@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.10 1994-04-20 16:58:52 amanda Exp $
+;; Version: $Id: latex.el,v 5.11 1994-04-23 15:53:38 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -753,13 +753,13 @@ You may use LaTeX-item-list to change the routines used to insert the item."
     (newline)
     (if (assoc environment LaTeX-item-list)
 	(funcall (cdr (assoc environment LaTeX-item-list)))
-      (insert TeX-esc "item "))
+      (TeX-insert-macro "item"))
     (LaTeX-indent-line)))
 
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
-  (insert TeX-esc "item[] ")
-  (backward-char 2))
+  (let ((TeX-arg-item-label-p t))
+    (TeX-insert-macro "item")))
 
 (defun LaTeX-item-bib ()
   "Insert a new bibitem."
@@ -1243,6 +1243,55 @@ comma."
   "Insert x and y coordinate as a pair."
  (TeX-arg-pair optional "X position" "Y position"))
 
+(defconst TeX-braces-default-association
+  '(("[" . "]")
+    ("\\{" . "\\}")
+    ("(" . ")")
+    ("|" . "|")
+    ("\\|" . "\\|")
+    ("/" . "/")
+    ("\\backslash" . "\\backslash")
+    ("\\lfloor" . "\\rfloor")
+    ("\\lceil" . "\\rceil")
+    ("\\langle" . "\\rangle")))
+
+(defvar TeX-braces-user-association nil
+  "A list of your personal association of brace symbols for \\left and \\right
+
+The car of each entry is the brace used with \\left,
+the cdr is the brace used with \\right.")
+
+(defvar TeX-braces-association
+  (append TeX-braces-user-association
+          TeX-braces-default-association)
+    "A list of association of brace symbols for \\left and \\right.
+The car of each entry is the brace used with \\left,
+the cdr is the brace used with \\right.")
+
+(defvar TeX-left-right-braces
+  '(("[") ("]") ("\\{") ("\\}") ("(") (")") ("|") ("\\|")
+    ("/") ("\\backslash") ("\\lfloor") ("\\rfloor")
+    ("\\lceil") ("\\rceil") ("\\langle") ("\\rangle")
+    ("\\uparrow") ("\\Uparrow") ("\\downarrow") ("\\Downarrow")
+    ("\\updownarrow") ("\\Updownarrow") ("."))
+  "List of symbols which can follow the \\left or \\right command")
+
+(defun TeX-insert-braces (optional &optional prompt)
+  (let ((left-brace (completing-read
+                     (TeX-argument-prompt optional prompt "Which brace")
+                     TeX-left-right-braces)))
+    (insert left-brace " ")
+    (save-excursion
+      (let ((right-brace (cdr (assoc left-brace
+                                     TeX-braces-association))))
+        (insert " " TeX-esc "right")
+        (if (and TeX-arg-right-insert-p
+                 right-brace)
+            (insert right-brace)
+          (insert (completing-read
+                   (TeX-argument-prompt optional prompt "Which brace")
+                   TeX-left-right-braces)))))))
+
 ;;; Indentation
 
 (defvar LaTeX-indent-level 2
@@ -1260,7 +1309,7 @@ Add LaTeX-indent-level indentation in each \\begin{ - \\end{ block.
 Lines starting with an item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
-  (let ((indent (calculate-LaTeX-indentation)))
+  (let ((indent (LaTeX-indent-calculate)))
     (save-excursion
       (if (/= (current-indentation) indent)
 	  (let ((beg (progn
@@ -1461,15 +1510,51 @@ comments and verbatim environments"
      justify
      (concat " buffer " (buffer-name)))))
 
-(defun calculate-LaTeX-indentation ()
+(defvar LaTeX-indent-environment-list
+  '(("verbatim" current-indentation)
+    ("verbatim*" current-indentation))
+    "Alist of environments with special indentation.
+The second element in each entry is the function to calculate the
+indentation level in columns.")
+
+(defvar LaTeX-indent-environment-check t
+  "If non-nil, check for any special environments.")
+
+(defvar LaTeX-left-comment-regexp "%%%"
+  "Regexp matching comments that should be placed on the left margin.")
+
+(defvar LaTeX-right-comment-regexp "%[^%]"
+  "Regexp matching comments that should be placed to the right margin.")
+
+(defvar LaTeX-ignore-comment-regexp nil
+  "Regexp matching comments that whose indentation should not be touched.")
+
+(defun LaTeX-indent-calculate ()
   ;; Return the correct indentation of line of LaTeX source. (I hope...)
   (save-excursion
     (back-to-indentation)
     (cond ((looking-at (concat (regexp-quote TeX-esc)
 			       "\\(begin\\|end\\){verbatim\\*?}"))
+	   ;; \end{verbatim} must be flush left, otherwise an unwanted
+	   ;; empty line appears in LaTeX's output.
 	   0)
-	  ;; \end{verbatim} must be flush left, otherwise an unwanted
-	  ;; empty line appears in LaTeX's output
+	  ((and LaTeX-left-comment-regexp
+		(looking-at LaTeX-left-comment-regexp))
+	   ;; Comments to the left margin.
+	   0)
+	  ((and LaTeX-right-comment-regexp
+                (looking-at LaTeX-right-comment-regexp))
+           ;; Comments to the right margin.
+	   comment-column)
+	  ((and LaTeX-ignore-comment-regexp
+                (looking-at LaTeX-ignore-comment-regexp))
+           ;; Comments best left alone.
+	   (current-indentation))
+	  ((and LaTeX-indent-environment-check
+		;; Special environments.
+		(let ((entry (assoc (LaTeX-current-environment)
+				    LaTeX-indent-environment-list)))
+		  (and entry (funcall (nth 1 entry))))))
 	  ((looking-at (concat "\\("
 			       (regexp-quote TeX-esc)
 			       "end *"
@@ -1477,20 +1562,28 @@ comments and verbatim environments"
 			       "\\|"
 			       (regexp-quote TeX-esc)
 			       "right\\W\\)"))
-	   ;; without \W things like \rightarrow at the beginning of a
-	   ;; line destroy a level of indentation anyway: there is
-	   ;; (was) no provision to indent the corresponding \left
-	   (- (calculate-normal-LaTeX-indentation) LaTeX-indent-level))
+	   ;; Backindent after \end{ and \right.
+	   (- (LaTeX-indent-calculate-last) LaTeX-indent-level))
 	  ((looking-at (concat (regexp-quote TeX-esc) LaTeX-item-regexp))
-	   (+ (calculate-normal-LaTeX-indentation) LaTeX-item-indent))
-	  (t (calculate-normal-LaTeX-indentation)))))
+	   ;; Items.
+	   (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
+	  (t (LaTeX-indent-calculate-last)))))
 
-(defun calculate-normal-LaTeX-indentation ()
+(defun LaTeX-indent-calculate-last ()
   "Return the correct indentation of a normal line of text.
 The point is supposed to be at the beginning of the current line."
   (skip-chars-backward "\n\t ")
   (move-to-column (current-indentation))
-  (cond ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
+
+  ;; Ignore comments.
+  (while (and (looking-at "%") (not (bobp)))
+    (skip-chars-backward "\n\t ")
+    (if (not (bobp))
+	(move-to-column (current-indentation))))
+
+  (cond ((bobp)
+	 0)
+	((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
 	 ;; I dislike having all of the document indented...
 	 (current-indentation))
 	((looking-at (concat (regexp-quote TeX-esc) "begin"
@@ -1509,7 +1602,7 @@ The point is supposed to be at the beginning of the current line."
 					   (regexp-quote TeX-grop)
 					   "verbatim\\*?"
 					   (regexp-quote TeX-grcl)) 0 t)
-	       (calculate-normal-LaTeX-indentation)
+	       (LaTeX-indent-calculate-last)
 	     0)))
 	(t (+ (TeX-brace-count-line)
 	      (cond ((looking-at (concat "\\("
@@ -1647,6 +1740,10 @@ The point is supposed to be at the beginning of the current line."
 (defvar TeX-arg-item-label-p nil
   "*If non-nil, always ask for optional label in items.
 Otherwise, only ask in description environments.")
+
+(defvar TeX-arg-right-insert-p t
+  "*If non-nil, always insert automatically the corresponding
+\\right if \\left is inserted.")
 
 ;;;###autoload
 (defun latex-mode ()
@@ -1941,6 +2038,7 @@ of LaTeX-mode-hook."
    '("numberline" "Section number" "Heading")
    '("caption" t)
    '("marginpar" [ "Left margin text" ] "Text")
+   '("left" TeX-insert-braces)
 
    ;; These have no special support, but are included in case the
    ;; auto files are missing. 

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.12 1994-04-21 14:05:13 amanda Exp $
+;; Version: $Id: tex.el,v 5.13 1994-04-23 15:53:44 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -25,23 +25,15 @@
 
 ;;; Code:
 
-(require 'auc-ver)
-(require 'tex-site)
-(require 'easymenu)
-
-(cond ((< (string-to-int emacs-version) 19)
-       (require 'tex-18))
-      ((string-match "Lucid" emacs-version)
-       (require 'tex-lcd))
-      (t
-       (require 'tex-19)))
-
 ;;; Site Customization
 ;;
 ;; The following variables are likely to need to be changed for your
 ;; site.  It is suggested that you do this by *not* changing this
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
+
+(defvar TeX-lisp-directory "/usr/local/lib/emacs/site-lisp/auctex/"
+  "*The directory where the AUC TeX lisp files are located.")
 
 ;; Change this to point to the place where the TeX macros are stored
 ;; at yourt site.
@@ -229,6 +221,42 @@ the string to be expanded.  The second element is the name of a
 function returning the expanded string when called with the remaining
 elements as arguments.  The special value `file' will be expanded to
 the name of the file being processed, with an optional extension.")
+
+;;; Import
+
+(or (member TeX-lisp-directory load-path)
+    (setq load-path (cons TeX-lisp-directory load-path)))
+
+(require 'auc-ver)
+(require 'easymenu)
+
+(cond ((< (string-to-int emacs-version) 19)
+       (require 'tex-18))
+      ((string-match "Lucid" emacs-version)
+       (require 'tex-lcd))
+      (t
+       (require 'tex-19)))
+
+(defvar no-doc
+  "This function is part of AUC TeX, but has not yet been loaded.
+Full documentation will be available after autoloading the function."
+  "Documentation for autoload functions.")
+
+;; This hook will store bibitems when you save a BibTeX buffer.
+(defvar bibtex-mode-hook nil)
+(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
+(autoload 'BibTeX-auto-store "latex" no-doc t)
+
+;; Bind latex-help globally. 
+(autoload 'latex-help "ltx-help" no-doc t)
+(define-key help-map "\C-l" 'latex-help)
+
+(autoload 'LaTeX-math-mode "ltx-math" no-doc t)
+(autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
+(autoload 'japanese-latex-mode "tex-jp" no-doc t)
+(autoload 'japanese-slitex-mode "tex-jp" no-doc t)
+(autoload 'texinfo-mode "tex-info" no-doc t)
+(autoload 'latex-mode "latex" no-doc t)
 
 ;;; Buffer
 

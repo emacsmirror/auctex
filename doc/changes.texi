@@ -26,6 +26,34 @@ and probably more.@refill
 
 @itemize @bullet
 @item
+Support Emacs comment conventions.  Comments starting with a single
+@samp{%} are indented at @code{comment-column}.  Comments starting with
+@samp{%%%} are indented at column 0.  Comments starting with
+@samp{%%} are indented like ordinary text.  You can set the variables
+@code{LaTeX-right-comment-regexp} and @code{LaTeX-left-comment-regexp}
+to nil to disable this.  See also @code{LaTeX-ignore-comment-regexp}.
+Rewrote it from Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>} from
+original code.
+
+@item
+@key{tab} and @key{lfd} will not indent code in @samp{verbatim}
+environment if you set @code{LaTeX-indent-environment-check} to non-nil.
+Thise was also first implemented by Christoph Wedler
+@samp{<wedler@@fmi.uni-passau.de>}.  
+
+@item
+You can now get get custom indentation for various environments.  See
+@code{LaTeX-indent-environment-list}.
+
+@item
+@kbd{C-c C-m left @key{ret}} new automatically inserts a matching
+@samp{\right}.  See variables @code{TeX-left-right-braces},
+@code{TeX-braces-default-association}, and
+@code{TeX-braces-user-association}.  This feature was suggested by Jesse
+@samp{<jes@@math.msu.edu>} and implemented by Berwin Turlach
+@samp{<berwin@@core.ucl.ac.be>}.
+
+@item
 Don't automatically display the compilation buffer unless
 @code{TeX-show-compilation} in non-nil.  Suggested by Stefan Schoef
 @samp{Stefan.Schoef@@arbi.informatik.uni-oldenburg.de}. 
