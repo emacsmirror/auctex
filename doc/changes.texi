@@ -11,6 +11,18 @@
 @item
 You can customize the completion for graphic files with 
 @code{LaTeX-includegraphics-read-file}.
+
+@item
+@file{url.sty} is now supported with command completion and
+fontification.
+
+@item
+Fontification of sub-/superscript content in math and filling was sped
+up.
+
+@item
+Insertion of nodes in Texinfo mode now supports completion of existing
+node names.
 @end itemize
 
 
@@ -32,6 +44,9 @@ Completion for graphic files in the TeX search path has been added.
 @item
 @command{start} is used for the viewer for Mik@TeX{} and fp@TeX{}.
 
+@item
+The variable @code{TeX-fold-preserve-comments} can now be customized to
+deactivate folding in comments.
 @end itemize
 
 @heading News in 11.52
@@ -63,6 +78,9 @@ Omega support has been added.
 
 @item
 Bug fixes in the build process.
+
+@item
+@code{TeX-fold} now supports folding of environments in Texinfo mode.
 @end itemize
 
 @heading News in 11.50
