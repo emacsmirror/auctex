@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.67 $
+%  \rcskey \version CVS-$Revision: 1.68 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-09-16 21:46:19 $
+%\rcskey\next $Date: 2002-11-05 16:28:00 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -343,10 +343,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.67 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.68 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-09-16 21:46:19 $
+\reserved@a\next $Date: 2002-11-05 16:28:00 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1217,10 +1217,12 @@
 %    \end{macrocode}
 %The page size is calculated as the appropriate differences, the page
 %offset consists of the coordinates of the lower left corner, with
-%that of the $x$ coordinate negated.
+%those coordinates negated that would be reckoned positive in the
+%device coordinate system.
 %    \begin{macrocode}
 %<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
-%<tightpage>       /PageOffset[7 -2 roll exch neg exch]>>setpagedevice%
+%<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
+%<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice%
 %    \end{macrocode}
 %So we now bind the old definition of |bop-hook| into our new
 %definition and finish it.
