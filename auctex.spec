@@ -79,16 +79,6 @@ mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 # file will not been included in the rpm distribution (make RPM 4.1+ happy)
 rm -f '%{buildroot}%{_infodir}/dir'
 
-# Package documentation in /usr/share/doc/auctex-n.n
-# rather than /usr/share/doc/auctex-emacs-n.n-1.whatever
-%define docs	    %{_defaultdocdir}/%{name}-%{version}
-mkdir -p '%{buildroot}%{docs}'
-for i in RELEASE COPYING INSTALL README TODO FAQ CHANGES \
-    doc/tex-ref.pdf; do
-  cp -R "$i" '%{buildroot}%{docs}'
-done
-
-
 %pre
 echo "; Autoactivation of AUCTeX" > %{startupfile}
 echo "; Created for %{name}-%{version}-%{release}.noarch.rpm" >> \
@@ -111,7 +101,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
-%doc %{docs}
+%doc doc/tex-ref.pdf
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
 %{_localstatedir}/%{name}
