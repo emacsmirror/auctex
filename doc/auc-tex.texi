@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.14 1993-03-16 02:24:29 amanda Exp $
+@c $Id: auc-tex.texi,v 1.15 1993-03-16 02:28:12 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1649,7 +1649,7 @@ when it ask you about pressing the key twice to get the original
 binding.  You can then switch between QWERTY and Dvorak with @kbd{M-x
 keyboard-mode}.@refill
 
-@xref{Keyboard Remapping} for a more detailed descriptions of these
+@xref{Scandinavian} for a more detailed descriptions of these
 functions. 
 
 @node Accents, Converting, Dvorak, Internationalization
