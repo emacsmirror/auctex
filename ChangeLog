@@ -1,3 +1,18 @@
+2004-09-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-verbatim-environments): Change from
+	defvar to defcustom.
+	(font-latex-verbatim-environments-local)
+	(font-latex-verbatim-macros)
+	(font-latex-verbatim-macros-local): New variables.
+	(font-latex-set-syntactic-keywords): Use them.
+
+	* style/listings.el: New file.
+
+	* Makefile.in (STYLESRC): Add it.
+
+	* doc/changes.texi: Mention support for listings.sty.
+
 2004-09-16  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/changes.texi: Mention built fixes.
