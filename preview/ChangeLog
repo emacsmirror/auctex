@@ -1,3 +1,9 @@
+2002-11-21  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-mode-setup): And here we have the
+	toolbar icon for XEmacs users.  Does not look too pretty, but
+	might inspire volunteers for improvements.
+
 2002-11-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: Cosmetic change to the AUC TeX path printout
