@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.4 1993-09-28 23:33:41 amanda Exp $
+;; $Id: tex-info.el,v 5.5 1993-09-29 20:16:22 amanda Exp $
 
 ;; Copyright (C) 1993 Per Abrahamsen 
 ;; 
@@ -21,7 +21,9 @@
 ;;; Code:
 
 (require 'tex-init)
-(require 'texinfo)
+(condition-case nil			;Lucid is not providing.
+    (require 'texinfo)
+  (error))
 (require 'easymenu)
 
 ;;; Environments:
