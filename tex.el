@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.474 $"))
+	    (rev "$Revision: 5.475 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-28 00:40:17 $"))
+    (let ((date "$Date: 2005-01-06 18:25:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3638,9 +3638,11 @@ not move point further than this value."
     (if (< count 0)
 	(forward-line -1)
       (beginning-of-line))
-    (let ((prefix (when (looking-at (concat "[ \t]*\\("
-					    TeX-comment-start-regexp "+\\)"))
-		    (buffer-substring (match-beginning 1) (match-end 1)))))
+    (let ((prefix (when (looking-at (concat "\\([ \t]*"
+					    TeX-comment-start-regexp "+\\)+"))
+		    (buffer-substring (+ (line-beginning-position)
+					 (current-indentation))
+				      (match-end 0)))))
       (while (save-excursion
 	       (and (if (> count 0)
 			(<= (point) limit)
@@ -3649,15 +3651,17 @@ not move point further than this value."
 			       (forward-line 1)
 			     (forward-line -1)))
 		    (if prefix
-			(if (looking-at (concat "[ \t]*\\("
+			(if (looking-at (concat "\\([ \t]*"
 						TeX-comment-start-regexp
-						"+\\)"))
+						"+\\)+"))
 			    ;; If the preceding line is a commented line
 			    ;; as well, check if the prefixes are
 			    ;; identical.
 			    (string= prefix
-				     (buffer-substring (match-beginning 1)
-						       (match-end 1)))
+				     (buffer-substring
+				      (+ (line-beginning-position)
+					 (current-indentation))
+				      (match-end 0)))
 			  nil)
 		      (not (looking-at (concat "[ \t]*"
 					       TeX-comment-start-regexp))))))
