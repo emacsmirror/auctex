@@ -1,5 +1,10 @@
 2002-12-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* style/amsmath.el ("amsmath"): environment "xxalignat*" doesn't
+	exist.
+	(LaTeX-amsmath-env-alignat):  environment "xxalignat" should not
+	get a \label.
+
 	* Makefile (BATCH): Added `-no-site-file' to batch options.
 
 2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
