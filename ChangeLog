@@ -1,5 +1,7 @@
 2004-09-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Add changes from 11.51 up to now.
+
 	* style/url.el: New file.
 
 	* Makefile.in (STYLESRC): Add style/url.el.
