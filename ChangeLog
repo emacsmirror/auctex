@@ -9,6 +9,9 @@
 	(TeX-comment-or-uncomment-region): Use it.
 	(TeX-comment-or-uncomment-paragraph): Ditto.
 
+	* doc/changes.texi: Remove warning about TeX-fold not working
+	correctly on XEmacs.
+
 2004-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-display-string-face): Remove `min-colors'
