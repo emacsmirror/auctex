@@ -1,3 +1,7 @@
+2004-11-08  David Kastrup  <dak@gnu.org>
+
+	* latex.el (doctex-mode): Set the mode name.
+
 2004-11-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (texinfo-mode): Add `@command' macro.

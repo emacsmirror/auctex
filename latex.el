@@ -4259,6 +4259,8 @@ runs the hooks in `doctex-mode-hook'."
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
+  (setq TeX-base-mode-name "docTeX")
+  (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
 
 (defvar LaTeX-header-end
