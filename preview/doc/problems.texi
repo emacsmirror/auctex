@@ -51,7 +51,7 @@ processing a particular image, this image will be tagged with clickable
 buttons for the error description and for the corresponding source file.
 
 @strong{Important note:} Various versions of GhostScript have a security
-bug which could seriously affect @preview-latex{}.  Current versions of
+bug which could seriously affect @previewlatex{}.  Current versions of
 @previewlatex{} should work around this bug.  The symptom would be that
 one out of two previews will fail, and previews get generated quite
 slowly since @previewlatex{} starts a new GhostScript process after each
