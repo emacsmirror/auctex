@@ -1,4 +1,4 @@
-;;; toolbarx.el --- fancy toolbar handling in Emacs and XEmacs
+;;; toolbar-x.el --- fancy toolbar handling in Emacs and XEmacs
 
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 
@@ -1165,39 +1165,41 @@ side effect."
 		     ;; (memq :insert filtered-props)
 		     (eval (nth 1 (memq :insert filtered-props))))))
     (when insert
-      (if (eq symbol :new-line)
-	  (progn
-	    ;; insert as many transparent spaces as neede to fill a line
-	    ;; (setq image-descriptor (toolbarx-find-image "tex6"))
-	    (let ((lines-needed (tool-bar-lines-needed))
-		  (temp-tool-bar-map tool-bar-map)
-		  (new-line-happened (not tool-bar-mode))
-		  (starting t)
-		  (key-not-used 'transp)
-		  (count 0)
-		  (image-descriptor (toolbarx-find-image "transp-strip")))
-	      (while (not new-line-happened)
-		(setq temp-tool-bar-map (copy-sequence tool-bar-map))
-		(if starting
-		    (setq starting nil)
-		  (setq used-keys-list (cons key-not-used used-keys-list)))
-		;; finding a symbol not in used-keys-list
-		(while (memq key-not-used used-keys-list)
-		  (setq count (1+ count))
-		  (setq key-not-used (intern
-				      (format "%s-%d" 'transp count))))
-		;;
-		(define-key-after tool-bar-map
-		  (vector key-not-used)
-		  `(menu-item "Transparent space"
-			      (lambda nil (interactive))
-			      :image ,image-descriptor
-			      :enable nil
-			      :help ""))
-		(setq new-line-happened (not (eq (tool-bar-lines-needed)
-						 lines-needed))))
-	      (setq tool-bar-map (copy-sequence temp-tool-bar-map))))
-	;; symbol is not :new-line, therefore a normal button
+      (cond
+       ((eq symbol :new-line)
+	;; insert as many transparent spaces as neede to fill a line
+	;; (setq image-descriptor (toolbarx-find-image "tex6"))
+	(let ((lines-needed (tool-bar-lines-needed))
+	      (temp-tool-bar-map tool-bar-map)
+	      (new-line-happened (not tool-bar-mode))
+	      (starting t)
+	      (key-not-used 'transp)
+	      (count 0)
+	      (image-descriptor (toolbarx-find-image "transp-strip")))
+	  (while (not new-line-happened)
+	    (setq temp-tool-bar-map (copy-sequence tool-bar-map))
+	    (if starting
+		(setq starting nil)
+	      (setq used-keys-list (cons key-not-used used-keys-list)))
+	    ;; finding a symbol not in used-keys-list
+	    (while (memq key-not-used used-keys-list)
+	      (setq count (1+ count))
+	      (setq key-not-used (intern
+				  (format "%s-%d" 'transp count))))
+	    ;;
+	    (define-key-after tool-bar-map
+	      (vector key-not-used)
+	      `(menu-item "Transparent space"
+			  (lambda nil (interactive))
+			  :image ,image-descriptor
+			  :enable nil
+			  :help ""))
+	    (setq new-line-happened (not (eq (tool-bar-lines-needed)
+					     lines-needed))))
+	  (setq tool-bar-map (copy-sequence temp-tool-bar-map))))
+;;       ((eq symbol :sep)  )
+       (t
+	;; symbol is not :new-line, therefore a normal button       
 	(let* ((image (cadr (memq :image filtered-props)))
 	       (image-descriptor
 		(when (memq :image filtered-props)
@@ -1250,7 +1252,7 @@ side effect."
 	  (when (and image-descriptor command)
 	    (setq used-keys-list (cons key-not-used used-keys-list))
 	    (define-key-after tool-bar-map
-	      (vector key-not-used) menuitem)))))
+	      (vector key-not-used) menuitem))))))
     (when used-keys (setcdr used-keys used-keys-list))))
 
 
@@ -1969,7 +1971,8 @@ this button is ignored."
 
 
 (defconst toolbarx-default-toolbar-meaning-alist
-  '((open-file :image ["new" toolbar-file-icon]
+  '((:sep :image "sep" :command t :enable nil :help "")
+    (open-file :image ["new" toolbar-file-icon]
 	       :command [find-file toolbar-open]
 	       :enable [(not (window-minibuffer-p
 			      (frame-selected-window menu-updating-frame)))
@@ -2128,6 +2131,6 @@ in `toolbarx-install-toolbar':
 Ps.: there are more buttons available than suggested in the
 expression above.")
 
-(provide 'toolbarx)
+(provide 'toolbar-x)
 
-;;; toolbarx.el ends here
+;;; toolbar-x.el ends here
