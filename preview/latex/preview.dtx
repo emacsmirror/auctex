@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.64 $
+%  \rcskey \version CVS-$Revision: 1.65 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-30 18:37:30 $
+%\rcskey\next $Date: 2002-07-30 22:48:07 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -329,7 +329,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.64 $
+   \reserved@a\reserved@b CVS-$Revision: 1.65 $
 \else
    \begingroup
       \lccode`-=`.
@@ -338,7 +338,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-07-30 18:37:30 $
+\reserved@a\next $Date: 2002-07-30 22:48:07 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1193,7 +1193,8 @@
 %    \begin{macrocode}
 %<tightpage>\preview@delay{\AtBeginDvi{%
 %<tightpage>  \special{!userdict begin/bop-hook{%
-%<tightpage>     7{currentfile token not{stop}if 65781.76 div DVImag mul}repeat
+%<tightpage>     7{currentfile token not{stop}if
+%<tightpage>       65781.76 div DVImag mul}repeat
 %    \end{macrocode}
 %Next we produce the horizontal part of the bounding box as
 %\[ (1\mathrm{in},1\mathrm{in}) +
