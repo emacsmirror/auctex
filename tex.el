@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.457 $"))
+	    (rev "$Revision: 5.458 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-13 13:03:23 $"))
+    (let ((date "$Date: 2004-10-26 19:18:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2446,8 +2446,10 @@ If TEX is a directory, generate style files for all files in the directory."
   (interactive)
   (unless (file-directory-p TeX-auto-global)
     (make-directory TeX-auto-global))
-  (mapcar (lambda (macro) (TeX-auto-generate macro TeX-auto-global))
-	  TeX-macro-global)
+  (let ((TeX-file-extensions '("cls" "sty"))
+	(BibTeX-file-extensions nil))
+    (mapcar (lambda (macro) (TeX-auto-generate macro TeX-auto-global))
+	    TeX-macro-global))
   (byte-recompile-directory TeX-auto-global 0))
 
 (defun TeX-auto-store (file)

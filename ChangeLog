@@ -1,3 +1,7 @@
+2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-auto-generate-global): Only parse cls and sty files.
+
 2004-10-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-match-command-in-braces): Remove
