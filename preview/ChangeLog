@@ -1,3 +1,20 @@
+2001-10-01  David Kastrup  <dakas@tupik.goethe.zz>
+
+	* README: Added CVS instructions and a few other odds and ends.
+
+	* bootstrap.ins: Remove docstrip configuration related messages.
+
+	* INSTALL: Some more massaging.
+
+	* PROBLEMS: Initial checkin, preparation for first tarball release.
+
+	* ChangeLog: Initial entry of ChangeLog.
+
+2001-10-01  alanshutko  <alanshutko@tupik.goethe.zz>
+
+	* aclocal.m4: Instead of /dev/null, throw stuff to FD 5, where it
+	might do some good.
+
 2001-10-01  alanshutko  <alanshutko@users.sourceforge.net>
 
 	* aclocal.m4: Instead of /dev/null, throw stuff to FD 5, where it
