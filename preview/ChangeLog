@@ -1,3 +1,10 @@
+2001-12-03  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-clearout): add optional argument keep-dir.
+	(preview-place-preview): Don't clearout previews from current
+	run.  This makes preview-latex keep multiple previews in command
+	arguments instead of just keeping the last such one.
+
 2001-11-30  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (section{Provided Commands}): Add descriptions of
