@@ -1,11 +1,11 @@
 ;;; auc-menu.el - Easy menu support for FSF and Lucid Emacs 19.
 ;; 
-;; $Id: auc-menu.el,v 5.3 1994-08-06 12:42:27 amanda Exp $
+;; $Id: auc-menu.el,v 5.4 1994-08-09 00:00:07 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; Easy menu support for FSF and Lucid Emacs 19|
-;; $Date: 1994-08-06 12:42:27 $|$Revision: 5.3 $|~/misc/auc-menu.el.gz|
+;; $Date: 1994-08-09 00:00:07 $|$Revision: 5.4 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
@@ -101,7 +101,7 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 
 ;;; Emacs 18
 
-((< (string-to-int emacs-version) 19)
+((or (< (string-to-int emacs-version) 19) (null window-system))
 
 (defun easy-menu-do-define (symbol maps doc menu)
   (fset symbol (symbol-function 'ignore)))
@@ -243,9 +243,7 @@ Call this from 'activate-menubar-hook' to implement dynamic menus."
 (defun easy-menu-remove (menu))
 
 (defun easy-menu-add (menu &optional map)
-  (and (fboundp 'x-popup-menu)
-       (eq window-system 'x)
-       (string-match "^19\\.\\([0-9]+\\)" emacs-version)
+  (and (string-match "^19\\.\\([0-9]+\\)" emacs-version)
        (< 22 (string-to-int (substring emacs-version
 				       (match-beginning 1) (match-end 1))))
        (x-popup-menu nil menu)))

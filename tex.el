@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.22 1994-07-30 05:39:43 amanda Exp $
+;; Version: $Id: tex.el,v 5.23 1994-08-09 00:00:13 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -825,8 +825,10 @@ AUC TeX knows of some macros, and may query for extra arguments."
 AUC TeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
-  (let ((minibuffer-local-completion-map TeX-electric-macro-map))
-    (call-interactively 'TeX-insert-macro)))
+  (if (memq (preceding-char) '(?\\ ?.))
+      (call-interactively 'self-insert-command)
+    (let ((minibuffer-local-completion-map TeX-electric-macro-map))
+      (call-interactively 'TeX-insert-macro))))
 
 (defun TeX-parse-macro (symbol args)
   "How to parse TeX macros which takes one or more arguments."

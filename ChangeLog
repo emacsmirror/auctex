@@ -1,11 +1,21 @@
-Sat Aug  6 13:53:01 1994  Per Abrahamsen  (amanda@verdande)
+Tue Aug  9 01:26:58 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* auc-menu.el (easy-menu-add): Undid previous change.
+	(top level `cond'): Use Emacs 18 code if `window-system' is nil.
+	Patch by Patrice Belleville <patrice@cs.sfu.ca>.
+
+Mon Aug  8 21:40:01 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* tex.el (TeX-electric-macro): No electricity after `.' or `\'.
+
+Sat Aug  6 13:53:01 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-paragraph-commands): New variable.
 	(LaTeX-common-initialization): Use it.  Suggested by
 	liyuan@allwise.research.att.com (Yuan P. Li).
 
 	* auc-menu.el (easy-menu-add): Check that `x-popup-menu' is bound
-	and that we are running under X before calling it.  reported by
+	and that we are running under X before calling it.  Reported by
 	Adrian F. Clark <alien@essex.ac.uk>
 
 Thu Aug  4 19:14:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
@@ -14,7 +24,7 @@ Thu Aug  4 19:14:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	regexps by koba@flab.fujitsu.co.jp (Kobayashi Shinji) reported by
 	Uenami Ken'ichi <uenami@rita.cow.melco.co.jp>.
 
-	* doc/auc-tex.texi (European): Mention `iso-cnv.el' as suggested
+	* doc/auc-tex.texi (European): Mention `iso-cvt.el' as suggested
 	by mike@vlsivie.tuwien.ac.at (Michael Gschwind).
 
 Wed Aug  3 15:36:02 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
@@ -33,6 +43,8 @@ Wed Aug  3 15:36:02 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* Makefile (LispInstall): Use "/bin/pwd" instead of "pwd".
 	reported by mic@cs.ucsd.edu (Michelangelo Grigni).
+
+	* ChangeLog: New file.
 
 	* Version 9.1 released.
 
