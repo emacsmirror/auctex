@@ -1,3 +1,7 @@
+2002-03-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* RELEASE: Some adjustments for 0.6.1.
+
 2002-03-09  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): Use preview-with-LaTeX-menus.
