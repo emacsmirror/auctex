@@ -2,15 +2,10 @@
 
 	* font-latex.el: Add change log entries and bump version
 	(font-latex-find-matching-close): Fix typo in last commit.
+	(font-latex-match-font-inside-braces): Set actual numbers in the
+	match, not nil.  Fixes errors with `font-lock-multiline' enabled.
 
 2004-09-27  David Kastrup  <dak@gnu.org>
-
-	* latex.el (LaTeX-top-caption-list, LaTeX-label)
-	(LaTeX-label-function, LaTeX-figure-label, LaTeX-table-label)
-	(LaTeX-default-format, LaTeX-default-position)
-	(LaTeX-equation-label, LaTeX-eqnarray-label, LaTeX-env-item)
-	(LaTeX-label-alist, LaTeX-label): Reconstitute damage from checkin
-	from 2004-09-19
 
 	* font-latex.el (font-latex-find-matching-close): Simplify.
 
