@@ -15,21 +15,6 @@
     ("j-report"))
   "*List of Japanese document styles.")
 
-;;; @@ Coding systems
-
-(if (boundp 'MULE)
-    (progn
-      (defvar TeX-process-input-coding-system *euc-japan*
-	"TeX-process' coding system with standard input.")
-      (defvar TeX-process-output-coding-system *junet*
-	"TeX-process' coding system with standard output.")))
-(if (boundp 'NEMACS)
-    (progn
-      (defvar TeX-process-kanji-code 2
-	"TeX-process' kanji code with standard I/O.
-0:No-conversion  1:Shift-JIS  2:JIS  3:EUC/AT&T/DEC")
-      (define-program-kanji-code nil ".*tex.*" TeX-process-kanji-code)))
-
 ;;; @@ Japanese LaTeX initialization
 
 (defun japanese-TeX-initialization ()

@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.28 1993-03-28 13:40:03 amanda Exp $
+;;; $Id: tex-buf.el,v 1.29 1993-03-28 15:40:58 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -650,7 +650,7 @@ original file."
 
 ;;; @@ Parsing
 
-;;; @@ Customization
+;;; @@@ Customization
 
 (defvar TeX-display-help t
   "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
@@ -869,6 +869,60 @@ Return nil if we gave a report."
 	    (message (concat "! " error)))
 	  nil)
       t)))
+
+;;; @@@ Help
+
+(defvar TeX-last-debug "dbg-none"
+  "Language last used for debug messages.")
+
+(defun TeX-help-error (error output)
+  "Print ERROR in context OUTPUT in another window."
+
+  (let ((language (TeX-style-check TeX-debug-language)))
+    (if (equal language TeX-last-debug)
+	()
+      (load-library language)
+      (setq TeX-last-debug language)))
+
+  (let ((old-buffer (current-buffer))
+	(log-file (TeX-active-master "log"))
+	(TeX-error-pointer 1))
+
+    ;; Find help text entry.
+    (while (not (string-match (car (nth TeX-error-pointer 
+					TeX-error-description-list))
+			      error))
+      (setq TeX-error-pointer (+ TeX-error-pointer 1)))
+
+    (pop-to-buffer (get-buffer-create "*TeX Help*"))
+    (erase-buffer)
+    (insert "ERROR: " error
+	    "\n\n--- TeX said ---"
+	    output
+	    "\n--- HELP ---\n"
+	    (save-excursion
+	      (if (and (string= (cdr (nth TeX-error-pointer
+					  TeX-error-description-list))
+				"No help available")
+		       (let* ((log-buffer (find-file-noselect log-file)))
+			 (set-buffer log-buffer)
+			 (auto-save-mode nil)
+			 (setq buffer-read-only t)
+			 (goto-line (point-min))
+			 (search-forward error nil t 1)))
+		  (progn
+		    (re-search-forward "^l.")
+		    (re-search-forward "^ +$")
+		    (forward-char 1)
+		    (let ((start (point)))
+		      (re-search-forward "^$")
+		      (concat "From the .log file...\n\n"
+			      (buffer-substring start (point)))))
+		(cdr (nth TeX-error-pointer
+			  TeX-error-description-list)))))
+    (goto-char (point-min))
+    (pop-to-buffer old-buffer)))
+  
 
 ;;; @@ Emacs
 
