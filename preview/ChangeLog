@@ -1,3 +1,12 @@
+2002-07-28  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex/preview.dtx (subsection{Preview attaching commands}): Fix
+	\PreviewEnvironment*
+	(subsection{Preview attaching commands}): Type out font size and
+	magnification info at start of document.
+	(subsection{Supporting conversions}): Take DVI magnification into
+	account in `tightpage' option.
+
 2002-07-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* circ.tex: Demonstrate showlabels (and fix a math oversight).
