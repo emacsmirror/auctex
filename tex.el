@@ -344,12 +344,21 @@ is performed as specified in TeX-expand-list."
 ;; You may want special options to the view command depending on the
 ;; style options.  Only works if parsing is enabled.
 
-(defcustom TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "xdvi %d -paper a5")
-			    ("^landscape$" "xdvi %d -paper a4r -s 4")
-			    ;; The latest xdvi can show embedded postscript.
-			    ;; If you don't have that, uncomment next line.
-			    ;; ("^epsf$" "ghostview %f")
-			    ("." "xdvi %d"))
+(defcustom TeX-view-style
+  '(((concat
+      "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
+     "xdvi \"%d\" -paper a4")
+    ((concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+     "xdvi \"%d\" -paper a5")
+    ("^b5paper$" "xdvi \"%d\" -paper b5")
+    ("^letterpaper$" "xdvi \"%d\" -paper us")
+    ("^legalpaper$" "xdvi \"%d\" -paper legal")
+    ("^executivepaper$" "xdvi \"%d\" -paper 7.25x10.5in")
+    ("^landscape$" "xdvi \"%d\" -paper a4r -s 0")
+    ;; The latest xdvi can show embedded postscript.  If you don't
+    ;; have that, uncomment next line.
+    ;; ("^epsf$" "ghostview %f")
+    ("." "xdvi %d"))
   "List of style options and view options.
 
 If the first element (a regular expresion) matches the name of one of
@@ -361,12 +370,23 @@ string."
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  '(("^dvi$" ("^a5\\(?:comb\\|paper\\)?$" "^landscape$")
-     "xdvi \"%d\" -paper a5r -s 4")
-    ("^dvi$" "^a5\\(?:comb\\|paper\\)?$" "xdvi \"%d\" -paper a5")
+  '(("^dvi$" (concat
+              "^"
+              (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
+              "$")
+     "xdvi \"%d\" -paper a4")
+    ("^dvi$" ((concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+              "^landscape$")
+     "xdvi \"%d\" -paper a5r -s 0")
+    ("^dvi$" (concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+     "xdvi \"%d\" -paper a5")
+    ("^dvi$" "^b5paper$" "xdvi \"%d\" -paper b5")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-                        "dvips -t landscape -f \"%d\" | gv")
-    ("^dvi$" "^landscape$" "xdvi \"%d\" -paper a4r -s 4")
+     "dvips -t landscape -f \"%d\" | gv")
+    ("^dvi$" "^letterpaper$" "xdvi \"%d\" -paper us")
+    ("^dvi$" "^legalpaper$" "xdvi \"%d\" -paper legal")
+    ("^dvi$" "^executivepaper$" "xdvi \"%d\" -paper 7.25x10.5in")
+    ("^dvi$" "^landscape$" "xdvi \"%d\" -paper a4r -s 0")
     ("^dvi$" "^pstricks$\\|^psfrag$" "dvips -f \"%d\" | gv")
     ("^dvi$" "." "xdvi \"%d\"")
     ("^pdf$" "^landscape$" "xpdf -papertype a4r \"%o\"")
@@ -515,7 +535,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.332 $"))
+	(rev "$Revision: 5.333 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +550,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-28 19:29:17 $"))
+    (let ((date "$Date: 2004-03-11 21:59:02 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2885,16 +2905,20 @@ LIMIT is non-nil, search down to this position in the buffer."
   "Return the position of the closing brace for the current
 opening brace.  With optional ARG>=1, find that outer level.  If
 LIMIT is non-nil, search up to this position in the buffer."
-  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
+  (let ((arg (if arg (if (< arg 1) 1 arg) 1))
+        brace)
     (save-excursion
-      (while (and
-              (/= arg 0)
-              (re-search-backward (concat "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*"
-                                         "\\({\\|}\\)") limit t 1))
-        (cond ((string= (substring (match-string 0) -1) "}")
-               (setq arg (1+ arg)))
-              (t
-               (setq arg (1- arg)))))
+      (while (and (/= arg 0)
+                  (re-search-backward "{\\|}" limit t 1))
+        (setq brace (match-string 0))
+        (when (TeX-looking-at-backward
+               (concat "[^" TeX-esc "]\\("
+                       (regexp-quote (concat TeX-esc TeX-esc))
+                       "\\)*"))
+          (cond ((string= brace "}")
+                 (setq arg (1+ arg)))
+                (t
+                 (setq arg (1- arg))))))
       (if (/= arg 0)
           nil
         (point)))))
