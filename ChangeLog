@@ -1,3 +1,8 @@
+2005-01-14  David Kastrup  <dak@gnu.org>
+
+	* auctex.spec: Add and remove auctex.info instead of auctex in
+	info dir.  Bump release to 2 to match upload.
+
 2005-01-13  David Kastrup  <dak@gnu.org>
 
 	* doc/changes.texi: 
