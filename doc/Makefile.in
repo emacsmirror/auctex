@@ -13,11 +13,11 @@ TEXINDEX=texindex
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=dvips
 TEXIFILES = auc-tex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi
+	changes.texi todo.texi faq.texi
 
 all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
-dist: auctex INSTALL INSTALL.windows README CHANGES TODO \
+dist: auctex INSTALL INSTALL.windows README CHANGES TODO FAQ \
 	auc-tex_toc.html auc-tex.ps
 
 auc-tex_toc.html: auc-tex.texi
@@ -83,6 +83,10 @@ TODO: todo.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		todo.texi --output TODO
 
+FAQ: faq.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		faq.texi --output FAQ
+
 install: auctex
 	-$(MKINSTALLDIRS) $(infodir)
 	$(INSTALL_DATA) auctex $(infodir)
@@ -98,8 +102,8 @@ install: auctex
 clean:
 	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
-		*.fns *.vrs *.pgs *.tmp auctex auctex-? *.html INSTALL \
-		INSTALL.windows README CHANGES HISTORY TODO
+		*.fns *.vrs *.pgs *.tmp auctex auctex-* *.html INSTALL \
+		INSTALL.windows README CHANGES HISTORY TODO FAQ
 
 distclean: clean
 	rm -f Makefile
