@@ -34,10 +34,6 @@
 (when (featurep 'xemacs)
   (require 'overlay))
 
-(add-hook 'TeX-mode-hook
-	  '(lambda nil
-	     (define-key TeX-mode-map "\C-c\C-o\C-f" 'TeX-fold-mode)))
-
 (defgroup TeX-fold nil
   "Fold TeX macros."
   :group 'LaTeX)
@@ -170,9 +166,10 @@ Remove the respective properties from the overlay OV."
 					      mark-active)
 				     (overlays-at (mark)))
 				   (overlays-at (point))))
-		  (push (cons (selected-window) ol) TeX-fold-open-spots)
-		  (setq old-ols (delq ol old-ols))
-		  (TeX-fold-show-item ol)))
+		  (when (eq (overlay-get ol 'category) 'TeX-fold)
+		    (push (cons (selected-window) ol) TeX-fold-open-spots)
+		    (setq old-ols (delq ol old-ols))
+		    (TeX-fold-show-item ol))))
 	      ;; Close old overlays.
 	      (dolist (ol old-ols)
 		(when (and (eq (current-buffer) (overlay-buffer ol))
