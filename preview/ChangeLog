@@ -1,5 +1,16 @@
 2002-11-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi: Some cosmetic changes and version info
+	updates.
+
+	* doc/preview-latex.texi (Keys and lisp): Adjust docs for changed
+	menu structure (Preview having a top-level entry).
+	(On EPS previews): phase out info about historical `postscript'
+	settings.
+
+	* preview.el (preview-image-type): Don't offer `postscript' when
+	customizing.
+
 	* configure.in: bump version.
 
 	* doc/preview-latex.texi: bump version.
