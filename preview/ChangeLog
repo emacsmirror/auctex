@@ -1,4 +1,12 @@
-2003-12-01  Jan-Åke Larsson  <jalar@mai.liu.se>
+2003-12-01  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c: 
+	* dvipng/dvipng.h: 
+	* dvipng/misc.c: Change to physical pagenumbers, instead of DVI
+	pagenumbers. DVI pagenumbers will be indicated on STDOUT if they
+	differ from physical pagenumbers, but the numbering of PNG files
+	is physical pagenumbers. Old behaviour can be chosen with the
+	option -dvinum.
 
 	* dvipng/ppagelist.c:
 	* dvipng/misc.c:
