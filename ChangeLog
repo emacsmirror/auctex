@@ -1,3 +1,8 @@
+2004-02-26  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-master-file): Don't overwrite TeX-master when not
+	asking the question.
+
 2004-02-19  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-fill-paragraph): Back out changes from
