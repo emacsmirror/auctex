@@ -2201,7 +2201,9 @@ pass args FROM, TO and JUSTIFY-FLAG."
 		(if (match-string 1)
 		    (LaTeX-fill-region-as-para-do from (point) justify-flag)
 		  (LaTeX-fill-region-as-para-do
-		   from (line-beginning-position 0) justify-flag)))
+		   from (line-beginning-position 0) justify-flag)
+		  ;; At least indent the line ending with `\\'.
+		  (indent-according-to-mode)))
 	      (setq from (point)))
 	  ;; ELSE part follows - loop termination relies on a fact
 	  ;; that (LaTeX-fill-region-as-para-do) moves point past
