@@ -1,8 +1,8 @@
 Release notes for version 0.7.4 of the preview-latex package:
 
-preview-latex dresses up your LaTeX source by placing right into its
-Emacs/XEmacs buffer judiciously selected chunks (such as single
-formulas) chopped from unwieldy preview pages, while keeping the
+preview-latex dresses up your LaTeX source by placing judiciously
+selected chunks (such as single formulas) chopped from unwieldy
+preview pages right into its Emacs/XEmacs buffer, while keeping the
 original source readily accessible.  You get to have your eye candy
 and edit it, too.
 
@@ -12,21 +12,18 @@ released under the GNU Public License (GPL).  At the current point of
 time, at least GNU Emacs-21.1 under the X window system, AUC TeX
 (11.11 recommended, see below), a working LaTeX installation and
 GhostScript are required.  This version also supports XEmacs-21, best
-in version 21.4.9 or later.  Under the Windows operating system, we
-have had positive reports for both native and Cygwin ports of XEmacs.
-Recent CVS versions of GNU Emacs could conceivably be made to run
-preview-latex under Windows, but we have had no reports for this
-combination yet.
+in version 21.4.9 or later.  The various Windows ports of XEmacs
+should work out of the box.  Recent CVS versions of Windows GNU Emacs
+could conceivably be made to work, too, but the jury is still out on
+that one.
 
 Release 0.7.4 is a consolidation release containing mostly bug fixes.
-The quest to work around broken security implementations of
-GhostScript hopefully has lead to safer and more reliable results.
-Under GNU Emacs, preview-at-point has been added to the tool-bar.
-
-The previous release lead to problems when buffers without associated
-file name were put into LaTeX-mode.  If this occured while first
-loading preview-latex, compatibility macros caused further problems
-with various other packages in XEmacs.
+Several interoperatibility problems under Windows and with various
+GhostScript versions have been dealt with.  The previous release lead
+to problems when buffers without associated file name were put into
+LaTeX-mode.  If this occured while first loading preview-latex,
+compatibility macros caused further problems with XEmacs.  As a
+promotional measure, preview-at-point has been added to the tool bar.
 
 The README file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
