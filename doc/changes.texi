@@ -4,6 +4,35 @@
 
 @end ifset
 
+@heading News in 11.55
+
+@itemize @bullet
+@item
+A bug was fixed which lead to the insertion of trailing whitespace
+during filling.  In particular extra spaces were added to sentence
+endings at the end of lines.  You can make this whitespace visible by
+setting the variable @code{show-trailing-whitespace} to @code{t}.  If
+you want to delete all trailing whitespace in a buffer, type @kbd{M-x
+delete-trailing-whitespace RET}.
+
+@item
+A bug was fixed which lead to a @samp{*Compile-Log*} buffer popping up
+when the first @LaTeX{} file was loaded in an Emacs session.
+
+@item
+On some systems the presence of an outdated Emacspeak package lead to
+the error message @samp{File mode specification error: (error "Variable
+binding depth exceeds max-specpdl-size")}.  Precautions were added which
+prevent this error from happening.  But nevertheless, it is advised to
+upgrade or uninstall the outdated Emacspeak package.
+
+@item
+The value of @code{TeX-macro-global} is not determined during
+configuration anymore but at load time of @AUCTeX{}.  Consequently the
+associated configuration option @samp{--with-tex-input-dirs} was
+removed.
+@end itemize
+
 @heading News in 11.54
 
 @itemize @bullet
