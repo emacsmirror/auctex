@@ -460,6 +460,12 @@ The behaviour of this hook is controlled by variable `LaTeX-section-label'."
 
 (defvar LaTeX-environment-history nil)
 
+;; Variable used to cache the current environment, e.g. for repeated
+;; tasks in an environment, like indenting each line in a paragraph to
+;; be filled.  It must not have a non-nil value in general.  That
+;; means it is usually let-bound for such operations.
+(defvar LaTeX-current-environment nil)
+
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
 With optional ARG, modify current environment.
@@ -2011,7 +2017,8 @@ outer indentation in case of a commented line.  The symbols
 	     0)
 	    ((and LaTeX-indent-environment-check
 		  ;; Special environments.
-		  (let ((entry (assoc (LaTeX-current-environment)
+		  (let ((entry (assoc (or LaTeX-current-environment
+					  (LaTeX-current-environment))
 				      LaTeX-indent-environment-list)))
 		    (and entry
 			 (nth 1 entry)
@@ -2455,57 +2462,57 @@ space does not end a sentence, so don't break a line there."
 
 	;; This is the actual FILLING LOOP.
 	(goto-char from)
-	(let (linebeg
-	      code-comment-flag)
-	  (setq code-comment-flag
+	(let* (linebeg
+	       (code-comment-flag
 		(save-excursion
 		  (LaTeX-back-to-indentation)
 		  (TeX-re-search-forward-unescaped TeX-comment-start-regexp
 						   (line-end-position) t)))
-	  (let ((end-marker
-		 (save-excursion
-		   (goto-char (if code-comment-flag
-				  ;; Get the position right after the
-				  ;; last non-comment-word.
-				  (save-excursion
-				    (goto-char (match-beginning 0))
-				    (skip-chars-backward " \t")
-				    (point))
-				to))
-		   (point-marker))))
-	    ;; Fill until point is greater than the end point.  If there
-	    ;; is a code comment, use the code comment's start as a
-	    ;; limit.
-	    (while (and (< (point) (marker-position end-marker))
-			(or (not code-comment-flag)
-			    (and code-comment-flag
-				 (> (- (marker-position end-marker)
-				       (line-beginning-position))
-				    fill-column))))
-	      (setq linebeg (point))
-	      (move-to-column (current-fill-column))
-	      (if (when (< (point) (marker-position end-marker))
-		    ;; Find the position where we'll break the line.
-		    (forward-char 1) ; Use an immediately following
-				     ; space, if any.
-		    (LaTeX-fill-move-to-break-point linebeg)
+	       (end-marker
+		(save-excursion
+		  (goto-char (if code-comment-flag
+				 ;; Get the position right after the
+				 ;; last non-comment-word.
+				 (save-excursion
+				   (goto-char (match-beginning 0))
+				   (skip-chars-backward " \t")
+				   (point))
+			       to))
+		  (point-marker)))
+	       (LaTeX-current-environment (LaTeX-current-environment)))
+	  ;; Fill until point is greater than the end point.  If there
+	  ;; is a code comment, use the code comment's start as a
+	  ;; limit.
+	  (while (and (< (point) (marker-position end-marker))
+		      (or (not code-comment-flag)
+			  (and code-comment-flag
+			       (> (- (marker-position end-marker)
+				     (line-beginning-position))
+				  fill-column))))
+	    (setq linebeg (point))
+	    (move-to-column (current-fill-column))
+	    (if (when (< (point) (marker-position end-marker))
+		  ;; Find the position where we'll break the line.
+		  (forward-char 1)	; Use an immediately following
+					; space, if any.
+		  (LaTeX-fill-move-to-break-point linebeg)
 
-		    ;; Check again to see if we got to the end of
-		    ;; the paragraph.
- 		    (skip-chars-forward " \t")
-		    (< (point) (marker-position end-marker)))
-		  ;; Found a place to cut.
-		  (progn
-		    (LaTeX-fill-newline)
-		    (when justify
-		      ;; Justify the line just ended, if desired.
-		      (save-excursion
-			(forward-line -1)
-			(justify-current-line justify nil t))))
+		  ;; Check again to see if we got to the end of
+		  ;; the paragraph.
+		  (skip-chars-forward " \t")
+		  (< (point) (marker-position end-marker)))
+		;; Found a place to cut.
+		(progn
+		  (LaTeX-fill-newline)
+		  (when justify
+		    ;; Justify the line just ended, if desired.
+		    (save-excursion
+		      (forward-line -1)
+		      (justify-current-line justify nil t))))
 
-		(goto-char end-marker)
-		;; Justify this last line, if desired.
-		(if justify (justify-current-line justify t t)))))
+	      (goto-char end-marker)
+	      ;; Justify this last line, if desired.
+	      (if justify (justify-current-line justify t t))))
 
 	  ;; Fill a code comment if necessary.  (Enable this code if
 	  ;; you want the comment part in lines with code comments to
