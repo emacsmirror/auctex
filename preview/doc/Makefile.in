@@ -14,16 +14,16 @@ INSTALL_DATA=@INSTALL_DATA@
 all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: preview-latex.texi install.texi readme.texi \
-	copying.texi problems.texi
+	copying.texi problems.texi preview-dtxdoc.texi macros.texi
 	makeinfo --html preview-latex.texi
 
 html-docs: preview-latex/index.html
 
-preview-dtxdoc.texi: ../preview.dtx
+preview-dtxdoc.texi: ../preview.dtx preview-dtxdoc.pl
 	-$(PERL) preview-dtxdoc.pl < ../preview.dtx > preview-dtxdoc.texi
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi
+	problems.texi preview-dtxdoc.texi macros.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 	-$(TEXINDEX) preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
@@ -32,16 +32,16 @@ preview-latex.ps: preview-latex.dvi
 	$(DVIPS) preview-latex.dvi -o preview-latex.ps
 
 preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi
+	problems.texi preview-dtxdoc.texi macros.texi
 	-$(MAKEINFO) preview-latex.texi
 
-INSTALL: install.texi
+INSTALL: install.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate install.texi --output INSTALL
 
-README: readme.texi
+README: readme.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate readme.texi --output README
 
-PROBLEMS: problems.texi
+PROBLEMS: problems.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate problems.texi --output PROBLEMS
 
 install: preview-latex.info
