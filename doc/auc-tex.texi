@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.12 1993-03-15 18:12:19 amanda Exp $
+@c $Id: auc-tex.texi,v 1.13 1993-03-16 01:49:40 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2344,20 +2344,67 @@ List of hooks to be called after parsing a @TeX{} file.
 @cindex Customization, personal
 @cindex Customization, site
 
+Before you do anything else, make sure that you have the latest version
+of @TeX{}info installed.  It is available by ftp from
+@samp{prep.ai.mit.edu}.  You need at least version 2.16.
+
 First, you should consult the file @file{tex-site.el} and edit it to fit
-your local site.  The file is documented, so that shouldn't be that
-hard.  Don't worry if you don't understand some of it -- you can read
-this documentation later to fine tune your installation.
+your local site.  Be sure to get the following two variables right, or
+you will not be able to complete the installation procedure:
+
+@defopt TeX-lisp-directory
+The directory where you want to install the AUC @TeX{} lisp files. 
+@end defopt
+
+@defopt TeX-macro-global
+Directories containing the sites @TeX{} style files.
+@end defopt
+
+You probably also need to change @code{TeX-command-list} to make sure
+that the commands used for starting @TeX{}, printing, etc. works on your
+system. 
+@vindex TeX-command-list
+
+Finally, edit @code{TeX-printer-list} to contain the printers available
+at your site.
+@vindex TeX-printer-list
 
 Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
-paths for installation of the files. 
+paths for installation of the files.  Be sure that
 
-Now type @kbd{make all}, and the whole thing will be `made'.  If this
-succeeds, now type @kbd{make install}, and it will all be installed.
+@table @code
+@item bindir
+Is set to the directory where you want the LaCheck binary to be
+installed.
+
+@item infodir
+Is set to the directory where you want the AUC @TeX{} ``info''
+documentation to be installed.  
+
+@item aucdir
+Is set to the directory where you want the lisp files for AUC @TeX{} to
+be installed.  This @strong{must} be the same directory as you specified
+for @code{TeX-lisp-directory} in @file{tex-site.el}.  If you unpacked
+AUC @TeX{} in that directory (@code{TeX-lisp-directory}), you should set
+@code{aucdir} to @samp{.} in order to avoid copying the byte compiled
+lisp files.
+
+@item mandir
+Is set to the directory where you want to install the (unformatted) man
+page for LaCheck.
+
+@item elispdir
+Is set to the directory where the lisp files from the standard Emacs
+distribution is found.  
+
+@end table
+
+Then type @kbd{make all}, and the whole thing will be `made'.  If this
+succeeds, type @kbd{make install}, and it will be installed.
 
 To extract information from your sites @TeX{} macros, type @kbd{make
-install-auto}. This will work if you set @code{TeX-macro-global}
-correctly in @file{tex-site.el}.
+install-auto}. This will only work if you have set
+@code{TeX-macro-global} correctly in @file{tex-site.el}.
 
 Tell the users on your site to insert
 @lisp 
@@ -2385,8 +2432,9 @@ this version, and for the authors, who get nostalgic at times.
 
 Coordinator: Per Abrahamsen, 1993.
 
-Alpha testers: Piet van Oostrum @samp{<piet@@cs.ruu.nl>} and Sven
-Mattisson @samp{<sven@@tde.lth.se>}.
+Alpha testers: Piet van Oostrum @samp{<piet@@cs.ruu.nl>}, Sven Mattisson
+@samp{<sven@@tde.lth.se>}, and Tim Geisler
+@samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}.
 
 @itemize @bullet
 @item
@@ -3032,6 +3080,28 @@ can not fix or honor right away will be added to this list
 
 @itemize @bullet
 
+@item 
+Correct indentation for table, math, and array environments.
+
+@item
+Customizable indentation for verbatim-like user defined environments.
+
+@item 
+Speciel indentation after an @samp{\item}.
+
+@example
+\begin@{itemize@}
+\item blabalaskdfjlas lajf adf
+      lkfjl  af jasl lkf jlsdf jlf 
+\item f lk jldjf lajflkas flf af
+\end{itemize}
+@end example 
+
+@item
+Completion for citations, counters, and sboxes.
+
+The two latter is easy the first is useful.
+
 @item
 Outline should be able to hide environments.
 
@@ -3071,6 +3141,53 @@ Minor modes should be able to document themselves conveniently.
 
 Have a special minor mode help (bound to @kbd{C-h x}) with help for all
 the active minor modes.
+
+Here is one suggestion.
+
+@lisp
+;; minor-map mode documentation by Guido Bosch (bosch@@loria.crin.fr)
+
+;; At a given time, one major mode and some minor modes may be active.
+;; The following function is useful to allow the user to choose among
+;; the documentations of all of them. It overrides the standard
+;; describe-mode (usually bound to C-h)
+
+;; I found it useful to have a buffer local variable `minor-modes',
+;; being the list of minor modes currently active. It is ment to be
+;; the counterpart to the variable `major-mode'.
+
+(defvar minor-modes nil
+  "list of symbols for current buffers minor modes")
+
+(make-variable-buffer-local 'minor-modes)
+
+(defun describe-mode ()
+  "Display documentation of current major or minor modes.
+If there are minor modes loaded, ask the user which mode to describe."
+
+  (interactive)
+	  
+  (let ((mode
+	 (if minor-modes
+	     (let ((mode-name
+		    (completing-read
+		     (format "Modes: %s: " (cons major-mode minor-modes))
+		     (or (cons (list (symbol-name major-mode))
+			       (mapcar '(lambda (s) (list (symbol-name s)))
+				       minor-modes))
+			 (error "There is no current minor mode."))
+		     nil t)))
+	       (if (string= mode-name "")
+		   major-mode
+		 (intern mode-name)))
+	   major-mode)))
+	  
+    (with-output-to-temp-buffer "*Help*"
+      (princ mode)
+      (princ " Mode:\n")
+      (princ (documentation mode))
+      (print-help-return-message))))    
+@end lisp
 
 @item
 The minor mode keymap support should be able to add and remove prefix

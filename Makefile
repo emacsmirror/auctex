@@ -1,14 +1,18 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.26 1993-03-15 20:01:34 amanda Exp $
+# $Id: Makefile,v 5.27 1993-03-16 01:49:19 amanda Exp $
 #
+# Edit the makefile, type `make', and follow the instructions.
 
 ##----------------------------------------------------------------------
-##  YUO MUST EDIT THE FOLLOWING LINES 
+##  YOU MUST EDIT THE FOLLOWING LINES 
 ##----------------------------------------------------------------------
 
+# Where local software is found
 prefix=/usr/local
 #prefix=/home/local/sys/gnu
+
+# Where architecture dependent local software go
 exec_prefix = $(prefix)
 
 # Where installed binaries go.
@@ -17,7 +21,7 @@ bindir = $(exec_prefix)/bin
 # Where info files go.
 infodir = $(prefix)/info
 
-# Where emacs lisp files go.
+# Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
 #aucdir=/user/amanda/lib/emacs/auctex
 aucdir=$(prefix)/elisp/auctex
@@ -72,8 +76,7 @@ MV = mv
 ##  BELOW THIS LINE ON YOUR OWN RISK!
 ##----------------------------------------------------------------------
 
-#FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp
-FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp/alpha
+FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
 MINMAPSRC = min-map.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
 	    min-ind.el	min-ispl.el

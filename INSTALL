@@ -1,0 +1,62 @@
+Installation of AUC TeX
+***********************
+
+   Before you do anything else, make sure that you have the latest
+version of TeXinfo installed.  It is available by ftp from
+`prep.ai.mit.edu'.  You need at least version 2.16.
+
+   First, you should consult the file `tex-site.el' and edit it to fit
+your local site.  Be sure to get the following two variables right, or
+you will not be able to complete the installation procedure:
+
+ -- User Option: TeX-lisp-directory
+     The directory where you want to install the AUC TeX lisp files.
+
+ -- User Option: TeX-macro-global
+     Directories containing the sites TeX style files.
+
+   You probably also need to change `TeX-command-list' to make sure
+that the commands used for starting TeX, printing, etc. works on your
+system.
+
+   Finally, edit `TeX-printer-list' to contain the printers available
+at your site.
+
+   Next, edit the file `Makefile' in the AUC TeX directory to set up
+paths for installation of the files.  Be sure that
+
+`bindir'
+     Is set to the directory where you want the LaCheck binary to be
+     installed.
+
+`infodir'
+     Is set to the directory where you want the AUC TeX "info"
+     documentation to be installed.
+
+`aucdir'
+     Is set to the directory where you want the lisp files for AUC TeX
+     to be installed.  This *must* be the same directory as you
+     specified for `TeX-lisp-directory' in `tex-site.el'.  If you
+     unpacked AUC TeX in that directory (`TeX-lisp-directory'), you
+     should set `aucdir' to `.' in order to avoid copying the byte
+     compiled lisp files.
+
+`mandir'
+     Is set to the directory where you want to install the
+     (unformatted) man page for LaCheck.
+
+`elispdir'
+     Is set to the directory where the lisp files from the standard
+     Emacs distribution is found.
+
+   Then type `make all', and the whole thing will be `made'.  If this
+succeeds, type `make install', and it will be installed.
+
+   To extract information from your sites TeX macros, type `make
+install-auto'. This will only work if you have set `TeX-macro-global'
+correctly in `tex-site.el'.
+
+   Tell the users on your site to insert
+             (load-file "/path/for/auctex/tex-site")
+   in their `.emacs' file in order to use AUC TeX.
+

@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.23 1993-03-15 18:11:35 amanda Exp $
+;;; $Id: tex-buf.el,v 1.24 1993-03-16 01:49:24 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -167,7 +167,8 @@ command."
 	  (let ((prefix (substring command 0 (match-beginning 0)))
 		(postfix (substring command (match-end 0))))
 	    (setq command (concat prefix
-				  (cond ((fboundp expansion)
+				  (cond ((or (listp expansion)
+					     (fboundp expansion))
 					 (apply expansion arguments))
 					((boundp expansion)
 					 (apply (eval expansion) arguments))
