@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.49 1993-07-27 18:44:51 amanda Exp $
+@c $Id: auc-tex.texi,v 1.50 1993-07-28 00:31:30 amanda Exp $
 
 @finalout
 @titlepage
@@ -1526,6 +1526,10 @@ before loading AUC @TeX{} by quoting them, as in the example above.
 
 @defvr Constant LaTeX-auto-minimal-regexp-list
 Only parse documentstyle.
+@end defvr
+
+@defvr Constant LaTeX-auto-label-regexp-list
+Only parse La@TeX{} labels.
 @end defvr
 
 @defvr Constant LaTeX-auto-regexp-list
