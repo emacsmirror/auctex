@@ -6,7 +6,7 @@ TEXIHTML=texi2html
 DVIPS=dvips
 PERL=perl
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
-INSTALLINFO=@INSTALL_INFO@
+INSTALL_INFO=@INSTALL_INFO@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -66,7 +66,7 @@ install: preview-latex.info
 	for x in preview-latex.info* ; do \
 		$(INSTALL_DATA) $$x $(infodir) ; \
 	done
-	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
+	-$(INSTALL_INFO)  --info-dir=$(infodir) preview-latex.info
 
 clean: 
 	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \
