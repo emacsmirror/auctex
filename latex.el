@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.35 1995-01-11 12:59:43 amanda Exp $
+;; Version: $Id: latex.el,v 5.36 1995-01-17 14:29:16 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -2045,7 +2045,6 @@ of LaTeX-mode-hook."
 	 "^.*[^" (regexp-quote TeX-esc) "\n]%.*$\\|"
 	 "^%.*$\\|"
 	 (regexp-quote TeX-esc)
-	 "par\\|"
 	 "^[ \t]*$\\|"
 	 "^[ \t]*"
 	 (regexp-quote TeX-esc)

@@ -1,3 +1,13 @@
+Tue Jan 17 15:12:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-directory-absolute-p): Moved definition before
+	`TeX-macro-private'.  Reported by Frederic Devernay
+	<Frederic.Devernay@sophia.inria.fr>. 
+
+	* latex.el (LaTeX-common-initialization): Remove extra and wrong
+	"\\\\par" from `paragraph-separate'.  Bug reported by
+	nijhof@th.rug.nl (Jeroen Nijhof). 
+
 Wed Jan 11 11:43:01 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-command-region): Comment fix.  Patch by

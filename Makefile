@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.109 1995-01-11 12:59:37 amanda Exp $
+# $Id: Makefile,v 5.110 1995-01-17 14:29:08 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -32,7 +32,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.27
+EMACS=emacs-19.28
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
