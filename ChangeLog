@@ -1,5 +1,7 @@
 2004-04-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/Makefile.in (clean): Remove *.tmp (created with auc-tex.ps).
+
 	* doc/.cvsignore: Added *.tmp.
 
 	* .cvsignore: Revert 2004-04-12 change.  Added README.

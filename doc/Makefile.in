@@ -84,4 +84,4 @@ install: auctex
 	-$(INSTALL_INFO)  --info-dir=$(infodir) auctex
 
 clean:
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs auctex auctex-? *.html INSTALLATION README CHANGES HISTORY
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.tmp auctex auctex-? *.html INSTALLATION README CHANGES HISTORY
