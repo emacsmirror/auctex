@@ -1,5 +1,24 @@
 2002-04-12  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Makefile.in: New icons.
+
+	* images/preverr.xbm, images/preverr.xpm: New icons.
+
+	* prv-emacs.el (preview-error-icon): New icon.
+
+	* preview.el (preview-mouse-open-error): Use other call
+	conventions in order not to confuse XEmacs.
+	(preview-gs-flag-error): switch to using error icon.
+	(preview-error-face): deleted.
+
+	* prv-xemacs.el (preview-error-icon): New icon.
+	(preview-make-clickable): new properties preview-balloon-help and
+	preview-keymap.
+	(preview-click-reroute): changed to use preview-keymap.
+	(preview-reroute-map): new function.
+	(preview-balloon-reroute): new function.
+	(preview-toggle): change the juggling.
+
 	* doc/preview-latex.texi (Simple customization): expound on the
 	center example.
 
