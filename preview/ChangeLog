@@ -1,3 +1,7 @@
+2003-03-28  David Kastrup  <dakas@users.sourceforge.net>
+
+	* doc/faq.texi (Installation Trouble): Update Windows info.
+
 2003-03-12  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvi.c (DVIFollowToggle): 
