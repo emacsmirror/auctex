@@ -2,7 +2,7 @@
 @setfilename auctex
 @settitle AUC TeX
 @direntry
-* AUCTeX::      A much enhanced LaTeX mode for GNU Emacs.
+* AUCTeX: (auctex).      A much enhanced LaTeX mode for GNU Emacs.
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.126 2000-11-30 13:13:57 abraham Exp $
+@c $Id: auc-tex.texi,v 1.127 2001-03-26 14:10:48 abraham Exp $
 
 @finalout
 @titlepage
@@ -24,7 +24,7 @@
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992, Kresten Krab Thorup @*
-Copyright @copyright{} 1993, 1994, 1995 Per Abrahamsen
+Copyright @copyright{} 1993, 1994, 1995, 2001 Per Abrahamsen
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -83,12 +83,12 @@ Kresten Krab Thorup (6.0) @*
 Per Abrahamsen (later updates)
 
 There is a mailing list for discussion about AUC @TeX{} and announcement
-of alpha releases, write to @samp{auc-tex-request@@sunsite.auc.dk} to join
-it.  Send contributions to @samp{auc-tex@@sunsite.auc.dk}.
+of alpha releases, write to @samp{auc-tex-request@@sunsite.dk} to join
+it.  Send contributions to @samp{auc-tex@@sunsite.dk}.
 
 Bug reports, suggestions for new features, and pleas for help should go
-to either @samp{auc-tex_mgr@@sunsite.auc.dk} (the AUC @TeX{} managers), or
-to @samp{auc-tex@@sunsite.auc.dk} (the mailing list) if they might have
+to either @samp{auc-tex_mgr@@sunsite.dk} (the AUC @TeX{} managers), or
+to @samp{auc-tex@@sunsite.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
 TeX-submit-bug-report} to report bugs if possible.@refill
 
@@ -1209,7 +1209,7 @@ It is much more configurable than @code{lacheck}, but doesn't find all
 the problems @code{lacheck} does, at least in its default configuration.
 You must install the programs before using them, and for @code{chktex}
 you must also modify @code{TeX-command-list}.  You can get
-@code{lacheck} from @file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>}
+@code{lacheck} from @file{<URL:ftp://sunsite.dk/pub/text/lacheck/>}
 or alternatively @code{chktex} from
 @file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
 `chktex' in @file{tex.el} to see how to switch between them.@refill

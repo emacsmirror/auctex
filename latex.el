@@ -1,9 +1,9 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 10.0d
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Version: 10.0e
 ;; Keywords: wp
-;; X-URL: http://sunsite.auc.dk/auctex
+;; X-URL: http://sunsite.dk/auctex
 
 ;; Copyright 1991 Kresten Krab Thorup
 ;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
@@ -1905,6 +1905,9 @@ indentation level in columns."
 			       "\\)"))
 	   ;; Items.
 	   (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
+	  ((looking-at "}")
+	   ;; End brace in the start of the line.
+	   (- (LaTeX-indent-calculate-last) TeX-brace-indent-level))
 	  (t (LaTeX-indent-calculate-last)))))
 
 (defcustom LaTeX-left-right-indent-level LaTeX-indent-level
@@ -2008,6 +2011,8 @@ The point is supposed to be at the beginning of the current line."
 					   LaTeX-item-regexp
 					   "\\)"))
 		       (- LaTeX-item-indent))
+		      ((looking-at "}")
+		       TeX-brace-indent-level)
 		      (t 0)))))))
 
 ;;; Math Minor Mode

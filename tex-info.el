@@ -1,9 +1,9 @@
 ;;; tex-info.el - Support for editing Texinfo source.
 ;;
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 10.0d
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Version: 10.0e
 
-;; Copyright (C) 1993, 1994, 1997, 2000 Per Abrahamsen 
+;; Copyright (C) 1993, 1994, 1997, 2000, 2001 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ When called interactively, prompt for an environment."
 
   (define-key TeXinfo-mode-map "\C-c\n"   'texinfo-insert-@item)
   (or (key-binding "\e\r")
-      (define-key map "\e\r"    'texinfo-insert-@item)) ;*** Alias
+      (define-key TeXinfo-mode-map "\e\r" 'texinfo-insert-@item)) ;*** Alias
   (define-key TeXinfo-mode-map "\C-c\C-s" 'texinfo-insert-@node)
   (define-key TeXinfo-mode-map "\C-c]" 'texinfo-insert-@end))
 

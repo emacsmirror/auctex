@@ -3,8 +3,8 @@
 ;; Copyright (C) 1999, 2000, 2001 Per Abrahamsen 
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 10.0d
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Version: 10.0e
 ;; Keywords: wp
 
 ;; This program is free software; you can redistribute it and/or modify

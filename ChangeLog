@@ -1,3 +1,24 @@
+2001-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 10.0e released.
+
+2001-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-expand-list): Changed default to lazy evaluation of
+	`TeX-view-style' and `LaTeX-command-style'.
+	Suggested by Peter Neergaard <turtle@cs.bu.edu>.
+
+	* latex.el (LaTeX-indent-calculate, LaTeX-indent-calculate-last):
+	Backindent when brace is at the start of a line.
+	Patch by Masashi Shimbo <shimbo@cis.ibaraki.ac.jp>.
+
+	* doc/auc-tex.texi: Fixed dir entry.
+	Reported by David Masterson <dmasters@Rational.Com>.
+
+	* tex-info.el (TeXinfo-mode-map): "\e\r" bound to `map', not
+	`TeXinfo-mode-map'. 
+	Patch by Dan Nicolaescu <dann@godzilla.ICS.UCI.EDU>.
+
 2001-03-01  Hidenobu Nabetani  <nabe@debian.or.jp>
 
 	* tex-jp.el: Don't work correctly in current AucTeX.
@@ -8,6 +29,10 @@
 	Created new variable japanese-TeX-command-list and 
 	added support for mendex.
 	Updated LaTeX-auto-regexp-list variable.
+
+2001-01-09  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* all: Changed `sunsite.auc.dk' to `sunsite.dk'.
 
 2001-01-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 

@@ -168,7 +168,7 @@ Installation procedure is changed, read the @file{INSTALLATION} file.
 
 @item
 LaCheck is unbundled.  You can get @code{lacheck} from
-@file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>} or alternatively
+@file{<URL:ftp://sunsite.dk/pub/text/lacheck/>} or alternatively
 @code{chktex} from
 @file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
 `chktex' in @file{tex.el} to see how to switch between them.@refill
