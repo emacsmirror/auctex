@@ -1,4 +1,7 @@
-2005-03-23  Jan-Ake Larsson  <jalar@mai.liu.se>
+2005-03-23  jalar  <jalar@mai.liu.se>
+
+	* doc/Makefile.in:
+	* Makefile.in: add maintainer-clean target 
 
 	* Makefile.in: add tarball-ready target
 
