@@ -1097,7 +1097,8 @@ There might be text before point."
 ;; Key bindings
 
 (defvar ConTeXt-mode-map
-  (let ((map (copy-keymap TeX-mode-map)))
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map TeX-mode-map)
 
     (define-key map "\e\C-a"  'ConTeXt-find-matching-start)
     (define-key map "\e\C-e"  'ConTeXt-find-matching-stop)

@@ -1,3 +1,28 @@
+2004-05-25  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-command): Add `override-confirm' argument.
+	(TeX-view): New function, without confirmation.
+
+	* context.el (ConTeXt-mode-map): Inherit keymap instead of
+	copying.
+
+	* latex.el (LaTeX-mode-map): Inherit keymap instead of copying.
+
+	* tex.el (TeX-source-specials-map): New variable.
+	(TeX-source-specials): Make a minor mode.  Replaces
+	`TeX-toggle-source-specials' and
+	`TeX-source-specials-active-flag'.
+	(TeX-source-specials-expand-options): Adapt to that.
+	(TeX-electric-macro-map): inherit from
+	`minibuffer-local-completion-map' instead of copying.
+	(plain-tex-mode): Help string uses `plain-TeX-mode-map'.
+	(TeX-mode-p): New variable, set in TeX modes.
+	(VirTeX-common-initialization): Set it.
+	(TeX-mode-map): Proper defvar.  Add keybindings for
+	`TeX-source-specials' and `TeX-view'.
+	(plain-TeX-mode-map): Inherit instead of copy.
+	(AmSTeX-mode-map): Same here.
+
 2004-05-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Configure): Remove unused option
@@ -8,7 +33,7 @@
 
 2004-05-25  David Kastrup  <dak@gnu.org>
 
-	* doc/auc-tex.texi: Change dired formatting, adapt copyrights
+	* doc/auc-tex.texi: Change info dir formatting, adapt copyrights
 	according to the assignment process.
 
 2004-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>

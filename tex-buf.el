@@ -214,19 +214,21 @@ Prefix by C-u to start from the beginning of the errors."
 
 ;;; Command Query
 
-(defun TeX-command (name file)
+(defun TeX-command (name file &optional override-confirm)
   "Run command NAME on the file you get by calling FILE.
 
 FILE is a function return a file name.  It has one optional argument,
 the extension to use on the file.
-
-Use the information in TeX-command-list to determine how to run the
-command."
+Use the information in `TeX-command-list' to determine how to run the
+command.  If OVERRIDE-CONFIRM is a prefix argument, confirmation will be
+asked if it is positive, and suppressed if it is not."
   (setq TeX-current-process-region-p (eq file 'TeX-region-file))
   (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
 				     file))
 	(hook (nth 2 (assoc name TeX-command-list)))
-	(confirm (nth 3 (assoc name TeX-command-list))))
+	(confirm (if override-confirm
+		     (> (prefix-numeric-value override-confirm) 0)
+		   (nth 3 (assoc name TeX-command-list)))))
 
     ;; Verify the expanded command
     (if confirm
@@ -433,6 +435,16 @@ entry."
   "Get the name of the current TeX output file"
   (TeX-active-master (TeX-view-extension)))
 
+(defun TeX-view ()
+  "Start a viewer without confirmation.
+The viewer is started either on region or master file,
+depending on the last command issued."
+  (interactive)
+  (TeX-command "View" (if TeX-current-process-region-p
+			  'TeX-region-file
+			'TeX-master-file)
+	       0))
+
 (defun TeX-output-style-check (styles)
   "Check STYLES compared to the current view output file extension and
 the current style options."
@@ -454,7 +466,7 @@ the current style options."
       (setq styles (cdr styles)))
     (if styles
 	(concat (nth 2 (car styles))
-		(if TeX-source-specials-active-flag
+		(if TeX-source-specials
 		    (concat " " TeX-source-specials-viewer-flags)
 		  ""))
       "%v")))

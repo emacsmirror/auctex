@@ -3869,7 +3869,8 @@ commands are defined:
 ;;; Keymap
 
 (defvar LaTeX-mode-map
-  (let ((map (copy-keymap TeX-mode-map)))
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map TeX-mode-map)
 
     ;; Standard
     (define-key map "\n"      'reindent-then-newline-and-indent)
