@@ -109,46 +109,51 @@ performed as specified in TeX-expand-list."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t)
-	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
+  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
+              (list 'plain-tex-mode))
+	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil
+              (list 'plain-tex-mode))
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex)
-	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil 'latex)
+	      'TeX-run-TeX nil (list 'latex-mode))
+	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil
+              (list 'latex-mode))
 	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex)
+	      'TeX-run-TeX nil (list 'latex-mode))
 	;; Not part of standard TeX.
 	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex)
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil 'texinfo)
+	      'TeX-run-TeX nil (list 'latex-mode))
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
+              (list 'texinfo-mode))
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
-              'texinfo)
+              (list 'texinfo-mode))
 	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
-	      'TeX-run-TeX nil 'amstex)
+	      'TeX-run-TeX nil (list 'ams-tex-mode))
 	;; support for ConTeXt  --pg
 	;; first version of ConTeXt to support nonstopmode: 2003.2.10
 	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX
-              nil 'context)
+              nil (list 'context-mode))
 	(list "ConTeXt Interactive" "texexec --once --texutil %t"
-              'TeX-run-interactive t 'context)
-	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil 'context)
+              'TeX-run-interactive t (list 'context-mode))
+	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil
+              (list 'context-mode))
 	;; --purge %s does not work on unix systems with current texutil
 	;; check again october 2003 --pg
 	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil
-              'context)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
+              (list 'context-mode))
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%V " 'TeX-run-silent t nil)
-	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
-	(list "Print" "%p %r " 'TeX-run-command t nil)
-	(list "Queue" "%q" 'TeX-run-background nil nil)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
-	(list "Index" "makeindex %s" 'TeX-run-command nil nil)
-	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil nil)
+	    (list "View" "%V " 'TeX-run-silent t t)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t t))
+	(list "Print" "%p %r " 'TeX-run-command t t)
+	(list "Queue" "%q" 'TeX-run-background nil t)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
+	(list "Index" "makeindex %s" 'TeX-run-command nil t)
+	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil t)
 	;; Uncomment the above line and comment out the next line to
 	;; use `chktex' instead of `lacheck'.
-	(list "Check" "lacheck %s" 'TeX-run-compile nil nil)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
-	(list "Other" "" 'TeX-run-command t nil))
+	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
+	(list "Other" "" 'TeX-run-command t t))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -197,8 +202,10 @@ create an asynchronous process.
 If the fourth element is non-nil, the user will get a chance to
 modify the expanded string.
 
-The fifth element indicates in which mode the command should be
-present in the Command menu."
+The fifth element indicates in which mode(s) the command should be
+present in the Command menu.  Use `t' if it should be active in any
+mode.  If it should only be present in some modes, specify a list with
+the respective mode names."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(string :tag "Command")
@@ -221,13 +228,14 @@ present in the Command menu."
 				(function-item TeX-run-dviout)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
-                        (choice :tag "Mode"
-                                (const :tag "Any" nil)
-                                (const :tag "Plain TeX" t)
-                                (const :tag "LaTeX" latex)
-                                (const :tag "ConTeXt" context)
-                                (const :tag "Texinfo" texinfo)
-                                (const :tag "AmSTeX" amstex)))))
+                        (choice :tag "Modes"
+                                (const :tag "All" t)
+                                (set :tag "Specific"
+                                     (const :tag "Plain TeX" plain-tex-mode)
+                                     (const :tag "LaTeX" latex-mode)
+                                     (const :tag "ConTeXt" context-mode)
+                                     (const :tag "Texinfo" texinfo-mode)
+                                     (const :tag "AmSTeX" ams-tex-mode))))))
 
 (defcustom TeX-command-output-list
   '(("\\`pdf[a-z]*tex" "pdf")
@@ -507,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.313 $"))
+	(rev "$Revision: 5.314 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -522,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-06 08:17:11 $"))
+    (let ((date "$Date: 2004-01-07 09:42:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2570,23 +2578,8 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 (defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
   "Keymap used in plain TeX mode.")
 
-(defun TeX-mode-specific-command-menu (mode-spec)
-  "Return a Command menu specific for the active TeX mode.
-
-MODE-SPEC is used for specifying which mode is used and corresponds
-to the values specified in the defustom for `TeX-command-list':
-
-* `nil' is for any mode
-
-* `t' is for plain TeX
-
-* `latex' is for LaTeX
-
-* `context' is for ConTeXt
-
-* `texinfo' is for Texinfo
-
-* `amstex' is for AmSTeX"
+(defun TeX-mode-specific-command-menu (mode)
+  "Return a Command menu specific to the major MODE."
   (append '("Command")
 	  '(("Command on"
 	     [ "Master File" TeX-command-select-master
@@ -2599,21 +2592,26 @@ to the values specified in the defustom for `TeX-command-list':
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
 	  (let ((file 'TeX-command-on-current)
-                (command-list ((lambda (full-list)
-                                 (let (out-list)
-                                   (mapcar (lambda (entry)
-                                              (if (or (eq (nth 4 entry) mode-spec)
-                                                      (eq (nth 4 entry) nil))
-                                                  (setq out-list
-                                                        (append entry out-list))))
-                                           full-list))) TeX-command-list)))
+                (command-list
+                 ((lambda (full-list)
+                    (let (out-list)
+                      (mapcar (lambda (entry)
+                                ;; `(nth 4 entry)' may be either an
+                                ;; atom in case of which the entry
+                                ;; should be present in any mode or a
+                                ;; list of major modes.
+                                (if (or (atom (nth 4 entry))
+                                        (memq mode (nth 4 entry)))
+                                    (setq out-list
+                                          (append entry out-list))))
+                              full-list))) TeX-command-list)))
 	    (mapcar 'TeX-command-menu-entry command-list))))
 
 ;;; Menus for plain TeX mode
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (TeX-mode-specific-command-menu t))
+    (TeX-mode-specific-command-menu 'plain-tex-mode))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -2647,11 +2645,11 @@ to the values specified in the defustom for `TeX-command-list':
   (copy-keymap TeX-mode-map)
   "Keymap used in `AmSTeX-mode'.")
 
-;;; Menu for AmSTeX mode
+;; Menu for AmSTeX mode
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
     "Command menu used in AmsTeX mode."
-    (TeX-mode-specific-command-menu 'amstex))
+    (TeX-mode-specific-command-menu 'ams-tex-mode))
 
 ;;;###autoload
 (defun ams-tex-mode ()
