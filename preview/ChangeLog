@@ -1,4 +1,9 @@
-2002-02-20  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
+2002-02-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/preview-latex.texi: Incorporated docs from preview.dtx,
+	minor other changes
+
+2002-02-20  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/preview-latex.texi: Removed isolatin1 style include and chars
 
