@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.482 $"))
+	    (rev "$Revision: 5.483 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-01 16:22:19 $"))
+    (let ((date "$Date: 2005-02-12 10:22:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3879,12 +3879,11 @@ considered part of the macro."
 	  (goto-char opening-brace)
 	  (setq start-point (TeX-find-macro-start-helper lower-bound))))
 
-      (if (not start-point)
-	  nil
+      (when start-point
 	;; Search forward for the end of the macro.
 	(goto-char (TeX-find-macro-end-helper start-point))
 	(if (< orig-point (point))
-	    (list start-point (point))
+	    (cons start-point (point))
 	  nil)))))
 
 (defun TeX-find-macro-start-helper (&optional limit)
@@ -3907,39 +3906,40 @@ START is the position just before the starting token of the macro.
 If the macro is followed by square brackets or curly braces,
 those will be considered part of it."
   (save-excursion
-    (catch 'found
-      (goto-char (1+ start))
-      (if (zerop (skip-chars-forward "A-Za-z@"))
-	  (forward-char)
-	(skip-chars-forward "*"))
-      (while (not (eobp))
-	(cond
-	 ;; Skip over pairs of square brackets
-	 ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
-					        ; only consecutive lines.
-	      (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
-		   (save-excursion
-		     (forward-line 1)
-		     (looking-at "[ \t]*\\(\\[\\)"))))
-	  (goto-char (match-beginning 1))
-	  (condition-case nil
-	      (forward-sexp)
-	    (scan-error (throw 'found (point)))))
-	 ;; Skip over pairs of curly braces
-	 ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
+    (save-match-data
+      (catch 'found
+	(goto-char (1+ start))
+	(if (zerop (skip-chars-forward "A-Za-z@"))
+	    (forward-char)
+	  (skip-chars-forward "*"))
+	(while (not (eobp))
+	  (cond
+	   ;; Skip over pairs of square brackets
+	   ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
 					; only consecutive lines.
-	      (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
-		   (save-excursion
-		     (forward-line 1)
-		     (looking-at "[ \t]*{"))))
-	  (goto-char (match-end 0))
-	  (goto-char (or (TeX-find-closing-brace)
-			 ;; If we cannot find a regular end, use the
-			 ;; next whitespace.
-			 (save-excursion (skip-chars-forward "^ \t\n")
-					 (point)))))
-	 (t
-	  (throw 'found (point))))))))
+		(and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
+		     (save-excursion
+		       (forward-line 1)
+		       (looking-at "[ \t]*\\(\\[\\)"))))
+	    (goto-char (match-beginning 1))
+	    (condition-case nil
+		(forward-sexp)
+	      (scan-error (throw 'found (point)))))
+	   ;; Skip over pairs of curly braces
+	   ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
+					; only consecutive lines.
+		(and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
+		     (save-excursion
+		       (forward-line 1)
+		       (looking-at "[ \t]*{"))))
+	    (goto-char (match-end 0))
+	    (goto-char (or (TeX-find-closing-brace)
+			   ;; If we cannot find a regular end, use the
+			   ;; next whitespace.
+			   (save-excursion (skip-chars-forward "^ \t\n")
+					   (point)))))
+	   (t
+	    (throw 'found (point)))))))))
 
 (defun TeX-find-macro-start (&optional limit)
   "Return the start of a macro.
@@ -3952,7 +3952,7 @@ considered part of the macro."
   "Return the end of a macro.
 Arguments enclosed in brackets or braces are considered part of
 the macro."
-  (cadr (TeX-find-macro-boundaries)))
+  (cdr (TeX-find-macro-boundaries)))
 
 (defun TeX-search-forward-unescaped (string &optional bound noerror)
   "Search forward from point for unescaped STRING.
@@ -4145,7 +4145,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	  (if (looking-at regexp)
 	      (throw 'done t)
 	    (up-list -1))))
-      (forward-sexp 2)
+      (goto-char (TeX-find-macro-end))
       (save-excursion
 	(replace-match start t t))
       (delete-backward-char 1)
