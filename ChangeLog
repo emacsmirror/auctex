@@ -1,3 +1,8 @@
+2004-11-22  Berend de Boer  <berend@pobox.com>
+
+	* context.el (ConTeXt-mode-common-initialization): ConTeXt does
+	not need italics correction.
+
 2004-11-20  Christian Schlauer  <cschl@arcor.de>
 
 	* doc/auctex.texi (Floats): Update.
@@ -75,7 +80,7 @@
 
 	* images/amstex.xpm: Added.  Contains symbolic color
 	'backgroundToolBarColor', required by (GNU/Linux) XEmacs.
-	
+
 2004-11-03  Christian Schlauer  <cschl@arcor.de>
 
 	* latex.el (LaTeX-env-figure, LaTeX-env-minipage)
@@ -131,7 +136,7 @@
 	matchers.
 
 2004-11-01  Miguel Frasson  <frasson@math.leidenuniv.nl>
-	
+
 	* toolbar-x.el
 	(toolbarx-make-command): Code clean up.
 
@@ -183,7 +188,7 @@
 	TeX-TeX-sentinel-check.
 	(TeX-bar-error-handling-switches): Removed.
 	(TeX-bar-LaTeX-button-alist): next-error updated.
-	
+
 2004-10-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-bar.el (TeX-bar-LaTeX-button-alist): Add `TeX-save-document'.
@@ -193,7 +198,7 @@
 	* tex-site.el.in: Ditto.
 
 2004-10-28  Miguel Frasson  <frasson@math.leidenuniv.nl>
-	
+
 	* tex-bar.el: Now requires tex-buf.el, for error handling.
 	Renamed symbols:
 	(LaTeX-install-toolbar): New name for `latex-install-toolbar'.
@@ -225,7 +230,7 @@
 	buttons received :help from TeX-command-list.
 	(TeX-bar-LaTeX-buttons): next-error is default, and file is no
 	longer default.
-	
+
 2004-10-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-auto-class-regexp-list): New variable.
@@ -288,7 +293,7 @@
 	anymore (fixed).
 	(toolbarx-install-toolbar): Improved documentation for the :image
 	property.
-	
+
 2004-10-22  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* tex-bar.el: Improve comments.  Symbol-toolbar code moved to the
@@ -310,7 +315,7 @@
 	(toolbarx-process-symbol): Code cleanup.
 	(toolbarx-default-toolbar-meaning-alist): Separator button label
 	renamed from `:sep' to `separator'.
-	
+
 2004-10-22  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (European): Adjust to change of
@@ -557,7 +562,7 @@
 	* toolbar-x.el: Added; (new name of toolbarx.el).
 	(toolbarx-default-toolbar-meaning-alist) Added `:sep' button.
 	(toolbarx-emacs-add-button): clean up.
-	
+
 2004-10-13  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-default-width): New variable.
@@ -689,7 +694,7 @@
 	`font-latex-verbatim-environments-local'.
 
 2004-10-05  Miguel Frasson  <frasson@math.leidenuniv.nl>
-	
+
 	* toolbarx.el (toolbarx-default-toolbar-meaning-alist): New
 	constant, providing a MEANING-ALIST for the insertion of the
 	default buttons and some extra ones in Emacs and XEmacs.
@@ -718,7 +723,7 @@
 	* images/tex.xpm, images/view.xpm, images/viewdvi.xpm,
 	* images/viewpdf.xpm, images/viewps.xpm: Add symbolic color
 	'backgroundToolBarColor' to make pics work in (GNU/Linux) XEmacs
-	
+
 2004-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Some clean-ups, rearrangements and performance
@@ -743,7 +748,7 @@
 	* doc/changes.texi: Add some new features and fixed bugs.
 
 2004-09-29  Miguel Frasson  <frasson@math.leidenuniv.nl>
-	
+
 	* images/bibtex.xpm, images/dvipdf.xpm, images/dvips.xpm,
 	* images/error.xpm, images/exec.xpm, images/execbibtex.xpm,
 	* images/execdvips.xpm, images/execerror.xpm,
@@ -754,7 +759,7 @@
 	* images/tex.xpm, images/view.xpm, images/viewdvi.xpm,
 	* images/viewpdf.xpm, images/viewps.xpm: Add designed images for
 	toolbar buttons.
-	
+
 2004-09-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-do-multi-line): Add new option and use
@@ -781,7 +786,7 @@
 	* images, images/dropdown.xpm, images/ltx-symb-turn-off.xpm,
 	* images/ltx-symb-turn-on.xpm: Add designed images for symbol
 	toolbar.
-	
+
 2004-09-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Add change log entries and bump version.
@@ -808,7 +813,7 @@
 
 	* auctb.el: Add to cvs (first version); features only a symbol
 	toolbar.
-	
+
 2004-09-24  Davide G. M. Salvetti  <salve@debian.org>
 
 	* configure.in: Add `--(en|dis)able-build-dir-test' switch to
