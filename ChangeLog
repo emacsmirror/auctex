@@ -1,5 +1,7 @@
 2004-03-19  Davide G. M. Salvetti  <salve@debian.org>
 
+	* doc/Makefile.in (clean): Add HISTORY.
+
 	* tex.el (TeX-lisp-directory): Removed, it's already defined in
 	tex-site.el.in.
 
