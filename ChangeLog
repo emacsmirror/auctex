@@ -1,3 +1,38 @@
+2004-07-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-macro-spec-list): New name for
+	`TeX-fold-spec-list'.  More unobtrusive default.
+	(TeX-fold-env-spec-list)
+	(TeX-fold-unspec-macro-display-string)
+	(TeX-fold-unspec-env-display-string): New variables.
+	(TeX-fold-keymap): New key bindings which are more mnemonic and
+	orient at preview-latex's bindings instead of outline.el.
+	(TeX-fold-buffer): Transfer contents to `TeX-fold-buffer-type'
+	which can be used for both macros and environments.
+	(TeX-fold-buffer-type): New function.
+	(TeX-fold-macro): Transfer contents to `TeX-fold-item' which can
+	be used for both macros and environments.
+	(TeX-fold-env, TeX-fold-item): New functions.
+	(TeX-fold-clearout-item): New name for `TeX-fold-clearout-macro'.
+	(TeX-fold-hide-item, TeX-fold-show-item): Adapt doc string.
+
+	* latex.el (LaTeX-hide-environment): Remove.  Functionality is now
+	provided by TeX-fold.
+	(LaTeX-show-environment): Ditto.
+	(LaTeX-mode-map): Remove key bindings for `LaTeX-hide-environment'
+	and `LaTeX-show-environment'.
+	(LaTeX-mode-menu): Adapt key bindings for folding.  Remove menu
+	entries for `LaTeX-hide-environment' and `LaTeX-show-environment'.
+
+	* context.el (ConTeXt-mode-menu): Adapt key bindings for folding.
+
+	* tex-info.el (TeXinfo-mode-menu): Ditto.
+
+	* doc/auc-tex.texi (Folding): Document new and changed functions
+	and variables related to folding environments (new) and macros.
+
+	* doc/changes.texi: Advertise support for folding environments.
+
 2004-07-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-source-specials): Do not set a lighter in
