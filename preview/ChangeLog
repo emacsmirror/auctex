@@ -1,5 +1,11 @@
 2002-12-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-counter-find): Factor out stuff from advice
+	since it will otherwise miss out on compatibility macros for XEmacs.
+	(TeX-region-create): Factor out advice.
+	(preview-reinstate-preview): Oops, wrong data if nothing
+	changed.  Switched around.
+
 	* latex/preview.dtx (subsection{Preview attaching commands}):
 	Don't \unskip in vertical modes in preview/nopreview
 	environments.
