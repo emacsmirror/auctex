@@ -2,7 +2,7 @@
 @setfilename preview-latex
 @settitle Preview-LaTeX
 @direntry
-* Preview: (preview-latex).      A LaTeX preview mode primarily for AUC TeX in GNU Emacs.
+* Preview: (preview-latex).      A LaTeX preview mode for AUC TeX in Emacs.
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -13,8 +13,8 @@
 
 @finalout
 @titlepage
-@title Preview La@TeX{}
-@subtitle A La@TeX{} preview mode primarily for AUC @TeX{} in GNU Emacs.
+@title preview-latex
+@subtitle A La@TeX{} preview mode for AUC @TeX{} in Emacs.
 @subtitle Version 0.6
   
 @author by David Kastrup and Alan Shutko 
@@ -53,28 +53,32 @@ approved by the Free Software Foundation.
 
 @ifinfo
 @node top, Copying, (dir), (dir)
-@top Preview La@TeX{}
+@top preview-latex
  
-Preview La@TeX{} is a package that allows extraction of certain
+preview-latex is a package that allows extraction of certain
 environments (most notably displayed formulas) for use in different
 contexts. While the first application has been the embedding of those
 preview fragments into Emacs source buffers under the AUC @TeX{} editing
 environment, other applications are easily imaginable.
 
-This file documents Preview La@TeX{} version 0.6
+The name of the package is really @samp{preview-latex}, all in lowercase
+letters, with a hyphen.  Its name is special among most other
+@TeX{}-related software packages in that it is not typeset specially.
+Of course, the usual pronunciation rules regarding @TeX{} apply.
 
-If you want to use Preview La@TeX{} in AUC @TeX{} right away, be sure
-to have a working AUC @TeX{} installation, install Preview La@TeX{}
-and insert the following in your @file{.emacs} file.  This will make
-Emacs load preview.el into AUC @TeX{} when you first load a La@TeX{}
-file. 
+This file documents preview-latex version 0.6
+
+If you want to use preview-latex in AUC @TeX{} right away, be sure to
+have a working AUC @TeX{} installation, install preview-latex and insert
+the following in your @file{.emacs} file.  This will make Emacs load
+@file{preview.el} into AUC @TeX{} when you first load a La@TeX{} file.
 
 @lisp
 (autoload 'LaTeX-preview-setup "preview")
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
-@strong{Please note:} Currently xemacs support is missing.
+@strong{Please note:} Currently XEmacs support is not yet operative.
 
 This documentation is preliminary. It should however cover most
 important points. Corrections or perhaps rewrites of sections are
@@ -114,7 +118,7 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 @node Getting started, Keys and lisp, Installation, top
 @chapter Getting started
 
-The simplest way to use Preview La@TeX{} is to insert the following in
+The simplest way to use preview-latex is to insert the following in
 your @file{.emacs} file: 
 @cindex @file{.emacs}
 
@@ -123,13 +127,18 @@ your @file{.emacs} file:
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
-Now, load a La@TeX{} document, and press @kbd{C-c C-c g RET} (for
-``Generate Preview'') or press @kbd{C-c C-p C-p} (for ``De/Preview
-at point''). Previews will now be generated for various objects in your
-document. You'll see them change into a large question-mark when the
-process is half finished. Note that you can freely edit the buffer while
-this is going on. When the process is finished you will see the objects
-typeset in your buffer.
+Now, load a La@TeX{} document, and press @kbd{C-c C-c g @key{RET}} (for
+``Generate Preview'') or press @kbd{C-c C-p C-p} (for ``De/Preview at
+point'').  You may also use the appropriate menu entries.  Previews will
+now be generated for various objects in your document. You'll see them
+change into a large question-mark when the process is half
+finished. Note that you can freely navigate the buffer while this is
+going on.  It is a bad idea, however, to edit the buffer before the
+question marks appear, since that is the moment when the correlation
+between the original text and the buffer locations gets established.  If
+the buffer changes before that point of time, the previews will not be
+placed where they belong.  When the process is finished you will see the
+objects typeset in your buffer.
 
 To see/edit the La@TeX{} code for a specific object, put the point (the
 cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
@@ -138,15 +147,21 @@ and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 @node Keys and lisp, Customization, Getting started, top
 @chapter Key bindings and user-level lisp functions 
 
-To the functions and key bindings in AUC @TeX{} (hyperlink into AUC
-@TeX{} info file), the following are added:
+To the functions and key bindings in AUC @TeX{} @inforef{Key
+Index,,auctex}, the following are added:
 
 @table @w
 @item @kbd{C-c C-c g RET} 
 ``Generate preview''. This command generates previews for all
-appropriate objects in the current buffer. Already preset previews are
+appropriate objects in the current document. Already preset previews are
 re-generated.
-@cindex @kbd{C-c C-c g RET}
+
+You can use the AUC @TeX{} variants starting with @kbd{C-c C-b g
+@key{RET}} and @kbd{C-c C-r g @key{RET}} for generating previews just in
+the current buffer of the document, or a region of it.
+@cindex @kbd{C-c C-c g @key{RET}}
+@cindex @kbd{C-c C-b g @key{RET}}
+@cindex @kbd{C-c C-r g @key{RET}}
 @cindex Generate Preview
 
 @item @kbd{C-c C-p C-p}
@@ -210,10 +225,10 @@ previews associated with that directory are kept.
 @cindex @kbd{C-c C-p C-c C-r}
 @cindex @code{preview-clearout}
 
-@item @kbd{M-x preview-report-bug RET}
+@item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
 Report a bug in the preview-latex package.
-@cindex @kbd{M-x preview-report-bug RET}
+@cindex @kbd{M-x preview-report-bug @key{RET}}
 @cindex @code{preview-report-bug}
 @cindex Report a bug
 @end table
@@ -223,8 +238,8 @@ Report a bug in the preview-latex package.
 @cindex Customization
 
 Customization options can be found by typing @kbd{M-x customize-group
-RET preview RET}. The list of suggestions can be made very long, but
-some are:
+@key{RET} preview @key{RET}}. The list of suggestions can be made very
+long, but some are:
 
 @itemize @bullet
 @item Adjust the smoothening of the previews
@@ -244,7 +259,8 @@ whole background of a preview, but you'll have to live with that.
 
 In the @code{Preview Latex} group, check the box next to @code{textmath}
 in @code{Preview Default Option List}.  Beware if you use
-@code{x-symbol}, there is a known issue with that package.
+@code{x-symbol}, there is a known issue with that package if you are
+using a version before 4.0h/beta.
 
 @item The @code{showkeys} package
 
@@ -252,8 +268,8 @@ When using preview-latex, the @code{\label}s are hidden by the previews.
 To show them in the previews (yes, this is possible) use the La@TeX{}
 package @code{showkeys}, by changing @code{Preview Default Preamble} in
 the @code{Preview Latex} group to include @code{\usepackage@{showkeys@}}
-before the @code{\RequirePackage[%P]@{preview@}} line (press the [Show]
-and the first [INS] buttons).
+before the @code{\RequirePackage[%P]@{preview@}} line (press the @key{Show}
+and the first @key{INS} buttons).
 
 @end itemize
  
@@ -262,7 +278,7 @@ and the first [INS] buttons).
 
 This package consists of two parts. A La@TeX{} style that splits the
 output into appropriate parts with one preview object on each page, and
-an emacs-lisp part integrating the thing into emacs (aided by AUC
+an Emacs-lisp part integrating the thing into emacs (aided by AUC
 @TeX{}).
 
 @menu
@@ -281,7 +297,7 @@ an emacs-lisp part integrating the thing into emacs (aided by AUC
 
 When you generate previews on a buffer or a region, the command in
 @code{preview-LaTeX-command} gets run (that variable should only be
-changed with @code{M-x customize RET} so that changes get propagated to
+changed with @code{M-x customize @key{RET}} so that changes get propagated to
 AUC @TeX{}'s command list).
 
 This command passes options @code{auctex} and @code{active} to the
@@ -294,18 +310,20 @@ the preview package is loaded using default options from
 @code{preview-default-preamble}.
 
 This run produces a dvi file where every preview is on a separate page.
-As usual with AUC @TeX{}, you can continue editing while this is going
-on. It produces a host of pseudo-error messages that get parsed by
-preview-latex at the end of the La@TeX{} run and give it the necessary
-information about where in the source file the La@TeX{} code for the
-various previews is located exactly. The parsing takes a moment and will
-render Emacs busy. Before Emacs starts the parsing of the error
-messages, it starts conversion of the previews into PostScript EPS
-files, by calling the configurable @code{preview-dvips-command}. The
-printer specified in there is @code{-Pwww} by default, which will
-usually get you scalable fonts where available. If you are experiencing
-problems, you might want to try playing around with dvips options
-(hyperlink to dvips info file?).
+As usual with AUC @TeX{}, you can continue working while this is going
+on.  It is not a good idea to change the file until after Preview
+La@TeX{} has established where to place the previews which it can only
+do after the La@TeX{} run completes.  This run produces a host of
+pseudo-error messages that get parsed by Preview La@TeX at the end of the
+La@TeX{} run and give it the necessary information about where in the
+source file the La@TeX{} code for the various previews is located
+exactly. The parsing takes a moment and will render Emacs busy. Before
+Emacs starts the parsing of the error messages, it starts conversion of
+the previews into PostScript @acronym{eps} files, by calling the configurable
+@code{preview-dvips-command}. The printer specified in there is
+@code{-Pwww} by default, which will usually get you scalable fonts where
+available. If you are experiencing problems, you might want to try
+playing around with dvips options @inforef{Command-line options,,dvips}.
 
 When Emacs has finished parsing the error messages, it activates all
 detected previews.  This entails throwing away any previous previews
@@ -314,7 +332,7 @@ appearance by a placeholder looking like a question mark.
 
 What happens when dvips is finished depends on the configuration of
 @code{preview-image-type}. If this is set to @code{'postscript},
-preview-latex will simply tell Emacs about where it can find the EPS
+preview-latex will simply tell Emacs about where it can find the @acronym{eps}
 files for each image and will then be finished. Emacs runs GhostScript
 whenever it finds it needs to have one image displayed. It turns out
 that at the time of writing, the implementation in Emacs causes this to
@@ -322,7 +340,7 @@ make editing painfully slow and non-responsive. This is because Emacs
 starts one GhostScript process per image. For this reason,
 @code{preview-image-type} defaults to @code{'png}. This makes
 preview-latex start up a single GhostScript process on its own and feeds
-it the various EPS files in sequence for conversion into PNG format
+it the various @acronym{eps} files in sequence for conversion into PNG format
 which can be displayed much faster by Emacs. Actually, not in sequence
 but backwards since you are most likely editing at the end of the
 document. And as an added convenience, any preview that happens to be
@@ -339,30 +357,30 @@ afterwards will not take away your attention and will eventually
 guarantee that jumping around in the document will encounter only
 prerendered images.
 
-@section On EPS previews
+@section On @acronym{eps} previews
 
 @cindex @code{preview-image-type}
 @cindex @code{preview-image-creators}
 As mentioned above, preview-latex's default mechanism calls GhostScript
 itself for first rendering all preview images into png format, then the
-rendered images get used instead of making use of Emacs' builtin EPS
-support. For this to work, your version of GhostScript needs to support
-the png256 device. Other options are available by customizing
-@code{preview-image-type}. The appropriate type must be supported in the
-@code{preview-image-creators} variable which you can customize as well,
-so adding a suitable device or changing an existing one in a way to
-better suit the version of GhostScript you happen to be using should be
-possible if you take the existing settings as example. Please send
-information about such devices to the addresses mentioned in the README
-file so that we can improve preview-latex.
+rendered images get used instead of making use of Emacs' builtin
+@acronym{eps} support. For this to work, your version of GhostScript
+needs to support the @option{png256} device. Other options are available
+by customizing @code{preview-image-type}. The appropriate type must be
+supported in the @code{preview-image-creators} variable which you can
+customize as well, so adding a suitable device or changing an existing
+one in a way to better suit the version of GhostScript you happen to be
+using should be possible if you take the existing settings as
+example. Please send information about such devices to the addresses
+mentioned in the README file so that we can improve preview-latex.
 
-IF you want to use Emacs' embedded EPS rendering support (which is NOT
-the default), you almost certainly want to put @code{(setq gs-device
-"x11alpha")} into your @file{.emacs} file. This will turn on
-anti-aliasing.
+IF you want to use Emacs' embedded @acronym{eps} rendering support
+(which is @emph{not} the default), you almost certainly want to put
+@code{(setq gs-device "x11alpha")} into your @file{.emacs} file. This
+will turn on anti-aliasing.
 
-If you are using GS 6.63 or later, you may get better output using the
-following.
+If you are using GhostScript 6.63 or later, you may get better output
+using the following.
 @cindex @code{gs-device}
 @cindex @code{gs-options}
 
@@ -381,27 +399,27 @@ following.
 @section Misplaced previews
 
 As explained previously, Emacs uses pseudo-error messages generated by
-the preview.sty package in order to pinpoint the exact source location
-where a preview originated. This works in running text, but fails when
-preview material happens to lie in macro arguments, like the contents of
-@code{\emph}. Those macros first read in their entire argument, munge it
-through, perhaps transform it somehow, process it and perhaps then
-typeset something. When they finally typeset something, where is the
-location where the stuff originated? @TeX{}, having read in the entire
-argument before, does not know and actually there would be no sane way
-of defining it. 
+the @samp{preview} package in order to pinpoint the exact source
+location where a preview originated. This works in running text, but
+fails when preview material happens to lie in macro arguments, like the
+contents of @code{\emph}. Those macros first read in their entire
+argument, munge it through, perhaps transform it somehow, process it and
+perhaps then typeset something. When they finally typeset something,
+where is the location where the stuff originated? @TeX{}, having read in
+the entire argument before, does not know and actually there would be no
+sane way of defining it.
 
 For previews contained inside such a macro argument, the default
 behaviour of preview-latex is to use a position immediately after the
 closing brace of the argument. All the prewiews get placed there, all at
-a zero-width position, which means that emacs displays it in an order
-that preview-latex cannot influence (currently in emacs it is even
+a zero-width position, which means that Emacs displays it in an order
+that preview-latex cannot influence (currently in Emacs it is even
 possible that the order changes between runs). And since the placement
 of those previews is goofed up, you will not be able to regenerate them
 by clicking on them. The default behaviour is thus somewhat undesirable.
 
 The solution (like with other preview problems) is to tell the La@TeX{}
-preview package how to tackle this problem. You know the
+\samp{preview} package how to tackle this problem. You know the
 @code{\PreviewMacro} command explained above (cough, cough). There is a
 variant @code{\PreviewMacro*} and its cousin @code{\PreviewEnvironment*}
 that do just the opposite. @code{\PreviewMacro\somecommand} puts the
