@@ -1,3 +1,12 @@
+2004-08-07  David Kastrup  <dak@gnu.org>
+
+	* doc/todo.texi (Mid-term Goals): Use @previewlatex macro.
+	(Mid-term Goals): New entries.  Should some of them be moved to
+	wishlist?  Remove a few fixed bugs.
+
+	* doc/macros.texi: move @ConTeXt macro out of info-only section.
+	Typeset @previewlatex differently.
+
 2004-08-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el: Use "gnu.org" instead of "nongnu.org".

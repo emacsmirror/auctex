@@ -24,10 +24,10 @@ changes on the mailing list of @AUCTeX{} first.
 @section Mid-term Goals
 
 @itemize @bullet
-@item Integration of preview-latex into @AUCTeX{}
+@item Integration of @previewlatex{} into @AUCTeX{}
 
 @AUCTeX{} users will thereby get the functionality provided by
-preview-latex without the hassle of an additional installation.
+@previewlatex{} without the hassle of an additional installation.
 
 Looking at the backend, the integration involves folding of error
 parsing and task management of both packages which will ease
@@ -37,12 +37,47 @@ development efforts and avoid redundant work.
 
 The current state of command handling with @code{TeX-command-list} is
 not very flexible because there is no distinction between executables
-and command line options to be passed to them.  This is problematic if
-macro processors should be called with dynamically determined options.
-Additionally, the current scheme does not allow changes in command
-handling without possibly breaking customizations made by users.  A new
-scheme will facilitate the (automatic) customization of macro processors
-and viewers at install time as well.
+and command line options to be passed to them.
+
+Customization of @code{TeX-command-list} by the user will interfere with
+updates of @AUCTeX{}.
+
+@item Error help catalogs
+
+Currently, the help for errors is more or less hardwired into
+@file{tex.el}.  For supporting error help in other languages, it would
+be sensible to instead arrange error messages in language-specific
+files, make a common info file from all such catalogs in a given
+language and look the error texts up in an appropriate index.  The user
+would then specify a preference list of languages, and the errors would
+be looked up in the catalogs in sequence until the were identified.
+
+@item Quick error overviews
+
+An error overview window (extract from the log file with just the error
+lines, clickable like a ``grep'' buffer) and/or fringe indicators for
+errors in the main text would be nice.
+
+@item A math entry grid
+
+A separate frame with a table of math character graphics to click on in
+order to insert the respective sequence into the buffer (cf. the
+``grid'' of x-symbol).
+
+@item Crossreferencing support
+
+It would be nice if you could index process your favorite collection of
+@file{.dtx} files (such as the LaTeX source), just call a command on
+arbitrary control sequence, and get either the DVI viewer opened right
+at the definition of that macro (using Source Specials), or the source
+code of the @file{.dtx} file.
+
+@item Combining @samp{docTeX} with RefTeX
+
+Macro cross references should also be usable for document navigation
+using RefTeX.
+
+
 @end itemize
 
 @node Wishlist, Bugs, Mid-term Goals, ToDo
@@ -210,7 +245,7 @@ We should have a way to globally specify the default value of the header
 and trailer regexps.
 
 @item
-Add support for original @code{TeX-mode} keybindings.
+Get closer to original @code{TeX-mode} keybindings.
 
 A third initialization file (@file{tex-mode.el}) containing an emulator
 of the standard @code{TeX-mode} would help convince some people to
@@ -223,16 +258,8 @@ with regard to line numbers and changed files.  This is what
 @code{next-error} does. (Or did, until Emacs 19).
 
 @item
-When @code{LaTeX-environment} is given an argument, change the current
-environment.  Be smart about @samp{\item[]} versus @samp{\item } and
-labels like @samp{fig:} versus @samp{tab:}.
-
-@item
 Finish the Texinfo mode.  For one thing, many Texinfo mode commands do
 not accept braces around their arguments.
-
-@item
-Support for AMSLaTeX style files.
 
 @item
 Hook up the letter environment with `bbdb.el'.
@@ -254,7 +281,7 @@ by Juergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
 Reported by  "Robert B. Love"  <rlove@@raptor.rmNUG.ORG>.
 
 @item
-@kbd{C-c '} should always stay in the current window, also when it find
+@kbd{C-c `} should always stay in the current window, also when it find
 a new file.
 
 @item
