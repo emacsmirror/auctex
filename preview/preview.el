@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.103 2002-04-11 14:13:27 dakas Exp $
+;; $Id: preview.el,v 1.104 2002-04-11 16:45:20 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1080,15 +1080,24 @@ on first use.")
 	  (overlay-get ov 'preview-image)
 	  filenames)))
 
-(defun preview-buffer-restore (buffer-misc)
+(defun preview-buffer-restore-internal (buffer-misc)
   "Restore previews from BUFFER-MISC if proper."
-  (and (eq 'preview (pop desktop-buffer-misc))
-       (equal (pop desktop-buffer-misc)
+  (and (eq 'preview (pop buffer-misc))
+       (equal (pop buffer-misc)
 	      (visited-file-modtime))
        (let (tempdirlist)
-	 (dolist (ovdata desktop-buffer-misc)
+	 (dolist (ovdata buffer-misc)
 	   (setq tempdirlist
 		 (apply #'preview-reinstate-preview tempdirlist ovdata))))))
+
+(defun preview-buffer-restore (buffer-misc)
+  "At end of desktop load, reinstate previews.
+This delay is so that minor modes changing buffer geometry
+\(like `x-symbol-mode' does) will not wreak havoc."
+  (add-hook 'desktop-delay-hook `(lambda ()
+				   (with-current-buffer ,(current-buffer)
+				     (preview-buffer-restore-internal
+				      ',buffer-misc)))))
   
 (defun desktop-buffer-preview ()
   "Hook function for restoring persistent previews into a buffer."
@@ -1788,7 +1797,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.103 $"))
+	(rev "$Revision: 1.104 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
