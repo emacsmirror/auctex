@@ -606,7 +606,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.439 $"))
+	    (rev "$Revision: 5.440 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -621,7 +621,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-23 12:45:14 $"))
+    (let ((date "$Date: 2004-08-24 20:27:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2058,7 +2058,7 @@ The algorithm is as follows:
 	 "\\(\\(^\\|[^\\\n]\\)\\("
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
-	 "\\)*\\)\\(" comment-start "+[ \t]*\\)"))
+	 "\\)*\\)\\(%+[ \t]*\\)"))
   ;; `comment-padding' is defined here as an integer for compatibility
   ;; reasons because older Emacsen could not cope with a string.
   (make-local-variable 'comment-padding)
@@ -3643,10 +3643,10 @@ If LIMIT is non-nil, search up to this position in the buffer."
       (while (and (/= arg 0)
 		  (re-search-backward "{\\|}" limit t 1))
 	(setq brace (match-string 0))
-	(when (TeX-looking-at-backward
-	       (concat "[^" TeX-esc "]\\("
-		       (regexp-quote (concat TeX-esc TeX-esc))
-		       "\\)*"))
+	(when (not (TeX-looking-at-backward
+		    (concat (regexp-quote TeX-esc) "\\("
+			    (regexp-quote (concat TeX-esc TeX-esc))
+			    "\\)*")))
 	  (cond ((string= brace "}")
 		 (setq arg (1+ arg)))
 		(t
@@ -3695,18 +3695,18 @@ the macro."
 
 (defun TeX-find-macro-start-helper ()
   "Find the starting token of a macro, e.g. a backslash."
-  (if (save-excursion
-	(and (re-search-backward
-	      (concat
-	       "\\(^\\|[^" TeX-esc "\n]\\)"
-	       "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-	       "\\(" (regexp-quote TeX-esc) "\\)")
-	      nil t)
-	     (save-excursion
-	       (goto-char (match-end 3))
-	       (not (looking-at (regexp-quote TeX-esc))))))
-      (match-beginning 3)
-    nil))
+  (save-excursion
+    (catch 'found
+      (while (search-backward TeX-esc nil t)
+	(when (not (save-match-data
+		     (prog1
+			 (TeX-looking-at-backward
+			  (concat (regexp-quote TeX-esc) "\\("
+				  (regexp-quote (concat TeX-esc
+							TeX-esc)) "\\)*")
+			  (- (point) (line-beginning-position)))
+		       (goto-char (match-beginning 0)))))
+	  (throw 'found (match-beginning 0)))))))
 
 (defun TeX-find-macro-end-helper (start)
   "Find the end of a macro if its START is known.
