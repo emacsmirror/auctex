@@ -1,5 +1,7 @@
 2003-05-13  David Kastrup  <dakas@users.sourceforge.net>
 
+	* configure.in: Really bail if 8bit test fails.
+
 	* circ.tex (section{Die gerade Linie}): Add comments for
 	intentional bugs.
 
