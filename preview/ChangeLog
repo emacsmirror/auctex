@@ -1,3 +1,7 @@
+2003-11-10  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* preview.el: Add preview-scale functionality
+
 2003-11-08  Stephen Reindl  <sr@stephenreindl.de>
 
 	* preview-latex.spec (%install): rm texinfo 'dir' file because
