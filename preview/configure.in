@@ -24,58 +24,12 @@ ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
 
 AC_SET_MAKE
 AC_PROG_INSTALL
+AC_PROG_EMACS
 
-dnl
-dnl Apparently, if you run a shell window in Emacs, it sets the EMACS
-dnl environment variable to 't'.  Lets undo the damage.
-dnl
-if test "${EMACS}" = "t"; then
-   EMACS=""
-fi
-
-AC_ARG_ENABLE(8bit-test,[  --disable-8bit-test            Disable LaTeX 8-bit test], 
-	[ if test "$enableval" = no ; then ENABLE8BIT=false ; 
-	  else ENABLE8BIT=true ; fi  ], [ ENABLE8BIT=true ])
-
-AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
-	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS="${withval}"; fi ])
-AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
-	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS="${withval}"; fi ])
-
-AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR        TEXMF tree to install into],
- [ texmfdir="${withval}" ; 
-   if test ! -d "`eval echo "$texmfdir"`"  ; then
-      AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
-   fi
-   previewtexmfdir=$texmfdir/tex/latex/preview
-   previewdocdir=$texmfdir/doc/latex/styles
-   ])
-
-AC_ARG_WITH(tex-dir,[  --with-tex-dir=DIR        Location to install preview TeX sources],
- [ previewtexmfdir="${withval}" ; 
-   if test ! -d "`eval echo "$previewtexmfdir"`"  ; then
-      AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
-   fi
-   ])
-
-AC_ARG_WITH(doc-dir,[  --with-doc-dir=DIR        Location to install preview.dvi],
- [ previewdocdir="${withval}" ; 
-   if test ! -d "`eval echo "$previewdocdir"`"  ; then
-      AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
-   fi
-   ])
-
-
-dnl FIXME we should check that it's the right version
-AC_PATH_PROGS_REQUIRED(EMACS, $EMACS emacs xemacs, [(X)Emacs not found!  Aborting!  
-You must install Emacs 21 or XEmacs for preview to work.])
-
-AC_XEMACS_P
 packagedir=
-
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
-   AC_PATH_PACKAGEDIR
+   AC_PATH_PACKAGEDIR([preview])
    ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
    lispdir="${packagedir}/lisp/preview"
    icondir="${packagedir}/etc/preview"
@@ -83,14 +37,15 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
 else
    PLAT_LISP=prv-emacs.el
    AC_MSG_CHECKING([if $EMACS supports images])
-   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))], "noecho")
+   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types)\
+		 (error \"This Emacs does not support images\"))], "noecho")
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
       AC_MSG_ERROR("You need an Emacs that supports images")
    else
-      AC_MSG_RESULT([present])
+      AC_MSG_RESULT([yes])
    fi
    
-   AC_PATH_LISPDIR
+   AC_PATH_LISPDIR([preview],[preview])
    ICONFORM= # TODO: fill this in
    icondir="${lispdir}"
 fi
@@ -101,22 +56,23 @@ AC_SUBST(packagedir)
 AC_SUBST(icondir)
 
 AC_CHECK_AUCTEX
-AC_PATH_PROG(INSTALL_INFO, install-info)
-AC_PATH_PROG(INSTALL_INFO, install-info,, /usr/sbin)
-AC_PATH_PROG(INSTALL_INFO, install-info,:, /sbin)
+AC_SUBST(auctexdir)
 
-AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE, [GhostScript not found!  Aborting!  
+AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE, 
+[GhostScript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
 dnl Check to see if specific drivers are built in.
 dnl Need table of mappings, with priority
 
-
-
 AC_PATH_PROG_REQUIRED(LATEX, latex, [LaTeX not found, aborting!
 You must install LaTeX for preview to work.])
 
+AC_ARG_ENABLE(8bit-test,
+   [  --disable-8bit-test            Disable LaTeX 8-bit test], 
+   [ if test "$enableval" = no ; then ENABLE8BIT=false ; 
+     else ENABLE8BIT=true ; fi  ], [ ENABLE8BIT=true ])
 if test "$ENABLE8BIT"x = truex ; then
     AC_MSG_CHECKING([if LaTeX is installed 8-bit clean])
 # Restore the locale variables saved on startup
@@ -125,23 +81,22 @@ if test "$ENABLE8BIT"x = truex ; then
   for x in LANG LC_CTYPE LANGUAGE LC_ALL
   do
     eval 'if test -n "$MY_'$x'"; then '$x'=$MY_'$x'; export '$x'; else unset '$x'; fi'
-  done
-    
-    if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep 'fc!$' >/dev/null 2>/dev/null
-    then
-       AC_MSG_ERROR([
-       LaTeX is not installed 8-bit clean.  Check the PROBLEMS file for details.])
-    else
-       AC_MSG_RESULT(yes)
-    fi
+  done    
+  if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep 'fc!$' >/dev/null 2>/dev/null
+  then
+    AC_MSG_ERROR([LaTeX is not installed 8-bit clean!  
+Check the PROBLEMS file for details.])
+  else
+    AC_MSG_RESULT(yes)
+  fi
     )
 fi
 
+# Determine which latex-style components to install
 # To match .sty, .def, .cfg, but _not_ .drv
 TEXMFGEN=[`sed -n 's/^%<installer>.*file[{]\\([^}.]*\\.[sdc][tef][yfg]\\)[}].*/\\1/p' latex/preview.dtx`]
 # Replace newlines with spaces.
 TEXMFGEN=`echo $TEXMFGEN`
-
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
@@ -150,15 +105,19 @@ AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 # MikTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
 AC_PATH_PROG(TEXHASH, texhash)
-AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
-AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
-
-AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
-AC_CHECK_MACROS_MAKEINFO(acronym env option)
-
-AC_SUBST(auctexdir)
+if test -z "$TEXHASH"; then
+  AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
+  if test -z "$TEXHASH"; then
+    AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
+  fi
+fi
 
 AC_PATH_TEXMFDIR
+
+AC_PATH_PROG(MAKEINFO, makeinfo, :)
+AC_CHECK_MACROS_MAKEINFO(acronym env option)
+AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
+
 AC_OUTPUT(Makefile doc/Makefile latex/Makefile)
 cat >&2 <<EOF
 
