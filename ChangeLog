@@ -1,3 +1,8 @@
+2004-09-08  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (TeX-arg-input-file): Remove duplicates from the
+	completion list.  Simplify code by using `unless'.
+
 2004-09-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (Texinfo-insert-node): New function.

@@ -1492,8 +1492,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
 
 First optional argument is the promt, the second is a flag.
 If the flag is set, only complete with local files."
-  (if (or TeX-global-input-files local)
-      ()
+  (unless (or TeX-global-input-files local)
     (message "Searching for files...")
     (setq TeX-global-input-files
 	  (mapcar 'list (TeX-search-files (append TeX-macro-private
@@ -1502,13 +1501,13 @@ If the flag is set, only complete with local files."
   (let ((file (if TeX-check-path
 		  (completing-read
 		   (TeX-argument-prompt optionel prompt "File")
-		   (append (mapcar 'list
-				   (TeX-search-files '("./")
-						     TeX-file-extensions
-						     t t))
-			   (if local
-			       nil
-			     TeX-global-input-files)))
+		   (TeX-delete-dups
+		    (append (mapcar 'list
+				    (TeX-search-files '("./")
+						      TeX-file-extensions
+						      t t))
+			    (unless local
+			      TeX-global-input-files))))
 		(read-file-name
 		 (TeX-argument-prompt optionel prompt "File")))))
     (if (null file)
