@@ -103,6 +103,7 @@
 ;; wanted, because it becomes mult-line, and in XEmacs, there is one
 ;; line, but toolbars and all sides of a frame.)
 
+
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -451,33 +452,40 @@ documentation of function `toolbarx-process-symbol')."
 	 (lambda (img)
 	   (let* ((val (toolbarx-option-value img))
 		  (all-obj-ok t)
-		  (good-obj (if (featurep 'xemacs)
-				;; if XEmacs
-				(or (stringp val)
-				    (glyphp val)
-				    (and (symbolp val)
-					 (boundp val)
-					 (check-toolbar-button-syntax
-					  (vector val
-						  (lambda nil (interactive))
-						  nil nil) t))
-				    (and (listp val)
-					 (> (length val) 0)
-					 (< (length val) 7)
-					 (dolist (i val all-obj-ok)
-					   (setq all-obj-ok
-						 (and all-obj-ok
-						      (or (not i)
-							  (stringp i)
-							  (glyphp i)))))))
-			      ;; if Emacs
-			      (or (stringp val)
-				  (and (listp val)
-				       (= (length val) 4)
-				       (dolist (i val all-obj-ok)
-					 (setq all-obj-ok
-					       (and all-obj-ok
-						    (stringp i)))))))))
+		  (good-obj
+		   (if (featurep 'xemacs)
+		       ;; if XEmacs
+		       (or (stringp val)
+			   (glyphp val)
+			   (and (symbolp val)
+				(boundp val)
+				(check-toolbar-button-syntax
+				 (vector val
+					 (lambda nil (interactive))
+					 nil nil) t))
+			   (and (listp val)
+				(> (length val) 0)
+				(< (length val) 7)
+				(dolist (i val all-obj-ok)
+				  (setq all-obj-ok
+					(and all-obj-ok
+					     (or (not i)
+						 (stringp i)
+						 (glyphp i)))))))
+		     ;; if Emacs
+		     (or (stringp val)
+			 (and (consp val) ; image descriptor
+			      (eq (car val) 'image))
+			 (and (listp val)
+			      (= (length val) 4)
+			      (dolist (i val all-obj-ok)
+				(setq all-obj-ok
+				      (and all-obj-ok
+					   (or (stringp i)
+					      ; image descriptor
+					       (and (consp i)
+						    (eq (car i)
+							'image)))))))))))
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-image-type-simple)))
 
@@ -1072,6 +1080,7 @@ in the end of SWITCHES, which is returned."
 
 ;;; How a image is made, giving a string as (part of) file name.
 
+;; look at function `image-type-available-p' for Emacs !!!!
 ;;;###autoload;
 (defun toolbarx-find-image (filename)
   "Return a image object from image on FILENAME, a string.
@@ -1096,6 +1105,7 @@ ommited, tries `xpm', `xbm' and `pbm'."
   "Store the list of processed buttons, used by `toolbarx-refresh'.
 This variable can store different values for the different buffers.")
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Second engine: display parsed buttons in Emacs
 
@@ -1165,7 +1175,7 @@ side effect."
 		  (starting t)
 		  (key-not-used 'transp)
 		  (count 0)
-		  (image-descriptor (toolbarx-find-image "transpstrip")))
+		  (image-descriptor (toolbarx-find-image "transp-strip")))
 	      (while (not new-line-happened)
 		(setq temp-tool-bar-map (copy-sequence tool-bar-map))
 		(if starting
@@ -1191,9 +1201,18 @@ side effect."
 	(let* ((image (cadr (memq :image filtered-props)))
 	       (image-descriptor
 		(when (memq :image filtered-props)
-		  (if (stringp image)
-		      (toolbarx-find-image image)
-		    (apply 'vector (mapcar 'toolbarx-find-image image)))))
+		  (cond 
+		   ((stringp image)
+		    (toolbarx-find-image image))
+		   ((and (consp image)	; image descriptor
+			 (eq (car image) 'image))
+		    image)
+		   (t
+		    (apply 'vector (mapcar (lambda (img)
+					      (if (stringp img)
+						  (toolbarx-find-image img)
+						img))
+					   image))))))
 	       (command
 		(let* ((com (nth 1 (memq :command filtered-props)))
 		       (app (nth 1 (memq :append-command filtered-props)))
@@ -1274,7 +1293,7 @@ is used and the default value of `toolbarx-map' is changed."
         (setq-default tool-bar-map tool-bar-map-temp)
       (setq tool-bar-map tool-bar-map-temp))))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Third engine: display parsed buttons in XEmacs
 
@@ -1717,16 +1736,17 @@ elements that a button should have.)  The supported properties
 for buttons and their `basic types' (see note on how values of
 properties are obtained!) are:
 
- :image -- in Emacs, either a string or a list of 4 strings; in
-   XEmacs, either a string or a glyph or a list of at least 1 and
-   at most 6 strings or glyphs or nil (not the first element
-   though); defines the image file displayed by the button.  If
-   it is a string, the image file found with that name (always
-   using the function `toolbarx-find-image' to make the
-   \`internal\' image descriptor) is used as button image.  For
-   the other formats, the button image is handled in the same way
-   as it is treated by the editors; see info nodes bellow for a
-   description of the capabilities of each editor
+ :image -- in Emacs, either a string or image descriptor (see
+   info for a definition), ora list of 4 strings or image
+   descriptors; in XEmacs, either a string or a glyph or a list
+   of at least 1 and at most 6 strings or glyphs or nil (not the
+   first element though); defines the image file displayed by the
+   button.  If it is a string, the image file found with that
+   name (always using the function `toolbarx-find-image' to make
+   the \`internal\' image descriptor) is used as button image.
+   For the other formats, the button image is handled in the same
+   way as it is treated by the editors; see info nodes bellow for
+   a description of the capabilities of each editor
       Emacs: info file \"elisp\", node \"Tool Bar\" (see `:image'
              property);
              PS: a *vector* of four strings is used in the Emacs
