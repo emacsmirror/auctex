@@ -2919,7 +2919,7 @@ the last entry in the menu."
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
-    (TeX-mode-specific-command-menu 'latex))
+    (TeX-mode-specific-command-menu 'latex-mode))
 
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
