@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.17 1994-05-28 02:47:33 amanda Exp $
+;; Version: $Id: latex.el,v 5.18 1994-06-01 21:30:05 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1732,6 +1732,7 @@ The point is supposed to be at the beginning of the current line."
   ;; Update entries on AUC TeX menu.
   (or (eq major-mode 'latex-mode)
       (null LaTeX-menu-changed)
+      (not (fboundp 'easy-menu-change))
       (progn
 	(TeX-update-style)
 	(setq LaTeX-menu-changed nil)
@@ -1749,8 +1750,10 @@ The point is supposed to be at the beginning of the current line."
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "LaTeX"
-	(list LaTeX-environment-menu-name)
-	(list LaTeX-environment-modify-menu-name)
+	(list LaTeX-environment-menu-name
+	      ~Upgrade `easymenu.el'~)
+	(list LaTeX-environment-modify-menu-name
+	      "Upgrade `easymenu.el'")
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
