@@ -257,8 +257,23 @@ press the @key{Show} button and the last @key{INS} button, then add
 @example
 \PreviewEnvironment@{center@}
 @end example
+@noindent
+in the space that just opened.  Note that since @code{center} is a
+generic formatting contruct of @LaTeX{}, a general configuration like
+that is not quite prudent.  You better to do this on a per-document
+base so that it is easy to disable this behavior when you find this
+particular entry gives you trouble.
 
-in the space that just opened. 
+One possibility is to save such settings in the corresponding file-local
+variable instead of your global configuration (@pxref{File
+Variables,,Local Variables in Files,emacs,GNU Emacs Manual}).  A perhaps
+more convenient place for such options would be in a configuration file
+@file{prdefault.cfg} in the same directory with your project
+(@pxref{Package options}).  In case that your distribution already
+takes this file for a different purpose, you can always add an option
+@option{myownsettings} to the options in @code{Preview Default Options
+List}, then place your own customization in a file
+@file{prmyownsettings.def}.
 
 @item Don't preview inline math
 @cindex Inline math
