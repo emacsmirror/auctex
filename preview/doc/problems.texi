@@ -201,9 +201,9 @@ fails, pass the option @code{--disable-8bit-test} to configure.
 Thanks to the work of Christoph Wedler, starting with version
 @samp{4.0h/beta} of x-symbol, the line parsing of @AUCTeX{} and
 @previewlatex{} is fully supported.  Earlier versions exhibit problems.
-However, we do recommend that you use version 4.2.1 or later, as
-versions older than that may slow down the parsing pass of
-@previewlatex{} considerably.
+However, versions before 4.2.2 will cause a drastic slowdown of
+@previewlatex{}'s parsing pass, so we don't recommend to use versions
+earlier than that.
 
 If you wonder what x-symbol is, it is a package that transforms various
 tokens and subscripts to a more readable form while editing and offers a
@@ -214,8 +214,8 @@ few input methods handy especially for dealing with math. Take a look at
 @section Middle-clicks paste instead of toggling
 
 This is probably the fault of your favorite package.  In Emacs-21.1, the
-following culprits are known; later versions might have this corrected
-already, so apply the patches only if you encounter the problem.
+following culprits are known; Emacs-21.2 has them fixed already.  Apply
+the patches only if you encounter the problem.
 
 @itemize @bullet
 @item flyspell.el
@@ -225,4 +225,12 @@ Apply the patch in @file{patches/flyspell.patch}.
 @item mouse-drag.el
 
 Apply the patch in @file{patches/mouse-drag.patch}.
+
+@item isearch.el
+
+This is one complicated mess to dig through.  Better just end the search
+with @kbd{@key{RET}} before toggling and resume with @kbd{C-s C-s} or
+similar afterwards.  Since previews over the current match will
+auto-open, anyway, this should not be much of a problem.
+
 @end itemize
