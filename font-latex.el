@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.931 (28 Sep 2004)
+;; Version:    0.932 (29 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,14 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.932 29Sep2004 Ralf Angeli
+;;  - `font-latex-do-multi-line': Add new option and use it as default value.
+;;  - `font-latex-use-cache': New variable.
+;;  - `font-latex-match-command-outside-arguments',
+;;    `font-latex-match-font-outside-braces',
+;;    `font-latex-match-font-inside-braces': Use it.
+;;  - `font-latex-check-cache': Do not check if cache is to be used.
+;;  - `font-latex-setup': Set up multi-line font locking.
 ;; V0.931 28Sep2004 Ralf Angeli
 ;;  - Add change log entries and bump version
 ;;  - `font-latex-find-matching-close': Fix typo in last commit.
@@ -402,10 +410,34 @@
   :prefix "font-latex-"
   :group 'font-latex)
 
-(defcustom font-latex-do-multi-line t
-  "Nil means disable the multi-line fontification prone to infinite loops."
+(defcustom font-latex-do-multi-line 'try-font-lock
+  "Control multi-line fontification.
+
+font-latex has a built-in caching mechanism for fontification of
+multi-line constructs.  Besides, Emacs provides its own facilities
+for multi-line fontification which can be controlled by the
+variable `font-lock-multiline'.
+
+Setting `font-latex-do-multi-line' to t will enable font-latex's
+mechanism, setting it to nil will disable it.  Setting it to
+'try-font-lock will use font-lock's mechanism if available and
+font-latex's method if not.
+
+Setting this variable will only have effect after resetting
+buffers controlled by font-latex or restarting Emacs."
   :group 'font-latex
-  :type 'boolean)
+  :type '(choice (const :tag "Enabled (font-lock or font-latex)" try-font-lock)
+		 (const :tag "Enabled (force font-latex)" t)
+		 (const :tag "Disabled" nil)))
+
+(defvar font-latex-use-cache nil
+  "Control cache for multi-line fontification.")
+;; `font-lock-multiline' has to be made buffer-local.  Do the same
+;; with `font-latex-use-cache'.  This way a change of
+;; `font-latex-do-multi-line' will only have effect after restarting
+;; Emacs or re-initializing the respective buffers, but there won't be
+;; any inconsistencies.
+(make-variable-buffer-local 'font-latex-use-cache)
 
 (defvar font-latex-quote-regexp-beg nil
   "Regexp used to find quotes.")
@@ -902,6 +934,7 @@ e.g. \\section[option]{key}
   :type '(repeat (string :tag "keyword"))
   :set 'font-latex-match-title-4-keywords-set
   :group 'font-latex)
+
 (defvar font-latex-match-textual)
 (defvar font-latex-match-textual-keywords)
 (defvar font-latex-match-textual-keywords-local nil
@@ -1298,6 +1331,14 @@ have changed."
     (make-local-variable 'font-lock-string-face)
     (setq font-lock-string-face font-latex-math-face)))
 
+  ;; Configure multi-line fontification.
+  (cond ((eq font-latex-do-multi-line 'try-font-lock)
+	 (if (boundp 'font-lock-multiline)
+	     (set (make-local-variable 'font-lock-multiline) t)
+	   (setq font-latex-use-cache t)))
+	((eq font-latex-do-multi-line t)
+	 (setq font-latex-use-cache t)))
+
   ;; Tell Font Lock about the support.
   (make-local-variable 'font-lock-defaults)
   ;; The test for `major-mode' currently only works with docTeX mode
@@ -1566,7 +1607,7 @@ Return t if we move, false if we don't."
         (oldlimit (or (font-latex-get-cache cache-id 6) 0)))
     (when
         (and
-         font-latex-do-multi-line
+         font-latex-use-cache
          kbeg                           ;; Check that cache is actually set
          (equal keywords (font-latex-get-cache cache-id 3))
 ;debug   (message "1- cache: %s" (symbol-name cache-id))
@@ -1629,62 +1670,63 @@ Sets `match-data' so that:
 Returns nil if none of KEYWORDS is found."
 ;;(let ((we-moved (font-latex-check-cache
 ;;                 'font-latex-match-command-cache keywords limit)))
-  (font-latex-check-cache 'font-latex-match-command-cache keywords limit)
-    (when (re-search-forward keywords limit t)
-      (cond
-       ((font-latex-commented-outp)
-        ;; Return a dummy match such that we skip over this pattern.
-        ;; (Would be better to skip over internally to this function)
-        ;; We used to return a (nil nil) pattern match along with the
-        ;; status of `t' to keep looking.  font-lock was happy with that.
-        ;; But when font-lock-multiline is `t', the match really needs to
-        ;; exists otherwise there is a elisp error at line 1625 of
-        ;; font-lock.el in function font-lock-fontify-keywords-region.
-        (store-match-data (list (match-end 0)(match-end 0)))
-        t)
-       (t
-        (let ((kbeg (match-beginning 0))
-              kend sbeg send cbeg cend
-              cache-reset
-              (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
-          (goto-char (match-end 0))
-          (if (and asterix (eq (following-char) ?\*))
-              (forward-char 1))
-          (skip-chars-forward " \n\t" limit)
-          (setq kend (point))
-          (while (eq (following-char) ?\[)
-            (setq sbeg kend)
-            (save-restriction
-              ;; Restrict to LIMIT.
-              (narrow-to-region (point-min) limit)
-              (if (font-latex-find-matching-close ?\[ ?\])
-                  (setq send (point))
-                (setq cache-reset t)
-                (setq send (point-max))
-                (goto-char send))))
-          (skip-chars-forward " \n\t" limit)
-          (when (eq (following-char) ?\{)
-            (setq cbeg (point))
-            (save-restriction
-              ;; Restrict to LIMIT.
-              (narrow-to-region (point-min) limit)
-              (if (font-latex-find-matching-close ?\{ ?\})
-                  (setq cend (point))
-                (setq cache-reset t)
-                (setq cend (point-max))
-                (goto-char cend))))
-          (when twoargs
-            (skip-chars-forward " \n\t" limit)
-            (when (eq (following-char) ?\{)
-              (save-restriction
-                ;; Restrict to LIMIT.
-                (narrow-to-region (point-min) limit)
-                (if (font-latex-find-matching-close ?\{ ?\})
-                    (setq cend (point))
-                  (setq cache-reset t)
-                  (setq cend (point-max))
-                  (goto-char cend)))))
-          (store-match-data (list kbeg kend sbeg send cbeg cend))
+  (when font-latex-use-cache
+    (font-latex-check-cache 'font-latex-match-command-cache keywords limit))
+  (when (re-search-forward keywords limit t)
+    (cond
+     ((font-latex-commented-outp)
+      ;; Return a dummy match such that we skip over this pattern.
+      ;; (Would be better to skip over internally to this function)
+      ;; We used to return a (nil nil) pattern match along with the
+      ;; status of `t' to keep looking.  font-lock was happy with that.
+      ;; But when font-lock-multiline is `t', the match really needs to
+      ;; exists otherwise there is a elisp error at line 1625 of
+      ;; font-lock.el in function font-lock-fontify-keywords-region.
+      (store-match-data (list (match-end 0)(match-end 0)))
+      t)
+     (t
+      (let ((kbeg (match-beginning 0))
+	    kend sbeg send cbeg cend
+	    cache-reset
+	    (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
+	(goto-char (match-end 0))
+	(if (and asterix (eq (following-char) ?\*))
+	    (forward-char 1))
+	(skip-chars-forward " \n\t" limit)
+	(setq kend (point))
+	(while (eq (following-char) ?\[)
+	  (setq sbeg kend)
+	  (save-restriction
+	    ;; Restrict to LIMIT.
+	    (narrow-to-region (point-min) limit)
+	    (if (font-latex-find-matching-close ?\[ ?\])
+		(setq send (point))
+	      (setq cache-reset t)
+	      (setq send (point-max))
+	      (goto-char send))))
+	(skip-chars-forward " \n\t" limit)
+	(when (eq (following-char) ?\{)
+	  (setq cbeg (point))
+	  (save-restriction
+	    ;; Restrict to LIMIT.
+	    (narrow-to-region (point-min) limit)
+	    (if (font-latex-find-matching-close ?\{ ?\})
+		(setq cend (point))
+	      (setq cache-reset t)
+	      (setq cend (point-max))
+	      (goto-char cend))))
+	(when twoargs
+	  (skip-chars-forward " \n\t" limit)
+	  (when (eq (following-char) ?\{)
+	    (save-restriction
+	      ;; Restrict to LIMIT.
+	      (narrow-to-region (point-min) limit)
+	      (if (font-latex-find-matching-close ?\{ ?\})
+		  (setq cend (point))
+		(setq cache-reset t)
+		(setq cend (point-max))
+		(goto-char cend)))))
+	(store-match-data (list kbeg kend sbeg send cbeg cend))
 
           ;; Handle cache
 ;          (if (and we-moved
@@ -1695,11 +1737,11 @@ Returns nil if none of KEYWORDS is found."
 ;                (message "pattern cancelled... twice in a row")
 ;                nil) ;; Return a nul search (cancel this fontification)
 
-          (when (and font-latex-do-multi-line cache-reset)
-            (font-latex-set-cache
-             'font-latex-match-command-cache
-             kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
-          t)))))
+	(when (and font-latex-use-cache cache-reset)
+	  (font-latex-set-cache
+	   'font-latex-match-command-cache
+	   kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
+	t)))))
 
 (defvar font-latex-match-font-cache nil
   "Cache start of unterminated LaTeX font-changing commands to fontify.")
@@ -1713,7 +1755,8 @@ Sets `match-data' so that:
  subexpression 2 is the content to fontify in bold.
  subexpression 3 is the content to fontify in type-face.
 Returns nil if no font-changing command is found."
-  (font-latex-check-cache 'font-latex-match-font-cache 'font limit)
+  (when font-latex-use-cache
+    (font-latex-check-cache 'font-latex-match-font-cache 'font limit))
   (when (re-search-forward
          (eval-when-compile
            (concat "\\\\" "\\("
@@ -1763,7 +1806,7 @@ Returns nil if no font-changing command is found."
         ;; Start the subsequent search immediately after this keyword.
           (goto-char kend)
 
-        (when (and font-latex-do-multi-line cache-reset)
+        (when (and font-latex-use-cache cache-reset)
           (goto-char limit)             ;Avoid infinite loops?
           (font-latex-set-cache
            'font-latex-match-font-cache
@@ -1784,7 +1827,8 @@ Sets `match-data' so that:
  subexpression 2 is the content to fontify in bold.
  subexpression 3 is the content to fontify in type-face.
 Returns nil if no font-changing command is found."
-  (font-latex-check-cache 'font-latex-match-infont-cache 'infont limit)
+  (when font-latex-use-cache
+    (font-latex-check-cache 'font-latex-match-infont-cache 'infont limit))
   (when (re-search-forward
          (eval-when-compile
            (concat "\\\\" "\\("
@@ -1843,7 +1887,7 @@ Returns nil if no font-changing command is found."
             ;; Start the subsequent search immediately after this keyword.
             (goto-char kend)
 
-            (when (and font-latex-do-multi-line cache-reset)
+            (when (and font-latex-use-cache cache-reset)
               (goto-char limit)             ;Avoid infinite loops?
               (font-latex-set-cache
                'font-latex-match-infont-cache
