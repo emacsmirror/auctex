@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.98 2002-04-05 13:15:44 dakas Exp $
+;; $Id: preview.el,v 1.99 2002-04-05 19:41:08 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1634,7 +1634,10 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 		    (if (number-or-marker-p string)
 			(progn
 			  (goto-char string)
-			  (setq lpoint (line-beginning-position)))
+			  (setq lpoint
+				(if (number-or-marker-p after-string)
+				    after-string
+				  (line-beginning-position))))
 		      (if (and (eq (current-buffer) lbuffer)
 			       (<= lline line))
 			  ;; while Emacs does the perfectly correct
@@ -1786,7 +1789,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.98 $"))
+	(rev "$Revision: 1.99 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
