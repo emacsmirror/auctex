@@ -69,8 +69,8 @@ or to a site-wide initialization file is
 @end example
 @noindent
 For a well-configured prepackaged version, this should be the all you
-need to do.  If you installed @previewlatex{} yourself, at least the
-line
+need to do, if @AUCTeX{} is already activated.  If you installed
+@previewlatex{} yourself, at least the line
 
 @example
 (autoload 'LaTeX-preview-setup "preview")
@@ -83,26 +83,25 @@ been installed is not known to Emacs, a line like
 (add-to-list 'load-path @var{"/whatever/directory"})
 @end example
 @noindent
-needs to be added, as well.
+needs to be added, as well.  Once activated, @previewlatex{} will be
+accessible from @AUCTeX{}'s menus and pretty much self-explanatory.
 
 @section Prerequisites
 
-Currently, @previewlatex{} works with Emacs-21.1.  Due to Emacs' current
-lack of image support on those platforms, it will not work on Windows or
-on Macintoshes.  We have been using te@TeX{}, but other @TeX{}
-distributions containing Dvips are not likely to cause major
+Currently, @previewlatex{} is known to work with Emacs-21 under Unix.
+Since nobody is working on Emacs' image support for Windows,
+@previewlatex{} will not work there.  Preliminary XEmacs support is
+available.  We have been using te@TeX{} with @previewlatex{}, but other
+@TeX{} distributions containing Dvips are not likely to cause major
 difficulties.  You need @AUCTeX{} in version 11.0 or later, which at the
 time of this writing means an alpha-test version.  You can get it from
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  A suitable version
-also is available from the download site of @previewlatex{}'s home page
-(see below).  You need GhostScript, at least version 6.51.
+also is available from the download section of @previewlatex{}'s home
+page (see below).  You need GhostScript, at least version 6.51.
 
 @strong{Please note:} At the current point of time, the port to XEmacs
-is progressing, but neither finished nor documented yet.  With the Emacs
-port, a lot of work had to be invested for the final polish, making
-things work smooth and naturally.  The same is to be expected for
-XEmacs.  If you are interested in contributing to this or any other
-area, please contact the developers' list mentioned below.
+is work in progress.  Don't expect too much, and be prepared to contact
+the developers' list mentioned below.
 
 For some known issues with various software, see
 @ifset rawfile
