@@ -1076,6 +1076,30 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")
 
+(defvar LaTeX-auto-class-regexp-list
+  '(;; \RequirePackage[<options>]{<package>}[<date>]
+    ("\\\\Require\\(Package\\)\\(\\[\\([^#\\.%]*?\\)\\]\\)?\
+{\\([^#\\.\n\r]+?\\)}"
+     (3 4 1) LaTeX-auto-style)
+    ;; \RequirePackageWithOptions{<package>}[<date>],
+    ("\\\\Require\\(Package\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
+     (2 3 1) LaTeX-auto-style)
+    ;; \LoadClass[<options>]{<package>}[<date>]
+    ("\\\\Load\\(Class\\)\\(\\[\\([^#\\.%]*?\\)\\]\\)?{\\([^#\\.\n\r]+?\\)}"
+     (3 4 1) LaTeX-auto-style)
+    ;; \LoadClassWithOptions{<package>}[<date>]
+    ("\\\\Load\\(Class\\)WithOptions\\(\\){\\([^#\\.\n\r]+?\\)}"
+     (2 3 1) LaTeX-auto-style)
+    ;; \DeclareRobustCommand{<cmd>}[<num>][<default>]{<definition>},
+    ;; \DeclareRobustCommand*{<cmd>}[<num>][<default>]{<definition>}
+    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}\
+\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*?\\)\\]"
+     (1 2 3) LaTeX-auto-optional)
+    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}\\[\\([0-9]+\\)\\]"
+     (1 2) LaTeX-auto-arguments)
+    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}" 1 TeX-auto-symbol))
+  "List of regular expressions matching macros in LaTeX classes and packages.")
+
 (defvar LaTeX-auto-regexp-list
   (append
    '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
@@ -1097,6 +1121,7 @@ This is necessary since index entries may contain commands and stuff.")
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
      ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+   LaTeX-auto-class-regexp-list
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list)
@@ -1122,8 +1147,7 @@ This is necessary since index entries may contain commands and stuff.")
 			       LaTeX-auto-bibliography)))
 
   ;; Cleanup document classes and packages
-  (if (null LaTeX-auto-style)
-      ()
+  (unless (null LaTeX-auto-style)
     (while LaTeX-auto-style
       (let* ((entry (car LaTeX-auto-style))
 	     (options (nth 0 entry))
@@ -1134,9 +1158,13 @@ This is necessary since index entries may contain commands and stuff.")
 	(setq LaTeX-auto-style (cdr LaTeX-auto-style))
 
 	;; Get the options.
-	(setq options (TeX-split-string
-		       "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+"
-		       options))
+	;; FIXME: Parse key=value options like "pdftitle={A Perfect
+	;; Day},colorlinks=false" correctly.  When this works, the
+	;; check for "=" can be removed again.
+	(setq options (unless (string-match "=" options)
+			(TeX-split-string
+			 "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+"
+			 options)))
 
 	;; Strip empty options.
 	(if (string-equal (car options) "")
@@ -1151,7 +1179,8 @@ This is necessary since index entries may contain commands and stuff.")
 	(setq TeX-auto-file (append options TeX-auto-file))
 
 	;; Treat documentclass/documentstyle specially.
-	(if (string-equal "package" class)
+	(if (or (string-equal "package" class)
+		(string-equal "Package" class))
 	    (setq TeX-auto-file
 		  (append (TeX-split-string
 			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style)
