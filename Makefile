@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.16 1992-09-16 12:14:13 amanda Exp $
+# $Id: Makefile,v 5.17 1992-09-16 12:21:25 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -151,7 +151,7 @@ dist:
 	   "(provide 'auc-ver)"  > auc-ver.el
 	cvs export -r $(TAG) auctex
 	cp auc-ver.el auctex
-	(cd auctex/doc; make aux-tex.info)
+	(cd auctex/doc; make auc-tex.info)
 	(cd auctex/lacheck; make lacheck.c)
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
