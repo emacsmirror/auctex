@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.161 2004-07-12 00:27:58 angeli Exp $
+@c $Id: auc-tex.texi,v 1.162 2004-07-17 09:31:29 angeli Exp $
 
 @finalout
 @titlepage
@@ -1201,9 +1201,11 @@ of the macro.
 In order to use this feature, you have to activate @code{TeX-fold-mode}
 which will activate the auto-reveal feature and the necessary commands
 to hide and show macros.  You can activate the mode in a certain buffer
-by issueing the command @kbd{M-x TeX-fold-mode RET}.  If you want to use
-it every time you edit a La@TeX{} document, add it to a hook:
+by typing the command @kbd{M-x TeX-fold-mode RET} or using the keyboard
+shortcut @kbd{C-c C-o C-f}.  If you want to use it every time you edit a
+La@TeX{} document, add it to a hook:
 @findex TeX-fold-mode
+@kindex C-c C-o C-f
 
 @lisp
 (add-hook 'LaTeX-mode-hook '(lambda nil
