@@ -1,3 +1,8 @@
+2004-04-24  David Kastrup  <dak@gnu.org>
+
+	* style/natbib.el ("natbib"): Add fontification for regexps.
+	Patch by Thomas Baumann.
+
 2004-04-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (texinfo-mode): Set `font-lock-defaults' as in
