@@ -172,10 +172,14 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 
 (defcustom TeX-bar-LaTeX-button-alist
   '((latex :image (lambda nil (if TeX-PDF-mode "pdftex" "tex"))
-	   :command (TeX-command "LaTeX" 'TeX-master-file -1)
-	   :help (lambda nil (TeX-bar-help-from-command-list "LaTeX")))    
+	   :command (progn
+		      (TeX-save-document (TeX-master-file))
+		      (TeX-command "LaTeX" 'TeX-master-file -1))
+	   :help (lambda nil (TeX-bar-help-from-command-list "LaTeX")))
     (pdflatex :image "pdftex"
-	      :command (TeX-command "PDFLaTeX" 'TeX-master-file -1)
+	      :command (progn
+			 (TeX-save-document (TeX-master-file))
+			 (TeX-command "PDFLaTeX" 'TeX-master-file -1))
 	      :help (lambda nil (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
 		:command TeX-next-error
@@ -183,7 +187,7 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 				   (intern (TeX-master-file)))
 		:visible (plist-get TeX-bar-error-handling-switches
 				    (intern (TeX-master-file))))
-    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi")) 
+    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
 	  :help (lambda nil (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"

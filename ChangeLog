@@ -1,6 +1,10 @@
 2004-10-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex-bar.el (TeX-bar-LaTeX-button-alist): Add `TeX-save-document'.
+
 	* doc/changes.texi: Renamed function `LaTeX-install-toolbar'.
+
+	* tex-site.el.in: Ditto.
 
 2004-10-28  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	

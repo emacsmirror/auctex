@@ -101,7 +101,7 @@ The directory names *must* end with a slash."
 (autoload 'latex-mode "latex" no-doc t)
 
 (add-to-list 'load-path TeX-image-directory)
-(autoload 'latex-install-toolbar "tex-bar")
+(autoload 'LaTeX-install-toolbar "tex-bar")
 
 (provide 'tex-site)
 
