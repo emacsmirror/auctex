@@ -452,6 +452,11 @@ Pure borderless black-on-white will return NIL."
           (mapcar #'preview-gs-color-value fg)
           '("setrgbcolor"))))))
 
+(defcustom preview-use-balloon-help t
+  "*Should we start up balloon help in preview-latex?"
+  :group 'preview-appearance
+  :type 'boolean)
+
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
   (mapc #'make-local-hook
@@ -459,9 +464,10 @@ Pure borderless black-on-white will return NIL."
 	  before-change-functions after-change-functions))
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (unless (and (boundp 'balloon-help-mode)
-	       balloon-help-mode)
-    (balloon-help-minor-mode 1))
+  (and preview-use-balloon-help
+       (not (and (boundp 'balloon-help-mode)
+		 balloon-help-mode))
+       (balloon-help-minor-mode 1))
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
   (add-hook 'after-change-functions #'preview-handle-after-change nil t)
   (easy-menu-add-item nil
