@@ -1,6 +1,6 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.6 1993-07-24 20:57:43 amanda Exp $
+;;; $Id: latex.el,v 1.7 1993-08-17 16:55:21 amanda Exp $
 
 ;;; @@ Hook
 
@@ -153,7 +153,7 @@
      '("hspace" "Length")
      '("mbox" t)
      '("newsavebox" TeX-argument-define-savebox-hook)
-     '("parbox" [ TeX-argument-bt-hook] "Width" t)
+     '("parbox" [ TeX-argument-tb-hook] "Width" t)
      '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
      '("rule" [ "Raise" ] "Width" "Thickness")
      '("sbox" TeX-argument-define-savebox-hook t)

@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.60 1993-08-05 11:35:15 amanda Exp $
+# $Id: Makefile,v 5.61 1993-08-17 16:54:01 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -110,9 +110,8 @@ STYLESRC = style/latex.el   style/slitex.el style/report.el \
 	   style/j-article.el style/j-book.el style/j-report.el \
 	   style/jarticle.el style/jbook.el style/jreport.el
 
-
 LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
-	lacheck/lacheck.man lacheck/lacheck.noflex.c
+	lacheck/lacheck.man lacheck/lacheck.c lacheck/test.tex
 
 DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
 
@@ -197,13 +196,13 @@ LaInstall: LaCheck
 	@echo "**********************************************************"
 	@echo "** Installing LaCheck "
 	@echo "**********************************************************"
-	-(cd lacheck; make install bindir=$(bindir) mandir=$(mandir))
+	-(cd lacheck; $(MAKE) install bindir=$(bindir) mandir=$(mandir))
 
 DocInstall: 
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
 	@echo "**********************************************************"
-	-(cd doc; make install infodir=$(infodir) TEX=$(TEX))
+	-(cd doc; $(MAKE) install infodir=$(infodir) TEX=$(TEX))
 
 LispInstall:
 	@echo "**********************************************************"
@@ -227,22 +226,22 @@ LaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck"
 	@echo "**********************************************************"
-	-(cd lacheck; make bindir=$(bindir) \
+	-(cd lacheck; $(MAKE) bindir=$(bindir) \
 	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
 
 Doc: 
 	@echo "**********************************************************"
 	@echo "** Making AUC TeX documentation"
 	@echo "**********************************************************"
-	-(cd doc; make TEX=$(TEX))
+	-(cd doc; $(MAKE) TEX=$(TEX))
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
-	(cd doc; make clean)
-	(cd lacheck; make clean)
+	(cd doc; $(MAKE) clean)
+	(cd lacheck; $(MAKE) clean)
 
 dist:	
-	-(cd lacheck; make dist)
+	-(cd lacheck; $(MAKE) dist)
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $$TAG"
@@ -258,8 +257,8 @@ dist:
 	cvs checkout -r $(TAG) auctex
 	find auctex -name CVS -print | xargs rm -rf
 	cp auc-ver.el auctex
-	(cd auctex/doc; make auc-tex.info)
-	(cd auctex/lacheck; make lacheck.c; make lacheck.1; cp lacheck.c lacheck.noflex.c)
+	(cd auctex/doc; $(MAKE) auc-info)
+	(cd auctex/lacheck; $(MAKE) lacheck.c lacheck.1 test.old)
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
@@ -276,7 +275,7 @@ ftp:
 	@echo "**********************************************************"
 	@echo "** Making ftp copy of lacheck for whatever release it is"
 	@echo "**********************************************************"
-	-(cd lacheck; make ftp)
+	-(cd lacheck; $(MAKE) ftp)
 	@echo "**********************************************************"
 	@echo "** Making ftp copy of minor maps for $$TAG"
 	@echo "** Making ftp copy of outline minor mode for $$TAG"

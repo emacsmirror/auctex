@@ -1,6 +1,6 @@
 ;;; @ TEX.el - Special code for TeX mode.
 ;;;
-;;; $Id: TEX.el,v 1.2 1993-07-24 20:57:41 amanda Exp $
+;;; $Id: TEX.el,v 1.3 1993-08-17 16:54:58 amanda Exp $
 
 (require 'tex-init)
 (require 'tex-misc)
@@ -11,7 +11,7 @@
  (function
   (lambda ()
     (use-local-map plain-TeX-mode-map)
-    (easy-menu-add TeX-mode-menu plain-TeX-mode-map)
+    (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
     (setq mode-name "TeX")
     (setq major-mode 'plain-TeX-mode)
     (set-syntax-table TeX-mode-syntax-table)

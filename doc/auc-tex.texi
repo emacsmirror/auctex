@@ -1,20 +1,20 @@
 \input texinfo
-@setfilename auc-tex.info
+@setfilename auc-info
 @settitle AUC TeX
 @c footnotestyle separate
 @c paragraphindent 2
 @comment %**end of header 
- 
-@c $Id: auc-tex.texi,v 1.52 1993-08-05 10:01:06 amanda Exp $
+
+@c $Id: auc-tex.texi,v 1.53 1993-08-17 16:54:42 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle June 1993, for AUC @TeX{} Version 7.3
+@subtitle June 1993, for AUC @TeX{} Version 7.4
   
 @author by Kresten Krab Thorup
-@author updated for 7.3 by Per Abrahamsen
+@author updated for 7.4 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -52,7 +52,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 7.3.
+This file documents AUC @TeX{} version 7.4.
 
 The keybindings have changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -558,7 +558,8 @@ inserted or, as the first choice the value of the variable
 @code{LaTeX-default-environment}.
 
 @defopt LaTeX-default-environment
-Default environment to insert when invoking @samp{LaTeX-environment}.
+Default environment to insert when invoking @samp{LaTeX-environment}
+first time.
 @end defopt
 
 If the document is empty, or the cursor is placed at the top of the
@@ -755,6 +756,14 @@ Some examples are listed below.
 (@kbd{C-c C-m}) Prompt (with completion) for the name of a @TeX{} macro,
 and if AUC @TeX{} knows the macro, prompt for each argument.
 @end deffn
+
+As a default selection, AUC @TeX{} will suggest the macro last inserted
+or, as the first choice the value of the variable
+@code{TeX-default-macro}.
+
+@defopt TeX-default-macro
+Default macro to insert when invoking @samp{TeX-insert-macro} first time.
+@end defopt
 
 Completions work because AUC @TeX{} can analyze @TeX{} files, and store
 symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
@@ -1384,7 +1393,7 @@ name.@refill
 If the variable is @code{t}, AUC @TeX{} will assume the file is a master
 file itself.@refill
 
-If the variable is @code{'shared}, AUC @TeX{} will query for the name,
+If the variable is @code{shared}, AUC @TeX{} will query for the name,
 but not change the file.@refill
 
 It is suggested that you use the File Variables (@pxref{File
@@ -2372,6 +2381,29 @@ environment hook to insert the environment, but the function
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to a list after the hook.
 
+For simple environments with arguments, for example defined with
+@samp{\newenvironment}, you can make AUC @TeX{} prompt for the arguments
+by giving the prompt strings in the call to
+@code{LaTeX-add-environments}.  For example, if you have defined a
+@code{loop} environment with the three arguments @var{from}, @var{to},
+and @var{step}, you can add support for them in a style file.
+
+@example
+%% loop.sty
+
+\newenvironment@{loop@}[3]@{...@}@{...@}
+@end example
+
+@lisp
+;; loop.el
+
+(TeX-add-style-hook "loop"
+ (function
+  (lambda ()
+    (LaTeX-add-environments
+     '("loop" "From" "To" "Step")))))
+@end lisp
+
 If an environment is defined multiple times, AUC @TeX{} will chose the
 one with the longest definition.  Thus, if you have an enumerate style
 file, and want it to replace the standard La@TeX{} enumerate hook above,
@@ -2701,16 +2733,72 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
-* Version 7.3::                 Newest news in 7.3
-* Version 7.2::                 Newer news in 7.2
-* Version 7.1::                 New news in 7.1
+* Version 7.4::                 News in 7.4
+* Version 7.3::                 News in 7.3
+* Version 7.2::                 News in 7.2
+* Version 7.1::                 News in 7.1
 * Version 7.0::                 News in 7.0
-* Version 6.1::                 Old news in 6.1
-* Version 6.0::                 Older news in 6.0
+* Version 6.1::                 News in 6.1
+* Version 6.0::                 News in 6.0
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 7.3, Version 7.2, History, History
+@node Version 7.4, Version 7.3, History, History
+@comment  node-name,  next,  previous,  up
+@section News in 7.4
+
+Coordinater: Per Abrahamsen, 1993.
+
+@itemize @bullet
+@item
+Make @samp{plain-TeX-mode-menu} work in Lucid Emacs.  Thanks to Anthony
+Rossini @samp{rossini@@hsph.harvard.edu} for reporting this.
+
+@item
+First cut on a @TeX{}info mode.
+
+@item
+More strict about parsing @samp{\bibitem}'s and Bib@TeX{} entries.
+
+@item
+Made it easier to write style files for environments that takes
+arguments and documented it.  Suggested by Martin
+Wunderli @samp{<wunderli@@inf.ethz.ch>}.
+
+@item
+Parse optional argument to @samp{\newenvironment}.  Suggested by Martin
+Wunderli @samp{<wunderli@@inf.ethz.ch>}.
+
+@item
+Fixed @samp{parbox} macro.  Thanks to Shinji Kobayashi
+@samp{<koba@@flab.fujitsu.co.jp>}.
+
+@item
+Made the parser work better in outline minor mode.  Thanks to Salvador
+Pinto Abreu @samp{<spa@@khosta.fct.unl.pt>}.
+
+@item
+Also save style information with @code{TeX-normal-mode} when buffer not
+modified.
+
+@item
+Use code{$(MAKE)} instead of @samp{make} to invoke @code{make} from the
+@file{Makefile}.  Thanks to John Interrante
+@samp{<interran@@uluru.Stanford.EDU>}. 
+
+@item
+Make last value default for @code{TeX-insert-macro}.  Suggested by Matt
+Fairtlough @samp{<M.Fairtlough@@dcs.sheffield.ac.uk>}.
+
+@item
+Renamed info file to @samp{auc-info} in order to fil DOS file limits.
+Please remember to update your @file{dir} file to reflect this change.
+
+@item
+Delete auto file instead of saving an empty file.
+@end itemize
+
+@node Version 7.3, Version 7.2, Version 7.4, History
 @comment  node-name,  next,  previous,  up
 @section News in 7.3
 
@@ -3685,6 +3773,24 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+Allow @code{TeX-auto-private} and @code{TeX-style-private} to be lists
+to mimic @code{TeX-macro-private}.
+
+@item
+Try to initialize @code{TeX-macro-private} from @code{BIBPATH} and
+@code{TEXPATH}. 
+
+@item
+Allow whitespace more places during parsing, e.g. between macro and the
+first argument, or between individual style options in
+@samp{\documentstyle}. 
+
+@item
+The @samp{Spell} command should apply to all files in a document.  Maybe
+it could try to restrict to files that have been modified since last
+spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@ucsd.edu>}. 
+
+@item
 Add completion of macro arguments to @code{TeX-complete-symbol}.
 
 @item
@@ -3692,17 +3798,12 @@ Make @key{.} check for abbreviations and sentences ending with capital
 letters.  Make @key{,} and @key{.} remove italic correction.  
 
 @item
-Make LaCheck check for itallic correction before @samp{.} or @samp{,}.
-
-@item
 Use Emacs 19 minubuffer history to choose between previewers, and other
 stuff.  Suggested by John Interrante
 @samp{<interran@@uluru.Stanford.EDU>}. 
 
 @item
-It is often too slow to parse the file each time it is saved, especially
-with Emacs 19.  Check if @code{TeX-auto-generate} is useful for doing
-more occasionally, like updating the @file{TAGS} file.
+Make AUC @TeX{} fast and stupid by default.
 
 @item
 Control @TeX{} compilation window.
@@ -3831,7 +3932,7 @@ labels like @samp{fig:} versus @samp{tab:}.
 Check out if lightening completion from Ultra @TeX{} is anything for us.
 
 @item
-TeXinfo mode.
+Finish the TeXinfo mode.
 
 @item
 BibTeX mode.
@@ -3921,6 +4022,5 @@ All in all I am pleased with your package.  Thanks a lot.
 
 @comment Local Variables:
 @comment mode: texinfo
-@comment mode: outline-minor
 @comment outline-regexp: "@node "
 @comment End:

@@ -41,23 +41,13 @@ Insert
 
 in your .emacs file.
 
-* Applying style hooks...  is sloooow.
-
-AUC TeX is parsing your file each time you load it.
-
-You can create a subdirectory named `auto' in the directory where you
-have your tex files, AUC TeX will then only have to parse the file the
-first time you load the file.  It also have the benefit that you get
-access to macros, labels, etc. in all the files in a multifile
-document from any of the files.
-
-* Applying style hooks... is still too slow.
+* Applying style hooks... is too slow.
 
 Set the variable TeX-auto-global to nil.  You will then not get
 macro expansion for all macros, but AUC TeX will still expand the
 standard LaTeX macros.
 
-* Now saving the buffer is too slow.
+* Saving the buffer is too slow.
 
 AUC TeX parses your buffer and save the information each time you save
 the buffer.  See the section about parsing TeX in the manual for a
@@ -78,18 +68,17 @@ have changed.
         (setq TeX-check-path
               (append '("./") TeX-macro-private TeX-macro-global))
 
-* Only the master file knows about styles, macros, etc.
-
-Create a `auto' subdirectory, and save the master file.  This will put
-the necessary information in the `auto' subdirectory, and the other
-files in the document will read this information when they apply the
-style hooks.
-
 * After you write the file under a new name, AUC TeX still use the old!
 
 AUC @TeX{} cache a lot of information for efficiency, press C-c C-n to
 flush the cache after changing the name of a file.  Press C-u C-c C-n
 to flush everything.
+
+* When I save `foo.bib' AUC TeX forgets the information in `foo.tex'.
+
+For various reasons, AUC TeX ignores the extension when it store
+information about a file, so you should use unique base names for your
+files.  E.g. rename `foo.bib' to `foob.bib'.
 
 
 % Local Variables: 

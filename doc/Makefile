@@ -25,7 +25,7 @@ auc-tex.dvi: auc-tex.texi
 	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
-auc-tex.info: auc-tex.texi
+auc-info: auc-tex.texi
 	-makeinfo auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install
@@ -33,11 +33,11 @@ auc-tex.info: auc-tex.texi
 	@echo "**********************************************************"
 
 install: auc-tex.info
-	cp auc-tex.info* $(infodir)
+	cp auc-info* $(infodir)
 	@echo "**********************************************************"
-	@echo "** auc-tex.info may now be installed"
+	@echo "** auc-info may now be installed"
 	@echo "** Edit \`$(infodir)/dir'"
-	@echo "** to reflect the file \`auc-tex.info'"
+	@echo "** to reflect the file \`auc-info'"
 	@echo "**********************************************************"
 
 clean: allways
