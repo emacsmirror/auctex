@@ -218,9 +218,10 @@ other hooks, such as major mode hooks, can do the job."
 (defmacro preview-create-icon (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
   `(let ((glyph
-          (make-glyph
-           (vector ,type
-                   :file ,file))))
+	  (make-glyph
+	   (cons (selected-device)
+		 (vector ,type
+			 :file ,file)) 'buffer)))
      (set-glyph-baseline glyph ,ascent)
      glyph))
 
@@ -322,7 +323,7 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
 +are functions to call on preview's clicks."
   `(let (,@(if glyph `((res (if (stringp ,glyph)
                                 (copy-sequence ,glyph)
-                              (propertize "x" 'end-glyph ,glyph 'invisible t)))))
+                              (propertize "x" 'end-glyph ,glyph)))))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
