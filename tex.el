@@ -63,18 +63,6 @@
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
 
-(defcustom TeX-lisp-directory
-  (or (and (fboundp 'locate-data-directory)
-	   (locate-data-directory "auctex"))
-      (and (fboundp 'locate-library)
-	   (let ((f (locate-library "tex")))
-	     (and f (file-name-directory f))))
-      (file-name-as-directory
-       (expand-file-name "auctex" data-directory)))
-  "The directory where the AUCTeX Lisp files are located."
-  :group 'TeX-file
-  :type 'directory)
-
 ;; Change this to point to the place where the TeX macros are stored
 ;; at your site.
 (defcustom TeX-macro-global '("/usr/local/lib/texmf/tex/")
@@ -535,7 +523,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.337 $"))
+	(rev "$Revision: 5.338 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -550,7 +538,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-19 12:06:21 $"))
+    (let ((date "$Date: 2004-03-19 14:36:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
