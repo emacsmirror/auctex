@@ -124,53 +124,17 @@ implementation fixed (only very recent versions of Dvips have).
 
 Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
 
-@item GNU Emacs under Windows operating systems
+@item Emacsen on Windows operating systems
 
 As of GNU Emacs 21.2, no image support is available in Emacs under
 Windows.  Without images, @previewlatex{} is useless.  The current
 @acronym{CVS} version of Emacs available from
-@uref{http://savannah.gnu.org/projects/emacs} now is supposed to
-support images, so it is likely that @w{Emacs 21.4} will have a
-reasonable chance of working once it is out. However, as of this
-writing, no support for the @code{png} image format seems to be
-available in GNU Emacs for Windows. In this case, you can try using
-the @code{pnm} image format, but we recommend that you get an Emacs
-version that supports @code{png} images (and if none is available we
-recommend that you complain to your Emacs deliverer).  If it is
-important to you and you have the necessary technical skills, support
-the Emacs developer crew by checking out the current version and
-trying to get @previewlatex{} to run on it.  Reasonable patches
-necessary to make @previewlatex{} work under Windows will gladly be
-accepted.  Another option for Windows users might be to try XEmacs
-(see below).
-
-@item XEmacs
-
-XEmacs support should now work.
-
-There is are two current problems known with the XEmacs core.  One leads
-to seriously mispositioned baselines and previews hanging far above
-other text on the same line.  An alpha-quality patch against
-XEmacs-21.4.6 to fix this is available from
-@uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00129.html}.
-This patch in included in XEmacs-21.4.9, but won't be present in any
-earlier version, with one exception: the MS Windows port had
-incorporated these fixes a few version numbers earlier.
-
-The other core bug causes a huge delay when XEmacs's idea of the state of
-processes (like ghostscript) is wrong, and can lead to nasty spurious
-error messages.  It should be fixed in version 21.4.8.
-
-Previews will only remain from one session to the next if you have
-version 1.81 or above of the @file{edit-utils} package, first released
-in the 2002-03-12 sumo tarball.
-
-By now we have had success reports of both Cygwin XEmacs and the native
-Windows ports (one Cygwin user reported that he had to disable
-@code{balloon-help-mode} in @code{preview-mode-setup} in the file
-@file{prv-xemacs.el}, please report back your experiences).  If you are
-lacking the usual infrastructure for the installation process of
-@previewlatex{}, things will become more complicated.
+@uref{http://savannah.gnu.org/projects/emacs} now supports images
+including the @acronym{PNG} format, so @w{Emacs 21.4} should work out of
+the box once it is released.  Another option for Windows users might be
+to try XEmacs.  @previewlatex{} has successfully been installed with
+recent @acronym{CVS} versions of @w{GNU Emacs}, and both Cygwin XEmacs
+and the native Windows XEmacs.
 
 See
 @ifset rawfile
@@ -179,8 +143,23 @@ the file @file{INSTALL.windows}
 @ifclear rawfile
 @ref{Installation under MS Windows}
 @end ifclear
-for an installation report for this platform.
+for detailed installation instructions for this platform.
 @end itemize
+
+@item XEmacs
+
+There is are two larger problems known with older XEmacs releases.  One
+leads to seriously mispositioned baselines and previews hanging far
+above other text on the same line.  This should be fixed as of
+XEmacs-21.4.9.
+
+The other core bug causes a huge delay when XEmacs's idea of the state of
+processes (like ghostscript) is wrong, and can lead to nasty spurious
+error messages.  It should be fixed in version 21.4.8.
+
+Previews will only remain from one session to the next if you have
+version 1.81 or above of the @file{edit-utils} package, first released
+in the 2002-03-12 sumo tarball.
 
 @node AUC TeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
 @section @AUCTeX{} prior to 11.0
