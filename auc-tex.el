@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1991-09-04 20:33:46 $|$Revision: 4.9 $|iesd.auc.dk:/pub/emacs-lisp
+;; |$Date: 1991-12-07 14:08:59 $|$Revision: 4.10 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 4.9 $  
+;; RCS status      : $Revision: 4.10 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Sep  2 23:07:38 1991
-;; Update Count    : 388
+;; Last Modified On: Sat Dec  7 15:08:22 1991
+;; Update Count    : 434
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -182,7 +182,7 @@ the extention `.tex'")
   "Keymap used in LaTeX-mode.")
 
 (defvar TeX-compilation-map nil
-  "Keymap for the TeX shell.  A shell-mode-map with a few additions")
+  "Keymap for the TeX compile buffer.")
 
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
@@ -207,6 +207,7 @@ as the definition of this this function is placed in an external module."))
   ;; environment commands
   (autoload 'LaTeX-environment "latex-environment" no-doc t)
   (autoload 'LaTeX-insert-item "latex-environment" no-doc t)
+  (autoload 'LaTeX-close-block "latex-environment" no-doc t)
 
   ;; invoking tex
   (autoload 'TeX-home-buffer "tex-buffer" no-doc t)
@@ -231,7 +232,10 @@ as the definition of this this function is placed in an external module."))
   (autoload 'TeX-un-comment-region "tex-misc" no-doc t)
   (autoload 'TeX-validate-buffer "tex-misc" no-doc t)
   (autoload 'TeX-terminate-paragraph "tex-misc" no-doc t)
-  (autoload 'TeX-complete-symbol "tex-complete" no-doc t))
+  (if TeX-use-completion
+      (autoload 'TeX-complete-symbol "tex-complete" no-doc t)
+    )
+  )
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keymaps
@@ -265,22 +269,24 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c\C-e" 'TeX-emphasize)
   (define-key TeX-mode-map "\C-c\C-t" 'TeX-typewriter)
   (define-key TeX-mode-map "\C-c\C-y" 'TeX-small-caps)
+
   (define-key TeX-mode-map "\C-c\C-m" 'TeX-insert-macro)
   (define-key TeX-mode-map "\C-c\C-d" 'TeX-region)
   (define-key TeX-mode-map "\C-c\C-a" 'TeX-buffer)
   (define-key TeX-mode-map "\C-c\C-p" 'TeX-preview)
   (define-key TeX-mode-map "\C-c\C-n" 'TeX-next-error)
+
   (define-key TeX-mode-map "\C-c\C-h" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
-  (define-key TeX-mode-map "\e\t"    'TeX-complete-symbol))
+  (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
 
 (if LaTeX-mode-map
     ()
   (setq LaTeX-mode-map (copy-keymap TeX-mode-map))
   (define-key LaTeX-mode-map "\n"       'reindent-then-newline-and-indent)
   (define-key LaTeX-mode-map "\t"       'LaTeX-indent-line)
-  (define-key LaTeX-mode-map "\e\r"    'LaTeX-insert-item)
+  (define-key LaTeX-mode-map "\M-\r"     'LaTeX-insert-item)
   (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
   (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
@@ -290,6 +296,7 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\M-g"     'LaTeX-format-region)
   (define-key LaTeX-mode-map "\M-s"     'LaTeX-format-section)
   (define-key LaTeX-mode-map "\M-\C-e"  'LaTeX-mark-environment)
+  (define-key LaTeX-mode-map "\M-\C-f"  'LaTeX-close-block)
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
@@ -452,14 +459,26 @@ of LaTeX-mode-hook."
   (setq indent-line-function 'LaTeX-indent-line)
   (use-local-map LaTeX-mode-map)
   (setq mode-name "LaTeX")
-  (setq major-mode 'LaTeX-mode)
+  (setq major-mode 'LaTeX-mode)  
   (setq outline-level-function 'LaTeX-outline-level)
+
   (make-variable-buffer-local 'outline-regexp)
   (setq outline-regexp LaTeX-outline-regexp)
+
   (make-local-variable 'TeX-command)
   (setq TeX-command "latex")
+
   (make-local-variable 'TeX-format-package)
   (setq TeX-format-package LaTeX-format-package)
+
+  (make-local-variable 'LaTeX-style)
+  (setq LaTeX-style '(""))
+  (LaTeX-document-style)
+
+  (make-local-variable 'LaTeX-options)
+  (setq LaTeX-options '(""))
+  (LaTeX-style-options)
+
   (setq TeX-bibtex-command "bibtex")
   (setq TeX-index-command "makeindex")
   (setq LaTeX-paragraph-start-command
@@ -475,7 +494,8 @@ of LaTeX-mode-hook."
   (setq paragraph-start
 	(concat
 	 "\\("
-	 "^.*[^\\\\]%.*$\\|"
+	 "^.*[^" (regexp-quote TeX-esc) "]%.*$\\|"
+	 "^%.*$\\|"
 	 "^[ \t]*$"
 	 "\\|"
 	 "^[ \t]*"
@@ -487,6 +507,7 @@ of LaTeX-mode-hook."
 	(concat
 	 "\\("
 	 "^.*[^" (regexp-quote TeX-esc) "]%.*$\\|"
+	 "^%.*$\\|"
 	 (regexp-quote TeX-esc)
 	 "par\\|"
 	 "^[ \t]*$\\|"
@@ -657,7 +678,8 @@ Prefix arg means justify as well."
 (defun LaTeX-format-region (from to &optional justify what)
  "Fill and indent each of the paragraphs in the region as LaTeX text.
 Prefix arg (non-nil third arg, if called from program)
-means justify as well."
+means justify as well. Fourth arg WHAT is a word to be displayed when
+formatting."
   (interactive "r\nP")
   (save-restriction
     (save-excursion
@@ -675,69 +697,69 @@ means justify as well."
 	  (re-search-forward (concat "\\(" LaTeX-paragraph-start-command "\\|^ +$\\|\\'\\)" ) (point-max) t)))))
   (message "Finished"))
 
-(defun LaTeX-format-region-old (from to &optional justify what)
- "Fill and indent each of the paragraphs in the region as LaTeX text.
-Prefix arg (non-nil third arg, if called from program)
-means justify as well."
-  (interactive "r\nP")
-  (save-excursion
-    (LaTeX-indent-line)
-    (let ((the-end (set-marker (make-marker) to))
-	  (length (- to from)))
-      (save-restriction
-	(narrow-to-region from to) 
-	(while (and (<= (point) (marker-position the-end))
-		    (not (eobp)))
-	  (narrow-to-region (point)
-			    (progn
-			      (re-search-forward
-			       "\\(\\\\begin *{verbatim}\\|[^\\\\]%\\|\\'\\)")
-			      (point)))
-	  (let  ((is-percent (string-match "%" (buffer-substring
-						(match-beginning 0)
-						(match-end 0)))))
-	    (goto-char (point-min))
-	    (replace-regexp "\\\\\\(begin\\|end\\|left\\|right\\|item\\)"
-			    " \\&")
-	    (goto-char (point-min))
-	    (replace-regexp "^[ \t]+\\\\" "\\\\")
-	    (goto-char (point-min))
-	    (replace-regexp "[ \t]+\\\\[^\\\\]" "\n\\&")
-	    (goto-char (point-max))
-	    (widen)
-	    (if is-percent
-		(end-of-line)
-	      (goto-char (progn
-			   (re-search-forward
-			    "\\(\\\\end *{verbatim}\\|\\'\\)")
-			   (point)))))))
-      (while (and (<= (point) (marker-position the-end))
-		  (not (eobp)))
-	(re-search-forward "\\(^[ \t]*\\|\\'\\)")
-	(if (looking-at ".*\\\\begin *{verbatim}")
-	    (re-search-forward "\\\\end *{verbatim}"))
-	(LaTeX-indent-line)
-	(message "Formatting%s (take one)... %d%%"
-		 (if (not what)
-		     ""
-		   what)
-		 (/ (* 100 (- (point) from)) length)))
-      (goto-char from)
-      (while (and (<= (point) (marker-position the-end))
-		  (not (eobp)))
-	(LaTeX-format-paragraph justify)
-	(forward-paragraph 1)
-	(if (looking-at "^[ \t]*$")
-	    (forward-line))
-	(beginning-of-line)
-	(if (looking-at ".*\\\\begin *{verbatim}")
-	    (re-search-forward "\\\\end *{verbatim}"))
-	(message "Formatting%s (take two)... %d%%"
-		 (if (not what)
-		     ""
-		   what)
-		 (/ (* 100 (- (point) from)) length)))))
-  (message ""))
+;(defun LaTeX-format-region-old (from to &optional justify what)
+; "Fill and indent each of the paragraphs in the region as LaTeX text.
+;Prefix arg (non-nil third arg, if called from program)
+;means justify as well."
+;  (interactive "r\nP")
+;  (save-excursion
+;    (LaTeX-indent-line)
+;    (let ((the-end (set-marker (make-marker) to))
+;	  (length (- to from)))
+;      (save-restriction
+;	(narrow-to-region from to) 
+;	(while (and (<= (point) (marker-position the-end))
+;		    (not (eobp)))
+;	  (narrow-to-region (point)
+;			    (progn
+;			      (re-search-forward
+;			       "\\(\\\\begin *{verbatim}\\|[^\\\\]%\\|\\'\\)")
+;			      (point)))
+;	  (let  ((is-percent (string-match "%" (buffer-substring
+;						(match-beginning 0)
+;						(match-end 0)))))
+;	    (goto-char (point-min))
+;	    (replace-regexp "\\\\\\(begin\\|end\\|left\\|right\\|item\\)"
+;			    " \\&")
+;	    (goto-char (point-min))
+;	    (replace-regexp "^[ \t]+\\\\" "\\\\")
+;	    (goto-char (point-min))
+;	    (replace-regexp "[ \t]+\\\\[^\\\\]" "\n\\&")
+;	    (goto-char (point-max))
+;	    (widen)
+;	    (if is-percent
+;		(end-of-line)
+;	      (goto-char (progn
+;			   (re-search-forward
+;			    "\\(\\\\end *{verbatim}\\|\\'\\)")
+;			   (point)))))))
+;      (while (and (<= (point) (marker-position the-end))
+;		  (not (eobp)))
+;	(re-search-forward "\\(^[ \t]*\\|\\'\\)")
+;	(if (looking-at ".*\\\\begin *{verbatim}")
+;	    (re-search-forward "\\\\end *{verbatim}"))
+;	(LaTeX-indent-line)
+;	(message "Formatting%s (take one)... %d%%"
+;		 (if (not what)
+;		     ""
+;		   what)
+;		 (/ (* 100 (- (point) from)) length)))
+;      (goto-char from)
+;      (while (and (<= (point) (marker-position the-end))
+;		  (not (eobp)))
+;	(LaTeX-format-paragraph justify)
+;	(forward-paragraph 1)
+;	(if (looking-at "^[ \t]*$")
+;	    (forward-line))
+;	(beginning-of-line)
+;	(if (looking-at ".*\\\\begin *{verbatim}")
+;	    (re-search-forward "\\\\end *{verbatim}"))
+;	(message "Formatting%s (take two)... %d%%"
+;		 (if (not what)
+;		     ""
+;		   what)
+;		 (/ (* 100 (- (point) from)) length)))))
+;  (message ""))
 
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
@@ -953,4 +975,77 @@ With prefix argument, always insert \" characters."
       (t "''")))))
 
 
+
+(defun LaTeX-document-style ()
+  "Return the name of the used documentstyle in this LaTeX file."
+  (interactive)
+  (if (not (equal LaTeX-style '("")));Have we found it before?
+      LaTeX-style
+    (save-excursion
+      (goto-char (point-min))
+      (if (and (re-search-forward 
+		(concat "^[ \t]*"
+			(regexp-quote TeX-esc) "documentstyle")
+				  (+ (point) 2048) t)
+	       (search-forward TeX-grop (+ (point) 512) t)) ;May be wrong!
+	  (let ((beg (point)))
+	    (skip-chars-forward (concat "^" TeX-grcl))	
+	    (setq LaTeX-style (buffer-substring beg (point))))))))
+
+
+(defun LaTeX-style-options ()
+  "Return the name of the used style options in this LaTeX file."
+  (interactive)
+  (if (not (equal LaTeX-options '("")));Have we found it before?
+      LaTeX-options
+    (save-excursion
+      (goto-char (point-min))
+      (if (and (re-search-forward 
+		(concat "^[ \t]*"
+			(regexp-quote TeX-esc) "documentstyle")
+				  (+ (point) 2048) t)
+	       (search-forward LaTeX-optop (+ (point) 512) t)) ;May be wrong!
+	  (let ((beg (point)))
+	    (skip-chars-forward (concat "^" LaTeX-optcl))
+	    (setq LaTeX-options (buffer-substring beg (point))))))))
+
+
+(defun split-string (char string)
+  "Returns a list of strings. given REGEXP the STRING is split into 
+sections which in string was seperated by regexp 
+
+This function is used to seperate the arguments of
+
+\\documentstyle\[style1,style2,style3\]{style}, and to seperate the 
+arguments for TeX-print.  This allows us to use call-process directly without writing \"-c exec ...\", which some shells won't eat
+
+Examples:
+
+      (split-string \"\:\" \"abc:def:ghi\")
+          -> (\"abc\" \"def\" \"ghi\")
+
+      (split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
+
+          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
+
+If CHAR is nil, or \"\", an error will occur."
+
+  (let ((regexp char)
+	(start 0)
+	(result '()))
+    (while (string-match regexp string start)
+      (let ((match (string-match regexp string start)))
+	(setq result (cons (substring string start match) result))
+	(setq start (+ 1 match))))
+    (setq result (cons (substring string start nil) result))
+    (nreverse result)))
+
+(defvar TeX-last-fmt TeX-format-package
+  "last used format package")
+
+(defvar LaTeX-last-opt '("")
+  "last used LaTeX style options")
+
+(defvar LaTeX-last-sty '("")
+  "last used LaTeX-style")
 
