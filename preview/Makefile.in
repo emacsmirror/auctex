@@ -23,7 +23,7 @@ AUCTEXDIR = @AUCTEXDIR@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
-all: preview.sty prauctex.def preview.drv \
+all: preview.sty prauctex.def prauctex.cfg preview.drv \
    preview-mk.ins preview.dvi $(LISP_OBJS) install-hint
 	(cd doc ; $(MAKE) all)
 
@@ -55,10 +55,11 @@ install-el: $(LISP_OBJS)
 	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
 	done
 
-install-texmf: preview.sty prauctex.def 
+install-texmf: preview.sty prauctex.def prauctex.cfg preview.dvi
 	-mkdir -p $(previewtexmfdir)
 	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
+	$(INSTALL_DATA) prauctex.cfg $(previewtexmfdir)
 	-mkdir -p $(previewdocdir)
 	$(INSTALL_DATA) preview.dvi $(previewdocdir)
 	-$(TEXHASH) $(texmfdir)
@@ -66,7 +67,7 @@ install-texmf: preview.sty prauctex.def
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'
 
-preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
+preview.sty prauctex.def prauctex.cfg preview.drv: preview.dtx preview-mk.ins
 	$(TEX) '\nonstopmode \input preview-mk.ins'
 
 preview.dvi: preview.drv preview.dtx
@@ -81,7 +82,7 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.drv
 	rm -f docstrip.log preview.ins preview.log preview.drv preview.sty \
-		prauctex.def preview.aux preview.dvi circ.log \
+		prauctex.def prauctex.cfg preview.aux preview.dvi circ.log \
 		circ.dvi circ.aux texput.log testdocstrip.tex \
 		testdocstrip.log bootstrap.log preview-mk.ins preview-mk.log
 	(cd doc ; $(MAKE) clean)
