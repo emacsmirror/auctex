@@ -1,3 +1,8 @@
+2003-02-14  Patrick Gundlach  <patrick@gundla.ch>
+
+	* tex.el, latex.el : moved TeX-arg-literal and TeX-near-bopb from
+	latex.el to tex.el. More will follow.
+
 2003-02-13  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (clean): Remove .elc files.
