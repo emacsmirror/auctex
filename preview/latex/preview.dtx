@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1052}
+%\CheckSum{1104}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.68 $
+%  \rcskey \version CVS-$Revision: 1.69 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-11-05 16:28:00 $
+%\rcskey\next $Date: 2002-11-22 00:24:28 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -235,6 +235,15 @@
 %functionality (at the time of writing, just implemented for math
 %insets, in the CVS version of LyX that will eventually be released as
 %1.3.0).
+%\item[|counters|] This writes out diagnostics at the start and the end
+%of previews.  Only the counters changed since the last output get
+%written, and if no counters changed, nothing get written at all.  The
+%list consists of counter name and value, both enclosed in |{}|
+%braces, followed by a space.  The last such pair is followed by a
+%colon (|:|) if it is at the start of the preview snippet, and by a
+%period (|.|) if it is at the end.  The order of different diagnostics
+%like this being issued depends on the order of the specification of
+%the options when calling the package.
 %\end{description}
 %The following options are just for debugging purposes of the package
 %and similar to the corresponding \TeX\ commands they allude to:
@@ -343,10 +352,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.68 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.69 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-11-05 16:28:00 $
+\reserved@a\next $Date: 2002-11-22 00:24:28 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1089,6 +1098,27 @@
 %<lyx>  \number\ht\pr@box\space \number\dp\pr@box \space\number\wd\pr@box}}
 %    \end{macrocode}
 %
+%\subsection{The \texttt{counters} option}
+%This outputs a checkpoint.  We do this by saving all counter
+%registers in backup macros starting with |\pr@c@| in their name.  A
+%checkpoint first writes out all changed counters (previously
+%unchecked counters are not written out unless different from zero),
+%then saves all involved counter values.  LaTeX tracks its counters
+%in the global variable \cmd{\cl@ckpt}.
+%    \begin{macrocode}
+%<counters>\ifPreview\else\expandafter\endinput\fi
+%<counters>\def\pr@eltprint#1{\expandafter\@gobble\ifnum\value{#1}=0%
+%<counters>  \csname pr@c@#1\endcsname\else\relax
+%<counters>  \space{#1}{\arabic{#1}}\fi}
+%<counters>\def\pr@eltdef#1{\expandafter\xdef
+%<counters>  \csname pr@c@#1\endcsname{\arabic{#1}}}
+%<counters>\def\pr@ckpt#1{{\let\@elt\pr@eltprint\edef\next{\cl@@ckpt}%
+%<counters>  \ifx\next\@empty\else\typeout{Preview: Counters\next#1}%
+%<counters>  \let\@elt\pr@eltdef\cl@@ckpt\fi}}
+%<counters>\g@addto@macro\pr@ship@start{\pr@ckpt:}
+%<counters>\g@addto@macro\pr@ship@end{\pr@ckpt.}
+%    \end{macrocode}
+%
 %\subsection{Debugging options}
 %Those are for debugging the operation of |preview|, and thus are
 %mostly of interest for people that want to use |preview| for their
@@ -1377,6 +1407,7 @@
 %<installer>    \file{prtracingall.def}{\from{preview.dtx}{tracingall}}
 %<installer>    \file{prtightpage.def}{\from{preview.dtx}{tightpage}}
 %<installer>    \file{prlyx.def}{\from{preview.dtx}{lyx}}
+%<installer>    \file{prcounters.def}{\from{preview.dtx}{counters}}
 %<installer> }
 %<installer> \endbatchfile
 %    \end{macrocode}
