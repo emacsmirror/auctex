@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.183 2002-12-16 17:24:03 dakas Exp $
+;; $Id: preview.el,v 1.184 2002-12-29 22:13:09 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1272,6 +1272,13 @@ the given value of TIMESTAMP."
       (with-current-buffer buffer (preview-clearout))
     (preview-clearout)))
 
+(defun preview-clearout-section ()
+  "Clearout previews from LaTeX section."
+  (interactive)
+  (save-excursion
+    (LaTeX-mark-section)
+    (preview-clearout (region-beginning) (region-end))))
+
 (defun preview-clearout-at-point ()
   "Clearout any preview at point."
   (interactive)
@@ -1746,6 +1753,7 @@ See description of `TeX-command-list' for details."
     (define-key map "\C-s" #'preview-section)
     (define-key map "\C-c\C-p" #'preview-clearout-at-point)
     (define-key map "\C-c\C-r" #'preview-clearout)
+    (define-key map "\C-c\C-s" #'preview-clearout-section)
     (define-key map "\C-c\C-b" #'preview-clearout-buffer)
     (define-key map "\C-c\C-d" #'preview-clearout-document)
     map))
@@ -1763,22 +1771,29 @@ to add the preview functionality."
   (easy-menu-define preview-menu LaTeX-mode-map
     "This is the menu for preview-latex."
     '("Preview"
-      ["On/off at point" preview-at-point]
-      ["Environment" preview-environment]
-      ["Section" preview-section]
-      ["Region" preview-region (preview-mark-active)]
-      ["Buffer" preview-buffer]
-      ["Document" preview-document]
-      ["Clearout at point" preview-clearout-at-point]
-      ["Clearout region" preview-clearout (preview-mark-active)]
-      ["Clearout buffer" preview-clearout-buffer]
-      ["Clearout document" preview-clearout-document]
-      ["Cache preamble" preview-cache-preamble]
-      ["Cache preamble off" preview-cache-preamble-off]
+      "Generate previews"
+      ["(or toggle) at point" preview-at-point]
+      ["for environment" preview-environment]
+      ["for section" preview-section]
+      ["for region" preview-region (preview-mark-active)]
+      ["for buffer" preview-buffer]
+      ["for document" preview-document]
+      "---"
+      "Remove previews"
+      ["at point" preview-clearout-at-point]
+      ["from section" preview-clearout-section]
+      ["from region" preview-clearout (preview-mark-active)]
+      ["from buffer" preview-clearout-buffer]
+      ["from document" preview-clearout-document]
+      "---"
+      "Turn preamble cache"
+      ["on" preview-cache-preamble]
+      ["off" preview-cache-preamble-off]
+      "---"
       ("Customize"
        ["Browse options"
 	(customize-group 'preview)]
-       ["Generate custom menu"
+       ["Generate custom menu here"
 	(easy-menu-add-item
 	 nil '("Preview")
 	 (customize-menu-create 'preview))])
@@ -2461,7 +2476,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.183 $"))
+	(rev "$Revision: 1.184 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2472,7 +2487,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-16 17:24:03 $"))
+    (let ((date "$Date: 2002-12-29 22:13:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
