@@ -1,3 +1,9 @@
+2004-08-12  David Kastrup  <dak@gnu.org>
+
+	* tex-jp.el (japanese-TeX-command-list): Fixed this to new style.
+	(LaTeX-command-style): Same here.  Hey, this should even make
+	preview-latex work mostly with Japanese files and PDFTeX.
+
 2004-08-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-view-extension): Remove.
