@@ -300,13 +300,13 @@ similar mechanism internal to @previewlatex{}, enable the
 
 @item Open previews automatically
 
-If you want the previews to open automatically when the cursor enters
-them, set @code{Preview Auto Reveal} to @code{On}, or alternatively
-enable @code{reveal-mode}. The preview will close again when the cursor
-leaves the preview unless you change it, in which case you will have to
-regenerate the preview (via e.g., @kbd{C-c C-p C-p}).  There also exist
-other settings for this variable; @code{customize} offers sensible
-defaults for trying them out.
+The current default is to open previews automatically when you enter
+them with cursor left/right motions.  Auto-opened previews will close
+again once the cursor leaves them again (this is also done when doing
+incremental search, or query-replace operations), unless you changed
+anything in it.  In that case, you will have to regenerate the preview
+(via e.g., @kbd{C-c C-p C-p}).  Other options for @code{Preview Auto
+Reveal} are available via @code{customize}.
 
 @item Preview your favourite @LaTeX{} constructs
 
@@ -326,7 +326,7 @@ press the @key{Show} button and the last @key{INS} button, then add
 @end example
 @noindent
 in the space that just opened.  Note that since @code{center} is a
-generic formatting contruct of @LaTeX{}, a general configuration like
+generic formatting construct of @LaTeX{}, a general configuration like
 that is not quite prudent.  You better to do this on a per-document
 base so that it is easy to disable this behavior when you find this
 particular entry gives you trouble.
@@ -335,12 +335,19 @@ One possibility is to save such settings in the corresponding file-local
 variable instead of your global configuration (@pxref{File
 Variables,,Local Variables in Files,emacs,GNU Emacs Manual}).  A perhaps
 more convenient place for such options would be in a configuration file
-@file{prdefault.cfg} in the same directory with your project
-(@pxref{Package options}).  In case that your distribution already
-takes this file for a different purpose, you can always add an option
-@option{myownsettings} to the options in @code{Preview Default Options
-List}, then place your own customization in a file
-@file{prmyownsettings.def}.
+in the same directory with your project (@pxref{Package options}).
+
+The usual file for @previewlatex{} preconfiguration is
+@file{prauctex.cfg}.  If you also want to keep the systemwide defaults,
+you should add a line
+
+@example
+\InputIfFileExists@{preview/prauctex.cfg@}@{@}@{@}
+@end example
+@noindent
+to your own version of @file{prauctex.cfg} (this is assuming that
+global files relating to the @code{preview} package are installed in a
+subdirectory @file{preview}, the default behavior).
 
 @item Don't preview inline math
 @cindex Inline math
