@@ -1,5 +1,9 @@
 2005-01-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-set-syntactic-keywords): Do not call
+	`regexp-opt' on empty lists.  Prevents `regexp-opt-group' from
+	entering a loop on installations with an outdated regexp-opt.el.
+
 	* tex-buf.el (TeX-command-region): Pass name of region file
 	without directory to `TeX-command-query' because a test in the
 	latter expects it like that.
