@@ -72,10 +72,10 @@ LC_CTYPE=$MY_LC_CTYPE
 export LANG
 export LC_CTYPE
 
-if latex '\nonstopmode\message{ü!}' 2>&1 | tee latex.out | grep -q 'fc!$'
+if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep -q 'fc!$'
 then
    AC_MSG_ERROR([
-Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])
+   LaTeX is not installed 8-bit clean.  Check the PROBLEMS file for details.])
 else
    AC_MSG_RESULT(yes)
 fi
