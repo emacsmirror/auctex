@@ -522,7 +522,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.346 $"))
+	(rev "$Revision: 5.347 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -537,7 +537,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-15 11:11:44 $"))
+    (let ((date "$Date: 2004-04-16 07:36:38 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1438,7 +1438,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
     ("AMSTEX" ams-tex-mode
      "\\\\document\\b")
     ("CONTEXT" context-mode
-     "\\\\starttext")
+     "\\(\\\\\\(starttext\\|starttekst\\)\\|%.*?interface=\\)")
     ("LATEX" latex-mode
      "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
