@@ -1,10 +1,10 @@
-;;; ngerman.el - Setup AUC TeX for editing German text.
-
-;; $Id: ngerman.el,v 1.3 2004-08-22 16:45:20 dak Exp $
+;;; ngerman.el --- Setup AUCTeX for editing German text.
 
 ;;; Commentary:
 ;;
-;; `ngerman.sty' use `"' to give next character an umlaut.
+;; Cater for some specialities of `(n)german.sty', e.g. special quote
+;; and hyphen strings or that `"' makes the following letter an
+;; umlaut.
 
 ;;; Code:
 
@@ -14,25 +14,29 @@
 
 (modify-syntax-entry ?\"  "w"  LaTeX-german-mode-syntax-table)
 
-(defvar LaTeX-german-quote-after-quote t
-  "Initial value of `TeX-quote-after-quote' for `german.el'")
-(defvar LaTeX-german-open-quote "\"`"
-  "Initial value of `TeX-open-quote' for `german.el'")
-(defvar LaTeX-german-close-quote "\"'"
-  "Initial value of `TeX-close-quote' for `german.el'")
-
-(TeX-add-style-hook "ngerman"
- (function (lambda ()
-	     (set-syntax-table LaTeX-german-mode-syntax-table)
-	     (unless (local-variable-p 'TeX-open-quote (current-buffer))
-	       (make-local-variable 'TeX-open-quote)
-	       (setq TeX-open-quote LaTeX-german-open-quote))
-	     (unless (local-variable-p 'TeX-close-quote (current-buffer))
-	       (make-local-variable 'TeX-close-quote)
-	       (setq TeX-close-quote LaTeX-german-close-quote))
-	     (unless (local-variable-p 'TeX-quote-after-quote (current-buffer))
-	       (make-local-variable 'TeX-quote-after-quote)
-	       (setq TeX-quote-after-quote LaTeX-german-quote-after-quote))
-	     (run-hooks 'TeX-language-de-hook))))
+(TeX-add-style-hook
+ "ngerman"
+ (lambda ()
+   (set-syntax-table LaTeX-german-mode-syntax-table)
+   ;; XXX: Handle former customizations of the now defunct
+   ;; German-specific variables.  References to the respective
+   ;; variables are to be deleted in future versions. (now = 2005-04-01)
+   (unless (eq (car TeX-quote-language) 'override)
+     (let ((open-quote (if (and (boundp 'LaTeX-german-open-quote)
+				LaTeX-german-open-quote)
+			   LaTeX-german-open-quote
+			 "\"`"))
+	   (close-quote (if (and (boundp 'LaTeX-german-close-quote)
+				 LaTeX-german-close-quote)
+			    LaTeX-german-close-quote
+			  "\"'"))
+	   (q-after-q (if (and (boundp 'LaTeX-german-quote-after-quote)
+			       LaTeX-german-quote-after-quote)
+			  LaTeX-german-quote-after-quote
+			t)))
+       (setq TeX-quote-language
+	     `("ngerman" (,open-quote . ,close-quote) ,q-after-q))))
+   (setq LaTeX-babel-hyphen-language "ngerman")
+   (run-hooks 'TeX-language-de-hook)))
 
 ;;; ngerman.el ends here
