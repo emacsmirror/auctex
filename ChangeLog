@@ -1,3 +1,10 @@
+2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex.el (TeX-master-file): Don't make C-c ` bomb out in files
+	like xxx.gls.  Probably a more elaborate way would be to export
+	the TeX-master variable into files visited by error parsing.
+	Could be incorrect, however, if more than one file included them.
+
 2002-01-24  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.11 released.
