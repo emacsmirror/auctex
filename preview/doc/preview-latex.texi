@@ -264,7 +264,9 @@ If you want the previews to open automatically when the cursor enters
 them, set @code{Preview Auto Reveal} to @code{On}, or alternatively
 enable @code{reveal-mode}. The preview will close again when the cursor
 leaves the preview unless you change it, in which case you will have to
-regenerate the preview (via e.g., @kbd{C-c C-p C-p}).
+regenerate the preview (via e.g., @kbd{C-c C-p C-p}).  There also exist
+other settings for this variable; @code{customize} offers sensible
+defaults for trying them out.
 
 @item Preview your favourite @LaTeX{} constructs
 
