@@ -52,14 +52,16 @@
   :group 'TeX-fold)
 
 (defface TeX-fold-display-string-face
-  '((((class grayscale) (background light))
+  '((((class color) (min-colors 88) (background light))
+     (:foreground "SlateBlue"))
+    (((class color) (min-colors 88) (background dark))
+     (:foreground "SlateBlue1"))
+    (((class color) (min-colors 8))
+     (:foreground "blue"))
+    (((class grayscale) (background light))
      (:foreground "DimGray"))
     (((class grayscale) (background dark))
      (:foreground "LightGray"))
-    (((class color) (background light))
-     (:foreground "SlateBlue"))
-    (((class color) (background dark))
-     (:foreground "SlateBlue1"))
     (t (:slant italic)))
   "Face for display strings."
   :group 'TeX-fold)
@@ -73,14 +75,15 @@
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-o\C-o" 'TeX-fold-buffer)
-    (define-key map "\C-c\C-o\C-a" 'TeX-fold-remove-all-overlays)
+    (define-key map "\C-c\C-o\C-a" 'TeX-fold-clearout-buffer)
+    (define-key map "\C-c\C-o\C-c" 'TeX-fold-macro)
+    (define-key map "\C-c\C-o\C-e" 'TeX-fold-clearout-macro)
     map))
 
 (defun TeX-fold-buffer ()
-  "Hide all macros specified in the variable `TeX-fold-spec-list'.
-With optional argument UNFOLD, show macros instead."
+  "Hide all macros specified in the variable `TeX-fold-spec-list'."
   (interactive)
-  (TeX-fold-remove-all-overlays)
+  (TeX-fold-clearout-buffer)
   (save-excursion
     (let ((fold-list TeX-fold-spec-list)
 	  fold-item)
@@ -99,14 +102,53 @@ With optional argument UNFOLD, show macros instead."
 				    (current-buffer) t nil)))
 	      (TeX-fold-hide-item ov display-string))))))))
 
-(defun TeX-fold-remove-all-overlays ()
-  "Remove all overlays set by TeX-fold."
+(defun TeX-fold-macro ()
+  "Hide the macro on which point currently is located."
+  (interactive)
+  (let ((macro-start (TeX-find-macro-start)))
+    (if (not macro-start)
+	(message "No macro found.")
+      (let* ((macro-name (save-excursion
+			   (goto-char macro-start)
+			   (looking-at (concat (regexp-quote TeX-esc)
+					       "\\([A-Za-z@]+\\)"))
+			   (match-string 1)))
+	     (fold-list TeX-fold-spec-list)
+	     fold-item
+	     (display-string (progn
+			       (catch 'found
+				 (while fold-list
+				   (setq fold-item (car fold-list))
+				   (setq fold-list (cdr fold-list))
+				   (when (member macro-name (cadr fold-item))
+				     (throw 'found (car fold-item))))))))
+	(if (not display-string)
+	    (message "Macro not specified in variable `TeX-fold-spec-list'.")
+	  (let ((ov (make-overlay macro-start
+				  (save-excursion
+				    (goto-char macro-start)
+				    (TeX-find-macro-end))
+				  (current-buffer) t nil)))
+	    (TeX-fold-hide-item ov display-string)))))))
+
+(defun TeX-fold-clearout-buffer ()
+  "Permanently show all macros in the buffer"
   (interactive)
   (let ((overlays (overlays-in (point-min) (point-max))))
-    (while overlays
-      (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
-	(delete-overlay (car overlays)))
-      (setq overlays (cdr overlays)))))
+    (TeX-fold-remove-overlays overlays)))
+
+(defun TeX-fold-clearout-macro ()
+  "Permanently show the macro on which point currently is located."
+  (interactive)
+  (let ((overlays (overlays-at (point))))
+    (TeX-fold-remove-overlays overlays)))
+
+(defun TeX-fold-remove-overlays (overlays)
+  "Remove all overlays set by TeX-fold in OVERLAYS."
+  (while overlays
+    (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
+      (delete-overlay (car overlays)))
+    (setq overlays (cdr overlays))))
 
 (defun TeX-fold-hide-item (ov &optional display-string)
   "Hide a single LaTeX macro.
@@ -137,6 +179,7 @@ Remove the respective properties from the overlay OV."
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
 (defun TeX-fold-post-command ()
+  ;; `with-local-quit' is not supported in XEmacs.
   (condition-case nil
       (let ((inhibit-quit nil))
 	(condition-case err
@@ -208,9 +251,9 @@ With zero or negative ARG turn mode off."
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t))
     (kill-local-variable 'search-invisible)
-    (TeX-fold-remove-all-overlays)
+    (TeX-fold-clearout-buffer)
     (remove-hook 'post-command-hook 'TeX-fold-post-command t)))
 
 (provide 'tex-fold)
 
-;;; latex-fold.el ends here
+;;; tex-fold.el ends here
