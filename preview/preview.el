@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.208 2004-04-12 13:05:38 dakas Exp $
+;; $Id: preview.el,v 1.209 2004-05-08 17:29:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -491,6 +491,12 @@ and tries to restart GhostScript if necessary."
 	  (setq compilation-in-progress (delq process compilation-in-progress)))
 	(when (buffer-name (process-buffer process))
 	  (with-current-buffer (process-buffer process)
+	    (goto-char (point-max))
+	    (insert-before-markers "\n" mode-name " " string)
+	    (forward-char -1)
+	    (insert " at "
+		    (substring (current-time-string) 0 -5))
+	    (forward-char 1)
 	    (TeX-command-mode-line process)
 	    (when (memq status '(exit signal))
 	      ;; process died.
@@ -552,6 +558,12 @@ Gets the usual PROCESS and STRING parameters, see
 		   (current-buffer)
 		   preview-gs-command
 		   preview-gs-command-line)))
+      (goto-char (point-max))
+      (insert-before-markers "Running `Preview-GhostScript' with ``"
+			     preview-gs-command " "
+			     (mapconcat #'shell-quote-argument
+					preview-gs-command-line
+					" ") "''\n")
       (setq preview-gs-answer "")
       (process-kill-without-query process)
       (set-process-sentinel process #'preview-gs-sentinel)
@@ -605,13 +617,13 @@ to GhostScript floats."
 	(mask (aref colors 2))
 	(border (aref colors 3)))
     (concat
-     (and (or mask (and bg (not fg)))
+     (and (or (and mask border) (and bg (not fg)))
 	  "gsave ")
      (and bg
 	 (concat
 	  (mapconcat #'preview-gs-color-value bg " ")
 	  " setrgbcolor clippath fill "))
-     (and mask
+     (and mask border
 	 (format "%s setrgbcolor false setstrokeadjust %g \
 setlinewidth clippath strokepath \
 matrix setmatrix true \
@@ -621,7 +633,7 @@ pathforall pop fill "
 		 (mapconcat #'preview-gs-color-value mask " ")
 		 (* 2 border)))
 	  ;; I hate antialiasing.  Warp border to integral coordinates.
-     (and (or mask (and bg (not fg)))
+     (and (or (and mask border) (and bg (not fg)))
 	  "grestore ")
      (and fg
 	  (concat
@@ -644,7 +656,7 @@ Pure borderless black-on-white will return an empty string."
      (and fg
 	  (format "--fg 'rgb %s' "
 		  (mapconcat #'preview-gs-color-value fg " ")))
-     (and mask
+     (and border
 	  (format "--bd %d" (max 1 border))))))
 
 (defun preview-gs-dvips-process-setup ()
@@ -2965,7 +2977,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.208 $"))
+	(rev "$Revision: 1.209 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2976,7 +2988,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-12 13:05:38 $"))
+    (let ((date "$Date: 2004-05-08 17:29:00 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
