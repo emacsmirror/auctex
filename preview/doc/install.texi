@@ -104,6 +104,12 @@ clean.  Check @file{PROBLEMS} file or @ref{Known problems}).
 This switch disables the 8-bit test, in case you know that your
 installation is clean and the test is simply failing.
 
+Another problem might occur if you have fetched @previewlatex{} via
+@acronym{CVS} or have run @code{autoconf} by hand: @code{autoconf}
+unfortunately clobbers the language environment settings, and there is
+no way portable across versions to preserve them.  The current version
+of the @code{autogen.sh} script tries to make up for this deficiency.
+
 @end table
 
 
