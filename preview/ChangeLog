@@ -1,5 +1,15 @@
 2001-10-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* We now cater for people with non-black-on-white setup.
+
+	* prv-emacs.el (preview-get-colors): gets colors from default
+	font.
+
+	* preview.el (preview-gs-colors): new variable for GhostScript
+	color setup string.
+	(preview-gs-transact): pass color setup.
+	(preview-get-geometry): pass color setup
+
 	* prv-emacs.el (preview-ps-image): Don't expect white background
 	in heuristic-mask.
 
