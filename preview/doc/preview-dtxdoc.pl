@@ -1,7 +1,12 @@
 #!/usr/bin/perl
 # Simpleminded autoconverter from preview.dtx to preview-dtxdoc.texi
-# run as 'perl preview-dtxdoc.pl < ../preview.dtx > preview-dtxdoc.texi'
+# run as 'perl preview-dtxdoc.pl ../latex/preview.dtx preview-dtxdoc.texi'
 # Author Jan-Åke Larsson <jalar@mai.liu.se>
+
+die "Usage: perl preview-dtxdoc.pl infile outfile" unless ($#ARGV == 1);
+open(STDIN, $ARGV[0]) || die "Can't open $ARGV[0] for reading";
+open(STDOUT, "> $ARGV[1]") || die "Can't open $ARGV[1] for writing";
+
 
 # Eat header 
 MUNGE: while (<STDIN>) {

@@ -22,12 +22,12 @@ all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: $(TEXIFILES)
 	rm -f preview-latex/*
-	-$(MAKEINFO) --html preview-latex.texi
+	$(MAKEINFO) --html preview-latex.texi
 
 html-docs: preview-latex/index.html
 
 preview-dtxdoc.texi: ../latex/preview.dtx preview-dtxdoc.pl
-	-$(PERL) preview-dtxdoc.pl < ../latex/preview.dtx > preview-dtxdoc.texi
+	-$(PERL) preview-dtxdoc.pl ../latex/preview.dtx preview-dtxdoc.texi
 
 preview-latex.dvi: $(TEXIFILES)
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
