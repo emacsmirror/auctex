@@ -148,6 +148,17 @@ on preview's clicks."
 	     res)
 	 '(resmap))))
 
+(defun preview-int-bb (bb)
+  "Make integer bounding box from possibly float BB."
+  ;; Due to a bug in earlier Emacs versions, we make this a list instead
+  ;; of a vector
+  (when bb
+    (list
+     (floor (aref bb 0))
+     (floor (aref bb 1))
+     (ceiling (aref bb 2))
+     (ceiling (aref bb 3)))))
+
 (defun preview-ps-image (filename scale)
   "Place a PostScript image directly by Emacs.
 This uses Emacs built-in PostScript image support for

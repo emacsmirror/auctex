@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.44 2001-11-09 00:40:23 dakas Exp $
+;; $Id: preview.el,v 1.45 2001-11-09 02:31:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -159,6 +159,10 @@ that is."
   "Size of file area scanned for bounding box information."
   :group 'preview :type 'integer)
 
+(defcustom preview-preserve-indentation t
+  "*Whether to keep additional whitespace at the left of a line."
+  :group 'preview-appearance :type 'boolean)
+
 (defun preview-extract-bb (filename)
   "Extract EPS bounding box vector from FILENAME."
   (with-temp-buffer
@@ -171,22 +175,13 @@ that is."
  +\\([-+]?[0-9.]+\\)\
  +\\([-+]?[0-9.]+\\)" nil t)
       (vector
-       (string-to-number (match-string 1))
+       (if preview-preserve-indentation
+	   (min 72 (string-to-number (match-string 1)))
+	 (string-to-number (match-string 1)))
        (string-to-number (match-string 2))
        (string-to-number (match-string 3))
        (string-to-number (match-string 4))
        ))))
-
-(defun preview-int-bb (bb)
-  "Make integer bounding box from possibly float BB."
-  ;; Due to a bug in earlier Emacs versions, we make this a list instead
-  ;; of a vector
-  (when bb
-    (list
-     (floor (aref bb 0))
-     (floor (aref bb 1))
-     (ceiling (aref bb 2))
-     (ceiling (aref bb 3)))))
 
 (defcustom preview-gs-command "gs"
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
@@ -1275,7 +1270,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.44 $"))
+	(rev "$Revision: 1.45 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
