@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.235 2005-02-25 23:38:58 dakas Exp $
+;; $Id: preview.el,v 1.236 2005-02-26 03:54:41 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -656,7 +656,7 @@ Gets the usual PROCESS and STRING parameters, see
     (let* ((process-connection-type nil)
 	   (outfile (format "-dOutputFile=%s"
 			    (preview-ps-quote-filename
-			     (format "%s/pv%d-%%d.%s"
+			     (format "%s/pr%d-%%d.%s"
 				     (car TeX-active-tempdir)
 				     (car preview-gs-sequence)
 				     preview-gs-image-type))))
@@ -1200,7 +1200,7 @@ given as ANSWER."
 				    (nconc filenames
 					   (list
 					    (preview-make-filename
-					     (format "pv%d-%d.%s"
+					     (format "pr%d-%d.%s"
 						     (car preview-gs-sequence)
 						     (cdr preview-gs-sequence)
 						     preview-gs-image-type)
@@ -2315,7 +2315,7 @@ preview Emacs Lisp package something too stupid."))
   (condition-case err
       (progn
 	(mapc #'delete-file
-	      (directory-files dir t "\\`pre" t))
+	      (directory-files dir t "\\`pr" t))
 	(delete-directory dir))
     (error (message "Deletion of `%s' failed: %s" dir
 		    (error-message-string err)))))
@@ -3262,7 +3262,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.235 $"))
+	(rev "$Revision: 1.236 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3273,7 +3273,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-25 23:38:58 $"))
+    (let ((date "$Date: 2005-02-26 03:54:41 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,7 +1,14 @@
 2005-02-26  David Kastrup  <dak@gnu.org>
 
+	* doc/readme.texi (Basic modes of operation): Adapt PDFLaTeX
+	explanation to newer AUCTeX versions.
+
 	* preview.el (preview-error-icon-specs): Choose somewhat oversized
 	errors. Adapt to set.
+	(preview-gs-restart, preview-gs-transact): Change image file name
+	prefix to `pr'.
+	(preview-clean-subdir): When cleaning out subdirectories, match
+	`pr' instead of `pre'.
 
 	* Makefile.in (ICON_SOURCES): Adapt to existing set.
 
