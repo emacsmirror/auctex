@@ -135,7 +135,6 @@ variable @code{TeX-output-view-style}.
 You can control whether @code{TeX-insert-macro} (@kbd{C-c RET}) ask for
 all optional arguments by customizing the variable
 @code{TeX-insert-macro-default-style}.
-@c FIXME: Document this in the main part of the manual
 
 @item
 @code{TeX-run-discard} is now able to completely detach a process that

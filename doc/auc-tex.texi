@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auc-tex.texi,v 1.170 2004-08-10 18:06:33 rsteib Exp $
+@c $Id: auc-tex.texi,v 1.171 2004-08-10 18:37:45 rsteib Exp $
 
 @finalout
 @titlepage
@@ -778,6 +778,22 @@ and if @AUCTeX{} knows the macro, prompt for each argument.
 As a default selection, @AUCTeX{} will suggest the macro last inserted
 or, as the first choice the value of the variable
 @code{TeX-default-macro}.
+
+@defopt TeX-insert-macro-default-style
+Specifies whether @code{TeX-insert-macro} will ask for all optional
+arguments.
+
+If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
+asks for optional arguments of TeX marcos.  If set to
+@code{mandatory-args-only}, @code{TeX-insert-macro} asks only for
+mandatory argument.  When @code{TeX-insert-macro} is called with prefix
+argument (@kbd{C-u}), it's the other way round.
+
+Note that for some macros, there are special mechanisms, e.g.
+@code{LaTeX-includegraphics-options-alist}.
+
+@end defopt
+
 
 @defopt TeX-default-macro
 Default macro to insert when invoking @code{TeX-insert-macro} first time.

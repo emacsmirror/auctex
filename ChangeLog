@@ -1,5 +1,7 @@
 2004-08-10  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auc-tex.texi (Completion): TeX-insert-macro-default-style.
+
 	* tex.el (TeX-source-specials-mode): Add manual link.
 
 	* doc/auc-tex.texi (Commands): Say how to enable
