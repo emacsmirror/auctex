@@ -1,5 +1,6 @@
 2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
 	* configure.in: Try fixing the emacs flavor detection.
+	And revert back to Alan's version.
 
 2001-10-12  Alan Shutko  <ats@acm.org>
 
