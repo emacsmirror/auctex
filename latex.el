@@ -1058,10 +1058,10 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 (defvar LaTeX-auto-minimal-regexp-list
   '(("\\\\document\\(style\\|class\\)\
 \\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)*\\)\\]\\)?\
-{\\([^#\\\\\\.\n\r]+\\)}"
+{\\([^#\\\\\\.\n\r]+?\\)}"
      (3 5 1) LaTeX-auto-style)
     ("\\\\use\\(package\\)\\(\\[\\([^\]\\\\]*\\)\\]\\)?\
-{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
+{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+?\\)}"
      (3 4 1) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
 
@@ -1176,75 +1176,71 @@ This is necessary since index entries may contain commands and stuff.")
 	      (setq index (cdr index)))))
 
 	;; Add them, to the style list.
-	(setq TeX-auto-file (append options TeX-auto-file))
+	(dolist (elt options)
+	  (add-to-list 'TeX-auto-file elt))
 
 	;; Treat documentclass/documentstyle specially.
 	(if (or (string-equal "package" class)
 		(string-equal "Package" class))
-	    (setq TeX-auto-file
-		  (append (TeX-split-string
-			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style)
-			  TeX-auto-file))
+	    (dolist (elt (TeX-split-string
+			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style))
+	      (add-to-list 'TeX-auto-file elt))
 	  ;; And a special "art10" style file combining style and size.
-	  (setq TeX-auto-file (cons style TeX-auto-file))
-	  (setq TeX-auto-file
-		(cons (concat
-		       (cond ((string-equal "article" style)
-			      "art")
-			     ((string-equal "book" style)
-			      "bk")
-			     ((string-equal "report" style)
-			      "rep")
-			     ((string-equal "jarticle" style)
-			      "jart")
-			     ((string-equal "jbook" style)
-			      "jbk")
-			     ((string-equal "jreport" style)
-			      "jrep")
-			     ((string-equal "j-article" style)
-			      "j-art")
-			     ((string-equal "j-book" style)
-			      "j-bk")
-			     ((string-equal "j-report" style )
-			      "j-rep")
-			     (t style))
-		       (cond ((member "11pt" options)
-			      "11")
-			     ((member "12pt" options)
-			      "12")
-			     (t
-			      "10")))
-		      TeX-auto-file)))
+	  (add-to-list 'TeX-auto-file style)
+	  (add-to-list 'TeX-auto-file
+		       (concat
+			(cond ((string-equal "article" style)
+			       "art")
+			      ((string-equal "book" style)
+			       "bk")
+			      ((string-equal "report" style)
+			       "rep")
+			      ((string-equal "jarticle" style)
+			       "jart")
+			      ((string-equal "jbook" style)
+			       "jbk")
+			      ((string-equal "jreport" style)
+			       "jrep")
+			      ((string-equal "j-article" style)
+			       "j-art")
+			      ((string-equal "j-book" style)
+			       "j-bk")
+			      ((string-equal "j-report" style )
+			       "j-rep")
+			      (t style))
+			(cond ((member "11pt" options)
+			       "11")
+			      ((member "12pt" options)
+			       "12")
+			      (t
+			       "10")))))
 
 	;; The third argument if "class" indicates LaTeX2e features.
 	(cond ((equal class "class")
-	       (setq TeX-auto-file (cons "latex2e" TeX-auto-file)))
+	       (add-to-list 'TeX-auto-file "latex2e"))
 	      ((equal class "style")
-	       (setq TeX-auto-file (cons "latex2" TeX-auto-file)))))))
+	       (add-to-list 'TeX-auto-file "latex2"))))))
 
   ;; Cleanup optional arguments
   (mapcar (lambda (entry)
-	    (setq TeX-auto-symbol
-		  (cons (list (nth 0 entry)
-			      (string-to-int (nth 1 entry)))
-			TeX-auto-symbol)))
+	    (add-to-list 'TeX-auto-symbol
+			 (list (nth 0 entry)
+			       (string-to-int (nth 1 entry)))))
 	  LaTeX-auto-arguments)
 
   ;; Cleanup default optional arguments
   (mapcar (lambda (entry)
-	    (setq TeX-auto-symbol
-		  (cons (list (nth 0 entry)
-			      (vector "argument")
-			      (1- (string-to-int (nth 1 entry))))
-			TeX-auto-symbol)))
+	    (add-to-list 'TeX-auto-symbol
+			 (list (nth 0 entry)
+			       (vector "argument")
+			       (1- (string-to-int (nth 1 entry))))))
 	  LaTeX-auto-optional)
 
   ;; Cleanup environments arguments
   (mapcar (lambda (entry)
-	    (setq LaTeX-auto-environment
-		  (cons (list (nth 0 entry)
-			      (string-to-int (nth 1 entry)))
-			LaTeX-auto-environment)))
+	    (add-to-list 'LaTeX-auto-environment
+			 (list (nth 0 entry)
+			       (string-to-int (nth 1 entry)))))
 	  LaTeX-auto-env-args)
 
   ;; Cleanup use of def to add environments
@@ -1253,8 +1249,7 @@ This is necessary since index entries may contain commands and stuff.")
   (mapcar (lambda (symbol)
 	    (if (not (TeX-member symbol TeX-auto-symbol 'equal))
 		;; No matching symbol, insert in list
-		(setq TeX-auto-symbol
-		      (cons (concat "end" symbol) TeX-auto-symbol))
+		(add-to-list 'TeX-auto-symbol (concat "end" symbol))
 	      ;; Matching symbol found, remove from list
 	      (if (equal (car TeX-auto-symbol) symbol)
 		  ;; Is it the first symbol?
@@ -1268,8 +1263,7 @@ This is necessary since index entries may contain commands and stuff.")
 			(setcdr list (cdr (cdr list))))
 		    (setq list (cdr list)))))
 	      ;; and add the symbol as an environment.
-	      (setq LaTeX-auto-environment
-		    (cons symbol LaTeX-auto-environment))))
+	      (add-to-list 'LaTeX-auto-environment symbol)))
 	  LaTeX-auto-end-symbol))
 
 (add-hook 'TeX-auto-cleanup-hook 'LaTeX-auto-cleanup)
