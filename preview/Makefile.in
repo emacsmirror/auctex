@@ -113,6 +113,8 @@ preview-latex.el: preview.el auto.el
 	fi
 	cat auto.el >> $@
 
+.PHONY: clean
+
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
 	   preview-latex.el
@@ -120,9 +122,17 @@ clean:
 	(cd doc ; $(MAKE) clean)
 	(cd latex ; $(MAKE) clean)
 
-distclean:
-	make clean
-	rm -f config.log config.cache config.status config.h aclocal.m4 
+.PHONY: distclean
+
+distclean: clean
+	rm -f config.log config.cache config.status config.h
 	rm -f configure auto.el *.png TAGS
 	rm -f Makefile */Makefile
+
+.PHONY: tarball-ready
+
+tarball-ready: 
 	autoconf
+	(cd doc; make all README INSTALL PROBLEMS TODO INSTALL.windows FAQ)
+	(cd doc; mv README INSTALL PROBLEMS TODO INSTALL.windows FAQ ..)
+	$(MAKE) distclean
