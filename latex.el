@@ -2107,6 +2107,12 @@ See also `LaTeX-math-menu'."
     (?x "chi" "greek")
     (?y "psi" "greek")
     (?z "zeta" "greek")
+    (nil "varepsilon" "greek")
+    (nil "varphi" "greek")
+    (nil "varpi" "greek")
+    (nil "varrho" "greek")
+    (nil "varsigma" "greek")
+    (nil "vartheta" "greek")
     (?D "Delta" "Greek")
     (?F "Phi" "Greek")
     (?G "Gamma" "Greek")
@@ -3345,21 +3351,24 @@ of `LaTeX-mode-hook'."
    ;; These have no special support, but are included in case the
    ;; auto files are missing.
 
-   "LaTeX" "SLiTeX" "samepage" "newline" "smallskip" "medskip"
-   "bigskip" "stretch" "nonumber" "centering" "raggedright"
+   "TeX" "LaTeX"
+   "samepage" "newline"
+   "smallskip" "medskip" "bigskip" "fill" "stretch"
+   "thinspace" "negthinspace" "enspace" "enskip" "quad" "qquad"
+   "nonumber" "centering" "raggedright"
    "raggedleft" "kill" "pushtabs" "poptabs" "protect" "arraystretch"
    "hline" "vline" "cline" "thinlines" "thicklines" "and" "makeindex"
    "makeglossary" "reversemarginpar" "normalmarginpar"
    "raggedbottom" "flushbottom" "sloppy" "fussy" "newpage"
    "clearpage" "cleardoublepage" "twocolumn" "onecolumn"
 
-   ;; Added 24/10/2002
-   "TeX" "maketitle" "tableofcontents" "listoffigures" "listoftables"
+   "maketitle" "tableofcontents" "listoffigures" "listoftables"
    "tiny" "scriptsize" "footnotesize" "small"
    "normalsize" "large" "Large" "LARGE" "huge" "Huge"
    "pounds" "copyright"
    "hfil" "hfill" "vfil" "vfill" "hrulefill" "dotfill"
-   "indent" "noindent" "today")
+   "indent" "noindent" "today"
+   "appendix")
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments

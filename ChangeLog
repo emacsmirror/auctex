@@ -1,5 +1,9 @@
 2003-11-25  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* latex.el (LaTeX-math-default): Added greek \var... symbols.
+	(LaTeX-common-initialization): Removed "SLiTeX", added spacing
+	commands and "appendix".
+
 	* font-latex.el (font-latex-match-function-keywords): Added
 	spacing commands, "nonumber", "centering", "TeX", and "LaTeX".
 	(font-latex-match-textual-keywords): Added textsuperscript.
