@@ -2439,6 +2439,12 @@ space does not end a sentence, so don't break a line there."
 	;; COMPATIBILITY for Emacs <= 21.1
 	(if (fboundp 'fill-delete-newlines)
 	    (fill-delete-newlines from to justify nosqueeze squeeze-after)
+	  ;; For Japanese (FIXED on 2005-02-11)
+	  (when (featurep 'mule)
+	    (goto-char from)
+	    (while (re-search-forward "\\(\\cj\\)\n" to t)
+	      (replace-match "\\1")
+	      (setq to (1- to))))
 	  ;; Make sure sentences ending at end of line get an extra space.
 	  (if (or (not (boundp 'sentence-end-double-space))
 		  sentence-end-double-space)
@@ -2558,7 +2564,12 @@ space does not end a sentence, so don't break a line there."
   ;; COMPATIBILITY for Emacs <= 21.3 and XEmacs
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
-    (skip-chars-backward "^ \n")
+    ;; For Japanese (FIXED on 2005-02-11)
+    (if (featurep 'mule)
+	(if (TeX-looking-at-backward "\\cj")
+	    (backward-char 1)
+	  (skip-chars-backward "^ \n"))
+      (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
     ;; while searching backward, search forward again.
     (cond ((bolp)
