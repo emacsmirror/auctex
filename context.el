@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-15 11:12:13 $
+;; Last Change: $Date: 2004-04-15 22:46:26 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,78 +62,6 @@
 	:group 'TeX-macro)
 
 
-;; en interface
-
-;; ConText macro names
-
-(defvar ConTeXt-en-setup-list
-	'("align" "arranging" "background" "backgrounds" "blackrules"
-		"blank" "block" "bodyfont" "bodyfontenvironment" "bottom"
-		"bottomtexts" "buffer" "capitals" "caption" "captions" "color"
-		"colors" "columns" "combinations" "combinedlist" "descriptions"
-		"enumerations" "externalfigure" "fillinlines" "fillinrules" "float"
-		"floats" "footer" "footertexts" "footnodedefinition" "footnotes"
-		"framed" "framedtexts" "head" "header" "headertexts" "headnumber"
-		"heads" "headtext" "hyphenmark" "indentations" "indenting" "inmargin"
-		"inerlinespace" "itemize" "items" "labeltext" "language" "layout"
-		"linenumbering" "lines" "list" "makeup" "marginblocks"
-		"marginrules" "marking" "narrower" "oppositeplacing" "pagenumber"
-		"pagenumbering" "palet" "papersize" "paragraphs" "quote" "referencing"
-		"register" "screens" "section" "sectionblock" "sorting" "spacing"
-		"subpagenumber" "synonyms" "text" "textrules" "texttexts" "thinrules"
-		"tolerance" "top" "toptexts" "type" "typing" "underbar" "whitespace")
-	"List of the names of ConTeXt en interface  macro's that setup things.")
-
-(defun ConTeXt-en-setup-command (what)
-	"The ConTeXt en interface way of creating a setup command."
-	(concat "setup" what)
-	)
-
-(defvar ConTeXt-en-project-structure-list
-	'("project" "environment" "product" "component")
-	"List of the names of ConTeXt project structure elements for its en interface. List should be in logical order.")
-
-(defvar ConTeXt-en-section-block-list
-	'("frontmatter" "bodymatter" "appendices" "backmatter")
-	"List of the names of ConTeXt section blocks for its en interface. List should be in logical order.")
-
-;; TODO:
-;; ConTeXt has alternative sections like title and subject. Currently
-;; the level is used to find the section name, so the alternative
-;; names are never found. Have to start using the section name instead
-;; of the number.
-(defvar ConTeXt-en-section-list
-	'(("part" 0)
-		("chapter" 1)
-		("section" 2)
-		("subsection" 3)
-		("subsubsection" 4)
-		("subsubsubsection" 5)
-;; 		("title" 1)
-;; 		("subject" 2)
-;; 		("subsubject" 3)
-;; 		("subsubsubject" 4)
-		)
-	"List of the names of ConTeXt sections for its en interface."
-)
-
-(defvar ConTeXt-en-text "text"
-	"The ConTeXt en interface body text group.")
-
-(defvar ConTeXt-en-item-list
-	'("item" "its" "mar" "ran" "sub" "sym")
-	"The ConTeXt macro's that are variants of item")
-
-;; Emacs en menu names and labels should go here
-;; to be done
-
-
-;;; nl (Dutch) interface
-
-(defvar ConTeXt-nl-text "tekst"
-	"The ConTeXt  interface body text group.")
-
-
 ;;; variables
 
 ;; globals used in certain macro's.
@@ -149,14 +77,15 @@
 
 ;; others
 
-(setq ConTeXt-known-interfaces '("nl" "en" "de" "cz" "it" "ro"))
+(setq ConTeXt-known-interfaces '("cz" "de" "en" "it" "nl" "ro" "uk"))
 
-(defvar ConTeXt-default-interface "en"
-	"Default interface to be used when running ConTeXt.")
+(defcustom ConTeXt-default-interface "en"
+	"Default interface to be used when running ConTeXt."
+  :group 'ConTeXt
+  :type 'string)
 
-(eval-and-compile (defvar ConTeXt-current-interface "en"
-	"Interface to be used for inserting macros and ConTeXt run"))
-(make-variable-buffer-local 'ConTeXt-current-interface)
+(defvar ConTeXt-current-interface "en"
+	"Interface to be used for inserting macros and ConTeXt run")
 
 (defvar ConTeXt-menu-changed nil)
 ;; Need to update ConTeXt menu.
@@ -164,7 +93,6 @@
 
 (defvar ConTeXt-largest-level nil
 	"Largest sectioning level within current document.")
-
 (make-variable-buffer-local 'ConTeXt-largest-level)
 
 (defun ConTeXt-largest-level ()
@@ -181,15 +109,14 @@
 	"The ConTeXt optional argument closing character.")
 
 
-;; Support for ConTeXt setup macro's
+;; Setup a ConTeXt macro
 
-(defmacro ConTeXt-setup-list ()
-	"Calls ConTeXt-XX-setup-list where XX is the current interface."
-	(intern (concat "ConTeXt-" ConTeXt-current-interface "-setup-list")))
+(defvar ConTeXt-setup-list ()
+	"Calls ConTeXt-XX-setup-list where XX is the current interface.")
 
 (defun ConTeXt-setup-command (what)
 	"The ConTeXt macro to setup WHAT."
-	(funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-setup-command")) what)
+	(funcall (intern (concat "ConTeXt-setup-command-" ConTeXt-current-interface)) what)
 )
 
 (defun ConTeXt-insert-setup (setup)
@@ -203,15 +130,14 @@
 
 ;;; Project structure
 
-(defmacro ConTeXt-project-structure-list ()
-	"Calls ConTeXt-XX-project-structure where XX is the current interface."
-	(intern (concat "ConTeXt-" ConTeXt-current-interface "-project-structure-list")))
+(defvar ConTeXt-project-structure-list ()
+	"Calls ConTeXt-XX-project-structure where XX is the current interface.")
 
 (defun ConTeXt-project-structure (N)
 	"Insert a ConTeXt project structure where N is in index into ConTeXt-project-structure-list."
 	(funcall (intern(concat
 									 "ConTeXt-project-"
-									 (nth N ConTeXt-en-project-structure-list)
+									 (nth N ConTeXt-project-structure-list)
 									 "-insert")))
 )
 
@@ -219,15 +145,15 @@
 	"Insert a basic template for a new ConTeXt project."
 	(save-excursion
 		(insert "% The following names are examples only\n")
-		(insert TeX-esc (ConTeXt-environment-start-name) (nth 0 (ConTeXt-project-structure-list)) " myproject")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 0 ConTeXt-project-structure-list) " myproject")
 		(newline 2)
-		(insert TeX-esc (nth 1 (ConTeXt-project-structure-list)) " myenvironment")
+		(insert TeX-esc (nth 1 ConTeXt-project-structure-list) " myenvironment")
 		(newline 2)
-		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(insert TeX-esc (nth 2 ConTeXt-project-structure-list) " myproduct1")
 		(newline 2)
-		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct2")
+		(insert TeX-esc (nth 2 ConTeXt-project-structure-list) " myproduct2")
 		(newline 2)
-		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 0 (ConTeXt-project-structure-list)))
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 0 ConTeXt-project-structure-list))
 		)
 	)
 
@@ -235,9 +161,9 @@
 	"Insert a basic template for the environment of a ConTeXt project."
 	(save-excursion
 		(insert "% The name 'myenvironment' is an example only.\n% It must match the name in your project file.\n")
-		(insert TeX-esc (ConTeXt-environment-start-name) (nth 1 (ConTeXt-project-structure-list)) " myenvironment\n\n")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 1 ConTeXt-project-structure-list) " myenvironment\n\n")
 		(insert "% Put environment charateristics that must be defined at the highest level here\n\n")
-		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 1 (ConTeXt-project-structure-list)))
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 1 ConTeXt-project-structure-list))
 		)
 )
 
@@ -245,16 +171,16 @@
 	"Insert a basic template for a product of a ConTeXt project."
 	(save-excursion
 		(insert "% The following names are examples only\n")
-		(insert TeX-esc (ConTeXt-environment-start-name) (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 2 ConTeXt-project-structure-list) " myproduct1")
 		(newline 2)
-		(insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject")
+		(insert TeX-esc (nth 0 ConTeXt-project-structure-list) " myproject")
 		(newline 2)
 		(insert "% Components are optional. You can also just start your document here.\n")
-		(insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
+		(insert TeX-esc (nth 3 ConTeXt-project-structure-list) " mycomponent1")
 		(newline 2)
-		(insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent2")
+		(insert TeX-esc (nth 3 ConTeXt-project-structure-list) " mycomponent2")
 		(newline 2)
-		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 2 (ConTeXt-project-structure-list)))
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 2 ConTeXt-project-structure-list))
 		)
 )
 
@@ -262,23 +188,22 @@
 	"Insert a basic template for a component of a ConTeXt project."
 	(save-excursion
 		(insert "% The following names are examples only\n")
-		(insert TeX-esc (ConTeXt-environment-start-name) (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 3 ConTeXt-project-structure-list) " mycomponent1")
 		(newline 2)
-		(insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject\n")
-		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(insert TeX-esc (nth 0 ConTeXt-project-structure-list) " myproject\n")
+		(insert TeX-esc (nth 2 ConTeXt-project-structure-list) " myproduct1")
 		(newline 2)
 		(insert "% ... text here ...")
 		(newline 2)
-		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 3 (ConTeXt-project-structure-list)))
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 3 ConTeXt-project-structure-list))
 		)
 )
 
 
 ;;; Section blocks
 
-(defmacro ConTeXt-section-block-list ()
-	"Calls ConTeXt-XX-section-list where XX is the current interface."
-	(intern (concat "ConTeXt-" ConTeXt-current-interface "-section-block-list")))
+(defvar ConTeXt-section-block-list ()
+	"Calls ConTeXt-XX-section-list where XX is the current interface.")
 
 (defun ConTeXt-section-block (section-block)
 	"Insert the ConTeXt section block SECTION-BLOCK."
@@ -380,13 +305,12 @@ section."
 					nil t)))
 	(ConTeXt-up-section (1- arg))))))
 
-(defmacro ConTeXt-section-list ()
-	"Calls ConTeXt-XX-section-list where XX is the current interface."
-	(intern (concat "ConTeXt-" ConTeXt-current-interface "-section-list")))
+(defvar ConTeXt-section-list ()
+	"ConTeXt-XX-section-list where XX is the current interface.")
 
 (defun ConTeXt-section-name (level)
 	"Return the name of the section corresponding to LEVEL."
-	(let ((entry (TeX-member level (ConTeXt-section-list)
+	(let ((entry (TeX-member level ConTeXt-section-list
 				 (function (lambda (a b) (equal a (nth 1 b)))))))
 		(if entry
 	(nth 0 entry)
@@ -394,7 +318,7 @@ section."
 
 (defun ConTeXt-section-level (name)
 	"Return the level of the section NAME."
-	(let ((entry (TeX-member name (ConTeXt-section-list)
+	(let ((entry (TeX-member name ConTeXt-section-list
 					(function (lambda (a b) (equal a (nth 0 b)))))))
 
 		(if entry
@@ -455,7 +379,7 @@ Insert this hook into `ConTeXt-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 	(let ((string (completing-read
 								 (concat "Select level: (default " name ") ")
-								 (ConTeXt-section-list)
+								 ConTeXt-section-list
 								 nil nil nil)))
 		;; Update name
 		(if (not (zerop (length string)))
@@ -534,36 +458,29 @@ inserted after the sectioning command."
 
 
 ;;; Environments
+
 (defgroup ConTeXt-environment nil
 	"Environments in AUCTeX."
 	:group 'ConTeXt-macro)
 
-;; todo: interface awareness
+;; TODO: interface awareness
 (defcustom ConTeXt-default-environment "itemize"
 	"*The default environment when creating new ones with `ConTeXt-environment'."
 	:group 'ConTeXt-environment
 	:type 'string)
 (make-variable-buffer-local 'ConTeXt-default-environment)
 
-;; now we have ConTeXt-en-add-environment... ConTeXt-de-add-environment
-(mapcar '(lambda (interface)
-		 (TeX-auto-add-type "environment" (concat "ConTeXt-" interface)))
-	ConTeXt-known-interfaces)
+(TeX-auto-add-type "environment" "ConTeXt")
 
-(defmacro ConTeXt-environment-list ()
-	"Calls ConTeXt-XX-environment-list where XX is the current interface."
-	(quote (funcall (intern (concat "ConTeXt-"
-					ConTeXt-current-interface
-					"-environment-list")))))
+(fset 'ConTeXt-add-environments-auto
+			(symbol-function 'ConTeXt-add-environments))
+(defun ConTeXt-add-environments (&rest environments)
+	"Add ENVIRONMENTS to the list of known environments."
+	(apply 'ConTeXt-add-environments-auto environments)
+	(setq ConTeXt-menu-changed t))
 
-;; is it safe to return nil? --pg
-(defmacro ConTeXt-add-environments (&rest args)
-	"Calls ConTeXt-XX-add-environments where XX is the current interface."
-	`(apply (intern (concat "ConTeXt-"
-			 ConTeXt-current-interface
-			 "-add-environments"))
-	 (mapcar 'eval args))
-	nil)
+;; (defvar ConTeXt-environment-list ()
+;; 	"ConTeXt-environment-list-XX where XX is the current interface.")
 
 (defvar ConTeXt-environment-history nil)
 
@@ -600,7 +517,7 @@ With optional ARG, modify current environment."
 																	"text"
 																ConTeXt-default-environment)
 															") ")
-											(ConTeXt-environment-list)
+											ConTeXt-environment-list
 											nil nil nil
 											'ConTeXt-environment-history)
 										 ))
@@ -613,7 +530,7 @@ With optional ARG, modify current environment."
 					(t
 					 (setq ConTeXt-default-environment environment)))
 
-		(let ((entry (assoc environment (ConTeXt-environment-list))))
+		(let ((entry (assoc environment ConTeXt-environment-list)))
 			(when (null entry)
 				(ConTeXt-add-environments (list environment)))
 			(if arg
@@ -643,7 +560,7 @@ With optional ARG, modify current environment."
 
 (defun ConTeXt-environment-menu (environment)
 	"Insert ENVIRONMENT around point or region."
-	(let ((entry (assoc environment (ConTeXt-environment-list))))
+	(let ((entry (assoc environment ConTeXt-environment-list)))
 		(cond ((not (and entry (nth 1 entry)))
 					 (ConTeXt-insert-environment environment))
 					((numberp (nth 1 entry))
@@ -888,7 +805,8 @@ nil, go to the point just past the \\start... macro."
 (defun ConTeXt-insert-item ()
 	"Insert a new item. "
 	(interactive "*")
-	(newline)
+  (or (TeX-looking-at-backward "^[ \t]*")
+      (newline))
 	(TeX-insert-macro "item")
 	(indent-according-to-mode))
 
@@ -941,9 +859,8 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 
 ;; paragraph (re)-formatting
 
-(defmacro ConTeXt-item-list ()
-	"List of macro's considered items."
-	(intern (concat "ConTeXt-" ConTeXt-current-interface "-item-list")))
+(defvar ConTeXt-item-list ()
+	"List of macro's considered items.")
 
 (defvar ConTeXt-extra-paragraph-commands
 	'("crlf" "par")
@@ -955,12 +872,12 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 	 "\\[\\|\\]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
 	 (ConTeXt-environment-start-name) "\\b\\|"
 	 (ConTeXt-environment-stop-name) "\\b\\|start"
-	 (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|start") "\\b\\|stop"
-	 (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|stop") "\\b\\|"
-	 (mapconcat 'car (ConTeXt-section-list) "\\b\\|") "\\b\\|"
+	 (mapconcat 'identity ConTeXt-section-block-list "\\b\\|start") "\\b\\|stop"
+	 (mapconcat 'identity ConTeXt-section-block-list "\\b\\|stop") "\\b\\|"
+	 (mapconcat 'car ConTeXt-section-list "\\b\\|") "\\b\\|"
 	 (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
 	 "\\b\\|"
-	 (mapconcat 'identity (ConTeXt-item-list) "\\b\\|") "\\b"
+	 (mapconcat 'identity ConTeXt-item-list "\\b\\|") "\\b"
 	 )
 	)
 
@@ -972,11 +889,6 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
 	(concat (ConTeXt-environment-start-name) environment)
 )
 
-;; (defun ConTeXt-environment-full-start-names (environments)
-;;   "Return the ConTeXt macro names that start the environments listed in ENVIRONMENTS. It is interface aware"
-;;   (mapcar 'ConTeXt-environment-full-start-name environments)
-;; )
-
 (defun ConTeXt-outline-regexp (&optional anywhere)
 	"Return regexp for ConTeXt section blocks and sections.
 
@@ -987,8 +899,8 @@ header is at the start of a line."
 	 "[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
-	 (mapconcat 'ConTeXt-environment-full-start-name (ConTeXt-section-block-list) "\\|") "\\|"
-	 (mapconcat 'car (ConTeXt-section-list) "\\|")
+	 (mapconcat 'ConTeXt-environment-full-start-name ConTeXt-section-block-list "\\|") "\\|"
+	 (mapconcat 'car ConTeXt-section-list "\\|")
 	 "\\)\\b"
 	 (if TeX-outline-extra
 			 "\\|"
@@ -999,21 +911,23 @@ header is at the start of a line."
 	 )
 	)
 
+(defvar ConTeXt-text "Name of ConTeXt macro that begins the text body.")
+
 (defun ConTeXt-header-end ()
 	"Default end of header marker for ConTeXt documents."
 	(concat
 	 (regexp-quote TeX-esc)
 	 (ConTeXt-environment-start-name)
-	 (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
-	 )
-)
+   ConTeXt-text
+   )
+  )
 
 (defun ConTeXt-trailer-start ()
 	"Default start of trailer marker for ConTeXt documents."
 	(concat
 	 (regexp-quote TeX-esc)
 	 (ConTeXt-environment-stop-name)
-	 (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
+   ConTeXt-text
 	 )
 )
 
@@ -1042,9 +956,9 @@ header is at the start of a line."
 				 (save-excursion
 					 (skip-chars-forward " \t")
 					 (forward-char 1)
-					 (cond ((looking-at (ConTeXt-start-environment-regexp (ConTeXt-section-block-list))) 1)
-								 ((TeX-look-at (ConTeXt-section-list))
-									(max 1 (+ (TeX-look-at (ConTeXt-section-list))
+					 (cond ((looking-at (ConTeXt-start-environment-regexp ConTeXt-section-block-list)) 1)
+								 ((TeX-look-at ConTeXt-section-list)
+									(max 1 (+ (TeX-look-at ConTeXt-section-list)
 														(ConTeXt-outline-offset))))
 								 (t
 									(error "Unrecognized header"))))))
@@ -1212,8 +1126,6 @@ There might be text before point."
 (defvar ConTeXt-mode-map
 	(let ((map (copy-keymap TeX-mode-map)))
 
-		(define-key map "\C-c\C-s" 'ConTeXt-section)
-		(define-key map "\C-c\C-s" 'TeX-output-view-style)
 		(define-key map "\e\C-a"  'ConTeXt-find-matching-start)
 		(define-key map "\e\C-e"  'ConTeXt-find-matching-stop)
 		;; likely to change in the future
@@ -1223,6 +1135,7 @@ There might be text before point."
 		(or (key-binding "\e\r")
 				(define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
 		(define-key map "\C-c]" 'ConTeXt-close-environment)
+    (define-key map "\C-c\C-s" 'ConTeXt-section)
 		;; XML in ConTeXt support
 		(define-key map "\C-c/" 'ConTeXt-close-xml-tag)
 		map)
@@ -1260,10 +1173,12 @@ There might be text before point."
 
 ;; meta-structure project structure menu entries
 
+(defvar ConTeXt-project-structure-menu-name "Project structure")
+
 (defun ConTeXt-project-structure-menu (project-structure)
 	"Insert project structure from menu."
 	(ConTeXt-project-structure
-	 (let ((l (ConTeXt-project-structure-list)))
+	 (let ((l ConTeXt-project-structure-list))
 		 (- (length l) (length (member project-structure l)))))
 	)
 
@@ -1272,13 +1187,10 @@ There might be text before point."
 	(vector entry (list 'ConTeXt-project-structure-menu entry))
 	)
 
-(defun ConTeXt-project-structure-menu-create ()
-	"Create a menu over ConTeXt project structures."
-	(append '("Project structure")
-		(mapcar 'ConTeXt-project-structure-menu-entry (ConTeXt-project-structure-list))))
-
 
 ;; meta-structure section blocks menu entries
+
+(defvar ConTeXt-section-block-menu-name "Section block")
 
 (defun ConTeXt-section-block-menu (section-block)
 	"Insert section block from menu."
@@ -1289,13 +1201,10 @@ There might be text before point."
 	(vector entry (list 'ConTeXt-section-block-menu entry))
 	)
 
-(defun ConTeXt-section-block-menu-create ()
-	"Create a menu over ConTeXt section blocks."
-	(append '("Section block")
-		(mapcar 'ConTeXt-section-block-menu-entry (ConTeXt-section-block-list))))
-
 
 ;; section menu entries
+
+(defvar ConTeXt-section-menu-name "Section  (C-c C-s)")
 
 (defun ConTeXt-section-enable-symbol (level)
 	"Symbol used to enable section LEVEL in the menu bar."
@@ -1319,11 +1228,6 @@ There might be text before point."
 		(set enable t)
 		(vector (car entry) (list 'ConTeXt-section-menu (nth 1 entry)) enable)))
 
-(defun ConTeXt-section-menu-create ()
-	"Create a menu over ConTeXt sections."
-	(append '("Section  (C-c C-s)")
-		(mapcar 'ConTeXt-section-menu-entry (ConTeXt-section-list))))
-
 
 ;; etexshow support
 
@@ -1344,6 +1248,10 @@ There might be text before point."
   "Command menu used in ConTeXt mode."
   (TeX-mode-specific-command-menu 'context-mode))
 
+;; it seems the menu is evaluated at compile/load-time
+;; we don't have ConTeXt-current-interface at that time
+;; so make sure to do updates based on that variable in
+;; ConTeXt-menu-update
 (easy-menu-define ConTeXt-mode-menu
 		ConTeXt-mode-map
 		"Menu used in ConTeXt mode."
@@ -1352,15 +1260,15 @@ There might be text before point."
 	(list ConTeXt-environment-modify-menu-name)
 	(list ConTeXt-setup-menu-name)
 	"-"
-	(ConTeXt-project-structure-menu-create)
-	(ConTeXt-section-block-menu-create)
-	(ConTeXt-section-menu-create)
-  ["Add table of contents to menu" (imenu-add-to-menubar "TOC") t]
+  (list ConTeXt-project-structure-menu-name)
+  (list ConTeXt-section-block-menu-name)
+  (list ConTeXt-section-menu-name)
+  ["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
 	"-"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
-	["Item" LaTeX-insert-item t]
-	["Show definition" ConTeXt-etexshow t]
+	["Item" ConTeXt-insert-item t]
+	["Show ConTeXt macro definition" ConTeXt-etexshow t]
 	"-"
 	(list "Insert Font"
 				["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
@@ -1410,45 +1318,79 @@ There might be text before point."
 
 (defun ConTeXt-menu-update (&optional menu)
 	"Update entries on AUCTeX menu."
-	(or (not (memq major-mode '(context-mode doctex-mode)))
+	(or (not (memq major-mode '(context-mode)))
 			(null ConTeXt-menu-changed)
 			(not (fboundp 'easy-menu-change))
 			(progn
 				(TeX-update-style)
 				(setq ConTeXt-menu-changed nil)
 				(message "Updating section menu...")
-				(mapcar 'ConTeXt-section-enable (ConTeXt-section-list))
+				(mapcar 'ConTeXt-section-enable ConTeXt-section-list)
 				(message "Updating environment menu...")
 				(easy-menu-change '("ConTeXt") ConTeXt-environment-menu-name
 													(LaTeX-split-long-menu
 													 (mapcar 'ConTeXt-environment-menu-entry
-																	 (ConTeXt-environment-list))))
+																	 ConTeXt-environment-list)))
 				(message "Updating modify environment menu...")
 				(easy-menu-change '("ConTeXt") ConTeXt-environment-modify-menu-name
 													(LaTeX-split-long-menu
 													 (mapcar 'ConTeXt-environment-modify-menu-entry
-																	 (ConTeXt-environment-list))))
+																	 ConTeXt-environment-list)))
 				(message "Updating setup menu...")
 				(easy-menu-change '("ConTeXt") ConTeXt-setup-menu-name
 													(LaTeX-split-long-menu
 													 (mapcar 'ConTeXt-setup-menu-entry
-																	 (ConTeXt-setup-list))))
+																	 ConTeXt-setup-list)))
+				(message "Updating project structure menu...")
+				(easy-menu-change '("ConTeXt") ConTeXt-project-structure-menu-name
+													(LaTeX-split-long-menu
+													 (mapcar 'ConTeXt-project-structure-menu-entry
+																	 ConTeXt-project-structure-list)))
+				(message "Updating section block menu...")
+				(easy-menu-change '("ConTeXt") ConTeXt-section-block-menu-name
+													(LaTeX-split-long-menu
+													 (mapcar 'ConTeXt-section-block-menu-entry
+																	 ConTeXt-section-block-list)))
+				(message "Updating section menu...")
+				(easy-menu-change '("ConTeXt") ConTeXt-section-menu-name
+													(LaTeX-split-long-menu
+													 (mapcar 'ConTeXt-section-menu-entry
+																	 ConTeXt-section-list)))
 				(message "Updating...done")
-				(and menu (easy-menu-return-item ConTeXt-mode-menu menu)))))
+				(and menu (easy-menu-return-item ConTeXt-mode-menu menu))
+        ))
+)
 
 
 ;;; Mode
-(defun context-mode ()
-	"Major mode for editing files of input for ConTeXt.
 
-Special commands:
-\\{ConTeXt-mode-map}
+;; ConTeXt variables that are interface aware
+;; They are mapped to interface specific variables
 
-Entering context-mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of context-mode-hook."
-	(interactive)
+(defvar ConTeXt-language-variable-list
+  '(ConTeXt-setup-list ConTeXt-project-structure-list ConTeXt-section-block-list ConTeXt-section-list ConTeXt-text ConTeXt-item-list))
+
+
+(defun ConTeXt-mode-common-initialization ()
+  "Initialization code that is common for all ConTeXt interfaces."
 	(plain-TeX-common-initialization)
+
+  ;; Make language specific variables buffer local
+  (dolist (symbol ConTeXt-language-variable-list)
+    (make-variable-buffer-local symbol))
+
+  (require (intern (concat "context-" ConTeXt-current-interface)))
+  (dolist (symbol ConTeXt-language-variable-list)
+    (set symbol (symbol-value (intern (concat (symbol-name symbol) "-" ConTeXt-current-interface)))))
+
+
+	;; What's the deepest level at we can collapse a document?
+	;; set only if user has not set it. Need to be set before menu is created.
+  ;; level 2 is "section"
+	(or ConTeXt-largest-level
+			(setq ConTeXt-largest-level 2))
+
+  ;; keybindings
 	(use-local-map ConTeXt-mode-map)
 
 	;; Indenting
@@ -1459,7 +1401,6 @@ of context-mode-hook."
 	(set (make-local-variable 'LaTeX-syntactic-comments) nil)
 	(set (make-local-variable 'LaTeX-paragraph-commands)
        (ConTeXt-paragraph-commands))
-	;;(setq LaTeX-paragraph-commands "par\\b\\|crlf\\b")
 	(set (make-local-variable 'paragraph-ignore-fill-prefix) t)
 	(set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
 	(set (make-local-variable 'adaptive-fill-mode) nil)
@@ -1477,20 +1418,12 @@ of context-mode-hook."
 				 "[ \t]*\\("
 				 "\\$\\$" ; display math delimitor
 				 "\\|$\\)"))
-;;   (setq paragraph-start "[ \t\n]")
-;;   (setq paragraph-separate
-;;         (concat
-;;          (regexp-quote TeX-esc)
-;;          "\\(par\\b"
-;;          "\\)"
-;;          )
-;;         )
-
 
 	;; Keybindings and menu
 	(use-local-map ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-menu ConTeXt-mode-map)
+  (setq ConTeXt-menu-changed t)
 
 	(if (= emacs-major-version 20)
 			(make-local-hook 'activate-menubar-hook))
@@ -1498,86 +1431,53 @@ of context-mode-hook."
 
 	;; Outline support
 	(require 'outline)
-	(set (make-local-variable 'outline-level)
-       'ConTeXt-outline-level)
-	(set (make-local-variable 'outline-regexp)
-       (ConTeXt-outline-regexp t))
+	(set (make-local-variable 'outline-level) 'ConTeXt-outline-level)
+	(set (make-local-variable 'outline-regexp) (ConTeXt-outline-regexp t))
 	;;(make-local-variable 'outline-heading-end-regexp)
 	(setq TeX-header-end (ConTeXt-header-end)
 				TeX-trailer-start (ConTeXt-trailer-start))
-
-	;; What's the deepest level at we can collapse a document?
-	;; set only if user has not set it.
-	(or ConTeXt-largest-level
-			(setq ConTeXt-largest-level (ConTeXt-section-level "section")))
 
   ;; imenu support
   (set (make-local-variable 'imenu-create-index-function)
        'ConTeXt-imenu-create-index-function)
 
-	;; other initializations
-	(funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-mode")))
-
-	(setq mode-name "ConTeXt")
+  ;; run hooks
 	(setq major-mode 'context-mode)
 	(setq TeX-command-default "ConTeXt")
 	(setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
-	(run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
-
-
-;; Language specifics
-
-
-;; en environment
-
-(fset 'ConTeXt-en-add-environments-auto
-			(symbol-function 'ConTeXt-en-add-environments))
-(defun ConTeXt-en-add-environments (&rest environments)
-	"Add ENVIRONMENTS to the list of known environments."
-	(apply 'ConTeXt-en-add-environments-auto environments)
-	(setq ConTeXt-menu-changed t))
-
-(defun ConTeXt-en-mode ()
-	(ConTeXt-en-add-environments
-	 "alignment" "appendices"
-	 "background" "backmatter" "bodymatter" "bodypart" "buffer"
-	 "color" "columns" "combination"
-	 "encoding" "extroductions"
-	 "fact" "formula" "framedtext" "frontmatter"
-	 "helptext" "hiding"
-	 "itemize"
-	 "legend" "line" "linecorrection" "linenumbering" "lines" "localenvironment" "localfootnotes"
-		"makeup" "mapping" "marginblock" "marginedge" "marginrule" "mode"
-		"narrower" "notmode"
-		"opposite"
-		"packed" "positioning" "postponing"
-		"quotation"
-		"raster" "register"
-		"standardmakeup"
-		"table" "tabulate" "text" "textbackground" "typing"
-		"unpacked"
-		;; project structure
-		"component" "environment" "product" "project"
-		;; flowcharts, if you have loaded this module
-		"FLOWcell" "FLOWchart"
-		;; typesetting computer languages
-		"EIFFEL" "JAVA" "JAVASCRIPT" "MP" "PASCAL" "PERL" "SQL" "TEX" "XML"
-		;; some metapost environments
-		"MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
-		"uniqueMPgraphic"
-		"buffer" "narrower" "tabulate")
-
-	(TeX-add-symbols
-	 '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("item" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("items" (ConTeXt-arg-setup t) (TeX-arg-string "Comma separated list"))
-	 '("its" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("nop" (TeX-arg-literal " "))
-	 '("ran" TeX-arg-string (TeX-arg-literal " "))
-	 '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))
-	 )
+	(run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook)
 )
 
+(defun context-guess-current-interface ()
+  "Guess what ConTeXt interface the current buffer is using."
+
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward "\\\\starttext" (+ 1024 (point)) t)
+        (setq ConTeXt-current-interface "en")
+      (if (re-search-forward "\\\\starttekst" (+ 1024 (point)) t)
+          (setq ConTeXt-current-interface "nl")
+        (setq ConTeXt-current-interface ConTeXt-default-interface)
+        )
+      )
+    )
+  )
+
+(defun context-mode ()
+	"Major mode for editing files of input for ConTeXt.
+
+Special commands:
+\\{ConTeXt-mode-map}
+
+Entering context-mode calls the value of text-mode-hook,
+then the value of TeX-mode-hook, and then the value
+of context-mode-hook."
+	(interactive)
+  (context-guess-current-interface)
+  (require (intern (concat "context-" ConTeXt-current-interface)))
+  (funcall (intern (concat "context-" ConTeXt-current-interface "-mode")))
+)
+
+(provide 'context)
 
 ;;; context.el ends here
