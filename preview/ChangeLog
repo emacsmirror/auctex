@@ -1,5 +1,17 @@
 2004-04-12  David Kastrup  <dakas@users.sourceforge.net>
 
+	* Release 0.8.1
+
+	* RELEASE, configure.in, doc/preview-latex.texi: Adapt to 0.8.1
+
+	* preview-latex.spec: xemacspkgdir has changed in recent XEmacs
+	releases for Redhat.
+
+	* prv-xemacs.el (preview-mode-setup): Remove non-existent menu.
+
+	* prv-emacs.el (preview-mode-setup): Remove non-existent menu
+	"copied" from TeX-command-list to Command menu.
+
 	* Release 0.8
 	
 	* RELEASE: prepare for 0.8
