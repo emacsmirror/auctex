@@ -91,9 +91,12 @@ rm -rf %{buildroot}
 %doc doc/tex-ref.pdf
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
-%config(noreplace) %{_datadir}/emacs/site-lisp/tex-site.el
+%config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
+* Thu Aug 19 2004 David Kastrup <dak@gnu.org>
+- Change tex-site.el to overwriting config file mode.
+
 * Mon Aug 16 2004 David Kastrup <dak@gnu.org>
 - Attempt a bit of SuSEism.  Might work if we are lucky.
 

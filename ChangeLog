@@ -1,5 +1,8 @@
 2004-08-19  David Kastrup  <dak@gnu.org>
 
+	* auctex.spec: Change `tex-site.el' to overwriting config file
+	mode.
+
 	* tex.el (plain-tex-mode): Move menu initializiation here instead
 	of `plain-TeX-common-initialization'.  We don't want "TeX" menus
 	in `ConTeXt-mode' or `AmSTeX-mode'.
