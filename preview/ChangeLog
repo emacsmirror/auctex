@@ -1,3 +1,10 @@
+2002-12-10  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* autogen.sh: Make LANG and LC_CTYPE saving work across recursive
+	call of ./configure (2.13)
+
+	* doc/macros.texi: Typo fixed
+
 2002-12-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-counter-find): Take counters by searching
