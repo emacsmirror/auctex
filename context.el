@@ -1403,15 +1403,13 @@ There might be text before point."
 	(concat
 	 "[ \t]*\\("
 	 (regexp-quote TeX-esc)
-	 "\\("
-	 (ConTeXt-paragraph-commands)
-	 "\\)\\|$"
-	 "\\)"
-	 ))
+	 "\\(" (ConTeXt-paragraph-commands) "\\)\\|"
+	 "\\$\\$\\|" ; Plain TeX display math
+	 "$\\)"))
   (setq paragraph-separate
 	(concat
 	 "[ \t]*\\("
-	 "\\$\\$"			; display math delimitor
+	 "\\$\\$" ; Plain TeX display math
 	 "\\|$\\)"))
 
   ;; Keybindings and menu
