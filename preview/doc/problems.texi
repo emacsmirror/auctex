@@ -78,6 +78,10 @@ with bitmapped fonts, anyway.  You might try @option{-Ppdf} for another
 stab at scalable fonts, or other printer definitions.  Use
 
 @display
+@kbd{M-x customize-variable @key{RET} preview-fast-dvips-command @key{RET}}
+@end display
+and
+@display
 @kbd{M-x customize-variable @key{RET} preview-dvips-command @key{RET}}
 @end display
 @noindent
@@ -99,7 +103,7 @@ Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
 
 @item GNU Emacs under Windows operating systems
 
-As of GNU Emacs 21.1, no image support is available in Emacs under
+As of GNU Emacs 21.2, no image support is available in Emacs under
 Windows.  Without images, @previewlatex{} is useless.  If it is important
 to you, support the Emacs developer crew with regard to image support
 (PostScript image support is @emph{not} necessary).  I do not use
@@ -108,20 +112,11 @@ work under it.
 
 @item XEmacs
 
-Work in progress.  Volunteers welcome.  Ask on the developers' list how
-you may contribute.
+We have preliminary support of XEmacs in place, but you should not
+expect any miracles.  Please test it and report any problems you may be
+experiencing.  Volunteers welcome.  Ask on the developers' list how you
+may contribute.
 
-@item GNU Emacs @acronym{EPS} handling
-
-Direct @acronym{EPS} rendering still is in need of improvement and very
-experimental, so the default setting of @previewlatex{} replaces
-Emacs' internal @acronym{EPS} handling by an indirect rendering
-mechanism. If you feel capable of helping out with Emacs' @acronym{EPS}
-interface (meaning that the APIs connecting GhostScript and viewers such
-as GhostView and Xdvi are not a book with seven seals for you), feel
-free to do so. Report bugs you can reproduce along with the files needed
-to reproduce them. The new display engine for 21.1 is quite powerful,
-and some bugs still might be lurking inside.
 @end itemize
 
 @node AUC TeX prior to 11.0, LaTeX international characters, Emacs problems, Known problems
