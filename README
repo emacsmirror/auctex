@@ -1,0 +1,157 @@
+
+AUC TeX 
+=======
+
+AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
+
+No real documentation has been written so far, but according to my
+planning, it will be available around august 1991.
+
+However, you're welcome to direct questions to the current maintainer,
+whose address is at the bottom of this file.
+
+Files in this distribution
+--------------------------
+
+	README			This file
+	
+	auc-tex.el		The main file of AUC TeX
+
+	latex-environment.el	Environment functions
+	latex-section.el	Sectioning functions
+	tex-buffer.el		Invoking LaTeX from inside Emacs
+	tex-debug.el		Debugging LaTeX and TeX documents
+	tex-misc.el		Miscellaneous utility functions
+
+	outline-m.el		Outline mode as minor mode
+	tex-math.el		Smart math minor mode for writing
+				lots of LaTeX math symbols
+	minor-map.el		Management of keymaps for minor modes
+
+	Emakefile.el		Batch file to byte compile all modules
+
+
+Installation
+------------
+
+You will need to insert the following lines in your .emacs file. If it
+is a cite installation, these lines should rather be in the local init
+file.  This will make sure, that AUC TeX will be loaded automatically
+when you load a file width suffix `.tex'.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Tell Emacs where the files of AUC TeX is located
+
+(setq load-path (cons (expand-file-name "PATH_FOR_AUC-TEX") load-path))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Make AUC TeX be loaded automatically when one of the following
+;; three commands are invoked.
+
+(autoload 'tex-mode "auc-tex" "Automatic select TeX or LaTeX mode" t)
+(autoload 'plain-tex-mode "auc-tex" "Mode for Plain TeX" t)
+(autoload 'latex-mode "auc-tex" "Mode for LaTeX" t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Let tex-mode be called, if a `.tex' file is loaded.
+
+(setq auto-mode-alist (append '(("\.tex$" . tex-mode))
+                              auto-mode-alist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Now you should set your personal defaults of the user-definable
+variables.  These are listed in the elisp `.el' files, and are marked
+with `*' in the beginning of the documentation string.  E.g. you
+should set the default printer name:
+
+(setq TeX-default-printer-name "lw")
+
+These settings should be placed in your init `.emacs' file
+
+Also -- you may want to setup some keybindings for outline-minor-mode
+and LaTeX-math-mode.  Since those are minor modes, the key definitions
+for invoking them should be set by you.  Here's how I do it myself.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Personal keybindings of $USER
+
+(defun Ctl-C-prefix ()			; Use Ctl-C as a command prefix
+  Ctl-C-keymap)
+(setq Ctl-C-keymap (make-keymap))	; allocate Ctl-C keymap table
+(global-set-key "\C-c" (Ctl-C-prefix))	; define Ctl-C function
+
+(define-key Ctl-C-keymap "O" 'outline-minor-mode) 
+(define-key Ctl-C-keymap "M" 'LaTeX-math-mode)
+
+(autoload 'outline-minor-mode "outline-m" t)
+(autoload 'LaTeX-math-mode "tex-math" t)
+
+;; Note:  C-c <letter> sequences are reserved for users own bindings
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+Warranty
+--------
+
+AUC TeX is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY.  No author or distributor accepts responsibility to
+anyone for the consequences of using it or for whether it serves any
+particular purpose or works at all.
+
+Everyone is granted permission to copy, modify and redistribute this
+file, but only under the conditions described in the document "GNU
+Emacs copying permission notice".  An exact copy of the document is
+supposed to have been given to you along with this file so that you
+can know how you may redistribute it all.  It should be in a file
+named COPYING.  Among other things, the copyright notice and this
+notice must be preserved on all copies.
+
+This software was written as part of the author's official duty as an
+employee of the University of Aalborg (denmark) and is in the public
+domain.  You are free to use this software as you wish, but WITHOUT
+ANY WARRANTY WHATSOEVER.  It would be nice, though if when you use
+this code, you give due credit to the author.
+
+
+Contacts
+--------
+
+Mailing list:	
+
+There has been established a mailing list for discussion of the
+evaluation of auc-tex.  You're very welcome to join.  However, If you
+are only interested in updates information, you should refer to the
+newsgroups comp.text.tex and gnu.emacs.announce.
+
+If you want to contact the auc-tex mailing list, mail:
+
+	Articles:	auc-tex@iesd.auc.dk 
+
+	Requests:	auc-tex-request@iesd.auc.dk
+
+
+To contact the current maintainer of auc-tex, Email:
+
+			auc-tex_mgr@iesd.auc.dk
+
+
+The direct address to the author is:
+
+			krab@iesd.auc.dk
+
+			Kresten Krab Thorup 
+			Dept. of Math and Computer Science
+			University of Aalborg
+			Aalborg, Denmark
+
+
+
+
+
