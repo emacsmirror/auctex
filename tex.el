@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7p
+;; Version: 9.8a
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1087,7 +1087,8 @@ active.")
 Only do this if it has not been done before, or if optional argument
 FORCE is not nil."
 
-  (if (or (eq TeX-auto-update 'BibTeX)	; Not a real TeX buffer
+  (if (or (and (boundp 'TeX-auto-update)
+	       (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
 	  (and (not force) TeX-style-hook-applied-p))
       ()
     (setq TeX-style-hook-applied-p t)
@@ -1927,41 +1928,76 @@ If TEX is a directory, generate style files for all files in the directory."
   :type 'integer)
   (make-variable-buffer-local 'TeX-auto-parse-length)
 
+(defcustom TeX-auto-x-parse-length 0
+  "*Maximum length of TeX file that will be parse additionally.
+Use `TeX-auto-x-regexp-list' for parsing the region between
+`TeX-auto-parse-length' and this value."
+  :group 'TeX-parse
+  :type 'integer)
+  (make-variable-buffer-local 'TeX-auto-x-parse-length)
+
+(defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
+  "*List of regular expresions used for additional parsing.
+See `TeX-auto-x-parse-length'."
+  :type '(radio (variable-item TeX-auto-empty-regexp-list)
+		(variable-item TeX-auto-full-regexp-list)
+		(variable-item plain-TeX-auto-regexp-list)
+		(variable-item LaTeX-auto-minimal-regexp-list)
+		(variable-item LaTeX-auto-label-regexp-list)
+		(variable-item LaTeX-auto-regexp-list)
+		(symbol :tag "Other")
+		(repeat :tag "Specify"
+			(group (regexp :tag "Match")
+			       (sexp :tag "Groups")
+			       symbol)))
+  :group 'TeX-parse)
+  (make-variable-buffer-local 'TeX-auto-x-regexp-list)
+
+(defun TeX-auto-parse-region (regexp-list beg end)
+  "Parse TeX information in region between BEG and END.
+Parse according to REGEXP-LIST."
+  (if (symbolp regexp-list)
+      (setq regexp-list (and (boundp regexp-list) (symbol-value regexp-list))))
+   (if regexp-list
+       ;; Extract the information.
+       (let ((regexp (concat "\\("
+			     (mapconcat 'car regexp-list "\\)\\|\\(")
+			     "\\)")))
+	 (goto-char (if end (min end (point-max)) (point-max)))
+	 (while (re-search-backward regexp beg t)
+	   (if (TeX-in-comment)
+	       ()
+	     (let* ((entry (TeX-member nil regexp-list
+				       (function (lambda (a b)
+						   (looking-at (nth 0 b))))))
+		    (symbol (nth 2 entry))
+		    (match (nth 1 entry)))
+	       (if (fboundp symbol)
+		   (funcall symbol match)
+		 (set symbol (cons (if (listp match)
+				       (mapcar 'TeX-match-buffer match)
+				     (TeX-match-buffer match))
+				   (symbol-value symbol))))))))))
+
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.
 
 Call the functions in TeX-auto-prepare-hook before parsing, and the
 functions in TeX-auto-cleanup-hook after parsing."
 
-  (let ((case-fold-search nil)
-	(regexp-list (if (symbolp TeX-auto-regexp-list)
-			 (symbol-value TeX-auto-regexp-list)
-		       TeX-auto-regexp-list)))
-
+  (let ((case-fold-search nil))
+    
     (mapcar 'TeX-auto-clear-entry TeX-auto-parser)
     (run-hooks 'TeX-auto-prepare-hook)
     
-    ;; Parse
     (save-excursion
-      (goto-char (min (point-max) TeX-auto-parse-length))
-      ;; Extract the information.
-      (let ((regexp (concat "\\("
-			    (mapconcat 'car regexp-list "\\)\\|\\(")
-			    "\\)")))
-	(while (re-search-backward regexp nil t)
-	  (if (TeX-in-comment)
-	      ()
-	    (let* ((entry (TeX-member nil regexp-list
-				      (function (lambda (a b)
-						  (looking-at (nth 0 b))))))
-		   (symbol (nth 2 entry))
-		   (match (nth 1 entry)))
-	      (if (fboundp symbol)
-		  (funcall symbol match)
-		(set symbol (cons (if (listp match)
-				      (mapcar 'TeX-match-buffer match)
-				    (TeX-match-buffer match))
-				  (symbol-value symbol)))))))))
+      (and (> TeX-auto-x-parse-length TeX-auto-parse-length)
+	   (> (point-max) TeX-auto-parse-length)
+	   (TeX-auto-parse-region TeX-auto-x-regexp-list
+				  TeX-auto-parse-length
+				  TeX-auto-x-parse-length))
+      (TeX-auto-parse-region TeX-auto-regexp-list
+			     nil TeX-auto-parse-length))
     
     ;; Cleanup ignored symbols.
     
