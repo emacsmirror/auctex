@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.194 2004-01-04 01:11:19 dakas Exp $
+;; $Id: preview.el,v 1.195 2004-01-06 12:31:15 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1138,7 +1138,9 @@ Removes comments and collapses white space, except for multiple newlines."
   (interactive "r")
   (TeX-region-create (TeX-region-file TeX-default-extension)
 		     (buffer-substring begin end)
-		     (file-name-nondirectory (buffer-file-name))
+		     (if buffer-file-name
+			 (file-name-nondirectory buffer-file-name)
+		       "<none>")
 		     (save-restriction
 		       (widen)
 		       (let ((inhibit-point-motion-hooks t)
@@ -1147,7 +1149,8 @@ Removes comments and collapses white space, except for multiple newlines."
 			    (save-excursion
 			      (goto-char begin)
 			      (if (bolp) 0 -1))))))
-  (TeX-command "Generate Preview" 'TeX-region-file))
+  (preview-generate-preview t (TeX-region-file nil t)
+			    preview-LaTeX-command-replacements))
 
 (defun preview-buffer ()
   "Run preview on current buffer."
@@ -1181,7 +1184,8 @@ Removes comments and collapses white space, except for multiple newlines."
   "Run preview on master document."
   (interactive)
   (TeX-save-document (TeX-master-file))
-  (TeX-command "Generate Preview" 'TeX-master-file))
+  (preview-generate-preview nil (TeX-master-file nil t)
+			    preview-LaTeX-command-replacements))
 		       
 (defcustom preview-inner-environments '("Bmatrix" "Vmatrix" "aligned"
 					"array" "bmatrix" "cases"
@@ -1246,23 +1250,27 @@ Searches backwards if BACKWARDS is non-nil."
 	(setq history (and (not preview-state) pt)))
       (or history pt))))
 	     
-(defun preview-at-point ()
+(defun preview-at-point (&optional ovr window)
   "Do the appropriate preview thing at point.
 If the cursor is positioned on or inside of a preview area, this
-toggles its visibility, regenerating the preview if necessary.  If
-not, it will run the surroundings through preview.  The surroundings
-include all areas up to the next valid preview, unless invalid
-previews occur before, in which case the area will include the last
-such preview."
+toggles its visibility, regenerating the preview if necessary.
+If not, it will run the surroundings through preview.  The
+surroundings include all areas up to the next valid preview,
+unless invalid previews occur before, in which case the area will
+include the last such preview.  If OVR is specified, only the
+specified overlay is affected instead of the first one found near point.
+For cursor restoration purposes, WINDOW can be specified with a
+window or an event.  It defaults to the selected window."
   (interactive)
   (catch 'exit
-    (dolist (ovr (overlays-in (max (point-min) (1- (point)))
-			      (min (point-max) (1+ (point)))))
+    (dolist (if ovr (list ovr)
+	      (overlays-in (max (point-min) (1- (point)))
+			   (min (point-max) (1+ (point)))))
       (let ((preview-state (overlay-get ovr 'preview-state)))
 	(when preview-state
 	  (if (eq preview-state 'disabled)
 	      (preview-regenerate ovr)
-	    (preview-toggle ovr 'toggle (selected-window)))
+	    (preview-toggle ovr 'toggle (or window (selected-window))))
 	  (throw 'exit t))))
     (preview-region (preview-next-border t)
 		    (preview-next-border nil))))
@@ -1933,13 +1941,6 @@ to add the preview functionality."
 	 (customize-menu-create 'preview))])
       ["Read documentation" preview-goto-info-page]
       ["Report Bug" preview-report-bug]))
-  (let ((preview-entry '("Generate Preview" "See `preview-LaTeX-command'"
-			 TeX-inline-preview nil t)))
-    (setq TeX-command-list
-	  (nconc (delq
-		  (assoc (car preview-entry) TeX-command-list)
-		  TeX-command-list)
-		 (list preview-entry))))
   (add-to-list 'TeX-error-description-list
 	       '("\\(?:Package Preview Error\\|Preview\\):.*" .
 "The auctex option to preview should not be applied manually.  If you
@@ -2141,7 +2142,9 @@ name(\\([^)]+\\))\\)\\|\
 			  ;; We may use these in another buffer.
 			  offset (car TeX-error-offset)
 			  file (car TeX-error-file))
-		    (when (and (stringp file) (TeX-match-extension file))
+		    (when (and (stringp file)
+			       (or (string= file "<none>")
+				   (TeX-match-extension file)))
 		      ;; if we are the first time round, check for fast hooks:
 		      (when (null parsestate)
 			(setq open-data
@@ -2225,8 +2228,11 @@ name(\\([^)]+\\))\\)\\|\
 		      box (aref state 5)
 		      counters (aref state 6))
 		(unless (string= lfile file)
-		  (set-buffer (find-file-noselect
-			       (expand-file-name file run-directory)))
+		  (set-buffer (if (string= file "<none>")
+				  (with-current-buffer run-buffer
+				    TeX-command-buffer)
+				(find-file-noselect
+				 (expand-file-name file run-directory))))
 		  (setq lfile file))
 		(save-excursion
 		  (save-restriction
@@ -2526,10 +2532,7 @@ on the same master file."
     (TeX-save-document master)
     (setq TeX-current-process-region-p nil)
     (prog1
-	(TeX-inline-preview
-	 "Cache Preamble"
-	 nil
-	 master)
+	(preview-generate-preview nil master preview-dump-replacements)
       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
       (setq TeX-sentinel-function
 	    `(lambda (process string)
@@ -2562,7 +2565,23 @@ stored in `preview-dumped-alist'."
 
 (defun TeX-inline-preview (name command file)
   "Main function called by AUCTeX.
+Deprecated.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
+  (preview-generate-preview
+   TeX-current-process-region-p
+   file
+   (symbol-value (cdr (assoc name '(("Generate Preview" .
+		       preview-LaTeX-command-replacements)
+			 ("Cache Preamble" .
+			  preview-dump-replacements)))))))
+
+
+(defun preview-generate-preview (region-p file replacements)
+  "Generate a preview.
+REGION-P is the region flag, FILE is the file, REPLACEMENTS
+is either `preview-LaTeX-command-replacements' or
+`preview-dump-replacements'."
+  (setq TeX-current-process-region-p region-p)
   (let* ((commandbuff (current-buffer))
 	 (pr-file (cons
 		   (if TeX-current-process-region-p
@@ -2573,12 +2592,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		   (TeX-command-expand
 		    (preview-string-expand preview-LaTeX-command)
 		    (car pr-file))
-		   (symbol-value (cdr (assoc
-				       name
-				       '(("Generate Preview" .
-					  preview-LaTeX-command-replacements)
-					 ("Cache Preamble" .
-					  preview-dump-replacements)))))))
+		   replacements))
 	 (master (TeX-master-file))
 	 (master-file (expand-file-name master))
 	 (dumped-cons (assoc master-file
@@ -2597,22 +2611,22 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		`(lambda (process string)
 		   (funcall ,TeX-sentinel-function process string)
 		   (TeX-inline-preview-internal
-		    ,name ,command ,file
+		    ,command ,file
 		    ',pr-file ,commandbuff
 		    ',dumped-cons
 		    ',master
 		    (prog1
 			(buffer-string)
 		      (set-buffer ,commandbuff))))))
-      (TeX-inline-preview-internal name command file
+      (TeX-inline-preview-internal command file
 				   pr-file commandbuff dumped-cons master))))
 
-(defun TeX-inline-preview-internal (name command file pr-file
-					 commandbuff dumped-cons master
-					 &optional str)
+(defun TeX-inline-preview-internal (command file pr-file
+				    commandbuff dumped-cons master
+				    &optional str)
   "See doc of `TeX-inline-preview'.
-Should explain meaning of NAME, COMMAND, FILE, and
-PR-FILE, COMMANDBUFF, DUMPED-CONS and MASTER are
+Should explain meaning of COMMAND, FILE, and
+PR-FILE; COMMANDBUFF, DUMPED-CONS and MASTER are
 internal parameters, STR may be a log to insert into the current log."
   (let*
       ((preview-format-name (preview-dump-file-name
@@ -2644,14 +2658,14 @@ internal parameters, STR may be a log to insert into the current log."
 	  (setq TeX-parse-function 'TeX-parse-TeX)
 	  (if TeX-process-asynchronous
 	      process
-	    (TeX-synchronous-sentinel name file process)))
+	    (TeX-synchronous-sentinel "Preview-LaTeX" file process)))
       (error (preview-log-error err "Preview" process)
 	     (delete-process process)))
     (preview-reraise-error process)))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.194 $"))
+	(rev "$Revision: 1.195 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2662,7 +2676,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-04 01:11:19 $"))
+    (let ((date "$Date: 2004-01-06 12:31:15 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
