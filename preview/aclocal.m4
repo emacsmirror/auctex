@@ -14,9 +14,9 @@ if test -z "$previewtexmfdir" ; then
 \fi
 \endbatchfile
 EOF
-    $LATEX '\nonstopmode \input testdocstrip' > /dev/null 2>&1
-    texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>/dev/null`
-    previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2> /dev/null `
+    $LATEX '\nonstopmode \input testdocstrip' >&5 2>&1
+    texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>&5`
+    previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
 	    previewtexmfdir=$texmfdir
