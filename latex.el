@@ -2149,7 +2149,8 @@ space does not end a sentence, so don't break a line there."
                        "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*\\][ \t]*"
                        "\\(\\\\\\\\\\)*{")
                       (line-end-position) t)
-                     (> (- (TeX-find-closing-brace)
+                     (> (- (or (TeX-find-closing-brace)
+                               (line-end-position))
                            (line-beginning-position))
                         fill-column)))
               (save-excursion
@@ -2160,7 +2161,8 @@ space does not end a sentence, so don't break a line there."
              ((save-excursion
                 (and (memq 'braced LaTeX-fill-distinct-contents)
                      (string= (substring match-string -1) "{")
-                     (> (- (TeX-find-closing-brace)
+                     (> (- (or (TeX-find-closing-brace)
+                               (line-end-position))
                            (line-beginning-position))
                         fill-column)))
               (save-excursion
