@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.24 2001-10-07 19:33:04 dakas Exp $
+;; $Id: preview.el,v 1.25 2001-10-07 21:55:31 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -1080,8 +1080,8 @@ file dvips put into the directory indicated by TEMPDIR."
 (defun preview-get-geometry ()
   "Transfer display geometry parameters from current display.
 Those are put in local variables `preview-scale' and
-`preview-resolution'.  Calculation is done with source buffer
-`TeX-command-buffer' active."
+`preview-resolution'.  Calculation is done in source buffer
+specified by variable `TeX-command-buffer'."
   (let (scale res)
     (with-current-buffer TeX-command-buffer
       (setq scale (funcall preview-scale-function)
@@ -1112,12 +1112,23 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	process
       (TeX-synchronous-sentinel name file process))))
 
+(defconst preview-version
+  (let ((name "$Name:  $")
+	(rev "$Revision: 1.25 $"))
+    (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
+	    (match-string 1 name))
+	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
+	    (format "CVS-%s" (match-string 1 rev)))
+	"unknown"))
+  "Preview version.
+If not a regular release, CVS revision of `preview.el'.")
+
 (defun preview-report-bug () "Report a bug in the preview-latex package."
   (interactive)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.24 $ $Name:  $"
+     preview-version
      '(AUC-TeX-version
        image-types
        preview-image-type
