@@ -35,7 +35,7 @@ Since @previewlatex{} heavily exercises new features of Emacs 21,
 getting the newest release is a good idea.
  
 While image support for Emacs under Microsoft Windows has not been
-implemented as of @w{version 21.2}, it is under development and can be
+implemented as of @w{version 21.3}, it is under development and can be
 accessed by anonymous @acronym{CVS} at
 @uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
 before @w{Emacs 21.4} gets released.
@@ -179,13 +179,6 @@ the `LaTeX international characters' section in the @file{PROBLEMS} file
 @ref{LaTeX international characters}
 @end ifclear
 for more details.
-
-Failure of this test can also happen if you have fetched @previewlatex{}
-via @acronym{CVS} and have run @code{autoconf} by hand instead of using
-the provided @file{autogen.sh}: @code{autoconf} unfortunately clobbers
-the language environment settings, and there is no way portable across
-versions to preserve them.  The current version of the @file{autogen.sh}
-script tries to work around this deficiency.
 
 @item --help
 This is not an option specific to @previewlatex{}. A number of standard

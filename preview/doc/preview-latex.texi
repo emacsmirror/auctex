@@ -22,13 +22,13 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.9
+@subtitle Version 0.8
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001--2003 David Kastrup, Alan Shutko, 
+Copyright @copyright{} 2001--2004 David Kastrup, Alan Shutko, 
 Jan-@AA{}ke Larsson and Nick Alcock.
  
 Permission is granted to make and distribute verbatim copies of
@@ -62,11 +62,11 @@ approved by the Free Software Foundation.
 @ifnottex
 @top preview-latex
  
-@previewlatex{} is a package that allows extraction of certain
-environments (most notably displayed formulas) for use in different
-contexts. While the first application has been the embedding of those
-preview fragments into Emacs source buffers under the @AUCTeX{} editing
-environment, other applications are easily imaginable.
+@previewlatex{} is a package embedding preview fragments into Emacs
+source buffers under the @AUCTeX{} editing environment for @LaTeX{}.  It
+uses @file{preview.sty} for the extraction of certain environments (most
+notably displayed formulas).  Other applications of this style file are
+possible and exist.
 
 The name of the package is really @samp{preview-latex}, all in
 lowercase letters, with a hyphen.  If you want to use it in a more
@@ -74,7 +74,7 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.9
+This file documents @previewlatex{} version 0.8
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
@@ -247,10 +247,31 @@ tampered with.
 Clear the pregenerated format file and stop using preambles for the
 current document. If the caching gives you problems, use this.
 
+@item @kbd{C-c C-p C-w}
+@itemx @code{preview-copy-region-as-mml}
+@itemx Copy a region as MML
+@kindex @kbd{C-c C-p C-w}
+@findex preview-copy-region-as-mml
+This option is also available as a variant in the context menu on the
+right mouse button (where the region is the preview that has been
+clicked on).  It copies a string into the kill buffer that will in
+@acronym{MML} mode (as is used in gnus' message mode) cause the
+a reference to the respective image file to be inserted into the mail
+or news article.  If you regenerate or otherwise kill the preview in
+its source buffer before the mail or news gets posted, this will fail.
+Also you should generate images you want to send with
+@var{preview-transparent-border}
+@vindex preview-transparent-border
+set to @samp{nil}, or the images will have an ugly border.  Preview
+your mail with @kbd{M-m P}
+@kindex @kbd{M-m P}
+to make sure it looks fine.
+
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
 @itemx Preview/Read Documentation
 @kindex @kbd{C-c C-p C-i}
+@findex preview-goto-info-page
 Read
 @ifinfo
 this
@@ -454,6 +475,15 @@ the @LaTeX{} run and give it the necessary information about where in
 the source file the @LaTeX{} code for the various previews is located
 exactly. The parsing takes a moment and will render Emacs busy.
 
+@item preview-LaTeX-command-replacements
+This variable specifies transformations to be used before calling the
+configured command.  One possibility is to have @samp{\pdfoutput=0 }
+appended to every command starting with @samp{pdf}.  This particular
+setting is available as the shortcut
+@samp{preview-LaTeX-disable-pdfoutput}.  Use the
+@samp{customize-variable} command on
+@samp{preview-LaTeX-command-replacements} for finding out more.
+
 @item preview-required-option-list
 @code{preview-LaTeX-command} uses @code{preview-required-option-list} in
 order to pass options such as @option{auctex}, @option{active} and
@@ -557,7 +587,7 @@ where available. If you are experiencing problems, you might want to try
 playing around with Dvips options (@inforef{Command-line options,,dvips}).
 
 The conversion of the previews into PostScript or @acronym{EPS} files
-gets started after the @LaTeX{} run completes when Emacs recignizes the
+gets started after the @LaTeX{} run completes when Emacs recognizes the
 first image while parsing the error messages.  When Emacs has finished
 parsing the error messages, it activates all detected previews.  This
 entails throwing away any previous previews covering the same areas, and
@@ -587,7 +617,7 @@ bothersome, anyway.
 @vtable @code
 @item preview-image-type
 @itemx preview-image-creators
-What happens when Dvips is finished depends on the configuration of
+What happens when @LaTeX{} is finished depends on the configuration of
 @code{preview-image-type}.  What to do for each of the various settings,
 what options to pass into GhostScript, and what Emacs image type to use
 is specified in @code{preview-image-creators}.  The setting
@@ -601,15 +631,26 @@ here, you might want to reconfigure @code{preview-image-creators} or
 
 Most devices make @previewlatex{} start up a single GhostScript process
 for the entire preview run (as opposed to one per image) and feed it
-either sections of a single PostScript file or separate @acronym{EPS}
-files in sequence for conversion into @acronym{PNG} format which can be
-displayed much faster by Emacs. Actually, not in sequence but backwards
-since you are most likely editing at the end of the document. And as an
-added convenience, any preview that happens to be on-screen is given
-higher priority so that @previewlatex{} will first cater for the images
-that are displayed. There are various options customizable concerning
-aspects of that operation, see the customization group @code{Preview Gs}
-for this.
+either sections of a @acronym{PDF} file (if PDF@LaTeX{} was used), or
+(after running Dvips) sections of a single PostScript file or separate
+@acronym{EPS} files in sequence for conversion into @acronym{PNG} format
+which can be displayed much faster by Emacs.  Actually, not in sequence
+but backwards since you are most likely editing at the end of the
+document.  And as an added convenience, any preview that happens to be
+on-screen is given higher priority so that @previewlatex{} will first
+cater for the images that are displayed. There are various options
+customizable concerning aspects of that operation, see the customization
+group @code{Preview Gs} for this.
+
+Another noteworthy setting of this variable is @samp{dvipng}: in this
+case, the @samp{dvipng}
+@pindex{dvipng}
+program will get run on @samp{DVI} output (or GhostScript with a
+@samp{PNG} device on @samp{PDF} output).  This is in general much
+faster than Dvips and GhostScript.  In that case, the option
+
+@item preview-dvipng-command
+will get run for doing the conversion.
 
 @item preview-gs-options
 Most interesting to the user perhaps is the setting of this variable.

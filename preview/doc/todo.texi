@@ -3,13 +3,6 @@
 
 @itemize @bullet
 
-@item Factor out @AUCTeX{} specific code
-
-and provide alternatives.  This could make @previewlatex{} work with
-Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
-might provide an abstraction layer that would make it possible to embed
-@previewlatex{}'s core mechanisms into Emacs calc.
-
 @item Support other formats than just @LaTeX{}
 
 plain @TeX{} users and Con@TeX{}t users should not have to feel left
@@ -61,9 +54,8 @@ catchers.
 @item Pepper the manual with screen shots and graphics
 
 This will be of interest for the @acronym{HTML} and @TeX{} renditions
-of the texinfo manual.  Except for maybe autoconverted ASCII art
-versions of the @acronym{XBM} icons, the info rendition will usually be
-restricted to text descriptions, however.
+of the texinfo manual.  Since Texinfo now supports images as well, this
+could well be nice to have.
 
 @item Fix duplicates
 
@@ -76,22 +68,9 @@ Various stuff appears several times.
 The current @file{gs.el} interface is fundamentally flawed, not only
 because of a broken implementation.  A general batchable and
 daemonizable rendering infrastructure that can work on all kinds of
-preview images for embedding into buffers is warranted.  This is the
-best option for integrating the current work on @code{dvipng} and should
-also help with
-
-@item Working via @acronym{PDF}
- 
-Going via latexpdf/gs and a single file might be faster than the current
-latex/dvips/gs path and could come handy for previewing documents
-intended for use with pdflatex.
-
-@item Apropos @code{dvipng}
-
-With @code{dvipng}, a high performance and quality converter to bitmap
-exists that would significantly speed up @previewlatex{} operation once
-it was integrated properly.  It is a shame that this has not yet been
-done.
+preview images for embedding into buffers is warranted.  The current
+implementation has a rather adhoc flavor and is not easily extended.
+It will not work outside of AUCTeX, either.
 
 @item Integrate into Ref@TeX{}
 
@@ -99,11 +78,6 @@ When referencing to equations and the like, the preview-images of the
 source rather than plain text should be displayed.  If the preview in
 question covers labels, those should appear in the bubble help and/or a
 context menu.  Apropos:
-
-@item Implement context menus
-
-Right mouse key currently just kills previews.  Offer more options than
-that.
 
 @item Implement @LaTeX{} error indicators
 
@@ -123,14 +97,14 @@ purposes.
 @item Benchmark and kill Emacs inefficiencies
 
 Both the @LaTeX{} run under Emacs control as well as actual image
-insertion in Emacs appear woefully slow.  Why?
+insertion in Emacs could be faster.  CVS Emacs has improved in that
+respect, but it still is slower than desirable.
 
-@item Make a sane gamma (non)correction image @acronym{API} for Emacs
+@item Improve image support under Emacs
 
-It is currently impossible to make Emacs screen colors and generated
-colors match exactly because of gamma correction issues.  At least the
-current @acronym{CVS} version of Emacs gets things less wrong than it
-did previously.  Also general image and color handling in Emacs is
-inefficient and partly defective.
+The general image and color handling in Emacs is inefficient and partly
+defective.  This is still the case in CVS.  One option would be to
+replace the whole color and image handling with @acronym{GDK} routines
+when this library is available, since it has been optimized for it.
 
 @end itemize
