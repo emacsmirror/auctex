@@ -7,6 +7,7 @@ tex-site.el
 INSTALL
 INSTALL.windows
 README
+TODO
 autom4te.*
 #*
 *.elc
