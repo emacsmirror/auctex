@@ -1,4 +1,14 @@
-2002-06-11  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+2002-06-12  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/special.c: on unimplemented \special, give pixel position
+
+	* dvipng/misc.c: Bugfix + literal response on stdin interface
+
+	* dvipng/font.c, dvipng/dvipng.h: Font handling fixed
+
+	* dvipng/dvipng.c: prompt on stdin interface
+
+2002-06-11  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/set.c (SetChar): load chars on PASS_DRAW <sigh>
 	-T -O bug fixed
