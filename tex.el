@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.325 $"))
+	(rev "$Revision: 5.326 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-31 09:06:56 $"))
+    (let ((date "$Date: 2004-02-03 09:23:39 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2558,12 +2558,12 @@ character ``\\'' will be bound to `TeX-electric-macro'."
       (define-key TeX-mode-map "\\" 'TeX-electric-macro))
   (define-key TeX-mode-map "\e\t"   'TeX-complete-symbol) ;*** Emacs 19 way
   
-  (define-key TeX-mode-map "\C-c;"    'TeX-comment-region)
-  (define-key TeX-mode-map "\C-c%"    'TeX-comment-paragraph)
+  (define-key TeX-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
+  (define-key TeX-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
 
-  (define-key TeX-mode-map "\C-c'"    'TeX-comment-paragraph) ;*** Old way
-  (define-key TeX-mode-map "\C-c:"    'TeX-un-comment-region) ;*** Old way
-  (define-key TeX-mode-map "\C-c\""   'TeX-un-comment) ;*** Old way
+  (define-key TeX-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
+  (define-key TeX-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
+  (define-key TeX-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
 
   ;; From tex-buf.el
   (define-key TeX-mode-map "\C-c\C-d" 'TeX-save-document)
@@ -2630,10 +2630,10 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	["Debug Bad Boxes" TeX-toggle-debug-boxes
 	 :style toggle :selected TeX-debug-bad-boxes ]
 	["Recenter Output Buffer" TeX-recenter-output-buffer t]
-	;; ["Uncomment" TeX-un-comment t]
-	["Uncomment Region" TeX-un-comment-region t]
-	;; ["Comment Paragraph" TeX-comment-paragraph t]
 	["Comment Region" TeX-comment-region t]
+	["Uncomment Region" TeX-uncomment-region t]
+	;; ["Comment Paragraph" TeX-comment-paragraph t]
+	;; ["Uncomment" TeX-uncomment t]
         (list "Multifile"
 	      ["Switch to Master File" TeX-home-buffer t]
               ["Save Document" TeX-save-document t]
@@ -2686,14 +2686,8 @@ of AmS-TeX-mode-hook."
 
 ;;; Comments
 
-;; As soon as support for GNU Emacsen before version 21.4 is
-;; discontinued, `TeX-comment-or-uncomment-region' can be replaced by
-;; `comment-or-uncomment-region'.  For now, there is compatibility
-;; code below.
-(fset 'TeX-comment-region 'TeX-comment-or-uncomment-region)
-(fset 'TeX-un-comment-region 'TeX-comment-or-uncomment-region)
+(fset 'TeX-comment-region 'comment-region)
 
-;; Start compatibility code
 (eval-and-compile
   ;; `comment-or-uncomment-region' is not available before Emacs 21.4
   (if (fboundp 'comment-or-uncomment-region)
@@ -2734,9 +2728,8 @@ comment characters instead."
                    (concat "^" comment-start "+") end t)
                   (length (match-string 0)))))
       (comment-region beg end (- arg)))))
-;; End compatibility code
 
-(defun TeX-un-comment ()
+(defun TeX-uncomment ()
   "Delete comment characters from the beginning of each line in a comment."
   (interactive)
   (save-excursion
@@ -2750,14 +2743,14 @@ comment characters instead."
       (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (eobp)))
         (forward-line 1))
       ; Uncomment region
-      (uncomment-region beg (point)))))
+      (TeX-uncomment-region beg (point)))))
 
-(defun TeX-comment-paragraph ()
+(defun TeX-comment-or-uncomment-paragraph ()
   "Inserts or removes comment characters at the beginning of every line
 in the current paragraph."
   (interactive)
   (if (TeX-in-commented-line)
-      (TeX-un-comment)
+      (TeX-uncomment)
     (save-excursion
       (beginning-of-line)
       ;; Don't do anything if we are in an empty line.  If this line
