@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.935 (10 Oct 2004)
+;; Version:    0.936 (11 Oct 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,22 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.936 10Oct2004 Ralf Angeli
+;;  - Small clean-ups and rearrangements.
+;;  - `font-latex-match-variable-keywords',
+;;    `font-latex-match-reference-keywords'
+;;    `font-latex-match-function-keywords'
+;;    `font-latex-match-title-1-keywords', `font-latex-match-title-2-keywords'
+;;    `font-latex-match-title-3-keywords', `font-latex-match-title-4-keywords'
+;;    `font-latex-match-textual-keywords', `font-latex-match-warning-keywords':
+;;     Remove redundant defvars.
+;;  - `font-latex-match-variable', `font-latex-match-reference',
+;;    `font-latex-match-function', `font-latex-match-title-1',
+;;    `font-latex-match-title-2', `font-latex-match-title-3',
+;;    `font-latex-match-title-4', `font-latex-match-textual',
+;;    `font-latex-match-warning': Set default values and make buffer-local.
+;;  - `font-latex-match-reference': Add doc string.
+;;  - `font-latex-set-syntactic-keywords': Do not set comment syntax.
 ;; V0.935 10Oct2004 Ralf Angeli
 ;;  - Do not autoload `texmathp'.
 ;;  - `font-latex-fontify-script': Doc fix.
@@ -599,8 +615,9 @@ Also selects \"<quote\"> versus \">quote\"<."
 (defvar font-latex-title-4-face (font-latex-set-title-face 4)
   "Face for LaTeX titles at level 4.")
 
-(defvar font-latex-match-variable)
-(defvar font-latex-match-variable-keywords)
+
+;;; Variable keywords
+
 (defvar font-latex-match-variable-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-variable-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -626,8 +643,7 @@ Done using `font-latex-match-variable-keywords' as input."
                         font-latex-match-variable-keywords-local
                         font-latex-match-variable-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-variable-keywords-set (symbol value)
   "Update `font-latex-match-variable'.
@@ -648,8 +664,12 @@ e.g. \\setlength[option]{key}
   :set 'font-latex-match-variable-keywords-set
   :group 'font-latex)
 
-(defvar font-latex-match-reference)
-(defvar font-latex-match-reference-keywords)
+(defvar font-latex-match-variable font-latex-match-variable-keywords)
+(make-variable-buffer-local 'font-latex-match-variable)
+
+
+;;; Reference keywords
+
 (defvar font-latex-match-reference-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-reference-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -662,7 +682,6 @@ fontification regexp like so:
 
  (add-to-list 'font-latex-match-reference-keywords-local \"someref\")
  (font-latex-match-reference-make)")
-
 (make-variable-buffer-local 'font-latex-match-reference-keywords-local)
 
 (defun font-latex-match-reference-make ()
@@ -676,8 +695,7 @@ Done using `font-latex-match-reference-keywords' as input."
                         font-latex-match-reference-keywords-local
                         font-latex-match-reference-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-reference-keywords-set (symbol value)
   "Update `font-latex-match-reference'.
@@ -700,8 +718,12 @@ e.g. \\cite[option]{key}
   :set 'font-latex-match-reference-keywords-set
   :group 'font-latex)
 
-(defvar font-latex-match-function)
-(defvar font-latex-match-function-keywords)
+(defvar font-latex-match-reference font-latex-match-reference-keywords)
+(make-variable-buffer-local 'font-latex-match-reference)
+
+
+;;; Function keywords
+
 (defvar font-latex-match-function-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-function-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -727,8 +749,7 @@ Done using `font-latex-match-function-keywords' as input."
                         font-latex-match-function-keywords-local
                         font-latex-match-function-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-function-keywords-set (symbol value)
   "Update `font-latex-match-function'.
@@ -759,10 +780,12 @@ e.g. \\newcommand[option]{key}
   :set 'font-latex-match-function-keywords-set
   :group 'font-latex)
 
-;;;--------------
-;;; Title level 1
-(defvar font-latex-match-title-1)
-(defvar font-latex-match-title-1-keywords)
+(defvar font-latex-match-function font-latex-match-function-keywords)
+(make-variable-buffer-local 'font-latex-match-function)
+
+
+;;; Title keywords (level 1)
+
 (defvar font-latex-match-title-1-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-title-1-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -788,8 +811,7 @@ Done using `font-latex-match-title-1-keywords' as input."
                         font-latex-match-title-1-keywords-local
                         font-latex-match-title-1-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-title-1-keywords-set (symbol value)
   "Update `font-latex-match-title-1'.
@@ -810,10 +832,12 @@ e.g. \\section[option]{key}
   :set 'font-latex-match-title-1-keywords-set
   :group 'font-latex)
 
-;;;--------------
-;;; Title level 2
-(defvar font-latex-match-title-2)
-(defvar font-latex-match-title-2-keywords)
+(defvar font-latex-match-title-1 font-latex-match-title-1-keywords)
+(make-variable-buffer-local 'font-latex-match-title-1)
+
+
+;;; Title keywords (level 2)
+
 (defvar font-latex-match-title-2-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-title-2-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -839,8 +863,7 @@ Done using `font-latex-match-title-2-keywords' as input."
                         font-latex-match-title-2-keywords-local
                         font-latex-match-title-2-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-title-2-keywords-set (symbol value)
   "Update `font-latex-match-title-2'.
@@ -861,11 +884,12 @@ e.g. \\section[option]{key}
   :set 'font-latex-match-title-2-keywords-set
   :group 'font-latex)
 
+(defvar font-latex-match-title-2 font-latex-match-title-2-keywords)
+(make-variable-buffer-local 'font-latex-match-title-2)
 
-;;;--------------
-;;; Title level 3
-(defvar font-latex-match-title-3)
-(defvar font-latex-match-title-3-keywords)
+
+;;; Title keywords (level 3)
+
 (defvar font-latex-match-title-3-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-title-3-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -891,8 +915,7 @@ Done using `font-latex-match-title-3-keywords' as input."
                         font-latex-match-title-3-keywords-local
                         font-latex-match-title-3-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-title-3-keywords-set (symbol value)
   "Update `font-latex-match-title-3'.
@@ -915,11 +938,12 @@ e.g. \\section[option]{key}
   :set 'font-latex-match-title-3-keywords-set
   :group 'font-latex)
 
+(defvar font-latex-match-title-3 font-latex-match-title-3-keywords)
+(make-variable-buffer-local 'font-latex-match-title-3)
 
-;;;--------------
-;;; Title level 4
-(defvar font-latex-match-title-4)
-(defvar font-latex-match-title-4-keywords)
+
+;;; Title keywords (level 4)
+
 (defvar font-latex-match-title-4-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-title-4-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -945,8 +969,7 @@ Done using `font-latex-match-title-4-keywords' as input."
                         font-latex-match-title-4-keywords-local
                         font-latex-match-title-4-keywords)))
            (regexp-opt fields t))
-         "\\)\\>")
-        ))
+         "\\)\\>")))
 
 (defun font-latex-match-title-4-keywords-set (symbol value)
   "Update `font-latex-match-title-4'.
@@ -967,8 +990,12 @@ e.g. \\section[option]{key}
   :set 'font-latex-match-title-4-keywords-set
   :group 'font-latex)
 
-(defvar font-latex-match-textual)
-(defvar font-latex-match-textual-keywords)
+(defvar font-latex-match-title-4 font-latex-match-title-4-keywords)
+(make-variable-buffer-local 'font-latex-match-title-4)
+
+
+;;; Textual keywords
+
 (defvar font-latex-match-textual-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-textual-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -1020,8 +1047,12 @@ e.g. \\section[option]{key}
   :set 'font-latex-match-textual-keywords-set
   :group 'font-latex)
 
-(defvar font-latex-match-warning)
-(defvar font-latex-match-warning-keywords)
+(defvar font-latex-match-textual font-latex-match-textual-keywords)
+(make-variable-buffer-local 'font-latex-match-textual)
+
+
+;;; Warning keywords
+
 (defvar font-latex-match-warning-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-warning-keywords'.
 This must be a list of keyword strings \(not regular expressions\) omitting
@@ -1067,12 +1098,8 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
   :set 'font-latex-match-warning-keywords-set
   :group 'font-latex)
 
-(defun font-latex-match-warning-function (limit)
-  "Find `font-latex-match-warning' keywords up to LIMIT for font-lock."
-  (when (re-search-forward  font-latex-match-warning limit t)
-    (goto-char (match-end 0))
-    (store-match-data (list (match-beginning 0) (point)))
-    t))
+(defvar font-latex-match-warning font-latex-match-warning-keywords)
+(make-variable-buffer-local 'font-latex-match-warning)
 
 
 ;;; Keywords
@@ -1242,13 +1269,11 @@ have changed."
     (setq font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}"
-			      "\\(.?\\).*\\(\n\\)")
-		     (1 "<") (2 "|" t)))
+		   `(,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}.*\\(\n\\)")
+		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}"
-			      "\\(.?\\)")
-		     (1 "|" t) (2 "<"))))
+		   `(,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}")
+		     (1 "|" t))))
     (unless (= (length verb-like-commands) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-like-commands "\\)"
@@ -1463,16 +1488,17 @@ have changed."
 
 
 
+(defun font-latex-match-warning-function (limit)
+  "Find `font-latex-match-warning' keywords up to LIMIT for font-lock."
+  (when (re-search-forward  font-latex-match-warning limit t)
+    (goto-char (match-end 0))
+    (store-match-data (list (match-beginning 0) (point)))
+    t))
+
 (defun font-latex-match-reference (limit)
+  "Fontify things like \\ref{text} up to LIMIT."
   (if font-latex-match-reference
       (font-latex-match-command-outside-arguments font-latex-match-reference
-;;;   (eval-when-compile
-;;;     (concat "\\\\" "\\("
-;;;             (mapconcat 'identity
-;;;              '("[A-Za-z]*cite[A-Za-z]*" "label" "\\(page\\|v\\|eq\\)?ref"
-;;;                "index" "glossary" "\\(footnote\\(mark\\|text\\)?\\)")
-;;;              "\\|")
-;;;      "\\)\\>"))
                                                   limit nil nil)))
 
 (defun font-latex-match-function (limit)
@@ -1480,31 +1506,37 @@ have changed."
   (if font-latex-match-function
       (font-latex-match-command-outside-arguments font-latex-match-function
                                                   limit nil t)))
+
 (defun font-latex-match-textual (limit)
   "Fontify things like \\title{text} up to LIMIT."
   (if font-latex-match-textual
       (font-latex-match-command-outside-arguments font-latex-match-textual
                                                   limit nil t)))
+
 (defun font-latex-match-title-1 (limit)
   "Fontify things like \\chapter{text} up to LIMIT."
   (if font-latex-match-title-1
       (font-latex-match-command-outside-arguments font-latex-match-title-1
                                                   limit nil t)))
+
 (defun font-latex-match-title-2 (limit)
   "Fontify things like \\section{text} up to LIMIT."
   (if font-latex-match-title-2
       (font-latex-match-command-outside-arguments font-latex-match-title-2
                                                   limit nil t)))
+
 (defun font-latex-match-title-3 (limit)
   "Fontify things like \\subsection{text} up to LIMIT."
   (if font-latex-match-title-3
       (font-latex-match-command-outside-arguments font-latex-match-title-3
                                                   limit nil t)))
+
 (defun font-latex-match-title-4 (limit)
   "Fontify things like \\subsubsection{text} up to LIMIT."
   (if font-latex-match-title-4
       (font-latex-match-command-outside-arguments font-latex-match-title-4
                                                   limit nil t)))
+
 (defun font-latex-match-variable (limit)
   "Fontify things like \\newcommand{stuff} up to LIMIT."
   (if font-latex-match-variable
