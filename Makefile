@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.58 1993-07-27 01:12:27 amanda Exp $
+# $Id: Makefile,v 5.59 1993-07-27 02:50:27 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -161,8 +161,8 @@ install: LispInstall LaInstall DocInstall
 	@echo "** Do NOT try to install the auto files with Lucid Emacs!"
 	@echo "** Lucid Emacs batch mode is broken and will crash, at least"
 	@echo "** in version 19.6 and earlier.  You can install them from"
-	@echo "** an interactive emacs session by typing
-	@echo "** `M-x TeX-auto-generate-global RET'."
+	@echo "** an interactive emacs session by typing"
+	@echo "** \"M-x TeX-auto-generate-global RET\"."
 	@echo "**********************************************************"
 	@echo
 
