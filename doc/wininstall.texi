@@ -58,19 +58,6 @@ setting).
 If you are using XEmacs, of course use @samp{--with-xemacs} in the same
 manner.
 
-@item --with-texmf-dir=@var{dir}
-This will specify the directory where your @TeX{} installation sits. If
-your @TeX{} installation does not conform to the TDS (@TeX{} directory
-standard), you may need to specify more options to get everything in
-place. See
-@ifset rawfile
-the `Configure' section in the @file{INSTALL} file
-@end ifset
-@ifclear rawfile
-@ref{Configure}
-@end ifclear
-for more information about the available options.
-
 @item --with-lispdir=@var{/dir}
 This may be needed for GNU Emacs installation, but hopefully
 @file{configure} should figure this out by itself. Don't use this for
@@ -79,7 +66,27 @@ XEmacs, rather use
 @item --with-packagedir=@var{/dir}
 which gives the location of the package directory for XEmacs where stuff
 should be installed. Again, hopefully this is not necessary to specify.
+
+@item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
+This option allows to specify the directories to be used for file
+searches, e.g. for completion of LaTeX or BibTeX style file names.  They
+will be used in the variable @code{TeX-macro-global}.
+
+@file{configure} will try to determine the right value for this option
+but will only succeed if it finds the necessary programs of the @TeX{}
+system in the system path.
+
+@item --with-auto-dir=@var{/dir}
+Directory containing automatically generated information.
 @end table
+
+Some additional information about the above options may be found in
+@ifset rawfile
+the `Configure' section in the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Configure}.
+@end ifclear
 
 @ignore
 Some executables might not be found in your path. That is not a good
