@@ -41,14 +41,7 @@ devel team).
 
 Most of the problems encountered come from interaction with GhostScript.
 It is a good idea to have a fairly recent version of GhostScript
-installed.  In particular, the device names have changed over time,
-so you should check that the devices demanded by the customizable
-variable @code{preview-image-creators} fit your version of GhostScript,
-at least the entry corresponding to the current value of
-@code{preview-image-type}.  While not being best in file size and image
-quality, setting @code{preview-image-creators} to @code{jpeg} should
-probably be one of the best bets, since that device name has not changed
-in quite some time.
+installed.  
 
 When GhostScript fails, the necessary information and messages from
 Ghostscript go somewhere.  If GhostScript fails before starting to
@@ -57,8 +50,17 @@ buffer you can see with @kbd{C-c C-l}.  If GhostScript fails while
 processing a particular image, this image will be tagged with clickable
 buttons for the error description and for the corresponding source file.
 
-The default options configurable with
+@strong{Important note:} GNU GhostScript 6.53 and 7.05 (and possibly
+later) has a security bug which can seriously affect preview-latex.
+Rather than fail, preview-latex disables security for the involved known
+versions exhibiting this bug.  If you have any doubts concerning the
+source of included PostScript code, rather install a recent version of
+AFPL GhostScript (v7.04 is known to work).  If a newer version of GNU
+GhostScript has been released since this has been written, you can try
+that out too: if the bug persists, one out of two previews will fail.
+If not, PostScript code will be executed in a secure setting.
 
+The default options configurable with
 @display
 @kbd{M-x customize-variable @key{RET} preview-gs-options @key{RET}}
 @end display
@@ -69,6 +71,16 @@ make GhostScript 5.50 fail, but should work under GhostScript 6.51 and
 later.  If you are experiencing problems, it might help to customize
 them away.  Of course, this also takes away the joy of antialiasing, so
 upgrading GhostScript might not be the worst idea after all.
+
+The device names have changed over time, so when using an old
+GhostScript, you may have problems with the devices demanded by the
+customizable variable @code{preview-image-creators}. In that case, make
+sure they fit your version of GhostScript, at least the entry
+corresponding to the current value of @code{preview-image-type}.  While
+not being best in file size and image quality, setting
+@code{preview-image-creators} to @code{jpeg} should probably be one of
+the best bets, since that device name has not changed in quite some
+time.
 
 @node Font problems with Dvips, Emacs problems, Problems with GhostScript, Known problems
 @section Font problems with Dvips
