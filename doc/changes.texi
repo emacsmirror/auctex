@@ -1,6 +1,10 @@
 @section News in 9.9
 
 @itemize @bullet
+@item Simple imenu support for La@TeX{}.
+
+@item Workaround for 20.3 bugs. 
+
 @item The `Spell' command now works on all open buffers in the
 document.  Patch by Jason Stewart <jasons@@cs.unm.edu>.
 

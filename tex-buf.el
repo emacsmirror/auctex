@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9j
+;; Version: 9.9k
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -547,6 +547,7 @@ Error parsing on C-x ` should work with a bit of luck."
     (setq TeX-command-buffer (current-buffer))
     (with-output-to-temp-buffer buffer)
     (set-buffer buffer)
+    (setq buffer-read-only nil)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (comint-exec buffer name TeX-shell nil

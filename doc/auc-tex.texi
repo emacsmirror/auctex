@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.121 1998-06-10 09:25:42 abraham Exp $
+@c $Id: auc-tex.texi,v 1.122 1998-11-20 13:55:40 abraham Exp $
 
 @finalout
 @titlepage
@@ -1564,56 +1564,12 @@ To be able to display non-ASCII characters you will need an appropriate
 font and a version of GNU Emacs capable of displaying 8-bit characters.
 I believe all emacs versions except plain Emacs 18 are capable of this.
 For GNU Emacs 19, @pxref{European Display,,,emacs, The GNU Emacs
-Editor}.  Other relevant packages are:
-
-@table @file
-@item remap
-Supports lots of different 7-bit and 8-bit character sets for GNU Emacs
-19.  Mostly useful if you have seldomly used character sets, or need to
-use different character set for keyboard, buffer, and display.  An
-overkill if you just need ISO 8859 Latin 1.  Currently in alpha test,
-but available by ftp from the host @t{sunsite.auc.dk} in
-@file{/packages/auctex/}.
-
-To get dead keys for @TeX{}, install remap and insert the following in
-your @file{.emacs} or @file{site-start.el} file.
-
-@lisp
-(require 'remap)
-
-(defvar all-dead-keys "~'`^"
-  "Dead keys used by remap")
-
-(remap-define-map "Dead Key"
-  (apply 'append (mapcar 'remap-dead-map all-dead-keys)))
-
-(remap-define-map "TeX Dead Key"
-  (remap-map "Dead Key" (remap-add "Ascii" "~TeX")))
-
-(setq remap-setup-alist
-      '(("7-bit"  "Raw"          "L1" "US" "Ctrl" "~TeX")
-        ("8-bit"  "Raw"          "L1" "L1" "Ctrl" "Raw")
-        ("Dead/7" "Dead Key"     "L1" "US" "Ctrl" "~TeX")
-        ("Dead/8" "Dead Key"     "L1" "L1" "Ctrl" "Raw")
-        ("TeX"    "TeX Dead Key" "L1" "US" "Ctrl" "Raw")))
-@end lisp
-
-You can now enable TeX dead keys with 
-@example
-@kbd{M-x remap-setup-choose RET TeX RET}
-@end example
-@end table
+Editor}.  
 
 A compromise is to use use an European character set when editing the
 file, and convert to @TeX{} macros when reading and writing the files.
 
 @table @file
-@item iso-tex.el
-@cindex @file{iso-tex.el}
-This file automatically converts between ISO 8859 Latin 1 encoding and
-La@TeX{} encodings of West European characters.  It is available by ftp
-from @t{aida.intellektik.informatik.th-darmstadt.de} in the directory
-@file{/pub/gene/Emacs}.
 @item iso-cvt.el
 @cindex @file{iso-cvt.el}
 Much like @file{iso-tex.el} but is bundled with Emacs 19.23 and later.

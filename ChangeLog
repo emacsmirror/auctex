@@ -1,3 +1,25 @@
+1998-11-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9k released.
+
+1998-11-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-load-style-file): Protect `byte-compile-file'.
+	Reported by Kurt Swanson <kurt@dna.lth.se>.
+
+	* latex.el (LaTeX-outline-name): New function.
+	(LaTeX-imenu-create-index-function): New function.
+	(LaTeX-common-initialization): Use it.
+
+	* tex-buf.el (TeX-run-interactive): Make sure buffer is writable
+	(needed in Emacs 20.3).
+	Reported by many.
+
+1998-10-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/auc-tex.texi (European): Removed references to obsolete
+	packages. 
+
 1998-07-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9j released.
