@@ -16,18 +16,20 @@ time, at least GNU Emacs-21.1 under the X window system, AUC TeX
 (11.14 recommended, see below), a working LaTeX installation and
 GhostScript are required.  This version also supports XEmacs-21, best
 in version 21.4.9 or later.  The various Windows ports of XEmacs
-should work out of the box.  Recent CVS versions of Windows GNU Emacs
-can reportedly be made to work, too.
+should work out of the box.  Really.  Recent CVS versions of Windows
+GNU Emacs can reportedly be made to work, too.
 
 Release 0.7.6 is another consolidation release since AFPL GhostScript
 releases 7.x were inexplicably affected negatively by the latest bug
 workarounds for GNU GhostScript versions.  Treatment of
 multi-directory projects has been corrected, but you need at least
-AUCTeX-11.14 to make use of it.  An added feature can be customized
+AUC TeX 11.14 to make use of it.  An added feature can be customized
 into the new `preview-required-option-list' variable: checking the
 `counters' option will make it possible to retain correct equation and
 section numbering even when you are regenerating single previews.  The
-XEmacs toolbar icon is nicer, too.
+XEmacs toolbar icon is nicer, too.  Various bugs have been fixed and
+the installation process does a better job of getting things to work
+particularly for Windows users.
 
 The README file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
