@@ -1,5 +1,8 @@
 2002-07-18  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (face-attribute): shift stuff to compile time.
+	(preview-with-LaTeX-menus, preview-mode-setup): cosmetic changes.
+
 	* preview.el (preview-LaTeX-command): Use Windows-friendly
 	quoting.
 	(preview-dump-command, preview-undump-command): Same here.
