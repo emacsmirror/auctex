@@ -1,3 +1,7 @@
+2002-04-03  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.spec: Use texmfdir, slight other edits
+
 2002-04-02  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* aclocal.m4: escaped usage of $texmfdir
