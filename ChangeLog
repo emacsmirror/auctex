@@ -1,3 +1,8 @@
+2002-12-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex.el (LaTeX-label): Fix a thinko/type where label would be
+	non-nil in cases where a label should not be asked for.
+
 2002-12-10  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/amsmath.el (LaTeX-amsmath-label): New variable.
