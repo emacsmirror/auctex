@@ -77,10 +77,10 @@ must have backslashes in, rather than forward slashes.
 @item
 Install gnu make if not already installed.
 @item
-Run @code{make} in the @previewlatex directory.
+Run @code{make} in the @previewlatex{} directory.
 	
 @item
-Run @code{make install} in the @previewlatex directory.
+Run @code{make install} in the @previewlatex{} directory.
 
 @item
 Load @file{circ.tex} into XEmacs and see if you can generate previews.
