@@ -3,7 +3,7 @@
 ;; Maintainer: Patrick Gundlach <pg@levana.de>
 ;; Version: 11.14
 ;; Keywords: wp
-;; X-URL: http://www.gnu.org/auctex/
+;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
 ;; Last Change: Wed Apr  9 20:14:02 2003
