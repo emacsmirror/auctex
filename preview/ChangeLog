@@ -1,3 +1,7 @@
+2004-10-23  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview): Change group to 'AUCTeX.
+
 2004-10-21  David Kastrup  <dakas@users.sourceforge.net>
 
 	* prv-xemacs.el (preview-mode-setup): Add `desktop-save-buffer'

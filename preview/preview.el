@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.219 2004-10-21 16:06:10 dakas Exp $
+;; $Id: preview.el,v 1.220 2004-10-23 16:54:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -67,7 +67,7 @@ preview-latex's bug reporting commands will probably not work.")))
 	     'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
-  :group 'AUC-TeX
+  :group 'AUCTeX
   :prefix "preview-"
   :link '(custom-manual "(preview-latex)Top")
   :link '(info-link "(preview-latex)The Emacs interface")
@@ -3048,7 +3048,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.219 $"))
+	(rev "$Revision: 1.220 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3059,7 +3059,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-21 16:06:10 $"))
+    (let ((date "$Date: 2004-10-23 16:54:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
