@@ -12,11 +12,28 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
+@chapter Known problems
 @end ifnottex
 @c -----------------------
 @cindex @kbd{M-x preview-report-bug @key{RET}}
 @cindex @code{preview-report-bug}
 @cindex Report a bug
+
+A number of issues are known concerning the interoperation with various
+other software.
+
+@ifclear rawfile
+@menu
+* Problems with GhostScript::   
+* Font problems with Dvips::    
+* Emacs problems::              
+* AUC TeX prior to 11.0::    
+* LaTeX international characters::  
+* x-symbol interoperation::     
+* Middle-clicks paste instead of toggling::  
+@end menu
+@end ifclear
+
 Some of the known problems can be solved by moving to newer versions of
 the problematic software, by simple patches, or in one case, by changing
 OS(!). If you find something not mentioned here, please send a bug
