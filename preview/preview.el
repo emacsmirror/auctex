@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.84 2002-03-23 12:17:28 dakas Exp $
+;; $Id: preview.el,v 1.85 2002-03-23 13:08:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1414,8 +1414,11 @@ name(\\([^)]+\\))\\)" nil t)
 ;;; \\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)
 ;;; Deep breath: an opening paren either at the start od the line or
 ;;; preceded by a space, followed by a file name (which we take to be
-;;; consiting of anything but parens, space or newline), followed by
+;;; consiting of anything but parens, space or newline), followed
+;;; immediately by 0 or more closing parens followed by
 ;;; either a space or the end of the line: a just opened file.
+;;; Position for searching immediately after the file name so as to
+;;; not miss closing parens or something.
 ;;; (match-string 2) is the file name.
 ;;; match-alternative 3:
 ;;; )+\\( \\|$\\)
@@ -1688,7 +1691,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.84 $"))
+	(rev "$Revision: 1.85 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
