@@ -1,3 +1,13 @@
+1999-10-28  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10j released.
+
+1999-10-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (dist): Create a .nosearch in the style directory.
+	(install-lisp): Ditto.
+	Suggested by Markus Rost <rost@IAS.EDU>.
+
 1999-10-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10i released.
@@ -19,7 +29,7 @@
 	* tex.el (TeX-add-style-hook): Don't add the same hook twice.
 	Suggested by Jarl Friis <jarl@diku.dk>.
 
-	* text.el: Removed portability code for old Emacsen.
+	* tex.el: Removed portability code for old Emacsen.
 
 1999-10-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 

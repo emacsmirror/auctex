@@ -5,7 +5,7 @@
 Just a copy of the german style support.
 
 @item
-Removed support for emacsen older than XEmacs 19.14 and Emacs 19.30.
+Removed support for Emacs 18 and 19.
 
 @item @code{mdwlist} support.
 Patch by Stephen Heilbronner <heilbron@@nm.informatik.uni-muenchen.de>.

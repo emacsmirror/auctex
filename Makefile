@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10i
+# Version: 9.10j
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -135,6 +135,10 @@ install-lisp:	some
 	    $(MV) style/*.elc $(aucdir)/style ; \
 	    $(CP) $(AUCSRC) $(aucdir) ; \
 	    $(CP) style/*.el $(aucdir)/style ; \
+	    touch $(aucdir)/style/.nosearch ; \
+	    if [ ! -d $(aucdir)/auto ]; then mkdir $(aucdir)/auto; \
+	                                else true; fi ; \
+	    touch $(aucdir)/auto/.nosearch ; \
 	else \
 	    echo "Leaving compiled files in place."; \
 	fi
@@ -197,6 +201,7 @@ dist:
 	mkdir auctex-$(TAG)/doc 
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) auctex-$(TAG)/style
+	touch auctex-$(TAG)/style/.nosearch
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
