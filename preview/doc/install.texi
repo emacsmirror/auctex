@@ -219,13 +219,17 @@ visible, and @kbd{C-c C-p C-d} should produce previews.
 
 If you used @code{--with-packagedir}, you have to make sure that the
 directory @file{lisp/preview} under the directory you specified is in
-XEmacs' @code{load-path} variable.
+XEmacs' @code{load-path} variable.  The package system should normally
+cater for that.
 
-For GNU Emacs, the recommended way to activate @previewlatex{} is to
-copy the file @file{preview-latex.el} (which is generated during the
-installation) to a place where your installation keeps automatically
-loaded startup files.  Alternatively, you can copy it to some place on
-your @code{load-path} and load it with
+With Emacs (or if you explicitly disabled use of the package system),
+the file @file{preview-latex.el} (which is generated during the
+installation) may already be in a directory of the @file{site-start.d/}
+variety if your Emacs installation provides it and you followed the
+suggestion in the configuration section above.  In that case it should
+be automatically loaded on startup and nothing else needs to be done.
+If not, it should at least have been placed somewhere in your
+@var{load-path}.  You can then load it with
 
 @example
 (load "preview-latex.el" nil t t)

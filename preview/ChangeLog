@@ -1,3 +1,8 @@
+2005-03-05  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Loading the package): Explain that
+	preview-latex.el should already be installed in-place.
+
 2005-03-03  David Kastrup  <dak@gnu.org>
 
 	* Release 0.9
