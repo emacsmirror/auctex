@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.55 1993-07-17 06:26:47 amanda Exp $
+# $Id: Makefile,v 5.56 1993-07-18 02:41:32 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -25,8 +25,8 @@ infodir = $(prefix)/info
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located.
-elispdir=/home/dist/lib/emacs/lisp
-#elispdir=$(prefix)/lib/emacs/19.16/lisp
+#elispdir=/home/dist/lib/emacs/lisp
+elispdir=$(prefix)/lib/emacs/19.16/lisp
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -35,8 +35,10 @@ elispdir=/home/dist/lib/emacs/lisp
 # TeX-lisp-directory in tex-site.el
 #
 #aucdir=/home/pd/share/emacs/auctex7.2
-#aucdir=$(prefix)/lib/emacs/site-lisp/auctex
-aucdir=/tmp
+aucdir=$(prefix)/lib/emacs/site-lisp/auctex
+
+# Name of your emacs binary
+EMACS=emacs-19.16
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -49,13 +51,13 @@ aucdir=/tmp
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-EMACS=/home/dist/bin/emacs -batch -q lpath.el -f eval-current-buffer
+BATCH=$(EMACS) -batch -q lpath.el -f eval-current-buffer
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC= $(EMACS) -f batch-byte-compile
+ELC= $(BATCH) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= $(EMACS) -l tex-auto -f TeX-auto-generate-global
+AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
 AUTOC= $(ELC)
@@ -269,7 +271,6 @@ dist:
 
 ftp:	
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
-	@echo "]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making ftp copy of lacheck for whatever release it is"
 	@echo "**********************************************************"
