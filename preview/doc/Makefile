@@ -6,10 +6,10 @@ all: preview-latex.dvi preview-latex
 
 dist: preview-latex INSTALL README preview-latex_toc.html preview-latex.ps
 
-preview-latex_toc.html: preview-latex.texi
+preview-latex_toc.html: preview-latex.texi install.texi readme.texi copying.texi
 	texi2html -split_node preview-latex.texi
 
-preview-latex.dvi: preview-latex.texi
+preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 	-texindex preview-latex.ky
 	-texindex preview-latex.fn
