@@ -1,5 +1,7 @@
 2002-04-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.1
+
 	* prv-xemacs.el (preview-supports-image-type): New macro.
 
 	* prv-emacs.el (preview-supports-image-type): New macro.

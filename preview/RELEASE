@@ -21,8 +21,10 @@ the first time, workable XEmacs support is included.  The LaTeX style
 has gained a load of new options.  It is now possible to generate all
 image files for a document with a single run of GhostScript on a
 single PostScript file from Dvips.  Release 0.7.1 fixes various issues
-under XEmacs including an installation problem, and offers some
-additional performance enhancements.
+with XEmacs including an installation problem and has a workaround
+for a very ugly bug in Mule-XEmacs killing off all image display once
+dired is loaded.  Some additional performance enhancements have been
+achieved.
 
 The README file has been changed in order to provide adequate
 information for preinstalled distributions.  In that case, including
