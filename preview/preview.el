@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.207 2004-04-11 19:58:08 dakas Exp $
+;; $Id: preview.el,v 1.208 2004-04-12 13:05:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2781,9 +2781,9 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
-    ("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\
+    ("\\`\\(e?\\(pdf\\)?e?\\(la\\)?tex\\)\
 \\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\1\\2\\3tex -ini \"&\\1\\2\\3tex\" " preview-format-name ".ini \\7")))
+     . ("\\1 -ini \"&\\1\" " preview-format-name ".ini \\7")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -2791,9 +2791,10 @@ This is passed through `preview-do-replacements'."
 		  (cons string (repeat (choice symbol string))))))
 
 (defcustom preview-undump-replacements
-  '(("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
+  '(("\\`\\(e?\\(pdf\\)?e?\\(la\\)?tex\\)\
+\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
 \\input{\\([^}]*\\)}.*\\'"
-     . ("\\1\\2\\3tex\\4 \"&" preview-format-name "\" \\7")))
+     . ("\\1 \"&" preview-format-name "\" \\7")))
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -2964,7 +2965,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.207 $"))
+	(rev "$Revision: 1.208 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2975,7 +2976,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-11 19:58:08 $"))
+    (let ((date "$Date: 2004-04-12 13:05:38 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
