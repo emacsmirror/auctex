@@ -944,6 +944,39 @@ header is at the start of a line."
 		  (error "Unrecognized header")))))))
 
 
+;;; Fonts
+
+(defcustom ConTeXt-font-list '((?\C-b "{\\bf " "}")
+			   (?\C-c "{\\sc " "}")
+			   (?\C-e "{\\em " "}")
+			   (?\C-i "{\\it " "}")
+			   (?\C-r "{\\rm " "}")
+			   (?\C-s "{\\sl " "}")
+			   (?\C-t "{\\tt " "}")
+			   (?\C-d "" "" t))
+  "List of fonts used by `TeX-font'.
+
+Each entry is a list.
+The first element is the key to activate the font.
+The second element is the string to insert before point, and the third
+element is the string to insert after point.
+If the fourth and fifth element are strings, they specify the prefix and
+suffix to be used in math mode.
+An optional fourth (or sixth) element means always replace if t."
+  :group 'TeX-macro
+  :type '(repeat
+	   (group
+	    :value (?\C-a "" "")
+	    (character :tag "Key")
+	    (string :tag "Prefix")
+	    (string :tag "Suffix")
+	    (option (group
+		     :inline t
+		     (string :tag "Math Prefix")
+		     (string :tag "Math Suffix")))
+	    (option (sexp :format "Replace\n" :value t)))))
+
+
 ;; Imenu support
 
 (defun ConTeXt-outline-name ()
@@ -1429,6 +1462,9 @@ There might be text before point."
   ;;(make-local-variable 'outline-heading-end-regexp)
   (setq TeX-header-end (ConTeXt-header-end)
 	TeX-trailer-start (ConTeXt-trailer-start))
+
+  ;; font switch support
+  (set (make-local-variable 'TeX-font-list) ConTeXt-font-list)
 
   ;; imenu support
   (set (make-local-variable 'imenu-create-index-function)
