@@ -99,6 +99,16 @@ performed as specified in `TeX-expand-list'."
   :group 'TeX-command
   :type 'string)
 
+(defcustom TeX-mode-hook nil
+  "A hook run in TeX mode buffers."
+  :type 'hook
+  :group 'TeX-misc)
+
+(defcustom AmS-TeX-mode-hook nil
+  "A hook run in AmS TeX mode buffers."
+  :type 'hook
+  :group 'TeX-misc)
+
 ;; This is the major configuration variable.  Most sites will only
 ;; need to change the second string in each entry, which is the name
 ;; of a command to send to the shell.  If you use other formatters
@@ -168,7 +178,7 @@ TeX-run-command: Start up the process and show the output in a
 separate buffer.  Check that there is not two commands running for the
 same file.  Return the process object.
 
-TeX-run-format: As TeX-run-command, but assume the output is created
+TeX-run-format: As `TeX-run-command', but assume the output is created
 by a TeX macro package.  Return the process object.
 
 TeX-run-TeX: For TeX output.
@@ -194,7 +204,7 @@ PC-9801.
 
 To create your own hook, define a function taking three arguments: The
 name of the command, the command string, and the name of the file to
-process.  It might be useful to use TeX-run-command in order to
+process.  It might be useful to use `TeX-run-command' in order to
 create an asynchronous process.
 
 If the fourth element is non-nil, the user will get a chance to
@@ -550,7 +560,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.358 $"))
+	(rev "$Revision: 5.359 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -565,7 +575,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-04 19:54:31 $"))
+    (let ((date "$Date: 2004-05-05 16:24:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -695,7 +705,7 @@ See `TeX-source-specials-active-flag'."
 (defun TeX-source-specials-expand-options ()
   "Return source specials command line option for TeX commands.
 The return value depends on the value of `TeX-source-specials-active-flag'.
-If this is `nil', an empty string will be returned."
+If this is nil, an empty string will be returned."
   (if TeX-source-specials-active-flag
       (concat
        TeX-source-specials-tex-flags
@@ -1655,7 +1665,7 @@ Special commands:
 \\{TeX-mode-map}
 
 Entering `plain-tex-mode' calls the value of `text-mode-hook',
-then the value of TeX-mode-hook, and then the value
+then the value of `TeX-mode-hook', and then the value
 of plain-TeX-mode-hook."
   (interactive)
   (plain-TeX-common-initialization)
@@ -2287,10 +2297,10 @@ Access to the value should be through the function `TeX-output-extension'.")
   (make-variable-buffer-local 'TeX-output-extension)
 
 (defvar TeX-view-extension "dvi"
-  "Extension of TeX output file for viewing.  If nil, (`TeX-output-extension')
-is used.  This variable could be changed by running File commands,
-like dvips.
-Access to the value should be through the function `TeX-view-extension'.")
+  "Extension of TeX output file for viewing.
+If nil, the variable `TeX-output-extension' is used.  This variable could be
+changed by running File commands, like dvips.  Access to the value should be
+through the function `TeX-view-extension'.")
 
   (make-variable-buffer-local 'TeX-view-extension)
 
@@ -2870,8 +2880,8 @@ Special commands:
 \\{AmSTeX-mode-map}
 
 Entering AmS-tex-mode calls the value of `text-mode-hook',
-then the value of TeX-mode-hook, and then the value
-of AmS-TeX-mode-hook."
+then the value of `TeX-mode-hook', and then the value
+of `AmS-TeX-mode-hook'."
   (interactive)
   (plain-TeX-common-initialization)
   (use-local-map AmSTeX-mode-map)

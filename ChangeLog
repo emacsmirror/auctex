@@ -1,5 +1,13 @@
 2004-05-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex.el (TeX-command-list, TeX-source-specials-expand-options)
+	(plain-tex-mode, TeX-view-extension, ams-tex-mode): Doc fixes.
+
+	* tex.el (TeX-mode-hook, AmS-TeX-mode-hook): Have always been run,
+	but were not declared with defcustom (or defvar).
+
+	* latex.el (LaTeX-mode-hook): Ditto.
+
 	* Makefile.in (tar-ball-clean): New.
 
 	* autogen.sh: Create README and TODO.

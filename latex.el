@@ -4149,6 +4149,11 @@ This happens when \\left is inserted."
 	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
   "Regexp matching names of LaTeX macros that should have their own line.")
 
+(defcustom LaTeX-mode-hook nil
+  "A hook run in LaTeX mode buffers."
+  :type 'hook
+  :group 'LaTeX)
+
 ;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
