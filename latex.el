@@ -2565,10 +2565,9 @@ space does not end a sentence, so don't break a line there."
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
     ;; For Japanese (FIXED on 2005-02-11)
-    (if (featurep 'mule)
-	(if (TeX-looking-at-backward "\\cj")
-	    (backward-char 1)
-	  (skip-chars-backward "^ \n"))
+    (if (and (featurep 'mule)
+	     (TeX-looking-at-backward "\\cj"))
+	(backward-char 1)
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
     ;; while searching backward, search forward again.
