@@ -42,11 +42,10 @@ in XEmacs.)
 
 @item
 For macro completion in doc@TeX{} mode the AUC@TeX{} style files
-@file{doc.el}, @file{ltxdoc.el} and @file{ltx-base.el} were contributed
-by Frank K@"uster <frank@@kuesterei.ch>.  The latter provides general
-support for low-level La@TeX{} macros and may be used with La@TeX{}
-class and style files as well.  It is currently not loaded automatically
-for those files.
+@file{doc.el}, @file{ltxdoc.el} and @file{ltx-base.el} were included.
+The latter provides general support for low-level La@TeX{} macros and
+may be used with La@TeX{} class and style files as well.  It is
+currently not loaded automatically for those files.
 
 @item
 Support for Con@TeX{}t with a separate Con@TeX{}t mode is now included.
