@@ -1,3 +1,17 @@
+2004-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* aclocal.m4 (TEX_INPUT_DIRS): New function.
+
+	* configure.in: Use `TEX_INPUT_DIRS' for the expansion of
+	`@texinputdirs@' in `tex-site.el.in'.
+
+	* tex-site.el.in: Updated header.
+	(TeX-macro-global): Moved here from `tex.el'.  Use
+	`@texinputdirs@'.
+
+	* tex.el: Require `tex-site' at compile time.
+	(TeX-macro-global): Moved to `tex-site.el.in'.
+
 2004-05-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-toggle-source-specials): Added missing call to
