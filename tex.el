@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.11 1994-04-20 16:59:10 amanda Exp $
+;; Version: $Id: tex.el,v 5.12 1994-04-21 14:05:13 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1035,8 +1035,6 @@ of AmS-TeX-mode-hook."
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
-  (make-local-variable 'ispell-tex-major-modes)
-  (setq ispell-tex-major-modes (list major-mode))
 
   ;; Redefine some standard varaibles
   (make-local-variable 'paragraph-start)
@@ -2234,6 +2232,12 @@ what in fact did happen."))
 	 (ispell))
 	(t 
 	 (spell-buffer))))
+
+;; Some versions of ispell 3 use this.
+(defvar ispell-tex-major-modes nil)
+(setq ispell-tex-major-modes
+      (append '(plain-tex-mode ams-tex-mode latex-mode)
+	      ispell-tex-major-modes))
 
 (provide 'tex)
 

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.66 1994-04-20 16:58:59 amanda Exp $
+;; $Id: tex-buf.el,v 1.67 1994-04-21 14:05:03 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -21,9 +21,17 @@
 
 ;;; Code:
 
-(require 'tex-site)
+(defvar no-doc
+  "This function is part of AUC TeX, but has not yet been loaded.
+Full documentation will be available after autoloading the function."
+  "Documentation for autoload functions.")
 
-;;; Customization
+;;; Customization:
+
+(defvar TeX-lisp-directory "/usr/local/lib/emacs/site-lisp/auctex/"
+  "*The directory where the AUC TeX lisp files are located.")
+
+(setq load-path (cons TeX-lisp-directory load-path))
 
 (defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
   "*Use asynchronous processes.")

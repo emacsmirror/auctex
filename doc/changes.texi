@@ -21,6 +21,7 @@ Peter Barth @samp{<barth@@mpi-sb.mpg.de>},
 Andy Piper @samp{<ajp@@eng.cam.ac.uk>},
 Richard Stanton @samp{<stanton@@haas.berkeley.edu>},
 Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>},
+Graham Gough @samp{<graham@@cs.man.ac.uk>},
 and probably more.@refill
 
 @itemize @bullet

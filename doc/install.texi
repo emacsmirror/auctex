@@ -50,6 +50,10 @@ directory.  For Lucid Emacs and Emacs 18 you can copy it to the
 @file{.../emacs/lisp/} directory, just remember to move the file when
 you install a new version of Emacs.
 
+Alternatively, you can insert the code from @file{tex-site.el} directly
+into your @file{.emacs} or @file{site-start.el} file, if you want to
+save the overhead of opening another file.
+
 Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
 paths for installation of the files.  Be sure that
 
