@@ -1,5 +1,7 @@
 2004-11-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-backward-paragraph): Jump to macro start.  D'oh.
+
 	* texmathp.el: Rearrange variable and function definitions in
 	order to get as few compiler warnings as possible due to the
 	reintroduction of the :set function in `texmathp-tex-commands'.
