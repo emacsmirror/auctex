@@ -766,19 +766,19 @@ the label inserted, or nil if no label was inserted."
   :type 'string)
 
 (defcustom LaTeX-default-format ""
-  "Specifies the default format string for array and tabular environments."
+  "Specifies the default format for array and tabular environments."
   :group 'LaTeX-environment
   :type 'string)
 (make-variable-buffer-local 'LaTeX-default-format)
 
 (defcustom LaTeX-default-width "1.0\\linewidth"
-  "Specifies the default width string minipage and tabular* environments."
+  "Specifies the default width for minipage and tabular* environments."
   :group 'LaTeX-environment
   :type 'string)
 (make-variable-buffer-local 'LaTeX-default-width)
 
 (defcustom LaTeX-default-position ""
-  "Specifies the default position string for array and tabular environments.
+  "Specifies the default position for array and tabular environments.
 If nil, act like the empty string is given, but don't prompt."
   :group 'LaTeX-environment
   :type '(choice (const :tag "Don't prompt" nil)
