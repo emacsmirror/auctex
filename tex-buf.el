@@ -1,10 +1,10 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6g
+;; Version: 9.6h
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993 Per Abrahamsen 
+;; Copyright (C) 1993, 1996 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

@@ -1,11 +1,11 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6g
+;; Version: 9.6h
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
-;; Copyright 1993, 1994, 1995 Per Abrahamsen
+;; Copyright 1993, 1994, 1995, 1996 Per Abrahamsen
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1083,14 +1083,9 @@ Used for specifying extra syntax for a macro."
   (setq prompt (concat (if optional "(Optional) " "")
 		       (if prompt prompt "Add key")
 		       ": (default none) "))
-  (let (string bibitem)
-    (while (not (member (setq bibitem (completing-read prompt
-						       (LaTeX-bibitem-list)))
-			'("" "*")))
-      (LaTeX-add-bibitems bibitem)
-      (setq string (if string (concat string "," bibitem) bibitem)))
-    (if (equal bibitem "*") (setq string bibitem))
-    (TeX-argument-insert (or string "") optional optional)))
+  (let ((items (multi-prompt "," t prompt (LaTeX-bibitem-list))))
+    (apply 'LaTeX-add-bibitems items)
+    (TeX-argument-insert (mapconcat 'identity items ",") optional optional)))
 
 (defun TeX-arg-counter (optional &optional prompt definition)
   "Prompt for a LaTeX counter."
@@ -1245,18 +1240,16 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
       (setq BibTeX-global-files
 	    (mapcar 'list (TeX-search-files nil BibTeX-file-extensions t t))))
   
-  (let ((file (completing-read
-	       (TeX-argument-prompt optional prompt "BibTeX file")
-	       (append (mapcar 'list
-				    (TeX-search-files '(".")
-						      BibTeX-file-extensions
-						      t t))
-		      BibTeX-global-files))))
-    (TeX-argument-insert file optional)
-    (if (string-equal file "")
-	()
-      (let ((styles (TeX-split-string "," file)))
-	(apply 'LaTeX-add-bibliographies styles)))))
+  (let ((styles (multi-prompt 
+		 "," t
+		 (TeX-argument-prompt optional prompt "BibTeX files")
+		 (append (mapcar 'list
+				 (TeX-search-files '(".")
+						   BibTeX-file-extensions
+						   t t))
+			 BibTeX-global-files))))
+    (apply 'LaTeX-add-bibliographies styles)
+    (TeX-argument-insert (mapconcat 'identity styles ",") optional)))
 
 (defun TeX-arg-corner (optional &optional prompt)
   "Prompt for a LaTeX side or corner position with completion."

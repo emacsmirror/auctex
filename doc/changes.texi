@@ -1,6 +1,13 @@
 @section News in 9.6
 
 @itemize @bullet
+@item 
+Now use @kbd{,} to enter multiple arguments to a @samp{\cite} or
+@samp{\bibliography} command instead of @kbd{@key{ret}}.
+
+@item
+Installation procedure is changed, read the @file{INSTALLATION} file. 
+
 @item
 LaCheck is unbundled.  You can get @code{lacheck} from
 @file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>} or alternatively

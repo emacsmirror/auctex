@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6g
+# Version: 9.6h
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -68,7 +68,8 @@ MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el font-latex.el
 
-AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el ltx-help.el 
+AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el ltx-help.el \
+	multi-prompt.el
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \

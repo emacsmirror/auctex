@@ -1,3 +1,9 @@
+Sat Aug 31 16:03:52 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (TeX-arg-cite): Use `multi-prompt' when asking for
+	entries. 
+	(TeX-arg-bibliography): Ditto.
+
 Thu Aug 29 22:22:14 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile: Simplified installation (I hope).
