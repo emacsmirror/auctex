@@ -64,6 +64,7 @@ packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    AC_PATH_PACKAGEDIR
+   ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
    lispdir=${packagedir}/lisp/preview
    icondir=${packagedir}/etc/preview
 else
@@ -73,10 +74,14 @@ else
       AC_MSG_ERROR("You need an Emacs that supports images")
    fi
    AC_PATH_LISPDIR
+   ICONFORM= # TODO: fill this in
+   icondir= # TODO: fill this in
 fi
 
 AC_SUBST(PLAT_LISP)
+AC_SUBST(ICONFORM)
 AC_SUBST(packagedir)
+AC_SUBST(icondir)
 
 AC_CHECK_AUCTEX
 AC_PATH_PROG(INSTALL_INFO, install-info, /bin/true, $PATH:/usr/sbin:/sbin)
