@@ -1,3 +1,23 @@
+2004-09-27  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-top-caption-list, LaTeX-label)
+	(LaTeX-label-function, LaTeX-figure-label, LaTeX-table-label)
+	(LaTeX-default-format, LaTeX-default-position)
+	(LaTeX-equation-label, LaTeX-eqnarray-label, LaTeX-env-item)
+	(LaTeX-label-alist, LaTeX-label): Reconstitute damage from checkin
+	from 2004-09-19
+
+	* font-latex.el (font-latex-find-matching-close): Simplify.
+
+	* latex.el (LaTeX-math-default): Use `W in math mode for the Omega
+	letter.
+
+	* tex.el (TeX-find-macro-start-helper): Simplify.
+	(TeX-find-macro-end-helper): Simplify.
+	(TeX-find-macro-end-helper): Stop if `forward-sexp' fails.
+
+	* doc/todo.texi (Wishlist): Macro spell checking mentioned.
+
 2004-09-24  Davide G. M. Salvetti  <salve@debian.org>
 
 	* configure.in: Add `--(en|dis)able-build-dir-test' switch to

@@ -64,6 +64,10 @@ using RefTeX.
 @section Wishlist
 
 @itemize @bullet
+@item Spell checking of macros
+
+A special ispell dictionary for macros could be nice to have.
+
 @item Quick error overviews
 
 An error overview window (extract from the log file with just the error

@@ -1413,53 +1413,41 @@ have changed."
 OPENCHAR is the opening character and CLOSECHAR is the closing character."
   (let ((parse-sexp-ignore-comments t) ; scan-sexps ignores comments
         (init-point (point))
-        (status)
-	(esc-char (if (and (boundp 'TeX-esc) TeX-esc) TeX-esc "\\")))
-    (if (condition-case nil
-            (goto-char (scan-sexps (point) 1))
-          (error))
-        ;; No error code.  See if closechar is quoted
-        (if (save-excursion
-	      (backward-char 1)
-	      (not (zerop (mod (skip-chars-backward (regexp-quote esc-char))
-			       2))))
-            (setq status nil)
-          (setq status t))
-      ;; Terminated in error -- Try ourselves
-      (setq status nil))
-    (if status
-        t
-      (goto-char init-point)
-      (let ((target)
-            (mycount 1))
-        (save-excursion
-          (save-match-data
-            (forward-char 1)
-            (while (and (> mycount 0)
-                        (progn
-                          (re-search-forward
-                           (concat "["
-                                   ;; closechar might be ]
-                                   ;; and therefor must be first in regexp
-                                   (char-to-string closechar)
-                                   (char-to-string openchar)
-                                   "]")
-                           nil t)))
-              (cond
-               ((font-latex-commented-outp)
-                (forward-line 1))
-               ((save-excursion
-		  (backward-char 1)
-		  (not (zerop (mod (skip-chars-backward (regexp-quote esc-char))
-				   2))))
-                nil)
-               (t
-                (setq mycount (if (= (preceding-char) openchar)
-                                  (+ mycount 1)
-                                (- mycount 1))))))
-            (setq target (point))))
-        (if (= mycount 0)
-            (goto-char target))))))
+	(my-count 1)
+	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\")))
+    (or
+     (condition-case nil
+	 (progn
+	   (goto-char (scan-sexps (point) 1))
+	   ;; No error code.  See if closechar is unquoted
+	   (save-excursion
+	     (backward-char 1)
+	     (zerop (mod (skip-chars-backward (regexp-quote esc-char))
+			 2))))
+       (error nil))
+     (save-match-data
+       (goto-char (1+ init-point))
+       (while (and (> mycount 0)
+		   (re-search-forward
+		    (string ?\[
+			    ;; closechar might be ]
+			    ;; and therefor must be first in regexp
+			    closechar openchar
+			    ?\])
+		    nil t))
+	 (cond
+	  ((font-latex-commented-outp)
+	   (forward-line 1))
+	  ((save-excursion
+	     (backward-char 1)
+	     (zerop (mod (skip-chars-backward (regexp-quote esc-char))
+			 2)))
+	   (setq mycount (+ mycount
+			    (if (= (preceding-char) openchar) 1 -1)))))))
+     (if (= mycount 0)
+	 t
+       (goto-char init-point)
+       nil))))
 
 ;; FIXME: --About font-latex-commented-outp--
 ;; Fontification is *slower* for affected functions (in particular

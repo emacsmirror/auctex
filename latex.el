@@ -3320,7 +3320,7 @@ See also `LaTeX-math-menu'."
     (?U "Upsilon" "Greek" 978) ;; #X03D2
     (?F "Phi" "Greek" 934) ;; #X03A6
     (?Y "Psi" "Greek" 936) ;; #X03A8
-    (?O "Omega" "Greek" 937) ;; #X03A9
+    (?W "Omega" "Greek" 937) ;; #X03A9
     (?c LaTeX-math-cal "Cal-whatever")
     (nil "pm" "Binary Op" 177) ;; #X00B1
     (nil "mp" "Binary Op" 8723) ;; #X2213

@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.451 $"))
+	    (rev "$Revision: 5.452 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-09-22 16:19:34 $"))
+    (let ((date "$Date: 2004-09-27 18:28:53 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3772,10 +3772,8 @@ found, return the position before the escaping character."
    (save-excursion
      (save-match-data
        (and (search-backward TeX-esc limit t)
-	    (let ((oldpoint (point)))
-	      (if (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))
-		  oldpoint
-		(1- oldpoint)))))))
+	    (- (point)
+	       (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))))))
 
 (defun TeX-find-macro-end-helper (start)
   "Find the end of a macro given its START.
@@ -3784,11 +3782,10 @@ If the macro is followed by square brackets or curly braces,
 those will be considered part of it."
   (save-excursion
     (catch 'found
-      (goto-char start)
-      (forward-char)
-      (if (not (looking-at "[A-Za-z@]"))
+      (goto-char (1+ start))
+      (if (zerop (skip-chars-forward "A-Za-z@"))
 	  (forward-char)
-	(skip-chars-forward "A-Za-z@*"))
+	(skip-chars-forward "*"))
       (while (not (eobp))
 	(cond
 	 ;; Skip over pairs of square brackets
@@ -3799,7 +3796,9 @@ those will be considered part of it."
 		     (forward-line 1)
 		     (looking-at "[ \t]*\\(\\[\\)"))))
 	  (goto-char (match-beginning 1))
-	  (forward-sexp))
+	  (condition-case nil
+	      (forward-sexp)
+	    (scan-error (throw 'found (point)))))
 	 ;; Skip over pairs of curly braces
 	 ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
 					; only consecutive lines.
