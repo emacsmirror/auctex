@@ -13,6 +13,9 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
+@macro fontlatex {}
+font-latex
+@end macro
 @ifset no-acronym
 @clear no-acronym
 @macro acronym {text}
@@ -47,6 +50,8 @@ preview-latex
     L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
 \gdef\previewlatex#1{%
     {\sf preview-latex}#1}
+\gdef\fontlatex#1{%
+    {\sf font-latex}#1}
 \gdef\AUCTeX{AUC\TeX}
 \gdef\ConTeXt#1{%
     Con\TeX t}
