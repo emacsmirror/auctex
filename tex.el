@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.495 $"))
+	    (rev "$Revision: 5.496 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-02 07:30:36 $"))
+    (let ((date "$Date: 2005-04-04 06:41:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4365,7 +4365,8 @@ overriding `TeX-quote-after-quote'."
 		:value-type (group
 			     (cons (string :tag "Opening quotation mark")
 				   (string :tag "Closing quotation mark"))
-			     (boolean :tag "Insert plain quote first"))))
+			     (boolean :tag "Insert plain quote first"
+				      :value t))))
 
 (defvar TeX-quote-language nil
   "If non-nil determines behavior of quote insertion.
