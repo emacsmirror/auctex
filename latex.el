@@ -3066,6 +3066,14 @@ comments and verbatim environments"
 
 ;;; Navigation
 
+(defvar LaTeX-paragraph-commands
+  (concat "[][]\\|" ; display math
+	  (regexp-opt '("begin" "end" "part" "chapter" "label" "caption"
+			"section" "subsection" "subsubsection" "par"
+			"noindent" "paragraph" "include" "includeonly"
+			"tableofcontents" "appendix") t))
+  "Regexp matching names of LaTeX macros that should have their own line.")
+
 (defun LaTeX-forward-paragraph (&optional count)
   "Move forward to end of paragraph.
 If COUNT is non-nil, do it COUNT times."
@@ -4191,14 +4199,6 @@ This happens when \\left is inserted."
   :type 'boolean
   :group 'LaTeX-macro)
 
-(defvar LaTeX-paragraph-commands
-  (concat "\\[\\|\\]\\|"  ; display math delimitors
-	  "begin\\b\\|end\\b\\|part\\b\\|chapter\\b\\|label\\b\\|"
-	  "caption\\b\\|section\\b\\|subsection\\b\\|subsubsection\\b\\|"
-	  "par\\b\\|noindent\\b\\|paragraph\\b\\|include\\b\\|"
-	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
-  "Regexp matching names of LaTeX macros that should have their own line.")
-
 (defcustom LaTeX-mode-hook nil
   "A hook run in LaTeX mode buffers."
   :type 'hook
@@ -4288,15 +4288,14 @@ runs the hooks in `doctex-mode-hook'."
 	(concat
 	 "[ \t]*%*[ \t]*\\("
 	 (regexp-quote TeX-esc)
-	 "\\("
-	 LaTeX-paragraph-commands "\\|" LaTeX-item-regexp
-	 "\\)\\|$"
-	 "\\)"
-	 ))
+	 "\\(" LaTeX-paragraph-commands "\\|" LaTeX-item-regexp "\\)\\|"
+	 "\\$\\$\\|" ; Plain TeX display math (Some people actually
+		     ; use this with LaTeX.  Yuck.)
+	 "$\\)"))
   (setq paragraph-separate
 	(concat
 	 "[ \t]*%*[ \t]*\\("
-	 "\\$\\$" ; display math delimitor
+	 "\\$\\$" ; Plain TeX display math
 	 "\\|$\\)"))
 
   (make-local-variable 'LaTeX-item-list)
