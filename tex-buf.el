@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.64 1994-04-14 14:22:52 amanda Exp $
+;; $Id: tex-buf.el,v 1.65 1994-04-14 18:13:11 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -57,7 +57,6 @@
 ;; THEN ``the'' process is the region process
 ;; ELSE ``the'' process is the master file (of the current buffer) process
 
-;;;###autoload
 (defun TeX-save-document (name)
   "Save all files belonging to the current document.
 Return non-nil if document need to be re-TeX'ed."
@@ -69,7 +68,6 @@ Return non-nil if document need to be re-TeX'ed."
 		   (cons name (TeX-style-list))
 		   TeX-file-extensions))
 
-;;;###autoload
 (defun TeX-command-master ()
   "Run command on the current document."
   (interactive)
@@ -82,7 +80,6 @@ Return non-nil if document need to be re-TeX'ed."
 (make-variable-buffer-local 'TeX-command-region-begin)
 (make-variable-buffer-local 'TeX-command-region-end)
 
-;;;###autoload
 (defun TeX-command-region (&optional old)
   "Run TeX on the current region.
 
@@ -122,7 +119,6 @@ all text after TeX-trailer-start."
 			   (count-lines (point-min) begin))))
     (TeX-command command 'TeX-region-file)))
 
-;;;###autoload
 (defun TeX-command-buffer ()
   "Run TeX on the current buffer.
 
@@ -134,7 +130,6 @@ visible part of the buffer."
 	(TeX-command-region-end (point-max-marker)))
     (TeX-command-region t)))
 
-;;;###autoload
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
 The last line of the buffer is displayed on line LINE of the window, or
@@ -152,7 +147,6 @@ at bottom if LINE is nil."
 	  (pop-to-buffer old-buffer))
       (message "No process for this document."))))
 
-;;;###autoload
 (defun TeX-kill-job ()
   "Kill the currently running TeX job."
   (interactive)
@@ -162,7 +156,6 @@ at bottom if LINE is nil."
       ;; Should test for TeX background process here.
       (error "No TeX process to kill."))))
 
-;;;###autoload
 (defun TeX-home-buffer (arg)
   "Go to the buffer where you last issued a TeX command.  
 If there is no such buffer, or you already are in that buffer, find
@@ -174,7 +167,6 @@ the master file."
       (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
 
-;;;###autoload
 (defun TeX-next-error (reparse)
   "Find the next error in the TeX output buffer.
 Prefix by C-u to start from the beginning of the errors."
@@ -184,7 +176,6 @@ Prefix by C-u to start from the beginning of the errors."
     (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
 	     reparse)))
 
-;;;###autoload
 (defun TeX-toggle-debug-boxes ()
   "Toggle if the debugger should display \"bad boxes\" too."
   (interactive)
@@ -277,10 +268,6 @@ in TeX-check-path."
 
 (defvar TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX.")
-
-(defvar TeX-command-force nil)
-;; If non-nil, TeX-command-query will return the value of this
-;; variable instead of quering the user. 
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.4 1994-04-14 14:22:59 amanda Exp $
+;; Version: $Id: tex.el,v 5.5 1994-04-14 18:13:19 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -60,8 +60,10 @@ Must be the car of an entry in TeX-command-list.")
 (defvar TeX-command-Queue "Queue"
   "The name of the Queue entry in TeX-command-Queue.")
 
+(autoload 'TeX-save-document "tex-buf" no-doc t)
 (autoload 'TeX-home-buffer "tex-buf" no-doc t)
 (autoload 'TeX-command-region "tex-buf" no-doc t)
+(autoload 'TeX-command-buffer "tex-buf" no-doc t)
 (autoload 'TeX-command-master "tex-buf" no-doc t)
 (autoload 'TeX-command "tex-buf" no-doc nil)
 (autoload 'TeX-kill-job "tex-buf" no-doc t)
@@ -1523,6 +1525,10 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 
 (defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
   "Keymap used in plain TeX mode.")
+
+(defvar TeX-command-force nil)
+;; If non-nil, TeX-command-query will return the value of this
+;; variable instead of quering the user. 
 
 (defun TeX-command-menu (name file)
   ;; Execute TeX-command-list NAME on FILE from a menu.

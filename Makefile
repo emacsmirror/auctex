@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.88 1994-04-14 14:22:42 amanda Exp $
+# $Id: Makefile,v 5.89 1994-04-14 18:12:58 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -39,8 +39,8 @@ EMACS=emacs-19.22
 LACHECK=lacheck
 
 # For gcc use
-LIBS=
-#LIBS=-ll
+#LIBS=
+LIBS=-ll
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -295,10 +295,16 @@ dist:	tex-load.el
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	/home/pd/bin/zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
-	@if [ "X$(OLD)" = "X" ]; then echo "No patch"; exit 1; fi \
+	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
 	cvs diff -c -r  release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
 	            -r  release_`echo $(TAG) | sed -e 's/[.]/_/g'` \
-		> $(FTPDIR)/auctex-$(OLD)-to-$(NEW).patch
+		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ; fi ; exit 0
+
+patch:
+	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
+	cvs diff -c -r  release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	            -r  release_`echo $(TAG) | sed -e 's/[.]/_/g'` \
+		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ; fi ; exit 0
 
 min-map:
 	-cvs add $(MINMAPSRC) 

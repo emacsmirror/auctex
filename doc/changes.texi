@@ -19,6 +19,7 @@ Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
 Peter Paris @samp{<pparis@@bass.gmu.edu>},
 Peter Barth @samp{<barth@@mpi-sb.mpg.de>},
 Andy Piper @samp{<ajp@@eng.cam.ac.uk>},
+Richard Stanton @samp{<stanton@@haas.berkeley.edu>},
 and probably more.@refill
 
 @itemize @bullet

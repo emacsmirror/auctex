@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.3 1994-04-14 14:22:48 amanda Exp $
+;; Version: $Id: latex.el,v 5.4 1994-04-14 18:13:05 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -378,7 +378,6 @@ The beaviour of this hook is controled by LaTeX-section-label."
   "*The default environment when creating new ones with LaTeX-environment.")
  (make-variable-buffer-local 'LaTeX-default-environment)
 
-;;;###autoload
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
 With optional ARG, modify current environment.
@@ -439,7 +438,6 @@ LaTeX-default-position		Position for array and tabular."
 	    (t
 	     (apply (nth 1 entry) environment (nthcdr 2 entry)))))))
 
-;;;###autoload
 (defun LaTeX-close-environment ()
   "Creates an \\end{...} to match the current environment."
   (interactive "*")
@@ -454,7 +452,6 @@ LaTeX-default-position		Position for array and tabular."
 
 (autoload 'outline-flag-region "outline")
 
-;;;###autoload
 (defun LaTeX-hide-environment ()
   "Hide current LaTeX environment using selective display."
   (interactive)
@@ -462,7 +459,6 @@ LaTeX-default-position		Position for array and tabular."
 		       (save-excursion (LaTeX-find-matching-end) (point))
 		       ?\r))
 
-;;;###autoload
 (defun LaTeX-show-environment ()
   "Show current LaTeX environment."
   (interactive)
@@ -749,7 +745,6 @@ like array and tabular."
   "An list of environments where items have a special syntax. 
 The cdr is the name of the function, used to insert this kind of items.")
 
-;;;###autoload
 (defun LaTeX-insert-item ()
   "Insert a new item in an environment.
 You may use LaTeX-item-list to change the routines used to insert the item."
@@ -1606,9 +1601,9 @@ The point is supposed to be at the beginning of the current line."
 	["Delete Font" (TeX-font t ?\C-d) "C-c C-f C-d"]
 	"-"
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File" 'TeX-master-file)
-	(TeX-command-create-menu "Command on Buffer" 'buffer)
-	(TeX-command-create-menu "Command on Region" 'TeX-region-file)
+	(TeX-command-create-menu "Command on Master File" 'TeX-command-master)
+	(TeX-command-create-menu "Command on Buffer" 'TeX-command-buffer)
+	(TeX-command-create-menu "Command on Region" 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
