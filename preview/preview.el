@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.42 2001-11-06 14:24:35 dakas Exp $
+;; $Id: preview.el,v 1.43 2001-11-07 12:19:04 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -58,11 +58,16 @@
   :prefix "preview-")
 
 (defgroup preview-gs nil "Preview's GhostScript Renderer."
-  :group 'preview)
+  :group 'preview
+  :prefix "preview-")
+
 (defgroup preview-appearance nil "Preview image appearance."
-  :group 'preview)
+  :group 'preview
+  :prefix "preview-")
+
 (defgroup preview-latex nil "LaTeX options for preview."
-  :group 'preview)
+  :group 'preview
+  :prefix "preview-")
 
 (defcustom preview-image-creators
   '((postscript
@@ -1190,7 +1195,9 @@ Those are put in local variables `preview-scale' and
 specified by BUFF."
   (let (scale res colors)
     (with-current-buffer buff
-      (setq scale (funcall preview-scale-function)
+      (setq scale (if (functionp preview-scale-function)
+		      (funcall preview-scale-function)
+		    preview-scale-function)
 	    res (cons (/ (* 25.4 (display-pixel-width))
 			 (display-mm-width))
 		      (/ (* 25.4 (display-pixel-height))
@@ -1268,7 +1275,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.42 $"))
+	(rev "$Revision: 1.43 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
