@@ -1876,13 +1876,23 @@ The car is used for subscript, the cdr is used for superscripts."
 		(while (eq (char-before pos) ?\\)
 		  (setq pos (1- pos) odd (not odd)))
 		odd))
-    (if (eq (char-after pos) ?_)
-	;; This won't work in XEmacs.
-	`(face font-latex-subscript-face display
-	       ,(car font-latex-script-display))
-      ;; This neither.
-      `(face font-latex-superscript-face display
-	     ,(cdr font-latex-script-display)))))
+    ;; Adding other text properties than `face' is supported by
+    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
+    ;; Emacs 21.4 respectively.  With the introduction of this feature
+    ;; the variable `font-lock-extra-managed-props' was introduced and
+    ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
+    ;; currently (2004-08-18) does not support this feature.
+    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
+      (if (eq (char-after pos) ?_)
+	  (if extra-props-flag
+	      `(face font-latex-subscript-face display
+		     ,(car font-latex-script-display))
+	    font-latex-subscript-face)
+	(if extra-props-flag
+	    `(face font-latex-superscript-face display
+		   ,(cdr font-latex-script-display))
+	  font-latex-superscript-face)))))
+
 
 ;;; docTeX
 
