@@ -570,10 +570,10 @@ Return the new process."
 (defun TeX-run-discard (name command file)
   "Start process with second argument, discarding its output."
   (let ((default-directory (TeX-master-directory)))
-    (process-kill-without-query (start-process (concat name " discard")
-					       nil TeX-shell
-					       TeX-shell-command-option
-					       command))))
+    (call-process TeX-shell
+		  nil 0 nil
+		  TeX-shell-command-option
+		  command)))
 
 (defun TeX-run-dviout (name command file)
   "Call process wbith second argument, discarding its output. With support
@@ -963,10 +963,17 @@ command."
 
 ;;; Region File
 
-(defcustom TeX-region-extra "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}{\\AucTeX@cite{}[]}}}\n"
+(defcustom TeX-region-extra ""
   "*String to insert in the region file between the header and the text."
   :group 'TeX-commands
   :type 'string)
+
+;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
+;;           \\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}\
+;;           {\\AucTeX@cite{}[]}}}\n"
+;; However, that string is inappropriate for plain TeX and ConTeXt.
+;; This needs reconsideration.
+
 
 (defvar TeX-region-hook nil
   "List of hooks to run before the region file is saved.
