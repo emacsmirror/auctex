@@ -506,6 +506,21 @@ EOF
 `"])
 
 dnl
+dnl Check if build directory is valid.
+dnl The directory should not be part of `load-path'
+dnl
+AC_DEFUN(VALID_BUILD_DIR, [
+  AC_MSG_CHECKING([if build directory is valid])
+  EMACS_LISP(valid_build_dir,
+    [[(if (member (getenv \"PWD\") load-path) \"no\" \"yes\")]])
+  if test "$valid_build_dir" = "no"; then
+    AC_MSG_ERROR([Build directory inside load-path!  Aborting!])
+  else
+    AC_MSG_RESULT([yes])
+  fi
+])
+
+dnl
 dnl Determine directories which hold TeX input files.
 dnl
 AC_DEFUN(TEX_INPUT_DIRS,
