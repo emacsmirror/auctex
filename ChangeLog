@@ -1,3 +1,8 @@
+2004-02-19  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-fill-paragraph): Back out changes from
+	2003-12-29.
+
 2004-02-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-title-4-face): Added missing :weight
