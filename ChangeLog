@@ -8,6 +8,21 @@
 
 2004-08-19  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-mode-menu): Use `TeX-common-menu-entries'.
+
+	* tex-info.el (Texinfo-mode-menu): Use `TeX-common-menu-entries'.
+
+	* tex.el (ams-tex-mode): Add `plain-TeX-mode-menu' here.  Doh.
+
+	* context.el (ConTeXt-mode-menu): Use `TeX-menu-with-help' instead
+	of `TeX-maybe-remove-help'.
+	(ConTeXt-mode-menu): Use `TeX-common-menu-entries'.
+
+	* tex.el (TeX-customization-menu): Save the customization menu
+	here when generated, so that we have it available in all modes.
+	(TeX-common-menu-entries): The common menu entries for TeX modes.
+	(plain-TeX-mode-menu): Use `TeX-common-menu-entries'.
+
 	* configure.in: export `localstatedir'.
 
 	* Makefile.in (localstatedir): import `localstatedir'.

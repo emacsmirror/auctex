@@ -4113,36 +4113,9 @@ the last entry in the menu."
       :style toggle :selected LaTeX-math-mode
       :help "Toggle math mode"]
      "-"
-     ("Multifile/Parsing"
-      ["Switch to Master File" TeX-home-buffer
-       :help "Switch to buffer of Master File, or buffer of last TeX command"]
-      ["Save Document" TeX-save-document
-       :help "Save all buffers associated with the current Master File"]
-      ["Set Master File" TeX-master-file-ask
-       :active (not (TeX-local-master-p))
-       :help "Set the main file to run TeX commands on"]
-      ["Reset Buffer" TeX-normal-mode
-       :help "Save and reparse the current buffer for style information"]
-      ["Reset AUCTeX" (TeX-normal-mode t)
-       :keys "\\[universal-argument] \\[TeX-normal-mode]"
-       :help "Reset buffer and reload AUCTeX style files"])
       [ "Convert 209 to 2e" LaTeX-209-to-2e
         :visible (member "latex2" (TeX-style-list)) ]
-;; Rats.  XEmacs does not like :visible.  We'll use
-;; TeX-maybe-remove-help in order to convert it to :included
-     ("Customize"
-      ["Browse Options"
-       (customize-group 'AUCTeX)
-       :help "Open the customization buffer for AUCTeX"]
-      ["Extend this Menu"
-       (easy-menu-add-item
-	nil '("LaTeX")
-	(customize-menu-create 'AUCTeX))
-       :help "Make this menu a full-blown customization menu"])
-     ["Read the AUCTeX Manual" TeX-goto-info-page
-      :help "Everything worth reading"]
-     ["Report AUCTeX Bug" TeX-submit-bug-report
-      :help "Create a problem report for mailing"])))
+      . ,TeX-common-menu-entries)))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")

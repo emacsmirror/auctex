@@ -42,23 +42,23 @@ Requirements
 
 It is required that you use at least GNU Emacs 21 or XEmacs 21.4 with
 AUCTeX.  Support for Emacs 20 has been dropped in favor of getting
-more important work done.  Unfortunately, just before release it has
-come to our attention that you need at least version 1.84 of the
-xemacs-base package (released on 01/27/2004) or a sumo tarball dated
-02/02/2004 or newer for compiling AUCTeX because of non-trivial
-changes in easy-mmode.el.  Providing backward compatibility to earlier
-versions would require resources we don't have right now: none of the
-currently active developers actually uses XEmacs.  We apologize for
-the inconvenience and hope that you can make use of the XEmacs package
-system to upgrade if necessary.
+more important work done.  For XEmacs, you need at least version 1.84
+of the xemacs-base package (released on 01/27/2004) or a sumo tarball
+dated 02/02/2004 or newer for compiling AUCTeX because of non-trivial
+changes in easy-mmode.el: please use the XEmacs package system for
+upgrading if necessary.  The current developers don't have the
+resources for providing backward compatibility to earlier versions.
 
 
 Availability
 ------------
 
 AUCTeX can be downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex>.
-This location is mirrored to the directory support/auctex on CTAN.  It
-is licensed under the GNU General Public License version 2.
+There are tarballs, and RPMs for Fedora (for Emacs).  A separate
+directory contains some stuff from the tarball, such as ChangeLog,
+printable manuals, a reference sheet.  The download area is mirrored
+to the directory support/auctex on CTAN.  AUCTeX is licensed under the
+GNU General Public License version 2.
 
 You'll find more information at the web site of AUCTeX
 <URL:http://www.gnu.org/software/auctex>, including its mailing list

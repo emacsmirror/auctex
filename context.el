@@ -1236,7 +1236,7 @@ There might be text before point."
 (easy-menu-define ConTeXt-mode-menu
   ConTeXt-mode-map
   "Menu used in ConTeXt mode."
-  (TeX-maybe-remove-help
+  (TeX-menu-with-help
    `("ConTeXt"
      (,ConTeXt-project-structure-menu-name)
      (,ConTeXt-section-block-menu-name)
@@ -1284,33 +1284,7 @@ There might be text before point."
       TeX-comment-or-uncomment-paragraph
       :help "Make the current paragraph outcommented or active again"]
      ,TeX-fold-menu
-     "-"
-     ("Multifile/Parsing"
-      ["Switch to Master File" TeX-home-buffer
-       :help "Switch to buffer of Master File, or buffer of last TeX command"]
-      ["Save Document" TeX-save-document
-       :help "Save all buffers associated with the current Master File"]
-      ["Set Master File" TeX-master-file-ask
-       :active (not (TeX-local-master-p))
-       :help "Set the main file to run TeX commands on"]
-      ["Reset Buffer" TeX-normal-mode
-       :help "Save and reparse the current buffer for style information"]
-      ["Reset AUCTeX" (TeX-normal-mode t)
-       :keys "\\[universal-argument] \\[TeX-normal-mode]"
-       :help "Reset buffer and reload AUCTeX style files"])
-     ("Customize"
-      ["Browse Options"
-       (customize-group 'AUCTeX)
-       :help "Open the customization buffer for AUCTeX"]
-      ["Extend this Menu"
-       (easy-menu-add-item
-	nil '("ConTeXt")
-	(customize-menu-create 'AUCTeX))
-       :help "Make this menu a full-blown customization menu"])
-     ["Read the AUCTeX Manual" TeX-goto-info-page
-      :help "Everything worth reading"]
-     ["Report AUCTeX Bug" TeX-submit-bug-report
-      :help "Create a problem report for mailing"])))
+     "-" . ,TeX-common-menu-entries)))
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
