@@ -1,5 +1,8 @@
 2004-12-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-buffer-type): Do not ignore case during
+	search.
+
 	* context.el (ConTeXt-paragraph-commands-regexp): New name for
 	`ConTeXt-paragraph-commands'.  Doc fix.  Match escape character at
 	front as well.
