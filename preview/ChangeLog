@@ -1,3 +1,8 @@
+2005-03-31  jalar  <jalar@mai.liu.se>
+
+	* Makefile.in: 
+	* aclocal.m4: Add $emacsprefix
+
 2005-03-31  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Update release info.
