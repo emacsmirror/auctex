@@ -40,7 +40,7 @@ AC_PATH_PROG(MAKEINFO, makeinfo, :)
 AC_PATH_PROG(TEXI2HTML, texi2html, :)
 AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
 AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
-MAKEINFO_CHECK_MACROS(acronym env option)
+MAKEINFO_CHECK_MACROS(acronym env option command)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
 
