@@ -1630,6 +1630,11 @@ macros and environments which were inserted after the last invocation of
 the command.
 @end deffn
 
+@deffn Command TeX-fold-region
+@kindex C-c C-o C-r
+(@kbd{C-c C-o C-r}) Hide all configured macros in the marked region.
+@end deffn
+
 @deffn Command TeX-fold-paragraph
 @kindex C-c C-o C-p
 (@kbd{C-c C-o C-p}) Hide all configured macros in the paragraph
@@ -1660,6 +1665,12 @@ located.  The behavior regarding the display string is analogous to
 @kindex C-c C-o C-x
 (@kbd{C-c C-o C-x}) Permanently unfold all macros and environments in
 the current buffer.
+@end deffn
+
+@deffn Command TeX-fold-clearout-region
+@kindex C-c C-o C-y
+(@kbd{C-c C-o C-y}) Permanently unfold all macros and environments in
+the marked region.
 @end deffn
 
 @deffn Command TeX-fold-clearout-paragraph
