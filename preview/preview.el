@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.66 2002-03-02 01:06:47 dakas Exp $
+;; $Id: preview.el,v 1.67 2002-03-03 23:44:33 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -845,7 +845,7 @@ on first use."
 
 (defun preview-dissect (ov)
   (let ((filenames (butlast (nth 0 (overlay-get ov 'filenames)))))
-    (setq preview-temp-dirs (delq (nth 2 filenames) preview-temp-dirs))
+    (setq preview-temp-dirs (delete (nth 2 filenames) preview-temp-dirs))
     (prog1
 	(list (overlay-start ov)
 	      (overlay-end ov)
@@ -854,15 +854,19 @@ on first use."
       (delete-overlay ov))))
 
 (defun desktop-buffer-preview ()
-  (and (eq (car desktop-buffer-misc) 'preview)
-       (not (memq (desktop-buffer-file) '(ignored nil)))
-       (let (tempdirlist)
-	 (pop desktop-buffer-misc)
-	 (when (equal (pop desktop-buffer-misc)
-		      (nth 5 (file-attributes (buffer-file-name))))
-	   (dolist (ovdata desktop-buffer-misc)
-	     (setq tempdirlist
-		   (apply #'preview-reinstate-preview tempdirlist ovdata)))))))
+  (let (buf tempdirlist)
+    (and (eq (car desktop-buffer-misc) 'preview)
+	 desktop-buffer-file-name
+	 (file-readable-p desktop-buffer-file-name)
+	 (setq buf (find-file-noselect desktop-buffer-file-name))
+	 (with-current-buffer buf
+	   (pop desktop-buffer-misc)
+	   (when (equal (pop desktop-buffer-misc)
+			(nth 5 (file-attributes desktop-buffer-file-name)))
+	     (dolist (ovdata desktop-buffer-misc)
+	       (setq tempdirlist
+		     (apply #'preview-reinstate-preview tempdirlist ovdata))))
+	   buf))))
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
@@ -934,9 +938,10 @@ This generates the EPS filename used in `TeX-active-tempdir'
 \(see `preview-make-filename' for its definition) for preview
 snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
-  (let ((ov (with-current-buffer source
-	      (preview-clearout start end TeX-active-tempdir)
-	      (make-overlay start end nil nil nil))) image)
+  (let* ((save-temp TeX-active-tempdir)
+	 (ov (with-current-buffer source
+	       (preview-clearout start end save-temp)
+	       (make-overlay start end nil nil nil))) image)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -952,29 +957,30 @@ region between START and END."
     (preview-toggle ov t)))
 
 (defun preview-reinstate-preview (tempdirlist start end image filename)
-  (setq TeX-active-tempdir
-	(or (assoc (nth 1 filename) tempdirlist)
-	    (car (push (append (cdr filename) (list 0)) tempdirlist))))
-  (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
-  (setcar (cdr TeX-active-tempdir)
-	  (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
-		   (progn
-		     (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
-		     (push (nth 1 TeX-active-tempdir) preview-temp-dirs)))))
-  (setcdr filename TeX-active-tempdir)
-  (let ((ov (make-overlay start end nil nil nil)))
-    (overlay-put ov 'preview-map
-		 (preview-make-clickable
-		  nil nil nil
-		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
-		  `(lambda() (interactive) (preview-delete ,ov))))
-    (overlay-put ov 'filenames (list filename))
-    (overlay-put ov 'preview-image image)
-    (overlay-put ov 'strings
-		 (cons (preview-active-string
-			ov image)
-		       (preview-inactive-string ov)))
-    (preview-toggle ov t))
+  (when (file-readable-p (car filename))
+    (setq TeX-active-tempdir
+	  (or (assoc (nth 1 filename) tempdirlist)
+	      (car (push (append (cdr filename) (list 0)) tempdirlist))))
+    (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
+    (setcar (cdr TeX-active-tempdir)
+	    (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
+		     (progn
+		       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
+		       (push (nth 1 TeX-active-tempdir) preview-temp-dirs)))))
+    (setcdr filename TeX-active-tempdir)
+    (let ((ov (make-overlay start end nil nil nil)))
+      (overlay-put ov 'preview-map
+		   (preview-make-clickable
+		    nil nil nil
+		    `(lambda() (interactive) (preview-toggle ,ov 'toggle))
+		    `(lambda() (interactive) (preview-delete ,ov))))
+      (overlay-put ov 'filenames (list filename))
+      (overlay-put ov 'preview-image image)
+      (overlay-put ov 'strings
+		   (cons (preview-active-string
+			  ov image)
+			 (preview-inactive-string ov)))
+      (preview-toggle ov t)))
   tempdirlist)
 
 (defun preview-back-command (&optional posn buffer)
@@ -1402,7 +1408,10 @@ for definition of PROCESS and NAME."
     (if (memq status '(signal exit))
 	(delete-process process))
     (if (eq status 'exit)
-	(preview-call-hook 'open))))
+	(unwind-protect
+	    (preview-call-hook 'open)
+	  (setq compilation-in-progress
+		(delq process compilation-in-progress))))))
 
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
@@ -1424,7 +1433,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.66 $"))
+	(rev "$Revision: 1.67 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
