@@ -1,3 +1,6 @@
+2004-10-28  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Renamed function `LaTeX-install-toolbar'.
 
 2004-10-28  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	

@@ -13,7 +13,7 @@
 There is an experimental tool bar support now.  It is not activated by
 default.  If you want to use it, add
 @lisp
-(add-hook 'LaTeX-mode-hook 'latex-install-toolbar)
+(add-hook 'LaTeX-mode-hook 'LaTeX-install-toolbar)
 @end lisp
 your init file.
 
