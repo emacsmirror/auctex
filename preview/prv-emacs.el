@@ -334,10 +334,14 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (unless after-change
     (preview-register-change ov)))
 
-(defun preview-toggle (ov &optional arg)
+(defun preview-toggle (ov &optional arg event)
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
-nil displays the underlying text, and 'toggle toggles."
+nil displays the underlying text, and 'toggle toggles.
+If EVENT is given, it indicates the window where the event
+occured, either by being a mouse event or by directly being
+the window in question.  This may be used for cursor restoration
+purposes."
   (let ((old-urgent (preview-remove-urgentization ov))
 	(preview-state
 	 (if (if (eq arg 'toggle)
@@ -365,7 +369,13 @@ nil displays the underlying text, and 'toggle toggles."
 	  (setcdr strings (preview-inactive-string ov)))
 	(overlay-put ov 'before-string (cdr strings)))
       (if old-urgent
-	  (apply 'preview-add-urgentization old-urgent)))))
+	  (apply 'preview-add-urgentization old-urgent))))
+  (if event
+      (preview-restore-position
+       ov
+       (if (windowp event)
+	   event
+	 (posn-window (event-start event))))))
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
@@ -391,14 +401,39 @@ nil displays the underlying text, and 'toggle toggles."
 
 (defvar preview-temporary-opened nil)
 
+(defvar preview-last-location nil
+  "Restored cursor position marker for reopened previews.")
+(make-variable-buffer-local 'preview-last-location)
+
 (defun preview-mark-point ()
   "Mark position for fake intangibility."
-;;  seems to hurt more than it helps.
-;;  (when (eq (get-char-property (point) 'preview-state) 'active)
-;;    (set-marker preview-marker (point))
-;;    (preview-move-point))
+  (when (eq (get-char-property (point) 'preview-state) 'active)
+    (unless preview-last-location
+      (setq preview-last-location (make-marker)))
+    (set-marker preview-last-location (point))
+    (set-marker preview-marker (point))
+    (preview-move-point))
   (set-marker preview-marker (point)))
 
+(defun preview-restore-position (ov window)
+  "Tweak position after opening/closing preview.
+The treated overlay OV has been triggered in WINDOW.  This function
+records the original buffer position for reopening, or restores it
+after reopening.  Note that by using the mouse, you can open/close
+overlays not in the active window."
+  (when (eq (overlay-buffer ov) (window-buffer window))
+    (with-current-buffer (overlay-buffer ov)
+      (if (eq (overlay-get ov 'preview-state) 'active)
+	  (setq preview-last-location
+		(set-marker (or preview-last-location (make-marker))
+			    (window-point window)))
+	(when (and
+	       (markerp preview-last-location)
+	       (eq (overlay-buffer ov) (marker-buffer preview-last-location))
+	       (< (overlay-start ov) preview-last-location)
+	       (> (overlay-end ov) preview-last-location))
+	  (set-window-point window preview-last-location))))))
+      
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
