@@ -1,3 +1,22 @@
+2005-03-17  David Kastrup  <dak@gnu.org>
+
+	* preview.el (tex-site): Require loads of stuff at the beginning:
+	preview.el is supposed to be autoloaded, so we can just load
+	everything that needs to get loaded, anyway.
+	(TeX-overlay-prioritize): alias to "ignore" if not defined
+	elsewhere.  This will not set priorities.
+	(eval-when-compile): move out most requires.
+	(preview-place-preview): Use TeX-overlay-prioritize instead of
+	TeX-fold-prioritize.
+	(preview-counter-find): Pass begin in to reduce one compilation
+	error message.
+	(TeX-region-create): Don't preactivate `preview-counter' advice.
+	(preview-reinstate-preview): Rename priority function to
+	`TeX-overlay-prioritize'.
+	(LaTeX-preview-setup): Remove requires.
+	(TeX-region-create): Explicitly activate `preview-preamble' advice
+	even though it is preactivated.
+
 2005-03-16  David Kastrup  <dak@gnu.org>
 
 	* prv-emacs.el: Use the four-argument version of `face-attribute'

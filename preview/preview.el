@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.240 2005-03-15 02:29:23 dak Exp $
+;; $Id: preview.el,v 1.241 2005-03-17 17:21:30 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -41,12 +41,15 @@
 
 ;;; Code:
 
-(autoload 'TeX-fold-prioritize "tex-fold" no-doc t)
+(require 'tex-site)
+(require 'tex)
+(require 'tex-buf)
+(require 'latex)
+
+(unless (boundp 'TeX-overlay-prioritize)
+  (defalias 'TeX-overlay-priorize 'ignore))
 
 (eval-when-compile
-  (require 'tex-site)
-  (require 'tex-buf)
-  (require 'latex)
   (condition-case nil
       (require 'desktop)
     (file-error (message "Missing desktop package:
@@ -1957,7 +1960,7 @@ Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
-    (overlay-put ov 'priority (TeX-fold-prioritize start end))
+    (overlay-put ov 'priority (TeX-overlay-prioritize start end))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -1978,7 +1981,7 @@ to the close hook."
 ;; the start of the interesting area when TeX-region-create is being
 ;; called.
 
-(defun preview-counter-find ()
+(defun preview-counter-find (begin)
   "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
 not use in advice."
@@ -1996,17 +1999,17 @@ not use in advice."
 	    (next-single-char-property-change begin 'preview-counters)
 	    'preview-counters))))
 
-(defadvice TeX-region-create (around preview-counters preactivate)
+(defadvice TeX-region-create (around preview-counters)
   "Write out counter information to region."
   (let ((TeX-region-extra
 	 (concat
-	  (and preview-buffer-has-counters
-	       (boundp 'begin)
+	  (and (boundp 'begin)
+	       preview-buffer-has-counters
 	       (mapconcat
 		#'identity
 		(cons
 		 ""
-		 (preview-counter-find))
+		 (preview-counter-find begin))
 		"\\setcounter"))
 	  TeX-region-extra)))
     ad-do-it))
@@ -2035,7 +2038,7 @@ if any."
     (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
     (setcdr filename TeX-active-tempdir)
     (let ((ov (make-overlay start end nil nil nil)))
-      (overlay-put ov 'priority (TeX-fold-prioritize start end))
+      (overlay-put ov 'priority (TeX-overlay-prioritize start end))
       (overlay-put ov 'preview-map
 		   (preview-make-clickable
 		    nil nil nil
@@ -2291,8 +2294,6 @@ This is called by `LaTeX-mode-hook' and changes AUCTeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
-  (require 'tex-buf)
-  (require 'latex)
   (define-key LaTeX-mode-map "\C-c\C-p" preview-map)
   (easy-menu-define preview-menu LaTeX-mode-map
     "This is the menu for preview-latex."
@@ -3134,7 +3135,7 @@ stored in `preview-dumped-alist'."
 ;; This will fail if the region is to contain just part of the
 ;; preamble -- a bad idea anyhow.
 
-(defadvice TeX-region-create (before preview-preamble preactivate)
+(defadvice TeX-region-create (before preview-preamble preactivate activate)
   "Skip preamble for the sake of predumped formats."
   (when (string-match TeX-header-end (ad-get-arg 1))
     (ad-set-arg 1
@@ -3289,7 +3290,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.240 $"))
+	(rev "$Revision: 1.241 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3300,7 +3301,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-15 02:29:23 $"))
+    (let ((date "$Date: 2005-03-17 17:21:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

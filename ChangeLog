@@ -1,3 +1,17 @@
+2005-03-17  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-overlay-priority-step): New variable, previously in
+	tex-fold.el under different name.
+	(TeX-overlay-prioritize): new function in Emacs and XEmacs
+	variants.
+
+	* tex-fold.el (TeX-fold-make-overlay): Use `TeX-overlay-prioritize'.
+	(TeX-fold-priority-step, TeX-fold-prioritize): Renamed and moved
+	to tex.el.
+
+	* tex-buf.el (TeX-region-create): Transfer
+	`buffer-file-coding-system' from master buffer to region.
+
 2005-03-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-section-list-add-locally)

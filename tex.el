@@ -597,7 +597,6 @@ Full documentation will be available after autoloading the function."
 (autoload 'TeX-fold-mode "tex-fold" no-doc t)
 (autoload 'tex-fold-mode "tex-fold" no-doc t)
 
-
 ;;; Portability.
 
 (require 'easymenu)
@@ -632,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.490 $"))
+	    (rev "$Revision: 5.491 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-17 10:01:12 $"))
+    (let ((date "$Date: 2005-03-17 17:21:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -692,6 +691,11 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
 		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
 
+(defvar TeX-overlay-priority-step 16
+  "Numerical difference of priorities between nested overlays.
+The step should be big enough to allow setting a priority for new
+overlays between two existing ones.")
+
 
 ;;; Special support for XEmacs
 
@@ -713,7 +717,44 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
   (unless (fboundp 'line-beginning-position)
     (defalias 'line-beginning-position 'point-at-bol))
   (unless (fboundp 'line-end-position)
-    (defalias 'line-end-position 'point-at-eol)))
+    (defalias 'line-end-position 'point-at-eol))
+
+  (defun TeX-overlay-prioritize (start end)
+    "Calculate a priority for an overlay extending from START to END.
+The calculated priority is lower than the minimum of priorities
+of surrounding overlays and higher than the maximum of enclosed
+overlays."
+    (let (inner-priority outer-priority
+			 (prios (cons nil nil)))
+      (map-extents
+       #'(lambda (ov prios)
+	   (and
+	    (or (eq (extent-property ov 'category) 'TeX-fold)
+		(extent-property ov 'preview-state))
+	    (setcar prios
+		    (max (or (car prios) 0)
+			 (extent-property ov 'priority))))
+	   nil)
+       nil start end prios 'start-and-end-in-region 'priority)
+      (map-extents
+       #'(lambda (ov prios)
+	   (and
+	    (or (eq (extent-property ov 'category) 'TeX-fold)
+		(extent-property ov 'preview-state))
+	    (setcdr prios
+		    (min (or (cdr prios) most-positive-fixnum)
+			 (extent-property ov 'priority))))
+	   nil)
+       nil start end prios
+       '(start-and-end-in-region negate-in-region) 'priority)
+      (setq inner-priority (car prios) outer-priority (cdr prios))
+      (cond ((and inner-priority (not outer-priority))
+	     (+ inner-priority TeX-fold-priority-step))
+	    ((and (not inner-priority) outer-priority)
+	     (/ outer-priority 2))
+	    ((and inner-priority outer-priority)
+	     (/ (- outer-priority inner-priority) 2))
+	    (t TeX-overlay-priority-step)))) )
 
 ;;; Special support for GNU Emacs
 
@@ -727,7 +768,30 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
     (and transient-mark-mode mark-active))
 
   (defun TeX-activate-region ()
-    nil))
+    nil)
+
+  (defun TeX-overlay-prioritize (start end)
+    "Calculate a priority for an overlay extending from START to END.
+The calculated priority is lower than the minimum of priorities
+of surrounding overlays and higher than the maximum of enclosed
+overlays."
+    (let (outer-priority inner-priority ov-priority)
+      (dolist (ov (overlays-in start end))
+	(when (or (eq (overlay-get ov 'category) 'TeX-fold)
+		  (overlay-get ov 'preview-state))
+	  (setq ov-priority (overlay-get ov 'priority))
+	  (if (>= (overlay-start ov) start)
+	      (setq inner-priority (max ov-priority (or inner-priority
+							ov-priority)))
+	    (setq outer-priority (min ov-priority (or outer-priority
+						      ov-priority))))))
+      (cond ((and inner-priority (not outer-priority))
+	     (+ inner-priority TeX-overlay-priority-step))
+	    ((and (not inner-priority) outer-priority)
+	     (/ outer-priority 2))
+	    ((and inner-priority outer-priority)
+	     (/ (- outer-priority inner-priority) 2))
+	    (t TeX-overlay-priority-step)))) )
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.

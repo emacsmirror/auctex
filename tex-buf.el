@@ -1198,6 +1198,9 @@ original file."
       (setq buffer-undo-list t)
       (setq original-content (buffer-string))
       (erase-buffer)
+      (when (boundp 'buffer-file-coding-system)
+	(setq buffer-file-coding-system
+	      (with-current-buffer master-buffer buffer-file-coding-system)))
       (insert "\\message{ !name(" master-name ")}"
 	      header
 	      TeX-region-extra

@@ -450,7 +450,7 @@ be altered to prevent overfull lines."
 		       (point))
 		   ov-end))
 	 (display-string (concat display-string (when overfull "\n")))
-	 (priority (TeX-fold-prioritize ov-start ov-end))
+	 (priority (TeX-overlay-prioritize ov-start ov-end))
 	 (ov (make-overlay ov-start ov-end (current-buffer) t nil)))
     (overlay-put ov 'category 'TeX-fold)
     (overlay-put ov 'priority priority)
@@ -502,34 +502,6 @@ of the resulting list."
 		  ;; than one face, so we just use the first one we get.
 		  (car (extent-property (extent-at content-start) 'face))))
 	nil))))
-
-(defvar TeX-fold-priority-step 16
-  "Numerical difference of priorities between nested overlays.
-The step should be big enough to allow setting a priority for new
-overlays between two existing ones.")
-
-(defun TeX-fold-prioritize (start end)
-  "Calculate a priority for an overlay extending from START to END.
-The calculated priority is lower than the minimum of priorities
-of surrounding overlays and higher than the maximum of enclosed
-overlays."
-  (let (outer-priority inner-priority)
-    (dolist (ov (overlays-in start end))
-      (when (or (eq (overlay-get ov 'category) 'TeX-fold)
-		(eq (overlay-get ov 'category) 'preview-overlay))
-	(let ((ov-priority (overlay-get ov 'priority)))
-	  (if (>= (overlay-start ov) start)
-	      (setq inner-priority (max ov-priority (or inner-priority
-							ov-priority)))
-	    (setq outer-priority (min ov-priority (or outer-priority
-						      ov-priority)))))))
-    (cond ((and inner-priority (not outer-priority))
-	   (+ inner-priority TeX-fold-priority-step))
-	  ((and (not inner-priority) outer-priority)
-	   (/ outer-priority 2))
-	  ((and inner-priority outer-priority)
-	   (/ (- outer-priority inner-priority) 2))
-	  (t TeX-fold-priority-step))))
 
 (defun TeX-fold-buffer-substring (start end)
   "Return the contents of buffer from START to END as a string.
