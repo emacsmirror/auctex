@@ -1,3 +1,13 @@
+1998-07-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9h released.
+
+1998-07-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-insert-dollar): Use `string-equal' to compare
+	strings.
+	Patch by Carsten Dominik <dominik@strw.leidenuniv.nl>.
+
 1998-06-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9g released.
