@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.173 2004-08-10 22:49:51 dak Exp $
+@c $Id: auctex.texi,v 1.174 2004-08-11 15:26:46 angeli Exp $
 
 @finalout
 @titlepage
@@ -1628,10 +1628,10 @@ variables @code{TeX-output-view-style} and @code{TeX-view-style}.
 
 @deffn Command TeX-view
 @kindex C-c C-v
-The command @code{TeX-view}, bound to @kbd{C-c C-v}, start a viewer
-without confirmation.  The viewer is started either on region or master
-file, depending on the last command issued.  This is especially useful
-to jump to the to the location corresponding to point in the
+The command @code{TeX-view}, bound to @kbd{C-c C-v}, starts a viewer
+without confirmation.  The viewer is started either on a region or the
+master file, depending on the last command issued.  This is especially
+useful for jumping to the location corresponding to point in the
 @acronym{DVI} viewer when using @code{TeX-source-specials-mode},
 @ref{Commands}.
 @end deffn
@@ -1647,6 +1647,33 @@ output file extensions.  It is used as a fallback in case none of the
 alternatives specified in @code{TeX-output-view-style} match.  In case
 none of the entries in @code{TeX-view-style} match either, no suggestion
 for a viewer will be made.
+@end defopt
+
+@cindex Inverse search
+@cindex Forward search
+You can make use of forward and inverse searching if this is supported
+by your @acronym{DVI} viewer and you enabled
+@code{TeX-source-specials-mode}.  @AUCTeX{} will automatically pass the
+necessary command line options to the viewer in order to display the
+page containing the content you are currently editing (forward search).
+Upon opening the viewer you will be asked if you want to start a server
+process (Gnuserv or Emacs server) which is necessary for inverse search.
+This happens only if there is no server running already.  You can
+customize the variable @code{TeX-source-specials-view-start-server} to
+inhibit the question and always or never start the server respectively.
+Once the server and the viewer are running you can use a mouse click in
+the viewer to jump to the corresponding part of your document in Emacs
+(inverse search).  Refer to the documentation of your viewer to find out
+what you have to do exactly.  In xdvi you usually have to use
+@kbd{C-down-mouse-1}.
+
+@defopt TeX-source-specials-view-start-server
+If @code{TeX-source-specials-mode} is active and a @acronym{DVI} viewer
+is invoked, the default behavior is to ask if a server process should be
+started.  Set this variable to @code{t} if the question should be
+inhibited and the server should be started always.  Set it to @code{nil}
+if the server should never be started.  Inverse search will not be
+available in the latter case.
 @end defopt
 
 @node Debugging, Checking, Viewing, Running TeX and friends
