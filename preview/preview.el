@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.127 2002-04-18 13:56:42 dakas Exp $
+;; $Id: preview.el,v 1.128 2002-04-20 11:24:05 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -904,6 +904,46 @@ numbers (can be float if available)."
   "Face consulted for colors and scale of active previews.
 Fallback to :inherit and 'default implemented."
   :group 'preview-appearance)
+
+(defcustom preview-auto-reveal 'reveal-mode
+  "*Cause previews to open automatically when entered.
+Possibilities are:
+T autoopens,
+NIL doesn't,
+a symbol will have its value consulted if it exists,
+defaulting to NIL if it doesn't.
+A CONS-cell means to call a function for determining the value.
+The CAR of the cell is the function to call which receives
+the CDR of the CONS-cell in the rest of the arguments, while
+point and current buffer point to the position in question.
+All of the options show reasonable defaults."
+  :group 'preview-appearance
+  :type `(choice (const :tag "Off" nil)
+		 (const :tag "On" t)
+		 (symbol :tag "Indirect variable" :value reveal-mode)
+		 (cons :tag "Function call"
+		       :value (preview-arrived-via
+			       ,(key-binding [left])
+			       ,(key-binding [right]))
+		       function (list :tag "Argument list"
+				      (repeat :inline t sexp)))))
+  
+(defun preview-auto-reveal-p (mode)
+  "Decide whether to auto-reveal.
+Returns non-NIL if region should be auto-opened.
+See `preview-auto-reveal' for definitions of MODE, which gets
+set to `preview-auto-reveal'."
+  (cond ((symbolp mode)
+	 (and (boundp mode)
+	      (preview-auto-reveal-p (symbol-value mode))))
+	((consp mode)
+	 (apply (car mode) (cdr mode)))
+	(t mode)))
+
+(defun preview-arrived-via (&rest list)
+  "Indicate auto-opening.
+Returns non-NIL if called by one of the commands in LIST."
+  (memq this-command list))
 
 (defun preview-regenerate (ovr)
   "Pass the modified region in OVR again through LaTeX."
@@ -1875,7 +1915,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.127 $"))
+	(rev "$Revision: 1.128 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1886,7 +1926,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-18 13:56:42 $"))
+    (let ((date "$Date: 2002-04-20 11:24:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
