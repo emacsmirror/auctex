@@ -1,5 +1,7 @@
 2003-02-15  David Kastrup  <dakas@users.sourceforge.net>
 
+	* configure.in: quote MAKEINFO.
+
 	* README.CVS: Fix instructions because autoconf now does not need
 	patching anymore.
 
