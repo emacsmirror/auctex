@@ -326,7 +326,33 @@ If this option is `On', it tells @previewlatex{} never to try to extract
 bounding boxes from the bounding box comments of @acronym{EPS} files,
 but rather rely on the boxes it gets from @TeX{}.  If you activated
 @code{preview-fast-conversion}, this is done, anyhow.  The option
-defaults to `Off'.
+defaults to `Off', simply because about the only conceivable reason to
+switch off @code{preview-fast-conversion} would be that you have some
+bounding box problem and want to get Dvips' angle on that matter.
+
+@item preview-scale-function
+@itemx preview-default-document-pt
+@itemx preview-reference-face
+@code{preview-scale-function} determines by what factor PostScript
+images should be scaled when appearing on the screen.  If you specify a
+numerical value here, the physical size on the screen will be that of
+the original paper output scaled by the specified factor, at least if
+Emacs' information about screen size and resolution are correct.  The
+default is to let @code{preview-scale-from-face} determine the scale
+function.  This function asks @AUCTeX{} about any size specification
+like @option{12pt} to the documentclass, asks Emacs about the geometry
+of the font @code{preview-reference-face} (usually the default face used
+for display) and then calculates the scale factor to make them match.
+If you find that the size of previews and the other Emacs display
+clashes, something goes wrong.  One possibility is that you did not
+specify a size option, in which case @code{preview-default-document-pt}
+is assumed, normally @code{10pt}.  If you are using a document class
+with a different default value (like KomaScript), this assumption will
+probably be wrong and @previewlatex{} will scale up things too large.
+So better specify those size options even when you know that @LaTeX{}
+does not need them: @previewlatex{} might benefit from them.  Another
+possibility for error is that you have not enabled @AUCTeX{}'s document
+parsing options.
 
 @item preview-fast-dvips-command
 @itemx preview-dvips-command
@@ -341,12 +367,12 @@ where available. If you are experiencing problems, you might want to try
 playing around with Dvips options (@inforef{Command-line options,,dvips}).
 
 The conversion of the previews into PostScript or @acronym{EPS} files
-gets started immediately after the @LaTeX{} run completes and before
-Emacs starts the parsing of the error messages.  When Emacs has finished
+gets started after the @LaTeX{} run completes when Emacs recignizes the
+first image while parsing the error messages.  When Emacs has finished
 parsing the error messages, it activates all detected previews.  This
 entails throwing away any previous previews covering the same areas, and
 then replacing the text in its visual appearance by a placeholder
-looking like a question mark.
+looking like a roadworks sign.
 
 @item preview-inner-environments
 This is a list of environments that are regarded as inner levels of an
