@@ -5,10 +5,10 @@
 ;; Author:    Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
 ;;                               <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.15 (20 Dec 99)
+;; Version:   3.16 (20 Dec 99)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.13 1999-12-20 20:28:06 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.14 2000-01-14 19:29:19 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -373,6 +373,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.16 Dec 20 99 - (RCS V1.37)
+;;  - Added customize support.
 ;; V3.15 Dec 20 99 - (RCS V1.36)
 ;;  - Removed stupid debugging code that I had left in.
 ;; V3.14 Dec 20 99 - 
@@ -607,46 +609,48 @@
 
 ;;>>>>>>User-Modifiable variables start here:
 
-(defvar bib-cite-use-reftex-view-crossref nil
-  "*Non-nil means, RefTeX will be used to find cross references.
+(cond
+ ((not (fboundp 'defcustom))
+  (defvar bib-cite-use-reftex-view-crossref nil
+    "*Non-nil means, RefTeX will be used to find cross references.
 When this variable is non-nil, both `bib-find' and `bib-display' will
 call a function in RefTeX do find or display the cross reference of a
 \\ref or \\cite macro at point.")
 
-(defvar bib-novice t
-  "*Give advice to novice users about what commands to use next.")
-
-(defvar bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
-  "*Use imenu package for LaTeX modes (coded in bib-cite).")
-
-(defvar bib-hilit-if-available t
-  "*Use hilit19 or hl319 to hilit bib-display if available")
-
-(defvar bib-switch-to-buffer-function 'switch-to-buffer
-  "*Function used to select buffers if they differ from the original.
+  (defvar bib-novice t
+    "*Give advice to novice users about what commands to use next.")
+  
+  (defvar bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
+    "*Use imenu package for LaTeX modes (coded in bib-cite).")
+  
+  (defvar bib-hilit-if-available t
+    "*Use hilit19 or hl319 to hilit bib-display if available")
+  
+  (defvar bib-switch-to-buffer-function 'switch-to-buffer
+    "*Function used to select buffers if they differ from the original.
 You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 `switch-to-buffer-other-frame'.")
-
-(defvar bib-highlight-mouse-t t
-  "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight.")
-
-(defvar bib-label-help-echo-format "button2 finds %s, button3 displays %s"
-  "*Format string for info if the mouse is over LaTeX commands.
+  
+  (defvar bib-highlight-mouse-t t
+    "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight.")
+  
+  (defvar bib-label-help-echo-format "button2 finds %s, button3 displays %s"
+    "*Format string for info if the mouse is over LaTeX commands.
 If nil, do not display info.")
-
-(defvar bib-bibtex-env-variable "BIBINPUTS"
-  "*Environment variable setting the path where BiBTeX input files are found.
+  
+  (defvar bib-bibtex-env-variable "BIBINPUTS"
+    "*Environment variable setting the path where BiBTeX input files are found.
 BiBTeX 0.99b manual says this should be TEXBIB.
 Another version says it should BSTINPUTS.  I don't know anymore!
 
 The colon character (:) is the default path separator in unix, but you may
 use semi-colon (;) for DOS or OS/2 if you set bib-dos-or-os2-variable to `t'.")
 
-(defvar bib-dos-or-os2-variable (or (equal 'emx system-type)
-                                    (equal 'ms-dos system-type))
+  (defvar bib-dos-or-os2-variable (or (equal 'emx system-type)
+                                      (equal 'ms-dos system-type))
 ;; Under OS/2 system-type equals emx
 ;; Under DOS  system-type equals ms-dos
-  "*`t' if you use DOS or OS/2 for bib-make-bibliography/bib-display
+    "*`t' if you use DOS or OS/2 for bib-make-bibliography/bib-display
 
 It tells bib-make-bibliography and bib-display to translate
 the BIBINPUTS environment variable using the \";\" character as
@@ -657,46 +661,164 @@ e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
 (You can change the environment variable which is searched by setting the 
 elisp variable bib-bibtex-env-variable)")
 
-(defvar bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o "
-  "*Variable for the etags command and its output option.
+  (defvar bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o "
+    "*Variable for the etags command and its output option.
 In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -o \" 
 (we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
 In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
 If so, set it this variable.")
 
-(defvar bib-etags-append-command 
-  "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o "
-  "*Variable for the etags command and its append and output option.
+  (defvar bib-etags-append-command 
+    "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o "
+    "*Variable for the etags command and its append and output option.
 In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -a -o \"
 In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable.")
 
-(defvar bib-etags-filename "TAGS"
-   "*Variable for the filename generated by etags, by defaults this TAGS
+  (defvar bib-etags-filename "TAGS"
+    "*Variable for the filename generated by etags, by defaults this TAGS
 but you may want to change this to something like TAGSLaTeX such that it can
 coexist with some other tags file in your master file directory.")
 
-(defvar bib-ref-regexp "\\\\\\(eq\\|page\\)?ref"
-  "*Regular expression for \\ref LaTeX commands that have a matching \\label
+  (defvar bib-ref-regexp "\\\\\\(eq\\|page\\)?ref"
+    "*Regular expression for \\ref LaTeX commands that have a matching \\label
 without the curly bracket.
 
 If you change this variable and you use multi-file documents, make sure you
 also edit the variables bib-etags-command and bib-etags-append-command.")
 
-(defvar bib-substitute-string-in-display t
-  "*Determines if bib-display will substitute @string definitions.
+  (defvar bib-substitute-string-in-display t
+    "*Determines if bib-display will substitute @string definitions.
 If t, then the @string text is substituted.
 If nil, the text is not substituted but the @string entry is included.")
 
 ;;Following list of @string abbreviations harvested from:
 ;;$ grep -h MACRO /usr/share/texmf/bibtex/bst/*/*.bst | sort | awk '{print $2}' | uniq | sed -e 's/{//;s/}//'
-(defvar bib-string-ignored-warning 
+  (defvar bib-string-ignored-warning 
+    '("jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "sept" "oct" "nov" 
+      "dec" "acmcs" "acta" "cacm" "ibmjrd" "ibmjs" "ieeese" "ieeetcad"
+      "ieeetc" "ipl" "jacm" "jcss" "scp" "sicomp" "tcs" "tocs" "tods" "tog"
+      "toms" "toois" "toplas" )
+   "*List of @string abbreviations for which a warning is given if not defined.
+These are usually month abbreviations (or journals) defined in a style file."))
+(t
+  (defgroup bib-cite nil
+    "bib-cite, LaTeX minor-mode to display \\cite, \\ref and \\label commands."
+    :group 'tex)
+
+  (defcustom bib-cite-use-reftex-view-crossref nil
+    "*Non-nil means, RefTeX will be used to find cross references.
+When this variable is non-nil, both `bib-find' and `bib-display' will
+call a function in RefTeX do find or display the cross reference of a
+\\ref or \\cite macro at point."
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defcustom bib-novice t
+    "*Give advice to novice users about what commands to use next."
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defcustom bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
+    "*Use imenu package for LaTeX modes (coded in bib-cite)."
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defvar bib-hilit-if-available t
+    "*Use hilit19 or hl319 to hilit bib-display if available")
+
+  (defcustom bib-switch-to-buffer-function 'switch-to-buffer
+    "*Function used to select buffers if they differ from the original.
+You may use `switch-to-buffer' `switch-to-buffer-other-window' or
+`switch-to-buffer-other-frame'."
+    :group 'bib-cite
+    :type '(choice (function-item switch-to-buffer)
+                   (function-item switch-to-buffer-other-window)
+                   (function-item switch-to-buffer-other-frame)))
+
+  (defcustom bib-highlight-mouse-t t
+    "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight."
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defcustom bib-label-help-echo-format "button2 finds %s, button3 displays %s"
+    "*Format string for info if the mouse is over LaTeX commands.
+If nil, do not display info." 
+    :group 'bib-cite
+    :type 'string)
+
+  (defcustom bib-bibtex-env-variable "BIBINPUTS"
+    "*Environment variable setting the path where BiBTeX input files are found.
+BiBTeX 0.99b manual says this should be TEXBIB.
+Another version says it should BSTINPUTS.  I don't know anymore!
+
+The colon character (:) is the default path separator in unix, but you may
+use semi-colon (;) for DOS or OS/2 if you set bib-dos-or-os2-variable to `t'."
+    :group 'bib-cite
+    :type 'string)
+
+  (defcustom bib-dos-or-os2-variable (or (equal 'emx system-type)
+                                         (equal 'ms-dos system-type))
+    ;; Under OS/2 system-type equals emx
+    ;; Under DOS  system-type equals ms-dos
+    "*`t' if you use DOS or OS/2 for bib-make-bibliography/bib-display
+
+It tells bib-make-bibliography and bib-display to translate
+the BIBINPUTS environment variable using the \";\" character as
+a path separator and to translate DOS' backslash to slash.
+  
+e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
+
+(You can change the environment variable which is searched by setting the 
+elisp variable bib-bibtex-env-variable)"
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defcustom bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o "
+  "*Variable for the etags command and its output option.
+In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -o \" 
+(we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
+In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
+If so, set it this variable."
+    :group 'bib-cite
+    :type 'string)
+
+  (defcustom bib-etags-append-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o "
+  "*Variable for the etags command and its append and output option.
+In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -a -o \"
+In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable."
+    :group 'bib-cite
+    :type 'string)
+
+  (defcustom bib-etags-filename "TAGS"
+   "*Variable for the filename generated by etags, by defaults this TAGS
+but you may want to change this to something like TAGSLaTeX such that it can
+coexist with some other tags file in your master file directory."
+    :group 'bib-cite
+    :type 'string)
+
+  (defcustom bib-ref-regexp "\\\\\\(eq\\|page\\)?ref"
+  "*Regular expression for \\ref LaTeX commands that have a matching \\label
+without the curly bracket.
+
+If you change this variable and you use multi-file documents, make sure you
+also edit the variables bib-etags-command and bib-etags-append-command."
+    :group 'bib-cite
+    :type 'regexp)
+
+  (defcustom bib-substitute-string-in-display t
+  "*Determines if bib-display will substitute @string definitions.
+If t, then the @string text is substituted.
+If nil, the text is not substituted but the @string entry is included."
+    :group 'bib-cite
+    :type 'boolean)
+
+  (defvar bib-string-ignored-warning 
   '("jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "sept" "oct" "nov" 
     "dec" "acmcs" "acta" "cacm" "ibmjrd" "ibmjs" "ieeese" "ieeetcad"
     "ieeetc" "ipl" "jacm" "jcss" "scp" "sicomp" "tcs" "tocs" "tods" "tog"
     "toms" "toois" "toplas" )
   "*List of @string abbreviations for which a warning is given if not defined.
-These are usually month abbreviations (or journals) defined in a style file.")
-
+These are usually month abbreviations (or journals) defined in a style file.")))
 ;;<<<<<<User-Modifiable variables end here.
 
 (defvar bib-ref-regexpc (concat bib-ref-regexp "{")

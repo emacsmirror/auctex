@@ -1,24 +1,18 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996, 1997, 1998 Peter S. Galbraith
+;; Copyright (C) 1996-1999 Peter S. Galbraith
  
 ;; Authors:    Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
+;;                                <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
+;;                                <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.603 (02 July 1998)
+;; Version:    0.700 (20 December 1999)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.5 1998-12-11 16:47:13 abraham Exp $
+;; RCS $Id: font-latex.el,v 5.6 2000-01-14 19:29:20 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
-
-;; LCD Archive Entry: (Not yet submitted!)
-;; font-latex|Peter Galbraith|GalbraithP@df0-mpo.gc.ca|
-;; LaTeX fontification for font-lock|
-;; 06-Jul-1996|0.01|~/modes/font-latex.el|
-
-;; The archive is ftp://archive.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive/
-;;            or http://ftp.digital.com/pub/GNU/elisp-archive/
 
 ;;; This file is not part of GNU Emacs.
 
@@ -75,7 +69,34 @@
 ;;   I direct you to the file font-lock.el that comes with Emacs for more
 ;;   info.
 ;;
+;; Fontification Levels:
+;;
+;;  There are two levels of fontification, selected by the value of the
+;;  font-lock variable font-lock-maximum-decoration.  There are ways
+;;  documented in font-latex.el to set this differently for each mode that
+;;  uses font-lock, but if you are unsure and are running on a fast enough
+;;  machine, try putting this in your ~/.emacs file: 
+;;    (setq font-lock-maximum-decoration t) 
+;;  It probably best to put it before the (require 'font-latex) statement.
+;;
+;; Changing colours
+;;
+;;  Okay, so you hate the colours I picked.  How do you change them you ask?
+;;  First, find the font name to change using the command:
+;;    M-x list-text-properties-at
+;;  Then, suppose you got `font-latex-math-face', edit ~/.Xdefaults and add:
+;;    Emacs.font-latex-math-face.attributeForeground: blue
+;;  without the semi-colon I'm using here ascomment delimiters, of course.
+;;
 ;; Turning on Font-lock automatically:
+;;
+;;  Note: Recent versions of GNU Emacs uses a better mecanish to turn
+;;        on fontification for all buffer:
+;;
+;;    (if window-system
+;;        (global-font-lock-mode t nil))
+;;
+;;  For older Emacsen:
 ;;
 ;;  If you choose to turn-on font-lock by default using a mode-hook,
 ;;  there is an order to respect with-respect-to loading font-latex.  
@@ -95,25 +116,6 @@
 ;;
 ;;  It's probably not a bad idea to always append 'turn-on-font-lock
 ;;  such that it is always sure to be last.
-;;
-;; Fontification Levels:
-;;
-;;  There are two levels of fontification, selected by the value of the
-;;  font-lock variable font-lock-maximum-decoration.  There are ways
-;;  documented in font-latex.el to set this differently for each mode that
-;;  uses font-lock, but if you are unsure and are running on a fast enough
-;;  machine, try putting this in your ~/.emacs file: 
-;;    (setq font-lock-maximum-decoration t) 
-;;  It probably best to put it before the (require 'font-latex) statement.
-;;
-;; Changing colours
-;;
-;;  Okay, so you hate the colours I picked.  How do you change them you ask?
-;;  First, find the font name to change using the command:
-;;    M-x list-text-properties-at
-;;  Then, suppose you got `font-latex-math-face', edit ~/.Xdefaults and add:
-;;    Emacs.font-latex-math-face.attributeForeground: blue
-;;  without the semi-colon I'm using here ascomment delimiters, of course.
 ;;
 ;; Lazy-lock users:
 ;;
@@ -144,6 +146,8 @@
 ;;    instead of `highlighting 1: \(^\|[^\\]\)\(\\[a-zA-Z\\]+\)'
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.700 20Dec99 PSG (RCS V1.62)
+;;    Added customize support.
 ;; V0.603 02July98 PSG (RCS V1.61)
 ;;    Squashed another infinite loop.
 ;; V0.602 02July98 PSG (RCS V1.60)
@@ -260,9 +264,25 @@
 ;;; Code:
 (require 'font-lock)
 
-(defvar font-latex-do-multi-line t
-  "*Set this to nil to disable the multi-line fontification 
-prone to infinite loop bugs.")
+(cond
+ ((fboundp 'defcustom)
+  (defgroup font-latex nil
+    "Font-latex text highlighting package."
+    :prefix "font-latex-"
+    :group 'faces
+    :group 'tex)
+  (defgroup font-latex-highlighting-faces nil
+    "Faces for highlighting text in font-latex."
+    :prefix "font-latex-"
+    :group 'font-latex)
+  (defcustom font-latex-do-multi-line t
+    "Nil means disable the multi-line fontification prone to infinite loops."
+    :group 'font-latex
+    :type 'boolean))
+ (t
+  (defvar font-latex-do-multi-line t
+    "*Set this to nil to disable the multi-line fontification 
+prone to infinite loop bugs.")))
 
 (defvar font-latex-warning-face			'font-latex-warning-face
   "Face to use for LaTeX major keywords.")
@@ -437,8 +457,7 @@ prone to infinite loop bugs.")
   (require 'cl))
 
 (cond
- ((or font-latex-is-Emacs20 
-      font-latex-is-XEmacs20)
+ ((fboundp 'defface)
   (defface font-latex-bold-face
     '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
       (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))

@@ -1,3 +1,9 @@
+2000-01-14  Peter Galbraith <psg@debian.org>
+
+	* bib-cite.el: Updated to 3.16 (20 Dec 99).
+	* font-latex.el: Updated to 0.700 (20 Dec 99).
+	* hilit-LaTeX.el: Changed author email address.
+
 1999-12-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10p released.
