@@ -208,7 +208,7 @@ dist:
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
-	-zip -r $(FTPDIR)/auctex-$(TAG) auctex-$(TAG)
+	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) > \
