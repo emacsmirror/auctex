@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.75 1994-01-30 21:17:20 amanda Exp $
+@c $Id: auc-tex.texi,v 1.76 1994-01-31 12:13:42 amanda Exp $
 
 @finalout
 @titlepage
@@ -2483,7 +2483,7 @@ Sawicki @samp{<pfs@@mimuw.edu.pl>}.
 Added support for Polish style files @file{plfonts.sty} and
 @file{plhb.sty}, contributed by Piotr Filip
 Sawicki @samp{<pfs@@mimuw.edu.pl>}.
- 
+
 @item
 Added section with suggestions for how to handle European
 character sets.

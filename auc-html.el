@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.2 1994-01-29 22:31:20 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.3 1994-01-31 12:13:02 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-01-29 22:31:20 $|$Revision: 5.2 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-01-31 12:13:02 $|$Revision: 5.3 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1046,9 +1046,10 @@ With ARG always delete tag."
 (defvar html-mode-syntax-table
   ;; Syntax table used in html mode.
   (let ((table (copy-syntax-table text-mode-syntax-table))) 
-    (modify-syntax-entry ?- "_ 23" table)
-    (modify-syntax-entry ?< "(>4" table)
-    (modify-syntax-entry ?> ")<1" table)
+    (modify-syntax-entry ?- "_ 3" table)
+    (modify-syntax-entry ?! ". 2" table)
+    (modify-syntax-entry ?< "(>1" table)
+    (modify-syntax-entry ?> ")<4" table)
     table))
 
 (defvar html-paragraph-separate
@@ -1074,13 +1075,13 @@ Turning on html mode runs `text-mode-hook', then `html-mode-hook'."
 
   ;; Comments
   (make-local-variable 'comment-start)
-  (setq comment-start "<-- ")
+  (setq comment-start "<!-- ")
   (make-local-variable 'comment-end)
   (setq comment-end " -->")
   (make-local-variable 'comment-column)
   (setq comment-column 32)
   (make-local-variable 'comment-start-skip)
-  (setq comment-start-skip "<--+ *")
+  (setq comment-start-skip "<!--+ *")
   (make-local-variable 'comment-multi-line)
   (setq comment-multi-line t)
   (make-local-variable 'comment-indent-function)
