@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9a
+;; Version: 9.9b
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1339,7 +1339,7 @@ See TeX-parse-macro for details."
 (defun TeX-parse-argument (optional arg)
   "Depending on OPTIONAL, insert TeX macro argument ARG in curly braces.
 If OPTIONAL is set, only insert if there is anything to insert, and
-then use scare brackets.
+then use square brackets.
 
 See TeX-parse-macro for details."
   
@@ -1374,7 +1374,7 @@ See TeX-parse-macro for details."
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
 
-If OPTIONAL, only insert it if not empty, and then use scuare brackets."
+If OPTIONAL, only insert it if not empty, and then use square brackets."
   (if (and optional (string-equal name ""))
       (setq last-optional-rejected t)
     (insert <)
@@ -2111,7 +2111,8 @@ TeX-file-extensions is used instead."
 
   (let ((regexp (concat "\\.\\("
                         (mapconcat 'identity extensions "\\|")
-                        "\\)$")))
+                        "\\)$"))
+	(case-fold-search t))
     (string-match regexp file)))
 
 (defun TeX-strip-extension (&optional string extensions nodir nostrip)
