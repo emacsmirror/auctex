@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6d
+;; Version: 9.6e
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -80,6 +80,9 @@ performed as specified in TeX-expand-list.")
 	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
 	(list "Index" "makeindex %s" 'TeX-run-command nil t)
+	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil t)
+	;; Uncomment the above line and comment out the next line to
+	;; use `chktex' instead of `lacheck'. 
 	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
 	(list "Spell" "<ignored>" 'TeX-run-ispell nil nil)
 	(list "Other" "" 'TeX-run-command t t)
