@@ -1,26 +1,32 @@
-;;; tex-buf.el - External commands for AUCTeX.
-;;
-;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
-;; Version: 11.14
+;;; tex-buf.el --- External commands for AUCTeX.
 
 ;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 2003, 2004 Free Software Foundation
-;;
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+
+;; Maintainer: auc-tex@sunsite.dk
+;; Keywords: tex
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
+
+;;; Commentary:
+
+;; This file provides support external commands.
 
 ;;; Code:
 
@@ -399,35 +405,14 @@ entry."
 				(substring expansion (match-end 0)))))
       expansion)))
 
-(defun TeX-style-check (styles &optional source-spec)
-  "Check STYLES compared to the current style options.
-If SOURCE-SPEC, add source specials support if available."
-
+(defun TeX-style-check (styles)
+  "Check STYLES compared to the current style options."
   (let ((files (TeX-style-list)))
     (while (and styles
 		(not (TeX-member (car (car styles)) files 'string-match)))
       (setq styles (cdr styles))))
   (if styles
-      (let ((ret (nth 1 (car styles))))
-	(cond (source-spec
-	       ;; Maybe add source specials:
-	       (message "Checking for source specials... %s"
-			(if TeX-source-specials-active-flag "yes" "no"))
-	       (concat
-		ret
-		(if TeX-source-specials-active-flag
-		    (concat
-		     " "
-		     TeX-source-specials-tex-flags
-		     (if TeX-source-specials-places
-			 (concat
-			  "="
-			  (mapconcat 'identity
-				     TeX-source-specials-places
-				     ","))
-		       " "))
-		  "")))
-	      (t ret)))
+      (nth 1 (car styles))
     ""))
 
 (defun TeX-output-extension ()
