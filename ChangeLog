@@ -1,5 +1,20 @@
 2005-01-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* configure.ac: Bump version info to 11.55.
+
+	* auctex.spec (Version): Bump to 11.55.
+	(Release): Reset to 1.
+
+	* doc/tex-ref.tex: Bump version info to 11.55.
+	(Source Display): Adapt information about key bindings to current
+	implementation.
+
+	* doc/auctex.texi: Bump version info to 11.55.
+
+	* doc/changes.texi: Add information about changes in AUCTeX 11.55.
+
+	* RELEASE: Add information about fixed bugs in AUCTeX 11.55.
+
 	* latex.el (LaTeX-fill-region-as-para-do): Limit the search for
 	sentence ends.  Fixes erroneous addition of spaces at places
 	following a paragraph to be filled.
