@@ -1,5 +1,7 @@
 2004-08-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-info.el (TeXinfo-mode-menu): Add help strings.
+
 	* tex.el (TeX-command-list): Set a default value which will not
 	lead to an inactive menu entry.
 	(plain-TeX-mode-menu): Add some help strings.
