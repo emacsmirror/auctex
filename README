@@ -1,5 +1,5 @@
 
-$Id: README,v 5.13 1992-03-12 22:56:22 krab Exp $
+$Id: README,v 5.14 1992-03-18 18:08:36 krab Exp $
 
 AUC TeX 
 =======
@@ -18,7 +18,7 @@ Files in this distribution
 	README			This file
 	COPYING			The GNU emacs copyright notice
 	INTRO			A short introduction to AUC-TeX
-	TAGS			Tags file for crossreference 
+	TAGS			Tags file for cross reference 
 
 	auc-tex.el		The main file of AUC TeX
 	tex-site.el		Site specific setup
@@ -31,6 +31,9 @@ Files in this distribution
 	tex-math.el		Smart math minor mode for writing
 				lots of LaTeX math symbols
 	min-map.el		Management of keymaps for minor modes
+
+	make-idetex		Makefile for idetex, a simple de-TeX'er
+	idetex.l		Lex (source) for idetex
 
 
 Installation
