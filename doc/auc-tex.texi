@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.24 1993-03-27 22:15:24 amanda Exp $
+@c $Id: auc-tex.texi,v 1.25 1993-03-27 22:19:46 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2291,7 +2291,7 @@ Here is the file defining @code{slitex-mode}.
     (TeX-run-style-hooks "latex" "slitex"))))
 @end lisp
 
-The file should be placed in the directory @code{{TeX-fomat-director}).
+The file should be placed in the directory @code{TeX-format-directory}.
 
 @defopt TeX-format-directory
 Directory containing information about @TeX{} format packages.
