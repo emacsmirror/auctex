@@ -1,3 +1,15 @@
+2002-03-23  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}): Removed an \everypar
+	that caused bad spacing.  No idea why.  Redundant anyway.
+	(subsection{Selection options}): changed displaymath option to
+	put in the \everydisplay tokens at a theoretically more correct
+	place.  Explicitly hooked equation and equation*: AMSLaTeX calls
+	them too late to have them behave well.
+	(subsection{Preview attaching commands}): Corrected
+	\PreviewEnvironment which must have led to error messages for
+	months.  Seems nobody cares.
+
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (section{The Implementation}): fix typo in dvips
