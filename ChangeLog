@@ -1,3 +1,11 @@
+2005-04-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-help-echo-max-length): New variable.
+	(TeX-fold-make-help-echo): New function.
+	(TeX-fold-make-overlay): Use it.
+	(TeX-fold-hide-item): Set help-echo property.
+	(TeX-fold-show-item): Invalidate help-echo property.
+
 2005-04-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Minor
