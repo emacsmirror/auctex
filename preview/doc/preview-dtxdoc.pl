@@ -41,13 +41,13 @@ MAIN: while (<STDIN>) {
     s/\\item /\@item /;
     s/\\end\{enumerate\}/\@end enumerate\n/;
 
-    # Formatting
+    # Formatting (\cmd is special within {quote})
     s/\\texttt/\@option/g;
     s/\\marg/ \@var/g;
     s/\\meta/\@var/g;
     s/\\emph/\@emph/g;
-    s/\\cmd(\\[\(\)])/\@code{$1}/g;
-    s/\\cmd/\@code/g;
+    s/\\cmd(\\[\(\)\w]+)/|$1|/g;
+    s/\\cmd\{(.*?)\}/|$1|/g;
     s/\\oarg\{(\w+?)\}/\[\@var{$1}\]/g;
     s/\\char.//g;
     s/\\raggedright\n//g;
