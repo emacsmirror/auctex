@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.98 1994-07-30 05:38:56 amanda Exp $
+# $Id: Makefile,v 5.99 1994-07-31 02:51:41 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -80,9 +80,8 @@ MV = mv
 #LACHECK=lacheck.exe
 LACHECK=lacheck
 
-# For gcc use
-#LIBS=
-LIBS=-ll
+# For linking lacheck
+LIBS=
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
