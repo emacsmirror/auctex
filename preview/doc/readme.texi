@@ -47,30 +47,33 @@ key.
 
 @example
 cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
-
 cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
 @end example
 
 Updates from within the preview directory do not need the -d parameter.
-A simple @code{cvs update} from with that directory will make your CVS
+A simple @code{cvs update} from within that directory will make your CVS
 mirror up to date again. For developer access, ask on the
 @email{preview-latex-devel} list (see below).
 
 
 @section Contacts
 
-Bug reports should be sent by using @kbd{@key{M-x} preview-report-bug
-@key{RET}}, as this will fill in a lot of information interesting to us.
-There is a mailing list for developers, look at
+Bug reports should be sent by using @kbd{M-x preview-report-bug RET}, as
+this will fill in a lot of information interesting to us. There is a
+mailing list for developers, look at
 @url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}
 Send a message with just the word `help' as subject or body to
 @email{preview-latex-devel-request@@lists.sourceforge.net} for more
 information. Suggestions for new features, and pleas for help should go
-to either @email{preview-latex-devel@@sourceforge.net} (the Preview
-La@TeX{} devel team), or to @email{???} (the mailing list) if they might
-have general interest. Please use the command @kbd{@key{M-x}
-preview-report-bug @key{RET}} to report bugs if possible.
+to @email{preview-latex-devel@@lists.sourceforge.net} (the Preview
+La@TeX{} devel team).
+@c either, or to @email{???} (the mailing list) if they might have general 
+@c interest. 
+Please use the command @kbd{M-x preview-report-bug RET} to report bugs
+if possible.
 
+@noindent
 Offers to support further development will be appreciated.
 
+@noindent
 David Kastrup, @email{dakas@@users.sourceforge.net}

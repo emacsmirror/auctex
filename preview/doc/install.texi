@@ -1,9 +1,10 @@
 Installing preview-latex should be simple: merely @code{./configure},
 @code{make}, and @code{make install}.
 
-Note that unlike most packages, preview-latex consists of a TeX part and
-an Emacs part. This makes configuration a bit trickier than normal.
-Please read through this document fully before installing anything.
+Note that unlike most emacs add-ins, preview-latex consists of a TeX
+part and an Emacs part (that uses AUC @TeX{}). This makes configuration
+a bit trickier than normal. Please read through this document fully
+before installing anything.
 
 @section Prerequisites
 
@@ -15,16 +16,16 @@ is Emacs-21.1. Only very recent pretest versions before that have slight
 chances of working at all. Since preview-latex heavily exercises new
 features of Emacs 21, getting the newest release is a good idea.
 
-@item A working AUC-TeX installation
+@item A working AUC @TeX{} installation
 
-You need a working AUC-TeX installation.  AUC-TeX can be found at
-<http://mirrors.sunsite.dk/auctex/www/auctex/>.  All fairly recent
+You need a working AUC @TeX{} installation. AUC @TeX{} can be found at
+@url{http://mirrors.sunsite.dk/auctex/www/auctex/}. All fairly recent
 versions should work.
 
 @item A working LaTeX installation
 
-Preview should work with nearly any LaTeX installation which contains
-dvips, though most testing has taken place using teTeX-based
+Preview should work with nearly any La@TeX{} installation which contains
+dvips, though most testing has taken place using tetex-based
 distributions.
 @end itemize
 
@@ -49,44 +50,37 @@ it out with one of these options
 --with-emacs=/path/to/emacs
 @end example
 
-  If you are using a pretest which isn't in your $PATH, or configure
-  is not finding the right emacs binary, you can specify it with this
-  option.
+If you are using a pretest which isn't in your $PATH, or configure is
+not finding the right emacs binary, you can specify it with this option.
 
 @example
 --with-auctex=/dir
 @end example
 
-  If AUC-TeX is installed in a non-standard location (not in
-  site-lisp), use this option to specify the location.
+If AUC-TeX is installed in a non-standard location (not in site-lisp),
+use this option to specify the location.
 
 @example
 --with-texmf=/dir
 --with-preview-dir=/dir
 @end example
 
-  Both of these options can be used to specify the location to install
-  the preview TeX files.  They are not necessary for most TeX
-  installs, but may be used if you don't like the directory that configure
-  is suggesting.
-
-  You can specify a part of the TeX directory hierarchy with
-  @code{--with-texmf=/dir}, and the TeX files will be installed in
-  @code{/dir/tex/latex/preview}.  Use this if you'd like things installed
-  in a TDS directory hierarchy.
-
-  Or, you can specify the exact directory the preview TeX files will
-  be installed with @code{--with-preview-dir=/dir.} In this case, the
-  files
-  will be placed in /dir.
+Both of these options can be used to specify the location to install the
+preview TeX files. They are not necessary for most TeX installs, but may
+be used if you don't like the directory that configure is suggesting.
+Using @code{--with-texmf=/dir} you can specify where the @TeX{} TDS
+directory hierarchy resides, and the @TeX{} files will be installed in
+@code{/dir/tex/latex/preview}. If you want to specify an exact directory
+for the preview @TeX{} files, use @code{--with-preview-dir=/dir}. In
+this case, the files will be placed in /dir.
 
 @example
 --with-lispdir=/dir
 @end example
 
-  This tells where to install Emacs Lisp files.  Normally, this option
-  is unnecessary, but may be used if you don't like the directory that
-  configure is suggesting.
+This tells where to install Emacs Lisp files. Normally, this option is
+unnecessary, but may be used if you don't like the directory that
+configure is suggesting.
 
 @section Building files
 
@@ -128,15 +122,14 @@ Next put the following lines into your .emacs file:
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
-This will make Emacs load preview.el and let it install itself into
-AUC @TeX{} when you first load a LaTeX file (be sure to have AUC @TeX{}
-up and working). @kbd{@key{C-c} @key{C-c} g @key{RET}} should then give
-you a graphics preview. You can customize the default option set and
-other settings of the Emacs package by entering @kbd{@key{M-x}
-customize-group @key{RET} preview @key{RET}}.
+This will make Emacs load preview.el and let it install itself into AUC
+@TeX{} when you first load a LaTeX file (be sure to have AUC @TeX{} up
+and working). @kbd{C-c C-c g RET} should then give you a graphics
+preview. You can customize the default option set and other settings of
+the Emacs package by entering @kbd{M-x customize-group RET preview RET}.
 
-There is a sample file circ.tex which you can use for testing around
-a bit, and which serves as sort of a reference for initial bug
+There is a sample file @file{circ.tex} which you can use for testing
+around a bit, and which serves as sort of a reference for initial bug
 reports.
 
 @section If it does not work
@@ -146,11 +139,11 @@ might be necessary to play around with the settings of the variable
 preview-gs-options in order to get your version of GhostScript to work.
 We want to support most reasonable versions of GhostScript, so if you
 are experiencing problems, be sure to include the output of "gs -h" in
-your report. If you use M-x preview-report-bug, this should be done
-automatically.
+your report. If you use @kbd{M-x preview-report-bug RET}, this should be
+done automatically.
 
 A failing run will add information to the bottom of the process buffer
-displayed by C-c C-l, or attach the information to the particular
+displayed by @kbd{C-c C-l}, or attach the information to the particular
 images causing failure.
 
 See the @file{PROBLEMS} file for a list of known problems.
