@@ -44,16 +44,16 @@
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
 
-;; AUC-TEX USERS:
-;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
-;;    http://savannah.nongnu.org/download/auctex/stable.pkg/  <-stable release
-;;    http://savannah.nongnu.org/download/auctex/beta.pkg <-alpha/beta release
+;; AUCTeX users:
+;;  AUCTeX is a super-charged LaTeX mode for emacs. Get it at:
+;;    http://savannah.gnu.org/download/auctex/stable.pkg/  <-stable release
+;;    http://savannah.gnu.org/download/auctex/beta.pkg <-alpha/beta release
 ;;
-;;  WWW users may want to check out the AUC TeX page at
-;;    http://www.nongnu.org/auctex/
+;;  WWW users may want to check out the AUCTeX page at
+;;    http://www.gnu.org/auctex/
 ;;
-;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
-;;  you use auc-tex and didn't obtained bib-cite.el separately, make sure
+;;  bib-cite.el is included in the AUCTeX distribution.  Therefore, if
+;;  you use AUCTeX and didn't obtained bib-cite.el separately, make sure
 ;;  that you are actually using the more recent version.
 
 ;; reftex users:
@@ -69,7 +69,7 @@
 ;;  display and find \label's and \cite bibliography entries, set the variable
 ;;  bib-cite-use-reftex-view-crossref to t.
 
-;; MS-DOS USERS:
+;; MS-DOS users:
 ;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
 ;;  which contains a bug for MSDOS (at least for emacs 19.27 it does).
 ;;  Get the file
@@ -197,14 +197,14 @@
 ;;
 ;;  bib-etags:                 Bound to `\C-c b e'
 ;;
-;;   Creates a TAGS file for auc-tex's multi-file document (or refreshes it).
+;;   Creates a TAGS file for AUCTeX's multi-file document (or refreshes it).
 ;;   This is used by bib-find when editing multi-file documents.  The TAGS file
 ;;   is created automatically, but it isn't refreshed automatically.  So if
 ;;   bib-find can't find something, try running bib-etags again.
 ;;
 ;;  bib-create-auto-file:
 ;;
-;;   Use this when editing a BiBTeX buffer to generate the auc-tex .el file
+;;   Use this when editing a BiBTeX buffer to generate the AUCTeX .el file
 ;;   which tell emacs about all its cite keys.  I've added this command to
 ;;   bibtex-mode pull-down menu.
 ;;
@@ -219,7 +219,7 @@
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
 ;;  bib-cite is a minor-mode, so you could invoke it in a LaTeX-mode hook.
-;;  e.g. If you are using AUC-TeX (http://www.nongnu.org/auctex/), you could
+;;  e.g. If you are using AUCTeX (http://www.gnu.org/auctex/), you could
 ;;  use:
 ;;
 ;;   (autoload 'turn-on-bib-cite "bib-cite")
@@ -323,6 +323,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.26 Aug 06 2004 - Reiner Steib
+;;  - Changed URL of AUCTeX. Use "AUCTeX", not "auc-tex" (skipped Change log).
 ;; V3.25 Feb 15 2004 - PSG
 ;;  - Check existence of font-lock-unset-defaults; no longer defined in CVS
 ;;    Emacs. Thanks to Adrian Lanz for reporting the problem.
@@ -892,7 +894,7 @@ runs bib-find, and [mouse-3] runs bib-display."
        (or window-system
 	   (fboundp 'smart-menu)))      ;text menus by Bob Weiner
   ;;
-  ;; xemacs under X with auc-tex
+  ;; xemacs under X with AUCTeX
   ;;
 
   ;; Add to bibtex.el's popup menu
@@ -901,7 +903,7 @@ runs bib-find, and [mouse-3] runs bib-display."
       "Bib-Cite"
       "---"
       ["Search apropos BibTeX files" bib-apropos t]
-      ["Create auc-tex auto parsing file" bib-create-auto-file t])
+      ["Create AUCTeX auto parsing file" bib-create-auto-file t])
     "Submenu of bibtex-mode menu, used by bib-cite.")
 
   (if (boundp 'bibtex-menu)
@@ -932,7 +934,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 
   ;; This *almost* makes me want to switch over to XEmacs...
 
-  ;; to auc-tex auto file for a bibtex buffer
+  ;; to AUCTeX auto file for a bibtex buffer
   (eval-after-load
    "bibtex"
    '(progn
@@ -947,7 +949,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 	(define-key-after
 	  (lookup-key bibtex-mode-map [menu-bar move/edit])
 	  [auc-tex-parse]
-	  '("Create auc-tex auto parsing file" . bib-create-auto-file)
+	  '("Create AUCTeX auto parsing file" . bib-create-auto-file)
 	  'bib-apropos))
        ((lookup-key bibtex-mode-map [menu-bar bibtex-edit])
 	(define-key-after
@@ -959,7 +961,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 	(define-key-after
 	  (lookup-key bibtex-mode-map [menu-bar bibtex-edit])
 	  [auc-tex-parse]
-	  '("Create auc-tex auto parsing file" . bib-create-auto-file)
+	  '("Create AUCTeX auto parsing file" . bib-create-auto-file)
 	  'bib-apropos)))))))
 
 ;; Following from bibtex.el
@@ -1172,7 +1174,7 @@ by using bib-apropos sequentially."
   "Extract citations used in the current document from \bibliography{} file(s).
 Put them into a buffer named after the current buffer, with extension .bib.
 
-In an auc-tex multi-file document, parsing must be on and the citation keys
+In an AUCTeX multi-file document, parsing must be on and the citation keys
 are extracted from the .aux files.
 
 In a plain LaTeX buffer (not multi-file), the cite keys are extracted from
@@ -1744,12 +1746,12 @@ Does not save excursion."
 ;;        picking out both instead of the section label above them.  But since
 ;;        users typically puts their labels next to the section declaration,
 ;;        I'm satisfied with this... for now.
-;; I could have used the following auc-tex functions:
+;; I could have used the following AUCTeX functions:
 ;;  LaTeX-current-environment
 ;;    Function: Return the name (a string) of the enclosing LaTeX environment.
 ;;  LaTeX-current-section
 ;;    Function: Return the level of the section that contain point.
-;; but then this code would only work as part of auc-tex...
+;; but then this code would only work as part of AUCTeX...
   (let ((the-point (point))
 	(end-point (point))
 	(the-environment)(foundf))
@@ -1795,7 +1797,7 @@ Does not save excursion."
 	 "Sorry, could not find an environment or section declaration")))))
 
 (defvar LaTeX-find-label-hist-alist nil "History list for LaTeX-find-label.")
-(defvar LaTeX-label-list nil "Used by auc-tex to store label names.")
+(defvar LaTeX-label-list nil "Used by AUCTeX to store label names.")
 
 
 (defun create-alist-from-list (the-list)
@@ -2214,7 +2216,7 @@ Sets global variable bib-document-TeX-files-warnings."
 (defun bib-document-citekeys-obarray ()
   "Return cite keys obarray for multi-file document.
 Return nil if not a multi-file document.
-This is a auc-tex supported feature only.
+This is a AUCTeX supported feature only.
 Also, see bib-buffer-citekeys-obarray.
 Sets global variable bib-document-citekeys-obarray-warnings."
   (setq bib-document-citekeys-obarray-warnings nil)
@@ -2324,7 +2326,7 @@ Makes sure TAGS file exists, etc."
 (defun bib-get-bibliography (include-filenames-f)
   "Returns a new bibliography buffer holding all bibtex files in the document.
 
-If using auc-tex, and either TeX-parse-self is set or C-c C-n is used to
+If using AUCTeX, and either TeX-parse-self is set or C-c C-n is used to
 parse the document, then the entire multifile document will be searched
 for \bibliography commands.
 
@@ -2400,7 +2402,7 @@ accents embeded in bibtex entries."
 
 (defun bib-bibliography-list ()
   "Return list of bib files listed in first \\bibliography command in buffer.
-Similar output to auc-tex's LaTeX-bibliography-list
+Similar output to AUCTeX's LaTeX-bibliography-list
 The first element may contain trailing whitespace (if there was any in input)
 although BiBTeX doesn't allow it!"
   (save-excursion
@@ -2423,12 +2425,12 @@ although BiBTeX doesn't allow it!"
 	    (setq doNext nil)))
 	(mapcar 'list the-list)))))
 
-;; BibTeX-mode key def to create auc-tex's parsing file.
+;; BibTeX-mode key def to create AUCTeX's parsing file.
 (defun bib-create-auto-file ()
-  "Force the creation of the auc-tex auto file for a bibtex buffer."
+  "Force the creation of the AUCTeX auto file for a bibtex buffer."
   (interactive)
   (if (not (require 'latex))
-      (error "Sorry, This is only useful if you have auc-tex"))
+      (error "Sorry, This is only useful if you have AUCTeX"))
   (let ((TeX-auto-save t)
        (TeX-auto-update t)
        (TeX-auto-regexp-list BibTeX-auto-regexp-list))
@@ -2559,7 +2561,7 @@ If FIRST-FILE is t, stop after first file is found."
 ;; dired-split is defined.  That would eliminate a check in psg-list-env.
 (and (not (fboundp 'TeX-split-string))
      (not (fboundp 'dired-split))
-     ;; This code is part of auc-tex
+     ;; This code is part of AUCTeX
      (defun TeX-split-string (char string)
        "Returns a list of strings. given REGEXP the STRING is split into
 sections which in string was seperated by REGEXP.

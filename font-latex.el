@@ -49,7 +49,7 @@
 
 ;; Installation instructions:
 ;;
-;;  AUCTeX users:  <URL:http://www.nongnu.org/auctex/>
+;;  AUCTeX users:  <URL:http://www.gnu.org/auctex/>
 ;;   You don't have to do anything special as it gets installed
 ;;   along with the rest of AUCTeX and gets enabled by default via the
 ;;   customizable variable TeX-install-font-lock.
@@ -95,6 +95,8 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.922 06Aug2004 Reiner Steib
+;;  - Changed URL of AUCTeX. Use "AUCTeX", not "auc-tex" (skipped Change log).
 ;; V0.921 05Aug2004 Reiner Steib
 ;;  - (font-latex-script-display): New variable.  Make raise of
 ;;    sub-/superscripts customizable.
@@ -118,9 +120,9 @@
 ;;  - (font-latex-title-*-face): Use it to simplify the initialization.
 ;; V0.916 08Jul2004 Ralf Angeli
 ;;  - `font-latex-superscript-face', `font-latex-subscript-face': New faces.
-;;  - `font-latex-script-keywords'): New constant.
-;;  - `font-latex-fontify-script'): New customize option.
-;;  - `font-latex-script'): New function.
+;;  - `font-latex-script-keywords': New constant.
+;;  - `font-latex-fontify-script': New customize option.
+;;  - `font-latex-script': New function.
 ;; V0.915 05Jun2004 Ralf Angeli
 ;;  - `font-latex-make-title-faces': New function.
 ;;  - `font-latex-title-1-face', `font-latex-title-2-face',

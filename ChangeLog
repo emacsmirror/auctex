@@ -1,3 +1,11 @@
+2004-08-06  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el: Use "gnu.org" instead of "nongnu.org".
+
+	* bib-cite.el: Ditto.  Use "AUCTeX", not "auc-tex".
+
+	* lpath.el: Use "AUCTeX".
+
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/macros.texi: New @ConTeXt macro.
