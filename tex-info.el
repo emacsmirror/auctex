@@ -144,8 +144,9 @@ for @node."
       (while (re-search-forward "^@node\\b" nil t)
 	(skip-chars-forward " \t")
 	(add-to-list 'nodes
-		     (buffer-substring-no-properties
-		      (point) (progn (skip-chars-forward "^,") (point))))))
+		     (list (buffer-substring-no-properties
+			    (point) (progn (skip-chars-forward "^,")
+					   (point)))))))
     (unless active-mark
       (setq node-name (read-string "Node name: ")))
     ;; FIXME: What if key binding for `minibuffer-complete' was changed?
