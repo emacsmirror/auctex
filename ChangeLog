@@ -1,5 +1,14 @@
 2005-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-paragraph-commands-regexp-make): New function.
+	(LaTeX-paragraph-commands-regexp, LaTeX-paragraph-commands): Use
+	it.
+	(LaTeX-paragraph-commands-add-locally): New function.
+
+	* style/beamer.el ("beamer"): Use it.  Newline not needed anymore
+	because \frametitle is now a paragraph command and will not be
+	filled together with the other content.
+
 	* context.el (ConTeXt-find-indent): Correct indentation of
 	environments.
 
