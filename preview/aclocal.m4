@@ -133,7 +133,7 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
 			              name (directory-file-name name)))))
 		            (null name))
 		   (throw 22
-                      (if (string= reldir ".") (directory-file-name prefix)
+                      (if (string= reldir \".\") (directory-file-name prefix)
                         (concat (file-name-as-directory prefix)
                                 reldir)))))))))],[$5],
   [prefix expanded $6],["${currentprefix}" "${expprefix}" $7])
