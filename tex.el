@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.396 $"))
+	(rev "$Revision: 5.397 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-22 14:44:43 $"))
+    (let ((date "$Date: 2004-07-29 08:59:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3260,10 +3260,10 @@ If LIMIT is non-nil, search up to this position in the buffer."
 	  nil
 	(point)))))
 
-(defun TeX-find-macro-start (&optional arg)
-  "Find the start of a macro.
+(defun TeX-find-macro-boundaries ()
+  "Return a list containing the start and end of a macro.
 Arguments enclosed in brackets or braces are considered part of
-the macro.  If ARG is non-nil, find the end of a macro."
+the macro."
   (save-excursion
     (let ((orig-point (point))
 	  opening-brace
@@ -3295,9 +3295,7 @@ the macro.  If ARG is non-nil, find the end of a macro."
 	(goto-char start-point)
 	(goto-char (TeX-find-macro-end-helper (point)))
 	(if (< orig-point (point))
-	    (if arg
-		(point)
-	      start-point)
+	    (list start-point (point))
 	  nil)))))
 
 (defun TeX-find-macro-start-helper ()
@@ -3326,14 +3324,16 @@ those will be considered part of it."
       (skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
       (while (not (eobp))
 	(cond
-	 ((or (looking-at "[ \t]*\\(\\[\\)")
+	 ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
+					        ; only consecutive lines.
 	      (and (looking-at (concat "[ \t]*" comment-start))
 		   (save-excursion
 		     (forward-line 1)
 		     (looking-at "[ \t]*\\(\\[\\)"))))
 	  (goto-char (match-beginning 1))
 	  (forward-sexp))
-	 ((or (looking-at "[ \t]*{")
+	 ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
+					; only consecutive lines.
 	      (and (looking-at (concat "[ \t]*" comment-start))
 		   (save-excursion
 		     (forward-line 1)
@@ -3347,11 +3347,17 @@ those will be considered part of it."
 	 (t
 	  (throw 'found (point))))))))
 
-(defun TeX-find-macro-end ()
-  "Find the end of a macro.
+(defun TeX-find-macro-start ()
+  "Return the start of a macro.
 Arguments enclosed in brackets or braces are considered part of
 the macro."
-  (TeX-find-macro-start t))
+  (car (TeX-find-macro-boundaries)))
+
+(defun TeX-find-macro-end ()
+  "Return the end of a macro.
+Arguments enclosed in brackets or braces are considered part of
+the macro."
+  (cadr (TeX-find-macro-boundaries)))
 
 
 ;;; Fonts
