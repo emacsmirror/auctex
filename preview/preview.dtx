@@ -572,8 +572,15 @@
 \@fileswfalse
 %    \end{macrocode}
 %Let the output routine throw everything gathered regularly away.
+%Start with all float boxes, continue with output box, pack everything
+%afloat from \cmd{\@currlist} back into \cmd{\@freelist}.
 %    \begin{macrocode}
-\output{\global\setbox255=\box\voidb@x}
+\output{\def\@elt#1{\global\setbox#1=\box\voidb@x}%
+  \@currlist
+  \@elt{255}%
+  \let\@elt\relax
+  \xdef\@freelist{\@currlist\@freelist}%
+  \global\let\@currlist\@empty}
 %</active>
 %</style>
 %    \end{macrocode}
