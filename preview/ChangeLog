@@ -1,3 +1,9 @@
+2004-04-23  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-gs-color-string)
+	(preview-dvipng-color-string): Try to do something reasonably sane
+	when a non-nil border thickness is specified, but no color.
+
 2004-04-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* .cvsignore: Added "autom4te.cache".
