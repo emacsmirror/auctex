@@ -14,6 +14,8 @@ w
 q
 EOF
 }
-makeinfo -D rawfile --no-headers --no-validate doc/readme.texi >README
-makeinfo -D rawfile --no-headers --no-validate doc/install.texi >INSTALL
-makeinfo -D rawfile --no-headers --no-validate doc/problems.texi >PROBLEMS
+cd doc
+makeinfo -D rawfile --no-headers --no-validate readme.texi >../README
+makeinfo -D rawfile --no-headers --no-validate install.texi >../INSTALL
+makeinfo -D rawfile --no-headers --no-validate problems.texi >../PROBLEMS
+cd ..
