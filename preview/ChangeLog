@@ -1,5 +1,9 @@
 2002-03-27  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx: be careful in unboxing so as not to remove
+	possibly shifted hboxes (bug reported by Jan-Åke) protected by an
+	otherwise inexplicable penalty.
+
 	* preview.el: Complete overhaul of parsing to avoid (costly)
 	buffer switches.
 	(preview-gs-close): Transfer queue to
