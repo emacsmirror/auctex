@@ -416,12 +416,14 @@ Used by Japanese TeX to set the coding system.")
 Return the new process."
   (let ((default TeX-command-default)
 	(buffer (TeX-process-buffer-name file))
-	(dir (TeX-master-directory)))
+	(dir (TeX-master-directory))
+	(command-buff (current-buffer)))
     (TeX-process-check file)		; Check that no process is running
-    (setq TeX-command-buffer (current-buffer))
+    (setq-default TeX-command-buffer command-buff)
     (get-buffer-create buffer)
     (set-buffer buffer)
     (erase-buffer)
+    (set (make-local-variable 'TeX-command-buffer) command-buff)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
@@ -554,11 +556,13 @@ Error parsing on C-x ` should work with a bit of luck."
   (let ((default TeX-command-default)
 	(buffer (TeX-process-buffer-name file))
 	(process nil)
-	(dir (TeX-master-directory)))
+	(dir (TeX-master-directory))
+	(command-buff (current-buffer)))
     (TeX-process-check file)		; Check that no process is running
-    (setq TeX-command-buffer (current-buffer))
+    (setq-default TeX-command-buffer command-buff)
     (with-output-to-temp-buffer buffer)
     (set-buffer buffer)
+    (set (make-local-variable 'TeX-command-buffer) command-buff)
     (setq buffer-read-only nil)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
@@ -774,7 +778,7 @@ command."
 				name
 				"' running, kill it? "))
 	   (delete-process process))
-	  (t
+	  ((eq (process-status process) 'run)
 	   (error "Cannot have two processes for the same document")))))
 
 (defun TeX-process-buffer-name (name)
