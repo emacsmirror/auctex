@@ -1,3 +1,25 @@
+2001-11-03  Alan Shutko  <ats@acm.org>
+
+	* aclocal.m4
+	(AC_CHECK_PROG_REQUIRED,AC_CHECK_PROGS_REQUIRED,AC_PATH_PROG_REQUIRED):
+	New functions to check programs, and abort with a message if not
+	found.
+	(AC_EMACS_CHECK_LIB): Function stolen from Gnus to check whether
+	an elisp library exists.
+	(AC_CHECK_AUCTEX): Check if AUC-TeX is in a normal emacs load
+	path, and allow --with-auctex switch to specify it. SF Bug
+	#477262, #477260.
+
+	* Makefile.in (use-hint, install-hint): New hints.  SF Bug #477282.
+	(all, install): Use the above hints.
+
+	* configure.in: Changed all AC_CHECK_PROG(S)/AC_PATH_PROG(S) to
+	new AC_*_REQUIRED, which abort and print a message if something
+	isn't found.  Added AC_CHECK_AUCTEX.  Add note at end of configure
+	to run "make".  SF Bug #469741 (partial).
+	
+	Removed --with-auctex since that's now done in AC_CHECK_AUCTEX.
+
 2001-10-30  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-emacs.el (preview-make-clickable): Use 'keymap instead of

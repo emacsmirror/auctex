@@ -18,15 +18,31 @@ datadir = @datadir@
 texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
 previewdocdir = @previewdocdir@
-AUCTEXDIR = @auctexdir@
+AUCTEXDIR = @AUCTEXDIR@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
 all: preview.sty prauctex.def preview.drv \
-   preview-mk.ins preview.dvi $(LISP_OBJS)
+   preview-mk.ins preview.dvi $(LISP_OBJS) install-hint
 
-install: install-texmf install-el
+install-hint:
+	@echo "Congratulations!  Build is complete."
+	@echo 
+	@echo "Now, run \"make install\" as root, or whatever user has permissions"
+	@echo "to write to the install directory."
+
+install: install-texmf install-el use-hint
+
+use-hint:
+	@echo "Installation completed."
+	@echo
+	@echo "Please read the PROBLEMS file if you use\
+a) AucTeX with a version less than 11.0\
+b) GNU Emacs with a version less than 21.2\
+c) GhostScript with a version less than 6.51\
+Please use M-x preview-report-bug if you experience any\
+problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
 	-mkdir -p $(lispdir)

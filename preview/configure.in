@@ -16,13 +16,6 @@ AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build],
 AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
 
-AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standard], 
- [ auctexdir=${withval} ; 
-   if test ! -d $auctexdir  ; then
-      AC_MSG_ERROR([--with-auctex=$auctexdir: Directory does not exist])
-   fi
-])
-
 AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
  [ texmfdir=${withval} ; 
    if test ! -d $texmfdir  ; then
@@ -39,7 +32,9 @@ AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install pre
 
 
 dnl FIXME we should check that it's the right version
-AC_CHECK_PROG(EMACS, emacs, emacs, xemacs)
+AC_CHECK_PROGS_REQUIRED(EMACS, emacs xemacs, [(X)Emacs not found!  Aborting!  
+You must install Emacs 21 or XEmacs for preview to work.])
+
 AC_XEMACS_P
 
 if test $EMACS_FLAVOR = "xemacs"  ; then
@@ -50,12 +45,29 @@ fi
 
 AC_SUBST(PLAT_LISP)
 
-AC_PATH_PROG(LATEX, latex, latex)
-AC_PATH_PROG(TEX, tex, tex)
-AC_PATH_PROG(TEXHASH, texhash, texhash)
+AC_CHECK_AUCTEX
+
+AC_PATH_PROG_REQUIRED(GS, gs, [gs not found!  Aborting!  
+You must install Ghostscript for preview to work.])
+
+dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
+dnl Check to see if specific drivers are built in.  Need table of mappings, with priority
+
+
+
+AC_PATH_PROG_REQUIRED(LATEX, latex, [LaTeX not found, aborting!
+You must install LaTeX for preview to work.])
+AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
+AC_PATH_PROG_REQUIRED(TEXHASH, texhash, NONE)
 
 AC_SUBST(auctexdir)
 
 AC_PATH_TEXMFDIR
 AC_PATH_LISPDIR
 AC_OUTPUT(Makefile)
+cat >&2 <<EOF
+
+Congratulations!  Configuration is complete.
+
+Type "make" at the prompt to build preview.
+EOF
