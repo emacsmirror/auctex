@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.175 2002-12-07 12:45:34 dakas Exp $
+;; $Id: preview.el,v 1.176 2002-12-07 17:51:46 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1703,9 +1703,8 @@ later while in use."
 		topdir
 		0))
     (shell-quote-argument
-     (expand-file-name (file-name-nondirectory (nth 0 TeX-active-tempdir))
-		       (file-name-as-directory
-			(file-name-nondirectory topdir))))))
+     (concat (file-name-as-directory (file-name-nondirectory topdir))
+	     (file-name-nondirectory (nth 0 TeX-active-tempdir))))))
 
 ;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
 (if (featurep 'latex)
@@ -2288,7 +2287,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.175 $"))
+	(rev "$Revision: 1.176 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2299,7 +2298,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-07 12:45:34 $"))
+    (let ((date "$Date: 2002-12-07 17:51:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2316,6 +2315,7 @@ In the form of yyyy.mmdd")
      "preview-latex-bugs@lists.sourceforge.net"
      preview-version
      '(AUC-TeX-version
+       LaTeX-command-style
        image-types
        preview-image-type
        preview-image-creators
