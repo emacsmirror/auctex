@@ -1,3 +1,8 @@
+2005-02-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/auctex.texi (Japanese): Doc fix.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-nth-arg): Doc fix.
