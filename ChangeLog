@@ -1,3 +1,7 @@
+2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile: some changes for my setup.
+
 2002-12-14  David Kastrup  <David.Kastrup@t-online.de>
 
 	*  graphicsx.el: removed. superseded by graphicx.el and unused.
