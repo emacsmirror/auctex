@@ -25,6 +25,9 @@
 
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi Added section for package providers, updated
+	the links.
+
 	* preview.el (preview-error-condition): New variable for last
 	error condition.
 	(preview-log-error): Error reporting routine.  Logs to run buffer.
