@@ -1,5 +1,24 @@
 2005-01-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-macro-global): New function.
+	(TeX-macro-global): (the variable) Moved here from tex-site.el.in.
+	Use new `TeX-macro-global' function.
+
+	* aclocal.m4 (library): Remove TEX_INPUT_DIRS function.
+
+	* configure.ac (auctexdir): Remove call to TEX_INPUT_DIRS.
+
+	* lpath.el: Setting `TeX-macro-global' is not necessary anymore as
+	it now is in tex.el.
+
+	* tex-site.el.in (TeX-macro-global): Move defcustom to tex.el.
+
+	* doc/install.texi (Configure): Remove documentation of
+	--with-tex-input-dirs.
+
+	* doc/wininstall.texi: Remove documentation of
+	--with-tex-input-dirs.
+
 	* latex.el (LaTeX-insert-environment): Insert a simple newline
 	character instead of using `newline'.  Fixes insertion of
 	environment end at wrong place in XEmacs.
