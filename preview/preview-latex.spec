@@ -114,11 +114,12 @@ for i in *emacs; do
     mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
     install -c -m 644 preview-latex.el \
       '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
+    %makeinstall 'lispdir=%{buildroot}%{_datadir}/emacs/site-lisp/preview' 'texmfdir=%{buildroot}%{_datadir}/texmf'
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
+    %makeinstall 'packagedir=%{buildroot}%{xemacspkgdir}' 'texmfdir=%{buildroot}%{_datadir}/texmf'
   fi
-  %makeinstall 'lispdir=%{buildroot}%{_datadir}/emacs/site-lisp/preview' 'packagedir=%{buildroot}%{xemacspkgdir}' 'texmfdir=%{buildroot}%{_datadir}/texmf'
   popd
 done
 
