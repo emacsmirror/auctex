@@ -188,7 +188,19 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 				    (regexp-opt item-list t) "}"))
 			   (t
 			    (concat (regexp-quote TeX-esc)
-				    (regexp-opt item-list t) "\\b"))))
+				    ;; An alternative for "[[{%$0-9\s-]" could
+				    ;; be "\\_>".  (This could be used in
+				    ;; font-latex as well for
+				    ;; `font-latex-match-variable-make' and
+				    ;; friends instead of "\\>" and would fix
+				    ;; issues with starred macros.)  But this
+				    ;; is only available with Emacs 21.4 or
+				    ;; later (checked into CVS Emacs on
+				    ;; 2004-05-19).  And `trivial_regexp_p'
+				    ;; is not available in Lisp for feature
+				    ;; checking.  Great.  Anyway, let's see
+				    ;; how this behaves ...
+				    (regexp-opt item-list t) "[[{%$0-9\s-]"))))
 	;; Start from the bottom so that it is easier to prioritize
 	;; nested macros.
 	(end-of-buffer)
@@ -282,8 +294,10 @@ TYPE specifies the type of item and can be one of the symbols
 					    "\\([A-Za-z]+\\)}"))
 				   (t
 				    (concat (regexp-quote TeX-esc)
-					    "\\([A-Za-z@]+\\)"))))
-			    (match-string-no-properties 1)))
+					    "\\([A-Za-z@*]+\\)"))))
+			    (if (fboundp 'match-string-no-properties)
+				(match-string-no-properties 1)
+			      (match-string 1))))
 	       (fold-list (if (eq type 'env)
 			      TeX-fold-env-spec-list
 			    TeX-fold-macro-spec-list))
@@ -351,11 +365,11 @@ be 'macro for macros and 'env for environments.
 
 The position of the end of the overlay and its display string may
 be altered to prevent overfull lines."
-  (let* ((display-string (if (listp display-string)
+  (let* ((face (when (listp display-string)
+		 (cadr display-string)))
+	 (display-string (if (listp display-string)
 			     (car display-string)
 			   display-string))
-	 (face (when (listp display-string)
-		 (cadr display-string)))
 	 (overfull (and (not (featurep 'xemacs)) ; Linebreaks in glyphs don't
 						 ; work in XEmacs anyway.
 			(save-excursion
@@ -497,7 +511,9 @@ That means, put respective properties onto overlay OV."
 			       "[Error: No content found]"))))
     (overlay-put ov 'mouse-face 'highlight)
     (if (featurep 'xemacs)
-	(let ((glyph (make-glyph display-string))
+	(let ((glyph (make-glyph (if (listp display-string)
+				     (car display-string)
+				   display-string)))
 	      (face (overlay-get ov 'TeX-fold-face)))
 	  (overlay-put ov 'invisible t)
 	  (if face
