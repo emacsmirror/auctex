@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.238 2005-03-08 11:01:14 dak Exp $
+;; $Id: preview.el,v 1.239 2005-03-14 05:26:58 ataka Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -40,6 +40,8 @@
 ;;
 
 ;;; Code:
+
+(autoload 'TeX-fold-prioritize "tex-fold" no-doc t)
 
 (eval-when-compile
   (require 'tex-site)
@@ -1954,6 +1956,7 @@ Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
+    (overlay-put ov 'priority (TeX-fold-prioritize start end))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -2031,6 +2034,7 @@ if any."
     (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
     (setcdr filename TeX-active-tempdir)
     (let ((ov (make-overlay start end nil nil nil)))
+      (overlay-put ov 'priority (TeX-fold-prioritize start end))
       (overlay-put ov 'preview-map
 		   (preview-make-clickable
 		    nil nil nil
@@ -3284,7 +3288,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.238 $"))
+	(rev "$Revision: 1.239 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3295,7 +3299,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-08 11:01:14 $"))
+    (let ((date "$Date: 2005-03-14 05:26:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
