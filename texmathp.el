@@ -112,35 +112,16 @@
   :prefix "texmathp-"
   :group 'tex)
 
-(defcustom texmathp-tex-commands nil
-  "List of environments and macros influencing (La)TeX math mode.
-This user-defined list is used in addition to LaTeX and AMSLaTeX defaults.
-The structure of each entry is (NAME TYPE)
+;; Some internal variables which are computed from `texmathp-tex-commands'
+;; and `texmathp-tex-commands-default'.
+(defvar texmathp-environments nil)
+(defvar texmathp-macros nil)
+(defvar texmathp-onoff-regexp nil)
+(defvar texmathp-toggle-regexp nil)
+(defvar texmathp-tex-commands1 nil)
+(defvar texmathp-memory nil)
 
-- The first item in each entry is the name of an environment or macro.
-  If it's a macro, include the backslash.
-
-- The second item is a symbol indicating how the command works:
-    `env-on'     Environment: turns math mode for its body  on
-    `env-off'    Environment: turns math mode for its body  off
-    `arg-on'     Command: turns math mode for its arguments on
-    `arg-off'    Command: turns math mode for its arguments off
-    `sw-on'      Switch: turns math-mode of following text  on
-    `sw-off'     Switch: turns math-mode of following text  off
-    `sw-toggle'  Switch: toggles math mode of following text"
-  :group 'texmathp
-  :type
-  '(repeat
-    (list :value ("" env-on)
-     (string  :tag "Name")
-     (choice  :tag "Type"
-      (const :tag "Environment: turns math mode for its body on" env-on)
-      (const :tag "Environment: turns math mode for its body off" env-off)
-      (const :tag "Command: turns math mode for its argument on" arg-on)
-      (const :tag "Command: turns math-mode for its argument off" arg-off)
-      (const :tag "Switch: turns math-mode of following text on" sw-on)
-      (const :tag "Switch: turns math-mode of following text off" sw-off)
-      (const :tag "Switch: toggles math mode of following text" sw-toggle)))))
+(defvar texmathp-tex-commands)		; silence the compiler
 
 (defvar texmathp-tex-commands-default
   '(;; Plain TeX
@@ -173,54 +154,6 @@ The structure of each entry is (NAME TYPE)
     ("\\text"        arg-off)     ("\\intertext"   arg-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
-(defcustom texmathp-search-n-paragraphs 2
-  "*Number of paragraphs to check before point.
-Normally, you cannot have an empty line in a math environment in (La)TeX.
-The fastest method to test for math mode is then limiting the search
-backward to the nearest empty line.
-However, during editing it happens that such lines exist temporarily.
-Therefore we look a little further.  This variable determines how many
-empty lines we go back to fix the search limit."
-  :group 'texmathp
-  :type 'number)
-
-(defcustom texmathp-allow-detached-args nil
-  "*Non-nil means, allow arguments of macros to be detached by whitespace.
-When this is t, `aaa' will be interpreted as an argument of \bb in the
-following construct:  \bbb [xxx] {aaa}
-This is legal in TeX.  The disadvantage is that any number of braces expressions
-will be considered arguments of the macro independent of its definition."
-  :group 'texmathp
-  :type 'boolean)
-
-(defvar texmathp-why nil
-  "After a call to `texmathp' this variable shows why math-mode is on or off.
-The value is a cons cell (MATCH . POSITION).
-MATCH is a string like a car of an entry in `texmathp-tex-commands', e.q.
-\"equation\" or \"\\ensuremath\" or \"\\[\" or \"$\".
-POSITION is the buffer position of the match.  If there was no match,
-it points to the limit used for searches, usually two paragraphs up.")
-
-;; Some internal variables which are computed from `texmathp-tex-commands'
-;; and `texmathp-tex-commands-default'.
-(defvar texmathp-environments nil)
-(defvar texmathp-macros nil)
-(defvar texmathp-onoff-regexp nil)
-(defvar texmathp-toggle-regexp nil)
-(defvar texmathp-tex-commands1 nil)
-(defvar texmathp-memory nil)
-
-;; We need our own syntax table to play with the syntax of () [] and {}
-;; For speed reasons we define it statically instead of copying it each time.
-(defvar texmathp-syntax-table (make-syntax-table)
-  "Syntax table used while texmathp is parsing.")
-(mapcar (lambda (x) (modify-syntax-entry (car x) (cdr x) texmathp-syntax-table))
-	'((?\\ . "\\") (?\f .">")  (?\n . ">")  (?% . "<")
-	  (?\[ . ".")  (?\] . ".") (?\{ . "(}") (?\} . "){")
-	  (?\( . ".")  (?\) . ".") (?\" . ".")  (?& . ".")   (?_ . ".")
-	  (?@ . "_")   (?~ . " ")  (?$ . "$")   (?' . "w")
-	  ))
-
 (defun texmathp-compile ()
   "Compile the value of `texmathp-tex-commands' into the internal lists.
 Call this when you have changed the value of that variable without using
@@ -251,6 +184,76 @@ customize (customize calls it when setting the variable)."
 		  (mapconcat 'regexp-quote togglers "\\|")
 		  "\\)"))))
 
+(defcustom texmathp-tex-commands nil
+  "List of environments and macros influencing (La)TeX math mode.
+This user-defined list is used in addition to LaTeX and AMSLaTeX defaults.
+The structure of each entry is (NAME TYPE)
+
+- The first item in each entry is the name of an environment or macro.
+  If it's a macro, include the backslash.
+
+- The second item is a symbol indicating how the command works:
+    `env-on'     Environment: turns math mode for its body  on
+    `env-off'    Environment: turns math mode for its body  off
+    `arg-on'     Command: turns math mode for its arguments on
+    `arg-off'    Command: turns math mode for its arguments off
+    `sw-on'      Switch: turns math-mode of following text  on
+    `sw-off'     Switch: turns math-mode of following text  off
+    `sw-toggle'  Switch: toggles math mode of following text"
+  :group 'texmathp
+  :set '(lambda (symbol value) (set-default symbol value) (texmathp-compile))
+  :type
+  '(repeat
+    (list :value ("" env-on)
+     (string  :tag "Name")
+     (choice  :tag "Type"
+      (const :tag "Environment: turns math mode for its body on" env-on)
+      (const :tag "Environment: turns math mode for its body off" env-off)
+      (const :tag "Command: turns math mode for its argument on" arg-on)
+      (const :tag "Command: turns math-mode for its argument off" arg-off)
+      (const :tag "Switch: turns math-mode of following text on" sw-on)
+      (const :tag "Switch: turns math-mode of following text off" sw-off)
+      (const :tag "Switch: toggles math mode of following text" sw-toggle)))))
+
+(defcustom texmathp-search-n-paragraphs 2
+  "*Number of paragraphs to check before point.
+Normally, you cannot have an empty line in a math environment in (La)TeX.
+The fastest method to test for math mode is then limiting the search
+backward to the nearest empty line.
+However, during editing it happens that such lines exist temporarily.
+Therefore we look a little further.  This variable determines how many
+empty lines we go back to fix the search limit."
+  :group 'texmathp
+  :type 'number)
+
+(defcustom texmathp-allow-detached-args nil
+  "*Non-nil means, allow arguments of macros to be detached by whitespace.
+When this is t, `aaa' will be interpreted as an argument of \bb in the
+following construct:  \bbb [xxx] {aaa}
+This is legal in TeX.  The disadvantage is that any number of braces expressions
+will be considered arguments of the macro independent of its definition."
+  :group 'texmathp
+  :type 'boolean)
+
+(defvar texmathp-why nil
+  "After a call to `texmathp' this variable shows why math-mode is on or off.
+The value is a cons cell (MATCH . POSITION).
+MATCH is a string like a car of an entry in `texmathp-tex-commands', e.q.
+\"equation\" or \"\\ensuremath\" or \"\\[\" or \"$\".
+POSITION is the buffer position of the match.  If there was no match,
+it points to the limit used for searches, usually two paragraphs up.")
+
+;; We need our own syntax table to play with the syntax of () [] and {}
+;; For speed reasons we define it statically instead of copying it each time.
+(defvar texmathp-syntax-table (make-syntax-table)
+  "Syntax table used while texmathp is parsing.")
+(mapcar (lambda (x) (modify-syntax-entry (car x) (cdr x) texmathp-syntax-table))
+	'((?\\ . "\\") (?\f .">")  (?\n . ">")  (?% . "<")
+	  (?\[ . ".")  (?\] . ".") (?\{ . "(}") (?\} . "){")
+	  (?\( . ".")  (?\) . ".") (?\" . ".")  (?& . ".")   (?_ . ".")
+	  (?@ . "_")   (?~ . " ")  (?$ . "$")   (?' . "w")
+	  ))
+
 ;;;###autoload
 (defun texmathp ()
   "Determine if point is inside (La)TeX math mode.
@@ -259,9 +262,6 @@ The functions assumes that you have (almost) syntactically correct (La)TeX in
 the buffer.
 See the variable `texmathp-tex-commands' about which commands are checked."
   (interactive)
-  (if (not (and (eq (car texmathp-memory) texmathp-tex-commands)
-		(eq (cdr texmathp-memory) texmathp-tex-commands-default)))
-    (texmathp-compile))
   (let* ((pos (point)) math-on sw-match
 	 (bound (save-excursion
 		  (if (re-search-backward "[\n\t][ \t]*[\n\r]"
