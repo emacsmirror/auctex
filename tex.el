@@ -514,7 +514,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.315 $"))
+	(rev "$Revision: 5.316 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -529,7 +529,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-07 16:53:50 $"))
+    (let ((date "$Date: 2004-01-09 09:31:13 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -625,7 +625,7 @@ Must be the car of an entry in TeX-command-list."
 
 You should set this variable to match the name of all files, where
 automatically adding a file variable with the name of the master file
-is a good idea.  When AUCTeX add the name of the master file as a
+is a good idea.  When AUCTeX adds the name of the master file as a
 file variable, it does not need to ask next time you edit the file.  
 
 If you dislike AUCTeX automatically modifying your files, you can set
@@ -826,7 +826,7 @@ This will be done when AUCTeX first try to use the master file.")
 section, `nil' otherwise."
   (save-excursion
     (goto-char (point-max))
-    (if (re-search-backward "^%%+ *TeX-master:" nil t)
+    (if (re-search-backward "^%+ *TeX-master:" nil t)
         t
       nil)))
 
