@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.493 $"))
+	    (rev "$Revision: 5.494 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-28 02:45:27 $"))
+    (let ((date "$Date: 2005-03-30 13:31:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4444,27 +4444,28 @@ important information about your AUCTeX version and AUCTeX
 configuration."
   (interactive)
   (require 'reporter)
-  (reporter-submit-bug-report
-   "bug-auctex@gnu.org"
-   (concat "AUCTeX " AUCTeX-version
-	   (if (string-match "^CVS-" AUCTeX-version)
-	       (format " (%s)" AUCTeX-date)
-	     ""))
-   (list 'window-system
-	 'LaTeX-version
-	 'TeX-style-path
-	 'TeX-auto-save
-	 'TeX-parse-self
-	 'TeX-master)
-   nil nil
-   "Remember to cover the basics, that is, what you expected to happen and
+  (let ((reporter-prompt-for-summary-p "Bug report subject: "))
+    (reporter-submit-bug-report
+     "bug-auctex@gnu.org"
+     (if (string-match "^CVS-" AUCTeX-version)
+	 (concat "tex-" (substring AUCTeX-version 4))
+       AUCTeX-version)
+     (list 'AUCTeX-date
+	   'window-system
+	   'LaTeX-version
+	   'TeX-style-path
+	   'TeX-auto-save
+	   'TeX-parse-self
+	   'TeX-master)
+     nil nil
+     "Remember to cover the basics, that is, what you expected to happen and
 what in fact did happen.
 
 If the bug (or problem) is triggered by a specific \(La\)TeX
 file, you should try to produce a minimal sample file showing the
 problem and include it in your report.
 
-Your bug report will be posted to the AUCTeX mailing list."))
+Your bug report will be posted to the AUCTeX bug reporting list.")))
 
 ;;; Ispell Support
 
