@@ -1,3 +1,12 @@
+1998-06-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9g released.
+
+1998-06-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-auto-index-regexp-list): Remove extra quote.
+	Patch by Carsten Dominik  <dominik@strw.leidenuniv.nl>.
+
 1998-06-24  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9f released.
