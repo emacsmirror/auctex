@@ -1,3 +1,17 @@
+2002-03-27  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/preview-latex.texi:
+	Moved menu to problems.texi, documented preview-auto-reveal and
+	preview-inner-environments
+
+	* doc/problems.texi: Moved menu here from preview-latex.texi
+
+	* doc/readme.texi: Removed out-commented parts
+
+2002-03-26  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview.dtx: Minimal change to simplify autogen of texinfo manuals
+
 2002-03-26  Alan Shutko  <ats@acm.org>
 
 	* doc/.cvsignore: Add preview-latex.tmp.
