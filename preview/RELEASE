@@ -1,4 +1,4 @@
-Release notes for version 0.7.1 of the preview-latex package:
+Release notes for version 0.7.2 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  The employed style file
@@ -7,28 +7,23 @@ elements as images.  The package is released under the GNU Public
 License (GPL).  At the current point of time, GNU Emacs-21 under the X
 window system, AUC TeX, a working LaTeX installation and GhostScript
 are required.  This version for the first time also fully supports
-XEmacs with a version of at least 21.1.  Some issues with the display
-engine have been uncovered in the course of porting; consult the
-PROBLEMS file for more information.  No versions have been tested to
-run under the MS Windows operating system.  Recent CVS versions of
-Emacs could possibly be made to run preview-latex there, and we have
-had a positive report with Cygwin XEmacs.  Please report your
-experiences.
+XEmacs with a version of at least 21.1.14.  Some issues with the
+display engine have been uncovered in the course of porting; consult
+the PROBLEMS file for more information.  No Emacs versions of
+preview-latex have yet been tested to run under the MS Windows
+operating system.  Recent CVS versions of Emacs could possibly be made
+to run preview-latex there, and we have had a positive report with
+Cygwin XEmacs.  Please report your experiences.
 
-Release focus for 0.7 have been documentation improvements, staggering
-performance enhancements, better error handling and new features.  For
-the first time, workable XEmacs support is included.  The LaTeX style
-has gained a load of new options.  It is now possible to generate all
-image files for a document with a single run of GhostScript on a
-single PostScript file from Dvips.  Release 0.7.1 fixes various issues
-with XEmacs including an installation problem and has a workaround
-for a very ugly bug in Mule-XEmacs killing off all image display once
-dired is loaded.  Some additional performance enhancements have been
-achieved.
+Release 0.7.2 is a consolidation release containing mostly bug fixes.
+Its stability should be sufficient for third party package providers
+of GNU Emacs packages.  The XEmacs part still has rough edges, partly
+due to XEmacs internal bugs that are expected to be ironed out in
+future XEmacs releases.
 
-The README file has been changed in order to provide adequate
-information for preinstalled distributions.  In that case, including
-the separate INSTALL file will not be necessary.
+The README file provides adequate information for preinstalled
+distributions.  The INSTALL file contains a special section with
+advice for package providers.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
