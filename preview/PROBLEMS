@@ -1,0 +1,80 @@
+Most of the problems encountered come from interaction with
+GhostScript.  It is a good idea to have a fairly recent version of
+GhostScript installed.  In particular, the device names have changed
+over the time, so you should check that the devices demanded by the
+customizable variable preview-image-creators fit your version of
+GhostScript, at least the entry corresponding to the current value of
+preview-image-type.  While not being best in file size and image
+quality, setting preview-image-creators to `jpeg' should probably be
+one of the best bets, since that device name has not changed in quite
+some time.
+
+If you want to try the direct Postscript rendering from Emacs by
+setting preview-image-type to `postscript', Emacs-21.0.106
+unfortunately has a bug that should be corrected as of the following
+version.  Earlier versions are not affected (although versions earlier
+than 21.0.105 are mostly unusable for internal EPS support).  Use the
+following patch for 21.0.106:
+
+*** /home/tmp/emacs-21.0.106/lisp/gs.el~	Mon Sep 17 14:27:24 2001
+--- /home/tmp/emacs-21.0.106/lisp/gs.el	Sun Sep 30 01:06:26 2001
+***************
+*** 115,124 ****
+  requested image, and IMG-HEIGHT is the height of the requested
+  image in pixels."
+    (let* ((box (plist-get (cdr spec) :bounding-box))
+! 	 (llx (elt 0 box))
+! 	 (lly (elt 1 box))
+! 	 (urx (elt 2 box))
+! 	 (ury (elt 3 box))
+  	 (rotation (or (plist-get (cdr spec) :rotate) 0))
+  	 ;; The pixel width IMG-WIDTH of the pixmap gives the
+  	 ;; dots, URX - LLX give the inch.
+--- 115,124 ----
+  requested image, and IMG-HEIGHT is the height of the requested
+  image in pixels."
+    (let* ((box (plist-get (cdr spec) :bounding-box))
+! 	 (llx (elt box 0))
+! 	 (lly (elt box 1))
+! 	 (urx (elt box 2))
+! 	 (ury (elt box 3))
+  	 (rotation (or (plist-get (cdr spec) :rotate) 0))
+  	 ;; The pixel width IMG-WIDTH of the pixmap gives the
+  	 ;; dots, URX - LLX give the inch.
+
+AucTeX versions up to 10.0g have a bug in the calculation of the
+offsets for the start of a region.  This affects C-c C-r commands
+where the start of the region does not lie on the start of a line.  To
+correct this, apply the following patch:
+
+*** tex-buf.el.~1.163.~	Mon Oct  1 15:40:31 2001
+--- tex-buf.el	Mon Oct  1 15:45:27 2001
+***************
+*** 123,130 ****
+      (TeX-region-create (TeX-region-file TeX-default-extension)
+  		       (buffer-substring begin end)
+  		       (file-name-nondirectory (buffer-file-name))
+! 		       (count-lines (save-restriction (widen) (point-min))
+! 				    begin)))
+    (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
+  
+  (defun TeX-command-buffer ()
+--- 123,131 ----
+      (TeX-region-create (TeX-region-file TeX-default-extension)
+  		       (buffer-substring begin end)
+  		       (file-name-nondirectory (buffer-file-name))
+! 		       (+ (count-lines (save-restriction (widen) (point-min))
+! 				    begin)
+! 			  (save-excursion (goto-char begin) (if (bolp) 0 -1)))))
+    (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
+  
+  (defun TeX-command-buffer ()
+
+The CVS version of AucTeX is already fixed with regard to that
+particular bug.
+
+Current versions of x-symbol confuse the line parsing of
+preview-LaTeX.  They also confuse that of Auc-TeX, but with less
+glaring consequences.  A solution is being worked on, but this depends
+on a few factors that will probably lead to some changed APIs in
+AucTeX.
