@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.393 $"))
+	(rev "$Revision: 5.394 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-14 08:53:44 $"))
+    (let ((date "$Date: 2004-07-17 09:31:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3226,59 +3226,86 @@ Arguments enclosed in brackets or braces are considered part of
 the macro.  If ARG is non-nil, find the end of a macro."
   (save-excursion
     (let ((orig-point (point))
-	  start-point
-	  found-end-flag)
-      (cond
-       ;; Point is located directly at the start of a macro.
-       ((and (looking-at (concat "\\(" (regexp-quote TeX-esc) "\\)[@A-Za-z]+"))
-	     (save-match-data
-	       (not (TeX-looking-at-backward
-		     (concat "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-			     "\\(" (regexp-quote TeX-esc) "\\)")))))
-	(setq start-point (point))
-	(goto-char (match-end 1)))
-       ;; Search backward for a macro start.
-       ((and (re-search-backward
-	      (concat "\\(^\\|[^" TeX-esc "\n]\\)"
-		      "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-		      "\\(" (regexp-quote TeX-esc) "\\)")
-	      nil t)
-	     (save-excursion
-	       (goto-char (match-end 3))
-	       (not (looking-at (regexp-quote TeX-esc)))))
-	(setq start-point (match-beginning 3))
-	(goto-char (match-end 3))))
+	  opening-brace
+	  start-point)
+      (if (and (looking-at
+		(concat "\\(" (regexp-quote TeX-esc) "\\)[@A-Za-z]+"))
+	       (save-match-data
+		 (not (TeX-looking-at-backward
+		       (concat
+			"\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
+			"\\(" (regexp-quote TeX-esc) "\\)")))))
+	  ;; Point is located directly at the start of a macro.
+	  (progn
+	    (setq start-point (point))
+	    (goto-char (match-end 1)))
+	;; Search backward for a macro start.
+	(setq start-point (TeX-find-macro-start-helper))
+	(setq opening-brace (TeX-find-opening-brace))
+	;; Cases {\foo ba-!-r} or \foo{bar\baz{bla}bl-!-u}
+	(when (and opening-brace start-point
+		   (> start-point opening-brace)
+		   (>= (point) (TeX-find-macro-end-helper start-point)))
+	  (goto-char opening-brace)
+	  (setq start-point (TeX-find-macro-start-helper))))
+
       (if (not start-point)
 	  nil
 	;; Search forward for the end of the macro.
-	(skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
-	(while (not found-end-flag)
-	  (cond
-	   ((or (looking-at "[ \t]*\\(\\[\\)")
-		(and (looking-at (concat "[ \t]*" comment-start))
-		     (save-excursion
-		       (forward-line 1)
-		       (looking-at "[ \t]*\\(\\[\\)"))))
-	    (goto-char (match-beginning 1))
-	    (forward-sexp))
-	   ((or (looking-at "[ \t]*{")
-		(and (looking-at (concat "[ \t]*" comment-start))
-		     (save-excursion
-		       (forward-line 1)
-		       (looking-at "[ \t]*{"))))
-	    (goto-char (match-end 0))
-	    (goto-char (or (TeX-find-closing-brace)
-			   ;; If we cannot find a regular end, use the
-			   ;; next whitespace.
-			   (save-excursion (skip-chars-forward "^ \t\n")
-					   (point)))))
-	   (t
-	    (setq found-end-flag t))))
+	(goto-char start-point)
+	(goto-char (TeX-find-macro-end-helper (point)))
 	(if (< orig-point (point))
 	    (if arg
 		(point)
 	      start-point)
 	  nil)))))
+
+(defun TeX-find-macro-start-helper ()
+  "Find the starting token of a macro, e.g. a backslash."
+  (if (save-excursion
+	(and (re-search-backward
+	      (concat
+	       "\\(^\\|[^" TeX-esc "\n]\\)"
+	       "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
+	       "\\(" (regexp-quote TeX-esc) "\\)")
+	      nil t)
+	     (save-excursion
+	       (goto-char (match-end 3))
+	       (not (looking-at (regexp-quote TeX-esc))))))
+      (match-beginning 3)
+    nil))
+
+(defun TeX-find-macro-end-helper (start)
+  "Find the end of a macro if its START is known.
+If the macro is followed by square brackets or curly braces,
+those will be considered part of it."
+  (save-excursion
+    (catch 'found
+      (goto-char start)
+      (skip-chars-forward (regexp-quote TeX-esc))
+      (skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
+      (while (not (eobp))
+	(cond
+	 ((or (looking-at "[ \t]*\\(\\[\\)")
+	      (and (looking-at (concat "[ \t]*" comment-start))
+		   (save-excursion
+		     (forward-line 1)
+		     (looking-at "[ \t]*\\(\\[\\)"))))
+	  (goto-char (match-beginning 1))
+	  (forward-sexp))
+	 ((or (looking-at "[ \t]*{")
+	      (and (looking-at (concat "[ \t]*" comment-start))
+		   (save-excursion
+		     (forward-line 1)
+		     (looking-at "[ \t]*{"))))
+	  (goto-char (match-end 0))
+	  (goto-char (or (TeX-find-closing-brace)
+			 ;; If we cannot find a regular end, use the
+			 ;; next whitespace.
+			 (save-excursion (skip-chars-forward "^ \t\n")
+					 (point)))))
+	 (t
+	  (throw 'found (point))))))))
 
 (defun TeX-find-macro-end ()
   "Find the end of a macro.
