@@ -1,3 +1,15 @@
+2005-02-18  David Kastrup  <dak@gnu.org>
+
+	* images/prvwrk24.xpm: New icon, dimmer, better shape.
+
+	* images/prvwrk20.xpm: New icon
+
+	* images/prvwrk16.xpm: New icon
+
+	* images/prvwrk14.xpm: New icon
+
+	* images/prvwrk12.xpm: New icon
+
 2005-02-15  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-error-quote): Encode to raw-text to get
