@@ -1,3 +1,8 @@
+2004-10-14  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (LaTeX-default-width): Make it buffer local.
+	(LaTeX-env-minipage): Pick up new value of LaTeX-default-width.
+
 2004-10-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Add starred sectioning

@@ -775,7 +775,7 @@ the label inserted, or nil if no label was inserted."
   "Specifies the default width string minipage and tabular* environments."
   :group 'LaTeX-environment
   :type 'string)
-(make-variable-buffer-local 'LaTeX-default-format)
+(make-variable-buffer-local 'LaTeX-default-width)
 
 (defcustom LaTeX-default-position ""
   "Specifies the default position string for array and tabular environments.
@@ -971,8 +971,9 @@ Just like array and tabular."
   (let ((pos (read-string "Position: " LaTeX-default-position))
 	(width (read-string "Width: "  LaTeX-default-width)))
     (setq LaTeX-default-position pos)
-    (when (zerop (length width))
-      (setq width LaTeX-default-width))
+    (setq LaTeX-default-width (if (zerop (length width))
+     				  LaTeX-default-width
+				width))
     (LaTeX-insert-environment environment
 			      (concat (when (not (zerop (length pos)))
 					(format "[%s]" pos))
