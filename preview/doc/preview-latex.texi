@@ -2,12 +2,9 @@
 @setfilename preview-latex.info
 @settitle preview-latex
 @dircategory TeX
-@direntry
-* preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
-@end direntry
 @dircategory Emacs
 @direntry
-* preview-latex: (preview-latex).       Preview LaTeX fragments
+* preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
