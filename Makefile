@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6c
+# Version: 9.6d
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -33,7 +33,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/share/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.32
+EMACS=emacs-19.34
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE

@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6c
+;; Version: 9.6d
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -374,7 +374,7 @@ Return the new process."
     (get-buffer-create buffer)
     (set-buffer buffer)
     (erase-buffer)
-    (cd dir)
+    (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
     (if TeX-show-compilation
