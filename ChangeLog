@@ -1,3 +1,15 @@
+2001-10-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.06 released.
+
+2001-10-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Removed font lock support.
+	(TeX-install-font-lock): New option.
+	(VirTeX-common-initialization): Call it.
+
+	* tex-font.el: New file.
+
 2001-10-13  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex-buf.el (TeX-current-offset): The number of things that can

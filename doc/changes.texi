@@ -2,6 +2,11 @@
 
 @itemize @bullet
 @item
+You can now switch between using the @file{font-latex} (all emacsen),
+the @file{tex-font} (Emacs 21 only) or no special package for font
+locking.  Customize @code{TeX-install-font-lock} for this.
+
+@item
 Now use @t{-t landscape} by default when landscape option appears.
 Suggested by Erik Frisk <frisk@@isy.liu.se>.
 
