@@ -1,3 +1,21 @@
+2004-11-20  Christian Schlauer  <cschl@arcor.de>
+
+	* doc/auctex.texi (Floats): Update.
+
+	* doc/changes.texi: Mention change of `LaTeX-float'.
+
+	* latex.el (LaTeX-float, LaTeX-env-figure): Implement "do not
+	prompt" option.  `LaTeX-float' has the same customize value menu
+	like `LaTeX-default-position' now.  This implies that the old
+	meaning nil corresponds to `""' now, while nil means "do not
+	prompt".
+	(LaTeX-env-figure): Ask for `Float position' instead of `Float
+	to'.
+	(LaTeX-float): New default value "" instead of "htbp" (after a
+	discussion on the mailing list).
+	(LaTeX-default-format, LaTeX-default-width)
+	(LaTeX-default-position): Omit `Specifies the' in doc-string.
+
 2004-11-19  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* tex-buf.el (TeX-run-TeX): Improve comments.
