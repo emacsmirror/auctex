@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.486 $"))
+	    (rev "$Revision: 5.487 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-04 01:03:58 $"))
+    (let ((date "$Date: 2005-03-07 20:45:45 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4231,13 +4231,13 @@ With optional ARG, insert that many dollar signs."
        (TeX-toggle-off-input-method)))
 
 (defun TeX-toggle-off-input-method ()
-  "Toggle off CJK input methods.
-Only support LEIM package (toggle-input-method)."
+  "Toggle off input methods.
+Currently, only support CJK input methods provided by LEIM package."
   (cond
-   ;; LEIM Package Support
+   ;; LEIM Package
    ((and (boundp 'current-input-method) current-input-method
-	 (string-match "^chinese\\|japanese\\|korean" current-input-method))
-    (toggle-input-method))
+	 (string-match "^\\(chinese\\|japanese\\|korean\\)" current-input-method))
+    (inactivate-input-method))
    (t );; do nothing
    ))
 
