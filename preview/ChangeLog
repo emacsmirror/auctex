@@ -1,5 +1,9 @@
 2002-04-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-open): Make Emacs bomb out if image type
+	is not supported.
+	(preview-gs-transact): Ignore errors on write to pipe.
+
 	* prv-xemacs.el (preview-move-point): Use map-extents rather than
 	extents-at.
 
