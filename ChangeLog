@@ -1,3 +1,14 @@
+2003-07-20  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* Makefile.in (CONTRIB_MULE, COMPILE_MULE, CONTRIB_MULEELC): New macros.
+	(contrib): Compile CONTRIB and COMPILE_MULE.
+	(install-contrib): Install CONTRIB_MULE and CONTRIB_MULEELC, too.
+
+	* aclocal.m4 (EMACS_CHECK_MULE): Check (X)Emacs mule supported.
+
+	* Makefile.in (clean): Remove Emacs auto-save files.  Remove elc
+	files in the current and style directory.
+
 2003-06-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* Makefile.in: Delete trailing whitespaces.
