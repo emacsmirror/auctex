@@ -1,3 +1,9 @@
+2001-10-12  Alan Shutko  <ats@acm.org>
+
+	* Makefile.in (LISP_OBJS): New var.
+	($(LISP_OBJS)): Got rid of elc target and used dependencies, so we
+	don't recompile every make.
+
 2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
 	* configure.in: Try fixing the emacs flavor detection.
 	And revert back to Alan's version.
