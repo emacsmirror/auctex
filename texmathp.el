@@ -268,8 +268,11 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 					  nil 1 texmathp-search-n-paragraphs)
 		      (match-beginning 0)
 		    (point-min))))
-	 (env-match (texmathp-match-environment bound))
 	 (mac-match (texmathp-match-macro bound))
+	 (env-match (texmathp-match-environment
+		     (if (and mac-match (> (cdr mac-match) bound))
+			 (cdr mac-match)
+		       bound)))
 	 (match (cons nil bound)))
 
     ;; Select the nearer match
