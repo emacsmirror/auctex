@@ -1,3 +1,7 @@
+2003-04-09  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4: More sane emacs-macro path-searching.
+
 2003-04-07  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-kpathsea-directory-alist): Fix bad kpathsea
