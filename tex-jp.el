@@ -47,7 +47,7 @@
 
 (setq TeX-command-list
       (append japanese-TeX-command-list
-	      '("-" "" nil nil t) ;; separetor for command menu
+	      '(("-" "" nil nil t)) ;; separetor for command menu
 	      TeX-command-list))
 
 ;; Menus
