@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.9 1993-02-16 04:09:40 amanda Exp $
+@c $Id: auc-tex.texi,v 1.10 1993-02-16 05:42:56 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -243,7 +243,7 @@ avoiding stupid mistakes like mismatched braces, or
 @kbd{\begin@{@}}-@kbd{\end@{@}} pairs.@refill
 
 @menu
-* Quotes::			Inserting double quotes
+* Quotes::                      Inserting double quotes
 * Font Specifiers::             Inserting Font Specifiers 
 * Sectioning::                  Inserting chapters, sections, etc. 
 * Environments::                Inserting Environment Templates
@@ -415,7 +415,7 @@ The following variables can be set to customize the function.
 @table @code
 @item LaTeX-section-hooks
 Hooks to be run when inserting a section.
-@item LaTeX-section-label	
+@item LaTeX-section-label       
 Prefix to all section references.
 @end table
 
@@ -474,10 +474,10 @@ To get a full featured @code{LaTeX-section} command, insert
 @lisp
 (setq LaTeX-section-hooks
       '(LaTeX-section-level-hook
-	LaTeX-section-title-hook
-	LaTeX-section-toc-hook
-	LaTeX-section-section-hook
-	LaTeX-section-label-hook))
+        LaTeX-section-title-hook
+        LaTeX-section-toc-hook
+        LaTeX-section-section-hook
+        LaTeX-section-label-hook))
 @end lisp
 
 in your @file{.emacs} file.
@@ -649,8 +649,8 @@ You may add your own favorite environments, by setting
 (setq LaTeX-mode-hook 
       (function (lambda () (setq LaTeX-environment-alist
                                  (append '(("myenv")
-			                   ("myenv2" . LaTeX-myenv2-hook))
-				          LaTeX-environment-alist)))))
+                                           ("myenv2" . LaTeX-myenv2-hook))
+                                          LaTeX-environment-alist)))))
 @end lisp
 
 The function, (in this case @code{LaTeX-myenv2-hook}) will then simply
@@ -1069,9 +1069,9 @@ run (La)@TeX{} from within Emacs, and moreover allowing you to
 @emph{debug} your documents.  
 
 @menu
-* Commands:: 		Invoking external commands.
-* Debugging::		Debugging @TeX{} and La@TeX{} output.
-* Control::  		Controlling the processes.
+* Commands::            Invoking external commands.
+* Debugging::           Debugging @TeX{} and La@TeX{} output.
+* Control::             Controlling the processes.
 * Multifile::           Multifile Documents.
 @end menu
 
