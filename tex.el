@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 10.0e
+;; Version: 10.0f
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -1279,8 +1279,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 ;; Stolen from Emacs 21.
 
 (eval-and-compile
-  (unless (featurep 'xemacs)
-
+  (unless (or (featurep 'xemacs) (< emacs-major-version 21))
     (defconst tex-font-lock-keywords-1
       (eval-when-compile
 	(let* (;; Names of commands whose arg should be fontified as heading, etc.
@@ -1386,12 +1385,9 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
       "Default expressions to highlight in TeX modes.")
 
 
-    (if (> emacs-major-version 20)
-	(defface tex-math-face
-	  '((t :inherit font-lock-string-face))
-	  "Face used to highlight TeX math expressions.")
-      (require 'font-lock)
-      (copy-face 'font-lock-string-face 'tex-math-face))
+    (defface tex-math-face
+      '((t :inherit font-lock-string-face))
+      "Face used to highlight TeX math expressions.")
     (defvar tex-math-face 'tex-math-face)
 
     ;; Use string syntax but math face for $...$.
@@ -1560,7 +1556,7 @@ of AmS-TeX-mode-hook."
 	      (list "" TeX-complete-word)))
   
   ;; Support Font Lock for Emacs 21+.
-  (unless (featurep 'xemacs)
+  (unless (or (featurep 'xemacs) (< emacs-major-version 21))
     (set (make-local-variable 'font-lock-defaults)
 	 '((tex-font-lock-keywords
 	    tex-font-lock-keywords-1 tex-font-lock-keywords-2)
