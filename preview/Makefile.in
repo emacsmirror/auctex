@@ -24,9 +24,9 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
 all: preview.sty prauctex.def prauctex.cfg preview.drv \
-   preview-mk.ins preview.dvi $(LISP_OBJS) install-hint
+   preview-mk.ins preview.dvi $(LISP_OBJS) docs install-hint
 
-doc:
+docs:
 	(cd doc ; $(MAKE) all)
 
 install-hint:
