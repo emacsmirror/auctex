@@ -1,3 +1,8 @@
+2002-10-28  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile (prefix): Revert accidental change to
+	/usr/local/emacs-21 (sorry folks).
+
 2002-10-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile (STYLESRC): Add style/scrlttr2.el
