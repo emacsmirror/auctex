@@ -3860,7 +3860,7 @@ runs the hooks in `doctex-mode-hook'."
    '("shortstack" [ TeX-arg-lr ] t)
    '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
    '("cline" "Span `i-j'")
-   '("multicolumn" "Columns" "Position" t)
+   '("multicolumn" "Columns" "Format" t)
    '("item"
      (TeX-arg-conditional (or TeX-arg-item-label-p
 			      (string-equal (LaTeX-current-environment)
