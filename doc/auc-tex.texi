@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.30 1993-04-09 22:13:15 amanda Exp $
+@c $Id: auc-tex.texi,v 1.31 1993-04-12 20:33:10 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1781,7 +1781,7 @@ it.
 To write Japanese text with AUC @TeX{} you need to have versions of
 @TeX{} and Emacs that supports Japanese.  There exist at least two
 variants of @TeX{} for Japanese text, and AUC @TeX{} can be used with
-both, as well as with the two Japanese-aware Emacses, DEMACS and MULE.
+both, as well as with the two Japanese-aware Emacses, NEMACS and MULE.
 
 To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
 @code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
@@ -2065,7 +2065,19 @@ match an argument to the @TeX{} macro.  What is done depend on the argument
 type.
 
 If a macro is defined multiple times, AUC @TeX{} will chose the one with
-the longest definition.
+the longest definition (i.e.\ the one with most arguments).
+
+Thus, to overwrite
+@example
+        '("tref" 1) ; one argument
+@end example
+you can specify 
+@example
+        '("tref" TeX-argument-label-hook ignore) ; two arguments
+@end example
+
+@code{ignore} is a functions that does not do anything, so when you
+insert a @samp{tref} you will be prompted for a label and no more.
 
 @table @code
 @item string
@@ -2231,8 +2243,23 @@ environment hook to insert the environment, but the function
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to list after the hook.
 
-If a macro is defined multiple times, AUC @TeX{} will chose the one with
-the longest definition.
+If a environment is defined multiple times, AUC @TeX{} will chose the
+one with the longest definition.  Thus, if you have a enumerate style
+file, and want it to replace the standard La@TeX{} enumerate hook above,
+you could define an @file{enumerate.el} file as follows, and place it in
+the appropriate style directory. 
+@example
+(TeX-add-style-hook "latex"
+ (function
+  (lambda ()
+    (LaTeX-add-environments
+     '("enumerate" LaTeX-enumerate-hook foo)))))
+
+(defun LaTeX-enumerate-hook (environment &optional ignore) ...)
+@end example
+The symbol @code{foo} will be passed to @code{LaTeX-enumerate-hook} as
+the second argument, but since we only added it to overwrite the
+definition in @file{latex.el} it is just ignored.
 
 @defun LaTeX-add-environments @var{env} @dots{}
 Add each @var{env} to list of loaded environments.

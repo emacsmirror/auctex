@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.34 1993-04-09 22:12:49 amanda Exp $
+;;; $Id: tex-buf.el,v 1.35 1993-04-12 20:32:55 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -191,6 +191,7 @@ Also check if ORIGINAL is modified in a non-saved buffer."
   (mapcar (function (lambda (buffer)
 		      (and (equal (expand-file-name original)
 				  (buffer-file-name buffer))
+			   (buffer-modified-p buffer)
 			   (y-or-n-p (concat "Save file "
 					     (buffer-file-name buffer)
 					     "? "))
@@ -226,24 +227,35 @@ Used when checking if any files have changed.")
 		     extensions)))
 		 files))))
 
+(defun TeX-check-files (derived originals extensions)
+  "Check that DERIVED is newer than any of the ORIGINALS.
+Try each original with each member of EXTENSIONS, in all directories
+in TeX-check-path."
+  (let ((found nil))
+    (mapcar (function (lambda (original)
+			(if (TeX-check-dependency derived original)
+			    (setq found t))))
+	    (TeX-dependencies originals extensions))
+    found))
+
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
   (let* ((default (cond ((and (null TeX-check-path)
-			      (or (buffer-modified-p)
+			      (or (and (buffer-modified-p)
+				       (y-or-n-p (concat "Save file "
+							 (buffer-file-name)
+							 "? "))
+				       (progn (save-buffer) t))
 				  (file-newer-than-file-p
-				   (buffer-file-name)
-				   (concat name ".dvi"))))
+				   (buffer-file-name) (concat name ".dvi"))))
 			 TeX-command-default)
-			((TeX-member (concat name ".dvi")
-				     (TeX-dependencies (TeX-style-list)
-						       TeX-file-extensions)
-				     'TeX-check-dependency)
+			((TeX-check-files (concat name ".dvi")
+					  (TeX-style-list)
+					  TeX-file-extensions)
 			 TeX-command-default)
-			((TeX-member (concat name ".bbl")
-				     (TeX-dependencies
-				      (LaTeX-bibliographies-list)
-				      BibTeX-file-extensions)
-				     'TeX-check-dependency)
+			((TeX-check-files (concat name ".bbl")
+					  (LaTeX-bibliographies-list)
+					  BibTeX-file-extensions)
 			 ;; We should check for bst files here as well.
 			 TeX-command-BibTeX)
 			((TeX-process-get-variable name

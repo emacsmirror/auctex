@@ -40,6 +40,10 @@
 
 ;;; @@ Japanese TeX modes
 
+(fset 'japanese-plain-TeX-mode 'japanese-plain-tex-mode)
+(fset 'japanese-LaTeX-mode 'japanese-latex-mode)
+(fset 'japanese-SliTeX-mode 'japanese-slitex-mode)
+
 (defvar japanese-plain-TeX-format-package "JTEX"
   "Name of japanese plain TeX format package (for finding symbols).")
 
