@@ -6,11 +6,13 @@
 @c paragraphindent 2
 @comment %**end of header 
  
+@c $Id: auc-tex.texi,v 1.2 1992-07-22 13:45:44 krab Exp $
+
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
 @subtitle July 1992, for AUC @TeX{} Version 5.7
- 
+  
 @author by Kresten Krab Thorup
  
 @page
@@ -48,6 +50,12 @@ features in small steps.  AUC @TeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
 an environment where you will make very few LaTeX errors, and makes it
 easy to find the errors that may slip through anyway.
+
+NOTE: This documentation is preliminary.  It should however cover most
+important points.  Corrections or perhaps rewrites of sections 
+ are VERY WELCOME.@refill
+
+Kresten Krab Thorup
 @end ifinfo
 
 @menu
