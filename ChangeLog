@@ -1,5 +1,8 @@
 2004-11-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-make-user-keywords): Add the "fixed"
+	matchers here rather than in `font-latex-make-built-in-keywords'.
+
 	* latex.el (LaTeX-math-default, LaTeX-math-menu): Use "Greek
 	Uppercase" instead of "Greek" and "Greek Lowercase" instead of
 	"greek".
