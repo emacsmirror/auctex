@@ -8,6 +8,7 @@ INSTALL
 INSTALL.windows
 README
 TODO
+FAQ
 autom4te.*
 #*
 *.elc
