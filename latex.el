@@ -2256,6 +2256,21 @@ does not fit into the line."
   :group 'LaTeX
   :type 'boolean)
 
+(defcustom LaTeX-nospace-between-char-regexp
+  (if (featurep 'xemacs)
+    (if (and (boundp 'word-across-newline) word-across-newline)
+	word-across-newline
+      ;; NOTE: Ensure not to have a value of nil for such a rare case that
+      ;; somebody removes the mule test in `LaTeX-fill-delete-newlines' so that
+      ;; it could match only "\n" and this could lead to problem.  XEmacs does
+      ;; not have a category `\c|' and `\ct' means `Chinese Taiwan' in XEmacs.
+      "\\(\\cj\\|\\cc\\|\\ct\\)")
+    "\\c|")
+  "Regexp matching a character where no interword space is necessary.
+Words formed by such characters can be broken across newlines."
+  :group 'LaTeX
+  :type 'regexp)
+
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph.
 Break lines to fit `fill-column', but leave all lines ending with
@@ -2537,9 +2552,11 @@ space does not end a sentence, so don't break a line there."
     (if (featurep 'xemacs)
 	(when (featurep 'mule)
 	  (goto-char from)
-	  (while (re-search-forward "\\(\\cj\\|\\cc\\|\\ct\\)\n\\(\\cj\\|\\cc\\|\\ct\\)" to t)
-	    (skip-chars-backward "^\n")
-	    (delete-char -1)))
+	  (let ((unwished-newline (concat LaTeX-nospace-between-char-regexp "\n"
+					  LaTeX-nospace-between-char-regexp)))
+	    (while (re-search-forward unwished-newline to t)
+	      (skip-chars-backward "^\n")
+	      (delete-char -1))))
       ;; This else-sentence was copied from the function `fill-delete-newlines'
       ;; in `fill.el' (CVS Emacs, 2005-02-17) and adapted accordingly.
       (while (search-forward "\n" nil t)
@@ -2573,12 +2590,14 @@ space does not end a sentence, so don't break a line there."
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
   "Move to the position where the line should be broken."
-  ;; COMPATIBILITY for Emacs <= 21.3 and XEmacs
+  ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
-    ;; For Japanese (FIXED on 2005-02-11)
+    ;; Cancel `forward-char' which is called just before
+    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
+    ;; `LaTeX-nospace-between-char-regexp'.
     (if (and (featurep 'mule)
-	     (TeX-looking-at-backward "\\cj"))
+	     (TeX-looking-at-backward LaTeX-nospace-between-char-regexp))
 	(backward-char 1)
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
