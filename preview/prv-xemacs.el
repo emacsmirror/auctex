@@ -474,7 +474,15 @@ Pure borderless black-on-white will return NIL."
 		      '("Command")
 		      (TeX-command-menu-entry
 		       (assoc "Generate Preview" TeX-command-list)))
-  (easy-menu-add preview-menu))
+  (easy-menu-add preview-menu)
+  (let* ((filename (expand-file-name buffer-file-name))
+	 format-cons)
+    (when (string-match (concat "\\." TeX-default-extension "\\'")
+			filename)
+      (setq filename (substring filename 0 (match-beginning 0))))
+    (setq format-cons (assoc filename preview-dumped-alist))
+    (when format-cons
+      (preview-watch-preamble (current-buffer) format-cons))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
@@ -568,6 +576,53 @@ Also make `query-replace' open preview text about to be replaced."
 (defvar preview-change-list nil
   "List of tentatively changed overlays.")
 
+(defcustom preview-dump-threshold
+  "^ *\\\\begin *{document}"
+  "*Regexp denoting end of preamble.
+This is the location up to which preamble changes are considered
+to require redumping of a format."
+  :group 'preview-latex
+  :type 'string)
+
+(defvar preview-preamble-format-cons nil
+  "Where our preamble is supposed to end")
+(make-variable-buffer-local 'preview-preamble-format-cons)
+
+(defun preview-preamble-check-change (beg end)
+  "Hook function for change hooks on preamble.
+Reacts to changes between BEG and END."
+  (when (and preview-preamble-format-cons
+	     (number-or-marker-p (cdr preview-preamble-format-cons))
+	     (< beg (cdr preview-preamble-format-cons)))
+    (preview-format-kill preview-preamble-format-cons)
+    (preview-unwatch-preamble preview-preamble-format-cons)
+    (setcdr preview-preamble-format-cons t)))
+
+(defun preview-watch-preamble (file format-cons)
+  "Set up a watch on master file FILE.
+FILE can be an associated buffer instead of a filename.
+FORMAT-CONS contains the format info for the main
+format dump handler."
+  (let ((buffer (if (bufferp file)
+		    file
+		  (find-buffer-visiting file))))
+    (when buffer
+      (with-current-buffer buffer
+	(save-excursion
+	  (save-restriction
+	    (widen)
+	    (goto-char (point-min))
+	    (unless (re-search-forward preview-dump-threshold nil t)
+	      (error "Can't find preamble of `%s'" file))
+	    (setcdr format-cons (point))
+	    (setq preview-preamble-format-cons format-cons)))))))
+
+(defun preview-unwatch-preamble (format-cons)
+  "Stop watching a format on FORMAT-CONS.
+The watch has been set up by `preview-watch-preamble'."
+  (when (number-or-marker-p (cdr format-cons))
+    (setcdr format-cons nil)))
+
 (defun preview-register-change (ov map-arg)
   "Register not yet changed OV for verification.
 This stores the old contents of the overlay in the
@@ -613,7 +668,8 @@ Disable it if that is the case.  Ignores text properties."
   "Hook function for `before-change-functions'.
 Receives BEG and END, the affected region."
   (map-extents #'preview-register-change nil beg end
-	       nil nil 'preview-state))
+	       nil nil 'preview-state)
+  (preview-preamble-check-change beg end))
 
 (defun preview-handle-after-change (beg end length)
   "Hook function for `after-change-functions'.
