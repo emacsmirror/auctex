@@ -1,6 +1,7 @@
 
 @SET_MAKE@
 LATEX=@LATEX@
+PDFLATEX=@PDFLATEX@
 TEX=@TEX@
 TEXHASH=@TEXHASH@
 
@@ -48,6 +49,11 @@ preview.dvi: preview.drv preview.dtx
 	$(LATEX) '\nonstopmode \input preview.drv'
 	$(LATEX) '\nonstopmode \input preview.drv'
 	$(LATEX) '\nonstopmode \input preview.drv'
+
+preview.pdf: preview.drv preview.dtx
+	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
+	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
+	$(PDFLATEX) '\nonstopmode \AtBeginDocument{\OnlyDescription}\input{preview.drv}'
 
 clean:
 	rm -f *~ *.aux *.dvi *.drv *.log 

@@ -6,24 +6,24 @@ preview pages right over their source in the Emacs/XEmacs buffer.  You
 get to have your eye candy and edit it, too.
 
 The employed style file `preview.sty' is independently useful for
-extraction of selected text elements as images.  It now fully supports
-pdftex including the `tightpage' option.
+extraction of selected text elements as images.  EPS Graphics that
+were created using dvips can now be used with the `tightpage' option,
+and some new commands and options are available for selecting
+previews.
 
 The package is released under the GNU Public License (GPL).  At the
 current point of time, at least GNU Emacs-21.1 under the X window
-system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.14 or
-later recommended, see below), a working LaTeX installation and
+system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.51 or
+later required for PDF support), a working LaTeX installation and
 GhostScript are required.  dvipng (version 1.4 or later), a very fast
 dvi converter available from the same CVS archive, can also be used
 for conversion.  Recent CVS versions of GNU Emacs for Windows or MacOS
 Carbon should also work.
 
-This version finally gets rid of all 8bit-cleanness issues that
-plagued cooperation with several TeX distributions, though cooperation
-with current versions of X-Symbol (4.5.1-beta) still requires
-8bit-cleanliness until the fixes get incorporated there.  But
-preview-latex does no longer check for this.  utf-8 buffers are now
-also supported.
+This version finally gets rid of all 8bit issues that plagued
+cooperation with several TeX distributions, and will also support
+utf-8 input files.  This does not extend to the use of X-Symbol (as of
+4.5.1-beta).
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -38,7 +38,8 @@ is located at <URL:http://sourceforge.net/projects/preview-latex>.
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
 
-Paypal donations to the maintainer are also possible via SourceForge.
+Paypal donations to the maintainer are possible directly or via
+SourceForge.
 
 Additional files can be found at
 <URL:http://prdownloads.sourceforge.net/preview-latex>:

@@ -15,8 +15,9 @@
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.8.1
-Release: 	3%{distri}
+Version: 	0.9
+Release: 	0%{distri}
+Licence:        GPL
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -114,11 +115,11 @@ for i in *emacs; do
     mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
     install -c -m 644 preview-latex.el \
       '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
-    %makeinstall 'lispdir=%{_datadir}/emacs/site-lisp/preview' 'texmfdir=%{_datadir}/texmf' 'infodir=%{_infodir}'
+    %makeinstall
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
-    %makeinstall 'packagedir=%{xemacspkgdir}' 'texmfdir=%{_datadir}/texmf' 'infodir=%{_infodir}'
+    %makeinstall
   fi
   popd
 done

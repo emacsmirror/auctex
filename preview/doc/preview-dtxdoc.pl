@@ -19,7 +19,8 @@ MAIN: while (<STDIN>) {
 
     # Text-substitution macros
     s/\@/\@\@/g;
-    s/AUC~\\TeX[\\ ]?/\@AUCTeX{}/g;
+    s/\\#/#/g;
+    s/AUC~?\\TeX[\\ ]?/\@AUCTeX{}/g;
     s/\\LaTeX[\\ ]?/\@LaTeX{}/g;
     s/\\TeX[\\ ]?/\@TeX{}/g;
     s/\\previewlatex[\\ ]?/\@previewlatex{}/g;

@@ -1,3 +1,25 @@
+2005-01-29  David Kastrup  <dak@gnu.org>
+
+	* preview-latex.spec (Release): Bump version to prerelease, make
+	some changes that look like they'd fit into AUCTeX's scheme.
+
+	* RELEASE: Some changes and mentions.
+
+	* doc/preview-dtxdoc.pl: Convert AUC\TeX reference as well.
+	Convert `\#' to `#'.
+
+	* latex/preview.dtx: Add `#' and `:' letters and documentation.
+	Make all commands pass on `#' on cleanly.  Don't eliminate last
+	`{}' last in argument lists.
+
+	* latex/Makefile.in (preview.pdf): New target.  Since PDFs are
+	used for external documentation usually, generate only the
+	description (for internal docs, dvi is fine and adding the code,
+	too).
+
+	* configure.in: Bump version number.
+	check for PDFLaTeX.
+
 2005-01-26  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-copy-mml, preview-copy-region-as-mml)

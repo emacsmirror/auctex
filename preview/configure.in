@@ -3,7 +3,7 @@ dnl Now we use the old AC_INIT macro for versions 2.0 to 2.19.  That
 dnl should make the proper split between 2.13 and 2.49a.
 dnl
 ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
-  [AC_INIT(preview-latex,0.8.2,preview-latex-bugs@lists.sourceforge.net)],
+  [AC_INIT(preview-latex,0.9,preview-latex-bugs@lists.sourceforge.net)],
   [AC_INIT(preview.el)])
 
 AC_SET_MAKE
@@ -63,6 +63,8 @@ dnl Need table of mappings, with priority
 AC_PATH_PROG_REQUIRED(LATEX, latex, [LaTeX not found, aborting!
 You must install LaTeX for preview to work.])
 
+AC_PATH_PROG(PDFLATEX, pdflatex)
+
 # Determine which latex-style components to install
 # To match .sty, .def, .cfg, but _not_ .drv
 TEXMFGEN=[`sed -n 's/^%<installer>.*file[{]\\([^}.]*\\.[sdc][tef][yfg]\\)[}].*/\\1/p' latex/preview.dtx`]
@@ -105,6 +107,7 @@ AC_SHELL_QUOTIFY(INSTALL_INFO)
 AC_SHELL_QUOTIFY(MAKEINFO)
 AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)
+AC_SHELL_QUOTIFY(PDFLATEX)
 
 AC_OUTPUT(Makefile doc/Makefile latex/Makefile)
 cat >&2 <<EOF

@@ -1,7 +1,7 @@
 %%\iffalse
 %%     preview.dtx for extracting previews from LaTeX documents.  Part of
 %%     the preview-latex package.
-%%     Copyright (C) 2001, 2002, 2003, 2004 David Kastrup
+%%     Copyright (C) 2001, 2002, 2003, 2004, 2005 David Kastrup
 %%
 %%     This program is free software; you can redistribute it and/or modify
 %%     it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1524}
+% \CheckSum{1594}
 % \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.94 $
+%   \rcskey \version CVS-$Revision: 1.95 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,9 +32,9 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2004-11-05 01:36:34 $
+% \rcskey\next $Date: 2005-01-29 00:31:37 $
 % \expandafter\date\expandafter{\next}
-% \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
+% \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
 % \maketitle
 %\section{Introduction}
@@ -42,7 +42,7 @@
 % environments (most notably displayed formulas) for use in different
 % contexts.  While the erstwhile application has been the embedding of
 % those preview fragments into Emacs source buffers under the
-% AUC~\TeX\ editing environment, other applications are easily
+% AUC\TeX\ editing environment, other applications are easily
 % imaginable.
 % 
 % In particular it should be noted that producing EPS files with Dvips
@@ -161,7 +161,7 @@
 %   through the use of driver files.
 % \item[|auctex|] This driver will produce fake error messages at the
 %   start and end of every preview environment that enable the Emacs
-%   package \previewlatex\ in connection with AUC~\TeX\ to pinpoint
+%   package \previewlatex\ in connection with AUC\TeX\ to pinpoint
 %   the exact source location where the previews have originated.
 %   Unfortunately, there is no other reliable means of passing the
 %   current \TeX\ input position \emph{in} a line to external
@@ -348,6 +348,16 @@
 %   literally into the executed call of the command.
 % \item[|-|] will just drop the next token.  It will probably be most
 %   often used in the true branch of a |?| specification.
+% \item[|\#|\marg{argument}\marg{replacement}] is a transformation
+%   rule that calls a macro with the given argument and replacement
+%   text on the rest of the argument list.  The replacement is used in
+%   the executed call of the command.  This can be used for parsing
+%   arbitrary constructs.  For example, the |[]| option could manually
+%   be implemented with the option string |?[{#{[#1]}{[{#1}]}}{}|.
+%   PStricks users might enjoy this sort of flexibility.
+% \item[|:|\marg{argument}\marg{replacement}] is again a
+%   transformation rule.  As opposed to |#|, however, the result of
+%   the transformation is parsed again.  You'll rarely need this.
 % \end{description}
 % 
 % There is a second optional argument in brackets that can be used to
@@ -431,10 +441,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.94 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.95 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-11-05 01:36:34 $
+\reserved@a\next $Date: 2005-01-29 00:31:37 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -792,11 +802,14 @@
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@parse*}
-%  Straightforward, same mechanism \LaTeX\ itself employs.
+%  Straightforward, same mechanism \LaTeX\ itself employs.  We take
+%  some care not to pass potential |#| tokens unprotected through
+%  macros.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse*\endcsname#1\pr@endparse#2{%
-  \@ifstar{\pr@parseit#1\pr@endparse{#2*}}%
-          {\pr@parseit#1\pr@endparse{#2}}}
+  \begingroup\toks@{#1\pr@endparse{#2}}%
+  \edef\next##1{\endgroup##1\the\toks@}%
+  \@ifstar{\next{\pr@parse@*}}{\next\pr@parseit}}
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@parse[}
@@ -808,8 +821,9 @@
 %  start.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse[\endcsname#1\pr@endparse#2{%
-  \@ifnextchar[{\pr@bracket#1\pr@endparse{#2}}%
-               {\pr@parseit#1\pr@endparse{#2}}}
+  \begingroup\toks@{#1\pr@endparse{#2}}%
+  \edef\next##1{\endgroup##1\the\toks@}%
+  \@ifnextchar[{\next\pr@bracket}{\next\pr@parseit}}
 \long\def\pr@bracket#1\pr@endparse#2[#3]{%
    \pr@parseit#1\pr@endparse{#2[{#3}]}}
 %    \end{macrocode}
@@ -839,7 +853,7 @@
 %  given two alternatives as a result.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse?\endcsname#1#2\pr@endparse#3{%
-  \begingroup\toks@{#2\pr@endparse{#3}}
+  \begingroup\toks@{#2\pr@endparse{#3}}%
   \@ifnextchar#1{\pr@parsecond\@firstoftwo}%
                 {\pr@parsecond\@secondoftwo}}
 \def\pr@parsecond#1{\expandafter\endgroup
@@ -862,7 +876,7 @@
 \long\expandafter\def\csname pr@parse-\endcsname
   #1\pr@endparse#2{\begingroup
   \toks@{\endgroup\pr@parseit #1\pr@endparse{#2}}%
-  \edef\next{\the\toks@}\afterassignment\next
+  {\aftergroup\the\aftergroup\toks@ \afterassignment}%
   \let\next= }
 %    \end{macrocode}
 % \end{macro}
@@ -874,12 +888,25 @@
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse:\endcsname
   #1#2#3\pr@endparse#4{\begingroup
-    \toks@{\endgroup\pr@parseit #3\pr@endparse{#4}}%
+    \toks@{\endgroup \pr@parseit#3\pr@endparse{#4}}%
     \long\def\next#1{#2}%
     \the\expandafter\toks@\next}
-%</active>
 %    \end{macrocode}
 % \end{macro}
+% ^^A\begin{macro}{\pr@parse#}
+% Another transform rule, but this passes the transformed material
+% into the token list.
+%    \begin{macrocode}
+\long\expandafter\def\csname pr@parse#\endcsname
+  #1#2#3\pr@endparse#4{\begingroup
+    \toks@{#4}%
+    \long\edef\next##1{\toks@{\the\toks@##1}}%
+    \toks@{\endgroup \pr@parseit#3\pr@endparse}%
+    \long\def\reserved@a#1{{#2}}%
+    \the\expandafter\next\reserved@a}
+%</active>
+%    \end{macrocode}
+% ^^A\end{macro}
 %
 %\subsection{Selection options}
 %  The |displaymath| option.  The |equation| environments in
@@ -1026,10 +1053,11 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 \long\def\pr@domacro#1#2{%
    \long\def\next##1{#2}%
-   \pr@callafter\next#1\pr@endparse}
+   \pr@callafter\next#1]\pr@endparse}
 \newcommand\pr@macro[1][]{%
-   \long\def\next[##1]##2{%
-   \pr@advise@ship{##2}{\pr@domacro{#1}{##1\pr@endbox}}{}}%
+   \toks@{\pr@domacro{#1}}%
+   \long\edef\next[##1]##2{%
+    \noexpand\pr@advise@ship{##2}{\the\toks@{##1\noexpand\pr@endbox}}{}}%
    \@ifnextchar[\next\pr@macroii}
 \def\pr@macroii{\next[##1]}
 \long\def\pr@endmacro#1{#1\pr@endbox}
@@ -1047,9 +1075,10 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 \long\def\pr@protect@domacro#1#2{\pr@protect{%
     \long\def\next##1{#2}%
-    \pr@callafter\next#1\pr@endparse}}
-\newcommand\pr@starmacro[1][]{\long\def\next[##1]##2{%
-    \pr@advise##2{\pr@protect@domacro{#1}{##1}}}%
+    \pr@callafter\next#1]\pr@endparse}}
+\newcommand\pr@starmacro[1][]{\toks@{\pr@protect@domacro{#1}}%
+    \long\edef\next[##1]##2{%
+      \noexpand\pr@advise##2{\the\toks@{##1}}}%
     \@ifnextchar[\next{\next[]}}
 %    \end{macrocode}
 %\end{macro}
@@ -1064,10 +1093,11 @@ Please complain to your document class author}%
 %  \begin{macro}{\pr@open}
 %    \begin{macrocode}
 \newcommand\pr@open[1][]{%
-   \long\def\next[##1]##2{%
-   \pr@advise##2{\begingroup
-     \pr@protect@ship
-        {\pr@domacro{#1}{\begingroup\aftergroup\pr@endbox##1}}%
+   \toks@{\pr@domacro{#1}}%
+   \long\edef\next[##1]##2{%
+     \noexpand\pr@advise##2{\begingroup
+     \noexpand\pr@protect@ship
+        {\the\toks@{\begingroup\aftergroup\noexpand\pr@endbox##1}}%
         {\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
@@ -1082,29 +1112,33 @@ Please complain to your document class author}%
 %  \begin{macro}{\pr@close}
 %    \begin{macrocode}
 \newcommand\pr@close[1][]{%
-  \long\def\next[##1]##2{%
-   \pr@advise{##2}{\pr@domacro{#1}{##1\endgroup}}}%
+  \toks@{\pr@domacro{#1}}%
+  \long\edef\next[##1]##2{%
+   \noexpand\pr@advise{##2}{\the\toks@{##1\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\PreviewEnvironment}
 %  Actually, this ignores any syntax argument.  But don't tell
-%  anybody.  But for the |*|~form, it respects (actually ignores) any
-%  argument!  Of course, we'll need to deactivate
+%  anybody.  Except for the |*|~variant, it respects (actually
+%  ignores) any argument!  Of course, we'll need to deactivate
 %  |\end{|\meta{environment}|}| as well.
 %    \begin{macrocode}
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
-\newcommand\pr@starenv[1][]{\long\def\next##1##2{%
-    \pr@starmacro[{#1}][{##2}]##1}%
+\newcommand\pr@starenv[1][]{\toks@{\pr@starmacro[{#1}]}%
+  \long\edef\next##1##2{%
+    \the\toks@[{##2}]##1}%
   \begingroup\pr@starenvii}
 \newcommand\pr@starenvii[2][]{\endgroup
   \expandafter\next\csname#2\endcsname{#1}%
   \expandafter\pr@starmacro\csname end#2\endcsname}
 \newcommand\pr@env[1][]{%
-   \long\def\next[##1]##2{%
-   \expandafter\pr@advise@ship\csname##2\endcsname{\pr@domacro{#1}%
-      {\begingroup\aftergroup\pr@endbox##1}}{\endgroup}}%
+   \toks@{\pr@domacro{#1}}%
+   \long\edef\next[##1]##2{%
+   \noexpand\expandafter\noexpand\pr@advise@ship
+     \noexpand\csname##2\noexpand\endcsname{\the\toks@
+      {\begingroup\aftergroup\noexpand\pr@endbox##1}}{\endgroup}}%
    \@ifnextchar[\next\pr@macroii %]
  }
 %    \end{macrocode}
@@ -1138,7 +1172,7 @@ Please complain to your document class author}%
    \else
      \let\pr@endsnarf\relax
    \fi
-  \pr@protect{\pr@callafter\pr@startsnarf#1\pr@endparse}}
+  \pr@protect{\pr@callafter\pr@startsnarf#1]\pr@endparse}}
 \def\pr@startsnarf#1{#1\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
    \ignorespaces}
@@ -1244,7 +1278,7 @@ Please complain to your document class author}%
 %
 %\section{The option files}
 %\subsection{The \texttt{auctex} option}
-%The AUC~\TeX\ option will cause error messages to spew.  We want them
+%The AUC\TeX\ option will cause error messages to spew.  We want them
 %on the terminal, but we don't want \LaTeX\ to stop its automated run.
 %We delay \cmd{\nonstopmode} in case the user has any
 %pseudo-interactive folderol like reading in of file names in his
@@ -1377,7 +1411,7 @@ Please complain to your document class author}%
 %Those are for debugging the operation of |preview|, and thus are
 %mostly of interest for people that want to use |preview| for their
 %own purposes.  Since debugging output is potentially confusing to the
-%error message parsing from AUC~\TeX, you should not turn on
+%error message parsing from AUC\TeX, you should not turn on
 %|\tracingonline| or switch from |\nonstopmode| unless you are certain
 %your package will never be used with \previewlatex.
 %
@@ -1713,7 +1747,7 @@ Please complain to your document class author}%
 % And here comes the documentation driver.
 %    \begin{macrocode}
 %<driver> \documentclass{ltxdoc}
-%<driver> \newcommand\previewlatex{Preview-\LaTeX}
+%<driver> \newcommand\previewlatex{\texttt{preview-latex}}
 %<driver> \begin{document}
 %<driver> \DocInput{preview.dtx}
 %<driver> \end{document}
