@@ -1,5 +1,8 @@
 2005-03-09  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* style/amsmath.el ("amsmath"): Fixed typo: "dotssc" -> "dotsc".
+	Added symbol "dots" and "dotsi".
+
 	* latex.el (LaTeX-insert-environment): Call
 	`TeX-math-input-method-off'.
 	* style/amsmath.el (LaTeX-amsmath-env-alignat)
