@@ -67,7 +67,7 @@ Made @key{,} and @kbd{.} remove any preceding italic correction.
 
 @item
 Changes in math mode: @samp{setminus} moved to @key{\}, @samp{not} moved
-to @key{/}, and @samp{wedge, @samp{vee}, and @samp{neg} installed on
+to @key{/}, and @samp{wedge}, @samp{vee}, and @samp{neg} installed on
 @key{&}, @kbd{|}, and @kbd{!} to make writing logic easier for C
 programmers.
 
