@@ -1,3 +1,50 @@
+2002-03-19  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-xemacs.el: Require overlay always, not just at compile time.
+
+	(preview-compatibility-macros): Define only when compiling.
+	(preview-defmacro): Likewise.  Teach Emacs to indent this form properly.
+
+	Code to compensate for features missing in XEmacs:
+
+	(face-attribute): Teach how to fake :foreground and :background.
+
+	(find-image): Remove.
+	(defimage): Likewise. There's no need for this call here; even if there
+	were, the image-type analysis should take place at instantiation
+	time, not definition time.
+
+	(easy-menu-create-menu): New, after the Emacs function.
+	(next-single-char-property-change): Likewise.
+	(previous-single-char-property-change): Likewise.
+	(with-temp-message): Likewise.
+	(add-to-list): Likewise, redefining the two-argument XEmacs version.
+
+	(copy-glyph): New, uses...
+	(destructive-replace-glyph): ... this. New (and ugly). Uses...
+	(map-plist): ... this. New, `map' for property lists.
+
+	Code derived from prv-emacs.el:
+
+	(preview-mark-active): New, handle the special XEmacs `mark-is-nil' case.
+	(preview-create-icon): New.
+	(preview-icon): XEmacsize from commented-out code; reindent.
+	(preview-nonready-icon): Likewise.
+
+	(preview-add-urgentization): Add docstring.
+	(preview-add-urgentization): Likewise.
+
+	(preview-image-from-icon): New.
+	(preview-string-from-image): Likewise.
+	(preview-make-clickable): Likewise.
+	(preview-ps-image): Likewise.
+	(preview-toggle): Likewise.
+	(preview-inherited-face-attribute): Likewise.
+	(preview-with-LaTeX-menus): Likewise.
+	(preview-gs-get-colors): Likewise.
+
+	(provide): Add.
+
 2002-03-16  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/install.texi: Work in progress.
