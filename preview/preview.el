@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.144 2002-05-06 11:25:06 dakas Exp $
+;; $Id: preview.el,v 1.145 2002-05-08 10:42:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1613,7 +1613,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  (while
 	      (re-search-forward "\
 \\(^! \\)\\|\
-\\(?: \\|^\\)(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
+\(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
 )+\\( \\|$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
@@ -2036,7 +2036,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.144 $"))
+	(rev "$Revision: 1.145 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2047,7 +2047,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-05-06 11:25:06 $"))
+    (let ((date "$Date: 2002-05-08 10:42:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
