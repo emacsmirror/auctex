@@ -1,5 +1,8 @@
 2005-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-PDF-mode, TeX-interactive-mode, TeX-Omega-mode): Set
+	customization group.
+
 	* latex.el (LaTeX-math-default): New entry and key for \colon.
 	New "Punctuation" category.  Get rid of some entries in
 	"delimiters" category already defined in "Arrows".  Get rid of
