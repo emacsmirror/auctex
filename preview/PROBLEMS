@@ -114,11 +114,14 @@ against libc5 libraries.
 
 * x-symbol
 
-Current versions of x-symbol confuse the line parsing of
-preview-LaTeX.  They also confuse that of Auc-TeX, but with less
-glaring consequences.  A solution is being worked on, but this depends
-on a few factors that will probably lead to some changed APIs in
-AucTeX.
+Thanks to the work of Christoph Wedler, starting with x-symbol
+4.0h/beta, the line parsing of Auc-TeX and preview-LaTeX is fully
+supported.  Earlier versions exhibit problems.  If you wonder about
+what x-symbol is, take a look at
+<URL:http://www.fmi.uni-passau.de/~wedler/x-symbol/emacs.html>.  In a
+nutshell, x-symbol transforms various tokens and subscripts to a more
+readable form while editing and offers a few input methods handy
+especially for dealing with math.
 
 * Middle-clicking pastes instead of toggling previews
 
