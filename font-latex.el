@@ -1249,7 +1249,9 @@ have changed."
     (let ((next (next-single-property-change beg 'display nil end))
 	  (prop (get-text-property beg 'display)))
       (if (and (eq (car-safe prop) 'raise)
-	       (member (car-safe (cdr prop)) '(-0.3 +0.3))
+	       (member (car-safe (cdr prop))
+		       (list (nth 1 (car font-latex-script-display))
+			     (nth 1 (cdr font-latex-script-display))))
 	       (null (cddr prop)))
 	  (put-text-property beg next 'display nil))
       (setq beg next))))
@@ -1825,6 +1827,15 @@ set to french, and >> german << (and 8-bit) are used if set to german."
       (store-match-data (list beg (point)))
       t)))
 
+(defcustom font-latex-script-display '((raise -0.3) . (raise 0.3))
+  "Display specification for subscript and superscript content.
+The car is used for subscript, the cdr is used for superscripts."
+  :group 'font-latex
+  :type '(cons (choice (sexp :tag "Subscript form")
+		       (const :tag "No lowering" nil))
+	       (choice (sexp :tag "Superscript form")
+		       (const :tag "No raising" nil))))
+
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."
     (when (and font-latex-fontify-script
@@ -1860,10 +1871,11 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 		odd))
     (if (eq (char-after pos) ?_)
 	;; This won't work in XEmacs.
-	'(face font-latex-subscript-face display (raise -0.3))
+	`(face font-latex-subscript-face display
+	       ,(car font-latex-script-display))
       ;; This neither.
-      '(face font-latex-superscript-face display (raise +0.3)))))
-
+      `(face font-latex-superscript-face display
+	     ,(cdr font-latex-script-display)))))
 
 ;;; docTeX
 
