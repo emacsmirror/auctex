@@ -487,6 +487,13 @@ nil, go to the point just past the \\start... macro."
   "Keymap used in `ConTeXt-mode'.")
 
 
+;;; Menu
+(easy-menu-define ConTeXt-mode-command-menu
+    ConTeXt-mode-map
+    "Command menu used in ConTeXt mode."
+    (TeX-mode-specific-command-menu 'context))
+
+
 ;;; Mode
 (defun context-mode ()
   "Major mode for editing files of input for ConTeXt.
@@ -500,6 +507,9 @@ of context-mode-hook."
   (interactive)
   (plain-TeX-common-initialization)
   (use-local-map ConTeXt-mode-map)
+
+  ;; Menu
+  (easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
 
   ;; initializations
   (ConTeXt-en-add-environments
