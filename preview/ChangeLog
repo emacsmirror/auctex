@@ -1,3 +1,29 @@
+2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}): add \leavevmode to make
+	things like \paragraph flush their \everypar tokens.  Perhaps not
+	the right thing to do, let's wait for error reports about that
+	one.
+
+	* preview.el: require 'tex-site when compiling
+	(preview-gs-file): new local variable
+	(preview-gs-sentinel): cater for "Compilation" flag in mode-line
+	(preview-gs-restart): changes in process setup
+	(preview-gs-close): Same here
+	(preview-gs-open): Same here
+	(preview-gs-dvips-sentinel): New function
+	(preview-gs-place): postpone Bounding Box extraction.
+	(preview-gs-flag-error): cosmetic changes
+	(preview-gs-transact): extract bounding box
+	(preview-LaTeX-command): Remove dvips call from command
+	(preview-dvips-command): New option for dvips call
+	(preview-parse-messages): add message while parsing
+	(preview-parse-messages): remove call to open, this calls parsing
+	instead.
+	(preview-start-dvips): New function.
+	(preview-TeX-inline-sentinel): Changed to new process model
+	Note: this breaks 'postscript image support.  To be fixed.
+	
 2001-11-03  Alan Shutko  <ats@acm.org>
 
 	* aclocal.m4
