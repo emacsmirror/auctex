@@ -2480,12 +2480,15 @@ space does not end a sentence, so don't break a line there."
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
   "Move to the position where the line should be broken."
-  ;; COMPATIBILITY for Emacs <= 21.3
+  ;; COMPATIBILITY for Emacs <= 21.3 and XEmacs
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
     (skip-chars-backward "^ \n")
-    (when (bolp)
-      (skip-chars-forward "^ \n" (point-max))))
+    (cond ((bolp)
+	   (skip-chars-forward "^ \n" (point-max)))
+	  ((TeX-looking-at-backward "^[ \t]+" (1- (line-beginning-position)))
+	   (goto-char (match-end 0))
+	   (skip-chars-forward "^ \n" (point-max)))))
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
