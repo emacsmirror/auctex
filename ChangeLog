@@ -1,3 +1,25 @@
+2004-07-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-display-string-face): Cater for display
+	devices with few colors.
+	(TeX-fold-keymap): Add key bindings for showing and hiding
+	individual macros.
+	(TeX-fold-macro): New function.
+	(TeX-fold-clearout-buffer): New name for
+	`TeX-fold-remove-all-overlays'.
+	(TeX-fold-clearout-macro): New function.
+	(TeX-fold-remove-overlays): New function.
+
+	* latex.el (LaTeX-mode-menu): Add entries for showing and hiding
+	individual macros.
+
+	* tex-info.el (TeXinfo-mode-menu): Update and rearrange.  Add
+	entries for "Show/Hide" functionality.
+
+	* doc/auc-tex.texi (Show/Hide): New section.
+	(Folding): New subsection.
+	(Outline): Moved under "Show/Hide".
+
 2004-07-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el: Do not require tex-fold.el.
