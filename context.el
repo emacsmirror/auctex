@@ -46,7 +46,7 @@ of context-mode-hook."
   (setq mode-name "ConTeXt") 
   (setq major-mode 'context-mode) 
   (setq TeX-command-default "ConTeXt Interactive")
-  (setq TeX-sentinel-function 'TeX-ConTeXt-sentinel)
+  (setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
 
 (defun TeX-ConTeXt-sentinel (process name)

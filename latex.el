@@ -3058,7 +3058,7 @@ of `LaTeX-mode-hook'."
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
-  (setq TeX-sentinel-function 'TeX-LaTeX-sentinel)
+  (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
   ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
   (and (boundp 'filladapt-function-table)
        (boundp 'auto-fill-function)
