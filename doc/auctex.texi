@@ -239,6 +239,9 @@ will insert a literal double quote.  The respective values of
 after typing @kbd{"} once again.
 @end defopt
 
+@vindex LaTeX-german-open-quote
+@vindex LaTeX-german-close-quote
+@vindex LaTeX-german-quote-after-quote
 If you include the style files @file{german} or @file{ngerman}
 @code{TeX-open-quote} and @code{TeX-close-quote} will be set to the
 values of @code{LaTeX-german-open-quote} and
@@ -247,6 +250,18 @@ values of @code{LaTeX-german-open-quote} and
 @code{LaTeX-german-quote-after-quote}.  If you write texts which
 facilitate the style files mentioned before, you should customize
 those special variables instead of the standard variables.
+
+@vindex LaTeX-csquotes-open-quote
+@vindex LaTeX-csquotes-close-quote
+@vindex LaTeX-csquotes-quote-after-quote
+Similarly you should customize @code{LaTeX-csquotes-open-quote},
+@code{LaTeX-csquotes-close-quote} and
+@code{LaTeX-csquotes-quote-after-quote} if you use the @samp{csquotes}
+package.  The quotation characters will only be used if both
+variables---@code{LaTeX-csquotes-open-quote} and
+@code{LaTeX-csquotes-close-quote}---are non-empty strings.  But then the
+@samp{csquotes}-related values will take precedence over the
+@samp{(n)german}-related ones.
 
 In @AUCTeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
