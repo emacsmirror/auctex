@@ -4,6 +4,12 @@
 
 2004-09-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-commented-outp): Reimplement for
+	better performance.
+
+	* doc/changes.texi: Streamline documentation of performance
+	changes.
+
 	* tex.el (TeX-search-syntax-table): Make XEmacs happy.
 	(VirTeX-common-initialization): Append our stuff to the end of
 	`find-file-hooks'.  Fixes problems with `auto-insert-mode'.
