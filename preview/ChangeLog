@@ -1,3 +1,12 @@
+2002-02-20  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
+
+	* doc/preview-latex.texi: Removed isolatin1 style include and chars
+
+2002-02-20  Alan Shutko  <ats@acm.org>
+
+	* configure.in: Patch from Stephen Gildea
+	correcting the disable-8bit-test code.
+
 2002-02-19  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* Created 0.6b, which includes .info and .dvi manuals
