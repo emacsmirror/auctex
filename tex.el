@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.447 $"))
+	    (rev "$Revision: 5.448 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-31 12:40:23 $"))
+    (let ((date "$Date: 2004-09-05 20:40:02 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3638,48 +3638,92 @@ regardless of its data type."
 
 ;;; Navigation
 
-(defun TeX-find-closing-brace (&optional arg limit)
+(defvar TeX-search-syntax-table
+  (let ((table (make-syntax-table (make-char-table 'syntax-table))))
+    (modify-syntax-entry ?\f ">" table)
+    (modify-syntax-entry ?\n ">" table)
+    table)
+  "Syntax table used for searching purposes.
+It should be accessed through the function `TeX-search-syntax-table'.")
+
+(defun TeX-search-syntax-table (&rest args)
+  "Return a syntax table for searching purposes.
+ARGS may be a list of characters.  For each of them the
+respective predefined syntax is set.  Currently the parenthetical
+characters ?{, ?}, ?[, and ?] are supported.  The syntax of each
+of these characters not specified will be reset to \" \".
+Besides the escape characters ?\\\\ and ?@ as well as the comment
+character ?% may be specified.  This should not be necessary as
+they are set automatically if they are omitted."
+  (let ((char-syntax-alist '((?\\ . "\\")
+			     (?\@ . "\\")
+			     (?\% . "<")
+			     (?\{ . "(}")
+			     (?\} . "){")
+			     (?\[ . "(]")
+			     (?\] . ")["))))
+    ;; First clean up.
+    (dolist (item char-syntax-alist)
+      (modify-syntax-entry (car item) " " TeX-search-syntax-table))
+    ;; Set the escape character automatically if it is not specified
+    ;; explicitely.  (This could be done as well once when the mode is
+    ;; being initialized.)
+    (unless (or (memq ?\\ args) (memq ?\@ args))
+      (modify-syntax-entry (string-to-char TeX-esc) "\\"
+			   TeX-search-syntax-table))
+    ;; Same for comment character.
+    (unless (and (memq ?\% args) (eq major-mode 'texinfo-mode))
+      (modify-syntax-entry ?\% "<" TeX-search-syntax-table))
+    ;; Now set what we got.
+    (dolist (item args)
+      (modify-syntax-entry item (cdr (assoc item char-syntax-alist))
+			   TeX-search-syntax-table))
+    ;; Return the syntax table.
+    TeX-search-syntax-table))
+
+(defun TeX-find-balanced-brace (&optional count depth limit)
+  "Return the position of a balanced brace in a TeX group.
+The function scans forward COUNT parenthetical groupings.
+Default is 1.  If COUNT is negative, it searches backwards.  With
+optional DEPTH>=1, find that outer level.  If LIMIT is non-nil,
+do not search further than this position in the buffer."
+  (let ((count (if count
+		   (if (= count 0) (error "COUNT has to be <> 0") count)
+		 1))
+	(depth (if depth
+		   (if (< depth 1) (error "DEPTH has to be > 0") depth)
+		 1)))
+    (save-restriction
+      (when limit
+	(if (> count 0)
+	    (narrow-to-region (point-min) limit)
+	  (narrow-to-region limit (point-max))))
+      (with-syntax-table (TeX-search-syntax-table ?\{ ?\})
+	(condition-case nil
+	    (scan-lists (point) count depth)
+	  (error nil))))))
+
+(defun TeX-find-closing-brace (&optional depth limit)
   "Return the position of the closing brace in a TeX group.
 The function assumes that point is inside the group, i.e. after
-an opening brace.  With optional ARG>=1, find that outer level.
-If LIMIT is non-nil, search down to this position in the buffer."
-  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
-    (save-excursion
-      (while (and
-	      (/= arg 0)
-	      (re-search-forward (concat "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*"
-					 "\\({\\|}\\)") limit t 1))
-	(cond ((string= (substring (match-string 0) -1) "{")
-	       (setq arg (1+ arg)))
-	      (t
-	       (setq arg (1- arg)))))
-      (if (/= arg 0)
-	  nil
-	(point)))))
+an opening brace.  With optional DEPTH>=1, find that outer level.
+If LIMIT is non-nil, do not search further down than this
+position in the buffer."
+  (TeX-find-balanced-brace 1 depth limit))
 
-(defun TeX-find-opening-brace (&optional arg limit)
+(defun TeX-find-opening-brace (&optional depth limit)
   "Return the position of the opening brace in a TeX group.
 The function assumes that point is inside the group, i.e. before
-a closing brace.  With optional ARG>=1, find that outer level.
-If LIMIT is non-nil, search up to this position in the buffer."
-  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
-    (save-excursion
-      (while (and (/= arg 0)
-		  (re-search-backward "{\\|}" limit t 1))
-	(when (save-excursion
-		 (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2)))
-	  (cond ((eq (char-after) ?})
-		 (setq arg (1+ arg)))
-		(t
-		 (setq arg (1- arg))))))
-      (if (/= arg 0)
-	  nil
-	(point)))))
+a closing brace.  With optional DEPTH>=1, find that outer level.
+If LIMIT is non-nil, do not search further up than this position
+in the buffer."
+  (TeX-find-balanced-brace -1 depth limit))
 
-(defun TeX-find-macro-boundaries ()
+(defun TeX-find-macro-boundaries (&optional lower-bound)
   "Return a list containing the start and end of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
+If LOWER-BOUND is given, do not search backward further than this
+point in buffer.  Arguments enclosed in brackets or braces are
+considered part of the macro."
   (save-excursion
     (let ((orig-point (point))
 	  opening-brace
@@ -3690,15 +3734,15 @@ the macro."
 	  ;; Point is located directly at the start of a macro.
 	  (setq start-point (point))
 	;; Search backward for a macro start.
-	(setq start-point (TeX-find-macro-start-helper))
-	(setq opening-brace (TeX-find-opening-brace))
+	(setq start-point (TeX-find-macro-start-helper lower-bound))
+	(setq opening-brace (TeX-find-opening-brace nil lower-bound))
 	;; Cases {\foo ba-!-r} or \foo{bar\baz{bla}bl-!-u}
 	;; FIXME: Fails on \foo{\bar}{ba-!-z} constructs.
 	(when (and opening-brace start-point
 		   (> start-point opening-brace)
 		   (>= (point) (TeX-find-macro-end-helper start-point)))
 	  (goto-char opening-brace)
-	  (setq start-point (TeX-find-macro-start-helper))))
+	  (setq start-point (TeX-find-macro-start-helper lower-bound))))
 
       (if (not start-point)
 	  nil
@@ -3708,14 +3752,17 @@ the macro."
 	    (list start-point (point))
 	  nil)))))
 
-(defun TeX-find-macro-start-helper ()
+(defun TeX-find-macro-start-helper (&optional limit)
    "Find the starting token of a macro.
-In TeX, LaTeX or ConTeXt this is a `\\' character, in Texinfo it
-is the character `@'.  In case an escaped character is found,
-return the position before the escaping character."
+If LIMIT is given, do not search backward further than this point
+in buffer.
+
+In TeX, LaTeX or ConTeXt the token is a `\\' character, in
+Texinfo it is the character `@'.  In case an escaped character is
+found, return the position before the escaping character."
    (save-excursion
      (save-match-data
-       (and (search-backward TeX-esc nil t)
+       (and (search-backward TeX-esc limit t)
 	    (let ((oldpoint (point)))
 	      (if (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))
 		  oldpoint
@@ -3735,6 +3782,7 @@ those will be considered part of it."
 	(skip-chars-forward "A-Za-z@*"))
       (while (not (eobp))
 	(cond
+	 ;; Skip over pairs of square brackets
 	 ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
 					        ; only consecutive lines.
 	      (and (looking-at (concat "[ \t]*" comment-start))
@@ -3743,6 +3791,7 @@ those will be considered part of it."
 		     (looking-at "[ \t]*\\(\\[\\)"))))
 	  (goto-char (match-beginning 1))
 	  (forward-sexp))
+	 ;; Skip over pairs of curly braces
 	 ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
 					; only consecutive lines.
 	      (and (looking-at (concat "[ \t]*" comment-start))
@@ -3758,11 +3807,12 @@ those will be considered part of it."
 	 (t
 	  (throw 'found (point))))))))
 
-(defun TeX-find-macro-start ()
+(defun TeX-find-macro-start (&optional limit)
   "Return the start of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
-  (car (TeX-find-macro-boundaries)))
+If LIMIT is given, do not search backward further than this point
+in buffer.  Arguments enclosed in brackets or braces are
+considered part of the macro."
+  (car (TeX-find-macro-boundaries limit)))
 
 (defun TeX-find-macro-end ()
   "Return the end of a macro.
