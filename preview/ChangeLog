@@ -1,3 +1,12 @@
+2002-04-06  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* autogen.sh, doc/Makefile.in, doc/preview-latex.texi:
+	Include todo.texi
+
+	* doc/todo.texi: Moved from TODO
+
+	* TODO: Moved to todo.texi
+
 2002-04-05  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-parse-messages): Another addition to the
