@@ -1,3 +1,18 @@
+2004-11-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* texmathp.el: Rearrange variable and function definitions in
+	order to get as few compiler warnings as possible due to the
+	reintroduction of the :set function in `texmathp-tex-commands'.
+	Add a dummy `defvar' for `texmathp-tex-commands' to silence the
+	compiler.
+	(texmathp-tex-commands): Reintroduce a :set function as advertised
+	in `texmathp-compile'.
+	(texmathp): Remove the conditional call to `texmathp-compile' as
+	this is handled by the :set function in `texmathp-tex-commands' on
+	load of the file.
+
+	* tex.el: Autoload `texmathp-match-switch'.
+
 2004-11-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-bold-face, font-latex-italic-face)
