@@ -14,6 +14,10 @@ and probably more.@refill
 
 @itemize @bullet
 @item
+Font support for La@TeX{}2e.  Many people suggested this.
+Set @code{LaTeX-version} to @samp{2e} to activate it.
+
+@item
 Outline support for La@TeX{}2e fixed by Robert Estes
 @samp{<estes@@ece.ucdavis.edu>}. 
 

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.19 1994-06-03 04:49:29 amanda Exp $
+;; Version: $Id: latex.el,v 5.20 1994-06-03 21:33:43 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1813,6 +1813,21 @@ The point is supposed to be at the beginning of the current line."
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
 
+(defvar LaTeX-font-list
+  '((?\C-b "\\textbf{" "}")
+    (?\C-c "\\textsc{" "}")
+    (?\C-e "\\emph{" "}")
+    (?\C-f "\\textsf{" "}")
+    (?\C-i "\\textit{" "}")
+    (?\C-m "\\textmd{" "}")
+    (?\C-n "\\textnormal{" "}")
+    (?\C-r "\\textrm{" "}")
+    (?\C-s "\\textsl{" "}")
+    (?\C-t "\\texttt{" "}")
+    (?\C-u "\\textup{" "}")
+    (?\C-d "" "" t))
+  "Font commands used with LaTeX2e.  See `TeX-font-list'.")
+
 ;;; Mode
 
 (defvar LaTeX-version "2"
@@ -1931,6 +1946,11 @@ of LaTeX-mode-hook."
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
 			  ("thebibliography" . LaTeX-item-bib)))
+
+  (if (string-equal LaTeX-version "2")
+      ()
+    (make-local-variable 'TeX-font-list)
+    (setq TeX-font-list LaTeX-font-list))
 
   (setq TeX-complete-list
 	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"

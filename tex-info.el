@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.13 1994-05-28 02:47:44 amanda Exp $
+;; $Id: tex-info.el,v 5.14 1994-06-03 21:33:46 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -210,6 +210,24 @@ When called interactively, prompt for an environment."
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
 
+(defvar TeXinfo-font-list
+  '((?\C-b "@b{" "}")
+    (?\C-c "@sc{" "}")
+    (?\C-e "@emph{" "}")
+    (?\C-i "@i{" "}")
+    (?\C-r "@r{" "}")
+    (?\C-s "@samp{" "}")
+    (?\C-t "@t{" "}")
+    (?s    "@strong{" "}")
+    (?\C-f "@file{" "}")
+    (?\C-d "@dfn{" "}")
+    (?\C-v "@var{" "}")
+    (?k    "@key{" "}")
+    (?\C-k "@kbd{" "}")
+    (?c    "@code{" "}")
+    (?C    "@cite{" "}"))
+  "Font commands used in TeXinfo mode.  See `TeX-font-list'.")
+  
 ;;; Mode:
 
 ;;;###autoload
@@ -271,21 +289,7 @@ TeXinfo-mode-hook."
   (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
   
   (make-local-variable 'TeX-font-list)
-  (setq TeX-font-list '((?\C-b "@b{" "}")
-			(?\C-c "@sc{" "}")
-			(?\C-e "@emph{" "}")
-			(?\C-i "@i{" "}")
-			(?\C-r "@r{" "}")
-			(?\C-s "@samp{" "}")
-			(?\C-t "@t{" "}")
-			(?s    "@strong{" "}")
-			(?\C-f "@file{" "}")
-			(?\C-d "@dfn{" "}")
-			(?\C-v "@var{" "}")
-			(?k    "@key{" "}")
-			(?\C-k "@kbd{" "}")
-			(?c    "@code{" "}")
-			(?C    "@cite{" "}")))
+  (setq TeX-font-list TeXinfo-font-list)
   
   (TeX-add-symbols
    '("appendix" "Title")
