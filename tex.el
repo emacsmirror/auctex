@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9m
+;; Version: 9.9n
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2141,7 +2141,7 @@ hierarchy, 't' means recurse indefinitely."
   :group 'TeX-parse
   :type '(choice (const :tag "On" t)
 		 (const :tag "Off" nil)
-		 (integer :tag "Depth" :value 1))
+		 (integer :tag "Depth" :value 1)))
 
 (defun TeX-match-extension (file &optional extensions)
   "Return non-nil if FILE has an one of EXTENSIONS.
