@@ -2,6 +2,8 @@
 
 	* preview.el (LaTeX-preview-setup): Deal with the easy-menu
 	sickness so that XEmacs might work.
+	(LaTeX-preview-setup): (require 'latex) unnecessary, we get
+	called only if the feature has been loaded already.
 
 2002-03-08  Alan Shutko  <ats@acm.org>
 
