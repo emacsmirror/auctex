@@ -1,5 +1,8 @@
 2002-04-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-default-option-list): set textmath per
+	default.
+
 	* latex/README-preview: update to reflect added file footprint
 	from preview.dtx
 
