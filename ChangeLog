@@ -1,5 +1,8 @@
 2005-03-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* latex.el (LaTeX-fill-move-to-break-point): Prevent line break
+	between 2-byte char an 1 byte-char.
+
 	* latex.el (LaTeX-fill-move-to-break-point): Do not skip
 	LaTeX-nospace-between-char-regexp.
 	Reported by Ikumi Keita <ikumi@revery.net>.
