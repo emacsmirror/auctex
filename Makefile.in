@@ -94,11 +94,15 @@ install-lisp:	some
 	-$(MKINSTALLDIRS) $(lispdir)
 	rm -f $(auctexdir)/tex-site.el # Remove old (CVS-version) mistakes
 	if [ -f $(lispdir)/tex-site.el ]; then \
-	    echo "Leaving old tex-site.el alone."; \
-	else \
-	    sed -e 's#@AUCDIR#$(lispdir)/#' tex-site.el \
-	    > $(lispdir)/tex-site.el ; \
-        fi
+	   if grep -q "tex-site.*Don't edit." $(lispdir)/tex-site.el; then \
+	    echo "Overwriting old tex-site.el" ; \
+	   else \
+	    echo "Renaming old texsite.el to texsite.el.save" ; \
+	    mv $(lispdir)/tex-site.el $(lispdir)/texsite.el.save ; \
+	   fi; \
+	fi; \
+	sed -e 's#@AUCDIR#$(auctexdir)/#' tex-site.el \
+	  > $(lispdir)/tex-site.el
 	-$(MKINSTALLDIRS) $(auctexdir)
 	for x in $(AUCSRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
