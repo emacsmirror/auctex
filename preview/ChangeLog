@@ -1,3 +1,8 @@
+2002-03-08  Alan Shutko  <ats@acm.org>
+
+	* configure.in: When checking for texhash, use /bin/true if we
+	can't find it.
+
 2002-03-08  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/problems.texi (Emacs problems), doc/readme.texi: some
