@@ -1,3 +1,8 @@
+2004-06-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/changes.texi: Add some news regarding upcoming release.
+	Try to match former news with actual releases.
+
 2004-06-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-comment-padding-string): New function.
