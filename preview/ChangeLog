@@ -1,5 +1,16 @@
 2001-11-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-int-bb): moved from preview.el
+
+	* preview.el (preview-preserve-indentation): New option, on per
+	default.  Switch off for old behaviour.
+	(preview-extract-bb): heed preview-preserve-indentation by faking
+	the bounding box left.
+	(preview-int-bb): move to prv-emacs.el
+
+	* preview.dtx (subsection{The internals}): Try killing off indents
+	in order to get good horizontal positioning of preview.
+
 	* preview.el (preview-start-dvips): fix bug WRT free variable
 	`buffer'.
 
