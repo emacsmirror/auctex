@@ -132,6 +132,18 @@ the current buffer of the document, or a region of it.
 @kindex @kbd{C-c C-r g @key{RET}}
 @cindex Generate Preview
 
+@item @kbd{C-c C-p C-d}
+@itemx @code{preview-document} 
+Run preview on the present document.
+@kindex @kbd{C-c C-p C-d}
+@findex preview-document
+
+@item @kbd{C-c C-p C-b}
+@itemx @code{preview-buffer} 
+Run preview on the present buffer.
+@kindex @kbd{C-c C-p C-b}
+@findex preview-buffer
+
 @item @kbd{C-c C-p C-p}
 @itemx @code{preview-at-point}
 On/off at point. If the cursor is positioned on or inside of a preview
@@ -143,14 +155,6 @@ last such preview.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
 @cindex On/off at point
-
-@item @kbd{C-c C-k}
-Kill preview-generating process. This is really an @AUCTeX{} keybinding,
-but it is included here as a hint. If you start generating a preview and
-then make a change to the buffer, @previewlatex{} may be confused and
-place the previews wrong.
-@kindex @kbd{C-c C-k}
-@cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
@@ -179,6 +183,27 @@ on region between @code{begin} and @code{end}.
 @kindex @kbd{C-c C-p C-r}
 @findex preview-region
 @c @cindex Preview region
+
+@item @kbd{C-c C-p C-i}
+@itemx @code{preview-goto-info-page}
+Read
+@ifinfo
+this
+@end ifinfo 
+@ifnotinfo
+the
+@end ifnotinfo
+info manual.
+@kindex @kbd{C-c C-k}
+@cindex Kill preview-generating process
+
+@item @kbd{C-c C-k}
+Kill preview-generating process. This is really an @AUCTeX{} keybinding,
+but it is included here as a hint. If you sart generating a preview and
+then make a change to the buffer, @previewlatex{} may be confused and
+place the previews wrong.
+@kindex @kbd{C-c C-k}
+@cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
