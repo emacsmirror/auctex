@@ -6,9 +6,9 @@ Send a message with just the word `help' as subject or body to
     preview-latex-devel-request@lists.sourceforge.net
 for more information.
 
-Thr project is just starting.  Current state of affairs:  get Emacs at
-least version 21.0.105 (available for pretesting purposes from
-<URL:ftp://alpha.gnu.org/pub/gnu/emacs/unreadable/pretest>), versions
+Thr project is just starting.  Current state of affairs: you need to
+get access to an Emacs version that is at 21.0.105, which at the
+current time means that you need to be a pretester of Emacs.  Versions
 before that have EPS rendering support that is defective.  The current
 version of EPS support is just a hack and workaround with a side
 effect of sluggish response time, feel free to help the Emacs
