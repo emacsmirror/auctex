@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.115 2002-04-14 14:08:40 dakas Exp $
+;; $Id: preview.el,v 1.116 2002-04-14 16:20:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1117,7 +1117,7 @@ on first use.")
     (overlay-put ov 'timestamp timestamp)
     (list (overlay-start ov)
 	  (overlay-end ov)
-	  (overlay-get ov 'preview-image)
+	  (preview-export-image (overlay-get ov 'preview-image))
 	  filenames)))
 
 (defun preview-buffer-restore-internal (buffer-misc)
@@ -1289,7 +1289,7 @@ and the corresponding topdir."
 		    `(lambda() (interactive) (preview-toggle ,ov 'toggle))
 		    `(lambda() (interactive) (preview-delete ,ov))))
       (overlay-put ov 'filenames (list filename))
-      (overlay-put ov 'preview-image image)
+      (overlay-put ov 'preview-image (preview-import-image image))
       (overlay-put ov 'strings
 		   (cons (preview-active-string ov)
 			 (preview-inactive-string ov)))
@@ -1857,7 +1857,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.115 $"))
+	(rev "$Revision: 1.116 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
