@@ -15,13 +15,13 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.183 2004-08-24 14:12:08 rsteib Exp $
+@c $Id: auctex.texi,v 1.184 2004-08-28 21:20:13 dak Exp $
 
 @finalout
 @titlepage
 @title @AUCTeX{}
 @subtitle A much enhanced @LaTeX{} mode for Emacs.
-@subtitle Version 11.52
+@subtitle Version 11.53
 
 @author by Kresten Krab Thorup
 @author updates from 6.1 to 11.13 by Per Abrahamsen
@@ -63,7 +63,7 @@ approved by the Free Software Foundation.
 @AUCTeX{} is an integrated environment for editing @LaTeX{} and
 @TeX{} files.
 
-This file documents @AUCTeX{} version 11.52.
+This file documents @AUCTeX{} version 11.53.
 
 Although @AUCTeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and @LaTeX{}
