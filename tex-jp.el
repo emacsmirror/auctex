@@ -106,22 +106,20 @@
   "*Default when creating new Japanese documents.")
 
 (defvar japanese-LaTeX-style-list
-  '(("book")
-    ("article")
-    ("letter")
-    ("slides")
-    ("report")
-    ("jbook")
+  '(("j-article")
+    ("j-report")
     ("j-book")
     ("jarticle")
-    ("j-article")
-    ("jslides")
+    ("jbook")
     ("jreport")
-    ("j-report")
+    ("jslides")
     ("tarticle")
     ("treport")
     ("tbook"))
   "*List of Japanese document styles.")
+
+(setq LaTeX-style-list
+      (append japanese-LaTeX-style-list LaTeX-style-list))
 
 ;;; Coding system
 
@@ -234,7 +232,6 @@ Set japanese-TeX-mode to t, and enters latex-mode."
       (progn
 	(setq TeX-command-default japanese-LaTeX-command-default)
 	(setq LaTeX-default-style japanese-LaTeX-default-style)
-	(setq LaTeX-style-list japanese-LaTeX-style-list)
 	(setq TeX-command-BibTeX "jBibTeX")
 	(setq japanese-TeX-mode nil))))
 
