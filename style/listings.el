@@ -51,6 +51,9 @@
    ;; Filling
    (make-local-variable 'LaTeX-verbatim-macros)
    (add-to-list 'LaTeX-verbatim-macros "lstinline")
+   (make-local-variable 'LaTeX-indent-environment-list)
+   (add-to-list 'LaTeX-indent-environment-list
+		'("lstlisting" current-indentation))
    ;; Fontification
    (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
    (font-latex-match-function-make)
@@ -66,6 +69,7 @@
    (font-latex-match-variable-make)
    (add-to-list 'font-latex-verbatim-environments-local "lstlisting")
    (add-to-list 'font-latex-verbatim-macros-local "lstinline")
+   (add-to-list 'font-latex-verb-like-commands-local "lstinline")
    (font-latex-set-syntactic-keywords)))
 
 ;;; listings.el ends here
