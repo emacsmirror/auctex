@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.33 1993-04-17 04:53:18 amanda Exp $
+@c $Id: auc-tex.texi,v 1.34 1993-04-21 18:13:35 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2274,7 +2274,8 @@ one with the longest definition.  Thus, if you have a enumerate style
 file, and want it to replace the standard La@TeX{} enumerate hook above,
 you could define an @file{enumerate.el} file as follows, and place it in
 the appropriate style directory. 
-@example
+
+@lisp
 (TeX-add-style-hook "latex"
  (function
   (lambda ()
@@ -2282,7 +2283,8 @@ the appropriate style directory.
      '("enumerate" LaTeX-enumerate-hook foo)))))
 
 (defun LaTeX-enumerate-hook (environment &optional ignore) ...)
-@end example
+@end lisp
+
 The symbol @code{foo} will be passed to @code{LaTeX-enumerate-hook} as
 the second argument, but since we only added it to overwrite the
 definition in @file{latex.el} it is just ignored.
@@ -2613,6 +2615,10 @@ this version, and for the authors, who get nostalgic at times.
 Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
+@item
+Improved backward compatibility in @file{auc-tex.el}.  Thanks to Ralf
+Handl @samp{<handl@@cs.uni-sb.de>}.
+
 @item
 New style hook for @file{german.sty}.
 
