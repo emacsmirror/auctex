@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.924 (27 Aug 2004)
+;; Version:    0.925 (12 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,15 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.925 12Sep2004 Ralf Angeli
+;;  - `font-latex-keywords-1': Add highlighter for math macros.
+;;  - `font-latex-keywords-2': Use regexp for matching instead of
+;;    `font-latex-match-script'.
+;;  - `font-latex-match-font-outside-braces': Add support for math, esp.
+;;    "\ensuremath".
+;;  - `font-latex-match-script': Remove.
+;;  - `font-latex-script': Fix check for present faces.  Add `texmathp'
+;;    check in case there is no math face present.
 ;; V0.924 27Aug2004 Ralf Angeli
 ;;  - `font-latex': Add to AUCTeX's customization group.
 ;;  - `font-latex-find-matching-close': Correctly recognize multiple
@@ -996,7 +1005,8 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
         t)                              ;Laxmatch? if t, do not signal error
      (1 font-latex-italic-face append t)
      (2 font-latex-bold-face append t)
-     (3 font-lock-type-face append t))
+     (3 font-lock-type-face append t)
+     (4 font-latex-math-face append t))
     (font-latex-match-font-inside-braces		      ;;;{\it text}
      (0 font-lock-keyword-face append t)
      (1 font-latex-italic-face append t)
@@ -1044,7 +1054,9 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
       (0 font-latex-math-face append t))
      ("\\\\[@A-Za-z]+"                                        ;;;Other commands
       (0 font-latex-sedate-face append))
-     (font-latex-match-script
+     ;; Regexp taken from `tex-font-lock-keywords-3' from tex-mode.el
+     ;; in GNU Emacs on 2004-07-07.
+     ("[_^] *\\([^\n\\{}]\\|\\\\\\([a-zA-Z@]+\\|[^ \t\n]\\)\\|{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*}\\)"
       (1 (font-latex-script (match-beginning 0)) append))))
   "High level highlighting for LaTeX modes.")
 
@@ -1652,10 +1664,11 @@ Returns nil if no font-changing command is found."
                    "\\(emph\\)\\|"			      ;;; 2 - italic
                    "\\(text\\("
                                "\\(it\\|sl\\)\\|"	      ;;; 5 - italic
-                               "\\(md\\|rm\\|sf\\|tt\\)\\|" ;;; 6 - type
+                               "\\(md\\|rm\\|sf\\|tt\\)\\|"   ;;; 6 - type
                                "\\(bf\\|sc\\|up\\)"	      ;;; 7 - bold
                           "\\)\\)\\|"
-                   "\\(boldsymbol\\|pmb\\)"		      ;;; 8 - bold
+                   "\\(boldsymbol\\|pmb\\)\\|"		      ;;; 8 - bold
+		   "\\(ensuremath\\)"                         ;;; 9 - math
                    "\\)" "{"))
          limit t)
     (cond
@@ -1669,7 +1682,7 @@ Returns nil if no font-changing command is found."
      (t
       (let ((kbeg (match-beginning 0)) (kend (match-end 1))
             (beg  (1- (match-end 0)))   ;Include openning bracket
-            end itbeg itend bfbeg bfend ttbeg ttend
+            end itbeg itend bfbeg bfend ttbeg ttend mathbeg mathend
             (parse-sexp-ignore-comments t) ; scan-sexps ignores comments
             cache-reset)
         (goto-char kend)
@@ -1682,13 +1695,15 @@ Returns nil if no font-changing command is found."
             (setq end (point-max))
             (goto-char end)))
         (cond ((or (match-beginning 2) (match-beginning 5))
-               (setq itbeg beg  itend end))
+               (setq itbeg beg    itend end))
               ((match-beginning 6)
-               (setq ttbeg beg  ttend end))
+               (setq ttbeg beg    ttend end))
+	      ((match-beginning 9)
+	       (setq mathbeg beg  mathend end))
               (t
-               (setq bfbeg beg  bfend end)))
+               (setq bfbeg beg    bfend end)))
         (store-match-data
-         (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend))
+         (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend mathbeg mathend))
         ;; Start the subsequent search immediately after this keyword.
           (goto-char kend)
 
@@ -1858,55 +1873,46 @@ The car is used for subscript, the cdr is used for superscripts."
 	       (choice (sexp :tag "Superscript form")
 		       (const :tag "No raising" nil))))
 
-(defun font-latex-match-script (limit)
-  "Match subscript and superscript patterns up to LIMIT."
-    (when (and font-latex-fontify-script
-	       (not (featurep 'xemacs))
-	       (re-search-forward
-		(eval-when-compile
-		  ;; Regexp taken from `tex-font-lock-keywords-3'
-		  ;; from tex-mode.el in GNU Emacs on 2004-07-07.
-		  (concat "[_^] *\\([^\n\\{}]\\|" "\\\\"
-			  "\\([a-zA-Z@]+\\|[^ \t\n]\\)" "\\|"
-			  "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*" "}\\)"))
-		limit t))
-      (goto-char (match-end 0))
-      (if (save-match-data (condition-case nil (texmathp) (error nil)))
-	  (set-match-data (list (match-beginning 0) (match-end 0)
-				(match-beginning 1) (match-end 1)))
-	;; Not in a math environment.  Return an empty match.
-	(set-match-data (list 1 1 1 1)))
-      t))
-
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
 (defun font-latex-script (pos)
   "Return face and display spec for subscript and superscript content."
-  (unless (or (memq (get-text-property pos 'face)
-		    '(font-lock-constant-face font-lock-builtin-face
-		      font-lock-comment-face font-latex-verbatim-face))
-	      ;; Check for backslash quoting
-	      (let ((odd nil)
-		    (pos pos))
-		(while (eq (char-before pos) ?\\)
-		  (setq pos (1- pos) odd (not odd)))
-		odd))
-    ;; Adding other text properties than `face' is supported by
-    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
-    ;; Emacs 21.4 respectively.  With the introduction of this feature
-    ;; the variable `font-lock-extra-managed-props' was introduced and
-    ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
-    ;; currently (2004-08-18) does not support this feature.
-    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
-      (if (eq (char-after pos) ?_)
+  (let* ((prop (get-text-property pos 'face))
+	 (prop-list (if (listp prop) prop (list prop))))
+    (unless (or (catch 'member
+		  (dolist (item prop-list)
+		    (when (memq item '(font-lock-constant-face
+				       font-lock-builtin-face
+				       font-lock-comment-face
+				       font-latex-verbatim-face))
+		      (throw 'member t))))
+		;; Check for math (but only if we don't already know
+		;; because of an existing fontification).
+		(and (not (memq 'font-latex-math-face prop-list))
+		     (not (save-match-data
+			    (condition-case nil (texmathp) (error nil)))))
+		;; Check for backslash quoting
+		(let ((odd nil)
+		      (pos pos))
+		  (while (eq (char-before pos) ?\\)
+		    (setq pos (1- pos) odd (not odd)))
+		  odd))
+      ;; Adding other text properties than `face' is supported by
+      ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
+      ;; Emacs 21.4 respectively.  With the introduction of this feature
+      ;; the variable `font-lock-extra-managed-props' was introduced and
+      ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
+      ;; currently (2004-08-18) does not support this feature.
+      (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
+	(if (eq (char-after pos) ?_)
+	    (if extra-props-flag
+		`(face font-latex-subscript-face display
+		       ,(car font-latex-script-display))
+	      font-latex-subscript-face)
 	  (if extra-props-flag
-	      `(face font-latex-subscript-face display
-		     ,(car font-latex-script-display))
-	    font-latex-subscript-face)
-	(if extra-props-flag
-	    `(face font-latex-superscript-face display
-		   ,(cdr font-latex-script-display))
-	  font-latex-superscript-face)))))
+	      `(face font-latex-superscript-face display
+		     ,(cdr font-latex-script-display))
+	    font-latex-superscript-face))))))
 
 
 ;;; docTeX
