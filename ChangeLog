@@ -8,7 +8,7 @@
 	* context.el (ConTeXt-mode-common-initialization): Add support for
 	"$$" to `paragraph-start'.
 
-	* font-latex.el Remove change log.
+	* font-latex.el: Remove change log.
 	(font-latex-make-keywords): New function.
 	(font-latex-match-variable-keywords-local)
 	(font-latex-match-variable-make)
@@ -113,6 +113,9 @@
 	`font-latex-match-font-inside-braces'.  Generalize, so that it can
 	be used for any command and does not return a special, complex
 	match.
+	(font-latex-set-syntactic-keywords): Try to
+	minimize false fontifications of macros which may look like
+	\foo{bar} and \foo{bar{.
 
 2004-10-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
