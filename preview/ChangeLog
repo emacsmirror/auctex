@@ -1,3 +1,27 @@
+2004-08-09  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (showlabels): work around ntheorem/amsmath
+	bug.
+
+	* preview.el (preview-gs-image-type-alist): Add fallback for
+	'postscript image type (not yet used).
+	(preview-dvipng-command): Add documentation about
+	`preview-dvipng-image-type'.  Change options to `-picky
+	-noghostscript' to work with dvipng 1.2.
+	(preview-dvipng-image-type): New variable.
+	(preview-gs-open): Don't barf until we know what device will
+	actually be used.
+	(preview-gs-dvips-process-setup): Complain about unavailable
+	devices here.
+	(preview-dvipng-process-setup): And here.
+	(preview-dvipng-process-setup, preview-dvipng-place-all): Use
+	`preview-dvipng-image-type'.
+	(preview-TeX-inline-sentinel): Change "abnormally with code 1" and
+	"finished" exit status message.
+	(preview-dump-replacements, preview-undump-replacements): Don't
+	match command name as specifically.
+	(preview-report-bug): Report more variables.
+
 2004-08-07  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/macros.texi: New @ConTeXt{} macro, change appearance of

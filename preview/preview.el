@@ -22,9 +22,9 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.215 2004-08-03 17:14:17 dakas Exp $
+;; $Id: preview.el,v 1.216 2004-08-09 01:22:42 dakas Exp $
 ;;
-;; This style is for the "seamless" embedding of generated EPS images
+;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
 ;; for further instruction.
 ;;
@@ -134,10 +134,12 @@ function args" :inline t sexp))
     (dvipng png "-sDEVICE=png16m")
     (jpeg jpeg "-sDEVICE=jpeg")
     (pnm pbm "-sDEVICE=pnmraw")
-    (tiff tiff "-sDEVICE=tiff12nc"))
+    (tiff tiff "-sDEVICE=tiff12nc")
+    (postscript png "-sDEVICE=png16m"))
   "*Alist of image types and corresponding GhostScript options.
-The `dvipng' entry really specifies the fallback device when
-images can't be processed by dvipng."
+The `dvipng' and `postscript' (don't use) entries really specify
+a fallback device when images can't be processed by the requested
+method, like when PDFTeX was used."
   :group 'preview-gs
   :type '(repeat (list :tag nil (symbol :tag "preview image-type")
 		       (symbol :tag "Emacs image-type")
@@ -407,10 +409,24 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng -no-image-on-warn -noghostscript %d -o %m/prev%03d.png"
-  "*Command used for converting to separate PNG images."
+  "dvipng -no-image-on-warn -noghostscript %d -o \"%m/prev%%03d.png\""
+  "*Command used for converting to separate PNG images.
+
+You might specify options for converting to other image types,
+but then you'll need to adapt `preview-dvipng-image-type'."
   :group 'preview-latex
   :type 'string)
+
+(defcustom preview-dvipng-image-type
+  'png
+  "*Image type that dvipng produces.
+
+You'll need to change `preview-dvipng-command' too,
+if you customize this."
+  :group 'preview-latex
+  :type '(choice (const png)
+		 (const gif)
+		 (symbol :tag "Other" :value png)))
 
 (defcustom preview-dvips-command
   "dvips -Pwww -i -E %d -o %m/preview.000"
@@ -571,8 +587,6 @@ Gets the usual PROCESS and STRING parameters, see
 SETUP may contain a parser setup function."
   (let ((image-info (assq preview-image-type preview-gs-image-type-alist)))
     (setq preview-gs-image-type (nth 1 image-info))
-    (unless (preview-supports-image-type preview-gs-image-type)
-      (error "This Emacs lacks '%s image support" preview-gs-image-type))
     (setq preview-gs-command-line (append
 				   preview-gs-options
 				   (nthcdr 2 image-info))
@@ -649,6 +663,8 @@ Pure borderless black-on-white will return an empty string."
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
+  (unless (preview-supports-image-type preview-gs-image-type)
+    (error "This Emacs lacks '%s image support" preview-gs-image-type))
   (setq preview-gs-command-line (append
 				 preview-gs-command-line
 				 (list (preview-gs-resolution
@@ -671,13 +687,16 @@ Pure borderless black-on-white will return an empty string."
 					(car preview-resolution)
 					(cdr preview-resolution)))))
   (if preview-parsed-pdfoutput
-      (preview-pdf2dsc-process-setup)
-    (unless (preview-supports-image-type 'png)
-      (error "This Emacs lacks 'png image support"))
+      (if (preview-supports-image-type preview-gs-image-type)
+	  (preview-pdf2dsc-process-setup)
+	(error "This Emacs lacks '%s image support" preview-gs-image-type))
+    (unless (preview-supports-image-type preview-dvipng-image-type)
+      (error "This Emacs lacks '%s image support"
+	     preview-dvipng-image-type))
     (let ((process (preview-start-dvipng)))
       (setq TeX-sentinel-function #'preview-dvipng-sentinel)
       (list process (current-buffer) TeX-active-tempdir t
-	  'png))))
+	  preview-dvipng-image-type))))
 
 
 (defun preview-pdf2dsc-process-setup ()
@@ -1731,7 +1750,7 @@ Deletes the dvi file when finished."
 	    (progn
 	      (overlay-put ov 'preview-image
 			   (preview-create-icon (car filename)
-						'png
+						preview-dvipng-image-type
 						(preview-ascent-from-bb
 						 (aref queued 0))))
 	      (overlay-put ov 'queued nil)
@@ -2776,10 +2795,17 @@ for definition of PROCESS and NAME."
     (if (memq status '(signal exit))
 	(delete-process process))
     (when (eq status 'exit)
-	(condition-case err
-	    (preview-call-hook 'open)
-	  (error (preview-log-error err "LaTeX" process)))
-	(preview-reraise-error process))))
+      (save-excursion
+	(goto-char (point-max))
+	(forward-line -1)
+	(if (search-forward "abnormally with code 1" nil t)
+	    (replace-match "as expected with code 1" t t)
+	  (if (search-forward "finished" nil t)
+	      (insert " with nothing to show"))))
+      (condition-case err
+	  (preview-call-hook 'open)
+	(error (preview-log-error err "LaTeX" process)))
+      (preview-reraise-error process))))
 
 (defcustom preview-format-extensions '(".fmt" ".efmt")
   "Possible extensions for format files.
@@ -2850,9 +2876,9 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
-    ("\\`\\(e?\\(pdf\\)?e?\\(la\\)?tex\\)\
+    ("\\`\\([^ ]+\\)\
 \\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\1 -ini \"&\\1\" " preview-format-name ".ini \\7")))
+     . ("\\1 -ini \"&\\1\" " preview-format-name ".ini \\5")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -2860,10 +2886,10 @@ This is passed through `preview-do-replacements'."
 		  (cons string (repeat (choice symbol string))))))
 
 (defcustom preview-undump-replacements
-  '(("\\`\\(e?\\(pdf\\)?e?\\(la\\)?tex\\)\
+  '(("\\`\\([^ ]+\\)\
 \\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
 \\input{\\([^}]*\\)}.*\\'"
-     . ("\\1 \"&" preview-format-name "\" \\7")))
+     . ("\\1 \"&" preview-format-name "\" \\5")))
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -3034,7 +3060,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.215 $"))
+	(rev "$Revision: 1.216 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3045,7 +3071,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 17:14:17 $"))
+    (let ((date "$Date: 2004-08-09 01:22:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3066,8 +3092,12 @@ In the form of yyyy.mmdd")
        image-types
        preview-image-type
        preview-image-creators
+       preview-dvipng-image-type
+       preview-dvipng-command
+       preview-pdf2dsc-command
        preview-gs-command
        preview-gs-options
+       preview-gs-image-type-alist
        preview-fast-conversion
        preview-prefer-TeX-bb
        preview-dvips-command
