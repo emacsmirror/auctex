@@ -1158,7 +1158,7 @@ There might be text before point."
 
 ;; meta-structure project structure menu entries
 
-(defvar ConTeXt-project-structure-menu-name "Project structure")
+(defvar ConTeXt-project-structure-menu-name "Project Structure")
 
 (defun ConTeXt-project-structure-menu (project-structure)
   "Insert project structure from menu."
@@ -1173,7 +1173,7 @@ There might be text before point."
 
 ;; meta-structure section blocks menu entries
 
-(defvar ConTeXt-section-block-menu-name "Section block")
+(defvar ConTeXt-section-block-menu-name "Section Block")
 
 (defun ConTeXt-section-block-menu (section-block)
   "Insert section block from menu."
@@ -1241,13 +1241,13 @@ There might be text before point."
      (,ConTeXt-project-structure-menu-name)
      (,ConTeXt-section-block-menu-name)
      (,ConTeXt-section-menu-name)
-     ["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
+     ["Add Table of Contents to Emacs Menu" (imenu-add-to-menubar "TOC") t]
      "-"
-     ["Macro..." TeX-insert-macro
+     ["Macro ..." TeX-insert-macro
       :help "Insert a macro and possibly arguments"]
      ["Complete" TeX-complete-symbol
       :help "Complete the current macro or environment name"]
-     ["Show ConTeXt macro definition" ConTeXt-etexshow]
+     ["Show ConTeXt Macro Definition" ConTeXt-etexshow]
      "-"
      (,ConTeXt-environment-menu-name)
      (,ConTeXt-environment-modify-menu-name)
@@ -1321,17 +1321,17 @@ There might be text before point."
        :keys "\\[universal-argument] \\[TeX-normal-mode]"
        :help "Reset buffer and reload AUCTeX style files"])
      ("Customize"
-      ["Browse options"
+      ["Browse Options"
        (customize-group 'AUCTeX)
        :help "Open the customization buffer for AUCTeX"]
-      ["Extend this menu"
+      ["Extend this Menu"
        (easy-menu-add-item
 	nil '("ConTeXt")
 	(customize-menu-create 'AUCTeX))
        :help "Make this menu a full-blown customization menu"])
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
-     ["Report AUCTeX bug" TeX-submit-bug-report
+     ["Report AUCTeX Bug" TeX-submit-bug-report
       :help "Create a problem report for mailing"])))
 
 (defun ConTeXt-menu-update (&optional menu)
