@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.153 2004-05-13 08:36:49 salve Exp $
+@c $Id: auc-tex.texi,v 1.154 2004-05-14 19:00:28 salve Exp $
 
 @finalout
 @titlepage
@@ -847,7 +847,7 @@ in the current region.  Uncommenting works only if the region encloses
 solely commented lines.  If AUC@TeX{} should not try to guess if the
 region should be commented or uncommented the commands
 @code{TeX-comment-region} and @code{TeX-uncomment-region} can be used
-to explicitely comment or uncomment the region in concern.
+to explicitly comment or uncomment the region in concern.
 @end deffn
 
 @deffn Command TeX-comment-or-uncomment-paragraph
@@ -1733,16 +1733,16 @@ Runs style hook @code{TeX-language-de-hook}.
 Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
 @samp{"}.
 
+@item italian
+Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
+insert @samp{«} or @samp{»} depending on context.
+
 @item plfonts
 @itemx plhb
 Runs style hook @code{TeX-language-pl-hook}.
 Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
 @samp{"}.  Pressing @key{"} twice will insert @samp{"<} or @samp{">}
 depending on context.
-
-@item italian
-Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
-insert @samp{«} or @samp{»} depending on context.
 @end table
 
 @node Japanese,  , European, I18n
@@ -1763,7 +1763,7 @@ insert @samp{«} or @samp{»} depending on context.
 To write Japanese text with AUC@TeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
 variants of @TeX{} for Japanese text (j@TeX{} and p@TeX{}), and
-AUC@TeX{} can be used with MULE supported Emacsens.
+AUC@TeX{} can be used with MULE supported Emacsen.
 
 To install Japanese support for AUC@TeX{}, copy @file{tex-jp.el} to
 AUC@TeX{} installed directory.  Next two commands will automatically
