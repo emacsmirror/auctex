@@ -5,6 +5,7 @@ dnl <yamaoka@jpl.org>
 
 AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
+  dnl $2 here is only for correcting old (CVS) mistakes
   tmpprefix="${prefix}"
   AC_FULL_EXPAND(tmpprefix)
   EMACS_LISP(packagedir,
@@ -14,11 +15,11 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
            (and putative-existing-lisp-dir\
 	        (setq putative-existing-lisp-dir\
 		      (file-name-directory putative-existing-lisp-dir))\
-                (string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($1[\\\\/]\\\\)?\$\"\
-                               putative-existing-lisp-dir)\
-                (replace-match \"\" t t putative-existing-lisp-dir))))\
+		(string-match \"[[\\\\/]]lisp[[\\\\/]]\\\\($2[[\\\\/]]\\\\)?\$\"\
+			       putative-existing-lisp-dir)\
+		(replace-match \"\" t t putative-existing-lisp-dir))))\
       (if (and (boundp (quote early-packages))\
-               (not package-dir))\
+	       (not package-dir))\
 	  (let ((dirs (append (if early-package-load-path early-packages)\
 			      (if late-package-load-path late-packages)\
 			      (if last-package-load-path last-packages))))\
@@ -28,7 +29,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 		  (setq	dirs (cdr dirs))))))\
       (if package-dir\
 	  (progn\
-	    (if (string-match \"[\\\\/]\$\" package-dir)\
+	    (if (string-match \"[[\\\\/]]\$\" package-dir)\
 		(setq package-dir (substring package-dir 0\
 					     (match-beginning 0))))\
 	    (if (and prefix\
@@ -36,28 +37,28 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 		       (setq prefix (file-name-as-directory prefix))\
 		       (eq 0 (string-match (regexp-quote prefix)\
 					   package-dir))))\
-		(replace-match (file-name-as-directory \"\$(prefix)\") t t package-dir)\
+		(replace-match (file-name-as-directory \"\${prefix}\") t t package-dir)\
 	      package-dir))\
 	\"NONE\"))],
     [noecho],,[prefix],["${tmpprefix}"])])
 
 AC_DEFUN(EMACS_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
+  dnl $2 here is only for correcting old (CVS) mistakes
   if test ${EMACS_FLAVOR} = xemacs; then
     AC_MSG_CHECKING([for XEmacs package directory])
     AC_ARG_WITH(packagedir,
       [  --with-packagedir=DIR   package DIR for XEmacs],
       [if test "${withval}" = yes -o -z "${withval}"; then
-	EMACS_EXAMINE_PACKAGEDIR($1)
+	EMACS_EXAMINE_PACKAGEDIR($1,$2)
       else
-	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
+	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
       fi],
-      [EMACS_EXAMINE_PACKAGEDIR($1)])
+      [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
     if test -z "${packagedir}"; then
-      AC_MSG_RESULT(not found)
-    else
-      AC_MSG_RESULT(${packagedir})
+      AC_MSG_ERROR([not found, exiting!])
     fi
+    AC_MSG_RESULT(${packagedir})
   else
     packagedir=
   fi
@@ -72,8 +73,8 @@ AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
    if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
    fi
-   previewtexmfdir='$(texmfdir)/tex/latex/preview'
-   previewdocdir='$(texmfdir)/doc/latex/styles'
+   previewtexmfdir='${texmfdir}/tex/latex/preview'
+   previewdocdir='${texmfdir}/doc/latex/styles'
    ])
 
 AC_ARG_WITH(tex-dir,
@@ -111,11 +112,11 @@ EOF
     previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
-	    previewtexmfdir='$(texmfdir)'
-	    previewdocdir='$(texmfdir)'
+	    previewtexmfdir='${texmfdir}'
+	    previewdocdir='${texmfdir}'
 	fi
     else
-	previewdocdir='$(texmfdir)/doc/latex/styles'
+	previewdocdir='${texmfdir}/doc/latex/styles'
     fi
 # Next 
 # kpsepath -n latex tex
@@ -136,8 +137,8 @@ do
   x="`echo $x | sed -e 's+//+/+g' -e 's+/\$++' `"
   if test -d "$x"  ; then
      texmfdir="`echo $x | sed -e 's+/tex/latex++'`"
-     previewdocdir='$(texmfdir)/doc/latex/styles'
-     previewtexmfdir='$(texmfdir)/tex/latex/preview'
+     previewdocdir='${texmfdir}/doc/latex/styles'
+     previewtexmfdir='${texmfdir}/tex/latex/preview'
      break
   fi
 done
@@ -151,8 +152,8 @@ for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir="$x"
-     previewtexmfdir='$(texmfdir)/preview'
-     previewdocdir='$(texmfdir)/preview'
+     previewtexmfdir='${texmfdir}/preview'
+     previewdocdir='${texmfdir}/preview'
      break
   fi
 done
@@ -166,7 +167,7 @@ for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir="$x"
-     previewdocdir='$(texmfdir)'
+     previewdocdir='${texmfdir}'
      break
   fi
 done
@@ -210,8 +211,8 @@ dnl assigned from the command line arguments from $6.
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo "${EMACS}" -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  "${EMACS}" -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}
@@ -237,7 +238,8 @@ AC_ARG_WITH(xemacs,
    else if test "${withval}" = "no"; then EMACS=emacs
    else EMACS="${withval}"; fi ; fi])
 
-AC_PATH_PROGS(EMACS, $EMACS emacs xemacs)
+# "${prefix}/bin" is for Windows users
+AC_PATH_PROGS(EMACS, $EMACS emacs xemacs, "", $PATH "${prefix}/bin" )
 if test -z "$EMACS"; then
   AC_MSG_ERROR([(X)Emacs not found!  Aborting!])
 fi
@@ -261,11 +263,11 @@ fi
 
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
-  for i in "\${packagedir}/lisp" \
-           "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
-           "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
-           "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
-           "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp"; do
+  for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
+	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
+	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
+	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
+	   "\${prefix}/site-lisp" ; do
     lispdir="$i"
     AC_FULL_EXPAND(i)
     EMACS_LISPDIR=""
@@ -289,36 +291,51 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      Where to install lisp files], 
-    [lispdir="${withval}"],
+    [  --with-lispdir=DIR      Where to install lisp files],
+    [lispdir="${withval}"
+     # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
+     lispdir_expanded="`echo $lispdir | sed 's/[[\/\\]]$//'`"
+     AC_FULL_EXPAND(lispdir_expanded)
+    ],
     [
      # Save prefix
      oldprefix=${prefix}
+     oldexec_prefix=${exec_prefix}
      if test "${prefix}" = "NONE"; then
        # Set prefix temporarily
        prefix="${ac_default_prefix}"
      fi
-     # Test paths relative to prefixes
-     EMACS_TEST_LISPDIR
-     if test "$lispdir" = "NONE"; then
-       # No? Test paths relative to binary
-       EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+     if test "${exec_prefix}" = "NONE"; then
+       # Set exec_prefix temporarily
+	exec_prefix="${prefix}"
+     fi
+     if test "${EMACS_FLAVOR}" = 'emacs' -o "${packagedir}" = 'no'; then
+       # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
-       AC_FULL_EXPAND(lispdir)
+       if test "$lispdir" = "NONE"; then
+	 # No? Test paths relative to binary
+	 EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+	 exec_prefix=${prefix}
+	 EMACS_TEST_LISPDIR
+	 AC_FULL_EXPAND(lispdir)
+       fi
+       if test "$lispdir" = "NONE"; then
+	 # No? notify user.
+	 AC_MSG_ERROR([Cannot locate lisp directory,
+use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
+       fi
+     else
+       # XEmacs
+       lispdir='${packagedir}/lisp'
      fi
-     if test "$lispdir" = "NONE"; then
-       # No? notify user.
-       AC_MSG_ERROR([Cannot locate lisp directory,
-use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
---libdir (xemacs), or possibly --prefix to rectify this])
-     fi
-     if test -n "$1"; then 
-       lispdir="$lispdir/$1"
-     fi
+     # Store expanded path, may be added to (X)Emacs load-path
+     lispdir_expanded="$lispdir"
+     AC_FULL_EXPAND(lispdir_expanded)
      # Restore prefix
      prefix=${oldprefix}
+     exec_prefix=${oldexec_prefix}
     ])
-  AC_MSG_RESULT($lispdir)
+  AC_MSG_RESULT([${lispdir}, expanded to ${lispdir_expanded}])
   AC_SUBST(lispdir)
 ])
 
@@ -417,11 +434,11 @@ if test -z "$auctexdir" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
   EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
-    EMACS_LISP(EMACS_cv_ACCEPTABLE_AUCTEX, 
-	[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
-           (if (string-match \"[\\\\/]\$\" aucdir)\
-               (replace-match \"\" t t aucdir)\
-  	       aucdir))], "noecho")
+    EMACS_LISP(EMACS_cv_ACCEPTABLE_AUCTEX,
+	[[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
+	   (if (string-match \"[\\\\/]\$\" aucdir)\
+	       (replace-match \"\" t t aucdir)\
+	       aucdir))]], "noecho")
   else
 	AC_MSG_ERROR([Can't find AUCTeX!  Please install it!  
 Check the PROBLEMS file for details.])
@@ -434,7 +451,24 @@ AC_SUBST(auctexdir)
 ])
 
 dnl
-dnl MAKEINFO_CHECK_MACRO( MACRO, [ACTION-IF-FOUND 
+dnl Check (X)Emacs supports Mule.
+dnl
+AC_DEFUN(EMACS_CHECK_MULE, [
+AC_MSG_CHECKING(for mule support)
+EMACS_CHECK_REQUIRE(mule,silent)
+if test "${HAVE_mule}" = "yes"; then
+  COMPILE_MULE="tex-jp.el"
+  CONTRIB_MULEELC="tex-jp.elc"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+AC_SUBST(COMPILE_MULE)
+AC_SUBST(CONTRIB_MULEELC)
+])
+
+dnl
+dnl MAKEINFO_CHECK_MACRO( MACRO, [ACTION-IF-FOUND
 dnl					[, ACTION-IF-NOT-FOUND]])
 dnl
 AC_DEFUN(MAKEINFO_CHECK_MACRO,
@@ -471,3 +505,123 @@ AC_DEFUN(AC_SHELL_QUOTIFY,
 [$]$1
 EOF
 `"])
+
+dnl
+dnl Check if build directory is valid.
+dnl The directory should not be part of `load-path'
+dnl
+AC_DEFUN(VALID_BUILD_DIR, [
+  AC_MSG_CHECKING([if build directory is valid])
+  EMACS_LISP(valid_build_dir,
+    [[(if (or (member (directory-file-name default-directory) load-path)\
+	      (member (file-name-as-directory default-directory) load-path))\
+	 \"no\" \"yes\")]])
+  if test "$valid_build_dir" = "no"; then
+    AC_MSG_ERROR([Build directory inside load-path!  Aborting!])
+  else
+    AC_MSG_RESULT([yes])
+  fi
+])
+
+dnl
+dnl Determine directories which hold TeX input files.
+dnl
+AC_DEFUN(TEX_INPUT_DIRS,
+ [
+AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
+			  semicolon-separated DIRS for TeX file searches],
+ [ texinputdirs="${withval}" ;
+   AC_FULL_EXPAND(withval)
+   texinputdirsout=""
+   for x in `echo ${texinputdirs} | sed -e 's/\;/\\n/g'` ; do
+     if test ! -d "$x" ; then
+       AC_MSG_ERROR([--with-tex-input-dirs="$x": Directory does not exist])
+     fi
+     if test "${texinputdirsout}" != "" ; then
+       texinputdirsout="${texinputdirsout} "
+     fi
+     texinputdirsout="${texinputdirsout}\"$x\""
+   done
+   texinputdirs="${texinputdirsout}"
+   ])
+
+if test -z "$texinputdirs" ; then
+  AC_MSG_CHECKING([for directories holding TeX input files])
+  texinputdirs=""
+  temp=`kpsewhich --progname latex --expand-braces \\$SYSTEXMF 2> /dev/null`
+  if test $? -ne 0 ; then
+    temp=""
+    temp1=`kpsewhich --progname latex --expand-braces \\$TEXMFLOCAL 2> /dev/null`
+    if test $? -ne 0 ; then
+      temp1=`kpsewhich --progname latex --expand-path \\$TEXMFLOCAL`
+    fi
+    temp2=`kpsewhich --progname latex --expand-braces \\$TEXMFMAIN 2> /dev/null`
+    if test $? -ne 0 ; then
+      temp2=`kpsewhich --progname latex --expand-path \\$TEXMFMAIN`
+    fi
+    temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST 2> /dev/null`
+    if test $? -ne 0 ; then
+      temp3=""
+    fi
+    for i in $temp1 $temp2 $temp3 ; do
+      if ! echo $i | grep -e '^[[A-Za-z]]:' > /dev/null && \
+	 ! echo $i | grep ';' > /dev/null ; then
+	i=`echo $i | tr ':' ';'`
+      fi
+      if ! test -z "$i" ; then
+	if ! test -z "$temp" ; then
+	  temp=$temp";"
+	fi
+	temp="$temp""$i"
+      fi
+    done
+  else
+    if ! echo $temp | grep -e '^[[A-Za-z]]:' > /dev/null && \
+       ! echo $temp | grep ';' > /dev/null ; then
+      temp=`echo $temp | tr ':' ';'`
+    fi
+  fi
+  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//'` ; do
+    # We assume that we are dealing with a TDS-compliant TeX system.
+    for y in "/tex/" "/bibtex/bst/" ; do
+      tempy="$x""$y"
+      if test -e "$tempy" ; then
+	if test "${texinputdirs}" != "" ; then
+	  texinputdirs="${texinputdirs} "
+	fi
+	texinputdirs="${texinputdirs}\"${tempy}\""
+      fi
+    done
+  done
+  if test -z "$texinputdirs" ; then
+    texinputdirs="\"/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/\""
+  fi
+  AC_MSG_RESULT((${texinputdirs}))
+fi
+AC_SUBST(texinputdirs)
+])
+
+# AUCTEX_AUTO_DIR
+# ---------------
+# Set the directory containing AUCTeX automatically generated global style
+# hooks.
+AC_DEFUN(AUCTEX_AUTO_DIR,
+[AC_MSG_CHECKING([where automatically generated global style hooks go])
+ AC_ARG_WITH(auto-dir,
+	     [  --with-auto-dir=DIR     directory containing AUCTeX automatically generated
+			  global style hooks],
+	     [autodir="${withval}"
+	      autodir_expanded="${autodir}"
+	      AC_FULL_EXPAND(autodir_expanded)],
+	     [autodir='${localstatedir}/auctex'
+	      oldprefix="${prefix}" # save prefix
+	      if test "${prefix}" = "NONE"
+		then prefix="${ac_default_prefix}" # temporarily set it
+	      fi
+	      autodir_expanded="${autodir}"
+	      AC_FULL_EXPAND(autodir_expanded)
+	      prefix="${oldprefix}" # restore prefix])
+ AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
+ AC_SUBST(autodir)
+ AC_SUBST(autodir_expanded)
+])
