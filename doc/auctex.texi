@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.188 2004-11-04 14:13:18 angeli Exp $
+@c $Id: auctex.texi,v 1.189 2004-11-20 11:05:42 angeli Exp $
 
 @finalout
 @titlepage
@@ -609,11 +609,11 @@ After choosing either `figure' or `table' in the environment list
 described above, you will be prompted for a number of additional things.
 
 @table @var
-@item float-to
-This field is the option of float environments that controls how they are
-placed in the final document.  In @LaTeX{} this is a sequence of the
-letters @samp{htbp} as described in the @LaTeX{} manual.  The value will
-default to the value of @code{LaTeX-float}.
+@item float position
+This is the optional argument of float environments that controls how
+they are placed in the final document.  In @LaTeX{} this is a sequence
+of the letters @samp{htbp} as described in the @LaTeX{} manual.  The
+value will default to the value of @code{LaTeX-float}.
 @vindex LaTeX-float
 
 @item caption
@@ -630,8 +630,10 @@ controlled by the variables @code{LaTeX-figure-label} and
 @cindex Labels
 @end table
 
-Moreover, in the case of a `figure' environment, you will be asked if
-you want to insert a `center' environment inside the figure.
+Moreover, you will be asked if you want the contents of the float
+environment to be horizontally centered.  Upon a positive answer a
+@samp{\centering} macro will be inserted at the beginning of the float
+environment.
 
 @defopt LaTeX-float
 Default placement for floats.
