@@ -23,8 +23,10 @@ up.
 @item
 Insertion of nodes in Texinfo mode now supports completion of existing
 node names.
-@end itemize
 
+@item
+Bug fixes in the build process.
+@end itemize
 
 @heading News in 11.53
 
