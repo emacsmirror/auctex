@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.478 $"))
+	    (rev "$Revision: 5.479 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-19 09:03:10 $"))
+    (let ((date "$Date: 2005-01-26 07:22:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3107,7 +3107,7 @@ Used for specifying extra syntax for a macro."
   (modify-syntax-entry ?&  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?_  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?@  "_"  TeX-mode-syntax-table)
-  (modify-syntax-entry ?~  " "  TeX-mode-syntax-table)
+  (modify-syntax-entry ?~  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
   (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
