@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.372 $"))
+	(rev "$Revision: 5.373 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-26 13:20:32 $"))
+    (let ((date "$Date: 2004-05-26 15:01:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1343,6 +1343,11 @@ Or alternatively:
   "Insert TeX macro SYMBOL with completion.
 
 AUCTeX knows of some macros, and may query for extra arguments."
+  ;; When called with a prefix (C-u), only ask for mandantory arguments,
+  ;; i.e. all optional arguments are skipped.  See `TeX-parse-arguments' for
+  ;; details.  Note that this behavior may be changed in favor of a more
+  ;; flexible solution in the future, therefore we don't document it at the
+  ;; moment.
   (interactive (list (completing-read (concat "Macro (default "
 					      TeX-default-macro
 					      "): "
@@ -1453,6 +1458,11 @@ INITIAL-INPUT is a string to insert before reading input."
 
 See `TeX-parse-macro' for details."
   (let ((last-optional-rejected nil))
+    ;; Get rid of all optional arguments when called with prefix (C-u).  See
+    ;; `TeX-insert-macro' for more comments.
+    (when (equal current-prefix-arg '(4))
+      (while (vectorp (car args))
+	(setq args (cdr args))))
     (while args
       (if (vectorp (car args))
 	  (if last-optional-rejected
@@ -2337,8 +2347,7 @@ EXTENSIONS defaults to `TeX-file-extensions'."
 
 (defcustom TeX-kpathsea-path-delimiter t
   "Path delimiter for kpathsea output.
-T means autodetect,
-NIL means kpathsea is disabled."
+t means autodetect, nil means kpathsea is disabled."
   :group 'TeX-file
   :type '(choice (const ":")
 		 (const ";")

@@ -4480,7 +4480,8 @@ runs the hooks in `doctex-mode-hook'."
    '("hspace" "Length")
    '("mbox" t)
    '("newsavebox" TeX-arg-define-savebox)
-   '("parbox" [ TeX-arg-tb ] "Width" t)
+   '("parbox" [ TeX-arg-tb ] [ "Height" ] [ TeX-arg-tb "Inner position" ]
+     "Width" t)
    '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
    '("rule" [ "Raise" ] "Width" "Thickness")
    '("sbox" TeX-arg-define-savebox t)
