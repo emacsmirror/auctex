@@ -1,5 +1,8 @@
 2004-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fptex.el (TeX-command-list): Use correct expander for
+	"View PDF".
+
 	* latex.el (LaTeX-fill-region-as-para-do): Fix removal of trailing
 	whitespace.
 	(LaTeX-fill-move-to-break-point): Prevent infinite loop in
