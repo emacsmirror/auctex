@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.101 2002-04-09 15:13:45 dakas Exp $
+;; $Id: preview.el,v 1.102 2002-04-10 15:27:45 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1264,7 +1264,7 @@ and the corresponding topdir."
       (error (goto-char oldpos)))))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
-					 "graphics" "sections")
+					 "graphics" "textmath" "sections")
   "*Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
@@ -1788,7 +1788,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.101 $"))
+	(rev "$Revision: 1.102 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
