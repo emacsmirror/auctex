@@ -9,12 +9,29 @@
 
 @itemize @bullet
 @item
+Keywords for syntax highlighting of @LaTeX{} constructs to be typeset in
+bold, italic or typewriter fonts may now be customized.  The
+customization options can be found in the customization group of
+@samp{font-latex}.
+
+@item
+Verbatim content is now displayed with a Courier font. (GNU Emacs only)
+
+@item
+Syntax highlighting should not spill out of verbatim content
+anymore. (GNU Emacs only)
+
+@item
+Verbatim commands like @samp{\verb|...|} will not be broken anymore
+during filling.
+
+@item
 You can customize the completion for graphic files with 
 @code{LaTeX-includegraphics-read-file}.
 
 @item
-@file{url.sty} and @file{listings.sty} is now (basically) supported with
-command completion and fontification.
+@file{url.sty} and @file{listings.sty} are now (basically) supported with
+command completion and syntax highlighting.
 
 @item
 Performance of fontification and filling was improved.
