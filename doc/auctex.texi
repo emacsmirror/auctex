@@ -2658,7 +2658,7 @@ insert @samp{''}.
 
 To write Japanese text with @AUCTeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
-variants of @TeX{} for Japanese text (j@TeX{} and p@TeX{}), and
+variants of @TeX{} for Japanese text (NTT j@TeX{} and ASCII p@TeX{}).
 @AUCTeX{} can be used with MULE supported Emacsen.
 
 To install Japanese support for @AUCTeX{}, copy @file{tex-jp.el} to
@@ -2670,12 +2670,10 @@ make contrib
 make install-contrib
 @end example
 
-See @file{INSTALL} and @file{Makefile} for more information.
-
-To use the Japanese @TeX{} variants, simply enter @code{japanese-tex-mode},
-@code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
-everything should work.  If not, send mail to Shinji Kobayashi
-@samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
+To use the Japanese @TeX{} variants, simply enter
+@code{japanese-plain-tex-mode} or @code{japanese-latex-mode} and
+everything should work.  If not, send mail to Masayuki Ataka
+@samp{<ataka@@milk.freemail.ne.jp>}, who kindly donated the code for
 supporting Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
 maintainers understand Japanese, so they can not help you.
 
@@ -2695,19 +2693,19 @@ To use Japanese @TeX{} always, set japanese command for example:
 @defopt japanese-TeX-command-default
 The default command for TeX-command in japanese @TeX{} mode.
 
-The default value is @samp{jTeX}.
+The default value is @samp{pTeX}.
 @end defopt
 
 @defopt japanese-LaTeX-command-default
 The default command for TeX-command in japanese @LaTeX{} mode.
 
-The default value is @samp{jLaTeX}.
+The default value is @samp{LaTeX}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
 The default style/class when creating new japanese @LaTeX{} document.
 
-The default value is @samp{j-article}.
+The default value is @samp{jarticle}.
 @end defopt
 
 See @file{tex-jp.el} for more information.
