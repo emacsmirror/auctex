@@ -1,4 +1,8 @@
-2001-12-03  Jan-Ake Larsson  <jalar@imf.au.dk>
+2001-12-04  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+
+	* doc/Makefile: Added index generation for DVI docs
+
+2001-12-03  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
 
 	* preview-latex.texi:
 	Keymap documentation and general text on emacs interface added
