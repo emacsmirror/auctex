@@ -5,32 +5,30 @@ dnl <yamaoka@jpl.org>
 
 AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
+  tmpprefix="${prefix}"
+  AC_FULL_EXPAND(tmpprefix)
   AC_EMACS_LISP(packagedir,
-    [(let* ((prefix \"${prefix}\")\
+    [(let* (\
            (putative-existing-lisp-dir (locate-library \"$1\"))\
-           (putative-existing-package-dir\
+           (package-dir\
            (and putative-existing-lisp-dir\
-                (string-match \"lisp/\\\\($1/\\\\)?$1\.elc?\$\"\
-                              putative-existing-lisp-dir)\
-                 (replace-in-string putative-existing-lisp-dir\
-                                    \"lisp/\\\\($1/\\\\)?$1\.elc?\$\" \"\")))\
-           package-dir)\
+	        (setq putative-existing-lisp-dir\
+		      (file-name-directory putative-existing-lisp-dir))\
+                (string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($1[\\\\/]\\\\)?\$\"\
+                               putative-existing-lisp-dir)\
+                (replace-match \"\" t t putative-existing-lisp-dir 0))))\
       (if (and (boundp (quote early-packages))\
-               (not putative-existing-package-dir))\
-	  (let ((dirs (append (if putative-existing-package-dir\
-                                  (list putative-existing-package-dir))\
-                              (if early-package-load-path early-packages)\
+               (not package-dir))\
+	  (let ((dirs (append (if early-package-load-path early-packages)\
 			      (if late-package-load-path late-packages)\
 			      (if last-package-load-path last-packages))))\
 	    (while (and dirs (not package-dir))\
 	      (if (file-directory-p (car dirs))\
-		  (setq package-dir (car dirs)\
-			dirs (cdr dirs))))))\
-      (if putative-existing-package-dir\
-          (setq package-dir putative-existing-package-dir))\
+		  (setq package-dir (car dirs))\
+		  (setq	dirs (cdr dirs))))))\
       (if package-dir\
 	  (progn\
-	    (if (string-match \"/\$\" package-dir)\
+	    (if (string-match \"[\\\\/]\$\" package-dir)\
 		(setq package-dir (substring package-dir 0\
 					     (match-beginning 0))))\
 	    (if (and prefix\
@@ -38,10 +36,10 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
 		       (setq prefix (file-name-as-directory prefix))\
 		       (eq 0 (string-match (regexp-quote prefix)\
 					   package-dir))))\
-		(replace-match \"\$(prefix)/\" nil nil package-dir)\
+		(replace-match (file-name-as-directory \"\$(prefix)\") t t package-dir)\
 	      package-dir))\
 	\"NONE\"))],
-    [noecho])])
+    [noecho],,[prefix],["${tmpprefix}"])])
 
 AC_DEFUN(AC_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
@@ -395,7 +393,11 @@ if test -z "$auctexdir" ; then
 
   if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
 	AC_EMACS_LISP(auctex_dir, 
-		[(file-name-directory (locate-library \"tex-site\"))], 
+		[(let ((aucdir (file-name-directory\
+                         (locate-library \"tex-site\"))))\
+                         (if (string-match \"[\\\\/]\$\" aucdir)\
+                             (replace-match \"\" t t aucdir 0)\
+			   aucdir))], 
 		"noecho")
 	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
   else
