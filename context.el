@@ -689,7 +689,7 @@ An entry looks like: (\"environment\" . function)")
   (let ((beg))
     (save-excursion
       (ConTeXt-last-unended-start)
-      (setq beg (+ (point) (length (ConTeXt-environment-start-name))))
+      (setq beg (+ (point) (length (ConTeXt-environment-start-name)) 1))
       (goto-char (match-end 0))
       (skip-chars-forward "a-zA-Z")
       (buffer-substring beg (point)))))
