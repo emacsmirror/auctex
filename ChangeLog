@@ -1,3 +1,7 @@
+2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile (dist): Correct zip file name.
+
 2002-12-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* Makefile (MINMAPSRC): Remove auc-menu.el, maniac.el, and
