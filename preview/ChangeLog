@@ -2,6 +2,8 @@
 
 	* preview.el (require): Don't abort compilation if desktop or
 	reporter packages are not installed.
+	(preview-gs-broken-security): Removed:
+	(preview-gs-open): Workaround for braindead security.
 
 2002-11-04  David Kastrup  <David.Kastrup@t-online.de>
 
