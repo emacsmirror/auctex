@@ -1,6 +1,6 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.13
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
@@ -542,7 +542,7 @@ the name.  Special value t means use `TeX-default-extension'.
 If optional second argument NONDIRECTORY is non-nil, do not include
 the directory.
 
-Currently is will check for the presence of a ``Master:'' line in
+Currently it will check for the presence of a ``Master:'' line in
 the beginning of the file, but that feature will be phased out."
   (if (eq extension t)
       (setq extension TeX-default-extension))
