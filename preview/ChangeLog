@@ -1,5 +1,15 @@
 2004-05-05  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/fontmap.c: Use both kpse_fontmap_format and
+	_dvips_header_
+
+	* dvipng/enc.c: Use configure test 
+
+	* dvipng/configure.ac: Add test for kpse_enc_format, reorder gd
+	and png tests
+
+	* dvipng/aclocal.m4: Add test for kpse_enc_format
+
 	* dvipng/special.c: More informative warnings
 
 2004-05-04  Jan-Åke Larsson  <jalar@mai.liu.se>
