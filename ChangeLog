@@ -1,3 +1,11 @@
+2004-01-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-mode-menu): Removed menu filters in the submenus
+	for inserting and modifying environments which call
+	`LaTeX-menu-update'.
+	(LaTeX-common-initialization): Add `LaTeX-menu-update' to
+	`activate-menubar-hook' instead.
+
 2004-01-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-view-style, TeX-output-view-style): Use a regexp
