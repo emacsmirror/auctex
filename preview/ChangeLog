@@ -1,8 +1,16 @@
+2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-create-icon): I hate XEmacs.  I hate it.
+	I don't have to take this stupid image instantiator crap, do I?
+	That's what Nick was supposed to work out.  Make make-glyph not
+	run Amok when the current buffer is not selected.  I don't even
+	understand what this does.
+
 2002-04-14  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-mode-setup): Make the various hooks local.
-	(preview-move-point): Do not try to redisplay a detached extent (as happens
-	if a preview is killed while auto-revealed).
+	(preview-move-point): Do not try to redisplay a detached extent
+	(as happens if a preview is killed while auto-revealed).
 
 	* doc/readme.texi (Activation):
 	Mention that XEmacs installations normally don't need
