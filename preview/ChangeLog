@@ -1,3 +1,8 @@
+2004-07-16  David Kastrup  <dakas@users.sourceforge.net>
+
+	* Makefile.in (INSTALL_DATA): Use `$(null)' at end of variables at
+	end of lines instead of `#'
+
 2004-07-15  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-format-mml): Somewhat different code.
