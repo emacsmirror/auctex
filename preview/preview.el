@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.56 2002-02-07 12:54:54 dakas Exp $
+;; $Id: preview.el,v 1.57 2002-02-07 20:49:35 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -191,7 +191,7 @@ that is."
   :group 'preview-gs
   :type 'string)
 
-(defcustom preview-gs-options '("-q" "-dNOPAUSE"
+(defcustom preview-gs-options '("-q" "-dSAFER" "-dDELAYSAFER" "-dNOPAUSE"
 				"-DNOPLATFONTS" "-dTextAlphaBits=4"
 				"-dGraphicsAlphaBits=4")
   "*Options with which to call gs for conversion from EPS.
@@ -546,7 +546,9 @@ given as ANSWER."
 				 "clear \
 /preview-LaTeX-state save def << \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
->> setpagedevice %s (%s) run preview-LaTeX-state restore\n"
+>> setpagedevice %s (%s) \
+systemdict /.setsafe known { .setsafe } if \
+run preview-LaTeX-state restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
 				 (- (aref bbox 3) (aref bbox 1))
 				 (- (aref bbox 0)) (aref bbox 1)
@@ -1322,7 +1324,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.56 $"))
+	(rev "$Revision: 1.57 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
