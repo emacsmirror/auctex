@@ -1,3 +1,65 @@
+1998-06-10  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9c released.
+
+1998-06-10  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (texmathp): Added autoload.
+	(TeX-math-mode-p): Deleted.
+	(TeX-parse-macro): Use `texmathp' instead of `TeX-math-mode-p'.
+
+	* texmathp.el: New file by Carsten Dominik
+	<dominik@strw.LeidenUniv.nl>. 
+	* Makefile (AUCSRC): Added.
+	(AUCELC): Added.
+
+1998-06-05  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-expand-list): Add `%n' escape.
+	(TeX-current-line): New function.
+	Suggested by "Lee, Sang-Min" <smagus@acorn.snu.ac.kr>.
+
+	* doc/auc-tex.texi: Doc fixes by Gustavo Chaves
+	<gustavo@cpqd.com.br>. 
+	* doc/intro.texi: Ditto.
+	* doc/install.texi: Ditto.
+
+1998-05-16  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el: Checkdoc'ed.
+
+1998-04-29  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/README: Update iesd->sunsite in addresses.
+
+1998-04-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/Makefile (auc-tex.ps): Cut of the first two lines.
+
+1998-03-29  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
+
+       * latex.el (LaTeX-section-section): When RefTeX is available,
+       notify it about the new section.
+
+1998-03-04  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/math-ref.tex (section{Symbols}): Wrong keybindings.
+	Reported by "Ron Smith" <rsmith@eel.ufl.edu>.
+
+1998-02-27  Soren Dayton <csdayton@cs.uchicago.edu>
+
+	* tex.el (TeX-load-style): Also look in master directory.
+
+1998-02-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-insert-punctuation): Only expand abbrevs when abbrev
+	mode is on.  Suggested by Alastair Burt <alastair.burt@dfki.de>.
+	
+1998-02-25  SL Baur  <steve@altair.xemacs.org>
+
+	* doc/auc-tex.texi: Add direntry section for automatic
+	installation.
+
 1998-02-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9b released.

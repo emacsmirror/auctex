@@ -34,8 +34,9 @@ auc-tex.dvi: auc-tex.texi
 	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
+# dvips spews two error lines.  I don't know why.
 auc-tex.ps: auc-tex.dvi
-	dvips auc-tex.dvi > auc-tex.ps
+	dvips auc-tex.dvi | tail +3 > auc-tex.ps
 
 auctex: auc-tex.texi install.texi intro.texi changes.texi
 	-makeinfo auc-tex.texi

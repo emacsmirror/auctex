@@ -95,7 +95,7 @@ Directories containing the site's @TeX{} style files.
 @end defopt
 
 Normally, AUC @TeX{} will only allow you to complete a short list of
-build-in macros and environments and on the macros you define yourself.
+built-in macros and environments and on the macros you define yourself.
 If you issue the @kbd{M-x TeX-auto-generate-global} command after
 loading AUC @TeX{}, you will be able to complete on all macros available
 in the standard style files used by your document.  To do this, you must

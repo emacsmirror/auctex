@@ -31,9 +31,9 @@ write it --- you can also let it indent and format an entire document.
 It has a special outline feature, which can greatly help you `getting an
 overview' of a document.
 
-Apart from these special features, AUC @TeX{} provides an large range of
+Apart from these special features, AUC @TeX{} provides a large range of
 handy Emacs macros, which in several different ways can help you write
-your La@TeX{} documents fast and painless.
+your La@TeX{} documents fast and painlessly.
 
 All features of AUC @TeX{} are documented using the GNU Emacs online
 documentation system.  That is, documentation for any command is just
@@ -46,7 +46,7 @@ itself).  AUC @TeX{} is distributed under the `GNU Emacs General Public
 License' and may therefore almost freely be copied and redistributed.
 
 The next sections are a short introduction to some `actual' features.
-For further information, refer to the build-in online documentation of
+For further information, refer to the built-in online documentation of
 AUC @TeX{}.
 
 @section Indentation and formatting
@@ -64,10 +64,10 @@ to the La@TeX{} structure @t{:-)}.
 
 @section Completion
 
-By studying your @samp{\documentstyle} command (in the top of your
+By studying your @samp{\documentclass} command (in the top of your
 document), and consulting a precompiled list of (La)@TeX{} symbols from
 a large number of @TeX{} and La@TeX{} files, AUC @TeX{} is aware of the
-La@TeX{} commands you should able to use in this particular document.
+La@TeX{} commands you should be able to use in this particular document.
 This `knowledge' of AUC @TeX{} is used for two purposes.
 
 @enumerate
@@ -86,8 +86,7 @@ prompted for which `environment' to insert.
 @section Editing your document
 
 A number of more or less intelligent keyboard macros have been defined
-to aid you editing your document.  The most important are listed here
-below.
+to aid you editing your document.  The most important are listed below.
 
 @table @code
 @item LaTeX-environment
@@ -97,7 +96,7 @@ described above.
 (@kbd{C-c C-s}) Insert one of @samp{\chapter}, @samp{\section}, etc.
 @item TeX-font
 (@kbd{C-c C-f C-r}, @kbd{C-c C-f C-i}, @kbd{C-c C-f C-b}) Insert one of
-@samp{@{\textrm @}}), @samp{@{\textit \/@}} @samp{@{\textbf @}} etc.
+@samp{\textrm@{ @}}), @samp{\textit@{ \/@}} @samp{\textbf@{ @}} etc.
 @end table
 
 A number of additional functions are available.  But it would be far too
@@ -106,12 +105,12 @@ documentation for further information.
 
 @section Running La@TeX{}
 
-When invoking on of the commands @code{TeX-command-master} (@kbd{C-c
+When invoking one of the commands @code{TeX-command-master} (@kbd{C-c
 C-c}) or @code{TeX-command-region} (@kbd{C-c C-r}) La@TeX{} is run on
 either the entire current document or a given region of it.  The Emacs
 view is split in two, and the output of @TeX{} is printed in the second
 half of the screen, as you may simultaneously continue editing your
-document.  In case @TeX{} found any errors when processing your input
+document.  In case @TeX{} find any errors when processing your input
 you can call the function @code{TeX-next-error} (@kbd{C-c `}) which will
 move the cursor to the first given error, and display a short
 explanatory text along with the message @TeX{} gave.  This procedure may
@@ -156,9 +155,9 @@ the newsgroups @samp{comp.text.tex} and @samp{gnu.emacs.sources}.
 
 If you want to contact the AUC @TeX{} mailing list, send mail to
 @samp{<auc-tex-request@@iesd.auc.dk>} in order to join.  Articles should
-be send to @samp{<auc-tex@@iesd.auc.dk>}.
+be sent to @samp{<auc-tex@@iesd.auc.dk>}.
 
-To contact the current maintainers of auc-@TeX{} directly, email
+To contact the current maintainers of AUC @TeX{} directly, email
 @samp{<auc-tex_mgr@@iesd.auc.dk>}.
 
 @example

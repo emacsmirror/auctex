@@ -1,6 +1,9 @@
 \input texinfo
 @setfilename auctex
 @settitle AUC TeX
+@direntry
+* AUCTeX::      A much enhanced LaTeX mode for GNU Emacs.
+@end direntry
 @c footnotestyle separate
 @c paragraphindent 2
 @comment %**end of header 
@@ -8,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.120 1998-02-25 09:34:56 abraham Exp $
+@c $Id: auc-tex.texi,v 1.121 1998-06-10 09:25:42 abraham Exp $
 
 @finalout
 @titlepage
@@ -171,7 +174,7 @@ The most commonly used commands/macros of AUC @TeX{} are those which
 simply insert templates for often used @TeX{} and/or La@TeX{}
 constructs, like font changes, handling of environments, etc.
 These features are very simple, and easy to learn, and help you
-avoiding stupid mistakes like mismatched braces, or
+avoid stupid mistakes like mismatched braces, or
 @samp{\begin@{@}}-@samp{\end@{@}} pairs.@refill
 
 @menu
@@ -193,7 +196,7 @@ avoiding stupid mistakes like mismatched braces, or
 @cindex Matching dollar signs
 @cindex Display math mode
 
-In @TeX{} literal double quotes @samp{"like this"} are seldom used,
+In @TeX{}, literal double quotes @samp{"like this"} are seldom used,
 instead two single quotes are used @samp{``like this''}.  To help you
 insert these efficiently, AUC @TeX{} allows you to continue to press
 @kbd{"} to insert two single quotes.  To get a literal double quote,
@@ -213,7 +216,7 @@ String inserted by typing @kbd{"} to open a quotation.
 @end defopt
 
 @defopt TeX-close-quote
-String inserted by typing @kbd{"} to open a quotation.
+String inserted by typing @kbd{"} to close a quotation.
 @end defopt
 
 If you include the style file @file{german} @code{TeX-open-quote} and
@@ -274,37 +277,37 @@ will be inserted.@refill
 @item C-c C-f C-r 
 @kindex C-c C-f C-r
 @cindex @code{\textrm}
-Insert roman @r{@{\textrm @point{}@}} text.
+Insert roman @r{\textrm@{@point{}@}} text.
 
 @item C-c C-f C-b
 @kindex C-c C-f C-b
 @cindex @code{\textbf}
-Insert @b{bold face} @samp{@{\textbf @point{}@}} text.
+Insert @b{bold face} @samp{\textbf@{@point{}@}} text.
 
 @item C-c C-f C-i
 @kindex C-c C-f C-i
 @cindex @code{\textit}
-Insert @i{italics} @samp{@{\textit @point{}\/@}} text.
+Insert @i{italics} @samp{\textit@{@point{}@}} text.
 
 @item C-c C-f C-e
 @kindex C-c C-f C-e
 @cindex @code{\emph}
-Insert @i{emphasized} @samp{@{\emph @point{}\/@}} text.
+Insert @i{emphasized} @samp{\emph@{@point{}@}} text.
 
 @item C-c C-f C-s
 @kindex C-c C-f C-s
 @cindex @code{\textsl}
-Insert @i{slanted} @samp{@{\textsl @point{}\/@}} text.
+Insert @i{slanted} @samp{\textsl@{@point{}@}} text.
 
 @item C-c C-f C-t
 @kindex C-c C-f C-t
 @cindex @code{\texttt}
-Insert @t{typewriter} @samp{@{\texttt @point{}@}} text.
+Insert @t{typewriter} @samp{\texttt@{@point{}@}} text.
 
 @item C-c C-f C-c
 @kindex C-c C-f C-c
 @cindex @code{\textsc}
-Insert @sc{small caps} @samp{@{\textsc @point{}@}} text.
+Insert @sc{small caps} @samp{\textsc@{@point{}@}} text.
 
 @item C-c C-f C-d
 @kindex C-c C-f C-c
@@ -490,7 +493,7 @@ that is @samp{\begin@{@}} --- @samp{\end@{@}} pairs.
 
 AUC @TeX{} is aware of most of the actual environments available in a
 specific document.  This is achieved by examining your
-@samp{\documentstyle} command, and consulting a precompiled list of
+@samp{\documentclass} command, and consulting a precompiled list of
 environments available in a large number of styles.
 
 You insert an environment with @kbd{C-c C-e}, and select an environment
@@ -647,7 +650,7 @@ indenting and navigating through the document.
 @TeX{} is written by a mathematician, and has always contained good
 support for formatting mathematical text.  AUC @TeX{} supports this
 tradition, by offering a special minor mode for entering text with many
-mathematic symbols.  You can enter this mode by typing @kbd{C-c
+mathematical symbols.  You can enter this mode by typing @kbd{C-c
 ~}.@refill
 
 @deffn Command LaTeX-math-mode
@@ -836,7 +839,7 @@ that you would indent ordinary computer programs.
 @vindex LaTeX-item-indent
 
 The following is a short sample of an itemize environment indented by
-AUC @TeX{}.  If more environment are nested, they are indented
+AUC @TeX{}.  If more environments are nested, they are indented
 `accumulated' just like most programming languages usually are seen
 indented in nested constructs.
 
@@ -1215,8 +1218,7 @@ you must also modify @code{TeX-command-list}.  You can get
 @code{lacheck} from @file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>}
 or alternatively @code{chktex} from
 @file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
-`chktex' in @file{tex.el} to see how to switch between them.@refill They
-are
+`chktex' in @file{tex.el} to see how to switch between them.@refill
 
 @node Control,  , Checking, Formatting
 @section Controlling the output
@@ -1237,7 +1239,7 @@ application running under AUC @TeX{}
 @deffn Command TeX-kill-job
 @kindex C-c C-k
 (@kbd{C-c C-k})  Kill currently running external application.
-This may be either of @TeX{}, La@TeX{}, previewer Bib@TeX{} etc.
+This may be either of @TeX{}, La@TeX{}, previewer, Bib@TeX{}, etc.
 @end deffn
 
 @deffn Command TeX-recenter-output-buffer
@@ -1266,7 +1268,7 @@ process was started.
 @cindex \input
 @cindex Master file
 
-You may wish spread a document over many files (as you are likely to do if
+You may wish to spread a document over many files (as you are likely to do if
 there are multiple authors, or if you have not yet discovered the power
 of the outline commands (@pxref{Outline})).  This can be done by having a
 ``master'' file in which you include the various files with the @TeX{}
@@ -1539,7 +1541,7 @@ of TeX and Emacs are needed for Korean, Japanese, and Chinese.
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
-later, it has the advantage that the usual the standard emacs word
+later, it has the advantage that the usual standard emacs word
 movement and case change commands will work.
 
 
@@ -2340,6 +2342,12 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+Page count when compiling should (optionally) go to modeline of the
+window where the compilation command was invoked, instead of the output
+window.  Suggested by Karsten Tinnefeld
+<tinnefeld@@irb.informatik.uni-dortmund.de>.
+
 @item
 Command to insert a macrodefinition in the preamble, without moving
 point from the current location.  Suggested by 
