@@ -1,3 +1,11 @@
+2004-04-16  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-info.el (TeXinfo-command-menu): Use
+	`TeX-mode-specific-command-menu'.
+
+	* tex-jp.el (plain-TeX-mode-command-menu) 
+	(LaTeX-mode-command-menu): Ditto.
+
 2004-04-16  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (STYLESRC): Add jura.el and alphanum.el
