@@ -6,13 +6,37 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.1 $    << OFFICIAL RELEASE NO.
+;; RCS status      : $Revision: 3.2 $    << OFFICIAL RELEASE NO.
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri May 31 01:27:34 1991
-;; Update Count    : 79
-;;  
+;; Last Modified On: Fri May 31 07:22:47 1991
+;; Update Count    : 83
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; AUC TeX is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing. 
+;;
+;; Everyone is granted permission to copy, modify and redistribute
+;; this file, but only under the conditions described in the
+;; document "GNU Emacs copying permission notice".   An exact copy
+;; of the document is supposed to have been given to you along with
+;; this file so that you can know how you may redistribute it all.
+;; It should be in a file named COPYING.  Among other things, the
+;; copyright notice and this notice must be preserved on all copies.
+;;
+;; This software was written as part of the author's official duty as
+;; an employee of the University of Aalborg (denmark) and is in the
+;; public domain.  You are free to use this software as you wish, but
+;; WITHOUT ANY WARRANTY WHATSOEVER.  It would be nice, though if when
+;; you use this code, you give due credit to the author.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;
 ;; HISTORY
 ;; 30-May-1991  (Last Mod: Thu May 30 21:00:46 1991 #54)  Kresten Krab Thorup
 ;;    Fixed bug in TeX-preview, au suggested by Martin Simons 
@@ -32,47 +56,26 @@
 ;;    Added comment macros, and took out the danish support
 ;; 27-May-1991  (Last Mod: Mon May 27 01:17:14 1991 #9)  Kresten Krab Thorup
 ;;    validate-TeX-buffer changed to TeX-validate-buffer
-;; 24-May-1991  (Last Mod: Fri May 24 09:36:43 1991 #1)  Kresten Krab Thorup
-;;    Initial distributed revision
 ;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; SUMMARY OF TEX-MODE FUNCTIONS
-;;
-;; -  Intelligent macros for often used controls: {\em }, \section{ } etc. 
-;; -  Invoking and debugging TeX/LaTeX from within Emacs.
-;; -  HELP for errors while debugging (includes all TeX and LaTeX errors)
-;; -  Indentation by environments
-;; -  Support for outline-minor-mode
+;; AUC TeX was derived from tex-mode.el of the original 
+;; Emacs distribution. 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Everyone is granted permission to copy, modify and redistribute
-;; this file, but only under the conditions described in the
-;; document "GNU Emacs copying permission notice".   An exact copy
-;; of the document is supposed to have been given to you along with
-;; this file so that you can know how you may redistribute it all.
-;; It should be in a file named COPYING.  Among other things, the
-;; copyright notice and this notice must be preserved on all copies.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; CREDITS
+;; THE GOOD GUYS
 ;; 
-;; William F. Schelter and Dick King <king@kestrel>        1985
-;; Stephen Gildea                    <mit-erl!gildea>      1986
-;; Michael Prange                    <mit-erl!prange>      1986
-;; Lars Fischer                      <fischer@iesd.auc.dk> 1985
-;; Per Abrahamsen                    <abraham@iesd.auc.dk> 1986
-;; Kresten Krab Thorup               <krab@iesd.auc.dk>    1991
-;;
-;; Comments and ideas to auc-tex@iesd.auc.dk
-;; University of Aalborg, Denmark, march 4, 1991
+;; Lars Fischer                      <fischer@iesd.auc.dk> 
+;; Per Abrahamsen                    <abraham@iesd.auc.dk> 
+;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  Bugreports and improvements, please send to:
-;;  Internet: auc-tex_mgr@iesd.auc.dk
+;;  BUGREPORTS 
+;;
+;;  please send to:
+;;  Internet : auc-tex_mgr@iesd.auc.dk
+;;
+;;  Comments and ideas to auc-tex@iesd.auc.dk
 ;;
 ;;  A mailing list `auc-tex' discusses topics concerning
 ;;  auctex.  You may subscribe by mailing the above adress.
@@ -86,14 +89,10 @@
 ;;
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
 ;;
-;;
 ;;   Make fill-paragraph (M-q) work properly
 ;;
 ;;   Make some good regexp's for paragraph-start and    
 ;;     paragraph-seperate
-;;
-;;   Make it possible to specify arguments for latex like -v on
-;;     the NeWS that runs a previewer. 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -150,6 +149,8 @@ witch a backslash. Default is the meaning of M-t when latex-mode was called.")
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (autoload 'TeX-math-mode "tex-math" nil t)
+
+(autoload 'outline-minor-mode "outline-m" nil t)
 
 (autoload 'LaTeX-section "latex-section" nil t)
 
