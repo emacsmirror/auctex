@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.46 2001-11-09 21:20:00 dakas Exp $
+;; $Id: preview.el,v 1.47 2001-11-12 14:34:44 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -338,8 +338,7 @@ Gets the usual PROCESS and STRING parameters, see
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
       (setq mode-name "Preview-GhostScript")
-      (setq compilation-in-progress (cons process
-					  compilation-in-progress))
+      (push process compilation-in-progress)
       (TeX-command-mode-line process)
       (set-buffer-modified-p (buffer-modified-p))
       process)
@@ -777,13 +776,23 @@ the entire buffer."
     (if (overlay-get ov 'preview-state)
 	(preview-delete ov))))
 
-(add-hook 'kill-buffer-hook #'preview-clearout nil nil)
+(defun preview-clearout-buffer (&optional buffer)
+  "Clearout BUFFER from previews, current buffer if nil."
+  (interactive)
+  (if buffer
+      (with-current-buffer buffer (preview-clearout))
+    (preview-clearout)))
+
+(add-hook 'kill-buffer-hook #'preview-clearout-buffer)
 
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
 Any directory not in this list will be cleared out by preview
 on first use."
 )
+
+(add-hook 'kill-emacs-hook
+	  (lambda () (mapc #'preview-clean-topdir preview-temp-dirs)))
 
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
@@ -911,7 +920,7 @@ upgraded to a fancier version of just the LaTeX style."
 
 (defun preview-make-options ()
   "Create default option list to pass into LaTeX preview package."
-  (mapconcat 'identity preview-default-option-list ","))
+  (mapconcat #'identity preview-default-option-list ","))
 
 (defcustom preview-LaTeX-command "%l '\\nonstopmode\
 \\PassOptionsToPackage{auctex,active}{preview}\
@@ -971,12 +980,16 @@ preview Emacs Lisp package something too stupid."))
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
   (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-r" #'preview-clearout)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-b" #'preview-clearout-buffer)
   (easy-menu-add-item LaTeX-mode-menu nil
 		      (easy-menu-create-menu "Preview"
 			'(["What I want" preview-dwim t]
-			["Region" preview-region t]
 			["Environment" preview-environment t]
 			["Section" preview-section t]
+			["Region" preview-region mark-active]
+			["Clearout region" preview-clearout mark-active]
+			["Clearout buffer" preview-clearout-buffer t]
 			)) "Miscellaneous")
 )
 
@@ -984,11 +997,20 @@ preview Emacs Lisp package something too stupid."))
   "Cleans out a temporary DIR with preview image files."
   (condition-case err
       (progn
-	(mapc 'delete-file
+	(mapc #'delete-file
 	      (directory-files dir t "\\`pre" t))
 	(delete-directory dir))
-    (error (message "Deletion of %s failed: %s" dir
+    (error (message "Deletion of `%s' failed: %s" dir
 		    (error-message-string err)))))
+
+(defun preview-clean-topdir (topdir)
+  "Cleans out TOPDIR from temporary directories.
+This does not erase the directory itself since its permissions
+might be needed for colloborative work on common files."
+  (mapc #'preview-clean-subdir
+	(condition-case nil
+	    (directory-files topdir t "\\`tmp" t)
+	  (file-error nil))))
 
 (defun preview-create-subdirectory ()
   "Create a temporary subdir for the current TeX process.
@@ -1005,10 +1027,9 @@ later while in use."
       (if (file-directory-p topdir)
 	  ;;  Cleans out the top preview directory by
 	  ;;  removing subdirs possibly left from a previous session.
-	  (mapc 'preview-clean-subdir
-		(directory-files topdir t "\\`tmp" t))
+	  (preview-clean-topdir topdir)
 	(make-directory topdir))
-      (setq preview-temp-dirs (cons topdir preview-temp-dirs)) )
+      (push topdir preview-temp-dirs))
     (setq TeX-active-tempdir
 	  (cons (make-temp-file (expand-file-name
 			   "tmp" (file-name-as-directory topdir)) t) 0))
@@ -1235,8 +1256,7 @@ specified by BUFF."
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
 	  (set-marker (process-mark process) (point-max))
-	  (setq compilation-in-progress (cons process
-					      compilation-in-progress))
+	  (push process compilation-in-progress)
 	  (sit-for 0)
 	  process)
       (setq mode-line-process ": run")
@@ -1277,7 +1297,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.46 $"))
+	(rev "$Revision: 1.47 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1299,6 +1319,7 @@ If not a regular release, CVS revision of `preview.el'.")
        preview-gs-command
        preview-gs-options
        preview-gs-outstanding-limit
+       preview-dvips-command
        preview-scale-function
        preview-default-option-list)
      nil
