@@ -569,7 +569,7 @@ breaks will be replaced by spaces."
       (when (string-match "[ \t]+$" line)
 	(setq line (replace-match "" nil nil line)))
       (setq result (concat result " " line)))
-    (when (> end spill) (setq result (concat result " ...")))
+    (when (> end spill) (setq result (concat result "...")))
     result))
 
 
