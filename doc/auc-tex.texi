@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.13 1993-03-16 01:49:40 amanda Exp $
+@c $Id: auc-tex.texi,v 1.14 1993-03-16 02:24:29 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -77,7 +77,7 @@ Per Abrahamsen (7.0 update)
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
 * Multifile::                   Documents split over many files
-* Internationalization::        Support for West European Languages
+* Internationalization::        Support for European Languages
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Installation::                Installation
@@ -123,9 +123,10 @@ Formatting and Printing
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
 
-Support for West European Languages
+Support for European Languages
 
-* Keyboard Remapping::          Keyboard Remapping
+* Scandinavian::                Support for the Scandinavian Languages
+* Russian::                     Support for Russian
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
@@ -1431,30 +1432,30 @@ any file with an extension of @samp{.tex}.@refill
 @end defopt
 
 @node Internationalization, Automatic, Multifile, top
-@chapter Support for West European Languages
+@chapter Support for European Languages
 @cindex Internationalization
-@cindex West Europe
 @cindex Europe
 @cindex Character set
 
-AUC @TeX{} contains some support for ease the use of various West
-European character sets.  This support is contained in two packages
-``Keymap Mode'' in @file{min-key.el}, which support general remapping of
-the keyboard, as well as converting between various character set
-encodings, and ``Dead Key Mode'' in @file{ltx-dead.el}, which support
-dead keys for entering accents.  Both packages depend on the ``Minor
-Mode Keymap'' support in @file{min-map.el}, but at least ``Keymap Mode''
-is otherwise useful even outside AUC @TeX{}.
+AUC @TeX{} contains some support for ease the use of various European
+character sets.  This support is contained in two packages ``Keymap
+Mode'' in @file{min-key.el}, which support general remapping of the
+keyboard, as well as converting between various character set encodings,
+and ``Dead Key Mode'' in @file{ltx-dead.el}, which support dead keys for
+entering accents.  Both packages depend on the ``Minor Mode Keymap''
+support in @file{min-map.el}, but at least ``Keymap Mode'' is otherwise
+useful even outside AUC @TeX{}.
 
 @menu
-* Keyboard Remapping::          Keyboard Remapping
+* Scandinavian::                Support for the Scandinavian Languages
+* Russian::                     Support for Russian
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
 @end menu
 
-@node Keyboard Remapping, Dvorak,  , Internationalization
-@section Keyboard Remapping
+@node Scandinavian, Russian,  , Internationalization
+@section Support for the Scandinavian Languages
 @cindex Keyboard remapping
 @cindex Remapping the keyboard
 @cindex Denmark
@@ -1497,9 +1498,9 @@ occur twice in row in an Scandinavian word.
 
 The keyboard mapping is implemented as a minor mode.  To enter the minor
 mode the first time, type @kbd{M-x keyboard-query-mapping}.  It will
-first prompt you for a what language to use.  Currently only Danish and
-Swedish are defined, so you have to chose one of those.  Norway use the
-same character set as Denmark.@refill
+first prompt you for a what language to use.  Currently only Danish,
+Swedish, and Russian are defined, so you have to chose one of those.
+Norway use the same character set as Denmark.@refill
 
 Next, it will prompt you for what encoding of the languages character
 set to use for the keyboard and screen.  The same encodings are
@@ -1598,7 +1599,25 @@ The encodings must appear in the same sequence as they were found in
 the second element.
 @end defopt
 
-@node Dvorak, Accents, Keyboard Remapping, Internationalization
+@node Russian, Dvorak, Scandinavian, Internationalization
+@section Support for Russian
+@cindex Cyrillic
+@cindex Russian
+@cindex KOI8
+
+@xref{Scandinavian} for a general explanation of keyboard remapping. 
+
+For Russian it not only makes sense to remap the keyboard.  You have to
+do it, in order to get the Cyrillic character set from an ordinary
+QWERTY keyboard.  AUC @TeX{} will map QWERTY into the Russian keyboard
+layout YAWERTY, either with AMS Cyrillic encoding or the KOI8 character
+set encoding.
+
+The Russian character set encodings were kindly contributed by Justin R.
+Smith @samp{<jsmith@@king.mcs.drexel.edu>}, please direct questions to
+him.
+
+@node Dvorak, Accents, Russian, Internationalization
 @section Dvorak and QWERTY
 @cindex QWERTY
 @cindex Dvorak
@@ -1612,7 +1631,7 @@ it is far from optimal.  It is even said that QWERTY was purposefully
 designed to slow down the typist, in order to protect the early
 typewriters.
 
-Modern research as shown that large speedups in typing can be obtained
+Modern research has shown that large speedups in typing can be obtained
 by designing a new keyboard radically different from the current
 standard.  Specifically, it should be split in two, and characters
 should be entered by pressing several keys at once.
@@ -3094,7 +3113,7 @@ Speciel indentation after an @samp{\item}.
 \item blabalaskdfjlas lajf adf
       lkfjl  af jasl lkf jlsdf jlf 
 \item f lk jldjf lajflkas flf af
-\end{itemize}
+\end@{itemize@}
 @end example 
 
 @item

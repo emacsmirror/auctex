@@ -1,6 +1,6 @@
 * README_MINOR - Introduction to minor modes.
 
-$Id: README_MINOR,v 5.3 1993-03-15 18:11:11 amanda Exp $
+$Id: README_MINOR,v 5.4 1993-03-16 02:24:14 amanda Exp $
 
 ** min-map.el:  Minor Keymaps 
 
@@ -60,6 +60,9 @@ supported:
 
 "Swedish":
 	"ISO 646 SE" "Keyboard Layout" "Digraphs" "TeX" "ISO 8859 Latin 1"
+
+"Russian":
+	"Keyboard Layout" "TeX" "KOI8"
 
 "Keyboard Layout":
 	"QWERTY" "Dvorak"
