@@ -2514,7 +2514,7 @@ of @TeX{} and Emacs are needed for Korean, Japanese, and Chinese.
 
 @menu
 * European::                    Using @AUCTeX{} with European Languages
-* Japanese::                    Japanese @TeX{}
+* Japanese::                    Using @AUCTeX{} with Japanese
 @end menu
 
 @node European
@@ -2651,6 +2651,7 @@ insert @samp{''}.
 @cindex ASCII p@TeX{}
 @cindex p@TeX{}
 @cindex p@LaTeX{}
+@cindex @file{tex-jp.el}
 @vindex TeX-default-mode
 @vindex japanese-TeX-command-default
 @vindex japanese-LaTeX-command-default

@@ -1,3 +1,8 @@
+2005-02-23  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/auctex.texi (I18n): Removed FIXME comment.
+	Patch by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-delete-newlines): Call search-forward,
