@@ -8,6 +8,8 @@
 	(preview-cache-preamble-off): Same here.
 	(TeX-inline-preview-internal): Same here.
 	(preview-report-bug): Add autoload cookie.
+	(preview-create-subdirectory): Make dvips directory relative.
+	(preview-report-bug): also report LaTeX-command-style.
 
 2002-12-06  David Kastrup  <David.Kastrup@t-online.de>
 
