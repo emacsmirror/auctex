@@ -1,4 +1,10 @@
-2003-12-08  Jan-Åke Larsson  <jalar@mai.liu.se>
+2003-12-08  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi: 
+	* dvipng/configure.ac: 
+	* dvipng/RELEASE: Prepare for 0.8 
+
+	* dvipng/ft.c: Fix debug output
 
 	* dvipng/draw.c:
 	* dvipng/dvipng.h:
