@@ -1,3 +1,7 @@
+2002-09-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex.el: Apply spelling fixes from G.M.Salvetti to tex.el
+
 2002-03-24  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex-buf.el (TeX-parse-TeX): Make subordinate files without
