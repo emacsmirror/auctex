@@ -594,12 +594,6 @@ With optional ARG>=1, find that outer level."
 	(backward-char 1)
 	(buffer-substring beg (point))))))
 
-(defun TeX-near-bobp ()
-  "Return t iff there's nothing but whitespace between (bob) and (point)."
-  (save-excursion
-    (skip-chars-backward " \t\n")
-    (bobp)))
-
 ;;; Environment Hooks
 
 (defvar LaTeX-document-style-hook nil
@@ -1185,11 +1179,6 @@ ELSE as an argument list."
     (if (equal (length args) 1)
 	(TeX-parse-argument optional (car args))
       (TeX-parse-argument optional args))))
-
-(defun TeX-arg-literal (optional &optional &rest args)
-  "Insert its arguments into the buffer.
-Used for specifying extra syntax for a macro."
-  (apply 'insert args))
 
 (defun TeX-arg-eval (optional &rest args)
   "Evaluate args and insert value in buffer."

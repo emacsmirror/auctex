@@ -2338,6 +2338,19 @@ See match-data for details."
   "Return current filename, without path."
   (file-name-nondirectory buffer-file-name))
 
+;; was in latex.el, needed in context.el --pg
+(defun TeX-near-bobp ()
+  "Return t iff there's nothing but whitespace between (bob) and (point)."
+  (save-excursion
+    (skip-chars-backward " \t\n")
+    (bobp)))
+
+(defun TeX-arg-literal (optional &optional &rest args)
+  "Insert its arguments into the buffer.
+Used for specifying extra syntax for a macro."
+  (apply 'insert args))
+
+
 
 ;;; Syntax Table
 
