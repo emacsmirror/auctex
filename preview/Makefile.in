@@ -71,6 +71,12 @@ install-texmf: preview.sty prauctex.def prauctex.cfg preview.dvi
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'
 
+#only for standalone preview.sty package:
+preview.ins: preview.dtx
+	$(TEX) '\nonstopmode\def\jobname{.ins}\input docstrip ' \
+	'\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}' \
+	'\endbatchfile'
+
 preview.sty prauctex.def prauctex.cfg preview.drv: preview.dtx preview-mk.ins
 	$(TEX) '\nonstopmode \input preview-mk.ins'
 
