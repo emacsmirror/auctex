@@ -130,8 +130,12 @@
 	 (newline-and-indent))))
 
 (defcustom LaTeX-amsmath-label LaTeX-equation-label
-  "*Default prefix to amsmath equation labels."
+  "*Default prefix to amsmath equation labels.
+
+Amsmath equations include \"align\", \"alignat\", \"xalignat\", \"aligned\",
+\"flalign\" and \"gather\"."
   :group 'LaTeX-label
   :type 'string)
+
 
 ;;; amsmath.el ends here.

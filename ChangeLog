@@ -1,3 +1,10 @@
+2002-12-11  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/amsmath.el (LaTeX-amsmath-label): Improved doc-string.
+
+	* doc/auc-tex.texi (Equations): New @subsection documenting
+	LaTeX-equation-label, LaTeX-eqnarray-label and LaTeX-amsmath-label.
+
 2002-12-11  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (japanese-LaTeX-default-style)

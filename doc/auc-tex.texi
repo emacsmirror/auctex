@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.131 2002-12-10 22:57:49 dak Exp $
+@c $Id: auc-tex.texi,v 1.132 2002-12-11 16:33:16 rsteib Exp $
 
 @finalout
 @titlepage
@@ -533,6 +533,7 @@ Most of these are described further in the following sections, and you
 may easily specify more, as described in `Customizing environments'.
 
 @menu
+* Equations::                   Equations
 * Floats::                      Floats
 * Itemize-like::                Itemize-like
 * Tabular-like::                Tabular-like
@@ -547,7 +548,31 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment. 
 @end deffn
 
-@node Floats, Itemize-like, Environments, Environments
+@node Equations, Floats, Environments, Environments
+@subsection Equations
+@cindex Equations
+@cindex Equation
+@cindex Eqnarray
+@cindex amsmath
+
+When inserting equation-like environments, the @samp{\label} will have a
+default prefix, which is controlled by the following variables:
+
+@defopt LaTeX-equation-label
+Prefix to use for `equation' labels.
+@end defopt
+
+@defopt LaTeX-eqnarray-label
+Prefix to use for `eqnarray' labels.
+@end defopt
+
+@defopt LaTeX-amsmath-label
+Prefix to use for amsmath equation labels.  Amsmath equations include
+@samp{align}, @samp{alignat}, @samp{xalignat}, @samp{aligned},
+@samp{flalign} and @samp{gather}.
+@end defopt
+
+@node Floats, Itemize-like, Equations, Environments
 @subsection Floats
 @cindex Floats
 @cindex Figures
