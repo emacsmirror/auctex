@@ -14,10 +14,14 @@
 
 	* style/listings.el (TeX-add-style-hook): Suppress indentation in
 	lstlisting environments.  Fontify both \lstinline|...| and
-	\lstinline{...}.
+	\lstinline{...}.  Add lstlisting environment to
+	`LaTeX-verbatim-regexp'.
 
 	* style/url.el (TeX-add-style-hook): Treat arguments \url|...| and
 	\url{...} as verbatim.
+
+	* style/alltt.el (TeX-add-style-hook): Use buffer-local variable
+	`font-latex-verbatim-environments-local'.
 
 2004-10-05  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	
