@@ -7,6 +7,7 @@
 	orthogonal and you do no longer need C-c C-c and their ilk (though
 	still supported): we have the commands all accessible via C-c C-p
 	now.
+	(preview-dsc-parse): Make DSC parsing more robust.
 
 	* prv-xemacs.el (preview-mode-setup): New function.  Enable
 	balloon help.
