@@ -30,53 +30,31 @@
 
 ;;; Code:
 
+(require 'tex-site)
+
 (defmacro parent-directory (f)
   "Return safe parent directory of the directory given as argument."
   `(directory-file-name
     (file-name-directory
      (directory-file-name ,f))))
 
-(setq TeX-lisp-directory 
-      (concat (parent-directory (invocation-directory))
-	      "/site-lisp/auctex"))
+(unless (get 'TeX-lisp-directory 'saved-value)
+  (setq-default TeX-lisp-directory
+		(concat (parent-directory (invocation-directory))
+			"/site-lisp/auctex")))
 
 (unless (get 'TeX-command-list 'saved-value)
+  ;; Remove the Queue entry from the default, and make a non-Unix
+  ;; specific print entry, assuming that dvips will print by default.
+  ;; Actually, stuff like that should rather be done by fiddling with
+  ;; the respective TeX-printer* variables, but the code is pretty
+  ;; opaque.
   (setq TeX-command-list
-	(list (list "TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
-		    'TeX-run-TeX nil (list 'plain-tex-mode)
-		    :help "Run plain TeX")
-	      (list "LaTeX" "%l \"%(mode)\\input{%t}\"" 'TeX-run-TeX nil
-		    (list 'latex-mode 'doctex-mode) :help "Run LaTeX")
-	      (list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
-		    (list 'texinfo-mode) :help "Run Makeinfo with Info output")
-	      (list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
-		    (list 'texinfo-mode) :help "Run Makeinfo with HTML output")
-	      (list "AmSTeX" "amstex %S \"%(mode)\\input %t\""
-		    'TeX-run-TeX nil (list 'ams-tex-mode) :help "Run AMSTeX")
-	      (list "ConTeXt" "texexec --once --texutil %(execmode)%t"
-		    'TeX-run-TeX nil (list 'context-mode)
-		    :help "Run ConTeXt once")
-	      (list "ConTeXt Full" "texexec %(execmode)%t" 'TeX-run-TeX nil
-		    (list 'context-mode) :help "Run ConTeXt until completion")
-	      (list "ConTeXt Clean" "texutil --purgeall"
-		    'TeX-run-interactive nil (list 'context-mode)
-		    :help "Clean temporary ConTeXt files")
-	      (list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t
-		    :help "Run BibTeX")
-	      (list "View" "%V" 'TeX-run-discard t t :help "Run viewer")
-	      (list "Print" "dvips %d" 'TeX-run-command t t
-		    :help "Print the file")
-	      (list "File" "dvips %d -o %f " 'TeX-run-command t t
-		    :help "Generate PostScript file")
-	      (list "Index" "makeindex %s" 'TeX-run-command nil t
-		    :help "Create index file")
-	      (list "Check" "lacheck %s" 'TeX-run-compile nil
-		    (list 'latex-mode)
-		    :help "Check LaTeX file for correctness")
-	      (list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t
-		    :help "Spell-check the document")
-	      (list "Other" "" 'TeX-run-command t t
-		    :help "Run an arbitrary command"))))
+	(delq (assoc "Queue" TeX-command-list)
+	      TeX-command-list))
+  (when (assoc "Print" TeX-command-list)
+       (setcar (cdr (assoc "Print" TeX-command-list))
+	       "dvips %d")))
 
 (unless (get 'TeX-view-style 'saved-value)
   (setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")

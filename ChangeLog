@@ -1,5 +1,11 @@
 2004-08-11  David Kastrup  <dak@gnu.org>
 
+	* tex-fptex.el: require tex-site.  Only set `TeX-lisp-directory'
+	if it has not been customized.  Construct `TeX-command-list' from
+	its default value.
+
+	* tex-mik.el: same here.
+
 	* tex.el (TeX-mode-specific-command-menu): Tiny optimization.
 	(TeX-mode-specific-command-menu-entries): Make it legal for
 	`TeX-command-mode-menu-entry' to return nil for indicating no menu
