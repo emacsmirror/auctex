@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9g
+;; Version: 9.9h
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2681,7 +2681,7 @@ With optional ARG, insert that many dollar signs."
    ((texmathp)
     ;; We are inside math mode
     (if (and (stringp (car texmathp-why))
-	     (equal (substring (car texmathp-why) 0 1) "\$"))
+	     (string-equal (substring (car texmathp-why) 0 1) "\$"))
 	;; Math mode was turned on with $ or $$ - so finish it accordingly.
 	(progn
 	  (insert (car texmathp-why))
