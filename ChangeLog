@@ -1,5 +1,10 @@
 2004-08-23  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-match-buffer): Use `buffer-substring-no-properties'
+	(TeX-in-commented-line): Use `skip-chars-forward' and `forward-line'.
+	(TeX-in-line-comment): Use `forward-line'.
+	(TeX-brace-count-line): Use `skip-chars-forward'.
+
 	* RELEASE: Some updates.
 
 	* latex.el (LaTeX-section): Use an active region as title if available.

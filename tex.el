@@ -606,7 +606,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.438 $"))
+	    (rev "$Revision: 5.439 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -621,7 +621,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-22 16:45:21 $"))
+    (let ((date "$Date: 2004-08-23 12:45:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2910,9 +2910,7 @@ Like assoc, except case insensitive."
   "Return the substring corresponding to the N'th match.
 See `match-data' for details."
   (if (match-beginning n)
-      (let ((str (buffer-substring (match-beginning n) (match-end n))))
-	(set-text-properties 0 (length str) nil str)
-	(copy-sequence str))
+      (buffer-substring-no-properties (match-beginning n) (match-end n))
     ""))
 
 (defun TeX-function-p (arg)
@@ -3498,22 +3496,21 @@ which will not match commented lines with leading whitespace.  But
 `TeX-in-commented-line' will match commented lines without leading
 whitespace as well."
   (save-excursion
-    (save-match-data
-      (re-search-backward "^\\|\r" nil t)
-      (if (looking-at (concat "[ \t]*" comment-start))
-	  t
-	nil))))
+    (forward-line 0)
+    (skip-chars-forward " \t")
+    (string= (buffer-substring-no-properties
+	      (point) (min (point-max) (+ (point) (length comment-start))))
+	     comment-start)))
 
 (defun TeX-in-line-comment ()
   "Return non-nil if point is in a line comment.
 A line comment is a comment starting in column one, i.e. there is
 no whitespace before the comment sign."
   (save-excursion
-    (save-match-data
-      (move-to-left-margin)
-      (if (looking-at comment-start)
-	  t
-	nil))))
+    (forward-line 0)
+    (string= (buffer-substring-no-properties
+	      (point) (min (point-max) (+ (point) (length comment-start))))
+	     comment-start)))
 
 (defun TeX-forward-comment-skip (&optional count limit)
   "Move forward to the next comment skip.
@@ -3598,22 +3595,21 @@ regardless of its data type."
 (defun TeX-brace-count-line ()
   "Count number of open/closed braces."
   (save-excursion
-    (save-restriction
-      (let ((count 0))
-	(narrow-to-region (point)
-			  (save-excursion
-			    (re-search-forward "[^\\\\]%\\|\n\\|\\'")
-			    (backward-char)
-			    (point)))
-
-	(while (re-search-forward "\\({\\|}\\|\\\\.\\)" nil t)
-	  (cond
-	   ((string= "{" (TeX-match-buffer 1))
-	    (setq count (+ count TeX-brace-indent-level)))
-	   ((string= "}" (TeX-match-buffer 1))
-	    (setq count (- count TeX-brace-indent-level)))))
-	count))))
-
+    (let ((count 0) (limit (line-end-position)) char)
+      (while (progn
+	       (skip-chars-forward "^%{}\\\\" limit)
+	       (when (< (point) limit)
+		 (setq char (char-after))
+		 (forward-char)
+		 (cond ((eq char ?\{)
+			(setq count (+ count TeX-brace-indent-level)))
+		       ((eq char ?\})
+			(setq count (- count TeX-brace-indent-level)))
+		       ((eq char ?\\)
+			(when (< (point) limit)
+			  (forward-char)
+			  t))))))
+      count)))
 
 ;;; Navigation
 
