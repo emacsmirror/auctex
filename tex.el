@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10n
+;; Version: 9.10o
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -66,7 +66,7 @@
 				       (let ((f (locate-library "tex")))
 					 (and f (file-name-directory f))))
 				  (concat data-directory "auctex/"))
-  "The directory where the AUC TeX lisp files are located."
+  "The directory where the AUC TeX Lisp files are located."
   :group 'TeX-file
   :type 'directory)
 
@@ -138,7 +138,7 @@ Each element is a list, whose first element is the name of the command
 as it will be presented to the user.  
 
 The second element is the string handed to the shell after being
-expanded. The expansion is done using the information found in
+expanded.  The expansion is done using the information found in
 TeX-expand-list. 
 
 The third element is the function which actually start the process.
@@ -401,7 +401,8 @@ Full documentation will be available after autoloading the function."
 (defun TeX-active-mark ()
   (and transient-mark-mode mark-active))
 
-(defun TeX-activate-region ())
+(defun TeX-activate-region ()
+  nil)
 
 ))
 
@@ -411,10 +412,10 @@ Full documentation will be available after autoloading the function."
 ;; be careful before changing anything.
 
 (defconst AUC-TeX-version "9.10n"
-  "AUC TeX version number")
+  "AUC TeX version number.")
 
 (defconst AUC-TeX-date "Fri Dec  3 10:59:14 MET 1999"
-  "AUC TeX release date")
+  "AUC TeX release date.")
 
 ;;; Buffer
 
@@ -424,14 +425,12 @@ Full documentation will be available after autoloading the function."
   :group 'AUC-TeX)
 
 (defcustom TeX-display-help t
-  "*Non-nil means popup help when stepping thrugh errors with
-\\[TeX-next-error]"
+  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]."
   :group 'TeX-output
   :type 'boolean)
 
 (defcustom TeX-debug-bad-boxes nil
-  "*Non-nil means also find overfull/underfull boxes warnings with
-TeX-next-error"
+  "*Non-nil means also find overfull/underfull boxes warnings with \\[TeX-next-error]."
   :group 'TeX-output
   :type 'boolean)
 
@@ -657,7 +656,7 @@ the Emacs manual) to set this variable permanently for each file."
 This will be done when AUC TeX first try to use the master file.")
 
 (defun TeX-add-local-master ()
-  "Add local variable for TeX-master."
+  "Add local variable for `TeX-master'."
 
   (if (and (buffer-file-name)
            (string-match TeX-one-master
@@ -717,8 +716,9 @@ These correspond to TeX macros found in the current directory."
   :type 'string)
 
 (defun TeX-split-string (regexp string)
-  "Returns a list of strings. given REGEXP the STRING is split into 
-sections which in string was seperated by REGEXP.
+  "Returns a list of strings. 
+Given REGEXP the STRING is split into sections which in string was
+seperated by REGEXP.
 
 Examples:
 
@@ -835,7 +835,7 @@ active.")
   :type 'boolean)
 
 (defun TeX-load-style (style)
-  "Search for and load each definition for style in TeX-style-path."
+  "Search for and load each definition for STYLE in TeX-style-path."
   (cond ((assoc style TeX-style-hook-list)) ; We already found it
 	((string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style) ;Complex path
 	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
