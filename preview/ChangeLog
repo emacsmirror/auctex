@@ -1,5 +1,8 @@
 2003-10-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* dvipng/configure.ac:
+	* dvipng/config.h.in: Fix helptext in config.h.in
+
 	* dvipng/test_dvipng.tex: Add some tests for ligatures and sizes
 
 2003-10-03  Jan-Åke Larsson  <jalar@mai.liu.se>
