@@ -3,7 +3,7 @@
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.7.1
+Version: 	0.7.2
 Release: 	1
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
