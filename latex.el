@@ -66,15 +66,19 @@ the lines are outcommented, like in dtx files."
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
   (if LaTeX-insert-into-comments
-      (cond ((and (looking-at (concat "[ \t]*" comment-start "+"))
-		  (TeX-looking-at-backward "^[ \t]*"))
+      (cond ((and (save-excursion (skip-chars-backward " \t") (bolp))
+		  (save-excursion
+		    (skip-chars-forward " \t")
+		    (looking-at (concat TeX-comment-start-regexp "+"))))
 	     (beginning-of-line)
-	     (looking-at (concat "[ \t]*" comment-start "+"))
-	     (insert (match-string 0))
+	     (insert (buffer-substring-no-properties
+		      (line-beginning-position) (match-end 0)))
 	     (newline))
 	    ((and (not (bolp))
-		  (not (TeX-escaped-p))
-		  (looking-at (concat "[ \t]*" comment-start "+[ \t]*")))
+		  (save-excursion
+		    (skip-chars-forward " \t") (not (TeX-escaped-p)))
+		  (looking-at
+		   (concat "[ \t]*" TeX-comment-start-regexp "+[ \t]*")))
 	     (delete-region (match-beginning 0) (match-end 0))
 	     (indent-new-comment-line))
 	    (t
@@ -560,7 +564,7 @@ It may be customized with the following variables:
 	     (if (and LaTeX-insert-into-comments
 		      (TeX-in-commented-line)
 		      (not (bolp)))
-		 (concat "^[ \t]*" comment-start "+[ \t]*")
+		 (concat "^[ \t]*" TeX-comment-start-regexp "+[ \t]*")
 	       "^[ \t]*"))
       (LaTeX-newline))
     ;; Insert a linebreak at the end of the marked region if necessary.
@@ -572,7 +576,8 @@ It may be customized with the following variables:
 	  (if (bolp) (newline) (LaTeX-newline))
 	  (indent-according-to-mode))))
     (when (and LaTeX-insert-into-comments
-	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
+	       (looking-at
+		(concat "[ \t]*\\(" TeX-comment-start-regexp "+\\)")))
       (setq comment-flag t)
       (insert (setq prefix (match-string 1)) (TeX-comment-padding-string)))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
@@ -800,8 +805,8 @@ If nil, act like the empty string is given, but don't prompt."
 	(end-of-line 1))
     (end-of-line 0))
   (delete-char 1)
-  (when (or (looking-at (concat "[ \t]*" comment-start "*[ \t]+$"))
-	    (looking-at (concat "[ \t]+" comment-start "*[ \t]*$")))
+  (when (looking-at (concat "^[ \t]+$\\|"
+			    "^[ \t]*" TeX-comment-start-regexp "+[ \t]*$"))
     (delete-region (point) (line-end-position)))
   (delete-horizontal-space)
   (LaTeX-insert-item)
@@ -1868,7 +1873,8 @@ Lines starting with an item is given an extra indentation of
 	 (fill-prefix (and (TeX-in-commented-line)
 			   (save-excursion
 			     (beginning-of-line)
-			     (looking-at (concat "[ \t]*" comment-start "+"))
+			     (looking-at (concat "[ \t]*"
+						 TeX-comment-start-regexp "+"))
 			     (concat (match-string 0)
 				     (TeX-comment-padding-string)))))
 	 (overlays (when (featurep 'xemacs)
@@ -1917,12 +1923,9 @@ Lines starting with an item is given an extra indentation of
     ;; Make the overlays invisible again.
     (dolist (ol-spec ol-specs)
       (set-extent-property (car ol-spec) 'invisible (cadr ol-spec)))
-    (if (< (current-column) (save-excursion
-			      (beginning-of-line)
-			      (re-search-forward
-			       (concat "^[ \t]*" comment-start "*[ \t]*"))
-			      (length (match-string 0))))
-	(LaTeX-back-to-indentation))))
+    (when (< (current-column) (save-excursion
+				(LaTeX-back-to-indentation) (current-column)))
+      (LaTeX-back-to-indentation))))
 
 (defun LaTeX-indent-inner-do (inner-indent)
   ;; Small helper function for `LaTeX-indent-line' to perform
@@ -2020,10 +2023,8 @@ outer indentation in case of a commented line.  The symbols
 	(narrow-to-region (point)
 			  (save-excursion
 			    (re-search-forward
-			     (concat "[^"
-				     (regexp-quote TeX-esc)
-				     "]\\("
-				     LaTeX-indent-comment-start-regexp
+			     (concat "[^" TeX-esc "]"
+				     "\\(" LaTeX-indent-comment-start-regexp
 				     "\\)\\|\n\\|\\'"))
 			    (backward-char)
 			    (point)))
@@ -2176,7 +2177,8 @@ outer indentation in case of a commented line.  The symbols
       (progn
 	(move-to-left-margin)
 	(TeX-re-search-forward-unescaped
-	 (concat comment-start "+\\([ \t]*\\)") (line-end-position) t)
+	 (concat TeX-comment-start-regexp "+\\([ \t]*\\)")
+	 (line-end-position) t)
 	(- (length (match-string 1)) (if (integerp comment-padding)
 					 comment-padding
 				       (length comment-padding))))
@@ -2247,7 +2249,8 @@ pass args FROM, TO and JUSTIFY-FLAG."
 	  ;; a special string at the start of a region to fill should
 	  ;; inhibit filling.
 	  (progn (save-excursion (goto-char from)
-				 (looking-at (concat comment-start "+[ \t]*"
+				 (looking-at (concat TeX-comment-start-regexp
+						     "+[ \t]*"
 						     "Local Variables:")))))
       ;; Filling disabled, only do indentation.
       (indent-region from to nil)
@@ -2261,7 +2264,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
 		     "[^ \t%\n\r][ \t]*" comment-start-skip
 		     "\\|"
 		     ;; (lines with code comments looking like " {%")
-		     "^[ \t]*[^ \t%\n\r" TeX-esc"]" comment-start
+		     "^[ \t]*[^ \t%\n\r" TeX-esc"]" TeX-comment-start-regexp
 		     "\\|"
 		     ;; Lines ending with `\par'.
 		     "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
@@ -2408,9 +2411,9 @@ space does not end a sentence, so don't break a line there."
 	    (goto-char from)
 	    (forward-line 1)
 	    (when (< (point) to)
-	      (while (re-search-forward
-		      (concat "^[ \t]+\\|^[ \t]*" comment-start "+[ \t]*")
-		      to t)
+	      (while (re-search-forward (concat "^[ \t]+\\|^[ \t]*"
+						TeX-comment-start-regexp
+						"+[ \t]*") to t)
 		(delete-region (match-beginning 0) (match-end 0))))))
 
 	(setq from (point))
@@ -2450,8 +2453,8 @@ space does not end a sentence, so don't break a line there."
 	  (setq code-comment-flag
 		(save-excursion
 		  (LaTeX-back-to-indentation)
-		  (TeX-search-forward-unescaped comment-start
-						(line-end-position) t)))
+		  (TeX-re-search-forward-unescaped TeX-comment-start-regexp
+						   (line-end-position) t)))
 	  (save-restriction
 	    ;; The start of a code comment is a moving target during
 	    ;; filling, so we work with `narrow-to-region' and
@@ -2525,7 +2528,9 @@ space does not end a sentence, so don't break a line there."
 			fill-column))
 	    (beginning-of-line)
 	    (re-search-forward comment-start-skip (line-end-position) t)
-	    (skip-chars-backward (concat " \t" comment-start))
+	    (goto-char (match-beginning 0))
+	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
+	    (skip-chars-backward " \t")
 	    (skip-chars-backward "^ \t\n")
 	    (when (not (bolp))
 	      (LaTeX-fill-newline)))))
@@ -2546,7 +2551,7 @@ space does not end a sentence, so don't break a line there."
     (cond ((bolp)
 	   (skip-chars-forward "^ \n" (point-max)))
 	  ((TeX-looking-at-backward
-	    (concat "^[ \t]+\\|^[ \t]*" comment-start "+[ \t]*")
+	    (concat "^[ \t]+\\|^[ \t]*" TeX-comment-start-regexp "+[ \t]*")
 	    (1- (line-beginning-position)))
 	   (goto-char (match-end 0))
 	   (skip-chars-forward "^ \n" (point-max)))))
@@ -2741,7 +2746,7 @@ depends on the value of `LaTeX-syntactic-comments'."
   (interactive "P")
   (if (save-excursion
 	(beginning-of-line)
-	(looking-at (concat comment-start "*[ \t]*$")))
+	(looking-at (concat TeX-comment-start-regexp "*[ \t]*$")))
       ;; Don't do anything if we look at an empty line and let
       ;; `fill-paragraph' think we successfully filled the paragraph.
       t
@@ -2758,28 +2763,16 @@ depends on the value of `LaTeX-syntactic-comments'."
 	(cond
 	 ;; A line only with potential whitespace followed by a
 	 ;; comment on it?
-	 ((looking-at (concat "[ \t]*" comment-start "[" comment-start " \t]*"))
+	 ((looking-at (concat "^[ \t]*" TeX-comment-start-regexp
+			      "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*"))
 	  (setq has-comment t
 		comment-fill-prefix (buffer-substring (match-beginning 0)
 						      (match-end 0))))
-	 ;; A line with some code, followed by a comment?  Remember
-	 ;; that the semi which starts the comment shouldn't be part
-	 ;; of a string or character.
-	 ((condition-case nil
-	      (save-restriction
-		(narrow-to-region (point-min) (line-end-position))
-		(while (not (looking-at (concat comment-start "\\|$")))
-		  (skip-chars-forward (concat "^" comment-start
-					      (regexp-quote TeX-esc) "\n"))
-		  (when (eq (char-after (point)) ?\\)
-		    (forward-char 2)))
-		(and (looking-at (concat comment-start "+[\t ]*"))
-		     ;; See if there is at least one non-whitespace
-		     ;; character before the comment starts.
-		     (save-excursion
-		       (re-search-backward "[^ \t\n]"
-					   (line-beginning-position) t))))
-	    (error nil))
+	 ;; A line with some code, followed by a comment?
+	 ((when (re-search-forward comment-start-skip (line-end-position) t)
+	    ;; See if there is at least one non-whitespace character
+	    ;; before the comment starts.
+	    (re-search-backward "[^ \t\n]" (line-beginning-position) t))
 	  (setq has-comment t
 		has-code-and-comment t))))
 
@@ -2794,7 +2787,9 @@ depends on the value of `LaTeX-syntactic-comments'."
 	    (when (save-excursion
 		    (beginning-of-line)
 		    (re-search-forward comment-start-skip (line-end-position) t)
-		    (skip-chars-backward (concat " \t" comment-start))
+		    (goto-char (match-beginning 0))
+		    (while (not (looking-at TeX-comment-start-regexp))
+		      (forward-char))
 		    (>= (- (point) (line-beginning-position)) fill-column))
 	      (LaTeX-fill-region-as-paragraph (point-min) (point-max) justify)
 	      (goto-char (point-max)))
@@ -2814,13 +2809,16 @@ depends on the value of `LaTeX-syntactic-comments'."
 			       (or (bolp) (newline 1))
 			       (and (eobp) (not (bolp)) (open-line 1))
 			       (point)))
-		   (start (progn (LaTeX-backward-paragraph)
-				 (while (and (looking-at (concat "[ \t]*"
-								 comment-start
-								 "*[ \t]*$"))
-					     (< (point) end))
-				   (forward-line))
-				 (point))))
+		   (start
+		    (progn
+		      (LaTeX-backward-paragraph)
+		      (while (and (looking-at
+				   (concat "$\\|[ \t]+$\\|"
+					   "[ \t]*" TeX-comment-start-regexp
+					   "+[ \t]*$"))
+				  (< (point) end))
+			(forward-line))
+		      (point))))
 	      (LaTeX-fill-region-as-paragraph start end justify)))))
 	;; Non-syntax-aware filling.
        (t
@@ -2831,15 +2829,17 @@ depends on the value of `LaTeX-syntactic-comments'."
 	     ;; Find the first line we should include in the region to fill.
 	     (save-excursion
 	       (while (and (zerop (forward-line -1))
-			   (looking-at (concat "^[ \t]*" comment-start))))
+			   (looking-at (concat "^[ \t]*"
+					       TeX-comment-start-regexp))))
 	       ;; We may have gone too far.  Go forward again.
-	       (or (looking-at (concat ".*" comment-start))
+	       (or (looking-at (concat ".*" TeX-comment-start-regexp))
 		   (forward-line 1))
 	       (point))
 	     ;; Find the beginning of the first line past the region to fill.
 	     (save-excursion
 	       (while (progn (forward-line 1)
-			     (looking-at (concat "^[ \t]*" comment-start))))
+			     (looking-at (concat "^[ \t]*"
+						 TeX-comment-start-regexp))))
 	       (point)))
 	    ;; The definitions of `paragraph-start' and
 	    ;; `paragraph-separate' will still make
@@ -2849,9 +2849,11 @@ depends on the value of `LaTeX-syntactic-comments'."
 	    ;; accordingly.  (Lines with only `%' characters on them
 	    ;; can be paragraph boundaries.)
 	    (let* ((paragraph-start
-		    (concat paragraph-start "\\|[ \t" comment-start "]*$"))
+		    (concat paragraph-start "\\|"
+			    "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*$"))
 		   (paragraph-separate
-		    (concat paragraph-separate "\\|[ \t" comment-start "]*$"))
+		    (concat paragraph-separate "\\|"
+			    "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*$"))
 		   (fill-prefix comment-fill-prefix)
 		   (end (progn (forward-paragraph)
 			       (or (bolp) (newline 1))
@@ -2875,27 +2877,21 @@ depends on the value of `LaTeX-syntactic-comments'."
 	(end (line-beginning-position 2))
 	fill-prefix)
     (indent-according-to-mode)
-    (when (save-restriction
-	    (beginning-of-line)
-	    (narrow-to-region beg end)
-	    (while (not (looking-at (concat comment-start "\\|$")))
-	      (skip-chars-forward (concat "^" comment-start
-					  (regexp-quote TeX-esc) "\n"))
-	      (when (eq (char-after (point)) ?\\)
-		(forward-char 2)))
-	    (and (looking-at (concat comment-start "+[\t ]*"))
-		 ;; See if there is at least one non-whitespace
-		 ;; character before the comment starts.
-		 (save-excursion
-		   (save-match-data
-		     (re-search-backward "[^ \t\n]"
-					 (line-beginning-position) t)))))
+    (when (when (re-search-forward comment-start-skip (line-end-position) t)
+	    (goto-char (match-beginning 0))
+	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
+	    ;; See if there is at least one non-whitespace character
+	    ;; before the comment starts.
+	    (save-excursion
+	      (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
       (setq fill-prefix
 	    (concat (if indent-tabs-mode
 			(concat (make-string (/ (current-column) 8) ?\t)
 				(make-string (% (current-column) 8) ?\ ))
 		      (make-string (current-column) ?\ ))
-		    (buffer-substring (match-beginning 0) (match-end 0))))
+		    (progn
+		      (looking-at (concat TeX-comment-start-regexp "+[ \t]*"))
+		      (buffer-substring (match-beginning 0) (match-end 0)))))
       (fill-region-as-paragraph beg end justify-flag  nil
 				(save-excursion
 				  (goto-char beg)
@@ -2932,7 +2928,8 @@ formatting."
 	    (LaTeX-backward-paragraph)
 	    (while (and (not (eobp))
 			(looking-at
-			 (concat "^[ \t]*" comment-start "*[ \t]*$")))
+			 (concat "^\\($\\|[ \t]+$\\|[ \t]*"
+				 TeX-comment-start-regexp "+[ \t]*$\\)")))
 	      (forward-line 1))))
 	(set-marker to nil)))
     (message "Finished")))
@@ -3111,7 +3108,7 @@ If COUNT is non-nil, do it COUNT times."
 		   (save-excursion
 		     (beginning-of-line)
 		     (looking-at
-		      (concat "[ \t]*" comment-start "*[ \t]*"
+		      (concat "[ \t]*" TeX-comment-start-regexp "*[ \t]*"
 			      "\\(" LaTeX-paragraph-commands-regexp "\\)"))))
 	      (match-beginning 1))
 	     (t nil)))
@@ -3130,7 +3127,8 @@ If COUNT is non-nil, do it COUNT times."
 		 (goto-char paragraph-command-start)
 		 (setq macro-end (goto-char (TeX-find-macro-end)))
 		 (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
-				     "[ \t]*\\($\\|" comment-start "\\)"))))
+				     "[ \t]*\\($\\|"
+				     TeX-comment-start-regexp "\\)"))))
 	  (progn
 	    (goto-char macro-end)
 	    ;; If the paragraph command is followed directly by
@@ -3152,21 +3150,16 @@ If COUNT is non-nil, do it COUNT times."
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
   (dotimes (i count)
-    (let* ((macro-start (TeX-find-macro-start))
-	   (paragraph-command-start
-	    (cond
-	     ;; Point is inside of a paragraph command.
-	     ((and macro-start
-		   (save-excursion
-		     (goto-char macro-start)
-		     (looking-at LaTeX-paragraph-commands-regexp)))
-	      (match-beginning 0))
-	     (t nil))))
-      (if (and paragraph-command-start
+    (let* ((macro-start (TeX-find-macro-start)))
+      (if (and macro-start
 	       ;; Point really has to be inside of the macro, not before it.
-	       (not (= paragraph-command-start (point))))
+	       (not (= macro-start (point)))
+	       (save-excursion
+		 (goto-char macro-start)
+		 (looking-at LaTeX-paragraph-commands-regexp)))
+	  ;; Point is inside of a paragraph command.
 	  (progn
-	    (goto-char paragraph-command-start)
+	    (goto-char macro-start)
 	    (beginning-of-line))
 	(let (limit
 	      (start (line-beginning-position)))
@@ -3188,7 +3181,8 @@ If COUNT is non-nil, do it COUNT times."
 				(forward-line -1)
 				(not break-flag))
 		      (when (looking-at
-			     (concat "^[ \t]*" comment-start "*[ \t]*" "\\("
+			     (concat "^[ \t]*" TeX-comment-start-regexp "*"
+				     "[ \t]*\\("
 				     LaTeX-paragraph-commands-regexp "\\)"))
 			(save-excursion
 			  (goto-char (match-beginning 1))
@@ -3200,7 +3194,7 @@ If COUNT is non-nil, do it COUNT times."
 				(looking-at
 				 (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
 					 "[ \t]*\\($\\|"
-					 comment-start "\\)")))
+					 TeX-comment-start-regexp "\\)")))
 			      (progn
 				(when (looking-at
 				       (concat (regexp-quote TeX-esc)
