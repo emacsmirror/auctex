@@ -1,4 +1,16 @@
-* I get errors during byte compilation.
+* You are not using UNIX or can't figure out how to install.
+
+0. Delete any old version you have.
+
+1. Edit tex-site.el.  Read the comments in the file.
+
+2. Add (load-file "<Path to AUC TeX>/tex-site.el") to your .emacs file.
+
+3. Byte compile the files with "emacs -batch -f batch-byte-compile *.el".
+
+4. Optionally do a `M-x TeX-auto-generate-global' to get macro completion.
+
+* You get errors during byte compilation.
 
 This is almost always because some old version of AUC TeX gets loaded
 during the compilation.  Make sure to remove all old versions, and try
@@ -21,7 +33,7 @@ You may want to disable the automatic byte compilation by setting
 
 in your .emacs file.
 
-* I hate being prompted for master file.
+* You hate being prompted for master file.
 
 Insert 
 
@@ -73,7 +85,7 @@ the necessary information in the `auto' subdirectory, and the other
 files in the document will read this information when they apply the
 style hooks.
 
-* After I write the file under a new name, AUC TeX still use the old!
+* After you write the file under a new name, AUC TeX still use the old!
 
 AUC @TeX{} cache a lot of information for efficiency, press C-c C-n to
 flush the cache after changing the name of a file.  Press C-u C-c C-n
