@@ -2552,6 +2552,15 @@ space does not end a sentence, so don't break a line there."
       ;; Return the fill-prefix we used
       fill-prefix)))
 
+;; Following lines are copied from `fill.el' (CVS Emacs, March 2005).
+;;   The `fill-space' property carries the string with which a newline should be
+;;   replaced when unbreaking a line (in fill-delete-newlines).  It is added to
+;;   newline characters by fill-newline when the default behavior of
+;;   fill-delete-newlines is not what we want.
+(unless (featurep 'xemacs) 
+  ;; COMPATIBILITY for Emacs < 22.1
+  (add-to-list 'text-property-default-nonsticky '(fill-space . t)))
+
 (defun LaTeX-fill-delete-newlines (from to justify nosqueeze squeeze-after)
   ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
   (if (fboundp 'fill-delete-newlines)
@@ -2567,11 +2576,13 @@ space does not end a sentence, so don't break a line there."
       ;; This else-sentence was copied from the function `fill-delete-newlines'
       ;; in `fill.el' (CVS Emacs, 2005-02-17) and adapted accordingly.
       (while (search-forward "\n" to t)
-	(let ((prev (char-before (match-beginning 0)))
-	      (next (following-char)))
-	  (when (or (aref (char-category-set next) ?|)
-		    (aref (char-category-set prev) ?|))
-	    (delete-char -1)))))
+  	(if (get-text-property (match-beginning 0) 'fill-space)
+  	    (replace-match (get-text-property (match-beginning 0) 'fill-space))
+	  (let ((prev (char-before (match-beginning 0)))
+		(next (following-char)))
+	    (when (or (aref (char-category-set next) ?|)
+		      (aref (char-category-set prev) ?|))
+	      (delete-char -1))))))
 
     ;; Make sure sentences ending at end of line get an extra space.
     (if (or (not (boundp 'sentence-end-double-space))
