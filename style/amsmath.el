@@ -106,14 +106,16 @@
     (LaTeX-insert-environment env (concat TeX-grop ncols TeX-grcl))
     (and (not (string= "xxalignat" env))
 	 (LaTeX-label environment)
-	 (newline-and-indent))))
+	 (newline-and-indent))
+    (TeX-math-input-method-off)))
 
 (defun LaTeX-amsmath-env-aligned (env)
   (let ((where (read-string "(optional) Vertical position (t or b): ")))
     (if (string= where "")
 	(setq where "")
       (setq where (concat "[" where "]")))
-    (LaTeX-insert-environment env where)))
+    (LaTeX-insert-environment env where)
+    (TeX-math-input-method-off)))
 
 (defun LaTeX-item-equation ()
   (end-of-line 0)
