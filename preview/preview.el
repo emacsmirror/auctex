@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.23 2001-10-07 15:00:40 dakas Exp $
+;; $Id: preview.el,v 1.24 2001-10-07 19:33:04 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -46,8 +46,7 @@
 
 (eval-when-compile
   (defvar error)
-  (require 'tex-buf)
-  (defvar TeX-auto-file))
+  (require 'tex-buf))
 
 (eval-and-compile
   (defvar preview-compatibility-macros nil
@@ -537,8 +536,8 @@ If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
 had let your document be parsed by AucTeX.  Otherwise
 the value is taken from `preview-default-document-pt'."
-  (or (and (boundp 'TeX-auto-file)
-	   (catch 'return (dolist (option TeX-auto-file nil)
+  (or (and (boundp 'TeX-active-styles)
+	   (catch 'return (dolist (option TeX-active-styles nil)
 			    (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
 				(throw 'return
 				       (string-to-number
@@ -1078,17 +1077,20 @@ file dvips put into the directory indicated by TEMPDIR."
 		(setq preview-snippet-start nil))
 	    (message "Unexpected end of Preview snippet %d" snippet)))))))
 
-(defun preview-get-geometry (process)
-  "Transfer display geometry parameters of current display.
+(defun preview-get-geometry ()
+  "Transfer display geometry parameters from current display.
 Those are put in local variables `preview-scale' and
-`preview-resolution' of GhostScript rendering buffer from PROCESS."
-  (with-current-buffer (process-buffer process)
-    (setq preview-scale (funcall preview-scale-function))
-    (setq preview-resolution (cons
-			      (/ (* 25.4 (display-pixel-width))
-				 (display-mm-width))
-			      (/ (* 25.4 (display-pixel-height))
-				 (display-mm-height))))))
+`preview-resolution'.  Calculation is done with source buffer
+`TeX-command-buffer' active."
+  (let (scale res)
+    (with-current-buffer TeX-command-buffer
+      (setq scale (funcall preview-scale-function)
+	    res (cons (/ (* 25.4 (display-pixel-width))
+			 (display-mm-width))
+		      (/ (* 25.4 (display-pixel-height))
+			 (display-mm-height)))))
+    (setq preview-scale scale)
+    (setq preview-resolution res)))
 
 (defun preview-TeX-inline-sentinel (process name)
   "Sentinel function for preview.
@@ -1103,7 +1105,7 @@ for definition of PROCESS and NAME."
   "Main function called by AucTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((process (TeX-run-format "Preview-LaTeX" command file)))
-    (preview-get-geometry process)
+    (preview-get-geometry)
     (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
     (setq TeX-parse-function 'preview-parse-TeX)
     (if TeX-process-asynchronous
@@ -1115,7 +1117,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.23 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.24 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
