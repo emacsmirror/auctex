@@ -149,9 +149,11 @@ string for any unspecified macro or environment."
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-o\C-b" 'TeX-fold-buffer)
+    (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
     (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
     (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
     (define-key map "\C-c\C-o\C-x" 'TeX-fold-clearout-buffer)
+    (define-key map "\C-c\C-o\C-v" 'TeX-fold-clearout-paragraph)
     (define-key map "\C-c\C-o\C-c" 'TeX-fold-clearout-item)
     map))
 
@@ -163,90 +165,110 @@ string for any unspecified macro or environment."
 The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
 and environments in `TeX-fold-env-spec-list'."
   (interactive)
-  (TeX-fold-clearout-buffer)
-  (TeX-fold-buffer-type 'env)
-  (TeX-fold-buffer-type 'macro))
+  (TeX-fold-clearout-region (point-min) (point-max))
+  (TeX-fold-region (point-min) (point-max)))
 
-(defun TeX-fold-buffer-type (type)
-  "Fold all items of type TYPE in buffer.
-TYPE can be one of the symbols 'env for environments or 'macro for macros."
-  (when (or (and (eq type 'env)
-		 (not (eq major-mode 'plain-tex-mode)))
-	    (eq type 'macro))
-    (save-excursion
-      (let (fold-list item-list regexp)
-	(dolist (item (if (eq type 'env)
-			  TeX-fold-env-spec-list
-			TeX-fold-macro-spec-list))
-	  (dolist (i (cadr item))
-	    (add-to-list 'fold-list (list i (car item)))
-	    (add-to-list 'item-list i)))
-	(setq regexp (cond ((and (eq type 'env)
-				 (eq major-mode 'context-mode))
-			    (concat (regexp-quote TeX-esc)
-				    "start" (regexp-opt item-list t)))
-			   ((and (eq type 'env)
-				 (eq major-mode 'texinfo-mode))
-			    (concat (regexp-quote TeX-esc)
-				    (regexp-opt item-list t)))
-			   ((eq type 'env)
-			    (concat (regexp-quote TeX-esc)
-				    "begin[ \t]*{"
-				    (regexp-opt item-list t) "}"))
-			   (t
-			    ;; "\\_>" is only available with Emacs
-			    ;; 21.4 or later (checked into CVS Emacs
-			    ;; on 2004-05-19). (This could be used in
-			    ;; font-latex as well for
-			    ;; `font-latex-match-variable-make' and
-			    ;; friends instead of "\\>" and would fix
-			    ;; issues with starred macros.)
-			    (concat (regexp-quote TeX-esc)
-				    (regexp-opt item-list t)
-				    (if (string-match "\\_>" "X")
-					"\\_>"
-				      "[^A-Za-z@*]")))))
-	;; Start from the bottom so that it is easier to prioritize
-	;; nested macros.
-	(goto-char (point-max))
-	(let ((case-fold-search nil))
-	  (while (re-search-backward regexp nil t)
-	    (when (not (and TeX-fold-preserve-comments (TeX-in-commented-line)))
-	      (let* ((item-start (match-beginning 0))
-		     (display-string-spec (cadr (assoc (match-string 1)
-						       fold-list)))
-		     (item-end (cond ((and (eq type 'env)
-					   (eq major-mode 'context-mode))
-				      (save-excursion
-					(goto-char (match-end 0))
-					(ConTeXt-find-matching-stop)
-					(point)))
-				     ((and (eq type 'env)
-					   (eq major-mode 'texinfo-mode))
-				      (save-excursion
-					(goto-char (match-end 0))
-					(Texinfo-find-env-end)
-					(point)))
-				     ((eq type 'env)
-				      (save-excursion
-					(goto-char (match-end 0))
-					(LaTeX-find-matching-end)
-					(point)))
-				     (t
-				      (save-excursion
-					(goto-char item-start)
-					(TeX-find-macro-end)))))
-		     (display-string (if (integerp display-string-spec)
-					 (or (TeX-fold-macro-nth-arg
-					      display-string-spec
-					      item-start (when (eq type 'macro)
-							   item-end))
-					     "[Error: No content found]")
-				       display-string-spec))
-		     (ov (TeX-fold-make-overlay item-start item-end type
-						display-string-spec
-						display-string)))
-		(TeX-fold-hide-item ov)))))))))
+(defun TeX-fold-paragraph ()
+  "Hide all configured macros and environments in the current paragraph.
+The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
+and environments in `TeX-fold-env-spec-list'."
+  (interactive)
+  (save-excursion
+    (let ((end (progn (LaTeX-forward-paragraph) (point)))
+	  (start (progn (LaTeX-backward-paragraph) (point))))
+      (TeX-fold-clearout-region start end)
+      (TeX-fold-region start end))))
+
+(defun TeX-fold-region (start end &optional type)
+  "Fold all items in region starting at position START and ending at END.
+If optional parameter TYPE is given, fold only items of the
+specified type.  TYPE can be one of the symbols 'env for
+environments or 'macro for macros."
+  (if (null type)
+      (progn
+	(TeX-fold-region start end 'env)
+	(TeX-fold-region start end 'macro))
+    (when (or (and (eq type 'env)
+		   (not (eq major-mode 'plain-tex-mode)))
+	      (eq type 'macro))
+      (save-excursion
+	(let (fold-list item-list regexp)
+	  (dolist (item (if (eq type 'env)
+			    TeX-fold-env-spec-list
+			  TeX-fold-macro-spec-list))
+	    (dolist (i (cadr item))
+	      (add-to-list 'fold-list (list i (car item)))
+	      (add-to-list 'item-list i)))
+	  (setq regexp (cond ((and (eq type 'env)
+				   (eq major-mode 'context-mode))
+			      (concat (regexp-quote TeX-esc)
+				      "start" (regexp-opt item-list t)))
+			     ((and (eq type 'env)
+				   (eq major-mode 'texinfo-mode))
+			      (concat (regexp-quote TeX-esc)
+				      (regexp-opt item-list t)))
+			     ((eq type 'env)
+			      (concat (regexp-quote TeX-esc)
+				      "begin[ \t]*{"
+				      (regexp-opt item-list t) "}"))
+			     (t
+			      ;; "\\_>" is only available with Emacs
+			      ;; 21.4 or later (checked into CVS Emacs
+			      ;; on 2004-05-19). (This could be used in
+			      ;; font-latex as well for
+			      ;; `font-latex-match-variable-make' and
+			      ;; friends instead of "\\>" and would fix
+			      ;; issues with starred macros.)
+			      (concat (regexp-quote TeX-esc)
+				      (regexp-opt item-list t)
+				      (if (string-match "\\_>" "X")
+					  "\\_>"
+					"[^A-Za-z@*]")))))
+	  (save-restriction
+	    (narrow-to-region start end)
+	    ;; Start from the bottom so that it is easier to prioritize
+	    ;; nested macros.
+	    (goto-char (point-max))
+	    (let ((case-fold-search nil))
+	      (while (re-search-backward regexp nil t)
+		(when (not (and TeX-fold-preserve-comments
+				(TeX-in-commented-line)))
+		  (let* ((item-start (match-beginning 0))
+			 (display-string-spec (cadr (assoc (match-string 1)
+							   fold-list)))
+			 (item-end (cond ((and (eq type 'env)
+					       (eq major-mode 'context-mode))
+					  (save-excursion
+					    (goto-char (match-end 0))
+					    (ConTeXt-find-matching-stop)
+					    (point)))
+					 ((and (eq type 'env)
+					       (eq major-mode 'texinfo-mode))
+					  (save-excursion
+					    (goto-char (match-end 0))
+					    (Texinfo-find-env-end)
+					    (point)))
+					 ((eq type 'env)
+					  (save-excursion
+					    (goto-char (match-end 0))
+					    (LaTeX-find-matching-end)
+					    (point)))
+					 (t
+					  (save-excursion
+					    (goto-char item-start)
+					    (TeX-find-macro-end)))))
+			 (display-string (if (integerp display-string-spec)
+					     (or (TeX-fold-macro-nth-arg
+						  display-string-spec
+						  item-start
+						  (when (eq type 'macro)
+						    item-end))
+						 "[Error: No content found]")
+					   display-string-spec))
+			 (ov (TeX-fold-make-overlay item-start item-end type
+						    display-string-spec
+						    display-string)))
+		    (TeX-fold-hide-item ov)))))))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
@@ -481,9 +503,22 @@ overlays."
 ;;; Removal
 
 (defun TeX-fold-clearout-buffer ()
-  "Permanently show all macros in the buffer"
+  "Permanently show all macros in the buffer."
   (interactive)
-  (let ((overlays (overlays-in (point-min) (point-max))))
+  (TeX-fold-clearout-region (point-min) (point-max)))
+
+(defun TeX-fold-clearout-paragraph ()
+  "Permanently show all macros in the paragraph point is located in."
+  (interactive)
+  (save-excursion
+    (let ((end (progn (LaTeX-forward-paragraph) (point)))
+	  (start (progn (LaTeX-backward-paragraph) (point))))
+      (TeX-fold-clearout-region start end))))
+
+(defun TeX-fold-clearout-region (start end)
+  "Permanently show all macros in region starting at START and ending at END."
+  (interactive "r")
+  (let ((overlays (overlays-in start end)))
     (TeX-fold-remove-overlays overlays)))
 
 (defun TeX-fold-clearout-item ()
