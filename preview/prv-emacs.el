@@ -137,9 +137,9 @@ on preview's clicks."
   `(let (,@(if string `((res (copy-sequence ,string))))
 	   (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
-	   `((define-key resmap ,preview-button-1 ,click1)))
+	   `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
-	   `((define-key resmap ,preview-button-2 ,click2)))
+	   `((define-key resmap preview-button-2 ,click2)))
      ,@(if string
 	   `((add-text-properties
 	      0 (length res)
@@ -189,6 +189,10 @@ specifies."
      'insert-in-front-hooks
      '(preview-handle-insert-in-front))
 
+(put 'preview-overlay
+     'insert-behind-hooks
+     '(preview-handle-insert-behind))
+
 ;; We have to fake our way around atomicity, but at least this is more
 ;; efficient than the XEmacs version which has to cope with not being
 ;; able to use local change hooks at all.
@@ -200,25 +204,73 @@ specifies."
 ;; again: we remove it.  A disabled preview needs no insert-in-front
 ;; handler.
 
+(defvar preview-change-list nil
+  "List of tentatively changed overlays.")
+
+(defun preview-register-change (ov)
+  "Register not yet changed OV for verification.
+This stores the old contents of the overlay in the
+`preview-prechange' property and puts the overlay into
+`preview-change-list' where `preview-check-changes' will
+find it at some later point of time."
+  (unless (overlay-get ov 'preview-prechange)
+    (if (eq (overlay-get ov 'preview-state) 'disabled)
+	(overlay-put ov 'preview-prechange t)
+      (overlay-put ov 'preview-prechange
+		   (buffer-substring-no-properties
+		    (overlay-start ov) (overlay-end ov))))
+    (push ov preview-change-list)))
+
+(defun preview-check-changes ()
+  "Check whether the contents under the overlay have changed.
+Disable it if that is the case.  Ignores text properties."
+  (dolist (ov preview-change-list)
+    (condition-case nil
+	(with-current-buffer (overlay-buffer ov)
+	  (let ((text (buffer-substring-no-properties
+		       (overlay-start ov) (overlay-end ov))))
+	    (if (zerop (length text))
+		(preview-delete ov)
+	      (unless
+		  (or (eq (overlay-get ov 'preview-state) 'disabled)
+		      (string= text (overlay-get ov 'preview-prechange)))
+		(overlay-put ov 'insert-in-front-hooks nil)
+		(overlay-put ov 'insert-behind-hooks nil)
+		(preview-disable ov)))))
+      (error nil))
+    (overlay-put ov 'preview-prechange nil))
+  (setq preview-change-list nil))
+
 (defun preview-handle-insert-in-front
   (ov after-change beg end &optional length)
-  "Hook function for insert-in-front-hooks property."
-  (when (and (not undo-in-progress) after-change)
-    (if (eq (overlay-get ov 'preview-state) 'active)
-	(move-overlay ov end (overlay-end ov))
-      (overlay-put ov 'insert-in-front-hooks nil)
-      (preview-disable ov))))
+  "Hook function for `insert-in-front-hooks' property.
+See info node `(elisp)Managing Overlays' for
+definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
+  (if after-change
+      (unless undo-in-progress
+	(if (eq (overlay-get ov 'preview-state) 'active)
+	    (move-overlay ov end (overlay-end ov))))
+    (preview-register-change ov)))
+
+(defun preview-handle-insert-behind
+  (ov after-change beg end &optional length)
+  "Hook function for `insert-behind-hooks' property.
+This is needed in case `insert-before-markers' is used at the
+end of the overlay.  See info node `(elisp)Managing Overlays'
+for definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
+  (if after-change
+      (unless undo-in-progress
+	(if (eq (overlay-get ov 'preview-state) 'active)
+	    (move-overlay ov (overlay-start ov) beg)))
+    (preview-register-change ov)))
 
 (defun preview-handle-modification
   (ov after-change beg end &optional length)
-  "Hook function for modification-hooks property."
-  (when after-change
-    (if (and (eq (overlay-start ov) (overlay-end ov))
-	     (not undo-in-progress))
-	(preview-delete ov)
-      (when (overlay-get ov 'insert-in-front-hooks)
-	(overlay-put ov 'insert-in-front-hooks nil)
-	(preview-disable ov)))))
+  "Hook function for `modification-hooks' property.
+See info node `(elisp)Managing Overlays' for
+definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
+  (unless after-change
+    (preview-register-change ov)))
 
 (put 'preview-overlay 'isearch-open-invisible #'preview-toggle)
 
@@ -278,6 +330,7 @@ toggles it."
 
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
+  (preview-check-changes)
   (when (and (eq (marker-buffer preview-marker) (current-buffer))
 	     (not disable-point-adjustment)
 	     (not global-disable-point-adjustment))
@@ -297,8 +350,8 @@ toggles it."
 
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
-Conversion from Emacs color numbers (0 to 65535) to GhostScript
-floats."
+Conversion from Emacs color numbers (0 to 65535) in VALUE
+to GhostScript floats."
   (format "%g" (/ value 65535.0)))
 
 (defun preview-inherited-face-attribute (face attribute &optional
