@@ -1,3 +1,12 @@
+2004-02-28  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-outline-regexp, LaTeX-environment)
+	(LaTeX-document-style-hook): Change docs to refer to document
+	classes instead of document style.
+	(LaTeX-env-document): Don't insert anything but document class.
+	(LaTeX-menu-update): Check for doctex-mode.
+	(doctex-mode): Make it a major mode derived from latex-mode.
+
 2004-02-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	Merge with new-fill branch.
