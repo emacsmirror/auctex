@@ -1,4 +1,4 @@
-Release notes for version 0.7 of the preview-latex package:
+Release notes for version 0.7.1 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  The employed style file
@@ -7,20 +7,22 @@ elements as images.  The package is released under the GNU Public
 License (GPL).  At the current point of time, GNU Emacs-21 under the X
 window system, AUC TeX, a working LaTeX installation and GhostScript
 are required.  This version for the first time also fully supports
-XEmacs with a version of at least 21.1.  Some non-critical issues with
-the display engine have been uncovered in the course of porting;
-consult the PROBLEMS file for more information.  No versions have been
-tested to run under the MS Windows operating system.  Recent CVS
-versions of Emacs could possibly be made to run preview-latex there,
-and you stand a chance of trying XEmacs there, too.  Please report
-your experiences.
+XEmacs with a version of at least 21.1.  Some issues with the display
+engine have been uncovered in the course of porting; consult the
+PROBLEMS file for more information.  No versions have been tested to
+run under the MS Windows operating system.  Recent CVS versions of
+Emacs could possibly be made to run preview-latex there, and we have
+had a positive report with Cygwin XEmacs.  Please report your
+experiences.
 
-Release focus have been documentation improvements, staggering
+Release focus for 0.7 have been documentation improvements, staggering
 performance enhancements, better error handling and new features.  For
 the first time, workable XEmacs support is included.  The LaTeX style
 has gained a load of new options.  It is now possible to generate all
 image files for a document with a single run of GhostScript on a
-single PostScript file from Dvips.
+single PostScript file from Dvips.  Release 0.7.1 fixes various issues
+under XEmacs including an installation problem, and offers some
+additional performance enhancements.
 
 The README file has been changed in order to provide adequate
 information for preinstalled distributions.  In that case, including
