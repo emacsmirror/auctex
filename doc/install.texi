@@ -114,7 +114,7 @@ may try to install @AUCTeX{} in the systemwide package directory
 a good value for this option is @file{~/.xemacs/xemacs-packages}, as
 XEmacs looks there for per-user packages by default.
 
-@item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
+@item --with-tex-input-dirs=@var{"/dir-1/;/dir-2/;...;/dir-N/"}
 This option allows to specify the directories to be used for file
 searches, e.g. for completion of @LaTeX{} or Bib@TeX{} style file names.
 They will be used in the variable @code{TeX-macro-global}.
@@ -125,6 +125,8 @@ texmf trees here is possible but may slow down file searching.
 
 The directories should be separated by semicolons and each has to end
 with a directory separator, i.e. a slash or a backslash respectively.
+If more than one directory is specified or spaces are used in the name
+of a directory the whole string has to be quoted.
 
 @item --with-auto-dir=@var{/dir}
 You can use this option to specify the directory containing
