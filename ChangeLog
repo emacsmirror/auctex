@@ -1,5 +1,7 @@
 2004-08-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* configure.in: enable --without-packagedir
+
 	* aclocal.m4:
 	Barf if packagedir not found, don't bother with load-path on xemacs' lispdir
 
