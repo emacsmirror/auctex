@@ -1,0 +1,13 @@
+*.aux
+*.dvi
+*.log
+*.prv
+Makefile
+auto
+*.cfg
+*.def
+preview-mk.ins
+*.drv
+preview.ins
+preview.sty
+
