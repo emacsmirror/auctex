@@ -1,6 +1,6 @@
 ;;; graphicx.el --- AUCTeX style file for graphicx.sty
 
-;; Copyright (C) 2000, 2004 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2004, 2005 by Free Software Foundation, Inc.
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
@@ -34,12 +34,29 @@
 
 (TeX-add-style-hook
  "graphicx"
- (function (lambda ()
-	     (TeX-add-symbols
-	      ;; Why do we need those?
-	      "protect" "clip" "keepaspectratio"
-	      "width" "height" "bb" "angle" "totalheight"
-	      '("includegraphics" LaTeX-arg-includegraphics)))))
+ (lambda ()
+   (TeX-add-symbols
+    '("reflectbox" "Argument")
+    '("resizebox" "Width" "Height" "Argument")
+    '("resizebox*" "Width" "Total height" "Argument")
+    '("rotatebox" [ "Options" ] "Angle" "Argument")
+    '("scalebox" "Horizontal scale" [ "Vertical scale" ] "Argument")
+    '("includegraphics" LaTeX-arg-includegraphics))
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-textual-keywords-local "reflectbox")
+     ;; Fontification of optional and mandantory arguments of \resizebox,
+     ;; \rotatebox and \scalebox should be improved.
+     ;; (add-to-list 'font-latex-match-textual-keywords-local "resizebox")
+     ;; (add-to-list 'font-latex-match-textual-keywords-local "rotatebox")
+     ;; (add-to-list 'font-latex-match-textual-keywords-local "scalebox")
+     (add-to-list 'font-latex-match-reference-keywords-local "includegraphics")
+     ;; Tell font-lock about the update.
+     (font-latex-match-textual-make)
+     (font-latex-match-reference-make)
+     (setq font-lock-set-defaults nil)
+     (font-lock-set-defaults))))
 
 (defun LaTeX-includegraphics-extensions (&optional list)
   "Return appropriate extensions for input files to \\includegraphics."

@@ -1,5 +1,8 @@
 2005-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* style/graphicx.el: Added completion of boxing macros.  Fontify
+	some macros.
+
 	* font-latex.el (font-latex-built-in-keyword-classes): Fixed typo
 	in doc string.
 
