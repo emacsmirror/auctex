@@ -86,6 +86,8 @@ preview.sty prauctex.def prauctex.cfg preview.drv: preview.dtx preview-mk.ins
 
 preview.dvi: preview.drv preview.dtx
 	$(LATEX) '\nonstopmode \input preview.drv'
+	$(LATEX) '\nonstopmode \input preview.drv'
+	$(LATEX) '\nonstopmode \input preview.drv'
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
