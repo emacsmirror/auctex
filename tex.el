@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10f
+;; Version: 9.10g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -376,6 +376,19 @@ Full documentation will be available after autoloading the function."
 
 ;; An GNU Emacs 19 variable.
 (defvar minor-mode-map-alist nil)
+
+(or (fboundp 'match-string)
+    ;; Introduced in 19.29.
+    (defun match-string (num &optional string)
+      "Return string of text matched by last search.
+NUM specifies which parenthesized expression in the last regexp.
+ Value is nil if NUMth pair didn't match, or there were less than NUM pairs.
+Zero means the entire text matched by the whole regexp or whole string.
+STRING should be given if the last search was by `string-match' on STRING."
+      (if (match-beginning num)
+	  (if string
+	      (substring string (match-beginning num) (match-end num))
+	    (buffer-substring (match-beginning num) (match-end num))))))
 
 ;;; Special support for Emacs 18
 
