@@ -1,3 +1,8 @@
+2005-03-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/german.el (LaTeX-german-insert-hyphen): Do not add "=
+	repeatedly but stick to - after the first swapping.
+
 2005-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/german.el (LaTeX-mode-map): Bind `-' to
