@@ -1,9 +1,19 @@
 2001-10-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el:  insert-in-front back.  Discovered all-saving
+	undo-in-progress.
+	(preview-handle-insert-in-front): pseudo-advance if not in undo
+	while iconized.
+	(preview-handle-modification): fitting behaviour for that. commit
+	suicide on changes that leave the range empty, disable else.
+
 	* preview.el (preview-place-preview): overlays get auto-advancing
 	front.
 	(preview-analyze-error): intangible.  inhibit-point-motion-hooks.
 	what a mess.  Made parsing saner in the presence of such stuff.
+	(preview-place-preview): overlays get non-auto-advancing front
+	back again, since we rather pseudo-advance in
+	preview-handle-insert-in-front.
 
 	* prv-emacs.el: don't handle insert-in-front: impossible to do
 	consistently.  Instead make beginning ofg overlays auto-advance
