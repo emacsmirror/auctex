@@ -1,4 +1,14 @@
+2002-02-05  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/Makefile: Simpler index generation
+
+2002-02-04  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.texi: Simplify to only one section for keys and
+	lisp function sections. Also only one Index.
+
 2002-02-01  David Kastrup  <David.Kastrup@t-online.de>
+
 	* PROBLEMS: Tell about x-symbol 4.0h/beta working successfully
 	with preview-latex.	
 
@@ -53,16 +63,6 @@
 	
 	* preview-latex.texi (section Misplaced previews): Info on \emph
 	and \PreviewMacro*.
-
-2001-12-05  Jan-Ake Larsson  <jalar@imf.au.dk>
-
-	* Makefile: Corrected dependencies
-
-	* preview-latex.texi: Added new section: User-level lisp functions
-
-	* install.texi: Layout improvements
-
-	* Makefile: Typo corrected
 
 2001-12-05  Jan-Ake Larsson  <jalar@imf.au.dk>
 
