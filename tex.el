@@ -40,7 +40,6 @@
 (require 'custom)
 (eval-when-compile
   (require 'cl))
-(require 'tex-fold)
 
 (defgroup AUCTeX nil
   "A (La)TeX environment."
@@ -555,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.391 $"))
+	(rev "$Revision: 5.392 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-09 09:33:20 $"))
+    (let ((date "$Date: 2004-07-10 13:21:38 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -739,6 +738,7 @@ Must be the car of an entry in `TeX-command-list'."
 (autoload 'TeX-toggle-debug-boxes "tex-buf" no-doc t)
 (autoload 'TeX-region-file "tex-buf" no-doc nil)
 (autoload 'TeX-current-offset "tex-buf" no-doc nil)
+(autoload 'TeX-fold-mode "tex-fold" no-doc t)
 
 (defvar TeX-trailer-start nil
   "Regular expression delimiting start of trailer in a TeX file.")
@@ -2807,7 +2807,9 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c^" 'TeX-home-buffer)
     (define-key map "\C-c`"    'TeX-next-error)
     (define-key map "\C-c\C-w" 'TeX-toggle-debug-boxes)
-    
+    ;; From tex-fold.el
+    (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
+
     ;; Multifile
     (define-key map "\C-c_" 'TeX-master-file-ask)  ;*** temporary
     map)
