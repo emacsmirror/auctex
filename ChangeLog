@@ -2,6 +2,8 @@
 
 	* style/scrbase.el (TeX-add-symbols): Remove redundant entries.
 	* style/scrlttr2.el (TeX-add-symbols): Remove redundant entry.
+	* style/scrpage2.el: Remove unnecessary coding cookie and text in
+	introductory comment.
 	
 2003-08-02  Mike Sperber  <mike@xemacs.org>
 
