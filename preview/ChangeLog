@@ -1,3 +1,8 @@
+2002-12-20  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile.in (LISP_SOURCES): Use = instead of := for non-GNU
+	make versions.  Also in other variables.
+
 2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (section{Package options}): Document
