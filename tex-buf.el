@@ -844,7 +844,7 @@ Return nil ifs no errors were found."
 	(let ((output-file (TeX-match-buffer 1)))
 	  (setq TeX-current-page (concat "{" (TeX-match-buffer 2) "}"))
 	  (setq TeX-output-extension
-		(if (string-match "\\.\\([^.].*\\)$" output-file)
+		(if (string-match "\\.\\([^.]*\\)$" output-file)
 		    (match-string 1 output-file)
 		  "dvi")))))
   (if process (TeX-format-mode-line process))
