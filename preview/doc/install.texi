@@ -9,6 +9,8 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
+@chapter Installing @previewlatex{}
+
 @end ifset
 @c -----------------------
 Installing @previewlatex{} should be simple: merely @code{./configure},
@@ -17,30 +19,58 @@ add-ins, @previewlatex{} consists of a @TeX{} part and an Emacs part (that
 uses @AUCTeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
 
+@ifclear rawfile
+@menu
+* Prerequisites::               
+* Configure::                   
+* Build/install::               
+* Loading the package::         
+@end menu
+@end ifclear
+
+@node Prerequisites
 @section Prerequisites
 
 @itemize @bullet
-@item A recent version of Emacs 21
+@item A recent version of Emacs 21, alternatively XEmacs
 
 The first version without known quirks and bugs affecting @previewlatex{}
 is Emacs-21.1.  Only very recent pretest versions before that have slight
 chances of working at all.  Since @previewlatex{} heavily exercises new
 features of Emacs 21, getting the newest release is a good idea.
+ 
+While image support for Emacs under Microsoft Windows has not been
+implemented as of @w{version 21.2}, it is present in the @acronym{CVS}
+version at @uref{http://savannah.gnu.org/projects/emacs}; please help in
+testing it before @w{Emacs 21.3} gets released.  
+
+Another option is to try XEmacs for which we now have preliminary
+support available.  @strong{Please note:} Presently, the port to XEmacs
+is work in progress.  Don't expect too much, and be prepared to contact
+the developers.
 
 @item A working @AUCTeX{} installation
 
 You need a working @AUCTeX{} installation.  @AUCTeX{} can be found at
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  All fairly recent
 versions should work.  Since at the time of this writing, the latest
-released version is 10.0g (with known issues), you should rather get an
-alpha test version.  11.11 is known to work well.  If this option is not
-available to you, try the patch described in the @file{PROBLEMS} file or
-@ref{Known problems}).
+released version is 10.0g (with known issues), you should rather get
+version 11.0 or later, which at the time of this writing is an
+alpha-test version.  A suitable version is also available from the
+download section of @previewlatex{}'s home page
+@ifset rawfile
+(see the @file{README} file).
+@end ifset
+@ifclear rawfile
+(@pxref{Availability}).
+@end ifclear 
+If this option is not available to you, try the patch described in the
+@file{PROBLEMS} file or @ref{Known problems}).
 
 @item A working @LaTeX{} installation
 
 Preview should work with nearly any @LaTeX{} installation which contains
-dvips, though most testing has taken place using tetex-based
+dvips, though most testing has taken place using te@TeX{}-based
 distributions.
 
 @item A recent GhostScript
@@ -58,6 +88,15 @@ file with the prebuilt documentation from Sourceforge and install it
 over the main unpacked tar archive.
 @end itemize
 
+For some known issues with various software, see 
+@ifset rawfile
+the @file{PROBLEMS} file.
+@end ifset
+@ifclear rawfile
+@ref{Known problems}.
+@end ifclear
+
+@node Configure
 @section Configure
 
 The first step is to configure the source code, telling it where
@@ -125,6 +164,7 @@ script tries to work around this deficiency.
 
 @end table
 
+@node Build/install
 @section Build/install
 
 Once @file{configure} has been run, simply enter
@@ -140,10 +180,12 @@ locations chosen earlier, type
 @example
 make install
 @end example
+
 @noindent 
 You may need special privileges to install, e.g., if you are installing
-into system directories.
+into system directories. 
 
+@node Loading the package
 @section Loading the package
 
 You need to place a few lines in your personal @file{.emacs} file (or a
