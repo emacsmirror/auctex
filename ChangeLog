@@ -1,5 +1,7 @@
 2005-03-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-style.el (LaTeX-german-hyphen): Doc fix.  Fix :type.
+
 	* style/german.el (LaTeX-german-insert-hyphen): Do not add "=
 	repeatedly but stick to - after the first swapping.
 
