@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.4 1994-04-14 18:13:05 amanda Exp $
+;; Version: $Id: latex.el,v 5.5 1994-04-14 20:17:08 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1646,6 +1646,24 @@ The point is supposed to be at the beginning of the current line."
 (defvar TeX-arg-item-label-p nil
   "*If non-nil, always ask for optional label in items.
 Otherwise, only ask in description environments.")
+
+;;;###autoload
+(defun latex-mode ()
+  "Major mode for editing files of input for LaTeX.
+See info under AUC TeX for full documentation.
+
+Special commands:
+\\{LaTeX-mode-map}
+
+Entering LaTeX mode calls the value of text-mode-hook,
+then the value of TeX-mode-hook, and then the value
+of LaTeX-mode-hook."
+  (interactive)
+  (LaTeX-common-initialization)
+  (setq mode-name "LaTeX")
+  (setq major-mode 'latex-mode)  
+  (setq TeX-command-default "LaTeX")
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
 
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.

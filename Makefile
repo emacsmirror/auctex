@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.89 1994-04-14 18:12:58 amanda Exp $
+# $Id: Makefile,v 5.90 1994-04-14 20:17:03 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -34,14 +34,6 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 # Name of your emacs binary
 EMACS=emacs-19.22
 
-# For OS/2 use
-#LACHECK=lacheck.exe
-LACHECK=lacheck
-
-# For gcc use
-#LIBS=
-LIBS=-ll
-
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
 ##----------------------------------------------------------------------
@@ -59,7 +51,7 @@ BATCH=$(EMACS) -batch -q lpath.el -f eval-current-buffer
 ELC= $(BATCH) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -l $(aucdir)/tex.elc \
+AUTO= $(EMACS) -batch -l $(aucdir)/tex.elc \
 	-l $(aucdir)/latex.elc -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
@@ -84,6 +76,13 @@ LEX = flex -8  lacheck.lex
 # How to move the byte compiled files to their destination.  
 MV = mv
 
+# For OS/2 use
+#LACHECK=lacheck.exe
+LACHECK=lacheck
+
+# For gcc use
+#LIBS=
+LIBS=-ll
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
@@ -93,13 +92,13 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  none
+REMOVE =  tex-load.el
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    easymenu.el min-map.el  ltx-math.el \
 	    outln-18.el out-xtra.el
 
-AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex.el \
+AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el easymenu.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
 	 reporter.el
@@ -122,7 +121,8 @@ LACHECKGEN = lacheck.c test.old
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex
 
-EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile tex-jp.el lpath.el
+EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile \
+	tex-jp.el lpath.el tex-site.el 
 
 first:
 	@echo ""
@@ -155,6 +155,13 @@ install: LispInstall LaInstall DocInstall
 	@echo 
 	@echo "**********************************************************"
 	@echo "** AUC TeX installation almost completed "
+	@echo "** "
+	@echo "** Now copy \`tex-site.el' to the directory where you put "
+	@echo "** local lisp extensions (usually emacs/site-lisp) and "
+	@echo "** insert"
+	@echo "**   (require 'tex-site)"
+	@echo "** in your \`.emacs' or \`site-start.el' file."
+	@echo "** "
 	@echo "** Still missing is the automatic extraction of symbols"
 	@echo "** and environments from your sites TeX style files."
 	@echo "** To do this, type \`make install-auto'."
@@ -194,7 +201,6 @@ install-auto:
 	@echo "** You may want to print the following files:  "
 	@echo "**    doc/auc-tex.dvi"
 	@echo "**    doc/tex-ref.dvi"
-	@echo "** Now edit .emacs according to the documentation       **"
 	@echo "**********************************************************"
 	@echo
 
@@ -218,7 +224,7 @@ LispInstall:
 	@echo "** Expect some harmless warnings about free variables and "
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
-	$(ELC) $(AUCSRC) tex-load.el $(STYLESRC)
+	$(ELC) $(AUCSRC) $(STYLESRC)
 	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); else true; fi ; 
 	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
@@ -251,13 +257,7 @@ clean:
 wc:
 	wc $(AUCSRC) $(STYLESRC) 
 
-tex-load.el: $(AUCSRC) 
-	mv tex-load.el loaddefs.el
-	emacs -batch -f batch-update-autoloads $(AUCSRC) 
-	mv loaddefs.el tex-load.el
-	touch tex-load.el
-
-dist:	tex-load.el
+dist:	
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"
@@ -271,7 +271,7 @@ dist:	tex-load.el
 	echo "(provide 'auc-ver)"	           >> auc-ver.el
 	rm -f $(REMOVE) 
 	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) tex-load.el $(EXTRAFILES)
+	-cvs add $(AUCSRC) $(EXTRAFILES)
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
@@ -280,7 +280,7 @@ dist:	tex-load.el
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style
 	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
-	cp $(AUCSRC) tex-load.el $(EXTRAFILES) auctex-$(TAG)
+	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) auctex-$(TAG)/style
 	cp $(LACHECKFILES) auctex-$(TAG)/lacheck
 	(cd lacheck; $(MAKE) $(LACHECKGEN); \
@@ -301,10 +301,8 @@ dist:	tex-load.el
 		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ; fi ; exit 0
 
 patch:
-	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
 	cvs diff -c -r  release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
-	            -r  release_`echo $(TAG) | sed -e 's/[.]/_/g'` \
-		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ; fi ; exit 0
+	            -r  release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 
 min-map:
 	-cvs add $(MINMAPSRC) 

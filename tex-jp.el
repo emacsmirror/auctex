@@ -6,6 +6,24 @@
 
 ;;; Customization
 
+(setq TeX-format-list
+      (append '(("JSLITEX" japanese-slitex-mode
+		 "\\\\documentstyle[^%\n]*{jslides}")
+		("JLATEX" japanese-latex-mode "\\\\documentstyle[^%\n]*{j")
+		("JTEX" japanese-plain-tex-mode
+		 "-- string likely in Japanese TeX --"))
+	      TeX-format-list))
+
+(setq TeX-command-list
+      (append '((list "jTeX" "jtex '\\nonstopmode\\input %t'"
+		      'TeX-run-TeX nil t)
+		(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
+		      'TeX-run-LaTeX nil t)
+		(list "jSliTeX" "jslitex '\\nonstopmode\\input{%t}'"
+		      'TeX-run-LaTeX nil t)
+		(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
+	      TeX-command-list))
+       
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
 

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.5 1994-04-14 18:13:19 amanda Exp $
+;; Version: $Id: tex.el,v 5.6 1994-04-14 20:17:16 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -29,19 +29,206 @@
 (require 'tex-site)
 (require 'easymenu)
 
-;;; Import
+(cond ((< (string-to-int emacs-version) 19)
+       (require 'tex-18))
+      ((string-match "Lucid" emacs-version)
+       (require 'tex-lcd))
+      (t
+       (require 'tex-19)))
+
+;;; Site Customization
 ;;
-;; The following are autoloads for different modules, as well as
-;; variables that has to be made buffer local and functions we really
-;; need now.
+;; The following variables are likely to need to be changed for your
+;; site.  It is suggested that you do this by *not* changing this
+;; file, but instead copy those definitions you need to change to
+;; `tex-site.el'. 
 
-(defvar no-doc
-  "This function is part of AUC TeX, but has not yet been loaded.
-Full documentation will be available after autoloading the function."
-  "Documentation for autoload functions.")
+;; Change this to point to the place where the TeX macros are stored
+;; at yourt site.
+(defvar TeX-macro-global
+  '("/usr/local/lib/tex/inputs/" "/usr/local/lib/tex/generate/")
+  "*Directories containing the sites TeX macro files and style files.
 
-(autoload 'TeX-region-create "tex-buf" no-doc nil)
-(autoload 'LaTeX-common-initialization "latex" no-doc nil)
+The directory names *must* end with a slash.")
+
+;; How to print.
+
+(defvar TeX-print-command "dvips %s -P%p"
+  "*Command used to print a file. 
+
+First %p is expanded to the printer name, then ordinary expansion is
+performed as specified in TeX-expand-list.")
+
+(defvar TeX-queue-command "lpq -P%p"
+  "*Command used to show the status of a printer queue. 
+
+First %p is expanded to the printer name, then ordinary expansion is
+performed as specified in TeX-expand-list.")
+
+;; This is the major configuration variable.  Most sites will only
+;; need to change the second string in each entry, which is the name
+;; of a command to send to the shell.  If you use other formatters
+;; like AMSLaTeX or AMSTeX, you can add those to the list.  See
+;; TeX-expand-list for a description of the % escapes
+
+(defvar TeX-command-list
+  ;; You may have to remove the single quotes around the command
+  ;; arguments if you use DOS.
+  (list (list "TeX" "tex '\\nonstopmode\\input %t'" 'TeX-run-TeX nil t)
+	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
+	(list "LaTeX" "%l '\\nonstopmode\\input{%t}'" 'TeX-run-LaTeX nil t)
+	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil t)
+	(list "LaTeX2e" "latex2e '\\nonstopmode\\input{%t}'"
+	      'TeX-run-LaTeX nil t)
+	(if (or window-system (getenv "DISPLAY"))
+	    (list "View" "%v " 'TeX-run-background t nil)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
+	(list "Print" "%p " 'TeX-run-command t nil)
+	(list "Queue" "%q" 'TeX-run-background nil nil)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
+	(list "Index" "makeindex %s" 'TeX-run-command nil t)
+	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	(list "Spell" "<ignored>" 'TeX-run-ispell nil nil)
+	(list "Other" "" 'TeX-run-command t t)
+	;; Not part of standard TeX.
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	(list "AmSTeX" "amstex '\\nonstopmode\\input %t'"
+	      'TeX-run-TeX nil t))
+  "*List of commands to execute on the current document.
+
+Each element is a list, whose first element is the name of the command
+as it will be presented to the user.  
+
+The second element is the string handed to the shell after being
+expanded. The expansion is done using the information found in
+TeX-expand-list. 
+
+The third element is the function which actually start the process.
+Several such hooks has been defined:
+
+TeX-run-command: Start up the process and show the output in a
+separate buffer.  Check that there is not two commands running for the
+same file.  Return the process object. 
+
+TeX-run-format: As TeX-run-command, but assume the output is created
+by a TeX macro package.  Return the process object. 
+
+TeX-run-TeX: For TeX output.
+
+TeX-run-LaTeX: For LaTeX output.
+
+TeX-run-interactive: Run TeX or LaTeX interactively.
+
+TeX-run-BibTeX: For BibTeX output.
+
+TeX-run-compile: Use `compile' to run the process.  
+
+TeX-run-shell: Use `shell-command' to run the process.
+
+TeX-run-discard: Start the process in the background, discarding its
+output.
+
+TeX-run-background: Start the process in the background, show output
+in other window.
+
+TeX-run-dviout: Special hook for the Japanese dviout previewer for
+PC-9801.
+
+To create your own hook, define a function taking three arguments: The
+name of the command, the command string, and the name of the file to
+process.  It might be useful to use TeX-run-command in order to
+create an asynchronous process.
+
+If the fourth element is non-nil, the user will get a chance to
+modify the expanded string.
+
+If the fifth element is non-nil, the TeX-region file will be rebuild
+before the command is started.")
+
+;; You may want special options to the view command depending on the
+;; style options.  Only works if parsing is enabled.
+
+(defvar LaTeX-command-style
+  '(("^ams" "amslatex")
+    ("^foils$" "foiltex")
+    ("^slides$" "slitex")
+    ("^plfonts\\|plhb$" "platex")
+    ("." "latex"))
+  "*List of style options and LaTeX commands.
+
+If the first element (a regular expresion) matches the name of one of
+the style files, any occurrence of the string %l in a command in
+TeX-command-list will be replaced with the second element.  The first
+match is used, if no match is found the %l is replaced with the empty
+string.")
+
+;; Enter the names of the printers available at your site, or nil if
+;; you only have one printer.
+
+(defvar TeX-printer-list
+  '(("Local" "dvips -f %s | lpr" "lpq")
+    ("lw") ("ps"))
+  "*List of available printers.
+
+The first element of each entry is the printer name.
+
+The second element is the command used to print to this
+printer.  It defaults to the value of TeX-print-command.
+
+The third element is the command used to examine the print queue for
+this printer.  It defaults to the value of TeX-queue-command.
+
+Any occurence of `%p' in the second or third element is expanded to
+the printer name given in the first element, then ordinary expansion
+is performed as specified in TeX-expand-list.")
+
+;; The name of the most used printer.  
+
+(defvar TeX-printer-default (or (getenv "PRINTER")
+				(and TeX-printer-list
+				     (car (car TeX-printer-list)))
+				"lw")
+  "*Default printer to use with TeX-command.")
+
+;; You may want special options to the view command depending on the
+;; style options.  Only works if parsing is enabled.
+
+(defvar TeX-view-style '(("^a5$" "xdvi %d -paper a5")
+			 ("^landscape$" "xdvi %d -paper a4r -s 4")
+			 ;; The latest xdvi can show embedded postscript.
+			 ;; If you don't have that, uncomment next line.
+			 ;; ("^epsf$" "ghostview %f")
+			 ("." "xdvi %d"))
+  "*List of style options and view options.
+
+If the first element (a regular expresion) matches the name of one of
+the style files, any occurrence of the string %v in a command in
+TeX-command-list will be replaced with the second element.  The first
+match is used, if no match is found the %v is replaced with the empty
+string.")
+
+;; This is the list of expansion for the commands in
+;; TeX-command-list.  Not likely to be changed, but you may e.g. want
+;; to handle .ps files. 
+
+(defvar TeX-expand-list 
+  (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
+	(list "%q" (function (lambda ()
+		     (TeX-printer-query TeX-queue-command 2))))
+	(list "%v" 'TeX-style-check TeX-view-style)
+	(list "%l" 'TeX-style-check LaTeX-command-style)
+	(list "%s" 'file)
+	(list "%t" 'file 't)
+	(list "%d" 'file "dvi")
+	(list "%f" 'file "ps"))
+  "*List of expansion strings for TeX command names.
+
+Each entry is a list with two or more elements.  The first element is
+the string to be expanded.  The second element is the name of a
+function returning the expanded string when called with the remaining
+elements as arguments.  The special value `file' will be expanded to
+the name of the file being processed, with an optional extension.")
 
 ;;; Buffer
 
@@ -60,6 +247,7 @@ Must be the car of an entry in TeX-command-list.")
 (defvar TeX-command-Queue "Queue"
   "The name of the Queue entry in TeX-command-Queue.")
 
+(autoload 'TeX-region-create "tex-buf" no-doc nil)
 (autoload 'TeX-save-document "tex-buf" no-doc t)
 (autoload 'TeX-home-buffer "tex-buf" no-doc t)
 (autoload 'TeX-command-region "tex-buf" no-doc t)
@@ -236,6 +424,9 @@ This will be done when AUC TeX first try to use the master file.")
                   "% End: \n")))))
 
 ;;; Style Paths
+
+(or (string-match "/\\'" TeX-lisp-directory)
+    (setq TeX-lisp-directory (concat TeX-lisp-directory "/")))
 
 (defvar TeX-auto-global (concat TeX-lisp-directory "auto/")
   "*Directory containing automatically generated information.
@@ -724,6 +915,23 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 
 ;;; The Mode
 
+(defvar TeX-format-list
+  '(("LATEX" latex-mode 
+     "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
+    ("TEX" plain-tex-mode "."))
+  "*List of format packages to consider when choosing a TeX mode.
+
+A list with a entry for each format package available at the site.
+
+Each entry is a list with three elements.
+
+1. The name of the format package.
+2. The name of the major mode.
+3. A regexp typically matched in the beginning of the file.
+
+When entering tex-mode, each regexp is tried in turn in order to find
+when major mode to enter.")
+
 (defvar TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
 the file is plain TeX or LaTeX or what.")
@@ -803,24 +1011,6 @@ of AmS-TeX-mode-hook."
   (setq major-mode 'ams-tex-mode)
   (setq TeX-command-default "AmSTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
-
-;;;###autoload
-(defun latex-mode ()
-  "Major mode for editing files of input for LaTeX.
-See info under AUC TeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
-
-Entering LaTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook."
-  (interactive)
-  (LaTeX-common-initialization)
-  (setq mode-name "LaTeX")
-  (setq major-mode 'latex-mode)  
-  (setq TeX-command-default "LaTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
 
 (defun VirTeX-common-initialization ()
   ;; Initialize

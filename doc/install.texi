@@ -38,6 +38,18 @@ Finally, edit @code{TeX-printer-list} to contain the printers available
 at your site.
 @vindex TeX-printer-list
 
+The best way to change @code{TeX-macro-global}, @code{TeX-command-list},
+@code{TeX-printer-list} and the other customization variables is to copy
+their definitions from @file{tex.el} to @file{tex-site.el} and change
+them there.  This way, when you upgrade AUC @TeX{} you can keep the old
+@file{tex-site.el} file so you don't need to customize it again.
+
+Now copy @file{tex-site.el} to somewhere where emacs can find it.  For
+FSF Emacs 19 the best place is in the @file{.../emacs/site-lisp/}
+directory.  For Lucid Emacs and Emacs 18 you can copy it to the
+@file{.../emacs/lisp/} directory, just remember to move the file when
+you install a new version of Emacs.
+
 Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
 paths for installation of the files.  Be sure that
 
@@ -80,16 +92,10 @@ To extract information from your sites @TeX{} macros, type @kbd{make
 install-auto}. This will only work if you have set
 @code{TeX-macro-global} correctly in @file{tex-site.el}.
 
-Tell the users on your site to insert
-@lisp 
-        (load-file "/path/for/auctex/tex-site.elc")
-@end lisp
-in their @file{.emacs} file in order to use AUC @TeX{}.
-
-Users who know the older keybindings from version 6.1 may also want to
-insert 
+Now, tell the users to insert 
 @lisp
-        (load "auc-tex")
+        (require 'tex-site)
 @end lisp
-in their @file{.emacs}
-
+in their @file{.emacs} files if they want to use AUC @TeX{}.  If you use
+FSF Emacs 19, you can do this for them by inserting the above line in
+the @file{.../emacs/site-lisp/site-start.el} file.
