@@ -3239,7 +3239,11 @@ the macro.  If ARG is non-nil, find the end of a macro."
 		       (forward-line 1)
 		       (looking-at "[ \t]*{"))))
 	    (goto-char (match-end 0))
-	    (goto-char (TeX-find-closing-brace)))
+	    (goto-char (or (TeX-find-closing-brace)
+			   ;; If we cannot find a regular end, use the
+			   ;; next whitespace.
+			   (save-excursion (skip-chars-forward "^ \t\n")
+					   (point)))))
 	   (t
 	    (setq found-end-flag t))))
 	(if (< orig-point (point))
@@ -4292,6 +4296,7 @@ Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
+  (setq TeX-default-extension docTeX-default-extension)
   (funcall TeX-install-font-lock))
 
 (defvar LaTeX-header-end
