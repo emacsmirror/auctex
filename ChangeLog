@@ -3,6 +3,8 @@
 	* tex-buf.el (TeX-run-shell): Start shell from TeX process buffer
 	in order to inherit environment from there (like cwd).
 	(TeX-run-discard): Same here.
+	(TeX-run-shell, TeX-run-discard): Rather let default-directory
+	temporarily: we may not have a TeX process buffer!
 
 2002-12-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
