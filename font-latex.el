@@ -529,15 +529,17 @@ keywords.  As a side effect, the variable `font-latex-match-function' is set."
   (font-latex-match-function-make))
 
 (defcustom font-latex-match-function-keywords
- '("begin" "end"
-   "pagenumbering"
-   "thispagestyle" "pagestyle"
-   "nofiles" "includeonly"
-   "bibliographystyle" "documentstyle" "documentclass"
-   "newenvironment" "newcommand" "newlength" "newtheorem" "newcounter"
-   "renewenvironment" "renewcommand" "renewlength" "renewtheorem"
-   "renewcounter"
-   "usepackage" "fbox" "mbox" "sbox" "vspace" "hspace")
+  '("begin" "end"
+    "pagenumbering"
+    "thispagestyle" "pagestyle"
+    "nofiles" "includeonly"
+    "bibliographystyle" "documentstyle" "documentclass"
+    "newenvironment" "newcommand" "newlength" "newtheorem" "newcounter"
+    "renewenvironment" "renewcommand" "renewlength" "renewtheorem"
+    "renewcounter"
+    "usepackage" "fbox" "mbox" "sbox" "vspace" "hspace"
+    "thinspace" "negthinspace" "enspace" "enskip" "quad" "qquad"
+    "nonumber" "centering" "TeX" "LaTeX")
   "Font-latex keyword for function face.
 e.g. \\newcommand[option]{key}
   -> \\newcommand appears in `font-lock-keyword-face'
@@ -797,7 +799,7 @@ keywords.  As a side effect, the variable `font-latex-match-textual' is set."
 ;;; "part" "chapter" "section" "subsection" "subsubsection"
 ;;; "paragraph" "subparagraph" "subsubparagraph"
     "title" "author" "date" "thanks" "address"
-    "caption")
+    "caption" "textsuperscript")
   "Font-latex keywords for textual face.
 e.g. \\section[option]{key}
   -> \\section appears in `font-lock-keyword-face'
@@ -849,7 +851,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 (defcustom font-latex-match-warning-keywords
   '("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
     "enlargethispage" "nolinebreak" "linebreak" "newline"
-    "-" "\\" "\\*"
+    "-" "\\" "\\*" "appendix"
     "displaybreak" "allowdisplaybreaks")
   "Font-latex keywords for warning face."
   :type '(repeat (string :tag "keyword"))
