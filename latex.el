@@ -2879,7 +2879,6 @@ depends on the value of `LaTeX-syntactic-comments'."
 (defun LaTeX-fill-code-comment (&optional justify-flag)
   "Fill a line including code followed by a comment."
   (let ((beg (line-beginning-position))
-	(end (line-beginning-position 2))
 	fill-prefix)
     (indent-according-to-mode)
     (when (when (re-search-forward comment-start-skip (line-end-position) t)
@@ -2898,7 +2897,8 @@ depends on the value of `LaTeX-syntactic-comments'."
 	     (progn
 	       (looking-at (concat TeX-comment-start-regexp "+[ \t]*"))
 	       (buffer-substring (match-beginning 0) (match-end 0)))))
-      (fill-region-as-paragraph beg end justify-flag  nil
+      (fill-region-as-paragraph beg (line-beginning-position 2)
+				justify-flag  nil
 				(save-excursion
 				  (goto-char beg)
 				  (if (looking-at fill-prefix)
