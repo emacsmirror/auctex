@@ -1,3 +1,9 @@
+2004-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el: Change spaces to tabs in indentation.
+
+	* tex.el: Ditto.
+
 2004-04-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-output-view-style): Move "dvips && gv" element to
