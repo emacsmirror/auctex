@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2001, 2002  Free Software Foundation, Inc.
 
-;; Author: David Kastrup <David.Kastrup@t-online.de>
+;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.129 2002-04-20 13:27:22 dakas Exp $
+;; $Id: preview.el,v 1.130 2002-04-20 13:48:12 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1917,7 +1917,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.129 $"))
+	(rev "$Revision: 1.130 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1928,7 +1928,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-20 13:27:22 $"))
+    (let ((date "$Date: 2002-04-20 13:48:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
