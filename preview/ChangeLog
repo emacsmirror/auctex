@@ -1,5 +1,8 @@
 2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
 
+	* latex/preview.dtx: Remove tightpdf option again. Better
+	explanation for tightpage.
+
 	* preview.el (preview-parsed-tightpage): New variable.
 	(preview-TeX-bb): Use tightpage borders if found in file.
 	(preview-gs-flag-error): Display correct file on error.
@@ -10,6 +13,17 @@
 	(preview-parse-tightpage): New function.
 	(preview-parse-variables): Add preview-parse-tightpage, add
 	function quoting.
+	(preview-gs-open): Move color setup to BeginPage hook.  Rename
+	preview-latex-* PostScript Variables to just preview-*.
+	(preview-gs-transact): Set minimal pagesize if tightpage detected
+	to speed up unimportant setpagedevice operations.
+	(preview-required-option-list): Use tightpage option always.
+	(preview-parse-variables): Remove function quoting: it lead to
+	double quotes and tears.
+	(preview-LaTeX-disable-pdfoutput): Move into separate constant
+	for easy access as it is no longer the standard.
+	(preview-LaTeX-command-replacements): Default to nil to enable
+	PDFTeX operation.  Better customization type.
 
 	* latex/preview.dtx: Some reformatting, add new parse items - and
 	  >, add new option pdftex, adjust tightpage for it, add new
