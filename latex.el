@@ -2930,10 +2930,12 @@ the last entry in the menu."
   (list "LaTeX"
 	(list LaTeX-environment-menu-name)
 	(list LaTeX-environment-modify-menu-name)
+	"-"
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Item" LaTeX-insert-item t]
+	"-"
 	(list "Insert Font"
 	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
 	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
@@ -2962,6 +2964,9 @@ the last entry in the menu."
 	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
 	       :style toggle :selected TeX-debug-bad-boxes ]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
+        (list "Commenting"
+	      ["Comment Region" TeX-comment-region t]
+	      ["Uncomment Region" TeX-uncomment-region t])
         (list "Multifile"
 	      ["Switch to Master File" TeX-home-buffer t]
               ["Save Document" TeX-save-document t]
@@ -2979,9 +2984,6 @@ the last entry in the menu."
 	      ["Hide Environment" LaTeX-hide-environment t]
 	      ["Show Environment" LaTeX-show-environment t])
 	(list "Miscellaneous"
-	      ["Uncomment Region" TeX-un-comment-region t]
-	      ["Comment Region" TeX-comment-region t]
-	      ["Save Document" TeX-save-document t]
 	      ["Math Mode" LaTeX-math-mode
 	       :style toggle :selected LaTeX-math-mode ]
 	      ["Documentation" TeX-goto-info-page t]
