@@ -27,7 +27,6 @@ If you do not want this, install/upgrade with 'rpm --nopre ...'
 # NOT RECOMMENDED, but useful for testing!
 test -f ./configure || ./autogen.sh
 # --with-texmf-dir overrides local docstrip configurations.
-# --with-packagedir repairs RedHat XEmacs braindamage
 %configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
 make 'infodir=%{_infodir}'
 pushd doc
@@ -38,6 +37,10 @@ popd
 rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 %makeinstall install-contrib install-info
+
+# Remove dir file that has been created by the makeinfo calls because this
+# file will not been included in the rpm distribution (make RPM 4.1+ happy)
+rm -f '%{buildroot}%{_infodir}/dir'
 
 %pre
 echo "; Autoactivation of AUCTeX" > \
