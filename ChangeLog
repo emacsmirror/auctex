@@ -1,3 +1,11 @@
+Wed Feb 26 23:15:27 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7k released.
+
+Wed Feb 26 23:14:43 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-submit-bug-report): Fix address (sunsite, not iesd!).
+
 Tue Feb 25 17:36:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7j released.
