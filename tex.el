@@ -2061,19 +2061,18 @@ Check for potential LaTeX environments."
 
   (make-variable-buffer-local 'TeX-default-extension)
 
-(defcustom TeX-output-extension "dvi"
-  "*Extension of TeX output file."
-  :group 'TeX-file-extension
-  :type 'string)
+(defvar TeX-output-extension "dvi"
+  "Extension of TeX output file. This is either a string or a list with
+a string as element. Its value is obtained from `TeX-command-output-list'.
+Access to the value should be through the function `TeX-output-extension'.")
 
   (make-variable-buffer-local 'TeX-output-extension)
 
-(defcustom TeX-view-extension "dvi"
-  "*Extension of TeX output file for viewing. If nil, TeX-output-extension
-should be used. This variable could be changed by running File commands,
-like dvips."
-  :group 'TeX-file-extension
-  :type 'string)
+(defvar TeX-view-extension "dvi"
+  "Extension of TeX output file for viewing. If nil, (`TeX-output-extension')
+is used. This variable could be changed by running File commands,
+like dvips. 
+Access to the value should be through the function `TeX-view-extension'.")
 
   (make-variable-buffer-local 'TeX-view-extension)
 

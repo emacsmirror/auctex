@@ -1,3 +1,8 @@
+2003-02-08  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* tex.el (TeX-output-extension, TeX-view-extension): Changed
+	defcustom into defvar, as these are intermediate variables.
+
 2003-02-07  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* tex.el (TeX-command-output-list): Corrected customization widget.
