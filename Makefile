@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.13 1992-07-22 14:04:19 krab Exp $
+# $Id: Makefile,v 5.14 1992-07-22 17:53:47 krab Exp $
 #
 
 ELISPDIR=/home/local/lib/emacs/local/auctex
@@ -13,7 +13,7 @@ EMACS=emacs
 TEX=tex
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
-	ltx-sec.el tex-buf.el tex-math.el tex-site.el 
+	ltx-sec.el tex-buf.el tex-math.el tex-site.el auc-ver.el
 OTHERFILES = COPYING INTRO README Makefile lacheck/* doc/*
 
 all: $(ELISPDIR) Doc LaCheck
@@ -42,11 +42,18 @@ Doc:
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
+	(cd doc; make clean)
+	(cd lacheck; make clean)
 
 
 dist: 	
-	if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
-	echo "Make distribution of auctex for release $$TAG"
+	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
+	@echo "Make distribution of auctex for release $$TAG"
+	rm -f auc-ver.el
+	echo "(defconst AUC-TeX-version \"$$TAG\" \
+	   \"AUC TeX version number\")" \
+	   "(defconst AUC-TeX-date \"`date`\" \
+	   \"AUC TeX release date\")" > auc-ver.el
 	cvs checkout -r $(TAG) auctex
 	find auctex -name CVS -exec rm -r {} \;
 	(cd auctex;  \

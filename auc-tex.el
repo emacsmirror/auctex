@@ -1,4 +1,4 @@
-;;;* Last edited: Jul 21 12:14 1992 (krab)
+;;;* Last edited: Jul 22 19:48 1992 (krab)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -10,17 +10,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-07-22 12:24:26 $|$Revision: 5.34 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-07-22 17:53:52 $|$Revision: 5.35 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.34 1992-07-22 12:24:26 krab Exp $
+;; $Id: auc-tex.el,v 5.35 1992-07-22 17:53:52 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Tue Jul 21 12:14:35 1992
-;; Buffer Position : 21784
-;; Update Count    : 607
+;; Last Modified On: Wed Jul 22 19:48:58 1992
+;; Buffer Position : 6587
+;; Update Count    : 612
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -140,6 +140,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'auc-ver)
+
 (defvar TeX-esc "\\" "The TeX escape character.")
 (make-variable-buffer-local 'TeX-esc)
 
@@ -249,7 +251,7 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c'"    'TeX-comment-out-paragraph)
   (define-key TeX-mode-map "\C-c:"    'TeX-un-comment-region)
   (define-key TeX-mode-map "\C-c\""   'TeX-un-comment)
-  (define-key TeX-mode-map "\C-c\C-o" 'TeX-cmd-on-region)
+  (define-key TeX-mode-map "\C-c\C-o" 'outline-minor-mode)
   (define-key TeX-mode-map "\C-c\C-b" 'TeX-bold)
   (define-key TeX-mode-map "\C-c\C-i" 'TeX-italic)
   (define-key TeX-mode-map "\C-c\C-s" 'TeX-slanted)
