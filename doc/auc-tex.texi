@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.151 2004-05-02 12:42:09 angeli Exp $
+@c $Id: auc-tex.texi,v 1.152 2004-05-04 19:53:54 angeli Exp $
 
 @finalout
 @titlepage
@@ -1341,9 +1341,10 @@ It is much more configurable than @code{lacheck}, but doesn't find all
 the problems @code{lacheck} does, at least in its default configuration.
 You must install the programs before using them, and for @code{chktex}
 you must also modify @code{TeX-command-list}.  You can get
-@code{lacheck} from @file{<URL:ftp://sunsite.dk/pub/text/lacheck/>}
-or alternatively @code{chktex} from
-@file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
+@code{lacheck} from
+@file{<URL:ftp://ftp.ctan.org/tex-archive/support/lacheck/>} or
+alternatively @code{chktex} from
+@file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.  Search for
 `chktex' in @file{tex.el} to see how to switch between them.
 
 @node Control,  , Checking, Running TeX and friends
