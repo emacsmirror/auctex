@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.932 (29 Sep 2004)
+;; Version:    0.933 (02 Oct 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,24 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.933 02Oct2004 Ralf Angeli
+;;  - Some clean-ups, rearrangements and performance improvements.
+;; `font-latex-verbatim-face': XEmacs does not like :inherit.
+;; `font-latex-setup': Activate `font-latex-syntactic-face-function.
+;; `font-latex-faces-present-p': New function.
+;; `font-latex-match-command-outside-arguments': Use it.
+;; `font-latex-bold-command-keywords'
+;; `font-latex-italic-command-keywords'
+;; `font-latex-math-command-keywords'
+;; `font-latex-type-command-keywords': New variables.
+;; `font-latex-match-font-outside-braces': Use them.
+;; Check for comment and verbatim faces.
+;; `font-latex-bold-declaration-keywords'
+;; `font-latex-italic-declaration-keywords'
+;; `font-latex-type-declaration-keywords': New variables.
+;; `font-latex-match-font-inside-braces': Use them.
+;; Check for comment and verbatim faces.
+;; `font-latex-script': Use `font-latex-faces-present-p'.
 ;; V0.932 29Sep2004 Ralf Angeli
 ;;  - `font-latex-do-multi-line': Add new option and use it as default value.
 ;;  - `font-latex-use-cache': New variable.
@@ -1015,9 +1033,7 @@ Done using `font-latex-match-warning-keywords' as input."
                (fields (append
                         font-latex-match-warning-keywords-local
                         font-latex-match-warning-keywords)))
-           (regexp-opt fields t))
-);;         "\\)")
-        ))
+           (regexp-opt fields t)))))
 
 (defun font-latex-match-warning-keywords-set (symbol value)
   "Update `font-latex-match-warning'.
@@ -1291,7 +1307,15 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-verbatim-face
-  '((t (:inherit font-latex-math-face :family "courier")))
+  '((((class grayscale) (background light))
+     (:foreground "DimGray" :family "courier"))
+    (((class grayscale) (background dark))
+     (:foreground "LightGray" :family "courier"))
+    (((class color) (background light))
+     (:foreground "SaddleBrown" :family "courier"))
+    (((class color) (background dark))
+     (:foreground "burlywood" :family "courier"))
+    (t (:family "courier")))
   "Face used to highlight TeX verbatim environments."
   :group 'font-latex-highlighting-faces)
 
@@ -1327,7 +1351,8 @@ have changed."
 				       instance (current-buffer))))
 	      (built-in-face-specifiers))))
    (t
-  ;;(if (fboundp 'font-lock-make-faces) (font-lock-make-faces))
+    ;; FIXME: Should not be necessary anymore for Emacs, as syntactic
+    ;; fontification is handled by `font-latex-syntactic-face-function'.
     (make-local-variable 'font-lock-string-face)
     (setq font-lock-string-face font-latex-math-face)))
 
@@ -1369,6 +1394,8 @@ have changed."
             (font-lock-mark-block-function . mark-paragraph)
 	    (font-lock-unfontify-region-function
 	     . font-latex-unfontify-region)
+            (font-lock-syntactic-face-function
+             . font-latex-syntactic-face-function)
             (font-lock-syntactic-keywords
              . font-latex-syntactic-keywords))))))
 
@@ -1388,20 +1415,6 @@ have changed."
 	  (put-text-property beg next 'display nil))
       (setq beg next))))
 
-;; Should not be necessary since XEmacs' font-lock also supports
-;; Emacs' use of the `font-lock-defaults' local variable.   -Stefan
-;; (when (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))
-;;     (put 'latex-mode 'font-lock-defaults
-;;          '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-;;            nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
-;;            (font-lock-comment-start-regexp . "%")
-;;            (font-lock-mark-block-function . mark-paragraph)))
-;;     (put 'latex-tex-mode	'font-lock-defaults 'latex-mode)
-;;     (put 'LaTex-tex-mode	'font-lock-defaults 'latex-mode)
-;;     (put 'LaTeX-mode        'font-lock-defaults 'latex-mode)
-;;     (put 'japanese-LaTeX-mode 'font-lock-defaults 'latex-mode)
-;;     (put 'LATeX-MoDe	'font-lock-defaults 'latex-mode)
-;;     (put 'lATEx-mODe	'font-lock-defaults 'latex-mode))
 
 
 (defun font-latex-match-reference (limit)
@@ -1452,6 +1465,9 @@ have changed."
       (font-latex-match-command-outside-arguments font-latex-match-variable
                                                   limit t nil)))
 
+
+;;; Utility functions
+
 ;; font-latex-find-matching-close is a little helper function which
 ;; is used like scan-sexp.  It skips over matching
 ;; pairs of '{' and '}'.  As an added benefit, it ignores any characters
@@ -1496,18 +1512,6 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
        (goto-char init-point)
        nil))))
 
-;; FIXME: --About font-latex-commented-outp--
-;; Fontification is *slower* for affected functions (in particular
-;; font-latex-match-function), so it will be worth it to increase
-;; performance in the algorithm.
-;;  - don't return (store-match-data (list nil nil)) in
-;;    font-latex-match-command-outside-arguments, instead skip over
-;;    commented-out parts internally.
-;;  - Perhaps handling outlined code is excessive and slows down the
-;;    search too much?
-;;  - Is save-match-data expensive? The calling function could store
-;;    the match-data before it calls (font-latex-commented-outp) knowing
-;;    that is would trash the list.
 (defun font-latex-commented-outp ()
   "Return t if comment character is found between bol and point."
   (save-excursion
@@ -1524,6 +1528,25 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
 		     (mod (skip-chars-backward (regexp-quote esc-char)) 2)))
 	      (throw 'found t))
 	    (forward-char)))))))
+
+(defun font-latex-faces-present-p (faces &optional pos)
+  "Return t if FACES are present at position POS.
+FACES may be a single face or a list of faces.
+If POS is omitted, the current position of point is used."
+  (let* ((faces (if (listp faces) faces (list faces)))
+	 (pos (or pos (point)))
+	 (prop (get-text-property pos 'face))
+	 (prop-list (if (listp prop) prop (list prop))))
+    (catch 'member
+      (dolist (item prop-list)
+	(when (memq item faces)
+	  (throw 'member t))))))
+
+(defun font-latex-not-on-same-line-as (cache-start)
+  "Return t if point is not on same line as CACHE-START."
+  (save-excursion
+    (not (= (progn (beginning-of-line) (point))
+            (progn (goto-char cache-start) (beginning-of-line) (point))))))
 
 
 ;;;;------------------
@@ -1674,7 +1697,9 @@ Returns nil if none of KEYWORDS is found."
     (font-latex-check-cache 'font-latex-match-command-cache keywords limit))
   (when (re-search-forward keywords limit t)
     (cond
-     ((font-latex-commented-outp)
+     ((or (font-latex-faces-present-p '(font-lock-comment-face
+					font-latex-verbatim-face))
+	  (font-latex-commented-outp))
       ;; Return a dummy match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
       ;; We used to return a (nil nil) pattern match along with the
@@ -1743,9 +1768,46 @@ Returns nil if none of KEYWORDS is found."
 	   kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
 	t)))))
 
+
+;;; Font commands
+
 (defvar font-latex-match-font-cache nil
   "Cache start of unterminated LaTeX font-changing commands to fontify.")
 (make-variable-buffer-local 'font-latex-match-font-cache)
+
+(defcustom font-latex-bold-command-keywords
+  '("textbf" "textsc" "textup"
+    "boldsymbol" "pmb")
+  "List of commands usually typeset in bold.
+The list may also contain commands which actually are not typeset
+in bold, but should be fontified equivalently to the former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
+
+(defcustom font-latex-italic-command-keywords
+  '("emph" "textit" "textsl")
+  "List of commands usually typeset in italic.
+The list may also contain commands which actually are not typeset
+in italic, but should be fontified equivalently to the former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
+
+(defcustom font-latex-math-command-keywords
+  '("ensuremath")
+  "List of commands usually typeset as math.
+The list may also contain commands which actually are not typeset
+as math, but should be fontified equivalently to the former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
+
+(defcustom font-latex-type-command-keywords
+  '("texttt" "textsf" "textrm" "textmd")
+  "List of commands usually typeset in bold.
+The list may also contain commands which actually are not typeset
+in typewriter, but should be fontified equivalently to the
+former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
 
 (defun font-latex-match-font-outside-braces (limit)
   "Search for font-changing command like \textbf{fubar} before LIMIT.
@@ -1754,24 +1816,22 @@ Sets `match-data' so that:
  subexpression 1 is the content to fontify in italic.
  subexpression 2 is the content to fontify in bold.
  subexpression 3 is the content to fontify in type-face.
+ subexpression 4 is the content to fontify as math.
 Returns nil if no font-changing command is found."
   (when font-latex-use-cache
     (font-latex-check-cache 'font-latex-match-font-cache 'font limit))
   (when (re-search-forward
-         (eval-when-compile
-           (concat "\\\\" "\\("
-                   "\\(emph\\)\\|"			      ;;; 2 - italic
-                   "\\(text\\("
-                               "\\(it\\|sl\\)\\|"	      ;;; 5 - italic
-                               "\\(md\\|rm\\|sf\\|tt\\)\\|"   ;;; 6 - type
-                               "\\(bf\\|sc\\|up\\)"	      ;;; 7 - bold
-                          "\\)\\)\\|"
-                   "\\(boldsymbol\\|pmb\\)\\|"		      ;;; 8 - bold
-		   "\\(ensuremath\\)"                         ;;; 9 - math
-                   "\\)" "{"))
+	 (concat "\\\\" "\\("
+		 (regexp-opt font-latex-bold-command-keywords t) "\\|"
+		 (regexp-opt font-latex-italic-command-keywords t) "\\|"
+		 (regexp-opt font-latex-type-command-keywords t) "\\|"
+		 (regexp-opt font-latex-math-command-keywords t)
+		 "\\)" "{")
          limit t)
     (cond
-     ((font-latex-commented-outp)
+     ((or (font-latex-faces-present-p '(font-lock-comment-face
+					font-latex-verbatim-face))
+	  (font-latex-commented-outp))
       ;; Return a nul match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
       ;; Using `prepend' won't help here, because the problem is that
@@ -1793,18 +1853,18 @@ Returns nil if no font-changing command is found."
             (setq cache-reset t)
             (setq end (point-max))
             (goto-char end)))
-        (cond ((or (match-beginning 2) (match-beginning 5))
+        (cond ((match-beginning 2)
+	       (setq bfbeg beg    bfend end))
+              ((match-beginning 3)
                (setq itbeg beg    itend end))
-              ((match-beginning 6)
+	      ((match-beginning 4)
                (setq ttbeg beg    ttend end))
-	      ((match-beginning 9)
-	       (setq mathbeg beg  mathend end))
               (t
-               (setq bfbeg beg    bfend end)))
+	       (setq mathbeg beg  mathend end)))
         (store-match-data
          (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend mathbeg mathend))
         ;; Start the subsequent search immediately after this keyword.
-          (goto-char kend)
+	(goto-char kend)
 
         (when (and font-latex-use-cache cache-reset)
           (goto-char limit)             ;Avoid infinite loops?
@@ -1815,9 +1875,41 @@ Returns nil if no font-changing command is found."
 
         t)))))
 
+
+;;; Font declarations
+
 (defvar font-latex-match-infont-cache nil
   "Cache start of unterminated LaTeX font-changing commands to fontify.")
 (make-variable-buffer-local 'font-latex-match-infont-cache)
+
+(defcustom font-latex-bold-declaration-keywords
+  '("bf" "bfseries" "sc" "scshape" "upshape")
+  "List of declarations usually typeset in bold.
+The list may also contain declarations which actually are not
+typeset in bold, but should be fontified equivalently to the former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
+
+(defcustom font-latex-italic-declaration-keywords
+  '("em" "it" "itshape" "sl" "slshape")
+  "List of declarations usually typeset in italic.
+The list may also contain declarations which actually are not
+typeset in italic, but should be fontified equivalently to the
+former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
+
+(defcustom font-latex-type-declaration-keywords
+  '("tt" "ttfamily"
+    "sf" "sffamily" "rm" "rmfamily" "mdseries"
+    "tiny" "scriptsize" "footnotesize" "small"
+    "normalsize" "large" "Large" "LARGE" "huge" "Huge")
+  "List of declarations usually typeset in typewriter.
+The list may also contain declarations which actually are not
+typeset in typwriter, but should be fontified equivalently to the
+former."
+  :group 'font-latex
+  :type '(repeat (string :tag "Keyword")))
 
 (defun font-latex-match-font-inside-braces (limit)
   "Search for font-changing command like {\bf fubar} before LIMIT.
@@ -1830,20 +1922,16 @@ Returns nil if no font-changing command is found."
   (when font-latex-use-cache
     (font-latex-check-cache 'font-latex-match-infont-cache 'infont limit))
   (when (re-search-forward
-         (eval-when-compile
-           (concat "\\\\" "\\("
-                                                              ;;; 2 - italic
-                   "\\(em\\|it\\(shape\\)?\\|sl\\(shape\\)?\\)\\|"
-	                                                      ;;; 5 - bold
-                   "\\(bf\\(series\\)?\\|upshape\\|sc\\(shape\\)?\\)\\|"
-                   "mdseries\\|tt\\(family\\)?\\|"
-                   "sf\\(family\\)?\\|rm\\(family\\)?\\|"
-                   "tiny\\|scriptsize\\|footnotesize\\|"
-                   "small\\|normalsize\\|large\\|Large\\|LARGE\\|huge\\|Huge"
-                   "\\)\\>[ \t]*"))
+	 (concat "\\\\" "\\("
+		 (regexp-opt font-latex-bold-declaration-keywords t) "\\|"
+		 (regexp-opt font-latex-italic-declaration-keywords t) "\\|"
+		 (regexp-opt font-latex-type-declaration-keywords t)
+		 "\\)" "\\>[ \t]*")
          limit t)
     (cond
-     ((font-latex-commented-outp)
+     ((or (font-latex-faces-present-p '(font-lock-comment-face
+					font-latex-verbatim-face))
+	  (font-latex-commented-outp))
       ;; Return a nul match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
       ;; Using `prepend' won't help here, because the problem is that
@@ -1860,8 +1948,8 @@ Returns nil if no font-changing command is found."
         (cond
          ((not (eq (preceding-char) ?\{))
           ;; Fontify only the keyword as bf/it/type (no argument found).
-          (cond ((match-beginning 2) (setq itbeg kbeg itend kend))
-                ((match-beginning 5) (setq bfbeg kbeg bfend kend))
+          (cond ((match-beginning 2) (setq bfbeg kbeg bfend kend))
+                ((match-beginning 3) (setq itbeg kbeg itend kend))
                 (t                   (setq ttbeg kbeg ttend kend)))
           (goto-char (match-end 0))
           (store-match-data
@@ -1878,8 +1966,8 @@ Returns nil if no font-changing command is found."
               (setq cache-reset t)
               (setq end (point-max))
               (goto-char end))
-            (cond ((match-beginning 2) (setq itbeg beg  itend end))
-                  ((match-beginning 5) (setq bfbeg beg  bfend end))
+            (cond ((match-beginning 2) (setq bfbeg beg  bfend end))
+                  ((match-beginning 3) (setq itbeg beg  itend end))
                   (t                   (setq ttbeg beg  ttend end)))
             (store-match-data
              (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend))
@@ -1895,12 +1983,6 @@ Returns nil if no font-changing command is found."
                (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend)))
 
             t))))))))
-
-(defun font-latex-not-on-same-line-as (cache-start)
-  "Return t if point is not on same line as CACHE-START."
-  (save-excursion
-    (not (= (progn (beginning-of-line)(point))
-            (progn (goto-char cache-start) (beginning-of-line)(point))))))
 
 ;;; FIXME: Add caches for math-env, math-envII and quotations.
 (defun font-latex-match-math-env (limit)
@@ -1980,42 +2062,38 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 ;; GNU Emacs on 2004-07-07.
 (defun font-latex-script (pos)
   "Return face and display spec for subscript and superscript content."
-  (let* ((prop (get-text-property pos 'face))
-	 (prop-list (if (listp prop) prop (list prop))))
-    (unless (or (catch 'member
-		  (dolist (item prop-list)
-		    (when (memq item '(font-lock-constant-face
-				       font-lock-builtin-face
-				       font-lock-comment-face
-				       font-latex-verbatim-face))
-		      (throw 'member t))))
-		;; Check for math (but only if we don't already know
-		;; because of an existing fontification).
-		(and (not (memq 'font-latex-math-face prop-list))
-		     (not (save-match-data
-			    (condition-case nil (texmathp) (error nil)))))
-		;; Check for backslash quoting
-		(let ((odd nil)
-		      (pos pos))
-		  (while (eq (char-before pos) ?\\)
-		    (setq pos (1- pos) odd (not odd)))
-		  odd))
-      ;; Adding other text properties than `face' is supported by
-      ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
-      ;; Emacs 21.4 respectively.  With the introduction of this feature
-      ;; the variable `font-lock-extra-managed-props' was introduced and
-      ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
-      ;; currently (2004-08-18) does not support this feature.
-      (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
-	(if (eq (char-after pos) ?_)
-	    (if extra-props-flag
-		`(face font-latex-subscript-face display
-		       ,(car font-latex-script-display))
-	      font-latex-subscript-face)
+  (unless (or (font-latex-faces-present-p '(font-lock-constant-face
+					    font-lock-builtin-face
+					    font-lock-comment-face
+					    font-latex-verbatim-face) pos)
+	      ;; Check for math (but only if we don't already know
+	      ;; because of an existing fontification).
+	      (and (not (font-latex-faces-present-p
+			 'font-latex-math-face pos))
+		   (not (save-match-data
+			  (condition-case nil (texmathp) (error nil)))))
+	      ;; Check for backslash quoting
+	      (let ((odd nil)
+		    (pos pos))
+		(while (eq (char-before pos) ?\\)
+		  (setq pos (1- pos) odd (not odd)))
+		odd))
+    ;; Adding other text properties than `face' is supported by
+    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
+    ;; Emacs 21.4 respectively.  With the introduction of this feature
+    ;; the variable `font-lock-extra-managed-props' was introduced and
+    ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
+    ;; currently (2004-08-18) does not support this feature.
+    (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
+      (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
-	      `(face font-latex-superscript-face display
-		     ,(cdr font-latex-script-display))
-	    font-latex-superscript-face))))))
+	      `(face font-latex-subscript-face display
+		     ,(car font-latex-script-display))
+	    font-latex-subscript-face)
+	(if extra-props-flag
+	    `(face font-latex-superscript-face display
+		   ,(cdr font-latex-script-display))
+	  font-latex-superscript-face)))))
 
 
 ;;; docTeX
