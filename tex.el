@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.477 $"))
+	    (rev "$Revision: 5.478 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-19 08:59:32 $"))
+    (let ((date "$Date: 2005-01-19 09:03:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3201,7 +3201,6 @@ be bound to `TeX-electric-macro'."
   :type '(choice (const newline)
 		 (const newline-and-indent)
 		 (const reindent-then-newline-and-indent)
-		 (const LaTeX-reindent-then-newline-and-indent)
 		 (sexp :tag "Other")))
 
 (defun TeX-newline ()
