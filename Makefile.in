@@ -224,7 +224,7 @@ full-release:
 	|| { echo "Not a properly tagged release!" >&2 ; exit 1 ; }
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
 	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz" -
-	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-$(TAG)[.-]* $(FTPDIR)
+	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-emacs-$(TAG)[.-]* $(FTPDIR)
 	read -sp "Enter pass phrase: " phrase ; \
 	for i in $(FTPDIR)/*; do \
 	   echo "$$phrase" | gpg --passphrase-fd 0 --detach-sign $$i ; \
