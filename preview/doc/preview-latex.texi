@@ -1,4 +1,6 @@
 \input texinfo
+@documentencoding ISO-8859-1
+@documentlanguage en
 @setfilename preview-latex
 @settitle preview-latex
 @direntry
@@ -95,6 +97,7 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 * Getting started::             Simple and fast.
 * Keys and lisp::               Key bindings and user-level lisp functions.
 * Customization::               Fitting it in.
+* Known problems::              When things go wrong.
 * Internals::                   Under the hood.
 * Credits::                     Contributors.
 * Index::                       A menu of many topics.             
@@ -233,7 +236,7 @@ Report a bug in the preview-latex package.
 @cindex Report a bug
 @end table
 
-@node Customization, Internals, Keys and lisp, top
+@node Customization, Known problems, Keys and lisp, top
 @chapter Customization
 @cindex Customization
 
@@ -272,8 +275,25 @@ before the @code{\RequirePackage[%P]@{preview@}} line (press the @key{Show}
 and the first @key{INS} buttons).
 
 @end itemize
- 
-@node Internals, Credits, Customization, top
+
+@node Known problems, Internals, Customization, top
+@chapter Known problems
+@comment also used as PROBLEMS file
+A number of issues are known concerning the interoperation with various
+other software.
+
+@menu
+* Problems with GhostScript::   
+* Font problems with Dvips::    
+* Emacs problems::              
+* AUC @TeX{} prior to 11.0::    
+* La@TeX{} international characters::  
+* x-symbol interoperation::     
+* Middle-clicks paste instead of toggling::  
+@end menu
+@include problems.texi
+
+@node Internals, Credits, Known problems, top
 @chapter Internals/more customization
 
 This package consists of two parts. A La@TeX{} style that splits the
@@ -448,7 +468,6 @@ alternatively in @code{preview-default-preamble}, which is customizable
 in the Preview Latex group. This currently contains @code{\emph} and
 @code{\footnote} but the plan is that it eventually will contain most
 common cases.
-
 
 @node Credits, Index, Internals, top
 @appendix Credits 
