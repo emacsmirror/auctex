@@ -50,19 +50,12 @@ buffer you can see with @kbd{C-c C-l}.  If GhostScript fails while
 processing a particular image, this image will be tagged with clickable
 buttons for the error description and for the corresponding source file.
 
-@strong{Important note:} GNU GhostScript 6.53 and 7.05 (and possibly
-later) has a security bug which can seriously affect preview-latex.
-Rather than fail, preview-latex disables security for the involved known
-versions exhibiting this bug.  If you have any doubts concerning the
-source of included PostScript code, rather install a recent version of
-AFPL GhostScript (v7.04 is known to work).  If a newer version of GNU
-GhostScript has been released since this has been written, you can try
-that out too: if the bug persists, one out of two previews will fail.
-In that case, you will need to customize the variable
-@code{preview-gs-broken-security}
-@vindex preview-gs-broken-security
-in order to tell @previewlatex{} to keep ignoring security for GNU
-GhostScript versions later than 7.05 as well.
+@strong{Important note:} Various versions of GhostScript have a security
+bug which could seriously affect @preview-latex{}.  Current versions of
+@previewlatex{} should work around this bug.  The symptom would be that
+one out of two previews will fail, and previews get generated quite
+slowly since @previewlatex{} starts a new GhostScript process after each
+failure.  Please report any reoccurence of the problem.
 
 The default options configurable with
 
