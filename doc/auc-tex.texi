@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.53 1993-08-17 16:54:42 amanda Exp $
+@c $Id: auc-tex.texi,v 1.54 1993-08-17 18:53:11 amanda Exp $
 
 @finalout
 @titlepage
@@ -2782,7 +2782,7 @@ Also save style information with @code{TeX-normal-mode} when buffer not
 modified.
 
 @item
-Use code{$(MAKE)} instead of @samp{make} to invoke @code{make} from the
+Use @code{$(MAKE)} instead of @samp{make} to invoke @code{make} from the
 @file{Makefile}.  Thanks to John Interrante
 @samp{<interran@@uluru.Stanford.EDU>}. 
 
@@ -3788,7 +3788,7 @@ first argument, or between individual style options in
 @item
 The @samp{Spell} command should apply to all files in a document.  Maybe
 it could try to restrict to files that have been modified since last
-spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@ucsd.edu>}. 
+spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@@ucsd.edu>}. 
 
 @item
 Add completion of macro arguments to @code{TeX-complete-symbol}.
