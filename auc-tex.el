@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1991-12-09 17:57:13 $|$Revision: 5.10 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-23 15:32:55 $|$Revision: 5.11 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.10 $  
+;; RCS status      : $Revision: 5.11 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Dec  9 10:14:58 1991
-;; Update Count    : 463
+;; Last Modified On: Sat Jan 18 16:15:45 1992
+;; Update Count    : 477
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,11 +118,8 @@
 ;;
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
 ;;
-;;   Make some good regexp's for paragraph-start and    
-;;     paragraph-seperate... This is pretty critical!!
-;;
 ;;   Incorporate `TeX-info-mode'... This is just a mad idea, but 
-;;   why not ?
+;;   why not ?  --- I've started working on it!
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -290,6 +287,19 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
+(if (boundp 'texinfo-mode-map)
+    ()
+  (setq texinfo-mode-map (copy-keymap TeX-mode-map))
+  (define-key texinfo-mode-map "\M-\C-d" 'texinfo-format-region)
+  (define-key texinfo-mode-map "\M-\C-a" 'texinfo-format-buffer)
+  (define-key texinfo-mode-map "\C-c\C-v"    'texinfo-insert-@var)
+  (define-key texinfo-mode-map "\C-c\C-s"    'texinfo-insert-@samp)
+  (define-key texinfo-mode-map "\C-c\C-e"    'texinfo-insert-@emph)
+  (define-key texinfo-mode-map "\C-c\C-x"    'texinfo-insert-@node)
+  (define-key texinfo-mode-map "\C-c\C-="    'texinfo-insert-@dfn)
+  (define-key texinfo-mode-map "\C-c\C-t"    'texinfo-insert-@code)
+  )
+
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TeX / LaTeX modes
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -309,7 +319,9 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 		       (regexp-quote TeX-esc)
 		       "\\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
 	      'latex-mode
-	    TeX-default-mode))))
+	    (if nil
+		'texinfo-mode
+	      TeX-default-mode)))))
     (if mode (funcall mode)
       (funcall TeX-default-mode))))
 
@@ -345,7 +357,7 @@ of plain-TeX-mode-hook."
   (interactive)
   (TeX-common-initialization)
   (use-local-map TeX-mode-map)
-  (setq mode-name "TeX")
+  (setq mode-name "AUC-TeX")
   (setq major-mode 'plain-TeX-mode)
   (make-local-variable 'TeX-command)
   (setq TeX-command "tex")
@@ -445,7 +457,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
   (use-local-map LaTeX-mode-map)
-  (setq mode-name "LaTeX")
+  (setq mode-name "AUC-LaTeX")
   (setq major-mode 'LaTeX-mode)  
   (setq outline-level-function 'LaTeX-outline-level)
 
@@ -589,6 +601,8 @@ You should insert this in your TeX-mode-hook!"
       (goto-char (point-min))
       (if (not (re-search-forward "-\\*-.*-\\*-" 100 t))
 	  (insert-string (concat "% -*- " mode-name " -*-\n")))))
+
+
 
 (defvar dummy "OUTLINE-MODE")
 
