@@ -1,5 +1,25 @@
-2002-02-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+2002-02-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (TeX-active-tempdir): Changed the type.
+	(preview-gs-dvips-sentinel): adjusted for that.
+	(preview-gs-place): queued is now missing image
+	(preview-gs-transact): that is in overlay property preview-image
+	instead.
+	(preview-gs-transact): adapt to new queued
+	(desktop-buffer-preview-misc-data): save overlays when leaving
+	desktop.
+	(preview-dissect): gets details from overlay.
+	(desktop-buffer-preview): restore overlays on reentry
+	(kill-emacs-hook): must be run after desktop hook.
+	(preview-active-string): gets passed image instead of snippet.
+	(preview-make-filename): New TeX-active-tempdir type
+	(preview-delete-file): same here
+	(preview-place-preview): adapt to new preview-active-string
+	(preview-reinstate-preview): new function for restoring a preview
+	(preview-create-subdirectory): new TeX-active-tempdir type
+
+2002-02-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+  
 	* doc/preview-latex.texi: Incorporated docs from preview.dtx,
 	minor other changes
 
