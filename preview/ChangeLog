@@ -1,3 +1,28 @@
+2003-08-04  Jan-흆e Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi:
+	* dvipng/configure.ac:
+	* dvipng/RELEASE: Prepare for 0.5 
+
+	* dvipng/misc.c: 
+	* dvipng/dvipng.h: 
+	* dvipng/set.c: Add preliminary truecolor support 
+
+	* dvipng/pk.c: Benchmark truecolor rendering, no real code change
+
+	* dvipng/special.c: 
+	* dvipng/misc.c:
+	* dvipng/dvipng.h: Add preliminary image cacheing 
+
+	* dvipng/draw.c: Small adjustments
+
+2003-07-30  Jan-흆e Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c: Fix two bugs so that bounding box again is
+	correct
+
+	* dvipng/configure.ac: configuration printout improved
+
 2003-07-10  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/wininstall.texi: fix web page of AUCTeX.
@@ -10,6 +35,14 @@
 	* aclocal.m4 (library): Fix references to AUCTeX.
 
 	* RELEASE: Fix references to AUCTeX.
+
+2003-07-02  Jan-흆e Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.h: Add prototypes 
+
+	* dvipng/draw.c: minor change 
+
+	* dvipng/RELEASE: prepare for 0.4
 
 2003-07-01  Jan-흆e Larsson  <jalar@mai.liu.se>
 
