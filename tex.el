@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.303 $"))
+	(rev "$Revision: 5.304 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-14 21:09:00 $"))
+    (let ((date "$Date: 2003-06-21 06:41:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2360,7 +2360,7 @@ See match-data for details."
 
 ;; was in latex.el, needed in context.el --pg
 (defun TeX-near-bobp ()
-  "Return t if there's nothing but whitespace between (bob) and (point)."
+  "Return t iff there's nothing but whitespace between (bob) and (point)."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
