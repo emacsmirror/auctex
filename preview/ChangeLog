@@ -1,5 +1,7 @@
 2002-08-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.3
+
 	* preview.el (preview-auto-cache-preamble): Renamed from
 	preview-dump-default.  Make the default 'ask: that way people
 	will be hard put to overlook this feature, but are not stuck on
