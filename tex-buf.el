@@ -530,26 +530,21 @@ Return the new process."
 
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-run-format name command file)))
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel name file process))))
 
-(defun TeX-run-ConTeXt (name command file)
-  "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-run-format name command file)))
-    (setq TeX-sentinel-function 'TeX-ConTeXt-sentinel)
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel name file process))))
+  ;; can we assume that TeX-sentinel-function will not be changed
+  ;; during (TeX-run-format ..)? --pg
+  ;; rather use let* ? --pg
+  (let ((sentinel-function TeX-sentinel-default-function))
+    (let ((process (TeX-run-format name command file)))
+      (setq TeX-sentinel-function sentinel-function)
+      (if TeX-process-asynchronous
+	  process
+	(TeX-synchronous-sentinel name file process)))))
 
-(defun TeX-run-LaTeX (name command file)
-  "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-run-format name command file)))
-    (setq TeX-sentinel-function 'TeX-LaTeX-sentinel)
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel name file process))))
+;; backward compatibilty 
+ 
+(defalias 'TeX-run-LaTeX 'TeX-run-TeX)
+
 
 (defun TeX-run-BibTeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with BibTeX."
@@ -627,7 +622,7 @@ Error parsing on C-x ` should work with a bit of luck."
 	(process nil)
 	(dir (TeX-master-directory))
 	(command-buff (current-buffer))
-	(sentinel-function TeX-sentinel-function)) ;; inherit from major mode
+	(sentinel-function TeX-sentinel-default-function)) ; inherit from major mode
     (TeX-process-check file)		; Check that no process is running
     (setq-default TeX-command-buffer command-buff)
     (with-output-to-temp-buffer buffer)
@@ -717,6 +712,14 @@ Error parsing on C-x ` should work with a bit of luck."
 NAME is the name of the process.")
 
   (make-variable-buffer-local 'TeX-sentinel-function)
+
+
+(defvar TeX-sentinel-default-function (function (lambda (process name)))
+  "Default for TeX-sentinel-function. To be set in major mode. 
+Hook to cleanup TeX command buffer after temination of PROCESS. 
+NAME is the name of the process.")
+
+  (make-variable-buffer-local 'TeX-sentinel-default-function)
 
 (defun TeX-TeX-sentinel (process name)
   "Cleanup TeX output buffer after running TeX."
