@@ -10,12 +10,17 @@
 %else
 %define distri      .fedora
 %define commongroup Applications/Editors
-%define xemacspkgdir %{_datadir}/xemacs/site-packages
+%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %endif
+
+# we use xemacs-packages because the system packages can be found
+# here, and preview-latex is not yet a part of any sumo tarball or
+# similar.  The choice for AUCTeX would probably be site-packages
+# instead.
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.9
+Version: 	0.9.1
 Release: 	1%{distri}
 License:        GPL
 BuildArchitectures: noarch

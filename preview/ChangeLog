@@ -1,5 +1,8 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* preview-latex.spec: Change version number.  Change directory
+	choice to "xemacs-packages" on fedora.
+
 	* doc/wininstall.texi: Mention that Perl is not needed if working
 	with the default tarball.
 
