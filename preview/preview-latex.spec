@@ -121,6 +121,10 @@ for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
   cp -R $i %{buildroot}%{docs}
 done
 
+# Remove dir file that has been created by the makeinfo calls because this
+# file will not been included in the rpm distribution (make RPM 4.1+ happy)
+rm %{buildroot}/usr/share/info/dir
+
 %clean
 rm -rf %{buildroot}
 
