@@ -1,3 +1,9 @@
+2004-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-paragraph): Do not narrow region when code
+	comments are filled.  Fixes wrong indentation if a line with a
+	code comment following an indented line is filled.
+
 2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-built-in-keyword-classes): Move
