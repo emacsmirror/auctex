@@ -348,7 +348,7 @@ in TeX-check-path."
 	 (answer (or TeX-command-force
 		     (completing-read
 		      (concat "Command: (default " default ") ")
-		      TeX-command-list nil t
+		      (TeX-mode-specific-command-list major-mode) nil t
 		      nil 'TeX-command-history))))
     ;; If the answer "latex" it will not be expanded to "LaTeX"
     (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
