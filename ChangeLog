@@ -1,3 +1,15 @@
+2004-09-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-keywords-1): Add highlighter for math
+	macros.
+	(font-latex-keywords-2): Use regexp for matching instead of
+	`font-latex-match-script'.
+	(font-latex-match-font-outside-braces): Add support for math, esp.
+	"\ensuremath".
+	(font-latex-match-script): Remove.
+	(font-latex-script): Fix check for present faces.  Add `texmathp'
+	check in case there is no math face present.
+
 2004-09-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* aclocal.m4 (texinputdirs): Strip leading "!!".
