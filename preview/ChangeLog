@@ -1,5 +1,14 @@
 2002-02-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/Makefile (install): install the renamed info files.
+
+	* doc/preview-latex.texi: change output file name to
+	preview-latex.info in order to keep preview-latex as a directory
+	name for HTML output.
+
+	* doc/Makefile (preview-latex/index.html): generate HTML with
+	makeinfo as texi2html does not grok @preview-latex.
+
 	* doc/preview-latex.texi: Write Å instead of @AA (x-symbol sneaked
 	that in).  And revert again: does not print.
 
