@@ -1,3 +1,11 @@
+2005-02-01  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/changes.texi: Mention support for the jsarticle and jsbook
+	classes.
+
+	* tex-jp.el (japanese-LaTeX-style-list): Added
+	jsclasses (jsarticle and jsbook).
+
 2005-01-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Bump version info to 11.55.
