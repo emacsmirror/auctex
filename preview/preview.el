@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.162 2002-09-02 10:57:42 dakas Exp $
+;; $Id: preview.el,v 1.163 2002-11-04 20:28:48 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1147,7 +1147,7 @@ such preview."
 	(when preview-state
 	  (if (eq preview-state 'disabled)
 	      (preview-regenerate ovr)
-	    (preview-toggle ovr 'toggle))
+	    (preview-toggle ovr 'toggle (selected-window)))
 	  (throw 'exit t))))
     (preview-region (preview-next-border t)
 		    (preview-next-border nil))))
@@ -1439,7 +1439,8 @@ to the close hook."
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
-		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
+		  `(lambda(event) (interactive "e")
+		     (preview-toggle ,ov 'toggle event))
 		  `(lambda() (interactive) (preview-delete ,ov))))
     (prog1 (apply #'preview-call-hook 'place ov snippet box
 		  place-opts)
@@ -1471,7 +1472,8 @@ and the corresponding topdir."
       (overlay-put ov 'preview-map
 		   (preview-make-clickable
 		    nil nil nil
-		    `(lambda() (interactive) (preview-toggle ,ov 'toggle))
+		    `(lambda(event) (interactive "e")
+		       (preview-toggle ,ov 'toggle event))
 		    `(lambda() (interactive) (preview-delete ,ov))))
       (overlay-put ov 'filenames (list filename))
       (overlay-put ov 'preview-image (preview-import-image image))
@@ -2229,7 +2231,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.162 $"))
+	(rev "$Revision: 1.163 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2240,7 +2242,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-09-02 10:57:42 $"))
+    (let ((date "$Date: 2002-11-04 20:28:48 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
