@@ -1,5 +1,21 @@
 2004-12-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-keymap): Add key binding for
+	`TeX-fold-dwim'.
+	(TeX-fold-dwim): New function.
+	(TeX-fold-macro, TeX-fold-env): Call `message' here instead of in
+	`TeX-fold-item' to get the right return value for the latter.
+	(TeX-fold-item): Move `message' out to get the right return value.
+	(TeX-fold-remove-overlays): Signal if an overlay was deleted with
+	the return value.
+
+	* tex.el (TeX-fold-menu): Add menu entry for `Tex-fold-dwim'.
+
+	* doc/auctex.texi (Folding): Document `TeX-fold-dwim'.
+
+	* doc/changes.texi: Advertise folding and unfolding of regions as
+	well as DWIM functionality.
+
 	* tex-fold.el (TeX-fold-keymap): Add key bindings for
 	`TeX-fold-region and `TeX-fold-clearout-region'.
 	(TeX-fold-region): Make interactive.
@@ -9,6 +25,7 @@
 
 	* doc/auctex.texi (Folding): Document folding and unfolding of
 	regions.
+	Document `TeX-fold-dwim'.
 
 	* latex.el (LaTeX-fill-code-comment): Do not hardcode tab width.
 
