@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.43 1993-07-27 01:12:32 amanda Exp $
+;;; $Id: tex-buf.el,v 1.44 1993-07-27 18:44:25 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -243,7 +243,8 @@ in TeX-check-path."
 					  TeX-file-extensions)
 			 TeX-command-default)
 			((TeX-check-files (concat name ".bbl")
-					  (LaTeX-bibliography-list)
+					  (mapcar 'car
+						  (LaTeX-bibliography-list))
 					  BibTeX-file-extensions)
 			 ;; We should check for bst files here as well.
 			 TeX-command-BibTeX)
