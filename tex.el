@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.13 1994-04-23 15:53:44 amanda Exp $
+;; Version: $Id: tex.el,v 5.14 1994-04-24 21:55:01 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1810,9 +1810,12 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File" 'TeX-command-master)
-	(TeX-command-create-menu "Command on Buffer" 'TeX-command-buffer)
-	(TeX-command-create-menu "Command on Region" 'TeX-command-region)
+	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
+				 'TeX-command-master)
+	(TeX-command-create-menu "Command on Buffer  (C-c C-b)"
+				 'TeX-command-buffer)
+	(TeX-command-create-menu "Command on Region  (C-c C-r)"
+				 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	["Kill Job" TeX-kill-job t]
 	["Toggle debug of boxes" TeX-toggle-debug-boxes t]
@@ -2218,6 +2221,7 @@ between."
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUC TeX in the info system."
+  (interactive)
   (require 'info)
   (Info-goto-node "(auctex)"))
 

@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.89 1994-04-23 15:53:50 amanda Exp $
+@c $Id: auc-tex.texi,v 1.90 1994-04-24 21:55:07 amanda Exp $
 
 @finalout
 @titlepage
@@ -3366,6 +3366,10 @@ mail me first, though.
 
 @itemize @bullet
 @item
+A nice hierarchical by-topic organization of all officially documented
+LaTeX macros, available from the menu bar.
+
+@item
 Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
 simply self insert if not in a math context.
 
@@ -3383,11 +3387,6 @@ La@TeX{} formatting should skip @code{verbatim} environments.
 @item
 @code{TeX-command-default} should be set from the master file, if not
 set locally.  Suggested by Peter Whaite @samp{<peta@@cim.mcgill.ca>}.
-
-@item
-All the text formatting code really needs a major rewrite.  Not that
-there are many bugs, but I can't figure out how to fix those that
-exists. 
 
 @item
 Make AUC @TeX{} work with @samp{crypt++}.  Suggested by Chris Moore

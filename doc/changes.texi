@@ -26,6 +26,9 @@ and probably more.@refill
 
 @itemize @bullet
 @item
+Made environments and sections selectable from the menu bar.
+
+@item
 Support Emacs comment conventions.  Comments starting with a single
 @samp{%} are indented at @code{comment-column}.  Comments starting with
 @samp{%%%} are indented at column 0.  Comments starting with
