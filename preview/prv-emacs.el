@@ -139,33 +139,26 @@ if there was any urgentization."
   "Generate a clickable string or keymap.
 If MAP is non-nil, it specifies a keymap to add to, otherwise
 a new one is created.  If GLYPH is given, the result is made
-to display it, whether it is a string or image.  In that case,
+to display it wrapped in a string.  In that case,
 HELPSTRING is a format string with one or two %s specifiers
 for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
 are functions to call on preview's clicks."
-  `(let (,@(and glyph `((glyph ,glyph) res))
-           (resmap ,(or map '(make-sparse-keymap))))
+  `(let ((resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
            `((define-key resmap preview-button-2 ,click2)))
-     ,@(if glyph
-           `((if (stringp glyph)
-		 (setq res (copy-sequence glyph))
-	       (setq res (copy-sequence "x"))
-	       (add-text-properties 0 1 (list 'display glyph)
-				    res))
-	     (add-text-properties
-              0 (length res)
-              (list 'mouse-face 'highlight
-              'help-echo
-	      ,(if (stringp helpstring)
-		   (format helpstring preview-button-1 preview-button-2)
-		 `(format ,helpstring preview-button-1 preview-button-2))
-              'keymap resmap)
-              res)
-             res)
-         '(resmap))))
+     ,(if glyph
+	  `(propertize
+	    "x"
+	    'display ,glyph
+	    'mouse-face 'highlight
+	    'help-echo
+	    ,(if (stringp helpstring)
+		 (format helpstring preview-button-1 preview-button-2)
+	       `(format ,helpstring preview-button-1 preview-button-2))
+	    'keymap resmap)
+	'resmap)))
 
 (defun preview-int-bb (bb)
   "Make integer bounding box from possibly float BB."
