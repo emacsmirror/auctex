@@ -311,16 +311,19 @@ nil displays the underlying text, and 'toggle toggles."
 		(overlay-put ov prop
 			     (get-text-property 0 prop (car strings))))
 	      (overlay-put ov 'before-string nil))
-	    (overlay-put ov 'face nil)
-	    (with-current-buffer (overlay-buffer ov)
-	      (add-hook 'pre-command-hook #'preview-mark-point nil t)
-	      (add-hook 'post-command-hook #'preview-move-point nil t)))
+	    (overlay-put ov 'face nil))
 	(dolist (prop '(display keymap mouse-face help-echo))
 	  (overlay-put ov prop nil))
 	(overlay-put ov 'face 'preview-face)
 	(overlay-put ov 'before-string (cdr strings)))
       (if old-urgent
 	  (apply 'preview-add-urgentization old-urgent)))))
+
+(defun preview-mode-setup ()
+  "Setup proper buffer hooks and behavior for previews."
+  (add-hook 'pre-command-hook #'preview-mark-point nil t)
+  (add-hook 'post-command-hook #'preview-move-point nil t))
+
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
@@ -487,9 +490,9 @@ Pure borderless black-on-white will return NIL."
 	  (mapcar #'preview-gs-color-value fg)
 	  '("setrgbcolor"))))))
 
-(defun preview-mark-active ()
+(defmacro preview-mark-active ()
   "Return t if the mark is active."
-  mark-active)
+  'mark-active)
 
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
   "Activates the LaTeX menus for the BODYFORMS.
