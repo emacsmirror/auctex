@@ -2287,13 +2287,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
 	  ;; ELSE part follows - loop termination relies on a fact
 	  ;; that (LaTeX-fill-region-as-para-do) moves point past
 	  ;; the filled region
-	  (LaTeX-fill-region-as-para-do from (point-max) justify-flag)))
-      ;; the following four lines are clearly optional, but I like my
-      ;; LaTeX code that way
-      (goto-char (point-min))
-      (while (search-forward "$$ " nil t)
-	(replace-match "$$\n" t t)
-	(indent-according-to-mode)))))
+	  (LaTeX-fill-region-as-para-do from (point-max) justify-flag))))))
 
 ;; The content of `LaTeX-fill-region-as-para-do' was copied from the
 ;; function `fill-region-as-paragraph' in `fill.el' (CVS Emacs,
@@ -2581,10 +2575,11 @@ space does not end a sentence, so don't break a line there."
 	(beginning-of-line)
 	(LaTeX-back-to-indentation)
 	(setq start-point (point))
-	;; Find occurences of `[', `$', `{', `}', `\(', `\)', `\[' or `\]'.
+	;; Find occurences of [, $, {, }, \(, \), \[, \] or $$.
 	(while (and (= final-breakpoint orig-breakpoint)
 		    (TeX-re-search-forward-unescaped
-		     (concat "[[{}$]\\|" (regexp-quote TeX-esc) "[][()]")
+		     (concat "[[{}]\\|\\$\\$?\\|"
+			     (regexp-quote TeX-esc) "[][()]")
 		     orig-breakpoint t))
 	  (let ((match-string (match-string 0)))
 	    (cond
@@ -2593,7 +2588,6 @@ space does not end a sentence, so don't break a line there."
 	     ;; opening brace.)
 	     ((save-excursion
 		(and (memq '\[ LaTeX-fill-break-at-separators)
-		     (eq (length match-string) 1)
 		     (string= match-string "[")
 		     (TeX-re-search-forward-unescaped (concat "\\][ \t]*{")
 						      (line-end-position) t)
@@ -2608,7 +2602,7 @@ space does not end a sentence, so don't break a line there."
 	     ;; { (opening brace)
 	     ((save-excursion
 		(and (memq '\{ LaTeX-fill-break-at-separators)
-		     (string= (substring match-string -1) "{")
+		     (string= match-string "{")
 		     (> (- (save-excursion
 			     ;; `TeX-find-closing-brace' is not enough
 			     ;; if there is no breakpoint in form of
@@ -2637,7 +2631,7 @@ space does not end a sentence, so don't break a line there."
 	     ;; } (closing brace)
 	     ((save-excursion
 		(and (memq '\} LaTeX-fill-break-at-separators)
-		     (string= (substring match-string -1) "}")
+		     (string= match-string "}")
 		     (save-excursion
 		       (backward-char 2)
 		       (not (TeX-find-opening-brace
@@ -2646,32 +2640,23 @@ space does not end a sentence, so don't break a line there."
 		(skip-chars-forward "^ \n")
 		(when (> (point) start-point)
 		  (setq final-breakpoint (point)))))
-	     ;; $ or \( or \[ (opening math)
+	     ;; $ or \( or \[ or $$ (opening math)
 	     ((save-excursion
 		(and (or (and (memq '\\\( LaTeX-fill-break-at-separators)
-			      (string= (setq math-sep
-					     (substring match-string -1)) "$")
-			      (texmathp))
-			 (and (memq '\\\( LaTeX-fill-break-at-separators)
-			      (> (length match-string) 1)
-			      (string= (setq math-sep
-						 (substring match-string -2))
-					   "\\("))
+			      (or (and (string= match-string "$")
+				       (texmathp))
+				  (string= match-string "\\(")))
 			 (and (memq '\\\[ LaTeX-fill-break-at-separators)
-			      (> (length match-string) 1)
-			      (string= (setq math-sep
-					     (substring match-string -2))
-				       "\\[")))
+			      (or (string= match-string "\\[")
+				  (and (string= match-string "$$")
+				       (texmathp)))))
 		     (> (- (save-excursion
-			     (re-search-forward
-			      (cond
-			       ((string= math-sep "$")
-				(concat "[^" TeX-esc "]"
-					(regexp-quote "$")))
-			       ((string= math-sep "\\(")
-				(concat (regexp-quote TeX-esc) ")"))
-			       (t
-				(concat (regexp-quote TeX-esc) "]")))
+			     (TeX-search-forward-unescaped
+			      (cond ((string= match-string "\\(")
+				     (concat TeX-esc ")"))
+				    ((string= match-string "$") "$")
+				    ((string= match-string "$$") "$$")
+				    (t (concat TeX-esc "]")))
 			      (point-max) t)
 			     (point))
 			   (line-beginning-position))
@@ -2680,27 +2665,21 @@ space does not end a sentence, so don't break a line there."
 		(skip-chars-backward "^ \n")
 		(when (> (point) start-point)
 		  (setq final-breakpoint (point)))))
-	     ;; $ or \) or \] (closing math)
+	     ;; $ or \) or \] or $$ (closing math)
 	     ((save-excursion
 		(and (or (and (memq '\\\) LaTeX-fill-break-at-separators)
-			      (string= (setq math-sep
-					     (substring match-string -1)) "$")
-			      (not (texmathp)))
-			 (and (memq '\\\) LaTeX-fill-break-at-separators)
-			      (> (length match-string) 1)
-			      (string= (setq math-sep
-					     (substring match-string -2))
-				       "\\)"))
+			      (or (and (string= match-string "$")
+				       (not (texmathp)))
+				  (string= match-string "\\)")))
 			 (and (memq '\\\] LaTeX-fill-break-at-separators)
-			      (> (length match-string) 1)
-			      (string= (setq math-sep
-					     (substring match-string -2))
-				       "\\]")))
-		     (if (string= math-sep "$")
+			      (or (string= match-string "\\]")
+				  (and (string= match-string "$$")
+				       (not (texmathp))))))
+		     (if (member match-string '("$" "$$"))
 			 (save-excursion
-			   (backward-char 2)
+			   (skip-chars-backward "$")
 			   (not (TeX-search-backward-unescaped
-				 "$" (line-beginning-position) t)))
+				 match-string (line-beginning-position) t)))
 		       (texmathp-match-switch (line-beginning-position)))))
 	      (save-excursion
 		(skip-chars-forward "^ \n")
