@@ -2246,20 +2246,29 @@ space does not end a sentence, so don't break a line there."
 	;; This is the actual filling loop.
 	(goto-char from)
 	(let (linebeg
-              code-comment-pos)
-          (setq code-comment-pos
-                (save-excursion
-                  (forward-char (length fill-prefix))
-                  (re-search-forward comment-start-skip
-                                     (line-end-position) t)))
+              code-comment-flag)
+          (setq code-comment-flag
+                (if (save-excursion
+                      (forward-char (length fill-prefix))
+                      (re-search-forward comment-start-skip
+                                         (line-end-position) t))
+                t
+                nil))
           ;; Fill until point is greater than the end point.  If there
           ;; is a code comment, use the code comment's start as a
           ;; limit.
 	  (while (and (< (point) to)
-                      (or (not code-comment-pos)
-                          (and code-comment-pos
-                               (> (- code-comment-pos (line-beginning-position))
-                                  fill-column))))
+                      (or (not code-comment-flag)
+                          (and code-comment-flag
+                               ;; In terms of performance the
+                               ;; re-search-forward statement is not
+                               ;; very good.  But the code comment
+                               ;; position is a moving target and
+                               ;; cannot be set before the loop.
+                               (not (re-search-forward
+                                     comment-start-skip
+                                     (+ (line-beginning-position)
+                                        fill-column) t)))))
 	    (setq linebeg (point))
 	    (move-to-column (current-fill-column))
 	    (if (when (< (point) to)
