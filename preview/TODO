@@ -35,3 +35,7 @@ Program a direct dvi->png rendering daemon
  output and replaces the Dvips->GhostScript chain.  This could be
  done using DVIlib2 from the TeX-Guy project.  The current performance
  of  that, however, does not seem to offer any advantage.
+
+Integrate into refTeX
+ When referecing to equations and the like, the preview-images of the
+ source rather than plain text should be displayed.
