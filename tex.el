@@ -1,18 +1,18 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10p
+;; Version: 9.10q
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
-;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 2000 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 1, or (at your option)
+;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 ;; 
 ;; This program is distributed in the hope that it will be useful,
@@ -130,6 +130,7 @@ performed as specified in TeX-expand-list."
 	(list "LaTeX PDF" "pdflatex '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil t)
 	(list "AmSTeX" "amstex '\\nonstopmode\\input %t'"
 	      'TeX-run-TeX nil t))
   "List of commands to execute on the current document.
