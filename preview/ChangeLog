@@ -1,5 +1,19 @@
 2001-10-26  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-mouse-open-eps): fix a typo in help
+	message.
+	(preview-analyze-error): Remove traces of inhibit-point-motion
+	madness.  If search for (concat string after-string) fails, try
+	again just with string in order to support uses of Auc-TeX's
+	original interface.
+
+	* prv-emacs.el (preview-toggle): Don't reactivate disabled
+	overlays (could happen in isearches ended by an editing operation).
+	(preview-move-point): While we are simulating point-adjustment,
+	heed disable-point-adjustment in order to make isearch (and
+	probably other utilities) Do The Right Thing (TM).  Works
+	beatifully.
+
 	* preview.el (preview-LaTeX-command): new customization variable.
 	(LaTeX-preview-setup): use it.
 
