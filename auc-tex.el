@@ -6,12 +6,19 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.7 $  
+;; LCD Archive Entry:
+;; auc-tex.el|Kresten Krab Thorup|krab@iesd.auc.dk
+;; | A much enhanced LaTeX mode 
+;; |$Date: 1991-09-01 13:43:19 $|$Revision: 4.8 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.el
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; RCS status      : $Revision: 4.8 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Jun 13 20:33:56 1991
-;; Update Count    : 335
+;; Last Modified On: Sun Sep  1 15:43:18 1991
+;; Update Count    : 336
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
