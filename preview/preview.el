@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.70 2002-03-08 00:41:54 dakas Exp $
+;; $Id: preview.el,v 1.71 2002-03-09 10:57:32 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1077,7 +1077,7 @@ See description of `TeX-command-list' for details."
   :type 'string
   :set (lambda (symbol value)
 	 (set-default symbol value)
-	 (if (featurep 'tex)
+	 (if (featurep 'latex)
 	     (LaTeX-preview-setup)))
   :initialize #'custom-initialize-default)
 
@@ -1094,6 +1094,7 @@ This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (require 'tex-buf)
+  (require 'latex)
   (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
 			     #'TeX-inline-preview nil)))
     (setq TeX-command-list
@@ -1121,10 +1122,15 @@ preview Emacs Lisp package something too stupid."))
 ;;; out as a deep copy of TeX-mode-map, so changes in TeX-mode-menu
 ;;; don't reach LaTeX-mode-map.  Is this portable to XEmacs?  Probably
 ;;; not.
-
-  (easy-menu-add-item (easy-menu-get-map (assoc-default 'menu-bar LaTeX-mode-map) '("Command") "Generate Preview")
-		      nil
-		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
+  (let ((save-map (current-local-map)))
+    (unwind-protect
+	(progn
+	  (use-local-map LaTeX-mode-map)
+	  (easy-menu-add-item nil
+			      '("Command")
+			      (TeX-command-menu-entry
+			       (assoc "Generate Preview" TeX-command-list))))
+      (use-local-map save-map)))
   (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-at-point)
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
@@ -1208,7 +1214,7 @@ See `TeX-parse-TeX' for documentation of REPARSE."
 	nil)))
 
 ;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
-(if (featurep 'tex)
+(if (featurep 'latex)
     (LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup))
 
@@ -1458,7 +1464,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.70 $"))
+	(rev "$Revision: 1.71 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
