@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{500}
+%\CheckSum{510}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.27 $
+%  \rcskey \version CVS-$Revision: 1.28 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-11-30 20:05:00 $
+%\rcskey\next $Date: 2002-01-18 15:04:55 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -221,7 +221,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.27 $
+   \reserved@a\reserved@b CVS-$Revision: 1.28 $
 \else
    \begingroup
       \lccode`-=`.
@@ -230,7 +230,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-11-30 20:05:00 $
+\reserved@a\next $Date: 2002-01-18 15:04:55 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
@@ -407,13 +407,23 @@
    \voffset=-\ht\pr@box
    \hoffset=\z@
    \c@page=\pr@snippet
-   \shipout\box\pr@box}%
+   \pr@shipout\box\pr@box}%
    \pr@ship@end
    \global\advance\pr@snippet\@ne
    \pr@cleanup
 }
 %    \end{macrocode}
 %\end{macro}
+%Oh, and we kill off the usual meaning of \cmd{\shipout} in case
+%somebody makes a special output routine.  The following is rather
+%ugly, but should do the trick most of the time since \cmd{\shipout}
+%is most often called in a local group by \cmd{\output}.
+%  \begin{macro}{\shipout}
+%    \begin{macrocode}
+\let\pr@shipout=\shipout
+\def\shipout{\setbox\z@\voidb@x\setbox\z@}
+%    \end{macrocode}
+%  \end{macro}
 %\subsection{Parsing commands}
 %\begin{macro}{\pr@callafter}
 %\begin{macro}{\pr@parseit}
