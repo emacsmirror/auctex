@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.156 2002-07-28 23:28:20 dakas Exp $
+;; $Id: preview.el,v 1.157 2002-07-30 22:38:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -201,9 +201,11 @@ If `preview-fast-conversion' is set, this option is not
   :group 'preview-gs
   :type 'number)
 
-(defvar preview-parsed-font-size nil)
+(defvar preview-parsed-font-size nil
+  "Font size as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-font-size)
-(defvar preview-parsed-magnification nil)
+(defvar preview-parsed-magnification nil
+  "Magnification as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-magnification)
 
 (defun preview-get-magnification ()
@@ -872,7 +874,7 @@ recursively."
 	     (setq res (preview-hook-enquiry (car hook))
 		   hook (cdr hook)))
 	   res))
-	((symbolp hook)
+	((and (symbolp hook) (boundp hook))
 	 (symbol-value hook))
 	(t hook)))
 			  
@@ -905,10 +907,12 @@ This is for matching screen font size and previews."
   "*How `preview-document-pt' figures out the document size."
   :group 'preview-appearance
   :type
-  '(list (choice
-	  (symbol :value preview-parsed-font-size)
-	  (function :value preview-auctex-font-size)
-	  (number :value 11))))
+  '(repeat (choice
+	    ;; This is a bug: type function seems to match variables, too.
+	    (restricted-sexp :match-alternatives (functionp)
+			     :tag "Function" :value preview-auctex-font-size)
+	    (variable :value preview-parsed-font-size)
+	    (number :value 11))))
 
 (defun preview-auctex-font-size ()
   "Calculate the default font size of document.
@@ -2140,7 +2144,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.156 $"))
+	(rev "$Revision: 1.157 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2151,7 +2155,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-28 23:28:20 $"))
+    (let ((date "$Date: 2002-07-30 22:38:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
