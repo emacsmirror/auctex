@@ -11,9 +11,9 @@ INSTALLINFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
-TEXIFILES = copying.texi install.texi macros.texi preview-dtxdoc.texi \
-	preview-latex.texi problems.texi readme.texi todo.texi \
-	wininstall.texi
+TEXIFILES = copying.texi faq.texi install.texi macros.texi \
+	preview-dtxdoc.texi preview-latex.texi problems.texi \
+	readme.texi todo.texi wininstall.texi
 
 all: preview-latex.dvi preview-latex.info
 
@@ -48,6 +48,10 @@ INSTALL.windows: wininstall.texi macros.texi
 README: readme.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		readme.texi --output README
+
+FAQ: faq.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		--number-sections faq.texi --output FAQ
 
 PROBLEMS: problems.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \

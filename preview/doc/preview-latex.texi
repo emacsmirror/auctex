@@ -94,6 +94,7 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 * Known problems::              When things go wrong.
 * For advanced users::          Internals and more customizations.
 * ToDo::                        Future development.
+* Frequently Asked Questions::  All about @previewlatex{}
 * License::                     GPL.
 * Index::                       A menu of many topics.             
 @end menu
@@ -628,12 +629,17 @@ manual disabling of your favorite macro in
 @vindex preview-default-preamble
 which is customizable in the Preview Latex group.
 
-@node ToDo, License, For advanced users, top
+@node ToDo, Frequently Asked Questions, For advanced users, top
 @c Also used as TODO: in separate file
 @appendix ToDo
 @include todo.texi
 
-@node License, Index, ToDo, top
+@node Frequently Asked Questions, License, ToDo, top
+@c Also used as TODO: in separate file
+@appendix Frequently Asked Questions
+@include faq.texi
+
+@node License, Index, Frequently Asked Questions, top
 @c Not to be changed often, I think: in separate file.
 @appendix License
 @include copying.texi
