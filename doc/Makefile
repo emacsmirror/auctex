@@ -58,6 +58,7 @@ HISTORY: history.texi
 	-makeinfo --no-headers history.texi --output HISTORY
 
 install: auctex
+	-mkdir -p $(infodir)
 	cp auctex auctex-* $(infodir)
 	@echo "**********************************************************"
 	@echo "** The \`auctex' info files are now installed."
