@@ -1,3 +1,14 @@
+2002-11-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-ps-quote-filename): New function replacing
+	preview-ps-quote, generating a relative file name.
+	(preview-prepare-fast-conversion): Use it.
+	(preview-gs-transact): Use it.
+	(LaTeX-preview-setup): Make tmp directory name relative.
+	Problem is that Cygwin absolute paths are not suitable for
+	passing into MikTeX.  Sigh.  But perhaps relative file names are
+	nicer, anyway.
+
 2002-11-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.h: 
