@@ -1,3 +1,8 @@
+2003-03-30  David Kastrup  <dakas@users.sourceforge.net>
+
+	* doc/install.texi (Configure), doc/wininstall.texi: explain
+	--with-emacs and stuff even less ambiguously.
+
 2003-03-28  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/README: 

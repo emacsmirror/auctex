@@ -120,12 +120,13 @@ help it out with one of these options:
 @table @code
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
-@code{configure} is not finding the right Emacs binary, you can specify
-it with this option.
+@code{configure} is not finding the right Emacs executable, you can
+specify it with this option.
 
 @item --with-xemacs[=@var{/path/to/xemacs}]
-Configure for generation under xemacs (emacs is the default). Again, the
-path to the right XEmacs binary can be specified with this option.
+Configure for generation under XEmacs (Emacs is the default).  Again,
+the name of the right XEmacs executable can be specified, complete with
+path if necessary.
 
 @item --with-lispdir=@var{/dir}
 This tells where to install Emacs Lisp files.  Normally, this option is

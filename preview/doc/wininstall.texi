@@ -80,9 +80,11 @@ call @code{./configure} with appropriate options.
 Typical options you'll want to specify will be
 @table @code
 @item --with-emacs
-if you are installing Emacs.  Use
-@samp{--with-emacs=@var{path-to-emacs}} to specify the installed
-location of your Emacs binary.
+if you are installing Emacs.  You can use
+@samp{--with-emacs=@var{/path/to/emacs}} to specify the name of the
+installed Emacs executable, complete with its path if necessary (if
+Emacs is not within a directory specified in your @var{PATH}
+environment setting).
 
 @item --with-xemacs
 If you are using XEmacs, of course use @samp{--with-xemacs} in the same
