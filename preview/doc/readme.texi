@@ -52,9 +52,10 @@ For some known issues with various software, see the file
 @cindex Download
 @cindex @acronym{CVS} access
 
-The @previewlatex{} project is available at Sourceforge, where the
-source tarball can be downloaded and also a binary @file{.rpm}
-suitable for a recent RedHat system.  See
+The @previewlatex{} project is available at Sourceforge.  In addition to
+the main source tarball, we provide prebuilt documentation files there
+for those lacking a recent enough version of makeinfo, and source and
+binary @file{.rpm} files suitable for a recent RedHat system.  See
 @uref{http://sourceforge.net/projects/preview-latex}.
 
 Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
@@ -76,7 +77,6 @@ Updates from within the preview directory do not need the @option{-d}
 parameter.  A simple @code{cvs update} from within that directory will
 make your @acronym{CVS} mirror up to date again.  For developer access,
 ask on @email{preview-latex-devel@@lists.sourceforge.net} (see below).
-
 
 @section Contacts
 @cindex Contacts
