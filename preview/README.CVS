@@ -20,7 +20,4 @@ FAQ
 and you can then continue from there.
 
 You will need to have a working copy of `makeinfo' and of `autoconf'
-for that.  Since various versions of `autoconf' all have different
-issues and semantics, some changes to the generated `configure' script
-are applied by `autogen.sh' after running `autoconf'.  It will not
-work to just run `autoconf' yourself for that reason.
+for that.
