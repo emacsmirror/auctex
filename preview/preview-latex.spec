@@ -124,14 +124,14 @@ done
 rm -rf %{buildroot}
 
 %post common
-install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
+/sbin/install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
 texhash /usr/share/texmf
 
 %preun common
 # $1 is the number of versions of this package installed
 # after this uninstallation
 if [ $1 -eq 0 ]; then
-  install-info --info-dir=%{_infodir} --delete \
+  /sbin/install-info --info-dir=%{_infodir} --delete \
     %{_infodir}/preview-latex.info 
 fi
 
