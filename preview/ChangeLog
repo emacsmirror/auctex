@@ -1,3 +1,19 @@
+2003-04-17  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/install.texi:
+	* dvipng/dvipng.texi: Rewrite stuff 
+
+	* dvipng/dvipng.h: New debug flag 
+
+	* dvipng/configure.ac: 
+	* dvipng/config.h.in: Configure GS_PATH 
+
+	* dvipng/special.c: No tempfiles anymore. Communicate with child
+	through two pipes.
+
+	* dvipng/configure.ac: 
+	* dvipng/Makefile.in: Make docs
+
 2003-04-17  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* doc/wininstall.texi: Corrected --with-lispdir and --with-packagedir
