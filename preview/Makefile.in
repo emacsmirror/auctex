@@ -94,7 +94,7 @@ install-texmf:
 install-startup:
 	if $(packagedir) = no; then \
 	  $(MAKE) preview-latex.el && \
-	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir) \
+	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir) ; \
 	fi
 
 $(LISP_OBJS):	$(LISP_SOURCES)
