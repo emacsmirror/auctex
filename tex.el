@@ -358,7 +358,7 @@ is performed as specified in `TeX-expand-list'."
 
 If the first element (a regular expresion) matches the name of
 one of the style files, any occurrence of the string `%v' in a
-command in TeX-command-list will be replaced with the second
+command in `TeX-command-list' will be replaced with the second
 element.  The first match is used, if no match is found the `%v'
 is replaced with the empty string.
 
@@ -540,7 +540,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.349 $"))
+	(rev "$Revision: 5.350 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -555,7 +555,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-19 14:28:30 $"))
+    (let ((date "$Date: 2004-04-20 13:15:04 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -672,7 +672,7 @@ this variable to \"<none>\"."
   "Ask for master file, set `TeX-master' and add local variables."
   (interactive)
   (if (TeX-local-master-p)
-      (error "Master file already set.")
+      (error "Master file already set")
     (setq TeX-master
 	  (let ((default (TeX-dwim-master)))
 	    (or
@@ -2831,11 +2831,13 @@ comment characters instead."
 	(or (looking-at comment-start-skip)
 	    (re-search-forward comment-start-skip pos t))))))
 
-;; FIXME: The following defuns aren't checkdoc clean:  -- rs
-
 (defun TeX-in-commented-line ()
-  "Return non-nil if point is in a line consisting only of a comment with
-some potential whitespace at its beginning."
+  "Return non-nil if point is in a line consisting only of a comment.
+The comment can be preceded by whitespace.  This means that
+`TeX-in-commented-line' is more general than `TeX-in-line-comment'
+which will not match commented lines with leading whitespace.  But
+`TeX-in-commented-line' will match commented lines without leading
+whitespace as well."
   (save-excursion
     (save-match-data
       (re-search-backward "^\\|\r" nil t)
@@ -2844,8 +2846,9 @@ some potential whitespace at its beginning."
         nil))))
 
 (defun TeX-in-line-comment ()
-  "Return non-nil if point is in a line consisting only of a comment
-with no whitespace at its beginning."
+  "Return non-nil if point is in a line comment.
+A line comment is a comment starting in column one, i.e. there is
+no whitespace before the comment sign."
   (save-excursion
     (save-match-data
       (move-to-left-margin)
@@ -2854,10 +2857,10 @@ with no whitespace at its beginning."
         nil))))
 
 (defun TeX-forward-comment-skip (&optional count limit)
-  "Move forward to the next switch between commented and
-uncommented adjacent lines.  With argument COUNT do it COUNT
-times.  If argument LIMIT is given, do not move point further
-than this value."
+  "Move forward to the next comment/non-comment skip.
+This is a switch between commented and not commented adjacent
+lines.  With argument COUNT do it COUNT times.  If argument LIMIT
+is given, do not move point further than this value."
   (unless count (setq count 1))
   ;; A value of 0 is nonsense.
   (when (= count 0) (setq count 1))
@@ -2888,12 +2891,13 @@ than this value."
 	(forward-line 1))))
 
 (defun TeX-backward-comment-skip (&optional count limit)
-  "Move backward to the previous switch between commented and
-uncommented adjacent lines.  With argument COUNT do it COUNT
-times.  If argument LIMIT is given, do not move point to a
-position less than this value."
+  "Move backward to the previous comment/non-comment skip.
+This is a switch between commented and uncommented adjacent
+lines.  With argument COUNT do it COUNT times.  If argument LIMIT
+is given, do not move point to a position less than this value."
   (unless count (setq count 1))
   (when (= count 0) (setq count 1))
+  (unless limit (setq limit (point-min)))
   (TeX-forward-comment-skip (- count) limit))
 
 
@@ -2939,9 +2943,10 @@ position less than this value."
 ;;; Braces
 
 (defun TeX-find-closing-brace (&optional arg limit)
-  "Return the position of the closing brace for the current
-opening brace.  With optional ARG>=1, find that outer level.  If
-LIMIT is non-nil, search down to this position in the buffer."
+  "Return the position of the closing brace in a TeX group.
+The function assumes that point is inside the group, i.e. after
+an opening brace.  With optional ARG>=1, find that outer level.
+If LIMIT is non-nil, search down to this position in the buffer."
   (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
     (save-excursion
       (while (and
@@ -2957,9 +2962,10 @@ LIMIT is non-nil, search down to this position in the buffer."
 	(point)))))
 
 (defun TeX-find-opening-brace (&optional arg limit)
-  "Return the position of the closing brace for the current
-opening brace.  With optional ARG>=1, find that outer level.  If
-LIMIT is non-nil, search up to this position in the buffer."
+  "Return the position of the opening brace in a TeX group.
+The function assumes that point is inside the group, i.e. before
+a closing brace.  With optional ARG>=1, find that outer level.
+If LIMIT is non-nil, search up to this position in the buffer."
   (let ((arg (if arg (if (< arg 1) 1 arg) 1))
 	brace)
     (save-excursion
@@ -3173,7 +3179,7 @@ With optional ARG, insert that many dollar signs."
 		       (buffer-substring (point)
 					 (progn (end-of-line) (point)))))))
       ;; Math mode was not entered with dollar - we cannot finish it with one.
-      (error "Math mode because of `%s'.  Use `C-q $' to force a dollar."
+      (error "Math mode because of `%s'.  Use `C-q $' to force a dollar"
 	     (car texmathp-why))))
    (t
     ;; Just somewhere in the text.
