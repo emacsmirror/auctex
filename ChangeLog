@@ -1,3 +1,10 @@
+2004-08-03  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-source-specials-view-gnuserv-p): replaces
+	`TeX-source-specials-view-guess-server'.
+	(TeX-source-specials-view-expand-client)
+	(TeX-source-specials-view-expand-options): Use this.
+
 2004-08-03  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/alphanum.el, style/doc.el, style/jura.el,

@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.402 $"))
+	(rev "$Revision: 5.403 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 14:28:37 $"))
+    (let ((date "$Date: 2004-08-03 16:51:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -712,26 +712,24 @@ If this is nil, an empty string will be returned."
   "-editor \"%cS --no-wait +%%l %%f\""
   "*Flags to pass to DVI viewer commands for inverse search with emacsclient.")
 
-(defun TeX-source-specials-view-guess-server ()
-  "Guess the server to be used for inverse search."
+(defun TeX-source-specials-view-gnuserv-p ()
+  "Guess whether to use gnuserv for inverse search."
   (cond ((and (boundp 'gnuserv-process)
-	      (processp gnuserv-process))
-	 'gnuserv)
+	      (processp gnuserv-process)))
 	((and (boundp 'server-process)
 	      (processp server-process))
-	 'emacs-server)
-	((featurep 'xemacs) 'gnuserv)
-	(t 'emacs-server)))
+	 nil)
+	((featurep 'xemacs))))
 
 (defun TeX-source-specials-view-expand-client ()
   "Return gnuclient or emacslient executable with full path if possible."
-  (let* ((client-base (if (eq (TeX-source-specials-view-guess-server) 'gnuserv)
+  (let* ((client-base (if (TeX-source-specials-view-gnuserv-p)
 			  "gnuclient"
 			"emacsclient"))
 	 (client-full (and invocation-directory
 			   (expand-file-name client-base
 					     invocation-directory))))
-    (if (file-executable-p client-full)
+    (if (and client-full (file-executable-p client-full))
 	client-full
       client-base)))
 
@@ -740,38 +738,35 @@ If this is nil, an empty string will be returned."
 The return value depends on the value of `TeX-source-specials'.
 If this is nil, an empty string will be returned."
   (if TeX-source-specials
-    (let* ((server (TeX-source-specials-view-guess-server))
-	   (process (if (eq server 'gnuserv) 'gnuserv-process 'server-process))
-	   (start (if (eq server 'gnuserv) 'gnuserv-start 'server-start))
-	   (client-flags (if (eq server 'gnuserv)
-			     TeX-source-specials-view-gnuclient-flags
-			   TeX-source-specials-view-emacsclient-flags))
-	   (server-enabled
-	    (cond
-	     ;; Server is already running
-	     ((and (boundp process) (symbol-value process))
-	      t)
-	     ;; Server is not running but should be started unconditionally
-	     ((eq TeX-source-specials-view-start-server t)
-	      (funcall start))
-	     ;; Server is not running and we have to ask if it is to
-	     ;; be started
-	     ((and (eq TeX-source-specials-view-start-server 'ask)
-		   (not TeX-source-specials-view-start-server-asked))
-	      (if (y-or-n-p (concat "Start " (if (eq server 'gnuserv)
-						 "gnuserv"
-					       "Emacs server")
-				    " to allow inverse search with"
-				    " DVI viewer?"))
-		  (progn
-		    (setq TeX-source-specials-view-start-server-asked t)
-		    (funcall start))
-		(setq TeX-source-specials-view-start-server-asked t)
-		nil))
-	     ;; Server is not running and should not be started
-	     (t nil))))
-      (concat TeX-source-specials-view-position-flags
-	      (when server-enabled (concat " " client-flags))))
+      (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
+	     (process (if gnuserv-p 'gnuserv-process 'server-process))
+	     (start (if gnuserv-p 'gnuserv-start 'server-start))
+	     (client-flags (if gnuserv-p
+			       TeX-source-specials-view-gnuclient-flags
+			     TeX-source-specials-view-emacsclient-flags))
+	     (server-enabled
+	      (cond
+	       ;; Server is already running
+	       ((and (boundp process) (processp (symbol-value process))))
+	       ;; Server is not running but should be started unconditionally
+	       ((eq TeX-source-specials-view-start-server t)
+		(funcall start)
+		t)
+	       ;; Server is not running and we have to ask if it is to
+	       ;; be started
+	       ((and (eq TeX-source-specials-view-start-server 'ask)
+		     (not TeX-source-specials-view-start-server-asked)
+		     (prog1
+			 (y-or-n-p
+			  (format "Start %s for inverse search in viewer? "
+				  (if gnuserv-p
+				      "gnuserv"
+				    "Emacs server")))
+		       (setq TeX-source-specials-view-start-server-asked t)))
+		(funcall start)
+		t))))
+	(concat TeX-source-specials-view-position-flags
+		(when server-enabled (concat " " client-flags))))
     ""))
 
 
