@@ -1,3 +1,29 @@
+1999-01-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9o released.
+
+1999-01-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-insert-braces, TeX-command-list): Fixed custom types.  
+	Patch by Markus Rost <markus.rost@mathematik.uni-regensburg.de>.  
+
+1999-01-09  Christoph Wedler  <wedler@fmi.uni-passau.de>
+
+	* latex.el (LaTeX2e-font-replace): Don't use hard-coded regexp for
+ 	font commands, use local `TeX-font-list', i.e., `LaTeX-font-list'.
+
+1999-01-05  Christoph Wedler  <wedler@fmi.uni-passau.de>
+
+	* tex.el (TeX-load-style-file): Do not prevent .elc style files to
+ 	be loaded if `TeX-byte-compile' is nil, just prevent compilation.
+	(TeX-lisp-directory): Only use `locate-data-directory' if this
+	function is defined and AucTeX is installed as an XEmacs package.
+
+1998-12-12  Christoph Wedler  <wedler@fmi.uni-passau.de>
+
+	* tex.el (load-path): Don't add `TeX-lisp-directory'.
+	(TeX-lisp-directory): Use `locate-data-directory' if present.
+
 1998-12-12  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9n released.

@@ -1,6 +1,19 @@
 @section News in 9.9
 
 @itemize @bullet
+@item Fixed some custom types.  
+Patch by Markus Rost <markus.rost@@mathematik.uni-regensburg.de>.
+
+@item Support loading byte compiled files, even if
+@code{TeX-byte-compile} is nil.
+Patch by Christoph Wedler  <wedler@@fmi.uni-passau.de>.
+
+@item The command to replace a LaTeX2e font should work more reliably
+now.  Patch by Christoph Wedler  <wedler@@fmi.uni-passau.de>.
+
+@item Minor XEmacs packaging changes.
+Patch by Christoph Wedler  <wedler@@fmi.uni-passau.de>.
+
 @item @code{TeX-file-recurse} now accepts an integer value, max depth of
 recursion.  Patch by Alastair Burt  <burt@@dfki.bde>.
 

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9n
+;; Version: 9.9o
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2997,20 +2997,31 @@ of `LaTeX-mode-hook'."
 
 (defun LaTeX2e-font-replace (start end)
   "Replace LaTeX2e font specification around point with START and END."
-  (save-excursion
-    (catch 'done
-      (while t
-	(if (/= ?\\ (following-char))
-	    (skip-chars-backward "a-zA-Z "))
-	(skip-chars-backward "\\\\")
-	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\|math[a-z]+\\){")
-	    (throw 'done t)
-	  (up-list -1))))
-    (forward-sexp 2)
+  (let ((font-list TeX-font-list)
+	cmds strings regexp)
+    (while font-list
+      (setq strings (cdr (car font-list))
+	    font-list (cdr font-list))
+      (and (stringp (car strings)) (null (string= (car strings) ""))
+	   (setq cmds (cons (car strings) cmds)))
+      (setq strings (cdr (cdr strings)))
+      (and (stringp (car strings)) (null (string= (car strings) ""))
+	   (setq cmds (cons (car strings) cmds))))
+    (setq regexp (mapconcat 'regexp-quote cmds "\\|"))
     (save-excursion
-      (replace-match start t t))
-    (delete-backward-char 1)
-    (insert end)))
+      (catch 'done
+	(while t
+	  (if (/= ?\\ (following-char))
+	      (skip-chars-backward "a-zA-Z "))
+	  (skip-chars-backward "\\\\")
+	  (if (looking-at regexp)
+	      (throw 'done t)
+	    (up-list -1))))
+      (forward-sexp 2)
+      (save-excursion
+	(replace-match start t t))
+      (delete-backward-char 1)
+      (insert end))))
 
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.
