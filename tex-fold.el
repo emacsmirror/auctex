@@ -209,43 +209,44 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 	;; Start from the bottom so that it is easier to prioritize
 	;; nested macros.
 	(goto-char (point-max))
-	(while (re-search-backward regexp nil t)
-	  (when (not (and TeX-fold-preserve-comments (TeX-in-commented-line)))
-	    (let* ((item-start (match-beginning 0))
-		   (display-string-spec (cadr (assoc (match-string 1)
-						     fold-list)))
-		   (item-end (cond ((and (eq type 'env)
-					 (eq major-mode 'context-mode))
-				    (save-excursion
-				      (goto-char (match-end 0))
-				      (ConTeXt-find-matching-stop)
-				      (point)))
-				   ((and (eq type 'env)
-					 (eq major-mode 'texinfo-mode))
-				    (save-excursion
-				      (goto-char (match-end 0))
-				      (Texinfo-find-env-end)
-				      (point)))
-				   ((eq type 'env)
-				    (save-excursion
-				      (goto-char (match-end 0))
-				      (LaTeX-find-matching-end)
-				      (point)))
-				   (t
-				    (save-excursion
-				      (goto-char item-start)
-				      (TeX-find-macro-end)))))
-		   (display-string (if (integerp display-string-spec)
-				       (or (TeX-fold-macro-nth-arg
-					    display-string-spec
-					    item-start (when (eq type 'macro)
-							 item-end))
-					   "[Error: No content found]")
-				     display-string-spec))
-		   (ov (TeX-fold-make-overlay item-start item-end type
+	(let ((case-fold-search nil))
+	  (while (re-search-backward regexp nil t)
+	    (when (not (and TeX-fold-preserve-comments (TeX-in-commented-line)))
+	      (let* ((item-start (match-beginning 0))
+		     (display-string-spec (cadr (assoc (match-string 1)
+						       fold-list)))
+		     (item-end (cond ((and (eq type 'env)
+					   (eq major-mode 'context-mode))
+				      (save-excursion
+					(goto-char (match-end 0))
+					(ConTeXt-find-matching-stop)
+					(point)))
+				     ((and (eq type 'env)
+					   (eq major-mode 'texinfo-mode))
+				      (save-excursion
+					(goto-char (match-end 0))
+					(Texinfo-find-env-end)
+					(point)))
+				     ((eq type 'env)
+				      (save-excursion
+					(goto-char (match-end 0))
+					(LaTeX-find-matching-end)
+					(point)))
+				     (t
+				      (save-excursion
+					(goto-char item-start)
+					(TeX-find-macro-end)))))
+		     (display-string (if (integerp display-string-spec)
+					 (or (TeX-fold-macro-nth-arg
 					      display-string-spec
-					      display-string)))
-	      (TeX-fold-hide-item ov))))))))
+					      item-start (when (eq type 'macro)
+							   item-end))
+					     "[Error: No content found]")
+				       display-string-spec))
+		     (ov (TeX-fold-make-overlay item-start item-end type
+						display-string-spec
+						display-string)))
+		(TeX-fold-hide-item ov)))))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
