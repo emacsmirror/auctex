@@ -1,5 +1,8 @@
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/readme.texi (Getting started): mention circ.tex here
+	instead of installation.texi.
+
 	* preview.el (preview-gs-filter): Don't remove from "Compilation"
 	tag if just in filter routine.
 
