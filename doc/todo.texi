@@ -141,30 +141,6 @@ ought to make @kbd{,} special for these kind of completions.
 Suggest @samp{makindex} when appropriate.
 
 @item
-@AUCTeX{} should be able to parse @LaTeX{}2e @file{.cls} files.  Here
-are the regexps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
-Thiemann.
-
-@example
-     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?\\[\\([0-9]+\\)\\]\
-\\[\\([^\]\\\\\n\r]+\\)\\]"
-      (1 2 3) LaTeX-auto-optional)
-     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?\\[\\([0-9]+\\)\\]"
-      (1 2) LaTeX-auto-arguments)
-     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?" 1 TeX-auto-symbol)
-     ("\\\\DeclareFixedFont@{?\\\\\\([a-zA-Z]+\\)@}?"
-      1 TeX-auto-symbol)
-     ("\\\\Declare\\(Text\\|Old\\)FontCommand@{?\\\\\\([a-zA-Z]+\\)@}?"
-      2 TeX-auto-symbol)
-     ("\\\\DeclareMath\\(Symbol\\|Delimiter\\|Accent\\|Radical\\)@{?\\\\\\([a-zA-Z]+\\)@}?"
-      2 TeX-auto-symbol)
-     ;;; it is also valid to declare just a single symbol, e.g. <,
-     ;;; with \DeclareMathSymbol but it is not necessary to register that here
-     ("\\\\DeclareText\\(Command\\|Symbol\\|Accent\\|Composite\\)@{?\\\\\\([a-zA-Z]+\\)@}?"
-      2 TeX-auto-symbol)
-@end example
-
-@item
 Use index files (when available) to speed up @kbd{C-c C-m include
 @key{RET}}.
 
