@@ -1,3 +1,8 @@
+2005-02-18  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-delete-newlines): New function.
+	(LaTeX-fill-region-as-para-do): Use it.
+
 2005-02-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Give an
