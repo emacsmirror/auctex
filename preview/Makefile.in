@@ -126,7 +126,6 @@ clean:
 .PHONY: distclean
 
 distclean: clean
-	rm -rf autom4te.cache
 	rm -f config.log config.cache config.status
 	rm -f Makefile */Makefile auto.el
 
@@ -136,6 +135,7 @@ maintainer-clean:
 	(cd doc ; $(MAKE) maintainer-clean)
 	$(MAKE) distclean
 	rm -f $(DISTTEXTS)
+	rm -rf autom4te.cache
 
 .PHONY: tarball-ready
 
@@ -144,3 +144,4 @@ tarball-ready:
 	(cd doc; make preview-latex.info $(DISTTEXTS))
 	(cd doc; mv $(DISTTEXTS) ..)
 	$(MAKE) distclean
+	rm -rf autom4te.cache
