@@ -1,5 +1,7 @@
 2004-12-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* Makefile.in (distclean): Remove generated `configure' file.
+
 	* style/jurabib.el ("jurabib"): Add further macros.
 
 	* tex.el: Add coding cookie.
