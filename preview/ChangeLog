@@ -1,8 +1,12 @@
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-install.el (preview-make-package-xemacs): Use
+	preview-release-date.
+
 	* preview.el (preview-log-error): Be really anal and careful
 	about what information the process might still be providing.
 	Christ, is this silly.
+	(preview-release-date): New constant.
 
 	* prv-xemacs.el (preview-replace-active-icon): Use
 	set-extend-end-glyph.
