@@ -229,7 +229,13 @@ Also selects \"<quote\"> versus \">quote\"<."
   "High level highlighting for LaTeX modes.")
 
 (defvar font-latex-built-in-keyword-classes
-  '(("variable"
+  '(("warning"
+     ("nopagebreak" "pagebreak" "newpage" "clearpage"
+      "cleardoublepage" "enlargethispage" "nolinebreak" "linebreak"
+      "newline" "-" "\\" "\\*" "appendix" "displaybreak"
+      "allowdisplaybreaks" "include")
+     font-latex-warning-face 1 noarg)
+    ("variable"
      ("setlength" "settowidth" "setcounter" "addtolength"
       "addtocounter")
      font-lock-variable-name-face 2 (command 2 nil))
@@ -264,12 +270,6 @@ Also selects \"<quote\"> versus \">quote\"<."
      ("item" "title" "author" "date" "thanks" "address" "caption"
       "textsuperscript")
      font-lock-type-face 2 (command 1 t))
-    ("warning"
-     ("nopagebreak" "pagebreak" "newpage" "clearpage"
-      "cleardoublepage" "enlargethispage" "nolinebreak" "linebreak"
-      "newline" "-" "\\" "\\*" "appendix" "displaybreak"
-      "allowdisplaybreaks")
-     font-latex-warning-face 1 noarg)
     ("bold-command"
      ("textbf" "textsc" "textup" "boldsymbol" "pmb")
      font-latex-bold-face
