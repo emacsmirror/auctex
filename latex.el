@@ -3257,45 +3257,45 @@ See also `LaTeX-math-menu'."
 				(integer :tag "Number")))))
 
 (defconst LaTeX-math-default
-  '((?a "alpha" "greek" 945) ;; #X03B1
-    (?b "beta" "greek" 946) ;; #X03B2
-    (?g "gamma" "greek" 947) ;; #X03B3
-    (?d "delta" "greek" 948) ;; #X03B4
-    (?e "epsilon" "greek" 1013) ;; #X03F5
-    (?z "zeta" "greek" 950) ;; #X03B6
-    (?h "eta" "greek" 951) ;; #X03B7
-    (?j "theta" "greek" 952) ;; #X03B8
-    (nil "iota" "greek" 953) ;; #X03B9
-    (?k "kappa" "greek" 954) ;; #X03BA
-    (?l "lambda" "greek" 955) ;; #X03BB
-    (?m "mu" "greek" 956) ;; #X03BC
-    (?n "nu" "greek" 957) ;; #X03BD
-    (?x "xi" "greek" 958) ;; #X03BE
-    (?p "pi" "greek" 960) ;; #X03C0
-    (?r "rho" "greek" 961) ;; #X03C1
-    (?s "sigma" "greek" 963) ;; #X03C3
-    (?t "tau" "greek" 964) ;; #X03C4
-    (?u "upsilon" "greek" 965) ;; #X03C5
-    (?f "phi" "greek" 981) ;; #X03D5
-    (?q "chi" "greek" 967) ;; #X03C7
-    (?y "psi" "greek" 968) ;; #X03C8
-    (?w "omega" "greek" 969) ;; #X03C9
-    (nil "varepsilon" "greek" 949) ;; #X03B5
-    (nil "vartheta" "greek" 977) ;; #X03D1
-    (nil "varpi" "greek" 982) ;; #X03D6
-    (nil "varrho" "greek" 1009) ;; #X03F1
-    (nil "varsigma" "greek" 962) ;; #X03C2
-    (nil "varphi" "greek" 966) ;; #X03C6
-    (?G "Gamma" "Greek" 915) ;; #X0393
-    (?D "Delta" "Greek" 916) ;; #X0394
-    (?J "Theta" "Greek" 920) ;; #X0398
-    (?L "Lambda" "Greek" 923) ;; #X039B
-    (?P "Pi" "Greek" 928) ;; #X03A0
-    (?S "Sigma" "Greek" 931) ;; #X03A3
-    (?U "Upsilon" "Greek" 978) ;; #X03D2
-    (?F "Phi" "Greek" 934) ;; #X03A6
-    (?Y "Psi" "Greek" 936) ;; #X03A8
-    (?W "Omega" "Greek" 937) ;; #X03A9
+  '((?a "alpha" "Greek Lowercase" 945) ;; #X03B1
+    (?b "beta" "Greek Lowercase" 946) ;; #X03B2
+    (?g "gamma" "Greek Lowercase" 947) ;; #X03B3
+    (?d "delta" "Greek Lowercase" 948) ;; #X03B4
+    (?e "epsilon" "Greek Lowercase" 1013) ;; #X03F5
+    (?z "zeta" "Greek Lowercase" 950) ;; #X03B6
+    (?h "eta" "Greek Lowercase" 951) ;; #X03B7
+    (?j "theta" "Greek Lowercase" 952) ;; #X03B8
+    (nil "iota" "Greek Lowercase" 953) ;; #X03B9
+    (?k "kappa" "Greek Lowercase" 954) ;; #X03BA
+    (?l "lambda" "Greek Lowercase" 955) ;; #X03BB
+    (?m "mu" "Greek Lowercase" 956) ;; #X03BC
+    (?n "nu" "Greek Lowercase" 957) ;; #X03BD
+    (?x "xi" "Greek Lowercase" 958) ;; #X03BE
+    (?p "pi" "Greek Lowercase" 960) ;; #X03C0
+    (?r "rho" "Greek Lowercase" 961) ;; #X03C1
+    (?s "sigma" "Greek Lowercase" 963) ;; #X03C3
+    (?t "tau" "Greek Lowercase" 964) ;; #X03C4
+    (?u "upsilon" "Greek Lowercase" 965) ;; #X03C5
+    (?f "phi" "Greek Lowercase" 981) ;; #X03D5
+    (?q "chi" "Greek Lowercase" 967) ;; #X03C7
+    (?y "psi" "Greek Lowercase" 968) ;; #X03C8
+    (?w "omega" "Greek Lowercase" 969) ;; #X03C9
+    (nil "varepsilon" "Greek Lowercase" 949) ;; #X03B5
+    (nil "vartheta" "Greek Lowercase" 977) ;; #X03D1
+    (nil "varpi" "Greek Lowercase" 982) ;; #X03D6
+    (nil "varrho" "Greek Lowercase" 1009) ;; #X03F1
+    (nil "varsigma" "Greek Lowercase" 962) ;; #X03C2
+    (nil "varphi" "Greek Lowercase" 966) ;; #X03C6
+    (?G "Gamma" "Greek Uppercase" 915) ;; #X0393
+    (?D "Delta" "Greek Uppercase" 916) ;; #X0394
+    (?J "Theta" "Greek Uppercase" 920) ;; #X0398
+    (?L "Lambda" "Greek Uppercase" 923) ;; #X039B
+    (?P "Pi" "Greek Uppercase" 928) ;; #X03A0
+    (?S "Sigma" "Greek Uppercase" 931) ;; #X03A3
+    (?U "Upsilon" "Greek Uppercase" 978) ;; #X03D2
+    (?F "Phi" "Greek Uppercase" 934) ;; #X03A6
+    (?Y "Psi" "Greek Uppercase" 936) ;; #X03A8
+    (?W "Omega" "Greek Uppercase" 937) ;; #X03A9
     (?c LaTeX-math-cal "Cal-whatever")
     (nil "pm" "Binary Op" 177) ;; #X00B1
     (nil "mp" "Binary Op" 8723) ;; #X2213
@@ -3794,8 +3794,8 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defvar LaTeX-math-menu
   '("Math"
-    ("Greek") ("greek") ("Binary Op") ("Relational") ("Arrows")
-    ("Misc Symbol") ("Var Symbol") ("Log-like") ("delimiters")
+    ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
+    ("Arrows") ("Misc Symbol") ("Var Symbol") ("Log-like") ("delimiters")
     ("Delimiters") ("Constructs") ("Accents") ("AMS"))
   "Menu containing LaTeX math commands.
 The menu entries will be generated dynamically, but you can specify
