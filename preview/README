@@ -30,6 +30,9 @@ recent version of GhostScript.  At the current point of time, XEmacs
 is not supported.  This may change in future versions, depending on
 contributions.
 
+Bug reports should be sent by using M-x preview-report-bug RET, as
+this will fill in a lot of information interesting to us.
+
 See the INSTALL file for installation instructions, and COPYING for
 the license.  There is little documentation available except in the
 source files themselves at the current point of time.  The LaTeX style
