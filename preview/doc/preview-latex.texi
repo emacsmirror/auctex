@@ -26,7 +26,7 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.2
+@subtitle Version 0.7.3
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
@@ -78,12 +78,9 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.2
+This file documents @previewlatex{} version 0.7.3
 
-@strong{Please note:} XEmacs support is very new and its coverage in
-this manual might be incomplete.
-
-This documentation should cover most (other) important points.  However,
+This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
 
 David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
@@ -436,28 +433,51 @@ switch off @code{preview-fast-conversion} would be that you have some
 bounding box problem and want to get Dvips' angle on that matter.
 
 @item preview-scale-function
-@itemx preview-default-document-pt
 @itemx preview-reference-face
+@itemx preview-document-pt-list
+@itemx preview-default-document-pt
 @code{preview-scale-function} determines by what factor PostScript
 images should be scaled when appearing on the screen.  If you specify a
 numerical value here, the physical size on the screen will be that of
 the original paper output scaled by the specified factor, at least if
 Emacs' information about screen size and resolution are correct.  The
 default is to let @code{preview-scale-from-face} determine the scale
-function.  This function asks @AUCTeX{} about any size specification
-like @option{12pt} to the documentclass, asks Emacs about the geometry
-of the font @code{preview-reference-face} (usually the default face used
-for display) and then calculates the scale factor to make them match.
+function.  This function determines the scale factor by making the
+size of the default font in the document math that of the on-screen
+fonts.
+
+The size of the screen fonts is deduced from the font
+@code{preview-reference-face} (usually the default face used for
+display), the size of the default font for the document is determined
+by calling @code{preview-document-pt}.
+@findex preview-document-pt
+This function consults the members of @code{preview-document-pt-list} in
+turn until it gets the desired information.  The default consults first
+@code{preview-parsed-font-size},
+@vindex preview-parsed-font-size
+then calls @code{preview-auctex-font-size}
+@findex preview-auctex-font-size
+which asks @AUCTeX{} about any size specification like @option{12pt} to
+the documentclass that it might have detected when parsing the document, and
+finally reverts to just assuming @code{preview-default-document-pt} as
+the size used in the document (defaulting to 10pt).
+
 If you find that the size of previews and the other Emacs display
-clashes, something goes wrong.  One possibility is that you did not
-specify a size option, in which case @code{preview-default-document-pt}
-is assumed, normally @code{10pt}.  If you are using a document class
-with a different default value (like KomaScript), this assumption will
+clashes, something goes wrong.  @code{preview-parsed-font-size} is
+determined at @code{\begin@{document@}} time; if the default font size
+changes after that, it will not get reported.  If you have an outdated
+version of @file{preview.sty} in your path, the size might not be
+reported at all.  If in this case @AUCTeX{} is unable to find a size
+specification, and if you are using a document class with a different
+default value (like KomaScript), the default fallback assumption will
 probably be wrong and @previewlatex{} will scale up things too large.
 So better specify those size options even when you know that @LaTeX{}
 does not need them: @previewlatex{} might benefit from them.  Another
 possibility for error is that you have not enabled @AUCTeX{}'s document
-parsing options.
+parsing options.  The fallback method of asking @AUCTeX{} about the size
+might be disabled in future versions of @previewlatex{} since in
+general it is more reliable to get this information from the @LaTeX{}
+run itself.
 
 @item preview-fast-dvips-command
 @itemx preview-dvips-command
@@ -593,10 +613,13 @@ configuration file @file{prauctex.cfg} that gets loaded by default
 unless the @samp{preview} package gets loaded with the @option{noconfig}
 option.  You can make your own copy of this file in a local directory
 and edit it in case of need.  You can also add loading of a file of your
-liking to @code{preview-default-preamble}, or alternatively do the
+liking to @code{preview-default-preamble},
+@vindex preview-default-preamble
+or alternatively do the
 manual disabling of your favorite macro in
-@code{preview-default-preamble}, which is customizable in the Preview
-Latex group.
+@code{preview-default-preamble},
+@vindex preview-default-preamble
+which is customizable in the Preview Latex group.
 
 @node ToDo, License, For advanced users, top
 @c Also used as TODO: in separate file
