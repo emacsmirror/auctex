@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.117 2002-04-15 15:49:55 dakas Exp $
+;; $Id: preview.el,v 1.118 2002-04-15 23:05:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -354,9 +354,15 @@ ERR is the caught error syndrome, CONTEXT is where it
 occured, PROCESS is the process for which the run-buffer
 is to be used."
   (when (or (null process) (buffer-name (process-buffer process)))
-    (with-current-buffer (if process (process-buffer process) (current-buffer))
+    (with-current-buffer (or (and process
+				  (process-buffer process))
+			     (current-buffer))
       (save-excursion
-	(goto-char (if process (process-mark process) (point-max)))
+	(goto-char (or (and process
+			    (process-buffer process)
+			    (marker-buffer (process-mark process))
+			    (process-mark process))
+		       (point-max)))
 	(insert-before-markers
 	 (format "%s: %s\n"
 		 context (error-message-string err))))))
@@ -1859,7 +1865,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.117 $"))
+	(rev "$Revision: 1.118 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
