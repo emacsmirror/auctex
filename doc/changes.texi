@@ -1,6 +1,10 @@
 @section News in 9.8
 
 @itemize @bullet
+@item Make @code{TeX-master} a local variable in Bib@TeX{} mode and set
+it to true.  This seems to be necessary to enable auto-parsing of a .bib
+file.  Patch by Berwin A. Turlach @samp{<berwin.turlach@@anu.edu.au>}.
+
 @item Support for Harvard style updated by Berwin A. Turlach
 @samp{<berwin.turlach@@anu.edu.au>}.
 

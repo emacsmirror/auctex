@@ -1,3 +1,8 @@
+Sat Jul  5 11:08:07 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+
+	* latex.el (BibTeX-auto-store): make TeX-master a local variable
+	and set it to true.
+
 Thu Jul 03 18:06:22 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8c released.

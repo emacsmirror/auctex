@@ -1093,7 +1093,9 @@ It will setup BibTeX to store keys in an auto file."
   (make-local-variable 'TeX-auto-parse-length)
   (setq TeX-auto-parse-length 999999)
   (make-local-variable 'TeX-auto-regexp-list)
-  (setq TeX-auto-regexp-list BibTeX-auto-regexp-list))
+  (setq TeX-auto-regexp-list BibTeX-auto-regexp-list)
+  (make-local-variable 'TeX-master)
+  (setq TeX-master t))
 
 (defvar BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
