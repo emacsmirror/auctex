@@ -1,3 +1,13 @@
+2001-11-11  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-transparent-border): Change definition to
+	numeric/nil, set default to 3pt.
+	(preview-create-icon): adapt heuristic-mask accordingly
+	(preview-ps-image): same here
+	(preview-gs-get-colors): use new definition of
+	preview-transparent-border, use PostScript code not subject to
+	anti-aliasing effects.
+
 2001-11-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Make reassignment of
