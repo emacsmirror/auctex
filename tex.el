@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.62 1995-11-08 17:49:05 abraham Exp $
+;; Version: $Id: tex.el,v 5.63 1995-12-18 13:47:33 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1331,6 +1331,8 @@ of AmS-TeX-mode-hook."
 	 "\\)*\\)\\(%+ *\\)"))
   (make-local-variable 'comment-indent-hook)
   (setq comment-indent-hook 'TeX-comment-indent)
+  (make-local-variable 'comment-multi-line)
+  (setq comment-multi-line nil)
   (make-local-variable 'compile-command)
   (if (boundp 'compile-command)
       ()
@@ -1692,7 +1694,7 @@ If TEX is a directory, generate style files for all files in the directory."
   "List of hooks to be called before parsing a TeX file.")
 
 (defvar TeX-auto-cleanup-hook nil
-  "List of hooks to be called after partsing a TeX file.")
+  "List of hooks to be called after parsing a TeX file.")
 
 (defvar TeX-auto-parse-length 999999
   "*Maximal length of TeX file that will be parsed.")
