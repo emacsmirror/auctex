@@ -1,3 +1,9 @@
+2002-04-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-nonready-icon): Use new icons.
+	(preview-icon): Same here.
+
+
 2002-04-07  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-install.el (preview-make-package-xemacs):
