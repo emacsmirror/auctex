@@ -1,6 +1,7 @@
 @section News in 9.10
 
 @itemize @bullet
-@item None yet@dots{}
+@item Fixed bug with file searching.
+Reported by Berwin Turlach <bturlach@@maths.adelaide.edu.au>.
 
 @end itemize

@@ -2199,16 +2199,17 @@ If optional argument EXTENSIONS is not set, use TeX-file-extensions"
   (if (null directories)
       (setq directories
 	    (cons "./" (append TeX-macro-private TeX-macro-global))))
-  (mapcar (function
-	   (lambda (dir)
-	     (TeX-search-files-1 dir extensions nodir strip
-			      (cond 
-			       ((and (numberp TeX-file-recurse)
-				     (> TeX-file-recurse 0))
-				TeX-file-recurse)
-			       ((null TeX-file-recurse) 1)
-			       (t -1)))))
-	  directories))
+  (apply 'nconc 
+	 (mapcar
+	  (lambda (dir)
+	    (TeX-search-files-1 dir extensions nodir strip
+				(cond 
+				 ((and (numberp TeX-file-recurse)
+				       (> TeX-file-recurse 0))
+				  TeX-file-recurse)
+				 ((null TeX-file-recurse) 1)
+				 (t -1))))
+	  directories)))
 
 (defun TeX-search-files-1 (directory extensions nodir strip
 				     recursion-depth) 
