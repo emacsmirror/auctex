@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.91 2002-03-31 15:20:07 dakas Exp $
+;; $Id: preview.el,v 1.92 2002-03-31 17:10:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -61,7 +61,10 @@
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX
-  :prefix "preview-")
+  :prefix "preview-"
+  :link '(custom-manual "(preview-latex)Top")
+  :link '(info-link "(preview-latex)The Emacs interface")
+  :link '(url-link :tag "Homepage" "http://preview-latex.sourceforge.net"))
 
 (defgroup preview-gs nil "Preview's GhostScript renderer."
   :group 'preview
@@ -1715,7 +1718,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.91 $"))
+	(rev "$Revision: 1.92 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
