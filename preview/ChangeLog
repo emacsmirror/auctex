@@ -1,3 +1,21 @@
+2001-11-20  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-make-clickable): consult
+	`preview-button-1' and `preview-button-2' at run-time.
+	(preview-overlay): Need insert-behind-hooks too in case someone
+	uses `insert-before-markers' at end of previews.
+	(preview-change-list): New variable.
+	(preview-register-change): New function.
+	(preview-check-changes): New function.  All of this stuff is to
+	make sure we open/disable overlays only if permanent changes occur
+	inside.
+	(preview-handle-insert-in-front): some changes for new behaviour.
+	(preview-handle-insert-behind): New function.
+	(preview-move-point): Call `preview-check-changes' after commands.
+	(preview-gs-color-value): checkdoc-compatible comment.
+
+	* preview.el: Change installation comments
+
 2001-11-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (section{Provided Commands}): Correct documentation
