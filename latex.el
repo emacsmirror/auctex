@@ -3886,7 +3886,7 @@ the symbols will be surrounded by dollar signs.  The following
 commands are defined:
 
 \\{LaTeX-math-keymap}"
-  :keymap LaTeX-math-keymap
+  nil nil LaTeX-math-keymap
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
     (easy-menu-remove LaTeX-math-mode-menu))
