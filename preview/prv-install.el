@@ -38,8 +38,9 @@ Takes arguments on the comamnd line: the package directory and any
 number of Lisp files to generate autoloads from.
 
 Does nothing in Emacsen that do not support a package system."
-(if (string-match "XEmacs" (emacs-version))
-    (preview-make-package-xemacs)))
+  (if (string-match "XEmacs" (emacs-version))
+      (preview-make-package-xemacs))
+  (setq command-line-args-left nil))
 
 (defun preview-make-package-xemacs ()
   "Do anything required to make a package in XEmacs,
