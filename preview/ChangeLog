@@ -1,5 +1,11 @@
 2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
 
+	* preview.el (preview-dvipng-color-string): Try to deliver border
+	thickness.
+	(preview-gs-transact): Don't set page size to 1,1 if that has
+	already been done.
+	(preview-start-dvipng): Use new -D convention for resolution.
+
 	* circ.tex: Format with AUCTeX.
 
 	* preview.el (preview-gs-open): Bypass page initialization if
