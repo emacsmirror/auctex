@@ -203,7 +203,30 @@ The fifth element is obsolete and ignored."
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(sexp :format "End\n"))))
-		       
+
+(defcustom TeX-command-output-list
+  '(("\\`pdf[a-z]*tex" "pdf")
+; Add the following line if you want to use htlatex (tex4ht)
+;    ("\\`htlatex" ("html"))
+    ("." "dvi"))
+  "List of regexps and file extensions.
+
+Each element is a list, whose first element is a regular expression to
+match against the name of the command that will be used to process the TeX
+file.
+
+The second element is either a string or a list with a string as element.
+If it is a string this is the default file extension that will be expected
+for output files that are produced by commands that match the first
+element. The real file extension will be obtained from the logging output
+if possioble, defaulting to the given string.
+If it is a list, the element of the list will be the extension used without
+looking at the logging output. Extensions must be given without the \".\"."
+
+  :group 'TeX-command
+  :type '(repeat (group (regexp :tag "Command Regexp")
+			(choice (string :tag "Extension")
+				(const :tag "Use value from logfile" nil)))))
 
 ;; You may want to change the default LaTeX version for your site.
 (defcustom LaTeX-version "2e"
@@ -307,6 +330,32 @@ string."
   :group 'TeX-command
   :type '(repeat (group regexp (string :tag "Command"))))
 
+(defcustom TeX-output-view-style
+  '(("^dvi$" ("^a5$" "^landscape$") "xdvi \"%d\" -paper a5r -s 4")
+    ("^dvi$" "^a5$" "xdvi \"%d\" -paper a5")
+    ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
+                        "dvips -t landscape -f \"%d\" | gv")
+    ("^dvi$" "^landscape$" "xdvi \"%d\" -paper a4r -s 4")
+    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips -f \"%d\" | gv")
+    ("^dvi$" "." "xdvi \"%d\"")
+    ("^pdf$" "^landscape$" "xpdf -papertype a4r \"%o\"")
+    ("^pdf$" "." "xpdf \"%o\"")
+    ("^html?$" "." "netscape \"%o\""))
+  "List of output file extensions and view options.
+
+If the first element (a regular expresion) matches the output file
+extension, and the second element (a regular expresion) matches the name of
+one of the style options, any occurrence of the string %V in a command in
+TeX-command-list will be replaced with the third element. The first match
+is used; if no match is found the %V is replaced with %v.
+The second element may also be a list of regular expressions, in which case
+all the regular expressions must match for the element to apply."
+  :group 'TeX-command
+  :type '(repeat (group 
+		  (regexp :tag "Extension")
+		  (choice regexp (repeat :tag "List" regexp))
+		  (string :tag "Command"))))
+
 ;;Same for printing.
 
 (defcustom TeX-print-style '(("^landscape$" "-t landscape"))
@@ -328,6 +377,8 @@ string."
   (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
 	(list "%q" (function (lambda ()
 		     (TeX-printer-query TeX-queue-command 2))))
+	(list "%V" (lambda () 
+		     (TeX-output-style-check TeX-output-view-style)))
 	(list "%v" (lambda () 
 		     (TeX-style-check TeX-view-style)))
 	(list "%r" (lambda () 
@@ -339,6 +390,7 @@ string."
 	(list "%n" 'TeX-current-line)
 	(list "%d" 'file "dvi" t)
 	(list "%f" 'file "ps" t)
+	(list "%o" 'TeX-view-output-file)
         (list "%b" 'TeX-current-file-name-nondirectory))
   "List of expansion strings for TeX command names.
 
@@ -2007,6 +2059,22 @@ Check for potential LaTeX environments."
   :type 'string)
 
   (make-variable-buffer-local 'TeX-default-extension)
+
+(defcustom TeX-output-extension "dvi"
+  "*Extension of TeX output file."
+  :group 'TeX-file-extension
+  :type 'string)
+
+  (make-variable-buffer-local 'TeX-output-extension)
+
+(defcustom TeX-view-extension "dvi"
+  "*Extension of TeX output file for viewing. If nil, TeX-output-extension
+should be used. This variable could be changed by running File commands,
+like dvips."
+  :group 'TeX-file-extension
+  :type 'string)
+
+  (make-variable-buffer-local 'TeX-view-extension)
 
 (defcustom BibTeX-file-extensions '("bib")
   "Valid file extensions for BibTeX files."

@@ -1,3 +1,16 @@
+2003-02-06  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* tex-buf.el 
+	(TeX-save-document, TeX-command-query)
+	(TeX-output-style-check, TeX-run-format, TeX-TeX-sentinel-check): 
+	Added support for pdftex (and others)	
+	(TeX-run-set-command, TeX-output-extension)
+	(TeX-view-extension, TeX-view-output-file): new functions.
+	
+	* tex.el (TeX-output-extension, TeX-view-extension)
+	(TeX-output-view-style, TeX-command-output-list): new variables
+	(TeX-expand-list): adapted for pdf output.
+
 2003-01-31  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Use new lispdir check. 

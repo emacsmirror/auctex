@@ -74,7 +74,7 @@ Return non-nil if document need to be re-TeX'ed."
   (if (string-equal name "")
       (setq name (TeX-master-file)))
   
-  (TeX-check-files (concat name ".dvi")
+  (TeX-check-files (concat name "." (TeX-output-extension))
 		   (cons name (TeX-style-list))
 		   TeX-file-extensions))
 
@@ -326,7 +326,7 @@ in TeX-check-path."
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
   (let* ((default (cond ((if (string-equal name TeX-region)
-			     (TeX-check-files (concat name ".dvi")
+			     (TeX-check-files (concat name "." (TeX-output-extension))
 					      (list name)
 					      TeX-file-extensions)
 			   (TeX-save-document (TeX-master-file)))
@@ -403,6 +403,47 @@ entry."
       (nth 1 (car styles))
     ""))
 
+(defun TeX-output-extension ()
+  "Get the extension of the current TeX output file"
+  (if (listp TeX-output-extension)
+      (car TeX-output-extension)
+    (or (TeX-process-get-variable (TeX-active-master) 
+				'TeX-output-extension
+				TeX-output-extension)
+	TeX-output-extension)))
+
+(defun TeX-view-extension ()
+  "Get the extension of the current view output file"
+  (or TeX-view-extension
+      (TeX-output-extension)))
+
+(defun TeX-view-output-file ()
+  "Get the name of the current TeX output file"
+  (TeX-active-master (TeX-view-extension)))
+
+(defun TeX-output-style-check (styles)
+  "Check STYLES compared to the current view output file extension and 
+the current style options."
+  (let ((ext  (TeX-output-extension))
+	(files (TeX-style-list)))
+    (while (and 
+	    styles 
+	    (or
+	     (not (string-match (car (car styles)) ext))
+	     (let ((style (nth 1 (car styles))))
+	       (cond
+		((listp style)
+		 (while 
+		     (and style 
+			  (TeX-member (car style) files 'string-match))
+		   (setq style (cdr style)))
+		 style)
+		((not (TeX-member style files 'string-match)))))))
+      (setq styles (cdr styles)))
+    (if styles
+	(nth 2 (car styles))
+      "%v")))
+
 ;;; Command Hooks
 
 (defvar TeX-after-start-process-function nil
@@ -426,6 +467,7 @@ Return the new process."
     (get-buffer-create buffer)
     (set-buffer buffer)
     (erase-buffer)
+    (setq TeX-output-extension nil)
     (set (make-local-variable 'TeX-command-buffer) command-buff)
     (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
@@ -455,8 +497,21 @@ Return the new process."
       (call-process TeX-shell nil buffer nil
 		    TeX-shell-command-option command))))
 
+(defun TeX-run-set-command (name command)
+  "Remember TeX command to use to NAME and set corresponding output extension"
+  (setq TeX-command-default name
+	TeX-view-extension nil)
+  (let ((case-fold-search t)
+	(lst TeX-command-output-list))
+    (while lst
+      (if (string-match (car (car lst)) command)
+	  (setq TeX-output-extension (car (cdr (car lst)))
+		lst nil)
+	(setq lst (cdr lst))))))
+
 (defun TeX-run-format (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
+  (TeX-run-set-command name command)
   (let ((buffer (TeX-process-buffer-name file))
 	(process (TeX-run-command name command file)))
     ;; Hook to TeX debuger.
@@ -557,6 +612,7 @@ for the dviout previewer, especially when used with PC-9801 series."
 Run command in a buffer (in comint-shell-mode) so that it accepts user
 interaction. If you return to the file buffer after the TeX run,
 Error parsing on C-x ` should work with a bit of luck."
+  (TeX-run-set-command name command)
   (require 'comint)
   (let ((default TeX-command-default)
 	(buffer (TeX-process-buffer-name file))
@@ -673,8 +729,14 @@ NAME is the name of the process.")
 Return nil ifs no errors were found."
   (save-excursion
     (goto-char (point-max))
-    (if (re-search-backward "^Output written on.* (\\([0-9]+\\) page" nil t)
-	(setq TeX-current-page (concat "{" (TeX-match-buffer 1) "}"))))
+    (if (re-search-backward "^Output written on \\(.*\\) (\\([0-9]+\\) page"
+			    nil t)
+	(let ((output-file (TeX-match-buffer 1)))
+	  (setq TeX-current-page (concat "{" (TeX-match-buffer 2) "}"))
+	  (setq TeX-output-extension
+		(if (string-match "\\.\\([^.].*\\)$" output-file)
+		    (match-string 1 output-file)
+		  "dvi")))))
   (if process (TeX-format-mode-line process))
   (if (re-search-forward "^! " nil t)
       (progn
