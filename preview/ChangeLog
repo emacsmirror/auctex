@@ -1,5 +1,8 @@
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (section{The Implementation}): fix typo in dvips
+	option. Ugh.
+
 	* preview.el (preview-bb-filesize): move to preview-gs group.
 	(LaTeX-preview-setup): add bug reporter.
 	(preview-report-bug): update reported options.
