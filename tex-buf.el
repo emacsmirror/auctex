@@ -771,17 +771,18 @@ Return nil iff no process buffer exist."
   "Check if a process for the TeX document NAME already exist.
 If so, give the user the choice of aborting the process or the current
 command."
-  (let ((process (TeX-process name)))
-    (cond ((null process))
-	  ((not (eq (process-status process) 'run)))
-	  ((yes-or-no-p (concat "Process `"
-				(process-name process)
-				"' for document `"
-				name
-				"' running, kill it? "))
-	   (delete-process process))
-	  ((eq (process-status process) 'run)
-	   (error "Cannot have two processes for the same document")))))
+  (let (process)
+    (while (and (setq process (TeX-process name))
+		(eq (process-status process) 'run))
+      (cond
+       ((yes-or-no-p (concat "Process `"
+			     (process-name process)
+			     "' for document `"
+			     name
+			     "' running, kill it? "))
+	(delete-process process))
+       ((eq (process-status process) 'run)
+	   (error "Cannot have two processes for the same document"))))))
 
 (defun TeX-process-buffer-name (name)
   "Return name of AUC TeX buffer associated with the document NAME."
