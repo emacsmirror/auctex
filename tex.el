@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.389 $"))
+	(rev "$Revision: 5.390 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-02 09:18:51 $"))
+    (let ((date "$Date: 2004-07-02 09:25:07 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3114,10 +3114,11 @@ not move point further than this value."
 	  (forward-line 1)))))
 
 (defun TeX-backward-comment-skip (&optional count limit)
-  "Move backward to the previous comment/non-comment skip.
-This is a switch between commented and uncommented adjacent
-lines.  With argument COUNT do it COUNT times.  If argument LIMIT
-is given, do not move point to a position less than this value."
+  "Move backward to the next comment skip.
+This may be a switch between commented and not commented adjacent
+lines or between lines with different comment prefixes.  With
+argument COUNT do it COUNT times.  If argument LIMIT is given, do
+not move point to a position less than this value."
   (unless count (setq count 1))
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-min)))
