@@ -1,6 +1,6 @@
 #!/bin/sh
 autoconf
-grep -q '^MY_LANG=' configure || {
+grep '^MY_LANG=' configure >/dev/null 2>/dev/null || {
   echo "Using an old autoconf, are we?"
   echo "Fixing the two known issues now."
 # Two fixes: Save LANG and LC_CTYPE before configure munges it
