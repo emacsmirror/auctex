@@ -77,7 +77,7 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.3
+This file documents @previewlatex{} version 0.7.4
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
@@ -131,21 +131,21 @@ the current buffer of the document, or a region of it.
 
 @item @kbd{C-c C-p C-d}
 @itemx @code{preview-document} 
-@itemx LaTeX/Preview/Document 
+@itemx Preview/Document 
 Run preview on the present document.
 @kindex @kbd{C-c C-p C-d}
 @findex preview-document
 
 @item @kbd{C-c C-p C-b}
 @itemx @code{preview-buffer} 
-@itemx LaTeX/Preview/Buffer
+@itemx Preview/Buffer
 Run preview on the present buffer.
 @kindex @kbd{C-c C-p C-b}
 @findex preview-buffer
 
 @item @kbd{C-c C-p C-p}
 @itemx @code{preview-at-point}
-@itemx LaTeX/Preview/On/off at point
+@itemx Preview/On/off at point
 If the cursor is positioned on or inside of a preview area, this
 toggles its visibility, regenerating the preview if necessary. If not,
 it will run the surroundings through preview. The surroundings include
@@ -157,7 +157,7 @@ before, in which case the area will include the last such preview.
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
-@itemx LaTeX/Preview/Section
+@itemx Preview/Section
 Run preview on this @LaTeX{} section.
 @kindex @kbd{C-c C-p C-s}
 @findex preview-section
@@ -165,7 +165,7 @@ Run preview on this @LaTeX{} section.
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment (&optional count)}
-@itemx LaTeX/Preview/Environment
+@itemx Preview/Environment
 Run preview on @LaTeX{} environment.  The environments in
 @code{preview-inner-environments} are treated as inner levels so that
 for instance, the @code{split} environment in
@@ -179,7 +179,7 @@ levels.
 
 @item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
-@itemx LaTeX/Preview/Region
+@itemx Preview/Region
 Run preview on current region (between point and mark). If called
 non-interactively, runs preview on region between @code{begin} and
 @code{end}.
@@ -189,7 +189,7 @@ non-interactively, runs preview on region between @code{begin} and
 
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
-@itemx LaTeX/Preview/Read Documentation
+@itemx Preview/Read Documentation
 @kindex @kbd{C-c C-p C-i}
 Read
 @ifinfo
@@ -211,7 +211,7 @@ confused and place the previews wrong.
 
 @item @kbd{C-c C-p C-f}
 @itemx @code{preview-cache-preamble}
-@itemx LaTeX/Preview/Cache preamble
+@itemx Preview/Cache preamble
 @kindex @kbd{C-c C-p C-f}
 @findex preview-cache-preamble
 Dump a pregenerated format file.  For the rest of the session, this file
@@ -226,7 +226,7 @@ tampered with.
 
 @item @kbd{C-c C-p C-c C-f}
 @itemx @code{preview-cache-preamble-off}
-@itemx LaTeX/Preview/Cache preamble off
+@itemx Preview/Cache preamble off
 @kindex @kbd{C-u C-c C-p C-f}
 @findex preview-cache-preamble-off
 Clear the pregenerated format file. If the above gives you problems, use
@@ -234,7 +234,7 @@ this.
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
-@itemx LaTeX/Preview/Clearout Buffer
+@itemx Preview/Clearout Buffer
 @kindex @kbd{C-c C-p C-c C-b}
 @findex preview-clearout-buffer
 @c @cindex Clearout previews
@@ -244,7 +244,7 @@ from previews, current buffer if nil.
 
 @item @kbd{C-c C-p C-c C-r}
 @itemx @code{preview-clearout (&optional start end keep-dir)}
-@itemx LaTeX/Preview/Clearout Region
+@itemx Preview/Clearout Region
 @kindex @kbd{C-c C-p C-c C-r}
 @findex preview-clearout
 Clear out all previews in the current region. When called interactively,
@@ -256,7 +256,7 @@ kept.
 
 @item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
-@itemx LaTeX/Preview/Report Bug
+@itemx Preview/Report Bug
 @kindex @kbd{M-x preview-report-bug @key{RET}}
 @findex preview-report-bug
 @cindex Report a bug
@@ -318,7 +318,7 @@ will significantly speed up regeneration of previews.  The larger your
 preamble is, the more this will be apparent.  Once a preamble is cached,
 @previewlatex{} will try to keep track of when it is changed, and dump
 a fresh format in that case.  If you experience problems with this, or
-if you want it happen without asking you the first time, you can
+if you want it to happen without asking you the first time, you can
 customize the @code{Preview Auto Cache Preamble} setting.
 @vindex preview-auto-cache-preamble
 @cindex Caching a preamble
@@ -543,15 +543,11 @@ bothersome, anyway.
 What happens when Dvips is finished depends on the configuration of
 @code{preview-image-type}.  What to do for each of the various settings,
 what options to pass into GhostScript, and what Emacs image type to use
-is specified in @code{preview-image-creators}.  If
-@code{preview-image-type} is set to @code{'postscript}, @previewlatex{}
-will simply tell Emacs about where it can find the @acronym{EPS} files
-for each image and will then be finished.  Emacs then runs GhostScript
-whenever it finds it needs to have one image displayed.  It turns out
-that this mode of operation is of interest only for historic reasons
-since it is painfully slow, blocks interactive work and leads to
-defective images.  For this reason, @code{preview-image-type} defaults
-to @code{'png}.  For this to work, your version of GhostScript needs to
+is specified in @code{preview-image-creators}.  The setting
+@code{postscript} is not offered when customizing
+@code{preview-image-type} since it is mostly of historic interest and
+will not work satisfactorily.  @code{preview-image-type} defaults to
+@code{png}.  For this to work, your version of GhostScript needs to
 support the @option{png16m} device.  If you are experiencing problems
 here, you might want to reconfigure @code{preview-image-creators} or
 @code{preview-image-type}.
