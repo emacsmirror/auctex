@@ -1,3 +1,17 @@
+2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-disable): Go via toggle for disabling
+	strings.
+
+	* prv-xemacs.el (preview-mode-setup, preview-marker) 
+	(preview-temporary-opened, preview-mark-point) 
+	(preview-auto-reveal, preview-move-point, preview-open-overlays) 
+	(replace-highlight, preview-query-replace-reveal) 
+	(preview-change-list, preview-register-change) 
+	(preview-check-changes, preview-handle-before-change) 
+	(preview-handle-after-change): Do the whole fake-intangibility
+	and change detection shmeer.  isearch does not work yet.
+
 2002-04-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): call preview-mode-setup
