@@ -207,7 +207,7 @@ The fifth element is obsolete and ignored."
 (defcustom TeX-command-output-list
   '(("\\`pdf[a-z]*tex" "pdf")
 ; Add the following line if you want to use htlatex (tex4ht)
-;    ("\\`htlatex" ("html"))
+    ("\\`htlatex" ("html"))
     ("." "dvi"))
   "List of regexps and file extensions.
 
@@ -219,14 +219,15 @@ The second element is either a string or a list with a string as element.
 If it is a string this is the default file extension that will be expected
 for output files that are produced by commands that match the first
 element. The real file extension will be obtained from the logging output
-if possioble, defaulting to the given string.
-If it is a list, the element of the list will be the extension used without
-looking at the logging output. Extensions must be given without the \".\"."
+if possible, defaulting to the given string.
+If it is a list, the element of the list will be the fixed extension used
+without looking at the logging output. 
+Extensions must be given without the \".\"."
 
   :group 'TeX-command
   :type '(repeat (group (regexp :tag "Command Regexp")
-			(choice (string :tag "Extension")
-				(const :tag "Use value from logfile" nil)))))
+			(choice (string :tag "Default Extension")
+				(group (string :tag "Fixed Extension"))))))
 
 ;; You may want to change the default LaTeX version for your site.
 (defcustom LaTeX-version "2e"

@@ -1,3 +1,7 @@
+2003-02-07  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* tex.el (TeX-command-output-list): Corrected customization widget.
+
 2003-02-06  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* tex-buf.el 
