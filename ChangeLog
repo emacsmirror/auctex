@@ -1,5 +1,9 @@
 2003-11-17  Peter S Galbraith  <psg@debian.org>
 
+	* font-latex.el (font-latex-keywords-2): Had forgotten to set
+	LAXMATCH on all title matches.  Thanks to Ralf Angeli for
+	reporting the bug.
+
 	* bib-cite.el (bib-cite-file-directory-p): New functions.  I had
 	introduced a call to code from ff-paths.el by mistake.
 

@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.905 (18 Oct 2003)
+;; Version:    0.908 (17 Nov 2003)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.908 17Nov2003 PSG
+;;  - font-latex-keywords-2: Had forgotten to set LAXMATCH on all title
+;;    matches.  Thanks to Ralf Angeli for reporting the bug.
 ;; V0.907 23Oct2003 PSG
 ;;  - Make font-latex-warning-face a defface and not a copy.  Thanks to
 ;;    Ralf Angeli for reporting the bug that it wasn't customizable.
@@ -894,19 +897,19 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
      (font-latex-match-title-1                               ;;;\chapter
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
-      (2 font-latex-title-1-face t))                         ;;;        {text}
+      (2 font-latex-title-1-face append t))                  ;;;        {text}
      (font-latex-match-title-2                               ;;;\section
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
-      (2 font-latex-title-2-face t))                         ;;;        {text}
+      (2 font-latex-title-2-face append t))                  ;;;        {text}
      (font-latex-match-title-3                               ;;;\subsection
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
-      (2 font-latex-title-3-face t))                         ;;;        {text}
+      (2 font-latex-title-3-face append t))                  ;;;        {text}
      (font-latex-match-title-4                               ;;;\subsubsection
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
-      (2 font-latex-title-4-face t))                         ;;;        {text}
+      (2 font-latex-title-4-face append t))                  ;;;        {text}
      (font-latex-match-textual                               ;;;\title
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
@@ -1082,22 +1085,22 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
                                                   limit nil t)))
 (defun font-latex-match-title-1 (limit)
   "Fontify things like \\chapter{text} up to LIMIT."
-  (if font-latex-match-textual
+  (if font-latex-match-title-1
       (font-latex-match-command-outside-arguments font-latex-match-title-1
                                                   limit nil t)))
 (defun font-latex-match-title-2 (limit)
   "Fontify things like \\section{text} up to LIMIT."
-  (if font-latex-match-textual
+  (if font-latex-match-title-2
       (font-latex-match-command-outside-arguments font-latex-match-title-2
                                                   limit nil t)))
 (defun font-latex-match-title-3 (limit)
   "Fontify things like \\subsection{text} up to LIMIT."
-  (if font-latex-match-textual
+  (if font-latex-match-title-3
       (font-latex-match-command-outside-arguments font-latex-match-title-3
                                                   limit nil t)))
 (defun font-latex-match-title-4 (limit)
   "Fontify things like \\subsubsection{text} up to LIMIT."
-  (if font-latex-match-textual
+  (if font-latex-match-title-4
       (font-latex-match-command-outside-arguments font-latex-match-title-4
                                                   limit nil t)))
 (defun font-latex-match-variable (limit)
