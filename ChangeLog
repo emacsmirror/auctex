@@ -17,7 +17,7 @@
 	* tex-fold.el (TeX-fold-unfolded-face): Make it look more blueish
 	on displays with 24bit color depth.
 	(TeX-fold-buffer-type): Use either a complemented character
-	alternative to be on the save side or "\\_>" on Emacsen which
+	alternative to be on the safe side or "\\_>" on Emacsen which
 	support it.
 
 2004-08-17  Reiner Steib  <Reiner.Steib@gmx.de>
@@ -190,7 +190,7 @@
 	* tex-fold.el (TeX-fold-buffer-type): Support folding of
 	environments in texinfo-mode.
 	(TeX-fold-item): Ditto.
-	(TeX-fold-hide-item): Display an error string of the macro
+	(TeX-fold-hide-item): Display an error string if the macro
 	argument cannot be found.
 
 2004-08-14  David Kastrup  <dak@gnu.org>
