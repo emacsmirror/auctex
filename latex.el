@@ -2780,20 +2780,25 @@ depends on the value of `LaTeX-syntactic-comments'."
        ;; Code comments.
        ((and has-code-and-comment
 	     (not (TeX-in-commented-line)))
-	(save-restriction
-	  (narrow-to-region (line-beginning-position)
-			    (line-beginning-position 2))
-	  (save-excursion
-	    (when (save-excursion
-		    (beginning-of-line)
-		    (re-search-forward comment-start-skip (line-end-position) t)
-		    (goto-char (match-beginning 0))
-		    (while (not (looking-at TeX-comment-start-regexp))
-		      (forward-char))
-		    (>= (- (point) (line-beginning-position)) fill-column))
-	      (LaTeX-fill-region-as-paragraph (point-min) (point-max) justify)
-	      (goto-char (point-max)))
-	    (LaTeX-fill-code-comment justify))))
+	(save-excursion
+	  (when (save-excursion
+		  ;; Find the start of the comment.
+		  (beginning-of-line)
+		  (re-search-forward comment-start-skip (line-end-position) t)
+		  (goto-char (match-beginning 0))
+		  (while (not (looking-at TeX-comment-start-regexp))
+		    (forward-char))
+		  ;; Is it beyond the fill column?
+		  (>= (- (point) (line-beginning-position)) fill-column))
+	    ;; Then fill it as a regular paragraph before it is filled
+	    ;; as a code comment.
+	    (let ((end-marker (save-excursion (beginning-of-line 2)
+					      (point-marker))))
+	      (LaTeX-fill-region-as-paragraph (line-beginning-position)
+					      (line-beginning-position 2)
+					      justify)
+	      (goto-char end-marker)))
+	  (LaTeX-fill-code-comment justify)))
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
        ;; * `LaTeX-syntactic-comments' disabled: Uncommented code and
