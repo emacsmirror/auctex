@@ -486,10 +486,10 @@ The value is actually the tail of LIST whose car is ELT."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "9.7l"
+(defconst AUC-TeX-version "9.7m"
   "AUC TeX version number")
 
-(defconst AUC-TeX-date "Tue Mar  4 11:29:28 MET 1997"
+(defconst AUC-TeX-date "Mon Mar 17 13:35:50 MET 1997"
   "AUC TeX release date")
 
 ;;; Buffer

@@ -1,3 +1,22 @@
+Mon Mar 17 13:35:46 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7m released.
+
+Mon Mar 17 13:25:45 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-auto-generate): Only generate when needed. 
+	(TeX-auto-generate-global): Ditto.
+	Patch by Helmut Geyer <Helmut.Geyer@IWR.Uni-Heidelberg.De>.
+
+	* Makefile (install-contrib): Don't move elc files twice.  Patch
+	by Helmut Geyer <Helmut.Geyer@IWR.Uni-Heidelberg.De>.
+
+Thu Mar 13 12:10:03 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/danish.el: Copied from `style/dk.el'.
+	* Makefile (STYLESRC): Added `style/danish.el'.
+	Suggested by Lars Frellesen <frelle@math-tech.dk>.
+
 Tue Mar 04 11:29:23 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7l released.
