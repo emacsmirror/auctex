@@ -1,3 +1,9 @@
+2005-01-28  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (AUCTeX-date): Use ISO 8601 format.
+	(TeX-submit-bug-report): Include AUCTeX-date when using a
+	non-released version.
+
 2005-01-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el: Do not use whitespace syntax for ?~.  Prevents these

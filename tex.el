@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.479 $"))
+	    (rev "$Revision: 5.480 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,14 +648,13 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-26 07:22:40 $"))
+    (let ((date "$Date: 2005-01-28 14:33:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
-      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
+      (format "%s-%s-%s" (match-string 1 date) (match-string 2 date)
 	      (match-string 3 date))))
-  "AUCTeX release date.
-In the form of yyyy.mmdd")
+  "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 (defconst AUC-TeX-version AUCTeX-version
   "Obsolete.  Replaced by `AUCTeX-version'.")
@@ -4375,7 +4374,10 @@ configuration."
   (require 'reporter)
   (reporter-submit-bug-report
    "auc-tex@sunsite.dk"
-   (concat "AUCTeX " AUCTeX-version)
+   (concat "AUCTeX " AUCTeX-version
+	   (if (string-match "^CVS-" AUCTeX-version)
+	       (format " (%s)" AUCTeX-date)
+	     ""))
    (list 'window-system
 	 'LaTeX-version
 	 'TeX-style-path
