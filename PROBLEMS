@@ -1,0 +1,44 @@
+* You are using NeXT Emacs.
+
+NeXT Emacs is broken, a workaround is available by ftp:
+
+host: ftp.emacs.auc.dk
+file: /pack/ftp/pub/emacs-lisp/get-proc-env.el.z (gzip'ed)
+
+* Applying style hooks...  is sloooow.
+
+AUC TeX is parsing your file each time you load it.
+
+You can create a subdirectory named `auto' in the directory where you
+have your tex files, AUC TeX will then only have to parse the file the
+first time you load the file.  It also have the benefit that you get
+access to macros, labels, etc. in all the files in a multifile
+document from any of the files.
+
+If you don't want this, set TeX-parse-self to nil.  AUC TeX will then
+never parse your files.  This will disable many of AUC TeX's features.
+
+* Applying style hooks... is still too slow.
+
+Set the variable TeX-auto-global to nil.  You will then not get
+macro expansion for all macros, but AUC TeX will still expand the
+standard LaTeX macros.
+
+* C-c C-c has too great a delay.
+
+AUC TeX is searching your current directory as well as your private
+TeX macro directories for any files that may have changed.  You can
+limit it to the current directory with
+
+	(setq TeX-check-path '("./"))
+
+or disable it entirely with
+
+	(setq TeX-check-path nil)
+
+You can also make it search the global macro directories, so AUC TeX
+will suggest "LaTeX" if any of the style files have changed.
+
+	(setq TeX-check-path
+	      (append '("./") TeX-macro-private TeX-macro-global))
+

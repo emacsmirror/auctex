@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.42 1993-04-12 20:32:53 amanda Exp $
+# $Id: Makefile,v 5.43 1993-04-12 22:47:40 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -106,7 +106,7 @@ LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
 
 # dbg-jp.el can not be byte compiled with standard emacs
-OTHERFILES = COPYING README README_MINOR Makefile dbg-jp.el \
+OTHERFILES = COPYING README README_MINOR PROBLEMS Makefile dbg-jp.el \
 	 $(DOCFILES) $(LACHECKFILES)
 
 
