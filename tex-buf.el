@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8e
+;; Version: 9.8f
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -826,7 +826,9 @@ command."
 (defvar TeX-region-hook nil
   "List of hooks to run before the region file is saved.
 The hooks are run in the region buffer, you may use the variable
-master-buffer to access the buffer of the master file.")
+`master-buffer' to access the buffer of the master file and
+`orig-buffer' to access the buffer where \\[TeX-command-region] or
+\\[TeX-command-buffer] is invoked from.")
 
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION
@@ -843,6 +845,7 @@ original file."
 	 (trailer-start TeX-trailer-start)
 	 
 	 ;; We seach for header and trailer in the master file.
+	 (orig-buffer (current-buffer))
 	 (master-name (TeX-master-file TeX-default-extension))
 	 (master-buffer (find-file-noselect master-name))
 

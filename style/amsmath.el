@@ -10,14 +10,20 @@
   (lambda ()
 
     (LaTeX-add-environments
-     '("align"     LaTeX-env-label)
-     '("gather"    LaTeX-env-label)
-     '("flalign"   LaTeX-env-label)
-     '("multline"  LaTeX-env-label)
-     '("alignat"   LaTeX-amsmath-env-alignat)
-     '("aligned"   LaTeX-amsmath-env-aligned)
-     '("gathered"  LaTeX-amsmath-env-aligned)
-     "align*" "gather*" "flalign*" "multline*" "alignat*" "equation*"
+     '("align"      LaTeX-env-label)
+     '("gather"     LaTeX-env-label)
+     '("flalign"    LaTeX-env-label)
+     '("multline"   LaTeX-env-label)
+     '("alignat"    LaTeX-amsmath-env-alignat)
+     '("alignat*"   LaTeX-amsmath-env-alignat)
+     '("xalignat"   LaTeX-amsmath-env-alignat)
+     '("xalignat*"  LaTeX-amsmath-env-alignat)
+     '("xxalignat"  LaTeX-amsmath-env-alignat)
+     '("xxalignat*" LaTeX-amsmath-env-alignat)
+     '("aligned"    LaTeX-amsmath-env-aligned)
+     '("gathered"   LaTeX-amsmath-env-aligned)
+     "align*" "gather*" "flalign*" "multline*" "equation*"
+     "alignat*" "xalignat*" "xxalignat*" 
      "split"
      "cases"
      "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"

@@ -1,3 +1,17 @@
+Fri Aug 29 09:38:21 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8f released.
+
+Fri Aug 29 09:14:03 1997  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
+
+	* amsmath.el ("amsmath"): Added environments xalignat and
+	xxalignat, and starred forms
+
+Fri Aug 22 18:28:59 1997  Christoph Wedler  <wedler@fmi.uni-passau.de>
+
+	* tex-buf.el (TeX-region-create): Also bind `orig-buffer' which
+	might be useful in `TeX-region-hook'.
+
 Mon Jul 14 18:48:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8e released.
