@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.41 1993-07-16 04:34:36 amanda Exp $
+@c $Id: auc-tex.texi,v 1.42 1993-07-16 17:53:40 amanda Exp $
 
 @finalout
 @titlepage
@@ -2618,11 +2618,12 @@ this version, and for the authors, who get nostalgic at times.
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 7.3, Version 7.1, History, History
+@node Version 7.3, Version 7.2, History, History
 @comment  node-name,  next,  previous,  up
 @section News in 7.3
 
-Coordinater: Per Abrahamsen, 1993
+Coordinater: Per Abrahamsen, 1993.
+
 @itemize @bullet
 @item
 More robust installation, especially for Lucid Emacs (I hope).  Many
@@ -2654,18 +2655,27 @@ file now use those variables instead of changing the keymap.
 
 @item
 Changes to the default settings in @file{tex-site.el}, in particular a
-@sample{Queue} command is added to display the print queue.  Thanks to
+@samp{Queue} command is added to display the print queue.  Thanks to
 John Interrante @samp{<interran@@uluru.Stanford.EDU>} for code, and
 other members of the @samp{auc-tex@@iesd.auc.dk} mailing list for
 ideas.
 
+@item
+Make sure all outline mode commands are bound in
+@code{outline-minor-mode}. 
+
+@item
+Added autoload for @code{TeX-command}.  Thanks to Hanno Wirth
+@samp{<wirth@@igd.fhg.de>} for reporting this.
+
 @end itemize
 
-@node Version 7.2, Version 7.1, History, History
+@node Version 7.2, Version 7.1, Version 7.3, History
 @comment  node-name,  next,  previous,  up
 @section News in 7.2
 
-Coordinater: Per Abrahamsen, 1993
+Coordinater: Per Abrahamsen, 1993.
+
 @itemize @bullet
 @item
 @code{LaTeX-dead-mode} works again.  Thanks to Patrick O'Callaghan
@@ -2777,7 +2787,7 @@ from AUC @TeX{} instead of the standard @code{tex-mode}.
 @comment  node-name,  next,  previous,  up
 @section News in 7.1
 
-Coordinater: Per Abrahamsen, 1993
+Coordinater: Per Abrahamsen, 1993.
 
 @itemize @bullet
 @item
