@@ -1,3 +1,8 @@
+2002-04-21  Nix  <nix@esperi.demon.co.uk>
+
+	* configure.in (infodir): Define for XEmacs; point to the info
+	location in the package tree.
+
 2002-04-21  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-parse-messages): Try a few changes making
