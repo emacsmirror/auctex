@@ -7,14 +7,18 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.16 1992-07-22 13:06:20 krab Exp $
+;; $Id: tex-buf.el,v 1.17 1992-09-04 13:28:46 amanda Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
-;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Jul 22 14:28:27 1992
-;; Update Count    : 273
+;; Last Modified By: Per Abrahamsen
+;; Last Modified On: Fri Sep  4 15:27:49 1992
+;; Update Count    : 275
 ;; 
 ;; HISTORY
+;; 4-Sep-1992		Per Abrahamsen	
+;;    Last Modified: Fri Sep  4 15:26:43 1992 #274 (Per Abrahamsen)
+;;    max-point was used as a variable instead of a function in 
+;;    TeX-region.
 ;; 30-Apr-1992		Kresten Krab Thorup	
 ;;    Last Modified: Thu Apr 30 05:35:40 1992 #175 (Kresten Krab Thorup)
 ;;    Changed TeX-region not to insert a newline after the preamble,
@@ -320,7 +324,7 @@ Then the header/trailer will be searched in <file>."
 	;;
 	(save-excursion
 	  (set-buffer master-buffer)
-	  (goto-char point-max)  ;; end of given region
+	  (goto-char (point-max))  ;; end of given region
 	  (cond ((search-forward trailer nil t)
 		 (set-buffer temp-buffer)
 		 (erase-buffer)
