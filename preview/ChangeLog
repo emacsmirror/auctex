@@ -1,3 +1,13 @@
+2002-11-29  Jan-Ake Larsson  <jalar@localhost.localdomain>
+
+	* doc/readme.texi:
+	* doc/preview-latex.texi:
+	* doc/macros.texi:
+	* doc/Makefile.in: 
+	* configure.in: 
+	* aclocal.m4 (AC_TEST_MAKEINFO_ACRONYM): Attempt to make docs
+	build with old texinfo
+
 2002-11-28  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Release 0.7.5
