@@ -68,6 +68,13 @@ Commenting and uncommenting now works correctly.
 AUCTeX now works around XEmacs issues with text formatting in
 connection with preview-latex.
 
+IMPORTANT: Many of the new features rely on special properties in the
+variable `TeX-command-list' and will not work if you customized this
+variable for a former release of AUCTeX.  If this is the case for you,
+please re-initialize the variable by erasing the customization,
+thereby setting the variable to the new default, and re-adding your
+changes afterwards.
+
 
 Requirements
 ------------
