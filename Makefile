@@ -1,32 +1,32 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.24 1993-03-15 18:11:06 amanda Exp $
+# $Id: Makefile,v 5.25 1993-03-15 19:08:22 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
 ##  YUO MUST EDIT THE FOLLOWING LINES 
 ##----------------------------------------------------------------------
 
-#prefix=/usr/local
-prefix=/home/pd
+prefix=/usr/local
+#prefix=/home/local/sys/gnu
 exec_prefix = $(prefix)
 
 # Where installed binaries go.
 bindir = $(exec_prefix)/bin
 
 # Where info files go.
-#infodir = $(prefix)/info
-infodir = /home/local/sys/gnu/info
+infodir = $(prefix)/info
 
 # Where emacs lisp files go.
 # Set this to "." to specify current directory.
-#aucdir=$(prefix)/elisp/auctex
-aucdir=/user/amanda/lib/emacs/auctex
+#aucdir=/user/amanda/lib/emacs/auctex
+aucdir=$(prefix)/elisp/auctex
 
 # Where manual pages go.
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located
+#elispdir=/home/dist/lib/emacs/lisp
 elispdir=$(prefix)/lib/emacs/lisp
 
 ##----------------------------------------------------------------------
@@ -37,10 +37,10 @@ elispdir=$(prefix)/lib/emacs/lisp
 autodir=$(autodir)/auto
 
 # Using emacs in batch mode.
-EMACS="emacs -batch"
+EMACS=emacs -batch
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC="env EMACSLOADPATH=.:$(elispdir) $(EMACS) -f batch-byte-compile"
+ELC=env EMACSLOADPATH=.:$(elispdir) $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
 AUTO= env EMACSLOADPATH=$(aucdir) $(EMACS) \
@@ -179,12 +179,12 @@ LispInstall:
 	@echo "** Byte compiling AUC TeX.  This may take a while..."
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) $(STYLESRC)
-	if [ "." != $(aucdir) ] \
+	if [ "." != $(aucdir) ] ; \
 	then \
-	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi \
-	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi \
-	    $(MV) *.elc $(aucdir) \
-	    $(MV) style/*.elc $(aucdir)/style \
+	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; \
+	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi ; \
+	    $(MV) *.elc $(aucdir) ; \
+	    $(MV) style/*.elc $(aucdir)/style ; \
 	fi
 
 LaCheck:
