@@ -660,16 +660,19 @@ add keywords to this list and rebuild the variable
 This function can be used to refresh the variable in case other
 variables influencing its value, like `font-latex-verbatim-environments',
 have changed."
-  (let ((verb-envs (regexp-opt
-		    (append font-latex-verbatim-environments
-			    font-latex-verbatim-environments-local)))
-	(verb-like-commands (regexp-opt
-			     (append font-latex-verb-like-commands
-				     font-latex-verb-like-commands-local)))
-	(verb-macros (regexp-opt
-		      (append font-latex-verbatim-macros
-			      font-latex-verbatim-macros-local))))
-    (setq font-latex-syntactic-keywords nil)
+  ;; Checks for non-emptiness of lists added in order to cater for
+  ;; installations where `(regexp-opt-group nil)' would enter a loop.
+  (let ((verb-envs (append font-latex-verbatim-environments
+			   font-latex-verbatim-environments-local))
+	(verb-like-commands (append font-latex-verb-like-commands
+				    font-latex-verb-like-commands-local))
+	(verb-macros (append font-latex-verbatim-macros
+			     font-latex-verbatim-macros-local)))
+    (setq verb-envs (and verb-envs (regexp-opt verb-envs))
+	  verb-like-commands (and verb-like-commands
+				  (regexp-opt verb-like-commands))
+	  verb-macros (and verb-macros (regexp-opt verb-macros))
+	  font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}.*\\(\n\\)")
@@ -937,7 +940,8 @@ have changed."
 (defun font-latex-find-matching-close (openchar closechar)
   "Skip over matching pairs of { } or [ ], ignoring comments.
 OPENCHAR is the opening character and CLOSECHAR is the closing character."
-  (let ((parse-sexp-ignore-comments t) ; scan-sexps ignores comments
+  (let ((parse-sexp-ignore-comments
+	 (not (eq major-mode 'doctex-mode))) ; scan-sexps ignores comments
         (init-point (point))
 	(mycount 1)
 	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\")))
