@@ -1,3 +1,10 @@
+2003-04-03  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4: Make the emacs-macro path-searching tests run, and
+	make EMACS_PROG_EMACS fail gracefully when no binary executable is
+	found.
+
+
 2003-03-29  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-run-discard): Use `call-process' instead of
