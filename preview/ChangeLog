@@ -1,3 +1,11 @@
+2002-03-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): Use preview-with-LaTeX-menus.
+
+	* prv-emacs.el (preview-with-LaTeX-menus): New function
+	temporarily making menus active.  This is quite different for
+	XEmacs.
+
 2002-03-09  Nix  <nix@esperi.demon.co.uk>
 
 	* doc/preview-latex.texi: Minor typo fixes.
