@@ -29,8 +29,6 @@ if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info'; then
   fi
 fi
 
-
-TEX_INPUT_DIRS
 AUCTEX_AUTO_DIR
 
 AC_PATH_PROG(TEX, tex, :)
