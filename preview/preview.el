@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.40 2001-10-30 15:37:58 dakas Exp $
+;; $Id: preview.el,v 1.41 2001-11-06 13:35:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -45,6 +45,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'tex-site)
   (require 'tex-buf)
   (require 'latex)
   (defvar error))
@@ -263,16 +264,20 @@ show as response of GhostScript."
     
 (defvar preview-gs-command-line nil)
 (make-variable-buffer-local 'preview-gs-command-line)
+(defvar preview-gs-file nil)
+(make-variable-buffer-local 'preview-gs-file)
 
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
 and tries to restart GhostScript if necessary."
-  (when (buffer-name (process-buffer process))
-    (with-current-buffer (process-buffer process)
-      (TeX-command-mode-line process)
-      (let ((status (process-status process)))
-	(when (memq status '(exit signal))
+  (let ((status (process-status process)))
+    (when (memq status '(exit signal))
+      (setq compilation-in-progress (delq process compilation-in-progress)))
+    (when (buffer-name (process-buffer process))
+      (with-current-buffer (process-buffer process)
+	(TeX-command-mode-line process)
+ 	(when (memq status '(exit signal))
 	  ;; process died.
 	  ;;  Throw away culprit, go on.
 	  (let* ((err (concat preview-gs-answer "\n"
@@ -330,9 +335,15 @@ Gets the usual PROCESS and STRING parameters, see
       (process-kill-without-query process)
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
-      (TeX-command-mode-line process))))
+      (setq mode-name "Preview-GhostScript")
+      (setq compilation-in-progress (cons process
+					  compilation-in-progress))
+      (TeX-command-mode-line process)
+      (set-buffer-modified-p (buffer-modified-p))
+      process)
+    ))
 
-(defalias 'preview-gs-close #'preview-gs-restart)
+(defalias 'preview-gs-close #'ignore)
 
 (defun preview-gs-open (imagetype gs-optionlist)
   "Start a GhostScript conversion pass.
@@ -348,7 +359,30 @@ example \"-sDEVICE=png256\" will go well with 'png."
 					preview-scale
 					(car preview-resolution)
 					(cdr preview-resolution)))))
-  (setq preview-gs-queue nil))
+  (setq preview-gs-queue nil)
+  (let ((process (preview-start-dvips)))
+    (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
+    (preview-parse-messages)
+    (if TeX-process-asynchronous
+	process
+      (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
+				process))))
+
+(defun preview-gs-dvips-sentinel (process command)
+  "Sentinel function for indirect rendering DviPS process.
+The usual PROCESS and COMMAND arguments for
+`TeX-sentinel-function' apply."
+  (let ((status (process-status process)))
+    (cond ((eq status 'exit)
+	   (delete-process process)
+	   (preview-gs-restart))
+	  ((eq status 'signal)
+	   (delete-process process)
+	   (dolist (ov preview-gs-queue)
+	     (if (overlay-get ov 'queued)
+		 (preview-delete ov)))
+	   (setq preview-gs-queue nil)
+	   (preview-clean-subdir (car TeX-active-tempdir))))))
 
 (defun preview-gs-urgentize (ov buff)
   "Make a displayed overlay render with higher priority.
@@ -385,7 +419,7 @@ SNIPPET are used for making the name of the file to be generated."
 		   (format "prevnew.%03d" snippet))))
     (overlay-put ov 'queued
 		 (vector
-		  (preview-extract-bb (car (car filenames)))
+		  nil
 		  thisimage
 		  nil))
     (push ov preview-gs-queue)
@@ -433,9 +467,10 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
       "%s views error message"
       `(lambda() (interactive "@")
 	 (preview-mouse-open-error
-	  ,(concat preview-gs-command " "
+	  ,(concat
 		   (mapconcat #'shell-quote-argument
-			      preview-gs-command-line
+			      (cons preview-gs-command
+				    preview-gs-command-line)
 			      " ")
 		   "\nGS>"
 		   (aref (overlay-get ov 'queued) 2)
@@ -492,7 +527,8 @@ given as ANSWER."
 		(let* ((filenames (overlay-get ov 'filenames))
 		       (oldfile (nth 0 filenames))
 		       (newfile (nth 1 filenames))
-		       (bbox (aref queued 0))
+		       (bbox (aset queued 0
+				   (preview-extract-bb (car oldfile))))
 		       (gs-line (format
 				 "clear \
 /preview-LaTeX-state save def << \
@@ -865,8 +901,7 @@ upgraded to a fancier version of just the LaTeX style."
 (defcustom preview-LaTeX-command "%l '\\nonstopmode\
 \\PassOptionsToPackage{auctex,active}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined\
-\\RequirePackage[%P]{preview}\\fi}\\input{%t}';\
-dvips -Pwww -i -E %d -o %m/preview.000"
+\\RequirePackage[%P]{preview}\\fi}\\input{%t}'"
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -877,6 +912,11 @@ See description of `TeX-command-list' for details."
 	     (LaTeX-preview-setup)))
   :initialize #'custom-initialize-default)
 
+(defcustom preview-dvips-command
+  "dvips -Pwww -i -E %d -o %m/preview.000"
+  "*Command used for converting to single EPS images."
+  :group 'preview-latex
+  :type 'string)
 
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into Auc-TeX.
@@ -990,52 +1030,52 @@ See `TeX-parse-TeX' for documentation of REPARSE."
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
 document style for LaTeX."
-  (TeX-parse-reset)
-  (preview-call-hook 'open)
-  (unwind-protect
-      (progn
-	(setq preview-snippet 0)
-	(setq preview-snippet-start nil)
-	(goto-char TeX-error-point)
-	(while
-	    (re-search-forward
-	     (concat "\\("
-		     "^! Package Preview Error:[^.]*\\.\\|"
-		     "(\\|"
-		     ")\\|"
-		     "!offset([---0-9]*)\\|"
-		     "!name([^)]*)"
-		     "\\)") nil t)
-	  (let ((string (TeX-match-buffer 1)))
-	    (cond
-	     (;; Preview error
-	      (string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
-	      (preview-analyze-error
-	       (string-to-int (match-string 1 string))
-	       (string= (match-string 2 string) "started")))
-	     ;; New file -- Push on stack
-	     ((string= string "(")
-	      (re-search-forward "\\([^()\n \t]*\\)")
-	      (setq TeX-error-file
-		    (cons (TeX-match-buffer 1) TeX-error-file))
-	      (setq TeX-error-offset (cons 0 TeX-error-offset)))
-	     
-	     ;; End of file -- Pop from stack
-	     ((string= string ")")
-	      (setq TeX-error-file (cdr TeX-error-file))
-	      (setq TeX-error-offset (cdr TeX-error-offset)))
-	     
-	     ;; Hook to change line numbers
-	     ((string-match "!offset(\\([---0-9]*\\))" string)
-	      (rplaca TeX-error-offset
-		      (string-to-int (match-string 1 string))))
-	     
-	     ;; Hook to change file name
-	     ((string-match "!name(\\([^)]*\\))" string)
-	      (rplaca TeX-error-file (match-string 1 string))))))
-	(if (zerop preview-snippet)
-	    (preview-clean-subdir (car TeX-active-tempdir))) )
-    (preview-call-hook 'close)))
+  (with-temp-message "locating previews..."
+    (TeX-parse-reset)
+    (unwind-protect
+	(progn
+	  (setq preview-snippet 0)
+	  (setq preview-snippet-start nil)
+	  (goto-char TeX-error-point)
+	  (while
+	      (re-search-forward
+	       (concat "\\("
+		       "^! Package Preview Error:[^.]*\\.\\|"
+		       "(\\|"
+		       ")\\|"
+		       "!offset([---0-9]*)\\|"
+		       "!name([^)]*)"
+		       "\\)") nil t)
+	    (let ((string (TeX-match-buffer 1)))
+	      (cond
+	       (;; Preview error
+		(string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
+		(preview-analyze-error
+		 (string-to-int (match-string 1 string))
+		 (string= (match-string 2 string) "started")))
+	       ;; New file -- Push on stack
+	       ((string= string "(")
+		(re-search-forward "\\([^()\n \t]*\\)")
+		(setq TeX-error-file
+		      (cons (TeX-match-buffer 1) TeX-error-file))
+		(setq TeX-error-offset (cons 0 TeX-error-offset)))
+	       
+	       ;; End of file -- Pop from stack
+	       ((string= string ")")
+		(setq TeX-error-file (cdr TeX-error-file))
+		(setq TeX-error-offset (cdr TeX-error-offset)))
+	       
+	       ;; Hook to change line numbers
+	       ((string-match "!offset(\\([---0-9]*\\))" string)
+		(rplaca TeX-error-offset
+			(string-to-int (match-string 1 string))))
+	       
+	       ;; Hook to change file name
+	       ((string-match "!name(\\([^)]*\\))" string)
+		(rplaca TeX-error-file (match-string 1 string))))))
+	  (if (zerop preview-snippet)
+	      (preview-clean-subdir (car TeX-active-tempdir))) )
+      (preview-call-hook 'close))))
 
 (defun preview-analyze-error (snippet startflag)
   "Analyze a preview diagnostic for snippet SNIPPET.
@@ -1149,23 +1189,66 @@ specified by BUFF."
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
 
+(defun preview-start-dvips ()
+  "Start a DviPS process."
+  (let* ((file preview-gs-file)
+	 tempdir
+	 (command (with-current-buffer TeX-command-buffer
+		    (prog1
+			(TeX-command-expand preview-dvips-command
+					    (car file))
+		      (setq tempdir TeX-active-tempdir))))
+	 (name "Preview-DviPS"))
+    (setq TeX-active-tempdir tempdir)
+    (goto-char (point-max))
+    (insert-before-markers "Running `" name "' with ``" command "''\n")
+    (setq mode-name name)
+    (setq TeX-sentinel-function
+	  (lambda (process name) (message "%s: done." name)))
+    (if TeX-process-asynchronous
+	(let ((process (start-process name buffer TeX-shell
+				      TeX-shell-command-option
+				      command)))
+	  (if TeX-after-start-process-function
+	      (funcall TeX-after-start-process-function process))
+	  (TeX-command-mode-line process)
+	  (set-process-filter process 'TeX-command-filter)
+	  (set-process-sentinel process 'TeX-command-sentinel)
+	  (set-marker (process-mark process) (point-max))
+	  (setq compilation-in-progress (cons process
+					      compilation-in-progress))
+	  (sit-for 0)
+	  process)
+      (setq mode-line-process ": run")
+      (set-buffer-modified-p (buffer-modified-p))
+      (sit-for 0)				; redisplay
+      (call-process TeX-shell nil buffer nil
+		    TeX-shell-command-option
+		    command))))
+
 (defun preview-TeX-inline-sentinel (process name)
   "Sentinel function for preview.
 See `TeX-sentinel-function' and `set-process-sentinel'
 for definition of PROCESS and NAME."
   (if process (TeX-format-mode-line process))
-  (if (eq (process-status process) 'exit)
-      (with-temp-message (format "%s: locating previews..." name)
-	(preview-parse-messages))))
-  
+  (let ((status (process-status process)))
+    (if (memq status '(signal exit))
+	(delete-process process))
+    (if (eq status 'exit)
+	(preview-call-hook 'open))))
+
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
-  (let ((tempdir TeX-active-tempdir)
-	(commandbuff (current-buffer))
+  (let ((commandbuff (current-buffer))
+	(pr-file (cons
+		  (if TeX-current-process-region-p
+		      'TeX-region-file
+		    'TeX-master-file)
+		  file))
 	(process (TeX-run-format "Preview-LaTeX" command file)))
     (preview-get-geometry commandbuff)
-    (setq TeX-active-tempdir tempdir)
+    (setq preview-gs-file pr-file)
     (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
     (setq TeX-parse-function 'preview-parse-TeX)
     (if TeX-process-asynchronous
@@ -1174,7 +1257,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.40 $"))
+	(rev "$Revision: 1.41 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
