@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.30 1993-03-18 06:00:52 amanda Exp $
+# $Id: Makefile,v 5.31 1993-03-18 06:06:02 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -35,6 +35,8 @@ aucdir=/home/pd/share/emacs/auctex7
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located
+# For Lucid Emacs and perhaps Emacs 19 this will be a : separated path, 
+# which should include the directory containing the byte compiler. 
 elispdir=/home/dist/lib/emacs/lisp
 #elispdir=$(prefix)/lib/emacs/lisp
 
