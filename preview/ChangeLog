@@ -1,3 +1,8 @@
+2005-03-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* preview.el (TeX-fold-prioritize): autoload.
+	(preview-place-preview, preview-reinstate-preview): Use it.
+
 2005-03-07  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-gs-open): Make better error message for junk

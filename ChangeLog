@@ -1,3 +1,7 @@
+2005-03-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-fold.el (TeX-fold-prioritize): Cater for preview-latex.
+
 2005-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-paragraph-commands-regexp-make): New function.
