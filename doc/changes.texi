@@ -8,6 +8,8 @@
 @heading News in 11.54
 
 @itemize @bullet
+@item
+Info files of the manual now have a .info extension.
 
 @item
 There is an experimental tool bar support now.  It is not activated by
