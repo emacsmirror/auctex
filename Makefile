@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.54 1993-07-16 04:33:57 amanda Exp $
+# $Id: Makefile,v 5.55 1993-07-17 06:26:47 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -95,12 +95,12 @@ MINMAPFILES = README_MINOR $(MINMAPSRC)
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-jp.el \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el  tex-foil.el
+	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
 	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
-	    format/FOILTEX.el
+	    format/FOILTEX.el format/AMSTEX.el format/AMSLATEX.el
 
 STYLESRC = style/latex.el   style/slitex.el style/report.el \
 	   style/article.el style/book.el    style/letter.el \

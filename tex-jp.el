@@ -55,9 +55,6 @@
 (fset 'japanese-LaTeX-mode 'japanese-latex-mode)
 (fset 'japanese-SliTeX-mode 'japanese-slitex-mode)
 
-(defvar japanese-plain-TeX-format-package "JTEX"
-  "Name of japanese plain TeX format package (for finding symbols).")
-
 (defun japanese-plain-tex-mode ()
   "Major mode for editing files of input for Japanese plain TeX.
 Makes $ and } display the characters they match.
@@ -73,10 +70,7 @@ Entering japanese-plain-TeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of plain-TeX-mode-hook."
   (interactive)
-  (VirTeX-mode japanese-plain-TeX-format-package))
-
-(defvar japanese-LaTeX-format-package "JLATEX" 
-  "Name of LaTeX format package.")
+  (VirTeX-mode "JTEX"))
 
 (defun japanese-latex-mode ()
   "Major mode for editing files of input for Japanese LaTeX.
@@ -95,10 +89,7 @@ Entering japanese-LaTeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of LaTeX-mode-hook."
   (interactive)
-  (VirTeX-mode japanese-LaTeX-format-package))
-
-(defvar japanese-SliTeX-format-package "JSLITEX"
-  "Name of japanese SliTeX format package.")
+  (VirTeX-mode "JLATEX"))
 
 (defun japanese-slitex-mode ()
   "Major mode for editing files of input for Japanese SliTeX.
@@ -117,7 +108,7 @@ Entering japanese-SLiTeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of LaTeX-mode-hook. and then the value of SliTeX-mode-hook."
   (interactive)
-  (VirTeX-mode japanese-SliTeX-format-package))
+  (VirTeX-mode "JSLITEX"))
 
 ;;; @@ MULE and NEMACS paragraph filling.
 

@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.42 1993-07-16 17:53:40 amanda Exp $
+@c $Id: auc-tex.texi,v 1.43 1993-07-17 06:27:02 amanda Exp $
 
 @finalout
 @titlepage
@@ -2668,6 +2668,9 @@ Make sure all outline mode commands are bound in
 Added autoload for @code{TeX-command}.  Thanks to Hanno Wirth
 @samp{<wirth@@igd.fhg.de>} for reporting this.
 
+@item
+Added support for AmS@TeX{} and AmSLa@TeX{}.  Currently they are
+identical to @TeX{} and La@TeX{} except for another default command. 
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History
@@ -3520,20 +3523,14 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+Use Emacs 19 minubuffer history to choose between previewers, and other
+stuff.  Suggested by John Interrante
+@samp{<interran@@uluru.Stanford.EDU>}. 
+
+@item
 It is often too slow to parse the file each time it is saved, especially
 with Emacs 19.  Check if @code{TeX-auto-generate} is useful for doing
 more occasionally, like updating the @file{TAGS} file.
-
-@item
-Make quote start and end characters user definable.
-
-@item 
-Add support for different extensions.
-
-Such as @samp{texi} and @samp{ltx}.
-
-@item
-Make AUC TeX work with ange-ftp.
 
 @item
 Control @TeX{} compilation window.
@@ -3724,7 +3721,7 @@ TeXinfo mode.
 BibTeX mode.
 
 @item
-AMSTeX and AMSLaTeX support.
+Support for AMSLaTeX style files.
 
 @item
 Better LaTeX letter environment.
