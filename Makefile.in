@@ -36,8 +36,11 @@ REMOVE =  MSDOS VMS OS2 WIN-NT
 
 MINMAPSRC = all.el multi-prompt.el
 
-CONTRIB = bib-cite.el tex-jp.el tex-fptex.el
-CONTRIBELC = bib-cite.elc
+CONTRIB = bib-cite.el tex-fptex.el
+CONTRIBELC = bib-cite.elc tex-fptex.elc
+CONTRIB_MULE = tex-jp.el
+COMPILE_MULE = @COMPILE_MULE@
+CONTRIB_MULEELC = @CONTRIB_MULEELC@
 
 AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
@@ -71,7 +74,7 @@ DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
 EXTRAFILES = COPYING PROBLEMS IRIX Makefile ChangeLog \
-	lpath.el tex-site.el $(CONTRIB)
+	lpath.el tex-site.el $(CONTRIB) $(CONTRIB_MULE)
 
 all:	lisp
 
@@ -83,9 +86,7 @@ some:	$(AUCELC) $(STYLESRC:.el=.elc)
 install:	install-lisp install-info
 
 contrib:
-	$(ELCC) -f batch-byte-compile bib-cite.el
-	$(ELCC) -f batch-byte-compile font-latex.el
-# 	$(ELCC) -f batch-byte-compile tex-jp.el              # Doesn't compile without MULE
+	$(ELCC) -f batch-byte-compile $(CONTRIB) $(COMPILE_MULE)
 
 install-lisp:	some
 	-$(MKINSTALLDIRS) $(lispdir)
@@ -111,8 +112,8 @@ install-lisp:	some
 	done;
 	-$(MKINSTALLDIRS) $(autodir)
 
-install-contrib:	$(CONTRIBELC)
-	for x in $(CONTRIB) $(CONTRIBELC); do \
+install-contrib:	$(CONTRIBELC) $(CONTRIB_MULEELC)
+	for x in $(CONTRIB) $(CONTRIB_MULE) $(CONTRIBELC) $(CONTRIB_MULEELC); do \
 	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
 	  $(INSTALL_DATA) $$x $(lispdir) ; \
 	done;
