@@ -345,16 +345,16 @@ is performed as specified in TeX-expand-list."
 ;; style options.  Only works if parsing is enabled.
 
 (defcustom TeX-view-style
-  '(((concat
+  `((,(concat
       "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
-     "xdvi \"%d\" -paper a4")
-    ((concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi \"%d\" -paper a5")
-    ("^b5paper$" "xdvi \"%d\" -paper b5")
-    ("^letterpaper$" "xdvi \"%d\" -paper us")
-    ("^legalpaper$" "xdvi \"%d\" -paper legal")
-    ("^executivepaper$" "xdvi \"%d\" -paper 7.25x10.5in")
-    ("^landscape$" "xdvi \"%d\" -paper a4r -s 0")
+     "xdvi %d -paper a4")
+    (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+     "xdvi %d -paper a5")
+    ("^b5paper$" "xdvi %d -paper b5")
+    ("^letterpaper$" "xdvi %d -paper us")
+    ("^legalpaper$" "xdvi %d -paper legal")
+    ("^executivepaper$" "xdvi %d -paper 7.25x10.5in")
+    ("^landscape$" "xdvi %d -paper a4r -s 0")
     ;; The latest xdvi can show embedded postscript.  If you don't
     ;; have that, uncomment next line.
     ;; ("^epsf$" "ghostview %f")
@@ -370,28 +370,28 @@ string."
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  '(("^dvi$" (concat
+  `(("^dvi$" ,(concat
               "^"
               (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
               "$")
-     "xdvi \"%d\" -paper a4")
-    ("^dvi$" ((concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+     "xdvi %d -paper a4")
+    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
               "^landscape$")
-     "xdvi \"%d\" -paper a5r -s 0")
-    ("^dvi$" (concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi \"%d\" -paper a5")
-    ("^dvi$" "^b5paper$" "xdvi \"%d\" -paper b5")
+     "xdvi %d -paper a5r -s 0")
+    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+     "xdvi %d -paper a5")
+    ("^dvi$" "^b5paper$" "xdvi %d -paper b5")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-     "dvips -t landscape -f \"%d\" | gv")
-    ("^dvi$" "^letterpaper$" "xdvi \"%d\" -paper us")
-    ("^dvi$" "^legalpaper$" "xdvi \"%d\" -paper legal")
-    ("^dvi$" "^executivepaper$" "xdvi \"%d\" -paper 7.25x10.5in")
-    ("^dvi$" "^landscape$" "xdvi \"%d\" -paper a4r -s 0")
-    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips -f \"%d\" | gv")
-    ("^dvi$" "." "xdvi \"%d\"")
-    ("^pdf$" "^landscape$" "xpdf -papertype a4r \"%o\"")
-    ("^pdf$" "." "xpdf \"%o\"")
-    ("^html?$" "." "netscape \"%o\""))
+     "dvips -t landscape %d -o && gv %s.ps")
+    ("^dvi$" "^letterpaper$" "xdvi %d -paper us")
+    ("^dvi$" "^legalpaper$" "xdvi %d -paper legal")
+    ("^dvi$" "^executivepaper$" "xdvi %d -paper 7.25x10.5in")
+    ("^dvi$" "^landscape$" "xdvi %d -paper a4r -s 0")
+    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips %d -o && gv %s.ps")
+    ("^dvi$" "." "xdvi %d")
+    ("^pdf$" "^landscape$" "xpdf -papertype a4r %o")
+    ("^pdf$" "." "xpdf %o")
+    ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
 If the first element (a regular expresion) matches the output file
@@ -535,7 +535,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.333 $"))
+	(rev "$Revision: 5.334 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -550,7 +550,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-11 21:59:02 $"))
+    (let ((date "$Date: 2004-03-14 12:50:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
