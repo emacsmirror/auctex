@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.80 2002-03-22 03:49:30 dakas Exp $
+;; $Id: preview.el,v 1.81 2002-03-22 12:34:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -193,7 +193,9 @@ that is."
        ))))
 
 (defcustom preview-prefer-TeX-bb nil
-  "*Prefer TeX bounding box to EPS one if available."
+  "*Prefer TeX bounding box to EPS one if available.
+If `preview-fast-conversion' is set, this option is not
+ consulted since the TeX bounding box has to be used anyway."
   :group 'preview-gs
   :type 'boolean)
 
@@ -312,9 +314,9 @@ show as response of GhostScript."
 (defvar preview-gs-file nil)
 (make-variable-buffer-local 'preview-gs-file)
 
-(defcustom preview-fast-conversion nil
+(defcustom preview-fast-conversion t
   "*Set this for single-file PostScript conversion.
-This will not work in connection with `preview-image-type'
+This will have no effect when `preview-image-type' is
 set to `postscript'."
   :group 'preview-latex
   :type 'boolean)
@@ -326,7 +328,7 @@ set to `postscript'."
   :type 'string)
 
 (defcustom preview-fast-dvips-command
-  "dvips -Pwww %d -tletter -o %m/preview.ps"
+  "dvips -Pwww %d -o %m/preview.ps"
   "*Command used for converting to a single PS file."
   :group 'preview-latex
   :type 'string)
@@ -1200,8 +1202,8 @@ Defaults to point in current buffer."
   "*Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
-on a document not configured for preview.  \"auctex\", \"active\"
-and \"delayed\" need not be specified here."
+on a document not configured for preview.  \"auctex\", \"active\",
+\"dvips\" and \"delayed\" need not be specified here."
   :group 'preview-latex
   :type '(list (set :inline t :tag "Options known to work"
 		    :format "%t:\n%v%h" :doc
@@ -1235,7 +1237,7 @@ list of LaTeX commands is inserted just before \\begin{document}."
   (mapconcat #'identity preview-default-preamble "\n"))
 
 (defcustom preview-LaTeX-command "%l '\\nonstopmode\
-\\PassOptionsToPackage{auctex,active}{preview}\
+\\PassOptionsToPackage{auctex,active,dvips}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined\
 %D\\fi}\\input{%t}'"
   "*Command used for starting a preview.
@@ -1659,7 +1661,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.80 $"))
+	(rev "$Revision: 1.81 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
