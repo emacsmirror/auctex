@@ -1,3 +1,8 @@
+2004-08-04  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-view-style, TeX-output-view-style): Place dvi file
+	name last.
+
 2004-08-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-source-specials): New customization group.

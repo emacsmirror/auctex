@@ -350,18 +350,18 @@ is performed as specified in `TeX-expand-list'."
 (defcustom TeX-view-style
   `((,(concat
       "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
-     "xdvi %d %dS -paper a4")
+     "xdvi %dS -paper a4 %d")
     (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %d %dS -paper a5")
-    ("^b5paper$" "xdvi %d %dS -paper b5")
-    ("^letterpaper$" "xdvi %d %dS -paper us")
-    ("^legalpaper$" "xdvi %d %dS -paper legal")
-    ("^executivepaper$" "xdvi %d %dS -paper 7.25x10.5in")
-    ("^landscape$" "xdvi %d %dS -paper a4r -s 0")
+     "xdvi %dS -paper a5 %d")
+    ("^b5paper$" "xdvi %dS -paper b5 %d")
+    ("^letterpaper$" "xdvi %dS -paper us %d")
+    ("^legalpaper$" "xdvi %dS -paper legal %d")
+    ("^executivepaper$" "xdvi %dS -paper 7.25x10.5in %d")
+    ("^landscape$" "xdvi %dS -paper a4r -s 0 %d")
     ;; The latest xdvi can show embedded postscript.  If you don't
     ;; have that, uncomment next line.
     ;; ("^epsf$" "ghostview %f")
-    ("." "xdvi %d %dS"))
+    ("." "xdvi %dS %d"))
   "List of style options and view options.
 
 If the first element (a regular expresion) matches the name of
@@ -386,20 +386,20 @@ is not recommended because it is more powerful than
 	       "^"
 	       (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
 	       "$")
-     "xdvi %d %dS -paper a4")
+     "xdvi %dS -paper a4 %d")
     ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
 	      "^landscape$")
-     "xdvi %d %dS -paper a5r -s 0")
+     "xdvi %dS -paper a5r -s 0 %d")
     ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %d %dS -paper a5")
-    ("^dvi$" "^b5paper$" "xdvi %d %dS -paper b5")
+     "xdvi %dS -paper a5 %d")
+    ("^dvi$" "^b5paper$" "xdvi %dS -paper b5 %d")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
      "dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^letterpaper$" "xdvi %d %dS -paper us")
-    ("^dvi$" "^legalpaper$" "xdvi %d %dS -paper legal")
-    ("^dvi$" "^executivepaper$" "xdvi %d %dS -paper 7.25x10.5in")
-    ("^dvi$" "^landscape$" "xdvi %d %dS -paper a4r -s 0")
-    ("^dvi$" "." "xdvi %d %dS")
+    ("^dvi$" "^letterpaper$" "xdvi %dS -paper us %d")
+    ("^dvi$" "^legalpaper$" "xdvi %dS -paper legal %d")
+    ("^dvi$" "^executivepaper$" "xdvi %dS -paper 7.25x10.5in %d")
+    ("^dvi$" "^landscape$" "xdvi %dS -paper a4r -s 0 %d")
+    ("^dvi$" "." "xdvi %dS %d")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.405 $"))
+	(rev "$Revision: 5.406 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 19:24:59 $"))
+    (let ((date "$Date: 2004-08-03 22:45:00 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
