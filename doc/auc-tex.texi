@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.146 2004-04-04 22:04:13 berenddeboer Exp $
+@c $Id: auc-tex.texi,v 1.147 2004-04-07 07:44:16 angeli Exp $
 
 @finalout
 @titlepage
@@ -990,15 +990,26 @@ If non-nil comments will be filled and indented according to LaTeX
 syntax.  Otherwise they will be filled like normal text.
 @end defopt
 
-@defopt LaTeX-fill-distinct-contents
-Types of content which will be set apart by inserting linebreaks
-before and after them if they do not fit into one line.  This can be
-content enclosed in curly braces or inline math.
-
-Such formatting can be useful to make macros and math more visible or
-to prevent overfull lines in the LaTeX source in case a package for
+@defopt LaTeX-fill-break-at-separators
+List of separators before or after which respectively line breaks will
+be inserted if they do not fit into one line.  The separators can be
+curly braces, brackets, switches for inline math (@samp{$}, @samp{\(},
+@samp{\)}) and switches for display math (@samp{\[}, @samp{\]}).  Such
+formatting can be useful to make macros and math more visible or to
+prevent overfull lines in the @LaTeX{} source in case a package for
 displaying formatted TeX output inside the Emacs buffer, like
 preview-latex, is used.
+@end defopt
+
+@defopt LaTeX-fill-break-before-code-comments
+Code comments are comments preceded by some other text in the same line.
+When a paragraph containing such a comment is to be filled, the comment
+start will be seen as a border after which no line breaks will be
+inserted in the same line.  If the option
+@code{LaTeX-fill-break-before-code-comments} is enabled (which is the
+default) and the comment does not fit into the line, a line break will
+be inserted before the last non-comment word to minimize the chance that
+the line becomes overfull.
 @end defopt
 
 @node Outline,  , Marking and formatting, Advanced Features
