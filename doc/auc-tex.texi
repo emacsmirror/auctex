@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.158 2004-05-27 07:54:46 angeli Exp $
+@c $Id: auc-tex.texi,v 1.159 2004-06-03 11:59:31 angeli Exp $
 
 @finalout
 @titlepage
@@ -679,14 +679,16 @@ environments.
 
 The previous chapter described how to write the main body of the text
 easily and with a minimum of errors.  In this chapter we will describe
-some features for entering more specialized sorts of text, and for
-indenting and navigating through the document.
+some features for entering more specialized sorts of text, for
+formatting the source by indenting and filling and for navigating
+through the document.
 
 @menu
 * Mathematics::                 Entering Mathematics
-* Completion::                  Completion
-* Commenting::                  Commenting
-* Marking and formatting::      Marking, Formatting and Indenting
+* Completion::                  Completion of macros
+* Commenting::                  Commenting text
+* Indenting::                   Reflecting syntactic constructs with whitespace
+* Filling::                     Automatic and manual line breaking
 * Outline::                     Hiding text
 @end menu
 
@@ -828,7 +830,7 @@ the Bib@TeX{} files have been saved at least once after you enabled
 automatic parsing on save, and that the basename of the Bib@TeX{} file
 does not conflict with the basename of one of @TeX{} files.
 
-@node Commenting, Marking and formatting, Completion, Advanced Features
+@node Commenting, Indenting, Completion, Advanced Features
 @section Commenting
 
 It is often necessary to comment out temporarily a region of @TeX{} or
@@ -857,66 +859,84 @@ paragraph is considered to consist of all preceding and succeeding
 lines starting with a @samp{%}, until the first non-comment line.
 @end deffn
 
-@node Marking and formatting, Outline, Commenting, Advanced Features
-@section Marking, Formatting and Indenting
+@node Indenting, Filling, Commenting, Advanced Features
+@section Indenting
 @cindex Formatting
-@cindex Filling
 @cindex Indenting
+@cindex Indentation
 @cindex Reformatting
 @cindex Reindenting
 
-The word `formatting' is used with two meanings in this document.
-Either letting @TeX{} format the document, or letting AUC@TeX{} make
-the La@TeX{} source look better.  This section deals with the latter.
-
-AUC@TeX{} contains very advanced functionality for formatting the
-La@TeX{} source which comprises indentation and filling and can be
-done automatically or on demand.
-
-Filling deals with the insertion of line breaks to prevent lines from
-becoming wider than what is specified in @code{fill-column}.  The
-linebreaks will be inserted automatically if @code{auto-fill-mode} is
-enabled.  In this case the source is not only filled but also indented
-automatically as you write it.
+Indentation means the addition of whitespace at the beginning of lines
+to reflect special syntactical constructs.  This makes it easier to see
+the structure of the document, and to catch errors such as a missing
+closing brace.  Thus, the indentation is done for precisely the same
+reasons that you would indent ordinary computer programs.
 
 Indentation is done by La@TeX{} environments and by @TeX{} groups, that
 is the body of an environment is indented by the value of
 @code{LaTeX-indent-level} (default 2).  Also, items of an `itemize-like'
 environment are indented by the value of @code{LaTeX-item-indent},
-default @minus{}2.  This indentation makes it easier to see the
-structure of the document, and to catch errors such as a missing close
-brace.  Thus, the indentation is done for precisely the same reasons
-that you would indent ordinary computer programs.
+default @minus{}2.  If more environments are nested, they are indented
+`accumulated' just like most programming languages usually are seen
+indented in nested constructs.
 @vindex LaTeX-indent-level
 @vindex LaTeX-item-indent
 
-The following is a short sample of an itemize environment indented by
-AUC@TeX{}.  If more environments are nested, they are indented
-`accumulated' just like most programming languages usually are seen
-indented in nested constructs.
+You can explicitely indent single lines, usually by pressing @key{TAB},
+or marked regions by calling @code{indent-region} on it.  If you have
+@code{auto-fill-mode} enabled and a line is broken while you type it,
+Emacs automatically cares about the indentation in the following line.
+If you want to have a similar behavior upon hitting @key{RET}, you can
+customize the variable @code{TeX-newline-function} and change the
+default of @code{newline} which does no indentation to
+@code{newline-and-indent} which indents the new line or
+@code{reindent-then-newline-and-indent} which indents both the current
+and the new line.
+@vindex TeX-newline-function
 
-@example
-\begin@{itemize@}
-\item Insertion of templates for logical-structural compositions such as
-  environments and sections.
-\item Hot-keys for easy access to certain often used constructs, e.g.,
-  font changes, accented letters, and mathematical symbols.
-\item Running application programs (such as \TeX), and then parsing
-  the output so that errors in the document may be located
-  easily.
-\item Support for multi-file documents.
-\item Online help for \AllTeX\ error messages.
-\item Outlining\Dash i.e., manipulating the document as a composition
-  of nested/sequential logical constructs.
-\item Instant formatting and indentation of the \ascii-document in
-  order to make it easier to read.
-\item `Completion' (and thereby spell-checking) of partially written
-  control sequences.
-\end@{itemize@}
-@end example
+There are certain La@TeX{} environments which should be indented in a
+special way, like @samp{tabular} or @samp{verbatim}.  Those environments
+may be specified in the variable @code{LaTeX-indent-environment-list}
+together with their special indentation functions.  Taking the
+@samp{verbatim} environment as an example you can see that
+@code{current-indentation} is used as the indentation function.  This
+will stop AUC@TeX{} from doing any indentation in the environment if you
+hit @key{TAB} for example.
+@vindex LaTeX-indent-environment-list
 
-You can format and indent single lines, paragraphs, environments, or
-sections.
+There are environments in @code{LaTeX-indent-environment-list} which do
+not bring a special indentation function with them.  This is due to the
+fact that first the respective functions are not implemented yet and
+second that filling will be disabled for the specified environments.
+This shall prevent the source code from being messed up by accidently
+filling those environments with the standard filling routine.  If you
+think that providing special filling routines for such environments
+would be an appropriate and challenging task for you, you are invited to
+contribute. (@xref{Filling}, for further information about the filling
+functionality)
+@vindex LaTeX-indent-environment-list
+
+The check for the indentation function may be enabled or disabled by
+customizing the variable @code{LaTeX-indent-environment-check}.
+@vindex LaTeX-indent-environment-check
+
+As a side note with regard to formatting special environments: Newer
+Emacsen include @file{align.el} and therefore provide some support for
+formatting @samp{tabular} and @samp{tabbing} environments with the
+function @code{align-current} which will nicely align columns in the
+source code.
+
+AUC@TeX{} is able to format commented parts of your code just as any
+other part.  This means La@TeX{} environments and @TeX{} groups in
+comments will be indented syntactically correct if the variable
+@code{LaTeX-syntactic-comments} is set to t.  If you disable it,
+comments will be filled like normal text and no syntactic indentation
+will be done.
+@vindex LaTeX-syntactic-comments
+
+Following you will find a list of most commands and variables related
+to indenting with a small summary in each case:
 
 @table @kbd
 @item @key{TAB}
@@ -937,38 +957,6 @@ respective option is called @code{TeX-newline-function}.
 @item C-j
 @kindex C-j
 Alias for @key{LFD}
-
-@item C-c C-q C-p
-@kindex C-c C-q C-p
-@findex LaTeX-fill-paragraph
-@code{LaTeX-fill-paragraph} will reformat or `fill' the current
-paragraph.
-
-@item M-q
-@kindex M-q
-Alias for @kbd{C-c C-q C-p}
-
-@item C-c C-q C-e
-@kindex C-c C-q C-e
-@findex LaTeX-fill-environment
-@code{LaTeX-fill-environment} will reformat or `fill' the current
-environment.  This may e.g. be the `document' environment, in which case
-the entire document will be formatted.
-
-@item C-c C-q C-s
-@kindex C-c C-q C-s
-@findex LaTeX-fill-section
-@code{LaTeX-fill-section} will reformat or `fill' the current
-logical sectional unit.
-
-@item C-c C-q C-r
-@kindex C-c C-q C-r
-@findex LaTeX-fill-region
-@code{LaTeX-fill-region} will format or `fill' the current region.
-
-@item M-g
-@kindex M-g
-Alias for @kbd{C-c C-q C-r}
 @end table
 
 @defopt LaTeX-indent-environment-list
@@ -1003,8 +991,144 @@ If non-nil comments will be filled and indented according to LaTeX
 syntax.  Otherwise they will be filled like normal text.
 @end defopt
 
+@defopt TeX-newline-function
+Used to specify the function which is called when @key{RET} is pressed.
+This will normally be @code{newline} which simply inserts a new line.
+In case you want to have AUC@TeX{} do indentation as well when you press
+@key{RET}, use the built-in functions @code{newline-and-indent} or
+@code{reindent-then-newline-and-indent}.  The former inserts a new line
+and indents the following line, i.e. it moves the cursor to the right
+position and therefore acts as if you pressed @key{LFD}.  The latter
+function additionally indents the current line.  If you choose
+@samp{Other}, you can specify your own fancy function to be called when
+@key{RET} is pressed.
+@end defopt
+
+
+@node Filling, Outline, Indenting, Advanced Features
+@section Filling
+@cindex Filling
+@cindex Formatting
+@cindex Reformatting
+@cindex Refilling
+
+Filling deals with the insertion of line breaks to prevent lines from
+becoming wider than what is specified in @code{fill-column}.  The
+linebreaks will be inserted automatically if @code{auto-fill-mode} is
+enabled.  In this case the source is not only filled but also indented
+automatically as you write it.
+
+You can manually fill explicitely marked regions, paragraphs,
+environments, complete sections, or the whole buffer.  (Note that manual
+filling in AUC@TeX{} will indent the start of the region to be filled in
+contrast to many other Emacs modes.)
+
+There are some syntactical constructs which are handled specially with
+regard to filling.  These are so-called code comments and paragraph
+commands.
+
+Code comments are comments preceded by code or text in the same line.
+Upon filling a region, code comments themselves will not get filled.
+Filling is done from the start of the region to the line with the code
+comment and continues after it.  In order to prevent overfull lines in
+the source code, a linebreak will be inserted before the last
+non-comment word by default.  This can be changed by customizing
+@code{LaTeX-fill-break-before-code-comments}.  If you have overfull
+lines with code comments you can fill those explicitely by calling
+@code{LaTeX-fill-paragraph} or pressing @kbd{M-q} with the cursor
+positioned on them.  This will add linebreaks in the comment and indent
+subsequent comment lines to the column of the comment in the first line
+of the code comment.  In this special case @kbd{M-q} only acts on the
+current line and not on the whole paragraph.
+
+Lines with @samp{\par} are treated similarly to code comments,
+i.e. @samp{\par} will be treated as paragraph boundary which should not
+be followed by other code or text.  But it is not treated as a real
+paragraph boundary like an empty line where filling a paragraph would
+stop.
+
+Paragraph commands like @samp{\section} or @samp{\noindent} (the list of
+commands is defined by @code{LaTeX-paragraph-commands}) are often to be
+placed in their own line(s).  This means they should not be consecuted
+with any preceding or following adjacent lines of text.  AUC@TeX{} will
+prevent this from happening if you do not put any text except another
+macro after the end of the last brace of the respective macro.  If
+there is other text after the macro, AUC@TeX{} regards this as a sign
+that the macro is part of the following paragraph.
+@vindex LaTeX-paragraph-commands
+
+Here are some examples:
+
+@example
+\begin@{quote@}
+  text text text text
+@end example
+
+@example
+\begin@{quote@}\label@{foo@}
+  text text text text
+@end example
+
+If you press @kbd{M-q} on the first line in both examples, nothing will
+change.  But if you write
+
+@example
+\begin@{quote@} text
+  text text text text
+@end example
+
+and press @kbd{M-q}, you will get
+
+@example
+\begin@{quote@} text text text text text
+@end example
+
+Besides code comments and paragraph commands, another speciality of
+filling in AUC@TeX{} involves commented lines.  You should be aware that
+these comments are treated as islands in the rest of the La@TeX{} code
+if syntactic filling is enabled.  This means, for example, if you try to
+fill an environment with @code{LaTeX-fill-environment} and have the
+cursor placed on a commented line which does not have a surrounding
+environment inside the comment, AUC@TeX{} will report an error.
+@findex LaTeX-fill-environment
+
+The relevant commands and variables with regard to filling are:
+
+@table @kbd
+@item C-c C-q C-p
+@kindex C-c C-q C-p
+@findex LaTeX-fill-paragraph
+@code{LaTeX-fill-paragraph} will fill and indent the current paragraph.
+
+@item M-q
+@kindex M-q
+Alias for @kbd{C-c C-q C-p}
+
+@item C-c C-q C-e
+@kindex C-c C-q C-e
+@findex LaTeX-fill-environment
+@code{LaTeX-fill-environment} will fill and indent the current
+environment.  This may e.g. be the `document' environment, in which case
+the entire document will be formatted.
+
+@item C-c C-q C-s
+@kindex C-c C-q C-s
+@findex LaTeX-fill-section
+@code{LaTeX-fill-section} will fill and indent the current logical
+sectional unit.
+
+@item C-c C-q C-r
+@kindex C-c C-q C-r
+@findex LaTeX-fill-region
+@code{LaTeX-fill-region} will fill and indent the current region.
+
+@item M-g
+@kindex M-g
+Alias for @kbd{C-c C-q C-r}
+@end table
+
 @defopt LaTeX-fill-break-at-separators
-List of separators before or after which respectively line breaks will
+List of separators before or after which respectively linebreaks will
 be inserted if they do not fit into one line.  The separators can be
 curly braces, brackets, switches for inline math (@samp{$}, @samp{\(},
 @samp{\)}) and switches for display math (@samp{\[}, @samp{\]}).  Such
@@ -1025,20 +1149,8 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
-@defopt TeX-newline-function
-Used to specify the function which is called when @key{RET} is pressed.
-This will normally be @code{newline} which simply inserts a new line.
-In case you want to have AUC@TeX{} do indentation as well when you press
-@key{RET}, use the built-in functions @code{newline-and-indent} or
-@code{reindent-then-newline-and-indent}.  The former inserts a new line
-and indents the following line, i.e. it moves the cursor to the right
-position and therefore acts as if you pressed @key{LFD}.  The latter
-function additionally indents the current line.  If you choose
-@samp{Other}, you can specify your own fancy function to be called when
-@key{RET} is pressed.
-@end defopt
 
-@node Outline,  , Marking and formatting, Advanced Features
+@node Outline,  , Filling, Advanced Features
 @section Outlining the Document
 @cindex Outlining
 @cindex Headers
