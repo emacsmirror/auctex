@@ -1,3 +1,8 @@
+2004-09-07  Davide G. M. Salvetti  <salve@debian.org>
+
+	* aclocal.m4 (EMACS_LISP): Sync echo output with real emacs
+	invocation.
+
 2004-09-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (Texinfo-insert-environment): Add a space between
@@ -355,7 +360,7 @@
 
 	* texmathp.el (texmathp-tex-commands-default): Added \label.
 	Various checkdoc-related fixes.
-	
+
 2004-08-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-buffer-type): Use alternative way to
@@ -477,8 +482,8 @@
 
 2004-08-15  Dan Nicolaescu  <dann@ics.uci.edu>
 
-        * latex.el (LaTeX-common-initialization): Don't set
-        `selective-display'.
+	* latex.el (LaTeX-common-initialization): Don't set
+	`selective-display'.
 
 2004-08-15  David Kastrup  <dak@gnu.org>
 
@@ -621,7 +626,7 @@
 	doc/todo.texi: various changes and smaller typos corrected.
 
 	* doc/macros.texi fix problems with PDF links and indexing.
-	
+
 	* configure.in: Check for pdftex, dvips, texi2html, texi2dvi,
 	texi2pdf.
 
@@ -723,7 +728,7 @@
 	stuff.
 
 	* math-ref.tex: removed.
-	
+
 	* doc/Makefile.in (all): Remove math-ref.tex
 
 	* Makefile.in (DOCFILES): Remove math-ref.tex
