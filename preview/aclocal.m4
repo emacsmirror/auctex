@@ -113,7 +113,7 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
   AC_FULL_EXPAND(expprefix)
   EMACS_LISP([$1],
     [(catch 22
-       (let ((dirs $4))
+       (let (reldir (dirs $4))
 	  (dolist (name $3 \"NONE\")
 	    (dolist (dir dirs)
 	      (when (and dir
@@ -121,7 +121,7 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
                          (file-name-absolute-p dir)
 	      	         (file-directory-p dir)
 	                 (not (string-match \"\\\\\`\\\\.\\\\.\"
-                           (file-relative-name dir expanded)))
+                           (setq reldir (file-relative-name dir expanded))))
                          (let ((name name) (dir dir))
 		           (while (and dir name
 		                       (string= (file-name-nondirectory dir)
@@ -132,8 +132,10 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
 			         (setq dir (directory-file-name dir)
 			              name (directory-file-name name)))))
 		            (null name))
-		   (throw 22 (concat (file-name-as-directory prefix)
-		     (file-relative-name dir expanded)))))))))],[$5],
+		   (throw 22
+                      (if (string= reldir ".") (directory-file-name prefix)
+                        (concat (file-name-as-directory prefix)
+                                reldir)))))))))],[$5],
   [prefix expanded $6],["${currentprefix}" "${expprefix}" $7])
   if test "[$]$1" != NONE; then break; fi; done])
 
@@ -244,7 +246,7 @@ AC_MSG_CHECKING([for TDS-compliant directory])
 pathoutput="`kpsepath -n latex tex`"
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
-  [['${datadir}/texmf' "${texprefix}"]],
+  [['${datadir}/texmf' "${texprefix}/texmf-local" "${texprefix}/texmf"]],
   [[(list nil)]],
   [[(mapcar (lambda(x)
               (and (string-match \"\\\\\`!*\\\\(.*\\\\)/tex/latex//+\\\\'\" x)

@@ -1,5 +1,9 @@
 2005-04-01  David Kastrup  <dak@gnu.org>
 
+	* aclocal.m4(EMACS_EXAMINE_INSTALLATION_DIR): avoid trailing
+	`/.'.
+	(TEX_PATH_TEXMFDIR): search order changed.
+
 	* latex/Makefile.in (prefix, datadir, texmfdir, previewtexmfdir)
 	(previewdocdir): Use (null) to mask Windows backslashes.
 
