@@ -1,3 +1,10 @@
+2003-12-05  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/misc.c:
+	* dvipng/dvipng.texi:
+	* dvipng/dvipng.h:
+	* dvipng/draw.c: Change --baseline to --depth 
+
 2003-12-01  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/draw.c: 
