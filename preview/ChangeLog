@@ -1,5 +1,7 @@
 2002-03-23  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-parse-messages): Comment used regexps.
+
 	* preview.dtx (subsection{The internals}): Removed an \everypar
 	that caused bad spacing.  No idea why.  Redundant anyway.
 	(subsection{Selection options}): changed displaymath option to

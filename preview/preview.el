@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.83 2002-03-23 12:16:50 dakas Exp $
+;; $Id: preview.el,v 1.84 2002-03-23 12:17:28 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1434,7 +1434,7 @@ name(\\([^)]+\\))\\)" nil t)
 ;;;\\(?:Ov\\|Und\\)erfull \\\\.*[0-9]*--[0-9]*
 ;;;\\(?:.\{79\}
 ;;;\\)*.*$\\)\\|
-;;; This would have catched overfull box messages that consist of
+;;; This would have caught overfull box messages that consist of
 ;;; several lines of context all with 79 characters in length except
 ;;; of the last one.  prauctex.def kills all such messages.
 	    (cond
@@ -1688,7 +1688,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.83 $"))
+	(rev "$Revision: 1.84 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
