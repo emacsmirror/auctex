@@ -1,5 +1,7 @@
 2004-08-10  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* RELEASE: Add `volunteers welcome'.
+
 	* doc/auc-tex.texi (Completion): TeX-insert-macro-default-style.
 
 	* tex.el (TeX-source-specials-mode): Add manual link.

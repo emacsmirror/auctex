@@ -15,7 +15,7 @@ of the text while you enter it.
 Documentation and interfaces in this release are still a moving
 target, partly due to a lack of volunteers for non-programming tasks:
 documentation writing, tutorials, translations, reference material,
-sleuth work, testing.
+sleuth work, testing.  The usual ``volunteers welcome'' applies here.
 
 Nevertheless, we strongly recommend using this release over the last
 one: the number of bugs has quite decreased, and usability is
