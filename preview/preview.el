@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.142 2002-04-30 09:41:26 jalar Exp $
+;; $Id: preview.el,v 1.143 2002-04-30 19:17:55 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1219,14 +1219,16 @@ BUFFER-MISC is the appropriate data to be used."
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
-(defvar preview-dumped-list nil
-  "List of dumped masters.")
+(defvar preview-dumped-alist nil
+  "Alist of dumped masters.  
+The elements are (NAME . HEADER), NAME is the master-file and HEADER
+is its heading up to and including \\begin{document}")
 
 (defun preview-cleanout-tempfiles ()
   "Clean out all directories and files with non-persistent data.
 This is called as a hook when exiting Emacs."
   (mapc #'preview-kill-buffer-cleanup (buffer-list))
-  (mapc #'preview-format-kill preview-dumped-list))
+  (mapc #'preview-format-kill preview-dumped-alist))
 
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
@@ -1933,12 +1935,13 @@ Those are just needed for cleanup."
   :group 'preview-latex
   :type '(repeat string))
 
-(defun preview-format-kill (format-file)
-  "Kill a format file.
+(defun preview-format-kill (format-cons)
+  "Kill a cached format. 
+FORMAT-CONS is intended to be an element of `preview-dumped-alist'.
 Tries through `preview-format-extensions'."
   (dolist (ext preview-format-extensions)
     (condition-case nil
-	(delete-file (concat format-file ext))
+	(delete-file (concat (car format-cons) ext))
       (file-error nil))))
 
 (defun preview-dump-format () 
@@ -1952,28 +1955,47 @@ on the same master file."
 	 (LaTeX-command-style `(("."
 				 ,(TeX-command-expand
 				   preview-dump-command
-				   'TeX-master-file)))))
-    (setq preview-dumped-list (delete format-file preview-dumped-list))
-    ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
-    ;; in the tools bundle is an empty file.
-    (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
-    (preview-document)
-    (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
-    (setq TeX-sentinel-function
-	  `(lambda (process string)
-	     (push ,format-file preview-dumped-list)
-	     (condition-case err
-		 (delete-file ,dump-file)
-	       (file-error (preview-log-error err "Dumping" process)))
-	     (preview-reraise-error process)))))
+				   'TeX-master-file))))
+	 (header  
+	  ;; Header search taken from `tex-buf.el'
+	  ;; We search for the header from the master file.
+	  (save-excursion
+	    (save-restriction
+	      (set-buffer master-buffer)
+	      (save-excursion
+		(save-restriction
+		  (widen)
+		  (goto-char (point-min))
+		  ;; NOTE: We use the local value of
+		  ;; TeX-header-end from the master file.
+		  (if (not (re-search-forward TeX-header-end nil t))
+		      ""
+		    (re-search-forward "[\r\n]" nil t)
+		    (buffer-substring (point-min) (point))))))))
+	 (old-format (assoc format-file preview-dumped-alist)))
+    (unless (string= header (cdr old-format))
+      (setq preview-dumped-alist (delq old-format preview-dumped-alist))
+      ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
+      ;; in the tools bundle is an empty file.
+      (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
+      (preview-document)
+      (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
+      (setq TeX-sentinel-function
+	    `(lambda (process string)
+	       (push (cons ,format-file ,header) preview-dumped-alist)
+	       (condition-case err
+		   (delete-file ,dump-file)
+		 (file-error (preview-log-error err "Dumping" process)))
+	       (preview-reraise-error process))))))
 
 (defun preview-clear-format ()
   "Clear the pregenerated format file.  
 The use of the format file is discontinued."
   (interactive)
-  (let ((format-file (expand-file-name (TeX-master-file nil))))
-    (setq preview-dumped-list (delete format-file preview-dumped-list))
-    (preview-format-kill format-file)))
+  (let* ((format-file (expand-file-name (TeX-master-file nil)))
+	 (old-format (assoc format-file preview-dumped-alist)))
+    (setq preview-dumped-alist (delq old-format preview-dumped-alist))
+    (preview-format-kill old-format)))
 
 (defun TeX-inline-preview (name command file)
   "Main function called by AUC TeX.
@@ -1987,9 +2009,8 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	(process
 	 (TeX-run-command
 	  "Preview-LaTeX"
-	  (if (member (expand-file-name
-		       (TeX-master-file nil))
-		      preview-dumped-list)
+	  (if (assoc (expand-file-name (TeX-master-file nil))
+		     preview-dumped-alist)
 	      (TeX-command-expand preview-undump-command
 				  (car pr-file)
 				  (cons '("%f"
@@ -2013,7 +2034,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.142 $"))
+	(rev "$Revision: 1.143 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2024,7 +2045,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-30 09:41:26 $"))
+    (let ((date "$Date: 2002-04-30 19:17:55 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
