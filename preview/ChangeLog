@@ -1,3 +1,26 @@
+2002-08-14  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/dvipng.h: VF additions, general cleanup
+
+	* dvipng/dvipng.c: Small adjustments connected to the VF support
+
+	* dvipng/config.h: Remove unnecessary things
+
+	* dvipng/pagelist.c: Simplifications
+
+	* dvipng/color.c: Comment changed
+
+	* dvipng/special.c, dvipng/set.c: Scale always equal h/v
+
+	* dvipng/Makefile: Make vf.o
+
+	* dvipng/io.c: Start pre-conversion to mmap. Much still to be done.
+
+	* dvipng/misc.c, dvipng/set.c, dvipng/font.c, dvipng/pk.c,
+	dvipng/draw.c: Adjust for VF support
+
+	* dvipng/vf.c: VF support added to dvipng
+
 2002-08-14  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Release 0.7.3
