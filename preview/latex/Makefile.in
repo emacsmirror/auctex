@@ -25,7 +25,7 @@ install-texmf: $(TEXMFGEN)
 	  echo " $(INSTALL_DATA) $$x $(previewtexmfdir)" ; \
 	  $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
 	done
-	-$(TEXHASH) $(texmfdir)
+	-$(TEXHASH)
 
 install-texmf-doc: preview.dvi
 	-$(MKINSTALLDIRS) $(previewdocdir)
