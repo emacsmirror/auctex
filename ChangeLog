@@ -1,3 +1,11 @@
+2002-12-12  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-LaTeX-style-list): Remove styles overlapped
+	with LaTeX-style-list.  Append values to LaTeX-style-list instead
+	of overwriting.
+	(japanese-latex-mode-initialization): Do not overwrite
+	LaTeX-style-list.
+
 2002-12-11  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* bib-cite.el: Updated URLs.
