@@ -132,9 +132,13 @@ The following variables can be set to customize:
 		      (t val)))
 	 (name (LaTeX-section-name level))
 	 (toc nil)
-	 (title "")
+	 (title (if (TeX-active-mark)
+		    (buffer-substring (region-beginning)
+				      (region-end))
+		  ""))
 	 (done-mark (make-marker)))
-    (LaTeX-newline)
+    (when (zerop (length title))
+      (LaTeX-newline))
     (run-hooks 'LaTeX-section-hook)
     (LaTeX-newline)
     (if (marker-position done-mark)
@@ -394,7 +398,13 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (setq title (read-string "What title: ")))
+  (if (zerop (length title))
+      (setq title (read-string "What title: "))
+    (let ((region (and (TeX-active-mark)
+		       (cons (region-beginning) (region-end)))))
+      (setq title (read-string "What title: " title))
+      (if region
+	  (delete-region (car region) (cdr region))))))
 
 (defun LaTeX-section-toc ()
   "Hook to prompt for the LaTeX section entry in the table of content .
@@ -3213,7 +3223,8 @@ Each entry should be a list with three elements, KEY, VALUE, and MENU.
 KEY is the key to be redefined (under `LaTeX-math-abbrev-prefix' in
 math minor mode, VALUE can be a string with the name of the macro to
 be inserted, or a function to be called.  The optional third element is
-the name of the submenu where the command should be added.
+the name of the submenu where the command should be added.  The fourth
+element may be a Unicode character position for menu display.
 
 See also `LaTeX-math-menu'."
   :group 'LaTeX-math
@@ -3227,199 +3238,199 @@ See also `LaTeX-math-menu'."
 					(string :format "%v"))))))
 
 (defconst LaTeX-math-default
-  '((?a "alpha" "greek")
-    (?b "beta" "greek")
-    (?g "gamma" "greek")
-    (?d "delta" "greek")
-    (?e "epsilon" "greek")
-    (?z "zeta" "greek")
-    (?h  "eta" "greek")
-    (?j "theta" "greek")
-    (?k "kappa" "greek")
-    (?l "lambda" "greek")
-    (?m "mu" "greek")
-    (?n "nu" "greek")
-    (?x "xi" "greek")
-    (?p "pi" "greek")
-    (?r "rho" "greek")
-    (?s "sigma" "greek")
-    (?t "tau" "greek")
-    (?u "upsilon" "greek")
-    (?f "phi" "greek")
-    (?q "chi" "greek")
-    (?y "psi" "greek")
-    (?w "omega" "greek")
-    (nil "varepsilon" "greek")
-    (nil "vartheta" "greek")
-    (nil "varpi" "greek")
-    (nil "varrho" "greek")
-    (nil "varsigma" "greek")
-    (nil "varphi" "greek")
-    (?G "Gamma" "Greek")
-    (?D "Delta" "Greek")
-    (?J "Theta" "Greek")
-    (?L "Lambda" "Greek")
-    (?P "Pi" "Greek")
-    (?S "Sigma" "Greek")
-    (?U "Upsilon" "Greek")
-    (?F "Phi" "Greek")
-    (?Y "Psi" "Greek")
-    (?O "Omega" "Greek")
+  '((?a "alpha" "greek" 945) ;; #X03B1
+    (?b "beta" "greek" 946) ;; #X03B2
+    (?g "gamma" "greek" 947) ;; #X03B3
+    (?d "delta" "greek" 948) ;; #X03B4
+    (?e "epsilon" "greek" 1013) ;; #X03F5
+    (?z "zeta" "greek" 950) ;; #X03B6
+    (?h "eta" "greek" 951) ;; #X03B7
+    (?j "theta" "greek" 952) ;; #X03B8
+    (?k "kappa" "greek" 954) ;; #X03BA
+    (?l "lambda" "greek" 955) ;; #X03BB
+    (?m "mu" "greek" 956) ;; #X03BC
+    (?n "nu" "greek" 957) ;; #X03BD
+    (?x "xi" "greek" 958) ;; #X03BE
+    (?p "pi" "greek" 960) ;; #X03C0
+    (?r "rho" "greek" 961) ;; #X03C1
+    (?s "sigma" "greek" 963) ;; #X03C3
+    (?t "tau" "greek" 964) ;; #X03C4
+    (?u "upsilon" "greek" 965) ;; #X03C5
+    (?f "phi" "greek" 981) ;; #X03D5
+    (?q "chi" "greek" 967) ;; #X03C7
+    (?y "psi" "greek" 968) ;; #X03C8
+    (?w "omega" "greek" 969) ;; #X03C9
+    (nil "varepsilon" "greek" 949) ;; #X03B5
+    (nil "vartheta" "greek" 977) ;; #X03D1
+    (nil "varpi" "greek" 982) ;; #X03D6
+    (nil "varrho" "greek" 1009) ;; #X03F1
+    (nil "varsigma" "greek" 962) ;; #X03C2
+    (nil "varphi" "greek" 966) ;; #X03C6
+    (?\S-g "Gamma" "Greek" 915) ;; #X0393
+    (?\S-d "Delta" "Greek" 916) ;; #X0394
+    (?\S-j "Theta" "Greek" 920) ;; #X0398
+    (?\S-l "Lambda" "Greek" 923) ;; #X039B
+    (?\S-p "Pi" "Greek" 928) ;; #X03A0
+    (?\S-s "Sigma" "Greek" 931) ;; #X03A3
+    (?\S-u "Upsilon" "Greek" 978) ;; #X03D2
+    (?\S-f "Phi" "Greek" 934) ;; #X03A6
+    (?\S-y "Psi" "Greek" 936) ;; #X03A8
+    (?\S-o "Omega" "Greek" 937) ;; #X03A9
     (?c LaTeX-math-cal "Cal-whatever")
-    (nil "pm" "Binary Op")
-    (nil "mp" "Binary Op")
-    (?* "times" "Binary Op")
-    (nil "div" "Binary Op")
-    (nil "ast" "Binary Op")
-    (nil "star" "Binary Op")
-    (nil "circ" "Binary Op")
-    (nil "bullet" "Binary Op")
-    (?. "cdot" "Binary Op")
-    (?- "cap" "Binary Op")
-    (?+ "cup" "Binary Op")
-    (nil "uplus" "Binary Op")
-    (nil "sqcap" "Binary Op")
-    (?| "vee" "Binary Op")
-    (?& "wedge" "Binary Op")
-    (?\\ "setminus" "Binary Op")
-    (nil "wr" "Binary Op")
-    (nil "diamond" "Binary Op")
-    (nil "bigtriangleup" "Binary Op")
-    (nil "bigtriangledown" "Binary Op")
-    (nil "triangleleft" "Binary Op")
-    (nil "triangleright" "Binary Op")
+    (nil "pm" "Binary Op" 177) ;; #X00B1
+    (nil "mp" "Binary Op" 8723) ;; #X2213
+    (?* "times" "Binary Op" 215) ;; #X00D7
+    (nil "div" "Binary Op" 247) ;; #X00F7
+    (nil "ast" "Binary Op" 8727) ;; #X2217
+    (nil "star" "Binary Op" 8902) ;; #X22C6
+    (nil "circ" "Binary Op" 8728) ;; #X2218
+    (nil "bullet" "Binary Op" 8729) ;; #X2219
+    (?. "cdot" "Binary Op" 8901) ;; #X22C5
+    (?- "cap" "Binary Op" 8745) ;; #X2229
+    (?+ "cup" "Binary Op" 8746) ;; #X222A
+    (nil "uplus" "Binary Op" 8846) ;; #X228E
+    (nil "sqcap" "Binary Op" 8851) ;; #X2293
+    (?| "vee" "Binary Op" 8744) ;; #X2228
+    (?& "wedge" "Binary Op" 8743) ;; #X2227
+    (?\\ "setminus" "Binary Op" 8726) ;; #X2216
+    (nil "wr" "Binary Op" 8768) ;; #X2240
+    (nil "diamond" "Binary Op" 8900) ;; #X22C4
+    (nil "bigtriangleup" "Binary Op" 9651) ;; #X25B3
+    (nil "bigtriangledown" "Binary Op" 9661) ;; #X25BD
+    (nil "triangleleft" "Binary Op" 9665) ;; #X25C1
+    (nil "triangleright" "Binary Op" 9655) ;; #X25B7
     (nil "lhd" "Binary Op")
     (nil "rhd" "Binary Op")
     (nil "unlhd" "Binary Op")
     (nil "unrhd" "Binary Op")
-    (nil "oplus" "Binary Op")
-    (nil "ominus" "Binary Op")
-    (nil "otimes" "Binary Op")
-    (nil "oslash" "Binary Op")
-    (nil "odot" "Binary Op")
-    (nil "bigcirc" "Binary Op")
-    (nil "dagger" "Binary Op")
-    (nil "ddagger" "Binary Op")
-    (nil "amalg" "Binary Op")
-    (?< "leq" "Relational")
-    (?> "geq" "Relational")
-    (nil "qed" "Relational")
-    (nil "equiv" "Relational")
-    (nil "models" "Relational")
-    (nil "prec" "Relational")
-    (nil "succ" "Relational")
-    (nil "sim" "Relational")
-    (nil "perp" "Relational")
-    (nil "preceq" "Relational")
-    (nil "succeq" "Relational")
-    (nil "simeq" "Relational")
-    (nil "mid" "Relational")
-    (nil "ll" "Relational")
-    (nil "gg" "Relational")
-    (nil "asymp" "Relational")
-    (nil "parallel" "Relational")
-    (?{ "subset" "Relational")
-    (?} "supset" "Relational")
-    (nil "approx" "Relational")
-    (nil "bowtie" "Relational")
-    (?\[ "subseteq" "Relational")
-    (?\] "supseteq" "Relational")
-    (nil "cong" "Relational")
-    (nil "Join" "Relational")
-    (nil "sqsubset" "Relational")
-    (nil "sqsupset" "Relational")
-    (nil "neq" "Relational")
-    (nil "smile" "Relational")
-    (nil "sqsubseteq" "Relational")
-    (nil "sqsupseteq" "Relational")
-    (nil "doteq" "Relational")
-    (nil "frown" "Relational")
-    (?i "in" "Relational")
-    (nil "ni" "Relational")
-    (nil "propto" "Relational")
-    (nil "vdash" "Relational")
-    (nil "dashv" "Relational")
-    (?\C-b "leftarrow" "Arrows")
-    (nil "Leftarrow" "Arrows")
-    (?\C-f "rightarrow" "Arrows")
-    (nil "Rightarrow" "Arrows")
-    (nil "leftrightarrow" "Arrows")
-    (nil "Leftrightarrow" "Arrows")
-    (nil "mapsto" "Arrows")
-    (nil "hookleftarrow" "Arrows")
-    (nil "leftharpoonup" "Arrows")
-    (nil "leftharpoondown" "Arrows")
-    (nil "longleftarrow" "Arrows")
-    (nil "Longleftarrow" "Arrows")
-    (nil "longrightarrow" "Arrows")
-    (nil "Longrightarrow" "Arrows")
-    (nil "longleftrightarrow" "Arrows")
-    (nil "Longleftrightarrow" "Arrows")
-    (nil "longmapsto" "Arrows")
-    (nil "hookrightarrow" "Arrows")
-    (nil "rightharpoonup" "Arrows")
-    (nil "rightharpoondown" "Arrows")
-    (?\C-p "uparrow" "Arrows")
-    (nil "Uparrow" "Arrows")
-    (?\C-n "downarrow" "Arrows")
-    (nil "Downarrow" "Arrows")
-    (nil "updownarrow" "Arrows")
-    (nil "Updownarrow" "Arrows")
-    (nil "nearrow" "Arrows")
-    (nil "searrow" "Arrows")
-    (nil "swarrow" "Arrows")
-    (nil "nwarrow" "Arrows")
-    (nil "ldots" "Misc Symbol")
-    (nil "cdots" "Misc Symbol")
-    (nil "vdots" "Misc Symbol")
-    (nil "ddots" "Misc Symbol")
-    (?N "nabla" "Misc Symbol")
-    (nil "aleph" "Misc Symbol")
-    (nil "prime" "Misc Symbol")
-    (?A "forall" "Misc Symbol")
-    (?I "infty" "Misc Symbol")
-    (nil "hbar" "Misc Symbol")
-    (?0 "emptyset" "Misc Symbol")
-    (?E "exists" "Misc Symbol")
-    (nil "nabla" "Misc Symbol")
-    (nil "surd" "Misc Symbol")
+    (nil "oplus" "Binary Op" 8853) ;; #X2295
+    (nil "ominus" "Binary Op" 8854) ;; #X2296
+    (nil "otimes" "Binary Op" 8855) ;; #X2297
+    (nil "oslash" "Binary Op" 8709) ;; #X2205
+    (nil "odot" "Binary Op" 8857) ;; #X2299
+    (nil "bigcirc" "Binary Op" 9675) ;; #X25CB
+    (nil "dagger" "Binary Op" 8224) ;; #X2020
+    (nil "ddagger" "Binary Op" 8225) ;; #X2021
+    (nil "amalg" "Binary Op" 10815) ;; #X2A3F
+    (?< "leq" "Relational" 8804) ;; #X2264
+    (?> "geq" "Relational" 8805) ;; #X2265
+    (nil "qed" "Relational" 8718) ;; #X220E
+    (nil "equiv" "Relational" 8801) ;; #X2261
+    (nil "models" "Relational" 8871) ;; #X22A7
+    (nil "prec" "Relational" 8826) ;; #X227A
+    (nil "succ" "Relational" 8827) ;; #X227B
+    (nil "sim" "Relational" 8764) ;; #X223C
+    (nil "perp" "Relational" 10178) ;; #X27C2
+    (nil "preceq" "Relational" 10927) ;; #X2AAF
+    (nil "succeq" "Relational" 10928) ;; #X2AB0
+    (nil "simeq" "Relational" 8771) ;; #X2243
+    (nil "mid" "Relational" 8739) ;; #X2223
+    (nil "ll" "Relational" 8810) ;; #X226A
+    (nil "gg" "Relational" 8811) ;; #X226B
+    (nil "asymp" "Relational" 8781) ;; #X224D
+    (nil "parallel" "Relational" 8741) ;; #X2225
+    (?\{ "subset" "Relational" 8834) ;; #X2282
+    (?\} "supset" "Relational" 8835) ;; #X2283
+    (nil "approx" "Relational" 8776) ;; #X2248
+    (nil "bowtie" "Relational" 8904) ;; #X22C8
+    (?\[ "subseteq" "Relational" 8838) ;; #X2286
+    (?\] "supseteq" "Relational" 8839) ;; #X2287
+    (nil "cong" "Relational" 8773) ;; #X2245
+    (nil "Join" "Relational" 10781) ;; #X2A1D
+    (nil "sqsubset" "Relational" 8847) ;; #X228F
+    (nil "sqsupset" "Relational" 8848) ;; #X2290
+    (nil "neq" "Relational" 8800) ;; #X2260
+    (nil "smile" "Relational" 8995) ;; #X2323
+    (nil "sqsubseteq" "Relational" 8849) ;; #X2291
+    (nil "sqsupseteq" "Relational" 8850) ;; #X2292
+    (nil "doteq" "Relational" 8784) ;; #X2250
+    (nil "frown" "Relational" 8994) ;; #X2322
+    (?i "in" "Relational" 8712) ;; #X2208
+    (nil "ni" "Relational" 8715) ;; #X220B
+    (nil "propto" "Relational" 8733) ;; #X221D
+    (nil "vdash" "Relational" 8866) ;; #X22A2
+    (nil "dashv" "Relational" 8867) ;; #X22A3
+    (?\C-b "leftarrow" "Arrows" 8592) ;; #X2190
+    (nil "Leftarrow" "Arrows" 8656) ;; #X21D0
+    (?\C-f "rightarrow" "Arrows" 8594) ;; #X2192
+    (nil "Rightarrow" "Arrows" 8658) ;; #X21D2
+    (nil "leftrightarrow" "Arrows" 8596) ;; #X2194
+    (nil "Leftrightarrow" "Arrows" 8660) ;; #X21D4
+    (nil "mapsto" "Arrows" 8614) ;; #X21A6
+    (nil "hookleftarrow" "Arrows" 8617) ;; #X21A9
+    (nil "leftharpoonup" "Arrows" 8636) ;; #X21BC
+    (nil "leftharpoondown" "Arrows" 8637) ;; #X21BD
+    (nil "longleftarrow" "Arrows" 10229) ;; #X27F5
+    (nil "Longleftarrow" "Arrows" 10232) ;; #X27F8
+    (nil "longrightarrow" "Arrows" 10230) ;; #X27F6
+    (nil "Longrightarrow" "Arrows" 10233) ;; #X27F9
+    (nil "longleftrightarrow" "Arrows" 10231) ;; #X27F7
+    (nil "Longleftrightarrow" "Arrows" 10234) ;; #X27FA
+    (nil "longmapsto" "Arrows" 10236) ;; #X27FC
+    (nil "hookrightarrow" "Arrows" 8618) ;; #X21AA
+    (nil "rightharpoonup" "Arrows" 8640) ;; #X21C0
+    (nil "rightharpoondown" "Arrows" 8641) ;; #X21C1
+    (?\C-p "uparrow" "Arrows" 8593) ;; #X2191
+    (nil "Uparrow" "Arrows" 8657) ;; #X21D1
+    (?\C-n "downarrow" "Arrows" 8595) ;; #X2193
+    (nil "Downarrow" "Arrows" 8659) ;; #X21D3
+    (nil "updownarrow" "Arrows" 8597) ;; #X2195
+    (nil "Updownarrow" "Arrows" 8661) ;; #X21D5
+    (nil "nearrow" "Arrows" 8599) ;; #X2197
+    (nil "searrow" "Arrows" 8600) ;; #X2198
+    (nil "swarrow" "Arrows" 8601) ;; #X2199
+    (nil "nwarrow" "Arrows" 8598) ;; #X2196
+    (nil "ldots" "Misc Symbol" 8230) ;; #X2026
+    (nil "cdots" "Misc Symbol" 8943) ;; #X22EF
+    (nil "vdots" "Misc Symbol" 8942) ;; #X22EE
+    (nil "ddots" "Misc Symbol" 8945) ;; #X22F1
+    (?\S-n "nabla" "Misc Symbol" 8711) ;; #X2207
+    (nil "aleph" "Misc Symbol" 8501) ;; #X2135
+    (nil "prime" "Misc Symbol" 8242) ;; #X2032
+    (?\S-a "forall" "Misc Symbol" 8704) ;; #X2200
+    (?\S-i "infty" "Misc Symbol" 8734) ;; #X221E
+    (nil "hbar" "Misc Symbol" 8463) ;; #X210F
+    (?0 "emptyset" "Misc Symbol" 8709) ;; #X2205
+    (?\S-e "exists" "Misc Symbol" 8707) ;; #X2203
+    (nil "nabla" "Misc Symbol" 8711) ;; #X2207
+    (nil "surd" "Misc Symbol" 8730) ;; #X221A
     (nil "Box" "Misc Symbol")
-    (nil "triangle" "Misc Symbol")
+    (nil "triangle" "Misc Symbol" 9653) ;; #X25B5
     (nil "Diamond" "Misc Symbol")
-    (nil "imath" "Misc Symbol")
-    (nil "jmath" "Misc Symbol")
-    (nil "ell" "Misc Symbol")
-    (nil "neg" "Misc Symbol")
-    (?/ "not" "Misc Symbol")
-    (nil "top" "Misc Symbol")
-    (nil "flat" "Misc Symbol")
-    (nil "natural" "Misc Symbol")
-    (nil "sharp" "Misc Symbol")
-    (nil "wp" "Misc Symbol")
-    (nil "bot" "Misc Symbol")
-    (nil "clubsuit" "Misc Symbol")
-    (nil "diamondsuit" "Misc Symbol")
-    (nil "heartsuit" "Misc Symbol")
-    (nil "spadesuit" "Misc Symbol")
-    (nil "mho" "Misc Symbol")
-    (nil "Re" "Misc Symbol")
-    (nil "Im" "Misc Symbol")
-    (nil "angle" "Misc Symbol")
-    (nil "partial" "Misc Symbol")
-    (nil "sum" "Var Symbol")
-    (nil "prod" "Var Symbol")
-    (nil "coprod" "Var Symbol")
-    (nil "int" "Var Symbol")
-    (nil "oint" "Var Symbol")
-    (nil "bigcap" "Var Symbol")
-    (nil "bigcup" "Var Symbol")
-    (nil "bigsqcup" "Var Symbol")
-    (nil "bigvee" "Var Symbol")
-    (nil "bigwedge" "Var Symbol")
-    (nil "bigodot" "Var Symbol")
-    (nil "bigotimes" "Var Symbol")
-    (nil "bigoplus" "Var Symbol")
-    (nil "biguplus" "Var Symbol")
+    (nil "imath" "Misc Symbol" 305) ;; #X0131
+    (nil "jmath" "Misc Symbol" #X1D6A5)
+    (nil "ell" "Misc Symbol" 8467) ;; #X2113
+    (nil "neg" "Misc Symbol" 172) ;; #X00AC
+    (?/ "not" "Misc Symbol" 824) ;; #X0338
+    (nil "top" "Misc Symbol" 8868) ;; #X22A4
+    (nil "flat" "Misc Symbol" 9837) ;; #X266D
+    (nil "natural" "Misc Symbol" 9838) ;; #X266E
+    (nil "sharp" "Misc Symbol" 9839) ;; #X266F
+    (nil "wp" "Misc Symbol" 8472) ;; #X2118
+    (nil "bot" "Misc Symbol" 8869) ;; #X22A5
+    (nil "clubsuit" "Misc Symbol" 9827) ;; #X2663
+    (nil "diamondsuit" "Misc Symbol" 9826) ;; #X2662
+    (nil "heartsuit" "Misc Symbol" 9825) ;; #X2661
+    (nil "spadesuit" "Misc Symbol" 9824) ;; #X2660
+    (nil "mho" "Misc Symbol" 8487) ;; #X2127
+    (nil "Re" "Misc Symbol" 8476) ;; #X211C
+    (nil "Im" "Misc Symbol" 8465) ;; #X2111
+    (nil "angle" "Misc Symbol" 8736) ;; #X2220
+    (nil "partial" "Misc Symbol" 8706) ;; #X2202
+    (nil "sum" "Var Symbol" 8721) ;; #X2211
+    (nil "prod" "Var Symbol" 8719) ;; #X220F
+    (nil "coprod" "Var Symbol" 8720) ;; #X2210
+    (nil "int" "Var Symbol" 8747) ;; #X222B
+    (nil "oint" "Var Symbol" 8750) ;; #X222E
+    (nil "bigcap" "Var Symbol" 8898) ;; #X22C2
+    (nil "bigcup" "Var Symbol" 8899) ;; #X22C3
+    (nil "bigsqcup" "Var Symbol" 10758) ;; #X2A06
+    (nil "bigvee" "Var Symbol" 8897) ;; #X22C1
+    (nil "bigwedge" "Var Symbol" 8896) ;; #X22C0
+    (nil "bigodot" "Var Symbol" 10752) ;; #X2A00
+    (nil "bigotimes" "Var Symbol" 10754) ;; #X2A02
+    (nil "bigoplus" "Var Symbol" 10753) ;; #X2A01
+    (nil "biguplus" "Var Symbol" 10756) ;; #X2A04
     (nil "arccos" "Log-like")
     (nil "arcsin" "Log-like")
     (nil "arctan" "Log-like")
@@ -3445,259 +3456,259 @@ See also `LaTeX-math-menu'."
     (nil "log" "Log-like")
     (nil "max" "Log-like")
     (nil "min" "Log-like")
-    (nil "Pr" "Log-like")
+    (nil "Pr" "Log-like" 10939) ;; #X2ABB
     (nil "sec" "Log-like")
     (?\C-s "sin" "Log-like")
     (nil "sinh" "Log-like")
     (?\C-^ "sup" "Log-like")
     (?\C-t "tan" "Log-like")
     (nil "tanh" "Log-like")
-    (nil "uparrow" "delimiters")
-    (nil "Uparrow" "delimiters")
-    (nil "downarrow" "delimiters")
-    (nil "Downarrow" "delimiters")
+    (nil "uparrow" "delimiters" 8593) ;; #X2191
+    (nil "Uparrow" "delimiters" 8657) ;; #X21D1
+    (nil "downarrow" "delimiters" 8595) ;; #X2193
+    (nil "Downarrow" "delimiters" 8659) ;; #X21D3
     (nil "{" "delimiters")
     (nil "}" "delimiters")
-    (nil "updownarrow" "delimiters")
-    (nil "Updownarrow" "delimiters")
-    (nil "lfloor" "delimiters")
-    (nil "rfloor" "delimiters")
-    (nil "lceil" "delimiters")
-    (nil "rceil" "delimiters")
-    (?\( "langle" "delimiters")
-    (?\) "rangle" "delimiters")
-    (nil "backslash" "delimiters")
+    (nil "updownarrow" "delimiters" 8597) ;; #X2195
+    (nil "Updownarrow" "delimiters" 8661) ;; #X21D5
+    (nil "lfloor" "delimiters" 8970) ;; #X230A
+    (nil "rfloor" "delimiters" 8971) ;; #X230B
+    (nil "lceil" "delimiters" 8968) ;; #X2308
+    (nil "rceil" "delimiters" 8969) ;; #X2309
+    (?\( "langle" "delimiters" 10216) ;; #X27E8
+    (?\) "rangle" "delimiters" 10217) ;; #X27E9
+    (nil "backslash" "delimiters" 92) ;; #X005C
     (nil "|" "delimiters")
-    (nil "rmoustache" "Delimiters")
-    (nil "lmoustache" "Delimiters")
+    (nil "rmoustache" "Delimiters" 9137) ;; #X23B1
+    (nil "lmoustache" "Delimiters" 9136) ;; #X23B0
     (nil "rgroup" "Delimiters")
     (nil "lgroup" "Delimiters")
     (nil "arrowvert" "Delimiters")
     (nil "Arrowvert" "Delimiters")
     (nil "bracevert" "Delimiters")
-    (nil "widetilde" "Constructs")
-    (nil "widehat" "Constructs")
-    (nil "overleftarrow" "Constructs")
+    (nil "widetilde" "Constructs" 771) ;; #X0303
+    (nil "widehat" "Constructs" 770) ;; #X0302
+    (nil "overleftarrow" "Constructs" 8406) ;; #X20D6
     (nil "overrightarrow" "Constructs")
     (nil "overline" "Constructs")
     (nil "underline" "Constructs")
-    (nil "overbrace" "Constructs")
-    (nil "underbrace" "Constructs")
-    (nil "sqrt" "Constructs")
+    (nil "overbrace" "Constructs" 65079) ;; #XFE37
+    (nil "underbrace" "Constructs" 65080) ;; #XFE38
+    (nil "sqrt" "Constructs" 8730) ;; #X221A
     (nil "frac" "Constructs")
-    (?^ "hat" "Accents")
-    (nil "acute" "Accents")
-    (nil "bar" "Accents")
-    (nil "dot" "Accents")
-    (nil "breve" "Accents")
-    (nil "check" "Accents")
-    (nil "grave" "Accents")
-    (nil "vec" "Accents")
-    (nil "ddot" "Accents")
-    (?~ "tilde" "Accents")
-    (nil "digamma" ("AMS" "Hebrew"))
-    (nil "varkappa" ("AMS" "Hebrew"))
-    (nil "beth" ("AMS" "Hebrew"))
-    (nil "daleth" ("AMS" "Hebrew"))
-    (nil "gimel" ("AMS" "Hebrew"))
+    (?^ "hat" "Accents" 770) ;; #X0302
+    (nil "acute" "Accents" 769) ;; #X0301
+    (nil "bar" "Accents" 772) ;; #X0304
+    (nil "dot" "Accents" 775) ;; #X0307
+    (nil "breve" "Accents" 774) ;; #X0306
+    (nil "check" "Accents" 780) ;; #X030C
+    (nil "grave" "Accents" 768) ;; #X0300
+    (nil "vec" "Accents" 8407) ;; #X20D7
+    (nil "ddot" "Accents" 776) ;; #X0308
+    (?~ "tilde" "Accents" 771) ;; #X0303
+    (nil "digamma" ("AMS" "Hebrew") 989) ;; #X03DD
+    (nil "varkappa" ("AMS" "Hebrew") 1008) ;; #X03F0
+    (nil "beth" ("AMS" "Hebrew") 8502) ;; #X2136
+    (nil "daleth" ("AMS" "Hebrew") 8504) ;; #X2138
+    (nil "gimel" ("AMS" "Hebrew") 8503) ;; #X2137
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
-    (nil "leftleftarrows" ("AMS" "Arrows"))
-    (nil "leftrightarrows" ("AMS" "Arrows"))
-    (nil "Lleftarrow" ("AMS" "Arrows"))
-    (nil "twoheadleftarrow" ("AMS" "Arrows"))
-    (nil "leftarrowtail" ("AMS" "Arrows"))
-    (nil "looparrowleft" ("AMS" "Arrows"))
-    (nil "leftrightharpoons" ("AMS" "Arrows"))
-    (nil "curvearrowleft" ("AMS" "Arrows"))
+    (nil "leftleftarrows" ("AMS" "Arrows") 8647) ;; #X21C7
+    (nil "leftrightarrows" ("AMS" "Arrows") 8646) ;; #X21C6
+    (nil "Lleftarrow" ("AMS" "Arrows") 8666) ;; #X21DA
+    (nil "twoheadleftarrow" ("AMS" "Arrows") 8606) ;; #X219E
+    (nil "leftarrowtail" ("AMS" "Arrows") 8610) ;; #X21A2
+    (nil "looparrowleft" ("AMS" "Arrows") 8619) ;; #X21AB
+    (nil "leftrightharpoons" ("AMS" "Arrows") 8651) ;; #X21CB
+    (nil "curvearrowleft" ("AMS" "Arrows") 8630) ;; #X21B6
     (nil "circlearrowleft" ("AMS" "Arrows"))
-    (nil "Lsh" ("AMS" "Arrows"))
-    (nil "upuparrows" ("AMS" "Arrows"))
-    (nil "upharpoonleft" ("AMS" "Arrows"))
-    (nil "downharpoonleft" ("AMS" "Arrows"))
-    (nil "multimap" ("AMS" "Arrows"))
-    (nil "leftrightsquigarrow" ("AMS" "Arrows"))
-    (nil "looparrowright" ("AMS" "Arrows"))
-    (nil "rightleftharpoons" ("AMS" "Arrows"))
-    (nil "curvearrowright" ("AMS" "Arrows"))
+    (nil "Lsh" ("AMS" "Arrows") 8624) ;; #X21B0
+    (nil "upuparrows" ("AMS" "Arrows") 8648) ;; #X21C8
+    (nil "upharpoonleft" ("AMS" "Arrows") 8639) ;; #X21BF
+    (nil "downharpoonleft" ("AMS" "Arrows") 8643) ;; #X21C3
+    (nil "multimap" ("AMS" "Arrows") 8888) ;; #X22B8
+    (nil "leftrightsquigarrow" ("AMS" "Arrows") 8621) ;; #X21AD
+    (nil "looparrowright" ("AMS" "Arrows") 8620) ;; #X21AC
+    (nil "rightleftharpoons" ("AMS" "Arrows") 8652) ;; #X21CC
+    (nil "curvearrowright" ("AMS" "Arrows") 8631) ;; #X21B7
     (nil "circlearrowright" ("AMS" "Arrows"))
-    (nil "Rsh" ("AMS" "Arrows"))
-    (nil "downdownarrows" ("AMS" "Arrows"))
-    (nil "upharpoonright" ("AMS" "Arrows"))
-    (nil "downharpoonright" ("AMS" "Arrows"))
-    (nil "rightsquigarrow" ("AMS" "Arrows"))
-    (nil "nleftarrow" ("AMS" "Neg Arrows"))
-    (nil "nrightarrow" ("AMS" "Neg Arrows"))
-    (nil "nLeftarrow" ("AMS" "Neg Arrows"))
-    (nil "nRightarrow" ("AMS" "Neg Arrows"))
-    (nil "nleftrightarrow" ("AMS" "Neg Arrows"))
-    (nil "nLeftrightarrow" ("AMS" "Neg Arrows"))
-    (nil "leqq" ("AMS" "Relational I"))
-    (nil "leqslant" ("AMS" "Relational I"))
-    (nil "eqslantless" ("AMS" "Relational I"))
-    (nil "lesssim" ("AMS" "Relational I"))
-    (nil "lessapprox" ("AMS" "Relational I"))
-    (nil "approxeq" ("AMS" "Relational I"))
-    (nil "lessdot" ("AMS" "Relational I"))
-    (nil "lll" ("AMS" "Relational I"))
-    (nil "lessgtr" ("AMS" "Relational I"))
-    (nil "lesseqgtr" ("AMS" "Relational I"))
-    (nil "lesseqqgtr" ("AMS" "Relational I"))
+    (nil "Rsh" ("AMS" "Arrows") 8625) ;; #X21B1
+    (nil "downdownarrows" ("AMS" "Arrows") 8650) ;; #X21CA
+    (nil "upharpoonright" ("AMS" "Arrows") 8638) ;; #X21BE
+    (nil "downharpoonright" ("AMS" "Arrows") 8642) ;; #X21C2
+    (nil "rightsquigarrow" ("AMS" "Arrows") 8605) ;; #X219D
+    (nil "nleftarrow" ("AMS" "Neg Arrows") 8602) ;; #X219A
+    (nil "nrightarrow" ("AMS" "Neg Arrows") 8603) ;; #X219B
+    (nil "nLeftarrow" ("AMS" "Neg Arrows") 8653) ;; #X21CD
+    (nil "nRightarrow" ("AMS" "Neg Arrows") 8655) ;; #X21CF
+    (nil "nleftrightarrow" ("AMS" "Neg Arrows") 8622) ;; #X21AE
+    (nil "nLeftrightarrow" ("AMS" "Neg Arrows") 8654) ;; #X21CE
+    (nil "leqq" ("AMS" "Relational I") 8806) ;; #X2266
+    (nil "leqslant" ("AMS" "Relational I") 10877) ;; #X2A7D
+    (nil "eqslantless" ("AMS" "Relational I") 10901) ;; #X2A95
+    (nil "lesssim" ("AMS" "Relational I") 8818) ;; #X2272
+    (nil "lessapprox" ("AMS" "Relational I") 10885) ;; #X2A85
+    (nil "approxeq" ("AMS" "Relational I") 8778) ;; #X224A
+    (nil "lessdot" ("AMS" "Relational I") 8918) ;; #X22D6
+    (nil "lll" ("AMS" "Relational I") 8920) ;; #X22D8
+    (nil "lessgtr" ("AMS" "Relational I") 8822) ;; #X2276
+    (nil "lesseqgtr" ("AMS" "Relational I") 8922) ;; #X22DA
+    (nil "lesseqqgtr" ("AMS" "Relational I") 10891) ;; #X2A8B
     (nil "doteqdot" ("AMS" "Relational I"))
-    (nil "risingdotseq" ("AMS" "Relational I"))
-    (nil "fallingdotseq" ("AMS" "Relational I"))
-    (nil "backsim" ("AMS" "Relational I"))
-    (nil "backsimeq" ("AMS" "Relational I"))
-    (nil "subseteqq" ("AMS" "Relational I"))
-    (nil "Subset" ("AMS" "Relational I"))
-    (nil "sqsubset" ("AMS" "Relational I"))
-    (nil "preccurlyeq" ("AMS" "Relational I"))
-    (nil "curlyeqprec" ("AMS" "Relational I"))
-    (nil "precsim" ("AMS" "Relational I"))
-    (nil "precapprox" ("AMS" "Relational I"))
-    (nil "vartriangleleft" ("AMS" "Relational I"))
-    (nil "trianglelefteq" ("AMS" "Relational I"))
-    (nil "vDash" ("AMS" "Relational I"))
-    (nil "Vvdash" ("AMS" "Relational I"))
-    (nil "smallsmile" ("AMS" "Relational I"))
-    (nil "smallfrown" ("AMS" "Relational I"))
-    (nil "bumpeq" ("AMS" "Relational I"))
-    (nil "Bumpeq" ("AMS" "Relational I"))
-    (nil "geqq" ("AMS" "Relational II"))
-    (nil "geqslant" ("AMS" "Relational II"))
-    (nil "eqslantgtr" ("AMS" "Relational II"))
-    (nil "gtrsim" ("AMS" "Relational II"))
-    (nil "gtrapprox" ("AMS" "Relational II"))
-    (nil "gtrdot" ("AMS" "Relational II"))
-    (nil "ggg" ("AMS" "Relational II"))
-    (nil "gtrless" ("AMS" "Relational II"))
-    (nil "gtreqless" ("AMS" "Relational II"))
-    (nil "gtreqqless" ("AMS" "Relational II"))
-    (nil "eqcirc" ("AMS" "Relational II"))
-    (nil "circeq" ("AMS" "Relational II"))
-    (nil "triangleq" ("AMS" "Relational II"))
-    (nil "thicksim" ("AMS" "Relational II"))
-    (nil "thickapprox" ("AMS" "Relational II"))
-    (nil "supseteqq" ("AMS" "Relational II"))
-    (nil "Supset" ("AMS" "Relational II"))
-    (nil "sqsupset" ("AMS" "Relational II"))
-    (nil "succcurlyeq" ("AMS" "Relational II"))
-    (nil "curlyeqsucc" ("AMS" "Relational II"))
-    (nil "succsim" ("AMS" "Relational II"))
-    (nil "succapprox" ("AMS" "Relational II"))
-    (nil "vartriangleright" ("AMS" "Relational II"))
-    (nil "trianglerighteq" ("AMS" "Relational II"))
-    (nil "Vdash" ("AMS" "Relational II"))
-    (nil "shortmid" ("AMS" "Relational II"))
-    (nil "shortparallel" ("AMS" "Relational II"))
-    (nil "between" ("AMS" "Relational II"))
-    (nil "pitchfork" ("AMS" "Relational II"))
-    (nil "varpropto" ("AMS" "Relational II"))
-    (nil "blacktriangleleft" ("AMS" "Relational II"))
-    (nil "therefore" ("AMS" "Relational II"))
-    (nil "backepsilon" ("AMS" "Relational II"))
-    (nil "blacktriangleright" ("AMS" "Relational II"))
-    (nil "because" ("AMS" "Relational II"))
-    (nil "nless" ("AMS" "Neg Rel I"))
-    (nil "nleq" ("AMS" "Neg Rel I"))
+    (nil "risingdotseq" ("AMS" "Relational I") 8787) ;; #X2253
+    (nil "fallingdotseq" ("AMS" "Relational I") 8786) ;; #X2252
+    (nil "backsim" ("AMS" "Relational I") 8765) ;; #X223D
+    (nil "backsimeq" ("AMS" "Relational I") 8909) ;; #X22CD
+    (nil "subseteqq" ("AMS" "Relational I") 10949) ;; #X2AC5
+    (nil "Subset" ("AMS" "Relational I") 8912) ;; #X22D0
+    (nil "sqsubset" ("AMS" "Relational I") 8847) ;; #X228F
+    (nil "preccurlyeq" ("AMS" "Relational I") 8828) ;; #X227C
+    (nil "curlyeqprec" ("AMS" "Relational I") 8926) ;; #X22DE
+    (nil "precsim" ("AMS" "Relational I") 8830) ;; #X227E
+    (nil "precapprox" ("AMS" "Relational I") 10935) ;; #X2AB7
+    (nil "vartriangleleft" ("AMS" "Relational I") 8882) ;; #X22B2
+    (nil "trianglelefteq" ("AMS" "Relational I") 8884) ;; #X22B4
+    (nil "vDash" ("AMS" "Relational I") 8872) ;; #X22A8
+    (nil "Vvdash" ("AMS" "Relational I") 8874) ;; #X22AA
+    (nil "smallsmile" ("AMS" "Relational I") 8995) ;; #X2323
+    (nil "smallfrown" ("AMS" "Relational I") 8994) ;; #X2322
+    (nil "bumpeq" ("AMS" "Relational I") 8783) ;; #X224F
+    (nil "Bumpeq" ("AMS" "Relational I") 8782) ;; #X224E
+    (nil "geqq" ("AMS" "Relational II") 8807) ;; #X2267
+    (nil "geqslant" ("AMS" "Relational II") 10878) ;; #X2A7E
+    (nil "eqslantgtr" ("AMS" "Relational II") 10902) ;; #X2A96
+    (nil "gtrsim" ("AMS" "Relational II") 8819) ;; #X2273
+    (nil "gtrapprox" ("AMS" "Relational II") 10886) ;; #X2A86
+    (nil "gtrdot" ("AMS" "Relational II") 8919) ;; #X22D7
+    (nil "ggg" ("AMS" "Relational II") 8921) ;; #X22D9
+    (nil "gtrless" ("AMS" "Relational II") 8823) ;; #X2277
+    (nil "gtreqless" ("AMS" "Relational II") 8923) ;; #X22DB
+    (nil "gtreqqless" ("AMS" "Relational II") 10892) ;; #X2A8C
+    (nil "eqcirc" ("AMS" "Relational II") 8790) ;; #X2256
+    (nil "circeq" ("AMS" "Relational II") 8791) ;; #X2257
+    (nil "triangleq" ("AMS" "Relational II") 8796) ;; #X225C
+    (nil "thicksim" ("AMS" "Relational II") 8764) ;; #X223C
+    (nil "thickapprox" ("AMS" "Relational II") 8776) ;; #X2248
+    (nil "supseteqq" ("AMS" "Relational II") 10950) ;; #X2AC6
+    (nil "Supset" ("AMS" "Relational II") 8913) ;; #X22D1
+    (nil "sqsupset" ("AMS" "Relational II") 8848) ;; #X2290
+    (nil "succcurlyeq" ("AMS" "Relational II") 8829) ;; #X227D
+    (nil "curlyeqsucc" ("AMS" "Relational II") 8927) ;; #X22DF
+    (nil "succsim" ("AMS" "Relational II") 8831) ;; #X227F
+    (nil "succapprox" ("AMS" "Relational II") 10936) ;; #X2AB8
+    (nil "vartriangleright" ("AMS" "Relational II") 8883) ;; #X22B3
+    (nil "trianglerighteq" ("AMS" "Relational II") 8885) ;; #X22B5
+    (nil "Vdash" ("AMS" "Relational II") 8873) ;; #X22A9
+    (nil "shortmid" ("AMS" "Relational II") 8739) ;; #X2223
+    (nil "shortparallel" ("AMS" "Relational II") 8741) ;; #X2225
+    (nil "between" ("AMS" "Relational II") 8812) ;; #X226C
+    (nil "pitchfork" ("AMS" "Relational II") 8916) ;; #X22D4
+    (nil "varpropto" ("AMS" "Relational II") 8733) ;; #X221D
+    (nil "blacktriangleleft" ("AMS" "Relational II") 9664) ;; #X25C0
+    (nil "therefore" ("AMS" "Relational II") 8756) ;; #X2234
+    (nil "backepsilon" ("AMS" "Relational II") 1014) ;; #X03F6
+    (nil "blacktriangleright" ("AMS" "Relational II") 9654) ;; #X25B6
+    (nil "because" ("AMS" "Relational II") 8757) ;; #X2235
+    (nil "nless" ("AMS" "Neg Rel I") 8814) ;; #X226E
+    (nil "nleq" ("AMS" "Neg Rel I") 8816) ;; #X2270
     (nil "nleqslant" ("AMS" "Neg Rel I"))
     (nil "nleqq" ("AMS" "Neg Rel I"))
-    (nil "lneq" ("AMS" "Neg Rel I"))
-    (nil "lneqq" ("AMS" "Neg Rel I"))
+    (nil "lneq" ("AMS" "Neg Rel I") 10887) ;; #X2A87
+    (nil "lneqq" ("AMS" "Neg Rel I") 8808) ;; #X2268
     (nil "lvertneqq" ("AMS" "Neg Rel I"))
-    (nil "lnsim" ("AMS" "Neg Rel I"))
-    (nil "lnapprox" ("AMS" "Neg Rel I"))
-    (nil "nprec" ("AMS" "Neg Rel I"))
+    (nil "lnsim" ("AMS" "Neg Rel I") 8934) ;; #X22E6
+    (nil "lnapprox" ("AMS" "Neg Rel I") 10889) ;; #X2A89
+    (nil "nprec" ("AMS" "Neg Rel I") 8832) ;; #X2280
     (nil "npreceq" ("AMS" "Neg Rel I"))
-    (nil "precnsim" ("AMS" "Neg Rel I"))
-    (nil "precnapprox" ("AMS" "Neg Rel I"))
-    (nil "nsim" ("AMS" "Neg Rel I"))
-    (nil "nshortmid" ("AMS" "Neg Rel I"))
-    (nil "nmid" ("AMS" "Neg Rel I"))
-    (nil "nvdash" ("AMS" "Neg Rel I"))
-    (nil "nvDash" ("AMS" "Neg Rel I"))
-    (nil "ntriangleleft" ("AMS" "Neg Rel I"))
-    (nil "ntrianglelefteq" ("AMS" "Neg Rel I"))
-    (nil "nsubseteq" ("AMS" "Neg Rel I"))
-    (nil "subsetneq" ("AMS" "Neg Rel I"))
+    (nil "precnsim" ("AMS" "Neg Rel I") 8936) ;; #X22E8
+    (nil "precnapprox" ("AMS" "Neg Rel I") 10937) ;; #X2AB9
+    (nil "nsim" ("AMS" "Neg Rel I") 8769) ;; #X2241
+    (nil "nshortmid" ("AMS" "Neg Rel I") 8740) ;; #X2224
+    (nil "nmid" ("AMS" "Neg Rel I") 8740) ;; #X2224
+    (nil "nvdash" ("AMS" "Neg Rel I") 8876) ;; #X22AC
+    (nil "nvDash" ("AMS" "Neg Rel I") 8877) ;; #X22AD
+    (nil "ntriangleleft" ("AMS" "Neg Rel I") 8938) ;; #X22EA
+    (nil "ntrianglelefteq" ("AMS" "Neg Rel I") 8940) ;; #X22EC
+    (nil "nsubseteq" ("AMS" "Neg Rel I") 8840) ;; #X2288
+    (nil "subsetneq" ("AMS" "Neg Rel I") 8842) ;; #X228A
     (nil "varsubsetneq" ("AMS" "Neg Rel I"))
-    (nil "subsetneqq" ("AMS" "Neg Rel I"))
+    (nil "subsetneqq" ("AMS" "Neg Rel I") 10955) ;; #X2ACB
     (nil "varsubsetneqq" ("AMS" "Neg Rel I"))
-    (nil "ngtr" ("AMS" "Neg Rel II"))
-    (nil "ngeq" ("AMS" "Neg Rel II"))
+    (nil "ngtr" ("AMS" "Neg Rel II") 8815) ;; #X226F
+    (nil "ngeq" ("AMS" "Neg Rel II") 8817) ;; #X2271
     (nil "ngeqslant" ("AMS" "Neg Rel II"))
     (nil "ngeqq" ("AMS" "Neg Rel II"))
-    (nil "gneq" ("AMS" "Neg Rel II"))
-    (nil "gneqq" ("AMS" "Neg Rel II"))
+    (nil "gneq" ("AMS" "Neg Rel II") 10888) ;; #X2A88
+    (nil "gneqq" ("AMS" "Neg Rel II") 8809) ;; #X2269
     (nil "gvertneqq" ("AMS" "Neg Rel II"))
-    (nil "gnsim" ("AMS" "Neg Rel II"))
-    (nil "gnapprox" ("AMS" "Neg Rel II"))
-    (nil "nsucc" ("AMS" "Neg Rel II"))
+    (nil "gnsim" ("AMS" "Neg Rel II") 8935) ;; #X22E7
+    (nil "gnapprox" ("AMS" "Neg Rel II") 10890) ;; #X2A8A
+    (nil "nsucc" ("AMS" "Neg Rel II") 8833) ;; #X2281
     (nil "nsucceq" ("AMS" "Neg Rel II"))
-    (nil "succnsim" ("AMS" "Neg Rel II"))
-    (nil "succnapprox" ("AMS" "Neg Rel II"))
-    (nil "ncong" ("AMS" "Neg Rel II"))
-    (nil "nshortparallel" ("AMS" "Neg Rel II"))
-    (nil "nparallel" ("AMS" "Neg Rel II"))
-    (nil "nvDash" ("AMS" "Neg Rel II"))
-    (nil "nVDash" ("AMS" "Neg Rel II"))
-    (nil "ntriangleright" ("AMS" "Neg Rel II"))
-    (nil "ntrianglerighteq" ("AMS" "Neg Rel II"))
-    (nil "nsupseteq" ("AMS" "Neg Rel II"))
+    (nil "succnsim" ("AMS" "Neg Rel II") 8937) ;; #X22E9
+    (nil "succnapprox" ("AMS" "Neg Rel II") 10938) ;; #X2ABA
+    (nil "ncong" ("AMS" "Neg Rel II") 8775) ;; #X2247
+    (nil "nshortparallel" ("AMS" "Neg Rel II") 8742) ;; #X2226
+    (nil "nparallel" ("AMS" "Neg Rel II") 8742) ;; #X2226
+    (nil "nvDash" ("AMS" "Neg Rel II") 8877) ;; #X22AD
+    (nil "nVDash" ("AMS" "Neg Rel II") 8879) ;; #X22AF
+    (nil "ntriangleright" ("AMS" "Neg Rel II") 8939) ;; #X22EB
+    (nil "ntrianglerighteq" ("AMS" "Neg Rel II") 8941) ;; #X22ED
+    (nil "nsupseteq" ("AMS" "Neg Rel II") 8841) ;; #X2289
     (nil "nsupseteqq" ("AMS" "Neg Rel II"))
-    (nil "supsetneq" ("AMS" "Neg Rel II"))
+    (nil "supsetneq" ("AMS" "Neg Rel II") 8843) ;; #X228B
     (nil "varsupsetneq" ("AMS" "Neg Rel II"))
-    (nil "supsetneqq" ("AMS" "Neg Rel II"))
+    (nil "supsetneqq" ("AMS" "Neg Rel II") 10956) ;; #X2ACC
     (nil "varsupsetneqq" ("AMS" "Neg Rel II"))
-    (nil "dotplus" ("AMS" "Binary Op"))
-    (nil "smallsetminus" ("AMS" "Binary Op"))
-    (nil "Cap" ("AMS" "Binary Op"))
-    (nil "Cup" ("AMS" "Binary Op"))
-    (nil "barwedge" ("AMS" "Binary Op"))
-    (nil "veebar" ("AMS" "Binary Op"))
-    (nil "doublebarwedge" ("AMS" "Binary Op"))
-    (nil "boxminus" ("AMS" "Binary Op"))
-    (nil "boxtimes" ("AMS" "Binary Op"))
-    (nil "boxdot" ("AMS" "Binary Op"))
-    (nil "boxplus" ("AMS" "Binary Op"))
-    (nil "divideontimes" ("AMS" "Binary Op"))
-    (nil "ltimes" ("AMS" "Binary Op"))
-    (nil "rtimes" ("AMS" "Binary Op"))
-    (nil "leftthreetimes" ("AMS" "Binary Op"))
-    (nil "rightthreetimes" ("AMS" "Binary Op"))
-    (nil "curlywedge" ("AMS" "Binary Op"))
-    (nil "curlyvee" ("AMS" "Binary Op"))
-    (nil "circleddash" ("AMS" "Binary Op"))
-    (nil "circledast" ("AMS" "Binary Op"))
-    (nil "circledcirc" ("AMS" "Binary Op"))
+    (nil "dotplus" ("AMS" "Binary Op") 8724) ;; #X2214
+    (nil "smallsetminus" ("AMS" "Binary Op") 8726) ;; #X2216
+    (nil "Cap" ("AMS" "Binary Op") 8914) ;; #X22D2
+    (nil "Cup" ("AMS" "Binary Op") 8915) ;; #X22D3
+    (nil "barwedge" ("AMS" "Binary Op") 8892) ;; #X22BC
+    (nil "veebar" ("AMS" "Binary Op") 8891) ;; #X22BB
+    (nil "doublebarwedge" ("AMS" "Binary Op") 8966) ;; #X2306
+    (nil "boxminus" ("AMS" "Binary Op") 8863) ;; #X229F
+    (nil "boxtimes" ("AMS" "Binary Op") 8864) ;; #X22A0
+    (nil "boxdot" ("AMS" "Binary Op") 8865) ;; #X22A1
+    (nil "boxplus" ("AMS" "Binary Op") 8862) ;; #X229E
+    (nil "divideontimes" ("AMS" "Binary Op") 8903) ;; #X22C7
+    (nil "ltimes" ("AMS" "Binary Op") 8905) ;; #X22C9
+    (nil "rtimes" ("AMS" "Binary Op") 8906) ;; #X22CA
+    (nil "leftthreetimes" ("AMS" "Binary Op") 8907) ;; #X22CB
+    (nil "rightthreetimes" ("AMS" "Binary Op") 8908) ;; #X22CC
+    (nil "curlywedge" ("AMS" "Binary Op") 8911) ;; #X22CF
+    (nil "curlyvee" ("AMS" "Binary Op") 8910) ;; #X22CE
+    (nil "circleddash" ("AMS" "Binary Op") 8861) ;; #X229D
+    (nil "circledast" ("AMS" "Binary Op") 8859) ;; #X229B
+    (nil "circledcirc" ("AMS" "Binary Op") 8858) ;; #X229A
     (nil "centerdot" ("AMS" "Binary Op"))
-    (nil "intercal" ("AMS" "Binary Op"))
-    (nil "hbar" ("AMS" "Misc"))
-    (nil "hslash" ("AMS" "Misc"))
-    (nil "vartriangle" ("AMS" "Misc"))
-    (nil "triangledown" ("AMS" "Misc"))
-    (nil "square" ("AMS" "Misc"))
-    (nil "lozenge" ("AMS" "Misc"))
-    (nil "circledS" ("AMS" "Misc"))
-    (nil "angle" ("AMS" "Misc"))
-    (nil "measuredangle" ("AMS" "Misc"))
-    (nil "nexists" ("AMS" "Misc"))
-    (nil "mho" ("AMS" "Misc"))
-    (nil "Finv" ("AMS" "Misc"))
-    (nil "Game" ("AMS" "Misc"))
-    (nil "Bbbk" ("AMS" "Misc"))
-    (nil "backprime" ("AMS" "Misc"))
-    (nil "varnothing" ("AMS" "Misc"))
-    (nil "blacktriangle" ("AMS" "Misc"))
-    (nil "blacktriangledown" ("AMS" "Misc"))
-    (nil "blacksquare" ("AMS" "Misc"))
-    (nil "blacklozenge" ("AMS" "Misc"))
-    (nil "bigstar" ("AMS" "Misc"))
-    (nil "sphericalangle" ("AMS" "Misc"))
-    (nil "complement" ("AMS" "Misc"))
-    (nil "eth" ("AMS" "Misc"))
-    (nil "diagup" ("AMS" "Misc"))
-    (nil "diagdown" ("AMS" "Misc"))
+    (nil "intercal" ("AMS" "Binary Op") 8890) ;; #X22BA
+    (nil "hbar" ("AMS" "Misc") 8463) ;; #X210F
+    (nil "hslash" ("AMS" "Misc") 8463) ;; #X210F
+    (nil "vartriangle" ("AMS" "Misc") 9653) ;; #X25B5
+    (nil "triangledown" ("AMS" "Misc") 9663) ;; #X25BF
+    (nil "square" ("AMS" "Misc") 9633) ;; #X25A1
+    (nil "lozenge" ("AMS" "Misc") 9674) ;; #X25CA
+    (nil "circledS" ("AMS" "Misc") 9416) ;; #X24C8
+    (nil "angle" ("AMS" "Misc") 8736) ;; #X2220
+    (nil "measuredangle" ("AMS" "Misc") 8737) ;; #X2221
+    (nil "nexists" ("AMS" "Misc") 8708) ;; #X2204
+    (nil "mho" ("AMS" "Misc") 8487) ;; #X2127
+    (nil "Finv" ("AMS" "Misc") 8498) ;; #X2132
+    (nil "Game" ("AMS" "Misc") 8513) ;; #X2141
+    (nil "Bbbk" ("AMS" "Misc") #X1D55C)
+    (nil "backprime" ("AMS" "Misc") 8245) ;; #X2035
+    (nil "varnothing" ("AMS" "Misc") 8709) ;; #X2205
+    (nil "blacktriangle" ("AMS" "Misc") 9652) ;; #X25B4
+    (nil "blacktriangledown" ("AMS" "Misc") 9662) ;; #X25BE
+    (nil "blacksquare" ("AMS" "Misc") 9632) ;; #X25A0
+    (nil "blacklozenge" ("AMS" "Misc") 10731) ;; #X29EB
+    (nil "bigstar" ("AMS" "Misc") 9733) ;; #X2605
+    (nil "sphericalangle" ("AMS" "Misc") 8738) ;; #X2222
+    (nil "complement" ("AMS" "Misc") 8705) ;; #X2201
+    (nil "eth" ("AMS" "Misc") 240) ;; #X00F0
+    (nil "diagup" ("AMS" "Misc") 9585) ;; #X2571
+    (nil "diagdown" ("AMS" "Misc") 9586) ;; #X2572
     (nil "Hat" ("AMS" "Accents"))
     (nil "Check" ("AMS" "Accents"))
     (nil "Tilde" ("AMS" "Accents"))
@@ -3708,8 +3719,8 @@ See also `LaTeX-math-menu'."
     (nil "Breve" ("AMS" "Accents"))
     (nil "Bar" ("AMS" "Accents"))
     (nil "Vec" ("AMS" "Accents"))
-    (nil "dddot" ("AMS" "Accents"))
-    (nil "ddddot" ("AMS" "Accents"))
+    (nil "dddot" ("AMS" "Accents") 8411) ;; #X20DB
+    (nil "ddddot" ("AMS" "Accents") 8412) ;; #X20DC
     (nil "bigl" ("AMS" "Delimiters"))
     (nil "bigr" ("AMS" "Delimiters"))
     (nil "Bigl" ("AMS" "Delimiters"))
@@ -3722,10 +3733,10 @@ See also `LaTeX-math-menu'."
     (nil "rvert" ("AMS" "Delimiters"))
     (nil "lVert" ("AMS" "Delimiters"))
     (nil "rVert" ("AMS" "Delimiters"))
-    (nil "ulcorner" ("AMS" "Delimiters"))
-    (nil "urcorner" ("AMS" "Delimiters"))
-    (nil "llcorner" ("AMS" "Delimiters"))
-    (nil "lrcorner" ("AMS" "Delimiters"))
+    (nil "ulcorner" ("AMS" "Delimiters") 8988) ;; #X231C
+    (nil "urcorner" ("AMS" "Delimiters") 8989) ;; #X231D
+    (nil "llcorner" ("AMS" "Delimiters") 8990) ;; #X231E
+    (nil "lrcorner" ("AMS" "Delimiters") 8991) ;; #X231F
     (nil "nobreakdash" ("AMS" "Special"))
     (nil "leftroot" ("AMS" "Special"))
     (nil "uproot" ("AMS" "Special"))
@@ -3771,13 +3782,27 @@ the sequence by initializing this variable.")
 			 LaTeX-math-abbrev-prefix nil))
   'LaTeX-math-insert-prefix)
 
+(defcustom LaTeX-math-menu-unicode
+  (and (string-match "\\<GTK\\>" (emacs-version)) t)
+  "Whether the LaTeX menu should try using Unicode for effect."
+  :type 'boolean
+  :group 'LaTeX-math)
+
 (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
-      (map (lookup-key LaTeX-math-keymap LaTeX-math-abbrev-prefix)))
+      (map (lookup-key LaTeX-math-keymap LaTeX-math-abbrev-prefix))
+      (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
   (while math
     (let* ((entry (car math))
 	   (key (nth 0 entry))
+	   (prefix
+	    (and unicode
+		 (nth 3 entry)))
 	   value menu name)
       (setq math (cdr math))
+      (if (and prefix
+	       (setq prefix (decode-char 'ucs (nth 3 entry))))
+	  (setq prefix (concat (string prefix) " \\"))
+	(setq prefix "\\"))
       (if (listp (cdr entry))
 	  (setq value (nth 1 entry)
 		menu (nth 2 entry))
@@ -3807,11 +3832,14 @@ the sequence by initializing this variable.")
 	    (let ((sub (assoc menu parent)))
 	      (if sub
 		  (if (stringp value)
-		      (setcdr sub (cons (vector value name t) (cdr sub)))
+		      (setcdr sub (cons (vector (concat prefix value)
+						name t)
+					(cdr sub)))
 		    (error "Cannot have multiple special math menu items"))
 		(setcdr parent
 			(cons (if (stringp value)
-				  (list menu (vector value name t))
+				  (list menu (vector (concat prefix value)
+						     name t))
 				(vector menu name t))
 			      (cdr parent))))))))))
 
