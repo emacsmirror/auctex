@@ -53,7 +53,7 @@
               (list 'ams-tex-mode))
 	(list "View" "%v" 'TeX-run-command t t)
 	(list "View PS" "gsview32 %f" 'TeX-run-command t t)
-	(list "View PDF" "start %t.pdf" 'TeX-run-command t t)
+	(list "View PDF" "start %s.pdf" 'TeX-run-command t t)
 	(list "Print" "dvips %d" 'TeX-run-command t t)
 	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
