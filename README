@@ -28,7 +28,8 @@ Files in this distribution
 				lots of LaTeX math symbols
 	minor-map.el		Management of keymaps for minor modes
 
-	Emakefile.el		Batch file to byte compile all modules
+	latex-names.el		Names of (La)TeX commands, to use for
+	tex-commands.el		completion (tex-misc)
 
 
 Installation
