@@ -1,0 +1,53 @@
+@include macros.texi
+@c -----------------------
+
+@itemize @bullet
+@item Modularize @AUCTeX{}'s error message parsing
+
+so that we do not need to steal code from @AUCTeX{}, but can use
+@AUCTeX{}'s routines directly.  Submit to @AUCTeX{} development.
+
+@item Alternatively: factor out @AUCTeX{} specific code
+
+and provide alternatives.  This could make @previewlatex{} work with
+Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
+might provide an abstraction layer that would make it possible to embed
+preview-latex's core mechanisms into Emacs calc.
+
+@item Fix GhostScript rendering of Emacs
+
+The current gs.el interface does not work well when multiple EPS images
+appear.  A new process is started for every single image, but the
+processes have to wait for one another.  See also code in xdisp.c from
+the Emacs distribution.
+
+@item Think about temporary file handling
+ 
+The current solution may be suboptimal.  Perhaps a different dvi file
+from the main file would be preferable, perhaps compilation in a
+separate directory, perhaps support for more than one Emacs session or
+user properly accessing the same file.  In all fairness, the current
+@emph{region} mechanism of @AUCTeX{} does not support this, either.
+
+@item Port to XEmacs
+
+Under progress.
+
+@item Explore possibilities for working via PDF
+ 
+Going via latexpdf->GhostScript and a single file would certainly be
+faster than the current latex->dvips->GhostScript path.
+
+@item Program a direct dvi->png rendering daemon
+
+that gets sent page requests and file names for both input and output
+and replaces the Dvips->GhostScript chain.  This could be done using
+DVIlib2 from the @TeX{}-Guy project.  The current performance of that,
+however, does not seem to offer any advantage.
+
+@item Integrate into ref@TeX{}
+
+When referecing to equations and the like, the preview-images of the
+source rather than plain text should be displayed.
+
+@end itemize
