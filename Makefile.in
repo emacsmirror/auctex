@@ -4,12 +4,11 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: David Kastrup <dak@gnu.org>
-# Version: initial try <jalar@gnu.org>
+# Version: initial try <jalar@mai.liu.se>
 #
 
 prefix = @prefix@
-datadir= @datadir@
-infodir = @prefix@/info
+infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
 autodir = $(lispdir)/auto
