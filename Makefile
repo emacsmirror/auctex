@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.50 1993-07-08 02:47:17 amanda Exp $
+# $Id: Makefile,v 5.51 1993-07-08 16:33:56 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -152,7 +152,12 @@ install: main LispInstall LaInstall DocInstall
 	@echo "** To do this, type \`make install-auto'."
 	@echo "** Beware, this takes some time and uses around 300k"
 	@echo "** storage, depending on your the TeX style files. "
+	@echo "** "
 	@echo "** It is possible to use AUC TeX without this information."
+	@echo "** "
+	@echo "** Do NOT try to install the auto files with Lucid Emacs!"
+	@echo "** Lucid Emacs is broken and will crash, at least in"
+	@echo "** version 19.6 and earlier."
 	@echo "**********************************************************"
 	@echo
 
@@ -193,7 +198,7 @@ DocInstall: Doc
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
 	@echo "**********************************************************"
-	-(cd doc; make install infodir=$(infodir))
+	-(cd doc; make install infodir=$(infodir) TEX=$(TEX))
 
 LispInstall:
 	@echo "**********************************************************"
@@ -221,7 +226,7 @@ Doc:
 	@echo "**********************************************************"
 	@echo "** Making AUC TeX documentation"
 	@echo "**********************************************************"
-	-(cd doc; make)
+	-(cd doc; make TEX=$(TEX))
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
