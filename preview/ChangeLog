@@ -1,4 +1,18 @@
+2003-08-13  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/configure.ac: new test (ps inclusion speedup)
+
+	* dvipng/draw.c: simplify preprocessor processing, fix SetSpecial
+	call
+
+	* dvipng/special.c: speedup for ps image inclusion, fix SetSpecial
+	call
+
+	* dvipng/Makefile.in: fix install-docs 
+
 2003-08-04  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: Argh!, fix compilation for non-truecolor version
 
 	* dvipng/dvipng.h: Argh!, fix image cache
 
