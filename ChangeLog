@@ -1,3 +1,9 @@
+2004-08-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/changes.texi: Advertise support for toggling source
+	specials.  Mention macro completion in docTeX mode and fix for
+	filling in XEmacs with preview-latex and activated previews.
+
 2004-08-01  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Remove info about manual installation.
