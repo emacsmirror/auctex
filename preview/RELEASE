@@ -13,7 +13,9 @@ Release focus are mostly user interface improvements.  Main point has
 been an attempt to refrain from disabling previews unless the text
 under it has indeed changed and not just been replaced by something
 identical or decorated with font-lock.  This makes preview-latex
-behave better when filling paragraphs, for example.
+behave better when filling paragraphs, for example.  Menu entries for
+clearing out previews again have been added, and temporary directories
+are removed when leaving Emacs.  A TeXinfo manual has been started.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
