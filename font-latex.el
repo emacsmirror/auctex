@@ -95,6 +95,14 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.906 19Oct2003 PSG
+;;  - Enable multi-line cache on font-latex-match-command-outside-arguments
+;;    such that multi-line section commands will be fontified correctly.
+;;    This is a hack that dates from when font-lock _really_ only fontified
+;;    the current line.  With `jit', this is no longer strictly necessary
+;;    and may at some point be *removed*.
+;;  - Makes new title faces blue4, which is more consistent with the rest of
+;;    font-latex colors.
 ;; V0.905 18Oct2003 PSG
 ;;  - New defcustom `font-latex-title-fontity' defaults to use varying font
 ;;    height in sectioning commands.
@@ -347,7 +355,7 @@ Also selects \"<quote\"> versus \">quote\"<."
 
 (defface font-latex-title-4-face
   '((((type tty pc) (class color)) (:weight bold))
-    (t (:weight bold :inherit variable-pitch)))
+    (t (:weight bold :inherit variable-pitch :foreground "blue4")))
   "Face for LaTeX titles at level 4."
   :group 'font-latex-highlighting-faces)
 
@@ -1304,6 +1312,7 @@ Sets `match-data' so that:
 Returns nil if none of KEYWORDS is found."
 ;;(let ((we-moved (font-latex-check-cache
 ;;                 'font-latex-match-command-cache keywords limit)))
+  (font-latex-check-cache 'font-latex-match-command-cache keywords limit)
     (when (re-search-forward keywords limit t)
       (cond
        ((font-latex-commented-outp)
