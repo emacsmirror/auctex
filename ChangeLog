@@ -1,3 +1,8 @@
+2004-11-01  Miguel Frasson  <frasson@math.leidenuniv.nl>
+	
+	* toolbar-x.el
+	(toolbarx-make-command): Code clean up.
+
 2004-11-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Change maintainer information.
