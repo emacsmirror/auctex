@@ -1,6 +1,15 @@
 2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (preview-make-clickable): glyph could no longer be
+	a string.  Take advantage of that.
+
+	* prv-emacs.el (preview-make-clickable): glyph could no longer be
+	a string.  Take advantage of that.
+
 	* prv-xemacs.el: checkdoc compliance.
+	(next-single-char-property-change) 
+	(previous-single-char-property-change): Don't let them do more
+	than needed.
 
 	* preview.el (preview-disabled-string): slightly more correct
 	excursion.
