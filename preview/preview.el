@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.63 2002-02-26 04:58:18 dakas Exp $
+;; $Id: preview.el,v 1.64 2002-02-28 02:21:08 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -673,14 +673,36 @@ Fallback to :inherit and 'default implemented."
 			      (if (bolp) 0 -1))))))
   (TeX-command "Generate Preview" 'TeX-region-file))
 
-(defun preview-environment ()
-  "Run preview on LaTeX environment." (interactive)
+(defcustom preview-inner-environments '("Bmatrix" "Vmatrix" "aligned"
+					"array" "bmatrix" "cases"
+					"gathered" "matrix" "pmatrix"
+					"smallmatrix" "split"
+					"subarray" "vmatrix")
+  "Environments not to be previewed on their own."
+  :group 'preview-latex
+  :type '(repeat string))
+
+
+(defun preview-environment (count)
+  "Run preview on LaTeX environment." (interactive "p")
   (save-excursion
-    (LaTeX-mark-environment)
-    (preview-region (region-beginning) (region-end))))
+    (let (currenv pos startp endp)
+      (dotimes (i (1- count))
+	(setq currenv (LaTeX-current-environment))
+	(if (string= currenv "document")
+	    (error "No enclosing outer environment found"))
+	(LaTeX-find-matching-begin))
+      (while (member (setq currenv (LaTeX-current-environment))
+		     preview-inner-environments)
+	(LaTeX-find-matching-begin))
+      (if (string= currenv "document")
+	  (error "No enclosing outer environment found"))
+      (let ((startp (save-excursion (LaTeX-find-matching-begin) (point)))
+	    (endp (save-excursion (LaTeX-find-matching-end) (point))))
+	(preview-region startp endp)))))
 
 (defun preview-section ()
-  "Run preview on LaTeX environment." (interactive)
+  "Run preview on LaTeX section." (interactive)
   (save-excursion
     (LaTeX-mark-section)
     (preview-region (region-beginning) (region-end))))
@@ -1400,7 +1422,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.63 $"))
+	(rev "$Revision: 1.64 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
