@@ -1662,26 +1662,26 @@ located.  The behavior regarding the display string is analogous to
 @end deffn
 
 @deffn Command TeX-fold-clearout-buffer
-@kindex C-c C-o C-x
-(@kbd{C-c C-o C-x}) Permanently unfold all macros and environments in
-the current buffer.
+@kindex C-c C-o b
+(@kbd{C-c C-o b}) Permanently unfold all macros and environments in the
+current buffer.
 @end deffn
 
 @deffn Command TeX-fold-clearout-region
-@kindex C-c C-o C-y
-(@kbd{C-c C-o C-y}) Permanently unfold all macros and environments in
-the marked region.
+@kindex C-c C-o r
+(@kbd{C-c C-o r}) Permanently unfold all macros and environments in the
+marked region.
 @end deffn
 
 @deffn Command TeX-fold-clearout-paragraph
-@kindex C-c C-o C-v
-(@kbd{C-c C-o C-v}) Permanently unfold all macros and environments in
-the paragraph containing point.
+@kindex C-c C-o p
+(@kbd{C-c C-o p}) Permanently unfold all macros and environments in the
+paragraph containing point.
 @end deffn
 
 @deffn Command TeX-fold-clearout-item
-@kindex C-c C-o C-c
-(@kbd{C-c C-o C-c}) Permanently show the macro or environment on which
+@kindex C-c C-o i
+(@kbd{C-c C-o i}) Permanently show the macro or environment on which
 point currently is located.  In contrast to temporarily opening the
 macro when point is moved sideways onto it, the macro will be
 permanently unfolded and will not collapse again once point is leaving
