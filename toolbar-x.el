@@ -269,7 +269,7 @@ inside Emacs. See documentation of that function for more."
   ;; see (info "(elisp)Menu keymaps")
   (let* ((keymap (make-sparse-keymap title))
 	 (count 1)
-	 (used-symbols)
+	 (used-symbols '(nil))
 	 (key)
 	 (real-type (if (eq type 'toggle) 'toggle 'radio))
 	 (real-save (when save (if (eq save 'offer) 'offer 'always))))
@@ -468,15 +468,15 @@ documentation of function `toolbarx-process-symbol')."
 		  (good-obj
 		   (if (featurep 'xemacs)
 		       ;; if XEmacs
-		       (or (stringp val)
-			   (glyphp val)
-			   (and (symbolp val)
-				(boundp val)
+		       (or (stringp val) ; a string
+			   (glyphp val)  ; or a glyph
+			   (and (symbolp val) ; or a symbol bound to a 
+				(boundp val)  ; glyph-list
 				(check-toolbar-button-syntax
 				 (vector val
 					 (lambda nil (interactive))
 					 nil nil) t))
-			   (and (listp val)
+			   (and (listp val) ; or a glyph-or-string list
 				(> (length val) 0)
 				(< (length val) 7)
 				(dolist (i val all-obj-ok)
@@ -486,16 +486,21 @@ documentation of function `toolbarx-process-symbol')."
 						 (stringp i)
 						 (glyphp i)))))))
 		     ;; if Emacs
-		     (or (stringp val)
-			 (and (consp val) ; image descriptor
+		     (or (stringp val)	  ; string
+			 (and (consp val) ; or image descriptor
 			      (eq (car val) 'image))
-			 (and (listp val)
+			 (and (symbolp val) ; or a symbol bound to a 
+			      (boundp val)  ; image descriptor
+					    ; (defined with `defimage')
+			      (consp (eval val))
+			      (eq (car (eval val)) 'image))
+			 (and (listp val) ; or list with 4 strings or
+					  ; image descriptors
 			      (= (length val) 4)
 			      (dolist (i val all-obj-ok)
 				(setq all-obj-ok
 				      (and all-obj-ok
 					   (or (stringp i)
-					      ; image descriptor
 					       (and (consp i)
 						    (eq (car i)
 							'image)))))))))))
@@ -1220,12 +1225,20 @@ side effect."
 	       (image-descriptor
 		(when (memq :image filtered-props)
 		  (cond 
-		   ((stringp image)
+		   ((stringp image) 	; string
 		    (toolbarx-find-image image))
-		   ((and (consp image)	; image descriptor
+		   ((and (consp image)	; or image descriptor
 			 (eq (car image) 'image))
 		    image)
-		   (t
+		   ((and (symbolp image) ; or a symbol bound to a 
+			 (boundp image)  ; image descriptor (defined
+				       ; with `defimage')g
+			 (consp (eval image))
+			 (eq (car (eval image)) 'image))
+		    (eval image))
+		   (t			; otherwise, must be a list
+					; with 4 strings or image
+					; descriptors
 		    (apply 'vector (mapcar (lambda (img)
 					      (if (stringp img)
 						  (toolbarx-find-image img)
@@ -1302,7 +1315,7 @@ is used and the default value of `toolbarx-map' is changed."
 			   (default-value 'toolbarx-internal-button-switches)
 			 toolbarx-internal-button-switches)
 		     toolbarx-internal-button-switches))
-	(used-keys (list :used-symbols))
+	(used-keys (list :used-symbols nil))
 	(tool-bar-map-temp))
     (let ((tool-bar-map (make-sparse-keymap)))
       (toolbarx-emacs-refresh-process-button-or-insert-list switches used-keys)
@@ -1755,16 +1768,18 @@ for buttons and their `basic types' (see note on how values of
 properties are obtained!) are:
 
  :image -- in Emacs, either a string or image descriptor (see
-   info for a definition), ora list of 4 strings or image
-   descriptors; in XEmacs, either a string or a glyph or a list
-   of at least 1 and at most 6 strings or glyphs or nil (not the
-   first element though); defines the image file displayed by the
-   button.  If it is a string, the image file found with that
-   name (always using the function `toolbarx-find-image' to make
-   the \`internal\' image descriptor) is used as button image.
-   For the other formats, the button image is handled in the same
-   way as it is treated by the editors; see info nodes bellow for
-   a description of the capabilities of each editor
+   info for a definition), or a variable bound to a image
+   descriptor (like those defined with `defimage') or a list of 4
+   strings or image descriptors; in XEmacs, either a string or a
+   glyph, or a symbol bount to a glyph, or a list of at least 1
+   and at most 6 strings or glyphs or nil (not the first element
+   though); defines the image file displayed by the button.  If
+   it is a string, the image file found with that name (always
+   using the function `toolbarx-find-image' to make the
+   \`internal\' image descriptor) is used as button image.  For
+   the other formats, the button image is handled in the same way
+   as it is treated by the editors; see info nodes bellow for a
+   description of the capabilities of each editor
       Emacs: info file \"elisp\", node \"Tool Bar\" (see `:image'
              property);
              PS: a *vector* of four strings is used in the Emacs
@@ -1772,8 +1787,8 @@ properties are obtained!) are:
              property format, but here we reserve vectors to
              provide editor-dependent values; this motivates our
              choice for a list instead of vector (however,
-             internally the list shall be made vector when
-             displaying the button).
+             internally the list becomes a vector when displaying
+             the button).
      XEmacs: info file \"lispref\", node \"Toolbar Descriptor
              Format\" (see GLYPH-LIST) or the documentation of
              the variable `default-toolbar'; check the inheritage
