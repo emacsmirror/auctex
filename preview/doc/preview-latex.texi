@@ -25,7 +25,7 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.3
+@subtitle Version 0.7.4
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
@@ -190,6 +190,7 @@ non-interactively, runs preview on region between @code{begin} and
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
 @itemx LaTeX/Preview/Read Documentation
+@kindex @kbd{C-c C-p C-i}
 Read
 @ifinfo
 this
@@ -198,69 +199,72 @@ this
 the
 @end ifnotinfo
 info manual.
-@kindex @kbd{C-c C-p C-i}
 
 @item @kbd{C-c C-k}
 @itemx LaTeX/TeX Output/Kill Job
+@kindex @kbd{C-c C-k}
+@cindex Kill preview-generating process
 Kills the preview-generating process. This is really an @AUCTeX{}
 keybinding, but it is included here as a hint. If you are generating
 a preview and then make a change to the buffer, @previewlatex{} may be
 confused and place the previews wrong.
-@kindex @kbd{C-c C-k}
-@cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-f}
 @itemx @code{preview-cache-preamble}
 @itemx LaTeX/Preview/Cache preamble
+@kindex @kbd{C-c C-p C-f}
+@findex preview-cache-preamble
 Dump a pregenerated format file.  For the rest of the session, this file
 is used when running on the same master file.  Use this if you know your
 @LaTeX{} takes a long time to start up, the speedup will be most
-noticable when generating single or few previews. If you change your
-preamble, do this again.
-@kindex @kbd{C-c C-p C-f}
-@findex preview-cache-preamble
+noticeable when generating single or few previews.  If you change your
+preamble, do this again.  @previewlatex{} will try to detect the
+necessity of that automatically when editing changes to the preamble are
+done from within Emacs, but it will not notice if the preamble
+effectively changes because some included file or style file is
+tampered with.
 
 @item @kbd{C-c C-p C-c C-f}
 @itemx @code{preview-cache-preamble-off}
 @itemx LaTeX/Preview/Cache preamble off
-Clear the pregenerated format file. If the above gives you problems, use
-this.
 @kindex @kbd{C-u C-c C-p C-f}
 @findex preview-cache-preamble-off
+Clear the pregenerated format file. If the above gives you problems, use
+this.
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
 @itemx LaTeX/Preview/Clearout Buffer
-Clear out all previews in current buffer. This makes the current buffer
-lose all previews. If run non-interactively @code{buffer} is cleared out
-from previews, current buffer if nil.
 @kindex @kbd{C-c C-p C-c C-b}
 @findex preview-clearout-buffer
 @c @cindex Clearout previews
+Clear out all previews in current buffer. This makes the current buffer
+lose all previews. If run non-interactively @code{buffer} is cleared out
+from previews, current buffer if nil.
 
 @item @kbd{C-c C-p C-c C-r}
 @itemx @code{preview-clearout (&optional start end keep-dir)}
 @itemx LaTeX/Preview/Clearout Region
+@kindex @kbd{C-c C-p C-c C-r}
+@findex preview-clearout
 Clear out all previews in the current region. When called interactively,
 the current region is used. Non-interactively, the region between
 @code{start} and @code{end} is affected. Those two values default to the
 borders of the entire buffer. If @code{keep-dir} is set to a value from
 @code{TeX-active-tempdir}, previews associated with that directory are
 kept.
-@kindex @kbd{C-c C-p C-c C-r}
-@findex preview-clearout
 
 @item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
 @itemx LaTeX/Preview/Report Bug
+@kindex @kbd{M-x preview-report-bug @key{RET}}
+@findex preview-report-bug
+@cindex Report a bug
 This is the preferred way of reporting bugs as it will fill in what
 version of @previewlatex{} you are using as well as versions of
 relevant other software, and also some of the more important
 settings. Please use this method of reporting, if at all possible and
 before reporting a bug, have a look at @ref{Known problems}.
-@kindex @kbd{M-x preview-report-bug @key{RET}}
-@findex preview-report-bug
-@cindex Report a bug
 @end table
 
 @node Simple customization, Known problems, Keys and lisp, top
