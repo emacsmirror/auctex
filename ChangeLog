@@ -1,5 +1,14 @@
 2004-05-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-newline): New name for `TeX-indent-on-newline'.  It
+	now holds function definitions and not mere symbols anymore.
+	(TeX-mode-map): Use it.
+
+	* doc/auc-tex.texi (Marking and formatting): Remove documentation
+	for `TeX-indent-on-newline' and document `TeX-newline'.
+
+2004-05-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
 	* tex.el (TeX-indent-on-newline): New option.
 	(TeX-mode-map): Use it.
 
