@@ -1,3 +1,22 @@
+2003-03-28  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/README: 
+	* dvipng/RELEASE: Release 0.2, PostScript type1 font support and
+	PostScript inclusion.  
+
+	* dvipng/configure.ac: Added configure error message about where
+	to find libgd. 
+
+	* dvipng/dvipng.h:
+	* dvipng/draw.c (DrawCommand):
+	* dvipng/special.c (SetSpecial): Postscript inclusion now works. 
+
+	* dvipng/misc.c (DecodeArgs): Fix --help message 
+
+	* dvipng/COPYING: 
+	* dvipng/RELEASE: 
+	* dvipng/README: Added files to repository
+
 2003-03-28  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/faq.texi (Installation Trouble): Update Windows info.
