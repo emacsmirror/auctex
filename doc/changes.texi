@@ -24,9 +24,11 @@ a new user to start using @AUCTeX{}.
 
 @item
 Keywords for syntax highlighting of @LaTeX{} constructs to be typeset in
-bold, italic or typewriter fonts may now be customized.  The
-customization options can be found in the customization group of
-@samp{font-latex}.
+bold, italic or typewriter fonts may now be customized.  Besides the
+built-in classes, new keyword classes may be added by customizing the
+variable @samp{font-latex-user-keyword-classes}.  The customization
+options can be found in the customization group
+@samp{font-latex-keywords}.
 
 @item
 Verbatim content is now displayed with a Courier font. (GNU Emacs only)
@@ -45,8 +47,7 @@ You can customize the completion for graphic files with
 
 @item
 Support for the packages @samp{url}, @samp{listings} and @samp{jurabib}
-packages was added with regard to command completion and syntax
-highlighting.
+was added with regard to command completion and syntax highlighting.
 
 @item
 Performance of fontification and filling was improved.
