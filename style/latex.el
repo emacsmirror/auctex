@@ -1,6 +1,6 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.1 1993-03-15 18:12:56 amanda Exp $
+;;; $Id: latex.el,v 1.2 1993-03-18 06:02:16 amanda Exp $
 
 ;;; @@ Hook
 
@@ -14,7 +14,6 @@
      '("list" LaTeX-list-hook)
      '("trivlist" LaTeX-item-hook)
      '("picture" LaTeX-picture-hook)
-     '("verbatim*")
      '("tabular" LaTeX-array-hook)
      '("tabular*" LaTeX-array-hook)
      '("array" LaTeX-array-hook)
@@ -22,6 +21,12 @@
      '("eqnarray*" LaTeX-label-hook)
      '("equation" LaTeX-label-hook)
      '("minipage" LaTeX-minipage-hook)
+
+     ;; The following have no special support, but are included in
+     ;; case the auto files are missing. 
+
+     "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
+     "flushright" "flushleft" "displaymath" "math"
 
      ;; The following are not defined in latex.el, but in a number of
      ;; other style files.  I'm to lazy to copy them to all the
@@ -49,6 +54,8 @@
      '("setcounter" TeX-argument-counter-hook "Value")
      '("usecounter" TeX-argument-counter-hook)
      '("value" TeX-argument-counter-hook)
+     '("stepcounter" TeX-argument-counter-hook)
+     '("refstepcounter" TeX-argument-counter-hook)
      '("label" TeX-argument-define-label-hook)
      '("pageref" TeX-argument-label-hook)
      '("ref" TeX-argument-label-hook)
@@ -101,6 +108,7 @@
      '("bibliography" TeX-argument-bibligraphy-hook)
      '("footnote" [ "Number" ] t)
      '("footnotetext" [ "Number" ] t)
+     '("footnotemark" [ "Number" ])
      '("newlength" TeX-argument-define-macro-hook)
      '("setlength" TeX-argument-macro-hook "Length")
      '("addtolength" TeX-argument-macro-hook "Length")
@@ -112,7 +120,9 @@
      '("nolinebreak" [ "How much [0 - 4]" ])
      '("nopagebreak" [ "How much [0 - 4]" ])
      '("pagebreak" [ "How much [0 - 4]" ])
+     '("stackrel" t nil)
      '("frac" t nil)
+     '("lefteqn" t)
      '("overbrace" t)
      '("overline" t)
      '("sqrt" [ "Root" ] t)
@@ -151,7 +161,26 @@
        t)
      '("addtocontents" TeX-argument-file-hook t)
      '("typeout" t)
-     '("typein" [ TeX-argument-define-macro-hook ] t)))))
+     '("typein" [ TeX-argument-define-macro-hook ] t)
+     '("verb" TeX-argument-verb-hook)
+     '("verb*" TeX-argument-verb-hook)
+     '("extracolsep" t)
+     '("index" t)
+     '("glossary" t)
+     '("numberline" "Section number" "Heading")
+     '("caption" t)
+     '("marginpar" [ "Left margin text" ] "Text")
+     
+     ;; These have no special support, but are included in case the
+     ;; auto files are missing. 
+
+     "LaTeX" "SLiTeX" "samepage" "newline" "smallskip" "medskip"
+     "bigskip" "stretch" "nonumber" "centering" "raggedright"
+     "raggedleft" "kill" "pushtabs" "poptabs" "protect" "arraystretch"
+     "hline" "vline" "cline" "thinlines" "thicklines" "and" "makeindex"
+     "makeglossary" "reversemarginpar" "normalmarginpar"
+     "raggedbottom" "flushbottom" "sloppy" "fussy" "newpage"
+     "clearpage" "cleardoublepage" "twocolumn" "onecolumn"))))
 
 ;;; @@ Emacs
 
