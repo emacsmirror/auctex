@@ -34,7 +34,8 @@ install-texmf: preview.sty prauctex.def
 	-mkdir -p $(previewtexmfdir)
 	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
-#	$(INSTALL_DATA) preview.dvi $(previewdvidir)
+	-mkdir -p $(previewdocdir)
+	$(INSTALL_DATA) preview.dvi $(previewdocdir)
 	-$(TEXHASH) $(texmfdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
