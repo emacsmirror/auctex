@@ -204,9 +204,7 @@ specifies.  If BOX is present, it is the bounding box info."
      'insert-behind-hooks
      '(preview-handle-insert-behind))
 
-;; We have to fake our way around atomicity, but at least this is more
-;; efficient than the XEmacs version which has to cope with not being
-;; able to use local change hooks at all.
+;; We have to fake our way around atomicity.
 
 ;; Here is the beef: for best intuitiveness, we want to have
 ;; insertions be carried out as expected before iconized text
