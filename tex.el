@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.299 $"))
+	(rev "$Revision: 5.300 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-02 15:13:20 $"))
+    (let ((date "$Date: 2003-06-03 11:12:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1124,7 +1124,7 @@ FORCE is not nil."
 (defgroup TeX-macro nil
   "Support for TeX macros in AUCTeX."
   :prefix "TeX-"
-  :group 'TeX)
+  :group 'AUCTeX)
 
 (defcustom TeX-complete-word 'ispell-complete-word
   "*Function to call for completing non-macros in tex-mode."
