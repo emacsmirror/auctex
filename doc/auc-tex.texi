@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.149 2004-04-07 09:49:15 rsteib Exp $
+@c $Id: auc-tex.texi,v 1.150 2004-04-10 16:03:49 angeli Exp $
 
 @finalout
 @titlepage
@@ -1773,7 +1773,7 @@ make contrib
 make install-contrib
 @end example
 
-See @file{INSTALLATION} and @file{Makefile} for more information.
+See @file{INSTALL} and @file{Makefile} for more information.
 
 To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
 @code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
