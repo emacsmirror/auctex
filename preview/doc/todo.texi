@@ -31,7 +31,23 @@ user properly accessing the same file.  In all fairness, the current
 
 @item Port to XEmacs
 
-Under progress.
+In progress, most important first:
+@itemize @bullet
+@item Make preview generation work
+
+Right now all you can see is the preview-nonready-icon. Not ideal.
+
+@item Fix the big bugs.
+
+Make highlighting, the local keymap, and preview-toggling from other
+than the first character in the preview region work.
+
+@item Enfeaturize.
+
+Handle fake-intangible areas, point-motion hooks and so on.  (Eliminate
+the use of one-character propertized strings, maybe.)
+
+@end itemize
 
 @item Explore possibilities for working via PDF
  
