@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.51 2002-01-17 09:28:52 jalar Exp $
+;; $Id: preview.el,v 1.52 2002-01-18 11:35:15 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -595,13 +595,11 @@ If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
 had let your document be parsed by AucTeX.  Otherwise
 the value is taken from `preview-default-document-pt'."
-  (or (and (boundp 'TeX-active-styles)
-	   (catch 'return (dolist (option TeX-active-styles nil)
-			    (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
-				(throw 'return
-				       (string-to-number
-					(match-string 1 option)))))) )
-      preview-default-document-pt))
+  (catch 'return (dolist (option (TeX-style-list) preview-default-document-pt)
+		   (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
+		       (throw 'return
+			      (string-to-number
+			       (match-string 1 option)))))))
 
 (defun preview-scale-from-face ()
   "Calculate preview scale from `preview-reference-face'.
@@ -684,7 +682,7 @@ Fallback to :inherit and 'default implemented."
     (preview-region (region-beginning) (region-end))))
 
 (defun preview-next-border (backwards)
-  "Search for the next interesting border for `preview-dwim'.
+  "Search for the next interesting border for `preview-at-point'.
 Searches backwards if BACKWARDS is non-nil."
   (let (history preview-state (pt (point)))
       (while
@@ -706,8 +704,8 @@ Searches backwards if BACKWARDS is non-nil."
 	(setq history (and (not preview-state) pt)))
       (or history pt)))
 	     
-(defun preview-dwim ()
-  "Do the appropriate thing for a preview.
+(defun preview-at-point ()
+  "Do the appropriate preview thing at point.
 If the cursor is positioned on or inside of a preview area, this
 toggles its visibility, regenerating the preview if necessary.  If
 not, it will run the surroundings through preview.  The surroundings
@@ -1004,7 +1002,7 @@ preview Emacs Lisp package something too stupid."))
   (easy-menu-add-item (easy-menu-get-map (assoc-default 'menu-bar LaTeX-mode-map) '("Command") "Generate Preview")
 		      nil
 		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
-  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-dwim)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-at-point)
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
@@ -1012,15 +1010,15 @@ preview Emacs Lisp package something too stupid."))
   (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-r" #'preview-clearout)
   (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-b" #'preview-clearout-buffer)
   (easy-menu-add-item LaTeX-mode-menu nil
-		      (easy-menu-create-menu "Preview"
-			'(["What I want" preview-dwim t]
-			["Environment" preview-environment t]
-			["Section" preview-section t]
-			["Region" preview-region mark-active]
-			["Clearout region" preview-clearout mark-active]
-			["Clearout buffer" preview-clearout-buffer t]
-			)) "Miscellaneous")
-)
+		      (easy-menu-create-menu
+		       "Preview"
+		       '(["on/off at point" preview-at-point t]
+			 ["Environment" preview-environment t]
+			 ["Section" preview-section t]
+			 ["Region" preview-region mark-active]
+			 ["Clearout region" preview-clearout mark-active]
+			 ["Clearout buffer" preview-clearout-buffer t]))
+		      "Miscellaneous"))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
@@ -1328,7 +1326,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.51 $"))
+	(rev "$Revision: 1.52 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
