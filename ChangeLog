@@ -1,5 +1,9 @@
 2004-08-04  David Kastrup  <dak@gnu.org>
 
+	* tex-fptex.el (TeX-command-list): Remove PDFTeX calls.
+
+	* tex-mik.el (TeX-command-list): Remove PDFTeX calls.
+
 	* tex.el (TeX-command-list): Use %(PDF) where necessary, drop
 	PDFTeX entries.
 	(LaTeX-command-style): Add %(PDF) here.

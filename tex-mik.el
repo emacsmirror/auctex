@@ -32,12 +32,10 @@
 
 (unless (get 'TeX-command-list 'saved-value)
   (setq TeX-command-list
-	(list (list "TeX" "tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
+	(list (list "TeX" "%(PDF)tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
 		    (list 'plain-tex-mode))
 	      (list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
 		    (list 'latex-mode))
-	      (list "PDFLaTeX" "pdflatex %S \\nonstopmode\\input{%t}"
-		    'TeX-run-TeX nil (list 'latex-mode))
 	      (list "View" "%v" 'TeX-run-discard nil t)
 	      (list "Print" "gsview32 %f" 'TeX-run-command t t)
 	      (list "File" "dvips %d -o %f " 'TeX-run-command t t)
