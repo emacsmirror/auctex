@@ -1,3 +1,12 @@
+2003-12-08  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c:
+	* dvipng/dvipng.h:
+	* dvipng/dvipng.texi:
+	* dvipng/misc.c: Add --height option 
+
+	* dvipng/test_dvipng.tex: A nice equation is true. Behave!
+
 2003-12-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* enc.c: Encodings are _ps_header_s
