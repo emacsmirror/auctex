@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.75 2002-03-14 17:32:52 dakas Exp $
+;; $Id: preview.el,v 1.76 2002-03-15 03:34:04 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -957,8 +957,10 @@ snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let* ((save-temp TeX-active-tempdir)
 	 (ov (with-current-buffer source
-	       (preview-clearout start end save-temp)
-	       (make-overlay start end nil nil nil))) image)
+	       (save-restriction
+		 (widen)
+		 (preview-clearout start end save-temp)
+		 (make-overlay start end nil nil nil)))) image)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -1013,21 +1015,23 @@ Actually, this does not move but only returns the position.
 Defaults to point in current buffer."
   (save-excursion
     (if buffer (set-buffer buffer))
-    (if posn (goto-char posn))
-    (condition-case nil
-	(or (search-backward-regexp "\\(\\$\\$?\
+    (save-restriction
+      (widen)
+      (if posn (goto-char posn))
+      (condition-case nil
+	  (or (search-backward-regexp "\\(\\$\\$?\
 \\|\\\\[^a-zA-Z@]\
 \\|\\\\[a-zA-Z@]+\
 \\|\\\\begin[ \t]*{[^}]+}\
 \\)\\=" (line-beginning-position) t)
-	    (progn
-	      (while
-		  (let ((oldpoint (point)))
-		    (backward-sexp)
-		    (and (not (eq oldpoint (point)))
-			 (eq ?\( (char-syntax (char-after))))))
-	      (point)))
-      (error nil))))
+	      (progn
+		(while
+		    (let ((oldpoint (point)))
+		      (backward-sexp)
+		      (and (not (eq oldpoint (point)))
+			   (eq ?\( (char-syntax (char-after))))))
+		(point)))
+	(error nil)))))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
 					 "graphics" "sections")
@@ -1104,6 +1108,7 @@ This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (require 'tex-buf)
+  (require 'latex)
   (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
 			     #'TeX-inline-preview nil)))
     (setq TeX-command-list
@@ -1237,43 +1242,45 @@ document style for LaTeX."
 	(let ((parsestate (list 0 nil nil nil nil nil)))
 	  (goto-char TeX-error-point)
 	  (while
-	      (re-search-forward
-	       (concat "\\("
-		       "^! Package Preview Error:[^.]*\\.\\|"
-		       "(\\|"
-		       ")\\|"
-		       "!offset([---0-9]*)\\|"
-		       "!name([^)]*)"
-		       "\\)") nil t)
-	    (let ((string (TeX-match-buffer 1)))
-	      (cond
-	       (;; Preview error
-		(string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
-		(setq parsestate
-		      (apply #'preview-analyze-error
-			     (string-to-int (match-string 1 string))
-			     (string= (match-string 2 string) "started")
-			     parsestate)))
-	       ;; New file -- Push on stack
-	       ((string= string "(")
-		(re-search-forward "\\([^()\n \t]*\\)")
-		(setq TeX-error-file
-		      (cons (TeX-match-buffer 1) TeX-error-file))
-		(setq TeX-error-offset (cons 0 TeX-error-offset)))
-	       
-	       ;; End of file -- Pop from stack
-	       ((string= string ")")
-		(setq TeX-error-file (cdr TeX-error-file))
-		(setq TeX-error-offset (cdr TeX-error-offset)))
-	       
-	       ;; Hook to change line numbers
-	       ((string-match "!offset(\\([---0-9]*\\))" string)
-		(rplaca TeX-error-offset
-			(string-to-int (match-string 1 string))))
-	       
-	       ;; Hook to change file name
-	       ((string-match "!name(\\([^)]*\\))" string)
-		(rplaca TeX-error-file (match-string 1 string))))))
+	      (re-search-forward "\
+\\(^! \\)\\|\
+\\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
+)+\\( \\|$\\)\\|\
+!\\(?:offset(\\([---0-9]+\\))\\|\
+name(\\([^)]+\\))\\)" nil t)
+;;disabled in prauctex.def:
+;;\\(?:Ov\\|Und\\)erfull \\\\.*[0-9]*--[0-9]*
+;;\\(?:.\{79\}
+;;\\)*.*$\\)\\|
+	    (cond
+	     ((match-beginning 1)
+	      (if (looking-at "\
+Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\.")
+		  (setq parsestate
+			(apply #'preview-analyze-error
+			       (string-to-int (match-string 1))
+			       (string= (match-string 2) "started")
+			       parsestate))
+		(forward-line)
+		(re-search-forward "^l\\.[0-9]" nil t)
+		(forward-line 2)))
+	     ((match-beginning 2)
+	      ;; New file -- Push on stack
+	      (push (TeX-match-buffer 2) TeX-error-file)
+	      (push 0 TeX-error-offset)
+	      (goto-char (match-end 2)))
+	     ((match-beginning 3)
+	      ;; End of file -- Pop from stack
+	      (pop TeX-error-file)
+	      (pop TeX-error-offset)
+	      (goto-char (1+ (match-beginning 0))))
+	     ((match-beginning 4)
+	      ;; Hook to change line numbers
+	      (rplaca TeX-error-offset
+		      (string-to-int (TeX-match-buffer 4))))
+	     ((match-beginning 5)
+	      ;; Hook to change file name
+	      (rplaca TeX-error-file (TeX-match-buffer 5)))))
 	  (if (zerop (car parsestate))
 	      (preview-clean-subdir (nth 0 TeX-active-tempdir))) )
       (preview-call-hook 'close))))
@@ -1346,7 +1353,6 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
       (unless (eq snippet lsnippet)
 	(message "End of Preview snippet %d unexpected" snippet)
 	(setq lstart nil)))
-    (setq lsnippet snippet)
     (when line
       (setq line (+ line offset))
       (let* ((buffer (if (string= lfile file)
@@ -1356,21 +1362,23 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 	     (next-point
 	      (with-current-buffer buffer
 		(save-excursion
-		  (if (eq buffer lbuffer)
-		      (progn
-			(goto-char lpoint)
-			(if (eq selective-display t)
-			    (re-search-forward "[\n\C-m]" nil 'end (- line lline))
-			  (forward-line (- line lline))))
-		    (goto-line line))
-		  (setq lline line
-			lpoint (point)
-			lbuffer buffer)
-		  (if (search-forward (concat string after-string)
-				      (line-end-position) t)
-		      (backward-char (length after-string))
-		    (search-forward string (line-end-position) t))
-		  (point)))))
+		  (save-restriction
+		    (widen)
+		    (if (eq buffer lbuffer)
+			(progn
+			  (goto-char lpoint)
+			  (if (eq selective-display t)
+			      (re-search-forward "[\n\C-m]" nil 'end (- line lline))
+			    (forward-line (- line lline))))
+		      (goto-line line))
+		    (setq lline line
+			  lpoint (point)
+			  lbuffer buffer)
+		    (if (search-forward (concat string after-string)
+					(line-end-position) t)
+			(backward-char (length after-string))
+		      (search-forward string (line-end-position) t))
+		    (point))))))
 	(if start
 	    (setq lstart next-point)
 	  (if lstart
@@ -1381,13 +1389,12 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 		 (if (eq next-point lstart)
 		     lstart
 		   (or
-		    (preview-back-command lstart
-					  buffer)
+		    (preview-back-command lstart buffer)
 		    lstart))
 		 next-point)
 		(setq lstart nil))
 	    (message "Unexpected end of Preview snippet %d" snippet))))))
-  (list lsnippet lstart lfile lline lbuffer lpoint))
+  (list snippet lstart lfile lline lbuffer lpoint))
 
 (defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
@@ -1478,7 +1485,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.75 $"))
+	(rev "$Revision: 1.76 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
