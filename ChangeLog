@@ -1,3 +1,12 @@
+2004-09-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (VirTeX-common-initialization): Revert last change.
+
+	* font-latex.el (font-latex-keywords-2): Use function
+	`font-latex-match-script' instead of regexp directly.
+	(font-latex-fontify-script): Doc fix.
+	(font-latex-match-script): Reintroduce.
+
 2004-09-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-verbatim-macros): New variable.
