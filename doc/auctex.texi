@@ -1688,6 +1688,13 @@ permanently unfolded and will not collapse again once point is leaving
 it.
 @end deffn
 
+@deffn Command TeX-fold-dwim
+@kindex C-c C-o C-o
+(@kbd{C-c C-o C-o}) Hide or show items according to the current context.
+If there is folded content, unfold it.  If there is no folded content
+but a macro or environment, fold it.
+@end deffn
+
 The commands above will only take macros or environments into
 consideration which are specified in the variable
 @code{TeX-fold-macro-spec-list} or @code{TeX-fold-env-spec-list}
