@@ -854,9 +854,10 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
   '("crlf" "par")
   "List of ConTeXt macros that should have their own line besides the section(-block) commands.")
 
-(defun ConTeXt-paragraph-commands ()
-  "Regexp matching names of LaTeX macros that should have their own line."
+(defun ConTeXt-paragraph-commands-regexp ()
+  "Return a regexp matching macros that should have their own line."
   (concat
+   (regexp-quote TeX-esc) "\\("
    "\\[\\|\\]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
    (ConTeXt-environment-start-name) "\\b\\|"
    (ConTeXt-environment-stop-name) "\\b\\|start"
@@ -865,7 +866,7 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
    (mapconcat 'car ConTeXt-section-list "\\b\\|") "\\b\\|"
    (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
    "\\b\\|"
-   (mapconcat 'identity ConTeXt-item-list "\\b\\|") "\\b"))
+   (mapconcat 'identity ConTeXt-item-list "\\b\\|") "\\b\\)"))
 
 
 ;; Outline support
@@ -1427,16 +1428,15 @@ There might be text before point."
 
   ;; Paragraph formatting
   (set (make-local-variable 'LaTeX-syntactic-comments) nil)
-  (set (make-local-variable 'LaTeX-paragraph-commands)
-       (ConTeXt-paragraph-commands))
+  (set (make-local-variable 'LaTeX-paragraph-commands-regexp)
+       (ConTeXt-paragraph-commands-regexp))
   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
   (set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
   (set (make-local-variable 'adaptive-fill-mode) nil)
   (setq paragraph-start
 	(concat
 	 "[ \t]*\\("
-	 (regexp-quote TeX-esc)
-	 "\\(" (ConTeXt-paragraph-commands) "\\)\\|"
+	 (ConTeXt-paragraph-commands-regexp) "\\|"
 	 "\\$\\$\\|" ; Plain TeX display math
 	 "$\\)"))
   (setq paragraph-separate
