@@ -1,3 +1,9 @@
+2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-bb-filesize): move to preview-gs group.
+	(LaTeX-preview-setup): add bug reporter.
+	(preview-report-bug): update reported options.
+
 2002-03-22  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
 
 	* doc/preview-latex.texi (preview-environment):
