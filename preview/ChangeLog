@@ -2,6 +2,9 @@
 
 	* Release 0.9
 
+	* latex/Makefile.in (install-texmf-doc): Install PDF instead of
+	DVI file.
+
 	* doc/wininstall.texi: Simplify, rearrange, adapt to new
 	installation scheme.  Add links to CVS precompiled versions.
 
