@@ -1,3 +1,13 @@
+2003-04-15  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/macros.texi: Added
+
+	* dvipng/install.texi, dvipng/dvipng.texi: Initial version
+
+2003-04-09  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4: More sane emacs-macro path-searching.
+
 2003-03-31  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4 (EMACS_PROG_EMACS): Make the test fail gracefully
