@@ -26,14 +26,14 @@
 
 ;;; Commentary:
 ;;
-;; I believe that the Italian correct quoting is achieved with `«' and
-;; `»'.  However, I will be glad to see a normative reference. -- DGMS
+;; I believe that the Italian correct quoting is achieved with `\"<' and
+;; `\">'.  However, I will be glad to see a normative reference. -- DGMS
 
 ;;; Code:
 
-(defvar LaTeX-italian-open-quote "«"
+(defvar LaTeX-italian-open-quote "\"<"
   "Initial value of `TeX-open-quote' for `italian.el'")
-(defvar LaTeX-italian-close-quote "»"
+(defvar LaTeX-italian-close-quote "\">"
   "Initial value of `TeX-close-quote' for `italian.el'")
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
