@@ -1,6 +1,9 @@
 @section News in 9.9
 
 @itemize @bullet
+@item @kbd{C-c m} now puts content of region inside first empty brackets
+in the macro, if any.  Patch by Peter Thiemann <pjt@@cs.nott.ac.uk>.
+
 @item Update of @file{natbib.el} style file by Carsten Dominik
 <dominik@@strw.LeidenUniv.nl>.
 
