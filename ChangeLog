@@ -1,3 +1,7 @@
+2005-02-21  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/auctex.texi (Japanese): Fix bogus macro.
+
 2005-02-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/auctex.texi (Japanese): Doc fix.

@@ -2661,7 +2661,7 @@ insert @samp{''}.
 To write Japanese text with @AUCTeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
 variants of @TeX{} for Japanese text (NTT j@TeX{} and ASCII p@TeX{}).
-@AUCTeX{} can be used with @abbr{MULE, MULtilingual Enhancement to GNU
+@AUCTeX{} can be used with @acronym{MULE, MULtilingual Enhancement to GNU
 Emacs} supported Emacsen.
 
 Next two commands will automatically install Japanese contributed files.
