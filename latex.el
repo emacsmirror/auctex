@@ -4108,33 +4108,7 @@ the last entry in the menu."
        :help "Move point to the beginning of the current environment"]
       ["End of Environment" LaTeX-find-matching-end
        :help "Move point to the end of the current environment"])
-     ("Show/Hide"
-      ["Fold Mode" TeX-fold-mode
-       :style toggle
-       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :help "Toggle folding mode"]
-      "-"
-      ["Hide All" TeX-fold-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-b"
-       :help "Hide all configured TeX constructs in the current buffer"]
-      ["Hide Current Macro" TeX-fold-macro
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-m"
-       :help "Hide the LaTeX macro containing point"]
-      ["Hide Current Environment" TeX-fold-env
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-e"
-       :help "Hide the environment containing point"]
-      "-"
-      ["Show All" TeX-fold-clearout-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-x"
-       :help "Permanently show all folded content again"]
-      ["Show Current Item" TeX-fold-clearout-item
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-c"
-       :help "Permanently show the item containing point"])
+     ,TeX-fold-menu
      ["Math Mode" LaTeX-math-mode
       :style toggle :selected LaTeX-math-mode
       :help "Toggle math mode"]
