@@ -1,5 +1,8 @@
 2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
 
+	* font-latex.el (font-latex-setup): Better stab at verbatim
+	handling.
+
 	* tex-buf.el (TeX-region-create): Make file name in !name
 	messages relative to master file directory.
 
