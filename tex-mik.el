@@ -1,10 +1,10 @@
 ;;; tex-mik.el --- MikTeX support for AUC TeX.
 ;;
-;; Copyright (C) 1999, 2000 Per Abrahamsen 
+;; Copyright (C) 1999, 2000, 2001 Per Abrahamsen 
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10k
+;; Version: 10.0d
 ;; Keywords: wp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@
   (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
 	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
 	(list "LaTeX PDF" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
-	(list "View" "%v" 'TeX-run-discard t nil)
+	(list "View" "%v" 'TeX-run-discard nil nil)
 	(list "Print" "gsview32 %f" 'TeX-run-command t nil)
 	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
