@@ -2408,7 +2408,7 @@ space does not end a sentence, so don't break a line there."
 	      (forward-line 1)))
 
 	(when use-hard-newlines
-	  (remove-list-of-text-properties from to '(hard)))
+	  (remove-text-properties from to '(hard nil)))
 	;; Make sure first line is indented (at least) to left margin...
 	(indent-according-to-mode)
 	;; COMPATIBILITY for Emacs <= 21.1
