@@ -977,8 +977,7 @@ Just like array and tabular."
   (LaTeX-insert-environment environment)
   (when (LaTeX-label environment)
     (LaTeX-newline)
-    (indent-according-to-mode))
-  (TeX-math-input-method-off))
+    (indent-according-to-mode)))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
