@@ -1,5 +1,9 @@
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Makefile.in (preview-latex.el): Avoid putting the output of pwd
+	inside of "...", because something like "C:\notagain" is not
+	quite the Lisp string we'd want.
+
 	* preview.el (preview-walk-document): New function walking
 	through buffers of current document.
 	(preview-clearout-document): New function for completeness.
