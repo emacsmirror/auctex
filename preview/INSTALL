@@ -104,8 +104,8 @@ the Emacs package by entering
 M-x customize-group RET preview RET
 
 You almost certainly want to put (setq gs-device "x11alpha") into your
-.emacs file if you want to use Emacs' embedded EPS rendering support.
-This will turn on anti-aliasing.
+.emacs file if you want to use Emacs' embedded EPS rendering support
+(not the default, however).  This will turn on anti-aliasing.
 
 If you are using GS 6.63 or later, you might try
 
@@ -117,16 +117,23 @@ If you are using GS 6.63 or later, you might try
        gs-options))
 which may give better output.
 
-Currently, preview-latex's default mechanism calls GhostScript for
-first rendering all preview images into png format, then the rendered
-images get used instead of making use of Emacs' builtin EPS support.
-For this to work, your version of GhostScript needs to support the
-png256 device.  Other options are available by using customize (as
-mentioned above) on preview-image-type.  The appropriate type must be
-supported in the preview-image-creators variable which you can
-customize as well, so adding a suitable device should be possible.
-Please send information about such devices to the addresses mentioned
-in the README file so that we can improve preview-latex.
+Currently, preview-latex's default mechanism instead calls GhostScript
+itself for first rendering all preview images into png format, then
+the rendered images get used instead of making use of Emacs' builtin
+EPS support.  For this to work, your version of GhostScript needs to
+support the png256 device.  Other options are available by using
+customize (as mentioned above) on preview-image-type.  The appropriate
+type must be supported in the preview-image-creators variable which
+you can customize as well, so adding a suitable device or changing an
+existing one in a way to better suit the version of GhostScript you
+happen to be using should be possible if you take the existing
+settings as example.  Please send information about such devices to
+the addresses mentioned in the README file so that we can improve
+preview-latex.
+
+It might also be necessary to play around with the settings of the
+variable preview-gs-options in order to get your version of
+GhostScript to work.
 
 There is a sample file circ.tex which you can use for testing around
 a bit, and which serves as sort of a reference for initial bug
