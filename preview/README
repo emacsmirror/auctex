@@ -12,9 +12,13 @@ current time means that you need to be a pretester of Emacs.  Versions
 before that have EPS rendering support that is defective.  The current
 version of EPS support is just a hack and workaround with a side
 effect of sluggish response time, feel free to help the Emacs
-development crew in producing something better.  Even that version
-will exhibit quite a few display engine quirks.  Report bugs you can
-reproduce along with the files needed to reproduce them.
+development crew in producing something better.  The really bad thing
+is the busy-wait in gs.el for a deletion of the display properties
+used for passing parameters to GhostScript.  If that could be
+eliminated, it would be a boon.  Even 21.0.105 will exhibit occasional
+display engine quirks.  Report bugs you can reproduce along with the
+files needed to reproduce them.  The new display engine for 21.1 is
+quite powerful, and some bugs still might be lurking inside.
 
 Here is what currently works: edit Makefile to match your docstrip.cfg
 file.  Call make.  make preview.el accessible to Emacs.  Load it by
