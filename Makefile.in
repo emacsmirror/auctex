@@ -175,7 +175,7 @@ clean:
 	(cd doc; $(MAKE) clean)
 
 distclean: clean
-	rm -rf Makefile configure tex-site.el config.* autom4te.cache
+	rm -rf Makefile tex-site.el config.* autom4te.cache
 
 tar-ball-clean:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
