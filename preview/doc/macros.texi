@@ -60,14 +60,14 @@ font-latex
     {\sf font-latex}#1}
 \gdef\AUCTeX{AUC\TeX}
 \gdef\ConTeXt#1{%
-    Con\TeX t}
+    Con\TeX t#1}
 \toks0\expandafter{\indexnofonts
-  \def\TeX#1{TeX}%
-  \def\LaTeX#1{LaTeX}\def\previewlatex#1{preview-latex}}
+  \def\TeX#1{TeX#1}%
+  \def\LaTeX#1{LaTeX#1}\def\previewlatex#1{preview-latex#1}}
 \xdef\indexnofonts{\the\toks0}
 \toks0\expandafter{\commondummies
-  \def\TeX#1{TeX}%
-  \def\LaTeX#1{LaTeX}\def\previewlatex#1{preview-latex}}
+  \def\TeX#1{TeX#1}%
+  \def\LaTeX#1{LaTeX#1}\def\previewlatex#1{preview-latex#1}}
 \xdef\commondummies{\the\toks0}
 \ifx\acronym\undefined \gdef\acronym#1{{\smallcaps \lowercase{#1}}} \fi
 \ifx\env\undefined \global\let\env=\code \fi
