@@ -2085,7 +2085,7 @@ NIL means kpathsea is disabled."
   :type '(choice (const ":")
 		 (const ";")
 		 (const :tag "Autodetect" t)
-		 (const :tag "Off" nil))
+		 (const :tag "Off" nil)))
 
 (defcustom TeX-kpathsea-directory-alist '(("tex" . "$TEXINPUTS.latex")
 					  ("bib" . "$BIBINPUTS")
@@ -2141,7 +2141,7 @@ EXTENSIONS, NODIR and STRIP are explained there."
 			     (substring x 0 (match-beginning 0))
 			   x))
 		       result)
-	     result))))))
+	     result)))))
 
 (defun TeX-search-files (&optional directories extensions nodir strip)
   "Return a list of all reachable files in DIRECTORIES ending with EXTENSIONS.

@@ -1,3 +1,8 @@
+2003-01-24  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-kpathsea-path-delimiter, TeX-search-files-kpathsea):
+	Fixed braces.
+
 2003-01-22  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-search-files): Check in first version of kpathsea
