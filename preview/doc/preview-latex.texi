@@ -1,0 +1,254 @@
+\input texinfo
+@setfilename preview-latex
+@settitle Preview-LaTeX
+@direntry
+* Preview: (preview-latex).      A LaTeX preview mode primarily for AUC TeX in GNU Emacs.
+@end direntry
+@c footnotestyle separate
+@c paragraphindent 2
+@comment %**end of header 
+@iftex
+@tolerance 10000
+@end iftex
+
+@c Date: Nov 28 2001
+
+@finalout
+@titlepage
+@title Preview La@TeX{}
+@subtitle A La@TeX{} preview mode primarily for AUC @TeX{} in GNU Emacs.
+@subtitle Version 0.5.8.2
+  
+@author by David Kastrup,........
+@author manual by Jan-Åke Larsson
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2001, David Kastrup,...., and Jan-Åke Larsson 
+ 
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``Copying'' is included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+@end titlepage
+@page
+
+@ifinfo
+@node top, Copying, (dir), (dir)
+@top Preview La@TeX{}
+ 
+Preview La@TeX{} is a package that allows extraction of certain
+environments (most notably displayed formulas) for use in different
+contexts. While the first application has been the embedding of those
+preview fragments into Emacs source buffers under the AUC @TeX{} editing
+environment, other applications are easily imaginable.
+
+This file documents Preview La@TeX{} version 0.5.8.2.
+
+If you want to use Preview La@TeX{} in AUC @TeX{} right away, install
+AUC @TeX{} and Preview La@TeX{} and insert the following in your
+@file{.emacs} file.
+
+@lisp
+(require 'tex-site) ; Load AUC TeX, which is needed by Preview LaTeX
+(require 'preview) 
+@end lisp
+
+NOTE: This documentation is preliminary.  It should however cover most
+important points.  Corrections or perhaps rewrites of sections
+are VERY WELCOME.
+
+David Kastrup,...., Jan-Åke Larsson
+
+@end ifinfo
+
+@menu
+* Copying::                     Your rights.
+* Introduction::                What is it good for?
+* Installation::                Installation.
+* Simple usage::                Getting started.
+* Customization::               How to do it and some suggestions.
+* Internals::                   Under the hood.
+* Credits::                     Contributors.
+* Concept Index::               A menu covering many topics.
+@end menu
+
+@node Copying, Introduction, top, top
+@c Not to be changed often, I think: in separate file.
+@unnumbered Copying
+@include copying.texi
+
+@node Introduction, Installation, Copying, top
+@chapter Introduction 
+@c Used as @file{README} as well: in separate file
+@include readme.texi
+
+@node Installation, Simple usage, Introduction, top
+@chapter Installation 
+@c Used as @file{INSTALL} as well: in separate file
+@include install.texi
+
+@node Simple usage, Customization, Installation, top
+@chapter Simple usage (Getting started)
+
+The simplest way to use Preview La@TeX{} is to insert the following in
+your @file{.emacs} file:
+
+@lisp
+(require 'tex-site) ; Load AUC TeX, which is needed by Preview LaTeX
+(require 'preview) 
+@end lisp
+
+Now, load a La@TeX{} document, and press @kbd{@key{C-c} @key{C-c} g
+@key{RET}} (for ``Generate Preview'') or press @kbd{@key{C-c} @key{C-p}
+@key{C-p}} (for ``De/Preview This''). Previews will now be generated for
+various objects in your document. You'll see them change into a large
+question-mark when the process is half finished. Note that you can
+freely edit the buffer while this is going on. When the process is
+finished you will see the objects typeset in your buffer.
+
+To see/edit the La@TeX{} code for a specific object, put the point (the
+cursor) on it and press @kbd{@key{C-c} @key{C-p} @key{C-p}}. Now you can
+edit the code, and generate a new preview by again pressing
+@kbd{@key{C-c} @key{C-p} @key{C-p}}.
+
+
+@node Customization, Internals, Simple usage, top
+@chapter Customization
+
+Customization options can be found by typing @kbd{@key{M-x}
+customize-group @key{RET} preview @key{RET}}. The list can be made very
+long, but some suggestions are:
+
+@itemize
+@item Adjust the smoothening of the previews
+
+In the @code{Preview Gs} group, change @code{Preview Gs Options}: try
+setting @code{-dGraphicsAlphaBits=2}, for instance.
+
+@item Change the color of the preview background
+
+If you use a non-white background in emacs, it is possible to make the
+previews have the same background color. In the @code{Preview
+Appearance} group, set @code{Preview Transparent Color} to
+@code{Autodetect}. This will also make the point (the cursor) cover the
+whole background of a preview, but you'll have to live with that.
+
+@item Preview inline math
+
+In the @code{Preview Latex} group, check the box next to @code{textmath}
+in @code{Preview Default Option List}.  Beware if you use
+@code{x-symbol}, there is a known issue with that package.
+
+@item The @code{showkeys} package
+
+When using preview-latex, the \labels are hidden by the previews. To
+show them in the previews (yes, this is possible) use the La@TeX{}
+package @code{showkeys}, by changing @code{Preview Latex Command} to include
+@code{\usepackage@{showkeys@}} in between 
+@code{\AtBeginDocument@{} and @code{\ifx\ifPreview\undefined}
+
+@end itemize
+ 
+@node Internals, Credits, Customization, top
+@chapter Internals/more customization
+(Somebody should write this)
+
+@menu
+* The LaTeX style file::        
+* The emacs interface::         
+@end menu
+
+@node The LaTeX style file, The emacs interface, Internals, Internals
+@section The La@TeX{} style file
+
+(To be written, or at least copied from preview.dtx)
+
+@node The emacs interface,  , The LaTeX style file, Internals
+@section The emacs interface
+
+(To be written)
+
+@section On EPS previews
+
+Currently, preview-latex's default mechanism calls GhostScript itself
+for first rendering all preview images into png format, then the
+rendered images get used instead of making use of Emacs' builtin EPS
+support. For this to work, your version of GhostScript needs to support
+the png256 device. Other options are available by using customize (as
+mentioned above) on preview-image-type. The appropriate type must be
+supported in the preview-image-creators variable which you can customize
+as well, so adding a suitable device or changing an existing one in a
+way to better suit the version of GhostScript you happen to be using
+should be possible if you take the existing settings as example. Please
+send information about such devices to the addresses mentioned in the
+README file so that we can improve preview-latex.
+
+IF you want to use Emacs' embedded EPS rendering support (this is NOT
+the default), you almost certainly want to put @code{(setq gs-device
+"x11alpha")} into your @file{.emacs} file. This will turn on
+anti-aliasing.
+
+If you are using GS 6.63 or later, you may get better output using the
+following.
+
+@lisp
+(require 'gs)
+(setq gs-device "x11")
+(setq gs-options 
+      (append 
+       '("-dTextAlphaBits=4" "-dGraphicsAlphaBits=2" 
+         "-dMaxBitmap=10000000") 
+       gs-options))
+@end lisp
+
+@c @node History, TODO, Installation, top
+@c @appendix The (Brief) History of Preview La@TeX{}
+@c @c Use @file{../ChangeLog}, verbatim for now
+@c @display
+@c @include ../ChangeLog
+@c AAAAAAAAAAAAAAAAAAAAAARGH "{{{{{{{{{{{{{{{{"
+@c Nevermind, we dont want this here anyway(?)
+@c @end display
+
+@c @node TODO, Credit, History, top
+@c @appendix Wishlist
+@c 
+@c This is a list of projects for Preview La@TeX{}. Bug reports and
+@c requests we can not fix or honor right away will be added to this list.
+@c Offers to support further development will be appreciated.
+@c 
+@c @c Used as @file{../TODO}, verbatim for now
+@c @display
+@c @include ../TODO
+@c @end display
+
+@node Credits, Concept Index, Internals, top
+@appendix Credits 
+
+@node Concept Index,  , Credits, top
+@unnumbered Concept Index
+
+@printindex cp
+
+@summarycontents
+@contents
+@bye
+
+
