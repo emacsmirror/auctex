@@ -6,24 +6,42 @@ Send a message with just the word `help' as subject or body to
     preview-latex-devel-request@lists.sourceforge.net
 for more information.
 
+Anonymous CVS is available as well.  See the Sourceforge web pages for
+more information, but here are the basic instructions:
+
+When prompted for a password for anonymous, simply press the Enter
+key.
+
+cvs -d:pserver:anonymous@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
+ 
+cvs -z3 -d:pserver:anonymous@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
+
+Updates from within the preview directory do not need the -d
+parameter.  A simple
+cvs update
+from with that directory will make your CVS mirror up to date again.
+For developer access, ask on the preview-latex-devel list.
+
 Purpose of the package is to embed LaTeX environments such as display
 math or figures into the source buffers.  By mouse-clicking, you can
 open the original text.  After editing, another click will just run
 the region in question through LaTeX and redisplay the new results.
 
+For installation instructions, see the INSTALL file.  For some known
+problems with various other software, see PROBLEMS.
+
 Thr project is just starting.  Current state of affairs: you need to
-get access to an Emacs version that is at least 21.0.105, which at the
-current time means that you need to be a pretester of Emacs.  Versions
-before that have EPS rendering support that is defective.  The current
-version of EPS support is just a hack and workaround with a side
-effect of sluggish response time, feel free to help the Emacs
-development crew in producing something better.  The really bad thing
-is the busy-wait in gs.el for a deletion of the display properties
-used for passing parameters to GhostScript.  If that could be
-eliminated, it would be a boon.  Even 21.0.105 will exhibit occasional
-display engine quirks.  Report bugs you can reproduce along with the
-files needed to reproduce them.  The new display engine for 21.1 is
-quite powerful, and some bugs still might be lurking inside.
+get access to a very recent Emacs 21 version, which at the current
+time means that you need to be a pretester of Emacs.  Versions before
+21.0.105 have EPS rendering support that is defective.  Direct EPS
+rendering is in need of improvement and very experimental, so the
+default setting replaces Emacs internal EPS handling by an indirect
+rendering mechanism.  If you feel capable of helping out with Emacs'
+EPS interface (meaning that the APIs connecting GhostScript and
+viewers such as GhostView and xdvi are not a book with seven seals for
+you), feel free to do so.  Report bugs you can reproduce along with
+the files needed to reproduce them.  The new display engine for 21.1
+is quite powerful, and some bugs still might be lurking inside.
 
 You also need AucTeX installed and working, and probably a fairly
 recent version of GhostScript.  At the current point of time, XEmacs
