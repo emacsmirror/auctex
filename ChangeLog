@@ -1,3 +1,8 @@
+2003-07-25  Peter S Galbraith  <psg@debian.org>
+
+	* font-latex.el: Make & highlighted in font-latex-warning-face.
+	Better document font-latex-match-*-keywords-local variables.
+
 2003-07-20  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* configure.in: Use mule support check.
