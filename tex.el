@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7c
+;; Version: 9.7d
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
