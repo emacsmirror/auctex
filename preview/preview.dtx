@@ -3,7 +3,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.23 $
+%  \rcskey \version CVS-$Revision: 1.24 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -12,7 +12,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-11-10 18:48:16 $
+%\rcskey\next $Date: 2001-11-15 15:26:58 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -158,10 +158,11 @@
 %additional level of braces around the whole argument specification.
 %\end{description}
 %
-%\DescribeMacro{\PreviewEnv} The macro \cmd{\PreviewEnv} works just as
+%\DescribeMacro{\PreviewEnvironment} The macro
+%\cmd{\PreviewEnvironment} works just as
 %\cmd{\PreviewMacro} does, only for environments.
 %
-%\DescribeMacro{\PreviewSnarfEnv} This macro does not typeset the
+%\DescribeMacro{\PreviewSnarfEnvironment} This macro does not typeset the
 %original environment inside of a preview box, but instead typesets
 %just the contents of the original environment inside of the preview
 %box, leaving nothing for the original environment.  This has to be
@@ -189,7 +190,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.23 $
+   \reserved@a\reserved@b CVS-$Revision: 1.24 $
 \else
    \begingroup
       \lccode`-=`.
@@ -198,7 +199,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-11-10 18:48:16 $
+\reserved@a\next $Date: 2001-11-15 15:26:58 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
