@@ -25,13 +25,13 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.7
+@subtitle Version 0.7.8
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, 
+Copyright @copyright{} 2001--2003 David Kastrup, Alan Shutko, 
 Jan-@AA{}ke Larsson and Nick Alcock.
  
 Permission is granted to make and distribute verbatim copies of
@@ -77,7 +77,7 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.7
+This file documents @previewlatex{} version 0.7.8
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
@@ -129,23 +129,9 @@ the current buffer of the document, or a region of it.
 @kindex @kbd{C-c C-b g @key{RET}}
 @kindex @kbd{C-c C-r g @key{RET}}
 
-@item @kbd{C-c C-p C-d}
-@itemx @code{preview-document} 
-@itemx Preview/Document 
-Run preview on the present document.
-@kindex @kbd{C-c C-p C-d}
-@findex preview-document
-
-@item @kbd{C-c C-p C-b}
-@itemx @code{preview-buffer} 
-@itemx Preview/Buffer
-Run preview on the present buffer.
-@kindex @kbd{C-c C-p C-b}
-@findex preview-buffer
-
 @item @kbd{C-c C-p C-p}
 @itemx @code{preview-at-point}
-@itemx Preview/On/off at point
+@itemx Preview/Generate previews (or toggle) at point
 If the cursor is positioned on or inside of a preview area, this
 toggles its visibility, regenerating the preview if necessary. If not,
 it will run the surroundings through preview. The surroundings include
@@ -154,19 +140,10 @@ before, in which case the area will include the last such preview in
 either direction.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
-@cindex On/off at point
-
-@item @kbd{C-c C-p C-s}
-@itemx @code{preview-section} 
-@itemx Preview/Section
-Run preview on this @LaTeX{} section.
-@kindex @kbd{C-c C-p C-s}
-@findex preview-section
-@c @cindex Preview section 
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment (&optional count)}
-@itemx Preview/Environment
+@itemx Preview/Generate previews for environment
 Run preview on @LaTeX{} environment.  The environments in
 @code{preview-inner-environments} are treated as inner levels so that
 for instance, the @code{split} environment in
@@ -176,17 +153,103 @@ corresponding number of outward nested environments is treated as inner
 levels.
 @kindex @kbd{C-c C-p C-e}
 @findex preview-environment
-@c @cindex Preview environment
+
+@item @kbd{C-c C-p C-s}
+@itemx @code{preview-section} 
+@itemx Preview/Generate previews for section
+Run preview on this @LaTeX{} section.
+@kindex @kbd{C-c C-p C-s}
+@findex preview-section
 
 @item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
-@itemx Preview/Region
+@itemx Preview/Generate previews for region
 Run preview on current region (between point and mark). If called
 non-interactively, runs preview on region between @code{begin} and
 @code{end}.
 @kindex @kbd{C-c C-p C-r}
 @findex preview-region
-@c @cindex Preview region
+
+@item @kbd{C-c C-p C-b}
+@itemx @code{preview-buffer} 
+@itemx Preview/Generate previews for buffer
+Run preview on the present buffer.
+@kindex @kbd{C-c C-p C-b}
+@findex preview-buffer
+
+@item @kbd{C-c C-p C-d}
+@itemx @code{preview-document} 
+@itemx Preview/Generate previews for document
+Run preview on the present document.
+@kindex @kbd{C-c C-p C-d}
+@findex preview-document
+
+@item @kbd{C-c C-p C-c C-p}
+@itemx @code{preview-clearout-at-point}
+@itemx Preview/Remove previews at point
+@kindex @kbd{C-c C-p C-c C-p}
+@findex preview-clearout-at-point
+Clear out (remove) the previews that are immediately adjacent to point.
+
+@item @kbd{C-c C-p C-c C-s}
+@itemx @code{preview-clearout-section}
+@itemx Preview/Remove previews from section
+@kindex @kbd{C-c C-p C-c C-s}
+@findex preview-clearout-document
+Clear out all previews in current section.
+
+@item @kbd{C-c C-p C-c C-r}
+@itemx @code{preview-clearout (&optional start end keep-dir)}
+@itemx Preview/Remove previews from region
+@kindex @kbd{C-c C-p C-c C-r}
+@findex preview-clearout
+Clear out all previews in the current region. When called interactively,
+the current region is used. Non-interactively, the region between
+@code{start} and @code{end} is affected. Those two values default to the
+borders of the entire buffer. If @code{keep-dir} is set to a value from
+@code{TeX-active-tempdir}, previews associated with that directory are
+kept.
+
+@item @kbd{C-c C-p C-c C-b}
+@itemx @code{preview-clearout-buffer (&optional buffer)}
+@itemx Preview/Remove previews from buffer
+@kindex @kbd{C-c C-p C-c C-b}
+@findex preview-clearout-buffer
+Clear out all previews in current buffer. This makes the current buffer
+lose all previews. If run non-interactively @code{buffer} is cleared out
+from previews, current buffer if nil.
+
+@item @kbd{C-c C-p C-c C-d}
+@itemx @code{preview-clearout-document}
+@itemx Preview/Remove previews from document
+@kindex @kbd{C-c C-p C-c C-d}
+@findex preview-clearout-document
+Clear out all previews in current document.  The document consists of
+all buffers that have the same master file as the current buffer.  This
+makes the current document lose all previews.
+
+@item @kbd{C-c C-p C-f}
+@itemx @code{preview-cache-preamble}
+@itemx Preview/Turn preamble cache on
+@kindex @kbd{C-c C-p C-f}
+@findex preview-cache-preamble
+Dump a pregenerated format file.  For the rest of the session, this file
+is used when running on the same master file.  Use this if you know your
+@LaTeX{} takes a long time to start up, the speedup will be most
+noticeable when generating single or few previews.  If you change your
+preamble, do this again.  @previewlatex{} will try to detect the
+necessity of that automatically when editing changes to the preamble are
+done from within Emacs, but it will not notice if the preamble
+effectively changes because some included file or style file is
+tampered with.
+
+@item @kbd{C-c C-p C-c C-f}
+@itemx @code{preview-cache-preamble-off}
+@itemx Preview/Turn preamble cache off
+@kindex @kbd{C-u C-c C-p C-f}
+@findex preview-cache-preamble-off
+Clear the pregenerated format file and stop using preambles for the
+current document. If the caching gives you problems, use this.
 
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
@@ -209,61 +272,6 @@ Kills the preview-generating process. This is really an @AUCTeX{}
 keybinding, but it is included here as a hint. If you are generating
 a preview and then make a change to the buffer, @previewlatex{} may be
 confused and place the previews wrong.
-
-@item @kbd{C-c C-p C-f}
-@itemx @code{preview-cache-preamble}
-@itemx Preview/Cache preamble
-@kindex @kbd{C-c C-p C-f}
-@findex preview-cache-preamble
-Dump a pregenerated format file.  For the rest of the session, this file
-is used when running on the same master file.  Use this if you know your
-@LaTeX{} takes a long time to start up, the speedup will be most
-noticeable when generating single or few previews.  If you change your
-preamble, do this again.  @previewlatex{} will try to detect the
-necessity of that automatically when editing changes to the preamble are
-done from within Emacs, but it will not notice if the preamble
-effectively changes because some included file or style file is
-tampered with.
-
-@item @kbd{C-c C-p C-c C-f}
-@itemx @code{preview-cache-preamble-off}
-@itemx Preview/Cache preamble off
-@kindex @kbd{C-u C-c C-p C-f}
-@findex preview-cache-preamble-off
-Clear the pregenerated format file. If the above gives you problems, use
-this.
-
-@item @kbd{C-c C-p C-c C-d}
-@itemx @code{preview-clearout-document}
-@itemx Preview/Clearout Document
-@kindex @kbd{C-c C-p C-c C-d}
-@findex preview-clearout-document
-@c @cindex Clearout previews
-Clear out all previews in current document.  The document consists of
-all buffers that have the same master file as the current buffer.  This
-makes the current document lose all previews.
-
-@item @kbd{C-c C-p C-c C-b}
-@itemx @code{preview-clearout-buffer (&optional buffer)}
-@itemx Preview/Clearout Buffer
-@kindex @kbd{C-c C-p C-c C-b}
-@findex preview-clearout-buffer
-@c @cindex Clearout previews
-Clear out all previews in current buffer. This makes the current buffer
-lose all previews. If run non-interactively @code{buffer} is cleared out
-from previews, current buffer if nil.
-
-@item @kbd{C-c C-p C-c C-r}
-@itemx @code{preview-clearout (&optional start end keep-dir)}
-@itemx Preview/Clearout Region
-@kindex @kbd{C-c C-p C-c C-r}
-@findex preview-clearout
-Clear out all previews in the current region. When called interactively,
-the current region is used. Non-interactively, the region between
-@code{start} and @code{end} is affected. Those two values default to the
-borders of the entire buffer. If @code{keep-dir} is set to a value from
-@code{TeX-active-tempdir}, previews associated with that directory are
-kept.
 
 @item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
