@@ -1,5 +1,10 @@
 2005-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Fix @xref.
+
+	* doc/auctex.texi (Quotes): Fix @xref.
+	(European): Be more verbose.
+
 	* tex-info.el (texinfo-mode): Get rid of hyphens in prompts.
 	Add @xref command.
 
