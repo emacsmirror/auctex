@@ -1,5 +1,8 @@
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* patches/flyspell.patch, patches/mouse-drag.patch: update
+	inflicted Emacs version number.
+
 	* doc/problems.texi (Middle-clicks paste instead of toggling):
 	Alas, those bugs persist into 21.2 although the CVS has had it
 	fixed for half a year almost.  "Stable release" policies.  Ha.
