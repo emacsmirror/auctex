@@ -1,6 +1,6 @@
 @section News in 9.10
 
 @itemize @bullet
-@item None yet@ldots
+@item None yet@dots{}
 
 @end itemize

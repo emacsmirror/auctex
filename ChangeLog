@@ -1,7 +1,17 @@
 1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
+	* Version 9.10b released.
+
+1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/changes.texi: Typo: @ldots -> @dots.
+
 	* Version 9.10a released.
 
+	* doc/auc-tex.texi: Changed version to 9.10.
+	* doc/history.texi: Ditto.
+	* doc/changes.texi: Ditto.
+	
 1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9p released.
