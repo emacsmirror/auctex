@@ -1,5 +1,8 @@
 2002-07-31  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/Makefile.in (preview-latex/index.html, clean): clean out
+	preview-latex directory for html-docs.
+
 	* doc/problems.texi (Problems with GhostScript): document
 	preview-gs-broken-security.
 
