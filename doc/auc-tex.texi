@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.17 1993-03-17 22:24:33 amanda Exp $
+@c $Id: auc-tex.texi,v 1.18 1993-03-17 22:26:24 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1658,8 +1658,8 @@ bit characters to use it.
         |   n N           te Te          en En      |
         |   m M        ierik Ierik       em Em      |
         |                                           |
-        |   [ {          kha Kha        sha Sha     |
-        |   ] }          ier Ier      shcha Shcha   |
+        |   [ @{          kha Kha        sha Sha     |
+        |   ] @}          ier Ier      shcha Shcha   |
         |   ; :          zhe Zhe                    |
         |   ' "        e-rev E-rev                  |
         |   , <           be Be                     |
