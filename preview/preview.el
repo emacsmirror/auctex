@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.92 2002-03-31 17:10:38 dakas Exp $
+;; $Id: preview.el,v 1.93 2002-04-01 02:56:15 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1311,7 +1311,6 @@ to add the preview functionality."
 "The auctex option to preview should not be applied manually.  If you
 see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
-  (add-hook 'TeX-translate-location-hook #'preview-translate-location)
   (add-to-list 'TeX-expand-list
 	       '("%m" (lambda ()
 			(shell-quote-argument
@@ -1400,29 +1399,13 @@ later while in use."
 		0))
     (nth 0 TeX-active-tempdir)))
 
-(defun preview-translate-location ()
-  "Skip Package Preview Errors via `throw' of 'preview-error-tag.
-Used as function in `TeX-translate-location-hook'."
-  (if (string-match "Package Preview Error.*" error)
-      (condition-case nil
-	  (throw 'preview-error-tag t)
-	(no-catch nil))))
-
-(defun preview-parse-TeX (reparse)
-  "Implementation of error parsing in preview package.
-See `TeX-parse-TeX' for documentation of REPARSE."
-  (while
-      (catch 'preview-error-tag
-	(TeX-parse-TeX reparse)
-	nil)))
-
 ;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
 (if (featurep 'latex)
     (LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup))
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-      
+
 (defun preview-parse-messages (&rest place-opts)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -1436,8 +1419,11 @@ the placement hook."
 	  context offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
+	  (run-directory default-directory)
 	  (tempdir TeX-active-tempdir)
-	  closedata)
+	  closedata
+	  fast-hook
+	  slow-hook)
       (goto-char (point-min))
       (unwind-protect
 	  (while
@@ -1525,11 +1511,26 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			  offset (car TeX-error-offset)
 			  file (car TeX-error-file))
 		    (when (and (stringp file) (TeX-match-extension file))
-		      (run-hooks 'TeX-translate-location-hook)
-		      (push (list snippet box file
-				  (+ line offset)
-				  string after-string)
-			    parsestate)))
+		      ;; if we are the first time round, check for fast hooks:
+		      (when (null parsestate)
+			(dolist
+			    (lst (if (listp TeX-translate-location-hook)
+				     TeX-translate-location-hook
+				   (list TeX-translate-location-hook)))
+			  (let
+			      ((fast
+				(catch 'TeX-fast-translate-location
+				  (funcall lst)
+				  nil)))
+			    (if fast
+				(setq fast-hook
+				      (nconc fast-hook (list fast)))
+			      (setq slow-hook
+				    (nconc slow-hook (list lst)))))))
+		      (run-hooks slow-hook)
+		      (push (list file (+ line offset)
+				  string after-string
+				  snippet box) parsestate)))
 		;; else normal error message
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
@@ -1551,18 +1552,25 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 	     ((match-beginning 5)
 	      ;; Hook to change file name
 	      (rplaca TeX-error-file (match-string-no-properties 5)))))
+	(setq parsestate (nreverse parsestate))
+	(condition-case err
+	    (dolist (fun fast-hook)
+	      (setq parsestate (funcall fun parsestate)))
+	  (error (message "Error in translation-hook: %s"
+			  (error-message-string err))))
 	(setq snippet 0)
 	(unwind-protect
-	    (dolist (state (nreverse parsestate))
+	    (dolist (state parsestate)
 	      (setq lsnippet snippet
-		    snippet (pop state)
-		    box (pop state)
-		    file (pop state)
-		    line (pop state)
-		    string (pop state)
-		    after-string (pop state))
+		    file (nth 0 state)
+		    line (nth 1 state)
+		    string (nth 2 state)
+		    after-string (nth 3 state)
+		    snippet (nth 4 state)
+		    box (nth 5 state))
 	      (unless (string= lfile file)
-		(set-buffer (find-file-noselect file))
+		(set-buffer (find-file-noselect
+			     (expand-file-name file run-directory)))
 		(setq lfile file))
 	      (save-excursion
 		(save-restriction
@@ -1707,18 +1715,19 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		      'TeX-region-file
 		    'TeX-master-file)
 		  file))
-	(process (TeX-run-format "Preview-LaTeX" command file)))
+	(process (TeX-run-command "Preview-LaTeX" command file)))
     (preview-get-geometry commandbuff)
     (setq preview-gs-file pr-file)
     (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
-    (setq TeX-parse-function 'preview-parse-TeX)
+    (TeX-parse-reset)
+    (setq TeX-parse-function 'TeX-parse-TeX)
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel name file process))))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.92 $"))
+	(rev "$Revision: 1.93 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
