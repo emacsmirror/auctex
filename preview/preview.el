@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.47 2001-11-12 14:34:44 dakas Exp $
+;; $Id: preview.el,v 1.48 2001-11-15 13:19:11 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -942,6 +942,7 @@ See description of `TeX-command-list' for details."
   :group 'preview-latex
   :type 'string)
 
+;;;###autoload
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into Auc-TeX.
 This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
@@ -1055,6 +1056,8 @@ See `TeX-parse-TeX' for documentation of REPARSE."
 (if (featurep 'tex)
     (LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup))
+
+;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
       
 (defvar preview-snippet nil
   "Number of current preview snippet.")
@@ -1297,7 +1300,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.47 $"))
+	(rev "$Revision: 1.48 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1334,8 +1337,9 @@ file exhibiting the problem might help."
 
 (eval-and-compile
   (when (boundp 'preview-compatibility-macros)
-    (mapc #'fmakunbound preview-compatibility-macros)
-    (makunbound 'preview-compatibility-macros)))
+    (mapc #'fmakunbound preview-compatibility-macros)))
+
+(makunbound 'preview-compatibility-macros)
 
 (provide 'preview)
 ;;; preview.el ends here
