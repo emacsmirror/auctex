@@ -57,7 +57,7 @@ Offers all graphic files found in the TeX search path.  See
   ;; Drop latex/pdflatex differences for now.  Might be (re-)included later.
   (completing-read
    "Image file: "
-   (TeX-delete-dups
+   (TeX-delete-dups-by-car
     (mapcar 'list
 	    (TeX-search-files nil LaTeX-includegraphics-extensions t t)))
    nil nil nil))
