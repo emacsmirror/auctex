@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.179 2002-12-10 13:34:44 dakas Exp $
+;; $Id: preview.el,v 1.180 2002-12-10 17:03:57 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1560,15 +1560,16 @@ the file to use: a triple consisting of filename, its temp directory
 and the corresponding topdir.  COUNTERS is saved counter information,
 if any."
   (when (file-readable-p (car filename))
-    (setq TeX-active-tempdir
-	  (or (assoc (nth 1 filename) tempdirlist)
-	      (car (push (append (cdr filename) (list 0)) tempdirlist))))
+    (unless (equal (nth 1 filename) (car TeX-active-tempdir))
+      (setq TeX-active-tempdir
+	    (or (assoc (nth 1 filename) tempdirlist)
+		(car (push (append (cdr filename) (list 0)) tempdirlist))))
+      (setcar (cdr TeX-active-tempdir)
+	      (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
+		       (progn
+			 (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
+			 (push (nth 1 TeX-active-tempdir) preview-temp-dirs))))))
     (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
-    (setcar (cdr TeX-active-tempdir)
-	    (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
-		     (progn
-		       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
-		       (push (nth 1 TeX-active-tempdir) preview-temp-dirs)))))
     (setcdr filename TeX-active-tempdir)
     (let ((ov (make-overlay start end nil nil nil)))
       (overlay-put ov 'preview-map
@@ -2421,7 +2422,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.179 $"))
+	(rev "$Revision: 1.180 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2432,7 +2433,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-10 13:34:44 $"))
+    (let ((date "$Date: 2002-12-10 17:03:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
