@@ -41,10 +41,12 @@ The RPMs require a few packages:
 
 * GhostScript 6.51 is included in RH 7.2, but if you use an earlier
   release it can be downloaded from the RH7.2 updates,
-  <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>
+  <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>.
+  The current beta of RedHat 7.3 (see below) includes GhostScript 6.53.
 
-* Finally, Emacs-21.1 can be downloaded from rawhide,
-  <URL:ftp://ftp.redhat.com/pub/redhat/linux/rawhide/i386/RedHat/RPMS/>.
+* Emacs-21.2 is part of the beta release for RedHat 7.3 at
+  <URL:ftp://ftp.redhat.com/pub/redhat/linux/beta/skipjack/en/os/i386/RedHat/RPMS/>
+  unless it has already been superceded by the regular release.
   I installed this using 'rpm -i --nodeps --force', which worked for
   me, but since it does not follow the usual emacs + emacs-X11 +
   emacs-nox, YMMV.
