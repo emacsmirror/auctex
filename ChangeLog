@@ -1,3 +1,8 @@
+2004-10-18  Frank Küster <frank@kuesterei.ch>
+
+	* doc/Makefile.in (TEXIFILES): Add macros.texi.
+	(auctex.dvi, auctex.pdf): Depend on TEXIFILES.
+
 2004-10-18  Christian Schlauer  <cschl@arcor.de>
 
 	* latex.el (LaTeX-env-figure, LaTeX-env-minipage): Point out to

@@ -16,7 +16,7 @@ TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi faq.texi
+	changes.texi todo.texi faq.texi macros.texi
 
 all: auctex.dvi tex-ref.dvi auctex
 
@@ -38,10 +38,10 @@ tex-ref.ps: tex-ref.dvi
 tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
 
-auctex.dvi: auctex.texi
+auctex.dvi: $(TEXIFILES)
 	$(TEXI2DVI) auctex.texi
 
-auctex.pdf: auctex.texi
+auctex.pdf: $(TEXIFILES)
 	$(TEXI2PDF) auctex.texi
 
 # dvips spews two error lines.  I don't know why.
