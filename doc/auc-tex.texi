@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.38 1993-07-08 16:34:30 amanda Exp $
+@c $Id: auc-tex.texi,v 1.39 1993-07-08 17:51:57 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -146,7 +146,7 @@ Writing Your own Style Support
 * Adding Macros::               Adding Support for Macros
 * Adding Environments::         Adding Support for Environments
 * Adding Other::                Adding Other Information
-* Formats Packages::            Supporting Other Format Packages
+* Format Packages::             Supporting Other Format Packages
 * Hacking the Parser::          Automatic Extraction of New Things
 
 The History of AUC @TeX{}
@@ -2020,7 +2020,7 @@ directories instead of @file{auto} directories.
 * Adding Macros::               Adding Support for Macros
 * Adding Environments::         Adding Support for Environments
 * Adding Other::                Adding Other Information
-* Formats Packages::            Supporting Other Format Packages
+* Format Packages::             Supporting Other Format Packages
 * Hacking the Parser::          Automatic Extraction of New Things
 @end menu
 
@@ -2309,7 +2309,7 @@ Add each @var{env} to list of loaded environments.
 Insert environment of type @var{env}, with optional argument @var{extra}.
 @end defun
 
-@node Adding Other, Formats Packages, Adding Environments, Style Files
+@node Adding Other, Format Packages, Adding Environments, Style Files
 @section Adding Other Information
 @cindex Adding bibliographies
 @cindex Bibliographies, adding
@@ -2333,7 +2333,7 @@ Add each @var{bibliography} to list of loaded bibliographies.
 Add each @var{label} to the list of known labels.
 @end defun
 
-@node Formats Packages, Hacking the Parser, Adding Other, Style Files
+@node Format Packages, Hacking the Parser, Adding Other, Style Files
 @section Supporting Other Format Packages
 
 You can add support for new @TeX{} format packages.  These are treated
@@ -2389,7 +2389,7 @@ When entering @code{tex-mode}, each regexp is tried in turn in order to
 find when major mode to enter.
 @end defopt
 
-@node Hacking the Parser,  , Formats Packages, Style Files
+@node Hacking the Parser,  , Format Packages, Style Files
 @section Automatic Extraction of New Things
 @cindex Parsing new macros
 @cindex @file{macro.tex}
@@ -2626,8 +2626,11 @@ this version, and for the authors, who get nostalgic at times.
 @section News in 7.2
 
 Coordinater: Per Abrahamsen, 1993
-
 @itemize @bullet
+@item
+@code{LaTeX-dead-mode} works again.  Thanks to Patrick O'Callaghan
+@samp{<poc@@usb.ve>} for fixing it.
+
 @item
 Minor fixes to the documentation.  Thanks to Shinji Kobayashi
 @samp{<koba@@flab.fujitsu.co.jp>}.
