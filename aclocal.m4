@@ -322,7 +322,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        # Set exec_prefix temporarily
 	exec_prefix="${prefix}"
      fi
-     if test ${EMACS_FLAVOR} = 'emacs' -o ${packagedir} = 'no'; then
+     if test "${EMACS_FLAVOR}" = 'emacs' -o "${packagedir}" = 'no'; then
        # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
        if test "$lispdir" = "NONE"; then
