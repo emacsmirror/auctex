@@ -1,4 +1,19 @@
-Tue Jan 24 23:37:35 1995  Per Abrahamsen  (amanda@micro)
+Wed Jan 25 14:59:57 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* Makefile (AUCSRC): Add `auc-menu.el'.
+
+	* tex.el: Use auc-menu instead of easymenu.
+
+        * tex.el: Inserted comment to mark end of site customization.
+        Suggested by john@minster.york.ac.uk (John A. Murdie).
+
+	* tex.el (change-major-mode-hook): Forgot a set of parentheses.
+	Reported by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>. 
+
+	* tex-buf.el (TeX-current-pages): Removed extra parentheses.
+	Reported by mic@cs.ucsd.edu (Michelangelo Grigni).
+
+Tue Jan 24 23:37:35 1995  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex.el (change-major-mode-hook): Added workaround for error in
 	XEmacs 19.11's `kill-all-local-variables'.

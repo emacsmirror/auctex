@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.77 1995-01-11 12:59:51 amanda Exp $
+;; $Id: tex-buf.el,v 1.78 1995-01-25 14:20:54 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -580,7 +580,7 @@ NAME is the name of the process.")
 (defun TeX-current-pages ()
   ;; String indictating the number of pages formatted.
   (cond ((null TeX-current-page)
-	 ("some pages."))
+	 "some pages.")
 	((string-match "[^0-9]1[^0-9]" TeX-current-page)
 	 (concat TeX-current-page " page."))
 	(t

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.112 1995-01-24 22:52:26 amanda Exp $
+# $Id: Makefile,v 5.113 1995-01-25 14:20:48 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -101,7 +101,7 @@ CONTRIB = hilit-LaTeX.el bib-cite.el
 
 AUCSRC = auc-old.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
-	 ltx-help.el easymenu.el
+	 ltx-help.el easymenu.el auc-menu.el
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
