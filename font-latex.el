@@ -446,7 +446,8 @@ fontification regexp like so:
 
 	;; defcustom font-latex-match-*-keywords
 	(eval `(defcustom ,(intern (concat prefix name "-keywords")) nil
-		 ,(concat "Font-latex keywords for " name " face.")
+		 ,(concat "List of keyword strings for " name " face.
+Each string has to be the name of a macro omitting the leading backslash.")
 		 :type '(repeat (string :tag "Keyword"))
 		 :set (lambda (symbol value)
 			(set-default symbol value)
