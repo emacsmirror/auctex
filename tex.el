@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.467 $"))
+	    (rev "$Revision: 5.468 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-09 17:29:12 $"))
+    (let ((date "$Date: 2004-12-10 12:04:55 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3311,6 +3311,10 @@ be bound to `TeX-electric-macro'."
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-b"
       :help "Hide all configured TeX constructs in the current buffer"]
+     ["Hide All in Current Region" TeX-fold-region
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-r"
+      :help "Hide all configured TeX constructs in the marked region"]
      ["Hide All in Current Paragraph" TeX-fold-paragraph
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-p"
@@ -3329,6 +3333,10 @@ be bound to `TeX-electric-macro'."
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-x"
       :help "Permanently show all folded content again"]
+     ["Show All in Current Region" TeX-fold-clearout-region
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-y"
+      :help "Permanently show all folded content in marked region"]
      ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-v"
