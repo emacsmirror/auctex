@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.247 2005-03-30 13:36:01 angeli Exp $
+;; $Id: preview.el,v 1.248 2005-04-05 10:09:37 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1773,13 +1773,14 @@ BUFFER-MISC is the appropriate data to be used."
 			       desktop-buffer-name
 			       desktop-buffer-misc)
   "Hook function for restoring persistent previews into a buffer."
-  (and (eq (car desktop-buffer-misc) 'preview)
-       desktop-buffer-file-name
-       (file-readable-p desktop-buffer-file-name)
-       (let ((buf (find-file-noselect desktop-buffer-file-name)))
-	 (with-current-buffer buf
-	   (preview-buffer-restore desktop-buffer-misc)
-	   buf))))
+  (when (and desktop-buffer-file-name
+	     (file-readable-p desktop-buffer-file-name))
+    (let ((buf (find-file-noselect desktop-buffer-file-name)))
+      (if (eq (car desktop-buffer-misc) 'preview)
+	  (with-current-buffer buf
+	    (preview-buffer-restore desktop-buffer-misc)
+	    buf)
+	buf))))
 
 (eval-after-load "desktop"
   '(if (boundp 'desktop-buffer-mode-handlers)
@@ -3307,7 +3308,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.247 $"))
+	(rev "$Revision: 1.248 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3318,7 +3319,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-30 13:36:01 $"))
+    (let ((date "$Date: 2005-04-05 10:09:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
