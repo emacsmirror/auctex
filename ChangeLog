@@ -1,3 +1,9 @@
+2001-11-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex-buf.el (TeX-process-check): We didn't catch the case where
+	during the question a different process got started in the
+	buffer.  In that case, we just ask again.
+
 2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex-buf.el (TeX-command-sentinel): insert post-mortem info
