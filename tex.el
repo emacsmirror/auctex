@@ -522,7 +522,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.345 $"))
+	(rev "$Revision: 5.346 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -537,7 +537,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-08 21:15:12 $"))
+    (let ((date "$Date: 2004-04-15 11:11:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2594,6 +2594,18 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
+  ;; COMPATIBILITY for Emacs < 21
+  (if (and (not (featurep 'xemacs))
+           (= emacs-major-version 20))
+      (append (list TeX-command-menu-name)
+              (TeX-mode-specific-command-menu-entries mode))
+    (list TeX-command-menu-name
+          :filter `(lambda (&rest ignored)
+                     (TeX-mode-specific-command-menu-entries ',mode))
+          "Bug.")))
+
+(defun TeX-mode-specific-command-menu-entries (mode)
+  "Return the entries for a Command menu specific to the major MODE."
   (append '(("Command on"
 	     [ "Master File" TeX-command-select-master
 	       :keys "C-c C-c" :style radio
@@ -2626,10 +2638,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (list TeX-command-menu-name
-	  :filter (lambda (&rest ignored)
-		    (TeX-mode-specific-command-menu 'plain-tex-mode))
-	  "Bug."))
+    (TeX-mode-specific-command-menu 'plain-tex-mode))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -2675,10 +2684,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
     "Command menu used in AmsTeX mode."
-    (list TeX-command-menu-name
-	  :filter (lambda (&rest ignored)
-		    (TeX-mode-specific-command-menu 'ams-tex-mode))
-	  "Bug."))
+    (TeX-mode-specific-command-menu 'ams-tex-mode))
 
 ;;;###autoload
 (defun ams-tex-mode ()
