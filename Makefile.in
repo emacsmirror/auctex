@@ -213,6 +213,7 @@ tar-ball:
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.zip
+	chmod -R go-w+rX auctex-$(TAG)
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 

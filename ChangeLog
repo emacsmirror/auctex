@@ -1,5 +1,7 @@
 2004-06-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (tar-ball): Change permissions of auctex-$(TAG).
+
 	* tex.el (TeX-source-specials-expand-view-options): New function.
 	(TeX-expand-list): Added new specifier (%dS) for
 	`TeX-source-specials-expand-view-options'.
