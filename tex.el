@@ -581,7 +581,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.414 $"))
+	(rev "$Revision: 5.415 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -596,7 +596,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-09 21:54:12 $"))
+    (let ((date "$Date: 2004-08-09 23:06:39 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -662,7 +662,7 @@ If RESET is non-nil, `TeX-command-next' is reset to
 	       (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		       (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
 		       (and TeX-interactive-mode "I")
-		       (and TeX-source-specials "S"))))
+		       (and TeX-source-specials-mode "S"))))
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
@@ -682,10 +682,10 @@ If RESET is non-nil, `TeX-command-next' is reset to
     ;;	   (define-key map [(control button1)] #'TeX-view-mouse)
     ;;   (define-key map [C-down-mouse-1] #'TeX-view-mouse))
     map)
-  "Keymap for `TeX-source-specials' mode.
+  "Keymap for `TeX-source-specials-mode'.
 You could use this for unusual mouse bindings.")
 
-(define-minor-mode TeX-source-specials
+(define-minor-mode TeX-source-specials-mode
   "Minor mode for generating and using LaTeX source specials.
 
 If enabled, an option that inserts source specials into the DVI
@@ -707,12 +707,12 @@ details."
   ;; :link '(custom-manual "(auctex)Viewing")
   :global t
   (set-keymap-parent TeX-mode-map
-		     (and TeX-source-specials
+		     (and TeX-source-specials-mode
 			  TeX-source-specials-map))
-  (TeX-set-mode-name 'TeX-source-specials t t))
+  (TeX-set-mode-name 'TeX-source-specials-mode t t))
 
 (setq minor-mode-map-alist (delq
-		       (assq 'TeX-source-specials minor-mode-map-alist)
+		       (assq 'TeX-source-specials-mode minor-mode-map-alist)
 		       minor-mode-map-alist))
 
 (defcustom TeX-source-specials-tex-flags "-src-specials"
@@ -745,9 +745,9 @@ If nil, use (La)TeX's defaults."
 
 (defun TeX-source-specials-expand-options ()
   "Return source specials command line option for TeX commands.
-The return value depends on the value of `TeX-source-specials'.
+The return value depends on the value of `TeX-source-specials-mode'.
 If this is nil, an empty string will be returned."
-  (if TeX-source-specials
+  (if TeX-source-specials-mode
       (concat
        TeX-source-specials-tex-flags
        (if TeX-source-specials-places
@@ -820,9 +820,9 @@ Return the full path to the executable if possible."
 
 (defun TeX-source-specials-view-expand-options (&optional viewer)
   "Return source specials command line option for viewer command.
-The return value depends on the value of `TeX-source-specials'.
+The return value depends on the value of `TeX-source-specials-mode'.
 If this is nil, an empty string will be returned."
-  (if TeX-source-specials
+  (if TeX-source-specials-mode
       (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
 	     (process (if gnuserv-p 'gnuserv-process 'server-process))
 	     (start (if gnuserv-p 'gnuserv-start 'server-start))
@@ -883,7 +883,7 @@ function `TeX-global-PDF-mode' for toggling this value.")
 		      (not (default-value 'TeX-PDF-mode))))
     (TeX-set-mode-name 'TeX-PDF-mode nil t)))
 
-(defun TeX-PDF-mode (arg &optional parsed)
+(defun TeX-PDF-mode (&optional arg parsed)
   "Toggles PDF mode.
 Interactive ARG if positive switches on, non-positive off.
 
@@ -914,6 +914,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
     (setq TeX-PDF-mode arg))
   (TeX-set-mode-name 'TeX-PDF-mode t t)
   TeX-PDF-mode)
+(defalias 'tex-pdf-mode 'TeX-PDF-mode)
 
 (defun TeX-PDF-mode-on ()
   (TeX-PDF-mode 1 t))
@@ -935,6 +936,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
   "Minor mode for interactive runs of TeX."
   nil nil nil
   (TeX-set-mode-name 'TeX-interactive-mode t t))
+(defalias 'tex-interactive-mode 'TeX-interactive-mode)
 
 ;;; Commands
 
@@ -980,6 +982,7 @@ Must be the car of an entry in `TeX-command-list'."
 (autoload 'TeX-region-file "tex-buf" no-doc nil)
 (autoload 'TeX-current-offset "tex-buf" no-doc nil)
 (autoload 'TeX-fold-mode "tex-fold" no-doc t)
+(autoload 'tex-fold-mode "tex-fold" no-doc t)
 
 (defvar TeX-trailer-start nil
   "Regular expression delimiting start of trailer in a TeX file.")
@@ -3048,7 +3051,7 @@ be bound to `TeX-electric-macro'."
     
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
-    (define-key map "\C-c\C-t\C-s"   'TeX-source-specials)
+    (define-key map "\C-c\C-t\C-s"   'TeX-source-specials-mode)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-v" 'TeX-view)
     ;; From tex-buf.el
@@ -3130,8 +3133,8 @@ be bound to `TeX-electric-macro'."
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode
 	 :help "Stop on errors in a TeX run"]
-       [ "Source specials" TeX-source-specials
-	 :style toggle :selected TeX-source-specials
+       [ "Source specials" TeX-source-specials-mode
+	 :style toggle :selected TeX-source-specials-mode
 	 :help "Enable forward and inverse search in the previewer"]
        ["Debug Bad Boxes" TeX-toggle-debug-boxes
 	:style toggle :selected TeX-debug-bad-boxes

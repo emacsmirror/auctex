@@ -1,3 +1,17 @@
+2004-08-10  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-set-mode-name, TeX-source-specials-map)
+	(TeX-source-specials-mode, TeX-source-specials-expand-options)
+	(TeX-source-specials-view-expand-options): Rename
+	`TeX-source-specials' to `TeX-source-specials-mode'.
+	(TeX-PDF-mode): Make first arg optional (actually, not sure this
+	is a good idea).
+	(tex-pdf-mode): alias for `TeX-PDF-mode'.
+	(tex-interactive-mode): alias for `TeX-interactive-mode'
+	(tex-fold-mode): add autoload.
+	(TeX-mode-map, TeX-mode-specific-command-menu-entries): rename
+	`TeX-source-specials' to `TeX-source-specials-mode'.
+
 2004-08-09  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-set-mode-name): Add LOCAL argument.
