@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.31 1994-10-25 13:18:08 amanda Exp $
+;; Version: $Id: latex.el,v 5.32 1994-11-28 01:41:25 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1158,28 +1158,47 @@ Used for specifying extra syntax for a macro."
   ;; defined in individual style hooks
   (TeX-update-style))
 
-(defun TeX-arg-input-file (optional &optional prompt local)
+(defvar TeX-global-input-files nil
+  "*List of the non-local TeX input files. 
+
+Initialized once at the first time you prompt for an input file.
+May be reset with `C-u \\[TeX-normal-mode]'.")
+
+(defun TeX-arg-input-file (optionel &optional prompt local)
   "Prompt for a tex or sty file.
-First optional argument is the promt, the second is a flag.  If the
-flag is set, only complete with local files."
-  (message "Searching for files...")
+
+First optional argument is the promt, the second is a flag.  
+If the flag is set, only complete with local files."
+  (if (or TeX-global-input-files local)
+      ()
+    (message "Searching for files...")
+    (setq TeX-global-input-files
+	  (mapcar 'list (TeX-search-files (append TeX-macro-private
+						  TeX-macro-global)
+					  TeX-file-extensions t t))))
   (let ((file (if TeX-check-path
 		  (completing-read
-		   (TeX-argument-prompt optional prompt "File")
-		   (mapcar 'list (TeX-search-files TeX-check-path
-						   TeX-file-extensions t t)))
+		   (TeX-argument-prompt optionel prompt "File")
+		   (append (mapcar 'list
+				   (TeX-search-files '(".")
+						     TeX-file-extensions
+						     t t))
+			   (if local
+			       nil
+			     TeX-global-input-files)))
 		(read-file-name
-		 (TeX-argument-prompt optional prompt "File")))))
+		 (TeX-argument-prompt optionel prompt "File")))))
     (if (null file)
 	(setq file ""))
     (if (not (string-equal "" file))
 	(TeX-run-style-hooks file))
-    (TeX-argument-insert file optional)))
+    (TeX-argument-insert file optionel)))
 
 (defvar BibTeX-global-style-files nil
   "*Association list of BibTeX style files.
 
-If nil, AUC TeX will search for them.")
+Initialized once at the first time you prompt for an input file.
+May be reset with `C-u \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibstyle (optional &optional prompt)
   "Prompt for a BibTeX style file."
@@ -1203,7 +1222,8 @@ If nil, AUC TeX will search for them.")
 (defvar BibTeX-global-files nil
   "*Association list of BibTeX files.
 
-If nil, AUC TeX will search for them.")
+Initialized once at the first time you prompt for an BibTeX file.
+May be reset with `C-u \\[TeX-normal-mode]'.")
 
 (defun TeX-arg-bibliography (optional &optional prompt)
   "Prompt for a BibTeX database file."
@@ -1343,7 +1363,7 @@ the cdr is the brace used with \\right.")
 (defvar LaTeX-indent-level 2
   "*Indentation of begin-end blocks in LaTeX.")
 
-(defvar LaTeX-item-indent -2
+(defvar LaTeX-item-indent (- LaTeX-indent-level)
   "*Extra indentation for lines beginning with an item.")
 
 (defvar LaTeX-item-regexp "\\(bib\\)?item\\b"
@@ -1622,19 +1642,46 @@ indentation level in columns.")
 		  (and entry
 		       (nth 1 entry)
 		       (funcall (nth 1 entry))))))
-	  ((looking-at (concat "\\("
-			       (regexp-quote TeX-esc)
-			       "end *"
-			       (regexp-quote TeX-grop)
-			       "\\|"
-			       (regexp-quote TeX-esc)
-			       "right\\W\\)"))
-	   ;; Backindent after \end{ and \right.
+	  ((looking-at (concat (regexp-quote TeX-esc) "end\\b"))
+	   ;; Backindent at \end.
 	   (- (LaTeX-indent-calculate-last) LaTeX-indent-level))
+	  ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
+	   ;; Backindent at \right.
+	   (- (LaTeX-indent-calculate-last) LaTeX-left-right-indent-level))
 	  ((looking-at (concat (regexp-quote TeX-esc) LaTeX-item-regexp))
 	   ;; Items.
 	   (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
 	  (t (LaTeX-indent-calculate-last)))))
+
+(defvar LaTeX-left-right-indent-level LaTeX-indent-level
+  "*The level of indentation produced by a \\left macro.")
+
+(defun LaTeX-indent-level-count ()
+  ;; Count indentation change caused by all \left, \right, \begin, and
+  ;; \end commands in the current line.
+  (save-excursion
+    (save-restriction
+      (let ((count 0))
+	(narrow-to-region (point)
+			  (save-excursion
+			    (re-search-forward (concat "[^"
+						       (regexp-quote TeX-esc)
+						       "]%\\|\n\\|\\'"))
+			    (backward-char)
+			    (point)))
+	(while (search-forward TeX-esc nil t)
+	  (cond
+	   ((looking-at "left\\b")
+	    (setq count (+ count LaTeX-left-right-indent-level)))
+	   ((looking-at "right\\b")
+	    (setq count (- count LaTeX-left-right-indent-level)))
+	   ((looking-at "begin\\b")
+	    (setq count (+ count LaTeX-indent-level)))
+	   ((looking-at "end\\b")
+	    (setq count (- count LaTeX-indent-level)))
+	   ((looking-at (regexp-quote TeX-esc))
+	    (forward-char 1))))
+	count))))
 
 (defun LaTeX-indent-calculate-last ()
   "Return the correct indentation of a normal line of text.
@@ -1654,14 +1701,15 @@ The point is supposed to be at the beginning of the current line."
 	  ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
 	   ;; I dislike having all of the document indented...
 	   (current-indentation))
-	  ((looking-at (concat (regexp-quote TeX-esc) "begin"
+	  ((looking-at (concat (regexp-quote TeX-esc) "begin *"
 			       (regexp-quote TeX-grop)
 			       "verbatim\\*?"
 			       (regexp-quote TeX-grcl)))
 	   0)
 	  ((looking-at (concat (regexp-quote TeX-esc) "end"
 			       (regexp-quote TeX-grop)
-			       "verbatim\\*?"))
+			       "verbatim\\*?"
+			       (regexp-quote TeX-grcl)))
 	   ;; If I see an \end{verbatim} in the previous line I skip
 	   ;; back to the preceding \begin{verbatim}.
 	   (save-excursion
@@ -1672,18 +1720,17 @@ The point is supposed to be at the beginning of the current line."
 					     (regexp-quote TeX-grcl)) 0 t)
 		 (LaTeX-indent-calculate-last)
 	       0)))
-	  (t (+ (TeX-brace-count-line)
-		(cond ((looking-at (concat "\\("
-					   (regexp-quote TeX-esc) "begin *"
-					   (regexp-quote TeX-grop)
-					   "\\|"
-					   (regexp-quote TeX-esc)
-					   "left\\W\\)"))
-		       (+ (current-indentation) LaTeX-indent-level))
+	  (t (+ (current-indentation)
+		(TeX-brace-count-line)
+		(LaTeX-indent-level-count)
+		(cond ((looking-at (concat (regexp-quote TeX-esc) "end\\b"))
+		       LaTeX-indent-level)
+		      ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
+		       LaTeX-left-right-indent-level)
 		      ((looking-at (concat (regexp-quote TeX-esc)
 					   LaTeX-item-regexp))
-		       (- (current-indentation) LaTeX-item-indent))
-		      (t (current-indentation))))))))
+		       (- LaTeX-item-indent))
+		      (t 0)))))))
 
 ;;; Keymap
 
@@ -1928,6 +1975,23 @@ of LaTeX-mode-hook."
 (defvar LaTeX-trailer-start
   (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
   "Default start of trailer marker for LaTeX documents.")
+
+(defun LaTeX2e-font-replace (start end)
+  "Replace LaTeX2e font specification around point with START and END."
+  (save-excursion
+    (catch 'done
+      (while t
+	(if (/= ?\\ (following-char))
+	    (skip-chars-backward "a-zA-Z "))
+	(skip-chars-backward "\\\\")
+	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\){")
+	    (throw 'done t)
+	  (up-list -1))))
+    (forward-sexp 2)
+    (save-excursion
+      (replace-match start t t))
+    (delete-backward-char 1)
+    (insert end)))
 
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.
@@ -2210,9 +2274,11 @@ of LaTeX-mode-hook."
   (TeX-run-style-hooks "LATEX")
 
   (make-local-variable 'TeX-font-list)
+  (make-local-variable 'TeX-font-replace-function)
   (if (string-equal LaTeX-version "2")
       ()
     (setq TeX-font-list LaTeX-font-list)
+    (setq TeX-font-replace-function 'LaTeX2e-font-replace)
     (TeX-add-symbols
      '("newcommand" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
@@ -2225,6 +2291,7 @@ of LaTeX-mode-hook."
    ;; Use new fonts for `\documentclass' documents.
    (function (lambda ()
      (setq TeX-font-list LaTeX-font-list)
+     (setq TeX-font-replace-function 'LaTeX2e-font-replace)
      (if (equal LaTeX-version "2")
 	 (setq TeX-command-default "LaTeX2e"))
      (run-hooks 'LaTeX2e-hook))))
@@ -2233,6 +2300,8 @@ of LaTeX-mode-hook."
    ;; Use old fonts for `\documentstyle' documents.
    (function (lambda ()
      (setq TeX-font-list (default-value 'TeX-font-list))
+     (setq TeX-font-replace-function
+	   (default-value 'TeX-font-replace-function))
      (run-hooks 'LaTeX2-hook)))))
 
 (provide 'latex)

@@ -1,7 +1,22 @@
 @section News in 9.2
 
 @itemize @bullet
-@item Bug fixes.
+@item 
+Bug fixes.
+
+@item
+@kbd{C-c C-m input @key{ret}} should be faster now on second try.
+
+@item
+New variable @code{LaTeX-left-right-indent-level} controls the
+indentation added by @samp{\left}.
+
+@item
+@samp{\begin}, @samp{\end}, @samp{\left}, and @samp{\right} no longer
+need to be at the beginning of the line to take effect. 
+
+@item
+You can now delete and replace La@TeX{}2e style fonts.
 
 @item
 Moved external commands to new menu.

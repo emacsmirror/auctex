@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.107 1994-10-26 15:03:55 amanda Exp $
+# $Id: Makefile,v 5.108 1994-11-28 01:41:19 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -91,7 +91,7 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  tex-18.el tex-19.el tex-lcd.el auc-ver.el  
+REMOVE =  OEMACS
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    auc-menu.el min-map.el  ltx-math.el maniac.el \
@@ -120,7 +120,7 @@ LACHECKGEN = lacheck.c test.old
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
-EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile ChangeLog \
+EXTRAFILES = COPYING PROBLEMS MSDOS VMS Makefile ChangeLog \
 	tex-jp.el lpath.el tex-site.el 
 
 first:

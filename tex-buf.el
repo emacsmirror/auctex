@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.73 1994-10-25 13:53:09 amanda Exp $
+;; $Id: tex-buf.el,v 1.74 1994-11-28 01:41:32 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -291,6 +291,9 @@ in TeX-check-path."
 						   BibTeX-file-extensions))
 			     ;; We should check for bst files here as well.
 			     TeX-command-BibTeX)
+			    ((file-newer-than-file-p (concat name ".bbl")
+						     (concat name ".dvi"))
+			     TeX-command-default)
 			    ((TeX-process-get-variable name
 						       'TeX-command-next
 						       TeX-command-Show))
@@ -591,9 +594,12 @@ Return nil ifs no errors were found."
 	((re-search-forward "^LaTeX Warning: Citation" nil t)
 	 (message "You should run BibTeX to get citations right.")
 	 (setq TeX-command-next TeX-command-BibTeX))
-	((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
+	((re-search-forward "^LaTeX Warning: Label(s)" nil t)
 	 (message "You should run LaTeX again to get references right.")
 	 (setq TeX-command-next TeX-command-default))
+	((re-search-forward "^LaTeX Warning: Reference" nil t)
+	 (message (concat name ": there were unresolved references."))
+	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
 	 (message (concat name ": successfully formatted "

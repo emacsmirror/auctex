@@ -1,0 +1,210 @@
+-*- text -*-
+
+This is a brief description of how to install AUC-TeX under MS-DOS. It
+describes how to install AUC TeX version 9.1i using the OEMACS editor,
+but it is unlikely that this will fail if you use GNU Emacs 19.XX
+compiled for MS-DOS, it might even work with DEMACS.
+
+DISCLAIMER: I have no connection with the AUC-TeX maintainers, so this
+document may not be up to date, hopefully the installation procedure
+will not change too much.
+
+NO WARRANTY: If following these instructions causes a king-size
+disaster, it's just tough luck. There is no warranty, but you'll get
+my sympathy :-)
+
+
+STEP 1. Install the files at your PC. You can obtain AUC TeX by
+	anonymous ftp from ftp.iesd.auc.dk:/pub/emacs-lisp/auctex.zip.
+	Unpack the file using "pkzip -d auctex" from your site-lisp
+	directory (probably called "c:\emacs-19.19\site-lis"). The
+	"-d" is important to avoid getting everything in one
+	directory. AUC TeX will be installed in the subdirectory
+	auctex-9.1i (yes, this *IS* a valid DOS directory name)
+
+STEP 2.	Customize tex-site.el: (If you are updating AUC-TeX you may
+	already have a working tex-site.el in your site-lisp directory,
+	but you'll better read this anyway to check the file.)
+
+	Edit the definition of TeX-lisp-directory in tex-site.el: It
+	should contain the path to the directory where AUC-TeX is
+	found, probably something like this:
+
+(defvar TeX-lisp-directory "c:/emacs-19.19/site-lisp/auctex-9.1i/"
+  "*The directory where the AUC TeX lisp files are located.")
+
+	Copy the definition of TeX-macro-global from tex.el to
+	tex-site.el and edit it to reflect where the (La)TeX files are
+	found:
+
+(defvar TeX-macro-global
+  '("f:/emtex/ownsty/" "f:/emtex/latex2e/" "f:/emtex/texinput/")
+  "*Directories containing the sites TeX macro files and style files.
+
+The directory names *must* end with a slash.")
+
+	Copy the definition of TeX-command-list from tex.el, and
+	update it to reflect the names of the commands you use to call
+	latex, the dvi viewer etc. You should remove the single quotes
+	from the command lines, since they are not removed by
+	COMMAND.COM, and it is not necessary to prevent COMMAND.COM
+	from interpreting the command line. You should also remove
+	lines that will not work under MS-DOS, such as (La)TeX
+	Interactive and Spell. I ended up with this definition:
+
+(defvar TeX-command-list
+  ;; You may have to remove the single quotes around the command
+  ;; arguments if you use DOS.
+  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
+	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
+	(list "LaTeX2e" "latex2e \\nonstopmode\\input{%t}"
+	      'TeX-run-LaTeX nil t)
+	(list "View" "dviscr @f:\\emtex\\lj.cnf /o:4 /fl:-1 %s" 
+	      'TeX-run-command t nil)
+	(list "Print" "%p " 'TeX-run-command t nil)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
+	(list "Index" "makeindex %s" 'TeX-run-command nil t)
+	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	(list "Other" "" 'TeX-run-command t t)
+	;; Not part of standard TeX.
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	(list "AmSTeX" "amstex \\nonstopmode\\input %t"
+	      'TeX-run-TeX nil t)))
+
+	Note that I have not copied the long documentation string, so
+	the variable will not be documented until AUC-TeX is loaded.
+
+	Test if the file can be read (M-x load-file tex-site.el), then
+	copy tex-site to your site-lisp directory, so Emacs can find
+	it. If you are lucky you can reuse it when you update AUC-TeX.
+	If the file cannot be loaded you may have a mismatched
+	parenthesis.
+
+
+STEP 3.	Fix an MS-DOS incompatibility in tex.el (may be fixed in your
+	copy). In the definition of the function TeX-auto-generate
+	find this line (line 1338 in my version):
+               (default-directory (concat (if (string-match "^/" tex)
+	change it to:
+               (default-directory (concat (if (string-match 
+					       "^\\([A-Za-z]:\\)?/" tex)
+	The problem is that AUC-TeX tests if a directory name is
+	absolute or relative by testing if it starts with "/". But in
+	MS-DOS there may be a drive letter and a colon too.
+
+
+STEP 4.	Add the following line to your _emacs file:
+	(require 'tex-site)
+	You may also want to add these lines:
+	(setq tex-default-mode 'latex-mode)
+	(setq text-mode-hook 'turn-on-auto-fill)
+
+
+STEP 4.	Byte-compile AUC-TeX: Go to the auctex directory, start Emacs,
+	load the file lpath.el (M-x load-file), then byte-compile
+	everything in the directory (C-u 0 M-x
+	byte-recompile-directory).
+
+
+STEP 5. [OPTIONAL]
+	EITHER:
+	Compile the LaCheck utility using your favourite C compiler.
+	Look in the .../auctex/lacheck/makefile file to see what should be
+	done. I have not tried this, but I cannot see any reasons why
+	it should not work.
+	OR:
+	Ftp a copy of a DOS binary from ftp.iesd.auc.dk:/pub/packages/LaCheck.
+
+
+STEP 6.	[OPTIONAL]
+	Print the manual. If there is no .dvi file in the doc
+	directory, you'll need texinfo version 2.16 or later. You'll
+	also need the texindex program (part of texinfo?).
+	To make the dvi file type:
+		tex auc-tex
+		texindex auc-tex.ky
+		texindex auc-tex.fn
+		texindex auc-tex.vr
+		texindex auc-tex.cp
+		tex auc-tex
+
+	(Note: I haven't tested this under MS-DOS, since I don't have
+	the texindex program). The manual is worth reading, AUC-TeX
+	can do thing you wouldn't suspect you need :-)
+
+
+STEP 7. [OPTIONAL]
+	Install the info files: Move them to your info directory, and 
+	add the following line to the menu in the dir file:
+
+* AUC TeX: (auctex).	AUC TeX. Improved TeX/LaTeX mode.
+
+
+STEP 8. [OPTIONAL] 
+	Parse the (La)TeX macros and sty files. This is necessary if
+	you want macro completion, but will require some time and a
+	lot of swap space. It will consume half a megabyte disk
+	space. Just type M-x TeX-auto-generate-global, and go reading
+	a good book: "War and Peace" and "The Lord of The Rings" have
+	approximately the right length :-).
+
+	If you get the error message "Creating directory: access
+	denied, c:/..../auctex-9.1i/auto" the directory already
+	exists. Remove it and try again. If Emacs crashes you probably
+	ran out of virtual memory.
+
+	Note: This is likely to generate a directory with more that
+	255(?) files, causing MS-DOS 5.1 to be very inefficient. The
+	solution is to delete the .el files and clean up the
+	directory. I did it like this (from the auctex directory):
+		xcopy auto\*.elc auto2\
+		del auto
+		rd auto
+		xcopy auto2 auto\
+		del auto2
+		rd auto2
+	Note: Look at what happens when the first xcopy writes the
+	files. If it suddenly becomes slower you still have too many
+	files, and should delete some of them (there must be some
+	.sty files you never use, delete the corresponding .elc file).
+	This may anyway be a good idea to speed up loading. Removing
+	the .el files and half the .elc files this way speeded the
+	loading of the .elc files for my thesis up from 58 seconds to
+	12 seconds!
+
+
+The whole package will use 1.2 MB of your precious harddisk space ---
+but it's worth it! You could of course compress / delete everything
+except the .elc files (250 kB). I haven't tried this (yet), so I don't
+know if it has disastrous side effects.
+
+PROBLEMS: I have experienced the following problems, they are probably
+related to OEMACS and/or emTeX and not to AUC-TeX:
+
+1) When you have viewed the dvi file, and the screen is returned to
+text mode, the creen is not repainted. Press C-l to refresh the
+screen.
+
+2) If LaTeX, the dvi viewer etc. cannot find a file name, it will try
+to read a name from the keyboard via stdin, and hang. C-break can
+often save the day. My dvi viewer has no problems reading the keyboard
+once it has started since it then uses direct keyboard reads. 
+
+3) If the dviscr (my dvi viewer) doesn't find a font, it asks for a
+replacement font. This should be disabled by setting batch-mode in the
+configuration file (the "/fb" option). Also, you should not enable
+metafont-mode (the "/fm" option), since this will cause dviscr to ask
+you if it should write a MFjob input file if a font is missing. This
+will cause Emacs to hang.
+
+4) When the dvi viewer terminates, it changes from graphics mode to 25
+lines text mode. If Emacs was in 43 or 50 lines mode, the screen is
+now in 25 lines mode, but Emacs believes there are 43 (50) lines!
+This has been reported to Darryl Okahata (the OEMACS maintainer), and
+may be fixed in future versions of OEMACS.
+
+Jakob Schi{\o}tz
+Physics Department
+Technical University of Denmark
+Email: schiotz@fysik.dtu.dk

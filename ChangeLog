@@ -1,3 +1,79 @@
+Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (LaTeX-left-right-indent-level): New variable
+	controling indentation for \left \right blocks.
+	(LaTeX-indent-level-count): New function.  Previously only LaTeX
+	macros at the beginning of the line would affect indentation.
+	This problem was reported by many people.
+	(LaTeX-indent-calculate-last): Call `LaTeX-indent-level-count'.
+	Take into account that \end and \right at the beginning of the
+	line has immediate effect.
+
+Sun Nov 27 21:08:28 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (TeX-global-input-files): New variable.  Idea and
+	sample code by Christophe Mignot <Christophe.Mignot@loria.fr>.
+	(TeX-arg-input-file): Use it.
+	(BibTeX-global-style-files): Mention how it is reset in
+	`TeX-normal-mode'.
+	(BibTeX-global-files): Ditto.
+
+	* tex.el (TeX-normal-mode): Reset `BibTeX-global-style-files',
+	`BibTeX-global-files', and `TeX-global-input-files' if invoked
+	with an argument.
+
+	* tex-site.el: Ignore trailing `/' when adding TeX-lisp-directory
+	to load-path.  Patch by Michael Ernst
+	<mernst@research.microsoft.com>. 
+
+	* tex-buf.el (TeX-LaTeX-sentinel): Don't rerun LaTeX if on missing
+	references, unless they have changed.  Patch by schiotz@ltf.dth.dk
+	(Jakob Schiotz).
+
+	* latex.el (LaTeX2e-font-replace): New function.
+	(LaTeX-common-initialization): Set TeX-font-replace-function to
+	LaTeX2e-font-replace when using latex2e.
+
+	* tex.el (TeX-font-replace-function): New variable.
+	(TeX-font): Use it.
+
+	TeX-font-replace-function and LaTeX2e-font-replace were
+	contributed by Peter Thiemann
+	<thiemann@provence.informatik.uni-tuebingen.de>.
+	
+
+Tue Nov 22 14:21:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* MSDOS: Added.  Contributed by schiotz@ltf.dth.dk (Jakob
+	Schiotz). 
+
+	* OEMACS: Removed.
+
+	* tex.el (VirTeX-common-initialization): Make
+	`words-include-escapes' a local variable before setting it.
+	Reported by Bo Nygaard Bai <bai@iesd.auc.dk>.
+
+Tue Nov 15 11:12:38 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-auto-store): Change to functions that prevent the
+	auto file buffer from entering emacs-lisp-mode.
+	(TeX-auto-insert): Don't rely on emacs-lisp-mode for indentation.
+	Suggested by Stefan Schöf (schoef@informatik.uni-oldenburg.de).
+
+Fri Nov 11 16:37:54 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-macro-global): Change to `standard' path.
+
+Wed Nov  9 22:35:21 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-command-query): Suggest TeX-command-default
+	again if bbl file is newer than dvi file.
+
+Mon Nov  7 19:16:07 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-submit-bug-report): Indicate LaTeX-version.
+	Suggested by schiotz@ltf.dth.dk (Jakob Schiotz).
+
 Wed Oct 26 15:37:53 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* Makefile (dist): Automatically update AUC-TeX-version and

@@ -1,11 +1,11 @@
-;;; auc-menu.el - Easy menu support for FSF and Lucid Emacs 19.
+;;; auc-menu.el - Easy menu support for GNU Emacs 19 and XEmacs.
 ;; 
-;; $Id: auc-menu.el,v 5.6 1994-10-28 19:03:40 amanda Exp $
+;; $Id: auc-menu.el,v 5.7 1994-11-28 01:41:22 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
-;; Easy menu support for FSF and Lucid Emacs 19|
-;; $Date: 1994-10-28 19:03:40 $|$Revision: 5.6 $|~/misc/auc-menu.el.gz|
+;; Easy menu support for GNU Emacs 19 and XEmacs|
+;; $Date: 1994-11-28 01:41:22 $|$Revision: 5.7 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
@@ -23,20 +23,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-;;
-;; The code to add and remove menus for Lucid Emacs was originally
-;; from Alastair Burt <burt@dfki.uni-kl.de>.  The function
-;; `easy-menu-create-keymaps' is derived from code from the file
-;; `lemacs.el' in the FSF Emacs 19.15 distribution.
 
 ;; Commentary:
 ;;
-;; Easymenu allows you to define menus for both FSF and Lucid Emacs
-;; 19.  The advantages of using easymenu are:
+;; Easymenu allows you to define menus for both Emacs 19 and XEmacs.
+;; The advantages of using easymenu are:
 ;;
-;; - Easier to use than either the FSF or Lucid menu syntax.
+;; - Easier to use than either the Emacs 19 and XEmacs menu syntax.
 ;;
-;; - Common interface for Emacs 18, FSF Emacs 19, and Lucid Emacs.  
+;; - Common interface for Emacs 18, Emacs 19, and XEmacs.  
 ;;   (The code does nothing when run under Emacs 18).
 ;;
 ;; The public functions are:
@@ -46,7 +41,7 @@
 ;;            the name of a function that will present a the menu.
 ;;     MAPS is a list of keymaps where the menu should appear in the menubar.
 ;;     DOC is the documentation string for the variable.
-;;     MENU is a Lucid style menu description.  
+;;     MENU is an XEmacs style menu description.  
 ;;
 ;;     See the documentation for easy-menu-define for details.
 ;;
@@ -63,17 +58,17 @@
 ;; - Function: easy-menu-remove MENU
 ;;     Remove MENU from the current menubar.
 ;;
-;; FSF Emacs 19 never uses `easy-menu-add' or `easy-menu-remove',
+;; GNU Emacs 19 never uses `easy-menu-add' or `easy-menu-remove',
 ;; menus automatically appear and disappear when the keymaps
 ;; specified by the MAPS argument to `easy-menu-define' are
 ;; activated.
 ;;
-;; Lucid Emacs will bind the map to button3 in each MAPS, but you must
+;; XEmacs will bind the map to button3 in each MAPS, but you must
 ;; explicitly call `easy-menu-add' and `easy-menu-remove' to add and
 ;; remove menus from the menu bar.
 
 ;; auc-menu.el define the easymenu API included in Emacs 19.29 and
-;; later.
+;; later.  In fact, the Emacs 19 specific code should be identical.
 
 ;;; Code:
 
@@ -162,9 +157,9 @@ is a list of menu items, as above."
 
 )					;Emacs 18
 
-;;; Lucid Emacs
+;;; XEmacs
 
-((string-match "Lucid" emacs-version)
+((string-match "XEmacs\\|Lucid" emacs-version)
 
 (defun easy-menu-do-define (symbol maps doc menu)
   (set symbol menu)
@@ -201,9 +196,9 @@ is a list of menu items, as above."
        (assoc (car menu) current-menubar)
        (delete-menu-item (list (car menu)))))
 
-)					;Lucid Emacs
+)					;XEmacs
 
-;;; FSF Emacs 19
+;;; GNU Emacs 19
 
 (t
 
@@ -222,7 +217,7 @@ is a list of menu items, as above."
 
 (defvar easy-menu-item-count 0)
 
-;; Return a menu keymap corresponding to a Lucid-style menu list
+;; Return a menu keymap corresponding to a XEmacs style menu list
 ;; MENU-ITEMS, and with name MENU-NAME.
 (defun easy-menu-create-keymaps (menu-name menu-items)
   (let ((menu (make-sparse-keymap menu-name)))
@@ -308,7 +303,7 @@ Call this from `activate-menubar-hook' to implement dynamic menus."
 
 (defun easy-menu-add (menu &optional map))
 
-)					;FSF Emacs 19
+)					;GNU Emacs 19
 
 )					;cond
 
