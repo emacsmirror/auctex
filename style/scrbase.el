@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.4 2003-11-17 13:14:30 angeli Exp $
+;; Version: $Id: scrbase.el,v 1.5 2003-12-26 18:48:52 uid69014 Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -41,9 +41,7 @@
      '("ifthispageodd" t nil)
      '("lowertitleback" t)
      '("maketitle" [ "Pagenumber" ])
-     '("marginline" "Marginal note")
      '("marginline" t)
-     '("publishers" "Publisher")
      '("publishers" "Publishers")
      '("sectionmark" "Running head")
      '("setbibpreamble" "Preamble")
