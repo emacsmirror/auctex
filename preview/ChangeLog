@@ -1,5 +1,8 @@
 2005-04-03  David Kastrup  <dak@gnu.org>
 
+	* latex/preview.dtx: Don't let negative dimensions into tightpage
+	comment.
+
 	* doc/macros.texi: Make @previewlatex swallow argument in links.
 	Don't scrap sf declaration.  Make it correct in links.
 
