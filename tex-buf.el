@@ -486,10 +486,17 @@ entry."
 The viewer is started either on region or master file,
 depending on the last command issued."
   (interactive)
-  (TeX-command "View" (if TeX-current-process-region-p
-			  'TeX-region-file
-			'TeX-master-file)
-	       0))
+  (let ((output-file (concat (if TeX-current-process-region-p
+				 (TeX-region-file)
+			       (TeX-master-file)) "." (TeX-output-extension))))
+    (cond ((and TeX-current-process-region-p
+		(file-exists-p output-file))
+	   (TeX-command "View" 'TeX-region-file 0))
+	  ((and (not TeX-current-process-region-p)
+		(file-exists-p output-file))
+	   (TeX-command "View" 'TeX-master-file 0))
+	  (t
+	   (message "Output file %S does not exist." output-file)))))
 
 (defun TeX-output-style-check (styles)
   "Check STYLES compared to the current view output file extension and
