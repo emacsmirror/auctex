@@ -2323,7 +2323,7 @@ space does not end a sentence, so don't break a line there."
 			     (regexp-quote (concat TeX-esc TeX-esc))
 			     "\\)*"
                              "\\([[{}$]\\|"
-			     (regexp-quote TeX-esc) "[()]\\)")
+			     (regexp-quote TeX-esc) "[][()]\\)")
                      orig-breakpoint t))
           (let ((match-string (match-string 0)))
             (cond
@@ -2333,6 +2333,7 @@ space does not end a sentence, so don't break a line there."
              ((save-excursion
                 (and (memq 'braced LaTeX-fill-distinct-contents)
                      (string= (substring match-string -1) "[")
+                     (not (string= match-string "\["))
 		     (re-search-forward
 		      (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
                               (regexp-quote (concat TeX-esc TeX-esc))
@@ -2390,22 +2391,29 @@ space does not end a sentence, so don't break a line there."
                 (skip-chars-forward "^ \n")
                 (when (> (point) start-point)
                   (setq final-breakpoint (point)))))
-             ;; $ or \( (opening math)
+             ;; $ or \( or \[ (opening math)
              ((save-excursion
                 (and (memq 'math LaTeX-fill-distinct-contents)
                      (or (and (string= (setq math-sep
                                              (substring match-string -1)) "$")
                               (texmathp))
                          (and (> (length match-string) 1)
-                              (string= (setq math-sep
-                                             (substring match-string -2))
-                                       "\\(")))
+                              (or (string= (setq math-sep
+                                                 (substring match-string -2))
+                                           "\\(")
+                                  (string= (setq math-sep
+                                                 (substring match-string -2))
+                                           "\\["))))
                      (> (- (save-excursion
                              (re-search-forward
-                              (if (string= math-sep "$")
-                                  (concat "[^" TeX-esc "]"
-                                          (regexp-quote "$"))
+                              (cond
+                               ((string= math-sep "$")
+                                (concat "[^" TeX-esc "]"
+                                        (regexp-quote "$")))
+                               ((string= math-sep "\\(")
                                 (concat (regexp-quote TeX-esc) ")"))
+                               (t
+                                (concat (regexp-quote TeX-esc) "]")))
                               (point-max) t)
                              (point))
                            (line-beginning-position))
@@ -2414,16 +2422,19 @@ space does not end a sentence, so don't break a line there."
                 (skip-chars-backward "^ \n")
                 (when (> (point) start-point)
                   (setq final-breakpoint (point)))))
-             ;; $ or \) (closing math)
+             ;; $ or \) or \] (closing math)
              ((save-excursion
                 (and (memq 'math LaTeX-fill-distinct-contents)
                      (or (and (string= (setq math-sep
                                              (substring match-string -1)) "$")
                               (not (texmathp)))
                          (and (> (length match-string) 1)
-                              (string= (setq math-sep
-                                             (substring match-string -2))
-                                       "\\)")))
+                              (or (string= (setq math-sep
+                                                 (substring match-string -2))
+                                           "\\)")
+                                  (string= (setq math-sep
+                                                 (substring match-string -2))
+                                           "\\]"))))
                      (if (string= math-sep "$")
                          (save-excursion
                            (backward-char 2)
