@@ -1,3 +1,8 @@
+2005-01-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el: Do not use whitespace syntax for ?~.  Prevents these
+	characters from being deleted during filling.
+
 2005-01-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el: Update header.
