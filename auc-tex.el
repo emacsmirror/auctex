@@ -9,17 +9,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-23 23:20:24 $|$Revision: 5.30 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-31 03:19:16 $|$Revision: 5.31 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.30 1992-03-23 23:20:24 krab Exp $
+;; $Id: auc-tex.el,v 5.31 1992-03-31 03:19:16 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Tue Mar 24 00:17:32 1992
-;; Buffer Position : 13680
-;; Update Count    : 510
+;; Last Modified On: Wed Mar 25 02:13:33 1992
+;; Buffer Position : 13440
+;; Update Count    : 515
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -311,25 +311,30 @@ and in the TeX-compilation."
 
 (defun tex-mode ()
   "Major mode for editing files of input for TeX or LaTeX.
-Tries to intuit whether this file is for plain TeX or LaTeX and
-calls plain-tex-mode or latex-mode.  If it cannot be determined
-\(e.g., the file is empty), the value of TeX-default-mode is used."
+Tries to intuit whether this file is for plain TeX or LaTeX.
+
+The algorithm is as follows:
+
+   1) if the file is empty, TeX-default-mode is chosen
+   2) If \documentstyle or \begin{, \section{, \part{ or \chapter{ is
+      found, latex-mode is selected.
+   3) Otherwise, use plain-tex-mode "
   (interactive)
-  (let
-      ((mode
-	(save-excursion
-	  (goto-char (point-min))
-	  (if (re-search-forward 
-	       (concat "^[^%\n]*"
-		       (regexp-quote TeX-esc)
-		       "\\(\\(begin\\|section\\|part\\|chapter\\){"
-		       "\\|documentstyle\\)") nil t)
-	      'latex-mode
-	    'plain-tex-mode
-;;mj	    TeX-default-mode
-	    ))))
-    (if mode (funcall mode)
-      (funcall TeX-default-mode))))
+  (funcall
+   (save-excursion
+     (goto-char (point-min))
+     
+     (cond ((equal (buffer-size) 0) ;; an empty file!
+	    TeX-default-mode)
+
+	   ((re-search-forward      ;; must be LaTeX
+	     (concat "^[^%\n]*"
+		     (regexp-quote TeX-esc)
+		     "\\(\\(begin\\|section\\|part\\|chapter\\){"
+		     "\\|documentstyle\\)") nil t)
+	    'latex-mode)
+	   (t                       ;; else - plain TeX
+	    'plain-tex-mode)))))
 
 (defun plain-tex-mode ()
   "Major mode for editing files of input for plain TeX.
