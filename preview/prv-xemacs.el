@@ -43,9 +43,16 @@
 ;; TODO: This is not as elegant as I'd like; the `list' should
 ;; be evalled at macroexpand time.
 (preview-defmacro propertize (string &rest properties)
+  "Add PROPERTIES to the STRING.
+If STRING is zero-length, a zero-length extent is created instead."
   `(let ((res (copy-sequence ,string)))
-     (add-text-properties 0 (length res)
-                          (list ,@properties) res)
+     (if (eq 0 (length res))
+         (set-extent-properties (make-extent 0 0 res)
+                                (list ,@properties))
+       (add-text-properties 0 (length res)
+                            (append (list ,@properties)
+                                    '(duplicable t))
+                                    res))
      res))
 
 (preview-defmacro assoc-default (key alist test)
@@ -182,8 +189,8 @@ FUNCTION should take one argument, a cons cell."
   (map-plist #'(lambda (property)
                  ; XEmacs hands out nil properties that can't be set :(
                  (and (cdr property)
-                      (set-glyph-property new-glyph (car property) (cdr property))))
-             (object-plist glyph))
+                      (set-glyph-property glyph (car property) (cdr property))))
+             (object-plist new-glyph))
   new-glyph)
 
 (defun copy-glyph (glyph)
@@ -229,10 +236,9 @@ other hooks, such as major mode hooks, can do the job."
           (list
            `[xpm :file ,(locate-data-file "prevwork.xpm")]
            `[xbm :file ,(locate-data-file "prevwork.xbm")]))))
-    (set-glyph-baseline glyph 80)
+    (set-glyph-baseline glyph 90)
     glyph)
-  "The symbol used for previews to be generated.
-Usually a question mark.")
+  "The symbol used for previews to be generated.")
 
 (defvar preview-icon
   (let ((glyph
@@ -240,10 +246,9 @@ Usually a question mark.")
           (list
            `[xpm :file ,(locate-data-file "preview.xpm")]
            `[xbm :file ,(locate-data-file "preview.xbm")])))) 
-    (set-glyph-baseline glyph 100)
+    (set-glyph-baseline glyph 75)
     glyph)
-  "The symbol used for an open preview.
-Usually a magnifying glass.")
+  "The symbol used for an open preview.")
 
 ;; Image frobbing.
 
@@ -266,49 +271,41 @@ if there was any urgentization."
   (prog1 (list (extent-property ov 'initial-redisplay-function) ov)
     (set-extent-initial-redisplay-function ov nil)))
 
-(defmacro preview-image-from-icon (icon)
-  "Generate a copy of the ICON that is \"editable\".
-Which means that `preview-replace-icon' can be called on the
-value returned here, and wherever the value was used, the new
-image will appear, while ICON itself is not changed."
-  `(copy-glyph ,icon))
+(defmacro preview-nonready-copy ()
+  "Prepare for a later call of `preview-replace-active-icon'."
+  'preview-nonready-icon)
 
-;; TODO: Shouldn't this be renamed to something like `preview-image-property'?
-;; We don't *need* to create a silly one-character string with contents that are
-;; never seen...
-(defmacro preview-string-from-image (image)
-  "Make a string displaying IMAGE.
-In fact, it won't display IMAGE without preprocessing; the
-image is in the `glyph' property, but you must move it to either
-the `begin-glyph' or `end-glyph' property of some extent."
-  `(propertize "x" 'glyph ,image))
-
-(defmacro preview-replace-icon (icon replacement)
-  "Replace an ICON representation by REPLACEMENT, another icon."
-  `(destructive-replace-glyph ,icon (copy-glyph ,replacement)))
+(defmacro preview-replace-active-icon (ov replacement)
+  "Replace the active Icon in OV by REPLACEMENT, another icon."
+  `(destructive-replace-glyph (extent-property ,ov 'preview-image)
+                              (copy-glyph ,replacement)))
 
 (defvar preview-button-1 [mouse-2])
 (defvar preview-button-2 [mouse-3])
 
 ;; TODO: doesn't seem quite to work yet; the image is highlighted
 ;;       but not click-responsive.
-;; This is so similar to the GNU Emacs function that some refactoring
-;; is probably called for.
-(defmacro preview-make-clickable (&optional map string helpstring click1 click2)
+;; The `x' and invisible junk is because XEmacs doesn't bother to insert
+;; the extents of a zero-length string. Bah.
+;; When this is fixed, we'll autodetect this case and use zero-length
+;; strings where possible.
+(defmacro preview-make-clickable (&optional map glyph helpstring click1 click2)
   "Generate a clickable string or keymap.
 If MAP is non-nil, it specifies a keymap to add to, otherwise
-a new one is created.  If STRING is given, the result is made
-a property of it.  In that case, HELPSTRING is a format string
-with one or two %s specifiers for preview's clicks, displayed
-via balloon-help.  CLICK1 and CLICK2 are functions to call
-on preview's clicks."
-  `(let (,@(if string `((res (copy-sequence ,string))))
++a new one is created.  If GLYPH is given, the result is made
++to display it, whether it is a string or image.  In that case,
++HELPSTRING is a format string with one or two %s specifiers
++for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
++are functions to call on preview's clicks."
+  `(let (,@(if glyph `((res (if (stringp ,glyph)
+                                (copy-sequence ,glyph)
+                              (propertize "x" 'end-glyph ,glyph 'invisible t)))))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
            `((define-key resmap preview-button-2 ,click2)))
-     ,@(if string
+     ,@(if glyph
            `((add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
@@ -343,8 +340,6 @@ This will not be so forever."
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
 nil displays the underlying text, and 'toggle toggles."
-;; TODO: Fix the messing around with glyphs-in-properties versus
-;;       glyphs on their own.
   (if (not (bufferp (extent-object ov)))
       (error 'wrong-type-argument ov))
   (let ((old-urgent (preview-remove-urgentization ov))
@@ -363,7 +358,7 @@ nil displays the underlying text, and 'toggle toggles."
                                         face nil
                                         begin-glyph nil
                                         begin-glyph-layout text
-                                        end-glyph ,(get-text-property 0 'glyph (car strings))))
+                                        end-glyph ,(get-text-property 0 'end-glyph (car strings))))
             (dolist (prop '(keymap mouse-face balloon-help))
               (set-extent-property ov prop
                                    (get-text-property 0 prop (car strings))))
@@ -374,7 +369,7 @@ nil displays the underlying text, and 'toggle toggles."
         (dolist (prop '(keymap mouse-face balloon-help invisible))
           (set-extent-property ov prop nil))
         (set-extent-properties ov `(face preview-face
-                                    begin-glyph ,(get-text-property 0 'glyph (cdr strings))
+                                    begin-glyph ,(get-text-property 0 'end-glyph (cdr strings))
                                     begin-glyph-layout text
                                     end-glyph nil)))
       (if old-urgent
