@@ -121,7 +121,7 @@ When called interactively, prompt for an environment."
 (easy-menu-define TeXinfo-command-menu
   TeXinfo-mode-map
   "Menu used in TeXinfo mode for external commands."
-  (TeX-mode-specific-command-menu 'texinfo))
+  (TeX-mode-specific-command-menu 'texinfo-mode))
 
 (easy-menu-define TeXinfo-mode-menu
     TeXinfo-mode-map
