@@ -9,6 +9,8 @@
 
 	* preview.el (preview-counter-find): Take counters by searching
 	forward if searching backwards does not avail us.
+	(preview-reinstate-preview): Optimize queue/tempdir handling for
+	the most common case.
 
 2002-12-09  David Kastrup  <David.Kastrup@t-online.de>
 
