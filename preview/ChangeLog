@@ -1,5 +1,9 @@
 2002-02-05  Jan-Ake Larsson  <jalar@imf.au.dk>
 
+	* readme.texi: Typo corrected
+
+	* preview-latex.texi: Document preview-default-preamble
+
 	* doc/Makefile: Simpler index generation
 
 2002-02-04  Jan-Ake Larsson  <jalar@imf.au.dk>
