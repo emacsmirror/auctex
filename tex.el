@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10k
+;; Version: 9.10l
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -30,6 +30,7 @@
   (error "AUC TeX requires Emacs 20 or later"))
 
 (require 'custom)
+(eval-when-compile (require 'cl))
 
 (defgroup AUC-TeX nil
   "A (La)TeX environment."
@@ -61,6 +62,9 @@
 
 (defcustom TeX-lisp-directory (or (and (fboundp 'locate-data-directory)
 				       (locate-data-directory "auctex"))
+				  (and (fboundp 'locate-library)
+				       (let ((f (locate-library "tex")))
+					 (and f (file-name-directory f))))
 				  (concat data-directory "auctex/"))
   "The directory where the AUC TeX lisp files are located."
   :group 'TeX-file
@@ -317,7 +321,8 @@ string."
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
 	(list "%d" 'file "dvi" t)
-	(list "%f" 'file "ps" t))
+	(list "%f" 'file "ps" t)
+        (list "%b" 'TeX-current-file-name-nondirectory))
   "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
@@ -501,11 +506,20 @@ this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
 
+(defun TeX-dwim-master ()
+  "Find a likely `TeX-master'."
+  (let ((dir default-directory))
+    (dolist (buf (buffer-list))
+      (when (with-current-buffer buf
+	      (and (equal dir default-directory)
+		   (stringp TeX-master)))
+	(return (with-current-buffer buf TeX-master))))))
+
 (defun TeX-master-file (&optional extension nondirectory)
   "Return the name of the master file for the current document.
 
 If optional argument EXTENSION is non-nil, add that file extension to
-the name.  Special value `t' means use `TeX-default-extension'.
+the name.  Special value t means use `TeX-default-extension'.
 
 If optional second argument NONDIRECTORY is non-nil, do not include
 the directory.
@@ -523,23 +537,24 @@ the beginning of the file, but that feature will be phased out."
 	(goto-char (point-min))
 	(cond
 	 ;; Special value 't means it is own master (a free file).
-	 ((equal TeX-master my-name) 
+	 ((equal TeX-master my-name)
 	  (setq TeX-master t))
 
 	 ;; For files shared between many documents.
 	 ((eq 'shared TeX-master)
 	  (setq TeX-master
 		(TeX-strip-extension
-		 (read-file-name "Master file: (default this file) "
-				 nil "///")
+		 (let ((default (or (TeX-dwim-master) "this file")))
+		   (read-file-name (format "Master file: (default %s) " default)
+				   nil default)
 		 (list TeX-default-extension)
-		 'path))
-	  (if (or (string-equal TeX-master "///")
+		 'path)))
+	  (if (or (string-equal TeX-master "this file")
 		  (string-equal TeX-master ""))
 	      (setq TeX-master t)))
 
 	 ;; We might already know the name.
-	 (TeX-master)
+	 ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
 
 	 ;; Support the ``Master:'' line (under protest!)
 	 ((re-search-forward
@@ -560,13 +575,17 @@ the beginning of the file, but that feature will be phased out."
 	 ;; Ask the user (but add it as a local variable).
 	 (t
 	  (setq TeX-master
-		(TeX-strip-extension
-		 (condition-case name
-		     (read-file-name "Master file: (default this file) "
-				     nil "<default>")
-		   (quit "<quit>"))
-		 (list TeX-default-extension)
-		 'path))
+		(let ((default (TeX-dwim-master)))
+		  (or
+		   (and (eq 'dwim TeX-master) default)
+		   (TeX-strip-extension
+		    (condition-case name
+			(read-file-name (format "Master file: (default %s) "
+						(or default "this file"))
+					nil (or default "<default>"))
+		      (quit "<quit>"))
+		    (list TeX-default-extension)
+		    'path))))
 	  (cond ((string-equal TeX-master "<quit>")
 		 (setq TeX-master t))
 		((or (string-equal TeX-master "<default>")
@@ -616,7 +635,10 @@ If the variable is t, AUC TeX will assume the file is a master file
 itself.
 
 If the variable is 'shared, AUC TeX will query for the name, but not
-change the file.  
+change the file.
+
+If the variable is 'dwim, AUC TeX will try to avoid querying by
+attempting to `do what I mean'; and then change the file.
 
 It is suggested that you use the File Variables (see the info node in
 the Emacs manual) to set this variable permanently for each file."
@@ -625,6 +647,7 @@ the Emacs manual) to set this variable permanently for each file."
   :type '(choice (const :tag "Query" nil)
 		 (const :tag "This file" t)
 		 (const :tag "Shared" shared)
+		 (const :tag "Dwim" dwim)
 		 (string :format "%v")))
 
  (make-variable-buffer-local 'TeX-master)
@@ -2111,6 +2134,11 @@ See match-data for details."
 (defun TeX-current-line ()
   "The current line number."
   (count-lines (point-min) (point)))
+
+(defun TeX-current-file-name-nondirectory ()
+  "Return current filename, without path."
+  (file-name-nondirectory buffer-file-name))
+
 
 ;;; Syntax Table
 
