@@ -1,5 +1,7 @@
 2001-10-02  David Kastrup  <dakas@users.sourceforge.net>
 
+	* preview.el: Make active error display.
+
 	* preview.el:
 	Changed the process line appearance somewhat, added a bit of
 	robustness when error line parsing fails, beautified appearance of
@@ -9,8 +11,6 @@
 2001-10-01  David Kastrup  <dakas@users.sourceforge.net>
 
 	* TODO: Added a few items.
-
-	* ChangeLog: *** empty log message ***
 
 	* README: Added CVS instructions and a few other odds and ends.
 
