@@ -453,7 +453,7 @@ Pure borderless black-on-white will return NIL."
           '("setrgbcolor"))))))
 
 (defcustom preview-use-balloon-help t
-  "*Should we start up balloon help in preview-latex?"
+  "*Is balloon help enabled in preview-latex?"
   :group 'preview-appearance
   :type 'boolean)
 
@@ -650,6 +650,7 @@ of an insertion."
 			 (nth 2 image))))
 
 (defsubst preview-supports-image-type (imagetype)
+  "Return whether IMAGETYPE is supported by XEmacs."
   (memq imagetype (image-instantiator-format-list)))
 
 ;; Now bind the list of compatibility macros into the compiled code.
