@@ -1,5 +1,9 @@
 2002-12-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.6
+
+	* preview-latex.spec (Requires): Bump to 0.7.6
+
 	* doc/faq.texi (Requirements): Change version requirements for
 	AUC TeX.
 
