@@ -59,6 +59,11 @@
 (preview-defmacro line-beginning-position () '(point-at-bol))
 (preview-defmacro line-end-position () '(point-at-eol))
 
+;; This is not quite the case, but unless we're playing with duplicable extents,
+;; the two are equivalent in XEmacs.
+(unless (fboundp 'match-string-no-properties)
+  (define-compatible-function-alias 'match-string-no-properties 'match-string))
+
 (preview-defmacro easy-menu-create-menu (menu-name menu-items)
   "Return a menu called MENU-NAME with items described in MENU-ITEMS.
 MENU-NAME is a string, the name of the menu.  MENU-ITEMS is a list of items
@@ -75,11 +80,11 @@ is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
     ((eq ,attr :background)
      (face-background-instance ,face))
     (t
-     (error (concat "Don't know how to fake " (symbol-name ,attr))))))
+     (error 'unimplemented (concat "Don't know how to fake " (symbol-name ,attr))))))
 
 (preview-defmacro make-temp-file (prefix dir-flag)
   (if (not dir-flag)
-      (error "Can only fake make-temp-file for directories"))
+      (error 'unimplemented "Can only fake make-temp-file for directories"))
   `(let (file)
      (while (condition-case ()
                 (progn
@@ -90,6 +95,19 @@ is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
               (file-already-exists t))
        nil)
      file))
+
+(preview-defmacro set-buffer-multibyte (multibyte)
+  "Set the representation type of the current buffer.  If MULTIBYTE
+is non-`nil', the buffer becomes multibyte.  If MULTIBYTE is
+`nil', the buffer becomes unibyte.
+
+Because XEmacs does not implement multibyte versus unibyte buffers
+per se (they just have encodings which may be unibyte or multibyte),
+this is only implemented for the `nil' case."
+  (if (not multibyte)
+      `(if (fboundp 'set-buffer-file-coding-system)
+           (set-buffer-file-coding-system 'binary))
+    (error 'unimplemented "`set-buffer-multibyte is only implemented for the binary case.")))
 
 (preview-defmacro next-single-char-property-change (pos prop &optional object limit)
   "Return the position of next property change for a specific property.
@@ -120,7 +138,6 @@ position in OBJECT if no change is found."
             0)
        (and (bufferp ,object)
             (point-min ,object))))
-
 
 (preview-defmacro with-temp-message (message &rest body)
   "Display MESSAGE temporarily if non-nil while BODY is evaluated.
@@ -229,10 +246,12 @@ Usually a magnifying glass.")
 
 ;; Image frobbing.
 
-(defun preview-add-urgentization (fun ov buff)
-  "Cause FUN to be called with OV and BUFF when redisplayed."
+(defun preview-add-urgentization (fun ov &rest rest)
+  "Cause FUN (function call form) to be called when redisplayed.
+FUN must be a form with OV as first argument,
+REST as the remainder, returning T."
   (set-extent-property ov 'initial-redisplay-function
-                       `(lambda (ov) (,fun ov ,buff))))
+                       `(lambda (ov) (,fun ov ,@rest))))
 
 (defun preview-remove-urgentization (ov)
   "Undo urgentization of OV by `preview-add-urgentization'."
@@ -249,8 +268,11 @@ image will appear, while ICON itself is not changed."
 ;; We don't *need* to create a silly one-character string with contents that are
 ;; never seen...
 (defmacro preview-string-from-image (image)
-  "Make a string displaying IMAGE."
-  `(propertize "x" 'begin-glyph ,image))
+  "Make a string displaying IMAGE.
+In fact, it won't display IMAGE without preprocessing; the
+image is in the `glyph' property, but you must move it to either
+the `begin-glyph' or `end-glyph' property of some extent."
+  `(propertize "x" 'glyph ,image))
 
 (defmacro preview-replace-icon (icon replacement)
   "Replace an ICON representation by REPLACEMENT, another icon."
@@ -288,13 +310,13 @@ on preview's clicks."
              res)
          '(resmap))))
 
-(defun preview-ps-image (filename scale)
+(defun preview-ps-image (filename scale &optional box)
   "Place a PostScript image directly by Emacs.
 This uses XEmacs built-in PostScript image support for
 rendering the preview image in EPS file FILENAME, with
 a scale factor of SCALE indicating the relation of desired
 image size on-screen to the size the PostScript code
-specifies.
+specifies.  If BOX is present, it is the bounding box info.
 
 Since there is, as yet, no such support, this is stubbed out.
 This will not be so forever."
@@ -304,22 +326,23 @@ This will not be so forever."
 
 ;; Most of the changes to this are junking the use of overlays;
 ;; a bit of it is different, and there's a little extra paranoia.
-(defun preview-toggle (ov &optional args)
+
+;; We also have to move the image from the begin to the end-glyph
+;; whenever the extent is invisible because of a bug in XEmacs-21.4's
+;; redisplay engine.
+(defun preview-toggle (ov &optional arg)
   "Toggle visibility of preview overlay OV.
-ARGS can be one of the following, in order to make this most
-useful for isearch hooks: nothing, which means making the
-overlay contents visible.  nil currently means the same (this
-is the value used when isearch temporarily opens the overlay)
-but could change in future, for example displaying both preview
-and source text.  t makes the contents invisible, and 'toggle
-toggles it."
+ARG can be one of the following: t displays the overlay,
+nil displays the underlying text, and 'toggle toggles."
+;; TODO: Fix the messing around with glyphs-in-properties versus
+;;       glyphs on their own.
   (if (not (bufferp (extent-object ov)))
       (error 'wrong-type-argument ov))
   (let ((old-urgent (preview-remove-urgentization ov))
         (preview-state
-         (if (if (eq args 'toggle)
+         (if (if (eq arg 'toggle)
                  (not (eq (extent-property ov 'preview-state) 'active))
-               args)
+               arg)
              'active
            'inactive))
         (strings (extent-property ov 'strings)))
@@ -327,21 +350,24 @@ toggles it."
       (set-extent-property ov 'preview-state preview-state)
       (if (eq preview-state 'active)
           (progn
-            (set-extent-property ov 'invisible t)
-            (if (eq (extent-start-position ov) (extent-end-position ov))
-                (set-extent-properties `(begin-glyph ,(car strings)
-                                         begin-glyph-layout text))
-              (dolist (prop '(begin-glyph keymap mouse-face balloon-help))
-                (set-extent-property ov prop
-                                     (get-text-property 0 prop (caar strings)))))
-            (set-extent-property ov 'face nil)
+            (set-extent-properties ov `(invisible t
+                                        face nil
+                                        begin-glyph nil
+                                        begin-glyph-layout text
+                                        end-glyph ,(get-text-property 0 'glyph (car strings))))
+            (dolist (prop '(keymap mouse-face balloon-help))
+              (set-extent-property ov prop
+                                   (get-text-property 0 prop (car strings))))
 ;            (with-current-buffer (overlay-object ov)  ; not yet implemented
 ;              (add-hook 'pre-command-hook #'preview-mark-point nil t)
 ;              (add-hook 'post-command-hook #'preview-move-point nil t))
             )
         (dolist (prop '(keymap mouse-face balloon-help invisible))
           (set-extent-property ov prop nil))
-        (set-extent-properties ov `(face preview-face begin-glyph ,(cadr strings))))
+        (set-extent-properties ov `(face preview-face
+                                    begin-glyph ,(get-text-property 0 'glyph (cdr strings))
+                                    begin-glyph-layout text
+                                    end-glyph nil)))
       (if old-urgent
           (apply 'preview-add-urgentization old-urgent)))))
 
@@ -360,15 +386,13 @@ FALLBACKS is unused."
   (face-attribute face attribute))
 
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
-  "This activates the LaTeX menus for the BODYFORMS
-so that one can add to them.
+  "Activates the LaTeX menus for the BODYFORMS.
+This makes it possible to add to them.
 
 Because of a bug in easymenu.el, we can only add items to the
 current menubar. So we temporarily add the TeX and LaTeX menus
 to the current menubar. This is a quite appalling kludge."
-  `(let* ((current-menubar (copy-sequence current-menubar)))
-     (add-submenu nil TeX-mode-menu)
-     (add-submenu nil LaTeX-mode-menu)
+  `(let* ((current-menubar (list LaTeX-mode-menu TeX-mode-menu)))
      ,@bodyforms))
 
 (defun preview-gs-get-colors ()
