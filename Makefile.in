@@ -217,9 +217,9 @@ tar-ball:
 	cp images/*.??m auctex-$(TAG)/images
 	cp $(STYLESRC) $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
-	(cd doc; $(MAKE) dist; cp auctex ../auctex-$(TAG)/doc )
+	(cd doc; $(MAKE) dist; cp auctex.info ../auctex-$(TAG)/doc )
 	(cd doc; \
-	for x in auctex-*; do \
+	for x in auctex.info-*; do \
 	  if [ -r $$x ]; then \
 	    cp $$x ../auctex-$(TAG)/doc ; \
 	  fi; \
