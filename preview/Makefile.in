@@ -6,7 +6,7 @@ TEXHASH=@TEXHASH@
 
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file
-AUCTEX=-eval '(if (not (string-match "$(AUCTEXDIR)" "")) \
+AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
 prefix = @prefix@
@@ -39,13 +39,13 @@ install-texmf: preview.sty prauctex.def
 	-$(TEXHASH) $(texmfdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
-	$(TEX) -interaction nonstopmode bootstrap.ins
+	$(TEX) '\nonstopmode \input bootstrap.ins'
 
 preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
-	$(TEX) -interaction nonstopmode preview-mk.ins
+	$(TEX) '\nonstopmode \input preview-mk.ins'
 
 preview.dvi: preview.drv preview.dtx
-	$(LATEX) -interaction nonstopmode preview.drv
+	$(LATEX) '\nonstopmode \input preview.drv'
 
 preview.elc: preview.el
 	$(ELCC) $(AUCTEX) -f batch-byte-compile preview.el
