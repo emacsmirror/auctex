@@ -1,4 +1,4 @@
-%define basename auctex
+%define pkgname     auctex
 
 %define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
 
@@ -6,27 +6,27 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{basename}.el
+%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{pkgname}.el
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{basename}-init.el
+%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{pkgname}-init.el
 %endif
 
 Summary: 	Enhanced LaTeX mode for Emacs
-Name: 		%{basename}-emacs
+Name: 		%{pkgname}-emacs
 Version: 	11.52
 Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
-Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{basename}-%{version}.tar.gz
+Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{pkgname}-%{version}.tar.gz
 Requires: 	emacs >= 21
 #BuildRequires: 	emacs-X11
 Obsoletes:      ge_auc emacs-auctex auctex
 BuildArchitectures: noarch
-BuildRoot: 	%{_tmppath}/%{basename}-root
+BuildRoot: 	%{_tmppath}/%{pkgname}-root
 
 %description 
 AUCTeX is an extensible package that supports writing and formatting TeX files
@@ -92,7 +92,7 @@ rm -rf %{buildroot}
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
 %doc %{_infodir}/*
-%{_datadir}/emacs/site-lisp/%{basename}
+%{_datadir}/emacs/site-lisp/%{pkgname}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
