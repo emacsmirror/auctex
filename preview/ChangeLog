@@ -1,3 +1,15 @@
+2002-03-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/install.texi: Incorporated "Prerequisites" from readme.texi
+
+	* doc/preview-latex.texi: Moved "Getting started" to readme.texi,
+	also index changes
+
+	* doc/readme.texi: Moved "Getting started" from
+	preview-latex.texi, moved "Prerequisites" to install.texi, Placed
+	appropriate pointers and crossreferences in README and other
+	manuals
+
 2002-03-24  David Kastrup  <David.Kastrup@t-online.de>
 
 	* RELEASE: Info about RedHat 7.3 beta.
