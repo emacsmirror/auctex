@@ -70,12 +70,13 @@ from @AUCTeX{}'s menus.  When you have loaded a @LaTeX{} document (a
 sample document @file{circ.tex} is included in the distribution, but
 most documents including math and/or figures should do), you should be
 able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus, or press
-@kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or @kbd{C-c C-p
-C-p} (for ``On/off at point'').  Previews will now be generated for
-various objects in your document. You'll see them change into a
-roadworks sign when the process is half finished. Note that you can
-freely navigate the buffer while this is going on. When the process is
-finished you will see the objects typeset in your buffer.
+@kbd{C-c C-c g @key{RET}} (for the menu entry @samp{Command/Generate
+Preview}) or @kbd{C-c C-p C-b} (for @samp{LaTeX/Preview/Buffer}).
+Previews will now be generated for various objects in your
+document. You'll see them change into a roadworks sign when the process
+is half finished. Note that you can freely navigate the buffer while
+this is going on. When the process is finished you will see the objects
+typeset in your buffer.
 
 It is a bad idea, however, to edit the buffer before the roadworks signs
 appear, since that is the moment when the correlation between the
@@ -86,8 +87,9 @@ spotted, we recommend you stop the background process by pressing
 @kbd{C-c C-k}.
 
 To see/edit the @LaTeX{} code for a specific object, put the point (the
-cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
-and generate a new preview by again pressing @kbd{C-c C-p C-p}.
+cursor) on it and press @kbd{C-c C-p C-p} (for
+@samp{LaTeX/Preview/On/off at point}). Now you can edit the code, and
+generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
 If you are using the @code{desktop} package, previews will remain from
 one session to the next as long as you don't kill your buffer.  If you
@@ -116,15 +118,9 @@ info preview-latex
 @end example
 
 @noindent
-or with
-
-@example
-@kbd{C-h i d m preview-latex @key{RET}}
-@end example
-
-@noindent
-from inside Emacs. Once @previewlatex{} is activated, the info manual is
-also present as the menu entry @samp{LaTeX/Preview/Read documentation}.
+or by pressing @kbd{C-h i d m preview-latex @key{RET}} in Emacs. Once
+@previewlatex{} is activated, you can instead use @kbd{C-c C-p
+@key{TAB}} (or the menu entry @samp{LaTeX/Preview/Read documentation}).
 
 Depending on your installation, 
 @ifnottex
@@ -166,7 +162,10 @@ binary @file{.rpm} files suitable for a recent RedHat system. Anonymous
 
 Bug reports should be sent by using @kbd{M-x preview-report-bug
 @key{RET}}, as this will fill in a lot of information interesting to
-us. Questions, suggestions for new features, and/or pleas for help
+us. If the installation fails (but this should be a rare event), contact
+the developers at @email{preview-latex-bugs@@lists.sourceforge.net}.
+
+Questions, suggestions for new features, pleas for help, and/or praise
 should go to @email{preview-latex-devel@@lists.sourceforge.net} (the
 @previewlatex{} devel team).  For more information on this mailing list,
 send a message with just the word @samp{help} as subject or body to
