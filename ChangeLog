@@ -1,3 +1,8 @@
+2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex-buf.el (TeX-region-create): Make file name in !name
+	messages relative to master file directory.
+
 2002-12-06  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex.el: Lots of doc fixes/white space.  Did the mistake of
