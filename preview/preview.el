@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.61 2002-02-18 16:52:54 dakas Exp $
+;; $Id: preview.el,v 1.62 2002-02-25 08:40:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -132,7 +132,7 @@ that is."
 	 	   
 
 (defvar TeX-active-tempdir nil
-  "CONS of a directory name and a reference count.")
+  "List of directory name, top directory name and reference count.")
 (make-variable-buffer-local 'TeX-active-tempdir)
 
 ;; (defun preview-extract-bb (filename)
@@ -395,7 +395,7 @@ The usual PROCESS and COMMAND arguments for
 	     (if (overlay-get ov 'queued)
 		 (preview-delete ov)))
 	   (setq preview-gs-queue nil)
-	   (preview-clean-subdir (car TeX-active-tempdir))))))
+	   (preview-clean-subdir (nth 0 TeX-active-tempdir))))))
 
 (defun preview-gs-urgentize (ov buff)
   "Make a displayed overlay render with higher priority.
@@ -433,7 +433,6 @@ SNIPPET are used for making the name of the file to be generated."
     (overlay-put ov 'queued
 		 (vector
 		  nil
-		  thisimage
 		  nil))
     (push ov preview-gs-queue)
     (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
@@ -486,7 +485,7 @@ Try \\[ps-run-start] \\[ps-run-buffer] and \
 				    preview-gs-command-line)
 			      " ")
 		   "\nGS>"
-		   (aref (overlay-get ov 'queued) 2)
+		   (aref (overlay-get ov 'queued) 1)
 		   err))))
      " in "
      (preview-make-clickable
@@ -513,7 +512,7 @@ given as ANSWER."
 	    (let ((queued (overlay-get ov 'queued)))
 	      (when queued
 		(let* ((bbox (aref queued 0))
-		       (img (aref queued 1))
+		       (img (overlay-get ov 'preview-image))
 		       (filenames (overlay-get ov 'filenames))
 		       (oldfile (nth 0 filenames))
 		       (newfile (nth 1 filenames)))
@@ -561,7 +560,7 @@ cleardictstack 0 get restore\n"
 		  (setq preview-gs-outstanding
 			(nconc preview-gs-outstanding
 			       (list ov)))
-		  (aset queued 2 gs-line)
+		  (aset queued 1 gs-line)
 		  (process-send-string
 		   process
 		   gs-line
@@ -794,14 +793,56 @@ directory are kept."
 (add-hook 'kill-buffer-hook #'preview-clearout-buffer)
 (add-hook 'before-revert-hook #'preview-clearout-buffer)
 
+(defun desktop-buffer-preview-misc-data ()
+  (let (process save-info)
+    (dolist (ov (overlays-in (point-min) (point-max)))
+      (when (and (memq (overlay-get ov 'preview-state) '(active inactive))
+		 (null (overlay-get ov 'queued))
+		 (eq 1 (length (overlay-get ov 'filenames))))
+	(when (and (null save-info)
+		   (setq process (get-buffer-process (current-buffer))))
+	  (while process
+	    (delete-process process)
+	    (setq process (get-buffer-process (current-buffer))))
+	  (sit-for 0 0 t))
+	(push (preview-dissect ov) save-info)))
+    (and save-info
+	 (cons 'preview (cons (nth 5 (file-attributes (buffer-file-name)))
+			      save-info)))))
+
+(add-hook 'desktop-buffer-misc-functions #'desktop-buffer-preview-misc-data)
+
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
 Any directory not in this list will be cleared out by preview
 on first use."
 )
 
+(defun preview-dissect (ov)
+  (let ((filenames (subseq (nth 0 (overlay-get ov 'filenames)) 0 3)))
+    (setq preview-temp-dirs (delq (nth 2 filenames) preview-temp-dirs))
+    (prog1
+	(list (overlay-start ov)
+	      (overlay-end ov)
+	      (overlay-get ov 'preview-image)
+	      filenames)
+      (delete-overlay ov))))
+
+(defun desktop-buffer-preview ()
+  (and (eq (car desktop-buffer-misc) 'preview)
+       (not (memq (desktop-buffer-file) '(ignored nil)))
+       (let (tempdirlist)
+	 (pop desktop-buffer-misc)
+	 (when (equal (pop desktop-buffer-misc)
+		      (nth 5 (file-attributes (buffer-file-name))))
+	   (dolist (ovdata desktop-buffer-misc)
+	     (setq tempdirlist
+		   (apply #'preview-reinstate-preview tempdirlist ovdata)))))))
+
+(add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
+
 (add-hook 'kill-emacs-hook
-	  (lambda () (mapc #'preview-clean-topdir preview-temp-dirs)))
+	  (lambda () (mapc #'preview-clean-topdir preview-temp-dirs)) t)
 
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
@@ -827,14 +868,14 @@ Since OV already carries all necessary information,
 the argument SNIPPET passed via a hook mechanism is ignored."
   (preview-ps-image (car (nth 0 (overlay-get ov 'filenames))) preview-scale))
 
-(defun preview-active-string (ov snippet)
+(defun preview-active-string (ov image)
   "Generate before-string for active image overlay OV.
 This calls the `place' hook indicated by `preview-image-type'
 in `preview-image-creators' with OV and SNIPPET
 and expects an image property as result."
   (preview-make-clickable
    (overlay-get ov 'preview-map)
-   (preview-string-from-image (preview-call-hook 'place ov snippet))
+   (preview-string-from-image image)
    "%s opens text
 %s kills preview"))
 
@@ -842,10 +883,10 @@ and expects an image property as result."
   "Generate a preview filename from FILE and `TeX-active-tempdir'.
 Those consist of a CONS-cell with absolute file name as CAR
 and `TeX-active-tempdir' as CDR.  `TeX-active-tempdir' is a
-CONS-cell with the directory name as CAR and the reference count
-as CDR."
-  (setcdr TeX-active-tempdir (1+ (cdr TeX-active-tempdir)))
-  (cons (expand-file-name file (car TeX-active-tempdir))
+list with the directory name, the reference count and its top directory
+name elements."
+  (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
+  (cons (expand-file-name file (nth 0 TeX-active-tempdir))
 	TeX-active-tempdir))
 
 (defun preview-delete-file (file)
@@ -857,10 +898,10 @@ it gets deleted as well."
       (delete-file (car file))
     (let ((tempdir (cdr file)))
       (when tempdir
-	(if (> (cdr tempdir) 1)
-	    (setcdr tempdir (1- (cdr tempdir)))
+	(if (> (nth 2 tempdir) 1)
+	    (setcar (nthcdr 2 tempdir) (1- (nth 2 tempdir)))
 	  (setcdr file nil)
-	  (delete-directory (car tempdir)))))))
+	  (delete-directory (nth 0 tempdir)))))))
 
 (defun preview-place-preview (snippet source start end)
   "Generate and place an overlay preview image.
@@ -870,7 +911,7 @@ snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end TeX-active-tempdir)
-	      (make-overlay start end nil nil nil))))
+	      (make-overlay start end nil nil nil))) image)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -878,11 +919,36 @@ region between START and END."
 		  `(lambda() (interactive) (preview-delete ,ov))))
     (overlay-put ov 'filenames (list (preview-make-filename
 				      (format "preview.%03d" snippet))))
+    (overlay-put ov 'preview-image
+		 (setq image (preview-call-hook 'place ov snippet)))
     (overlay-put ov 'strings
-		 (cons (preview-active-string ov snippet)
+		 (cons (preview-active-string ov image)
 		       (preview-inactive-string ov)))
     (preview-toggle ov t)))
 
+(defun preview-reinstate-preview (tempdirlist start end image filename)
+  (setq TeX-active-tempdir
+	(or (assoc (nth 1 filename) tempdirlist)
+	    (car (push (append (cdr filename) (list 0)) tempdirlist))))
+  (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
+  (setcar (cdr TeX-active-tempdir)
+	  (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
+		   (push (nth 1 TeX-active-tempdir) preview-temp-dirs))))
+  (setcdr filename TeX-active-tempdir)
+  (let ((ov (make-overlay start end nil nil nil)))
+    (overlay-put ov 'preview-map
+		 (preview-make-clickable
+		  nil nil nil
+		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
+		  `(lambda() (interactive) (preview-delete ,ov))))
+    (overlay-put ov 'filenames (list filename))
+    (overlay-put ov 'preview-image image)
+    (overlay-put ov 'strings
+		 (cons (preview-active-string
+			ov image)
+		       (preview-inactive-string ov)))
+    (preview-toggle ov t))
+  tempdirlist)
 
 (defun preview-back-command (&optional posn buffer)
   "Move backward a TeX token from POSN in BUFFER.
@@ -1057,9 +1123,11 @@ later while in use."
 	(make-directory topdir))
       (push topdir preview-temp-dirs))
     (setq TeX-active-tempdir
-	  (cons (make-temp-file (expand-file-name
-			   "tmp" (file-name-as-directory topdir)) t) 0))
-    (car TeX-active-tempdir)))
+	  (list (make-temp-file (expand-file-name
+			   "tmp" (file-name-as-directory topdir)) t)
+		topdir
+		0))
+    (nth 0 TeX-active-tempdir)))
 
 (defun preview-translate-location ()
   "Skip Package Preview Errors via `throw' of 'preview-error-tag.
@@ -1138,7 +1206,7 @@ document style for LaTeX."
 	       ((string-match "!name(\\([^)]*\\))" string)
 		(rplaca TeX-error-file (match-string 1 string))))))
 	  (if (zerop preview-snippet)
-	      (preview-clean-subdir (car TeX-active-tempdir))) )
+	      (preview-clean-subdir (nth 0 TeX-active-tempdir))) )
       (preview-call-hook 'close))))
 
 (defun preview-analyze-error (snippet startflag)
@@ -1325,7 +1393,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.61 $"))
+	(rev "$Revision: 1.62 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
