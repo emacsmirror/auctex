@@ -4,6 +4,10 @@
 
 2004-08-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* aclocal.m4: EMACS_PATH_LISPDIR: Expand lispdir if relative to
+	binary. Quote lispdir, and deal with exec_prefix, add missing
+	bracket.
+
 	* aclocal.m4: Fix xemacs<->emacs mistake, restore path searching
 	when --without-packagedir is given
 
