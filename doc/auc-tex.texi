@@ -13,17 +13,17 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.164 2004-07-29 08:58:45 angeli Exp $
+@c $Id: auc-tex.texi,v 1.165 2004-07-30 11:24:33 angeli Exp $
 
 @finalout
 @titlepage
 @title AUC@TeX{}
 @subtitle A much enhanced La@TeX{} mode for Emacs.
-@subtitle Almost Version 12
+@subtitle Version 11.50
 
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 11 by Per Abrahamsen
-@author updated for almost 12 by David Kastrup
+@author updates from 6.1 to 11.13 by Per Abrahamsen
+@author updates from 11.14 by David Kastrup
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1993, 1994, 1995,
@@ -61,7 +61,7 @@ approved by the Free Software Foundation.
 AUC@TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.
 
-This file almost documents AUC@TeX{} version 12.
+This file documents AUC@TeX{} version 11.50.
 
 Although AUC@TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -84,8 +84,8 @@ important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.
 
 Kresten Krab Thorup (6.0) @*
-Per Abrahamsen (updates to 11) @*
-David Kastrup (updates from almost 12)
+Per Abrahamsen (updates to 11.13) @*
+David Kastrup (updates from 11.14)
 
 There is a mailing list for discussion about AUC@TeX{} and announcement
 of alpha releases, write to @samp{auc-tex-request@@sunsite.dk} to join
@@ -111,7 +111,7 @@ TeX-submit-bug-report} to report bugs if possible.
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Installation::                How to install AUC@TeX{}
-* History::                     The History of AUC@TeX{}
+* Changes::                     Changes and New Features
 * ToDo::                        Future Development
 * FAQ::                         Frequently Asked Questions
 * Key Index::                   Key Index
@@ -2743,21 +2743,21 @@ List of functions to be called before parsing a @TeX{} file.
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
-@node Installation, History, Style Files, top
+@node Installation, Changes, Style Files, top
 @chapter How to install AUC@TeX{}
 @include install.texi
 
-@node History, ToDo, Installation, top
+@node Changes, ToDo, Installation, top
 @comment  node-name,  next,  previous,  up
-@appendix The History of AUC@TeX{}
+@appendix Changes and New Features
 
 See the file @file{history.texi} for older changes.
 
 @include changes.texi
 
-@node ToDo, FAQ, History, top
+@node ToDo, FAQ, Changes, top
 @comment  node-name,  next,  previous,  up
-@appendix ToDo
+@appendix Future Development
 @include todo.texi
 
 @node FAQ, Key Index, ToDo, top
