@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 1993, 1994, 1996, 1997, 1999,
-;;   2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 1993, 1994, 1996, 1997, 1999, 2000,
+;;   2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.494 $"))
+	    (rev "$Revision: 5.495 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-30 13:31:17 $"))
+    (let ((date "$Date: 2005-04-02 07:30:36 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4337,72 +4337,112 @@ With optional argument ARG, also reload the style hooks."
   :group 'AUCTeX)
 
 (defcustom TeX-open-quote "``"
-  "*String inserted by typing \\[TeX-insert-quote] to open a quotation."
+  "String inserted by typing \\[TeX-insert-quote] to open a quotation."
   :group 'TeX-quote
   :type 'string)
 
 (defcustom TeX-close-quote "''"
-  "*String inserted by typing \\[TeX-insert-quote] to close a quotation."
+  "String inserted by typing \\[TeX-insert-quote] to close a quotation."
   :group 'TeX-quote
   :type 'string)
 
 (defcustom TeX-quote-after-quote nil
-  "*Behaviour of \\[TeX-insert-quote].  Nil means standard behaviour;
-when non-nil, opening and closing quotes are inserted only after \"."
+  "Behaviour of \\[TeX-insert-quote].
+Nil means standard behaviour; when non-nil, opening and closing
+quotes are inserted only after \"."
   :group 'TeX-quote
   :type 'boolean)
 
+(defcustom TeX-quote-language-alist nil
+  "Alist for overriding the default language-specific quote insertion.
+First element in each item is the name of the language as set by
+the language style file.  Second element is a cons cell
+containing the opening and closing quotation marks as strings.
+Third element is a boolean specifying insertion behavior,
+overriding `TeX-quote-after-quote'."
+  :group 'TeX-quote
+  :type '(alist :key-type (string :tag "Language")
+		:value-type (group
+			     (cons (string :tag "Opening quotation mark")
+				   (string :tag "Closing quotation mark"))
+			     (boolean :tag "Insert plain quote first"))))
+
+(defvar TeX-quote-language nil
+  "If non-nil determines behavior of quote insertion.
+It is usually set by language-related style files.  Its value has
+the same structure as the elements of `TeX-quote-language-alist'.
+The symbol 'override can be used as its the car in order to
+override the settings of style files.  Style files should
+therefore check if this symbol is present and not alter
+`TeX-quote-language' if it is.")
+(make-variable-buffer-local 'TeX-quote-language)
+
 ;;;###autoload
 (defun TeX-insert-quote (force)
-  "Insert the appropriate quote marks for TeX.
+  "Insert the appropriate quotation marks for TeX.
 Inserts the value of `TeX-open-quote' (normally ``) or `TeX-close-quote'
 \(normally '') depending on the context.  If `TeX-quote-after-quote'
 is non-nil, this insertion works only after \".
 With prefix argument FORCE, always inserts \" characters."
   (interactive "*P")
-  (if force
+  (if (or force
+	  ;; Do not insert TeX quotes in verbatim, math or comment constructs.
+	  (and (fboundp 'font-latex-faces-present-p)
+	       (font-latex-faces-present-p '(font-latex-verbatim-face
+					     font-latex-math-face
+					     font-lock-comment-face)))
+	  (texmathp)
+	  (TeX-in-comment))
       (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
-    (if TeX-quote-after-quote
+    (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
+			      TeX-quote-language
+			    (assoc (car TeX-quote-language)
+				   TeX-quote-language-alist)))
+	   (lang (or lang-override TeX-quote-language))
+	   (open-quote (if lang (car (nth 1 lang)) TeX-open-quote))
+	   (close-quote (if lang (cdr (nth 1 lang)) TeX-close-quote))
+	   (q-after-q (if lang (nth 2 lang) TeX-quote-after-quote)))
+      (if q-after-q
+	  (insert (cond ((bobp)
+			 ?\")
+			((not (= (preceding-char) ?\"))
+			 ?\")
+			((save-excursion
+			   (forward-char -1)
+			   (bobp))
+			 (delete-backward-char 1)
+			 open-quote)
+			((save-excursion
+			   (forward-char -2) ;;; at -1 there is double quote
+			   (looking-at "[ \t\n]\\|\\s("))
+			 (delete-backward-char 1)
+			 open-quote)
+			(t
+			 (delete-backward-char 1)
+			 close-quote)))
 	(insert (cond ((bobp)
+		       open-quote)
+		      ((= (preceding-char) (string-to-char TeX-esc))
 		       ?\")
-		      ((not (= (preceding-char) ?\"))
+		      ((= (preceding-char) ?\")
+		       ?\")
+		      ((save-excursion
+			 (forward-char (- (length open-quote)))
+			 (looking-at (regexp-quote open-quote)))
+		       (delete-backward-char (length open-quote))
+		       ?\")
+		      ((save-excursion
+			 (forward-char (- (length close-quote)))
+			 (looking-at (regexp-quote close-quote)))
+		       (delete-backward-char (length close-quote))
 		       ?\")
 		      ((save-excursion
 			 (forward-char -1)
-			 (bobp))
-		       (delete-backward-char 1)
-		       TeX-open-quote)
-		      ((save-excursion
-			 (forward-char -2) ;;; at -1 there is double quote
 			 (looking-at "[ \t\n]\\|\\s("))
-		       (delete-backward-char 1)
-		       TeX-open-quote)
+		       open-quote)
 		      (t
-		       (delete-backward-char 1)
-		       TeX-close-quote)))
-      (insert (cond ((bobp)
-		     TeX-open-quote)
-		    ((= (preceding-char) (string-to-char TeX-esc))
-		     ?\")
-		    ((= (preceding-char) ?\")
-		     ?\")
-		    ((save-excursion
-		       (forward-char (- (length TeX-open-quote)))
-		       (looking-at (regexp-quote TeX-open-quote)))
-		     (delete-backward-char (length TeX-open-quote))
-		     ?\")
-		    ((save-excursion
-		       (forward-char (- (length TeX-close-quote)))
-		       (looking-at (regexp-quote TeX-close-quote)))
-		     (delete-backward-char (length TeX-close-quote))
-		     ?\")
-		    ((save-excursion
-		       (forward-char -1)
-		       (looking-at "[ \t\n]\\|\\s("))
-		     TeX-open-quote)
-		    (t
-		     TeX-close-quote))))))
+		       close-quote)))))))
 
 ;; For the sake of BibTeX...
 ;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
@@ -4439,7 +4479,7 @@ between."
 Don't hesitate to report any problems or inaccurate documentation.
 
 If you don't have setup sending mail from (X)Emacs, please copy
-the output buffer into your mail program, as is gives use
+the output buffer into your mail program, as is gives us
 important information about your AUCTeX version and AUCTeX
 configuration."
   (interactive)
