@@ -2652,16 +2652,18 @@ space does not end a sentence, so don't break a line there."
 	(when (fboundp 'kinsoku-process) ;XEmacs
 	  (kinsoku-process)))))
   ;; Prevent line break between 2-byte char and 1-byte char.
-  (when (and enable-multibyte-characters
+  (when (and (featurep 'mule)
+	     enable-multibyte-characters
 	     (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
 		      (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
 		 (and (not (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
-		      (looking-at LaTeX-nospace-between-char-regexp))))
-    (re-search-backward
-     (concat LaTeX-nospace-between-char-regexp LaTeX-nospace-between-char-regexp
-	     LaTeX-nospace-between-char-regexp
-	     "\\|"
-	     ".\\ca\\s +\\ca") linebeg t)
+		      (looking-at LaTeX-nospace-between-char-regexp)))
+	     (re-search-backward
+	      (concat LaTeX-nospace-between-char-regexp
+		      LaTeX-nospace-between-char-regexp
+		      LaTeX-nospace-between-char-regexp
+		      "\\|"
+		      ".\\ca\\s +\\ca") linebeg t))
     (if (looking-at "..\\c>")
 	(forward-char 1)
       (forward-char 2)))
