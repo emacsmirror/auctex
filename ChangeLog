@@ -8,6 +8,7 @@
 	* latex.el (LaTeX-fill-move-to-break-point): Use TeX-esc in
 	regexps to accommodate Texinfo better.
 	(LaTeX-fill-move-to-break-point): no regexp-quote within braces.
+	(LaTeX-common-initialization): Correct \multicolumn prompt
 
 2004-03-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
