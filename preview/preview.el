@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.86 2002-03-25 22:37:20 dakas Exp $
+;; $Id: preview.el,v 1.87 2002-03-27 19:57:16 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -409,7 +409,9 @@ Gets the usual PROCESS and STRING parameters, see
       process)
     ))
 
-(defalias 'preview-gs-close #'ignore)
+(defun preview-gs-close (closedata)
+  "Set up the queue accumulated in CLOSEDATA in the TeX run buffer."
+  (setq preview-gs-queue closedata))
 
 (defun preview-gs-open (imagetype gs-optionlist)
   "Start a GhostScript conversion pass.
@@ -435,7 +437,8 @@ aload pop restore}def "
   (setq preview-gs-queue nil)
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (preview-parse-messages)
+    (preview-parse-messages (current-buffer) TeX-active-tempdir
+			    preview-ps-file)
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
@@ -447,7 +450,7 @@ aload pop restore}def "
 	 (process (preview-start-dvips)))
     (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
 			      process))
-  (preview-parse-messages))
+  (preview-parse-messages TeX-active-tempdir preview-scale))
   
 (defun preview-dsc-parse (file)
   "Parse DSC comments of FILE.
@@ -514,7 +517,7 @@ The usual PROCESS and COMMAND arguments for
 	   (unless preview-gs-queue
 	     (setq compilation-in-progress
 		   (delq process compilation-in-progress))
-	     (error "No preview images found."))
+	     (error "No preview images found"))
 	   (if preview-ps-file
 	       (preview-prepare-fast-conversion))
 	   (preview-gs-restart))
@@ -548,23 +551,29 @@ is located."
   t)
 
 
-(defun preview-gs-place (ov snippet box)
+(defun preview-gs-place (ov snippet box run-buffer tempdir ps-file)
   "Generate an image placeholder rendered over by GhostScript.
 This enters OV into all proper queues in order to make it render
 this image for real later, and returns a substitute image
-to be placed as a first measure.  `TeX-active-tempdir' and
-SNIPPET are used for making the name of the file to be generated.
-BOX is a bounding box if we already know one via TeX."
-  (let ((thisimage (preview-image-from-icon preview-nonready-icon))
-	(filenames (overlay-get ov 'filenames)))
-    (setcdr filenames
-	    (list (preview-make-filename
-		   (format "prevnew.%03d" snippet))))
+to be placed as a first measure.  SNIPPET gives the number of the
+snippet in question for the file to be generated.
+BOX is a bounding box if we already know one via TeX.
+RUN-BUFFER is the buffer of the TeX process,
+TEMPDIR is the correct copy of `TeX-active-tempdir',
+PS-FILE is a copy of `preview-ps-file'."
+  (let ((thisimage (preview-image-from-icon preview-nonready-icon)))
+    (overlay-put ov 'filenames
+		 (list
+		  (preview-make-filename
+		   (or ps-file
+		       (format "preview.%03d" snippet))
+		   tempdir)
+		  (preview-make-filename
+		   (format "prevnew.%03d" snippet) tempdir)))
     (overlay-put ov 'queued
 		 (vector box nil snippet))
-    (push ov preview-gs-queue)
-    (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
-    thisimage))
+    (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
+    (list thisimage ov)))
 
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
@@ -1044,7 +1053,8 @@ This is called as a hook when exiting Emacs."
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
 This is for overlays where the source text has been clicked
-visible."
+visible.  For efficiency reasons it is expected that the buffer
+is already selected and unnarrowed."
   (concat
    (preview-make-clickable (overlay-get ov 'preview-map)
 			   (preview-string-from-image preview-icon)
@@ -1053,20 +1063,24 @@ visible."
 %s kills preview")
 ;; icon on separate line only for stuff starting on its own line
    (save-excursion
-     (with-current-buffer
-	 (overlay-buffer ov)
-       (goto-char (overlay-start ov))
-       (if (bolp) "\n" "")))))
+     (goto-char (overlay-start ov))
+     (if (bolp) "\n" ""))))
 
 
-(defun preview-eps-place (ov snippet box)
+(defun preview-eps-place (ov snippet box tempdir scale)
   "Generate an image via direct EPS rendering.
 Since OV already carries all necessary information,
 the argument SNIPPET passed via a hook mechanism is ignored.
-BOX is a bounding box from TeX if we know one."
-  (preview-ps-image (car (nth 0 (overlay-get ov 'filenames)))
-		    preview-scale
-		    (and preview-prefer-TeX-bb box)))
+BOX is a bounding box from TeX if we know one.  TEMPDIR is used
+for creating the file name, and SCALE is a copy
+of `preview-scale' necessary for `preview-ps-image."
+  (let ((filename (preview-make-filename
+		   (format "preview.%03d" snippet)
+		   tempdir)))
+    (overlay-put ov 'filenames (list filename))
+    (list (preview-ps-image (car filename)
+			    scale
+			    (and preview-prefer-TeX-bb box)))))
 
 (defun preview-active-string (ov image)
   "Generate before-string for active image overlay OV.
@@ -1077,11 +1091,11 @@ The IMAGE for clicking is passed in as an argument."
    "%s opens text
 %s kills preview"))
 
-(defun preview-make-filename (file)
-  "Generate a preview filename from FILE and `TeX-active-tempdir'.
-Those consist of a CONS-cell with absolute file name as CAR
-and `TeX-active-tempdir' as CDR.  `TeX-active-tempdir' is a
-list with the directory name, the reference count and its top directory
+(defun preview-make-filename (file tempdir)
+  "Generate a preview filename from FILE and TEMPDIR.
+Filenames consist of a CONS-cell with absolute file name as CAR
+and TEMPDIR as CDR.  TEMPDIR is a copy of `TeX-active-tempdir'
+with the directory name, the reference count and its top directory
 name elements.  If FILE is already in that form, the file name itself
 gets converted into a CONS-cell with a name and a reference count."
   (if (consp file)
@@ -1090,9 +1104,9 @@ gets converted into a CONS-cell with a name and a reference count."
 	    (setcdr (car file) (1+ (cdr (car file))))
 	  (setcar file (cons (car file) 1)))
 	file)
-    (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
-    (cons (expand-file-name file (nth 0 TeX-active-tempdir))
-	  TeX-active-tempdir)))
+    (setcar (nthcdr 2 tempdir) (1+ (nth 2 tempdir)))
+    (cons (expand-file-name file (nth 0 tempdir))
+	  tempdir)))
 
 (defun preview-delete-file (file)
   "Delete a preview FILE.
@@ -1115,33 +1129,33 @@ it gets deleted as well."
 		(setcdr file nil)
 		(delete-directory (nth 0 tempdir)))))))))
 
-(defun preview-place-preview (snippet source start end box)
+(defun preview-place-preview (snippet start end box tempdir place-opts)
   "Generate and place an overlay preview image.
-This generates the EPS filename used in `TeX-active-tempdir'
-\(see `preview-make-filename' for its definition) for preview
-snippet SNIPPET in buffer SOURCE, and uses it for the
+This generates the filename for the preview
+snippet SNIPPET in the current buffer, and uses it for the
 region between START and END.  BOX is an optional preparsed
-TeX bounding BOX passed on to the `place' hook."
-  (let* ((save-temp TeX-active-tempdir)
-	 (ov (with-current-buffer source
-	       (save-restriction
-		 (widen)
-		 (preview-clearout start end save-temp)
-		 (make-overlay start end nil nil nil)))) image)
+TeX bounding BOX passed on to the `place' hook.
+TEMPDIR is a copy of `TeX-active-tempdir'.
+PLACE-OPTS are additional arguments passed into
+`preview-parse-messages'.  Returns
+a list with additional info from the placement hook.
+Those lists get concatenated together and get passed
+to the close hook."
+  (preview-clearout start end tempdir)
+  (let ((ov (make-overlay start end nil nil nil)) placement)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
 		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
 		  `(lambda() (interactive) (preview-delete ,ov))))
-    (overlay-put ov 'filenames (list (preview-make-filename
-				      (or preview-ps-file
-					  (format "preview.%03d" snippet)))))
-    (overlay-put ov 'preview-image
-		 (setq image (preview-call-hook 'place ov snippet box)))
+    (setq placement (apply #'preview-call-hook 'place ov snippet box
+			   place-opts))
+    (overlay-put ov 'preview-image (car placement))
     (overlay-put ov 'strings
-		 (cons (preview-active-string ov image)
+		 (cons (preview-active-string ov (car placement))
 		       (preview-inactive-string ov)))
-    (preview-toggle ov t)))
+    (preview-toggle ov t)
+    (cdr placement)))
 
 (defun preview-reinstate-preview (tempdirlist start end image filename)
   "Reinstate a single preview.
@@ -1395,15 +1409,23 @@ See `TeX-parse-TeX' for documentation of REPARSE."
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
       
-(defun preview-parse-messages ()
+(defun preview-parse-messages (&rest place-opts)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
-document style for LaTeX."
+document style for LaTeX.  PLACE-OPTS are passed on to
+the placement hook."
   (with-temp-message "locating previews..."
-    (TeX-parse-reset)
-    (unwind-protect
-	(let ((parsestate (list 0 nil nil nil nil nil)))
-	  (goto-char TeX-error-point)
+    (let (TeX-error-file TeX-error-offset snippet box
+	  file line buffer
+	  (lsnippet 0) lstart lfile lline lbuffer lpoint
+	  string after-string next-point error context-start
+	  context offset
+	  parsestate (case-fold-search nil)
+	  (run-buffer (current-buffer))
+	  (tempdir TeX-active-tempdir)
+	  closedata)
+      (goto-char (point-min))
+      (unwind-protect
 	  (while
 	      (re-search-forward "\
 \\(^! \\)\\|\
@@ -1412,10 +1434,10 @@ document style for LaTeX."
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
 ;;; Ok, here is a line by line downbreak: match-alternative 1:
-;;; \\(^! \\)
-;;; explamation point at start of line followed by blank: TeX error
+;;; \(^! \)
+;;; exclamation point at start of line followed by blank: TeX error
 ;;; match-alternative 2:
-;;; \\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)
+;;; \(?:^\| \)(\([^()\n ]+\))*\(?: \|$\)
 ;;; Deep breath: an opening paren either at the start od the line or
 ;;; preceded by a space, followed by a file name (which we take to be
 ;;; consiting of anything but parens, space or newline), followed
@@ -1425,22 +1447,22 @@ name(\\([^)]+\\))\\)" nil t)
 ;;; not miss closing parens or something.
 ;;; (match-string 2) is the file name.
 ;;; match-alternative 3:
-;;; )+\\( \\|$\\)
+;;; )+\( \|$\)
 ;;; a closing paren followed by the end of line or a space: a just
 ;;; closed file.
 ;;; match-alternative 4 (wrapped into one shy group with
 ;;; match-alternative 5, so that the match on first char is slightly
 ;;; faster):
-;;; !offset(\\([---0-9]+\\))
+;;; !offset(\([---0-9]+\))
 ;;; an AUC TeX offset message. (match-string 4) is the offset itself
-;;; !name(\\([^)]+\\))
+;;; !name(\([^)]+\))
 ;;; an AUC TeX file name message.  (match-string 5) is the file name
 ;;; TODO: Actually, the latter two should probably again match only
 ;;; after a space or newline, since that it what \message produces.
 ;;;disabled in prauctex.def:
-;;;\\(?:Ov\\|Und\\)erfull \\\\.*[0-9]*--[0-9]*
-;;;\\(?:.\{79\}
-;;;\\)*.*$\\)\\|
+;;;\(?:Ov\|Und\)erfull \\.*[0-9]*--[0-9]*
+;;;\(?:.\{79\}
+;;;\)*.*$\)\|
 ;;; This would have caught overfull box messages that consist of
 ;;; several lines of context all with 79 characters in length except
 ;;; of the last one.  prauctex.def kills all such messages.
@@ -1449,25 +1471,59 @@ name(\\([^)]+\\))\\)" nil t)
 	      (if (looking-at "\
 Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 \\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
-		  (setq parsestate
-			(apply #'preview-analyze-error
-			       (string-to-int (match-string 1))
-			       (unless
-				   (string= (match-string 2) "started")
-				 (if (match-string 4)
-				     (mapcar #'string-to-int
-					     (list
-					      (match-string 4)
-					      (match-string 5)
-					      (match-string 6)))
-				   t))
-			       parsestate))
+		  (progn
+		    (setq snippet (string-to-int (match-string 1))
+			  box (unless
+				  (string= (match-string 2) "started")
+				(if (match-string 4)
+				    (mapcar #'string-to-int
+					    (list
+					     (match-string 4)
+					     (match-string 5)
+					     (match-string 6)))
+				  t))
+			  error (progn
+				  (setq lpoint (point))
+				  (end-of-line)
+				  (buffer-substring lpoint (point)))
+			  
+			  ;; And the context for the help window.
+			  context-start (point)
+			  
+			  ;; And the line number to position the cursor.
+;;; variant 1: profiling seems to indicate the regexp-heavy solution
+;;; to be favorable.  Will XEmacs like this kind of regexp?
+			  line (and (re-search-forward "\
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*?\\)
+\\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
+				    (string-to-int (match-string 1)))
+			  ;; And a string of the context to search for.
+			  string (and line (match-string 3))
+			  after-string (and line (buffer-substring
+						  (+ (match-beginning 4)
+						     (- (match-end 3)
+							(match-beginning 0)))
+						  (match-end 4)))
+			  
+			  ;; And we have now found to the end of the context.
+			  context (buffer-substring context-start (point))
+			  ;; We may use these in another buffer.
+			  offset (car TeX-error-offset)
+			  file (car TeX-error-file))
+		    (if (or (null file) (null line))
+			(error "Parse error in Preview-LaTeX run"))
+		    (run-hooks 'TeX-translate-location-hook)
+		    (push (list snippet box file
+				(+ line offset)
+				string after-string)
+			  parsestate))
+		;; else normal error message
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
 		(forward-line 2)))
 	     ((match-beginning 2)
 	      ;; New file -- Push on stack
-	      (push (TeX-match-buffer 2) TeX-error-file)
+	      (push (match-string-no-properties 2) TeX-error-file)
 	      (push 0 TeX-error-offset)
 	      (goto-char (match-end 2)))
 	     ((match-beginning 3)
@@ -1478,129 +1534,79 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 	     ((match-beginning 4)
 	      ;; Hook to change line numbers
 	      (rplaca TeX-error-offset
-		      (string-to-int (TeX-match-buffer 4))))
+		      (string-to-int (match-string 4))))
 	     ((match-beginning 5)
 	      ;; Hook to change file name
-	      (rplaca TeX-error-file (TeX-match-buffer 5)))))
-	  (if (zerop (car parsestate))
-	      (preview-clean-subdir (nth 0 TeX-active-tempdir))) )
-      (preview-call-hook 'close))))
-
-(defun preview-analyze-error (snippet box lsnippet lstart lfile lline lbuffer lpoint)
-  "Analyze a preview diagnostic for snippet SNIPPET.
-The diagnostic is for the end of the snippet if BOX
-is set (TeX dimensions in sp if present in the diagnostic, T else),
-and an overlay will be generated for the corresponding
-file dvips put into the directory indicated by `TeX-active-tempdir'.
-LSNIPPET, LSTART, LFILE, LLINE, LBUFFER, LPOINT are all
-infos from the last call.  The last four are used for
-caching line number info from one call to the next."
-  
-  (let* (;; We need the error message to show the user.
-	 op                            ;; temporary variable
-	 (error (progn
-		  (setq op (point))
-		  (end-of-line)
-		  (buffer-substring op (point))))
-	 
-	 ;; And the context for the help window.
-	 (context-start (point))
-	 
-	 ;; And the line number to position the cursor.
-;;; variant 1: profiling seems to indicate the regexp-heavy solution
-;;; to be favorable.  Will XEmacs like this kind of regexp?
-	 (line (and (re-search-forward "\
-^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*?\\)
-\\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
-		    (string-to-int (match-string 1))))
-	 ;; And a string of the context to search for.
-	 (string (and line (match-string 3)))
-	 (after-string (and line (buffer-substring
-				  (+ (match-beginning 4)
-				     (- (match-end 3)
-					(match-beginning 0)))
-				  (match-end 4))))
-;; variant 2:
-;; 	 (line (and (re-search-forward "^l\\.\\([0-9]+\\) \
-;; \\(\\.\\.\\.\\)?" nil t)
-;; 		    (string-to-int (match-string 1))))
-;; 	 (string (when line
-;; 		   (setq op (point))
-;; 		   (end-of-line)
-;; 		   (buffer-substring op (point))))
-;; 	 (after-string (when line
-;; 			 (setq op (point))
-;; 			 (forward-line)
-;; 			 (setq op (+ (point) (- op (match-beginning 0))))
-;; 			 (end-of-line)
-;; 			 (setq op (buffer-substring op (point)))
-;; 			 (if (and (> (length op) 2)
-;; 				  (string= (substring op -3) "..."))
-;; 			     (substring op 0 -3)
-;; 			   op)))
-
-	 ;; And we have now found to the end of the context.
-	 (context (buffer-substring context-start (point)))
-	 ;; We may use these in another buffer.
-	 (offset (car TeX-error-offset) )
-	 (file (car TeX-error-file)))
-    
-    ;; Remember where we was.
-    (setq TeX-error-point (point))
-    
-    ;; Find the error.
-    (if (null file)
-	(error "Error occurred after last TeX file closed"))
-    (run-hooks 'TeX-translate-location-hook)
-    (if box
-	(unless (eq snippet lsnippet)
-	  (message "End of Preview snippet %d unexpected" snippet)
-	  (setq lstart nil))
-      (unless (eq snippet (1+ lsnippet))
-	(message "Preview snippet %d out of sequence" snippet)))
-    (when line
-      (setq line (+ line offset))
-      (let* ((buffer (if (string= lfile file)
-			 lbuffer
-		       (find-file-noselect (setq lfile file))))
-	     (case-fold-search nil)
-	     (next-point
-	      (with-current-buffer buffer
-		(save-excursion
-		  (save-restriction
-		    (widen)
-		    (if (eq buffer lbuffer)
-			(progn
-			  (goto-char lpoint)
-			  (if (eq selective-display t)
-			      (re-search-forward "[\n\C-m]" nil 'end (- line lline))
-			    (forward-line (- line lline))))
-		      (goto-line line))
-		    (setq lline line
-			  lpoint (point)
-			  lbuffer buffer)
-		    (if (search-forward (concat string after-string)
-					(line-end-position) t)
-			(backward-char (length after-string))
-		      (search-forward string (line-end-position) t))
-		    (point))))))
-	(if box
-	  (if lstart
-	      (progn
-		(preview-place-preview
-		 snippet
-		 buffer
-		 (if (eq next-point lstart)
-		     lstart
-		   (or
-		    (preview-back-command lstart buffer)
-		    lstart))
-		 next-point
-		 (preview-TeX-bb box))
-		(setq lstart nil))
-	    (message "Unexpected end of Preview snippet %d" snippet))
-	  (setq lstart next-point)))))
-  (list snippet lstart lfile lline lbuffer lpoint))
+	      (rplaca TeX-error-file (match-string-no-properties 5)))))
+	(setq snippet 0)
+	(unwind-protect
+	    (dolist (state (nreverse parsestate))
+	      (setq lsnippet snippet
+		    snippet (pop state)
+		    box (pop state)
+		    file (pop state)
+		    line (pop state)
+		    string (pop state)
+		    after-string (pop state))
+	      (unless (string= lfile file)
+		(set-buffer (find-file-noselect file))
+		(setq lfile file))
+	      (save-excursion
+		(save-restriction
+		  (widen)
+		  (if (and (eq (current-buffer) lbuffer)
+			   (<= lline line))
+		      ;; while Emacs does the perfectly correct
+		      ;; thing even when when the line differences
+		      ;; get zero or negative, I don't trust this
+		      ;; to be universally the case across other
+		      ;; implementations.  Besides, if the line
+		      ;; number gets smaller again, we are probably
+		      ;; rereading the file, and restarting from
+		      ;; the beginning will probably be faster.
+		      (progn
+			(goto-char lpoint)
+			(if (/= lline line)
+			    (if (eq selective-display t)
+				(re-search-forward "[\n\C-m]" nil
+						   'end
+						   (- line lline))
+			      (forward-line (- line lline)))))
+		    (goto-line line))
+		  (setq lline line
+			lpoint (point)
+			lbuffer (current-buffer))
+		  (if (search-forward (concat string after-string)
+				      (line-end-position) t)
+		      (backward-char (length after-string))
+		    (search-forward string (line-end-position) t))
+		  (if box
+		      (progn
+			(if (and lstart (= snippet lsnippet))
+			    (setq closedata
+				  (nconc
+				   (preview-place-preview
+				    snippet
+				    (or (and (/= lpoint lstart)
+					     (preview-back-command lstart))
+					lstart)
+				    (point)
+				    (preview-TeX-bb box)
+				    tempdir
+				    place-opts)
+				   closedata))
+			  (message
+			   "End of Preview snippet %d unexpected"
+			   snippet))
+			(setq lstart nil))
+		    ;; else-part of if box
+		    (setq lstart (point))
+		    (unless (= snippet (1+ lsnippet))
+		      (message "Preview snippet %d out of sequence" snippet))))))
+	  (if (zerop lsnippet)
+	      (preview-clean-subdir (nth 0 tempdir)))
+	  (set-buffer run-buffer)
+	  (preview-call-hook 'close closedata))))))
 
 (defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
@@ -1635,7 +1641,8 @@ If FAST is set, do a fast conversion."
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPS"))
     (setq TeX-active-tempdir tempdir)
-    (setq preview-ps-file (and fast (preview-make-filename "preview.ps")))
+    (setq preview-ps-file (and fast (preview-make-filename
+				     "preview.ps" tempdir)))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
@@ -1695,7 +1702,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.86 $"))
+	(rev "$Revision: 1.87 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
