@@ -1,3 +1,13 @@
+2005-03-31  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Skip non-space chars
+	backward if re-search-backward does not find white spaces or
+	LaTeX-nospace-between-char-regexp.  Add mule check before line
+	break between 2-byte and 1-byte chars.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+	Do not move point if re-search-backward didn't find proper line
+	break point.
+
 2005-03-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-submit-bug-report): Insert AUCTeX version into mail
