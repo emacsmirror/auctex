@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1264}
+%\CheckSum{1306}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.84 $
+%  \rcskey \version CVS-$Revision: 1.85 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-10-15 13:30:43 $
+%\rcskey\next $Date: 2003-11-02 14:00:58 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -406,10 +406,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.84 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.85 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-10-15 13:30:43 $
+\reserved@a\next $Date: 2003-11-02 14:00:58 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -891,12 +891,37 @@
   \PreviewMacro[*[[!]{\includegraphics}%]]
 }
 %    \end{macrocode}
-%  The |floats| option.
+%  The |floats| option.  The complications here are merely to spare us
+%  bug reports about broken document classes that use |\let| on
+%  |\endfigure| and similar.  Notable culprits that have not been
+%  changed in years in spite of reports are |elsart.cls| and
+%  |IEEEtran.cls|.  Complain when you are concerned.
 %    \begin{macrocode}
-\DeclareOption{floats}{%
-  \PreviewSnarfEnvironment[![]{@float}%]
-  \PreviewSnarfEnvironment[![]{@dblfloat}%]
-}
+\def\pr@floatfix#1#2{\ifx#1#2%
+  \ifx#1\@undefined\else
+  \PackageWarningNoLine{preview}{%
+Your document class has a bad definition^^J
+of \string#1, most likely^^J
+\string\let\string#1=\string#2^^J
+which has now been changed to^^J
+\string\def\string#1{\string#2}^^J
+because otherwise subsequent changes to \string#2^^J
+(like done by several packages changing float behaviour)^^J
+can't take effect on \string#1.^^J
+Please complain to your document class author}%
+  \def#1{#2}\fi\fi}
+\begingroup
+\def\next#1#2{\endgroup
+  \DeclareOption{floats}{%
+    \pr@floatfix\endfigure\end@float
+    \pr@floatfix\endtable\end@float
+    \pr@floatfix#1\end@dblfloat
+    \pr@floatfix#2\end@dblfloat
+    \PreviewSnarfEnvironment[![]{@float}%]
+    \PreviewSnarfEnvironment[![]{@dblfloat}%]
+  }}
+\expandafter\next\csname endfigure*\expandafter\endcsname
+  \csname endtable*\endcsname
 %    \end{macrocode}
 %  The |sections| option.
 %    \begin{macrocode}
