@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.5 $  
+;; RCS status      : $Revision: 3.6 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Jun  1 20:59:15 1991
-;; Update Count    : 130
+;; Last Modified On: Sun Jun  2 16:30:25 1991
+;; Update Count    : 147
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -39,7 +39,8 @@
 ;;
 ;; HISTORY
 ;; 1-Jun-1991  (Last Mod: Sat Jun  1 20:32:48 1991 #129)  Kresten Krab Thorup
-;;    fill-paragraph is made to indent too
+;;    fill-paragraph is made to indent too due to help from Per Hagen
+;;    <per@iesd.auc.dk>
 ;; 31-May-1991  (Last Mod: Fri May 31 09:10:01 1991 #118)  Kresten Krab Thorup
 ;;    The distribution has been split into 8 individual modules. This will
 ;;    speed up the entire system.  Also, there has been added completion for
@@ -75,6 +76,7 @@
 ;; Lars Fischer                      <fischer@iesd.auc.dk> 
 ;; Per Abrahamsen                    <abraham@iesd.auc.dk> 
 ;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
+;; Per Hagen                         <per@iesd.auc.dk>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -96,8 +98,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
-;;
-;;   Make fill-paragraph (M-q) work properly
 ;;
 ;;   Make some good regexp's for paragraph-start and    
 ;;     paragraph-seperate
@@ -185,7 +185,7 @@ witch a backslash. Default is the meaning of M-t when latex-mode was called.")
 (autoload 'TeX-validate-buffer "tex-misc" nil t)
 (autoload 'TeX-terminate-paragraph "tex-misc" nil t)
 (autoload 'TeX-complete-symbol "tex-misc" nil t)
-(autoload 'TeX- "tex-misc" nil t)
+(autoload 'LaTeX-insert-item "latex-environment" nil t)
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keymaps
@@ -376,42 +376,32 @@ of LaTeX-mode-hook."
 	(modify-syntax-entry ?{ "(}")  
 	(modify-syntax-entry ?} "){")    
 	(modify-syntax-entry ?% "<")
-	(modify-syntax-entry ?" ".")
-	(modify-syntax-entry ?& ".")
+	(modify-syntax-entry ?\" ".")
+        (modify-syntax-entry ?& ".")
 	(modify-syntax-entry ?_ ".")
-	(modify-syntax-entry ?@ "_")
+        (modify-syntax-entry ?@ "_")
 	(modify-syntax-entry ?~ " ")
 	(modify-syntax-entry ?' "w"))
     (set-syntax-table TeX-mode-syntax-table))
+  (make-local-variable 'paragraph-separate)
+  (setq paragraph-separate (concat
+			    "\\(" "\\\\par.*$"
+			    "\\|" "^[ \t]*$"
+			    "\\|" "^[ \t]*\\\\"
+			     "\\("
+			     "begin\\|end\\|part\\|chapter\\|"
+			     "section\\|subsection\\|subsubsection\\|"
+			     "paragraph\\|include\\|includeonly\\|"
+			     "tableofcontents\\|appendix"
+			     "\\)"
+			     ".*$"
+			    "\\)"))
   (make-local-variable 'paragraph-start)
   (setq paragraph-start (concat
                           "\\(^[ \t]*$"
-                          "\\|"
-                          "^[ \t]*"
-                          "\\\\"
-                          "\\("
-                          "begin\\|end\\|item\\|part\\|chapter\\|"
-                          "section\\|subsection\\|subsubsection\\|"
-                          "paragraph\\|include\\|includeonly\\|"
-                          "tableofcontents\\|appendix\\|"
-                          "\[\\|]" ; display math delimitors
-                          "\\)"
-                          "\\|"
-                          "^[ \t]*\\$\\$" ; display math delimitor
-                          "\\)" ))
-  (make-local-variable 'paragraph-separate)
-  (setq paragraph-separate (concat "\\("
-                                   "\\\\par\\|"
-				   "^[ \t]*$\\|"
-                                   "^[ \t]*"
-                                   "\\\\"
-                                   "\\("
-                                   "begin\\|end\\|part\\|chapter\\|"
-                                   "section\\|subsection\\|subsubsection\\|"
-                                   "paragraph\\|include\\|includeonly\\|"
-                                   "tableofcontents\\|appendix"
-                                   "\\)"
-				   "\\)"))
+                          "\\|^[ \t]*\\\\\\(item\\|[[]\\).*$"
+			  "\\|\\$\\$"
+			  "\\|" paragraph-separate "\\)" ))
   (make-local-variable 'comment-start)
   (setq comment-start "%")
   (make-local-variable 'comment-start-skip)
@@ -470,16 +460,16 @@ Lines starting with \\item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
   (save-excursion
-    (let ((indent (calculate-LaTeX-indentation)))
-      (if (/= (current-indentation) indent)
-	  (let ((beg (progn
-		       (beginning-of-line)
-		       (point))))
-	    (back-to-indentation)
-	    (delete-region beg (point))
-	    (indent-to indent))
-	;; Should we leave it at the same position, as in c-mode?
-	(back-to-indentation)))))
+  (let ((indent (calculate-LaTeX-indentation)))
+    (if (/= (current-indentation) indent)
+	(let ((beg (progn
+		     (beginning-of-line)
+		     (point))))
+	  (back-to-indentation)
+	  (delete-region beg (point))
+	  (indent-to indent)))))
+  (if (looking-at "^[ \t]*$")
+      (end-of-line)))
 
 (defun LaTeX-fill-paragraph (prefix)
 "Fill paragraph at or after point.
@@ -494,26 +484,57 @@ Prefix arg means justify as well."
     (indent-region (region-beginning) (region-end) nil)
     (setq fill-column (+ fill-column indent-val))))
 
+(defun LaTeX-fill-region-as-paragraph (from to prefix)
+  ""
+  (make-local-variable 'indent-val)
+  (setq indent-val (calculate-LaTeX-indentation))
+  (setq fill-column (- fill-column indent-val))
+  (fill-region-as-paragraph from to prefix)
+  (indent-region from to nil)
+  (setq fill-column (+ fill-column indent-val)))
+
 ;;
 ;; The fill-environment functions are still being tested...
 ;;
 
-;;(defun LaTeX-fill-environment (prefix)
-;;  (interactive "P")
-;;  (save-excursion
-;;    (LaTeX-mark-environment)
-;;    (fill-individual-paragraphs prefix) 
-;;    (indent-region (region-beginning) (region-end) nil)))
+(defun LaTeX-fill-region (from to &optional prefix)
+ ""
+  (interactive "r\nP")
+  (save-restriction
+    (goto-char from)
+    (let ((continue t))
+      (while (not (equal initial (point)))
+	(let ((initial (point))
+	      (end (progn (forward-paragraph 1) (point))))
+	  (forward-paragraph -1)
+	  (if (>= (point) initial)
+	      (progn
+		(LaTeX-fill-region-as-paragraph (point) end prefix)
+		(goto-char end)
+	    (goto-char end))))))))
 
-;;(defun LaTeX-mark-environment ()
-;;  ""
-;;  (let (env LaTeX-current-environment)
-;;    (if (re-search-backward (concat "\\begin{" env "}" ) nil t)
-;;	(progn
-;;	  (set-mark)
-;;	(if (not (re-search-forward "\\end{" env "}" nil t))
-;;	    (error "you're not inside any environment")))
-;;    (error "no matching begin")))
+(defun LaTeX-mark-environment ()
+  "Set mark to beginning of current
+environment and point to the matching end"
+  (interactive)
+  (if (re-search-backward "\\\\begin{.+}" nil t)
+      (progn
+	(set-mark-command nil)
+	(LaTeX-find-matching-end 0))
+    (error "not inside any environment")))
+
+(defun LaTeX-find-matching-end (env-level)
+  ""
+  (re-search-forward "\\(\\\\begin\\|\\\\end\\)")
+  (if (equal "\\begin" (buffer-substring
+			(match-beginning 0)
+			(match-end 0)))
+      (LaTeX-find-matching-end (+ 1 env-level))
+    (progn
+      (re-search-forward "{.+}")
+      (setq env-level (- env-level 1))
+      (if (not (equal env-level 0))
+	  (LaTeX-find-matching-end env-level)))))
 
 (defun calculate-LaTeX-indentation ()
   "Return the correct indentation of line of LaTeX source. (I hope...)"
