@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6j
+;; Version: 9.6k
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1362,6 +1362,13 @@ of AmS-TeX-mode-hook."
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes nil)
 
+  ;; Make TAB stand out
+  ;;  (make-local-variable 'buffer-display-table)
+  ;;  (setq buffer-display-table (if standard-display-table
+  ;;				 (copy-sequence standard-display-table)
+  ;;			       (make-display-table)))
+  ;;  (aset buffer-display-table ?\t (apply 'vector (append "<TAB>" nil)))
+  
   ;; Symbol completion.
   (make-local-variable 'TeX-complete-list)
   (setq TeX-complete-list
