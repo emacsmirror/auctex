@@ -4,7 +4,7 @@
 @dircategory Emacs
 @dircategory TeX
 @direntry
-* AUCTeX: (auctex).      A much enhanced TeX/LaTeX mode for Emacs.
+* AUCTeX: (auctex).     A much enhanced TeX/LaTeX mode for Emacs.
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.154 2004-05-14 19:00:28 salve Exp $
+@c $Id: auc-tex.texi,v 1.155 2004-05-25 08:36:13 dak Exp $
 
 @finalout
 @titlepage
@@ -26,10 +26,9 @@
 @author updated for almost 12 by David Kastrup
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2004 Free Software Foundation, Inc.
-Copyright @copyright{} 2002 David Kastrup
-Copyright @copyright{} 1993, 1994, 1995, 2001 Per Abrahamsen
-Copyright @copyright{} 1992  Kresten Krab Thorup @*
+Copyright @copyright{} 1993, 1994, 1995,
+                       2001, 2002, 2004 Free Software Foundation, Inc.
+Copyright @copyright{} 1992 Kresten Krab Thorup @*
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
