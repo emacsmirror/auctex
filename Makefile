@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10b
+# Version: 9.10c
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -178,19 +178,19 @@ dist:
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	cvs commit -m "Release $(OLD)++" tex.el
+	auc commit -m 'Release_$(OLD)++' tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
 	sed -e '/defconst AUC-TeX-date/s/"[^"]*"/"'"`date`"'"/' \
 	    -e '/defconst AUC-TeX-version/s/"[^"]*"/"'$(TAG)'"/' \
 	    < tex.el.orig > tex.el
 	rm -f $(REMOVE) 
-	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) $(EXTRAFILES)
-	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
-	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
-	cvs commit -m "Release $(TAG)"
-	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
+	-auc remove $(REMOVE) 
+	-auc add $(AUCSRC) $(EXTRAFILES)
+	-(cd doc; auc add `echo $(DOCFILES) | sed -e s@doc/@@g` )
+	-(cd style; auc add `echo $(STYLESRC) | sed -e s@style/@@g` )
+	auc commit -m 'Release_$(TAG)'
+	auc tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style
 	mkdir auctex-$(TAG)/doc 
@@ -209,15 +209,15 @@ dist:
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
-	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
 	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
 		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
 
 patch:
-	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
 	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex
 
 min-map:
-	-cvs add $(MINMAPSRC) 
-	cvs commit -m "Update"
+	-auc add $(MINMAPSRC) 
+	auc commit -m "Update"
 	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR) 
