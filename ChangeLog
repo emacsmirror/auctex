@@ -1,3 +1,8 @@
+2004-12-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/csquotes.el (LaTeX-csquotes-quote-after-quote): Avoid
+	interference with (n)german.el.
+
 2004-12-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (distclean): Remove generated `configure' file.
