@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.366 $"))
+	(rev "$Revision: 5.367 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-12 16:09:18 $"))
+    (let ((date "$Date: 2004-05-13 07:15:15 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -604,7 +604,7 @@ In the form of yyyy.mmdd")
 (defcustom TeX-source-specials-active-flag nil
   "*Non-nil means generate and use LaTeX source specials.
 
-If enabled, an option that insert source specials into the DVI
+If enabled, an option that inserts source specials into the DVI
 file is added to the LaTeX commmand line and the DVI viewer is
 called with an appropriate option, so that it shows the the point
 in the DVI file corresponding to the point in the Emacs buffer.
@@ -2338,28 +2338,43 @@ NIL means kpathsea is disabled."
 		 (const :tag "Autodetect" t)
 		 (const :tag "Off" nil)))
 
-(defcustom TeX-kpathsea-directory-alist '(("tex" . "${TEXINPUTS.latex}")
-					  ("bib" . "$BIBINPUTS")
-					  ("bst" . "$BSTINPUTS"))
-  "Directories to search for expansion using kpathsea."
+(defcustom TeX-kpathsea-format-alist
+  '(("tex" "${TEXINPUTS.latex}" TeX-file-extensions)
+    ("bib" "$BIBINPUTS" BibTeX-file-extensions)
+    ("bst" "$BSTINPUTS" BibTeX-style-extensions))
+  "Formats to search for expansion using kpathsea.
+The key of the alist represents the name of the format.  The
+first element of the cdr of the alist is string to expand by the
+respective kpathsea program and the second element is a list of
+file extensions to match."
   :group 'TeX-file
-  :type '(alist :key-type string :value-type string))
+  :type '(alist :key-type string :value-type (group string sexp)))
 
+;; FIXME: Despite the first parameter named `extensions',
+;; `TeX-search-files-kpathsea' basically treats this as a format
+;; specifier.  Only the first element in the respective list will be
+;; used to determine the search paths and file extensions with the
+;; help of `TeX-kpathsea-format-alist'.  Out of these differences
+;; arises a need to unify the behavior of `TeX-search-files' and
+;; `TeX-search-files-kpathsea' and their treatment of parameters.
+;; Additionally `TeX-search-files-kpathses' should be made more
+;; general to work with other platforms and TeX systems as well.
 (defun TeX-search-files-kpathsea (extensions nodir strip)
   "The kpathsea-enabled version of `TeX-search-files'.
 Except for DIRECTORIES (a kpathsea string), the arguments for
 EXTENSIONS, NODIR and STRIP are explained there."
   (and TeX-kpathsea-path-delimiter
        (catch 'no-kpathsea
-	 (let ((dirs (with-output-to-string
-		       (unless (zerop
-				(call-process
-				 "kpsewhich" nil (list standard-output nil)
-				 nil
-				 (concat
-				  "-expand-path="
-				  (cdr (assoc (car extensions)
-					      TeX-kpathsea-directory-alist)))))
+	 (let* ((format-spec (assoc (car extensions)
+				    TeX-kpathsea-format-alist))
+		(dirs (with-output-to-string
+			(unless (zerop
+				 (call-process
+				  "kpsewhich" nil (list standard-output nil)
+				  nil
+				  (concat
+				   "-expand-path="
+				   (nth 1 format-spec))))
 			 (if (eq TeX-kpathsea-path-delimiter t)
 			     (throw 'no-kpathsea
 				    (setq kpathsea-path-delimiter nil))
@@ -2377,7 +2392,7 @@ EXTENSIONS, NODIR and STRIP are explained there."
 						 TeX-kpathsea-path-delimiter
 						 "]+")))
 	   (setq extensions (concat "\\."
-				    (regexp-opt TeX-file-extensions t)
+				    (regexp-opt (eval (nth 2 format-spec)) t)
 				    "\\'"))
 	   (setq result
 		 (apply #'append
@@ -2733,9 +2748,9 @@ be bound to `TeX-electric-macro'."
 	       :selected (eq TeX-command-current 'TeX-command-buffer) ]
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-region) ]
-	     [ "Source specials" TeX-toggle-source-specials
-	       :style toggle :selected TeX-source-specials-active-flag ]))
+	       :selected (eq TeX-command-current 'TeX-command-region) ])
+	    [ "Source specials" TeX-toggle-source-specials
+	      :style toggle :selected TeX-source-specials-active-flag ])
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
 	    (mapcar 'TeX-command-menu-entry
 		    (TeX-mode-specific-command-list mode)))))
