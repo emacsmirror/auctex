@@ -1,10 +1,15 @@
 2002-05-27  Jan-Ake Larsson  <jalar@imf.au.dk>
 
-	* special.c, set.c, postamble.c, pk.c, misc.c, io.c, font.c,
-	dvipng.c, color.c, commands.h, dvipng.h: Initial version
+	* dvipng/.cvsignore, dvipng/special.c, dvipng/set.c,
+	dvipng/postamble.c, dvipng/pk.c, dvipng/misc.c, dvipng/io.c,
+	dvipng/font.c, dvipng/dvipng.c, dvipng/color.c, dvipng/commands.h,
+	dvipng/dvipng.h: Initial version
 
-	* config.h, Makefile: Initial version, to be replaced by
-	autoconf'ism
+	* dvipng/config.h, dvipng/Makefile: Initial version, to be
+	replaced by autoconf'ism
+	
+	* dvipng/klibtool.config, dvipng/klibtool: Included for now. To be
+	removed.
 
 2002-05-08  David Kastrup  <David.Kastrup@t-online.de>
 
