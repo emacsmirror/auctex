@@ -3,6 +3,9 @@
 @macro AUCTeX {}
 AUC@TeX{}
 @end macro
+@macro ConTeXt {}
+Con@TeX{}t
+@end macro
 @ifnottex
 @macro LaTeX {}
 La@TeX{}
@@ -31,7 +34,7 @@ preview-latex
 @end ifnottex
 @tex
 \gdef\LaTeX{L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
-\gdef\previewlatex{Preview-\LaTeX}
+\gdef\previewlatex{{\sf preview-latex}}
 \ifx\acronym\undefined \gdef\acronym#1{{\smallcaps \lowercase{#1}}} \fi
 \ifx\env\undefined \global\let\env=\code \fi
 \ifx\option\undefined \global\let\option=\samp \fi

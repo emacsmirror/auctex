@@ -1,3 +1,19 @@
+2004-08-07  David Kastrup  <dakas@users.sourceforge.net>
+
+	* doc/macros.texi: New @ConTeXt{} macro, change appearance of
+	@previewlatex{}.
+
+	* doc/faq.texi (Customization): Presentation classes should work
+	mostly.
+	(Customization): Remove troubleshooting for `xy.sty'.
+	(Requirements): Add AUCTeX 11.50 for PDFLaTeX.
+	(Requirements): Mention dvipng.
+	(Customization): PDFLaTeX is supported now.
+	(Customization): ConTeXt is supported by AUCTeX, PDFLaTeX too.
+	`Only' style support is missing now.
+
+	* latex/preview.dtx: workaround for `xy.sty' in `textmath' code.
+
 2004-08-04  David Kastrup  <dakas@users.sourceforge.net>
 
 	* aclocal.m4: Merge a few AUCTeX changes.
