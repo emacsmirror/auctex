@@ -2,7 +2,7 @@
 infodir=/usr/local/info
 TEX=tex
 
-all: auc-tex.dvi ref-card.dvi math-ref.dvi auctex
+all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
 dist: auctex INSTALLATION README CHANGES auc-tex_toc.html
 
@@ -15,10 +15,10 @@ math-ref.dvi: math-ref.tex
 	@echo "** doc/math-ref.dvi may now be printed (1 page)"
 	@echo "**********************************************************"
 
-ref-card.dvi: ref-card.tex
-	$(TEX) ref-card
+tex-ref.dvi: tex-ref.tex
+	$(TEX) tex-ref
 	@echo "**********************************************************"
-	@echo "** doc/ref-card.dvi may now be printed (1 page)"
+	@echo "** doc/tex-ref.dvi may now be printed (1 page)"
 	@echo "**********************************************************"
 
 auc-tex.dvi: auc-tex.texi
@@ -59,7 +59,7 @@ install: auctex
 	@echo "**********************************************************"
 
 clean: allways
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs auctex auctex-? *.html
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs auctex auctex-? *.html INSTALLATION README CHANGES
 
 
 allways:

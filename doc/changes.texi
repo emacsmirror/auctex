@@ -13,13 +13,29 @@ Peter Thiemann @samp{<thiemann@@provence.informatik.uni-tuebingen.de>},
 Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
 Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
 Johan Van Biesen @samp{<vbiesen@@wins.uia.ac.be>},
-Marc.Gemis @samp{<makke@@wins.uia.ac.be>},
+Marc Gemis @samp{<makke@@wins.uia.ac.be>},
+Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>},
+Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
+Peter Paris @samp{<pparis@@bass.gmu.edu>},
+Peter Barth @samp{<barth@@mpi-sb.mpg.de>},
+Andy Piper @samp{<ajp@@eng.cam.ac.uk>},
 and probably more.@refill
 
 @itemize @bullet
 @item
+Fixed problem with parsing errors after running La@TeX{} on the region
+from the menu.  Thanks to Peter Barth @samp{<barth@@mpi-sb.mpg.de>} for
+finding this one.
+
+@item
+The file @file{doc/ref-card.texi} has been renamed to
+@file{doc/tex-ref.texi} to avoid confusion with the reference card for
+GNU Emacs.  Suggested by Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>}.
+
+@item
 The @file{README}, @file{CHANGES} and @file{INSTALLATION} files are now
 generated from chapters of this manual, to ensure they stay in sync.
+
 @item
 @kbd{M-@key{tab}} will now complete some macro arguments in addition to
 macro names.  In particular, if you press @kbd{M-@key{tab}} after

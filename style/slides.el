@@ -1,6 +1,6 @@
 ;;; slides.el - Special code for slitex.
 ;;
-;; $Id: slides.el,v 1.1 1994-04-07 21:08:50 amanda Exp $
+;; $Id: slides.el,v 1.2 1994-04-13 12:56:25 amanda Exp $
 
 (require 'latex)
 
@@ -13,7 +13,7 @@
     (add-hook 'LaTeX-document-style-hook 'LaTeX-style-slides)
     (LaTeX-add-environments '("slide" LaTeX-env-slide)
 			    '("overlay" LaTeX-env-slide))
-    (run-style-hooks "SLITEX"))))
+    (TeX-run-style-hooks "SLITEX"))))
 
 (defvar LaTeX-slide-color "" 
   "*Default slide color.")
