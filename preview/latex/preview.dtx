@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1112}
+%\CheckSum{1125}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.71 $
+%  \rcskey \version CVS-$Revision: 1.72 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-12-09 21:37:36 $
+%\rcskey\next $Date: 2002-12-12 08:35:56 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -352,10 +352,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.71 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.72 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-12-09 21:37:36 $
+\reserved@a\next $Date: 2002-12-12 08:35:56 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -526,6 +526,14 @@
    \@gobbletwo}
 %    \end{macrocode}
 %\end{macro}
+%\begin{macro}{\pr@insert}
+%  We don't want insertions to end up on our lists.  So we disable
+%  them right now by replacing them with the following:
+%    \begin{macrocode}
+\def\pr@insert{\afterassignment\pr@insertii\count@}
+\def\pr@insertii{\setbox\pr@box\vbox}
+%    \end{macrocode}
+%  \end{macro}
 %\begin{macro}{\pr@box}
 %\begin{macro}{\pr@startbox}
 %  Previews will be stored in \cmd{\box}\cmd{\pr@box}.
@@ -544,6 +552,7 @@
     \setbox\pr@box\vbox\bgroup
     \break
     \pr@outerfalse\@arrayparboxrestore
+    \let\insert\pr@insert
     \expandafter\expandafter\expandafter
     \pr@ship@start
     \expandafter\@firstofone
