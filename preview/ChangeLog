@@ -1,5 +1,10 @@
 2002-11-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-transact): add a bit of paranoia into
+	page shifts in case the coordinate origin is not upper left.
+	Similar to change in tightpage option of preview.dtx.
+	(preview-LaTeX-command-replacements): comment fix.
+
 	* latex/preview.dtx (subsection{The \texttt{counters} option}):
 	new option and documentation: add counter checkpoints in
 	diagnostics.
