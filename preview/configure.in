@@ -93,13 +93,15 @@ AC_SUBST(packagedir)
 AC_SUBST(icondir)
 
 AC_CHECK_AUCTEX
-AC_PATH_PROG(INSTALL_INFO, install-info, /bin/true, $PATH:/usr/sbin:/sbin)
+AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH:/usr/sbin:/sbin)
 
-AC_PATH_PROG_REQUIRED(GS, gs, [gs not found!  Aborting!  
-You must install Ghostscript for preview to work.])
+AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE,
+  [GhostScript not found!  Aborting!  
+You need GhostScript in your PATH for preview to work.])
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
-dnl Check to see if specific drivers are built in.  Need table of mappings, with priority
+dnl Check to see if specific drivers are built in.
+dnl Need table of mappings, with priority
 
 
 
@@ -132,7 +134,8 @@ TEXMFGEN=["`sed -n 's/^%<installer>.*\\file{\([^}.]*\.[sdc][tef][yfg]\)}.*$/\1/p
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
-AC_PATH_PROGS(TEXHASH, texhash mktexlsr MakeTeXls-R, /bin/true)
+AC_PATH_PROGS(TEXHASH, texhash mktexlsr MakeTeXls-R)
+AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u, :)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
 AC_CHECK_MACROS_MAKEINFO(acronym env option)
 
