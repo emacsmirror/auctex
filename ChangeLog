@@ -1,3 +1,8 @@
+2005-03-16  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-nospace-between-char-regexp): Changed from
+	defcustom to defvar.
+
 2005-03-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-title-faces): Deal with the case
