@@ -37,6 +37,9 @@ preview-latex.dvi: $(TEXIFILES)
 preview-latex.ps: preview-latex.dvi
 	$(DVIPS) preview-latex.dvi -o preview-latex.ps
 
+preview-latex.pdf: $(TEXIFILES)
+	texi2dvi --pdf preview-latex.texi
+
 preview-latex.info: $(TEXIFILES)
 	-$(MAKEINFO) preview-latex.texi
 

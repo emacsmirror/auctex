@@ -104,7 +104,9 @@ for i in *emacs; do
   else
     %configure --with-xemacs '--with-packagedir=%{xemacspkgdir}'
   fi
-  make 'infodir=%{_infodir}' doc/preview-latex.pdf
+  make 'infodir=%{_infodir}'
+  cd doc
+  make preview-latex.pdf
   popd
 done
 
