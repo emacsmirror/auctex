@@ -1,3 +1,50 @@
+2004-03-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-current-environment): Use correct regexp for
+	determination of a comment.
+	(LaTeX-format-comment-syntax-aware): Renamed from
+	`LaTeX-fill-comment-syntax-aware' because it affects both filling
+	and indentation.
+	(LaTeX-indent-line): Add support for doing outer and inner
+	indentation.
+	(LaTeX-current-indentation): Ditto.
+	(LaTeX-back-to-indentation): Ditto.
+	(LaTeX-indent-calculate): Ditto.
+	(LaTeX-indent-calculate-last): Ditto.  Fix indentation for
+	environments mentioned in `LaTeX-document-regexp' which use an
+	unclosed brace in the first line.
+	(LaTeX-indent-inner-do): New function.
+	(LaTeX-indent-outer-do): New function.
+	(LaTeX-fill-region-as-paragraph): Include lines with code comments
+	in regions to be filled.  Recognize lines ending with `\par' as
+	boundaries for filling.
+	(LaTeX-fill-region-as-para-do): Better handling of code comments.
+	(LaTeX-fill-paragraph): Make function more readable by selecting
+	different filling methods by a `cond' statement and putting code
+	for the determination of the region to fill in case of
+	syntax-aware filling into the separate functions
+	`LaTeX-forward-paragraph' and `LaTeX-backward-paragraph'.  Better
+	handling of code comments.
+	(LaTeX-fill-code-comment): New function.
+	(LaTeX-forward-paragraph): New function.
+	(LaTeX-backward-paragraph): New function.
+	(LaTeX-paragraph-commend-p): New function.
+	(LaTeX-common-initialization): Let `paragraph-start' handle
+	comments preceded by whitespace as well.
+
+	* tex.el (tex-mode): `comment-start-skip' shouldn't match line
+	beginnings.
+	(VirTeX-common-initialization): Ditto.
+	(TeX-in-line-comment): New function.
+	(TeX-forward-comment-skip): Use correct regexp for determination
+	of a comment.  Fix case where `count' is less than zero, i.e. if
+	a backward search is performed.
+	(TeX-backward-comment-skip): New function.
+
+	* doc/auc-tex.texi: Reflect name change of
+	`LaTeX-fill-comment-syntax-aware' to
+	`LaTeX-format-comment-syntax-aware'.
+
 2004-03-18  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in, configure.in, tex-site.el, tex-site.el.in:
