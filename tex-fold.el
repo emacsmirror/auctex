@@ -54,6 +54,7 @@
   '(("[f]" ("footnote"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
+    ("[r]" ("ref"))
     ("[i]" ("index"))
     ("*" ("item"))
     ("..." ("dots"))
@@ -174,8 +175,8 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 	;; nested macros.
 	(end-of-buffer)
 	(while (re-search-backward regexp nil t)
-	  (let* ((display-string (cadr (assoc (match-string 1) fold-list)))
-		 (item-start (match-beginning 0))
+	  (let* ((item-start (match-beginning 0))
+		 (display-string-spec (cadr (assoc (match-string 1) fold-list)))
 		 (item-end (if (eq type 'env)
 			       (save-excursion
 				 (goto-char (match-end 0))
@@ -183,14 +184,16 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 			     (save-excursion
 			       (goto-char item-start)
 			       (TeX-find-macro-end))))
-		 (ov (TeX-fold-make-overlay
-		      item-start item-end
-		      (if (integerp display-string)
-			  (or (TeX-fold-macro-nth-arg display-string item-start
-						      (when (eq type 'macro)
-							item-end))
-			      "[Error: No content found]")
-			display-string))))
+		 (display-string (if (integerp display-string-spec)
+				     (or (TeX-fold-macro-nth-arg
+					  display-string-spec
+					  item-start (when (eq type 'macro)
+						       item-end))
+					 "[Error: No content found]")
+				   display-string-spec))
+		 (ov (TeX-fold-make-overlay item-start item-end type
+					    display-string-spec
+					    display-string)))
 	    (TeX-fold-hide-item ov)))))))
 
 (defun TeX-fold-macro ()
@@ -235,16 +238,17 @@ TYPE specifies the type of item and can be one of the symbols
 			      TeX-fold-env-spec-list
 			    TeX-fold-macro-spec-list))
 	       fold-item
-	       (display-string (or (catch 'found
-				     (while fold-list
-				       (setq fold-item (car fold-list))
-				       (setq fold-list (cdr fold-list))
-				       (when (member item-name (cadr fold-item))
-					 (throw 'found (car fold-item)))))
-				   ;; Item is not specified.
-				   (if (eq type 'env)
-				       TeX-fold-unspec-env-display-string
-				     TeX-fold-unspec-macro-display-string)))
+	       (display-string-spec
+		(or (catch 'found
+		      (while fold-list
+			(setq fold-item (car fold-list))
+			(setq fold-list (cdr fold-list))
+			(when (member item-name (cadr fold-item))
+			  (throw 'found (car fold-item)))))
+		    ;; Item is not specified.
+		    (if (eq type 'env)
+			TeX-fold-unspec-env-display-string
+		      TeX-fold-unspec-macro-display-string)))
 	       (item-end (if (eq type 'env)
 			     (save-excursion
 			       (goto-char (match-end 0))
@@ -252,36 +256,46 @@ TYPE specifies the type of item and can be one of the symbols
 			   (save-excursion
 			     (goto-char item-start)
 			     (TeX-find-macro-end))))
-	       (ov (TeX-fold-make-overlay
-		    item-start item-end
-		    (if (integerp display-string)
-			(or (TeX-fold-macro-nth-arg display-string item-start
-						    (when (eq type 'macro)
-						      item-end))
-			    "[Error: No content found]")
-		      display-string))))
+	       (display-string (if (integerp display-string-spec)
+				   (or (TeX-fold-macro-nth-arg
+					display-string-spec
+					item-start (when (eq type 'macro)
+						     item-end))
+				       "[Error: No content found]")
+				 display-string-spec))
+	       (ov (TeX-fold-make-overlay item-start item-end type
+					  display-string-spec
+					  display-string)))
 	  (TeX-fold-hide-item ov))))))
 
 
 ;;; Utilities for folding
 
-(defun TeX-fold-make-overlay (ov-start ov-end display-string-spec)
-  "Make an overlay to cover the item and hide it.
+(defun TeX-fold-make-overlay (ov-start ov-end type
+				       display-string-spec display-string)
+  "Make an overlay to cover the item.
 The overlay will reach from OV-START to OV-END and will display
 the string part of DISPLAY-STRING which has to be a string or a
 list where the first item is a string and the second a face or
-nil.  The end of the overlay and its display string may be
-altered to prevent overfull lines."
-  (let* ((display-string (if (listp display-string-spec)
-			     (car display-string-spec)
-			   display-string-spec))
-	 (face (when (listp display-string-spec)
-		 (cadr display-string-spec)))
+nil.  DISPLAY-STRING-SPEC is the original specification of the
+display string in the variables `TeX-fold-macro-spec-list' or
+`TeX-fold-env-spec-list' and may be a string or an integer.  TYPE
+is a symbol which is used to describe the content to hide and may
+be 'macro for macros and 'env for environments.
+
+The position of the end of the overlay and its display string may
+be altered to prevent overfull lines."
+  (let* ((display-string (if (listp display-string)
+			     (car display-string)
+			   display-string))
+	 (face (when (listp display-string)
+		 (cadr display-string)))
 	 (overfull (and (not (featurep 'xemacs)) ; Linebreaks in glyphs don't
-						 ; work on XEmacs anyway.
+						 ; work in XEmacs anyway.
 			(save-excursion
 			  (goto-char ov-end)
 			  (search-backward "\n" ov-start t))
+			(not (string-match "\n" display-string))
 			(> (+ (- ov-start
 				 (save-excursion
 				   (goto-char ov-start)
@@ -305,10 +319,12 @@ altered to prevent overfull lines."
     (overlay-put ov 'priority priority)
     (overlay-put ov 'evaporate t)
     (overlay-put ov 'TeX-fold-face face)
+    (overlay-put ov 'TeX-fold-type type)
+    (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
     (overlay-put ov 'TeX-fold-display-string display-string)
     ov))
 
-(defun TeX-fold-macro-nth-arg (n &optional macro-start macro-end)
+(defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end)
   "Return a property list of the nth argument of a macro.
 The first item in the list is the string specified in the
 argument, the second item may be a face if the argument string
@@ -317,11 +333,11 @@ well, so the second item is always nil.  In XEmacs the string
 does not enclose any faces, so these are given in the second item
 of the resulting list."
   (save-excursion
-    (let ((macro-boundaries (when (or (not macro-start) (not macro-end))
-			      (TeX-find-macro-boundaries)))
+    (let ((macro-end (if macro-end
+			 macro-end
+		       (save-excursion (goto-char macro-start)
+				       (TeX-find-macro-end))))
 	  content-start content-end)
-      (unless macro-start (setq macro-start (car macro-boundaries)))
-      (unless macro-end (setq macro-start (cadr macro-boundaries)))
       (goto-char macro-start)
       (if (condition-case nil
 	      (progn
@@ -401,7 +417,17 @@ overlays."
 (defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.
 That means, put respective properties onto overlay OV."
-  (let ((display-string (overlay-get ov 'TeX-fold-display-string)))
+  (let* ((display-string-spec (overlay-get ov 'TeX-fold-display-string-spec))
+	 (display-string (if (stringp display-string-spec)
+			     (overlay-get ov 'TeX-fold-display-string)
+			   ;; If the display string specification is
+			   ;; an integer, recompute the display string
+			   ;; in order to have an up-to-date string if
+			   ;; the content has changed.
+			   (TeX-fold-macro-nth-arg
+			    display-string-spec (overlay-start ov)
+			    (when (eq (overlay-get ov 'TeX-fold-type) 'macro)
+			      (overlay-end ov))))))
     (overlay-put ov 'mouse-face 'highlight)
     (if (featurep 'xemacs)
 	(let ((glyph (make-glyph display-string))
