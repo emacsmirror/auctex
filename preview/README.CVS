@@ -17,6 +17,6 @@ PROBLEMS
 and you can then continue from there.
 
 You will need to have a working copy of makeinfo and of autoconf for
-that.  autoconf versions before 2.13 may cause problems with the
-detection of 8bit-unclean systems.  See the PROBLEMS file for
+that.  autoconf versions before 2.53 may cause problems with the
+detection of 8bit-unclean systems.  See the INSTALL file for
 appropriate measures.
