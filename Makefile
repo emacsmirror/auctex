@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.116 1995-11-08 17:37:34 abraham Exp $
+# $Id: Makefile,v 5.117 1995-11-08 17:49:04 abraham Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -277,7 +277,7 @@ dist:
 	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
-	zip -r $(FTPDIR)/auctex auctex-$(TAG)
+#	zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
 	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
 	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
