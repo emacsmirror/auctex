@@ -1,3 +1,7 @@
+2002-08-19  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/misc.c: Added -mode switch
+
 2002-08-14  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/dvipng.h: VF additions, general cleanup
