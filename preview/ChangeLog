@@ -1,3 +1,9 @@
+2002-07-23  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-image-creators): Change tiff device to use
+	tiff12nc, which has a chance of working with the current
+	settings, at the cost of large file sizes.
+
 2002-07-23  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/install.texi: Minor changes
