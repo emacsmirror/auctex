@@ -1,3 +1,19 @@
+2004-11-29  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* configure.ac: Add @command macro test 
+
+	* configure.in: Moved to configure.ac
+
+	* configure.ac: Moved from configure.in
+
+	* doc/macros.texi: Add @command macro 
+
+	* doc/auctex.texi: Change order of @top and @ifnottex, error
+	message otherwise.
+
+	* doc/Makefile.in: Add MAKEINFO environment variable for texi2...
+	usage. Remove old (confusing) messages. 
+
 2004-11-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/intro.texi (Introduction): @/ unfortunately is only
