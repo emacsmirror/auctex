@@ -6,17 +6,21 @@ preview.sty is independently useful for extraction of selected text
 elements as images.  The package is released under the GNU Public
 License (GPL).  At the current point of time, GNU Emacs-21 under the X
 window system, AUC TeX, a working LaTeX installation and GhostScript
-are required.  There is preliminary support for XEmacs available, and
-the current CVS version of Emacs could possibly be made to run
-preview-latex under the Windows operating system.  If you are planning
-on contributing, please contact the developers' list.
+are required.  This version for the first time also fully supports
+XEmacs with a version of at least 21.1.  Some non-critical issues with
+the display engine have been uncovered in the course of porting;
+consult the PROBLEMS file for more information.  No versions have been
+tested to run under the MS Windows operating system.  Recent CVS
+versions of Emacs could possibly be made to run preview-latex there,
+and you stand a chance of trying XEmacs there, too.  Please report
+your experiences.
 
 Release focus have been documentation improvements, staggering
-performance enhancements and new features.  For the first time,
-workable XEmacs support is included.  The LaTeX style has gained a
-load of new options.  It is now possible to generate all image files
-for a document with a single run of GhostScript on a single PostScript
-file from Dvips.
+performance enhancements, better error handling and new features.  For
+the first time, workable XEmacs support is included.  The LaTeX style
+has gained a load of new options.  It is now possible to generate all
+image files for a document with a single run of GhostScript on a
+single PostScript file from Dvips.
 
 The README file has been changed in order to provide adequate
 information for preinstalled distributions.  In that case, including
@@ -42,7 +46,8 @@ Additional files can be found at
   preview-latex, you can find it there as well.
 
 * RPMs for preview-latex and AUC TeX are provided for users of RedHat
-  Linux.
+  Linux.  For the binary RPMs, you will need the preview-latex-common
+  RPM as well as the Emacs-flavor specific RPM.
 
 The RPMs require a few packages:
 
