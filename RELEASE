@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.51
+Release notes for AUCTeX 11.52
 ==============================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -21,12 +21,13 @@ sleuth work, testing.  The usual ``volunteers welcome'' applies here.
 New features and fixed bugs in this release
 -------------------------------------------
 
-This is primarily a bug fix release to the last major release 11.50.
-PDFTeX and Source Special support did not work with ConTeXt, this has
-been fixed.  Similar for Source Special support under Windows.  Some
-more potential installation mistakes are now diagnosed.  Omega support
-has been added.  Some user interface changes have been done and other
-bugs fixed.
+This is primarily a bug fix release to the last major release 11.51.
+Initialization in XEmacs works flawlessly again.  Additionally
+fontification of subscripts and superscripts in Emacs 21.3 and earlier
+does not produce error messages anymore.  Unfortunately this means
+that subscripts and superscripts are raised or lowered no more.
+Currently this feature is only supported with development versions of
+GNU Emacs.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
@@ -86,4 +87,4 @@ order): Ralf Angeli, Masayuki Ataka, Thomas Baumann, Berend de Boer,
 Peter S. Galbraith, Patrick Gundlach, Yvon Hevel, David Kastrup, Frank
 Küster, Jan-Åke Larsson, Dan Nicolaescu, Piet van Oostrum, Davide
 G. M. Salvetti, Mike Sperber, Reiner Steib, Christian Schlauer, Shiro
-Takeda (Please apologize if we forgot somebody.)
+Takeda (Please accept our appologies if we forgot somebody.)
