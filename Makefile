@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.59 1993-07-27 02:50:27 amanda Exp $
+# $Id: Makefile,v 5.60 1993-08-05 11:35:15 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -57,7 +57,7 @@ BATCH=$(EMACS) -batch -q lpath.el -f eval-current-buffer
 ELC= $(BATCH) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -f TeX-auto-generate-global
+AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -l $(aucdir)/tex-auto.elc -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
 AUTOC= $(ELC)
@@ -213,9 +213,9 @@ LispInstall:
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) $(STYLESRC) $(FORMATSRC)
+	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; 
 	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
-	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi ; \
 	    if [ ! -d $(aucdir)/format ]; then mkdir $(aucdir)/format; fi ; \
 	    $(MV) *.elc $(aucdir) ; \
