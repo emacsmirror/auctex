@@ -1,5 +1,9 @@
 2005-02-12  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* tex.el (TeX-add-local-master): Insert "japanese-" before mode
+	name  if buffer local variable `japanese-TeX-mode' is non-nil.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
 	* doc/auctex.texi (Japanese): Doc fix to follow the latest
 	tex-jp.el.
 
