@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6c
+;; Version: 9.6d
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -643,7 +643,10 @@ the beginning of the file, but that feature will be phased out."
 
 (defun TeX-master-directory ()
   "Directory of master file."
-  (file-name-directory (TeX-master-file)))
+  (abbreviate-file-name
+   (expand-file-name
+    (concat (file-name-directory buffer-file-name)
+	    (file-name-directory (TeX-master-file))))))
 
 (defvar TeX-master t
   "*The master file associated with the current buffer.
