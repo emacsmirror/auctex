@@ -21,7 +21,7 @@ icondir = @icondir@
 datadir = @datadir@
 packagedir = @packagedir@
 AUCTEXDIR = @AUCTEXDIR@
-AUCTEXLISP = "`echo '$(AUCTEXDIR)'|sed s/\\/&&/g`"
+AUCTEXLISP = "`echo '$(AUCTEXDIR)'|sed 's/\\/&&/g'`"
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
