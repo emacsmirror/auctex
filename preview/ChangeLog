@@ -1,3 +1,10 @@
+2002-03-30  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-back-command): typo.
+
+	* autogen.sh (makeinfo): move into doc directory for
+	autogenerating files so that include files are found.
+
 2002-03-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/Makefile.in: New dependency on macros.texi
