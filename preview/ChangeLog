@@ -1,5 +1,7 @@
 2002-02-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/readme.texi: overhaul for 0.6.
+
 	* doc/preview-latex.texi: fat overhaul.
 
 	* preview.dtx (section{The Implementation}): Simplify \pr@advise,
