@@ -646,7 +646,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.431 $"))
+	(rev "$Revision: 5.432 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -661,7 +661,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-16 21:36:05 $"))
+    (let ((date "$Date: 2004-08-17 09:37:08 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3212,35 +3212,36 @@ be bound to `TeX-electric-macro'."
     (nreverse out-list)))
 
 (defvar TeX-fold-menu
-  '("Show/Hide"
-    ["Fold Mode" TeX-fold-mode
-     :style toggle
-     :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :help "Toggle folding mode"]
-    "-"
-    ["Hide All" TeX-fold-buffer
-     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :keys "C-c C-o C-b"
-     :help "Hide all configured TeX constructs in the current buffer"]
-    ["Hide Current Macro" TeX-fold-macro
-     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :keys "C-c C-o C-m"
-     :help "Hide the macro containing point"]
-    ["Hide Current Environment" TeX-fold-env
-     :visible (not (eq major-mode 'plain-tex-mode))
-     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :keys "C-c C-o C-e"
-     :help "Hide the environment containing point"]
-    "-"
-    ["Show All" TeX-fold-clearout-buffer
-     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :keys "C-c C-o C-x"
-     :help "Permanently show all folded content again"]
-    ["Show Current Item" TeX-fold-clearout-item
-     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-     :keys "C-c C-o C-c"
-     :help "Permanently show the item containing point"])
-  "Menu definition for commands from tex-fold.el.")
+  (TeX-menu-with-help
+   '("Show/Hide"
+     ["Fold Mode" TeX-fold-mode
+      :style toggle
+      :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :help "Toggle folding mode"]
+     "-"
+     ["Hide All" TeX-fold-buffer
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-b"
+      :help "Hide all configured TeX constructs in the current buffer"]
+     ["Hide Current Macro" TeX-fold-macro
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-m"
+      :help "Hide the macro containing point"]
+     ["Hide Current Environment" TeX-fold-env
+      :visible (not (eq major-mode 'plain-tex-mode))
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-e"
+      :help "Hide the environment containing point"]
+     "-"
+     ["Show All" TeX-fold-clearout-buffer
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-x"
+      :help "Permanently show all folded content again"]
+     ["Show Current Item" TeX-fold-clearout-item
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-c"
+      :help "Permanently show the item containing point"]))
+   "Menu definition for commands from tex-fold.el.")
 
 
 ;;; Menus for plain TeX mode
