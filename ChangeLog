@@ -1,3 +1,9 @@
+2005-01-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-insert-environment): Insert a simple newline
+	character instead of using `newline'.  Fixes insertion of
+	environment end at wrong place in XEmacs.
+
 2005-01-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (European): Document all TeX-language-*-hook
