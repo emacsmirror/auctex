@@ -6,6 +6,11 @@
 
 2004-05-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-env-item): Don't eat non-empty lines when
+	called on a marked region unless they only consist of whitespace
+	and comment characters.  Fill the paragraph of a potentially
+	outdented line after insertion of \item.
+
 	* aclocal.m4 (TEX_INPUT_DIRS): Repair quoting.
 
 	* tex.el (TeX-kpathsea-format-alist): Rename.  Formerly known as
