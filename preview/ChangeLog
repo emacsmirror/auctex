@@ -1,5 +1,11 @@
 2002-11-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* configure.in: bump version.
+
+	* doc/preview-latex.texi: bump version.
+	(Keys and lisp): reorder so that indexes refer to the start of
+	items.
+
 	* preview.el (preview-gs-transact): add a bit of paranoia into
 	page shifts in case the coordinate origin is not upper left.
 	Similar to change in tightpage option of preview.dtx.
