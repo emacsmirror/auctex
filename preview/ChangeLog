@@ -1,5 +1,9 @@
 2004-04-12  David Kastrup  <dakas@users.sourceforge.net>
 
+	* Release 0.8
+	
+	* RELEASE: prepare for 0.8
+
 	* preview-latex.spec: prepare for 0.8, bump XEmacs to 21.4.9.
 	
 2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
