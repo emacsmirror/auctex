@@ -966,12 +966,12 @@ original file."
 	      TeX-region-extra
 	      "\n\\message{ !name(" original ") !offset(")
       (insert (int-to-string (- offset
-				(TeX-current-offset)))
+				(1+ (TeX-current-offset))))
 	      ") }\n"
 	      region
 	      "\n\\message{ !name("  master-name ") !offset(")
       (insert (int-to-string (- trailer-offset
-				(TeX-current-offset)))
+				(1+ (TeX-current-offset))))
 	      ") }\n"
 	      trailer)
       (run-hooks 'TeX-region-hook)
