@@ -3,6 +3,10 @@
 	* latex.el (LaTeX-insert-environment): Partial rewrite.  Stay in
 	comments.  Do not comment uncommented following lines.  Get rid of
 	redundant comment prefix.
+	(LaTeX-indent-calculate): Check for beginning of buffer.
+	(LaTeX-indent-calculate-last): Do not check for beginning of
+	buffer.  Fixes wrong indentation of environments at the top of the
+	buffer.
 
 2004-10-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
