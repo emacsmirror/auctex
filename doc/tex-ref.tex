@@ -1,5 +1,5 @@
 +% -*- plain-tex -*- 
-% $Id: tex-ref.tex,v 1.1 1994-04-13 13:00:29 amanda Exp $
+% $Id: tex-ref.tex,v 1.2 1994-04-20 16:59:24 amanda Exp $
 % Reference Card for Auc TeX version 7
 %**start of header
 \newcount\columnsperpage
@@ -217,6 +217,7 @@ of TeX-mode-hook, and then the value of LaTeX-mode-hook.
 
 \key{Save Document}{C-c C-d}
 \key{Run a command on the master file}{C-c C-c}
+\key{Run a command on the buffer}{C-c C-b}
 \key{Run a command on the region}{C-c C-r}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
@@ -249,7 +250,7 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Close LaTeX environment}{C-c ]}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
-\key{Complete \TeX\ macro}{C-c TAB}
+\key{Complete \TeX\ macro}{M-TAB}
 \key{Smart ``quote''}{"}
 \key{Smart ``dollar''}{\$}
   
@@ -261,14 +262,15 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Insert {\it emphasized} text}{C-c C-f C-e}
 \key{Insert {\tt typewriter} text}{C-c C-f C-t}
 \key{Insert {\sl slanted\/} text}{C-c C-f C-s}
-\key{Insert small caps text}{C-c C-f C-c}
+\key{Delete font}{C-c C-f C-d}
+\key{Change font}{C-u C-c C-f <KEY>}
 
 \section{Source Formatting}
 
 \key{Indent current line}{TAB}
 \key{Indent next line}{LFD}
 
-\key{Format a paragraph}{C-c C-q C-p}
+\key{Format a paragraph}{M-q}
 \key{Format a region}{C-c C-q C-r}
 \key{Format a section}{C-c C-q C-s}
 \key{Format an environment}{C-c C-q C-e}
@@ -276,8 +278,10 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Mark an environment}{C-c .}
 \key{Mark a section}{C-c *}
 
-\key{(Un)comment region}{C-c ;}
-\key{(Un)comment paragraph}{C-c \%}
+\key{Comment region}{C-c ;}
+\key{Comment paragraph}{C-c \%}
+\key{Uncomment region}{C-u - C-c ;}
+\key{Uncomment paragraph}{C-u - C-c \%}
 
 \section{Miscellaneous}
 

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.10 1994-04-16 16:31:15 amanda Exp $
+;; Version: $Id: tex.el,v 5.11 1994-04-20 16:59:10 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1695,7 +1695,8 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
   (define-key TeX-mode-map "\C-c#"    'TeX-normal-mode)
   (define-key TeX-mode-map "\C-c\C-n" 'TeX-normal-mode)
   (define-key TeX-mode-map "\C-c?"    'describe-mode)
-  
+  (define-key TeX-mode-map "\C-c\C-i" 'TeX-goto-info-page)
+
   ;; From tex.el
   (define-key TeX-mode-map "\""       'TeX-insert-quote)
   (define-key TeX-mode-map "$"        'TeX-insert-dollar)
@@ -1796,6 +1797,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	;; ["Comment Paragraph" TeX-comment-paragraph t]
 	["Comment Region" TeX-comment-region t]
 	["Switch to Master file" TeX-home-buffer t]
+	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
@@ -2187,6 +2189,11 @@ between."
   (save-excursion
     (if arg (forward-sexp (prefix-numeric-value arg)))
     (insert TeX-grcl)))
+
+(defun TeX-goto-info-page ()
+  "Read documentation for AUC TeX in the info system."
+  (require 'info)
+  (Info-goto-node "(auctex)"))
 
 ;;;###autoload
 (defun TeX-submit-bug-report ()

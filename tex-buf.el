@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.65 1994-04-14 18:13:11 amanda Exp $
+;; $Id: tex-buf.el,v 1.66 1994-04-20 16:58:59 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -90,11 +90,11 @@ the region file file be recreated with the current region.  If mark is
 not active, the new text in the previous used region will be used.
 
 If the master file for the document has a header, it is written to the
-temporary file before the region itself.  The documents header is all
-text until TeX-header-end.
+temporary file before the region itself.  The document's header is all
+text after TeX-header-end.
 
 If the master file for the document has a trailer, it is written to
-the temporary file before the region itself.  The documents trailer is
+the temporary file before the region itself.  The document's trailer is
 all text after TeX-trailer-start."
   (interactive "P")
   (let ((command (TeX-command-query (TeX-region-file))))
@@ -116,7 +116,7 @@ all text after TeX-trailer-start."
 	(TeX-region-create (TeX-region-file TeX-default-extension)
 			   (buffer-substring begin end)
 			   (file-name-nondirectory (buffer-file-name))
-			   (count-lines (point-min) begin))))
+			   (count-lines (save-restriction (widen) (point-min)) begin))))
     (TeX-command command 'TeX-region-file)))
 
 (defun TeX-command-buffer ()
@@ -349,6 +349,9 @@ entry."
   "Hooks to run after starting an asynchronous process.
 Used by Japanese TeX to set the coding system.")
 
+(defvar TeX-show-compilation nil
+  "*If non-nil, show output of TeX compilation in other window.")
+
 (defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
@@ -361,7 +364,9 @@ Return the new process."
     (erase-buffer)
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
-    (display-buffer buffer)
+    (if TeX-show-compilation
+	(display-buffer buffer)
+      (message "Type `C-c C-l' to display results of compilation."))
     (setq TeX-parse-function 'TeX-parse-command)
     (setq TeX-command-default default)
     (setq TeX-sentinel-function

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.90 1994-04-14 20:17:03 amanda Exp $
+# $Id: Makefile,v 5.91 1994-04-20 16:58:47 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -101,7 +101,7 @@ MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el easymenu.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
-	 reporter.el
+	 reporter.el ltx-help.el
 
 STYLESRC = style/slides.el    style/foils.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -193,7 +193,7 @@ install-auto:
 	@echo "** Byte compiling.  This will take a while..."
 	@echo "** Some files may fail to compile. Don't Panic!"
 	@echo "**********************************************************"
-	-$(AUTOC) $(autodir)/*.el
+	-(cd ${autodir}; $(AUTOC) *.el)
 	@echo "**********************************************************"
 	@echo "**  Some files may have failed to compile. Don't Panic! **"
 	@echo "**  Congratulations! AUC TeX installation completed     **"

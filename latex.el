@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.9 1994-04-16 17:24:32 amanda Exp $
+;; Version: $Id: latex.el,v 5.10 1994-04-20 16:58:52 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1260,17 +1260,17 @@ Add LaTeX-indent-level indentation in each \\begin{ - \\end{ block.
 Lines starting with an item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
-  (save-excursion
-    (let ((indent (calculate-LaTeX-indentation)))
+  (let ((indent (calculate-LaTeX-indentation)))
+    (save-excursion
       (if (/= (current-indentation) indent)
 	  (let ((beg (progn
 		       (beginning-of-line)
 		       (point))))
 	    (back-to-indentation)
 	    (delete-region beg (point))
-	    (indent-to indent)))))
-  (if (< (current-column) (calculate-LaTeX-indentation))
-      (back-to-indentation)))
+	    (indent-to indent))))
+    (if (< (current-column) indent)
+	(back-to-indentation))))
 
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph: break lines to fit fill-column.
@@ -1476,7 +1476,7 @@ comments and verbatim environments"
 			       (regexp-quote TeX-grop)
 			       "\\|"
 			       (regexp-quote TeX-esc)
-			       "right\W\\)"))
+			       "right\\W\\)"))
 	   ;; without \W things like \rightarrow at the beginning of a
 	   ;; line destroy a level of indentation anyway: there is
 	   ;; (was) no provision to indent the corresponding \left
@@ -1516,7 +1516,7 @@ The point is supposed to be at the beginning of the current line."
 					 (regexp-quote TeX-esc) "begin *"
 					 (regexp-quote TeX-grop)
 					 "\\|"
-					 (regexp-quote TeX-esc) "left\W\\)"))
+					 (regexp-quote TeX-esc) "left\\W\\)"))
 		     (+ (current-indentation) LaTeX-indent-level))
 		    ((looking-at (concat (regexp-quote TeX-esc)
 					 LaTeX-item-regexp))
@@ -1628,6 +1628,7 @@ The point is supposed to be at the beginning of the current line."
 	["Comment Region" TeX-comment-region t]
 	["Switch to Master file" TeX-home-buffer t]
 	["Math Mode" LaTeX-math-mode t]
+	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))

@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.87 1994-04-16 13:34:56 amanda Exp $
+@c $Id: auc-tex.texi,v 1.88 1994-04-20 16:59:17 amanda Exp $
 
 @finalout
 @titlepage
@@ -3361,12 +3361,13 @@ error messages in the @file{tex-dbg.el} file.
 This is a list of projects for AUC @TeX{}.  Bug reports and requests we
 can not fix or honor right away will be added to this list.  If you have
 some time for emacs lisp hacking, you are encouraged to try to provide a
-solution to one of the following problems.
+solution to one of the following problems.  It might be a good idea to
+mail me first, though.
 
 @itemize @bullet
 @item
-Key binding to toggle variables.  Suggested by Berwin Turlach
-@samp{<berwin@@core.ucl.ac.be>}.
+Support Emacs comment conventions.  Christoph Wedler
+@samp{<wedler@@fmi.uni-passau.de>} has posted code to do this.
 
 @item
 @kbd{C-c C-m \left @key{ret}} should prompt for delimiter and insert
@@ -3439,16 +3440,6 @@ letters.  Make @key{,} and @key{.} remove italic correction.
 Use Emacs 19 minibuffer history to choose between previewers, and other
 stuff.  Suggested by John Interrante
 @samp{<interran@@uluru.Stanford.EDU>}. 
-
-@item
-Control @TeX{} compilation window.
-
-It is not good that half of the screen is wasted for the log when @TeX{}
-is processing a file. It is possible to make the log screen smaller, but
-the best solution would be to have a user configurable window layout
-that could be defined by some variables as for VM or GNUS. Or a log
-screen that opens only in case of an error. --- Tim Geisler
-@samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}
 
 @item 
 Make features.

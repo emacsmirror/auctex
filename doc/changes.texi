@@ -20,9 +20,23 @@ Peter Paris @samp{<pparis@@bass.gmu.edu>},
 Peter Barth @samp{<barth@@mpi-sb.mpg.de>},
 Andy Piper @samp{<ajp@@eng.cam.ac.uk>},
 Richard Stanton @samp{<stanton@@haas.berkeley.edu>},
+Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>},
 and probably more.@refill
 
 @itemize @bullet
+@item
+Don't automatically display the compilation buffer unless
+@code{TeX-show-compilation} in non-nil.  Suggested by Stefan Schoef
+@samp{Stefan.Schoef@@arbi.informatik.uni-oldenburg.de}. 
+
+@item
+Bundled @file{ltx-help.el}.  Press @kbd{C-h C-l} to get the
+documentation for a LaTeX command.
+
+@item
+Fixed indentation of @samp{\left} and @samp{\right}.  Thanks to
+Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
+
 @item
 Installation procedure changed.  @file{tex-site.el} is now intended to
 survive AUC @TeX{} upgraded.  The distribution version only contains
