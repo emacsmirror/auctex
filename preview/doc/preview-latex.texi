@@ -212,6 +212,20 @@ confused and place the previews wrong.
 @kindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
 
+@item @kbd{C-c C-p C-f}
+@itemx @code{preview-dump-format (&optional arg)}
+@itemx LaTeX/Preview/Cache preamble
+Dump a pregenerated format file.  For the rest of the session, this file
+is used when running on the same master file.  With prefix @code{arg},
+the use of the format file is discontinued (done via @kbd{C-u C-c C-p
+C-f} for LaTeX/Preview/Cache preamble off).
+
+Use this if you know your @LaTeX{} takes a long time to start up. The
+speedup will be most noticable when generating single or few previews.
+@kindex @kbd{C-c C-p C-f}
+@kindex @kbd{C-u C-c C-p C-f}
+@findex preview-dump-format
+
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
 @itemx LaTeX/Preview/Clearout Buffer
