@@ -1,5 +1,8 @@
 2002-02-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-image-creators): Change png default device
+	to png16m due to popular request.
+
 	* doc/readme.texi: overhaul for 0.6.
 
 	* doc/preview-latex.texi: fat overhaul.
