@@ -1,3 +1,14 @@
+2003-01-24  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-gs-sentinel): Delete PostScript file when
+	GhostScript has finished.
+	(preview-gs-dvips-sentinel): Don't mark PostScript file for
+	deletion when GhostScript will be run: otherwise preview.el will
+	delete the PostScript file automatically when the last preview has
+	been generated but before GhostScript exits.  And since
+	GhostScript has the file still open, some "operating systems" will
+	refuse to delete the PostScript file at that moment.
+
 2003-01-20  David Kastrup  <dakas@users.sourceforge.net>
 
 	* Release 0.7.8
