@@ -41,7 +41,7 @@ Another option is to try XEmacs, for which we now have support
 available.  @strong{Please note:} Presently, the port to XEmacs is work
 in progress.  Don't expect too much, and be prepared to contact the
 developers.  Problems with the XEmacs port are described in @ref{Known
-Problems}.
+problems}.
 
 @item A working @AUCTeX{} installation
 
