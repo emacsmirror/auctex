@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.28 $
+%  \rcskey \version CVS-$Revision: 1.29 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-01-18 15:04:55 $
+%\rcskey\next $Date: 2002-02-07 21:39:29 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -221,7 +221,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.28 $
+   \reserved@a\reserved@b CVS-$Revision: 1.29 $
 \else
    \begingroup
       \lccode`-=`.
@@ -230,7 +230,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-01-18 15:04:55 $
+\reserved@a\next $Date: 2002-02-07 21:39:29 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
@@ -749,7 +749,7 @@
 %    \end{macrocode}
 %Try to keep \LaTeX\ from overwriting its information files:
 %    \begin{macrocode}
-\@fileswfalse
+\nofiles
 %    \end{macrocode}
 %Let the output routine throw everything gathered regularly away.
 %Start with all float boxes, continue with output box, pack everything
