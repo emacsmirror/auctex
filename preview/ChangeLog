@@ -1,3 +1,14 @@
+2004-03-18  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/RELEASE:
+	* dvipng/dvi.c:
+	* dvipng/dvipng.c:
+	* dvipng/dvipng.h:
+	* dvipng/font.c:
+	* dvipng/misc.c:
+	* dvipng/papersiz.c:
+	* dvipng/special.c: Change the behaviour of the -D switch 
+
 2004-03-15  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-gs-color-string): Add missing space in
