@@ -1,4 +1,3 @@
-es
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
 ;; Copyright (C) 2001  Free Software Foundation, Inc.
@@ -493,17 +492,6 @@ Pure borderless black-on-white will return NIL."
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
-(defcustom preview-auto-reveal 'reveal-mode
-  "*Cause previews to open automatically when entered.
-Set to t or nil, or to a symbol which will be consulted
-if defined.  The default is to follow the setting of
-`reveal-mode'.  As long as that is undefined, this
-defaults to off."
-  :group 'preview-appearance
-  :type '(choice (const :tag "Off" nil)
-		 (const :tag "On" t)
-		 symbol))
-
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
@@ -523,8 +511,7 @@ defaults to off."
 		  (preview-toggle ov t)
 		  nil)
 		(push ov newlist))))
-    (if	(and (boundp preview-auto-reveal)
-	     (symbol-value preview-auto-reveal))
+    (if	(preview-auto-reveal-p preview-auto-reveal)
 	(map-extents #'preview-open-overlay nil
 		     pt pt nil nil 'preview-state 'active)
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
