@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-# Version: 11.11
+# Version: 11.12
 #
 # Edit the makefile, type `make', and follow the instructions.
 

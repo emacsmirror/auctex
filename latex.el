@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.11
+;; Version: 11.12
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -1703,7 +1703,9 @@ Prefix arg means justify as well."
 	  (start (progn
 		   (backward-paragraph)
 		   (point))))
-      (LaTeX-fill-region-as-paragraph start end prefix))))
+      (LaTeX-fill-region-as-paragraph start end prefix)))
+  ;; Done.
+  t)
 
 (defun LaTeX-fill-region (from to &optional justify what)
   "Fill and indent each of the paragraphs in the region as LaTeX text.
@@ -2733,7 +2735,8 @@ commands are defined:
     (define-key map "\n"      'reindent-then-newline-and-indent)
     
     ;; From latex.el
-    (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
+    ;; We now set `fill-paragraph-function' instead.
+    ;; (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
     ;; This key is now used by Emacs for face settings.
     ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
     (define-key map "\e\C-e"  'LaTeX-find-matching-end)
@@ -3063,6 +3066,8 @@ of `LaTeX-mode-hook'."
   (set-syntax-table LaTeX-mode-syntax-table)
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
+  (make-local-variable 'fill-paragraph-function)
+  (setq fill-paragraph-function 'LaTeX-fill-paragraph)
   (use-local-map LaTeX-mode-map)
   (easy-menu-add TeX-mode-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)

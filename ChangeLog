@@ -1,3 +1,7 @@
+2002-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.12 released.
+
 2002-10-28  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile (prefix): Revert accidental change to
@@ -83,12 +87,35 @@
 	major mode default to that of the calling file when doing error
 	processing.
 
+2002-03-21  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-site.el (eamcs-major-version): Changed if to when.
+	Suggested by Martin Thornquist <martint@ifi.uio.no>.
+	
 2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex.el (TeX-master-file): Don't make C-c ` bomb out in files
 	like xxx.gls.  Probably a more elaborate way would be to export
 	the TeX-master variable into files visited by error parsing.
 	Could be incorrect, however, if more than one file included them.
+
+2002-02-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-auto-generate): Expand file name.
+	Suggested by "Dr. Mark A. Friedman" <DrMarkAFriedman@earthlink.net>.
+
+	* latex.el (LaTeX-common-initialization): Set
+	`fill-paragraph-function'. 
+	(LaTeX-mode-map): Don't bind M-q.
+	Suggested by Nils Klarlund <klarlund@research.att.com>.
+
+	* tex.el (TeX-printer-list): Fixed spelling.
+	Reported by Nils Klarlund <klarlund@research.att.com>.
+
+2002-02-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Fixed some spelling errors.
+	Patch by "Davide G.M.Salvetti" <salve@debian.org>.
 
 2002-01-24  Per Abrahamsen  <abraham@dina.kvl.dk>
 

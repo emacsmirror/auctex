@@ -429,10 +429,10 @@ Full documentation will be available after autoloading the function."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "11.11"
+(defconst AUC-TeX-version "11.12"
   "AUC TeX version number.")
 
-(defconst AUC-TeX-date "Thu Jan 24 10:52:34 CET 2002"
+(defconst AUC-TeX-date "Mon Nov 25 15:32:59 MET 2002"
   "AUC TeX release date.")
 
 ;;; Buffer
@@ -1003,11 +1003,7 @@ FORCE is not nil."
   (setq TeX-active-styles (list TeX-virgin-style)))
 
 (defun TeX-style-list ()
-<<<<<<< tex.el
-  "Return a list of all styles (subfiles) use by the current document."
-=======
   "Return a list of all styles (subfiles) used by the current document."
->>>>>>> 5.268
   (TeX-update-style)
   TeX-active-styles)
 
