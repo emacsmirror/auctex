@@ -1,3 +1,21 @@
+2004-08-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-expand-list): New %cS expander for
+	`TeX-source-specials-view-expand-client'.
+	(TeX-source-specials-view-start-server): New customize option.
+	(TeX-source-specials-view-start-server-asked): New variable.
+	(TeX-source-specials-view-position-flags): New name.  Formerly
+	known as `TeX-source-specials-viewer-flags'.
+	(TeX-source-specials-view-gnuclient-flags): New variable.
+	(TeX-source-specials-view-emacsclient-flags): New variable.
+	(TeX-source-specials-view-expand-client): New function.
+	(TeX-source-specials-view-expand-options): Expand options for
+	inverse search as well.
+
+	* doc/changes.texi: Avoid email addresses.
+
+	* doc/tex-ref.tex: Update to 11.50.
+
 2004-08-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Advertise support for toggling source
