@@ -1,4 +1,5 @@
-These are the release notes for AUCTeX 11.50.
+Release notes for AUCTeX 11.50
+==============================
 
 AUCTeX provides by far the most wide-spread and sophisticated
 environment of editing LaTeX, TeX, ConTeXt and Texinfo documents using
@@ -18,7 +19,9 @@ Nevertheless, we strongly recommend using this release over the last
 one: the number of bugs has quite decreased, and usability is
 strikingly superior.
 
-Notable new features:
+
+New features and fixed bugs in this release
+-------------------------------------------
 
 PDFTeX is being supported with a new mode that can be toggled with C-c
 C-t C-p, and the appropriate viewer gets selected depending on the
@@ -40,11 +43,15 @@ few other goodies.
 
 ConTeXt is a supported format now.
 
-tex-fold.el is a new style file used for hiding away TeX constructs
-like footnotes or references.
-
 Syntax highlighting has become smarter and supports sub- and
-superscripts.
+superscripts.  Headings are now fontified in a larger font.
+
+Display of LaTeX sources can now be further improved by hiding and
+auto-revealing TeX constructes like footnotes or citations.  That
+means much of the distracting markup can be replaced by pre-defined
+strings or the content of the respective macros.  The functionality is
+available via the "Show/Hide" menu entry or the respective key
+bindings (use C-c C-o C-h to get a list).
 
 The menus have been reorganized and cleaned up (and you'll see a few
 changes and additions in keybindings there), and the Command menu will
@@ -53,6 +60,23 @@ now only offer commands relevant to the current major mode.
 A new autoconf-based installation makes configuring and installing
 AUCTeX a mostly automatic process, even under Windows.  Read the files
 INSTALL or INSTALL.windows for instructions.
+
+Commenting and uncommenting now works correctly.
+
+AUCTeX now contains facilities to prevent issues with text formatting
+in XEmacs in connection with preview-latex.
+
+
+Requirements
+------------
+
+It is recommended that you use at least GNU Emacs 21 or XEmacs 21.4
+with AUCTeX.  Support for Emacs 20 was dropped in favor of the
+possibility to implement new features easily.
+
+
+Future development and additional information
+---------------------------------------------
 
 AUCTeX is proceeding as a GNU project with the long-term intent of
 merging it into Emacs (and merging with preview-latex
