@@ -48,6 +48,9 @@
    ;; New environments
    (LaTeX-add-environments
     "lstlisting")
+   ;; Filling
+   (make-local-variable 'LaTeX-verbatim-macros)
+   (add-to-list 'LaTeX-verbatim-macros "lstinline")
    ;; Fontification
    (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
    (font-latex-match-function-make)
