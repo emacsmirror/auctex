@@ -1,3 +1,13 @@
+2004-08-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-view-extension): Remove.
+	(TeX-view-output-file): Use the function `TeX-output-extension'
+	instead of `TeX-view-extension'.
+	(TeX-run-set-command): Setting `TeX-view-extension' not necessary
+	anymore.
+
+	* tex.el (TeX-view-extension): Remove.
+
 2004-08-11  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: explain about tex-mik.el and tex-fptex.el
