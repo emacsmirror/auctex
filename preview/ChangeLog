@@ -1,3 +1,8 @@
+2002-03-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): Deal with the easy-menu
+	sickness so that XEmacs might work.
+
 2002-03-08  Alan Shutko  <ats@acm.org>
 
 	* configure.in: When checking for texhash, use /bin/true if we
