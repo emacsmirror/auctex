@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.3 1992-03-18 19:04:13 krab Exp $
+# $Id: Makefile,v 5.4 1992-03-18 20:04:16 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -47,7 +47,7 @@ clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
 
 
-dist:	
+dist: 	
 	if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	echo "Make distribution of auctex for release $$TAG"
 	cvs checkout -r $(TAG) auctex
@@ -58,7 +58,17 @@ dist:
 	ident $(ELISPSRC) $(OTHERFILES) >> FILELIST )
 	OUT=auctex`echo $$TAG | sed s/release//`; \
 	tar -cf - auctex | compress -c > $$OUT.Z; \
+	if [ ! -d split ]; then mkdir split; else rm split/*; fi; \
+	cp auctex/FILELIST split; \
+	uuencode $$OUT.Z $$OUT.Z | split -200 - split/auc-tex-
 	rm -r auctex
 
+mail:
+	if [ "X$$WHO" = "X" ]; then echo "*** No reciepient(s) ***"; exit 1; fi
+	for U in $$WHO; do\
+	for F in `ls -1 split`; do\
+	echo Sending $$F to $$U ; \
+	Mail -s $$F $$U < split/$$F;\
+	sleep 20; \
+	done; done
 	
-
