@@ -1,13 +1,13 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.72 1996-03-23 02:10:45 abraham Exp $
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
+;; Version: 9.5a
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994 Per Abrahamsen 
+;; Copyright (C) 1993, 1994, 1996 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -249,10 +249,6 @@ Full documentation will be available after autoloading the function."
 
 (autoload 'BibTeX-auto-store "latex" no-doc t)
 
-;; Bind latex-help globally. 
-(autoload 'latex-help "ltx-help" no-doc t)
-(define-key help-map "\C-l" 'latex-help)
-
 (autoload 'LaTeX-math-mode "latex" no-doc t)
 (autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
 (autoload 'japanese-latex-mode "tex-jp" no-doc t)
@@ -417,14 +413,14 @@ The value is actually the tail of LIST whose car is ELT."
       (or (stringp (ad-get-arg 3))
 	  ad-do-it)))
 
-(defun TeX-active-mark ()
-  ;; In Lucid (mark) returns nil when not active.
-  (mark))
-
 (defun TeX-mark-active ()
-  (and zmacs-regions (mark)))
+  ;; In Lucid (mark) returns nil when not active.
+  (if zmacs-regions 
+      (mark)
+    (mark t)))
 
-(add-menu-item '("Help") "Document LaTeX word..." 'latex-help t "-----")
+(defun TeX-active-mark ()
+  (and zmacs-regions (mark)))
 
 ;; Lucid 19.11 have no idea what `kill-all-local-variables' is
 ;; supposed to do.  I have to explicitly clear `TeX-symbol-list'
@@ -469,11 +465,6 @@ The value is actually the tail of LIST whose car is ELT."
 
 (defun TeX-active-mark ()
   (and transient-mark-mode mark-active))
-
-(let ((map (lookup-key global-map [menu-bar help])))
-  (if (keymapp map)
-      (define-key-after map [ latex ]
-	'("Document LaTeX word..." . latex-help) 'describe-variable)))
 
 (defun TeX-activate-region ())
 
@@ -760,6 +751,8 @@ If REGEXP is nil, or \"\", an error will occur."
       (setq entries (cdr entries))
       (or (string-match "/$" entry)
 	  (setq entry (concat entry "/")))
+      (and (string-match "//$" entry)
+	   (setq entry (substring entry 0 -1)))
       (or (not (TeX-directory-absolute-p entry))
 	  (member entry TeX-macro-global)
 	  (string-equal "/" entry)
@@ -921,8 +914,14 @@ FORCE is not nil."
       ()
     (setq TeX-style-hook-applied-p t)
     (message "Applying style hooks...")
-    (apply 'TeX-run-style-hooks (list (TeX-strip-extension nil nil t)
-				      (TeX-master-file)))
+    (TeX-run-style-hooks (TeX-strip-extension nil nil t))
+    ;; Run parent style hooks if it has a single parent that isn't itself. 
+    (if (or (not (memq TeX-master '(nil t)))
+	    (and (buffer-file-name)
+		 (string-match TeX-one-master
+			       (file-name-nondirectory (buffer-file-name)))))
+	(TeX-run-style-hooks (TeX-master-file)))
+
     (if (and TeX-parse-self
 	     (null (cdr-safe (assoc (TeX-strip-extension nil nil t)
 				    TeX-style-hook-list))))
@@ -2067,7 +2066,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
   (setq TeX-mode-map (make-sparse-keymap))
 
   ;; Standard
-  (define-key TeX-mode-map "\177"     'backward-delete-char-untabify)
+  ;; (define-key TeX-mode-map "\177"     'backward-delete-char-untabify)
   (define-key TeX-mode-map "\C-c}"    'up-list)
   (define-key TeX-mode-map "\C-c#"    'TeX-normal-mode)
   (define-key TeX-mode-map "\C-c\C-n" 'TeX-normal-mode)
