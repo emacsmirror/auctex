@@ -1,3 +1,8 @@
+2005-02-27  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Cater for kinsoku,
+	especially for Japanese.
+
 2005-02-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-common-initialization): Update LaTeX menu when a
