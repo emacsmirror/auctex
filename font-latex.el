@@ -94,26 +94,24 @@ buffers controlled by font-latex or restarting Emacs."
 (defvar font-latex-quote-regexp-beg nil
   "Regexp used to find quotes.")
 
-(defvar font-latex-quote-end-list nil
-  "List matching end quotes for `font-latex-quote-regexp-beg'.")
+(defvar font-latex-quote-list nil
+  "List of matching start and end quote pairs for quotation fontification.")
 
 (defcustom font-latex-quotes 'french
-  "Whether to fontify << french quotes >> or >> german quotes <<.
+  "Whether to fontify << French quotes >> or >>German quotes<<.
 Also selects \"<quote\"> versus \">quote\"<."
   :type '(choice (const french) (const german))
   :set (lambda (symbol value)
-         (set-default symbol value)
-         (if (equal value 'french)
-             (setq font-latex-quote-regexp-beg
-                   (concat "\\(``\\)\\|\\(\"<\\)\\|\\(\"`\\)\\|\\(<<\\)\\|"
-                           "\\(" (char-to-string 171) "\\)") ; An 8-bit "<<"
-                   font-latex-quote-end-list
-                   `("''" "\">" "\"'" ">>" ,(char-to-string 187)))
-           (setq font-latex-quote-regexp-beg
-                 (concat "\\(``\\)\\|\\(\">\\)\\|\\(\"`\\)\\|\\(>>\\)\\|"
-                         "\\(" (char-to-string 187) "\\)") ; An 8-bit ">>"
-                 font-latex-quote-end-list
-                 `("''" "\"<" "\"'" "<<" ,(char-to-string 171)))))
+	 (set-default symbol value)
+	 (if (equal value 'french)
+	     (setq font-latex-quote-list
+		   '(("``" . "''")  ("\"`" . "\"'")
+		     ("\"<" . "\">") ("<<" . ">>") ("«" . "»")))
+	   (setq font-latex-quote-list
+		 '(("``" . "''") ("\"`" . "\"'")
+		   ("\">" . "\"<") (">>" . "<<") ("»" . "«"))))
+	 (setq font-latex-quote-regexp-beg
+	       (regexp-opt (mapcar 'car font-latex-quote-list) t)))
   :group 'font-latex)
 
 (defvar font-latex-warning-face			'font-latex-warning-face
@@ -372,9 +370,9 @@ use."
 	((eq type 'noarg)
 	 (if (listp face)
 	     `(,(intern (concat prefix name))
-	       (1 ',face))
+	       (0 ',face))
 	   `(,(intern (concat prefix name))
-	     (1 ,face))))
+	     . ,face)))
 	((eq type 'declaration)
 	 (if (listp face)
 	     `(,(intern (concat prefix name))
@@ -416,32 +414,26 @@ fontification regexp like so:
 	;; defun font-latex-match-*-make
 	(eval `(defun ,(intern (concat prefix name "-make")) ()
 		 ,(concat "Make or remake the variable `" prefix name "'.")
+		 (let ((keywords
+			(append
+			 ,(intern (concat prefix name "-keywords-local"))
+			 ,(intern (concat prefix name "-keywords"))))
+		       multi-char-macros single-char-macros)
+		   (dolist (elt keywords)
+		     (if (string-match "^[A-Za-z]" elt)
+			 (add-to-list 'multi-char-macros elt)
+		       (add-to-list 'single-char-macros elt)))
 		 (setq ,(intern (concat prefix name))
 		       (concat
-			;; To avoid the [^A-Za-z@*] part being
-			;; highlighted with 'noarg keywords, an
-			;; additional group is created and only
-			;; (match-string 1) is highlighted.  (See
-			;; `font-latex-keyword-matcher'.)
-			,(when (eq type 'noarg) "\\(")
-			"\\\\"
-			(let ((max-specpdl-size 1000)
-			      (fields
-			       (append
-				,(intern (concat prefix name "-keywords-local"))
-				,(intern (concat prefix name "-keywords")))))
-			  (regexp-opt fields t))
-			,(when (eq type 'noarg) "\\)")
-			;; Warning keywords can contain symbol
-			;; constituents which will not be matched if
-			;; "\\>" is used.  They are currently the only
-			;; ones which should not use "\\>".  If there
-			;; will be more in the future, we should use a
-			;; new element in the variable
-			;; `keywords-specs'.
-			(if (string= ,name "warning")
-			    "[^A-Za-z@*]"
-			  "\\>")))))
+			"\\\\\\("
+			(when (> (safe-length multi-char-macros) 0)
+			  (concat
+			   "\\(?:" (regexp-opt multi-char-macros) "\\)\\>"))
+			(when (> (safe-length single-char-macros) 0)
+			  (concat
+			   (when (> (safe-length multi-char-macros) 0) "\\|")
+			   "\\(?:" (regexp-opt single-char-macros) "\\)"))
+			"\\)")))))
 
 	;; defcustom font-latex-match-*-keywords
 	(eval `(defcustom ,(intern (concat prefix name "-keywords")) nil
@@ -572,7 +564,7 @@ are missing, the face will be applied to the command itself.
 
   ;; Add the "fixed" matchers and highlighters.
   (dolist (item
-	   '(("\\(^\\|[^\\\\]\\)\\(&+\\)" 2 font-latex-warning-face)
+	   '(("\\(^\\|[^\\]\\)\\(&+\\)" 2 font-latex-warning-face)
 	     ("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)
 	     (font-latex-match-quotation . font-latex-string-face)))
     (add-to-list 'font-latex-keywords-1 item)
@@ -582,8 +574,8 @@ are missing, the face will be applied to the command itself.
 	      (0 font-latex-math-face append t))
 	     (font-latex-match-math-envII
 	      (0 font-latex-math-face append t))
-	     ("\\\\[@A-Za-z]+"
-	      (0 font-latex-sedate-face append))
+	     ("\\(?:^\\|[^\\]\\)\\(?:\\\\\\\\\\)*\\(\\\\[@A-Za-z]+\\)"
+	      (1 font-latex-sedate-face append))
 	     (font-latex-match-script
 	      (1 (font-latex-script (match-beginning 0)) append))))
     (add-to-list 'font-latex-keywords-2 item t)))
@@ -692,7 +684,7 @@ have changed."
 			      ;; is valid, but allowing it might screw
 			      ;; up fontification of stuff like
 			      ;; "\url{...} foo \textbf{<--!...}".
-			      "\\([^a-z@*{]\\).*?\\(\\1\\)")
+			      "\\([^a-z@*\n\f{]\\).*?\\(\\1\\)")
 		     (1 "\"") (2 "\""))))
     (unless (= (length verb-macros) 0)
       (add-to-list 'font-latex-syntactic-keywords
@@ -1345,13 +1337,8 @@ The quotes << french >> and 8-bit french are used if `font-latex-quotes' is
 set to french, and >> german << (and 8-bit) are used if set to german."
   (when (re-search-forward font-latex-quote-regexp-beg limit t)
     (let ((beg (match-beginning 0)))
-      (search-forward
-       (cond ((match-beginning 1) (nth 0 font-latex-quote-end-list))
-	     ((match-beginning 2) (nth 1 font-latex-quote-end-list))
-	     ((match-beginning 3) (nth 2 font-latex-quote-end-list))
-	     ((match-beginning 4) (nth 3 font-latex-quote-end-list))
-	     ((match-beginning 5) (nth 4 font-latex-quote-end-list)))
-       limit 'move)
+      (search-forward (cdr (assoc (match-string 0) font-latex-quote-list))
+		      limit 'move)
       (store-match-data (list beg (point)))
       t)))
 
@@ -1490,5 +1477,9 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 
 ;; Provide ourselves:
 (provide 'font-latex)
+
+;; Local Variabes:
+;; coding: iso-8859-1
+;; End:
 
 ;;; font-latex.el ends here
