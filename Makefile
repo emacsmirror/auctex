@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.34 1993-03-23 11:40:00 amanda Exp $
+# $Id: Makefile,v 5.35 1993-03-23 11:47:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -9,8 +9,8 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-#prefix=/usr/local
-prefix=/home/local/sys/gnu
+prefix=/usr/local
+#prefix=/home/local/sys/gnu
 
 # Where architecture dependent local software go
 exec_prefix = $(prefix)
@@ -19,24 +19,24 @@ exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 
 # Where info files go.
-infodir = $(prefix)/info
+infodir = $(prefix)/lib/emacs/info
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
-
-# Make sure that this is the same directory as specified by
-# TeX-lisp-directory in tex-site.el
-
-#aucdir=/user/amanda/lib/emacs/auctex
-#aucdir=$(prefix)/elisp/auctex
-aucdir=/home/pd/share/emacs/auctex7
 
 # Where manual pages go.
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located
-elispdir=/home/dist/lib/emacs/lisp
-#elispdir=$(prefix)/lib/emacs/lisp
+elispdir=$(prefix)/lib/emacs/lisp
+#elispdir=/home/dist/lib/emacs/lisp
+
+# Make sure that this is the same directory as specified by
+# TeX-lisp-directory in tex-site.el
+
+aucdir=$(elispdir)/auctex
+#aucdir=/home/pd/share/emacs/auctex7
+#aucdir=/user/amanda/lib/emacs/auctex
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
