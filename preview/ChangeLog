@@ -1,5 +1,8 @@
 2002-04-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-environment, preview-parse-messages): byte
+	compiler warnings.
+
 	* prv-xemacs.el (face-attribute): Try getting calculation of
 	:height more correct.
 	(preview-inherited-face-attribute): Make a macro.
