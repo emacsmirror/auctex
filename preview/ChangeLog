@@ -1,3 +1,21 @@
+2004-05-04  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/enc.c:
+	Use the new kpathsea search format kpse_enc_format if available,
+	otherwise use kpse_tex_ps_header_format
+
+	* dvipng/fontmap.c:
+	Fix new kpathsea search type kpse_fontmap_format, use
+	kpse_dvips_config_format if not available
+
+	* dvipng/ft.c: Fix sizing
+
+	* dvipng/draw.c: Simplify LoadT1 call
+
+	* dvipng/t1.c: Shorten call, fix sizing
+
+	* dvipng/dvipng.h: Simplify char-storing structure
+
 2004-05-03  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/fontmap.c, dvipng/font.c, dvipng/t1.c, dvipng/ft.c:
