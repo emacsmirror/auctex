@@ -448,7 +448,7 @@ sane way of defining it.
 
 For previews contained inside such a macro argument, the default
 behaviour of @previewlatex{} is to use a position immediately after the
-closing brace of the argument. All the prewiews get placed there, all at
+closing brace of the argument. All the previews get placed there, all at
 a zero-width position, which means that Emacs displays it in an order
 that @previewlatex{} cannot influence (currently in Emacs it is even
 possible that the order changes between runs). And since the placement
@@ -485,9 +485,15 @@ redefine just that, since they call it only after having read their
 argument in, and then it already is too late. So you need to disable
 every of those commands by hand in your document preamble, or
 alternatively in @code{preview-default-preamble}, which is customizable
-in the Preview Latex group. This currently contains @code{\emph} and
-@code{\footnote} but the plan is that it eventually will contain most
-common cases.
+in the Preview Latex group.
+
+Actually, we wrote all of the above just to scare you.  At least all of
+the above mentioned macros and a few more are already catered for by a
+configuration file @file{prauctex.cfg} that gets loaded by default
+unless the @code{preview} package get loaded with the
+@option{noconfig} option.  You can make your own copy of this file in a
+local directory and edit it in case of need.  You can also add loading
+of a file of your liking to @code{preview-default-preamble}.
 
 @node License, Index, Internals, top
 @c Not to be changed often, I think: in separate file.
