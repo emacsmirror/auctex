@@ -1,3 +1,8 @@
+2005-01-05  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Fixed typo
+	in doc string.
+
 2005-01-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* toolbar-x.el (toolbarx-default-toolbar-meaning-alist): Some

@@ -311,7 +311,7 @@ The fifth element is the type of construct to be matched.  It can
 be one of 'noarg which will match simple macros without
 arguments (like \"\\foo\"), 'declaration which will match macros
 inside a TeX group (like \"{\\bfseries foo}\") or a list of the
-form `(command <numer of mandatory arguments> <flag determining
+form `(command <number of mandatory arguments> <flag determining
 if trailing asterisk should be fontified>)' which will match
 macros of the form \"\\foo[bar]{baz}\".")
 
