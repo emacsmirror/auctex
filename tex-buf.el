@@ -957,7 +957,7 @@ command."
 			   (while (setq pos (string-match "\n" str pos))
 			     (setq str (replace-match "" t t str)))
 			   (string-match
-			    "\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]"
+			    "\\`\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]\\'"
 			    str)))
 		(setq TeX-current-page str
 		      pt nil)
