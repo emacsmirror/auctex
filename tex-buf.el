@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7d
+;; Version: 9.7e
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -981,7 +981,8 @@ You might want to examine and modify the free variables `file',
 				     "\\'\\|"
 				     "!offset([---0-9]*)\\|"
 				     "!name([^)]*)\\|"
-				     "^.*erfull \\\\.*[0-9]*--[0-9]*"
+				     "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
+				     "^LaTeX Warning: .*[0-9]+\\.$"
 				     "\\)"))
 	  (let ((string (TeX-match-buffer 1)))
 
@@ -991,7 +992,11 @@ You might want to examine and modify the free variables `file',
 		   nil)
 
 		  ;; LaTeX warning
-		  ((string-match "^.*erfull \\\\.*[0-9]*--[0-9]*"
+		  ((string-match (concat "\\("
+					 "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
+					 "^LaTeX Warning: .*[0-9]+\\.$"
+					 "\\)")
+
 				 string)
 		   (TeX-warning string))
 
@@ -1084,14 +1089,26 @@ Return nil if we gave a report."
 
   (let* ((error (concat "** " string))
 
+	 ;; bad-box is nil if this is a "LaTeX Warning"
+	 (bad-box (string-match "^.*erfull \\\\.*[0-9]*--[0-9]*" string))
+	 ;; line-string: match 1 is beginning line, match 2 is end line
+	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
+			"on input line \\([0-9]*\\)\\."))
+	 ;; word-string: match 1 is the word
+	 (word-string (if bad-box "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
+			"`\\(\\w+\\)'"))
+
 	 ;; Get error-line (warning)
 	 (line (progn
-		 (re-search-backward " \\([0-9]*\\)--\\([0-9]*\\)")
+		 (re-search-backward line-string)
 		 (string-to-int (TeX-match-buffer 1))))
-	 (line-end (string-to-int (TeX-match-buffer 2)))
+	 (line-end (if bad-box (string-to-int (TeX-match-buffer 2))
+		     line))
 	 
 	 ;; Find the context
-	 (context-start (progn (end-of-line) (point)))
+	 (context-start (progn (if bad-box (end-of-line)
+				 (beginning-of-line))
+			       (point)))
 
 	 (context (progn
 		    (forward-line 1)
@@ -1106,7 +1123,7 @@ Return nil if we gave a report."
 
 	 ;; Now find the error word.
 	 (string (progn
-		   (re-search-backward "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
+		   (re-search-backward word-string
 				       context-start t)
 		   (TeX-match-buffer 1)))
 
@@ -1133,7 +1150,7 @@ Return nil if we gave a report."
 	    (search-forward string nil t))
 	  ;; Display help
 	  (if TeX-display-help
-	      (TeX-help-error error context)
+	      (TeX-help-error error (if bad-box context (concat "\n" context)))
 	    (message (concat "! " error)))
 	  nil)
       t)))

@@ -1,3 +1,13 @@
+Mon Jan 20 18:41:23 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7e released.
+
+Mon Jan 20 18:38:58 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-parse-error): Support LaTeX warnings.  Frederic
+	Devernay <devernay@istar.fr>.
+	(TeX-warning): Ditto.
+
 Fri Jan 17 17:42:20 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7d released.
