@@ -1,5 +1,10 @@
 2005-03-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* style/beamer.el ("beamer"): Find the correct start of
+	environment in case a frame environment is inserted with point on
+	a non-empty line.  Insert an additional newline to set off title
+	and content.
+
 	* font-latex.el (font-latex-make-title-faces): Use `font-size'
 	instead of `face-height' to determine the font size because the
 	latter (as the sum of the face's ascent and descent) returns
