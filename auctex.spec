@@ -1,30 +1,32 @@
+%define basename auctex
+
 %define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
 
 %if %{FOR_SUSE}
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{name}.el
+%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{basename}.el
 %else
-%define distri       %{?thisshouldbeempty:}
+%define distri       .fedora
 %define commongroup  Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
+%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{basename}-init.el
 %endif
 
 Summary: 	Enhanced LaTeX mode for Emacs
-Name: 		auctex
+Name: 		%{basename}-emacs
 Version: 	11.52
 Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
-Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
+Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{basename}-%{version}.tar.gz
 Requires: 	emacs >= 21
 #BuildRequires: 	emacs-X11
-Obsoletes:      ge_auc emacs-auctex
+Obsoletes:      ge_auc emacs-auctex auctex
 BuildArchitectures: noarch
-BuildRoot: 	%{_tmppath}/%{name}-root
+BuildRoot: 	%{_tmppath}/%{basename}-root
 
 %description 
 AUCTeX is an extensible package that supports writing and formatting TeX files
@@ -90,12 +92,12 @@ rm -rf %{buildroot}
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
 %doc %{_infodir}/*
-%{_datadir}/emacs/site-lisp/%{name}
+%{_datadir}/emacs/site-lisp/%{basename}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
 * Thu Aug 19 2004 David Kastrup <dak@gnu.org>
-- Change tex-site.el to overwriting config file mode.
+- Change tex-site.el to overwriting config file mode.  New naming scheme.
 
 * Mon Aug 16 2004 David Kastrup <dak@gnu.org>
 - Attempt a bit of SuSEism.  Might work if we are lucky.
@@ -112,5 +114,3 @@ rm -rf %{buildroot}
 
 * Sat Feb 16 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Prerelease 11.11
-
-

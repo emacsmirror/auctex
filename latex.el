@@ -4188,8 +4188,8 @@ This happens when \\left is inserted."
   :group 'LaTeX)
 
 ;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(defun latex-mode ()
-  "Major mode for editing files of input for LaTeX.
+(TeX-defun latex-mode ()
+  "Major mode in %s for editing LaTeX files.
 See info under AUCTeX for full documentation.
 
 Special commands:

@@ -1,6 +1,23 @@
-2004-08-19  David Kastrup  <dak@gnu.org>
+2004-08-20  David Kastrup  <dak@gnu.org>
 
-	* Version 11.52 released.
+	* tex.el (AUCTeX-version): move to front and also eval when
+	compiling.  Other version info moved, too.
+	(TeX-defun): Macro for putting version info into definition.
+	(plain-tex-mode): Use `TeX-defun'.
+	(ams-tex-mode): Use `TeX-defun'.
+
+	* tex-info.el (texinfo-mode): Use `TeX-defun' for getting version
+	info into mode doc.
+
+	* latex.el (latex-mode): Use `TeX-defun' for getting version info
+	into mode doc.
+
+	* context.el (context-mode): Use `TeX-defun' for getting version
+	info into mode doc.
+
+	* auctex.spec (BuildRoot): New naming scheme.
+
+	* RELEASE: Add `DESTDIR' blurb.
 
 2004-08-19  David Kastrup  <dak@gnu.org>
 

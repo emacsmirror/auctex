@@ -602,6 +602,53 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
+(eval-and-compile
+  (defconst AUCTeX-version
+    (eval-when-compile
+      (let ((name "$Name:  $")
+	    (rev "$Revision: 5.436 $"))
+	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
+				name)
+	      (setq name (match-string 2 name))
+	      (while (string-match "_" name)
+		(setq name (replace-match "." t t name)))
+	      name)
+	    (if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
+		(format "CVS-%s" (match-string 1 rev)))
+	    "unknown")))
+    "AUCTeX version.
+If not a regular release, CVS revision of `tex.el'."))
+
+(defconst AUCTeX-date
+  (eval-when-compile
+    (let ((date "$Date: 2004-08-20 00:32:59 $"))
+      (string-match
+       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
+       date)
+      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
+	      (match-string 3 date))))
+  "AUCTeX release date.
+In the form of yyyy.mmdd")
+
+(defconst AUC-TeX-version AUCTeX-version
+  "Obsolete.  Replaced by `AUCTeX-version'.")
+
+(defconst AUC-TeX-date AUCTeX-date
+  "Obsolete.  Replaced by `AUCTeX-date'.")
+
+(defmacro TeX-defun (name args doc &rest body)
+  "Define an AUCTeX function.
+The function NAME with argument ARGS and version-specific
+DOC string gets defined as BODY.  An occurence of %s in the
+DOC string gets replaced with a string like \"AUCTeX 5.1\"."
+;;   (declare (indent defun) (debug &declare name name
+;; 				 lambda-list args
+;; 				 arg doc
+;; 				 def-body body))
+  `(defun ,name ,args ,(format doc
+			       (concat "AUCTeX " AUCTeX-version))
+     ,@body))
+
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
 (eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"))
@@ -643,39 +690,6 @@ Also does other stuff."
 
   (defun TeX-activate-region ()
     nil))
-
-(defconst AUCTeX-version (eval-when-compile
-  (let ((name "$Name:  $")
-	(rev "$Revision: 5.435 $"))
-    (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
-			    name)
-	  (setq name (match-string 2 name))
-	  (while (string-match "_" name)
-	    (setq name (replace-match "." t t name)))
-	  name)
-	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
-	    (format "CVS-%s" (match-string 1 rev)))
-	"unknown")))
-  "AUCTeX version.
-If not a regular release, CVS revision of `tex.el'.")
-
-(defconst AUCTeX-date
-  (eval-when-compile
-    (let ((date "$Date: 2004-08-19 21:31:22 $"))
-      (string-match
-       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
-       date)
-      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
-	      (match-string 3 date))))
-  "AUCTeX release date.
-In the form of yyyy.mmdd")
-
-(defconst AUC-TeX-version AUCTeX-version
-  "Obsolete.  Replaced by `AUCTeX-version'.")
-
-(defconst AUC-TeX-date AUCTeX-date
-  "Obsolete.  Replaced by `AUCTeX-date'.")
-
 
 ;;; Buffer
 
@@ -1985,7 +1999,7 @@ when major mode to enter.")
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
-  "Major mode for editing files of input for TeX or LaTeX.
+  "Major mode for editing TeX or LaTeX files.
 Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
@@ -2117,8 +2131,8 @@ The algorithm is as follows:
 ;;; Plain TeX mode
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(defun plain-tex-mode ()
-  "Major mode for editing files of input for plain TeX.
+(TeX-defun plain-tex-mode ()
+  "Major mode in %s for editing plain TeX files.
 See info under AUCTeX for documentation.
 
 Special commands:
@@ -3345,8 +3359,8 @@ be bound to `TeX-electric-macro'."
   (cons "AmS-TeX" plain-TeX-menu-entries))
 
 ;;;###autoload
-(defun ams-tex-mode ()
-  "Major mode for editing files of input for AmS-TeX.
+(TeX-defun ams-tex-mode ()
+  "Major mode in %s for editing AmS-TeX files.
 See info under AUCTeX for documentation.
 
 Special commands:

@@ -1457,8 +1457,8 @@ There might be text before point."
 		(t
 		 ConTeXt-default-interface)))))
 
-(defun context-mode ()
-  "Major mode for editing files of input for ConTeXt.
+(TeX-defun context-mode ()
+  "Major mode in %s for editing ConTeXt files.
 
 Special commands:
 \\{ConTeXt-mode-map}

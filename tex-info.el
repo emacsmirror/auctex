@@ -234,8 +234,8 @@ When called interactively, prompt for an environment."
 ;;; Mode:
 
 ;;; Do not ;;;###autoload because of conflict with standard texinfo.el.
-(defun texinfo-mode ()
-  "Major mode for editing files of input for Texinfo.
+(TeX-defun texinfo-mode ()
+  "Major mode in %s for editing Texinfo files.
 
 Special commands:
 \\{Texinfo-mode-map}

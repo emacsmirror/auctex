@@ -227,7 +227,7 @@
 
 ;;;###autoload
 (defun japanese-plain-tex-mode ()
-  "Major mode for editing files of input for Japanese plain TeX.
+  "Major mode for editing Japanese plain TeX files.
 Set japanese-TeX-mode to t, and enters plain-tex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
@@ -242,7 +242,7 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 
 ;;;###autoload
 (defun japanese-latex-mode ()
-  "Major mode for editing files of input for Japanese plain TeX.
+  "Major mode for editing Japanese LaTeX files.
 Set japanese-TeX-mode to t, and enters latex-mode."
   (interactive)
   (setq japanese-TeX-mode t)

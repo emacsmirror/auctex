@@ -26,7 +26,8 @@ under XEmacs work again (maybe for the first time).  Fontification of
 subscripts and superscripts is now disabled when the fontification
 engine is not able to support it properly.  As a consequence,
 currently this feature is only available for developer versions of
-Emacs.
+Emacs.  The `install' targets now use `DESTDIR' which should make
+compilation for SuSE and Debian feasible.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
