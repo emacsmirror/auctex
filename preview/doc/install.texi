@@ -16,6 +16,7 @@ Please read through this document fully before installing anything.
 * Configure::                   
 * Build/install::               
 * Loading the package::         
+* Advice for package providers::  
 @end menu
 @end ifclear
 
@@ -239,4 +240,56 @@ the @file{PROBLEMS} file
 @ref{Known problems}
 @end ifclear
 for a list of known problems.
+
+@node Advice for package providers
+@section Providing @previewlatex{} as a package
+As a package provider, you should make sure that your users will be
+served best according to their intentions, and keep in mind that a
+system might be used by more than one user, with different preferences.
+
+Use of packages should in general not impact performance negatively if a
+user chooses not to employ it, but should be as convenient as possible.
+
+The policy with regard to @AUCTeX{} typically has been @emph{not} to
+activate it automatically when it is installed as a package.  This is
+reasonable because
+
+@itemize @bullet
+@item Emacs comes with a simpler default @TeX{} mode with different
+keybindings.  Some users might prefer that.
+@item @AUCTeX{} is activated via @code{(require 'tex-site)}.  Once this
+has happened, it is not possible to get back the original @TeX{} mode.
+A site-wide default would for this reason be hard to override.
+@end itemize
+
+In contrast, @previewlatex{} does not affect operation of @AUCTeX{}
+unless you exercise its features.  The recommended invocation (see
+above) that is also provided in the example file
+@file{preview-latex.el} will, once you have added @previewlatex{}'s
+Lisp code to your @code{load-path} variable, delay loading and
+activating @previewlatex{} until the first @LaTeX{} file gets loaded.
+For this reason, should a user decide that he does not want to get
+@previewlatex{} loaded and activated, placing the line
+
+@lisp
+(remove-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+@end lisp
+
+@noindent
+in his personal configuration file will be completely sufficient for
+keeping his personal setup free from any impact of @previewlatex{}'s
+presence.
+
+For this reason we recommend installing the invocation provided in the
+file @file{preview-latex.el} at a place where it gets executed during
+the site startup phase of Emacs.  As long as @previewlatex{}'s Lisp
+files are installed to a place in Emacs' @code{load-path} variable, this
+should be sufficient.  It will result in a default behavior of loading
+@previewlatex{} whenever @AUCTeX{} gets loaded.
+
+XEmacs uses a package system.  @previewlatex{} should cater for
+everything necessary in that case.
+
+For @acronym{RPM} files we include a @file{preview-latex.spec} file in
+the tarball distribution that should do just that.
 
