@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.13 1994-04-26 15:27:15 amanda Exp $
+;; Version: $Id: latex.el,v 5.14 1994-04-26 18:22:46 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1281,7 +1281,7 @@ the cdr is the brace used with \\right.")
     ("\\updownarrow") ("\\Updownarrow") ("."))
   "List of symbols which can follow the \\left or \\right command")
 
-(defun TeX-insert-braces (optional &optional prompt)
+(defun TeX-arg-insert-braces (optional &optional prompt)
   (let ((left-brace (completing-read
                      (TeX-argument-prompt optional prompt "Which brace")
                      TeX-left-right-braces)))
@@ -2106,7 +2106,7 @@ of LaTeX-mode-hook."
    '("numberline" "Section number" "Heading")
    '("caption" t)
    '("marginpar" [ "Left margin text" ] "Text")
-   '("left" TeX-insert-braces)
+   '("left" TeX-arg-insert-braces)
 
    ;; These have no special support, but are included in case the
    ;; auto files are missing. 
