@@ -1,6 +1,7 @@
 @SET_MAKE@
 prefix=@prefix@#
 datadir=@datadir@#
+packagedir=@packagedir@#
 infodir=@infodir@#
 TEX=@TEX@
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
