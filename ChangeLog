@@ -1,5 +1,9 @@
 2003-02-15  David Kastrup  <dak@gnu.org>
 
+	* tex.el (LaTeX): Change :prefix field to LaTeX.
+	(TeX-auto-add-type): Make more readable and place doc string
+	indicating the origin into generated functions.
+
 	* font-latex.el (font-latex-setup): Try to behave better when the
 	interesting newlines in verbatim environments get moved.
 	Probably not the ultimate solution.
