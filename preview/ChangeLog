@@ -4,6 +4,10 @@
 	off that annoy our space strippers.  That makes
 	\PreviewMacro[*[]{}]{\footnote} feasible.
 
+2002-12-11  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* images/preview-cap-up.xpm: Fix bg and fg color issues
+
 2002-12-10  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* autogen.sh: Make LANG and LC_CTYPE saving work across recursive
