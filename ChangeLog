@@ -42,9 +42,6 @@
 
 	* tex-mik.el (TeX-command-list): Ditto.
 
-	* Makefile.in (AUCSRC, CONTRIB): Moved `tex-mik.el' from AUCTeX
-	core to contributed files.
-
 2004-01-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-mode-map): Use `C-c -' as a key binding for
