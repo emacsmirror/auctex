@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.399 $"))
+	(rev "$Revision: 5.400 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 09:40:53 $"))
+    (let ((date "$Date: 2004-08-03 09:53:35 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -743,9 +743,12 @@ If this is nil, an empty string will be returned."
 						      "Emacs server")
 					   " to allow inverse search with"
 					   " DVI viewer?"))
-			 (progn (funcall start)
-				TeX-source-specials-view-emacsclient-flags))
-		     (setq TeX-source-specials-view-start-server-asked t))))))
+			 (progn
+			   (setq TeX-source-specials-view-start-server-asked t)
+			   (funcall start)
+			   TeX-source-specials-view-emacsclient-flags)
+		       (setq TeX-source-specials-view-start-server-asked t)
+		       nil))))))
       (concat TeX-source-specials-view-position-flags
 	      (when server-flags " ") server-flags))
     ""))
