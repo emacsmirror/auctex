@@ -19,13 +19,16 @@ texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
 previewdocdir = @previewdocdir@
 AUCTEXDIR = @AUCTEXDIR@
-TEXMFGEN=@TEXMFGEN@
+TEXMFGEN = @TEXMFGEN@
 
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
 
-all: preview.sty prauctex.def prauctex.cfg preview.drv \
-   preview-mk.ins preview.dvi $(LISP_OBJS) docs install-hint
+all: texmf elisp docs install-hint
+
+elisp: $(LISP_OBJS)
+
+texmf: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi
 
 docs:
 	(cd doc ; $(MAKE) all)
@@ -81,7 +84,7 @@ preview.ins: preview.dtx
 	'\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}' \
 	'\endbatchfile'
 
-preview.sty prauctex.def prauctex.cfg preview.drv: preview.dtx preview-mk.ins
+$(TEXMFGEN) preview.drv: preview.dtx preview-mk.ins
 	$(TEX) '\nonstopmode \input preview-mk.ins'
 
 preview.dvi: preview.drv preview.dtx
@@ -102,7 +105,6 @@ clean:
 		circ.dvi circ.aux texput.log testdocstrip.tex \
 		testdocstrip.log bootstrap.log preview-mk.ins preview-mk.log
 	(cd doc ; $(MAKE) clean)
-
 
 distclean:
 	make clean
