@@ -1,3 +1,11 @@
+2004-06-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/mdwlist.el (TeX-add-style-hook): Change variables only
+	locally.
+
+	* latex.el (LaTeX-default-verb-delimiter): New variable.
+	(TeX-arg-verb): Use it.
+
 2004-06-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/mdwlist.el: New header.
