@@ -5,7 +5,7 @@
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
-;; Version: $Id: beamer.el,v 1.3 2005-01-12 12:11:38 angeli Exp $
+;; Version: $Id: beamer.el,v 1.4 2005-03-03 09:05:38 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -18,12 +18,18 @@
 
 ;;; Code:
 
+(defvar LaTeX-beamer-section-labels-flag nil
+  "If non-nil section labels are added")
+
+(defcustom LaTeX-beamer-item-overlay-flag t
+  "If non-nil do prompt for an overlay in itemize-like environments."
+  :type 'boolean
+  :group 'LaTeX-macro)
+
 (TeX-add-style-hook
  "beamer"
  (lambda ()
-   (defvar beamer-use-section-labels-flag nil
-     "Controls whether section labels are added")
-   (unless beamer-use-section-labels-flag
+   (unless LaTeX-beamer-section-labels-flag
      (make-local-variable 'LaTeX-section-hook)
      (setq LaTeX-section-hook
 	   '(LaTeX-section-heading
@@ -130,10 +136,18 @@
       (insert TeX-grop TeX-grcl))))
 
 (defun LaTeX-item-beamer ()
-  "Insert a new item with an optional overlay argument."
+  "Insert a new item with an optional overlay argument. You 
+can turn off the prompt for the overlay argument by setting 
+`LaTeX-beamer-item-overlay-flag' to nil. Calling the function
+with a prefix argument prompts for the overlay specification
+unconditionally."
+  (if (listp current-prefix-arg)
+      (setq current-prefix-arg (car current-prefix-arg))
+    current-prefix-arg)
   (TeX-insert-macro "item")
   (delete-horizontal-space)
-  (TeX-arg-beamer-overlay-spec 0)
+  (if (or current-prefix-arg LaTeX-beamer-item-overlay-flag)
+      (TeX-arg-beamer-overlay-spec 0))
   (insert " ")
   (indent-according-to-mode))
   
