@@ -1,3 +1,7 @@
+2003-04-15  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/wininstall.texi: Fixed typos in configure options.
+
 2003-04-15  Patrick Gundlach  <patrick@gundla.ch>
 
 	* tex.el (TeX-command-list): Changed %v to %V in View. Now
