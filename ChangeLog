@@ -1,3 +1,10 @@
+2004-08-01  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Remove info about manual installation.
+	Explain about preferred path syntax.
+
+	* doc/install.texi: Move info dor INSTALL.Windows.
+
 2004-08-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fptex.el: Do not overwrite customized variables.

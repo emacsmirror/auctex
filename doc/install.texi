@@ -8,7 +8,15 @@ Installing @AUCTeX{} should be simple: merely @code{./configure},
 @code{make}, and @code{make install}. This does not yet activate the
 package, but merely makes it available. See @ref{Loading the package}
 for the activation. Please read through this document fully before
-installing anything.
+installing anything.  The installation procedure has changed as
+compared to earlier versions.  In particular, note that there is some
+additional information for @w{MS Windows} installations in
+@ifset rawfile
+the file @file{INSTALL.windows}.
+@end ifset
+@ifclear rawfile
+@xref{Installation under MS Windows}.
+@end ifclear
 
 @ifclear rawfile
 @menu
@@ -27,15 +35,7 @@ installing anything.
 @section Prerequisites
 
 @itemize @bullet
-@item A recent version of Emacs 21, alternatively XEmacs 21
-
-There is additional information for Windows installations in
-@ifset rawfile
-the file @file{INSTALL.windows}.
-@end ifset
-@ifclear rawfile
-@xref{Installation under MS Windows}.
-@end ifclear
+@item A recent version of @w{Emacs 21}, alternatively @w{XEmacs 21}.
 
 @item A working @LaTeX{} installation
 

@@ -9,17 +9,20 @@ to resolve the issues involved. Please report success/failure to us at
 The installation of @AUCTeX{} will require the MSYS tool set from
 @uref{http://www.mingw.org}. If you have the Cygwin tool set from
 @uref{http://cygwin.com} installed, that should do just fine as well,
-but it is quite larger and slower. If you need to compile Emacs/XEmacs
-from source, you'll also need compilers and stuff that are also
-available for both of those tool sets. Compiling Emacs is outside of the
-scope of this manual: good luck. @AUCTeX{} itself does not require a
-@w{C compiler} for installation. Without either of those tool sets,
-however, you would need to generate your various @file{Makefile} copies
-from the respective @file{Makefile.in} files by hand, and that would
-mean quite a lot of guesswork. There is no sense going into too much
-details here: the instructions would change severely between versions,
-and the above tool sets are easy enough to acquire to make manual
-configuration unnecessary.
+but it is quite larger and slower.
+
+If you are installing AUC@TeX{} with one of those sets for an Emacs
+compiled in a different one, you should try to avoid tool-specific path
+names like @file{/cygwin/c}.  Instead, use the @file{c:} syntax.  It
+might also help to use forward slashes instead of the backward slashes
+more typical for @w{MS Windows}: while backward slashes are supposed to
+work if properly escaped in the shell, this is one area easily
+overlooked by the developers.  The same holds for file or directory
+names with spaces in them.  Of course, we want to hear about any
+problems in that area.
+
+Compiling Emacs is outside of the scope of this manual.  @AUCTeX{}
+itself does not require a @w{C compiler} for installation.
 
 @item
 Install GNU Emacs from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}
