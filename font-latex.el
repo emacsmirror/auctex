@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.915 (05 Jun 2004)
+;; Version:    0.916 (08 Jul 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.916 08Jul2004 Ralf Angeli
+;;  - `font-latex-superscript-face', `font-latex-subscript-face': New faces.
+;;  - `font-latex-suscript-keywords'): New constant.
+;;  - `font-latex-fontify-suscript'): New customize option.
+;;  - `font-latex-suscript'): New function.
 ;; V0.915 05Jun2004 Ralf Angeli
 ;;  - `font-latex-make-title-faces': New function.
 ;;  - `font-latex-title-1-face', `font-latex-title-2-face',
@@ -378,6 +383,10 @@ Also selects \"<quote\"> versus \">quote\"<."
   "Face to use for strings.  This is set by Font LaTeX.")
 (defvar font-latex-verbatim-face                'font-latex-verbatim-face
   "Face to use for text in verbatim macros or environments.")
+(defvar font-latex-superscript-face             'font-latex-superscript-face
+  "Face to use for superscripts.")
+(defvar font-latex-subscript-face               'font-latex-subscript-face
+  "Face to use for subscripts.")
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -934,6 +943,9 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
     (store-match-data (list (match-beginning 0) (point)))
     t))
 
+
+;;; Keywords
+
 (defvar font-latex-keywords-1
   '((font-latex-match-warning-function . font-latex-warning-face)
     ("\\(^\\|[^\\\\]\\)\\(&+\\)" 2 font-latex-warning-face)   ;;; & but not \&
@@ -1007,6 +1019,37 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 (eval-when-compile
   (require 'cl))
+
+
+;;; Subscript and superscript
+
+;; Copy and adaption of `tex-font-lock-keywords-3' from tex-mode.el in
+;; GNU Emacs on 2004-07-07.
+(defconst font-latex-suscript-keywords
+  (eval-when-compile
+    (let ((general "\\([a-zA-Z@]+\\|[^ \t\n]\\)")
+	  (slash "\\\\")
+	  (arg "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*"))
+      `((,(concat "[_^] *\\([^\n\\{}]\\|" slash general "\\|" arg "}\\)")
+	 (1 (font-latex-suscript (match-beginning 0))
+	    append)))))
+  "Keyword definition for highlighting sub- and superscript in LaTeX modes.")
+
+(defcustom font-latex-fontify-suscript t
+  "Non-nil means do not fontify subscript or superscript strings.
+This feature is not available in XEmacs."
+  :type 'boolean
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (unless (featurep 'xemacs)
+	   (if value
+	       (setq font-latex-keywords-2
+		     (append font-latex-keywords-2
+			     font-latex-suscript-keywords))
+	     (setq font-latex-keywords-2
+		   (remove (car font-latex-suscript-keywords)
+			   font-latex-keywords-2)))))
+  :group 'font-latex)
 
 
 ;;; Syntactic keywords
@@ -1124,6 +1167,14 @@ have changed."
   '((t (:inherit font-latex-math-face :family "courier")))
   "Face used to highlight TeX verbatim environments."
   :group 'font-latex-highlighting-faces)
+
+(defface font-latex-superscript-face
+  '((t (:height 0.8)))
+  "Face used for superscripts.")
+
+(defface font-latex-subscript-face
+  '((t (:height 0.8)))
+  "Face used for subscripts.")
 
 
 ;;; Setup
@@ -1752,6 +1803,24 @@ set to french, and >> german << (and 8-bit) are used if set to german."
        limit 'move)
       (store-match-data (list beg (point)))
       t)))
+
+;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
+;; GNU Emacs on 2004-07-07.
+(defun font-latex-suscript (pos)
+  (unless (or (memq (get-text-property pos 'face)
+		    '(font-lock-constant-face font-lock-builtin-face
+		      font-lock-comment-face font-latex-verbatim-face))
+	      ;; Check for backslash quoting
+	      (let ((odd nil)
+		    (pos pos))
+		(while (eq (char-before pos) ?\\)
+		  (setq pos (1- pos) odd (not odd)))
+		odd))
+    (if (eq (char-after pos) ?_)
+	;; This won't work in XEmacs.
+	'(face font-latex-subscript-face display (raise -0.3))
+      ;; This neither.
+      '(face font-latex-superscript-face display (raise +0.3)))))
 
 
 ;;; docTeX
