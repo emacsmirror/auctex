@@ -103,15 +103,15 @@ Linien sind in Abbildung~\ref{linpict} zu sehen.
 \caption{Linienzugalgorithmus} \label{linalg}
 \begin{fframe}
 \begin{enumerate}
-\item Setze $x \leftarrow 0$, $y \leftarrow 0$, $d \leftarrow -\left\lceil\frac{\Delta x}2\right\rceil$
+\item Setze $x \gets 0$, $y \gets 0$, $d \gets -\left\lceil\frac{\Delta x}2\right\rceil$
 \item Wiederhole bis $x = \Delta x$
 \begin{enumerate}
 \item Zeichne Punkt an $x \choose y$
-\item Setze $x \leftarrow x + 1$, $d \leftarrow d + \Delta y$
+\item Setze $x \gets x + 1$, $d \gets d + \Delta y$
 \item Falls $d \geq 0$
 \begin{enumerate}
-\item Setze $d \leftarrow d - \Delta x$
-\item Setze $y \leftarrow y + 1$
+\item Setze $d \gets d - \Delta x$
+\item Setze $y \gets y + 1$
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
@@ -210,7 +210,7 @@ erzeugen.
 
 Die Gleichung eines Kreises ist hier
 \begin{equation}
-y = \pm\sqrt{r^2 - x^2}
+y = ±\sqrt{r^2 - x^2}
 \end{equation}
 
 Der Wert $y$ läßt sich darstellen als Summe einer ganzen Zahl $e$ und
@@ -259,17 +259,17 @@ C-Programm ist in Tabelle \ref{prog} zu finden.
 \caption{Kreiszeichenalgorithmus}\label{alg}
 \begin{fframe}
 \begin{enumerate}
-\item Setze $x\leftarrow 0$, $y\leftarrow r$, $q\leftarrow r$
+\item Setze $x\gets 0$, $y\gets r$, $q\gets r$
 \item Wiederhole bis $x>y$:
 \begin{enumerate}
 \item Setze einen Punkt an $x \choose y$.
-\item Setze $q\leftarrow q-2x-1$
+\item Setze $q\gets q-2x-1$
 \item Falls $q<0$
 \begin{enumerate}
-\item Setze $q\leftarrow q + 2y-2$
-\item Setze $y\leftarrow y-1$
+\item Setze $q\gets q + 2y-2$
+\item Setze $y\gets y-1$
 \end{enumerate}
-\item Setze $x\leftarrow x+1$
+\item Setze $x\gets x+1$
 \end{enumerate}
 \end{enumerate}
 \end{fframe}
@@ -385,16 +385,16 @@ algorithmus für den ersten Oktanten.
 \caption{Hyperbelalgorithmus}\label{halg}
 \begin{fframe}
 \begin{enumerate}
-\item Setze $d \leftarrow r$, $x \leftarrow r$, $y \leftarrow r$
+\item Setze $d \gets r$, $x \gets r$, $y \gets r$
 \item Wiederhole bis zufrieden
 \begin{enumerate}
 \item Setze Punkt an $x \choose y$
-\item Setze $x \leftarrow x + 1$
-\item Setze $d \leftarrow d - 2y + 1$
+\item Setze $x \gets x + 1$
+\item Setze $d \gets d - 2y + 1$
 \item Falls $d < 0$
 \begin{enumerate}
-\item Setze $d \leftarrow d + 2x$
-\item Setze $y \leftarrow y - 1$
+\item Setze $d \gets d + 2x$
+\item Setze $y \gets y - 1$
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
