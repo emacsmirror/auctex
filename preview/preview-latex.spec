@@ -8,7 +8,7 @@
 %define commongroup Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
-%define distri      ''
+%define distri      
 %define commongroup Applications/Editors
 %define xemacspkgdir %{_libdir}/xemacs/site-packages
 %endif
@@ -118,7 +118,7 @@ for i in *emacs; do
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
   fi
-  %makeinstall 'DESTDIR=%{buildroot}' infodir=%{_infodir}'
+  %makeinstall 'DESTDIR=%{buildroot}' 'infodir=%{_infodir}'
   popd
 done
 
