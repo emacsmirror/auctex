@@ -22,7 +22,7 @@ satisfied with the default settings, you should customize
 
 @item
 Similar to language-specific quote insertion, @AUCTeX{} now helps you
-with hyphens in different languages as well.  @xref{European} for
+with hyphens in different languages as well.  @xref{European}, for
 details.
 
 @item
