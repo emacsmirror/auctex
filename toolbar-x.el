@@ -241,19 +241,18 @@ COMM is a command or a form.  PREP and APP are forms.  If PREP or
 APP are non-nil, they are added to the resulting command at the
 beginning and end, respectively.  If both are nil and COMM is a
 command, COMM is returned."
-  (if (or app prep)
+  (let ((comm-is-command (commandp comm)))
+    (if (and (not prep)
+	     (not app)
+	     comm-is-command)
+	comm
       (append '(lambda nil (interactive))
 	      (when prep (list prep))
 	      (when comm
-		(if (commandp comm)
+		(if comm-is-command
 		    `((call-interactively (function ,comm)))
 		  (list comm)))
-	      (when app (list app)))
-    (if comm
-	(if (commandp comm)
-	    comm
-	  `(lambda () (interactive) ,comm))
-      '(lambda nil (interactive)))))
+	      (when app (list app))))))
 
 ;; in Emacs, menus are made of keymaps (vectors are possible, but editors
 ;; handle `menu titles' differently) meanwhile in XEmacs, menus are lists of
