@@ -262,11 +262,11 @@ format dump handler."
 (defun preview-unwatch-preamble (format-cons)
   "Stop watching a format on FORMAT-CONS.
 The watch has been set up by `preview-watch-preamble'."
-  (cond (((overlayp (cdr format-cons))
-	  (delete-overlay (cdr format-cons))
-	  (setcdr format-cons nil))
-	 ((eq 'watch (cdr format-cons))
-	  (setcdr format-cons nil)))))
+  (cond ((overlayp (cdr format-cons))
+	 (delete-overlay (cdr format-cons))
+	 (setcdr format-cons nil))
+	((eq 'watch (cdr format-cons))
+	 (setcdr format-cons nil))))
 
 (defun preview-register-change (ov)
   "Register not yet changed OV for verification.

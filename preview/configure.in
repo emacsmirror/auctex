@@ -11,7 +11,7 @@ AC_DIVERT_PUSH(DEFAULTS)dnl
 fi]
 AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7.6,preview-latex-bugs@lists.sourceforge.net)
+AC_INIT(preview-latex,0.7.7,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
