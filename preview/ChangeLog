@@ -1,5 +1,13 @@
 2001-10-07  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el: Don't defvar AucTeX internal TeX-auto-file, make
+	auto-size detection of previews from parsed styles work.
+	(preview-document-pt): Use `TeX-active-styles' instead of bad AucTeX
+	internal `TeX-auto-file'.
+	(preview-get-geometry): Different arguments and semantics.  Make
+	it work.
+	(TeX-inline-preview): Call changed `preview-get-geometry'.
+
 	* prv-xemacs.el: add macros line-beginning-position and
 	line-end-position.
 
