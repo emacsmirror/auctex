@@ -1,3 +1,15 @@
+2002-11-20  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-dump-command, preview-undump-command):
+	deleted.
+	(preview-do-replacements): New function for performing
+	replacements in strings.
+	(preview-LaTeX-command-replacements, preview-format-name) 
+	(preview-dump-replacements, preview-undump-replacements): new
+	variables.
+	(preview-cache-preamble): adapt to new variables.
+	(TeX-inline-preview, TeX-inline-preview-internal): same.
+
 2002-11-18  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-emacs.el (preview-mode-setup): Add preview-at-point to the
