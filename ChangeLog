@@ -1,3 +1,13 @@
+2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex-buf.el (TeX-run-command): Let the TeX-process-buffer acquire
+	a buffer-local value of TeX-command-buffer so that its sentinel
+	will still refer to the right buffer even if another compilation
+	has been started.
+	(TeX-run-interactive): Same here.
+	(TeX-process-check): Don't bomb out when user does not want to
+	kill a process that has died on its own in the meantime.
+
 2001-10-09  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.04 released.
