@@ -1,7 +1,7 @@
 %%\iffalse
 %%     preview.dtx for extracting previews from LaTeX documents.  Part of
 %%     the preview-latex package.
-%%     Copyright (C) 2001, 2002 David Kastrup
+%%     Copyright (C) 2001, 2002, 2003 David Kastrup
 %%
 %%     This program is free software; you can redistribute it and/or modify
 %%     it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1236}
+%\CheckSum{1242}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.76 $
+%  \rcskey \version CVS-$Revision: 1.77 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-01-06 18:55:12 $
+%\rcskey\next $Date: 2003-01-06 23:58:02 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -380,6 +380,16 @@
 %mode.
 %\end{enumerate}
 %
+%\DescribeMacro{\PreviewOpen}
+%\DescribeMacro{\PreviewClose}
+%Those Macros form a matched preview pair.  This is for macros that
+%behave similar as \cmd{\begin} and \cmd{\end} of an environment.  It
+%is essential for the operation of \cmd{\PreviewOpen} that the macro
+%treated with it will open an additional group even when the preview
+%falls inside of another preview or inside of a |nopreview|
+%environment.  Similarly, the macro treated with \cmd{PreviewClose}
+%will close an environment even when inactive.
+%
 %\DescribeMacro{\ifPreview} In case you need to know whether |preview|
 %is active, you can use the conditional \cmd{\ifPreview} together with
 %|\else| and |\fi|.  
@@ -394,10 +404,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.76 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.77 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-01-06 18:55:12 $
+\reserved@a\next $Date: 2003-01-06 23:58:02 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -822,7 +832,7 @@
   \pr@advise@ship\equation*{\begingroup\aftergroup\pr@endbox
     \def\dt@ptrue{\m@ne=\m@ne}\noindent}
     {\endgroup}%
-  \PreviewOpen[][\def\dt@ptrue{\m@ne=\m@one}\noindent#1]\[%
+  \PreviewOpen[][\def\dt@ptrue{\m@ne=\m@ne}\noindent#1]\[%
   \PreviewClose\]%
   \PreviewEnvironment[][\noindent#1]{eqnarray}%
   \PreviewEnvironment[][\noindent#1]{eqnarray*}%
@@ -953,7 +963,9 @@
 %    \begin{macrocode}
 \newcommand*\pr@open[1][]{%
    \def\next[##1]##2{%
-   \pr@advise@ship{##2}{\pr@domacro{#1}{##1}}{}}%
+   \pr@advise##2{\begingroup
+     \pr@protect@ship{\pr@domacro{#1}{\begingroup\aftergroup\pr@endbox##1}}%
+                     {\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
 %\end{macro}
@@ -968,7 +980,7 @@
 %    \begin{macrocode}
 \newcommand*\pr@close[1][]{%
   \def\next[##1]##2{%
-   \pr@advise{##2}{\pr@protect@domacro{#1}{##1\pr@endbox}}}%
+   \pr@advise{##2}{\pr@domacro{#1}{##1\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
 %\end{macro}
