@@ -13,7 +13,10 @@
 	font-latex is not loaded and enabled.  Reinitialize font-lock
 	defaults.
 
-	* font-latex.el (font-latex-syntactic-keywords): Default to nil.
+	* font-latex.el: Do not autoload `texmathp'.
+	(font-latex-fontify-script): Doc fix.
+	(font-latex-script): Do without `texmathp'.
+	(font-latex-syntactic-keywords): Default to nil.
 	Make buffer-local.
 	(font-latex-setup): Set syntactic keywords.
 
