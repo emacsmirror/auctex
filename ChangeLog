@@ -1,3 +1,8 @@
+2005-03-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-submit-bug-report): Insert AUCTeX version into mail
+	subject.
+
 2005-03-30  Ikumi Keita <ikumi@revery.net>
 
 	* latex.el (LaTeX-env-label): Remove `TeX-toggle-off-input-method'

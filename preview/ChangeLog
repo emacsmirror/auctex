@@ -1,3 +1,8 @@
+2005-03-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* preview.el (preview-report-bug): Use "preview-" prefix in
+	version information.
+
 2005-03-29  David Kastrup  <dak@gnu.org>
 
 	* configure.in (auctexdir): Use `AC_ARG_VAR' on `GS' and `TEXHASH'
