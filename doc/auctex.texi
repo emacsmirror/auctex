@@ -54,9 +54,9 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
-@ifnottex
 @node top
 @top @AUCTeX{}
+@ifnottex
 
 @AUCTeX{} is an integrated environment for editing @LaTeX{} and
 @TeX{} files.
