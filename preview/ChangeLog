@@ -1,3 +1,21 @@
+2004-01-06  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-region): Use "<none>" for file name if
+	buffer not associated with a file.
+	(preview-parse-messages): recognize "<none>" to mean
+	TeX-command-buffer.
+	(preview-region): Use `preview-generate-preview' instead of
+	`TeX-command'.
+	(preview-document): Same.
+	(preview-at-point): Add arguments to allow mouse use at later
+	time.
+	(LaTeX-preview-setup): Don't touch TeX-command-list.
+	(preview-cache-preamble): Use `preview-generate-preview' instead
+	of `TeX-command'.
+	(TeX-inline-preview): Deprecate.
+	(preview-generate-preview): New function.
+	(TeX-inline-preview-internal): Remove `name' argument.
+
 2004-01-04  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-equality-transforms)
