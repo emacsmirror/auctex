@@ -23,7 +23,7 @@
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.95 $
+%   \rcskey \version CVS-$Revision: 1.96 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2005-01-29 00:31:37 $
+% \rcskey\next $Date: 2005-03-05 14:31:07 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -441,10 +441,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.95 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.96 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-01-29 00:31:37 $
+\reserved@a\next $Date: 2005-03-05 14:31:07 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -563,7 +563,7 @@
 \DeclareOption{psfixbb}{\ifPreview%
   \pr@fixbbtrue
   \newbox\pr@markerbox
-  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}\fi}%
+  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}\fi
 }
 %    \end{macrocode}
 %\end{macro}

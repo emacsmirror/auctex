@@ -1,5 +1,8 @@
 2005-03-05  David Kastrup  <dak@gnu.org>
 
+	* latex/preview.dtx: Fix psfixbb option that must have become
+	illegal at some time accidentally.
+
 	* doc/install.texi (Loading the package): Explain that
 	preview-latex.el should already be installed in-place.
 
