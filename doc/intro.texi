@@ -15,7 +15,7 @@ changes can be found in the @file{CHANGES} file.  If you are upgrading
 from an older version, read the History chapter in the AUC@TeX{} manual.
 
 AUC@TeX{} is a comprehensive customizable integrated environment for
-writing input files for La@TeX{} using GNU Emacs.
+writing input files for @TeX{}/La@TeX{} using GNU Emacs.
 
 AUC@TeX{} lets you run @TeX{}/La@TeX{} and other La@TeX{}-related
 tools, such as a output filters or post processor from inside Emacs.
@@ -155,4 +155,3 @@ should be sent to @url{mailto:auc-tex@@sunsite.dk}.
 
 To contact the current maintainers of AUC@TeX{} directly, email
 @url{mailto:auc-tex_mgr@@sunsite.dk}.
-
