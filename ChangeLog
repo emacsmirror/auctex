@@ -1,3 +1,16 @@
+2004-10-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-region-as-paragraph): Do not add linebreaks
+	after "$$ " at the end of paragraph filling.
+	(LaTeX-fill-move-to-break-point): Simplify.  Add support for
+	$$...$$ type display math.
+
+	* style/jurabib.el: New file.
+
+	* Makefile.in (STYLESRC): Add jurabib.el.
+
+	* doc/changes.texi: Mention support for the jurabib package.
+
 2004-10-14  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* auctb.el: Removed (renamed to tex-bar.el)
