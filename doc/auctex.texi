@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.184 2004-08-28 21:20:13 dak Exp $
+@c $Id: auctex.texi,v 1.185 2004-10-12 09:13:39 rsteib Exp $
 
 @finalout
 @titlepage
@@ -777,7 +777,7 @@ Some examples are listed below.
 
 @deffn Command TeX-insert-macro
 @kindex C-c C-m
-(@kbd{C-c C-m}) Prompt (with completion) for the name of a @TeX{} macro,
+(@kbd{C-c C-m} or @kbd{C-c RET}) Prompt (with completion) for the name of a @TeX{} macro,
 and if @AUCTeX{} knows the macro, prompt for each argument.
 @end deffn
 
@@ -792,7 +792,7 @@ arguments.
 If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
 asks for optional arguments of @TeX{} macros.  If set to
 @code{mandatory-args-only}, @code{TeX-insert-macro} asks only for
-mandatory argument.  When @code{TeX-insert-macro} is called with prefix
+mandatory arguments.  When @code{TeX-insert-macro} is called with prefix
 argument (@kbd{C-u}), it's the other way round.
 
 Note that for some macros, there are special mechanisms, e.g.
@@ -1953,7 +1953,7 @@ adding the following lines to your @file{.emacs} file.
 (setq TeX-auto-save t) ; Enable parse on save.
 @end lisp
 
-The later command will make @AUCTeX{} store the parsed information in
+The latter command will make @AUCTeX{} store the parsed information in
 an @file{auto} subdirectory in the directory each time the @TeX{} files
 are stored, @pxref{Automatic Local}.  If @AUCTeX{} finds the pre-parsed
 information when loading a file, it will not need to reparse the buffer.
@@ -2162,9 +2162,11 @@ Runs style hook @code{TeX-language-dk-hook}.
 Runs style hook @code{TeX-language-nl-hook}.
 
 @item german
-Runs style hook @code{TeX-language-de-hook}.
-Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
-@samp{"}.
+Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
+syntax, makes the @key{"} key insert a literal @samp{"}, and pressing it
+twice will give you opening or closing german quotes (@samp{"`} or
+@samp{"'}), if you have configured @code{TeX-open-quote} and
+@code{TeX-close-quote} accordingly @xref{Quotes}.
 
 @item italian
 Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will

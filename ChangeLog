@@ -1,3 +1,14 @@
+2004-10-12  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/auctex.texi (Completion): Mention `C-c RET' for
+	`TeX-insert-macro'.  Fixed typo.
+	(Parsing Files): Fixed typo.
+	(European): Improved.
+	From Frank Küster <frank@kuesterei.ch>,	slightly modified.
+
+	* latex.el (LaTeX-common-initialization): Use `LaTeX-env-tabular*'
+	for "tabular*".
+
 2004-10-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (Texinfo-insert-node): Emacs 21.3 and earlier

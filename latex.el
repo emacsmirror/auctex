@@ -4353,7 +4353,7 @@ runs the hooks in `doctex-mode-hook'."
    '("trivlist" LaTeX-env-item)
    '("picture" LaTeX-env-picture)
    '("tabular" LaTeX-env-array)
-   '("tabular*" LaTeX-env-array)
+   '("tabular*" LaTeX-env-tabular*)
    '("array" LaTeX-env-array)
    '("eqnarray" LaTeX-env-label)
    '("equation" LaTeX-env-label)
