@@ -1011,7 +1011,7 @@ An optional fourth (or sixth) element means always replace if t."
 (defvar ConTeXt-indent-arg 2)
 (defvar ConTeXt-indent-basic 2)
 (defvar ConTeXt-indent-item ConTeXt-indent-basic)
-(defvar ConTeXt-indent-item-re "\\\\\\\(item\\|setup[a-zA-Z]*\\)\\>")
+(defvar ConTeXt-indent-item-re "\\\\\item\\>")
 
 (defvar ConTeXt-indent-syntax-table (make-syntax-table TeX-mode-syntax-table)
   "Syntax table used while computing indentation.")
