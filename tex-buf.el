@@ -1,6 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.80 1996-02-27 18:50:30 abraham Exp $
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
+;; Version: 9.5a
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 

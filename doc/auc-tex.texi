@@ -8,16 +8,16 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.109 1996-03-12 00:16:37 abraham Exp $
+@c $Id: auc-tex.texi,v 1.110 1996-07-18 09:23:35 abraham Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle Version 9.4
+@subtitle Version 9.5
   
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 9.4 by Per Abrahamsen
+@author updated for 6.1 to 9.5 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -54,7 +54,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 9.4.
+This file documents AUC @TeX{} version 9.5.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -882,21 +882,21 @@ Alias for @kbd{C-c C-q C-p}
 
 @item C-c C-q C-p
 @kindex C-c C-q C-p
-@findex LaTeX-format-paragraph
-@code{LaTeX-format-paragraph} will reformat or `fill' the current
+@findex LaTeX-fill-paragraph
+@code{LaTeX-fill-paragraph} will reformat or `fill' the current
 paragraph.
 
 @item C-c C-q C-e
 @kindex C-c C-q C-e
-@findex LaTeX-format-environment
-@code{LaTeX-format-environment} will reformat or `fill' the current
+@findex LaTeX-fill-environment
+@code{LaTeX-fill-environment} will reformat or `fill' the current
 environment.  This may e.g. be the `document' environment, in which case
 the entire document will be formatted.
 
 @item C-c C-q C-s
 @kindex C-c C-q C-s
-@findex LaTeX-format-section
-@code{LaTeX-format-section} will reformat or `fill' the current
+@findex LaTeX-fill-section
+@code{LaTeX-fill-section} will reformat or `fill' the current
 logical sectional unit. 
 
 @item M-g
@@ -905,8 +905,8 @@ Alias for @kbd{C-c C-q C-r}
 
 @item C-c C-q C-r
 @kindex C-c C-q C-r
-@findex LaTeX-format-region
-@code{LaTeX-format-region} will format or `fill' the current region. 
+@findex LaTeX-fill-region
+@code{LaTeX-fill-region} will format or `fill' the current region. 
 @end table
 
 @strong{Warning:} The formatting cannot handle tabular-like

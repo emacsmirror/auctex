@@ -4,7 +4,7 @@
  
 ;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
 ;; Created:   06 July 1994
-;; Version:   2.13 (08 Feb 96)
+;; Version:   2.20 (25 June 96)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;; Everyone is granted permission to copy, modify and redistribute this
@@ -21,14 +21,13 @@
 ;; LCD Archive Entry:
 ;; bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
 ;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
-;; 08-February-1996|2.13|~/misc/bib-cite.el.gz|
+;; 25-June-1996|2.20|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; New versions of this package (if they exist) may be found at:
-;;   ftp://bathybius.meteo.mcgill.ca/pub/users/rhogee/elisp/bib-cite.el
-;;   ftp://mixing.qc.dfo.ca/pub/elisp/bib-cite.el
+;;   ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/bib-cite.el
 
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
@@ -39,7 +38,10 @@
 ;; AUC-TEX USERS: 
 ;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
 ;;    ftp://ftp.iesd.auc.dk/pub/emacs-lisp/auctex.tar.gz       <-stable release
-;;    ftp://ftp.iesd.auc.dk/pub/emacs-lisp/alpha/auctex.tar.gz <-alpha release
+;;    ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/auctex/   <-alpha release
+;;
+;;  WWW users may want to check out the AUC TeX page at
+;;    http://www.iesd.auc.dk/~amanda/auctex/
 ;;
 ;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
 ;;  you use auc-tex, you probably have an old version of bib-cite.el in
@@ -48,14 +50,13 @@
 ;;  or delete it!!!
 
 ;; XEMACS USERS:
-;;  The pull-down menus will be defined if you use auc-tex's LaTeX-mode and
-;;  if it is already loaded when you load bib-cite (xemacs doesn't seem to 
-;;  have eval-after-load and I gave up on all the messy mode-hooks).
+;;  bib-cite's pull-down menu will be defined for auc-tex's LaTeX-mode only.
 
 ;; MS-DOS USERS:
 ;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
 ;;  which contains a bug for MSDOS (at least for emacs 19.27 it does).
-;;  Get the file ftp://mixing.qc.dfo.ca/pub/elisp/bib-cite.etags-bug-report
+;;  Get the file 
+;;    ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/bib-cite.etags-bug-report
 ;;  to see what patches to make to etags.c to fix it.
 
 ;; Description:
@@ -101,7 +102,8 @@
 
 ;; Usage instructions:
 ;; ~~~~~~~~~~~~~~~~~~
-;;  bib-display  (Bound to Shift-Mouse-1 or Mouse-1 when specially highlighted)
+;;  bib-display  (Bound to Shift-Mouse-1 or Mouse-1 when specially
+;;  highlighted. In Hyperbole, bound to the Assist key.)
 ;;
 ;;   bib-display will show the bibtex entry or the corresponding label or
 ;;   ref commands from anywhere within a document.
@@ -124,7 +126,8 @@
 ;;   which is automatically generated for you.  This enables you to then use
 ;;   any tags related emacs features.
 ;;
-;;  bib-find  (Bound to Shift-Mouse-2 or Mouse-2 when specially highlighted)
+;;  bib-find  (Bound to Shift-Mouse-2 or Mouse-2 when specially highlighted.
+;;  In Hyperbole, bound to the Action key.)
 ;;
 ;;    bib-find will select the buffer and move point to the BiBTeX source file
 ;;    at the proper citation for a cite command, or move point to anywhere
@@ -243,6 +246,12 @@
 ;;
 ;;    You are welcome to tell me how to do the same using font-lock.
 ;;  ---
+;;  The variable bib-switch-to-buffer-function sets the function used to 
+;;  select buffers (if they differ from the original) in bib-cite commands
+;;  bib-make-bibliography, bib-display, bib-find
+;;  You may use `switch-to-buffer' `switch-to-buffer-other-window' or
+;;  `switch-to-buffer-other-frame'.
+;;  ---
 ;;  The following variable determines whether we will attempt to highlight
 ;;  citation, ref and label commands in green when they are under the
 ;;  mouse.  When highlighted, the unshifted mouse keys work to call
@@ -345,14 +354,39 @@
 ;; Things for me to do in later versions:
 ;; - jmv@di.uminho.pt (Jose Manuel Valenca) wants:
 ;; - prompt for \cite as well as \label and \ref 
-;;    (and use auctex's completion list)
+;;   (and use auctex's completion list)
 ;; - implement string concatenation, with #[ \t\n]*STRING_NAME
 ;; - Create new command to substitute @string text in any bibtex buffer.
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
-;; V2.13  Feb 08 96 - Peter Galbraith - Fixed recursive use of bib-apropos.
-;; V2.12  Jan 19 96 - Peter Galbraith 
+;; V2.20 June 25 95 - Peter Galbraith
+;;   imenu fixed for emacs-19.31.
+;; V2.19 May 13 96
+;;  PSG:
+;;  - @string substitution fixed; bib-edit-citation fixed when buffer exists;
+;;  Christoph Wedler <wedler@fmi.uni-passau.de>:
+;;  - Added bib-switch-to-buffer-function 
+;;  - (setq tags-always-exact nil) for xemacs
+;;  - removed eval-after-load foe xemacs
+;; V2.18 May 06 96 - PSG
+;;   New eval-after-load from Fred Devernay <Frederic.Devernay@sophia.inria.fr>
+;; V2.17 May 03 96 - PSG
+;;   Fixed bug introduced in V2.16, reported by Dennis Dams <wsindd@win.tue.nl>
+;; V2.16 May 02 96 - Vladimir Alexiev <vladimir@cs.ualberta.ca>
+;; - somewhat compatible with Hyperbole by binding bib-find and bib-display to
+;;   the Action and Assist keys inside the bib-highlight-mouse-keymap.
+;; - makes more liberal provisions for users with a tty.
+;; V2.15 Apr 09 96 - 
+;; - fix "Buffer read-only" error caused by mouse-face text properties
+;;   patch by Piet van Oostrum <piet@cs.ruu.nl>
+;; - Use tmm non-X menu, patch by Vladimir Alexiev <vladimir@cs.ualberta.ca>
+;; - input{file.txt} would not work. 
+;;   bug report: David Kastrup <dak@pool.informatik.rwth-aachen.de>
+;; V2.14 Feb 26 96 - PSG - define eval-after-load for xemacs 
+;; Frederic Devernay's <Frederic.Devernay@sophia.inria.fr> suggestion.
+;; V2.13 Feb 08 96 - Peter Galbraith - Fixed recursive use of bib-apropos.
+;; V2.12 Jan 19 96 - Peter Galbraith 
 ;;   emacs-19.30's [down-mouse-1] is defined (rather than [mouse-1]), so
 ;;   bib-highlight-mouse-keymap now has [down-mouse-1] defined to override it.
 ;; V2.11  Nov 21 95 - Peter Galbraith 
@@ -484,6 +518,11 @@
 (defvar bib-hilit-if-available t
   "*Use hilit19 or hl319 to hilit bib-display if available")
 
+(defvar bib-switch-to-buffer-function 'switch-to-buffer
+  "*Function used to select buffers if they differ from the original.
+You may use `switch-to-buffer' `switch-to-buffer-other-window' or
+`switch-to-buffer-other-frame'.")
+
 (defvar bib-highlight-mouse-t t
   "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight.")
 
@@ -550,12 +589,43 @@ These are usually month abbreviations (or journals) defined in a style file.")
     (cond 
      ((string-match "XEmacs\\|Lucid" emacs-version)
       (set-keymap-name m 'bib-highlight-mouse-keymap)
+      (cond
+       ;; action-key stuff from Vladimir Alexiev <vladimir@cs.ualberta.ca>
+       ((commandp 'action-key)
+        ;; for hyperbole. The Right Way is to define implicit buttons
+        ;; (defib) bib-cite and label-ref instead of overriding action-key and
+        ;; assist key, so that eg smart key help can be obtained, but I'm
+        ;; lazy.
+        (substitute-key-definition 'action-key 'bib-find m global-map)
+        (substitute-key-definition 'assist-key 'bib-display m global-map)
+        (substitute-key-definition 'action-key-depress 
+                                   'bib-find-mouse m global-map)
+        (substitute-key-definition 'assist-key-depress 
+                                   'bib-display-mouse m global-map)
+        (substitute-key-definition 'action-mouse-key nil m global-map)
+        (substitute-key-definition 'assist-mouse-key nil m global-map))
+       (t                               ; xemacs, not hyperbole
+        (define-key m "\e\r" 'bib-find-mouse) ;   bug Fixed in V2.17
+        (define-key m "\e\n" 'bib-display-mouse) ;bug Fixed in V2.17
       ;;(define-key m [(shift button1)] 'bib-display-mouse)
-      (define-key m [button1] 'bib-display-mouse)
-      (define-key m [button2] 'bib-find-mouse))
-     (t
-      (define-key m [down-mouse-1] 'bib-display-mouse)
-      (define-key m [mouse-2] 'bib-find-mouse)))
+        (define-key m [button1] 'bib-display-mouse)
+        (define-key m [button2] 'bib-find-mouse))))
+     (t                                 ; emacs 19
+      (cond
+       ((commandp 'action-key)
+        (substitute-key-definition 'action-key 'bib-find m global-map)
+        (substitute-key-definition 'assist-key 'bib-display m global-map)
+        (substitute-key-definition 'action-mouse-key-emacs19 
+                                   'bib-find-mouse m global-map)
+        (substitute-key-definition 'assist-mouse-key-emacs19 
+                                   'bib-display-mouse m global-map)
+        (substitute-key-definition 'action-key-depress-emacs19 
+                                   nil m global-map)
+        (substitute-key-definition 'assist-key-depress-emacs19 
+                                   nil m global-map))
+       (t                               ; emacs 19, not hyperbole
+        (define-key m [down-mouse-1] 'bib-display-mouse)
+        (define-key m [mouse-2] 'bib-find-mouse)))))
     m))
 
 (defvar bib-ext-list nil 
@@ -716,7 +786,8 @@ to create a bibtex file containing only the references used in the document."
                                           new-buffer
                                           nil)))
     (kill-buffer bib-buffer)
-    (switch-to-buffer new-buffer)
+;;; (switch-to-buffer new-buffer)
+    (funcall bib-switch-to-buffer-function new-buffer)
     (bibtex-mode)
     (if (and bib-hilit-if-available
              (fboundp 'hilit-highlight-region))
@@ -821,10 +892,12 @@ See variables bib-etags-command and bib-etags-filename"
 (defun bib-highlight-mouse ()
   "Make that nice green highlight when the mouse is over LaTeX commands"
   (interactive)
-  (if (and bib-highlight-mouse-t        ;Do nothing unless under X
-           window-system)
+  (if (and bib-highlight-mouse-t
+           ;;window-system)        ;Do nothing unless under X
+           )
       (save-excursion
         (let ((s)(e)(extent)
+	      (inhibit-read-only t)
               (modified (buffer-modified-p))) ;put-text-property changing this?
           (goto-char (point-min))
 	  ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
@@ -860,7 +933,8 @@ See variables bib-etags-command and bib-etags-filename"
   (interactive)
   (if (setq bib-highlight-mouse-t (not bib-highlight-mouse-t))
       (bib-highlight-mouse)
-    (let ((modified (buffer-modified-p)))
+    (let ((modified (buffer-modified-p))
+	  (inhibit-read-only t))
       (cond 
        ((string-match "XEmacs\\|Lucid" emacs-version)
         (while bib-ext-list
@@ -938,7 +1012,9 @@ e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
         (re-search-backward "%%%Filename: \\([^\n]*\\)" nil t)
         (setq the-file (buffer-substring (match-beginning 1)(match-end 1)))
         (kill-buffer bib-buffer)))
-    (find-file the-file)
+;;; (find-file the-file)
+    (funcall bib-switch-to-buffer-function (find-file-noselect the-file))
+    (goto-char (point-min))             ;V2.19 fix
     (re-search-forward (concat "@[^{]+{[\t ]*" the-key "[ ,\n]") nil t)))
 
 ;;--------------------------------------------------------------------------
@@ -1044,7 +1120,8 @@ The label or ref name is extracted from the text under the cursor.
           (push-mark (point) t nil)   ;We've moving there... push mark
           (goto-char new-point))
       (if new-buffer                    ;We've changing buffer
-          (switch-to-buffer new-buffer)))
+;;         (switch-to-buffer new-buffer)
+           (funcall bib-switch-to-buffer-function new-buffer)))
     (if (bib-Is-hidden)
         (save-excursion
           (beginning-of-line)
@@ -1302,14 +1379,20 @@ Return the-warnings as text."
                            (regexp-quote (symbol-name string-key))
                            "[\t ]*=[\t ]*\\(\"\\|\{\\)")
                    nil t)
-                  (progn
-                    ;;handle {text} or "text" cases
-                    (forward-char -1)
-                    (if (string-equal "{" (buffer-substring (match-beginning 1)
-                                                            (match-end 1)))
-                        (forward-list 1)
-                      (re-search-forward "[^\\]\"" nil t))
-;;;V2.05 Fix         ((re-search-forward "[^\"]+\"" nil t))
+                  (let ((the-string-start (1- (match-end 1))) ;catch bracket
+                        ;;handle {text} or "text" cases
+                        (the-string-end
+                         (cond 
+                          ((string-equal "\"" 
+                                         (buffer-substring (match-beginning 1)
+                                                           (match-end 1)))
+                           
+                           (re-search-forward "[^\\]\"" nil t)
+                           (point))
+                          (t
+                           (forward-char -1)
+                           (forward-list 1)
+                           (point)))))
                     (if substitute      ;Collect substitutions
                         (setq string-alist
                               (append
@@ -1317,10 +1400,8 @@ Return the-warnings as text."
                                (list 
                                 (cons (symbol-name string-key) 
                                       (regexp-quote
-                                       (buffer-substring 
-                                        (1- (match-beginning 0))
-                      ;;                 ^ this grabs the leading quote/bracket
-                                        (match-end 0)))))))
+                                       (buffer-substring the-string-start
+                                                         the-string-end))))))
                       ;;Collect the strings command themseves
                       (setq the-text
                             (concat the-text 
@@ -1546,7 +1627,8 @@ Return the-warnings as text."
         (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
           (if (string-match ".sty$" the-file) ;Skip over style files!
               nil
-            (if (not (string-match ".tex$" the-file))
+            (if (and (not (file-readable-p (expand-file-name the-file dir)))
+                     (not (string-match ".tex$" the-file)))
                 (setq the-file (concat the-file ".tex")))
             (setq the-file (expand-file-name the-file dir))
             (if (not (file-readable-p the-file))
@@ -1683,7 +1765,9 @@ Return the-warnings as text."
         (while (re-search-forward 
                 "^[ \t]*\\\\\\(input\\|include\\){\\([^}]*\\)}" nil t)
           (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
-            (if (not (string-match ".tex$" the-file))
+            (if (and (not (file-readable-p 
+                           (expand-file-name the-file default-directory)))
+                     (not (string-match ".tex$" the-file)))
                 (setq the-file (concat the-file ".tex")))
             (end-of-line)(insert "\n")
             (insert-file-contents the-file)))
@@ -1708,11 +1792,14 @@ Return the-warnings as text."
         (kill-buffer tex-buffer)
         (imenu-progress-message prev-pos 100 t)
         ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
-        (and index-label-alist	
-             (push (cons (imenu-create-submenu-name "Labels") 
-                         (sort (imenu--remove-LaTeX-keyword-list 
-                                index-label-alist) 'imenu--label-cmp))
-		   index-alist))
+        ;;Plus PSG's fix for 19.31 w/o imenu-create-submenu-name
+        (and index-label-alist
+             (push (cons (or (and (fboundp 'imenu-create-submenu-name)
+                                  (imenu-create-submenu-name "Labels"))
+                             "Labels")
+                       (sort (imenu--remove-LaTeX-keyword-list 
+                              index-label-alist) 'imenu--label-cmp))
+                 index-alist))
         ;;(and index-label-alist
         ;;     (push (cons (imenu-create-submenu-name "Labels") 
         ;;                index-label-alist)
@@ -1743,8 +1830,11 @@ Return the-warnings as text."
                     index-label-alist))))))
       (imenu-progress-message prev-pos 100 t)
       ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
-      (and index-label-alist	
-           (push (cons (imenu-create-submenu-name "Labels") 
+      ;;Plus PSG's fix for 19.31 w/o imenu-create-submenu-name
+      (and index-label-alist
+           (push (cons (or (and (fboundp 'imenu-create-submenu-name)
+                                (imenu-create-submenu-name "Labels"))
+                           "Labels")
                        (sort (imenu--remove-LaTeX-keyword-list 
                               index-label-alist) 'imenu--label-cmp))
                  index-alist))
@@ -1928,7 +2018,7 @@ although BiBTeX doesn't allow it!"
   (let ((TeX-auto-save t)
        (TeX-auto-update t)
        (TeX-auto-regexp-list BibTeX-auto-regexp-list))
-    ;; TeX-auto-wite   
+    ;; TeX-auto-write   
     ;; -> calls TeX-auto-store 
     ;;    -> calls TeX-auto-parse
     ;;       clears LaTeX-auto-bibtem (temporary holding space for bibitems)
@@ -1965,34 +2055,77 @@ although BiBTeX doesn't allow it!"
         bib-highlight-mouse)
       'bib-etags))))
 
+;; Christoph Wedler <wedler@fmi.uni-passau.de>
+;;  Replace eval-after-load (which doesn't work with efs anyway)
+;;  with add-submenu in bib-cite-initialize
+
+;;(if ((and (string-match "XEmacs\\|Lucid" emacs-version)
+;;          (or window-system
+;;              (fboundp 'smart-menu))      ;text menus by Bob Weiner
+;;          (not (fboundp 'eval-after-load))))
+;;    ;; define eval-after-load for XEmacs
+;;    (defun eval-after-load (file form)
+;;      "Arrange that, if FILE is ever loaded, FORM will be run at that
+;;time.
+;;This makes or adds to an entry on `after-load-alist'.
+;;It does nothing if FORM is already on the list for FILE.
+;;FILE should be the name of a library, with no directory name."
+;;      (or (assoc file after-load-alist)
+;;          (setq after-load-alist (cons (list file) after-load-alist)))
+;;      (let ((elt (assoc file after-load-alist)))
+;;        (or (member form (cdr elt))
+;;            (nconc elt (list form))))
+;;      form))
+
 (cond
  ((and (string-match "XEmacs\\|Lucid" emacs-version)
-       (featurep 'latex)                ;auc-tex must be loaded
-       window-system)
+       (or window-system
+           (fboundp 'smart-menu)))      ;text menus by Bob Weiner
   ;;
   ;; xemacs under X with auc-tex
   ;;
-  (add-menu-button '("LaTeX") ["----" nil t])
-  (add-menu-button 
-   '("LaTeX") ["Make BibTeX bibliography buffer" bib-make-bibliography t])
-  (add-menu-button 
-   '("LaTeX") ["Display citation or matching \\ref or \\label" bib-display t])
-  (add-menu-button 
-   '("LaTeX") ["Find BibTeX citation or matching \\ref or \\label" bib-find t])
-  (add-menu-button 
-   '("LaTeX") ["Search apropos BibTeX files" bib-apropos t])
-  (add-menu-button 
-   '("LaTeX") ["Build TAGS file for multi-file document" bib-etags t])
-  (add-menu-button 
-   '("LaTeX") 
-   ["Refresh \\cite, \\ref and \\label mouse highlight" bib-highlight-mouse t])
-  )
+
+  ;; Christoph Wedler <wedler@fmi.uni-passau.de>
+  (defvar bib-cite-xemacs-menu
+    '("Bib-Cite"
+      ["Make BibTeX bibliography buffer" bib-make-bibliography t]
+      ["Display citation or matching \\ref or \\label" bib-display t]
+      ["Find BibTeX citation or matching \\ref or \\label" bib-find t]
+      ["Search apropos BibTeX files" bib-apropos t]
+      ["Build TAGS file for multi-file document" bib-etags t]
+      ["Refresh \\cite, \\ref and \\label mouse highlight"
+       bib-highlight-mouse t])
+    "Submenu of LaTeX menu, used by bib-cite.")
+
+;;  (eval-after-load 
+;;   "latex"
+;;   '(progn
+;;      (add-menu-button '("LaTeX") ["----" nil t])
+;;      (add-menu-button 
+;;      '("LaTeX") ["Make BibTeX bibliography buffer" bib-make-bibliography t])
+;;      (add-menu-button 
+;;       '("LaTeX") ["Display citation or matching \\ref or \\label" 
+;;                   bib-display t])
+;;      (add-menu-button 
+;;       '("LaTeX") ["Find BibTeX citation or matching \\ref or \\label" 
+;;                   bib-find t])
+;;      (add-menu-button 
+;;       '("LaTeX") ["Search apropos BibTeX files" bib-apropos t])
+;;      (add-menu-button 
+;;       '("LaTeX") ["Build TAGS file for multi-file document" bib-etags t])
+;;      (add-menu-button 
+;;       '("LaTeX") 
+;;       ["Refresh \\cite, \\ref and \\label mouse highlight" 
+;;        bib-highlight-mouse t])
+
+      )
 
  ((and (not (string-match "XEmacs\\|Lucid" emacs-version))
        (string-equal "19" (substring emacs-version 0 2))
-       window-system)
+       (or window-system
+           (fboundp 'tmm-menubar)))     ; 19.30 - Will autoload if necessary 
   ;;
-  ;; emacs-19 under X-windows
+  ;; emacs-19 under X-windows (or non-X with tmm)
   ;;
   
   ;; to auc-tex auto file for a bibtex buffer
@@ -2039,7 +2172,7 @@ although BiBTeX doesn't allow it!"
         '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
       (define-key tex-mode-map [menu-bar tex bib-apropos]
         '("Search apropos BiBTeX files" . bib-apropos))
-      (define-key TeX-mode-map [menu-bar TeX bib-highlight-mouse]
+      (define-key tex-mode-map [menu-bar TeX bib-highlight-mouse]
         '("Refresh \\cite, \\ref and \\label mouse highlight"
           . bib-highlight-mouse))))
 
@@ -2226,6 +2359,17 @@ bib-dos-or-os2-variable affects:
 ;; Create the unified hook to call from LaTeX-mode-hook
 ;;
 (defun bib-cite-initialize ()
+  ;; Christoph Wedler's <wedler@fmi.uni-passau.de> suggestion for xemacs
+  ;; Added for version 2.19
+  (make-local-variable 'tags-always-exact)
+  (setq tags-always-exact nil)
+
+  ;; Christoph Wedler <wedler@fmi.uni-passau.de>
+  (and (boundp 'bib-cite-xemacs-menu)
+       bib-cite-xemacs-menu
+       (fboundp 'add-submenu)     ;Insurance for emacs
+       (add-submenu '("LaTeX") bib-cite-xemacs-menu))
+
   (if bib-highlight-mouse-t
       (bib-highlight-mouse))
   (if bib-use-imenu

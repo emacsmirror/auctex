@@ -1,6 +1,7 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.17 1996-03-12 00:16:32 abraham Exp $
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
+;; Version: 9.5a
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -228,8 +229,11 @@ TeXinfo-mode-hook."
   (setq comment-start-skip "@c +\\|@comment +")
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes t)
-  (make-local-variable 'imenu-generic-expression)
-  (setq imenu-generic-expression texinfo-imenu-generic-expression)
+  (if (not (boundp 'texinfo-imenu-generic-expression))
+      ;; This was introduced in 19.30.
+      ()
+    (make-local-variable 'imenu-generic-expression)
+    (setq imenu-generic-expression texinfo-imenu-generic-expression))
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(texinfo-font-lock-keywords t))
   (if (not (boundp 'texinfo-section-list))

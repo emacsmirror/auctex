@@ -1,6 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.121 1996-03-23 02:10:44 abraham Exp $
+# Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
+# Version: 9.5a
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -45,7 +46,7 @@ EMACS=emacs-19.30
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-BATCH=$(EMACS) -batch -q lpath.el -f eval-current-buffer
+BATCH=$(EMACS) -batch -q -l lpath.el
 
 # Specify the byte-compiler for compiling AUC TeX files
 ELC= $(BATCH) -f batch-byte-compile
@@ -60,9 +61,8 @@ AUTOC= $(ELC)
 # Using TeX in batch mode.
 TEX=tex
 
-# Need K&R compiler.  Either `cc' or `gcc -traditional'
-#CC = gcc -traditional
-CC = cc
+# Compiler to use.
+CC = gcc
 
 # Cflags.. Include `-DNEED_STRSTR' if you don't have strstr() in libc
 CFLAGS = -O # -DNEED_STRSTR 
@@ -95,12 +95,12 @@ FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 #WWWDIR = $(HOME)/.public_html/auctex
 WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  none
+REMOVE =  ltx-help.el
 
 MINMAPSRC = auc-menu.el maniac.el \
 	    outln-18.el auc-html.el all.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el 
+CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el
 
 AUCSRC = auc-old.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
@@ -248,6 +248,7 @@ dist:
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
 	rm -f $(WWWDIR)/version
 	echo $(TAG) > $(WWWDIR)/version
+	perl -pi.bak -e "s/Version: 9.5a
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig

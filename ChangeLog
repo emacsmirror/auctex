@@ -1,3 +1,43 @@
+Tue Jul 16 20:18:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-fill-region-as-para-do):  Make sure `.}' gets
+	two spaces at end of sentence when filling.
+
+Mon Jul 15 12:13:36 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-parse-path): Ignore tralining //.  Suggested by
+	Göran Uddeborg <Göran.Uddeborg@carmen.se>.
+
+Sun May  5 11:06:37 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* all: Use version number instead of CVS id.
+
+	* tex.el (TeX-mode-map): Don't bind `del'.  We aren't supposed to
+	have any tabs in the first place.
+
+Thu May  2 01:28:52 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-mark-active, TeX-active-mark) [XEmacs]: The
+	definition of these two were swapped.  Bug reported by 
+	Vladimir Alexiev <vladimir@cs.ualberta.ca>.
+	
+Thu Apr 25 11:20:03 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-update-style): Don't run parent style hooks for
+	files that doesn't match `TeX-one-master'.  Suggested by many
+	people.
+
+Wed Apr 24 14:44:13 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-close-environment): Bind
+	`next-line-add-newlines' to t.  Patch by Fritz Knabe
+	<knabe@matecumbe.ing.puc.cl>.
+
+Mon Apr  1 16:36:04 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-fill-region-as-para-do): Fill `.}' as a sentence
+	end.  Patch by Fritz Knabe <knabe@matecumbe.ing.puc.cl>.
+
 Mon Mar 11 22:56:30 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-cal): Use `\mathcal{}' under LaTeX2e.

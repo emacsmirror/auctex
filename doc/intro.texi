@@ -58,7 +58,7 @@ environment level, and the cursor is moved down one line.  By pressing
 @key{tab}, the current line is indented, and the cursor stays where it
 is.  The well-known Emacs feature @code{format-paragraph} (@kbd{M-q}) is
 reimplemented especially for AUC @TeX{} to follow the indentation.  A
-special command @code{LaTeX-format-buffer} lets you indent an entire
+special command @code{LaTeX-fill-buffer} lets you indent an entire
 document like the well-known C utility indent (this time, only according
 to the La@TeX{} structure @t{:-)}.
 

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
-;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.46 1996-03-12 00:16:30 abraham Exp $
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
+;; Version: 9.5a
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -457,8 +457,9 @@ LaTeX-default-position          Position for array and tabular."
   (LaTeX-indent-line)
   (if (not (looking-at "[ \t]*$"))
       (insert "\n")
-    (next-line 1)
-    (beginning-of-line))
+    (let ((next-line-add-newlines t))
+      (next-line 1)
+      (beginning-of-line)))
   (LaTeX-indent-line))
 
 (autoload 'outline-flag-region "outline")
@@ -1461,7 +1462,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 
 	  ;; Make sure sentences ending at end of line get an extra space.
 	  (goto-char from)
-	  (while (re-search-forward "[.?!][])\"']*$" nil t)
+	  (while (re-search-forward "[.?!][]})\"']*$" nil t)
 	    (insert ? ))
 	  ;; The change all newlines to spaces.
     (subst-char-in-region from (point-max) ?\n ?\ )
@@ -1472,7 +1473,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
       (delete-region
        (+ (match-beginning 0)
 	  (if (save-excursion
-		(skip-chars-backward " ])\"'")
+		(skip-chars-backward " ]})\"'")
 		(memq (preceding-char) '(?. ?? ?!)))
 	      2 1))
        (match-end 0)))

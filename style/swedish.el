@@ -1,6 +1,6 @@
-;;; swedish.el - Setup AUC TeX for editing Swedishtext.
+;;; swedish.el - Setup AUC TeX for editing Swedish text.
 
-;; $Id: swedish.el,v 1.1 1996-02-27 18:50:40 abraham Exp $
+;; $Id: swedish.el,v 1.2 1996-07-18 09:23:40 abraham Exp $
 
 ;;; Commentary:
 ;;
