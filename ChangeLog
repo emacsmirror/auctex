@@ -1,3 +1,9 @@
+2004-08-09  Berend de Boer  <berend@pobox.com>
+
+	* context.el (ConTeXt-current-environment): now properly skips
+	nested environments instead of always returning the last
+	environment just above the cursor.
+
 2004-08-08  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-run-set-command): Initialize
@@ -41,11 +47,11 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/macros.texi: New @ConTeXt macro.
-	
+
 	* doc/auc-tex.texi, doc/changes.texi, doc/history.texi,
 	doc/todo.texi, doc/wininstall.texi: Use macros @AUCTeX, @ConTeXt,
 	@LaTeX everywhere.
-	
+
 	* doc/auc-tex.texi (European): Mention Emacs 21.  Fixed typo.
 
 	* doc/todo.texi: Help for documentation wanted.
@@ -382,7 +388,7 @@
 	(font-latex-title-fontity): Use it to make customization work
 	during a session.
 	(font-latex-title-*-face): Use it to simplify the initialization.
-	
+
 2004-07-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): New name for
@@ -510,7 +516,7 @@
 2004-07-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el: New file.
-	
+
 	* Makefile.in (AUCSRC): Add tex-fold.el.
 	(AUCELC): Add tex-fold.elc.
 
