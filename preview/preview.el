@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.73 2002-03-09 22:08:34 dakas Exp $
+;; $Id: preview.el,v 1.74 2002-03-13 15:29:59 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -52,6 +52,7 @@
   (require 'tex-buf)
   (require 'latex)
   (require 'desktop)
+  (require 'info)
   (defvar error))
 
 (require (if (string-match "XEmacs" (emacs-version))
@@ -1087,6 +1088,15 @@ See description of `TeX-command-list' for details."
   :group 'preview-latex
   :type 'string)
 
+(defun preview-goto-info-page ()
+  "Read documentation for preview-latex in the info system."
+  (interactive)
+  (require 'info)
+  (Info-goto-node "(preview-latex)"))
+
+(eval-after-load 'info '(add-to-list 'Info-file-list-for-emacs
+				     '("preview" . "preview-latex")))
+
 ;;;###autoload
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into Auc-TeX.
@@ -1117,6 +1127,7 @@ preview Emacs Lisp package something too stupid."))
 	       '("%P" preview-make-options) t)
   (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-at-point)
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-i" #'preview-goto-info-page)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
   (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
@@ -1127,16 +1138,22 @@ preview Emacs Lisp package something too stupid."))
 		       '("Command")
 		       (TeX-command-menu-entry
 			(assoc "Generate Preview" TeX-command-list)))
-   (easy-menu-add-item nil
-		       '("LaTeX")
-		       (easy-menu-create-menu
-			"Preview"
-			'(["on/off at point" preview-at-point t]
-			  ["Environment" preview-environment t]
-			  ["Section" preview-section t]
-			  ["Region" preview-region mark-active]
-			  ["Clearout region" preview-clearout mark-active]
-			  ["Clearout buffer" preview-clearout-buffer t]))
+   (easy-menu-add-item nil '("LaTeX")
+		       '("Preview"
+			 ["on/off at point" preview-at-point t]
+			 ["Environment" preview-environment t]
+			 ["Section" preview-section t]
+			 ["Region" preview-region mark-active]
+			 ["Clearout region" preview-clearout mark-active]
+			 ["Clearout buffer" preview-clearout-buffer t]
+			 ("Customize"
+			  ["Browse options"
+			   (customize-group 'preview) t]
+			  ["Generate custom menu"
+			   (easy-menu-add-item
+			    nil '("LaTeX" "Preview")
+			    (customize-menu-create 'preview)) t])
+			 ["Read documentation" preview-goto-info-page t])
 		       "Miscellaneous"))
   (if (boundp 'desktop-buffer-misc)
       (preview-buffer-restore desktop-buffer-misc)))
@@ -1454,7 +1471,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.73 $"))
+	(rev "$Revision: 1.74 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
