@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.136 2003-11-16 14:08:20 angeli Exp $
+@c $Id: auc-tex.texi,v 1.137 2004-01-09 08:56:54 angeli Exp $
 
 @finalout
 @titlepage
@@ -846,14 +846,14 @@ with a @samp{%}, until the first non-comment line.
 @cindex Reindenting
 
 AUC@TeX{} contains very advanced handling of indentation and
-reformatting of the La@TeX{} source.  If you have already tried AUC
-@TeX{} with @code{auto-fill-mode} enabled, you may have noted that the
-source is automatically indented and formatted as you write it.  More
-over, AUC@TeX{} is able to format sections of text on demand.
+reformatting of the La@TeX{} source.  If you have already tried
+AUC@TeX{} with @code{auto-fill-mode} enabled, you may have noted that
+the source is automatically indented and formatted as you write it.
+More over, AUC@TeX{} is able to format sections of text on demand.
 
 It is important to realize, that AUC@TeX{} comes with `formatting' in
-two fashions.  Either letting @TeX{} format the file, or letting AUC
-@TeX{} make the ASCII document look better.
+two fashions.  Either letting @TeX{} format the file, or letting
+AUC@TeX{} make the ASCII document look better.
 
 Indentation is done by La@TeX{} environments and by @TeX{} groups, that
 is the body of an environment is indented by the value of
@@ -1144,11 +1144,11 @@ formatted text near the end of the file.
 @cindex Local Variables
 
 @example
-% Local Variables: 
-% TeX-header-end: "% End-Of-Header"
-% TeX-trailer-start: "% Start-Of-Trailer"
-% TeX-command-default: "SliTeX"
-% End: 
+%%% Local Variables: 
+%%% TeX-header-end: "% End-Of-Header"
+%%% TeX-trailer-start: "% Start-Of-Trailer"
+%%% TeX-command-default: "SliTeX"
+%%% End: 
 @end example
 
 AUC@TeX{} will try to save any buffers related to the document, and
@@ -1308,20 +1308,20 @@ advanced algorithm.
 (setq-default TeX-master nil) ; Query for master file.
 @end lisp
 
-If AUC@TeX{} finds the line indicating the end of the header in a
-master file (@code{TeX-header-end}), it can figure out for itself that
-this is a master file.  Otherwise, it will ask for the name of the
-master file associated with the buffer.  To avoid asking you again, AUC
-@TeX{} will automatically insert the name of the master file as a file
-variable (@pxref{File Variables,,,emacs,The Emacs Editor}).  You can
-also insert the file variable yourself, by putting the following text at
-the end of your files.
+If AUC@TeX{} finds the line indicating the end of the header in a master
+file (@code{TeX-header-end}), it can figure out for itself that this is
+a master file.  Otherwise, it will ask for the name of the master file
+associated with the buffer.  To avoid asking you again, AUC@TeX{} will
+automatically insert the name of the master file as a file variable
+(@pxref{File Variables,,,emacs,The Emacs Editor}).  You can also insert
+the file variable yourself, by putting the following text at the end of
+your files.
 @findex TeX-header-end
 
 @example
-% Local Variables: 
-% TeX-master: "master"
-% End: 
+%%% Local Variables: 
+%%% TeX-master: "master"
+%%% End: 
 @end example
 
 You should always set this variable to the name of the top level document.  If
@@ -1346,10 +1346,6 @@ file itself.
 
 If the variable is @code{shared}, then AUC@TeX{} will query for the name,
 but will not change the file.
-
-It is suggested that you use the File Variables (@pxref{File
-Variables,,,emacs,The Emacs Editor}) to set this variable permanently
-for each file.
 @end defopt
 
 @defopt TeX-one-master
@@ -1364,6 +1360,17 @@ If you dislike AUC@TeX{} automatically modifying your files, you can
 set this variable to @samp{"<none>"}.  By default, AUC@TeX{} will modify
 any file with an extension of @samp{.tex}.
 @end defopt
+
+@deffn Command TeX-master-file-ask
+@kindex C-c -
+(@kbd{C-c -}) Query for the name of a master file and add the respective
+File Variables (@pxref{File Variables,,,emacs,The Emacs Editor}) to the
+file for setting this variable permanently.
+
+AUC@TeX{} will not ask for a master file when it encounters existing
+files.  This function shall give you the possibility to insert the
+variable manually.
+@end deffn
 
 AUC@TeX{} keeps track of macros, environments, labels, and style
 files that are used in a given document.  For this to work with
@@ -1428,10 +1435,10 @@ The variables can also be done on a per file basis, by changing the file
 local variables.
 
 @example
-% Local Variables: 
-% TeX-parse-self: t
-% TeX-auto-save: t
-% End: 
+%%% Local Variables: 
+%%% TeX-parse-self: t
+%%% TeX-auto-save: t
+%%% End: 
 @end example
 
 Even when you have disabled the automatic parsing, you can force the
@@ -1492,10 +1499,10 @@ These variables can also be specified on a per file basis, by changing
 the file local variables.
 
 @example
-% Local Variables: 
-% TeX-auto-regexp-list: TeX-auto-full-regexp-list
-% TeX-auto-parse-length: 999999
-% End: 
+%%% Local Variables: 
+%%% TeX-auto-regexp-list: TeX-auto-full-regexp-list
+%%% TeX-auto-parse-length: 999999
+%%% End: 
 @end example
 
 @defopt TeX-auto-regexp-list
@@ -1649,8 +1656,8 @@ depending on context.
 
 To write Japanese text with AUC@TeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
-variants of @TeX{} for Japanese text (j@TeX{} and p@TeX{}), and AUC
-@TeX{} can be used with MULE supported Emacsens.
+variants of @TeX{} for Japanese text (j@TeX{} and p@TeX{}), and
+AUC@TeX{} can be used with MULE supported Emacsens.
 
 To install Japanese support for AUC@TeX{}, copy @file{tex-jp.el} to
 AUC@TeX{} installed directory.  Next two commands will automatically
@@ -1817,9 +1824,9 @@ shared by all users of a site.
 @cindex Private directories
 @cindex Personal information
 
-You should specify where you store your private @TeX{} macros, so AUC
-@TeX{} can extract their information.  The extracted information will go
-to the directories listed in @code{TeX-auto-private}
+You should specify where you store your private @TeX{} macros, so
+AUC@TeX{} can extract their information.  The extracted information will
+go to the directories listed in @code{TeX-auto-private}
 
 Use @kbd{M-x TeX-auto-generate} to extract the information.
 
