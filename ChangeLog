@@ -4,6 +4,7 @@
 	and `tar-ball'.
 	(snapshot'): New: use `check-dist' and `tar-ball'.
 	(release-commit): Fix mail address.
+	(REMOVE, MINMAPSRC, min-map): Removed.
 
 	* doc/Makefile.in (dist): Use INSTALL and INSTALL.windows instead
 	of INSTALLATION.

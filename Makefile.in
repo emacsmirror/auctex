@@ -33,10 +33,6 @@ FTPDIR = /home/tmp/auctex-ftp
 WWWDIR = /home/tmp/auctex-www
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  MSDOS VMS OS2 WIN-NT
-
-MINMAPSRC = all.el multi-prompt.el
-
 CONTRIB = bib-cite.el tex-fptex.el
 CONTRIBELC = bib-cite.elc tex-fptex.elc
 CONTRIB_MULE = tex-jp.el
@@ -221,7 +217,3 @@ patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) > \
 		$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch; exit 0
 
-min-map:
-	-cvs add $(MINMAPSRC)
-	cvs commit -m "Update"
-	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR)
