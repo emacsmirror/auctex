@@ -1,3 +1,8 @@
+2002-05-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-gs-get-colors): Warp outline borders to
+	integral pixels in order to avoid antialiasing artifacts.
+
 2002-05-06    <dak@lola.goethe.zz>
 
 	* preview.el (preview-back-command): Changed semantics in order
