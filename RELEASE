@@ -21,13 +21,12 @@ sleuth work, testing.  The usual ``volunteers welcome'' applies here.
 New features and fixed bugs in this release
 -------------------------------------------
 
-This is primarily a bug fix release to the last major release 11.51.
-Initialization in XEmacs works flawlessly again.  Additionally
-fontification of subscripts and superscripts in Emacs 21.3 and earlier
-does not produce error messages anymore.  Unfortunately this means
-that subscripts and superscripts are raised or lowered no more.
-Currently this feature is only supported with development versions of
-GNU Emacs.
+Third time's the charm.  This is another big bad bug fix release to
+the major release 11.50 from Friday 13th.  Installation and menus
+under XEmacs work again.  Fontification of subscripts and superscripts
+is now disabled when the fontification engine is not able to support
+it properly.  As a consequence, currently this feature is only
+available for developer versions of GNU Emacs.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
@@ -82,9 +81,11 @@ Current project manager is David Kastrup <URL:mailto:dak@gnu.org>.
 While Paypal contributions are appreciated, volunteering for tasks
 remains the most effective way of helping AUCTeX development.
 
-The following people contributed to this release (in alphabetical
-order): Ralf Angeli, Masayuki Ataka, Thomas Baumann, Berend de Boer,
-Peter S. Galbraith, Patrick Gundlach, Yvon Hevel, David Kastrup, Frank
-Küster, Jan-Åke Larsson, Dan Nicolaescu, Piet van Oostrum, Davide
-G. M. Salvetti, Mike Sperber, Reiner Steib, Christian Schlauer, Shiro
-Takeda (Please accept our appologies if we forgot somebody.)
+The following people contributed to this release series (in
+alphabetical order): Ralf Angeli, Masayuki Ataka, Thomas Baumann,
+Berend de Boer, Peter S. Galbraith, Patrick Gundlach, Yvon Hevel,
+David Kastrup, Frank Küster, Jan-Åke Larsson, Dan Nicolaescu, Piet van
+Oostrum, Davide G. M. Salvetti, Mike Sperber, Reiner Steib, Christian
+Schlauer, Shiro Takeda (Please accept our apologies if we forgot
+somebody).
+
