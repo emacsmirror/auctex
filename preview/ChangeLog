@@ -1,3 +1,18 @@
+2004-05-02  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/Makefile.in:
+	* dvipng/config.h.in: 
+	* dvipng/configure.ac:
+	* dvipng/draw.c:
+	* dvipng/dvipng.c:
+	* dvipng/dvipng.h:
+	* dvipng/enc.c:
+	* dvipng/font.c:
+	* dvipng/fontmap.c:
+	* dvipng/ft.c:
+	* dvipng/t1.c:
+	* dvipng/misc.c: Add t1lib support
+
 2004-04-23  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-gs-color-string)
