@@ -1,3 +1,11 @@
+2002-03-14  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-parse-messages): Obliterate preview-snippet
+	and preview-snippet-start for general parsestate.
+	(preview-analyze-error): Use parsestate and cache line number
+	info from last call.  This plugs a *big* performance hog
+	(goto-line).  Made buffer parsing here about 8 times faster.
+
 2002-03-13  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Use
