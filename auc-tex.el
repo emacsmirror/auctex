@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.10 $  
+;; RCS status      : $Revision: 4.0 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Tue Jun  4 03:52:34 1991
-;; Update Count    : 330
+;; Last Modified On: Sat Jun  8 19:36:04 1991
+;; Update Count    : 132
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,9 +38,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
-;; 1-Jun-1991  (Last Mod: Sat Jun  1 20:32:48 1991 #129)  Kresten Krab Thorup
-;;    fill-paragraph is made to indent too due to help from Per Hagen
-;;    <per@iesd.auc.dk>
 ;; 31-May-1991  (Last Mod: Fri May 31 09:10:01 1991 #118)  Kresten Krab Thorup
 ;;    The distribution has been split into 8 individual modules. This will
 ;;    speed up the entire system.  Also, there has been added completion for
@@ -76,7 +73,6 @@
 ;; Lars Fischer                      <fischer@iesd.auc.dk> 
 ;; Per Abrahamsen                    <abraham@iesd.auc.dk> 
 ;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
-;; Per Hagen                         <per@iesd.auc.dk>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,6 +94,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
+;;
+;;   Make fill-paragraph (M-q) work properly
 ;;
 ;;   Make some good regexp's for paragraph-start and    
 ;;     paragraph-seperate
@@ -125,20 +123,44 @@
   "*Mode to enter for a new file when it can't be determined whether
 the file is plain TeX or LaTeX or what.")
 
-(defvar TeX-complete-word (key-binding "\M-\t")
-  "*Function to call, if M-t is invoked on a word that do not start 
-witch a backslash. Default is the meaning of M-t when latex-mode was called.")
+(defvar TeX-complete-word (key-binding "\e\t")
+  "*Function to call if M-t is invoked on a word which does not start 
+with a backslash. Default is the meaning of M-t when latex-mode was called.")
 
 (defvar LaTeX-indent-level 2
   "*Indentation of begin-end blocks in LaTeX.")
 
 (defvar LaTeX-item-indent -2
-  "*Ekstra indentation for lines beginning with \\item{.")
+  "*Extra indentation for lines beginning with \\item{.")
+
+(defvar TeX-auto-header "texheader"
+  "*filename for TeX-headers. \input by TeX, so the real file should have
+the extention `.tex'")
+
+(defvar TeX-auto-trailer "textrailer"
+  "*filename for TeX-trailers \input by TeX, so the real file should have
+the extention `.tex'")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar TeX-esc "\\" "The TeX escape character.")
+(make-variable-buffer-local 'TeX-esc)
+
+(defvar TeX-grop "{" "The TeX group opening character.")
+(make-variable-buffer-local 'TeX-grop)
+
+(defvar TeX-grcl "}" "The TeX group closing character.")
+(make-variable-buffer-local 'TeX-grcl)
+
+(defvar LaTeX-optop "[" "The LaTeX optional argument opening character.")
+(make-variable-buffer-local 'LaTeX-optop)
+
+(defvar LaTeX-optcl "]" "The LaTeX optional argument closeing character.")
+(make-variable-buffer-local 'LaTeX-optcl)
+
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
+(make-variable-buffer-local 'TeX-mode-syntax-table)
 
 (defvar TeX-mode-map nil
   "Keymap used in TeX-mode.")
@@ -149,43 +171,49 @@ witch a backslash. Default is the meaning of M-t when latex-mode was called.")
 (defvar TeX-compilation-map nil
   "Keymap for the TeX shell.  A shell-mode-map with a few additions")
 
-(defvar TeX-mode-syntax-table nil
-  "Syntax table used while in TeX mode.")
-
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Autoload modules
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(autoload 'LaTeX-math-mode "tex-math" nil t)
+(let ((no-doc
+       "Documentation will be available when the function has been called
+as the definition of this this function is placed in an external module."))
 
-(autoload 'outline-minor-mode "outline-m" nil t)
+  ;; minor modes
+  (autoload 'LaTeX-math-mode "tex-math" no-doc t)
+  (autoload 'outline-minor-mode "outline-m" no-doc t)
 
-(autoload 'LaTeX-section "latex-section" nil t)
+  ;; sectioning commands
+  (autoload 'LaTeX-section "latex-section" no-doc t)
 
-(autoload 'LaTeX-environment "latex-environment" nil t)
+  ;; environment commands
+  (autoload 'LaTeX-environment "latex-environment" no-doc t)
+  (autoload 'LaTeX-insert-item "latex-environment" no-doc t)
 
-(autoload 'TeX-home-buffer "tex-buffer" nil t)
-(autoload 'TeX-region "tex-buffer" nil t)
-(autoload 'TeX-buffer "tex-buffer" nil t)
-(autoload 'TeX-kill-job "tex-buffer" nil t)
-(autoload 'TeX-recenter-output-buffer "tex-buffer" nil t)
-(autoload 'TeX-preview "tex-buffer" nil t)
-(autoload 'TeX-print "tex-buffer" nil t)
-(autoload 'LaTeX-bibtex "tex-buffer" nil t)
-(autoload 'LaTeX-makeindex "tex-buffer" nil t)
-
-(autoload 'TeX-next-error "tex-debug" nil t)
-(autoload 'TeX-toggle-debug-boxes "tex-debug" nil t)
-(autoload 'TeX-help-error "tex-debug" nil t)
-
-(autoload 'TeX-comment-out-region "tex-misc" nil t)
-(autoload 'TeX-comment-out-paragraph "tex-misc" nil t)
-(autoload 'TeX-un-comment "tex-misc" nil t)
-(autoload 'TeX-un-comment-region "tex-misc" nil t)
-(autoload 'TeX-validate-buffer "tex-misc" nil t)
-(autoload 'TeX-terminate-paragraph "tex-misc" nil t)
-(autoload 'TeX-complete-symbol "tex-misc" nil t)
-(autoload 'LaTeX-insert-item "latex-environment" nil t)
+  ;; invoking tex
+  (autoload 'TeX-home-buffer "tex-buffer" no-doc t)
+  (autoload 'TeX-region "tex-buffer" no-doc t)
+  (autoload 'TeX-buffer "tex-buffer" no-doc t)
+  (autoload 'TeX-kill-job "tex-buffer" no-doc t)
+  (autoload 'TeX-recenter-output-buffer "tex-buffer" no-doc t)
+  (autoload 'TeX-preview "tex-buffer" no-doc t)
+  (autoload 'TeX-print "tex-buffer" no-doc t)
+  (autoload 'LaTeX-bibtex "tex-buffer" no-doc t)
+  (autoload 'LaTeX-makeindex "tex-buffer" no-doc t)
+  
+  ;; `debugging' commands
+  (autoload 'TeX-next-error "tex-debug" no-doc t)
+  (autoload 'TeX-toggle-debug-boxes "tex-debug" no-doc t)
+  (autoload 'TeX-help-error "tex-debug" no-doc t)
+  
+  ;; miscellaneous
+  (autoload 'TeX-comment-out-region "tex-misc" no-doc t)
+  (autoload 'TeX-comment-out-paragraph "tex-misc" no-doc t)
+  (autoload 'TeX-un-comment "tex-misc" no-doc t)
+  (autoload 'TeX-un-comment-region "tex-misc" no-doc t)
+  (autoload 'TeX-validate-buffer "tex-misc" no-doc t)
+  (autoload 'TeX-terminate-paragraph "tex-misc" no-doc t)
+  (autoload 'TeX-complete-symbol "tex-misc" no-doc t))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keymaps
@@ -227,27 +255,19 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c\C-h" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
-  (define-key TeX-mode-map "\M-\t"    'TeX-complete-symbol))
+  (define-key TeX-mode-map "\e\t"    'TeX-complete-symbol))
 
 (if LaTeX-mode-map
     ()
   (setq LaTeX-mode-map (copy-keymap TeX-mode-map))
   (define-key LaTeX-mode-map "\n"       'reindent-then-newline-and-indent)
   (define-key LaTeX-mode-map "\t"       'LaTeX-indent-line)
-  (define-key LaTeX-mode-map "\M-\r"    'LaTeX-insert-item)
+  (define-key LaTeX-mode-map "\e\r"    'LaTeX-insert-item)
   (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
   (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
-  (define-key LaTeX-mode-map "\C-c@"    'LaTeX-bibtex)
-  (define-key LaTeX-mode-map "\C-c#"    'LaTeX-makeindex)
-  (define-key LaTeX-mode-map "\M-q"     'LaTeX-format-paragraph)
-  (define-key LaTeX-mode-map "\M-g"     'LaTeX-format-region)
-  (define-key LaTeX-mode-map "\M-s"     'LaTeX-format-section)
-  (define-key LaTeX-mode-map "\M-\C-e"  'LaTeX-mark-environment)
-  (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
-  (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment)
-  (define-key LaTeX-mode-map "\M-\C-b"  'LaTeX-find-matching-begin)
-  (define-key LaTeX-mode-map "\M-\C-f"  'LaTeX-find-matching-end))
+  (define-key LaTeX-mode-map "\C-c@" 'LaTeX-bibtex)
+  (define-key LaTeX-mode-map "\C-c#" 'LaTeX-makeindex))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TeX / LaTeX modes
@@ -255,7 +275,7 @@ and in the TeX-compilation."
 
 (defun tex-mode ()
   "Major mode for editing files of input for TeX or LaTeX.
-Trys to intuit whether this file is for plain TeX or LaTeX and
+Tries to intuit whether this file is for plain TeX or LaTeX and
 calls plain-tex-mode or latex-mode.  If it cannot be determined
 \(e.g., the file is empty), the value of TeX-default-mode is used."
   (interactive)
@@ -301,14 +321,70 @@ then the value of TeX-mode-hook, and then the value
 of plain-TeX-mode-hook."
   (interactive)
   (TeX-common-initialization)
+  (setq TeX-esc "\\")
+  (setq TeX-grop "{")
+  (setq TeX-grcl "}")
+  (modify-syntax-entry (string-to-char TeX-esc) "/")
+  (modify-syntax-entry (string-to-char TeX-grop) (concat "(" TeX-grcl))  
+  (modify-syntax-entry (string-to-char TeX-grcl) (concat ")" TeX-grop))
   (use-local-map TeX-mode-map)
   (setq mode-name "TeX")
   (setq major-mode 'plain-TeX-mode)
   (make-local-variable 'TeX-command)
   (setq TeX-command "tex")
+  (setq TeX-bibtex-command "bibtex")
+  (setq TeX-index-command "makeindex")
+  (setq paragraph-start
+	(concat
+	 "\\(^[ \t]*$"
+	 "\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 "begin\\|end\\|item\\|part\\|chapter\\|"
+	 "section\\|subsection\\|subsubsection\\|"
+	 "paragraph\\|include\\|includeonly\\|"
+	 "tableofcontents\\|appendix\\|"
+	 "\[\\|]" ; display math delimitors
+	 "\\)"
+	 "\\|"
+	 "^[ \t]*\\$\\$" ; display math delimitor
+	 "\\)" ))
+  (setq paragraph-separate
+	(concat
+	 "\\("
+	 (regexp-quote TeX-esc)
+	 "par\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 "begin\\|end\\|item\\|part\\|chapter\\|"
+	 "section\\|subsection\\|subsubsection\\|"
+	 "paragraph\\|include\\|includeonly\\|"
+	 "tableofcontents\\|appendix"
+	 "\\)"
+	 "\\)"))
+  (setq comment-start-skip
+	(concat
+	 "\\(\\(^\\|[^\\]\\)\\("
+	 (regexp-quote TeX-esc)
+	 (regexp-quote TeX-esc)
+	 "\\)*\\)\\(%+ *\\)"))
   (setq TeX-start-of-header "%**start of header")
   (setq TeX-end-of-header "%**end of header")
-  (setq TeX-trailer "\\bye")
+  (setq TeX-trailer (concat TeX-esc "bye"))
+  (setq TeX-h1 (concat
+		TeX-esc "nonstopmode" TeX-grop TeX-grcl))
+  (setq TeX-h2 (concat
+		TeX-esc "input"
+		TeX-grop TeX-auto-header TeX-grcl
+		TeX-grop TeX-grcl))
+  (setq TeX-t1 (concat TeX-grop TeX-grcl))
+  (setq TeX-t2 (concat
+		TeX-esc "input"
+		TeX-grop TeX-auto-trailer TeX-grcl
+		TeX-grop TeX-grcl))
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
 (defun latex-mode ()
@@ -350,18 +426,81 @@ then the value of TeX-mode-hook, and then the value
 of LaTeX-mode-hook."
   (interactive)
   (TeX-common-initialization)
+  (setq TeX-esc "\\")
+  (setq TeX-grop "{")
+  (setq TeX-grcl "}")
+  (setq LaTeX-optop "[")
+  (setq LaTeX-optcl "]")
+  (modify-syntax-entry (string-to-char TeX-esc) "/")
+  (modify-syntax-entry (string-to-char TeX-grop) (concat "(" TeX-grcl))  
+  (modify-syntax-entry (string-to-char TeX-grcl) (concat ")" TeX-grop))
+  (modify-syntax-entry (string-to-char LaTeX-optop) (concat "(" LaTeX-optcl))  
+  (modify-syntax-entry (string-to-char LaTeX-optcl) (concat ")" LaTeX-optop))
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
   (use-local-map LaTeX-mode-map)
   (setq mode-name "LaTeX")
   (setq major-mode 'LaTeX-mode)
   (setq outline-level-function 'LaTeX-outline-level)
+  (make-variable-buffer-local 'outline-regexp)
   (setq outline-regexp LaTeX-outline-regexp)
   (make-local-variable 'TeX-command)
   (setq TeX-command "latex")
-  (setq TeX-start-of-header "\\documentstyle")
-  (setq TeX-end-of-header "\\begin{document}")
-  (setq TeX-trailer "\\end{document}")
+  (setq TeX-bibtex-command "bibtex")
+  (setq TeX-index-command "makeindex")
+  (setq paragraph-start
+	(concat
+	 "\\(^[ \t]*$"
+	 "\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 "begin\\|end\\|item\\|part\\|chapter\\|"
+	 "section\\|subsection\\|subsubsection\\|"
+	 "paragraph\\|include\\|includeonly\\|"
+	 "tableofcontents\\|appendix\\|"
+	 "\[\\|]" ; display math delimitors
+	 "\\)"
+	 "\\|"
+	 "^[ \t]*\\$\\$" ; display math delimitor
+	 "\\)" ))
+  (setq paragraph-separate
+	(concat
+	 "\\("
+	 (regexp-quote TeX-esc)
+	 "par\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 "begin\\|end\\|item\\|part\\|chapter\\|"
+	 "section\\|subsection\\|subsubsection\\|"
+	 "paragraph\\|include\\|includeonly\\|"
+	 "tableofcontents\\|appendix"
+	 "\\)"
+	 "\\)"))
+  (setq comment-start-skip
+	(concat
+	 "\\(\\(^\\|[^\\]\\)\\("
+	 (regexp-quote TeX-esc)
+	 (regexp-quote TeX-esc)
+	 "\\)*\\)\\(%+ *\\)"))
+  (setq TeX-start-of-header (concat TeX-esc "documentstyle"))
+  (setq TeX-end-of-header (concat TeX-esc "begin"
+				  TeX-grop "document" TeX-grcl))
+  (setq TeX-trailer (concat TeX-esc "end"
+				  TeX-grop "document" TeX-grcl))
+  (setq TeX-h1 (concat
+		TeX-esc "nonstopmode" TeX-grop TeX-grcl))
+  (setq TeX-h2 (concat
+		TeX-esc "input"
+		TeX-grop TeX-auto-header TeX-grcl
+		TeX-grop TeX-grcl))
+  (setq TeX-t1 (concat TeX-grop TeX-grcl))
+  (setq TeX-t2 (concat
+		TeX-esc "input"
+		TeX-grop TeX-auto-trailer TeX-grcl
+		TeX-grop TeX-grcl))
   (setq indent-tabs-mode nil)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
 
@@ -376,51 +515,37 @@ of LaTeX-mode-hook."
       (progn
 	(setq TeX-mode-syntax-table (make-syntax-table))
 	(set-syntax-table TeX-mode-syntax-table)
-	(modify-syntax-entry ?\\ "/")
+	(modify-syntax-entry (string-to-char TeX-esc) "/")
 	(modify-syntax-entry ?\f ">")
 	(modify-syntax-entry ?\n ">")
 	(modify-syntax-entry ?$ "$$")
-	(modify-syntax-entry ?{ "(}")  
-	(modify-syntax-entry ?} "){")    
+	(modify-syntax-entry (string-to-char TeX-grop) (concat "(" TeX-grcl))  
+	(modify-syntax-entry (string-to-char TeX-grcl) (concat ")" TeX-grop))  
 	(modify-syntax-entry ?% "<")
-	(modify-syntax-entry ?\" ".")
-        (modify-syntax-entry ?& ".")
+	(modify-syntax-entry ?" ".")
+	(modify-syntax-entry ?& ".")
 	(modify-syntax-entry ?_ ".")
-        (modify-syntax-entry ?@ "_")
+	(modify-syntax-entry ?@ "_")
 	(modify-syntax-entry ?~ " ")
 	(modify-syntax-entry ?' "w"))
     (set-syntax-table TeX-mode-syntax-table))
-  (make-local-variable 'paragraph-separate)
-  (setq paragraph-separate (concat
-  			    "\\(" "\\\\par.*$"
- 			    "\\|" ".*\\\\\\\\.*$"
-			    "\\|[^\\\\]%.*$"
-  			    "\\|" "^[ \t]*$"
- 			    "\\|" "^[ \t]*\\\\"
-			    "\\("
-			    "left\\|right\\|"
-			    "begin\\|end\\|part\\|chapter\\|"
-			    "section\\|subsection\\|subsubsection\\|"
-			    "paragraph\\|include\\|includeonly\\|"
-			    "tableofcontents\\|appendix"
-			    "\\)"
-			    ".*$"
-  			    "\\)"))
   (make-local-variable 'paragraph-start)
-  (setq paragraph-start (concat
-			 "\\(^[ \t]*$"
-			 "\\|^[ \t]*\\\\\\(item\\|[[]\\).*$"
-			 "\\|" paragraph-separate "\\)" ))
+  (make-local-variable 'paragraph-separate)
   (make-local-variable 'comment-start)
   (setq comment-start "%")
   (make-local-variable 'comment-start-skip)
-  (setq comment-start-skip "\\(\\(^\\|[^\\]\\)\\(\\\\\\\\\\)*\\)\\(%+ *\\)")
   (make-local-variable 'comment-indent-hook)
   (setq comment-indent-hook 'TeX-comment-indent)
+  (make-local-variable 'TeX-bibtex-command)
+  (make-local-variable 'TeX-index-command)
    (make-local-variable 'TeX-command)
   (make-local-variable 'TeX-start-of-header)
   (make-local-variable 'TeX-end-of-header)
-  (make-local-variable 'TeX-trailer))
+  (make-local-variable 'TeX-trailer)
+  (make-local-variable 'TeX-h1)
+  (make-local-variable 'TeX-h2)
+  (make-local-variable 'TeX-t1)
+  (make-local-variable 'TeX-t2))
 
 (defun insert-mode-line ()
     "This little macro inserts `% -*- mode-name -*-' if not present.
@@ -437,8 +562,10 @@ You should insert this in your TeX-mode-hook!"
 ;; outline-mode
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar LaTeX-outline-regexp "[ \t]*\\\\\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\|subsubsection\\|paragraph\\|subparagraph\\)"
-  "Regular expresion to use for outlines.")
+(defvar LaTeX-outline-regexp
+  (concat "[ \t]*" (regexp-quote TeX-esc)
+	  "\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\|subsubsection\\|paragraph\\|subparagraph\\)"
+  "Regular expresion to use for outlines."))
 
 (defun LaTeX-outline-level ()
   "Find the level of current outline heading in an LaTeX document."
@@ -461,13 +588,13 @@ You should insert this in your TeX-mode-hook!"
 ;; Indentation
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
 Add LaTeX-indent-level indentation in each \\begin{ - \\end{ block.
 Lines starting with \\item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
-  (save-excursion
   (let ((indent (calculate-LaTeX-indentation)))
     (if (/= (current-indentation) indent)
 	(let ((beg (progn
@@ -475,193 +602,32 @@ LaTeX-item-indent."
 		     (point))))
 	  (back-to-indentation)
 	  (delete-region beg (point))
-	  (indent-to indent)))))
-  (if (< (current-column) (calculate-LaTeX-indentation))
-      (back-to-indentation)))
-
-(defun LaTeX-format-paragraph (prefix)
-"Fill and indent paragraph at or after point.
-Prefix arg means justify as well."
-  (interactive "P")
-  (let ((where (point))
-	(word (progn
-		(re-search-forward "[^ \t]")
-		(buffer-substring (match-beginning 0)
-				  (match-end 0)))))
-    (goto-char where)
-    (save-excursion
-      (LaTeX-indent-line)
-      (let ((indent-val (calculate-LaTeX-indentation)))
-	(mark-paragraph)
-	(setq fill-column (- fill-column indent-val))
-	(fill-paragraph prefix)
-	(indent-region (region-beginning) (region-end) nil)
-	(setq fill-column (+ fill-column indent-val))))
-    (search-forward word)
-    (backward-char)))
-
-(defun LaTeX-format-region (from to &optional justify what)
- "Fill and indent each of the paragraphs in the region as LaTeX text.
-Prefix arg (non-nil third arg, if called from program)
-means justify as well."
-  (interactive "r\nP")
-  (save-excursion
-    (LaTeX-indent-line)
-    (let ((the-end (set-marker (make-marker) to))
-	  (length (- to from)))
-      (save-restriction
-	(narrow-to-region from to) 
-	(while (and (<= (point) (marker-position the-end))
-		    (not (eobp)))
-	  (narrow-to-region (point)
-			    (progn
-			      (re-search-forward
-			       "\\(\\\\begin *{verbatim}\\|[^\\\\]%\\|\\'\\)")
-			      (point)))
-	  (let  ((is-percent (string-match "%" (buffer-substring
-						(match-beginning 0)
-						(match-end 0)))))
-	    (goto-char (point-min))
-	    (replace-regexp "\\\\\\(begin\\|end\\|left\\|right\\|item\\)"
-			    " \\&")
-	    (goto-char (point-min))
-	    (replace-regexp "^[ \t]+\\\\" "\\\\")
-	    (goto-char (point-min))
-	    (replace-regexp "[ \t]+\\\\[^\\\\]" "\n\\&")
-	    (goto-char (point-max))
-	    (widen)
-	    (if is-percent
-		(end-of-line)
-	      (goto-char (progn
-			   (re-search-forward
-			    "\\(\\\\end *{verbatim}\\|\\'\\)")
-			   (point)))))))
-      (while (and (<= (point) (marker-position the-end))
-		  (not (eobp)))
-	(re-search-forward "\\(^[ \t]*|\\'\\)")
-	(if (looking-at "\\\\begin *{verbatim}")
-	    (re-search-forward "\\\\end *{verbatim}"))
-	(LaTeX-indent-line)
-	(message "Formatting%s (take one)... %d%%"
-		 (if (not what)
-		     ""
-		   what)
-		 (/ (* 100 (- (point) from)) length)))
-      (goto-char from)
-      (while (and (<= (point) (marker-position the-end))
-		  (not (eobp)))
-	(LaTeX-format-paragraph justify)
-	(forward-paragraph 1)
-	(if (looking-at "^[ \t]*$")
-	    (forward-line))
-	(beginning-of-line)
-	(if (looking-at " *\\\\begin *{verbatim}")
-	    (re-search-forward "\\\\end *{verbatim}"))
-	(message "Formatting%s (take two)... %d%%"
-		 (if (not what)
-		     ""
-		   what)
-		 (/ (* 100 (- (point) from)) length)))))
-  (message ""))
-
-(defun LaTeX-mark-environment ()
-  "Set mark to end of current environment and point to the matching begin
-will not work properly if there are unbalanced begin-end pairs in
-comments and verbatim environments"
-  (interactive)
-  (LaTeX-find-matching-end)
-  (set-mark (point))
-  (search-backward "\\")
-  (LaTeX-find-matching-begin))
-
-(defun LaTeX-find-matching-end ()
-  "Move mark to the \\end of the current environment"
-  (interactive)
-  (while
-      (progn
-        (if (re-search-forward "\\(\\\\begin\\|\\\\end\\)" nil  t)
-            (if (string-match "\\begin" (buffer-substring
-					 (match-beginning 0)
-					 (match-end 0)))
-                (progn (LaTeX-find-matching-end) t)
-              nil)
-          (error "Can't locate current environment - end"))))
-  (re-search-forward "}[ \t]*\n?"))
-
-
-(defun LaTeX-find-matching-begin ()
-  ""
-  (interactive)
-  (while 
-      (progn
-	(if (re-search-backward "\\(\\\\begin\\|\\\\end\\)" nil t)
-	    (if (equal "\\end" (buffer-substring
-				(match-beginning 0)
-				(match-end 0)))
-		(progn (LaTeX-find-matching-begin) t)
-	      nil)
-	(error "Can't locate current environment - begin")))))
-
-
-(defun LaTeX-format-environment (justify)
-  "Fill and indent current environment as LaTeX text."
-  (interactive "P")
-  (save-excursion
-    (LaTeX-mark-environment)
-    (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-format-region
-     (region-beginning)
-     (region-end)
-     justify
-     (concat " environment " (buffer-substring (match-beginning 1)
-					     (match-end 1))))))
-
-
-(defun LaTeX-format-section (justify)
-  "Fill and indent current logical section as LaTeX text."
-  (interactive "P")
-  (save-excursion
-    (LaTeX-mark-section)
-    (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-format-region
-     (region-beginning)
-     (region-end)
-     justify
-     (concat " section " (buffer-substring (match-beginning 1)
-					   (match-end 1))))))
-
-(defun LaTeX-mark-section ()
-  "Set mark at end of current logical section, and point at top."
-  (interactive)
-  (re-search-forward (concat  "\\(^" LaTeX-outline-regexp
-			      "\\|\\'\\)"))
-  (re-search-backward "^")
-  (set-mark (point))
-  (re-search-backward (concat "\\(^" LaTeX-outline-regexp
-			      "\\|\\`\\)")))
-
-
-(defun LaTeX-format-buffer (justify)
-  "Fill and indent current buffer as LaTeX text."
-  (interactive "P")
-  (save-excursion
-    (LaTeX-format-region
-     (point-min)
-     (point-max)
-     justify
-     (concat " buffer " (buffer-name)))))
+	  (indent-to indent))
+      ; Should we leave it at the same position, as in c-mode?
+      (back-to-indentation))))
 
 (defun calculate-LaTeX-indentation ()
   "Return the correct indentation of line of LaTeX source. (I hope...)"
   (save-excursion
     (back-to-indentation)
-    (cond ((looking-at "\\\\end{verbatim}")
+    (cond ((looking-at (concat
+			(regexp-quote TeX-esc) "end"
+			(regexp-quote TeX-grop)
+			"verbatim"
+			(regexp-quote TeX-grcl)))
 	   (save-excursion
-	     (search-backward "\\begin{verbatim}")
+	     (search-backward (concat
+			(regexp-quote TeX-esc) "begin"
+			(regexp-quote TeX-grop)
+			"verbatim"
+			(regexp-quote TeX-grcl)))
 	     (current-indentation)))
-	  ((looking-at "\\(\\\\end{\\|\\\\right\\)")
+	  ((looking-at (concat
+			(regexp-quote TeX-esc) "end"
+			(regexp-quote TeX-grop)))
 	   (- (calculate-normal-LaTeX-indentation) LaTeX-indent-level))
-	  ((looking-at "\\\\item\\W")
+	  ((looking-at (concat
+			(regexp-quote TeX-esc) "item\\W"))
 	   (+ (calculate-normal-LaTeX-indentation) LaTeX-item-indent))
 	  (t (calculate-normal-LaTeX-indentation)))))
 
@@ -669,14 +635,19 @@ comments and verbatim environments"
   "Return the correct indentation of a normal line of text."
   (skip-chars-backward "\n\t ")
   (move-to-column (current-indentation))
-  (cond ((looking-at "\\\\begin{document}")
-	 ;; I dislike having all of the document indented...
+  (cond ((looking-at (concat (regexp-quote TeX-esc) "begin"
+			     (regexp-quote TeX-grop)
+			     "document" (regexp-quote TeX-grcl)))
+					; I dislike having all of the document indented...
 	 (current-indentation))
-	((looking-at "\\\\begin{verbatim")
+	((looking-at (concat (regexp-quote TeX-esc) "begin"
+			     (regexp-quote TeX-grop)
+			     "verbatim"))
 	 0)
-	((looking-at "\\(\\\\begin{\\|\\\\left\\)")
+	((looking-at (concat (regexp-quote TeX-esc) "begin"
+			     (regexp-quote TeX-grop)))
 	 (+ (current-indentation) LaTeX-indent-level))
-	((looking-at "\\\\item\\W")
+	((looking-at (concat (regexp-quote TeX-esc) "item\\W"))
 	 (- (current-indentation) LaTeX-item-indent))
 	(t (current-indentation))))
 
@@ -699,60 +670,55 @@ comments and verbatim environments"
 Inserts command at the start of the group."
   (interactive "*r\ns(La)TeX-command on region: ")
   (save-excursion
-    (goto-char end)   (insert "}")
-    (goto-char begin) (insert "{\\" command " ")))
+    (goto-char end)   (insert TeX-grcl)
+    (goto-char begin) (insert TeX-grop TeX-esc command " ")))
 
 (defun TeX-insert-macro ()
   (interactive)
-  (insert "\\{}")
+  (insert TeX-esc TeX-grop TeX-grcl)
   (backward-char 2))
 
 (defun TeX-insert-braces ()
   "Make a pair of braces and be poised to type inside of them."
   (interactive)
-  (insert ?\{)
+  (insert TeX-grop)
   (save-excursion
-    (insert ?})))
+    (insert TeX-grcl)))
 
 (defun TeX-bold ()
   (interactive)
-  (insert "{\\bf }")
+  (insert TeX-grop TeX-esc "bf " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-italic ()
   (interactive)
-  (insert "{\\it \\/}")
+  (insert TeX-grop TeX-esc "it " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-slanted ()
   (interactive)
-  (insert "{\\sl \\/}")
+  (insert TeX-grop TeX-esc "sl " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-roman ()
   (interactive)
-  (insert "{\\rm }")
+  (insert TeX-grop TeX-esc "rm " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-emphasize ()
   (interactive)
-  (insert "{\\em \\/}")
+  (insert TeX-grop TeX-esc "em " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-typewriter ()
   (interactive)
-  (insert "{\\tt }")
+  (insert TeX-grop TeX-esc "tt " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-small-caps ()
   (interactive)
-  (insert "{\\sc }")
+  (insert TeX-grop TeX-esc "sc " TeX-grcl)
   (backward-char 1))
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; miscellaneous often used functions
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defun TeX-insert-quote (arg)
   "Insert ``, '' or \" according to preceding character.
@@ -770,7 +736,7 @@ With prefix argument, always insert \" characters."
 	     (forward-char -1)
 	     (looking-at "[ \t\n]\\|\\s(")))
        "``")
-      ((= (preceding-char) ?\\)
+      ((= (preceding-char) TeX-esc)
        ?\")
       (t "''")))))
 
