@@ -15,7 +15,7 @@ EMACS_PATH_LISPDIR([tex-site])
 auctexdir=${lispdir_expanded}/auctex
 AC_SUBST(auctexdir)
 
-if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info' ; then
+if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info' -a $packagedir != 'no'; then
    infodir='${packagedir}/info'
 fi
 
