@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.2 2001-09-14 14:43:44 dakas Exp $
+;; $Id: preview.el,v 1.3 2001-09-15 23:20:09 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -40,14 +40,6 @@
 ;; function.
 
 ;;; Code:
-
-(defun shell-command-to-string (command)
-  "Execute shell command COMMAND and return its output as a string."
-  (with-output-to-string
-    (with-current-buffer
-      standard-output
-      (call-process shell-file-name nil t nil shell-command-switch command))))
-
 
 (defun preview-extract-bb (filename)
   "Extract EPS bounding box vector from FILENAME."
@@ -71,6 +63,15 @@
       )
     )
 )
+
+(defun preview-int-bb (bb)
+  "Make integer bounding box from possibly float one"
+  (when bb
+    (list
+     (floor (elt bb 0))
+     (floor (elt bb 1))
+     (ceiling (elt bb 2))
+     (ceiling (elt bb 3)))))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -123,13 +124,15 @@ so that they match the current default face in height."
 (defun preview-ps-image (filename)
   (let* ((filename (expand-file-name filename))
 	 (bb (preview-extract-bb filename))
+	 (intbb (preview-int-bb bb))
 	 (scale (funcall preview-scale))
+;; should the following 2 be rather intbb?
 	 (ptw (- (elt bb 2) (elt bb 0)))
 	 (pth (- (elt bb 3) (elt bb 1))))
     (create-image filename 'postscript nil
 		  :pt-width (round (* scale ptw))
 		  :pt-height (round (* scale pth))
-		  :bounding-box bb :ascent (if (and (<= (elt bb 1) 720) (> (elt bb 3) 720)) (round (* 100.0 (/ (- (elt bb 3) 720.0) pth))) 100)
+		  :bounding-box intbb :ascent (if (and (<= (elt bb 1) 720) (> (elt bb 3) 720)) (round (* 100.0 (/ (- (elt bb 3) 720.0) pth))) 100)
 		  :heuristic-mask '(65535 65535 65535)
 		  )
     ))
@@ -156,8 +159,7 @@ so that they match the current default face in height."
 
 (put 'preview-overlay
      'modification-hooks
-     '(preview-disable)
-     )
+     '(preview-disable) )
 
 (put 'preview-overlay
      'insert-in-front-hooks
@@ -246,7 +248,7 @@ mouse-3 kills preview"))
   (concat
    (propertize "x" 'display preview-icon
 	       'local-map (overlay-get ov 'preview-map)
-	       'help-echo "mouse-2 opens preview
+	       'help-echo "mouse-2 toggles preview
 mouse-3 kills preview")
    "\n") )
 
@@ -284,6 +286,24 @@ mouse-3 kills preview") )
 		       (eq ?\( (char-syntax (char-after)))))))
 	  (point))
       (error nil))))
+
+(defcustom preview-default-option-list '("displaymath" "floats" "graphics")
+  "*Specifies default options to pass to preview package.
+These options are only used when the LaTeX document in question does
+not itself load the preview package, namely when you use preview
+on a document not configured for preview."
+  :group 'preview
+  :type '(set (const "displaymath")
+	      (const "floats")
+	      (const "graphics")
+	      (const "textmath")
+	      (repeat :inline t :tag "Other" (string))))
+
+(make-variable-buffer-local 'preview-default-option-list)
+
+(defun preview-make-options ()
+  "Create default option list to pass into LaTeX preview package.\n"
+  (mapconcat 'identity preview-default-option-list ","))
 		
 (defun LaTeX-preview-setup ()
   (remove-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
@@ -291,7 +311,7 @@ mouse-3 kills preview") )
   (setq TeX-command-list
        (append TeX-command-list
 	       '(("Graphic Preview"
-		  "%l '\\nonstopmode\\PassOptionsToPackage{auctex,active}{preview}\\input{%t}';dvips -Pwww -i -E %d -o %m/eps.000"
+		  "%l '\\nonstopmode\\PassOptionsToPackage{auctex,active}{preview}\\AtBeginDocument{\\ifx\\ifPreview\\undefined\\RequirePackage[%P]{preview}\\fi}\\input{%t}';dvips -Pwww -i -E %d -o %m/eps.000"
 		  TeX-inline-preview nil))))
   (setq TeX-error-description-list
        (cons '("Package Preview Error.*" .
@@ -301,7 +321,8 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
   (add-hook 'TeX-translate-location-hook 'preview-translate-location)
   (setq TeX-expand-list
 	(append TeX-expand-list
-		'(("%m" preview-create-subdirectory)) )))
+		'(("%m" preview-create-subdirectory)
+		  ("%P" preview-make-options)) )))
 
 (defun preview-clean-subdir (dir)
   (condition-case err
