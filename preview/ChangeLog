@@ -1,3 +1,14 @@
+2003-06-23  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/configure.ac:
+	* dvipng/config.h.in: Added tests for newly added C code 
+
+	* dvipng/Makefile.in: 
+	* dvipng/dvipng.texi: Reflect move of readme 
+
+	* dvipng/README: 
+	* dvipng/readme.texi:  Moved from README to readme.texi
+
 2003-06-19  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/special.c: Fix crash on file not found
