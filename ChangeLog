@@ -1,5 +1,7 @@
 2005-03-06  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* doc/auctex.texi (I18n): Comment fix.
+
 	* latex.el: Set fill-space nonsticky.
 	(LaTeX-fill-delete-newlines): Check text property 'fill-space.
 
