@@ -69,7 +69,7 @@ WWWDIR = /home/tmp/auctex-www
 
 REMOVE =  MSDOS VMS OS2 WIN-NT
 
-MINMAPSRC = auc-menu.el maniac.el outln-18.el all.el multi-prompt.el
+MINMAPSRC = all.el multi-prompt.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el tex-fptex.el
 CONTRIBELC = bib-cite.elc 
