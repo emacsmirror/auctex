@@ -1,3 +1,17 @@
+2004-08-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Change version to 11.52.  Replace old feature/bug
+	information.
+
+	* font-latex.el (font-latex-script): Disable raising of characters
+	for older Emacsen.  Original patch by Reiner Steib.
+
+	* tex-fold.el (TeX-fold-unfolded-face): Make it look more blueish
+	on displays with 24bit color depth.
+	(TeX-fold-buffer-type): Use either a complemented character
+	alternative to be on the save side or "\\_>" on Emacsen which
+	support it.
+
 2004-08-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* texmathp.el (texmathp-tex-commands-default): Added \label.
