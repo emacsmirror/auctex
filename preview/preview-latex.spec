@@ -28,8 +28,8 @@ Version: 	0.9.1
 Release: 	1%{distri}
 License:        GPL
 BuildArchitectures: noarch
-URL: 		http://preview-latex.sourceforge.org
-Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+URL: 		http://www.gnu.org/software/auctex
+Source0: 	ftp://ftp.gnu.org/pub/auctex/%{name}-%{version}.tar.gz
 Group: 		%{commongroup}
 BuildRoot: 	%{_tmppath}/%{name}-root
 Prereq:		info
