@@ -27,7 +27,19 @@
 ;;; Commentary:
 
 ;; This file provides support for hiding and unhiding TeX, LaTeX,
-;; ContTeXt, Texinfo and similar macros inside of AUCTeX.
+;; ContTeXt, Texinfo and similar macros and environments inside of
+;; AUCTeX.
+;;
+;; Caveats:
+;;
+;; The display string of content which should display part of itself
+;; is made by copying the text from the buffer together with its text
+;; properties.  If fontification has not happened when this is done
+;; (e.g. because of lazy font locking) the intended fontification will
+;; not show up.  Maybe this could be improved by using some sort of
+;; "lazy folding" or refreshing the window upon scrolling.  As a
+;; workaround you can leave Emacs idle a few seconds and wait for
+;; stealth font locking to finish before you fold the buffer.
 
 ;;; Code:
 
@@ -40,16 +52,26 @@
 
 (defcustom TeX-fold-macro-spec-list
   '(("[f]" ("footnote"))
-    ("[c]" ("cite")))
+    ("[c]" ("cite"))
+    ("[l]" ("label"))
+    ("[i]" ("index"))
+    ("*" ("item"))
+    ("..." ("dots"))
+    (1 ("part" "chapter" "section" "subsection" "subsubsection"
+	"paragraph" "subparagraph"
+	"emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
+	"textbf" "textsc" "textup")))
   "List of display strings and macros to fold."
-  :type '(repeat (group (string :tag "Display String")
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
 			(repeat :tag "Macros" (string))))
   :group 'TeX-fold)
 
 (defcustom TeX-fold-env-spec-list
   '(("[comment]" ("comment")))
   "List of display strings and environments to fold."
-  :type '(repeat (group (string :tag "Display String")
+  :type '(repeat (group (choice (string :tag "Display String")
+				(integer :tag "Number of argument" :value 1))
 			(repeat :tag "Environments" (string))))
   :group 'TeX-fold)
 
@@ -72,7 +94,7 @@ hidden which is not specified in `TeX-fold-env-spec-list'."
   :type 'boolean
   :group 'TeX-fold)
 
-(defface TeX-fold-display-string-face
+(defface TeX-fold-folded-face
   '((((class color) (background light))
      (:foreground "SlateBlue"))
     (((class color) (background dark))
@@ -82,11 +104,27 @@ hidden which is not specified in `TeX-fold-env-spec-list'."
     (((class grayscale) (background dark))
      (:foreground "LightGray"))
     (t (:slant italic)))
-  "Face for display strings."
+  "Face for the display string of folded content."
   :group 'TeX-fold)
 
-(defvar TeX-fold-display-string-face 'TeX-fold-display-string-face
-  "Face for display strings.")
+(defvar TeX-fold-folded-face 'TeX-fold-folded-face
+  "Face for the display string of folded content.")
+
+(defface TeX-fold-unfolded-face
+  '((((class color) (background light))
+     (:background "#f8f0fd"))
+    (((class color) (background dark))
+     (:background "#38405d"))
+    (((class grayscale) (background light))
+     (:background "LightGray"))
+    (((class grayscale) (background dark))
+     (:background "DimGray"))
+    (t (:inverse-video t)))
+  "Face for folded content when it is temporarily opened."
+  :group 'TeX-fold)
+
+(defvar TeX-fold-unfolded-face 'TeX-fold-unfolded-face
+  "Face for folded content when it is temporarily opened.")
 
 (defvar TeX-fold-open-spots nil)
 (make-variable-buffer-local 'TeX-fold-open-spots)
@@ -100,6 +138,9 @@ hidden which is not specified in `TeX-fold-env-spec-list'."
     (define-key map "\C-c\C-o\C-c" 'TeX-fold-clearout-item)
     map))
 
+
+;;; Folding
+
 (defun TeX-fold-buffer ()
   "Hide all configured macros and environments in the current buffer.
 The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
@@ -112,41 +153,45 @@ and environments in `TeX-fold-env-spec-list'."
 (defun TeX-fold-buffer-type (type)
   "Fold all items of type TYPE in buffer.
 TYPE can be one of the symbols 'env for environments or 'macro for macros."
-  (save-excursion
-    ;; All these `(eq type 'env)' tests are ugly, I know.
-    (let ((fold-list (if (eq type 'env)
-			 TeX-fold-env-spec-list
-		       TeX-fold-macro-spec-list))
-	  fold-item)
-      (when (or (and (eq type 'env)
-		     (or (eq major-mode 'latex-mode)
-			 (eq major-mode 'doctex-mode)))
-		(eq type 'macro))
-	(while fold-list
-	  (beginning-of-buffer)
-	  (setq fold-item (car fold-list))
-	  (setq fold-list (cdr fold-list))
-	  (let ((display-string (nth 0 fold-item))
-		(items (regexp-opt (nth 1 fold-item) t)))
-	    (while (re-search-forward (if (eq type 'env)
-					  (concat (regexp-quote TeX-esc)
-						  "begin[ \t]*{" items "}")
-					(concat (regexp-quote TeX-esc)
-						items "\\b"))
-				      nil t)
-	      (let* ((item-start (match-beginning 0))
-		     (item-end (if (eq type 'env)
-				   (save-excursion
-				     (goto-char (match-end 0))
-				     (LaTeX-find-matching-end))
-				 (save-excursion
-				   (goto-char item-start)
-				   (TeX-find-macro-end)))))
-		(TeX-fold-make-overlay item-start item-end display-string)
-		;; Jump to end of macro/env to avoid nested overlays
-		;; as this will wreak havoc with display strings as
-		;; long as the overlays are not prioritized.
-		(goto-char item-end)))))))))
+  (when (or (and (eq type 'env)
+		 (or (eq major-mode 'latex-mode)
+		     (eq major-mode 'doctex-mode)))
+	    (eq type 'macro))
+    (save-excursion
+      (let (fold-list item-list regexp)
+	(dolist (item (if (eq type 'env)
+			  TeX-fold-env-spec-list
+			TeX-fold-macro-spec-list))
+	  (dolist (i (cadr item))
+	    (add-to-list 'fold-list (list i (car item)))
+	    (add-to-list 'item-list i)))
+	(setq regexp (if (eq type 'env)
+			 (concat (regexp-quote TeX-esc)
+				 "begin[ \t]*{" (regexp-opt item-list t) "}")
+		       (concat (regexp-quote TeX-esc)
+			       (regexp-opt item-list t) "\\b")))
+	;; Start from the bottom so that it is easier to prioritize
+	;; nested macros.
+	(end-of-buffer)
+	(while (re-search-backward regexp nil t)
+	  (let* ((display-string (cadr (assoc (match-string 1) fold-list)))
+		 (item-start (match-beginning 0))
+		 (item-end (if (eq type 'env)
+			       (save-excursion
+				 (goto-char (match-end 0))
+				 (LaTeX-find-matching-end))
+			     (save-excursion
+			       (goto-char item-start)
+			       (TeX-find-macro-end))))
+		 (ov (TeX-fold-make-overlay
+		      item-start item-end
+		      (if (integerp display-string)
+			  (or (TeX-fold-macro-nth-arg display-string item-start
+						      (when (eq type 'macro)
+							item-end))
+			      "[Error: No content found]")
+			display-string))))
+	    (TeX-fold-hide-item ov)))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
@@ -206,8 +251,130 @@ TYPE specifies the type of item and can be one of the symbols
 			       (LaTeX-find-matching-end))
 			   (save-excursion
 			     (goto-char item-start)
-			     (TeX-find-macro-end)))))
-	  (TeX-fold-make-overlay item-start item-end display-string))))))
+			     (TeX-find-macro-end))))
+	       (ov (TeX-fold-make-overlay
+		    item-start item-end
+		    (if (integerp display-string)
+			(or (TeX-fold-macro-nth-arg display-string item-start
+						    (when (eq type 'macro)
+						      item-end))
+			    "[Error: No content found]")
+		      display-string))))
+	  (TeX-fold-hide-item ov))))))
+
+
+;;; Utilities for folding
+
+(defun TeX-fold-make-overlay (ov-start ov-end display-string-spec)
+  "Make an overlay to cover the item and hide it.
+The overlay will reach from OV-START to OV-END and will display
+the string part of DISPLAY-STRING which has to be a string or a
+list where the first item is a string and the second a face or
+nil.  The end of the overlay and its display string may be
+altered to prevent overfull lines."
+  (let* ((display-string (if (listp display-string-spec)
+			     (car display-string-spec)
+			   display-string-spec))
+	 (face (when (listp display-string-spec)
+		 (cadr display-string-spec)))
+	 (overfull (and (not (featurep 'xemacs)) ; Linebreaks in glyphs don't
+						 ; work on XEmacs anyway.
+			(save-excursion
+			  (goto-char ov-end)
+			  (search-backward "\n" ov-start t))
+			(> (+ (- ov-start
+				 (save-excursion
+				   (goto-char ov-start)
+				   (line-beginning-position)))
+			      (length display-string)
+			      (- (save-excursion
+				   (goto-char ov-end)
+				   (line-end-position))
+				 ov-end))
+			   (current-fill-column))))
+	 (ov-end (if overfull
+		     (save-excursion
+		       (goto-char ov-end)
+		       (skip-chars-forward " \t")
+		       (point))
+		   ov-end))
+	 (display-string (concat display-string (when overfull "\n")))
+	 (priority (TeX-fold-prioritize ov-start ov-end))
+	 (ov (make-overlay ov-start ov-end (current-buffer) t nil)))
+    (overlay-put ov 'category 'TeX-fold)
+    (overlay-put ov 'priority priority)
+    (overlay-put ov 'evaporate t)
+    (overlay-put ov 'TeX-fold-face face)
+    (overlay-put ov 'TeX-fold-display-string display-string)
+    ov))
+
+(defun TeX-fold-macro-nth-arg (n &optional macro-start macro-end)
+  "Return a property list of the nth argument of a macro.
+The first item in the list is the string specified in the
+argument, the second item may be a face if the argument string
+was fontified.  In Emacs the string holds text properties as
+well, so the second item is always nil.  In XEmacs the string
+does not enclose any faces, so these are given in the second item
+of the resulting list."
+  (save-excursion
+    (let ((macro-boundaries (when (or (not macro-start) (not macro-end))
+			      (TeX-find-macro-boundaries)))
+	  content-start content-end)
+      (unless macro-start (setq macro-start (car macro-boundaries)))
+      (unless macro-end (setq macro-start (cadr macro-boundaries)))
+      (goto-char macro-start)
+      (if (condition-case nil
+	      (progn
+		(while (> n 0)
+		  (skip-chars-forward "^{" macro-end)
+		  (when (not (looking-at "{")) (error nil))
+		  (setq content-start (save-excursion
+					(skip-chars-forward "{ \t")
+					(point)))
+		  (forward-sexp)
+		  (setq content-end (save-excursion
+				      (skip-chars-backward "} \t")
+				      (point)))
+		  (setq n (1- n)))
+		t)
+	    (error nil))
+	  (list (buffer-substring content-start content-end)
+		(when (and (featurep 'xemacs)
+			   (extent-at content-start))
+		  ;; A glyph in XEmacs does not seem to be able to hold more
+		  ;; than one face, so we just use the first one we get.
+		  (car (extent-property (extent-at content-start) 'face))))
+	nil))))
+
+(defvar TeX-fold-priority-step 16
+  "Numerical difference of priorities between nested overlays.
+The step should be big enough to allow setting a priority for new
+overlays between two existing ones.")
+
+(defun TeX-fold-prioritize (start end)
+  "Calculate a priority for an overlay.
+The calculated priority is lower than the minimum of priorities
+of surrounding overlays and higher than the maximum of enclosed
+overlays."
+  (let (outer-priority inner-priority)
+    (dolist (ov (overlays-in start end))
+      (when (eq (overlay-get ov 'category) 'TeX-fold)
+	(let ((ov-priority (overlay-get ov 'priority)))
+	  (if (>= (overlay-start ov) start)
+	      (setq inner-priority (max ov-priority (or inner-priority
+							ov-priority)))
+	    (setq outer-priority (min ov-priority (or outer-priority
+						      ov-priority)))))))
+    (cond ((and inner-priority (not outer-priority))
+	   (+ inner-priority TeX-fold-priority-step))
+	  ((and (not inner-priority) outer-priority)
+	   (/ outer-priority 2))
+	  ((and inner-priority outer-priority)
+	   (/ (- outer-priority inner-priority) 2))
+	  (t TeX-fold-priority-step))))
+
+
+;;; Removal
 
 (defun TeX-fold-clearout-buffer ()
   "Permanently show all macros in the buffer"
@@ -228,64 +395,35 @@ TYPE specifies the type of item and can be one of the symbols
       (delete-overlay (car overlays)))
     (setq overlays (cdr overlays))))
 
-(defun TeX-fold-make-overlay (ov-start ov-end display-string)
-  "Make an overlay to cover the item and hide it.
-The overlay will reach from OV-START to OV-END and will display
-by DISPLAY-STRING.  The end of the overlay and its display string
-may be altered to prevent overfull lines."
-  (let* ((overfull (and (not (featurep 'xemacs)) ; Doesn't work on XEmacs
-					         ; anyway.
-			(save-excursion
-			  (goto-char ov-end)
-			  (search-backward "\n" ov-start t))
-			(> (+ (- ov-start
-				 (save-excursion
-				   (goto-char ov-start)
-				   (line-beginning-position)))
-			      (- (save-excursion
-				   (goto-char ov-end)
-				   (line-end-position))
-				 ov-end))
-			   (current-fill-column))))
-	 (ov-end (if overfull
-		     (save-excursion
-		       (goto-char ov-end)
-		       (skip-chars-forward " \t")
-		       (point))
-		   ov-end))
-	 (display-string (concat display-string (when overfull "\n")))
-	 (ov (make-overlay ov-start ov-end (current-buffer) t nil)))
-    ;; Give environments a higher priority so that their display
-    ;; string overrides those of possibly enclosed macros.
-    (overlay-put ov 'priority (if (eq type 'env) 2 1))
-    (TeX-fold-hide-item ov display-string)))
 
-(defun TeX-fold-hide-item (ov &optional display-string)
+;;; Toggling
+
+(defun TeX-fold-hide-item (ov)
   "Hide a single macro or environment.
-Put the display string DISPLAY-STRING and other respective
-properties onto overlay OV."
-  (let ((display-string (or display-string
-			    (overlay-get ov 'TeX-fold-display-string))))
-    (overlay-put ov 'category 'TeX-fold)
-    (overlay-put ov 'evaporate t)
-    (overlay-put ov 'TeX-fold-display-string display-string)
+That means, put respective properties onto overlay OV."
+  (let ((display-string (overlay-get ov 'TeX-fold-display-string)))
+    (overlay-put ov 'mouse-face 'highlight)
     (if (featurep 'xemacs)
-	(let ((glyph (make-glyph display-string)))
+	(let ((glyph (make-glyph display-string))
+	      (face (overlay-get ov 'TeX-fold-face)))
 	  (overlay-put ov 'invisible t)
-	  (set-glyph-property glyph 'face TeX-fold-display-string-face)
+	  (if face
+	      (set-glyph-property glyph 'face face)
+	    (set-glyph-property glyph 'face TeX-fold-folded-face))
 	  (set-extent-property ov 'end-glyph glyph))
-      (overlay-put ov 'face TeX-fold-display-string-face)
+      (overlay-put ov 'face TeX-fold-folded-face)
       (overlay-put ov 'display display-string))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.
 Remove the respective properties from the overlay OV."
-  (overlay-put ov 'face nil)
+  (overlay-put ov 'mouse-face nil)
   (if (featurep 'xemacs)
       (progn
 	(set-extent-property ov 'end-glyph nil)
 	(overlay-put ov 'invisible nil))
-    (overlay-put ov 'display nil)))
+    (overlay-put ov 'display nil)
+    (overlay-put ov 'face TeX-fold-unfolded-face)))
 
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
@@ -313,7 +451,8 @@ Remove the respective properties from the overlay OV."
 			     global-disable-point-adjustment)
 			;; See preview.el on how to make this configurable.
 			(memq this-command (list (key-binding [left])
-						 (key-binding [right]))))
+						 (key-binding [right])
+						 'mouse-set-point)))
 		;; Open new overlays.
 		(dolist (ol (nconc (when (and TeX-fold-unfold-around-mark
 					      (boundp 'mark-active)
@@ -340,6 +479,9 @@ Remove the respective properties from the overlay OV."
 	  (error (message "TeX-fold: %s" err))))
     (quit (setq quit-flag t))))
 
+
+;;; Misc
+
 ;; Copy and adaption of `cvs-partition' from pcvs-util.el in GNU Emacs
 ;; on 2004-07-05 to make latex-fold.el mainly self-contained.
 (defun TeX-fold-partition-list (p l)
@@ -351,6 +493,9 @@ the other elements.  The ordering among elements is maintained."
     (dolist (x l)
       (if (funcall p x) (push x car) (push x cdr)))
     (cons (nreverse car) (nreverse cdr))))
+
+
+;;; The mode
 
 (define-minor-mode TeX-fold-mode
   "Toggle TeX-fold-mode on or off.
