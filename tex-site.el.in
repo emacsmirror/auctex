@@ -55,7 +55,7 @@ Full documentation will be available after autoloading the function."
 (defvar TeX-lisp-directory "@auctexdir@"
   "*The directory where the AUCTeX lisp files are located.")
 
-(defcustom TeX-auto-global "@autodir@"
+(defcustom TeX-auto-global "@autodir_expanded@"
   "*Directory containing automatically generated information.
 Must end with a directory separator.
 
