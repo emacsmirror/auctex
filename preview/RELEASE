@@ -25,8 +25,8 @@ page that among others offers anonymous CVS access is located at
 <URL:http://sourceforge.net/projects/preview-latex>.
 
 
-For users of RedHat linux, a RPM is provided at the above site. The RPM
-requires a few packages:
+For users of RedHat linux, a RPM is provided at the above site
+primarily for RH 7.x. The RPM requires a few packages:
 
 * GhostScript 6.51 is included in RH 7.2, but if you use an earlier
   release it can be downloaded from the RH7.2 updates,
