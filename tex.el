@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.364 $"))
+	(rev "$Revision: 5.365 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-09 18:10:22 $"))
+    (let ((date "$Date: 2004-05-12 14:20:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2725,12 +2725,12 @@ be bound to `TeX-electric-macro'."
       (define-key TeX-mode-map "\\" 'TeX-electric-macro))
   (define-key TeX-mode-map "\e\t"   'TeX-complete-symbol) ;*** Emacs 19 way
 
-  (define-key TeX-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
-  (define-key TeX-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
-
   (define-key TeX-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
   (define-key TeX-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
   (define-key TeX-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
+
+  (define-key TeX-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
+  (define-key TeX-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
 
   ;; FIXME: Which key?  -- rs
   ;; (define-key TeX-mode-map "???"   'TeX-toggle-source-specials)
@@ -2815,10 +2815,8 @@ be bound to `TeX-electric-macro'."
 	["Debug Bad Boxes" TeX-toggle-debug-boxes
 	 :style toggle :selected TeX-debug-bad-boxes ]
 	["Recenter Output Buffer" TeX-recenter-output-buffer t]
-	["Comment Region" TeX-comment-region t]
-	["Uncomment Region" TeX-uncomment-region t]
-	;; ["Comment Paragraph" TeX-comment-paragraph t]
-	;; ["Uncomment" TeX-uncomment t]
+	["Comment or Uncomment Region" TeX-comment-or-uncomment-region t]
+	;; ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph t]
 	(list "Multifile"
 	      ["Switch to Master File" TeX-home-buffer t]
 	      ["Save Document" TeX-save-document t]
