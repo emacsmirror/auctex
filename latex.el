@@ -2399,7 +2399,7 @@ space does not end a sentence, so don't break a line there."
 	  (unless (and nosqueeze (not (eq justify 'full)))
 	    (canonically-space-region (or squeeze-after (point)) to)
 	    ;; Remove trailing whitespace.
-	    (goto-char (point-max))
+	    (goto-char (line-end-position))
 	    (delete-char (- (skip-chars-backward " \t")))))
 
 	;; This is the actual FILLING LOOP.
@@ -2509,9 +2509,13 @@ space does not end a sentence, so don't break a line there."
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
     (skip-chars-backward "^ \n")
+    ;; Prevent infinite loops: If we cannot find a place to break
+    ;; while searching backward, search forward again.
     (cond ((bolp)
 	   (skip-chars-forward "^ \n" (point-max)))
-	  ((TeX-looking-at-backward "^[ \t]+" (1- (line-beginning-position)))
+	  ((TeX-looking-at-backward
+	    (concat "^[ \t]+\\|^[ \t]*" comment-start "+[ \t]*")
+	    (1- (line-beginning-position)))
 	   (goto-char (match-end 0))
 	   (skip-chars-forward "^ \n" (point-max)))))
   (when LaTeX-fill-break-at-separators
@@ -2678,11 +2682,10 @@ space does not end a sentence, so don't break a line there."
 
 (defun LaTeX-fill-newline ()
   "Replace whitespace here with one newline and indent the line."
+  (skip-chars-backward " \t")
+  (newline)
   ;; COMPATIBILITY for XEmacs
-  (if (and (featurep 'xemacs) (not (fboundp 'char-in-category-p)))
-      (newline-and-indent)
-    (skip-chars-backward " \t")
-    (insert ?\n)
+  (unless (featurep 'xemacs)
     ;; Give newline the properties of the space(s) it replaces
     (set-text-properties (1- (point)) (point)
 			 (text-properties-at (point)))
@@ -2699,13 +2702,13 @@ space does not end a sentence, so don't break a line there."
       ;; an invisible newline.
       (if fill-nobreak-invisible
 	  (remove-text-properties (1- (point)) (point)
-				  '(invisible t))))
-    ;; Insert the fill prefix.
-    (and fill-prefix (not (equal fill-prefix ""))
-	 ;; Markers that were after the whitespace are now at point: insert
-	 ;; before them so they don't get stuck before the prefix.
-	 (insert-before-markers-and-inherit fill-prefix))
-    (indent-according-to-mode)))
+				  '(invisible t)))))
+  ;; Insert the fill prefix.
+  (and fill-prefix (not (equal fill-prefix ""))
+       ;; Markers that were after the whitespace are now at point: insert
+       ;; before them so they don't get stuck before the prefix.
+       (insert-before-markers-and-inherit fill-prefix))
+  (indent-according-to-mode))
 
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like \\[fill-paragraph], but handle LaTeX comments.
