@@ -40,8 +40,10 @@ Usually a question mark")
   "The symbol used for an open preview.
 Usually a magnifying glass.")
 
-(defcustom preview-transparent-color '(default :background)
-  "Color to appear transparent in previews."
+(defcustom preview-transparent-color '(highlight :background)
+  "Color to appear transparent in previews.
+Set this to something unusual when using `preview-transparent-border',
+to the default background in most other cases."
   :type '(radio (const :tag "None" nil)
 		 (const :tag "Autodetect" t)
 		 (color :tag "By name" :value "white")
@@ -53,14 +55,27 @@ Usually a magnifying glass.")
 			(const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
+(defcustom preview-transparent-border t
+  "Whether to add a transparent border to previews.
+Setting this to a non-nil value will add a border of
+`preview-transparent-color' around images, and will turn
+the heuristic-mask setting of images to default to 't since
+then the borders are correctly detected even in case of
+palette operations.  If the transparent color is something
+not present otherwise in the image, the cursor display
+will affect just this border."
+  :group 'preview-appearance
+  :type '(choice (const :value nil :tag "No border")
+		(const :value t :tag "Border")))
+
 (defun preview-get-heuristic-mask ()
   "Get heuristic-mask to use for previews.
 Consults `preview-transparent-color'."
   (cond ((stringp preview-transparent-color)
 	 (color-values preview-transparent-color))
 	((or (not (consp preview-transparent-color))
-	     (integerp (car preview-transparent-color))
-	     preview-transparent-color))
+	     (integerp (car preview-transparent-color)))
+	 preview-transparent-color)
 	(t (color-values (preview-inherited-face-attribute
 			  (nth 0 preview-transparent-color)
 			  (nth 1 preview-transparent-color)
@@ -72,7 +87,7 @@ Consults `preview-transparent-color'."
 	 :file ,file
 	 :type ,type
 	 :ascent ,ascent
-	 :heuristic-mask (preview-get-heuristic-mask)))
+	 :heuristic-mask (or preview-transparent-border (preview-get-heuristic-mask))))
 
 (defun preview-add-urgentization (fun ov buff)
   "Cause FUN to be called with OV and BUFF when redisplayed."
@@ -149,7 +164,7 @@ specifies."
 			      (* scale (- (aref bb 3) (aref bb 1))))
 		  :bounding-box (preview-int-bb bb)
 		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask (preview-get-heuristic-mask))))
+		  :heuristic-mask (or preview-transparent-border (preview-get-heuristic-mask)))))
 
 (defvar preview-overlay nil)
 
@@ -310,12 +325,19 @@ Returns NIL for black-on-white."
       ((bg (color-values (preview-inherited-face-attribute
 			  'preview-reference-face :background 'default)))
        (fg (color-values (preview-inherited-face-attribute
-			  'preview-reference-face :foreground 'default))))
+			  'preview-reference-face :foreground 'default)))
+       (mask (preview-get-heuristic-mask)))
     (unless (and (equal '(65535 65535 65535) bg)
-		 (equal '(0 0 0) fg))
+		 (equal '(0 0 0) fg)
+		 (null preview-transparent-border))
       (append
        (mapcar #'preview-gs-color-value bg)
        '("setrgbcolor" "clippath" "fill")
+       (when (and preview-transparent-border
+		  (consp mask) (integerp (car mask)))
+	 (append
+	  (mapcar #'preview-gs-color-value mask)
+	  '("setrgbcolor" "clippath" "stroke")))
        (mapcar #'preview-gs-color-value fg)
        '("setrgbcolor")))))
 
