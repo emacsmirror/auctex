@@ -1,5 +1,11 @@
 2002-11-28  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.5
+	
+	* latex/preview.dtx (subsection{Debugging options}): Typos.
+
+	* Makefile.in (use-hint): Add XEmacs version hint.
+
 	* prv-xemacs.el (preview-defmacro): define compatibility macros
 	only at compile time.
 	(preview-mode-setup): correct check for icon in toolbar.
