@@ -1,3 +1,14 @@
+2002-02-19  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* Makefile.in:
+	Changed target 'doc' to 'docs'. 'doc' matched the (unchanged)
+	directory 'doc'.
+
+	* preview-latex.el: Startup file for site-start.d
+
+	* preview-latex.spec:
+	Added site-start.d support and prauctex.cfg config file
+
 2002-02-19  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx: Oops, prauctex.cfg inadvertantly overrode a
