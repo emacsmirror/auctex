@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.191 2003-11-06 20:47:05 jalar Exp $
+;; $Id: preview.el,v 1.192 2003-11-07 15:31:28 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2271,10 +2271,15 @@ specified by BUFF."
   (let* ((file preview-gs-file)
 	 tempdir
 	 (colors (mapconcat #'identity (preview-dvipng-get-colors) " "))
+	 (resolution (format " -D%d " ; (* 
+			     (* 3 ;(preview-hook-enquiry preview-scale-function))
+				(/ (* 25.4 (display-pixel-height))
+				   (display-mm-height)))))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
 			(concat (TeX-command-expand preview-dvipng-command
-						       (car file)) " " colors)
+						    (car file)) 
+				" " colors resolution)
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPNG"))
     (setq TeX-active-tempdir tempdir)
@@ -2589,7 +2594,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.191 $"))
+	(rev "$Revision: 1.192 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2600,7 +2605,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-11-06 20:47:05 $"))
+    (let ((date "$Date: 2003-11-07 15:31:28 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
