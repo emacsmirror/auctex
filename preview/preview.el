@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.26 2001-10-07 23:05:53 dakas Exp $
+;; $Id: preview.el,v 1.27 2001-10-08 18:34:39 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -45,7 +45,8 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'tex-buf))
+  (require 'tex-buf)
+  (defvar error))
 
 (eval-and-compile
   (defvar preview-compatibility-macros nil
@@ -114,6 +115,10 @@ that is."
     (when hook
       (apply (car hook) (append (cdr hook) rest)))))
 	 	   
+
+(defvar TeX-active-tempdir nil
+  "CONS of a directory name and a reference count.")
+(make-variable-buffer-local 'TeX-active-tempdir)
 
 ;; (defun preview-extract-bb (filename)
 ;;   "Extract EPS bounding box vector from FILENAME."
@@ -361,17 +366,17 @@ is located."
   "The symbol used for previews to be generated.
 Usually a question mark")
 
-(defun preview-gs-place (ov tempdir snippet)
+(defun preview-gs-place (ov snippet)
   "Generate an image placeholder rendered over by GhostScript.
-This enters OV into all proper queues in order to make it
-render this image for real later, and returns a substitute
-image to be placed as a first measure.  TEMPDIR and SNIPPET
-are used for making the name of the file to be generated."
+This enters OV into all proper queues in order to make it render
+this image for real later, and returns a substitute image
+to be placed as a first measure.  `TeX-active-tempdir' and
+SNIPPET are used for making the name of the file to be generated."
   (let ((thisimage (cons 'image (cdr preview-nonready-icon)))
 	(filenames (overlay-get ov 'filenames)))
     (setcdr filenames
 	    (list (preview-make-filename
-		   (format "prevnew.%03d" snippet) tempdir)))
+		   (format "prevnew.%03d" snippet))))
     (overlay-put ov 'queued
 		 (vector
 		  (preview-extract-bb (car (car filenames)))
@@ -737,32 +742,32 @@ mouse-3 kills preview")
        (if (bolp) "\n" "")))))
 
 
-(defun preview-eps-place (ov tempdir snippet)
+(defun preview-eps-place (ov snippet)
   "Generate an image via direct Emacs EPS rendering.
 Since OV already carries all necessary information,
- the arguments TEMPDIR and SNIPPET passed via a hook
-mechanism are ignored."
+the argument SNIPPET passed via a hook mechanism is ignored."
   (preview-ps-image (car (nth 0 (overlay-get ov 'filenames))) preview-scale))
 
-(defun preview-active-string (ov tempdir snippet)
+(defun preview-active-string (ov snippet)
   "Generate before-string for active image overlay OV.
 This calls the `place' hook indicated by `preview-image-type'
-in `preview-image-creators' with OV, TEMPDIR and SNIPPET
+in `preview-image-creators' with OV and SNIPPET
 and expects an image property as result."
   (propertize "x" 'display
-	      (preview-call-hook 'place ov tempdir snippet)
+	      (preview-call-hook 'place ov snippet)
 	      'local-map (overlay-get ov 'preview-map)
 	      'help-echo "mouse-2 opens text
 mouse-3 kills preview") )
 
-(defun preview-make-filename (file tempdir)
-  "Generate a preview filename from FILE and TEMPDIR.
+(defun preview-make-filename (file)
+  "Generate a preview filename from FILE and `TeX-active-tempdir'.
 Those consist of a CONS-cell with absolute file name as CAR
-and TEMPDIR as CDR.  TEMPDIR is a CONS-cell with the directory
-name as CAR and the reference count as CDR."
-
-  (setcdr tempdir (1+ (cdr tempdir)))
-  (cons (expand-file-name file (car tempdir)) tempdir))
+and `TeX-active-tempdir' as CDR.  `TeX-active-tempdir' is a
+CONS-cell with the directory name as CAR and the reference count
+as CDR."
+  (setcdr TeX-active-tempdir (1+ (cdr TeX-active-tempdir)))
+  (cons (expand-file-name file (car TeX-active-tempdir))
+	TeX-active-tempdir))
 
 (defun preview-delete-file (file)
   "Delete a preview FILE.
@@ -778,10 +783,10 @@ it gets deleted as well."
 	  (setcdr file nil)
 	  (delete-directory (car tempdir)))))))
 
-(defun preview-place-preview (tempdir snippet source start end)
+(defun preview-place-preview (snippet source start end)
   "Generate and place an overlay preview image.
-This generates the EPS filename used in TEMPDIR (see
-`preview-make-filename' for its definition) for preview
+This generates the EPS filename used in `TeX-active-tempdir'
+(see `preview-make-filename' for its definition) for preview
 snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
@@ -790,9 +795,8 @@ region between START and END."
     (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map (preview-make-map ov))
     (overlay-put ov 'filenames (list (preview-make-filename
-				      (format "preview.%03d" snippet)
-				      tempdir)))
-    (let ((active (preview-active-string ov tempdir snippet)))
+				      (format "preview.%03d" snippet))))
+    (let ((active (preview-active-string ov snippet)))
       (overlay-put ov 'strings
 		   (cons active
 			 (preview-inactive-string ov)))
@@ -872,10 +876,6 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
     (error (message "Deletion of %s failed: %s" dir
 		    (error-message-string err)))))
 
-
-(defvar TeX-active-tempdir)
-(make-variable-buffer-local 'TeX-active-tempdir)
-
 (defun preview-create-subdirectory ()
   "Create a temporary subdir for the current TeX process.
 If necessary, generates a fitting top
@@ -932,62 +932,58 @@ See `TeX-parse-TeX' for documentation of REPARSE."
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
 document style for LaTeX."
-  (let ((tempdir TeX-active-tempdir))
-    (with-current-buffer (TeX-active-buffer)
-      (TeX-parse-reset)
-      (preview-call-hook 'open)
-      (unwind-protect
-	  (progn
-	    (setq preview-snippet 0)
-	    (setq preview-snippet-start nil)
-	    (goto-char TeX-error-point)
-	    (while
-		(re-search-forward
-		 (concat "\\("
-			 "^! Package Preview Error:[^.]*\\.\\|"
-			 "(\\|"
-			 ")\\|"
-			 "!offset([---0-9]*)\\|"
-			 "!name([^)]*)"
-			 "\\)") nil t)
-	      (let ((string (TeX-match-buffer 1)))
-		(cond
-		 (;; Preview error
-		  (string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
-		  (preview-analyze-error
-		   (string-to-int (match-string 1 string))
-		   (string= (match-string 2 string) "started")
-		   tempdir))
-		 ;; New file -- Push on stack
-		 ((string= string "(")
-		  (re-search-forward "\\([^()\n \t]*\\)")
-		  (setq TeX-error-file
-			(cons (TeX-match-buffer 1) TeX-error-file))
-		  (setq TeX-error-offset (cons 0 TeX-error-offset)))
-		 
-		 ;; End of file -- Pop from stack
-		 ((string= string ")")
-		  (setq TeX-error-file (cdr TeX-error-file))
-		  (setq TeX-error-offset (cdr TeX-error-offset)))
-		 
-		 ;; Hook to change line numbers
-		 ((string-match "!offset(\\([---0-9]*\\))" string)
-		  (rplaca TeX-error-offset
-			  (string-to-int (match-string 1 string))))
-		 
-		 ;; Hook to change file name
-		 ((string-match "!name(\\([^)]*\\))" string)
-		  (rplaca TeX-error-file (match-string 1 string)))
-		 (t (error "Should have matched %s" string)))))
-	    (if (zerop preview-snippet)
-		(preview-clean-subdir (car tempdir))) )
-	(preview-call-hook 'close)))))
+  (TeX-parse-reset)
+  (preview-call-hook 'open)
+  (unwind-protect
+      (progn
+	(setq preview-snippet 0)
+	(setq preview-snippet-start nil)
+	(goto-char TeX-error-point)
+	(while
+	    (re-search-forward
+	     (concat "\\("
+		     "^! Package Preview Error:[^.]*\\.\\|"
+		     "(\\|"
+		     ")\\|"
+		     "!offset([---0-9]*)\\|"
+		     "!name([^)]*)"
+		     "\\)") nil t)
+	  (let ((string (TeX-match-buffer 1)))
+	    (cond
+	     (;; Preview error
+	      (string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
+	      (preview-analyze-error
+	       (string-to-int (match-string 1 string))
+	       (string= (match-string 2 string) "started")))
+	     ;; New file -- Push on stack
+	     ((string= string "(")
+	      (re-search-forward "\\([^()\n \t]*\\)")
+	      (setq TeX-error-file
+		    (cons (TeX-match-buffer 1) TeX-error-file))
+	      (setq TeX-error-offset (cons 0 TeX-error-offset)))
+	     
+	     ;; End of file -- Pop from stack
+	     ((string= string ")")
+	      (setq TeX-error-file (cdr TeX-error-file))
+	      (setq TeX-error-offset (cdr TeX-error-offset)))
+	     
+	     ;; Hook to change line numbers
+	     ((string-match "!offset(\\([---0-9]*\\))" string)
+	      (rplaca TeX-error-offset
+		      (string-to-int (match-string 1 string))))
+	     
+	     ;; Hook to change file name
+	     ((string-match "!name(\\([^)]*\\))" string)
+	      (rplaca TeX-error-file (match-string 1 string))))))
+	(if (zerop preview-snippet)
+	    (preview-clean-subdir (car TeX-active-tempdir))) )
+    (preview-call-hook 'close)))
 
-(defun preview-analyze-error (snippet startflag tempdir)
+(defun preview-analyze-error (snippet startflag)
   "Analyze a preview diagnostic for snippet SNIPPET.
 The diagnostic is for the start of the snippet if STARTFLAG
 is set, and an overlay will be generated for the corresponding
-file dvips put into the directory indicated by TEMPDIR."
+file dvips put into the directory indicated by `TeX-active-tempdir'."
   
   (let* (;; We need the error message to show the user.
 	 op                            ;; temporary variable
@@ -995,10 +991,10 @@ file dvips put into the directory indicated by TEMPDIR."
 		  (setq op (point))
 		  (end-of-line)
 		  (buffer-substring op (point))))
-
+	 
 	 ;; And the context for the help window.
 	 (context-start (point))
-
+	 
 	 ;; And the line number to position the cursor.
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
 ;;; to be favorable.  Will XEmacs like this kind of regexp?
@@ -1037,10 +1033,10 @@ file dvips put into the directory indicated by TEMPDIR."
 	 ;; We may use these in another buffer.
 	 (offset (car TeX-error-offset) )
 	 (file (car TeX-error-file)))
-  
+    
     ;; Remember where we was.
     (setq TeX-error-point (point))
-
+    
     ;; Find the error.
     (if (null file)
 	(error "Error occured after last TeX file closed"))
@@ -1068,21 +1064,20 @@ file dvips put into the directory indicated by TEMPDIR."
 	    (setq preview-snippet-start next-point)
 	  (if preview-snippet-start
 	      (progn
-		(preview-place-preview tempdir
-				       snippet
+		(preview-place-preview snippet
 				       buffer
 				       preview-snippet-start
 				       next-point)
 		(setq preview-snippet-start nil))
 	    (message "Unexpected end of Preview snippet %d" snippet)))))))
 
-(defun preview-get-geometry ()
+(defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
 Those are put in local variables `preview-scale' and
 `preview-resolution'.  Calculation is done in source buffer
-specified by variable `TeX-command-buffer'."
+specified by BUFF."
   (let (scale res)
-    (with-current-buffer TeX-command-buffer
+    (with-current-buffer buff
       (setq scale (funcall preview-scale-function)
 	    res (cons (/ (* 25.4 (display-pixel-width))
 			 (display-mm-width))
@@ -1097,14 +1092,16 @@ See `TeX-sentinel-function' and `set-process-sentinel'
 for definition of PROCESS and NAME."
   (if process (TeX-format-mode-line process))
   (if (eq (process-status process) 'exit)
-      (with-current-buffer TeX-command-buffer
-	(preview-parse-messages))))
+      (preview-parse-messages)))
   
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
-  (let ((process (TeX-run-format "Preview-LaTeX" command file)))
-    (preview-get-geometry)
+  (let ((tempdir TeX-active-tempdir)
+	(commandbuff (current-buffer))
+	(process (TeX-run-format "Preview-LaTeX" command file)))
+    (preview-get-geometry commandbuff)
+    (setq TeX-active-tempdir tempdir)
     (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
     (setq TeX-parse-function 'preview-parse-TeX)
     (if TeX-process-asynchronous
@@ -1113,7 +1110,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.26 $"))
+	(rev "$Revision: 1.27 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
