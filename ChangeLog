@@ -1,3 +1,11 @@
+2005-03-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-title-faces): Use `font-size'
+	instead of `face-height' to determine the font size because the
+	latter (as the sum of the face's ascent and descent) returns
+	inappropriate values.  Suggested by Steven E. Harris
+	<seh@panix.com>.
+
 2005-03-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-comment-prefix): New function.
