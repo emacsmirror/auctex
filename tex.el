@@ -207,7 +207,7 @@ The fifth element is obsolete and ignored."
 (defcustom TeX-command-output-list
   '(("\\`pdf[a-z]*tex" "pdf")
 ; Add the following line if you want to use htlatex (tex4ht)
-    ("\\`htlatex" ("html"))
+;    ("\\`htlatex" ("html"))
     ("." "dvi"))
   "List of regexps and file extensions.
 

@@ -1,3 +1,9 @@
+2003-02-08  pvoostrum  <pvoostrum@nono.cs.uu.nl>
+
+	* tex.el: Added missing semicolon in TeX-command-output-list.
+
+	* tex.el: Changed defcustom to defvar.
+
 2003-02-08  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* tex.el (TeX-output-extension, TeX-view-extension): Changed
