@@ -128,7 +128,7 @@ specifies."
 			      (* scale (- (aref bb 3) (aref bb 1))))
 		  :bounding-box (preview-int-bb bb)
 		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask '(65535 65535 65535)
+		  :heuristic-mask t
 		  )
     ))
 
