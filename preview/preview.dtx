@@ -1,4 +1,4 @@
-%\CheckSum{386}
+%\CheckSum{392}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
 %\maketitle
@@ -259,6 +259,15 @@
 %    \begin{macrocode}
 %<*active>
 %    \end{macrocode}
+%\begin{macro}{\pr@snippet}
+%  \cmd{\pr@snippet} is the current snippet number.  We need a
+%  separate counter to \cmd{\c@page} since several other commands
+%  might fiddle with the page number.
+%    \begin{macrocode}
+\newcount\pr@snippet
+\global\pr@snippet=1
+%    \end{macrocode}
+%\end{macro}
 %\begin{macro}{\pr@protect@ship}
 %  Let's begin with the above mentioned \cmd{\pr@protect@ship}.  This
 %  gets three arguments.  The first is what to do at the beginning of
@@ -317,9 +326,10 @@
    {\let\protect\noexpand
    \voffset=-\ht\pr@box
    \hoffset=\z@
+   \c@page=\pr@snippet
    \shipout\box\pr@box}%
    \pr@ship@end
-   \global\advance\c@page\@ne
+   \global\advance\pr@snippet\@ne
    \pr@cleanup
 }
 %    \end{macrocode}
@@ -570,7 +580,7 @@
 %<auctex>\ifPreview
 %<auctex>\preview@delay{\nonstopmode}
 %<auctex>\def\pr@msg#1{\PackageError{Preview}%
-%<auctex>   {Snippet \number\c@page\space#1}%
+%<auctex>   {Snippet \number\pr@snippet\space#1}%
 %<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
 %<auctex>    Just hit Return and be gone.}}
 %<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
