@@ -1,5 +1,10 @@
 2004-08-11  David Kastrup  <dak@gnu.org>
 
+	* auctex.spec (Version): Change version, web sites, some build
+	stuff (this is not yet finished).
+
+	* auc-old.el: remove.
+
 	* doc/Makefile.in (TEXIFILES): refer to auctex.texi instead of
 	auc-tex.texi.  Change all dependent stuff, too.
 

@@ -1,12 +1,12 @@
 Summary: 	Enhanced LaTeX mode for GNU Emacs
 Name: 		auctex
-Version: 	11.14
-Release: 	1
+Version: 	11.50
+Release: 	0
 License: 	GPL
 Group: 		Applications/Editors
-URL: 		http://www.nongnu.org/auctex/
-Source0:        http://savannah.nongnu.org/download/auctex/stable.pkg/%{version}/%{name}-%{version}.tar.gz
-Requires: 	emacs >= 20
+URL: 		http://www.gnu.org/software/auctex/
+Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{version}/%{name}-%{version}.tar.gz
+Requires: 	emacs >= 21
 #BuildRequires: 	emacs-X11
 BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
@@ -15,22 +15,12 @@ BuildRoot: 	%{_tmppath}/%{name}-root
 AUC TeX is a comprehensive, customizable, integrated environment for
 writing, editing and processing input files for LaTeX using GNU Emacs.
 
-This .rpm enables AUC TeX system-wide.  
+This .rpm enables AUCTeX system-wide.  
 If you do not want this, install/upgrade with 'rpm --nopre ...' 
 (the activation is done in the preinstall script).
 
 %prep
 %setup -q
-cat >> tex-site.el << EOF
-;; Correction: RedHat adjustments
-;;
-;; Variable from tex.el, with a default more fitting for RedHat
-(defcustom TeX-macro-global '("/usr/share/texmf/tex/")
-  "Directories containing the sites TeX macro files and style files.
-The directory names *must* end with a slash."
-  :group 'TeX-file
-  :type '(repeat (directory :format "%v")))
-EOF
 
 %build
 make
@@ -41,11 +31,9 @@ make contrib
 rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 %makeinstall install-contrib install-info
-sed -e "s#@AUCDIR#%{_datadir}/emacs/site-lisp/auctex/#" tex-site.el \
-  > %{buildroot}%{_datadir}/emacs/site-lisp/tex-site.el
 
 %pre
-echo "; Autoactivation of AUC TeX" > \
+echo "; Autoactivation of AUCTeX" > \
   %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
 echo "; Created for %{name}-%{version}-%{release}.noarch.rpm" >> \
   %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
