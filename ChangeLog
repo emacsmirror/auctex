@@ -1,3 +1,9 @@
+2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Mention experimental tool bar support.
+
+	* Makefile.in (tar-ball): Include tex-bar images.
+
 2004-10-25  David Kastrup  <dak@gnu.org>
 
 	Toolbar patches by Reiner Steib

@@ -211,8 +211,10 @@ tar-ball:
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
 	mkdir auctex-$(TAG)
 	mkdir auctex-$(TAG)/style
+	mkdir auctex-$(TAG)/images
 	mkdir auctex-$(TAG)/doc
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
+	cp -r images auctex-$(TAG)
 	cp $(STYLESRC) $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex ../auctex-$(TAG)/doc )

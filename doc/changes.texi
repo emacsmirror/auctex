@@ -10,6 +10,14 @@
 @itemize @bullet
 
 @item
+There is an experimental tool bar support now.  It is not activated by
+default.  If you want to use it, add
+@lisp
+(add-hook 'LaTeX-mode-hook 'latex-install-toolbar)
+@end lisp
+your init file.
+
+@item
 The documentation now contains a new chapter ``Quick Start''.  It
 explains the main features and how to use them, and should be enough for
 a new user to start using @AUCTeX{}.
