@@ -1,3 +1,24 @@
+2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el: copyright extended.  Basically overhaul of
+	persistent data, leads to:
+	(preview-disable): clear timestamp.
+	(preview-delete): Don't fiddle with ovr after it is already
+	deleted.
+	(preview-clearout): additional argument timestamp
+	(preview-kill-buffer-cleanup): New function for killing buffers:
+	properly time-stamped previews will not get their files deleted.
+	(kill-buffer-hook): use it
+	(before-revert-hook): use it
+	(desktop-buffer-preview-misc-data): changed dissect call, work
+	only if buffer unmodified.
+	(preview-dissect): work with timestamp, don't destroy preview.
+	(preview-buffer-restore): new function, works from saved data.
+	(desktop-buffer-preview): use it.
+	(preview-cleanout-tempfiles): Do things differently.
+	(LaTeX-preview-setup): Call preview-buffer-restore if we
+	accidently got here before setting up the desktop hooks.
+
 2002-03-04  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/preview-latex.texi (Package options): doc changes, psfixbb
