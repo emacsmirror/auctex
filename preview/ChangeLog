@@ -1,5 +1,15 @@
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-prefer-TeX-bb): Doc cosmetic.
+	(preview-fast-conversion): Now defaults to on.
+	(preview-fast-dvips-command): remove -tletter option, we do this
+	better now.
+	(preview-LaTeX-command): Pass new dvips option to preview.
+
+	* preview.dtx (section{Package options}) 
+	(section{The Implementation}): Add dvips option for overriding
+	page dimensions/landscape and such stuff.
+
 	* preview.el (preview-TeX-bb): comment sanitized.
 	(preview-gs-init-string, preview-ps-file, preview-gs-dsc): new
 	variables.
