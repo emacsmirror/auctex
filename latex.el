@@ -1510,7 +1510,7 @@ If the flag is set, only complete with local files."
   (let ((file (if TeX-check-path
 		  (completing-read
 		   (TeX-argument-prompt optionel prompt "File")
-		   (TeX-delete-dups
+		   (TeX-delete-dups-by-car
 		    (append (mapcar 'list
 				    (TeX-search-files '("./")
 						      TeX-file-extensions
