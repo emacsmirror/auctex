@@ -140,9 +140,9 @@ the printer has no corresponding command."
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
-    ("ConTeXt" "texexec --once --texutil %(execmode)%t"
+    ("ConTeXt" "texexec --once --texutil %(execopts)%t"
      TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
-    ("ConTeXt Full" "texexec %(execmode)%t"
+    ("ConTeXt Full" "texexec %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
     ;; --purge %s does not work on unix systems with current texutil
@@ -477,10 +477,21 @@ string."
 		 (if TeX-interactive-mode
 		     ""
 		   "\\nonstopmode")))
-    ("%(execmode)" (lambda ()
-		     (if TeX-interactive-mode
-			 ""
-		       "--nonstop ")))
+    ("%(execopts)" (lambda ()
+		     (concat
+		      (and TeX-PDF-mode "--pdf ")
+		      (unless (eq ConTeXt-current-interface "en")
+			(format "--interface=%s " ConTeXt-current-interface))
+		      (unless TeX-interactive-mode "--nonstop ")
+		      (if TeX-source-specials-mode
+			  (format
+			   "--passon=\"%s\" "
+			   (concat
+			    TeX-source-specials-tex-flags
+			    (unless TeX-interactive-mode
+			      " -interaction=nonstopmode")))
+			(unless TeX-interactive-mode
+			  "--passon=\"-interaction=nonstopmode\" ")))))
     ("%S" TeX-source-specials-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
@@ -613,7 +624,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.426 $"))
+	(rev "$Revision: 5.427 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -628,7 +639,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-13 02:56:32 $"))
+    (let ((date "$Date: 2004-08-14 17:20:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,11 @@
+2004-08-14  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-command-list): rename `%(execmode)' to `%(execopts)'
+	since it has gotten quite fatter.
+	(TeX-expand-list): Implement `TeX-PDF-mode',
+	`TeX-interactive-mode', `TeX-source-specials-mode' for ConTeXt and
+	pass on `ConTeXt-current-interface'.
+
 2004-08-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-mik.el: Change `TeX-source-specials-viewer-flags' to
