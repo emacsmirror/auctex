@@ -22,8 +22,8 @@ and the above tool sets are easy enough to acquire to make manual
 configuration unnecessary.
 
 @item
-Install GNU Emacs from @uref{http://savannah.gnu.org/projects/emacs/} or
-XEmacs from @uref{http://www.xemacs.org}.
+Install GNU Emacs from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}
+or XEmacs from @uref{http://www.xemacs.org}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
