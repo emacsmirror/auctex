@@ -195,24 +195,26 @@ toggles it."
 	     'active
 	   'inactive))
 	(strings (overlay-get ov 'strings)))
-    (overlay-put ov 'preview-state preview-state)
-    (if (eq preview-state 'active)
-	(progn
-	  (overlay-put ov 'category 'preview-overlay)
-	  (dolist (prop '(display local-map mouse-face help-echo))
-	    (overlay-put ov prop
-			 (get-text-property 0 prop (car strings))))
-	  (overlay-put ov 'before-string nil)
-	  (overlay-put ov 'face nil)
-	  (with-current-buffer (overlay-buffer ov)
-	    (add-hook 'pre-command-hook #'preview-mark-point nil t)
-	    (add-hook 'post-command-hook #'preview-move-point nil t)))
-      (dolist (prop '(display local-map mouse-face help-echo))
-	(overlay-put ov prop nil))
-      (overlay-put ov 'face 'preview-face)
-      (overlay-put ov 'before-string (cdr strings)))
-    (if old-urgent
-	(apply 'preview-add-urgentization old-urgent))))
+    (unless (eq (overlay-get ov 'preview-state) 'disabled)
+      (overlay-put ov 'preview-state preview-state)
+      (if (eq preview-state 'active)
+	  (progn
+	    (overlay-put ov 'category 'preview-overlay)
+	    (overlay-put ov 'invisible t)
+	    (dolist (prop '(display local-map mouse-face help-echo))
+	      (overlay-put ov prop
+			   (get-text-property 0 prop (car strings))))
+	    (overlay-put ov 'before-string nil)
+	    (overlay-put ov 'face nil)
+	    (with-current-buffer (overlay-buffer ov)
+	      (add-hook 'pre-command-hook #'preview-mark-point nil t)
+	      (add-hook 'post-command-hook #'preview-move-point nil t)))
+	(dolist (prop '(display local-map mouse-face help-echo invisible))
+	  (overlay-put ov prop nil))
+	(overlay-put ov 'face 'preview-face)
+	(overlay-put ov 'before-string (cdr strings)))
+      (if old-urgent
+	  (apply 'preview-add-urgentization old-urgent)))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
@@ -223,7 +225,9 @@ toggles it."
 
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
-  (when (eq (marker-buffer preview-marker) (current-buffer))
+  (when (and (eq (marker-buffer preview-marker) (current-buffer))
+	     (not disable-point-adjustment)
+	     (not global-disable-point-adjustment))
     (let* ((pt (point))
 	   (backward (< pt (marker-position preview-marker))))
       (while (catch 'loop
