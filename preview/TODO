@@ -1,0 +1,22 @@
+-*- text -*-
+Comment preview.el
+
+Fix temporary subdirectory handling of preview.el
+
+Modularize AucTeX's error message parsing
+so that we do not need to steal code from AucTeX, but can use
+AucTeX's routines directly.  Submit to AucTeX development.
+
+Add customization
+
+x-symbol compatibility
+ Error messages from TeX and buffer contents from the file do not agree
+ when x-symbol is active.  That renders the textmath option of the
+ preview package mostly useless.  This should be fixed for AucTeX as well.
+
+Fix GhostScript rendering of Emacs
+ The current gs.el interface does not work well when multiple EPS
+ images appear.  A new process is started for every single image, but
+ the processes have to wait for one another.  See also code in
+ xdisp.c from the Emacs distribution.
+

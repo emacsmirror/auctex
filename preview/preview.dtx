@@ -1,0 +1,546 @@
+%\author{David Kastrup\thanks{\texttt{dakas@sourceforge.net}}}
+%\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
+%\maketitle
+%\section{Introduction}
+%The main purpose of this package is the extraction of certain
+%environments (most notably displayed formulas) for use in different
+%contexts.  While the erstwhile application has been the embedding of
+%those preview fragments into Emacs source buffers under the Auc\TeX\
+%editing environment, other applications are easily imaginable.
+%
+%In particular it should be noted that producing EPS files with
+%Dvips and its derivatives using the \texttt{-E} option is
+%not currently well-supported by \LaTeX.  People make do by fiddling
+%around with |\thispagestyle{empty}| and hoping for the best (namely,
+%that the specified contents will indeed fit on single pages), and
+%then trying to guess the baseline of the resulting code and stuff,
+%but this is at best dissatisfactory.  The preview package provides an
+%easy way to ensure that exactly one page per request gets shipped,
+%with a well-defined baseline and no page decorations.  Thus you can
+%safely use
+%\begin{quote}
+%|dvips -E -i|
+%\end{quote}
+%and get a single EPS file with shrink-wrapped bounding box for every
+%generated image of a LaTeX run.  The possibility for generating a
+%whole set of graphics with a single run of \LaTeX\ and Dvips
+%increases both speed and robustness of applications.  It is to be
+%hoped that applications like \LaTeX HTML will be able to make use of
+%this package in future.  For this reason, once it stabilizes, it will
+%be submitted to CTAN.
+%
+%\section{Package options}
+%The package is included with the customary
+%\begin{quote}
+%\cmd\usepackage\oarg{options}|{preview}|
+%\end{quote}
+%You should usually load this package as the last one, since it
+%redefines several things that other packages may also provide.
+%
+%The following options are available:
+%\begin{description}
+%\item[|active|] is the most essential option.  If this option is not
+%specified, the |preview| package will be inactive and the document
+%will be typeset as if the |preview| package were not loaded, except
+%that all declarations and environments defined by the package are
+%still legal but have no effect.  This allows defining previewing
+%characteristics in your document, and only activating them by calling
+%\LaTeX\ as
+%\begin{quote}
+%|latex '\PassOptionsToPackage{active}{preview} \input|\marg{filename}|'|
+%\end{quote}
+%\item[|displaymath|] will make all displayed math environments subject to
+%preview processing.  This will typically be the most desired option.
+%\item[|floats|] will make all float objects subject to preview
+%processing.  If you want to be more selective about what floats to
+%pass through to a preview, you should instead use the
+%\cmd{\PreviewSnarfEnvironment} command on the floats you want to have
+%previewed.
+%\item[|textmath|] will make all text math subject to previews.  Since
+%math mode is used throughly inside of LaTeX even for other purposes,
+%this works by redefining \cmd\(, \cmd\) and |$|.  Only occurences of
+%these text math delimiters in later loaded packages and in the main
+%document will thus be affected.
+%\item[|graphics|] will subject all \cmd{\includegraphics} commands to
+%a preview.
+%\item[|delayed|] will delay all activations and redefinitions the
+%|preview| package makes until |\begin{document}|.  The purpose of
+%this is to cater for documents which should be subjected to the
+%|preview| package without having been prepared for it.  You can
+%process such documents with
+%\begin{quote}
+%|latex '\RequirePackage[active,delayed,|\meta{options}|]{preview}|
+%|\input|\marg{filename}|'|
+%\end{quote}
+%This relaxes the requirement to be loading the |preview| package as
+%last package.
+%\item[\meta{driver}] loads a special driver file
+%|pr|\meta{driver}|.def|.  Currently the only supported driver is
+%|auctex|.  This driver will produce fake error messages at the start and
+%end of every preview environment that enable a special Emacs package in
+%connection with Auc\TeX\ to pinpoint the exact source location where
+%the previews have originated.  Unfortunately, there is no other
+%reliable means of passing the current \TeX\ input position
+%\emph{in} a line to external programs.
+%You should not specify this option manually, since it will only be
+%needed by automated runs that want to parse the pseudo error
+%messages.  Those runs will then use \cmd{\PassOptionsToPackage} in
+%order to effect the desired behaviour.
+%\end{description}
+%\section{Provided Commands}
+%\DescribeEnv{preview} The |preview| environment causes its contents to
+%be set as a single preview image.  Insertions like figures and
+%footnotes (except those
+%included in minipages) will typically lead to error messages or
+%be lost.  In case the |preview| package has not been activated, the
+%contents of this environment will be typeset normally.
+%
+%\DescribeEnv{nopreview} The |nopreview| environment will cause its
+%contents not to undergo any special treatment by the |preview|
+%package.  When |preview| is active, the contents will be discarded
+%like all main text that does not trigger the |preview| hooks.  When
+%|preview| is not active, the contents will be typeset just like the
+%main text.
+%
+%Note that both of these environments typeset things when preview is
+%not active.  If you need something typeset conditionally, use the
+%\cmd{\ifPreview} conditional for it.
+%
+%\DescribeMacro{\PreviewMacro} If you want to make a macro like
+%\cmd{\includegraphics} (actually, this is what is done by the
+%|graphics| option to |preview|) produce a preview image, you put a
+%declaration like
+%\begin{quote}
+%|\PreviewMacro[*[[!]{\includegraphics}|
+%\end{quote}
+%into your preamble.  The optional argument to \cmd{\PreviewMacro}
+%specifies the arguments \cmd{\includegraphics} accepts, since this is
+%necessary information for properly ending the preview box.  The
+%letters simply mean
+%\begin{description}
+%\item[|*|] indicates an optional |*| modifier, as in
+%|\includegraphics*|.
+%\item[|[|] indicates an optional argument in brackets.  This syntax
+%is somewhat disingenious, but using |[]| instead would have the
+%disadvantage of ending the optional argument to \cmd{\PreviewMacro}
+%prematurely.
+%\item[|!|] indicates a mandatory argument.  The logical choice for
+%this would have been |#|, but \LaTeX's current way of processing
+%optional arguments prohibits passing |#| properly.
+%\end{description}
+%
+%\DescribeMacro{\PreviewEnv} The macro \cmd{\PreviewEnv} works just as
+%\cmd{\PreviewMacro} does, only for environments.
+%
+%\DescribeMacro{\PreviewSnarfEnv} This macro does not typeset the
+%original environment inside of a preview box, but instead typesets
+%just the contents of the original environment inside of the preview
+%box, leaving nothing for the original environment.  This has to be
+%used for figures, for example, since they would
+%\begin{enumerate}
+%\item produce insertion material that cannot be extracted to the
+%preview properly,
+%\item complain with an error message about not being in outer par
+%mode.
+%\end{enumerate}
+%
+%\DescribeMacro{\ifPreview} In case you need to know whether |preview|
+%is active, you can use the conditional \cmd{\ifPreview} together with
+%|\else| and |\fi|.  
+%\StopEventually{}
+%\section{The Implementation}
+%Since many parts here will not be needed as long as the package is
+%inactive, we will include them enclosed with |<active>| and
+%|</active>| guards.  That way, we can append all of this stuff at a
+%place where it does not get loaded if not necessary.
+%
+%\begin{macro}{\ifPreview}
+%  Setting the \cmd{\ifPreview} command should not be done by the user,
+%  so we don't use \cmd{\newif} here.
+%    \begin{macrocode}
+%<*style>
+%<*!active>
+\let\ifPreview\iffalse
+%</!active>
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\ifpr@outer}
+%  We don't allow previews inside of previews.  The macro
+%  \cmd{\ifpr@outer} can be used for checking whether we are outside of
+%  any preview code.
+%    \begin{macrocode}
+%<*active>
+\newif\ifpr@outer
+\pr@outertrue
+%</active>
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\preview@delay}
+%  The usual meaning of \cmd{\preview@delay} is to just echo its
+%  argument in normal |preview| operation.  If |preview| is inactive, it
+%  swallows its argument.  If the |delayed| option is active, the
+%  contents will be passed to the \cmd{\AtBeginDocument} hook.
+%\begin{macro}{\pr@advise}
+%  The core macro for modifying commands is \cmd{\pr@advise}.  You
+%  pass it the original command name as first argument and the new
+%  definition as a second argument, with |#1| in the place where the
+%  original argument should be called.  The new definition gets
+%  \cmd{\edef}-expanded, so prepare it properly.
+%\begin{macro}{\pr@advise@ship}
+%  The most often used macro for modifying commands is
+%  \cmd{\pr@advise@ship}.  It receives three arguments.  The first is
+%  the macro to modify, the second specifies some actions to be done
+%  inside of a box to be created before the original macro gets
+%  executed, the third one specifies actions after the original macro
+%  got executed.
+
+%    \begin{macrocode}
+%<*!active>
+\let\preview@delay=\@gobble
+\let\pr@advise=\@gobbletwo
+\def\pr@advise@ship#1#2#3{}
+%    \end{macrocode}
+%  These commands get more interesting when |preview| is active:
+%    \begin{macrocode}
+\DeclareOption{active}{%
+  \let\ifPreview\iftrue
+  \def\pr@advise#1{%
+    \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
+  \def\pr@advise@ship#1#2#3{\toks@{\pr@protect@ship{#2}{#3}}%
+     \pr@advise#1{\the\toks@##1}}
+  \let\preview@delay\@firstofone}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%What the \dots!?!  Well the |\@gobble| is just circumvention of a
+%\LaTeX\ bug.  ignore it.
+%\begin{macro}{\pr@adviseii}
+%  Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
+%  recursive definitions, we advise only macros that are not yet
+%  advised.  Or, more exactly, we throw away the old advice and only
+%  take the new one.
+%    \begin{macrocode}
+\def\pr@adviseii#1#2#3{\preview@delay{%
+  \ifx#1\relax \let#1#2\fi
+  \edef\reserved@a##1{\def\noexpand#2{#3}}%
+  \reserved@a#1}}
+%    \end{macrocode}
+%\end{macro}
+%
+%  The |delayed| option is easy to implement:
+%    \begin{macrocode}
+\DeclareOption{delayed}{%
+  \ifPreview \let\preview@delay\AtBeginDocument \fi
+}
+%</!active>
+%    \end{macrocode}
+%
+%\subsection{The internals}
+%
+%Those are only needed if |preview| is active.
+%    \begin{macrocode}
+%<*active>
+%    \end{macrocode}
+%\begin{macro}{\pr@protect@ship}
+%  Let's begin with the above mentioned \cmd{\pr@protect@ship}.  This
+%  gets three arguments.  The first is what to do at the beginning of
+%  the preview, the second what to do at the end, the third is the
+%  macro where we stored the original definition.
+%
+%  In case we are not in a typesetting situation,
+%  \cmd{\pr@protect@ship} leaves the stored macro to fend for its
+%  own.  No better or worse protection than the original.  And we only
+%  do anything different when \cmd{\ifpr@outer} turns out to be true.
+%    \begin{macrocode}
+\def\pr@protect@ship{\ifx\protect\@typeset@protect
+   \expandafter\pr@startbox\else \expandafter\@gobbletwo \fi}
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\pr@box}
+%\begin{macro}{\pr@startbox}
+%  Previews will be stored in \cmd{\box}\cmd{\pr@box}.
+%  \cmd{\pr@startbox} gets two arguments: code to execute immediately
+%  before the following stuff, code to execute afterwards.  You have
+%  to cater for \cmd{\pr@endbox} being called at the right time
+%  yourself.
+%    \begin{macrocode}
+\newbox\pr@box
+\def\pr@startbox#1#2{%
+  \ifpr@outer
+    \pr@ship@start
+    \toks@{#2}%
+    \edef\pr@cleanup{\the\toks@}%
+    \setbox\pr@box\vbox\bgroup
+    \pr@outerfalse\color@setgroup
+    \expandafter\@firstofone
+  \else
+     \expandafter \@gobble
+  \fi{#1}}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\pr@endbox}
+%  Cleaning up also is straightforward.
+%    \begin{macrocode}
+\def\pr@endbox{%
+   \color@endgroup
+   \egroup
+%    \end{macrocode}
+%  Except that we shift the output box up by its height.  This has two
+%  purposes: first we make sure that no package-inflicted non-zero
+%  value of \cmd{\voffset} or \cmd{\hoffset} will have any influence
+%  of the positioning of our box.  Second we shift the box such that
+%  its basepoint will exactly be at the (1in,1in)~mark defined by
+%  TeX.  That way we can properly take ascenders into account.
+%    \begin{macrocode}
+   {\let\protect\noexpand
+   \voffset=-\ht\pr@box
+   \hoffset=\z@
+   \shipout\box\pr@box}
+   \pr@ship@end
+   \global\advance\c@page\@ne
+   \pr@cleanup
+}
+%    \end{macrocode}
+%\end{macro}
+%\subsection{Parsing commands}
+%\begin{macro}{\pr@callafter}
+%\begin{macro}{\pr@parseit}
+%\begin{macro}{\pr@seq}
+%  The following stuff is for parsing the arguments of commands we want
+%  to somehow surround with stuff.  Usage is
+%    \begin{quote}
+%    \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\endcsname}\\
+%    \qquad\meta{macro}\meta{parameters}
+%    \end{quote}
+%  \meta{aftertoken} is stored in \cmd{\pr@seq} and gets placed after
+%  the completely parsed macro.  \meta{parsestring} would be, for
+%  example for the \cmd{\includegraphics} macro, |*[[!|, an optional
+%  |*| argument followed by two optional arguments enclosed in |[]|,
+%  followed by one mandatory argument.
+%  The implementation is rather trivial.
+%    \begin{macrocode}
+\def\pr@callafter{%
+  \afterassignment\pr@parseit
+  \let\pr@seq= }
+\def\pr@parseit#1{\csname pr@parse#1\endcsname}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\pr@parse*}
+%  Straightforward, same mechanism \LaTeX\ itself employs.
+\expandafter\def\csname pr@parse*\endcsname#1\endcsname#2{%
+  \@ifstar{\pr@parseit#1\endcsname{#2*}}{\pr@parseit#1\endcsname{#2}}}
+%\end{macro}
+%\begin{macro}{\pr@parse[}
+%\begin{macro}{\pr@brace}
+%  Copies optional parameters in brackets if present.  The additional
+%  level of braces is necessary to ensure that braces the user might
+%  have put to hide a~|]| bracket in an optional argument don't get
+%  lost.  There will be no harm if such braces were not there at the
+%  start.
+%    \begin{macrocode}
+\expandafter\def\csname pr@parse[\endcsname#1\endcsname#2{%
+  \@ifnextchar[{\pr@bracket#1\endcsname{#2}}{\pr@parseit#1\endcsname{#2}}}
+\def\pr@bracket#1\endcsname#2[#3]{\pr@parseit#1\endcsname{#2[{#3}]}}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\pr@parse!}
+%  Mandatory arguments are perhaps easiest to parse.
+%    \begin{macrocode}
+\expandafter\def\csname pr@parse!\endcsname#1\endcsname#2#3{%
+  \pr@parseit#1\endcsname{#2{#3}}}
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\pr@parse}
+%  And finally the macro that gets called at the end and wraps all
+%  this up by placing the completed macro call and the putting
+%  \cmd{\pr@seq} behind it.
+%    \begin{macrocode}
+\def\pr@parse\endcsname#1{#1\pr@seq}
+%</active>
+%    \end{macrocode}
+%\end{macro}
+%\subsection{Selection options}
+%  The |displaymath| option.
+%    \begin{macrocode}
+%<*!active>
+\DeclareOption{displaymath}{%
+  \preview@delay{%
+    \everydisplay\expandafter{\the\everydisplay
+    \pr@startbox{$$\aftergroup\pr@endbox}{$$}}}%
+}
+%    \end{macrocode}
+%
+%  The |textmath| option.  Some folderol in order to define the active
+%  |$| math mode delimiter.
+%    \begin{macrocode}
+\begingroup
+\lccode`\~=`\$
+\lowercase{\endgroup
+    \DeclareOption{textmath}{%
+      \pr@advise@ship\(\pr@endaftergroup{}%
+      \def~{$}%
+      \pr@advise@ship~{\pr@endaftergroup}{}%
+      \preview@delay{\catcode`\$=\active}}}
+%</!active>
+%    \end{macrocode}
+%\begin{macro}{\pr@endaftergroup}
+%  This justs ends the box after the group opened by |#1| is closed
+%  again.
+%    \begin{macrocode}
+%<*active>
+\def\pr@endaftergroup#1{#1\aftergroup\pr@endbox}
+%</active>
+%    \end{macrocode}
+%\end{macro}
+%  The |graphics| option.
+%    \begin{macrocode}
+%<*!active>
+\DeclareOption{graphics}{%
+  \PreviewMacro[{*[[!}]{\includegraphics}}
+%    \end{macrocode}
+%  The |floats| option.
+%    \begin{macrocode}
+\DeclareOption{floats}{%
+  \PreviewSnarfEnvironment[![]{@float}%
+  \PreviewSnarfEnvironment[![]{@dblfloat}}
+%
+%We now interpret any further options as driver files we load.
+%    \begin{macrocode}
+\DeclareOption*
+   {\InputIfFileExists{pr\CurrentOption.def}{}{\OptionNotUsed}}
+%    \end{macrocode}
+%
+%\subsection{Preview attaching commands}
+%  \begin{macro}{\PreviewMacro}
+%  As explained above.
+%    \begin{macrocode}
+\newcommand\PreviewMacro[2][]{%
+   \pr@advise@ship{#2}{\pr@callafter\pr@endbox#1\endcsname}{}}
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\PreviewEnvironment}
+%  Actually, this ignores any syntax argument.  But don't tell
+%  anybody.
+%    \begin{macrocode}
+\newcommand{\PreviewEnvironment}[2][]{\expandafter\pr@advise@ship
+   \csname #2\endcsname{\aftergroup\pr@endbox}{}}
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\PreviewSnarfEnvironment}[2][]
+%  This is a nuisance since we have to advise \emph{both} the
+%  environment and its end.
+%    \begin{macrocode}
+\newcommand{\PreviewSnarfEnvironment}[2][]{\toks@{%
+    \pr@callafter\pr@startsnarf#1\endcsname}%
+  \expandafter\pr@advise
+   \csname #2\endcsname{\the\toks@##1}%
+ \expandafter\pr@advise
+   \csname end#2\endcsname{\endgroup##1}}
+%</!active>
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\pr@startsnarf}
+%  Ok, this looks complicated, but we have to start a group in order
+%  to be able to hook \cmd{\pr@endbox} into the game only when
+%  \cmd{\ifpr@outer} has triggered the start.
+%<*active>
+\def\pr@startsnarf{\begingroup
+   \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
+   \ignorespaces}
+%</active>
+%\begin{macro}{\pr@ship@start}
+%\begin{macro}{\pr@ship@end}
+%  The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
+%  to by option files by the help of the \cmd{\g@addto@macro} command
+%  from \LaTeX.  They are called just before starting to process some
+%  preview, and just after it.
+%    \begin{macrocode}
+%<*!active>
+\let\pr@ship@start\@empty
+\let\pr@ship@end\@empty
+%</!active>
+%</style>
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%The Auc\TeX\ option will cause error messages to spew.  We want them
+%on the terminal, but we don't want LaTeX to stop its automated run.
+%So here is the contents of the |prauctex.def| file:
+%    \begin{macrocode}
+%<auctex>\nonstopmode
+%<auctex>\def\pr@msg#1{\PackageError{Preview}%
+%<auctex>   {Snippet \number\c@page\space#1}%
+%<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
+%<auctex>    Just hit Return and be gone.}}
+%<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
+%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended}}
+%    \end{macrocode}
+%
+%\begin{environment}{preview}
+%\begin{environment}{nopreview}
+%  First we write the definitions of these environments when |preview|
+%  is inactive.  We will redefine them if |preview| gets activated.
+%    \begin{macrocode}
+%<*style>
+%<*!active>
+\newenvironment{preview}{\ignorespaces}{\unskip}
+\newenvironment{nopreview}{\ignorespaces}{\unskip}
+%    \end{macrocode}
+%\end{environment}
+%\end{environment}
+%
+%We now process the options and finish in case we are not active.
+%    \begin{macrocode}
+\ProcessOptions\relax
+\ifPreview\else\expandafter\endinput\fi
+%</!active>
+%    \end{macrocode}
+%Now for the redefinition of the |preview| and |endpreview|
+%environments:
+%    \begin{macrocode}
+%<*active>
+\renewenvironment{preview}{\begingroup
+   \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}\ignorespaces}%
+   {\endgroup\unskip}
+\renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}{\unskip}
+%    \end{macrocode}
+%Try to keep \LaTeX\ from overwriting its information files:
+%    \begin{macrocode}
+\@fileswfalse
+%    \end{macrocode}
+%Let the output routine throw everything gathered regularly away.
+%    \begin{macrocode}
+\output{\global\setbox255=\box\voidb@x}
+%</active>
+%</style>
+%    \end{macrocode}
+%
+% \section{Various drivers}
+% The installer, in case it is missing.
+%    \begin{macrocode}
+%<installer> \input docstrip
+%<installer> \askforoverwritefalse
+%<installer> \generate{
+%<installer>    \file{preview.drv}{\from{preview.dtx}{driver}}
+%<installer>    \usedir{tex/latex/preview}
+%<installer>    \file{preview.sty}{\from{preview.dtx}{style}
+%<installer>                       \from{preview.dtx}{style,active}}
+%<installer>    \file{prauctex.def}{\from{preview.dtx}{auctex}}
+%<installer> }
+%<installer> \endbatchfile
+%    \end{macrocode}
+% And here comes the documentation driver.
+%    \begin{macrocode}
+%<driver> \documentclass{ltxdoc}
+%<driver> \begin{document}
+%<driver> \DocInput{preview.dtx}
+%<driver> \end{document}
+%    \end{macrocode}
+% \Finale{}
