@@ -1,5 +1,12 @@
 2004-04-08  Berend de Boer  <berend@pobox.com>
 
+	* latex.el (LaTeX-outline-name): could reach past end of buffer
+	when an imenu was created and LaTeX-outline-regexp contained a
+	macro that either didn't take a argument between braces or a macro
+	was found in the document and the user forgot to specify the
+	argument. And that macro was after the last 20 characters of the
+	buffer.
+
 	* context.el (ConTeXt-current-interface): eval-when-compile this
 	variable fixed another reported compiliation error.
 
