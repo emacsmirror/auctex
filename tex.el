@@ -131,7 +131,15 @@ performed as specified in TeX-expand-list."
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil t)
 	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
-	      'TeX-run-TeX nil t))
+	      'TeX-run-TeX nil t)
+	;; support for ConTeXt  --pg
+	(list "ConTeXt" "texexec --once --nonstopmode --texutil %t" 'TeX-run-ConTeXt nil t)
+	(list "ConTeXt Interactive" "texexec --once --texutil %t" 'TeX-run-interactive t t)
+	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil t)
+	;; --purge %s does not work on unix systems with current texutil
+	;; check again october 2003 --pg
+	;; (list "ConTeXt Clean" "texutil --purge %s" 'TeX-run-interactive nil t))
+	(list "ConTeXt Clean" "texutil --purge" 'TeX-run-interactive nil t))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -1362,6 +1370,8 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
      "-- string likely in Japanese TeX --")
     ("AMSTEX" ams-tex-mode
      "\\\\document\\b")
+    ("CONTEXT" context-mode
+     "\\\\starttext")
     ("LATEX" latex-mode 
      "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
@@ -1447,6 +1457,7 @@ of plain-TeX-mode-hook."
   (setq TeX-command-default "TeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
+
 ;;;###autoload
 (defun ams-tex-mode ()
   "Major mode for editing files of input for AmS TeX.
@@ -1481,7 +1492,7 @@ Choose `ignore' if you don't want AUC TeX to install support for font locking."
 		(function-item ignore)
 		(function :tag "Other")))
 
-(defun VirTeX-common-initialization ()
+(defun VirTeX-common-initialization () 
   ;; Initialize
   (kill-all-local-variables)
   (setq local-abbrev-table text-mode-abbrev-table)

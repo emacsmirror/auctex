@@ -1,3 +1,25 @@
+2003-02-08  Patrick Gundlach  <patrick@gundla.ch>
+
+	* tex-site.el: Added simple ConTeXt support.
+
+	* latex.el (latex-mode): Added explicit set of
+	TeX-sentinel-function to be used in TeX-run-interactive.
+
+	* tex-buf.el: Added TeX-run-ConTeXt. Removed explicit call to
+	TeX-LaTeX-sentinel in TeX-run-interactive. The sentinel-function
+	is now inherited from the buffer calling
+	TeX-run-interactive. Hopefully this won't break anything.
+
+	* tex.el: Adapted TeX-command-list for ConTeXt
+	support. Interfaces for texexec and texutil added. Nonstopmode
+	(texexec) and purge (texutil) won't work right with current
+	ConTeXt versions. This will be fixed in ConTeXt versions later
+	than Feb 2003. 
+
+	* context.el: basic support for ConTeXt added. New
+	sentinel-functiont that is different from the LaTeX one.
+	
+
 2003-02-08  pvoostrum  <pvoostrum@nono.cs.uu.nl>
 
 	* tex.el: Added missing semicolon in TeX-command-output-list.
