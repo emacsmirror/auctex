@@ -406,7 +406,7 @@ visible.  However, you might want to set @samp{INFOPATH} anyway, for the
 sake of standalone readers outside of XEmacs. (The info files in XEmacs
 are normally in @file{~/.xemacs/xemacs-packages/info}.)
 
-@subheading Making the LaTeX style available
+@subheading Making the @LaTeX{} style available
 
 Again, for yourself you want to manipulate the @samp{TEXINPUTS}
 environment variable or an appropriate setting of a personal
