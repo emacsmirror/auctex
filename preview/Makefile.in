@@ -9,7 +9,7 @@ ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (con
 AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
-LISP_SOURCES = preview.el @PLAT_LISP@
+LISP_SOURCES = @PLAT_LISP@ preview.el
 
 prefix = @prefix@
 lispdir = @lispdir@/preview
