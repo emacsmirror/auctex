@@ -1,3 +1,8 @@
+2004-10-22  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/auctex.texi (European): Adjust to change of
+	`LaTeX-italian-open-quote'.
+
 2004-10-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (TEX_INPUT_DIRS): Do not use -e command line option
