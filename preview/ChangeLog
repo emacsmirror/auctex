@@ -1,3 +1,8 @@
+2001-10-19  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}): Heed \AtBeginDvi
+	sequences.  Small doc/formatting changes.
+
 2001-10-17  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx: Get the version headers right (hopefully).
