@@ -1,7 +1,8 @@
-2003-03-30  Jan-Åke Larsson  <jalar@mai.liu.se>
+2003-03-31  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* configure.in (EMACS_PROG_EMACS): Make the test fail gracefully
-	when no binary executable is found.
+	* aclocal.m4 (EMACS_PROG_EMACS): Make the test fail gracefully
+	when no binary executable is found. More generally, make the
+	emacs-macro path-searching tests run.
 	
 2003-03-30  David Kastrup  <dakas@users.sourceforge.net>
 
