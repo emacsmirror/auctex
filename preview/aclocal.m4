@@ -261,6 +261,19 @@ fi
   AC_SUBST(EMACS_FLAVOR)
 ])
 
+AC_DEFUN(EMACS_CHECK_MAJOR_VERSION, [
+AC_MSG_CHECKING([if (X)Emacs is recent enough])
+EMACS_LISP(EMACS_MAJOR_VERSION,[emacs-major-version])
+if (( $EMACS_MAJOR_VERSION < $1 )); then
+  AC_MSG_RESULT([no])
+  AC_MSG_ERROR([This package requires at least (X)Emacs version $1.  Aborting!])
+else
+  AC_MSG_RESULT([yes])
+fi
+  AC_SUBST(EMACS_MAJOR_VERSION)
+])
+
+dnl "\${packagedir}/lisp"
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
   for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
@@ -521,84 +534,6 @@ AC_DEFUN(VALID_BUILD_DIR, [
   else
     AC_MSG_RESULT([yes])
   fi
-])
-
-dnl
-dnl Determine directories which hold TeX input files.
-dnl
-AC_DEFUN(TEX_INPUT_DIRS,
- [
-AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
-			  semicolon-separated DIRS for TeX file searches],
- [ texinputdirs="${withval}" ;
-   AC_FULL_EXPAND(withval)
-   texinputdirsout=""
-   for x in `echo ${texinputdirs} | sed -e 's/\;/\\n/g'` ; do
-     if test ! -d "$x" ; then
-       AC_MSG_ERROR([--with-tex-input-dirs="$x": Directory does not exist])
-     fi
-     if test "${texinputdirsout}" != "" ; then
-       texinputdirsout="${texinputdirsout} "
-     fi
-     texinputdirsout="${texinputdirsout}\"$x\""
-   done
-   texinputdirs="${texinputdirsout}"
-   ])
-
-if test -z "$texinputdirs" ; then
-  AC_MSG_CHECKING([for directories holding TeX input files])
-  texinputdirs=""
-  temp=`kpsewhich --progname latex --expand-braces \\$SYSTEXMF 2> /dev/null`
-  if test $? -ne 0 ; then
-    temp=""
-    temp1=`kpsewhich --progname latex --expand-braces \\$TEXMFLOCAL 2> /dev/null`
-    if test $? -ne 0 ; then
-      temp1=`kpsewhich --progname latex --expand-path \\$TEXMFLOCAL`
-    fi
-    temp2=`kpsewhich --progname latex --expand-braces \\$TEXMFMAIN 2> /dev/null`
-    if test $? -ne 0 ; then
-      temp2=`kpsewhich --progname latex --expand-path \\$TEXMFMAIN`
-    fi
-    temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST 2> /dev/null`
-    if test $? -ne 0 ; then
-      temp3=""
-    fi
-    for i in $temp1 $temp2 $temp3 ; do
-      if ! echo $i | grep -e '^[[A-Za-z]]:' > /dev/null && \
-	 ! echo $i | grep ';' > /dev/null ; then
-	i=`echo $i | tr ':' ';'`
-      fi
-      if ! test -z "$i" ; then
-	if ! test -z "$temp" ; then
-	  temp=$temp";"
-	fi
-	temp="$temp""$i"
-      fi
-    done
-  else
-    if ! echo $temp | grep -e '^[[A-Za-z]]:' > /dev/null && \
-       ! echo $temp | grep ';' > /dev/null ; then
-      temp=`echo $temp | tr ':' ';'`
-    fi
-  fi
-  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//'` ; do
-    # We assume that we are dealing with a TDS-compliant TeX system.
-    for y in "/tex/" "/bibtex/bst/" ; do
-      tempy="$x""$y"
-      if test -e "$tempy" ; then
-	if test "${texinputdirs}" != "" ; then
-	  texinputdirs="${texinputdirs} "
-	fi
-	texinputdirs="${texinputdirs}\"${tempy}\""
-      fi
-    done
-  done
-  if test -z "$texinputdirs" ; then
-    texinputdirs="\"/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/\""
-  fi
-  AC_MSG_RESULT((${texinputdirs}))
-fi
-AC_SUBST(texinputdirs)
 ])
 
 # AUCTEX_AUTO_DIR
