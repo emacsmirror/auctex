@@ -1,3 +1,17 @@
+2004-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-syntactic-comments): New name.  Formerly known
+	as `LaTeX-format-comment-syntax-aware'.  This should better
+	reflect the meaning the variable will receive eventually.
+	(LaTeX-indent-line): Use new name.
+	(LaTeX-current-indentation): Ditto.
+	(LaTeX-back-to-indentation): Ditto.
+	(LaTeX-fill-paragraph): Ditto.
+	(doctex-mode): Ditto.
+
+	* context.el (context-mode): Use `LaTeX-syntactic-comments'
+	instead of `LaTeX-format-comment-syntax-aware'.
+
 2004-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auc-tex.texi (Japanese): Refer to `INSTALL' instead of
