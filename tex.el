@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9b
+;; Version: 9.9c
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -318,6 +318,7 @@ string."
 	(list "%l" 'TeX-style-check LaTeX-command-style)
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
+	(list "%n" 'TeX-current-line)
 	(list "%d" 'file "dvi" t)
 	(list "%f" 'file "ps" t))
   "List of expansion strings for TeX command names.
@@ -361,6 +362,7 @@ Full documentation will be available after autoloading the function."
 (autoload 'latex-mode "latex" no-doc t)
 
 (autoload 'multi-prompt "multi-prompt" no-doc nil)
+(autoload 'texmathp "texmathp" no-doc nil)
 
 ;;; Portability.
 
@@ -997,8 +999,16 @@ active.")
 	((string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style) ;Complex path
 	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
 		(style (substring style (match-beginning 2) (match-end 2)))
+		(master-dir (if (stringp TeX-master)
+				(file-name-directory
+				 (file-relative-name TeX-master))
+			      "./"))
 		(TeX-style-path (append (list (concat dir TeX-auto-local)
-					      (concat dir TeX-style-local))
+					      (concat master-dir
+						      TeX-auto-local)  
+					      (concat dir TeX-style-local)  
+					      (concat master-dir
+						      TeX-style-local))
 					TeX-style-path)))
 	   (TeX-load-style style)))
 	(t				;Relative path
@@ -1217,11 +1227,6 @@ Or alternatively:
   :group 'TeX-macro
   :type 'string)
 
-(defun TeX-math-mode-p ()
-  "Are we in TeX math mode?"
-  ;; This should check for dollar signs, but thats to hard for now.
-  (and (boundp 'LaTeX-math-mode) LaTeX-math-mode))
-
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro with completion.
 
@@ -1307,7 +1312,7 @@ Space will complete and exit."
 	  ((and TeX-insert-braces
 		(equal position (point))
 		(string-match "[a-zA-Z]+" symbol)
-		(not (TeX-math-mode-p)))
+		(not (texmathp)))
 	   (insert TeX-grop TeX-grcl)))))
 
 (defun TeX-arg-string (optional &optional prompt input)
@@ -2237,6 +2242,10 @@ See match-data for details."
 			       (if limit (max (point-min) (- (point) limit)))
 			       t)
 	   (eq (match-end 0) pos)))))
+
+(defun TeX-current-line ()
+  "The current line number."
+  (count-lines (point-min) (point)))
 
 ;;; Syntax Table
 
