@@ -1,3 +1,8 @@
+2005-02-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Fix typo
+	in previous commit.
+
 2005-02-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* style/jarticle.el ("jarticle"): Use `LaTeX-section-level'.

@@ -29,7 +29,7 @@ Windows and MacOS don't offer toolbar and @previewlatex{} support.
 Our success with XEmacs has been less than convincing.  Under the
 Windows operating system, nominally the only option for a released,
 stable Emacs variant supporting toolbars and @previewlatex{} would be
-@{XEmacs 21.4}.  However, code for core functionality like formatting
+@w{XEmacs 21.4}.  However, code for core functionality like formatting
 and syntax highlighting tends to be different and often older than even
 @w{Emacs 21.3}, and Unicode support as delivered is problematic at best,
 missing on Windows.  Both @AUCTeX{} and XEmacs developers don't hear
