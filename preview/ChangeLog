@@ -1,5 +1,8 @@
 2002-03-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* autogen.sh: don't prebuild doc.  We offer a separate download
+	archive for people without texinfo.
+
 	* preview-latex.spec (BuildRequires): changes for 0.6.1.
 
 	* doc/install.texi: Some changes for 0.6.1.
