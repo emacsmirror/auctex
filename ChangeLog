@@ -7,6 +7,8 @@
 	(font-latex-match-command-with-arguments): Check for limit when
 	looking at optional and mandatory arguments.  Prevents an infinite
 	loop in XEmacs when typing the "n" of \begin in "\begi\n[foo]".
+	(font-latex-user-keyword-classes): Specify a default value for the
+	list.
 
 2005-03-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
