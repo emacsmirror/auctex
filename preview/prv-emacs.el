@@ -242,28 +242,31 @@ format dump handler."
   (let ((buffer (if (bufferp file)
 		    file
 		  (find-buffer-visiting file))) ov)
-    (when buffer
-      (with-current-buffer buffer
-	(save-excursion
-	  (save-restriction
-	    (widen)
-	    (goto-char (point-min))
-	    (unless (re-search-forward preview-dump-threshold nil t)
-	      (error "Can't find preamble of `%s'" file))
-	    (setq ov (make-overlay (point-min) (point)))
-	    (setcdr format-cons ov)
-	    (overlay-put ov 'format-cons format-cons)
-	    (overlay-put ov 'insert-in-front-hooks
-			 '(preview-preamble-changed-function))
-	    (overlay-put ov 'modification-hooks
-			 '(preview-preamble-changed-function))))))))
+    (if buffer
+	(with-current-buffer buffer
+	  (save-excursion
+	    (save-restriction
+	      (widen)
+	      (goto-char (point-min))
+	      (unless (re-search-forward preview-dump-threshold nil t)
+		(error "Can't find preamble of `%s'" file))
+	      (setq ov (make-overlay (point-min) (point)))
+	      (setcdr format-cons ov)
+	      (overlay-put ov 'format-cons format-cons)
+	      (overlay-put ov 'insert-in-front-hooks
+			   '(preview-preamble-changed-function))
+	      (overlay-put ov 'modification-hooks
+			   '(preview-preamble-changed-function)))))
+      (setcdr format-cons 'watch))))
 
 (defun preview-unwatch-preamble (format-cons)
   "Stop watching a format on FORMAT-CONS.
 The watch has been set up by `preview-watch-preamble'."
-  (when (overlayp (cdr format-cons))
-    (delete-overlay (cdr format-cons))
-    (setcdr format-cons nil)))
+  (cond (((overlayp (cdr format-cons))
+	  (delete-overlay (cdr format-cons))
+	  (setcdr format-cons nil))
+	 ((eq 'watch (cdr format-cons))
+	  (setcdr format-cons nil)))))
 
 (defun preview-register-change (ov)
   "Register not yet changed OV for verification.
@@ -403,7 +406,7 @@ purposes."
 			  filename)
 	(setq filename (substring filename 0 (match-beginning 0))))
       (setq format-cons (assoc filename preview-dumped-alist))
-      (when format-cons
+      (when (eq (cdr format-cons) 'watch)
 	(preview-watch-preamble (current-buffer) format-cons)))))
 
 (defvar preview-marker (make-marker)
