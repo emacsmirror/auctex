@@ -1,3 +1,8 @@
+2001-10-19  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-TeX-command-list): Fixed for mendex.
+	* doc/auc-tex.texi (Japanese): Doc fix.
+	
 2001-10-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.08 released.
