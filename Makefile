@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.114 1995-01-27 21:06:51 amanda Exp $
+# $Id: Makefile,v 5.115 1995-02-14 19:43:53 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -97,7 +97,7 @@ MINMAPSRC = column.el   auc-menu.el maniac.el \
 	    outln-18.el auc-html.el easymenu.el \
 	    xt-mouse.el all.el  cpp.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el
+CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el 
 
 AUCSRC = auc-old.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
@@ -122,7 +122,7 @@ DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
 EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 Makefile ChangeLog \
-	tex-jp.el lpath.el tex-site.el $(CONTRIB)
+	lpath.el tex-site.el $(CONTRIB)
 
 first:
 	@echo ""

@@ -8,20 +8,20 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.104 1995-01-27 21:07:16 amanda Exp $
+@c $Id: auc-tex.texi,v 1.105 1995-02-14 19:44:38 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle Version 9.2
+@subtitle Version 9.3
   
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 9.2 by Per Abrahamsen
+@author updated for 6.1 to 9.3 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
-Copyright @copyright{} 1993 Per Abrahamsen
+Copyright @copyright{} 1993, 1994,1995 Per Abrahamsen
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -54,7 +54,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 9.2.
+This file documents AUC @TeX{} version 9.3.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -1343,10 +1343,10 @@ all other files in the document, AUC @TeX{} will get information from
 all files in the document.  This means that you will get from each file,
 for example, completion for all labels defined anywhere in the document.
 
-You must create the @file{auto} directory manually for this to work.  If
-you don't do this, the other files in the document will not know
-anything about each other, except for the name of the master file.
-@xref{Automatic Local}.
+AUC TeX will create the @file{auto} directory automatically if
+@code{TeX-auto-save} is non-nil.  Without it, the files in the document
+will not know anything about each other, except for the name of the
+master file.  @xref{Automatic Local}.
 
 @deffn Command TeX-save-document
 @kindex C-c C-d
@@ -2320,7 +2320,34 @@ mail me first, though.
 
 @itemize @bullet
 @item
-Filling should leave lines ending in @samp{\\} alone.
+@code{LaTeX-fill-environment} does not indent the closing @samp{\end}.
+
+@item
+Rewrite @file{ltx-help.el} and put it in @file{latex.el}.  Fix also:
+@example
+From: Denby Wong <DnB@@slip224.qlink.QueensU.CA>
+
+ 1) change documentation regarding where to get the 
+    latest version (at CTAN at pip.shsu.edu for me)
+    under info/latex2e-help-texinfo/
+
+ 2) change or provide choice over which version to
+    use.  There are three references to the info
+    node "(latex)" in the file which should be 
+    "(latex2e)"  for the new file.  
+
+From: Piet van Oostrum <piet@@cs.ruu.nl>
+
+One of the annoying things of latex-help is that if you ask for \LARGE, you
+get \large if you have case-fold-search=t. This is really info's problem as
+it doesn't reset it for a search of the node, but it would be easy to stick
+a (let (case-fold-search) in latex-help.
+@end example
+
+@item
+It should be possible to insert a default preamble containing
+e.g. @code{usepackage} declarations, perhaps depending on the document
+class. 
 
 @item
 Multiple argument completion for @samp{\bibliography}.  In general, I
@@ -2365,6 +2392,10 @@ Thiemann.
 @item
 Use index files (when available) to speed up @kbd{C-c C-m include
 @key{ret}}. 
+
+@item
+Option not to calculate very slow completions like for 
+@kbd{C-c C-m include @key{ret}}.@refill
 
 @item
 AUC @TeX{} should not parse verbatim environments.
@@ -2421,11 +2452,6 @@ environment.
 @item
 Function to check if you are in math mode (between two dollar signs).
 Suggested by Jan Erik Odegard @samp{<odegard@@dsp.rice.edu>}
-
-@item
-Allow whitespace more places during parsing, e.g. between macro and the
-first argument, or between individual style options in
-@samp{\documentstyle}. 
 
 @item
 The @samp{Spell} command should apply to all files in a document.  Maybe

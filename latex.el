@@ -1,11 +1,11 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.40 1995-01-27 21:07:00 amanda Exp $
+;; Version: $Id: latex.el,v 5.41 1995-02-14 19:44:09 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
-;; Copyright 1993, 1994 Per Abrahamsen
+;; Copyright 1993, 1994, 1995 Per Abrahamsen
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1391,27 +1391,80 @@ LaTeX-item-indent."
     (if (< (current-column) indent)
 	(back-to-indentation))))
 
+;; New version by michal@ellpspace.math.ualberta.ca (Michal Jaegermann):
+
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-  "Fill region as one paragraph: break lines to fit fill-column.
+  "Fill region as one paragraph: break lines to fit fill-column,
+but leave all lines ending with \\\\ (plus its optional argument) alone.
 Prefix arg means justify too.
 From program, pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
-  (save-restriction
-    (goto-char from)
-    (skip-chars-forward " \n")
-    (LaTeX-indent-line)
-    (beginning-of-line)
-    (narrow-to-region (point) to)
-    (setq from (point))
+  (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+      (save-restriction
+	(narrow-to-region from to)
+	(goto-char from)
+	(while (not (eobp))
+	  (LaTeX-indent-line)
+	  (forward-line))
+	(goto-char from)
+	(while (not (eobp))
+	  (if 
+	      (re-search-forward (concat "^.*"
+					 (regexp-quote TeX-esc)
+					 (regexp-quote TeX-esc)
+					 "\\(\\s-*\\*\\)?"
+					 "\\(\\s-*\\[[^]]*\\]\\)?\\s-*$") 
+				 nil t)
+	      (progn
+		(goto-char (match-end 0))
+		(delete-horizontal-space)
+		;; I doubt very much if we want justify -
+		;; this is a line with \\
+		;; if you think otherwise - uncomment the next line
+		;; (and justify-flag (justify-current-line))
+		(forward-char)
+		;; keep our position in a buffer
+		(save-excursion
+		  (LaTeX-fill-region-as-para-do
+		   from (match-beginning 0) justify-flag))
+		(setq from (point)))
+	    ;; ELSE part follows - loop termination relies on a fact
+	    ;; that (LaTeX-fill-region-as-para-do) moves point past
+	    ;; the filled region
+	    (LaTeX-fill-region-as-para-do from to justify-flag)))
+	;; the following four lines are clearly optional, but I like my
+	;; LaTeX code that way 
+	(goto-char (point-min))
+	(while (search-forward "$$ " nil t)
+	  (replace-match "$$\n" t t)
+	  (LaTeX-indent-line)))))
 
-    ;; from is now before the text to fill,
-    ;; but after any fill prefix on the first line.
+;;; the code below differs from an original (LaTeX-fill-region-as-paragraph)
+;;; only by extra (< from to) comparison and required all arguments
+;;;
 
-    ;; Make sure sentences ending at end of line get an extra space.
-    (goto-char from)
-    (while (re-search-forward "[.?!][])\"']*$" nil t)
-      (insert ? ))
-    ;; The change all newlines to spaces.
+(defun LaTeX-fill-region-as-para-do (from to justify-flag)
+  "Fill region as one paragraph: break lines to fit fill-column."
+  (if (< from to)
+      (progn
+	;; (save-restriction) here is likely not needed because
+	;; it was done by a caller, but I am not sure - mj
+	(save-restriction
+	  (goto-char from)
+	  (skip-chars-forward " \n")
+	  (LaTeX-indent-line)
+	  (beginning-of-line)
+	  (narrow-to-region (point) to)
+	  (setq from (point))
+
+	  ;; from is now before the text to fill,
+	  ;; but after any fill prefix on the first line.
+
+	  ;; Make sure sentences ending at end of line get an extra space.
+	  (goto-char from)
+	  (while (re-search-forward "[.?!][])\"']*$" nil t)
+	    (insert ? ))
+	  ;; The change all newlines to spaces.
     (subst-char-in-region from (point-max) ?\n ?\ )
     ;; Flush excess spaces, except in the paragraph indentation.
     (goto-char from)
@@ -1452,7 +1505,72 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	       (forward-line 1)))
 	)
       (goto-char (point-max))
-      (delete-horizontal-space))))
+      (delete-horizontal-space))))))
+
+;; Old version:
+
+;(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
+;  "Fill region as one paragraph: break lines to fit fill-column.
+;Prefix arg means justify too.
+;From program, pass args FROM, TO and JUSTIFY-FLAG."
+;  (interactive "*r\nP")
+;  (save-restriction
+;    (goto-char from)
+;    (skip-chars-forward " \n")
+;    (LaTeX-indent-line)
+;    (beginning-of-line)
+;    (narrow-to-region (point) to)
+;    (setq from (point))
+
+;    ;; from is now before the text to fill,
+;    ;; but after any fill prefix on the first line.
+
+;    ;; Make sure sentences ending at end of line get an extra space.
+;    (goto-char from)
+;    (while (re-search-forward "[.?!][])\"']*$" nil t)
+;      (insert ? ))
+;    ;; The change all newlines to spaces.
+;    (subst-char-in-region from (point-max) ?\n ?\ )
+;    ;; Flush excess spaces, except in the paragraph indentation.
+;    (goto-char from)
+;    (skip-chars-forward " \t")
+;    (while (re-search-forward "   *" nil t)
+;      (delete-region
+;       (+ (match-beginning 0)
+;	  (if (save-excursion
+;		(skip-chars-backward " ])\"'")
+;		(memq (preceding-char) '(?. ?? ?!)))
+;	      2 1))
+;       (match-end 0)))
+;    (goto-char (point-max))
+;    (delete-horizontal-space)
+;    (insert "  ")
+;    (goto-char (point-min))
+;    (let ((prefixcol 0))
+;      (while (not (eobp))
+;	(move-to-column (1+ fill-column))
+;	(if (eobp)
+;	    nil
+;	  (skip-chars-backward "^ \n")
+;	  (if (if (zerop prefixcol)
+;		  (bolp)
+;		(>= prefixcol (current-column)))
+;	      (skip-chars-forward "^ \n")
+;	    (forward-char -1)))
+;	(delete-horizontal-space)
+;	(if (equal (preceding-char) ?\\)
+;	    (insert ? ))
+;	(insert ?\n)
+;	(LaTeX-indent-line)
+;	(setq prefixcol (current-column))
+;	(and justify-flag (not (eobp))
+;	     (progn
+;	       (forward-line -1)
+;	       (justify-current-line)
+;	       (forward-line 1)))
+;	)
+;      (goto-char (point-max))
+;      (delete-horizontal-space))))
 
 (defun LaTeX-fill-paragraph (prefix)
   "Fill and indent paragraph at or after point.
@@ -2390,6 +2508,7 @@ The value can be a string or a function.")
     ( ?y . "psi" )
     ( ?z . "zeta" )
     ( ?D . "Delta" )
+    ( ?F . "Phi" )
     ( ?G . "Gamma" )
     ( ?Q . "Theta" )
     ( ?L . "Lambda" )
@@ -2397,7 +2516,6 @@ The value can be a string or a function.")
     ( ?P . "Pi" )
     ( ?S . "Sigma" )
     ( ?U . "Upsilon" )
-    ( ?V . "Phi" )
     ( ?O . "Omega" )
     ( ?\C-f . "rightarrow" )
     ( ?\C-b . "leftarrow" )

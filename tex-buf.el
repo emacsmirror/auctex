@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.78 1995-01-25 14:20:54 amanda Exp $
+;; $Id: tex-buf.el,v 1.79 1995-02-14 19:44:17 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -166,6 +166,7 @@ at bottom if LINE is nil."
   "Go to the buffer where you last issued a TeX command.  
 If there is no such buffer, or you already are in that buffer, find
 the master file."
+  (interactive)
   (if (or (null TeX-command-buffer)
 	  (eq TeX-command-buffer (current-buffer)))
       (find-file (TeX-master-file TeX-default-extension))
@@ -275,33 +276,34 @@ in TeX-check-path."
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (or TeX-command-force
-      (let* ((default (cond ((if (string-equal name TeX-region)
-				 (TeX-check-files (concat name ".dvi")
-						  (list name)
-						  TeX-file-extensions)
-			       (TeX-save-document (TeX-master-file)))
-			     TeX-command-default)
-			    ((and (eq major-mode 'latex-mode)
-				  (TeX-check-files (concat name ".bbl")
-						   (mapcar 'car
-							   (LaTeX-bibliography-list))
-						   BibTeX-file-extensions))
-			     ;; We should check for bst files here as well.
-			     TeX-command-BibTeX)
-			    ((TeX-process-get-variable name
-						       'TeX-command-next
-						       TeX-command-Show))
-			    (TeX-command-Show)))
-	     (completion-ignore-case t)
-	     (answer (completing-read (concat "Command: (default " default  ") ")
-				      TeX-command-list nil t)))
-	;; If the answer "latex" it will not be expanded to "LaTeX"
-	(setq answer (car-safe (TeX-assoc answer TeX-command-list)))
-	(if (and answer
-		 (not (string-equal answer "")))
-	    answer
-	  default))))
+  (let* ((default (cond ((if (string-equal name TeX-region)
+			     (TeX-check-files (concat name ".dvi")
+					      (list name)
+					      TeX-file-extensions)
+			   (TeX-save-document (TeX-master-file)))
+			 TeX-command-default)
+			((and (eq major-mode 'latex-mode)
+			      (TeX-check-files (concat name ".bbl")
+					       (mapcar 'car
+						       (LaTeX-bibliography-list))
+					       BibTeX-file-extensions))
+			 ;; We should check for bst files here as well.
+			 TeX-command-BibTeX)
+			((TeX-process-get-variable name
+						   'TeX-command-next
+						   TeX-command-Show))
+			(TeX-command-Show)))
+	 (completion-ignore-case t)
+	 (answer (or TeX-command-force
+		     (completing-read
+		      (concat "Command: (default " default ") ")
+		      TeX-command-list nil t))))
+    ;; If the answer "latex" it will not be expanded to "LaTeX"
+    (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
+    (if (and answer
+	     (not (string-equal answer "")))
+	answer
+      default)))
 
 (defvar TeX-command-next nil
   "The default command next time TeX-command is invoked.")
@@ -399,18 +401,21 @@ Return the new process."
 
 (defun TeX-run-format (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-run-command name command file)))
+  (let ((process (TeX-run-command name command file))
+	(buffer (TeX-process-buffer-name file)))
     ;; Hook to TeX debuger.
-    (TeX-parse-reset)
-    (setq TeX-parse-function 'TeX-parse-TeX)
-    (setq TeX-sentinel-function 'TeX-TeX-sentinel)
-    (if TeX-process-asynchronous
-	(progn
-	  ;; Updating the mode line.
-	  (setq TeX-current-page "[0]")
-	  (TeX-format-mode-line process)
-	  (set-process-filter process 'TeX-format-filter)))
-    process))
+    (save-excursion
+      (set-buffer buffer)
+      (TeX-parse-reset)
+      (setq TeX-parse-function 'TeX-parse-TeX)
+      (setq TeX-sentinel-function 'TeX-TeX-sentinel)
+      (if TeX-process-asynchronous
+	  (progn
+	    ;; Updating the mode line.
+	    (setq TeX-current-page "[0]")
+	    (TeX-format-mode-line process)
+	    (set-process-filter process 'TeX-format-filter)))
+      process)))
 
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
@@ -610,10 +615,11 @@ Return nil ifs no errors were found."
 		(re-search-forward "^LaTeX Warning: Citation" nil t))
 	      (let ((current (current-buffer)))
 		(set-buffer TeX-command-buffer)
-		(prog1 (TeX-check-files (TeX-master-file "bbl")
-					(TeX-style-list)
-					(append TeX-file-extensions
-						BibTeX-file-extensions))
+		(prog1 (and (LaTeX-bibliography-list)
+			    (TeX-check-files (TeX-master-file "bbl")
+					    (TeX-style-list)
+					    (append TeX-file-extensions
+						    BibTeX-file-extensions)))
 		  (set-buffer current))))
 	 (message (concat "You should run BibTeX to get citations right, "
                           (TeX-current-pages)))

@@ -1,3 +1,45 @@
+Tue Feb 14 20:36:00 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (LaTeX-fill-region-as-paragraph): Should now format \\
+	correctly.  Patch by michal@ellpspace.math.ualberta.ca (Michal
+	Jaegermann). 
+	(LaTeX-fill-region-as-para-do): New function.
+	(LaTeX-fill-region-as-paragraph): Do not fill paragraphs inside
+	special environments. 
+
+Sun Feb 12 15:40:15 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-byte-compile): Make it default to nil.  Suggested by
+	michal@ellpspace.math.ualberta.ca (Michal Jaegermann).
+
+	* tex-buf.el (TeX-command-query): Also offer to save files when
+	started from a menu.  Reported by wscoas@win.tue.nl (Anton
+	A. Stoorvogel). 
+	(TeX-LaTeX-sentinel): Don't suggest BibTeX if there is no
+	bibliographies. Suggested by Piet van Oostrum <piet@cs.ruu.nl>.
+
+Sat Feb 11 21:44:19 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-run-format): Protect against being run from a
+	different buffer.  Patch by Michael Kifer
+	<kifer@sbkifer.cs.sunysb.edu>. 
+
+	* latex.el (LaTeX-math-default): Moved `Phi' from V to F in
+	LaTeX-math-mode.   Suggested by dak@ind.rwth-aachen.de (David
+	Kastrup). 
+	* doc/math-ref.tex: Documented it.
+
+Thu Feb  2 11:24:46 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-home-buffer): Added interactive, reported by
+	edavid@lami.univ-evry.fr. 
+
+Wed Feb  1 11:12:35 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* hilit-LaTeX.el: Upgraded to 1.06.
+
+	* Makefile (CONTRIB, EXTRAFILES): Moved tex-jp.el to CONTRIB.
+
 Fri Jan 27 21:56:32 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-paragraph-commands): Incorrectly placed

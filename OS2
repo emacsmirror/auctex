@@ -1,3 +1,26 @@
+From amanda  Fri Jan 27 01:55:30 1995
+X-VM-v5-Data: ([nil nil nil nil t t nil nil nil]
+	["1357" "Thu" "26" "January" "1995" "16:54:03" "-0800" "Ching Mo Chang" "chang@theta.math.wsu.edu" "<9501270054.AA05151@theta.math.wsu.edu>" "34" "AucTeX in OS/2 (TeX-auto-generate-global)" "^From:" nil nil "1" "1995012700:54:03" "AucTeX in OS/2 (TeX-auto-generate-global)" nil nil]
+	nil)
+X-VM-Summary-Format: "%n %*%a %-17.17F %-3.3m %2d %4l/%-5c %I\"%s\"\n"
+X-VM-Labels: nil
+X-VM-VHeader: ("From:" "Sender:" "To:" "Cc:" "Subject:" "Date:" "Newsgroups:") nil
+X-VM-Bookmark: 1
+Received: from localhost (amanda@localhost) by iesd.auc.dk (8.6.5/8.6.5) id BAA26826; Fri, 27 Jan 1995 01:53:50 +0100
+Resent-Date: Fri, 27 Jan 1995 01:53:50 +0100
+Message-Id: <9501270054.AA05151@theta.math.wsu.edu>
+Resent-Message-ID: <"CSvlR2.0.5Z6.PG4Al"@iesd.auc.dk>
+Resent-From: auc-tex@iesd.auc.dk
+X-Mailing-List: <auc-tex@iesd.auc.dk> archive/latest/17
+X-Loop: auc-tex@iesd.auc.dk
+Precedence: list
+Resent-Sender: auc-tex-request@iesd.auc.dk
+Lines: 36
+From: Ching Mo Chang <chang@theta.math.wsu.edu>
+To: auc-tex@iesd.auc.dk
+Subject: AucTeX in OS/2 (TeX-auto-generate-global)
+Date: Thu, 26 Jan 1995 16:54:03 -0800
+
 In order for "TeX-auto-generate-global" to work in Emacs-19.27 for OS/2,
 I do a change in tex.el (see below).
 
@@ -32,3 +55,33 @@ Also OS/2 seems didn't search files for complete when with "\usepackage".
 ===========================================================================
 
 Ching-Mo
+
+From amanda  Wed Feb  1 14:30:22 1995
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	["384" "Wed" " 1" "February" "1995" "14:28:40" "+0100" "Eberhard Mattes" "mattes@azu.informatik.uni-stuttgart.de" "<9502011328.AA06068@azu.informatik.uni-stuttgart.de>" "14" "AUC TeX 9.2y, OS2" "^From:" nil nil "2" "1995020113:28:40" "AUC TeX 9.2y, OS2" nil nil]
+	nil)
+Received: from ifi.informatik.uni-stuttgart.de (ifi.informatik.uni-stuttgart.de [129.69.211.1]) by iesd.auc.dk (8.6.5/8.6.5) with SMTP id OAA16605 for <auc-tex_mgr@iesd.auc.dk>; Wed, 1 Feb 1995 14:28:49 +0100
+Received: from azu.informatik.uni-stuttgart.de by ifi.informatik.uni-stuttgart.de with SMTP; Wed, 1 Feb 95 14:28:39 +0100
+Message-Id: <9502011328.AA06068@azu.informatik.uni-stuttgart.de>
+Received: by azu.informatik.uni-stuttgart.de; Wed, 1 Feb 95 14:28:40 +0100
+Lines: 15
+From: Eberhard Mattes <mattes@azu.informatik.uni-stuttgart.de>
+To: auc-tex_mgr@iesd.auc.dk
+Subject: AUC TeX 9.2y, OS2
+Date: Wed, 1 Feb 95 14:28:40 +0100
+
+The OS2 file of AUC TeX 9.2y says:
+
+  Note: (file-readable-p tex) will return "nil" in OS/2, when tex ia a
+  directory.
+
+  Did anyone have better fix for this?
+
+There is a patch which fixes file-readable-p:
+ftp.uni-stuttgart.de:/pub/systems/os2/emacs-19/patches/dired
+
+However, that fix requires recompilation of Emacs.
+
+-- 
+  Eberhard Mattes (mattes@azu.informatik.uni-stuttgart.de)
+

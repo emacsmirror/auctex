@@ -1,14 +1,13 @@
-;;; auc-menu.el - Easy menu support for GNU Emacs and XEmacs.
+;;; auc-menu.el - Easy menu support for Emacs 19 and XEmacs.
 ;; 
-;; $Id: auc-menu.el,v 5.8 1995-01-24 22:52:29 amanda Exp $
+;; $Id: auc-menu.el,v 5.9 1995-02-14 19:44:00 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
-;; Easy menu support for GNU Emacs and XEmacs|
-;; $Date: 1995-01-24 22:52:29 $|$Revision: 5.8 $|~/misc/auc-menu.el.gz|
+;; Easy menu support for Emacs 19 and XEmacs|
+;; $Date: 1995-02-14 19:44:00 $|$Revision: 5.9 $|~/misc/auc-menu.el.gz|
 
-;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
-;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
+;; Copyright (C) 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -58,15 +57,14 @@
 ;; - Function: easy-menu-remove MENU
 ;;     Remove MENU from the current menubar.
 ;;
-;; GNU Emacs 19 never uses `easy-menu-add' or `easy-menu-remove',
-;; menus automatically appear and disappear when the keymaps
-;; specified by the MAPS argument to `easy-menu-define' are
-;; activated.
+;; Emacs 19 never uses `easy-menu-add' or `easy-menu-remove', menus
+;; automatically appear and disappear when the keymaps specified by
+;; the MAPS argument to `easy-menu-define' are activated.
 ;;
 ;; XEmacs will bind the map to button3 in each MAPS, but you must
 ;; explicitly call `easy-menu-add' and `easy-menu-remove' to add and
 ;; remove menus from the menu bar.
-
+;;
 ;; auc-menu.el defines the easymenu API included in Emacs 19.29.
 ;; In fact, the Emacs 19 specific code should be identical.
 
@@ -198,7 +196,7 @@ is a list of menu items, as above."
 
 )					;XEmacs
 
-;;; GNU Emacs 19
+;;; Emacs 19
 
 (t
 
@@ -303,7 +301,7 @@ Call this from `activate-menubar-hook' to implement dynamic menus."
 
 (defun easy-menu-add (menu &optional map))
 
-)					;GNU Emacs 19
+)					;Emacs 19
 
 )					;cond
 

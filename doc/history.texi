@@ -1,3 +1,68 @@
+@section News in 9.2
+
+@itemize @bullet
+@item 
+Bug fixes.
+
+@item
+New file @file{bib-cite.el} contributed by Peter S. Galbraith
+@samp{<rhogee@@bathybius.meteo.mcgill.ca>}.  This file is not installed
+or enabled by default and is not part of the basic AUC @TeX{}
+package. If you have problems, questions, or suggestions, please direct
+them to Peter.
+
+@item
+New file @file{hilit-LaTeX.el} contributed by Peter S. Galbraith
+@samp{<rhogee@@bathybius.meteo.mcgill.ca>}.  This file is not installed
+or enabled by default and is not part of the basic AUC @TeX{}
+package. If you have problems, questions, or suggestions, please direct
+them to Peter.
+
+@item
+AUC @TeX{} is now less likely to suggest running Bib@TeX{} when it is
+not needed.
+
+@item
+Press @kbd{M-x LaTeX-209-to-2e @key{ret}} to make a stab at converting a
+La@TeX{} 2.09 header to La@TeX{}2e.
+
+@item
+@kbd{C-c C-m input @key{ret}} should be faster now on second try.
+
+@item
+New variable @code{LaTeX-left-right-indent-level} controls the
+indentation added by @samp{\left}.
+
+@item
+@samp{\begin}, @samp{\end}, @samp{\left}, and @samp{\right} no longer
+need to be at the beginning of the line to take effect. 
+
+@item
+You can now delete and replace La@TeX{}2e style fonts.
+
+@item
+Moved external commands to new menu.
+
+@item
+@kbd{C-c C-m cite @key{ret}} will prompt for multiple keys.
+
+@item
+Better handling of @samp{"} with @file{german.sty}.
+
+@item
+New variable @code{LaTeX-paragraph-commands} lists La@TeX{} commands
+that shouldn't be formatted as part of a paragraph.
+
+@item
+Older news moved to @file{HISTORY}.  It is not @TeX{}info able, but you
+can get a plaintext version with @samp{make HISTORY}.
+
+@item
+See the new @file{ChangeLog} file for a more detailed list of changes.
+The history section will now only contain user level changes.  If you
+send me a patch, please also provide a ChangeLog entry.
+@end itemize
+
 @node Version 9.1, Version 9.0, Version 9.2, History
 @section News in 9.1
 
