@@ -1,3 +1,9 @@
+2003-09-23  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/ft.c:
+	* dvipng/enc.c:
+	* dvipng/dvipng.h: Only load encodings once
+
 2003-09-18  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/draw.c:
