@@ -1,3 +1,19 @@
+2005-01-26  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-copy-mml, preview-copy-region-as-mml)
+	(preview-format-mml): Ask whether user really wants to use
+	bordered graphics.
+	(preview-error-quote): Fix typo.  Make the condition to call
+	decode-coding-string depend on (featurep 'mule) to match choice
+	for using raw process output.
+	(preview-get-geometry): Return the geometry instead of
+	manipulating a buffer.
+	(preview-set-geometry): New function to set the geometry into
+	buffer-local variables.
+	(preview-generate-preview): Start by getting geometry.
+	(TeX-inline-preview-internal): Additional geometry argument.
+	Don't switch into buffer where we are already.
+
 2005-01-25  David Kastrup  <dak@gnu.org>
 
 	* prv-emacs.el: Don't use transparent borders when Emacs is new

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.223 2005-01-25 16:26:06 dakas Exp $
+;; $Id: preview.el,v 1.224 2005-01-26 02:21:01 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1665,7 +1665,7 @@ Remove them if they have expired."
 
 (defun preview-buffer-restore (buffer-misc)
   "At end of desktop load, reinstate previews.
-This delay is so that minor modes changing buffer geometry
+This delay is so that minor modes changing buffer positions
 \(like `x-symbol-mode' does) will not wreak havoc.
 BUFFER-MISC is the appropriate data to be used."
   (add-hook 'desktop-delay-hook `(lambda ()
@@ -2097,37 +2097,50 @@ See description of `TeX-command-list' for details."
   "Copy an MML representation of OV into the kill buffer.
 This can be used to send inline images in mail and news when
 using MML mode."
-  (let ((str (preview-format-mml ov)))
-    (if str
-	(if (eq last-command 'kill-region)
-	    (kill-append str nil)
-	  (kill-new str))
-      (error "No image file available"))))
+  (when (catch 'badcolor
+	  (let ((str (car (preview-format-mml ov))))
+	    (if str
+		(if (eq last-command 'kill-region)
+		    (kill-append str nil)
+		  (kill-new str))
+	      (error "No image file available")))
+	  nil)
+    (let (preview-transparent-border)
+      (preview-regenerate ov))))
 
 (defun preview-copy-region-as-mml (start end)
   (interactive "r")
-  (let (str lst)
-    (dolist (ov (overlays-in start end))
-      (and (setq str (preview-format-mml ov))
-	   (>= (overlay-start ov) start)
-	   (<= (overlay-end ov) end)
-	   (push (list (- (overlay-start ov) start)
-		       (- (overlay-end ov) start)
-		       str) lst)))
-    (setq str (buffer-substring start end))
-    (dolist (elt (nreverse (sort lst #'car-less-than-car)))
-      (setq str (concat (substring str 0 (nth 0 elt))
-			(nth 2 elt)
-			(substring str (nth 1 elt)))))
-    (if (eq last-command 'kill-region)
-	(kill-append str nil)
-      (kill-new str))))
+  (when (catch 'badcolor
+	  (let (str lst dont-ask)
+	    (dolist (ov (overlays-in start end))
+	      (when (setq str (preview-format-mml ov dont-ask))
+		(setq dont-ask (cdr str))
+		(and
+		 (>= (overlay-start ov) start)
+		 (<= (overlay-end ov) end)
+		 (push (list (- (overlay-start ov) start)
+			     (- (overlay-end ov) start)
+			     (car str)) lst))))
+	    (setq str (buffer-substring start end))
+	    (dolist (elt (nreverse (sort lst #'car-less-than-car)))
+	      (setq str (concat (substring str 0 (nth 0 elt))
+				(nth 2 elt)
+				(substring str (nth 1 elt)))))
+	    (if (eq last-command 'kill-region)
+		(kill-append str nil)
+	      (kill-new str)))
+	  nil)
+    (let (preview-transparent-border)
+      (preview-region start end))))
 
-(defun preview-format-mml (ov)
+(defun preview-format-mml (ov &optional dont-ask)
   "Return an MML representation of OV as string.
 This can be used to send inline images in mail and news when
 using MML mode.  If there is nothing current available,
-NIL is returned."
+NIL is returned.  If the image has a colored border and the
+user wants it removed when asked (unless DONT-ASK is set),
+'badcolor is thrown a t.  The MML is returned in the car of the
+result, DONT-ASK in the cdr."
   (and (memq (overlay-get ov 'preview-state) '(active inactive))
        (not (overlay-get ov 'queued))
        (let* ((text (with-current-buffer (overlay-buffer ov)
@@ -2137,19 +2150,26 @@ NIL is returned."
 	      (type (progn (require 'mailcap)
 			   (mailcap-extension-to-mime
 			    (file-name-extension file)))))
-	 (format "<#part %s
+	 (and (not dont-ask)
+	      (nth 3 (cdr (overlay-get ov 'preview-image)))
+	      (if (y-or-n-p "Replace colored borders? ")
+		  (throw 'badcolor t)
+		(setq dont-ask t)))
+	 (cons
+	  (format "<#part %s
 description=\"%s\"
 filename=%s>
 <#/part>"
-		 (if type
-		     (format "type=\"%s\" disposition=inline" type)
-		   "disposition=attachment")
-		 (if (string-match "[\n\"]" text)
-		     "preview-latex image"
-		   text)
-		 (if (string-match "[ \n<>]" file)
-		     (concat "\"" file "\"")
-		   file)))))
+		  (if type
+		      (format "type=\"%s\" disposition=inline" type)
+		    "disposition=attachment")
+		  (if (string-match "[\n\"]" text)
+		      "preview-latex image"
+		    text)
+		  (if (string-match "[ \n<>]" file)
+		      (concat "\"" file "\"")
+		    file))
+	  dont-ask))))
 
 (defun preview-active-contents (ov)
   "Check whether we have a valid image associated with OV."
@@ -2324,13 +2344,13 @@ will not get matched, usually."
 					     (match-end 0)))
 			 "\\|"
 			 (char-to-string
-			  (logxor (aref (string (match-beginning 2))) 64))
+			  (logxor (aref string (match-beginning 2)) 64))
 			 "\\)")
 		      (char-to-string
 		       (string-to-number (match-string 1 string) 16))))
 	    string (substring string (match-end 0))))
     (setq output (concat output (regexp-quote string)))
-    (if (fboundp 'decode-coding-string)
+    (if (featurep 'mule)
 	(decode-coding-string output buffer-file-coding-system)
       output)))
 
@@ -2647,25 +2667,27 @@ name(\\([^)]+\\))\\)\\|\
 				  snippet)) "Parser"))))))))
 	  (preview-call-hook 'close (car open-data) close-data))))))
 
-(defun preview-get-geometry (buff)
+(defun preview-get-geometry ()
   "Transfer display geometry parameters from current display.
-Those are put in local variables `preview-scale',
-`preview-resolution' and `preview-colors'.  Calculation
-is done in source buffer specified by BUFF."
-  (let (scale res colors)
-    (condition-case err
-	(with-current-buffer buff
-	  (setq scale (preview-hook-enquiry preview-scale-function)
-		res (cons (/ (* 25.4 (display-pixel-width))
-			     (display-mm-width))
-			  (/ (* 25.4 (display-pixel-height))
-			     (display-mm-height)))
-		colors (preview-get-colors)))
-      (error (error "Display geometry unavailable: %s"
-		    (error-message-string err))))
-    (setq preview-scale scale)
-    (setq preview-resolution res)
-    (setq preview-colors colors)))
+Returns list of scale, resolution and colors.  Calculation
+is done in current buffer."
+  (condition-case err
+      (list (preview-hook-enquiry preview-scale-function)
+	    (cons (/ (* 25.4 (display-pixel-width))
+		     (display-mm-width))
+		  (/ (* 25.4 (display-pixel-height))
+		     (display-mm-height)))
+	    (preview-get-colors))
+    (error (error "Display geometry unavailable: %s"
+		  (error-message-string err)))))
+
+(defun preview-set-geometry (geometry)
+  "Set geometry variables from GEOMETRY.
+Buffer-local `preview-scale', `preview-resolution',
+and `preview-colors' are set as given."
+  (setq preview-scale (nth 0 geometry)
+	preview-resolution (nth 1 geometry)
+	preview-colors (nth 2 geometry)))
 
 (defun preview-start-dvipng ()
   "Start a DviPNG process.."
@@ -2986,7 +3008,8 @@ REGION-P is the region flag, FILE is the file, REPLACEMENTS
 is either `preview-LaTeX-command-replacements' or
 `preview-dump-replacements'."
   (setq TeX-current-process-region-p region-p)
-  (let* ((commandbuff (current-buffer))
+  (let* ((geometry (preview-get-geometry))
+	 (commandbuff (current-buffer))
 	 (pr-file (cons
 		   (if TeX-current-process-region-p
 		       'TeX-region-file
@@ -3019,18 +3042,22 @@ is either `preview-LaTeX-command-replacements' or
 		    ',pr-file ,commandbuff
 		    ',dumped-cons
 		    ',master
+		    ',geometry
 		    (prog1
 			(buffer-string)
 		      (set-buffer ,commandbuff))))))
       (TeX-inline-preview-internal command file
-				   pr-file commandbuff dumped-cons master))))
+				   pr-file commandbuff
+				   dumped-cons master
+				   geometry))))
 
 (defun TeX-inline-preview-internal (command file pr-file
 				    commandbuff dumped-cons master
+				    geometry
 				    &optional str)
   "See doc of `TeX-inline-preview'.
 Should explain meaning of COMMAND, FILE, and
-PR-FILE; COMMANDBUFF, DUMPED-CONS and MASTER are
+PR-FILE; COMMANDBUFF, DUMPED-CONS, MASTER, and GEOMETRY are
 internal parameters, STR may be a log to insert into the current log."
   (let*
       ((preview-format-name (preview-dump-file-name
@@ -3045,13 +3072,12 @@ internal parameters, STR may be a log to insert into the current log."
     (condition-case err
 	(progn
 	  (when str
-	    (with-current-buffer (process-buffer process)
-	      (save-excursion
-		(goto-char (point-min))
-		(insert str)
-		(when (= (process-mark process) (point-min))
-		  (set-marker (process-mark process) (point))))))
-	  (preview-get-geometry commandbuff)
+	    (save-excursion
+	      (goto-char (point-min))
+	      (insert str)
+	      (when (= (process-mark process) (point-min))
+		(set-marker (process-mark process) (point)))))
+	  (preview-set-geometry geometry)
 	  (setq preview-gs-file pr-file)
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
 	  (when (featurep 'mule)
@@ -3068,7 +3094,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.223 $"))
+	(rev "$Revision: 1.224 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3079,7 +3105,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-25 16:26:06 $"))
+    (let ((date "$Date: 2005-01-26 02:21:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
