@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.32 1994-10-27 12:50:54 amanda Exp $
+;; Version: $Id: tex.el,v 5.33 1994-10-28 21:03:01 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -257,6 +257,12 @@ Full documentation will be available after autoloading the function."
 (autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
 
+;;; Portability.
+
+;; An GNU Emacs 19 function.
+(or (fboundp 'set-text-properties)
+    (fset 'set-text-properties (symbol-function 'ignore)))
+
 ;;; Special support for Emacs 18
 
 (cond ((< (string-to-int emacs-version) 19)
@@ -378,9 +384,6 @@ The value is actually the tail of LIST whose car is ELT."
   (while (and list (not (equal elt (car list))))
     (setq list (cdr list)))
   list)
-
-;; An Emacs 19 function.
-(fset 'set-text-properties (symbol-function 'ignore))
 
 ;; Easymenu.
 
