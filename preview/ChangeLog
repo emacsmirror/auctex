@@ -1,3 +1,7 @@
+2001-10-04  David Kastrup  <David.Kastrup@t-online.de>
+
+	* PROBLEMS: be more specific about GhostScript errors
+
 2001-10-03  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-delete-file): remove dont-register
