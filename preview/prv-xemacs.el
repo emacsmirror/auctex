@@ -485,6 +485,24 @@ Pure borderless black-on-white will return NIL."
           (mapcar #'preview-gs-color-value fg)
           '("setrgbcolor"))))))
 
+(defun preview-dvipng-get-colors ()
+  "Return color setup tokens for dvipng.
+Fetches the current screen colors and makes a list of options
+suitable for passing to dvipng.
+Pure borderless black-on-white will return an empty string."
+  (let
+      ((bg (color-instance-rgb-components (preview-inherited-face-attribute
+             'preview-reference-face :background 'default)))
+       (fg (color-instance-rgb-components (preview-inherited-face-attribute
+                                           'preview-reference-face :foreground 'default))))
+    (append
+     (unless (equal '(65535 65535 65535) bg)
+       (append
+	'("--bg 'rgb") (mapcar #'preview-gs-color-value bg) '("'")))
+     (unless (equal '(0 0 0) fg)
+       (append
+	'("--fg 'rgb") (mapcar #'preview-gs-color-value fg) '("'"))))))
+
 (defcustom preview-use-balloon-help t
   "*Is balloon help enabled in preview-latex?"
   :group 'preview-appearance
