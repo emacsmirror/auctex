@@ -1,13 +1,13 @@
 # This diversion attempts to save the locale variables
 # before configure overwrites them.  It's needed for the 
 # 8-bit LaTeX test below.  This test only works with
-# autoconf 2.13
-AC_DIVERT_PUSH(AC_DIVERSION_INIT)dnl
+# autoconf 2.52
+AC_DIVERT_PUSH(DEFAULTS)dnl
 [MY_LANG=$LANG
- MY_LC_CTYPE=$LC_CTYPE]
+MY_LC_CTYPE=$LC_CTYPE]
 AC_DIVERT_POP()
 
-AC_INIT(preview.el)
+AC_INIT(preview-latex,0.6.1,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
@@ -74,14 +74,9 @@ dnl Check to see if specific drivers are built in.  Need table of mappings, with
 AC_PATH_PROG_REQUIRED(LATEX, latex, [LaTeX not found, aborting!
 You must install LaTeX for preview to work.])
 
-# Restore the locale variables saved on startup
-LANG=$MY_LANG
-LC_CTYPE=$MY_LC_CTYPE
-export LANG
-export LC_CTYPE
-
 if test "$ENABLE8BIT"x = truex ; then
     AC_MSG_CHECKING([if LaTeX is installed 8-bit clean])
+# Restore the locale variables saved on startup
     LANG=$MY_LANG
     LC_CTYPE=$MY_LC_CTYPE
     export LANG
