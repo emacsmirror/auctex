@@ -1,3 +1,9 @@
+2004-06-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/mdwlist.el: New header.
+	(TeX-add-style-hook): Add support for \makecompactlist, \suspend,
+	and \resume.
+
 2004-06-14  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-pin-region): Don't balk at unpinning if there
