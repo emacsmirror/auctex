@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.1 1994-04-07 21:07:53 amanda Exp $
+;; Version: $Id: latex.el,v 5.2 1994-04-13 12:55:50 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -946,9 +946,15 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 
 (TeX-auto-add-type "label" "LaTeX")
 (TeX-auto-add-type "bibitem" "LaTeX")
-(TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
 (TeX-auto-add-type "environment" "LaTeX")
+(TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
 
+(fset 'LaTeX-add-bibliographies-auto
+      (symbol-function 'LaTeX-add-bibliographies))
+(defun LaTeX-add-bibliographies (&rest bibliographies)
+  "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
+  (apply 'LaTeX-add-bibliographies-auto bibliographies)
+  (apply 'TeX-run-style-hooks bibliographies))
 
 ;;; Macro Argument Hooks
 
@@ -1145,7 +1151,7 @@ If nil, AUC TeX will search for them.")
 
 If nil, AUC TeX will search for them.")
 
-(defun TeX-arg-bibligraphy (optional &optional prompt)
+(defun TeX-arg-bibliography (optional &optional prompt)
   "Prompt for a BibTeX database file."
   (message "Searching for BibTeX files...")
   (or BibTeX-global-files
@@ -1160,8 +1166,10 @@ If nil, AUC TeX will search for them.")
 						      t t))
 		      BibTeX-global-files))))
     (TeX-argument-insert file optional)
-    (if (not (string-equal file ""))
-	(LaTeX-add-bibliographies (TeX-split-string "," file)))))
+    (if (string-equal file "")
+	()
+      (let ((styles (TeX-split-string "," file)))
+	(LaTeX-add-bibliographies styles)))))
 
 (defun TeX-arg-corner (optional &optional prompt)
   "Prompt for a LaTeX side or corner position with completion."
@@ -1608,7 +1616,7 @@ The point is supposed to be at the beginning of the current line."
 ;;; Mode
 
 (defvar LaTeX-version "2"
-  ~LaTeX version.  Currently recognized is \"2\" and \"2e\".)
+  "LaTeX version.  Currently recognized is \"2\" and \"2e\".")
 
 (defvar TeX-arg-cite-note-p nil
   "*If non-nil, ask for optional note in citations.")
@@ -1820,7 +1828,7 @@ Otherwise, only ask in description environments.")
      TeX-arg-cite)
    '("nocite" TeX-arg-cite)
    '("bibliographystyle" TeX-arg-bibstyle)
-   '("bibliography" TeX-arg-bibligraphy)
+   '("bibliography" TeX-arg-bibliography)
    '("footnote"
      (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
      t)

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.62 1994-04-08 20:08:45 amanda Exp $
+;; $Id: tex-buf.el,v 1.63 1994-04-13 12:55:54 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -73,7 +73,6 @@ Return non-nil if document need to be re-TeX'ed."
 (defun TeX-command-master ()
   "Run command on the current document."
   (interactive)
-  (setq TeX-current-process-region-p nil)
   (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file))
 
 (defvar TeX-command-region-begin nil)
@@ -101,7 +100,6 @@ If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The documents trailer is
 all text after TeX-trailer-start."
   (interactive "P")
-  (setq TeX-current-process-region-p t)
   (let ((command (TeX-command-query (TeX-region-file))))
     (if (null (nth 4 (assoc command TeX-command-list)))
 	()
@@ -207,6 +205,7 @@ the extension to use on the file.
 
 Use the information in TeX-command-list to determine how to run the
 command."
+  (setq TeX-current-process-region-p (eq file 'TeX-region-file))
   (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
 				     file))
 	(hook (nth 2 (assoc name TeX-command-list)))

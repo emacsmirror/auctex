@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.2 1994-04-08 20:08:51 amanda Exp $
+;; Version: $Id: tex.el,v 5.3 1994-04-13 12:56:07 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -40,7 +40,7 @@
 Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
-(autoload 'TeX-help-error "tex-buf" no-doc nil)
+(autoload 'TeX-region-create "tex-buf" no-doc nil)
 (autoload 'LaTeX-common-initialization "latex" no-doc nil)
 
 ;;; Buffer
@@ -961,11 +961,12 @@ separate type of information in the parser."
     (make-variable-buffer-local change)
     (set change nil)
     (fset add (list 'lambda '(&rest entries)
-		    (concat "Add information about" (upcase name)
+		    (concat "Add information about " (upcase name)
 			    " to the current buffer.")
 		    (list 'TeX-auto-add-information name 'entries)))
     (fset local (list 'lambda nil
-		      (concat "List of " name " active in the current buffer.")
+		      (concat "List of " names
+			      " active in the current buffer.")
 		      (list 'TeX-auto-list-information name)))
     (add-hook 'TeX-remove-style-hook
 	      (list 'lambda nil (list 'setq (symbol-name local) nil)))))
@@ -1140,8 +1141,8 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (insert ")))\n\n")
 	  (save-buffer 0)
 	  (kill-buffer (current-buffer))))
-    (if (file-exists-p (concat "file" "c"))
-	(delete-file (concat "file" "c")))
+    (if (file-exists-p (concat file "c"))
+	(delete-file (concat file "c")))
     (if (file-exists-p file)
 	(delete-file file))))
 
@@ -1221,7 +1222,7 @@ It will setup BibTeX to store keys in an auto file."
 (defvar BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+[{(][ \t]*\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)"
-     1 TeX-auto-bibitem))
+     1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 (defvar TeX-auto-prepare-hook nil
@@ -1552,6 +1553,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 		  (mark))
 	     (let ((begin (min (point) (mark)))
 		   (end (max (point) (mark))))
+	       (setq TeX-current-process-region-p t)
 	       (TeX-region-create (TeX-region-file "tex")
 				  (buffer-substring begin end)
 				  (file-name-nondirectory (buffer-file-name))

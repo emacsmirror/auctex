@@ -54,15 +54,15 @@
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
       (1 3) TeX-auto-env-args)
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1
-      TeX-auto-environment)
-     ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\cj\\)+\\)}" 1 TeX-auto-environment)
+      LaTeX-auto-environment)
+     ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\cj\\)+\\)}" 1 LaTeX-auto-environment)
      ("\\\\input{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
      ("\\\\include{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
      ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}" 1
-      TeX-auto-bibitem)
+      LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}"
-      1 TeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 TeX-auto-bibliography))
+      1 LaTeX-auto-bibitem)
+     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
@@ -86,7 +86,7 @@
 (defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)" 1
-     TeX-auto-bibitem))
+     LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 ))
@@ -102,15 +102,15 @@
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
       (1 3) TeX-auto-env-args)
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1
-      TeX-auto-environment)
-     ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\z\\)+\\)}" 1 TeX-auto-environment)
+      LaTeX-auto-environment)
+     ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\z\\)+\\)}" 1 LaTeX-auto-environment)
      ("\\\\input{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
      ("\\\\include{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
      ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}" 1
-      TeX-auto-bibitem)
+      LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}"
-      1 TeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 TeX-auto-bibliography))
+      1 LaTeX-auto-bibitem)
+     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
@@ -134,7 +134,7 @@
 (defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)" 1
-     TeX-auto-bibitem))
+     LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 ))

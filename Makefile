@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.86 1994-04-07 21:16:30 amanda Exp $
+# $Id: Makefile,v 5.87 1994-04-13 12:55:41 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -59,7 +59,8 @@ BATCH=$(EMACS) -batch -q lpath.el -f eval-current-buffer
 ELC= $(BATCH) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -l $(aucdir)/tex-auto.elc -f TeX-auto-generate-global
+AUTO= $(EMACS) -batch -q -l $(aucdir)/tex-site.elc -l $(aucdir)/tex.elc \
+	-l $(aucdir)/latex.elc -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
 AUTOC= $(ELC)
@@ -92,7 +93,7 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  README
+REMOVE =  doc/ref-card.texi out-xtra.el
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    easymenu.el min-map.el  ltx-math.el \
@@ -119,7 +120,7 @@ LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
-	doc/changes.texi doc/ref-card.tex doc/math-ref.tex
+	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex
 
 EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile tex-jp.el lpath.el
 
@@ -192,7 +193,7 @@ install-auto:
 	@echo "**********************************************************"
 	@echo "** You may want to print the following files:  "
 	@echo "**    doc/auc-tex.dvi"
-	@echo "**    doc/ref-card.dvi"
+	@echo "**    doc/tex-ref.dvi"
 	@echo "** Now edit .emacs according to the documentation       **"
 	@echo "**********************************************************"
 	@echo
