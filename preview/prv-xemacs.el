@@ -26,7 +26,12 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'overlay))
+
 (eval-and-compile
+  (defvar preview-compatibility-macros nil
+    "List of macros only present when compiling/loading.")
+
   (defmacro preview-defmacro (name &rest rest)
     (unless (fboundp name)
       (push name preview-compatibility-macros)
@@ -51,10 +56,9 @@
 		    (error "Know only how to fake face-height"))
 		  `(face-height ,face))
 
-(eval-and-compile
-  (when (not (fboundp 'find-image))
-    (defun find-image (specs)
-      "Find an image, choosing one of a list of image specifications.
+(unless (fboundp 'find-image)
+  (defun find-image (specs)
+    "Find an image, choosing one of a list of image specifications.
 
 SPECS is a list of image specifications.
 
@@ -69,39 +73,38 @@ specification to be returned.  Return nil if no specification is
 satisfied.
 
 The image is looked for first on `load-path' and then in `data-directory'."
-      (let (image)
-	(while (and specs (null image))
-	  (let* ((spec (car specs))
-		 (type (plist-get spec :type))
-		 (data (plist-get spec :data))
-		 (file (plist-get spec :file))
-		 found)
-	    (when (if (fboundp 'valid-image-instantiator-format-p)
-		      (valid-image-instantiator-format-p type)
-		    (image-type-available-p type))
-	      (cond ((stringp file)
-		     (let ((path load-path))
-		       (while (and (not found) path)
-			 (let ((try-file (expand-file-name file (car path))))
-			   (when (file-readable-p try-file)
-			     (setq found try-file)))
-			 (setq path (cdr path)))
-		       (unless found
-			 (let ((try-file (expand-file-name file data-directory)))
-			   (if (file-readable-p try-file)
-			       (setq found try-file))))
-		       (if found
-			   (setq image
-				 (cons 'image (plist-put (copy-sequence spec)
-							 :file found))))))
-		    ((not (null data))
-		     (setq image (cons 'image spec)))))
-	    (setq specs (cdr specs))))
-	image)))
+    (let (image)
+      (while (and specs (null image))
+	(let* ((spec (car specs))
+	       (type (plist-get spec :type))
+	       (data (plist-get spec :data))
+	       (file (plist-get spec :file))
+	       found)
+	  (when (if (fboundp 'valid-image-instantiator-format-p)
+		    (valid-image-instantiator-format-p type)
+		  (image-type-available-p type))
+	    (cond ((stringp file)
+		   (let ((path load-path))
+		     (while (and (not found) path)
+		       (let ((try-file (expand-file-name file (car path))))
+			 (when (file-readable-p try-file)
+			   (setq found try-file)))
+		       (setq path (cdr path)))
+		     (unless found
+		       (let ((try-file (expand-file-name file data-directory)))
+			 (if (file-readable-p try-file)
+			     (setq found try-file))))
+		     (if found
+			 (setq image
+			       (cons 'image (plist-put (copy-sequence spec)
+						       :file found))))))
+		  ((not (null data))
+		   (setq image (cons 'image spec)))))
+	  (setq specs (cdr specs))))
+      image)))
   
-  (when (not (fboundp 'defimage))
-    (defmacro defimage (symbol specs &optional doc)
-      "Define SYMBOL as an image.
+(preview-defmacro defimage (symbol specs &optional doc)
+  "Define SYMBOL as an image.
 
 SPECS is a list of image specifications.  DOC is an optional
 documentation string.
@@ -119,7 +122,7 @@ Example:
 
    (defimage test-image ((:type xpm :file \"~/test1.xpm\")
                          (:type xbm :file \"~/test1.xbm\")))"
-      `(defvar ,symbol (find-image ',specs) ,doc))))
+      `(defvar ,symbol (find-image ',specs) ,doc))
 
 (preview-defmacro make-temp-file (prefix dir-flag)
 		  (if (not dir-flag)
@@ -128,8 +131,7 @@ Example:
 		     (while (condition-case ()
 				(progn
 				  (setq file
-					(make-temp-name
-					 (expand-file-name ,prefix temporary-file-directory)))
+					(make-temp-name ,prefix))
 				  (make-directory file)
 				  nil)
 			      (file-already-exists t))
