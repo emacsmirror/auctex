@@ -1,5 +1,8 @@
 2002-04-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-install.el (preview-make-package): Avoid Emacs
+	unnecessarily loading all command line arguments as files.
+
 	* prv-xemacs.el (preview-click-reroute): New routine to
 	discriminate between clicks on glyphs or else.
 	(preview-make-reroute): Generate a reroute map from original
