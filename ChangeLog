@@ -1,3 +1,8 @@
+2004-05-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-doctex-^^A): Add mistakenly deleted
+	space again.
+
 2004-05-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/graphicx.el (TeX-string-divide-number-unit): Renamed from
