@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.49 2001-11-20 11:19:40 dakas Exp $
+;; $Id: preview.el,v 1.50 2001-12-03 13:55:44 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -767,17 +767,20 @@ a hook in some cases"
 	(file-error nil)))
     (overlay-put ovr 'filenames nil)))
 
-(defun preview-clearout (&optional start end)
+(defun preview-clearout (&optional start end keep-dir)
   "Clear out all previews in the current region.
 When called interactively, the current region is used.
 Non-interactively, the region between START and END is
 affected.  Those two values default to the borders of
-the entire buffer."
+the entire buffer.  If KEEP-DIR is set to a value from
+`TeX-active-tempdir', previews associated with that
+directory are kept."
   (interactive "r")
   (dolist (ov (overlays-in (or start 1)
 			   (or end (1+ (buffer-size)))))
-    (if (overlay-get ov 'preview-state)
-	(preview-delete ov))))
+    (and (overlay-get ov 'preview-state)
+	 (not (rassq keep-dir (overlay-get ov 'filenames)))
+	 (preview-delete ov))))
 
 (defun preview-clearout-buffer (&optional buffer)
   "Clearout BUFFER from previews, current buffer if nil."
@@ -863,7 +866,7 @@ This generates the EPS filename used in `TeX-active-tempdir'
 snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
-	      (preview-clearout start end)
+	      (preview-clearout start end TeX-active-tempdir)
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
@@ -1303,7 +1306,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.49 $"))
+	(rev "$Revision: 1.50 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
