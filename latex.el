@@ -550,7 +550,8 @@ It may be customized with the following variables:
 	(LaTeX-newline)
 	(goto-char (mark))
 	(unless (TeX-looking-at-backward
-		  (if LaTeX-insert-into-comments
+		  (if (and LaTeX-insert-into-comments
+                           (TeX-in-commented-line))
 		      (concat "^" comment-start-skip "[ \t]*")
 		    "^[ \t]*"))
 	    (LaTeX-newline))
@@ -562,7 +563,8 @@ It may be customized with the following variables:
 	(or (assoc environment LaTeX-indent-environment-list)
 	    (LaTeX-fill-environment nil)))
     (unless (TeX-looking-at-backward
-	     (if LaTeX-insert-into-comments
+	     (if (and LaTeX-insert-into-comments
+                      (TeX-in-commented-line))
 		 (concat "^" comment-start-skip "[ \t]*")
 	       "^[ \t]*"))
       (LaTeX-newline))
