@@ -199,23 +199,13 @@ dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
 dnl adapted from w3.
 
 AC_DEFUN(EMACS_LISP, [
-elisp="$2"
-if test -z "$3"; then
-	AC_MSG_CHECKING(for $1)
-fi
-AC_CACHE_VAL(EMACS_cv_SYS_$1,[
-	OUTPUT=./conftest-$$
-	echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-	${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-	retval="`cat ${OUTPUT}`"
-	echo "=> ${retval}" >& AC_FD_CC 2>&1
-	rm -f ${OUTPUT}
-	EMACS_cv_SYS_$1=$retval
-])
-$1=${EMACS_cv_SYS_$1}
-if test -z "$3"; then
-	AC_MSG_RESULT($$1)
-fi
+  elisp="$2"
+  OUTPUT=./conftest-$$
+  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  $1="`cat ${OUTPUT}`"
+  echo "=> ${1}" >& AC_FD_CC 2>&1
+  rm -f ${OUTPUT}
 ])
 
 
@@ -245,7 +235,7 @@ fi
 
 AC_MSG_CHECKING([if $EMACS is XEmacs])
 EMACS_LISP(XEMACS,
-	[(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\")],quiet)
+	[(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\")])
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
 else
@@ -261,53 +251,66 @@ fi
 ])
 
 
+AC_DEFUN(EMACS_TEST_LISPDIR, [
+  for i in "\${packagedir}/lisp" \
+           "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
+           "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
+           "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
+           "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp"; do
+    lispdir="$i"
+    AC_FULL_EXPAND(i)
+    EMACS_LISPDIR=""
+    EMACS_LISP(EMACS_LISPDIR,
+      [(let ((load-path load-path))
+         (while (and load-path (not (string-match \"^${i}/?\$\" (car load-path))))
+                (setq load-path (cdr load-path))) 
+         (if load-path \"yes\" \"no\"))])
+    if test "$EMACS_LISPDIR" = "yes"; then
+      break
+    fi
+  done
+  if test "$EMACS_LISPDIR" = "no"; then
+    lispdir="NONE"
+  fi
+])
+
+
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-     [  --with-lispdir=DIR      Where to install lisp files], 
-     lispdir="${withval}",
-     [EMACS_PREFIX="${prefix}"	
-     if test "$EMACS_PREFIX" = "NONE"; then
-        EMACS_LISP(EMACS_PREFIX,
-                   (expand-file-name \"..\" invocation-directory), silent)
+    [  --with-lispdir=DIR      Where to install lisp files], 
+    [lispdir="${withval}"],
+    [
+     # Save prefix
+     oldprefix=${prefix}
+     if test "${prefix}" = "NONE"; then
+       # Set prefix temporarily
+       prefix="${ac_default_prefix}"
      fi
-     EMACS_DATADIR="${EMACS_PREFIX}/\\\\(share\\\\|lib\\\\)"
-     if test $EMACS_FLAVOR = emacs; then
-        if test "$datadir" != '${prefix}/share'; then
-           EMACS_DATADIR="$datadir"
-        fi
-	EMACS_LISPDIR="${EMACS_DATADIR}/emacs/site-lisp"
+     # Test paths relative to prefixes
+     EMACS_TEST_LISPDIR
+     if test "$lispdir" = "NONE"; then
+       # No? Test paths relative to binary
+       EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+       EMACS_TEST_LISPDIR
+       AC_FULL_EXPAND(lispdir)
      fi
-     if test $EMACS_FLAVOR = xemacs; then
-        if test "$libdir" != '${exec_prefix}/lib'; then
-	   EMACS_DATADIR="$libdir"
-        fi
-	EMACS_LISPDIR="${EMACS_DATADIR}/xemacs/site-packages/lisp"
-        if test -n "$packagedir"; then
-  	   EMACS_LISPDIR="$packagedir/lisp"
-        fi
-     fi
-     EMACS_LISP(lispdir,
-        [(let ((load-path load-path))
-            (while (and load-path (not (string-match 
-                  		\"^${EMACS_LISPDIR}/?\$\" (car load-path))))
-                   (setq load-path (cdr load-path))) 
-            (if load-path 
-                (substring (car load-path) 0 
-			   (string-match \"/\$\" (car load-path))) 
-		\"\"))], silent)
-     if test -z "$lispdir"; then
-	AC_MSG_ERROR([Cannot locate lisp directory
-
-Use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
+     if test "$lispdir" = "NONE"; then
+       # No? notify user.
+       AC_MSG_ERROR([Cannot locate lisp directory,
+use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
 --libdir (xemacs), or possibly --prefix to rectify this])
      fi
      if test -n "$1"; then 
-        lispdir="$lispdir/$1"
-     fi])
+       lispdir="$lispdir/$1"
+     fi
+     # Restore prefix
+     prefix=${oldprefix}
+    ])
   AC_MSG_RESULT($lispdir)
-  AC_SUBST(lispdir)]
-)
+  AC_SUBST(lispdir)
+])
+
 
 AC_DEFUN(AC_CHECK_PROG_REQUIRED, [
 AC_CHECK_PROG($1, $2, NONE)
@@ -374,13 +377,13 @@ library=`echo $1 | tr _ -`
 EMACS_LISP($1, 
 	[(condition-case nil (require '$library ) \
 	(error (prog1 nil (message \"$library not found\"))))],"noecho")
-if test "${EMACS_cv_SYS_$1}" = "nil"; then
-	EMACS_cv_SYS_$1=no
+if test "$$1" = "nil"; then
+  	$1=no
 fi
-if test "${EMACS_cv_SYS_$1}" = "$library"; then
-	EMACS_cv_SYS_$1=yes
+if test "$$1" = "$library"; then
+	$1=yes
 fi
-HAVE_$1=${EMACS_cv_SYS_$1}
+HAVE_$1=$$1
 AC_SUBST(HAVE_$1)
 if test -z "$2"; then
 	AC_MSG_RESULT($HAVE_$1)
@@ -388,7 +391,7 @@ fi
 ])
 
 dnl
-dnl Perform sanity checking and try to locate the W3 package
+dnl Perform sanity checking and try to locate the auctex package
 dnl
 AC_DEFUN(EMACS_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
@@ -403,33 +406,20 @@ if test -z "$auctexdir" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
   EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
-  	EMACS_cv_ACCEPTABLE_AUCTEX=yes
-  else
-	EMACS_cv_ACCEPTABLE_AUCTEX=no
-  fi
-
-  if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
-	EMACS_LISP(auctex_dir, 
-		[(let ((aucdir (file-name-directory\
-                         (locate-library \"tex-site\"))))\
-                         (if (string-match \"[\\\\/]\$\" aucdir)\
-                             (replace-match \"\" t t aucdir)\
-			   aucdir))], 
-		"noecho")
-	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
+    EMACS_LISP(EMACS_cv_ACCEPTABLE_AUCTEX, 
+	[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
+           (if (string-match \"[\\\\/]\$\" aucdir)\
+               (replace-match \"\" t t aucdir)\
+  	       aucdir))], "noecho")
   else
 	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  
 Check the PROBLEMS file for details.])
   fi
   ])
-   auctexdir=${EMACS_cv_ACCEPTABLE_AUCTEX}
+  auctexdir=${EMACS_cv_ACCEPTABLE_AUCTEX}
 fi
-
-   AC_MSG_RESULT(${auctexdir})
-   #echo ${auctexdir}
-   #  [echo ${auctexdir} | sed 's/\\/&&/g']
-	#   auctexdir=`echo ${auctexdir} | sed 's/\\\\/&&/g'`
-   AC_SUBST(auctexdir)
+AC_MSG_RESULT(${auctexdir})
+AC_SUBST(auctexdir)
 ])
 
 dnl
