@@ -1,4 +1,27 @@
+2004-08-08  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-run-set-command): Initialize
+	`TeX-output-extension' based on `TeX-PDF-mode'.
+
+	* tex.el (TeX-command-output-list): Don't look at pdf* commands.
+	Don't have default mode "dvi".
+	(VirTeX-common-initialization): Don't add to
+	desktop-locals-to-save locally: that's broken.
+	(desktop): Add stuff into appropriate variables for proper desktop
+	save/restore.
+	(TeX-mode-specific-command-menu-entries, plain-TeX-mode-menu):
+	Reorganize menus.  Add font commands into plain TeX menu.
+
+	* tex-info.el (TeXinfo-mode-menu): Reorganize menu.
+
+	* latex.el (LaTeX-mode-menu): Reorganize menu.
+
+	* context.el (ConTeXt-mode-menu): Reorganize menu.
+
 2004-08-07  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-base-mode-name): Make buffer-local (Doh).
+	(TeX-set-mode-name): Doc fix.
 
 	* doc/todo.texi (Mid-term Goals): Use @previewlatex macro.
 	(Mid-term Goals): New entries.  Should some of them be moved to

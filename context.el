@@ -1270,12 +1270,6 @@ There might be text before point."
 	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
-	["Next Error" TeX-next-error t]
-	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	       :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	(list "Commenting"
 	      ["Comment or Uncomment Region"
 	       TeX-comment-or-uncomment-region t]
@@ -1300,18 +1294,22 @@ There might be text before point."
 	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
 	       :keys "C-c C-o C-c"])
 	"-"
-	(list "AUCTeX"
-	      (list "Customize"
-		    ["Browse options"
-		     (customize-group 'AUCTeX)]
-		    ["Extend this menu"
-		     (easy-menu-add-item
-		      nil '("ConTeXt" "AUCTeX")
-		      (customize-menu-create 'AUCTeX))])
-	      ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
+	(list "Multifile/Parsing"
+	      ["Save Document" TeX-save-document t]
+	      ["Switch to Master File" TeX-home-buffer t]
+	      ["Set Master File" TeX-master-file-ask
+	       :active (not (TeX-local-master-p))]
 	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
+	(list "Customize"
+	      ["Browse options"
+	       (customize-group 'AUCTeX)]
+	      ["Extend this menu"
+	       (easy-menu-add-item
+		nil '("ConTeXt")
+		(customize-menu-create 'AUCTeX))])
+	["Documentation" TeX-goto-info-page t]
+	["Submit bug report" TeX-submit-bug-report t]))
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."

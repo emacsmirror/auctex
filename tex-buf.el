@@ -580,7 +580,8 @@ Return the new process."
 (defun TeX-run-set-command (name command)
   "Remember TeX command to use to NAME and set corresponding output extension"
   (setq TeX-command-default name
-	TeX-view-extension nil)
+	TeX-view-extension nil
+	TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (let ((case-fold-search t)
 	(lst TeX-command-output-list))
     (while lst

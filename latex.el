@@ -4046,14 +4046,13 @@ the last entry in the menu."
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "LaTeX"
+	["Macro..." TeX-insert-macro t]
+	["Complete" TeX-complete-symbol t]
 	(list LaTeX-environment-menu-name)
 	(list LaTeX-environment-modify-menu-name)
 	["Close Environment" LaTeX-close-environment t]
-	"-"
-	(LaTeX-section-menu-create)
-	["Macro..." TeX-insert-macro t]
-	["Complete" TeX-complete-symbol t]
 	["Item" LaTeX-insert-item t]
+	(LaTeX-section-menu-create)
 	"-"
 	(list "Insert Font"
 	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
@@ -4077,22 +4076,10 @@ the last entry in the menu."
 	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
-	["Next Error" TeX-next-error t]
-	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	       :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
-	(list "Commenting"
-	      ["Comment or Uncomment Region"
-	       TeX-comment-or-uncomment-region t]
-	      ["Comment or Uncomment Paragraph"
-	       TeX-comment-or-uncomment-paragraph t])
-	(list "Multifile"
-	      ["Switch to Master File" TeX-home-buffer t]
-	      ["Save Document" TeX-save-document t]
-	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))])
+	["Comment or Uncomment Region"
+	 TeX-comment-or-uncomment-region t]
+	["Comment or Uncomment Paragraph"
+	 TeX-comment-or-uncomment-paragraph t]
 	(list "Formatting and Marking"
 	      ["Format Environment" LaTeX-fill-environment t]
 	      ["Format Paragraph" LaTeX-fill-paragraph t]
@@ -4125,25 +4112,28 @@ the last entry in the menu."
 	      ["Show Current Item" TeX-fold-clearout-item
 	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
 	       :keys "C-c C-o C-c"])
-	(list "Miscellaneous"
-	      ["Math Mode" LaTeX-math-mode
-	       :style toggle :selected LaTeX-math-mode ]
-	      [ "Convert 209 to 2e" LaTeX-209-to-2e
-		:active (member "latex2" (TeX-style-list)) ])
+	["Math Mode" LaTeX-math-mode
+	 :style toggle :selected LaTeX-math-mode ]
 	"-"
-	(list "AUCTeX"
-	      (list "Customize"
-		    ["Browse options"
-		     (customize-group 'AUCTeX)]
-		    ["Extend this menu"
-		     (easy-menu-add-item
-		      nil '("LaTeX" "AUCTeX")
-		      (customize-menu-create 'AUCTeX))])
-	      ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
+	(list "Multifile/Parsing"
+	      ["Switch to Master File" TeX-home-buffer t]
+	      ["Save Document" TeX-save-document t]
+	      ["Set Master File" TeX-master-file-ask
+	       :active (not (TeX-local-master-p))]
 	      ["Reset Buffer" TeX-normal-mode t]
 	      ["Reset AUCTeX" (TeX-normal-mode t)
-	       :keys "\\[universal-argument] \\[TeX-normal-mode]"])))
+	       :keys "\\[universal-argument] \\[TeX-normal-mode]"])
+	[ "Convert 209 to 2e" LaTeX-209-to-2e
+	  :visible (member "latex2" (TeX-style-list)) ]
+	(list "Customize"
+	      ["Browse options"
+	       (customize-group 'AUCTeX)]
+	      ["Extend this menu"
+	       (easy-menu-add-item
+		nil '("LaTeX")
+		(customize-menu-create 'AUCTeX))])
+	["Documentation" TeX-goto-info-page t]
+	["Submit bug report" TeX-submit-bug-report t]))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")

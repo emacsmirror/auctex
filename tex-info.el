@@ -141,22 +141,11 @@ When called interactively, prompt for an environment."
 	["Update Every Node" texinfo-every-node-update t]
 	["Update All Menus" texinfo-all-menus-update t]
 	"-"
-	["Next Error" TeX-next-error t]
-	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	        :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	(list "Commenting"
 	      ["Comment or Uncomment Region"
 	       TeX-comment-or-uncomment-region t]
 	      ["Comment or Uncomment Paragraph"
 	       TeX-comment-or-uncomment-paragraph t])
-	(list "Multifile"
-	      ["Save Document" TeX-save-document t]
-	      ["Switch to Master File" TeX-home-buffer t]
-	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))])
 	(list "Show/Hide"
 	      ["Fold Mode" TeX-fold-mode
 	       :style toggle
@@ -176,18 +165,22 @@ When called interactively, prompt for an environment."
 	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
 	       :keys "C-c C-o C-c"])
 	"-"
-	(list "AUCTeX"
-	      (list "Customize"
-		    ["Browse options"
-		     (customize-group 'AUCTeX)]
-		    ["Extend this menu"
-		     (easy-menu-add-item
-		      nil '("Texinfo" "AUCTeX")
-		      (customize-menu-create 'AUCTeX))])
-	      ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
+	(list "Multifile/Parsing"
+	      ["Save Document" TeX-save-document t]
+	      ["Switch to Master File" TeX-home-buffer t]
+	      ["Set Master File" TeX-master-file-ask
+	       :active (not (TeX-local-master-p))]
 	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
+	(list "Customize"
+	      ["Browse options"
+	       (customize-group 'AUCTeX)]
+	      ["Extend this menu"
+	       (easy-menu-add-item
+		nil '("AUCTeX")
+		(customize-menu-create 'AUCTeX))])
+	["Documentation" TeX-goto-info-page t]
+	["Submit bug report" TeX-submit-bug-report t]))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")

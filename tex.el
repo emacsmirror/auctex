@@ -232,10 +232,10 @@ the respective mode names."
 				     (const :tag "AmSTeX" ams-tex-mode))))))
 
 (defcustom TeX-command-output-list
-  '(("\\`pdf[a-z]*tex" "pdf")
+  '(
 ; Add the following line if you want to use htlatex (tex4ht)
 ;    ("\\`htlatex" ("html"))
-    ("." "dvi"))
+    )
   "List of regexps and file extensions.
 
 Each element is a list, whose first element is a regular expression to
@@ -249,6 +249,9 @@ element.  The real file extension will be obtained from the logging output
 if possible, defaulting to the given string.
 If it is a list, the element of the list will be the fixed extension used
 without looking at the logging output.
+
+If this list does not yield an extension, the default is either \"dvi\"
+or \"pdf\", depending on the setting of `TeX-PDF-mode'.
 Extensions must be given without the \".\"."
 
   :group 'TeX-command
@@ -558,7 +561,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.410 $"))
+	(rev "$Revision: 5.411 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -573,7 +576,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-05 13:43:24 $"))
+    (let ((date "$Date: 2004-08-08 17:10:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -610,6 +613,7 @@ In the form of yyyy.mmdd")
 
 (defvar TeX-base-mode-name nil
   "Base name of mode.")
+(make-variable-buffer-local 'TeX-base-mode-name)
 
 (defun TeX-set-mode-name (&optional changed reset)
   "Build and set the mode name.
@@ -619,6 +623,7 @@ helper modes where appropriate.
 If CHANGED is non-nil, it indicates which global mode
 may have changed so that all corresponding buffers
 without a local value might get their name updated.
+A value ot `t' will thus update all buffer names.
 If RESET is non-nil, `TeX-command-next' is reset to
 `TeX-command-default' in affected buffers."
   (if changed
@@ -1924,11 +1929,7 @@ The algorithm is as follows:
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
-
-  ;; Desktop support
-  (if (boundp 'desktop-locals-to-save)
-      (add-to-list 'desktop-locals-to-save 'TeX-master))
-
+  
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
   (make-local-variable 'paragraph-separate)
@@ -1998,6 +1999,17 @@ The algorithm is as follows:
 				 (TeX-master-file nil nil t))
 			       (TeX-update-style)) nil t))
 
+;; desktop-locals-to-save is broken by design.  Don't have
+;; buffer-local values of it.
+
+(eval-after-load 'desktop
+  '(progn
+     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode))
+       (unless (member elt (default-value 'desktop-locals-to-save))
+	 (setq-default desktop-locals-to-save
+		       (cons elt (default-value 'desktop-locals-to-save)))))
+     (add-hook 'desktop-after-read-hook '(lambda ()
+					   (TeX-set-mode-name t)))))
 
 ;;; Plain TeX mode
 
@@ -3051,32 +3063,40 @@ be bound to `TeX-electric-macro'."
 
 (defun TeX-mode-specific-command-menu-entries (mode)
   "Return the entries for a Command menu specific to the major MODE."
-  (append '(("Command on"
-	     [ "Master File" TeX-command-select-master
-	       :keys "C-c C-c" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-master) ]
-	     [ "Buffer" TeX-command-select-buffer
-	       :keys "C-c C-b" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-buffer) ]
-	     [ "Region" TeX-command-select-region
-	       :keys "C-c C-r" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-region) ])
-	    [ "Pin region" TeX-pin-region
+  (append '("Command on"
+	    [ "Master File" TeX-command-select-master
+	      :keys "C-c C-c" :style radio
+	      :selected (eq TeX-command-current 'TeX-command-master) ]
+	    [ "Buffer" TeX-command-select-buffer
+	      :keys "C-c C-b" :style radio
+	      :selected (eq TeX-command-current 'TeX-command-buffer) ]
+	    [ "Region" TeX-command-select-region
+	      :keys "C-c C-r" :style radio
+	      :selected (eq TeX-command-current 'TeX-command-region) ]
+	    [ "Fix the region" TeX-pin-region
 	      :active (or (if prefix-arg
 			      (<= (prefix-numeric-value prefix-arg) 0)
 			    (and (boundp 'TeX-command-region-begin)
 				 (markerp TeX-command-region-begin)))
 			  (TeX-mark-active))
-	      ;; :visible (eq TeX-command-current 'TeX-command-region)
+	      ;;:visible (eq TeX-command-current 'TeX-command-region)
 	      :style toggle
 	      :selected (and (boundp 'TeX-command-region-begin)
 			     (markerp TeX-command-region-begin))]
-	    [ "PDF mode" TeX-PDF-mode
-	      :style toggle :selected TeX-PDF-mode ]
-	    [ "Run Interactively" TeX-interactive-mode
-	      :style toggle :selected TeX-interactive-mode ]
-	    [ "Source specials" TeX-source-specials
-	      :style toggle :selected TeX-source-specials ])
+	    "-"
+	    ["Recenter Output Buffer" TeX-recenter-output-buffer t]
+	    ["Kill Job" TeX-kill-job t]
+	    ["Next Error" TeX-next-error t]
+	    "-"
+	    ("TeXing options"
+	     [ "PDF mode" TeX-PDF-mode
+	       :style toggle :selected TeX-PDF-mode ]
+	     [ "Run Interactively" TeX-interactive-mode
+	       :style toggle :selected TeX-interactive-mode ]
+	     [ "Source specials" TeX-source-specials
+	       :style toggle :selected TeX-source-specials ]
+	     ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	      :style toggle :selected TeX-debug-bad-boxes ]))
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
 	    (mapcar 'TeX-command-menu-entry
 		    (TeX-mode-specific-command-list mode)))))
@@ -3107,19 +3127,40 @@ be bound to `TeX-electric-macro'."
   (list "TeX"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
-	["Next Error" TeX-next-error t]
-	["Kill Job" TeX-kill-job t]
-	["Debug Bad Boxes" TeX-toggle-debug-boxes
-	 :style toggle :selected TeX-debug-bad-boxes ]
-	["Recenter Output Buffer" TeX-recenter-output-buffer t]
+	"-"
+	(list "Insert Font"
+	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+	(list "Replace Font"
+	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+	"-"
+
 	["Comment or Uncomment Region" TeX-comment-or-uncomment-region t]
-	;; ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph t]
-	(list "Multifile"
+	["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph t]
+	"-"
+	(list "Multifile/Parsing"
 	      ["Switch to Master File" TeX-home-buffer t]
 	      ["Save Document" TeX-save-document t]
 	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))])
-	"-"
+	       :active (not (TeX-local-master-p))]
+	      ["Reset Buffer" TeX-normal-mode t]
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
 	(list "Customize"
 	      ["Browse options"
 	       (customize-group 'AUCTeX)]
@@ -3128,9 +3169,7 @@ be bound to `TeX-electric-macro'."
 		nil '("TeX")
 		(customize-menu-create 'AUCTeX))])
 	["Documentation" TeX-goto-info-page t]
-	["Submit bug report" TeX-submit-bug-report t]
-	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+	["Submit bug report" TeX-submit-bug-report t]))
 
 ;;; AmSTeX
 
