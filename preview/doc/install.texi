@@ -113,11 +113,27 @@ system directories.
 
 @section Loading the package
 
-Load it by putting @code{(require 'preview)} into your @file{.emacs}. Be
-sure to have AUC @TeX{} up and working. @kbd{@key{C-c} @key{C-c} g
-@key{RET}} should then give you a graphics preview. You can customize the
-default option set and other settings of the Emacs package by entering
-@kbd{@key{M-x} customize-group @key{RET} preview @key{RET}}.
+You need to place a few lines in your personal .emacs file (or a
+site-wide configuration file).
+
+If you used the option @code{--with-lispdir}, you have to make sure
+that the directory where you installed the lisp files of preview-latex
+is in Emacs' load-path variable.  This could mean, for example, adding
+the line @code{(add-to-list 'load-path "~/elisp/preview")} to your
+@file{.emacs} file.
+
+Next put the following lines into your .emacs file:
+@example
+(autoload 'LaTeX-preview-setup "preview")
+(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+@end example
+
+This will make Emacs load preview.el and let it install itself into
+AUC @TeX{} when you first load a LaTeX file (be sure to have AUC @TeX{}
+up and working). @kbd{@key{C-c} @key{C-c} g @key{RET}} should then give
+you a graphics preview. You can customize the default option set and
+other settings of the Emacs package by entering @kbd{@key{M-x}
+customize-group @key{RET} preview @key{RET}}.
 
 There is a sample file circ.tex which you can use for testing around
 a bit, and which serves as sort of a reference for initial bug
