@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.8 1992-03-23 23:20:23 krab Exp $
+# $Id: Makefile,v 5.9 1992-03-31 03:07:35 krab Exp $
 #
 
 ELISPDIR=/home/local/lib/emacs/local/auctex
@@ -21,16 +21,16 @@ all: $(ELISPDIR) idetex refcard
 $(ELISPDIR): $(ELISPSRC)  Makefile
 	if [ ! -d $(ELISPDIR) ]; then mkdir $(ELISPDIR); fi
 	cp $(ELISPSRC) $(ELISPDIR)
-	(touch /tmp/auc.$$$$;\
-	for EL in $(ELISPSRC); do\
+	(touch /tmp/auc.$$$$; \
+	for EL in $(ELISPSRC); do \
 	echo "(byte-compile-file \"$(ELISPDIR)/$$EL\")" \
               >> /tmp/auc.$$$$; \
 	done; \
 	$(EMACS) -batch -l /tmp/auc.$$$$; \
 	rm -f /tmp/auc.$$$$ )
-	(for EL in $(ELISPSRC); do\
-	chmod 644 $(ELISPDIR)/$${EL}c;\
-	rm $(ELISPDIR)/$$EL;\
+	(for EL in $(ELISPSRC); do \
+	chmod 644 $(ELISPDIR)/$${EL}c; \
+	rm $(ELISPDIR)/$$EL; \
 	done)
 
 idetex: idetex.l
