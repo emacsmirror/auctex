@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{944}
+%\CheckSum{947}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.51 $
+%  \rcskey \version CVS-$Revision: 1.52 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-30 21:42:56 $
+%\rcskey\next $Date: 2002-03-30 22:16:42 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -139,10 +139,10 @@
 %through the use of driver files.
 %\item[|auctex|]  This driver will produce fake error messages at the
 %start and end of every preview environment that enable the Emacs
-%package Preview-\LaTeX\ in connection with AUC~\TeX\ to pinpoint the
+%package \previewlatex\ in connection with AUC~\TeX\ to pinpoint the
 %exact source location where the previews have originated.
 %Unfortunately, there is no other reliable means of passing the
-%current \TeX\ input position %\emph{in} a line to external programs.
+%current \TeX\ input position \emph{in} a line to external programs.
 %In order to make the parsing more robust, this option also switches
 %off quite a few diagnostics that could be misinterpreted.
 %
@@ -154,7 +154,7 @@
 %caters for the most frequently encountered problematic commands.
 %\item[|showlabels|] During the editing process, some people like to
 %see the label names in their equations, figures and the like.  Now if
-%you are using Emacs for editing, and in particular Preview-\LaTeX,
+%you are using Emacs for editing, and in particular \previewlatex,
 %I'd strongly recommend that you check out the ref\TeX\ package which
 %pretty much obliterates the need for this kind of functionality.  If
 %you still want it, standard \LaTeX\ provides it with the |showkeys|
@@ -187,8 +187,8 @@
 %\begin{quote}
 %\raggedright
 %  \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
-%  -dGraphicsAlphaBits=4 -dSAFER -q -dNOPAUSE \meta{inputfile}.ps
-%  -sOutputFile=\meta{outputfile}\%d.png}
+%    -dGraphicsAlphaBits=4 -dSAFER -q -dNOPAUSE
+%    -sOutputFile=\meta{outputfile}\%d.png} \meta{inputfile}.ps
 %\end{quote}
 %will be able to produce tight graphics from a single PostScript file
 %generated with Dvips \emph{without} use of the options |-E -i|, in a
@@ -323,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.51 $
+   \reserved@a\reserved@b CVS-$Revision: 1.52 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-30 21:42:56 $
+\reserved@a\next $Date: 2002-03-30 22:16:42 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1036,7 +1036,7 @@
 %own purposes.  Since debugging output is potentially confusing to the
 %error message parsing from AUC~TeX, you should not turn on
 %|\tracingonline| or switch from |\nonstopmode| unless you are certain
-%your package will never be used with Preview-\LaTeX.
+%your package will never be used with \previewlatex.
 %
 %\paragraph{The \texttt{showbox} option} will generate diagnostic
 %output for every produced box.  It does not
@@ -1163,7 +1163,7 @@
 %\subsection{The \texttt{showlabels} option}
 %During the editing process, some people like to see the label names
 %in their equations, figures and the like.  Now if you are using Emacs
-%for editing, and in particular Preview-\LaTeX, I'd strongly recommend
+%for editing, and in particular \previewlatex, I'd strongly recommend
 %that you check out the ref\TeX\ package which pretty much obliterates
 %the need for this kind of functionality.  If you still want it,
 %standard \LaTeX\ provides it with the |showkeys| package, and there is
@@ -1283,6 +1283,7 @@
 % And here comes the documentation driver.
 %    \begin{macrocode}
 %<driver> \documentclass{ltxdoc}
+%<driver> \newcommand\previewlatex{Preview-\LaTeX}
 %<driver> \begin{document}
 %<driver> \DocInput{preview.dtx}
 %<driver> \end{document}

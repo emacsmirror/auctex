@@ -21,6 +21,7 @@ MAIN: while (<STDIN>) {
     s/AUC~\\TeX[\\ ]?/\@AUCTeX{}/g;
     s/\\LaTeX[\\ ]?/\@LaTeX{}/g;
     s/\\TeX[\\ ]?/\@TeX{}/g;
+    s/\\previewlatex[\\ ]?/\@previewlatex{}/g;
     s/EPS/\@acronym{EPS}/g;
     s/DVI/\@acronym{DVI}/g;
     s/~/\@w{ }/g;
