@@ -1,3 +1,8 @@
+2002-04-30  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview.el (preview-buffer): Changed to mirror the behaviour of
+	TeX-region-create. This is probably the best we can do.
+
 2002-04-29  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview.el (preview-buffer): allow it to work with format
