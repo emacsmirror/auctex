@@ -53,21 +53,29 @@
   ;; use the %(latex) and %(tex) shorthands here because I have not
   ;; clue whether Omega-related versions exist.  --dak
   '(("jTeX" "%(PDF)jtex %S%(PDFout) \"%(mode)\\input %t\""
-     TeX-run-TeX nil (plain-tex-mode))
+     TeX-run-TeX nil (plain-tex-mode) :help "Run NTT jTeX")
     ("jLaTeX" "%(PDF)jlatex %S%(PDFout) \"%(mode)\\input{%t}\""
-     TeX-run-LaTeX nil (latex-mode))
+     TeX-run-TeX nil (latex-mode) :help "Run NTT jLaTeX")
     ("pTeX" "%(PDF)ptex %S%(PDFout) \"%(mode)\\input %t\""
-     TeX-run-TeX nil (plain-tex-mode))
+     TeX-run-TeX nil (plain-tex-mode) :help "Run ASCII pTeX")
     ("pLaTeX" "%(PDF)platex %S%(PDFout) \"%(mode)\\input{%t}\""
-     TeX-run-LaTeX nil (latex-mode))
-    ("Mendex" "mendex %s" TeX-run-command nil t)
-    ("jBibTeX" "jbibtex %s" TeX-run-BibTeX nil t))
-  "Additional list of commands to execute in japanese-LaTeX-mode")
+     TeX-run-TeX nil (latex-mode) :help "Run ASCII pLaTeX")
+    ("Mendex" "mendex %s" TeX-run-command nil t :help "Create index file with mendex")
+    ("jBibTeX" "jbibtex %s" TeX-run-BibTeX nil t :help "Run jBibTeX"))
+  "Additional list of commands to execute in `japanese-LaTeX-mode'")
 
 (setq TeX-command-list
       (append japanese-TeX-command-list
 	      '(("-" "" nil nil t)) ;; separator for command menu
 	      TeX-command-list))
+
+(mapcar (lambda (dir) (add-to-list 'TeX-macro-global dir t))
+  (TeX-macro-global-internal "platex" '("/ptex/" "/jbibtex/bst/")
+    '("/usr/share/texmf/ptex/" "/usr/share/texmf/jbibtex/bst/")))
+
+(mapcar (lambda (dir) (add-to-list 'TeX-macro-global dir t))
+  (TeX-macro-global-internal "jlatex" '("/jtex/" "/jbibtex/bst/")
+    '("/usr/share/texmf/jtex/" "/usr/share/texmf/jbibtex/bst/")))
 
 ;; Menus
 
@@ -87,9 +95,6 @@
 		("^[jt]s?\\(article\\|report\\|book\\)$"
 		 "%(PDF)platex %S%(PDFout)"))
 	      LaTeX-command-style))
-
-(setcdr (assoc "%l" TeX-expand-list)
-	(list 'TeX-style-check LaTeX-command-style))
 
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
@@ -117,13 +122,13 @@
 )
 
 (defcustom japanese-TeX-command-default "pTeX"
-  "*The default command for TeX-command in the japanese-TeX mode."
+  "*The default command for `TeX-command' in the japanese-TeX mode."
   :group 'AUCTeX-jp
   :type 'string)
   (make-variable-buffer-local 'japanese-TeX-command-default)
 
 (defcustom japanese-LaTeX-command-default "LaTeX"
-  "*The default command for TeX-command in the japanese-LaTeX mode."
+  "*The default command for `TeX-command' in the japanese-LaTeX mode."
   :group 'AUCTeX-jp
   :type 'string)
   (make-variable-buffer-local 'japanese-LaTeX-command-default)
