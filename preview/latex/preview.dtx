@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.86 $
+%  \rcskey \version CVS-$Revision: 1.87 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2004-01-11 03:23:35 $
+%\rcskey\next $Date: 2004-03-10 16:25:24 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -406,10 +406,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.86 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.87 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-01-11 03:23:35 $
+\reserved@a\next $Date: 2004-03-10 16:25:24 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1148,7 +1148,7 @@ Please complain to your document class author}%
   \ifx\pdfoutput\@undefined \else
     \ifx\pdfoutput\relax \else
       \ifnum\pdfoutput>\z@
-        \typeout{Preview: PDFoutput}%
+        \typeout{Preview: PDFoutput 1}%
       \fi
     \fi
   \fi
