@@ -1,5 +1,12 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/todo.texi: Help for documentation wanted.
+
+	* doc/changes.texi: Some additions: captcont and subfigure,
+	`LaTeX-includegraphics-options-alist', `LaTeX-default-position',
+	kpathsea based completion, `TeX-insert-macro-default-style'.
+	Refer to installation nodes (autoconf installation).
+
 	* tex.el (TeX-submit-bug-report): Added more explanations.
 
 	* latex.el (LaTeX-style-list): Improve doc-string.

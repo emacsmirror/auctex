@@ -8,7 +8,8 @@ The following sections describe future development of @AUCTeX{}.
 Besides mid-term goals, bug reports and requests we cannot fix or honor
 right away are being gathered here.  If you have some time for Emacs
 Lisp hacking, you are encouraged to try to provide a solution to one of
-the following problems.  It might be a good idea to discuss proposed
+the following problems.  If you don't know Lisp, you may help us to
+improve the documentation.  It might be a good idea to discuss proposed
 changes on the mailing list of @AUCTeX{} first.
 
 @ifclear rawfile
@@ -67,6 +68,7 @@ decide where they should be.  Suggested by Remo Badii <Remo.Badii@@psi.ch>.
 Create template for (first) line of tabular environment.
 
 @item
+@c Already fixed?
 I think prompting for the master is the intended behaviour.  It
 corresponds to a `shared' value for TeX-master.
 
@@ -240,6 +242,8 @@ Hook up the letter environment with `bbdb.el'.
 @node Bugs, , Wishlist, ToDo
 @section Bugs
 
+@c FIXME: Are those bugs still present?  Especially the filling bugs?
+
 @itemize @bullet
 @item
 Filling messes up comments, but only at the end of the file.  Reported
@@ -299,4 +303,7 @@ programming languages in @samp{lstlisting} environments as well.
 Unfortunately such conditional font locking is not provided yet by
 Emacs.  As a workaround you can insert @samp{%$} after the end of the
 environment in concern.
+@c Might be fixed as described in
+@c <news:v9smle4ge8.fsf@marauder.physik.uni-ulm.de>
+@c http://thread.gmane.org/gmane.emacs.auc-tex/1018
 @end itemize

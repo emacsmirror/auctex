@@ -77,8 +77,22 @@ size.
 
 @item
 Support for @code{alphanum.sty}, @code{beamer.cls}, @code{booktabs.sty},
-@code{emp.sty} and @code{paralist.sty} was added.  Credits go to the
-authors mentioned in the respective AUC@TeX{} style files.
+@code{captcont.sty}, @code{emp.sty}, @code{paralist.sty} and
+@code{subfigure.el} was added.  Credits go to the authors mentioned in
+the respective AUC@TeX{} style files.
+
+@item
+Inserting graphics with @kbd{C-c RET \includegraphics RET} was improved.
+See the variable @code{LaTeX-includegraphics-options-alist}.
+@c FIXME: Document this in the main part of the manual
+
+@item
+If @code{LaTeX-default-position} is @code{nil}, don't prompt for
+position arguments in Tabular-like environments, see @ref{Tabular-like}.
+
+@item
+Completion for available packages when using @kbd{C-c RET \usepackage
+RET} was improved on systems using the kpathsea library.
 
 @item
 The commenting functionality was fixed.  The separate functions for
@@ -116,11 +130,19 @@ behavior can be adapted or extended respectively by customizing the
 variable @code{TeX-output-view-style}.
 
 @item
+You can control whether @code{TeX-insert-macro} (@kbd{C-c RET}) ask for
+all optional arguments by customizing the variable
+@code{TeX-insert-macro-default-style}.
+@c FIXME: Document this in the main part of the manual
+
+@item
 @code{TeX-run-discard} is now able to completely detach a process that
 it started.
 
 @item
-The build process was enhanced and is now based on @code{autoconf}.
+The build process was enhanced and is now based on @code{autoconf}
+making installing @AUCTeX{} a mostly automatic process.  See
+@ref{Installation} and @ref{Installation under MS Windows} for details.
 @end itemize
 
 @heading News in 11.14
