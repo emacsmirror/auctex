@@ -7,9 +7,20 @@
 
 @itemize @bullet
 @item
+The use of source specials when processing or viewing the document can
+now be controlled with the new @code{TeX-source-specials} minor mode
+which can be toggled via an entry in the Command menu or the key binding
+@kbd{C-c C-t C-s}.  If you have customized the variable
+@code{TeX-command-list}, you have to re-initialize it for this to work.
+This means to open a customization buffer for the variable by typing
+@code{M-x customize-variable RET TeX-command-list RET}, selecting
+``Erase Customization'' and do your customization again with the new
+default.
+
+@item
 The content of the command menu now depends on the mode (plain @TeX{},
 La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
-@code{TeX-command-menu} has to be erased.  Otherwise the command menu
+@code{TeX-command-list} has to be erased.  Otherwise the command menu
 and the customization will not work correctly.
 
 @item
@@ -21,12 +32,21 @@ You can now control if indentation is done upon typing @key{RET} by
 customizing the variable @code{TeX-newline-function}.
 
 @item
-Limited support for @code{doc.sty} (@samp{dtx} files) was added.  The
-new doc@TeX{} mode provides functionality for editing documentation
-parts.  This includes formatting (indenting and filling), adding macros
-and environments while staying in comments as well as syntax
-highlighting.  Please note that the mode is by far not finished yet.
-For example syntax highlighting does not work yet in XEmacs.
+Limited support for @code{doc.sty} and @code{ltxdoc.cls} (@samp{dtx}
+files) was added.  The new doc@TeX{} mode provides functionality for
+editing documentation parts.  This includes formatting (indenting and
+filling), adding and completion of macros and environments while staying
+in comments as well as syntax highlighting.  (Please note that the mode
+is not finished yet.  For example syntax highlighting does not work yet
+in XEmacs.)
+
+@item
+For macro completion in doc@TeX{} mode the AUC@TeX{} style files
+@file{doc.el}, @file{ltxdoc.el} and @file{ltx-base.el} were contributed
+by Frank K@"uster <frank@@kuesterei.ch>.  The latter provides general
+support for low-level La@TeX{} macros and may be used with La@TeX{}
+class and style files as well.  It is currently not loaded automatically
+for those files.
 
 @item
 Support for Con@TeX{}t with a separate Con@TeX{}t mode is now included.
@@ -37,6 +57,11 @@ The filling and indentation code was overhauled and is now able to
 format commented parts of the source syntactically correct.  Newly
 available functionality and customization options are explained in the
 manual.
+
+@item
+Filling and indentation in XEmacs with preview-latex and activated
+previews lead to the insertion of whitespace before multi-line previews.
+AUC@TeX{} now contains facilities to prevent this problem.
 
 @item
 If @code{TeX-master} is set to @code{t}, AUC@TeX{} will now query for a
