@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 
-;; Version: $Id: harvard.el,v 1.2 1994-03-02 14:20:32 amanda Exp $
+;; Version: $Id: harvard.el,v 1.3 1994-03-17 18:40:56 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -37,22 +37,27 @@
  (function
   (lambda ()
     (LaTeX-add-environments
-     '("thebibliography" LaTeX-env-harvardbib ignore)
-     )
+     '("thebibliography" LaTeX-env-harvardbib ignore))
     (TeX-add-symbols
      '("citeasnoun"
-       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) () )
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
      '("citeyear"
-       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) () )
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
      '("citename"
-       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) () )
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
      '("citationstyle"      TeX-arg-harvard-citationstyle)
      '("bibliographystyle"  TeX-arg-harvard-bibliographystyle ignore)
-     '("harvarditem" TeX-arg-harvard-bibitem)
-     ))))
+     '("harvarditem" TeX-arg-harvard-bibitem))
+    ;; change LaTeX-item-list, so that LaTeX-item-harvardbib instead of
+    ;; LaTeX-item-bib is called if we insert a "thebibliography"
+    ;; environment.
+    (make-local-variable 'LaTeX-item-list)
+    (setq LaTeX-item-list (copy-alist LaTeX-item-list))
+    (setcdr (assoc '"thebibliography" LaTeX-item-list)
+	    'LaTeX-item-harvardbib))))
 
 (defun TeX-arg-harvard-citationstyle (optional &optional prompt)
   "Prompt for a Harvard citationstyle with completion. (LaTeX)"
@@ -84,18 +89,6 @@
    optional)
   (TeX-arg-define-cite
    optional))
-
-;; change LaTeX-item-list, so that LaTeX-item-harvardbib instead of
-;; LaTeX-item-bib is called if we insert a "thebibliography"
-;; environment.
-;;
-;; Tip how to get a local copy and pick out the correct item in
-;; LaTeX-item-list from:
-;;      Daniel Polani <polani@informatik.mathematik.uni-mainz.de
-;;
-(make-variable-buffer-local 'LaTeX-item-list)
-(setq LaTeX-item-list (copy-alist LaTeX-item-list))
-(setcdr (assoc '"thebibliography" LaTeX-item-list) 'LaTeX-item-harvardbib)
 
 ;; analog to LaTeX-env-bib from ltx-env.el
 ;; the optional ignore is needed to make sure that

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.59 1994-03-02 14:20:17 amanda Exp $
+;; $Id: tex-buf.el,v 1.60 1994-03-17 18:38:43 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -132,6 +132,18 @@ all text after TeX-trailer-start."
 			   (file-name-nondirectory (buffer-file-name))
 			   (count-lines (point-min) begin))))
     (TeX-command command 'TeX-region-file)))
+
+;;;###autoload
+(defun TeX-command-buffer ()
+  "Run TeX on the current buffer.
+
+Query the user for a command to run on the temporary file specified by
+the variable TeX-region.  The region file file be recreated from the
+visible part of the buffer."
+  (interactive)
+  (let ((TeX-command-region-begin (point-min-marker))
+	(TeX-command-region-end (point-max-marker)))
+    (TeX-command-region t)))
 
 ;;;###autoload
 (defun TeX-recenter-output-buffer (line)

@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.82 1994-03-02 14:20:26 amanda Exp $
+@c $Id: auc-tex.texi,v 1.83 1994-03-17 18:40:18 amanda Exp $
 
 @finalout
 @titlepage
@@ -88,8 +88,8 @@ it.  Send contributions to @samp{auc-tex@@iesd.auc.dk}.
 Bug reports, suggestions for new features, and pleas for help should go
 to either @samp{auc-tex_mgr@@iesd.auc.dk} (the AUC @TeX{} managers), or
 to @samp{auc-tex@@iesd.auc.dk} (the mailing list) if they might have
-general interest.  Under Emacs 19, please use @kbd{M-x
-TeX-submit-bug-report} to report bugs.@refill
+general interest.  Please use the command @kbd{M-x
+TeX-submit-bug-report} to report bugs if possible.@refill
 
 @end ifinfo
 
@@ -2481,9 +2481,48 @@ Alpha testers (in order of appearance): Volker Dobler
 @samp{<Frederic.Devernay@@sophia.inria.fr>},
 Robert Estes @samp{<estes@@ece.ucdavis.edu>},
 Berwin Turlach @samp{<berwin@@core.ucl.ac.be>},
+Tim Carlson @samp{<imsgtcar@@mathfs.math.montana.edu>},
+Peter Thiemann @samp{<thiemann@@provence.informatik.uni-tuebingen.de>},
+Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
+Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
 and probably more.@refill
 
 @itemize @bullet
+@item
+New function @code{TeX-command-buffer} (@kbd{C-c C-b}) to run a command
+on the (visible part of) the current buffer.
+
+@item
+Bundled the latest @file{reporter.el}, added
+@code{TeX-submit-bug-report} to menus.
+
+@item
+@code{TeX-insert-braces} now takes an argument like
+@code{insert-parentheses}.  Thanks to Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>}. 
+
+@item
+Fixed bug in @samp{\put} and @samp{\multiput} macros.  Thanks to Kevin
+Scott @samp{<scottkj@@prl.philips.co.uk>}.
+
+@item
+Deleted @code{ams-latex-mode}, @code{slitex-mode}, and
+@code{foiltex-mode}.  Instead, use @code{LaTeX-command-style} to
+determine the name of the external command to use.
+
+@item
+Deleted @code{ams-tex-mode}.   Instead, set @code{TeX-command-default}
+as a file local variable.
+
+@item
+Deleted @code{latex2e-mode}.  Instead set the @code{LaTeX-version}
+variable.  This will be done automatically if you use
+@samp{\documentclass} int he furture.
+
+@item
+Fixed Lucid Emacs menu for @TeX{}info mode.  Thanks to Frederic Devernay
+@samp{<Frederic.Devernay@@sophia.inria.fr>},
+
 @item
 Added support for @file{harvard.sty} by Berwin Turlach
 @samp{<berwin@@core.ucl.ac.be>}.
@@ -3673,6 +3712,10 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
+simply self insert if not in a math context.
+
+@item
 @code{LaTeX-fill-paragraph} gets confused when two blocks of text are
 separated by an empty comment only.
 
@@ -3697,7 +3740,7 @@ La@TeX{} formatting should skip @code{verbatim} environments.
 set locally.  Suggested by Peter Whaite @samp{<peta@@cim.mcgill.ca>}.
 
 @item
-All the text formatting code really need a major rewrite.  Not that
+All the text formatting code really needs a major rewrite.  Not that
 there are many bugs, but I can't figure out how to fix those that
 exists. 
 
@@ -3746,7 +3789,7 @@ Make @key{.} check for abbreviations and sentences ending with capital
 letters.  Make @key{,} and @key{.} remove italic correction.  
 
 @item
-Use Emacs 19 minubuffer history to choose between previewers, and other
+Use Emacs 19 minibuffer history to choose between previewers, and other
 stuff.  Suggested by John Interrante
 @samp{<interran@@uluru.Stanford.EDU>}. 
 

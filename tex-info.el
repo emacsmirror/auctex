@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.8 1994-01-29 18:59:21 amanda Exp $
+;; $Id: tex-info.el,v 5.9 1994-03-17 18:38:55 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -223,6 +223,7 @@ When called interactively, prompt for an environment."
 	"-"
 	["Save Document" TeX-save-document t]
 	(TeX-command-create-menu "Command on Master File" 'TeX-master-file)
+	(TeX-command-create-menu "Command on Buffer" 'buffer)
 	(TeX-command-create-menu "Command on Region" 'TeX-region-file)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
@@ -239,6 +240,7 @@ When called interactively, prompt for an environment."
 	["Uncomment Region" TeX-un-comment-region t]
 	["Comment Region" TeX-comment-region t]
 	["Switch to Master file" TeX-home-buffer t]
+	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
 
@@ -259,7 +261,7 @@ TeXinfo-mode-hook."
   (setq mode-name "TeXinfo")
   (setq major-mode 'texinfo-mode)
   (use-local-map TeXinfo-mode-map)
-  (easy-menu-add TeX-mode-menu TeXinfo-mode-map)
+  (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
   (set-syntax-table texinfo-mode-syntax-table)
   (make-local-variable 'page-delimiter)
   (setq page-delimiter 
