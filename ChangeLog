@@ -1,3 +1,15 @@
+2004-03-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-view-style): Use `%f' instead of `%s.ps' for
+	PostScript files.
+	(TeX-mode-map): Change key binding of `TeX-master-file-ask' to
+	`C-c_' because `C-c-' is already taken by RefTeX.
+
+	* doc/auc-tex.texi: Change "Formatting" node to "Running TeX and
+	friends" and use a respective heading.
+
+	* doc/intro.texi: Correct URLs.
+
 2004-03-14  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-command-list): Change interactive calls to use
