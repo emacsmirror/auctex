@@ -110,8 +110,8 @@ XEmacs looks there for per-user packages by default.
 
 @item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
 This option allows to specify the directories to be used for file
-searches, e.g. for completion of LaTeX or BibTeX style file names.  They
-will be used in the variable @code{TeX-macro-global}.
+searches, e.g. for completion of @LaTeX{} or Bib@TeX{} style file names.
+They will be used in the variable @code{TeX-macro-global}.
 
 Normally only the subdirectories @file{tex/} and @file{bibtex/bst/}
 below the used texmf trees should be relevant.  Putting the roots of

@@ -1,12 +1,12 @@
 @ifclear macros
 @set macros
+@ifnottex
 @macro AUCTeX {}
 AUC@TeX{}
 @end macro
 @macro ConTeXt {}
 Con@TeX{}t
 @end macro
-@ifnottex
 @macro LaTeX {}
 La@TeX{}
 @end macro
@@ -33,10 +33,26 @@ preview-latex
 @end ifset
 @end ifnottex
 @tex
-\gdef\LaTeX{L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
-\gdef\previewlatex{{\sf preview-latex}}
+\global\let\savedTeX\TeX
+\gdef\TeX#1{\savedTeX#1}
+\gdef\LaTeX{%
+    L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
+\gdef\previewlatex#1{%
+    {\sf preview-latex}#1}
+\gdef\AUCTeX{AUC\TeX}
+\gdef\ConTeXt#1{%
+    Con\TeX t}
+\toks0\expandafter{\indexnofonts
+  \def\TeX#1{TeX}%
+  \def\LaTeX#1{LaTeX}\gdef\previewlatex{preview-latex}}
+\xdef\indexnofonts{\the\toks0}
 \ifx\acronym\undefined \gdef\acronym#1{{\smallcaps \lowercase{#1}}} \fi
 \ifx\env\undefined \global\let\env=\code \fi
 \ifx\option\undefined \global\let\option=\samp \fi
+%Bug fix for texinfo.tex:
+\gdef\cslet#1#2{%
+\expandafter\let
+\csname#1\expandafter\endcsname
+\csname#2\endcsname}
 @end tex
 @end ifclear

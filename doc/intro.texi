@@ -1,5 +1,5 @@
 @include macros.texi
-@chapter Introduction to AUCTeX
+@chapter Introduction to @AUCTeX{}
 
 This section of the @AUCTeX{} manual gives a brief overview of what
 @AUCTeX{} is, and the section is also available as a @file{README} file.

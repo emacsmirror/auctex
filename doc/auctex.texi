@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.175 2004-08-11 17:07:51 rsteib Exp $
+@c $Id: auctex.texi,v 1.176 2004-08-12 23:01:30 dak Exp $
 
 @finalout
 @titlepage
@@ -37,7 +37,7 @@ this manual provided the copyright notice and this permission notice
 are preserved on all copies.
 
 @ignore
-Permission is granted to process this file through TeX and print the
+Permission is granted to process this file through @TeX{} and print the
 results, provided the printed document carries copying permission
 notice identical to this one except for the removal of this paragraph
 (this paragraph not being relevant to the printed manual).
@@ -70,7 +70,7 @@ reasons to despair.  You can continue to write @TeX{} and @LaTeX{}
 documents the way you are used to, and only start using the multiple
 features in small steps.  @AUCTeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
-an environment where you will make very few LaTeX errors, and makes it
+an environment where you will make very few @LaTeX{} errors, and makes it
 easy to find the errors that may slip through anyway.
 
 If you want to make @AUCTeX{} aware of style files and multi-file
@@ -212,7 +212,7 @@ press @kbd{"} twice.
 
 @deffn Command TeX-insert-quote @var{count}
 @kindex "
-(@kbd{"}) Insert the appropriate quote marks for TeX.
+(@kbd{"}) Insert the appropriate quote marks for @TeX{}.
 
 Inserts the value of @code{TeX-open-quote} (normally @samp{``}) or
 @code{TeX-close-quote} (normally @samp{''}) depending on the context.
@@ -717,7 +717,7 @@ prefix argument, the symbol will be surrounded by dollar signs.
 @end deffn
 
 You can use another prefix key (instead of @kbd{`}) by  setting the
-variable LaTeX-math-abbrev-prefix.
+variable @code{LaTeX-math-abbrev-prefix}.
 
 @defopt LaTeX-math-abbrev-prefix
 A string containing the prefix of @code{LaTeX-math-mode} commands;
@@ -731,8 +731,8 @@ A list containing key command mappings to use in @code{LaTeX-math-mode}.
 The car of each element is the key and the cdr is the macro name.
 @end defopt
 
-@AUCTeX{} distributions include a reference card for
-@code{LaTeX-math-mode} with a list of all math mode commands.
+@AUCTeX{}'s reference card @file{tex-ref.tex} includes a list of all
+math mode commands.
 
 @node Completion, Commenting, Mathematics, Advanced Features
 @section Completion
@@ -784,7 +784,7 @@ Specifies whether @code{TeX-insert-macro} will ask for all optional
 arguments.
 
 If set to the symbol @code{show-optional-args}, @code{TeX-insert-macro}
-asks for optional arguments of TeX marcos.  If set to
+asks for optional arguments of @TeX{} macros.  If set to
 @code{mandatory-args-only}, @code{TeX-insert-macro} asks only for
 mandatory argument.  When @code{TeX-insert-macro} is called with prefix
 argument (@kbd{C-u}), it's the other way round.
@@ -1006,7 +1006,7 @@ matched by a @samp{@}}.
 @end defopt
 
 @defopt LaTeX-syntactic-comments
-If non-nil comments will be filled and indented according to LaTeX
+If non-nil comments will be filled and indented according to @LaTeX{}
 syntax.  Otherwise they will be filled like normal text.
 @end defopt
 
@@ -1168,7 +1168,7 @@ curly braces, brackets, switches for inline math (@samp{$}, @samp{\(},
 @samp{\)}) and switches for display math (@samp{\[}, @samp{\]}).  Such
 formatting can be useful to make macros and math more visible or to
 prevent overfull lines in the @LaTeX{} source in case a package for
-displaying formatted TeX output inside the Emacs buffer, like
+displaying formatted @TeX{} output inside the Emacs buffer, like
 preview-latex, is used.
 @end defopt
 
@@ -1595,6 +1595,12 @@ You can permanently activate @code{TeX-source-specials-mode} with
 or by customizing the variable @code{TeX-source-specials-mode}.
 There is a bunch of customization options, use @code{customize-group} on
 the group @samp{TeX-source-specials} to find out more.
+
+It has to stressed @emph{very} strongly however, that Source Specials
+can cause differences in page breaks, in spacing, can seriously
+interfere with various packages and should thus @emph{never} be used for
+the final version of a document.  In particular, fine-tuning the page
+breaks should be done with Source Specials switched off.
 @end deffn
 
 @node Viewing, Debugging, Commands, Running TeX and friends
@@ -1687,7 +1693,7 @@ available in the latter case.
 @cindex Parsing errors
 @cindex Parsing TeX output
 @cindex Next error
-@cindex Parsing LaTeX errors
+@cindex Parsing @LaTeX{} errors
 @cindex Overfull boxes
 @cindex Bad boxes
 @cindex Wonderful boxes
@@ -1738,12 +1744,11 @@ document, not examples of bad style.  Furthermore, description of the
 errors may often be confusing.  The utility @code{lacheck} can be used
 to find style errors, such as forgetting to escape the space after an
 abbreviation or using @samp{...} instead of @samp{\ldots} and many other
-problems like that.  You start @code{lacheck} with @kbd{C-c C-c C h e c
-k @key{RET}}.  The result will be a list of errors in the
+problems like that.  You start @code{lacheck} with @kbd{C-c C-c Check
+@key{RET}}.  The result will be a list of errors in the
 @samp{*compilation*} buffer.  You can go through the errors with
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
-Editor}), which will move point to the location of the next
-error.
+Editor}), which will move point to the location of the next error.
 
 Another newer program which can be used to find errors is @code{chktex}.
 It is much more configurable than @code{lacheck}, but doesn't find all
@@ -1863,7 +1868,7 @@ but will not change the file.
 @end defopt
 
 @defopt TeX-one-master
-Regular expression matching ordinary TeX files.
+Regular expression matching ordinary @TeX{} files.
 
 You should set this variable to match the name of all files, for which
 it is a good idea to append a @code{TeX-master} file variable entry
@@ -1900,7 +1905,7 @@ all other files in the document, @AUCTeX{} will get information from
 all files in the document.  This means that you will get from each file,
 for example, completion for all labels defined anywhere in the document.
 
-AUC TeX will create the @file{auto} directory automatically if
+@AUCTeX{} will create the @file{auto} directory automatically if
 @code{TeX-auto-save} is non-nil.  Without it, the files in the document
 will not know anything about each other, except for the name of the
 master file.  @xref{Automatic Local}.
@@ -2024,7 +2029,7 @@ List of regular expressions used for parsing the current file.
 @end defopt
 
 @defopt TeX-auto-parse-length
-Maximal length of TeX file that will be parsed.
+Maximal length of @TeX{} file that will be parsed.
 @end defopt
 
 The pre-specified lists of regexps are defined below.  You can use these
@@ -2063,7 +2068,7 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 There are several problems associated with editing non-English @TeX{}
 with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are usable for
 European (Latin, Cyrillic, Greek) based languages, but special versions
-of TeX and Emacs are needed for Korean, Japanese, and Chinese.
+of @TeX{} and Emacs are needed for Korean, Japanese, and Chinese.
 
 @c FIXME: Is Emacs 21.4 able to deal with CJK?
 
@@ -2093,7 +2098,7 @@ use macros, or teach @TeX{} about the ISO character sets.  I prefer the
 latter, it has the advantage that the usual standard emacs word
 movement and case change commands will work.
 
-With LaTeX2e, just add @samp{\usepackage[latin1]@{inputenc@}}.  Other
+With @LaTeX{}2e, just add @samp{\usepackage[latin1]@{inputenc@}}.  Other
 languages than Western European ones will probably have other encoding
 needs.
 
@@ -2166,9 +2171,9 @@ depending on context.
 @cindex Nippon
 @cindex MULE
 @cindex j@TeX{}
-@cindex jLa@TeX{}
+@cindex j@LaTeX{}
 @cindex p@TeX{}
-@cindex pLa@TeX{}
+@cindex p@LaTeX{}
 @vindex TeX-default-mode
 @vindex japanese-TeX-command-default
 @vindex japanese-LaTeX-command-default
@@ -2190,7 +2195,7 @@ make install-contrib
 
 See @file{INSTALL} and @file{Makefile} for more information.
 
-To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
+To use the Japanese @TeX{} variants, simply enter @code{japanese-tex-mode},
 @code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
 everything should work.  If not, send mail to Shinji Kobayashi
 @samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
@@ -2453,7 +2458,7 @@ Here is a simple example of a style file.
 
 @end lisp
 
-This file specifies that the largest kind of section in a LaTeX document
+This file specifies that the largest kind of section in a @LaTeX{} document
 using the book document style is chapter.  The interesting thing to
 notice is that the style file defines an (anonymous) function, and adds it
 to the list of loaded style hooks by calling @code{TeX-add-style-hook}.
