@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9j
+;; Version: 9.9k
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1031,7 +1031,9 @@ active.")
 	  ((file-newer-than-file-p el elc)
 	   (if (not (file-writable-p elc))
 	       (load-file el)
-	     (byte-compile-file el)
+	     (save-excursion
+	       ;; `byte-compile-file' switches buffer in Emacs 20.3.
+	       (byte-compile-file el))
 	     (load-file elc)))
 	  ((file-readable-p elc)
 	   (load-file elc))
