@@ -7,7 +7,7 @@ AC_DIVERT_PUSH(DEFAULTS)dnl
 MY_LC_CTYPE=$LC_CTYPE]
 AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7,preview-latex-bugs@lists.sourceforge.net)
+AC_INIT(preview-latex,0.7.1,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
