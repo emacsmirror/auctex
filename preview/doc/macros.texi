@@ -10,7 +10,7 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
-@ifset texinfo-nhave-acronym
+@ifset makeinfo-nhave-acronym
 @macro acronym {text}
 @sc{\text\}
 @end macro
