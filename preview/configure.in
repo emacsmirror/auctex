@@ -134,8 +134,14 @@ TEXMFGEN=["`sed -n 's/^%<installer>.*\\file{\([^}.]*\.[sdc][tef][yfg]\)}.*$/\1/p
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
-AC_PATH_PROGS(TEXHASH, texhash mktexlsr MakeTeXls-R)
-AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u, :)
+
+# Be very careful about assuming things about the available hash programs
+# MikTeX comes with a braindead link to mktexlsr, apparently, so first
+# try the regular utility from them.
+AC_PATH_PROG(TEXHASH, texhash)
+AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
+AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
+
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
 AC_CHECK_MACROS_MAKEINFO(acronym env option)
 
