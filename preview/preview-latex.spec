@@ -3,8 +3,8 @@
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.7
-Release: 	2
+Version: 	0.7.1
+Release: 	1
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -110,9 +110,9 @@ for i in *emacs; do
   popd
 done
 
-# Package documentation in /usr/share/doc/preview-latex-n.n-n
-# rather than /usr/share/doc/preview-latex-common-n.n-n
-%define docs	    %{_defaultdocdir}/%{name}-%{version}-%{release}
+# Package documentation in /usr/share/doc/preview-latex-n.n
+# rather than /usr/share/doc/preview-latex-common-n.n
+%define docs	    %{_defaultdocdir}/%{name}-%{version}
 mkdir -p %{buildroot}%{docs}
 pushd %{name}-%{version}
 for i in ChangeLog circ.tex COPYING INSTALL PROBLEMS README \
@@ -157,6 +157,9 @@ install-info --info-dir=%{_infodir} --delete \
 %endif
 
 %changelog
+* Tue Apr 16 2002 David Kastrup <David.Kastrup@t-online.de>
+- allow split info file, docs now go in preview-latex-n.n
+
 * Mon Apr 15 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Docs now goes in preview-latex-n.n-n directory
 
