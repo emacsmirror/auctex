@@ -35,7 +35,7 @@ EMACS=emacs
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-BATCH=$(EMACS) -batch -q -l lpath.el
+BATCH=$(EMACS) -batch -no-site-file -q -l lpath.el
 
 # Specify the byte-compiler for compiling AUC TeX files
 ELC= $(BATCH) -f batch-byte-compile

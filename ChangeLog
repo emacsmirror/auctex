@@ -1,3 +1,7 @@
+2002-12-09  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile (BATCH): Added `-no-site-file' to batch options.
+
 2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* font-latex.el (font-latex-setup): Better stab at verbatim
