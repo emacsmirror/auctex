@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.363 $"))
+	(rev "$Revision: 5.364 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-09 16:20:40 $"))
+    (let ((date "$Date: 2004-05-09 18:10:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -666,9 +666,12 @@ If nil, use (La)TeX's defaults."
   'TeX-source-specials-check-xdvi
   "Function used to check if the the system supports source specials.
 The function must return t if source specials are supported, and nil
-otherwise.  Set it to nil is source special support is not desired."
+otherwise.  Set it to nil is source special support is not desired.  Set it to
+\(lambda nil t\) if source special should be on without a check."
   :group 'TeX-command
-  :type '(choice (const nil)
+  :type '(choice (const :tag "Always off" nil)
+		 (const :tag "Always on" (lambda nil t))
+		 (const :tag "Check yap" TeX-source-specials-check-yap)
 		 function))
 
 (defvar TeX-source-specials-xdvi-p nil

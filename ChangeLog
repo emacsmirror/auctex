@@ -1,3 +1,8 @@
+2004-05-09  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-source-specials-check-function): Added "Always on"
+	choice.
+
 2004-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-doctex-syntactic-keywords): Moved to
