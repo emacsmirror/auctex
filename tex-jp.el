@@ -48,7 +48,7 @@
 ;		 "-- string likely in Japanese TeX --"))
 ;	      TeX-format-list))
 
-(defvar japanese-TeX-command-list
+(defcustom japanese-TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.  I don't
   ;; use the %(latex) and %(tex) shorthands here because I have not
   ;; clue whether Omega-related versions exist.  --dak
@@ -62,7 +62,40 @@
      TeX-run-TeX nil (latex-mode) :help "Run ASCII pLaTeX")
     ("Mendex" "mendex %s" TeX-run-command nil t :help "Create index file with mendex")
     ("jBibTeX" "jbibtex %s" TeX-run-BibTeX nil t :help "Run jBibTeX"))
-  "Additional list of commands to execute in `japanese-TeX-mode'.")
+  "Additional list of commands, especially for Japanese.
+For detail, see `TeX-command-list', which this list is appended to."
+  :group 'AUCTeX-jp
+  :type '(repeat (group :value ("" "" TeX-run-command nil t)
+			(string :tag "Name")
+			(string :tag "Command")
+			(choice :tag "How"
+				:value TeX-run-command
+				(function-item TeX-run-command)
+				(function-item TeX-run-format)
+				(function-item TeX-run-TeX)
+				;; leave the following line in
+				;; customization? Replaced (but still
+				;; available) with TeX-run-TeX --pg
+				(function-item TeX-run-LaTeX)
+				(function-item TeX-run-interactive)
+				(function-item TeX-run-BibTeX)
+				(function-item TeX-run-compile)
+				(function-item TeX-run-shell)
+				(function-item TeX-run-discard)
+				(function-item TeX-run-background)
+				(function-item TeX-run-silent)
+				(function-item TeX-run-dviout)
+				(function :tag "Other"))
+			(boolean :tag "Prompt")
+			(choice :tag "Modes"
+				(const :tag "All" t)
+				(set (const :tag "Plain TeX" plain-tex-mode)
+				     (const :tag "LaTeX" latex-mode)
+				     (const :tag "DocTeX" doctex-mode)
+				     (const :tag "ConTeXt" context-mode)
+				     (const :tag "Texinfo" texinfo-mode)
+				     (const :tag "AmSTeX" ams-tex-mode)))
+			(repeat :tag "Menu elements" :inline t sexp))))
 
 (setq TeX-command-list
       (append japanese-TeX-command-list
@@ -96,8 +129,10 @@
 		 "%(PDF)platex %S%(PDFout)"))
 	      LaTeX-command-style))
 
-(defvar japanese-TeX-error-messages t
-  "If non-nil, explain TeX error messages in Japanese.")
+(defcustom japanese-TeX-error-messages t
+  "*If non-nil, explain TeX error messages in Japanese."
+  :group 'AUCTeX-jp
+  :type 'boolean)
 
 (when (featurep 'mule)
 
