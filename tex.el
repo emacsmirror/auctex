@@ -207,7 +207,8 @@ the respective mode names.
 Any additional elements get just transferred to the respective menu entries.
 "
   :group 'TeX-command
-  :type '(repeat (group (string :tag "Name")
+  :type '(repeat (group :value ("" "" TeX-run-command nil t)
+			(string :tag "Name")
 			(string :tag "Command")
 			(choice :tag "How"
 				:value TeX-run-command
@@ -588,7 +589,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.416 $"))
+	(rev "$Revision: 5.417 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -603,7 +604,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 01:33:46 $"))
+    (let ((date "$Date: 2004-08-10 08:23:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3176,7 +3177,7 @@ be bound to `TeX-electric-macro'."
     "Menu used in plain TeX mode."
     (TeX-menu-with-help
      '("TeX"
-       ["Macro..." TeX-insert-macro
+       ["Macro ..." TeX-insert-macro
 	:help "Insert a macro and possibly arguments"]
        ["Complete" TeX-complete-symbol
 	:help "Complete the current macro"]
@@ -3203,14 +3204,14 @@ be bound to `TeX-electric-macro'."
 	["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
        ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
        "-"
-
-       ["Comment or Uncomment Region" TeX-comment-or-uncomment-region]
-       ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph]
+       ["Comment or Uncomment Region" TeX-comment-or-uncomment-region
+	:help "Comment or uncomment the currently selected region"]
+       ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
+	:help "Comment or uncomment the paragraph containing point"]
        "-"
        ("Multifile/Parsing"
 	["Switch to Master File" TeX-home-buffer
-	 :help "Switch to buffer of current Master File,
-or buffer of last TeX command."]
+	 :help "Switch to buffer of Master File, or buffer of last TeX command"]
 	["Save Document" TeX-save-document
 	 :help "Save all buffers associated with the current Master File"]
 	["Set Master File" TeX-master-file-ask
@@ -3219,10 +3220,11 @@ or buffer of last TeX command."]
 	["Reset Buffer" TeX-normal-mode
 	 :help "Save and reparse the current buffer for style information"]
 	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
-	 :help "Reset Buffer and reload AUCTeX style files"])
+	 :help "Reset buffer and reload AUCTeX style files"])
        ("Customize"
 	["Browse options"
-	 (customize-group 'AUCTeX)]
+	 (customize-group 'AUCTeX)
+	 :help "Open the customization buffer for AUCTeX"]
 	["Extend this menu"
 	 (easy-menu-add-item
 	  nil '("TeX")
