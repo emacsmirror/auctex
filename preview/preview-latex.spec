@@ -163,7 +163,7 @@ rm -rf '%{buildroot}'
 
 %post common
 /sbin/install-info '--info-dir=%{_infodir}' '%{_infodir}/preview-latex.info'
-texhash /usr/share/texmf
+texhash /usr/local/share/texmf
 
 %preun common
 # $1 is the number of versions of this package installed
@@ -175,11 +175,11 @@ fi
 
 %files common
 %defattr(-,root,root)
-%dir %{_datadir}/texmf/tex/latex/preview
-%{_datadir}/texmf/tex/latex/preview/*.sty
-%{_datadir}/texmf/tex/latex/preview/*.def
-%config %{_datadir}/texmf/tex/latex/preview/*.cfg
-%doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
+%dir %{_prefix}/local/share/texmf/tex/latex/preview
+%{_prefix}/local/share/texmf/tex/latex/preview/*.sty
+%{_prefix}/local/share/texmf/tex/latex/preview/*.def
+%config %{_prefix}/local/share/texmf/tex/latex/preview/*.cfg
+%doc %{_prefix}/local/share/texmf/doc/latex/styles/preview.dvi
 %doc %{_infodir}/preview-latex.info*
 %doc %{docs}
 
