@@ -1914,8 +1914,8 @@ justify too.  From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(while (not (eobp))
           (if (re-search-forward
                (concat "\\("
-                       "[^ \t%\n\r].*"
-                       "[^" (regexp-quote TeX-esc) "\n\r]%+"
+                       "^.*[^ \t%\n\r].*"
+                       "[^" TeX-esc "\n\r]%+"
                        ".*$"
                        "\\|"
                        "^.*"
