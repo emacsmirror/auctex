@@ -998,7 +998,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
     (((class color)(background dark))(:foreground "red" :bold t ))
     (t (:bold t)))
   "Font Lock face for LaTeX major keywords."
-  :group 'font-latex-highlighting-faces))
+  :group 'font-latex-highlighting-faces)
 
 ;;;###autoload
 (defun font-latex-setup ()
