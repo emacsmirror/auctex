@@ -32,13 +32,13 @@ preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
 	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi
-	-$(MAKEINFO) --no-headers --no-validate install.texi --output INSTALL
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate install.texi --output INSTALL
 
 README: readme.texi
-	-$(MAKEINFO) --no-headers --no-validate readme.texi --output README
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate readme.texi --output README
 
 PROBLEMS: problems.texi
-	-$(MAKEINFO) --no-headers --no-validate problems.texi --output PROBLEMS
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate problems.texi --output PROBLEMS
 
 install: preview-latex.info
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
