@@ -1,3 +1,26 @@
+2002-04-04  Nix  <nix@esperi.demon.co.uk>
+
+	* preview.el (preview-parse-messages):
+	Cater for XEmacs shy grouping bug (shy grouping
+	very nearly doesn't work in XEmacs-21.4...)
+
+	* prv-xemacs.el (match-string-no-properties):
+	New, same as `match-string'.
+	(set-buffer-multibyte): Degenerate implementation.
+
+	(face-attribute): Throw an error of the right error class.
+	(make-temp-file): Likewise.
+
+	(preview-add-urgentization): Revise signature, as in prv-emacs.
+	(preview-with-LaTeX-menus): Do not copy useless menus around.
+
+	(preview-string-from-image): Make obvious that this generates any
+	kind of glyph, not just begin-glyphs.
+	(preview-ps-image): Revise signature (but implementation is still
+	stubbed).
+	(preview-toggle): Revise signature slightly. Flip between begin
+	and end-glyphs to partially cater for XEmacs redisplay bug.
+
 2002-04-04  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-dvips-process-setup): Correct deletion
