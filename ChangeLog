@@ -3,6 +3,7 @@
 	* latex.el (LaTeX-fill-paragraph): Do not narrow region when code
 	comments are filled.  Fixes wrong indentation if a line with a
 	code comment following an indented line is filled.
+	Mark end of current line, not beginning of next.
 
 2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
