@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1991-12-07 23:43:03 $|$Revision: 5.0 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1991-12-09 09:15:16 $|$Revision: 5.1 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.0 $  
+;; RCS status      : $Revision: 5.1 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Dec  7 22:15:04 1991
-;; Update Count    : 459
+;; Last Modified On: Mon Dec  9 18:22:48 1991
+;; Update Count    : 563
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,6 +45,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
+;; 9-Dec-1991  (Last Mod: Mon Dec  9 10:04:18 1991 #461)  Kresten Krab Thorup
+;;    Fixed a bug in LaTeX-style-options, which caused completion to
+;;    crash when no optional arguments were available in
+;;    \documentstyle, as supposed by smith@pell.anu.edu.au (Michael Smith)
 ;; 13-Jun-1991  (Last Mod: Thu Jun 13 20:27:50 1991 #334)  Kresten Krab Thorup
 ;;    Fixed some bugs in Mattison's patch. Thanks to Robert Estes
 ;;    estes@ebony.eecs.ucdavis.edu  for supplying some..
@@ -91,6 +95,7 @@
 ;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
 ;; Per Hagen                         <per@iesd.auc.dk>
 ;; Sven Mattisson                    <sven@tde.lth.se>
+;; Michael Smith                     <smith@pell.anu.edu.au>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -932,7 +937,9 @@ With prefix argument, always insert \" characters."
 	       (search-forward LaTeX-optop (+ (point) 512) t)) ;May be wrong!
 	  (let ((beg (point)))
 	    (skip-chars-forward (concat "^" LaTeX-optcl))
-	    (setq LaTeX-options (buffer-substring beg (point))))))))
+	    (setq LaTeX-options (buffer-substring beg (point))))
+	""
+	))))
 
 
 (defun split-string (char string)
