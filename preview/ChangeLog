@@ -1,5 +1,7 @@
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/Makefile.in (preview-latex.info): Remove --no-split.
+
 	* prv-install.el (preview-make-package-xemacs): Use
 	preview-release-date.
 
