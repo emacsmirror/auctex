@@ -16,6 +16,9 @@
 @iftex
 @tolerance 10000 @emergencystretch 3em
 @end iftex
+@macro AUCTeX {}
+AUC@w{ }@TeX{}
+@end macro
 @ifnottex
 @macro LaTeX {}
 La@TeX{}
@@ -32,8 +35,8 @@ preview-latex
 @finalout
 @titlepage
 @title @previewlatex{}
-@subtitle A @LaTeX{} preview mode for AUC @TeX{} in Emacs.
-@subtitle Version 0.6
+@subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
+@subtitle Version 0.6.1
   
 @author by David Kastrup and Alan Shutko 
 @author manual by Jan-@AA{}ke Larsson
@@ -76,7 +79,7 @@ approved by the Free Software Foundation.
 @previewlatex{} is a package that allows extraction of certain
 environments (most notably displayed formulas) for use in different
 contexts. While the first application has been the embedding of those
-preview fragments into Emacs source buffers under the AUC @TeX{} editing
+preview fragments into Emacs source buffers under the @AUCTeX{} editing
 environment, other applications are easily imaginable.
 
 The name of the package is really @samp{preview-latex}, all in
@@ -85,12 +88,12 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.6
+This file documents @previewlatex{} version 0.6.1
 
-@c If you want to use @previewlatex{} in AUC @TeX{} right away, be sure to
-@c have a working AUC @TeX{} installation, install @previewlatex{} and insert
+@c If you want to use @previewlatex{} in @AUCTeX{} right away, be sure to
+@c have a working @AUCTeX{} installation, install @previewlatex{} and insert
 @c the following in your @file{.emacs} file.  This will make Emacs load
-@c @file{preview.el} into AUC @TeX{} when you first load a @LaTeX{} file.
+@c @file{preview.el} into @AUCTeX{} when you first load a @LaTeX{} file.
 @c 
 @c @lisp
 @c (autoload 'LaTeX-preview-setup "preview")
@@ -167,16 +170,16 @@ and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 @node Keys and lisp, Customization, Installation, top
 @chapter Key bindings and user-level lisp functions 
 
-To the functions and key bindings in AUC @TeX{} @inforef{Key
+To the functions and key bindings in @AUCTeX{} @inforef{Key
 Index,,auctex}, the following are added:
 
 @table @w
-@item @kbd{C-c C-c g RET} 
+@item @kbd{C-c C-c g @key{RET}} 
 Generate preview. This command generates previews for all appropriate
 objects in the current document. Already preset previews are
 re-generated.
 
-You can use the AUC @TeX{} variants starting with @kbd{C-c C-b g
+You can use the @AUCTeX{} variants starting with @kbd{C-c C-b g
 @key{RET}} and @kbd{C-c C-r g @key{RET}} for generating previews just in
 the current buffer of the document, or a region of it.
 @cindex @kbd{C-c C-c g @key{RET}}
@@ -197,7 +200,7 @@ last such preview.
 @cindex De/Preview at point
 
 @item @kbd{C-c C-k}
-Kill preview-generating process. This is really an AUC @TeX{}
+Kill preview-generating process. This is really an @AUCTeX{}
 keybinding, but it is included here as a hint. If you start generating a
 preview and then make a change to the buffer, @previewlatex{} may be
 confused and place the previews wrong.
@@ -213,7 +216,10 @@ Run preview on this @LaTeX{} section.
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment}
-Run preview on this @LaTeX{} environment.
+Run preview on @LaTeX{} environment.  This avoids running environments
+through @previewlatex{} that are indicated in
+`preview-inner-environments'.  If you use a prefix argument, the
+corresponding level of outward nested environments is selected.
 @cindex @kbd{C-c C-p C-e}
 @cindex @code{preview-environment}
 @cindex Preview environment
@@ -311,8 +317,7 @@ other software.
 
 This package consists of two parts. A @LaTeX{} style that splits the
 output into appropriate parts with one preview object on each page, and
-an Emacs-lisp part integrating the thing into Emacs (aided by AUC
-@TeX{}).
+an Emacs-lisp part integrating the thing into Emacs (aided by @AUCTeX{}).
 
 @menu
 * The LaTeX style file::        
@@ -327,7 +332,7 @@ an Emacs-lisp part integrating the thing into Emacs (aided by AUC
 The main purpose of this package is the extraction of certain
 environments (most notably displayed formulas) for use in different
 contexts.  While the erstwhile application has been the embedding of
-those preview fragments into Emacs source buffers under the AUC @TeX{}
+those preview fragments into Emacs source buffers under the @AUCTeX{}
 editing environment, other applications are easily imaginable.
 
 In particular it should be noted that producing @acronym{EPS} files with
@@ -355,7 +360,7 @@ The package is included with the customary
 @noindent
 You should usually load this package as the last one, since it redefines
 several things that other packages may also provide. Note that if you
-are using AUC @TeX{}, the package is loaded automatically, so you don't
+are using @AUCTeX{}, the package is loaded automatically, so you don't
 need to do it yourself unless you have something advanced in mind.
 
 
@@ -391,6 +396,16 @@ In addition, there may be configuration files specific for certain
 @samp{preview} options like @option{auctex} which have more immediate
 needs.  The @option{noconfig} option suppresses loading of those option
 files, too.  
+
+@item psfixbb
+Dvips determines the bounding boxes from the material in the
+@acronym{DVI} file it understands.  Lots of PostScript specials are not
+part of that.  Since the @TeX{} boxes do not make it into the
+@acronym{DVI} file, but merely characters, rules and specials do, Dvips
+might include far too small areas.  The option @option{psfixbb} will
+include @file{/dev/null} as a graphic file in the ultimate upper left
+and lower right corner of the previewed box.  This will make Dvips
+generate an appropriate bounding box.
 
 @item displaymath 
 This option will make all displayed math environments subject to preview
@@ -435,7 +450,7 @@ last package.
 This loads a special driver file @file{pr@var{driver}.def}.  Currently
 the only supported driver is @option{auctex}.  This driver will produce
 fake error messages at the start and end of every preview environment
-that enable a special Emacs package in connection with AUC @TeX{} to
+that enable a special Emacs package in connection with @AUCTeX{} to
 pinpoint the exact source location where the previews have originated.
 Unfortunately, there is no other reliable means of passing the current
 @TeX{} input position @emph{in} a line to external programs.  You should
@@ -563,7 +578,7 @@ can use the conditional @code{\ifPreview} together with @code{\else} and
 When you generate previews on a buffer or a region, the command in
 @code{preview-LaTeX-command} gets run (that variable should only be
 changed with @kbd{M-x customize @key{RET}} so that changes get
-propagated to AUC @TeX{}'s command list).
+propagated to @AUCTeX{}'s command list).
 
 @cindex @code{preview-default-option-list}
 @cindex @code{preview-default-preamble}
@@ -578,7 +593,7 @@ the preview package is loaded using default options from
 
 @cindex @code{preview-dvips-command}
 This run produces a dvi file where every preview is on a separate page.
-As usual with AUC @TeX{}, you can continue working while this is going
+As usual with @AUCTeX{}, you can continue working while this is going
 on.  It is not a good idea to change the file until after
 @previewlatex{} has established where to place the previews which it can
 only do after the @LaTeX{} run completes.  This run produces a host of
