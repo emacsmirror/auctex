@@ -421,10 +421,9 @@ well, so the second item is always nil.  In XEmacs the string
 does not enclose any faces, so these are given in the second item
 of the resulting list."
   (save-excursion
-    (let ((macro-end (if macro-end
-			 macro-end
-		       (save-excursion (goto-char macro-start)
-				       (TeX-find-macro-end))))
+    (let ((macro-end (or macro-end
+			 (save-excursion (goto-char macro-start)
+					 (TeX-find-macro-end))))
 	  content-start content-end)
       (goto-char macro-start)
       (if (condition-case nil
@@ -432,10 +431,10 @@ of the resulting list."
 		(while (> n 0)
 		  (skip-chars-forward "^{" macro-end)
 		  (when (not (looking-at "{")) (error nil))
-		  (setq content-start (save-excursion
+		  (setq content-start (progn
 					(skip-chars-forward "{ \t")
 					(point)))
-		  (forward-sexp)
+		  (goto-char (TeX-find-closing-brace))
 		  (setq content-end (save-excursion
 				      (skip-chars-backward "} \t")
 				      (point)))
