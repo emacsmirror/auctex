@@ -1,4 +1,3 @@
-<<<<<<< ChangeLog
 2004-04-23  David Kastrup  <dak@gnu.org>
 
 	* Source special support by Dan Nicolaescu <dann@ics.uci.edu>:
@@ -15,7 +14,11 @@
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Fix call to
 	`indent-region' for "older" Emacsen.
+	(LaTeX-mode-menu): Fix menu extension for customization.
 
+	* context.el (ConTeXt-mode-menu): Fix menu extension for
+	customization.
+	
 	* tex-info.el (TeXinfo-insert-environment): Support enclosure of
 	a selected region by the environment to be inserted.
 	Don't eat newline at the end of the environment.
