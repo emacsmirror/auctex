@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9e
+;; Version: 9.9f
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -893,8 +893,8 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
   "List of regular expression matching LaTeX labels only.")
 
 (defvar LaTeX-auto-index-regexp-list
-  (list "\\\\index{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-	1 'LaTeX-auto-index-entry)
+  '(("\\\\index{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
+	1 'LaTeX-auto-index-entry))
   "List of regular expression matching LaTeX index entries only.
 Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")

@@ -1,3 +1,13 @@
+1998-06-24  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9f released.
+
+1998-06-24  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-auto-index-regexp-list): Fix parentheses.
+	* texmathp.el (texmathp): Use `if (not' instead of `unless'.
+	Patch by Carsten Dominik  <dominik@strw.leidenuniv.nl>.
+	
 1998-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9e released.

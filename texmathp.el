@@ -1,7 +1,7 @@
 ;; texmathp.el -- Code to check if point is inside LaTeX math environment
 ;; Copyright (c) 1998 Carsten Dominik
 
-;; $Id: texmathp.el,v 5.2 1998-06-10 11:01:25 abraham Exp $
+;; $Id: texmathp.el,v 5.3 1998-06-24 12:11:51 abraham Exp $
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Keywords: tex
@@ -248,9 +248,9 @@ The functions assumes that you have (almost) syntactically correct (La)TeX in
 the buffer.
 See the variable `texmathp-tex-commands' about which commands are checked."
   (interactive)
-  (unless (and (eq (car texmathp-memory) texmathp-tex-commands)
-	       (eq (cdr texmathp-memory) texmathp-tex-commands-default))
-    (texmathp-compile))
+  (if (not (and (eq (car texmathp-memory) texmathp-tex-commands)
+	       (eq (cdr texmathp-memory) texmathp-tex-commands-default)))
+      (texmathp-compile))
   (let* ((pos (point)) math-on sw-match
 	 (bound (save-excursion
 		  (if (re-search-backward "[\n\t][ \t]*[\n\r]"
