@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.39 1993-04-01 02:34:40 amanda Exp $
+# $Id: Makefile,v 5.40 1993-04-09 20:52:21 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -105,7 +105,7 @@ STYLESRC = style/latex.el   style/slitex.el \
 	   style/article.el style/book.el    style/letter.el \
 	   style/foiltex.el
 
-LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
+LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
 
 DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex

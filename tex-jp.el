@@ -21,18 +21,17 @@
   "Initialization for Japanese TeX."
   (if (boundp 'MULE)
       (setq TeX-after-start-process-hook
-	    (function (lambda ()
+	    (function (lambda (process)
 			(set-process-coding-system
-			 nil
+			 process
 			 TeX-japanese-process-input-coding-system
 			 TeX-japanese-process-output-coding-system)))))
   (if (boundp 'NEMACS)
       (setq TeX-after-start-process-hook
 	    (function
-	     (lambda ()
-	       (set-process-kanji-code nil TeX-process-kanji-code))))))
+	     (lambda (process)
+	       (set-process-kanji-code process TeX-process-kanji-code))))))
  
-
 (defun japanese-LaTeX-initialization ()
   "Initialization for Japanese LaTeX."
   (japanese-TeX-initialization)

@@ -1,6 +1,6 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.3 1993-03-23 11:40:32 amanda Exp $
+;;; $Id: latex.el,v 1.4 1993-04-09 20:52:57 amanda Exp $
 
 ;;; @@ Hook
 
@@ -26,7 +26,7 @@
      ;; case the auto files are missing. 
 
      "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
-     "flushright" "flushleft" "displaymath" "math"
+     "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
 
      ;; The following are not defined in latex.el, but in a number of
      ;; other style files.  I'm to lazy to copy them to all the

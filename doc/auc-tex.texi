@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.28 1993-04-01 02:35:03 amanda Exp $
+@c $Id: auc-tex.texi,v 1.29 1993-04-09 20:52:51 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2555,11 +2555,17 @@ this version, and for the authors, who get nostalgic at times.
 
 @node Version 7.1, Version 7.0,  , History
 @comment  node-name,  next,  previous,  up
-@section Version 7.1
+@section News in 7.1
 
 Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
+@item
+New variable @code{TeX-fast}.
+
+Set this to @code{'t} on slow machines @emph{before} loading AUC @TeX{}.
+Better get the wrong answers fast than the right answers slow.
+
 @item
 Foil@TeX{} support.
 
@@ -3280,9 +3286,29 @@ Help, list of math symbols.
 @appendix Wishlist
 
 This is a list of projects for AUC @TeX{}.  Bug reports and requests we
-can not fix or honor right away will be added to this list
+can not fix or honor right away will be added to this list.  If you have
+some time for emacs lisp hacking, you are encouraged to try to provide a
+solution to one of the following problems.
 
 @itemize @bullet
+
+@item 
+Add support for different extensions.
+
+Such as @samp{texi} and @samp{ltx}.
+
+@item
+Make AUC TeX work with ange-ftp.
+
+@item
+Control @TeX{} compilation window.
+
+It is not good that half of the screen is wasted for the log when @TeX{}
+is processing a file. It is possible to make the log screen smaller, but
+the best solution would be to have a user configurable window layout
+that could be defined by some variables as for VM or GNUS. Or a log
+screen that opens only in case of an error. --- Tim Geisler
+@samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}
 
 @item 
 Make features.

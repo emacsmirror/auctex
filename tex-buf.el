@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.32 1993-04-01 02:34:45 amanda Exp $
+;;; $Id: tex-buf.el,v 1.33 1993-04-09 20:52:32 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -195,9 +195,12 @@ Also check if ORIGINAL is modified in a non-saved buffer."
 					  (buffer-file-name buffer))
 				   (buffer-modified-p buffer)))))))
 
-(defvar TeX-check-path (cons "./" TeX-macro-private)
+(defvar TeX-check-path (if TeX-fast
+			   nil
+			 (cons "./" TeX-macro-private))
   "*Directory path to search for dependencies.
 
+If nil, just check the current file.
 Used when checking if any files have changed.")
 
 (defun TeX-dependencies (files extensions)
@@ -220,12 +223,18 @@ Used when checking if any files have changed.")
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (cond ((TeX-member (TeX-master-file "dvi")
+  (let* ((default (cond ((and (null TeX-check-path)
+			      (or (buffer-modified-p)
+				  (file-newer-than-file-p
+				   (buffer-file-name)
+				   (concat name ".dvi"))))
+			 TeX-command-default)
+			((TeX-member (concat name ".dvi")
 				     (TeX-dependencies (TeX-style-list)
 						       TeX-file-extensions)
 				     'TeX-check-dependency)
 			 TeX-command-default)
-			((TeX-member (TeX-master-file "bbl")
+			((TeX-member (concat name ".bbl")
 				     (TeX-dependencies
 				      (LaTeX-bibliographies-list)
 				      BibTeX-file-extensions)
@@ -234,11 +243,18 @@ Used when checking if any files have changed.")
 			 TeX-command-BibTeX)
 			((TeX-process-get-variable name
 						   'TeX-command-next
-						   TeX-command-default))
+						   TeX-command-Show))
 			(TeX-command-Show)))
 	 (completion-ignore-case t)
 	 (answer (completing-read (concat "Command: (default " default  ") ")
 				  TeX-command-list nil t)))
+    ;;; If the answer "latex" it will not be expanded to "LaTeX"
+    (setq answer
+	  (car (let ((case-fold-search t))
+		 (TeX-member answer TeX-command-list
+			     (function (lambda (a b)
+			       (string-match (concat "^" (regexp-quote a) "$")
+					     (car b))))))))
     (if (and answer
 	     (not (string-equal answer "")))
 	answer
@@ -307,7 +323,8 @@ Return the new process."
     (if TeX-process-asynchronous
 	(let ((process (start-process name buffer TeX-shell
 				      TeX-shell-command-option command)))
-	  (run-hooks 'TeX-after-start-process-hook)
+	  (if TeX-after-start-process-hook
+	      (funcall TeX-after-start-process-hook process))
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
@@ -371,15 +388,15 @@ Return the new process."
   (process-kill-without-query (start-process (concat name " discard")
 					     nil TeX-shell
 					     TeX-shell-command-option
-					     command))
-  (run-hooks 'TeX-after-start-process-hook))
+					     command)))
 
 (defun TeX-background-hook (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((process (start-process (concat name " background")
 				nil TeX-shell
 				TeX-shell-command-option command)))
-    (run-hooks 'TeX-after-start-process-hook)
+    (if TeX-after-start-process-hook
+	(funcall TeX-after-start-process-hook process))
     (set-process-filter process 'TeX-background-filter)
     (process-kill-without-query process)))
 
@@ -965,7 +982,7 @@ Return nil if we gave a report."
 			 (search-forward error nil t 1)))
 		  (progn
 		    (re-search-forward "^l.")
-		    (re-search-forward "^ +$")
+		    (re-search-forward "^ [^\n]+$")
 		    (forward-char 1)
 		    (let ((start (point)))
 		      (re-search-forward "^$")
