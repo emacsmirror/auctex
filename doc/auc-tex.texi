@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.19 1993-03-18 06:01:24 amanda Exp $
+@c $Id: auc-tex.texi,v 1.20 1993-03-18 06:23:31 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2697,6 +2697,14 @@ Automatically untabify buffer when you save it.
 Hands up, everyone who have produced a `last revision' paper containing
 an unreadable list of data in the back, because @TeX{} does not
 understands tabs.
+
+@item
+Call show-all when you change major mode.
+
+Thanks to Inge Frick's @samp{<inge@@nada.kth.se>} @file{kill-fix.el}
+enhancement, outline minor mode can now guarantee that all text is shown
+when you leave the minor mode, even if you leave the minor mode by
+changing the major mode.
 
 @item
 Updated documentation for 7.0.
