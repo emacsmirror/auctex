@@ -1,3 +1,9 @@
+2002-07-24  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (TeX-inline-preview): Export buffer coding system to
+	TeX process output encoding (for our Polish friends and others).
+	Hope this does not break non-Mule XEmacsen if such are around.
+
 2002-07-23  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-image-creators): Change tiff device to use
