@@ -93,3 +93,7 @@
        (reftex-add-section-levels
 	'(("toc" .  reftex-get-section-level-alphanum)
 	  ("sub" .  reftex-get-section-level-alphanum))))))
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:
