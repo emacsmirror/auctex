@@ -1,5 +1,17 @@
 2003-02-15  David Kastrup  <dak@gnu.org>
 
+	* latex.el: AUC TeX to AUCTeX, new header.
+
+	* tex-buf.el (TeX-quote-filename): New function.
+	(TeX-region-create): Use it so that Windows can talk about its
+	master files properly.
+	(TeX-help-error): Try not to have "log file has changed"
+	messages.  AUC TeX to AUCTeX, new header.
+
+	* tex.el: AUC TeX to AUCTeX, new header.
+
+	* auc-old.el: AUC TeX to AUCTeX, new header.
+
 	* README.CVS: Check in a first version.  Ok, it currently
 	contains a few lies, but the basics are not wrong, and hopefully
 	we will have soon what it takes to make it true.
