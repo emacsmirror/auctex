@@ -6,7 +6,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.2 1992-07-22 13:45:44 krab Exp $
+@c $Id: auc-tex.texi,v 1.3 1992-07-22 14:04:32 krab Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -298,7 +298,7 @@ Insertion of sectioning commands, that is @samp{\chapter},
 When invoking @kbd{C-c C-x} you will be asked for a section command to
 insert.  An appropriate default is automatically selected by AUC @TeX{},
 that is either: In the top of the document; the top level sectioning for
-that document style, and any other place: The same as the last occuring
+that document style, and any other place: The same as the last occurring
 sectioning command.
 
 Next, you will be asked for the the actual name of that section, and
@@ -313,7 +313,7 @@ environments, that is @kbd{\begin@{@}} --- @kbd{\end@{@}} pairs.
 
 AUC @TeX{} is aware of most of the actual environments available in a
 specific document.  This is achieved by examining your
-@kbd{\documentstyle} command, and consulting a precompiled list of
+@kbd{\documentstyle} command, and consulting a recompiled list of
 environments available in a large number of styles.  
 
 To insert an environment, invoke @samp{LaTeX-environment} by pressing
@@ -324,11 +324,11 @@ After selection of a specific environment AUC @TeX{} may prompt you for
 further specifications.  
 
 As a default selection, AUC @TeX{} will suggest the environment last
-inserted or, as the first choise the value of
+inserted or, as the first choice the value of
 @samp{LaTeX-default-environment}.
 
 Most of these are described further in the following sections, and you
-may easily specify more, as described in `Costumizing environments'.
+may easily specify more, as described in `Customizing environments'.
 
 @menu
 * Floats::                      Floats
@@ -378,7 +378,7 @@ insert an appropriate @kbd{\item} for the current environment. That is,
 @subsection Tabular like
 
 When inserting tabular like environments, that is, `tabular' `array'
-etc., you will be promted for a template for that environment.
+etc., you will be prompted for a template for that environment.
 
 @node Customizing environments,  , Tabular like, Environments
 @subsection Customizing environments
@@ -451,7 +451,7 @@ A string containing the prefix of @samp{LaTeX-math-mode} commands;
 usually @kbd{`}. @refill
 @end defvar
 
-Another variable holdt the actual mapping of keys into commands:
+Another variable holds the actual mapping of keys into commands:
 
 @defvar LaTeX-mathlist
 Alist containing key-command mappings to use in LaTeX-math-mode. 
@@ -525,7 +525,7 @@ is indented by the value of @samp{LaTeX-indent-level} which defaults to
 2.  Also, items of an `itemize-like' environment are indented.  The
 following is a short sample of an itemize environment indented by AUC
 @TeX{}.  If more environment are nested, they are indented `accumulated'
-just like most programmings usually are seen indented in nested
+just like most programming languages usually are seen indented in nested
 constructs. 
 
 @example
@@ -548,14 +548,14 @@ constructs.
 \end@{itemize@}
 @end example
 
-The following functions are avilable for formatting:
+The following functions are available for formatting:
 
 @table @kbd
 @item TAB
 @samp{LaTeX-indent-line} will indent the current line.
 
 @item LFD
-@samp{reindent-then-newline-and-indent} indents the current line, and
+@samp{reinvent-then-newline-and-indent} indents the current line, and
 then inserts a new line (much like @kbd{RET}) and move the cursor to an
 appropriate position by the left margin.
 
@@ -663,7 +663,7 @@ beginning of the line.  The longer the match, the deeper the level.
 @node Miscellaneous,  , Outline, Advanced Features
 @section Miscellaneous editing commands
 
-A number of more or less `free-lance' functions are avilable. They are
+A number of more or less `free-lance' functions are available. They are
 listed here, as they don't seem to fit in anywhere else.
 
 @table @kbd
@@ -690,7 +690,7 @@ current region.  The actual command is then inserted as @kbd{@{\XX ...@}}.
 @chapter Formatting and Printing 
 
 The most powerful features of AUC @TeX{} are those allowing you to run
-(La)@TeX{} from within Emacs, and moreover aloowing tou to @emph{debug}
+(La)@TeX{} from within Emacs, and moreover allowing you to @emph{debug}
 your documents.  The following sections describe those features in
 detail. 
 
@@ -794,7 +794,7 @@ and for examples of how the actual preview functions should be defined.
 @node Printing, MakeIndex, Previewing, Formatting
 @section Printing
 
-Onve you've formatted your document using the functions described in
+Once you've formatted your document using the functions described in
 the section `Invoking LaTeX', you may print it using:
 
 @deffn Command TeX-print 
@@ -810,7 +810,7 @@ added to your printing command line option @samp{-P}.
 @end defvar
 
 @defvar TeX-print-command
-Command used to invoke the your favourite printer filter.
+Command used to invoke the your favorite printer filter.
 @end defvar
 
 @node MakeIndex, BibTeX, Printing, Formatting
@@ -832,12 +832,22 @@ document.
 @node Control,  , BibTeX, Formatting
 @section Controlling the output
 
-A number of commands are avilable for controlling the output of an
+A number of commands are available for controlling the output of an
 application running under AUC @TeX{}
 
 @deffn Command TeX-kill-job
 Bound to @kbd{C-c C-k}. Kill currently running external application.
-This may be either of @TeX{}, La@TeX{}, perviewer Bib@TeX{} etc.
+This may be either of @TeX{}, La@TeX{}, previewer Bib@TeX{} etc.
+@end deffn
+
+@deffn Command TeX-recenter-output-buffer
+Bound to @kbd{C-c C-l}.  Recenter the output buffer so that the bottom
+line is visible.
+@end deffn
+
+@deffn Command TeX-home-buffer
+Bound to @kbd{C-c C-h}. Go to the `main' file of the most recently
+formatted @TeX{} document.
 @end deffn
 
 @node Supported symbols,  , Formatting, top
