@@ -1,3 +1,11 @@
+Sat Feb 15 18:00:48 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7h released.
+
+Sat Feb 15 13:39:30 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-lisp-directory): Removed.
+
 Fri Feb 07 14:58:29 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7g released.

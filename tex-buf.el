@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7g
+;; Version: 9.7h
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -28,11 +28,6 @@ Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
 ;;; Customization:
-
-(defvar TeX-lisp-directory "/usr/local/lib/emacs/site-lisp/auctex/"
-  "*The directory where the AUC TeX lisp files are located.")
-
-(setq load-path (cons TeX-lisp-directory load-path))
 
 (defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
   "*Use asynchronous processes.")

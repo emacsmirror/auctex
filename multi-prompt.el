@@ -1,10 +1,10 @@
 ;;; multi-prompt.el --- completing read of multiple strings.
 
-;; Copyright (C) 1996 Per Abrahamsen.
+;; Copyright (C) 1996, 1997 Per Abrahamsen.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: extensions
-;; Version: 0.1
+;; Version: 0.2
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
@@ -41,6 +41,9 @@
 
 ;;; Change Log:
 ;;
+;; Sat Feb 15 17:58:31 MET 1997
+;;      * Version 0.2 released.
+;;        Renamed predicate to `mp-predicate'.
 ;; Sat Aug 31 18:32:20 MET DST 1996
 ;;      * Version 0.1 released.
 ;;        Fixed `predicate' bug.  
@@ -58,7 +61,7 @@
 
 (defun multi-prompt (separator
 		     unique prompt table
-		     &optional predicate require-match initial history)
+		     &optional mp-predicate require-match initial history)
   "Completing prompt for a list of strings.  
 The first argument SEPARATOR should be the string (of length 1) to
 separate the elements in the list.  The second argument UNIQUE should
@@ -83,9 +86,9 @@ are the arguments to `completing-read'.  See that."
 	   (filter (cond (unique
 			  (lambda (x)
 			    (and (not (member (car x) multi-prompt-found))
-				 (or (null predicate)
-				     (funcall predicate x)))))
-			 (predicate)))
+				 (or (null mp-predicate)
+				     (funcall mp-predicate x)))))
+			 (mp-predicate)))
 	   (answer (catch 'multi-prompt-exit
 		     (while t
 		       (let ((extra (catch 'multi-prompt-next
