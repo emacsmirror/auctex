@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1991-12-07 14:08:59 $|$Revision: 4.10 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1991-12-07 15:24:43 $|$Revision: 4.11 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 4.10 $  
+;; RCS status      : $Revision: 4.11 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Dec  7 15:08:22 1991
-;; Update Count    : 434
+;; Last Modified On: Sat Dec  7 16:22:45 1991
+;; Update Count    : 445
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,6 +116,9 @@
 ;;   Make some good regexp's for paragraph-start and    
 ;;     paragraph-seperate... This is pretty critical!!
 ;;
+;;   Incorporate `TeX-info-mode'... This is just a mad idea, but 
+;;   why not ?
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -279,7 +282,9 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c\C-h" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
-  (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
+  (if TeX-use-completion
+      (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
+  )
 
 (if LaTeX-mode-map
     ()
@@ -315,7 +320,9 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 	(save-excursion
 	  (goto-char (point-min))
 	  (if (re-search-forward 
-	       "^[^%]*\\\\\\(begin[^a-z]\\|section\\|part\\|chapter\\)" nil t)
+	       (concat "^[^%]*"
+		       (regexp-quote TeX-esc)
+		       \\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
 	      'latex-mode
 	    TeX-default-mode))))
     (if mode (funcall mode)
@@ -697,70 +704,6 @@ formatting."
 	  (re-search-forward (concat "\\(" LaTeX-paragraph-start-command "\\|^ +$\\|\\'\\)" ) (point-max) t)))))
   (message "Finished"))
 
-;(defun LaTeX-format-region-old (from to &optional justify what)
-; "Fill and indent each of the paragraphs in the region as LaTeX text.
-;Prefix arg (non-nil third arg, if called from program)
-;means justify as well."
-;  (interactive "r\nP")
-;  (save-excursion
-;    (LaTeX-indent-line)
-;    (let ((the-end (set-marker (make-marker) to))
-;	  (length (- to from)))
-;      (save-restriction
-;	(narrow-to-region from to) 
-;	(while (and (<= (point) (marker-position the-end))
-;		    (not (eobp)))
-;	  (narrow-to-region (point)
-;			    (progn
-;			      (re-search-forward
-;			       "\\(\\\\begin *{verbatim}\\|[^\\\\]%\\|\\'\\)")
-;			      (point)))
-;	  (let  ((is-percent (string-match "%" (buffer-substring
-;						(match-beginning 0)
-;						(match-end 0)))))
-;	    (goto-char (point-min))
-;	    (replace-regexp "\\\\\\(begin\\|end\\|left\\|right\\|item\\)"
-;			    " \\&")
-;	    (goto-char (point-min))
-;	    (replace-regexp "^[ \t]+\\\\" "\\\\")
-;	    (goto-char (point-min))
-;	    (replace-regexp "[ \t]+\\\\[^\\\\]" "\n\\&")
-;	    (goto-char (point-max))
-;	    (widen)
-;	    (if is-percent
-;		(end-of-line)
-;	      (goto-char (progn
-;			   (re-search-forward
-;			    "\\(\\\\end *{verbatim}\\|\\'\\)")
-;			   (point)))))))
-;      (while (and (<= (point) (marker-position the-end))
-;		  (not (eobp)))
-;	(re-search-forward "\\(^[ \t]*\\|\\'\\)")
-;	(if (looking-at ".*\\\\begin *{verbatim}")
-;	    (re-search-forward "\\\\end *{verbatim}"))
-;	(LaTeX-indent-line)
-;	(message "Formatting%s (take one)... %d%%"
-;		 (if (not what)
-;		     ""
-;		   what)
-;		 (/ (* 100 (- (point) from)) length)))
-;      (goto-char from)
-;      (while (and (<= (point) (marker-position the-end))
-;		  (not (eobp)))
-;	(LaTeX-format-paragraph justify)
-;	(forward-paragraph 1)
-;	(if (looking-at "^[ \t]*$")
-;	    (forward-line))
-;	(beginning-of-line)
-;	(if (looking-at ".*\\\\begin *{verbatim}")
-;	    (re-search-forward "\\\\end *{verbatim}"))
-;	(message "Formatting%s (take two)... %d%%"
-;		 (if (not what)
-;		     ""
-;		   what)
-;		 (/ (* 100 (- (point) from)) length)))))
-;  (message ""))
-
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
 will not work properly if there are unbalanced begin-end pairs in
@@ -768,7 +711,7 @@ comments and verbatim environments"
   (interactive)
   (LaTeX-find-matching-end)
   (set-mark (point))
-  (search-backward "\\")
+  (search-backward TeX-esc)
   (LaTeX-find-matching-begin))
 
 (defun LaTeX-find-matching-end ()
@@ -776,7 +719,8 @@ comments and verbatim environments"
   (interactive)
   (while
       (progn
-        (if (re-search-forward "\\\\\\(begin\\|end\\)" nil  t)
+        (if (re-search-forward (concat (regexp-quote TeX-esc)
+				       "\\(begin\\|end\\)") nil  t)
             (if (string-match "\\begin" (buffer-substring
 					 (match-beginning 1)
 					 (match-end 1)))
@@ -791,7 +735,9 @@ comments and verbatim environments"
   (interactive)
   (while 
       (progn
-	(if (re-search-backward " *\\\\\\(begin\\|end\\)" nil t)
+	(if (re-search-backward (concat " *"
+					(regexp-quote TeX-esc)
+					"\\(begin\\|end\\)") nil t)
 	    (if (equal "\\end" (buffer-substring
 				(match-beginning 1)
 				(match-end 1)))
@@ -852,13 +798,17 @@ comments and verbatim environments"
   "Return the correct indentation of line of LaTeX source. (I hope...)"
   (save-excursion
     (back-to-indentation)
-    (cond ((looking-at "\\\\end{verbatim}")
+    (cond ((looking-at (concat (regexp-quote TeX-esc) "end{verbatim}"))
 	   (save-excursion
 	     (search-backward "\\begin{verbatim}")
 	     (current-indentation)))
-	  ((looking-at "\\(\\\\end{\\|\\\\right\\)")
+	  ((looking-at (concat "\\("
+			       (regexp-quote TeX-esc)
+			       "end{\\|"
+			       (regexp-quote TeX-esc)
+			       "right\\)"))
 	   (- (calculate-normal-LaTeX-indentation) LaTeX-indent-level))
-	  ((looking-at "\\\\item\\W")
+	  ((looking-at (concat (regexp-quote TeX-esc) "item\\W"))
 	   (+ (calculate-normal-LaTeX-indentation) LaTeX-item-indent))
 	  (t (calculate-normal-LaTeX-indentation)))))
 
@@ -866,7 +816,7 @@ comments and verbatim environments"
   "Return the correct indentation of a normal line of text."
   (skip-chars-backward "\n\t ")
   (move-to-column (current-indentation))
-  (cond ((looking-at "\\\\begin{document}")
+  (cond ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
 	 ;; I dislike having all of the document indented...
 	 (current-indentation))
 	((looking-at (concat (regexp-quote TeX-esc) "begin"
