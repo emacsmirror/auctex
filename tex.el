@@ -350,18 +350,18 @@ is performed as specified in `TeX-expand-list'."
 (defcustom TeX-view-style
   `((,(concat
       "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
-     "xdvi %d -paper a4")
+     "xdvi %d %dS -paper a4")
     (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %d -paper a5")
-    ("^b5paper$" "xdvi %d -paper b5")
-    ("^letterpaper$" "xdvi %d -paper us")
-    ("^legalpaper$" "xdvi %d -paper legal")
-    ("^executivepaper$" "xdvi %d -paper 7.25x10.5in")
-    ("^landscape$" "xdvi %d -paper a4r -s 0")
+     "xdvi %d %dS -paper a5")
+    ("^b5paper$" "xdvi %d %dS -paper b5")
+    ("^letterpaper$" "xdvi %d %dS -paper us")
+    ("^legalpaper$" "xdvi %d %dS -paper legal")
+    ("^executivepaper$" "xdvi %d %dS -paper 7.25x10.5in")
+    ("^landscape$" "xdvi %d %dS -paper a4r -s 0")
     ;; The latest xdvi can show embedded postscript.  If you don't
     ;; have that, uncomment next line.
     ;; ("^epsf$" "ghostview %f")
-    ("." "xdvi %d"))
+    ("." "xdvi %d %dS"))
   "List of style options and view options.
 
 If the first element (a regular expresion) matches the name of
@@ -386,20 +386,20 @@ is not recommended because it is more powerful than
 	       "^"
 	       (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
 	       "$")
-     "xdvi %d -paper a4")
+     "xdvi %d %dS -paper a4")
     ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
 	      "^landscape$")
-     "xdvi %d -paper a5r -s 0")
+     "xdvi %d %dS -paper a5r -s 0")
     ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %d -paper a5")
-    ("^dvi$" "^b5paper$" "xdvi %d -paper b5")
+     "xdvi %d %dS -paper a5")
+    ("^dvi$" "^b5paper$" "xdvi %d %dS -paper b5")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
      "dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^letterpaper$" "xdvi %d -paper us")
-    ("^dvi$" "^legalpaper$" "xdvi %d -paper legal")
-    ("^dvi$" "^executivepaper$" "xdvi %d -paper 7.25x10.5in")
-    ("^dvi$" "^landscape$" "xdvi %d -paper a4r -s 0")
-    ("^dvi$" "." "xdvi %d")
+    ("^dvi$" "^letterpaper$" "xdvi %d %dS -paper us")
+    ("^dvi$" "^legalpaper$" "xdvi %d %dS -paper legal")
+    ("^dvi$" "^executivepaper$" "xdvi %d %dS -paper 7.25x10.5in")
+    ("^dvi$" "^landscape$" "xdvi %d %dS -paper a4r -s 0")
+    ("^dvi$" "." "xdvi %d %dS")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
@@ -451,6 +451,8 @@ string."
 		     (TeX-style-check LaTeX-command-style)))
 	(list "%S" (lambda ()
 		     (TeX-source-specials-expand-options)))
+	(list "%dS" (lambda ()
+		      (TeX-source-specials-expand-view-options)))
 	;; `file' means to call `TeX-master-file'
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
@@ -554,7 +556,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.386 $"))
+	(rev "$Revision: 5.387 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +571,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-17 09:16:07 $"))
+    (let ((date "$Date: 2004-06-17 11:54:18 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -673,6 +675,14 @@ If nil, use (La)TeX's defaults."
 (defvar TeX-source-specials-viewer-flags
   "-sourceposition %n:%b"
   "*Extra flags to pass to the dvi viewer commands to use source specials.")
+
+(defun TeX-source-specials-expand-view-options (&optional viewer)
+  "Return source specials command line option for viewer command.
+The return value depends on the value of `TeX-source-specials'.
+If this is nil, an empty string will be returned."
+  (if TeX-source-specials
+      TeX-source-specials-viewer-flags
+    ""))
 
 (defun TeX-source-specials-expand-options ()
   "Return source specials command line option for TeX commands.

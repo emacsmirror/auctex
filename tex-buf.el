@@ -511,10 +511,7 @@ the current style options."
 		((not (TeX-member style files 'string-match)))))))
       (setq styles (cdr styles)))
     (if styles
-	(concat (nth 2 (car styles))
-		(if TeX-source-specials
-		    (concat " " TeX-source-specials-viewer-flags)
-		  ""))
+	(nth 2 (car styles))
       "%v")))
 
 ;;; Command Hooks

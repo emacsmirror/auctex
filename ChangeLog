@@ -1,3 +1,14 @@
+2004-06-17  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-source-specials-expand-view-options): New function.
+	(TeX-expand-list): Added new specifier (%dS) for
+	`TeX-source-specials-expand-view-options'.
+	(TeX-view-style, TeX-output-view-style): Add %dS for source
+	specials in all xdvi calls.
+
+	* tex-buf.el (TeX-output-style-check): Remove addition of source
+	specials.
+
 2004-06-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-one-master): Add "dtx" extension.
