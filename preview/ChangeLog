@@ -1,5 +1,11 @@
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-walk-document): New function walking
+	through buffers of current document.
+	(preview-clearout-document): New function for completeness.
+	(preview-map): Add keybinding for it.
+	(LaTeX-preview-setup): Add menu entry for it.
+
 	* configure.in: Preparations for 0.7.6
 
 	* RELEASE: Preparations for 0.7.6
