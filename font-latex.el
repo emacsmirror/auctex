@@ -1256,9 +1256,9 @@ have changed."
 			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
 		     (1 "|") (2 "|"))))))
 
-(defvar font-latex-syntactic-keywords
-  (font-latex-set-syntactic-keywords)
+(defvar font-latex-syntactic-keywords nil
   "Syntactic keywords used by `font-latex'.")
+(make-variable-buffer-local 'font-latex-syntactic-keywords)
 
 
 ;;; Syntactic fontification
@@ -1374,6 +1374,7 @@ have changed."
 ;;;###autoload
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
+  (font-latex-set-syntactic-keywords)
   ;; Trickery to make $$ fontification be in `font-latex-math-face' while
   ;; strings get whatever `font-lock-string-face' has been set to.
   (cond
