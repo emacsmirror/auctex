@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{626}
+%\CheckSum{655}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.44 $
+%  \rcskey \version CVS-$Revision: 1.45 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-23 02:30:09 $
+%\rcskey\next $Date: 2002-03-24 05:07:19 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.44 $
+   \reserved@a\reserved@b CVS-$Revision: 1.45 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-23 02:30:09 $
+\reserved@a\next $Date: 2002-03-24 05:07:19 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -354,7 +354,7 @@
 \pr@fixbbfalse
 \DeclareOption{psfixbb}{\pr@fixbbtrue
   \newbox\pr@markerbox
-  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}
+  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}%
 }
 %    \end{macrocode}
 %\end{macro}
@@ -425,7 +425,8 @@
        \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
        \@begindvi
     \endgroup
-    \pr@outerfalse\color@setgroup\@arrayparboxrestore
+    \pr@outerfalse\color@setgroup\@arrayparboxrestore\nointerlineskip
+    \@nobreaktrue
     \expandafter\@firstofone
   \else
      \expandafter \@gobble
@@ -572,14 +573,23 @@
 %  original |\everydisplay| tokens only once and where appropriate.
 %    \begin{macrocode}
 %<*!active>
+\begingroup
+\catcode`\*=11
+\@firstofone{\endgroup
 \DeclareOption{displaymath}{%
   \preview@delay{\toks@{%
-      \pr@startbox{$$\aftergroup\pr@endbox\@gobbletwo}{$$}\@firstofone}%
+      \pr@startbox{$$%
+        \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
+        \aftergroup\pr@endbox\@gobbletwo}{$$}\@firstofone}%
     \everydisplay\expandafter{\the\expandafter\toks@
       \expandafter{\the\everydisplay}}}%
-  \PreviewEnvironment{equation}%
-  \PreviewEnvironment{equation*}%
-}
+  \pr@advise@ship\equation{\begingroup\aftergroup\pr@endbox
+      \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
+    }{\endgroup}%
+  \pr@advise@ship\equation*{\begingroup\aftergroup\pr@endbox
+      \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
+    }{\endgroup}%
+}}
 %    \end{macrocode}
 %
 %  The |textmath| option.  Some folderol in order to define the active
@@ -628,7 +638,7 @@
   \def\reserved@b##1{##1{\the##1}}%
   \def\reserved@c##1{%
     ##1{\reserved@a\reserved@b\aftergroup\noexpand\pr@endbox
-        \noexpand\the##1}}
+        \noexpand\the##1}}%
    \edef\reserved@a{\reserved@a\reserved@c}\reserved@a}
 %</active>
 %    \end{macrocode}
