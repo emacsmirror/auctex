@@ -10,13 +10,13 @@ and make install.
 
 * Prerequisites
 
-** A recent version or pretest of Emacs 21
+** A recent version of Emacs 21
 
-You need one of the pretest versions of Emacs 21.  Versions 21.0.105
-and higher have been tested to work with EPS images, although lower
-versions should work with PNG images.  In general, you want the latest
-pretest anyway, since preview-latex heavily exercises new features of
-Emacs 21, and those naturally are most susceptible to improvements.
+The first version without known quirks and bugs affecting
+preview-latex is Emacs-21.1.  Only very recent pretest versions before
+that have slight chances of working at all.  Since preview-latex
+heavily exercises new features of Emacs 21, getting the newest release
+is a good idea.
 
 ** A working AUC-TeX installation
 
