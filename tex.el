@@ -110,44 +110,47 @@ performed as specified in `TeX-expand-list'."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
-	      'TeX-run-TeX nil
-	      (list 'plain-tex-mode))
-	(list "LaTeX" "%l \"%(mode)\\input{%t}\""
-	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
+  `(("TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
+     TeX-run-TeX nil
+     (plain-tex-mode) :help "Run plain TeX")
+    ("LaTeX" "%l \"%(mode)\\input{%t}\""
+     TeX-run-TeX nil
+     (latex-mode doctex-mode) :help "Run LaTeX")
 	;; Not part of standard TeX.
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
-	      (list 'texinfo-mode))
-	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
-	      (list 'texinfo-mode))
-	(list "AmSTeX" "amstex %S \"%(mode)\\input %t\""
-	      'TeX-run-TeX nil (list 'ams-tex-mode))
-	;; support for ConTeXt  --pg
-	;; first version of ConTeXt to support nonstopmode: 2003.2.10
-	(list "ConTeXt" "texexec --once --texutil %(execmode)%t"
-	      'TeX-run-TeX
-	      nil (list 'context-mode))
-	(list "ConTeXt Full" "texexec %(execmode)%t"
-	      'TeX-run-TeX nil
-	      (list 'context-mode))
-	;; --purge %s does not work on unix systems with current texutil
-	;; check again october 2003 --pg
-	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil
-	      (list 'context-mode))
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
-	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%V " 'TeX-run-discard t t)
-	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t t))
-	(list "Print" "%p %r " 'TeX-run-command t t)
-	(list "Queue" "%q" 'TeX-run-background nil t)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
-	(list "Index" "makeindex %s" 'TeX-run-command nil t)
-	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil t)
-	;; Uncomment the above line and comment out the next line to
-	;; use `chktex' instead of `lacheck'.
-	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
-	(list "Other" "" 'TeX-run-command t t))
+    ("Makeinfo" "makeinfo %t" TeX-run-compile nil
+     (texinfo-mode) :help "Run Makeinfo with Info output")
+    ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
+     (texinfo-mode) :help "Run Makeinfo with HTML output")
+    ("AmSTeX" "amstex %S \"%(mode)\\input %t\""
+     TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
+    ;; support for ConTeXt  --pg
+    ;; first version of ConTeXt to support nonstopmode: 2003.2.10
+    ("ConTeXt" "texexec --once --texutil %(execmode)%t"
+     TeX-run-TeX nil (context-mode) :help "Run ConTeXt once")
+    ("ConTeXt Full" "texexec %(execmode)%t"
+     TeX-run-TeX nil
+     (context-mode) :help "Run ConTeXt until completion")
+    ;; --purge %s does not work on unix systems with current texutil
+    ;; check again october 2003 --pg
+    ("ConTeXt Clean" "texutil --purgeall" TeX-run-interactive nil
+     (context-mode) :help "Clean temporary ConTeXt files")
+    ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+    ,(if (or window-system (getenv "DISPLAY"))
+	'("View" "%V " TeX-run-discard t t :help "Run Viewer")
+       '("View" "dvi2tty -q -w 132 %s " TeX-run-command t t
+	 :help "Run Text viewer"))
+    ("Print" "%p %r " TeX-run-command t t :help "Print the file")
+    ("Queue" "%q" TeX-run-background nil t :help "View the printer queue")
+    ("File" "dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+    ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
+    ;; (list "Check" "chktex -v3 %s" TeX-run-compile nil t :help "Check )
+    ;; Uncomment the above line and comment out the next line to
+    ;; use `chktex' instead of `lacheck'.
+    ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
+     :help "Check LaTeX file for correctness")
+    ("Spell" "<ignored>" TeX-run-ispell-on-document nil t
+     :help "Spell-check the document")
+    ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -199,7 +202,10 @@ modify the expanded string.
 The fifth element indicates in which mode(s) the command should be
 present in the Command menu.  Use t if it should be active in any
 mode.  If it should only be present in some modes, specify a list with
-the respective mode names."
+the respective mode names.
+
+Any additional elements get just transferred to the respective menu entries.
+"
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(string :tag "Command")
@@ -229,7 +235,8 @@ the respective mode names."
 				     (const :tag "DocTeX" doctex-mode)
 				     (const :tag "ConTeXt" context-mode)
 				     (const :tag "Texinfo" texinfo-mode)
-				     (const :tag "AmSTeX" ams-tex-mode))))))
+				     (const :tag "AmSTeX" ams-tex-mode)))
+			(repeat :tag "Menu elements" :inline t sexp))))
 
 (defcustom TeX-command-output-list
   '(
@@ -581,7 +588,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.415 $"))
+	(rev "$Revision: 5.416 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -596,7 +603,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-09 23:06:39 $"))
+    (let ((date "$Date: 2004-08-10 01:33:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2992,7 +2999,8 @@ Used for specifying extra syntax for a macro."
 		     (mapcar 'TeX-command-menu-queue-entry ; dickow fix part 2.
 			     TeX-printer-list))))
 	  (t
-	   (vector name (list 'TeX-command-menu name) t)))))
+	   (vconcat `(,name (TeX-command-menu ,name))
+		    (nthcdr 5 entry))))))
 
 (defconst TeX-command-menu-name "Command"
   "Name to be displayed for the command menu in all modes defined by AUCTeX.")
@@ -3140,22 +3148,22 @@ be bound to `TeX-electric-macro'."
 	:style toggle :selected TeX-debug-bad-boxes
 	:help "Make \"Next Error\" show bad boxes"])))
    (let ((file 'TeX-command-on-current));; is this actually needed?
-     (mapcar 'TeX-command-menu-entry
-	     (TeX-mode-specific-command-list mode)))))
+     (TeX-maybe-remove-help
+      (mapcar 'TeX-command-menu-entry
+	     (TeX-mode-specific-command-list mode))))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."
-  (let ((full-list (copy-sequence TeX-command-list))
+  (let ((full-list TeX-command-list)
 	out-list
 	entry)
-    (while (car full-list)
-      (setq entry (pop full-list))
+    (while (setq entry (pop full-list))
       ;; `(nth 4 entry)' may be either an atom in case of which the
       ;; entry should be present in any mode or a list of major modes.
       (if (or (atom (nth 4 entry))
 	      (memq mode (nth 4 entry)))
-	  (setq out-list (append out-list (list entry)))))
-    out-list))
+	  (push entry out-list)))
+    (nreverse out-list)))
 
 ;;; Menus for plain TeX mode
 (easy-menu-define plain-TeX-mode-command-menu
