@@ -33,40 +33,33 @@
 
 (defvar japanese-TeX-command-list
   (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t)
+	      'TeX-run-TeX nil t t)
 	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil t)
+	      'TeX-run-LaTeX nil 'latex t)
 	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t)
+	      'TeX-run-TeX nil t t)
 	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil t)
-	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
-	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
+	      'TeX-run-LaTeX nil 'latex t)
+	(list "Mendex" "mendex %s" 'TeX-run-command nil nil t)
+	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil nil)
+        (list "-" "" nil nil nil nil))
   "Additional list of commands to execute in japanese-LaTeX-mode")
 
 (setq TeX-command-list
       (append japanese-TeX-command-list TeX-command-list))
 
-;; the following code is needed to change mode-menu in japanese-LaTeX-mode.
-(easy-menu-define TeX-mode-menu
-    TeX-mode-map
-    "Menu used in TeX mode."
-  (append '("Command")
-	  '(("Command on"
-	     [ "Master File" TeX-command-select-master
-	       :keys "C-c C-c" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-master) ]
-	     [ "Buffer" TeX-command-select-buffer
-	       :keys "C-c C-b" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-buffer) ]
-	     [ "Region" TeX-command-select-region
-	       :keys "C-c C-r" :style radio
-	       :selected (eq TeX-command-current 'TeX-command-region) ]))
-	  (let ((file 'TeX-command-on-current))
-	    (mapcar 'TeX-command-menu-entry TeX-command-list))))
+;; Menus
 
-(define-key LaTeX-mode-map [menu-bar Command] (cons "Command" TeX-mode-menu))
-;; up to here to change mode-menu in japanese-LaTeX-mode.
+(easy-menu-define plain-TeX-mode-command-menu
+    plain-TeX-mode-map
+    "Command menu used in TeX mode."
+    (TeX-mode-specific-command-menu t))
+
+(easy-menu-define LaTeX-mode-command-menu
+    LaTeX-mode-map
+    "Command menu used in LaTeX mode."
+    (TeX-mode-specific-command-menu 'latex))
+
 
 (setq LaTeX-command-style
       (append (if (string-equal LaTeX-version "2")
