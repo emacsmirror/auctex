@@ -1,4 +1,4 @@
-Release notes for version 0.7.4 of the preview-latex package:
+Release notes for version 0.7.5 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by placing judiciously
 selected chunks (such as single formulas) chopped from unwieldy
@@ -17,13 +17,11 @@ should work out of the box.  Recent CVS versions of Windows GNU Emacs
 could conceivably be made to work, too, but the jury is still out on
 that one.
 
-Release 0.7.4 is a consolidation release containing mostly bug fixes.
-Several interoperatibility problems under Windows and with various
-GhostScript versions have been dealt with.  The previous release lead
-to problems when buffers without associated file name were put into
-LaTeX-mode.  If this occured while first loading preview-latex,
-compatibility macros caused further problems with XEmacs.  As a
-promotional measure, preview-at-point has been added to the tool bar.
+Release 0.7.5 is a bug fix release for XEmacs.  Compatibility macros
+caused several conflicts with other packages when preview-latex was
+loaded after them.  In addition, the preview icon could appear doubly
+in the toolbar.  GNU Emacs users were not affected by either bug and
+need not upgrade from 0.7.4.
 
 The README file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
