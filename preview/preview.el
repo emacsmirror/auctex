@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.38 2001-10-26 14:08:29 dakas Exp $
+;; $Id: preview.el,v 1.39 2001-10-29 23:58:23 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -53,7 +53,15 @@
 	     'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
-  :group 'AUC-TeX)
+  :group 'AUC-TeX
+  :prefix "preview-")
+
+(defgroup preview-gs nil "Preview's GhostScript Renderer."
+  :group 'preview)
+(defgroup preview-appearance nil "Preview image appearance."
+  :group 'preview)
+(defgroup preview-latex nil "LaTeX options for preview."
+  :group 'preview)
 
 (defcustom preview-image-creators
   '((postscript (place preview-eps-place))
@@ -80,7 +88,7 @@ the function `preview-call-hook' through which those are
 called.  Additional argument lists specified in here
 are passed to the functions before any additional
 arguments given to `preview-call-hook'."
-  :group 'preview
+  :group 'preview-gs
   :type '(alist :key-type (symbol :tag "Preview's image type")
 		:value-type
 		(alist :tag "Handler" :key-type (symbol :tag "Operation:")
@@ -92,7 +100,7 @@ function args" :inline t sexp))
 
 (defcustom preview-image-type 'png
   "*Image type to be used in images."
-  :group 'preview
+  :group 'preview-gs
   :type (append '(choice)
 	      (mapcar (lambda (symbol) (list 'const (car symbol)))
 		      preview-image-creators)
@@ -174,7 +182,7 @@ that is."
 
 (defcustom preview-gs-command "gs"
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
-  :group 'preview
+  :group 'preview-gs
   :type 'string)
 
 (defcustom preview-gs-options '("-q" "-DSAFER" "-dNOPAUSE"
@@ -182,7 +190,7 @@ that is."
 				"-dGraphicsAlphaBits=4")
   "*Options with which to call gs for conversion from EPS.
 See also `preview-gs-command'."
-  :group 'preview
+  :group 'preview-gs
   :type '(repeat string))
 
 (defvar preview-gs-queue nil
@@ -202,7 +210,7 @@ this number is larger, the probability of GhostScript
 working continuously is higher when Emacs is rather
 busy.  If this number is smaller, redisplay will
 follow changes in the displayed buffer area faster."
-  :group 'preview
+  :group 'preview-gs
   :type '(restricted-sexp
 	  :match-alternatives
 	  ((lambda (value) (and
@@ -226,7 +234,7 @@ screen content.  Buffer-local to rendering buffer.")
 (make-variable-buffer-local 'preview-scale)
 
 (defvar preview-gs-colors nil
-  "GhostScript color setup string.")
+  "GhostScript color setup tokens.")
 (make-variable-buffer-local 'preview-gs-colors)
 
 (defvar preview-resolution nil
@@ -487,12 +495,13 @@ given as ANSWER."
 				 "clear \
 /preview-LaTeX-state save def << \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
->> setpagedevice %s(%s) run preview-LaTeX-state restore\n"
+>> setpagedevice %s (%s) run preview-LaTeX-state restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
 				 (- (aref bbox 3) (aref bbox 1))
 				 (- (aref bbox 0)) (aref bbox 1)
 				 (car newfile)
-				 preview-gs-colors
+				 (mapconcat #'identity
+					    preview-gs-colors " ")
 				 (car oldfile))))
 		  (setq preview-gs-outstanding
 			(nconc preview-gs-outstanding
@@ -510,7 +519,7 @@ given as ANSWER."
   "*Scale factor for included previews.
 This can be either a function to calculate the scale, or
 a fixed number."
-  :group 'preview
+  :group 'preview-appearance
   :type '(choice (function-item preview-scale-from-face)
 		 (const 1.0)
 		 (number :value 1.0)
@@ -521,7 +530,7 @@ a fixed number."
 If the point size (such as 11pt) of the document cannot be
 determined from the document options itself, assume this size.
 This is for matching screen font size and previews."
-  :group 'preview
+  :group 'preview-appearance
   :type
           '(choice (const :tag "10pt" 10)
                   (const :tag "11pt" 11)
@@ -544,12 +553,12 @@ the value is taken from `preview-default-document-pt'."
       preview-default-document-pt))
 
 (defun preview-scale-from-face ()
-  "Calculate preview scale from default face.
+  "Calculate preview scale from `preview-reference-face'.
 This calculates the scale of EPS images from a document assumed
 to have a default font size given by function `preview-document-pt'
-so that they match the current default face in height."
-  (/ (face-attribute 'default :height) 10.0 (preview-document-pt)))
-
+so that they match the reference face in height."
+  (/ (preview-inherited-face-attribute 'preview-reference-face :height
+				       'default) 10.0 (preview-document-pt)))
 
 (defun preview-ascent-from-bb (bb)
   "This calculates the image ascent from its bounding box.
@@ -569,13 +578,22 @@ numbers (can be float if available)."
       100)))
 
 
-(defface preview-face '((t (:background "lightgray")))
+(defface preview-face '((((background dark))
+			 (:background "dark slate gray"))
+			(t
+			 (:background "beige")))
   "Face to use for the source of preview."
-  :group 'preview)
+  :group 'preview-appearance)
 
-(defface preview-error-face '((t (:background "red")))
+(defface preview-error-face '((((class color)) (:background "red"))
+			      (t (:inverse-video t)))
   "Face for displaying error message overlays."
-  :group 'preview)
+  :group 'preview-appearance)
+
+(defface preview-reference-face '((t nil))
+  "Face consulted for colors and scale of active previews.
+Fallback to :inherit and 'default implemented."
+  :group 'preview-appearance)
 
 (defun preview-regenerate (ovr)
   "Pass the modified region in OVR again through LaTeX."
@@ -827,7 +845,7 @@ These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
 on a document not configured for preview.  \"auctex\", \"active\"
 and \"delayed\" need not be specified here."
-  :group 'preview
+  :group 'preview-latex
   :type '(list (set :inline t :tag "Options known to work"
 		    :format "%t:\n%v%h" :doc
 "The above options are all the available ones
@@ -852,7 +870,7 @@ upgraded to a fancier version of just the LaTeX style."
 dvips -Pwww -i -E %d -o %m/preview.000"
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
-  :group 'preview
+  :group 'preview-latex
   :type 'string
   :set (lambda (symbol value)
 	 (set-default symbol value)
@@ -1126,7 +1144,7 @@ specified by BUFF."
 			 (display-mm-width))
 		      (/ (* 25.4 (display-pixel-height))
 			 (display-mm-height)))
-	    colors (preview-get-colors)))
+	    colors (preview-gs-get-colors)))
     (setq preview-scale scale)
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
@@ -1137,7 +1155,8 @@ See `TeX-sentinel-function' and `set-process-sentinel'
 for definition of PROCESS and NAME."
   (if process (TeX-format-mode-line process))
   (if (eq (process-status process) 'exit)
-      (preview-parse-messages)))
+      (with-temp-message (format "%s: locating previews..." name)
+	(preview-parse-messages))))
   
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
@@ -1155,7 +1174,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.38 $"))
+	(rev "$Revision: 1.39 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)

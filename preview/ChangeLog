@@ -1,3 +1,40 @@
+2001-10-30  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-transparent-color): Make transparency
+	customizable.  Note that due to a bug everything except "None" is
+	treated the same as "Autodetect" in 21.1.  Fixed in CVS.
+	(preview-get-heuristic-mask): Function for calculating mask to use
+	from above.
+	(preview-create-icon): use preview-get-heuristic-mask
+	(preview-ps-image): same.
+	(preview-mark-point): move point out of previews before starting
+	next command for consistent implementation of intangibility.  Not
+	sure whether this is actually a good idea, though.
+	(preview-inherited-face-attribute): New function
+	(preview-gs-get-colors): New function, replaces preview-get-colors
+
+	* preview.el (preview-gs): New customization group hierarchy
+	(preview-appearance): same
+	(preview-latex): same
+	(preview-gs-colors): change string to single tokens.
+	(preview-gs-transact): construct string from same
+	(preview-scale-from-face): consult preview-reference-face instead
+	of default.  Use new function preview-inherited-face-attribute for
+	this.
+	(preview-face): add different colours for dark backgrounds.
+	change default background to beige, probably less likely to match
+	users default background.
+	(preview-error-face): change preview-error-face for non-color terms.
+	(preview-reference-face): used for size and color determination of
+	previews.
+	(preview-TeX-inline-sentinel): tell user while we are parsing
+
+2001-10-27  David Kastrup  <David.Kastrup@t-online.de>
+
+	* PROBLEMS: revert AucTeX patch to that before we tried our luck
+	with intangibility.  Some changes in formatting.  Add comment
+	about -Pwww font problems.
+
 2001-10-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Release 0.5.8.1

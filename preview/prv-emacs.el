@@ -43,13 +43,39 @@ Usually a question mark")
   "The symbol used for an open preview.
 Usually a magnifying glass.")
 
+(defcustom preview-transparent-color '(default :background)
+  "Color to appear transparent in previews."
+  :type '(radio (const :tag "None" nil)
+		 (const :tag "Autodetect" t)
+		 (color :tag "By name" :value "white")
+		 (list :tag "Take from face"
+		       :value (default :background)
+		       (face)
+		       (choice :tag "What to take"
+			(const :tag "Background" :value :background)
+			(const :tag "Foreground" :value :foreground))))
+  :group 'preview-appearance)
+
+(defun preview-get-heuristic-mask ()
+  "Get heuristic-mask to use for previews.
+Consults `preview-transparent-color'."
+  (cond ((stringp preview-transparent-color)
+	 (color-values preview-transparent-color))
+	((or (not (consp preview-transparent-color))
+	     (integerp (car preview-transparent-color))
+	     preview-transparent-color))
+	(t (color-values (preview-inherited-face-attribute
+			  (nth 0 preview-transparent-color)
+			  (nth 1 preview-transparent-color)
+			  'default)))))
+
 (defmacro preview-create-icon (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
   `(list 'image
 	 :file ,file
 	 :type ,type
 	 :ascent ,ascent
-	 :heuristic-mask t))
+	 :heuristic-mask (preview-get-heuristic-mask)))
 
 (defun preview-add-urgentization (fun ov buff)
   "Cause FUN to be called with OV and BUFF when redisplayed."
@@ -128,9 +154,7 @@ specifies."
 			      (* scale (- (aref bb 3) (aref bb 1))))
 		  :bounding-box (preview-int-bb bb)
 		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask t
-		  )
-    ))
+		  :heuristic-mask (preview-get-heuristic-mask))))
 
 (defvar preview-overlay nil)
 
@@ -221,6 +245,9 @@ toggles it."
 
 (defun preview-mark-point ()
   "Mark position for fake intangibility."
+  (when (eq (get-char-property (point) 'preview-state) 'active)
+    (set-marker preview-marker (point))
+    (preview-move-point))
   (set-marker preview-marker (point)))
 
 (defun preview-move-point ()
@@ -242,17 +269,57 @@ toggles it."
       nil)
       (goto-char pt))))
 
-(defun preview-get-colors ()
+(defun preview-gs-color-value (value)
+  "Return string to be used as color value for an RGB component.
+Conversion from Emacs color numbers (0 to 65535) to GhostScript
+floats."
+  (format "%g" (/ value 65535.0)))
+
+(defun preview-inherited-face-attribute (face attribute &optional fallbacks)
+  (let ((value (face-attribute face attribute)))
+    (when fallbacks
+      (setq fallbacks
+	    (append
+	     (let ((ancestors (face-attribute face :inherit)))
+	       (cond ((facep ancestors) (list ancestors))
+		     ((consp ancestors) ancestors)))
+	     (cond ((facep fallbacks) (list fallbacks))
+		   ((consp fallbacks) fallbacks)))))
+    (cond ((null fallbacks) value)
+	  ((floatp value)
+	   (let ((avalue
+		  (preview-inherited-face-attribute
+		   (car fallbacks) attribute (or (null (cdr
+							fallbacks))
+						 (cdr fallbacks)))))
+	     (cond ((integerp avalue)
+		    (round (* avalue value)))
+		   ((floatp avalue)
+		    (* value avalue))
+		   (t value))))
+	  ((eq value 'unspecified)
+	   (preview-inherited-face-attribute
+	    (car fallbacks) attribute (or (null (cdr fallbacks))
+					  (cdr fallbacks))))
+	  (t value))))
+
+(defun preview-gs-get-colors ()
+  "Return color setup tokens for GhostScript.
+Fetches the current screen colors and makes a list of tokens
+suitable for passing into GhostScript as arguments.
+Returns NIL for black-on-white."
   (let
-      ((bg (color-values (face-background 'default)))
-       (fg (color-values (face-foreground 'default))))
-    (if (and (equal '(65535 65535 65535) bg)
-	     (equal '(0 0 0) fg))
-	""
-      (apply #'format
-"%g %g %g setrgbcolor clippath fill %g %g %g setrgbcolor "
-	      (mapcar (lambda (x) (/ x 65535.0))
-			 (append bg fg))))))
+      ((bg (color-values (preview-inherited-face-attribute
+			  'preview-reference-face :background 'default)))
+       (fg (color-values (preview-inherited-face-attribute
+			  'preview-reference-face :foreground 'default))))
+    (unless (and (equal '(65535 65535 65535) bg)
+		 (equal '(0 0 0) fg))
+      (append
+       (mapcar #'preview-gs-color-value bg)
+       '("setrgbcolor" "clippath" "fill")
+       (mapcar #'preview-gs-color-value fg)
+       '("setrgbcolor")))))
 
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
