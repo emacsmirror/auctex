@@ -45,7 +45,7 @@
 (setq TeX-view-style '(("^a5$" "yap %d -paper a5")
 		       ("^landscape$" "yap %d -paper a4r -s 4")
 		       ("^epsf$" "gsview32 %f")
-		       ("." "yap -1 -s%n%b %d"))
+		       ("." "yap -1 -s%n%b %d")))
 
 (provide 'tex-mik)
 

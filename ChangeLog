@@ -1,3 +1,12 @@
+1999-12-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10n released.
+
+1999-12-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-mik.el: Fixed typo.
+	Reported by Bernt Guldbrandtsen <bg@rs580.sh.dk>
+
 1999-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10m released.
