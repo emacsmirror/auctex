@@ -485,3 +485,58 @@ AC_DEFUN(AC_SHELL_QUOTIFY,
 [$]$1
 EOF
 `"])
+
+dnl
+dnl Determine directories which hold TeX input files.
+dnl
+AC_DEFUN(TEX_INPUT_DIRS,
+ [
+AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS    Directories holding TeX input files (separated by semicolons)],
+ [ texinputdirs="${withval}" ;
+   AC_FULL_EXPAND(withval)
+   texinputdirsout=""
+   for x in `echo ${texinputdirs} | sed -e 's/\;/\\n/g'` ; do
+     if test ! -d "$x" ; then
+       AC_MSG_ERROR([--with-texmf-dir="$x": Directory does not exist])
+     fi
+     if test "${texinputdirsout}" != "" ; then
+       texinputdirsout="${texinputdirsout}""\" \""
+     fi
+     texinputdirsout="${texinputdirsout}""$x"
+   done
+   texinputdirs=${texinputdirsout}
+   ])
+
+if test -z "$texinputdirs" ; then
+  AC_MSG_CHECKING([for directories holding TeX input files])
+
+  if which kpsepath > /dev/null ; then
+    for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
+        grep '^/.*/tex///$'`
+    do
+      if test -e "$x" ; then
+        if test "${texinputdirs}" != "" ; then
+          texinputdirs="${texinputdirs}""\" \""
+        fi
+        texinputdirs="${texinputdirs}"`echo $x | sed -e 's+///+/+g'`
+      fi
+    done
+  elif which findtexmf > /dev/null ; then
+    for x in `findtexmf -alias=latex -show-path=tex | tr ';' '\\n' | \
+        grep '\\tex//$'`
+    do
+      if test -e "$x" ; then
+        if test "${texinputdirs}" != "" ; then
+          texinputdirs="${texinputdirs}""\" \""
+        fi
+        texinputdirs="${texinputdirs}"`echo $x | sed -e 's+//+/+g' \
+                                                     -e 's+\\+/+g'`
+      fi
+    done
+  else
+    texinputdirs="/usr/share/texmf/tex/"
+  fi
+  AC_MSG_RESULT("${texinputdirs}")
+fi
+AC_SUBST(texinputdirs)
+])
