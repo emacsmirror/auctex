@@ -1,3 +1,9 @@
+2003-01-22  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-search-files): Check in first version of kpathsea
+	support.  This implementation does not yet cooperate properly
+	with TeX-auto-generate-*
+
 2003-01-18  David Kastrup  <dak@gnu.org>
 
 	* configure.in: Announce AUC TeX, not preview.

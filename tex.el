@@ -2077,6 +2077,72 @@ EXTENSIONS defaults to TeX-file-extensions."
         (file-name-nondirectory strip)
       strip)))
 
+(defcustom TeX-kpathsea-path-delimiter t
+  "Path delimiter for kpathsea output.
+T means autodetect,
+NIL means kpathsea is disabled."
+  :group 'TeX-file
+  :type '(choice (const ":")
+		 (const ";")
+		 (const :tag "Autodetect" t)
+		 (const :tag "Off" nil))
+
+(defcustom TeX-kpathsea-directory-alist '(("tex" . "$TEXINPUTS.latex")
+					  ("bib" . "$BIBINPUTS")
+					  ("bst" . "$BSTINPUTS"))
+  "Directories to search for expansion using kpathsea."
+  :group 'TeX-file
+  :type '(alist :key-type string :value-type string))
+
+(defun TeX-search-files-kpathsea (extensions nodir strip)
+  "kpathsea-enabled version of `TeX-search-files'.
+Except for DIRECTORIES (a kpathsea string), the arguments for
+EXTENSIONS, NODIR and STRIP are explained there."
+  (and TeX-kpathsea-path-delimiter
+       (catch 'no-kpathsea
+	 (let ((dirs (with-output-to-string
+		       (unless (zerop
+				(call-process
+				 "kpsewhich" nil (list standard-output nil)
+				 nil
+				 (concat
+				  "-expand-path="
+				  (cdr (assoc (car extensions)
+					      TeX-kpathsea-directory-alist)))))
+			 (if (eq TeX-kpathsea-path-delimiter t)
+			     (throw 'no-kpathsea
+				    (setq kpathsea-path-delimiter nil))
+			   (error "kpsewhich error")))))
+	       result)
+	   (when (eq TeX-kpathsea-path-delimiter t)
+	     (setq TeX-kpathsea-path-delimiter
+		   (cond ((string-match ";" dirs)
+			  ";")
+			 ((string-match ":" dirs)
+			  ":"))))
+	   (unless TeX-kpathsea-path-delimiter
+	     (throw 'no-kpathsea nil))
+	   (setq dirs (split-string dirs (concat "[\n\r"
+						 TeX-kpathsea-path-delimiter
+						 "]+")))
+	   (setq extensions (concat "\\."
+				    (regexp-opt TeX-file-extensions t)
+				    "\\'"))
+	   (setq result
+		 (apply #'append
+			(mapcar
+			 (lambda(x) (directory-files x
+						     (not nodir)
+						     extensions))
+			 dirs)))
+	   (if strip
+	       (mapcar (lambda(x)
+			 (if (string-match extensions x)
+			     (substring x 0 (match-beginning 0))
+			   x))
+		       result)
+	     result))))))
+
 (defun TeX-search-files (&optional directories extensions nodir strip)
   "Return a list of all reachable files in DIRECTORIES ending with EXTENSIONS.
 If optional argument NODIR is set, remove directory part.
@@ -2087,47 +2153,49 @@ If optional argument EXTENSIONS is not set, use TeX-file-extensions"
 
   (if (null extensions)
       (setq extensions TeX-file-extensions))
-  
-  (if (null directories)
-      (setq directories
-	    (cons "./" (append TeX-macro-private TeX-macro-global))))
-  
-  (let (match
-	(TeX-file-recurse (cond ((symbolp TeX-file-recurse)
-					TeX-file-recurse)
-				       ((zerop TeX-file-recurse)
-					nil)
-				       ((1- TeX-file-recurse)))))
-    (while directories
-      (let* ((directory (car directories))
-             (content (and directory
-			   (file-readable-p directory)
-			   (file-directory-p directory)
-			   (directory-files directory))))
-        
-        (setq directories (cdr directories))
-	
-        (while content
-          (let ((file (concat directory (car content))))
+
+  (or (TeX-search-files-kpathsea extensions nodir strip)
+      (if (null directories)
+	  (setq directories
+		(cons "./" (append TeX-macro-private TeX-macro-global))))
+      
+      (let (match
+	    (TeX-file-recurse (cond ((symbolp TeX-file-recurse)
+				     TeX-file-recurse)
+				    ((zerop TeX-file-recurse)
+				     nil)
+				    ((1- TeX-file-recurse)))))
+	(while directories
+	  (let* ((directory (car directories))
+		 (content (and directory
+			       (file-readable-p directory)
+			       (file-directory-p directory)
+			       (directory-files directory))))
 	    
-            (setq content (cdr content))
-            (cond ((string-match TeX-ignore-file file))
-		  ((not (file-readable-p file)))
-                  ((file-directory-p file)
-		   (if TeX-file-recurse
-		       (setq match 
-			     (append match 
-				     (TeX-search-files (list (concat file "/"))
-						       extensions
-						       nodir strip)))))
-                  ((TeX-match-extension file extensions)
-                   (setq match (cons (TeX-strip-extension file
-							  extensions
-							  nodir
-							  (not strip))
-                                     match))))))))
-    
-    match))
+	    (setq directories (cdr directories))
+	    
+	    (while content
+	      (let ((file (concat directory (car content))))
+		
+		(setq content (cdr content))
+		(cond ((string-match TeX-ignore-file file))
+		      ((not (file-readable-p file)))
+		      ((file-directory-p file)
+		       (if TeX-file-recurse
+			   (setq match 
+				 (append match 
+					 (TeX-search-files
+					  (list (concat file "/"))
+					  extensions
+					  nodir strip)))))
+		      ((TeX-match-extension file extensions)
+		       (setq match (cons (TeX-strip-extension file
+							      extensions
+							      nodir
+							      (not strip))
+					 match))))))))
+	
+	match)))
 
 (defun TeX-car-string-lessp (a b)
   (string-lessp (car a) (car b)))
