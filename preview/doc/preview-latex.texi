@@ -1,7 +1,7 @@
 \input texinfo
 @documentencoding ISO-8859-1
 @documentlanguage en
-@setfilename preview-latex
+@setfilename preview-latex.info
 @settitle preview-latex
 @dircategory TeX
 @direntry
