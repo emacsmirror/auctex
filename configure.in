@@ -23,7 +23,6 @@ MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
 
-AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(lispdir)
