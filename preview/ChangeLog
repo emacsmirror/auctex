@@ -1,5 +1,16 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (preview-auto-reveal): moved to preview.el
+	(preview-move-point): use preview-auto-reveal-p
+
+	* prv-emacs.el (preview-auto-reveal): moved to preview.el
+	(preview-move-point): Use preview-auto-reveal-p
+
+	* preview.el (preview-auto-reveal): moved from prv-*.el, new
+	customization options.
+	(preview-auto-reveal-p): New function.
+	(preview-arrived-via): New function.
+
 	* doc/problems.texi (LaTeX international characters): Offer
 	another solution.
 	(Middle-clicks paste instead of toggling): Update Emacs version
