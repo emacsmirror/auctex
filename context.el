@@ -1283,17 +1283,22 @@ There might be text before point."
 	       TeX-comment-or-uncomment-paragraph t])
 	(list "Show/Hide"
 	      ["Fold Mode" TeX-fold-mode
-	       :style toggle :selected TeX-fold-mode]
+	       :style toggle
+	       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)]
 	      "-"
 	      ["Hide All" TeX-fold-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-b"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-b"]
 	      ["Hide Current Macro" TeX-fold-macro
-	       :active TeX-fold-mode :keys "C-c C-o C-m"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-m"]
 	      "-"
 	      ["Show All" TeX-fold-clearout-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-x"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-x"]
 	      ["Show Current Item" TeX-fold-clearout-item
-	       :active TeX-fold-mode :keys "C-c C-o C-c"])
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-c"])
 	"-"
 	(list "AUCTeX"
 	      (list "Customize"
@@ -1322,12 +1327,12 @@ There might be text before point."
 	(easy-menu-change '("ConTeXt") ConTeXt-environment-menu-name
 			  (LaTeX-split-long-menu
 			   (mapcar 'ConTeXt-environment-menu-entry
-				   ConTeXt-environment-list)))
+				   (ConTeXt-environment-list))))
 	(message "Updating modify environment menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-environment-modify-menu-name
 			  (LaTeX-split-long-menu
 			   (mapcar 'ConTeXt-environment-modify-menu-entry
-				   ConTeXt-environment-list)))
+				   (ConTeXt-environment-list))))
 	(message "Updating setup menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-setup-menu-name
 			  (LaTeX-split-long-menu
