@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.30 1993-03-30 00:25:02 amanda Exp $
+;;; $Id: tex-buf.el,v 1.31 1993-03-31 00:57:57 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -28,9 +28,6 @@
 
 (defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
   "*Use asynchronous processes.")
-
-(defvar shell-command-option "-c"
-  "DEMACS stuff.")
 
 ;;; @@ Interactive Commands
 ;;;
@@ -259,8 +256,10 @@ Return the new process."
     (setq mode-name name)
     (setq TeX-parse-hook 'TeX-parse-command)
     (setq TeX-command-default default)
+    (setq TeX-sentinel-hook (function (lambda (a b))))
     (if TeX-process-asynchronous
-	(let ((process (start-process name buffer "sh" "-c" command)))
+	(let ((process (start-process name buffer TeX-shell
+				      TeX-shell-command-option command)))
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
@@ -268,15 +267,16 @@ Return the new process."
       (setq mode-line-process ": run")
       (set-buffer-modified-p (buffer-modified-p))
       (sit-for 0)				; redisplay
-      (call-process
-       shell-file-name nil buffer nil shell-command-option command))))
+      (call-process TeX-shell nil buffer nil
+		    TeX-shell-command-option command))))
 
 (defun TeX-format-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-command-hook name command file)))
     ;; Hook to TeX debuger.
-    (setq TeX-parse-hook 'TeX-parse-TeX)
     (TeX-parse-reset)
+    (setq TeX-parse-hook 'TeX-parse-TeX)
+    (setq TeX-sentinel-hook 'TeX-TeX-sentinel)
     (if TeX-process-asynchronous
 	(progn
 	  ;; Updating the mode line.
@@ -288,7 +288,6 @@ Return the new process."
 (defun TeX-TeX-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-format-hook name command file)))
-    (setq TeX-sentinel-hook 'TeX-TeX-sentinel)
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel name file process))))
@@ -322,12 +321,15 @@ Return the new process."
 (defun TeX-discard-hook (name command file)
   "Start process with second argument, discarding its output."
   (process-kill-without-query (start-process (concat name " discard")
-					     nil "sh" "-c" command)))
+					     nil TeX-shell
+					     TeX-shell-command-option
+					     command)))
 
 (defun TeX-background-hook (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((process (start-process (concat name " background")
-				nil "sh" "-c" command)))
+				nil TeX-shell
+				TeX-shell-command-option command)))
     (set-process-filter process 'TeX-background-filter)
     (process-kill-without-query process)))
 
@@ -390,7 +392,7 @@ Return the new process."
 
 (defvar TeX-sentinel-hook (function (lambda (process name)))
   "Hook to cleanup TeX command buffer after temination of PROCESS.
-NAME is the name of the process.  Point is set to   ")
+NAME is the name of the process.")
 
  (make-variable-buffer-local 'TeX-sentinel-hook)
 

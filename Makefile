@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.37 1993-03-30 00:38:49 amanda Exp $
+# $Id: Makefile,v 5.38 1993-03-31 00:57:55 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -172,10 +172,12 @@ install-auto:
 	@echo
 	@echo "**********************************************************"
 	@echo "** Byte compiling.  This will take a while..."
+	@echo "** Some files may fail to compile. Don't Panic!"
 	@echo "**********************************************************"
-	$(AUTOC) $(autodir)/*.el
+	-$(AUTOC) $(autodir)/*.el
 	@echo "**********************************************************"
-	@echo "**   Congratulations! AUC TeX installation completed    **"
+	@echo "**  Some files may have failed to compile. Don't Panic! **"
+	@echo "**  Congratulations! AUC TeX installation completed     **"
 	@echo "**********************************************************"
 	@echo "** You may want to print the following files:  "
 	@echo "**    doc/auc-tex.dvi"
