@@ -1,3 +1,13 @@
+2003-01-07  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (section{Provided Commands}): Add description
+	of \PreviewOpen and \PreviewClose.
+	(subsection{Selection options}): Typo in displaymath hook on \[
+	fixed.
+	(subsection{Preview attaching commands}): Fix code of
+	\PreviewOpen and \PreviewClose which need to have their own
+	groups open and close always.
+
 2003-01-06  David Kastrup  <dakas@users.sourceforge.net>
 
 	* latex/preview.dtx (section{Provided Commands}): Add a lot of
