@@ -6,7 +6,6 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.82 2004-11-02 18:32:58 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -96,6 +95,7 @@
 ;;; Code:
 
 (require 'font-lock)
+(require 'tex)
 
 (eval-when-compile
   (require 'cl))
@@ -554,20 +554,14 @@ are missing, the face will be applied to the command itself.
 	   (when (and (listp (nth 3 item))
 		      (< (cadr (nth 3 item)) 1))
 	     (error "Number of arguments has to be greater than 0")))
-	 ;; FIXME: A message telling the user which entry is
-	 ;; duplicated would be nicer.  This requires a function which
-	 ;; returns the names of duplicate entries.
-	 (let (names names-copy)
+	 (let (names names-uniq)
 	   (dolist (item (append font-latex-built-in-keyword-classes value))
 	     (setq names (append names (list (car item)))))
-	   (setq names-copy (copy-sequence names))
-	   (unless (equal names (cond ((fboundp 'TeX-delete-duplicates)
-				       (TeX-delete-duplicates names-copy))
-				      ((fboundp 'delete-dups)
-				       (delete-dups names-copy))
-				      ((fboundp 'delete-duplicates)
-				       (delete-duplicates names-copy))))
-	     (error "Duplicate names are not allowed")))
+	   (setq names (TeX-sort-strings names))
+	   (setq names-uniq (TeX-delete-duplicate-strings names))
+	   (dotimes (i (safe-length names-uniq))
+	     (unless (string= (nth i names) (nth i names-uniq))
+	       (error "Name %S already exists" (nth i names)))))
 	 (set-default symbol value)
 	 (let ((prefix "font-latex-match-"))
 	   (dolist (elt value)
