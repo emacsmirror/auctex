@@ -2,7 +2,7 @@
 
 	* Makefile.in: From Makefile
 
-	* configure.in, aclocal.m4: Initial version
+	* configure.in, aclocal.m4, autogen.sh: Initial version
 
 	* mkinstalldirs, install-sh: Prepare for autoconf
 
