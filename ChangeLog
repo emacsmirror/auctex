@@ -1,3 +1,7 @@
+2005-02-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* style/jarticle.el ("jarticle"): Use `LaTeX-section-level'.
+
 2005-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-code-comment): Compute the end of the
