@@ -3,7 +3,7 @@
 ;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 ;; Keywords: wp
-;; X-URL: http://www.nongnu.org/auctex/
+;; X-URL: http://www.gnu.org/software/auctex/
 
 ;; Copyright 1991 Kresten Krab Thorup
 ;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
@@ -1706,8 +1706,9 @@ Prefix arg means justify as well."
   (interactive "*P")
   (save-excursion
     (beginning-of-line)
-    (if (looking-at "[ \t]*%]")
-	(re-search-forward "^[ \t]*[^% \t\n]"))
+;; Do the following 2 lines actually serve a sensible purpose?
+    (if (looking-at "[ \t]+%")
+	(re-search-forward "^\\(%\\|[ \t]*[^% \t\n]\\)"))
     (forward-paragraph)
     (or (bolp) (newline 1))
     (and (eobp) (open-line 1))
@@ -3111,31 +3112,24 @@ of `LaTeX-mode-hook'."
 
   (setq paragraph-start
 	(concat
-	 "\\("
-	 "^.*[^" TeX-esc "\n]%.*$\\|"
-	 "^%.*$\\|"
-	 "^[ \t]*$\\|"
-	 "^[ \t]*"
+	 "%*[ \t]*\\("
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands
-	 "\\|\\(bib\\)?item\\b"
-	 "\\)"
-	 "\\|"
-	 "^[ \t]*\\$\\$" ; display math delimitor
-	 "\\)" ))
+	 "\\)\\|$"
+	 "\\)"))
+	 ))
   (setq paragraph-separate
 	(concat
-	 "\\("
-	 "^.*[^" TeX-esc "\n]%.*$\\|"
-	 "^%.*$\\|"
-	 "^[ \t]*$\\|"
-	 "^[ \t]*"
+	 "%*[ \t]*\\("
+	 "$\\|"
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands
 	 "\\)"
-	 "\\)"))
+	 "\\|"
+	 "\\$\\$" ; display math delimitor
+	 "\\|$\\)"))
   (setq selective-display t)
 
   (make-local-variable 'LaTeX-item-list)
