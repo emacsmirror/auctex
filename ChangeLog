@@ -1,0 +1,18 @@
+Wed Aug  3 15:36:02 1994  Per Abrahamsen  (amanda@verdande)
+
+	* doc/history.texi: New file.
+
+	* doc/Makefile (HISTORY): Added rule.
+
+	* Makefile (EXTRAFILES): Added `ChangeLog'.
+	(DOCFILES): Added `history.texi'.
+
+	* doc/auc-tex.texi (History): Made ready for 9.2.  Move history to 
+	`history.texi'.
+
+	* doc/changes.texi: Made ready for 9.2.  Introduce ChangeLog.
+
+	* Makefile (LispInstall): Use "/bin/pwd" instead of "pwd".
+
+	* Version 9.1 released.
+

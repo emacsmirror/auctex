@@ -50,6 +50,9 @@ README: intro.texi
 CHANGES: changes.texi
 	-makeinfo --no-headers changes.texi --output CHANGES
 
+HISTORY: history.texi
+	-makeinfo --no-headers history.texi --output HISTORY
+
 install: auctex
 	cp auctex auctex-* $(infodir)
 	@echo "**********************************************************"

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.99 1994-07-31 02:51:41 amanda Exp $
+# $Id: Makefile,v 5.100 1994-08-03 14:31:36 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -118,9 +118,9 @@ LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
-	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex
+	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
-EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile \
+EXTRAFILES = COPYING PROBLEMS OEMACS VMS Makefile ChangeLog \
 	tex-jp.el lpath.el tex-site.el 
 
 first:
@@ -202,7 +202,7 @@ LispInstall:
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) $(STYLESRC)
 	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); else true; fi ; 
-	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
+	if [ `/bin/pwd` != `(cd $(aucdir) && /bin/pwd)` ] ; \
 	then \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; \
 	                                 else true; fi ; \
