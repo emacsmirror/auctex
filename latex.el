@@ -388,7 +388,7 @@ assumes the section already is inserted."
 Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
-The beaviour of this hook is controled by `LaTeX-section-label'."
+The behaviour of this hook is controlled by `LaTeX-section-label'."
   (and (LaTeX-label name)
        (newline)))
 

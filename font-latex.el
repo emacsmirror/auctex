@@ -11,7 +11,7 @@
 ;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.12 2002-12-07 16:29:12 dak Exp $
+;; RCS $Id: font-latex.el,v 5.13 2002-12-10 19:36:42 rsteib Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -320,7 +320,7 @@ prone to infinite loop bugs.")))
        "ub\\(paragraph\\|s\\(ection\\|ub\\(paragraph\\|section\\)\\)\\)\\)\\|"
    "t\\(hanks\\|itle\\)"
    "\\)\\>")
-  "font-latex regexp to match LaTeX function with text arguemnt.")
+  "font-latex regexp to match LaTeX function with text argument.")
 
 
 (defvar font-latex-keywords-1
