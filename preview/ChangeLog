@@ -1,3 +1,7 @@
+2004-04-20  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* .cvsignore: Added "autom4te.cache".
+
 2004-04-19  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/preview-latex.texi (Simple customization): Don't "unlispify"

@@ -10,6 +10,7 @@ PROBLEMS
 README
 _region_.tex
 auto
+autom4te.cache
 config.cache
 config.status
 configure
