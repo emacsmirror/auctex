@@ -7,6 +7,9 @@ support.
 @item
 Bug fixes.
 
+@item
+Better handling of subdirectories, suggested by Frederic Devernay
+<Frederic.Devernay@@sophia.inria.fr> and many others.
 @end itemize
 
 

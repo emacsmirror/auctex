@@ -8,7 +8,7 @@ Fri Aug 23 10:23:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(TeX-expand-list): Set second argument `NONDIRECTORY' to file
 	entries. 
 	(TeX-master-directory): New function.
-
+	* tex.el (TeX-auto-write): Write in master directory.
 
 Thu Aug 22 22:33:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 

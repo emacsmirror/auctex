@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.112 1996-08-23 08:40:35 abraham Exp $
+@c $Id: auc-tex.texi,v 1.113 1996-08-23 08:44:13 abraham Exp $
 
 @finalout
 @titlepage
@@ -1531,7 +1531,7 @@ later, it has the advantage that the usual the standard emacs word
 movement and case change commands will work.
 
 
-With LaTeX2e, just add @samp{\usepackage[latin1]{inputenc}}.  With older
+With LaTeX2e, just add @samp{\usepackage[latin1]@{inputenc@}}.  With older
 LaTeX versions, try: 
 
 @table @file
@@ -2338,8 +2338,8 @@ Reported by  "Robert B. Love"  <rlove@@raptor.rmNUG.ORG>.
 
 @item 
 One suggestion for AUC-TeX: I think that the font command C-c C-f C-r,
-which produces \textrm{} in a LaTeX file, should instead produce
-either \textrm{} or \mathrm{}, depending on whether one is in math
+which produces \textrm@{@} in a LaTeX file, should instead produce
+either \textrm@{@} or \mathrm@{@}, depending on whether one is in math
 mode or not. --- John Palmieri <palmieri@@math.mit.edu>
 
 @item
