@@ -1,3 +1,24 @@
+2003-02-11  Patrick Gundlach  <patrick@gundla.ch>
+
+	* tex.el (TeX-command-list): Changed TeX-run-LaTeX to
+	TeX-run-TeX.
+
+	* tex-buf.el (TeX-run-TeX): TeX-run-TeX gets the
+	TeX-sentinel-function from the major mode, so TeX-run-LaTeX and
+	alike won't be needed if they don't need to do something
+	fancy. Defaliased TeX-run-LaTeX to TeX-run-TeX. 
+	(TeX-run-interactive): Uses TeX-sentinel-default-function
+	instead of TeX-sentinel-function.
+
+	* latex.el (latex-mode): Sets TeX-sentinel-default-function
+	instead of TeX-sentinel-function.
+
+	* tex-mik.el (TeX-command-list): Changed TeX-run-LaTeX to
+	TeX-run-TeX.
+
+	* tex-fptex.el (TeX-command-list): Changed TeX-run-LaTeX to
+	TeX-run-TeX.
+
 2003-02-08  Patrick Gundlach  <patrick@gundla.ch>
 
 	* tex-site.el: Added simple ConTeXt support.
