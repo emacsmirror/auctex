@@ -1,5 +1,15 @@
 2003-09-18  Peter S Galbraith  <psg@debian.org>
 
+	* font-latex.el (font-latex-quotes): New defcustom to fontify
+	either french or german quotes.
+	(font-latex-quote-regexp-beg): New variable. Holds the regexp to
+	match the beginning of a quote.
+	(font-latex-quote-end-list): New variable.  Holds the list of
+	strings to end a matched quote.
+	(font-latex-match-quotation): Fixed to use above variables.
+
+2003-09-18  Peter S Galbraith  <psg@debian.org>
+
 	* bib-cite.el: bib-cite-aux-inputs:  new defcustom.
 	Minor code cleanup for `match-string'.
 
