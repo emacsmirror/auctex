@@ -37,6 +37,10 @@ various files will be.  To do so, run
 
 ./configure [OPTIONS]
 
+(Note: if you have fetched preview-latex from CVS rather than a
+regular release, you will have to first generate ./configure by
+running autoconf in the preview directory.)
+
 On many machines, you will not need to specify any options, but if
 configure cannot determine something on its own, you'll need to help
 it out with one of these options
@@ -103,6 +107,8 @@ set.  You can customize this default option set and other settings of
 the Emacs package by entering
 M-x customize-group RET preview RET
 
+* Various configuration issues
+
 You almost certainly want to put (setq gs-device "x11alpha") into your
 .emacs file if you want to use Emacs' embedded EPS rendering support
 (not the default, however).  This will turn on anti-aliasing.
@@ -139,8 +145,16 @@ There is a sample file circ.tex which you can use for testing around
 a bit, and which serves as sort of a reference for initial bug
 reports.
 
+* If it does not work
+
 Currently one of the most common problems is GhostScript failing.  We
 want to support most reasonable versions of GhostScript, so if you are
 experiencing problems, be sure to include the output of "gs -h" in
 your report.  If you use M-x preview-report-bug, this should be done
 automatically.
+
+A failing run will add information to the bottom of the process buffer
+displayed by C-c C-l, or attach the information to the particular
+images causing failure.
+
+See the PROBLEMS file for a list of known problems.
