@@ -10,10 +10,10 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
            (putative-existing-lisp-dir (locate-library \"$1\"))\
            (putative-existing-package-dir\
            (and putative-existing-lisp-dir\
-                (string-match \"lisp/$1\.elc?\$\"\
+                (string-match \"lisp/\\\\($1/\\\\)?$1\.elc?\$\"\
                               putative-existing-lisp-dir)\
                  (replace-in-string putative-existing-lisp-dir\
-                                    \"lisp/$1\.elc?\$\" \"\")))\
+                                    \"lisp/\\\\($1/\\\\)?$1\.elc?\$\" \"\")))\
            package-dir)\
       (if (and (boundp (quote early-packages))\
                (not putative-existing-package-dir))\
@@ -46,7 +46,7 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
 AC_DEFUN(AC_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
   if test ${EMACS_FLAVOR} = xemacs; then
-    AC_MSG_CHECKING([where the XEmacs package is])
+    AC_MSG_CHECKING([for XEmacs package directory])
     AC_ARG_WITH(packagedir,
       [  --with-packagedir=DIR   package DIR for XEmacs],
       [if test "${withval}" = yes -o -z "${withval}"; then
@@ -68,6 +68,31 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
 
 AC_DEFUN(AC_PATH_TEXMFDIR,
  [
+AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
+ [ texmfdir="${withval}" ; 
+   if test ! -d "`eval echo "$texmfdir"`"  ; then
+      AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
+   fi
+   previewtexmfdir=$texmfdir/tex/latex/preview
+   previewdocdir=$texmfdir/doc/latex/styles
+   ])
+
+AC_ARG_WITH(tex-dir,
+ [  --with-tex-dir=DIR      Location to install preview TeX sources],
+ [ previewtexmfdir="${withval}" ; 
+   if test ! -d "`eval echo "$previewtexmfdir"`"  ; then
+      AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
+   fi
+   ])
+
+AC_ARG_WITH(doc-dir,
+  [  --with-doc-dir=DIR      Location to install preview.dvi],
+  [ previewdocdir="${withval}" ; 
+   if test ! -d "`eval echo "$previewdocdir"`"  ; then
+      AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
+   fi
+   ])
+
 # First check for docstrip.cfg information
 
 if test -z "$previewtexmfdir" ; then
@@ -149,7 +174,8 @@ fi
 
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
-	AC_MSG_ERROR([Cannot find the texmf directory!  Please use --with-texmf-dir=dir to specify where the preview tex files go])
+	AC_MSG_ERROR([Cannot find the texmf directory!  
+Please use --with-texmf-dir=dir to specify where the preview tex files go])
 fi
      AC_MSG_RESULT($texmfdir)
 fi
@@ -188,29 +214,57 @@ if test -z "$3"; then
 fi
 ])
 
-AC_DEFUN(AC_XEMACS_P, [
-  AC_MSG_CHECKING([if $EMACS is really XEmacs])
-  AC_EMACS_LISP(xemacsp,(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\") ,"noecho")
-  XEMACS=${EMACS_cv_SYS_xemacsp}
+
+AC_DEFUN(AC_PROG_EMACS, [
+# Check for (x)emacs, report its' path and flavour
+
+# Apparently, if you run a shell window in Emacs, it sets the EMACS
+# environment variable to 't'.  Lets undo the damage.
+if test "${EMACS}" = "t"; then
+   EMACS=""
+fi
+AC_ARG_WITH(emacs,
+  [  --with-emacs@<:@=PATH@:>@     Use Emacs to build (on PATH if given)],
+  [if test "${withval}" = "yes"; then EMACS=emacs
+   else if test "${withval}" = "no"; then EMACS=xemacs
+   else EMACS="${withval}"; fi ; fi])
+AC_ARG_WITH(xemacs,
+  [  --with-xemacs@<:@=PATH@:>@    Use XEmacs to build (on PATH if given)], 
+  [if test "${withval}" = "yes"; then EMACS=xemacs; 
+   else if test "${withval}" = "no"; then EMACS=emacs
+   else EMACS="${withval}"; fi ; fi])
+
+AC_PATH_PROGS(EMACS, $EMACS emacs xemacs)
+if test -z "$EMACS"; then
+  AC_MSG_ERROR([(X)Emacs not found!  Aborting!])
+fi
+
+AC_MSG_CHECKING([if $EMACS is XEmacs])
+AC_EMACS_LISP(XEMACS,
+	[(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\")],quiet)
+if test "$XEMACS" = "yes"; then
+  EMACS_FLAVOR=xemacs
+else
   EMACS_FLAVOR=emacs
-  if test "$XEMACS" = "yes"; then
-     EMACS_FLAVOR=xemacs
-  fi
+fi
   AC_MSG_RESULT($XEMACS)
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
 ])
 
+
 AC_DEFUN(AC_PATH_LISPDIR, [
-  AC_XEMACS_P
   if test "$prefix" = "NONE"; then
 	AC_MSG_CHECKING([prefix for your Emacs])
-	AC_EMACS_LISP(prefix,(expand-file-name \"..\" invocation-directory),"noecho")
+	AC_EMACS_LISP(prefix,(expand-file-name \"..\" invocation-directory),
+		"noecho")
 	prefix=${EMACS_cv_SYS_prefix}
 	AC_MSG_RESULT($prefix)
   fi
-  AC_ARG_WITH(lispdir,[  --with-lispdir=DIR      Where to install lisp files], lispdir=${withval})
-  AC_MSG_CHECKING([where .elc files should go])
+  AC_ARG_WITH(lispdir,
+	[  --with-lispdir=DIR      Where to install lisp files], 
+	lispdir=${withval})
+  AC_MSG_CHECKING([where lisp files go])
   if test -z "$lispdir"; then
     dnl Set default value
     theprefix=$prefix
@@ -295,7 +349,9 @@ if test -z "$2"; then
 	AC_MSG_CHECKING(for $1)
 fi
 library=`echo $1 | tr _ -`
-AC_EMACS_LISP($1,[(condition-case nil (require '$library ) (error (prog1 nil (message \"$library not found\"))))],"noecho")
+AC_EMACS_LISP($1, 
+	[(condition-case nil (require '$library ) \
+	(error (prog1 nil (message \"$library not found\"))))],"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi
@@ -313,8 +369,8 @@ dnl
 dnl Perform sanity checking and try to locate the W3 package
 dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
-AC_MSG_CHECKING(for acceptable AUC-TeX version)
-AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC-TeX's tex-site.el, if not standard], 
+AC_MSG_CHECKING(for the location of AUC TeX)
+AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
  [ AUCTEXDIR=${withval} ; 
    if test ! -d $AUCTEXDIR  ; then
       AC_MSG_ERROR([--with-tex-site=$AUCTEXDIR: Directory does not exist])
@@ -330,24 +386,29 @@ if test -z "$AUCTEXDIR" ; then
   fi
 
   if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
-	AC_EMACS_LISP(auctex_dir, [(file-name-directory (locate-library \"tex-site\"))] ,"noecho")
+	AC_EMACS_LISP(auctex_dir, 
+		[(file-name-directory (locate-library \"tex-site\"))], 
+		"noecho")
 	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
   else
-	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])
+	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  
+Check the PROBLEMS file for details.])
   fi
   ])
    AUCTEXDIR=${EMACS_cv_ACCEPTABLE_AUCTEX}
 fi
 
-   AC_MSG_RESULT(in ${AUCTEXDIR})
+   AC_MSG_RESULT(${AUCTEXDIR})
    #echo ${AUCTEXDIR}
    #  [echo ${AUCTEXDIR} | sed 's/\\/&&/g']
 	#   AUCTEXDIR=`echo ${AUCTEXDIR} | sed 's/\\\\/&&/g'`
    AC_SUBST(AUCTEXDIR)
 ])
 
-
-dnl AC_CHECK_MACRO_MAKEINFO(MACRO, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+dnl
+dnl AC_CHECK_MACRO_MAKEINFO( MACRO, [ACTION-IF-FOUND 
+dnl					[, ACTION-IF-NOT-FOUND]])
+dnl
 AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
 [if test -n "$MAKEINFO" -a "$makeinfo" != ":"; then
   AC_MSG_CHECKING([if $MAKEINFO understands @$1{}])
@@ -364,11 +425,15 @@ AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
 fi
 ])
 
-dnl AC_CHECK_MACROS_MAKEINFO(FUNCTION... [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+dnl
+dnl AC_CHECK_MACROS_MAKEINFO( MACRO ... [, ACTION-IF-FOUND 
+dnl					[, ACTION-IF-NOT-FOUND]])
+dnl
 AC_DEFUN(AC_CHECK_MACROS_MAKEINFO,
 [for ac_macro in $1; do
-    AC_CHECK_MACRO_MAKEINFO($ac_macro, $2, [MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
-    $3])dnl
+    AC_CHECK_MACRO_MAKEINFO($ac_macro, $2, 
+	[MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
+	$3])dnl
   done
 AC_SUBST(MAKEINFO_MACROS)
 ])
