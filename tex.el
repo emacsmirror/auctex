@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.323 $"))
+	(rev "$Revision: 5.324 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-22 23:54:05 $"))
+    (let ((date "$Date: 2004-01-23 01:18:08 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2934,9 +2934,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	  (regexp-quote TeX-dollar-string)))
 
 (defcustom TeX-math-toggle-off-input-method t
-  "*If non-nil, toggle off input method when entering math mode.
-Supported input methods are Canna, Wnn, SKK, and T-Code.
-Latin input methods for example latin-1-postfix are not turned off."
+  "*If non-nil, auto toggle off CJK input methods when entering math mode."
   :group 'TeX-macro
   :type 'boolean)
 
