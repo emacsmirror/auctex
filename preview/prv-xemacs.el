@@ -32,12 +32,12 @@
 
 (eval-when-compile
   (defvar preview-compatibility-macros nil
-    "List of macros only present when compiling/loading.")
+    "List of macros only present when compiling/loading uncompiled.")
 
   (defmacro preview-defmacro (name &rest rest)
     (unless (fboundp name)
       (push name preview-compatibility-macros)
-      `(defmacro ,name ,@rest)))
+      `(eval-when-compile (defmacro ,name ,@rest))))
   (push 'preview-defmacro preview-compatibility-macros))
 
 (preview-defmacro assoc-default (key alist test)
@@ -498,7 +498,7 @@ Pure borderless black-on-white will return NIL."
 ;;; instantiated in a given domain
   (let ((tb (cdadar (or (specifier-spec-list default-toolbar (current-buffer))
 			(specifier-spec-list default-toolbar 'global)))))
-    (unless (assq preview-icon-toolbar-button tb)
+    (unless (member preview-icon-toolbar-button tb)
       (set-specifier default-toolbar
 		     (append tb (list preview-icon-toolbar-button))
 		     (current-buffer))))
@@ -761,12 +761,6 @@ of an insertion."
 (defsubst preview-supports-image-type (imagetype)
   "Return whether IMAGETYPE is supported by XEmacs."
   (memq imagetype (image-instantiator-format-list)))
-
-;; Now bind the list of compatibility macros into the compiled code.
-
-(defvar preview-compatibility-macros
-  (eval-when-compile preview-compatibility-macros)
-    "List of macros only present when compiling/loading.")
 
 (provide 'prv-xemacs)
 
