@@ -63,5 +63,5 @@ install: preview-latex.info
 clean: 
 	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
-		*.fns *.vrs *.pgs *.dvi *.info *.html *.tmp \
+		*.fns *.vrs *.pgs *.dvi *.info* *.html *.tmp \
 		INSTALL README PROBLEMS TODO
