@@ -139,6 +139,40 @@ produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
 
+;; style/german.el
+
+(defcustom LaTeX-german-quote-after-quote t
+  "Initial value of `TeX-quote-after-quote' for `german.el'."
+  :group 'LaTeX-style
+  :type 'boolean)
+
+(defcustom LaTeX-german-open-quote "\"`"
+  "Initial value of `TeX-open-quote' for `german.el'."
+  :group 'LaTeX-style
+  :type 'string)
+
+(defcustom LaTeX-german-close-quote "\"'"
+  "Initial value of `TeX-close-quote' for `german.el'."
+  :group 'LaTeX-style
+  :type 'string)
+
+(defcustom LaTeX-german-hyphen "\"="
+  "String to be used when typing `-'.
+This usually is a hyphen alternatives or hyphenation aid
+provided by (n)german.sty, like \"=, \"~ or \"-.
+Set it to an empty string or nil for disabling this feature."
+  :group 'LaTeX-style
+  :type '(string))
+
+(defcustom LaTeX-german-hyphen-after-hyphen t
+  "Control insertion of hyphen strings.
+If non-nil insert normal hyphen on first key press and swap it
+with the (n)german.sty-specific hyphen string specified in the
+variable `LaTeX-german-hyphen' on second key press.
+If nil do it the other way round."
+  :group 'LaTeX-style
+  :type 'boolean)
+
 ;; style/graphicx.el
 
 (defcustom LaTeX-includegraphics-extensions
