@@ -1,7 +1,7 @@
 
 @SET_MAKE@
 
-# Makefile - for the AUC TeX distribution.
+# Makefile - for the AUCTeX distribution.
 #
 # Maintainer: David Kastrup <dak@gnu.org>
 # Version: initial try <jalar@mai.liu.se>
@@ -38,7 +38,7 @@ MINMAPSRC = all.el multi-prompt.el
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el tex-fptex.el
 CONTRIBELC = bib-cite.elc 
 
-AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el \
+AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el
 AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
 	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc
@@ -76,7 +76,7 @@ lisp:
 
 some:	$(AUCELC) $(STYLESRC:.el=.elc)
 
-install:	install-lisp
+install:	install-lisp install-info
 
 contrib:
 	$(ELCC) -f batch-byte-compile bib-cite.el
@@ -85,40 +85,37 @@ contrib:
 # 	$(ELCC) -f batch-byte-compile hilit-LaTeX.el         # Doesn't compile without X
 
 install-lisp:	some
-	-$(MKINSTALLDIRS) '$(lispdir)'
+	-$(MKINSTALLDIRS) $(lispdir)
 	if [ -f $(lispdir)/tex-site.el ]; then \
 	    echo "Leaving old tex-site.el alone."; \
 	else \
 	    sed -e 's#@AUCDIR#$(lispdir)/#' tex-site.el \
 	    > $(lispdir)/tex-site.el ; \
         fi
-	-$(MKINSTALLDIRS) '$(lispdir)' 
+	-$(MKINSTALLDIRS) $(lispdir)
 	for x in $(AUCSRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
-	  $(INSTALL_DATA) $$x '$(lispdir)' ; \
+	  $(INSTALL_DATA) $$x $(lispdir) ; \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(lispdir)' ; \
-	  $(INSTALL_DATA) $${x}c '$(lispdir)' ; \
+	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
 	done;
-	-$(MKINSTALLDIRS) '$(styledir)'
+	-$(MKINSTALLDIRS) $(styledir)
 	for x in $(STYLESRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(styledir)' ; \
-	  $(INSTALL_DATA) $$x '$(styledir)' ; \
+	  $(INSTALL_DATA) $$x $(styledir) ; \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(styledir)' ; \
-	  $(INSTALL_DATA) $${x}c '$(styledir)' ; \
+	  $(INSTALL_DATA) $${x}c $(styledir) ; \
 	done;
-	touch $(styledir)/.nosearch 
-	-$(MKINSTALLDIRS) '$(autodir)'
-	touch $(autodir)/.nosearch  
-
+	-$(MKINSTALLDIRS) $(autodir)
 
 install-contrib:	$(CONTRIBELC)
 	for x in $(CONTRIB) $(CONTRIBELC); do \
 	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
-	  $(INSTALL_DATA) $$x '$(lispdir)' ; \
+	  $(INSTALL_DATA) $$x $(lispdir) ; \
 	done;
 
 install-info:
-	-(cd doc; $(MAKE) install infodir=$(infodir))
+	-cd doc; $(MAKE) install
 
 
 install-auto:

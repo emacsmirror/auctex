@@ -13,7 +13,22 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    infodir="${packagedir}/info"
 fi
 
-AC_OUTPUT(Makefile)
+AC_PATH_PROG(MAKEINFO, makeinfo, :)
+AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
+
+
+AC_SHELL_QUOTIFY(texmfdir)
+AC_SHELL_QUOTIFY(prefix)
+AC_SHELL_QUOTIFY(packagedir)
+AC_SHELL_QUOTIFY(lispdir)
+AC_SHELL_QUOTIFY(infodir)
+AC_SHELL_QUOTIFY(datadir)
+AC_SHELL_QUOTIFY(EMACS)
+AC_SHELL_QUOTIFY(INSTALL_INFO)
+AC_SHELL_QUOTIFY(MAKEINFO)
+AC_SHELL_QUOTIFY(TEX)
+
+AC_OUTPUT(Makefile doc/Makefile)
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.
