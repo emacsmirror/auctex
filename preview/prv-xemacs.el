@@ -373,7 +373,9 @@ nil displays the underlying text, and 'toggle toggles."
 	    (unless (extent-keymap ov)
 	      (set-extent-keymap ov (preview-reroute-map ov))
 	      (set-extent-property ov 'balloon-help #'preview-balloon-reroute))
-            (set-extent-properties ov `(invisible t
+            (set-extent-properties ov '(invisible t
+					isearch-open-invisible ignore
+					isearch-invisible t
                                         face nil
                                         begin-glyph nil
                                         begin-glyph-layout text))
@@ -381,13 +383,14 @@ nil displays the underlying text, and 'toggle toggles."
 				      mouse-face preview-balloon-help))
               (set-extent-property ov prop
                                    (get-text-property 0 prop (car strings)))))
-        (dolist (prop '(mouse-face invisible))
-          (set-extent-property ov prop nil))
         (set-extent-properties ov `(face preview-face
                                     begin-glyph ,(get-text-property
 						  0 'end-glyph (cdr strings))
                                     begin-glyph-layout text
                                     end-glyph nil
+				    mouse-face nil
+				    invisible nil
+				    isearch-invisible nil
 				    preview-keymap
 				    ,(get-text-property
 				     0 'preview-keymap (cdr strings))
@@ -457,8 +460,7 @@ Pure borderless black-on-white will return NIL."
 	       balloon-help-mode)
     (balloon-help-minor-mode 1))
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
-  (add-hook 'after-change-functions #'preview-handle-after-change nil t)
-  )
+  (add-hook 'after-change-functions #'preview-handle-after-change nil t))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
@@ -501,9 +503,8 @@ if defined.  The default is to follow the setting of
 		  (preview-toggle ov t)
 		  nil)
 		(push ov newlist))))
-    (if (or isearch-mode
-	    (and (boundp preview-auto-reveal)
-		 (symbol-value preview-auto-reveal)))
+    (if	(and (boundp preview-auto-reveal)
+	     (symbol-value preview-auto-reveal))
 	(preview-open-overlays (extents-at pt nil 'preview-state))
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
 			   (< pt (marker-position preview-marker)))))
@@ -530,10 +531,29 @@ if defined.  The default is to follow the setting of
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
 
-(defadvice replace-highlight (before preview)
+(when (fboundp 'replace-highlight)
+  (defadvice replace-highlight (before preview)
+    "Make `query-replace' open preview text about to be replaced."
+    (preview-open-overlays
+     (overlays-in (ad-get-arg 0) (ad-get-arg 1)))))
+
+(defadvice isearch-highlight (before preview)
   "Make `query-replace' open preview text about to be replaced."
   (preview-open-overlays
    (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+
+(defcustom preview-isearch-reveal t
+  "*Make `query-replace' autoreveal previews."
+  :group 'preview-appearance
+  :type 'boolean
+  :require 'preview
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (if value
+	     (ad-enable-advice 'isearch-highlight 'before 'preview)
+	   (ad-disable-advice 'isearch-highlight 'before 'preview))
+	 (ad-activate 'isearch-highlight))
+  :initialize #'custom-initialize-reset)
 
 (defcustom preview-query-replace-reveal t
   "*Make `query-replace' autoreveal previews."
@@ -542,10 +562,11 @@ if defined.  The default is to follow the setting of
   :require 'preview
   :set (lambda (symbol value)
 	 (set-default symbol value)
-	 (if value
-	     (ad-enable-advice 'replace-highlight 'before 'preview)
-	   (ad-disable-advice 'replace-highlight 'before 'preview))
-	 (ad-activate 'replace-highlight))
+	 (when (fboundp 'replace-highlight)
+	   (if value
+	       (ad-enable-advice 'replace-highlight 'before 'preview)
+	     (ad-disable-advice 'replace-highlight 'before 'preview))
+	   (ad-activate 'replace-highlight)))
   :initialize #'custom-initialize-reset)
 
 ;; Here is the beef: for best intuitiveness, we want to have
