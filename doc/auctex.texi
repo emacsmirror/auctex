@@ -678,7 +678,7 @@ Prefix to use for table labels.
 
 @defopt LaTeX-top-caption-list
 List of float environments with top caption.
-@end defop
+@end defopt
 
 @node Itemize-like
 @subsection Itemize-like
@@ -2515,15 +2515,15 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @cindex National letters
 @cindex CJK language
 @cindex MULE
-@cindex C@TeX
-@cindex China@TeX
-@cindex p@TeX
-@cindex ASCII p@TeX
-@cindex j@TeX
-@cindex NTT j@TeX
-@cindex k@TeX
-@cindex H@LaTeX
-@cindex CJK-@LaTeX
+@cindex C@TeX{}
+@cindex China@TeX{}
+@cindex p@TeX{}
+@cindex ASCII p@TeX{}
+@cindex j@TeX{}
+@cindex NTT j@TeX{}
+@cindex k@TeX{}
+@cindex H@LaTeX{}
+@cindex CJK-@LaTeX{}
 @cindex UNICODE
 @cindex MULE-UCS
 
@@ -2531,7 +2531,7 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 languages.  Some @LaTeX{} packages and EmacsLisp are available for easy
 typesetting and editing European languages.
 
-For @acronym{CJK} (Chinese, Japanese, and Korean) language,
+For @acronym{CJK, Chinese, Japanese, and Korean} languages,
 @acronym{MULE, MULtilingual Enhancement to GNU Emacs} supported Emacsen
 are needed.  @acronym{MULE} is part of GNU Emacs from Emacs 20; XEmacs
 should be configured with @samp{--with-mule} option.  Special versions

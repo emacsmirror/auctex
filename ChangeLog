@@ -1,3 +1,7 @@
+2005-03-02  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/auctex.texi (I18n): Fix some markup errors.
+
 2005-03-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-title-faces)
