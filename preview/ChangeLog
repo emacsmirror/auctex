@@ -1,5 +1,12 @@
 2001-10-04  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-behead-outstanding): use
+	`preview-gs-flag-error'.
+	(preview-mouse-open-error, preview-mouse-open-eps): factored out
+	stuff from `preview-gs-flag-error'.
+	(preview-gs-flag-error): replaces `preview-gs-error-string'
+	(preview-gs-transact): Use `preview-gs-flag-error'.
+
 	* PROBLEMS: be more specific about GhostScript errors
 
 2001-10-03  David Kastrup  <David.Kastrup@t-online.de>
