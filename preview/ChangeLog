@@ -1,21 +1,7 @@
 2002-02-11  Jan-Ake Larsson  <jalar@imf.au.dk>
 
-	* readme.texi, install.texi, problems.texi, copying.texi:
-	Include @macro defs for text-file generation
-
-	* readme.texi: Shortened
-
-	* Makefile: Added --no-validate on README
-
-	* install.texi: Layout changes, xref to PROBLEMS shortened
-
-	* problems.texi:
-	Lauout changes, added text on bug reports and GS EPS handling
-
-	* preview-latex.texi: Layout changes, install-info fix, index
-	additions, fixed direntries for preview-latex
-
-2002-02-11  Jan-Ake Larsson  <jalar@imf.au.dk>
+	* doc/readme.texi, doc/install.texi, doc/problems.texi,
+	doc/copying.texi: Include @macro defs for text-file generation
 
 	* doc/problems.texi: Minor changes
 
@@ -28,8 +14,8 @@
 	* doc/problems.texi:
 	Layout changes, added text on bug reports and GS EPS handling
 
-	* doc/preview-latex.texi:
-	Layout changes, install-info fix, index additions
+	* doc/preview-latex.texi: Layout changes, install-info fix, index
+	additions, fixed direntries for preview-latex
 
 2002-02-11  David Kastrup  <David.Kastrup@t-online.de>
 
