@@ -3,6 +3,8 @@ config.*
 *~
 Makefile
 configure
+INSTALL
+INSTALL.windows
 autom4te.*
 #*
 *.elc
