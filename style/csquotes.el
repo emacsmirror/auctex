@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(defcustom LaTeX-csquotes-quote-after-quote TeX-quote-after-quote
+(defcustom LaTeX-csquotes-quote-after-quote nil
   "Initial value of `TeX-quote-after-quote' for `csquotes.el'"
   :type 'boolean)
 
