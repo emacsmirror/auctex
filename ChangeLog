@@ -1,3 +1,7 @@
+2004-09-09  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* aclocal.m4 (texinputdirs): Strip leading "!!".
+
 2004-09-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (TeX-arg-input-file): Remove duplicates from the
