@@ -1,5 +1,8 @@
 2004-08-09  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-set-mode-name): Actually use `reset' (patch by Ralf
+	Angeli).
+
 	* latex.el (LaTeX-common-initialization): There is no "LaTeX2e"
 	command anymore, so don't set it.  Don't do anything on
 	"DVIoutput".  doc fixes.

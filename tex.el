@@ -561,7 +561,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.411 $"))
+	(rev "$Revision: 5.412 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -576,7 +576,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-08 17:10:12 $"))
+    (let ((date "$Date: 2004-08-09 09:43:36 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -640,8 +640,8 @@ If RESET is non-nil, `TeX-command-next' is reset to
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
-				    (concat "/" trailing-flags)))
-		TeX-command-next TeX-command-default)
+				    (concat "/" trailing-flags))))
+	  (when reset (setq TeX-command-next TeX-command-default))
 	  (set-buffer-modified-p (buffer-modified-p))))))
 
 ;;; Source Specials
