@@ -165,10 +165,12 @@ string for any unspecified macro or environment."
 
 (defun TeX-fold-dwim ()
   "Hide or show items according to the current context.
-If there is folded content, unfold it.  If there is no folded
-content but a macro or environment, fold it."
+If there is folded content, unfold it.  If there is a marked
+region, fold all configured content in this region.  If there is
+no folded content but a macro or environment, fold it."
   (interactive)
   (cond ((TeX-fold-clearout-item))
+	((TeX-active-mark) (TeX-fold-region (mark) (point)))
 	((TeX-fold-item 'macro))
 	((TeX-fold-item 'env))))
 
