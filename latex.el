@@ -2923,7 +2923,7 @@ the last entry in the menu."
 	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
 	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
 	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-	(list "Change Font"
+	(list "Replace Font"
 	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
 	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
 	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]

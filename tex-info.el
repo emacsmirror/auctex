@@ -135,7 +135,7 @@ When called interactively, prompt for an environment."
 	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
 	      ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
 	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
-	(list "Change Font"
+	(list "Replace Font"
 	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
 	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
 	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]

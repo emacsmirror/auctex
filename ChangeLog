@@ -1,3 +1,12 @@
+2003-06-03  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-mode-menu): Replace "Change Font" with "Replace
+	Font"
+	
+	* tex-info.el (TeXinfo-mode-menu): Same here.
+
+	* doc/tex-ref.tex (section{Font Selection}): Same here.
+
 2003-06-03  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-math-toggle-off-input-method): New user option.
