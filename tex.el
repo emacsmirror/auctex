@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.06
+;; Version: 11.07
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -1444,8 +1444,10 @@ Choose `ignore' if you don't want AUC TeX to install support for font locking."
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
 	 "\\)*\\)\\(%+ *\\)"))
-  (make-local-variable 'comment-indent-hook)
-  (setq comment-indent-hook 'TeX-comment-indent)
+  (make-local-variable 'comment-add)
+  (setq comment-add 1)			;default to `%%' in comment-region
+  (make-local-variable 'comment-indent-function)
+  (setq comment-indent-function 'TeX-comment-indent)
   (make-local-variable 'comment-multi-line)
   (setq comment-multi-line nil)
   (make-local-variable 'compile-command)
