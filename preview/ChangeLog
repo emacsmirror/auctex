@@ -1,3 +1,10 @@
+2002-08-04  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-back-command): New optional argument
+	NOCOMPLEX.
+	(preview-parse-messages): Use it for not skipping backwards over
+	braced expressions when start and end of triggered errors match.
+
 2002-08-03  David Kastrup  <David.Kastrup@t-online.de>
 
 	* RELEASE: update RedHat distro info.
