@@ -1,3 +1,17 @@
+2002-04-06  Nix  <nix@esperi.demon.co.uk>
+
+	* doc/todo.texi: Update XEmacs status.
+
+	* Makefile.in (packagedir): New variable, used by...
+	(install-el): ... this new package-installation handling.
+
+	* prv-install.el: New file, containing...
+	(preview-make-package): New function.
+	(preview-make-package-xemacs): New function.
+
+	* aclocal.m4 (AC_EXAMINE_PACKAGEDIR): Lowercasify PACKAGEDIR.
+	(AC_PATH_PACKAGEDIR): Likewise.
+
 2002-04-06  Alan Shutko  <ats@acm.org>
 
 	* configure.in: Start adding XEmacs-specific hooks.  Right now,
