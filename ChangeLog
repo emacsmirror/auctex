@@ -1,3 +1,9 @@
+2004-03-21  David Kastrup  <dak@gnu.org>
+
+	* tex.el (VirTeX-common-initialization): Set
+	sentence-end-double-space and sentence-end to more appropriate
+	values for TeX.
+
 2004-03-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Fix separation of
