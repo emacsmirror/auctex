@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.41 2001-11-06 13:35:00 dakas Exp $
+;; $Id: preview.el,v 1.42 2001-11-06 14:24:35 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -65,7 +65,9 @@
   :group 'preview)
 
 (defcustom preview-image-creators
-  '((postscript (place preview-eps-place))
+  '((postscript
+     (open preview-eps-open)
+     (place preview-eps-place))
     (png (open preview-gs-open png ("-sDEVICE=png256"))
 	 (place preview-gs-place)
 	 (close preview-gs-close))
@@ -367,6 +369,15 @@ example \"-sDEVICE=png256\" will go well with 'png."
 	process
       (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
 				process))))
+
+(defun preview-eps-open ()
+  "Place everything nicely for direct PostScript rendering."
+  (let* ((TeX-process-asynchronous nil)
+	 (process (preview-start-dvips)))
+    (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
+			      process))
+  (preview-parse-messages))
+  
 
 (defun preview-gs-dvips-sentinel (process command)
   "Sentinel function for indirect rendering DviPS process.
@@ -1257,7 +1268,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.41 $"))
+	(rev "$Revision: 1.42 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
