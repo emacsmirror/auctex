@@ -71,11 +71,11 @@ should be able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus,
 or press @kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or
 @kbd{C-c C-p C-p} (for ``On/off at point'').  Previews will now be
 generated for various objects in your document. You'll see them change
-into a large question-mark when the process is half finished. Note that
+into a roadworks sign when the process is half finished. Note that
 you can freely navigate the buffer while this is going on. When the
 process is finished you will see the objects typeset in your buffer.
 
-It is a bad idea, however, to edit the buffer before the question marks
+It is a bad idea, however, to edit the buffer before the roadworks signs
 appear, since that is the moment when the correlation between the
 original text and the buffer locations gets established.  If the buffer
 changes before that point of time, the previews will not be placed where
