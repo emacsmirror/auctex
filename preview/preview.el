@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.155 2002-07-25 11:06:05 dakas Exp $
+;; $Id: preview.el,v 1.156 2002-07-28 23:28:20 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -201,12 +201,24 @@ If `preview-fast-conversion' is set, this option is not
   :group 'preview-gs
   :type 'number)
 
+(defvar preview-parsed-font-size nil)
+(make-variable-buffer-local 'preview-parsed-font-size)
+(defvar preview-parsed-magnification nil)
+(make-variable-buffer-local 'preview-parsed-magnification)
+
+(defun preview-get-magnification ()
+  "Get magnification from `preview-parsed-magnification'."
+  (if preview-parsed-magnification
+      (/ preview-parsed-magnification 1000.0) 1.0))
+
 (defun preview-TeX-bb (list)
   "Calculate bounding box from (ht dp wd).
 LIST consists of TeX dimensions in sp (1/65536 TeX point)."
   (and
    (consp list)
-   (let ((dims (vconcat (mapcar (lambda (x) (/ x 65781.76)) list))))
+   (let ((dims (vconcat (mapcar
+			 #'(lambda (x)
+			     (/ x 65781.76)) list))))
      (vector
       (+ 72 (- preview-TeX-bb-border) (min 0 (aref dims 2)))
       (+ 720 (- preview-TeX-bb-border) (min (aref dims 0) (- (aref dims 1)) 0))
@@ -293,8 +305,8 @@ dots per inch.  Buffer-local to rendering buffer.")
 Calculated from real-life factor SCALE and XRES and
 YRES, the screen resolution in dpi."
   (format "-r%gx%g"
-	  (* scale xres)
-	  (* scale yres)))
+	  (/ (* scale xres) (preview-get-magnification))
+	  (/ (* scale yres) (preview-get-magnification))))
 
 (defun preview-gs-behead-outstanding (err)
   "Remove leading element of outstanding queue after error.
@@ -451,10 +463,11 @@ Gets the usual PROCESS and STRING parameters, see
 
 (defcustom preview-gs-broken-security
   "(GNU Ghostscript)product eq revision 705 le and"
-  "*This string contains PostScript code deciding when to disable
-operation of the .runandhide operator in spite of it being
-available.  Currently this holds for GNU GhostScript with versions
-up to 7.05."
+  "*PostScript code disabling security.
+This is used for deciding when to disable operation
+of the .runandhide operator in spite of it being
+available.  Currently this holds for GNU GhostScript
+with versions up to 7.05."
   :group 'preview-gs
   :type 'string)
 
@@ -469,11 +482,7 @@ example \"-sDEVICE=png256\" will go well with 'png."
   (setq preview-gs-image-type imagetype)
   (setq preview-gs-command-line (append
 				 preview-gs-options
-				 gs-optionlist
-				 (list (preview-gs-resolution
-					preview-scale
-					(car preview-resolution)
-					(cdr preview-resolution)))))
+				 gs-optionlist))
   (setq preview-gs-init-string
 	(format "\
 /preview-latex-do{{setpagedevice}stopped{handleerror quit}if save %s \
@@ -488,6 +497,12 @@ aload pop restore}bind def "
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
+  (setq preview-gs-command-line (append
+				 preview-gs-command-line
+				 (list (preview-gs-resolution
+					(preview-hook-enquiry preview-scale)
+					(car preview-resolution)
+					(cdr preview-resolution)))))
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
     (list process (current-buffer) TeX-active-tempdir preview-ps-file)))
@@ -631,7 +646,7 @@ object corresponding to the wanted page."
 	    (1- (car curpage)) (nth 1 curpage))))
   
 (defun preview-ps-quote (str)
-  "Make a PostScript string."
+  "Make a PostScript string from STR."
   (let ((index 0))
     (while (setq index (string-match "[\\()]" str index))
       (setq str (replace-match "\\\\\\&" t nil str)
@@ -843,6 +858,24 @@ given as ANSWER."
 	  (process-send-eof process)
 	(error nil)))))
 
+(defun preview-hook-enquiry (hook)
+  "Gets a value from a configured hook.
+HOOK is a list or single item, for which the first resolving to
+non-nil counts.  Entries can be a callable function, or
+a symbol that is consulted, or a value.  Lists are evaluated
+recursively."
+  (cond ((functionp hook)
+	 (funcall hook))
+	((consp hook)
+	 (let (res)
+	   (while (and (not res) hook)
+	     (setq res (preview-hook-enquiry (car hook))
+		   hook (cdr hook)))
+	   res))
+	((symbolp hook)
+	 (symbol-value hook))
+	(t hook)))
+			  
 (defcustom preview-scale-function #'preview-scale-from-face
   "*Scale factor for included previews.
 This can be either a function to calculate the scale, or
@@ -866,25 +899,41 @@ This is for matching screen font size and previews."
                   (number :tag "Other" :value 11.0))
 )
 
-(defun preview-document-pt ()
+(defcustom preview-document-pt-list '(preview-parsed-font-size
+  preview-auctex-font-size
+  preview-default-document-pt)
+  "*How `preview-document-pt' figures out the document size."
+  :group 'preview-appearance
+  :type
+  '(list (choice
+	  (symbol :value preview-parsed-font-size)
+	  (function :value preview-auctex-font-size)
+	  (number :value 11))))
+
+(defun preview-auctex-font-size ()
   "Calculate the default font size of document.
 If packages, classes or styles were called with an option
 like 10pt, size is taken from the first such option if you
-had let your document be parsed by AucTeX.  Otherwise
-the value is taken from `preview-default-document-pt'."
-  (catch 'return (dolist (option (TeX-style-list) preview-default-document-pt)
+had let your document be parsed by AucTeX."
+  (catch 'return (dolist (option (TeX-style-list))
 		   (if (string-match "\\`\\([0-9]+\\)pt\\'" option)
 		       (throw 'return
 			      (string-to-number
 			       (match-string 1 option)))))))
+
+(defsubst preview-document-pt ()
+  "Calculate the default font size of document."
+  (preview-hook-enquiry preview-document-pt-list))
 
 (defun preview-scale-from-face ()
   "Calculate preview scale from `preview-reference-face'.
 This calculates the scale of EPS images from a document assumed
 to have a default font size given by function `preview-document-pt'
 so that they match the reference face in height."
-  (/ (preview-inherited-face-attribute 'preview-reference-face :height
-				       'default) 10.0 (preview-document-pt)))
+  `(lambda nil
+     (/ ,(/ (preview-inherited-face-attribute 'preview-reference-face :height
+					      'default) 10.0)
+	(preview-document-pt))))
 
 (defun preview-ascent-from-bb (bb)
   "This calculates the image ascent from its bounding box.
@@ -985,7 +1034,7 @@ Returns non-NIL if called by one of the commands in LIST."
 (defun preview-buffer ()
   "Run preview on current buffer."
   (interactive)
-  (save-excursion 
+  (save-excursion
     (goto-char (point-min))
     ;; Exclude header. Included again in `TeX-region-create', which
     ;; puts a correct !offset _after_ \begin{document} to cooperate
@@ -1202,8 +1251,8 @@ on first use.")
 	  filenames)))
 
 (defun preview-buffer-restore-internal (buffer-misc)
-  "Restore previews from BUFFER-MISC if proper.  Remove them
-if they have expired."
+  "Restore previews from BUFFER-MISC if proper.
+Remove them if they have expired."
   (let ((timestamp (visited-file-modtime)) tempdirlist files)
     (when (eq 'preview (pop buffer-misc))
       (if (equal (pop buffer-misc) timestamp)
@@ -1247,7 +1296,7 @@ BUFFER-MISC is the appropriate data to be used."
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
 (defvar preview-dumped-alist nil
-  "Alist of dumped masters.  
+  "Alist of dumped masters.
 The elements are (NAME . HEADER), NAME is the master-file and HEADER
 is its heading up to and including \\begin{document}")
 
@@ -1616,6 +1665,12 @@ later while in use."
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 
+(defvar preview-parse-variables
+  '(("Fontsize" preview-parsed-font-size
+     "\\` *\\([0-9.]+\\)pt\\'" 1 string-to-number)
+    ("Magnification" preview-parsed-magnification
+     "\\` *\\([0-9]+\\)\\'" 1 string-to-number)))
+
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -1637,6 +1692,9 @@ call, and in its CDR the final stuff for the placement hook."
 	  open-data
 	  fast-hook
 	  slow-hook)
+      ;; clear parsing variables
+      (dolist (var preview-parse-variables)
+	(set (nth 1 var) nil))
       (goto-char (point-min))
       (unwind-protect
 	  (while
@@ -1645,7 +1703,8 @@ call, and in its CDR the final stuff for the placement hook."
 \(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
 )+\\( \\|$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
-name(\\([^)]+\\))\\)" nil t)
+name(\\([^)]+\\))\\)\\|\
+^Preview: \\([a-zA-Z]+\\) \\(.*\\)$" nil t)
 ;;; Ok, here is a line by line breakdown: match-alternative 1:
 ;;; \(^! \)
 ;;; exclamation point at start of line followed by blank: TeX error
@@ -1689,7 +1748,9 @@ name(\\([^)]+\\))\\)" nil t)
 			  box (unless
 				  (string= (match-string 2) "started")
 				(if (match-string 4)
-				    (mapcar #'string-to-int
+				    (mapcar #'(lambda (x)
+						(* (preview-get-magnification)
+						   (string-to-int x)))
 					    (list
 					     (match-string 4)
 					     (match-string 5)
@@ -1767,7 +1828,20 @@ name(\\([^)]+\\))\\)" nil t)
 		      (string-to-int (match-string 4))))
 	     ((match-beginning 5)
 	      ;; Hook to change file name
-	      (rplaca TeX-error-file (match-string-no-properties 5)))))
+	      (rplaca TeX-error-file (match-string-no-properties 5)))
+	     ((match-beginning 6)
+	      (let ((var
+		     (assoc (match-string-no-properties 6)
+			    preview-parse-variables))
+		    str)
+		(when (and var
+			   (string-match (nth 2 var)
+					 (setq str (match-string 7))))
+		  (set (nth 1 var)
+		       (funcall (nth 4 var)
+				(match-string-no-properties
+				 (nth 3 var)
+				 str))))))))
 	(unwind-protect
 	    (save-excursion
 	      (if (null parsestate)
@@ -1874,9 +1948,7 @@ specified by BUFF."
   (let (scale res colors)
     (condition-case err
 	(with-current-buffer buff
-	  (setq scale (if (functionp preview-scale-function)
-			  (funcall preview-scale-function)
-			preview-scale-function)
+	  (setq scale (preview-hook-enquiry preview-scale-function)
 		res (cons (/ (* 25.4 (display-pixel-width))
 			     (display-mm-width))
 			  (/ (* 25.4 (display-pixel-height))
@@ -1967,7 +2039,7 @@ Those are just needed for cleanup."
   :type '(repeat string))
 
 (defun preview-format-kill (format-cons)
-  "Kill a cached format. 
+  "Kill a cached format.
 FORMAT-CONS is intended to be an element of `preview-dumped-alist'.
 Tries through `preview-format-extensions'."
   (dolist (ext preview-format-extensions)
@@ -1975,7 +2047,7 @@ Tries through `preview-format-extensions'."
 	(delete-file (concat (car format-cons) ext))
       (file-error nil))))
 
-(defun preview-dump-format () 
+(defun preview-dump-format ()
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
 on the same master file."
@@ -1987,7 +2059,7 @@ on the same master file."
 				 ,(TeX-command-expand
 				   preview-dump-command
 				   'TeX-master-file))))
-	 (header  
+	 (header
 	  ;; Header search taken from `tex-buf.el'
 	  ;; We search for the header from the master file.
 	  (save-excursion
@@ -2020,7 +2092,7 @@ on the same master file."
 	       (preview-reraise-error process))))))
 
 (defun preview-clear-format ()
-  "Clear the pregenerated format file.  
+  "Clear the pregenerated format file.
 The use of the format file is discontinued."
   (interactive)
   (let* ((format-file (expand-file-name (TeX-master-file nil)))
@@ -2068,7 +2140,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.155 $"))
+	(rev "$Revision: 1.156 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2079,7 +2151,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-25 11:06:05 $"))
+    (let ((date "$Date: 2002-07-28 23:28:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
