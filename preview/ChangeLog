@@ -1,3 +1,8 @@
+2003-05-13  David Kastrup  <dakas@users.sourceforge.net>
+
+	* circ.tex (section{Die gerade Linie}): Add comments for
+	intentional bugs.
+
 2003-04-28  David Kastrup  <dakas@users.sourceforge.net>
 
 	* configure.in: Fix check for images.
