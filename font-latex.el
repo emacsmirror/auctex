@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.75 2004-10-16 12:29:04 angeli Exp $
+;; Version:    $Id: font-latex.el,v 5.76 2004-10-16 16:43:28 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -599,7 +599,11 @@ have changed."
     (unless (= (length verb-like-commands) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-like-commands "\\)"
-			      "\\([^a-z@*]\\).*?\\(\\1\\)")
+			      ;; An opening curly brace as delimiter
+			      ;; is valid, but allowing it might screw
+			      ;; up fontification of stuff like
+			      ;; "\url{...} foo \textbf{<--!...}".
+			      "\\([^a-z@*{]\\).*?\\(\\1\\)")
 		     (1 "\"") (2 "\""))))
     (unless (= (length verb-macros) 0)
       (add-to-list 'font-latex-syntactic-keywords
