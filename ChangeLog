@@ -1,3 +1,32 @@
+2004-05-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-verbatim-face)
+	(font-latex-doctex-preprocessor-face)
+	(font-latex-doctex-documentation-face): New variables and faces.
+	(font-latex-verbatim-environments, font-latex-syntactic-keywords)
+	(font-latex-doctex-syntactic-keywords)
+	(font-latex-doctex-keywords): New variables.
+	(font-latex-set-syntactic-keywords)
+	(font-latex-syntactic-face-function, font-latex-doctex-^^A)
+	(font-latex-doctex-syntactic-face-function): New functions.
+	(font-latex-setup): Set special `font-lock-defaults' for docTeX
+	mode.
+	(font-latex-commented-outp): Don't classify line comments in
+	docTeX mode as "real" comments.
+
+	* latex.el (doctex-mode): Call `TeX-install-font-lock' to
+	activate special fontification in docTeX mode.
+
+	* style/alltt.el (TeX-add-style-hook): Added "alltt" to
+	`font-latex-verbatim-environments'.
+
+	* context.el: Updated header.
+
+	* context-nl.el: Updated header.
+
+	* context-en.el: Updated header.
+	(context-en-mode): Set `ConTeXt-current-interface' to "en".
+
 2004-05-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-toggle-source-specials): Simplify the code.
