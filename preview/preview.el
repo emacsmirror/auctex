@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.28 2001-10-08 22:19:21 dakas Exp $
+;; $Id: preview.el,v 1.29 2001-10-10 11:53:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -823,7 +823,8 @@ Defaults to point in current buffer."
 	  (point))
       (error nil))))
 
-(defcustom preview-default-option-list '("displaymath" "floats" "graphics")
+(defcustom preview-default-option-list '("displaymath" "floats"
+					 "graphics" "sections")
   "*Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
@@ -839,7 +840,8 @@ upgraded to a fancier version of just the LaTeX style."
 		    (const "displaymath")
 		    (const "floats")
 		    (const "graphics")
-		    (const "textmath"))
+		    (const "textmath")
+		    (const "sections"))
 	       (repeat :inline t :tag "Other options" (string))))
 
 (defun preview-make-options ()
@@ -1116,7 +1118,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.28 $"))
+	(rev "$Revision: 1.29 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
