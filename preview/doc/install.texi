@@ -52,7 +52,6 @@ This is not really needed to @emph{install} the package, but will be
 required for stable operation of it.  Most problems we have encountered
 come from interaction with not so recent versions of GhostScript, so it
 is a good idea to have, say GhostScript 6.51 or later installed.
-@end itemize
 
 @item The @code{texinfo} package
 
@@ -60,6 +59,7 @@ This is needed for building the documentation.  At least @w{version 4.0}
 is required.  If you don't have this, you may download a separate tar
 file with the prebuilt documentation from Sourceforge and install it
 over the main unpacked tar archive.
+@end itemize
 
 @section Configure
 
