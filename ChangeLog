@@ -1,3 +1,24 @@
+2004-12-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-comment-start-regexp): New variable.
+	(TeX-comment-or-uncomment-region, TeX-uncomment)
+	(TeX-forward-comment-skip, TeX-find-macro-end-helper): Use it.
+
+	* latex.el (LaTeX-newline, LaTeX-insert-environment)
+	(LaTeX-env-item, LaTeX-indent-line, LaTeX-current-indentation)
+	(LaTeX-fill-region-as-paragraph, LaTeX-fill-region-as-para-do)
+	(LaTeX-fill-move-to-break-point, LaTeX-fill-paragraph)
+	(LaTeX-fill-code-comment, LaTeX-fill-region)
+	(LaTeX-forward-paragraph, LaTeX-backward-paragraph): Use
+	`TeX-comment-start-regexp' instead of `comment-start'.
+	(LaTeX-backward-paragraph, LaTeX-indent-line): Simplify.
+
+	* style/mdwlist.el ("mdwlist"): Use `TeX-comment-start-regexp'
+	instead of `comment-start'.
+
+	* style/doc.el (LaTeX-env-no-comment): Use
+	`TeX-comment-start-regexp' instead of `comment-start'.
+
 2004-12-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-buffer-type): Do not ignore case during
