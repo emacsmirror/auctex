@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.53 2002-01-18 13:06:32 dakas Exp $
+;; $Id: preview.el,v 1.54 2002-01-18 13:33:16 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -936,16 +936,9 @@ list of LaTeX commands is inserted just before \\begin{document}. "
   :group 'preview-latex
   :type '(list (repeat :inline t :tag "Preamble commands" (string))))
 
-(defun preview-expand-command (command)
-  "Expand a command (from preview-default-preamble) using 
-TeX-expand-list."
-  ; This is necessary because the expansion is not recursive (?)
-  (TeX-command-expand command ""))      ; The file special will 
-					; never be used here
-
 (defun preview-make-preamble ()
   "Create default preamble to add to LaTeX document."
-  (mapconcat #'preview-expand-command preview-default-preamble "\n"))
+  (mapconcat #'identity preview-default-preamble "\n"))
 
 (defcustom preview-LaTeX-command "%l '\\nonstopmode\
 \\PassOptionsToPackage{auctex,active}{preview}\
@@ -990,9 +983,9 @@ preview Emacs Lisp package something too stupid."))
   (add-to-list 'TeX-expand-list
 	       '("%m" preview-create-subdirectory) t)
   (add-to-list 'TeX-expand-list
-	       '("%P" preview-make-options) t)
-  (add-to-list 'TeX-expand-list
 	       '("%D" preview-make-preamble) t)
+  (add-to-list 'TeX-expand-list
+	       '("%P" preview-make-options) t)
 ;;;  (easy-menu-add-item TeX-mode-menu nil
 ;;;		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
 ;;; The following ugliness is necessary because LaTeX-mode-map starts
@@ -1327,7 +1320,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.53 $"))
+	(rev "$Revision: 1.54 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
