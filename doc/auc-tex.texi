@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.140 2004-02-27 21:56:00 angeli Exp $
+@c $Id: auc-tex.texi,v 1.141 2004-03-06 11:38:53 angeli Exp $
 
 @finalout
 @titlepage
@@ -1192,18 +1192,18 @@ the document is formatted or via the respective entry in the Command
 menu.
 
 AUC@TeX{} will try to guess which type of viewer (DVI, PostScript or
-PDF) has to be used and what options are to be passed over to it.
-This decision is based on the output files present in the working
-directory and the style options used in the document.  For example, if
-there is a DVI file in your working directory, a DVI viewer will be
-invoked.  In case of a PDF file it will be a PDF viewer.  If you
+PDF) has to be used and what options are to be passed over to it.  This
+decision is based on the output files present in the working directory
+as well as the class and style options used in the document.  For
+example, if there is a DVI file in your working directory, a DVI viewer
+will be invoked.  In case of a PDF file it will be a PDF viewer.  If you
 specified a special paper format like @samp{a5paper} or use the
-@samp{landscape} option , this will be passed to the viewer.
-Especially some DVI viewers depend on this kind of information to
-display your document correctly.  In case you are using
-@samp{pstricks} or @samp{psfrag} in your document a DVI viewer cannot
-display the contents correctly and a PostScript viewer will be
-invoked instead.
+@samp{landscape} option, this will be passed to the viewer by the
+appropriate options.  Especially some DVI viewers depend on this kind of
+information in order to display your document correctly.  In case you
+are using @samp{pstricks} or @samp{psfrag} in your document, a DVI
+viewer cannot display the contents correctly and a PostScript viewer
+will be invoked instead.
 
 The information about which file types and style options are
 associated with which viewers and options for them is stored in the
@@ -1215,10 +1215,10 @@ List of output file extensions, style options and view options.
 
 @defopt TeX-view-style
 List of style options and view options.  This is the predecessor of
-@code{TeX-output-view-style} which does not allow the specification
-of output file extensions.  It is used as a fallback in case none of
-the alternatives specified in @code{TeX-output-view-style} matches.
-In case @code{TeX-view-style} does not match either, no suggestion
+@code{TeX-output-view-style} which does not allow the specification of
+output file extensions.  It is used as a fallback in case none of the
+alternatives specified in @code{TeX-output-view-style} match.  In case
+none of the entries in @code{TeX-view-style} match either, no suggestion
 for a viewer will be made.
 @end defopt
 
