@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.45 1995-01-24 22:52:58 amanda Exp $
+;; Version: $Id: tex.el,v 5.46 1995-01-25 14:20:10 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -229,6 +229,8 @@ function returning the expanded string when called with the remaining
 elements as arguments.  The special value `file' will be expanded to
 the name of the file being processed, with an optional extension.")
 
+;; End of Site Customization.
+
 ;;; Import
 
 (or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
@@ -257,6 +259,8 @@ Full documentation will be available after autoloading the function."
 (autoload 'latex-mode "latex" no-doc t)
 
 ;;; Portability.
+
+(require 'auc-menu)
 
 ;; An GNU Emacs 19 function.
 (or (fboundp 'set-text-properties)
@@ -384,24 +388,6 @@ The value is actually the tail of LIST whose car is ELT."
     (setq list (cdr list)))
   list)
 
-;; Easymenu.
-
-(defmacro easy-menu-define (symbol maps doc menu)
-  "Define SYMBOL to be a menu for keymaps MAPS.
-DOC is the documentation string, and MENU is a Lucid style menu."
-  (` (progn
-       (defvar (, symbol) nil (, doc))
-       (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
-
-(defun easy-menu-do-define (symbol maps doc menu)
-  (fset symbol (symbol-function 'ignore)))
-(defun easy-menu-remove (menu))
-(defun easy-menu-add (menu &optional map))
-(defun easy-menu-change (path name items))
-
-(provide 'easymenu)
-(provide 'tex-18)
-
 )
 
 ;;; Special support for XEmacs 
@@ -427,7 +413,7 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 ;; you have a `%%% mode: latex' line in your file variable section,
 ;; and have latex-mode as your default mode for ".tex" files.
 ;; Unfortunately I have been unable to isolate the error further.
-(add-hook 'change-major-mode-hook '(lambda (setq TeX-symbol-list nil)))
+(add-hook 'change-major-mode-hook '(lambda () (setq TeX-symbol-list nil)))
 
 ;; Lucid 19.6 grok this regexp, but you loose the ability to use
 ;; whitespace in your documentstyle command.
@@ -448,52 +434,6 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 ;; Lucid only
 (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
 
-;; Easymenu.
-
-(defmacro easy-menu-define (symbol maps doc menu)
-  "Define SYMBOL to be a menu for keymaps MAPS.
-DOC is the documentation string, and MENU is a Lucid style menu."
-  (` (progn
-       (defvar (, symbol) nil (, doc))
-       (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
-
-(defun easy-menu-do-define (symbol maps doc menu)
-  (set symbol menu)
-  (fset symbol (list 'lambda '(e)
-		     doc
-		     '(interactive "@e")
-		     '(run-hooks 'activate-menubar-hook)
-		     '(setq zmacs-region-stays 't)
-		     (list 'popup-menu symbol)))
-  (mapcar (function (lambda (map) (define-key map 'button3 symbol)))
-	  (if (keymapp maps) (list maps) maps)))
-
-(fset 'easy-menu-change (symbol-function 'add-menu))
-
-(defun easy-menu-add (menu &optional map)
-  "Add MENU to the current menu bar."
-  (cond ((null current-menubar)
-	 ;; Don't add it to a non-existing menubar.
-	 nil)
-	((assoc (car menu) current-menubar)
-	 ;; Already present.
-	 nil)
-	((equal current-menubar '(nil))
-	 ;; Set at left if only contains right marker.
-	 (set-buffer-menubar (list menu nil)))
-	(t
-	 ;; Add at right.
-	 (set-buffer-menubar (copy-sequence current-menubar))
-	 (add-menu nil (car menu) (cdr menu)))))
-
-(defun easy-menu-remove (menu)
-  "Remove MENU from the current menu bar."
-  (and current-menubar
-       (assoc (car menu) current-menubar)
-       (delete-menu-item (list (car menu)))))
-
-(provide 'easymenu)
-
 )
 ;;; Special support for GNU Emacs 19
 
@@ -512,8 +452,6 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 	'("Document LaTeX word..." . latex-help) 'describe-variable)))
 
 (defun TeX-activate-region ())
-
-(require 'easymenu)
 
 ))
 
