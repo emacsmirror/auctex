@@ -2200,6 +2200,14 @@ recognized."
 
 ;;; Filling
 
+;; FIXME: Consolidate this with `font-latex-verbatim-macros' when
+;; font-latex.el gets fully integrated in AUCTeX.
+(defcustom LaTeX-verbatim-macros
+  '("verb" "verb*")
+  "Macros for inline verbatim which should not be broken across lines."
+  :group 'LaTeX
+  :type '(repeat (string)))
+
 (defcustom LaTeX-fill-break-at-separators nil
   "List of separators before or after which respectively a line
 break will be inserted if they do not fit into one line."
@@ -2551,6 +2559,33 @@ space does not end a sentence, so don't break a line there."
 	    (1- (line-beginning-position)))
 	   (goto-char (match-end 0))
 	   (skip-chars-forward "^ \n" (point-max)))))
+  ;; Cater for \verb|...| (and similar) contructs which should not be
+  ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
+  ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
+  ;; chosen with \MakeShortVerb{<char>}.)
+  (let ((orig-breakpoint (point))
+	(final-breakpoint (point))
+	(verb-macros (regexp-opt LaTeX-verbatim-macros)))
+    (save-excursion
+      (beginning-of-line)
+      (when (and (re-search-forward
+		  (concat (regexp-quote TeX-esc) "\\(?:" verb-macros
+			  "\\)\\([^a-z@*]\\)")
+		  orig-breakpoint t)
+		 ;; The test for the closing delimiter is not included
+		 ;; in the `re-search-forward' statement above to
+		 ;; allow the search being limited to `orig-breakpoint'.
+		 (progn (goto-char (match-beginning 1))
+			(looking-at "\\([^a-z@*]\\).*?\\(\\1\\)"))
+		 (> (- (match-end 2) (line-beginning-position))
+		    (current-fill-column)))
+	(goto-char (match-beginning 0))
+	(skip-chars-backward "^ \n")
+	(when (bolp)
+	  (goto-char (match-end 2))
+	  (skip-chars-forward "^ \n" (point-max)))
+	(setq final-breakpoint (point))))
+    (goto-char final-breakpoint))
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
@@ -2712,11 +2747,10 @@ space does not end a sentence, so don't break a line there."
 ;; The content of `LaTeX-fill-newline' was copied from the function
 ;; `fill-newline' in `fill.el' (CVS Emacs, January 2004) and adapted
 ;; to the needs of AUCTeX.
-
 (defun LaTeX-fill-newline ()
   "Replace whitespace here with one newline and indent the line."
   (skip-chars-backward " \t")
-  (newline)
+  (newline 1)
   ;; COMPATIBILITY for XEmacs
   (unless (featurep 'xemacs)
     ;; Give newline the properties of the space(s) it replaces
