@@ -264,7 +264,8 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
     EMACS_LISPDIR=""
     EMACS_LISP(EMACS_LISPDIR,
       [(let ((load-path load-path))
-         (while (and load-path (not (string-match \"^${i}/?\$\" (car load-path))))
+         (while (and load-path (not (string-match \"^${i}/\?\$\" 
+                                                  (car load-path))))
                 (setq load-path (cdr load-path))) 
          (if load-path \"yes\" \"no\"))])
     if test "$EMACS_LISPDIR" = "yes"; then
@@ -303,6 +304,9 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
 use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
 --libdir (xemacs), or possibly --prefix to rectify this])
      fi
+     # Store expanded path, may be added to (X)Emacs load-path
+     lispdir_expanded=$lispdir
+     AC_FULL_EXPAND(lispdir_expanded)
      # Restore prefix
      prefix=${oldprefix}
     ])
