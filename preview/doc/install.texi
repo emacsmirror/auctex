@@ -54,6 +54,13 @@ come from interaction with not so recent versions of GhostScript, so it
 is a good idea to have, say GhostScript 6.51 or later installed.
 @end itemize
 
+@item The @code{texinfo} package
+
+This is needed for building the documentation.  At least @w{version 4.0}
+is required.  If you don't have this, you may download a separate tar
+file with the prebuilt documentation from Sourceforge and install it
+over the main unpacked tar archive.
+
 @section Configure
 
 The first step is to configure the source code, telling it where
@@ -102,21 +109,23 @@ configure is suggesting.
 There can be problems if your @LaTeX{} implementation is not 8-bit
 clean.  Check @file{PROBLEMS} file or @ref{Known problems}).
 This switch disables the 8-bit test, in case you know that your
-installation is clean and the test is simply failing.
+installation is clean and the test is simply failing.  By specifying
+this switch, you signal your acceptance of having @previewlatex{} fail
+on @LaTeX{} files containing 8-bit characters.
 
-Another problem might occur if you have fetched @previewlatex{} via
-@acronym{CVS} or have run @code{autoconf} by hand: @code{autoconf}
-unfortunately clobbers the language environment settings, and there is
-no way portable across versions to preserve them.  The current version
-of the @code{autogen.sh} script tries to make up for this deficiency.
+Failure of this test can also happen if you have fetched @previewlatex{}
+via @acronym{CVS} and have run @code{autoconf} by hand instead of using
+the provided @file{autogen.sh}: @code{autoconf} unfortunately clobbers
+the language environment settings, and there is no way portable across
+versions to preserve them.  The current version of the @file{autogen.sh}
+script tries to work around this deficiency.
 
 @end table
 
 
-
 @section Build/install
 
-Once configure has been run, simply enter
+Once @file{configure} has been run, simply enter
 
 @example
 make
