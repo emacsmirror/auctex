@@ -1174,7 +1174,7 @@ If EXPR evaluate to true, parse THEN as an argument list, else parse
 ELSE as an argument list."
   (TeX-parse-arguments (if (eval expr) then else)))
 
-(defun TeX-arg-free (optional &optional &rest args)
+(defun TeX-arg-free (optional &rest args)
   "Parse its arguments but use no braces when they are inserted."
   (let ((< "")
 	(> ""))

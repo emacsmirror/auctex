@@ -1,3 +1,9 @@
+2003-02-17  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* tex.el (TeX-arg-literal): Remove illegal and superfluous &optional.
+
+	* latex.el (TeX-arg-free): Remove illegal and superfluous &optional.
+
 2003-02-17  David Kastrup  <dak@gnu.org>
 
 	* font-latex.el (font-latex-find-matching-close): Remove a very

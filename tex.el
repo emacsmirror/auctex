@@ -2353,7 +2353,7 @@ See match-data for details."
     (skip-chars-backward " \t\n")
     (bobp)))
 
-(defun TeX-arg-literal (optional &optional &rest args)
+(defun TeX-arg-literal (optional &rest args)
   "Insert its arguments into the buffer.
 Used for specifying extra syntax for a macro."
   (apply 'insert args))
