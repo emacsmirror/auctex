@@ -43,9 +43,8 @@ to your own @file{.emacs} file or to a site-wide initialization file is
 @end example
 
 @noindent
-For a well-configured prepackaged version, this should be the all you
-need to do.  If you installed @previewlatex{} yourself, at least the
-line
+For a well-configured prepackaged version, not more than that should be
+required.  If you installed @previewlatex{} yourself, at least the line
 
 @example
 (autoload 'LaTeX-preview-setup "preview")
@@ -80,7 +79,7 @@ appear, since that is the moment when the correlation between the
 original text and the buffer locations gets established.  If the buffer
 changes before that point of time, the previews will not be placed where
 they belong. If you do want to change some obvious error you just
-spotted we recommend you stop the background process by pressing
+spotted, we recommend you stop the background process by pressing
 @kbd{C-c C-k}.
 
 To see/edit the @LaTeX{} code for a specific object, put the point (the
@@ -152,7 +151,7 @@ The @previewlatex{} project is available at SourceForge.  In addition to
 the main source tarball, we provide prebuilt documentation files there
 for those lacking a recent enough version of makeinfo, and source and
 binary @file{.rpm} files suitable for a recent RedHat system. Anonymous
-@acronym{CVS} is available as well. The SourceForge homepage of
+@acronym{CVS} is available as well. The SourceForge project page of
 @previewlatex{} is @uref{http://sourceforge.net/projects/preview-latex}.
 
 @node  Contacts,  , Availability, Introduction
