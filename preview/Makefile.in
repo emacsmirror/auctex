@@ -19,6 +19,7 @@ texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
 previewdocdir = @previewdocdir@
 AUCTEXDIR = @AUCTEXDIR@
+TEXMFGEN=@TEXMFGEN@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -59,14 +60,17 @@ install-el: $(LISP_OBJS)
 	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
 	done
 
-install-texmf: preview.sty prauctex.def prauctex.cfg preview.dvi
+install-texmf: $(TEXMFGEN) install-texmf-doc
 	-mkdir -p $(previewtexmfdir)
-	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
-	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
-	$(INSTALL_DATA) prauctex.cfg $(previewtexmfdir)
+	for x in $(TEXMFGEN) ; do \
+	  echo " $(INSTALL_DATA) $$x $(previewtexmfdir)" ; \
+	  $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
+	done
+	-$(TEXHASH) $(texmfdir)
+
+install-texmf-doc: preview.dvi
 	-mkdir -p $(previewdocdir)
 	$(INSTALL_DATA) preview.dvi $(previewdocdir)
-	-$(TEXHASH) $(texmfdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'

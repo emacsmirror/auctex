@@ -103,6 +103,10 @@ if test "$ENABLE8BIT"x = truex ; then
     fi
 fi
 
+TEXMFGEN=[`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.\(sty\|def\|cfg\)\)}.*$/\1/p' preview.dtx | tr '\n' ' '`]
+echo TEXMFGEN=$TEXMFGEN
+AC_SUBST(TEXMFGEN)
+
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 AC_PATH_PROG_REQUIRED(TEXHASH, texhash, /bin/true)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
