@@ -1,3 +1,9 @@
+2003-09-24  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi:
+	* dvipng/install.texi:
+	* dvipng/misc.c: Fix documentation
+
 2003-09-23  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/ft.c:
