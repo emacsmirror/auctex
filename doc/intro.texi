@@ -10,9 +10,9 @@ Read the @file{INSTALLATION} file for information about how to install
 AUC @TeX{}.  It is identical to the Installation chapter in the AUC
 @TeX{} manual.
 
-If you are upgrading from the previous version oif AUC @TeX{}, the
+If you are upgrading from the previous version of AUC @TeX{}, the
 latest changes can be found in the @file{CHANGES} file.  If you are
-upgrading from an older version, read the History cxhapter in the AUC
+upgrading from an older version, read the History chapter in the AUC
 @TeX{} manual.
 
 AUC @TeX{} is a comprehensive customizable integrated environment for

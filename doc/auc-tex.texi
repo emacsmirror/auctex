@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.102 1995-01-24 22:53:09 amanda Exp $
+@c $Id: auc-tex.texi,v 1.103 1995-01-27 16:58:09 amanda Exp $
 
 @finalout
 @titlepage
@@ -221,7 +221,7 @@ If you include the style file @file{german} @code{TeX-open-quote} and
 @code{TeX-close-quote} will both be set to @samp{"}.
 
 In AUC @TeX{}, dollar signs should match like they do in @TeX{}.  This
-has been parially implemented, we assume dollar signs always match
+has been partially implemented, we assume dollar signs always match
 within a paragraph.  The first @samp{$} you insert in a paragraph will
 do nothing special.  The second @samp{$} will match the first.  This
 will be indicated by moving the cursor temporarily over the first dollar
@@ -1502,7 +1502,7 @@ Parse all @TeX{} and La@TeX{} commands that AUC @TeX{} can use.
 There are several problems associated with editing non-English @TeX{}
 with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are usable for
 European (Latin, Cyrillic, Greek) based languages, but special versions
-of TeX and Emacs are needed for Korean, Japanes, and Chinese. 
+of TeX and Emacs are needed for Korean, Japanese, and Chinese. 
 
 @menu
 * European::                    Using AUC @TeX{} for European languages.
@@ -1605,7 +1605,7 @@ AUC @TeX{} supports style files for several languages.  Each style file
 may modify some AUC @TeX{} to better support the language, and will run
 a language specific hook that will allow you to for example change
 ispell dictionary, or run code to change the keyboard remapping.  The
-following will for example choose a danish dictionary for documents
+following will for example choose a Danish dictionary for documents
 including the @file{dk.sty} file.  This requires parsing to be enabled,
 @pxref{Parsing Files}. 
 
@@ -2342,7 +2342,7 @@ Maybe the regexp for matching a TeX symbol during parsing should be
 
 @item
 AUC TeX should be able to parse La@TeX{}2e @file{.cls} files.  Here are
-the regesps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
+the regexps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
 Thiemann. 
 
 @example
