@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.96 2002-04-04 12:35:47 dakas Exp $
+;; $Id: preview.el,v 1.97 2002-04-04 21:06:54 nixsf Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1477,7 +1477,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  (while
 	      (re-search-forward "\
 \\(^! \\)\\|\
-\\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
+\\(?: \\|^\\)(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
 )+\\( \\|$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
@@ -1781,7 +1781,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.96 $"))
+	(rev "$Revision: 1.97 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
