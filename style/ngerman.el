@@ -1,6 +1,6 @@
 ;;; ngerman.el - Setup AUC TeX for editing German text.
 
-;; $Id: ngerman.el,v 1.2 2003-03-13 22:45:32 dak Exp $
+;; $Id: ngerman.el,v 1.3 2004-08-22 16:45:20 dak Exp $
 
 ;;; Commentary:
 ;;
@@ -23,13 +23,16 @@
 
 (TeX-add-style-hook "ngerman"
  (function (lambda ()
-   (set-syntax-table LaTeX-german-mode-syntax-table)
-   (make-local-variable 'TeX-open-quote)
-   (make-local-variable 'TeX-close-quote)
-   (make-local-variable 'TeX-quote-after-quote)
-   (setq TeX-quote-after-quote LaTeX-german-quote-after-quote)
-   (setq TeX-open-quote LaTeX-german-open-quote)
-   (setq TeX-close-quote LaTeX-german-close-quote)
-   (run-hooks 'TeX-language-de-hook))))
+	     (set-syntax-table LaTeX-german-mode-syntax-table)
+	     (unless (local-variable-p 'TeX-open-quote (current-buffer))
+	       (make-local-variable 'TeX-open-quote)
+	       (setq TeX-open-quote LaTeX-german-open-quote))
+	     (unless (local-variable-p 'TeX-close-quote (current-buffer))
+	       (make-local-variable 'TeX-close-quote)
+	       (setq TeX-close-quote LaTeX-german-close-quote))
+	     (unless (local-variable-p 'TeX-quote-after-quote (current-buffer))
+	       (make-local-variable 'TeX-quote-after-quote)
+	       (setq TeX-quote-after-quote LaTeX-german-quote-after-quote))
+	     (run-hooks 'TeX-language-de-hook))))
 
 ;;; ngerman.el ends here

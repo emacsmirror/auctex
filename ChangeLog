@@ -1,3 +1,17 @@
+2004-08-22  David Kastrup  <dak@gnu.org>
+
+	* style/italian.el ("italian"): Don't overwrite existing local
+	variable settings.
+
+	* style/ngerman.el ("ngerman"): Don't overwrite existing local
+	variable settings.
+
+	* style/german.el ("german"): Don't overwrite existing local
+	variable settings.
+
+	* tex.el (TeX-set-mode-name, TeX-PDF-mode): XEmacs needs two
+	arguments for `local-variable-p'.
+
 2004-08-20  David Kastrup  <dak@gnu.org>
 
 	* tex.el (desktop): Save TeX-Omega-mode, too.

@@ -41,10 +41,12 @@
 (TeX-add-style-hook
  "italian"
  (lambda ()
-   (make-local-variable 'TeX-open-quote)
-   (make-local-variable 'TeX-close-quote)
-   (setq TeX-open-quote LaTeX-italian-open-quote)
-   (setq TeX-close-quote LaTeX-italian-close-quote)
+   (unless (local-variable-p 'TeX-open-quote (current-buffer))
+     (set (make-local-variable 'TeX-open-quote)
+	  LaTeX-italian-open-quote))
+   (unless (local-variable-p 'TeX-close-quote (current-buffer))
+     (set (make-local-variable 'TeX-close-quote)
+	  LaTeX-italian-close-quote))
    (run-hooks 'TeX-language-it-hook)))
 
 ;;; italian.el ends here

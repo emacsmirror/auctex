@@ -1,6 +1,6 @@
 ;;; german.el - Setup AUC TeX for editing German text.
 
-;; $Id: german.el,v 1.7 2003-03-13 22:46:31 dak Exp $
+;; $Id: german.el,v 1.8 2004-08-22 16:45:21 dak Exp $
 
 ;;; Commentary:
 ;;
@@ -23,13 +23,16 @@
 
 (TeX-add-style-hook "german"
  (function (lambda ()
-   (set-syntax-table LaTeX-german-mode-syntax-table)
-   (make-local-variable 'TeX-open-quote)
-   (make-local-variable 'TeX-close-quote)
-   (make-local-variable 'TeX-quote-after-quote)
-   (setq TeX-quote-after-quote LaTeX-german-quote-after-quote)
-   (setq TeX-open-quote LaTeX-german-open-quote)
-   (setq TeX-close-quote LaTeX-german-close-quote)
-   (run-hooks 'TeX-language-de-hook))))
+	     (set-syntax-table LaTeX-german-mode-syntax-table)
+	     (unless (local-variable-p 'TeX-open-quote (current-buffer))
+	       (make-local-variable 'TeX-open-quote)
+	       (setq TeX-open-quote LaTeX-german-open-quote))
+	     (unless (local-variable-p 'TeX-close-quote (current-buffer))
+	       (make-local-variable 'TeX-close-quote)
+	       (setq TeX-close-quote LaTeX-german-close-quote))
+	     (unless (local-variable-p 'TeX-quote-after-quote (current-buffer))
+	       (make-local-variable 'TeX-quote-after-quote)
+	       (setq TeX-quote-after-quote LaTeX-german-quote-after-quote))
+	     (run-hooks 'TeX-language-de-hook))))
 
 ;;; german.el ends here

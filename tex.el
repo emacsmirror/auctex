@@ -606,7 +606,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.437 $"))
+	    (rev "$Revision: 5.438 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -621,7 +621,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-20 04:25:54 $"))
+    (let ((date "$Date: 2004-08-22 16:45:21 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -731,7 +731,7 @@ name is to be updated.
 If RESET is non-nil, `TeX-command-next' is reset to
 `TeX-command-default' in updated buffers."
   (if (and changed
-	   (not (and local (local-variable-p changed))))
+	   (not (and local (local-variable-p changed (current-buffer)))))
       (dolist (buffer (buffer-list))
 	(and (local-variable-p 'TeX-mode-p buffer)
 	     (not (local-variable-p changed buffer))
@@ -980,7 +980,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
       (if TeX-PDF-mode-parsed
 	  (unless (eq TeX-PDF-mode arg)
 	    (kill-local-variable 'TeX-PDF-mode))
-	(unless (local-variable-p 'TeX-PDF-mode)
+	(unless (local-variable-p 'TeX-PDF-mode (current-buffer))
 	  (setq TeX-PDF-mode-parsed t
 		TeX-PDF-mode arg)))
     (if TeX-PDF-mode-parsed
