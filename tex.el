@@ -525,12 +525,17 @@ Full documentation will be available after autoloading the function."
 (eval-and-compile
   (if (featurep 'xemacs)
       (defun TeX-maybe-remove-help (menu)
-      "Removes :help entries from menus, since XEmacs does not like them."
+      "Removes :help entries from menus, since XEmacs does not like them.
+Also does other stuff."
       (cond ((consp menu)
-	     (if (eq (car menu) :help)
-		 (TeX-maybe-remove-help (cddr menu))
-	       (cons (TeX-maybe-remove-help (car menu))
-		     (TeX-maybe-remove-help (cdr menu)))))
+	     (cond ((eq (car menu) :help)
+		    (TeX-maybe-remove-help (cddr menu)))
+		   ((eq (car menu) :visible)
+		    (cons :included
+			  (cons (cadr menu)
+				(TeX-maybe-remove-help (cddr menu)))))
+		   (t (cons (TeX-maybe-remove-help (car menu))
+			    (TeX-maybe-remove-help (cdr menu))))))
 	    ((vectorp menu)
 	     (vconcat (TeX-maybe-remove-help (append menu nil))))
 	    (t menu)))
@@ -539,7 +544,8 @@ Full documentation will be available after autoloading the function."
 but does nothing in Emacs."
       menu))
   (defmacro TeX-menu-with-help (menu)
-    "Compatibility macro that removes :help entries if on XEmacs."
+    "Compatibility macro that removes :help entries if on XEmacs.
+Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
@@ -589,7 +595,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.418 $"))
+	(rev "$Revision: 5.419 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -604,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 10:45:37 $"))
+    (let ((date "$Date: 2004-08-10 13:47:13 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3233,8 +3239,8 @@ be bound to `TeX-electric-macro'."
 	 :help "Make this menu a full-blown customization menu"])
        ["Read the AUCTeX manual" TeX-goto-info-page
 	:help "Everything worth reading"]
-       ["Submit bug report" TeX-submit-bug-report
-	:help "Create a problem report for mailing."])))
+       ["Report AUCTeX bug" TeX-submit-bug-report
+	:help "Create a problem report for mailing"])))
 
 ;;; AmSTeX
 

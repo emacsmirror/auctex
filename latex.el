@@ -4151,9 +4151,10 @@ the last entry in the menu."
       ["Reset AUCTeX" (TeX-normal-mode t)
        :keys "\\[universal-argument] \\[TeX-normal-mode]"
        :help "Reset buffer and reload AUCTeX style files"])
-;;      [ "Convert 209 to 2e" LaTeX-209-to-2e
-;;        :visible (member "latex2" (TeX-style-list)) ]
-;; Rats.  XEmacs does not like :visible.
+      [ "Convert 209 to 2e" LaTeX-209-to-2e
+        :visible (member "latex2" (TeX-style-list)) ]
+;; Rats.  XEmacs does not like :visible.  We'll use
+;; TeX-maybe-remove-help in order to convert it to :included
      ("Customize"
       ["Browse options"
        (customize-group 'AUCTeX)
@@ -4165,7 +4166,7 @@ the last entry in the menu."
        :help "Make this menu a full-blown customization menu"])
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
-     ["Submit bug report" TeX-submit-bug-report
+     ["Report AUCTeX bug" TeX-submit-bug-report
       :help "Create a problem report for mailing"])))
 
 (defcustom LaTeX-font-list

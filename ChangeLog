@@ -1,5 +1,16 @@
 2004-08-10  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-maybe-remove-help): convert Emacs' :visible into
+	XEmacs' :included.
+
+	* latex.el (LaTeX-mode-menu): Change bug submit menu entry.
+
+	* context.el (ConTeXt-mode-menu): Same.
+
+	* tex.el (plain-TeX-mode-menu): Same.
+
+	* tex-info.el (TeXinfo-mode-menu): Same.
+
 	* latex.el (LaTeX-mode-menu): A few changed help strings and other
 	small fry.
 

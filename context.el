@@ -1331,7 +1331,7 @@ There might be text before point."
        :help "Make this menu a full-blown customization menu"])
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
-     ["Submit bug report" TeX-submit-bug-report
+     ["Report AUCTeX bug" TeX-submit-bug-report
       :help "Create a problem report for mailing"])))
 
 (defun ConTeXt-menu-update (&optional menu)
