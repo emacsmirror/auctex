@@ -1,5 +1,9 @@
 2002-04-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-sentinel): Avoid dead process-mark
+	problem with XEmacs.
+	(preview-get-geometry): Be more specific about display errors.
+
 	* Release 0.7.1
 
 	* prv-xemacs.el (preview-supports-image-type): New macro.
