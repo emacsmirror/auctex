@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.3 2001-09-15 23:20:09 dakas Exp $
+;; $Id: preview.el,v 1.4 2001-09-16 23:06:29 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -291,13 +291,20 @@ mouse-3 kills preview") )
   "*Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
-on a document not configured for preview."
+on a document not configured for preview.  \"auctex\", \"active\"
+and \"delayed\" need not be specified here."
   :group 'preview
-  :type '(set (const "displaymath")
-	      (const "floats")
-	      (const "graphics")
-	      (const "textmath")
-	      (repeat :inline t :tag "Other" (string))))
+  :type '(list (set :inline t :tag "Options known to work"
+		    :format "%t:\n%v%h" :doc
+"The above options are all the available ones
+at the time of the release of this package.
+You should not need \"Other options\" unless you
+upgraded to a fancier version of just the LaTeX style."
+		    (const "displaymath")
+		    (const "floats")
+		    (const "graphics")
+		    (const "textmath"))
+	       (repeat :inline t :tag "Other options" (string))))
 
 (make-variable-buffer-local 'preview-default-option-list)
 
