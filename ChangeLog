@@ -1,5 +1,8 @@
 Wed Jan 25 14:59:57 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
+	* tex.el (change-major-mode-hook): Also clear
+	`LaTeX-environment-list'. 
+
 	* Makefile (AUCSRC): Add `auc-menu.el'.
 
 	* tex.el: Use auc-menu instead of easymenu.
