@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.27 2001-10-08 18:34:39 dakas Exp $
+;; $Id: preview.el,v 1.28 2001-10-08 22:19:21 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -388,10 +388,12 @@ SNIPPET are used for making the name of the file to be generated."
 		
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
-  (let ((buff (generate-new-buffer
+  (let ((buff (get-buffer-create
 	       "*Preview-GhostScript-Error*")))
     (with-current-buffer buff
+      (kill-all-local-variables)
       (setq buffer-undo-list t)
+      (erase-buffer)
       (insert string)
       (goto-char (point-min)))
     (view-buffer-other-window
@@ -864,7 +866,11 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
   (setq TeX-expand-list
 	(append TeX-expand-list
 		'(("%m" preview-create-subdirectory)
-		  ("%P" preview-make-options)) )))
+		  ("%P" preview-make-options)) ))
+  (easy-menu-add-item TeX-mode-menu
+		      nil
+		      (let ((file 'TeX-command-on-current))
+			(TeX-command-menu-entry (car (last TeX-command-list))))))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
@@ -1110,7 +1116,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.27 $"))
+	(rev "$Revision: 1.28 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
