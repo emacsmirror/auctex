@@ -20,12 +20,19 @@ reference material, sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-AUCTeX 11.55 includes fixes for the following bugs: Erroneous
-insertion of trailing whitespace during filling.  Unwanted display of
-*Compile-Log* buffer when the first LaTeX file in an Emacs session is
-loaded.  `File mode specification error: (error "Variable binding
-depth exceeds max-specpdl-size")' if outdated Emacspeak package is
-installed.
+AUCTeX 11.55 includes fixes for the following bugs:
+
+  * Erroneous insertion of trailing whitespace during filling.
+
+  * Unwanted display of *Compile-Log* buffer when the first LaTeX file
+    in an Emacs session is loaded.
+
+  * `File mode specification error: (error "Variable binding depth
+    exceeds max-specpdl-size")' if outdated Emacspeak package is
+    installed.
+
+More detailed information can be found in the CHANGES file included in
+the distribution or the "Changes" section in the manual.
 
 IMPORTANT: Many of the new features in the 11.5x series rely on
 special properties in the variable `TeX-command-list' and will not
