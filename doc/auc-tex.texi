@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.101 1994-11-28 01:41:46 amanda Exp $
+@c $Id: auc-tex.texi,v 1.102 1995-01-24 22:53:09 amanda Exp $
 
 @finalout
 @titlepage
@@ -2321,6 +2321,9 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+Filling should leave lines ending in @samp{\\} alone.
+
 @item
 Multiple argument completion for @samp{\bibliography}.  In general, I
 ought to make @kbd{,} special for these kind of completions. 

@@ -5,7 +5,6 @@
 (TeX-add-style-hook "amsart"
  (function
   (lambda ()
-    (TeX-add-symbols
-   '("eqref" TeX-arg-label)))))
+    (TeX-run-style-hooks "amstex"))))
 
 ;;; amsart.el ends here.

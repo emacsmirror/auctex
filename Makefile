@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.111 1995-01-22 12:47:03 amanda Exp $
+# $Id: Makefile,v 5.112 1995-01-24 22:52:26 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -91,20 +91,19 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  OEMACS
+REMOVE =  double.el min-ispl.el min-map.el  ltx-math.el 
 
-MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
-	    auc-menu.el min-map.el  ltx-math.el maniac.el \
-	    outln-18.el xt-mouse.el min-map.el all.el  cpp.el \
-	    easymenu.el
+MINMAPSRC = column.el   auc-menu.el maniac.el \
+	    outln-18.el auc-html.el easymenu.el \
+	    xt-mouse.el all.el  cpp.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el
 
 AUCSRC = auc-old.el  tex.el \
-	 tex-buf.el  latex.el    tex-info.el ltx-math.el \
+	 tex-buf.el  latex.el    tex-info.el \
 	 ltx-help.el easymenu.el
 
-STYLESRC = style/slides.el    style/foils.el \
+STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
 	   style/report.el    style/amsart.el   style/amsbook.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \

@@ -1,30 +1,34 @@
 ;;; column.el --- display line and column in the mode line
 
-;; Copyright (C) 1993, 1994 Per Abrahamsen.
+;; Copyright (C) 1993, 1994, 1995 Per Abrahamsen.
 ;; Copyright abandoned.  This file is donated to the public domain.
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
-;; Version: 0.4
+;; Version: 0.5
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
 ;; LCD Archive Entry:
 ;; column|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; Display line and column in the mode line|
-;; 1994-01-11|0.4|~/misc/column.el.Z|
+;; 1995-01-11|0.5|~/misc/column.el.Z|
 
 ;;; Commentary:
 
 ;; Save this file in your load-path, insert
 ;;   (autoload 'display-column-mode "column" nil t)
-;; in your `.emacs' file, restart FSF Emacs 19 then activate with 
+;; in your `.emacs' file, restart Emacs then activate with 
 ;;   M-x display-column-mode RET
 ;; If you want it activated by default, insert
 ;;   (display-column-mode 1)
 ;; after the autoload.
 
+;; Will not work with XEmacs or Emacs 18.
+
 ;;; Change Log:
 ;;
+;; Sun Jan 22 13:53:53 1995
+;;      * Warn about XEmacs and Emacs 18.
 ;; Tue Jan 11 14:33:48 1994
 ;;      * Add a bit more documentation for how to customize it.
 ;; Fri Dec 31 14:02:47 1993

@@ -1,3 +1,25 @@
+Tue Jan 24 23:37:35 1995  Per Abrahamsen  (amanda@micro)
+
+	* tex.el (change-major-mode-hook): Added workaround for error in
+	XEmacs 19.11's `kill-all-local-variables'.
+
+Mon Jan 23 16:03:35 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (LaTeX-common-initialization): Removed unnecessary
+	regexp quotes of `TeX-esc'.
+
+	* style/amsart.el: Move `eqref' definition to `style/amstex.el'
+	and load that style hook.  
+	* style/amstex.el: New file.
+	* Makefile (STYLESRC): Added it.
+	Suggested by vb1890@PLAY.CS.NYU.EDU (Victor Boyko). 
+
+Sun Jan 22 14:18:12 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el, ltx-math.el, Makefile: Integrated `ltx-math.el' in
+	`latex.el'. 
+	* tex-site.el: Removed autoload for `LaTeX-math-mode'.
+
 Thu Jan 19 12:31:45 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (latex-mode): Epoch fix by Martin Sjolin

@@ -1,11 +1,11 @@
-;;; auc-menu.el - Easy menu support for GNU Emacs 19 and XEmacs.
+;;; auc-menu.el - Easy menu support for GNU Emacs and XEmacs.
 ;; 
-;; $Id: auc-menu.el,v 5.7 1994-11-28 01:41:22 amanda Exp $
+;; $Id: auc-menu.el,v 5.8 1995-01-24 22:52:29 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
-;; Easy menu support for GNU Emacs 19 and XEmacs|
-;; $Date: 1994-11-28 01:41:22 $|$Revision: 5.7 $|~/misc/auc-menu.el.gz|
+;; Easy menu support for GNU Emacs and XEmacs|
+;; $Date: 1995-01-24 22:52:29 $|$Revision: 5.8 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
@@ -67,8 +67,8 @@
 ;; explicitly call `easy-menu-add' and `easy-menu-remove' to add and
 ;; remove menus from the menu bar.
 
-;; auc-menu.el define the easymenu API included in Emacs 19.29 and
-;; later.  In fact, the Emacs 19 specific code should be identical.
+;; auc-menu.el defines the easymenu API included in Emacs 19.29.
+;; In fact, the Emacs 19 specific code should be identical.
 
 ;;; Code:
 
