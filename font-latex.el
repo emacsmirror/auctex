@@ -95,6 +95,18 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.902 07Sep2003 PSG
+;;  - Bug fix when font-lock-multiline is set to t.
+;;    When a searched pattern was commented-out, we used to return a (nil
+;;    nil) pattern match to font-lock, along with the status of `t' for it
+;;    to keep looking past this match.  font-lock was happy with that.  But
+;;    now when font-lock-multiline is `t', the match really needs to exists
+;;    otherwise there is a elisp error at line 1625 of font-lock.el in
+;;    function font-lock-fontify-keywords-region.  So we provide a match
+;;    that begins and ends at the same character (the end of the match).
+;;    Thanks to Benoit Plessis <benoit.plessis@tuxfamily.org> for reporting
+;;    the problem to Debian (Bug#208503) and for being persistent enough to
+;;    find the tickling conditions.
 ;; V0.901 25Jul2003 PSG
 ;;  - Make & highlighted in font-latex-warning-face.
 ;;  - Better document font-latex-match-*-keywords-local variables.
@@ -955,9 +967,14 @@ Returns nil if none of KEYWORDS is found."
     (when (re-search-forward keywords limit t)
       (cond
        ((font-latex-commented-outp)
-        ;; Return a nul match such that we skip over this pattern.
+        ;; Return a dummy match such that we skip over this pattern.
         ;; (Would be better to skip over internally to this function)
-        (store-match-data (list nil nil))
+        ;; We used to return a (nil nil) pattern match along with the
+        ;; status of `t' to keep looking.  font-lock was happy with that.
+        ;; But when font-lock-multiline is `t', the match really needs to
+        ;; exists otherwise there is a elisp error at line 1625 of 
+        ;; font-lock.el in function font-lock-fontify-keywords-region.
+        (store-match-data (list (match-end 0)(match-end 0)))
         t)
        (t
         (let ((kbeg (match-beginning 0)) 
@@ -1049,7 +1066,7 @@ Returns nil if no font-changing command is found."
       ;; (Would be better to skip over internally to this function)
       ;; Using `prepend' won't help here, because the problem is that
       ;; scan-sexp *fails* to find a commented-out matching bracket!
-      (store-match-data (list nil nil))
+      (store-match-data (list (match-end 0)(match-end 0)))
       t)
      (t
       (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
@@ -1118,7 +1135,7 @@ Returns nil if no font-changing command is found."
       ;; (Would be better to skip over internally to this function)
       ;; Using `prepend' won't help here, because the problem is that
       ;; scan-sexp *fails* to find a commented-out matching bracket!
-      (store-match-data (list nil nil))
+      (store-match-data (list (match-end 0)(match-end 0)))
       t)
      (t
       (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
@@ -1182,7 +1199,7 @@ Returns nil if no font-changing command is found."
     (if (eq (preceding-char) ?\\)       ; \\[ is not a math environment
         (progn 
           (goto-char (match-end 0))
-          (store-match-data (list nil nil)) 
+          (store-match-data (list (match-end 0)(match-end 0))) 
           t)
       (let ((b1start (point)))
         (search-forward (cond ((match-beginning 1) "\\)")
