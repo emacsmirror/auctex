@@ -2650,34 +2650,34 @@ space does not end a sentence, so don't break a line there."
 
 (defun LaTeX-fill-newline ()
   "Replace whitespace here with one newline and indent the line."
-  (skip-chars-backward " \t")
-  (insert ?\n)
-  ;; Give newline the properties of the space(s) it replaces
-  (set-text-properties (1- (point)) (point)
-		       (text-properties-at (point)))
-  (and (looking-at "\\( [ \t]*\\)\\(\\c|\\)?")
-       ;; COMPATIBILITY for XEmacs
-       (or (if (featurep 'xemacs)
-	       (char-in-category-p (or (char-before (1- (point))) ?\000) ?|)
-	     (aref (char-category-set (or (char-before (1- (point))) ?\000)) ?|))
-	   (match-end 2))
-       ;; When refilling later on, this newline would normally not be replaced
-       ;; by a space, so we need to mark it specially to re-install the space
-       ;; when we unfill.
-       (put-text-property (1- (point)) (point) 'fill-space (match-string 1)))
-  ;; COMPATIBILITY for Emacs <= 21.2
-  (when (boundp 'fill-nobreak-invisible)
-    ;; If we don't want breaks in invisible text, don't insert
-    ;; an invisible newline.
-    (if fill-nobreak-invisible
-	(remove-text-properties (1- (point)) (point)
-				'(invisible t))))
-  ;; Insert the fill prefix.
-  (and fill-prefix (not (equal fill-prefix ""))
-       ;; Markers that were after the whitespace are now at point: insert
-       ;; before them so they don't get stuck before the prefix.
-       (insert-before-markers-and-inherit fill-prefix))
-  (LaTeX-indent-line))
+  ;; COMPATIBILITY for XEmacs
+  (if (and (featurep 'xemacs) (not (fboundp 'char-in-category-p)))
+      (newline-and-indent)
+    (skip-chars-backward " \t")
+    (insert ?\n)
+    ;; Give newline the properties of the space(s) it replaces
+    (set-text-properties (1- (point)) (point)
+			 (text-properties-at (point)))
+    (and (looking-at "\\( [ \t]*\\)\\(\\c|\\)?")
+	 (or (aref (char-category-set (or (char-before (1- (point))) ?\000)) ?|)
+	     (match-end 2))
+	 ;; When refilling later on, this newline would normally not
+	 ;; be replaced by a space, so we need to mark it specially to
+	 ;; re-install the space when we unfill.
+	 (put-text-property (1- (point)) (point) 'fill-space (match-string 1)))
+    ;; COMPATIBILITY for Emacs <= 21.3
+    (when (boundp 'fill-nobreak-invisible)
+      ;; If we don't want breaks in invisible text, don't insert
+      ;; an invisible newline.
+      (if fill-nobreak-invisible
+	  (remove-text-properties (1- (point)) (point)
+				  '(invisible t))))
+    ;; Insert the fill prefix.
+    (and fill-prefix (not (equal fill-prefix ""))
+	 ;; Markers that were after the whitespace are now at point: insert
+	 ;; before them so they don't get stuck before the prefix.
+	 (insert-before-markers-and-inherit fill-prefix))
+    (indent-according-to-mode)))
 
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like \\[fill-paragraph], but handle LaTeX comments.
