@@ -1,3 +1,8 @@
+2002-04-29  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview.el (preview-buffer): allow it to work with format
+	caching + added comment
+	
 2002-04-28  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/preview-latex.texi:
