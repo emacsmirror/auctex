@@ -109,42 +109,46 @@ performed as specified in TeX-expand-list."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t)
-	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
+  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t t)
+	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t t)
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil t)
-	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil t)
+	      'TeX-run-TeX nil 'latex t)
+	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil 'latex t)
 	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil t)
-	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%V " 'TeX-run-silent t nil)
-	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
-	(list "Print" "%p %r " 'TeX-run-command t nil)
-	(list "Queue" "%q" 'TeX-run-background nil nil)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
-	(list "Index" "makeindex %s" 'TeX-run-command nil t)
-	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil t)
-	;; Uncomment the above line and comment out the next line to
-	;; use `chktex' instead of `lacheck'. 
-	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
-	(list "Other" "" 'TeX-run-command t t)
+	      'TeX-run-TeX nil 'latex t)
 	;; Not part of standard TeX.
-	(list "LaTeX PDF" "pdflatex \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil t)
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
-	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil t)
+	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
+	      'TeX-run-TeX nil 'latex t)
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil 'texinfo t)
+	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
+              'texinfo t)
 	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
-	      'TeX-run-TeX nil t)
+	      'TeX-run-TeX nil 'amstex t)
 	;; support for ConTeXt  --pg
 	;; first version of ConTeXt to support nonstopmode: 2003.2.10
-	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX nil t)
-	(list "ConTeXt Interactive" "texexec --once --texutil %t" 'TeX-run-interactive t t)
-	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil t)
+	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX
+              nil 'context t)
+	(list "ConTeXt Interactive" "texexec --once --texutil %t"
+              'TeX-run-interactive t 'context t)
+	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil 'context t)
 	;; --purge %s does not work on unix systems with current texutil
 	;; check again october 2003 --pg
-	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil t))
+	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil
+              'context t)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil nil)
+	(if (or window-system (getenv "DISPLAY"))
+	    (list "View" "%V " 'TeX-run-silent t nil nil)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil nil))
+	(list "Print" "%p %r " 'TeX-run-command t nil nil)
+	(list "Queue" "%q" 'TeX-run-background nil nil nil)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t nil nil)
+	(list "Index" "makeindex %s" 'TeX-run-command nil nil t)
+	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil nil t)
+	;; Uncomment the above line and comment out the next line to
+	;; use `chktex' instead of `lacheck'.
+	(list "Check" "lacheck %s" 'TeX-run-compile nil nil t)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil nil)
+	(list "Other" "" 'TeX-run-command t nil t))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -190,10 +194,11 @@ name of the command, the command string, and the name of the file to
 process.  It might be useful to use TeX-run-command in order to
 create an asynchronous process.
 
-If the fourth element is non-nil, the user will get a chance to
-modify the expanded string.
+The fourth element indicates in which mode the command should be
+present in the Command menu.
 
-The fifth element is obsolete and ignored."
+If the fifth element is non-nil, the user will get a chance to
+modify the expanded string."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(string :tag "Command")
@@ -216,6 +221,13 @@ The fifth element is obsolete and ignored."
 				(function-item TeX-run-dviout)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
+                        (choice :tag "Mode"
+                                (const :tag "Any" nil)
+                                (const :tag "Plain TeX" t)
+                                (const :tag "LaTeX" latex)
+                                (const :tag "ConTeXt" context)
+                                (const :tag "Texinfo" texinfo)
+                                (const :tag "AmSTeX" amstex))
 			(sexp :format "End\n"))))
 
 (defcustom TeX-command-output-list
@@ -496,7 +508,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.310 $"))
+	(rev "$Revision: 5.311 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -511,7 +523,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-03 10:54:15 $"))
+    (let ((date "$Date: 2004-01-05 09:18:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1503,25 +1515,6 @@ of plain-TeX-mode-hook."
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
-
-;;;###autoload
-(defun ams-tex-mode ()
-  "Major mode for editing files of input for AmS TeX.
-See info under AUCTeX for documentation.
-
-Special commands:
-\\{TeX-mode-map}
- 
-Entering AmS-tex-mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of AmS-TeX-mode-hook."
-  (interactive)
-  (plain-TeX-common-initialization)
-  (setq mode-name "AmS TeX")
-  (setq major-mode 'ams-tex-mode)
-  (setq TeX-command-default "AmSTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook))
-
 (autoload 'font-latex-setup "font-latex" 
   "Font locking optimized for LaTeX.
 Should work with all Emacsen." t)
@@ -1550,7 +1543,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
 
-  ;; Redefine some standard varaibles
+  ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
   (make-local-variable 'paragraph-separate)
   (make-local-variable 'comment-start)
@@ -1619,7 +1612,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
   ;; Common initialization for plain TeX like modes.
   (VirTeX-common-initialization)
   (use-local-map plain-TeX-mode-map)
-  (easy-menu-add TeX-mode-menu plain-TeX-mode-map)
+  (easy-menu-add plain-TeX-mode-command-menu plain-TeX-mode-map)
   (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
   (set-syntax-table TeX-mode-syntax-table)
   (setq paragraph-start
@@ -2575,9 +2568,26 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   ;; Multifile
   (define-key TeX-mode-map "\C-c-" 'TeX-master-file-ask)) ;*** temporary
 
-(easy-menu-define TeX-mode-menu
-    TeX-mode-map
-    "Menu used in TeX mode."
+(defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
+  "Keymap used in plain TeX mode.")
+
+(defun TeX-mode-specific-command-menu (mode-spec)
+  "Return a Command menu specific for the active TeX mode.
+
+MODE-SPEC is used for specifying which mode is used and corresponds
+to the values specified in the defustom for `TeX-command-list':
+
+* `nil' is for any mode
+
+* `t' is for plain TeX
+
+* `latex' is for LaTeX
+
+* `context' is for ConTeXt
+
+* `texinfo' is for Texinfo
+
+* `amstex' is for AmSTeX"
   (append '("Command")
 	  '(("Command on"
 	     [ "Master File" TeX-command-select-master
@@ -2589,11 +2599,22 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
-	  (let ((file 'TeX-command-on-current))
-	    (mapcar 'TeX-command-menu-entry TeX-command-list))))
+	  (let ((file 'TeX-command-on-current)
+                (command-list ((lambda (full-list)
+                                 (let (out-list)
+                                   (mapcar (lambda (entry)
+                                              (if (or (eq (nth 4 entry) mode-spec)
+                                                      (eq (nth 4 entry) nil))
+                                                  (setq out-list
+                                                        (append entry out-list))))
+                                           full-list))) TeX-command-list)))
+	    (mapcar 'TeX-command-menu-entry command-list))))
 
-(defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
-  "Keymap used in plain TeX mode.")
+;;; Menus for plain TeX mode
+(easy-menu-define plain-TeX-mode-command-menu
+    plain-TeX-mode-map
+    "Command menu used in TeX mode."
+    (TeX-mode-specific-command-menu t))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -2619,6 +2640,43 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+
+
+;;; AmSTeX
+
+(defvar AmSTeX-mode-map
+  (copy-keymap TeX-mode-map)
+  "Keymap used in `AmSTeX-mode'.")
+
+;;; Menu for AmSTeX mode
+(easy-menu-define AmSTeX-mode-command-menu
+    AmSTeX-mode-map
+    "Command menu used in AmsTeX mode."
+    (TeX-mode-specific-command-menu 'amstex))
+
+;;;###autoload
+(defun ams-tex-mode ()
+  "Major mode for editing files of input for AmS TeX.
+See info under AUCTeX for documentation.
+
+Special commands:
+\\{AmSTeX-mode-map}
+ 
+Entering AmS-tex-mode calls the value of text-mode-hook,
+then the value of TeX-mode-hook, and then the value
+of AmS-TeX-mode-hook."
+  (interactive)
+  (plain-TeX-common-initialization)
+  (use-local-map AmSTeX-mode-map)
+
+  ;; Menu
+  (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
+
+  (setq mode-name "AmS TeX")
+  (setq major-mode 'ams-tex-mode)
+  (setq TeX-command-default "AmSTeX")
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook))
+
 
 ;;; Comments
 
