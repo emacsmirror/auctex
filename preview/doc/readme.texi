@@ -1,31 +1,31 @@
 @cindex Readme
-Does Your neck hurt from turning between previewer windows and the
+Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/La@TeX{} package will render your displayed
-LaTeX equations right into the editing window where they belong.
+La@TeX{} equations right into the editing window where they belong.
 
-The purpose of Preview La@TeX{} is to embed La@TeX{} environments such as
+The purpose of preview-latex is to embed La@TeX{} environments such as
 display math or figures into the source buffers. By mouse-clicking, you
 can open the original text. After editing, another click will just run
 the region in question through LaTeX and redisplay the new results.
 
 For installation instructions, see the @file{INSTALL} file or the
-identical Installation chapter in the Preview La@TeX{} manual. The LaTeX
-style used is documented in a dvi style produced by the installation
-process.
+identical Installation chapter in the preview-latex manual. The La@TeX{}
+style used is documented in a @code{dvi} style produced by the
+installation process.
 
 @section Prerequisites
 
 Current state of affairs: you need to get access to a version of Emacs
 21. The public release 21.1 should be ok for starters. Pretest versions
-before that have problems. Direct EPS rendering still is in need of
-improvement and very experimental, so the default setting replaces
-Emacs' internal EPS handling by an indirect rendering mechanism. If you
-feel capable of helping out with Emacs' EPS interface (meaning that the
-APIs connecting GhostScript and viewers such as GhostView and xdvi are
-not a book with seven seals for you), feel free to do so. Report bugs
-you can reproduce along with the files needed to reproduce them. The new
-display engine for 21.1 is quite powerful, and some bugs still might be
-lurking inside.
+before that have problems. Direct @acronym{EPS} rendering still is in
+need of improvement and very experimental, so the default setting
+replaces Emacs' internal @acronym{EPS} handling by an indirect rendering
+mechanism. If you feel capable of helping out with Emacs' @acronym{EPS}
+interface (meaning that the APIs connecting GhostScript and viewers such
+as GhostView and xdvi are not a book with seven seals for you), feel
+free to do so. Report bugs you can reproduce along with the files needed
+to reproduce them. The new display engine for 21.1 is quite powerful,
+and some bugs still might be lurking inside.
 
 You also need AUC @TeX{} installed and working, and probably a fairly
 recent version of GhostScript.  At the current point of time, XEmacs
@@ -37,16 +37,17 @@ For some known problems with various software, see the file
 
 @section Availability
 @cindex Download
-@cindex CVS access
+@cindex @acronym{CVS} access
 
 The preview-latex project is available at Sourceforge,
-@url{http://sourceforge.net/projects/preview-latex}. There, the source
+@uref{http://sourceforge.net/projects/preview-latex}. There, the source
 tarball can be downloaded and also a binary .rpm suitable for a recent
 RedHat system.
 
-Anonymous CVS is available as well. See the Sourceforge web pages for
-more information, but here are the basic instructions (when prompted for
-a password for anonymous, simply press the @key{enter} key.)
+Anonymous @acronym{CVS} is available as well. See the Sourceforge web
+pages for more information, but here are the basic instructions (when
+prompted for a password for anonymous, simply press the @key{enter}
+key.)
 
 @example
 @iftex
@@ -59,27 +60,28 @@ cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview
 @end ifnottex 
 @end example
 
-Updates from within the preview directory do not need the -d parameter.
-A simple @code{cvs update} from within that directory will make your CVS
-mirror up to date again. For developer access, ask on the
-@email{preview-latex-devel} list (see below).
+Updates from within the preview directory do not need the @option{-d}
+parameter.  A simple @code{cvs update} from within that directory will
+make your @acronym{CVS} mirror up to date again. For developer access,
+ask on @email{preview-latex-devel@@lists.sourceforge.net} (see below).
 
 
 @section Contacts
 @cindex Contacts
 @cindex Mailing list
 
-Bug reports should be sent by using @kbd{M-x preview-report-bug RET}, as
-this will fill in a lot of information interesting to us. There is a
-mailing list for developers, look at
-@url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
-For more information, send a message with just the word ``help'' as
+Bug reports should be sent by using
+@kbd{M-x preview-report-bug @key{RET}}, as this will fill in a lot of
+information interesting to us. There is a mailing list for developers,
+look at
+@uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
+For more information, send a message with just the word @samp{help} as
 subject or body to
 @email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
 for new features, and pleas for help should go to
-@email{preview-latex-devel@@lists.sourceforge.net} (the Preview La@TeX{}
-devel team). Please use the command @kbd{M-x preview-report-bug RET} to
-report bugs if possible.
+@email{preview-latex-devel@@lists.sourceforge.net} (the preview-latex
+devel team). Please use the command
+@kbd{M-x preview-report-bug @key{RET}} to report bugs if possible.
 
 @noindent
 Offers to support further development will be appreciated.
