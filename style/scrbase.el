@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.2 2002-10-08 13:24:33 dakas Exp $
+;; Version: $Id: scrbase.el,v 1.3 2002-10-26 20:33:37 dakas Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -15,8 +15,6 @@
 ;; contains the base definitions that work with all KOMA-Script
 ;; classes (scrarctl.cls, scrreprt.cls, scrbook.cls and scrlttr2.cls).
 ;; You need this file since it's loaded from the class-styles.
-
-;; scrlttr2.cls support is not yet implemented. Sorry.
 
 ;; This file is intended to be used with the AUC TeX-Package by Per
 ;; Abrahamsen. Put this File into your TeX-style-path. You may also
@@ -27,6 +25,7 @@
   (lambda ()
     (TeX-add-symbols
      ;; Additional elements for \maketitle
+     '("maketitle" [ "Pagenumber" ])
      '("subject" "Subject")
      '("titlehead" t)
      '("publishers" "Publisher")
@@ -43,7 +42,11 @@
      '("ifthispageodd" t nil)
      '("ifpdfoutput" t nil)
      ;; Textcommands
-     '("textsubscript" t)
+     '("textsubscript" "Text")
+     ;; Additional clearpage commands
+     '("cleardoublestandardpage")
+     '("cleardoubleplainpage")
+     '("cleardoubleemptypage")
      ;; Marginline automatically uses the correct margin
      '("marginline" t)
      ;; caption formatting
