@@ -1,3 +1,10 @@
+
+2004-10-05  Miguel Frasson <frasson@math.leidenuniv.nl>
+	
+	* toolbarx.el (toolbarx-default-toolbar-meaning-alist): New
+	constant, providing a MEANING-ALIST for the insertion of the
+	default buttons and some extra ones in Emacs and XEmacs.
+
 2004-10-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-output-view-style): Move more special items upwards.
@@ -22,7 +29,6 @@
 	* images/tex.xpm, images/view.xpm, images/viewdvi.xpm,
 	* images/viewpdf.xpm, images/viewps.xpm: Add symbolic color
 	'backgroundToolBarColor' to make pics work in (GNU/Linux) XEmacs
-
 	
 2004-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
