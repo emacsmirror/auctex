@@ -15,9 +15,14 @@ if test -z "$previewtexmfdir" ; then
 \endbatchfile
 EOF
     $LATEX -interaction nonstopmode testdocstrip.tex > /dev/null 2>&1
-    texmfdir=`(grep -e '--texmf-prefix=' testdocstrip.log | awk -F= '{print $2}')  2>/dev/null`
-    previewtexmfdir=`(grep -e '--preview-tex-dir=' testdocstrip.log | awk -F= '{print $2}') 2> /dev/null `
-    
+    texmfdir=`(grep -e '--texmf-prefix=' testdocstrip.log | awk -F= '{print [$]2}')  2>/dev/null`
+    previewtexmfdir=`(grep -e '--preview-tex-dir=' testdocstrip.log | grep -v UNDEFINED | awk -F= '{print [$]2}') 2> /dev/null `
+
+    if test -z "$previewtexmfdir"  ; then
+	if test ! -z "$texmfdir"  ; then
+	    previewtexmfdir=$texmfdir
+	fi
+    fi
 # Next 
 # kpsepath -n latex tex
 # and then go for the following in its output:

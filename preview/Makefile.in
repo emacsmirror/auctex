@@ -1,6 +1,7 @@
 
 @SET_MAKE@
 LATEX=@LATEX@
+TEX=@TEX@
 EMACS=@EMACS@
 
 prefix = @prefix@
@@ -11,7 +12,7 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
 all: preview.sty prauctex.def preview.drv \
-   preview.ins preview.dvi preview.elc
+   preview-mk.ins preview.dvi preview.elc
 
 install: install-texmf install-el
 
@@ -26,14 +27,14 @@ install-texmf: preview.sty prauctex.def preview.drv
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
 	$(INSTALL_DATA) preview.drv $(previewtexmfdir)
 
-preview.ins: preview.dtx
-	tex '\nonstopmode\def\jobname{ugh.ins}\input docstrip \askforoverwritefalse\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}\endbatchfile'
+preview-mk.ins: preview.dtx bootstrap.ins
+	$(TEX) -interaction nonstopmode bootstrap.ins
 
-preview.sty auctex.pde preview.drv: preview.dtx preview.ins ${INSTALLDIR}
-	TEXMFOUTPUT=${INSTALLDIR} tex preview.ins
+preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
+        $(TEX) -interaction nonstopmode preview-mk.ins
 
 preview.dvi: preview.drv preview.dtx
-	latex -interaction nonstopmode preview.drv
+	$(LATEX) -interaction nonstopmode preview.drv
 
 preview.elc: preview.el
 	$(EMACS) -batch -q -no-site-file -f batch-byte-compile preview.el

@@ -21,10 +21,19 @@ AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
    fi
    previewtexmfdir=$texmfdir/preview])
 
+AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install preview],
+ [ previewtexmfdir=${withval} ; 
+   if test ! -d $previewtexmfdir  ; then
+      AC_MSG_ERROR([--with-preview-dir=$previewtexmfdir: Directory does not exist])
+   fi
+   ])
+
+
 dnl FIXME we should check that it's the right version
 AC_CHECK_PROG(EMACS, emacs, emacs)
 
 AC_CHECK_PROG(LATEX, latex, latex)
+AC_CHECK_PROG(TEX, tex, tex)
 
 AC_PATH_TEXMFDIR
 AC_PATH_LISPDIR
