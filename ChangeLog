@@ -1,3 +1,49 @@
+2005-04-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-open-quote, TeX-close-quote)
+	(TeX-quote-after-quote): Doc fix.
+	(TeX-quote-language-alist, TeX-quote-language): New variables.
+	(TeX-insert-quote): Use them.
+	(TeX-submit-bug-report): Doc fix.
+
+	* latex.el (LaTeX-mode-map): Map "-" to
+	`LaTeX-babel-insert-hyphen'.
+	(LaTeX-babel-hyphen, LaTeX-babel-hyphen-after-hyphen)
+	(LaTeX-babel-hyphen-language-alist, LaTeX-babel-hyphen-language):
+	New variables.  (Moved from tex-style.el and style/german.el
+	respectively and generalized.)
+	(LaTeX-babel-insert-hyphen): New function.  (Moved from
+	syle/german.el).
+
+	* tex-style.el (LaTeX-csquotes-open-quote)
+	(LaTeX-csquotes-close-quote): Doc fix.
+	(LaTeX-german-quote-after-quote, LaTeX-german-open-quote)
+	(LaTeX-german-close-quote, LaTeX-german-hyphen)
+	(LaTeX-german-hyphen-after-hyphen): Remove.
+
+	* style/csquotes.el ("csquotes"): Use `TeX-quote-language'.
+
+	* style/italian.el (LaTeX-italian-open-quote)
+	(LaTeX-italian-close-quote): Remove.
+	("italian"): Use `TeX-quote-language'.
+
+	* style/ngerman.el (LaTeX-german-quote-after-quote)
+	(LaTeX-german-open-quote, LaTeX-german-close-quote): Remove.
+	("ngerman"): Use `TeX-quote-language' and
+	`LaTeX-babel-hyphen-language'.
+
+	* style/german.el: Move definition of "-" key to latex.el.
+	(LaTeX-german-hyphen-internal): Move to latex.el as
+	`LaTeX-babel-hyphen-language'.
+	(LaTeX-german-insert-hyphen): Move to latex.el as
+	`LaTeX-babel-insert-hyphen'.
+	("german"): Use `TeX-quote-language' and
+	`LaTeX-babel-hyphen-language'.
+
+	* style/czech.el, style/danish.el, style/slovak.el,
+	style/swedish.el: Use `TeX-quote-language' and
+	`LaTeX-babel-hyphen-language' where appropriate.
+
 2005-03-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Add
