@@ -2562,12 +2562,12 @@ handle a lot of mathematical characters and input methods.
 
 @cindex ispell
 @AUCTeX{} supports style files for several languages.  Each style file
-may modify some @AUCTeX{} to better support the language, and will run
+may modify @AUCTeX{} to better support the language, and will run
 a language specific hook that will allow you to for example change
 ispell dictionary, or run code to change the keyboard remapping.  The
 following will for example choose a Danish dictionary for documents
-including the @file{dk.sty} file.  This requires parsing to be enabled,
-@pxref{Parsing Files}.
+including @samp{\usepackage[danish]@{babel@}}.
+This requires parsing to be enabled, @pxref{Parsing Files}.
 
 @lisp
 (add-hook 'TeX-language-dk-hook
@@ -2603,8 +2603,9 @@ insert @samp{\uv@{} and @samp{@}} depending on context.
 @item danish
 Runs style hook @code{TeX-language-dk-hook}.  Pressing @key{"} will
 insert @samp{"`} and @samp{"'} depending on context.
-@item dk
-Runs style hook @code{TeX-language-dk-hook}.
+@c dk.sty seems to be obsolete, so we don't want to encourage using it.
+@c @item dk
+@c Runs style hook @code{TeX-language-dk-hook}.
 
 @item dutch
 Runs style hook @code{TeX-language-nl-hook}.

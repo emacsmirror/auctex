@@ -1,7 +1,7 @@
 2005-01-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (European): Document all TeX-language-*-hook
-	variables.
+	variables.  Don't document obsolete `dk.sty'.
 
 2005-01-14  David Kastrup  <dak@gnu.org>
 
