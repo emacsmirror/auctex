@@ -1,5 +1,9 @@
 2004-03-11  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/readme.texi (Activating preview-latex): Make a few changes
+	with regard to keybindings and stuff.
+	(Contacts): Add Paypal info for myself.
+
 	* doc/preview-latex.texi (Keys and lisp): Remove the C-c C-c g
 	pseudobinding from the description.
 	(Keys and lisp): Document mouse actions.
