@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.106 2002-04-12 08:13:56 dakas Exp $
+;; $Id: preview.el,v 1.107 2002-04-12 13:57:18 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -874,6 +874,16 @@ Fallback to :inherit and 'default implemented."
 			      (if (bolp) 0 -1))))))
   (TeX-command "Generate Preview" 'TeX-region-file))
 
+(defun preview-buffer ()
+  "Run preview on current buffer."
+  (interactive)
+  (preview-region (point-min) (point-max)))
+
+(defun preview-document ()
+  "Run preview on master document."
+  (interactive)
+  (TeX-command "Generate Preview" 'TeX-master-file))
+		       
 (defcustom preview-inner-environments '("Bmatrix" "Vmatrix" "aligned"
 					"array" "bmatrix" "cases"
 					"gathered" "matrix" "pmatrix"
@@ -1363,6 +1373,8 @@ preview Emacs Lisp package something too stupid."))
 	       '("%P" preview-make-options) t)
   (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-at-point)
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-b" #'preview-buffer)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-d" #'preview-document)
   (define-key LaTeX-mode-map "\C-c\C-p\C-i" #'preview-goto-info-page)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
@@ -1380,6 +1392,8 @@ preview Emacs Lisp package something too stupid."))
 			 ["Environment" preview-environment t]
 			 ["Section" preview-section t]
 			 ["Region" preview-region (preview-mark-active)]
+			 ["Buffer" preview-buffer]
+			 ["Document" preview-document]
 			 ["Clearout region" preview-clearout (preview-mark-active)]
 			 ["Clearout buffer" preview-clearout-buffer t]
 			 ("Customize"
@@ -1787,7 +1801,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.106 $"))
+	(rev "$Revision: 1.107 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
