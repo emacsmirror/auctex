@@ -2551,18 +2551,13 @@ space does not end a sentence, so don't break a line there."
   ;; chosen with \MakeShortVerb{<char>}.)  This could probably be
   ;; handled with `fill-nobreak-predicate', but this is not available
   ;; in XEmacs.
-  (let ((orig-breakpoint (point))
-	(final-breakpoint (point))
+  (let ((final-breakpoint (point))
 	(verb-macros (regexp-opt LaTeX-verbatim-macros)))
     (save-excursion
-      (beginning-of-line)
-      (when (and (re-search-forward
+      (when (and (re-search-backward
 		  (concat (regexp-quote TeX-esc) "\\(?:" verb-macros
 			  "\\)\\([^a-z@*]\\)")
-		  orig-breakpoint t)
-		 ;; The test for the closing delimiter is not included
-		 ;; in the `re-search-forward' statement above to
-		 ;; allow the search being limited to `orig-breakpoint'.
+		  (line-beginning-position) t)
 		 (progn (goto-char (match-beginning 1))
 			(looking-at "\\([^a-z@*]\\).*?\\(\\1\\)"))
 		 (> (- (match-end 2) (line-beginning-position))
