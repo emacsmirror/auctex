@@ -5,6 +5,7 @@ dnl <yamaoka@jpl.org>
 
 AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
+  dnl $2 here is only for correcting old (CVS) mistakes
   tmpprefix="${prefix}"
   AC_FULL_EXPAND(tmpprefix)
   EMACS_LISP(packagedir,
@@ -14,7 +15,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
            (and putative-existing-lisp-dir\
 	        (setq putative-existing-lisp-dir\
 		      (file-name-directory putative-existing-lisp-dir))\
-                (string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($1[\\\\/]\\\\)?\$\"\
+                (string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($2[\\\\/]\\\\)?\$\"\
                                putative-existing-lisp-dir)\
                 (replace-match \"\" t t putative-existing-lisp-dir))))\
       (if (and (boundp (quote early-packages))\
@@ -43,16 +44,17 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 
 AC_DEFUN(EMACS_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
+  dnl $2 here is only for correcting old (CVS) mistakes
   if test ${EMACS_FLAVOR} = xemacs; then
     AC_MSG_CHECKING([for XEmacs package directory])
     AC_ARG_WITH(packagedir,
       [  --with-packagedir=DIR   package DIR for XEmacs],
       [if test "${withval}" = yes -o -z "${withval}"; then
-	EMACS_EXAMINE_PACKAGEDIR($1)
+	EMACS_EXAMINE_PACKAGEDIR($1,$2)
       else
 	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
       fi],
-      [EMACS_EXAMINE_PACKAGEDIR($1)])
+      [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
     if test -z "${packagedir}"; then
       AC_MSG_RESULT(not found)
     else
@@ -301,9 +303,6 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
 use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
 --libdir (xemacs), or possibly --prefix to rectify this])
      fi
-     if test -n "$1"; then 
-       lispdir="$lispdir/$1"
-     fi
      # Restore prefix
      prefix=${oldprefix}
     ])
@@ -431,6 +430,9 @@ EMACS_CHECK_REQUIRE(mule,silent)
 if test "${HAVE_mule}" = "yes"; then
   COMPILE_MULE="tex-jp.el"
   CONTRIB_MULEELC="tex-jp.elc"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
 fi
 AC_SUBST(COMPILE_MULE)
 AC_SUBST(CONTRIB_MULEELC)
