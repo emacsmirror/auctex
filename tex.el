@@ -1,11 +1,11 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.10
+;; Version: 11.11
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
-;; Copyright (C) 1985, 1986, 2000, 2001 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 2000, 2001, 2002 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
@@ -223,8 +223,8 @@ LaTeX version 2e."
 		(string :tag "Other")))
 		
 
-;; You may want special options to the view command depending on the
-;; style options.  Only works if parsing is enabled.
+;; Use different compilation commands depending on style.
+;; Only works if parsing is enabled.
 
 (defcustom LaTeX-command-style
   (if (string-equal LaTeX-version "2")
