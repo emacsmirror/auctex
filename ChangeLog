@@ -1,5 +1,8 @@
 2005-04-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Minor
+	enhancements in wording.
+
 	* tex.el (TeX-open-quote, TeX-close-quote)
 	(TeX-quote-after-quote): Doc fix.
 	(TeX-quote-language-alist, TeX-quote-language): New variables.
