@@ -6,6 +6,9 @@
 
 2004-08-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/auctex.texi (Viewing): Add some information about forward
+	and inverse search.
+
 	* tex-mik.el: Synchronize `TeX-command-list' with tex.el.
 	Use gsview32 in `TeX-output-view-style'.
 
