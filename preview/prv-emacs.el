@@ -217,8 +217,10 @@ find it at some later point of time."
     (if (eq (overlay-get ov 'preview-state) 'disabled)
 	(overlay-put ov 'preview-prechange t)
       (overlay-put ov 'preview-prechange
-		   (buffer-substring-no-properties
-		    (overlay-start ov) (overlay-end ov))))
+		   (save-restriction
+		     (widen)
+		     (buffer-substring-no-properties
+		      (overlay-start ov) (overlay-end ov)))))
     (push ov preview-change-list)))
 
 (defun preview-check-changes ()
@@ -227,8 +229,10 @@ Disable it if that is the case.  Ignores text properties."
   (dolist (ov preview-change-list)
     (condition-case nil
 	(with-current-buffer (overlay-buffer ov)
-	  (let ((text (buffer-substring-no-properties
-		       (overlay-start ov) (overlay-end ov))))
+	  (let ((text (save-restriction
+			(widen)
+			(buffer-substring-no-properties
+			 (overlay-start ov) (overlay-end ov)))))
 	    (if (zerop (length text))
 		(preview-delete ov)
 	      (unless
@@ -244,7 +248,7 @@ Disable it if that is the case.  Ignores text properties."
 (defun preview-handle-insert-in-front
   (ov after-change beg end &optional length)
   "Hook function for `insert-in-front-hooks' property.
-See info node `(elisp)Managing Overlays' for
+See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (if after-change
       (unless undo-in-progress
@@ -256,7 +260,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (ov after-change beg end &optional length)
   "Hook function for `insert-behind-hooks' property.
 This is needed in case `insert-before-markers' is used at the
-end of the overlay.  See info node `(elisp)Managing Overlays'
+end of the overlay.  See info node `(elisp) Overlay Properties'
 for definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (if after-change
       (unless undo-in-progress
@@ -267,7 +271,7 @@ for definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
 (defun preview-handle-modification
   (ov after-change beg end &optional length)
   "Hook function for `modification-hooks' property.
-See info node `(elisp)Managing Overlays' for
+See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (unless after-change
     (preview-register-change ov)))
