@@ -35,7 +35,7 @@ REMOVE =  MSDOS VMS OS2 WIN-NT
 
 MINMAPSRC = all.el multi-prompt.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el tex-fptex.el
+CONTRIB = bib-cite.el tex-jp.el tex-fptex.el
 CONTRIBELC = bib-cite.elc 
 
 AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
@@ -82,7 +82,6 @@ contrib:
 	$(ELCC) -f batch-byte-compile bib-cite.el
 	$(ELCC) -f batch-byte-compile font-latex.el
 # 	$(ELCC) -f batch-byte-compile tex-jp.el              # Doesn't compile without MULE
-# 	$(ELCC) -f batch-byte-compile hilit-LaTeX.el         # Doesn't compile without X
 
 install-lisp:	some
 	-$(MKINSTALLDIRS) $(lispdir)
