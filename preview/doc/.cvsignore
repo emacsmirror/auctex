@@ -1,0 +1,16 @@
+*.aux
+*.cp
+*.cps
+*.dvi
+*.fn
+*.ky
+*.log
+*.pg
+*.toc
+*.tp
+*.vr
+*.info
+INSTALL
+README
+PROBLEMS
+preview-latex
