@@ -1096,7 +1096,7 @@ You might want to examine and modify the free variables `file',
 
 		  ;; New file -- Push on stack
 		  ((string= string "(")
-		   (re-search-forward "\\([^()\n \t]*\\)")
+		   (re-search-forward "\\([^(){}\n \t]*\\)")
 		   (setq TeX-error-file
 			 (cons (TeX-match-buffer 1) TeX-error-file))
 		   (setq TeX-error-offset (cons 0 TeX-error-offset))

@@ -1,3 +1,8 @@
+2003-01-30  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* tex-buf.el (TeX-parse-error): Exclude { and } from filenames to
+	improve parsing of error messages from pdftex.
+
 2003-01-24  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-kpathsea-path-delimiter, TeX-search-files-kpathsea):
