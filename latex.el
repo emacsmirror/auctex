@@ -3067,14 +3067,29 @@ comments and verbatim environments"
 
 ;;; Navigation
 
-(defvar LaTeX-paragraph-commands
-  (concat "[][]\\|" ; display math
-	  (regexp-opt '("maketitle"
-			"begin" "end" "part" "chapter" "label" "caption"
-			"section" "subsection" "subsubsection" "par"
-			"noindent" "paragraph" "include" "includeonly"
-			"tableofcontents" "appendix") t))
-  "Regexp matching names of LaTeX macros that should have their own line.")
+(defvar LaTeX-paragraph-commands-internal
+  '("[" "]" ; display math
+    "appendix" "begin" "caption" "chapter" "end" "include" "includeonly"
+    "label" "maketitle" "noindent" "par" "paragraph" "part" "section"
+    "subsection" "subsubsection" "tableofcontents")
+  "Internal list of LaTeX macros that should have their own line.")
+
+(defvar LaTeX-paragraph-commands-regexp
+  (concat (regexp-quote TeX-esc)
+	  (regexp-opt LaTeX-paragraph-commands-internal t))
+  "Regular expression matching LaTeX macros that should have their own line.")
+
+(defcustom LaTeX-paragraph-commands nil
+  "List of LaTeX macros that should have their own line."
+  :group 'LaTeX-macro
+  :type '(repeat (string))
+  :set (lambda (symbol value)
+         (set-default symbol value)
+	 (setq LaTeX-paragraph-commands-regexp
+	       (concat
+		(regexp-quote TeX-esc)
+		(regexp-opt (append LaTeX-paragraph-commands
+				    LaTeX-paragraph-commands-internal) t)))))
 
 (defun LaTeX-forward-paragraph (&optional count)
   "Move forward to end of paragraph.
@@ -3088,9 +3103,7 @@ If COUNT is non-nil, do it COUNT times."
 	     ((and macro-start
 		   (save-excursion
 		     (goto-char macro-start)
-		     (looking-at
-		      (concat (regexp-quote TeX-esc)
-			      "\\(" LaTeX-paragraph-commands "\\)"))))
+		     (looking-at LaTeX-paragraph-commands-regexp)))
 	      (match-beginning 0))
 	     ;; Point is before a paragraph command in the same line.
 	     ((and (not macro-start)
@@ -3098,8 +3111,7 @@ If COUNT is non-nil, do it COUNT times."
 		     (beginning-of-line)
 		     (looking-at
 		      (concat "[ \t]*" comment-start "*[ \t]*"
-			      "\\(" (regexp-quote TeX-esc) "\\)"
-			      "\\(" LaTeX-paragraph-commands "\\)"))))
+			      "\\(" LaTeX-paragraph-commands-regexp "\\)"))))
 	      (match-beginning 1))
 	     (t nil)))
 	   macro-end)
@@ -3146,9 +3158,7 @@ If COUNT is non-nil, do it COUNT times."
 	     ((and macro-start
 		   (save-excursion
 		     (goto-char macro-start)
-		     (looking-at
-		      (concat (regexp-quote TeX-esc)
-			      "\\(" LaTeX-paragraph-commands "\\)"))))
+		     (looking-at LaTeX-paragraph-commands-regexp)))
 	      (match-beginning 0))
 	     (t nil))))
       (if (and paragraph-command-start
@@ -3177,9 +3187,8 @@ If COUNT is non-nil, do it COUNT times."
 				(forward-line -1)
 				(not break-flag))
 		      (when (looking-at
-			     (concat "^[ \t]*" comment-start "*[ \t]*"
-				     "\\(" (regexp-quote TeX-esc) "\\)"
-				     "\\(" LaTeX-paragraph-commands "\\)"))
+			     (concat "^[ \t]*" comment-start "*[ \t]*" "\\("
+				     LaTeX-paragraph-commands-regexp "\\)"))
 			(save-excursion
 			  (goto-char (match-end 1))
 			  (save-match-data
@@ -4312,8 +4321,8 @@ runs the hooks in `doctex-mode-hook'."
   (setq paragraph-start
 	(concat
 	 "[ \t]*%*[ \t]*\\("
-	 (regexp-quote TeX-esc)
-	 "\\(" LaTeX-paragraph-commands "\\|" LaTeX-item-regexp "\\)\\|"
+	 LaTeX-paragraph-commands-regexp "\\|"
+	 (regexp-quote TeX-esc) "\\(" LaTeX-item-regexp "\\)\\|"
 	 "\\$\\$\\|" ; Plain TeX display math (Some people actually
 		     ; use this with LaTeX.  Yuck.)
 	 "$\\)"))
