@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.401 $"))
+	(rev "$Revision: 5.402 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 13:29:06 $"))
+    (let ((date "$Date: 2004-08-03 14:28:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -712,9 +712,22 @@ If this is nil, an empty string will be returned."
   "-editor \"%cS --no-wait +%%l %%f\""
   "*Flags to pass to DVI viewer commands for inverse search with emacsclient.")
 
+(defun TeX-source-specials-view-guess-server ()
+  "Guess the server to be used for inverse search."
+  (cond ((and (boundp 'gnuserv-process)
+	      (processp gnuserv-process))
+	 'gnuserv)
+	((and (boundp 'server-process)
+	      (processp server-process))
+	 'emacs-server)
+	((featurep 'xemacs) 'gnuserv)
+	(t 'emacs-server)))
+
 (defun TeX-source-specials-view-expand-client ()
   "Return gnuclient or emacslient executable with full path if possible."
-  (let* ((client-base (if (featurep 'xemacs) "gnuclient" "emacsclient"))
+  (let* ((client-base (if (eq (TeX-source-specials-view-guess-server) 'gnuserv)
+			  "gnuclient"
+			"emacsclient"))
 	 (client-full (and invocation-directory
 			   (expand-file-name client-base
 					     invocation-directory))))
@@ -727,30 +740,38 @@ If this is nil, an empty string will be returned."
 The return value depends on the value of `TeX-source-specials'.
 If this is nil, an empty string will be returned."
   (if TeX-source-specials
-    (let* ((xemacs (featurep 'xemacs))
-	   (process (if xemacs 'gnuserv-process 'server-process))
-	   (start (if xemacs 'gnuserv-start 'server-start))
-	   (server-flags
-	    (if (condition-case nil (symbol-value process) (error nil))
-		TeX-source-specials-view-emacsclient-flags
-	      (cond ((eq TeX-source-specials-view-start-server t)
-		     (funcall start)
-		     TeX-source-specials-view-emacsclient-flags)
-		    ((and (eq TeX-source-specials-view-start-server 'ask)
-			  (not TeX-source-specials-view-start-server-asked))
-		     (if (y-or-n-p (concat "Start " (if xemacs
-							"gnuserv"
-						      "Emacs server")
-					   " to allow inverse search with"
-					   " DVI viewer?"))
-			 (progn
-			   (setq TeX-source-specials-view-start-server-asked t)
-			   (funcall start)
-			   TeX-source-specials-view-emacsclient-flags)
-		       (setq TeX-source-specials-view-start-server-asked t)
-		       nil))))))
+    (let* ((server (TeX-source-specials-view-guess-server))
+	   (process (if (eq server 'gnuserv) 'gnuserv-process 'server-process))
+	   (start (if (eq server 'gnuserv) 'gnuserv-start 'server-start))
+	   (client-flags (if (eq server 'gnuserv)
+			     TeX-source-specials-view-gnuclient-flags
+			   TeX-source-specials-view-emacsclient-flags))
+	   (server-enabled
+	    (cond
+	     ;; Server is already running
+	     ((and (boundp process) (symbol-value process))
+	      t)
+	     ;; Server is not running but should be started unconditionally
+	     ((eq TeX-source-specials-view-start-server t)
+	      (funcall start))
+	     ;; Server is not running and we have to ask if it is to
+	     ;; be started
+	     ((and (eq TeX-source-specials-view-start-server 'ask)
+		   (not TeX-source-specials-view-start-server-asked))
+	      (if (y-or-n-p (concat "Start " (if (eq server 'gnuserv)
+						 "gnuserv"
+					       "Emacs server")
+				    " to allow inverse search with"
+				    " DVI viewer?"))
+		  (progn
+		    (setq TeX-source-specials-view-start-server-asked t)
+		    (funcall start))
+		(setq TeX-source-specials-view-start-server-asked t)
+		nil))
+	     ;; Server is not running and should not be started
+	     (t nil))))
       (concat TeX-source-specials-view-position-flags
-	      (when server-flags " ") server-flags))
+	      (when server-enabled (concat " " client-flags))))
     ""))
 
 
