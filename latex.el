@@ -1105,7 +1105,17 @@ This is necessary since index entries may contain commands and stuff.")
      (1 2 3) LaTeX-auto-optional)
     ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?\\[\\([0-9]+\\)\\]"
      (1 2) LaTeX-auto-arguments)
-    ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?" 1 TeX-auto-symbol))
+    ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?"
+     1 TeX-auto-symbol)
+    ;; Patterns for commands described in "LaTeX2e font selection" (fntguide)
+    ("\\\\DeclareMath\\(?:Symbol\\|Delimiter\\|Accent\\|Radical\\)\
+{?\\\\\\([A-Za-z]+\\)}?"
+     1 TeX-auto-symbol)
+    ("\\\\\\(Declare\\|Provide\\)Text\
+\\(?:Command\\|Symbol\\|Accent\\|Composite\\){?\\\\\\([A-Za-z]+\\)}?"
+     1 TeX-auto-symbol)
+    ("\\\\Declare\\(?:Text\\|Old\\)FontCommand{?\\\\\\([A-Za-z]+\\)}?"
+     1 TeX-auto-symbol))
   "List of regular expressions matching macros in LaTeX classes and packages.")
 
 (defvar LaTeX-auto-regexp-list
