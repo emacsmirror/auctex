@@ -11,12 +11,13 @@ INSTALLINFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
+TEXIFILES = copying.texi install.texi macros.texi preview-dtxdoc.texi \
+	preview-latex.texi problems.texi readme.texi todo.texi \
+	wininstall.texi
 
 all: preview-latex.dvi preview-latex.info
 
-preview-latex/index.html: preview-latex.texi install.texi readme.texi \
-	copying.texi problems.texi preview-dtxdoc.texi macros.texi \
-	todo.texi 
+preview-latex/index.html: $(TEXIFILES)
 	makeinfo --html preview-latex.texi
 
 html-docs: preview-latex/index.html
@@ -24,8 +25,7 @@ html-docs: preview-latex/index.html
 preview-dtxdoc.texi: ../latex/preview.dtx preview-dtxdoc.pl
 	-$(PERL) preview-dtxdoc.pl < ../latex/preview.dtx > preview-dtxdoc.texi
 
-preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi macros.texi todo.texi
+preview-latex.dvi: $(TEXIFILES)
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 	-$(TEXINDEX) preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
@@ -33,9 +33,7 @@ preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
 preview-latex.ps: preview-latex.dvi
 	$(DVIPS) preview-latex.dvi -o preview-latex.ps
 
-preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi macros.texi todo.texi \
-	wininstall.texi
+preview-latex.info: $(TEXIFILES)
 	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi macros.texi
@@ -69,4 +67,4 @@ clean:
 	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.dvi *.info* *.html *.tmp \
-		INSTALL README PROBLEMS TODO
+		INSTALL INSTALL.windows README PROBLEMS TODO
