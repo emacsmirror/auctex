@@ -1,3 +1,11 @@
+2002-04-23  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Release 0.7.2
+
+	* preview.el (preview-buffer-restore-internal): Remove expired
+	previews.
+	(preview-reinstate-preview): set timestamp.
+
 2002-04-22  Nix  <nix@esperi.demon.co.uk>
 
 	* doc/install.texi (Advice for non-privileged users):
