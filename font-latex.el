@@ -150,8 +150,10 @@ Also selects \"<quote\"> versus \">quote\"<."
 					 (expt 1.2 (- 3 i)))))
 			      "pt")))
 	    (eval `(defface ,face-name
-		     '((((type tty pc) (class color))
-			(:foreground "lightblue" :bold t))
+		     '((((type tty pc) (class color) (background light))
+			(:foreground "blue4" :bold t))
+		       (((type tty pc) (class color) (background dark))
+			(:foreground "yellow" :bold t))
 		       (((class color) (background light))
 			(:bold t :foreground "blue4" :family "helvetica"
 			       :size ,size))
@@ -163,25 +165,31 @@ Also selects \"<quote\"> versus \">quote\"<."
 			      (number-to-string num) ".")
 		     :group 'font-latex-highlighting-faces)))
 	(eval `(defface ,face-name
-	   '((((type tty pc) (class color)) (:foreground "yellow" :weight bold))
-	     (t (:height 1.2 :inherit ,(intern (concat
-						"font-latex-title-"
-						(number-to-string (1+ num))
-						"-face")))))
-	   ,(concat "Face for LaTeX titles at level "
-		    (number-to-string num) ".")
-	   :group 'font-latex-highlighting-faces))))))
+		 '((t (:height 1.2 :inherit ,(intern
+					      (concat
+					       "font-latex-title-"
+					       (number-to-string (1+ num))
+					       "-face")))))
+		 ,(concat "Face for LaTeX titles at level "
+			  (number-to-string num) ".")
+		 :group 'font-latex-highlighting-faces))))))
 (font-latex-make-title-faces)
 
 (defface font-latex-title-4-face
   (if (featurep 'xemacs)
-      '((((type tty pc) (class color)) (:bold t))
+      '((((type tty pc) (class color) (background light))
+	 (:foreground "blue4" :bold t))
+	(((type tty pc) (class color) (background dark))
+	 (:foreground "yellow" :bold t))
 	(((class color) (background light))
 	 (:bold t :foreground "blue4" :family "helvetica"))
 	(((class color) (background dark))
 	 (:bold t :foreground "yellow" :family "helvetica"))
 	(t (:bold t :family "helvetica")))
-    '((((type tty pc) (class color)) (:weight bold))
+    '((((type tty pc) (class color) (background light))
+       (:foreground "blue4" :weight bold))
+      (((type tty pc) (class color) (background dark))
+       (:foreground "yellow" :weight bold))
       (((class color) (background light))
        (:weight bold :inherit variable-pitch :foreground "blue4"))
       (((class color) (background dark))
