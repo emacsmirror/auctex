@@ -1,3 +1,38 @@
+2002-12-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-parsed-counters): New variable.
+	(preview-dissect): export counter info.
+	(preview-place-preview): get counter info.
+	(preview-reinstate-preview): resinstate counters also.
+	(preview-default-option-list): add counters option.
+	(preview-string-expand): New function.
+	(preview-expandable-string): New type.
+	(TeX-region-create): Advice for counter restoration.
+	(preview-last-counter): for restoring.
+	(preview-extract-counters): New function.
+	(desktop-buffer-preview-misc-data): Sort stuff when writing and
+	deal with counters.
+	(preview-dissect, preview-buffer-restore-internal) 
+	(preview-place-preview): Deal with counters.
+	(preview-buffer-has-counters): New variable during parsing.
+	(preview-place-preview): Deal with counters.
+	(preview-required-option-list): New option.
+	(preview-make-options, preview-make-preamble): deleted
+	(preview-default-preamble, preview-LaTeX-command): redefine using
+	expandable strings.
+	(LaTeX-preview-setup): Replace entry in TeX-command-list with
+	dummy.
+	(LaTeX-preview-setup): Delete "%D" and "%P" fudges.
+	(preview-parse-counters): New function for parsing counters.
+	(preview-parse-variables): Add preview-parsed-counters to parse
+	list.
+	(preview-parse-messages): deal with counters.
+	(preview-dump-replacements): Add preview-LaTeX-command-replacements
+	(preview-cache-preamble): Don't generate string for
+	TeX-inline-preview, it does so itself.
+	(TeX-inline-preview): Generate command from preview-LaTeX-command
+	(preview-report-bug): Report more variables.
+
 2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): simplify "%m" entry in
