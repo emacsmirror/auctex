@@ -1035,9 +1035,9 @@ An optional fourth (or sixth) element means always replace if t."
 
 (defun ConTeXt-find-indent (&optional virtual)
   "Find the proper indentation of text after point.
-VIRTUAL if non-nil indicates that we're only trying to find the indentation
-	in order to determine the indentation of something else.
-There might be text before point."
+VIRTUAL if non-nil indicates that we're only trying to find the
+indentation in order to determine the indentation of something
+else.  There might be text before point."
   (save-excursion
     (skip-chars-forward " \t")
     (or
@@ -1054,10 +1054,14 @@ There might be text before point."
      ;; Default (maybe an argument)
      (let ((pos (point))
 	   (char (char-after))
-	   ;; Outdent \item if necessary.
-	   (indent (if (looking-at ConTeXt-indent-item-re)
-		       (- ConTeXt-indent-item) 0))
+	   (indent 0)
 	   up-list-pos)
+       ;; Look for macros to be outdented
+       (cond ((looking-at (concat (regexp-quote TeX-esc)
+				  (ConTeXt-environment-stop-name)))
+	      (setq indent (- indent ConTeXt-indent-basic)))
+	     ((looking-at ConTeXt-indent-item-re)
+	      (setq indent (- indent ConTeXt-indent-item))))
        ;; Find the previous point which determines our current indentation.
        (condition-case err
 	   (progn
@@ -1084,10 +1088,17 @@ There might be text before point."
 	((not (and (not virtual) (eq (char-after) ?\\)))
 	 ;; Nothing particular here: just keep the same indentation.
 	 (+ indent (current-column)))
-	;; We're now looking at a macro call.
+	;; We're now looking at an item.
 	((looking-at ConTeXt-indent-item-re)
 	 ;; Indenting relative to an item, have to re-add the outdenting.
 	 (+ indent (current-column) ConTeXt-indent-item))
+	;; We're looking at an environment starter.
+	((and (looking-at (concat (regexp-quote TeX-esc)
+				  (ConTeXt-environment-start-name)))
+	      (not (looking-at (concat (regexp-quote TeX-esc)
+				       (ConTeXt-environment-start-name)
+				       ConTeXt-text)))) ; other environments?
+	 (+ indent (current-column) ConTeXt-indent-basic))
 	(t
 	 (let ((col (current-column)))
 	   (if (not (eq (char-syntax char) ?\())
