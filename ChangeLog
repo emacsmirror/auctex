@@ -1,3 +1,13 @@
+2005-02-16  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (TeX-after-start-process-function): Removed code for
+	XEmacs.  `set-process-coding-system' is available in XEmacs 21.1.
+	(TeX-japanese-process-input-coding-system)
+	(TeX-japanese-process-output-coding-system): Change from defvar to
+	defcustom.  Use `default-process-coding-system'; Old XEmacs
+	doesn't have the variable?
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Simplify.
