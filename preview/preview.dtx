@@ -1,9 +1,29 @@
+%%\iffalse
+%%     preview.dtx for extracting previews from LaTeX documents.  Part of
+%%     the preview-latex package.
+%%     Copyright (C) 2001 David Kastrup
+%%
+%%     This program is free software; you can redistribute it and/or modify
+%%     it under the terms of the GNU General Public License as published by
+%%     the Free Software Foundation; either version 2 of the License, or
+%%     (at your option) any later version.
+%%
+%%     This program is distributed in the hope that it will be useful,
+%%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%     GNU General Public License for more details.
+%%
+%%     You should have received a copy of the GNU General Public License
+%%     along with this program; if not, write to the
+%%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+%%     Boston, MA 02111-1307  USA
+%%\fi
 %\CheckSum{451}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.24 $
+%  \rcskey \version CVS-$Revision: 1.25 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -12,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-11-15 15:26:58 $
+%\rcskey\next $Date: 2001-11-20 13:28:14 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -190,7 +210,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.24 $
+   \reserved@a\reserved@b CVS-$Revision: 1.25 $
 \else
    \begingroup
       \lccode`-=`.
@@ -199,7 +219,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-11-15 15:26:58 $
+\reserved@a\next $Date: 2001-11-20 13:28:14 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
