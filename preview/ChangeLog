@@ -1,3 +1,7 @@
+2002-01-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.spec: Initial version. On the 0.5.8.2 release.
+
 2002-01-22  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): quote created directory name
