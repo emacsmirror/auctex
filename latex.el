@@ -2156,61 +2156,63 @@ comments and lines ending with `\par' are included in filling but
 act as boundaries.  Prefix arg means justify too.  From program,
 pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
-  (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
-      (save-restriction
-	(narrow-to-region from to)
-	(goto-char from)
-	(while (not (eobp))
-	  (if (re-search-forward
-	       (concat "\\("
-		       ;; Code comments.
-		       "[^ \t%\n\r][ \t]*" comment-start-skip
-		       "\\|"
-		       ;; (lines with code comments looking like " {%")
-		       "^[ \t]*[^ \t%\n\r" TeX-esc"]" comment-start
-		       "\\|"
-		       ;; Lines ending with `\par'.
-		       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
-		       (regexp-quote (concat TeX-esc TeX-esc))
-		       "\\)*"
-		       (regexp-quote TeX-esc) "par[ \t]*"
-		       "\\({[ \t]*}\\)?[ \t]*$"
-		       "\\)\\|\\("
-		       ;; Lines ending with `\\'.
-		       (regexp-quote TeX-esc)
-		       (regexp-quote TeX-esc)
-		       "\\(\\s-*\\*\\)?"
-		       "\\(\\s-*\\[[^]]*\\]\\)?"
-		       "\\s-*$\\)")
-	       nil t)
-	      (progn
-		(goto-char (line-end-position))
-		(delete-horizontal-space)
-		;; I doubt very much if we want justify -
-		;; this is a line with \\
-		;; if you think otherwise - uncomment the next line
-		;; (and justify-flag (justify-current-line))
-		(forward-char)
-		;; keep our position in a buffer
-		(save-excursion
-		  ;; Code comments and lines ending with `\par' are
-		  ;; included in filling.  Lines ending with `\\' are
-		  ;; skipped.
-		  (if (match-string 1)
-		      (LaTeX-fill-region-as-para-do from (point) justify-flag)
-		    (LaTeX-fill-region-as-para-do
-		     from (line-beginning-position 0) justify-flag)))
-		(setq from (point)))
-	    ;; ELSE part follows - loop termination relies on a fact
-	    ;; that (LaTeX-fill-region-as-para-do) moves point past
-	    ;; the filled region
-	    (LaTeX-fill-region-as-para-do from (point-max) justify-flag)))
-	;; the following four lines are clearly optional, but I like my
-	;; LaTeX code that way
-	(goto-char (point-min))
-	(while (search-forward "$$ " nil t)
-	  (replace-match "$$\n" t t)
-	  (indent-according-to-mode)))))
+  (if (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+      ;; Filling disabled, only do indentation.
+      (indent-region from to)
+    (save-restriction
+      (narrow-to-region from to)
+      (goto-char from)
+      (while (not (eobp))
+	(if (re-search-forward
+	     (concat "\\("
+		     ;; Code comments.
+		     "[^ \t%\n\r][ \t]*" comment-start-skip
+		     "\\|"
+		     ;; (lines with code comments looking like " {%")
+		     "^[ \t]*[^ \t%\n\r" TeX-esc"]" comment-start
+		     "\\|"
+		     ;; Lines ending with `\par'.
+		     "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
+		     (regexp-quote (concat TeX-esc TeX-esc))
+		     "\\)*"
+		     (regexp-quote TeX-esc) "par[ \t]*"
+		     "\\({[ \t]*}\\)?[ \t]*$"
+		     "\\)\\|\\("
+		     ;; Lines ending with `\\'.
+		     (regexp-quote TeX-esc)
+		     (regexp-quote TeX-esc)
+		     "\\(\\s-*\\*\\)?"
+		     "\\(\\s-*\\[[^]]*\\]\\)?"
+		     "\\s-*$\\)")
+	     nil t)
+	    (progn
+	      (goto-char (line-end-position))
+	      (delete-horizontal-space)
+	      ;; I doubt very much if we want justify -
+	      ;; this is a line with \\
+	      ;; if you think otherwise - uncomment the next line
+	      ;; (and justify-flag (justify-current-line))
+	      (forward-char)
+	      ;; keep our position in a buffer
+	      (save-excursion
+		;; Code comments and lines ending with `\par' are
+		;; included in filling.  Lines ending with `\\' are
+		;; skipped.
+		(if (match-string 1)
+		    (LaTeX-fill-region-as-para-do from (point) justify-flag)
+		  (LaTeX-fill-region-as-para-do
+		   from (line-beginning-position 0) justify-flag)))
+	      (setq from (point)))
+	  ;; ELSE part follows - loop termination relies on a fact
+	  ;; that (LaTeX-fill-region-as-para-do) moves point past
+	  ;; the filled region
+	  (LaTeX-fill-region-as-para-do from (point-max) justify-flag)))
+      ;; the following four lines are clearly optional, but I like my
+      ;; LaTeX code that way
+      (goto-char (point-min))
+      (while (search-forward "$$ " nil t)
+	(replace-match "$$\n" t t)
+	(indent-according-to-mode)))))
 
 ;; The content of `LaTeX-fill-region-as-para-do' was copied from the
 ;; function `fill-region-as-paragraph' in `fill.el' (CVS Emacs,
