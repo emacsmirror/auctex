@@ -62,7 +62,7 @@
      TeX-run-TeX nil (latex-mode) :help "Run ASCII pLaTeX")
     ("Mendex" "mendex %s" TeX-run-command nil t :help "Create index file with mendex")
     ("jBibTeX" "jbibtex %s" TeX-run-BibTeX nil t :help "Run jBibTeX"))
-  "Additional list of commands to execute in `japanese-LaTeX-mode'")
+  "Additional list of commands to execute in `japanese-TeX-mode'.")
 
 (setq TeX-command-list
       (append japanese-TeX-command-list
