@@ -1,5 +1,8 @@
 2002-03-30  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-dtxdoc.pl, preview.dtx (section{Various driver
+	files}): Add \previewlatex macro for consistent translation.
+
 	* doc/preview-dtxdoc.pl: add \% and ~ translations.
 
 	* preview.dtx (section{Package options}): document new option
