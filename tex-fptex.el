@@ -40,21 +40,25 @@
 
 ;; The fpTeX commands.
 (setq TeX-command-list
-  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
-	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex)
-	(list "PDFLaTeX" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex)
-	(list "AmSTeX" "amstex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'amstex)
-	(list "View" "%v" 'TeX-run-command t nil)
-	(list "View PS" "gsview32 %f" 'TeX-run-command t nil)
-	(list "View PDF" "start %t.pdf" 'TeX-run-command t nil)
-	(list "Print" "dvips %d" 'TeX-run-command t nil)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
-	(list "Index" "makeindex %s" 'TeX-run-command nil nil)
-	(list "Check" "lacheck %s" 'TeX-run-compile nil nil)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil nil)
-	(list "Other" "" 'TeX-run-command t nil)))
+  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil
+              (list 'plain-tex-mode))
+	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
+              (list 'latex-mode))
+	(list "PDFLaTeX" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
+              (list 'latex-mode))
+	(list "AmSTeX" "amstex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
+              (list 'ams-tex-mode))
+	(list "View" "%v" 'TeX-run-command t t)
+	(list "View PS" "gsview32 %f" 'TeX-run-command t t)
+	(list "View PDF" "start %t.pdf" 'TeX-run-command t t)
+	(list "Print" "dvips %d" 'TeX-run-command t t)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
+	(list "Index" "makeindex %s" 'TeX-run-command nil t)
+	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	(list "Other" "" 'TeX-run-command t t)))
 
 ;; DVI to source correspondence (stolen from the German magazine c't).
 (setq LaTeX-command-style '(("." "latex --src-specials")))
