@@ -1,5 +1,8 @@
 2004-03-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/dvipng.texi: 
+	* dvipng/misc.c: Change year
+
 	* dvipng/special.c: Revert change, not only resolution but also
 	offset is needed when generating png from ps
 
