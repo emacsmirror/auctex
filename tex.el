@@ -115,7 +115,7 @@ performed as specified in TeX-expand-list."
               (list 'plain-tex-mode))
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
-	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil
+	(list "LaTeX Interactive" "%l \"\\input{%t}\"" 'TeX-run-interactive nil
               (list 'latex-mode 'doctex-mode))
 	;; Not part of standard TeX.
 	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
@@ -535,7 +535,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.334 $"))
+	(rev "$Revision: 5.335 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -550,7 +550,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-14 12:50:30 $"))
+    (let ((date "$Date: 2004-03-14 20:16:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1566,6 +1566,10 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
+
+  ;; Desktop support
+  (if (boundp 'desktop-locals-to-save)
+      (add-to-list 'desktop-locals-to-save 'TeX-master))
 
   ;; Redefine some standard variables
   (make-local-variable 'paragraph-start)
