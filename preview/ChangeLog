@@ -1,5 +1,8 @@
 2001-11-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (section{Provided Commands}): Correct documentation
+	names for \PreviewEnvironment and \PreviewSnarfEnvironment
+
 	* prv-emacs.el (preview-inherited-face-attribute): Add document
 	string, simplify some tests.
 
