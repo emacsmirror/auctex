@@ -1,13 +1,8 @@
 -*- text -*-
-Comment preview.el
-
-Fix temporary subdirectory handling of preview.el
 
 Modularize AucTeX's error message parsing
 so that we do not need to steal code from AucTeX, but can use
 AucTeX's routines directly.  Submit to AucTeX development.
-
-Add customization
 
 x-symbol compatibility
  Error messages from TeX and buffer contents from the file do not agree
