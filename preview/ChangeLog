@@ -1,3 +1,17 @@
+2003-06-12  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/Makefile.in: Fix SunOS make suffix rule wierdness
+
+	* dvipng/color.c: Change comment 
+
+	* dvipng/dvi.c (DVIOpen): bugfix ".dvi" completion
+
+	* dvipng/dvipng.h (PIXROUND): Round down instead of up, SetRule
+	now has its own rounding mechanism
+
+	* dvipng/set.c (SetRule): Refine rule drawing, make sure rule is
+	inside bounding box 
+
 2003-06-10  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/README:
