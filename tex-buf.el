@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.46 1993-09-09 23:49:04 amanda Exp $
+;; $Id: tex-buf.el,v 1.47 1993-09-13 21:25:59 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -48,15 +48,6 @@
 	 "-c"))
   "Shell argument indicating that next argument is the command.")
 
-(defvar TeX-command-BibTeX "BibTeX"
-  "*The name of the BibTeX entry in TeX-command-list.")
-  (make-variable-buffer-local 'TeX-command-BibTeX)
-
-(defvar TeX-command-Show "View"
-  "*The default command to show (view or print) a TeX file.
-Must be the car of an entry in TeX-command-list.")
-  (make-variable-buffer-local 'TeX-command-Show)
-
 (defvar TeX-debug-language '(("JTEX" "dbg-jp")
 			     ("JLATEX" "dbg-jp")
 			     ("JSLITEX" "dbg-jp")
@@ -79,6 +70,17 @@ by the second element.  The first match will be used.")
 ;; IF   last process started was on a region 
 ;; THEN ``the'' process is the region process
 ;; ELSE ``the'' process is the master file (of the current buffer) process
+
+(defun TeX-save-document (name)
+  "Save all files belonging to the current document.
+Return non-nil if document need to be re-TeX'ed."
+  (interactive (list (TeX-master-file)))
+  (if (string-equal name "")
+      (setq name (TeX-master-file)))
+  
+  (TeX-check-files (concat name ".dvi")
+		   (cons name (TeX-style-list))
+		   TeX-file-extensions))
 
 (defun TeX-command-master ()
   "Run command on the current document."
@@ -219,65 +221,43 @@ LIST default to TeX-expand-list."
     (setq list (cdr list)))
   command)
 
-(defun TeX-check-dependency (derived original)
-  "Return non-nil if DERIVED is older than ORIGINAL
-Also check if ORIGINAL is modified in a non-saved buffer."
-  (mapcar (function (lambda (buffer)
-		      (and (equal (expand-file-name original)
-				  (buffer-file-name buffer))
-			   (buffer-modified-p buffer)
-			   (y-or-n-p (concat "Save file "
-					     (buffer-file-name buffer)
-					     "? "))
-			   (save-excursion
-			     (set-buffer buffer)
-			     (save-buffer)))))
-	  (buffer-list))
-  (file-newer-than-file-p original derived))
-
-(defun TeX-dependencies (files extensions)
-  "Return a combined list of FILES with EXTENSIONS in TeX-check-path."
-  (apply 'append
-	 (apply 'append
-		(mapcar
-		 (function
-		  (lambda (x)
-		    (mapcar
-		     (function
-		      (lambda (y)
-			(mapcar
-			 (function
-			  (lambda (z)
-			    (expand-file-name (concat z x "." y))))
-			 TeX-check-path)))
-		     extensions)))
-		 files))))
-
 (defun TeX-check-files (derived originals extensions)
   "Check that DERIVED is newer than any of the ORIGINALS.
 Try each original with each member of EXTENSIONS, in all directories
 in TeX-check-path."
-  (let ((found nil))
-    (mapcar (function (lambda (original)
-			(if (TeX-check-dependency derived original)
-			    (setq found t))))
-	    (TeX-dependencies originals extensions))
+  (let ((found nil)
+	(regexp (concat "\\`\\("
+			(mapconcat (function (lambda (dir)
+				      (regexp-quote (expand-file-name dir))))
+				   TeX-check-path "\\|")
+			"\\)\\("
+			(mapconcat 'regexp-quote originals "\\|")
+			"\\).\\("
+			(mapconcat 'regexp-quote extensions "\\|")
+			"\\)\\'"))
+	(buffers (buffer-list)))
+    (while buffers
+      (let* ((buffer (car buffers))
+	     (name (buffer-file-name buffer)))
+	(setq buffers (cdr buffers))
+	(if (and name (string-match regexp name))
+	    (progn
+	      (and (buffer-modified-p buffer)
+		   (or (not TeX-save-query)
+		       (y-or-n-p (concat "Save file "
+					 (buffer-file-name buffer)
+					 "? ")))
+		   (save-excursion (set-buffer buffer) (save-buffer)))
+	      (if (file-newer-than-file-p name derived)
+		  (setq found t))))))
     found))
+
+(defvar TeX-save-query t
+  "*If non-nil, ask user for permission to save files before starting TeX.")
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (cond ((and (null TeX-check-path)
-			      (or (and (buffer-modified-p)
-				       (y-or-n-p (concat "Save file "
-							 (buffer-file-name)
-							 "? "))
-				       (progn (save-buffer) t))
-				  (file-newer-than-file-p
-				   (buffer-file-name) (concat name ".dvi"))))
-			 TeX-command-default)
-			((TeX-check-files (concat name ".dvi")
-					  (TeX-style-list)
-					  TeX-file-extensions)
+  (let* ((default (cond ((TeX-save-document)
 			 TeX-command-default)
 			((TeX-check-files (concat name ".bbl")
 					  (mapcar 'car
@@ -629,10 +609,10 @@ command."
   "Filter to process normal output."
   (save-excursion
     (set-buffer (process-buffer process))
-    (goto-char (point-max))
-    (insert string)
-    (save-excursion)
-    ))
+    (save-excursion
+      (goto-char (process-mark proc))
+      (insert-before-markers string)
+      (set-marker (process-mark proc) (point)))))
 
 (defvar TeX-current-page nil
   "The page number currently being formatted, enclosed in brackets.")
@@ -649,8 +629,10 @@ command."
   "Filter to process TeX output."
   (save-excursion
     (set-buffer (process-buffer process))
-    (goto-char (point-max))
-    (insert string)
+    (save-excursion
+      (goto-char (process-mark proc))
+      (insert-before-markers string)
+      (set-marker (process-mark proc) (point))) 
     (save-excursion 
       (if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
 	  (let ((new (TeX-match-buffer 0)))
@@ -667,8 +649,10 @@ command."
   (let ((old-window (selected-window))
 	(pop-up-windows t))
     (pop-to-buffer "*TeX background*")
-    (goto-char (point-max))
-    (insert string)
+    (save-excursion
+      (goto-char (process-mark proc))
+      (insert-before-markers string)
+      (set-marker (process-mark proc) (point)))
     (select-window old-window)))
 
 

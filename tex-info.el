@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.2 1993-09-06 22:27:27 amanda Exp $
+;; $Id: tex-info.el,v 5.3 1993-09-13 21:26:02 amanda Exp $
 
 ;; Copyright (C) 1993 Per Abrahamsen 
 ;; 
@@ -222,8 +222,9 @@ When called interactively, prompt for an environment."
 	      ["Sample"    (TeX-font t ?\C-s) "  C-u C-c C-f C-s"]
 	      ["Roman"      (TeX-font t ?\C-r) "  C-u C-c C-f C-r"])
 	"-"
-	(TeX-command-menu "Command on Master File" 'TeX-master-file)
-	(TeX-command-menu "Command on Region" 'TeX-region-file)
+	["Save Document" TeX-save-document t]
+	(TeX-command-create-menu "Command on Master File" 'TeX-master-file)
+	(TeX-command-create-menu "Command on Region" 'TeX-region-file)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]

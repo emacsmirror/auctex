@@ -33,11 +33,16 @@ You may want to disable the automatic byte compilation by setting
 
 in your .emacs file.
 
-* Applying style hooks... is too slow.
+* None if this completion or multifile stuff works...
 
-Set the variable TeX-auto-global to nil.  You will then not get
-macro expansion for all macros, but AUC TeX will still expand the
-standard LaTeX macros.
+It must be enabled first, insert this in your emacs:
+
+	(setq-default TeX-master nil)
+	(setq TeX-parse-self t)
+	(setq TeX-auto-save t)
+
+Read also the chapters about parsing and multifile documents in the
+manual.  
 
 * When I save `foo.bib' AUC TeX forgets the information in `foo.tex'.
 

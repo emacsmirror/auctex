@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.57 1993-09-09 23:49:32 amanda Exp $
+@c $Id: auc-tex.texi,v 1.58 1993-09-13 21:26:22 amanda Exp $
 
 @finalout
 @titlepage
@@ -1177,21 +1177,13 @@ formatted text near the end of the file.
 @end example
 
 AUC @TeX{} will try to save any buffers related to the document, and
-check if the document needs to be reformatted.  By default it will only
-check the current buffer, but if you set the variable
-@code{TeX-check-path} it will check buffers associated with files used
-in the document, located in the directories in @code{TeX-check-path}.
-Suggested values are
-
-@lisp
-(setq TeX-check-path '("./"))
-@end lisp
-
-or 
-
-@lisp
-(setq TeX-check-path (append '("./") TeX-macro-private))
-@end lisp
+check if the document needs to be reformatted.  If the variable
+@code{TeX-save-query} is non-nil, AUC @TeX{} will query before saving
+each file.  By default AUC @TeX{} will check emacs buffers associated
+with files in the current directory, in one of the
+@code{TeX-macro-private} directories, and in the @code{TeX-macro-global}
+directories.  You can change this by setting the variable
+@code{TeX-check-path}.@refill
 
 @defopt TeX-check-path
 Directory path to search for dependencies.
@@ -1404,6 +1396,17 @@ You must create the @file{auto} directory manually for this to work.  If
 you don't do this, the other files in the document will not know
 anything about each other, except for the name of the master file.
 @xref{Automatic Local}.
+
+@deffn Command TeX-save-document
+@kindex C-c C-d
+(@kbd{C-c C-d}) Save all buffers known to belong to the current documnt.
+@end deffn
+
+@defopt TeX-save-query
+If non-nil, query the user before saving each file with
+@code{TeX-save-document}. 
+@end defopt
+
 
 @node Parsing Files, Japanese, Multifile, top
 @chapter Automatic Parsing of @TeX{} files.
@@ -2385,6 +2388,36 @@ Alpha testers (in order of appearance): Marc Gemis
 @samp{<koba@@flab.fujitsu.co.jp>}.@refill
 
 @itemize @bullet
+@item
+The external commands will now insert there output @emph{before} point
+in the output buffers.  This allows you to follow the progress by
+putting point at the end of the file.  Suggested by Jak Kirman
+@samp{<jak@@cs.brown.edu>}.
+
+@item
+When invoking an external command from a menu, the document will be
+automatically saved. 
+
+@item
+There are now a printer menu for emacs 19.
+
+@item
+Redesigned dependecy checking.  Now only checks dependencies for files
+loaded in the current emacs session.  This is much faster, but will not
+catch files that are edited outside this emacs session, or files edited
+in killed buffers.
+
+@item
+New variable @code{TeX-save-query} control if AUC @TeX{} will query you
+for each modified buffer when you save the document.  Set it to nil to
+get rid of these questions.  Setting this variable also affect the
+automatic saving of the document that happens each time you start an
+external command.
+
+@item
+New command @code{TeX-save-document} will save all files in the current
+document, i.e. the document associated with the current buffer.
+
 @item 
 Cleaned up all minor modes, also made them use @file{min-map.el} or
 @file{min-mode.el} instead of @file{min-bind.el}.
@@ -2443,16 +2476,14 @@ untabifying the buffer when it is saved.  Several people wanted this.
 
 @item
 Changed defaults to @emph{not} do any automatic parsing, nor prompt for
-a master file or check for dependencies.  @xref{Parsing Files},
-@ref{Multifile}, and @ref{Formatting} for information about how ot
-correct this.  In short, insert the following in your @file{.emacs}
-file.
+a master file.  @xref{Parsing Files}, @ref{Multifile}, for information
+about how ot correct this.  In short, insert the following in your
+@file{.emacs} file.
 
 @lisp
-(setq TeX-check-path '("./"))
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
-(setq TeX-master nil)
+(setq-default TeX-master nil)
 @end lisp
 
 @item

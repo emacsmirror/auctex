@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.66 1993-09-09 23:48:44 amanda Exp $
+# $Id: Makefile,v 5.67 1993-09-13 21:25:35 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -90,18 +90,20 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = outline.v18
+REMOVE = none
 
-MINMAPSRC = min-map.el  remap.el    map-euro.el dvorak.el   map-tex.el \
-	    min-ind.el	min-ispl.el column.el   outln-18.el easymenu.el \
-	    ltx-math.el 
+MINMAPFILES = remap.el    map-euro.el dvorak.el   map-tex.el \
+	      map-mnem.el map-8859.el \
+	      min-mode.el min-ind.el  min-ispl.el column.el   
 
-MINMAPFILES = $(MINMAPSRC)
+MINMAPSRC = $(MINMAPFILES)  easymenu.el min-map.el ltx-math.el \
+	    outln-18.el
 
-AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
-	 tex-auto.el  tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el  tex-info.el \
-	 loaddefs.el  tex-18.el   tex-19.el   tex-lcd.el
+AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
+	 tex-auto.el tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
+	 ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el easymenu.el \
+	 loaddefs.el tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
+	 outln-18.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
@@ -119,7 +121,7 @@ STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 	       lacheck/test.tex
 
-LACHECKGEN = lacheck.c lacheck.1 test.old
+LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex doc/math-ref.tex
 
@@ -261,7 +263,7 @@ dist:
 	echo "(provide 'auc-ver)"	           >> auc-ver.el
 	emacs -batch -f batch-update-autoloads .
 	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) $(EXTRAFILES) 
+	-cvs add $(AUCSRC) $(EXTRAFILES) $(MINMAPFILES) 
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
@@ -280,5 +282,8 @@ dist:
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) auc-info; cp auc-info* ../auctex-$(TAG)/doc )
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-	tar -cf - auctex-$(TAG)  | gzip > $(FTPDIR)/auctex-$(TAG).tar.gz
+	rm -f $(FTPDIR)/auctex.tar.Z
+	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
+	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex-$(TAG).tar.Z
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
+	cp $(MINMAPSRC) $(FTPDIR) 
