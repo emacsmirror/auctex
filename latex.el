@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.20 1994-06-03 21:33:43 amanda Exp $
+;; Version: $Id: latex.el,v 5.21 1994-06-07 01:47:04 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1731,19 +1731,23 @@ The point is supposed to be at the beginning of the current line."
 
 (defun LaTeX-menu-update ()
   ;; Update entries on AUC TeX menu.
-  (or (eq major-mode 'latex-mode)
+  (or (not (eq major-mode 'latex-mode))
       (null LaTeX-menu-changed)
       (not (fboundp 'easy-menu-change))
       (progn
 	(TeX-update-style)
 	(setq LaTeX-menu-changed nil)
+	(message "Updating section menu...")
 	(mapcar 'LaTeX-section-enable LaTeX-section-list)
+	(message "Updating environment menu...")
+	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
+			  (mapcar 'LaTeX-environment-menu-entry
+				  (LaTeX-environment-list)))
+	(message "Updating modify environment menu...")
 	(easy-menu-change '("LaTeX") LaTeX-environment-modify-menu-name
 			  (mapcar 'LaTeX-environment-modify-menu-entry
 				  (LaTeX-environment-list)))
-	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
-			  (mapcar 'LaTeX-environment-menu-entry
-				  (LaTeX-environment-list))))))
+	(message "Updating...done"))))
 
 (add-hook 'activate-menubar-hook 'LaTeX-menu-update)
 
