@@ -1,3 +1,8 @@
+2002-04-20  Nix  <nix@esperi.demon.co.uk>
+
+	* preview.el (preview-auto-reveal-p): Handle self-quoting
+	symbols (t and nil, principally).
+
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/install.texi (Configure): typo --with-texmf corrected.
@@ -39,6 +44,7 @@
 	problems section.
 
 2002-04-18  David Kastrup  <David.Kastrup@t-online.de>
+
 	* preview.el (preview-dsc-parse): Newly written for better error
 	messages and more acribic adherence to DSC conventions.
 
