@@ -1,7 +1,22 @@
 2004-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (TEX_INPUT_DIRS): Don't use `findtexmf' but a
+	universal call of `kpsewhich' and unify paths separated by `;'
+	or `:'.
+
+	* context.el (ConTeXt-mode-menu): Show `TeX-comment-or-uncomment-*'
+	functions in the menu instead of the comment and uncomment
+	functions which don't have a key binding.
+
+	* tex.el (plain-TeX-mode-menu): Ditto.
+	(TeX-mode-map): Move definitions of `C-c ;' and `C-c %' downwards
+	so that they become visible in the menu.
+
 	* latex.el (LaTeX-fill-region-as-para-do): Remove extra spaces
 	between words.
+	(LaTeX-mode-menu): Show `TeX-comment-or-uncomment-*'
+	functions in the menu instead of the comment and uncomment
+	functions which don't have a key binding.
 
 2004-05-11  David Kastrup  <dak@gnu.org>
 
