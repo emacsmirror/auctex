@@ -10,6 +10,10 @@ EMACS_CHECK_MULE
 EMACS_PATH_PACKAGEDIR([tex-site],[auctex])
 EMACS_PATH_LISPDIR([tex-site])
 
+auctexdir=${lispdir}/auctex
+AC_FULL_EXPAND(auctexdir)
+AC_SUBST(auctexdir)
+
 if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info' ; then
    infodir='${packagedir}/info'
 fi
@@ -24,6 +28,7 @@ AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(lispdir)
+AC_SHELL_QUOTIFY(auctexdir)
 AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(datadir)
 AC_SHELL_QUOTIFY(EMACS)
@@ -31,7 +36,7 @@ AC_SHELL_QUOTIFY(INSTALL_INFO)
 AC_SHELL_QUOTIFY(MAKEINFO)
 AC_SHELL_QUOTIFY(TEX)
 
-AC_OUTPUT(Makefile doc/Makefile)
+AC_OUTPUT(Makefile tex-site.el doc/Makefile)
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.

@@ -101,8 +101,7 @@ install-el:
 	    mv $(lispdir)/tex-site.el $(lispdir)/texsite.el.save ; \
 	   fi; \
 	fi; \
-	sed -e 's#@AUCDIR#$(auctexdir)/#' tex-site.el \
-	  > $(lispdir)/tex-site.el
+	$(INSTALL_DATA) tex-site.el $(lispdir)
 	-$(MKINSTALLDIRS) $(auctexdir)
 	for x in $(AUCSRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
