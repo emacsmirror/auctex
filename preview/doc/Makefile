@@ -6,9 +6,10 @@ all: preview-latex.dvi preview-latex
 
 dist: preview-latex INSTALL README preview-latex_toc.html preview-latex.ps
 
-preview-latex_toc.html: preview-latex.texi install.texi readme.texi \
+preview-latex.html: preview-latex.texi install.texi readme.texi \
 	copying.texi problems.texi
-	texi2html -split_node preview-latex.texi
+	texi2html -split_chapter preview-latex.texi
+	# Small manual: use 'makeinfo --html' ????
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
 	problems.texi
@@ -27,7 +28,7 @@ INSTALL: install.texi
 	-makeinfo --no-headers --no-validate install.texi --output INSTALL
 
 README: readme.texi
-	-makeinfo --no-headers readme.texi --output README
+	-makeinfo --no-headers --no-validate readme.texi --output README
 
 PROBLEMS: problems.texi
 	-makeinfo --no-headers --no-validate problems.texi --output PROBLEMS
@@ -42,7 +43,8 @@ install: preview-latex
 	# install-info should be used.
 
 clean: 
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README PROBLEMS ChangeLog
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README PROBLEMS
+
 
 
 
