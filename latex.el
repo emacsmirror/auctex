@@ -4689,7 +4689,9 @@ runs the hooks in `doctex-mode-hook'."
      viewport trim
      ;; Table 3 in epslatex.ps: ``Boolean Options''
      ;; [not implemented:] noclip draft final
-     clip keepaspectratio))
+     clip keepaspectratio
+     ;; Only for PDF:
+     page))
   "Controls for which optional arguments of \\includegraphics you get prompted.
 
 An alist, consisting of \(NUMBER . LIST\) pairs.  Valid elements of LIST are

@@ -103,7 +103,11 @@ The extent of the optional arguments is determined by the prefix argument and
 	    (cdr (assq 0 LaTeX-includegraphics-options-alist)))
 	   (t
 	    (cdr (assq 0 LaTeX-includegraphics-options-alist)))))
-	 ;; Options from Table 1:
+	 ;; Order the optional aruments like in the tables in epslatex.ps,
+	 ;; page 14.  But collect y-or-n options at the end, so that the use
+	 ;; can skip some options by typing `RET RET ... RET n n n ... n'
+	 ;;
+	 ;; Options from Table 1 (epslatex.ps, page 14):
 	 (totalheight
 	  (TeX-arg-maybe
 	   'totalheight incl-opts
@@ -140,6 +144,10 @@ The extent of the optional arguments is determined by the prefix argument and
 	     (concat
 	      "Origin (any combination of `lcr' (horizontal) "
 	      "and `tcbB' (vertical)): "))))
+	 (page ;; Not in any table; Only for PDF.
+	  (TeX-arg-maybe
+	   'page incl-opts
+	   '(read-input "Page: ")))
 	 (bb
 	  (TeX-arg-maybe
 	   'bb incl-opts
@@ -154,7 +162,7 @@ The extent of the optional arguments is determined by the prefix argument and
 	   'trim incl-opts
 	   '(and (not viewport)
 		 (y-or-n-p "Set trim? "))))
-	 ;; Table 2:
+	 ;; Table 3:
 	 (clip
 	  (TeX-arg-maybe
 	   'clip incl-opts
@@ -250,6 +258,11 @@ The extent of the optional arguments is determined by the prefix argument and
       (setq maybe-left-brace ""))
     (when keepaspectratio
       (insert maybe-left-brace maybe-comma "keepaspectratio")
+      (setq maybe-comma ",")
+      (setq maybe-left-brace ""))
+    ;;
+    (when (not (zerop (length page)))
+      (insert maybe-left-brace maybe-comma "page=" page)
       (setq maybe-comma ",")
       (setq maybe-left-brace ""))
     ;;

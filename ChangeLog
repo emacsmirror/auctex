@@ -1,3 +1,9 @@
+2004-11-29  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/graphicx.el (LaTeX-arg-includegraphics): Add "page".
+
+	* latex.el (LaTeX-includegraphics-options-alist): Ditto.
+
 2004-11-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi: Use "auctex.info" instead of "auctex" as info
