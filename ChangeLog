@@ -1,5 +1,11 @@
 1999-03-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
+	* Version 9.10d released.
+
+1999-03-29  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/changes.texi: Added extra `@'.
+
 	* Version 9.10c released.
 
 1999-03-19  Carsten Dominik  <dominik@strw.leidenuniv.nl>
