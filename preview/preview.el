@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.109 2002-04-13 02:04:04 dakas Exp $
+;; $Id: preview.el,v 1.110 2002-04-13 12:49:05 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -935,6 +935,7 @@ environments is selected."
   "Search for the next interesting border for `preview-at-point'.
 Searches backwards if BACKWARDS is non-nil."
   (let (history preview-state (pt (point)))
+    (catch 'exit
       (while
 	  (null
 	   (memq
@@ -944,15 +945,15 @@ Searches backwards if BACKWARDS is non-nil."
 				   (previous-single-char-property-change
 				    pt 'preview-state)) (point-min))
 			  (get-char-property (1- pt) 'preview-state)
-			'active)
+			(throw 'exit (or history (point-min))))
 		    (if (< (setq pt
 				 (next-single-char-property-change
 				  pt 'preview-state)) (point-max))
 			(get-char-property pt 'preview-state)
-		      'active)))
+		      (throw 'exit (or history (point-max))))))
 	    '(active inactive)))
 	(setq history (and (not preview-state) pt)))
-      (or history pt)))
+      (or history pt))))
 	     
 (defun preview-at-point ()
   "Do the appropriate preview thing at point.
@@ -964,7 +965,8 @@ previews occur before, in which case the area will include the last
 such preview."
   (interactive)
   (catch 'exit
-    (dolist (ovr (overlays-at (point)))
+    (dolist (ovr (overlays-in (max (point-min) (1- (point)))
+			      (min (point-max) (1+ (point)))))
       (let ((preview-state (overlay-get ovr 'preview-state)))
 	(when preview-state
 	  (if (eq preview-state 'disabled)
@@ -1809,7 +1811,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.109 $"))
+	(rev "$Revision: 1.110 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
