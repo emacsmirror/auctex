@@ -1,5 +1,8 @@
 2004-08-10  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-PDF-mode): Set `TeX-output-extension' too.
+	(ams-tex-mode): Move `TeX-set-mode-name' after running hooks.
+
 	* tex-ref.tex: merge math-ref.tex, update a few things, format
 	stuff.
 

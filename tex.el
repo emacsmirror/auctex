@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.421 $"))
+	(rev "$Revision: 5.422 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 18:06:33 $"))
+    (let ((date "$Date: 2004-08-10 20:57:47 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -926,7 +926,9 @@ See `TeX-global-PDF-mode' for toggling the default value."
     (if TeX-PDF-mode-parsed
 	(setq TeX-PDF-mode-parsed nil))
     (setq TeX-PDF-mode arg))
-  (TeX-set-mode-name 'TeX-PDF-mode t t)
+  (TeX-set-mode-name nil nil t)
+  (setq TeX-output-extension
+	(if TeX-PDF-mode "pdf" "dvi"))
   TeX-PDF-mode)
 (defalias 'tex-pdf-mode 'TeX-PDF-mode)
 
@@ -3274,10 +3276,10 @@ of `AmS-TeX-mode-hook'."
   (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
 
   (setq TeX-base-mode-name "AmS-TeX")
-  (TeX-set-mode-name)
   (setq major-mode 'ams-tex-mode)
   (setq TeX-command-default "AmSTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
+  (TeX-set-mode-name))
 
 
 ;;; Comments
