@@ -3068,12 +3068,10 @@ of `LaTeX-mode-hook'."
   (setq TeX-command-default "LaTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
-  ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
-  (and (boundp 'filladapt-function-table)
-       (boundp 'auto-fill-function)
-       (eq auto-fill-function 'do-auto-fill)
-       (setq auto-fill-function
-	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))
+  ;; Defeat filladapt
+  (if (and (boundp 'filladapt-mode)
+	   filladapt-mode)
+      (turn-off-filladapt-mode)))
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)

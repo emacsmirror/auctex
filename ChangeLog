@@ -1,3 +1,8 @@
+2003-08-02  Mike Sperber  <mike@xemacs.org>
+
+	* latex.el (latex-mode): Really turn off filladapt.  It just
+	doesn't work with `LaTeX-fill-paragraph'.
+
 2003-12-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (tex-mode): Let `TeX-master-file' be called upon opening
