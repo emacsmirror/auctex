@@ -48,15 +48,12 @@ their definitions from @file{tex.el} to @file{tex-site.el} and change
 them there.  This way, when you upgrade AUC @TeX{} you can keep the old
 @file{tex-site.el} file so you don't need to customize it again.
 
-Now copy @file{tex-site.el} to somewhere where emacs can find it.  For
-FSF Emacs 19 the best place is in the @file{.../emacs/site-lisp/}
-directory.  For Lucid Emacs and Emacs 18 you can copy it to the
-@file{.../emacs/lisp/} directory, just remember to move the file when
-you install a new version of Emacs.
-
-Alternatively, you can insert the code from @file{tex-site.el} directly
-into your @file{.emacs} or @file{site-start.el} file, if you want to
-save the overhead of opening another file.
+Now copy @file{tex-site.el} to somewhere where emacs can find it, the
+best place is in the @file{.../emacs/site-lisp/} which is automatically
+searched in newer emacsen.  Alternatively, you can insert the code from
+@file{tex-site.el} directly into your @file{.emacs} or
+@file{site-start.el} file, if you want to save the overhead of opening
+another file.
 
 Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
 paths for installation of the files.  Be sure that
@@ -101,7 +98,7 @@ Now, tell the users to insert
         (require 'tex-site)
 @end lisp
 in their @file{.emacs} files if they want to use AUC @TeX{}.  If you use
-FSF Emacs 19, you can do this for them by inserting the above line in
+a modern emacs, you can do this for them by inserting the above line in
 the @file{.../emacs/site-lisp/site-start.el} file.
 
 To extract information from your sites @TeX{} macros, type @kbd{M-x

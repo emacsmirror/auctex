@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.27 1994-08-16 23:57:42 amanda Exp $
+;; Version: $Id: latex.el,v 5.28 1994-08-20 05:44:02 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1067,11 +1067,17 @@ Used for specifying extra syntax for a macro."
 
 (defun TeX-arg-cite (optional &optional prompt definition)
   "Prompt for a BibTeX citation with completion."
-  (let ((bibitem (completing-read (TeX-argument-prompt optional prompt "Key")
-				(LaTeX-bibitem-list))))
-    (if (and definition (not (string-equal "" bibitem)))
-	(LaTeX-add-bibitems bibitem))
-    (TeX-argument-insert bibitem optional optional)))
+  (setq prompt (concat (if optional "(Optional) " "")
+		       (if prompt prompt "Add key")
+		       ": (default none) "))
+  (let (string bibitem)
+    (while (not (member (setq bibitem (completing-read prompt
+						       (LaTeX-bibitem-list)))
+			'("" "*")))
+      (LaTeX-add-bibitems bibitem)
+      (setq string (if string (concat string "," bibitem) bibitem)))
+    (if (equal bibitem "*") (setq string bibitem))
+    (TeX-argument-insert (or string "") optional optional)))
 
 (defun TeX-arg-counter (optional &optional prompt definition)
   "Prompt for a LaTeX counter."
@@ -1966,10 +1972,10 @@ of LaTeX-mode-hook."
 	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
 		   1 LaTeX-bibitem-list "}")
 		  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]\\)"
+		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
 		   2 LaTeX-bibitem-list)
 		  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]\\)"
+		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
 		   2 LaTeX-bibitem-list)
 		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")

@@ -1,3 +1,23 @@
+Fri Aug 19 14:59:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* doc/install.texi: The `site-lisp' directory is also available in
+	Lucide Emacs 19.10.  Reported by Tim Geisler
+	<geisler@pms.informatik.uni-muenchen.de>.
+
+Thu Aug 18 06:56:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* latex.el (TeX-arg-cite): Prompt for multiple keys.  Suggested by
+	Masahiro Kitagawa <kitagawa@ee.es.osaka-u.ac.jp>.
+
+Wed Aug 17 14:00:16 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* style/german.el ("german"): Use `TeX-quote-after-quote'.
+	Suggested by te@informatik.uni-hannover.de (Thomas Esser).
+
+	* latex.el (LaTeX-common-initialization): Error in regexp for
+	multiple arguments to `\cite', reported by Masahiro Kitagawa
+	<kitagawa@ee.es.osaka-u.ac.jp>.
+
 Wed Aug 17 01:24:55 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-env-figure): Put caption inside center
