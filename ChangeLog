@@ -1,3 +1,33 @@
+2004-05-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-expand-list): Inserted new expander `%S' for source
+	specials command line option.
+	(TeX-command-list): Inserted `%S' for source specials support
+	where appropriate.
+	(LaTeX-command-style): Ditto.
+	(TeX-source-specials-expand-options): New function.
+
+	* tex-buf.el: Updated header.
+	(TeX-style-check): Remove code specific to source specials and
+	thereby revert to state before 2004-04-27.
+
+	* tex-jp.el: Updated header.
+	(japanese-TeX-command-list): Inserted `%S' for source specials
+	support where appropriate.
+
+	* tex-fptex.el: Updated header.
+	(TeX-command-list): Inserted `%S' for source specials support
+	where appropriate.
+	(LaTeX-command-style): Setting removed.
+
+	* tex-mik.el: Updated header.
+	(TeX-command-list): Inserted `%S' for source specials support
+	where appropriate.
+	(LaTeX-command-style): Setting removed.
+
+	* doc/auc-tex.texi (Checking): Updated URL's for lacheck and
+	chktex.
+
 2004-05-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el: Header updated.
