@@ -9,11 +9,11 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-12 22:11:04 $|$Revision: 5.24 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-12 22:56:24 $|$Revision: 5.25 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.24 1992-03-12 22:11:04 krab Exp $
+;; $Id: auc-tex.el,v 5.25 1992-03-12 22:56:24 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
@@ -304,6 +304,21 @@ and in the TeX-compilation."
 ;; TeX / LaTeX modes
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;
+;; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support automatic mode
+;; change after using insert-mode-line hook. Also modified regexp to choose
+;; tex mode to be more aware of latex (documentstyle is uniq, isn'it)
+;;
+(defun auc-latex-mode ()
+  "Called when we have a mode line specification in first line."
+  (interactive)
+  (latex-mode))
+
+(defun auc-tex-mode ()
+  "Called when we have a mode line specification in first line."
+  (interactive)
+  (plain-tex-mode))
+
 (defun tex-mode ()
   "Major mode for editing files of input for TeX or LaTeX.
 Tries to intuit whether this file is for plain TeX or LaTeX and
@@ -586,6 +601,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'TeX-h2)
   (make-local-variable 'TeX-t1)
   (make-local-variable 'TeX-t2)
+  (make-local-variable 'TeX-zap-file)	;marsj@ida. To enable multiple dvi files.
   (setq TeX-esc "\\")
   (setq TeX-grop "{")
   (setq TeX-grcl "}")

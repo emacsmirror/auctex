@@ -1,5 +1,5 @@
 
-$Id: README,v 5.12 1992-03-12 22:11:28 krab Exp $
+$Id: README,v 5.13 1992-03-12 22:56:22 krab Exp $
 
 AUC TeX 
 =======
@@ -55,6 +55,8 @@ when you load a file width suffix `.tex'.
 (autoload 'tex-mode "auc-tex" "Automatic select TeX or LaTeX mode" t)
 (autoload 'plain-tex-mode "auc-tex" "Mode for Plain TeX" t)
 (autoload 'latex-mode "auc-tex" "Mode for LaTeX" t)
+(autoload 'LaTeX-math-mode    "tex-math"      "Math mode for TeX." t)
+(autoload 'outline-minor-mode "outline-minor" "Minor Outline Mode." t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,11 +114,6 @@ or site-setup file. This is what I use:
 (setq LaTeX-default-style-options "a4,12pt,dk")
 (setq LaTeX-float "hbtp")
 
-(setq TeX-mode-hook  ;; NB: invoking (la)tex-mode also runs text-mode-hook
-      '(lambda ()
-         (dansk-double-mode 1)))
-
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

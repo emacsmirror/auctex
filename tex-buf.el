@@ -6,7 +6,7 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.9 1992-03-12 22:11:11 krab Exp $
+;; $Id: tex-buf.el,v 1.10 1992-03-12 22:56:28 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
@@ -167,9 +167,14 @@ before the file is sent to TeX. Used by \\[TeX-region].")
   "Directory in which to run TeX subjob.  Temporary files are
 created in this directory. Should always be \".\"")
 
-(defvar TeX-zap-file nil
-  "Temporary file name used for text being sent as input to TeX.
-Should be a simple file name with no extension or directory specification.")
+;; Mon Mar  9 20:41:52 1992
+;; marsj@ida.liu.se
+;; - create local variable, to enable multiple dvips files.
+;;
+;;(defvar TeX-zap-file nil
+;;  "Temporary file name used for text being sent as input to TeX.
+;;Should be a simple file name with no extension or directory specification.")
+;;
 
 (defun TeX-region (beg end)
   "Run TeX on the current region.  A temporary file (TeX-zap-file) is
