@@ -65,52 +65,48 @@ This package contains the lisp modules for XEmacs 21.4 or higher.
 %endif
 
 %prep
-%setup -q
+%setup -c -q
 
-%build
-# The below will make the package build from a tar straight from CVS
-# NOT RECOMMENDED, but useful for testing!
-# Actually, when building, you should get your stuff via
-# cvs export
-# and you won't get those pesky CVS directories.
-#./autogen.sh; rm -r patches/CVS # Simplifies the files section
-
-mkdir -p %{buildroot}%{_datadir}/texmf
-%configure 
-make texmf docs
 %if %{HAVE_EMACS}
-  mkdir emacs-build
-  pushd emacs-build
-  ln -s ../* .
-  %configure --with-emacs 
-  make elisp
+  mkdir emacs
+  pushd emacs
+  ln -sf ../%{name}-%{version}/* .
   popd
 %endif
+
 %if %{HAVE_XEMACS}
-  %configure --with-xemacs
-  make elisp
+  mkdir xemacs
+  pushd xemacs
+  ln -sf ../%{name}-%{version}/* .
+  popd
 %endif
+
+%build
+for i in *emacs; do
+  pushd $i
+  # The below will make the package build from a tar straight from CVS
+  # NOT RECOMMENDED, but useful for testing!
+  test -f ./configure || ./autogen.sh
+  %configure --with-$i
+  make
+  popd
+done
 
 %install 
 rm -rf %{buildroot}
-install -d %{buildroot}%{_infodir}
-make prefix=%{buildroot}%{_prefix} infodir=%{buildroot}%{_infodir} \
-  texmfdir=%{buildroot}%{_datadir}/texmf \
-  install-docs install-texmf
+for i in *emacs; do
+  pushd $i
+  %makeinstall texmfdir=%{buildroot}%{_datadir}/texmf 
+  popd
+done
+
+# Remains to be put in the Makefile
 %if %{HAVE_EMACS}
-  pushd emacs-build
-  make prefix=%{buildroot}%{_prefix} install-el install-icons
+  pushd emacs
   mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   install -c -m 644 preview-latex.el \
     %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   popd
-%endif
-%if %{HAVE_XEMACS}
-  make prefix=%{buildroot}%{_prefix} install-el install-icons
-  install -d \
-    %{buildroot}%{_libdir}/xemacs/site-packages/lisp/site-start.d
-  install -c -m 644 preview-latex.el \
-    %{buildroot}%{_libdir}/xemacs/site-packages/lisp/site-start.d
 %endif
 
 %clean
@@ -130,11 +126,19 @@ install-info --info-dir=%{_infodir} --delete \
 %{_datadir}/texmf/tex/latex/preview/*.sty
 %{_datadir}/texmf/tex/latex/preview/*.def
 %config %{_datadir}/texmf/tex/latex/preview/*.cfg
-%{_datadir}/texmf/doc/latex/styles/preview.dvi
-%{_infodir}/preview-latex.info.gz
-%doc ChangeLog circ.tex COPYING INSTALL PROBLEMS README
-%doc README-preview RELEASE TODO doc/preview-latex.dvi
-%doc patches
+%doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
+%doc %{_infodir}/preview-latex.info.gz
+%doc %{name}-%{version}/ChangeLog
+%doc %{name}-%{version}/circ.tex
+%doc %{name}-%{version}/COPYING
+%doc %{name}-%{version}/INSTALL
+%doc %{name}-%{version}/PROBLEMS
+%doc %{name}-%{version}/README
+%doc %{name}-%{version}/latex/README-preview
+%doc %{name}-%{version}/RELEASE
+%doc %{name}-%{version}/TODO
+%doc %{name}-%{version}/doc/preview-latex.dvi
+%doc %{name}-%{version}/patches
 
 %if %{HAVE_EMACS}
 %files emacs
@@ -151,6 +155,9 @@ install-info --info-dir=%{_infodir} --delete \
 %endif
 
 %changelog
+* Wed Apr 10 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+- Triple-rpm simplifications
+
 * Sun Mar 31 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Prepare for 0.7, initial triple rpm attempt
 
