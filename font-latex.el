@@ -145,20 +145,13 @@ Also selects \"<quote\"> versus \">quote\"<."
 	   (face-name (intern (concat "font-latex-title-" (number-to-string num)
 				      "-face"))))
       (if (featurep 'xemacs)
-	  (let* ((base-size (font-size (font-create-object
-					(face-font-name 'default))))
-		 (base-size-num (cond ((numberp base-size)
-				       base-size)
-				      ((stringp base-size)
-				       (string-to-number
-					(progn
-					  (string-match "^[0-9]+" base-size)
-					  (match-string 0 base-size))))
-				      (t (face-height 'default))))
-		 (size (concat
-			(number-to-string
-			 (round (* base-size-num (expt 1.2 (- 3 i)))))
-			"pt")))
+	  (let ((size (concat
+		       (number-to-string
+			;; Multiply with .9 because `face-height' returns a
+			;; value slightly larger than the actual font size.
+			(round (* .9 (face-height 'default)
+				  (expt 1.2 (- 3 i)))))
+		       "pt")))
 	    (eval `(defface ,face-name
 		     '((((type tty pc) (class color) (background light))
 			(:foreground "blue4" :bold t))
