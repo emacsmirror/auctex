@@ -1,4 +1,6 @@
-2004-01-12  Jan-Åke Larsson  <jalar@mai.liu.se>
+2004-01-12  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* RELEASE: Prepare for 0.9
 
 	* dvipng/misc.c: Enable --expand-bbox
 
