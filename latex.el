@@ -719,13 +719,12 @@ job to this function."
 	(setq label (funcall LaTeX-label-function environment))
       (let ((prefix
 	     (or (cdr (assoc environment LaTeX-label-alist))
-		 (and
-		  (assoc environment LaTeX-section-list)
-		  (if (stringp LaTeX-section-label)
-		      LaTeX-section-label
-		    (and (listp LaTeX-section-label)
-			 (cdr (assoc environment LaTeX-section-label)))))
-		 "")))
+		 (if (assoc environment LaTeX-section-list)
+		     (if (stringp LaTeX-section-label)
+			 LaTeX-section-label
+		       (and (listp LaTeX-section-label)
+			    (cdr (assoc environment LaTeX-section-label))))
+		   ""))))
 	(when prefix
 	  (when (symbolp prefix)
 	    (setq prefix (symbol-value prefix)))
