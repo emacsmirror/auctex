@@ -31,6 +31,10 @@ The value of @code{TeX-macro-global} is not determined during
 configuration anymore but at load time of @AUCTeX{}.  Consequently the
 associated configuration option @samp{--with-tex-input-dirs} was
 removed.
+
+@item
+Support for the @LaTeX{} Japanese classes @samp{jsarticle} and
+@samp{jsbook} was added.
 @end itemize
 
 @heading News in 11.54
