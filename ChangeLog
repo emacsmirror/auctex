@@ -7,6 +7,7 @@
 	patch by David Kastrup; slightly modified.  Doc fix.
 	(TeX-find-macro-end-helper): Doc fix.  Handle macros not
 	consisting of [A-Za-z@] correctly.
+	(TeX-find-opening-brace): Improve performance.
 
 2004-08-25  Reiner Steib  <Reiner.Steib@gmx.de>
 
