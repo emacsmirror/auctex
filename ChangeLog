@@ -1,3 +1,8 @@
+2005-03-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Add
+	general information about how to deal with bugs.
+
 2005-03-31  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Skip non-space chars
