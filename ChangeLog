@@ -1,3 +1,26 @@
+2004-07-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-source-specials): Do not set a lighter in
+	`minor-mode-alist' but use `TeX-set-mode-name' instead.
+	(TeX-base-mode-name): New variable.
+	(TeX-set-mode-name): New function.
+	(plain-tex-mode): Set `TeX-base-mode-name' instead of `mode-name'
+	and use `TeX-set-mode-name'.
+	(ams-tex-mode): Ditto.
+
+	* context-en.el (context-en-mode): Ditto.
+
+	* context-nl.el (context-nl-mode): Ditto.
+
+	* latex.el: Do not add a lighter for `LaTeX-math-mode' in
+	`minor-mode-alist'.
+	(LaTeX-math-mode): Use `TeX-set-mode-name'.
+	(latex-mode): Set `TeX-base-mode-name' instead of `mode-name' and
+	use `TeX-set-mode-name'.
+
+	* tex-fold.el (TeX-fold-mode): Do not set a lighter in
+	`minor-mode-alist' but use `TeX-set-mode-name' instead.
+
 2004-07-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-find-macro-start): Fix handling of nested macros.
