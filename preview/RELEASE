@@ -4,16 +4,17 @@ preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  The employed style file
 preview.sty is independently useful for extraction of selected text
 elements as images.  The package is released under the GNU Public
-License (GPL).  At the current point of time, GNU Emacs-21 under the X
-window system, AUC TeX, a working LaTeX installation and GhostScript
-are required.  This version for the first time also fully supports
-XEmacs with a version of at least 21.1.14.  Some issues with the
-display engine have been uncovered in the course of porting; consult
-the PROBLEMS file for more information.  No Emacs versions of
-preview-latex have yet been tested to run under the MS Windows
-operating system.  Recent CVS versions of Emacs could possibly be made
-to run preview-latex there, and we have had a positive report with
-Cygwin XEmacs.  Please report your experiences.
+License (GPL).  At the current point of time, at least GNU Emacs-21.1
+under the X window system, AUC TeX (11.11 recommended, see below), a
+working LaTeX installation and GhostScript are required.  This version
+for the first time also fully supports XEmacs with a version of at
+least 21.1.14.  Some issues with the display engine have been
+uncovered in the course of porting; consult the PROBLEMS file for more
+information.  No Emacs versions of preview-latex have yet been tested
+to run under the MS Windows operating system.  Recent CVS versions of
+Emacs could possibly be made to run preview-latex there, and we have
+had a positive report with Cygwin XEmacs.  Please report your
+experiences.
 
 Release 0.7.2 is a consolidation release containing mostly bug fixes.
 Its stability should be sufficient for third party package providers
