@@ -1,5 +1,8 @@
 2001-11-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* README-preview: adjust instructions because preview.ins will be
+	available on CTAN already.
+
 	* prv-emacs.el (preview-make-clickable): consult
 	`preview-button-1' and `preview-button-2' at run-time.
 	(preview-overlay): Need insert-behind-hooks too in case someone

@@ -1,4 +1,4 @@
-Release notes for version 0.5.8.2 of the preview-latex package:
+Release notes for version 0.5.8.3 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  It is released under the GNU
@@ -9,10 +9,11 @@ welcome.  Due to missing image support of Emacs-21.1 under Microsoft
 Windows, this platform is not usable at the current point of time,
 either.
 
-Release focus are mostly user interface improvements.  Notable are
-changes in the build process, changes in cursor display handling,
-preservation of indentation of previews, improvements in process
-handling, better configurability.
+Release focus are mostly user interface improvements.  Main point has
+been an attempt to refrain from disabling previews unless the text
+under it has indeed changed and not just been replaced by something
+identical or decorated with font-lock.  This makes preview-latex
+behave better when filling paragraphs, for example.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
