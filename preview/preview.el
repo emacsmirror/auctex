@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.177 2002-12-09 18:23:41 dakas Exp $
+;; $Id: preview.el,v 1.178 2002-12-09 22:55:37 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1515,6 +1515,21 @@ to the close hook."
 ;; the start of the interesting area when TeX-region-create is being
 ;; called.
 
+(defun preview-counter-find ()
+  "Fetch the next preceding preview-counters property.
+Factored out because of compatibility macros XEmacs would
+not use in advice."
+  (or (car (get-char-property begin 'preview-counters))
+      (cdr (get-char-property (max (point-min)
+				   (1- begin))
+			      'preview-counters))
+      (cdr (get-char-property
+	    (max (point-min)
+		 (1- (previous-single-char-property-change
+		      begin
+		      'preview-counters)))
+	    'preview-counters))))
+
 (defadvice TeX-region-create (around preview-counters preactivate)
   "Write out counter information to region."
   (let ((TeX-region-extra
@@ -1525,16 +1540,7 @@ to the close hook."
 		#'identity
 		(cons
 		 ""
-		 (or (car (get-char-property begin 'preview-counters))
-		     (cdr (get-char-property (max (point-min)
-						  (1- begin))
-					     'preview-counters))
-		     (cdr (get-char-property
-			   (max (point-min)
-				(1- (previous-single-char-property-change
-				     begin
-				     'preview-counters)))
-			   'preview-counters))))
+		 (preview-counter-find))
 		"\\setcounter"))
 	  TeX-region-extra)))
     ad-do-it))
@@ -1572,16 +1578,16 @@ if any."
 	(overlay-put
 	 ov 'preview-counters
 	 (cons
-	  (if (string= (car counters) "")
-	      preview-parsed-counters
 	    (mapcar #'cdr
-		    (setq preview-parsed-counters
-			  (preview-parse-counters (car counters)))))
-	  (if (string= (cdr counters) "")
-	      preview-parsed-counters
+		    (if (string= (car counters) "")
+			preview-parsed-counters
+		      (setq preview-parsed-counters
+			    (preview-parse-counters (car counters)))))
 	    (mapcar #'cdr
-		    (setq preview-parsed-counters
-			  (preview-parse-counters (cdr counters)))))))
+		    (if (string= (cdr counters) "")
+			preview-parsed-counters
+		      (setq preview-parsed-counters
+			    (preview-parse-counters (cdr counters)))))))
 	(setq preview-buffer-has-counters t))
       (overlay-put ov 'filenames (list filename))
       (overlay-put ov 'preview-image (preview-import-image image))
@@ -2412,7 +2418,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.177 $"))
+	(rev "$Revision: 1.178 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2423,7 +2429,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-09 18:23:41 $"))
+    (let ((date "$Date: 2002-12-09 22:55:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
