@@ -1,5 +1,9 @@
 2002-04-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
+	* preview.el (preview-dump-format):
+	Now checks if format has changed; if it hasn't,
+	no new dump is made.
+
 	* preview.el (preview-buffer): Changed to mirror the behaviour of
 	TeX-region-create. This is probably the best we can do.
 
