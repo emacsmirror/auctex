@@ -1,5 +1,7 @@
 2001-10-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* circ.tex: Demonstrate new `sections' option.
+
 	* preview.el (preview-default-option-list): Cater for new
 	`sections' option to preview.sty.
 
