@@ -1,86 +1,136 @@
 @include macros.texi
 
-This is the report of one user of us how he got a native installation of
-XEmacs under MS-Windows to work with @previewlatex{}.  Please report
-back your experiences.
+Installation of @previewlatex{} has been verified to work (in order of
+increasing operating speed) with current @acronym{CVS} versions of
+@w{GNU Emacs}, and with both Cygwin and native versions of XEmacs.
+Since various fixes in the installation procedure have been
+incorporated for Windows lately, you should install the current release
+of @previewlatex{}.
 
+Ok, here are the steps to perform:
 @enumerate
 @item
-Install @AUCTeX{}. If you install a v10 @AUCTeX{}, patch it as per the
-instructions with @previewlatex{}.
+The installation of @previewlatex{} will require the MSYS tool set from
+@uref{http://www.mingw.org}.  If you have the Cygwin tool set from
+@uref{http://cygwin.com} installed, that should do just fine as well,
+but it is quite larger and slower.  If you need to compile Emacs/XEmacs
+from source, you'll also need compilers and stuff that are also
+available for both of those tool sets.  Compiling Emacs is outside of
+the scope of this manual: good luck.  @previewlatex{} itself does not
+(yet) require a @w{C compiler} for installation.  Without either of
+those tool sets, however, you would need to generate your various
+@file{Makefile} copies from the respective @file{Makefile.in} files by
+hand, and that would mean quite a lot of guesswork.  There is no sense
+going into too much details here: the instructions would change severely
+between versions, and the above tool sets are easy enough to acquire to
+make manual configuration unnecessary.
 
 @item
-@table @strong
-@item Either
-Install a system that can run configure such as MSYS (see
-@uref{http://mingw.sf.net}) and run configure with the
-@code{--with-xemacs} and @code{--with-texmf-dir=@var{DIR}} options
-(where @var{DIR} is the path to your @file{texmf} directory). Tweak the
-generated Makefiles to ensure all the paths are valid win32 paths (not MSYS
-paths, or cygwin paths, for example)
+Install a current version of XEmacs (such as 21.4.10) from
+@uref{http://www.xemacs.org} or try getting and compiling an
+@acronym{CVS} version of GNU Emacs from
+@uref{http://savannah.gnu.org/cvs/?group=emacs}.
 
-@item or
-Copy each @file{makefile.in} file to a makefile in the same directory,
-and replace all the automake variables @code{@@VARNAME@@} with an
-appropriate value. Here are the values for my system:
+@item
+You need a working @TeX{} installation.  One popular installation under
+Windows is @uref{http://www.miktex.org,Mik@TeX{}}.  Another much more
+extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
+which is rather close to its Unix cousins.
 
+@item
+Install @uref{http://www.nongnu.org,@AUCTeX{}} according to its
+instructions.  It is recommended that you install at least 11.14.  At
+the current point of time this means that you should forego installing
+@AUCTeX{} from the XEmacs package repository: it may just be too old.
+If you insist, there are patch instructions for older versions of
+@AUCTeX{} in
+@ifset rawfile
+the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Prerequisites}.
+@end ifclear
+
+@item
+You need a copy of @uref{http://www.cs.wisc.edu/~ghost,GhostScript}.
+
+@item
+@uref{http://www.perl.org,Perl} is needed for building the
+documentation.  When we release tarballs for @previewlatex{}, we also
+pregenerate the documentation.  If you install the @samp{prebuilt-docs}
+tarball over the normal source after configuration is complete, the
+dependencies for the documentation will be satisfied without needing to
+run Perl.  If you are building @previewlatex{} from @acronym{CVS},
+however, you'll need Perl.
+
+@item
+Now the fun stuff starts.  Unpack the @previewlatex{} distribution into
+some installation directory.  @strong{Do not} unpack it right into your
+Emacs' own directories: the installation will copy the material that
+needs to be placed there.  Keep the installation directory separate:
+you can remove its contents after installation completes.  Since you
+are reading this, you probably have already unpacked @previewlatex{},
+but it should still be easy to move it elsewhere now.
+
+@item
+Ready for takeoff.  Start some shell (typically @file{bash}) capable of
+running @file{configure}, change into the installation directory and
+call @code{./configure} with appropriate options.
+
+Typical options you'll want to specify will be
 @table @code
-@item	@@SET_MAKE@@
-@item	@@EMACS@@
-@code{xemacs}
-@item	@@ICONFORM@@
-@code{--eval '(setq data-directory-list (cons
-"images" data-directory-list))'}
-@item	@@PLAT_LISP@@
-@code{prv-xemacs.el}
-@item	@@lispdir@@
-@code{c:/progra~1/xemacs/xemacs-packages/lisp/preview}
-@item	@@icondir@@
-@code{c:/progra~1/xemacs/xemacs-packages/etc/preview}
-@item	@@prefix@@
-@item	@@datadir@@
-@item	@@packagedir@@
-@code{c:/progra~1/xemacs/xemacs-packages}
-@item	@@AUCTEXDIR@@
-@code{c:/progra~1/xemacs/xemacs-packages/lisp/}
-@item	@@TEX@@
-@code{tex}
-@item	@@infodir@@
-@code{c:/progra~1/xemacs/xemacs-packages/info/}
-@item	@@MAKEINFO@@
-@code{makeinfo}
-@item	@@INSTALL_INFO@@
-@code{install-info}
-@item	@@LATEX@@
-@code{latex}
-@item	@@TEXHASH@@
-@code{texhash}
-@item	@@texmfdir@@
-@code{d:/local/texmf}
-@item	@@previewtexmfdir@@
-@code{d:/local/texmf/tex/latex/preview}
-@item	@@previewdocdir@@
-@code{d:/local/texmf/doc/latex/preview}
-@item	@@TEXMFGEN@@
-@code{preview.sty prauctex.def prauctex.cfg
-prshowbox.def prshowlabels.def prtracingall.def prtightpage.def}
-@end table
+@item --with-emacs
+if you are installing Emacs.  Use
+@samp{--with-emacs=@var{path-to-emacs}} to specify the installed
+location of your Emacs binary.
+
+@item --with-xemacs
+If you are using XEmacs, of course use @samp{--with-xemacs} in the same
+manner.
+
+@item --with-texmf-dir=@var{dir}
+This will specify the directory where your @TeX{} installation sits.  If
+your @TeX{} installation does not conform to the TDS (@TeX{} directory
+standard), you may need to specify more options to get everything in
+place.  See
+@ifset rawfile
+the `Configure' section in the @file{INSTALL} file
+@end ifset
+@ifclear rawfile
+@ref{Configure}
+@end ifclear
+for more information about the available options.
+
+@item --with-lisp-dir=@var{/dir}
+This may be needed for GNU Emacs installation, but hopefully
+@file{configure} should figure this out by itself.  Don't use this for
+XEmacs, rather use
+
+@item --with-package-dir=@var{/dir}
+which gives the location of the package directory for XEmacs where
+stuff should be installed.  Again, hopefully this is not necessary to
+specify.
 @end table
 
-@item
-Update the @code{INSTALL} and @code{INSTALL_DATA} entries in every
-makefile to @code{cp} (if you installed the Unix-like tools) or
-@code{xcopy} (if you didn't).  In this case, the paths specified above
-must have backslashes in, rather than forward slashes.
-	
+Some executables might not be found in your path.  That is not a good
+idea, but you can get around by specifying environment variables to
+@file{configure}:
+@example
+GS="@var{/path/to/GhostScript}" ./configure @dots{}
+@end example
+should work for this purpose.
 
 @item
-Install gnu make if not already installed.
+If you need to use the prebuilt documentation (see above), now is the
+time to unpack it over the rest of the installation directory.
+
 @item
-Run @code{make} in the @previewlatex{} directory.
+Run @code{make} in the installation directory (we have had one report
+that Emacs did not manage to byte compile the Elisp files, and that had
+to be done by hand.  No idea about what might have gone wrong there).
 	
 @item
-Run @code{make install} in the @previewlatex{} directory.
+Run @code{make install} in the installation directory.
 
 @item
 Load @file{circ.tex} into XEmacs and see if you can generate previews.
