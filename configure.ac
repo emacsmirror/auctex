@@ -5,6 +5,7 @@ ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
 AC_SET_MAKE
 AC_PROG_INSTALL
 EMACS_PROG_EMACS
+EMACS_CHECK_MAJOR_VERSION([21])
 EMACS_CHECK_MULE
 
 # The Debian package uses `--disable-build-dir-test'; normal users should

@@ -259,19 +259,19 @@ fi
   AC_MSG_RESULT($XEMACS)
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
+])
 
+AC_DEFUN(EMACS_CHECK_MAJOR_VERSION, [
 AC_MSG_CHECKING([if (X)Emacs is recent enough])
 EMACS_LISP(EMACS_MAJOR_VERSION,[emacs-major-version])
-if (( $EMACS_MAJOR_VERSION < 21 )); then
+if (( $EMACS_MAJOR_VERSION < $1 )); then
   AC_MSG_RESULT([no])
-  AC_MSG_ERROR([AUCTeX requires at least (X)Emacs version 21.  Aborting!])
+  AC_MSG_ERROR([This package requires at least (X)Emacs version $1.  Aborting!])
 else
   AC_MSG_RESULT([yes])
 fi
   AC_SUBST(EMACS_MAJOR_VERSION)
 ])
-
-
 
 dnl "\${packagedir}/lisp"
 
@@ -304,7 +304,7 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      Where to install the lisp files, note that most
+    [  --with-lispdir=DIR      Where to install lisp files, note that most
                            of AUCTeX will be installed in a subdirectory],
     [lispdir="${withval}"
      # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
