@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-18 20:37:30 $
+;; Last Change: $Date: 2004-04-19 16:15:19 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,15 +22,14 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-
-;;; Notes:
+;;; Commentary:
 
 ;; This file is loaded by context.el when required.
 
+;;; Code:
 
 ;; Build upon ConTeXt
 (require 'context)
-
 
 ;;; ConText macro names
 
@@ -45,16 +44,16 @@
     "regels" "smaller" "symboolset" "synchronisatie" "tabel"
     "tabellen" "tabulatie" "tekstlijn" "typen" "uitlijnen"
     "uitstellen" "vanelkaar" "verbergen" "versie"
-		;; project structure
-		"omgeving" "onderdeel" "produkt" "project"
-		;; flowcharts, if you have loaded this module
-		"FLOWcell" "FLOWchart"
-		;; typesetting computer languages
-		"EIFFEL" "JAVA" "JAVASCRIPT" "MP" "PASCAL" "PERL" "SQL" "TEX" "XML"
-		;; some metapost environments
-		"MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
-		"uniqueMPgraphic")
-    "List of the ConTeXt en interface start/stop pairs.")
+    ;; project structure
+    "omgeving" "onderdeel" "produkt" "project"
+    ;; flowcharts, if you have loaded this module
+    "FLOWcell" "FLOWchart"
+    ;; typesetting computer languages
+    "EIFFEL" "JAVA" "JAVASCRIPT" "MP" "PASCAL" "PERL" "SQL" "TEX" "XML"
+    ;; some metapost environments
+    "MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
+    "uniqueMPgraphic")
+  "List of the ConTeXt en interface start/stop pairs.")
 
 (defvar ConTeXt-setup-list-nl
   '("achtergronden" "achtergrond" "alineas" "arrangeren" "blanko"
@@ -82,20 +81,19 @@
     "tekstpositie" "tekstteksten" "tekstvariabele" "tolerantie" "type"
     "typen" "uitlijnen" "uitvoer" "url" "velden" "veld" "versies"
     "voet" "voetnootdefinitie" "voetnoten" "voetteksten" "witruimte")
-	"List of the names of ConTeXt en interface  macro's that setup things.")
+  "List of the names of ConTeXt en interface macro's that setup things.")
 
 (defun ConTeXt-setup-command-nl (what)
-	"The ConTeXt en interface way of creating a setup command."
-	(concat "stel" what "in")
-	)
+  "The ConTeXt en interface way of creating a setup command."
+  (concat "stel" what "in"))
 
 (defvar ConTeXt-project-structure-list-nl
-	'("project" "omgeving" "produkt" "onderdeel")
-	"List of the names of ConTeXt project structure elements for its en interface. List should be in logical order.")
+  '("project" "omgeving" "produkt" "onderdeel")
+  "List of the names of ConTeXt project structure elements for its en interface.  List should be in logical order.")
 
 (defvar ConTeXt-section-block-list-nl
-	'("inleidingen" "hoofdteksten" "bijlagen" "uitleidingen")
-	"List of the names of ConTeXt section blocks for its nl interface. List should be in logical order.")
+  '("inleidingen" "hoofdteksten" "bijlagen" "uitleidingen")
+  "List of the names of ConTeXt section blocks for its nl interface.  List should be in logical order.")
 
 
 ;; TODO:
@@ -104,30 +102,28 @@
 ;; names are never found. Have to start using the section name instead
 ;; of the number.
 (defvar ConTeXt-section-list-nl
-	'(("deel" 0)
-		("hoofdstuk" 1)
-		("paragraaf" 2)
-		("subparagraaf" 3)
-		("subsubparagraaf" 4)
-;; 		("title" 1)
-;; 		("subject" 2)
-;; 		("subsubject" 3)
-;; 		("subsubsubject" 4)
-		)
-	"List of the names of ConTeXt sections for its nl interface."
-)
+  '(("deel" 0)
+    ("hoofdstuk" 1)
+    ("paragraaf" 2)
+    ("subparagraaf" 3)
+    ("subsubparagraaf" 4))
+  ;; ("title" 1)
+  ;; ("subject" 2)
+  ;; ("subsubject" 3)
+  ;; ("subsubsubject" 4)
+  "List of the names of ConTeXt sections for its nl interface.")
 
 (defvar ConTeXt-text-nl "tekst"
-	"The ConTeXt nl interface body text group.")
+  "The ConTeXt nl interface body text group.")
 
 (defvar ConTeXt-item-list-nl
-	'("som" "its" "mar" "ran" "sub" "sym")
-	"The ConTeXt macro's that are variants of item")
+  '("som" "its" "mar" "ran" "sub" "sym")
+  "The ConTeXt macro's that are variants of item.")
 
 (defcustom ConTeXt-default-environment-nl "opsomming"
-	"*The default environment when creating new ones with `ConTeXt-environment'."
-	:group 'ConTeXt-nl-environment
-	:type 'string)
+  "*The default environment when creating new ones with `ConTeXt-environment'."
+  :group 'ConTeXt-nl-environment
+  :type 'string)
 
 
 ;; Emacs en menu names and labels should go here
@@ -140,40 +136,37 @@
   "ConTeXt dutch interface specific initialization."
   (mapcar 'ConTeXt-add-environments (reverse ConTeXt-environment-list-nl))
 
-	(TeX-add-symbols
-	 '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("som" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("items" (ConTeXt-arg-setup t) (TeX-arg-string "Comma separated list"))
-	 '("its" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("nop" (TeX-arg-literal " "))
-	 '("ran" TeX-arg-string (TeX-arg-literal " "))
-	 '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
-	 '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))
-	 )
-)
+  (TeX-add-symbols
+   '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+   '("som" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+   '("items" (ConTeXt-arg-setup t) (TeX-arg-string "Comma separated list"))
+   '("its" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+   '("nop" (TeX-arg-literal " "))
+   '("ran" TeX-arg-string (TeX-arg-literal " "))
+   '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+   '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))))
 
 ;;;###autoload
 (defun context-nl-mode ()
-	"Major mode for editing files for ConTeXt using its dutch interface.
+  "Major mode for editing files for ConTeXt using its dutch interface.
 
 Special commands:
 \\{ConTeXt-mode-map}
 
-Entering context-mode calls the value of text-mode-hook,
+Entering `context-mode' calls the value of `text-mode-hook',
 then the value of TeX-mode-hook, and then the value
 of context-mode-hook."
   (interactive)
 
   ;; set the ConTeXt interface
-	(set (make-local-variable 'ConTeXt-current-interface) "nl")
+  (set (make-local-variable 'ConTeXt-current-interface) "nl")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
   (ConTeXt-nl-mode-initialization)
 
   ;; set mode line
-	(setq mode-name "ConTeXt-nl")
-)
+  (setq mode-name "ConTeXt-nl"))
 
 (provide 'context-nl)
 

@@ -3,6 +3,10 @@
 	* tex.el, latex.el: Make almost checkdoc clean.  See "FIXME" for
 	remaining issues.
 
+	* context.el, context-en.el, context-nl.el: Reindent.  Coding
+	conventions fixes (but files are still far from being checkdoc
+	clean).
+
 2004-04-19  Berend de Boer  <berend@pobox.com>
 
 	* context-en.el (ConTeXt-default-environment-en): added default
