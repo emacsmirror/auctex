@@ -1,5 +1,4 @@
 \input texinfo
-@documentencoding ISO-8859-1
 @documentlanguage en
 @setfilename preview-latex.info
 @settitle preview-latex
@@ -105,7 +104,7 @@ This documentation is preliminary. It should however cover most
 important points. Corrections or perhaps rewrites of sections are
 @emph{very welcome}.
 
-David Kastrup, Alan Shutko, and Jan-Åke Larsson
+David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 
 @end ifnottex
 
