@@ -113,9 +113,11 @@
 	`font-latex-match-font-inside-braces'.  Generalize, so that it can
 	be used for any command and does not return a special, complex
 	match.
-	(font-latex-set-syntactic-keywords): Try to
-	minimize false fontifications of macros which may look like
-	\foo{bar} and \foo{bar{.
+	(font-latex-set-syntactic-keywords): Try to minimize false
+	fontifications of macros which may look like \foo{bar} and
+	\foo{bar{.
+	(font-latex-commented-outp): Do not consider comment characters in
+	verbatim content.
 
 2004-10-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
