@@ -15,7 +15,7 @@ DVIPS=dvips
 
 all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
-dist: auctex INSTALLATION README CHANGES auc-tex_toc.html auc-tex.ps
+dist: auctex INSTALL INSTALL.windows README CHANGES auc-tex_toc.html auc-tex.ps
 
 auc-tex_toc.html: auc-tex.texi
 	$(TEXIHTML) -split_node auc-tex.texi

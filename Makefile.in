@@ -161,24 +161,33 @@ distclean: clean
 wc:
 	wc $(AUCSRC) $(STYLESRC)
 
-dist:
+snapshot: check-dist tar-ball
+
+dist:	check-dist release-commit tar-ball
+
+check-dist:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	if [ "X$(OLD)" = "X" ]; then echo "No patch"; exit 1; fi
+
+release-commit:
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
-	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
+	sleep 3
 	perl -pi.bak -e "s/Version: $(OLD)/Version: $(TAG)/" \
 	    $(AUCSRC) $(EXTRAFILES)
 	mv ChangeLog ChangeLog.old
 	echo `date "+%Y-%m-%d "` \
-	     " David Kastrup  <David.Kastrup@t-online.de>" > ChangeLog
+	     " David Kastrup  <dak@gnu.org>" > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
 	cat ChangeLog.old >> ChangeLog
 	cvs commit -m 'Release_$(TAG)'
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
+
+tar-ball:
+	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
 	mkdir auctex-$(TAG)
 	mkdir auctex-$(TAG)/auto
 	mkdir auctex-$(TAG)/style
@@ -188,8 +197,17 @@ dist:
 	cp $(NOSEARCH) auctex-$(TAG)/auto
 	cp $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
-	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
-	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
+	(cd doc; $(MAKE) dist; cp auctex auctex ../auctex-$(TAG)/doc )
+	(cd doc; \
+	for x in auctex-*; do \
+	  if [ -r $$x ]; then \
+	    cp $$x ../auctex-$(TAG)/doc ; \
+	  else \
+	    echo "Warning: File $$x doesn't exist."; \
+	  fi; \
+	done )
+	(cd doc; cp INSTALL INSTALL.windows README CHANGES ../auctex-$(TAG)/ )
+	mkdir -p $(FTPDIR) $(WWWDIR)/doc
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
 	cp doc/auc-tex.ps $(FTPDIR)
 	cp ChangeLog $(FTPDIR)

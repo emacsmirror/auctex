@@ -4,5 +4,8 @@ auctex auctex-?
 Makefile
 CHANGES
 HISTORY
+INSTALL
+INSTALL.windows
 README
 auc-tex*.html
+auc-tex.ps

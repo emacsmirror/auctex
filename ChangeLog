@@ -1,3 +1,17 @@
+2004-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (dist): Split into `check-dist', `release-commit'
+	and `tar-ball'.
+	(snapshot'): New: use `check-dist' and `tar-ball'.
+	(release-commit): Fix mail address.
+
+	* doc/Makefile.in (dist): Use INSTALL and INSTALL.windows instead
+	of INSTALLATION.
+
+	* doc/.cvsignore: Added INSTALL, INSTALL.windows, auc-tex.ps
+
+	* .cvsignore: Removed INSTALL, INSTALL.windows.
+
 2004-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-syntactic-comments): New name.  Formerly known
