@@ -1,3 +1,15 @@
+2002-02-26  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (require): suppress desktop warnings
+	(preview-clearout): restrict to narrowed area.
+	(desktop-buffer-preview-misc-data): widen.
+	(preview-dissect): don't use subseq from cl-extra, rather butlast
+	from subr.
+	(preview-cleanout-tempfiles): new routine used in kill-emacs-hook
+	(preview-reinstate-preview): setup kill-emacs-hook late so that
+	preview-cleanout gets called after desktop saving
+	(preview-create-subdirectory): same here
+
 2002-02-25  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (TeX-active-tempdir): Changed the type.
