@@ -6,6 +6,11 @@ Send a message with just the word `help' as subject or body to
     preview-latex-devel-request@lists.sourceforge.net
 for more information.
 
+Purpose of the package is to embed LaTeX environments such as display
+math or figures into the source buffers.  By mouse-clicking, you can
+open the original text.  After editing, another click will just run
+the region in question through LaTeX and redisplay the new results.
+
 Thr project is just starting.  Current state of affairs: you need to
 get access to an Emacs version that is at least 21.0.105, which at the
 current time means that you need to be a pretester of Emacs.  Versions
@@ -35,3 +40,8 @@ a bit, and which serves as sort of a reference for initial bug
 reports.
 
 Help out!
+
+You'll reach me at
+dakas@sourceforge.net
+
+David Kastrup
