@@ -1,3 +1,9 @@
+2004-08-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Add warning about `TeX-command-list'.
+
+	* doc/auctex.texi (Commands): Add "be".
+
 2004-08-13  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (tar-ball): copy only one auctex, add pdf manual and
