@@ -3,6 +3,10 @@
 ;;; This will also load the amstext, amsbsy and amsopn style files.
 ;;; AUTHOR: Carsten Dominik <dominik@strw.leidenuniv.nl>
 
+;; FIXME: What about the copyright for <= 2004?
+
+;; Copyright (C) 2005  Free Software Foundation, Inc.
+
 ;;; Code:
 
 (TeX-add-style-hook "amsmath"
@@ -83,6 +87,10 @@
 		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
+    ;; When `LaTeX-amsmath-label' i nil, use value of LaTeX-equation-label:
+    (unless LaTeX-amsmath-label
+      (setq LaTeX-amsmath-label LaTeX-equation-label))
+
     (setq LaTeX-label-alist
 	  (append '(("align"      . LaTeX-amsmath-label)
 		    ("alignat"    . LaTeX-amsmath-label)
@@ -130,14 +138,5 @@
   (let ((environment (LaTeX-current-environment 1)))
     (and (LaTeX-label environment)
 	 (newline-and-indent))))
-
-(defcustom LaTeX-amsmath-label LaTeX-equation-label
-  "*Default prefix to amsmath equation labels.
-
-Amsmath equations include \"align\", \"alignat\", \"xalignat\", \"aligned\",
-\"flalign\" and \"gather\"."
-  :group 'LaTeX-label
-  :type 'string)
-
 
 ;;; amsmath.el ends here.

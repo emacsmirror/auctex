@@ -1,6 +1,6 @@
 ;;; emp.el --- AUCTeX support for emp.sty
 
-;; Copyright (C) 2004  Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005  Free Software Foundation, Inc.
 
 ;; Author: Yvon Henel aka TeXnicien de surface <Yvon.Henel@wanadoo.fr>
 ;; Maintainer: auc-tex@sunsite.dk
@@ -39,13 +39,6 @@
      '("empgraph" LaTeX-env-emp-gen)
      '("empcmds")
      ))))
-
-(defcustom LaTeX-write18-enabled-p t
-  "*If non-nil, insert automatically the \\write18 calling metapost.
-When disabled, you have to use mpost on the mp files automatically 
-produced by emp.sty and then re-LaTeX the document."
-  :type 'boolean
-  :group 'LaTeX-macro)
 
 (defun LaTeX-env-emp-gen (environment-name)
    "Ask for file, width and length. Insert environment-name environment

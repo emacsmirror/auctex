@@ -1,3 +1,30 @@
+2005-03-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-style.el: New file.  defcustoms for style/*.el should go
+	here.
+
+	* latex.el (LaTeX-includegraphics-extensions)
+	(LaTeX-includegraphics-options-alist)
+	(LaTeX-includegraphics-strip-extension-flag)
+	(LaTeX-includegraphics-read-file, LaTeX-beamer-themes): Moved to
+	tex-style.el.
+	(tex-style): Require.
+
+	* style/amsmath.el (LaTeX-amsmath-label): Moved to tex-style.el.
+
+	* style/beamer.el: Remove install instructions.  Won't work
+	properly outside current AUCTeX anymore.  Removed CVS Id.
+	(LaTeX-beamer-section-labels-flag)
+	(LaTeX-beamer-item-overlay-flag): Moved to tex-style.el.
+
+	* style/csquotes.el (LaTeX-csquotes-quote-after-quote)
+	(LaTeX-csquotes-open-quote, LaTeX-csquotes-close-quote): Moved to
+	tex-style.el.
+
+	* style/emp.el (LaTeX-write18-enabled-p):  Moved to tex-style.el.
+
+	* Makefile.in (AUCSRC): Added tex-style.el.
+
 2005-03-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (japanese-TeX-command-list)

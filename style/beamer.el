@@ -5,26 +5,13 @@
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
-;; Version: $Id: beamer.el,v 1.5 2005-03-04 18:04:45 rsteib Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
 
 ;; This file adds support for the latex-beamer class.
-;;
-;; This file is intended to be used with the AUCTeX-Package.
-;; Put this File into your TeX-style-path. You may also
-;; byte-compile this file.
 
 ;;; Code:
-
-(defvar LaTeX-beamer-section-labels-flag nil
-  "If non-nil section labels are added")
-
-(defcustom LaTeX-beamer-item-overlay-flag t
-  "If non-nil do prompt for an overlay in itemize-like environments."
-  :type 'boolean
-  :group 'LaTeX-macro)
 
 (TeX-add-style-hook
  "beamer"

@@ -1,6 +1,6 @@
 ;;; csquotes.el --- AUCTeX style for `csquotes.sty'
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auc-tex@sunsite.dk
@@ -29,26 +29,6 @@
 ;; This file adds support for `csquotes.sty'.
 
 ;;; Code:
-
-(defcustom LaTeX-csquotes-quote-after-quote nil
-  "Initial value of `TeX-quote-after-quote' for `csquotes.el'"
-  :type 'boolean)
-
-(defcustom LaTeX-csquotes-open-quote ""
-  "Opening quotation mark to be used with the csquotes package.
-The specified string will be used for `TeX-open-quote' (and override
-the value of `LaTeX-german-open-quote' if the german or ngerman
-package is used) only if both `LaTeX-csquotes-open-quote' and
-`LaTeX-csquotes-close-quote' are non-empty strings."
-  :type 'string)
-
-(defcustom LaTeX-csquotes-close-quote ""
-  "Closing quotation mark to be used with the csquotes package.
-The specified string will be used for `TeX-close-quote' (and override
-the value of `LaTeX-german-close-quote' if the german or ngerman
-package is used) only if both `LaTeX-csquotes-open-quote' and
-`LaTeX-csquotes-close-quote' are non-empty strings."
-  :type 'string)
 
 (TeX-add-style-hook
  "csquotes"
