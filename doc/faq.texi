@@ -1,0 +1,56 @@
+@ifset rawfile
+@include macros.texi
+@node Frequently Asked Questions About AUCTeX
+@top Frequently Asked Questions about @AUCTeX{}
+@end ifset
+
+@c We should switch to sectioning commands instead of items when this
+@c list grows.  Keep in mind to formulate short questions because
+@c section headings will not be broken in contrast to items.
+@enumerate
+@item
+What versions of Emacs and XEmacs are supported?
+
+@AUCTeX{} was tested with Emacs 20.7 and XEmacs 21.4.  Older versions
+may work but are unsupported.
+
+@item
+Why doesn't the completion or multifile stuff work?
+
+It must be enabled first, insert this in your emacs:
+
+@lisp
+(setq-default TeX-master nil)
+(setq TeX-parse-self t)
+(setq TeX-auto-save t)
+@end lisp
+
+Read also the chapters about parsing and multifile documents in the
+manual.
+
+@item
+Why doesn't @code{TeX-save-document} work?
+
+@code{TeX-check-path} has to contain "./" somewhere.
+
+@item
+Why is the information in @file{foo.tex} forgotten when I save
+@file{foo.bib}?
+
+For various reasons, @AUCTeX{} ignores the extension when it stores
+information about a file, so you should use unique base names for your
+files.  E.g. rename @file{foo.bib} to @file{foob.bib}.
+
+@item
+Why doesn't @AUCTeX{} signal when processing a document is done?
+
+If the message in the minibuffer stays "Type `C-c C-l' to display
+results of compilation.", you probably have a misconfiguration in your
+init file (@file{.emacs}, @file{init.el} or similar).  To track this
+down either search in the @samp{*Messages*} buffer for an error message
+or put @code{(setq debug-on-error t)} as the first line into your init
+file, restart Emacs and open a @LaTeX{} file.  Emacs will complain
+loudly by opening a debugging buffer as soon as an error occurs.  The
+information in the debugging buffer can help you find the cause of the
+error in your init file.
+@end enumerate
