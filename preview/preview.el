@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.176 2002-12-07 17:51:46 dakas Exp $
+;; $Id: preview.el,v 1.177 2002-12-09 18:23:41 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -221,6 +221,9 @@ If `preview-fast-conversion' is set, this option is not
 (defvar preview-parsed-magnification nil
   "Magnification as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-magnification)
+(defvar preview-parsed-counters nil
+  "Counters as parsed from the log of LaTeX run.")
+(make-variable-buffer-local 'preview-parsed-counters)
 
 (defun preview-get-magnification ()
   "Get magnification from `preview-parsed-magnification'."
@@ -345,6 +348,33 @@ This will have no effect when `preview-image-type' is
 set to `postscript'."
   :group 'preview-latex
   :type 'boolean)
+
+(defun preview-string-expand (arg)
+  "Expand ARG as a string.
+It can already be a string.  Or it can be a list, then the first
+element of the list is the string separator, and the cdr of the
+list gets concatenated after being expanded recursively.  If the
+cdr is a symbol, it is dereferenced and the resulting list gets
+expanded element by element."
+  (cond
+   ((null arg) (error "Bad string expansion"))
+   ((stringp arg) arg)
+   ((consp arg) (mapconcat #'preview-string-expand
+			   (if (symbolp (cdr arg))
+			       (symbol-value (cdr arg))
+			     (cdr arg))
+			   (car arg)))
+   ((and (symbolp arg) (boundp arg))
+    (preview-string-expand (symbol-value arg)))))
+
+(defconst preview-expandable-string
+  '(choice
+    string
+    (cons (string :tag "Separator")
+	  (choice (variable-item :tag "Variable to concatenate.")
+		  (list :tag "Explicit elements"
+			(repeat :inline t sexp))))
+    (variable-item :tag "Indirect variable")))
 
 (defcustom preview-dvips-command
   "dvips -Pwww -i -E %d -o %m/preview.000"
@@ -1057,7 +1087,7 @@ Returns non-NIL if called by one of the commands in LIST."
 ;; This will fail if the region is to contain just part of the
 ;; preamble -- a bad idea anyhow.
 
-(defadvice TeX-region-create (before preview preactivate)
+(defadvice TeX-region-create (before preview-preamble preactivate)
   "Skip preamble for the sake of predumped formats."
   (when (string-match TeX-header-end (ad-get-arg 1))
     (ad-set-arg 1
@@ -1249,19 +1279,31 @@ kept."
 (add-hook 'kill-buffer-hook #'preview-kill-buffer-cleanup)
 (add-hook 'before-revert-hook #'preview-kill-buffer-cleanup)
 
+(defvar preview-last-counter)
+
+(defun preview-extract-counters (ctr)
+  (setq preview-last-counter
+	(prog1 (copy-sequence ctr)
+	  (dolist (elt preview-last-counter)
+	    (setq ctr (delete elt ctr)))))
+  (apply #'concat ctr))
+
 (defun desktop-buffer-preview-misc-data ()
   "Hook function that extracts previews for persistent sessions."
   (unless (buffer-modified-p)
+    (setq preview-last-counter nil)
     (save-restriction
       (widen)
       (let (save-info (timestamp (visited-file-modtime)))
-	(dolist (ov (overlays-in (point-min) (point-max)))
+	(dolist (ov (sort (overlays-in (point-min) (point-max))
+			  (lambda (x y) (< (overlay-start x)
+					   (overlay-start y)))))
 	  (when (and (memq (overlay-get ov 'preview-state) '(active inactive))
 		     (null (overlay-get ov 'queued))
 		     (eq 1 (length (overlay-get ov 'filenames))))
 	    (push (preview-dissect ov timestamp) save-info)))
 	(and save-info
-	     (cons 'preview (cons timestamp save-info)))))))
+	     (cons 'preview (cons timestamp (nreverse save-info))))))))
 
 (add-hook 'desktop-buffer-misc-functions #'desktop-buffer-preview-misc-data)
 
@@ -1277,12 +1319,17 @@ on first use.")
     (list (overlay-start ov)
 	  (overlay-end ov)
 	  (preview-export-image (overlay-get ov 'preview-image))
-	  filenames)))
+	  filenames
+	  (let ((ctr (overlay-get ov 'preview-counters)))
+	    (and ctr
+		 (cons (preview-extract-counters (car ctr))
+		       (preview-extract-counters (cdr ctr))))))))
 
 (defun preview-buffer-restore-internal (buffer-misc)
   "Restore previews from BUFFER-MISC if proper.
 Remove them if they have expired."
   (let ((timestamp (visited-file-modtime)) tempdirlist files)
+    (setq preview-parsed-counters nil)
     (when (eq 'preview (pop buffer-misc))
       (if (equal (pop buffer-misc) timestamp)
 	  (dolist (ovdata buffer-misc)
@@ -1430,12 +1477,17 @@ it gets deleted as well."
 		(setcdr file nil)
 		(delete-directory (nth 0 tempdir)))))))))
 
-(defun preview-place-preview (snippet start end box tempdir place-opts)
+(defvar preview-buffer-has-counters nil)
+(make-variable-buffer-local 'preview-buffer-has-counters)
+
+(defun preview-place-preview (snippet start end 
+				      box counters tempdir place-opts)
   "Generate and place an overlay preview image.
 This generates the filename for the preview
 snippet SNIPPET in the current buffer, and uses it for the
 region between START and END.  BOX is an optional preparsed
 TeX bounding BOX passed on to the `place' hook.
+COUNTERS is the info about saved counter structures.
 TEMPDIR is a copy of `TeX-active-tempdir'.
 PLACE-OPTS are additional arguments passed into
 `preview-parse-messages'.  Returns
@@ -1450,13 +1502,45 @@ to the close hook."
 		  `(lambda(event) (interactive "e")
 		     (preview-toggle ,ov 'toggle event))
 		  `(lambda() (interactive) (preview-delete ,ov))))
+    (when (cdr counters)
+      (overlay-put ov 'preview-counters counters)
+      (setq preview-buffer-has-counters t))
     (prog1 (apply #'preview-call-hook 'place ov snippet box
 		  place-opts)
       (overlay-put ov 'strings
 		   (list (preview-active-string ov)))
       (preview-toggle ov t))))
 
-(defun preview-reinstate-preview (tempdirlist timestamp start end image filename)
+;; The following is a brutal hack.  It relies on `begin' being let to
+;; the start of the interesting area when TeX-region-create is being
+;; called.
+
+(defadvice TeX-region-create (around preview-counters preactivate)
+  "Write out counter information to region."
+  (let ((TeX-region-extra
+	 (concat
+	  (and preview-buffer-has-counters
+	       (boundp 'begin)
+	       (mapconcat
+		#'identity
+		(cons
+		 ""
+		 (or (car (get-char-property begin 'preview-counters))
+		     (cdr (get-char-property (max (point-min)
+						  (1- begin))
+					     'preview-counters))
+		     (cdr (get-char-property
+			   (max (point-min)
+				(1- (previous-single-char-property-change
+				     begin
+				     'preview-counters)))
+			   'preview-counters))))
+		"\\setcounter"))
+	  TeX-region-extra)))
+    ad-do-it))
+
+(defun preview-reinstate-preview (tempdirlist timestamp start end
+  image filename &optional counters)
   "Reinstate a single preview.
 This gets passed TEMPDIRLIST, a list consisting of the kind
 of entries used in `TeX-active-tempdir', and TIMESTAMP, the
@@ -1464,7 +1548,8 @@ time stamp under which the file got read in.  It returns an augmented
 list.  START and END give the buffer location where the preview
 is to be situated, IMAGE the image to place there, and FILENAME
 the file to use: a triple consisting of filename, its temp directory
-and the corresponding topdir."
+and the corresponding topdir.  COUNTERS is saved counter information,
+if any."
   (when (file-readable-p (car filename))
     (setq TeX-active-tempdir
 	  (or (assoc (nth 1 filename) tempdirlist)
@@ -1483,6 +1568,21 @@ and the corresponding topdir."
 		    `(lambda(event) (interactive "e")
 		       (preview-toggle ,ov 'toggle event))
 		    `(lambda() (interactive) (preview-delete ,ov))))
+      (when counters
+	(overlay-put
+	 ov 'preview-counters
+	 (cons
+	  (if (string= (car counters) "")
+	      preview-parsed-counters
+	    (mapcar #'cdr
+		    (setq preview-parsed-counters
+			  (preview-parse-counters (car counters)))))
+	  (if (string= (cdr counters) "")
+	      preview-parsed-counters
+	    (mapcar #'cdr
+		    (setq preview-parsed-counters
+			  (preview-parse-counters (cdr counters)))))))
+	(setq preview-buffer-has-counters t))
       (overlay-put ov 'filenames (list filename))
       (overlay-put ov 'preview-image (preview-import-image image))
       (overlay-put ov 'strings
@@ -1513,6 +1613,18 @@ will be skipped over backwards."
 	      (backward-char)))
       (error (goto-char oldpos)))))
 
+(defcustom preview-required-option-list '("active" "dvips" "auctex")
+  "Specifies options passed to the preview package regardless
+of whether there is an explicit \\usepackage of that package
+present."
+  :group 'preview-latex
+  :type '(list (set :inline t :tag "Required options"
+		    (const "active")
+		    (const "dvips")
+		    (const "counters")
+		    (const "auctex"))
+	       (repeat :inline t :tag "Others" string)))
+
 (defcustom preview-default-option-list '("displaymath" "floats"
 					 "graphics" "textmath" "sections")
   "*Specifies default options to pass to preview package.
@@ -1523,7 +1635,7 @@ on a document not configured for preview.  \"auctex\", \"active\",
   :group 'preview-latex
   :type '(list (set :inline t :tag "Options known to work"
 		    :format "%t:\n%v%h" :doc
-"The above options are all the useful ones
+		    "The above options are all the useful ones
 at the time of the release of this package.
 You should not need \"Other options\" unless you
 upgraded to a fancier version of just the LaTeX style.
@@ -1545,35 +1657,24 @@ are selected."
 		    (const "tracingall"))
 	       (repeat :inline t :tag "Other options" (string))))
 
-(defun preview-make-options ()
-  "Create default option list to pass into LaTeX preview package."
-  (mapconcat #'identity preview-default-option-list ","))
-
-(defcustom preview-default-preamble '("\\RequirePackage[%P]{preview}")
-  "*Specifies default preamble to add to a LaTeX document.
+(defcustom preview-default-preamble
+  '(("" "\\RequirePackage[" ("," . preview-default-option-list)
+				      "]{preview}"))
+  "*Specifies default preamble lines to add to a LaTeX document.
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
 list of LaTeX commands is inserted just before \\begin{document}."
   :group 'preview-latex
-  :type '(list (repeat :inline t :tag "Preamble commands" (string))))
+  :type preview-expandable-string)
 
-(defun preview-make-preamble ()
-  "Create default preamble to add to LaTeX document."
-  (mapconcat #'identity preview-default-preamble "\n"))
-
-(defcustom preview-LaTeX-command "%l \"\\nonstopmode\
-\\PassOptionsToPackage{auctex,active,dvips}{preview}\
-\\AtBeginDocument{\\ifx\\ifPreview\\undefined\
-%D\\fi}\\input{%t}\""
+(defcustom preview-LaTeX-command '("" "%l \"\\nonstopmode\
+\\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
+\\AtBeginDocument{\\ifx\\ifPreview\\undefined"
+("\n" . preview-default-preamble) "\\fi}\\input{%t}\"")
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
-  :type 'string
-  :set (lambda (symbol value)
-	 (set-default symbol value)
-	 (if (featurep 'latex)
-	     (LaTeX-preview-setup)))
-  :initialize #'custom-initialize-default)
+  :type preview-expandable-string)
 
 (defun preview-goto-info-page ()
   "Read documentation for preview-latex in the info system."
@@ -1634,8 +1735,8 @@ to add the preview functionality."
 	 (customize-menu-create 'preview))])
       ["Read documentation" preview-goto-info-page]
       ["Report Bug" preview-report-bug]))
-  (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
-			     #'TeX-inline-preview nil t)))
+  (let ((preview-entry '("Generate Preview" "See `preview-LaTeX-command'"
+			 TeX-inline-preview nil t)))
     (setq TeX-command-list
 	  (nconc (delq
 		  (assoc (car preview-entry) TeX-command-list)
@@ -1648,10 +1749,6 @@ see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
   (add-to-list 'TeX-expand-list
 	       '("%m" preview-create-subdirectory) t)
-  (add-to-list 'TeX-expand-list
-	       '("%D" preview-make-preamble) t)
-  (add-to-list 'TeX-expand-list
-	       '("%P" preview-make-options) t)
   (if (eq major-mode 'latex-mode)
       (preview-mode-setup))
   (if (boundp 'desktop-buffer-misc)
@@ -1713,11 +1810,23 @@ later while in use."
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 
+(defun preview-parse-counters (string)
+  "Extract counter information from STRING."
+  (let ((list preview-parsed-counters) (pos 0))
+    (while (eq pos (string-match " *\\({\\([^{}]+\\)}{[-0-9]+}\\)" string pos))
+      (setcdr (or (assoc (match-string 2 string) list)
+		  (car (push (list (match-string 2 string)) list)))
+	      (match-string 1 string))
+      (setq pos (match-end 1)))
+    list))
+
 (defvar preview-parse-variables
   '(("Fontsize" preview-parsed-font-size
      "\\` *\\([0-9.]+\\)pt\\'" 1 string-to-number)
     ("Magnification" preview-parsed-magnification
-     "\\` *\\([0-9]+\\)\\'" 1 string-to-number)))
+     "\\` *\\([0-9]+\\)\\'" 1 string-to-number)
+    ("Counters" preview-parsed-counters
+     ".*" 0 preview-parse-counters)))
 
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
@@ -1727,9 +1836,10 @@ it is certain that we have a valid DVI file, and it has
 to return in its CAR the PROCESS parameter for the CLOSE
 call, and in its CDR the final stuff for the placement hook."
   (with-temp-message "locating previews..."
-    (let (TeX-error-file TeX-error-offset snippet box
+    (let (TeX-error-file TeX-error-offset snippet box counters
 	  file line
 	  (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
+	  lcounters
 	  string after-string error context-start
 	  context offset
 	  parsestate (case-fold-search nil)
@@ -1804,6 +1914,7 @@ name(\\([^)]+\\))\\)\\|\
 					     (match-string 5)
 					     (match-string 6)))
 				  t))
+			  counters (mapcar #'cdr preview-parsed-counters)
 			  error (progn
 				  (setq lpoint (point))
 				  (end-of-line)
@@ -1855,7 +1966,7 @@ name(\\([^)]+\\))\\)\\|\
 			(error (preview-log-error err "Translation hook")))
 		      (push (vector file (+ line offset)
 				  string after-string
-				  snippet box) parsestate)))
+				  snippet box counters) parsestate)))
 		;; else normal error message
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
@@ -1881,10 +1992,15 @@ name(\\([^)]+\\))\\)\\|\
 	      (let ((var
 		     (assoc (match-string-no-properties 6)
 			    preview-parse-variables))
-		    str)
+		    (offset (- (match-beginning 0) (match-beginning 7)))
+		    (str (match-string-no-properties 7)))
+		;; paste together continuation lines:
+		(while (= (- (length str) offset) 79)
+		  (search-forward-regexp "^\\([^\n\r]*\\)\r?$")
+		  (setq offset (- (length str))
+			str (concat str (match-string-no-properties 1))))
 		(when (and var
-			   (string-match (nth 2 var)
-					 (setq str (match-string 7))))
+			   (string-match (nth 2 var) str))
 		  (set (nth 1 var)
 		       (funcall (nth 4 var)
 				(match-string-no-properties
@@ -1908,7 +2024,8 @@ name(\\([^)]+\\))\\)\\|\
 		      string (aref state 2)
 		      after-string (aref state 3)
 		      snippet (aref state 4)
-		      box (aref state 5))
+		      box (aref state 5)
+		      counters (aref state 6))
 		(unless (string= lfile file)
 		  (set-buffer (find-file-noselect
 			       (expand-file-name file run-directory)))
@@ -1965,6 +2082,7 @@ name(\\([^)]+\\))\\)\\|\
 					(point))
 				      (point)
 				      (preview-TeX-bb box)
+				      (cons lcounters counters)
 				      tempdir
 				      (cdr open-data))
 				     close-data))
@@ -1976,7 +2094,7 @@ name(\\([^)]+\\))\\)\\|\
 				      snippet)) "Parser")))
 			  (setq lstart nil))
 		      ;; else-part of if box
-		      (setq lstart (point))
+		      (setq lstart (point) lcounters counters)
 		      ;; >= because snippets in between might have
 		      ;; been ignored because of TeX-default-extension
 		      (unless (>= snippet (1+ lsnippet))
@@ -2121,7 +2239,8 @@ This is passed through `preview-do-replacements'."
 (defvar preview-format-name)
 
 (defcustom preview-dump-replacements
-  '(("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\
+  '(preview-LaTeX-command-replacements
+    ("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\
 \\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
      . ("\\2initex\\4 \"&\\2\\3tex\" " preview-format-name ".ini \\7")))
   "Generate a dump command from the usual preview command."
@@ -2169,10 +2288,8 @@ on the same master file."
     (setq TeX-current-process-region-p nil)
     (prog1
 	(TeX-inline-preview
-	 "Cache preamble"
-	 (preview-do-replacements
-	  (TeX-command-expand preview-LaTeX-command 'TeX-master-file)
-	  preview-dump-replacements)
+	 "Cache Preamble"
+	 nil
 	 master)
       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
       (setq TeX-sentinel-function
@@ -2207,14 +2324,22 @@ stored in `preview-dumped-alist'."
 (defun TeX-inline-preview (name command file)
   "Main function called by AUC TeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
-  (setq command (preview-do-replacements command
-					 preview-LaTeX-command-replacements))
   (let* ((commandbuff (current-buffer))
 	 (pr-file (cons
 		   (if TeX-current-process-region-p
 		       'TeX-region-file
 		     'TeX-master-file)
 		   file))
+	 (command (preview-do-replacements
+		   (TeX-command-expand
+		    (preview-string-expand preview-LaTeX-command)
+		    (car pr-file))
+		   (symbol-value (cdr (assoc
+				       name
+				       '(("Generate Preview" .
+					  preview-LaTeX-command-replacements)
+					 ("Cache Preamble" .
+					  preview-dump-replacements)))))))
 	 (master (TeX-master-file))
 	 (master-file (expand-file-name master))
 	 (dumped-cons (assoc master-file
@@ -2287,7 +2412,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.176 $"))
+	(rev "$Revision: 1.177 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2298,7 +2423,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-07 17:51:46 $"))
+    (let ((date "$Date: 2002-12-09 18:23:41 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2327,8 +2452,13 @@ In the form of yyyy.mmdd")
        preview-fast-dvips-command
        preview-scale-function
        preview-LaTeX-command
+       preview-required-option-list
        preview-default-option-list
-       preview-default-preamble)
+       preview-default-preamble
+       preview-LaTeX-command-replacements
+       preview-dump-replacements
+       preview-undump-replacements
+       preview-auto-cache-preamble)
      nil
      (lambda ()
        (insert (format "\nOutput from running `%s -h':\n"
