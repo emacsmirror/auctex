@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.36 1993-04-12 22:25:44 amanda Exp $
+;;; $Id: tex-buf.el,v 1.37 1993-04-21 18:13:09 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -156,10 +156,8 @@ command."
 	      (read-from-minibuffer (concat name " command: ") command)))
     
     ;; Now start the process
-    (let ((buffer (current-buffer)))
-      (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
-      (apply hook name command (apply file nil) nil)
-      (pop-to-buffer buffer))))
+    (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
+    (apply hook name command (apply file nil) nil)))
 
 (defun TeX-command-expand (command file &optional list)
   "Expand COMMAND for FILE as described in LIST.
@@ -330,8 +328,8 @@ Return the new process."
 	(buffer (TeX-process-buffer-name file)))
     (TeX-process-check file)		; Check that no process is running
     (setq TeX-command-buffer (current-buffer))
-    (pop-to-buffer (get-buffer-create buffer) t)
-    (erase-buffer)
+    (with-output-to-temp-buffer buffer)
+    (set-buffer buffer)
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
     (setq TeX-parse-hook 'TeX-parse-command)

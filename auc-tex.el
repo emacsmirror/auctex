@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.46 1993-03-28 11:53:37 amanda Exp $
+;;; $Id: auc-tex.el,v 5.47 1993-04-21 18:13:02 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -41,7 +41,7 @@
 (TeX-define-key "\n"       'TeX-terminate-paragraph)
 (TeX-define-key "\e}"     'up-list)
 (TeX-define-key "\e{"     'TeX-insert-braces)
-(TeX-define-key "\C-c\C-o" 'outline-minor-mode)
+;(TeX-define-key "\C-c\C-o" 'outline-minor-mode)
 (TeX-define-key "\C-c\C-b" 'TeX-bold)
 (TeX-define-key "\C-c\C-i" 'TeX-italic)
 (TeX-define-key "\C-c\C-s" 'TeX-slanted)
@@ -86,6 +86,7 @@
 (defun TeX-buffer ()
   "OBSOLETE: Run TeX-command-default on the current document."
   (interactive)
+  (save-some-buffers) ; added for compatibility reasons
   (require 'tex-buf)
   (setq TeX-current-process-region-p nil)
   (TeX-command TeX-command-default 'TeX-master-file))
