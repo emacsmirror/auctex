@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.185 2003-01-10 15:30:03 dakas Exp $
+;; $Id: preview.el,v 1.186 2003-01-19 13:43:49 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -534,13 +534,13 @@ example \"-sDEVICE=png256\" will go well with 'png."
 				 gs-optionlist))
   (setq preview-gs-init-string
 	(format "\
-/preview-latex-do{{setpagedevice}stopped{handleerror quit}if save \
-exch[count 2 roll]exch cvx \
-systemdict/.runandhide known{.setsafe\
+/preview-latex-do{[count 3 roll save]3 1 roll{setpagedevice}stopped\
+{handleerror quit}if cvx systemdict/.runandhide known{.setsafe\
 \(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
 %s stopped{handleerror quit}if count 1 ne{quit}if \
-aload pop restore}bind def "
-		(mapconcat #'identity preview-gs-colors " ")))
+aload pop restore<</OutputFile%s>>setpagedevice}bind def "
+		(mapconcat #'identity preview-gs-colors " ")
+		(preview-ps-quote-filename null-device t)))
   (preview-gs-queue-empty)
   (preview-parse-messages #'preview-gs-dvips-process-setup))
 
@@ -694,10 +694,11 @@ object corresponding to the wanted page."
     (format "dup %d setfileposition %d()/SubFileDecode filter cvx"
 	    (1- (car curpage)) (nth 1 curpage))))
   
-(defun preview-ps-quote-filename (str)
+(defun preview-ps-quote-filename (str &optional nonrel)
   "Make a PostScript string from filename STR.
-The file name is first made relative."
-  (setq str (file-relative-name str))
+The file name is first made relative unless
+NONREL is not NIL."
+  (unless nonrel (setq str (file-relative-name str)))
   (let ((index 0))
     (while (setq index (string-match "[\\()]" str index))
       (setq str (replace-match "\\\\\\&" t nil str)
@@ -1060,6 +1061,38 @@ set to `preview-auto-reveal'."
   "Indicate auto-opening.
 Returns non-NIL if called by one of the commands in LIST."
   (memq this-command list))
+
+(defcustom preview-equality-transforms '(identity
+					 preview-canonical-spaces)
+"These functions are tried in turn on the strings from the
+regions of a preview to decide whether a preview is to be considered
+changed.  If any transform leads to equal results, the preview is
+considered unchanged."
+  :group 'preview-appearance
+  :type '(repeat function))
+
+(defun preview-relaxed-string= (&rest args)
+  (let ((lst preview-equality-transforms))
+    (while (and lst (not (apply #'string= (mapcar (car lst) args))))
+      (setq lst (cdr lst)))
+    lst))
+
+(defun preview-canonical-spaces (arg)
+  "Convert ARG into canonical form.
+Removes comments and collapses white space, except for multiple newlines."
+  (let (pos)
+    (while (setq pos (string-match "\\s<.*[\n\r][ \t]*" arg pos))
+      (setq arg (replace-match "" t t arg 0)))
+    (while (setq pos (string-match "[ \t]*\\(\\([ \t]\\)\\|[\n\r][ \t]*\\)"
+				   arg pos))
+      (setq arg (replace-match (if (match-beginning 2) " " "\n") t t arg 0)
+	    pos (1+ pos)))
+    (while (setq pos (string-match "\n+" arg pos))
+      (if (string= "\n" (match-string 0 arg))
+	  (setq arg (replace-match " " t t arg 0)
+		pos (1+ pos))
+	(setq pos (match-end 0)))))
+  arg)
 
 (defun preview-regenerate (ovr)
   "Pass the modified region in OVR again through LaTeX."
@@ -2476,7 +2509,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.185 $"))
+	(rev "$Revision: 1.186 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2487,7 +2520,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-01-10 15:30:03 $"))
+    (let ((date "$Date: 2003-01-19 13:43:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
