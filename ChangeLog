@@ -1,3 +1,13 @@
+2003-11-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/paralist.el: Removed coding cookie in first line.
+	Removed obsolete comment regarding placement of file.
+	(LaTeX-paralist-env-item-opt-label): Renamed from
+	`pl-LaTeX-env-item-opt-label' and changed references accordingly.
+	Added docstring.
+	Let `itemize' and `enumerate' environments use this function.
+	Thanks to Reiner Steib for these suggestions.
+
 2003-11-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-section-label): Added "part" and
