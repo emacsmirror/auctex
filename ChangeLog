@@ -1,3 +1,9 @@
+2005-03-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-title-faces)
+	(font-latex-title-4-face): Use yellow on terminals with dark
+	background and blue4 on terminals with light background.
+
 2005-03-02  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/auctex.texi (Floats): Document `LaTeX-top-caption-list'.
