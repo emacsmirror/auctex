@@ -1,3 +1,8 @@
+2001-10-26  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-LaTeX-command): new customization variable.
+	(LaTeX-preview-setup): use it.
+
 2001-10-25  David Kastrup  <David.Kastrup@t-online.de>
 
 	* We now cater for people with non-black-on-white setup.
