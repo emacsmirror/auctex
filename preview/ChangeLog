@@ -1,7 +1,3 @@
-2002-04-13  nixsf  <nixsf@punkthus221.au.dk>
-
-	* todo.texi: Update XEmacs status: most things are now done.
-
 2002-04-13  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Repair RedHat XEmacs braindamage
@@ -11,8 +7,8 @@
 2002-04-13  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-compatibility-macros):
-	Bind the final list of compiled macros
-	into the bytecode at the end of compilation.
+	Bind the final list of compiled macros into the bytecode at
+	the end of compilation.
 
 2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
 
