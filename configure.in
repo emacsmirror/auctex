@@ -17,6 +17,8 @@ if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info' ; then
    infodir='${packagedir}/info'
 fi
 
+TEX_INPUT_DIRS
+
 AC_PATH_PROG(TEX, tex, :)
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
 MAKEINFO_CHECK_MACROS(acronym env option)
