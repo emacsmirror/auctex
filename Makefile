@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.73 1993-11-18 20:09:04 amanda Exp $
+# $Id: Makefile,v 5.74 1993-12-15 21:42:09 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -275,7 +275,7 @@ dist:	tex-load.el
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
 	-(cd format; cvs add `echo $(FORMATSRC) | sed -e s@format/@@g` )
-	cvs commit 
+	cvs commit -m "Release $(TAG)"
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style auctex-$(TAG)/format 
@@ -297,5 +297,5 @@ dist:	tex-load.el
 
 min-map:
 	-cvs add $(MINMAPSRC) 
-	cvs commit
+	cvs commit -m "Update"
 	cp $(MINMAPSRC) $(FTPDIR) 

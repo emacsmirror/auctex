@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.51 1993-11-18 20:10:20 amanda Exp $
+;; $Id: tex-buf.el,v 1.52 1993-12-15 21:42:21 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -813,9 +813,12 @@ original file."
 
 (defun TeX-region-file (&optional extension)
   "Return TeX-region file name with EXTENSION."
-  (if extension
-      (concat TeX-region "." extension)
-    TeX-region))
+  (cond ((eq extension t)
+	 (concat TeX-region "." TeX-default-extension))
+	(extension
+	 (concat TeX-region "." extension))
+	(t
+	 TeX-region)))
 
 (defvar TeX-region "_region_"
   "*Base name for temporary file for use with TeX-region.")

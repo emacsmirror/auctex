@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.65 1993-11-18 20:43:11 amanda Exp $
+@c $Id: auc-tex.texi,v 1.66 1993-12-15 21:42:35 amanda Exp $
 
 @finalout
 @titlepage
@@ -2435,9 +2435,25 @@ Alpha testers (in order of appearance): Marc Gemis
 Tim Carlson @samp{<tim@@math.montana.edu>}, John Daschbach
 @samp{<dasch@@darkwing.uoregon.edu>}, Bob Fields
 @samp{<bob@@minster.york.ac.uk>}, Peter Whaite
-@samp{<peta@@cim.mcgill.ca>}, and probably more.@refill
+@samp{<peta@@cim.mcgill.ca>}, Volker Dobler
+@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>}, Phil Austin
+@samp{<phil@@geog.ubc.ca>}, Martin Maechler
+@samp{<maechler@@stat.math.ethz.ch>}, and probably more.@refill
 
 @itemize @bullet
+@item
+@code{LaTeX-dead-mode} removed.  Use the unbundled `remap' package
+instead. 
+
+@item
+All minor modes unbundled.  You can find them from ftp at
+@samp{ftp.iesd.auc.dk} in the directory @file{/pub/emacs-lisp}.  Removed
+information about minor modes from this document.
+
+@item
+New hooks for changing ispell directory, see @file{tex-site.el} for
+details.  The new hooks allow you to use the `remap' package instead.
+
 @item 
 La@TeX{}2e mode now supported.  Insert 
 @lisp
@@ -2556,18 +2572,11 @@ Cleaned up all minor modes, also made them use @file{min-map.el} or
 @file{min-mode.el} instead of @file{min-bind.el}.
 
 @item
-Removed information about minor modes from this document.
-
-@item
 Cleaned up release management.
 
 @item
 AUC TeX will not longer be confused when you rewrite a file under a new
 name. 
-
-@item
-The choice of ispell dictionary is now done in the when loading the
-style files, instead of when starting ispell.
 
 @item
 Lots of code cleanup, involving reformating the source and renaming all

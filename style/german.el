@@ -1,6 +1,6 @@
 ;;; german.el - Setup AUC TeX for editing German text.
 
-;; $Id: german.el,v 1.4 1993-09-06 22:28:34 amanda Exp $
+;; $Id: german.el,v 1.5 1993-12-15 21:42:44 amanda Exp $
 
 ;;; Commentary:
 ;;
@@ -16,11 +16,11 @@
 
 (TeX-add-style-hook "german"
  (function (lambda ()
-   (TeX-ispell-change-dictionary "german")
    (set-syntax-table LaTeX-german-mode-syntax-table)
    (make-local-variable 'TeX-open-quote)
    (make-local-variable 'TeX-close-quote)
    (setq TeX-open-quote "\"")
-   (setq TeX-close-quote "\""))))
+   (setq TeX-close-quote "\"")
+   (run-hooks 'TeX-language-de-hook))))
 
 ;;; german.el ends here
