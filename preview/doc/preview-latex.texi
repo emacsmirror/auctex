@@ -114,18 +114,6 @@ To the key bindings, lisp functions and menu entries in @AUCTeX{}
 (@inforef{Key Index,,auctex}), the following are added:
 
 @table @w
-@item @kbd{C-c C-c g @key{RET}} 
-@itemx Command/Generate preview. 
-This command generates previews for all appropriate objects in the
-current document. Already preset previews are re-generated.
-
-You can use the @AUCTeX{} variants starting with @kbd{C-c C-b g
-@key{RET}} and @kbd{C-c C-r g @key{RET}} for generating previews just in
-the current buffer of the document, or a region of it.
-@kindex @kbd{C-c C-c g @key{RET}}
-@kindex @kbd{C-c C-b g @key{RET}}
-@kindex @kbd{C-c C-r g @key{RET}}
-
 @item @kbd{C-c C-p C-p}
 @itemx @code{preview-at-point}
 @itemx Preview/Generate previews (or toggle) at point
@@ -137,6 +125,17 @@ before, in which case the area will include the last such preview in
 either direction.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
+
+@item @kbd{<mouse-2>}
+@itemx @kbd{<mouse-3>}
+The middle mouse button has a similar action bound to it as
+@code{preview-at-point}, only that it knows which preview to apply it to
+according to the position of the click.  You can click either anywhere
+on a previewed image, or when the preview is opened and showing the
+source text, you can click on the icon preceding the source text.  In
+other areas, the usual mouse key action (typically: paste) is not
+affected.  The right mouse key pops up a context menu with several
+options.
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment (&optional count)}
@@ -261,15 +260,6 @@ the
 @end ifnotinfo
 info manual.
 
-@item @kbd{C-c C-k}
-@itemx LaTeX/TeX Output/Kill Job
-@kindex @kbd{C-c C-k}
-@cindex Kill preview-generating process
-Kills the preview-generating process. This is really an @AUCTeX{}
-keybinding, but it is included here as a hint. If you are generating
-a preview and then make a change to the buffer, @previewlatex{} may be
-confused and place the previews wrong.
-
 @item @kbd{M-x preview-report-bug @key{RET}}
 @itemx @code{preview-report-bug}
 @itemx Preview/Report Bug
@@ -281,6 +271,15 @@ version of @previewlatex{} you are using as well as versions of
 relevant other software, and also some of the more important
 settings. Please use this method of reporting, if at all possible and
 before reporting a bug, have a look at @ref{Known problems}.
+
+@item @kbd{C-c C-k}
+@itemx LaTeX/TeX Output/Kill Job
+@kindex @kbd{C-c C-k}
+@cindex Kill preview-generating process
+Kills the preview-generating process. This is really an @AUCTeX{}
+keybinding, but it is included here as a hint. If you are generating
+a preview and then make a change to the buffer, @previewlatex{} may be
+confused and place the previews wrong.
 @end table
 
 @node Simple customization, Known problems, Keys and lisp, top
