@@ -1,6 +1,5 @@
 +% -*- plain-tex -*- 
-% $Id: tex-ref.tex,v 1.4 2003-06-03 09:01:31 dak Exp $
-% Reference Card for Auc TeX version 7
+% Reference Card for AUCTeX version 11.50
 %**start of header
 \newcount\columnsperpage
 
@@ -19,14 +18,15 @@
 %
 % Kresten Krab Thorup updated the reference card to 6.
 % Per Abrahamsen updated the reference card to 7, 8, and 9.
+% Ralf Angeli updated it to 11.50.
 %
 % Thanks to Stephen Gildea
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{9}
-\def\year{1993}
-\def\version{February \year\ v\versionnumber}
+\def\versionnumber{11.50}
+\def\year{2004}
+\def\version{August \year\ v\versionnumber}
 
 \def\shortcopyrightnotice{\vskip 1ex plus 2 fill
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
@@ -34,10 +34,10 @@
 
 \def\copyrightnotice{
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ 1987 Free Software Foundation, Inc.}
+\centerline{Copyright \copyright\ 1987, 2004 Free Software Foundation, Inc.}
 \centerline{Copyright \copyright\ 1992 Kresten Krab Thorup}
-\centerline{Copyright \copyright\ \year\ Per Abrahamsen}
-\centerline{for AUC \TeX\ version \versionnumber}
+\centerline{Copyright \copyright\ 1993 Per Abrahamsen}
+\centerline{for AUC\TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
 this card provided the copyright notice and this permission notice
@@ -196,7 +196,7 @@ are preserved on all copies.
 %**end of header
 
 
-\title{AUC \TeX\ Reference Card}
+\title{AUC\TeX\ Reference Card}
 
 \centerline{(for version \versionnumber)}
 
@@ -206,34 +206,42 @@ are preserved on all copies.
 \key{Tabular}{TAB}
 \key{Linefeed}{LFD}
 
-Mode variables: You want to change the variables found in the file
-`{\tt tex-site.el}' in the AUC-\TeX\ distribution for your site.  The
-other variables should be set by the individual user.  
-
-Entering LaTeX mode calls the value of text-mode-hook, then the value
-of TeX-mode-hook, and then the value of LaTeX-mode-hook.
+Entering LaTeX mode calls the value of `{\tt text-mode-hook}', then
+the value of `{\tt TeX-mode-hook}', and then the value of `{\tt
+LaTeX-mode-hook}'.
 
 \section{Shell Interaction}
 
-\key{Save Document}{C-c C-d}
 \key{Run a command on the master file}{C-c C-c}
 \key{Run a command on the buffer}{C-c C-b}
 \key{Run a command on the region}{C-c C-r}
+\key{Pin a region}{C-c C-t C-r}
+\key{Toggle usage of source specials}{C-c C-t C-s}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
 \key{Next error in \TeX/LaTeX session}{C-c `}
-\key{Toggle debug of wonderful boxes}{C-c C-w}
-\key{Switch to master file or active buffer}{C-c ^}
+\key{Toggle debug of wonderful boxes}{C-c C-w} % wonderful?
+\key{View output file}{C-c C-v}
 
-Commands you can run on the master file (with C-c C-c) or the region
-(with C-c C-r) include the following.
+Commands you can run on the master file (with \kbd{C-c C-c}) or the
+region (with \kbd{C-c C-r}) include the following (only for LaTeX
+mode).
 
-\key{\TeX}{TeX}
-\overfullrule=0pt %The next line is too wide.
-\key{Run \TeX{} Interactively}{TeX Interactive}
-\key{LaTeX}{LaTeX}
+% \key{\TeX}{TeX}
+% \overfullrule=0pt %The next line is too wide.
+% \key{Run \TeX{} Interactively}{TeX Interactive}
+% \key{Run PDF\TeX{}}{PDFTeX}
+\key{Run LaTeX}{LaTeX}
+\overfullrule=0pt
 \key{Run LaTeX Interactively}{LaTeX Interactive}
-\key{SliTeX}{SliTeX}
+\key{Run PDFLaTeX}{PDFLaTeX}
+% \key{Run Con\TeX{}t (once)}{ConTeXt}
+% \overfullrule=0pt
+% \key{Run Con\TeX{}t Interactively (once)}{ConTeXt Interactive}
+% \key{Run Con\TeX{}t Full}{ConTeXt Full}
+% \key{Run Makeinfo}{Makeinfo}
+% \overfullrule=0pt
+% \key{Run Makeinfo with HTML output}{Makeinfo HTML}
 \key{A previewer}{View}
 \key{Printing the DVI file}{Print}
 \key{Bib\TeX}{BibTeX}
@@ -247,6 +255,7 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Insert Section}{C-c C-s}
 \key{Insert LaTeX environment}{C-c C-e}
 \key{Insert item}{C-c LFD}
+\key{Insert item (alias)}{M-RET}
 \key{Close LaTeX environment}{C-c ]}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
@@ -278,15 +287,30 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Mark an environment}{C-c .}
 \key{Mark a section}{C-c *}
 
-\key{Comment region}{C-c ;}
-\key{Comment paragraph}{C-c \%}
-\key{Uncomment region}{C-u - C-c ;}
-\key{Uncomment paragraph}{C-u - C-c \%}
+\key{Comment or uncomment region}{C-c ;}
+\key{Comment or uncomment paragraph}{C-c \%}
+
+\section{Multifile Handling}
+
+\key{Save Document}{C-c C-d}
+\key{Switch to master file or active buffer}{C-c ^}
+\key{Query for a master file}{C-c \_}
+
+\section{Source Display}
+
+\key{Toggle folding mode}{C-c C-o C-f}
+\key{Hide all items in buffer}{C-c C-o C-b}
+\key{Hide current macro}{C-c C-o C-m}
+\key{Hide current environment}{C-c C-o C-e}
+\key{Show all items in buffer permanently}{C-c C-o C-x}
+\key{Show current item permanently}{C-c C-o C-c}
 
 \section{Miscellaneous}
 
+\key{Show documentation}{C-c TAB}
 \key{Math Mode}{C-c \~{}}
-\key{Reset AUC TeX}{C-c C-n}
+\key{Reset Buffer}{C-c C-n}
+\key{Reset AUC\TeX}{C-u C-c C-n}
 
 \copyrightnotice
 
