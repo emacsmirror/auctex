@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.112 2002-04-14 01:36:04 dakas Exp $
+;; $Id: preview.el,v 1.113 2002-04-14 01:46:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1851,12 +1851,13 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	  (if TeX-process-asynchronous
 	      process
 	    (TeX-synchronous-sentinel name file process)))
-      (error (preview-log-error err "Preview" process)))
+      (error (preview-log-error err "Preview" process)
+	     (delete-process process)))
     (preview-reraise-error process)))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.112 $"))
+	(rev "$Revision: 1.113 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
