@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.188 2003-07-10 21:56:09 dakas Exp $
+;; $Id: preview.el,v 1.189 2003-11-05 22:21:16 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -89,6 +89,9 @@ preview-latex's bug reporting commands will probably not work.")))
   '((postscript
      (open preview-eps-open)
      (place preview-eps-place))
+    (dvipng
+     (open preview-dvipng-open)
+     (place preview-dvipng-place))
     (png (open preview-gs-open png ("-sDEVICE=png16m"))
 	 (place preview-gs-place)
 	 (close preview-gs-close))
@@ -129,9 +132,9 @@ function args" :inline t sexp))
   "*Image type to be used in images."
   :group 'preview-gs
   :type (append '(choice)
-		(delete '(const postscript)
+;		(delete '(const postscript)
 			(mapcar (lambda (symbol) (list 'const (car symbol)))
-				preview-image-creators))
+				preview-image-creators);)
 		'((symbol :tag "Other"))))
 
 (defun preview-call-hook (symbol &rest rest)
@@ -389,6 +392,12 @@ cons cell with a separator string in the CAR, and either
 an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
+(defcustom preview-dvipng-command
+  "dvipng %d -o %m/preview.%03d"
+  "*Command used for converting to separate PNG images."
+  :group 'preview-latex
+  :type 'string)
+
 (defcustom preview-dvips-command
   "dvips -Pwww -i -E %d -o %m/preview.000"
   "*Command used for converting to separate EPS images."
@@ -632,6 +641,18 @@ The usual PROCESS and COMMAND arguments for
 	(delete-process process)
 	(unless (eq (process-status process) 'signal)
 	  (preview-dvips-abort)))))
+
+(defun preview-dvipng-open ()
+  "Place everything nicely for direct PNG rendering."
+  (preview-parse-messages #'preview-dvipng-process-setup))
+
+(defun preview-dvipng-process-setup ()
+  "Set up dvipng process for direct PNG rendering."
+  (let* ((TeX-process-asynchronous nil)
+	 (process (preview-start-dvipng)))
+    (TeX-synchronous-sentinel "Preview-DviPNG" (cdr preview-gs-file)
+			      process)
+    (list process TeX-active-tempdir preview-scale)))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
@@ -1494,6 +1515,23 @@ is already selected and unnarrowed."
 	 (goto-char (overlay-start ov))
 	 (if (bolp) "\n" ""))))))
 
+(defun preview-dvipng-place (ov snippet box tempdir scale)
+  "Generate an image via direct EPS rendering.
+Since OV already carries all necessary information,
+the argument SNIPPET passed via a hook mechanism is ignored.
+BOX is a bounding box from TeX if we know one.  TEMPDIR is used
+for creating the file name, and SCALE is a copy
+of `preview-scale' necessary for `preview-ps-image."
+  (let ((filename (preview-make-filename
+		   (format "preview.%03d" snippet)
+		   tempdir)))
+    (overlay-put ov 'filenames (list filename))
+    (overlay-put ov 'preview-image 
+		 (preview-create-icon (car filename)
+				      'png
+				      0)))
+  nil)
+
 (defun preview-eps-place (ov snippet box tempdir scale)
   "Generate an image via direct EPS rendering.
 Since OV already carries all necessary information,
@@ -2228,6 +2266,42 @@ specified by BUFF."
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
 
+(defun preview-start-dvipng ()
+  "Start a DviPNG process.."
+  (let* ((file preview-gs-file)
+	 tempdir
+	 (command (with-current-buffer TeX-command-buffer
+		    (prog1
+			(TeX-command-expand preview-dvipng-command
+					    (car file))
+		      (setq tempdir TeX-active-tempdir))))
+	 (name "Preview-DviPNG"))
+    (setq TeX-active-tempdir tempdir)
+    (goto-char (point-max))
+    (insert-before-markers "Running `" name "' with ``" command "''\n")
+    (setq mode-name name)
+    (setq TeX-sentinel-function
+	  (lambda (process name) (message "%s: done." name)))
+    (if TeX-process-asynchronous
+	(let ((process (start-process name (current-buffer) TeX-shell
+				      TeX-shell-command-option
+				      command)))
+	  (if TeX-after-start-process-function
+	      (funcall TeX-after-start-process-function process))
+	  (TeX-command-mode-line process)
+	  (set-process-filter process 'TeX-command-filter)
+	  (set-process-sentinel process 'TeX-command-sentinel)
+	  (set-marker (process-mark process) (point-max))
+	  (push process compilation-in-progress)
+	  (sit-for 0)
+	  process)
+      (setq mode-line-process ": run")
+      (set-buffer-modified-p (buffer-modified-p))
+      (sit-for 0)				; redisplay
+      (call-process TeX-shell nil (current-buffer) nil
+		    TeX-shell-command-option
+		    command))))
+
 (defun preview-start-dvips (&optional fast)
   "Start a DviPS process.
 If FAST is set, do a fast conversion."
@@ -2514,7 +2588,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.188 $"))
+	(rev "$Revision: 1.189 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2525,7 +2599,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-07-10 21:56:09 $"))
+    (let ((date "$Date: 2003-11-05 22:21:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
