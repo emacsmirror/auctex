@@ -144,7 +144,8 @@ install-info --info-dir=%{_infodir} --delete \
 %files xemacs
 %defattr(-,root,root)
 %{_libdir}/xemacs/site-packages/lisp/preview
-%{_libdir}/xemacs/site-packages/lisp/site-start.d/preview-latex.el 
+%{_libdir}/xemacs/site-packages/etc/preview
+%verify() %{_libdir}/xemacs/site-packages/pkginfo/MANIFEST.preview
 %endif
 
 %changelog
