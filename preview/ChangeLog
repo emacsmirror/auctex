@@ -1,3 +1,10 @@
+2003-04-28  David Kastrup  <dakas@users.sourceforge.net>
+
+	* configure.in: Fix check for images.
+
+	* aclocal.m4 (library): Try setting the EMACS_cv_SYS_* variable
+	that we are actually checking.  Is that correct?
+
 2003-04-17  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/install.texi:

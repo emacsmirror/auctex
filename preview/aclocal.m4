@@ -351,7 +351,7 @@ if test -z "$3"; then
 	AC_MSG_CHECKING(for $2 in $1)
 fi
 library=`echo $1 | tr _ -`
-EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
+EMACS_LISP(EMACS_cv_SYS_$1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi

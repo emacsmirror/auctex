@@ -37,7 +37,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
 else
    PLAT_LISP=prv-emacs.el
    AC_MSG_CHECKING([if $EMACS supports images])
-   EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types)\
+   EMACS_LISP(EMACS_cv_SYS_emacs21, [(unless (and (boundp 'image-types) image-types)
 		 (error \"This Emacs does not support images\"))], "noecho")
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
       AC_MSG_ERROR("You need an Emacs that supports images")
