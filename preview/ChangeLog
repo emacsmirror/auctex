@@ -1,3 +1,11 @@
+2001-11-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* PROBLEMS: Recommend customizing new variable
+	preview-dvips-command for DviPS problems.
+	Add sections about Windows and XEmacs.
+	Add section about LaTeX/language environment problem.
+	Add section about flyspell.el including patch.
+
 2001-11-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs): and other groups: set :prefix in
