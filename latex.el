@@ -2959,8 +2959,12 @@ the last entry in the menu."
 	      ["Kill Job" TeX-kill-job t]
 	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
 	       :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Switch to Original File" TeX-home-buffer t]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
+        (list "Multifile"
+	      ["Switch to Master File" TeX-home-buffer t]
+              ["Save Document" TeX-save-document t]
+              ["Set Master File" TeX-master-file-ask
+               :active (not (TeX-local-master-p))])
 	(list "Formatting and Marking"
 	      ["Format Environment" LaTeX-fill-environment t]
 	      ["Format Paragraph" LaTeX-fill-paragraph t]
@@ -2975,7 +2979,6 @@ the last entry in the menu."
 	(list "Miscellaneous"
 	      ["Uncomment Region" TeX-un-comment-region t]
 	      ["Comment Region" TeX-comment-region t]
-	      ["Switch to Master file" TeX-home-buffer t]
 	      ["Save Document" TeX-save-document t]
 	      ["Math Mode" LaTeX-math-mode
 	       :style toggle :selected LaTeX-math-mode ]
