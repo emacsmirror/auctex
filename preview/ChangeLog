@@ -1,4 +1,8 @@
-2003-10-07  Jan-Åke Larsson  <jalar@mai.liu.se>
+2003-10-08  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/psfontmap.c: Add third bare word: encoding
+
+2003-10-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/misc.c:
 	* dvipng/dvipng.texi: Allow for -- on options
