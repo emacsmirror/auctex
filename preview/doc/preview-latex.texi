@@ -1,5 +1,4 @@
 \input texinfo
-@documentlanguage en
 @setfilename preview-latex.info
 @settitle preview-latex
 @dircategory TeX
