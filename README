@@ -1,40 +1,38 @@
 
-$Id: README,v 5.15 1992-03-19 12:18:32 krab Exp $
+$Id: README,v 5.16 1992-07-22 13:06:16 krab Exp $
 
 AUC TeX 
 =======
 
 AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
 
-No real documentation has been written so far, but it may be available
-any year now.
+********** NEWS NEWS NEWS NEWS **********
 
-However, you're welcome to direct questions to the current maintainer,
-whose address is at the bottom of this file.
+Version 5.7:
 
-Files in this distribution
---------------------------
+	Preliminary documentation is avilable in the directory
+	`doc'.  It isn't very well written, but I beleve it covers
+	most interesting points.  Comments, suggestions, or even
+	rewrites of sections are VERY WELCOME...
 
-	README			This file
-	COPYING			The GNU emacs copyright notice
-	INTRO			A short introduction to AUC-TeX
-	TAGS			Tags file for cross reference 
+	LaCheck has been incorporated in the package.  The source
+	code for it is avilable in the directory `lacheck' along
+	with the documentation for it.  Lacheck may also be used 
+	from the command line.  It is bound to C-c $.
 
-	auc-tex.el		The main file of AUC TeX
-	tex-site.el		Site specific setup
-	ltx-env.el		Environment functions
-	ltx-sec.el		Sectioning functions
-	tex-buf.el		Invoking LaTeX from inside Emacs
-	tex-dbg.el		Debugging LaTeX and TeX documents
-	tex-misc.el		Miscellaneous utility functions
-	min-out.el		Outline mode as minor mode
-	tex-math.el		Smart math minor mode for writing
-				lots of LaTeX math symbols
-	min-map.el		Management of keymaps for minor modes
+	Some minor changes in:
 
-	make-idetex		Makefile for idetex, a simple de-TeX'er
-	idetex.l		Lex (source) for idetex
+	TeX-region:  Should work better with `Master:' option
 
+	LaTeX-environment:  Numerous new hooks added by Masayuki
+			Kuwada (hope I spelled it correctly)
+
+	And some additional minor fixes...
+	
+**************************************************
+
+You're welcome to direct questions to the current maintainer, whose
+address is at the bottom of this file.
 
 Installation
 ------------
@@ -97,13 +95,13 @@ or site-setup file. This is what I use:
 ;;  Setup outline-minor-mode
 ;; 
 
-(define-key Ctl-C-keymap "o" 'outline-minor-mode) 
+(global-set-key "\C-c o" 'outline-minor-mode)
 (autoload 'outline-minor-mode "min-out" t)
 
 (make-variable-buffer-local 'outline-prefix-char)
 (setq-default outline-prefix-char "\C-l")
 (make-variable-buffer-local 'outline-regexp)
-(setq-default outline-regexp "[*\^l]+")
+(setq-default outline-regexp "[*\^l]+") ;; this is purely a default
 (make-variable-buffer-local 'outline-level-function)
 (setq-default outline-level-function 'outline-level-default)
 
@@ -119,8 +117,8 @@ or site-setup file. This is what I use:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 For efficiency of auc-tex, you should byte compile the .el files.
+This is done automatically if you edit the make file run it.
 
 
 Warranty
@@ -143,10 +141,11 @@ Availability
 ------------
 
 AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
-"/pub/emacs-lisp/auc-tex-X.x.tar.Z". (where `X.x' specifies the
-release version) Also, it should be available at major TeX and Elisp
-archives around the world.  In case you don't have access anonymous
-ftp, you can get it by Email requests to `auc-tex_mgr@iesd.auc.dk'.
+"/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X.x' specifies the release
+version) The most recent version is available in `auctex.tex.Z'. Also,
+it should be available at major TeX and Elisp archives around the
+world.  In case you don't have access anonymous ftp, you can get it by
+Email requests to `auc-tex_mgr@iesd.auc.dk'.
 
 Contacts
 --------

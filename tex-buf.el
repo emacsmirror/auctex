@@ -1,4 +1,4 @@
-;;;* Last edited: Jul 22 10:15 1992 (krab)
+;;;* Last edited: Jul 22 14:28 1992 (krab)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; tex-buf.el - Invoking TeX from an inferior shell
@@ -7,12 +7,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.15 1992-07-22 12:24:34 krab Exp $
+;; $Id: tex-buf.el,v 1.16 1992-07-22 13:06:20 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Jul 22 10:15:24 1992
-;; Update Count    : 269
+;; Last Modified On: Wed Jul 22 14:28:27 1992
+;; Update Count    : 273
 ;; 
 ;; HISTORY
 ;; 30-Apr-1992		Kresten Krab Thorup	
@@ -311,7 +311,8 @@ Then the header/trailer will be searched in <file>."
  				(current-buffer))
  			    (max beg hend)
 			  beg)
-			end TeX-out-file t "no msg"))
+			end
+			TeX-out-file t "no msg"))
 	
 	
 	;;
@@ -320,7 +321,7 @@ Then the header/trailer will be searched in <file>."
 	(save-excursion
 	  (set-buffer master-buffer)
 	  (goto-char point-max)  ;; end of given region
-	  (cond ((search-forward trailer nil t))
+	  (cond ((search-forward trailer nil t)
 		 (set-buffer temp-buffer)
 		 (erase-buffer)
 		 ;; make sure trailer isn't hidden by a comment

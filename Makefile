@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.11 1992-07-22 12:25:59 krab Exp $
+# $Id: Makefile,v 5.12 1992-07-22 13:06:09 krab Exp $
 #
 
 ELISPDIR=/home/local/lib/emacs/local/auctex
@@ -16,7 +16,7 @@ ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-sec.el tex-buf.el tex-math.el tex-site.el 
 OTHERFILES = COPYING INTRO README Makefile
 
-all: $(ELISPDIR) refcard lacheck
+all: $(ELISPDIR) Doc LaCheck
 
 $(ELISPDIR): $(ELISPSRC)  Makefile
 	if [ ! -d $(ELISPDIR) ]; then mkdir $(ELISPDIR); fi
@@ -34,12 +34,11 @@ $(ELISPDIR): $(ELISPSRC)  Makefile
 	done)
 
 
-lacheck:
+LaCheck:
 	(cd lacheck; make)
 
-refcard: ref-card.tex
-	tex ref-card
-	rm ref-card.log
+Doc: 
+	(cd doc; make)
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
