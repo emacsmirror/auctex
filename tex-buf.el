@@ -535,6 +535,14 @@ Return the new process."
 	process
       (TeX-synchronous-sentinel name file process))))
 
+(defun TeX-run-ConTeXt (name command file)
+  "Create a process for NAME using COMMAND to format FILE with TeX."
+  (let ((process (TeX-run-format name command file)))
+    (setq TeX-sentinel-function 'TeX-ConTeXt-sentinel)
+    (if TeX-process-asynchronous
+	process
+      (TeX-synchronous-sentinel name file process))))
+
 (defun TeX-run-LaTeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-run-format name command file)))
@@ -618,7 +626,8 @@ Error parsing on C-x ` should work with a bit of luck."
 	(buffer (TeX-process-buffer-name file))
 	(process nil)
 	(dir (TeX-master-directory))
-	(command-buff (current-buffer)))
+	(command-buff (current-buffer))
+	(sentinel-function TeX-sentinel-function)) ;; inherit from major mode
     (TeX-process-check file)		; Check that no process is running
     (setq-default TeX-command-buffer command-buff)
     (with-output-to-temp-buffer buffer)
@@ -641,7 +650,8 @@ Error parsing on C-x ` should work with a bit of luck."
     (setq compilation-in-progress (cons process compilation-in-progress))
     (TeX-parse-reset)
     (setq TeX-parse-function 'TeX-parse-TeX)
-    (setq TeX-sentinel-function 'TeX-LaTeX-sentinel)))
+    ;; use the sentinel-function that the major mode sets, not the LaTeX one
+    (setq TeX-sentinel-function sentinel-function)))  
 
 ;;; Command Sentinels
 
@@ -747,6 +757,7 @@ Return nil ifs no errors were found."
     (setq TeX-command-next TeX-command-Show)
     nil))
 
+;; should go into latex.el? --pg
 (defun TeX-LaTeX-sentinel (process name)
   "Cleanup TeX output buffer after running LaTeX."
   (cond ((TeX-TeX-sentinel-check process name))
@@ -791,6 +802,7 @@ Return nil ifs no errors were found."
 			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-default))))
 
+;; should go into latex.el? --pg
 (defun TeX-BibTeX-sentinel (process name)
   "Cleanup TeX output buffer after running BibTeX."
   (message "You should perhaps run LaTeX again to get citations right.")
