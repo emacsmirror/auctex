@@ -1,3 +1,15 @@
+2003-10-17  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/misc.c:
+	* dvipng/font.c:
+	* dvipng/dvipng.texi: 
+	* dvipng/dvipng.h: Add option for freetype activation 
+
+	* dvipng/configure.ac: Add message when freetype is present
+
+	* dvipng/ft.c: Apparently FreeType hinting is a no-no. Load glyphs
+	with FT_LOAD_NO_HINTING. Only then output is acceptable.
+
 2003-10-15  David Kastrup  <dakas@users.sourceforge.net>
 
 	* latex/preview.dtx (subsection{Selection options}): Let the
