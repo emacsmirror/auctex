@@ -35,8 +35,8 @@ README: readme.texi
 PROBLEMS: problems.texi
 	-makeinfo --no-headers --no-validate problems.texi --output PROBLEMS
 
-install: preview-latex
-	cp preview-latex preview-latex-* $(infodir)
+install: preview-latex.info
+	cp preview-latex.info preview-latex-*.info $(infodir)
 	@echo "**********************************************************"
 	@echo "** The \`preview-latex' info files are now installed."
 	@echo "** Edit \`$(infodir)/dir'"
