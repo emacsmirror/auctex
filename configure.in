@@ -7,11 +7,11 @@ AC_PROG_INSTALL
 EMACS_PROG_EMACS
 EMACS_CHECK_MULE
 
-EMACS_PATH_PACKAGEDIR([tex-site])
-EMACS_PATH_LISPDIR([auctex])
+EMACS_PATH_PACKAGEDIR([tex-site],[auctex])
+EMACS_PATH_LISPDIR([tex-site])
 
-if test $EMACS_FLAVOR = "xemacs"  ; then
-   infodir="${packagedir}/info"
+if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info' ; then
+   infodir='${packagedir}/info'
 fi
 
 AC_PATH_PROG(TEX, tex, :)
