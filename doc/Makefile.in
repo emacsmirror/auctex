@@ -48,7 +48,7 @@ auc-tex.dvi: auc-tex.texi
 auc-tex.ps: auc-tex.dvi
 	$(DVIPS) auc-tex.dvi -o auc-tex.ps
 
-auctex: auc-tex.texi install.texi intro.texi changes.texi
+auctex: auc-tex.texi install.texi wininstall.texi intro.texi changes.texi
 	-$(MAKEINFO) auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
