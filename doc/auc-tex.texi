@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.156 2004-05-26 08:00:00 angeli Exp $
+@c $Id: auc-tex.texi,v 1.157 2004-05-26 13:19:45 angeli Exp $
 
 @finalout
 @titlepage
@@ -931,8 +931,8 @@ moves the cursor to an appropriate position by the left margin.
 
 Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
 tedious to type.  Therefore you can customize AUC@TeX{} to perform
-indentation upon pressing @key{RET} as well.  The respective option is
-called @code{TeX-indent-on-newline}.
+indentation (or to make coffee) upon pressing @key{RET} as well.  The
+respective option is called @code{TeX-newline}.
 
 @item C-j
 @kindex C-j
@@ -988,13 +988,6 @@ Number of spaces to add to the indentation for each @samp{\begin} not
 matched by a @samp{\end}.
 @end defopt
 
-@defopt TeX-indent-on-newline
-Used to determine if and how indentation happens when @key{RET} is
-pressed.  You can specify that your default for @key{RET} is used, that
-only the new line after pressing @key{RET} should be indented or that
-both the current line and the new line should be indented.
-@end defopt
-
 @defopt LaTeX-item-indent
 Number of spaces to add to the indentation for @samp{\item}'s in list
 environments.
@@ -1030,6 +1023,19 @@ inserted in the same line.  If the option
 default) and the comment does not fit into the line, a line break will
 be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
+@end defopt
+
+@defopt TeX-newline
+Used to specify the function which is called when @key{RET} is pressed.
+This will normally be @code{newline} which simply inserts a new line.
+In case you want to have AUC@TeX{} do indentation as well when you press
+@key{RET}, use the built-in functions @code{newline-and-indent} or
+@code{reindent-then-newline-and-indent}.  The former inserts a new line
+and indents the following line, i.e. it moves the cursor to the right
+position and therefore acts as if you pressed @key{LFD}.  The latter
+function additionally indents the current line.  If you choose
+@samp{Other}, you can specify your own fancy function to be called when
+@key{RET} is pressed.
 @end defopt
 
 @node Outline,  , Marking and formatting, Advanced Features
