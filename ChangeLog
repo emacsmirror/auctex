@@ -1,5 +1,9 @@
 2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-built-in-keyword-classes): Move
+	warning keywords up in order to save them from being covered by
+	less important faces.  Include "include" in warning keywords.
+
 	* aclocal.m4 (library): Change `IFS' temporarily for tokenizing
 	the string instead of inserting newlines.  The latter did not work
 	anyway because there was one backslash too much in "\\n".
