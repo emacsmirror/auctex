@@ -1,5 +1,14 @@
 2004-02-28  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (install-lisp): Overwrite old tex-site.el if it has
+	the "Don't edit" comment in it.  Rename it otherwise.  Use
+	$(auctexdir) instead of $(lispdir) for replacing @AUCTEX.
+
+	* tex-buf.el (TeX-command-query): Allow doctex-mode for .bbl file
+	checking.
+
+	* tex-site.el: Discourage customization in-file.
+
 	* latex.el (LaTeX-outline-regexp, LaTeX-environment)
 	(LaTeX-document-style-hook): Change docs to refer to document
 	classes instead of document style.
