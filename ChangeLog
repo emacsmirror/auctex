@@ -1,3 +1,10 @@
+2003-12-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (tex-mode): Let `TeX-master-file' be called upon opening
+	a file.  This shall restore the behaviour before the last change
+	regarding the question for `TeX-master'.  Thanks to Peter
+	Galbraith for setting the patch right.
+
 2003-11-28  David Kastrup  <dak@gnu.org>
 
 	* tex.el (LaTeX-update): Advice removed because of the following:
