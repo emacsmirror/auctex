@@ -6,7 +6,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.7 1992-09-16 12:14:55 amanda Exp $
+@c $Id: auc-tex.texi,v 1.8 1992-11-16 17:50:51 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -348,29 +348,96 @@ If ARG is positive or zero, use absolute level:
 The following variables can be set to customize the function.
 
 @table @code
+@item LaTeX-section-hooks
+Hooks to be run when inserting a section.
 @item LaTeX-section-label	
 Prefix to all section references.
-@item LaTeX-default-section		
-The default for new sections.
-@item LaTeX-expected-style
-The documentstyle assumed, when no @samp{\documentstyle} appear.
+@item LaTeX-largest-level
+The highest numeric level assumed when no @samp{\documentstyle} appears.
 @end table
 
 @end deffn
 
-When invoking @samp{LaTeX-section} you will be
-asked for a section command to insert.  An appropriate default is
-automatically selected by AUC @TeX{}, that is either: at the top of the
-document; the top level sectioning for that document style, and any
-other place: The same as the last occurring sectioning command.
+The precise behaviour of @samp{LaTeX-section} is defined by the contents
+of @samp{LaTeX-section-hooks}.
+
+@defvar LaTeX-section-hooks
+List of hooks to run when a new section is inserted.
+
+The following variables are set before the hooks are run
+
+@table @var
+@item level
+Numeric section level, default set by prefix arg to @samp{LaTeX-section}.
+@item name
+Name of the sectioning command, derived from @var{level}.
+@item title
+The title of the section, default to an empty string.
+@item toc
+Entry for the table of contents list, default nil.
+done-mark - Position of point afterwards, default nil meaning after the
+inserted text.
+@end table
+
+The following standard hook exist
+
+@table @samp
+@item LaTeX-section-level-hook
+Query the user about the name of the sectioning command.  Modifies
+@var{level} and @var{name}.
+@item LaTeX-section-title-hook
+Query the user about the title of the section. Modifies @var{title}.
+@item LaTeX-section-toc-hook
+Query the user for the toc entry.  Modifies @var{toc}.
+@item LaTeX-section-section-hook
+Insert La@TeX{} section command according to @var{name}, @var{title},
+and @var{toc}.  If @var{toc} is nil, no toc entry is enserted.  If
+@var{toc} or @var{title} are empty strings, @var{done-mark} will be
+placed at the point they should be inserted.
+@item LaTeX-section-label-hook
+Insert a label after the section command.  Controled by the variable
+@samp{LaTeX-section-label}.
+@end table 
+
+To get a full featured @samp{LaTeX-section} command, insert 
+
+@example
+(setq LaTeX-section-hooks
+      '(LaTeX-section-level-hook
+	LaTeX-section-title-hook
+	LaTeX-section-toc-hook
+	LaTeX-section-section-hook
+	LaTeX-section-label-hook))
+@end example
+
+in your @file{.emacs} file.
+@end defvar
+
+The following describes the default behaviour.
+
+When invoking @samp{LaTeX-section} you will be asked for a section
+command to insert.  An appropriate default is automatically selected by
+AUC @TeX{}, that is either: at the top of the document; the top level
+sectioning for that document style, and any other place: The same as the
+last occurring sectioning command.
 
 Next, you will be asked for the the actual name of that section, and
 last you will be asked for a label to be associated with that section.
 The label will be prefixed by the value of:
 
 @defvar LaTeX-section-label
-Prefix to use for labels associated with sections. Defaults to
-@samp{"sec:"}.
+Default prefix when asking for a label.
+
+If it is a string, it it used unchanged for all kinds of sections. 
+If it is nil, no label is inserted.
+If it is a list, the list is searched for a member whose car is equal
+to the name of the sectioning command being inserted.  The cdr is then
+used as the prefix.  If the name is not found, or if the cdr is nil,
+no label is inserted.
+
+By default, chapters have a prefix of @samp{cha:} while sections and
+subsections have a prefix of @samp{sec:}.  Labels are not automatically
+inserted for other types of sections.
 @end defvar
 
 @node Environments,  , Sectioning, Frequently Used Commands
@@ -931,15 +998,14 @@ Thus ``@samp{dvips}'' alone is equivalent to ``@samp{dvips -P%p %s}''.
 @section MakeIndex
 
 @deffn Command LaTeX-makeindex
-Bound to @kbd{C-c @@}.  Invokes @samp{MakeIndex} on the current
+Bound to @kbd{C-c #}.  Invokes @samp{MakeIndex} on the current
 document.
 @end deffn
-
 @node BibTeX, Control, MakeIndex, Formatting
 @section BibTeX
 
 @deffn Command LaTeX-bibtex
-Bound to @kbd{C-c #}.  Invokes Bib@TeX{} on the current
+Bound to @kbd{C-c @@}.  Invokes Bib@TeX{} on the current
 document.
 @end deffn
 
@@ -969,7 +1035,7 @@ formatted @TeX{} document.
 
 First, you should consult the file @samp{tex-site.el} and edit it to fit
 your local site.  The file is documented, so that shouldn't be that
-hard.  Don't worry if you dot understand some of it -- you can read
+hard.  Don't worry if you don't understand some of it -- you can read
 this documentation later to fine tune your installation.
 
 Next, edit the file @samp{Makefile} in the auctex directory to set up
