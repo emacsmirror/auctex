@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-16 07:40:19 $
+;; Last Change: $Date: 2004-04-18 20:37:30 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -463,12 +463,8 @@ inserted after the sectioning command."
 	"Environments in AUCTeX."
 	:group 'ConTeXt-macro)
 
-;; TODO: interface awareness
-(defcustom ConTeXt-default-environment "itemize"
-	"*The default environment when creating new ones with `ConTeXt-environment'."
-	:group 'ConTeXt-environment
-	:type 'string)
-(make-variable-buffer-local 'ConTeXt-default-environment)
+(defvar ConTeXt-default-environment "itemize"
+	"The default environment when creating new ones with `ConTeXt-environment'.")
 
 (TeX-auto-add-type "environment" "ConTeXt")
 
@@ -1368,7 +1364,7 @@ There might be text before point."
 ;; They are mapped to interface specific variables
 
 (defvar ConTeXt-language-variable-list
-	'(ConTeXt-setup-list ConTeXt-project-structure-list ConTeXt-section-block-list ConTeXt-section-list ConTeXt-text ConTeXt-item-list))
+	'(ConTeXt-setup-list ConTeXt-project-structure-list ConTeXt-section-block-list ConTeXt-section-list ConTeXt-text ConTeXt-item-list ConTeXt-default-environment))
 
 
 (defun ConTeXt-mode-common-initialization ()

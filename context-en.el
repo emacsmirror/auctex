@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-15 22:46:26 $
+;; Last Change: $Date: 2004-04-18 20:37:30 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -120,6 +120,12 @@
 (defvar ConTeXt-item-list-en
 	'("item" "its" "mar" "ran" "sub" "sym")
 	"The ConTeXt macro's that are variants of item")
+
+(defcustom ConTeXt-default-environment-en "itemize"
+	"*The default environment when creating new ones with `ConTeXt-environment'."
+	:group 'ConTeXt-en-environment
+	:type 'string)
+
 
 ;; Emacs en menu names and labels should go here
 ;; to be done
