@@ -1,3 +1,14 @@
+Thu Dec 14 19:51:15 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-menu): New variable.
+	(LaTeX-mode-menu): Use it.  Suggested by Peter S Galbraith
+	<rhogee@mixing.qc.dfo.ca>.
+
+Mon Nov 13 23:49:16 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (VirTeX-common-initialization): Set `comment-multi-line'
+	to nil.
+
 Fri Oct 13 14:16:36 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* PROBLEMS: Some easymenu explanations.

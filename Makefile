@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.117 1995-11-08 17:49:04 abraham Exp $
+# $Id: Makefile,v 5.118 1995-12-18 13:47:43 abraham Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -94,8 +94,7 @@ FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
 REMOVE =  easymenu.el cpp.el
 
 MINMAPSRC = auc-menu.el maniac.el \
-	    outln-18.el auc-html.el \
-	    xt-mouse.el all.el
+	    outln-18.el auc-html.el all.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el 
 

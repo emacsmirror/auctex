@@ -4,8 +4,8 @@
  
 ;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
 ;; Created:   06 July 1994
-;; Version:   2.00 (27 March 95)
-;; Keywords:  bibtex, cite, auctex 
+;; Version:   2.11 (12 Dec 95)
+;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;; Everyone is granted permission to copy, modify and redistribute this
 ;; file provided:
@@ -19,22 +19,44 @@
 ;;      distribution fee considered a charge.
 
 ;; LCD Archive Entry:
-;; bib-cite.el|Peter Galbraith|galbraith@mixing.qc.dfo.ca
-;; |Display \cite, \ref or \label / Extract refs from BiBTeX file.
-;; Mar 27 1995|2.00||
+;; bib-cite.el|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
+;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
+;; 12-December-1995|2.11|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; New versions of this package (if they exist) may be found at:
 ;;   ftp://bathybius.meteo.mcgill.ca/pub/users/rhogee/elisp/bib-cite.el
-;;   ftp://mixing.qc.dfo.ca/pub/emacs-add-ons/bib-cite.el
+;;   ftp://mixing.qc.dfo.ca/pub/elisp/bib-cite.el
 
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
 ;;  VMS: I have no clue if this works under VMS. I don't know how emacs handle 
 ;;  logical names (i.e. for BIBINPUTS) but I am willing to fix this package for
 ;;  VMS if someone if willing to test it and answer questions.
+
+;; AUC-TEX USERS: 
+;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
+;;    ftp://ftp.iesd.auc.dk/pub/emacs-lisp/auctex.tar.gz       <-stable release
+;;    ftp://ftp.iesd.auc.dk/pub/emacs-lisp/alpha/auctex.tar.gz <-alpha release
+;;
+;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
+;;  you use auc-tex, you probably have an old version of bib-cite.el in
+;;  your load-path which may get loaded instead of this file (unless this
+;;  is the auc-tex file!).  Make sure you replace that file, or rename it,
+;;  or delete it!!!
+
+;; XEMACS USERS:
+;;  The pull-down menus will be defined if you use auc-tex's LaTeX-mode and
+;;  if it is already loaded when you load bib-cite (xemacs doesn't seem to 
+;;  have eval-after-load and I gave up on all the messy mode-hooks).
+
+;; MS-DOS USERS:
+;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
+;;  which contains a bug for MSDOS (at least for emacs 19.27 it does).
+;;  Get the file ftp://mixing.qc.dfo.ca/pub/elisp/bib-cite.etags-bug-report
+;;  to see what patches to make to etags.c to fix it.
 
 ;; Description:
 ;; ~~~~~~~~~~~
@@ -60,16 +82,16 @@
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;;  Various flavors of \cite commands are allowed (as long as they contain
 ;;  the word `cite') and they may optionally have bracketed [] options.
-;;  Cross-references are displayed, and @string abbreviations are
+;;  Bibtex Cross-references are displayed, and @string abbreviations are
 ;;  substituted or included.
 ;;
-;;  The reference text is found (by emacs) in the bibtex source files listed in
-;;  the \bibliography command.  The BiBTeX files can be located in a search
-;;  path defined by an environment variable (typically BIBINPUTS, but you can
-;;  change this).
+;;  The \cite text is found (by emacs) in the bibtex source files listed in the
+;;  \bibliography command.  The BiBTeX files can be located in a search path
+;;  defined by an environment variable (typically BIBINPUTS, but you can change
+;;  this).
 ;;
-;;  All citations used in a buffer can also be listed in a new bibtex buffer
-;;  by using bib-make-bibliography.  This is useful to make a bibtex file for a
+;;  All citations used in a buffer can also be listed in a new bibtex buffer by
+;;  using bib-make-bibliography.  This is useful to make a bibtex file for a
 ;;  document from a large bibtex database.  In this case, cross-references are
 ;;  included, as well as the @string commands used. The @string abbreviations
 ;;  are not substituted.
@@ -79,7 +101,7 @@
 
 ;; Usage instructions:
 ;; ~~~~~~~~~~~~~~~~~~
-;;  bib-display  (Bound to Shift-Mouse-1)
+;;  bib-display  (Bound to Shift-Mouse-1 or Mouse-1 when specially highlighted)
 ;;
 ;;   bib-display will show the bibtex entry or the corresponding label or
 ;;   ref commands from anywhere within a document.
@@ -99,79 +121,85 @@
 ;;        -> Display environment associated with the matching \label command.
 ;;
 ;;   Finding a ref or label within a multi-file document requires a TAGS file,
-;;   which is automatically generated for you.  This enables you to then use 
+;;   which is automatically generated for you.  This enables you to then use
 ;;   any tags related emacs features.
 ;;
-;;  bib-find  (Bound to Shift-Mouse-2)
+;;  bib-find  (Bound to Shift-Mouse-2 or Mouse-2 when specially highlighted)
 ;;
-;;    bib-find will select the buffer and move point to the BiBTeX source
-;;    file at the proper citation for a cite command, or move point to
-;;    anywhere within a document for a label or ref command.  The ref
-;;    chosen is the first occurrance within a document (using a TAGS file).
-;;    If point is moved within the same buffer, mark is set before the move
-;;    and a message stating so is given.  If point is moved to another
-;;    file, this is done in a new window using tag functions.  Within a
-;;    plain file, the search pattern is set for another similar \ref
-;;    command (since TAGS file are not used).  Within a multi-file document
-;;    the following tag functions are appropriately setup:
+;;    bib-find will select the buffer and move point to the BiBTeX source file
+;;    at the proper citation for a cite command, or move point to anywhere
+;;    within a document for a label or ref command.  The ref chosen is the
+;;    first occurrance within a document (using a TAGS file).  If point is
+;;    moved within the same buffer, mark is set before the move and a message
+;;    stating so is given.  If point is moved to another file, this is done in
+;;    a new window using tag functions.  Within a plain file, the search
+;;    pattern is set for another similar \ref command (since TAGS file are not
+;;    used).  Within a multi-file document the following tag functions are
+;;    appropriately setup:
 ;;
 ;;     C-u M-.     Find next alternate definition of last tag specified.
 ;;
 ;;     C-u - M-.   Go back to previous tag found.
 ;;
 ;;
-;;    For multi-file documents, you must be using auctex (so that bib-cite
-;;    can find the master file) and all \input and \include commands must be 
-;;    first on a line (not preceeded by any non-white text).
+;;    For multi-file documents, you must be using auctex (so that bib-cite can
+;;    find the master file) and all \input and \include commands must be first
+;;    on a line (not preceeded by any non-white text).
 ;;
-;;  imenu support  (Bound to Shift-Mouse-3)
+;;  imenu support  (Suggested key binding: Shift-Mouse-3)  
 ;;
-;;    S-Mouse-3 is bound to the imenu facility to move point to a LaTeX
-;;    section (or chapter) division or to a label declaration.
-;;    When editing a multi-file document, all such declarations within 
-;;    the document are displayed in the menu (again using a TAGS file).
-;;    If you do not want to load imenu.el and use these features, set 
-;;    bib-use-imenu to nil.
+;;    If you want to bind imenu globally to Shift-Mouse-3, do so by adding the
+;;    following to your ~/.emacs
+;;
+;;     (require 'imenu)
+;;     (define-key global-map [S-mouse-3] 'imenu)
+;;
+;;    The imenu facility (distributed with emacs) is supported by bib-cite to
+;;    move point to a LaTeX section (or chapter) division or to a label
+;;    declaration.  When editing a multi-file document, all such declarations
+;;    within the document are displayed in the menu (again using a TAGS file).
+;;    If you do not want to load imenu.el and use these features, set
+;;    bib-use-imenu to nil. (This feature is disabled in xemacs because I'm
+;;    told it doesn't have imenu).
 ;;
 ;;  bib-make-bibliography:
 ;;
 ;;   Extract citations used in the current document from the \bibliography{}
-;;   file(s).  Put them into a new suitably-named buffer.
-;;   In a auctex multi-file document, the .aux files are used to find the
-;;   cite keys (for speed).  You will be warned if these are out of date.
+;;   file(s).  Put them into a new suitably-named buffer.  In a auctex
+;;   multi-file document, the .aux files are used to find the cite keys (for
+;;   speed).  You will be warned if these are out of date.
 ;;
-;;   This buffer is not saved to a file.  It is your job to save it to
-;;   whatever name you wish.  Note that auctex has a unique name space for
-;;   LaTeX and BiBTeX files, so you should *not* name the bib file
-;;   associated with example.tex as example.bib!  Rather, name it something
-;;   like example-bib.bib.
+;;   This buffer is not saved to a file.  It is your job to save it to whatever
+;;   name you wish.  Note that auctex has a unique name space for LaTeX and
+;;   BiBTeX files, so you should *not* name the bib file associated with
+;;   example.tex as example.bib!  Rather, name it something like
+;;   example-bib.bib.
 ;;
 ;;  bib-apropos:
 ;;
-;;   Searches the \bibliography{} file(s) for entries containing a keyword
-;;   and display them in the *help* buffer.  You can trim down your search
-;;   by using bib-apropos in the *Help* buffer after the first invocation.
-;;   the current buffer is also searched for keyword matches if it is in
-;;   bibtex-mode. 
+;;   Searches the \bibliography{} file(s) for entries containing a keyword and
+;;   display them in the *help* buffer.  You can trim down your search by using
+;;   bib-apropos in the *Help* buffer after the first invocation.  the current
+;;   buffer is also searched for keyword matches if it is in bibtex-mode.
 ;;   
 ;;   It doesn't display cross-references nor does it substitute or display
 ;;   @string commands used.  It could easily be added, but it's faster this
 ;;   way.  Drop me a line if this would be a useful addition.
 ;;
-;;   If you find yourself entering a cite command and have forgotten which
-;;   key you want, but have entered a few initial characters as in 
-;;   `\cite{Gal', then invoke bib-apropos.  It will take that string (in
-;;   this case `Gal') as an initial response to the apropos prompt.  You are
-;;   free to edit it, or simply press carriage return.
+;;   If you find yourself entering a cite command and have forgotten which key
+;;   you want, but have entered a few initial characters as in `\cite{Gal',
+;;   then invoke bib-apropos.  It will take that string (in this case `Gal') as
+;;   an initial response to the apropos prompt.  You are free to edit it, or
+;;   simply press carriage return.
 ;;
 ;;  bib-etags:
 ;;
 ;;   Creates a TAGS file for auc-tex's multi-file document (or refreshes it).
-;;   This is used by bib-find when editing multi-file documents.  The TAGS
-;;   file is created automatically, but it isn't refreshed automatically.
-;;   So if bib-find can't find something, try running bib-etags again.
-;;   The *rescan* in imenu (S-Mouse-3) also calls bib-etags to refresh the 
-;;   TAGS file, so that is another way to generate it.
+;;   This is used by bib-find when editing multi-file documents.  The TAGS file
+;;   is created automatically, but it isn't refreshed automatically.  So if
+;;   bib-find can't find something, try running bib-etags again.  The *rescan*
+;;   in imenu also calls bib-etags to refresh the TAGS file, so that is another
+;;   way to generate it.
 ;;
 ;;  bib-create-auto-file:
 ;;
@@ -181,10 +209,11 @@
 ;;
 ;;  bib-highlight-mouse:    
 ;;
-;;   Highlights \cite, \ref and \label commands in green when the mouse is 
-;;   over them.  By default, a call to this function is added to 
-;;   LaTeX-mode-hook.  But you may want to run this command to refresh the
-;;   highlighting for newly edited text.
+;;   Highlights \cite, \ref and \label commands in green when the mouse is over
+;;   them.  By default, a call to this function is added to LaTeX-mode-hook
+;;   (via bib-cite-initialize) if you set bib-highlight-mouse-t to true.  But
+;;   you may want to run this command to refresh the highlighting for newly
+;;   edited text.
  
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -206,7 +235,6 @@
 ;;  The imenu features will be disabled if you set this variable to nil
 ;;
 ;;    (setq bib-use-imenu nil)
-;;
 ;;  ---
 ;;  If you use hilit19 (or hl319), then bib-display will use it to highlight 
 ;;  the display unless you turn this off with:
@@ -216,11 +244,12 @@
 ;;    You are welcome to tell me how to do the same using font-lock.
 ;;  ---
 ;;  The following variable determines whether we will attempt to highlight
-;;  citation, ref and label commands in green when they are under the mouse.
-;;  This has no functional purpose.  It just looks good, and reminds the 
-;;  user about the availability of bib-cite commands.  If you use a mode 
-;;  other than LaTeX-mode, you'll want to call bib-highlight-mouse with a
-;;  hook (See how we do this later in this file).
+;;  citation, ref and label commands in green when they are under the
+;;  mouse.  When highlighted, the unshifted mouse keys work to call
+;;  bib-display (bound to [mouse-1]) and bib-find (bound to [mouse-2]).  If
+;;  you use a mode other than LaTeX-mode, you'll want to call
+;;  bib-highlight-mouse with a hook (See how we do this at the end of this
+;;  file with the add-hook command).
 ;;
 ;;    (setq bib-highlight-mouse-t nil)
 ;;  ---
@@ -249,6 +278,13 @@
 ;;  reset it with the following variable (here, assuming it's TEXBIB instead):
 ;;
 ;;    (setq bib-bibtex-env-variable "TEXBIB")
+;;
+;;  Note that any directory ending in a double slash will cause bib-cite to
+;;  search recursively through subdirectories for your .bib files.  This can
+;;  be slow, so use this judiciously.
+;;  e.g.  setenv BSTINPUTS .:/home/rhogee/LaTeX/bibinputs//
+;;        -> all directories below /home/rhogee/LaTeX/bibinputs/ will be 
+;;           searched.
 ;;  ---
 ;;  If you do not wish bib-display to substitute @string abbreviations, 
 ;;  then set the following variable like so:
@@ -307,8 +343,7 @@
 ;; If you find circumstances in which this package fails, please let me know.
 
 ;; Things for me to do in later versions:
-;; - For menu definitions:
-;;   use "eval-after-load" in GNU Emacs to delay the code.
+;; - jmv@di.uminho.pt (Jose Manuel Valenca) wants:
 ;; - prompt for \cite as well as \label and \ref 
 ;;    (and use auctex's completion list)
 ;; - implement string concatenation, with #[ \t\n]*STRING_NAME
@@ -316,6 +351,38 @@
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V2.11  Nov 21 95 - Peter Galbraith 
+;; - Fixed bib-create-auto-file when bib file loaded before LaTeX file.
+;; - Michal Mnuk's better imenu labels menu <Michal.Mnuk@risc.uni-linz.ac.at>
+;; - [bib-mouse-1] and [bib-mouse-2] key defs for highlighted regions.
+;; - Improve X menus.
+;; - Skip over style files in bib-document-TeX-files.
+;; - Add menus and mouse highlighting for xemacs
+;;   Anders Stenman <stenman@isy.liu.se> Dima Barsky <D.Barsky@ee.surrey.ac.uk>
+;; - Check bib-use-imenu before calling LaTeX-hook-setq-imenu.
+;;   From: Kurt Hornik <hornik@ci.tuwien.ac.at>
+;; - Remove mouse face properties before inserting new ones.
+;;   From: Peter Whaite <peta@Whippet.McRCIM.McGill.EDU>
+;; V2.10  Aug 17 95 - Peter Galbraith - fatal bugs in bib-make-bibliography. 
+;; V2.09  Jul 19 95 - Peter Galbraith 
+;;   - Had introduced bug in search-directory-tree. synced with ff-paths.el.
+;; V2.08  Jul 13 95 - Peter Galbraith
+;;     Fred Douglis <douglis@research.att.com> says etags should be required
+;; V2.07  Jul 04 95 - Peter Galbraith 
+;;   - Minor changes with filename manipulations (careful with DOS...)
+;;   - Problem if auc-tex not already loaded -> LaTeX-mode-map
+;; V2.06  Jul 03 95 - Peter Galbraith - Added recursion through BIBINPUTS path.
+;; V2.05  Jun 22 95 - Peter Galbraith  Bug: Hanno Wirth <wirth@jake.igd.fhg.de>
+;;   bib-get-citations would truncate @String{KEY ="J. {\"u} Res."}
+;; V2.04  Jun 19 95 - Peter Galbraith -
+;;   - use bibtex-mode syntax table in bib buffer, else bib-apropos truncates
+;;     an article if it contains an unbalanced closing parenthesis.
+;;   - bib-highlight-mouse would mark a buffer modified
+;; V2.03  May 16 95 - Peter Galbraith -
+;;   auc-tec menu compatible with old "AUC TeX" pull-down name  
+;; V2.02  May 10 95 - Peter Galbraith - 
+;;   bug report by Bodo Huckestein <bh@thp.Uni-Koeln.DE> (getenv env) under DOS
+;; V2.01  Mar 27 95 - Peter Galbraith - No imenu on xemacs; check BIBINPUT also
 ;; V2.00  Mar 27 95 - Peter Galbraith
 ;;   - bib-find and bib-display replace bib-edit-citation and 
 ;;      bib-display-citation
@@ -407,14 +474,14 @@
 (defvar bib-novice t
   "*Give advice to novice users about what commands to use next.")
 
-(defvar bib-use-imenu t
-  "*Use imenu package bound to S-mouse-3 for LaTeX modes (coded in bib-cite).")
+(defvar bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
+  "*Use imenu package for LaTeX modes (coded in bib-cite).")
 
 (defvar bib-hilit-if-available t
   "*Use hilit19 or hl319 to hilit bib-display if available")
 
 (defvar bib-highlight-mouse-t t
-  "*Add bib-highlight-mouse to LaTeX-mode-hook to add fancy green highlight.")
+  "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight.")
 
 (defvar bib-bibtex-env-variable "BIBINPUTS"
   "*Environment variable setting the path where BiBTeX input files are found.
@@ -473,6 +540,23 @@ These are usually month abbreviations (or journals) defined in a style file.")
 (defvar bib-string-regexp
       "^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\([a-zA-Z][^#%'(),={}\" \t\n]*\\)"
       "Regular expression for field containing a @string")
+
+(defvar bib-highlight-mouse-keymap
+  (let ((m (make-sparse-keymap)))
+    (cond 
+     ((string-match "XEmacs\\|Lucid" emacs-version)
+      (set-keymap-name m 'bib-highlight-mouse-keymap)
+      ;;(define-key m [(shift button1)] 'bib-display-mouse)
+      (define-key m [button1] 'bib-display-mouse)
+      (define-key m [button2] 'bib-find-mouse))
+     (t
+      (define-key m [mouse-1] 'bib-display-mouse)
+      (define-key m [mouse-2] 'bib-find-mouse)))
+    m))
+
+(defvar bib-ext-list nil 
+  "xemacs buffer-local list of bib-cite extents.")
+(make-variable-buffer-local 'bib-ext-list)
 
 (defun bib-display ()
   "Display BibTeX citation or matching \\ref or \\label command under point.
@@ -635,21 +719,27 @@ to create a bibtex file containing only the references used in the document."
     (if (or bib-document-citekeys-obarray-warnings
             the-warnings)
         (progn
-          (with-output-to-temp-buffer "*Help*" 
-            (princ bib-document-citekeys-obarray-warnings
-                   the-warnings))
+          (cond
+           ((and bib-document-citekeys-obarray-warnings the-warnings)
+            (with-output-to-temp-buffer "*Help*" 
+              (princ bib-document-citekeys-obarray-warnings the-warnings)))
+           (bib-document-citekeys-obarray-warnings
+            (with-output-to-temp-buffer "*Help*" 
+              (princ bib-document-citekeys-obarray-warnings)))
+           (the-warnings
+            (with-output-to-temp-buffer "*Help*" (princ the-warnings))))
           (setq bib-document-citekeys-obarray-warnings nil) ;Reset
-          (if bib-novice
-              (message
-               (substitute-command-keys
-                "Use \\[save-buffer] to save this buffer to a file.")))
           (if (and bib-hilit-if-available
                    (fboundp 'hilit-region-set-face))
               (save-excursion
                 (set-buffer "*Help*")
                 (hilit-region-set-face 
                  1 (point-max)
-                 (cdr (assq 'error hilit-face-translation-table)))))))))
+                 (cdr (assq 'error hilit-face-translation-table)))))))
+    (if bib-novice
+        (message
+         (substitute-command-keys
+          "Use \\[save-buffer] to save this buffer to a file.")))))
 
 (defun bib-etags (&optional masterdir)
   "Invoke etags on all tex files of the document, storing the TAGS file
@@ -658,6 +748,7 @@ or within a plain single-file document.
 Also makes sure that the TAGS buffer is updated.
 See variables bib-etags-command and bib-etags-filename"
   (interactive)
+  (require 'etags)
   (let* ((the-file-list (bib-document-TeX-files))
          (the-file (car the-file-list))
          (dir (or masterdir (bib-master-directory)))
@@ -690,9 +781,11 @@ See variables bib-etags-command and bib-etags-filename"
     ;;  buffer and returns an error because TAGS buffer does have 
     ;;  tags-file-name set.
     ;;  To get around this.  I'm setting this variable in the TAGS buffer.
-    (save-excursion
-      (set-buffer (get-file-buffer the-tags-file))
-      (set (make-local-variable 'tags-file-name) the-tags-file)))
+    ;; Skip this in XEmacs (Changed by Anders Stenman)
+    (if (not (string-match "XEmacs\\|Lucid" emacs-version))
+	(save-excursion
+	  (set-buffer (get-file-buffer the-tags-file))
+	  (set (make-local-variable 'tags-file-name) the-tags-file))))
 
 
   (if bib-document-TeX-files-warnings   ;free variable loose in emacs!
@@ -723,20 +816,55 @@ See variables bib-etags-command and bib-etags-filename"
 (defun bib-highlight-mouse ()
   "Make that nice green highlight when the mouse is over LaTeX commands"
   (interactive)
-  (if (or (not bib-highlight-mouse-t)
-          (not window-system))
-      nil                               ;Do nothing unless under X
-    (save-excursion
-      (goto-char (point-min))
-      (while 
-        (re-search-forward 
-       "\\\\\\(ref\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}"
-          nil t)
-        (put-text-property (match-beginning 0) (match-end 0) 
-                           'mouse-face 'highlight)))))
+  (if (and bib-highlight-mouse-t        ;Do nothing unless under X
+           window-system)
+      (save-excursion
+        (let ((s)(e)(extent)
+              (modified (buffer-modified-p))) ;put-text-property changing this?
+          (goto-char (point-min))
+	  ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
+	  ;;   properties first.
+          (if (string-match "XEmacs\\|Lucid" emacs-version)
+              (while bib-ext-list
+                (delete-extent (car bib-ext-list))
+                (setq bib-ext-list (cdr bib-ext-list)))
+            ;; Remove properties for regular emacs
+            ;;; FIXME This detroys all mouse-faces and local-maps!
+            ;;; FIXME Hope no other package is using them in this buffer!
+            (remove-text-properties (point-min) (point-max) 
+                                    '(mouse-face local-map)))
+          (while 
+              (re-search-forward 
+               "\\\\\\(ref\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}"
+               nil t)
+ 	    (setq s (match-beginning 0))
+ 	    (setq e (match-end 0))
+ 	    (cond 
+             ((string-match "XEmacs\\|Lucid" emacs-version)
+              (setq extent (make-extent s e))
+	      (setq bib-ext-list (cons extent bib-ext-list))
+              (set-extent-property extent 'highlight t)
+              (set-extent-property extent 'start-open t)
+              (set-extent-property extent 'keymap bib-highlight-mouse-keymap))
+             (t
+              (put-text-property s e 'local-map bib-highlight-mouse-keymap)
+              (put-text-property s e 'mouse-face 'highlight))))
+          (set-buffer-modified-p modified)))))
 
-(if bib-highlight-mouse-t               ;If user wants this automatically
-    (add-hook 'LaTeX-mode-hook 'bib-highlight-mouse))
+(defun bib-toggle-highlight () 
+  (interactive)
+  (if (setq bib-highlight-mouse-t (not bib-highlight-mouse-t))
+      (bib-highlight-mouse)
+    (let ((modified (buffer-modified-p)))
+      (cond 
+       ((string-match "XEmacs\\|Lucid" emacs-version)
+        (while bib-ext-list
+          (delete-extent (car bib-ext-list))
+          (setq bib-ext-list (cdr bib-ext-list))))
+       (t
+        (remove-text-properties (point-min) (point-max) 
+                                '(mouse-face local-map))))
+      (set-buffer-modified-p modified))))
 
 ;;----------------------------------------------------------------------------
 ;; Routines to display or edit a citation's bibliography
@@ -1174,8 +1302,9 @@ Return the-warnings as text."
                     (forward-char -1)
                     (if (string-equal "{" (buffer-substring (match-beginning 1)
                                                             (match-end 1)))
-                        (re-search-forward "[^\}]+}" nil t)
-                      (re-search-forward "[^\"]+\"" nil t))
+                        (forward-list 1)
+                      (re-search-forward "[^\\]\"" nil t))
+;;;V2.05 Fix         ((re-search-forward "[^\"]+\"" nil t))
                     (if substitute      ;Collect substitutions
                         (setq string-alist
                               (append
@@ -1235,13 +1364,13 @@ Return the-warnings as text."
     (let ((the-point (point))
           (keys-obarray (make-vector 201 0)))
       ;; First try to match a cite command
-      (if (and (skip-chars-backward "\\\\a-zA-Z")
-               (looking-at "\\\\[a-zA-Z]*cite[a-zA-Z]*"))
+      (if (and (skip-chars-backward "a-zA-Z") ;Stops on \ or {
+               (looking-at "[a-zA-Z]*cite[a-zA-Z]*"))
           (progn
             ;;skip over any optional arguments to \cite[][]{key} command
-            (skip-chars-forward "\\\\a-zA-Z")
+            (skip-chars-forward "a-zA-Z")
             (while (looking-at "\\[")
-                (forward-sexp 1))
+                (forward-list 1))
             (re-search-forward "{[ \n]*\\([^,} \n]+\\)" nil t)
             (intern (buffer-substring (match-beginning 1)(match-end 1))
                     keys-obarray)
@@ -1410,17 +1539,19 @@ Return the-warnings as text."
       (while (re-search-forward "^[ \t]*\\\\\\(input\\|include\\){\\(.*\\)}"
                                 nil t)
         (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
-          (if (not (string-match ".tex$" the-file))
-              (setq the-file (concat the-file ".tex")))
-          (setq the-file (expand-file-name the-file dir))
-          (if (not (file-readable-p the-file))
-              (setq bib-document-TeX-files-warnings
-                    (concat 
-                     bib-document-TeX-files-warnings
-                     (format "Warning: File not found: %s" the-file)))
-            (setq the-list (cons (expand-file-name the-file dir) the-list))
-            (end-of-line)(insert "\n")
-            (insert-file-contents the-file)))))
+          (if (string-match ".sty$" the-file) ;Skip over style files!
+              nil
+            (if (not (string-match ".tex$" the-file))
+                (setq the-file (concat the-file ".tex")))
+            (setq the-file (expand-file-name the-file dir))
+            (if (not (file-readable-p the-file))
+                (setq bib-document-TeX-files-warnings
+                      (concat 
+                       bib-document-TeX-files-warnings
+                       (format "Warning: File not found: %s" the-file)))
+              (setq the-list (cons (expand-file-name the-file dir) the-list))
+              (end-of-line)(insert "\n")
+              (insert-file-contents the-file))))))
     (kill-buffer tex-buffer)
     (nreverse the-list)))
 
@@ -1485,6 +1616,7 @@ Return the-warnings as text."
 (defun bib-etags-find-noselect (tag &optional masterdir)
 ;; Returns a buffer with point on `tag'.  buffer is not selected.
 ;; Makes sure TAGS file exists, etc.
+  (require 'etags)
   (let* ((master (or masterdir (bib-master-directory)))
          (the-buffer (current-buffer))
          (new-buffer)
@@ -1495,24 +1627,30 @@ Return the-warnings as text."
         (visit-tags-table the-tags-file-name)) 
     ;; find-tag-noselect should set the TAGS file for the new buffer
     ;; that's what C-h f visit-tags-table says...
-    (setq new-buffer (find-tag-noselect tag)) ;Seems to set buffer to TAGS
-    (set-buffer the-buffer)
+    (if (string-match "XEmacs\\|Lucid" emacs-version)
+        (progn
+          (find-tag tag)
+          (setq new-buffer (current-buffer))
+          (set-buffer the-buffer))
+      (setq new-buffer (find-tag-noselect tag)) ;Seems to set buffer to TAGS
+      (set-buffer the-buffer))
     new-buffer))
 
 ;;---------------------------------------------------------------------------
 ;; imenu stuff
 ;; All of this should only be loaded if imenu is *already* loaded because
-;; we redine imenu here.
+;; we redefine imenu here.
 
 (cond
  (bib-use-imenu
   (require 'imenu)
   (require 'cl)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-hook-setq-imenu)
+  ;;; Now done at end of this file:
+  ;;(add-hook 'LaTeX-mode-hook 'LaTeX-hook-setq-imenu)
 
   (defun LaTeX-hook-setq-imenu ()
-    ;; User who *never* use multi-file documents could change this to:
-    ;;                                  'imenu--craete-LaTeX-index-for-buffer
+    ;; User who *never* uses multi-file documents could change this to:
+    ;;                                  'imenu--create-LaTeX-index-for-buffer
     (setq imenu-create-index-function 'imenu--create-LaTeX-index))
 
   (defun imenu--create-LaTeX-index ()
@@ -1547,7 +1685,7 @@ Return the-warnings as text."
         ;; Now, the document is like any other tex file
         (setq bib-imenu-document-counter -99) ;IDs menu entries start at -100
         (goto-char (point-max))
-        (imenu-progress-message prev-pos 0)
+        (imenu-progress-message prev-pos 0 t)
         (while (re-search-backward  
                 "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" nil t)
           (imenu-progress-message prev-pos nil t)
@@ -1563,11 +1701,17 @@ Return the-warnings as text."
                 (push (imenu--LaTeX-name-and-etags)
                       index-label-alist))))))
         (kill-buffer tex-buffer)
-        (imenu-progress-message prev-pos 100)
-        (and index-label-alist
+        (imenu-progress-message prev-pos 100 t)
+        ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
+        (and index-label-alist	
              (push (cons (imenu-create-submenu-name "Labels") 
-                         index-label-alist)
-                   index-alist))
+                         (sort (imenu--remove-LaTeX-keyword-list 
+                                index-label-alist) 'imenu--label-cmp))
+		   index-alist))
+        ;;(and index-label-alist
+        ;;     (push (cons (imenu-create-submenu-name "Labels") 
+        ;;                index-label-alist)
+        ;;         index-alist))
         index-alist)))
 
   (defun imenu--create-LaTeX-index-for-buffer ()
@@ -1577,7 +1721,7 @@ Return the-warnings as text."
           prev-pos)
       (setq bib-imenu-document-counter -99) ;IDs menu entries starting at -100
       (goto-char (point-max))
-      (imenu-progress-message prev-pos 0)
+      (imenu-progress-message prev-pos 0 t)
       (while (re-search-backward  
               "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" nil t)
         (imenu-progress-message prev-pos nil t)
@@ -1592,12 +1736,40 @@ Return the-warnings as text."
               (search-forward "}" nil t)
               (push (imenu--LaTeX-name-and-position)
                     index-label-alist))))))
-      (imenu-progress-message prev-pos 100)
-      (and index-label-alist
-           (push (cons (imenu-create-submenu-name "Labels") index-label-alist)
+      (imenu-progress-message prev-pos 100 t)
+      ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
+      (and index-label-alist	
+           (push (cons (imenu-create-submenu-name "Labels") 
+                       (sort (imenu--remove-LaTeX-keyword-list 
+                              index-label-alist) 'imenu--label-cmp))
                  index-alist))
+      ;;(and index-label-alist
+      ;;     (push (cons (imenu-create-submenu-name "Labels") 
+      ;;                index-label-alist)
+      ;;         index-alist))
       index-alist))
 
+  ;;Michal Mnuk's three routines:
+  (defun imenu--remove-LaTeX-keyword-list (llist)
+    "Remove the LaTeX KEYWORD from car's of all elements in LLIST."
+    (mapcar 
+     (function (lambda (element) 
+                 (imenu--remove-LaTeX-keyword-el element "label"))) 
+     llist))
+
+  (defun imenu--remove-LaTeX-keyword-el (element keyword)
+    "Remove the LaTeX KEYWORD from car of ELEMENT."
+    (save-match-data
+      (string-match (concat "\\\\" keyword "{\\(.*\\)}") (car element))
+      (cons 
+       (substring (car element) (match-beginning 1) (match-end 1)) 
+       (cdr element))))
+  
+  (defun imenu--label-cmp (el1 el2)
+    "Predicate to compare labels in lists produced by 
+     imenu--create-LaTeX-index."
+    (string< (car el1) (car el2)))
+  
   (defun imenu--LaTeX-name-and-position ()
     (save-excursion
       (search-backward "\\" nil t)
@@ -1635,7 +1807,7 @@ See `imenu-choose-buffer-index' for more information."
                (goto-char (cdr index-item))))))))
 
 ;;; end of bib-use-imenu stuff
-))
+  ))
 ;; --------------------------------------------------------------------------
 ;; The following routines make a temporary bibliography buffer 
 ;; holding all bibtex files found.
@@ -1654,7 +1826,7 @@ If include-filenames-f is true, include as a special header the filename
 of each bib file.
 
 Puts the buffer in text-mode such that forward-sexp works with german \" 
-accents embeeded in bibtex entries."
+accents embeded in bibtex entries."
   (let ((bib-list (or (and (fboundp 'LaTeX-bibliography-list)
                            (boundp 'TeX-auto-update)
                            (LaTeX-bibliography-list))
@@ -1666,9 +1838,15 @@ accents embeeded in bibtex entries."
         ;; Path is relative to the master directory
         (default-directory (bib-master-directory))
         (the-name)(the-warnings)(the-file))
-    (save-excursion
-      (set-buffer bib-buffer)
-      (text-mode)) ;such that forward-sexp works with embeeded \" in german
+    (save-excursion                     
+      ;; such that forward-sexp works with embeeded \" in german, 
+      ;; and unbalanced ()
+      (set-buffer bib-buffer)           ;
+      (set-syntax-table text-mode-syntax-table)
+;;      (if (boundp 'bibtex-mode-syntax-table)
+;;          (set-syntax-table bibtex-mode-syntax-table)
+;;        (text-mode))
+      )
     ;;We have a list of bib files
     ;;Search for them, include them, list those not readable
     (while bib-list
@@ -1686,6 +1864,8 @@ accents embeeded in bibtex entries."
                   (expand-file-name (concat "./" the-name)))
              (psg-checkfor-file-list the-name 
                                      (psg-list-env bib-bibtex-env-variable))
+             ;; Check for BIBINPUT env variable as well (by popular demand!)
+             (psg-checkfor-file-list the-name (psg-list-env "BIBINPUT"))
              (and (boundp 'TeX-check-path)
                   (psg-checkfor-file-list the-name TeX-check-path))))
       (if the-file
@@ -1734,228 +1914,146 @@ although BiBTeX doesn't allow it!"
             (setq doNext nil)))
         (mapcar 'list the-list)))))
 
-;; ---------------------------------------------------------------------------
-;; Key definitions start here... (but not for xemacs!)
-
 ;; BibTeX-mode key def to create auc-tex's parsing file. 
 (defun bib-create-auto-file ()
   "Force the creation of the auc-tex auto file for a bibtex buffer"
   (interactive)
   (if (not (require 'latex))
       (error "Sorry, This is only useful if you have auc-tex")) 
-  (let ((TeX-auto-save t))
+  (let ((TeX-auto-save t)
+       (TeX-auto-update t)
+       (TeX-auto-regexp-list BibTeX-auto-regexp-list))
+    ;; TeX-auto-wite   
+    ;; -> calls TeX-auto-store 
+    ;;    -> calls TeX-auto-parse
+    ;;       clears LaTeX-auto-bibtem (temporary holding space for bibitems)
+    ;;       searches buffer using regexp in TeX-auto-regexp-list
+    ;;    -> if LaTeX-auto-bibtem (the temporary holding space for bibitems) 
+    ;;       holds stuffs like 
+    ;;         ("Zimmermann:1991" "Anger_et_al:1993")
+    ;;       as determined by 
+    ;;         (member nil (mapcar 'TeX-auto-entry-clear-p TeX-auto-parser))
+    ;;       then it creates the auto file.
     (TeX-auto-write)))
 
-;;; >>>This section can be removed if incorporated into auctex
-;;; >>>by defining the menus in auc-tex (with auto-loads)
-;;; pull-down menu key defs
+;; ---------------------------------------------------------------------------
+;; Key definitions start here...
 
-(if (and (not (string-match "XEmacs\\|Lucid" emacs-version))
-         (string-equal "19" (substring emacs-version 0 2))
-         window-system)
-    (progn
-      ;; to auc-tex auto file for a bibtex buffer
-      (if (boundp 'bibtex-mode-map)
-          (progn
-            (define-key-after 
-              (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-              [bib-nil]
-              '("---" . nil)
-              '"--")
-            (define-key-after 
-              (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-              [bib-apropos]
-              '("Search Apropos" . bib-apropos)
-              'bib-nil)
-            (define-key-after 
-              (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-              [auc-tex-parse]
-              '("Create auc-tex auto parsing file" . bib-create-auto-file)
-              'bib-apropos))
-        (if (and (fboundp 'add-hook) (fboundp 'remove-hook))
-            (progn
-              (defun bib-bibtex-mode-hook ()
-                "hook created by bib-cite.el"
-                (define-key-after 
-                  (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-                  [bib-nil]
-                  '("---" . nil)
-                  '"--")
-                (define-key-after 
-                  (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-                  [bib-apropos]
-                  '("Search Apropos" . bib-apropos)
-                  'bib-nil)
-                (define-key-after 
-                  (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-                  [auc-tex-parse]
-                  '("Create auc-tex auto parsing file" . 
-                    bib-create-auto-file)
-                  'bib-apropos)
-                (remove-hook 'bibtex-mode-hook 'bib-bibtex-mode-hook))
-              (add-hook 'bibtex-mode-hook 'bib-bibtex-mode-hook))))
+(defun bib-add-menu-keys (the-key)
+  (cond
+   (the-key                             ;make sure keymap exists
+    (define-key-after the-key [bib-nil] '("---" . nil) '"--")
+    (define-key-after the-key [bib-make-bibliography]
+      '("Make BiBTeX bibliography buffer" . bib-make-bibliography) 'bib-nil)
+    (define-key-after the-key [bib-display]
+      '("Display citation or matching \\ref or \\label" . bib-display)
+      'bib-make-bibliography)
+    (define-key-after the-key [bib-find]
+      '("Find BiBTeX citation or matching \\ref or \\label" . bib-find)
+      'bib-display)
+    (define-key-after the-key [bib-apropos]
+      '("Search apropos BiBTeX files" . bib-apropos) 'bib-find)
+    (define-key-after the-key [bib-etags]
+      '("Build TAGS file for multi-file document" . bib-etags) 'bib-apropos)
+    (define-key-after the-key [bib-highlight-mouse]
+      '("Refresh \\cite, \\ref and \\label mouse highlight" . 
+        bib-highlight-mouse)
+      'bib-etags))))
 
-      ;;for plain tex-mode
-      (if (boundp 'tex-mode-map)
-          (progn                        ; ...already loaded
-            (define-key tex-mode-map [S-mouse-1] 'bib-display-mouse)
-            (define-key tex-mode-map [S-mouse-2] 'bib-find-mouse)
-            (define-key tex-mode-map [menu-bar tex bib-display]
-              '("Display citation or matching \\ref or \\label" 
-                . bib-display))
-            (define-key tex-mode-map [menu-bar tex bib-find]
-              '("Find BiBTeX citation or matching \\ref or \\label" 
-                . bib-find))
-            (define-key tex-mode-map [menu-bar tex bib-make-bibliography]
-              '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
-            (define-key tex-mode-map [menu-bar tex bib-apropos]
-              '("Search apropos BiBTeX files" . bib-apropos)))
-        ;; tex-mode is not already loaded, so put into a hook for later loading
-        (if (and (fboundp 'add-hook) (fboundp 'remove-hook))
-            (progn
-              (defun bib-tex-mode-hook ()
-                "hook created by bib-cite.el"
-                (define-key tex-mode-map [S-mouse-1] 'bib-display-mouse)
-                (define-key tex-mode-map [S-mouse-2] 'bib-find-mouse)
-                (define-key tex-mode-map [menu-bar tex bib-display]
-                  '("Display citation or matching \\ref or \\label" 
-                    . bib-display))
-                (define-key tex-mode-map [menu-bar tex bib-find]
-                  '("Find BiBTeX citation or matching \\ref or \\label" 
-                    . bib-find))
-                (define-key tex-mode-map [menu-bar tex bib-make-bibliography]
-                  '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
-                (define-key tex-mode-map [menu-bar tex bib-apropos]
-                  '("Search apropos BiBTeX files" . bib-apropos))
-                (remove-hook 'tex-mode-hook 'bib-tex-mode-hook))
-              (add-hook 'tex-mode-hook 'bib-tex-mode-hook))))
+(cond
+ ((and (string-match "XEmacs\\|Lucid" emacs-version)
+       (featurep 'latex)                ;auc-tex mustbe loaded
+       window-system)
+  ;;
+  ;; xemacs under X with auc-tex
+  ;;
+  (add-menu-button '("LaTeX") ["----" nil t])
+  (add-menu-button 
+   '("LaTeX") ["Make BibTeX bibliography buffer" bib-make-bibliography t])
+  (add-menu-button 
+   '("LaTeX") ["Display citation or matching \\ref or \\label" bib-display t])
+  (add-menu-button 
+   '("LaTeX") ["Find BibTeX citation or matching \\ref or \\label" bib-find t])
+  (add-menu-button 
+   '("LaTeX") ["Search apropos BibTeX files" bib-apropos t])
+  (add-menu-button 
+   '("LaTeX") ["Build TAGS file for multi-file document" bib-etags t])
+  (add-menu-button 
+   '("LaTeX") 
+   ["Refresh \\cite, \\ref and \\label mouse highlight" bib-highlight-mouse t])
+  )
 
-      ;;for loaded auc-tex's LaTeX-mode
-      ;; Use define-key-after (must be compatible with alpha version as well)
-      (if (boundp 'LaTeX-mode-map)
-          (progn
-            (define-key LaTeX-mode-map [S-mouse-1] 'bib-display-mouse)
-            (define-key LaTeX-mode-map [S-mouse-2] 'bib-find-mouse)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-              [bib-nil]
-              '("---" . nil)
-              '"--")
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-              [bib-make-bibliography]
-              '("Make BiBTeX bibliography buffer" . bib-make-bibliography)
-              'bib-nil)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-              [bib-display]
-              '("Display citation or matching \\ref or \\label" . bib-display)
-              'bib-make-bibliography)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-              [bib-find]
-              '("Find BiBTeX citation or matching \\ref or \\label" . bib-find)
-              'bib-display)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-              [bib-apropos]
-              '("Search apropos BiBTeX files" . bib-apropos)
-              'bib-find)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-              [bib-etags]
-              '("Build TAGS file for multi-file document" . bib-etags)
-              'bib-apropos)
-            (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-              [bib-highlight-mouse]
-              '("Refresh \\cite, \\ref and \\label mouse highlight" 
-                . bib-highlight-mouse)
-              'bib-etags))
+ ((and (not (string-match "XEmacs\\|Lucid" emacs-version))
+       (string-equal "19" (substring emacs-version 0 2))
+       window-system)
+  ;;
+  ;; emacs-19 under X-windows
+  ;;
+  
+  ;; to auc-tex auto file for a bibtex buffer
+  (eval-after-load 
+   "bibtex"
+   '(progn
+      (cond
+       ((lookup-key bibtex-mode-map [menu-bar move/edit])
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [bib-nil] '("---" . nil) '"--")
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [auc-tex-parse] 
+          '("Create auc-tex auto parsing file" . bib-create-auto-file)
+          'bib-apropos))
+       ((lookup-key bibtex-mode-map [menu-bar bibtex-edit])
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [bib-nil] '("---" . nil) '"--")
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [auc-tex-parse] 
+          '("Create auc-tex auto parsing file" . bib-create-auto-file)
+          'bib-apropos)))))
 
-        ;; not already loaded, so put into a hook for later loading
-        (if (and (fboundp 'add-hook) (fboundp 'remove-hook))
-            (progn
-              (defun bib-LaTeX-mode-hook ()
-                "hook created by bib-cite.el"
-                (define-key LaTeX-mode-map [S-mouse-1] 'bib-display-mouse)
-                (define-key LaTeX-mode-map [S-mouse-2] 'bib-find-mouse)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-                  [bib-nil]
-                  '("---" . nil)
-                  '"--")
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-                  [bib-make-bibliography]
-                  '("Make BiBTeX bibliography buffer" . bib-make-bibliography)
-                  'bib-nil)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-                  [bib-display]
-                  '("Display citation or matching \\ref or \\label" . 
-                    bib-display)
-                  'bib-make-bibliography)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX]) 
-                  [bib-find]
-                  '("Find BiBTeX citation or matching \\ref or \\label" . 
-                    bib-find)
-                  'bib-display)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-                  [bib-apropos]
-                  '("Search apropos BiBTeX files" . bib-apropos)
-                  'bib-find)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-                  [bib-etags]
-                  '("Build TAGS file for multi-file document" . bib-etags)
-                  'bib-apropos)
-                (define-key-after (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-                  [bib-highlight-mouse]
-                  '("Refresh \\cite, \\ref and \\label mouse highlight" 
-                    . bib-highlight-mouse)
-                  'bib-etags)
-                (remove-hook 'LaTeX-mode-hook 'bib-LaTeX-mode-hook))
-              (add-hook 'LaTeX-mode-hook 'bib-LaTeX-mode-hook))))
+  ;;for plain tex-mode
+  (eval-after-load 
+   "tex-mode"
+   '(progn
+      (define-key tex-mode-map [S-mouse-1] 'bib-display-mouse)
+      (define-key tex-mode-map [S-mouse-2] 'bib-find-mouse)
+      (define-key tex-mode-map [menu-bar tex bib-display]
+        '("Display citation or matching \\ref or \\label" . bib-display))
+      (define-key tex-mode-map [menu-bar tex bib-find]
+        '("Find BiBTeX citation or matching \\ref or \\label" . bib-find))
+      (define-key tex-mode-map [menu-bar tex bib-make-bibliography]
+        '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
+      (define-key tex-mode-map [menu-bar tex bib-apropos]
+        '("Search apropos BiBTeX files" . bib-apropos))
+      (define-key TeX-mode-map [menu-bar TeX bib-highlight-mouse]
+        '("Refresh \\cite, \\ref and \\label mouse highlight"
+          . bib-highlight-mouse))))
 
-;;;>>>This doesn't work... why?
-      ;;if auc-tex's LaTeX-mode is not loaded.  It will get the key defs
-      ;;from auc-tec's TeX-mode-map.  Is this a problem?
-;;;<<<This doesn't work... why?
-      (if (boundp 'TeX-mode-map)
-          (progn
-            (define-key TeX-mode-map [S-mouse-1] 'bib-display-mouse)
-            (define-key TeX-mode-map [S-mouse-2] 'bib-find-mouse)
-            (define-key TeX-mode-map [menu-bar TeX bib-display]
-              '("Display citation or matching \\ref or \\label" 
-                . bib-display))
-            (define-key TeX-mode-map [menu-bar TeX bib-find]
-              '("Find BiBTeX citation or matching \\ref or \\label" 
-                . bib-find))
-            (define-key TeX-mode-map [menu-bar TeX bib-make-bibliography]
-              '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
-            (define-key TeX-mode-map [menu-bar TeX bib-apropos]
-              '("Search apropos BiBTeX files" . bib-apropos))
-            (define-key TeX-mode-map [menu-bar TeX bib-etags]
-              '("Build TAGS file for multi-file document" . bib-etags))
-            (define-key TeX-mode-map [menu-bar TeX bib-highlight-mouse]
-              '("Refresh \\cite, \\ref and \\label mouse highlight"
-                . bib-highlight-mouse)))
-        (if (and (fboundp 'add-hook) (fboundp 'remove-hook))
-            (progn
-              (defun bib-TeX-mode-hook ()
-                "hook created by bib-cite.el"
-                (define-key TeX-mode-map [S-mouse-1] 'bib-display-mouse)
-                (define-key TeX-mode-map [S-mouse-2] 'bib-find-mouse)
-                (define-key TeX-mode-map [menu-bar TeX bib-display]
-                  '("Display citation or matching \\ref or \\label" 
-                    . bib-display))
-                (define-key TeX-mode-map [menu-bar TeX bib-find]
-                  '("Find BiBTeX citation or matching \\ref or \\label" 
-                    . bib-find))
-                (define-key TeX-mode-map [menu-bar TeX bib-make-bibliography]
-                  '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
-                (define-key TeX-mode-map [menu-bar TeX bib-apropos]
-                  '("Search apropos BiBTeX files" . bib-apropos))
-                (define-key TeX-mode-map [menu-bar TeX bib-etags]
-                  '("Build TAGS file for multi-file document" . bib-etags))
-                (define-key TeX-mode-map [menu-bar TeX bib-highlight-mouse]
-                  '("Refresh \\cite, \\ref and \\label mouse highlight"
-                    . bib-highlight-mouse))
-                (remove-hook 'TeX-mode-hook 'bib-TeX-mode-hook))
-              (add-hook 'TeX-mode-hook 'bib-TeX-mode-hook))))))
+  ;;for auc-tex's LaTeX-mode
+  (eval-after-load 
+   "latex"
+   '(let ((the-key (or (lookup-key LaTeX-mode-map [menu-bar LaTeX])
+                       (lookup-key LaTeX-mode-map [menu-bar AUC\ TeX]))))
+      (define-key LaTeX-mode-map [S-mouse-1] 'bib-display-mouse)
+      (define-key LaTeX-mode-map [S-mouse-2] 'bib-find-mouse)
+      (bib-add-menu-keys the-key)))
 
-;;; <<<This section can be removed if incorporated into auctex
-;;; <<<by defining the menus in auc-tex (with auto-loads)
+  ;;for auc-tex's TeX-mode
+  (eval-after-load 
+   "tex"
+   '(let ((the-key (lookup-key TeX-mode-map [menu-bar TeX])))
+      (define-key TeX-mode-map [S-mouse-1] 'bib-display-mouse)
+      (define-key TeX-mode-map [S-mouse-2] 'bib-find-mouse)
+      (bib-add-menu-keys the-key)))))
 
 ;; --------------------------------------------------------------------------
 ;; The following routines are also defined in other packages...
@@ -1970,14 +2068,81 @@ although BiBTeX doesn't allow it!"
         (filespec))
     (while the-list
       (if (not (car the-list))          ; it is nil
-          (setq filespec (concat "~/" filename))
+          (setq filespec (expand-file-name filename "~"))
         (setq filespec 
               (concat (file-name-as-directory (car the-list)) filename)))
       (if (file-exists-p filespec)
             (setq the-list nil)
         (setq filespec nil)
         (setq the-list (cdr the-list))))
-    filespec))
+    (if filespec
+        filespec
+      ;; If I have not found a file yet, then check if some directories
+      ;; ended in // and recurse through them.
+      (let ((the-list list))
+        (while the-list
+          (if (not (string-match "//$" (car the-list))) nil
+            (setq filespec (car 
+                            (search-directory-tree 
+                             (substring (car the-list) 0 (match-beginning 0)) 
+                             (concat "^" filename "$") 
+                             t
+                             t)))
+            (if filespec                ;Success!
+                (setq the-list nil)))
+          (setq the-list (cdr the-list)))
+        filespec))))
+
+
+(defun search-directory-tree (directories extension-regexp recurse first-file)
+  "Return a list of all reachable files in DIRECTORIES ending with EXTENSION.
+DIRECTORIES is a list or a single-directory string
+EXTENSION is actually (any) regexp, usually \\\\.bib$
+If RECURSE is t, then we will recurse into the directory tree, 
+              nil, we will only search the list given.
+If FIRST-FILE is t, stop after first file is found."
+  (or (listp directories)
+      (setq directories (list directories)))
+    
+  (let (match)
+    (while directories
+      (let* ((directory (file-name-as-directory  (car directories)))
+             (content (and directory
+			   (file-readable-p directory)
+			   (file-directory-p directory)
+			   (directory-files directory))))
+        (setq directories (cdr directories))
+        (while content
+          (let ((file (expand-file-name (car content) directory)))
+            (cond ((string-match "[.]+$" (car content))) ;This or parent dir
+                  ((not (file-readable-p file)))
+                  ((and recurse
+                        (file-directory-p file))
+                   (setq directories
+                         (cons (file-name-as-directory file) directories)))
+                  ((string-match extension-regexp 
+                                 (file-name-nondirectory file))
+                   (and first-file
+                        (setq content nil
+                              directories nil))
+                   (setq match (cons file match)))))
+          (setq content (cdr content)))))
+    
+    match))
+
+;;; (defun psg-checkfor-file-list (filename list)
+;;;   (let ((the-list list) 
+;;;         (filespec))
+;;;     (while the-list
+;;;       (if (not (car the-list))          ; it is nil
+;;;           (setq filespec (concat "~/" filename))
+;;;         (setq filespec 
+;;;               (concat (file-name-as-directory (car the-list)) filename)))
+;;;       (if (file-exists-p filespec)
+;;;             (setq the-list nil)
+;;;         (setq filespec nil)
+;;;         (setq the-list (cdr the-list))))
+;;;     filespec))
 
 (or (fboundp 'dired-replace-in-string)
     ;; This code is part of GNU emacs
@@ -2033,30 +2198,45 @@ HOME or HOME/bin (trailing directory not supported in dos or OS/2).
 bib-dos-or-os2-variable affects:
   path separator used (: or ;)
   whether backslashes are converted to slashes"
-  (let* ((value (if bib-dos-or-os2-variable
-                    (dired-replace-in-string "\\\\" "/" (getenv env))
-                  (getenv env)))
-         (sep-char (or (and bib-dos-or-os2-variable ";") ":"))
-         (entries (and value 
-                       (or (and (fboundp 'TeX-split-string)
-                                (TeX-split-string sep-char value))
-                           (dired-split sep-char value))))
-         entry
-	 answers)
-    (while entries
-      (setq entry (car entries))
-      (setq entries (cdr entries))
-      (if (file-directory-p entry)
-          (setq answers (cons entry answers))))
-    (nreverse answers)))
+  (if (not (getenv env))
+      nil                               ;Because dired-replace-in-string fails
+    (let* ((value (if bib-dos-or-os2-variable
+                      (dired-replace-in-string "\\\\" "/" (getenv env))
+                    (getenv env)))
+           (sep-char (or (and bib-dos-or-os2-variable ";") ":"))
+           (entries (and value 
+                         (or (and (fboundp 'TeX-split-string)
+                                  (TeX-split-string sep-char value))
+                             (dired-split sep-char value))))
+           entry
+           answers)
+      (while entries
+        (setq entry (car entries))
+        (setq entries (cdr entries))
+        (if (file-directory-p entry)
+            (setq answers (cons entry answers))))
+      (nreverse answers))))
 
-;; If bib-cite.el is loaded in LaTeX-mode-hook the bib-highlight-mouse is not
-;; called on this buffer... so invoke it now for .tex buffers.  Same for imenu.
-(if (string-match ".tex$" (buffer-name))
+;;
+;; Create the unified hook to call from LaTeX-mode-hook
+;;
+(defun bib-cite-initialize ()
+  (if bib-highlight-mouse-t
+      (bib-highlight-mouse))
+  (if bib-use-imenu
+      (LaTeX-hook-setq-imenu)))
+
+(add-hook 'LaTeX-mode-hook 'bib-cite-initialize t)
+
+;; If bib-cite.el is loaded in a mode hook, bib-highlight-mouse and
+;; LaTeX-hook-setq-imenu are not called on the buffer... 
+;; so invoke it now for .tex buffers.  Same for imenu.
+;(if (string-match ".tex$" (buffer-name))
+;  (bib-cite-initialize))
+
+(if (or (eq major-mode 'latex-mode) (eq major-mode 'tex-mode))
     (progn
-      (LaTeX-hook-setq-imenu)
-      (bib-highlight-mouse)))
+      (bib-cite-initialize)))
 
 (provide 'bib-cite)
 ;;; bib-cite.el ends here
-
