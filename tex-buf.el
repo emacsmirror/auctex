@@ -1,24 +1,26 @@
-;;; tex-buf.el - External commands for AUC TeX.
+;;; tex-buf.el - External commands for AUCTeX.
 ;;
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 
 ;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen 
 ;; Copyright (C) 1991 Kresten Krab Thorup
+;; Copyright (C) 2003 Free Software Foundation
 ;; 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
+
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
 
@@ -865,15 +867,15 @@ command."
 	   (error "Cannot have two processes for the same document"))))))
 
 (defun TeX-process-buffer-name (name)
-  "Return name of AUC TeX buffer associated with the document NAME."
+  "Return name of AUCTeX buffer associated with the document NAME."
   (concat "*" (abbreviate-file-name (expand-file-name name)) " output*"))
 
 (defun TeX-process-buffer (name)
-  "Return the AUC TeX buffer associated with the document NAME."
+  "Return the AUCTeX buffer associated with the document NAME."
   (get-buffer (TeX-process-buffer-name name)))
 
 (defun TeX-process (name)
-  "Return AUC TeX process associated with the document NAME."
+  "Return AUCTeX process associated with the document NAME."
   (and TeX-process-asynchronous
        (get-buffer-process (TeX-process-buffer name))))
 
@@ -973,6 +975,16 @@ The hooks are run in the region buffer, you may use the variable
 `orig-buffer' to access the buffer where \\[TeX-command-region] or
 \\[TeX-command-buffer] is invoked from.")
 
+(defun TeX-quote-filename (file)
+  "Convert file name into a form acceptable to TeX."
+  (let (pos)
+    (while (setq pos (string-match "\\\\" file pos))
+      (setq file (replace-match "/" t t file 0)
+	    pos (1+ pos)))
+    (while (setq pos (string-match "[~#]" file pos))
+      (setq file (replace-match "\\\\string\\&" t nil file 0)
+	    pos (+ pos 8)))))
+
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION
 The region is taken from ORIGINAL starting at line OFFSET.
@@ -1043,7 +1055,9 @@ original file."
 			      (setq trailer-offset (TeX-current-offset))
 			      (buffer-substring (point) (point-max))))))))))
     ;; file name should be relative to master
-    (setq original (file-relative-name original (TeX-master-directory)))
+    (setq original (TeX-quote-filename (file-relative-name
+					original (TeX-master-directory)))
+	  master-name (TeX-quote-filename master-name))
     (save-excursion
       (set-buffer file-buffer)
       (setq buffer-undo-list t)
@@ -1351,8 +1365,14 @@ Return nil if we gave a report."
 	      (if (and (string= (cdr (nth TeX-error-pointer
 					  TeX-error-description-list))
 				"No help available")
-		       (let* ((log-buffer (find-file-noselect log-file)))
-			 (set-buffer log-buffer)
+		       (let* ((log-buffer (find-buffer-visiting log-file)))
+			 (if log-buffer
+			     (progn
+			       (set-buffer log-buffer)
+			       (revert-buffer t t))
+			   (setq log-buffer
+				 (find-file-noselect log-file))
+			   (set-buffer log-buffer))
 			 (auto-save-mode nil)
 			 (setq buffer-read-only t)
 			 (goto-line (point-min))
