@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.909 (25 Nov 2003)
+;; Version:    0.910 (15 Feb 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,8 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.910 15Feb2004 Reiner Steib
+;;  - font-latex-title-4-face: Use different colors depending on background.
 ;; V0.909 25Nov2003 Reiner Steib
 ;;  - font-latex-match-function-keywords: Added spacing commands, "nonumber",
 ;;  "centering", "TeX", and "LaTeX".
@@ -346,6 +348,7 @@ Also selects \"<quote\"> versus \">quote\"<."
 ;; These 4 faces are literally from info.el
 ;;  Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99, 2000, 2001
 ;;  Free Software Foundation, Inc.
+;; Additionally, `font-latex-title-4-face' sets foreground colors.
 (defface font-latex-title-1-face
   '((((type tty pc) (class color)) (:foreground "yellow" :weight bold))
     (t (:height 1.2 :inherit font-latex-title-2-face)))
@@ -366,7 +369,9 @@ Also selects \"<quote\"> versus \">quote\"<."
 
 (defface font-latex-title-4-face
   '((((type tty pc) (class color)) (:weight bold))
-    (t (:weight bold :inherit variable-pitch :foreground "blue4")))
+    (((class color) (background light)) (:foreground "blue4"))
+    (((class color) (background dark))  (:foreground "yellow"))
+    (t (:weight bold :inherit variable-pitch)))
   "Face for LaTeX titles at level 4."
   :group 'font-latex-highlighting-faces)
 

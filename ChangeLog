@@ -1,3 +1,8 @@
+2004-02-15  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-title-4-face): Use different colors
+	depending on background.
+
 2004-02-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-comment-region): Map to `comment-region' instead of
