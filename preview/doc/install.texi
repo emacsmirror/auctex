@@ -30,7 +30,11 @@ features of Emacs 21, getting the newest release is a good idea.
 
 You need a working AUC @TeX{} installation.  AUC @TeX{} can be found at
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  All fairly recent
-versions should work.
+versions should work.  Since at the time of this writing, the latest
+released version is 10.0g (with known issues), you should rather get an
+alpha test version.  11.11 is known to work well.  If this option is not
+available to you, try the patch described in the @file{PROBLEMS} file or
+@ref{Known problems}).
 
 @item A working La@TeX{} installation
 
@@ -65,8 +69,9 @@ it out with one of these options
 
 @table @code
 @item --with-emacs=/path/to/emacs
-If you are using a pretest which isn't in your $PATH, or configure is
-not finding the right emacs binary, you can specify it with this option.
+If you are using a pretest which isn't in your @code{$PATH}, or
+@code{configure} is not finding the right emacs binary, you can specify
+it with this option.
 
 @item --with-tex-site=/dir
 If AUC @TeX{} is installed in a non-standard location (not in
@@ -75,19 +80,23 @@ If AUC @TeX{} is installed in a non-standard location (not in
 
 @item --with-texmf=/dir@*--with-preview-dir=/dir
 Both of these options can be used to specify the location to install the
-preview TeX files.  They are not necessary for most TeX installs, but may
-be used if you don't like the directory that configure is suggesting.
-Using @code{--with-texmf=/dir} you can specify where the @TeX{} TDS
-directory hierarchy resides, and the @TeX{} files will be installed in
-@code{/dir/tex/latex/preview}.  If you want to specify an exact directory
-for the preview @TeX{} files, use @code{--with-preview-dir=/dir}. In
-this case, the files will be placed in /dir.
+preview @TeX{} files.  They are not necessary for most @TeX{} installs,
+but may be used if you don't like the directory that configure is
+suggesting.  Using @code{--with-texmf=/dir} you can specify where the
+@TeX{} @acronym{TDS} directory hierarchy resides, and the @TeX{} files
+will be installed in @code{/dir/tex/latex/preview}.  If you want to
+specify an exact directory for the preview @TeX{} files, use
+@code{--with-preview-dir=/dir}. In this case, the files will be placed
+in @file{/dir}.
 
 @item --with-lispdir=/dir
 This tells where to install Emacs Lisp files.  Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
 @end table
+
+There can be problems if your @LaTeX{} implementation is not 8-bit
+clean.  Check @file{PROBLEMS} file or @ref{Known problems}).
 
 @section Build/install
 
@@ -115,11 +124,11 @@ into system directories.
 You need to place a few lines in your personal @file{.emacs} file (or a
 site-wide configuration file).
 
-If you used the option @code{--with-lispdir}, you have to make sure
-that the directory where you installed the lisp files of @previewlatex{}
-is in Emacs' load-path variable.  This could mean, for example, adding
-the line @code{(add-to-list 'load-path "~/elisp/preview")} to your
-@file{.emacs} file.
+If you used the option @code{--with-lispdir}, you have to make sure that
+the directory where you installed the lisp files of @previewlatex{} is
+in Emacs' @code{load-path} variable.  This could mean, for example,
+adding the line @code{(add-to-list 'load-path "~/elisp/preview")} to
+your @file{.emacs} file.
 
 @cindex @file{.emacs} 
 Next put the following lines into your @file{.emacs} file:
