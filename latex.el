@@ -2792,8 +2792,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 		  (>= (- (point) (line-beginning-position)) fill-column))
 	    ;; Then fill it as a regular paragraph before it is filled
 	    ;; as a code comment.
-	    (let ((end-marker (save-excursion (beginning-of-line 2)
-					      (point-marker))))
+	    (let ((end-marker (save-excursion (end-of-line) (point-marker))))
 	      (LaTeX-fill-region-as-paragraph (line-beginning-position)
 					      (line-beginning-position 2)
 					      justify)
