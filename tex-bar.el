@@ -18,24 +18,51 @@
 ;; MA 02111-1307 USA
 
 ;; Author: Miguel V. S. Frasson <frasson@math.leidenuniv.nl>
-;; Keywords: tool-bar
+;; Keywords: tool-bar, tex, latex
 
-;;; Use of this preliminary version
+;;; Commentary:
+;; 
 
-;; Requirements for the images: 1) you should have a folder called
-;; "symb-pics" with the pics of the symbols (xpm format is a good
-;; one), and the *parent* of this folder should be in `load-path'; 2)
-;; each image file is named after the command that it represents in
-;; the following rules: the base name is the name of the command
-;; without the escape character "\", like \delta -> "delta.xpm";
-;; however, since in some OS filenames are case insensitive, all
-;; occurences of capital letter should be replaced by the letter plus
-;; a dash: \Rightarrow -> "R-ightarrow.xpm" (just apply
-;; `tex-bar-img-filename' to "Rightarrow".)
+;; This package also needs `toolbar-x.el', and `latex.el' for the
+;; symbol-toolbar.
 
-;; This package also needs `toolbarx.el' and `latex.el'
+;;; Use of this preliminary version:
 
-;;; Code
+;; 1) Load this file.
+
+;; 2) Have the button images (from auctex/images folder on CVS) in
+;;    your `load-path'.
+
+;; 3) Add `latex-install-toolbar' to `LaTeX-mode-hook'.
+
+;; Special requirements for the use of experimental symbol-toolbar:
+
+;; 4) Customize `tex-bar-latex-buttons', adding the label
+;;    `latex-symbols-experimental' at the end.
+
+;; 5) You should have a folder called "symb-pics" with the pics of the
+;;    symbols (xpm format is a good one), and the *parent* of this
+;;    folder should be in `load-path'.
+
+;; Did you read carefully item 5)?  I will say again: the folder
+;; "symb-pics" should not be in `load-path', but its parent.
+
+;; 6) each image file is named after the command that it represents in
+;;    the following rules: the base name is the name of the command
+;;    without the escape character "\", like \delta -> "delta.xpm";
+;;    however, since in some OS filenames are case insensitive, all
+;;    occurences of capital letter should be replaced by the letter
+;;    plus a dash: \Rightarrow -> "R-ightarrow.xpm" --- actually, for
+;;    the correct name, apply `tex-bar-img-filename' to "Rightarrow"
+;;     (tex-bar-img-filename "Rightarrow")
+;;            -->  "R-ightarrow"
+;;    The function `tex-bar-img-filename' also treats special commands
+;;    like `\{', `\|', etc.
+
+;; You can get the symbol images on (temporary solution)
+;;    http://www.math.leidenuniv.nl/~frasson/symb-pics.tar.gz
+
+;;; Code:
 
 (require 'custom)
 
@@ -45,12 +72,117 @@
 
 ;; standard buttons
 
+(defgroup tex-tool-bar nil
+  "Tool bar support in AUCTeX."
+  :group 'AUCTeX)
+
+(defcustom tex-bar-latex-buttons
+  '(open-file save-buffer cut copy paste undo
+	      separator latex view file bibtex)
+  "List of buttons available in `latex-mode'.
+It should be a list in the same format of the BUTTONS parameter
+in function `toolbarx-install-toolbar', often a symbol that
+labels a button or Emacs/XEmacs choice of buttons.
+
+Type `\\[tex-bar-latex-buttons]' for a list of available buttons.
+
+Buttons are defined in alists (labels associated to properties
+that define a button).  For a list of variables that hold such
+alists, see variable `tex-bar-latex-all-button-alists'."
+  :type '(repeat (choice (symbol :tag "Label")
+			 (vector :args ((symbol :tag "Label in Emacs ")
+					(symbol :tag "Label in XEmacs"))
+				 :tag "Emacs/XEmacs choice")
+			 (sexp :tag "General element")))
+  :group 'tex-tool-bar)
+
+(defun tex-bar-latex-buttons ()
+  "Display in a buffer a list of buttons for `tex-bar.el'."
+  (interactive)
+  (let ((assqs-button-alists)
+	(labels))
+    (dolist (m-alist tex-bar-latex-all-button-alists)
+      (setq labels nil)
+      (dolist (as (eval m-alist))
+	(setq labels (cons (car as) labels)))
+      (setq assqs-button-alists (cons (cons m-alist (nreverse labels))
+				       assqs-button-alists)))
+    (setq assqs-button-alists (nreverse assqs-button-alists))
+    ;; displaying results
+    (save-excursion
+      (set-buffer (get-buffer-create "*TeX tool bar buttons*"))
+      (erase-buffer)
+      (insert "Available buttons for LaTeX mode
+================================")
+      (dolist (i assqs-button-alists)
+	(insert (format "\n\n`%s' provide buttons:\n  " (car i)))
+	(dolist (j (cdr i))
+	  (insert (format " %s" j)))
+	(fill-region (point-at-bol) (point-at-eol))))
+    (display-buffer "*TeX tool bar buttons*" t)))
+
+
+(defgroup tex-tool-bar-button-definitions nil
+  "Collections of button definitions."
+  :group 'tex-tool-bar)
+
+(defcustom tex-bar-latex-all-button-alists
+  '(tex-bar-latex-button-alist
+    toolbarx-default-toolbar-meaning-alist)
+  "List of variables that hold buttons properties.
+Each element should be a symbol bound to list in the format of
+the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
+  :type '(repeat variable)
+  :group 'tex-tool-bar-button-definitions)
+
+(defcustom tex-bar-latex-button-alist
+  '((latex :image "tex"
+	   :command (progn
+		      (TeX-save-document (TeX-master-file))
+		      (TeX-command "LaTeX" 'TeX-master-file -1)))
+    (pdflatex :image "pdftex"
+	      :command (progn
+			 (TeX-save-document (TeX-master-file))
+			 (TeX-command "PDFLaTeX" 'TeX-master-file -1)))
+    (view :image "view"
+	   :command (TeX-command "View" 'TeX-master-file -1))
+    (file :image "dvips"
+	   :command (TeX-command "File" 'TeX-master-file -1))
+    (bibtex :image "bibtex"
+	    :command (TeX-command "BibTeX" 'TeX-master-file -1))
+    (latex-symbols-experimental . (:alias :eval-group
+					  latex-symbols-toolbar-switch-contents
+					  latex-symbols-toolbar-contents)))
+  "Alist for button definitions in TeX bar.
+Value should le a list where each element is of format (KEY .
+PROPS), where KEY is a symbol that labels the button and PROPS is
+a list of properties of the button.  For a description of the
+format of PROPS, please see documentation of function
+`toolbarx-install-toolbar'.  This custom variable is in the same
+format of the argument MEANING-ALIST in the mentioned function."
+  :type '(alist :key-type symbol :value-type sexp)
+  :group 'tex-tool-bar-button-definitions)
+
+;;; instalation of toolbar
+(defun latex-install-toolbar ()
+  "Install toolbar buttons for LaTeX mode."
+  (interactive)
+  (toolbarx-install-toolbar tex-bar-latex-buttons
+			    (let ((append-list))
+			      (dolist (elt tex-bar-latex-all-button-alists)
+				(setq append-list (append append-list
+							  (eval elt))))
+			      append-list)))
+
+;;; Experimental Symbol Toolbar
+
 ;;; symbol toolbar
-(defun tex-bar-img-filename (str)
-  (let ((str-list (append str nil))
+(defun tex-bar-img-filename (tex-command)
+  "Return the filename (no extension) for the image button of TEX-COMMAND."
+  (let ((str-list (append tex-command nil))
 	(str-result))
     (dolist (i str-list)
-      (cond 
+      (cond
        ;; capital letter -> letter + "-"
        ((and (>= i ?A) (<= i ?Z))
 	(setq str-result (cons ?- (cons i str-result))))
@@ -140,7 +272,7 @@
     "Non-nil means that the LaTeX symbols on toolbar are visible.")
   (defconst latex-symbols-toolbar-switch-contents
     `(;; the on-off switch button
-      (latex-symbols-switch 
+      (latex-symbols-switch
        :image (lambda nil (if LaTeX-symbols-toolbar-visible-flag
 			      "ltx-symb-turn-off"
 			    "ltx-symb-turn-on"))
@@ -152,9 +284,7 @@
        ;; the name of the current class of symbols
        :help (lambda nil
 	       (concat "Turn "
-		       (if LaTeX-symbols-toolbar-visible-flag
-			   "off "
-			 "on ")
+		       (if LaTeX-symbols-toolbar-visible-flag "off " "on ")
 		       "the toolbar of LaTeX symbols (current class: "
 		       (nth (1- LaTeX-symbols-active-menuitem)
 			    (quote ,list-strings))
@@ -171,8 +301,8 @@
   (defconst latex-symbols-toolbar-contents
     (let* ((ltx-symb '(:sep))
 	   (count 0))
-      (dolist (i menu-strings-buttons-alist 
-		 (append (nreverse ltx-symb) 
+      (dolist (i menu-strings-buttons-alist
+		 (append (nreverse ltx-symb)
 			 '(:insert
 			   LaTeX-symbols-toolbar-visible-flag
 			   :toolbar (bottom . top))))
@@ -184,75 +314,6 @@
 		    ltx-symb))))))
 
 
-
-
-(defgroup tex-tool-bar nil
-  "Tool bar support in AUCTeX."
-  :group 'AUCTeX)
-
-(defcustom tex-bar-latex-buttons
-  '(save-buffer
-    [undo nil] cut copy paste [nil undo]
-    :sep
-    latex view file bibtex latex-symbols)
-  "List of buttons available in `latex-mode'.
-It should be a list (ELEM ELEM ...), where each ELEM could be a
-symbol which is associatet to button properties in some of the
-alists that are members of  The format of this custom variable is
-the same as the BUTTONS parameter in function
-`toolbarx-install-toolbar'.  "
-  :group 'tex-tool-bar)
-
-(defgroup tex-tool-bar-button-definitions nil
-  "Collections of button definitions."
-  :group 'tex-tool-bar)
-
-(defcustom tex-bar-meaning-alist
-  '((latex :image "tex"
-	   :command (progn
-		      (TeX-save-document (TeX-master-file))
-		      (TeX-command "LaTeX" 'TeX-master-file -1)))
-    (pdflatex :image "pdftex"
-	      :command (progn
-			 (TeX-save-document (TeX-master-file))
-			 (TeX-command "PDFLaTeX" 'TeX-master-file -1)))
-    (view :image "view"
-	   :command (TeX-command "View" 'TeX-master-file -1))
-    (file :image "dvips"
-	   :command (TeX-command "File" 'TeX-master-file -1))
-    (bibtex :image "bibtex"
-	    :command (TeX-command "BibTeX" 'TeX-master-file -1))    
-    (latex-symbols . (:alias :eval-group
-			     latex-symbols-toolbar-switch-contents
-			     latex-symbols-toolbar-contents)))
-  "Alist for button definitions in TeX bar.
-Value should le a list where each element is of format (KEY .
-PROPS), where KEY is a symbol that labels the button and PROPS is
-a list of properties of the button.  For a description of the
-format of PROPS, please see documentation of function
-`toolbarx-install-toolbar'.  This custom variable is in the same
-format of the argument MEANING-ALIST in the mentioned function."
-  :group 'tex-tool-bar-button-definitions)
-
-(defcustom tex-bar-available-meaning-alists
-  '(toolbarx-default-toolbar-meaning-alist
-    tex-bar-meaning-alist)
-  "List of variables that hold buttons properties.
-Each element should be a symbol bound to list in the format of
-the argument MEANING-ALIST in function `toolbarx-install-toolbar'."
-  :group 'tex-tool-bar-button-definitions)
-
-;;; instalation of toolbar
-(defun latex-install-toolbar ()
-  "Install toolbar buttons for LaTeX mode."
-  (interactive)
-  (toolbarx-install-toolbar tex-bar-latex-buttons
-			    (let ((append-list))
-			      (dolist (elt tex-bar-available-meaning-alists)
-				(setq append-list (append append-list
-							  (eval elt))))
-			      append-list)))
-
 (provide 'tex-bar)
 
-;;; tex-bar.el ends here.
+;;; tex-bar.el ends here
