@@ -103,12 +103,12 @@ the `Configure' section in the @file{INSTALL} file
 @end ifclear
 for more information about the available options.
 
-@item --with-lisp-dir=@var{/dir}
+@item --with-lispdir=@var{/dir}
 This may be needed for GNU Emacs installation, but hopefully
 @file{configure} should figure this out by itself.  Don't use this for
 XEmacs, rather use
 
-@item --with-package-dir=@var{/dir}
+@item --with-packagedir=@var{/dir}
 which gives the location of the package directory for XEmacs where
 stuff should be installed.  Again, hopefully this is not necessary to
 specify.
