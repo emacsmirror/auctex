@@ -1706,9 +1706,8 @@ Prefix arg means justify as well."
   (interactive "*P")
   (save-excursion
     (beginning-of-line)
-;; Do the following 2 lines actually serve a sensible purpose?
-    (if (looking-at "[ \t]+%")
-	(re-search-forward "^\\(%\\|[ \t]*[^% \t\n]\\)"))
+    (if (looking-at "[ \t]*%]")
+	(re-search-forward "^[ \t]*[^% \t\n]"))
     (forward-paragraph)
     (or (bolp) (newline 1))
     (and (eobp) (open-line 1))
@@ -3123,24 +3122,31 @@ of `LaTeX-mode-hook'."
 
   (setq paragraph-start
 	(concat
-	 "%*[ \t]*\\("
+	 "\\("
+	 "^.*[^" TeX-esc "\n]%.*$\\|"
+	 "^%.*$\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
-	 LaTeX-paragraph-commands "\\|item\\b"
-	 "\\)\\|$"
+	 LaTeX-paragraph-commands
+	 "\\|\\(bib\\)?item\\b"
 	 "\\)"
-	 ))
+	 "\\|"
+	 "^[ \t]*\\$\\$" ; display math delimitor
+	 "\\)" ))
   (setq paragraph-separate
 	(concat
-	 "%*[ \t]*\\("
-	 "$\\|"
+	 "\\("
+	 "^.*[^" TeX-esc "\n]%.*$\\|"
+	 "^%.*$\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands
 	 "\\)"
-	 "\\|"
-	 "\\$\\$" ; display math delimitor
-	 "\\|$\\)"))
+	 "\\)"))
   (setq selective-display t)
 
   (make-local-variable 'LaTeX-item-list)
