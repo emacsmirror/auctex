@@ -1,3 +1,21 @@
+2002-03-31  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-default-option-list): Update possibilities
+	and docs.
+	(preview-parse-messages): Don't do files not known to be
+	human-generated.
+	(preview-gs-queue-empty): New cleanout function.  We use this
+	instead of just clearing preview-gs-queue in order to avoid
+	losing pointers to deletable temporary files.
+	(preview-gs-sentinel): Use it.
+	(preview-gs-close): Same here.
+	(preview-gs-open): And here.  Use unwind-protect in order to
+	ascertain we process the queue.
+	(preview-prepare-fast-conversion): Accept non-dereferenced big ps
+	file.
+	(preview-gs-dvips-sentinel): better behavior when processes get
+	started and finished in unexpected orders.
+
 2002-03-31  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
 
 	* preview-latex.spec:
