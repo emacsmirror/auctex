@@ -107,6 +107,8 @@
 ;;    Thanks to Benoit Plessis <benoit.plessis@tuxfamily.org> for reporting
 ;;    the problem to Debian (Bug#208503) and for being persistent enough to
 ;;    find the tickling conditions.
+;;  - Change some doc strings following patch from Reiner Steib
+;;    <reiner.steib@gmx.de>, with my thanks.
 ;; V0.901 25Jul2003 PSG
 ;;  - Make & highlighted in font-latex-warning-face.
 ;;  - Better document font-latex-match-*-keywords-local variables.
@@ -284,13 +286,13 @@
 (defvar font-latex-match-variable-keywords)
 (defvar font-latex-match-variable-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-variable-keywords'.
-This must be a list of keyword strings omitting the leading slash and not
-regular expressions.  It will get transformed into a regexp automatically.
-This variable is not for end users; they should customize
-`font-latex-match-variable-keywords' instead.  It is for authors of lisp
-files that get loaded when LaTeX style files are used in the current
-buffer.  They should add to this list and rebuild the fontification regexp
-like so:
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-variable-make'.  This variable is not for end users; they
+should customize `font-latex-match-variable-keywords' instead.  It is for
+authors of lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
 
  (add-to-list 'font-latex-match-variable-keywords-local \"setstuff\")
  (font-latex-match-variable-make)")
@@ -333,13 +335,13 @@ e.g. \\setlength[option]{key}
 (defvar font-latex-match-reference-keywords)
 (defvar font-latex-match-reference-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-reference-keywords'.
-This must be a list of keyword strings omitting the leading slash and not
-regular expressions.  It will get transformed into a regexp automatically.
-This variable is not for end users; they should customize
-`font-latex-match-reference-keywords' instead.  It is for authors of lisp
-files that get loaded when LaTeX style files are used in the current
-buffer.  They should add to this list and rebuild the fontification regexp
-like so:
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-reference-make'.  This variable is not for end users; they
+should customize `font-latex-match-reference-keywords' instead.  It is for
+authors of lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
 
  (add-to-list 'font-latex-match-reference-keywords-local \"someref\")
  (font-latex-match-reference-make)")
@@ -385,13 +387,13 @@ e.g. \\cite[option]{key}
 (defvar font-latex-match-function-keywords)
 (defvar font-latex-match-function-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-function-keywords'.
-This must be a list of keyword strings omitting the leading slash and not
-regular expressions.  It will get transformed into a regexp automatically.
-This variable is not for end users; they should customize
-`font-latex-match-function-keywords' instead.  It is for authors of lisp
-files that get loaded when LaTeX style files are used in the current
-buffer.  They should add to this list and rebuild the fontification regexp
-like so:
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-function-make'.  This variable is not for end users; they
+should customize `font-latex-match-function-keywords' instead.  It is for
+authors of lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
 
  (add-to-list 'font-latex-match-function-keywords-local \"somecommand\")
  (font-latex-match-function-make)")
@@ -442,13 +444,13 @@ e.g. \\newcommand[option]{key}
 (defvar font-latex-match-textual-keywords)
 (defvar font-latex-match-textual-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-textual-keywords'.
-This must be a list of keyword strings omitting the leading slash and not
-regular expressions.  It will get transformed into a regexp automatically.
-This variable is not for end users; they should customize
-`font-latex-match-textual-keywords' instead.  It is for authors of lisp
-files that get loaded when LaTeX style files are used in the current
-buffer.  They should add to this list and rebuild the fontification regexp
-like so:
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-textual-make'.  This variable is not for end users; they
+should customize `font-latex-match-textual-keywords' instead.  It is for
+authors of lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
 
  (add-to-list 'font-latex-match-textual-keywords-local \"somesection\")
  (font-latex-match-textual-make)")
@@ -495,13 +497,13 @@ e.g. \\section[option]{key}
 (defvar font-latex-match-warning-keywords)
 (defvar font-latex-match-warning-keywords-local nil
   "Buffer-local keywords to add to `font-latex-match-warning-keywords'.
-This must be a list of keyword strings omitting the leading slash and not
-regular expressions.  It will get transformed into a regexp automatically.
-This variable is not for end users; they should customize
-`font-latex-match-warning-keywords' instead.  It is for authors of lisp
-files that get loaded when LaTeX style files are used in the current
-buffer.  They should add to this list and rebuild the fontification regexp
-like so:
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-warning-make'.  This variable is not for end users; they
+should customize `font-latex-match-warning-keywords' instead.  It is for
+authors of lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
 
  (add-to-list 'font-latex-match-warning-keywords-local \"somebreak\")
  (font-latex-match-warning-make)")
