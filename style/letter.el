@@ -1,8 +1,13 @@
 ;;; letter.el - Special code for letter style.
 
-;; $Id: letter.el,v 1.2 1993-09-06 22:28:48 amanda Exp $
+;; $Id: letter.el,v 1.3 1994-01-05 19:09:22 amanda Exp $
 
 ;;; Code:
+
+;; You may want to define this in tex-site.el to contain your
+;; organizations address.  
+(defvar LaTeX-letter-sender-address ""
+  "Initial value when prompting for a sender address in the letter style.")
 
 (TeX-add-style-hook "letter"
  (function
@@ -19,7 +24,8 @@
 (defun LaTeX-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."
   (let ((sender (read-input "Sender: " (user-full-name)))
-	(sender-address (read-input "Sender address: "))
+	(sender-address (read-input "Sender address: "
+				    LaTeX-letter-sender-address))
 	(recipient (read-input "Recipient: "))
 	(address (read-input "Recipient address: "))
 	(signature (read-input "Signature: "))
@@ -31,6 +37,7 @@
     (newline-and-indent)
     (if (not (zerop (length sender-address)))
 	(progn
+	  (setq LaTeX-letter-sender-address sender-address)
 	  (insert TeX-esc "address" TeX-grop sender-address TeX-grcl)
 	  (newline-and-indent)))
     (if (not (zerop (length signature)))

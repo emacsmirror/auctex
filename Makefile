@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.74 1993-12-15 21:42:09 amanda Exp $
+# $Id: Makefile,v 5.75 1994-01-05 19:08:40 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -35,7 +35,15 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
 #EMACS=/home/dist/bin/emacs
-EMACS=emacs-19.21
+EMACS=emacs-19.22
+
+# For OS/2 use
+#EXE=.exe
+EXE=
+
+# For gcc use
+LIBS=
+#LIBS=-ll
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -87,9 +95,7 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = remap.el    dvorak.el   map-tex.el  map-mnem.el map-case.el \
-	 latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
-	 map-samp.el
+REMOVE = none
 
 MINMAPFILES = min-mode.el min-ind.el  min-ispl.el column.el
 
@@ -110,7 +116,7 @@ FORMATSRC = format/VIRTEX.el format/TEXINFO.el \
 
 STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/article.el   style/book.el     style/letter.el \
-	   style/report.el    style/latex2e.el \
+	   style/report.el    style/latex2e.el  style/amsart.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
@@ -151,7 +157,7 @@ all: main
 	@echo "** Expect some warnings from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 
-main: Doc LaCheck
+main: TDoc TLaCheck
 
 install: LispInstall LaInstall DocInstall
 	@echo 
@@ -200,7 +206,7 @@ install-auto:
 	@echo "**********************************************************"
 	@echo
 
-LaInstall: LaCheck
+LaInstall: TLaCheck
 	@echo "**********************************************************"
 	@echo "** Installing LaCheck "
 	@echo "**********************************************************"
@@ -233,14 +239,15 @@ LispInstall:
 	else true; \
 	fi
 
-LaCheck:
+TLaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck"
 	@echo "**********************************************************"
 	-(cd lacheck; $(MAKE) bindir=$(bindir) \
-	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
+	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" \
+	  EXE=$(EXE) LIBS=$(LIBS))
 
-Doc: 
+TDoc: 
 	@echo "**********************************************************"
 	@echo "** Making AUC TeX documentation"
 	@echo "**********************************************************"
@@ -298,4 +305,4 @@ dist:	tex-load.el
 min-map:
 	-cvs add $(MINMAPSRC) 
 	cvs commit -m "Update"
-	cp $(MINMAPSRC) $(FTPDIR) 
+	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR) 

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.52 1993-12-15 21:42:21 amanda Exp $
+;; $Id: tex-buf.el,v 1.53 1994-01-05 19:08:49 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -39,9 +39,7 @@
 	 (if (boundp 'shell-command-option)
 	     shell-command-option
 	   "/c"))
-	((eq system-type 'emx)
-	 "/c")
-	(t				;Unix
+	(t				;Unix & EMX (Emacs 19 port to OS/2)
 	 "-c"))
   "Shell argument indicating that next argument is the command.")
 

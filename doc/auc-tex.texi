@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.66 1993-12-15 21:42:35 amanda Exp $
+@c $Id: auc-tex.texi,v 1.67 1994-01-05 19:09:04 amanda Exp $
 
 @finalout
 @titlepage
@@ -305,8 +305,8 @@ press @kbd{"} twice.
 @kindex "
 (@kbd{"}) Insert the appropriate quote marks for TeX.  
 
-Inserts the value of @code{tex-open-quote} (normally @samp{``}) or
-@code{tex-close-quote} (normally @samp{''}) depending on the context.
+Inserts the value of @code{TeX-open-quote} (normally @samp{``}) or
+@code{TeX-close-quote} (normally @samp{''}) depending on the context.
 With prefix argument, always inserts @samp{"} characters.@refill
 @end deffn
 
@@ -329,7 +329,7 @@ will be indicated by moving the cursor temporarily over the first dollar
 sign.  If you enter a dollar sign that matches a double dollar sign
 @samp{$$} AUC @TeX{} will automatically insert two dollar signs.  If you
 enter a second dollar sign that matches a single dollar sign, the single
-sollar sign will automatically be converted to a double dollar sign.
+dollar sign will automatically be converted to a double dollar sign.
 
 @deffn Command TeX-insert-dollar @var{arg}
 @kindex $
@@ -2438,9 +2438,54 @@ Tim Carlson @samp{<tim@@math.montana.edu>}, John Daschbach
 @samp{<peta@@cim.mcgill.ca>}, Volker Dobler
 @samp{<dobler@@etu.wiwi.uni-karlsruhe.de>}, Phil Austin
 @samp{<phil@@geog.ubc.ca>}, Martin Maechler
-@samp{<maechler@@stat.math.ethz.ch>}, and probably more.@refill
+@samp{<maechler@@stat.math.ethz.ch>}, Havard Rue
+@samp{<Havard.Rue@@sima.sintef.no>}, Tim Geisler
+@samp{<tmgeisle@@faui80.informatik.uni-erlangen.de>}, Tim Carlson
+@samp{<imsgtcar@@mathfs.math.montana.edu>}, Sridhar Anandakrishnan
+@samp{<sak@@essc.psu.edu>}, Peter Thiemann
+@samp{thiemann@@provence.informatik.uni-tuebingen.de}, Pedro Quaresma
+@samp{pedro@@mat.uc.pt}, Christian Lynbech
+@samp{<lynbech@@daimi.aau.dk>}, Kevin Scott
+@samp{<scottkj@@prl.philips.co.uk>}, Bodo Huckestein
+@samp{bodo@@eu10.mpi-hd.mpg.de}, and probably more.@refill
 
 @itemize @bullet
+@item
+New variable @code{LaTeX-letter-sender-address} contains default address
+for use with the letter style.  Set it to the address of your
+organization in @file{tex-site.el}.  Thanks to Sridhar Anandakrishnan
+@samp{<sak@@essc.psu.edu>}. 
+
+@item
+Makefile now works under OS/2 with GNU Make.  Thanks to Bodo Huckestein
+@samp{bodo@@eu10.mpi-hd.mpg.de}.
+
+@item
+Made it possible to install global auto files without having Bib@TeX{}
+mode installed.  Thanks to Christian Lynbech
+@samp{<lynbech@@daimi.aau.dk>}.
+
+@item
+Minor documentation fixes.  Thanks to Martin Maechler
+@samp{<maechler@@stat.math.ethz.ch>}.
+
+@item
+Added support for @samp{eqref} for the @samp{amsart} style.  Thanks to
+Peter Whaite @samp{<peta@@cim.mcgill.ca>}.
+
+@item 
+Use @samp{-c} as the default shell command option under @samp{emx}.
+Eberhard Mattes @samp{<mattes@@azu.informatik.uni-stuttgart.de>} says
+it is better than @samp{/c}.
+
+@item
+Made powerkey in the menus work better under OS/2.  Thanks to Eberhard
+Mattes @samp{<mattes@@azu.informatik.uni-stuttgart.de>}.
+
+@item
+Made the reference cards print correctly on US letter format paper.
+Thanks to Magnus Nordborg @samp{<magnus@@fisher.Stanford.EDU>}.
+
 @item
 @code{LaTeX-dead-mode} removed.  Use the unbundled `remap' package
 instead. 
@@ -2456,9 +2501,11 @@ details.  The new hooks allow you to use the `remap' package instead.
 
 @item 
 La@TeX{}2e mode now supported.  Insert 
+
 @lisp
   (setq TeX-default-mode 'latex2e-mode)
 @end lisp
+
 in your @file{.emacs} file to get documentclass instead of documentstyle
 per default.  The parser recognizes documentclass, usepackage, and
 newcommand with a default argument.  There are also templates for all of

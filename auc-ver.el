@@ -1,5 +1,5 @@
-(defconst AUC-TeX-version "8.0l"
+(defconst AUC-TeX-version "8.0m"
   "AUC TeX version number")
-(defconst AUC-TeX-date "Wed Dec 15 22:48:08 MET 1993"
+(defconst AUC-TeX-date "Wed Jan  5 20:08:10 MET 1994"
   "AUC TeX release date")
 (provide 'auc-ver)
