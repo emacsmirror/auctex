@@ -1,6 +1,24 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* doc/macros.texi: Synchronize to AUCTeX.
+
+	* Makefile.in (tarball-ready): Remove this target for now: it
+	can't be used consistently really.  It is probably better to do
+	just run autogen.sh on a freshly exported archive.
+
+	* doc/Makefile.in (DISTTEXTS): Targets in parent dir.
+	(../INSTALL, ../INSTALL.windows, ../README, ../FAQ, ../PROBLEMS)
+	(../TODO): New targets instead of targets in current dir.
+	(clean): Don't remove targets in this dir.
+	(maintainer-clean): Remove DISTTEXTS targets.
+
+	* autogen.sh: Use make for generating distribution texts and also
+	pregenerate the info file.
+
 	* Makefile.in (emacsprefix): Remove.
+	(.PHONY): Collect phony targets here.
+	(DISTTEXTS): Move to doc/Makefile.in
+	(tarball-ready): Adapt
 
 	* preview-latex.spec: Change version number.  Change directory
 	choice to "xemacs-packages" on fedora.

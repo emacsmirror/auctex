@@ -18,6 +18,8 @@ TEXIFILES = copying.texi faq.texi install.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi problems.texi \
 	readme.texi todo.texi wininstall.texi
 
+DISTTEXTS = ../README ../INSTALL ../PROBLEMS ../TODO ../INSTALL.windows ../FAQ
+
 all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: $(TEXIFILES)
@@ -43,31 +45,33 @@ preview-latex.pdf: $(TEXIFILES)
 preview-latex.info: $(TEXIFILES)
 	-$(MAKEINFO) preview-latex.texi
 
-INSTALL: install.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		install.texi --output INSTALL
+disttexts: $(DISTTEXTS)
 
-INSTALL.windows: wininstall.texi macros.texi
+../INSTALL: install.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		wininstall.texi --output INSTALL.windows
+		install.texi --output ../INSTALL
 
-README: readme.texi macros.texi
+../INSTALL.windows: wininstall.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		readme.texi --output README
+		wininstall.texi --output ../INSTALL.windows
 
-FAQ: faq.texi macros.texi
+../README: readme.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		--number-sections faq.texi --output FAQ
+		readme.texi --output ../README
 
-PROBLEMS: problems.texi macros.texi
+../FAQ: faq.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		problems.texi --output PROBLEMS
+		--number-sections faq.texi --output ../FAQ
 
-TODO: todo.texi macros.texi
+../PROBLEMS: problems.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		todo.texi --output TODO
+		problems.texi --output ../PROBLEMS
 
-.PHONY: install
+../TODO: todo.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		todo.texi --output ../TODO
+
+.PHONY: install disttexts clean maintainer-clean
 
 install: preview-latex.info
 	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
@@ -79,9 +83,8 @@ install: preview-latex.info
 clean: 
 	rm -f *.ps *.pdf *.aux *.cp *.fn *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
-		*.fns *.vrs *.pgs *.dvi *.html *.tmp FAQ \
-		INSTALL INSTALL.windows README PROBLEMS TODO \
+		*.fns *.vrs *.pgs *.dvi *.html *.tmp \
 		preview-latex/*
 
 maintainer-clean: clean
-	rm -f *.info* preview-dtxdoc.texi
+	rm -f *.info* preview-dtxdoc.texi $(DISTTEXTS)

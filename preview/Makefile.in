@@ -17,8 +17,6 @@ ICON_SOURCES = \
  images/prvwrk12.xpm  images/prvwrk14.xpm       images/prvwrk16.xpm \
  images/prvwrk20.xpm  images/prvwrk24.xbm       images/prvwrk24.xpm
 
-DISTTEXTS = README INSTALL PROBLEMS TODO INSTALL.windows FAQ
-
 prefix = @prefix@$(null)
 lispdir = @lispdir@$(null)
 icondir = @icondir@$(null)
@@ -52,7 +50,8 @@ install-hint:
 	@echo 'to write to the install directory.'
 
 
-.PHONY: install
+.PHONY: install install-texmf install-el install-icons install-startup \
+	install-docs use-hint all elisp texmf docs
 
 install: install-texmf install-el install-icons \
          install-startup install-docs use-hint
@@ -115,7 +114,7 @@ preview-latex.el: preview.el auto.el
 	fi
 	cat auto.el >> $@
 
-.PHONY: clean
+.PHONY: clean distclean maintainer-clean tarball-ready
 
 clean:
 	rm -f latex.out testdocstrip.tex preview-latex.el
@@ -123,25 +122,11 @@ clean:
 	(cd doc ; $(MAKE) clean)
 	(cd latex ; $(MAKE) clean)
 
-.PHONY: distclean
-
 distclean: clean
 	rm -f config.log config.cache config.status
 	rm -f Makefile */Makefile auto.el
 
-.PHONY: maintainer-clean
-
 maintainer-clean: 
 	(cd doc ; $(MAKE) maintainer-clean)
-	$(MAKE) distclean
-	rm -f $(DISTTEXTS)
-	rm -rf autom4te.cache
-
-.PHONY: tarball-ready
-
-tarball-ready: 
-	autoconf
-	(cd doc; make preview-latex.info $(DISTTEXTS))
-	(cd doc; mv $(DISTTEXTS) ..)
 	$(MAKE) distclean
 	rm -rf autom4te.cache
