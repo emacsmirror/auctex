@@ -1,3 +1,10 @@
+2004-01-08  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi:
+	* dvipng/configure.ac: Prepare for 0.9
+
+	* dvipng/Makefile.in: clean target 
+
 2004-01-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/color.c: 
