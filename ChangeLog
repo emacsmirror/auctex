@@ -7,6 +7,7 @@
 
 	* doc/auc-tex.texi: Change "Formatting" node to "Running TeX and
 	friends" and use a respective heading.
+	Adapt key binding for `TeX-master-file-ask'.
 
 	* doc/intro.texi: Correct URLs.
 
