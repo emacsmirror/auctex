@@ -1,3 +1,17 @@
+2002-08-30  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/dvi.c: fix bug in STRSIZE zap
+
+	* dvipng/vf.c: simplify, fix debug info, zap STRSIZE limit
+
+	* dvipng/misc.c: Fix background transparency
+
+	* dvipng/dvipng.h, dvipng/draw.c: Fix FormFeed bug (outfilename
+	wrong)
+
+	* dvipng/set.c: Fix FormFeed bug (outfilename wrong), and
+	background transparency
+
 2002-08-29  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/dvipng.h: type changes, dvi-io abstraction
