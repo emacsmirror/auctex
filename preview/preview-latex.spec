@@ -128,8 +128,12 @@ install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
 texhash /usr/share/texmf
 
 %preun
-install-info --info-dir=%{_infodir} --delete \
-  %{_infodir}/preview-latex.info 
+# $1 is the number of versions of this package installed
+# after this uninstallation
+if [ $1 -eq 0 ]; then
+  install-info --info-dir=%{_infodir} --delete \
+    %{_infodir}/preview-latex.info 
+fi
 
 %files common
 %defattr(-,root,root)
@@ -138,7 +142,7 @@ install-info --info-dir=%{_infodir} --delete \
 %{_datadir}/texmf/tex/latex/preview/*.def
 %config %{_datadir}/texmf/tex/latex/preview/*.cfg
 %doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
-%doc %{_infodir}/preview-latex.info*.gz
+%doc %{_infodir}/preview-latex.info*
 %doc %{docs}
 
 %if %{HAVE_EMACS}
