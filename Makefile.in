@@ -176,8 +176,6 @@ release-commit:
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	sleep 3
-	perl -pi.bak -e "s/Version: $(OLD)/Version: $(TAG)/" \
-	    $(AUCSRC) $(EXTRAFILES)
 	mv ChangeLog ChangeLog.old
 	echo `date "+%Y-%m-%d "` \
 	     " David Kastrup  <dak@gnu.org>" > ChangeLog

@@ -1,5 +1,8 @@
 2004-08-13  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (release-commit): There are no Version: strings
+	anymore, don't replace them.
+
 	* tex-fptex.el: customize Queue and Print commands appropriately.
 
 	* tex-mik.el: customize Queue and Print commands appropriately.
