@@ -5,16 +5,16 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.73 1994-01-29 21:05:14 amanda Exp $
+@c $Id: auc-tex.texi,v 1.74 1994-01-30 13:52:50 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle September 1993, for AUC @TeX{} Version 8.0
+@subtitle September 1993, for AUC @TeX{} Version 8.1
   
 @author by Kresten Krab Thorup
-@author updated for 8.0 by Per Abrahamsen
+@author updated for 6.1 to 8.1 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -90,7 +90,7 @@ TeX-submit-bug-report} to report bugs.@refill
 * Formatting::                  Formatting and Printing 
 * Multifile::                   Multifile Documents
 * Parsing Files::               Automatic Parsing of @TeX{} files.
-* Japanese::                    Japanese @TeX{}.
+* I18n::                        Internationalization
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Installation::                Installation of AUC @TeX{}
@@ -1406,7 +1406,7 @@ If non-nil, query the user before saving each file with
 @end defopt
 
 
-@node Parsing Files, Japanese, Multifile, top
+@node Parsing Files, I18n, Multifile, top
 @chapter Automatic Parsing of @TeX{} files.
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
@@ -1540,8 +1540,109 @@ Parse common plain @TeX{} commands.
 Parse all @TeX{} and La@TeX{} commands that AUC @TeX{} can use.
 @end defvr
 
-@node Japanese, Automatic, Parsing Files, top
-@chapter Japanese @TeX{} 
+@node I18n, Automatic, Parsing Files, top
+@chapter Internationalization
+@cindex Internationalization
+@cindex Character set
+@cindex National letters
+
+There are several problems associated with editing non-English @TeX{}
+with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are useable for
+European (Latin, Cyrillic, Greek) based languages, but special versions
+of TeX and Emacs are needed for Korean, Japanes, and Chinese. 
+
+@menu
+* European::                    Using AUC @TeX{} for European languages.
+* Japanese::                    Japanese @TeX{}
+@end menu
+
+@node European, Japanese, I18n, I18n
+@section Using AUC @TeX{} for European languages.
+@cindex Europe
+@cindex European Characters
+@cindex ISO 8859 Latin 1
+@cindex Latin 1
+@cindex ISO 8859 Latin 2
+@cindex Latin 2
+@cindex ANSI 
+@cindex Denmark
+@cindex Danish
+@cindex Holland
+@cindex Dutch
+@cindex Germany
+
+First you will need a way to write non-ASCII characters.  You can either
+use macros, or teach @TeX{} about the ISO character sets.  I prefer the
+later.  
+
+@table @file
+@item isolatin1.sty
+Support for ISO 8859 Latin 1.  Available by ftp from the host
+@t{ftp.uni-stuttgart.de} as
+@file{/pub/tex/macros/latex/contrib/misc/isolatin1.sty}. 
+
+@item latin2.sty
+Support for ISO 8859 Latin 2.  Available by ftp from the host
+@t{ftp.uni-stuttgart.de} as
+@file{/pub/tex/macros/latex/contrib/latin2.sty}.
+@end table
+
+To be able to display non-ASCII characters you will need an appropriate
+font and a version of GNU Emacs capable of displaying 8-bit characters.
+I believe all emacs versions except plain Emacs 18 are capable of this.
+For GNU Emacs 19, @pxref{European Display,,,emacs, The GNU Emacs
+Editor}.  Other relevant packages are:
+
+@table @file
+@item remap
+Supports lots of different 7-bit and 8-bit character sets for GNU Emacs
+19.  Mostly useful if you have seldomly used character sets, or need to
+use different character set for keyboard, buffer, and display.  An
+overkill if you just need ISO 8859 Latin 1.  Currently in alpha test,
+but available by ftp from the host @t{ftp.iesd.auc.dk} in
+@file{/pub/emacs-lisp} or @file{/pub/emacs-lisp/alpha}.
+@end table
+
+A compromise is to use use an European character set when editing the
+file, and convert to @TeX{} macros when reading and writing the files.
+
+@table @file
+@item iso-tex.el
+This file automatically converts between ISO 8859 Latin 1 encoding and
+La@TeX{} encodings of West European characters.  It is available by ftp
+from @t{aida.intellektik.informatik.th-darmstadt.de} in the directory
+@file{/pub/gene/Emacs}.
+@end table
+
+AUC @TeX{} supports style files for several languages.  Each style file
+may modify some AUC @TeX{} to better support the language, and will run
+a language specific hook that will allow you to for example change
+ispell dictionary, or run code to change the keyboard remapping.  The
+following will for example choose a danish dictionary for documents
+including the @file{dk.sty} file.  This requires parsing to be enabled,
+@pxref{Parsing Files}. 
+
+@lisp
+(add-hook 'TeX-language-dk-hook
+          (function (lambda () (ispell-change-dictionary "danish"))))
+@end lisp
+
+The following style files are recognized.
+@table @file
+@item dk
+Runs style hook @code{TeX-language-dk-hook}.
+
+@item dutch
+Runs style hook @code{TeX-language-nl-hook}.
+
+@item german
+Runs style hook @code{TeX-language-nl-hook}.
+Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
+@samp{"}.  
+@end table
+
+@node Japanese,  , European, I18n
+@section Japanese @TeX{} 
 @cindex Japan
 @cindex Japanese
 @cindex Nippon
@@ -1561,7 +1662,8 @@ everything should work.  If not, send mail to Shinji Kobayashi
 (@samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
 supporting Japanese in AUC @TeX{}.  None of the primary AUC @TeX{}
 maintainers understand Japanese, so they can not help you.
-@node Automatic, Style Files, Japanese, top
+
+@node Automatic, Style Files, I18n, top
 @chapter Automatic Customization
 @cindex Automatic Customization
 @cindex Extracting @TeX{} symbols
@@ -2323,16 +2425,18 @@ this version, and for the authors, who get nostalgic at times.
 @comment  node-name,  next,  previous,  up
 @section News in 8.1
 
+Coordinater: Per Abrahamsen, 1993.
+
 @itemize @bullet
+@item
+Added section with suggestions for how to handle European
+character sets.
+
 @item
 Created workaround for bug in the regexp handler in some Emacs 18
 versions and older versions of Lucid Emacs.  The workaround
 means you cannot use space in the documentstyle command in Emacs and
 Lucid Emacs earlier than version 19.9.
-
-@item
-Added file @file{ISO-TEX} with suggestions for how to handle European
-character sets.
 
 @item
 @file{powerkey.el} unbundled.
@@ -2419,8 +2523,6 @@ More OS/2 Makefile fixes by Bodo Huckestein
 Reimplemented comment support on top of @code{comment-region}, giving
 slightly different semantics.
 @end itemize
-
-Coordinater: Per Abrahamsen, 1993.
 
 @node Version 8.0, Version 7.3, Version 8.1, History
 @comment  node-name,  next,  previous,  up
