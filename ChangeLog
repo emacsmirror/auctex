@@ -1,3 +1,17 @@
+2004-02-27  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* configure.in: Respect --infodir even if using xemacs. 
+
+	* aclocal.m4: Add yes/no answer for the MULE check.
+
+	* Makefile.in: Correct xemacs-install.
+
+	* Makefile.in, aclocal.m4, configure.in: If there is a wrongly
+	installed tex-site.el, use the proper install directory anyway
+	(i.e., don't be side-tracked), and remove the wrongly installed
+	tex-site.el. These things are only needed for CVS users who have
+	used the erroneous xemacs-installation.	
+
 2004-02-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-mode-menu): Insert customize option and
