@@ -1,9 +1,13 @@
 2004-05-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el: Header updated.
+	(TeX-master-file): Removed bogus test for `TeX-header-end'.
+
 	* doc/auc-tex.texi (ToDo): New name for node/section formerly
 	known as `Projects' or `Wishlist' respectively.
 	Removed items not relevant anymore and moved the rest to the new
 	file `doc/todo.texi'.
+	Removed `Credits' section.
 
 	* doc/Makefile.in (TEXIFILES): New constant.
 	(auctex): Use it.
