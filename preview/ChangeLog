@@ -1,3 +1,10 @@
+2003-01-10  David Kastrup  <dakas@users.sourceforge.net>
+
+	* autogen.sh, configure.in: Ok, darn them all.  We now have a
+	configure.in that does no longer need to get patched up after
+	autoconf, regardless of which autoconf version gets used between
+	2.13 and 2.57 or hopefully later.
+
 2003-01-07  David Kastrup  <dakas@users.sourceforge.net>
 
 	* Makefile.in (AUCTEXLISP): quoting levels still unsufficient.
