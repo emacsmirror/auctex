@@ -1,5 +1,9 @@
 2002-03-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi: Work in progress.
+
+	* doc/readme.texi: Work in progress.
+
 	* TODO: update wish list.  This is getting longer by the minute.
 
 	* doc/Makefile.in (INSTALL, README, PROBLEMS): add -D rawfile
