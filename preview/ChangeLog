@@ -1,3 +1,14 @@
+2002-03-04  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-dissect): improve false desktop cleanups.
+	(desktop-buffer-preview): handle file load oneself.
+	(preview-place-preview): subtle bug leading to empty previews
+	accumulating in secondary buffers.
+	(preview-reinstate-preview): don't reinstate previews where the
+	files have been deleted.
+	(preview-TeX-inline-sentinel): Make sure "Compilation" flag gets
+	cleared even on errors.
+
 2002-03-02  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-transact): Don't use .setsafe unless
