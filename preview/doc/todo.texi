@@ -14,6 +14,15 @@ Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
 might provide an abstraction layer that would make it possible to embed
 @previewlatex{}'s core mechanisms into Emacs calc.
 
+@item Support other formats than just @LaTeX{}
+
+plain @TeX{} users and Con@TeX{}t users should not have to feel left
+out.  While Con@TeX{}t is not supported yet by @AUCTeX{}, at least
+supporting plain would help people, and be a start for Con@TeX{}t as
+well.  There are plain-based formats like MusiX@TeX{} that could benefit
+a lot from @previewlatex{}.  The main part of the difficulties here is
+to adapt @file{preview.dtx} to produce stuff not requiring @LaTeX{}.
+
 @item Manual improvements
 
 @itemize @minus
