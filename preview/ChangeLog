@@ -1,5 +1,8 @@
 2003-07-01  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/draw.c, dvipng/set.c:
+	Fix rules (again), this time taking maxdrift into account.
+
 	* dvipng/pk.c: Unfortunately gdImageColorResolveAlpha only works
 	on truecolor images. Some other day, then. I did fix the
 	performance of PROPER_OVERSTRIKE, though.
