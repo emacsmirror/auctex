@@ -156,7 +156,8 @@
 %
 %\begin{macro}{\ifPreview}
 %  Setting the \cmd{\ifPreview} command should not be done by the user,
-%  so we don't use \cmd{\newif} here.
+%  so we don't use \cmd{\newif} here.  As a consequence, there are no
+%  \cmd{\Previewtrue} and \cmd{\Previewfalse} commands.
 %    \begin{macrocode}
 %<*style>
 %<*!active>
@@ -207,7 +208,7 @@
   \def\pr@advise#1{%
     \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
   \def\pr@advise@ship#1#2#3{\toks@{\pr@protect@ship{#2}{#3}}%
-     \pr@advise#1{\the\toks@##1}}%
+     \pr@advise#1{\the\toks@\noexpand##1}}%
   \let\preview@delay\@firstofone}
 %    \end{macrocode}
 %\end{macro}
@@ -221,8 +222,8 @@
 %    \begin{macrocode}
 \def\pr@adviseii#1#2#3{\preview@delay{%
   \ifx#1\relax \let#1#2\fi
-  \edef\reserved@a##1{\def\noexpand#2{#3}}%
-  \reserved@a#1}}
+  \def\reserved@a##1{#3}%
+  \edef#2{\reserved@a#1}}}
 %    \end{macrocode}
 %\end{macro}
 %
@@ -382,13 +383,17 @@
 %  |$| math mode delimiter.
 %    \begin{macrocode}
 \begingroup
-\lccode`\~=`\$
-\lowercase{\endgroup
+\def\next#1#2{%
+\endgroup
     \DeclareOption{textmath}{%
-      \pr@advise@ship\(\pr@endaftergroup{}%
-      \def~{$}%
-      \pr@advise@ship~{\pr@endaftergroup}{}%
-      \preview@delay{\catcode`\$=\active}}}
+      \preview@delay{\ifx#1\@undefined \let#1=$\fi
+        \catcode`\$=\active}%
+      \pr@advise@ship\(\pr@endaftergroup{}% \)
+      \pr@advise@ship#1{\let#1=#2%
+         \pr@setmathhooks{##1\everymath##1\everydisplay}}{}}}
+\lccode`\~=`\$
+\lowercase{\expandafter\next\expandafter~}%
+  \csname pr@\string$\endcsname
 %</!active>
 %    \end{macrocode}
 %\begin{macro}{\pr@endaftergroup}
@@ -397,6 +402,31 @@
 %    \begin{macrocode}
 %<*active>
 \def\pr@endaftergroup#1{#1\aftergroup\pr@endbox}
+%    \end{macrocode}
+%\end{macro}
+%\begin{macro}{\pr@setmathhooks}
+%  This is here for making sure display math entered by |$$| will work
+%  more or less as expected (except of getting activated by the
+%  |textmath| option).  While |$$| is not to be used in \LaTeX\
+%  because it will cause inconsistent spacing compared to the other
+%  environments, we don't want to get bugged with error reports caused
+%  by |$$| just being an empty text math environment.
+%  Since we have restored the original meaning of the token we are
+%  going to parse, we have here a regular math environment enterer.
+%  We load both \cmd{\everymath} and \cmd{\everydisplay} hooks with
+%  code that restores both hooks to the previous state, then does
+%  \begin{quote}
+%    |\aftergroup \pr@endbox|
+%  \end{quote}
+%  and then executes the restored hook.  This code is to be relished,
+%  not explained.
+%    \begin{macrocode}
+\def\pr@setmathhooks#1{\def\reserved@a##1{#1}%
+  \def\reserved@b##1{##1{\the##1}}%
+  \def\reserved@c##1{%
+    ##1{\reserved@a\reserved@b\aftergroup\noexpand\pr@endbox
+        \noexpand\the##1}}
+   \edef\reserved@a{\reserved@a\reserved@c}\reserved@a}
 %</active>
 %    \end{macrocode}
 %\end{macro}
@@ -441,9 +471,9 @@
 \newcommand{\PreviewSnarfEnvironment}[2][]{\toks@{%
     \pr@snarfafter#1\endcsname}%
   \expandafter\pr@advise
-   \csname #2\endcsname{\the\toks@##1}%
+   \csname #2\endcsname{\the\toks@\noexpand##1}%
  \expandafter\pr@advise
-   \csname end#2\endcsname{\endgroup##1}}
+   \csname end#2\endcsname{\endgroup\noexpand##1}}
 %</!active>
 %    \end{macrocode}
 %\end{macro}
