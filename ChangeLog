@@ -1,3 +1,23 @@
+2004-10-22  Miguel Frasson  <frasson@math.leidenuniv.nl>
+
+	* tex-bar.el: Improve comments.  Symbol-toolbar code moved to the
+	bottom of the file.	
+	(tex-bar-latex-buttons): Improve comments.  Add custom :type.
+	(tex-bar-latex-buttons): New command -- display a list of defined
+	buttons.
+	(tex-bar-available-meaning-alists): Removed (renamed).
+	(tex-bar-latex-all-button-alists): New name of
+	`tex-bar-available-meaning-alists'.  Add custom :type.
+	(tex-bar-latex-button-alist): New name of `tex-bar-meaning-alist'.
+	Add custom :type.
+
+	* toolbar-x.el: Improve comments.
+	(toolbarx-process-group-without-insert): Become autoloaded.
+	(toolbarx-process-group): Code cleanup.
+	(toolbarx-process-symbol): Code cleanup.
+	(toolbarx-default-toolbar-meaning-alist): Separator button label
+	renamed from `:sep' to `separator'.
+	
 2004-10-22  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (European): Adjust to change of
