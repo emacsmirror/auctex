@@ -1,3 +1,4 @@
+@cindex Readme
 Does Your neck hurt from turning between previewer windows and the
 source too often? This Elisp/La@TeX{} package will render your displayed
 LaTeX equations right into the editing window where they belong.
@@ -35,19 +36,27 @@ For some known problems with various software, see the file
 @file{PROBLEMS}.
 
 @section Availability
+@cindex Download
+@cindex CVS access
 
 The preview-latex project is available at Sourceforge,
-@url{http://sourceforge.net/projects/preview-latex}. 
+@url{http://sourceforge.net/projects/preview-latex}. There, the source
+tarball can be downloaded and also a binary .rpm suitable for a recent
+RedHat system.
 
 Anonymous CVS is available as well. See the Sourceforge web pages for
-more information, but here are the basic instructions:
-
-(When prompted for a password for anonymous, simply press the Enter
-key.)
+more information, but here are the basic instructions (when prompted for
+a password for anonymous, simply press the @key{enter} key.)
 
 @example
+@iftex
+@nobreak @hskip-100pt cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
+@nobreak @hskip-100pt cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
+@end iftex 
+@ifnottex
 cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
 cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
+@end ifnottex 
 @end example
 
 Updates from within the preview directory do not need the -d parameter.
@@ -57,20 +66,20 @@ mirror up to date again. For developer access, ask on the
 
 
 @section Contacts
+@cindex Contacts
+@cindex Mailing list
 
 Bug reports should be sent by using @kbd{M-x preview-report-bug RET}, as
 this will fill in a lot of information interesting to us. There is a
 mailing list for developers, look at
-@url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}
-Send a message with just the word `help' as subject or body to
-@email{preview-latex-devel-request@@lists.sourceforge.net} for more
-information. Suggestions for new features, and pleas for help should go
-to @email{preview-latex-devel@@lists.sourceforge.net} (the Preview
-La@TeX{} devel team).
-@c either, or to @email{???} (the mailing list) if they might have general 
-@c interest. 
-Please use the command @kbd{M-x preview-report-bug RET} to report bugs
-if possible.
+@url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
+For more information, send a message with just the word ``help'' as
+subject or body to
+@email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
+for new features, and pleas for help should go to
+@email{preview-latex-devel@@lists.sourceforge.net} (the Preview La@TeX{}
+devel team). Please use the command @kbd{M-x preview-report-bug RET} to
+report bugs if possible.
 
 @noindent
 Offers to support further development will be appreciated.
