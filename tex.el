@@ -110,19 +110,15 @@ performed as specified in `TeX-expand-list'."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "tex %S \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
+  (list (list "TeX" "%(PDF)tex %S \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
 	      (list 'plain-tex-mode))
-	(list "TeX Interactive" "tex %S %t" 'TeX-run-interactive nil
+	(list "TeX Interactive" "%(PDF)tex %S %t" 'TeX-run-interactive nil
 	      (list 'plain-tex-mode))
-	(list "PDFTeX" "pdftex %S \"\\nonstopmode\\input %t\""
-	      'TeX-run-TeX nil (list 'plain-tex-mode))
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
 	(list "LaTeX Interactive" "%l \"\\input{%t}\""
 	      'TeX-run-interactive nil (list 'latex-mode 'doctex-mode))
 	;; Not part of standard TeX.
-	(list "PDFLaTeX" "pdflatex %S \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
 	      (list 'texinfo-mode))
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
@@ -291,7 +287,7 @@ The executable `latex' is LaTeX version 2e."
 	("^plfonts\\|plhb$" "platex %S")
 	("." "latex %S"))
     ;; They have all been combined in LaTeX 2e.
-    '(("." "latex %S")))
+    '(("." "%(PDF)latex %S")))
   "List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
@@ -449,6 +445,10 @@ string."
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
 		     (TeX-style-check LaTeX-command-style)))
+	(list "%(PDF)" (lambda ()
+			 (if TeX-PDF-mode
+			     "pdf"
+			   "")))
 	(list "%S" 'TeX-source-specials-expand-options)
 	(list "%dS" 'TeX-source-specials-view-expand-options)
 	(list "%cS" 'TeX-source-specials-view-expand-client)
@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.406 $"))
+	(rev "$Revision: 5.407 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 22:45:00 $"))
+    (let ((date "$Date: 2004-08-04 03:48:29 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -786,6 +786,74 @@ If this is nil, an empty string will be returned."
 		  (concat " " TeX-source-specials-view-editor-flags))))
     ""))
 
+;;;
+
+(defvar TeX-mode-p nil
+  "This indicates a TeX mode being active.")
+(make-variable-buffer-local 'TeX-mode-p)
+
+(defvar TeX-PDF-mode nil
+  "Minor mode for using PDFTeX.
+
+If enabled, PDFTeX will be used as an executable by default.
+For customization, see `global-TeX-PDF-mode' instead.
+Use the function `TeX-PDF-mode' for setting this.")
+
+(make-variable-buffer-local 'TeX-PDF-mode)
+
+(define-minor-mode global-TeX-PDF-mode
+  "Global minor mode for using PDFTeX.
+
+If enabled, PDFTeX will be used as an executable by default.
+This changes the global default for `TeX-PDF-mode' if it has
+not been called before: call `TeX-PDF-mode-toggle' instead for
+buffer-local use."
+  :global t
+  (setq-default TeX-PDF-mode global-TeX-PDF-mode)
+  (when TeX-mode-p
+      (TeX-set-mode-name)
+      (set-buffer-modified-p (buffer-modified-p)))
+  global-TeX-PDF-mode)
+
+(global-TeX-PDF-mode (if global-TeX-PDF-mode 1 0))
+
+(defun TeX-PDF-mode (arg &optional parsed)
+  "Toggles PDF mode.
+Interactive ARG if positive switches on, non-positive off.
+
+If PARSED is non-nil, buffer-local values of `TeX-PDF-mode' will not
+get overwritten.
+If the current value was parsed and conflicts with the new value,
+the default will be used instead."
+  (interactive "P")
+  (setq arg (if arg (> (prefix-numeric-value arg) 0)
+	      (not TeX-PDF-mode)))
+  (if parsed
+      (if TeX-PDF-mode-parsed
+	  (unless (eq TeX-PDF-mode arg)
+	    (setq TeX-PDF-mode (default-value 'TeX-PDF-mode))
+	    (setq TeX-PDF-mode-parsed nil))
+	(unless (local-variable-p 'TeX-PDF-mode)
+	  (setq TeX-PDF-mode-parsed t
+		TeX-PDF-mode arg)))
+    (if TeX-PDF-mode-parsed
+	(setq TeX-PDF-mode-parsed nil))
+    (setq TeX-PDF-mode arg))
+  (when TeX-mode-p
+    (TeX-set-mode-name)
+    (set-buffer-modified-p (buffer-modified-p)))
+  TeX-PDF-mode)
+
+(defun TeX-PDF-mode-on ()
+  (TeX-PDF-mode 1 t))
+
+(defun TeX-PDF-mode-off ()
+  (TeX-PDF-mode 0 t))
+
+(defvar TeX-PDF-mode-parsed nil
+  "Set if `TeX-PDF-mode' has come about by parsing.")
+
+(make-variable-buffer-local 'TeX-PDF-mode-parsed)
 
 ;;; Commands
 
@@ -1748,10 +1816,6 @@ Each entry is a list with three elements.
 When entering `tex-mode', each regexp is tried in turn in order to find
 when major mode to enter.")
 
-(defvar TeX-mode-p nil
-  "This indicates a TeX mode being active.")
-(make-variable-buffer-local 'TeX-mode-p)
-
 (defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
@@ -1769,10 +1833,11 @@ when major mode to enter.")
 The base mode name will be concatenated with indicators for
 helper modes where appropriate."
   (let ((trailing-flags
-	 (concat (when (and (boundp 'TeX-fold-mode) TeX-fold-mode) "F")
-		 (when (and (boundp 'LaTeX-math-mode) LaTeX-math-mode) "M")
-		 (when TeX-source-specials "S"))))
-    (setq mode-name (concat TeX-base-mode-name
+	 (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
+		 (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
+		 (and TeX-source-specials "S"))))
+    (setq mode-name (concat (and TeX-PDF-mode "PDF")
+			    TeX-base-mode-name
 			    (when (> (length trailing-flags) 0)
 			      (concat "/" trailing-flags))))))
 
@@ -2909,6 +2974,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
+    (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-v" 'TeX-view)
@@ -2970,6 +3036,8 @@ be bound to `TeX-electric-macro'."
 	      :style toggle
 	      :selected (and (boundp 'TeX-command-region-begin)
 			     (markerp TeX-command-region-begin))]
+	    [ "PDF mode" TeX-PDF-mode
+	      :style toggle :selected TeX-PDF-mode ]
 	    [ "Source specials" TeX-source-specials
 	      :style toggle :selected TeX-source-specials ])
 	  (let ((file 'TeX-command-on-current));; is this actually needed?

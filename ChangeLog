@@ -1,5 +1,22 @@
 2004-08-04  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-command-list): Use %(PDF) where necessary, drop
+	PDFTeX entries.
+	(LaTeX-command-style): Add %(PDF) here.
+	(TeX-expand-list): Expand %(PDF).
+	(TeX-mode-p): Moved.
+	(TeX-PDF-mode, global-TeX-PDF-mode): New minor modes.
+	(TeX-PDF-mode-on, TeX-PDF-mode-off): Shortcuts for calling.
+	(TeX-PDF-mode-parsed): New variable.
+	(TeX-set-mode-name): Simplify.
+	(TeX-mode-map): Add C-c C-t C-p for TeX-PDF-mode.
+	(TeX-mode-specific-command-menu-entries): Add menu entry for it.
+
+	* latex.el (LaTeX-math-mode): Refresh modeline after generating
+	it, not before.
+	(LaTeX-common-initialization): Add style-hooks fo pdftex, dvips
+	and others.
+
 	* tex.el (TeX-view-style, TeX-output-view-style): Place dvi file
 	name last.
 

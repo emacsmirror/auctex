@@ -3844,8 +3844,8 @@ commands are defined:
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
     (easy-menu-remove LaTeX-math-mode-menu))
-  (set-buffer-modified-p (buffer-modified-p))
-  (TeX-set-mode-name))
+  (TeX-set-mode-name)
+  (set-buffer-modified-p (buffer-modified-p)))
 
 (fset 'latex-math-mode 'LaTeX-math-mode)
 
@@ -4143,7 +4143,8 @@ the last entry in the menu."
 	      ["Documentation" TeX-goto-info-page t]
 	      ["Submit bug report" TeX-submit-bug-report t]
 	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
+	      ["Reset AUCTeX" (TeX-normal-mode t)
+	       :keys "\\[universal-argument] \\[TeX-normal-mode]"])))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")
@@ -4620,6 +4621,17 @@ runs the hooks in `doctex-mode-hook'."
      (setq TeX-font-replace-function
 	   (default-value 'TeX-font-replace-function))
      (run-hooks 'LaTeX2-hook)))
+
+  ;; There must be something better-suited, but I don't understand the
+  ;; parsing properly.  -- dak
+  (TeX-add-style-hook "pdftex" 'TeX-PDF-mode-on)
+  (TeX-add-style-hook "pdftricks" 'TeX-PDF-mode-on)
+  (TeX-add-style-hook "dvips" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "pstricks" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
 
   (set (make-local-variable 'imenu-create-index-function)
        'LaTeX-imenu-create-index-function))
