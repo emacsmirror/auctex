@@ -11,6 +11,9 @@ preview-latex_toc.html: preview-latex.texi
 
 preview-latex.dvi: preview-latex.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
+        -texindex preview-latex.ky
+        -texindex preview-latex.fn
+        -texindex preview-latex.vr
 	-texindex preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 
@@ -18,7 +21,6 @@ preview-latex.ps: preview-latex.dvi
 	dvips preview-latex.dvi -o preview-latex.ps
 
 preview-latex: preview-latex.texi install.texi readme.texi copying.texi
-# changelog.texi todo.texi
 	-makeinfo preview-latex.texi
 
 INSTALL: install.texi
@@ -26,12 +28,6 @@ INSTALL: install.texi
 
 README: readme.texi
 	-makeinfo --no-headers readme.texi --output README
-
-#ChangeLog: changelog.texi
-#	-makeinfo --no-headers changelog.texi --output ChangeLog
-
-#TODO: todo.texi
-#	-makeinfo --no-headers todo.texi --output TODO
 
 install: preview-latex
 	cp preview-latex preview-latex-* $(infodir)
