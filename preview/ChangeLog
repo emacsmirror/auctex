@@ -1,3 +1,8 @@
+2002-06-11  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+
+	* dvipng/set.c (SetChar): load chars on PASS_DRAW <sigh>
+	-T -O bug fixed
+	
 2002-06-11  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/set.c: Cleanup. Still buggy wrt -O, though.
