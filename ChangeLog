@@ -1,3 +1,12 @@
+2004-08-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-mik.el: Change `TeX-source-specials-viewer-flags' to
+	`TeX-source-specials-view-position-flags' as the latter is now
+	used in tex.el.
+	Set `TeX-source-specials-view-editor-flags'.
+
+	* tex-fptex.el: Ditto.
+
 2004-08-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (top): We want the introduction to appear in
