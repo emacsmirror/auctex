@@ -17,7 +17,8 @@ Please read through this document fully before installing anything.
 * Build/install::               
 * Loading the package::         
 * Advice for package providers::  
-* Advice for non-privileged users::
+* Advice for non-privileged users::  
+* Installation under MS Windows::  
 @end menu
 @end ifclear
 
@@ -42,7 +43,14 @@ Another option is to try XEmacs, for which we now have support
 available.  @strong{Please note:} Presently, the port to XEmacs is work
 in progress.  Don't expect too much, and be prepared to contact the
 developers.  Problems with the XEmacs port are described in @ref{Known
-problems}.
+problems}.  There is additional information for XEmacs/Windows
+installation in
+@ifset rawfile
+the file @file{INSTALL.windows}.
+@end ifset
+@ifclear rawfile
+@xref{Installation under MS Windows}.
+@end ifclear
 
 @item A working @AUCTeX{} installation
 
@@ -432,3 +440,10 @@ of Emacs, the augmentation of @samp{TEXINPUTS} will be helpful.
 Although it does not appear like it, under te@TeX{}-based systems,
 this invocation will also do the right thing in case @samp{TEXINPUTS}
 has no previous value.
+
+@ifclear rawfile
+@node Installation under MS Windows
+@comment  node-name,  next,  previous,  up
+@section Installation under MS Windows
+@include wininstall.texi
+@end ifclear

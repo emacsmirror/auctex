@@ -34,12 +34,17 @@ preview-latex.ps: preview-latex.dvi
 	$(DVIPS) preview-latex.dvi -o preview-latex.ps
 
 preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi macros.texi todo.texi
+	problems.texi preview-dtxdoc.texi macros.texi todo.texi \
+	wininstall.texi
 	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		install.texi --output INSTALL
+
+INSTALL.windows: wininstall.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		wininstall.texi --output INSTALL.windows
 
 README: readme.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \

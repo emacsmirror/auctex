@@ -107,7 +107,9 @@ One particular problem is that several printer setup files (typically in
 a file called @file{/usr/share/texmf/dvips/config/config.pdf} if you are
 using the @option{-Ppdf} switch) contain the @option{G} option for
 `character shifting'.  This option will result in @samp{fi} being
-rendered as @samp{@pounds{}} (British Pounds sign) in several fonts.
+rendered as @samp{@pounds{}} (British Pounds sign) in several fonts,
+unless your version of Dvips has a long-standing bug in its
+implementation fixed (only very recent versions of Dvips have).
 
 @node Emacs problems, AUC TeX prior to 11.0, Font problems with Dvips, Known problems
 @section Emacs problems
@@ -146,33 +148,33 @@ to seriously mispositioned baselines and previews hanging far above
 other text on the same line.  An alpha-quality patch against
 XEmacs-21.4.6 to fix this is available from
 @uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00129.html}.
-This patch may be included in XEmacs-21.4.8, but won't be present in any
-earlier version.
+This patch in included in XEmacs-21.4.9, but won't be present in any
+earlier version, with one exception: the MS Windows port had
+incorporated these fixes a few version numbers earlier.
 
 The other core bug causes a huge delay when XEmacs's idea of the state of
 processes (like ghostscript) is wrong, and can lead to nasty spurious
-error messages.  An alpha-quality patch against 21.4.6 to fix this is
-available from
-@uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00148.html}.
-The patch hasn't yet been reviewed, so it might be wrong: but it seems
-to work.  It isn't known what XEmacs release, if any, this patch will
-appear in.
+error messages.  It should be fixed in version 21.4.8.
 
 Previews will only remain from one session to the next if you have
 version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 
-Preliminary tests of XEmacs-21.4.5 under Windows (i.e. not
-Cygwin-XEmacs but native Windows-XEmacs) are successful.  One user
-reported success for the Cygwin port of XEmacs, after outcommenting
-the three lines concerning @code{balloon-help-mode} in
-@code{preview-mode-setup} in the file @file{prv-xemacs.el}.  It would
-appear that this mode is broken under Windows in some XEmacs versions.
-Please let us know of any further problems.
+By now we have had success reports of both Cygwin XEmacs and the native
+Windows ports (one Cygwin user reported that he had to disable
+@code{balloon-help-mode} in @code{preview-mode-setup} in the file
+@file{prv-xemacs.el}, please report back your experiences).  If you are
+lacking the usual infrastructure for the installation process of
+@previewlatex{}, things will become more complicated.
 
-This support is quite new and still changing frequently. Please test it
-and report any problems you may be experiencing.
-
+See
+@ifset rawfile
+the file @file{INSTALL.windows}
+@end ifset
+@ifclear rawfile
+@ref{Installation under MS Windows}
+@end ifclear
+for an installation report for this platform.
 @end itemize
 
 @node AUC TeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
