@@ -15,29 +15,57 @@ first time you load the file.  It also have the benefit that you get
 access to macros, labels, etc. in all the files in a multifile
 document from any of the files.
 
-If you don't want this, set TeX-parse-self to nil.  AUC TeX will then
-never parse your files.  This will disable many of AUC TeX's features.
-
 * Applying style hooks... is still too slow.
 
 Set the variable TeX-auto-global to nil.  You will then not get
 macro expansion for all macros, but AUC TeX will still expand the
 standard LaTeX macros.
 
+* Now saving the buffer is too slow.
+
+AUC TeX parses your buffer and save the information each time you
+save the buffer.  You may be able to speed it up by limiting the
+amount of information AUC TeX tries to extract.  You can do this by
+setting the variable `TeX-auto-regexp-list' before loading AUC TeX.
+Look at the definition of the variable in the file `tex-parse.el'.  If
+you only use LaTeX commands a good setting would be
+
+(setq TeX-auto-regexp-list
+  '(("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+     (1 2) TeX-auto-arguments)
+    ("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
+    ("\\\\newenvironment{\\([a-zA-Z]+\\)}" 1 TeX-auto-environment)
+    ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 TeX-auto-environment)
+    ("\\\\input{\\([^#\\\\\\.\n]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
+    ("\\\\include{\\([^#\\\\\\.\n]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
+    ("\\\\label{\\([]a-zA-Z0-9.:;,?!`'()[---/*@]+\\)}" 1 TeX-auto-label)
+    ("\\\\documentstyle\\[\\([^#\\\\\\.\n]+\\)\\]{\\([^#\\\\\\.\n]+\\)}"
+     (2 1) TeX-auto-style)
+    ("\\\\documentstyle{\\([^#\\\\\\.\n]+\\)}" (1) TeX-auto-style)))
+
+This will approximately cut the parse time to half.  If you don't use
+macro, environment, or label completion, set it to
+
+(setq TeX-auto-regexp-list
+  '(("\\\\documentstyle\\[\\([^#\\\\\\.\n]+\\)\\]{\\([^#\\\\\\.\n]+\\)}"
+     (2 1) TeX-auto-style)
+    ("\\\\documentstyle{\\([^#\\\\\\.\n]+\\)}" (1) TeX-auto-style)))
+
+This will cut the parse time to a quarter of the original.  To
+completly avoid parsing, set TeX-parse-self to nil.  AUC TeX will then
+never parse your files.  This will disable most of AUC TeX.
+
 * C-c C-c has too great a delay.
 
-AUC TeX is searching your current directory as well as your private
-TeX macro directories for any files that may have changed.  You can
-limit it to the current directory with
-
-	(setq TeX-check-path '("./"))
-
-or disable it entirely with
+By default AUC TeX will look in the current directory for files that
+may have changed in order to determine if it is necessary to run TeX
+or LaTeX again.  You can disable it with
 
 	(setq TeX-check-path nil)
 
-You can also make it search the global macro directories, so AUC TeX
-will suggest "LaTeX" if any of the style files have changed.
+You can also make AUC TeX search your private or the global macro
+directories, so AUC TeX will suggest "LaTeX" if any of the style files
+have changed.
 
 	(setq TeX-check-path
 	      (append '("./") TeX-macro-private TeX-macro-global))
