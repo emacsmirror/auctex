@@ -281,6 +281,15 @@ file).  Or rather, while they @strong{are} really @TeX{} error
 messages, they are intentional.  This currently is the only reliable
 way to pass the information from the @LaTeX{} run of @previewlatex{} to
 its Emacs part about where the previews originated in the source text.
+Since they are actual errors, you will also get @AUCTeX{} to state
+@example
+Preview-LaTeX exited abnormally with code 1 at Wed Sep  4 17:03:30
+@end example
+after the @LaTeX{} run in the run buffer.  This merely indicates that
+errors were present, and errors will always be present when
+@previewlatex{} is operating.  There might be also real errors, so in
+case of doubt, look for them explicitly in either run buffer or the
+resulting @file{.log} file.
 
 @section @previewlatex{} when not using @LaTeX{}
 
