@@ -1945,8 +1945,6 @@ Lines starting with an item is given an extra indentation of
   ;; the appropriate variables and should not be used outside of
   ;; `LaTeX-indent-line'.
   (back-to-indentation)
-  (skip-syntax-forward " " (line-end-position))
-  (backward-prefix-chars)
   (delete-region (line-beginning-position) (point))
   (indent-to outer-indent))
 
