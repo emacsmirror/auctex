@@ -26,21 +26,12 @@ Think about temporary file handling
 Port to XEmacs
  Under progress.
 
-Explore possibilities for generating a single PS file
- Can we get at the page boundaries then with some PostScript
- trickery?  Or should we write them into the log as part of the
- preview error messages?  Would probably make implementing the
- next point easier:
-
 Explore possibilities for working via PDF
  Going via latexpdf->GhostScript and a single file would certainly be
  faster than the current latex->dvips->GhostScript path.
 
-Explore using DSC comments for reordering of processing
- That's just desirable for the last two proposals working from a
- single file.
-
 Program a direct dvi->png rendering daemon
  that gets sent page requests and file names for both input and
  output and replaces the Dvips->GhostScript chain.  This could be
- done using DVIlib2 from the TeX-Guy project.
+ done using DVIlib2 from the TeX-Guy project.  The current performance
+ of  that, however, does not seem to offer any advantage.
