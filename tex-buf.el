@@ -620,7 +620,7 @@ Error parsing on C-x ` should work with a bit of luck."
 	     
 	     ;; Append post-mortem information to the buffer
 	     (goto-char (point-max))
-	     (insert "\n" mode-name " " msg)
+	     (insert-before-markers "\n" mode-name " " msg)
 	     (forward-char -1)
 	     (insert " at "
 		     (substring (current-time-string) 0 -5))
