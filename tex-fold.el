@@ -73,12 +73,10 @@ hidden which is not specified in `TeX-fold-env-spec-list'."
   :group 'TeX-fold)
 
 (defface TeX-fold-display-string-face
-  '((((class color) (min-colors 88) (background light))
+  '((((class color) (background light))
      (:foreground "SlateBlue"))
-    (((class color) (min-colors 88) (background dark))
+    (((class color) (background dark))
      (:foreground "SlateBlue1"))
-    (((class color) (min-colors 8))
-     (:foreground "blue"))
     (((class grayscale) (background light))
      (:foreground "DimGray"))
     (((class grayscale) (background dark))
@@ -249,11 +247,12 @@ properties onto overlay OV."
     (overlay-put ov 'category 'TeX-fold)
     (overlay-put ov 'evaporate t)
     (overlay-put ov 'TeX-fold-display-string display-string)
-    (overlay-put ov 'face TeX-fold-display-string-face)
     (if (featurep 'xemacs)
-	(progn
+	(let ((glyph (make-glyph display-string)))
 	  (overlay-put ov 'invisible t)
-	  (set-extent-property ov 'end-glyph (make-glyph display-string)))
+	  (set-glyph-property glyph 'face TeX-fold-display-string-face)
+	  (set-extent-property ov 'end-glyph glyph))
+      (overlay-put ov 'face TeX-fold-display-string-face)
       (overlay-put ov 'display display-string))))
 
 (defun TeX-fold-show-item (ov)
@@ -306,7 +305,10 @@ Remove the respective properties from the overlay OV."
 	      ;; Close old overlays.
 	      (dolist (ol old-ols)
 		(when (and (eq (current-buffer) (overlay-buffer ol))
-			   (not (rassq ol TeX-fold-open-spots)))
+			   (not (rassq ol TeX-fold-open-spots))
+			   (or (not (featurep 'xemacs))
+			       (and (featurep 'xemacs)
+				    (not (extent-detached-p ol)))))
 		  (if (and (>= (point) (overlay-start ol))
 			   (<= (point) (overlay-end ol)))
 		      ;; Still near the overlay: keep it open.
