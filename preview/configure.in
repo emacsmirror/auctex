@@ -134,7 +134,7 @@ AC_SUBST(TEXMFGEN)
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 AC_PATH_PROGS(TEXHASH, texhash mktexlsr MakeTeXls-R, /bin/true)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
-AC_TEST_MAKEINFO_ACRONYM
+AC_CHECK_MACROS_MAKEINFO(acronym env option)
 
 AC_SUBST(auctexdir)
 

@@ -10,13 +10,20 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
-@ifset makeinfo-nhave-acronym
+@ifset no-acronym
+@clear no-acronym
 @macro acronym {text}
 @sc{\text\}
 @end macro
+@end ifset
+@ifset no-env
+@clear no-env
 @macro env {text}
 @code{\text\}
 @end macro
+@end ifset
+@ifset no-option
+@clear no-option
 @macro option {text}
 @samp{\text\}
 @end macro

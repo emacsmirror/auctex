@@ -341,31 +341,30 @@ fi
    AC_MSG_RESULT(${AUCTEXDIR}tex-site.el)
 ])
 
-dnl
-dnl Test whether makeinfo understands @acronym{}
-dnl by Jan-Åke Larsson
-dnl This does not test TeX, which can understand @acronym{} even
-dnl when makeinfo does not. Strange.
-dnl
-AC_DEFUN([AC_TEST_MAKEINFO_ACRONYM],[
-  AC_MSG_CHECKING([if makeinfo understands @acronym{}])
-  AC_CACHE_VAL([ac_cv_test_makeinfo_acronym],[
-    echo \\\\input texinfo >test.texi
-    echo @acronym{test} >>test.texi
-    if makeinfo test.texi > /dev/null 2> /dev/null; then
-      ac_cv_test_makeinfo_acronym=yes
-    else  
-      ac_cv_test_makeinfo_acronym=no
-    fi
-    rm -f test.texi test.info
-  ]) # end of CACHE_VAL
-  AC_MSG_RESULT([${ac_cv_test_makeinfo_acronym}])
 
-  if test "X${ac_cv_test_makeinfo_acronym}" != Xno
-  then
-    HAVE_MAKEINFO_ACRONYM=''
-  else
-    HAVE_MAKEINFO_ACRONYM="-D makeinfo-nhave-acronym"
+dnl AC_CHECK_MACRO_MAKEINFO(MACRO, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
+[AC_MSG_CHECKING([if $MAKEINFO understands @$1{}])
+  echo \\\\input texinfo >test.texi
+  echo @$1{test} >>test.texi
+  if $MAKEINFO test.texi > /dev/null 2> /dev/null; then
+    AC_MSG_RESULT(yes)	
+    ifelse([$2], , :, [$2])
+  else  
+    AC_MSG_RESULT(no)	
+    ifelse([$3], , :, [$3])
   fi
-  AC_SUBST([HAVE_MAKEINFO_ACRONYM])
-]) 
+  rm -f test.texi test.info
+])
+
+dnl AC_CHECK_MACROS_MAKEINFO(FUNCTION... [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+AC_DEFUN(AC_CHECK_MACROS_MAKEINFO,
+[if test -n "$MAKEINFO"; then
+  for ac_macro in $1; do
+    AC_CHECK_MACRO_MAKEINFO($ac_macro, $2, [MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
+    $3])dnl
+  done
+fi
+AC_SUBST(MAKEINFO_MACROS)
+])
+
