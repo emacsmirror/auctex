@@ -1,5 +1,21 @@
 2001-10-30  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-make-clickable): Use 'keymap instead of
+	'local-map, obliterating the need to inherit from LaTeX-mode-map.
+	(preview-toggle): Same here, and cater for null-length overlays.
+	(preview-mark-point): Jury's still out on that one.
+
+	* preview.el (preview-gs-sentinel): Don't hickup if buffer got
+	killed.
+	(preview-gs-restart): Don't mind exiting Emacs if GhostScript
+	still running.
+	(preview-snippet): Buffer-locality not needed because parsing
+	occurs fully blocking.
+	(preview-snippet-start): Same
+	(preview-analyze-error): Somewhat saner behaviour if the error
+	message parsing fails due to macro arguments or other.  This
+	cannot be the final verdict.
+
 	* TODO: add a few items.
 
 	* prv-emacs.el (preview-transparent-color): Make transparency
