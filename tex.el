@@ -114,14 +114,12 @@ performed as specified in TeX-expand-list."
 	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil
               (list 'plain-tex-mode))
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil (list 'latex-mode))
+	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
 	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil
-              (list 'latex-mode))
-	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil (list 'latex-mode))
+              (list 'latex-mode 'doctex-mode))
 	;; Not part of standard TeX.
 	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil (list 'latex-mode))
+	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
               (list 'texinfo-mode))
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
@@ -232,6 +230,7 @@ the respective mode names."
                                 (const :tag "All" t)
                                 (set (const :tag "Plain TeX" plain-tex-mode)
                                      (const :tag "LaTeX" latex-mode)
+                                     (const :tag "DocTeX" doctex-mode)
                                      (const :tag "ConTeXt" context-mode)
                                      (const :tag "Texinfo" texinfo-mode)
                                      (const :tag "AmSTeX" ams-tex-mode))))))
@@ -271,9 +270,7 @@ The executable `latex' is LaTeX version 2."
 		       "2")
 		(const :format "%v\n%h"
 		       :doc "\
-The executable `latex' is LaTeX version 2e.
-Do *not* select this if you need to run `latex2e' in order to get
-LaTeX version 2e."
+The executable `latex' is LaTeX version 2e."
 		       "2e")
 		(string :tag "Other")))
 		
@@ -518,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.331 $"))
+	(rev "$Revision: 5.332 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -533,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-28 12:18:16 $"))
+    (let ((date "$Date: 2004-02-28 19:29:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3294,7 +3291,7 @@ what in fact did happen."))
 ;; Some versions of ispell 3 use this.
 (defvar ispell-tex-major-modes nil)
 (setq ispell-tex-major-modes
-      (append '(plain-tex-mode ams-tex-mode latex-mode)
+      (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
 	      ispell-tex-major-modes))
 
 (provide 'tex)
