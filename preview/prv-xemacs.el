@@ -28,19 +28,18 @@
 
 (eval-when-compile (require 'overlay))
 
-(eval-and-compile
-  (defvar preview-compatibility-macros nil
-    "List of macros only present when compiling/loading.")
+(defvar preview-compatibility-macros nil
+  "List of macros only present when compiling/loading.")
 
-  (defmacro preview-defmacro (name &rest rest)
-    (unless (fboundp name)
-      (push name preview-compatibility-macros)
-      `(defmacro ,name ,@rest)))
-  (push 'preview-defmacro preview-compatibility-macros))
+(defmacro preview-defmacro (name &rest rest)
+  (unless (fboundp name)
+    (push name preview-compatibility-macros)
+    `(defmacro ,name ,@rest)))
+(push 'preview-defmacro preview-compatibility-macros))
 
 (preview-defmacro propertize (string &rest properties)
 		  `(let ((res (copy-sequence ,string)))
-		     (add-text-properties 0 (length res) ,@properties res)
+		     (add-text-properties 0 (length res) ,properties res)
 		     res))
 
 (preview-defmacro assoc-default (key alist test)
@@ -140,5 +139,34 @@ Example:
 		       nil)
 		     file))
 
-(provide 'prv-xemacs)
+(defun preview-add-urgentization (ov fun buff)
+  (set-extent-property ov 'initial-redisplay-function
+		       `(lambda (ov) (,fun ov ,buff))))
+
+(defun preview-remove-urgentization (ov)
+  (set-extent-property ov 'initial-redisplay-function nil))
+
+;; Must be something similar to this.
+(defvar preview-nonready-icon
+  (let ((glyph
+	 (make-glyph (list [xpm :file "help.xpm"]
+			   [xbm :file "help.xbm"]))))
+    (set-glyph-baseline glyph 80)
+    glyph))
+  
+
+;; That's the original Emacs stuff...
+;; (defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
+;; 				 (:type pbm :file "help.pbm" :ascent
+;; 					80))
+;;   "The symbol used for previews to be generated.
+;; Usually a question mark")
+
+;; (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
+;; 			(:type pbm :file "search.pbm" :ascent 100))
+;;   "The symbol used for an open preview.
+;; Usually a magnifying glass.")
+
+	
+
 ;;; prv-xemacs.el ends here
