@@ -1,26 +1,26 @@
 ;;; context-en.el --- Support for the ConTeXt english interface.
-;;
+
+;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+
 ;; Maintainer: Berend de Boer <berend@pobox.com>
-;; Version: 11.14
-;; Keywords: wp
-;; X-URL: http://www.gnu.org/software/auctex/
-;; Copyright 2003 Free Software Foundation
+;; Keywords: tex
 
-;; Last Change: $Date: 2004-04-19 16:15:19 $
+;; This file is part of AUCTeX.
 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
+
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
 
 ;;; Commentary:
 
@@ -157,7 +157,7 @@ then the value of TeX-mode-hook, and then the value
 of context-mode-hook."
   (interactive)
   ;; set the ConTeXt interface
-  (set (make-local-variable 'ConTeXt-current-interface) "nl")
+  (set (make-local-variable 'ConTeXt-current-interface) "en")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
