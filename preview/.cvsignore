@@ -11,6 +11,7 @@ README
 TODO
 _region_.tex
 auto
+auto.el
 autom4te.cache
 config.cache
 config.status
