@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.69 1994-01-23 08:14:31 amanda Exp $
+@c $Id: auc-tex.texi,v 1.70 1994-01-25 09:02:31 amanda Exp $
 
 @finalout
 @titlepage
@@ -2324,6 +2324,15 @@ this version, and for the authors, who get nostalgic at times.
 @section News in 8.1
 
 @itemize @bullet
+@item
+Do not overwrite any global binding of @kbd{M-RET}.  Suggested by Jens
+Petersen @samp{<J.Petersen@qmw.ac.uk>}.
+
+@item
+Major modes for writing text are supposed to rebind @kbd{M-TAB} to
+@code{ispell-complete-word}.  Reported by Jens Petersen
+@samp{<J.Petersen@qmw.ac.uk>}.
+
 @item
 Fixed problems with @TeX{}info menus.  Thanks to David Smith
 @samp{<maa507@@comp.lancs.ac.uk>} for reporting this.
