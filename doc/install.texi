@@ -92,10 +92,6 @@ compiler is called if you do not have GCC installed.
 Then type @kbd{make all}, and the whole thing will be `made'.  If this
 succeeds, type @kbd{make install}, and it will be installed.
 
-To extract information from your sites @TeX{} macros, type @kbd{make
-install-auto}. This will only work if you have set
-@code{TeX-macro-global} correctly in @file{tex-site.el}.
-
 Now, tell the users to insert 
 @lisp
         (require 'tex-site)
@@ -103,3 +99,7 @@ Now, tell the users to insert
 in their @file{.emacs} files if they want to use AUC @TeX{}.  If you use
 FSF Emacs 19, you can do this for them by inserting the above line in
 the @file{.../emacs/site-lisp/site-start.el} file.
+
+To extract information from your sites @TeX{} macros, type @kbd{M-x
+TeX-auto-generate-global} in your emacs.  This will only work if you
+have set @code{TeX-macro-global} correctly in @file{tex-site.el}.

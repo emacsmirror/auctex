@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.92 1994-04-25 13:17:44 amanda Exp $
+# $Id: Makefile,v 5.93 1994-04-26 22:58:11 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -164,46 +164,22 @@ install: LispInstall LaInstall DocInstall
 	@echo "** "
 	@echo "** Still missing is the automatic extraction of symbols"
 	@echo "** and environments from your sites TeX style files."
-	@echo "** To do this, start \`make install-auto'."
 	@echo "** Beware, this takes some time and uses around 300k"
 	@echo "** storage, depending on your the TeX style files. "
-	@echo "** INPORTANT:  You must install tex-site.el first!"
-	@echo "** "
 	@echo "** It is possible to use AUC TeX without this information."
 	@echo "** "
-	@echo "** WARNING: Some old Emacs versions are broken, and will"
-	@echo "** not allow the auto files to be installed this way."
-	@echo "** You can instead install them from an interactive"
-	@echo "** emacs session by typing"
+	@echo "** To do this start emacs and type
 	@echo "** \"M-x TeX-auto-generate-global RET\"."
-	@echo "**********************************************************"
-	@echo
-
-install-auto:
-	@echo "**********************************************************"
-	@echo "** Extracting site information.	This may take a while..."
-	@echo "**********************************************************"
-	if [ ! -d $(autodir) ]; then mkdir $(autodir); else true; fi
-	$(AUTO) 
-	@echo "**********************************************************"
-	@echo "** If this failed then check that you have set"
-	@echo "** TeX-lisp-directory correctly in tex-site.el"
-	@echo "**********************************************************"
-	@echo
-	@echo "**********************************************************"
-	@echo "** Byte compiling.  This will take a while..."
-	@echo "** Some files may fail to compile. Don't Panic!"
-	@echo "**********************************************************"
-	-(cd ${autodir}; $(AUTOC) *.el)
-	@echo "**********************************************************"
-	@echo "**  Some files may have failed to compile. Don't Panic! **"
-	@echo "**  Congratulations! AUC TeX installation completed     **"
-	@echo "**********************************************************"
+	@echo "** INPORTANT:  You must install tex-site.el first!"
+	@echo "** "
 	@echo "** You may want to print the following files:  "
 	@echo "**    doc/auc-tex.dvi"
 	@echo "**    doc/tex-ref.dvi"
 	@echo "**********************************************************"
 	@echo
+
+install-auto:
+	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
 LaInstall: TLaCheck
 	@echo "**********************************************************"

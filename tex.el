@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.17 1994-04-26 15:27:20 amanda Exp $
+;; Version: $Id: tex.el,v 5.18 1994-04-26 22:58:19 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1350,8 +1350,10 @@ If TEX is a directory, generate style files for all files in the directory."
 (defun TeX-auto-generate-global ()
   "Create global auto directory for global TeX macro definitions."
   (interactive)
+  (make-directory TeX-auto-global)
   (mapcar (function (lambda (macro) (TeX-auto-generate macro TeX-auto-global)))
-          TeX-macro-global))
+          TeX-macro-global)
+  (byte-recompile-directory TeX-auto-global 0))
 
 (defun TeX-auto-store (file)
   ;; Extract information for auc tex from current buffer and store it in FILE.
