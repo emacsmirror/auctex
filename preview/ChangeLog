@@ -1,3 +1,40 @@
+2002-08-29  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/dvipng.h: type changes, dvi-io abstraction
+
+	* dvipng/color.c: comment changed
+
+	* dvipng/dvipng.c: dvi-io abstraction
+
+	* dvipng/font.c: type changes, STRSIZE killed
+
+	* dvipng/io.c: ReadCommand and CommandLength moved to dvi.c,
+	preparations for mmap
+
+	* dvipng/set.c: type changes
+
+	* dvipng/vf.c, dvipng/pk.c: prepare for mmap, type changes
+
+	* dvipng/pagequeue.c: type change
+
+	* dvipng/misc.c: dvi fopen moved to dvi.c, type changes
+
+	* dvipng/Makefile: pagelist.o gone, dvi.o new
+
+	* dvipng/draw.c: SetVF moved to vf.c, type and dvi-io abstraction
+	changes
+
+	* dvipng/commands.h: added length and debug texts
+
+	* dvipng/dvi.c: Functionality moved from pagelist.c and misc.c to
+	dvi.c. Still needs work, but is initial stab at proper abstraction
+	of dvi-reading stuff. STRSIZE killed.
+
+	* dvipng/pagelist.c: Functionality moved to dvi.c
+
+	* dvipng/special.c: DoSpecial now takes a const char* argument, as
+	opposed to before.
+
 2002-08-19  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/misc.c: Added -mode switch
