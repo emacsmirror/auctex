@@ -154,9 +154,12 @@ string for any unspecified macro or environment."
     (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
     (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
     (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
+    (define-key map "\C-c\C-ob"    'TeX-fold-clearout-buffer)
+    (define-key map "\C-c\C-or"    'TeX-fold-clearout-region)
+    (define-key map "\C-c\C-op"    'TeX-fold-clearout-paragraph)
+    (define-key map "\C-c\C-oi"    'TeX-fold-clearout-item)
+    ;; To be removed
     (define-key map "\C-c\C-o\C-x" 'TeX-fold-clearout-buffer)
-    (define-key map "\C-c\C-o\C-y" 'TeX-fold-clearout-region)
-    (define-key map "\C-c\C-o\C-v" 'TeX-fold-clearout-paragraph)
     (define-key map "\C-c\C-o\C-c" 'TeX-fold-clearout-item)
     map))
 
@@ -300,7 +303,8 @@ environments or 'macro for macros."
 (defun TeX-fold-item (type)
   "Hide the item on which point currently is located.
 TYPE specifies the type of item and can be one of the symbols
-'env for environments or 'macro for macros."
+'env for environments or 'macro for macros.
+Return non-nil if an item was found and folded, nil otherwise."
   (if (and (eq type 'env)
 	   (eq major-mode 'plain-tex-mode))
       (message
@@ -542,7 +546,8 @@ overlays."
     (TeX-fold-remove-overlays overlays)))
 
 (defun TeX-fold-remove-overlays (overlays)
-  "Remove all overlays set by TeX-fold in OVERLAYS."
+  "Remove all overlays set by TeX-fold in OVERLAYS.
+Return non-nil if a removal happened, nil otherwise."
   (let (found)
     (while overlays
       (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
