@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{655}
+%\CheckSum{696}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.45 $
+%  \rcskey \version CVS-$Revision: 1.46 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-24 05:07:19 $
+%\rcskey\next $Date: 2002-03-25 20:37:47 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.45 $
+   \reserved@a\reserved@b CVS-$Revision: 1.46 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-24 05:07:19 $
+\reserved@a\next $Date: 2002-03-25 20:37:47 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -341,7 +341,7 @@
 %  The |delayed| option is easy to implement:
 %    \begin{macrocode}
 \DeclareOption{delayed}{%
-  \ifPreview \let\preview@delay\AtBeginDocument \fi
+  \ifPreview \def\preview@delay{\AtBeginDocument} \fi
 }
 %    \end{macrocode}
 %
@@ -412,7 +412,9 @@
 %  \cmd{\pr@startbox} gets two arguments: code to execute immediately
 %  before the following stuff, code to execute afterwards.  You have
 %  to cater for \cmd{\pr@endbox} being called at the right time
-%  yourself.
+%  yourself.  We will use a \cmd{\vsplit} on the box later in order to
+%  remove any leading glues, penalties and similar stuff.  For this
+%  reason we start off the box with an optimal break point.
 %    \begin{macrocode}
 \newbox\pr@box
 \def\pr@startbox#1#2{%
@@ -421,12 +423,8 @@
     \toks@{#2}%
     \edef\pr@cleanup{\the\toks@}%
     \setbox\pr@box\vbox\bgroup
-    \begingroup
-       \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
-       \@begindvi
-    \endgroup
-    \pr@outerfalse\color@setgroup\@arrayparboxrestore\nointerlineskip
-    \@nobreaktrue
+    \break
+    \pr@outerfalse\@arrayparboxrestore
     \expandafter\@firstofone
   \else
      \expandafter \@gobble
@@ -438,15 +436,36 @@
 %  Cleaning up also is straightforward.  If we have to watch the
 %  bounding \TeX\ box, we want to remove spurious skips.  We also want
 %  to unwrap a possible single line paragraph, so that the box is not
-%  full line length.
+%  full line length.  We use \cmd{\vsplit} to clean up leading glue
+%  and stuff, and we make some attempt of removing trailing ones.
+%  After that, we wrap up the box including possible material from
+%  \cmd{\AtBeginDvi}.  If the |psfixbb| option is active, we adorn the
+%  upper left and lower right corners with copies of
+%  \cmd{\pr@markerbox}.
+%  The first few lines cater for \LaTeX\ hiding things like
+%  like the code for \cmd{\paragraph} in \cmd{\everypar}.
 %    \begin{macrocode}
 \def\pr@endbox{%
+   \ifvmode \edef\reserved@a{\the\everypar}%
+      \ifx\reserved@a\@empty\else
+            \dimen@\prevdepth
+            \noindent\par
+            \setbox\z@\lastbox\unskip\unpenalty
+            \prevdepth\dimen@
+            \ifdim\ht\z@=\z@\else
+                \noindent\unhbox\z@\fi\fi\fi
    \ifhmode \par\unpenalty\unskip\setbox\z@\lastbox
-   \nointerlineskip\hbox{\unhbox\z@\/}%
-   \fi
-   \unpenalty\unskip
-   \color@endgroup
+     \nointerlineskip\hbox{\unhbox\z@\/}%
+   \else \unskip\unpenalty\unskip \fi
    \egroup
+   {\splittopskip\z@skip\setbox\z@\vsplit\pr@box to\z@}%
+   \setbox\pr@box\vbox{%
+       \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+       \@begindvi
+       \nointerlineskip
+       \color@setgroup
+       \box\pr@box
+       \color@endgroup}%
    \ifpr@fixbb\setbox\pr@box\hbox{%
      \raise\ht\pr@box\copy\pr@markerbox
      \dimen@\dp\pr@box
@@ -454,12 +473,15 @@
      \lower\dimen@\copy\pr@markerbox}%
    \fi
 %    \end{macrocode}
-%  Except that we shift the output box up by its height.  This has two
-%  purposes: first we make sure that no package-inflicted non-zero
-%  value of \cmd{\voffset} or \cmd{\hoffset} will have any influence
-%  of the positioning of our box.  Second we shift the box such that
-%  its basepoint will exactly be at the (1in,1in)~mark defined by
-%  \TeX.  That way we can properly take ascenders into account.
+%  Note that we shift the output box up by its height via
+%  \cmd{\voffset}.  This has three reasons: first we make sure that no
+%  package-inflicted non-zero value of \cmd{\voffset} or
+%  \cmd{\hoffset} will have any influence on the positioning of our
+%  box.  Second we shift the box such that its basepoint will exactly
+%  be at the (1in,1in)~mark defined by \TeX.  That way we can properly
+%  take ascenders into account.  And the third reason is that \TeX\
+%  treats a \cmd{\hbox} and a \cmd{\vbox} differently with regard to
+%  the treating of its depth.
 %    \begin{macrocode}
    \pr@ship@end
    {\let\protect\noexpand
@@ -479,7 +501,7 @@
 %  \begin{macro}{\shipout}
 %    \begin{macrocode}
 \let\pr@shipout=\shipout
-\def\shipout{\setbox\z@\box\voidb@x\setbox\z@}
+\def\shipout{\deadcycles\z@\setbox\z@\box\voidb@x\setbox\z@}
 %    \end{macrocode}
 %  \end{macro}
 %\subsection{Parsing commands}
@@ -571,6 +593,9 @@
 %  AMS\LaTeX\ already do too much before our hook gets to interfere,
 %  so we hook earlier.  Some juggling is involved to ensure we get the
 %  original |\everydisplay| tokens only once and where appropriate.
+%
+%  The incredible hack with |\dt@ptrue| is necessary for working
+%  around bug `amslatex/3425'.
 %    \begin{macrocode}
 %<*!active>
 \begingroup
@@ -578,17 +603,16 @@
 \@firstofone{\endgroup
 \DeclareOption{displaymath}{%
   \preview@delay{\toks@{%
-      \pr@startbox{$$%
-        \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
+      \pr@startbox{\noindent$$%
         \aftergroup\pr@endbox\@gobbletwo}{$$}\@firstofone}%
     \everydisplay\expandafter{\the\expandafter\toks@
       \expandafter{\the\everydisplay}}}%
   \pr@advise@ship\equation{\begingroup\aftergroup\pr@endbox
-      \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
-    }{\endgroup}%
+    \def\dt@ptrue{\m@ne=\m@ne}\noindent}
+    {\endgroup}%
   \pr@advise@ship\equation*{\begingroup\aftergroup\pr@endbox
-      \abovedisplayskip\z@skip\abovedisplayshortskip\z@skip
-    }{\endgroup}%
+    \def\dt@ptrue{\m@ne=\m@ne}\noindent}
+    {\endgroup}%
 }}
 %    \end{macrocode}
 %
@@ -779,7 +803,13 @@
 %    \end{macrocode}
 %Since over/underfull boxes are about the messiest things to parse, we
 %disable them by setting the appropriate badness limits and making the
-%variables point to junk.  We also disable other stuff.
+%variables point to junk.  We also disable other stuff.  While we set
+%\cmd{\showboxbreadth} and \cmd{\showboxdepth} to indicate as little
+%diagnostic output as possible, we keep them operative, so that the
+%user retains the option of debugging using this stuff.  The other
+%variables concerning the generation of warnings and daignostics,
+%however, are more often set by commonly employed packages and macros
+%such as \cmd{\sloppy}.  So we kill them off for good.
 %    \begin{macrocode}
 %<auctex>\hbadness=\maxdimen
 %<auctex>\newcount\hbadness
@@ -790,9 +820,7 @@
 %<auctex>\vfuzz=\maxdimen
 %<auctex>\let\vfuzz=\hfuzz
 %<auctex>\showboxdepth=-1
-%<auctex>\let\showboxdepth=\hbadness
 %<auctex>\showboxbreadth=-1
-%<auctex>\let\showboxbreadth=\hbadness
 %<auctex>\pr@loadcfg{prauctex}
 %<auctex>\fi
 %    \end{macrocode}
@@ -812,8 +840,8 @@
 %<auccfg>\PreviewMacro*\maketitle
 %<auccfg>\PreviewMacro*\author
 %<auccfg>\PreviewMacro*\title
-%<auccfg>\@ifundefined{pr@\string\@startsection}{%
-%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}
+%<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
+%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
 %<auccfg>\PreviewMacro*\index
 %    \end{macrocode}
 %
@@ -860,7 +888,8 @@
   \@elt{255}%
   \let\@elt\relax
   \xdef\@freelist{\@currlist\@freelist}%
-  \global\let\@currlist\@empty}
+  \global\let\@currlist\@empty
+  \deadcycles\z@}
 %</active>
 %</style>
 %    \end{macrocode}
