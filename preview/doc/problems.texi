@@ -110,13 +110,17 @@ As of GNU Emacs 21.2, no image support is available in Emacs under
 Windows.  Without images, @previewlatex{} is useless.  The current
 @acronym{CVS} version of Emacs available from
 @uref{http://savannah.gnu.org/projects/emacs} now is supposed to support
-images, so it is likely that @w{Emacs 21.3} will have a reasonable
+images, so it is likely that @w{Emacs 21.4} will have a reasonable
 chance of working once it is out.  If it is important to you and you
 have the necessary technical skills, support the Emacs developer crew by
 checking out the current version and trying to get @previewlatex{} to
 run on it.  Reasonable patches necessary to make @previewlatex{} work
 under Windows will gladly be accepted.  Another option for Windows users
-might be to try XEmacs, although preview-latex is untested there, too.
+might be to try XEmacs.  One user reported success for the Cygwin port
+of XEmacs, after outcommenting the three lines concerning
+@code{balloon-help-mode} in @code{preview-mode-setup} in the file
+@file{prv-xemacs.el}.  It would appear that this mode is broken under
+Windows in some XEmacs versions.
 
 @item XEmacs
 
@@ -132,8 +136,9 @@ Previews will only remain from one session to the next if you have
 version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 
-The package hasn't been tested under either the Cygwin or native builds
-for Windows: if you try it and it works, please say!
+The package hasn't been tested under either the native build for
+Windows: if you try it and it works, please say!  For the Cygwin
+status, see above.
 
 This support is very new and still changing frequently. Please test it
 and report any problems you may be experiencing.
