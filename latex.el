@@ -1863,7 +1863,8 @@ Lines starting with an item is given an extra indentation of
 			     (concat (match-string 0)
 				     (TeX-comment-padding-string)))))
 	 (overlays (when (featurep 'xemacs)
-		     (overlays-at (line-beginning-position))))
+		     (overlays-in (line-beginning-position)
+				  (line-end-position))))
 	 ol-specs)
     ;; XEmacs' `indent-to' function (at least in version 21.4.15) has
     ;; a bug which leads to the insertion of whitespace in front of an
@@ -3246,6 +3247,7 @@ See also `LaTeX-math-menu'."
     (?z "zeta" "greek" 950) ;; #X03B6
     (?h "eta" "greek" 951) ;; #X03B7
     (?j "theta" "greek" 952) ;; #X03B8
+    (nil "iota" "greek" 953) ;; #X03B9
     (?k "kappa" "greek" 954) ;; #X03BA
     (?l "lambda" "greek" 955) ;; #X03BB
     (?m "mu" "greek" 956) ;; #X03BC
@@ -3395,7 +3397,7 @@ See also `LaTeX-math-menu'."
     (nil "nabla" "Misc Symbol" 8711) ;; #X2207
     (nil "surd" "Misc Symbol" 8730) ;; #X221A
     (nil "Box" "Misc Symbol")
-    (nil "triangle" "Misc Symbol" 9653) ;; #X25B5
+    (nil "triangle" "Misc Symbol" 9651) ;; #X25B3
     (nil "Diamond" "Misc Symbol")
     (nil "imath" "Misc Symbol" 305) ;; #X0131
     (nil "jmath" "Misc Symbol" #X1D6A5)

@@ -1,5 +1,9 @@
 2004-08-23  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-indent-line): Get all overlays, not just one.
+	(LaTeX-math-default): Add iota.
+	(LaTeX-math-default): Use different symbol for triangle.
+
 	* tex.el (TeX-match-buffer): Use `buffer-substring-no-properties'
 	(TeX-in-commented-line): Use `skip-chars-forward' and `forward-line'.
 	(TeX-in-line-comment): Use `forward-line'.
