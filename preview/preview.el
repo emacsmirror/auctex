@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.62 2002-02-25 08:40:19 dakas Exp $
+;; $Id: preview.el,v 1.63 2002-02-26 04:58:18 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -51,6 +51,7 @@
   (require 'tex-site)
   (require 'tex-buf)
   (require 'latex)
+  (require 'desktop)
   (defvar error))
 
 (require (if (string-match "XEmacs" (emacs-version))
@@ -777,8 +778,8 @@ the entire buffer.  If KEEP-DIR is set to a value from
 `TeX-active-tempdir', previews associated with that
 directory are kept."
   (interactive "r")
-  (dolist (ov (overlays-in (or start 1)
-			   (or end (1+ (buffer-size)))))
+  (dolist (ov (overlays-in (or start (point-min))
+			   (or end (point-max))))
     (and (overlay-get ov 'preview-state)
 	 (not (rassq keep-dir (overlay-get ov 'filenames)))
 	 (preview-delete ov))))
@@ -794,21 +795,24 @@ directory are kept."
 (add-hook 'before-revert-hook #'preview-clearout-buffer)
 
 (defun desktop-buffer-preview-misc-data ()
-  (let (process save-info)
-    (dolist (ov (overlays-in (point-min) (point-max)))
-      (when (and (memq (overlay-get ov 'preview-state) '(active inactive))
-		 (null (overlay-get ov 'queued))
-		 (eq 1 (length (overlay-get ov 'filenames))))
-	(when (and (null save-info)
-		   (setq process (get-buffer-process (current-buffer))))
-	  (while process
-	    (delete-process process)
-	    (setq process (get-buffer-process (current-buffer))))
-	  (sit-for 0 0 t))
-	(push (preview-dissect ov) save-info)))
-    (and save-info
-	 (cons 'preview (cons (nth 5 (file-attributes (buffer-file-name)))
-			      save-info)))))
+  (save-restriction
+    (widen)
+    (let (process save-info)
+      (dolist (ov (overlays-in (point-min) (point-max)))
+	(when (and (memq (overlay-get ov 'preview-state) '(active inactive))
+		   (null (overlay-get ov 'queued))
+		   (eq 1 (length (overlay-get ov 'filenames))))
+	  (when (and (null save-info)
+		     (setq process (get-buffer-process (current-buffer))))
+	    (while process
+	      (delete-process process)
+	      (setq process (get-buffer-process (current-buffer))))
+	    (sit-for 0 0 t))
+	  (push (preview-dissect ov) save-info)))
+      (preview-clearout-buffer)
+      (and save-info
+	   (cons 'preview (cons (nth 5 (file-attributes (buffer-file-name)))
+				save-info))))))
 
 (add-hook 'desktop-buffer-misc-functions #'desktop-buffer-preview-misc-data)
 
@@ -819,7 +823,7 @@ on first use."
 )
 
 (defun preview-dissect (ov)
-  (let ((filenames (subseq (nth 0 (overlay-get ov 'filenames)) 0 3)))
+  (let ((filenames (butlast (nth 0 (overlay-get ov 'filenames)))))
     (setq preview-temp-dirs (delq (nth 2 filenames) preview-temp-dirs))
     (prog1
 	(list (overlay-start ov)
@@ -841,8 +845,8 @@ on first use."
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
-(add-hook 'kill-emacs-hook
-	  (lambda () (mapc #'preview-clean-topdir preview-temp-dirs)) t)
+(defun preview-cleanout-tempfiles ()
+  (mapc #'preview-clean-topdir preview-temp-dirs))
 
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
@@ -933,7 +937,9 @@ region between START and END."
   (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
   (setcar (cdr TeX-active-tempdir)
 	  (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
-		   (push (nth 1 TeX-active-tempdir) preview-temp-dirs))))
+		   (progn
+		     (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
+		     (push (nth 1 TeX-active-tempdir) preview-temp-dirs)))))
   (setcdr filename TeX-active-tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
     (overlay-put ov 'preview-map
@@ -1121,7 +1127,8 @@ later while in use."
 	  ;;  removing subdirs possibly left from a previous session.
 	  (preview-clean-topdir topdir)
 	(make-directory topdir))
-      (push topdir preview-temp-dirs))
+      (push topdir preview-temp-dirs)
+      (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t))
     (setq TeX-active-tempdir
 	  (list (make-temp-file (expand-file-name
 			   "tmp" (file-name-as-directory topdir)) t)
@@ -1393,7 +1400,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.62 $"))
+	(rev "$Revision: 1.63 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
