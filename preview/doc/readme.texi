@@ -1,5 +1,5 @@
 Does Your neck hurt from turning between previewer windows and the
-source too often? This Elisp/LaTeX package will render your displayed
+source too often? This Elisp/La@TeX{} package will render your displayed
 LaTeX equations right into the editing window where they belong.
 
 The purpose of Preview La@TeX{} is to embed La@TeX{} environments such as
@@ -42,8 +42,8 @@ The preview-latex project is available at Sourceforge,
 Anonymous CVS is available as well. See the Sourceforge web pages for
 more information, but here are the basic instructions:
 
-When prompted for a password for anonymous, simply press the Enter
-key.
+(When prompted for a password for anonymous, simply press the Enter
+key.)
 
 @example
 cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
