@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.104 2002-04-11 16:45:20 dakas Exp $
+;; $Id: preview.el,v 1.105 2002-04-12 05:57:26 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -638,12 +638,12 @@ PS-FILE is a copy of `preview-ps-file'."
 	       "*Preview-GhostScript-Error*")))
     (with-current-buffer buff
       (kill-all-local-variables)
+      (set (make-local-variable 'view-exit-action) #'kill-buffer)
       (setq buffer-undo-list t)
       (erase-buffer)
       (insert string)
       (goto-char (point-min)))
-    (view-buffer-other-window
-     buff nil 'kill-buffer)))
+    (view-buffer-other-window buff)))
 
 (defun preview-mouse-open-eps (file &optional position)
   "Display eps FILE in a view buffer on click.
@@ -668,44 +668,37 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
-  (overlay-put
-   ov 'after-string
-   (propertize
-    (concat
-     (preview-make-clickable
-      nil
-      "[Error]"
-      "%s views error message"
-      `(lambda() (interactive "@")
-	 (preview-mouse-open-error
-	  ,(concat
-		   (mapconcat #'shell-quote-argument
-			      (cons preview-gs-command
-				    preview-gs-command-line)
-			      " ")
-		   "\nGS>"
-		   preview-gs-init-string
-		   (aref (overlay-get ov 'queued) 1)
-		   err))))
-     " in "
-     (let ((file (car (nth 0 (overlay-get ov 'filenames)))))
-       (if preview-ps-file
-	   (preview-make-clickable
-	    nil
-	    "[PS-file]"
-	    "%s views PS file"
-	    `(lambda() (interactive "@")
-	       (preview-mouse-open-eps
-		,(car file)
-		,(nth 0 (aref preview-gs-dsc
-			      (aref (overlay-get ov 'queued) 2))))))
-	 (preview-make-clickable
-	  nil
-	  "[EPS-file]"
-	  "%s views EPS file"
-	  `(lambda() (interactive "@")
-	     (preview-mouse-open-eps ,file))))))
-     'face 'preview-error-face)))
+  (let* ((file (car (nth 0 (overlay-get ov 'filenames))))
+	 (str
+	  (preview-make-clickable
+	   nil
+	   preview-error-icon
+	   (if preview-ps-file
+	       "%s views error message
+%s views PS file"
+	     "%s views error message
+%s views EPS file")
+	   `(lambda() (interactive "@")
+	      (preview-mouse-open-error
+	       ,(concat
+		 (mapconcat #'shell-quote-argument
+			    (cons preview-gs-command
+				  preview-gs-command-line)
+			    " ")
+		 "\nGS>"
+		 preview-gs-init-string
+		 (aref (overlay-get ov 'queued) 1)
+		 err)))
+	   (if preview-ps-file
+	       `(lambda() (interactive "@")
+		  (preview-mouse-open-eps
+		   ,(car file)
+		   ,(nth 0 (aref preview-gs-dsc
+				 (aref (overlay-get ov 'queued) 2)))))
+	     `(lambda() (interactive "@")
+		(preview-mouse-open-eps ,file))))))
+    (overlay-put ov 'strings (cons str str))
+    (preview-toggle ov)))
 
 (defun preview-gs-transact (process answer)
   "Work off GhostScript transaction.
@@ -844,17 +837,11 @@ numbers (can be float if available)."
 	(round (* 100.0 (/ (- top 720.0) (- top bottom))))
       100)))
 
-
 (defface preview-face '((((background dark))
 			 (:background "dark slate gray"))
 			(t
 			 (:background "beige")))
   "Face to use for the preview source."
-  :group 'preview-appearance)
-
-(defface preview-error-face '((((class color)) (:background "red"))
-			      (t (:inverse-video t)))
-  "Face for displaying error message overlays."
   :group 'preview-appearance)
 
 (defface preview-reference-face '((t nil))
@@ -1797,7 +1784,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.104 $"))
+	(rev "$Revision: 1.105 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
