@@ -90,6 +90,15 @@ hidden which is not specified in `TeX-fold-env-spec-list'."
   :type '(string)
   :group 'TeX-fold)
 
+(defcustom TeX-fold-unspec-use-name t
+  "If non-nil use the name of an unspecified item as display string.
+Set it to nil if you want to use the values of the variables
+`TeX-fold-unspec-macro-display-string' or
+`TeX-fold-unspec-env-display-string' respectively as a display
+string for any unspecified macro or environment."
+  :type 'boolean
+  :group 'TeX-fold)
+
 (defcustom TeX-fold-unfold-around-mark t
   "Unfold text around the mark, if active."
   :type 'boolean
@@ -269,9 +278,11 @@ TYPE specifies the type of item and can be one of the symbols
 			(when (member item-name (cadr fold-item))
 			  (throw 'found (car fold-item)))))
 		    ;; Item is not specified.
-		    (if (eq type 'env)
-			TeX-fold-unspec-env-display-string
-		      TeX-fold-unspec-macro-display-string)))
+		    (if TeX-fold-unspec-use-name
+			(concat "[" item-name "]")
+		      (if (eq type 'env)
+			  TeX-fold-unspec-env-display-string
+			TeX-fold-unspec-macro-display-string))))
 	       (item-end (cond ((and (eq type 'env)
 				     (eq major-mode 'context-mode))
 				(save-excursion
