@@ -1,3 +1,7 @@
+2005-02-04  David Kastrup  <dak@gnu.org>
+
+	* RELEASE (Warning): warn about XEmacs 21.4.16.
+
 2005-02-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-search-syntax-table): Give ?\" character punctuation

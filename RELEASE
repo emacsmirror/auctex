@@ -46,7 +46,10 @@ dated 02/02/2004 or newer for compiling AUCTeX because of non-trivial
 changes in easy-mmode.el: please use the XEmacs package system for
 upgrading if necessary.  The current developers don't have the
 resources for providing backward compatibility to earlier versions.
-
+Warning: release 21.4.16 of XEmacs is severely broken.  This leads to
+crashes and hangs, and AUCTeX 11.55 is more likely to trigger this
+problem than previous AUCTeX releases, so don't upgrade AUCTeX if you
+can't use a different XEmacs version.
 
 Availability
 ------------
