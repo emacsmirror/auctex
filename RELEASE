@@ -1,0 +1,64 @@
+These are the release notes for AUCTeX 11.50.
+
+A more stable release is still quite far away, yet there is no
+conceivable reason to prefer the last release to this one: the number
+of bugs has quite decreased, and usability is vastly superior.
+
+However, the documentation has not quite kept up, interfaces and
+customizable variables will change frequently, and there are a lot of
+plans requiring more developer power than we currently have at our
+disposal.  So this release announcement is also a plea for more
+volunteers.
+
+Prospective changes are:
+
+AUCTeX is proceeding as a GNU project with the long-term intent of
+merging it into Emacs.  This will require all new contributors to
+assign copyright to their contributions to the FSF (the usual
+procedure for Emacs contributors).  It also means that all past
+contributors need to be contacted and asked to assign their
+contributions to the FSF for the sake of a future Emacs integration.
+The principal authors and maintainers have already done so, but it
+would require a diligent and diplomatic volunteer to find and ask the
+rest.  Independent from that process, preview-latex
+<URL:http://preview-latex.sourceforge.net> will probably get
+integrated in the course of the next year.
+
+It would be nice to organize error help strings in Texinfo files in
+local languages, to be indexed by error messages (the current support
+for Japanese is quite ad-hoc).  Tutorials for authoring LaTeX texts
+with AUCTeX should be written.  Having a configuration assistant
+wizard that guides the user through most of the important
+configuration would be nice.
+
+What is offered right now:
+
+PDFTeX and corresponding viewers are being supported, and the
+appropriate viewer is selected depending on document options and the
+generated output file type.  The interfaces are bound to change yet,
+though.
+
+Authors of LaTeX class and style files previously were not able to
+make much use of AUCTeX.  Now they are supported with syntax
+highlighting, a highly sophisticated new engine for keeping
+indentation and environments in .dtx files consistent in documentation
+and code sections, additional macro completions for programmer
+commands and a few other goodies.
+
+ConTeXt is a supported format now.
+
+Syntax highlighting has become smarter and supports sub- and
+superscripts.  Forward search support for viewers using Source
+specials can be toggled with C-c C-t C-s and is made more convenient
+by the new C-c C-v keybinding shortcut that immediately starts or
+notifies the viewer without prompting.  Inverse search using
+emacsclient or gnuclient still requires setting appropriate
+environment variables or command lines and starting the respective
+server.
+
+The menus have been reorganized and cleaned up (and you'll see a few
+changes and additions in keybindings there), and the Command menu will
+now only offer commands relevant to the current major mode.
+
+A new autoconf-based installation makes configuring and installing
+AUCTeX into a mostly automatic process.
