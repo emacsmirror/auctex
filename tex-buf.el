@@ -274,8 +274,9 @@ asked if it is positive, and suppressed if it is not."
 				    nil nil)))
 
     ;; Now start the process
-    (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
-    (apply hook name command (apply file nil) nil)))
+    (setq file (funcall file))
+    (TeX-process-set-variable file 'TeX-command-next TeX-command-Show)
+    (funcall hook name command file)))
 
 (defun TeX-command-expand (command file &optional list)
   "Expand COMMAND for FILE as described in LIST.
@@ -906,12 +907,11 @@ Return nil ifs no errors were found."
 Return DEFAULT if the process buffer does not exist or SYMBOL is not
 defined."
   (let ((buffer (TeX-process-buffer name)))
-    (if buffer
+    (if (and buffer
+	     (local-variable-p symbol buffer))
 	(save-excursion
 	  (set-buffer buffer)
-	  (if (boundp symbol)
-	      (eval symbol)
-	    default))
+	  (symbol-value symbol))
       default)))
 
 (defun TeX-process-set-variable (name symbol value)

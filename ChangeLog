@@ -1,3 +1,17 @@
+2004-08-25  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-command): Call `TeX-process-set-variable' with
+	correct options, so that the viewer command is next unless
+	overridden.
+
+	* tex.el (TeX-set-mode-name): Set `TeX-command-next' in the
+	buffers where they actually count.
+
+2004-08-24  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-math-default): Correctly code "jmath" and
+	"Bbbk".
+
 2004-08-24  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Mathematics): Add `LaTeX-math-menu-unicode'.

@@ -3399,7 +3399,7 @@ See also `LaTeX-math-menu'."
     (nil "triangle" "Misc Symbol" 9651) ;; #X25B3
     (nil "Diamond" "Misc Symbol")
     (nil "imath" "Misc Symbol" 305) ;; #X0131
-    (nil "jmath" "Misc Symbol" #X1D6A5)
+    (nil "jmath" "Misc Symbol" 120485) ;; #X1D6A5
     (nil "ell" "Misc Symbol" 8467) ;; #X2113
     (nil "neg" "Misc Symbol" 172) ;; #X00AC
     (?/ "not" "Misc Symbol" 824) ;; #X0338
@@ -3697,7 +3697,7 @@ See also `LaTeX-math-menu'."
     (nil "mho" ("AMS" "Misc") 8487) ;; #X2127
     (nil "Finv" ("AMS" "Misc") 8498) ;; #X2132
     (nil "Game" ("AMS" "Misc") 8513) ;; #X2141
-    (nil "Bbbk" ("AMS" "Misc") #X1D55C)
+    (nil "Bbbk" ("AMS" "Misc") 120156) ;; #X1D55C
     (nil "backprime" ("AMS" "Misc") 8245) ;; #X2035
     (nil "varnothing" ("AMS" "Misc") 8709) ;; #X2205
     (nil "blacktriangle" ("AMS" "Misc") 9652) ;; #X25B4
