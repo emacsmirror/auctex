@@ -1,0 +1,18 @@
+@ifclear macros
+@set macros
+@macro AUCTeX {}
+AUC@w{ }@TeX{}
+@end macro
+@ifnottex
+@macro LaTeX {}
+La@TeX{}
+@end macro
+@macro previewlatex {}
+preview-latex
+@end macro
+@end ifnottex
+@tex
+\gdef\LaTeX{L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
+\gdef\previewlatex{Preview-\LaTeX}
+@end tex
+@end ifclear
