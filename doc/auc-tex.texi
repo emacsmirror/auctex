@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.138 2004-01-18 10:05:37 angeli Exp $
+@c $Id: auc-tex.texi,v 1.139 2004-02-03 09:24:59 angeli Exp $
 
 @finalout
 @titlepage
@@ -816,25 +816,27 @@ does not conflict with the basename of one of @TeX{} files.
 It is often necessary to comment out temporarily a region of @TeX{} or
 La@TeX{} code.  This can be done with the commands @kbd{C-c ;} and
 @kbd{C-c %}.  @kbd{C-c ;} will comment out all lines in the current
-region, while @kbd{C-c %} will comment out the current paragraph.  To
-uncomment, simply type @kbd{C-c ;} again to uncomment all lines of a
-commented region, or @kbd{C-c %} again to uncomment all comment lines
-around point.  These commands will insert or remove a single @samp{%}
-respectively.
+region, while @kbd{C-c %} will comment out the current paragraph.
+Type @kbd{C-c ;} again to uncomment all lines of a commented region,
+or @kbd{C-c %} again to uncomment all comment lines around point.
+These commands will insert or remove a single @samp{%} respectively.
 
-@deffn Command TeX-comment-region
+@deffn Command TeX-comment-or-uncomment-region
 @kindex C-c ;
-(@kbd{C-c ;}) Add or remove @samp{%} from the beginning of each line in
-the current region.  Uncommenting works only if the region encloses
-solely commented lines.
+(@kbd{C-c ;}) Add or remove @samp{%} from the beginning of each line
+in the current region.  Uncommenting works only if the region encloses
+solely commented lines.  If AUC@TeX{} should not try to guess if the
+region should be commented or uncommented the commands
+@code{TeX-comment-region} and @code{TeX-uncomment-region} can be used
+to explicitely comment or uncomment the region in concern.
 @end deffn
 
-@deffn Command TeX-comment-paragraph
+@deffn Command TeX-comment-or-uncomment-paragraph
 @kindex C-c %
-(@kbd{C-c %}) Add or remove @samp{%} from the beginning of each line in
-the current paragraph.  When removing @samp{%}'s the paragraph is
-considered to consist of all preceding and succeeding lines starting
-with a @samp{%}, until the first non-comment line.
+(@kbd{C-c %}) Add or remove @samp{%} from the beginning of each line
+in the current paragraph.  When removing @samp{%} characters the
+paragraph is considered to consist of all preceding and succeeding
+lines starting with a @samp{%}, until the first non-comment line.
 @end deffn
 
 @node Marking and formatting, Outline, Commenting, Advanced Features
