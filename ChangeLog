@@ -12,7 +12,8 @@
 	(TeX-fold-buffer-type): New function.
 	(TeX-fold-macro): Transfer contents to `TeX-fold-item' which can
 	be used for both macros and environments.
-	(TeX-fold-env, TeX-fold-item): New functions.
+	(TeX-fold-env): New function.
+	(TeX-fold-item): New function. Prioritize overlays.
 	(TeX-fold-clearout-item): New name for `TeX-fold-clearout-macro'.
 	(TeX-fold-hide-item, TeX-fold-show-item): Adapt doc string.
 
