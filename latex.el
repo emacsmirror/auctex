@@ -1939,7 +1939,8 @@ outer indentation in case of a commented line.  The symbols
 	  (list-length (safe-length docTeX-indent-inner-fixed))
 	  entry
 	  found)
-      (cond ((and (eq major-mode 'doctex-mode)
+      (cond ((save-excursion (beginning-of-line) (bobp)) 0)
+	    ((and (eq major-mode 'doctex-mode)
 		  fill-prefix
 		  (TeX-in-line-comment)
 		  (progn
@@ -2075,7 +2076,6 @@ outer indentation in case of a commented line.  The symbols
 			  (and (not comment-current-flag)
 			       comment-last-flag))))
 	     0)
-	    ((bobp) 0)
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "begin *{\\("
 				 LaTeX-document-regexp
