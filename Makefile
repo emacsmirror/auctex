@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.120 1996-02-29 13:56:19 abraham Exp $
+# $Id: Makefile,v 5.121 1996-03-23 02:10:44 abraham Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -32,7 +32,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.29
+EMACS=emacs-19.30
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -89,13 +89,13 @@ LIBS=
 
 SHELL = /bin/sh
 
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
-WWWDIR = $(HOME)/.public_html/auctex
-#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
+#WWWDIR = $(HOME)/.public_html/auctex
+WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  easymenu.el cpp.el
+REMOVE =  none
 
 MINMAPSRC = auc-menu.el maniac.el \
 	    outln-18.el auc-html.el all.el
