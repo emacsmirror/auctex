@@ -1,3 +1,26 @@
+2004-06-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-newline): New function.
+	(TeX-mode-map): Use it.
+
+	* latex.el: Various checkdoc-related fixes.
+	(LaTeX-forward-paragraph): Check for and cope with multi-line
+	paragraph commands not only those with a single line.
+	Check for LaTeX macro at the end of a paragraph command.
+	(LaTeX-backward-paragraph): Check for and cope with multi-line
+	paragraph commands not only those with a single line.
+	(LaTeX-paragraph-command-p): Remove.
+	(LaTeX-find-macro-start): Find macro start even if point is
+	already at the start.
+
+	* doc/auc-tex.texi (Marking and formatting): Split into
+	`Indenting' and `Filling'.
+	(Indenting): New section.
+	(Filling): New section.
+
+	* doc/intro.texi: Fix key representations and reference to
+	`fill-paragraph'.
+
 2004-06-02  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-format-filter): Don't use split-string which
