@@ -1,14 +1,14 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7h
+;; Version: 9.7i
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1996 Per Abrahamsen 
+;; Copyright (C) 1993, 1994, 1996, 1997 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
 
-(defvar TeX-lisp-directory "/usr/local/lib/emacs/site-lisp/auctex/"
+(defvar TeX-lisp-directory (concat data-directory "auctex/")
   "*The directory where the AUC TeX lisp files are located.")
 
 ;; Change this to point to the place where the TeX macros are stored
@@ -1254,7 +1254,7 @@ the file is plain TeX or LaTeX or what.")
 (defvar TeX-force-default-mode nil
   "*If set to nil, try to infer the mode of the file from its content.")
 
-;;;###autoload
+;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
   "Major mode for editing files of input for TeX or LaTeX.
 Tries to guess whether this file is for plain TeX or LaTeX.
@@ -1291,7 +1291,7 @@ The algorithm is as follows:
                      answer
                    TeX-default-mode))))))
 
-;;;###autoload
+;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun plain-tex-mode ()
   "Major mode for editing files of input for plain TeX.
 See info under AUC TeX for documentation.
@@ -2562,7 +2562,7 @@ With prefix argument, always inserts \" characters."
 		     TeX-close-quote))))))
 
 ;; For the sake of BibTeX...
-;;;###autoload
+;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (fset 'tex-insert-quote 'TeX-insert-quote)
 
 (defun TeX-insert-punctuation ()
