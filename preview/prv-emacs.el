@@ -29,16 +29,14 @@
 (defvar preview-compatibility-macros nil
   "List of macros only present when compiling/loading.")
 
-(defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
-				 (:type pbm :file "help.pbm" :ascent
-					80))
-  "The symbol used for previews to be generated.
-Usually a question mark.")
+(defimage preview-nonready-icon ((:type xpm :file "prevwork.xpm" :ascent 90)
+				 (:type xbm :file "prevwork.xbm" :ascent
+					90))
+  "The symbol used for previews to be generated.")
 
-(defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
-			(:type pbm :file "search.pbm" :ascent 100))
-  "The symbol used for an open preview.
-Usually a magnifying glass.")
+(defimage preview-icon ((:type xpm :file "preview.xpm" :ascent 75)
+			(:type xbm :file "preview.xbm" :ascent 75))
+  "The symbol used for an open preview.")
 
 (defcustom preview-transparent-color '(highlight :background)
   "Color to appear transparent in previews.
