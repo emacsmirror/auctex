@@ -58,7 +58,7 @@
 
 ;; reftex users:
 ;;  reftex is a package with similar functions to bib-cite.
-;;    http://zon.astro.uva.nl/~dominik/Tools/reftex/
+;;    http://www.astro.uva.nl/~dominik/Tools/reftex/
 ;;  RefTeX is bundled and preinstalled with Emacs since version 20.2.
 ;;  It was also bundled with XEmacs 19.16--20.x.
 ;;

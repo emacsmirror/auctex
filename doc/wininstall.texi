@@ -50,6 +50,17 @@ call @code{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
+@item --prefix=@var{drive:/path/to/emacs-directory}
+which makes sure that (1) the AUCTeX manual will be installed in the
+@file{info/} directory of your Emacs installation and (2) the
+automatically generated global style hooks will be installed in the
+@file{var/} directory of your Emacs installation.  If you are collecting
+stuff like that in a central directory hierarchy (not untypical with
+Cygwin), you might want to specify that here instead.  You stand a good
+chance that this will be the only option you need to supply, as long as
+your @TeX{}-related executables are in your system path, which they
+better be for @AUCTeX{}'s operation, anyway.
+
 @item --with-emacs
 if you are installing Emacs. You can use
 @samp{--with-emacs=@var{/path/to/emacs}} to specify the name of the
@@ -60,7 +71,7 @@ setting).
 @item --with-xemacs
 If you are using XEmacs, of course use @samp{--with-xemacs} in the same
 manner.  It may also be necessary to specify this option if a copy of
-Emacs is in your path, but you wouldlike to install @AUCTeX{} for
+Emacs is in your path, but you would like to install @AUCTeX{} for
 XEmacs, too.
 
 @item --with-lispdir=@var{/dir}
@@ -71,14 +82,6 @@ XEmacs, rather use
 @item --with-packagedir=@var{/dir}
 which gives the location of the package directory for XEmacs where stuff
 should be installed. Again, hopefully this is not necessary to specify.
-
-@item --prefix=@var{drive:/path/to/emacs-directory}
-which makes sure that (1) the AUCTeX manual will be installed in the
-@file{info/} directory of your Emacs installation and (2) the
-automatically generated global style hooks will be installed in the
-@file{var/} directory of your Emacs installation.  If you are collecting
-stuff like that in a central directory hierarchy (not untypical with
-Cygwin), you might want to specify that here instead.
 
 @item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
 This option allows to specify the directories to be used for file

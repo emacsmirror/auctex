@@ -1,4 +1,13 @@
+2004-08-17  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Quote when expanding and remove trailing backslash,
+	too.
+	(library): Don't check for $PWD but for default-directory.
+
 2004-08-16  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: move --prefix description up, since it
+	might be the only needed option.
 
 	* doc/tex-ref.tex (section{Font Selection}): Add italic
 	corrections and small-caps entry.

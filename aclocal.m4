@@ -305,7 +305,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
     [  --with-lispdir=DIR      Where to install lisp files],
     [lispdir="${withval}"
      # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
-     lispdir_expanded=`echo $lispdir | sed 's/\/$//'`
+     lispdir_expanded="`echo $lispdir | sed 's/[\/\\]$//'`"
      AC_FULL_EXPAND(lispdir_expanded)
     ],
     [
@@ -513,7 +513,9 @@ dnl
 AC_DEFUN(VALID_BUILD_DIR, [
   AC_MSG_CHECKING([if build directory is valid])
   EMACS_LISP(valid_build_dir,
-    [[(if (member (getenv \"PWD\") load-path) \"no\" \"yes\")]])
+    [[(if (or (member (directory-file-name default-directory) load-path)\
+              (member (file-name-as-directory default-directory) load-path))\
+         \"no\" \"yes\")]])
   if test "$valid_build_dir" = "no"; then
     AC_MSG_ERROR([Build directory inside load-path!  Aborting!])
   else
