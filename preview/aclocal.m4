@@ -146,7 +146,9 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
     [if test ${EMACS_FLAVOR} = xemacs; then
       AC_MSG_CHECKING([for XEmacs package directory])
       EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
-        [['${datadir}' '${libdir}' "${emacsprefix}"]],
+        [['${datadir}/xemacs/xemacs-packages' \
+	  '${libdir}/xemacs/xemacs-packages' \
+          '${datadir}' '${libdir}' "${emacsprefix}"]],
         [[(list \"xemacs/site-packages\" \"xemacs/xemacs-packages\"
                 \"site-packages\" \"xemacs-packages\")]],
         [[(append late-packages last-packages early-packages)]])
