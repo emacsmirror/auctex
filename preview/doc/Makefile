@@ -11,9 +11,9 @@ preview-latex_toc.html: preview-latex.texi
 
 preview-latex.dvi: preview-latex.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
-        -texindex preview-latex.ky
-        -texindex preview-latex.fn
-        -texindex preview-latex.vr
+	-texindex preview-latex.ky
+	-texindex preview-latex.fn
+	-texindex preview-latex.vr
 	-texindex preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 
