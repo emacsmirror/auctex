@@ -1,5 +1,9 @@
 2002-11-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.4
+
+	* doc/faq.texi: Various updates.
+
 	* doc/install.texi: Some cosmetic changes and version info
 	updates.
 
