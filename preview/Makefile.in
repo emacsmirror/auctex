@@ -18,6 +18,7 @@ datadir = @datadir@
 texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
 previewdocdir = @previewdocdir@
+packagedir = @packagedir@
 AUCTEXDIR = @AUCTEXDIR@
 TEXMFGEN = @TEXMFGEN@
 
@@ -61,7 +62,9 @@ install-el: $(LISP_OBJS)
 	  $(INSTALL_DATA) $$x $(lispdir) ; \
 	  echo " $(INSTALL_DATA) $${x}c $(lispdir)" ; \
 	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
-	done
+	done; \
+	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES); \
+
 
 install-texmf: $(TEXMFGEN) install-texmf-doc
 	-mkdir -p $(previewtexmfdir)
