@@ -25,6 +25,8 @@ INSTALL_DATA=@INSTALL_DATA@
 
 all: preview.sty prauctex.def prauctex.cfg preview.drv \
    preview-mk.ins preview.dvi $(LISP_OBJS) install-hint
+
+doc:
 	(cd doc ; $(MAKE) all)
 
 install-hint:
@@ -33,7 +35,9 @@ install-hint:
 	@echo "Now, run \"make install\" as root, or whatever user has permissions"
 	@echo "to write to the install directory."
 
-install: install-texmf install-el use-hint
+install: install-texmf install-el install-docs use-hint
+
+install-docs:
 	(cd doc ; $(MAKE) install)
 
 use-hint:

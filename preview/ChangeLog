@@ -1,3 +1,8 @@
+2002-02-18  Alan Shutko  <ats@acm.org>
+
+	* Makefile.in (all): Split out docs target so install-hint is
+	still last.  Ditto install.
+
 2002-02-18  David Kastrup  <David.Kastrup@t-online.de>
 
 	* TODO: Add a few suggestions and throw out what has already been
