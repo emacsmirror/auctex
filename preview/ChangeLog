@@ -1,3 +1,8 @@
+2002-09-06  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/faq.texi: Explain about 'Preview-LaTeX exited abnormally
+	with code 1' message
+
 2002-09-02  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-xemacs.el (preview-mode-setup): Make behaved startup in
