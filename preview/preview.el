@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.211 2004-07-15 03:12:59 dakas Exp $
+;; $Id: preview.el,v 1.212 2004-07-27 19:34:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -77,6 +77,10 @@ preview-latex's bug reporting commands will probably not work.")))
   :group 'preview
   :prefix "preview-")
 
+(defgroup preview-dvipng nil "Preview's Dvipng renderer."
+  :group 'preview
+  :prefix "preview-")
+
 (defgroup preview-appearance nil "Preview image appearance."
   :group 'preview
   :prefix "preview-")
@@ -90,19 +94,19 @@ preview-latex's bug reporting commands will probably not work.")))
      (open preview-eps-open)
      (place preview-eps-place))
     (dvipng
-     (open preview-dvipng-open)
+     (open preview-gs-open preview-dvipng-process-setup)
      (place preview-gs-place)
      (close preview-dvipng-close))
-    (png (open preview-gs-open png ("-sDEVICE=png16m"))
+    (png (open preview-gs-open)
 	 (place preview-gs-place)
 	 (close preview-gs-close))
-    (jpeg (open preview-gs-open jpeg ("-sDEVICE=jpeg"))
+    (jpeg (open preview-gs-open)
 	  (place preview-gs-place)
 	  (close preview-gs-close))
-    (pnm (open preview-gs-open pbm ("-sDEVICE=pnmraw"))
+    (pnm (open preview-gs-open)
 	  (place preview-gs-place)
 	  (close preview-gs-close))
-    (tiff (open preview-gs-open tiff ("-sDEVICE=tiff12nc"))
+    (tiff (open preview-gs-open)
 	  (place preview-gs-place)
 	  (close preview-gs-close)))
   "Define functions for generating images.
@@ -128,6 +132,20 @@ of Ghostscript, or by your copy of Emacs."
 					 (repeat :tag "Additional \
 function args" :inline t sexp))
 		       :options (open place close))))
+
+(defcustom preview-gs-image-type-alist
+  '((png png "-sDEVICE=png16m")
+    (dvipng png "-sDEVICE=png16m")
+    (jpeg jpeg "-sDEVICE=jpeg")
+    (pnm pbm "-sDEVICE=pnmraw")
+    (tiff tiff "-sDEVICE=tiff12nc"))
+  "*Alist of image types and corresponding GhostScript options.
+The `dvipng' entry really specifies the fallback device when
+images can't be processed by dvipng."
+  :group 'preview-gs
+  :type '(repeat (list :tag nil (symbol :tag "preview image-type")
+		       (symbol :tag "Emacs image-type")
+		       (repeat :inline t :tag "GhostScript options" string))))
 
 (defcustom preview-image-type 'png
   "*Image type to be used in images."
@@ -418,7 +436,7 @@ be consulted recursively.")
 (defcustom preview-dvipng-command
   "dvipng %d -o %m/prev%03d.png"
   "*Command used for converting to separate PNG images."
-  :group 'preview-latex
+  :group 'preview-dvipng
   :type 'string)
 
 (defcustom preview-dvips-command
@@ -575,21 +593,18 @@ Gets the usual PROCESS and STRING parameters, see
       (set-buffer-modified-p (buffer-modified-p))
       process)))
 
-(defun preview-gs-open (imagetype gs-optionlist &optional setup)
+(defun preview-gs-open (&optional setup)
   "Start a GhostScript conversion pass.
-IMAGETYPE specifies the Emacs image type for the generated
-files, GS-OPTIONLIST is a list of options to pass into
-GhostScript for getting that sort of image type, for
-example \"-sDEVICE=png256\" will go well with 'png.
 SETUP may contain a parser setup function."
-  (unless (preview-supports-image-type imagetype)
-    (error "This Emacs lacks '%s image support" imagetype))
-  (setq preview-gs-image-type imagetype)
-  (setq preview-gs-command-line (append
-				 preview-gs-options
-				 gs-optionlist))
-  (setq preview-gs-init-string
-	(format "\
+  (let ((image-info (assq preview-image-type preview-gs-image-type-alist)))
+    (setq preview-gs-image-type (nth 1 image-info))
+    (unless (preview-supports-image-type preview-gs-image-type)
+      (error "This Emacs lacks '%s image support" preview-gs-image-type))
+    (setq preview-gs-command-line (append
+				   preview-gs-options
+				   (nthcdr 2 image-info))
+	  preview-gs-init-string
+	  (format "\
 /.preview-BP currentpagedevice/BeginPage get dup \
 null eq {pop{pop}bind}if def \
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
@@ -599,10 +614,10 @@ null eq {pop{pop}bind}if def \
 \(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
 stopped{handleerror quit}if count 1 ne{quit}if \
 aload pop restore<</OutputFile%s>>setpagedevice}bind def "
-		(preview-gs-color-string preview-colors)
-		(preview-ps-quote-filename null-device t)))
-  (preview-gs-queue-empty)
-  (preview-parse-messages (or setup #'preview-gs-dvips-process-setup)))
+		  (preview-gs-color-string preview-colors)
+		  (preview-ps-quote-filename null-device t)))
+    (preview-gs-queue-empty)
+    (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
 
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
@@ -661,27 +676,31 @@ Pure borderless black-on-white will return an empty string."
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
+  (setq preview-gs-command-line (append
+				 preview-gs-command-line
+				 (list (preview-gs-resolution
+					(preview-hook-enquiry preview-scale)
+					(car preview-resolution)
+					(cdr preview-resolution)))))
   (if preview-parsed-pdfoutput
       (preview-pdf2dsc-process-setup)
-    (setq preview-gs-command-line (append
-				   preview-gs-command-line
-				   (list (preview-gs-resolution
-					  (preview-hook-enquiry preview-scale)
-					  (car preview-resolution)
-					  (cdr preview-resolution)))))
     (let ((process (preview-start-dvips preview-fast-conversion)))
       (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
       (list process (current-buffer) TeX-active-tempdir preview-ps-file
-	    preview-image-type))))
-
-(defun preview-dvipng-open ()
-  "Place everything nicely for direct PNG rendering."
-  (preview-gs-open 'png '("-sDEVICE=png256") #'preview-dvipng-process-setup))
+	    preview-gs-image-type))))
 
 (defun preview-dvipng-process-setup ()
   "Set up dvipng process for conversion."
+  (setq preview-gs-command-line (append
+				 preview-gs-command-line
+				 (list (preview-gs-resolution
+					(preview-hook-enquiry preview-scale)
+					(car preview-resolution)
+					(cdr preview-resolution)))))
   (if preview-parsed-pdfoutput
       (preview-pdf2dsc-process-setup)
+    (unless (preview-supports-image-type 'png)
+      (error "This Emacs lacks 'png image support"))
     (let ((process (preview-start-dvipng)))
       (setq TeX-sentinel-function #'preview-dvipng-sentinel)
       (list process (current-buffer) TeX-active-tempdir t
@@ -689,17 +708,10 @@ Pure borderless black-on-white will return an empty string."
 
 
 (defun preview-pdf2dsc-process-setup ()
-  (setq preview-gs-command-line (append
-				 preview-gs-command-line
-				 (list (preview-gs-resolution
-					(preview-hook-enquiry preview-scale)
-					(car preview-resolution)
-					(cdr preview-resolution)))))
   (let ((process (preview-start-pdf2dsc)))
     (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
     (list process (current-buffer) TeX-active-tempdir preview-ps-file
-	  (if (eq preview-image-type 'dvipng) 'png
-	    preview-image-type))))
+	  (nth 1 (assq preview-gs-image-type preview-gs-image-type-alist)))))
 
 (defun preview-dvips-abort ()
   "Abort a Dvips run."
@@ -2285,17 +2297,27 @@ later while in use."
      "\\` *\\(-?[0-9]+ *\\)\\{4\\}\\'" 0 preview-parse-tightpage)))
 
 (defun preview-error-quote (string)
-  "Turn STRING with potential ^^ sequences into a regexp."
-  (let (output)
-    (while (string-match "\\^\\^\\([@-_?]\\|[8-9a-f][0-9a-f]\\)" string)
+  "Turn STRING with potential ^^ sequences into a regexp.
+To preserve sanity, additional ^ prefixes are matched literally,
+so the character represented by ^^^ preceding extended characters
+will not get matched, usually."
+  (let (output case-fold-search)
+    (while (string-match "\\^\\{2,\\}\\(\\([@-_?]\\)\\|[8-9a-f][0-9a-f]\\)"
+			 string)
       (setq output
-	    (concat output "\\(?:" (regexp-quote (match-string 0 string))
+	    (concat output
+		    (regexp-quote (substring string
+					     0
+					     (- (match-beginning 1) 2)))
+		    "\\(?:" (regexp-quote
+			     (substring string
+					(- (match-beginning 1) 2)
+					(match-end 0)))
 		    "\\|"
-		    (regexp-quote
-		     (char-to-string
-		      (if (= (match-end 0) 3)
-			  (- (aref string 2) 64)
-			(string-to-number (match-string 1 string) 16))))
+		    (char-to-string
+		     (if (match-beginning 2)
+			 (logxor (aref string (match-beginning 2)) 64)
+		       (string-to-number (match-string 1 string) 16)))
 		    "\\)")
 	    string (substring string (match-end 0))))
     (concat output (regexp-quote string))))
@@ -2440,8 +2462,8 @@ name(\\([^)]+\\))\\)\\|\
 			  (save-excursion (run-hooks 'slow-hook))
 			(error (preview-log-error err "Translation hook")))
 		      (push (vector file (+ line offset)
-				  string after-string
-				  snippet box counters) parsestate)))
+				    string after-string
+				    snippet box counters) parsestate)))
 		;; else normal error message
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
@@ -3007,7 +3029,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.211 $"))
+	(rev "$Revision: 1.212 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3018,7 +3040,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-15 03:12:59 $"))
+    (let ((date "$Date: 2004-07-27 19:34:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
