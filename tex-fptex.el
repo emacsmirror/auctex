@@ -40,51 +40,54 @@
       (concat (parent-directory (invocation-directory))
 	      "/site-lisp/auctex"))
 
-;; The fpTeX commands.
-(setq TeX-command-list
-  (list (list "TeX" "tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
-              (list 'plain-tex-mode))
-	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
-              (list 'latex-mode))
-	(list "PDFLaTeX" "pdflatex %S \\nonstopmode\\input{%t}"
-	      'TeX-run-TeX nil (list 'latex-mode))
-	(list "AmSTeX" "amstex %S \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
-              (list 'ams-tex-mode))
-	(list "View" "%v" 'TeX-run-command t t)
-	(list "View PS" "gsview32 %f" 'TeX-run-command t t)
-	(list "View PDF" "start %s.pdf" 'TeX-run-command t t)
-	(list "Print" "dvips %d" 'TeX-run-command t t)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
-	(list "Index" "makeindex %s" 'TeX-run-command nil t)
-	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
-	(list "Other" "" 'TeX-run-command t t)))
+(unless (get 'TeX-command-list 'saved-value)
+  (setq TeX-command-list
+	(list (list "TeX" "tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
+		    (list 'plain-tex-mode))
+	      (list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
+		    (list 'latex-mode))
+	      (list "PDFLaTeX" "pdflatex %S \\nonstopmode\\input{%t}"
+		    'TeX-run-TeX nil (list 'latex-mode))
+	      (list "AmSTeX" "amstex %S \\nonstopmode\\input{%t}"
+		    'TeX-run-TeX nil (list 'ams-tex-mode))
+	      (list "View" "%v" 'TeX-run-command t t)
+	      (list "View PS" "gsview32 %f" 'TeX-run-command t t)
+	      (list "View PDF" "start %s.pdf" 'TeX-run-command t t)
+	      (list "Print" "dvips %d" 'TeX-run-command t t)
+	      (list "File" "dvips %d -o %f " 'TeX-run-command t t)
+	      (list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
+	      (list "Index" "makeindex %s" 'TeX-run-command nil t)
+	      (list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	      (list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
+	      (list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	      (list "Other" "" 'TeX-run-command t t))))
 
-(setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")
-		       ("^landscape$" "windvi %d -qpaper a4r -s 4")
-		       ("^epsf$" "gsview32 %f")
-		       ("." "windvi %d")))
+(unless (get 'TeX-view-style 'saved-value)
+  (setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")
+			 ("^landscape$" "windvi %d -qpaper a4r -s 4")
+			 ("^epsf$" "gsview32 %f")
+			 ("." "windvi %d"))))
 
-(setq TeX-output-view-style
-      '(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview32 %f")
-	("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
-	 "windvi %d %dS -qpaper a5r -s 0")
-	("^dvi$" "^a5\\(?:comb\\|paper\\)$" "windvi %d %dS -qpaper a5")
-	("^dvi$" "^b5paper$" "windvi %d %dS -qpaper b5")
-	("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-	 "dvips -t landscape %d -o && gsview32 %f")
-	("^dvi$" "^letterpaper$" "windvi %d %dS -qpaper us")
-	("^dvi$" "^legalpaper$" "windvi %d %dS -qpaper legal")
-	("^dvi$" "^executivepaper$" "windvi %d %dS -qpaper 7.25x10.5in")
-	("^dvi$" "^landscape$" "windvi %d %dS -qpaper a4r")
-	("^dvi$" "." "windvi %d %dS")
-	("^pdf$" "." "AcroRd32 %o")
-	("^html?$" "." "mozilla %o")))
+(unless (get 'TeX-output-view-style 'saved-value)
+  (setq TeX-output-view-style
+	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview32 %f")
+	  ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
+	   "windvi %d %dS -qpaper a5r -s 0")
+	  ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "windvi %d %dS -qpaper a5")
+	  ("^dvi$" "^b5paper$" "windvi %d %dS -qpaper b5")
+	  ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
+	   "dvips -t landscape %d -o && gsview32 %f")
+	  ("^dvi$" "^letterpaper$" "windvi %d %dS -qpaper us")
+	  ("^dvi$" "^legalpaper$" "windvi %d %dS -qpaper legal")
+	  ("^dvi$" "^executivepaper$" "windvi %d %dS -qpaper 7.25x10.5in")
+	  ("^dvi$" "^landscape$" "windvi %d %dS -qpaper a4r")
+	  ("^dvi$" "." "windvi %d %dS")
+	  ("^pdf$" "." "AcroRd32 %o")
+	  ("^html?$" "." "mozilla %o"))))
 
 ;; WinDVI does not support source specials?
-(setq TeX-source-specials-viewer-flags "")
+(unless (get 'TeX-source-specials-viewer-flags 'saved-value)
+  (setq TeX-source-specials-viewer-flags ""))
 
 (provide 'tex-fptex)
 

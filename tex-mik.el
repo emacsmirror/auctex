@@ -30,32 +30,35 @@
 
 ;;; Code:
 
-;; The MikTeX commands.
-(setq TeX-command-list
-  (list (list "TeX" "tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
-              (list 'plain-tex-mode))
-	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
-              (list 'latex-mode))
-	(list "PDFLaTeX" "pdflatex %S \\nonstopmode\\input{%t}"
-	      'TeX-run-TeX nil (list 'latex-mode))
-	(list "View" "%v" 'TeX-run-discard nil t)
-	(list "Print" "gsview32 %f" 'TeX-run-command t t)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t t)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
-	(list "Index" "makeindex %s" 'TeX-run-command nil t)
-	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Other" "" 'TeX-run-command t t)))
+(unless (get 'TeX-command-list 'saved-value)
+  (setq TeX-command-list
+	(list (list "TeX" "tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
+		    (list 'plain-tex-mode))
+	      (list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
+		    (list 'latex-mode))
+	      (list "PDFLaTeX" "pdflatex %S \\nonstopmode\\input{%t}"
+		    'TeX-run-TeX nil (list 'latex-mode))
+	      (list "View" "%v" 'TeX-run-discard nil t)
+	      (list "Print" "gsview32 %f" 'TeX-run-command t t)
+	      (list "File" "dvips %d -o %f " 'TeX-run-command t t)
+	      (list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
+	      (list "Index" "makeindex %s" 'TeX-run-command nil t)
+	      (list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	      (list "Other" "" 'TeX-run-command t t))))
 
-(setq TeX-view-style '(("^epsf$" "gsview32 %f")
-		       ("." "yap -1 %dS %d")))
+(unless (get 'TeX-view-style 'saved-value)
+  (setq TeX-view-style '(("^epsf$" "gsview32 %f")
+			 ("." "yap -1 %dS %d"))))
 
-(setq TeX-output-view-style
-      '(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview %f")
-	("^dvi$" "." "yap -1 %dS %d")
-	("^pdf$" "." "AcroRd32 %o")
-	("^html?$" "." "mozilla %o")))
+(unless (get 'TeX-output-view-style 'saved-value)
+  (setq TeX-output-view-style
+	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview %f")
+	  ("^dvi$" "." "yap -1 %dS %d")
+	  ("^pdf$" "." "AcroRd32 %o")
+	  ("^html?$" "." "mozilla %o"))))
 
-(setq TeX-source-specials-viewer-flags "-s %n%b")
+(unless (get 'TeX-source-specials-viewer-flags 'saved-value)
+  (setq TeX-source-specials-viewer-flags "-s %n%b"))
 
 (provide 'tex-mik)
 
