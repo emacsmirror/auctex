@@ -1,5 +1,7 @@
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* TODO: Throw out stuff already implemented.
+
 	* preview.el (preview-prefer-TeX-bb): Doc cosmetic.
 	(preview-fast-conversion): Now defaults to on.
 	(preview-fast-dvips-command): remove -tletter option, we do this
