@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6g
+;; Version: 9.6h
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -258,6 +258,8 @@ Full documentation will be available after autoloading the function."
 (autoload 'japanese-slitex-mode "tex-jp" no-doc t)
 (autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
+
+(autoload 'multi-prompt "multi-prompt" no-doc nil)
 
 ;;; Portability.
 
