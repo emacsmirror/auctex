@@ -14,7 +14,8 @@ INSTALL_DATA=@INSTALL_DATA@
 all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: preview-latex.texi install.texi readme.texi \
-	copying.texi problems.texi preview-dtxdoc.texi macros.texi
+	copying.texi problems.texi preview-dtxdoc.texi macros.texi \
+	todo.texi 
 	makeinfo --html preview-latex.texi
 
 html-docs: preview-latex/index.html
@@ -23,7 +24,7 @@ preview-dtxdoc.texi: ../preview.dtx preview-dtxdoc.pl
 	-$(PERL) preview-dtxdoc.pl < ../preview.dtx > preview-dtxdoc.texi
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi macros.texi
+	problems.texi preview-dtxdoc.texi macros.texi todo.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 	-$(TEXINDEX) preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
@@ -32,7 +33,7 @@ preview-latex.ps: preview-latex.dvi
 	$(DVIPS) preview-latex.dvi -o preview-latex.ps
 
 preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
-	problems.texi preview-dtxdoc.texi macros.texi
+	problems.texi preview-dtxdoc.texi macros.texi todo.texi
 	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi macros.texi
@@ -47,7 +48,12 @@ PROBLEMS: problems.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		problems.texi --output PROBLEMS
 
+TODO: todo.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		todo.texi --output TODO
+
 install: preview-latex.info
+	-mkdir -p $(infodir)
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
@@ -55,4 +61,4 @@ clean:
 	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.dvi *.info *.html *.tmp \
-		INSTALL README PROBLEMS
+		INSTALL README PROBLEMS TODO

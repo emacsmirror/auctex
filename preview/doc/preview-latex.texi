@@ -98,6 +98,7 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 * Simple customization::        To make it fit in.
 * Known problems::              When things go wrong.
 * For advanced users::          Internals and more customizations.
+* ToDo::                        Future development.
 * License::                     GPL.
 * Index::                       A menu of many topics.             
 @end menu
@@ -259,7 +260,7 @@ regenerate the preview (via e.g., @kbd{C-c C-p C-p}).
 @c also used as PROBLEMS file
 @include problems.texi
 
-@node For advanced users, License, Known problems, top
+@node For advanced users, ToDo, Known problems, top
 @chapter For advanced users
 
 This package consists of two parts. A @LaTeX{} style that splits the
@@ -462,7 +463,12 @@ manual disabling of your favorite macro in
 @code{preview-default-preamble}, which is customizable in the Preview
 Latex group.
 
-@node License, Index, For advanced users, top
+@node ToDo, License, For advanced users, top
+@c Also used as TODO: in separate file
+@appendix ToDo
+@include todo.texi
+
+@node License, Index, ToDo, top
 @c Not to be changed often, I think: in separate file.
 @appendix License
 @include copying.texi
