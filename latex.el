@@ -4115,10 +4115,14 @@ the last entry in the menu."
 	(list "Show/Hide"
 	      ["Macro Fold Mode" TeX-fold-mode
 	       :style toggle :selected TeX-fold-mode]
-	      ["Hide Macros" TeX-fold-buffer
+	      ["Hide All Macros" TeX-fold-buffer
 	       :active TeX-fold-mode :keys "C-c C-o C-o"]
-	      ["Show Macros" TeX-fold-remove-all-overlays
+	      ["Show All Macros" TeX-fold-remove-all-overlays
 	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      ["Hide Current Macro" TeX-fold-macro
+	       :active TeX-fold-mode :keys "C-c C-o C-c"]
+	      ["Show Current Macro" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-e"]
 	      "-"
 	      ["Hide Environment" LaTeX-hide-environment t]
 	      ["Show Environment" LaTeX-show-environment t])
