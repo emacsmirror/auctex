@@ -1,3 +1,11 @@
+2005-03-28  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Change contact info.
+
+	* doc/intro.texi (Introduction): Change contact info.
+
+	* doc/auctex.texi (top): Change contact info.
+
 2005-03-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-match-simple-command): New function.
