@@ -5,6 +5,10 @@
 
 ;;; @@ Variables
 
+(defvar japanese-LaTeX-default-style "j-article"
+  "*Default when creating new Japanese documents.")
+(make-variable-buffer-local 'japanese-LaTeX-default-style)
+
 (defvar japanese-LaTeX-style-list
   '(("jbook")
     ("j-book")
@@ -14,6 +18,7 @@
     ("jreport")
     ("j-report"))
   "*List of Japanese document styles.")
+(make-variable-buffer-local 'japanese-LaTeX-style-list)
 
 ;;; @@ Japanese LaTeX initialization
 
@@ -35,6 +40,7 @@
 (defun japanese-LaTeX-initialization ()
   "Initialization for Japanese LaTeX."
   (japanese-TeX-initialization)
+  (setq LaTeX-default-style japanese-LaTeX-default-style)
   (setq LaTeX-style-list japanese-LaTeX-style-list)
   (setq TeX-command-BibTeX "jBibTeX"))
 
