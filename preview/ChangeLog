@@ -1,3 +1,16 @@
+2003-01-30  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/Makefile.in: 
+	* dvipng/configure.ac: Fix includes and linking
+
+	* dvipng/draw.c: 
+	* dvipng/font.c: 
+	* dvipng/pk.c:
+	* dvipng/vf.c: 
+	* dvipng/dvipng.h (font_entry): remove unnamed union
+
+	* dvipng/dvipng.h: simplify includes
+
 2003-01-27  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/problems.texi (Emacs problems): CVS Emacs supports PNG now.
