@@ -178,9 +178,10 @@ math.
 
 Notice however that usage of x-symbol may slow down the parsing pass of
 @previewlatex{} considerably, so if you find the performance lacking on
-large documents, try disabling it.  Future versions of @previewlatex{}
-and x-symbol will incorporate special interfaces in order to alleviate
-this problem.
+large documents, try the patch in @file{patches/x-symbol.patch} which
+yields some improvement. If it still is unstatisfactory, try disabling
+x-symbol.  Future versions of @previewlatex{} and x-symbol will
+incorporate special interfaces in order to alleviate this problem.
 
 @node Middle-clicks paste instead of toggling,  , x-symbol interoperation, Known problems
 @section Middle-clicks paste instead of toggling
