@@ -465,11 +465,6 @@ Full documentation will be available after autoloading the function."
 
 (when (featurep 'xemacs)
 
-  (defadvice popup-mode-menu (before LaTeX-update activate)
-    "Run `LaTeX-menu-update' before showing menu."
-    (and (fboundp 'LaTeX-menu-update)
-	 (LaTeX-menu-update)))
-
   (defun TeX-mark-active ()
     ;; In Lucid (mark) returns nil when not active.
     (if zmacs-regions 
@@ -501,7 +496,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.306 $"))
+	(rev "$Revision: 5.307 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +511,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-11-16 14:09:42 $"))
+    (let ((date "$Date: 2003-11-28 13:21:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

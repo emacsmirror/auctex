@@ -2892,7 +2892,7 @@ the last entry in the menu."
 	    (if (= rest outer) (setq inner (1+ inner)))))
 	result))))
 
-(defun LaTeX-menu-update ()
+(defun LaTeX-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
   (or (not (eq major-mode 'latex-mode))
       (null LaTeX-menu-changed)
@@ -2912,16 +2912,21 @@ the last entry in the menu."
 			  (LaTeX-split-long-menu
 			   (mapcar 'LaTeX-environment-modify-menu-entry
 				   (LaTeX-environment-list))))
-	(message "Updating...done"))))
-
-(add-hook 'activate-menubar-hook 'LaTeX-menu-update)
+	(message "Updating...done")
+	(and menu (easy-menu-return-item LaTeX-mode-menu menu)))))
 
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "LaTeX"
-	(list LaTeX-environment-menu-name "Bug.")
-	(list LaTeX-environment-modify-menu-name "Bug.")
+	(list LaTeX-environment-menu-name
+	      :filter (lambda (ignored)
+			(LaTeX-menu-update LaTeX-environment-menu-name))
+	      "Bug.")
+	(list LaTeX-environment-modify-menu-name
+	      :filter (lambda (ignored)
+			(LaTeX-menu-update LaTeX-environment-modify-menu-name))
+	      "Bug.")
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]

@@ -1,3 +1,10 @@
+2003-11-28  David Kastrup  <dak@gnu.org>
+
+	* tex.el (LaTeX-update): Advice removed because of the following:
+
+	* latex.el (LaTeX-menu-update): Now called via :filter predicate
+	of menus.
+
 2003-11-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/paralist.el: Removed coding cookie in first line.
