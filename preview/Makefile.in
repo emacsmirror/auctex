@@ -1,9 +1,5 @@
 
 @SET_MAKE@
-LATEX=@LATEX@
-TEX=@TEX@
-TEXHASH=@TEXHASH@
-
 EMACS=@EMACS@
 ICONFORM=@ICONFORM@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
@@ -21,12 +17,8 @@ prefix = @prefix@
 lispdir = @lispdir@
 icondir = @icondir@
 datadir = @datadir@
-texmfdir = @texmfdir@
-previewtexmfdir = @previewtexmfdir@
-previewdocdir = @previewdocdir@
 packagedir = @packagedir@
 AUCTEXDIR = @AUCTEXDIR@
-TEXMFGEN = @TEXMFGEN@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -36,7 +28,8 @@ all: texmf elisp docs install-hint
 
 elisp: $(LISP_OBJS)
 
-texmf: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi
+texmf: 
+	(cd latex ; $(MAKE) all)
 
 docs:
 	(cd doc ; $(MAKE) all)
@@ -79,34 +72,8 @@ install-icons: $(ICON_SOURCES)
 	  $(INSTALL_DATA) $$x $(icondir) ; \
 	done
 
-install-texmf: $(TEXMFGEN) install-texmf-doc
-	-$(MKINSTALLDIRS) $(previewtexmfdir)
-	for x in $(TEXMFGEN) ; do \
-	  echo " $(INSTALL_DATA) $$x $(previewtexmfdir)" ; \
-	  $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
-	done
-	-$(TEXHASH) $(texmfdir)
-
-install-texmf-doc: preview.dvi
-	-$(MKINSTALLDIRS) $(previewdocdir)
-	$(INSTALL_DATA) preview.dvi $(previewdocdir)
-
-preview-mk.ins: preview.dtx bootstrap.ins
-	$(TEX) '\nonstopmode \input bootstrap.ins'
-
-#only for standalone preview.sty package:
-preview.ins: preview.dtx
-	$(TEX) '\nonstopmode\def\jobname{.ins}\input docstrip ' \
-	'\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}' \
-	'\endbatchfile'
-
-$(TEXMFGEN) preview.drv: preview.dtx preview-mk.ins
-	$(TEX) '\nonstopmode \input preview-mk.ins'
-
-preview.dvi: preview.drv preview.dtx
-	$(LATEX) '\nonstopmode \input preview.drv'
-	$(LATEX) '\nonstopmode \input preview.drv'
-	$(LATEX) '\nonstopmode \input preview.drv'
+install-texmf:
+	(cd latex ; $(MAKE) install)
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
@@ -115,14 +82,12 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 	done
 
 clean:
-	rm -f *.elc *~ *.aux *.dvi *.drv
-	rm -f docstrip.log preview.ins preview.log preview.drv preview.sty \
-		prauctex.def prauctex.cfg preview.aux preview.dvi circ.log \
-		circ.dvi circ.aux texput.log testdocstrip.tex \
-		testdocstrip.log bootstrap.log preview-mk.ins preview-mk.log
+	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex 
+	rm -rf *.prv 
 	(cd doc ; $(MAKE) clean)
+	(cd latex ; $(MAKE) clean)
 
 distclean:
 	make clean
 	rm -f config.log config.cache config.status
-	rm -f Makefile
+	rm -f Makefile */Makefile
