@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.205 2004-04-11 18:34:01 dakas Exp $
+;; $Id: preview.el,v 1.206 2004-04-11 19:18:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -633,14 +633,18 @@ Makes a string of options suitable for passing to dvipng.
 Pure borderless black-on-white will return an empty string."
   (let
       ((bg (aref colors 0))
-       (fg (aref colors 1)))
+       (fg (aref colors 1))
+       (mask (aref colors 2))
+       (border (aref colors 3)))
     (concat
      (and bg
 	  (format "--bg 'rgb %s' "
 		  (mapconcat #'preview-gs-color-value bg " ")))
      (and fg
-	  (format "--fg 'rgb %s'"
-		  (mapconcat #'preview-gs-color-value fg " "))))))
+	  (format "--fg 'rgb %s' "
+		  (mapconcat #'preview-gs-color-value fg " ")))
+     (and mask
+	  (format "--bd %d" (max 1 border))))))
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
@@ -1101,7 +1105,7 @@ given as ANSWER."
 				  (car (last (car oldfile)))
 				(car oldfile)))))
 		   (if preview-parsed-tightpage
-		       "/PageSize[1 1]"
+		       ""
 		     (format "/PageSize[%g %g]/PageOffset[%g \
 %g[1 1 dtransform exch]{0 ge{neg}if exch}forall]"
 			     (- (aref bbox 2) (aref bbox 0))
@@ -2566,7 +2570,7 @@ is done in source buffer specified by BUFF."
   (let* ((file preview-gs-file)
 	 tempdir
 	 (colors (preview-dvipng-color-string preview-colors))
-	 (resolution (format " -D%d " (* 3 (car preview-resolution)
+	 (resolution (format " -D%d " (* (car preview-resolution)
 					 (preview-hook-enquiry preview-scale))))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
@@ -2953,7 +2957,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.205 $"))
+	(rev "$Revision: 1.206 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2964,7 +2968,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-11 18:34:01 $"))
+    (let ((date "$Date: 2004-04-11 19:18:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
