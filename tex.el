@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.37 1994-11-28 02:58:19 amanda Exp $
+;; Version: $Id: tex.el,v 5.38 1994-12-02 09:05:44 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -390,7 +390,6 @@ The value is actually the tail of LIST whose car is ELT."
   "Define SYMBOL to be a menu for keymaps MAPS.
 DOC is the documentation string, and MENU is a Lucid style menu."
   (` (progn
-       (require 'auc-menu)		;For `easy-menu-do-define'.
        (defvar (, symbol) nil (, doc))
        (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
 
