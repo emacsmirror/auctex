@@ -2,6 +2,7 @@
 
 	* preview.el (preview-parse-messages): Another addition to the
 	fast location hook semantics.
+	(preview-parse-messages): one last change for Christoph.
 
 	* prv-emacs.el (preview-add-urgentization): Cosmetic change.
 
