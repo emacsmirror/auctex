@@ -1092,12 +1092,12 @@ This is necessary since index entries may contain commands and stuff.")
      (2 3 1) LaTeX-auto-style)
     ;; \DeclareRobustCommand{<cmd>}[<num>][<default>]{<definition>},
     ;; \DeclareRobustCommand*{<cmd>}[<num>][<default>]{<definition>}
-    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}\
+    ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?\
 \\[\\([0-9]+\\)\\]\\[\\([^\n\r]*?\\)\\]"
      (1 2 3) LaTeX-auto-optional)
-    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}\\[\\([0-9]+\\)\\]"
+    ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?\\[\\([0-9]+\\)\\]"
      (1 2) LaTeX-auto-arguments)
-    ("\\\\DeclareRobustCommand\\*?{\\\\\\([A-Za-z]+\\)}" 1 TeX-auto-symbol))
+    ("\\\\DeclareRobustCommand\\*?{?\\\\\\([A-Za-z]+\\)}?" 1 TeX-auto-symbol))
   "List of regular expressions matching macros in LaTeX classes and packages.")
 
 (defvar LaTeX-auto-regexp-list
