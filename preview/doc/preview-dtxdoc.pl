@@ -15,6 +15,7 @@ $noindent="";
 $quote="";
 MAIN: while (<STDIN>) {
     s/^%//;
+    s/\\%/%/g;
 
     # Text-substitution macros
     s/AUC~\\TeX[\\ ]?/\@AUCTeX{}/g;
@@ -22,6 +23,7 @@ MAIN: while (<STDIN>) {
     s/\\TeX[\\ ]?/\@TeX{}/g;
     s/EPS/\@acronym{EPS}/g;
     s/DVI/\@acronym{DVI}/g;
+    s/~/\@w{ }/g;
 
     # Environments
     if (s/\\begin\{quote\}/\n\@example/) { 
