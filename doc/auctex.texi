@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.178 2004-08-13 08:18:50 angeli Exp $
+@c $Id: auctex.texi,v 1.179 2004-08-13 08:43:13 angeli Exp $
 
 @finalout
 @titlepage
@@ -1264,9 +1264,10 @@ the command.
 (@kbd{C-c C-o C-m}) Hide the macro on which point currently is located.
 If the name of the macro is found in @code{TeX-fold-macro-spec-list},
 the respective display string will be shown instead.  If it is not
-found, the default string for unspecified macros will be shown which can
-be configured with the variable
-@code{TeX-fold-unspec-macro-display-string}.
+found, the name of the macro in sqare brackets or the default string for
+unspecified macros (@code{TeX-fold-unspec-macro-display-string}) will be
+shown, depending on the value of the variable
+@code{TeX-fold-unspec-use-name}.
 @end deffn
 
 @deffn Command TeX-fold-env
@@ -1321,13 +1322,20 @@ display string will be ``XXX''.
 @end defopt
 
 @defopt TeX-fold-unspec-macro-display-string
-Display string for macros which are not specified in
+Default display string for macros which are not specified in
 @code{TeX-fold-macro-spec-list}.
 @end defopt
 
 @defopt TeX-fold-unspec-env-display-string
-Display string for environments which are not specified in
+Default display string for environments which are not specified in
 @code{TeX-fold-env-spec-list}.
+@end defopt
+
+@defopt TeX-fold-unspec-use-name
+If non-nil the name of the macro or environment surrounded by square
+brackets is used as display string, otherwise the defaults specified in
+@code{TeX-fold-unspec-macro-display-string} or
+@code{TeX-fold-unspec-env-display-string} respectively.
 @end defopt
 
 @node Outline,  , Folding, Show/Hide
