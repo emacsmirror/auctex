@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.93 2002-04-01 02:56:15 dakas Exp $
+;; $Id: preview.el,v 1.94 2002-04-03 20:34:27 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -412,13 +412,7 @@ Gets the usual PROCESS and STRING parameters, see
       (push process compilation-in-progress)
       (TeX-command-mode-line process)
       (set-buffer-modified-p (buffer-modified-p))
-      process)
-    ))
-
-(defun preview-gs-close (closedata)
-  "Set up the queue accumulated in CLOSEDATA in the TeX run buffer."
-  (preview-gs-queue-empty)
-  (setq preview-gs-queue closedata))
+      process)))
 
 (defun preview-gs-open (imagetype gs-optionlist)
   "Start a GhostScript conversion pass.
@@ -442,29 +436,85 @@ stopped{handleerror quit}if count 1 ne{quit}if \
 aload pop restore}def "
 		(mapconcat #'identity preview-gs-colors " ")))
   (preview-gs-queue-empty)
+  (preview-parse-messages #'preview-gs-dvips-process-setup))
+
+(defun preview-gs-dvips-process-setup ()
+  "Set up Dvips process for conversions via gs."
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (unwind-protect
-	(preview-parse-messages (current-buffer) TeX-active-tempdir
-				preview-ps-file)
+    (list process (current-buffer) TeX-active-tempdir preview-ps-file)))
+
+(defun preview-dvips-abort ()
+  "Abort a Dvips run."
+  (preview-gs-queue-empty)
+  (condition-case nil
+      (delete-file
+       (let ((gsfile preview-gs-file))
+	 (with-current-buffer TeX-command-buffer
+	   (funcall (car gsfile) (cdr gsfile) "dvi"))))
+    (file-error nil))
+  (if preview-ps-file
+      (condition-case nil
+	  (preview-delete-file preview-ps-file)
+	(file-error nil)))
+  (preview-clean-subdir (nth 0 TeX-active-tempdir))
+  (setq TeX-sentinel-function nil))
+
+(defun preview-gs-dvips-sentinel (process command &optional gsstart)
+  "Sentinel function for indirect rendering DviPS process.
+The usual PROCESS and COMMAND arguments for
+`TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
+  (let ((status (process-status process))
+	(gsfile preview-gs-file))
+    (cond ((eq status 'exit)
+	   (delete-process process)
+	   (setq TeX-sentinel-function nil)
+	   (condition-case nil
+	       (delete-file
+		(with-current-buffer TeX-command-buffer
+		  (funcall (car gsfile) (cdr gsfile) "dvi")))
+	     (file-error nil))
+	   (if preview-ps-file
+	       (preview-prepare-fast-conversion))
+	   (if (and gsstart preview-gs-queue)
+	       (preview-gs-restart)))
+	  ((eq status 'signal)
+	   (delete-process process)
+	   (preview-dvips-abort)))))
+
+(defun preview-gs-close (process closedata)
+  "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
+  (setq preview-gs-queue (nconc preview-gs-queue closedata))
+  (if (and process preview-gs-queue)
       (if TeX-process-asynchronous
 	  (if (and (eq (process-status process) 'exit)
 		   (null TeX-sentinel-function))
 	      ;; Process has already finished and run sentinel
-	      (if preview-gs-queue
-		  (preview-gs-restart)
-		(error "No images found"))
-	    process)
+	      (preview-gs-restart)
+	    (setq TeX-sentinel-function (lambda (process command)
+					  (preview-gs-dvips-sentinel
+					   process
+					   command
+					   t))))
 	(TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
-				  process)))))
+				  process))
+  ;; pathological case: no previews although we sure thought so.
+    (when process
+      (delete-process process)
+      (unless TeX-sentinel-function
+	(preview-dvips-abort)))))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
+  (preview-parse-messages #'preview-eps-dvips-process-setup))
+
+(defun preview-eps-dvips-process-setup ()
+  "Set up Dvips process for direct EPS rendering."
   (let* ((TeX-process-asynchronous nil)
 	 (process (preview-start-dvips)))
     (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
-			      process))
-  (preview-parse-messages TeX-active-tempdir preview-scale))
+			      process)
+    (list process TeX-active-tempdir preview-scale)))
   
 (defun preview-dsc-parse (file)
   "Parse DSC comments of FILE.
@@ -522,24 +572,6 @@ object corresponding to the wanted page."
 		  (format "(%s)(r)file dup %s exec "
 			  file
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
-
-(defun preview-gs-dvips-sentinel (process command)
-  "Sentinel function for indirect rendering DviPS process.
-The usual PROCESS and COMMAND arguments for
-`TeX-sentinel-function' apply."
-  (let ((status (process-status process)))
-    (cond ((eq status 'exit)
-	   (delete-process process)
-	   (setq TeX-sentinel-function nil)
-	   (if preview-ps-file
-	       (preview-prepare-fast-conversion))
-	   (if preview-gs-queue
-	       (preview-gs-restart)))
-	  ((eq status 'signal)
-	   (delete-process process)
-	   (preview-gs-queue-empty)
-	   (preview-delete-file preview-ps-file)
-	   (preview-clean-subdir (nth 0 TeX-active-tempdir))))))
 
 (defun preview-gs-urgentize (ov buff)
   "Make a displayed overlay render with higher priority.
@@ -1406,11 +1438,13 @@ later while in use."
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 
-(defun preview-parse-messages (&rest place-opts)
+(defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
-document style for LaTeX.  PLACE-OPTS are passed on to
-the placement hook."
+document style for LaTeX.  OPEN-CLOSURE is called once
+it is certain that we have a valid DVI file, and it has
+to return in its CAR the PROCESS parameter for the CLOSE
+call, and in its CDR the final stuff for the placement hook."
   (with-temp-message "locating previews..."
     (let (TeX-error-file TeX-error-offset snippet box
 	  file line buffer
@@ -1420,8 +1454,9 @@ the placement hook."
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
 	  (run-directory default-directory)
-	  (tempdir TeX-active-tempdir)
-	  closedata
+	  tempdir
+	  close-data
+	  open-data
 	  fast-hook
 	  slow-hook)
       (goto-char (point-min))
@@ -1512,23 +1547,27 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			  file (car TeX-error-file))
 		    (when (and (stringp file) (TeX-match-extension file))
 		      ;; if we are the first time round, check for fast hooks:
-		      (when (null parsestate)
+		      (if (null parsestate)
+			(setq open-data
+			      (save-excursion (funcall open-closure))
+			      tempdir TeX-active-tempdir)
 			(dolist
 			    (lst (if (listp TeX-translate-location-hook)
 				     TeX-translate-location-hook
 				   (list TeX-translate-location-hook)))
-			  (let
-			      ((fast
-				(catch 'TeX-fast-translate-location
-				  (funcall lst)
-				  nil)))
+			  (let ((fast
+				 (and (symbolp lst)
+				      (get lst 'TeX-translate-via-list))))
 			    (if fast
 				(setq fast-hook
 				      (nconc fast-hook (list fast)))
 			      (setq slow-hook
 				    (nconc slow-hook (list lst)))))))
-		      (run-hooks slow-hook)
-		      (push (list file (+ line offset)
+		      (condition-case err
+			  (run-hooks 'slow-hook)
+			(error (message "Error in translation-hook: %s"
+					(error-message-string err))))
+		      (push (vector file (+ line offset)
 				  string after-string
 				  snippet box) parsestate)))
 		;; else normal error message
@@ -1552,85 +1591,87 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 	     ((match-beginning 5)
 	      ;; Hook to change file name
 	      (rplaca TeX-error-file (match-string-no-properties 5)))))
-	(setq parsestate (nreverse parsestate))
-	(condition-case err
-	    (dolist (fun fast-hook)
-	      (setq parsestate (funcall fun parsestate)))
-	  (error (message "Error in translation-hook: %s"
-			  (error-message-string err))))
-	(setq snippet 0)
 	(unwind-protect
-	    (dolist (state parsestate)
-	      (setq lsnippet snippet
-		    file (nth 0 state)
-		    line (nth 1 state)
-		    string (nth 2 state)
-		    after-string (nth 3 state)
-		    snippet (nth 4 state)
-		    box (nth 5 state))
-	      (unless (string= lfile file)
-		(set-buffer (find-file-noselect
-			     (expand-file-name file run-directory)))
-		(setq lfile file))
-	      (save-excursion
-		(save-restriction
-		  (widen)
-		  (if (and (eq (current-buffer) lbuffer)
-			   (<= lline line))
-		      ;; while Emacs does the perfectly correct
-		      ;; thing even when when the line differences
-		      ;; get zero or negative, I don't trust this
-		      ;; to be universally the case across other
-		      ;; implementations.  Besides, if the line
-		      ;; number gets smaller again, we are probably
-		      ;; rereading the file, and restarting from
-		      ;; the beginning will probably be faster.
-		      (progn
-			(goto-char lpoint)
-			(if (/= lline line)
-			    (if (eq selective-display t)
-				(re-search-forward "[\n\C-m]" nil
-						   'end
-						   (- line lline))
-			      (forward-line (- line lline)))))
-		    (goto-line line))
-		  (setq lline line
-			lpoint (point)
-			lbuffer (current-buffer))
-		  (if (search-forward (concat string after-string)
-				      (line-end-position) t)
-		      (backward-char (length after-string))
-		    (search-forward string (line-end-position) t))
-		  (if box
-		      (progn
-			(if (and lstart (= snippet lsnippet))
-			    (setq closedata
-				  (nconc
-				   (preview-place-preview
-				    snippet
-				    (if (/= (point) lstart)
-					(save-excursion
-					  (goto-char lstart)
-					  (preview-back-command)
-					  (point))
-				      lstart)
-				    (point)
-				    (preview-TeX-bb box)
-				    tempdir
-				    place-opts)
-				   closedata))
-			  (message
-			   "End of Preview snippet %d unexpected"
-			   snippet))
-			(setq lstart nil))
-		    ;; else-part of if box
-		    (setq lstart (point))
-		    (unless (= snippet (1+ lsnippet))
-		      (message "Preview snippet %d out of sequence" snippet))))))
-	  (if (zerop lsnippet)
-	      (preview-clean-subdir (nth 0 tempdir)))
+	    (progn
+	      (if (null parsestate)
+		  (error "LaTeX found no preview images"))
+	      (setq parsestate (nreverse parsestate))
+	      (condition-case err
+		  (dolist (fun fast-hook)
+		    (setq parsestate (funcall fun parsestate)))
+		(error (message "Error in translation-hook: %s"
+				(error-message-string err))))
+	      (setq snippet 0)
+	      (dolist (state parsestate)
+		(setq lsnippet snippet
+		      file (aref state 0)
+		      line (aref state 1)
+		      string (aref state 2)
+		      after-string (aref state 3)
+		      snippet (aref state 4)
+		      box (aref state 5))
+		(unless (string= lfile file)
+		  (set-buffer (find-file-noselect
+			       (expand-file-name file run-directory)))
+		  (setq lfile file))
+		(save-excursion
+		  (save-restriction
+		    (widen)
+		    (if (and (eq (current-buffer) lbuffer)
+			     (<= lline line))
+			;; while Emacs does the perfectly correct
+			;; thing even when when the line differences
+			;; get zero or negative, I don't trust this
+			;; to be universally the case across other
+			;; implementations.  Besides, if the line
+			;; number gets smaller again, we are probably
+			;; rereading the file, and restarting from
+			;; the beginning will probably be faster.
+			(progn
+			  (goto-char lpoint)
+			  (if (/= lline line)
+			      (if (eq selective-display t)
+				  (re-search-forward "[\n\C-m]" nil
+						     'end
+						     (- line lline))
+				(forward-line (- line lline)))))
+		      (goto-line line))
+		    (setq lline line
+			  lpoint (point)
+			  lbuffer (current-buffer))
+		    (if (search-forward (concat string after-string)
+					(line-end-position) t)
+			(backward-char (length after-string))
+		      (search-forward string (line-end-position) t))
+		    (if box
+			(progn
+			  (if (and lstart (= snippet lsnippet))
+			      (setq close-data
+				    (nconc
+				     (preview-place-preview
+				      snippet
+				      (if (/= (point) lstart)
+					  (save-excursion
+					    (goto-char lstart)
+					    (preview-back-command)
+					    (point))
+					lstart)
+				      (point)
+				      (preview-TeX-bb box)
+				      tempdir
+				      (cdr open-data))
+				     close-data))
+			    (message
+			     "End of Preview snippet %d unexpected"
+			     snippet))
+			  (setq lstart nil))
+		      ;; else-part of if box
+		      (setq lstart (point))
+		      (unless (= snippet (1+ lsnippet))
+			(message "Preview snippet %d out of sequence"
+				 snippet)))))))
 	  (set-buffer run-buffer)
-	  (preview-call-hook 'close closedata))))))
+	  (preview-call-hook 'close (car open-data) close-data))))))
 
 (defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
@@ -1727,7 +1768,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.93 $"))
+	(rev "$Revision: 1.94 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
