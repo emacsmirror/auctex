@@ -1,3 +1,9 @@
+Wed Aug 10 19:14:42 1994  Per Abrahamsen  (amanda@verdande)
+
+	* tex-buf.el (TeX-LaTeX-sentinel): Write "some" if
+	TeX-current-page is nil.  Reported by Michail Rozman
+	<roz@physik.uni-ulm.de>. 
+
 Tue Aug  9 01:26:58 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* auc-menu.el (easy-menu-add): Undid previous change.
