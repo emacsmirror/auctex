@@ -1296,7 +1296,7 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
-     "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
+     "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{j[s-]?\\(article\\|report\\|book\\|slides\\)")
     ("JTEX" japanese-plain-tex-mode
      "-- string likely in Japanese TeX --")
     ("AMSTEX" ams-tex-mode
