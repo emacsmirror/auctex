@@ -1,5 +1,7 @@
 @include macros.texi
 @ifset rawfile
+@c documentencoding is used by makeinfo in our --no-headers output.
+@documentencoding ISO-8859-1
 @chapter Known problems
 
 @end ifset
@@ -144,7 +146,6 @@ the file @file{INSTALL.windows}
 @ref{Installation under MS Windows}
 @end ifclear
 for detailed installation instructions for this platform.
-@end itemize
 
 @item XEmacs
 
@@ -160,6 +161,7 @@ error messages.  It should be fixed in version 21.4.8.
 Previews will only remain from one session to the next if you have
 version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
+@end itemize
 
 @node AUC TeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
 @section @AUCTeX{} prior to 11.0

@@ -1,3 +1,8 @@
+2003-02-05  Alan Shutko  <ats@acm.org>
+
+	* doc/problems.texi: Add documentencoding.
+	(Emacs problems): Move @end itemize after XEmacs.
+
 2003-02-03  David Kastrup  <dakas@users.sourceforge.net>
 
 	* latex/preview.dtx (subsection{The \texttt{auctex} option}):
