@@ -614,13 +614,16 @@ run of `TeX-run-TeX', use
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
 
-  ;; save information in TeX-error-report-switches
+  ;; Save information in TeX-error-report-switches
+  ;; Initialize error to nil (no error) for current master.
+  ;; Presence of error is reported inside `TeX-TeX-sentinel-check'
   (let ((current-master (TeX-master-file)))
     ;; the current master file is saved because error routines are
     ;; parsed in other buffers;
     (setq TeX-error-report-switches
 	  (plist-put TeX-error-report-switches
 		     'TeX-current-master current-master))
+    ;; reset error to nil (no error)
     (setq TeX-error-report-switches
 	  (plist-put TeX-error-report-switches
 		     (intern current-master) nil)))
