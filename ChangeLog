@@ -1,3 +1,10 @@
+2004-10-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-auto-class-regexp-list): New variable.
+	(LaTeX-auto-regexp-list): Use it.
+	(LaTeX-auto-cleanup): Do not consider key=value options.
+	Check for "Package" in addition to "package".
+
 2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-auto-generate-global): Only parse cls and sty files.
