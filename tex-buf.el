@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.35 1993-04-12 20:32:55 amanda Exp $
+;;; $Id: tex-buf.el,v 1.36 1993-04-12 22:25:44 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -202,7 +202,7 @@ Also check if ORIGINAL is modified in a non-saved buffer."
   (file-newer-than-file-p original derived))
 
 (defvar TeX-check-path (if TeX-fast
-			   nil
+			   (list "./")
 			 (cons "./" TeX-macro-private))
   "*Directory path to search for dependencies.
 
