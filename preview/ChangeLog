@@ -1,5 +1,8 @@
 2002-02-18  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/Makefile.in (install): correct install target for
+	install-info.
+
 	* doc/preview-latex.texi (Misplaced previews): explain about
 	prauctex.cfg.
 
