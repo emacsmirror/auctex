@@ -1,3 +1,11 @@
+2002-12-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex/Makefile.in (install-texmf): don't call TEXHASH with
+	argument: some of the substitutes might not like it.  Better safe
+	than sorry.
+
+	* configure.in: A few more texhash-related fixes.
+
 2002-12-20  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile.in (LISP_SOURCES): Use = instead of := for non-GNU
