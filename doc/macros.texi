@@ -34,6 +34,12 @@ font-latex
 @samp{\text\}
 @end macro
 @end ifset
+@ifset no-command
+@clear no-command
+@macro command {text}
+@samp{\text\}
+@end macro
+@end ifset
 @end ifnottex
 @macro sans {text}@c
 @iftex
@@ -62,6 +68,7 @@ font-latex
 \ifx\acronym\undefined \gdef\acronym#1{{\smallcaps \lowercase{#1}}} \fi
 \ifx\env\undefined \global\let\env=\code \fi
 \ifx\option\undefined \global\let\option=\samp \fi
+\ifx\command\undefined \global\let\command=\samp \fi
 %Bug fix for texinfo.tex:
 \gdef\cslet#1#2{%
 \expandafter\let
