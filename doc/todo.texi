@@ -312,11 +312,6 @@ Maybe the regexp for matching a TeX symbol during parsing should be
 @LaTeX{} formatting should skip @code{verbatim} environments.
 
 @item
-The argument to @samp{\verb} may be broken when filling if it contains a
-space.  This should be fixed or documented.  Suggested by several
-people.
-
-@item
 Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
 simply self insert if not in a math context.
 
