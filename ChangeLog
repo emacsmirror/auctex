@@ -1,3 +1,8 @@
+2004-03-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-region-as-para-do): Fix compatibility code
+	for older Emacsen.
+
 2004-03-19  David Kastrup  <dak@gnu.org>
 
 	* tex-site.el.in (texinfo-mode): Autoload tex-info again.  I
