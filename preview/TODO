@@ -1,8 +1,14 @@
 -*- text -*-
 
-Modularize AucTeX's error message parsing
- so that we do not need to steal code from AucTeX, but can use
- AucTeX's routines directly.  Submit to AucTeX development.
+Modularize AUC TeX's error message parsing
+ so that we do not need to steal code from AUC TeX, but can use
+ AUC TeX's routines directly.  Submit to AUC TeX development.
+
+Alternatively: factor out AUC TeX specific code
+ and provide alternatives.  This could make preview-latex work with
+ Emacs' default TeX/LaTeX modes which some people prefer.  Also one
+ might provide an abstraction layer that would make it possible to
+ embed preview-latex's core mechanisms into Emacs calc.
 
 Fix GhostScript rendering of Emacs
  The current gs.el interface does not work well when multiple EPS
@@ -15,11 +21,10 @@ Think about temporary file handling
  from the main file would be preferable, perhaps compilation in a
  separate directory, perhaps support for more than one Emacs session
  or user properly accessing the same file.  In all fairness, the
- current _region_ mechanism of AucTeX does not support this, either.
+ current _region_ mechanism of AUC TeX does not support this, either.
 
 Port to XEmacs
- Very much wanted since we then would get a non-pretest audience for
- preview-latex.
+ Under progress.
 
 Explore possibilities for generating a single PS file
  Can we get at the page boundaries then with some PostScript
@@ -35,7 +40,7 @@ Explore using DSC comments for reordering of processing
  That's just desirable for the last two proposals working from a
  single file.
 
-Add style options for marking bounding box
- Add options in TeX file to output zero-width rules around the shipped
- box so that, for example, PStricks pictures have a chance of getting
- a good bounding box.
+Program a direct dvi->png rendering daemon
+ that gets sent page requests and file names for both input and
+ output and replaces the Dvips->GhostScript chain.  This could be
+ done using DVIlib2 from the TeX-Guy project.
