@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.43 2001-11-07 12:19:04 dakas Exp $
+;; $Id: preview.el,v 1.44 2001-11-09 00:40:23 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -1224,7 +1224,7 @@ specified by BUFF."
     (setq TeX-sentinel-function
 	  (lambda (process name) (message "%s: done." name)))
     (if TeX-process-asynchronous
-	(let ((process (start-process name buffer TeX-shell
+	(let ((process (start-process name (current-buffer) TeX-shell
 				      TeX-shell-command-option
 				      command)))
 	  (if TeX-after-start-process-function
@@ -1240,7 +1240,7 @@ specified by BUFF."
       (setq mode-line-process ": run")
       (set-buffer-modified-p (buffer-modified-p))
       (sit-for 0)				; redisplay
-      (call-process TeX-shell nil buffer nil
+      (call-process TeX-shell nil (current-buffer) nil
 		    TeX-shell-command-option
 		    command))))
 
@@ -1275,7 +1275,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.43 $"))
+	(rev "$Revision: 1.44 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
