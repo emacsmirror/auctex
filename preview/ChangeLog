@@ -1,5 +1,8 @@
 2003-01-07  David Kastrup  <dakas@users.sourceforge.net>
 
+	* configure.in: Error message contained a single backquote, and
+	this made autoconf-213 barf.
+
 	* Makefile.in (AUCTEXLISP): quote sed command correctly.
 
 	* README.CVS: Update info about what autogen.sh generates.

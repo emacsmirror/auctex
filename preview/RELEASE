@@ -1,4 +1,4 @@
-Release notes for version 0.7.7 of the preview-latex package:
+Release notes for version 0.7.8 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by placing judiciously
 selected chunks (such as single formulas) chopped from unwieldy
@@ -9,30 +9,28 @@ can safely test-drive on important documents right away.  There are no
 physical withdrawal symptoms to be feared if you chose to quit using
 it, but you'll find yourself unable to do so.
 
-The employed style file preview.sty is independently useful for
+The employed style file `preview.sty' is independently useful for
 extraction of selected text elements as images.  The package is
 released under the GNU Public License (GPL).  At the current point of
 time, at least GNU Emacs-21.1 under the X window system, AUC TeX
 (11.14 recommended, see below), a working LaTeX installation and
 GhostScript are required.  This version also supports XEmacs-21, best
-in version 21.4.9 or later.  The various Windows ports of XEmacs
-should work out of the box.  Really.  Recent CVS versions of Windows
-GNU Emacs can reportedly be made to work, too.
+in version 21.4.9 or later, and the various Windows ports of XEmacs.
+You may also use recent CVS versions of Windows GNU Emacs.
 
-Release 0.7.7 is 0.7.6 minus a last-minute bug for GNU Emacs, so 0.7.6
-info applies: AFPL GhostScript releases 7.x should work.  Treatment of
-multi-directory projects has been corrected, once yo upgrade to AUC
-TeX 11.14.  An added feature can be customized into the new
-`preview-required-option-list' variable: checking the `counters'
-option will retain correct equation and section numbering even when
-you are regenerating single previews.  Various bugs have been fixed
-and the installation process does a better job of getting things to
-work particularly for Windows users.
+Release 0.7.8 has gained a few more commands, its menu has been
+reorganized, the `fleqn' document class option from LaTeX is fully
+supported, `preview.sty' has gained a much more powerful interface for
+configuring previews and a few more items are previewed by default or
+more correctly.  Various bugs have been fixed and the installation
+process does a better job of getting things to work particularly for
+Windows users, with more documentation, too.
 
-The README file provides adequate information for firing up
+The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
-INSTALL file contains a special section with advice for package
-providers.
+`INSTALL' file contains a special section with advice for package
+providers.  There is also a file `INSTALL.windows' detailing
+instructions for users of that operating system.
 
 The home page is <URL:http://preview-latex.sourceforge.net>, the
 SourceForge project page that among others offers anonymous CVS access
