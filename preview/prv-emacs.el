@@ -55,18 +55,20 @@ to the default background in most other cases."
 			(const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
-(defcustom preview-transparent-border t
-  "Whether to add a transparent border to previews.
-Setting this to a non-nil value will add a border of
+(defcustom preview-transparent-border 3
+  "Width of transparent border for previews in pt.
+Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
 the heuristic-mask setting of images to default to 't since
 then the borders are correctly detected even in case of
 palette operations.  If the transparent color is something
 not present otherwise in the image, the cursor display
-will affect just this border."
+will affect just this border.  A width of 0 is interpreted
+by PostScript as meaning a single pixel, other widths are
+interpreted as PostScript points (1/72 of 1in)"
   :group 'preview-appearance
   :type '(choice (const :value nil :tag "No border")
-		(const :value t :tag "Border")))
+		 (number :value 3 :tag "Border width in pt")))
 
 (defun preview-get-heuristic-mask ()
   "Get heuristic-mask to use for previews.
@@ -87,7 +89,7 @@ Consults `preview-transparent-color'."
 	 :file ,file
 	 :type ,type
 	 :ascent ,ascent
-	 :heuristic-mask (or preview-transparent-border (preview-get-heuristic-mask))))
+	 :heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask))))
 
 (defun preview-add-urgentization (fun ov buff)
   "Cause FUN to be called with OV and BUFF when redisplayed."
@@ -175,7 +177,7 @@ specifies."
 			      (* scale (- (aref bb 3) (aref bb 1))))
 		  :bounding-box (preview-int-bb bb)
 		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask (or preview-transparent-border (preview-get-heuristic-mask)))))
+		  :heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask)))))
 
 (defvar preview-overlay nil)
 
@@ -344,11 +346,13 @@ Returns NIL for black-on-white."
       (append
        (mapcar #'preview-gs-color-value bg)
        '("setrgbcolor" "clippath" "fill")
-       (when (and preview-transparent-border
+       (when (and (numberp preview-transparent-border)
 		  (consp mask) (integerp (car mask)))
 	 (append
 	  (mapcar #'preview-gs-color-value mask)
-	  '("setrgbcolor" "clippath" "stroke")))
+	  '("setrgbcolor" "currentlinewidth")
+	  (list (format "%g" preview-transparent-border))
+	  '("setlinewidth" "clippath" "strokepath" "fill" "setlinewidth")))
        (mapcar #'preview-gs-color-value fg)
        '("setrgbcolor")))))
 
