@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.158 2002-08-03 23:49:32 dakas Exp $
+;; $Id: preview.el,v 1.159 2002-08-13 03:14:56 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1021,7 +1021,6 @@ Returns non-NIL if called by one of the commands in LIST."
 (defun preview-region (begin end)
   "Run preview on region between BEGIN and END."
   (interactive "r")
-;;  (preview-clearout begin end)
   (TeX-region-create (TeX-region-file TeX-default-extension)
 		     (buffer-substring begin end)
 		     (file-name-nondirectory (buffer-file-name))
@@ -1038,13 +1037,30 @@ Returns non-NIL if called by one of the commands in LIST."
 (defun preview-buffer ()
   "Run preview on current buffer."
   (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    ;; Exclude header. Included again in `TeX-region-create', which
-    ;; puts a correct !offset _after_ \begin{document} to cooperate
-    ;; with format caching.
-    (re-search-forward TeX-header-end nil t)
-    (preview-region (point) (point-max))))
+  (preview-region (point-min) (point-max)))
+
+;; We have a big problem: When we are dumping preambles, diagnostics
+;; issued in later runs will not make it to the output when the
+;; predumped format skips the preamble.  So we have to place those
+;; after \begin{document}.  This we can only do if regions never
+;; include the preamble.  We could do this in our own functions, but
+;; that would not extend to the operation of C-c C-r g RET.  So we
+;; make this preamble skipping business part of TeX-region-create.
+;; This will fail if the region is to contain just part of the
+;; preamble -- a bad idea anyhow.
+
+(defadvice TeX-region-create (before preview preactivate)
+  "Skip preamble for the sake of predumped formats."
+  (when (string-match TeX-header-end (ad-get-arg 1))
+    (ad-set-arg 1
+ 		(prog1 (substring (ad-get-arg 1) (match-end 0))
+ 		  (ad-set-arg 3
+			      (with-temp-buffer
+				(insert (substring (ad-get-arg 1)
+						   0 (match-end 0)))
+				(+ (ad-get-arg 3)
+				   (count-lines (point-min) (point-max))
+				   (if (bolp) 0 -1))))))))
 
 (defun preview-document ()
   "Run preview on master document."
@@ -1299,10 +1315,23 @@ BUFFER-MISC is the appropriate data to be used."
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
+(defcustom preview-dump-default nil
+  "*Whether to dump formats automatically.
+Possible values are NIL, T, and 'ask."
+  :group 'preview-latex
+  :type '(choice (const :tag "Dump" t)
+		 (const :tag "Don't dump" nil)
+		 (const :tag "Ask" ask)))
+
 (defvar preview-dumped-alist nil
   "Alist of dumped masters.
-The elements are (NAME . HEADER), NAME is the master-file and HEADER
-is its heading up to and including \\begin{document}")
+The elements are (NAME . ASSOC).  NAME is the master file name
+\(without extension), ASSOC is what to do with regard to this
+format.  Possible values: NIL means no format is available
+and none should be generated.  T means no format is available,
+it should be generated on demand.  Other values mean that
+a format has been generated and the Emacs-flavor specific
+library keeping watch for a possible change of the preamble.")
 
 (defun preview-cleanout-tempfiles ()
   "Clean out all directories and files with non-persistent data.
@@ -2060,52 +2089,54 @@ For the rest of the session, this file is used when running
 on the same master file."
   (interactive)
   (let* ((dump-file (TeX-master-file "ini"))
-	 (format-file (expand-file-name (TeX-master-file nil)))
-	 (master-buffer (find-file-noselect (TeX-master-file t)))
+	 (format-name (expand-file-name (TeX-master-file nil)))
+	 (master-file (TeX-master-file t))
 	 (LaTeX-command-style `(("."
 				 ,(TeX-command-expand
 				   preview-dump-command
 				   'TeX-master-file))))
-	 (header
-	  ;; Header search taken from `tex-buf.el'
-	  ;; We search for the header from the master file.
-	  (save-excursion
-	    (save-restriction
-	      (set-buffer master-buffer)
-	      (save-excursion
-		(save-restriction
-		  (widen)
-		  (goto-char (point-min))
-		  ;; NOTE: We use the local value of
-		  ;; TeX-header-end from the master file.
-		  (if (not (re-search-forward TeX-header-end nil t))
-		      ""
-		    (re-search-forward "[\r\n]" nil t)
-		    (buffer-substring (point-min) (point))))))))
-	 (old-format (assoc format-file preview-dumped-alist)))
-    (unless (string= header (cdr old-format))
-      (setq preview-dumped-alist (delq old-format preview-dumped-alist))
-      ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
-      ;; in the tools bundle is an empty file.
-      (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
-      (preview-document)
+	 (format-cons (assoc format-name preview-dumped-alist))
+	 (preview-dump-default nil))
+    (if format-cons
+	(progn
+	  (preview-unwatch-preamble format-cons)
+	  (preview-format-kill format-cons)
+	  (setcdr format-cons nil))
+      (setq format-cons (list format-name))
+      (push format-cons preview-dumped-alist))
+    ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
+    ;; in the tools bundle is an empty file.
+    (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
+    (prog1
+	(preview-document)
       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
       (setq TeX-sentinel-function
 	    `(lambda (process string)
-	       (push (cons ,format-file ,header) preview-dumped-alist)
+	       (if (and (eq (process-status process) 'exit)
+			(zerop (process-exit-status process)))
+		   (preview-watch-preamble
+		    ,master-file
+		    ',format-cons)
+		 (preview-format-kill ',format-cons))
 	       (condition-case err
 		   (delete-file ,dump-file)
 		 (file-error (preview-log-error err "Dumping" process)))
 	       (preview-reraise-error process))))))
 
-(defun preview-clear-format ()
+(defun preview-clear-format (&optional old-format)
   "Clear the pregenerated format file.
-The use of the format file is discontinued."
+The use of the format file is discontinued.
+OLD_FORMAT may already contain a format-cons as
+stored in `preview-dumped-alist'."
   (interactive)
-  (let* ((format-file (expand-file-name (TeX-master-file nil)))
-	 (old-format (assoc format-file preview-dumped-alist)))
-    (setq preview-dumped-alist (delq old-format preview-dumped-alist))
-    (preview-format-kill old-format)))
+  (unless old-format
+    (setq old-format
+	  (let ((format-file (expand-file-name (TeX-master-file nil))))
+	    (or (assoc format-file preview-dumped-alist)
+		(car (push (list format-file) preview-dumped-alist))))))
+  (preview-unwatch-preamble old-format)
+  (preview-format-kill old-format)
+  (setcdr old-format nil))
 
 (defun TeX-inline-preview (name command file)
   "Main function called by AUC TeX.
@@ -2116,38 +2147,52 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		      'TeX-region-file
 		    'TeX-master-file)
 		  file))
-	(process
-	 (TeX-run-command
-	  "Preview-LaTeX"
-	  (if (assoc (expand-file-name (TeX-master-file nil))
-		     preview-dumped-alist)
-	      (TeX-command-expand preview-undump-command
-				  (car pr-file)
-				  (cons '("%f"
-					  (lambda ()
-					    (TeX-master-file nil)))
-					TeX-expand-list))
-	    command) file)))
-    (condition-case err
-	(progn
-	  (preview-get-geometry commandbuff)
-	  (setq preview-gs-file pr-file)
-	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
-	  (set-process-coding-system
-	   process
-	   (with-current-buffer commandbuff buffer-file-coding-system))
-	  (TeX-parse-reset)
-	  (setq TeX-parse-function 'TeX-parse-TeX)
-	  (if TeX-process-asynchronous
-	      process
-	    (TeX-synchronous-sentinel name file process)))
-      (error (preview-log-error err "Preview" process)
-	     (delete-process process)))
-    (preview-reraise-error process)))
+	(dumped-cons (assoc (expand-file-name (TeX-master-file nil))
+			    preview-dumped-alist))
+	process)
+    (if (if dumped-cons
+	    (eq (cdr dumped-cons) t)
+	  (if (eq preview-dump-default 'ask)
+	      (y-or-n-p "Cache preamble? ")
+	    preview-dump-default))
+	(prog1 (preview-dump-format)
+	  (setq TeX-sentinel-function
+		`(lambda (process string)
+		   (funcall ,TeX-sentinel-function process string)
+		   (with-current-buffer ,commandbuff
+		     (TeX-inline-preview ,name ,command ,file)))))
+      (setq process
+	    (TeX-run-command
+	     "Preview-LaTeX"
+	     (if (cdr dumped-cons)
+		 (TeX-command-expand preview-undump-command
+				     (car pr-file)
+				     (cons '("%f"
+					     (lambda ()
+					       (TeX-master-file nil)))
+					   TeX-expand-list))
+	       command) file))
+      (condition-case err
+	  (progn
+	    (preview-get-geometry commandbuff)
+	    (setq preview-gs-file pr-file)
+	    (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
+	    (when (featurep 'mule)
+	      (set-process-coding-system
+	       process
+	       (with-current-buffer commandbuff buffer-file-coding-system)))
+	    (TeX-parse-reset)
+	    (setq TeX-parse-function 'TeX-parse-TeX)
+	    (if TeX-process-asynchronous
+		process
+	      (TeX-synchronous-sentinel name file process)))
+	(error (preview-log-error err "Preview" process)
+	       (delete-process process)))
+      (preview-reraise-error process))))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.158 $"))
+	(rev "$Revision: 1.159 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2158,7 +2203,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-08-03 23:49:32 $"))
+    (let ((date "$Date: 2002-08-13 03:14:56 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
