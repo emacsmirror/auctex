@@ -469,6 +469,7 @@ Return the new process."
     (get-buffer-create buffer)
     (set-buffer buffer)
     (erase-buffer)
+    (set (make-local-variable 'line-number-display-limit) 0)
     (setq TeX-output-extension nil)
     (set (make-local-variable 'TeX-command-buffer) command-buff)
     (if dir (cd dir))
@@ -909,23 +910,35 @@ command."
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."
   (with-current-buffer (process-buffer process)
-    (let ((pt (marker-position (process-mark process))))
-      (save-excursion
-	(goto-char pt)
-	(setq pt (save-excursion
-		   (skip-chars-backward "-0-9.\n["
-					(max (point-min) (- pt 128)))))
-	(insert-before-markers string)
-	(set-marker (process-mark process) (point))
-	(save-match-data
-	  (when (re-search-backward
-		 "\\[\n?-?[0-9\n]+\\(\\.\n?-?[0-9\n]+\\)*\\]"
-		 pt
-		 t)
-	    (setq TeX-current-page
-		  (apply #'concat
-			 (split-string (TeX-match-buffer 0) "\n")))
-	    (TeX-format-mode-line process)))))))
+    (let (old-match str end (pt (marker-position (process-mark process))))
+      (unwind-protect
+	  (save-excursion
+	    (goto-char pt)
+	    (insert-before-markers string)
+	    (set-marker (process-mark process) (point))
+	    (while (and pt
+			(skip-chars-backward "^]" pt)
+			(> (point) pt))
+	      (setq end (point))
+	      (backward-char)
+	      (skip-chars-backward "-0-9\n." (max (point-min) (- pt 128)))
+	      (when (and (eq ?\[ (char-before))
+			 (not (eq ?\] (char-after)))
+			 (progn
+			   (setq str
+				 (apply #'concat
+					(split-string
+					 (buffer-substring (1- (point)) end)
+					 "\n")))
+			   (unless old-match
+			     (setq old-match (list (match-data))))
+			   (string-match
+			    "\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]"
+			    str)))
+		(setq TeX-current-page str
+		      pt nil)
+		(TeX-format-mode-line process))))
+	(when old-match (set-match-data (car old-match)))))))
 
 (defvar TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
