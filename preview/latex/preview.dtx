@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1149}
+%\CheckSum{1236}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.75 $
+%  \rcskey \version CVS-$Revision: 1.76 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-12-19 16:17:06 $
+%\rcskey\next $Date: 2003-01-06 18:55:12 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,6 +244,9 @@
 %period (|.|) if it is at the end.  The order of different diagnostics
 %like this being issued depends on the order of the specification of
 %the options when calling the package.
+%
+%Systems like \previewlatex\ use this for keeping counters accurate
+%when single previews are regenerated.
 %\item[|footnotes|] This makes footnotes render as previews, and only
 %as their footnote symbol.  A convenient editing feature inside of
 %Emacs.
@@ -312,7 +315,24 @@
 %\item[|!|] indicates a mandatory argument.
 %\item[|\char`{\char`}|] indicates the same.  Again, be sure to have that
 %additional level of braces around the whole argument specification.
+%\item[|?|\meta{delimiter}\marg{true case}\marg{false case}] is a
+%conditional.  The next character is checked against being equal to
+%\meta{delimiter}.  If it is, the specification \meta{true case} is
+%used for the further parsing, otherwise \meta{false case} will be
+%employed.  In neither case is something consumed from the input, so
+%\marg{true case} will still have to deal with the upcoming delimiter.
+%\item[|@|\marg{literal sequence}] will insert the given sequence
+%literally into the executed call of the command.
 %\end{description}
+%
+%There is a second optional argument in brackets that can be used to
+%declare any default action to be taken instead.  This is mostly for
+%the sake of macros that influence numbering: you would want to keep
+%their effects in that respect.  The default action should use |#1|
+%for referring to the original (not the patched) command with the
+%parsed options appended.  Not specifying a second optional argument
+%here is equivalent to specifying~|[#1]|.
+%
 %\DescribeMacro{\PreviewMacro*}
 %A similar invocation \cmd{\PreviewMacro*} simply throws the macro and
 %all of its arguments declared in the manner above away.  This is
@@ -323,20 +343,24 @@
 %that manner instead of being thrown away.  An exception might be,
 %say, sort keys for \cmd{\cite}.
 %
-%A second optional command in braces can be used to declare any
+%A second optional argument in brackets can be used to declare any
 %default action to be taken instead.  This is for the sake of macros
 %that influence numbering: you would want to keep their effects in
 %that respect.  The default action might use |#1| for referring to the
 %original (not the patched) command with the parsed options appended.
+%Not specifying a second optional argument here is equivalent to
+%specifying~|[]| since the command usually gets thrown away.
 %
-%For example, you might want to specify
+%As an example for using this argument, you might want to specify
 %\begin{quote}
 %|\PreviewMacro*\footnote[{[]}][#1{}]|
 %\end{quote}
 %This will replace a footnote by an empty footnote, but taking any
 %optional parameter into account, since an optional paramter changes
 %the numbering scheme.  That way the real argument for the footnote
-%remains for processing by \previewlatex.
+%remains for processing by \previewlatex\ (the actual definition is
+%more complicated in order not to change the numbering in case of
+%optional arguments being present).
 %
 %\DescribeMacro{\PreviewEnvironment} The macro
 %\cmd{\PreviewEnvironment} works just as
@@ -370,10 +394,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.75 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.76 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-12-19 16:17:06 $
+\reserved@a\next $Date: 2003-01-06 18:55:12 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -748,15 +772,31 @@
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
-%\begin{macro}{\pr@parse\pr@endparse}
-%  And finally the macro that gets called at the end and wraps all
-%  this up by placing the completed macro call and then putting
-%  \cmd{\pr@seq} behind it.
+%\begin{macro}{\pr@parse?}
+%\begin{macro}{\pr@parsecond}
+%  This does an explicit call of |\@ifnextchar| and forks into the
+%  given two alternatives as a result.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse\pr@endparse\endcsname#1{#1\pr@seq}
+\expandafter\def\csname pr@parse?\endcsname#1#2\pr@endparse#3{%
+  \begingroup\toks@{#2\pr@endparse{#3}}
+  \@ifnextchar#1{\pr@parsecond\@firstoftwo}%
+                {\pr@parsecond\@secondoftwo}}
+\def\pr@parsecond#1{\edef\next{%
+  \endgroup\noexpand\expandafter
+  \noexpand\pr@parseit\noexpand#1\the\toks@}\next}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\pr@parse@}
+%  This makes it possible to insert literal material into the argument
+%  list.
+%    \begin{macrocode}
+\def\pr@parse@#1#2\pr@endparse#3{%
+  \pr@parseit #2\pr@endparse{#3#1}}
 %</active>
 %    \end{macrocode}
 %\end{macro}
+%
 %\subsection{Selection options}
 %  The |displaymath| option.  The |equation| environments in
 %  AMS\LaTeX\ already do too much before our hook gets to interfere,
@@ -782,6 +822,11 @@
   \pr@advise@ship\equation*{\begingroup\aftergroup\pr@endbox
     \def\dt@ptrue{\m@ne=\m@ne}\noindent}
     {\endgroup}%
+  \PreviewOpen[][\def\dt@ptrue{\m@ne=\m@one}\noindent#1]\[%
+  \PreviewClose\]%
+  \PreviewEnvironment[][\noindent#1]{eqnarray}%
+  \PreviewEnvironment[][\noindent#1]{eqnarray*}%
+  \PreviewEnvironment{displaymath}%
 }}
 %    \end{macrocode}
 %
@@ -863,37 +908,69 @@
 %    \end{macrocode}
 %  The version without |*| is now rather straightforward.
 %  \begin{macro}{\pr@macro}
+%  \begin{macro}{\pr@domacro}
+%  \begin{macro}{\pr@macroii}
 %  \begin{macro}{\pr@endmacro}
 %    \begin{macrocode}
-\newcommand*\pr@macro[2][]{%
-   \pr@advise@ship{#2}{\pr@callafter\pr@endmacro#1\pr@endparse}{}}
+\def\pr@domacro#1#2{%
+   \def\next##1{#2}%
+   \pr@callafter\next#1\pr@endparse}
+\newcommand*\pr@macro[1][]{%
+   \def\next[##1]##2{%
+   \pr@advise@ship{##2}{\pr@domacro{#1}{##1\pr@endbox}}{}}%
+   \@ifnextchar[\next\pr@macroii}
+\def\pr@macroii{\next[##1]}
 \def\pr@endmacro#1{#1\pr@endbox}
 %    \end{macrocode}
 %  \end{macro}
 %  \end{macro}
 %  \end{macro}
+%  \end{macro}
+%  \end{macro}
 %  \begin{macro}{PreviewMacro*}
-%  \begin{macro}{\pr@protect@star}
+%  \begin{macro}{\pr@protect@domacro}
 %  \begin{macro}{\pr@starmacro}
-%  \begin{macro}{\pr@starmacroii}
 %  The version with |*| has to parse the arguments, then throw them
-%  away.  Some internal macros first, then the interface call.  This
-%  is somewhat complicated by the fact that we allow a second optional
-%  argument with alternate code to call.  That must be run without
-%  triggering any hooks, so we need to use |\pr@outerfalse|
-%  temporarily.
+%  away.  Some internal macros first, then the interface call.
 %    \begin{macrocode}
-\def\pr@protect@star#1#2{\pr@protect{%
+\def\pr@protect@domacro#1#2{\pr@protect{%
     \def\next##1{#2}%
     \pr@callafter\next#1\pr@endparse}}
-\newcommand*\pr@starmacro[1][]{\def\next##1##2{%
-    \pr@advise##2{\pr@protect@star{#1}{##1}}}
-  \begingroup\pr@starmacroii}
-\newcommand*\pr@starmacroii[1][]{\endgroup
-  \next{#1}}
+\newcommand*\pr@starmacro[1][]{\def\next[##1]##2{%
+    \pr@advise##2{\pr@protect@domacro{#1}{##1}}}%
+    \@ifnextchar[\next{\next[]}}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
+%\end{macro}
+%\begin{macro}{\PreviewOpen}
+%  As explained above. Detect possible |*| and call appropriate macro.
+%    \begin{macrocode}
+\def\PreviewOpen{\@ifstar\pr@starmacro\pr@open}
+%    \end{macrocode}
+%  The version without |*| is now rather straightforward.
+%  \begin{macro}{\pr@open}
+%    \begin{macrocode}
+\newcommand*\pr@open[1][]{%
+   \def\next[##1]##2{%
+   \pr@advise@ship{##2}{\pr@domacro{#1}{##1}}{}}%
+   \@ifnextchar[\next\pr@macroii}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\PreviewClose}
+%  As explained above. Detect possible |*| and call appropriate macro.
+%    \begin{macrocode}
+\def\PreviewClose{\@ifstar\pr@starmacro\pr@close}
+%    \end{macrocode}
+%  The version without |*| is now rather straightforward.
+%  \begin{macro}{\pr@close}
+%    \begin{macrocode}
+\newcommand*\pr@close[1][]{%
+  \def\next[##1]##2{%
+   \pr@advise{##2}{\pr@protect@domacro{#1}{##1\pr@endbox}}}%
+   \@ifnextchar[\next\pr@macroii}
+%    \end{macrocode}
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\PreviewEnvironment}
@@ -905,11 +982,15 @@
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
 \newcommand*\pr@starenv[1][]{\def\next##1##2{\pr@starmacro[{#1}][{##2}]##1}%
   \begingroup\pr@starenvii}
-\newcommand*\pr@startenvii[2][]{\endgroup
+\newcommand*\pr@starenvii[2][]{\endgroup
   \expandafter\next\csname#2\endcsname{#1}%
   \expandafter\pr@starmacro\csname end#2\endcsname}
-\newcommand*{\pr@env}[2][]{\expandafter\pr@advise@ship
-   \csname #2\endcsname{\begingroup\aftergroup\pr@endbox}{\endgroup}}
+\newcommand*\pr@env[1][]{%
+   \def\next[##1]##2{%
+   \expandafter\pr@advise@ship\csname##2\endcsname{\pr@domacro{#1}%
+      {\begingroup\aftergroup\pr@endbox##1}}{\endgroup}}%
+   \@ifnextchar[\next\pr@macroii %]
+ }
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\PreviewSnarfEnvironment}
@@ -1109,7 +1190,8 @@
 %And here we cater for several frequently used commands in
 %|prauctex.cfg|:
 %    \begin{macrocode}
-%<auccfg>\PreviewMacro*[[][#1{}]\footnote
+%<auccfg>\PreviewMacro*[?[{@{[]}}{}][#1{}]\footnote
+%<auccfg>\PreviewMacro*[?[{@{[]}}{}]\item
 %<auccfg>\PreviewMacro*\emph
 %<auccfg>\PreviewMacro*\textrm
 %<auccfg>\PreviewMacro*\textit
