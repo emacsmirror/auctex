@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.480 $"))
+	    (rev "$Revision: 5.481 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-28 14:33:30 $"))
+    (let ((date "$Date: 2005-02-01 12:02:00 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3782,8 +3782,10 @@ regardless of its data type."
   (let ((table (make-syntax-table (make-char-table (if (featurep 'xemacs)
 						       'syntax
 						     'syntax-table)))))
-    (modify-syntax-entry ?\f ">" table)
-    (modify-syntax-entry ?\n ">" table)
+    ;; Preset mode-independent syntax entries.  (Mode-dependent
+    ;; entries are set in the function `TeX-search-syntax-table'.)
+    (dolist (elt '((?\f . ">") (?\n . ">") (?\" . ".")))
+      (modify-syntax-entry (car elt) (cdr elt) table))
     table)
   "Syntax table used for searching purposes.
 It should be accessed through the function `TeX-search-syntax-table'.")
@@ -3793,32 +3795,22 @@ It should be accessed through the function `TeX-search-syntax-table'.")
 ARGS may be a list of characters.  For each of them the
 respective predefined syntax is set.  Currently the parenthetical
 characters ?{, ?}, ?[, and ?] are supported.  The syntax of each
-of these characters not specified will be reset to \" \".
-Besides the escape characters ?\\\\ and ?@ as well as the comment
-character ?% may be specified.  This should not be necessary as
-they are set automatically if they are omitted."
-  (let ((char-syntax-alist '((?\\ . "\\")
-			     (?\@ . "\\")
-			     (?\% . "<")
-			     (?\{ . "(}")
+of these characters not specified will be reset to \" \"."
+  (let ((char-syntax-alist '((?\{ . "(}")
 			     (?\} . "){")
 			     (?\[ . "(]")
 			     (?\] . ")["))))
-    ;; First clean up.
-    (dolist (item char-syntax-alist)
-      (modify-syntax-entry (car item) " " TeX-search-syntax-table))
-    ;; Set the escape character automatically if it is not specified
-    ;; explicitely.  (This could be done as well once when the mode is
-    ;; being initialized.)
-    (unless (or (memq ?\\ args) (memq ?\@ args))
-      (modify-syntax-entry (string-to-char TeX-esc) "\\"
-			   TeX-search-syntax-table))
-    ;; Same for comment character.
-    (unless (and (memq ?\% args) (eq major-mode 'texinfo-mode))
+    ;; Preset mode-dependent syntax entries.  (Mode-independent entries
+    ;; are set when the variable `TeX-search-syntax-table' is created.)
+    (modify-syntax-entry (string-to-char TeX-esc) "\\" TeX-search-syntax-table)
+    (unless (eq major-mode 'texinfo-mode)
       (modify-syntax-entry ?\% "<" TeX-search-syntax-table))
+    ;; Clean up the entries which can be specified as arguments.
+    (dolist (elt char-syntax-alist)
+      (modify-syntax-entry (car elt) " " TeX-search-syntax-table))
     ;; Now set what we got.
-    (dolist (item args)
-      (modify-syntax-entry item (cdr (assoc item char-syntax-alist))
+    (dolist (elt args)
+      (modify-syntax-entry elt (cdr (assoc elt char-syntax-alist))
 			   TeX-search-syntax-table))
     ;; Return the syntax table.
     TeX-search-syntax-table))
