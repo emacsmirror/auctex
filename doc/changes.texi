@@ -141,7 +141,7 @@ it started.
 
 @item
 The build process was enhanced and is now based on @code{autoconf}
-making installing @AUCTeX{} a mostly automatic process.  See
+making installing AUC@TeX{} a mostly automatic process.  See
 @ref{Installation} and @ref{Installation under MS Windows} for details.
 @end itemize
 
