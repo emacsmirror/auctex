@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.27 1994-10-25 13:53:16 amanda Exp $
+;; Version: $Id: tex.el,v 5.28 1994-10-26 15:02:15 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -235,21 +235,13 @@ the name of the file being processed, with an optional extension.")
 (or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
     (setq load-path (cons TeX-lisp-directory load-path)))
 
-(require 'auc-ver)
-
-(cond ((< (string-to-int emacs-version) 19)
-       (require 'tex-18))
-      ((string-match "Lucid" emacs-version)
-       (require 'tex-lcd))
-      (t
-       (require 'tex-19)))
-
 (defvar no-doc
   "This function is part of AUC TeX, but has not yet been loaded.
 Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
 ;; This hook will store bibitems when you save a BibTeX buffer.
+
 (defvar bibtex-mode-hook nil)
 (add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
 (autoload 'BibTeX-auto-store "latex" no-doc t)
@@ -264,6 +256,260 @@ Full documentation will be available after autoloading the function."
 (autoload 'japanese-slitex-mode "tex-jp" no-doc t)
 (autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
+
+;;; Special support for Emacs 18
+
+(cond ((< (string-to-int emacs-version) 19)
+
+(condition-case error
+    (require 'outline)			;No provide in Emacs 18 outline.el 
+  (error (provide 'outline)))
+
+;; Emacs 18 grok this regexp, but you loose the ability to use
+;; whitespace anywhere in your documentstyle command.
+(defvar LaTeX-auto-minimal-regexp-list
+  '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
+     (1 2) LaTeX-auto-style)
+    ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style)
+    ("\\\\documentclass\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
+     (1 2) LaTeX-auto-style)
+    ("\\\\documentclass{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style))
+  "Minimal list of regular expressions matching LaTeX macro definitions.")
+	    
+;; The Emacs 19 definition of `comment-region'.
+(defun comment-region (beg end &optional arg)
+  "Comment the region; third arg numeric means use ARG comment characters.
+If ARG is negative, delete that many comment characters instead.
+Comments are terminated on each line, even for syntax in which newline does
+not end the comment.  Blank lines do not get comments."
+  ;; if someone wants it to only put a comment-start at the beginning and
+  ;; comment-end at the end then typing it, C-x C-x, closing it, C-x C-x
+  ;; is easy enough.  No option is made here for other than commenting
+  ;; every line.
+  (interactive "r\np")
+  (or comment-start (error "No comment syntax is defined"))
+  (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
+  (save-excursion
+    (save-restriction
+      (let ((cs comment-start) (ce comment-end))
+        (cond ((not arg) (setq arg 1))
+              ((> arg 1)
+               (while (> (setq arg (1- arg)) 0)
+                 (setq cs (concat cs comment-start)
+                       ce (concat ce comment-end)))))
+        (narrow-to-region beg end)
+        (goto-char beg)
+        (while (not (eobp))
+          (if (< arg 0)
+              (let ((count arg))
+                (while (and (> 1 (setq count (1+ count)))
+                            (looking-at (regexp-quote cs)))
+                  (delete-char (length cs)))
+                (if (string= "" ce) ()
+                  (setq count arg)
+                  (while (> 1 (setq count (1+ count)))
+                    (end-of-line)
+                    ;; this is questionable if comment-end ends in whitespace
+                    ;; that is pretty brain-damaged though
+                    (skip-chars-backward " \t")
+                    (backward-char (length ce))
+                    (if (looking-at (regexp-quote ce))
+                        (delete-char (length ce)))))
+		(forward-line 1))
+            (if (looking-at "[ \t]*$") ()
+              (insert cs)
+              (if (string= "" ce) ()
+                (end-of-line)
+                (insert ce)))
+            (search-forward "\n" nil 'move)))))))
+
+;; The Emacs 19 definition of `add-hook'.
+(defun add-hook (hook function &optional append)
+  "Add to the value of HOOK the function FUNCTION.
+FUNCTION is not added if already present.
+FUNCTION is added (if necessary) at the beginning of the hook list
+unless the optional argument APPEND is non-nil, in which case
+FUNCTION is added at the end.
+ 
+HOOK should be a symbol, and FUNCTION may be any valid function.  If
+HOOK is void, it is first set to nil.  If HOOK's value is a single
+function, it is changed to a list of functions."
+  (or (boundp hook) (set hook nil))
+  ;; If the hook value is a single function, turn it into a list.
+  (let ((old (symbol-value hook)))
+    (if (or (not (listp old)) (eq (car old) 'lambda))
+        (set hook (list old))))
+  (or (if (consp function)
+          ;; Clever way to tell whether a given lambda-expression
+          ;; is equal to anything in the hook.
+          (let ((tail (assoc (cdr function) (symbol-value hook))))
+            (equal function tail))
+        (memq function (symbol-value hook)))
+      (set hook 
+           (if append
+               (nconc (symbol-value hook) (list function))
+             (cons function (symbol-value hook))))))
+
+;; An Emacs 19 function.
+(defun make-directory (dir)
+  "Create the directory DIR."
+  (shell-command (concat "mkdir " (if (string-match "/$" dir)
+				      (substring dir 0 -1)
+				    dir))))
+ 
+;; An Emacs 19 function.
+(defun abbreviate-file-name (name)
+  name)
+
+;; Different interface for each variant.
+(defun TeX-active-mark ()
+  ;; Emacs 18 does not have active marks.
+  nil)
+
+;; Different interface for each variant.
+(defun TeX-mark-active ()
+  ;; In Emacs 18 (mark) returns nil when not active.
+  (mark))
+
+;; An Emacs 19 function.
+(defun member (elt list)
+  "Return non-nil if ELT is an element of LIST.  Comparison done with EQUAL.
+The value is actually the tail of LIST whose car is ELT."
+  (while (and list (not (equal elt (car list))))
+    (setq list (cdr list)))
+  list)
+
+;; An Emacs 19 function.
+(fset 'set-text-properties (symbol-function 'ignore))
+
+;; Easymenu.
+
+(defmacro easy-menu-define (symbol maps doc menu)
+  "Define SYMBOL to be a menu for keymaps MAPS.
+DOC is the documentation string, and MENU is a Lucid style menu."
+  (` (progn
+       (require 'auc-menu)		;For `easy-menu-do-define'.
+       (defvar (, symbol) nil (, doc))
+       (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
+
+(defun easy-menu-do-define (symbol maps doc menu)
+  (fset symbol (symbol-function 'ignore)))
+(defun easy-menu-remove (menu))
+(defun easy-menu-add (menu &optional map))
+(defun easy-menu-change (path name items))
+
+(provide 'easymenu)
+(provide 'tex-18)
+
+)
+
+;;; Special support for XEmacs 
+
+((or (string-match "Lucid" emacs-version)
+     (string-match "XEmacs" emacs-version))
+
+(defun TeX-active-mark ()
+  ;; In Lucid (mark) returns nil when not active.
+  (mark))
+
+(defun TeX-mark-active ()
+  (and zmacs-regions (mark)))
+
+(add-menu-item '("Help") "Document LaTeX word..." 'latex-help t "-----")
+
+;; Lucid 19.6 grok this regexp, but you loose the ability to use
+;; whitespace in your documentstyle command.
+(string-match "\\`[0-9]+\\.\\([0-9]+\\)" emacs-version)
+(or (> (string-to-int (substring emacs-version
+				 (match-beginning 1) (match-end 1)))
+       8)
+    (> (string-to-int emacs-version) 19)
+    (boundp 'LaTeX-auto-minimal-regexp-list)
+    (setq LaTeX-auto-minimal-regexp-list
+     '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
+        (1 2) LaTeX-auto-style)
+       ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style)
+       ("\\\\documentclass\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
+        (1 2) LaTeX-auto-style)
+       ("\\\\documentclass{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style))))
+
+;; Lucid only
+(fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
+
+;; Easymenu.
+
+(defmacro easy-menu-define (symbol maps doc menu)
+  "Define SYMBOL to be a menu for keymaps MAPS.
+DOC is the documentation string, and MENU is a Lucid style menu."
+  (` (progn
+       (defvar (, symbol) nil (, doc))
+       (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
+
+(defun easy-menu-do-define (symbol maps doc menu)
+  (set symbol menu)
+  (fset symbol (list 'lambda '(e)
+		     doc
+		     '(interactive "@e")
+		     '(run-hooks 'activate-menubar-hook)
+		     '(setq zmacs-region-stays 't)
+		     (list 'popup-menu symbol)))
+  (mapcar (function (lambda (map) (define-key map 'button3 symbol)))
+	  (if (keymapp maps) (list maps) maps)))
+
+(fset 'easy-menu-change (symbol-function 'add-menu))
+
+(defun easy-menu-add (menu &optional map)
+  "Add MENU to the current menu bar."
+  (cond ((null current-menubar)
+	 ;; Don't add it to a non-existing menubar.
+	 nil)
+	((assoc (car menu) current-menubar)
+	 ;; Already present.
+	 nil)
+	((equal current-menubar '(nil))
+	 ;; Set at left if only contains right marker.
+	 (set-buffer-menubar (list menu nil)))
+	(t
+	 ;; Add at right.
+	 (set-buffer-menubar (copy-sequence current-menubar))
+	 (add-menu nil (car menu) (cdr menu)))))
+
+(defun easy-menu-remove (menu)
+  "Remove MENU from the current menu bar."
+  (and current-menubar
+       (assoc (car menu) current-menubar)
+       (delete-menu-item (list (car menu)))))
+
+(provide 'easymenu)
+
+)
+;;; Special support for GNU Emacs 19
+
+(t
+
+(defun TeX-mark-active ()
+  ;; In FSF 19 mark-active indicates if mark is active.
+  mark-active)
+
+(defun TeX-active-mark ()
+  (and transient-mark-mode mark-active))
+
+(let ((map (lookup-key global-map [menu-bar help])))
+  (if (keymapp map)
+      (define-key-after map [ latex ]
+	'("Document LaTeX word..." . latex-help) 'describe-variable)))
+
+(defun TeX-activate-region ())
+
+))
+
+;;; Version 
+
+(defconst AUC-TeX-version "9.2j"
+  "AUC TeX version number")
+
+(defconst AUC-TeX-date "Tue Oct 25 14:52:42 MET 1994"
+  "AUC TeX release date")
 
 ;;; Buffer
 
