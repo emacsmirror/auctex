@@ -160,9 +160,9 @@ produced by emp.sty and then re-LaTeX the document."
   "String to be used when typing `-'.
 This usually is a hyphen alternatives or hyphenation aid
 provided by (n)german.sty, like \"=, \"~ or \"-.
-Set it to an empty string or nil for disabling this feature."
+Set it to an empty string or nil in order to disable this feature."
   :group 'LaTeX-style
-  :type '(string))
+  :type 'string)
 
 (defcustom LaTeX-german-hyphen-after-hyphen t
   "Control insertion of hyphen strings.
