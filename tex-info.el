@@ -1,8 +1,8 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.6 1993-09-30 23:04:54 amanda Exp $
+;; $Id: tex-info.el,v 5.7 1994-01-23 08:14:14 amanda Exp $
 
-;; Copyright (C) 1993 Per Abrahamsen 
+;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -134,8 +134,7 @@ When called interactively, prompt for an environment."
 
   (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-region)
   (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-paragraph)
-
-  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-out-paragraph) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-paragraph) ;*** Old way
   (define-key TeXinfo-mode-map "\C-c:"    'TeX-un-comment-region) ;*** Old way
   (define-key TeXinfo-mode-map "\C-c\""   'TeX-un-comment) ;*** Old way
 
@@ -232,11 +231,11 @@ When called interactively, prompt for an environment."
 	      ["Switch to original file" TeX-home-buffer t]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	"--"
-	["Create Master Menu" 'texinfo-master-menu t]
-	["Create Menu" 'texinfo-make-menu t]
-	["Update Node" 'texinfo-update-node t]
+	["Create Master Menu" texinfo-master-menu t]
+	["Create Menu" texinfo-make-menu t]
+	["Update Node" texinfo-update-node t]
 	["Update Every Node" texinfo-every-node-update t]
-	["Update All Menus" 'texinfo-all-menus-update t]
+	["Update All Menus" texinfo-all-menus-update t]
 	["Uncomment Region" TeX-un-comment-region t]
 	["Comment Region" TeX-comment-region t]
 	["Switch to Master file" TeX-home-buffer t]
@@ -259,8 +258,194 @@ Entering TeXinfo mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value of
 TeXinfo-mode-hook."
   (interactive)
-  (VirTeX-mode "TEXINFO"))
+  ;; Mostly stolen from texinfo.el
+  (setq mode-name "TeXinfo")
+  (setq major-mode 'texinfo-mode)
+  (use-local-map TeXinfo-mode-map)
+  (easy-menu-add TeX-mode-menu TeXinfo-mode-map)
+  (set-syntax-table texinfo-mode-syntax-table)
+  (make-local-variable 'page-delimiter)
+  (setq page-delimiter 
+	(concat 
+	 "^@node [ \t]*[Tt]op\\|^@\\(" 
+	 texinfo-chapter-level-regexp 
+	 "\\)"))
+  (make-local-variable 'require-final-newline)
+  (setq require-final-newline t)
+  (make-local-variable 'indent-tabs-mode)
+  (setq indent-tabs-mode nil)
+  (make-local-variable 'paragraph-separate)
+  (setq paragraph-separate
+	(concat "^\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-separate))
+  (make-local-variable 'paragraph-start)
+  (setq paragraph-start
+	(concat "^\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-start))
+  (make-local-variable 'fill-column)
+  (setq fill-column 72)
+  (make-local-variable 'comment-start)
+  (setq comment-start "@c ")
+  (make-local-variable 'comment-start-skip)
+  (setq comment-start-skip "@c +\\|@comment +")
+  (make-local-variable 'words-include-escapes)
+  (setq words-include-escapes t)
+  
+  ;; Mostly AUC TeX stuff
+  (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
+  
+  (setq TeX-default-extension "texi")
+  (make-local-variable 'TeX-esc)
+  (setq TeX-esc "@")
 
+  (make-local-variable 'TeX-auto-regexp-list)
+  (setq TeX-auto-regexp-list 'TeX-auto-empty-regexp-list)
+  (make-local-variable 'TeX-auto-update)
+  (setq TeX-auto-update t)
+
+  (setq TeX-command-default "TeX")
+  (setq TeX-header-end "%**end")
+  (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
+  
+  (make-local-variable 'TeX-font-list)
+  (setq TeX-font-list '((?\C-b "@b{" "}")
+			(?\C-c "@sc{" "}")
+			(?\C-e "@emph{" "}")
+			(?\C-i "@i{" "}")
+			(?\C-r "@r{" "}")
+			(?\C-s "@samp{" "}")
+			(?\C-t "@t{" "}")
+			(?s    "@strong{" "}")
+			(?\C-f "@file{" "}")
+			(?\C-d "@dfn{" "}")
+			(?\C-v "@var{" "}")
+			(?k    "@key{" "}")
+			(?\C-k "@kbd{" "}")
+			(?c    "@code{" "}")
+			(?C    "@cite{" "}")))
+  
+  (TeX-add-symbols
+   '("appendix" "Title")
+   '("appendixsec" "Title")
+   '("appendixsection" "Title")
+   '("appendixsubsec" "Title")
+   '("appendixsubsubsec" "Title")
+   '("asis")
+   '("author" "Author")
+   '("b" "Text")
+   '("bullet")
+   '("bye")
+   '("c" "Comment")
+   '("center" "Line-of-text")
+   '("chapheading" "Title")
+   '("chapter" "Title")
+   '("cindex" "Entry")
+   '("cite" "Reference")
+   '("clear" "Flag")
+   '("code" "Sample-code")
+   '("comment" "Comment")
+   '("contents")
+   '("copyright")
+   '("defcodeindex" "Index-name")
+   '("defindex" "Index-name")
+   '("dfn" "Term")
+   '("dmn" "Dimension")
+   '("dots")
+   '("emph" "Text")
+   '("equiv")
+   '("error")
+   '("evenfooting" TeXinfo-lrc-argument-hook)
+   '("evenheading" TeXinfo-lrc-argument-hook)
+   '("everyfooting" TeXinfo-lrc-argument-hook)
+   '("everyheading" TeXinfo-lrc-argument-hook)
+   '("exdent" "Line-of-text")
+   '("expansion")
+   '("file" "Filename")
+   '("finalout")
+   '("findex" "Entry")
+   '("footnote" "Text-of-footnote")
+   '("footnotestyle" "Style")
+   '("group")
+   '("heading" "Title")
+   '("headings" "On-off-single-double")
+   '("i" "Text")
+   '("ignore")
+   '("include" "Filename")
+   '("inforef" "Node-name" "Info-file-name")
+   '("item")
+   '("itemx")
+   '("kbd" "Keyboard-characters")
+   '("key" "Key-name")
+   '("kindex" "Entry")
+   '("majorheading"  "Title")
+   '("menu")
+   '("minus")
+   '("need" "N")
+   '("node" "Name" "Next" "Previous" "Up")
+   '("noindent")
+   '("oddfooting" TeXinfo-lrc-argument-hook)
+   '("oddheading" TeXinfo-lrc-argument-hook)
+   '("page")
+   '("paragraphindent" "Indent")
+   '("pindex" "Entry")
+   '("point")
+   '("print")
+   '("printindex" "Index-name")
+   '("pxref" "Node-name")
+   '("r" "Text")
+   '("ref" "Node-name")
+   '("refill")
+   '("result")
+   '("samp" "Text")
+   '("sc" "Text")
+   '("section" "Title")
+   '("set" "Flag")
+   '("setchapternewpage" "On-off-odd")
+   '("setfilename" "Info-file-name")
+   '("settitle" "Title")
+   '("shortcontents")
+   '("smallbook")
+   '("sp" "N")
+   '("strong" "Text")
+   '("subheading" "Title")
+   '("subsection" "Title")
+   '("subsubheading" "Title")
+   '("subsubsection" "Title")
+   '("subtitle" "Title")
+   '("summarycontents")
+   '("syncodeindex" "From-index" "Into-index")
+   '("synindex" "From-index" "Into-index")
+   '("t" "Text")
+   '("TeX")
+   '("thischapter")
+   '("thischaptername")
+   '("thisfile")
+   '("thispage")
+   '("tindex" "Entry")
+   '("title" "Title")
+   '("titlefont" "Text")
+   '("titlepage")
+   '("today")
+   '("top" "Title")
+   '("unnumbered" "Title")
+   '("unnumberedsec" "Title")
+   '("unnumberedsubsec" "Title")
+   '("unnumberedsubsubsec" "Title")
+   '("value" "Flag")
+   '("var" "Metasyntactic-variable")
+   '("vindex" "Entry")
+   '("vskip" "Amount")
+   '("w" "Text"))
+  
+  (if (featurep 'tex-19)
+      (require 'outline)		;Must be loaded first.
+    (require 'outln-18))
+  
+  (make-local-variable 'outline-regexp)
+  (setq outline-regexp TeXinfo-outline-regexp)
+  (make-local-variable 'outline-level)
+  (setq outline-level 'TeXinfo-outline-level)
+  
+  (run-hooks 'text-mode-hook 'TeXinfo-mode-hook))
+  
 (provide 'tex-info)
-
+  
 ;;; tex-info.el ends here

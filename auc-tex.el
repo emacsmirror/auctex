@@ -1,6 +1,6 @@
 ;;; auc-tex.el - Compatibility with AUC TeX 6.*
 ;;
-;; $Id: auc-tex.el,v 5.50 1993-09-06 22:26:44 amanda Exp $
+;; $Id: auc-tex.el,v 5.51 1994-01-23 08:13:56 amanda Exp $
 ;;
 ;; Copyright (C) 1991 Kresten Krab Thorup 
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -55,7 +55,6 @@
 (TeX-define-key "\C-c!"    'TeX-print)
 (TeX-define-key "\e\t"    'TeX-complete-symbol)
 (TeX-define-key "\C-c$"    'TeX-run-lacheck)
-(TeX-define-key "\C-c;"    'TeX-comment-out-region)
 
 (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
 (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
@@ -90,7 +89,7 @@
   (setq TeX-current-process-region-p nil)
   (TeX-command TeX-command-default 'TeX-master-file))
 
-(defun TeX-run-command (name)
+(defun TeX-old-command (name)
   "OBSOLETE: Run command NAME on either the current document or region."
   (require 'tex-buf)
   (if TeX-current-process-region-p
@@ -100,27 +99,27 @@
 (defun TeX-preview ()
   "OBSOLETE: Run View command on either the current document or region."
   (interactive)
-  (TeX-run-command "View"))
+  (TeX-old-command "View"))
 
 (defun TeX-print ()
   "OBSOLETE: Run Print command on either the current document or region."
   (interactive)
-  (TeX-run-command "Print"))
+  (TeX-old-command "Print"))
 
 (defun TeX-run-lacheck()
   "OBSOLETE: Run lacheck command on either the current document or region."
   (interactive)
-  (TeX-run-command "Check"))
+  (TeX-old-command "Check"))
 
 (defun LaTeX-bibtex ()
   "OBSOLETE: Run BibTeX command on either the current document or region."
   (interactive)
-  (TeX-run-command TeX-command-BibTeX))
+  (TeX-old-command TeX-command-BibTeX))
 
 (defun LaTeX-makeindex ()
   "OBSOLETE: Run Index command on either the current document or region."
   (interactive)
-  (TeX-run-command "Index"))
+  (TeX-old-command "Index"))
 
 ;;; Fonts
 

@@ -170,10 +170,6 @@
 ;;;###autoload
 (defun japanese-plain-tex-mode ()
   "Major mode for editing files of input for Japanese plain TeX.
-Makes $ and } display the characters they match.
-Makes \" insert `` when it seems to be the beginning of a quotation,
-and '' when it appears to be the end; it inserts \" only after a \\.
-
 See info under AUC TeX for full documentation.
 
 Special commands:
@@ -183,18 +179,17 @@ Entering japanese-plain-tex-mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of plain-tex-mode-hook."
   (interactive)
-  (VirTeX-mode "JTEX"))
+  (plain-TeX-common-initialization)
+  (setq mode-name "jtex")
+  (setq major-mode 'japanese-plain-tex-mode)
+  (setq TeX-command-default "jTeX")
+  (japanese-TeX-initialization)
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
 ;;;###autoload
 (defun japanese-latex-mode ()
   "Major mode for editing files of input for Japanese LaTeX.
-
-Makes $ and } display the characters they match.
-Makes \" insert `` when it seems to be the beginning of a quotation,
-and '' when it appears to be the end; it inserts \" only after a \\.
-LFD and TAB indent lines as with programming modes.
-
-See under AUC TeX for full documentation.
+See info under AUC TeX for full documentation.
 
 Special commands:
 \\{LaTeX-mode-map}
@@ -203,18 +198,17 @@ Entering japanese-LaTeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of LaTeX-mode-hook."
   (interactive)
-  (VirTeX-mode "JLATEX"))
+  (LaTeX-common-initialization)
+  (japanese-LaTeX-initialization)
+  (setq mode-name "jlatex")
+  (setq major-mode 'japanese-latex-mode)  
+  (setq TeX-command-default "jLaTeX")
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
 
 ;;;###autoload
 (defun japanese-slitex-mode ()
   "Major mode for editing files of input for Japanese SliTeX.
-
-Makes $ and } display the characters they match.
-Makes \" insert `` when it seems to be the beginning of a quotation,
-and '' when it appears to be the end; it inserts \" only after a \\.
-LFD and TAB indent lines as with programming modes.
-
-See under AUC TeX for full documentation.
+See info under AUC TeX for full documentation.
 
 Special commands:
 \\{LaTeX-mode-map}
@@ -223,7 +217,15 @@ Entering japanese-SLiTeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of LaTeX-mode-hook. and then the value of SliTeX-mode-hook."
   (interactive)
-  (VirTeX-mode "JSLITEX"))
+  (japanese-LaTeX-initialization)
+  (LaTeX-common-initialization)
+  (setq mode-name "jSliTeX")
+  (setq major-mode 'japanese-slitex-mode)
+  (setq TeX-command-default "jSliTeX")
+  (setq LaTeX-default-style "jslides")
+  (setq TeX-delayed-style-hooks (cons "slitex" TeX-delayed-style-hooks))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook
+	     'SliTeX-mode-hook))
 
 ;;; MULE and NEMACS paragraph filling.
 

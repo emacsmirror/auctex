@@ -1,6 +1,6 @@
 * README - Introduction to AUC TeX.
 
-$Id: README,v 5.25 1993-07-16 04:34:00 amanda Exp $
+$Id: README,v 5.26 1994-01-23 08:13:53 amanda Exp $
 
 ** Copyright
 
@@ -101,7 +101,7 @@ commands you should able to use in this particular document.  This
 `knowledge' of AUC TeX is used for two purposes: 1) To make you able
 to `complete' partly written LaTeX commands. You may e.g. write
 "\renew" and press C-c TAB (TeX-complete-symbol), and then AUC TeX
-will complete the word "\renewcommand" for you. In case of ambigiouty
+will complete the word "\renewcommand" for you. In case of ambiguity
 it will display a list of possible completions. 2) To aid you
 inserting environments, that is \begin - \end pairs. This is done by
 pressing C-c C-e (LaTeX-environment), and you will be prompted for
@@ -132,7 +132,7 @@ When invoking on of the commands TeX-command-master (C-c C-c) or
 TeX-command-region (C-c C-r) LaTeX is run on either the entire current
 document or a given region of it.  The Emacs view is split in two, and
 the output of TeX is printed in the second half of the screen, as you
-may simultainiously continue editing you document.  In case TeX found
+may simultaneously continue editing you document.  In case TeX found
 any errors when processing your input you can call the function
 TeX-next-error (C-c `) which will move the cursor to the first given
 error, and display a short explanatory text along with the message TeX
@@ -169,7 +169,7 @@ See the texinfo file for a list of changes in the last versions.
 
 AUC TeX is available by anonymous ftp to `iesd.auc.dk' as
 "/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X_x' specifies the release
-version) The most resent version is ALLWAYS available in
+version) The most resent version is ALWAYS available in
 `/pub/emacs-lisp/auctex.tar.Z'.  In case you don't have access
 anonymous ftp, you can get it by email requests to
 `ftpmail@decwrl.dec.com'.

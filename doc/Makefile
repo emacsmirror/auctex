@@ -2,12 +2,12 @@
 infodir=/usr/local/info
 TEX=tex
 
-all: auc-tex.dvi ref-card.dvi math-ref.dvi auc-info
+all: auc-tex.dvi ref-card.dvi math-ref.dvi auctex
 
-dist: auc-info auc-tex_toc.html
+dist: auctex auc-tex_toc.html
 
 auc-tex_toc.html: auc-tex.texi
-	texi2html -split auc-tex.texi
+	texi2html -split_node auc-tex.texi
 
 math-ref.dvi: math-ref.tex
 	$(TEX) math-ref
@@ -34,19 +34,19 @@ auc-tex.dvi: auc-tex.texi
 	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
-auc-info: auc-tex.texi
+auctex: auc-tex.texi
 	-makeinfo auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
 	@echo "** a newer version of texinfo?"
 	@echo "**********************************************************"
 
-install: auc-info
-	cp auc-info* $(infodir)
+install: auctex
+	cp auctex auctex-* $(infodir)
 	@echo "**********************************************************"
-	@echo "** auc-info may now be installed"
+	@echo "** The \`auctex' info files are now installed."
 	@echo "** Edit \`$(infodir)/dir'"
-	@echo "** to reflect the file \`auc-info'"
+	@echo "** to add an entry for file \`auctex'"
 	@echo "**********************************************************"
 
 clean: allways

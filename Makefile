@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.76 1994-01-11 23:00:53 amanda Exp $
+# $Id: Makefile,v 5.77 1994-01-23 08:13:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -38,8 +38,8 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 EMACS=emacs-19.22
 
 # For OS/2 use
-#EXE=.exe
-EXE=
+#LACHECK=lacheck.exe
+LACHECK=lacheck
 
 # For gcc use
 LIBS=
@@ -108,12 +108,6 @@ AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
 	 outln-18.el powerkey.el out-xtra.el
 
-FORMATSRC = format/VIRTEX.el format/TEXINFO.el \
-	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
-	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
-	    format/FOILTEX.el format/AMSTEX.el format/AMSLATEX.el \
-	    format/LATEX2E.el
-
 STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/article.el   style/book.el     style/letter.el \
 	   style/report.el    style/latex2e.el  style/amsart.el \
@@ -121,7 +115,7 @@ STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
 	   style/jarticle.el  style/jbook.el    style/jreport.el \
-	   style/dinbrief.el
+	   style/dinbrief.el  style/virtex.el
 
 LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 	       lacheck/test.tex
@@ -172,10 +166,10 @@ install: LispInstall LaInstall DocInstall
 	@echo "** "
 	@echo "** It is possible to use AUC TeX without this information."
 	@echo "** "
-	@echo "** Do NOT try to install the auto files with Lucid Emacs!"
-	@echo "** Lucid Emacs batch mode is broken and will crash, at least"
-	@echo "** in version 19.6 and earlier.  You can install them from"
-	@echo "** an interactive emacs session by typing"
+	@echo "** WARNING: Some old Emacs versions are broken, and will"
+	@echo "** not allow the auto files to be installed this way."
+	@echo "** You can instead install them from an interactive"
+	@echo "** emacs session by typing"
 	@echo "** \"M-x TeX-auto-generate-global RET\"."
 	@echo "**********************************************************"
 	@echo
@@ -211,7 +205,8 @@ LaInstall: TLaCheck
 	@echo "**********************************************************"
 	@echo "** Installing LaCheck "
 	@echo "**********************************************************"
-	-(cd lacheck; $(MAKE) install bindir=$(bindir) mandir=$(mandir))
+	-(cd lacheck; $(MAKE) install bindir=$(bindir) mandir=$(mandir) \
+	LACHECK=$(LACHECK) SHELL=$(SHELL))
 
 DocInstall: 
 	@echo "**********************************************************"
@@ -226,17 +221,14 @@ LispInstall:
 	@echo "** Expect some harmless warnings about free variables and "
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
-	$(ELC) $(AUCSRC) tex-load.el $(STYLESRC) $(FORMATSRC)
+	$(ELC) $(AUCSRC) tex-load.el $(STYLESRC)
 	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); else true; fi ; 
 	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; \
 	                                 else true; fi ; \
-	    if [ ! -d $(aucdir)/format ]; then mkdir $(aucdir)/format; \
-			                  else true;  fi ; \
 	    $(MV) *.elc $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
-	    $(MV) format/*.elc $(aucdir)/format ; \
 	else true; \
 	fi
 
@@ -244,9 +236,9 @@ TLaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck"
 	@echo "**********************************************************"
-	-(cd lacheck; $(MAKE) bindir=$(bindir) \
-	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" \
-	  EXE=$(EXE) LIBS=$(LIBS))
+	-( cd lacheck; $(MAKE) bindir=$(bindir) \
+	   CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" \
+	   LACHECK=$(LACHECK) LIBS=$(LIBS))
 
 TDoc: 
 	@echo "**********************************************************"
@@ -258,6 +250,9 @@ clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
 	(cd doc; $(MAKE) clean)
 	(cd lacheck; $(MAKE) clean)
+
+wc:
+	wc $(AUCSRC) $(STYLESRC) 
 
 tex-load.el: $(AUCSRC) 
 	mv tex-load.el loaddefs.el
@@ -282,21 +277,19 @@ dist:	tex-load.el
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
-	-(cd format; cvs add `echo $(FORMATSRC) | sed -e s@format/@@g` )
 	cvs commit -m "Release $(TAG)"
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
-	mkdir auctex-$(TAG)/style auctex-$(TAG)/format 
+	mkdir auctex-$(TAG)/style
 	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
 	cp $(AUCSRC) tex-load.el $(EXTRAFILES) auctex-$(TAG)
-	cp $(FORMATSRC) auctex-$(TAG)/format
 	cp $(STYLESRC) auctex-$(TAG)/style
 	cp $(LACHECKFILES) auctex-$(TAG)/lacheck
 	(cd lacheck; $(MAKE) $(LACHECKGEN); \
 	 cp $(LACHECKGEN) ../auctex-$(TAG)/lacheck )
 	cp $(DOCFILES)  auctex-$(TAG)/doc
-	(cd doc; $(MAKE) dist; cp auc-info* ../auctex-$(TAG)/doc )
-	cp doc/*.html /user/amanda/lib/www
+	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
+	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.Z
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.54 1994-01-11 23:01:04 amanda Exp $
+;; $Id: tex-buf.el,v 1.55 1994-01-23 08:14:11 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -318,7 +318,8 @@ entry."
 					TeX-printer-list))
 		   "")))
     
-    (setq printer (car-safe (TeX-assoc printer TeX-printer-list)))
+    (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
+		      printer))
     (if (or (null printer) (string-equal "" printer))
 	(setq printer TeX-printer-default)
       (setq TeX-printer-default printer))

@@ -1,11 +1,11 @@
 \input texinfo
-@setfilename auc-info
+@setfilename auctex
 @settitle AUC TeX
 @c footnotestyle separate
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.68 1994-01-11 23:01:16 amanda Exp $
+@c $Id: auc-tex.texi,v 1.69 1994-01-23 08:14:31 amanda Exp $
 
 @finalout
 @titlepage
@@ -51,7 +51,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 8.0.
+This file documents AUC @TeX{} version 8.1.
 
 The keybindings have changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -102,62 +102,6 @@ TeX-submit-bug-report} to report bugs.@refill
 * Variable Index::              Variable Index
 * Concept Index::               Concept Index
 
- --- The Detailed Node Listing ---
-
-Inserting Frequently Used Commands  
-
-* Quotes::                      Inserting double quotes
-* Font Specifiers::             Inserting Font Specifiers 
-* Sectioning::                  Inserting chapters, sections, etc. 
-* Environments::                Inserting Environment Templates
-
-Inserting Environment Templates
-
-* Floats::                      Floats
-* Itemize-like::                Itemize-like
-* Tabular-like::                Tabular-like
-* Customizing environments::    Customizing environments
-
-Advanced Editing Features 
-
-* Mathematics::                 Entering Mathematics 
-* Completion::                  Completion 
-* Commenting::                  Commenting 
-* Marking and formatting::      Marking, Formatting and Indenting
-* Outline::                     Hiding text.
-
-Formatting and Printing 
-
-* Commands::                    Invoking external commands.
-* Debugging::                   Debugging @TeX{} and La@TeX{} output.
-* Checking::                    Checking the document.
-* Control::                     Controlling the processes.
-
-Automatic Customization
-
-* Automatic Global::            Automatic Customization for the Site
-* Automatic Private::           Automatic Customization for a User
-* Automatic Local::             Automatic Customization for a Directory
-
-Writing Your own Style Support
-
-* Simple Style::                A Simple Style File
-* Adding Macros::               Adding Support for Macros
-* Adding Environments::         Adding Support for Environments
-* Adding Other::                Adding Other Information
-* Format Packages::             Supporting Other Format Packages
-* Hacking the Parser::          Automatic Extraction of New Things
-
-The History of AUC @TeX{}
-
-* Version 8.0::                 News in 8.0
-* Version 7.3::                 News in 7.3
-* Version 7.2::                 News in 7.2
-* Version 7.1::                 News in 7.1
-* Version 7.0::                 News in 7.0
-* Version 6.1::                 News in 6.1
-* Version 6.0::                 News in 6.0
-* Ancient History::             Ancient History
 @end menu
 
 @node Copying, Introduction, top, top
@@ -284,7 +228,7 @@ avoiding stupid mistakes like mismatched braces, or
 @end menu
 
 @node Quotes, Font Specifiers, Frequently Used Commands, Frequently Used Commands
-@section Insertion of Quotes Dollars, and Braces
+@section Insertion of Quotes, Dollars, and Braces
 
 @cindex Quotes
 @cindex Double quotes
@@ -887,8 +831,8 @@ It is often necessary to comment out temporarily a region of @TeX{} or
 La@TeX{} code.  This can be done with the commands @kbd{C-c ;} and
 @kbd{C-c %}.  @kbd{C-c ;} will comment out all lines in the current
 region, while @kbd{C-c %} will comment out the current paragraph.  To
-uncomment, simply type @kbd{C-u C-c ;} to uncomment all lines in the
-region, or @kbd{C-u C-c %} uncomment all comment lines around point.  
+uncomment, simply type @kbd{C-u - C-c ;} to uncomment all lines in the
+region, or @kbd{C-u - C-c %} uncomment all comment lines around point.  
 
 By default, these commands will insert or remove a single @samp{%}.  To
 insert more than one, give an argument. @kbd{C-u 5 C-c %} will add five
@@ -899,18 +843,6 @@ insert more than one, give an argument. @kbd{C-u 5 C-c %} will add five
 @kindex C-c ;
 (@kbd{C-c ;}) Add or remove @samp{%} from the beginning of each line in
 the current region, as specified by @var{count}.
-
-If @var{count} is nil (no prefix argument), 1 @samp{%} will be added to
-each line.
-
-If @var{count} is a list (a non-numeric prefix argument), 1 @samp{%}
-will be removed from each line.
-
-If @var{count} is positive, @var{count} @samp{%}'s will be added to each
-line. 
-
-If @var{count} is negative, @var{count} @samp{%}'s will be removed from
-each line.
 @end deffn
 
 @deffn Command TeX-comment-paragraph @var{count}
@@ -920,18 +852,6 @@ the current paragraph, as specified by @var{count}.  When removing
 @samp{%}'s the paragraph is considered to consist of all preceding and
 succeeding lines starting with a @samp{%}, until the first non-comment
 line.
-
-If @var{count} is nil (no prefix argument), 1 @samp{%} will be added to
-each line.
-
-If @var{count} is a list (a non-numeric prefix argument), 1 @samp{%}
-will be removed from each line.
-
-If @var{count} is positive, @var{count} @samp{%}'s will be added to each
-line. 
-
-If @var{count} is negative, @var{count} @samp{%}'s will be removed from
-each line.
 @end deffn
 
 @node Marking and formatting, Outline, Commenting, Advanced Features
@@ -1063,16 +983,52 @@ matched by a @samp{@}}.@refill
 @cindex Overview
 @cindex Folding
 
+GNU Emacs earlier than version 19.19 does not have a useful outline
+mode.  If you want to use outlines with old versions of emacs, please
+get the file @file{outln-18.el} from
+@file{ftp.iesd.auc.dk:/pub/emacs-lisp/outln-18.el}.  It is a port of the
+Emacs 19.19 outline mode to Emacs 18 and Lucid Emacs.@refill
+
 AUC @TeX{} supports the standard outline minor mode using La@TeX{}
 sectioning commands as header lines.  @xref{Outline Mode, , Outline
 Mode, emacs, GNU Emacs Manual}.  By default
 @code{outline-minor-mode} will use the prefix key @kbd{C-c} which is
 also used by AUC @TeX{}, so it is suggested that you choose another
 prefix key by inserting 
+
 @lisp
   (setq outline-minor-mode-prefix "\C-c\C-o") ; Or whatever...
 @end lisp
+
 in your @file{.emacs} file.
+
+You can add your own headings by setting the variable
+@code{TeX-outline-extra}. 
+
+@defvar TeX-outline-extra
+List of extra @TeX{} outline levels.
+
+Each element is a list with two entries.  The first entry is the regular
+expression matching a header, and the second is the level of the header.
+A @samp{^} is automatically prepended to the regular expressions in the
+list, so they must match text at the beginning of the line.
+
+See @code{LaTeX-section-list} for existing header levels.
+@end defvar
+
+The following example add @samp{\item} and @samp{\bibliography} headers,
+with @samp{\bibliography} at the same outline level as @samp{\section},
+and @samp{\item} being below @samp{\subparagraph}.
+
+@example
+(setq TeX-outline-extra
+      '(("[ \t]*\\\\\\(bib\\)?item\\b" 7)
+        ("\\\\bibliography\\b" 2)))
+@end example
+
+You may want to check out the unbundled @file{out-xtra} package for even
+better outline support.  It is available from your favorite emacs lisp
+archive.
 
 @node Formatting, Multifile, Advanced Features, top
 @chapter Formatting and Printing 
@@ -1680,8 +1636,8 @@ These files or directories will not be considered when searching for
 @cindex Site information
 
 Assuming that the automatic customization at the global level was done
-when AUC @TeX{} was installed, your choice is now.  Will you use it?
-If you use it, you will benefit by having access to all the symbols and
+when AUC @TeX{} was installed, your choice is now: will you use it?  If
+you use it, you will benefit by having access to all the symbols and
 environments available for completion purposes.  The drawback is slower
 load time when you edit a new file and perhaps too many confusing
 symbols when you try to do a completion.
@@ -1797,7 +1753,6 @@ directories instead of @file{auto} directories.
 * Adding Macros::               Adding Support for Macros
 * Adding Environments::         Adding Support for Environments
 * Adding Other::                Adding Other Information
-* Format Packages::             Supporting Other Format Packages
 * Hacking the Parser::          Automatic Extraction of New Things
 @end menu
 
@@ -2109,7 +2064,7 @@ Add each @var{env} to list of loaded environments.
 Insert environment of type @var{env}, with optional argument @var{extra}.
 @end defun
 
-@node Adding Other, Format Packages, Adding Environments, Style Files
+@node Adding Other, Hacking the Parser, Adding Environments, Style Files
 @section Adding Other Information
 @cindex Adding bibliographies
 @cindex Bibliographies, adding
@@ -2133,63 +2088,7 @@ Add each @var{bibliography} to list of loaded bibliographies.
 Add each @var{label} to the list of known labels.
 @end defun
 
-@node Format Packages, Hacking the Parser, Adding Other, Style Files
-@section Supporting Other Format Packages
-
-You can add support for new @TeX{} format packages.  These are treated
-specially, in that they are loaded immediately after you enter
-@code{VirTeX-mode}, and they actually define the major mode. 
-
-Here is the file defining @code{slitex-mode}. 
-
-@lisp
-;;; @ SLITEX.el - Special code for SliTeX mode.
-
-(require 'tex-init)
-(require 'ltx-misc)
-
-(TeX-add-style-hook "SLITEX"
- (function
-  (lambda ()
-    (setq mode-name "SliTeX")
-    (setq major-mode 'SliTeX-mode)  
-    (setq TeX-command-default TeX-command-SliTeX)
-    (LaTeX-mode-initialization)
-    (run-hooks 'SliTeX-mode-hook)
-    (TeX-run-style-hooks "latex" "slitex"))))
-@end lisp
-
-The file should be placed in the directory @code{TeX-format-directory}.
-
-@defopt TeX-format-directory
-Directory containing information about @TeX{} format packages.
-Must end with a slash.
-@end defopt
-
-You must also add an entry to @code{TeX-format-list} in order to make it
-known to the rest of the system.
-
-@defopt TeX-format-list
-List of format packages to consider when choosing a @TeX{} mode.
-
-A list with an entry for each format package available at the site.
-
-Each entry is a list with three elements.
-
-@enumerate
-@item
-The name of the format package.
-@item
-The name of the major mode.
-@item
-A regexp typically matched in the beginning of the file.
-@end enumerate
-
-When entering @code{tex-mode}, each regexp is tried in turn in order to
-find what major mode to enter.
-@end defopt
-
-@node Hacking the Parser,  , Format Packages, Style Files
+@node Hacking the Parser,  , Adding Other, Style Files
 @section Automatic Extraction of New Things
 @cindex Parsing new macros
 @cindex @file{macro.tex}
@@ -2409,6 +2308,7 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
+* Version 8.1::                 News in 8.1
 * Version 8.0::                 News in 8.0
 * Version 7.3::                 News in 7.3
 * Version 7.2::                 News in 7.2
@@ -2419,7 +2319,60 @@ this version, and for the authors, who get nostalgic at times.
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 8.0, Version 7.3, History, History
+@node Version 8.1, Version 8.0, History, History
+@comment  node-name,  next,  previous,  up
+@section News in 8.1
+
+@itemize @bullet
+@item
+Fixed problems with @TeX{}info menus.  Thanks to David Smith
+@samp{<maa507@@comp.lancs.ac.uk>} for reporting this.
+
+@item
+Code cleanup.   Removed the @file{format} directory, as it did not make
+it easier to add new @TeX{} modes, quite the contrary.
+
+@item
+Fixed name conflict in @file{auc-tex.el}, reported by Rik Faith
+@samp{<faith@@cs.unc.edu>}. 
+
+@item
+Fixed some spelling errors.  Thanks to Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>}. 
+
+@item
+Fixed bug prohibiting non-standard file extensions.  Now recognize
+@file{.ltx} by default.  Suggested by Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>}. 
+
+@item
+Name of the AUC @TeX{} info files changes once again to be useable under
+DOS.  This time simply to @file{auctex}.
+
+@item
+Documented @code{TeX-outline-extra}.
+
+@item
+Could not select command on region from the menu before loading
+@file{tex-buf}.  Reported by Uwe Bonnes
+@samp{<bon@@lte.e-technik.uni-erlangen.de>}.
+
+@item
+Make the hilit19 interface more robust.  Thanks to William Dean Norris
+II @samp{<wdn@@dragonfly.cis.ufl.edu>}.
+
+@item
+More OS/2 Makefile fixes by Bodo Huckestein
+@samp{<bodo@@eu10.mpi-hd.mpg.de>}.
+
+@item
+Reimplemented comment support on top of @code{comment-region}, giving
+slightly different semantics.
+@end itemize
+
+Coordinater: Per Abrahamsen, 1993.
+
+@node Version 8.0, Version 7.3, Version 8.1, History
 @comment  node-name,  next,  previous,  up
 @section News in 8.0
 
@@ -3463,6 +3416,13 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+La@TeX{} formatting should skip @code{verbatim} environments.
+
+@item
+@code{TeX-command-default} should be set from the master file, if not
+set locally.  Suggested by Peter Whaite @samp{<peta@@cim.mcgill.ca>}.
+
+@item
 All the text formatting code really need a major rewrite.  Not that
 there are many bugs, but I can't figure out how to fix those that
 exists. 
@@ -3558,8 +3518,6 @@ Here is the start of such a list.
 @item LaTeX-largest-level
 
 @end table
-
-The rules for what can be done in a format package hook are different. 
 
 @item 
 Correct indentation for tabular, tabbing, table, math, and array
