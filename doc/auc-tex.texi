@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.91 1994-05-04 22:54:31 amanda Exp $
+@c $Id: auc-tex.texi,v 1.92 1994-06-22 14:49:42 amanda Exp $
 
 @finalout
 @titlepage
@@ -3702,6 +3702,20 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+The argument to @samp{\verb} may be broken when filling if it contains a
+space.  This should be fixed or documented.  Suggested by several
+people.
+
+@item
+The parser should catch warnings about undefined crossreferences.
+Suggested by Richard Hirsch @samp{i3080501@@ws.rz.tu-bs.de}.
+
+@item
+Change name of @file{easymenu.el} to @file{auc-menu.el} to avoid
+conflict with RMS's version.  Keep the interface and do a @code{(provide
+'easymenu)}.
+
 @item
 A nice hierarchical by-topic organization of all officially documented
 LaTeX macros, available from the menu bar.

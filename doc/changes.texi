@@ -14,6 +14,11 @@ and probably more.@refill
 
 @itemize @bullet
 @item
+Marking a section or environment now highlight it in Lucid Emacs.  It
+already worked in GNU Emacs.  Thanks to Andreas Ernst
+@samp{ernst_a@@maths.uwa.edu.au}.
+
+@item
 Font support for La@TeX{}2e.  Many people suggested this.
 Set @code{LaTeX-version} to @samp{2e} to activate it.
 

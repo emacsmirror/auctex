@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.21 1994-06-07 01:47:04 amanda Exp $
+;; Version: $Id: latex.el,v 5.22 1994-06-22 14:49:20 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1483,7 +1483,8 @@ comments and verbatim environments"
     (beginning-of-line 2)
     (set-mark (point))
     (goto-char cur)
-    (LaTeX-find-matching-begin)))
+    (LaTeX-find-matching-begin)
+    (TeX-activate-region)))
 
 (defun LaTeX-format-environment (justify)
   "Fill and indent current environment as LaTeX text."
@@ -1517,7 +1518,8 @@ comments and verbatim environments"
   (re-search-backward "^")
   (set-mark (point))
   (re-search-backward (concat "\\(" (LaTeX-outline-regexp)
-			      "\\|\\`\\)")))
+			      "\\|\\`\\)"))
+  (TeX-activate-region))
 
 (defun LaTeX-format-buffer (justify)
   "Fill and indent current buffer as LaTeX text."
