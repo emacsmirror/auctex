@@ -1,3 +1,4 @@
+%\CheckSum{356}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
 %\maketitle
@@ -149,8 +150,15 @@
 %|\else| and |\fi|.  
 %\StopEventually{}
 %\section{The Implementation}
+% Here we go:
+%    \begin{macrocode}
+%<*style>
+%<*!active>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{preview}[2001/10/05 version 0.5+]
+%    \end{macrocode}
 %Since many parts here will not be needed as long as the package is
-%inactive, we will include them enclosed with |<active>| and
+%inactive, we will include them enclosed with |<*active>| and
 %|</active>| guards.  That way, we can append all of this stuff at a
 %place where it does not get loaded if not necessary.
 %
@@ -159,8 +167,6 @@
 %  so we don't use \cmd{\newif} here.  As a consequence, there are no
 %  \cmd{\Previewtrue} and \cmd{\Previewfalse} commands.
 %    \begin{macrocode}
-%<*style>
-%<*!active>
 \let\ifPreview\iffalse
 %</!active>
 %    \end{macrocode}
@@ -558,7 +564,7 @@
 %<*active>
 \renewenvironment{preview}{\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}\ignorespaces}%
-   {\endgroup\unskip}
+   {\unskip\endgroup}
 \renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}{\unskip}
 %    \end{macrocode}
 %Try to keep \LaTeX\ from overwriting its information files:
