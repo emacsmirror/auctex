@@ -96,12 +96,30 @@ will install the files into the locations chosen earlier.  You may
 need special privileges to install, e.g. if you are installing into
 system directories.
 
-* Load it by putting (require 'preview) into your .emacs.  
+* Make Emacs load it automatically
 
-Be sure to have AucTeX up and working.  C-c C-c g <RET> should then
-give you a graphics preview, if you have a statement like
-\usepackage[graphics,floats,textmath,displaymath,delayed]{preview} in
-your document preamble.  If your preamble does not load the preview
+You need to place a few lines in your personal .emacs file (or a
+site-wide configuration file).
+
+First make sure that the directory where you installed the lisp files
+of preview-latex is in Emacs' load-path variable.  This could mean,
+for example, adding the line
+
+(add-to-list 'load-path "~/elisp/preview")
+to your .emacs file.
+
+Next put the following lines into your .emacs file:
+
+(autoload 'LaTeX-preview-setup "preview")
+(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+
+This will make Emacs load preview.el and let it install itself into
+Auc-TeX when you first load a LaTeX file.
+
+If you have AucTeX up and working,  C-c C-c g <RET> in a fresh Emacs
+should then give you a graphics preview, if you have a statement like
+\usepackage[graphics,floats,textmath,displaymath,delayed]{preview}
+in your document preamble.  If your preamble does not load the preview
 LaTeX package, it will get automatically loaded with a default option
 set.  You can customize this default option set and other settings of
 the Emacs package by entering
