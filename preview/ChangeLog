@@ -1,5 +1,11 @@
 2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-image-creators): Add preview-eps-open
+	function for calling dvips conversion.
+	(preview-eps-open): Resume half-hearted support of postscript
+	image type.  Does anybody use this, after all?  If so, let him
+	run DviPS in background if he so desires...
+
 	* preview.dtx (subsection{The internals}): add \leavevmode to make
 	things like \paragraph flush their \everypar tokens.  Perhaps not
 	the right thing to do, let's wait for error reports about that
