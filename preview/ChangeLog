@@ -1,9 +1,14 @@
+2002-04-17  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-move-point): Use map-extents rather than
+	extents-at.
+
 2002-04-16  Nix  <nix@esperi.demon.co.uk>
 
 	* doc/install.texi (Configure):
 	Describe what to pass to configure when you are a normal user,
-	but you have installed no packages before so your local package directory
-	doesn't exist.
+	but you have installed no packages before so your local package
+	directory doesn't exist.
 
 	* doc/problems.texi (Problems with GhostScript):
 	The error buttons are right-clickable too.
