@@ -1622,6 +1622,10 @@ Otherwise they will be filled like normal text."
 ;; 2) Comments starting after column one with only whitespace
 ;;    preceding it.
 ;;
+;; (There is actually a third type: Comments preceded not only by
+;; whitespace but by some code as well; so-called code comments.  But
+;; they are not relevant for the following explanations.)
+;;
 ;; Additionally we are distinguishing two different types of
 ;; indentation:
 ;;
@@ -1634,13 +1638,14 @@ Otherwise they will be filled like normal text."
 ;;
 ;; In `doctex-mode' line comments should always be indented
 ;; syntax-aware and the comment character has to be anchored at the
-;; first column.  Other comments not in the documentation parts always
-;; start after the first column and can be indented syntax-aware or
-;; not.  If they are indented syntax-aware both the indentation before
-;; and after the comment character(s) have to be checked and adjusted.
-;; Indentation should not move the comment character(s) to the first
-;; column.  With `LaTeX-format-comment-syntax-aware' disabled, line
-;; comments should still be indented syntax-aware.
+;; first column (unless the appear in a macrocode environment).  Other
+;; comments not in the documentation parts always start after the
+;; first column and can be indented syntax-aware or not.  If they are
+;; indented syntax-aware both the indentation before and after the
+;; comment character(s) have to be checked and adjusted.  Indentation
+;; should not move the comment character(s) to the first column.  With
+;; `LaTeX-format-comment-syntax-aware' disabled, line comments should
+;; still be indented syntax-aware.
 ;;
 ;; In `latex-mode' comments starting in different columns don't have
 ;; to be handled differently.  They don't have to be anchored in
@@ -1734,6 +1739,19 @@ value."
   :group 'LaTeX-indentation
   :type 'regexp)
 
+(defvar docTeX-indent-inner-fixed
+  `((,(concat (regexp-quote TeX-esc)
+             "\\(begin\\|end\\)[ \t]*{macrocode}") 4 t)
+    (,(concat (regexp-quote TeX-esc)
+             "\\(begin\\|end\\)[ \t]*{macro}") 0 nil))
+  "List of items which should have a fixed inner indentation.
+The items consist of three parts.  The first is a regular
+expression which should match the respective string.  The second
+is the amount of spaces to be used for indentation.  The third
+toggles if comment padding is relevant or not.  If `t' padding is
+part of the amount given, if `nil' the amount of spaces will be
+inserted after potential padding.")
+
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
 Add `LaTeX-indent-level' indentation in each \\begin{ - \\end{ block.
@@ -1814,46 +1832,67 @@ Lines starting with an item is given an extra indentation of
   (indent-to outer-indent))
 
 (defun LaTeX-indent-calculate (&optional force-type)
-  "Return the indentation of a line of LaTeX source.  FORCE-TYPE
-can be used to force the calculation of an inner or outer
-indentation in case of a commented line.  The symbols 'inner and
-'outer are recognized."
+  "Return the indentation of a line of LaTeX source.
+FORCE-TYPE can be used to force the calculation of an inner or
+outer indentation in case of a commented line.  The symbols
+'inner and 'outer are recognized."
   (save-excursion
     (LaTeX-back-to-indentation force-type)
-    (cond ((looking-at (concat (regexp-quote TeX-esc)
-			       "\\(begin\\|end\\){\\("
-			       LaTeX-verbatim-regexp
-			       "\\)}"))
-	   ;; \end{verbatim} must be flush left, otherwise an unwanted
-	   ;; empty line appears in LaTeX's output.
-	   0)
-	  ((and LaTeX-indent-environment-check
-		;; Special environments.
-		(let ((entry (assoc (LaTeX-current-environment)
-				    LaTeX-indent-environment-list)))
-		  (and entry
-		       (nth 1 entry)
-		       (funcall (nth 1 entry))))))
-	  ((looking-at (concat (regexp-quote TeX-esc)
-			       "\\("
-			       LaTeX-end-regexp
-			       "\\)"))
-	   ;; Backindent at \end.
-	   (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
-	  ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
-	   ;; Backindent at \right.
-	   (- (LaTeX-indent-calculate-last force-type)
-	      LaTeX-left-right-indent-level))
-	  ((looking-at (concat (regexp-quote TeX-esc)
-			       "\\("
-			       LaTeX-item-regexp
-			       "\\)"))
-	   ;; Items.
-	   (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
-	  ((looking-at "}")
-	   ;; End brace in the start of the line.
-	   (- (LaTeX-indent-calculate-last force-type) TeX-brace-indent-level))
-	  (t (LaTeX-indent-calculate-last force-type)))))
+    (let ((i 0)
+          (list-length (safe-length docTeX-indent-inner-fixed))
+          entry
+          found)
+      (cond ((and (eq major-mode 'doctex-mode)
+                  fill-prefix
+                  (TeX-in-line-comment)
+                  (progn
+                    (while (and (< i list-length)
+                                (not found))
+                      (setq entry (nth i docTeX-indent-inner-fixed))
+                      (when (looking-at (nth 0 entry))
+                        (setq found t))
+                      (setq i (1+ i)))
+                    found))
+             (if (nth 2 entry)
+                 (- (nth 1 entry) (if (integerp comment-padding)
+                                      comment-padding
+                                    (length comment-padding)))
+               (nth 1 entry)))
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\(begin\\|end\\){\\("
+                                 LaTeX-verbatim-regexp
+                                 "\\)}"))
+             ;; \end{verbatim} must be flush left, otherwise an unwanted
+             ;; empty line appears in LaTeX's output.
+             0)
+            ((and LaTeX-indent-environment-check
+                  ;; Special environments.
+                  (let ((entry (assoc (LaTeX-current-environment)
+                                      LaTeX-indent-environment-list)))
+                    (and entry
+                         (nth 1 entry)
+                         (funcall (nth 1 entry))))))
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-end-regexp
+                                 "\\)"))
+             ;; Backindent at \end.
+             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
+            ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
+             ;; Backindent at \right.
+             (- (LaTeX-indent-calculate-last force-type)
+                LaTeX-left-right-indent-level))
+            ((looking-at (concat (regexp-quote TeX-esc)
+                                 "\\("
+                                 LaTeX-item-regexp
+                                 "\\)"))
+             ;; Items.
+             (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
+            ((looking-at "}")
+             ;; End brace in the start of the line.
+             (- (LaTeX-indent-calculate-last force-type)
+                TeX-brace-indent-level))
+            (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
   "Count indentation change caused by all \\left, \\right, \\begin, and
@@ -1935,6 +1974,14 @@ outer indentation in case of a commented line.  The symbols
 		;; Some people have opening braces at the end of the
 		;; line, e.g. in case of `\begin{letter}{%'.
 		(TeX-brace-count-line)))
+            ((and (eq major-mode 'doctex-mode)
+                (looking-at (concat (regexp-quote TeX-esc)
+                                    "end[ \t]*{macrocode}"))
+                fill-prefix
+                (TeX-in-line-comment))
+             ;; Reset indentation to zero after a macrocode
+             ;; environment.             
+             0)
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "begin *{\\("
 				 LaTeX-verbatim-regexp
@@ -2350,7 +2397,7 @@ space does not end a sentence, so don't break a line there."
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
   "Move to the position where the line should be broken."
-  ;; COMPATIBILITY for Emacs <= 21.2
+  ;; COMPATIBILITY for Emacs <= 21.3
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
     (skip-chars-backward "^ \n")
@@ -4030,7 +4077,7 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
-(define-derived-mode doctex-mode latex-mode "DocTeX"
+(define-derived-mode doctex-mode latex-mode "docTeX"
   "Major mode for editing .dtx files derived from `LaTeX-mode'.
 Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
