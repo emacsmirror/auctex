@@ -219,7 +219,7 @@ Run preview on this @LaTeX{} section.
 Run preview on @LaTeX{} environment.  The environments in
 @code{preview-inner-environments} are treated as inner levels so that
 for instance, the @code{split} environment in
-@code{\begin@{equation@}\begin@{split@}@ldots\end@{split@}\end@{equation@}} is
+@code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}} is
 properly displayed.  If called with an argument @code{count}, the
 corresponding number of outward nested environments is treated as inner
 levels.
