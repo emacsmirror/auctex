@@ -1,3 +1,22 @@
+2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-parsed-tightpage): New variable.
+	(preview-TeX-bb): Use tightpage borders if found in file.
+	(preview-gs-flag-error): Display correct file on error.
+	(preview-gs-transact): Don't pass page dimensions if tightpage is
+	active.
+	(preview-required-option-list): Replace dvips option with tightpdf
+	option.
+	(preview-parse-tightpage): New function.
+	(preview-parse-variables): Add preview-parse-tightpage, add
+	function quoting.
+
+	* latex/preview.dtx: Some reformatting, add new parse items - and
+	  >, add new option pdftex, adjust tightpage for it, add new
+	  option tightpdf.
+
+	* doc/preview-dtxdoc.pl: Eat spaces after %.
+
 2004-04-09  David Kastrup  <dakas@users.sourceforge.net>
 
 	*  images/preverr.xbm:
