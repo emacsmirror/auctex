@@ -1,5 +1,21 @@
 2002-04-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-nonready-copy): replaces
+	preview-image-from-icon
+	(preview-replace-active-icon): replaces preview-replace-icon
+	(preview-make-clickable): make preview-string-from-image
+	unnecessary.
+
+	* preview.el (preview-gs-place): Don't return image, just enter
+	it.
+	(preview-gs-transact): Call preview-replace-active-icon
+	specialized routine instead of the more general hack used before.
+	(preview-disabled-string): kill preview-string-from-image
+	(preview-inactive-string): same here.
+	(preview-eps-place): change in place semantics as above.
+	(preview-active-string): Don't receive image argument.
+	(preview-place-preview): New place semantics.
+
 	* doc/problems.texi (x-symbol interoperation): Bump recommended
 	version to 4.2.2.
 	(Middle-clicks paste instead of toggling): Mention fixes present
