@@ -1,3 +1,8 @@
+2001-10-12  Alan Shutko  <ats@acm.org>
+
+	* configure.in: Change AC_PATH_PROG of emacs to AC_CHECK_PROG, as
+	it was breaking --with-xemacs.
+
 2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile.in: Switch order of LISP_SOURCES in order to avoid
