@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.455 $"))
+	    (rev "$Revision: 5.456 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-08 16:45:40 $"))
+    (let ((date "$Date: 2004-10-12 12:07:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2146,19 +2146,6 @@ The algorithm is as follows:
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))
 			       (TeX-update-style)) nil t))
-
-;; desktop-locals-to-save is broken by design.  Don't have
-;; buffer-local values of it.
-
-(eval-after-load 'desktop
-  '(progn
-     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode
-			       TeX-Omega-mode))
-       (unless (member elt (default-value 'desktop-locals-to-save))
-	 (setq-default desktop-locals-to-save
-		       (cons elt (default-value 'desktop-locals-to-save)))))
-     (add-hook 'desktop-after-read-hook '(lambda ()
-					   (TeX-set-mode-name t)))))
 
 ;;; Plain TeX mode
 
@@ -4063,7 +4050,7 @@ With optional ARG, insert that many dollar signs."
    (arg
     ;; Numerical arg inserts that many
     (insert (make-string (prefix-numeric-value arg) ?\$)))
-   ((TeX-point-is-escaped)
+   ((TeX-escaped-p)
     ;; This is escaped with `\', so just insert one.
     (insert "$"))
    ((texmathp)
@@ -4087,16 +4074,6 @@ With optional ARG, insert that many dollar signs."
     ;; Just somewhere in the text.
     (insert "$")))
   (TeX-math-input-method-off))
-
-(defun TeX-point-is-escaped ()
-  "Count backslashes before point and return t if number is odd."
-  (let (odd)
-    (save-excursion
-      (while (equal (preceding-char) ?\\)
-	(progn
-	  (forward-char -1)
-	  (setq odd (not odd)))))
-    odd))
 
 (defun TeX-math-input-method-off ()
   "Toggle off input method when entering math mode."
@@ -4296,6 +4273,27 @@ Your bug report will be posted to the AUCTeX mailing list."))
 (setq ispell-tex-major-modes
       (append '(plain-tex-mode ams-tex-mode latex-mode doctex-mode)
 	      ispell-tex-major-modes))
+
+
+;;; Special provisions for other modes and libraries
+
+;; desktop-locals-to-save is broken by design.  Don't have
+;; buffer-local values of it.
+(eval-after-load "desktop"
+  '(progn
+     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode
+			       TeX-Omega-mode))
+       (unless (member elt (default-value 'desktop-locals-to-save))
+	 (setq-default desktop-locals-to-save
+		       (cons elt (default-value 'desktop-locals-to-save)))))
+     (add-hook 'desktop-after-read-hook '(lambda ()
+					   (TeX-set-mode-name t)))))
+
+;; delsel.el, `delete-selection-mode'
+(put 'TeX-newline 'delete-selection t)
+(put 'TeX-insert-dollar 'delete-selection t)
+(put 'TeX-insert-quote 'delete-selection t)
+
 
 (provide 'tex)
 
