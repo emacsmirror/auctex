@@ -1,5 +1,7 @@
 2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: Few changes and explanations for 0.6.1.
+
 	* doc/problems.texi (Font problems with Dvips): Changed pounds
 	sign.  Not much of an improvement (we get the wrong character),
 	but 7bit safe.  If Jan-Åke finds this as desirable as to have his
