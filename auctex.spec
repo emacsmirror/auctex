@@ -15,7 +15,7 @@
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
 Version: 	11.52
-Release: 	1%{distri}
+Release: 	2%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
@@ -38,6 +38,7 @@ Summary: 	Enhanced TeX modes for GNU Emacs
 Group:          %{commongroup}
 Requires: 	emacs >= 21
 Obsoletes:      ge_auc emacs-auctex auctex
+Provides:       auctex
 
 %description emacs
 AUCTeX is an extensible package that supports writing and formatting TeX files
