@@ -3073,7 +3073,8 @@ comments and verbatim environments"
 
 (defvar LaTeX-paragraph-commands
   (concat "[][]\\|" ; display math
-	  (regexp-opt '("begin" "end" "part" "chapter" "label" "caption"
+	  (regexp-opt '("maketitle"
+			"begin" "end" "part" "chapter" "label" "caption"
 			"section" "subsection" "subsubsection" "par"
 			"noindent" "paragraph" "include" "includeonly"
 			"tableofcontents" "appendix") t))
