@@ -1,3 +1,8 @@
+2004-11-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-TeX-sentinel-check): Use only the letters after
+	the last dot of a file name for the file extension.
+
 2004-11-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Search backward for
