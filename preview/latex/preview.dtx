@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1060}
+%\CheckSum{1052}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.66 $
+%  \rcskey \version CVS-$Revision: 1.67 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-08-05 10:16:25 $
+%\rcskey\next $Date: 2002-09-16 21:46:19 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -58,11 +58,25 @@
 %|dvips -E -i|
 %\end{quote}
 %and get a single EPS file with shrink-wrapped bounding box for every
-%generated image of a \LaTeX\ run.  The possibility for generating a
-%whole set of graphics with a single run of \LaTeX\ and Dvips
-%increases both speed and robustness of applications.  It is to be
-%hoped that applications like \LaTeX 2HTML will be able to make use of
-%this package in future.
+%generated image of a \LaTeX\ run.
+%
+%If your ultimate goal is to produce a set of files in a different
+%format that can be produced by GhostScript, take a look at the
+%|tightpage| option of the preview package.  This will embed the page
+%dimensions into the PostScript code, obliterating the need to use the
+%|-E -i| options to Dvips.  You can then produce all image files with
+%a single run of GhostScript from a single PostScript file for all
+%images at once.
+%
+%Various options exist that will pass \TeX\ dimensions and other
+%information about the respective shipped out material (including
+%descender size) into the log file, where external applications might
+%make use of it.
+%
+%The possibility for generating a whole set of graphics with a single
+%run of \LaTeX, Dvips, and GhostScript increases both speed and
+%robustness of applications.  It is to be hoped that applications like
+%\LaTeX 2HTML will be able to make use of this package in future.
 %
 %\section{Package options}
 %The package is included with the customary
@@ -329,10 +343,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.66 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.67 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-08-05 10:16:25 $
+\reserved@a\next $Date: 2002-09-16 21:46:19 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -544,6 +558,7 @@
 %  like the code for \cmd{\paragraph} in \cmd{\everypar}.
 %    \begin{macrocode}
 \def\pr@endbox{%
+   \let\reserved@a\relax
    \ifvmode \edef\reserved@a{\the\everypar}%
       \ifx\reserved@a\@empty\else
             \dimen@\prevdepth
@@ -734,17 +749,29 @@
 %    \end{macrocode}
 %
 %  The |textmath| option.  Some folderol in order to define the active
-%  |$| math mode delimiter.
+%  |$| math mode delimiter.  \cmd\pr@textmathcheck is used for
+%  checking whether we have a single |$| or double |$$|.  In the
+%  latter case, we enter display math (this sort of display math is
+%  not allowed inside of \LaTeX\ because of inconsistent spacing, but
+%  surprisingly many people use it nevertheless).  Strictly speaking,
+%  this is incorrect, since not every |$$| actually means display
+%  math.  For example, |\hbox{$$}| will because of restricted
+%  horizontal mode rather yield an empty text math formula.  Since our
+%  implementation moved the sequence inside of a |\vbox|, the
+%  interpretation will change.  People should just not enter rubbish
+%  like that.
 %    \begin{macrocode}
 \begingroup
 \def\next#1#2{%
-\endgroup
-    \DeclareOption{textmath}{%
-      \preview@delay{\ifx#1\@undefined \let#1=$\fi
-        \catcode`\$=\active}%
-      \pr@advise@ship\(\pr@endaftergroup{}% \)
-      \pr@advise@ship#1{\let#1=#2%
-         \pr@setmathhooks{##1\everymath##1\everydisplay}}{}}}
+  \endgroup
+  \DeclareOption{textmath}{%
+    \preview@delay{\ifx#1\@undefined \let#1=$%$
+      \fi\catcode`\$=\active}%
+    \pr@advise@ship\(\pr@endaftergroup{}% \)
+    \pr@advise@ship#1{\@firstoftwo{\let#1=#2%
+        \futurelet\reserved@a\pr@textmathcheck}}{}}%
+  \def\pr@textmathcheck{\expandafter\pr@endaftergroup
+    \ifx\reserved@a#1{#2#2}\expandafter\@gobbletwo\fi#2}}
 \lccode`\~=`\$
 \lowercase{\expandafter\next\expandafter~}%
   \csname pr@\string$\endcsname
@@ -756,34 +783,10 @@
 %    \begin{macrocode}
 %<*active>
 \def\pr@endaftergroup#1{#1\aftergroup\pr@endbox}
-%    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@setmathhooks}
-%  This is here for making sure display math entered by |$$| will work
-%  more or less as expected (except of getting activated by the
-%  |textmath| option).  While |$$| is not to be used in \LaTeX\
-%  because it will cause inconsistent spacing compared to the other
-%  environments, we don't want to get bugged with error reports caused
-%  by |$$| just being an empty text math environment.
-%  Since we have restored the original meaning of the token we are
-%  going to parse, we have here a regular math environment enterer.
-%  We load both \cmd{\everymath} and \cmd{\everydisplay} hooks with
-%  code that restores both hooks to the previous state, then does
-%  \begin{quote}
-%    |\aftergroup \pr@endbox|
-%  \end{quote}
-%  and then executes the restored hook.  This code is to be relished,
-%  not explained.
-%    \begin{macrocode}
-\def\pr@setmathhooks#1{\def\reserved@a##1{#1}%
-  \def\reserved@b##1{##1{\the##1}}%
-  \def\reserved@c##1{%
-    ##1{\reserved@a\reserved@b\aftergroup\noexpand\pr@endbox
-        \noexpand\the##1}}%
-   \edef\reserved@a{\reserved@a\reserved@c}\reserved@a}
 %</active>
 %    \end{macrocode}
 %\end{macro}
+%
 %  The |graphics| option.
 %    \begin{macrocode}
 %<*!active>
