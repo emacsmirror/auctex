@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.159 2004-06-03 11:59:31 angeli Exp $
+@c $Id: auc-tex.texi,v 1.160 2004-06-13 13:23:52 angeli Exp $
 
 @finalout
 @titlepage
@@ -113,6 +113,7 @@ TeX-submit-bug-report} to report bugs if possible.
 * Installation::                How to install AUC@TeX{}
 * History::                     The History of AUC@TeX{}
 * ToDo::                        Future Development
+* FAQ::                         Frequently Asked Questions
 * Key Index::                   Key Index
 * Function Index::              Function Index
 * Variable Index::              Variable Index
@@ -1017,6 +1018,21 @@ becoming wider than what is specified in @code{fill-column}.  The
 linebreaks will be inserted automatically if @code{auto-fill-mode} is
 enabled.  In this case the source is not only filled but also indented
 automatically as you write it.
+
+@c Describe hooks at another suitable place!
+
+@code{auto-fill-mode} can be enabled for AUC@TeX{} by calling
+@code{turn-on-auto-fill} in one of the hooks AUC@TeX{} is running.  For
+all text modes with @code{text-mode-hook}, for all AUC@TeX{} modes with
+@code{TeX-mode-hook} or for specific modes with
+@code{plain-TeX-mode-hook}, @code{LaTeX-mode-hook},
+@code{ConTeXt-mode-hook} or @code{docTeX-mode-hook}.  As an example, if
+you want to enable @code{auto-fill-mode} in @code{LaTeX-mode}, put the
+following into your init file:
+
+@example
+(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+@end example
 
 You can manually fill explicitely marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
@@ -2602,13 +2618,16 @@ See the file @file{history.texi} for older changes.
 
 @include changes.texi
 
-@node ToDo, Key Index, History, top
+@node ToDo, FAQ, History, top
 @comment  node-name,  next,  previous,  up
 @appendix ToDo
-
 @include todo.texi
 
-@node Key Index, Function Index, ToDo, top
+@node FAQ, Key Index, ToDo, top
+@appendix Frequently Asked Questions
+@include faq.texi
+
+@node Key Index, Function Index, FAQ, top
 @comment    node-name,         next,       previous, up
 @unnumbered Key Index
 
