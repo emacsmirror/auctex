@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{594}
+%\CheckSum{620}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.38 $
+%  \rcskey \version CVS-$Revision: 1.39 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-19 23:12:40 $
+%\rcskey\next $Date: 2002-03-21 14:04:59 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -238,7 +238,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.38 $
+   \reserved@a\reserved@b CVS-$Revision: 1.39 $
 \else
    \begingroup
       \lccode`-=`.
@@ -247,7 +247,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-19 23:12:40 $
+\reserved@a\next $Date: 2002-03-21 14:04:59 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -430,10 +430,10 @@
 %  full line length.
 %    \begin{macrocode}
 \def\pr@endbox{%
-   \ifpr@fixbb
-     \ifhmode \par \setbox\z@\lastbox\nointerlineskip\hbox{\unhbox\z@}%
-   \fi\fi
-   \unskip
+   \ifhmode \par\unpenalty\unskip\setbox\z@\lastbox
+   \nointerlineskip\hbox{\unhbox\z@\/}%
+   \fi
+   \unpenalty\unskip
    \color@endgroup
    \egroup
    \ifpr@fixbb\setbox\pr@box\hbox{%
@@ -450,12 +450,12 @@
 %  its basepoint will exactly be at the (1in,1in)~mark defined by
 %  \TeX.  That way we can properly take ascenders into account.
 %    \begin{macrocode}
+   \pr@ship@end
    {\let\protect\noexpand
    \voffset=-\ht\pr@box
    \hoffset=\z@
    \c@page=\pr@snippet
    \pr@shipout\box\pr@box}%
-   \pr@ship@end
    \global\advance\pr@snippet\@ne
    \pr@cleanup
 }
@@ -561,8 +561,9 @@
 %<*!active>
 \DeclareOption{displaymath}{%
   \preview@delay{%
-    \everydisplay\expandafter{\the\everydisplay
-    \pr@startbox{$$\aftergroup\pr@endbox}{$$}}}%
+    \everydisplay\expandafter{\expandafter
+    \pr@startbox\expandafter{\expandafter$\expandafter$%
+      \the\everydisplay\aftergroup\pr@endbox}{$$}}}%
 }
 %    \end{macrocode}
 %
@@ -748,16 +749,21 @@
 %<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
 %<auctex>    Just hit Return and be gone.}}
 %<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
-%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended}}
+%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended%
+%<auctex>  (\number\ht\pr@box+\number\dp\pr@box x\number\wd\pr@box)}}
 %    \end{macrocode}
 %Since over/underfull boxes are about the messiest things to parse, we
 %disable them by setting the appropriate badness limits and making the
 %variables point to junk.  We also disable other stuff.
 %    \begin{macrocode}
-%<auctex>\hbadness=10000
+%<auctex>\hbadness=\maxdimen
 %<auctex>\newcount\hbadness
-%<auctex>\vbadness=10000
+%<auctex>\vbadness=\maxdimen
 %<auctex>\let\vbadness=\hbadness
+%<auctex>\hfuzz=\maxdimen
+%<auctex>\newdimen\hfuzz
+%<auctex>\vfuzz=\maxdimen
+%<auctex>\let\vfuzz=\hfuzz
 %<auctex>\showboxdepth=-1
 %<auctex>\let\showboxdepth=\hbadness
 %<auctex>\showboxbreadth=-1
