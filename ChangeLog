@@ -1,3 +1,18 @@
+2004-12-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Add coding cookie.
+	(font-latex-quote-end-list): Remove.
+	(font-latex-quote-list): New variable.
+	(font-latex-quotes, font-latex-match-quotation): Use it for
+	generalization.
+	(font-latex-keyword-matcher): Revert last change.
+	(font-latex-make-built-in-keywords): Match the empty string only
+	at the end of multi-char macros.
+	(font-latex-make-user-keywords): Make sure sedate face is not used
+	for words right after a "\\".
+	(font-latex-set-syntactic-keywords): Do not match linebreaks as
+	delimiters of `verb-like-commands'.
+
 2004-12-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-keyword-matcher): Highlight only first
