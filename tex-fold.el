@@ -539,6 +539,7 @@ With zero or negative ARG turn mode off."
     (remove-hook 'post-command-hook 'TeX-fold-post-command t)
     (TeX-fold-clearout-buffer))
   (TeX-set-mode-name))
+(defalias 'tex-fold-mode 'TeX-fold-mode)
 
 (provide 'tex-fold)
 
