@@ -181,7 +181,7 @@ dist:
 	    $(AUCSRC) $(EXTRAFILES)
 	mv ChangeLog ChangeLog.old
 	echo `date "+%Y-%m-%d "` \
-	     " Per Abrahamsen  <abraham@dina.kvl.dk>" > ChangeLog
+	     " David Kastrup  <David.Kastrup@t-online.de>" > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
