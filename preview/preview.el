@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.200 2004-03-15 16:53:23 dakas Exp $
+;; $Id: preview.el,v 1.201 2004-03-15 16:55:27 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -605,8 +605,9 @@ pathforall pop fill "
      (and (or mask (and bg (not fg)))
 	  "grestore ")
      (and fg
-	  (mapconcat #'preview-gs-color-value fg " ")
-	  " setrgbcolor"))))
+	  (concat
+	   (mapconcat #'preview-gs-color-value fg " ")
+	   " setrgbcolor")))))
 
 (defun preview-dvipng-color-string (colors)
   "Return color setup tokens for dvipng.
@@ -2916,7 +2917,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.200 $"))
+	(rev "$Revision: 1.201 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2927,7 +2928,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-15 16:53:23 $"))
+    (let ((date "$Date: 2004-03-15 16:55:27 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
