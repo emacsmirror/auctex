@@ -1,3 +1,11 @@
+2003-06-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el: Fix some document.
+	(AUCTeX-jp): New custom group.
+	(japanese-TeX-command-default, japanese-LaTeX-command-default)
+	(japanese-LaTeX-default-style, japanese-LaTeX-style-list):
+	Support for defcustoms.
+
 2003-06-14  David Kastrup  <dak@gnu.org> (tiny patch from Stephen Gildea)
 
 	* tex.el (TeX-auto-untabify): Change default to nil.
