@@ -79,7 +79,7 @@ number of Lisp files to generate autoloads from."
                "(package-provide 'preview\n"
                "                 :version "
                (if (string-match "^CVS-" preview-version)
-                   (substring preview-version 4)
+                   (concat "0." (substring preview-version 4))
                  preview-version) "\n"
                "                 :type 'regular)\n")))
     ; Delete and regenerate the auto-autoloads file.
