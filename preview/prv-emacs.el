@@ -34,6 +34,11 @@
 					90))
   "The symbol used for previews to be generated.")
 
+(defimage preview-error-icon ((:type xpm :file "preverr.xpm" :ascent 90)
+			      (:type xbm :file "preverr.xbm" :ascent
+				     90))
+  "The symbol used for PostScript errors.")
+
 (defimage preview-icon ((:type xpm :file "preview.xpm" :ascent 75)
 			(:type xbm :file "preview.xbm" :ascent 75))
   "The symbol used for an open preview.")
