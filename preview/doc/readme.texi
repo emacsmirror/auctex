@@ -1,7 +1,7 @@
 @c This is to enable generation of text-file from this file
 @ifset rawfile
 @macro AUCTeX {}
-@w{AUC @TeX{}}
+AUC@w{ }@TeX{}
 @end macro
 @macro LaTeX {}
 La@TeX{}
@@ -9,88 +9,101 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
+@chapter @previewlatex{} in a nutshell
 @end ifset
 @c -----------------------
 @cindex Readme
-@section @previewlatex{} in a nutshell
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/@LaTeX{} package will render your displayed
 @LaTeX{} equations right into the editing window where they belong.
 
-Purpose of @previewlatex{} is to embed @LaTeX{} environments such as
+The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
 display math or figures into the source buffers.  By mouse-clicking, you
 can open the original text.  After editing, another click will just run
 the region in question through @LaTeX{} and redisplay the new results.
 
-If @previewlatex{} has not come in the form of a preinstalled package
-for you, consult
-@ifset rawfile
-the @file{INSTALL} file.
-@end ifset
 @ifclear rawfile
-@ref{Installation}.
+@menu
+* Activating preview-latex::    
+* Getting started::             
+@c * Prerequisites::               
+* More documentation::               
+* Availability::                
+* Contacts::                    
+@end menu
 @end ifclear
-After the installation, documentation in the form of an info manual will
-be available.  You can access it with the standalone info reader with
 
-@example
-info preview-latex
-@end example
-@noindent
-or with
+@ifset rawfile
+If @previewlatex{} has not come in the form of a preinstalled package
+for you, consult the @file{INSTALL} file for installation instructions
+(especially, read the Prerequisites section).
+@end ifset
 
-@example
-@kbd{C-h i d m preview-latex @key{RET}}
-@end example
-@noindent
-from inside Emacs.  Once @previewlatex{} is activated, the
-documentation is also available from the @samp{LaTeX/Preview/Read
-documentation} menu.
-
-Detailed documentation for the @LaTeX{} style used for extracting the
-preview images is placed in @file{preview.dvi} in a suitable directory
-during installation; on typical teTeX-based systems,
-
-@example
-texdoc preview
-@end example
-@noindent
-will display it.
-
-@cindex Activation
+@node  Activating preview-latex, Getting started, Introduction, Introduction
 @section Activating @previewlatex{}
-After the installation process completes, you need to activate
-@previewlatex{} (prepackaged versions might already do that).  The
-activation line that needs to be added to your own @file{.emacs} file
-or to a site-wide initialization file is
+@cindex Activation
+After installation, the package needs to be activated (and remember to
+activate @AUCTeX{} too).  Some prepackaged versions are activated upon
+installation, but otherwise, the activation line that needs to be added
+to your own @file{.emacs} file or to a site-wide initialization file is
 
 @example
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
+
 @noindent
 For a well-configured prepackaged version, this should be the all you
-need to do, if @AUCTeX{} is already activated.  If you installed
-@previewlatex{} yourself, at least the line
+need to do.  If you installed @previewlatex{} yourself, at least the
+line
 
 @example
 (autoload 'LaTeX-preview-setup "preview")
 @end example
+
 @noindent
 is also needed.  And in case the directory to which the Elisp files have
 been installed is not known to Emacs, a line like
 
 @example
-(add-to-list 'load-path @var{"/whatever/directory"})
+(add-to-list 'load-path "@var{/whatever/directory}")
 @end example
-@noindent
-needs to be added, as well.  Once activated, @previewlatex{} will be
-accessible from @AUCTeX{}'s menus and pretty much self-explanatory.
 
+@noindent
+needs to be added as well.  
+
+@c @node Getting started, Prerequisites, Activating preview-latex, Introduction
+@node Getting started, More documentation, Activating preview-latex, Introduction
+@section Getting started
+
+Once activated, @previewlatex{} and its documentation will be accessible
+from @AUCTeX{}'s menus.  When you have loaded a @LaTeX{} document, you
+should be able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus,
+or press @kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or
+@kbd{C-c C-p C-p} (for ``On/off at point'').  Previews will now be
+generated for various objects in your document. You'll see them change
+into a large question-mark when the process is half finished. Note that
+you can freely navigate the buffer while this is going on. When the
+process is finished you will see the objects typeset in your buffer.
+
+It is a bad idea, however, to edit the buffer before the question marks
+appear, since that is the moment when the correlation between the
+original text and the buffer locations gets established.  If the buffer
+changes before that point of time, the previews will not be placed where
+they belong. If you do want to change some obvious error you just
+spotted we recommend you stop the background process by pressing
+@kbd{C-c C-k}.
+
+To see/edit the @LaTeX{} code for a specific object, put the point (the
+cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
+and generate a new preview by again pressing @kbd{C-c C-p C-p}.
+
+@ignore
+@node  Prerequisites, More documentation, Getting started, Introduction
 @section Prerequisites
 
-Currently, @previewlatex{} is known to work with @w{Emacs 21} under the
-X window system.  While image support for Emacs under Microsoft Windows
-has not been implemented as of @w{version 21.2}, it is present in the
+Currently, @previewlatex{} is known to work with @w{Emacs 21} under
+X-windows.  While image support for Emacs under Microsoft Windows has
+not been implemented as of @w{version 21.2}, it is present in the
 @acronym{CVS} version at @uref{http://savannah.gnu.org/projects/emacs};
 please help in testing it before @w{Emacs 21.3} gets released.  Another
 option is to try XEmacs for which we now have preliminary support
@@ -102,20 +115,83 @@ difficulties.  You need @AUCTeX{} in version 11.0 or later, which at the
 time of this writing means an alpha-test version.  You can get it from
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  A suitable version
 also is available from the download section of @previewlatex{}'s home
-page (see below).  You need GhostScript, at least @w{version 6.51}.
-
-@strong{Please note:} At the current point of time, the port to XEmacs
-is work in progress.  Don't expect too much, and be prepared to contact
-the developers' list mentioned below.
-
-For some known issues with various software, see
+page 
 @ifset rawfile
-the file @file{PROBLEMS}.
+(see below).
+@end ifset
+@ifclear rawfile
+(@pxref{Availability}).
+@end ifclear
+You also need GhostScript, at least @w{version 6.51}.
+
+@strong{Please note:} Presently, the port to XEmacs is work in progress.
+Don't expect too much, and be prepared to contact the developers' list
+mentioned below.
+
+For some known issues with various software, see 
+@ifset rawfile
+the @file{PROBLEMS} file.
 @end ifset
 @ifclear rawfile
 @ref{Known problems}.
 @end ifclear
+@end ignore
 
+@c @node More documentation, Availability, Prerequisites, Introduction
+@node More documentation, Availability, Getting started, Introduction
+@section More documentation
+After the installation, documentation in the form of 
+@ifinfo 
+@ifclear rawfile
+this
+@end ifclear
+@ifset rawfile
+an
+@end ifset
+@end ifinfo
+@ifnotinfo
+an
+@end ifnotinfo
+info manual will be available.  You can access it with the standalone
+info reader with
+
+@example
+info preview-latex
+@end example
+
+@noindent
+or with
+
+@example
+@kbd{C-h i d m preview-latex @key{RET}}
+@end example
+
+@noindent
+from inside Emacs. Once @previewlatex{} is activated, the info manual is
+also present as the menu entry @samp{LaTeX/Preview/Read documentation}.
+
+Depending on your installation, 
+@ifnottex
+a printable 
+@end ifnottex
+@iftex
+this printed
+@end iftex
+manual may also be available in the form of @file{preview-latex.dvi} or
+@file{preview-latex.ps}.
+
+Detailed documentation for the @LaTeX{} style used for extracting the
+preview images is placed in @file{preview.dvi} in a suitable directory
+during installation; on typical teTeX-based systems,
+
+@example
+texdoc preview
+@end example
+
+@noindent
+will display it.
+
+@node  Availability, Contacts, More documentation, Introduction
 @section Availability
 @cindex Download
 @cindex @acronym{CVS} access
@@ -130,8 +206,15 @@ Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
 pages for more information.
 
 For developer access, or if you are having access difficulties, ask on
-@email{preview-latex-devel@@lists.sourceforge.net} (see below).
-
+@email{preview-latex-devel@@lists.sourceforge.net} (@c
+@ifset rawfile
+see below@c
+@end ifset
+@ifclear rawfile
+@pxref{Contacts}@c
+@end ifclear
+).
+@node  Contacts,  , Availability, Introduction
 @section Contacts
 @cindex Contacts
 @cindex Mailing list
