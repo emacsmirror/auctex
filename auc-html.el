@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.4 1994-02-02 12:43:55 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.5 1994-02-09 00:01:07 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-02-02 12:43:55 $|$Revision: 5.4 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-02-09 00:01:07 $|$Revision: 5.5 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -193,6 +193,8 @@ html-read-url.")
   ;;     end tag.
   ;;   - header
   ;;     Should be on a line for itself.  No end tag.
+  ;;   - section
+  ;;     Tag at start of line, end tag at end of line,
   ;;   - body
   ;;     Tag and end tag occupies their own lines.  Text between them
   ;;     is not indented.
@@ -222,17 +224,17 @@ html-read-url.")
      nil nil (("role" document-role)))
     ("panel" "Floating panel" environment
      nil nil ("at" "id" "index"))
-    ("h1" "Section header" header
+    ("h1" "Section header" section
      nil nil ("id" "index"))
-    ("h2" "Section header" header
+    ("h2" "Section header" section
      nil nil ("id" "index"))
-    ("h3" "Section header" header
+    ("h3" "Section header" section
      nil nil ("id" "index"))
-    ("h4" "Section header" header
+    ("h4" "Section header" section
      nil nil ("id" "index"))
-    ("h5" "Section header" header
+    ("h5" "Section header" section
      nil nil ("id" "index"))
-    ("h6" "Section header" header
+    ("h6" "Section header" section
      nil nil ("id" "index"))
     ("em" "Emphasis" markup
      nil nil (("role" "Emphasis type" emphasis-role)
@@ -241,7 +243,7 @@ html-read-url.")
      nil nil ("role" "align" "indent" "id" "index"))
     ("br" "Line break" break
      nil nil ("id" "index"))
-    ("sp" "Unbreakable space" header
+    ("sp" "Unbreakable space" entity
      nil nil ("id" "index"))
     ("pre" "Preformatted text" body
      nil nil ("style" "tr" "hv" "width" "id" "index"))
@@ -401,7 +403,7 @@ html-read-url.")
   (let ((items nil)
 	(tags html-tag-alist))
     (while tags
-      (if (memq (html-tag-type (car tags)) '(environment markup))
+      (if (memq (html-tag-type (car tags)) '(environment markup section))
 	  (setq items (cons (car tags) items)))
       (setq tags (cdr tags)))
     items))
@@ -723,6 +725,16 @@ html-read-url.")
 		 (if (looking-at "[ \t]*$")
 		       ()
 		     (newline-and-indent)))
+		((eq type 'section)
+		 (if (html-looking-at-backward "^[ \t]*")
+                     ()
+                   (newline))
+		 (html-insert-tag-with-attributes entry)
+		 (save-excursion
+                   (insert "</" tag ">")
+		   (if (looking-at "[ \t]*$")
+                       ()
+                     (newline-and-indent))))
 		((eq type 'markup)
 		 (html-insert-tag-with-attributes entry)
 		 (save-excursion

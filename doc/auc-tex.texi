@@ -4,8 +4,11 @@
 @c footnotestyle separate
 @c paragraphindent 2
 @comment %**end of header 
+@iftex
+@tolerance 10000
+@end iftex
 
-@c $Id: auc-tex.texi,v 1.77 1994-02-02 12:44:06 amanda Exp $
+@c $Id: auc-tex.texi,v 1.78 1994-02-09 00:01:28 amanda Exp $
 
 @finalout
 @titlepage
@@ -2474,6 +2477,15 @@ Coordinater: Per Abrahamsen, 1994.
 
 @itemize @bullet
 @item
+Indentation no longer fooled by @samp{\\@{},  Thanks to Peter Thiemann
+@samp{<thiemann@@provence.informatik.uni-tuebingen.de>}.
+
+@item
+Bind @kbd{M-C-e} and @kbd{M-c-a} to @code{LaTeX-find-matching-end} and
+@code{LaTeX-find-matching-begin}.  Suggested by Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>}.
+
+@item
 Added variable @code{TeX-quote-after-quote} which causes
 @code{TeX-insert-quote} to insert literal @samp{"} except when after
 another @samp{"}, in which case it will expand to @code{TeX-open-quote}
@@ -3624,6 +3636,19 @@ some time for emacs lisp hacking, you are encouraged to try to provide a
 solution to one of the following problems.
 
 @itemize @bullet
+@item
+Make @code{TeX-insert-dollar} more robust.  Currently it can be fooled
+by @samp{\mbox}'es and escaped double dollar for example.
+
+@item
+Make @code{TeX-command-region} able to guess the next command, just like
+@code{TeX-command-master}.  I don't understand why this does not work
+now.
+
+@item
+Implement @kbd{M-C-n} in terms of LaTeX environments (maybe).  Suggested
+by Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>}.
+
 @item
 La@TeX{} formatting should skip @code{verbatim} environments.
 
