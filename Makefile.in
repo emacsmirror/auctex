@@ -194,7 +194,7 @@ tar-ball:
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
-	(cd doc; $(MAKE) dist; cp auctex auctex ../auctex-$(TAG)/doc )
+	(cd doc; $(MAKE) dist; cp auctex ../auctex-$(TAG)/doc )
 	(cd doc; \
 	for x in auctex-*; do \
 	  if [ -r $$x ]; then \
@@ -205,7 +205,7 @@ tar-ball:
 		../auctex-$(TAG)/ )
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
-	cp doc/auctex.ps $(FTPDIR)
+	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz

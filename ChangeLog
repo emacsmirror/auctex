@@ -1,5 +1,13 @@
 2004-08-13  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (tar-ball): copy only one auctex, add pdf manual and
+	reference card.
+
+	* doc/Makefile.in (dist): Add tex-ref, and both pdf and ps
+	(tex-ref.ps, auctex.ps): Use -Ppdf option for better quality.
+
+	* auctex.spec (BuildRoot): Add CHANGES.
+
 	* Makefile.in (release-commit): There are no Version: strings
 	anymore, don't replace them.
 

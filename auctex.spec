@@ -68,7 +68,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc RELEASE COPYING INSTALL README TODO FAQ
+%doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}

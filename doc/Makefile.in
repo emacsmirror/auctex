@@ -20,7 +20,7 @@ TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 all: auctex.dvi tex-ref.dvi auctex
 
 dist: auctex INSTALL INSTALL.windows README CHANGES TODO FAQ \
-	auctex_toc.html auctex.ps
+	auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 auctex_toc.html: auctex.texi
 	$(TEXI2HTML) -split_node auctex.texi
@@ -30,6 +30,9 @@ tex-ref.dvi: tex-ref.tex
 	@echo "**********************************************************"
 	@echo "** doc/tex-ref.dvi may now be printed (1 page)"
 	@echo "**********************************************************"
+
+tex-ref.ps: tex-ref.dvi
+	$(DVIPS) tex-ref.dvi -Ppdf -o tex-ref.ps
 
 tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
@@ -42,7 +45,7 @@ auctex.pdf: auctex.texi
 
 # dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
-	$(DVIPS) auctex.dvi -o auctex.ps
+	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex: $(TEXIFILES)
 	-$(MAKEINFO) auctex.texi
