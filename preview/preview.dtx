@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.41 $
+%  \rcskey \version CVS-$Revision: 1.42 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-22 12:30:22 $
+%\rcskey\next $Date: 2002-03-22 20:30:43 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.41 $
+   \reserved@a\reserved@b CVS-$Revision: 1.42 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-22 12:30:22 $
+\reserved@a\next $Date: 2002-03-22 20:30:43 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -361,7 +361,7 @@
 %  The |dvips| option redefines the |bop-hook| to reset the page size.
 %    \begin{macrocode}
 \DeclareOption{dvips}{%
-  \preview@delayed{\AtBeginDvi{%
+  \preview@delay{\AtBeginDvi{%
     \special{!userdict begin/bop-hook{/isls false def%
     /vsize 792 def/hsize 612 def}def end}}}}
 %</!active>
