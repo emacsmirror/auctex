@@ -1,4 +1,3 @@
-;;; -*- emacs-lisp -*-
 ;;; scrpage2.el -- AUCTeX style for scrpage2.sty
 
 ;; License:  GPL, see the file COPYING in the base directory of AUCTeX
@@ -9,10 +8,6 @@
 ;;; Commentary:
 
 ;; This file adds support for `scrpage2.sty'.
-
-;; This file is intended to be used with the AUCTeX package by Per
-;; Abrahamsen. Put this File into your TeX-style-path. You may also
-;; byte-compile this file.
 
 ;;; Code:
 
