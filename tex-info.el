@@ -33,7 +33,7 @@
 ;;; Environments:
 
 (defvar Texinfo-environment-list
-  '(("cartouche") ("copying") ("defcv") ("deffn") ("defivar")
+  '(("cartouche") ("command") ("copying") ("defcv") ("deffn") ("defivar")
     ("defmac") ("defmethod") ("defop") ("defopt") ("defspec")
     ("deftp") ("deftypefn") ("deftypefun") ("deftypevar") ("deftypevr")
     ("defun") ("defvar") ("defvr") ("description") ("detailmenu")
