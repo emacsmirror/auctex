@@ -277,25 +277,27 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (unless after-change
     (preview-register-change ov)))
 
-(put 'preview-overlay 'isearch-open-invisible #'preview-toggle)
+(defcustom preview-auto-reveal 'reveal-mode
+  "*If set, this will cause previews to open automatically
+when entered instead of treating them as a single character.
+Set to t or nil, or to a symbol which will be consulted
+if defined.  The default is to follow the setting of
+`reveal-mode'."
+  :group 'preview-appearance
+  :type '(choice (const :tag "Off" nil)
+		 (const :tag "On" t)
+		 symbol))
 
-(put 'preview-overlay 'isearch-open-invisible-temporary
-     #'preview-toggle)
 
-(defun preview-toggle (ov &rest args)
+(defun preview-toggle (ov &optional arg)
   "Toggle visibility of preview overlay OV.
-ARGS can be one of the following, in order to make this most
-useful for isearch hooks: nothing, which means making the
-overlay contents visible.  nil currently means the same (this
-is the value used when isearch temporarily opens the overlay)
-but could change in future, for example displaying both preview
-and source text.  t makes the contents invisible, and 'toggle
-toggles it."
+ARGS can be one of the following: t displays the overlay,
+nil displays the underlying text, and 'toggle toggles."
   (let ((old-urgent (preview-remove-urgentization ov))
 	(preview-state
-	 (if (if (eq (car args) 'toggle)
+	 (if (if (eq arg 'toggle)
 		 (null (eq (overlay-get ov 'preview-state) 'active))
-	       (car args))
+	       arg)
 	     'active
 	   'inactive))
 	(strings (overlay-get ov 'strings)))
@@ -304,7 +306,6 @@ toggles it."
       (if (eq preview-state 'active)
 	  (progn
 	    (overlay-put ov 'category 'preview-overlay)
-	    (overlay-put ov 'invisible t)
 	    (if (eq (overlay-start ov) (overlay-end ov))
 		(overlay-put ov 'before-string (car strings))
 	      (dolist (prop '(display keymap mouse-face help-echo))
@@ -315,7 +316,7 @@ toggles it."
 	    (with-current-buffer (overlay-buffer ov)
 	      (add-hook 'pre-command-hook #'preview-mark-point nil t)
 	      (add-hook 'post-command-hook #'preview-move-point nil t)))
-	(dolist (prop '(display keymap mouse-face help-echo invisible))
+	(dolist (prop '(display keymap mouse-face help-echo))
 	  (overlay-put ov prop nil))
 	(overlay-put ov 'face 'preview-face)
 	(overlay-put ov 'before-string (cdr strings)))
@@ -324,6 +325,8 @@ toggles it."
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
+
+(defvar preview-temporary-opened nil)
 
 (defun preview-mark-point ()
   "Mark position for fake intangibility."
@@ -336,22 +339,42 @@ toggles it."
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
-  (when (and (eq (marker-buffer preview-marker) (current-buffer))
-	     (not disable-point-adjustment)
-	     (not global-disable-point-adjustment))
-    (let* ((pt (point))
-	   (backward (< pt (marker-position preview-marker))))
-      (while (catch 'loop
-	       (dolist (ovr (overlays-at pt))
-		 (when (and
-			(eq (overlay-get ovr 'preview-state) 'active)
-			(> pt (overlay-start ovr)))
-		   (setq pt (if backward
-				(overlay-start ovr)
-			      (overlay-end ovr)))
-		   (throw 'loop t))))
-      nil)
-      (goto-char pt))))
+  (let (newlist (pt (point)))
+    (setq preview-temporary-opened
+	  (dolist (ov preview-temporary-opened newlist)
+	    (if (catch 'keep
+		  (unless (and (overlay-buffer ov)
+			       (eq (overlay-get ov 'preview-state) 'inactive))
+		    (throw 'keep nil))
+		  (unless (eq (overlay-buffer ov) (current-buffer))
+		    (throw 'keep t))
+		  (when (and (> pt (overlay-start ov))
+			     (< pt (overlay-end ov)))
+		    (throw 'keep t))
+		  (preview-toggle ov t)
+		  nil)
+		(push ov newlist))))
+    (when (eq (marker-buffer preview-marker) (current-buffer))
+      (let* ((backward (< pt (marker-position preview-marker)))
+	     (just-open (or disable-point-adjustment
+			    global-disable-point-adjustment
+			    (and (boundp preview-auto-reveal)
+				 (symbol-value preview-auto-reveal)))))
+	(while (catch 'loop
+		 (dolist (ovr (overlays-at pt))
+		   (when (and
+			  (eq (overlay-get ovr 'preview-state) 'active)
+			  (> pt (overlay-start ovr)))
+		     (if just-open
+			 (progn
+			   (preview-toggle ovr)
+			   (push ovr preview-temporary-opened))
+		       (setq pt (if backward
+				    (overlay-start ovr)
+				  (overlay-end ovr))))
+		     (throw 'loop t))))
+	  nil)
+	(goto-char pt)))))
 
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
