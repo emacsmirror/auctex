@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.903 18Sep2003 PSG
+;;  - Added `font-latex-quotes' to fontify either french or german quotes.
+;;  - Added internal vars `font-latex-quote-regexp-beg' and
+;;    `font-latex-quote-end-list'.
+;;  - Fixed font-latex-match-quotation to use above.
 ;; V0.902 07Sep2003 PSG
 ;;  - Bug fix when font-lock-multiline is set to t.
 ;;    When a searched pattern was commented-out, we used to return a (nil
@@ -270,6 +275,30 @@
   "Nil means disable the multi-line fontification prone to infinite loops."
   :group 'font-latex
   :type 'boolean)
+
+(defvar font-latex-quote-regexp-beg nil
+  "Regexp used to find quotes.")
+
+(defvar font-latex-quote-end-list nil
+  "List matching end quotes for `font-latex-quote-regexp-beg'.")
+
+(defcustom font-latex-quotes 'french
+  "Whether to fontify << french quotes >> or >> german quotes <<."
+  :type '(choice (const french) (const german))
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (if (equal value 'french)
+             (setq font-latex-quote-regexp-beg
+                   (concat "\\(``\\)\\|\\(\"<\\)\\|\\(\"`\\)\\|\\(<<\\)\\|"
+                           "\\(" (char-to-string 171) "\\)") ; An 8-bit "<<"
+                   font-latex-quote-end-list
+                   `("''" "\">" "\"'" ">>" ,(char-to-string 187)))
+           (setq font-latex-quote-regexp-beg
+                 (concat "\\(``\\)\\|\\(\"<\\)\\|\\(\"`\\)\\|\\(>>\\)\\|"
+                         "\\(" (char-to-string 187) "\\)") ; An 8-bit ">>"
+                 font-latex-quote-end-list
+                 `("''" "\">" "\"'" "<<" ,(char-to-string 171)))))
+  :group 'font-latex)
 
 (defvar font-latex-warning-face			'font-latex-warning-face
   "Face to use for LaTeX major keywords.")
@@ -1235,19 +1264,17 @@ The \\begin{equation} and \\end{equation are not fontified here."
 (defun font-latex-match-quotation (limit)
   "Used for patterns like:
 ``this is a normal quote'' and these are multilingual quoted strings:
-\"< french \"> and \"`german\"' quotes, << french >> and 8-bit french."
-  (when (re-search-forward
-	 (eval-when-compile
-	   (concat "\\(``\\)\\|\\(\"<\\)\\|\\(\"`\\)\\|\\(<<\\)\\|"
-		   "\\(" (char-to-string 171) "\\)")) ; An 8-bit "<<"
-	 limit t)
+\"< french \"> and \"`german\"' quotes.
+The quotes << french >> and 8-bit french are used if `font-latex-quotes' is
+set to french, and >> german << (and 8-bit) are used if set to german."
+  (when (re-search-forward font-latex-quote-regexp-beg limit t)
     (let ((beg (match-beginning 0)))
       (search-forward
-       (cond ((match-beginning 1) "''")
-	     ((match-beginning 2) "\">")
-	     ((match-beginning 3) "\"'")
-	     ((match-beginning 4) ">>")
-	     ((match-beginning 5) (eval-when-compile (char-to-string 187))))
+       (cond ((match-beginning 1) (nth 0 font-latex-quote-end-list))
+	     ((match-beginning 2) (nth 1 font-latex-quote-end-list))
+	     ((match-beginning 3) (nth 2 font-latex-quote-end-list))
+	     ((match-beginning 4) (nth 3 font-latex-quote-end-list))
+	     ((match-beginning 5) (nth 4 font-latex-quote-end-list)))
        limit 'move)
       (store-match-data (list beg (point)))
       t)))
