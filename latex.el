@@ -4,7 +4,7 @@
 ;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000,
 ;;   2003, 2004, 2005 Free Software Foundation, Inc.
 
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -104,7 +104,7 @@ This depends on `LaTeX-insert-into-comments'."
 
 (defun LaTeX-section (arg)
   "Insert a template for a LaTeX section.
-Determinate the type of section to be inserted, by the argument ARG.
+Determine the type of section to be inserted, by the argument ARG.
 
 If ARG is nil or missing, use the current level.
 If ARG is a list (selected by \\[universal-argument]), go downward one level.
@@ -140,8 +140,6 @@ The following variables can be set to customize:
 				      (region-end))
 		  ""))
 	 (done-mark (make-marker)))
-    (when (zerop (length title))
-      (LaTeX-newline))
     (run-hooks 'LaTeX-section-hook)
     (LaTeX-newline)
     (if (marker-position done-mark)
@@ -359,7 +357,7 @@ LaTeX-section-toc: Query the user for the toc entry.  Modifies
 
 LaTeX-section-section: Insert LaTeX section command according to
 `name', `title', and `toc'.  If `toc' is nil, no toc entry is
-enserted.  If `toc' or `title' are empty strings, `done-mark' will be
+inserted.  If `toc' or `title' are empty strings, `done-mark' will be
 placed at the point they should be inserted.
 
 LaTeX-section-label: Insert a label after the section command.
@@ -450,25 +448,35 @@ a different entry for the section in the table of content."
 
 (defun LaTeX-section-section ()
   "Hook to insert LaTeX section command into the file.
-Insert this hook into `LaTeX-section-hook' after those hooks which sets
-the `name', `title', and `toc' variables, but before those hooks which
-assumes the section already is inserted."
-    (insert TeX-esc name)
-    (cond ((null toc))
-	  ((zerop (length toc))
-	   (insert LaTeX-optop)
-	   (set-marker done-mark (point))
-	   (insert LaTeX-optcl))
-	  (t
-	   (insert LaTeX-optop toc LaTeX-optcl)))
-    (insert TeX-grop)
-    (if (zerop (length title))
-	(set-marker done-mark (point)))
-    (insert title TeX-grcl)
-    (LaTeX-newline)
-    ;; If RefTeX is available, tell it that we've just made a new section
-    (and (fboundp 'reftex-notice-new-section)
-	 (reftex-notice-new-section)))
+Insert this hook into `LaTeX-section-hook' after those hooks that set
+the `name', `title', and `toc' variables, but before those hooks that
+assume that the section is already inserted."
+  ;; insert a new line if the current line and the previous line are
+  ;; not empty (except for whitespace), with one exception: do not
+  ;; insert a new line if the previous (or current, sigh) line starts
+  ;; an environment (i.e., starts with `[optional whitespace]\begin')
+  (unless (save-excursion
+	    (re-search-backward
+	     (concat "^\\s-*\n\\s-*\\=\\|^\\s-*" (regexp-quote TeX-esc)
+		     "begin")
+	     (line-beginning-position 0) t))
+    (LaTeX-newline))
+  (insert TeX-esc name)
+  (cond ((null toc))
+	((zerop (length toc))
+	 (insert LaTeX-optop)
+	 (set-marker done-mark (point))
+	 (insert LaTeX-optcl))
+	(t
+	 (insert LaTeX-optop toc LaTeX-optcl)))
+  (insert TeX-grop)
+  (if (zerop (length title))
+      (set-marker done-mark (point)))
+  (insert title TeX-grcl)
+  (LaTeX-newline)
+  ;; If RefTeX is available, tell it that we've just made a new section
+  (and (fboundp 'reftex-notice-new-section)
+       (reftex-notice-new-section)))
 
 (defun LaTeX-section-label ()
   "Hook to insert a label after the sectioning command.
@@ -793,9 +801,9 @@ the label inserted, or nil if no label was inserted."
 
 (defcustom LaTeX-default-position ""
   "Default position for array and tabular environments.
-If nil, act like the empty string is given, but don't prompt."
+If nil, act like the empty string is given, but do not prompt."
   :group 'LaTeX-environment
-  :type '(choice (const :tag "Don't prompt" nil)
+  :type '(choice (const :tag "Do not prompt" nil)
 		 (const :tag "Empty" "")
 		 string))
 (make-variable-buffer-local 'LaTeX-default-position)
@@ -953,7 +961,7 @@ job to this function."
 	  (indent-according-to-mode))))
     (when (and (member environment '("table" "table*"))
 	       ;; Suppose an existing tabular environment should just
-	       ;; be wrapped into a table if there is an actice region.
+	       ;; be wrapped into a table if there is an active region.
 	       (not active-mark))
       (LaTeX-env-array "tabular"))))
 
@@ -1062,7 +1070,7 @@ Just like array and tabular."
 ;;; Item hooks
 
 (defvar LaTeX-item-list nil
-  "An list of environments where items have a special syntax.
+  "A list of environments where items have a special syntax.
 The cdr is the name of the function, used to insert this kind of items.")
 
 (defun LaTeX-insert-item ()
