@@ -1,3 +1,18 @@
+2002-03-26  Alan Shutko  <ats@acm.org>
+
+	* doc/.cvsignore: Add preview-latex.tmp.
+
+	* .cvsignore: Add latex.out.
+
+	* autogen.sh: Modify ed script to account for difference between
+	AC_INIT in 2.13 and 2.52
+
+
+	* doc/Makefile.in (INSTALLINFO): Make it use configure value.
+
+	* configure.in: Check for path of install-info.  Check whether
+	Emacs supports images.
+
 2002-03-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* TODO (Integrate into refTeX): bemoan another shortcoming, or

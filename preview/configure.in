@@ -57,11 +57,16 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
 else		
    PLAT_LISP=prv-emacs.el
+   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))])
+   if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
+      AC_MSG_ERROR("You need an Emacs that supports images")
+   fi
 fi
 
 AC_SUBST(PLAT_LISP)
 
 AC_CHECK_AUCTEX
+AC_PATH_PROG(INSTALL_INFO, install-info, /bin/true, $PATH:/usr/sbin:/sbin)
 
 AC_PATH_PROG_REQUIRED(GS, gs, [gs not found!  Aborting!  
 You must install Ghostscript for preview to work.])
