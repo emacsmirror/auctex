@@ -1,3 +1,11 @@
+2002-04-28  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/preview-latex.texi:
+	Document preview-clear-format and its keybindings
+
+	* preview.el (preview-clear-format):
+	new, also changed keybinding for it
+
 2002-04-26  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/preview-latex.texi: Documented preview-dump-format
