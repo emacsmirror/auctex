@@ -2133,8 +2133,11 @@ space does not end a sentence, so don't break a line there."
         ;; Find occurences of `$', `{', `}', `\(' or `\)'.
         (while (and (= final-breakpoint orig-breakpoint)
                     (re-search-forward
-                     (concat "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*"
-                             "\\(\\[\\|{\\|}\\|\\\\(\\|\\\\)\\|\\$\\)")
+                     (concat "\\(\\=\\|[^" TeX-esc "\\]\\)\\("
+			     (regexp-quote (concat TeX-esc TeX-esc))
+			     "\\)*"
+                             "\\([[{}$]\\|"
+			     (regexp-quote TeX-esc) "[()]\\)")
                      orig-breakpoint t))
           (let ((match-string (match-string 0)))
             (cond
@@ -2144,11 +2147,12 @@ space does not end a sentence, so don't break a line there."
              ((save-excursion
                 (and (memq 'braced LaTeX-fill-distinct-contents)
                      (string= (substring match-string -1) "[")
-                     (re-search-forward
-                      (concat
-                       "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*\\][ \t]*"
-                       "\\(\\\\\\\\\\)*{")
-                      (line-end-position) t)
+		     (re-search-forward
+		      (concat
+		       "\\(\\=\\|[^" TeX-esc "]\\)\\("
+		       (regexp-quote (concat TeX-esc TeX-esc))
+		       "\\)*\\][ \t]*{")
+		      (line-end-position) t)
                      (> (- (or (TeX-find-closing-brace)
                                (line-end-position))
                            (line-beginning-position))
@@ -2209,7 +2213,7 @@ space does not end a sentence, so don't break a line there."
                      (> (- (save-excursion
                              (re-search-forward
                               (if (string= math-sep "$")
-                                  (concat "[^" (regexp-quote TeX-esc) "]"
+                                  (concat "[^" TeX-esc "]"
                                           (regexp-quote "$"))
                                 (concat (regexp-quote TeX-esc) ")"))
                               (point-max) t)
