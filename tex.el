@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.371 $"))
+	(rev "$Revision: 5.372 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-26 08:00:31 $"))
+    (let ((date "$Date: 2004-05-26 13:20:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2677,13 +2677,13 @@ be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
-(defcustom TeX-indent-on-newline nil
-  "Wether and how indentation is done upon pressing `RET'."
+(defcustom TeX-newline 'newline
+  "Function to be called upon pressing `RET'."
   :group 'TeX-indentation
-  :type '(choice (const :tag "Use default" nil)
-		 (const :tag "Indent after newline" after-newline)
-		 (const :tag "Indent before and after newline"
-			before-and-after-newline)))
+  :type '(choice (const newline)
+		 (const newline-and-indent)
+		 (const reindent-then-newline-and-indent)
+		 (sexp :tag "Other")))
 
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
@@ -2694,6 +2694,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
     (define-key map "\C-c?"    'describe-mode)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
+    (define-key map "\r" (lambda nil (interactive) (funcall TeX-newline)))
     
     ;; From tex.el
     (define-key map "\""       'TeX-insert-quote)
@@ -2730,12 +2731,6 @@ be bound to `TeX-electric-macro'."
     
     ;; Multifile
     (define-key map "\C-c_" 'TeX-master-file-ask)  ;*** temporary
-
-    ;; Indentation
-    (cond ((eq TeX-indent-on-newline 'after-newline)
-	   (define-key map "\r" 'newline-and-indent))
-	  ((eq TeX-indent-on-newline 'before-and-after-newline)
-	   (define-key map "\r" 'reindent-then-newline-and-indent)))
     map)
   "Keymap for common TeX and LaTeX commands.")
 
