@@ -4,14 +4,16 @@ datadir=@datadir@#
 packagedir=@packagedir@#
 infodir=@infodir@#
 TEX=@TEX@
+PDFTEX=@PDFTEX@
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
-TEXIHTML=texi2html
-TEXINDEX=texindex
+TEXI2HTML=@TEXI2HTML@
+TEXI2DVI=@TEXI2DVI@
+TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
-DVIPS=dvips
+DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 	changes.texi todo.texi faq.texi
 
@@ -21,7 +23,7 @@ dist: auctex INSTALL INSTALL.windows README CHANGES TODO FAQ \
 	auctex_toc.html auctex.ps
 
 auctex_toc.html: auctex.texi
-	$(TEXIHTML) -split_node auctex.texi
+	$(TEXI2HTML) -split_node auctex.texi
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref
@@ -29,18 +31,14 @@ tex-ref.dvi: tex-ref.tex
 	@echo "** doc/tex-ref.dvi may now be printed (1 page)"
 	@echo "**********************************************************"
 
+tex-ref.pdf: tex-ref.tex
+	$(PDFTEX) tex-ref.tex
+
 auctex.dvi: auctex.texi
-	-$(TEX) "\nonstopmode\input auctex.texi"
-	-$(TEXINDEX) auctex.ky
-	-$(TEXINDEX) auctex.fn
-	-$(TEXINDEX) auctex.vr
-	-$(TEXINDEX) auctex.cp
-	-$(TEX) "\nonstopmode\input auctex.texi"
-	@echo "**********************************************************"
-	@echo "** If this gave trouble, maybe you need to install"
-	@echo "** a newer version of texinfo?"
-	@echo "** doc/auctex.dvi may now be printed (70+ pages)"
-	@echo "**********************************************************"
+	$(TEXI2DVI) auctex.texi
+
+auctex.pdf: auctex.texi
+	$(TEXI2PDF) auctex.texi
 
 # dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
@@ -92,7 +90,7 @@ install: auctex
 	-$(INSTALL_INFO)  --info-dir=$(infodir) auctex
 
 clean:
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \
+	rm -f *.dvi *.ps *.pdf *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.tmp auctex auctex-* *.html INSTALL \
 		INSTALL.windows README CHANGES HISTORY TODO FAQ

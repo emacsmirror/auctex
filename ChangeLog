@@ -1,3 +1,14 @@
+2004-08-13  David Kastrup  <dak@gnu.org>
+
+	* configure.in: Check for pdftex, dvips, texi2html, texi2dvi,
+	texi2pdf.
+
+	* doc/Makefile.in (TEXI2HTML, TEXI2DVI, TEXI2PDF): new variables
+	entered by configure.
+	(auctex.dvi): Use texi2dvi.
+	(auctex.pdf): New target.
+	(clean): Remove PDF files.
+
 2004-08-12  David Kastrup  <dak@gnu.org>
 
 	* tex-jp.el (japanese-TeX-command-list): Fixed this to new style.
