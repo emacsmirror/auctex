@@ -1,5 +1,8 @@
 2002-03-30  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx: loads of smaller and larger changes, new options
+	files.
+
 	* preview.el (preview-back-command): typo.
 
 	* autogen.sh (makeinfo): move into doc directory for
