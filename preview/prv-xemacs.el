@@ -264,8 +264,8 @@ if there was any urgentization."
 			  (car (extent-property ,ov 'strings)))
      (preview-toggle ,ov t)))
 
-(defvar preview-button-1 [mouse-2])
-(defvar preview-button-2 [mouse-3])
+(defvar preview-button-1 'button2)
+(defvar preview-button-2 'button3)
 
 ;; TODO: doesn't seem quite to work yet; the image is highlighted
 ;;       but not click-responsive.
@@ -293,8 +293,7 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
            `((add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
-              'balloon-help (lambda (extent)
-                              (format ,helpstring preview-button-1 preview-button-2))
+              'balloon-help (format ,helpstring preview-button-1 preview-button-2)
               'keymap resmap)
               res)
              res)
