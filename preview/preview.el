@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.55 2002-01-22 13:17:07 dakas Exp $
+;; $Id: preview.el,v 1.56 2002-02-07 12:54:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -191,7 +191,7 @@ that is."
   :group 'preview-gs
   :type 'string)
 
-(defcustom preview-gs-options '("-q" "-DSAFER" "-dNOPAUSE"
+(defcustom preview-gs-options '("-q" "-dNOPAUSE"
 				"-DNOPLATFONTS" "-dTextAlphaBits=4"
 				"-dGraphicsAlphaBits=4")
   "*Options with which to call gs for conversion from EPS.
@@ -1322,7 +1322,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.55 $"))
+	(rev "$Revision: 1.56 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
