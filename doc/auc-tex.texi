@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.137 2004-01-09 08:56:54 angeli Exp $
+@c $Id: auc-tex.texi,v 1.138 2004-01-18 10:05:37 angeli Exp $
 
 @finalout
 @titlepage
@@ -84,7 +84,7 @@ important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.
 
 Kresten Krab Thorup (6.0) @*
-Per Abrahamsen (updates to 11)
+Per Abrahamsen (updates to 11) @*
 David Kastrup (updates from almost 12)
 
 There is a mailing list for discussion about AUC@TeX{} and announcement
@@ -101,12 +101,12 @@ TeX-submit-bug-report} to report bugs if possible.
 
 @menu
 * Copying::                     Copying
-* Introduction::                Why AUC@TeX{} is good for you.
+* Introduction::                Introduction to AUC@TeX{}
 * Frequently Used Commands::    Inserting Frequently Used Commands  
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
 * Multifile::                   Multifile Documents
-* Parsing Files::               Automatic Parsing of @TeX{} files.
+* Parsing Files::               Automatic Parsing of @TeX{} files
 * I18n::                        Internationalization
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
@@ -1403,7 +1403,7 @@ If non-nil, then query the user before saving each file with
 
 
 @node Parsing Files, I18n, Multifile, top
-@chapter Automatic Parsing of @TeX{} files.
+@chapter Automatic Parsing of @TeX{} files
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
 @cindex Tabs
@@ -2353,6 +2353,7 @@ List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
 @node Installation, History, Style Files, top
+@chapter How to install AUC@TeX{}
 @include install.texi
 
 @node History, Projects, Installation, top
