@@ -1,3 +1,8 @@
+2004-04-04  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-find-matching-end, LaTeX-find-matching-end): Try
+	to keep track of in-comment-ness
+
 2004-04-03  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (STYLESRC): Add emp.el.
