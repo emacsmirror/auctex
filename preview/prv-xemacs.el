@@ -178,25 +178,6 @@ The message is displayed with label `progress'; see `display-message'."
 ;; Stuff missing from XEmacs that should really be there.
 ;; In time, this will hopefully all migrate into XEmacs.
 
-(defmacro map-plist (function plist)
-  "Map FUNCTION over a property list PLIST.
-FUNCTION should take one argument, a cons cell."
-  `(check-valid-plist ,plist)
-  `(mapc ,function (plist-to-alist ,plist)))
-
-(defun destructive-replace-glyph (glyph new-glyph)
-  "Destructively replace the contents of GLYPH with those of NEW-GLYPH."
-  (map-plist #'(lambda (property)
-                 ; XEmacs hands out nil properties that can't be set :(
-                 (and (cdr property)
-                      (set-glyph-property glyph (car property) (cdr property))))
-             (object-plist new-glyph))
-  new-glyph)
-
-(defun copy-glyph (glyph)
-  "Return a deep copy of GLYPH."
-  (destructive-replace-glyph glyph (make-glyph nil (glyph-type glyph))))
-
 ; XEmacs's `add-to-list' takes only two arguments.
 (defun add-to-list (list-var element &optional append)
   "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
@@ -277,8 +258,7 @@ if there was any urgentization."
 
 (defmacro preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
-  `(destructive-replace-glyph (extent-property ,ov 'preview-image)
-                              (copy-glyph ,replacement)))
+  `(set-extent-property ov 'preview-image ,replacement))
 
 (defvar preview-button-1 [mouse-2])
 (defvar preview-button-2 [mouse-3])
