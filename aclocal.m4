@@ -509,32 +509,45 @@ AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS    Directories holding 
 
 if test -z "$texinputdirs" ; then
   AC_MSG_CHECKING([for directories holding TeX input files])
-
-  if which kpsepath > /dev/null ; then
-    for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
-        grep '^/.*/tex///$'`
-    do
-      if test -e "$x" ; then
-        if test "${texinputdirs}" != "" ; then
-          texinputdirs="${texinputdirs}""\" \""
-        fi
-        texinputdirs="${texinputdirs}"`echo $x | sed -e 's+///+/+g'`
+  texinputdirs=""
+  # TeX input files
+  temp=`kpsewhich --progname latex --show-path tex`
+  # Simple test and conversion to unify paths separated by `;' and ':'.
+  if ! `echo $temp | grep ';'` ; then
+    temp=`echo $temp | tr ':' ';'`
+  fi
+  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
+      grep '/tex///\?$' | sed -e 's+///\?+/+g'`
+  do
+    if test -e "$x" ; then
+      if test "${texinputdirs}" != "" ; then
+        texinputdirs="${texinputdirs}""\" \""
       fi
-    done
-  elif which findtexmf > /dev/null ; then
-    for x in `findtexmf -alias=latex -show-path=tex | tr ';' '\\n' | \
-        grep '\\tex//$'`
-    do
-      if test -e "$x" ; then
-        if test "${texinputdirs}" != "" ; then
-          texinputdirs="${texinputdirs}""\" \""
-        fi
-        texinputdirs="${texinputdirs}"`echo $x | sed -e 's+//+/+g' \
-                                                     -e 's+\\+/+g'`
+      texinputdirs="${texinputdirs}"`echo $x`
+    fi
+  done
+  # BibTeX style files
+  bstinputs=""
+  temp=`kpsewhich --progname latex --show-path bst`
+  # Simple test and conversion to unify paths separated by `;' and ':'.
+  if ! `echo $temp | grep ';'` ; then
+    temp=`echo $temp | tr ':' ';'`
+  fi
+  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
+      grep '/bst//$' | sed -e 's+//+/+g'`
+  do
+    if test -e "$x" ; then
+      if test "${bstinputs}" != "" ; then
+        bstinputs="${bstinputs}""\" \""
       fi
-    done
-  else
-    texinputdirs="/usr/share/texmf/tex/"
+      bstinputs="${bstinputs}"`echo $x`
+    fi
+  done
+  if ! test -z "$bstinputs" ; then
+    texinputdirs="${texinputdirs}""\" \"""${bstinputs}"
+  fi
+  if test -z "$texinputdirs" ; then
+    texinputdirs="/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/"
   fi
   AC_MSG_RESULT("${texinputdirs}")
 fi
