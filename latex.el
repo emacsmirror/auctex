@@ -1862,16 +1862,21 @@ Lines starting with an item is given an extra indentation of
 			     (concat (match-string 0)
 				     (TeX-comment-padding-string)))))
 	 (overlays (when (featurep 'xemacs)
-		     (overlays-at (line-beginning-position))))
+		     ;; Isn't that fun?  In Emacs an `(overlays-at
+		     ;; (line-beginning-position))' would do the
+		     ;; trick.  How boring.
+		     (extent-list
+		      nil (line-beginning-position) (line-beginning-position)
+		      'all-extents-closed-open 'overlay)))
 	 ol-specs)
     ;; XEmacs' `indent-to' function (at least in version 21.4.15) has
     ;; a bug which leads to the insertion of whitespace in front of an
     ;; invisible overlay.  So during indentation we temporarily remove
-    ;; the invisible property.
+    ;; the 'invisible property.
     (dolist (ol overlays)
-      (when (overlay-get ol 'invisible)
-	(add-to-list 'ol-specs (list ol (overlay-get ol 'invisible)))
-	(overlay-put ol 'invisible nil)))
+      (when (extent-property ol 'invisible)
+	(add-to-list 'ol-specs (list ol (extent-property ol 'invisible)))
+	(set-extent-property ol 'invisible nil)))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
@@ -1901,7 +1906,7 @@ Lines starting with an item is given an extra indentation of
 		   (LaTeX-indent-outer-do outer-indent))))))
     ;; Make the overlays invisible again.
     (dolist (ol-spec ol-specs)
-      (overlay-put (car ol-spec) 'invisible (cadr ol-spec)))
+      (set-extent-property (car ol-spec) 'invisible (cadr ol-spec)))
     (if (< (current-column) (save-excursion
 			      (beginning-of-line)
 			      (re-search-forward
