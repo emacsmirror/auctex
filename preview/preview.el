@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.161 2002-08-14 01:19:49 dakas Exp $
+;; $Id: preview.el,v 1.162 2002-09-02 10:57:42 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1620,7 +1620,7 @@ to add the preview functionality."
 	(customize-group 'preview)]
        ["Generate custom menu"
 	(easy-menu-add-item
-	 nil '("LaTeX" "Preview")
+	 nil '("Preview")
 	 (customize-menu-create 'preview))])
       ["Read documentation" preview-goto-info-page]
       ["Report Bug" preview-report-bug]))
@@ -2081,21 +2081,31 @@ FORMAT-CONS is intended to be an element of `preview-dumped-alist'.
 Tries through `preview-format-extensions'."
   (dolist (ext preview-format-extensions)
     (condition-case nil
-	(delete-file (concat (car format-cons) ext))
+	(delete-file (preview-dump-file-name (concat (car format-cons) ext)))
       (file-error nil))))
+
+(defun preview-dump-file-name (file)
+  "Make a file name suitable for dumping from FILE."
+  (if file
+      (concat (file-name-directory file)
+	      "prv_"
+	      (file-name-nondirectory file))
+    "prv_texput"))
 
 (defun preview-cache-preamble ()
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
 on the same master file."
   (interactive)
-  (let* ((dump-file (TeX-master-file "ini"))
+  (let* ((dump-file (preview-dump-file-name (TeX-master-file "ini")))
 	 (format-name (expand-file-name (TeX-master-file nil)))
 	 (master-file (TeX-master-file t))
 	 (LaTeX-command-style `(("."
 				 ,(TeX-command-expand
 				   preview-dump-command
-				   'TeX-master-file))))
+				   (lambda (&rest args)
+				     (preview-dump-file-name
+				      (apply 'TeX-master-file args)))))))
 	 (format-cons (assoc format-name preview-dumped-alist))
 	 (preview-auto-cache-preamble nil))
     (if format-cons
@@ -2188,7 +2198,8 @@ may be a log to insert into the current log."
 				    (car pr-file)
 				    (cons '("%f"
 					    (lambda ()
-					      (TeX-master-file nil)))
+					      (preview-dump-file-name
+					       (TeX-master-file nil))))
 					  TeX-expand-list))
 	      command) file)))
       (condition-case err
@@ -2218,7 +2229,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.161 $"))
+	(rev "$Revision: 1.162 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2229,7 +2240,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-08-14 01:19:49 $"))
+    (let ((date "$Date: 2002-09-02 10:57:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
