@@ -23,7 +23,7 @@ installing anything.
 @end menu
 @end ifclear
 
-@node Prerequisites, Configure
+@node Prerequisites, Configure,, Installation
 @section Prerequisites
 
 @itemize @bullet
@@ -51,6 +51,7 @@ you may download a separate tar file with the prebuilt documentation
 from Savannah and install it over the main unpacked tar archive.
 @end itemize
 
+@ignore
 For some known issues with various software, see 
 @ifset rawfile
 the @file{PROBLEMS} file.
@@ -58,8 +59,9 @@ the @file{PROBLEMS} file.
 @ifclear rawfile
 @ref{Known problems}.
 @end ifclear
+@end ignore
 
-@node Configure, Build/install, Prerequisites
+@node Configure, Build/install, Prerequisites, Installation
 @section Configure
 
 The first step is to configure the source code, telling it where
@@ -120,7 +122,7 @@ describe them here; a short description of each is available, using
 
 @end table
 
-@node Build/install, Loading the package, Configure
+@node Build/install, Loading the package, Configure, Installation
 @section Build/install
 
 @cindex Installation
@@ -144,7 +146,7 @@ make install
 You may need special privileges to install, e.g., if you are installing
 into system directories. 
 
-@node Loading the package, Advice for package providers, Build/install
+@node Loading the package, Advice for package providers, Build/install, Installation
 @section Loading the package
 
 @cindex @file{.emacs}
@@ -191,7 +193,7 @@ That is all.  There are other ways of achieving the equivalent thing,
 but we don't mention them here any more since they are not better, and
 people got confused into trying everything at once.
 
-@node Advice for package providers, Advice for non-privileged users, Loading the package
+@node Advice for package providers, Advice for non-privileged users, Loading the package, Installation
 @section Providing @AUCTeX{} as a package
 
 As a package provider, you should make sure that your users will be
@@ -227,7 +229,7 @@ the tarball distribution, suitable for recent RedHat systems, that
 should do just that.
 @end ignore
 
-@node Advice for non-privileged users, Installation under MS Windows, Advice for package providers
+@node Advice for non-privileged users, Installation under MS Windows, Advice for package providers, Installation
 @section Installation for non-privileged users
 
 Often people without system administration privileges want to install
@@ -323,13 +325,12 @@ sake of standalone readers outside of XEmacs. (The info files in XEmacs
 are normally in @file{~/.xemacs/xemacs-packages/info}.)
 
 @ifclear rawfile
-@node Installation under MS Windows, Customizing, Advice for non-privileged users
-@comment  node-name,  next,  previous,  up
+@node Installation under MS Windows, Customizing, Advice for non-privileged users, Installation
 @section Installation under MS Windows
 @include wininstall.texi
 @end ifclear
 
-@node Customizing,  , Installation under MS Windows
+@node Customizing,  , Installation under MS Windows, Installation
 @section Customizing
 @cindex Site initialization
 @cindex Initialization
