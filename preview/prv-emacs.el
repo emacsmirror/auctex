@@ -428,5 +428,14 @@ Pure borderless black-on-white will return NIL."
 	  (mapcar #'preview-gs-color-value fg)
 	  '("setrgbcolor"))))))
 
+(defmacro preview-with-LaTeX-menus (&rest bodyforms)
+  "This activates the LaTeX menus for the BODYFORMS
+so that one can add to them."
+  `(let ((save-map (current-local-map)))
+     (unwind-protect
+	 (progn
+	   (use-local-map LaTeX-mode-map) ,@bodyforms)
+       (use-local-map save-map))))
+
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
