@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.464 $"))
+	    (rev "$Revision: 5.465 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-01 00:04:25 $"))
+    (let ((date "$Date: 2004-12-05 14:02:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -680,6 +680,22 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
 (eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"))
 			  (add-to-list 'Info-file-list-for-emacs
 				       (cons elt "AUCTeX"))))
+
+(defadvice hack-one-local-variable (after TeX-hack-one-local-variable-after
+					  activate)
+  "Call minor mode function if minor mode variable is found."
+  (let ((var (ad-get-arg 0))
+	(val (ad-get-arg 1)))
+    (when (if (boundp 'minor-mode-list)
+	      ;; Test which does not require maintenance but `minor-mode-list'.
+	      (and (memq var minor-mode-list)
+		   (string-match "^\\(La\\)*TeX-.+-mode$" (symbol-name var)))
+	    ;; "Manual" test requiring adaption when minor modes change.
+	    (memq var '(TeX-PDF-mode TeX-source-specials-mode
+				     TeX-interactive-mode TeX-Omega-mode
+				     TeX-fold-mode LaTeX-math-mode)))
+      (if (symbol-value val) (funcall var 1) (funcall var 0)))))
+
 
 ;;; Special support for XEmacs
 
@@ -1087,7 +1103,8 @@ See `TeX-global-PDF-mode' for toggling the default value."
 (define-minor-mode TeX-Omega-mode
   "Minor mode for using the Omega engine."
   nil nil nil
-  (TeX-PDF-mode 0)
+  (when TeX-Omega-mode
+    (TeX-PDF-mode 0))
   (TeX-set-mode-name 'TeX-Omega-mode t t))
 (defalias 'tex-omega-mode 'TeX-Omega-mode)
 
