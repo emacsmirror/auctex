@@ -2,6 +2,9 @@
 
 	* Release 0.7.4
 
+	* preview-latex.spec (Requires): New RPM brain damage means we
+	have to disable the 8bit test.
+
 	* doc/faq.texi: Various updates.
 
 	* doc/install.texi: Some cosmetic changes and version info
