@@ -1,3 +1,12 @@
+Sun Dec 01 17:33:49 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.6l released.
+
+Sun Dec  1 17:31:48 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-jp.el: Patch from IKEMOTO Masahiro
+	<ikeyan@airlab.cs.ritsumei.ac.jp>. 
+
 Fri Nov 29 18:50:26 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6k released.

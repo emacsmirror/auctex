@@ -7,7 +7,8 @@
 ;;; Customization
 
 (setq TeX-format-list
-      (append '(("JLATEX" japanese-latex-mode "\\\\documentstyle[^%\n]*{j")
+      (append '(("JLATEX" japanese-latex-mode
+		 "\\\\\\(\\\\documentstyle[^%\n]*{j\\|\\\\documentclass[^%\n]*{j\\)")
 		("JTEX" japanese-plain-tex-mode
 		 "-- string likely in Japanese TeX --"))
 	      TeX-format-list))
@@ -15,6 +16,8 @@
 (setq TeX-command-list
       (append (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
 			  'TeX-run-TeX nil t)
+		    (list "pTeX" "ptex '\\nonstopmode\\input %t'"
+                          'TeX-run-TeX nil t)
 		    (list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
 	      TeX-command-list))
        
@@ -23,7 +26,9 @@
 		  '(("^ams" "amsjlatex")
 		    ("^jslides$" "jslitex")
 		    ("^j-?\\(article\\|report\\|book\\)$" "jlatex"))
-		'(("^j-?\\(article\\|report\\|book\\)$" "jlatex")))
+                '(("^j-\\(article\\|report\\|book\\)$" "jlatex")
+                  ("^j\\(article\\|report\\|book\\)$" "platex")
+                  ("." "jlatex")))
 	      LaTeX-command-style))
 
 (setcdr (assoc "%l" TeX-expand-list)

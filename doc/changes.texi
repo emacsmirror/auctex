@@ -1,6 +1,10 @@
 @section News in 9.6
 
 @itemize @bullet
+@item
+@file{func-doc.el} unbundled, as @file{word-help.el} will be added to
+the standard Emacs distribution.  See @url{http://www.ifi.uio.no/~jensthi/}.
+
 @item 
 @samp{$} is now of the syntax class `matched pair', suggested by Mats
 Bengtsson @samp{<matsb@@s3.kth.se>}.
