@@ -1,10 +1,8 @@
 ;;; foils.el - Special code for FoilTeX.
 
-;; $Id: foils.el,v 1.2 1999-02-11 10:19:26 abraham Exp $
+;; $Id: foils.el,v 1.3 1999-07-16 13:48:17 abraham Exp $
 
 ;;; Code:
-
-(require 'latex)
 
 (TeX-add-style-hook "foils"
  (function

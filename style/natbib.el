@@ -5,8 +5,6 @@
 
 ;;; Code:
 
-(require 'latex)
-
 (TeX-add-style-hook "natbib"
  (function
   (lambda ()

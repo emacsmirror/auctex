@@ -3,7 +3,7 @@
 ;; Copyright (C) 1993 Marc Gemis <makke@wins.uia.ac.be>
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
-;; Version: $Id: latexinfo.el,v 1.5 1994-07-30 05:40:07 amanda Exp $
+;; Version: $Id: latexinfo.el,v 1.6 1999-07-16 13:48:17 abraham Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Code:
-
-(require 'latex)
 
 ;;; LaTeXinfo mode
 

@@ -2,7 +2,7 @@
 ;;      Harvard citation style is from Peter Williams
 ;;      available on the CTAN servers
 
-;; Version: $Id: harvard.el,v 1.6 1997-07-03 16:06:57 abraham Exp $
+;; Version: $Id: harvard.el,v 1.7 1999-07-16 13:48:17 abraham Exp $
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 ;; Copyright (C) 1997 Berwin Turlach <berwin.turlach@anu.edu.au>
@@ -22,8 +22,6 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Code:
-
-(require 'latex)
 
 (TeX-add-style-hook "harvard"
  (function

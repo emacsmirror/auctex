@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10e
+# Version: 9.10f
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -13,16 +13,16 @@
 prefix=/usr/local
 
 # Where info files go.
-infodir = /ohir5/domink/lib/info
+infodir = $(prefix)/info
 
 # Where local lisp files go.
-lispdir = /ohir5/domink/lib/emacs/lisp
+lispdir = $(prefix)/share/emacs/site-lisp
 
 # Where the AUC TeX emacs lisp files go.
-aucdir=/ohir5/domink/lib/emacs/auctex
+aucdir=$(lispdir)/auctex
 
 # Name of your emacs binary
-EMACS=xemacs
+EMACS=emacs
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10e
+;; Version: 9.10f
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -890,9 +890,9 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 \\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)\\]\\)?\
 {\\([^#\\\\\\.\n\r]+\\)}"
      (3 5 1) LaTeX-auto-style)
-    ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
+    ("\\\\use\\(package\\)\\(\\[\\([^\]\\\\]*\\)\\]\\)?\
 {\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
-     (2) LaTeX-auto-style))
+     (3 4 1) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
 
 (defvar LaTeX-auto-label-regexp-list
@@ -980,10 +980,9 @@ This is necessary since index entries may contain commands and stuff.")
 	;; Add them, to the style list.
 	(setq TeX-auto-file (append options TeX-auto-file))
 
-	;; The second argument if present is a normal style file.
-	(if (null style)
-	    ()
-	  (setq TeX-auto-file (cons style TeX-auto-file))
+	;; Treat documentclass/documentstyle specially.
+	(if (string-equal "package" class)
+	    (setq TeX-auto-file (cons style TeX-auto-file))
 
 	  ;; And a special "art10" style file combining style and size.
 	  (setq TeX-auto-file
@@ -1786,7 +1785,7 @@ comments and verbatim environments"
      justify
      (concat " buffer " (buffer-name)))))
 
-(defvar LaTeX-indent-environment-list
+(defcustom LaTeX-indent-environment-list
   '(("verbatim" current-indentation)
     ("verbatim*" current-indentation)
     ;; The following should have there own, smart indentation function.
@@ -1806,7 +1805,10 @@ comments and verbatim environments"
     ("tabular*"))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
-indentation level in columns.")
+indentation level in columns."
+    :group 'LaTeX-indentation
+    :type '(repeat (list (string :tag "Environment") 
+			 (option function))))
 
 (defcustom LaTeX-indent-environment-check t
   "*If non-nil, check for any special environments."

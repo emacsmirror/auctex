@@ -1,8 +1,6 @@
 ;;; slides.el - Special code for slitex.
 ;;
-;; $Id: slides.el,v 1.2 1994-04-13 12:56:25 amanda Exp $
-
-(require 'latex)
+;; $Id: slides.el,v 1.3 1999-07-16 13:48:18 abraham Exp $
 
 ;;; Code:
 

@@ -1,7 +1,7 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10e
+;; Version: 9.10f
 
 ;; Copyright (C) 1993, 1994, 1997 Per Abrahamsen 
 ;; 
@@ -190,16 +190,15 @@ When called interactively, prompt for an environment."
   
 ;;; Mode:
 
-;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
+;;; Do not ;;;###autoload because of conflict with standard texinfo.el.
 (defun texinfo-mode ()
   "Major mode for editing files of input for TeXinfo.
 
 Special commands:
 \\{TeXinfo-mode-map}
 
-Entering TeXinfo mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value of
-TeXinfo-mode-hook."
+Entering TeXinfo mode calls the value of `text-mode-hook'  and then the
+value of `TeXinfo-mode-hook'."
   (interactive)
   ;; Mostly stolen from texinfo.el
   (setq mode-name "TeXinfo")
