@@ -134,22 +134,42 @@ specifies."
      '(preview-handle-modification))
 
 (put 'preview-overlay
+     'insert-in-front-hooks
+     '(preview-handle-insert-in-front))
+
+(put 'preview-overlay
      'intangible t)
 
 ;; We have to fake our way around atomicity, but at least this is more
 ;; efficient than the XEmacs version which has to cope with not being
 ;; able to use local change hooks at all.
 
+;; Here is the beef: for best intuitiveness, we want to have
+;; insertions be carried out as expected before iconized text
+;; passages, but we want to insert *into* the overlay when not
+;; iconized.  A preview that has become empty can not get content
+;; again: we remove it.  A disabled preview needs no insert-in-front
+;; handler.
+
+(defun preview-handle-insert-in-front
+  (ov after-change beg end &optional length)
+  "Hook function for insert-in-front-hooks property."
+  (when (and (not undo-in-progress) after-change)
+    (if (overlay-get ov 'intangible)
+	(move-overlay ov end (overlay-end ov))
+      (overlay-put ov 'insert-in-front-hooks nil)
+      (preview-disable ov))))
+
 (defun preview-handle-modification
   (ov after-change beg end &optional length)
   "Hook function for modification-hooks property."
   (when after-change
-    (overlay-put ov 'modification-hooks nil)
-    (if (overlay-get ov 'intangible)
-	(progn
-	  (kill-region (overlay-start ov) (overlay-end ov))
-	  (preview-delete ov))
-      (preview-disable ov))))
+    (if (and (eq (overlay-start ov) (overlay-end ov))
+	     (not undo-in-progress))
+	(preview-delete ov)
+      (when (overlay-get ov 'insert-in-front-hooks)
+	(overlay-put ov 'insert-in-front-hooks nil)
+	(preview-disable ov)))))
 
 (put 'preview-overlay 'isearch-open-invisible 'preview-toggle)
 
