@@ -1,3 +1,15 @@
+Tue Feb 20 09:43:29 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-command-menu-queue, TeX-command-menu-queue-entry):
+ 	New functions supporting printer queue queries from the menu.  By
+ 	Ulrik Dickow <dickow@nbi.dk>
+	(TeX-command-menu-entry): Use them.
+
+Tue Feb 13 19:50:18 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/swedish.el: Support for Swedish quotation style by "G\vran
+	Uddeborg" <gvran@uddeborg.pp.se>.
+
 Thu Dec 21 16:49:19 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-default): Added more definitions by Mehmet

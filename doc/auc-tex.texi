@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.106 1995-04-07 02:45:07 amanda Exp $
+@c $Id: auc-tex.texi,v 1.107 1996-02-27 18:50:37 abraham Exp $
 
 @finalout
 @titlepage
@@ -80,12 +80,12 @@ Kresten Krab Thorup (6.0) @*
 Per Abrahamsen (later updates)
 
 There is a mailing list for discussion about AUC @TeX{} and announcement
-of alpha releases, write to @samp{auc-tex-request@@iesd.auc.dk} to join
-it.  Send contributions to @samp{auc-tex@@iesd.auc.dk}.
+of alpha releases, write to @samp{auc-tex-request@@sunsite.auc.dk} to join
+it.  Send contributions to @samp{auc-tex@@sunsite.auc.dk}.
 
 Bug reports, suggestions for new features, and pleas for help should go
 to either @samp{auc-tex_mgr@@iesd.auc.dk} (the AUC @TeX{} managers), or
-to @samp{auc-tex@@iesd.auc.dk} (the mailing list) if they might have
+to @samp{auc-tex@@sunsite.auc.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
 TeX-submit-bug-report} to report bugs if possible.@refill
 
@@ -939,7 +939,7 @@ matched by a @samp{@}}.@refill
 GNU Emacs earlier than version 19.19 does not have a useful outline
 mode.  If you want to use outlines with old versions of emacs, please
 get the file @file{outln-18.el} from
-@file{ftp.iesd.auc.dk:/pub/emacs-lisp/outln-18.el}.  It is a port of the
+@file{ftp.sunsite.auc.dk:/packages/auctex/outln-18.el}.  It is a port of the
 Emacs 19.19 outline mode to Emacs 18 and Lucid Emacs.@refill
 
 AUC @TeX{} supports the standard outline minor mode using La@TeX{}
@@ -1555,7 +1555,7 @@ Supports lots of different 7-bit and 8-bit character sets for GNU Emacs
 use different character set for keyboard, buffer, and display.  An
 overkill if you just need ISO 8859 Latin 1.  Currently in alpha test,
 but available by ftp from the host @t{ftp.iesd.auc.dk} in
-@file{/pub/emacs-lisp} or @file{/pub/emacs-lisp/alpha}.
+@file{/packages/auctex/}.
 
 To get dead keys for @TeX{}, install remap and insert the following in
 your @file{.emacs} or @file{site-start.el} file.
@@ -2319,6 +2319,19 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+Create template for (first) line of tabular environment.
+
+@item
+I think prompting for the master is the intended behaviour.  It
+corresponds to a `shared' value for TeX-master.
+
+There should probably be a `none' value which wouldn't query for the
+master, but instead disable all features that relies on TeX-master.
+
+This default value for TeX-master could then be controled with mapping
+based on the extension.
+
 @item
 @kbd{C-c '} should alway stay in the current window, also when it find a
 new file.

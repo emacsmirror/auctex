@@ -19,11 +19,12 @@
 	      TeX-command-list))
        
 (setq LaTeX-command-style
-      (if (string-equal LaTeX-version "2")
-	  (append '(("^ams" "amsjlatex")
+      (append (if (string-equal LaTeX-version "2")
+		  '(("^ams" "amsjlatex")
 		    ("^jslides$" "jslitex")
 		    ("^j-?\\(article\\|report\\|book\\)$" "jlatex"))
-		  LaTeX-command-style)))
+		'(("^j-?\\(article\\|report\\|book\\)$" "jlatex")))
+	      LaTeX-command-style))
 
 (setcdr (assoc "%l" TeX-expand-list)
 	(list 'TeX-style-check LaTeX-command-style))

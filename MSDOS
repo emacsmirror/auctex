@@ -15,7 +15,7 @@ my sympathy :-)
 
 
 STEP 1. Install the files at your PC. You can obtain AUC TeX by
-	anonymous ftp from ftp.iesd.auc.dk:/pub/emacs-lisp/auctex.zip.
+	anonymous ftp from ftp.sunsite.auc.dk:/pub/emacs-lisp/auctex.zip.
 	Unpack the file using "pkzip -d auctex" from your site-lisp
 	directory (probably called "c:\emacs-19.19\site-lis"). The
 	"-d" is important to avoid getting everything in one
@@ -105,7 +105,7 @@ STEP 5. [OPTIONAL]
 	done. I have not tried this, but I cannot see any reasons why
 	it should not work.
 	OR:
-	Ftp a copy of a DOS binary from ftp.iesd.auc.dk:/pub/packages/LaCheck.
+	Ftp a copy of a DOS binary from ftp.sunsite.auc.dk:/pub/packages/LaCheck.
 	[ This is an old version --Per ]
 
 

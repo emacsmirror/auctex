@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.79 1995-02-14 19:44:17 amanda Exp $
+;; $Id: tex-buf.el,v 1.80 1996-02-27 18:50:30 abraham Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -638,7 +638,7 @@ Return nil ifs no errors were found."
                           (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward
-	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
+	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
 	 (message (concat name ": successfully formatted "
 			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))

@@ -1,10 +1,10 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995 Peter S. Galbraith
+;; Copyright (C) 1994, 1995, 1996 Peter S. Galbraith
  
 ;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
 ;; Created:   06 July 1994
-;; Version:   2.11 (12 Dec 95)
+;; Version:   2.13 (08 Feb 96)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;; Everyone is granted permission to copy, modify and redistribute this
@@ -19,9 +19,9 @@
 ;;      distribution fee considered a charge.
 
 ;; LCD Archive Entry:
-;; bib-cite.el|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
+;; bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
 ;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
-;; 12-December-1995|2.11|~/misc/bib-cite.el.gz|
+;; 08-February-1996|2.13|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -351,10 +351,14 @@
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V2.13  Feb 08 96 - Peter Galbraith - Fixed recursive use of bib-apropos.
+;; V2.12  Jan 19 96 - Peter Galbraith 
+;;   emacs-19.30's [down-mouse-1] is defined (rather than [mouse-1]), so
+;;   bib-highlight-mouse-keymap now has [down-mouse-1] defined to override it.
 ;; V2.11  Nov 21 95 - Peter Galbraith 
 ;; - Fixed bib-create-auto-file when bib file loaded before LaTeX file.
 ;; - Michal Mnuk's better imenu labels menu <Michal.Mnuk@risc.uni-linz.ac.at>
-;; - [bib-mouse-1] and [bib-mouse-2] key defs for highlighted regions.
+;; - [mouse-1] and [mouse-2] key defs for highlighted regions.
 ;; - Improve X menus.
 ;; - Skip over style files in bib-document-TeX-files.
 ;; - Add menus and mouse highlighting for xemacs
@@ -550,7 +554,7 @@ These are usually month abbreviations (or journals) defined in a style file.")
       (define-key m [button1] 'bib-display-mouse)
       (define-key m [button2] 'bib-find-mouse))
      (t
-      (define-key m [mouse-1] 'bib-display-mouse)
+      (define-key m [down-mouse-1] 'bib-display-mouse)
       (define-key m [mouse-2] 'bib-find-mouse)))
     m))
 
@@ -641,7 +645,8 @@ cases, *it* is searched.  This allows you to trim down a search further
 by using bib-apropos sequentially."
   ;;(interactive "sBibTeX apropos: ")
   (interactive)
-  (let* ((keylist (and (fboundp 'LaTeX-bibitem-list) ;Use this if using auctex
+  (let* ((keylist (and (boundp 'TeX-auto-update) ;Avoid error in FRAMEPOP
+                       (fboundp 'LaTeX-bibitem-list) ;Use this if using auctex
                        (LaTeX-bibitem-list)))
          (keyword (bib-apropos-keyword-at-point))
          (keyword (completing-read "BiBTeX apropos: " keylist nil nil keyword))
@@ -1962,7 +1967,7 @@ although BiBTeX doesn't allow it!"
 
 (cond
  ((and (string-match "XEmacs\\|Lucid" emacs-version)
-       (featurep 'latex)                ;auc-tex mustbe loaded
+       (featurep 'latex)                ;auc-tex must be loaded
        window-system)
   ;;
   ;; xemacs under X with auc-tex
