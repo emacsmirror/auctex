@@ -728,16 +728,20 @@ job to this function."
 	(when prefix
 	  (when (symbolp prefix)
 	    (setq prefix (symbol-value prefix)))
-	  (setq label (read-string "What label: " prefix))
-	  (if (string= prefix label)
-	      (setq label nil)     ; No label entered
+	  ;; Use completing-read as we do with `C-c C-m \label RET'
+	  (setq label (completing-read
+		       (TeX-argument-prompt t nil "What label")
+		       (LaTeX-label-list) nil nil prefix))
+	  ;; No label or empty string entered?
+	  (if (or (string= prefix label)
+		  (string= "" label))
+	      (setq label nil)
 	    (insert TeX-esc "label" TeX-grop label TeX-grcl))))
       (if label
 	  (progn
 	    (LaTeX-add-labels label)
 	    label)
 	nil))))
-
 
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\label and \\caption commands."

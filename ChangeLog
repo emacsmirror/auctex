@@ -1,3 +1,8 @@
+2002-12-13  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (LaTeX-label): Added completing for labels.  Avoid
+	inserting an empty label.
+
 2002-12-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/amsopn.el ("amsopn"): Added \operatorname.
