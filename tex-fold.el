@@ -45,6 +45,15 @@
 
 (when (featurep 'xemacs)
   (require 'overlay))
+(require 'tex)
+(autoload 'LaTeX-forward-paragraph "latex")
+(autoload 'LaTeX-backward-paragraph "latex")
+(autoload 'LaTeX-find-matching-begin "latex")
+(autoload 'LaTeX-find-matching-end "latex")
+(autoload 'ConTeXt-find-matching-start "context")
+(autoload 'ConTeXt-find-matching-stop "context")
+(autoload 'Texinfo-find-env-start "tex-info")
+(autoload 'Texinfo-find-env-end "tex-info")
 
 (defgroup TeX-fold nil
   "Fold TeX macros."
