@@ -96,10 +96,6 @@ The directory names *must* end with a slash."
 (autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
 
-(when (memq system-type '(windows-nt))
-  ;; Try to make life easy for MikTeX users.
-  (require 'tex-mik))
-
 (provide 'tex-site)
 
 ;;; tex-site.el ends here

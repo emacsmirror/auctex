@@ -1,3 +1,34 @@
+2004-08-05  David Kastrup  <dak@gnu.org>
+
+	* tex-site.el.in: don't require 'tex-mik on Windows, let the user
+	load it instead of tex-site if he wants to.
+
+	* tex.el (TeX-command-list): Add `%(PDFout)', `%(mode)' and
+	`%(execmode)'.  Remove `TeX Interactive', `LaTeX Interactive' and
+	`ConTeXt Interactive'.
+	(LaTeX-command-style): Don't provide a default for a
+	`LaTeX-version' of "2": people can customize this if necessary
+	themselves, we would not know a sane default, anyway.
+	(TeX-expand-list): Support `TeX-DVI-via-PDFTeX', `%(PDFout)',
+	`%(mode)' and `%(execmode)'.
+	(TeX-set-mode-name): Add `reset' flag to indicate that the next
+	step should again be TeXing.  Add "I" flag.
+	(TeX-source-specials): Call `TeX-set-mode-name' with `reset' flag.
+	(TeX-mode-set): Variable setter for TeX modes.
+	(TeX-PDF-mode): Make the default value a global mode.
+	(TeX-global-PDF-mode): Toggle function to change default
+	`TeX-PDF-mode'.
+	(TeX-PDF-mode): Remove local binding of `TeX-PDF-mode' in case of
+	conflicts.  Call `TeX-set-mode-name' with `reset' flag.
+	(TeX-DVI-via-PDFTeX): New customizable variable.
+	(TeX-interactive-mode): New mode.
+	(TeX-mode-map): Add binding for `TeX-interactive-mode'.
+	(TeX-mode-specific-command-menu-entries): Add menu entry for it.
+
+	* tex-buf.el (TeX-command-expand): Document `%%'.
+	(TeX-run-TeX): If `TeX-interactive-mode' is set, run
+	`TeX-run-interactive' instead.
+
 2004-08-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-fontify-script): Default to nil in

@@ -280,7 +280,9 @@ asked if it is positive, and suppressed if it is not."
 
 (defun TeX-command-expand (command file &optional list)
   "Expand COMMAND for FILE as described in LIST.
-LIST default to TeX-expand-list."
+LIST default to `TeX-expand-list'.  As a special exception,
+`%%' can be used to produce a single `%' sign in the output
+without further expansion."
   (let (pat
 	pos
 	entry
@@ -612,12 +614,14 @@ Return the new process."
   ;; can we assume that TeX-sentinel-function will not be changed
   ;; during (TeX-run-format ..)? --pg
   ;; rather use let* ? --pg
-  (let ((sentinel-function TeX-sentinel-default-function))
-    (let ((process (TeX-run-format name command file)))
-      (setq TeX-sentinel-function sentinel-function)
-      (if TeX-process-asynchronous
-	  process
-	(TeX-synchronous-sentinel name file process)))))
+  (if TeX-interactive-mode
+      (TeX-run-interactive name command file)
+    (let ((sentinel-function TeX-sentinel-default-function))
+      (let ((process (TeX-run-format name command file)))
+	(setq TeX-sentinel-function sentinel-function)
+	(if TeX-process-asynchronous
+	    process
+	  (TeX-synchronous-sentinel name file process))))))
 
 ;; backward compatibilty
 

@@ -110,28 +110,25 @@ performed as specified in `TeX-expand-list'."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "%(PDF)tex %S \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
+  (list (list "TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
+	      'TeX-run-TeX nil
 	      (list 'plain-tex-mode))
-	(list "TeX Interactive" "%(PDF)tex %S %t" 'TeX-run-interactive nil
-	      (list 'plain-tex-mode))
-	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
+	(list "LaTeX" "%l \"%(mode)\\input{%t}\""
 	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
-	(list "LaTeX Interactive" "%l \"\\input{%t}\""
-	      'TeX-run-interactive nil (list 'latex-mode 'doctex-mode))
 	;; Not part of standard TeX.
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
 	      (list 'texinfo-mode))
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
 	      (list 'texinfo-mode))
-	(list "AmSTeX" "amstex %S \"\\nonstopmode\\input %t\""
+	(list "AmSTeX" "amstex %S \"%(mode)\\input %t\""
 	      'TeX-run-TeX nil (list 'ams-tex-mode))
 	;; support for ConTeXt  --pg
 	;; first version of ConTeXt to support nonstopmode: 2003.2.10
-	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX
+	(list "ConTeXt" "texexec --once --texutil %(execmode)%t"
+	      'TeX-run-TeX
 	      nil (list 'context-mode))
-	(list "ConTeXt Interactive" "texexec --once --texutil %t"
-	      'TeX-run-interactive t (list 'context-mode))
-	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil
+	(list "ConTeXt Full" "texexec %(execmode)%t"
+	      'TeX-run-TeX nil
 	      (list 'context-mode))
 	;; --purge %s does not work on unix systems with current texutil
 	;; check again october 2003 --pg
@@ -278,17 +275,9 @@ The executable `latex' is LaTeX version 2e."
 ;; Only works if parsing is enabled.
 
 (defcustom LaTeX-command-style
-  (if (string-equal LaTeX-version "2")
-      ;; There is a lot of different LaTeX 2 based formats.
-      '(("^latex2e$" "latex2e %S")
-	("^foils$" "foiltex")
-	("^ams" "amslatex %S")
-	("^slides$" "slitex")
-	("^plfonts\\|plhb$" "platex %S")
-	("." "latex %S"))
-    ;; They have all been combined in LaTeX 2e.
-    '(("." "%(PDF)latex %S")))
-  "List of style options and LaTeX commands.
+  ;; They have all been combined in LaTeX 2e.
+  '(("" "%(PDF)latex %S%(PDFout)"))
+"List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
 the style files, any occurrence of the string `%l' in a command in
@@ -446,13 +435,27 @@ string."
 	(list "%l" (lambda ()
 		     (TeX-style-check LaTeX-command-style)))
 	(list "%(PDF)" (lambda ()
-			 (if TeX-PDF-mode
+			 (if (or TeX-PDF-mode
+				 TeX-DVI-via-PDFTeX)
 			     "pdf"
 			   "")))
+	(list "%(PDFout)" (lambda ()
+			    (if (and (not TeX-PDF-mode)
+				     TeX-DVI-via-PDFTeX)
+				" \"\\pdfoutput=0 \""
+			      "")))
+	(list "%(mode)" (lambda ()
+			  (if TeX-interactive-mode
+			      ""
+			    "\\nonstopmode")))
+	(list "%(execmode)" (lambda ()
+			      (if TeX-interactive-mode
+				  ""
+				"--nonstop ")))
 	(list "%S" 'TeX-source-specials-expand-options)
 	(list "%dS" 'TeX-source-specials-view-expand-options)
 	(list "%cS" 'TeX-source-specials-view-expand-client)
-	;; `file' means to call `TeX-master-file'
+	;; `file' means to call `TeX-master-file' or `TeX-region-file'
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -555,7 +558,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.408 $"))
+	(rev "$Revision: 5.409 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +573,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-04 16:13:17 $"))
+    (let ((date "$Date: 2004-08-05 03:59:24 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -608,28 +611,32 @@ In the form of yyyy.mmdd")
 (defvar TeX-base-mode-name nil
   "Base name of mode.")
 
-(defun TeX-set-mode-name (&optional changed)
+(defun TeX-set-mode-name (&optional changed reset)
   "Build and set the mode name.
 The base mode name will be concatenated with indicators for
 helper modes where appropriate.
 
 If CHANGED is non-nil, it indicates which global mode
 may have changed so that all corresponding buffers
-without a local value might get their name updated."
+without a local value might get their name updated.
+If RESET is non-nil, `TeX-command-next' is reset to
+`TeX-command-default' in affected buffers."
   (if changed
       (dolist (buffer (buffer-list))
 	(and (local-variable-p 'TeX-mode-p buffer)
 	     (not (local-variable-p changed buffer))
-	     (with-current-buffer buffer (TeX-set-mode-name))))
+	     (with-current-buffer buffer (TeX-set-mode-name nil reset))))
     (if TeX-mode-p
 	(let ((trailing-flags
 	       (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
 		       (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
+		       (and TeX-interactive-mode "I")
 		       (and TeX-source-specials "S"))))
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
-				    (concat "/" trailing-flags))))
+				    (concat "/" trailing-flags)))
+		TeX-command-next TeX-command-default)
 	  (set-buffer-modified-p (buffer-modified-p))))))
 
 ;;; Source Specials
@@ -671,7 +678,7 @@ details."
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials
 			  TeX-source-specials-map))
-  (TeX-set-mode-name 'TeX-source-specials))
+  (TeX-set-mode-name 'TeX-source-specials t))
 
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials minor-mode-map-alist)
@@ -820,28 +827,30 @@ If this is nil, an empty string will be returned."
   "This indicates a TeX mode being active.")
 (make-variable-buffer-local 'TeX-mode-p)
 
-(defvar TeX-PDF-mode nil
+(defun TeX-mode-set (var value)
+  (set-default var value)
+  (TeX-set-mode-name var t))
+
+(defcustom TeX-PDF-mode nil nil
+  :group 'TeX-command
+  :set 'TeX-mode-set
+  :type 'boolean)
+
+(define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
 
 If enabled, PDFTeX will be used as an executable by default.
-For customization, see `global-TeX-PDF-mode' instead.
-Use the function `TeX-PDF-mode' for setting this.")
+You can customize an initial value, and you can use the
+function `TeX-global-PDF-mode' for toggling this value.")
 
-(make-variable-buffer-local 'TeX-PDF-mode)
-
-(define-minor-mode global-TeX-PDF-mode
-  "Global minor mode for using PDFTeX.
-
-If enabled, PDFTeX will be used as an executable by default.
-This changes the global default for `TeX-PDF-mode' if it has
-not been called before: call `TeX-PDF-mode-toggle' instead for
-buffer-local use."
-  :global t
-  (setq-default TeX-PDF-mode global-TeX-PDF-mode)
-  (TeX-set-mode-name 'TeX-PDF-mode)
-  global-TeX-PDF-mode)
-
-(global-TeX-PDF-mode (if global-TeX-PDF-mode 1 0))
+(defun TeX-global-PDF-mode (&optional arg)
+  "Toggle default for `TeX-PDF-mode'."
+  (interactive "P")
+  (prog1
+      (setq-default TeX-PDF-mode
+		    (if arg (> (prefix-numeric-value arg) 0)
+		      (not (default-value 'TeX-PDF-mode))))
+    (TeX-set-mode-name 'TeX-PDF-mode t)))
 
 (defun TeX-PDF-mode (arg &optional parsed)
   "Toggles PDF mode.
@@ -850,22 +859,29 @@ Interactive ARG if positive switches on, non-positive off.
 If PARSED is non-nil, buffer-local values of `TeX-PDF-mode' will not
 get overwritten.
 If the current value was parsed and conflicts with the new value,
-the default will be used instead."
+the default will be used instead.
+
+See `TeX-global-PDF-mode' for toggling the default value."
+;; Basically we have the following situations:
+;; TeX-PDF-mode-parsed (local-variable-p 'TeX-PDF-mode):
+;; nil nil : virgin state
+;; t   nil : conflicting parsed info -> use default.
+;; nil t   : stably set state
+;; t   t   : non-conflicting parsed info
   (interactive "P")
   (setq arg (if arg (> (prefix-numeric-value arg) 0)
 	      (not TeX-PDF-mode)))
   (if parsed
       (if TeX-PDF-mode-parsed
 	  (unless (eq TeX-PDF-mode arg)
-	    (setq TeX-PDF-mode (default-value 'TeX-PDF-mode))
-	    (setq TeX-PDF-mode-parsed nil))
+	    (kill-local-variable 'TeX-PDF-mode))
 	(unless (local-variable-p 'TeX-PDF-mode)
 	  (setq TeX-PDF-mode-parsed t
 		TeX-PDF-mode arg)))
     (if TeX-PDF-mode-parsed
 	(setq TeX-PDF-mode-parsed nil))
     (setq TeX-PDF-mode arg))
-  (TeX-set-mode-name)
+  (TeX-set-mode-name nil t)
   TeX-PDF-mode)
 
 (defun TeX-PDF-mode-on ()
@@ -878,6 +894,16 @@ the default will be used instead."
   "Set if `TeX-PDF-mode' has come about by parsing.")
 
 (make-variable-buffer-local 'TeX-PDF-mode-parsed)
+
+(defcustom TeX-DVI-via-PDFTeX nil
+  "Whether to use PDFTeX also for producing DVI files."
+  :group 'TeX-command
+  :type 'boolean)
+
+(define-minor-mode TeX-interactive-mode
+  "Minor mode for interactive runs of TeX."
+  nil nil nil
+  (TeX-set-mode-name nil t))
 
 ;;; Commands
 
@@ -2983,6 +3009,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
+    (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-v" 'TeX-view)
@@ -3046,6 +3073,8 @@ be bound to `TeX-electric-macro'."
 			     (markerp TeX-command-region-begin))]
 	    [ "PDF mode" TeX-PDF-mode
 	      :style toggle :selected TeX-PDF-mode ]
+	    [ "Run Interactively" TeX-interactive-mode
+	      :style toggle :selected TeX-interactive-mode ]
 	    [ "Source specials" TeX-source-specials
 	      :style toggle :selected TeX-source-specials ])
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
