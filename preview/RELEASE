@@ -4,17 +4,19 @@ preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  It is released under the GNU
 Public License (GPL).  At the current point of time, GNU Emacs-21.1,
 AUC TeX, a working LaTeX installation and GhostScript are required.
-XEmacs support has been intermittedly worked on.  If you are planning
-on contributing, please contact the developers' list.  Due to missing
+XEmacs support is again being worked on.  If you are planning on
+contributing, please contact the developers' list.  Due to missing
 image support of Emacs-21.1 under Microsoft Windows, this platform is
-not usable at the current point of time, either.
+not usable at the current point of time.
 
 Release focus have been user interface improvements and documentation.
 The TeXinfo documentation now also contains instructions for the used
 LaTeX style, and users of Emacs' desktop package will have previews
 survive into their next Emacs session.  The LaTeX style now has an
-option for making TeX bounding boxes known to Dvips in case there is
-a disagreement (frequent with packages like PStricks).
+option for making TeX bounding boxes known to Dvips in case it gets
+them wrong (frequent with packages like PStricks).  Due to a defective
+backport of security handling, GNU GhostScript-6.53 failed to work
+with version 0.6.  We now don't use the incomplete functionality.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
@@ -25,16 +27,24 @@ page that among others offers anonymous CVS access is located at
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
 
-For users of RedHat linux, a RPM is provided at Sourceforge primarily
-for RH 7.x. The RPM requires a few packages:
+Additional files can be found at
+<URL:http://prdownloads.sourceforge.net/preview-latex>:
+
+* If you don't have texinfo 4.0 or later installed, prebuilt
+  documentation files can be found there.
+
+* AUC TeX can be found at several places, but if you want the latest
+  11.11 (alpha, but stable AFAIK) with no known issues concerning
+  preview-latex, you can find it there as well.
+
+* RPMs for preview-latex and AUC TeX are provided for users of RedHat
+  Linux.
+
+The RPMs require a few packages:
 
 * GhostScript 6.51 is included in RH 7.2, but if you use an earlier
   release it can be downloaded from the RH7.2 updates,
   <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>
-
-* AUC TeX can be found at several places, but if you want the latest
-  11.11 (alpha, but stable AFAIK) with no known issues concerning
-  preview-latex, an RPM can be found at the project homepage.
 
 * Finally, Emacs-21.1 can be downloaded from rawhide,
   <URL:ftp://ftp.redhat.com/pub/redhat/linux/rawhide/i386/RedHat/RPMS/>.
