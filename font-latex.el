@@ -1085,8 +1085,7 @@ have changed."
   :group 'font-latex-highlighting-faces)
 
 (defface font-latex-verbatim-face
-  '((t :inherit font-latex-math-face
-       :family "courier"))
+  '((t (:inherit font-latex-math-face :family "courier")))
   "Face used to highlight TeX verbatim environments."
   :group 'font-latex-highlighting-faces)
 
@@ -1726,8 +1725,8 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   "Face used to highlight preprocessor directives in docTeX mode.")
 
 (defface font-latex-doctex-preprocessor-face
-  '((t :inherit (list font-latex-doctex-documentation-face
-                      font-lock-preprocessor-face)))
+  '((t (:inherit (list font-latex-doctex-documentation-face
+		       font-lock-preprocessor-face))))
   "Face used to highlight preprocessor directives in docTeX mode."
   :group 'font-latex-highlighting-faces)
 
@@ -1739,7 +1738,7 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   '((((class mono)) (:inverse-video t))
     (((class grayscale) (background dark)) (:background "#333"))
     (((class color) (background dark)) (:background "#333"))
-    (t :background "#eeeeee"))
+    (t (:background "#eeeeee")))
   "Face used to highlight the documentation parts in docTeX mode."
   :group 'font-latex-highlighting-faces)
 
@@ -1765,13 +1764,26 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 	     ;; syntax-table can't deal with.  We could turn it
 	     ;; into a non-comment, or use `\n%' or `%^' as the comment.
 	     ;; Instead, we include it in the ^^A comment.
-	     (eval-when-compile (string-to-syntax "< b"))
-	   (eval-when-compile (string-to-syntax ">"))))
+	     ;; COMPATIBILITY for Emacs 20 and XEmacs
+	     (eval-when-compile (if (fboundp 'string-to-syntax)
+				    (string-to-syntax "< b")
+				  '(2097163)))
+	   ;; COMPATIBILITY for Emacs 20 and XEmacs
+	   (eval-when-compile (if (fboundp 'string-to-syntax)
+				  (string-to-syntax ">")
+				'(12)))))
 	(let ((end (line-end-position)))
 	  (if (< end (point-max))
-	      (put-text-property end (1+ end) 'syntax-table
-	       (eval-when-compile (string-to-syntax "> b")))))
-	(eval-when-compile (string-to-syntax "< b")))))
+	      (put-text-propertyend (1+ end) 'syntax-table
+				    ;; COMPATIBILITY for Emacs 20 and XEmacs
+				    (eval-when-compile
+				      (if (fboundp 'string-to-syntax)
+					  (string-to-syntax "> b")
+					'(2097164))))))
+	;; COMPATIBILITY for Emacs 20 and XEmacs
+	(eval-when-compile (if (fboundp 'string-to-syntax)
+			       (string-to-syntax "< b")
+			     '(2097163))))))
 
 ;; Copy and adaptation of `doctex-font-lock-syntactic-face-function'
 ;; in `tex-mode.el' of CVS Emacs (March 2004)
