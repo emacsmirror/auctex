@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6h
+# Version: 9.6i
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -64,7 +64,8 @@ WWWDIR = $(HOME)/.public_html/auctex
 
 REMOVE =  ltx-help.el
 
-MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el
+MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el \
+	multi-prompt.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el font-latex.el
 
@@ -143,6 +144,13 @@ dist:
 	echo $(TAG) > $(WWWDIR)/version
 	perl -pi.bak -e "s/Version: $(OLD)/Version: $(TAG)/" \
 	    $(AUCSRC) $(EXTRAFILES)
+	mv ChangeLog ChangeLog.old
+	echo `date "+%a %b %d %T %Y "` \
+	     " Per Abrahamsen  <abraham@dina.kvl.dk>" > ChangeLog
+	echo >> ChangeLog
+	echo "	* Version" $(TAG) released. >> ChangeLog
+	echo >> ChangeLog
+	cat ChangeLog.old >> ChangeLog
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig

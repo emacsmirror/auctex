@@ -2,16 +2,16 @@
 
 ;; Copyright (C) 1996 Per Abrahamsen.
 
-;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
+;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: extensions
-;; Version: 0.0
+;; Version: 0.1
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
 ;; LCD Archive Entry:
 ;; multi-prompt|Per Abrahamsen|abraham@dina.kvl.dk|
 ;; completing read of multiple strings|
-;; 1996-08-31|0.0|~/misc/multi-prompt.el.Z|
+;; 1996-08-31|0.1|~/functions/multi-prompt.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -41,10 +41,20 @@
 
 ;;; Change Log:
 ;;
+;; Sat Aug 31 18:32:20 MET DST 1996
+;;      * Version 0.1 released.
+;;        Fixed `predicate' bug.  
+;;        Added provide.
+;;        Added `multi-prompt-found' variable.
 ;; Sat Aug 31 16:29:14 MET DST 1996
 ;;      * Created.
 
 ;;; Code:
+
+(provide 'multi-prompt)
+
+(defvar multi-prompt-found nil
+  "List of entries currently added during a `multi-prompt'.")
 
 (defun multi-prompt (separator
 		     unique prompt table
@@ -65,13 +75,13 @@ are the arguments to `completing-read'.  See that."
     (define-key new-map "\C-?" 'multi-prompt-delete)
     (let* ((minibuffer-local-completion-map new-map)
 	   (minibuffer-local-must-match-map new-map)
-	   (found nil)
+	   (multi-prompt-found nil)
 	   (done nil)
 	   (filter (cond (unique
 			  (lambda (x)
-			    (and (not (member (car x) found))
+			    (and (not (member (car x) multi-prompt-found))
 				 (or (null predicate)
-				     (not (predicate x))))))
+				     (funcall predicate x)))))
 			 (predicate)))
 	   (answer (catch 'multi-prompt-exit
 		     (while t
@@ -84,20 +94,23 @@ are the arguments to `completing-read'.  See that."
 							      initial
 							      history)))))
 			 (cond ((eq extra 'back)
-				(when found
-				  (setq prompt (substring
+				(when multi-prompt-found
+				  (setq prompt (substring 
 						prompt 0 
 						(- 0 (length separator)
-						   (length (car found))))
-					initial (car found)
-					found (cdr found))))
+						   (length
+						    (car multi-prompt-found))))
+					initial (car multi-prompt-found))
+				  (setq multi-prompt-found 
+					(cdr multi-prompt-found))))
 			       (t
 				(setq prompt (concat prompt extra separator)
-				      initial nil
-				      found (cons extra found)))))))))
+				      initial nil)
+				(setq multi-prompt-found
+				      (cons extra multi-prompt-found)))))))))
       (if answer 
-	  (nreverse (cons answer found))
-	found))))
+	  (nreverse (cons answer multi-prompt-found))
+	multi-prompt-found))))
 
 (defun multi-prompt-delete ()
   (interactive)

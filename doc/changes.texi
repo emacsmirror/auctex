@@ -2,6 +2,10 @@
 
 @itemize @bullet
 @item 
+@samp{$} is now of the syntax class `matched pair', suggested by Mats
+Bengtsson @samp{<matsb@@s3.kth.se>}.
+
+@item 
 Now use @kbd{,} to enter multiple arguments to a @samp{\cite} or
 @samp{\bibliography} command instead of @kbd{@key{ret}}.
 
