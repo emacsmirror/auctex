@@ -55,6 +55,8 @@
 		  (unless (eq attr :height)
 		    (error "Know only how to fake face-height"))
 		  `(face-height ,face))
+(preview-defmacro line-beginning-position () '(point-at-bol))
+(preview-defmacro line-end-position () '(point-at-eol))
 
 (unless (fboundp 'find-image)
   (defun find-image (specs)
