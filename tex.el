@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
-;; Version: 11.13
+;; Version: 11.14
 ;; Keywords: wp
 ;; X-URL: http://www.nongnu.org/auctex/
 
