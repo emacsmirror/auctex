@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.466 $"))
+	    (rev "$Revision: 5.467 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-09 16:17:52 $"))
+    (let ((date "$Date: 2004-12-09 17:29:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3307,10 +3307,14 @@ be bound to `TeX-electric-macro'."
       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :help "Toggle folding mode"]
      "-"
-     ["Hide All" TeX-fold-buffer
+     ["Hide All in Current Buffer" TeX-fold-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-b"
       :help "Hide all configured TeX constructs in the current buffer"]
+     ["Hide All in Current Paragraph" TeX-fold-paragraph
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-p"
+      :help "Hide all configured TeX constructs in the paragraph containing point"]
      ["Hide Current Macro" TeX-fold-macro
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-m"
@@ -3321,10 +3325,14 @@ be bound to `TeX-electric-macro'."
       :keys "C-c C-o C-e"
       :help "Hide the environment containing point"]
      "-"
-     ["Show All" TeX-fold-clearout-buffer
+     ["Show All in Current Buffer" TeX-fold-clearout-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-x"
       :help "Permanently show all folded content again"]
+     ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-v"
+      :help "Permanently show all folded content in paragraph containing point"]
      ["Show Current Item" TeX-fold-clearout-item
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-c"
