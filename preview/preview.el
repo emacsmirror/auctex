@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.167 2002-11-05 17:27:01 dakas Exp $
+;; $Id: preview.el,v 1.168 2002-11-10 19:50:56 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -642,8 +642,10 @@ object corresponding to the wanted page."
     (format "dup %d setfileposition %d()/SubFileDecode filter cvx"
 	    (1- (car curpage)) (nth 1 curpage))))
   
-(defun preview-ps-quote (str)
-  "Make a PostScript string from STR."
+(defun preview-ps-quote-filename (str)
+  "Make a PostScript string from filename STR.
+The file name is first made relative."
+  (setq str (file-relative-name str))
   (let ((index 0))
     (while (setq index (string-match "[\\()]" str index))
       (setq str (replace-match "\\\\\\&" t nil str)
@@ -658,7 +660,7 @@ object corresponding to the wanted page."
     (setq preview-gs-init-string
 	  (concat preview-gs-init-string
 		  (format "%s(r)file dup %s exec "
-			  (preview-ps-quote file)
+			  (preview-ps-quote-filename file)
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
 (defun preview-gs-urgentize (ov buff)
@@ -834,11 +836,12 @@ given as ANSWER."
 			       (preview-gs-dsc-cvx
 				snippet
 				preview-gs-dsc))
-		     (format "%s(r)file cvx" (preview-ps-quote (car oldfile))))
+		     (format "%s(r)file cvx"
+			     (preview-ps-quote-filename (car oldfile))))
 		   (- (aref bbox 2) (aref bbox 0))
 		   (- (aref bbox 3) (aref bbox 1))
 		   (- (aref bbox 0)) (aref bbox 1)
-		   (preview-ps-quote (car newfile)))))
+		   (preview-ps-quote-filename (car newfile)))))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
 			 (list ov)))
@@ -1636,7 +1639,8 @@ preview Emacs Lisp package something too stupid."))
   (add-to-list 'TeX-expand-list
 	       '("%m" (lambda ()
 			(shell-quote-argument
-			 (preview-create-subdirectory)))) t)
+			 (file-relative-name
+			  (preview-create-subdirectory))))) t)
   (add-to-list 'TeX-expand-list
 	       '("%D" preview-make-preamble) t)
   (add-to-list 'TeX-expand-list
@@ -2226,7 +2230,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.167 $"))
+	(rev "$Revision: 1.168 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2237,7 +2241,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-05 17:27:01 $"))
+    (let ((date "$Date: 2002-11-10 19:50:56 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
