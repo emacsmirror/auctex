@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.375 $"))
+	(rev "$Revision: 5.376 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-27 07:57:12 $"))
+    (let ((date "$Date: 2004-05-29 16:12:27 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -603,7 +603,7 @@ In the form of yyyy.mmdd")
 (defvar TeX-source-specials-map
   (let ((map (make-sparse-keymap)))
     (if (featurep 'xemacs)
-	(define-key map	[C-button1] #'TeX-view)
+	(define-key map	[(control button1)] #'TeX-view)
       (define-key map [C-down-mouse-1] #'TeX-view))
     map)
   "Keymap that is active when source specials are enabled.")
