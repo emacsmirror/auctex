@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.134 2002-04-20 22:49:52 dakas Exp $
+;; $Id: preview.el,v 1.135 2002-04-22 22:13:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1169,14 +1169,27 @@ on first use.")
 	  filenames)))
 
 (defun preview-buffer-restore-internal (buffer-misc)
-  "Restore previews from BUFFER-MISC if proper."
-  (and (eq 'preview (pop buffer-misc))
-       (equal (pop buffer-misc)
-	      (visited-file-modtime))
-       (let (tempdirlist)
-	 (dolist (ovdata buffer-misc)
-	   (setq tempdirlist
-		 (apply #'preview-reinstate-preview tempdirlist ovdata))))))
+  "Restore previews from BUFFER-MISC if proper.  Remove them
+if they have expired."
+  (let ((timestamp (visited-file-modtime)) tempdirlist files)
+    (when (eq 'preview (pop buffer-misc))
+      (if (equal (pop buffer-misc) timestamp)
+	  (dolist (ovdata buffer-misc)
+	    (setq tempdirlist
+		  (apply #'preview-reinstate-preview tempdirlist
+			 timestamp ovdata)))
+	(dolist (ovdata buffer-misc)
+	  (setq files (nth 3 ovdata))
+	  (condition-case nil
+	      (delete-file (nth 0 files))
+	    (file-error nil))
+	  (unless (member (nth 1 files) tempdirlist)
+	    (push (nth 1 files) tempdirlist)))
+	(dolist (dir tempdirlist)
+	  (condition-case nil
+	      (delete-directory dir)
+	    (file-error nil)))))))
+
 
 (defun preview-buffer-restore (buffer-misc)
   "At end of desktop load, reinstate previews.
@@ -1312,10 +1325,11 @@ to the close hook."
 		   (list (preview-active-string ov)))
       (preview-toggle ov t))))
 
-(defun preview-reinstate-preview (tempdirlist start end image filename)
+(defun preview-reinstate-preview (tempdirlist timestamp start end image filename)
   "Reinstate a single preview.
 This gets passed TEMPDIRLIST, a list consisting of the kind
-of entries used in `TeX-active-tempdir' and returns an augmented
+of entries used in `TeX-active-tempdir', and TIMESTAMP, the
+time stamp under which the file got read in.  It returns an augmented
 list.  START and END give the buffer location where the preview
 is to be situated, IMAGE the image to place there, and FILENAME
 the file to use: a triple consisting of filename, its temp directory
@@ -1341,6 +1355,7 @@ and the corresponding topdir."
       (overlay-put ov 'preview-image (preview-import-image image))
       (overlay-put ov 'strings
 		   (list (preview-active-string ov)))
+      (overlay-put ov 'timestamp timestamp)
       (preview-toggle ov t)))
   tempdirlist)
 
@@ -1909,7 +1924,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.134 $"))
+	(rev "$Revision: 1.135 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1920,7 +1935,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-20 22:49:52 $"))
+    (let ((date "$Date: 2002-04-22 22:13:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
