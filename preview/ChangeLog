@@ -2,6 +2,10 @@
 
 	* Release 0.8.1
 
+	* preview.el (preview-dump-replacements): Use regexp not
+	triggering bugs in older Emacsen.
+	(preview-dump-replacements): Same here.
+
 	* RELEASE, configure.in, doc/preview-latex.texi: Adapt to 0.8.1
 
 	* preview-latex.spec: xemacspkgdir has changed in recent XEmacs
