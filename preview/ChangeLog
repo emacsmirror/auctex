@@ -2,6 +2,11 @@
 
 	* Release 0.9
 
+	* preview-latex.spec: Make DVI.
+
+	* latex/Makefile.in (all): Generate both dvi and pdf.
+	(install-texmf-doc): Install DVI (faster, compact).
+
 	* latex/Makefile.in (install-texmf-doc): Install PDF instead of
 	DVI file.
 
