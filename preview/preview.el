@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.243 2005-03-18 18:24:13 dak Exp $
+;; $Id: preview.el,v 1.244 2005-03-18 23:24:23 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -45,9 +45,6 @@
 (require 'tex)
 (require 'tex-buf)
 (require 'latex)
-
-(unless (fboundp 'TeX-overlay-prioritize)
-  (defalias 'TeX-overlay-prioritize 'ignore))
 
 (eval-when-compile
   (condition-case nil
@@ -298,6 +295,9 @@ If `preview-fast-conversion' is set, this option is not
   :group 'preview-gs
   :type 'number)
 
+(defvar preview-coding-system nil
+  "Coding system used for LaTeX process.")
+(make-variable-buffer-local 'preview-coding-system)
 (defvar preview-parsed-font-size nil
   "Font size as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-font-size)
@@ -1961,7 +1961,8 @@ Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
   (let ((ov (make-overlay start end nil nil nil)))
-    (overlay-put ov 'priority (TeX-overlay-prioritize start end))
+    (when (fboundp 'TeX-overlay-prioritize)
+      (overlay-put ov 'priority (TeX-overlay-prioritize start end)))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -2039,7 +2040,8 @@ if any."
     (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
     (setcdr filename TeX-active-tempdir)
     (let ((ov (make-overlay start end nil nil nil)))
-      (overlay-put ov 'priority (TeX-overlay-prioritize start end))
+      (when (fboundp 'TeX-overlay-prioritize)
+	(overlay-put ov 'priority (TeX-overlay-prioritize start end)))
       (overlay-put ov 'preview-map
 		   (preview-make-clickable
 		    nil nil nil
@@ -2233,6 +2235,8 @@ using MML mode."
     (let (preview-transparent-border)
       (preview-region start end))))
 
+(autoload 'mailcap-extension-to-mime "mailcap")
+
 (defun preview-format-mml (ov &optional dont-ask)
   "Return an MML representation of OV as string.
 This can be used to send inline images in mail and news when
@@ -2247,9 +2251,8 @@ result, DONT-ASK in the cdr."
 		     (buffer-substring (overlay-start ov)
 				       (overlay-end ov))))
 	      (file (car (car (last (overlay-get ov 'filenames)))))
-	      (type (progn (require 'mailcap)
-			   (mailcap-extension-to-mime
-			    (file-name-extension file)))))
+	      (type (mailcap-extension-to-mime
+		     (file-name-extension file))))
 	 (and (not dont-ask)
 	      (nth 3 (cdr (overlay-get ov 'preview-image)))
 	      (if (y-or-n-p "Replace colored borders? ")
@@ -2421,14 +2424,14 @@ later while in use."
     ("Tightpage" preview-parsed-tightpage
      "\\` *\\(-?[0-9]+ *\\)\\{4\\}\\'" 0 preview-parse-tightpage)))
 
-(defun preview-error-quote (string)
+(defun preview-error-quote (string run-coding-system)
   "Turn STRING with potential ^^ sequences into a regexp.
 To preserve sanity, additional ^ prefixes are matched literally,
 so the character represented by ^^^ preceding extended characters
 will not get matched, usually."
   (let (output case-fold-search)
     (when (featurep 'mule)
-      (setq string (encode-coding-string string 'raw-text)))
+      (setq string (encode-coding-string string run-coding-system)))
     (while (string-match "\\^\\{2,\\}\\(\\([@-_?]\\)\\|[8-9a-f][0-9a-f]\\)"
 			 string)
       (setq output
@@ -2470,6 +2473,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  context offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
+	  (run-coding-system preview-coding-system)
 	  (run-directory default-directory)
 	  tempdir
 	  close-data
@@ -2702,10 +2706,15 @@ name(\\([^)]+\\))\\)\\|\
 		       ;;ok, transform ^^ sequences
 		       ((search-forward-regexp
 			 (concat "\\("
-				 (setq string (preview-error-quote string))
+				 (setq string
+				       (preview-error-quote
+					string
+					run-coding-system))
 				 "\\)"
 				 (setq after-string
-				       (preview-error-quote after-string)))
+				       (preview-error-quote
+					after-string
+					run-coding-system)))
 			 (line-end-position) t)
 			(goto-char (match-end 1)))
 		       ((search-forward-regexp
@@ -3278,8 +3287,13 @@ internal parameters, STR may be a log to insert into the current log."
 	  (setq preview-gs-file pr-file)
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
 	  (when (featurep 'mule)
+	    (setq preview-coding-system
+		  (preview-buffer-recode-system
+		   (coding-system-base
+		    (with-current-buffer TeX-command-buffer
+		      buffer-file-coding-system))))
 	    (set-process-coding-system
-	     process 'raw-text))
+	     process preview-coding-system))
 	  (TeX-parse-reset)
 	  (setq TeX-parse-function 'TeX-parse-TeX)
 	  (if TeX-process-asynchronous
@@ -3291,7 +3305,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.243 $"))
+	(rev "$Revision: 1.244 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3302,7 +3316,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-18 18:24:13 $"))
+    (let ((date "$Date: 2005-03-18 23:24:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -28,6 +28,9 @@
 ;;; Code:
 
 (require 'overlay)
+(require 'tex-site)
+(require 'tex)
+(require 'latex)
 
 ;; Compatibility macros and functions.
 
@@ -418,6 +421,39 @@ Pure borderless black-on-white will return quadruple NIL."
   "*Is balloon help enabled in preview-latex?"
   :group 'preview-appearance
   :type 'boolean)
+
+(defcustom preview-buffer-recoding-alist
+  (if (and (= emacs-major-version 21)
+	   (< emacs-minor-version 5))
+      '((utf-8-unix . raw-text-unix)
+	(utf-8-dos . raw-text-dos)
+	(utf-8-mac . raw-text-mac)
+	(utf-8 . raw-text)))
+  "Translate buffer encodings into process encodings.
+TeX is sometimes bad dealing with 8bit encodings and rather bad
+dealing with multibyte encodings.  So the process encoding output
+might need to get temporarily reprocessed into the original byte
+stream before the buffer characters can be identified.  XEmacs
+21.4 is rather bad at preserving incomplete multibyte characters
+in that process.  This variable makes it possible to use a
+reconstructable coding system in the run buffer instead.  Specify
+an alist of base coding system names here, which you can get
+using
+
+  \(coding-system-name (coding-system-base buffer-file-coding-system))
+
+in properly detected buffers."
+  :group 'preview-latex
+  :type '(repeat (cons symbol symbol)))
+
+(defun preview-buffer-recode-system (base)
+  "This is supposed to translate unrepresentable base encodings
+ into something that can be used safely for byte streams in the
+ run buffer.  XEmacs mule-ucs is so broken that this may be
+ needed."
+  (or (cdr (assq (coding-system-name base)
+		 preview-buffer-recoding-alist))
+      base))
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."

@@ -1,3 +1,32 @@
+2005-03-19  David Kastrup  <dak@gnu.org>
+
+	* prv-xemacs.el (preview-buffer-recoding-alist): Madness variable.
+	(preview-buffer-recode-system): Use it.
+	(tex-site, tex, latex): Require them.
+
+	* prv-emacs.el (tex-site, tex, latex): require them to silence
+	byte compiler.
+	(preview-buffer-recode-system): Compatibility function.  Probably
+	not necessary for Emacs.
+
+	* preview.el (TeX-overlay-prioritize): don't redefine, test for
+	its presence at runtime.  Less invasive, less offensive to the
+	byte compiler.
+	(preview-coding-system): New buffer-local variable to indicate the
+	coding system used for processes.
+	(preview-place-preview, preview-reinstate-preview):  Use
+	`TeX-overlay-prioritize' only if it exists.
+	(mailcap-extension-to-mime): Use an autoload form instead of
+	`require' at runtime.
+	(preview-format-mml): Use `mailcap-extension-to-mime' directly
+	(preview-error-quote): take coding system of LaTeX process as
+	second argument.
+	(preview-parse-messages): initialize `run-coding-system' from
+	`preview-coding-system'.  Use it for calling
+	`preview-error-quote'.
+	(TeX-inline-preview-internal): Initialize `preview-coding-system'
+	and make process use it.
+
 2005-03-18  David Kastrup  <dak@gnu.org>
 
 	* preview.el (TeX-region-create): Try shutting up the byte

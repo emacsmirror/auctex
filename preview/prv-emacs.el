@@ -26,6 +26,10 @@
 
 ;;; Code:
 
+(require 'tex-site)
+(require 'tex)
+(require 'latex)
+
 (defvar preview-compatibility-macros nil
   "List of macros only present when compiling/loading.")
 
@@ -362,6 +366,12 @@ purposes."
        (if (windowp event)
 	   event
 	 (posn-window (event-start event))))))
+
+(defsubst preview-buffer-recode-system (base)
+  "This is supposed to translate unrepresentable base encodings
+ into something that can be used safely for byte streams in the
+ run buffer.  A noop for Emacs."
+  base)
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
