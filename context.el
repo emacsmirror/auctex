@@ -1268,8 +1268,10 @@ There might be text before point."
 	       :style toggle :selected TeX-debug-bad-boxes ]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	(list "Commenting"
-	      ["Comment Region" TeX-comment-region t]
-	      ["Uncomment Region" TeX-uncomment-region t])
+	      ["Comment or Uncomment Region"
+	       TeX-comment-or-uncomment-region t]
+	      ["Comment or Uncomment Paragraph"
+	       TeX-comment-or-uncomment-paragraph t])
 	"-"
 	(list "AUCTeX"
 	      (list "Customize"
