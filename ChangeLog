@@ -1,3 +1,8 @@
+Fri Jan 27 21:56:32 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (LaTeX-paragraph-commands): Incorrectly placed
+	parenthesis.  Reported by mic@cs.ucsd.edu (Michelangelo Grigni). 
+
 Thu Jan 26 13:39:56 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-fill-region): Use marker to mark end of region

@@ -8,13 +8,13 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.103 1995-01-27 16:58:09 amanda Exp $
+@c $Id: auc-tex.texi,v 1.104 1995-01-27 21:07:16 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle September 1993, for AUC @TeX{} Version 9.2
+@subtitle Version 9.2
   
 @author by Kresten Krab Thorup
 @author updated for 6.1 to 9.2 by Per Abrahamsen
@@ -2217,8 +2217,6 @@ defined.  We can specify this information in a style hook file.
 ;;; macro.el - Special code for my own macro file.
 
 ;;; Code:
-
-(require 'tex-auto)
 
 (defvar TeX-newmacro-regexp
   '("\\\\newmacro@{\\\\\\([a-zA-Z]+\\)@}@{\\\\\\([a-zA-Z]+\\)@}"

@@ -1,0 +1,34 @@
+In order for "TeX-auto-generate-global" to work in Emacs-19.27 for OS/2,
+I do a change in tex.el (see below).
+
+Before this change it will return like "0 files found".
+
+Note: (file-readable-p tex) will return "nil" in OS/2, when tex ia a directory.
+
+Did anyone have better fix for this?
+Also OS/2 seems didn't search files for complete when with "\usepackage".
+
+*** auctex-9.2u/tex.el~	Wed Jan 25 16:38:00 1995
+--- auctex-9.2u/tex.el	Thu Jan 26 16:35:35 1995
+***************
+*** 1549,1555 ****
+                                                "AUTO lisp directory: "
+                                                TeX-auto-default
+                                                TeX-auto-default 'confirm)))))
+!   (cond ((not (file-readable-p tex)))
+  	((string-match TeX-ignore-file tex))
+          ((file-directory-p tex)
+           (let ((files (directory-files tex))
+--- 1549,1555 ----
+                                                "AUTO lisp directory: "
+                                                TeX-auto-default
+                                                TeX-auto-default 'confirm)))))
+!   (cond ;; ((not (file-readable-p tex)))
+  	((string-match TeX-ignore-file tex))
+          ((file-directory-p tex)
+           (let ((files (directory-files tex))
+
+
+===========================================================================
+
+Ching-Mo

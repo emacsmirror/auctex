@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.113 1995-01-25 14:20:48 amanda Exp $
+# $Id: Makefile,v 5.114 1995-01-27 21:06:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -121,7 +121,7 @@ LACHECKGEN = lacheck.c test.old
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
-EXTRAFILES = COPYING PROBLEMS MSDOS VMS Makefile ChangeLog \
+EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 Makefile ChangeLog \
 	tex-jp.el lpath.el tex-site.el $(CONTRIB)
 
 first:

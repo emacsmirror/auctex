@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.39 1995-01-26 23:09:02 amanda Exp $
+;; Version: $Id: latex.el,v 5.40 1995-01-27 21:07:00 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1946,8 +1946,8 @@ Otherwise, only ask in description environments.")
 	  "begin\\b\\|end\\b\\|part\\b\\|chapter\\b\\|label\\b\\|"
 	  "caption\\b\\|section\\b\\|subsection\\b\\|subsubsection\\b\\|"
 	  "par\\b\\|noindent\\b\\|paragraph\\b\\|include\\b\\|"
-	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b"
-  "Regexp matching names of LaTeX macros that should have their own line."))
+	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
+  "Regexp matching names of LaTeX macros that should have their own line.")
 
 ;;;###autoload
 (defun latex-mode ()
