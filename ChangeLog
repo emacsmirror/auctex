@@ -1,3 +1,7 @@
+2002-11-25  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex.el (TeX-arg-define-index): correct typo.
+
 2002-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.13 released.
