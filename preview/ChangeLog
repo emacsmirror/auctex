@@ -1,3 +1,13 @@
+2003-02-27  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c (DrawPages): 
+	* dvipng/misc.c (Message): Speed up slightly when not in DEBUG
+	mode.
+	
+	* dvipng/misc.c (DecodeArgs): Adjust copyright notice.
+
+	* dvipng/set.c (SetRule): Reposition rules, one dot up.
+
 2003-02-15  David Kastrup  <dakas@users.sourceforge.net>
 
 	* configure.in: quote MAKEINFO.
