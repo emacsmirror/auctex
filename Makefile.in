@@ -73,7 +73,7 @@ DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/history.texi \
 	doc/wininstall.texi doc/todo.texi doc/faq.texi doc/macros.texi
 
-EXTRAFILES = COPYING ChangeLog \
+EXTRAFILES = RELEASE COPYING ChangeLog auctex.spec \
 	configure install-sh $(MKINSTALLDIRS) Makefile.in \
 	tex-site.el.in lpath.el $(CONTRIB) $(CONTRIB_MULE)
 
@@ -205,7 +205,8 @@ tar-ball:
 	(cd doc; cp INSTALL INSTALL.windows README CHANGES TODO FAQ \
 		../auctex-$(TAG)/ )
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
-	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
+	cp doc/CHANGES $(FTPDIR)/CHANGES
+	cp RELEASE $(FTPDIR)/RELEASE-$(TAG)
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc

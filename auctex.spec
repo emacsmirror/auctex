@@ -5,7 +5,7 @@ Release: 	1
 License: 	GPL
 Group: 		Applications/Editors
 URL: 		http://www.gnu.org/software/auctex/
-Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{version}/%{name}-%{version}.tar.gz
+Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
 Requires: 	emacs >= 21
 #BuildRequires: 	emacs-X11
 BuildArchitectures: noarch

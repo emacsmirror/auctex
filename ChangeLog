@@ -1,10 +1,19 @@
+2004-08-13  David Kastrup  <dak@gnu.org>
+
+	* Version 11.50 released.
+
 2004-08-13  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: Add another alternative for lispdir
 
 2004-08-13  David Kastrup  <dak@gnu.org>
 
-	* Version 11.50 released.
+	* auctex.spec (Source0): Change source URL.
+
+	* Makefile.in (EXTRAFILES): Add RELEASE and auctex.spec.
+	(tar-ball): Don't create CHANGES-$(TAG), just CHANGES (as it is
+	always a longer history).  But create RELEASE-$(TAG) instead:
+	that's release-specific.
 
 2004-08-13  David Kastrup  <dak@gnu.org>
 
