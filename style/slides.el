@@ -1,50 +1,41 @@
-;;; slides.el - Special code for slitex.
-;;
-;; $Id: slides.el,v 1.4 2004-04-20 09:27:37 salve Exp $
+;;; slides.el --- AUCTeX style for the `slides' document class
+
+;; Copyright (C) 2004 Free Software Foundation, Inc.
+
+;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
+;; Maintainer: auc-tex@sunsite.dk
+;; Created: 2004-04-21
+;; Keywords: tex
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
+
+;;; Commentary:
+
+;; This file adds support for the `slides' document class.  Currently
+;; the support is very limited.  You are welcome to improve it.
 
 ;;; Code:
 
-(TeX-add-style-hook "slides"
- (function
-  (lambda ()
-    (setq LaTeX-default-style "slides")
-    (add-hook 'LaTeX-document-style-hook 'LaTeX-style-slides)
-    (LaTeX-add-environments '("slide" LaTeX-env-slide)
-			    '("overlay" LaTeX-env-slide))
-    (TeX-run-style-hooks "SLITEX"))))
-
-(defvar LaTeX-slide-color ""
-  "*Default slide color.")
-
- (make-variable-buffer-local 'LaTeX-slide-color)
-
-(defun LaTeX-style-slides ()
-  "Prompt for and insert SliTeX options."
-  (let ((slide-file (read-input "Slide file: "))
-	(slide-colors (read-input "Slide colors (comma separated list): "
-				  "black")))
-    (save-excursion
-      (goto-char (point-min))		; insert before \end{document}
-      (if (re-search-forward ".end.document." (point-max) t)
-	  (beginning-of-line 1))
-      (open-line 2)
-      (indent-relative-maybe)
-      (if (equal slide-colors "black")
-	  (insert TeX-esc "blackandwhite"
-		  TeX-grop slide-file TeX-grcl)
-	(progn
-	  (insert TeX-esc "colors"
-		  TeX-grop slide-colors TeX-grcl)
-	  (newline-and-indent)
-	  (insert TeX-esc "colorslides"
-		  TeX-grop slide-file TeX-grcl))))))
-
-(defun LaTeX-env-slide (environment)
-  "Insert ENVIRONMENT and prompt for slide colors."
-  (setq LaTeX-slide-color
-	(read-input "Slide colors: " LaTeX-slide-color))
-  (LaTeX-insert-environment environment
-			    (concat TeX-grop LaTeX-slide-color TeX-grcl)))
-
+(TeX-add-style-hook
+ "slides"
+ (lambda ()
+   (LaTeX-add-environments "slide"
+			   "overlay"
+			   "note")))
 
 ;;; slides.el ends here
