@@ -1,4 +1,3 @@
-
 @SET_MAKE@
 
 # Makefile - for the AUCTeX distribution.
@@ -13,7 +12,7 @@ infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
 auctexdir= $(lispdir)/auctex
-autodir = $(auctexdir)/auto
+autodir = @autodir@
 styledir = $(auctexdir)/style
 
 INSTALL = @INSTALL@
@@ -66,7 +65,7 @@ STYLESRC = style/prosper.el \
 	   style/scrpage2.el  style/captcont.el  style/subfigure.el \
 	   style/paralist.el  style/booktabs.el  style/emp.el \
 	   style/jura.el      style/alphanum.el	 style/beamer.el \
-	   style/alltt.el
+	   style/alltt.el     style/italian.el
 
 DOCFILES = doc/Makefile.in doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi \
@@ -220,4 +219,3 @@ tar-ball:
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) > \
 		$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch; exit 0
-
