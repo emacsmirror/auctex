@@ -81,7 +81,7 @@ is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
 (preview-defmacro face-attribute (face attr)
   `(cond
     ((eq ,attr :height)
-     (face-height ,face))
+     (* 10.0 (face-height ,face)))
     ((eq ,attr :foreground)
      (face-foreground-instance ,face))
     ((eq ,attr :background)
@@ -258,7 +258,11 @@ if there was any urgentization."
 
 (defmacro preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
-  `(set-extent-property ov 'preview-image ,replacement))
+  `(progn
+     (set-extent-property ,ov 'preview-image ,replacement)
+     (add-text-properties 0 1 (list 'end-glyph ,replacement)
+			  (car (extent-property ,ov 'strings)))
+     (preview-toggle ,ov t)))
 
 (defvar preview-button-1 [mouse-2])
 (defvar preview-button-2 [mouse-3])
