@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.78 2002-03-21 14:05:43 dakas Exp $
+;; $Id: preview.el,v 1.79 2002-03-21 15:09:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1309,7 +1309,7 @@ name(\\([^)]+\\))\\)" nil t)
 	     ((match-beginning 1)
 	      (if (looking-at "\
 Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
-\(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
+\\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
 		  (setq parsestate
 			(apply #'preview-analyze-error
 			       (string-to-int (match-string 1))
@@ -1549,7 +1549,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.78 $"))
+	(rev "$Revision: 1.79 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
