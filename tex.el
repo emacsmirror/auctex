@@ -496,7 +496,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.307 $"))
+	(rev "$Revision: 5.308 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -511,7 +511,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-11-28 13:21:33 $"))
+    (let ((date "$Date: 2003-12-03 17:40:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1460,7 +1460,11 @@ The algorithm is as follows:
 		     (setq entry (cdr entry))))
                  (if answer
                      answer
-                   TeX-default-mode))))))
+                   TeX-default-mode)))))
+  ;; Make `TeX-master-file' being called as soon as a file is opened.
+  (if (= emacs-major-version 20)
+      (make-local-hook 'hack-local-variables-hook))
+  (add-hook 'hack-local-variables-hook 'TeX-master-file nil t))
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun plain-tex-mode ()
