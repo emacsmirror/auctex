@@ -1,3 +1,7 @@
+2004-03-02  David Kastrup  <dakas@users.sourceforge.net>
+
+	* dvipng/dvi.c (DVIOpen): Fix a buffer overrun error.
+
 2004-01-16  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/font.c: fix compile without FT2
