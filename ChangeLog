@@ -1,3 +1,9 @@
+2001-10-04  Peter S Galbraith  <psg@debian.org>
+
+	* multi-prompt.el (multi-prompt-next): fixed for emacs-21.
+	Use minibuffer-contents-no-properties to get minibuffer contents
+	if it exists.
+
 2001-10-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.02 released.

@@ -4,7 +4,7 @@
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: extensions
-;; Version: 0.3
+;; Version: 0.4
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
@@ -41,6 +41,9 @@
 
 ;;; Change Log:
 ;;
+;; Wed Oct  3 14:48:11 EDT 2001   Peter S Galbraith <psg@debian.org>
+;;      * Version 0.4 released.
+;;        multi-prompt-next fixed for emacs-21.
 ;; Mon Jan  3 16:58:49 MET 2000
 ;;      * Version 0.2 released.
 ;;        Don't allow partial completions when require-match is true.
@@ -131,8 +134,14 @@ are the arguments to `completing-read'.  See that."
 (defun multi-prompt-next ()
   (interactive)
   (throw 'multi-prompt-next
-	 (buffer-substring-no-properties (point-min) (point-max))))
-
+         (cond
+          ((fboundp 'minibuffer-contents-no-properties)
+           ;; buffer-substring no longer works in emacs-21, it returns 
+           ;; the whole prompt line. Use this instead.
+           (minibuffer-contents-no-properties))
+          (t
+           (buffer-substring-no-properties (point-min) (point-max))))))
+         
 (defun multi-prompt-next-must-match ()
   (interactive)
   (when  (call-interactively 'minibuffer-complete)
