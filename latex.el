@@ -2796,7 +2796,8 @@ depends on the value of `LaTeX-syntactic-comments'."
 	      (LaTeX-fill-region-as-paragraph (line-beginning-position)
 					      (line-beginning-position 2)
 					      justify)
-	      (goto-char end-marker)))
+	      (goto-char end-marker)
+	      (beginning-of-line)))
 	  (LaTeX-fill-code-comment justify)))
        ;; Syntax-aware filling:
        ;; * `LaTeX-syntactic-comments' enabled: Everything.
