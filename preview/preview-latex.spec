@@ -89,6 +89,8 @@ This package contains the lisp modules for XEmacs 21.4.9 or higher.
   popd
 %endif
 
+export `locale|grep '^LC_CTYPE'`
+
 %build
 
 for i in *emacs; do
