@@ -5,6 +5,11 @@
 	(preview-dumped-list): New variable: dumped formats.
 	(preview-dump-format): New command for pregenerating format files.
 	(TeX-inline-preview): Use dumped format if present.
+	(preview-dumped-list): Move.
+	(preview-cleanout-tempfiles): Also kill format files.
+	(preview-format-extensions): New variable for cleanup purposes.
+	(TeX-inline-preview): preview-dumped-list contains expanded file
+	names.
 
 2002-04-24  Jan-Ake Larsson  <jalar@imf.au.dk>
 
