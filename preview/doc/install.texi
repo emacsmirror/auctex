@@ -19,7 +19,7 @@ features of Emacs 21, getting the newest release is a good idea.
 @item A working AUC @TeX{} installation
 
 You need a working AUC @TeX{} installation. AUC @TeX{} can be found at
-@url{http://mirrors.sunsite.dk/auctex/www/auctex/}. All fairly recent
+@uref{http://mirrors.sunsite.dk/auctex/www/auctex/}. All fairly recent
 versions should work.
 
 @item A working LaTeX installation
@@ -35,12 +35,12 @@ The first step is to configure the source code, telling it where
 various files will be.  To do so, run
 
 @example
-./configure [OPTIONS]
+./configure @var{options}
 @end example
 
-(Note: if you have fetched preview-latex from CVS rather than a
-regular release, you will have to first generate ./configure by
-running autoconf in the preview directory.)
+(Note: if you have fetched preview-latex from @acronym{CVS} rather than
+a regular release, you will have to first generate @file{./configure} by
+running @code{autogen.sh} in the preview directory.)
 
 On many machines, you will not need to specify any options, but if
 configure cannot determine something on its own, you'll need to help
@@ -51,9 +51,10 @@ it out with one of these options
 If you are using a pretest which isn't in your $PATH, or configure is
 not finding the right emacs binary, you can specify it with this option.
 
-@item --with-auctex=/dir
-If AUC-TeX is installed in a non-standard location (not in site-lisp),
-use this option to specify the location.
+@item --with-tex-site=/dir
+If AUC @TeX{} is installed in a non-standard location (not in
+@file{site-lisp}), use this option to specify the location of its
+@file{tex-site.el} file.
 
 @item --with-texmf=/dir@*--with-preview-dir=/dir
 Both of these options can be used to specify the location to install the
@@ -81,7 +82,7 @@ make
 
 @noindent 
 at the prompt to byte-compile the lisp files, extract the @TeX{} files
-and build the documentation DVI file.
+and build the documentation @acronym{DVI} file.
 
 @section Installing files
 
@@ -97,7 +98,7 @@ into system directories.
 
 @section Loading the package
 
-You need to place a few lines in your personal .emacs file (or a
+You need to place a few lines in your personal @file{.emacs} file (or a
 site-wide configuration file).
 
 If you used the option @code{--with-lispdir}, you have to make sure
@@ -106,17 +107,18 @@ is in Emacs' load-path variable.  This could mean, for example, adding
 the line @code{(add-to-list 'load-path "~/elisp/preview")} to your
 @file{.emacs} file.
 
-Next put the following lines into your .emacs file:
+Next put the following lines into your @file{.emacs} file:
 @example
 (autoload 'LaTeX-preview-setup "preview")
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
-This will make Emacs load preview.el and let it install itself into AUC
-@TeX{} when you first load a LaTeX file (be sure to have AUC @TeX{} up
-and working). @kbd{C-c C-c g RET} should then give you a graphics
-preview. You can customize the default option set and other settings of
-the Emacs package by entering @kbd{M-x customize-group RET preview RET}.
+This will make Emacs load @file{preview.el} and let it install itself
+into AUC @TeX{} when you first load a LaTeX file (be sure to have AUC
+@TeX{} up and working). @kbd{C-c C-c g @key{RET}} should then give you a
+graphics preview. You can customize the default option set and other
+settings of the Emacs package by entering @kbd{M-x customize-group
+@key{RET} preview @key{RET}}.
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
@@ -128,12 +130,14 @@ Currently one of the most common problems is GhostScript failing. It
 might be necessary to play around with the settings of the variable
 preview-gs-options in order to get your version of GhostScript to work.
 We want to support most reasonable versions of GhostScript, so if you
-are experiencing problems, be sure to include the output of "gs -h" in
-your report. If you use @kbd{M-x preview-report-bug RET}, this should be
-done automatically.
+are experiencing problems, be sure to include the output of @code{gs -h}
+in your report. If you use @kbd{M-x preview-report-bug @key{RET}}, this
+should be done automatically.
 
 A failing run will add information to the bottom of the process buffer
 displayed by @kbd{C-c C-l}, or attach the information to the particular
 images causing failure.
 
-See the @file{PROBLEMS} file for a list of known problems.
+@xref{Known problems}, or the file @file{PROBLEMS} for a list of known
+problems.
+
