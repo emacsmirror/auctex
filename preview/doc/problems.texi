@@ -228,8 +228,11 @@ few input methods handy especially for dealing with math. Take a look at
 @section Middle-clicks paste instead of toggling
 
 This is probably the fault of your favorite package.  In Emacs-21.1, the
-following culprits are known; Emacs-21.2 has them fixed already.  Apply
-the patches only if you encounter the problem.
+following culprits are known; Emacs-21.2 inherits those bugs.  The
+@acronym{CVS} version has had them fixed for a long time already; so
+they are not expected to persist into 21.3.  The patches have been
+thoroughly tested and applying them is hardly likely to cause any
+adverse effect.
 
 @itemize @bullet
 @item flyspell.el
