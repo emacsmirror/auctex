@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1041}
+%\CheckSum{1052}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.60 $
+%  \rcskey \version CVS-$Revision: 1.61 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-22 13:54:38 $
+%\rcskey\next $Date: 2002-07-26 01:23:38 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -323,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.60 $
+   \reserved@a\reserved@b CVS-$Revision: 1.61 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-07-22 13:54:38 $
+\reserved@a\next $Date: 2002-07-26 01:23:38 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -788,18 +788,21 @@
 %    \begin{macrocode}
 %<*!active>
 \DeclareOption{graphics}{%
-  \PreviewMacro[{*[[!}]{\includegraphics}}
+  \PreviewMacro[*[[!]{\includegraphics}%]]
+}
 %    \end{macrocode}
 %  The |floats| option.
 %    \begin{macrocode}
 \DeclareOption{floats}{%
-  \PreviewSnarfEnvironment[![]{@float}%
-  \PreviewSnarfEnvironment[![]{@dblfloat}}
+  \PreviewSnarfEnvironment[![]{@float}%]
+  \PreviewSnarfEnvironment[![]{@dblfloat}%]
+}
 %    \end{macrocode}
 %  The |sections| option.
 %    \begin{macrocode}
 \DeclareOption{sections}{%
-  \PreviewMacro[!!!!!!*[!]{\@startsection}}
+  \PreviewMacro[!!!!!!*[!]{\@startsection}%]
+}
 %    \end{macrocode}
 %We now interpret any further options as driver files we load.  Note
 %that these driver files are loaded even when |preview| is not
@@ -1238,7 +1241,7 @@
 %    \end{macrocode}
 %  \end{macro}
 %  \begin{macro}{\pr@label}
-%    We follow up with out own definition of the \cmd{\label} macro
+%    We follow up with our own definition of the \cmd{\label} macro
 %    which will be active only in previews.  The original definition
 %    is stored in |\pr@@label|.  |\pr@lastlabel| contains the last
 %    typeset label in order to avoid duplication in certain
@@ -1246,25 +1249,56 @@
 %    \begin{macrocode}
 %<showlabels>\def\pr@label#1{\pr@@label{#1}%
 %    \end{macrocode}
-%    This is active only in previews:
+%    Ok, now we generate the box, by placing the label below any
+%    existing stuff.
 %    \begin{macrocode}
+%<showlabels>   \ifpr@setbox\z@{#1}%
+%<showlabels>     \global\setbox\pr@labelbox\vbox{\unvbox\pr@labelbox
+%<showlabels>      \box\z@}\egroup\fi}
+%    \end{macrocode}
+%  \end{macro}
+%  \begin{macro}{\ifpr@setbox}
+%    |\ifpr@setbox| receives two arguments, |#1| is the box into which
+%    to set a label, |#2| is the label text itself.  If a label needs
+%    to be set (if it is not a duplicate in the current box, and is
+%    nonempty, and we are in the course of typesetting and so on), we
+%    are left in a true conditional and an open group with the preset
+%    box.  If nothing should be set, no group is opened, and we get
+%    into skipping to the closing of the conditional.  Since
+%    |\ifpr@setbox| is a macro, you should not place the call to it
+%    into conditional text, since it will not pair up with |\fi| until
+%    being expanded.
+%
+%    We have some trickery involved here.  |\romannumeral\z@| expands
+%    to empty, and will also remove everything between the two of them
+%    that also expands to empty, like a chain of |\fi|.
+%    \begin{macrocode}
+%<showlabels>\def\ifpr@setbox#1#2{%
+%<showlabels>  \romannumeral%
 %<showlabels>  \ifx\protect\@typeset@protect\ifpr@outer\else
 %    \end{macrocode}
 %    Ignore empty labels\dots
 %    \begin{macrocode}
-%<showlabels>   \protected@edef\next{#1}\@onelevel@sanitize\next
-%<showlabels>   \ifx\next\@empty\else
+%<showlabels>   \z@\bgroup
+%<showlabels>   \protected@edef\next{#2}\@onelevel@sanitize\next
+%<showlabels>   \ifx\next\@empty\egroup\romannumeral\else
 %    \end{macrocode}
 %    and labels equal to the last one.
 %    \begin{macrocode}
-%<showlabels>   \ifx\next\pr@lastlabel \else
+%<showlabels>   \ifx\next\pr@lastlabel\egroup\romannumeral\else
 %<showlabels>   \global\let\pr@lastlabel\next
+%<showlabels>   \setbox#1\pr@boxlabel\pr@lastlabel
+%<showlabels>   \expandafter\expandafter\romannumeral\fi\fi\fi\fi
+%<showlabels>   \z@\iffalse\iftrue\fi}
 %    \end{macrocode}
-%    Ok, now we generate the box, by placing the label below any
-%    existing stuff.
+%  \end{macro}
+%  \begin{macro}{\pr@boxlabel}
+%    Now the actual typesetting of a label box is done.  We use a
+%    small typewriter font inside of a framed box (the default
+%    frame/box separating distance is a bit large).
 %    \begin{macrocode}
-%<showlabels>   \global\setbox\pr@labelbox\vbox{\unvbox\pr@labelbox
-%<showlabels>      \hbox{\framebox{\ttfamily\pr@lastlabel}}}\fi\fi\fi\fi}
+%<showlabels>\def\pr@boxlabel#1{\hbox{\normalfont
+%<showlabels>   \footnotesize\ttfamily\fboxsep0.4ex\relax\fbox{#1}}}
 %    \end{macrocode}
 %  \end{macro}
 %  \begin{macro}{\pr@maketag}
@@ -1273,20 +1307,15 @@
 %    augment |\box\pr@labelbox| with an appropriate placeholder.
 %    \begin{macrocode}
 %<showlabels>\def\pr@maketag#1{\pr@@maketag{#1}%
-%<showlabels>  \ifx\protect\@typeset@protect{%
-%<showlabels>  \ifx\df@label\@empty\else
-%<showlabels>      \protected@edef\next{\df@label}%
-%<showlabels>      \@onelevel@sanitize\next
-%<showlabels>      \global\let\pr@lastlabel\next
-%<showlabels>      {\setbox\z@\hbox{\framebox{\ttfamily\pr@lastlabel}}%
-%<showlabels>        \global\setbox\pr@labelbox\vbox{%
-%<showlabels>           \hrule\@width\wd\z@\@height\z@
-%<showlabels>           \unvbox\pr@labelbox}%
+%<showlabels>  \ifpr@setbox\z@{\df@label}%
+%<showlabels>      \global\setbox\pr@labelbox\vbox{%
+%<showlabels>         \hrule\@width\wd\z@\@height\z@
+%<showlabels>         \unvbox\pr@labelbox}%
 %    \end{macrocode}
 %    Set the width of the box to empty so that the label placement
 %    gets not disturbed, then append it.
 %    \begin{macrocode}
-%<showlabels>        \wd\z@\z@\box\z@}\fi\fi}}
+%<showlabels>        \wd\z@\z@\box\z@ \egroup\fi}
 %    \end{macrocode}
 %  \end{macro}
 %  \begin{macro}{\pr@lastlabel}
