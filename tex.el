@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.404 $"))
+	(rev "$Revision: 5.405 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 18:59:09 $"))
+    (let ((date "$Date: 2004-08-03 19:24:59 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -606,6 +606,10 @@ In the form of yyyy.mmdd")
 
 ;;; Source Specials
 
+(defgroup TeX-source-specials nil
+  "Controlling source specials in AUCTeX."
+  :group 'TeX-command)
+
 (defvar TeX-source-specials-map
   (let ((map (make-sparse-keymap)))
     ;; (if (featurep 'xemacs)
@@ -632,7 +636,7 @@ details."
   ;;
   ;; We should describe emacsclient / gnuclient in the AUCTeX manual and
   ;; only add a reference here.
-  :group 'TeX-command
+  :group 'TeX-source-specials
   ;; FIXME: There's nothing about source-specials there yet:
   ;; :link '(custom-manual "(auctex)Viewing")
   :global t
@@ -647,13 +651,13 @@ details."
 
 (defcustom TeX-source-specials-tex-flags "-src-specials"
   "Extra flags to pass to TeX commands to generate source specials."
-  :type '(choice string (repeat string))
-  :group 'TeX-command)
+  :group 'TeX-source-specials
+  :type '(choice string (repeat string)))
 
 (defcustom TeX-source-specials-places nil
   "List of places where to insert source specials into the DVI file.
 If nil, use (La)TeX's defaults."
-  :group 'TeX-command
+  :group 'TeX-source-specials
   :type '(list (set :inline t
 		    ;; :tag "Options known to work"
 		    ;; cr display hbox math par parend vbox
@@ -693,22 +697,34 @@ If this is nil, an empty string will be returned."
   :type '(choice (const :tag "Always" t)
 		 (const :tag "Never" nil)
 		 (const :tag "Ask" ask))
-  :group 'TeX-command)
+  :group 'TeX-source-specials)
+
+(defcustom TeX-source-specials-view-position-flags
+  "-sourceposition %n:%b"
+  "Flags to pass to the DVI viewer commands for the position in the source."
+  :group 'TeX-source-specials
+  :type 'string)
+
+(defcustom TeX-source-specials-view-editor-flags
+  "-editor \"%cS\""
+  "Flags to pass to DVI viewer commands for inverse search."
+  :group 'TeX-source-specials
+  :type 'string)
+
+(defcustom TeX-source-specials-view-gnuclient-flags
+  "-q +%%l %%f"
+  "Flags to pass to gnuclient for inverse search."
+  :group 'TeX-source-specials
+  :type 'string)
+
+(defcustom TeX-source-specials-view-emacsclient-flags
+  "--no-wait +%%l %%f"
+  "Flags to emacsclient for inverse search."
+  :group 'TeX-source-specials
+  :type 'string)
 
 (defvar TeX-source-specials-view-start-server-asked nil
   "Keep track if question about server start for inverse search was asked.")
-
-(defvar TeX-source-specials-view-position-flags
-  "-sourceposition %n:%b"
-  "*Flags to pass to the DVI viewer commands for the position in the source.")
-
-(defvar TeX-source-specials-view-gnuclient-flags
-  "-editor \"%cS -q +%%l %%f\""
-  "*Flags to pass to DVI viewer commands for inverse search with gnuclient.")
-
-(defvar TeX-source-specials-view-emacsclient-flags
-  "-editor \"%cS --no-wait +%%l %%f\""
-  "*Flags to pass to DVI viewer commands for inverse search with emacsclient.")
 
 (defun TeX-source-specials-view-gnuserv-p ()
   "Guess whether to use gnuserv for inverse search."
@@ -720,16 +736,21 @@ If this is nil, an empty string will be returned."
 	((featurep 'xemacs))))
 
 (defun TeX-source-specials-view-expand-client ()
-  "Return gnuclient or emacslient executable with full path if possible."
-  (let* ((client-base (if (TeX-source-specials-view-gnuserv-p)
+  "Return gnuclient or emacslient executable with options.
+Return the full path to the executable if possible."
+  (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
+	 (client-base (if gnuserv-p
 			  "gnuclient"
 			"emacsclient"))
 	 (client-full (and invocation-directory
 			   (expand-file-name client-base
-					     invocation-directory))))
+					     invocation-directory)))
+	 (options (if gnuserv-p
+		      TeX-source-specials-view-gnuclient-flags
+		    TeX-source-specials-view-emacsclient-flags)))
     (if (and client-full (file-executable-p client-full))
-	client-full
-      client-base)))
+	(concat client-full " " options)
+      (concat client-base " " options))))
 
 (defun TeX-source-specials-view-expand-options (&optional viewer)
   "Return source specials command line option for viewer command.
@@ -739,9 +760,6 @@ If this is nil, an empty string will be returned."
       (let* ((gnuserv-p (TeX-source-specials-view-gnuserv-p))
 	     (process (if gnuserv-p 'gnuserv-process 'server-process))
 	     (start (if gnuserv-p 'gnuserv-start 'server-start))
-	     (client-flags (if gnuserv-p
-			       TeX-source-specials-view-gnuclient-flags
-			     TeX-source-specials-view-emacsclient-flags))
 	     (server-enabled
 	      (cond
 	       ;; Server is already running
@@ -764,7 +782,8 @@ If this is nil, an empty string will be returned."
 		(funcall start)
 		t))))
 	(concat TeX-source-specials-view-position-flags
-		(when server-enabled (concat " " client-flags))))
+		(when server-enabled
+		  (concat " " TeX-source-specials-view-editor-flags))))
     ""))
 
 
