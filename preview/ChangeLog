@@ -1,5 +1,9 @@
 2002-04-08  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/todo.texi: New suggestion for manual.
+
+	* doc/readme.texi (Getting started): Adapt text to new icons.
+
 	* doc/preview-latex.texi (The Emacs interface): Add documentation
 	about the scaling variables/issues from preview-latex.
 
