@@ -1,23 +1,27 @@
-;;; tex-info.el - Support for editing Texinfo source.
-;;
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.14
+;;; tex-info.el --- Support for editing Texinfo source.
 
 ;; Copyright (C) 1993, 1994, 1997, 2000, 2001 Per Abrahamsen 
-;; 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+;; Copyright (C) 2004 Free Software Foundation, Inc.
+
+;; Maintainer: auc-tex@sunsite.dk
+;; Keywords: tex
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;; 
+
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
 
 ;;; Code:
 
@@ -55,11 +59,25 @@ Subexpression 1 is what goes into the corresponding `@end' statement.")
 When called interactively, prompt for an environment."
   (interactive (list (completing-read "Environment: "
 				      TeXinfo-environment-list)))
-  (insert "@" env "\n\n@end " env "\n")
-  (if (null (cdr-safe (assoc "defcv" TeXinfo-environment-list)))
-      (forward-line -2)
-    ;; apply arguments
-    ))
+  (if (and (TeX-active-mark)
+	   (not (eq (mark) (point))))
+      (progn
+	(when (< (mark) (point))
+	  (exchange-point-and-mark))
+	(unless (TeX-looking-at-backward "^[ \t]*")
+	  (newline))
+	(insert "@" env)
+	(newline)
+	(goto-char (mark))
+	(unless (TeX-looking-at-backward "^[ \t]*")
+	  (newline))
+	(insert "@end" env)
+	(unless (looking-at "[ \t]*$")
+	  (save-excursion (newline)))
+	(end-of-line 0))
+    (insert "@" env "\n\n@end " env "\n")
+    (if (null (cdr-safe (assoc "defcv" TeXinfo-environment-list)))
+	(forward-line -2))))
 
 ;;; Keymap:
 
@@ -112,6 +130,7 @@ When called interactively, prompt for an environment."
 
   ;; Simulating LaTeX-mode
 
+  (define-key TeXinfo-mode-map "\C-c\C-e" 'TeXinfo-insert-environment)
   (define-key TeXinfo-mode-map "\C-c\n"   'texinfo-insert-@item)
   (or (key-binding "\e\r")
       (define-key TeXinfo-mode-map "\e\r" 'texinfo-insert-@item)) ;*** Alias
