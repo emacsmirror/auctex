@@ -467,6 +467,12 @@ Pure borderless black-on-white will return NIL."
   :group 'preview-appearance
   :type 'boolean)
 
+(defvar preview-icon-toolbar-button
+  (vector (list preview-icon)
+	  #'preview-at-point
+	  t
+	  "Preview on/off at point"))
+
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
   (mapc #'make-local-hook
@@ -485,6 +491,17 @@ Pure borderless black-on-white will return NIL."
 		      (TeX-command-menu-entry
 		       (assoc "Generate Preview" TeX-command-list)))
   (easy-menu-add preview-menu)
+;;; [Courtesy Stephen J. Turnbull, with some modifications
+;;;  Message-ID: <87el9fglsj.fsf@tleepslib.sk.tsukuba.ac.jp>
+;;;  I could not have figured this out for the world]
+;;; Hm, there really ought to be a way to get the spec that would be
+;;; instantiated in a given domain
+  (let ((tb (cdadar (or (specifier-spec-list default-toolbar (current-buffer))
+			(specifier-spec-list default-toolbar 'global)))))
+    (unless (assq preview-icon-toolbar-button tb)
+      (set-specifier default-toolbar
+		     (append tb (list preview-icon-toolbar-button))
+		     (current-buffer))))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
 	   format-cons)
