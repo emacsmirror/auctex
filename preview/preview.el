@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.135 2002-04-22 22:13:03 dakas Exp $
+;; $Id: preview.el,v 1.136 2002-04-26 00:30:20 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1482,6 +1482,7 @@ preview Emacs Lisp package something too stupid."))
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
   (define-key LaTeX-mode-map "\C-c\C-p\C-b" #'preview-buffer)
   (define-key LaTeX-mode-map "\C-c\C-p\C-d" #'preview-document)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-f" #'preview-dump-format)
   (define-key LaTeX-mode-map "\C-c\C-p\C-i" #'preview-goto-info-page)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
@@ -1503,6 +1504,9 @@ preview Emacs Lisp package something too stupid."))
 			 ["Document" preview-document]
 			 ["Clearout region" preview-clearout (preview-mark-active)]
 			 ["Clearout buffer" preview-clearout-buffer t]
+			 ["Cache preamble" preview-dump-format t]
+			 ["Cache preamble off" (preview-dump-format '(4))
+			  :keys "C-u \\[preview-dump-format]"]
 			 ("Customize"
 			  ["Browse options"
 			   (customize-group 'preview) t]
@@ -1898,16 +1902,70 @@ for definition of PROCESS and NAME."
 	  (error (preview-log-error err "LaTeX" process)))
 	(preview-reraise-error process))))
 
+(defvar preview-dumped-list nil
+  "List of dumped masters.")
+
+(defcustom preview-dump-command "initex '&'%l %s.ini"
+  "*Command for dumping a format.
+See `TeX-expand-list' for a list of special characters.
+Always run on the master file."
+  :group 'preview-latex
+  :type 'string)
+
+(defcustom preview-undump-command "%l '&%f' %t"
+  "*Command for using a dumped format.
+See `TeX-expand-list' for a list of special characters.
+When this command is used, %f is specially defined to be the
+master file name without extension, to be used as format name."
+  :group 'preview-latex
+  :type 'string)
+
+(defun preview-dump-format (arg) (interactive "P")
+  "Dump a pregenerated format file.
+For the rest of the session, this file is used when running
+on the same master file.  With prefix ARG, the use of the
+format file is discontinued."
+  (let* ((dump-file (TeX-master-file "ini"))
+	 (format-file (TeX-master-file nil))
+	 (master-buffer (find-file-noselect (TeX-master-file t)))
+	 (LaTeX-command-style `(("."
+				 ,(TeX-command-expand
+				   preview-dump-command
+				   'TeX-master-file)))))
+    (if arg
+	(setq preview-dumped-list (delete format-file preview-dumped-list))
+      (unless (member format-file preview-dumped-list)
+	(with-temp-buffer
+	  ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
+	  ;; in the tools bundle is an empty file.
+	  (insert "\\input mylatex.ltx {}")
+	  (write-region (point-min) (point-max) dump-file)))
+      (setq preview-dumped-list (delete format-file preview-dumped-list))
+      (preview-document)
+      (setq TeX-sentinel-function
+	    `(lambda (&rest ignore)
+	       (push ,format-file preview-dumped-list))))))
+
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
-  (let ((commandbuff (current-buffer))
+  (let* ((commandbuff (current-buffer))
 	(pr-file (cons
 		  (if TeX-current-process-region-p
 		      'TeX-region-file
 		    'TeX-master-file)
 		  file))
-	(process (TeX-run-command "Preview-LaTeX" command file)))
+	(process
+	 (TeX-run-command
+	  "Preview-LaTeX"
+	  (if (member (TeX-master-file nil) preview-dumped-list)
+	      (TeX-command-expand preview-undump-command
+				  (car pr-file)
+				  (cons '("%f"
+					  (lambda ()
+					    (TeX-master-file nil t)))
+					TeX-expand-list))
+	    command) file)))
     (condition-case err
 	(progn
 	  (preview-get-geometry commandbuff)
@@ -1924,7 +1982,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.135 $"))
+	(rev "$Revision: 1.136 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1935,7 +1993,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-22 22:13:03 $"))
+    (let ((date "$Date: 2002-04-26 00:30:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
