@@ -1,3 +1,14 @@
+2003-03-13  David Kastrup  <dak@gnu.org>
+
+	* style/german.el (LaTeX-german-quote-after-quote)
+	(LaTeX-german-open-quote, LaTeX-german-close-quote): New
+	variables to initialize quote stuff from.  If you set these in
+	file local variables, they will propagate accordingly to
+	`TeX-quote-after-quote' et al.
+
+	* style/ngerman.el (LaTeX-german-quote-after-quote)
+	(LaTeX-german-open-quote, LaTeX-german-close-quote): the same.
+
 2003-02-25  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (dist): Version info in tex.el gets automatically
