@@ -1,3 +1,12 @@
+2004-05-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-newline-function): Rename.  Formerly known as
+	`TeX-newline'.
+	(TeX-mode-map): Use new name.
+
+	* doc/auc-tex.texi (Marking and formatting): Rename `TeX-newline'
+	to `TeX-newline-function'.
+
 2004-05-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/graphicx.el (LaTeX-arg-includegraphics): Rewrite.
