@@ -2,20 +2,28 @@
 # before configure overwrites them.  It's needed for the 
 # 8-bit LaTeX test below.  This test only works with
 # autoconf 2.52
-AC_DIVERT_PUSH(DEFAULTS)dnl
-[if test -z "$MY_LANG$MY_LC_CTYPE$MY_LANGUAGE$MY_LC_ALL"; then 
-  MY_LANG=$LANG; export MY_LANG
-  MY_LC_CTYPE=$LC_CTYPE; export MY_LC_CTYPE
-  MY_LANGUAGE=$LANGUAGE; export MY_LANGUAGE
-  MY_LC_ALL=$LC_ALL; export MY_LC_ALL
-fi]
-AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7.7,preview-latex-bugs@lists.sourceforge.net)
+#The following will be inserted by autogen.sh.
+#autogen.sh: # Inserted by autogen.sh
+#autogen.sh: if test -z "$MY_LANG$MY_LC_CTYPE$MY_LANGUAGE$MY_LC_ALL"; then
+#autogen.sh:   for x in LANG LC_CTYPE LANGUAGE LC_ALL
+#autogen.sh:   do
+#autogen.sh:     eval 'if test -n "$'$x'"; then MY_'$x'=$'$x'; export MY_'$x'; fi'
+#autogen.sh:   done
+#autogen.sh: fi
+#autogen.sh: MY_LANGUAGEHOOKS=yes
+#autogen.sh: export MY_LANGUAGEHOOKS
+#autogen.sh: # End of insertion by autogen.sh
+#autogen.sh: #
+
+AC_INIT(preview-latex,0.7.8,preview-latex-bugs@lists.sourceforge.net)
+
+if test -z "$MY_LANGUAGEHOOKS"
+then AC_ERROR([configure needs to be generated with `./autogen.sh'!])
+fi
+
 AC_SET_MAKE
 AC_PROG_INSTALL
-
-
 
 dnl
 dnl Apparently, if you run a shell window in Emacs, it sets the EMACS
@@ -93,7 +101,9 @@ AC_SUBST(packagedir)
 AC_SUBST(icondir)
 
 AC_CHECK_AUCTEX
-AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH:/usr/sbin:/sbin)
+AC_PATH_PROG(INSTALL_INFO, install-info)
+AC_PATH_PROG(INSTALL_INFO, install-info,, /usr/sbin)
+AC_PATH_PROG(INSTALL_INFO, install-info,:, /sbin)
 
 AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE,
   [GhostScript not found!  Aborting!  
@@ -111,14 +121,12 @@ You must install LaTeX for preview to work.])
 if test "$ENABLE8BIT"x = truex ; then
     AC_MSG_CHECKING([if LaTeX is installed 8-bit clean])
 # Restore the locale variables saved on startup
-    LANG=$MY_LANG
-    LC_CTYPE=$MY_LC_CTYPE
-    LANGUAGE=$MY_LANGUAGE
-    LC_ALL=$MY_LC_ALL
-    export LANG
-    export LC_CTYPE
-    export LANGUAGE
-    export LC_ALL
+  (
+# Use a subshell
+  for x in LANG LC_CTYPE LANGUAGE LC_ALL
+  do
+    eval 'if test -n "$MY_'$x'"; then '$x'=$MY_'$x'; export '$x'; else unset '$x'; fi'
+  done
     
     if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep 'fc!$' >/dev/null 2>/dev/null
     then
@@ -127,6 +135,7 @@ if test "$ENABLE8BIT"x = truex ; then
     else
        AC_MSG_RESULT(yes)
     fi
+    )
 fi
 
 # To match .sty, .def, .cfg, but _not_ .drv
