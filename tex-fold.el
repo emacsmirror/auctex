@@ -550,20 +550,24 @@ Like `buffer-substring' but copy overlay display strings as well."
       (sort overlays '(lambda (a b) (< (overlay-start a) (overlay-start b))))
       ;; Get the string from the start of the region up to the first overlay.
       (setq result (buffer-substring start (overlay-start (car overlays))))
-      (dolist (ov overlays)
-	;; Add the display string of the overlay.
-	(setq result (concat result (overlay-get ov 'TeX-fold-display-string)))
-	;; Remove overlays contained in the current one.
-	(dolist (elt (cdr overlays))
-	  (when (< (overlay-start elt) (overlay-end ov))
-	    (setq overlays (remove elt overlays))))
-	;; Add the string from the end of the current overlay up to
-	;; the next overlay or the end of the specified region.
-	(setq result (concat result (buffer-substring (overlay-end ov)
-						      (if (cdr overlays)
-							  (overlay-start
-							   (cadr overlays))
-							end)))))
+      (let (ov)
+	(while overlays
+	  (setq ov (car overlays)
+		overlays (cdr overlays))
+	  ;; Add the display string of the overlay.
+	  (setq result (concat result
+			       (overlay-get ov 'TeX-fold-display-string)))
+	  ;; Remove overlays contained in the current one.
+	  (dolist (elt overlays)
+	    (when (< (overlay-start elt) (overlay-end ov))
+	      (setq overlays (remove elt overlays))))
+	  ;; Add the string from the end of the current overlay up to
+	  ;; the next overlay or the end of the specified region.
+	  (setq result (concat result (buffer-substring (overlay-end ov)
+							(if overlays
+							    (overlay-start
+							     (car overlays))
+							  end))))))
       result)))
 
 
