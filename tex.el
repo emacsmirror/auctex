@@ -71,7 +71,7 @@
   :type 'directory)
 
 ;; Change this to point to the place where the TeX macros are stored
-;; at yourt site.
+;; at your site.
 (defcustom TeX-macro-global '("/usr/local/lib/texmf/tex/")
   "Directories containing the sites TeX macro files and style files.
 The directory names *must* end with a slash."
@@ -384,6 +384,15 @@ Full documentation will be available after autoloading the function."
 ;;; Portability.
 
 (require 'easymenu)
+
+;;; Documentation for Info-goto-emacs-command-node and similar
+
+(eval-after-load 'info '(progn
+			  (add-to-list 'Info-file-list-for-emacs
+				       '("TeX" . "AUCTeX"))
+			  (add-to-list 'Info-file-list-for-emacs
+				       '("LaTeX" . "AUCTeX"))))
+
 
 ;;; Special support for XEmacs 
 
