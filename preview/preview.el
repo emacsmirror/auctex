@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2001  Free Software Foundation, Inc.
 
-;; Author: David Kastrup <David.Kastrup@neuroinformatik.ruhr-uni-bochum.de>
+;; Author: David Kastrup <David.Kastrup@t-online.de>
 ;; Keywords: tex, wp, convenience
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -22,23 +22,20 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.8 2001-09-24 14:48:18 dakas Exp $
+;; $Id: preview.el,v 1.9 2001-09-26 10:43:11 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
 ;; (require 'preview)
-;; into your .emacs file and the file somewhere into your load-path,
-;; preferably byte-compiled.  Since this stuff is pre-alpha, no
-;; customization and similar has been added up to now and
-;; documentation is scarce.  It need a style file "preview.sty"
-;; installed in your LaTeX path which probably should have been
-;; distributed together with this file in the form of a file
-;; "preview.dtx" and "preview.ins".  Running tex on "preview.ins" will
-;; give you "preview.drv" which you can latex for the LaTeX
-;; documentation and some files to put into your TeX path.  Of these,
-;; "preview.sty" and "prauctex.def" are mandatory for this package to
-;; function.
-
+;; into your .emacs file and the file somewhere into your load-path.
+;; Auc-TeX is required as to now.
+;; Please use the usual configure script for installation.
+;; Quite a few things with regard to its operation can be configured
+;; by using
+;; M-x customize-group RET preview RET
+;; LaTeX needs to access a special style file "preview.sty".  For the
+;; installation of this style file, use the provided configure and
+;; install scripts.
 
 ;;; History:
 ;;
@@ -46,6 +43,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (defvar error)
   (require 'tex-buf)
   (defvar TeX-auto-file)
   (require 'tq))
@@ -140,13 +138,23 @@ Buffer-local to the appropriate TeX process buffer.")
 Buffer-local to the appropriate TeX process buffer.")
 (make-variable-buffer-local 'preview-gs-queue)
 
+(defvar preview-gs-outstanding nil
+  "Overlays currently processed.")
+(make-variable-buffer-local 'preview-gs-outstanding)
+
+(defcustom preview-gs-outstanding-limit 2
+  "*Number of requests to be outstanding.
+This is the number of requests we might at any time have
+passed into GhostScript.  If this number is larger, the
+probability of GhostScript working continuously is larger.
+If this number is smaller, redisplay will follow changes in
+the displayed buffer area faster."
+  :type '(integer :tag "small integer"
+	  :match (lambda (widget value) (and (integerp value) (> value 0) (< value 20)))))
+
 (defvar preview-gs-tq nil
   "Transaction queue for gs processing.")
 (make-variable-buffer-local 'preview-gs-tq)
-
-(defvar preview-gs-ov nil
-  "Overlay currently processed.")
-(make-variable-buffer-local 'preview-gs-ov)
 
 (defvar preview-gs-image-type nil
   "Image type for gs produced images.")
@@ -167,36 +175,52 @@ dots per inch.  Buffer-local to rendering buffer.")
 (defun preview-gs-resolution (scale xres yres)
   "Generate resolution argument for gs.
 Calculated from real-life factor SCALE and XRES and
-YRES, the screen resulution in dpi."
+YRES, the screen resolution in dpi."
   (format "-r%gx%g"
 	  (* scale xres)
 	  (* scale yres)))
 
+(defun preview-gs-behead-outstanding ()
+  "Remove leading element of outstanding queue after error.
+Return element if non-nil."
+  (let ((ov (pop preview-gs-outstanding)))
+    (when ov
+      (condition-case nil
+	  (preview-delete-file
+	   (elt (overlay-get ov 'queued) 0)
+	   t)
+	(error nil))
+      (preview-deleter ov))
+    ov))
+    
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
 and tries to restart GhostScript if necessary."
+  (if process (TeX-format-mode-line process))
   (let ((status (process-status process)))
     (when (or (eq status 'exit) (eq status 'signal))
-      ;; process died.  Throw away culprit, go on.
+      ;; process died.
+      ;;  Throw away culprit, go on.
       (with-current-buffer (process-buffer process)
-	(when preview-gs-ov
-	  (condition-case nil
-	      (preview-delete-file
-	       (elt (overlay-get preview-gs-ov 'queued) 0)
-	       t)
-	    (error nil))
-	  (preview-deleter preview-gs-ov)
-	  (setq preview-gs-ov nil)
-	  (if (eq status 'signal)
-	      (progn
-		(mapc 'preview-deleter preview-gs-queue)
-		(setq preview-gs-urgent nil)
-		(setq preview-gs-queue nil))
+	;; Shut down queue
+	(tq-close preview-gs-tq)
+	(if (or (null (preview-gs-behead-outstanding))
+		(eq status 'signal))
+	  ;; if process was killed explicitly by signal, or if nothing
+	  ;; was processed, we give up on the matter altogether.
+	    (progn
+	      (mapc (function preview-deleter) preview-gs-outstanding)
+	      (mapc (function preview-deleter) preview-gs-queue)
+	      (setq preview-gs-outstanding nil)
+	      (setq preview-gs-urgent nil)
+	      (setq preview-gs-queue nil))
 	    
 	    ;; restart only if we made progress since last call
-	    (when preview-gs-tq
-	      (preview-gs-restart))))))))
+	  (setq preview-gs-urgent (nconc preview-gs-outstanding
+					 preview-gs-urgent))
+	  (setq preview-gs-outstanding nil)
+	  (preview-gs-restart))))))
 
 (defvar preview-gs-command-line nil)
 (make-variable-buffer-local 'preview-gs-command-line)
@@ -249,8 +273,6 @@ and tries to restart GhostScript if necessary."
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
     thisimage))
 		
-  
-
 (defun preview-gs-transact (buff answer)
   "Work off GhostScript transaction queue in buffer BUFF."
   (with-current-buffer buff
@@ -259,57 +281,59 @@ and tries to restart GhostScript if necessary."
       (unless (string= answer "GS>")
 	(insert answer))
       (condition-case whatgives
-	  (progn
-	    (when preview-gs-ov
+	  (let ((ov (pop preview-gs-outstanding)))
+	    (when ov
 	      (condition-case nil
-		  (preview-delete-file (overlay-get preview-gs-ov 'filename) t)
+		  (preview-delete-file (overlay-get ov 'filename) t)
 		(file-error nil))
-	      (let* ((queued (overlay-get preview-gs-ov 'queued))
+	      (let* ((queued (overlay-get ov 'queued))
 		     (newfile (elt queued 0))
 		     (bbox (elt queued 1))
 		     (img (elt queued 2)))
-		(overlay-put preview-gs-ov 'queued nil)
-		(overlay-put preview-gs-ov 'filename newfile)
+		(overlay-put ov 'queued nil)
+		(overlay-put ov 'filename newfile)
 		(setcdr img (list :file (car newfile)
 				  :type preview-gs-image-type
 				  :heuristic-mask t
 				  :ascent (preview-ascent-from-bb bbox)))))
 	    (while
-		(catch 'loop
-		  (setq preview-gs-ov
-			(or (pop preview-gs-urgent)
-			    (pop preview-gs-queue)))
-		  (when (null preview-gs-ov)
-		    (let ((queue preview-gs-tq))
-		      (setq preview-gs-tq nil)
-		      (tq-close queue)
-		      (throw 'loop nil)))
-		  
-		  (let ((queued (overlay-get preview-gs-ov 'queued)))
-		    (when (or (null queued)
-			      (null (overlay-buffer preview-gs-ov)))
-		      (throw 'loop t))
-		    (let ((newfile (elt queued 0))
-			  (bbox (elt queued 1))
-			  (oldfile (overlay-get preview-gs-ov 'filename)))
-		      (tq-enqueue
-		       preview-gs-tq
-		       (format "clear gsave << /PageSize [%g %g] \
+		(and
+		 (< (length preview-gs-outstanding)
+		    preview-gs-outstanding-limit)
+		 (setq ov
+		       (or (pop preview-gs-urgent)
+			   (pop preview-gs-queue))))
+	      (let ((queued (overlay-get ov 'queued)))
+		(when (and queued
+			   (not (memq ov preview-gs-outstanding))
+			   (overlay-buffer ov))
+		  (let ((newfile (elt queued 0))
+			(bbox (elt queued 1))
+			(oldfile (overlay-get ov 'filename)))
+		    (setq preview-gs-outstanding
+			  (nconc preview-gs-outstanding
+				 (list ov)))
+		    (tq-enqueue
+		     preview-gs-tq
+		     (format "clear \
+/preview-LaTeX-state save def \
+<< \
+/PageSize [%g %g] \
 /PageOffset [%g %g] \
-/OutputFile (%s) >> setpagedevice (%s) run grestore\n"
-;;;/HWResolution [%g %g]
-			       (- (elt bbox 2) (elt bbox 0))
-			       (- (elt bbox 3) (elt bbox 1))
-			       (- (elt bbox 0)) (elt bbox 1)
-			       (car newfile)
-			       (car oldfile))
-		       "GS\\(<[0-9]+\\)?>"
-		       buff
-		       (function preview-gs-transact))
-		      nil)		;end while
-		    ))))
+/OutputFile (%s) >> setpagedevice \
+(%s) run \
+preview-LaTeX-state restore\n"
+			     (- (elt bbox 2) (elt bbox 0))
+			     (- (elt bbox 3) (elt bbox 1))
+			     (- (elt bbox 0)) (elt bbox 1)
+			     (car newfile)
+			     (car oldfile))
+		     "GS\\(<[0-9]+\\)?>"
+		     buff
+		     (function preview-gs-transact)) ))))
+	    (unless (or ov preview-gs-outstanding)
+	      (process-send-eof (get-buffer-process buff))))
 	(error (insert (error-message-string whatgives)))))))
-
 
 (defcustom preview-scale-function (function preview-scale-from-face)
   "*Scale factor for included previews.
@@ -447,7 +471,9 @@ mouse-3 kills preview"))
   (let ((str (preview-disabled-string ovr)))
     (overlay-put ovr 'before-string str)
     (overlay-put ovr 'invisible nil)
-    (overlay-put ovr 'strings (cons str str)))
+    (overlay-put ovr 'strings (cons str str))
+    (overlay-put ovr 'insert-in-front-hooks nil)
+    (overlay-put ovr 'modification-hooks nil)
   (let ((filename (overlay-get ovr 'filename)))
     (when filename
       (overlay-put ovr 'filename nil)
@@ -470,11 +496,10 @@ mouse-3 kills preview"))
 (defun preview-clearout (&optional start end)
   "Clear out all previews in the current region"
   (interactive "r")
-  (mapc (lambda (ov)
-	  (if (eq (overlay-get ov 'category) 'preview-overlay)
-	      (preview-deleter ov) ))
-	(overlays-in (or start 1)
-		     (or end (1+ (buffer-size))))))
+  (dolist (ov (overlays-in (or start 1)
+			   (or end (1+ (buffer-size)))))
+    (if (eq (overlay-get ov 'category) 'preview-overlay)
+	(preview-deleter ov))))
 
 (add-hook 'kill-buffer-hook (function preview-clearout) nil nil)
 
@@ -764,10 +789,9 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
 
 (defun TeX-inline-sentinel (process name)
   (if process (TeX-format-mode-line process))
-  (let (inhibit-quit)
-    (save-excursion
-      (set-buffer TeX-command-buffer)
-      (preview-parse-messages))))
+  (if (eq (process-status process) 'exit)
+      (with-current-buffer TeX-command-buffer
+	(preview-parse-messages))))
   
 (defun TeX-inline-preview (name command file)
   (let ((process (TeX-run-format name command file)))
