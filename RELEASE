@@ -28,8 +28,10 @@ AUCTeX 11.55 includes fixes for the following bugs:
     in an Emacs session is loaded.
 
   * `File mode specification error: (error "Variable binding depth
-    exceeds max-specpdl-size")' if outdated Emacspeak package is
-    installed.
+    exceeds max-specpdl-size")' if an outdated Emacspeak package is
+    installed.  But since both Emacs and XEmacs contain a correct
+    version of `regexp-opt.el', simply removing any such file within
+    your copy of Emacspeak appears safer.
 
 More detailed information can be found in the CHANGES file included in
 the distribution or the "Changes" section in the manual.
@@ -54,9 +56,9 @@ changes in easy-mmode.el: please use the XEmacs package system for
 upgrading if necessary.  The current developers don't have the
 resources for providing backward compatibility to earlier versions.
 Warning: release 21.4.16 of XEmacs is severely broken.  This leads to
-crashes and hangs, and AUCTeX 11.55 is more likely to trigger this
-problem than previous AUCTeX releases, so don't upgrade AUCTeX if you
-can't use a different XEmacs version.
+crashes and hangs; since AUCTeX 11.55 is more likely to trigger this
+problem than previous AUCTeX releases, don't upgrade it if you can't
+use a different XEmacs version.
 
 Availability
 ------------
@@ -78,12 +80,12 @@ Future development and additional information
 
 AUCTeX is proceeding as a GNU project with the long-term intent of
 merging it into Emacs (and merging with preview-latex
-<URL:http://preview-latex.sourceforge.net/> probably next year).  For
-that reason, all new contributors need to assign copyright to their
-contributions to the FSF (the usual procedure for Emacs contributors).
-The same holds for past contributors.  The principal authors and
-maintainers have already done so, but it would require a diligent and
-diplomatic volunteer to find and ask the rest.
+<URL:http://preview-latex.sourceforge.net/> soon).  For that reason,
+all new contributors need to assign copyright to their contributions
+to the FSF (the usual procedure for Emacs contributors).  The same
+holds for past contributors.  The principal authors and maintainers
+have already done so, but it would require a diligent and diplomatic
+volunteer to find and ask the rest.
 
 Current project manager is David Kastrup <mailto:dak@gnu.org>.  While
 Paypal contributions are appreciated, volunteering for tasks remains
