@@ -1,5 +1,7 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi (Configure): typo --with-texmf corrected.
+
 	* preview-latex.spec (Requires): XEmacs at least 21.1.14 (regexp
 	problem).
 
