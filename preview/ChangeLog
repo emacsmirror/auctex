@@ -1,3 +1,7 @@
+2005-01-19  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4: sync with AUCTeX
+
 2005-01-17  jalar  <jalar@mai.liu.se>
 
 	* ChangeLog.1: Move dvipng changes to its Changelog
