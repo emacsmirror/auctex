@@ -23,7 +23,7 @@
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.96 $
+%   \rcskey \version CVS-$Revision: 1.97 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,43 +32,45 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2005-03-05 14:31:07 $
+% \rcskey\next $Date: 2005-03-15 02:29:23 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
 % \maketitle
-%\section{Introduction}
+% \section{Introduction}
 % The main purpose of this package is the extraction of certain
-% environments (most notably displayed formulas) for use in different
-% contexts.  While the erstwhile application has been the embedding of
-% those preview fragments into Emacs source buffers under the
-% AUC\TeX\ editing environment, other applications are easily
-% imaginable.
+% environments (most notably displayed formulas) from \LaTeX\ sources
+% as graphics.  This works with DVI files postprocessed by either
+% Dvips and GhostScript or Dvipng, but it also works when you are
+% using PDF\TeX for generating PDF files (usually also postprocessed
+% by GhostScript).
+%
+% Current uses of the package include the \previewlatex\ package for
+% WYSIWYG functionality in the AUC\TeX\ editing environment,
+% generation of previews in LyX, as part of the operation of the
+% ps4pdf package, the tbook XML system and some other tools.
 % 
-% In particular it should be noted that producing EPS files with Dvips
-% and its derivatives using the \texttt{-E} option is not currently
-% well-supported by \LaTeX.  People make do by fiddling around with
-% |\thispagestyle{empty}| and hoping for the best (namely, that the
-% specified contents will indeed fit on single pages), and then trying
-% to guess the baseline of the resulting code and stuff, but this is
-% at best dissatisfactory.  The preview package provides an easy way
-% to ensure that exactly one page per request gets shipped, with a
-% well-defined baseline and no page decorations.  Thus you can safely
-% use
+% Producing EPS files with Dvips and its derivatives using the
+% \texttt{-E} option is not a good alternative: People make do by
+% fiddling around with |\thispagestyle{empty}| and hoping for the best
+% (namely, that the specified contents will indeed fit on single
+% pages), and then trying to guess the baseline of the resulting code
+% and stuff, but this is at best dissatisfactory.  The preview package
+% provides an easy way to ensure that exactly one page per request
+% gets shipped, with a well-defined baseline and no page decorations.
+% While you still can use the preview package with the `classic'
 % \begin{quote}
 % |dvips -E -i|
 % \end{quote}
-% and get a single EPS file with shrink-wrapped bounding box for every
-% generated image of a \LaTeX\ run.
+% invocation, there are better ways available that don't rely on Dvips
+% not getting confused by PostScript specials.
 % 
-% If your ultimate goal is to produce a set of files in a different
-% format that can be produced by GhostScript, take a look at the
-% |tightpage| option of the preview package.  This will embed the page
-% dimensions into the PostScript code, obliterating the need to use
-% the |-E -i| options to Dvips.  You can then produce all image files
-% with a single run of GhostScript from a single PostScript file for
-% all images at once.  The |tightpage| option requires setting the
-% |dvips| option as well.
+% For most applications, you'll want to make use of the |tightpage|
+% option.  This will embed the page dimensions into the PostScript or
+% PDF code, obliterating the need to use the |-E -i| options to Dvips.
+% You can then produce all image files with a single run of
+% GhostScript from a single PDF or PostScript (as opposed to EPS)
+% file.
 % 
 % Various options exist that will pass \TeX\ dimensions and other
 % information about the respective shipped out material (including
@@ -76,12 +78,17 @@
 % make use of it.
 % 
 % The possibility for generating a whole set of graphics with a single
-% run of \LaTeX, Dvips, and GhostScript increases both speed and
-% robustness of applications.  It is to be hoped that applications
-% like \LaTeX 2HTML will be able to make use of this package in
-% future.
+% run of GhostScript (whether from \LaTeX\ or PDF\LaTeX) increases
+% both speed and robustness of applications.  It is also feasible to
+% use Dvipng on a DVI file with the options
+% \begin{quote}
+%   |-picky -noghostscript|
+% \end{quote}
+% to omit generating any image file that requires GhostScript, then
+% let a script generate all missing files using Dvips/GhostScript.
+% This will usually speed up the process significantly.
 % 
-%\section{Package options}
+% \section{Package options}
 % The package is included with the customary
 % \begin{quote}
 % |\usepackage|\oarg{options}|{preview}|
@@ -430,7 +437,7 @@
 % |preview| is active, you can use the conditional \cmd{\ifPreview}
 % together with |\else| and |\fi|.
 %
-%\StopEventually{}
+% \StopEventually{}
 % \section{The Implementation}
 % Here we go: the start is somewhat obtuse since we figure out version
 % number and date from RCS strings.  This should really be done at
@@ -441,23 +448,23 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.96 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.97 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-03-05 14:31:07 $
+\reserved@a\next $Date: 2005-03-15 02:29:23 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
 %    \end{macrocode}
-%  Since many parts here will not be needed as long as the package
-%  is inactive, we will include them enclosed with |<*active>| and
-%  |</active>| guards.  That way, we can append all of this stuff at
-%  a place where it does not get loaded if not necessary.
+% Since many parts here will not be needed as long as the package is
+% inactive, we will include them enclosed with |<*active>| and
+% |</active>| guards.  That way, we can append all of this stuff at a
+% place where it does not get loaded if not necessary.
 %
 %\begin{macro}{\ifPreview}
-%  Setting the \cmd{\ifPreview} command should not be done by the user,
-%  so we don't use \cmd{\newif} here.  As a consequence, there are no
-%  \cmd{\Previewtrue} and \cmd{\Previewfalse} commands.
+%  Setting the \cmd{\ifPreview} command should not be done by the
+%  user, so we don't use \cmd{\newif} here.  As a consequence, there
+%  are no \cmd{\Previewtrue} and \cmd{\Previewfalse} commands.
 %    \begin{macrocode}
 \let\ifPreview\iffalse
 %</!active>
@@ -465,8 +472,8 @@
 %\end{macro}
 %\begin{macro}{\ifpr@outer}
 %  We don't allow previews inside of previews.  The macro
-%  \cmd{\ifpr@outer} can be used for checking whether we are outside of
-%  any preview code.
+%  \cmd{\ifpr@outer} can be used for checking whether we are outside
+%  of any preview code.
 %    \begin{macrocode}
 %<*active>
 \newif\ifpr@outer
@@ -477,8 +484,8 @@
 %
 %\begin{macro}{\preview@delay}
 %  The usual meaning of \cmd{\preview@delay} is to just echo its
-%  argument in normal |preview| operation.  If |preview| is inactive, it
-%  swallows its argument.  If the |delayed| option is active, the
+%  argument in normal |preview| operation.  If |preview| is inactive,
+%  it swallows its argument.  If the |delayed| option is active, the
 %  contents will be passed to the \cmd{\AtBeginDocument} hook.
 %\begin{macro}{\pr@advise}
 %  The core macro for modifying commands is \cmd{\pr@advise}.  You
@@ -509,8 +516,8 @@
   \toks@{#2}\toks@\expandafter{\the\expandafter\toks@#1}%
   \xdef#1{\the\toks@}}
 %    \end{macrocode}
-%\end{macro}
-%  These commands get more interesting when |preview| is active:
+% \end{macro}
+% These commands get more interesting when |preview| is active:
 %    \begin{macrocode}
 \DeclareOption{active}{%
   \let\ifPreview\iftrue
@@ -519,16 +526,16 @@
   \long\def\pr@advise@ship#1#2#3{\pr@advise#1{\pr@protect@ship{#2}{#3}}}%
   \let\preview@delay\@firstofone}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%
-%\begin{macro}{\pr@adviseii}
-%  Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
-%  recursive definitions, we advise only macros that are not yet
-%  advised.  Or, more exactly, we throw away the old advice and only
-%  take the new one.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\pr@adviseii}
+%   Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
+%   recursive definitions, we advise only macros that are not yet
+%   advised.  Or, more exactly, we throw away the old advice and only
+%   take the new one.
 %    \begin{macrocode}
 \long\def\pr@adviseii#1#2#3{\preview@delay{%
   \ifx#1\relax \let#1#2\fi
@@ -536,10 +543,10 @@
 %    \end{macrocode}
 %\end{macro}
 %
-%  The |delayed| option is easy to implement: this is \emph{not} done
-%  with \cmd{\let} since at the course of document processing, \LaTeX\
-%  redefines \cmd{\AtBeginDocument} and we want to follow that
-%  redefinition.
+% The |delayed| option is easy to implement: this is \emph{not} done
+% with \cmd{\let} since at the course of document processing, \LaTeX\
+% redefines \cmd{\AtBeginDocument} and we want to follow that
+% redefinition.
 %    \begin{macrocode}
 \DeclareOption{delayed}{%
   \ifPreview \def\preview@delay{\AtBeginDocument}\fi
@@ -566,9 +573,10 @@
   \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}\fi
 }
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@graphicstype}
-% The |dvips| option redefines the |bop-hook| to reset the page size.
+% \end{macro}
+% \begin{macro}{\pr@graphicstype}
+%   The |dvips| option redefines the |bop-hook| to reset the page
+%   size.
 %    \begin{macrocode}
 \let\pr@graphicstype=\z@
 \DeclareOption{dvips}{%
@@ -587,50 +595,51 @@
 %</!active>
 %    \end{macrocode}
 % \end{macro}
-%\subsection{The internals}
+% \subsection{The internals}
 %
-%Those are only needed if |preview| is active.
+% Those are only needed if |preview| is active.
 %    \begin{macrocode}
 %<*active>
 %    \end{macrocode}
-%\begin{macro}{\pr@snippet}
-%  \cmd{\pr@snippet} is the current snippet number.  We need a
-%  separate counter to \cmd{\c@page} since several other commands
-%  might fiddle with the page number.
+% \begin{macro}{\pr@snippet}
+%   \cmd{\pr@snippet} is the current snippet number.  We need a
+%   separate counter to \cmd{\c@page} since several other commands
+%   might fiddle with the page number.
 %    \begin{macrocode}
 \newcount\pr@snippet
 \global\pr@snippet=1
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@protect}
-%  This macro gets one argument which is unpacked and executed in
-%  typesetting situations where we are not yet inside of a preview.
+% \end{macro}
+% \begin{macro}{\pr@protect}
+%   This macro gets one argument which is unpacked and executed in
+%   typesetting situations where we are not yet inside of a preview.
 %    \begin{macrocode}
 \def\pr@protect{\ifx\protect\@typeset@protect
   \ifpr@outer \expandafter\expandafter\expandafter
      \@secondoftwo\fi\fi\@gobble}
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@protect@ship}
-%  Now for the above mentioned \cmd{\pr@protect@ship}.  This
-%  gets three arguments.  The first is what to do at the beginning of
-%  the preview, the second what to do at the end, the third is the
-%  macro where we stored the original definition.
+% \end{macro}
+% \begin{macro}{\pr@protect@ship}
+%   Now for the above mentioned \cmd{\pr@protect@ship}.  This gets
+%   three arguments.  The first is what to do at the beginning of the
+%   preview, the second what to do at the end, the third is the macro
+%   where we stored the original definition.
 %
-%  In case we are not in a typesetting situation,
-%  \cmd{\pr@protect@ship} leaves the stored macro to fend for its
-%  own.  No better or worse protection than the original.  And we only
-%  do anything different when \cmd{\ifpr@outer} turns out to be true.
+%   In case we are not in a typesetting situation,
+%   \cmd{\pr@protect@ship} leaves the stored macro to fend for its
+%   own.  No better or worse protection than the original.  And we
+%   only do anything different when \cmd{\ifpr@outer} turns out to be
+%   true.
 %    \begin{macrocode}
 \def\pr@protect@ship{\pr@protect{\@firstoftwo\pr@startbox}%
    \@gobbletwo}
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@insert}
-%\begin{macro}{\pr@mark}
-%\begin{macro}{\pr@marks}
-%  We don't want insertions to end up on our lists.  So we disable
-%  them right now by replacing them with the following:
+% \end{macro}
+% \begin{macro}{\pr@insert}
+% \begin{macro}{\pr@mark}
+% \begin{macro}{\pr@marks}
+%   We don't want insertions to end up on our lists.  So we disable
+%   them right now by replacing them with the following:
 %    \begin{macrocode}
 \def\pr@insert{\begingroup\afterassignment\pr@insertii\count@}
 \def\pr@insertii{\endgroup\setbox\pr@box\vbox}
@@ -640,18 +649,18 @@
 \def\pr@mark{{\afterassignment}\toks@}
 \def\pr@marks{{\aftergroup\pr@mark\afterassignment}\count@}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@box}
-%\begin{macro}{\pr@startbox}
-%  Previews will be stored in \cmd{\box}\cmd{\pr@box}.
-%  \cmd{\pr@startbox} gets two arguments: code to execute immediately
-%  before the following stuff, code to execute afterwards.  You have
-%  to cater for \cmd{\pr@endbox} being called at the right time
-%  yourself.  We will use a \cmd{\vsplit} on the box later in order to
-%  remove any leading glues, penalties and similar stuff.  For this
-%  reason we start off the box with an optimal break point.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@box}
+% \begin{macro}{\pr@startbox}
+%   Previews will be stored in \cmd{\box}\cmd{\pr@box}.
+%   \cmd{\pr@startbox} gets two arguments: code to execute immediately
+%   before the following stuff, code to execute afterwards.  You have
+%   to cater for \cmd{\pr@endbox} being called at the right time
+%   yourself.  We will use a \cmd{\vsplit} on the box later in order
+%   to remove any leading glues, penalties and similar stuff.  For
+%   this reason we start off the box with an optimal break point.
 %    \begin{macrocode}
 \newbox\pr@box
 \long\def\pr@startbox#1#2{%
@@ -671,20 +680,19 @@
      \expandafter \@gobble
   \fi{#1}}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@endbox}
-%  Cleaning up also is straightforward.  If we have to watch the
-%  bounding \TeX\ box, we want to remove spurious skips.  We also want
-%  to unwrap a possible single line paragraph, so that the box is not
-%  full line length.  We use \cmd{\vsplit} to clean up leading glue
-%  and stuff, and we make some attempt of removing trailing ones.
-%  After that, we wrap up the box including possible material from
-%  \cmd{\AtBeginDvi}.  If the |psfixbb| option is active, we adorn the
-%  upper left and lower right corners with copies of
-%  \cmd{\pr@markerbox}.
-%  The first few lines cater for \LaTeX\ hiding things like
-%  like the code for \cmd{\paragraph} in \cmd{\everypar}.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@endbox}
+%   Cleaning up also is straightforward.  If we have to watch the
+%   bounding \TeX\ box, we want to remove spurious skips.  We also
+%   want to unwrap a possible single line paragraph, so that the box
+%   is not full line length.  We use \cmd{\vsplit} to clean up leading
+%   glue and stuff, and we make some attempt of removing trailing
+%   ones.  After that, we wrap up the box including possible material
+%   from \cmd{\AtBeginDvi}.  If the |psfixbb| option is active, we
+%   adorn the upper left and lower right corners with copies of
+%   \cmd{\pr@markerbox}.  The first few lines cater for \LaTeX\ hiding
+%   things like like the code for \cmd{\paragraph} in \cmd{\everypar}.
 %    \begin{macrocode}
 \def\pr@endbox{%
    \let\reserved@a\relax
@@ -713,28 +721,29 @@
        %\color@endgroup
      }%
 %    \end{macrocode}
-%  \begin{macro}{\pr@ship@end}
-%  \label{sec:prshipend}At this point, \cmd{\pr@ship@end} gets
-%  called.  You must not under any circumstances change |\box\pr@box|
-%  in any way that would add typeset material at the front of it,
-%  except for PostScript header specials, since the front of
-%  |\box\pr@box| may contains stuff from \cmd{\AtBeginDvi}.
-%  \cmd{\pr@ship@end} contains two types of code additions: stuff that
-%  adds to |\box\pr@box|, like the |labels| option does, and stuff
-%  that measures out things or otherwise takes a look at the finished
-%  |\box\pr@box|, like the |auctex| or |showbox| option do.  The
-%  former should use \cmd{pr@addto@front} for adding to this hook, the
-%  latter use \cmd{g@addto@macro} for adding at the end of this hook.
+% \begin{macro}{\pr@ship@end}
+%   \label{sec:prshipend}At this point, \cmd{\pr@ship@end} gets
+%   called.  You must not under any circumstances change |\box\pr@box|
+%   in any way that would add typeset material at the front of it,
+%   except for PostScript header specials, since the front of
+%   |\box\pr@box| may contains stuff from \cmd{\AtBeginDvi}.
+%   \cmd{\pr@ship@end} contains two types of code additions: stuff
+%   that adds to |\box\pr@box|, like the |labels| option does, and
+%   stuff that measures out things or otherwise takes a look at the
+%   finished |\box\pr@box|, like the |auctex| or |showbox| option do.
+%   The former should use \cmd{pr@addto@front} for adding to this
+%   hook, the latter use \cmd{g@addto@macro} for adding at the end of
+%   this hook.
 %
-%  Note that we shift the output box up by its height via
-%  \cmd{\voffset}.  This has three reasons: first we make sure that no
-%  package-inflicted non-zero value of \cmd{\voffset} or
-%  \cmd{\hoffset} will have any influence on the positioning of our
-%  box.  Second we shift the box such that its basepoint will exactly
-%  be at the (1in,1in)~mark defined by \TeX.  That way we can properly
-%  take ascenders into account.  And the third reason is that \TeX\
-%  treats a \cmd{\hbox} and a \cmd{\vbox} differently with regard to
-%  the treating of its depth.  
+%   Note that we shift the output box up by its height via
+%   \cmd{\voffset}.  This has three reasons: first we make sure that
+%   no package-inflicted non-zero value of \cmd{\voffset} or
+%   \cmd{\hoffset} will have any influence on the positioning of our
+%   box.  Second we shift the box such that its basepoint will exactly
+%   be at the (1in,1in)~mark defined by \TeX.  That way we can
+%   properly take ascenders into account.  And the third reason is
+%   that \TeX\ treats a \cmd{\hbox} and a \cmd{\vbox} differently with
+%   regard to the treating of its depth.
 %    \begin{macrocode}
    \pr@ship@end
    {\let\protect\noexpand
@@ -754,41 +763,41 @@
    \pr@cleanup
 }
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%Oh, and we kill off the usual meaning of \cmd{\shipout} in case
-%somebody makes a special output routine.  The following is rather
-%ugly, but should do the trick most of the time since \cmd{\shipout}
-%is most often called in a local group by \cmd{\output}.
-%  \begin{macro}{\shipout}
+% \end{macro}
+% \end{macro}
+% Oh, and we kill off the usual meaning of \cmd{\shipout} in case
+% somebody makes a special output routine.  The following is rather
+% ugly, but should do the trick most of the time since \cmd{\shipout}
+% is most often called in a local group by \cmd{\output}.
+% \begin{macro}{\shipout}
 %    \begin{macrocode}
 \let\pr@shipout=\shipout
 \def\shipout{\deadcycles\z@\setbox\z@\box\voidb@x\setbox\z@}
 %    \end{macrocode}
-%  \end{macro}
-%\subsection{Parsing commands}
-%\begin{macro}{\pr@parseit}
-%\begin{macro}{\pr@endparse}
-%\begin{macro}{\pr@callafter}
-%  The following stuff is for parsing the arguments of commands we want
-%  to somehow surround with stuff.  Usage is
-%    \begin{quote}
-%    \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\pr@endparse}\\
-%    \qquad\meta{macro}\meta{parameters}
-%    \end{quote}
-%  \meta{aftertoken} is stored away and gets executed once parsing
-%  completes, with its first argument being the parsed material.
-%  \meta{parsestring} would be, for example for the
-%  \cmd{\includegraphics} macro, |*[[!|, an optional
-%  |*| argument followed by two optional arguments enclosed in |[]|,
-%  followed by one mandatory argument.
+% \end{macro}
+% \subsection{Parsing commands}
+% \begin{macro}{\pr@parseit}
+% \begin{macro}{\pr@endparse}
+% \begin{macro}{\pr@callafter}
+%   The following stuff is for parsing the arguments of commands we
+%   want to somehow surround with stuff.  Usage is
+%   \begin{quote}
+%     \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\pr@endparse}\\
+%     \qquad\meta{macro}\meta{parameters}
+%   \end{quote}
+%   \meta{aftertoken} is stored away and gets executed once parsing
+%   completes, with its first argument being the parsed material.
+%   \meta{parsestring} would be, for example for the
+%   \cmd{\includegraphics} macro, |*[[!|, an optional |*| argument
+%   followed by two optional arguments enclosed in |[]|, followed by
+%   one mandatory argument.
 %
-%  For the sake of a somewhat more intuitive syntax, we now support
-%  also the syntax |{*[]{}}| in the optional argument.  Since \TeX\
-%  strips redundant braces, we have to write |[{{}}]| in this syntax
-%  for a single mandatory argument.  Hard to avoid.  We use an unusual
-%  character for ending the parsing.
-%  The implementation is rather trivial.
+%   For the sake of a somewhat more intuitive syntax, we now support
+%   also the syntax |{*[]{}}| in the optional argument.  Since \TeX\
+%   strips redundant braces, we have to write |[{{}}]| in this syntax
+%   for a single mandatory argument.  Hard to avoid.  We use an
+%   unusual character for ending the parsing.  The implementation is
+%   rather trivial.
 %    \begin{macrocode}
 \def\pr@parseit#1{\csname pr@parse#1\endcsname}
 \let\pr@endparse=\@percentchar
@@ -798,27 +807,27 @@
   \let#1= }}
 \expandafter\next\csname pr@parse\pr@endparse\endcsname
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@parse*}
-%  Straightforward, same mechanism \LaTeX\ itself employs.  We take
-%  some care not to pass potential |#| tokens unprotected through
-%  macros.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@parse*}
+%   Straightforward, same mechanism \LaTeX\ itself employs.  We take
+%   some care not to pass potential |#| tokens unprotected through
+%   macros.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse*\endcsname#1\pr@endparse#2{%
   \begingroup\toks@{#1\pr@endparse{#2}}%
   \edef\next##1{\endgroup##1\the\toks@}%
   \@ifstar{\next{\pr@parse@*}}{\next\pr@parseit}}
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@parse[}
-%\begin{macro}{\pr@brace}
-%  Copies optional parameters in brackets if present.  The additional
-%  level of braces is necessary to ensure that braces the user might
-%  have put to hide a~|]| bracket in an optional argument don't get
-%  lost.  There will be no harm if such braces were not there at the
-%  start.
+% \end{macro}
+% \begin{macro}{\pr@parse[}
+% \begin{macro}{\pr@brace}
+%   Copies optional parameters in brackets if present.  The additional
+%   level of braces is necessary to ensure that braces the user might
+%   have put to hide a~|]| bracket in an optional argument don't get
+%   lost.  There will be no harm if such braces were not there at the
+%   start.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse[\endcsname#1\pr@endparse#2{%
   \begingroup\toks@{#1\pr@endparse{#2}}%
@@ -827,30 +836,30 @@
 \long\def\pr@bracket#1\pr@endparse#2[#3]{%
    \pr@parseit#1\pr@endparse{#2[{#3}]}}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@parse]}
-%  This is basically a do-nothing, so that we may use the syntax
-%  |{*[][]!}| in the optional argument instead of the more concise but
-%  ugly |*[[!| which confuses the brace matchers of editors.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@parse]}
+%   This is basically a do-nothing, so that we may use the syntax
+%   |{*[][]!}| in the optional argument instead of the more concise
+%   but ugly |*[[!| which confuses the brace matchers of editors.
 %    \begin{macrocode}
 \expandafter\let\csname pr@parse]\endcsname=\pr@parseit
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@parse}
-%\begin{macro}{\pr@parse!}
-%  Mandatory arguments are perhaps easiest to parse.
+% \end{macro}
+% \begin{macro}{\pr@parse}
+% \begin{macro}{\pr@parse!}
+%   Mandatory arguments are perhaps easiest to parse.
 %    \begin{macrocode}
 \long\def\pr@parse#1\pr@endparse#2#3{%
   \pr@parseit#1\pr@endparse{#2{#3}}}
 \expandafter\let\csname pr@parse!\endcsname=\pr@parse
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@parse?}
-%\begin{macro}{\pr@parsecond}
-%  This does an explicit call of |\@ifnextchar| and forks into the
-%  given two alternatives as a result.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@parse?}
+% \begin{macro}{\pr@parsecond}
+%   This does an explicit call of |\@ifnextchar| and forks into the
+%   given two alternatives as a result.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse?\endcsname#1#2\pr@endparse#3{%
   \begingroup\toks@{#2\pr@endparse{#3}}%
@@ -860,11 +869,11 @@
   \expandafter\expandafter\expandafter\pr@parseit
   \expandafter#1\the\toks@}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@parse@}
-%  This makes it possible to insert literal material into the argument
-%  list.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@parse@}
+%   This makes it possible to insert literal material into the
+%   argument list.
 %    \begin{macrocode}
  \long\def\pr@parse@#1#2\pr@endparse#3{%
    \pr@parseit #2\pr@endparse{#3#1}}
@@ -881,10 +890,10 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\pr@parse:}
-% The following is a transform rule.  A macro is being defined with
-% the given argument list and replacement, and the transformed
-% version replaces the original.  The result of the transform is
-% still subject to being parsed.
+%   The following is a transform rule.  A macro is being defined with
+%   the given argument list and replacement, and the transformed
+%   version replaces the original.  The result of the transform is
+%   still subject to being parsed.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse:\endcsname
   #1#2#3\pr@endparse#4{\begingroup
@@ -893,9 +902,11 @@
     \the\expandafter\toks@\next}
 %    \end{macrocode}
 % \end{macro}
-% ^^A\begin{macro}{\pr@parse#}
-% Another transform rule, but this passes the transformed material
-% into the token list.
+% \edef\next{\noexpand\begin{macro}{\noexpand
+%    \pr@parse\string#}}
+% \next
+%   Another transform rule, but this passes the transformed material
+%   into the token list.
 %    \begin{macrocode}
 \long\expandafter\def\csname pr@parse#\endcsname
   #1#2#3\pr@endparse#4{\begingroup
@@ -906,16 +917,16 @@
     \the\expandafter\next\reserved@a}
 %</active>
 %    \end{macrocode}
-% ^^A\end{macro}
+% \end{macro}
 %
-%\subsection{Selection options}
-%  The |displaymath| option.  The |equation| environments in
-%  AMS\LaTeX\ already do too much before our hook gets to interfere,
-%  so we hook earlier.  Some juggling is involved to ensure we get the
-%  original |\everydisplay| tokens only once and where appropriate.
+% \subsection{Selection options}
+% The |displaymath| option.  The |equation| environments in AMS\LaTeX\
+% already do too much before our hook gets to interfere, so we hook
+% earlier.  Some juggling is involved to ensure we get the original
+% |\everydisplay| tokens only once and where appropriate.
 %
-%  The incredible hack with |\dt@ptrue| is necessary for working
-%  around bug `amslatex/3425'.
+% The incredible hack with |\dt@ptrue| is necessary for working around
+% bug `amslatex/3425'.
 %    \begin{macrocode}
 %<*!active>
 \begingroup
@@ -941,18 +952,19 @@
 }}
 %    \end{macrocode}
 %
-%  The |textmath| option.  Some folderol in order to define the active
-%  |$| math mode delimiter.  \cmd\pr@textmathcheck is used for
-%  checking whether we have a single |$| or double |$$|.  In the
-%  latter case, we enter display math (this sort of display math is
-%  not allowed inside of \LaTeX\ because of inconsistent spacing, but
-%  surprisingly many people use it nevertheless).  Strictly speaking,
-%  this is incorrect, since not every |$$| actually means display
-%  math.  For example, |\hbox{$$}| will because of restricted
-%  horizontal mode rather yield an empty text math formula.  Since our
-%  implementation moved the sequence inside of a |\vbox|, the
-%  interpretation will change.  People should just not enter rubbish
-%  like that.
+% The |textmath| option.  Some folderol in order to define the active
+% |$|
+% math mode delimiter.  \cmd\pr@textmathcheck is used for checking
+% whether we have a single |$| or double |$$|.
+% In the latter case, we enter display math (this sort of display math
+% is not allowed inside of \LaTeX\ because of inconsistent spacing,
+% but surprisingly many people use it nevertheless).  Strictly
+% speaking, this is incorrect, since not every
+% |$$| actually means display math.  For example, |\hbox{$$}| will
+% because of restricted horizontal mode rather yield an empty text
+% math formula.  Since our implementation moved the sequence inside of
+% a |\vbox|, the interpretation will change.  People should just not
+% enter rubbish like that.
 %    \begin{macrocode}
 \begingroup
 \def\next#1#2{%
@@ -973,28 +985,28 @@
   \endcsname
 %</!active>
 %    \end{macrocode}
-%\begin{macro}{\pr@endaftergroup}
-%  This justs ends the box after the group opened by |#1| is closed
-%  again.
+% \begin{macro}{\pr@endaftergroup}
+%   This justs ends the box after the group opened by |#1| is closed
+%   again.
 %    \begin{macrocode}
 %<*active>
 \def\pr@endaftergroup#1{#1\aftergroup\pr@endbox}
 %</active>
 %    \end{macrocode}
-%\end{macro}
+% \end{macro}
 %
-%  The |graphics| option.
+% The |graphics| option.
 %    \begin{macrocode}
 %<*!active>
 \DeclareOption{graphics}{%
   \PreviewMacro[*[[!]{\includegraphics}%]]
 }
 %    \end{macrocode}
-%  The |floats| option.  The complications here are merely to spare us
-%  bug reports about broken document classes that use |\let| on
-%  |\endfigure| and similar.  Notable culprits that have not been
-%  changed in years in spite of reports are |elsart.cls| and
-%  |IEEEtran.cls|.  Complain when you are concerned.
+% The |floats| option.  The complications here are merely to spare us
+% bug reports about broken document classes that use |\let| on
+% |\endfigure| and similar.  Notable culprits that have not been
+% changed in years in spite of reports are |elsart.cls| and
+% |IEEEtran.cls|.  Complain when you are concerned.
 %    \begin{macrocode}
 \def\pr@floatfix#1#2{\ifx#1#2%
   \ifx#1\@undefined\else
@@ -1028,28 +1040,29 @@ Please complain to your document class author}%
   \PreviewMacro[!!!!!!*[!]{\@startsection}%]
 }
 %    \end{macrocode}
-%We now interpret any further options as driver files we load.  Note
-%that these driver files are loaded even when |preview| is not
-%active.  The reason is that they might define commands (like
-%\cmd{\PreviewCommand}) that should be available even in case of
-%an inactive package.  Large parts of the |preview| package will not
-%have been loaded in this case: you have to cater for that.
+% We now interpret any further options as driver files we load.  Note
+% that these driver files are loaded even when |preview| is not
+% active.  The reason is that they might define commands (like
+% \cmd{\PreviewCommand}) that should be available even in case of an
+% inactive package.  Large parts of the |preview| package will not
+% have been loaded in this case: you have to cater for that.
 %    \begin{macrocode}
 \DeclareOption*
    {\InputIfFileExists{pr\CurrentOption.def}{}{\OptionNotUsed}}
 %    \end{macrocode}
 %
-%\subsection{Preview attaching commands}
-%  \begin{macro}{\PreviewMacro}
-%  As explained above. Detect possible |*| and call appropriate macro.
+% \subsection{Preview attaching commands}
+% \begin{macro}{\PreviewMacro}
+%   As explained above. Detect possible |*| and call appropriate
+%   macro.
 %    \begin{macrocode}
 \def\PreviewMacro{\@ifstar\pr@starmacro\pr@macro}
 %    \end{macrocode}
-%  The version without |*| is now rather straightforward.
-%  \begin{macro}{\pr@macro}
-%  \begin{macro}{\pr@domacro}
-%  \begin{macro}{\pr@macroii}
-%  \begin{macro}{\pr@endmacro}
+% The version without |*| is now rather straightforward.
+% \begin{macro}{\pr@macro}
+% \begin{macro}{\pr@domacro}
+% \begin{macro}{\pr@macroii}
+% \begin{macro}{\pr@endmacro}
 %    \begin{macrocode}
 \long\def\pr@domacro#1#2{%
    \long\def\next##1{#2}%
@@ -1062,16 +1075,16 @@ Please complain to your document class author}%
 \def\pr@macroii{\next[##1]}
 \long\def\pr@endmacro#1{#1\pr@endbox}
 %    \end{macrocode}
-%  \end{macro}
-%  \end{macro}
-%  \end{macro}
-%  \end{macro}
-%  \end{macro}
-%  \begin{macro}{PreviewMacro*}
-%  \begin{macro}{\pr@protect@domacro}
-%  \begin{macro}{\pr@starmacro}
-%  The version with |*| has to parse the arguments, then throw them
-%  away.  Some internal macros first, then the interface call.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{PreviewMacro*}
+% \begin{macro}{\pr@protect@domacro}
+% \begin{macro}{\pr@starmacro}
+%   The version with |*| has to parse the arguments, then throw them
+%   away.  Some internal macros first, then the interface call.
 %    \begin{macrocode}
 \long\def\pr@protect@domacro#1#2{\pr@protect{%
     \long\def\next##1{#2}%
@@ -1081,16 +1094,16 @@ Please complain to your document class author}%
       \noexpand\pr@advise##2{\the\toks@{##1}}}%
     \@ifnextchar[\next{\next[]}}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\PreviewOpen}
-%  As explained above. Detect possible |*| and call appropriate macro.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\PreviewOpen}
+%   As explained above. Detect possible |*| and call appropriate macro.
 %    \begin{macrocode}
 \def\PreviewOpen{\@ifstar\pr@starmacro\pr@open}
 %    \end{macrocode}
-%  The version without |*| is now rather straightforward.
-%  \begin{macro}{\pr@open}
+% The version without |*| is now rather straightforward.
+% \begin{macro}{\pr@open}
 %    \begin{macrocode}
 \newcommand\pr@open[1][]{%
    \toks@{\pr@domacro{#1}}%
@@ -1101,15 +1114,16 @@ Please complain to your document class author}%
         {\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\PreviewClose}
-%  As explained above. Detect possible |*| and call appropriate macro.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\PreviewClose}
+%   As explained above. Detect possible |*| and call appropriate
+%   macro.
 %    \begin{macrocode}
 \def\PreviewClose{\@ifstar\pr@starmacro\pr@close}
 %    \end{macrocode}
-%  The version without |*| is now rather straightforward.
-%  \begin{macro}{\pr@close}
+% The version without |*| is now rather straightforward.
+% \begin{macro}{\pr@close}
 %    \begin{macrocode}
 \newcommand\pr@close[1][]{%
   \toks@{\pr@domacro{#1}}%
@@ -1117,13 +1131,13 @@ Please complain to your document class author}%
    \noexpand\pr@advise{##2}{\the\toks@{##1\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\PreviewEnvironment}
-%  Actually, this ignores any syntax argument.  But don't tell
-%  anybody.  Except for the |*|~variant, it respects (actually
-%  ignores) any argument!  Of course, we'll need to deactivate
-%  |\end{|\meta{environment}|}| as well.
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\PreviewEnvironment}
+%   Actually, this ignores any syntax argument.  But don't tell
+%   anybody.  Except for the |*|~variant, it respects (actually
+%   ignores) any argument!  Of course, we'll need to deactivate
+%   |\end{|\meta{environment}|}| as well.
 %    \begin{macrocode}
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
 \newcommand\pr@starenv[1][]{\toks@{\pr@starmacro[{#1}]}%
@@ -1142,10 +1156,10 @@ Please complain to your document class author}%
    \@ifnextchar[\next\pr@macroii %]
  }
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\PreviewSnarfEnvironment}
-%  This is a nuisance since we have to advise \emph{both} the
-%  environment and its end.
+% \end{macro}
+% \begin{macro}{\PreviewSnarfEnvironment}
+%   This is a nuisance since we have to advise \emph{both} the
+%   environment and its end.
 %    \begin{macrocode}
 \newcommand{\PreviewSnarfEnvironment}[2][]{%
   \expandafter\pr@advise
@@ -1154,14 +1168,14 @@ Please complain to your document class author}%
    \csname end#2\endcsname{\pr@endsnarf}}
 %</!active>
 %    \end{macrocode}
-%\end{macro}
-%\begin{macro}{\pr@snarfafter}
-%\begin{macro}{\pr@startsnarf}
-%\begin{macro}{\pr@endsnarf}
-%  Ok, this looks complicated, but we have to start a group in order
-%  to be able to hook \cmd{\pr@endbox} into the game only when
-%  \cmd{\ifpr@outer} has triggered the start.  And we need to get our
-%  start messages out before parsing the arguments.
+% \end{macro}
+% \begin{macro}{\pr@snarfafter}
+% \begin{macro}{\pr@startsnarf}
+% \begin{macro}{\pr@endsnarf}
+%   Ok, this looks complicated, but we have to start a group in order
+%   to be able to hook \cmd{\pr@endbox} into the game only when
+%   \cmd{\ifpr@outer} has triggered the start.  And we need to get our
+%   start messages out before parsing the arguments.
 %    \begin{macrocode}
 %<*active>
 \let\pr@endsnarf\relax
@@ -1178,53 +1192,54 @@ Please complain to your document class author}%
    \ignorespaces}
 %</active>
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\end{macro}
-%\begin{macro}{\pr@ship@start}
-%\begin{macro}{\pr@ship@end}
-%  The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
-%  to by option files by the help of the \cmd{\g@addto@macro} command
-%  from \LaTeX, and by the \cmd{\pr@addto@front} command from
-%  |preview.sty| itself.  They are called just before starting to
-%  process some preview, and just after it.  Here is the policy for
-%  adding to them: \cmd{\pr@ship@start} is called inside of the vbox
-%  |\pr@box| before typeset material gets produced.  It is, however,
-%  preceded by a break command that is intended for usage in
-%  \cmd{\vsplit}, so that any following glue might disappear.  In case
-%  you want to add any material on the list, you have to precede it
-%  with \cmd{\unpenalty} and have to follow it with \cmd{\break}.  You
-%  have make sure that under no circumstances any other legal
-%  breakpoints appear before that, and your material should contribute
-%  no nonzero dimensions to the page.  For the policies of the
-%  \cmd{\pr@ship@end} hook, see the description on
-%  page~\pageref{sec:prshipend}.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\pr@ship@start}
+% \begin{macro}{\pr@ship@end}
+%   The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
+%   to by option files by the help of the \cmd{\g@addto@macro} command
+%   from \LaTeX, and by the \cmd{\pr@addto@front} command from
+%   |preview.sty| itself.  They are called just before starting to
+%   process some preview, and just after it.  Here is the policy for
+%   adding to them: \cmd{\pr@ship@start} is called inside of the vbox
+%   |\pr@box| before typeset material gets produced.  It is, however,
+%   preceded by a break command that is intended for usage in
+%   \cmd{\vsplit}, so that any following glue might disappear.  In
+%   case you want to add any material on the list, you have to precede
+%   it with \cmd{\unpenalty} and have to follow it with \cmd{\break}.
+%   You have make sure that under no circumstances any other legal
+%   breakpoints appear before that, and your material should
+%   contribute no nonzero dimensions to the page.  For the policies of
+%   the \cmd{\pr@ship@end} hook, see the description on
+%   page~\pageref{sec:prshipend}.
 %    \begin{macrocode}
 %<*!active>
 \let\pr@ship@start\@empty
 \let\pr@ship@end\@empty
 %    \end{macrocode}
-%\end{macro}
-%\end{macro}
-%\begin{environment}{preview}
-%\begin{environment}{nopreview}
-%  First we write the definitions of these environments when |preview|
-%  is inactive.  We will redefine them if |preview| gets activated.
+% \end{macro}
+% \end{macro}
+% \begin{environment}{preview}
+% \begin{environment}{nopreview}
+%   First we write the definitions of these environments when
+%   |preview| is inactive.  We will redefine them if |preview| gets
+%   activated.
 %    \begin{macrocode}
 \newenvironment{preview}{\ignorespaces}{\ifhmode\unskip\fi}
 \newenvironment{nopreview}{\ignorespaces}{\ifhmode\unskip\fi}
 %    \end{macrocode}
-%\end{environment}
-%\end{environment}
+% \end{environment}
+% \end{environment}
 %
-%We now process the options and finish in case we are not active.
+% We now process the options and finish in case we are not active.
 %    \begin{macrocode}
 \ProcessOptions\relax
 \ifPreview\else\expandafter\endinput\fi
 %</!active>
 %    \end{macrocode}
-%Now for the redefinition of the |preview| and |endpreview|
-%environments:
+% Now for the redefinition of the |preview| and |endpreview|
+% environments:
 %    \begin{macrocode}
 %<*active>
 \renewenvironment{preview}{\begingroup
@@ -1235,13 +1250,9 @@ Please complain to your document class author}%
 \renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}%
   {\ifhmode\unskip\fi}
 %    \end{macrocode}
-%Try to keep \LaTeX\ from overwriting its information files:
-%    \begin{macrocode}
-\nofiles
-%    \end{macrocode}
-%Let the output routine throw everything gathered regularly away.
-%Start with all float boxes, continue with output box, pack everything
-%afloat from \cmd{\@currlist} back into \cmd{\@freelist}.
+% Let the output routine throw everything gathered regularly away.
+% Start with all float boxes, continue with output box, pack
+% everything afloat from \cmd{\@currlist} back into \cmd{\@freelist}.
 %    \begin{macrocode}
 \output{\def\@elt#1{\global\setbox#1=\box\voidb@x}%
   \@currlist
@@ -1251,9 +1262,9 @@ Please complain to your document class author}%
   \global\let\@currlist\@empty
   \deadcycles\z@}
 %    \end{macrocode}
-%\begin{macro}{\pr@typeinfos}
-%  Then we have some document info that style files might want to
-%  output.
+% \begin{macro}{\pr@typeinfos}
+%   Then we have some document info that style files might want to
+%   output.
 %    \begin{macrocode}
 \def\pr@typeinfos{\typeout{Preview: Fontsize \f@size pt}%
   \ifnum\mag=\@m\else\typeout{Preview: Magnification \number\mag}\fi
@@ -1267,36 +1278,44 @@ Please complain to your document class author}%
 }
 \AtBeginDocument{\pr@typeinfos}
 %    \end{macrocode}
-%\end{macro}
-%And at the end we load the default configuration file, so that it may
-%override settings from this package:
+% \end{macro}
+% And at the end we load the default configuration file, so that it
+% may override settings from this package:
 %    \begin{macrocode}
 \pr@loadcfg{prdefault}
 %</active>
 %</style>
 %    \end{macrocode}
 %
-%\section{The option files}
-%\subsection{The \texttt{auctex} option}
-%The AUC\TeX\ option will cause error messages to spew.  We want them
-%on the terminal, but we don't want \LaTeX\ to stop its automated run.
-%We delay \cmd{\nonstopmode} in case the user has any
-%pseudo-interactive folderol like reading in of file names in his
-%preamble.  Because we are so good-hearted, we will not break this as
-%long as the document has not started, but after that we need the
-%error message mechanism operative.
+% \section{The option files}
+% \subsection{The \texttt{auctex} option}
+% The AUC\TeX\ option will cause error messages to spew.  We want them
+% on the terminal, but we don't want \LaTeX\ to stop its automated
+% run.  We delay \cmd{\nonstopmode} in case the user has any
+% pseudo-interactive folderol like reading in of file names in his
+% preamble.  Because we are so good-hearted, we will not break this as
+% long as the document has not started, but after that we need the
+% error message mechanism operative.
 %
-%So here is the contents of the |prauctex.def| file:
+% The |\nofiles| command here tries to avoid clobbering input files
+% used for references and similar.  It will come too late if you call
+% the package with \cmd{\AtBeginDocument}, so you'll need to issue
+% |\nofiles| yourself in that case.  Previously, this was done
+% unconditionally in the main style file, but since we don't know what
+% the package may be used for, this was inappropriate.
+%
+% So here is the contents of the |prauctex.def| file:
 %    \begin{macrocode}
 %<auctex>\ifPreview\else\expandafter\endinput\fi
+%<auctex>\nofiles
 %<auctex>\preview@delay{\nonstopmode}
 %    \end{macrocode}
-%Ok, here comes creative error message formatting.  It turns out a
-%sizable portion of the runtime is spent in I/O.  Making the error
-%messages short is an advantage.  It is not possible to convince \TeX\
-%to make shorter error messages than this: \TeX\ always wants to
-%include context.  This is about the shortest \ae sthetic one we can
-%muster.
+% Ok, here comes creative error message formatting.  It turns out a
+% sizable portion of the runtime is spent in I/O.  Making the error
+% messages short is an advantage.  It is not possible to convince
+% \TeX\ to make shorter error messages than this: \TeX\ always wants
+% to include context.  This is about the shortest \ae sthetic one we
+% can muster.
 %    \begin{macrocode}
 %<auctex>\begingroup
 %<auctex>\lccode`\~=`\-
@@ -1319,22 +1338,23 @@ Please complain to your document class author}%
 %<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended.%
 %<auctex>  (\number\ht\pr@box+\number\dp\pr@box x\number\wd\pr@box)}}
 %    \end{macrocode}
-%This looks pretty baffling, but it produces something short and
-%semi-graphical, namely |<-><->|.  That is a macro |<| that expands
-%into |<->|, where |<| and |>| are the braces around an
-%\cmd{\errmessage} argument and |-| is a macro expanding to the full
-%text of the error message.  Cough cough.  You did not really want to
-%know, did you?
+% This looks pretty baffling, but it produces something short and
+% semi-graphical, namely |<-><->|.  That is a macro |<| that expands
+% into |<->|, where |<| and |>| are the braces around an
+% \cmd{\errmessage} argument and |-| is a macro expanding to the full
+% text of the error message.  Cough cough.  You did not really want to
+% know, did you?
 %
-%Since over/underfull boxes are about the messiest things to parse, we
-%disable them by setting the appropriate badness limits and making the
-%variables point to junk.  We also disable other stuff.  While we set
-%\cmd{\showboxbreadth} and \cmd{\showboxdepth} to indicate as little
-%diagnostic output as possible, we keep them operative, so that the
-%user retains the option of debugging using this stuff.  The other
-%variables concerning the generation of warnings and daignostics,
-%however, are more often set by commonly employed packages and macros
-%such as \cmd{\sloppy}.  So we kill them off for good.
+% Since over/underfull boxes are about the messiest things to parse,
+% we disable them by setting the appropriate badness limits and making
+% the variables point to junk.  We also disable other stuff.  While we
+% set \cmd{\showboxbreadth} and \cmd{\showboxdepth} to indicate as
+% little diagnostic output as possible, we keep them operative, so
+% that the user retains the option of debugging using this stuff.  The
+% other variables concerning the generation of warnings and
+% daignostics, however, are more often set by commonly employed
+% packages and macros such as \cmd{\sloppy}.  So we kill them off for
+% good.
 %    \begin{macrocode}
 %<auctex>\hbadness=\maxdimen
 %<auctex>\newcount\hbadness
@@ -1347,12 +1367,12 @@ Please complain to your document class author}%
 %<auctex>\showboxdepth=-1
 %<auctex>\showboxbreadth=-1
 %    \end{macrocode}
-%Ok, now we load a possible configuration file.
+% Ok, now we load a possible configuration file.
 %    \begin{macrocode}
 %<auctex>\pr@loadcfg{prauctex}
 %    \end{macrocode}
-%And here we cater for several frequently used commands in
-%|prauctex.cfg|:
+% And here we cater for several frequently used commands in
+% |prauctex.cfg|:
 %    \begin{macrocode}
 %<auccfg>\PreviewMacro*[?[{@{[]}}{}][#1{}]\footnote
 %<auccfg>\PreviewMacro*[?[{@{[]}}{}][#1]\item
@@ -1375,9 +1395,9 @@ Please complain to your document class author}%
 %<auccfg>\PreviewMacro*\index
 %    \end{macrocode}
 %
-%\subsection{The \texttt{lyx} option}
-%The following is the option providing LyX with info for its
-%preview implementation.
+% \subsection{The \texttt{lyx} option}
+% The following is the option providing LyX with info for its preview
+% implementation.
 %    \begin{macrocode}
 %<lyx>\ifPreview\else\expandafter\endinput\fi
 %<lyx>\pr@loadcfg{prlyx}
@@ -1386,13 +1406,13 @@ Please complain to your document class author}%
 %<lyx>  \number\ht\pr@box\space \number\dp\pr@box \space\number\wd\pr@box}}
 %    \end{macrocode}
 %
-%\subsection{The \texttt{counters} option}
-%This outputs a checkpoint.  We do this by saving all counter
-%registers in backup macros starting with |\pr@c@| in their name.  A
-%checkpoint first writes out all changed counters (previously
-%unchecked counters are not written out unless different from zero),
-%then saves all involved counter values.  \LaTeX\ tracks its counters
-%in the global variable \cmd{\cl@ckpt}.
+% \subsection{The \texttt{counters} option}
+% This outputs a checkpoint.  We do this by saving all counter
+% registers in backup macros starting with |\pr@c@| in their name.  A
+% checkpoint first writes out all changed counters (previously
+% unchecked counters are not written out unless different from zero),
+% then saves all involved counter values.  \LaTeX\ tracks its counters
+% in the global variable \cmd{\cl@ckpt}.
 %    \begin{macrocode}
 %<counters>\ifPreview\else\expandafter\endinput\fi
 %<counters>\def\pr@eltprint#1{\expandafter\@gobble\ifnum\value{#1}=0%
@@ -1407,20 +1427,20 @@ Please complain to your document class author}%
 %<counters>\g@addto@macro\pr@ship@end{\pr@ckpt.}
 %    \end{macrocode}
 %
-%\subsection{Debugging options}
-%Those are for debugging the operation of |preview|, and thus are
-%mostly of interest for people that want to use |preview| for their
-%own purposes.  Since debugging output is potentially confusing to the
-%error message parsing from AUC\TeX, you should not turn on
-%|\tracingonline| or switch from |\nonstopmode| unless you are certain
-%your package will never be used with \previewlatex.
+% \subsection{Debugging options}
+% Those are for debugging the operation of |preview|, and thus are
+% mostly of interest for people that want to use |preview| for their
+% own purposes.  Since debugging output is potentially confusing to
+% the error message parsing from AUC\TeX, you should not turn on
+% |\tracingonline| or switch from |\nonstopmode| unless you are
+% certain your package will never be used with \previewlatex.
 %
-%\paragraph{The \texttt{showbox} option} will generate diagnostic
-%output for every produced box.  It does not
-%delay the resetting of the |\showboxbreadth| and |\showboxdepth|
-%parameters so that you can still change them after the loading of the
-%package.  It does, however, move them to the end of the package
-%loading, so that they will not be affected by the |auctex| option.
+% \paragraph{The \texttt{showbox} option} will generate diagnostic
+% output for every produced box.  It does not delay the resetting of
+% the |\showboxbreadth| and |\showboxdepth| parameters so that you can
+% still change them after the loading of the package.  It does,
+% however, move them to the end of the package loading, so that they
+% will not be affected by the |auctex| option.
 %    \begin{macrocode}
 %<showbox>\ifPreview\else\expandafter\endinput\fi
 %<showbox>\AtEndOfPackage{%
@@ -1429,40 +1449,41 @@ Please complain to your document class author}%
 %<showbox>\g@addto@macro\pr@ship@end{\showbox\pr@box}
 %    \end{macrocode}
 %
-%\paragraph{The \texttt{tracingall} option} is for the really heavy
-%diagnostic stuff.  For the reasons mentioned above, we do not want to
-%change the setting of the interaction mode, nor of the
-%|tracingonline| flag.  If the user wants them different, he should
-%set them outside of the preview boxes.
+% \paragraph{The \texttt{tracingall} option} is for the really heavy
+% diagnostic stuff.  For the reasons mentioned above, we do not want
+% to change the setting of the interaction mode, nor of the
+% |tracingonline| flag.  If the user wants them different, he should
+% set them outside of the preview boxes.
 %    \begin{macrocode}
 %<tracingall>\ifPreview\else\expandafter\endinput\fi
 %<tracingall>\pr@addto@front\pr@ship@start{\let\tracingonline\count@
 %<tracingall>  \let\errorstopmode\@empty\tracingall}
 %    \end{macrocode}
 %
-%\subsection{Supporting conversions}
-%It is not uncommon to want to use the results of |preview| as
-%images.  One possibility is to generate a flurry of EPS files with
-%\begin{quote}
-%  |dvips -E -i -Ppdf -o| \meta{outputfile}|.000| \meta{inputfile}
-%\end{quote}
-%However, in case those are to be processed further into graphic image
-%files by GhostScript, this process is inefficient.  One cannot use
-%GhostScript in a single run for generating the files, however, since
-%one needs to set the page size (or full size pages will be
-%produced).  The |tightpage| option will set the page dimensions at
-%the start of each PostScript page so that the output will be sized
-%appropriately.  That way, a single pass of Dvips followed by a single
-%pass of GhostScript will be sufficient for generating all images.
+% \subsection{Supporting conversions}
+% It is not uncommon to want to use the results of |preview| as
+% images.  One possibility is to generate a flurry of EPS files with
+% \begin{quote}
+%   |dvips -E -i -Ppdf -o| \meta{outputfile}|.000| \meta{inputfile}
+% \end{quote}
+% However, in case those are to be processed further into graphic
+% image files by GhostScript, this process is inefficient.  One cannot
+% use GhostScript in a single run for generating the files, however,
+% since one needs to set the page size (or full size pages will be
+% produced).  The |tightpage| option will set the page dimensions at
+% the start of each PostScript page so that the output will be sized
+% appropriately.  That way, a single pass of Dvips followed by a
+% single pass of GhostScript will be sufficient for generating all
+% images.
 %
-%You will have to specify the output driver to be used, either |dvips|
-%or |pdftex|.
+% You will have to specify the output driver to be used, either
+% |dvips| or |pdftex|.
 %
-%  \begin{macro}{\PreviewBorder}
-%  \begin{macro}{\PreviewBbAdjust}
-%  We start this off with the user tunable parameters which get
-%  defined even in the case of an inactive package, so that
-%  redefinitions and assignments to them will always work:
+% \begin{macro}{\PreviewBorder}
+% \begin{macro}{\PreviewBbAdjust}
+%   We start this off with the user tunable parameters which get
+%   defined even in the case of an inactive package, so that
+%   redefinitions and assignments to them will always work:
 %    \begin{macrocode}
 %<tightpage>\ifx\PreviewBorder\@undefined
 %<tightpage>  \newdimen\PreviewBorder
@@ -1473,9 +1494,9 @@ Please complain to your document class author}%
 %<tightpage>    \PreviewBorder \PreviewBorder}
 %<tightpage>\fi
 %    \end{macrocode}
-%  \end{macro}
-%  \end{macro}
-%Here is stuff used for parsing this:
+% \end{macro}
+% \end{macro}
+% Here is stuff used for parsing this:
 %    \begin{macrocode}
 %<tightpage>\ifPreview\else\expandafter\endinput\fi
 %<tightpage>\def\pr@nextbb{\edef\next{\next\space\number\dimen@}%
@@ -1484,16 +1505,16 @@ Please complain to your document class author}%
 %<tightpage>  \advance\count@\@ne\ifnum\count@<5
 %<tightpage>  \afterassignment\pr@nextbb\dimen@=\fi}
 %    \end{macrocode}
-%And here is the stuff that we fudge into our hook.  Of course, we
-%have to do it in a box, and we start this box off with our special.
-%There is one small consideration here:  it might come before any
-%|\AtBeginDvi| stuff containing header specials.  It turns out Dvips
-%rearranges this amicably: header code specials get transferred to the
-%appropriate header section, anyhow, so this ensures that we come
-%right after the bop section.  We insert the 7~numbers here: the
-%4~bounding box adjustments, and the 3~\TeX\ box dimensions.
-%In case the box adjustments have changed since the last time, we
-%write them out to the console.
+% And here is the stuff that we fudge into our hook.  Of course, we
+% have to do it in a box, and we start this box off with our special.
+% There is one small consideration here: it might come before any
+% |\AtBeginDvi| stuff containing header specials.  It turns out Dvips
+% rearranges this amicably: header code specials get transferred to
+% the appropriate header section, anyhow, so this ensures that we come
+% right after the bop section.  We insert the 7~numbers here: the
+% 4~bounding box adjustments, and the 3~\TeX\ box dimensions.  In case
+% the box adjustments have changed since the last time, we write them
+% out to the console.
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\z@
 %<tightpage>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
@@ -1534,9 +1555,8 @@ Please complain to your document class author}%
 %<tightpage>    \global\pdfhorigin-\pr@bb@i}}
 %<tightpage>\fi
 %    \end{macrocode}
-%Ok, here comes the beef.  First we fish the 7~numbers from the
-%file with |token| and convert them from \TeX~|sp| to PostScript
-%points.
+% Ok, here comes the beef.  First we fish the 7~numbers from the file
+% with |token| and convert them from \TeX~|sp| to PostScript points.
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\@ne
 %<tightpage>\preview@delay{\AtBeginDvi{%
@@ -1545,110 +1565,110 @@ Please complain to your document class author}%
 %<tightpage>     7{currentfile token not{stop}if
 %<tightpage>       65781.76 div DVImag mul}repeat
 %    \end{macrocode}
-%Next we produce the horizontal part of the bounding box as
-%\[ (1\mathrm{in},1\mathrm{in}) +
-%\bigl(\min(|\wd\pr@box|,0),\max(|\wd\pr@box|,0)\bigr) \]
-%and roll it to the bottom of the stack:
+% Next we produce the horizontal part of the bounding box as
+% \[ (1\mathrm{in},1\mathrm{in}) +
+% \bigl(\min(|\wd\pr@box|,0),\max(|\wd\pr@box|,0)\bigr) \]
+% and roll it to the bottom of the stack:
 %    \begin{macrocode}
 %<tightpage>     72 add 72 2 copy gt{exch}if 4 2 roll
 %    \end{macrocode}
-%Next is the vertical part of the bounding box.  Depth counts in
-%negatively, and we again take $\min$ and $\max$ of possible extents
-%in the vertical direction, limited by 0.  720 corresponds to
-%$10\,\mathrm{in}$ and is the famous $1\,\mathrm{in}$ distance away
-%from the edge of letterpaper.
+% Next is the vertical part of the bounding box.  Depth counts in
+% negatively, and we again take $\min$ and $\max$ of possible extents
+% in the vertical direction, limited by 0.  720 corresponds to
+% $10\,\mathrm{in}$ and is the famous $1\,\mathrm{in}$ distance away
+% from the edge of letterpaper.
 %    \begin{macrocode}
 %<tightpage>     neg 2 copy lt{exch}if dup 0 gt{pop 0 exch}%
 %<tightpage>     {exch dup 0 lt{pop 0}if}ifelse 720 add exch 720 add
 %<tightpage>     3 1 roll
 %    \end{macrocode}
-%Ok, we now have the bounding box on the stack in the proper order
-%llx, lly, urx, ury.  We add the adjustments:
+% Ok, we now have the bounding box on the stack in the proper order
+% llx, lly, urx, ury.  We add the adjustments:
 %    \begin{macrocode}
 %<tightpage>    4{5 -1 roll add 4 1 roll}repeat
 %    \end{macrocode}
-%The page size is calculated as the appropriate differences, the page
-%offset consists of the coordinates of the lower left corner, with
-%those coordinates negated that would be reckoned positive in the
-%device coordinate system.
+% The page size is calculated as the appropriate differences, the page
+% offset consists of the coordinates of the lower left corner, with
+% those coordinates negated that would be reckoned positive in the
+% device coordinate system.
 %    \begin{macrocode}
 %<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
 %<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
 %<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice}if%
 %    \end{macrocode}
-%So we now bind the old definition of |bop-hook| into our new
-%definition and finish it.
+% So we now bind the old definition of |bop-hook| into our new
+% definition and finish it.
 %    \begin{macrocode}
 %<tightpage>     //bop-hook exec}bind def end}}}
 %<tightpage>\fi
 %    \end{macrocode}
 %
-%\subsection{The \texttt{showlabels} option}
-%During the editing process, some people like to see the label names
-%in their equations, figures and the like.  Now if you are using Emacs
-%for editing, and in particular \previewlatex, I'd strongly recommend
-%that you check out the Ref\TeX\ package which pretty much obliterates
-%the need for this kind of functionality.  If you still want it,
-%standard \LaTeX\ provides it with the |showkeys| package, and there is
-%also the less encompassing |showlabels| package.  Unfortunately,
-%since those go to some pain not to change the page layout and
-%spacing, they also don't change |preview|'s idea of the \TeX\
-%dimensions of the involved boxes.
+% \subsection{The \texttt{showlabels} option}
+% During the editing process, some people like to see the label names
+% in their equations, figures and the like.  Now if you are using
+% Emacs for editing, and in particular \previewlatex, I'd strongly
+% recommend that you check out the Ref\TeX\ package which pretty much
+% obliterates the need for this kind of functionality.  If you still
+% want it, standard \LaTeX\ provides it with the |showkeys| package,
+% and there is also the less encompassing |showlabels| package.
+% Unfortunately, since those go to some pain not to change the page
+% layout and spacing, they also don't change |preview|'s idea of the
+% \TeX\ dimensions of the involved boxes.
 %
-%So those packages are mostly useless.  So we present here an
-%alternative hack that will get the labels through.
-%  \begin{macro}{\pr@labelbox}
-%    This works by collecting them into a separate box which we then
-%    tack to the right of the previews.
+% So those packages are mostly useless.  So we present here an
+% alternative hack that will get the labels through.
+% \begin{macro}{\pr@labelbox}
+%   This works by collecting them into a separate box which we then
+%   tack to the right of the previews.
 %    \begin{macrocode}
 %<showlabels>\ifPreview\else\expandafter\endinput\fi
 %<showlabels>\newbox\pr@labelbox
 %    \end{macrocode}
-%  \end{macro}
-%  \begin{macro}{\pr@label}
-%    We follow up with our own definition of the \cmd{\label} macro
-%    which will be active only in previews.  The original definition
-%    is stored in |\pr@@label|.  |\pr@lastlabel| contains the last
-%    typeset label in order to avoid duplication in certain
-%    environments, and we keep the stuff in |\pr@labelbox|.
+% \end{macro}
+% \begin{macro}{\pr@label}
+%   We follow up with our own definition of the \cmd{\label} macro
+%   which will be active only in previews.  The original definition is
+%   stored in |\pr@@label|.  |\pr@lastlabel| contains the last typeset
+%   label in order to avoid duplication in certain environments, and
+%   we keep the stuff in |\pr@labelbox|.
 %    \begin{macrocode}
 %<showlabels>\def\pr@label#1{\pr@@label{#1}%
 %    \end{macrocode}
-%    Ok, now we generate the box, by placing the label below any
-%    existing stuff.
+%   Ok, now we generate the box, by placing the label below any existing
+%   stuff.
 %    \begin{macrocode}
 %<showlabels>   \ifpr@setbox\z@{#1}%
 %<showlabels>     \global\setbox\pr@labelbox\vbox{\unvbox\pr@labelbox
 %<showlabels>      \box\z@}\egroup\fi}
 %    \end{macrocode}
-%  \end{macro}
-%  \begin{macro}{\ifpr@setbox}
-%    |\ifpr@setbox| receives two arguments, |#1| is the box into which
-%    to set a label, |#2| is the label text itself.  If a label needs
-%    to be set (if it is not a duplicate in the current box, and is
-%    nonempty, and we are in the course of typesetting and so on), we
-%    are left in a true conditional and an open group with the preset
-%    box.  If nothing should be set, no group is opened, and we get
-%    into skipping to the closing of the conditional.  Since
-%    |\ifpr@setbox| is a macro, you should not place the call to it
-%    into conditional text, since it will not pair up with |\fi| until
-%    being expanded.
+% \end{macro}
+% \begin{macro}{\ifpr@setbox}
+%   |\ifpr@setbox| receives two arguments, |#1| is the box into which
+%   to set a label, |#2| is the label text itself.  If a label needs
+%   to be set (if it is not a duplicate in the current box, and is
+%   nonempty, and we are in the course of typesetting and so on), we
+%   are left in a true conditional and an open group with the preset
+%   box.  If nothing should be set, no group is opened, and we get
+%   into skipping to the closing of the conditional.  Since
+%   |\ifpr@setbox| is a macro, you should not place the call to it
+%   into conditional text, since it will not pair up with |\fi| until
+%   being expanded.
 %
-%    We have some trickery involved here.  |\romannumeral\z@| expands
-%    to empty, and will also remove everything between the two of them
-%    that also expands to empty, like a chain of |\fi|.
+%   We have some trickery involved here.  |\romannumeral\z@| expands
+%   to empty, and will also remove everything between the two of them
+%   that also expands to empty, like a chain of |\fi|.
 %    \begin{macrocode}
 %<showlabels>\def\ifpr@setbox#1#2{%
 %<showlabels>  \romannumeral%
 %<showlabels>  \ifx\protect\@typeset@protect\ifpr@outer\else
 %    \end{macrocode}
-%    Ignore empty labels\dots
+%   Ignore empty labels\dots
 %    \begin{macrocode}
 %<showlabels>   \z@\bgroup
 %<showlabels>   \protected@edef\next{#2}\@onelevel@sanitize\next
 %<showlabels>   \ifx\next\@empty\egroup\romannumeral\else
 %    \end{macrocode}
-%    and labels equal to the last one.
+%   and labels equal to the last one.
 %    \begin{macrocode}
 %<showlabels>   \ifx\next\pr@lastlabel\egroup\romannumeral\else
 %<showlabels>   \global\let\pr@lastlabel\next
@@ -1656,20 +1676,20 @@ Please complain to your document class author}%
 %<showlabels>   \expandafter\expandafter\romannumeral\fi\fi\fi\fi
 %<showlabels>   \z@\iffalse\iftrue\fi}
 %    \end{macrocode}
-%  \end{macro}
-%  \begin{macro}{\pr@boxlabel}
-%    Now the actual typesetting of a label box is done.  We use a
-%    small typewriter font inside of a framed box (the default
-%    frame/box separating distance is a bit large).
+% \end{macro}
+% \begin{macro}{\pr@boxlabel}
+%   Now the actual typesetting of a label box is done.  We use a small
+%   typewriter font inside of a framed box (the default frame/box
+%   separating distance is a bit large).
 %    \begin{macrocode}
 %<showlabels>\def\pr@boxlabel#1{\hbox{\normalfont
 %<showlabels>   \footnotesize\ttfamily\fboxsep0.4ex\relax\fbox{#1}}}
 %    \end{macrocode}
-%  \end{macro}
-%  \begin{macro}{\pr@maketag}
-%    And here is a version for |amsmath| equations.  They look better
-%    when the label is right beside the tag, so we place it there, but
-%    augment |\box\pr@labelbox| with an appropriate placeholder.
+% \end{macro}
+% \begin{macro}{\pr@maketag}
+%   And here is a version for |amsmath| equations.  They look better
+%   when the label is right beside the tag, so we place it there, but
+%   augment |\box\pr@labelbox| with an appropriate placeholder.
 %    \begin{macrocode}
 %<showlabels>\def\pr@maketag#1{\pr@@maketag{#1}%
 %<showlabels>  \ifpr@setbox\z@{\df@label}%
@@ -1677,30 +1697,29 @@ Please complain to your document class author}%
 %<showlabels>         \hrule\@width\wd\z@\@height\z@
 %<showlabels>         \unvbox\pr@labelbox}%
 %    \end{macrocode}
-%    Set the width of the box to empty so that the label placement
-%    gets not disturbed, then append it.
+%   Set the width of the box to empty so that the label placement gets
+%   not disturbed, then append it.
 %    \begin{macrocode}
 %<showlabels>        \wd\z@\z@\box\z@ \egroup\fi}
 %    \end{macrocode}
-%  \end{macro}
-%  \begin{macro}{\pr@lastlabel}
-%    Ok, here is how we activate this: we clear out box and label info
+% \end{macro}
+% \begin{macro}{\pr@lastlabel}
+%   Ok, here is how we activate this: we clear out box and label info
 %    \begin{macrocode}
 %<showlabels>\g@addto@macro\pr@ship@start{%
 %<showlabels>  \global\setbox\pr@labelbox\box\voidb@x
 %<showlabels>  \xdef\pr@lastlabel{}%
 %    \end{macrocode}
-%    The definitions above are global because we might be in any
-%    amount of nesting.  We then reassign the appropriate labelling
-%    macros:
+%   The definitions above are global because we might be in any amount
+%   of nesting.  We then reassign the appropriate labelling macros:
 %    \begin{macrocode}
 %<showlabels>  \global\let\pr@@label\label \let\label\pr@label
 %<showlabels>  \let\pr@@maketag\maketag@@@ \let\maketag@@@\pr@maketag
 %<showlabels>}
 %    \end{macrocode}
-%  \end{macro}
-%Now all we have to do is to add the stuff to the box in question.
-%The stuff at the front works around a bug in |ntheorem.sty|.
+% \end{macro}
+% Now all we have to do is to add the stuff to the box in question.
+% The stuff at the front works around a bug in |ntheorem.sty|.
 %    \begin{macrocode}
 %<showlabels>\pr@addto@front\pr@ship@end{%
 %<showlabels>   \ifx \label\pr@label \global\let\label\pr@@label \fi
@@ -1710,9 +1729,9 @@ Please complain to your document class author}%
 %<showlabels>   \fi}
 %    \end{macrocode}
 % \subsection{The \texttt{footnotes} option}
-%This is rather simplistic right now.  It overrides the default
-%footnote action (which is to disable footnotes altogether for better
-%visibility).
+% This is rather simplistic right now.  It overrides the default
+% footnote action (which is to disable footnotes altogether for better
+% visibility).
 %    \begin{macrocode}
 %<footnotes>\PreviewMacro[[!]\footnote %]
 %    \end{macrocode}
@@ -1720,9 +1739,9 @@ Please complain to your document class author}%
 % \section{Various driver files}
 % The installer, in case it is missing.  If it is to be used via
 % |make|, we don't specify an installation path, since
-%\begin{quote}
-%|make install|
-%\end{quote}
+% \begin{quote}
+%   |make install|
+% \end{quote}
 % is supposed to cater for the installation itself.
 %    \begin{macrocode}
 %<installer> \input docstrip

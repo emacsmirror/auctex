@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.239 2005-03-14 05:26:58 ataka Exp $
+;; $Id: preview.el,v 1.240 2005-03-15 02:29:23 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1533,30 +1533,31 @@ Searches backwards if BACKWARDS is non-nil."
 	(setq history (and (not preview-state) pt)))
       (or history pt))))
 	     
-(defun preview-at-point (&optional ovr window)
+(defun preview-at-point ()
   "Do the appropriate preview thing at point.
-If the cursor is positioned on or inside of a preview area, this
+If point is positioned on or inside of a preview area, this
 toggles its visibility, regenerating the preview if necessary.
 If not, it will run the surroundings through preview.  The
 surroundings include all areas up to the next valid preview,
 unless invalid previews occur before, in which case the area will
-include the last such preview.  If OVR is specified, only the
-specified overlay is affected instead of the first one found near point.
-For cursor restoration purposes, WINDOW can be specified with a
-window or an event.  It defaults to the selected window."
+include the last such preview.  And overriding any other
+action, if a region is active (`transient-mark-mode' or
+`zmacs-regions'), it is run through `preview-region'."
   (interactive)
-  (catch 'exit
-    (dolist (ovr (if ovr (list ovr)
-		   (overlays-in (max (point-min) (1- (point)))
-				(min (point-max) (1+ (point))))))
-      (let ((preview-state (overlay-get ovr 'preview-state)))
-	(when preview-state
-	  (if (eq preview-state 'disabled)
-	      (preview-regenerate ovr)
-	    (preview-toggle ovr 'toggle (or window (selected-window))))
-	  (throw 'exit t))))
-    (preview-region (preview-next-border t)
-		    (preview-next-border nil))))
+  (if (if (featurep 'xemacs) (mark)
+	(and transient-mark-mode mark-active))
+      (preview-region (region-beginning) (region-end))
+    (catch 'exit
+      (dolist (ovr (overlays-in (max (point-min) (1- (point)))
+				(min (point-max) (1+ (point)))))
+	(let ((preview-state (overlay-get ovr 'preview-state)))
+	  (when preview-state
+	    (if (eq preview-state 'disabled)
+		(preview-regenerate ovr)
+	      (preview-toggle ovr 'toggle))
+	    (throw 'exit t))))
+      (preview-region (preview-next-border t)
+		      (preview-next-border nil)))))
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
@@ -2144,7 +2145,7 @@ list of LaTeX commands is inserted just before \\begin{document}."
   :group 'preview-latex
   :type preview-expandable-string)
 
-(defcustom preview-LaTeX-command '("%l \"\\nonstopmode\
+(defcustom preview-LaTeX-command '("%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
 preview-default-preamble "\\fi}\\input{%t}\"")
@@ -3288,7 +3289,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.239 $"))
+	(rev "$Revision: 1.240 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3299,7 +3300,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-14 05:26:58 $"))
+    (let ((date "$Date: 2005-03-15 02:29:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

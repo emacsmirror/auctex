@@ -1,3 +1,22 @@
+2005-03-15  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-latex.texi (Keys and lisp): Document
+	preview-at-point allowing active region.
+
+	* preview.el (preview-at-point): Remove nonsensical arguments.
+	Instead, allow for an active region.
+
+	* configure.in: Add `packagelispdir' to quoted Makefile variables.
+
+2005-03-14  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Reformat the kaboodle to look nicer.
+	Move \nofiles to auctex option.
+
+	* latex/README-preview (Note): Mention \nofiles problem.
+
+	* preview.el (preview-LaTeX-command): Add \nofiles to startup.
+
 2005-03-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* preview.el (TeX-fold-prioritize): autoload.
