@@ -108,8 +108,10 @@ TeX-submit-bug-report RET} to report bugs if possible.
 
 @end ifnottex
 
+@ifnothtml
 @shortcontents
 @contents
+@end ifnothtml
 
 @menu
 * Copying::                     Copying
