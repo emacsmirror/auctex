@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.35 1993-03-23 11:47:51 amanda Exp $
+# $Id: Makefile,v 5.36 1993-03-28 16:03:50 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -92,14 +92,15 @@ MINMAPSRC = min-map.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
 MINMAPFILES = README_MINOR $(MINMAPSRC)
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
-	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-dbg.el \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el
+	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-jp.el \
+	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-jp.el   dbg-eng.el
 
-STYLESRC = style/LATEX.el  style/VIRTEX.el  style/latex.el  \
-	   style/SLITEX.el style/article.el style/letter.el \
-	   style/TEX.el	   style/book.el    style/slitex.el
+FORMATSRC = format/VIRTEX.el \
+	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
+	    format/JTEX.el format/JLATEX.el format/JSLITEX.el
 
-
+STYLESRC = style/latex.el   style/slitex.el \
+	   style/article.el style/book.el    style/letter.el 
 
 LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
@@ -195,13 +196,15 @@ LispInstall:
 	@echo "**********************************************************"
 	@echo "** Byte compiling AUC TeX.  This may take a while..."
 	@echo "**********************************************************"
-	$(ELC) $(AUCSRC) $(STYLESRC)
+	$(ELC) $(AUCSRC) $(STYLESRC) $(FORMATSRC)
 	if [ "." != $(aucdir) ] ; \
 	then \
 	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi ; \
+	    if [ ! -d $(aucdir)/format ]; then mkdir $(aucdir)/format; fi ; \
 	    $(MV) *.elc $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
+	    $(MV) format/*.elc $(aucdir)/format ; \
 	fi
 
 LaCheck:
