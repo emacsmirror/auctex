@@ -1,5 +1,7 @@
 2002-03-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* TODO: update wish list.  This is getting longer by the minute.
+
 	* doc/Makefile.in (INSTALL, README, PROBLEMS): add -D rawfile
 	option for raw text files.
 
