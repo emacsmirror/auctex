@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.4 1992-03-18 20:04:16 krab Exp $
+# $Id: Makefile,v 5.5 1992-03-19 12:18:30 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -13,7 +13,7 @@ EMACS=emacs
 TEX=tex
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
-	ltx-sec.el tex-buf.el tex-math.el tex-site.el
+	ltx-sec.el tex-buf.el tex-math.el tex-site.el help-ext.el
 OTHERFILES = COPYING INTRO README Makefile
 
 all: $(ELISPDIR) idetex refcard
@@ -69,6 +69,6 @@ mail:
 	for F in `ls -1 split`; do\
 	echo Sending $$F to $$U ; \
 	Mail -s $$F $$U < split/$$F;\
-	sleep 20; \
+	sleep 10; \
 	done; done
 	

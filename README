@@ -1,5 +1,5 @@
 
-$Id: README,v 5.14 1992-03-18 18:08:36 krab Exp $
+$Id: README,v 5.15 1992-03-19 12:18:32 krab Exp $
 
 AUC TeX 
 =======
@@ -65,7 +65,7 @@ when you load a file width suffix `.tex'.
 ;;
 ;; Let tex-mode be called, if a `.tex' file is loaded.
 
-(setq auto-mode-alist (append '(("\.tex$" . tex-mode))
+(setq auto-mode-alist (append '(("\\.tex$" . tex-mode))
                               auto-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -9,11 +9,11 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-18 17:34:29 $|$Revision: 5.26 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-19 12:18:34 $|$Revision: 5.27 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.26 1992-03-18 17:34:29 krab Exp $
+;; $Id: auc-tex.el,v 5.27 1992-03-19 12:18:34 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
@@ -265,6 +265,7 @@ and in the TeX-compilation."
 
   (define-key TeX-mode-map "\C-c\C-h" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
+  (define-key TeX-mode-map "\C-c?"    'TeX-mode-help)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
   (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
 
@@ -279,6 +280,7 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
   (define-key LaTeX-mode-map "\C-c@"    'LaTeX-bibtex)
   (define-key LaTeX-mode-map "\C-c#"    'LaTeX-makeindex)
+  (define-key LaTeX-mode-map "\M-m"     'LaTeX-math-mode)
   (define-key LaTeX-mode-map "\M-q"     'LaTeX-format-paragraph)
   (define-key LaTeX-mode-map "\M-g"     'LaTeX-format-region)
   (define-key LaTeX-mode-map "\M-s"     'LaTeX-format-section)
@@ -997,3 +999,12 @@ If CHAR is nil, or \"\", an error will occur."
 (defvar LaTeX-last-sty '("")
   "last used LaTeX-style")
 
+
+;;; for TeX-mode-help
+(require 'help-ext)
+  
+(defun TeX-mode-help ()
+  "Put up window describing TeX-mode."
+  (interactive)
+  (describe-mode major-mode) )
+  
