@@ -1064,9 +1064,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
       (0 font-latex-math-face append t))
      ("\\\\[@A-Za-z]+"                                        ;;;Other commands
       (0 font-latex-sedate-face append))
-     ;; Regexp taken from `tex-font-lock-keywords-3' from tex-mode.el
-     ;; in GNU Emacs on 2004-07-07.
-     ("[_^] *\\([^\n\\{}]\\|\\\\\\([a-zA-Z@]+\\|[^ \t\n]\\)\\|{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*}\\)"
+     (font-latex-match-script
       (1 (font-latex-script (match-beginning 0)) append))))
   "High level highlighting for LaTeX modes.")
 
@@ -1085,11 +1083,20 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 ;;; Subscript and superscript
 
 (defcustom font-latex-fontify-script (not (featurep 'xemacs))
-  "Non-nil means do not fontify subscript or superscript strings.
-Fontification will only work if texmathp.el is available.
+  "If non-nil, fontify subscript and superscript strings.
+Fontification will only work correctly if texmathp.el is available.
 This feature does not work in XEmacs."
   :type 'boolean
   :group 'font-latex)
+
+(defcustom font-latex-script-display '((raise -0.3) . (raise 0.3))
+  "Display specification for subscript and superscript content.
+The car is used for subscript, the cdr is used for superscripts."
+  :group 'font-latex
+  :type '(cons (choice (sexp :tag "Subscript form")
+		       (const :tag "No lowering" nil))
+	       (choice (sexp :tag "Superscript form")
+		       (const :tag "No raising" nil))))
 
 
 ;;; Syntactic keywords
@@ -1914,14 +1921,17 @@ set to french, and >> german << (and 8-bit) are used if set to german."
       (store-match-data (list beg (point)))
       t)))
 
-(defcustom font-latex-script-display '((raise -0.3) . (raise 0.3))
-  "Display specification for subscript and superscript content.
-The car is used for subscript, the cdr is used for superscripts."
-  :group 'font-latex
-  :type '(cons (choice (sexp :tag "Subscript form")
-		       (const :tag "No lowering" nil))
-	       (choice (sexp :tag "Superscript form")
-		       (const :tag "No raising" nil))))
+(defun font-latex-match-script (limit)
+  "Match subscript and superscript patterns up to LIMIT."
+  (when font-latex-fontify-script
+    (re-search-forward
+     (eval-when-compile
+       ;; Regexp taken from `tex-font-lock-keywords-3' from
+       ;; tex-mode.el in GNU Emacs on 2004-07-07.
+       (concat "[_^] *\\([^\n\\{}]\\|" "\\\\"
+	       "\\([a-zA-Z@]+\\|[^ \t\n]\\)" "\\|"
+	       "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*" "}\\)"))
+     limit t)))
 
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
