@@ -1,3 +1,11 @@
+2002-02-14  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.spec:
+	For 0.6. Included code to build from CVS and temporary fix to allow
+	build before autoconf includes docs.
+
+	* doc/Makefile: Typo corrected
+
 2002-02-11  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/readme.texi, doc/install.texi, doc/problems.texi,
