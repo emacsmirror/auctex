@@ -40,10 +40,6 @@
 (eval-when-compile
   (require 'cl))
 
-;; Don't require `tex-buf' because `tex-buf' requires `tex'.
-(autoload 'TeX-process-set-variable "tex-buf")
-(autoload 'TeX-region-file "tex-buf")
-
 (defgroup AUCTeX nil
   "A (La)TeX environment."
   :tag "AUCTeX"
@@ -578,6 +574,28 @@ Full documentation will be available after autoloading the function."
 (autoload 'multi-prompt "multi-prompt" no-doc nil)
 (autoload 'texmathp "texmathp" no-doc nil)
 
+;; Don't require `tex-buf' because `tex-buf' requires `tex'.
+(autoload 'TeX-region-create "tex-buf" no-doc nil)
+(autoload 'TeX-save-document "tex-buf" no-doc t)
+(autoload 'TeX-home-buffer "tex-buf" no-doc t)
+(autoload 'TeX-pin-region "tex-buf" no-doc t)
+(autoload 'TeX-command-region "tex-buf" no-doc t)
+(autoload 'TeX-command-buffer "tex-buf" no-doc t)
+(autoload 'TeX-command-master "tex-buf" no-doc t)
+(autoload 'TeX-command "tex-buf" no-doc nil)
+(autoload 'TeX-kill-job "tex-buf" no-doc t)
+(autoload 'TeX-recenter-output-buffer "tex-buf" no-doc t)
+(autoload 'TeX-next-error "tex-buf" no-doc t)
+(autoload 'TeX-toggle-debug-boxes "tex-buf" no-doc t)
+(autoload 'TeX-region-file "tex-buf" no-doc nil)
+(autoload 'TeX-current-offset "tex-buf" no-doc nil)
+(autoload 'TeX-process-set-variable "tex-buf" no-doc nil)
+(autoload 'TeX-view "tex-buf" no-doc t)
+
+(autoload 'TeX-fold-mode "tex-fold" no-doc t)
+(autoload 'tex-fold-mode "tex-fold" no-doc t)
+
+
 ;;; Portability.
 
 (require 'easymenu)
@@ -612,7 +630,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.460 $"))
+	    (rev "$Revision: 5.461 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +645,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-11-03 08:59:58 $"))
+    (let ((date "$Date: 2004-11-24 09:07:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1099,23 +1117,6 @@ Must be the car of an entry in `TeX-command-list'."
   "The name of the Queue entry in `TeX-command-Queue'."
   :group 'TeX-command-name
   :type 'string)
-
-(autoload 'TeX-region-create "tex-buf" no-doc nil)
-(autoload 'TeX-save-document "tex-buf" no-doc t)
-(autoload 'TeX-home-buffer "tex-buf" no-doc t)
-(autoload 'TeX-pin-region "tex-buf" no-doc t)
-(autoload 'TeX-command-region "tex-buf" no-doc t)
-(autoload 'TeX-command-buffer "tex-buf" no-doc t)
-(autoload 'TeX-command-master "tex-buf" no-doc t)
-(autoload 'TeX-command "tex-buf" no-doc nil)
-(autoload 'TeX-kill-job "tex-buf" no-doc t)
-(autoload 'TeX-recenter-output-buffer "tex-buf" no-doc t)
-(autoload 'TeX-next-error "tex-buf" no-doc t)
-(autoload 'TeX-toggle-debug-boxes "tex-buf" no-doc t)
-(autoload 'TeX-region-file "tex-buf" no-doc nil)
-(autoload 'TeX-current-offset "tex-buf" no-doc nil)
-(autoload 'TeX-fold-mode "tex-fold" no-doc t)
-(autoload 'tex-fold-mode "tex-fold" no-doc t)
 
 (defvar TeX-trailer-start nil
   "Regular expression delimiting start of trailer in a TeX file.")
@@ -1812,11 +1813,11 @@ type of ARGS:
   your own hook, or use one of the predefined argument hooks.  If
   you add new hooks, you can assume that point is placed directly
   after the previous argument, or after the macro name if this is
-  the first argument.  Please leave point located efter the
+  the first argument.  Please leave point located after the
   argument you are inserting.  If you want point to be located
   somewhere else after all hooks have been processed, set the value
   of `exit-mark'.  It will point nowhere, until the argument hook
-  set it.  By convention, these hook all start with `TeX-arg-'.
+  set it.  By convention, these hooks all start with `TeX-arg-'.
 
   list: If the car is a string, insert it as a prompt and the next
   element as initial input.  Otherwise, call the car of the list
@@ -1838,6 +1839,10 @@ type of ARGS:
 	   (goto-char (marker-position exit-mark))
 	   (set-marker exit-mark nil))
 	  ((and TeX-insert-braces
+		;; Do not add braces for macros defined as `("foo" 0)'
+		(not (and (= (safe-length args) 1)
+			  (numberp (car args))
+			  (= (car args) 0)))
 		(equal position (point))
 		(string-match "[a-zA-Z]+" symbol)
 		(not (texmathp)))
@@ -1880,15 +1885,11 @@ See `TeX-parse-macro' for details."
     (while args
       (if (vectorp (car args))
 	  (unless last-optional-rejected
-	    (let ((< LaTeX-optop)
-		  (> LaTeX-optcl))
-	      (TeX-parse-argument t (if (equal (length (car args)) 1)
-					(aref (car args) 0)
-				      (append (car args) nil)))))
-	(let ((< TeX-grop)
-	      (> TeX-grcl))
-	  (setq last-optional-rejected nil)
-	  (TeX-parse-argument nil (car args))))
+	    (TeX-parse-argument t (if (equal (length (car args)) 1)
+				      (aref (car args) 0)
+				    (append (car args) nil))))
+	(setq last-optional-rejected nil)
+	(TeX-parse-argument nil (car args)))
       (setq args (cdr args)))))
 
 (defun TeX-parse-argument (optional arg)
@@ -1897,54 +1898,57 @@ If OPTIONAL is set, only insert if there is anything to insert, and
 then use square brackets.
 
 See `TeX-parse-macro' for details."
-
-  (cond ((stringp arg)
-	 (TeX-arg-string optional arg))
-	((numberp arg)
-	 (unless (< arg 1)
-	   (TeX-parse-argument optional t)
-	   (while (> arg 1)
-	     (TeX-parse-argument optional nil)
-	     (setq arg (- arg 1)))))
-	((null arg)
-	 (insert <)
-	 (if (and (not optional) (TeX-active-mark))
-	     (exchange-point-and-mark))
-	 (insert >))
-	((eq arg t)
-	 (insert  < )
-	 (if (and (not optional) (TeX-active-mark))
-	     (exchange-point-and-mark)
-	   (set-marker exit-mark (point)))
-	 (insert >))
-	((symbolp arg)
-	 (funcall arg optional))
-	((listp arg)
-	 (let ((head (car arg))
-	       (tail (cdr arg)))
-	   (cond ((stringp head)
-		  (apply 'TeX-arg-string optional arg))
-		 ((symbolp head)
-		  (apply head optional tail))
-		 (t (error "Unknown list argument type %s"
-			   (prin1-to-string head))))))
-	(t (error "Unknown argument type %s" (prin1-to-string arg)))))
+  (let ((opening-brace (if optional LaTeX-optop TeX-grop))
+	(closing-brace (if optional LaTeX-optcl TeX-grcl)))
+    (cond ((stringp arg)
+	   (TeX-arg-string optional arg))
+	  ((numberp arg)
+	   (unless (< arg 1)
+	     (TeX-parse-argument optional t)
+	     (while (> arg 1)
+	       (TeX-parse-argument optional nil)
+	       (setq arg (- arg 1)))))
+	  ((null arg)
+	   (insert opening-brace)
+	   (if (and (not optional) (TeX-active-mark))
+	       (exchange-point-and-mark))
+	   (insert closing-brace))
+	  ((eq arg t)
+	   (insert opening-brace)
+	   (if (and (not optional) (TeX-active-mark))
+	       (exchange-point-and-mark)
+	     (set-marker exit-mark (point)))
+	   (insert closing-brace))
+	  ((symbolp arg)
+	   (funcall arg optional))
+	  ((listp arg)
+	   (let ((head (car arg))
+		 (tail (cdr arg)))
+	     (cond ((stringp head)
+		    (apply 'TeX-arg-string optional arg))
+		   ((symbolp head)
+		    (apply head optional tail))
+		   (t (error "Unknown list argument type %s"
+			     (prin1-to-string head))))))
+	  (t (error "Unknown argument type %s" (prin1-to-string arg))))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
 
 If OPTIONAL, only insert it if not empty, and then use square brackets.
 If PREFIX is given, insert it before NAME."
-  (if (and optional (string-equal name ""))
-      (setq last-optional-rejected t)
-    (insert <)
-    (if prefix
-	(insert prefix))
-    (if (and (string-equal name "")
-	     (null (marker-position exit-mark)))
-	(set-marker exit-mark (point))
-      (insert name))
-    (insert >)))
+  (let ((opening-brace (if optional LaTeX-optop TeX-grop))
+	(closing-brace (if optional LaTeX-optcl TeX-grcl)))
+    (if (and optional (string-equal name ""))
+	(setq last-optional-rejected t)
+      (insert opening-brace)
+      (if prefix
+	  (insert prefix))
+      (if (and (string-equal name "")
+	       (null (marker-position exit-mark)))
+	  (set-marker exit-mark (point))
+	(insert name))
+      (insert closing-brace))))
 
 (defun TeX-argument-prompt (optional prompt default &optional complete)
   "Return a argument prompt.
@@ -2317,7 +2321,7 @@ Generated by `TeX-auto-add-type'.")
 	()
       (set change nil)
       ;; Sort it
-      (message "Sorting " name "...")
+      (message "Sorting %s..." name)
       (set local
 	   (sort (mapcar 'TeX-listify (apply 'append (symbol-value local)))
 		 'TeX-car-string-lessp))
