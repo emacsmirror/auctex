@@ -200,8 +200,6 @@ tar-ball:
 	for x in auctex-*; do \
 	  if [ -r $$x ]; then \
 	    cp $$x ../auctex-$(TAG)/doc ; \
-	  else \
-	    echo "Warning: File $$x doesn't exist."; \
 	  fi; \
 	done )
 	(cd doc; cp INSTALL INSTALL.windows README CHANGES TODO FAQ \
