@@ -33,7 +33,6 @@ LaTeX equations right into the editing window where they belong.
 
 This package contains the LaTeX style files and the documentation.
 
-%if %{HAVE_EMACS}
 %package emacs
 Summary:	Emacs/LaTeX inline preview (GNU Emacs lisp files)
 Group: 		Applications/Editors
@@ -47,9 +46,7 @@ source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
 This package contains the lisp modules for GNU Emacs 21.1 or higher.
-%endif
 
-%if %{HAVE_XEMACS}
 %package xemacs
 Summary:	Emacs/LaTeX inline preview (XEmacs lisp files)
 Group: 		Applications/Editors
@@ -62,7 +59,6 @@ source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
 This package contains the lisp modules for XEmacs 21.4 or higher.  
-%endif
 
 %prep
 %setup -c -q
@@ -97,17 +93,14 @@ rm -rf %{buildroot}
 for i in *emacs; do
   pushd $i
   %makeinstall texmfdir=%{buildroot}%{_datadir}/texmf 
+  if [ $i == "emacs" ]; then 
+    mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+    install -c -m 644 preview-latex.el \
+      %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+  fi
   popd
 done
 
-# Remains to be put in the Makefile
-%if %{HAVE_EMACS}
-  pushd emacs
-  mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
-  install -c -m 644 preview-latex.el \
-    %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
-  popd
-%endif
 
 %clean
 rm -rf %{buildroot}
