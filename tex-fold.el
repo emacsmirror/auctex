@@ -38,12 +38,33 @@
   "Fold TeX macros."
   :group 'AUCTeX)
 
-(defcustom TeX-fold-spec-list
-  '(("[F]" ("footnote"))
-    ("[C]" ("cite")))
+(defcustom TeX-fold-macro-spec-list
+  '(("[f]" ("footnote"))
+    ("[c]" ("cite")))
   "List of display strings and macros to fold."
   :type '(repeat (group (string :tag "Display String")
 			(repeat :tag "Macros" (string))))
+  :group 'TeX-fold)
+
+(defcustom TeX-fold-env-spec-list
+  '(("[comment]" ("comment")))
+  "List of display strings and environments to fold."
+  :type '(repeat (group (string :tag "Display String")
+			(repeat :tag "Environments" (string))))
+  :group 'TeX-fold)
+
+(defcustom TeX-fold-unspec-macro-display-string "[m]"
+  "Display string for unspecified macros.
+This string will be displayed if a single macro is being hidden
+which is not specified in `TeX-fold-macro-spec-list'."
+  :type '(string)
+  :group 'TeX-fold)
+
+(defcustom TeX-fold-unspec-env-display-string "[env]"
+  "Display string for unspecified environments.
+This string will be displayed if a single environment is being
+hidden which is not specified in `TeX-fold-env-spec-list'."
+  :type '(string)
   :group 'TeX-fold)
 
 (defcustom TeX-fold-unfold-around-mark t
@@ -67,69 +88,137 @@
   :group 'TeX-fold)
 
 (defvar TeX-fold-display-string-face 'TeX-fold-display-string-face
-  "Face name for display strings.")
+  "Face for display strings.")
 
 (defvar TeX-fold-open-spots nil)
 (make-variable-buffer-local 'TeX-fold-open-spots)
 
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map "\C-c\C-o\C-o" 'TeX-fold-buffer)
-    (define-key map "\C-c\C-o\C-a" 'TeX-fold-clearout-buffer)
-    (define-key map "\C-c\C-o\C-c" 'TeX-fold-macro)
-    (define-key map "\C-c\C-o\C-e" 'TeX-fold-clearout-macro)
+    (define-key map "\C-c\C-o\C-b" 'TeX-fold-buffer)
+    (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
+    (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
+    (define-key map "\C-c\C-o\C-x" 'TeX-fold-clearout-buffer)
+    (define-key map "\C-c\C-o\C-c" 'TeX-fold-clearout-item)
     map))
 
 (defun TeX-fold-buffer ()
-  "Hide all macros specified in the variable `TeX-fold-spec-list'."
+  "Hide all configured macros and environments in the current buffer.
+The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
+and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (TeX-fold-clearout-buffer)
+  (TeX-fold-buffer-type 'env)
+  (TeX-fold-buffer-type 'macro))
+
+(defun TeX-fold-buffer-type (type)
+  "Fold all items of type TYPE in buffer.
+TYPE can be one of the symbols 'env for environments or 'macro for macros."
   (save-excursion
-    (let ((fold-list TeX-fold-spec-list)
+    ;; All these `(eq type 'env)' tests are ugly, I know.
+    (let ((fold-list (if (eq type 'env)
+			 TeX-fold-env-spec-list
+		       TeX-fold-macro-spec-list))
 	  fold-item)
-      (while fold-list
-	(beginning-of-buffer)
-	(setq fold-item (car fold-list))
-	(setq fold-list (cdr fold-list))
-	(let ((display-string (nth 0 fold-item))
-	      (macros (regexp-opt (nth 1 fold-item) t)))
-	  (while (re-search-forward (concat (regexp-quote TeX-esc)
-					    macros "\\b") nil t)
-	    (let ((ov (make-overlay (match-beginning 0)
-				    (save-excursion
-				      (goto-char (match-beginning 0))
-				      (TeX-find-macro-end))
-				    (current-buffer) t nil)))
-	      (TeX-fold-hide-item ov display-string))))))))
+      (when (or (and (eq type 'env)
+		     (or (eq major-mode 'latex-mode)
+			 (eq major-mode 'doctex-mode)))
+		(eq type 'macro))
+	(while fold-list
+	  (beginning-of-buffer)
+	  (setq fold-item (car fold-list))
+	  (setq fold-list (cdr fold-list))
+	  (let ((display-string (nth 0 fold-item))
+		(items (regexp-opt (nth 1 fold-item) t)))
+	    (while (re-search-forward (if (eq type 'env)
+					  (concat (regexp-quote TeX-esc)
+						  "begin[ \t]*{" items "}")
+					(concat (regexp-quote TeX-esc)
+						items "\\b"))
+				      nil t)
+	      (let ((ov (make-overlay (match-beginning 0)
+				      ;; Jump to end of macro/env to
+				      ;; avoid nested overlays as this
+				      ;; will wreak havoc with display
+				      ;; strings as long as the
+				      ;; overlays are not prioritized.
+				      (if (eq type 'env)
+					  (progn
+					    (goto-char (match-end 0))
+					    (LaTeX-find-matching-end)
+					    (point))
+					(progn
+					  (goto-char (match-beginning 0))
+					  (goto-char (TeX-find-macro-end))))
+				      (current-buffer) t nil)))
+		;; Give environments a higher priority so that their
+		;; display string overrides those of possibly enclosed
+		;; macros.
+		(overlay-put ov 'priority (if (eq type 'env) 2 1))
+		(TeX-fold-hide-item ov display-string)))))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
   (interactive)
-  (let ((macro-start (TeX-find-macro-start)))
-    (if (not macro-start)
-	(message "No macro found.")
-      (let* ((macro-name (save-excursion
-			   (goto-char macro-start)
-			   (looking-at (concat (regexp-quote TeX-esc)
-					       "\\([A-Za-z@]+\\)"))
-			   (match-string 1)))
-	     (fold-list TeX-fold-spec-list)
-	     fold-item
-	     (display-string (progn
-			       (catch 'found
-				 (while fold-list
-				   (setq fold-item (car fold-list))
-				   (setq fold-list (cdr fold-list))
-				   (when (member macro-name (cadr fold-item))
-				     (throw 'found (car fold-item))))))))
-	(if (not display-string)
-	    (message "Macro not specified in variable `TeX-fold-spec-list'.")
-	  (let ((ov (make-overlay macro-start
-				  (save-excursion
-				    (goto-char macro-start)
-				    (TeX-find-macro-end))
-				  (current-buffer) t nil)))
-	    (TeX-fold-hide-item ov display-string)))))))
+  (TeX-fold-item 'macro))
+
+(defun TeX-fold-env ()
+  "Hide the environment on which point currently is located."
+  (interactive)
+  (TeX-fold-item 'env))
+
+(defun TeX-fold-item (type)
+  "Hide the item on which point currently is located.
+TYPE specifies the type of item and can be one of the symbols
+'env for environments or 'macro for macros."
+  (if (and (eq type 'env)
+	   (not (or (eq major-mode 'latex-mode)
+		    (eq major-mode 'doctex-mode))))
+      (message
+       "Folding of environments is supported in LaTeX or docTeX mode only.")
+    (let ((item-start (if (eq type 'env)
+			  (condition-case nil
+			      (save-excursion
+				(LaTeX-find-matching-begin) (point))
+			    (error nil))
+			(TeX-find-macro-start))))
+      (if (not item-start)
+	  (message (if (eq type 'env)
+		       "No environment found."
+		     "No macro found."))
+	(let* ((item-name (save-excursion
+			     (goto-char item-start)
+			     (looking-at (if (eq type 'env)
+					     (concat (regexp-quote TeX-esc)
+						     "begin[ \t]*{"
+						     "\\([A-Za-z]+\\)}")
+					   (concat (regexp-quote TeX-esc)
+						   "\\([A-Za-z@]+\\)")))
+			     (match-string-no-properties 1)))
+	       (fold-list (if (eq type 'env)
+			      TeX-fold-env-spec-list
+			    TeX-fold-macro-spec-list))
+	       fold-item
+	       (display-string (or (catch 'found
+				     (while fold-list
+				       (setq fold-item (car fold-list))
+				       (setq fold-list (cdr fold-list))
+				       (when (member item-name (cadr fold-item))
+					 (throw 'found (car fold-item)))))
+				   ;; Item is not specified.
+				   (if (eq type 'env)
+				       TeX-fold-unspec-env-display-string
+				     TeX-fold-unspec-macro-display-string))))
+	    (let ((ov (make-overlay item-start
+				    (if (eq type 'env)
+					(save-excursion
+					  (goto-char (match-end 0))
+					  (LaTeX-find-matching-end))
+				      (save-excursion
+					(goto-char item-start)
+					(TeX-find-macro-end)))
+				    (current-buffer) t nil)))
+	      (TeX-fold-hide-item ov display-string)))))))
 
 (defun TeX-fold-clearout-buffer ()
   "Permanently show all macros in the buffer"
@@ -137,7 +226,7 @@
   (let ((overlays (overlays-in (point-min) (point-max))))
     (TeX-fold-remove-overlays overlays)))
 
-(defun TeX-fold-clearout-macro ()
+(defun TeX-fold-clearout-item ()
   "Permanently show the macro on which point currently is located."
   (interactive)
   (let ((overlays (overlays-at (point))))
@@ -151,7 +240,7 @@
     (setq overlays (cdr overlays))))
 
 (defun TeX-fold-hide-item (ov &optional display-string)
-  "Hide a single LaTeX macro.
+  "Hide a single macro or environment.
 Put the display string DISPLAY-STRING and other respective
 properties onto overlay OV."
   (let ((display-string (or display-string
@@ -167,7 +256,7 @@ properties onto overlay OV."
       (overlay-put ov 'display display-string))))
 
 (defun TeX-fold-show-item (ov)
-  "Show a single LaTeX macro.
+  "Show a single LaTeX macro or environment.
 Remove the respective properties from the overlay OV."
   (overlay-put ov 'face nil)
   (if (featurep 'xemacs)
