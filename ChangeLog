@@ -1,3 +1,8 @@
+2005-02-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-common-initialization): Update LaTeX menu when a
+	popup menu in XEmacs is opened.
+
 2005-02-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* bib-cite.el: Some doc fixes in the commentary section.
