@@ -234,6 +234,3 @@ devel team).  Please use the command
 
 @noindent
 Offers to support further development will be appreciated.
-
-@noindent
-David Kastrup, @email{dakas@@users.sourceforge.net}
