@@ -9,7 +9,7 @@ grep -q '^MY_LANG=' configure || {
 MY_LANG=$LANG
 MY_LC_CTYPE=$LC_CTYPE
 .
-,s/ac_unique_file=preview-latex/ac_unique_file=preview-latex.el/
+,s/ac_unique_file=preview-latex/ac_unique_file=preview.el/
 w
 q
 EOF
