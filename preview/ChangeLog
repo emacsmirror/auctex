@@ -1,3 +1,13 @@
+2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/problems.texi (LaTeX international characters): Offer
+	another solution.
+	(Middle-clicks paste instead of toggling): Update Emacs version
+	bug/patch info.
+
+	* doc/preview-latex.texi (Misplaced previews): Add xref to
+	problems section.
+
 2002-04-18  David Kastrup  <David.Kastrup@t-online.de>
 	* preview.el (preview-dsc-parse): Newly written for better error
 	messages and more acribic adherence to DSC conventions.
