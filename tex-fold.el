@@ -403,7 +403,8 @@ be altered to prevent overfull lines."
     (overlay-put ov 'category 'TeX-fold)
     (overlay-put ov 'priority priority)
     (overlay-put ov 'evaporate t)
-    (overlay-put ov 'TeX-fold-face face)
+    (when font-lock-mode
+      (overlay-put ov 'TeX-fold-face face))
     (overlay-put ov 'TeX-fold-type type)
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
     (overlay-put ov 'TeX-fold-display-string display-string)
@@ -511,7 +512,8 @@ That means, put respective properties onto overlay OV."
 			   ;; the content has changed.
 			   (or (TeX-fold-macro-nth-arg
 				display-string-spec (overlay-start ov)
-				(when (eq (overlay-get ov 'TeX-fold-type) 'macro)
+				(when (eq (overlay-get ov 'TeX-fold-type)
+					  'macro)
 				  (overlay-end ov)))
 			       "[Error: No content found]"))))
     (overlay-put ov 'mouse-face 'highlight)
@@ -521,11 +523,13 @@ That means, put respective properties onto overlay OV."
 				   display-string)))
 	      (face (overlay-get ov 'TeX-fold-face)))
 	  (overlay-put ov 'invisible t)
-	  (if face
-	      (set-glyph-property glyph 'face face)
-	    (set-glyph-property glyph 'face TeX-fold-folded-face))
+	  (when font-lock-mode
+	    (if face
+		(set-glyph-property glyph 'face face)
+	      (set-glyph-property glyph 'face TeX-fold-folded-face)))
 	  (set-extent-property ov 'end-glyph glyph))
-      (overlay-put ov 'face TeX-fold-folded-face)
+      (when font-lock-mode
+	(overlay-put ov 'face TeX-fold-folded-face))
       (overlay-put ov 'display display-string))))
 
 (defun TeX-fold-show-item (ov)
@@ -537,7 +541,8 @@ Remove the respective properties from the overlay OV."
 	(set-extent-property ov 'end-glyph nil)
 	(overlay-put ov 'invisible nil))
     (overlay-put ov 'display nil)
-    (overlay-put ov 'face TeX-fold-unfolded-face)))
+    (when font-lock-mode
+      (overlay-put ov 'face TeX-fold-unfolded-face))))
 
 ;; Copy and adaption of `reveal-post-command' from reveal.el in GNU
 ;; Emacs on 2004-07-04.
