@@ -4,6 +4,8 @@
 	customization variable.
 	(preview-mode-setup): Use it.
 
+	* doc/preview-latex.texi (The Emacs interface): Document it.
+
 2002-08-05  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (subsection{Supporting conversions}): change
