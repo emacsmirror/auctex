@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.64 1993-09-06 22:26:40 amanda Exp $
+# $Id: Makefile,v 5.65 1993-09-06 22:41:24 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -245,7 +245,6 @@ clean:
 	(cd lacheck; $(MAKE) clean)
 
 dist:	
-	-(cd lacheck; $(MAKE) dist)
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"

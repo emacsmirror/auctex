@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.55 1993-09-06 22:27:54 amanda Exp $
+@c $Id: auc-tex.texi,v 1.56 1993-09-06 22:41:37 amanda Exp $
 
 @finalout
 @titlepage
@@ -2462,7 +2462,7 @@ defined.  We can specify this information in a style hook file.
 (require 'tex-auto)
 
 (defvar TeX-newmacro-regexp
-  '("\\\\newmacro{\\\\\\([a-zA-Z]+\\)}{\\\\\\([a-zA-Z]+\\)}"
+  '("\\\\newmacro@{\\\\\\([a-zA-Z]+\\)@}@{\\\\\\([a-zA-Z]+\\)@}"
     (1 2) TeX-auto-multi)
   "Matches \newmacro definitions.")
 
@@ -2693,7 +2693,7 @@ Support for @code{epsf} and @code{psfig} style files.  Thanks to Marc
 Gemis @samp{<makke@@wins.uia.ac.be>}.
 
 @item
-Support for La@TeXinfo.  Thanks to Marc Gemis
+Support for La@TeX{}info.  Thanks to Marc Gemis
 @samp{<makke@@wins.uia.ac.be>}.
 
 @item
@@ -2714,9 +2714,9 @@ untabifying the buffer when it is saved.  Several people wanted this.
 @item
 Changed defaults to @emph{not} do any automatic parsing, nor prompt for
 a master file or check for dependencies.  @xref{Parsing Files},
-@ref{Multifile}, and @ref{Formatting and Printing} for information about
-how ot correct this.  In short, insert the following in your
-@file{.emacs} file.
+@ref{Multifile}, and @ref{Formatting} for information about how ot
+correct this.  In short, insert the following in your @file{.emacs}
+file.
 
 @lisp
 (setq TeX-check-path '("./"))
