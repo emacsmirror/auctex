@@ -377,7 +377,6 @@ string."
     ("^dvi$" "^landscape$" "xdvi %d -paper a4r -s 0")
     ("^dvi$" "^pstricks$\\|^psfrag$" "dvips %d -o && gv %f")
     ("^dvi$" "." "xdvi %d")
-    ("^pdf$" "^landscape$" "xpdf -papertype a4r %o")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
@@ -523,7 +522,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.342 $"))
+	(rev "$Revision: 5.343 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -538,7 +537,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-26 14:48:20 $"))
+    (let ((date "$Date: 2004-03-28 13:34:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
