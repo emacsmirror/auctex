@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000,
-;;               2003, 2004, 2005 Free Software Foundation, Inc.
+;;   2003, 2004, 2005 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex
@@ -4315,8 +4315,9 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 
 (defcustom LaTeX-babel-hyphen "\"="
   "String to be used when typing `-'.
-This usually is a hyphen alternatives or hyphenation aid
-provided by (n)german.sty, like \"=, \"~ or \"-.
+This usually is a hyphen alternative or hyphenation aid provided
+by provided by @samp{babel} and the related language style files,
+like \"=, \"~ or \"-.
 
 Set it to an empty string or nil in order to disable this
 feature.  Alter `LaTeX-babel-hyphen-language-alist' in case you
@@ -4327,9 +4328,9 @@ want to change the behavior for a specific language only."
 (defcustom LaTeX-babel-hyphen-after-hyphen t
   "Control insertion of hyphen strings.
 If non-nil insert normal hyphen on first key press and swap it
-with the (n)german.sty-specific hyphen string specified in the
-variable `LaTeX-babel-hyphen' on second key press.
-If nil do it the other way round."
+with the language-specific hyphen string specified in the
+variable `LaTeX-babel-hyphen' on second key press.  If nil do it
+the other way round."
   :group 'LaTeX-macro
   :type 'boolean)
 
@@ -4344,7 +4345,8 @@ value overriding `LaTeX-bybel-hyphen-after-hyphen'."
   :group 'LaTeX-macro
   :type '(alist :key-type (string :tag "Language")
 		:value-type (group (string :tag "Hyphen string")
-				   (boolean :tag "Insert plain hyphen first"))))
+				   (boolean :tag "Insert plain hyphen first"
+					    :value t))))
 
 (defvar LaTeX-babel-hyphen-language nil
   "String determining language-specific behavior of hyphen insertion.
