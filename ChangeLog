@@ -1,3 +1,8 @@
+2004-08-04  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): Add style hook for
+	"ifpdf".
+
 2004-08-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-unfontify-region): New function.

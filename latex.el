@@ -4632,6 +4632,9 @@ runs the hooks in `doctex-mode-hook'."
   (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
+  (TeX-add-style-hook "ifpdf" (lambda ()
+				(TeX-PDF-mode-on)
+				(TeX-PDF-mode-off)))
 
   (set (make-local-variable 'imenu-create-index-function)
        'LaTeX-imenu-create-index-function))
