@@ -8,11 +8,8 @@
 ;; Maintainer: Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
 ;;                                <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.800 (01 November 2001)
+;; Version:    0.803 (01 November 2001)
 ;; Keywords:   LaTeX faces
-
-;; RCS $Id: font-latex.el,v 5.17 2003-02-17 14:36:53 dak Exp $
-;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
 
@@ -100,8 +97,13 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.803 17Feb03 David Kastrup
+;;   (font-latex-find-matching-close): Remove a very complicated way of
+;;    doing nothing since the byte compiler warns about it.
+;; V0.802 15Feb03 David Kastrup
+;;   (font-latex-setup): Tweak verbatim handling.
 ;; V0.801 07Dec02 David Kastrup
-;; - (font-latex-setup): Better stab at verbatim handling.
+;;   (font-latex-setup): Better stab at verbatim handling.
 ;; V0.800 01Nov01 PSG
 ;;  - Added font-lock-syntactic-keywords to font-lock-defaults to handle
 ;;    verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
