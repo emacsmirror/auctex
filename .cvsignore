@@ -3,6 +3,7 @@ config.*
 *~
 Makefile
 configure
+tex-site.el
 INSTALL
 INSTALL.windows
 autom4te.*
