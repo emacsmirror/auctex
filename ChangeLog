@@ -1,3 +1,26 @@
+2003-12-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-master-file): Added new parameter `ask' which is
+	to be used if the user shall be asked when the function is
+	called.  Took out the code which provides the functionality for
+	asking the respective question and added it to the newly created
+	function `TeX-master-file-ask'.
+	(TeX-master-file-ask): New function.
+	(TeX-local-master-p): New function.
+	(tex-mode): Removed the call of `TeX-master-file' via the hook
+	`hack-local-variables-hook'.
+	(VirTeX-common-initialization): Added the call to
+	`TeX-master-file' via the hook `find-file-hooks'.  Additionally
+	`TeX-update-style' will be called to activate the respective style
+	files.
+	(TeX-mode-map): Added key binding for calling
+	`TeX-master-file-ask'.  This is a temporary solution.
+	(TeX-mode-menu): Took out redundant entry for `TeX-home-buffer'.
+	Added entry "Set Master File" for `TeX-master-file-ask'.  Grouped
+	menu entries relevant for multifile handling.
+	* latex.el (LaTeX-mode-menu): Changed analogously to
+	`TeX-mode-menu'.
+
 2003-12-29  David Kastrup  <dak@gnu.org>
 
 	* latex.el: Fix AUCTeX URL.
