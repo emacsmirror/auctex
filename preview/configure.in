@@ -67,6 +67,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
    lispdir="${packagedir}/lisp/preview"
    icondir="${packagedir}/etc/preview"
+   infodir="${packagedir}/info"
 else
    PLAT_LISP=prv-emacs.el
    AC_MSG_CHECKING([if $EMACS supports images])
