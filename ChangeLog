@@ -1,5 +1,7 @@
 2003-04-10  David Kastrup  <dak@gnu.org>
 
+	* tex.el (AUCTeX): Fix URLs.
+
 	* context.el: Fix AUCTeX URL.
 	Make modification date RCS tag.
 
