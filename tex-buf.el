@@ -1,14 +1,14 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.02
+;; Version: 11.03
 
+;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen 
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1996 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 1, or (at your option)
+;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 ;; 
 ;; This program is distributed in the hope that it will be useful,
@@ -683,17 +683,16 @@ Return nil ifs no errors were found."
 		(or
                  (re-search-forward "^LaTeX Warning: Citation" nil t)
                  (re-search-forward "^Package natbib Warning: Citation" nil t)))
-	      (let ((current (current-buffer)))
-		(set-buffer TeX-command-buffer)
-		(prog1 (and (LaTeX-bibliography-list)
-			    (TeX-check-files (TeX-master-file "bbl")
-					    (TeX-style-list)
-					    (append TeX-file-extensions
-						    BibTeX-file-extensions)))
-		  (set-buffer current))))
+	      (with-current-buffer TeX-command-buffer
+		(and (LaTeX-bibliography-list)
+		     (TeX-check-files (TeX-master-file "bbl")
+				      (TeX-style-list)
+				      (append TeX-file-extensions
+					      BibTeX-file-extensions)))))
 	 (message (concat "You should run BibTeX to get citations right, "
                           (TeX-current-pages)))
-	 (setq TeX-command-next TeX-command-BibTeX))
+	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
+				  TeX-command-BibTeX)))
 	((or
           (re-search-forward "^LaTeX Warning: Label(s)" nil t)
           (re-search-forward "^Package natbib Warning: Citation(s)" nil t))

@@ -2,6 +2,10 @@
 
 @itemize @bullet
 @item
+Use @file{tex-fptex.el} for fpTeX support.
+Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
+
+@item
 New user option @code{LaTeX-top-caption-list} specifies environments
 where the caption should go at top.
 Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).

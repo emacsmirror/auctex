@@ -71,9 +71,17 @@
     (setq  LaTeX-item-list 
 	   (append '(("split"    . LaTeX-item-equation)
 		     ("multline" . LaTeX-item-equation)
-		     ("gather"  . LaTeX-item-equations)
-		     ("align"   . LaTeX-item-equations)
-		     ("flalign" . LaTeX-item-equations))
+		     ("gather"   . LaTeX-item-equations)
+		     ("gather*"  . LaTeX-item-equation)
+		     ("gathered" . LaTeX-item-equation)
+		     ("align"    . LaTeX-item-equations)
+		     ("align*"   . LaTeX-item-equation)
+		     ("aligned"  . LaTeX-item-equation)
+		     ("alignat"  . LaTeX-item-equations)
+		     ("alignat*" . LaTeX-item-equation)
+		     ("flalign"  . LaTeX-item-equations)
+		     ("flalign*" . LaTeX-item-equation)
+		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
     ;; amsmath includes amstext, amsbsy, & amsopn.

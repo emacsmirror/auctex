@@ -1,10 +1,10 @@
-;;; tex-mik.el --- MikTeX support for AUC TeX.
+;;; tex-fptex.el --- fpTeX support for AUC TeX.
 ;;
-;; Copyright (C) 1999, 2000, 2001 Per Abrahamsen 
+;; Copyright (C) 2000 Fabrice Popineau
 
-;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.03
+;; Author: Fabrice Popineau <Fabrice.Popineau@supelec.fr>
+;; Maintainer: Fabrice Popineau <Fabrice.Popineau@supelec.fr>
+;; Version: 9.10k
 ;; Keywords: wp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,30 +23,46 @@
 
 ;;; Commentary:
 ;;
-;; This file contains variables customized for MikTeX.
+;; This file contains variables customized for fpTeX.
+;; Borrowed from tex-mik.el .
 
 ;;; Code:
 
-;; The MikTeX commands.
+(defmacro parent-directory (f)
+  "Return safe parent directory of the directory given as argument."
+  `(directory-file-name
+    (file-name-directory
+     (directory-file-name ,f))))
+
+(setq TeX-lisp-directory 
+      (concat (parent-directory (invocation-directory))
+	      "/site-lisp/auctex"))
+
+;; The fpTeX commands.
 (setq TeX-command-list
   (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
 	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
 	(list "LaTeX PDF" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
-	(list "View" "%v" 'TeX-run-discard nil nil)
-	(list "Print" "gsview32 %f" 'TeX-run-command t nil)
+	(list "View" "%v" 'TeX-run-command t nil)
+	(list "View PS" "gsview32 %f" 'TeX-run-command t nil)
+	(list "View PDF" "start %t.pdf" 'TeX-run-command t nil)
+	(list "Print" "dvips %d" 'TeX-run-command t nil)
 	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
 	(list "Index" "makeindex %s" 'TeX-run-command nil t)
 	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
+	(list "AmSTeX" "amstex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil t)
 	(list "Other" "" 'TeX-run-command t t)))
 
 ;; DVI to source correspondence (stolen from the German magazine c't).
 (setq LaTeX-command-style '(("." "latex --src-specials")))
-(setq TeX-view-style '(("^a5$" "yap %d -paper a5")
-		       ("^landscape$" "yap %d -paper a4r -s 4")
+(setq TeX-view-style '(("^a5$" "windvi %d -paper a5")
+		       ("^landscape$" "windvi %d -paper a4r -s 4")
 		       ("^epsf$" "gsview32 %f")
-		       ("." "yap -1 -s%n%b %d")))
+		       ("." "windvi -single %d")))
 
-(provide 'tex-mik)
+(provide 'tex-fptex)
 
 ;;; tex-mik.el ends here

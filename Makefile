@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-# Version: 11.02
+# Version: 11.03
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -71,7 +71,7 @@ REMOVE =  MSDOS VMS OS2 WIN-NT
 
 MINMAPSRC = auc-menu.el maniac.el outln-18.el all.el multi-prompt.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el
+CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el tex-fptex.el
 CONTRIBELC = bib-cite.elc font-latex.elc
 
 AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el \
@@ -184,19 +184,19 @@ dist:
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	auc commit -m 'Release_$(OLD)++' tex.el
+	cvs commit -m 'Release_$(OLD)++' tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
 	sed -e '/defconst AUC-TeX-date/s/"[^"]*"/"'"`date`"'"/' \
 	    -e '/defconst AUC-TeX-version/s/"[^"]*"/"'$(TAG)'"/' \
 	    < tex.el.orig > tex.el
 	rm -f $(REMOVE) 
-	-auc remove $(REMOVE) 
-	-auc add $(AUCSRC) $(EXTRAFILES)
+	-cvs remove $(REMOVE) 
+	-cvs add $(AUCSRC) $(EXTRAFILES)
 	-(cd doc; auc add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd style; auc add `echo $(STYLESRC) | sed -e s@style/@@g` )
-	auc commit -m 'Release_$(TAG)'
-	auc tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
+	cvs commit -m 'Release_$(TAG)'
+	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style
 	mkdir auctex-$(TAG)/doc 
@@ -211,7 +211,6 @@ dist:
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-foo:
 	rm -f $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex auctex-$(TAG)
@@ -224,10 +223,10 @@ foo:
 #		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
 
 patch:
-	auc diff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	cvs diff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
 	         -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex
 
 min-map:
-	-auc add $(MINMAPSRC) 
-	auc commit -m "Update"
+	-cvs add $(MINMAPSRC) 
+	cvs commit -m "Update"
 	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR) 
