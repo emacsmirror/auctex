@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.420 $"))
+	(rev "$Revision: 5.421 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 14:32:30 $"))
+    (let ((date "$Date: 2004-08-10 18:06:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -717,8 +717,7 @@ details."
   ;; We should describe emacsclient / gnuclient in the AUCTeX manual and
   ;; only add a reference here.
   :group 'TeX-source-specials
-  ;; FIXME: There's nothing about source-specials there yet:
-  ;; :link '(custom-manual "(auctex)Viewing")
+  :link '(custom-manual "(auctex)Commands")
   :global t
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials-mode

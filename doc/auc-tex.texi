@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auc-tex.texi,v 1.169 2004-08-10 06:21:55 angeli Exp $
+@c $Id: auc-tex.texi,v 1.170 2004-08-10 18:06:33 rsteib Exp $
 
 @finalout
 @titlepage
@@ -1569,6 +1569,12 @@ support.  Source Specials will move the @acronym{DVI} viewer to the
 location corresponding to point (forward search), and it will use
 @samp{emacsclient} or @samp{gnuclient} to have the previewer move Emacs
 to a location corresponding to a control-click in the previewer window.
+
+You can permanently activate @code{TeX-source-specials-mode} with
+@lisp
+(TeX-source-specials-mode 1)
+@end lisp
+or by customizing the variable @code{TeX-source-specials-mode}.
 There is a bunch of customization options, use @code{customize-group} on
 the group @samp{TeX-source-specials} to find out more.
 @end deffn
@@ -1602,6 +1608,16 @@ will be invoked instead.
 The information about which file types and style options are
 associated with which viewers and options for them is stored in the
 variables @code{TeX-output-view-style} and @code{TeX-view-style}.
+
+@deffn Command TeX-view
+@kindex C-c C-v
+The command @code{TeX-view}, bound to @kbd{C-c C-v}, start a viewer
+without confirmation.  The viewer is started either on region or master
+file, depending on the last command issued.  This is especially useful
+to jump to the to the location corresponding to point in the
+@acronym{DVI} viewer when using @code{TeX-source-specials-mode},
+@ref{Commands}.
+@end deffn
 
 @defopt TeX-output-view-style
 List of output file extensions, style options and view options.

@@ -1,3 +1,11 @@
+2004-08-10  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-source-specials-mode): Add manual link.
+
+	* doc/auc-tex.texi (Commands): Say how to enable
+	TeX-source-specials-mode permanently.
+	(Viewing): Describe TeX-view.
+
 2004-08-10  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-maybe-remove-help): convert Emacs' :visible into
