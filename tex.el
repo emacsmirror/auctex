@@ -433,21 +433,21 @@ string."
   (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
 	(list "%q" (lambda ()
 		     (TeX-printer-query TeX-queue-command 2)))
-	(list "%V" (lambda () 
-		     (concat 
+	(list "%V" (lambda ()
+		     (concat
 		      (TeX-output-style-check TeX-output-view-style)
-		      (if TeX-generate-source-specials 
-			  TeX-generate-source-specials-dvi-viewer-extra-flags
+		      (if TeX-source-specials-active-flag
+			  TeX-source-specials-viewer-flags
 			""))))
 	(list "%v" (lambda ()
 		     (TeX-style-check TeX-view-style)))
 	(list "%r" (lambda ()
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
-		     (concat 
+		     (concat
 		      (TeX-style-check LaTeX-command-style)
-		      (if TeX-generate-source-specials 
-			  TeX-generate-source-specials-tex-extra-flags
+		      (if TeX-source-specials-active-flag
+			  TeX-source-specials-tex-flags
 			""))))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
@@ -551,7 +551,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.353 $"))
+	(rev "$Revision: 5.354 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -566,7 +566,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-23 16:46:18 $"))
+    (let ((date "$Date: 2004-04-24 17:30:31 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -598,54 +598,61 @@ In the form of yyyy.mmdd")
   :group 'TeX-output
   :type 'boolean)
 
-(defcustom TeX-generate-source-specials nil
-  "*Non-nil means generate latex source specials.
+(defcustom TeX-source-specials-active-flag nil
+  "*Non-nil means generate and use LaTeX source specials if possible.
 
-If non-nil the -src option is added to the latex commmand line. 
-Xdvi is called with the -sourceposition option, so that it
-shows the dvi file at the point where the emacs cursor is.
+Xdvi and LaTeX are tested to support the above flags, and iff they both are
+successful, the support for source specials is enabled.
 
-To enable the direct search, add 
-   (server-start)
-at the end of your .emacs file and
-XDvi*editor: emacsclient --no-wait +%l %f
-to your .Xdefaults file.
-After that, pressing C-mouse1 in the xdvi window will move the
-emacs cursor to the corresponding source location.
+If enabled, an option that insert source specials into the DVI file is added
+to the LaTeX commmand line and the DVI viewer is called with an appropriate
+option, so that it shows the the point in the DVI file corresponding to the
+point in the Emacs buffer.
 
-Not all versions of latex and xdvi have the features needed to
-support this option. Tetex-2.x is known to support all the
-needed features.
-
-xdvi and latex are tested to support the above flags, and iff
-they both do, the support for source specials is turned on."
+See the documention of your viewer, e.g. the section \"SOURCE SPECIALS\" in
+xdvi(1) and <URL:http://xdvi.sourceforge.net/inverse-search.html>, for
+details."
+  ;; FIXME: We'll need doc strings for all other viewers [beside xdvi] as
+  ;; well.  Or the respective pointers.  Or just a pointer to the manual
+  ;; that explains the details.  [Suggestion by dak]
+  ;;
+  ;; We should describe emacsclient / gnuclient in the AUCTeX manual and
+  ;; only add a reference here.
+  :group 'TeX-output
   :set 'TeX-maybe-set-source-specials
   :initialize 'custom-initialize-default
-  :group 'TeX-output
+  ;; FIXME: There's nothing about source-specials there yet:
+  ;; :link '(custom-manual "(auctex)Viewing")
   :type 'boolean)
 
-(defvar TeX-generate-source-specials-tex-extra-flags " -src "
-  "Extra flags to pass to the *tex commands to generate source specials.")
+(defvar TeX-source-specials-tex-flags " -src "
+  "*Extra flags to pass to TeX commands to generate source specials.")
+;; FIXME: We could also offer the WHERE value list.
+;; From latex(1):
+;; -src-specials            insert source specials into the DVI file
+;; -src-specials=WHERE      insert source specials in certain places of
+;;                           the DVI file. WHERE is a comma-separated value
+;;                           list: cr display hbox math par parend vbox
+;; Anyhow, this variable should be customizable.
 
-(defvar TeX-generate-source-specials-dvi-viewer-extra-flags 
+(defvar TeX-source-specials-viewer-flags
   " -sourceposition %n:%b "
-  "Extra flags to pass to the dvi viewer commands to use source specials.")
+  "*Extra flags to pass to the dvi viewer commands to use source specials.")
 
-(defvar TeX-test-source-specials-support-function
-  'TeX-xdvi-supports-source-specials-p
-  "A function used to test if the the system supports source specials.
-The functions should return t if source specials are supported, and 
-`nil' otherwise.
-Set it to `nil' is source special support is not desired.")
+(defvar TeX-source-specials-check-function
+  'TeX-source-specials-check-xdvi
+  "*Function used to check if the the system supports source specials.
+The function must return t if source specials are supported, and nil
+otherwise.  Set it to nil is source special support is not desired.")
 
-;; Variable used to cache the result of 
-;; `TeX-xdvi-supports-source-specials-p'. Do not change it.
-(defvar TeX-xdvi-supports-source-specials-cache nil)
+(defvar TeX-source-specials-xdvi-p nil
+  "Internal variable.  Do not change it.
+Used to cache the result of `TeX-source-specials-check-xdvi'")
 
-(defun TeX-xdvi-supports-source-specials-p ()
+(defun TeX-source-specials-check-xdvi ()
   "Return t if xdvi supports source specials.
-See `TeX-generate-source-specials'."
-  (if (null TeX-xdvi-supports-source-specials-cache)
+See `TeX-source-specials-active-flag'."
+  (if (null TeX-source-specials-xdvi-p)
       (with-temp-buffer
 	(let ( (buf (current-buffer))
 	       (supports-sourceposition nil))
@@ -653,14 +660,15 @@ See `TeX-generate-source-specials'."
 	      (call-process "xdvi" nil (current-buffer) nil "-help")
 	    (error nil))
 	  (goto-char 1)
-	  (setq supports-sourceposition (search-forward "sourceposition" nil t))
+	  (setq supports-sourceposition
+		(search-forward "sourceposition" nil t))
 	  (if supports-sourceposition
-	      (setq TeX-xdvi-supports-source-specials-cache 1)
-	    (setq TeX-xdvi-supports-source-specials-cache -1)
-	    (message "source specials disabled: xdvi does not support sourceposition"))
+	      (setq TeX-source-specials-xdvi-p 1)
+	    (setq TeX-source-specials-xdvi-p -1)
+	    (message "Source specials disabled: Not supported by xdvi."))
 	  supports-sourceposition))
     ;; not cached, check if positive
-    (> TeX-xdvi-supports-source-specials-cache 0)))
+    (> TeX-source-specials-xdvi-p 0)))
 
 (defgroup TeX-command-name nil
   "Names for external commands in AUCTeX."
@@ -2503,8 +2511,8 @@ to look backward for."
 
 (defun TeX-current-file-name-master-relative ()
   "Return current filename, relative to master directory."
-  (file-relative-name 
-   (buffer-file-name) 
+  (file-relative-name
+   (buffer-file-name)
    (TeX-master-directory)))
 
 ;; was in latex.el, needed in context.el --pg
@@ -2684,6 +2692,9 @@ be bound to `TeX-electric-macro'."
   (define-key TeX-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
   (define-key TeX-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
 
+  ;; FIXME: Which key?  -- rs
+  ;; (define-key TeX-mode-map "???"   'TeX-toggle-source-specials)
+
   ;; From tex-buf.el
   (define-key TeX-mode-map "\C-c\C-d" 'TeX-save-document)
   (define-key TeX-mode-map "\C-c\C-r" 'TeX-command-region)
@@ -2725,9 +2736,9 @@ be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
-	  (if TeX-test-source-specials-support-function
+	  (if TeX-source-specials-check-function
 	      '(["Generate source specials" TeX-toggle-source-specials
-		 :style toggle :selected TeX-generate-source-specials ])
+		 :style toggle :selected TeX-source-specials-active-flag ])
 		nil)
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
 	    (mapcar 'TeX-command-menu-entry
@@ -2787,22 +2798,23 @@ be bound to `TeX-electric-macro'."
 	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 (defun TeX-maybe-set-source-specials (symbol value)
-  (setq TeX-generate-source-specials
+  ;; FIXME: Add doc-string.  -- rs
+  (setq TeX-source-specials-active-flag
 	(if value
-	    (funcall TeX-test-source-specials-support-function)
+	    (funcall TeX-source-specials-check-function)
 	  nil)))
 
 (defun TeX-toggle-source-specials ()
-  "Toggle `TeX-generate-source-specials'."
+  "Toggle `TeX-source-specials-active-flag'."
   (interactive)
-  (if TeX-generate-source-specials
+  (if TeX-source-specials-active-flag
       (progn
-	(setq TeX-generate-source-specials nil)
-	(message "TeX-generate-source-specials: off"))
-    (setq TeX-generate-source-specials 
+	(setq TeX-source-specials-active-flag nil)
+	(message "TeX-source-specials-active-flag: off"))
+    (setq TeX-source-specials-active-flag
 	  (TeX-maybe-set-source-specials nil t))
-    (if TeX-generate-source-specials
-	(message "TeX-generate-source-specials: on"))))
+    (if TeX-source-specials-active-flag
+	(message "TeX-source-specials-active-flag: on"))))
 
 ;;; AmSTeX
 

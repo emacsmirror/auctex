@@ -1,6 +1,17 @@
+2004-04-24  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-toggle-source-specials)
+	(TeX-maybe-set-source-specials, TeX-source-specials-check-xdvi):
+	New (renamed) functions.
+	(TeX-source-specials-active-flag, TeX-source-specials-tex-flags)
+	(TeX-source-specials-viewer-flags)
+	(TeX-source-specials-check-function, TeX-source-specials-xdvi-p):
+	New (renamed) variables.  Tried to clarify doc-strings and
+	variable names.
+	
 2004-04-23  David Kastrup  <dak@gnu.org>
 
-	* Source special support by Dan Nicolaescu <dann@ics.uci.edu>:
+	Source special support by Dan Nicolaescu <dann@ics.uci.edu>:
 	* tex.el (TeX-command-list): start viewer with TeX-run-discard
 	(TeX-expand-list): Add source special flags to viewer call.
 	(TeX-expand-list): Add source special flags to LaTeX call.
@@ -22,7 +33,7 @@
 	* tex-info.el (TeXinfo-insert-environment): Support enclosure of
 	a selected region by the environment to be inserted.
 	Don't eat newline at the end of the environment.
-	(TeXinfo-mode-map): Bind `C-c C-e' to `TeXinfo-insert-environemt'
+	(TeXinfo-mode-map): Bind `C-c C-e' to `TeXinfo-insert-environment'
 	analogous to LaTeX mode.
 
 2004-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
