@@ -1,5 +1,7 @@
 2004-08-03  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-mode-menu): Add "Close Environment"
+
 	* tex.el (TeX-source-specials-view-gnuserv-p): replaces
 	`TeX-source-specials-view-guess-server'.
 	(TeX-source-specials-view-expand-client)

@@ -4049,6 +4049,7 @@ the last entry in the menu."
   (list "LaTeX"
 	(list LaTeX-environment-menu-name)
 	(list LaTeX-environment-modify-menu-name)
+	["Close Environment" LaTeX-close-environment t]
 	"-"
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
