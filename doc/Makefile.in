@@ -15,19 +15,13 @@ DVIPS=dvips
 TEXIFILES = auc-tex.texi install.texi wininstall.texi intro.texi \
 	changes.texi todo.texi faq.texi
 
-all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
+all: auc-tex.dvi tex-ref.dvi auctex
 
 dist: auctex INSTALL INSTALL.windows README CHANGES TODO FAQ \
 	auc-tex_toc.html auc-tex.ps
 
 auc-tex_toc.html: auc-tex.texi
 	$(TEXIHTML) -split_node auc-tex.texi
-
-math-ref.dvi: math-ref.tex
-	$(TEX) math-ref
-	@echo "**********************************************************"
-	@echo "** doc/math-ref.dvi may now be printed (1 page)"
-	@echo "**********************************************************"
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref

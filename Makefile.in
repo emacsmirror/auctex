@@ -69,7 +69,7 @@ STYLESRC = style/prosper.el \
 	   style/ltxdoc.el    style/ltx-base.el
 
 DOCFILES = doc/Makefile.in doc/auc-tex.texi doc/intro.texi doc/install.texi \
-	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi \
+	doc/changes.texi doc/tex-ref.tex doc/history.texi \
 	doc/wininstall.texi doc/todo.texi doc/faq.texi doc/macros.texi
 
 EXTRAFILES = COPYING ChangeLog \

@@ -1,15 +1,15 @@
-+% -*- plain-tex -*- 
+% -*- plain-tex -*- 
 % Reference Card for AUCTeX version 11.50
 %**start of header
 \newcount\columnsperpage
 
-% This file can be printed with 1, 2, or 3 columns per page (see below).
-% Specify how many you want here.  Nothing else needs to be changed.
+% This file has only been checked with 3 columns per page.  But it
+% should print fine either via DVI or PDFTeX.
 
-\columnsperpage=2
+\columnsperpage=3
 
 % This file is intended to be processed by plain TeX (TeX82).
-% compile-command: "tex ref-card.tex"
+% compile-command: "tex tex-ref" or "pdftex tex-ref"
 %
 % Original author of Auc-TeX Reference Card:
 %                                  
@@ -19,6 +19,7 @@
 % Kresten Krab Thorup updated the reference card to 6.
 % Per Abrahamsen updated the reference card to 7, 8, and 9.
 % Ralf Angeli updated it to 11.50.
+% And David Kastrup messed around with it, too, merging the math reference.
 %
 % Thanks to Stephen Gildea
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
@@ -32,11 +33,10 @@
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
   Permissions on back.  v\versionnumber}}
 
-\def\copyrightnotice{
+\def\copyrightnotice{%
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ 1987, 2004 Free Software Foundation, Inc.}
+\centerline{Copyright \copyright\ 1987, 1993, 2004 Free Software Foundation, Inc.}
 \centerline{Copyright \copyright\ 1992 Kresten Krab Thorup}
-\centerline{Copyright \copyright\ 1993 Per Abrahamsen}
 \centerline{for AUC\TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
@@ -54,7 +54,7 @@ are preserved on all copies.
 \newbox\columna
 \newbox\columnb
 
-\def\ncolumns{\the\columnsperpage}
+\edef\ncolumns{\the\columnsperpage}
 
 \message{[\ncolumns\space 
   column\if 1\ncolumns\else s\fi\space per page]}
@@ -76,9 +76,9 @@ are preserved on all copies.
   \def\makefootline{\baselineskip10pt\hsize6.5in\line{\the\footline}}
 \else
   \hsize 3.2in
-  \vsize 7.95in
-%  \hoffset -.75in
-%  \voffset -.745in
+  \vsize 7.8in
+  \hoffset -.75in
+  \voffset -.75in
   \font\titlefont=cmbx10 \scaledmag2
   \font\headingfont=cmbx10 \scaledmag1
   \font\smallfont=cmr6
@@ -90,11 +90,13 @@ are preserved on all copies.
   \font\eightsy=cmsy8
   \textfont0=\eightrm
   \textfont2=\eightsy
-  \def\rm{\eightrm}
+  \def\rm{\fam0 \eightrm}
   \def\bf{\eightbf}
   \def\it{\eightit}
   \def\tt{\eighttt}
   \normalbaselineskip=.8\normalbaselineskip
+  \ht\strutbox.8\ht\strutbox
+  \dp\strutbox.8\dp\strutbox
   \normallineskip=.8\normallineskip
   \normallineskiplimit=.8\normallineskiplimit
   \normalbaselines\rm           %make definitions take effect
@@ -106,6 +108,15 @@ are preserved on all copies.
   \else \if 3\ncolumns
     \let\maxcolumn=c
     \nopagenumbers
+    \ifcase\ifx\pdfoutput\undefined 1 \fi
+      \ifnum\pdfoutput=0 1 \fi
+      2 \or
+        \special{landscape}%
+        \or
+          \dimen0\pdfpagewidth
+          \pdfpagewidth\pdfpageheight
+          \pdfpageheight\dimen0
+      \fi
   \else
     \errhelp{You must set \columnsperpage equal to 1, 2, or 3.}
     \errmessage{Illegal number of columns per page}
@@ -155,7 +166,8 @@ are preserved on all copies.
 
 \outer\def\title#1{{\titlefont\centerline{#1}}\vskip 1ex plus .5ex}
 
-\outer\def\section#1{\par\filbreak
+\outer\def\section#1{\par\vskip 0pt plus 0.2\vsize \penalty-3000
+         \vskip 0pt plus -0.2\vsize
   \vskip 3ex plus 2ex minus 2ex {\headingfont #1}\mark{#1}%
   \vskip 2ex plus 1ex minus 1.5ex}
 
@@ -177,7 +189,7 @@ are preserved on all copies.
 \def\endexample{\endgroup}
 
 \def\key#1#2{\leavevmode\hbox to \hsize{\vtop
-  {\hsize=.75\hsize\rightskip=1em
+  {\hsize=.68\hsize\rightskip=1em
   \hskip\keyindent\relax#1}\kbd{#2}\hfil}}
 
 \newbox\metaxbox
@@ -195,28 +207,22 @@ are preserved on all copies.
 
 %**end of header
 
-
 \title{AUC\TeX\ Reference Card}
 
 \centerline{(for version \versionnumber)}
 
 \section{Conventions Used}
 
-\key{Carriage Return}{RET}
-\key{Tabular}{TAB}
-\key{Linefeed}{LFD}
-
-Entering LaTeX mode calls the value of `{\tt text-mode-hook}', then
-the value of `{\tt TeX-mode-hook}', and then the value of `{\tt
-LaTeX-mode-hook}'.
+\key{Carriage Return or \kbd{C-m}}{RET}
+\key{Tabular or \kbd{C-i}}{TAB}
+\key{Linefeed or \kbd{C-j}}{LFD}
 
 \section{Shell Interaction}
 
 \key{Run a command on the master file}{C-c C-c}
 \key{Run a command on the buffer}{C-c C-b}
 \key{Run a command on the region}{C-c C-r}
-\key{Pin a region}{C-c C-t C-r}
-\key{Toggle usage of source specials}{C-c C-t C-s}
+\key{Fix the region}{C-c C-t C-r}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
 \key{Next error in \TeX/LaTeX session}{C-c `}
@@ -224,31 +230,31 @@ LaTeX-mode-hook}'.
 \key{View output file}{C-c C-v}
 
 Commands you can run on the master file (with \kbd{C-c C-c}) or the
-region (with \kbd{C-c C-r}) include the following (only for LaTeX
-mode).
+region (with \kbd{C-c C-r}) include the following (starred versions
+are not available in all modes):
 
-% \key{\TeX}{TeX}
-% \overfullrule=0pt %The next line is too wide.
-% \key{Run \TeX{} Interactively}{TeX Interactive}
-% \key{Run PDF\TeX{}}{PDFTeX}
-\key{Run LaTeX}{LaTeX}
-\overfullrule=0pt
-\key{Run LaTeX Interactively}{LaTeX Interactive}
-\key{Run PDFLaTeX}{PDFLaTeX}
-% \key{Run Con\TeX{}t (once)}{ConTeXt}
-% \overfullrule=0pt
-% \key{Run Con\TeX{}t Interactively (once)}{ConTeXt Interactive}
-% \key{Run Con\TeX{}t Full}{ConTeXt Full}
-% \key{Run Makeinfo}{Makeinfo}
-% \overfullrule=0pt
-% \key{Run Makeinfo with HTML output}{Makeinfo HTML}
-\key{A previewer}{View}
-\key{Printing the DVI file}{Print}
+\def\star{\llap{\rm*}}
+\key{\TeX}{\star TeX}
+\key{LaTeX}{\star LaTeX}
+\key{Con\TeX{}t (once)}{\star ConTeXt}
+\key{Con\TeX{}t Full}{\star ConTeXt Full}
+\key{Makeinfo}{\star Makeinfo}
+\key{Makeinfo with HTML output}{\star Makeinfo HTML}
+\key{Appropriate previewer}{View}
+\key{Print the output}{Print}
 \key{Bib\TeX}{BibTeX}
 \key{MakeIndex}{Index}
 \key{LaCheck}{Check}
-\key{(PostScript) File}{File}
-\key{Ispell}{Spell} 
+\key{Make (PostScript) File}{File}
+\key{Ispell}{Spell}
+
+\section{\TeX ing options}
+\TeX\ runs can come in various types, which may be toggled and are
+indicated in the mode line.
+
+\key{PDF/DVI mode}{C-c C-t C-p}
+\key{Stop on errors (Interactive mode)}{C-c C-t C-i}
+\key{Use Source Specials for viewer control}{C-c C-t C-s}
 
 \section{Command Insertion}
 
@@ -272,7 +278,7 @@ mode).
 \key{Insert {\tt typewriter} text}{C-c C-f C-t}
 \key{Insert {\sl slanted\/} text}{C-c C-f C-s}
 \key{Delete font}{C-c C-f C-d}
-\key{Replace font}{C-u C-c C-f <KEY>}
+\key{Replace font}{C-u C-c C-f \<key>}
 
 \section{Source Formatting}
 
@@ -313,7 +319,111 @@ mode).
 \key{Reset AUC\TeX}{C-u C-c C-n}
 
 \copyrightnotice
+\penalty-9000
+\title{Math Mode}
+
+\section{Variables}
+
+All math mode commands are under the prefix key specified by
+LaTeX-math-abbrev-prefix, default is "`".
+
+You can define your own math mode commands by setting the variable
+LaTeX-math-list before loading LaTeX-math-mode.
+
+\section{Greek Letters}
+
+\def\disp#1{\hbox to 6ex{$#1$\hfill}}
+\def\twocol#1\par{{%
+  \def\key##1##2{##1&##2\cr}%
+  \setbox0\vbox{\halign to 0.45\hsize{\tabskip0ptplus1fil\relax
+    ##\hfil&\kbd{##}\hfil\cr\vrule width0ptheight\ht\strutbox#1}}%
+  \line{%
+  \splittopskip=\ht\strutbox
+  \dimen0\ht0
+  \advance\dimen0\baselineskip
+  \setbox2\vsplit0to0.5\dimen0
+  \vtop{\unvbox2}\hfill\raise \ht\strutbox \vtop {\unvbox0}}}}
+
+\twocol
+\key{\disp{\alpha} (alpha)}{a}
+\key{\disp{\beta} (beta)}{b}
+\key{\disp{\delta} (delta)}{d}
+\key{\disp{\epsilon} (epsilon)}{e}
+\key{\disp{\phi} (phi)}{f}
+\key{\disp{\gamma} (gamma)}{g}
+\key{\disp{\eta} (eta)}{h}
+\key{\disp{\kappa} (kappa)}{k}
+\key{\disp{\lambda} (lambda)}{l}
+\key{\disp{\mu} (mu)}{m}
+\key{\disp{\nabla} (nabla)}{N}
+\key{\disp{\nu} (nu)}{n}
+\key{\disp{\omega} (omega)}{o}
+\key{\disp{\pi} (pi)}{p}
+\key{\disp{\theta} (theta)}{q}
+\key{\disp{\rho} (rho)}{r}
+\key{\disp{\sigma} (sigma)}{s}
+\key{\disp{\tau} (tau)}{t}
+\key{\disp{\upsilon} (upsilon)}{u}
+\key{\disp{\chi} (chi)}{x}
+\key{\disp{\psi} (psi)}{y}
+\key{\disp{\zeta} (zeta)}{z}
+\key{\disp{\Delta} (Delta)}{D}
+\key{\disp{\Phi} (Phi)}{F}
+\key{\disp{\Gamma} (Gamma)}{G}
+\key{\disp{\Theta} (Theta)}{Q}
+\key{\disp{\Lambda} (Lambda)}{L}
+\key{\disp{\Psi} (Psi)}{Y}
+\key{\disp{\Pi} (Pi)}{P}
+\key{\disp{\Sigma} (Sigma)}{S}
+\key{\disp{\Upsilon} (Upsilon)}{U}
+\key{\disp{\Omega} (Omega)}{O}
+
+\section{Symbols}
+
+\twocol
+\key{\disp{\rightarrow} (rightarrow)}{C-f}
+\key{\disp{\leftarrow} (leftarrow)}{C-b}
+\key{\disp{\uparrow} (uparrow)}{C-p}
+\key{\disp{\downarrow} (downarrow)}{C-n}
+\key{\disp{\leq} (leq)}{<}
+\key{\disp{\geq} (geq)}{>}
+\key{\disp{\tilde{ }} (tilde)}{$\tilde{ }$}
+\key{\disp{\infty} (infty)}{I}
+\key{\disp{\forall} (forall)}{A}
+\key{\disp{\exists} (exists)}{E}
+\key{\disp{\not } (not)}{/}
+\key{\disp{\in} (in)}{i}
+\key{\disp{\times} (times)}{*}
+\key{\disp{\cdot} (cdot)}{.}
+\key{\disp{\subset} (subset)}{\{}
+\key{\disp{\supset} (supset)}{\}}
+\key{\disp{\subseteq} (subseteq)}{[}
+\key{\disp{\supseteq} (supseteq)}{]}
+\key{\disp{\emptyset} (emptyset)}{0}
+\key{\disp{\setminus} (setminus)}{\\}
+\key{\disp{\cup} (cup)}{+}
+\key{\disp{\cap} (cap)}{-}
+\key{\disp{\langle} (langle)}{(}
+\key{\disp{\rangle} (rangle)}{)}
+\key{\disp{\exp} (exp)}{C-e}
+\key{\disp{\sin} (sin)}{C-s}
+\key{\disp{\cos} (cos)}{C-c}
+\key{\disp{\sup} (sup)}{C-^}
+\key{\disp{\inf} (inf)}{C-_}
+\key{\disp{\det} (det)}{C-d}
+\key{\disp{\lim} (lim)}{C-l}
+\key{\disp{\tan} (tan)}{C-t}
+\key{\disp{\hat{ }} (hat)}{^}
+\key{\disp{\vee} (vee)}{|}
+\key{\disp{\wedge} (wedge)}{\&}
+
+\section{Miscellaneous}
+
+\key{cal letters}{c {\rm LETTER}}
 
 \bye
-
-% End:
+
+%%% Local Variables: 
+%%% mode: tex
+%%% TeX-master: t
+%%% End: 

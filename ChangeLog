@@ -1,3 +1,14 @@
+2004-08-10  David Kastrup  <dak@gnu.org>
+
+	* tex-ref.tex: merge math-ref.tex, update a few things, format
+	stuff.
+
+	* math-ref.tex: removed.
+	
+	* doc/Makefile.in (all): Remove math-ref.tex
+
+	* Makefile.in (DOCFILES): Remove math-ref.tex
+
 2004-08-10  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* RELEASE: Add `volunteers welcome'.
