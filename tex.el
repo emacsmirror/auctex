@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.491 $"))
+	    (rev "$Revision: 5.492 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-17 17:21:30 $"))
+    (let ((date "$Date: 2005-03-23 14:16:34 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2059,19 +2059,13 @@ See `TeX-parse-macro' for details."
 	((null arg)
 	 (insert TeX-arg-opening-brace)
 	 (when (and (not optional) (TeX-active-mark))
-	   (exchange-point-and-mark)
-	   (if (featurep 'xemacs)
-	       (zmacs-deactivate-region)
-	     (deactivate-mark)))
+	   (exchange-point-and-mark))
 	 (insert TeX-arg-closing-brace))
 	((eq arg t)
 	 (insert TeX-arg-opening-brace)
 	 (if (and (not optional) (TeX-active-mark))
 	     (progn
-	       (exchange-point-and-mark)
-	       (if (featurep 'xemacs)
-		   (zmacs-deactivate-region)
-		 (deactivate-mark)))
+	       (exchange-point-and-mark))
 	   (set-marker exit-mark (point)))
 	 (insert TeX-arg-closing-brace))
 	((symbolp arg)
@@ -2085,7 +2079,11 @@ See `TeX-parse-macro' for details."
 		  (apply head optional tail))
 		 (t (error "Unknown list argument type %s"
 			   (prin1-to-string head))))))
-	(t (error "Unknown argument type %s" (prin1-to-string arg)))))
+	(t (error "Unknown argument type %s" (prin1-to-string arg))))
+  (when (and (not optional) (TeX-active-mark))
+    (if (featurep 'xemacs)
+	(zmacs-deactivate-region)
+      (deactivate-mark))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
