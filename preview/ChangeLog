@@ -1,3 +1,8 @@
+2002-04-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex/README-preview: update to reflect added file footprint
+	from preview.dtx
+
 2002-04-10  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* Makefile.in: Move the texmf part to latex/Makefile.in, fix the
