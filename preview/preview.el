@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.133 2002-04-20 18:25:41 dakas Exp $
+;; $Id: preview.el,v 1.134 2002-04-20 22:49:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -479,9 +479,6 @@ aload pop restore}def "
   "Set up Dvips process for conversions via gs."
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (if preview-ps-file
-	(setq preview-ps-file
-	      (preview-make-filename preview-ps-file TeX-active-tempdir)))
     (list process (current-buffer) TeX-active-tempdir preview-ps-file)))
 
 (defun preview-dvips-abort ()
@@ -1683,7 +1680,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			      (setq slow-hook
 				    (nconc slow-hook (list lst)))))))
 		      (condition-case err
-			  (run-hooks 'slow-hook)
+			  (save-excursion (run-hooks 'slow-hook))
 			(error (preview-log-error err "Translation hook")))
 		      (push (vector file (+ line offset)
 				  string after-string
@@ -1710,7 +1707,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 	      ;; Hook to change file name
 	      (rplaca TeX-error-file (match-string-no-properties 5)))))
 	(unwind-protect
-	    (progn
+	    (save-excursion
 	      (if (null parsestate)
 		  (error "LaTeX found no preview images"))
 	      (setq parsestate (nreverse parsestate))
@@ -1805,7 +1802,6 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				 (format
 				  "Preview snippet %d out of sequence"
 				  snippet)) "Parser"))))))))
-	  (set-buffer run-buffer)
 	  (preview-call-hook 'close (car open-data) close-data))))))
 
 (defun preview-get-geometry (buff)
@@ -1844,8 +1840,10 @@ If FAST is set, do a fast conversion."
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPS"))
     (setq TeX-active-tempdir tempdir)
-    (setq preview-ps-file (and fast (preview-make-filename
-				     "preview.ps" tempdir)))
+    (setq preview-ps-file (and fast
+			       (preview-make-filename
+				(preview-make-filename
+				 "preview.ps" tempdir) tempdir)))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
@@ -1911,7 +1909,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.133 $"))
+	(rev "$Revision: 1.134 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1922,7 +1920,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-20 18:25:41 $"))
+    (let ((date "$Date: 2002-04-20 22:49:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
