@@ -1,5 +1,8 @@
 2004-04-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-info.el (texinfo-mode): Make last change in
+	`font-lock-defaults' compatible with Emacs 20.
+
 	* latex.el (LaTeX-fill-region-as-paragraph): Indent lines ending
 	with `\\' upon filling a region.
 	(LaTeX-fill-region): Prevent infinite loop at end of buffer.
