@@ -16,7 +16,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 		      (file-name-directory putative-existing-lisp-dir))\
                 (string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($1[\\\\/]\\\\)?\$\"\
                                putative-existing-lisp-dir)\
-                (replace-match \"\" t t putative-existing-lisp-dir 0))))\
+                (replace-match \"\" t t putative-existing-lisp-dir))))\
       (if (and (boundp (quote early-packages))\
                (not package-dir))\
 	  (let ((dirs (append (if early-package-load-path early-packages)\
@@ -191,7 +191,7 @@ AC_DEFUN(AC_FULL_EXPAND,
 [$]$1
 EOF
 `\"" ;; *) break ;; esac; done ])
-
+dnl "
 
 
 
@@ -249,7 +249,11 @@ EMACS_LISP(XEMACS,
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
 else
-  EMACS_FLAVOR=emacs
+  if test "$XEMACS" = "no"; then	
+    EMACS_FLAVOR=emacs
+  else
+    AC_MSG_ERROR([Unable to run $EMACS!  Aborting!])
+  fi
 fi
   AC_MSG_RESULT($XEMACS)
   AC_SUBST(XEMACS)
@@ -409,7 +413,7 @@ if test -z "$auctexdir" ; then
 		[(let ((aucdir (file-name-directory\
                          (locate-library \"tex-site\"))))\
                          (if (string-match \"[\\\\/]\$\" aucdir)\
-                             (replace-match \"\" t t aucdir 0)\
+                             (replace-match \"\" t t aucdir)\
 			   aucdir))], 
 		"noecho")
 	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
