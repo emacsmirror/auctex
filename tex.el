@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.442 $"))
+	    (rev "$Revision: 5.443 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-25 12:06:58 $"))
+    (let ((date "$Date: 2004-08-25 14:19:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3671,21 +3671,16 @@ the macro."
     (let ((orig-point (point))
 	  opening-brace
 	  start-point)
-      (if (and (looking-at
-		(concat "\\(" (regexp-quote TeX-esc) "\\)[@A-Za-z]+"))
-	       (save-match-data
-		 (not (TeX-looking-at-backward
-		       (concat
-			"\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-			"\\(" (regexp-quote TeX-esc) "\\)")))))
+      (if (and (eq (char-after) (aref TeX-esc 0))
+	       (save-excursion
+		 (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))))
 	  ;; Point is located directly at the start of a macro.
-	  (progn
-	    (setq start-point (point))
-	    (goto-char (match-end 1)))
+	  (setq start-point (point))
 	;; Search backward for a macro start.
 	(setq start-point (TeX-find-macro-start-helper))
 	(setq opening-brace (TeX-find-opening-brace))
 	;; Cases {\foo ba-!-r} or \foo{bar\baz{bla}bl-!-u}
+	;; FIXME: Fails on \foo{\bar}{ba-!-z} constructs.
 	(when (and opening-brace start-point
 		   (> start-point opening-brace)
 		   (>= (point) (TeX-find-macro-end-helper start-point)))
@@ -3695,36 +3690,36 @@ the macro."
       (if (not start-point)
 	  nil
 	;; Search forward for the end of the macro.
-	(goto-char start-point)
-	(goto-char (TeX-find-macro-end-helper (point)))
+	(goto-char (TeX-find-macro-end-helper start-point))
 	(if (< orig-point (point))
 	    (list start-point (point))
 	  nil)))))
 
 (defun TeX-find-macro-start-helper ()
-  "Find the starting token of a macro, e.g. a backslash."
-  (save-excursion
-    (catch 'found
-      (while (search-backward TeX-esc nil t)
-	(when (not (save-match-data
-		     (prog1
-			 (TeX-looking-at-backward
-			  (concat (regexp-quote TeX-esc) "\\("
-				  (regexp-quote (concat TeX-esc
-							TeX-esc)) "\\)*")
-			  (- (point) (line-beginning-position)))
-		       (goto-char (match-beginning 0)))))
-	  (throw 'found (match-beginning 0)))))))
+   "Find the starting token of a macro.
+In TeX, LaTeX or ConTeXt this is a `\\' character, in Texinfo it
+is the character `@'.  In case an escaped character is found,
+return the position before the escaping character."
+   (save-excursion
+     (save-match-data
+       (and (search-backward TeX-esc nil t)
+	    (let ((oldpoint (point)))
+	      (if (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))
+		  oldpoint
+		(1- oldpoint)))))))
 
 (defun TeX-find-macro-end-helper (start)
-  "Find the end of a macro if its START is known.
+  "Find the end of a macro given its START.
+START is the position just before the starting token of the macro.
 If the macro is followed by square brackets or curly braces,
 those will be considered part of it."
   (save-excursion
     (catch 'found
       (goto-char start)
-      (skip-chars-forward (regexp-quote TeX-esc))
-      (skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
+      (forward-char)
+      (if (not (looking-at "[A-Za-z@]"))
+	  (forward-char)
+	(skip-chars-forward "A-Za-z@*"))
       (while (not (eobp))
 	(cond
 	 ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
