@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.139 2004-02-03 09:24:59 angeli Exp $
+@c $Id: auc-tex.texi,v 1.140 2004-02-27 21:56:00 angeli Exp $
 
 @finalout
 @titlepage
@@ -225,8 +225,21 @@ String inserted by typing @kbd{"} to open a quotation.
 String inserted by typing @kbd{"} to close a quotation.
 @end defopt
 
-If you include the style file @file{german} @code{TeX-open-quote} and
-@code{TeX-close-quote} will both be set to @samp{"}.
+@defopt TeX-quote-after-quote
+Determines the behavior of @kbd{"}.  If it is non-nil, typing @kbd{"}
+will insert a literal double quote.  The respective values of
+@code{TeX-open-quote} and @code{TeX-close-quote} will be inserted
+after typing @kbd{"} once again.
+@end defopt
+
+If you include the style files @file{german} or @file{ngerman}
+@code{TeX-open-quote} and @code{TeX-close-quote} will be set to the
+values of @code{LaTeX-german-open-quote} and
+@code{LaTeX-german-close-quote} respectively.
+@code{TeX-quote-after-quote} will be set to the value of
+@code{LaTeX-german-quote-after-quote}.  If you write texts which
+facilitate the style files mentioned before, you should customize
+those special variables instead of the standard variables.
 
 In AUC@TeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
@@ -1019,12 +1032,13 @@ and moreover allowing you to @emph{debug} your documents.
 
 @menu
 * Commands::                    Invoking external commands.
+* Viewing::                     Invoking external viewers.
 * Debugging::                   Debugging @TeX{} and La@TeX{} output.
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
 @end menu
 
-@node Commands, Debugging, Formatting, Formatting
+@node Commands, Viewing, Formatting, Formatting
 @section Executing Commands
 @cindex Formatting
 @cindex Running La@TeX{}
@@ -1053,9 +1067,6 @@ and moreover allowing you to @emph{debug} your documents.
 @cindex Making a bibliography
 @cindex Printing
 @cindex Writing to a printer
-@cindex Viewing
-@cindex Previewing
-@cindex Starting a previewer
 
 Formatting the document with @TeX{} or La@TeX{}, viewing with a
 previewer, printing the document, running Bib@TeX{}, making an index, or
@@ -1169,7 +1180,49 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
-@node Debugging, Checking, Commands, Formatting
+@node Viewing, Debugging, Commands, Formatting
+@section Viewing the formatted output
+@cindex Viewing
+@cindex Previewing
+@cindex Starting a previewer
+
+AUC@TeX{} allows you to start external programs for previewing your
+document.  These are normally invoked by pressing @kbd{C-c C-c} once
+the document is formatted or via the respective entry in the Command
+menu.
+
+AUC@TeX{} will try to guess which type of viewer (DVI, PostScript or
+PDF) has to be used and what options are to be passed over to it.
+This decision is based on the output files present in the working
+directory and the style options used in the document.  For example, if
+there is a DVI file in your working directory, a DVI viewer will be
+invoked.  In case of a PDF file it will be a PDF viewer.  If you
+specified a special paper format like @samp{a5paper} or use the
+@samp{landscape} option , this will be passed to the viewer.
+Especially some DVI viewers depend on this kind of information to
+display your document correctly.  In case you are using
+@samp{pstricks} or @samp{psfrag} in your document a DVI viewer cannot
+display the contents correctly and a PostScript viewer will be
+invoked instead.
+
+The information about which file types and style options are
+associated with which viewers and options for them is stored in the
+variables @code{TeX-output-view-style} and @code{TeX-view-style}.
+
+@defopt TeX-output-view-style
+List of output file extensions, style options and view options.
+@end defopt
+
+@defopt TeX-view-style
+List of style options and view options.  This is the predecessor of
+@code{TeX-output-view-style} which does not allow the specification
+of output file extensions.  It is used as a fallback in case none of
+the alternatives specified in @code{TeX-output-view-style} matches.
+In case @code{TeX-view-style} does not match either, no suggestion
+for a viewer will be made.
+@end defopt
+
+@node Debugging, Checking, Viewing, Formatting
 @section Catching the errors
 @cindex Debugging
 @cindex Errors
