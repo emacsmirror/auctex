@@ -71,7 +71,7 @@ disttexts: $(DISTTEXTS)
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		todo.texi --output ../TODO
 
-.PHONY: install disttexts clean maintainer-clean
+.PHONY: install disttexts clean maintainer-clean html-docs all
 
 install: preview-latex.info
 	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
