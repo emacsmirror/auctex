@@ -14,12 +14,33 @@ Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
 might provide an abstraction layer that would make it possible to embed
 @previewlatex{}'s core mechanisms into Emacs calc.
 
+@item Manual improvements
+
+@itemize @minus
 @item Pepper the manual with screen shots and graphics
 
 This will be of interest for the @acronym{HTML} and @TeX{} renditions
 of the texinfo manual.  Except for maybe autoconverted ASCII art
 versions of the @acronym{XBM} icons, the info rendition will usually be
 restricted to text descriptions, however.
+
+@item Fix duplicates
+
+The activation info is still duplicated.
+
+@item Customization
+
+The customization entries need to be documented and rearranged.
+
+@item XEmacs-specific docs
+
+Well, a lot needs to be done.
+
+@item Wrongly placed previews
+
+Rethink this section
+
+@end itemize
 
 @item Fix GhostScript rendering of Emacs
 
@@ -39,7 +60,8 @@ user properly accessing the same file.  In all fairness, the current
 @item Port to XEmacs
 
 In progress, most important first:
-@itemize @bullet
+
+@itemize @minus
 @item Make preview generation work
 
 Right now all you can see is the preview-nonready-icon. Not ideal.
