@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.34 1994-10-28 21:03:20 amanda Exp $
+;; Version: $Id: tex.el,v 5.35 1994-11-28 01:40:55 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -37,8 +37,7 @@
 
 ;; Change this to point to the place where the TeX macros are stored
 ;; at yourt site.
-(defvar TeX-macro-global
-  '("/usr/local/lib/tex/inputs/" "/usr/local/lib/tex/generate/")
+(defvar TeX-macro-global '("/usr/local/lib/texmf/tex/")
   "*Directories containing the sites TeX macro files and style files.
 
 The directory names *must* end with a slash.")
@@ -1331,6 +1330,7 @@ of AmS-TeX-mode-hook."
   (kill-all-local-variables)
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
+  (make-local-variable 'words-include-escapes)
   (setq words-include-escapes t)
 
   ;; Ispell support
@@ -1641,14 +1641,14 @@ If TEX is a directory, generate style files for all files in the directory."
       (let ((style (TeX-strip-extension nil TeX-all-extensions t)))
         (TeX-unload-style style)
 	(save-excursion
-	  (set-buffer (find-file-noselect file))
+	  (set-buffer (generate-new-buffer file))
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook \"" style "\"\n"
 		  " (function\n"
 		  "  (lambda ()")
 	  (mapcar 'TeX-auto-insert TeX-auto-parser)
 	  (insert ")))\n\n")
-	  (save-buffer 0)
+	  (write-region (point-min) (point-max) file nil 'silent)
 	  (kill-buffer (current-buffer))))
     (if (file-exists-p (concat file "c"))
 	(delete-file (concat file "c")))
@@ -1667,14 +1667,12 @@ If TEX is a directory, generate style files for all files in the directory."
 	()
       (insert "\n    (" name)
       (while list
-	(newline-and-indent)
+	(insert "\n     ")
 	(if (stringp (car list))
 	    (insert (prin1-to-string (car list)))
 	  (insert "'" (prin1-to-string (car list))))
 	(setq list (cdr list)))
-      (insert ")")
-      (if (> (current-column) fill-column)
-	  (do-auto-fill)))))
+      (insert ")"))))
 
 (defvar TeX-auto-ignore
   '("csname" "filedate" "fileversion" "docdate" "next" "labelitemi"
@@ -2207,7 +2205,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	(while (re-search-forward "\\({\\|}\\|\\\\.\\)" nil t)
 	  (cond
 	   ((string= "{" (TeX-match-buffer 1))
-	    (setq count (+ TeX-brace-indent-level count)))
+	    (setq count (+ count TeX-brace-indent-level)))
 	   ((string= "}" (TeX-match-buffer 1))
 	    (setq count (- count TeX-brace-indent-level)))))
 	count))))
@@ -2239,6 +2237,9 @@ key to active the font.  The second element is the string to insert
 before point, and the third element is the string to insert after
 point.  An optional fourth element means always replace if not nil.")
 
+(defvar TeX-font-replace-function 'TeX-font-replace
+  "Determines the function which is called when a font should be replaced.")
+
 (defun TeX-describe-font-entry (entry)
   ;; A textual description of an ENTRY in TeX-font-list.
   (concat (format "%8s\t" (key-description (char-to-string (nth 0 entry))))
@@ -2262,7 +2263,7 @@ to use, as specified by TeX-font-list."
 	       (set-buffer "*Help*")
 	       (insert help))))
 	  (replace
-	   (TeX-font-replace (nth 1 entry) (nth 2 entry)))
+	   (funcall TeX-font-replace-function (nth 1 entry) (nth 2 entry)))
 	  ((TeX-active-mark)
 	   (save-excursion
 	     (cond ((> (mark) (point))
@@ -2455,7 +2456,10 @@ Save buffer first including style information.
 With optional argument, also reload the style hooks."
   (interactive "*P")
   (if arg
-      (setq TeX-style-hook-list nil))
+      (setq TeX-style-hook-list nil
+	    BibTeX-global-style-files nil
+	    BibTeX-global-files nil
+	    TeX-global-input-files nil))
   (let ((TeX-auto-save t))
     (if (buffer-modified-p)
 	(save-buffer)
@@ -2561,6 +2565,7 @@ between."
    "auc-tex@iesd.auc.dk"
    (concat "AUC TeX " AUC-TeX-version)
    (list 'window-system
+	 'LaTeX-version
 	 'TeX-style-path
 	 'TeX-auto-save
 	 'TeX-parse-self
