@@ -503,5 +503,11 @@ This makes it possible to add to them."
 	   (use-local-map LaTeX-mode-map) ,@bodyforms)
        (use-local-map save-map))))
 
+(defmacro preview-export-image (image)
+  image)
+
+(defmacro preview-import-image (image)
+  image)
+
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
