@@ -1,4 +1,4 @@
-2001-10-01  David Kastrup  <dakas@tupik.goethe.zz>
+2001-10-01  David Kastrup  <dakas@users.sourceforge.net>
 
 	* README: Added CVS instructions and a few other odds and ends.
 
@@ -10,7 +10,7 @@
 
 	* ChangeLog: Initial entry of ChangeLog.
 
-2001-10-01  alanshutko  <alanshutko@tupik.goethe.zz>
+2001-10-01  alanshutko  <alanshutko@users.sourceforge.net>
 
 	* aclocal.m4: Instead of /dev/null, throw stuff to FD 5, where it
 	might do some good.
