@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.150 2002-07-16 00:30:29 dakas Exp $
+;; $Id: preview.el,v 1.151 2002-07-18 21:57:48 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1465,10 +1465,10 @@ list of LaTeX commands is inserted just before \\begin{document}."
   "Create default preamble to add to LaTeX document."
   (mapconcat #'identity preview-default-preamble "\n"))
 
-(defcustom preview-LaTeX-command "%l '\\nonstopmode\
+(defcustom preview-LaTeX-command "%l \"\\nonstopmode\
 \\PassOptionsToPackage{auctex,active,dvips}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined\
-%D\\fi}\\input{%t}'"
+%D\\fi}\\input{%t}\""
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -1945,14 +1945,14 @@ for definition of PROCESS and NAME."
 	  (error (preview-log-error err "LaTeX" process)))
 	(preview-reraise-error process))))
 
-(defcustom preview-dump-command "initex '&'%l %s.ini"
+(defcustom preview-dump-command "initex \"&%l\" %s.ini"
   "*Command for dumping a format.
 See `TeX-expand-list' for a list of special characters.
 Always run on the master file."
   :group 'preview-latex
   :type 'string)
 
-(defcustom preview-undump-command "%l '&%f' %t"
+(defcustom preview-undump-command "%l \"&%f\" %t"
   "*Command for using a dumped format.
 See `TeX-expand-list' for a list of special characters.
 When this command is used, %f is specially defined to be the
@@ -2065,7 +2065,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.150 $"))
+	(rev "$Revision: 1.151 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2076,7 +2076,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-16 00:30:29 $"))
+    (let ((date "$Date: 2002-07-18 21:57:48 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
