@@ -315,7 +315,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
     ;; . + SPC + CR +     ==> . + SPC + 
     ;;(while (re-search-forward "[.?!][])""']*$" nil t)
     ;;  (insert ? ))
-    (while (re-search-forward "[.?!][])""']*$" nil t)
+    (while (re-search-forward "[.?!][])\"']*$" nil t)
       (if (eobp)
 	  nil
 	;; replace CR by two spaces.

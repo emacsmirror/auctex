@@ -1,4 +1,23 @@
-Wed Aug  3 15:36:02 1994  Per Abrahamsen  (amanda@verdande)
+Sat Aug  6 13:53:01 1994  Per Abrahamsen  (amanda@verdande)
+
+	* latex.el (LaTeX-paragraph-commands): New variable.
+	(LaTeX-common-initialization): Use it.  Suggested by
+	liyuan@allwise.research.att.com (Yuan P. Li).
+
+	* auc-menu.el (easy-menu-add): Check that `x-popup-menu' is bound
+	and that we are running under X before calling it.  reported by
+	Adrian F. Clark <alien@essex.ac.uk>
+
+Thu Aug  4 19:14:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* tex-jp.el (LaTeX-fill-region-as-paragraph): Patch for Emacs 19
+	regexps by koba@flab.fujitsu.co.jp (Kobayashi Shinji) reported by
+	Uenami Ken'ichi <uenami@rita.cow.melco.co.jp>.
+
+	* doc/auc-tex.texi (European): Mention `iso-cnv.el' as suggested
+	by mike@vlsivie.tuwien.ac.at (Michael Gschwind).
+
+Wed Aug  3 15:36:02 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/history.texi: New file.
 
@@ -13,6 +32,7 @@ Wed Aug  3 15:36:02 1994  Per Abrahamsen  (amanda@verdande)
 	* doc/changes.texi: Made ready for 9.2.  Introduce ChangeLog.
 
 	* Makefile (LispInstall): Use "/bin/pwd" instead of "pwd".
+	reported by mic@cs.ucsd.edu (Michelangelo Grigni).
 
 	* Version 9.1 released.
 

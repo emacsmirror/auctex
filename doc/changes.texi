@@ -2,6 +2,11 @@
 
 @itemize @bullet
 @item
+@item
+New variable @code{LaTeX-paragraph-commands} lists La@TeX{} commands
+that shouldn't be formatted as part of a paragraph.
+
+@item
 Older news moved to @file{HISTORY}.  It is not @TeX{}info able, but you
 can get a plaintext version with @samp{make HISTORY}.
 

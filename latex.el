@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.24 1994-08-02 04:56:24 amanda Exp $
+;; Version: $Id: latex.el,v 5.25 1994-08-06 12:42:32 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1862,6 +1862,14 @@ Otherwise, only ask in description environments.")
   "*If non-nil, always insert automatically the corresponding
 \\right if \\left is inserted.")
 
+(defvar LaTeX-paragraph-commands
+  (concat "\\[\\|\\]\\|"  ; display math delimitors
+	  "begin\\|end\\|part\\|chapter\\|label\\|caption\\|"
+	  "section\\|subsection\\|subsubsection\\|par\\|noindent\\|"
+	  "paragraph\\|include\\|includeonly\\|"
+	  "tableofcontents\\|appendix"
+  "Regexp matching names of LaTeX macros that should have their own line."))
+
 ;;;###autoload
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
@@ -1929,11 +1937,8 @@ of LaTeX-mode-hook."
 	 "^[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
-	 "\\[\\|\\]\\|"  ; display math delimitors
-	 "begin\\|end\\|item\\|part\\|chapter\\|label\\|caption\\|"
-	 "section\\|subsection\\|subsubsection\\|par\\|noindent\\|"
-	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
+	 LaTeX-paragraph-commands
+	 "\\|item\\|" (regexp-quote TeX-esc)
 	 "\\)"
 	 "\\|"
 	 "^[ \t]*\\$\\$" ; display math delimitor
@@ -1949,11 +1954,8 @@ of LaTeX-mode-hook."
 	 "^[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
-	 "\\[\\|\\]\\|"  ; display math delimitors
-	 "begin\\|end\\|part\\|chapter\\|label\\|caption\\|"
-	 "section\\|subsection\\|subsubsection\\|"
-	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
+	 LaTeX-paragraph-commands
+	 "\\|" (regexp-quote TeX-esc)
 	 "\\)"
 	 "\\)"))
   (setq selective-display t)
