@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.173 2002-11-28 17:14:36 dakas Exp $
+;; $Id: preview.el,v 1.174 2002-12-06 18:20:24 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -493,7 +493,8 @@ example \"-sDEVICE=png256\" will go well with 'png."
 	(format "\
 /preview-latex-do{{setpagedevice}stopped{handleerror quit}if save \
 exch[count 2 roll]exch cvx \
-systemdict/.runandhide known{.setsafe<<>>setpagedevice{.runandhide}}if \
+systemdict/.runandhide known{.setsafe\
+\(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
 %s stopped{handleerror quit}if count 1 ne{quit}if \
 aload pop restore}bind def "
 		(mapconcat #'identity preview-gs-colors " ")))
@@ -2283,7 +2284,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.173 $"))
+	(rev "$Revision: 1.174 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2294,7 +2295,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-28 17:14:36 $"))
+    (let ((date "$Date: 2002-12-06 18:20:24 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
