@@ -624,7 +624,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.427 $"))
+	(rev "$Revision: 5.428 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -639,7 +639,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-14 17:20:10 $"))
+    (let ((date "$Date: 2004-08-15 10:02:02 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3166,6 +3166,38 @@ be bound to `TeX-electric-macro'."
 	  (push entry out-list)))
     (nreverse out-list)))
 
+(defvar TeX-fold-menu
+  '("Show/Hide"
+    ["Fold Mode" TeX-fold-mode
+     :style toggle
+     :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :help "Toggle folding mode"]
+    "-"
+    ["Hide All" TeX-fold-buffer
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :keys "C-c C-o C-b"
+     :help "Hide all configured TeX constructs in the current buffer"]
+    ["Hide Current Macro" TeX-fold-macro
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :keys "C-c C-o C-m"
+     :help "Hide the macro containing point"]
+    ["Hide Current Environment" TeX-fold-env
+     :visible (not (eq major-mode 'plain-tex-mode))
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :keys "C-c C-o C-e"
+     :help "Hide the environment containing point"]
+    "-"
+    ["Show All" TeX-fold-clearout-buffer
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :keys "C-c C-o C-x"
+     :help "Permanently show all folded content again"]
+    ["Show Current Item" TeX-fold-clearout-item
+     :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+     :keys "C-c C-o C-c"
+     :help "Permanently show the item containing point"])
+  "Menu definition for commands from tex-fold.el.")
+
+
 ;;; Menus for plain TeX mode
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
@@ -3176,7 +3208,7 @@ be bound to `TeX-electric-macro'."
     plain-TeX-mode-map
     "Menu used in plain TeX mode."
     (TeX-menu-with-help
-     '("TeX"
+     `("TeX"
        ["Macro ..." TeX-insert-macro
 	:help "Insert a macro and possibly arguments"]
        ["Complete" TeX-complete-symbol
@@ -3208,6 +3240,7 @@ be bound to `TeX-electric-macro'."
 	:help "Comment or uncomment the currently selected region"]
        ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
 	:help "Comment or uncomment the paragraph containing point"]
+       ,TeX-fold-menu
        "-"
        ("Multifile/Parsing"
 	["Switch to Master File" TeX-home-buffer
