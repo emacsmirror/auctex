@@ -491,7 +491,7 @@ Pure borderless black-on-white will return NIL."
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
-(defcustom preview-auto-reveal (if (boundp 'reveal-mode) 'reveal-mode t)
+(defcustom preview-auto-reveal (if (boundp 'reveal-mode) 'reveal-mode nil)
   "*Cause previews to open automatically when entered.
 Set to t or nil, or to a symbol which will be consulted
 if defined.  The default is to follow the setting of
