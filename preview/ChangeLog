@@ -1,4 +1,30 @@
-2002-11-29  Jan-Ake Larsson  <jalar@localhost.localdomain>
+2002-12-03  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c: 
+	* dvipng/font.c: 	
+	* dvipng/vf.c: use void* in function call 
+
+	* dvipng/dvipng.h:
+	* dvipng/draw.c: 
+	* dvipng/color.c: 
+	* dvipng/set.c: change names of some functions
+
+	* dvipng/dvipng.h:
+	* dvipng/draw.c: 
+	* dvipng/dvi.c: 
+	* dvipng/ppagelist.c: make dvi data more local 
+
+	* dvipng/.cvsignore: 
+	* dvipng/dvipng.h:
+	* dvipng/special.c: 
+	* dvipng/font.c: 	
+	* dvipng/misc.c: 
+	* dvipng/dvipng.c:
+	* dvipng/configure.ac:
+	* dvipng/config.h.in: 
+	* dvipng/Makefile.in: autoconfiscate
+
+2002-11-29  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* doc/readme.texi:
 	* doc/preview-latex.texi:
