@@ -28,6 +28,8 @@
 		   ("enumerate" . LaTeX-item-beamer))
 		 LaTeX-item-list))
 
+   (LaTeX-paragraph-commands-add-locally "frametitle")
+
    (TeX-add-symbols
     '("alert" 1)
     '("alt" TeX-arg-beamer-overlay-spec 2)
@@ -86,9 +88,10 @@
 		       (end-of-line)
 		       (LaTeX-newline)
 		       (insert (format "\\frametitle{%s}" title))
-		       (LaTeX-newline)
-		       (LaTeX-fill-region (line-beginning-position 0)
-					  (line-beginning-position)))))))
+		       ;; This works because \frametitle is a
+		       ;; paragraph command.
+		       (backward-char)
+		       (LaTeX-fill-paragraph))))))
     '("onlyenv" (lambda (env &rest ignore)
 		  (LaTeX-insert-environment
 		   env
