@@ -48,8 +48,9 @@ You can customize the completion for graphic files with
 @code{LaTeX-includegraphics-read-file}.
 
 @item
-Support for the packages @samp{url}, @samp{listings} and @samp{jurabib}
-was added with regard to command completion and syntax highlighting.
+Support for the packages @samp{url}, @samp{listings}, @samp{jurabib} and
+@samp{csquotes} was added with regard to command completion and syntax
+highlighting.
 
 @item
 Performance of fontification and filling was improved.
