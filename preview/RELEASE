@@ -20,6 +20,14 @@ MacOS Carbon[3] or native GTK+ toolkit support[4], a developer
 version[5] of GNU Emacs (to be released as 22.1) is definitely
 required; for other platforms, use of it is advantageous.
 
+The installation procedure has been further improved: more
+configurations should now be detected automatically.  It is strongly
+recommended that you remove any previous installation before
+installing this version to avoid keeping conflicting or unnecessary
+files.  In particular version 0.9 has been known to install into
+strange (but working) places at times and will likely render later
+installed versions inoperative.
+
 The quality of multibyte and image support in the current
 implementations and the responsiveness of the developers to problem
 reports does not recommend the use of XEmacs at the current point of
@@ -29,14 +37,9 @@ The encoding support of preview-latex has been refined: the run buffer
 will now yield readable output again in most situations where it can
 be reasonably expected to do so.
 
-The installation procedure has been further improved: more
-configurations should now be detected automatically.  It is strongly
-recommended that you remove a previous installation if it happens to
-be older than 0.9 before installing this version to avoid keeping
-conflicting or unnecessary files.  The installation does no longer
-require Makeinfo or Perl as long as you don't touch source files:
-precompiled documentation is included in the distribution by default
-and no longer available as a separate archive.
+The installation no longer requires Makeinfo or Perl as long as you
+don't touch source files: precompiled documentation is included in the
+distribution by default and no longer available as a separate archive.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -46,9 +49,10 @@ instructions for users of that operating system.
 
 preview-latex has now been moved into the AUCTeX project.  As a
 consequence, its web site has become
-<URL:http://www.gnu.org/software/auctex#preview-latex>, the project
+<URL:http://www.gnu.org/software/auctex/#preview-latex>, the project
 page (with browsable CVS repository) is that of AUCTeX at
-<URL:http://savannah.gnu.org/projects/auctex>.
+<URL:http://savannah.gnu.org/projects/auctex>.  Starting with release
+11.80, preview-latex will come bundled with AUCTeX.
 
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.

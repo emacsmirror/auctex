@@ -4,6 +4,8 @@
 
 2005-04-01  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: rearrange.  Mention AUCTeX 11.80 as target.
+
 	* aclocal.m4(EMACS_EXAMINE_INSTALLATION_DIR): avoid trailing
 	`/.'.
 	(TEX_PATH_TEXMFDIR): search order changed.
