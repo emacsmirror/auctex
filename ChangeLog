@@ -1,5 +1,8 @@
 2005-01-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/auctex.texi (top): Restrict to one content listing in HTML
+	output.
+
 	* doc/todo.texi (Wishlist): Remove bug regarding parsing of LaTeX
 	class files.
 
