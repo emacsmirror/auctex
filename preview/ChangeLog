@@ -1,5 +1,7 @@
 2002-12-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.7
+	
 	* prv-emacs.el (preview-unwatch-preamble): Fix a lethal typo.
 
 	* Release 0.7.6
