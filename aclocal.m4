@@ -223,10 +223,10 @@ AC_DEFUN(EMACS_LISP, [
 
 
 AC_DEFUN(EMACS_PROG_EMACS, [
-# Check for (x)emacs, report its' path and flavour
+# Check for (X)Emacs, report its path, flavor and version
 
 # Apparently, if you run a shell window in Emacs, it sets the EMACS
-# environment variable to 't'.  Lets undo the damage.
+# environment variable to 't'.  Let's undo the damage.
 if test "${EMACS}" = "t"; then
    EMACS=""
 fi
@@ -261,8 +261,17 @@ fi
   AC_MSG_RESULT($XEMACS)
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
-])
 
+AC_MSG_CHECKING([if (X)Emacs is recent enough])
+EMACS_LISP(EMACS_MAJOR_VERSION,[emacs-major-version])
+if (( $EMACS_MAJOR_VERSION < 21 )); then
+  AC_MSG_RESULT([no])
+  AC_MSG_ERROR([AUCTeX requires at least (X)Emacs version 21.  Aborting!])
+else
+  AC_MSG_RESULT([yes])
+fi
+  AC_SUBST(EMACS_MAJOR_VERSION)
+])
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
   for i in "\${packagedir}/lisp" \
