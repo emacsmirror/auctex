@@ -520,7 +520,9 @@ Like `buffer-substring' but copy overlay display strings as well."
     (if (null overlays)
 	(buffer-substring start end)
       ;; Sort list according to ascending starts.
-      (sort overlays '(lambda (a b) (< (overlay-start a) (overlay-start b))))
+      (setq overlays (sort (copy-sequence overlays)
+			   (lambda (a b)
+			     (< (overlay-start a) (overlay-start b)))))
       ;; Get the string from the start of the region up to the first overlay.
       (setq result (buffer-substring start (overlay-start (car overlays))))
       (let (ov)
