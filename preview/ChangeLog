@@ -1,3 +1,20 @@
+2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-error-condition): New variable for last
+	error condition.
+	(preview-log-error): Error reporting routine.  Logs to run buffer.
+	(preview-reraise-error): At the end of routines, raise a true
+	error with beep and whatever else is necessary to get attention.
+	(preview-gs-sentinel, preview-gs-filter) 
+	(preview-gs-dvips-sentinel, preview-gs-transact): use it.
+	(preview-gs-transact): Don't send to dead process.
+	(preview-parse-messages): Use error logger.
+	(preview-TeX-inline-sentinel): Same here.
+
+2002-04-13  nixsf  <nixsf@punkthus221.au.dk>
+
+	* todo.texi: Update XEmacs status: most things are now done.
+
 2002-04-13  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Repair RedHat XEmacs braindamage
