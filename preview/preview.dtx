@@ -439,7 +439,7 @@
 %  environment and its end.
 %    \begin{macrocode}
 \newcommand{\PreviewSnarfEnvironment}[2][]{\toks@{%
-    \pr@callafter\pr@startsnarf#1\endcsname}%
+    \pr@snarfafter#1\endcsname}%
   \expandafter\pr@advise
    \csname #2\endcsname{\the\toks@##1}%
  \expandafter\pr@advise
@@ -447,17 +447,26 @@
 %</!active>
 %    \end{macrocode}
 %\end{macro}
+%\begin{macro}{\pr@snarfafter}
 %\begin{macro}{\pr@startsnarf}
 %  Ok, this looks complicated, but we have to start a group in order
 %  to be able to hook \cmd{\pr@endbox} into the game only when
-%  \cmd{\ifpr@outer} has triggered the start.
+%  \cmd{\ifpr@outer} has triggered the start.  And we need to get our
+%  start messages out before parsing the arguments.
 %    \begin{macrocode}
 %<*active>
+\def\pr@snarfafter{\ifpr@outer
+     \pr@ship@start
+     \let\pr@ship@start\@empty
+   \fi
+  \pr@callafter\pr@startsnarf}
 \def\pr@startsnarf{\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
    \ignorespaces}
 %</active>
 %    \end{macrocode}
+%\end{macro}
+%\end{macro}
 %\begin{macro}{\pr@ship@start}
 %\begin{macro}{\pr@ship@end}
 %  The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
@@ -471,7 +480,6 @@
 %</!active>
 %</style>
 %    \end{macrocode}
-%\end{macro}
 %\end{macro}
 %\end{macro}
 %The Auc\TeX\ option will cause error messages to spew.  We want them
