@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.377 $"))
+	(rev "$Revision: 5.378 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-01 18:31:30 $"))
+    (let ((date "$Date: 2004-06-01 18:42:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1327,17 +1327,35 @@ Or alternatively:
   :group 'TeX-macro
   :type 'string)
 
- (make-variable-buffer-local 'TeX-default-macro)
+(make-variable-buffer-local 'TeX-default-macro)
 
 (defcustom TeX-insert-braces t
   "*If non-nil, append a empty pair of braces after inserting a macro."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-insert-macro-default-style 'show-optional-args
+  "Specifies whether `TeX-insert-macro' will ask for all optional arguments.
+
+If set to the symbol `show-optional-args', `TeX-insert-macro' asks for
+optional arguments of TeX marcos.  If set to `mandatory-args-only',
+`TeX-insert-macro' asks only for mandatory argument.
+
+When `TeX-insert-macro' is called with \\[universal-argument], it's the other
+way round.
+
+Note that for some macros, there are special mechanism, see e.g.
+`LaTeX-includegraphics-options-alist'."
+  :group 'TeX-macro
+  :type '(choice (const mandatory-args-only)
+		 (const show-optional-args)))
+
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro SYMBOL with completion.
 
-AUCTeX knows of some macros, and may query for extra arguments."
+AUCTeX knows of some macros and may query for extra arguments, depending on
+the value of `TeX-insert-macro-default-style' and whether `TeX-insert-macro'
+is called with \\[universal-argument]."
   ;; When called with a prefix (C-u), only ask for mandantory arguments,
   ;; i.e. all optional arguments are skipped.  See `TeX-parse-arguments' for
   ;; details.  Note that this behavior may be changed in favor of a more
@@ -1452,12 +1470,17 @@ INITIAL-INPUT is a string to insert before reading input."
   "Parse TeX macro arguments ARGS.
 
 See `TeX-parse-macro' for details."
-  (let ((last-optional-rejected nil))
-    ;; Get rid of all optional arguments when called with prefix (C-u).  See
-    ;; `TeX-insert-macro' for more comments.
-    (when (equal current-prefix-arg '(4))
+  (let ((last-optional-rejected nil)
+	skip-opt)
+    ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro' for
+    ;; more comments.  See `TeX-insert-macro-default-style'.
+    (when (or (and (eq TeX-insert-macro-default-style 'show-optional)
+		   (equal current-prefix-arg '(4)))
+	      (and (eq TeX-insert-macro-default-style 'mandatory-only)
+		   (null (equal current-prefix-arg '(4)))))
       (while (vectorp (car args))
 	(setq args (cdr args))))
+
     (while args
       (if (vectorp (car args))
 	  (if last-optional-rejected
