@@ -1,5 +1,8 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi (Configure): link to `LaTeX international
+	characters'
+
 	* prv-xemacs.el (preview-auto-reveal): moved to preview.el
 	(preview-move-point): use preview-auto-reveal-p
 
