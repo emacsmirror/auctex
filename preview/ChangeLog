@@ -1,8 +1,11 @@
 2002-04-14  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (glyph-image-type): New, determine the
-	image typeof a glyph.
+	image type of a glyph.
 	(preview-export-image): Use it.
+
+	* doc/problems.texi (XEmacs): Say that preview reinstating
+	works with a new enough desktop.el.
 
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
