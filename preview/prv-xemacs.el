@@ -491,10 +491,6 @@ Pure borderless black-on-white will return quadruple NIL."
        (balloon-help-minor-mode 1))
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
   (add-hook 'after-change-functions #'preview-handle-after-change nil t)
-  (easy-menu-add-item nil
-		      '("Command")
-		      (TeX-command-menu-entry
-		       (assoc "Generate Preview" TeX-command-list)))
   (easy-menu-add preview-menu)
 ;;; [Courtesy Stephen J. Turnbull, with some modifications
 ;;;  Message-ID: <87el9fglsj.fsf@tleepslib.sk.tsukuba.ac.jp>
