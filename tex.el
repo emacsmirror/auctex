@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.58 1995-03-24 13:09:39 amanda Exp $
+;; Version: $Id: tex.el,v 5.59 1995-11-08 17:37:22 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -67,7 +67,8 @@ performed as specified in TeX-expand-list.")
   ;; arguments if you use DOS.
   (list (list "TeX" "tex '\\nonstopmode\\input %t'" 'TeX-run-TeX nil t)
 	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
-	(list "LaTeX" "%l '\\nonstopmode\\input{%t}'" 'TeX-run-LaTeX nil t)
+	(list "LaTeX" "%l '\\nonstopmode\\input{%t}'"
+	      'TeX-run-LaTeX nil t)
 	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil t)
 	(list "LaTeX2e" "latex2e '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
@@ -252,7 +253,7 @@ Full documentation will be available after autoloading the function."
 (autoload 'latex-help "ltx-help" no-doc t)
 (define-key help-map "\C-l" 'latex-help)
 
-(autoload 'LaTeX-math-mode "ltx-math" no-doc t)
+(autoload 'LaTeX-math-mode "latex" no-doc t)
 (autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
 (autoload 'japanese-latex-mode "tex-jp" no-doc t)
 (autoload 'japanese-slitex-mode "tex-jp" no-doc t)
@@ -261,7 +262,7 @@ Full documentation will be available after autoloading the function."
 
 ;;; Portability.
 
-(require 'auc-menu)
+(require 'easymenu)
 
 ;; An GNU Emacs 19 function.
 (or (fboundp 'set-text-properties)
@@ -408,6 +409,13 @@ The value is actually the tail of LIST whose car is ELT."
 
 ((or (string-match "Lucid" emacs-version)
      (string-match "XEmacs" emacs-version))
+
+(if (eq emacs-minor-version 13)
+    ;; XEmacs 19.13 had a partial defintion of set-text-properties.
+    (defadvice set-text-properties (around ignore-strings activate)
+      "Ignore strings."
+      (or (stringp (ad-get-arg 3))
+	  ad-do-it)))
 
 (defun TeX-active-mark ()
   ;; In Lucid (mark) returns nil when not active.
