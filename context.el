@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2003-04-10 10:01:23 $
+;; Last Change: 05/03/03 19:45:38
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@
 
 (defun ConTeXt-environment (arg)
   "Make ConTeXt environment (\\start...-\\stop... pair).
-With optional ARG, modify current environment. (currently not supported --pg)"
+With optional ARG, modify current environment."
   (interactive "*P")
   (let ((environment (completing-read (concat "Environment type: (default "
 					      (if (TeX-near-bobp)
@@ -161,11 +161,30 @@ With optional ARG, modify current environment. (currently not supported --pg)"
     (let ((entry (assoc environment (ConTeXt-environment-list))))
       (when (null entry)
 	(ConTeXt-add-environments (list environment)))
-      ;; (if arg
-      ;;   (ConTeXt-modify-environment environment)
-      (ConTeXt-environment-menu environment)
-      ;; )
-      )))
+      (if arg
+	  (ConTeXt-modify-environment environment)
+	(ConTeXt-environment-menu environment)))))
+
+;; taken from latex.el
+(defun ConTeXt-modify-environment (environment)
+  "Modify current environment."
+  (save-excursion
+    (ConTeXt-find-matching-stop)
+    (re-search-backward (concat (regexp-quote TeX-esc)
+				(ConTeXt-environment-stop-name)
+				" *\\([a-zA-Z]*\\)")
+			(save-excursion (beginning-of-line 1) (point)))
+    (replace-match 
+     (concat TeX-esc (ConTeXt-environment-stop-name) environment) t t)
+    (beginning-of-line 1)
+    (ConTeXt-find-matching-start)
+    (re-search-forward (concat (regexp-quote TeX-esc)
+			       (ConTeXt-environment-start-name)
+			       " *\\([a-zA-Z]*\\)")
+		       (save-excursion (end-of-line 1) (point)))
+    (replace-match 
+     (concat TeX-esc (ConTeXt-environment-start-name) environment) t t)))
+
 
 (defun ConTeXt-environment-menu (environment)
   "Insert ENVIRONMENT around point or region."
@@ -203,7 +222,7 @@ With optional ARG, modify current environment. (currently not supported --pg)"
 	   (point)))
       (insert "\n"))
   (insert  TeX-esc (ConTeXt-environment-stop-name)
-	   (ConTeXt-current-environment 1))
+	   (ConTeXt-current-environment))
   (indent-according-to-mode)
   (if (not (looking-at "[ \t]*$"))
       (insert "\n")
@@ -212,34 +231,7 @@ With optional ARG, modify current environment. (currently not supported --pg)"
       (beginning-of-line)))
   (indent-according-to-mode))
 
-(defun ConTeXt-current-environment (&optional arg)
-  "Return the name (a string) of the enclosing ConTeXt environment.
-With optional ARG>=1, find that outer level."
-  (setq arg (if arg (if (< arg 1) 1 arg) 1))
-  (save-excursion
-    (while (and
-	    (/= arg 0)
-	    (re-search-backward
-	     (concat (regexp-quote TeX-esc) (ConTeXt-environment-start-name)
-		     "\\|"
-		     (regexp-quote TeX-esc) (ConTeXt-environment-stop-name))
-	     nil t 1))
-      (cond ((TeX-in-comment)
-	     (beginning-of-line 1))
-	    ((looking-at (concat (regexp-quote TeX-esc) 
-				 (ConTeXt-environment-stop-name)))
-	     (setq arg (1+ arg)))
-	    (t
-	     (setq arg (1- arg)))))
-    (if (/= arg 0)
-	"text" ; todo: translate
-      (search-forward (concat TeX-esc (ConTeXt-environment-start-name)))  
-      (let ((beg (point)))
-	;; we can have \startitemize[n][stopper=)]
-	(re-search-forward "[^\\a-zA-Z]")
-	(backward-char 1)
-	(buffer-substring beg (point))))))
-
+;; ??? this looks very LaTeXish --pg
 (defun ConTeXt-insert-environment (environment &optional extra)
   "Insert ENVIRONMENT of type ENV, with optional argument EXTRA."
   (if (and (TeX-active-mark)
@@ -277,6 +269,198 @@ With optional ARG>=1, find that outer level."
     (indent-according-to-mode)
     (end-of-line 0)))
 
+
+;; with the following we can call a function on an environment. Say
+;; you have metapost stuff within your TeX file, go to the environment
+;; and run ConTeXt-work-on-environment (suggested Key: C-c !). AUCTeX
+;; sees that you are inside e.g. \startMPpage....\stopMPpage and
+;; looks in ConTeXt-environment-helper for a function to be called. 
+
+;; % so pressing C-c ! inside the following ...
+;;\startuseMPgraphic{Logo}{Scale}
+;; % Top rectangle
+;; filldraw (0,0)--(2cm,0)--(2cm,1cm)--(0,1cm)--cycle withcolor blue ;
+;; % Bottom black rectangle
+;; drawfill (0,0)--(2cm,0)--(2cm,-1cm)--(0,-1cm)--cycle withcolor black;
+;; % White Text
+;; draw btex \bf AB etex withcolor white ;
+;; % resize to size
+;; currentpicture := currentpicture scaled \MPvar{Scale} ;
+;; \stopuseMPgraphic
+
+;; % ...should give you a "new buffer" (currently narrowed to region
+;; % and switched to metapost-mode and recursive-edit)
+
+;; % Top rectangle
+;; filldraw (0,0)--(2cm,0)--(2cm,1cm)--(0,1cm)--cycle withcolor blue ;
+;; % Bottom black rectangle
+;; drawfill (0,0)--(2cm,0)--(2cm,-1cm)--(0,-1cm)--cycle withcolor black;
+;; % White Text
+;; draw btex \bf AB etex withcolor white ;
+;; % resize to size
+;; currentpicture := currentpicture scaled \MPvar{Scale} ;
+
+
+(defvar ConTeXt-environment-helper 
+  '(("useMPgraphic" . ConTeXt-mp-region)
+    ("MPpage" . ConTeXt-mp-region))
+  "alist that holds functions to call for working on regions. An entry
+  looks like: (\"environment\" . function)")
+
+(defun ConTeXt-mp-region ()
+  "Edit region in metapost-mode."
+  (ConTeXt-mark-environment t)
+  (narrow-to-region (mark) (point))
+  (metapost-mode)
+  (message "Type `M-x exit-recursive-edit' to get back")
+  (recursive-edit)
+  (context-mode)
+  (widen))
+
+;; find smarter name. Suggestions welcome
+(defun ConTeXt-work-on-environment ()
+  "Takes current environment and does something on it (todo: documentation)"
+  (interactive)
+  (let ((fun (cdr (assoc (ConTeXt-current-environment)
+			 ConTeXt-environment-helper))))
+    (when (functionp fun) 
+      (funcall fun))))
+
+
+;; duplicate?!?
+;; (defun ConTeXt-current-environment (&optional arg)
+;;   "Return the name (a string) of the enclosing ConTeXt environment.
+;; With optional ARG>=1, find that outer level."
+;;   (setq arg (if arg (if (< arg 1) 1 arg) 1))
+;;   (save-excursion
+;;     (while (and
+;; 	    (/= arg 0)
+;; 	    (re-search-backward
+;; 	     (concat (regexp-quote TeX-esc) (ConTeXt-environment-start-name)
+;; 		     "\\|"
+;; 		     (regexp-quote TeX-esc) (ConTeXt-environment-stop-name))
+;; 	     nil t 1))
+;;       (cond ((TeX-in-comment)
+;; 	     (beginning-of-line 1))
+;; 	    ((looking-at (concat (regexp-quote TeX-esc) 
+;; 				 (ConTeXt-environment-stop-name)))
+;; 	     (setq arg (1+ arg)))
+;; 	    (t
+;; 	     (setq arg (1- arg)))))
+;;     (if (/= arg 0)
+;; 	"text" ; todo: translate
+;;       (search-forward (concat TeX-esc (ConTeXt-environment-start-name)))  
+;;       (let ((beg (point)))
+;; 	;; we can have \startitemize[n][stopper=)]
+;; 	(re-search-forward "[^\\a-zA-Z]")
+;; 	(backward-char 1)
+;; 	(buffer-substring beg (point))))))
+
+(defun ConTeXt-current-environment ()
+  "Return the name of the current environment."
+  ;; don't make this interactive.
+  (let ((beg)
+	(end))
+    
+    (save-excursion 
+      (re-search-backward (concat (regexp-quote TeX-esc)
+				  (ConTeXt-environment-start-name)))
+      (goto-char (match-end 0))
+      (setq beg (point))
+      (skip-chars-forward "a-zA-Z")
+      (buffer-substring beg (point)))))
+
+(defun ConTeXt-mark-environment (&optional inner)
+  "Set mark to end of current environment (\\start...-\\stop...) and
+  point to the matching begin. If optional INNER is not 
+nil, include \\start... and \\stop, otherwise only the
+contents."
+  (interactive)
+  (let ((cur (point)))
+    (ConTeXt-find-matching-stop inner)
+    (set-mark (point))
+    (goto-char cur)
+    (ConTeXt-find-matching-start inner)
+    (TeX-activate-region)))
+
+(defun ConTeXt-find-matching-stop (&optional inner)
+  "Find end of current \\start...\\stop-Pair. If INNER is non
+nil, go to the point just past before \\stop... macro. Otherwise goto
+the point just past \\stop..."
+  (interactive)
+  (let ((regexp (concat (regexp-quote TeX-esc)
+			"\\("
+			(ConTeXt-environment-start-name)
+			"\\|"
+			(ConTeXt-environment-stop-name)
+			"\\)"
+			))
+	(level 1)
+	(pos))
+    ;;jump over the \start... when at the beginning of it.
+    (when (looking-at (concat (regexp-quote TeX-esc)
+			      (ConTeXt-environment-start-name)))
+      (re-search-forward regexp nil t))
+    (while (and (> level 0) 
+		(re-search-forward regexp nil t)
+		(goto-char (1- (match-beginning 1)))
+		(cond ((looking-at (concat (regexp-quote TeX-esc)
+					   (ConTeXt-environment-start-name)))
+		       (re-search-forward regexp nil t)
+		       (setq level (1+ level)))
+		      ((looking-at (concat (regexp-quote TeX-esc)
+					   (ConTeXt-environment-stop-name)))
+		       (re-search-forward regexp nil t)
+		       (setq level (1- level))))))
+    ;; now we have to look if we want to start behind the \start... macro
+    (if inner
+	(beginning-of-line)
+      (skip-chars-forward "a-zA-Z"))))
+  
+(defun ConTeXt-find-matching-start (&optional inner)
+  "Find beginning of current \\start...\\stop-Pair. If INNER is non
+nil, go to the point just past the \\start... macro."
+  (interactive)
+  (let ((regexp (concat (regexp-quote TeX-esc)
+			"\\("
+			(ConTeXt-environment-start-name)
+			"\\|"
+			(ConTeXt-environment-stop-name)
+			"\\)"
+			))
+	(level 1)
+	(pos))
+    (while (and (> level 0) 
+		(re-search-backward regexp nil t)
+		(cond ((looking-at (concat (regexp-quote TeX-esc)
+					   (ConTeXt-environment-stop-name)))
+		       (setq level (1+ level)))
+		      ((looking-at (concat (regexp-quote TeX-esc)
+					   (ConTeXt-environment-start-name)))
+		       (setq level (1- level))))))
+    ;; now we have to look if we want to start behind the \start... macro
+    (when inner
+      ;; \startfoo can have 0 or more {} and [] pairs. I assume that
+      ;; skipping all those parens will be smart enough. It fails when
+      ;; the first part in the \start-\stop-environment is { or [, like
+      ;; in \startquotation   {\em important} \stopquotation. There is
+      ;; yet another pitfall: \startsetups SomeSetup foo bar
+      ;; \stopsetups will use SomeSetup as the argument and the
+      ;; environment 
+      (skip-chars-forward "\\\\a-zA-Z")
+      (save-excursion
+	(while (progn 
+		 (skip-chars-forward "\t\n ")
+		 (forward-comment 1)
+		 (skip-chars-forward "\t\n ")
+		 (looking-at "\\s\("))
+	  (forward-list 1)
+	  (setq pos (point))))
+      (when pos
+	(goto-char pos))
+      (unless (bolp)
+	(forward-line)))))
+
 ;;; items
 
 (defun ConTeXt-insert-item ()
@@ -290,13 +474,15 @@ With optional ARG>=1, find that outer level."
 (defvar ConTeXt-mode-map
   (let ((map (copy-keymap TeX-mode-map)))
     
-    ;; Standard
+    (define-key map "\e\C-a"  'ConTeXt-find-matching-start)
+    (define-key map "\e\C-e"  'ConTeXt-find-matching-stop)
+;; likely to change in the future    
+    (define-key map "\C-c!"    'ConTeXt-work-on-environment)
     (define-key map "\C-c\C-e" 'ConTeXt-environment)
     (define-key map "\C-c\n"   'ConTeXt-insert-item)
     (or (key-binding "\e\r")
 	(define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
     (define-key map "\C-c]" 'ConTeXt-close-environment)
-
     map)
   "Keymap used in `ConTeXt-mode'.")
 
@@ -320,6 +506,7 @@ of context-mode-hook."
    "itemize" "text" "typing" "linenumbering"
    ;; some metapost environments
    "MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
+   "uniqueMPgraphic"
    "buffer" "narrower" "tabulate")
 
   ;; todo: make interface aware! 
