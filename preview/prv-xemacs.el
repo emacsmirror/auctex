@@ -101,35 +101,21 @@ this is only implemented for the `nil' case."
            (set-buffer-file-coding-system 'binary))
     (error 'unimplemented "`set-buffer-multibyte is only implemented for the binary case.")))
 
-(preview-defmacro next-single-char-property-change (pos prop &optional object limit)
+(preview-defmacro next-single-char-property-change (pos prop)
   "Return the position of next property change for a specific property.
-
 This is like `next-single-property-change', except that if no
-change is found before the end of the OBJECT, it returns the
-maximum valid position in OBJECT rather than `nil'."
-  `(or (next-single-property-change ,pos ,prop ,object ,limit)
-       ;; The lack of checking that object isa buffer-or-string is safe;
-       ;; `next-single-property-change' throws a noncontinuable error
-       ;; if this is not so.
-       (and (sequencep ,object)
-            (length ,object))
-       (and (bufferp ,object)
-            (point-max ,object))))
+change is found before the end of the buffer, it returns
+\(point-max) rather than `nil'."
+  `(or (next-single-property-change ,pos ,prop)
+       (point-max)))
 
-(preview-defmacro previous-single-char-property-change (pos prop &optional object limit)
+(preview-defmacro previous-single-char-property-change (pos prop)
   "Return the position of previous property change for a specific property.
-
-This is like `next-single-char-property-change', but scans back
-from POS instead of forward, and returns the minimum valid
-position in OBJECT if no change is found."
-  `(or (previous-single-property-change ,pos ,prop ,object ,limit)
-       ;; The lack of checking that object isa buffer-or-string is safe;
-       ;; `next-single-property-change' throws a noncontinuable error
-       ;; if this is not so.
-       (and (sequencep ,object)
-            0)
-       (and (bufferp ,object)
-            (point-min ,object))))
+This is like `next-single-property-change', except that if no
+change is found before the end of the buffer, it returns
+\(point-min) rather than `nil'."
+  `(or (previous-single-property-change ,pos ,prop)
+       (point-min)))
 
 (preview-defmacro with-temp-message (message &rest body)
   "Display MESSAGE temporarily if non-nil while BODY is evaluated.
@@ -302,25 +288,21 @@ if there was any urgentization."
   "Generate a clickable string or keymap.
 If MAP is non-nil, it specifies a keymap to add to, otherwise
 a new one is created.  If GLYPH is given, the result is made
-to display it, whether it is a string or image.  In that case,
+to display it wrapped in a string.  In that case,
 HELPSTRING is a format string with one or two %s specifiers
 for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
 are functions to call on preview's clicks."
-  `(let (,@(and glyph `((glyph ,glyph) res))
+  `(let (,@(and glyph '((res (copy-sequence "x"))))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
            `((define-key resmap preview-button-2 ,click2)))
      ,@(if glyph
-           `((if (stringp glyph)
-		 (setq res (copy-sequence glyph))
-	       (setq res (copy-sequence "x"))
-	       (add-text-properties 0 1 (list 'end-glyph glyph)
-				    res))
-	     (add-text-properties
-              0 (length res)
-              (list 'mouse-face 'highlight
+	   `((add-text-properties
+              0 1
+              (list 'end-glyph ,glyph
+		    'mouse-face 'highlight
               'preview-balloon-help
 	      ,(if (stringp helpstring)
 		   (format helpstring preview-button-1 preview-button-2)
@@ -328,7 +310,7 @@ are functions to call on preview's clicks."
               'preview-keymap resmap)
               res)
              res)
-         '(resmap))))
+	 '(resmap))))
 
 (defun preview-click-reroute (ov event)
   "If OV received a click EVENT on a glyph, reroute to special map."
