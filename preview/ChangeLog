@@ -1,3 +1,9 @@
+2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* configure.in: Preparations for 0.7.6
+
+	* RELEASE: Preparations for 0.7.6
+
 2002-12-14  David Kastrup  <David.Kastrup@t-online.de>
 
 	* aclocal.m4: Don't lie about name of option --with-texmf-dir
