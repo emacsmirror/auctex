@@ -94,11 +94,11 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\C-m" 'TeX-insert-macro)
   (define-key TeXinfo-mode-map "\e\t"     'TeX-complete-symbol) 
 
-  (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-region)
-  (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-paragraph)
-  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-paragraph) ;*** Old way
-  (define-key TeXinfo-mode-map "\C-c:"    'TeX-un-comment-region) ;*** Old way
-  (define-key TeXinfo-mode-map "\C-c\""   'TeX-un-comment) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
+  (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
+  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
 
   ;; From tex-buf.el
   (define-key TeXinfo-mode-map "\C-c\C-c" 'TeX-command-master)
@@ -166,8 +166,8 @@ When called interactively, prompt for an environment."
 	["Update Node" texinfo-update-node t]
 	["Update Every Node" texinfo-every-node-update t]
 	["Update All Menus" texinfo-all-menus-update t]
-	["Uncomment Region" TeX-un-comment-region t]
 	["Comment Region" TeX-comment-region t]
+	["Uncomment Region" TeX-uncomment-region t]
 	["Switch to Master file" TeX-home-buffer t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
