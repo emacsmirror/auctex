@@ -1,10 +1,8 @@
 Installing preview-latex should be simple: merely @code{./configure},
-@code{make}, and @code{make install}.
-
-Note that unlike most emacs add-ins, preview-latex consists of a TeX
-part and an Emacs part (that uses AUC @TeX{}). This makes configuration
-a bit trickier than normal. Please read through this document fully
-before installing anything.
+@code{make}, and @code{make install}. Note that unlike most emacs
+add-ins, preview-latex consists of a @TeX{} part and an Emacs part (that
+uses AUC @TeX{}). This makes configuration a bit trickier than normal.
+Please read through this document fully before installing anything.
 
 @section Prerequisites
 
@@ -22,11 +20,18 @@ You need a working AUC @TeX{} installation. AUC @TeX{} can be found at
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}. All fairly recent
 versions should work.
 
-@item A working LaTeX installation
+@item A working La@TeX{} installation
 
 Preview should work with nearly any La@TeX{} installation which contains
 dvips, though most testing has taken place using tetex-based
 distributions.
+
+@item A recent GhostScript
+
+This is not really needed to @emph{install} the package, but will be
+required for stable operation of it. Most problems we have encountered
+come from interaction with not so recent versions of GhostScript, so it
+is a good idea to have, say GhostScript 6.51 or later installed.
 @end itemize
 
 @section Configure
@@ -72,7 +77,7 @@ unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
 @end table
 
-@section Building files
+@section Build/install
 
 Once configure has been run, simply enter
 
@@ -82,18 +87,15 @@ make
 
 @noindent 
 at the prompt to byte-compile the lisp files, extract the @TeX{} files
-and build the documentation @acronym{DVI} file.
-
-@section Installing files
-
-To install the files into the locations chosen earlier, type
+and build the documentation files. To install the files into the
+locations chosen earlier, type
 
 @example
 make install
 @end example
 
 @noindent 
-You may need special privileges to install, e.g. if you are installing
+You may need special privileges to install, e.g., if you are installing
 into system directories.
 
 @section Loading the package
@@ -107,14 +109,16 @@ is in Emacs' load-path variable.  This could mean, for example, adding
 the line @code{(add-to-list 'load-path "~/elisp/preview")} to your
 @file{.emacs} file.
 
+@cindex @file{.emacs} 
 Next put the following lines into your @file{.emacs} file:
+
 @example
 (autoload 'LaTeX-preview-setup "preview")
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
 This will make Emacs load @file{preview.el} and let it install itself
-into AUC @TeX{} when you first load a LaTeX file (be sure to have AUC
+into AUC @TeX{} when you first load a La@TeX{} file (be sure to have AUC
 @TeX{} up and working). @kbd{C-c C-c g @key{RET}} should then give you a
 graphics preview. You can customize the default option set and other
 settings of the Emacs package by entering @kbd{M-x customize-group
@@ -122,22 +126,6 @@ settings of the Emacs package by entering @kbd{M-x customize-group
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
-reports.
-
-@section If it does not work
-
-Currently one of the most common problems is GhostScript failing. It
-might be necessary to play around with the settings of the variable
-preview-gs-options in order to get your version of GhostScript to work.
-We want to support most reasonable versions of GhostScript, so if you
-are experiencing problems, be sure to include the output of @code{gs -h}
-in your report. If you use @kbd{M-x preview-report-bug @key{RET}}, this
-should be done automatically.
-
-A failing run will add information to the bottom of the process buffer
-displayed by @kbd{C-c C-l}, or attach the information to the particular
-images causing failure.
-
-@xref{Known problems}, or the file @file{PROBLEMS} for a list of known
-problems.
+reports. See the @file{PROBLEMS} file or @ref{Known problems} for a list
+of known problems.
 
