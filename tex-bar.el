@@ -157,7 +157,11 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 				   (intern (TeX-master-file)))
 		:visible (plist-get TeX-error-report-switches
 				    (intern (TeX-master-file))))
-    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
+    (view :image "view"
+	  ;; FIXME: Mode specific switching doesn't work yet, so keep general
+	  ;; image for now.
+	  ;;
+	  ;; (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
 	  :help (lambda nil (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
