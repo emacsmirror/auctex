@@ -2346,8 +2346,14 @@ space does not end a sentence, so don't break a line there."
 			     (skip-chars-backward "\n")
 			     (point))))
 	    (subst-char-in-region from point-max ?\n ?\ ))
-	  ;; Remove trailing whitespace
-	  (goto-char to) (delete-char (- (skip-chars-backward " \t"))))
+	  (goto-char from)
+	  (skip-chars-forward " \t")
+	  ;; Remove extra spaces between words.
+	  (unless (and nosqueeze (not (eq justify 'full)))
+	    (canonically-space-region (or squeeze-after (point)) to)
+	    ;; Remove trailing whitespace.
+	    (goto-char (point-max))
+	    (delete-char (- (skip-chars-backward " \t")))))
 
 	;; This is the actual FILLING LOOP.
 	(goto-char from)
