@@ -1,27 +1,108 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.14 1992-07-22 17:53:47 krab Exp $
+# $Id: Makefile,v 5.15 1992-07-22 19:30:15 krab Exp $
 #
 
-ELISPDIR=/home/local/lib/emacs/local/auctex
-BINDIR=/home/local/pd/bin
+##----------------------------------------------------------------------
+##  EDIT THE FOLLOWING LINES 
+##----------------------------------------------------------------------
 
-CC = gcc
-CFLAGS = -O
-LDFLAGS = -ll
+#
+# For AUC TeX installation
+#
+
 EMACS=emacs
 TEX=tex
+
+ELISPDIR=/home/local/lib/emacs/local/auctex
+INFODIR=/home/local/sys/gnu/info
+
+#
+# for LaCheck installation:
+#
+
+PD_DIR=/home/local/pd
+BINDIR=$(PD_DIR)/bin
+MANDIR=$(PD_DIR)/man
+
+# Need K&R compiler.  Either `cc' or `gcc -traditional'
+CC = gcc -traditional
+
+# Cflags.. Include `-DNEED_STRSTR' if you don't have strstr() in libc
+CFLAGS = -O # -DNEED_STRSTR 
+
+# How to run flex. (flex is needed, lex won't do)
+# if you don't have `flex' you may use the other instead:
+
+LEX = flex -8  lacheck.lex
+#LEX = cp lacheck.noflex.c lex.yy.c 
+
+
+##----------------------------------------------------------------------
+##  BELOW THIS LINE ON YOUR OWN RISK!
+##----------------------------------------------------------------------
+
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
 	ltx-sec.el tex-buf.el tex-math.el tex-site.el auc-ver.el
 OTHERFILES = COPYING INTRO README Makefile lacheck/* doc/*
 
-all: $(ELISPDIR) Doc LaCheck
+first:
+	@echo ""
+	@echo "  ** Welcome to the AUC TeX installation suite **"
+	@echo ""
+	@echo "  Edit the Makefile to suit your needs. Then run:"
+	@echo 
+	@echo "   make all"
+	@echo 
+	@echo "  and follow the instructions."
+	@echo ""
+
+all: main
+	@echo "**********************************************************"
+	@echo "** Before running \`make install' you should edit the "
+	@echo "** file \`tex-site.el' in this directory to suit your"
+	@echo "** local needs.  Print out the file \`doc/auc-tex.dvi'"
+	@echo "** and read the section \`Installation' if in doubt." 
+	@echo "** Alternatively you may run \`make DocInstall' and read"
+	@echo "** that information via Emacs' info system"
+	@echo "** Then run: \`make install'"
+	@echo "**********************************************************"
+
+main: Doc LaCheck
+
+install: main $(ELISPDIR) LaInstall DocInstall
+	@echo 
+	@echo "**********************************************************"
+	@echo "**   Congratulations! AUC TeX installation completed    **"
+	@echo "**********************************************************"
+	@echo "** You may want to print the following files:  "
+	@echo "**    doc/auc-tex.dvi"
+	@echo "**    doc/ref-card.dvi"
+	@echo "** Now edit .emacs according to the documentation       **"
+	@echo "**********************************************************"
+	@echo
+
+LaInstall: LaCheck
+	@echo "**********************************************************"
+	@echo "** Installing LaCheck "
+	@echo "**********************************************************"
+	(cd lacheck; make install BINDIR=$(BINDIR) MANDIR=$(MANDIR))
+
+DocInstall: Doc
+	@echo "**********************************************************"
+	@echo "** Preparing AUC TeX \`info' pages"
+	@echo "**********************************************************"
+	(cd doc; make install INFODIR=$(INFODIR))
 
 $(ELISPDIR): $(ELISPSRC)  Makefile
+	@echo "**********************************************************"
+	@echo "** Byte compiling AUC TeX.  This may take a while..."
+	@echo "**********************************************************"
 	if [ ! -d $(ELISPDIR) ]; then mkdir $(ELISPDIR); fi
 	cp $(ELISPSRC) $(ELISPDIR)
 	(touch /tmp/auc.$$$$; \
+	echo "(setq load-path (cons \"$(ELISPDIR)\" load-path))" >>  /tmp/auc.$$$$; \
 	for EL in $(ELISPSRC); do \
 	echo "(byte-compile-file \"$(ELISPDIR)/$$EL\")" \
               >> /tmp/auc.$$$$; \
@@ -35,9 +116,16 @@ $(ELISPDIR): $(ELISPSRC)  Makefile
 
 
 LaCheck:
-	(cd lacheck; make)
+	@echo "**********************************************************"
+	@echo "** Building LaCheck
+	@echo "**********************************************************"
+	(cd lacheck; make BINDIR=$(BINDIR) \
+	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
 
 Doc: 
+	@echo "**********************************************************"
+	@echo "** Making AUC TeX documentation
+	@echo "**********************************************************"
 	(cd doc; make)
 
 clean:
@@ -48,14 +136,21 @@ clean:
 
 dist: 	
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
-	@echo "Make distribution of auctex for release $$TAG"
-	rm -f auc-ver.el
-	echo "(defconst AUC-TeX-version \"$$TAG\" \
+	@echo "]; then echo "*** No tag ***"; exit 1; fi
+	@echo "**********************************************************"
+	@echo "** Making distribution of auctex for release $$TAG"
+	@echo "**********************************************************"
+	rm  -f auc-ver.el
+	if [ -d auctex ]; then rm -r auctex; fi
+	OUT=`echo $$TAG | sed s/release_//`; \
+	   echo "(defconst AUC-TeX-version \"$$OUT\" \
 	   \"AUC TeX version number\")" \
 	   "(defconst AUC-TeX-date \"`date`\" \
-	   \"AUC TeX release date\")" > auc-ver.el
+	   \"AUC TeX release date\")" \
+	   "(provide 'auc-ver)"  > auc-ver.el
 	cvs checkout -r $(TAG) auctex
 	find auctex -name CVS -exec rm -r {} \;
+	cp auc-ver.el auctex
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \

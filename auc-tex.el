@@ -1,4 +1,4 @@
-;;;* Last edited: Jul 22 19:48 1992 (krab)
+;;;* Last edited: Jul 22 21:17 1992 (krab)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -10,17 +10,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-07-22 17:53:52 $|$Revision: 5.35 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-07-22 19:30:20 $|$Revision: 5.36 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.35 1992-07-22 17:53:52 krab Exp $
+;; $Id: auc-tex.el,v 5.36 1992-07-22 19:30:20 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Jul 22 19:48:58 1992
-;; Buffer Position : 6587
-;; Update Count    : 612
+;; Last Modified On: Wed Jul 22 21:17:39 1992
+;; Buffer Position : 6589
+;; Update Count    : 614
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

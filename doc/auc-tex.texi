@@ -6,12 +6,12 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.4 1992-07-22 17:54:08 krab Exp $
+@c $Id: auc-tex.texi,v 1.5 1992-07-22 19:30:27 krab Exp $
 
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle July 1992, for AUC @TeX{} Version 5.7
+@subtitle July 1992, for AUC @TeX{} Version 6
   
 @author by Kresten Krab Thorup
  
@@ -41,7 +41,7 @@ notice identical to this one except for the removal of this paragraph
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This is the first edition of the AUC @TeX{} documentation.
+This file documents AUC @TeX{} version 6.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reason to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -64,6 +64,7 @@ Kresten Krab Thorup
 * Frequently Used Commands::    Inserting Frequently Used Commands  
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
+* Installation::                Installation
 * Supported symbols::           Currently supported symbols in LaTeX-math-mode
 
  --- The Detailed Node Listing ---
@@ -699,7 +700,7 @@ placed right after the @kbd{\}.
 @end table
 
 
-@node Formatting, Supported symbols, Advanced Features, top
+@node Formatting, Installation, Advanced Features, top
 @chapter Formatting and Printing 
 
 The most powerful features of AUC @TeX{} are those allowing you to run
@@ -863,7 +864,101 @@ Bound to @kbd{C-c C-h}. Go to the `main' file of the most recently
 formatted @TeX{} document.
 @end deffn
 
-@node Supported symbols,  , Formatting, top
+@node Installation, Supported symbols, Formatting, top
+@chapter Installation of AUC @TeX{}
+
+First, you should consult the file @samp{tex-site.el} and edit it to fit
+your local site.  The file is documented, so that shouldn't be that
+hard.  Don't worry if you dont understand some of it -- you can read
+this documentation later to fine tune your installation.
+
+Next, edit the file @samp{Makefile} in the auctex directory to set up
+pathes for installation of the files. 
+
+Now type @samp{make all}, and the whole thing will be `made'.  If this
+succeeds, now type @samp{make install}, and it will all be installed.
+
+Finally, you will need to insert the following lines in your .emacs
+file. If it is a cite installation, these lines should rather be in the
+local init file.  This will make sure, that AUC @TeX{} will be loaded
+automatically when you load a file width suffix @samp{.tex}.@refill
+ 
+@lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Tell Emacs where the files of AUC TeX is located
+ 
+(setq load-path (cons (expand-file-name "PATH_FOR_AUC-TEX") load-path))
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Make AUC TeX be loaded automatically when one of the following
+;; commands are invoked.
+ 
+(autoload 'tex-mode "auc-tex" "Automatic select TeX or LaTeX mode" t)
+(autoload 'plain-tex-mode "auc-tex" "Mode for Plain TeX" t)
+(autoload 'latex-mode "auc-tex" "Mode for LaTeX" t)
+(autoload 'LaTeX-math-mode    "tex-math"      "Math mode for TeX." t)
+(autoload 'outline-minor-mode "min-out" "Minor Outline Mode." t)
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Let tex-mode be called, if a `.tex' file is loaded.  The fuction
+;; tex-mode will automatically select either plain-TeX or LaTeX mode
+ 
+(setq auto-mode-alist (append '(("\\.tex$" . tex-mode))
+                              auto-mode-alist))
+@end lisp
+
+Also, you should insert the following in you .emacs file.  The following
+may have to be modified to fit personal taste:
+
+@lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Note:  C-c <letter> sequences are reserved for users own bindings
+;;
+ 
+(defun Ctl-C-prefix ()                  ; Use Ctl-C as a command prefix
+  Ctl-C-keymap)
+(setq Ctl-C-keymap (make-keymap))       ; allocate Ctl-C keymap table
+(global-set-key "\C-c" (Ctl-C-prefix))  ; define Ctl-C function
+ 
+(define-key Ctl-C-keymap "m" 'LaTeX-math-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Setup outline-minor-mode
+;; 
+
+(define-key Ctl-C-keymap "o" 'outline-minor-mode)
+(make-variable-buffer-local 'outline-prefix-char)
+(setq-default outline-prefix-char "\C-l")
+(make-variable-buffer-local 'outline-regexp)
+(setq-default outline-regexp "[*\^l]+") ;; this is purely a default
+(make-variable-buffer-local 'outline-level-function)
+(setq-default outline-level-function 'outline-level-default)
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Personal defaults for AUC-TeX mode
+;;
+ 
+(setq LaTeX-figure-label "fig:")
+(setq LaTeX-table-label "tab:")
+(setq LaTeX-section-label "sec:")
+(setq LaTeX-default-style-options "a4,12pt,dk")
+(setq LaTeX-float "hbtp")
+@end lisp
+
+For efficiency of AUC @TeX{}, you should byte compile the .el files.
+This is done automatically if you edit the make file run it.
+ 
+See the file @samp{ltx-dead.el} for how to install
+@samp{LaTeX-dead-keys-mode}.  This is the mode which handles accented
+letters. 
+
+@node Supported symbols,  , Installation, top
 @appendix Currently supported symbols in LaTeX-math-mode
  
 

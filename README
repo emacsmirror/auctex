@@ -1,5 +1,5 @@
 
-$Id: README,v 5.16 1992-07-22 13:06:16 krab Exp $
+$Id: README,v 5.17 1992-07-22 19:30:17 krab Exp $
 
 AUC TeX 
 =======
@@ -8,9 +8,9 @@ AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents.
 
 ********** NEWS NEWS NEWS NEWS **********
 
-Version 5.7:
+Version 6:
 
-	Preliminary documentation is avilable in the directory
+DOCS!	Preliminary documentation is avilable in the directory
 	`doc'.  It isn't very well written, but I beleve it covers
 	most interesting points.  Comments, suggestions, or even
 	rewrites of sections are VERY WELCOME...
@@ -22,10 +22,13 @@ Version 5.7:
 
 	Some minor changes in:
 
-	TeX-region:  Should work better with `Master:' option
+	  TeX-region:  Should work better with `Master:' option
 
-	LaTeX-environment:  Numerous new hooks added by Masayuki
-			Kuwada (hope I spelled it correctly)
+	  LaTeX-environment:  Numerous new hooks added by Masayuki
+			      Kuwada (hope I spelled it correctly)
+
+	  TeX-command-on-region: removed. C-c C-o used for 
+			      outline-minor-mode instead.
 
 	And some additional minor fixes...
 	
@@ -34,91 +37,13 @@ Version 5.7:
 You're welcome to direct questions to the current maintainer, whose
 address is at the bottom of this file.
 
+
+
 Installation
 ------------
 
-You will need to insert the following lines in your .emacs file. If it
-is a cite installation, these lines should rather be in the local init
-file.  This will make sure, that AUC TeX will be  loaded automatically
-when you load a file width suffix `.tex'.
+Just type `make' and follow the instructions.  
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Tell Emacs where the files of AUC TeX is located
-
-(setq load-path (cons (expand-file-name "PATH_FOR_AUC-TEX") load-path))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Make AUC TeX be loaded automatically when one of the following
-;; three commands are invoked.
-
-(autoload 'tex-mode "auc-tex" "Automatic select TeX or LaTeX mode" t)
-(autoload 'plain-tex-mode "auc-tex" "Mode for Plain TeX" t)
-(autoload 'latex-mode "auc-tex" "Mode for LaTeX" t)
-(autoload 'LaTeX-math-mode    "tex-math"      "Math mode for TeX." t)
-(autoload 'outline-minor-mode "outline-minor" "Minor Outline Mode." t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Let tex-mode be called, if a `.tex' file is loaded.
-
-(setq auto-mode-alist (append '(("\\.tex$" . tex-mode))
-                              auto-mode-alist))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Now you should set your personal defaults of the user-definable
-variables.  These are listed in the elisp `tex-site.el' file, and are
-marked with `*' in the beginning of the documentation string.  E.g.
-you should set the default printer name:
-
-	(setq TeX-default-printer-name "lw")
-
-Also -- you should include something like the following in your .emacs
-or site-setup file. This is what I use:
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Note:  C-c <letter> sequences are reserved for users own bindings
-;;
-
-(defun Ctl-C-prefix ()			; Use Ctl-C as a command prefix
-  Ctl-C-keymap)
-(setq Ctl-C-keymap (make-keymap))	; allocate Ctl-C keymap table
-(global-set-key "\C-c" (Ctl-C-prefix))	; define Ctl-C function
-
-(define-key Ctl-C-keymap "m" 'LaTeX-math-mode)
-(autoload 'LaTeX-math-mode "tex-math" t)
-
-;;
-;;  Setup outline-minor-mode
-;; 
-
-(global-set-key "\C-c o" 'outline-minor-mode)
-(autoload 'outline-minor-mode "min-out" t)
-
-(make-variable-buffer-local 'outline-prefix-char)
-(setq-default outline-prefix-char "\C-l")
-(make-variable-buffer-local 'outline-regexp)
-(setq-default outline-regexp "[*\^l]+") ;; this is purely a default
-(make-variable-buffer-local 'outline-level-function)
-(setq-default outline-level-function 'outline-level-default)
-
-;;
-;; Personal defaults for AUC-TeX mode
-;;
-
-(setq LaTeX-figure-label "fig:")
-(setq LaTeX-table-label "tab:")
-(setq LaTeX-section-label "sec:")
-(setq LaTeX-default-style-options "a4,12pt,dk")
-(setq LaTeX-float "hbtp")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-For efficiency of auc-tex, you should byte compile the .el files.
-This is done automatically if you edit the make file run it.
 
 
 Warranty
@@ -142,10 +67,11 @@ Availability
 
 AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
 "/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X.x' specifies the release
-version) The most recent version is available in `auctex.tex.Z'. Also,
-it should be available at major TeX and Elisp archives around the
-world.  In case you don't have access anonymous ftp, you can get it by
-Email requests to `auc-tex_mgr@iesd.auc.dk'.
+version) The most resent version is ALLWAYS available in
+`/pub/emacs-lisp/auctex.tar.Z'. Also, it should be available at major
+TeX and Elisp archives around the world.  In case you don't have
+access anonymous ftp, you can get it by Email requests to
+`auc-tex_mgr@iesd.auc.dk'.
 
 Contacts
 --------
