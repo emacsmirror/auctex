@@ -54,9 +54,8 @@ When GhostScript fails, the necessary information and messages from
 Ghostscript go somewhere.  If GhostScript fails before starting to
 process images, you'll find the information at the end of the process
 buffer you can see with @kbd{C-c C-l}.  If GhostScript fails while
-processing a particular image, this image will be tagged with
-middle-clickable buttons for the error description and for the
-corresponding source file.
+processing a particular image, this image will be tagged with clickable
+buttons for the error description and for the corresponding source file.
 
 The default options configurable with
 
