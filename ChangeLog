@@ -1,11 +1,16 @@
 2004-04-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el: New header.
+	(LaTeX-indent-environment-list): Remove `alltt' and add support
+	for it in `alltt.el' instead.
+
+	* Makefile.in (STYLESRC): Added `alltt.el'.
+
+	* style/alltt.el: New file.
+
 	* doc/changes.texi: Describe changes in quote insertion if
 	`german.sty' or `ngerman.sty' is used.
-
-	* latex.el: New header.
-	(LaTeX-indent-environment-list): Disable indentation for `alltt'
-	environments.
+	Advertise new style files.
 
 2004-04-29  Reiner Steib  <Reiner.Steib@gmx.de>
 
