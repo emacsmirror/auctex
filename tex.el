@@ -540,7 +540,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.351 $"))
+	(rev "$Revision: 5.352 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -555,7 +555,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-20 19:44:35 $"))
+    (let ((date "$Date: 2004-04-21 08:01:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2628,13 +2628,13 @@ be bound to `TeX-electric-macro'."
   "Return a Command menu specific to the major MODE."
   ;; COMPATIBILITY for Emacs < 21
   (if (and (not (featurep 'xemacs))
-           (= emacs-major-version 20))
+	   (= emacs-major-version 20))
       (append (list TeX-command-menu-name)
-              (TeX-mode-specific-command-menu-entries mode))
+	      (TeX-mode-specific-command-menu-entries mode))
     (list TeX-command-menu-name
-          :filter `(lambda (&rest ignored)
-                     (TeX-mode-specific-command-menu-entries ',mode))
-          "Bug.")))
+	  :filter `(lambda (&rest ignored)
+		     (TeX-mode-specific-command-menu-entries ',mode))
+	  "Bug.")))
 
 (defun TeX-mode-specific-command-menu-entries (mode)
   "Return the entries for a Command menu specific to the major MODE."
@@ -2650,20 +2650,20 @@ be bound to `TeX-electric-macro'."
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
 	    (mapcar 'TeX-command-menu-entry
-                    (TeX-mode-specific-command-list mode)))))
+		    (TeX-mode-specific-command-list mode)))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."
   (let ((full-list (copy-sequence TeX-command-list))
-        out-list
-        entry)
+	out-list
+	entry)
     (while (car full-list)
       (setq entry (pop full-list))
       ;; `(nth 4 entry)' may be either an atom in case of which the
       ;; entry should be present in any mode or a list of major modes.
       (if (or (atom (nth 4 entry))
-              (memq mode (nth 4 entry)))
-          (setq out-list (append out-list (list entry)))))
+	      (memq mode (nth 4 entry)))
+	  (setq out-list (append out-list (list entry)))))
     out-list))
 
 ;;; Menus for plain TeX mode
@@ -2842,8 +2842,8 @@ whitespace as well."
     (save-match-data
       (re-search-backward "^\\|\r" nil t)
       (if (looking-at (concat "[ \t]*" comment-start))
-          t
-        nil))))
+	  t
+	nil))))
 
 (defun TeX-in-line-comment ()
   "Return non-nil if point is in a line comment.
@@ -2853,8 +2853,8 @@ no whitespace before the comment sign."
     (save-match-data
       (move-to-left-margin)
       (if (looking-at comment-start)
-          t
-        nil))))
+	  t
+	nil))))
 
 (defun TeX-forward-comment-skip (&optional count limit)
   "Move forward to the next comment/non-comment skip.

@@ -638,15 +638,15 @@ The same rules are used for `LaTeX-find-matching-begin' and
     ;; prefix as well which can indicate a new part.
     (save-restriction
       (when (or (and in-comment
-                     (eq major-mode 'latex-mode)
-                     LaTeX-syntactic-comments)
-                (and in-comment
-                     (eq major-mode 'doctex-mode)
-                     (docTeX-in-macrocode-p)))
-        (narrow-to-region (save-excursion
-                            (progn (TeX-forward-comment-skip) (point)))
-                          (save-excursion
-                            (progn (TeX-backward-comment-skip) (point)))))
+		     (eq major-mode 'latex-mode)
+		     LaTeX-syntactic-comments)
+		(and in-comment
+		     (eq major-mode 'doctex-mode)
+		     (docTeX-in-macrocode-p)))
+	(narrow-to-region (save-excursion
+			    (progn (TeX-forward-comment-skip) (point)))
+			  (save-excursion
+			    (progn (TeX-backward-comment-skip) (point)))))
       (save-excursion
 	(while (and
 		(/= arg 0)
@@ -655,16 +655,16 @@ The same rules are used for `LaTeX-find-matching-begin' and
 			 "\\|"
 			 (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop))
 		 nil t 1)
-                ;; We currently don't check if point is in a macrocode
-                ;; environment in case the function is called in a
-                ;; commented line and point is in a commented line.
-                ;; As this seems to be a very rare case we currently
-                ;; don't do those tests yet which would add complexity
-                ;; and negatively influence performance.
-                (or (and LaTeX-syntactic-comments
-                         (eq in-comment (TeX-in-commented-line)))
-                    (and (not LaTeX-syntactic-comments)
-                         (not (TeX-in-commented-line)))))
+		;; We currently don't check if point is in a macrocode
+		;; environment in case the function is called in a
+		;; commented line and point is in a commented line.
+		;; As this seems to be a very rare case we currently
+		;; don't do those tests yet which would add complexity
+		;; and negatively influence performance.
+		(or (and LaTeX-syntactic-comments
+			 (eq in-comment (TeX-in-commented-line)))
+		    (and (not LaTeX-syntactic-comments)
+			 (not (TeX-in-commented-line)))))
 	  (cond ((looking-at (concat "[ \t]*" (regexp-quote TeX-esc)
 				     "end" (regexp-quote TeX-grop)))
 		 (setq arg (1+ arg)))
@@ -684,12 +684,12 @@ The same rules are used for `LaTeX-find-matching-begin' and
     (save-excursion
       (re-search-forward
        (concat "^%    " (regexp-quote TeX-esc)
-               "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 0)
+	       "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 0)
       (if (or (eobp)
-              (= (match-beginning 0) orig-point)
-              (= (char-after (match-beginning 1)) ?b))
-          nil
-        t))))
+	      (= (match-beginning 0) orig-point)
+	      (= (char-after (match-beginning 1)) ?b))
+	  nil
+	t))))
 
 
 ;;; Environment Hooks
@@ -1790,9 +1790,9 @@ value."
 
 (defvar docTeX-indent-inner-fixed
   `((,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{macrocode}") 4 t)
+	     "\\(begin\\|end\\)[ \t]*{macrocode}") 4 t)
     (,(concat (regexp-quote TeX-esc)
-             "\\(begin\\|end\\)[ \t]*{macro}") 0 nil))
+	     "\\(begin\\|end\\)[ \t]*{macro}") 0 nil))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -1888,60 +1888,60 @@ outer indentation in case of a commented line.  The symbols
   (save-excursion
     (LaTeX-back-to-indentation force-type)
     (let ((i 0)
-          (list-length (safe-length docTeX-indent-inner-fixed))
-          entry
-          found)
+	  (list-length (safe-length docTeX-indent-inner-fixed))
+	  entry
+	  found)
       (cond ((and (eq major-mode 'doctex-mode)
-                  fill-prefix
-                  (TeX-in-line-comment)
-                  (progn
-                    (while (and (< i list-length)
-                                (not found))
-                      (setq entry (nth i docTeX-indent-inner-fixed))
-                      (when (looking-at (nth 0 entry))
-                        (setq found t))
-                      (setq i (1+ i)))
-                    found))
-             (if (nth 2 entry)
-                 (- (nth 1 entry) (if (integerp comment-padding)
-                                      comment-padding
-                                    (length comment-padding)))
-               (nth 1 entry)))
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "\\(begin\\|end\\){\\("
-                                 LaTeX-verbatim-regexp
-                                 "\\)}"))
-             ;; \end{verbatim} must be flush left, otherwise an unwanted
-             ;; empty line appears in LaTeX's output.
-             0)
-            ((and LaTeX-indent-environment-check
-                  ;; Special environments.
-                  (let ((entry (assoc (LaTeX-current-environment)
-                                      LaTeX-indent-environment-list)))
-                    (and entry
-                         (nth 1 entry)
-                         (funcall (nth 1 entry))))))
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "\\("
-                                 LaTeX-end-regexp
-                                 "\\)"))
-             ;; Backindent at \end.
-             (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
-            ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
-             ;; Backindent at \right.
-             (- (LaTeX-indent-calculate-last force-type)
-                LaTeX-left-right-indent-level))
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "\\("
-                                 LaTeX-item-regexp
-                                 "\\)"))
-             ;; Items.
-             (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
-            ((looking-at "}")
-             ;; End brace in the start of the line.
-             (- (LaTeX-indent-calculate-last force-type)
-                TeX-brace-indent-level))
-            (t (LaTeX-indent-calculate-last force-type))))))
+		  fill-prefix
+		  (TeX-in-line-comment)
+		  (progn
+		    (while (and (< i list-length)
+				(not found))
+		      (setq entry (nth i docTeX-indent-inner-fixed))
+		      (when (looking-at (nth 0 entry))
+			(setq found t))
+		      (setq i (1+ i)))
+		    found))
+	     (if (nth 2 entry)
+		 (- (nth 1 entry) (if (integerp comment-padding)
+				      comment-padding
+				    (length comment-padding)))
+	       (nth 1 entry)))
+	    ((looking-at (concat (regexp-quote TeX-esc)
+				 "\\(begin\\|end\\){\\("
+				 LaTeX-verbatim-regexp
+				 "\\)}"))
+	     ;; \end{verbatim} must be flush left, otherwise an unwanted
+	     ;; empty line appears in LaTeX's output.
+	     0)
+	    ((and LaTeX-indent-environment-check
+		  ;; Special environments.
+		  (let ((entry (assoc (LaTeX-current-environment)
+				      LaTeX-indent-environment-list)))
+		    (and entry
+			 (nth 1 entry)
+			 (funcall (nth 1 entry))))))
+	    ((looking-at (concat (regexp-quote TeX-esc)
+				 "\\("
+				 LaTeX-end-regexp
+				 "\\)"))
+	     ;; Backindent at \end.
+	     (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
+	    ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
+	     ;; Backindent at \right.
+	     (- (LaTeX-indent-calculate-last force-type)
+		LaTeX-left-right-indent-level))
+	    ((looking-at (concat (regexp-quote TeX-esc)
+				 "\\("
+				 LaTeX-item-regexp
+				 "\\)"))
+	     ;; Items.
+	     (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
+	    ((looking-at "}")
+	     ;; End brace in the start of the line.
+	     (- (LaTeX-indent-calculate-last force-type)
+		TeX-brace-indent-level))
+	    (t (LaTeX-indent-calculate-last force-type))))))
 
 (defun LaTeX-indent-level-count ()
   "Count indentation change caused by all \\left, \\right, \\begin, and
@@ -2023,14 +2023,14 @@ outer indentation in case of a commented line.  The symbols
 		;; Some people have opening braces at the end of the
 		;; line, e.g. in case of `\begin{letter}{%'.
 		(TeX-brace-count-line)))
-            ((and (eq major-mode 'doctex-mode)
-                (looking-at (concat (regexp-quote TeX-esc)
-                                    "end[ \t]*{macrocode}"))
-                fill-prefix
-                (TeX-in-line-comment))
-             ;; Reset indentation to zero after a macrocode
-             ;; environment.
-             0)
+	    ((and (eq major-mode 'doctex-mode)
+		(looking-at (concat (regexp-quote TeX-esc)
+				    "end[ \t]*{macrocode}"))
+		fill-prefix
+		(TeX-in-line-comment))
+	     ;; Reset indentation to zero after a macrocode
+	     ;; environment.
+	     0)
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "begin *{\\("
 				 LaTeX-verbatim-regexp
@@ -2366,19 +2366,19 @@ space does not end a sentence, so don't break a line there."
 		    t
 		  nil))
 	  (save-restriction
-            ;; The start of a code comment is a moving target during
-            ;; filling, so we work with `narrow-to-region' and
-            ;; `point-max'.  We use narrowing in non-code-comment
-            ;; cases as well for the sake of simplicity.
-            (narrow-to-region
-             (point-min)
-             (if code-comment-flag
-                 ;; Get the position right after the last
-                 ;; non-comment-word.
-                 (if (match-string 1)
-                     (match-beginning 1)
-                   (match-beginning 5))
-               to))
+	    ;; The start of a code comment is a moving target during
+	    ;; filling, so we work with `narrow-to-region' and
+	    ;; `point-max'.  We use narrowing in non-code-comment
+	    ;; cases as well for the sake of simplicity.
+	    (narrow-to-region
+	     (point-min)
+	     (if code-comment-flag
+		 ;; Get the position right after the last
+		 ;; non-comment-word.
+		 (if (match-string 1)
+		     (match-beginning 1)
+		   (match-beginning 5))
+	       to))
 	    ;; Fill until point is greater than the end point.  If there
 	    ;; is a code comment, use the code comment's start as a
 	    ;; limit.
@@ -2397,8 +2397,8 @@ space does not end a sentence, so don't break a line there."
 
 		    ;; Check again to see if we got to the end of
 		    ;; the paragraph.
-		    (skip-chars-forward " \t")
-                    (< (point) (point-max)))
+ 		    (skip-chars-forward " \t")
+		    (< (point) (point-max)))
 		  ;; Found a place to cut.
 		  (progn
 		    (LaTeX-fill-newline)
@@ -2549,19 +2549,19 @@ space does not end a sentence, so don't break a line there."
 	     ;; $ or \( or \[ (opening math)
 	     ((save-excursion
 		(and (or (and (memq '\\\( LaTeX-fill-break-at-separators)
-                              (string= (setq math-sep
+			      (string= (setq math-sep
 					     (substring match-string -1)) "$")
 			      (texmathp))
 			 (and (memq '\\\( LaTeX-fill-break-at-separators)
-                              (> (length match-string) 1)
+			      (> (length match-string) 1)
 			      (string= (setq math-sep
 						 (substring match-string -2))
 					   "\\("))
 			 (and (memq '\\\[ LaTeX-fill-break-at-separators)
-                              (> (length match-string) 1)
-                              (string= (setq math-sep
-                                             (substring match-string -2))
-                                       "\\[")))
+			      (> (length match-string) 1)
+			      (string= (setq math-sep
+					     (substring match-string -2))
+				       "\\[")))
 		     (> (- (save-excursion
 			     (re-search-forward
 			      (cond
@@ -2583,19 +2583,19 @@ space does not end a sentence, so don't break a line there."
 	     ;; $ or \) or \] (closing math)
 	     ((save-excursion
 		(and (or (and (memq '\\\) LaTeX-fill-break-at-separators)
-                              (string= (setq math-sep
+			      (string= (setq math-sep
 					     (substring match-string -1)) "$")
 			      (not (texmathp)))
 			 (and (memq '\\\) LaTeX-fill-break-at-separators)
-                              (> (length match-string) 1)
+			      (> (length match-string) 1)
 			      (string= (setq math-sep
-                                             (substring match-string -2))
-                                       "\\)"))
+					     (substring match-string -2))
+				       "\\)"))
 			 (and (memq '\\\] LaTeX-fill-break-at-separators)
-                              (> (length match-string) 1)
-                              (string= (setq math-sep
-                                             (substring match-string -2))
-                                       "\\]")))
+			      (> (length match-string) 1)
+			      (string= (setq math-sep
+					     (substring match-string -2))
+				       "\\]")))
 		     (if (string= math-sep "$")
 			 (save-excursion
 			   (backward-char 2)
@@ -2691,7 +2691,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 		(narrow-to-region (point-min) (line-end-position))
 		(while (not (looking-at (concat comment-start "\\|$")))
 		  (skip-chars-forward (concat "^" comment-start
-                                          (regexp-quote TeX-esc) "\n"))
+					      (regexp-quote TeX-esc) "\n"))
 		  (when (eq (char-after (point)) ?\\)
 		    (forward-char 2)))
 		(and (looking-at (concat comment-start "+[\t ]*"))
@@ -2801,7 +2801,7 @@ depends on the value of `LaTeX-syntactic-comments'."
 	    (narrow-to-region beg end)
 	    (while (not (looking-at (concat comment-start "\\|$")))
 	      (skip-chars-forward (concat "^" comment-start
-                                          (regexp-quote TeX-esc) "\n"))
+					  (regexp-quote TeX-esc) "\n"))
 	      (when (eq (char-after (point)) ?\\)
 		(forward-char 2)))
 	    (and (looking-at (concat comment-start "+[\t ]*"))
@@ -2813,9 +2813,9 @@ depends on the value of `LaTeX-syntactic-comments'."
 					 (line-beginning-position) t)))))
       (setq fill-prefix
 	    (concat (if indent-tabs-mode
-                        (concat (make-string (/ (current-column) 8) ?\t)
-                                (make-string (% (current-column) 8) ?\ ))
-                      (make-string (current-column) ?\ ))
+			(concat (make-string (/ (current-column) 8) ?\t)
+				(make-string (% (current-column) 8) ?\ ))
+		      (make-string (current-column) ?\ ))
 		    (buffer-substring (match-beginning 0) (match-end 0))))
       (fill-region-as-paragraph beg end justify-flag  nil
 				(save-excursion
@@ -2864,33 +2864,33 @@ see the documentation of `LaTeX-current-environment'."
 	(in-comment (TeX-in-commented-line)))
     (save-restriction
       (when (or (and in-comment
-                     (eq major-mode 'latex-mode)
-                     LaTeX-syntactic-comments)
-                (and in-comment
-                     (eq major-mode 'doctex-mode)
-                     (docTeX-in-macrocode-p)))
-        (narrow-to-region (save-excursion
-                            (progn (TeX-forward-comment-skip) (point)))
-                          (save-excursion
-                            (progn (TeX-backward-comment-skip) (point)))))
+		     (eq major-mode 'latex-mode)
+		     LaTeX-syntactic-comments)
+		(and in-comment
+		     (eq major-mode 'doctex-mode)
+		     (docTeX-in-macrocode-p)))
+	(narrow-to-region (save-excursion
+			    (progn (TeX-forward-comment-skip) (point)))
+			  (save-excursion
+			    (progn (TeX-backward-comment-skip) (point)))))
       (save-excursion
-        (skip-chars-backward "a-zA-Z \t{")
-        (unless (bolp)
-          (backward-char 1)
-          (and (looking-at regexp)
-               (char-equal (char-after (1+ (match-beginning 0))) ?e)
-               (setq level 0))))
+	(skip-chars-backward "a-zA-Z \t{")
+	(unless (bolp)
+	  (backward-char 1)
+	  (and (looking-at regexp)
+	       (char-equal (char-after (1+ (match-beginning 0))) ?e)
+	       (setq level 0))))
       (while (and (> level 0) (re-search-forward regexp nil t))
-        (when (or (and LaTeX-syntactic-comments
-                       (eq in-comment (TeX-in-commented-line)))
-                  (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line))))
-          (if (= (char-after (1+ (match-beginning 0))) ?b) ;;begin
-              (setq level (1+ level))
-            (setq level (1- level)))))
+	(when (or (and LaTeX-syntactic-comments
+		       (eq in-comment (TeX-in-commented-line)))
+		  (and (not LaTeX-syntactic-comments)
+		       (not (TeX-in-commented-line))))
+	  (if (= (char-after (1+ (match-beginning 0))) ?b) ;;begin
+	      (setq level (1+ level))
+	    (setq level (1- level)))))
       (if (= level 0)
-          (search-forward "}")
-        (error "Can't locate end of current environment")))))
+	  (search-forward "}")
+	(error "Can't locate end of current environment")))))
 
 (defun LaTeX-find-matching-begin ()
   "Move point to the \\begin of the current environment.
@@ -2902,32 +2902,32 @@ see the documentation of `LaTeX-current-environment'."
 	(in-comment (TeX-in-commented-line)))
     (save-restriction
       (when (or (and in-comment
-                     (eq major-mode 'latex-mode)
-                     LaTeX-syntactic-comments)
-                (and in-comment
-                     (eq major-mode 'doctex-mode)
-                     (docTeX-in-macrocode-p)))
-        (narrow-to-region (save-excursion
-                            (progn (TeX-forward-comment-skip) (point)))
-                          (save-excursion
-                            (progn (TeX-backward-comment-skip) (point)))))
+		     (eq major-mode 'latex-mode)
+		     LaTeX-syntactic-comments)
+		(and in-comment
+		     (eq major-mode 'doctex-mode)
+		     (docTeX-in-macrocode-p)))
+	(narrow-to-region (save-excursion
+			    (progn (TeX-forward-comment-skip) (point)))
+			  (save-excursion
+			    (progn (TeX-backward-comment-skip) (point)))))
       (skip-chars-backward "a-zA-Z \t{")
       (if (bolp)
-          nil
-        (backward-char 1)
-        (and (looking-at regexp)
-             (char-equal (char-after (1+ (match-beginning 0))) ?b)
-             (setq level 0)))
+	  nil
+	(backward-char 1)
+	(and (looking-at regexp)
+	     (char-equal (char-after (1+ (match-beginning 0))) ?b)
+	     (setq level 0)))
       (while (and (> level 0) (re-search-backward regexp nil t))
-        (when (or (and LaTeX-syntactic-comments
-                       (eq in-comment (TeX-in-commented-line)))
-                  (and (not LaTeX-syntactic-comments)
-                       (not (TeX-in-commented-line))))
-          (if (= (char-after (1+ (match-beginning 0))) ?e) ;;end
-              (setq level (1+ level))
-            (setq level (1- level)))))
+	(when (or (and LaTeX-syntactic-comments
+		       (eq in-comment (TeX-in-commented-line)))
+		  (and (not LaTeX-syntactic-comments)
+		       (not (TeX-in-commented-line))))
+	  (if (= (char-after (1+ (match-beginning 0))) ?e) ;;end
+	      (setq level (1+ level))
+	    (setq level (1- level)))))
       (or (= level 0)
-          (error "Can't locate beginning of current environment")))))
+	  (error "Can't locate beginning of current environment")))))
 
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
