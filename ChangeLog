@@ -1,5 +1,19 @@
 2005-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* style/german.el (LaTeX-mode-map): Bind `-' to
+	`LaTeX-german-insert-hyphen'.
+	(LaTeX-german-quote-after-quote, LaTeX-german-open-quote)
+	(LaTeX-german-close-quote): Move to tex-style.el.
+	(LaTeX-german-hyphen-internal): New variable.
+	(LaTeX-german-insert-hyphen): New function.
+	("german"): Set `LaTeX-german-hyphen-internal'.
+
+	* tex-style.el (LaTeX-german-quote-after-quote)
+	(LaTeX-german-open-quote, LaTeX-german-close-quote): Move here
+	from style/german.el.
+	(LaTeX-german-hyphen, LaTeX-german-hyphen-after-hyphen): New
+	variables.
+
 	* doc/auctex.texi (Font Locking): References are now fontified
 	with `font-lock-constant-face' because `font-lock-reference-face'
 	is deprecated.
