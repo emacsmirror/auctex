@@ -1,26 +1,26 @@
-# This diversion attempts to save the locale variables
-# before configure overwrites them.  It's needed for the 
-# 8-bit LaTeX test below.  This test only works with
-# autoconf 2.52
+dnl This diversion attempts to save the locale variables
+dnl before configure overwrites them.  It's needed for the 
+dnl 8-bit LaTeX test below.  Diversion 1 is sure to be right on top.
 
-#The following will be inserted by autogen.sh.
-#autogen.sh: # Inserted by autogen.sh
-#autogen.sh: if test -z "$MY_LANG$MY_LC_CTYPE$MY_LANGUAGE$MY_LC_ALL"; then
-#autogen.sh:   for x in LANG LC_CTYPE LANGUAGE LC_ALL
-#autogen.sh:   do
-#autogen.sh:     eval 'if test -n "$'$x'"; then MY_'$x'=$'$x'; export MY_'$x'; fi'
-#autogen.sh:   done
-#autogen.sh: fi
-#autogen.sh: MY_LANGUAGEHOOKS=yes
-#autogen.sh: export MY_LANGUAGEHOOKS
-#autogen.sh: # End of insertion by autogen.sh
-#autogen.sh: #
-
-AC_INIT(preview-latex,0.7.8,preview-latex-bugs@lists.sourceforge.net)
-
-if test -z "$MY_LANGUAGEHOOKS"
-then AC_ERROR([configure needs to be generated with ./autogen.sh!])
+AC_DIVERT_PUSH(1)dnl
+# >> A brief intermission for a short diversion from      <<
+# >> our multinational entertainment and correction group <<
+if test -z "$MY_LANG$MY_LC_CTYPE$MY_LANGUAGE$MY_LC_ALL"; then
+  for x in LANG LC_CTYPE LANGUAGE LC_ALL
+  do
+    eval 'if test -n "$'$x'"; then MY_'$x'=$'$x'; export MY_'$x'; fi'
+  done
 fi
+# >> Thank you for your patience.  You may now resume     <<
+# >> perusing the rest of your configure script.          <<
+AC_DIVERT_POP dnl
+dnl
+dnl Now we use the old AC_INIT macro for versions 2.0 to 2.19.  That
+dnl should make the proper split between 2.13 and 2.49a.
+dnl
+ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]*$]),-1,
+  [AC_INIT(preview-latex,0.7.8,preview-latex-bugs@lists.sourceforge.net)],
+  [AC_INIT(preview.el)])
 
 AC_SET_MAKE
 AC_PROG_INSTALL
