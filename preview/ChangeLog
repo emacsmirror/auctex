@@ -1,3 +1,8 @@
+2005-03-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (distclean, maintainer-clean, tarball-ready): Delete
+	autom4te.cache in maintainer-clean and tarball-ready targets.
+
 2005-03-24  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* doc/Makefile.in: Add *.pdf to clean target and

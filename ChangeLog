@@ -1,3 +1,13 @@
+2005-03-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (AUCELC): Derive from AUCSRC.
+	(STYLEELC, CLEANFILES, DISTCLEANFILES, DISTTEXTS): New variables.
+	(some): Use STYLEELC.
+	(clean): Use CLEANFILES.
+	(distclean): Use CLEANFILES and DISTCLEANFILES.  Call distclean
+	target in doc directory.
+	(maintainer-clean, extraclean): New targets.
+
 2005-03-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-parse-argument): Deactivate mark after insertion of
