@@ -1873,17 +1873,17 @@ indentation level in columns."
   :group 'LaTeX-indentation
   :type 'boolean)
 
-(defcustom LaTeX-left-comment-regexp "%%%"
+(defcustom LaTeX-left-comment-regexp "%"
   "*Regexp matching comments that should be placed on the left margin."
   :group 'LaTeX-indentation
   :type 'regexp)
 
-(defcustom LaTeX-right-comment-regexp "%[^%]"
+(defcustom LaTeX-right-comment-regexp "[ \t]*%"
   "*Regexp matching comments that should be placed to the right margin."
   :group 'LaTeX-indentation
   :type 'regexp)
 
-(defcustom LaTeX-ignore-comment-regexp nil
+(defcustom LaTeX-ignore-comment-regexp "^%"
   "*Regexp matching comments whose indentation should not be touched."
   :group 'LaTeX-indentation
   :type '(choice (const :tag "none" nil)
@@ -3117,7 +3117,7 @@ of `LaTeX-mode-hook'."
 	 "\\("
 	 LaTeX-paragraph-commands
 	 "\\)\\|$"
-	 "\\)"))
+	 "\\)"
 	 ))
   (setq paragraph-separate
 	(concat
