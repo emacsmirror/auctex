@@ -1,3 +1,8 @@
+2004-04-08  Peter S Galbraith  <psg@debian.org>
+
+	* font-latex.el (font-latex-setup): Bug Fix; was overriding
+	font-latex-string-face.  Thanks to Reuben Thomas for finding the bug.
+
 2004-04-08  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Remove sole reference to texmfdir 

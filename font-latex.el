@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.910 (15 Feb 2004)
+;; Version:    0.912 (08 Apr 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.912 08Apr2004 Peter S Galbraith
+;;  - font-latex-setup: was overriding font-latex-string-face.
+;;    Thanks to Reuben Thomas for finding the bug.
 ;; V0.911 17Feb2004 Reiner Steib
 ;;  - font-latex-title-4-face: Added missing :weight and :inherit.
 ;; V0.910 15Feb2004 Reiner Steib
@@ -346,6 +349,8 @@ Also selects \"<quote\"> versus \">quote\"<."
   "Face to use for LaTeX bolds.")
 (defvar font-latex-math-face			'font-latex-math-face
   "Face to use for LaTeX math environments.")
+(defvar font-latex-string-face                  'font-latex-string-face
+  "Face to use for strings.  This is set by Font LaTeX.")
 
 ;; These 4 faces are literally from info.el
 ;;  Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99, 2000, 2001
@@ -946,9 +951,6 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 ;; End-User can stop reading here.
 
-(defvar font-latex-string-face nil
-  "Face to use for strings.  This is set by Font LaTeX.")
-
 (defvar font-lock-comment-start-regexp nil
   "Regexp to match the start of a comment.")
 
@@ -1041,8 +1043,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
    (t
   ;;(if (fboundp 'font-lock-make-faces) (font-lock-make-faces))
     (make-local-variable 'font-lock-string-face)
-    (setq font-lock-string-face font-latex-math-face
-	  font-latex-string-face (default-value 'font-lock-string-face))))
+    (setq font-lock-string-face font-latex-math-face)))
 
   ;; Tell Font Lock about the support.
   (make-local-variable 'font-lock-defaults)
