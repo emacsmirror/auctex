@@ -1,5 +1,8 @@
 2004-10-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/todo.texi (Bugs): Document some bugs related to font locking
+	and folding.
+
 	* latex.el (LaTeX-insert-environment): Partial rewrite.  Stay in
 	comments.  Do not comment uncommented following lines.  Get rid of
 	redundant comment prefix.
