@@ -501,14 +501,14 @@ Return the new process."
 
 (defun TeX-run-shell (name command file)
   "Ignore first and third argument, start shell-command with second argument."
-  (with-current-buffer (TeX-process-buffer file)
+  (let ((default-directory (TeX-master-directory)))
     (shell-command command)
     (if (eq system-type 'ms-dos)
 	(redraw-display))))
 
 (defun TeX-run-discard (name command file)
   "Start process with second argument, discarding its output."
-  (with-current-buffer (TeX-process-buffer file)
+  (let ((default-directory (TeX-master-directory)))
     (process-kill-without-query (start-process (concat name " discard")
 					       nil TeX-shell
 					       TeX-shell-command-option
