@@ -40,8 +40,11 @@
     '("itemize*" LaTeX-env-item)
     '("description*" LaTeX-env-item))
    ;; Indentation and filling
+   (make-local-variable 'LaTeX-begin-regexp)
    (setq LaTeX-begin-regexp (concat LaTeX-begin-regexp "\\|resume\\b"))
+   (make-local-variable 'LaTeX-end-regexp)
    (setq LaTeX-end-regexp (concat LaTeX-end-regexp "\\|suspend\\b"))
+   (make-local-variable 'paragraph-start)
    (setq paragraph-start (concat paragraph-start
 				 "\\|[ \t]*" comment-start "*[ \t]*"
 				 (regexp-quote TeX-esc)
