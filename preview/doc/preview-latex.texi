@@ -37,7 +37,7 @@ preview-latex
 @subtitle Version 0.6
   
 @author by David Kastrup and Alan Shutko 
-@author manual by Jan-@AA{}ke Larsson
+@author manual by Jan-Åke Larsson
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and
