@@ -1,3 +1,7 @@
+2004-02-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	Merge with new-fill branch.
+	
 2004-02-27  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Respect --infodir even if using xemacs. 
@@ -16,12 +20,28 @@
 
 	* latex.el (LaTeX-mode-menu): Insert customize option and
 	rearrange.
+	(LaTeX-fill-move-to-break-point): Bandaid for not breaking inside
+	square brackets where the content fits into one line.
 
 	* tex.el (plain-TeX-mode-menu): Insert customize option.
 
 	* doc/auc-tex.texi: Document options for inserting quotes in files
 	where `(n)german.sty' is used and the invocation of external
 	viewers.
+
+2004-02-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-break-before-macro)
+	(LaTeX-fill-break-after-macro): Unused, so removed.
+	(LaTeX-fill-distinct-contents): New name for defcustom
+	`LaTeX-fill-break-before-and-after'.
+	(LaTeX-fill-move-to-break-point): Fix filling of nested braces and
+	math.
+	(TeX-find-closing-brace, TeX-find-opening-brace)
+	(TeX-forward-comment-skip): Moved to `tex.el'.
+
+	* tex.el (TeX-find-closing-brace, TeX-find-opening-brace)
+	(TeX-forward-comment-skip): Moved from `latex.el'.
 
 2004-02-26  David Kastrup  <dak@gnu.org>
 
@@ -31,6 +51,13 @@
 
 	* tex.el (TeX-master-file): Don't overwrite TeX-master when not
 	asking the question.
+
+2004-02-22  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-newline): New function.  Spread it throughout
+	the code in order to stay in comments for completion and
+	insertion commands.
+	(doctex-mode): New function.
 
 2004-02-19  David Kastrup  <dak@gnu.org>
 

@@ -495,7 +495,12 @@ Full documentation will be available after autoloading the function."
 
   (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
 
-  )
+  ;; I am aware that this counteracts coding conventions but I am sick
+  ;; of it.
+  (unless (fboundp 'line-beginning-position)
+    (defalias 'line-beginning-position 'point-at-bol))
+  (unless (fboundp 'line-end-position)
+    (defalias 'line-end-position 'point-at-eol)))
 
 ;;; Special support for GNU Emacs
 
@@ -509,13 +514,11 @@ Full documentation will be available after autoloading the function."
     (and transient-mark-mode mark-active))
 
   (defun TeX-activate-region ()
-    nil)
-
-  )
+    nil))
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.330 $"))
+	(rev "$Revision: 5.331 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +533,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-27 11:24:11 $"))
+    (let ((date "$Date: 2004-02-28 12:18:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1559,6 +1562,10 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
 	 "\\)*\\)\\(%+ *\\)"))
+  ;; `comment-padding' is defined here as an integer for compatibility
+  ;; reasons because older Emacsen could not cope with a string.
+  (make-local-variable 'comment-padding)
+  (setq comment-padding 1)
   ;; Removed as commenting in (La)TeX is done with one `%' not two
   ;; (make-local-variable 'comment-add)
   ;; (setq comment-add 1) ;default to `%%' in comment-region
@@ -2089,7 +2096,7 @@ Check for potential LaTeX environments."
 ;; should use the "TeX-" prefix to avoid name clashes.
 
 (defcustom TeX-auto-regexp-list 'TeX-auto-full-regexp-list
-  "*List of regular expresions used for parsing the current file."
+  "*List of regular expressions used for parsing the current file."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
 		(variable-item TeX-auto-full-regexp-list)
 		(variable-item plain-TeX-auto-regexp-list)
@@ -2694,7 +2701,7 @@ of AmS-TeX-mode-hook."
 (fset 'TeX-comment-region 'comment-region)
 
 (eval-and-compile
-  ;; `comment-or-uncomment-region' is not available before Emacs 21.4
+  ;; COMPATIBILITY for Emacs <= 21.3
   (if (fboundp 'comment-or-uncomment-region)
       (defalias 'TeX-comment-or-uncomment-region 'comment-or-uncomment-region)
     ;; The following function was copied from `newcomment.el' on
@@ -2714,7 +2721,7 @@ is passed on to the respective function."
                    'TeX-uncomment-region 'comment-region)
                beg end arg)))
 
-  ;; `uncomment-region' is not available in Emacs 20.  Introduced in 21.1?
+  ;; COMPATIBILITY for Emacs <= 20.  (Introduced in 21.1?)
   (if (fboundp 'uncomment-region)
       (defalias 'TeX-uncomment-region 'uncomment-region)
     (defun TeX-uncomment-region (beg end &optional arg)
@@ -2788,6 +2795,37 @@ in the current paragraph."
         t
       nil)))
 
+(defun TeX-forward-comment-skip (&optional count limit)
+  "Move forward to the next switch between commented and
+uncommented adjacent lines.  With argument COUNT do it COUNT
+times.  If argument LIMIT is given, do not move point further
+than this value."
+  (unless count (setq count 1))
+  ;; A value of 0 is nonsense.
+  (when (= count 0) (setq count 1))
+  (unless limit (setq limit (point-max)))
+  (when (< count 0) (forward-line -1))
+  (dotimes (i (abs count))
+    (while (and (<= (point) limit)
+                (or (save-excursion
+                      (and (looking-at comment-start-skip)
+                           (zerop (if (> count 0)
+                                      (forward-line 1)
+                                    (forward-line -1)))
+                           (looking-at comment-start-skip)))
+                    (save-excursion
+                      (and (not (looking-at comment-start-skip))
+                           (zerop (if (> count 0)
+                                      (forward-line 1)
+                                    (forward-line -1)))
+                           (not (looking-at comment-start-skip))))))
+      (if (> count 0)
+          (forward-line 1)
+        (forward-line -1)))
+    (if (> count 0)
+        (forward-line 1))))
+
+
 ;;; Indentation
 
 (defgroup TeX-indentation nil
@@ -2824,6 +2862,46 @@ in the current paragraph."
     (skip-chars-backward " \t")
     (max (if (bolp) 0 (1+ (current-column)))
 	 comment-column)))
+
+
+;;; Braces
+
+(defun TeX-find-closing-brace (&optional arg limit)
+  "Return the position of the closing brace for the current
+opening brace.  With optional ARG>=1, find that outer level.  If
+LIMIT is non-nil, search down to this position in the buffer."
+  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
+    (save-excursion
+      (while (and
+              (/= arg 0)
+              (re-search-forward (concat "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*"
+                                         "\\({\\|}\\)") limit t 1))
+        (cond ((string= (substring (match-string 0) -1) "{")
+               (setq arg (1+ arg)))
+              (t
+               (setq arg (1- arg)))))
+      (if (/= arg 0)
+          nil
+        (point)))))
+
+(defun TeX-find-opening-brace (&optional arg limit)
+  "Return the position of the closing brace for the current
+opening brace.  With optional ARG>=1, find that outer level.  If
+LIMIT is non-nil, search up to this position in the buffer."
+  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
+    (save-excursion
+      (while (and
+              (/= arg 0)
+              (re-search-backward (concat "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*"
+                                         "\\({\\|}\\)") limit t 1))
+        (cond ((string= (substring (match-string 0) -1) "}")
+               (setq arg (1+ arg)))
+              (t
+               (setq arg (1- arg)))))
+      (if (/= arg 0)
+          nil
+        (point)))))
+
 
 ;;; Fonts
 
