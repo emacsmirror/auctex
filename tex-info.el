@@ -1,7 +1,7 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10n
+;; Version: 9.10o
 
 ;; Copyright (C) 1993, 1994, 1997 Per Abrahamsen 
 ;; 
@@ -200,6 +200,7 @@ Special commands:
 Entering TeXinfo mode calls the value of `text-mode-hook'  and then the
 value of `TeXinfo-mode-hook'."
   (interactive)
+  (kill-all-local-variables)
   ;; Mostly stolen from texinfo.el
   (setq mode-name "TeXinfo")
   (setq major-mode 'texinfo-mode)

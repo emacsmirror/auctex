@@ -1,6 +1,24 @@
 @section News in 9.10
 
 @itemize @bullet
+@item
+@code{danish} quotes support.
+Suggested by arne@@daimi.au.dk (Arne Joergensen).
+
+@item
+Some PDF support.
+
+@item
+New @file{tex-mik.el} file for Mik@TeX{} support.
+
+@item
+Some commands now have their own history.
+Suggested by Werner LEMBERG <sx0005@sx2.HRZ.Uni-Dortmund.DE>.
+
+@item
+Use @code{\centering} instead of center environment in figures.
+Patch by Stefan Monnier <foo@@acm.com>.
+
 @item 
 New @code{dwim} setting for @code{TeX-master} attempts to guess
 a default master for new files.

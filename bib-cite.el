@@ -3,23 +3,30 @@
 ;; Copyright (C) 1994, 1995, 1996, 1997 Peter S. Galbraith
  
 ;; Author:    Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
+;;                               <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.12 (10 Dec 98)
+;; Version:   3.13 (20 Dec 99)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.11 1998-12-11 16:47:11 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.12 1999-12-20 18:09:06 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
-;; Everyone is granted permission to copy, modify and redistribute this
-;; file provided:
-;;   1. All copies contain this copyright notice.
-;;   2. All modified copies shall carry a prominant notice stating who
-;;      made modifications and the date of such modifications.
-;;   3. The name of the modified file be changed.
-;;   4. No charge is made for this software or works derived from it.
-;;      This clause shall not be construed as constraining other software
-;;      distributed on the same medium as this software, nor is a
-;;      distribution fee considered a charge.
+;;; This file is not part of GNU Emacs.
+
+;; This package is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This package is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
 ;; LCD Archive Entry:
 ;; bib-cite|Peter Galbraith|GalbraithP@dfo-mpo.gc.ca|
@@ -42,11 +49,11 @@
 
 ;; AUC-TEX USERS: 
 ;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
-;;    ftp://ftp.iesd.auc.dk/pub/emacs-lisp/auctex.tar.gz       <-stable release
+;;    ftp://sunsite.auc.dk/packages/auctex/auctex.tar.gz       <-stable release
 ;;    ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/auctex/   <-alpha release
 ;;
 ;;  WWW users may want to check out the AUC TeX page at
-;;    http://www.iesd.auc.dk/~amanda/auctex/
+;;    http://sunsite.auc.dk/auctex/
 ;;
 ;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
 ;;  you use auc-tex, you probably have an old version of bib-cite.el in
@@ -56,7 +63,10 @@
 
 ;; reftex users:
 ;;  reftex is a package with similar functions to bib-cite.
-;;    ftp://strw.leidenuniv.nl/pub/dominik/reftex.el
+;;    http://strw.leidenuniv.nl/~dominik/Tools/
+;;  RefTeX is bundled and preinstalled with Emacs since version 20.2. 
+;;  It was also bundled with XEmacs 19.16--20.x. 
+;;
 ;;  I suggest that you use reftex to help you type-in text as it's functions
 ;;  are better suited to this task than bib-cite, and use bib-cite's features
 ;;  when you proof-read the text.
@@ -162,6 +172,14 @@
 ;;
 ;;  imenu support  (Suggested key binding: Shift-Mouse-3)  
 ;;
+;;    The imenu facility (distributed with emacs) is supported by bib-cite
+;;    to move point to a LaTeX section (or chapter) or to a label
+;;    declaration.  When editing a multi-file document, all such
+;;    declarations within the document are displayed in the menu (again
+;;    using a TAGS file).  If you do not want to load imenu.el and use
+;;    these features, set bib-use-imenu to nil. (This feature is disabled
+;;    in xemacs because I'm told it doesn't have imenu).
+;;
 ;;    If you want to bind imenu globally to Shift-Mouse-3, do so by adding the
 ;;    following to your ~/.emacs
 ;;
@@ -176,14 +194,15 @@
 ;;      or in a hook such as:
 ;;
 ;;    (add-hook 'LaTeX-mode-hook '(lambda () (imenu-add-to-menubar "Imenu"))) 
-;; 
-;;    The imenu facility (distributed with emacs) is supported by bib-cite to
-;;    move point to a LaTeX section (or chapter) division or to a label
-;;    declaration.  When editing a multi-file document, all such declarations
-;;    within the document are displayed in the menu (again using a TAGS file).
-;;    If you do not want to load imenu.el and use these features, set
-;;    bib-use-imenu to nil. (This feature is disabled in xemacs because I'm
-;;    told it doesn't have imenu).
+;;
+;;    Recent versions of Emacs also have a more direct method for adding an
+;;    imenu index to the menubar:
+;;
+;;     M-x imenu-add-menubar-index RET
+;;
+;;      or in a hook such as:
+;;
+;;    (add-hook 'LaTeX-mode-hook 'imenu-add-menubar-index)
 ;;
 ;;  bib-make-bibliography:     Bound to `\C-c b m'
 ;;
@@ -311,8 +330,9 @@
 ;;  variant "etags -o ", but users have reported differently.  So while the
 ;;  unix notation is used here, you can reset it if you need to like so:
 ;;
-;;    (setq bib-etags-command        "etags  /r='/.*\\eqref.*/' /o=")
-;;    (setq bib-etags-append-command "etags  /r='/.*\\eqref.*/' /a /o=")
+;;    (setq bib-etags-command  "etags  /r='/.*\\\(eq\|page\)ref.*/' /o=")
+;;    (setq bib-etags-append-command 
+;;                             "etags  /r='/.*\\\(eq\|page\)ref.*/' /a /o=")
 ;;  ---
 ;;  For multi-file documents, a TAGS file is generated by etags.  
 ;;  By default, its name is TAGS.  You can change this like so:
@@ -344,14 +364,27 @@
 ;; If you find circumstances in which this package fails, please let me know.
 
 ;; Things for me to do in later versions:
+;; - treat @Strings correctly, not just in isolation.
+;; - use  `kpsewhich -expand-path='$BIBINPUTS'`  instead of BIBINPUTS.
 ;; - jmv@di.uminho.pt (Jose Manuel Valenca) wants:
-;; - prompt for \cite as well as \label and \ref 
-;;   (and use auctex's completion list)
-;; - implement string concatenation, with #[ \t\n]*STRING_NAME
-;; - Create new command to substitute @string text in any bibtex buffer.
-
+;;   - prompt for \cite as well as \label and \ref 
+;;     (and use auctex's completion list)
+;;   - implement string concatenation, with #[ \t\n]*STRING_NAME
+;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.14 Dec 20 99 - (RCS V1.35)
+;;  - New variable bib-ref-regexp for \ref regexp to match \label constructs
+;;    and added \pageref. (RCS V1.34)
+;;  - Edited bib-etags-command snd bib-etags-append-command to match.
+;; V3.13 Dec 20 99 - (RCS V1.32)
+;;  - License changed to GPL.
+;;  - Kai Engelhardt <ke@socs.uts.edu.au> bib-master-file takes .ltx extension
+;;  - imenu--create-LaTeX-index-for-document and bib-document-TeX-files
+;;    edited to accept .ltx extension.
+;;  - Michael Steiner <steiner@cs.uni-sb.de> added journals to @string
+;;    abbrevs and contributed `member-cis' to complaces @strings in a
+;;    case-insensitive manner.
 ;; V3.12 Dec 10 98 - Bruce Ravel <bruce.ravel@nist.gov> (RCS V1.30)
 ;;    Fixed bib-label-help. 
 ;; V3.11 Oct 06 98 - PSG (RCS V1.29) 
@@ -622,17 +655,17 @@ e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
 (You can change the environment variable which is searched by setting the 
 elisp variable bib-bibtex-env-variable)")
 
-(defvar bib-etags-command "etags -r '/.*\\eqref.*/' -o "
+(defvar (setq bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o ")
   "*Variable for the etags command and its output option.
-In unix, this is usually \"etags -r '/.*\\eqref.*/' -o \" 
+In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -o \" 
 (we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
 In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
 If so, set it this variable.")
 
-(defvar bib-etags-append-command 
-  "etags -r '/.*\\eqref.*/' -a -o "
+(defvar (setq bib-etags-append-command 
+  "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o ")
   "*Variable for the etags command and its append and output option.
-In unix, this is usually \"etags -r '/.*\\eqref.*/' -a -o \"
+In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -a -o \"
 In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable.")
 
 (defvar bib-etags-filename "TAGS"
@@ -640,19 +673,33 @@ In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable.")
 but you may want to change this to something like TAGSLaTeX such that it can
 coexist with some other tags file in your master file directory.")
 
+(defvar bib-ref-regexp "\\\\\\(eq\\|page\\)?ref"
+  "*Regular expression for \\ref LaTeX commands that have a matching \\label
+without the curly bracket.
+
+If you change this variable and you use multi-file documents, make sure you
+also edit the variables bib-etags-command and bib-etags-append-command.")
+
 (defvar bib-substitute-string-in-display t
   "*Determines if bib-display will substitute @string definitions.
 If t, then the @string text is substituted.
 If nil, the text is not substituted but the @string entry is included.")
 
+;;Following list of @string abbreviations harvested from:
+;;$ grep -h MACRO /usr/share/texmf/bibtex/bst/*/*.bst | sort | awk '{print $2}' | uniq | sed -e 's/{//;s/}//'
 (defvar bib-string-ignored-warning 
   '("jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "sept" "oct" "nov" 
-   "dec")
+    "dec" "acmcs" "acta" "cacm" "ibmjrd" "ibmjs" "ieeese" "ieeetcad"
+    "ieeetc" "ipl" "jacm" "jcss" "scp" "sicomp" "tcs" "tocs" "tods" "tog"
+    "toms" "toois" "toplas" )
   "*List of @string abbreviations for which a warning is given if not defined.
 These are usually month abbreviations (or journals) defined in a style file.")
 
 ;;<<<<<<User-Modifiable variables end here.
 
+(defvar bib-ref-regexpc (concat bib-ref-regexp "{")
+  "*Regular expression for \\ref LaTeX commands that have a matching \\label
+with the curly bracket.")
 
 (defvar bib-cite-is-XEmacs
   (not (null (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))))
@@ -965,7 +1012,7 @@ A TAGS file is created and used for multi-file documents under auctex."
     (save-excursion
       (if (not (looking-at "\\\\"))
           (search-backward "\\" nil t))
-      (if (looking-at "\\\\\\(eq\\)?ref{")
+      (if (looking-at bib-ref-regexpc)
           (setq ref t)
         (if (looking-at "\\\\label{")
             (setq label t)              
@@ -1006,7 +1053,7 @@ A TAGS file is created and used for multi-file documents under auctex."
     (save-excursion
       (if (not (looking-at "\\\\"))
           (search-backward "\\" nil t))
-      (if (looking-at "\\\\\\(eq\\)?ref{") 
+      (if (looking-at bib-ref-regexpc)
           (setq ref t)
         (if (looking-at "\\\\label{")
             (setq label t)              
@@ -1037,7 +1084,7 @@ find the next occurrence of a regexp."
         (find-tag t t t))
     (if bib-cite-search-ring
         ;;FIXME: Should first make sure I move off initial \ref{}.
-        (let ((regexp (concat "\\\\\\(eq\\)?ref{" bib-cite-search-ring "}")))
+        (let ((regexp (concat bib-ref-regexpc bib-cite-search-ring "}")))
           (if prev-p
               (if (not (re-search-backward regexp nil t))
                   (message "No previous occurrence of reference %s" 
@@ -1362,7 +1409,9 @@ See variables bib-etags-command and bib-etags-filename"
       (goto-char (point-min))
       (while 
           (re-search-forward 
-           "\\\\\\(\\(eq\\)?ref\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}"
+           (concat 
+            "\\\\\\(" (substring bib-ref-regexp 2) 
+            "\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}")
            nil t)
         (setq s (match-beginning 0))
         (setq e (match-end 0))
@@ -1421,7 +1470,8 @@ Use mouse button 3 to display the %s."))
   (save-match-data
     (let* ((string (extent-string object))
 	   (type (cond ((string-match "^\\\\[A-Za-z]*cite[A-Za-z]*" string) "citation")
-		       ((string-match "^\\\\\\(eq\\)?ref" string) "\\label{}")
+		       ((string-match 
+                         (concat "^" bib-ref-regexp) string) "\\label{}")
 		       ((string-match "^\\\\label" string) "\\ref{}")
 		       (t "this (unknown) reference"))))
       (format format type type))))
@@ -1619,14 +1669,14 @@ The label or ref name is extracted from the text under the cursor.
                                  (save-excursion (beginning-of-line)(point)) 
                                  t))
     (cond
-     ((looking-at "\\\\\\(eq\\)?ref{")   ;On \ref, looking for matching \label
+     ((looking-at bib-ref-regexpc)   ;On \ref, looking for matching \label
       (let ((b (progn (search-forward "{" nil t)(forward-char -1)(point)))
             (e (progn (forward-sexp 1)(point))))
         (concat "\\\\label" (regexp-quote (buffer-substring b e)))))
      ((looking-at "\\\\label{")         ;On \label, looking for matching \ref
       (let ((b (progn (search-forward "{" nil t)(forward-char -1)(point)))
             (e (progn (forward-sexp 1)(point))))
-        (concat "\\\\\\(eq\\)?ref" (regexp-quote (buffer-substring b e)))))
+        (concat  bib-ref-regexp (regexp-quote (buffer-substring b e)))))
      (t                                 ;Prompt the user
       (let* ((minibuffer-local-completion-map bib-label-prompt-map)
 	     (the-alist (create-alist-from-list 
@@ -1647,7 +1697,7 @@ The label or ref name is extracted from the text under the cursor.
             (setq the-name (completing-read "Ref: " the-alist nil nil nil 
                                             'LaTeX-find-label-hist-alist)))
           (if (not (equal the-name ""))
-              (concat "\\\\\\(eq\\)?ref{" (regexp-quote the-name) "}")
+              (concat bib-ref-regexpc (regexp-quote the-name) "}")
             nil)))))))
 
 (defun bib-display-this-ref ()
@@ -1738,7 +1788,11 @@ Does not save excursion."
       ;; Just find the section declaration
       (goto-char the-point)
       (if (re-search-backward
-           "\\(^\\|\^M\\)[ \t]*\\\\\\(sub\\)*section{\\([^}]*\\)}" nil t)
+;;;        "\\(^\\|\^M\\)[ \t]*\\\\\\(sub\\)*section{\\([^}]*\\)}" nil t)
+;;; Michael Steiner <steiner@cs.uni-sb.de> patch
+           "\\(^\\|\^M\\)[ \t]*\\\\\\(\\(sub\\)*section\\|chapter\\|part\\)\\*?\
+{\\([^}]*\\)}" 
+           nil t)
           (message (buffer-substring (match-beginning 0)(match-end 0)))
         (error 
          "Sorry, could not find an environment or section declaration")))))
@@ -1925,7 +1979,7 @@ Return the-warnings as text."
                                                          nil t))
                                     "\n"))))
                 ;; @string entry not found
-                (if (not (member (symbol-name string-key) 
+                (if (not (member-cis (symbol-name string-key) 
                                  bib-string-ignored-warning))
                     (setq the-warnings 
                           (concat the-warnings 
@@ -1960,6 +2014,23 @@ Return the-warnings as text."
     ;; We are done!
     ;; Return the warnings...
     the-warnings))
+
+;;; Following contributed by Michael Steiner <steiner@cs.uni-sb.de> The
+;;  @string abbreviation are not case-sensitive, so we replaced the `member' 
+;;  test above with `member-cis' defined here:
+(defun member-cis (ELT LIST)
+  "Return non-nil if ELT is an element of LIST. All elements should be strings.
+Comparison is case-insensitive."	
+  ;; If list is exhausted,
+  (if (null LIST)
+      nil ;; if null then we haven't found the element ...
+    ;; else split list and ...
+    (let((listelt (car LIST))(listrest (cdr LIST)))
+      ;; see if car is equal to ELT
+      (if (string-equal (downcase ELT) (downcase listelt))
+          t ;; if so return true
+        ;; else recurse for rest of list
+        (member-cis ELT listrest)))))
 
 (defun bib-get-citekeys-obarray ()
   "Return obarray of citation key (within curly brackets) under cursor."
@@ -2090,8 +2161,10 @@ Return the-warnings as text."
     (cond
      ((not master)
       nil)
-     ((string-match ".tex$" master)
+     ((string-match ".\\(tex\\|ltx\\)$" master)
       master)
+     ((file-readable-p (concat master ".ltx"))
+      (concat master ".ltx"))
      (t
       (concat master ".tex")))))
 
@@ -2145,6 +2218,11 @@ Return the-warnings as text."
         (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
           (if (string-match ".sty$" the-file) ;Skip over style files!
               nil
+            (if (and (not (file-readable-p (expand-file-name the-file dir)))
+                     (not (string-match ".ltx$" the-file))
+                     (file-readable-p 
+                      (expand-file-name (concat the-file ".ltx") dir)))
+                (setq the-file (concat the-file ".ltx")))
             (if (and (not (file-readable-p (expand-file-name the-file dir)))
                      (not (string-match ".tex$" the-file)))
                 (setq the-file (concat the-file ".tex")))
@@ -2297,6 +2375,13 @@ Return the-warnings as text."
           (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
             (if (and (not (file-readable-p 
                            (expand-file-name the-file default-directory)))
+                     (not (string-match ".ltx$" the-file))
+                     (file-readable-p 
+                      (expand-file-name (concat the-file ".ltx") 
+                                        default-directory)))
+                (setq the-file (concat the-file ".ltx")))
+            (if (and (not (file-readable-p 
+                           (expand-file-name the-file default-directory)))
                      (not (string-match ".tex$" the-file)))
                 (setq the-file (concat the-file ".tex")))
             (end-of-line)(insert "\n")
@@ -2308,6 +2393,7 @@ Return the-warnings as text."
         (while 
             (re-search-backward  
 ;;;          "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
+;;; Fixme: add `part'?
              "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
              nil t)
           (imenu-progress-message prev-pos nil t)
@@ -2351,6 +2437,7 @@ Return the-warnings as text."
 ;;;        "^[^;]*\\(\\\\\\)\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
 ;;; Original regexp that would catch commented-out stuff
 ;;;        "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
+;;; Fixme: add `part'?
            "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
            nil t)
         (imenu-progress-message prev-pos nil t)

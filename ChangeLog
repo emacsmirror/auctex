@@ -1,4 +1,20 @@
+1999-12-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10o released.
+
+1999-12-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* bib-cite.el: Updated to 3.13 (20 Dec 99).
+
+1999-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/danish.el ("danish"): Support Danish quotes.
+	Suggested by arne@daimi.au.dk (Arne Jørgensen).
+
 1999-12-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-info.el (texinfo-mode): Added `kill-all-local-variables'.
+	Reported by Stefan Monnier <foo@acm.com>.
 
 	* Version 9.10n released.
 
