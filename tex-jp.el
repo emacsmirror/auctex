@@ -19,10 +19,14 @@
 
 ;;; Customization
 
+(defgroup AUCTeX-jp nil
+  "Japanese support in AUCTeX." 
+  :group 'AUCTeX)
+
 ;; TeX-format-list need to be set in tex.el, not tex-jp.el.
 ;(setq TeX-format-list
 ;      (append '(("JLATEX" japanese-latex-mode
-;		 "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
+;                 "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\\(article\\|report\\|book\\|slides\\)")
 ;		("JTEX" japanese-plain-tex-mode
 ;		 "-- string likely in Japanese TeX --"))
 ;	      TeX-format-list))
@@ -94,18 +98,24 @@
       (defvar TeX-japanese-process-output-coding-system 'junet
 	"TeX-process' coding system with standard output.")))
 
-(defvar japanese-TeX-command-default "jTeX"
-  "The default command for TeX-command in the japanese-TeX mode.")
-(make-variable-buffer-local 'japanese-TeX-command-default)
+(defcustom japanese-TeX-command-default "pTeX"
+  "*The default command for TeX-command in the japanese-TeX mode."
+  :group 'AUCTeX-jp
+  :type 'string)
+  (make-variable-buffer-local 'japanese-TeX-command-default)
 
-(defvar japanese-LaTeX-command-default "jLaTeX"
-  "The default command for TeX-command in the japanese-LaTeX mode.")
-(make-variable-buffer-local 'japanese-LaTeX-command-default)
+(defcustom japanese-LaTeX-command-default "LaTeX"
+  "*The default command for TeX-command in the japanese-LaTeX mode."
+  :group 'AUCTeX-jp
+  :type 'string)
+  (make-variable-buffer-local 'japanese-LaTeX-command-default)
 
-(defvar japanese-LaTeX-default-style "j-article"
-  "*Default when creating new Japanese documents.")
+(defcustom japanese-LaTeX-default-style "jarticle"
+  "*Default when creating new Japanese documents."
+  :group 'AUCTeX-jp
+  :type 'string)
 
-(defvar japanese-LaTeX-style-list
+(defcustom japanese-LaTeX-style-list
   '(("j-article")
     ("j-report")
     ("j-book")
@@ -116,7 +126,9 @@
     ("tarticle")
     ("treport")
     ("tbook"))
-  "*List of Japanese document styles.")
+  "*List of Japanese document styles."
+  :group 'AUCTeX-jp
+  :type '(repeat (group (string :format "%v"))))
 
 (setq LaTeX-style-list
       (append japanese-LaTeX-style-list LaTeX-style-list))
@@ -136,8 +148,7 @@
 
 ;;; Japanese Parsing
 
-(if (featurep 'mule)
-(progn
+(when (featurep 'mule)
 
 (defconst LaTeX-auto-regexp-list
   (append
@@ -190,7 +201,7 @@
      1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
-))
+)
 
 (defconst TeX-auto-full-regexp-list
   (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list)
