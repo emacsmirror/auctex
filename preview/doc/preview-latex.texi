@@ -651,7 +651,7 @@ As mentioned above, @previewlatex{}'s default mechanism calls
 GhostScript itself for first rendering all preview images into png
 format, then the rendered images get used instead of making use of
 Emacs' builtin @acronym{EPS} support. For this to work, your version of
-GhostScript needs to support the @option{png256} device. Other options
+GhostScript needs to support the @option{png16m} device. Other options
 are available by customizing @code{preview-image-type}. The appropriate
 type must be supported in the @code{preview-image-creators} variable
 which you can customize as well, so adding a suitable device or changing
