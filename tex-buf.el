@@ -1,4 +1,4 @@
-;;;* Last edited: Jun 12 21:08 1992 (krab)
+;;;* Last edited: Jul 22 10:15 1992 (krab)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; tex-buf.el - Invoking TeX from an inferior shell
@@ -7,12 +7,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.14 1992-06-12 19:14:25 krab Exp $
+;; $Id: tex-buf.el,v 1.15 1992-07-22 12:24:34 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri Jun 12 21:08:32 1992
-;; Update Count    : 250
+;; Last Modified On: Wed Jul 22 10:15:24 1992
+;; Update Count    : 269
 ;; 
 ;; HISTORY
 ;; 30-Apr-1992		Kresten Krab Thorup	
@@ -106,6 +106,8 @@ TeX-index-command to use on TeX-master-file.")
 (defvar TeX-current-page ""
   "The pagenumber currently being formatted, enclosed in brackets")
 
+(defvar TeX-running nil
+  "Last command run from AUC TeX.  May be 'tex or 'lacheck")
 
 ;;;
 
@@ -305,16 +307,20 @@ Then the header/trailer will be searched in <file>."
 	  ;; Now, append the main body of the document to the file
 	  ;;
 	  
-	  (write-region (max beg hend) end TeX-out-file t "no msg"))
+ 	  (write-region (if (eq master-buffer
+ 				(current-buffer))
+ 			    (max beg hend)
+			  beg)
+			end TeX-out-file t "no msg"))
+	
 	
 	;;
 	;; For the trailer, we'll see if we can find it...
 	;;
 	(save-excursion
 	  (set-buffer master-buffer)
-	  (goto-char end)  ;; end of given region
-	  (cond ((and (not (equal end (point-max)))
-		      (search-forward trailer nil t))
+	  (goto-char point-max)  ;; end of given region
+	  (cond ((search-forward trailer nil t))
 		 (set-buffer temp-buffer)
 		 (erase-buffer)
 		 ;; make sure trailer isn't hidden by a comment
@@ -359,6 +365,7 @@ Then the header/trailer will be searched in <file>."
   
   (TeX-fix-process "Compilation")
   (setq TeX-new-run t)
+  (setq TeX-running 'tex)
   (setq TeX-start-directory (expand-file-name TeX-directory)))
 
 (defun TeX-compilation-sentinel (proc msg)
@@ -475,6 +482,7 @@ TeX/LaTeX will be run on <file> instead of the current."
     (with-output-to-temp-buffer "*TeX-output*"))
   (TeX-fix-process "Formatting")
   (setq TeX-new-run t)
+  (setq TeX-running 'tex)
   (setq TeX-start-directory (expand-file-name TeX-directory))
   )
 
@@ -633,3 +641,18 @@ This command will not work under bash"
 				    TeX-zap-file ))
   (with-output-to-temp-buffer "*TeX-output*")
   (TeX-fix-process name))
+
+(defun TeX-run-lacheck ()
+  "Run LaCheck on the current document"
+  (interactive)
+  (setq TeX-running 'lacheck)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((lacheck-buffer
+	   (if (re-search-forward 
+		"^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
+	       (buffer-substring (match-beginning 1)
+				 (match-end 1))
+	     (buffer-file-name (current-buffer)))))
+      (compile (format "lacheck %s" lacheck-buffer)))))
+

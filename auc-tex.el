@@ -1,4 +1,4 @@
-;;;* Last edited: Jun 12 20:55 1992 (krab)
+;;;* Last edited: Jul 21 12:14 1992 (krab)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -10,17 +10,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-06-12 19:14:21 $|$Revision: 5.33 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-07-22 12:24:26 $|$Revision: 5.34 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.33 1992-06-12 19:14:21 krab Exp $
+;; $Id: auc-tex.el,v 5.34 1992-07-22 12:24:26 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri Jun 12 20:55:15 1992
-;; Buffer Position : 33391
-;; Update Count    : 597
+;; Last Modified On: Tue Jul 21 12:14:35 1992
+;; Buffer Position : 21784
+;; Update Count    : 607
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -44,7 +44,7 @@
 ;; WITHOUT ANY WARRANTY WHATSOEVER.  It would be nice, though if when
 ;; you use this code, you give due credit to the author.
 
-;; HISTORY 
+;; HISTORY (Not being updated)
 ;; 30-Apr-1992		Kresten Krab Thorup	
 ;;    Last Modified: Thu Apr 30 05:36:59 1992 #519 (Kresten Krab Thorup)
 ;;   Fixed LaTeX-mark-environmetn, as supposed by Denys Duchier. 
@@ -111,20 +111,13 @@
 ;;  Comments and ideas to auc-tex@iesd.auc.dk
 ;;
 ;;  A mailing list `auc-tex' discusses topics concerning
-;;  auctex.  You may subscribe by mailing the above adress.
+;;  auctex.  You may subscribe by mailing auc-tex-request@iesd.auc.dk. 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Thanks a lot to Leslie Lamport for supplying the source 
 ;;  for the LaTeX error messages in the tex-dbg.el module
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
-;;
-;;   Incorporate `TeX-info-mode'... This is just a mad idea, but 
-;;   why not ?  --- I've started working on it! ideas are welcome
-;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -213,6 +206,7 @@ as the definition of this this function is placed in an external module."))
   (autoload 'TeX-recenter-output-buffer "tex-buf" no-doc t)
   (autoload 'TeX-preview "tex-buf" no-doc t)
   (autoload 'TeX-print "tex-buf" no-doc t)
+  (autoload 'TeX-run-lacheck "tex-buf" no-doc t)
   (autoload 'LaTeX-bibtex "tex-buf" no-doc t)
   (autoload 'LaTeX-makeindex "tex-buf" no-doc t)
   
@@ -274,7 +268,9 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
   (define-key TeX-mode-map "\C-c?"    'TeX-mode-help)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
-  (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
+  (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol)
+
+  (define-key TeX-mode-map "\C-c$"    'TeX-run-lacheck))
 
 (if LaTeX-mode-map
     ()
@@ -600,9 +596,10 @@ of LaTeX-mode-hook."
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-indent-hook)
   (setq comment-indent-hook 'TeX-comment-indent)
+  (make-local-variable 'compile-command)
   (make-local-variable 'TeX-bibtex-command)
   (make-local-variable 'TeX-index-command)
-   (make-local-variable 'TeX-command)
+  (make-local-variable 'TeX-command)
   (make-local-variable 'TeX-start-of-header)
   (make-local-variable 'TeX-end-of-header)
   (make-local-variable 'TeX-trailer)
@@ -786,7 +783,7 @@ formatting."
 (defun LaTeX-find-matching-end ()
   "Move point to the \\end of the current environment"
   (interactive)
-  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)"))
+  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\) *"))
 	(level 1))
     (while (and (> level 0) (re-search-forward regexp nil t))
       (if (= (char-after (1+ (match-beginning 0))) ?b);;begin
@@ -799,7 +796,7 @@ formatting."
 (defun LaTeX-find-matching-begin ()
   "Move point to the \\begin of the current environment"
   (interactive)
-  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)"))
+  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\) *"))
 	(level 1))
     (while (and (> level 0) (re-search-backward regexp nil t))
       (if (= (char-after (1+ (match-beginning 0))) ?e);;e
@@ -879,7 +876,7 @@ comments and verbatim environments"
 	     (current-indentation)))
 	  ((looking-at (concat "\\("
 			       (regexp-quote TeX-esc)
-			       "end{\\|"
+			       "end *{\\|"
 			       (regexp-quote TeX-esc)
 			       "right\\)"))
 	   (- (calculate-normal-LaTeX-indentation) LaTeX-indent-level))
@@ -902,7 +899,7 @@ The point is supposed to be at the beginning of the current line."
 	   0)
 	  (t (+ (TeX-brace-count-line)
 		(cond 
-		 ((looking-at (concat (regexp-quote TeX-esc) "begin"
+		 ((looking-at (concat (regexp-quote TeX-esc) "begin *"
 				      (regexp-quote TeX-grop)))
 		  (+ (current-indentation) LaTeX-indent-level))
 		 ((looking-at (concat (regexp-quote TeX-esc) "item\\W"))
@@ -1120,3 +1117,4 @@ If CHAR is nil, or \"\", an error will occur."
   (interactive)
   (describe-mode))
   
+
