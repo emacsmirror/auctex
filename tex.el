@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.66 1995-12-21 16:37:40 abraham Exp $
+;; Version: $Id: tex.el,v 5.67 1996-02-27 18:50:14 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -2012,6 +2012,27 @@ See match-data for details."
 		name)
 	  t))
 
+;; Begin fix part 1 by Ulrik Dickow <dickow@nbi.dk> 16-Feb-1996,
+;; to make queue command usable.  Easy but ugly code duplication again.
+
+(defun TeX-command-menu-queue (printer command name)
+  ;; Show queue for PRINTER using method COMMAND to run NAME.
+  (let ((TeX-printer-default printer)
+	(TeX-printer-list nil)
+	(TeX-queue-command command))
+    (TeX-command-menu name)))
+
+(defun TeX-command-menu-queue-entry (entry)
+  ;; Return TeX-printer-list ENTRY as a menu item.
+  (vector (nth 0 entry)
+	  (list 'TeX-command-menu-queue
+		(nth 0 entry)
+		(or (nth lookup entry) command)
+		name)
+	  t))
+
+;; End fix part 1.
+
 (defun TeX-command-menu-entry (entry)
   ;; Return TeX-command-list ENTRY as a menu item.
   (let ((name (car entry)))
@@ -2027,7 +2048,7 @@ See match-data for details."
 	   (let ((command TeX-queue-command)
 		 (lookup 2))
 	     (append (list TeX-command-Queue)
-		     (mapcar 'TeX-command-menu-printer-entry
+		     (mapcar 'TeX-command-menu-queue-entry ; dickow fix part 2.
 			     TeX-printer-list))))
 	  (t
 	   (vector name (list 'TeX-command-menu name) t)))))
