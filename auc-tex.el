@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.5 $  
+;; RCS status      : $Revision: 4.6 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Jun 13 20:27:50 1991
-;; Update Count    : 334
+;; Last Modified On: Thu Jun 13 20:33:56 1991
+;; Update Count    : 335
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,6 +38,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
+;; 13-Jun-1991  (Last Mod: Thu Jun 13 20:27:50 1991 #334)  Kresten Krab Thorup
+;;    Fixed some bugs in Mattison's patch. Thanks to Robert Estes
+;;    estes@ebony.eecs.ucdavis.edu  for supplying some..
 ;; 10-Jun-1991  (Last Mod: Mon Jun 10 02:15:45 1991 #332)  Kresten Krab Thorup
 ;;    Added batches from Sven Mattison.  This includes also some
 ;;    handling of 7-bit modes... All "\\" are translated to TeX-esc etc.
