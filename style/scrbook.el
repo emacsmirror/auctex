@@ -1,12 +1,12 @@
 ;;; -*- emacs-lisp -*-
 ;;; scrbook.el -- AUCTeX style for scrbook.cls
 
-;; Copyright (C) 2002 Free Software Foundation
+;; Copyright (C) 2002, 2005 Free Software Foundation
 ;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbook.el,v 1.5 2004-10-10 11:02:24 angeli Exp $
+;; Version: $Id: scrbook.el,v 1.6 2005-03-17 10:02:06 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -19,7 +19,7 @@
 ;;; Code:
 (TeX-add-style-hook "scrbook"
   (lambda ()
-    (setq LaTeX-largest-level (LaTeX-section-level "chapter"))
+    (LaTeX-largest-level-set "chapter")
     ;; load basic definitons
     (TeX-run-style-hooks "scrbase")
     (TeX-add-symbols
@@ -29,10 +29,7 @@
      '("setpartpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
      '("setchapterpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
      '("dictum" [ "Author" ] t))
-    (make-local-variable 'LaTeX-section-list)
-    (setq LaTeX-section-list (append
-			      LaTeX-section-list
-			      '(("addchap" 1))))
+    (LaTeX-section-list-add-locally '("addchap" 1))
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label (append
 			       LaTeX-section-label

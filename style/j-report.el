@@ -1,11 +1,12 @@
 ;;; j-report.el - Special code for j-report style.
 
-;; $Id: j-report.el,v 1.2 1993-09-06 22:28:39 amanda Exp $
+;; $Id: j-report.el,v 1.3 2005-03-17 10:02:06 angeli Exp $
 
 ;;; Code:
 
-(TeX-add-style-hook "j-report"
- (function (lambda () (setq LaTeX-largest-level
-			    (LaTeX-section-level "chapter")))))
+(TeX-add-style-hook
+ "j-report"
+ (lambda ()
+   (LaTeX-largest-level-set "chapter")))
 
 ;;; j-report.el ends here

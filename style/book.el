@@ -1,11 +1,12 @@
 ;;; book.el - Special code for book style.
 
-;; $Id: book.el,v 1.4 1993-09-06 22:28:26 amanda Exp $
+;; $Id: book.el,v 1.5 2005-03-17 10:02:06 angeli Exp $
 
 ;;; Code:
 
-(TeX-add-style-hook "book"
- (function (lambda () 
-  (setq LaTeX-largest-level (LaTeX-section-level "chapter")))))
+(TeX-add-style-hook
+ "book"
+ (lambda () 
+   (LaTeX-largest-level-set "chapter")))
 
 ;;; book.el ends here

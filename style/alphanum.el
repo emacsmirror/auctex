@@ -72,14 +72,14 @@
 (TeX-add-style-hook
  "alphanum"
  (lambda ()
-   (setq LaTeX-largest-level (LaTeX-section-level "chapter"))
+   (LaTeX-largest-level-set "chapter")
    (TeX-add-symbols '("levelup" TeX-arg-none))
    (make-local-variable 'LaTeX-section-list)
-   (setq LaTeX-section-list
-	 '(("part" 0)
-	   ;; the levels don't make sense with alphanum, I randomly chose 0...
-	   ("toc" 0)
-	   ("sub" 0)))
+   (LaTeX-section-list-add-locally
+    '(("part" 0)
+      ;; the levels don't make sense with alphanum, I randomly chose 0...
+      ("toc" 0)
+      ("sub" 0)) t)
    (setq LaTeX-section-label
 	 '(("part" . "part:")
 	   ("toc" . "sec:")

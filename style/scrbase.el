@@ -1,11 +1,11 @@
 ;;; scrbase.el --- AUCTeX style for the KOMA-Script bundle.
 
 ;; Copyright (C) 2002 Mark Trettin
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.7 2004-10-10 11:02:24 angeli Exp $
+;; Version: $Id: scrbase.el,v 1.8 2005-03-17 10:02:06 angeli Exp $
 ;; Keywords: tex
 ;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
@@ -110,12 +110,9 @@
 			      (format "[%s]%s" offset
 				      (if (y-or-n-p "Starred? ")
 					  "*" "")))))))))
-    (make-local-variable 'LaTeX-section-list)
-    (setq LaTeX-section-list (append
-			      LaTeX-section-list
-			      '(("addpart" 0)
-				("addsec" 2)
-				("minisec" 7))))
+    (LaTeX-section-list-add-locally '(("addpart" 0)
+				      ("addsec" 2)
+				      ("minisec" 7)))
     ;; This doesn't work. Maybe it's refTeX's label insertion?
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label (append

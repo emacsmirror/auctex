@@ -1,11 +1,12 @@
 ;;; jsarticle.el - Special code for jsarticle style.
 
-;; $Id: jsarticle.el,v 1.1 2005-01-31 11:32:12 ataka Exp $
+;; $Id: jsarticle.el,v 1.2 2005-03-17 10:02:06 angeli Exp $
 
 ;;; Code:
 
-(TeX-add-style-hook "jsarticle"
- (function (lambda ()
-  (setq LaTeX-largest-level (LaTeX-section-level "section")))))
+(TeX-add-style-hook
+ "jsarticle"
+ (lambda ()
+   (LaTeX-largest-level-set "section")))
 
 ;;; jsarticle.el ends here

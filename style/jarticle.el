@@ -1,11 +1,12 @@
 ;;; jarticle.el - Special code for jarticle style.
 
-;; $Id: jarticle.el,v 1.3 2005-02-07 14:14:03 ataka Exp $
+;; $Id: jarticle.el,v 1.4 2005-03-17 10:02:06 angeli Exp $
 
 ;;; Code:
 
-(TeX-add-style-hook "jarticle"
- (function (lambda ()
-  (setq LaTeX-largest-level (LaTeX-section-level "section")))))
+(TeX-add-style-hook
+ "jarticle"
+ (lambda ()
+   (LaTeX-largest-level-set "section")))
 
 ;;; jarticle.el ends here
