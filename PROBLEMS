@@ -27,7 +27,7 @@ AUC TeX parses your buffer and save the information each time you
 save the buffer.  You may be able to speed it up by limiting the
 amount of information AUC TeX tries to extract.  You can do this by
 setting the variable `TeX-auto-regexp-list' before loading AUC TeX.
-Look at the definition of the variable in the file `tex-parse.el'.  If
+Look at the definition of the variable in the file `tex-auto.el'.  If
 you only use LaTeX commands a good setting would be
 
 (setq TeX-auto-regexp-list

@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.45 1993-05-28 01:53:00 amanda Exp $
+# $Id: Makefile,v 5.46 1993-05-29 03:00:43 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -24,7 +24,7 @@ infodir = $(prefix)/info
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located.
-elispdir=$(prefix)/lib/emacs/19.8/lisp
+elispdir=$(prefix)/lib/emacs/19.9/lisp
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
