@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.7 2001-09-24 01:52:29 dakas Exp $
+;; $Id: preview.el,v 1.8 2001-09-24 14:48:18 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -41,13 +41,13 @@
 
 
 ;;; History:
-;; 
+;;
 
 ;;; Code:
 
 (eval-when-compile
-  (require 'tex-buf))
-(eval-when-compile
+  (require 'tex-buf)
+  (defvar TeX-auto-file)
   (require 'tq))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
@@ -83,8 +83,7 @@ any remaining arguments configured here."
 			       preview-image-type) symbol)))
     (when hook
       (apply (car hook) (append (cdr hook) rest)))))
-	 
-	   
+	 	   
 
 (defun preview-extract-bb (filename)
   "Extract EPS bounding box vector from FILENAME."
@@ -183,8 +182,9 @@ and tries to restart GhostScript if necessary."
       (with-current-buffer (process-buffer process)
 	(when preview-gs-ov
 	  (condition-case nil
-	      (delete-file (elt (overlay-get preview-gs-ov
-					     'queued) 0))
+	      (preview-delete-file
+	       (elt (overlay-get preview-gs-ov 'queued) 0)
+	       t)
 	    (error nil))
 	  (preview-deleter preview-gs-ov)
 	  (setq preview-gs-ov nil)
@@ -241,9 +241,9 @@ and tries to restart GhostScript if necessary."
   (let ((thisimage (cons 'image (cdr preview-nonready-icon))))
     (overlay-put ov 'queued
 		 (vector
-		  (expand-file-name
-		   (format "prevnew.%03d" snippet) tempdir)
-		  (preview-extract-bb (overlay-get ov 'filename))
+		  (preview-make-filename
+		   (format "prevnew.%03d" snippet) tempdir t)
+		  (preview-extract-bb (car (overlay-get ov 'filename)))
 		  thisimage))
     (push ov preview-gs-queue)
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
@@ -262,7 +262,7 @@ and tries to restart GhostScript if necessary."
 	  (progn
 	    (when preview-gs-ov
 	      (condition-case nil
-		  (delete-file (overlay-get preview-gs-ov 'filename))
+		  (preview-delete-file (overlay-get preview-gs-ov 'filename) t)
 		(file-error nil))
 	      (let* ((queued (overlay-get preview-gs-ov 'queued))
 		     (newfile (elt queued 0))
@@ -270,7 +270,7 @@ and tries to restart GhostScript if necessary."
 		     (img (elt queued 2)))
 		(overlay-put preview-gs-ov 'queued nil)
 		(overlay-put preview-gs-ov 'filename newfile)
-		(setcdr img (list :file newfile
+		(setcdr img (list :file (car newfile)
 				  :type preview-gs-image-type
 				  :heuristic-mask t
 				  :ascent (preview-ascent-from-bb bbox)))))
@@ -301,8 +301,8 @@ and tries to restart GhostScript if necessary."
 			       (- (elt bbox 2) (elt bbox 0))
 			       (- (elt bbox 3) (elt bbox 1))
 			       (- (elt bbox 0)) (elt bbox 1)
-			       newfile
-			       oldfile)
+			       (car newfile)
+			       (car oldfile))
 		       "GS\\(<[0-9]+\\)?>"
 		       buff
 		       (function preview-gs-transact))
@@ -444,13 +444,15 @@ mouse-3 kills preview"))
 (defun preview-disable (ovr &rest ignored)
   (define-key (overlay-get ovr 'preview-map) [mouse-2]
     `(lambda () (interactive) (preview-regenerate ,ovr)))
-  (overlay-put ovr 'before-string (preview-disabled-string ovr))
-  (overlay-put ovr 'invisible nil)
+  (let ((str (preview-disabled-string ovr)))
+    (overlay-put ovr 'before-string str)
+    (overlay-put ovr 'invisible nil)
+    (overlay-put ovr 'strings (cons str str)))
   (let ((filename (overlay-get ovr 'filename)))
     (when filename
       (overlay-put ovr 'filename nil)
       (condition-case nil
-	  (delete-file filename)
+	  (preview-delete-file filename)
 	(file-error nil)))))
     
 (defun preview-deleter (ovr &rest ignored)
@@ -460,9 +462,10 @@ mouse-3 kills preview"))
   (let ((filename (overlay-get ovr 'filename)))
     (delete-overlay ovr)
     (when filename
-	(condition-case nil
-	    (delete-file filename)
-	  (file-error nil)))))
+      (overlay-put ovr 'filename nil)
+      (condition-case nil
+	  (preview-delete-file filename)
+	(file-error nil)))))
 
 (defun preview-clearout (&optional start end)
   "Clear out all previews in the current region"
@@ -473,15 +476,13 @@ mouse-3 kills preview"))
 	(overlays-in (or start 1)
 		     (or end (1+ (buffer-size))))))
 
-(add-hook 'kill-buffer-hook 'preview-kill-buffer nil nil)
-(defvar preview-temp-dirs nil)
-(make-local-variable 'preview-temp-dirs)
+(add-hook 'kill-buffer-hook (function preview-clearout) nil nil)
 
-(defun preview-kill-buffer ()
-  (preview-clearout)
-  (condition-case nil
-      (mapc 'delete-directory preview-temp-dirs)
-    (error nil)) )
+(defvar preview-temp-dirs nil
+"List of top-level temporary directories in use from preview.
+Any directory not in this list will be cleared out by preview
+on first use."
+)
 
 (defun preview-inactive-string (ov)
   (concat
@@ -492,7 +493,7 @@ mouse-3 kills preview")
    "\n") )
 
 (defun preview-eps-place (ov tempdir snippet)
-  (preview-ps-image (overlay-get ov 'filename) preview-scale))
+  (preview-ps-image (car (overlay-get ov 'filename)) preview-scale))
 
 (defun preview-active-string (ov tempdir snippet)
   (propertize "x" 'display 
@@ -501,13 +502,24 @@ mouse-3 kills preview")
 	      'help-echo "mouse-2 opens text
 mouse-3 kills preview") )
 
+(defun preview-make-filename (file tempdir &optional dont-register)
+  (unless dont-register
+    (setcdr tempdir (1+ (cdr tempdir))))
+  (cons (expand-file-name file (car tempdir)) tempdir))
+
+(defun preview-delete-file (file &optional dont-register)
+  (delete-file (car file))
+  (when (and (null dont-register)
+	     (zerop (setcdr (cdr file) (1- (cdr (cdr file))))))
+    (delete-directory (car (cdr file)))))
+
 (defun preview-place-preview (tempdir snippet source start end)
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end)
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map (preview-make-map ov))
-    (overlay-put ov 'filename (expand-file-name
+    (overlay-put ov 'filename (preview-make-filename
 			       (format "preview.%03d" snippet) tempdir))
     (let ((active (preview-active-string ov tempdir snippet)))
       (overlay-put ov 'strings
@@ -599,10 +611,10 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
 	(make-directory topdir))
       (setq preview-temp-dirs (cons topdir preview-temp-dirs)) )
     (setq TeX-active-tempdir
-	  (make-temp-file (expand-file-name
-			   "tmp" (file-name-as-directory topdir)) t))))
+	  (cons (make-temp-file (expand-file-name
+			   "tmp" (file-name-as-directory topdir)) t) 0))
+    (car TeX-active-tempdir)))
 
-(eval-when-compile (defvar error))	; dynamic bondage
 (defun preview-translate-location ()
   (if (string-match "Package Preview Error.*" error)
       (condition-case nil
@@ -674,7 +686,7 @@ preview Emacs Lisp package something too stupid.") TeX-error-description-list))
 		  (rplaca TeX-error-file (match-string 1 string)))
 		 (t (error "Should have matched %s" string)))))
 	    (if (zerop preview-snippet)
-		(preview-clean-subdir tempdir)) )
+		(preview-clean-subdir (car tempdir))) )
 	(preview-call-hook 'close)))))
 
 (defun preview-analyze-error (snippet startflag tempdir)
