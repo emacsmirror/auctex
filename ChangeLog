@@ -1,3 +1,10 @@
+2004-08-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-mik.el: Use `start' instead of the respective executable for
+	PostScript, PDF and HTML files.
+
+	* tex-fptex.el: Ditto.
+
 2004-08-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-find-macro-boundaries): Detect the start of any
