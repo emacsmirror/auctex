@@ -7,7 +7,7 @@
 @direntry
 * preview-latex: (preview-latex).       A preview mode for GNU Emacs
 @end direntry
-@dircategory GNU Emacs
+@dircategory Emacs
 @direntry
 * preview-latex: (preview-latex).       To preview LaTeX constructs
 @end direntry
