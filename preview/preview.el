@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.36 2001-10-25 21:37:38 dakas Exp $
+;; $Id: preview.el,v 1.37 2001-10-26 00:30:43 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -586,7 +586,8 @@ numbers (can be float if available)."
       (preview-region begin end))))
 
 (defun preview-region (begin end)
-  "Run preview on region." (interactive "r")
+  "Run preview on region between BEGIN and END."
+  (interactive "r")
 ;;  (preview-clearout begin end)
   (TeX-region-create (TeX-region-file TeX-default-extension)
 		     (buffer-substring begin end)
@@ -843,23 +844,42 @@ upgraded to a fancier version of just the LaTeX style."
 (defun preview-make-options ()
   "Create default option list to pass into LaTeX preview package."
   (mapconcat 'identity preview-default-option-list ","))
-		
+
+(defcustom preview-LaTeX-command "%l '\\nonstopmode\
+\\PassOptionsToPackage{auctex,active}{preview}\
+\\AtBeginDocument{\\ifx\\ifPreview\\undefined\
+\\RequirePackage[%P]{preview}\\fi}\\input{%t}';\
+dvips -Pwww -i -E %d -o %m/preview.000"
+  "*Command used for starting a preview.
+See description of `TeX-command-list' for details."
+  :group 'preview
+  :type 'string
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (if (featurep 'tex)
+	     (LaTeX-preview-setup)))
+  :initialize #'custom-initialize-default)
+
+
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into Auc-TeX.
 This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
-  (remove-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+  (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (require 'tex-buf)
-  (add-to-list 'TeX-command-list
-	       '("Generate Preview"
-		  "%l '\\nonstopmode\\PassOptionsToPackage{auctex,active}{preview}\\AtBeginDocument{\\ifx\\ifPreview\\undefined\\RequirePackage[%P]{preview}\\fi}\\input{%t}';dvips -Pwww -i -E %d -o %m/preview.000"
-		  TeX-inline-preview nil) t)
+  (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
+			     #'TeX-inline-preview nil)))
+    (setq TeX-command-list
+	  (nconc (delq
+		  (assoc (car preview-entry) TeX-command-list)
+		  TeX-command-list)
+		 (list preview-entry))))
   (add-to-list 'TeX-error-description-list
 	       '("Package Preview Error.*" .
 "The auctex option to preview should not be applied manually.  If you
 see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
-  (add-hook 'TeX-translate-location-hook 'preview-translate-location)
+  (add-hook 'TeX-translate-location-hook #'preview-translate-location)
   (add-to-list 'TeX-expand-list
 	       '("%m" preview-create-subdirectory) t)
   (add-to-list 'TeX-expand-list
@@ -941,7 +961,7 @@ See `TeX-parse-TeX' for documentation of REPARSE."
 ;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
 (if (featurep 'tex)
     (LaTeX-preview-setup)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup))
+  (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup))
       
 (defvar preview-snippet nil
   "Number of current preview snippet.")
@@ -1135,7 +1155,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.36 $"))
+	(rev "$Revision: 1.37 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
