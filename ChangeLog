@@ -1,3 +1,14 @@
+2004-11-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-paragraph-commands): Now is a customizable list
+	instead of a regular expression.
+	(LaTeX-paragraph-commands-internal)
+	(LaTeX-paragraph-commands-regexp): New variables.
+	(LaTeX-forward-paragraph, LaTeX-backward-paragraph)
+	(LaTeX-common-initialization): Use
+	`LaTeX-paragraph-commands-regexp' instead of
+	`LaTeX-paragraph-commands'.
+
 2004-11-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-close-environment): Insert a newline at the end
