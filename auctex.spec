@@ -27,14 +27,21 @@ BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
 
 %description 
-AUCTeX is a comprehensive, customizable, integrated environment for
-writing, editing and processing input files for LaTeX using GNU Emacs.
+AUCTeX is an extensible package that supports writing and formatting TeX files
+for most variants of Emacs.  
 
-For XEmacs, use XEmacs' own package system for installation.
+AUCTeX supports many different TeX macro packages, including AMS-TeX, LaTeX,
+Texinfo and basic support for ConTeXt.  Documentation can be found under
+/usr/share/doc, e.g. the reference card (tex-ref.pdf) and the FAQ.  The AUCTeX
+manual is available in Emacs info (C-h i d m AUCTeX RET).  On the AUCTeX home
+page, we provide manuals in various formats.
 
-This .rpm enables AUCTeX system-wide.  
-If you do not want this, install/upgrade with 'rpm --nopre ...' 
-(the activation is done in the preinstall script).
+This package is for GNU Emacs.  XEmacs users should use the package system for
+installation.
+
+The package enables AUCTeX system-wide.  If you do not want this,
+install/upgrade with 'rpm --nopre ...'  (the activation is done in the
+preinstall script).
 
 %prep
 %setup

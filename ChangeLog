@@ -1,5 +1,7 @@
 2004-08-19  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* auctex.spec (description): Overhauled.
+
 	* doc/install.texi: Markup fixes, see "(texinfo)command".
 
 	* doc/wininstall.texi: Ditto.
