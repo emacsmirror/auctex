@@ -510,42 +510,47 @@ AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS    Directories holding 
 if test -z "$texinputdirs" ; then
   AC_MSG_CHECKING([for directories holding TeX input files])
   texinputdirs=""
-  # TeX input files
-  temp=`kpsewhich --progname latex --show-path tex`
-  # Simple test and conversion to unify paths separated by `;' and ':'.
-  if ! echo $temp | grep ';' > /dev/null ; then
-    temp=`echo $temp | tr ':' ';'`
-  fi
-  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
-      grep '/tex///\?$' | sed -e 's+///\?+/+g'`
-  do
-    if test -e "$x" ; then
-      if test "${texinputdirs}" != "" ; then
-	texinputdirs="${texinputdirs}""\" \""
-      fi
-      texinputdirs="${texinputdirs}"`echo $x`
+  temp=`kpsewhich --progname latex --expand-braces \\$SYSTEXMF`
+  if test -z "$temp" ; then
+    temp1=`kpsewhich --progname latex --expand-braces \\$TEXMFLOCAL`
+    if test -z "$temp1" ; then
+      temp1=`kpsewhich --progname latex --expand-path \\$TEXMFLOCAL`
     fi
-  done
-  # BibTeX style files
-  bstinputs=""
-  temp=`kpsewhich --progname latex --show-path bst`
-  # Simple test and conversion to unify paths separated by `;' and ':'.
-  if ! echo $temp | grep ';' > /dev/null ; then
-    temp=`echo $temp | tr ':' ';'`
-  fi
-  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
-      grep '/bst//$' | sed -e 's+//+/+g'`
-  do
-    if test -e "$x" ; then
-      if test "${bstinputs}" != "" ; then
-	bstinputs="${bstinputs}""\" \""
-      fi
-      bstinputs="${bstinputs}"`echo $x`
+    temp2=`kpsewhich --progname latex --expand-braces \\$TEXMFMAIN`
+    if test -z "$temp2" ; then
+      temp2=`kpsewhich --progname latex --expand-path \\$TEXMFMAIN`
     fi
-  done
-  if ! test -z "$bstinputs" ; then
-    texinputdirs="${texinputdirs}""\" \"""${bstinputs}"
+    temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST`
+    for i in $temp1 $temp2 $temp3 ; do
+      if ! echo $i | grep -e '^[A-Za-z]:' > /dev/null && \
+         ! echo $i | grep ';' > /dev/null ; then
+        i=`echo $i | tr ':' ';'`
+      fi
+      if ! test -z "$i" ; then
+        if ! test -z "$temp" ; then
+          temp=$temp";"
+        fi
+        temp="$temp""$i"
+      fi
+    done
+  else
+    if ! echo $temp | grep -e '^[A-Za-z]:' > /dev/null && \
+       ! echo $temp | grep ';' > /dev/null ; then
+      temp=`echo $temp | tr ':' ';'`
+    fi
   fi
+  for x in `echo $temp | tr ';' '\\n'` ; do
+    # We assume that we are dealing with a TDS-compliant TeX system.
+    for y in "/tex/" "/bibtex/bst/" ; do
+      tempy="$x""$y"
+      if test -e "$tempy" ; then
+        if test "${texinputdirs}" != "" ; then
+	  texinputdirs="${texinputdirs}""\" \""
+        fi
+        texinputdirs="${texinputdirs}""$tempy"
+      fi
+    done
+  done
   if test -z "$texinputdirs" ; then
     texinputdirs="/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/"
   fi
