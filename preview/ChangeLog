@@ -1,5 +1,9 @@
 2002-05-08  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-parse-messages): There is little point in
+	being more picky about ( than we are about ), since all that this
+	buys us is bad nesting.
+
 	* prv-emacs.el (preview-gs-get-colors): Warp outline borders to
 	integral pixels in order to avoid antialiasing artifacts.
 
