@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.38 1993-03-31 00:57:55 amanda Exp $
+# $Id: Makefile,v 5.39 1993-04-01 02:34:40 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -94,14 +94,16 @@ MINMAPFILES = README_MINOR $(MINMAPSRC)
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-jp.el \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el
+	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el  tex-foil.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
-	    format/JTEX.el format/JLATEX.el format/JSLITEX.el
+	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
+	    format/FOILTEX.el
 
 STYLESRC = style/latex.el   style/slitex.el \
-	   style/article.el style/book.el    style/letter.el 
+	   style/article.el style/book.el    style/letter.el \
+	   style/foiltex.el
 
 LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c

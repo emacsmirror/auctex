@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.27 1993-03-30 00:46:59 amanda Exp $
+@c $Id: auc-tex.texi,v 1.28 1993-04-01 02:35:03 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2561,6 +2561,16 @@ Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
 @item
+Foil@TeX{} support.
+
+Thanks to Sven Mattisson @samp{sven@@tde.lth.se}
+
+@item
+Smarter about when you need to reformat.
+
+Thanks to Chris Callsen @samp{<chris@@iesd.auc.dk>}.
+
+@item
 Japanese @TeX{}
 
 Now supports Japanese @TeX{}.  Thanks to Shinji Kobayashi
@@ -3276,10 +3286,6 @@ can not fix or honor right away will be added to this list
 
 @item 
 Make features.
-
-@kbd{C-c C-c} should check if any of the included tex or sty files are
-changed, and then sugest @code{TeX-command-default}.  It should also
-check the bib files it uses, and suggest Bib@TeX{}.  
 
 A new command @code{TeX-update} (@kbd{C-c C-u}) could be used to create
 an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and

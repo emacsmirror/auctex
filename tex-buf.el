@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.31 1993-03-31 00:57:57 amanda Exp $
+;;; $Id: tex-buf.el,v 1.32 1993-04-01 02:34:45 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -157,7 +157,7 @@ command."
     
     ;; Now start the process
     (let ((buffer (current-buffer)))
-      (TeX-process-set-variable name 'TeX-command-next TeX-command-default)
+      (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
       (apply hook name command (apply file nil) nil)
       (pop-to-buffer buffer))))
 
@@ -185,14 +185,57 @@ LIST default to TeX-expand-list."
     (setq list (cdr list)))
   command)
 
+(defun TeX-check-dependency (derived original)
+  "Return non-nil if DERIVED is older than ORIGINAL
+Also check if ORIGINAL is modified in a non-saved buffer."
+  (or (file-newer-than-file-p original derived)
+      (TeX-member original (buffer-list)
+		  (function (lambda (file buffer)
+			      (and (equal (expand-file-name file)
+					  (buffer-file-name buffer))
+				   (buffer-modified-p buffer)))))))
+
+(defvar TeX-check-path (cons "./" TeX-macro-private)
+  "*Directory path to search for dependencies.
+
+Used when checking if any files have changed.")
+
+(defun TeX-dependencies (files extensions)
+  "Return a combined list of FILES with EXTENSIONS in TeX-check-path."
+  (apply 'append
+	 (apply 'append
+		(mapcar
+		 (function
+		  (lambda (x)
+		    (mapcar
+		     (function
+		      (lambda (y)
+			(mapcar
+			 (function
+			  (lambda (z)
+			    (expand-file-name (concat z x "." y))))
+			 TeX-check-path)))
+		     extensions)))
+		 files))))
+
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (cond ((buffer-modified-p)
+  (let* ((default (cond ((TeX-member (TeX-master-file "dvi")
+				     (TeX-dependencies (TeX-style-list)
+						       TeX-file-extensions)
+				     'TeX-check-dependency)
 			 TeX-command-default)
+			((TeX-member (TeX-master-file "bbl")
+				     (TeX-dependencies
+				      (LaTeX-bibliographies-list)
+				      BibTeX-file-extensions)
+				     'TeX-check-dependency)
+			 ;; We should check for bst files here as well.
+			 TeX-command-BibTeX)
 			((TeX-process-get-variable name
 						   'TeX-command-next
 						   TeX-command-default))
-			(TeX-command-default)))
+			(TeX-command-Show)))
 	 (completion-ignore-case t)
 	 (answer (completing-read (concat "Command: (default " default  ") ")
 				  TeX-command-list nil t)))
@@ -243,6 +286,10 @@ LIST default to TeX-expand-list."
 
 ;;; @@ Command Hooks
 
+(defvar TeX-after-start-process-hook nil
+  "Hooks to run after starting an asynchronous process.
+Used by Japanese TeX to set the coding system.")
+
 (defun TeX-command-hook (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
@@ -260,6 +307,7 @@ Return the new process."
     (if TeX-process-asynchronous
 	(let ((process (start-process name buffer TeX-shell
 				      TeX-shell-command-option command)))
+	  (run-hooks 'TeX-after-start-process-hook)
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
@@ -323,13 +371,15 @@ Return the new process."
   (process-kill-without-query (start-process (concat name " discard")
 					     nil TeX-shell
 					     TeX-shell-command-option
-					     command)))
+					     command))
+  (run-hooks 'TeX-after-start-process-hook))
 
 (defun TeX-background-hook (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((process (start-process (concat name " background")
 				nil TeX-shell
 				TeX-shell-command-option command)))
+    (run-hooks 'TeX-after-start-process-hook)
     (set-process-filter process 'TeX-background-filter)
     (process-kill-without-query process)))
 
@@ -349,7 +399,7 @@ Return the new process."
       (setq mode-line-process ": exit")
       
       ;; Do command specific actions.
-      (setq TeX-command-next TeX-command-default)
+      (setq TeX-command-next TeX-command-Show)
       (goto-char (point-min))
       (apply TeX-sentinel-hook nil name nil)
       
@@ -377,7 +427,7 @@ Return the new process."
 	     
 	     ;; Do command specific actions.
 	     (TeX-command-mode-line process)
-	     (setq TeX-command-next TeX-command-default)
+	     (setq TeX-command-next TeX-command-Show)
 	     (goto-char (point-min))
 	     (apply TeX-sentinel-hook process name nil)
 	     

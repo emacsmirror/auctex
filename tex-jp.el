@@ -20,12 +20,18 @@
 (defun japanese-TeX-initialization ()
   "Initialization for Japanese TeX."
   (if (boundp 'MULE)
-      (progn
-	(make-variable-buffer-local 'start-process-hook)
-	(setq start-process-hook
-	      '(lambda (name buffer program &rest args)
-		 (cons TeX-process-input-coding-system
-		       TeX-process-output-coding-system))))))
+      (setq TeX-after-start-process-hook
+	    (function (lambda ()
+			(set-process-coding-system
+			 nil
+			 TeX-japanese-process-input-coding-system
+			 TeX-japanese-process-output-coding-system)))))
+  (if (boundp 'NEMACS)
+      (setq TeX-after-start-process-hook
+	    (function
+	     (lambda ()
+	       (set-process-kanji-code nil TeX-process-kanji-code))))))
+ 
 
 (defun japanese-LaTeX-initialization ()
   "Initialization for Japanese LaTeX."
