@@ -1,3 +1,7 @@
+2002-04-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/readme.texi (Getting started): mention the mouse buttons.
+
 2002-04-21  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-emacs.el: Remove comment regarding XEmacs's lack of local
