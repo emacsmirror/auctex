@@ -6,6 +6,10 @@
 
 2005-02-19  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* tex-jp.el (TeX-japanese-process-input-coding-system): Remove
+	garbage code.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 	* latex.el (LaTeX-nospace-between-char-regexp): New variable.
 	(LaTeX-fill-delete-newlines): Use it.
 	(LaTeX-fill-move-to-break-point): Ditto.  Fix comment.
