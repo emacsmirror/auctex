@@ -1,3 +1,29 @@
+2004-11-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Change maintainer information.
+	(font-latex-keywords): New customization group.
+	(font-latex-built-in-keyword-classes): New variable.
+	(font-latex-make-match-defun, font-latex-keyword-matcher): New
+	functions.
+	(font-latex-make-built-in-keywords): New name for
+	`font-latex-make-keywords'.
+	Move default keyword definitions from
+	`font-latex-match-*-keywords' to
+	`font-latex-match-*-keywords-local'.
+	Integrate `font-latex-match-*-keywords-set' function into
+	`font-latex-match-*-keywords' defcustom.
+	(font-latex-keywords-1, font-latex-keywords-2): Default to nil.
+	All matchers are now added in `font-latex-make-built-in-keywords'
+	and `font-latex-make-user-keywords'.
+	(font-latex-user-keyword-classes): New variable.
+	(font-latex-make-user-keywords): New function.
+
+	* doc/changes.texi: Remove duplicate word.
+	Mention possibility to add new keyword classes.
+
+	* doc/quickstart.texi: Some rewordings, corrections and
+	enhancements.
+
 2004-10-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-auto-symbol-check): Use `add-to-list' instead of
