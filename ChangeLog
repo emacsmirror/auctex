@@ -1,3 +1,8 @@
+2003-12-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/scrbase.el (TeX-add-symbols): Remove redundant entries.
+	* style/scrlttr2.el (TeX-add-symbols): Remove redundant entry.
+	
 2003-08-02  Mike Sperber  <mike@xemacs.org>
 
 	* latex.el (latex-mode): Really turn off filladapt.  It just
