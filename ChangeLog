@@ -1,5 +1,7 @@
 2003-07-20  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* configure.in: Use mule support check.
+
 	* Makefile.in (CONTRIB_MULE, COMPILE_MULE, CONTRIB_MULEELC): New macros.
 	(contrib): Compile CONTRIB and COMPILE_MULE.
 	(install-contrib): Install CONTRIB_MULE and CONTRIB_MULEELC, too.
