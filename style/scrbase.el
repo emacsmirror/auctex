@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.3 2002-10-26 20:33:37 dakas Exp $
+;; Version: $Id: scrbase.el,v 1.4 2003-11-17 13:14:30 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -24,38 +24,45 @@
 (TeX-add-style-hook "scrbase"
   (lambda ()
     (TeX-add-symbols
-     ;; Additional elements for \maketitle
-     '("maketitle" [ "Pagenumber" ])
-     '("subject" "Subject")
-     '("titlehead" t)
-     '("publishers" "Publisher")
-     '("extratitle" t)
-     '("uppertitleback" t)
-     '("lowertitleback" t)
-     ;; Dedications
-     '("dedication" t)
-     ;; Fonts
+     "appendixmore"
+     "autodot"
      '("addtokomafont" TeX-arg-KOMA-fontelements t)
-     '("setkomafont" TeX-arg-KOMA-fontelements t)
-     '("usekomafont" TeX-arg-KOMA-fontelements)
-     ;; Useful stuff
-     '("ifthispageodd" t nil)
-     '("ifpdfoutput" t nil)
-     ;; Textcommands
-     '("textsubscript" "Text")
-     ;; Additional clearpage commands
-     '("cleardoublestandardpage")
-     '("cleardoubleplainpage")
+     '("areaset" [ "BCOR" ] "Width" "Height")
+     '("captionabove" [ "Lof entry" ] "Caption")
+     '("captionbelow" [ "Lof entry" ] "Caption")
      '("cleardoubleemptypage")
-     ;; Marginline automatically uses the correct margin
+     '("cleardoubleplainpage")
+     '("cleardoublestandardpage")
+     '("dedication" t)
+     '("deffootnote" [ "Mark width" ] "Indent" "Parindent" "Definition")
+     '("deffootnotemark" "Definition")
+     '("extratitle" t)
+     '("ifpdfoutput" t nil)
+     '("ifthispageodd" t nil)
+     '("lowertitleback" t)
+     '("maketitle" [ "Pagenumber" ])
+     '("marginline" "Marginal note")
      '("marginline" t)
-     ;; caption formatting
+     '("publishers" "Publisher")
+     '("publishers" "Publishers")
+     '("sectionmark" "Running head")
+     '("setbibpreamble" "Preamble")
+     '("setcaphanging")
      '("setcapindent" "Indent")
      '("setcapindent*" "X-Indent")
-     '("setcaphanging")
-     '("setcapwidth" [ TeX-arg-KOMA-capjust ] "Width")
      '("setcapmargin" [ "Margin left" ] "Margin")
-     '("setcapmargin*" [ "Margin inside" ] "Margin"))
+     '("setcapmargin*" [ "Margin inside" ] "Margin")
+     '("setcapwidth" [ TeX-arg-KOMA-capjust ] "Width")
+     '("setindexpreamble" "Preamble")
+     '("setkomafont" TeX-arg-KOMA-fontelements t)
+     '("subject" "Subject")
+     '("subsectionmark" "Running head")
+     '("textsubscript" "Text")
+     '("thanks" "Footnote")
+     '("thefootnotemark")
+     '("titlehead" t)
+     '("uppertitleback" t)
+     '("usekomafont" TeX-arg-KOMA-fontelements))
     (LaTeX-add-environments
      '("labeling" (lambda (env &rest ignore)
 		    (LaTeX-insert-environment
@@ -121,7 +128,64 @@
 			       LaTeX-section-label
 			       '(("addpart" . nil)
 				 ("addsec" . nil)
-				 ("minisec" . nil)))) ))
+				 ("minisec" . nil))))
+    ;; Definitions for font-latex
+    ;; Textual keywords
+    (setq font-latex-match-textual-keywords-local
+          (append font-latex-match-textual-keywords-local
+                  '("addpart"
+                    "addsec"
+                    "captionabove"
+                    "captionbelow"
+                    "dedication"
+                    "extratitle"
+                    "lowertitleback"
+                    "maketitle"
+                    "marginline"
+                    "minisec"
+                    "publishers"
+                    "subject"
+                    "sectionmark"
+                    "setbibpreamble"
+                    "setindexpreamble"
+                    "subsectionmark"
+                    "textsubscript"
+                    "titlehead"
+                    "uppertitleback")))
+    (font-latex-match-textual-make)
+    ;; Function keywords
+    (setq font-latex-match-function-keywords-local
+          (append font-latex-match-function-keywords-local
+                  '("deffootnote"
+                    "deffootnotemark"
+                    "ifpdfoutput"
+                    "ifthispageodd")))
+    (font-latex-match-function-make)
+    ;; Variable keywords
+    (setq font-latex-match-variable-keywords-local
+          (append font-latex-match-variable-keywords-local
+                  '("addtokomafont"
+                    "areaset"
+                    "setcaphanging"
+                    "setcapindent"
+                    "setcapmargin"
+                    "setcapwidth"
+                    "setkomafont"
+                    "typearea"
+                    "usekomafont")))
+    (font-latex-match-variable-make)
+    ;; Warning keywords
+    (setq font-latex-match-warning-keywords-local
+          (append font-latex-match-warning-keywords-local
+                  '("cleardoublestandardpage"
+                    "cleardoubleplainpage"
+                    "cleardoubleemptypage")))
+    (font-latex-match-warning-make)
+    ;; Title keywords
+    (add-to-list 'font-latex-match-title-1-keywords-local "addpart")
+    (font-latex-match-title-1-make)
+    (add-to-list 'font-latex-match-title-2-keywords-local "addsec")
+    (font-latex-match-title-2-make)))
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."

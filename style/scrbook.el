@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbook.el,v 1.2 2002-10-08 13:24:33 dakas Exp $
+;; Version: $Id: scrbook.el,v 1.3 2003-11-17 13:14:30 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -25,6 +25,9 @@
     ;; load basic definitons
     (TeX-run-style-hooks "scrbase")
     (TeX-add-symbols
+     "chapapp"
+     "raggeddictum"
+     '("chapappifchapterprefix" "Additional text")
      '("setpartpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
      '("setchapterpreamble" [ TeX-arg-KOMA-setpreamble ] [ "Width" ] t)
      '("dictum" [ "Author" ] t))
@@ -35,6 +38,19 @@
     (make-local-variable 'LaTeX-section-label)
     (setq LaTeX-section-label (append
 			       LaTeX-section-label
-			       '(("addchap" . nil)))) ))
+			       '(("addchap" . nil))))
+    ;; Definitions for font-latex
+    ;; Textual keywords
+    (setq font-latex-match-textual-keywords-local
+          (append font-latex-match-textual-keywords-local
+                  '("addchap"
+                    "setpartpreamble"
+                    "setchapterpreamble"
+                    "dictum")))
+    (font-latex-match-textual-make)
+
+    ;; Title keywords
+    (add-to-list 'font-latex-match-title-1-keywords-local "addchap")
+    (font-latex-match-title-1-make)))
 
 ;;; scrbook.el ends here
