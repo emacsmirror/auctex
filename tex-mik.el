@@ -39,18 +39,18 @@
 
 (unless (get 'TeX-print-command 'saved-value)
   (setq TeX-print-command
-	"gsview32 %f"))
+	"start %f"))
 
 (unless (get 'TeX-view-style 'saved-value)
-  (setq TeX-view-style '(("^epsf$" "gsview32 %f")
+  (setq TeX-view-style '(("^epsf$" "start %f")
 			 ("." "yap -1 %dS %d"))))
 
 (unless (get 'TeX-output-view-style 'saved-value)
   (setq TeX-output-view-style
-	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview32 %f")
+	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && start %f")
 	  ("^dvi$" "." "yap -1 %dS %d")
-	  ("^pdf$" "." "AcroRd32 %o") ; Use "start %o" instead?
-	  ("^html?$" "." "mozilla %o"))))
+	  ("^pdf$" "." "start %o")
+	  ("^html?$" "." "start %o"))))
 
 (unless (get 'TeX-source-specials-view-position-flags 'saved-value)
   (setq TeX-source-specials-view-position-flags "-s %n%b"))

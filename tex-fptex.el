@@ -56,25 +56,25 @@
 (unless (get 'TeX-view-style 'saved-value)
   (setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")
 			 ("^landscape$" "windvi %d -qpaper a4r -s 4")
-			 ("^epsf$" "gsview32 %f")
+			 ("^epsf$" "start %f")
 			 ("." "windvi %d"))))
 
 (unless (get 'TeX-output-view-style 'saved-value)
   (setq TeX-output-view-style
-	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview32 %f")
+	'(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && start %f")
 	  ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
 	   "windvi %d %dS -qpaper a5r -s 0")
 	  ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "windvi %d %dS -qpaper a5")
 	  ("^dvi$" "^b5paper$" "windvi %d %dS -qpaper b5")
 	  ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-	   "dvips -t landscape %d -o && gsview32 %f")
+	   "dvips -t landscape %d -o && start %f")
 	  ("^dvi$" "^letterpaper$" "windvi %d %dS -qpaper us")
 	  ("^dvi$" "^legalpaper$" "windvi %d %dS -qpaper legal")
 	  ("^dvi$" "^executivepaper$" "windvi %d %dS -qpaper 7.25x10.5in")
 	  ("^dvi$" "^landscape$" "windvi %d %dS -qpaper a4r")
 	  ("^dvi$" "." "windvi %d %dS")
-	  ("^pdf$" "." "AcroRd32 %o") ; Use "start %o" instead?
-	  ("^html?$" "." "mozilla %o"))))
+	  ("^pdf$" "." "start %o")
+	  ("^html?$" "." "start %o"))))
 
 ;; WinDVI does not support source specials?
 (unless (get 'TeX-source-specials-view-position-flags 'saved-value)
