@@ -5,6 +5,8 @@ ICONFORM=@ICONFORM@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
 AUCTEX=-eval '(if (not (string-equal "'$(AUCTEXLISP)'" "")) \
                 (setq load-path (cons "'$(AUCTEXLISP)'" load-path)))'
+AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
+		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
 GS=@GS@
 
 LISP_SOURCES = @PLAT_LISP@ preview.el
@@ -87,15 +89,11 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 
 preview-latex.el: preview.el
 	rm -f preview-latex.el
-	-$(EMACS) -batch -no-site-file -no-init-file --eval \
-'(let ((generated-autoload-file (expand-file-name "$@"))) \
- (update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
+	-$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
 	if [ ! -r "$@" ]; then \
 	echo ";; Auto-generated preview-latex.el" >"$@" ; \
 	echo "" >>"$@" ; \
-	$(EMACS) -batch -no-site-file -no-init-file --eval \
-'(let ((generated-autoload-file (expand-file-name "$@"))) \
- (update-file-autoloads "preview.el")(save-buffers-kill-emacs t))' ; \
+	$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
 	fi
 	if [ '$(GS)' != 'gs' ]; then \
 	  echo '(setq preview-gs-command "$(GS)")' | \
