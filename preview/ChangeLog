@@ -1,3 +1,8 @@
+2005-02-15  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-error-quote): Encode to raw-text to get
+	unibyte string.
+
 2005-02-13  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-latex.texi (The Emacs interface): Adapt to new

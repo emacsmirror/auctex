@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.230 2005-02-13 04:12:42 dakas Exp $
+;; $Id: preview.el,v 1.231 2005-02-15 16:55:33 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2358,6 +2358,8 @@ To preserve sanity, additional ^ prefixes are matched literally,
 so the character represented by ^^^ preceding extended characters
 will not get matched, usually."
   (let (output case-fold-search)
+    (when (featurep 'mule)
+      (setq string (encode-coding-string string 'raw-text)))
     (while (string-match "\\^\\{2,\\}\\(\\([@-_?]\\)\\|[8-9a-f][0-9a-f]\\)"
 			 string)
       (setq output
@@ -3220,7 +3222,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.230 $"))
+	(rev "$Revision: 1.231 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3231,7 +3233,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-13 04:12:42 $"))
+    (let ((date "$Date: 2005-02-15 16:55:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
