@@ -3,31 +3,45 @@
 @chapheading Changes and New Features in @AUCTeX{}
 
 @end ifset
-@c -----------------------
 
 @heading News in 11.54
 
 @itemize @bullet
 @item
-Folding can now be done for paragraphs and regions as well.  With the
-new @code{TeX-fold-dwim} command content can be hidden or shown with a
-single key chain.
+The parser (used e.g. for @code{TeX-auto-generate-global}) was extended
+to recognize keywords common in @LaTeX{} packages and classes, like
+``\DeclareRobustCommand'' or ``\RequirePackage''.  Additionally a bug
+was fixed which led to duplicate entries in @AUCTeX{} style files.
+
+@item
+Folding can now be done for paragraphs and regions besides single
+constructs and the whole buffer.  With the new @code{TeX-fold-dwim}
+command content can both be hidden and shown with a single key binding.
+In course of these changes new key bindings for unfolding commands where
+introduced.  The old bindings are still present but will be phased out
+in future releases.
 
 @item
 Info files of the manual now have a .info extension.
 
 @item
-There is an experimental tool bar support now.  It is not activated by
+There is an experimental toolbar support now.  It is not activated by
 default.  If you want to use it, add
 @lisp
 (add-hook 'LaTeX-mode-hook 'LaTeX-install-toolbar)
 @end lisp
-your init file.
+to your init file.
 
 @item
-The documentation now contains a new chapter ``Quick Start''.  It
-explains the main features and how to use them, and should be enough for
-a new user to start using @AUCTeX{}.
+The manual now contains a new chapter ``Quick Start''.  It explains the
+main features and how to use them, and should be enough for a new user
+to start using @AUCTeX{}.
+
+@item
+A new section ``Font Locking'' was added to the manual which explains
+syntax highlighting in @AUCTeX{} and its customization.  Together with
+the sections related to folding and outlining, the section is part of
+the new chapter ``Display''.
 
 @item
 Keywords for syntax highlighting of @LaTeX{} constructs to be typeset in
@@ -38,7 +52,8 @@ options can be found in the customization group
 @samp{font-latex-keywords}.
 
 @item
-Verbatim content is now displayed with a Courier font. (GNU Emacs only)
+Verbatim content is now displayed with the @samp{fixed-pitch} face. (GNU
+Emacs only)
 
 @item
 Syntax highlighting should not spill out of verbatim content
@@ -53,9 +68,9 @@ You can customize the completion for graphic files with
 @code{LaTeX-includegraphics-read-file}.
 
 @item
-Support for the packages @samp{url}, @samp{listings}, @samp{jurabib} and
-@samp{csquotes} was added with regard to command completion and syntax
-highlighting.
+Support for the @LaTeX{} packages @samp{url}, @samp{listings},
+@samp{jurabib} and @samp{csquotes} was added with regard to command
+completion and syntax highlighting.
 
 @item
 Performance of fontification and filling was improved.
@@ -71,7 +86,10 @@ can get the old behaviour of @code{nil} by setting the variable to
 @code{""}, i.e. an empty string.  See also @ref{Floats}.
 
 @item
-Bug fixes in the build process.
+The XEmacs-specific bug concerning @code{overlays-at} was fixed.
+
+@item
+Lots of bug fixes.
 @end itemize
 
 @heading News in 11.53
