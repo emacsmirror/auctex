@@ -1,5 +1,10 @@
-2004-01-09  Jan-Ake Larsson  <jalar@mai.liu.se>
+2004-01-11  David Kastrup  <dakas@users.sourceforge.net>
 
+	* latex/preview.dtx (subsection{Preview attaching commands}):
+	Tell preview-latex when the output format is PDF.
+
+2004-01-09  Jan-Ake Larsson  <jalar@mai.liu.se>
+	
 	* special.c: Add preview-latex's "tightpage" code
 
 2004-01-08  Jan-Ake Larsson  <jalar@mai.liu.se>
@@ -38,6 +43,7 @@
 	* dvipng/draw.c: Fix bbox
 
 	* dvipng/dvipng.h: Adjust for freetype >= 2.1.6
+======= end
 
 2004-01-06  David Kastrup  <dakas@users.sourceforge.net>
 
