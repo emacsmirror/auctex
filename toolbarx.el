@@ -377,7 +377,8 @@ inside XEmacs. See documentation of that function for more."
 
 ;;;###autoload
 (defun toolbarx-mount-popup-menu (strings var type &optional title save)
-  "Return a interactive `lambda'-expression that show a popup menu.
+  "Return a command that show a popup menu.
+The return is a `lambda'-expression with a interactive declaration.
 
 STRINGS is a list of strings which will be the itens of the menu.
 
@@ -769,14 +770,13 @@ value, and after that a list in the same format as SWITCHES."
 ;;;###autoload
 (defun toolbarx-process-symbol (symbol meaning-alist props switches)
   "Procces a button given by SYMBOL in MEANING-ALIST.
-If SYMBOL is nil, do nothing, otherwise look for a association of
-SYMBOL in MEANING-ALIST.  Such association is a list that
-represents either a normal button (a description of the button),
-an alias group (the symbol is an alias for a group of buttons) or
-a dropdown group.  One can override or add to proerties (depends
-on the property) giving a list of properties in PROPS.  Scope is
-given by GLOBAL-FLAG.  For a more precise description, see
-documentation of function `toolbarx-install-toolbar'."
+The processed button is appended in SWITCHES, which is returned.
+Look for a association of SYMBOL in MEANING-ALIST for collecting
+properties.  Such association is a list that represents either a
+normal button (a description of the button) or an alias
+group (the symbol is an alias for a group of buttons).  PROPS is
+a externel list of properties that are merged and then applied to
+the button.  Scope is given by GLOBAL-FLAG."
   ;; there are 3 situations: symbol is :new-line, there is an alias group
   ;; or a normal button
   (let ((button-assq (cdr (assq symbol meaning-alist))))
@@ -819,7 +819,7 @@ documentation of function `toolbarx-install-toolbar'."
 						 props-override
 						 props-add)))
 	;; return: 
-	(nreverse (cons (cons symbol merged-props) switches))))))
+	(nreverse (cons (cons symbol merged-props) (nreverse switches)))))))
 
 ;;;###autoload
 (defun toolbarx-process-dropdown-group (dropdown meaning-alist props switches)
@@ -827,7 +827,8 @@ documentation of function `toolbarx-install-toolbar'."
 Process a dropdown group DROPDOWN with meaning alist
 MEANING-ALIST, external property list PROP and GLOBAL-FLAG
 specifying scope. For a complete description, see documentation
-of `toolbarx-install-toolbar'."
+of `toolbarx-install-toolbar'.  The processed buttons are stored
+in the end of SWITCHES, which is returned."
   (let* ((dropdown-group (if (eq (car dropdown) :dropdown-group)
 			     (cdr dropdown)
 			   dropdown))
@@ -1945,7 +1946,6 @@ this button is ignored."
       (unless (featurep 'xemacs)
 	(make-local-variable 'tool-bar-map))))
   (toolbarx-refresh global-flag))
-
 
 (provide 'toolbarx)
 
