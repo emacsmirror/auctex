@@ -1,34 +1,45 @@
-%define pkgname     auctex
-
 %define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
 
 %if %{FOR_SUSE}
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{pkgname}.el
+%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{name}.el
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{pkgname}-init.el
+%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
 %endif
 
-Summary: 	Enhanced LaTeX mode for Emacs
-Name: 		%{pkgname}-emacs
+Summary: 	Enhanced TeX modes for Emacsen
+Name: 		auctex
 Version: 	11.52
 Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
-Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{pkgname}-%{version}.tar.gz
-Requires: 	emacs >= 21
-#BuildRequires: 	emacs-X11
-Obsoletes:      ge_auc emacs-auctex auctex
+Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
 BuildArchitectures: noarch
-BuildRoot: 	%{_tmppath}/%{pkgname}-root
+BuildRoot: 	%{_tmppath}/%{name}-root
 
 %description 
+AUCTeX is an extensible package that supports writing and formatting TeX files
+for most variants of Emacs.  
+
+AUCTeX supports many different TeX macro packages, including AMS-TeX, LaTeX,
+Texinfo and basic support for ConTeXt.  Documentation can be found under
+/usr/share/doc, e.g. the reference card (tex-ref.pdf) and the FAQ.  The AUCTeX
+manual is available in Emacs info (C-h i d m AUCTeX RET).  On the AUCTeX home
+page, we provide manuals in various formats.
+
+%package emacs
+Summary: 	Enhanced TeX modes for GNU Emacs
+Group:          %{commongroup}
+Requires: 	emacs >= 21
+Obsoletes:      ge_auc emacs-auctex auctex
+
+%description emacs
 AUCTeX is an extensible package that supports writing and formatting TeX files
 for most variants of Emacs.  
 
@@ -46,7 +57,7 @@ install/upgrade with 'rpm --nopre ...'  (the activation is done in the
 preinstall script).
 
 %prep
-%setup -n %{pkgname}-%{version}
+%setup
 
 %build
 # The below will make the package build from a tar straight from CVS
@@ -67,6 +78,17 @@ mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 # Remove dir file that has been created by the makeinfo calls because this
 # file will not been included in the rpm distribution (make RPM 4.1+ happy)
 rm -f '%{buildroot}%{_infodir}/dir'
+
+# Package documentation in /usr/share/doc/auctex-n.n
+# rather than /usr/share/doc/auctex-emacs-n.n-1.whatever
+%define docs	    %{_defaultdocdir}/%{name}-%{version}
+mkdir -p '%{buildroot}%{docs}'
+pushd %{name}-%{version}
+for i in RELEASE COPYING INSTALL README TODO FAQ CHANGES \
+    doc/tex-ref.pdf; do
+  cp -R "$i" '%{buildroot}%{docs}'
+done
+
 
 %pre
 echo "; Autoactivation of AUCTeX" > %{startupfile}
@@ -90,10 +112,10 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
-%doc doc/tex-ref.pdf
+%doc %{docs}
 %doc %{_infodir}/*
-%{_datadir}/emacs/site-lisp/%{pkgname}
-%{_localstatedir}/%{pkgname}
+%{_datadir}/emacs/site-lisp/%{name}
+%{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
