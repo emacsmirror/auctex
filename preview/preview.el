@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.65 2002-03-01 16:22:54 dakas Exp $
+;; $Id: preview.el,v 1.66 2002-03-02 01:06:47 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -547,8 +547,7 @@ given as ANSWER."
 << \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
 >> setpagedevice [save] %s (%s) (r) file cvx \
-systemdict /.setsafe known {.setsafe} if \
-systemdict /.runandhide known {{.runandhide}} if \
+systemdict /.runandhide known {.setsafe {.runandhide}} if \
 stopped {handleerror quit} if count 1 ne {quit} if \
 cleardictstack 0 get restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
@@ -1145,14 +1144,15 @@ in `preview-make-filename'.  The directory is registered
 in `preview-temp-dirs' in order not to be cleaned out
 later while in use."
   (let ((topdir (expand-file-name (TeX-active-master "prv"))))
-    (unless (member topdir preview-temp-dirs)
-      (if (file-directory-p topdir)
+    (if (file-directory-p topdir)
+	(unless (member topdir preview-temp-dirs)
 	  ;;  Cleans out the top preview directory by
 	  ;;  removing subdirs possibly left from a previous session.
 	  (preview-clean-topdir topdir)
-	(make-directory topdir))
-      (push topdir preview-temp-dirs)
-      (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t))
+	  (push topdir preview-temp-dirs))
+      (make-directory topdir)
+      (add-to-list 'preview-temp-dirs topdir))
+    (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
     (setq TeX-active-tempdir
 	  (list (make-temp-file (expand-file-name
 			   "tmp" (file-name-as-directory topdir)) t)
@@ -1424,7 +1424,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.65 $"))
+	(rev "$Revision: 1.66 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
