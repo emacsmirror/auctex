@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.25 1994-08-06 12:42:32 amanda Exp $
+;; Version: $Id: latex.el,v 5.26 1994-08-16 10:36:14 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1994,7 +1994,6 @@ of LaTeX-mode-hook."
    '("tabular*" LaTeX-env-array)
    '("array" LaTeX-env-array)
    '("eqnarray" LaTeX-env-label)
-   '("eqnarray*" LaTeX-env-label)
    '("equation" LaTeX-env-label)
    '("minipage" LaTeX-env-minipage)
 
@@ -2003,7 +2002,7 @@ of LaTeX-mode-hook."
 
    "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
    "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
-   "abstract" "center" "titlepage" "verse"
+   "abstract" "center" "titlepage" "verse" "eqnarray*"
 
    ;; The following are not defined in latex.el, but in a number of
    ;; other style files.  I'm to lazy to copy them to all the
