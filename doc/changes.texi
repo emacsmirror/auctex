@@ -1,9 +1,13 @@
-@section News in 11
+@section News in 12
 
 @itemize @bullet
 @item
 Support for the KOMA-Script classes.
 Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
+
+@item
+Many more LaTeX and LaTeX2e commands are supported.
+Done by Masayuki Ataka  <ataka@@milk.freemail.ne.jp>
 
 @item
 Support for @file{prosper.sty}, see @url{http://prosper.sourceforge.net/}.
