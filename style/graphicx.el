@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.4 2001-10-17 10:19:44 arafune Exp $
+;; Version: $Id: graphicx.el,v 1.5 2001-10-19 06:02:16 arafune Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 ;; Acknowledgements
 ;;  Dr. Thomas Baumann <thomas.baumann@ch.tum.de>
 ;;  David Kastrup <David.Kastrup@t-online.de>
-;;
+;;  Masayuki Akata <ataka@milk.freemail.ne.jp>
 ;;; Code:
 
 (TeX-add-style-hook 
@@ -44,6 +44,8 @@
 
 (defvar TeX-include-graphics-simple t
   "if nil, AUC TeX asks the following arguments: Bounding box (bb), Rotation angle (angle), Total height (totalheight) in addition to the normal arguments.")
+
+(defvar TeX-default-unit-for-image "cm")
 
 (defun TeX-arg-includegraphics (optional)
   "Ask for file name (eps file only), width, height, keepaspectratio, and clip. Insert includegraphics macro"
@@ -58,15 +60,15 @@
 	(keepaspectratio (y-or-n-p "Keep Aspectratio ? "))
 	(clip (y-or-n-p "Clipping figure ? ")))
     (when (not (zerop (length figwidth)))
-      (if (TeX-string-numberp figwidth)
-	  (insert maybe-left-brace "width=" figwidth "cm")
-	(insert maybe-left-brace "width=" figwidth))
+      (insert maybe-left-brace maybe-comma "width=" (car (TeX-string-divide-nuber-unit figwidth))
+	      (if (zerop (length (car (cdr (TeX-string-divide-nuber-unit figwidth)))))
+		  TeX-default-unit-for-image (car (cdr (TeX-string-divide-nuber-unit figwidth)))))
       (setq maybe-comma ",")
       (setq maybe-left-brace ""))
     (when (not (zerop (length figheight)))
-      (if (TeX-string-numberp figheight)
-	  (insert maybe-left-brace "height=" figheight "cm")
-	(insert maybe-left-brace "height=" figheight))
+      (insert maybe-left-brace "heigt=" (car (TeX-string-divide-nuber-unit figheight))
+	      (if (zerop (length (car (cdr (TeX-string-divide-nuber-unit figheight)))))
+		  TeX-default-unit-for-image (car (cdr (TeX-string-divide-nuber-unit figheight)))))
       (setq maybe-comma ",")
       (setq maybe-left-brace ""))
     (when keepaspectratio
@@ -97,9 +99,9 @@
 	    (setq maybe-comma ",")
 	    (setq maybe-left-brace ""))
 	  (when (not (zerop (length totalheight)))
-	    (if (TeX-string-numberp totalheight)
-		(insert maybe-left-brace maybe-comma "totalheight=" totalheight "cm")
-	      (insert maybe-left-brace maybe-comma "totalheight=" totalheight))
+	    (insert maybe-left-brace maybe-comma "totalheight=" (car (TeX-string-divide-nuber-unit totalheight))
+		    (if (zerop (length (car (cdr (TeX-string-divide-nuber-unit totalheight)))))
+			TeX-default-unit-for-image (car (cdr (TeX-string-divide-nuber-unit totalheight)))))
 	    (setq maybe-left-brace ""))))
 ;;;
     (if (zerop (length maybe-left-brace))
@@ -108,9 +110,13 @@
     (insert psfile)
     ))
 
-(defun TeX-string-numberp (string)
-  (if (string-match "[0-9]*\\.?[0-9]+" string)
-      (not (string-match "[a-zA-Z]" string))))
+(defun TeX-string-divide-nuber-unit (string)
+ (if (string-match "[0-9]*\\.?[0-9]+" string)
+      (list (substring string 0 (string-match "[^.0-9]" string))
+	    (substring string (if (string-match "[^.0-9]" string) 
+				  (string-match "[^.0-9]" string) 
+				(length string))))
+   (list "" string)))
 
-
+						 
 ;;; graphicx.el ends here
