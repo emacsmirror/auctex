@@ -1,3 +1,11 @@
+2005-01-13  David Kastrup  <dak@gnu.org>
+
+	* doc/changes.texi: 
+	* doc/auctex.texi (Font Locking): 
+	* font-latex.el (font-latex-set-title-face)
+	(font-latex-title-fontify): font-latex-title-fontify, not
+	fontity.  fontify, fontify, fontify.
+
 2005-01-12  David Kastrup  <dak@gnu.org>
 
 	* Version 11.54 released.

@@ -192,15 +192,15 @@ Also selects \"<quote\"> versus \">quote\"<."
 (defun font-latex-set-title-face (level)
   "Set fontification of LaTeX titles at LEVEL."
   (cond
-   ((equal font-latex-title-fontity 'height)
+   ((equal font-latex-title-fontify 'height)
     (set (intern (format "font-latex-title-%d-face" level))
 	 (intern (format "font-latex-title-%d-face" level))))
-   ((equal font-latex-title-fontity 'color)
+   ((equal font-latex-title-fontify 'color)
     (set (intern (format "font-latex-title-%d-face" level))
 	 'font-lock-type-face))))
 
-(defcustom font-latex-title-fontity 'height
-  "Whether to fontity LaTeX titles with varying height faces or a color face."
+(defcustom font-latex-title-fontify 'height
+  "Whether to fontify LaTeX titles with varying height faces or a color face."
   :type '(choice (const height)
                  (const color))
   :set (lambda (symbol value)

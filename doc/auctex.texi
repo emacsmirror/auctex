@@ -1373,9 +1373,9 @@ Face: @code{font-latex-warning-face}
 
 Sectioning commands are macros like @samp{\chapter} or @samp{\section}.
 For these commands there are two fontification schemes which may be
-selected by customizing the variable @code{font-latex-title-fontity}.
+selected by customizing the variable @code{font-latex-title-fontify}.
 
-@defopt font-latex-title-fontity
+@defopt font-latex-title-fontify
 Per default sectioning commands will be shown in a larger, proportional
 font, which corresponds to the value @samp{height} for this variable.
 The font size varies with the sectioning level, e.g. @samp{\part} will

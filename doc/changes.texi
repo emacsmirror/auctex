@@ -217,7 +217,7 @@ _} is provided for adding the variable manually.
 @item
 Sectioning commands are now shown in a larger font on display devices
 which support such fontification.  The variable
-@code{font-latex-title-fontity} can be customized to restore the old
+@code{font-latex-title-fontify} can be customized to restore the old
 appearance, i.e. the usage of a different color instead of a change in
 size.
 
