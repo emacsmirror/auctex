@@ -997,12 +997,6 @@ have changed."
   (font-latex-set-syntactic-keywords)
   "Syntactic keywords used by `font-latex'.")
 
-(defvar font-latex-doctex-syntactic-keywords
-  (append
-   font-latex-syntactic-keywords
-   ;; For docTeX comment-in-doc.
-   '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
-
 
 ;;; Syntactic fontification
 
@@ -1752,6 +1746,12 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 (defvar font-latex-doctex-keywords
   (append font-latex-keywords-2
 	  '(("^%<[^>]*>" (0 font-latex-doctex-preprocessor-face t)))))
+
+(defvar font-latex-doctex-syntactic-keywords
+  (append
+   font-latex-syntactic-keywords
+   ;; For docTeX comment-in-doc.
+   `(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
 
 ;; Copy and adaptation of `doctex-font-lock-^^A' in `tex-mode.el' of
 ;; CVS Emacs (March 2004)
