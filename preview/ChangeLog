@@ -1,3 +1,13 @@
+2001-10-17  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx: Get the version headers right (hopefully).
+
+2001-10-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx: Make a stab at an automated version header
+	(subsection{Preview attaching commands}): Move the badness stuff
+	to the auctex option.
+
 2001-10-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-emacs.el:  insert-in-front back.  Discovered all-saving
