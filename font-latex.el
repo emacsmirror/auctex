@@ -95,6 +95,10 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.907 23Oct2003 PSG
+;;  - Make font-latex-warning-face a defface and not a copy.  Thanks to
+;;    Ralf Angeli for reporting the bug that it wasn't customizable.
+;;  - Idem for font-latex-string-face.
 ;; V0.906 19Oct2003 PSG
 ;;  - Enable multi-line cache on font-latex-match-command-outside-arguments
 ;;    such that multi-line section commands will be fontified correctly.
@@ -977,17 +981,24 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
   "Font Lock mode face used to highlight sedate stuff in LaTeX."
   :group 'font-latex-highlighting-faces)
 
-(copy-face 'font-lock-string-face 'font-latex-string-face)
-(if (facep 'font-lock-warning-face)
-    (copy-face 'font-lock-warning-face 'font-latex-warning-face)
-  (defface font-latex-warning-face
-    '((((class grayscale)(background light))(:foreground "DimGray" :bold t))
-      (((class grayscale)(background dark))(:foreground "LightGray" :bold t))
-      (((class color)(background light))(:foreground "red" :bold t ))
-      (((class color)(background dark))(:foreground "red" :bold t ))
-      (t (:bold t)))
-    "Font Lock for LaTeX major keywords."
-    :group 'font-latex-highlighting-faces))
+(defface font-latex-string-face
+  '((((type tty) (class color)) (:foreground "green"))
+    (((class grayscale) (background light)) (:foreground "DimGray" :italic t))
+    (((class grayscale) (background dark)) (:foreground "LightGray" :italic t))
+    (((class color) (background light)) (:foreground "RosyBrown"))
+    (((class color) (background dark)) (:foreground "LightSalmon"))
+    (t (:italic t)))
+  "Font Lock face used to highlight strings in LaTeX."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-warning-face
+  '((((class grayscale)(background light))(:foreground "DimGray" :bold t))
+    (((class grayscale)(background dark))(:foreground "LightGray" :bold t))
+    (((class color)(background light))(:foreground "red" :bold t ))
+    (((class color)(background dark))(:foreground "red" :bold t ))
+    (t (:bold t)))
+  "Font Lock face for LaTeX major keywords."
+  :group 'font-latex-highlighting-faces))
 
 ;;;###autoload
 (defun font-latex-setup ()
