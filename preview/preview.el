@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.213 2004-07-28 00:04:49 dakas Exp $
+;; $Id: preview.el,v 1.214 2004-08-02 00:39:32 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -173,29 +173,6 @@ that is."
 (defvar TeX-active-tempdir nil
   "List of directory name, top directory name and reference count.")
 (make-variable-buffer-local 'TeX-active-tempdir)
-
-;; (defun preview-extract-bb (filename)
-;;   "Extract EPS bounding box vector from FILENAME."
-;;   (let ((str
-;; 	 (with-output-to-string
-;; 	   (with-current-buffer
-;; 	       standard-output
-;; 	     (call-process "grep" filename '(t nil) nil "^%%\\(HiRes\\)\\?BoundingBox:")))))
-;;     (if (or (string-match   "^%%HiResBoundingBox:\
-;;  +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\)"
-;; 			    str)
-;; 	    (string-match   "^%%BoundingBox:\
-;;  +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\)"
-;; 			    str))
-;; 	(vector
-;; 	 (string-to-number (match-string 1 str))
-;; 	 (string-to-number (match-string 2 str))
-;; 	 (string-to-number (match-string 3 str))
-;; 	 (string-to-number (match-string 4 str))
-;; 	 )
-;;       )
-;;     )
-;; )
 
 (defcustom preview-bb-filesize 1024
   "Size of file area scanned for bounding box information."
@@ -434,7 +411,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng %d -o %m/prev%03d.png"
+  "dvipng -no-image-on-warn %d -o %m/prev%03d.png"
   "*Command used for converting to separate PNG images."
   :group 'preview-dvipng
   :type 'string)
@@ -711,7 +688,7 @@ Pure borderless black-on-white will return an empty string."
   (let ((process (preview-start-pdf2dsc)))
     (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
     (list process (current-buffer) TeX-active-tempdir preview-ps-file
-	  (nth 1 (assq preview-gs-image-type preview-gs-image-type-alist)))))
+	  preview-gs-image-type)))
 
 (defun preview-dvips-abort ()
   "Abort a Dvips run."
@@ -820,19 +797,12 @@ The usual PROCESS and COMMAND arguments for
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Places all snippets if PLACEALL is set."
   (condition-case err
-      (let ((status (process-status process))
-	    (gsfile preview-gs-file))
+      (let ((status (process-status process)))
 	(cond ((eq status 'exit)
 	       (delete-process process)
 	       (setq TeX-sentinel-function nil)
-	       (condition-case nil
-		   (delete-file
-		    (with-current-buffer TeX-command-buffer
-		      (funcall (car gsfile) "dvi")))
-		 (file-error nil))
 	       (when placeall
-		 (if preview-gs-queue
-		     (preview-dvipng-place-all))))
+		 (preview-dvipng-place-all)))
 	      ((eq status 'signal)
 	       (delete-process process)
 	       (preview-dvipng-abort))))
@@ -1751,20 +1721,56 @@ is already selected and unnarrowed."
 	 (if (bolp) "\n" ""))))))
 
 (defun preview-dvipng-place-all ()
-  (let (filename queued)
-    (dolist (ov preview-gs-queue)
-      (when (setq queued (overlay-get ov 'queued))
-	(setq filename (car (overlay-get ov 'filenames)))
-	(overlay-put ov 'preview-image
-		     (preview-create-icon (car filename)
-					  'png
-					  (preview-ascent-from-bb
-					   (aref queued 0))))
-	(overlay-put ov 'queued nil)
-	(overlay-put ov 'strings
-		     (list (preview-active-string ov)))
-	(preview-toggle ov t))))
-  (setq preview-gs-queue nil))
+  "Place all images dvipng has created, if any.
+Deletes the dvi file when finished."
+  (let (filename queued oldfiles snippet)
+    (dolist (ov (prog1 preview-gs-queue (setq preview-gs-queue nil)))
+      (when (and (setq queued (overlay-get ov 'queued))
+		 (setq filename (car (overlay-get ov 'filenames))))
+	(if (file-exists-p (car filename))
+	    (progn
+	      (overlay-put ov 'preview-image
+			   (preview-create-icon (car filename)
+						'png
+						(preview-ascent-from-bb
+						 (aref queued 0))))
+	      (overlay-put ov 'queued nil)
+	      (overlay-put ov 'strings
+			   (list (preview-active-string ov)))
+	      (preview-toggle ov t))
+	  (setq oldfiles (nconc (overlay-get ov 'filenames)
+				oldfiles))
+	  (overlay-put ov 'filenames nil)
+	  (push ov preview-gs-queue))))
+    (if (setq preview-gs-queue (nreverse preview-gs-queue))
+	(progn
+	  (preview-start-dvips preview-fast-conversion)
+	  (setq TeX-sentinel-function (lambda (process command)
+					(preview-gs-dvips-sentinel
+					 process
+					 command
+					 t)))
+	  (dolist (ov preview-gs-queue)
+	    (setq snippet (aref (overlay-get ov 'queued) 2))
+	    (overlay-put ov 'filenames
+			 (list
+			  (preview-make-filename
+			   (or preview-ps-file
+			       (format "preview.%03d" snippet))
+			   TeX-active-tempdir)
+			  (preview-make-filename
+			   (format "prev%03d.%s" snippet preview-gs-image-type)
+			   TeX-active-tempdir))))
+	  (while (setq filename (pop oldfiles))
+	    (condition-case nil
+		(preview-delete-file filename)
+	      (file-error nil))))
+      (condition-case nil
+	  (let ((gsfile preview-gs-file))
+	    (delete-file
+	     (with-current-buffer TeX-command-buffer
+	       (funcall (car gsfile) "dvi"))))
+	(file-error nil)))))
    
 (defun preview-eps-place (ov snippet box tempdir scale)
   "Generate an image via direct EPS rendering.
@@ -3028,7 +3034,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.213 $"))
+	(rev "$Revision: 1.214 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3039,7 +3045,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-28 00:04:49 $"))
+    (let ((date "$Date: 2004-08-02 00:39:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

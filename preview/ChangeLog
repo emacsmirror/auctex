@@ -1,3 +1,14 @@
+2004-08-02  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-extract-bb): remove old outcommented version.
+	(preview-dvipng-command): Use -no-image-on-warn option.
+	(preview-pdf2dsc-process-setup): Oops, just use
+	`preview-gs-image-type' here.
+	(preview-dvipng-sentinel): Don't delete dvi file since it might be
+	needed in `dvipng-place-all'.
+	(preview-dvipng-place-all): Start dvips/GhostScript if some image
+	files are missing.  Delete dvi file if none are missing.
+
 2004-07-28  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/problems.texi (Too small bounding boxes): Fix node
