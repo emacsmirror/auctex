@@ -169,6 +169,14 @@ other hooks, such as major mode hooks, can do the job."
              (append (symbol-value list-var) (list element))
            (cons element (symbol-value list-var))))))
 
+;; Replacement for `extents-at', which does not exist in XEmacs-21.1.
+(defsubst preview-extents-at (pos &optional object property)
+  "Returns all extents at POS in OBJECT which have PROPERTY set."
+  (let ((extents))
+    (map-extents #'(lambda (extent unused)
+                     (setq extents (nconc extents (list extent))))
+                 object pos (1+ pos) nil 'start-or-end-in-region property)))
+
 ;; We have to pick the image-specifier's inst-list apart by hand.  This code
 ;; won't work if there are multiple valid image types in a single glyph in a
 ;; single (locale * domain): but we don't care, because only the first of those
@@ -186,12 +194,18 @@ other hooks, such as major mode hooks, can do the job."
 
 ;; TODO: Generalize this so we can create the fixed icons using it.
 
+;; Argh, dired breaks :file :(
+;; This is a temporary kludge to get around that until a fixed dired
+;; or a fixed XEmacs is released.
 (defmacro preview-create-icon (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
   `(let ((glyph
-	  (make-glyph
-	   (vector ,type
-		   :file ,file))))
+          (make-glyph
+           (vector ,type
+                   :file ,file
+                   :data (with-temp-buffer
+                           (insert-file-contents-literally ,file)
+                           (buffer-string))))))
      (set-glyph-baseline glyph ,ascent)
      glyph))
 
@@ -334,7 +348,7 @@ are functions to call on preview's clicks."
     map))
 
 (defun preview-balloon-reroute (ov)
-  "Give ballon help only if over glyph of OV."
+  "Give balloon help only if over glyph of OV."
   (and (eq ov (event-glyph-extent (mouse-position-as-motion-event)))
        (extent-property ov 'preview-balloon-help)))
 
@@ -523,7 +537,7 @@ defaults to off."
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
 			   (< pt (marker-position preview-marker)))))
 	(while (catch 'loop
-		 (dolist (ovr (extents-at pt nil 'preview-state))
+		 (dolist (ovr (preview-extents-at pt nil 'preview-state))
 		   (when (and
 			  (eq (overlay-get ovr 'preview-state) 'active))
 		     (setq pt (if (and backward
