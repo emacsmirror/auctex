@@ -6,7 +6,10 @@ EMACS=@EMACS@
 
 prefix = @prefix@
 lispdir = @lispdir@/preview
+datadir = @datadir@
 previewtexmfdir = @previewtexmfdir@
+previewdocdir = @previewdocdir@
+
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -21,17 +24,17 @@ install-el: preview.elc preview.el
 	$(INSTALL_DATA) preview.elc $(lispdir)
 	$(INSTALL_DATA) preview.el $(lispdir)
 
-install-texmf: preview.sty prauctex.def preview.drv
+install-texmf: preview.sty prauctex.def 
 	-mkdir -p $(previewtexmfdir)
 	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
-	$(INSTALL_DATA) preview.drv $(previewtexmfdir)
+#	$(INSTALL_DATA) preview.dvi $(previewdvidir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) -interaction nonstopmode bootstrap.ins
 
 preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
-        $(TEX) -interaction nonstopmode preview-mk.ins
+	$(TEX) -interaction nonstopmode preview-mk.ins
 
 preview.dvi: preview.drv preview.dtx
 	$(LATEX) -interaction nonstopmode preview.drv

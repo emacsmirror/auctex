@@ -21,6 +21,8 @@ EOF
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
 	    previewtexmfdir=$texmfdir
+	    previewdocdir=$texmfdir
+	    
 	fi
     fi
 # Next 
