@@ -1,5 +1,8 @@
 2002-12-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* latex.el (LaTeX-style-list): Added some supported classes.
+	Fixed a typo.
+
 	* style/amsmath.el ("amsmath"): environment "xxalignat*" doesn't
 	exist.
 	(LaTeX-amsmath-env-alignat):  environment "xxalignat" should not

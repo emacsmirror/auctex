@@ -739,7 +739,7 @@ job to this function."
 	    (setq prefix (symbol-value prefix)))
 	  (setq label (read-string "What label: " prefix))
 	  (if (string= prefix label)
-	      (setq label nil)     ; No label eneterd
+	      (setq label nil)     ; No label entered
 	    (insert TeX-esc "label" TeX-grop label TeX-grcl))))
       (if label
 	  (progn
@@ -1307,11 +1307,21 @@ Used for specifying extra syntax for a macro."
   "Prompt for a LaTeX savebox."
   (TeX-arg-savebox optional prompt t))
 
-(defcustom LaTeX-style-list '(("book")
+(defcustom LaTeX-style-list '(("amsart")
+			      ("amsbook")
 			      ("article")
+			      ("book")
+			      ("dinbrief")
+			      ("foils")
 			      ("letter")
-			      ("slides")
-			      ("report"))
+			      ("minimal")
+			      ("prosper")
+			      ("report")
+			      ("scrartcl")
+			      ("scrbook")
+			      ("scrlttr2")
+			      ("scrreprt")
+			      ("slides"))
   "List of document styles."
   :group 'LaTeX-environment
   :type '(repeat (group (string :format "%v"))))
