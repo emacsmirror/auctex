@@ -1,5 +1,16 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el: Rip personal Email address
+
+	* prv-install.el: Rip personal Email address
+
+	* prv-xemacs.el: Rip personal Email address
+
+	* prv-emacs.el: Rip personal Email address
+
+	* preview.el (preview-parse-messages): Make sequence check of
+	previews not complain about censored ones.
+
 	* doc/install.texi (Configure): link to `LaTeX international
 	characters'
 
