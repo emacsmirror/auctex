@@ -77,7 +77,7 @@ Full documentation will be available after autoloading the function."
 (autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
 (autoload 'japanese-latex-mode "tex-jp" no-doc t)
 (autoload 'japanese-slitex-mode "tex-jp" no-doc t)
-;;(autoload 'texinfo-mode "tex-info" no-doc t)
+(autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
 
 (when (memq system-type '(windows-nt))
