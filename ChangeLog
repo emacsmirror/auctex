@@ -1,5 +1,8 @@
 2005-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* context.el (ConTeXt-find-indent): Correct indentation of
+	environments.
+
 	* latex.el (LaTeX-fill-region-as-para-do): Use
 	`remove-text-properties' instead of
 	`remove-list-of-text-properties' because the latter is not
