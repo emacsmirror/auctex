@@ -27,13 +27,13 @@
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
 @subtitle Version 0.7
-  
-@author by David Kastrup and Alan Shutko 
-@author manual by Jan-@AA{}ke Larsson
+
+@author by David Kastrup, Alan Shutko,
+@author Jan-@AA{}ke Larsson and Nick Alcock.
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and
-Jan-@AA{}ke Larsson
+Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, 
+Jan-@AA{}ke Larsson and Nick Alcock.
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -80,11 +80,10 @@ Email and other electronic communication, it is a `manual' form.
 
 This file documents @previewlatex{} version 0.7
 
-@cindex XEmacs
 @strong{Please note:} XEmacs support is preliminary and not yet covered
 in this manual.
 
-This documentation should cover most important points. However,
+This documentation should cover most (other) important points. However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
 
 David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
@@ -211,11 +210,6 @@ long (and is covered in detail in @ref{For advanced users}),
 but some are:
 
 @itemize @bullet
-@item Adjust the smoothening of the previews
-
-In the @code{Preview Gs} group, change @code{Preview Gs Options}: try
-setting @option{-dGraphicsAlphaBits=2}, for instance.
-
 @item Change the color of the preview background
 
 If you use a non-white background in Emacs, you might have color
@@ -263,9 +257,10 @@ regenerate the preview (via e.g., @kbd{C-c C-p C-p}).
 @node For advanced users, ToDo, Known problems, top
 @chapter For advanced users
 
-This package consists of two parts. A @LaTeX{} style that splits the
+This package consists of two parts: a @LaTeX{} style that splits the
 output into appropriate parts with one preview object on each page, and
-an Emacs-lisp part integrating the thing into Emacs (aided by @AUCTeX{}).
+an Emacs-lisp part integrating the thing into Emacs (aided by
+@AUCTeX{}).
 
 @menu
 * The LaTeX style file::        
