@@ -1,3 +1,14 @@
+2003-06-07  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-lisp-directory, TeX-auto-global, TeX-style-global)
+	(TeX-auto-local, TeX-style-local, TeX-macro-private)
+	(TeX-load-style, TeX-parse-path, TeX-run-style-hooks)
+	(TeX-auto-write, TeX-auto-generate, TeX-auto-generate-global)
+	(TeX-ignore-file, TeX-search-files): try catering with Windows
+	file names.
+	(TeX-directory-absolute-p): removed, since file-name-absolute-p
+	serves the same purpose.
+
 2003-06-06  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in: Added datadir

@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.301 $"))
+	(rev "$Revision: 5.302 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-04 17:02:24 $"))
+    (let ((date "$Date: 2003-06-07 15:22:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -797,36 +797,38 @@ This will be done when AUCTeX first try to use the master file.")
 
 ;;; Style Paths
 
-(or (string-match "/\\'" TeX-lisp-directory)
-    (setq TeX-lisp-directory (concat TeX-lisp-directory "/")))
+(setq TeX-lisp-directory (file-name-as-directory TeX-lisp-directory))
 
-(defcustom TeX-auto-global (concat TeX-lisp-directory "auto/")
+(defcustom TeX-auto-global (file-name-as-directory
+			    (concat TeX-lisp-directory "auto"))
+
   "*Directory containing automatically generated information.
-Must end with a slash.
+Must end with a directory separator.
 
 For storing automatic extracted information about the TeX macros
 shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
-(defcustom TeX-style-global (concat TeX-lisp-directory "style/")
+(defcustom TeX-style-global (file-name-as-directory
+			     (concat TeX-lisp-directory "style"))
   "*Directory containing hand generated TeX information.
-Must end with a slash.
+Must end with a directory separator.
 
 These correspond to TeX macros shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
-(defcustom TeX-auto-local "auto/"
+(defcustom TeX-auto-local (file-name-as-directory "auto")
   "*Directory containing automatically generated TeX information.
-Must end with a slash.
+Must end with a directory separator.
 
 This correspond to TeX macros found in the current directory, and must
 be relative to that."
   :group 'TeX-file
   :type 'string)
 
-(defcustom TeX-style-local "style/"
+(defcustom TeX-style-local (file-name-as-directory "style")
   "*Directory containing hand generated TeX information.
 Must end with a slash.
 
@@ -860,36 +862,32 @@ If REGEXP is nil, or \"\", an error will occur."
     (setq result (cons (substring string start nil) result))
     (nreverse result)))
 
-(defun TeX-directory-absolute-p (dir)
-  ;; Non-nil iff DIR is the name of an absolute directory.
-  (if (memq system-type '(ms-dos emx windows-nt))
-      (string-match "^\\([A-Za-z]:\\)?/" dir)
-    (string-match "^/" dir)))
-
 (defun TeX-parse-path (env)
   ;; Return a list if private TeX directories found in environment
   ;; variable ENV.  
   (let* ((value (getenv env))
-	 (entries (and value (TeX-split-string ":" value)))
+	 (entries (and value
+		       (TeX-split-string
+			(if (string-match ";" value) ";" ":")
+			value)))
 	 entry
 	 answers) 
     (while entries
       (setq entry (car entries))
       (setq entries (cdr entries))
-      (or (string-match "/$" entry)
-	  (setq entry (concat entry "/")))
-      (and (string-match "//$" entry)
-	   (setq entry (substring entry 0 -1)))
-      (or (not (TeX-directory-absolute-p entry))
-	  (member entry TeX-macro-global)
-	  (string-equal "/" entry)
+      (setq entry (file-name-as-directory
+		   (if (string-match "/?/?\\'$" entry)
+		       (substring entry 0 (match-beginning 0))
+		     entry)))
+      (or (not (file-name-absolute-p entry))
+	  (member entry (append '("/" "\\") TeX-macro-global))
 	  (setq answers (cons entry answers))))
     answers))
 
 (defcustom TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
 				     (TeX-parse-path "BIBINPUTS"))
   "Directories where you store your personal TeX macros.
-Each must end with a slash."
+Each must end with a directory separator."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
 
@@ -957,7 +955,7 @@ active.")
 (defun TeX-load-style (style)
   "Search for and load each definition for STYLE in TeX-style-path."
   (cond ((assoc style TeX-style-hook-list)) ; We already found it
-	((string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style) ;Complex path
+	((string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style) ;Complex path
 	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
 		(style (substring style (match-beginning 2) (match-end 2)))
 		(master-dir (if (stringp TeX-master)
@@ -977,9 +975,9 @@ active.")
 	 (setq TeX-style-hook-list (cons (list style) TeX-style-hook-list))
 	 ;; Now check each element of the path
 	 (mapcar (function (lambda (name)
-		    (TeX-load-style-file (if (string-match "/$" name)
-					     (concat name style)
-					   (concat name "/" style)))))
+		    (TeX-load-style-file (concat
+					  (file-name-as-directory name)
+					  style))))
 		 TeX-style-path))))
 
 (defun TeX-load-style-file (file)
@@ -1048,7 +1046,7 @@ active.")
 	       (setq TeX-active-styles
 		     (cons style TeX-active-styles))
 	       (TeX-load-style style)
-	       (if (string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style)
+	       (if (string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style)
 		   (setq style		; Complex path
 			 (substring style (match-beginning 2) (match-end 2))))
 	       (mapcar 'funcall
@@ -1776,16 +1774,17 @@ Generated by `TeX-auto-add-type'.")
   (if TeX-auto-untabify
       (untabify (point-min) (point-max)))
   (if (and TeX-auto-save TeX-auto-local)
-      (let* ((file (concat (TeX-master-directory)
-			   TeX-auto-local
-			   (if (string-match "/$" TeX-auto-local) "" "/")
-			   (TeX-strip-extension nil TeX-all-extensions t)
-			   ".el"))
+      (let* ((file (expand-file-name
+		    (concat
+		     (file-name-as-directory TeX-auto-local)
+		     (TeX-strip-extension nil TeX-all-extensions t)
+		     ".el")
+		    (TeX-master-directory)))
 	     (dir (file-name-directory file)))
 	;; Create auto directory if possible.
 	(if (not (file-exists-p dir))
 	    (condition-case name
-		(make-directory (substring dir 0 -1))
+		(make-directory dir)
 	      (error nil)))
 	(if (file-writable-p file)
 	    (save-excursion
@@ -1821,12 +1820,8 @@ If TEX is a directory, generate style files for all files in the directory."
 	((string-match TeX-ignore-file tex))
         ((file-directory-p tex)
          (let ((files (directory-files (expand-file-name tex)))
-               (default-directory (concat (if (TeX-directory-absolute-p tex)
-                                              ""
-                                            default-directory)
-                                          (if (string-match "/$" tex)
-                                              tex
-                                            (concat tex "/"))))
+               (default-directory (file-name-as-directory
+				   (expand-file-name tex)))
 	       (TeX-file-recurse (cond ((symbolp TeX-file-recurse)
 					TeX-file-recurse)
 				       ((zerop TeX-file-recurse)
@@ -1837,16 +1832,17 @@ If TEX is a directory, generate style files for all files in the directory."
 				       (not (file-directory-p file)))
 				   (TeX-auto-generate file auto))))
 		   files)))
-        ((not (file-newer-than-file-p tex
-                   (concat auto (if (string-match "/$" auto) "" "/")
-                      (TeX-strip-extension tex TeX-all-extensions t) ".el"))))
+        ((not (file-newer-than-file-p
+	       tex
+	       (concat (file-name-as-directory auto)
+		       (TeX-strip-extension tex TeX-all-extensions t)
+		       ".el"))))
         ((TeX-match-extension tex (append TeX-file-extensions
 					  BibTeX-file-extensions))
          (save-excursion
            (set-buffer (find-file-noselect tex))
            (message "Parsing %s..." tex)
-           (TeX-auto-store (concat auto
-                                   (if (string-match "/$" auto) "" "/")
+           (TeX-auto-store (concat (file-name-as-directory auto)
                                    (TeX-strip-extension tex
 							TeX-all-extensions
 							t)
@@ -1858,14 +1854,8 @@ If TEX is a directory, generate style files for all files in the directory."
 (defun TeX-auto-generate-global ()
   "Create global auto directory for global TeX macro definitions."
   (interactive)
-  (if (file-directory-p 
-             (if (string-match "/$" TeX-auto-global)   
-                   (substring TeX-auto-global 0 -1)
-                    TeX-auto-global))
-	nil
-        (make-directory (if (string-match "/$" TeX-auto-global)
-		      (substring TeX-auto-global 0 -1)
-		    TeX-auto-global)))
+  (unless (file-directory-p TeX-auto-global) 
+    (make-directory TeX-auto-global))
   (mapcar (function (lambda (macro) (TeX-auto-generate macro TeX-auto-global)))
           TeX-macro-global)
   (byte-recompile-directory TeX-auto-global 0))
@@ -2130,7 +2120,7 @@ Access to the value should be through the function `TeX-view-extension'.")
   :group 'TeX-file-extension
   :type '(repeat (string :format "%v")))
 
-(defcustom TeX-ignore-file "\\(^\\|/\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\|babel\\..*\\)$"
+(defcustom TeX-ignore-file "\\(^\\|[/\\]\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\|babel\\..*\\)$"
   "Regular expression matching file names to ignore.
 
 These files or directories will not be considered when searching for
@@ -2297,7 +2287,7 @@ If optional argument EXTENSIONS is not set, use TeX-file-extensions"
 			   (setq match 
 				 (append match 
 					 (TeX-search-files
-					  (list (concat file "/"))
+					  (list (file-name-as-directory file))
 					  extensions
 					  nodir strip)))))
 		      ((TeX-match-extension file extensions)
