@@ -255,7 +255,10 @@ value of `TeXinfo-mode-hook'."
     (make-local-variable 'imenu-generic-expression)
     (setq imenu-generic-expression texinfo-imenu-generic-expression))
   (make-local-variable 'font-lock-defaults)
-  (setq font-lock-defaults '(texinfo-font-lock-keywords t))
+  (setq font-lock-defaults
+	'(texinfo-font-lock-keywords nil nil nil backward-paragraph
+				     (font-lock-syntactic-keywords
+				      . texinfo-font-lock-syntactic-keywords)))
   (if (not (boundp 'texinfo-section-list))
       ;; This was included in 19.31.
       ()
