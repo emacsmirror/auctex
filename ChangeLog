@@ -13,7 +13,6 @@
 	`fill-paragraph' within comments.
 	(LaTeX-common-initialization): Remove syntax error, sorry.
 
-<<<<<<< variant A
 2003-12-29  David Kastrup  <dak@gnu.org>
 
 	* latex.el: Fix AUCTeX URL.
