@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.444 $"))
+	    (rev "$Revision: 5.445 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-25 16:02:41 $"))
+    (let ((date "$Date: 2004-08-25 19:43:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3645,15 +3645,13 @@ If LIMIT is non-nil, search down to this position in the buffer."
 The function assumes that point is inside the group, i.e. before
 a closing brace.  With optional ARG>=1, find that outer level.
 If LIMIT is non-nil, search up to this position in the buffer."
-  (let ((arg (if arg (if (< arg 1) 1 arg) 1))
-	brace)
+  (let ((arg (if arg (if (< arg 1) 1 arg) 1)))
     (save-excursion
       (while (and (/= arg 0)
 		  (re-search-backward "{\\|}" limit t 1))
-	(setq brace (match-string 0))
 	(when (save-excursion
 		 (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2)))
-	  (cond ((string= brace "}")
+	  (cond ((eq (char-after) ?})
 		 (setq arg (1+ arg)))
 		(t
 		 (setq arg (1- arg))))))
