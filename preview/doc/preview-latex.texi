@@ -200,10 +200,10 @@ last such preview.
 @cindex De/Preview at point
 
 @item @kbd{C-c C-k}
-Kill preview-generating process. This is really an @AUCTeX{}
-keybinding, but it is included here as a hint. If you start generating a
-preview and then make a change to the buffer, @previewlatex{} may be
-confused and place the previews wrong.
+Kill preview-generating process. This is really an @AUCTeX{} keybinding,
+but it is included here as a hint. If you start generating a preview and
+then make a change to the buffer, @previewlatex{} may be confused and
+place the previews wrong.
 @cindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
 
@@ -215,11 +215,14 @@ Run preview on this @LaTeX{} section.
 @cindex Preview section 
 
 @item @kbd{C-c C-p C-e}
-@itemx @code{preview-environment}
-Run preview on @LaTeX{} environment.  This avoids running environments
-through @previewlatex{} that are indicated in
-`preview-inner-environments'.  If you use a prefix argument, the
-corresponding level of outward nested environments is selected.
+@itemx @code{preview-environment (&optional count)}
+Run preview on @LaTeX{} environment.  The environments in
+@code{preview-inner-environments} are treated as inner levels so that
+for instance, the @code{split} environment in
+@code{\begin@{equation@}\begin@{split@}@ldots\end@{split@}\end@{equation@}} is
+properly displayed.  If called with an argument @code{count}, the
+corresponding number of outward nested environments is treated as inner
+levels.
 @cindex @kbd{C-c C-p C-e}
 @cindex @code{preview-environment}
 @cindex Preview environment
@@ -227,7 +230,7 @@ corresponding level of outward nested environments is selected.
 @item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
 Run preview on current region. If called non-interactively, runs preview
-on region between BEGIN and END.
+on region between @code{begin} and @code{end}.
 @cindex @kbd{C-c C-p C-r}
 @cindex @code{preview-region}
 @cindex Preview region
@@ -235,8 +238,8 @@ on region between BEGIN and END.
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
 Clear out all previews in current buffer. This makes the current buffer
-lose all previews. If run non-interactively BUFFER is cleared out from
-previews, current buffer if nil.
+lose all previews. If run non-interactively @code{buffer} is cleared out
+from previews, current buffer if nil.
 @cindex @kbd{C-c C-p C-c C-b}
 @cindex @code{preview-clearout-buffer}
 @cindex Clearout previews
@@ -244,10 +247,11 @@ previews, current buffer if nil.
 @item @kbd{C-c C-p C-c C-r}
 @itemx @code{preview-clearout (&optional start end keep-dir)}
 Clear out all previews in the current region. When called interactively,
-the current region is used. Non-interactively, the region between START
-and END is affected. Those two values default to the borders of the
-entire buffer. If KEEP-DIR is set to a value from `TeX-active-tempdir',
-previews associated with that directory are kept.
+the current region is used. Non-interactively, the region between
+@code{start} and @code{end} is affected. Those two values default to the
+borders of the entire buffer. If @code{keep-dir} is set to a value from
+@code{TeX-active-tempdir}, previews associated with that directory are
+kept.
 @cindex @kbd{C-c C-p C-c C-r}
 @cindex @code{preview-clearout}
 @end table
