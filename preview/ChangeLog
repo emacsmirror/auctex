@@ -1,11 +1,33 @@
 2004-03-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/special.c: Revert change, not only resolution but also
+	offset is needed when generating png from ps
+
+	* dvipng/misc.c: Change helptext
+
+	* dvipng/configure.ac: Change version number
+
 	* dvipng/README: Checkin updated README 
 
 	* dvipng/pk.c:
 	* dvipng/ft.c: Speed up color cache
 
 	* dvipng/dvipng.texi: Add info on resolution, change version number 
+
+2004-03-24  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: Fix missing 'showpage' and a memory leak 
+
+	* dvipng/font.c: Adjust error message 
+
+	* dvipng/dvipng.h:
+	* dvipng/ft.c:
+	* dvipng/pk.c: Change ink darkness map
+
+	* dvipng/draw.c: Output page numbers more often. If the user has a
+	slow terminal he's to blame himself, not me.
+
+	* dvipng/tfm.c: Include alloca.h if present
 
 2004-03-23  Jan-Åke Larsson  <jalar@mai.liu.se>
 
