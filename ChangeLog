@@ -1,3 +1,8 @@
+2004-03-26  Davide G. M. Salvetti  <salve@debian.org>
+
+	* bib-cite.el, latex.el, tex-buf.el, tex-jp.el, tex.el:
+	Map (function (lambda ...)) to (lambda ...) for better readability.
+
 2004-03-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-indent-line): Use `looking-at' instead of
@@ -37,7 +42,7 @@
 	(LaTeX-find-macro-end): New function.
 
 	* .cvsignore: Added `tex-site.el'.
-	
+
 2004-03-23  David Kastrup  <dak@gnu.org>
 
 	* tex.el (VirTeX-common-initialization): Back out last change
@@ -253,10 +258,10 @@
 2004-02-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	Merge with new-fill branch.
-	
+
 2004-02-27  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* configure.in: Respect --infodir even if using xemacs. 
+	* configure.in: Respect --infodir even if using xemacs.
 
 	* aclocal.m4: Add yes/no answer for the MULE check.
 
@@ -266,7 +271,7 @@
 	installed tex-site.el, use the proper install directory anyway
 	(i.e., don't be side-tracked), and remove the wrongly installed
 	tex-site.el. These things are only needed for CVS users who have
-	used the erroneous xemacs-installation.	
+	used the erroneous xemacs-installation.
 
 2004-02-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
@@ -483,7 +488,7 @@
 	* tex-mik.el (TeX-command-list): Ditto.
 
 	* tex-fptex.el (TeX-command-list): Ditto.
-	
+
 2004-01-05  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-common-initialization): Add \item to the
@@ -506,7 +511,7 @@
 	for the respective command.  Adapted doc string.  Added respective
 	symbols to command definitions.  Rearranged command definitions.
 	Changed `LaTeX PDF' to `PDFLaTeX'.
-	
+
 	* latex.el (LaTeX-mode-command-menu): New menu used instead of
 	`TeX-mode-menu'.
 	(LaTeX-common-initialization): Activate it.
@@ -611,7 +616,7 @@
 
 	* style/scrpage2.el: Remove unnecessary coding cookie and text in
 	introductory comment.
-	
+
 2003-08-02  Mike Sperber  <mike@xemacs.org>
 
 	* latex.el (latex-mode): Really turn off filladapt.  It just
@@ -819,7 +824,7 @@
 
 	* latex.el (LaTeX-mode-menu): Replace "Change Font" with "Replace
 	Font"
-	
+
 	* tex-info.el (TeXinfo-mode-menu): Same here.
 
 	* doc/tex-ref.tex (section{Font Selection}): Same here.
@@ -837,7 +842,7 @@
 2003-05-27  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* latex.el (LaTeX-auto-minimal-regexp-list): Changed regexp to
-		  allow \documentclass[]{someclass}. 
+		  allow \documentclass[]{someclass}.
 
 2003-05-02  Patrick Gundlach  <patrick@gundla.ch>
 
@@ -846,7 +851,7 @@
 	function on an environment. ConTeXt-mark-environment,
 	ConTeXt-find-matching-stop and ConTeXt-find-matching-start
 	(similar to the ones in latex.el) added.
-	
+
 2003-04-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/wininstall.texi: Fixed typos in configure options.
@@ -884,16 +889,16 @@
 
 2003-04-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* autogen.sh: Generate INSTALL and INSTALL.windows 
+	* autogen.sh: Generate INSTALL and INSTALL.windows
 
 	* doc/Makefile.in: Use the configure compatibility test results
 
-	* doc/macros.texi: Compatibility macros, initial version 
+	* doc/macros.texi: Compatibility macros, initial version
 
 	* configure.in: Do the makeinfo tests, for compatibility with
 	texinfo 3.12, test for tex
 
-	* doc/install.texi: Changed to document the autoconf stuff 
+	* doc/install.texi: Changed to document the autoconf stuff
 
 	* doc/wininstall.texi: Added
 
@@ -1058,7 +1063,7 @@
 	* tex-buf.el (TeX-run-TeX): TeX-run-TeX gets the
 	TeX-sentinel-function from the major mode, so TeX-run-LaTeX and
 	alike won't be needed if they don't need to do something
-	fancy. Defaliased TeX-run-LaTeX to TeX-run-TeX. 
+	fancy. Defaliased TeX-run-LaTeX to TeX-run-TeX.
 	(TeX-run-interactive): Uses TeX-sentinel-default-function
 	instead of TeX-sentinel-function.
 
@@ -1087,11 +1092,11 @@
 	support. Interfaces for texexec and texutil added. Nonstopmode
 	(texexec) and purge (texutil) won't work right with current
 	ConTeXt versions. This will be fixed in ConTeXt versions later
-	than Feb 2003. 
+	than Feb 2003.
 
 	* context.el: basic support for ConTeXt added. New
 	sentinel-functiont that is different from the LaTeX one.
-	
+
 
 2003-02-08  pvoostrum  <pvoostrum@nono.cs.uu.nl>
 
@@ -1110,26 +1115,26 @@
 
 2003-02-06  Piet van Oostrum  <piet@cs.uu.nl>
 
-	* tex-buf.el 
+	* tex-buf.el
 	(TeX-save-document, TeX-command-query)
-	(TeX-output-style-check, TeX-run-format, TeX-TeX-sentinel-check): 
-	Added support for pdftex (and others)	
+	(TeX-output-style-check, TeX-run-format, TeX-TeX-sentinel-check):
+	Added support for pdftex (and others)
 	(TeX-run-set-command, TeX-output-extension)
 	(TeX-view-extension, TeX-view-output-file): new functions.
-	
+
 	* tex.el (TeX-output-extension, TeX-view-extension)
 	(TeX-output-view-style, TeX-command-output-list): new variables
 	(TeX-expand-list): adapted for pdf output.
 
 2003-01-31  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* configure.in: Use new lispdir check. 
+	* configure.in: Use new lispdir check.
 
 	* aclocal.m4: Some cleaning of macro names. Windows quoting by
 	David Kastrup <dak@gnu.org>. Also, lispdir now checks (x)emacs
 	load-path instead of physical disk content.
-	
-	* Makefile.in: Fix infodir 
+
+	* Makefile.in: Fix infodir
 
 2003-01-30  Piet van Oostrum  <piet@cs.uu.nl>
 
@@ -1317,7 +1322,7 @@
 	* latex.el (LaTeX-optop, LaTeX-optcl, LaTeX-default-options,
 	LaTeX-figure-label, LaTeX-table-label, LaTeX-equation-label,
 	LaTeX-eqnarray-label, LaTeX-style-list): remove buffer-local
-	declarations where they don't make sense.	
+	declarations where they don't make sense.
 
 2002-12-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
@@ -1430,7 +1435,7 @@
 
 	* scrartcl.el: Initial version. Testing LaTeX-section-list.
 
-	* scrbase.el: Initial version of the base file. 
+	* scrbase.el: Initial version of the base file.
 
 	* scrreprt.el, scrbook.el: Initial version.
 
@@ -1450,7 +1455,7 @@
 
 	* tex-site.el (eamcs-major-version): Changed if to when.
 	Suggested by Martin Thornquist <martint@ifi.uio.no>.
-	
+
 2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex.el (TeX-master-file): Don't make C-c ` bomb out in files
@@ -1464,7 +1469,7 @@
 	Suggested by "Dr. Mark A. Friedman" <DrMarkAFriedman@earthlink.net>.
 
 	* latex.el (LaTeX-common-initialization): Set
-	`fill-paragraph-function'. 
+	`fill-paragraph-function'.
 	(LaTeX-mode-map): Don't bind M-q.
 	Suggested by Nils Klarlund <klarlund@research.att.com>.
 
@@ -1494,7 +1499,7 @@
 
 	* font-latex.el: Updated to V0.800.
 	Added font-lock-syntactic-keywords to font-lock-defaults to handle
-        verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
+	verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
 	* bib-cite.el: Updated to V3.17.
 	XEmacs has imenu after all.
 
@@ -1503,7 +1508,7 @@
 	* tex.el (TeX-format-list): Fix problem that AUC TeX switch to
 	JLATEX mode if the class file starts with the letter `j'.
 	Reported by Joe Reinhardt <jmr@everest.radiology.uiowa.edu>.
-	
+
 	* tex-jp.el (japanese-TeX-command-list): Use `%l' instead
 	of [pj]latex command.
 	Patch by Atsuhito Kohda	<kohda@pm.tokushima-u.ac.jp>.
@@ -1513,7 +1518,7 @@
 
 	* tex.el (LaTeX-command-style): Fix comment.
 	Reported by Atsuhito Kohda <kohda@pm.tokushima-u.ac.jp>
-	via. Debian. 
+	via. Debian.
 
 	* latex.el (LaTeX-outline-name): Allow longer names.
 	Reported by "Michael Soulier" <msoulier@nortelnetworks.com>
@@ -1522,7 +1527,7 @@
 2001-12-22  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-imenu-create-index-function): Strip text
-	properties. 
+	properties.
 	Reported by Venkatesh Prasad Ranganath <rvprasad@@cis.ksu.edu>.
 
 2001-12-13  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -1542,7 +1547,7 @@
 2001-11-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* auc-old.el (insert-mode-line): Use `insert' instead of
-	`insert-string'. 
+	`insert-string'.
 
 2001-10-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -1569,7 +1574,7 @@
 
 	* tex-jp.el (japanese-TeX-command-list): Fixed for mendex.
 	* doc/auc-tex.texi (Japanese): Doc fix.
-	
+
 2001-10-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.08 released.
@@ -1590,7 +1595,7 @@
 	Suggested by "Davide G. M. Salvetti" <salve@debian.org>.
 	Change `comment-indent-hook' to `comment-indent-function'.
 
-	
+
 2001-10-15  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el: Remove self-installation to LaTeX-mode-hook now
@@ -1654,7 +1659,7 @@
 
 	* style/amsmath.el ("amsmath"): More items.
 	Patch by Masayuki Ataka <ataka@milk.freemail.ne.jp>.
-	
+
 2001-10-04  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Use `with-current-buffer'.
@@ -1662,7 +1667,7 @@
 	* tex-buf.el (TeX-LaTeX-sentinel): Use the value of
 	`TeX-command-BibTeX' in `TeX-command-buffer'.
 	Patch by Katsuaki KAWACHI <kawachi@cim.pe.u-tokyo.ac.jp>.
-	
+
 	* tex-fptex.el: New file.
 	Contributed by Fabrice Popineau <Fabrice.Popineau@supelec.fr>.
 	* Makefile (CONTRIB): Added it.
@@ -1682,7 +1687,7 @@
 	* latex.el (LaTeX-top-caption-list): New option.
 	(LaTeX-env-figure): Use it.
 	Patch by ataka@milk.freemail.ne.jp (Masayuki Ataka).
-	
+
 	* style/graphicx.el (TeX-string-numberp): New function.
 	(TeX-arg-includegraphics): Call it.
 	Patch by ataka@milk.freemail.ne.jp (Masayuki Ataka).
@@ -1726,7 +1731,7 @@
 	flag.  Autoload TeX-current-offset for that if necessary.
 
 	* tex-buf.el (TeX-current-offset, TeX-command-region,
-	              TeX-region-create):
+		      TeX-region-create):
 	Correct offset calculations when not at start of line.  New function
 	TeX-current-offset for that.
 
@@ -1747,7 +1752,7 @@
 
 2001-03-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* tex.el (unless): Don't enable Emacs 21 font-lock for Emacs 20. 
+	* tex.el (unless): Don't enable Emacs 21 font-lock for Emacs 20.
 	(VirTeX-common-initialization): Ditto.
 
 2001-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -1768,7 +1773,7 @@
 	Reported by David Masterson <dmasters@Rational.Com>.
 
 	* tex-info.el (TeXinfo-mode-map): "\e\r" bound to `map', not
-	`TeXinfo-mode-map'. 
+	`TeXinfo-mode-map'.
 	Patch by Dan Nicolaescu <dann@godzilla.ICS.UCI.EDU>.
 
 2001-03-01  Hidenobu Nabetani  <nabe@debian.or.jp>
@@ -1776,9 +1781,9 @@
 	* tex-jp.el: Don't work correctly in current AucTeX.
 	Patch by Masayuki Ataka <j1297007@ed.kagu.sut.ac.jp>
 	and Yuzo Furukawa <hurukawa@kuee.kyoto-u.ac.jp>.
-	Removed support for NEmacs and Mule1,2 which are based 
+	Removed support for NEmacs and Mule1,2 which are based
 	on Emacs 18 and 19.
-	Created new variable japanese-TeX-command-list and 
+	Created new variable japanese-TeX-command-list and
 	added support for mendex.
 	Updated LaTeX-auto-regexp-list variable.
 
@@ -1846,11 +1851,11 @@
 2000-10-09  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-outline-name): Don't escape `{' or `}' in
-	regexps. 
+	regexps.
 	Patch by "Stefan Monnier" <monnier+gnu/emacs/news/@RUM.cs.yale.edu>.
 
 	* tex-mik.el (TeX-command-list): Use `TeX-run-discard' for "View"
-	command. 
+	command.
 	Suggested by "Claus Dethlefsen" <c.dethlefsen@lancaster.ac.uk>.
 
 	* latex.el (LaTeX-common-initialization): `\bibitem' starts
@@ -1862,7 +1867,7 @@
 	* tex.el (TeX-current-line): Return a string, not a number.
 	Reported by Julia Habel <julia.habel@gmx.de>.
 	Patch by Dirk.Ullrich@DaimlerChrysler.com.
-	
+
 2000-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-site.el: Require tex-mik after changing load-path.
@@ -1899,7 +1904,7 @@
 	* style/graphicsx.el: New file.
 	* Makefile (STYLESRC): Added it.
 	Donated by Ryuichi Arafune <arafune@ushioda.riec.tohoku.ac.jp>.
-	
+
 2000-04-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10q released.
@@ -1907,11 +1912,11 @@
 2000-03-23  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-keymap): Accept vector for
-	`LaTeX-math-abbrev-prefix'. 
+	`LaTeX-math-abbrev-prefix'.
 	(LaTeX-math-insert-prefix): Better error message if
 	`LaTeX-math-abbrev-prefix' is not bound.
 	Reported by Jan Vroonhof <vroonhof@math.ethz.ch>.
-	
+
 2000-02-23  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-info.el (TeXinfo-environment-list): Added more missing
@@ -1921,21 +1926,21 @@
 
 	* tex-info.el (TeXinfo-environment-list): Add `group'.
 	Patch by Akim Demaille <akim@epita.fr>.
-	
+
 2000-01-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-command-list): Add `makeinfo --html' support.
 	Suggested by Akim Demaille <akim@epita.fr>.
-	
+
 2000-01-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* tex-info.el (TeXinfo-mode-map): Added "\e\r" binding for 
+	* tex-info.el (TeXinfo-mode-map): Added "\e\r" binding for
 	`texinfo-insert-@item'.
 	Reported by Akim Demaille <akim@epita.fr>.
 	(TeXinfo-mode-menu, texinfo-mode): Changed menu name and mode name
 	to `Texinfo'.
 	Suggested by Akim Demaille <akim@epita.fr>.
-	
+
 1999-12-21  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* bib-cite.el: Updated to 3.16 (20 Dec 99).
@@ -2026,7 +2031,7 @@
 	(TeX-master-file): Use it.
 	(TeX-master): Document it.
 	Patch by Stefan Monnier <foo@acm.com>.
-	
+
 1999-11-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10k released.
@@ -2034,7 +2039,7 @@
 1999-11-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el: Use `indent-according-to-mode' instead of
-	`LaTeX-indent-line'. 
+	`LaTeX-indent-line'.
 	(LaTeX-mode-map): Don't remap `TAB'.
 	Patch by "Stefan Monnier <foo@acm.com>".
 
@@ -2060,7 +2065,7 @@
 
 	* tex.el (TeX-master-directory): Call `substitute-in-file-name'.
 	Patch by Alexander Holt <alexander.holt@ed.ac.uk>.
-	
+
 	* style/ngerman.el: New style.
 	Suggested by Torsten Schuetze <schuetze@math.tu-dresden.de>.
 	* Makefile (STYLESRC): Added it.
@@ -2082,7 +2087,7 @@
 1999-09-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-auto-cleanup): Allow multiple packages for
-	`usepackage'. 
+	`usepackage'.
 	Reported by Torsten Schuetze <schuetze@math.tu-dresden.de>.
 	(LaTeX-auto-cleanup): Also add "unmangled" documentstyle.
 	Reported by Cyril Humbert <humbert@phobos.univ-mlv.fr>.
@@ -2108,7 +2113,7 @@
 	* latex.el (LaTeX-hide-environment, LaTeX-show-environment): make
 	them work with new outline mode.
 	Reported by Thomas Schick <schick@math.psu.edu>.
-	
+
 	* tex.el (match-string): New compatibility function.
 	Reported by Andrew Edward Santosa <andrews@comp.nus.edu.sg>.
 
@@ -2119,7 +2124,7 @@
 	(TeX-japanese-process-input-coding-system): Update for Emacs 20.
 	(TeX-japanese-process-output-coding-system): Update for Emacs 20.
 	(TeX-command-default): Change from "j-article" to "jarticle".
-	(LaTeX-fill-region-as-para-do): Fix the problem that fill mode 
+	(LaTeX-fill-region-as-para-do): Fix the problem that fill mode
 	don't work in Emacs 20.
 
 1999-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2129,7 +2134,7 @@
 1999-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-auto-minimal-regexp-list): Recognize usepackage
-	options. 
+	options.
 	(LaTeX-auto-cleanup): Ditto.
 
 1999-07-15  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2143,7 +2148,7 @@
 	* style/slides.el: Ditto.
 	* style/latexinfo.el: Ditto.
 	Reported by Mate Wierdl <mw@wierdlmpc.msci.memphis.edu>.
-	
+
 	* Makefile (infodir, lispdir, aucdir, EMACS): Use `standard' values.
 	Reported by Mate Wierdl <mw@wierdlmpc.msci.memphis.edu>.
 
@@ -2153,7 +2158,7 @@
 1999-05-17  Jerry James  <jerry@cs.ucsb.edu>
 
 	* tex.el: Fix two typos in comments.
-  	(set-text-properties): Protect against possible XEmacs version
+	(set-text-properties): Protect against possible XEmacs version
 	21.13, 22.13, etc.
 
 1999-05-14  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2165,7 +2170,7 @@
 1999-05-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el: (TeX-auto-generate): Reimplemented support for numeric
-	`TeX-file-recurse'. 
+	`TeX-file-recurse'.
 	(TeX-search-files): Ditto.
 
 1999-05-03  Rune Kleveland <runekl@math.uio.no>
@@ -2194,9 +2199,9 @@
 1999-03-12  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
 
 	* latex.el (TeX-arg-index-tag): New function, to be used by the
- 	index.el and multind.el style files.
+	index.el and multind.el style files.
 	(LaTeX-auto-index-regexp-list): Now matches both \index and
- 	\glossary.
+	\glossary.
 	(TeX-arg-index): Renamed from TeX-arg-define-index.
 	(TeX-arg-define-index): Now an alias for `TeX-arg-index'.
 	(LaTeX-common-initialization): Added a regexp for index and
@@ -2207,14 +2212,14 @@
 	* style/multind.el: New file.
 	* style/varioref.el: New file.
 	* style/fancyref.el: New file.
-	* Makefile (STYLESRC): Added `style/index.el', `style=makeidx.el', 
+	* Makefile (STYLESRC): Added `style/index.el', `style=makeidx.el',
 	`style/multind.el', `style/varioref.el', `style/fancyref.el'.
-	
+
 1999-02-23  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-search-files): `nconc' the result.
 	Reported by Berwin Turlach <bturlach@maths.adelaide.edu.au>.
-	
+
 1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10b released.
@@ -2228,7 +2233,7 @@
 	* doc/auc-tex.texi: Changed version to 9.10.
 	* doc/history.texi: Ditto.
 	* doc/changes.texi: Ditto.
-	
+
 1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9p released.
@@ -2265,18 +2270,18 @@
 
 1999-01-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* tex.el (TeX-insert-braces, TeX-command-list): Fixed custom types.  
-	Patch by Markus Rost <markus.rost@mathematik.uni-regensburg.de>.  
+	* tex.el (TeX-insert-braces, TeX-command-list): Fixed custom types.
+	Patch by Markus Rost <markus.rost@mathematik.uni-regensburg.de>.
 
 1999-01-09  Christoph Wedler  <wedler@fmi.uni-passau.de>
 
 	* latex.el (LaTeX2e-font-replace): Don't use hard-coded regexp for
- 	font commands, use local `TeX-font-list', i.e., `LaTeX-font-list'.
+	font commands, use local `TeX-font-list', i.e., `LaTeX-font-list'.
 
 1999-01-05  Christoph Wedler  <wedler@fmi.uni-passau.de>
 
 	* tex.el (TeX-load-style-file): Do not prevent .elc style files to
- 	be loaded if `TeX-byte-compile' is nil, just prevent compilation.
+	be loaded if `TeX-byte-compile' is nil, just prevent compilation.
 	(TeX-lisp-directory): Only use `locate-data-directory' if this
 	function is defined and AucTeX is installed as an XEmacs package.
 
@@ -2293,7 +2298,7 @@
 
 	* tex.el (TeX-file-recurse): Added right parenthesis.
 	Reported by Bernt Guldbrandtsen <bernt@stat.washington.edu>.
-	
+
 1998-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9m released.
@@ -2307,11 +2312,11 @@
 
 1998-12-01  Alastair Burt  <burt@dfki.de>
 
-	* doc/auc-tex.texi (Automatic): 
+	* doc/auc-tex.texi (Automatic):
 
 	* lisp/tex.el: Extended the semantics of TeX-file-recurse
 	-- now accepts a positive integer as a bound on the recursion.
-	Functions TeX-search-files and TeX-auto-generate have been amended 
+	Functions TeX-search-files and TeX-auto-generate have been amended
 	appropriately.
 
 1998-11-23  Carsten Dominik  <dominik@strw.leidenuniv.nl>
@@ -2338,7 +2343,7 @@
 1998-10-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* doc/auc-tex.texi (European): Removed references to obsolete
-	packages. 
+	packages.
 
 1998-07-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2358,11 +2363,11 @@
 	* tex.el (TeX-parse-macro, TeX-arg-string, TeX-parse-argument): If
 	region is active, put it inside empty brackets.
 	Patch by Peter Thiemann <pjt@cs.nott.ac.uk>.
-	
+
 1998-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (plain-TeX-auto-regexp-list): Add missing \\'es.
-	Reported by Markus Rost t4287 
+	Reported by Markus Rost t4287
 	<markus.rost@mathematik.uni-regensburg.de>.
 
 1998-07-14  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2393,7 +2398,7 @@
 	* latex.el (LaTeX-auto-index-regexp-list): Fix parentheses.
 	* texmathp.el (texmathp): Use `if (not' instead of `unless'.
 	Patch by Carsten Dominik  <dominik@strw.leidenuniv.nl>.
-	
+
 1998-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9e released.
@@ -2430,8 +2435,8 @@
 1998-06-10  Carsten Dominik  <dominik@strw.leidenuniv.nl>
 
 	* natbib.el ("natbib"): Rewritten to allow for more flexible
-          control of optional note arguments.  New macros in NatBib 6
-          supported.  Added support for RefTeX. 
+	  control of optional note arguments.  New macros in NatBib 6
+	  supported.  Added support for RefTeX.
 
 1998-06-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2450,7 +2455,7 @@
 	(TeX-parse-macro): Use `texmathp' instead of `TeX-math-mode-p'.
 
 	* texmathp.el: New file by Carsten Dominik
-	<dominik@strw.LeidenUniv.nl>. 
+	<dominik@strw.LeidenUniv.nl>.
 	* Makefile (AUCSRC): Added.
 	(AUCELC): Added.
 
@@ -2461,7 +2466,7 @@
 	Suggested by "Lee, Sang-Min" <smagus@acorn.snu.ac.kr>.
 
 	* doc/auc-tex.texi: Doc fixes by Gustavo Chaves
-	<gustavo@cpqd.com.br>. 
+	<gustavo@cpqd.com.br>.
 	* doc/intro.texi: Ditto.
 	* doc/install.texi: Ditto.
 
@@ -2495,7 +2500,7 @@
 
 	* tex.el (TeX-insert-punctuation): Only expand abbrevs when abbrev
 	mode is on.  Suggested by Alastair Burt <alastair.burt@dfki.de>.
-	
+
 1998-02-25  SL Baur  <steve@altair.xemacs.org>
 
 	* doc/auc-tex.texi: Add direntry section for automatic
@@ -2510,13 +2515,13 @@
 	* latex.el (LaTeX-auto-regexp-list): Recognize empty optional
 	  arguments and macros in optional arguments.
 
-        * tex.el (TeX-parse-argument): minor spelling correction.
+	* tex.el (TeX-parse-argument): minor spelling correction.
 	(TeX-argument-insert): ditto
 
 1998-02-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-match-extension): Fold case when matching
-	extensions. 
+	extensions.
 
 1998-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2540,7 +2545,7 @@
 
 1998-01-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* tex-jp.el: Added credit.  
+	* tex-jp.el: Added credit.
 	Patch by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>.
 
 1997-12-10  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2578,7 +2583,7 @@
 1997-10-01  kifer@CS.SunySB.EDU (Michael Kifer)
 
 	* tex.el (TeX-insert-punctuation): Expand abbrevs in the
-	beginning. 
+	beginning.
 
 1997-09-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2672,47 +2677,47 @@
 
 	* tex.el (TeX-update-style): `TeX-auto-update' could be unbound.
 	(TeX-auto-x-parse-length): New variable.  Allows to use maximimum
- 	= slow parsing for the beginning of a file and minimum = fast
- 	parsing, e.g., just for labels, for the rest of the file.
+	= slow parsing for the beginning of a file and minimum = fast
+	parsing, e.g., just for labels, for the rest of the file.
 	(TeX-auto-x-regexp-list): Ditto.
 	(TeX-auto-parse-region): New function.
 	(TeX-auto-parse): Use them.
 
 	* tex-buf.el (TeX-region-extra): New variable with a value which
- 	redefines \cite for the region file in order get less
+	redefines \cite for the region file in order get less
 	warnings. With value "", this variable has no effect.
 	(TeX-region-hook): New variable.
 	(TeX-region-create): Use them.
 
 	* latex.el (LaTeX-indent-line): TeX commands are case sensitive.
 	(LaTeX-find-matching-end): Would not work correctly with more than
- 	one \end in a line.
+	one \end in a line.
 	(LaTeX-find-matching-begin): Would not work correctly with more
- 	than one \begin in a line.
+	than one \begin in a line.
 
 	(LaTeX-menu-max-items): New variable with value 25.  Split menu
- 	if number of entries in a menu is larger than this value.  If nil,
- 	never split menu into submenus, which is the behaviour before the
- 	introduction of this variable.
+	if number of entries in a menu is larger than this value.  If nil,
+	never split menu into submenus, which is the behaviour before the
+	introduction of this variable.
 	(LaTeX-submenu-name-format): New variable.
 	(LaTeX-split-long-menu): New function using the two new variables.
 	(LaTeX-menu-update): Use it.
 
 	(LaTeX-document-regexp): New variable.  Texts in environments
- 	other than "document", e.g., "letter", could be without initial
- 	indentation.
+	other than "document", e.g., "letter", could be without initial
+	indentation.
 	(LaTeX-verbatim-regexp): New variable.  \begin and \end of
- 	environments other than "verbatim\\*?", e.g., "program", could
- 	start at column 0.
+	environments other than "verbatim\\*?", e.g., "program", could
+	start at column 0.
 	(LaTeX-begin-regexp): New variable similar to `LaTeX-item-regexp'.
-  	Commands other than "begin", e.g, "if", could increase the
- 	indentation.
+	Commands other than "begin", e.g, "if", could increase the
+	indentation.
 	(LaTeX-end-regexp): New variable similar to `LaTeX-item-regexp'.
-  	Commands other than "end", e.g, "fi", could decrease the
- 	indentation.
+	Commands other than "end", e.g, "fi", could decrease the
+	indentation.
 	(LaTeX-indent-comment-start-regexp): New variable.  Would allow
- 	you to correct the automatic indentation with commands in special
- 	comments.
+	you to correct the automatic indentation with commands in special
+	comments.
 	(LaTeX-indent-calculate): Use them.
 	(LaTeX-indent-level-count): Use them.
 	(LaTeX-indent-calculate-last): Use them.
@@ -2728,7 +2733,7 @@
 
 1997-06-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* latex.el (LaTeX-auto-minimal-regexp-list): Added `usepackage'. 
+	* latex.el (LaTeX-auto-minimal-regexp-list): Added `usepackage'.
 	(LaTeX-auto-minimal-regexp-list): Ditto.
 	Patch by Carsten Dominik <dominik@strw.LeidenUniv.nl>.
 
@@ -2756,7 +2761,7 @@
 	* tex.el: Added customize information.
 	* tex-buf.el: Ditto.
 	* latex.el: Ditto.
-	
+
 1997-04-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7o released.
@@ -2769,7 +2774,7 @@
 	`eqnarray'.
 	(LaTeX-env-figure): Support `table*'.
 	Patch by Joes Staal <staal@geo.tudelft.nl>.
-	
+
 1997-03-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-down-section): Doc fix.
@@ -2791,7 +2796,7 @@
 
 	* latex.el (LaTeX-math-default): Fixed hebrew delimiters.
 	Patch by John Griffith <griffith@sfs.nphil.uni-tuebingen.de>.
-	
+
 1997-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-209-to-2e): Use `buffer-substring-no-properties'.
@@ -2803,7 +2808,7 @@
 
 1997-03-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* tex.el (TeX-auto-generate): Only generate when needed. 
+	* tex.el (TeX-auto-generate): Only generate when needed.
 	(TeX-auto-generate-global): Ditto.
 	Patch by Helmut Geyer <Helmut.Geyer@IWR.Uni-Heidelberg.De>.
 
@@ -2842,7 +2847,7 @@
 
 1997-02-21  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* Makefile (some): New target.  
+	* Makefile (some): New target.
 	Suggested by Steven L Baur <steve@miranova.com>.
 
 1997-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -2871,11 +2876,11 @@
 	* Makefile (install-lisp): Don't install $(aucdir)/lpath.el and
 	$(aucdir)/tex-site.el.
 	(contrib, install-contrib): New targets.
-	
+
 1997-01-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-default): uparow -> uparrow.  Reported by
-	Kyeong Soo Kim <kks@baekdu.rgit.wustl.edu>. 
+	Kyeong Soo Kim <kks@baekdu.rgit.wustl.edu>.
 
 1997-01-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2894,7 +2899,7 @@
 	(LaTeX-env-label): Ditto.
 	Patch supplied by Carsten Dominik <dominik@strw.LeidenUniv.nl> for
 	better RevTeX.el support.
-	
+
 	* latex.el (LaTeX-env-figure): Don't insert \leavevmode, at the
 	request of David Carlisle <carlisle@ma.man.ac.uk>.
 
@@ -2915,25 +2920,25 @@
 1997-01-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-jp.el: XEmacs 20 support by Soren Dayton
-	<csdayton@cs.uchicago.edu>. 
+	<csdayton@cs.uchicago.edu>.
 
 1997-01-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (CP): Use `cp -p'.  Suggested by Graham Gough
-	<graham@cs.man.ac.uk>. 
+	<graham@cs.man.ac.uk>.
 
 	* Version 9.7c released.
 
 1997-01-08  Per Abrahamsen  <abraham@dina.kvl.dk>
 
-	* doc/intro.texi: Spelling fixes by Franklin Chen <chen@adi.com>. 
+	* doc/intro.texi: Spelling fixes by Franklin Chen <chen@adi.com>.
 
 	* tex-buf.el (TeX-shell-command-option): Insitialize from
 	shell-command-switch.  Suggested by Fabio@Colorado.EDU (Fabio
-	Somenzi). 
+	Somenzi).
 
 	* latex.el (LaTeX-mode-menu): Added sans serif.  Patch by Ralf
-	Fassel <ralf@atg.venture.de>. 
+	Fassel <ralf@atg.venture.de>.
 
 1997-01-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2954,7 +2959,7 @@
 
 	* tex-buf.el (TeX-run-format): Bind `buffer' before `process' to
 	avoid side effect.  Suggested by Frederic Devernay
-	<devernay@istar.fr>. 
+	<devernay@istar.fr>.
 
 	* Version 9.7a released.
 
@@ -2974,7 +2979,7 @@
 1996-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-jp.el: Patch from IKEMOTO Masahiro
-	<ikeyan@airlab.cs.ritsumei.ac.jp>. 
+	<ikeyan@airlab.cs.ritsumei.ac.jp>.
 
 1996-11-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2992,7 +2997,7 @@
 
 	* latex.el (LaTeX-common-initialization): Added eqref to
 	LaTeX-label-list.  Suggested by Martin Hagstrom
-	<martinh@sto.foa.se>. 
+	<martinh@sto.foa.se>.
 
 1996-11-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -3006,7 +3011,7 @@
 1996-09-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-mode-map): Do not overwrite standard binding of
-	`M-g'. 
+	`M-g'.
 
 	* tex.el (popup-mode-menu): Run `LaTeX-menu-update' if present.
 	Workaround for bug reported by Hendrik Visage
@@ -3028,7 +3033,7 @@
 1996-08-31  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (TeX-arg-cite): Use `multi-prompt' when asking for
-	entries. 
+	entries.
 	(TeX-arg-bibliography): Ditto.
 
 1996-08-29  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -3049,7 +3054,7 @@
 
 	* tex.el (TeX-master-file): Allow second argument `NONDIRECTOPRY'.
 	(TeX-expand-list): Set second argument `NONDIRECTORY' to file
-	entries. 
+	entries.
 	(TeX-master-directory): New function.
 	* tex.el (TeX-auto-write): Write in master directory.
 
@@ -3068,7 +3073,7 @@
 
 	* tex.el (VirTeX-common-initialization): Removed duplicate
 	initialization of `words-include-escapes'.  Reperted by Mark Hovey
-	<hovey@math.mit.edu>. 
+	<hovey@math.mit.edu>.
 
 1996-08-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -3078,7 +3083,7 @@
 
 	* Makefile (aucdir): Changed `lib' to `share' per new emacs
 	conventions.  Reported by "Edward J. Huff"
-	<huffe@carbon.chem.nyu.edu>. 
+	<huffe@carbon.chem.nyu.edu>.
 
 1996-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -3100,9 +3105,9 @@
 1996-05-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-mark-active, TeX-active-mark) [XEmacs]: The
-	definition of these two were swapped.  Bug reported by 
+	definition of these two were swapped.  Bug reported by
 	Vladimir Alexiev <vladimir@cs.ualberta.ca>.
-	
+
 1996-04-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-update-style): Don't run parent style hooks for
@@ -3123,7 +3128,7 @@
 1996-03-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-cal): Use `\mathcal{}' under LaTeX2e.
-	Reported by Mate Wierdl <wierdlm@zebra.msci.memphis.edu>. 
+	Reported by Mate Wierdl <wierdlm@zebra.msci.memphis.edu>.
 
 1996-03-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -3133,8 +3138,8 @@
 1996-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-command-menu-queue, TeX-command-menu-queue-entry):
- 	New functions supporting printer queue queries from the menu.  By
- 	Ulrik Dickow <dickow@nbi.dk>
+	New functions supporting printer queue queries from the menu.  By
+	Ulrik Dickow <dickow@nbi.dk>
 	(TeX-command-menu-entry): Use them.
 
 1996-02-13  Per Abrahamsen  <abraham@dina.kvl.dk>
@@ -3173,7 +3178,7 @@
 	* easymenu.el: File deleted.
 	* column.el: File deleted.
 	* cpp.el: File deleted.
-	
+
 	* latex.el (LaTeX-math-insert): Don't check if `TeX-insert-macro'
 	is defined.
 	(LaTeX-close-environment): Work better when called on an empty
@@ -3188,10 +3193,10 @@
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Should now format \\
 	correctly.  Patch by michal@ellpspace.math.ualberta.ca (Michal
-	Jaegermann). 
+	Jaegermann).
 	(LaTeX-fill-region-as-para-do): New function.
 	(LaTeX-fill-region-as-paragraph): Do not fill paragraphs inside
-	special environments. 
+	special environments.
 
 1995-02-12  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3200,7 +3205,7 @@
 
 	* tex-buf.el (TeX-command-query): Also offer to save files when
 	started from a menu.  Reported by wscoas@win.tue.nl (Anton
-	A. Stoorvogel). 
+	A. Stoorvogel).
 	(TeX-LaTeX-sentinel): Don't suggest BibTeX if there is no
 	bibliographies. Suggested by Piet van Oostrum <piet@cs.ruu.nl>.
 
@@ -3208,17 +3213,17 @@
 
 	* tex-buf.el (TeX-run-format): Protect against being run from a
 	different buffer.  Patch by Michael Kifer
-	<kifer@sbkifer.cs.sunysb.edu>. 
+	<kifer@sbkifer.cs.sunysb.edu>.
 
 	* latex.el (LaTeX-math-default): Moved `Phi' from V to F in
 	LaTeX-math-mode.   Suggested by dak@ind.rwth-aachen.de (David
-	Kastrup). 
+	Kastrup).
 	* doc/math-ref.tex: Documented it.
 
 1995-02-02  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-home-buffer): Added interactive, reported by
-	edavid@lami.univ-evry.fr. 
+	edavid@lami.univ-evry.fr.
 
 1995-02-01  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3229,7 +3234,7 @@
 1995-01-27  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-paragraph-commands): Incorrectly placed
-	parenthesis.  Reported by mic@cs.ucsd.edu (Michelangelo Grigni). 
+	parenthesis.  Reported by mic@cs.ucsd.edu (Michelangelo Grigni).
 
 1995-01-26  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3240,24 +3245,24 @@
 	Reported by Steve Anderson <anderson@sapir.ling.yale.edu>.
 
 	* tex.el (save-match-data): Added by koba@flab.fujitsu.co.jp
-	(Kobayashi Shinji). 
+	(Kobayashi Shinji).
 	(bibtex-mode-hook): Don't use add-hook yet.  Reported by
 	koba@flab.fujitsu.co.jp (Kobayashi Shinji).
 
 1995-01-25  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (change-major-mode-hook): Also clear
-	`LaTeX-environment-list'. 
+	`LaTeX-environment-list'.
 
 	* Makefile (AUCSRC): Add `auc-menu.el'.
 
 	* tex.el: Use auc-menu instead of easymenu.
 
-        * tex.el: Inserted comment to mark end of site customization.
-        Suggested by john@minster.york.ac.uk (John A. Murdie).
+	* tex.el: Inserted comment to mark end of site customization.
+	Suggested by john@minster.york.ac.uk (John A. Murdie).
 
 	* tex.el (change-major-mode-hook): Forgot a set of parentheses.
-	Reported by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>. 
+	Reported by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>.
 
 	* tex-buf.el (TeX-current-pages): Removed extra parentheses.
 	Reported by mic@cs.ucsd.edu (Michelangelo Grigni).
@@ -3273,21 +3278,21 @@
 	regexp quotes of `TeX-esc'.
 
 	* style/amsart.el: Move `eqref' definition to `style/amstex.el'
-	and load that style hook.  
+	and load that style hook.
 	* style/amstex.el: New file.
 	* Makefile (STYLESRC): Added it.
-	Suggested by vb1890@PLAY.CS.NYU.EDU (Victor Boyko). 
+	Suggested by vb1890@PLAY.CS.NYU.EDU (Victor Boyko).
 
 1995-01-22  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el, ltx-math.el, Makefile: Integrated `ltx-math.el' in
-	`latex.el'. 
+	`latex.el'.
 	* tex-site.el: Removed autoload for `LaTeX-math-mode'.
 
 1995-01-19  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (latex-mode): Epoch fix by Martin Sjolin
-	<marsj@ida.liu.se>. 
+	<marsj@ida.liu.se>.
 
 1995-01-17  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3295,29 +3300,29 @@
 	<rhogee@bathybius.meteo.mcgill.ca>.
 
 	* hilit-LaTeX.el: New file contributed by Peter S. Galbraith
-	<rhogee@bathybius.meteo.mcgill.ca>. 
+	<rhogee@bathybius.meteo.mcgill.ca>.
 
 	* Makefile (CONTRIB): New macro for user contributed emacs lisp
-	packages, initialized with `bib-cite.el' and `hilit-LaTeX.el'. 
+	packages, initialized with `bib-cite.el' and `hilit-LaTeX.el'.
 	(EXTRAFILES): Added $(CONTRIB) to the list.
 
 	* tex.el (TeX-directory-absolute-p): Moved definition before
 	`TeX-macro-private'.  Reported by Frederic Devernay
-	<Frederic.Devernay@sophia.inria.fr>. 
+	<Frederic.Devernay@sophia.inria.fr>.
 
 	* latex.el (LaTeX-common-initialization): Remove extra and wrong
 	"\\\\par" from `paragraph-separate'.  Bug reported by
-	nijhof@th.rug.nl (Jeroen Nijhof). 
+	nijhof@th.rug.nl (Jeroen Nijhof).
 
 1995-01-11  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-command-region): Comment fix.  Patch by
-	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger). 
+	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger).
 	(TeX-region-create): More outline-mode safe. Patch by
-	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger). 
+	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger).
 
 	* Makefile (dist): Put version number in WWW page.  Suggested by
-	several people. 
+	several people.
 
 	* latex.el (LaTeX-auto-regexp-list): Ignore first optional
 	argument to newenvironment if there is a second.  Problem reported
@@ -3330,7 +3335,7 @@
 
 	* tex-buf.el (TeX-TeX-sentinel-check): New function.  Updates
 	`TeX-current-page' with regexp by dodd@roebling.poly.edu (Lawrence
-	R. Dodd) 
+	R. Dodd)
 	(TeX-current-pages): New function.
 	(TeX-LaTeX-sentinel, TeX-TeX-sentinel): Use it.
 y	(TeX-format-filter): Removed unnecessary check before assignment.
@@ -3353,7 +3358,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 
 	* latex.el (BibTeX-auto-store): Set TeX-auto-parse-length to
 	999999 locally.  Problem reported by Christoph Wedler
-	<wedler@fmi.uni-passau.de>. 
+	<wedler@fmi.uni-passau.de>.
 
 1994-12-02  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3364,7 +3369,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 1994-11-28  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-209-to-2e): New function by
-	Graham Gough <graham@cs.man.ac.uk>. 
+	Graham Gough <graham@cs.man.ac.uk>.
 
 	* latex.el (LaTeX-mode-menu): Move many commands to new
 	"Miscellaneous" submenu.
@@ -3395,7 +3400,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 
 	* tex-site.el: Ignore trailing `/' when adding TeX-lisp-directory
 	to load-path.  Patch by Michael Ernst
-	<mernst@research.microsoft.com>. 
+	<mernst@research.microsoft.com>.
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Don't rerun LaTeX on missing
 	references, unless they have changed.  Patch by schiotz@ltf.dth.dk
@@ -3411,12 +3416,12 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	TeX-font-replace-function and LaTeX2e-font-replace were
 	contributed by Peter Thiemann
 	<thiemann@provence.informatik.uni-tuebingen.de>.
-	
+
 
 1994-11-22  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* MSDOS: Added.  Contributed by schiotz@ltf.dth.dk (Jakob
-	Schiotz). 
+	Schiotz).
 
 	* OEMACS: Removed.
 
@@ -3451,9 +3456,9 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	AUC-TeX-date in tex.el
 
 	* tex.el (AUC-TeX-version): Added AUC-TeX-version and
-	AUC-TeX-date from auc-ver.el. 
+	AUC-TeX-date from auc-ver.el.
 
-        * auc-ver.el: File removed.
+	* auc-ver.el: File removed.
 
 	* tex.el: Added version specific code from seperate files.
 
@@ -3473,12 +3478,12 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	(TeX-command-menu-printer-entry): Don't pass file argument.
 	(TeX-command-create-menu): Removed.
 	(TeX-mode-menu): New menu.
-	(plain-TeX-mode-menu): Removed entries now in TeX-mode-menu. 
+	(plain-TeX-mode-menu): Removed entries now in TeX-mode-menu.
 	(plain-TeX-mode-menu): Use `toggle' for bad boxes.
 	(plain-TeX-common-initialization): Enable TeX-mode-menu.
 
 	* latex.el (LaTeX-mode-menu): Removed entries now in
-	TeX-mode-menu. 
+	TeX-mode-menu.
 	(LaTeX-mode-menu): Use `toggle' for bad boxes.
 	(LaTeX-common-initialization): Enable TeX-mode-menu.
 
@@ -3495,7 +3500,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	* auc-menu.el: Just load easymenu.el when using GNU Emacs.
 
 	* easymenu.el Try to use RMS's easymenu instead of auc-menu.
-        (easy-menu-define): Call `easy-menu-do-define' to do
+	(easy-menu-define): Call `easy-menu-do-define' to do
 	the real work.  Document XEmacs keyword arguments.
 	(easy-menu-do-define): New function.
 	(easy-menu-create-keymaps): Support XEmacs keyword arguments in
@@ -3512,17 +3517,17 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 
 	* latex.el (TeX-arg-insert-braces): Have \left and \right on
 	different lines.  Patch by thiemann@informatik.uni-tuebingen.de
-	(Peter Thiemann). 
+	(Peter Thiemann).
 
 	* Makefile (dist): Add CHANGES and ChangeLog files to the ftp
 	directory.  Suggested by Frederic Devernay
-	<Frederic.Devernay@sophia.inria.fr>. 
+	<Frederic.Devernay@sophia.inria.fr>.
 
 	* latex.el (LaTeX-indent-calculate): Allow nil second element in
-	`LaTeX-indent-environment-list'.  
+	`LaTeX-indent-environment-list'.
 	(LaTeX-indent-environment-list): Added special environments
 	suggested by thiemann@informatik.uni-tuebingen.de (Peter
-	Thiemann). 
+	Thiemann).
 
 1994-10-20  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3540,7 +3545,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	to avoid accidentally matching longer macros.
 
 	* tex.el (TeX-add-local-master): Use three %'s when adding buffer
-	local variables.  Suggested by Raymond Toy <toy@rtp.ericsson.se>. 
+	local variables.  Suggested by Raymond Toy <toy@rtp.ericsson.se>.
 
 	* tex.el (TeX-format-list): Added entry for AmSTeX by Ulf Juergens
 	<ulf@Mathematik.Uni-Bielefeld.DE>.
@@ -3550,7 +3555,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	<ulf@Mathematik.Uni-Bielefeld.DE>.
 
 	* tex-buf.el (TeX-format-filter): Add `save-match-data'.  Patch by
-	David Aspinall <da@dcs.edinburgh.ac.uk>. 
+	David Aspinall <da@dcs.edinburgh.ac.uk>.
 
 1994-09-14  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3559,7 +3564,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 1994-09-13  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* doc/history.texi, doc/auc-tex.texi: Fixes from Chris Fearnley
-	<@vm.uni-c.dk:FEARNLCJ@DUVM>. 
+	<@vm.uni-c.dk:FEARNLCJ@DUVM>.
 
 1994-09-09  Per Abrahamsen  <abraham@research.att.com>
 
@@ -3568,7 +3573,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	Gough <graham@cs.man.ac.uk>.
 
 	* tex.el (LaTeX-command-style): Made latex2e first in the list.
-	Suggested by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>. 
+	Suggested by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>.
 
 1994-09-05  Per Abrahamsen  <abraham@research.att.com>
 
@@ -3585,23 +3590,23 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	* tex-buf.el (TeX-command-query): Check if region file is newer
 	than dvi file.
 	(TeX-command-region): Only query for command _after_ region file
-	is created.  
+	is created.
 	(TeX-region-create): Only save file if the new content is
 	different than the original content.
 
 1994-08-29  Per Abrahamsen  (abraham@research.att.com)
 
-	* tex-buf.el (TeX-warning): Use offset for line end.  Fixed by 
+	* tex-buf.el (TeX-warning): Use offset for line end.  Fixed by
 	ddw2@sunbim.be (Dominique de Waleffe).
 
 1994-08-26  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/auc-tex.texi (Projects): Removed preceding item from
-	wishlist. 
+	wishlist.
 
 	* latex.el (LaTeX-common-initialization): Fix to comments
 	separating paragraphs by koba@flab.fujitsu.co.jp (Kobayashi
-	Shinji). 
+	Shinji).
 
 	* tex-jp.el (LaTeX-fill-region-as-paragraph): New version for MULE
 	2.0 by Tomotake FURUHATA <furuhata@trl.ibm.co.jp>.
@@ -3640,7 +3645,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 1994-08-17  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-env-figure): Put caption inside center
-	environment.  Suggested by Martin Wunderli <wunderli@inf.ethz.ch>. 
+	environment.  Suggested by Martin Wunderli <wunderli@inf.ethz.ch>.
 
 	* tex.el (TeX-strip-extension): If NODIR is set to `path', remove
 	the directory part iff it is equal to the current directory, or is
@@ -3653,7 +3658,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 
 	* latex.el (LaTeX-common-initialization): `eqnarray*' should not
 	have a label.  Reported by dodd@roebling.poly.edu (Lawrence R.
-	Dodd). 
+	Dodd).
 
 1994-08-11  Per Abrahamsen  (abraham@iesd.auc.dk)
 
@@ -3668,7 +3673,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Write "some" if
 	TeX-current-page is nil.  Reported by Michail Rozman
-	<roz@physik.uni-ulm.de>. 
+	<roz@physik.uni-ulm.de>.
 
 1994-08-09  Per Abrahamsen  (abraham@iesd.auc.dk)
 
@@ -3708,7 +3713,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	* Makefile (EXTRAFILES): Added `ChangeLog'.
 	(DOCFILES): Added `history.texi'.
 
-	* doc/auc-tex.texi (History): Made ready for 9.2.  Move history to 
+	* doc/auc-tex.texi (History): Made ready for 9.2.  Move history to
 	`history.texi'.
 
 	* doc/changes.texi: Made ready for 9.2.  Introduce ChangeLog.
