@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.49 1993-07-08 02:21:56 amanda Exp $
+# $Id: Makefile,v 5.50 1993-07-08 02:47:17 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -34,8 +34,8 @@ elispdir=$(prefix)/lib/emacs/19.16/lisp
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 #
-aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 #aucdir=/home/pd/share/emacs/auctex7.2
+aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -48,8 +48,8 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-#EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp /home/dist/bin/emacs -batch -q
-EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp emacs -batch -q
+#EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp:$(elispdir)/utils:$(elispdir)/modes /home/dist/bin/emacs -batch -q
+EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp:$(elispdir)/utils:$(elispdir)/modes emacs -batch -q
 # Specify the byte-compiler for compiling AUC TeX files
 ELC= $(EMACS) -f batch-byte-compile
 
