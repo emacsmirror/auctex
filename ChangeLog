@@ -1,3 +1,8 @@
+2003-04-07  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-kpathsea-directory-alist): Fix bad kpathsea
+	searchpath name for LaTeX files.
+
 2003-04-03  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: Make the emacs-macro path-searching tests run, and
