@@ -1,5 +1,12 @@
 2002-03-23  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-toggle): get rid of
+	isearch-open-invisible hooks and stuff; using the invisible
+	property was confusing to the display engine, anyhow, and was
+	about to be broken by changes in Emacs.  The current behavior for
+	isearch is nicer than the default was before, so what.
+	(preview-auto-reveal): New customizable option.
+
 	* doc/problems.texi (Emacs problems): Windows availability for CVS
 	Emacs.
 
