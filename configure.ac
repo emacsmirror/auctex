@@ -1,5 +1,5 @@
 ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
-  [AC_INIT(auctex,11.54,auc-tex@sunsite.dk)],
+  [AC_INIT(auctex,11.55,auc-tex@sunsite.dk)],
   [AC_INIT(auctex.spec)])
 
 AC_SET_MAKE
