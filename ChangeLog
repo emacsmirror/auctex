@@ -1,3 +1,13 @@
+2004-05-12  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-source-specials-active-flag)
+	(TeX-source-specials-check-function, TeX-source-specials-xdvi-p)
+	(TeX-source-specials-check-xdvi)
+	(TeX-mode-specific-command-menu-entries)
+	(TeX-maybe-set-source-specials, TeX-toggle-source-specials):
+	Remove all checks for validity of the Source Special options.
+	Just assume that the user knows what he is asking for.
+
 2004-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (TEX_INPUT_DIRS): Don't use `findtexmf' but a
