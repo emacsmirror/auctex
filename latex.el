@@ -3030,7 +3030,28 @@ comments and verbatim environments"
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
   (dotimes (i count)
-    (let (macro-end)
+    (let* ((macro-start (LaTeX-find-macro-start))
+	   (paragraph-command-start
+	    (cond
+	     ;; Point is inside of a paragraph command.
+	     ((and macro-start
+		   (save-excursion
+		     (goto-char macro-start)
+		     (looking-at
+		      (concat (regexp-quote TeX-esc)
+			      "\\(" LaTeX-paragraph-commands "\\)"))))
+	      (match-beginning 0))
+	     ;; Point is before a paragraph command in the same line.
+	     ((and (not macro-start)
+		   (save-excursion
+		     (beginning-of-line)
+		     (looking-at
+		      (concat "[ \t]*" comment-start "*[ \t]*"
+			      "\\(" (regexp-quote TeX-esc) "\\)"
+			      "\\(" LaTeX-paragraph-commands "\\)"))))
+	      (match-beginning 1))
+	     (t nil)))
+	   macro-end)
       ;; If a paragraph command is encountered there are two cases to be
       ;; distinguished:
       ;; 1) If the end of the paragraph command coincides (apart from
@@ -3040,19 +3061,19 @@ If COUNT is non-nil, do it COUNT times."
       ;; 2) If the end of the paragraph command is followed by other
       ;;    code, it is assumed that it should be included with the rest
       ;;    of the paragraph.
-      (if (and (LaTeX-paragraph-command-p)
+      (if (and paragraph-command-start
 	       (save-excursion
-		 (beginning-of-line)
-		 (looking-at
-		  (concat
-		   "[ \t]*" comment-start "*[ \t]*" (regexp-quote TeX-esc)
-		   "\\(" LaTeX-paragraph-commands "\\)"))
-		 (goto-char (match-beginning 1))
+		 (goto-char paragraph-command-start)
 		 (setq macro-end (goto-char (LaTeX-find-macro-end)))
 		 (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
 				     "[ \t]*\\($\\|" comment-start "\\)"))))
 	  (progn
 	    (goto-char macro-end)
+	    ;; If the paragraph command is followed directly by
+	    ;; another macro, regard the latter as part of the
+	    ;; paragraph command's paragraph.
+	    (when (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+"))
+	      (goto-char (LaTeX-find-macro-end)))
 	    (forward-line))
 	(let (limit)
 	  (goto-char (min (save-excursion
@@ -3067,73 +3088,73 @@ If COUNT is non-nil, do it COUNT times."
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
   (dotimes (i count)
-    (if (and (not (bolp))
-	     (LaTeX-paragraph-command-p))
-	(re-search-backward
-	 (concat "^[ \t]*" comment-start "*[ \t]*"
-		 (regexp-quote TeX-esc)
-		 "\\(" LaTeX-paragraph-commands "\\)"))
-      (let (limit
-	    (start (line-beginning-position)))
-	(goto-char (max (save-excursion
-			  (backward-paragraph)
-			  (setq limit (point)))
-			;; Search for possible transitions from
-			;; commented to uncommented regions and vice
-			;; versa.
+    (let* ((macro-start (LaTeX-find-macro-start))
+	   (paragraph-command-start
+	    (cond
+	     ;; Point is inside of a paragraph command.
+	     ((and macro-start
+		   (save-excursion
+		     (goto-char macro-start)
+		     (looking-at
+		      (concat (regexp-quote TeX-esc)
+			      "\\(" LaTeX-paragraph-commands "\\)"))))
+	      (match-beginning 0))
+	     (t nil))))
+      (if (and paragraph-command-start
+	       ;; Point really has to be inside of the macro, not before it.
+	       (not (= paragraph-command-start (point))))
+	  (progn
+	    (goto-char paragraph-command-start)
+	    (beginning-of-line))
+	(let (limit
+	      (start (line-beginning-position)))
+	  (goto-char
+	   (max (save-excursion
+		  (backward-paragraph)
+		  (setq limit (point)))
+		;; Search for possible transitions from commented to
+		;; uncommented regions and vice versa.
+		(save-excursion
+		  (TeX-backward-comment-skip 1 limit)
+		  (point))
+		;; Search for possible paragraph commands.
+		(save-excursion
+		  (let (break-flag
+			end-point)
+		    (while (and (> (point) limit)
+				(not (bobp))
+				(forward-line -1)
+				(not break-flag))
+		      (when (looking-at
+			     (concat "^[ \t]*" comment-start "*[ \t]*"
+				     "\\(" (regexp-quote TeX-esc) "\\)"
+				     "\\(" LaTeX-paragraph-commands "\\)"))
 			(save-excursion
-			  (TeX-backward-comment-skip 1 limit)
-			  (point))
-			;; Search for possible paragraph commands.
-			(save-excursion
-			  (let (break-flag
-				end-point)
-			    (while (and (> (point) limit)
-					(not (bobp))
-					(forward-line -1)
-					(not break-flag))
-			      (when (looking-at
-				     (concat
-				      "^[ \t]*" comment-start "*[ \t]*"
-				      "\\(" (regexp-quote TeX-esc) "\\)"
-				      "\\(" LaTeX-paragraph-commands "\\)"))
-				(save-excursion
-				  (goto-char (match-end 1))
-				  (save-match-data
-				    (goto-char (LaTeX-find-macro-end)))
-				  ;; For an explanation of this
-				  ;; distinction see
-				  ;; `LaTeX-forward-paragraph'.
-				  (if (save-match-data
-					(looking-at
-					 (concat
-					  (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
-					  "[ \t]*\\($\\|" comment-start "\\)")))
-				      (progn
-					(forward-line 1)
-					(setq end-point (if (< (point) start)
-							    (point)
-							  0)))
-				    (setq end-point (match-beginning 0))))
-				(setq break-flag t)))
-			    (if end-point
-				end-point
-			      0))))))
-      (beginning-of-line))))
-
-;; The way `LaTeX-paragraph-command-p' is used in
-;; `LaTeX-forward-paragraph' and `LaTeX-backward-paragraph', it should
-;; probably check if it is inside of a paragraph command which can
-;; span multiple lines.
-(defun LaTeX-paragraph-command-p ()
-  "Determine if point is in a line containing a paragraph command.
-Paragraph commands, i.e. commands included in
-`LaTeX-paragraph-commands', should be placed in their own line."
-  (save-excursion
-    (beginning-of-line)
-    (looking-at
-     (concat "[ \t]*" comment-start "*[ \t]*" (regexp-quote TeX-esc)
-	     "\\(" LaTeX-paragraph-commands "\\)"))))
+			  (goto-char (match-end 1))
+			  (save-match-data
+			    (goto-char (LaTeX-find-macro-end)))
+			  ;; For an explanation of this distinction
+			  ;; see `LaTeX-forward-paragraph'.
+			  (if (save-match-data
+				(looking-at
+				 (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
+					 "[ \t]*\\($\\|"
+					 comment-start "\\)")))
+			      (progn
+				(when (looking-at
+				       (concat (regexp-quote TeX-esc)
+					       "[@A-Za-z]+"))
+				  (goto-char (LaTeX-find-macro-end)))
+				(forward-line 1)
+				(setq end-point (if (< (point) start)
+						    (point)
+						  0)))
+			    (setq end-point (match-beginning 0))))
+			(setq break-flag t)))
+		    (if end-point
+			end-point
+		      0))))))
+	(beginning-of-line)))))
 
 (defun LaTeX-find-macro-start (&optional arg)
   "Find the start of a macro.
@@ -3143,42 +3164,53 @@ the macro.  If ARG is non-nil, find the end of a macro."
     (let ((orig-point (point))
 	  start-point
 	  found-end-flag)
-      (if (not (and (re-search-backward
-		     (concat "\\(^\\|[^" TeX-esc "\n]\\)\\("
-			     (regexp-quote (concat TeX-esc TeX-esc))
-			     "\\)*"
-			     "\\(" (regexp-quote TeX-esc) "\\)")
-		     nil t)
-		    (save-excursion
-		      (goto-char (match-end 3))
-		      (not (looking-at (regexp-quote TeX-esc))))))
-	nil
-      (setq start-point (match-beginning 3))
-      (goto-char (match-end 3))
-      (skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
-      (while (not found-end-flag)
-	(cond
-	 ((or (looking-at "[ \t]*\\(\\[\\)")
-	      (and (looking-at (concat "[ \t]*" comment-start))
-		   (save-excursion
-		     (forward-line 1)
-		     (looking-at "[ \t]*\\(\\[\\)"))))
-	  (goto-char (match-beginning 1))
-	  (forward-sexp))
-	 ((or (looking-at "[ \t]*{")
-	      (and (looking-at (concat "[ \t]*" comment-start))
-		   (save-excursion
-		     (forward-line 1)
-		     (looking-at "[ \t]*{"))))
-	  (goto-char (match-end 0))
-	  (goto-char (TeX-find-closing-brace)))
-	 (t
-	  (setq found-end-flag t))))
-      (if (< orig-point (point))
-	  (if arg
-	      (point)
-	    start-point)
-	nil)))))
+      (cond
+       ;; Point is located directly at the start of a macro.
+       ((and (looking-at (concat "\\(" (regexp-quote TeX-esc) "\\)[@A-Za-z]+"))
+	     (save-match-data
+	       (not (TeX-looking-at-backward
+		     (concat "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
+			     "\\(" (regexp-quote TeX-esc) "\\)")))))
+	(setq start-point (point))
+	(goto-char (match-end 1)))
+       ;; Search backward for a macro start.
+       ((and (re-search-backward
+	      (concat "\\(^\\|[^" TeX-esc "\n]\\)"
+		      "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
+		      "\\(" (regexp-quote TeX-esc) "\\)")
+	      nil t)
+	     (save-excursion
+	       (goto-char (match-end 3))
+	       (not (looking-at (regexp-quote TeX-esc)))))
+	(setq start-point (match-beginning 3))
+	(goto-char (match-end 3))))
+      (if (not start-point)
+	  nil
+	;; Search forward for the end of the macro.
+	(skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
+	(while (not found-end-flag)
+	  (cond
+	   ((or (looking-at "[ \t]*\\(\\[\\)")
+		(and (looking-at (concat "[ \t]*" comment-start))
+		     (save-excursion
+		       (forward-line 1)
+		       (looking-at "[ \t]*\\(\\[\\)"))))
+	    (goto-char (match-beginning 1))
+	    (forward-sexp))
+	   ((or (looking-at "[ \t]*{")
+		(and (looking-at (concat "[ \t]*" comment-start))
+		     (save-excursion
+		       (forward-line 1)
+		       (looking-at "[ \t]*{"))))
+	    (goto-char (match-end 0))
+	    (goto-char (TeX-find-closing-brace)))
+	   (t
+	    (setq found-end-flag t))))
+	(if (< orig-point (point))
+	    (if arg
+		(point)
+	      start-point)
+	  nil)))))
 
 (defun LaTeX-find-macro-end ()
   "Find the end of a macro.
