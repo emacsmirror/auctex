@@ -1,5 +1,8 @@
 2004-07-28  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/problems.texi (Too small bounding boxes): Fix node
+	crosslinks.
+
 	* latex/preview.dtx: Tiny change to placate font-latex.
 
 	* latex/README-preview: Explain that PDF may be produced.

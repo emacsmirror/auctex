@@ -205,7 +205,7 @@ which will tag the corners of the included @TeX{} box.  This will mostly
 be convenient for @emph{pure} PostScript stuff like that created by
 PStricks, which Dvips would otherwise reserve no space for.
 
-@node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
+@node x-symbol interoperation, Middle-clicks paste instead of toggling, Too small bounding boxes, Known problems
 @section x-symbol interoperation
 
 Thanks to the work of Christoph Wedler, starting with version
