@@ -1,3 +1,10 @@
+2005-01-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-command-region): Pass name of region file
+	without directory to `TeX-command-query' because a test in the
+	latter expects it like that.
+	(TeX-command-query): Doc fix.
+
 2005-01-19  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4, configure.ac: A few small changes to allow sync with
