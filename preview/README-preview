@@ -1,0 +1,66 @@
+The preview.sty style file:
+
+This style file is part of the preview-latex project with home page
+<URL:http://preview-latex.sourceforge.net>.  The project page at
+<URL:http://sourceforge.net/projects/preview-latex> offers downloads
+and anonymous CVS access for cutting edge versions.  The entire
+package also is available from CTAN at location
+CTAN:support/preview-latex and separate README and INSTALL files exist
+for the complete distribution.
+
+While the primary focus of the package has been the support of editing
+in Emacs buffers augmented with preview images, its possible uses are
+not limited to that.  The package extracts indicated pieces from a
+source file (typically displayed equations, figures and graphics) and
+typesets with their base point at the (1in,1in) magic location,
+shipping out the individual pieces on separate pages without any page
+markup, thus eligible for letting DviPS -i -E create separate EPS
+files.  It is easy to define what commands and constructs should be
+treated that way.
+
+To install the preview style file on its own without fetching the
+entire preview-latex package, you would typically use the following
+session:
+
+tex docstrip
+[...]
+****************************************************
+* First type the extension of your input file(s):  *
+\infileext=dtx
+****************************************************
+
+****************************************************
+* Now type the extension of your output file(s)  : *
+\outfileext=ins
+****************************************************
+
+****************************************************
+* Now type the name(s) of option(s) to include   : *
+\Options=installer
+****************************************************
+
+****************************************************
+* Finally give the list of input file(s) without   *
+* extension seperated by commas if necessary     : *
+\filelist=preview
+****************************************************
+[...]
+More files to process (y/n)?
+\answer=n
+
+This will extract a file preview.ins.  Running TeX on that will then
+extract further files: preview.drv which you can run through LaTeX in
+order to get the documentation for preview.sty, preview.sty itself,
+and the option file prauctex.def that is mostly useful only when using
+the complete package.  In case your docstrip configuration has not
+already taken care of that, install the latter two files to a location
+where LaTeX will be able to find them, generate the documentation and
+have fun.
+
+The license of the original file is the GPL which you'll find a copy
+of in the complete preview-latex distribution.  The complete
+distribution will also unpack and install the respective LaTeX files
+with an autoconf-supported mechanism, so you might consider using
+that.
+
+David Kastrup
