@@ -1,3 +1,13 @@
+2002-03-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/Makefile.in (INSTALL, README, PROBLEMS): add -D rawfile
+	option for raw text files.
+
+	* doc/readme.texi: documentation restructuring for making README
+	good on preinstalled systems.
+
+	* autogen.sh (makeinfo): add -D rawfile option for raw text files
+
 2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{Preview attaching commands}): disable
