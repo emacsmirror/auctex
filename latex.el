@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000,
-;;               2003, 2004 Free Software Foundation, Inc.
+;;               2003, 2004, 2005 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex
@@ -2050,108 +2050,104 @@ outer indentation in case of a commented line.  The symbols
 	line-comment-last-flag
 	comment-current-flag
 	comment-last-flag)
-    (save-restriction
-      ;; The following `widen' statement is necessary to cope with
-      ;; potentially narrowed region to indent or fill respectively.
-      (widen)
-      (beginning-of-line)
-      (setq line-comment-current-flag (TeX-in-line-comment)
-	    comment-current-flag (TeX-in-commented-line))
-      (if comment-current-flag
-	  (skip-chars-backward "%\n\t ")
-	(skip-chars-backward "\n\t "))
-      (beginning-of-line)
-      ;; If we are called in a non-comment line, skip over comment
-      ;; lines.  The computation of indentation should in this case
-      ;; rather take the last non-comment line into account.
-      ;; Otherwise there might arise problems with e.g. multi-line
-      ;; code comments.  This behavior is not enabled in docTeX mode
-      ;; where large amounts of line comments may have to be skipped
-      ;; and indentation should not be influenced by unrelated code in
-      ;; other macrocode environments.
-      (while (and (not (eq major-mode 'doctex-mode))
-		  (not comment-current-flag)
-		  (TeX-in-commented-line)
-		  (not (bobp)))
-	(skip-chars-backward "\n\t ")
-	(beginning-of-line))
-      (setq line-comment-last-flag (TeX-in-line-comment)
-	    comment-last-flag (TeX-in-commented-line))
-      (LaTeX-back-to-indentation force-type)
-      ;; Separate line comments and other stuff (normal text/code and
-      ;; code comments).  Additionally we don't want to compute inner
-      ;; indentation when a commented and a non-commented line are
-      ;; compared.
-      (cond ((or (and (eq major-mode 'doctex-mode)
-		      (or (and line-comment-current-flag
-			       (not line-comment-last-flag))
-			  (and (not line-comment-current-flag)
-			       line-comment-last-flag)))
-		 (and force-type
-		      (eq force-type 'inner)
-		      (or (and comment-current-flag
-			       (not comment-last-flag))
-			  (and (not comment-current-flag)
-			       comment-last-flag))))
-	     0)
-	    ((looking-at (concat (regexp-quote TeX-esc)
-				 "begin *{\\("
-				 LaTeX-document-regexp
-				 "\\)}"))
-	     ;; I dislike having all of the document indented...
-	     (+ (LaTeX-current-indentation force-type)
-		;; Some people have opening braces at the end of the
-		;; line, e.g. in case of `\begin{letter}{%'.
-		(TeX-brace-count-line)))
-	    ((and (eq major-mode 'doctex-mode)
+    (beginning-of-line)
+    (setq line-comment-current-flag (TeX-in-line-comment)
+	  comment-current-flag (TeX-in-commented-line))
+    (if comment-current-flag
+	(skip-chars-backward "%\n\t ")
+      (skip-chars-backward "\n\t "))
+    (beginning-of-line)
+    ;; If we are called in a non-comment line, skip over comment
+    ;; lines.  The computation of indentation should in this case
+    ;; rather take the last non-comment line into account.
+    ;; Otherwise there might arise problems with e.g. multi-line
+    ;; code comments.  This behavior is not enabled in docTeX mode
+    ;; where large amounts of line comments may have to be skipped
+    ;; and indentation should not be influenced by unrelated code in
+    ;; other macrocode environments.
+    (while (and (not (eq major-mode 'doctex-mode))
+		(not comment-current-flag)
+		(TeX-in-commented-line)
+		(not (bobp)))
+      (skip-chars-backward "\n\t ")
+      (beginning-of-line))
+    (setq line-comment-last-flag (TeX-in-line-comment)
+	  comment-last-flag (TeX-in-commented-line))
+    (LaTeX-back-to-indentation force-type)
+    ;; Separate line comments and other stuff (normal text/code and
+    ;; code comments).  Additionally we don't want to compute inner
+    ;; indentation when a commented and a non-commented line are
+    ;; compared.
+    (cond ((or (and (eq major-mode 'doctex-mode)
+		    (or (and line-comment-current-flag
+			     (not line-comment-last-flag))
+			(and (not line-comment-current-flag)
+			     line-comment-last-flag)))
+	       (and force-type
+		    (eq force-type 'inner)
+		    (or (and comment-current-flag
+			     (not comment-last-flag))
+			(and (not comment-current-flag)
+			     comment-last-flag))))
+	   0)
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "begin *{\\("
+			       LaTeX-document-regexp
+			       "\\)}"))
+	   ;; I dislike having all of the document indented...
+	   (+ (LaTeX-current-indentation force-type)
+	      ;; Some people have opening braces at the end of the
+	      ;; line, e.g. in case of `\begin{letter}{%'.
+	      (TeX-brace-count-line)))
+	  ((and (eq major-mode 'doctex-mode)
 		(looking-at (concat (regexp-quote TeX-esc)
 				    "end[ \t]*{macrocode}"))
 		fill-prefix
 		(TeX-in-line-comment))
-	     ;; Reset indentation to zero after a macrocode
-	     ;; environment.
-	     0)
-	    ((looking-at (concat (regexp-quote TeX-esc)
-				 "begin *{\\("
-				 LaTeX-verbatim-regexp
-				 "\\)}"))
-	     0)
-	    ((looking-at (concat (regexp-quote TeX-esc)
-				 "end *{\\("
-				 LaTeX-verbatim-regexp
-				 "\\)}"))
-	     ;; If I see an \end{verbatim} in the previous line I skip
-	     ;; back to the preceding \begin{verbatim}.
-	     (save-excursion
-	       (if (re-search-backward (concat (regexp-quote TeX-esc)
-					       "begin *{\\("
-					       LaTeX-verbatim-regexp
-					       "\\)}") 0 t)
-		   (LaTeX-indent-calculate-last force-type)
-		 0)))
-	    (t (+ (LaTeX-current-indentation force-type)
-		  (if (not (and force-type
-				(eq force-type 'outer)
-				(TeX-in-commented-line)))
-		      (+ (LaTeX-indent-level-count)
-			 (TeX-brace-count-line))
-		    0)
-		  (cond ((looking-at (concat (regexp-quote TeX-esc)
-					     "\\("
-					     LaTeX-end-regexp
-					     "\\)"))
-			 LaTeX-indent-level)
-			((looking-at
-			  (concat (regexp-quote TeX-esc) "right\\b"))
-			 LaTeX-left-right-indent-level)
-			((looking-at (concat (regexp-quote TeX-esc)
-					     "\\("
-					     LaTeX-item-regexp
-					     "\\)"))
-			 (- LaTeX-item-indent))
-			((looking-at "}")
-			 TeX-brace-indent-level)
-			(t 0))))))))
+	   ;; Reset indentation to zero after a macrocode
+	   ;; environment.
+	   0)
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "begin *{\\("
+			       LaTeX-verbatim-regexp
+			       "\\)}"))
+	   0)
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "end *{\\("
+			       LaTeX-verbatim-regexp
+			       "\\)}"))
+	   ;; If I see an \end{verbatim} in the previous line I skip
+	   ;; back to the preceding \begin{verbatim}.
+	   (save-excursion
+	     (if (re-search-backward (concat (regexp-quote TeX-esc)
+					     "begin *{\\("
+					     LaTeX-verbatim-regexp
+					     "\\)}") 0 t)
+		 (LaTeX-indent-calculate-last force-type)
+	       0)))
+	  (t (+ (LaTeX-current-indentation force-type)
+		(if (not (and force-type
+			      (eq force-type 'outer)
+			      (TeX-in-commented-line)))
+		    (+ (LaTeX-indent-level-count)
+		       (TeX-brace-count-line))
+		  0)
+		(cond ((looking-at (concat (regexp-quote TeX-esc)
+					   "\\("
+					   LaTeX-end-regexp
+					   "\\)"))
+		       LaTeX-indent-level)
+		      ((looking-at
+			(concat (regexp-quote TeX-esc) "right\\b"))
+		       LaTeX-left-right-indent-level)
+		      ((looking-at (concat (regexp-quote TeX-esc)
+					   "\\("
+					   LaTeX-item-regexp
+					   "\\)"))
+		       (- LaTeX-item-indent))
+		      ((looking-at "}")
+		       TeX-brace-indent-level)
+		      (t 0)))))))
 
 (defun LaTeX-current-indentation (&optional force-type)
   "Return the indentation of a line.
@@ -2242,66 +2238,66 @@ comments and lines ending with `\par' are included in filling but
 act as boundaries.  Prefix arg means justify too.  From program,
 pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
-  (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
-	  ;; This could be generalized, if there are more cases where
-	  ;; a special string at the start of a region to fill should
-	  ;; inhibit filling.
-	  (progn (save-excursion (goto-char from)
-				 (looking-at (concat TeX-comment-start-regexp
-						     "+[ \t]*"
-						     "Local Variables:")))))
-      ;; Filling disabled, only do indentation.
-      (indent-region from to nil)
-    (save-restriction
-      (narrow-to-region from to)
-      (goto-char from)
-      (while (not (eobp))
-	(if (re-search-forward
-	     (concat "\\("
-		     ;; Code comments.
-		     "[^ \t%\n\r][ \t]*" comment-start-skip
-		     "\\|"
-		     ;; (lines with code comments looking like " {%")
-		     "^[ \t]*[^ \t%\n\r" TeX-esc"]" TeX-comment-start-regexp
-		     "\\|"
-		     ;; Lines ending with `\par'.
-		     "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
-		     (regexp-quote (concat TeX-esc TeX-esc))
-		     "\\)*"
-		     (regexp-quote TeX-esc) "par[ \t]*"
-		     "\\({[ \t]*}\\)?[ \t]*$"
-		     "\\)\\|\\("
-		     ;; Lines ending with `\\'.
-		     (regexp-quote TeX-esc)
-		     (regexp-quote TeX-esc)
-		     "\\(\\s-*\\*\\)?"
-		     "\\(\\s-*\\[[^]]*\\]\\)?"
-		     "\\s-*$\\)")
-	     nil t)
-	    (progn
-	      (goto-char (line-end-position))
-	      (delete-horizontal-space)
-	      ;; I doubt very much if we want justify -
-	      ;; this is a line with \\
-	      ;; if you think otherwise - uncomment the next line
-	      ;; (and justify-flag (justify-current-line))
-	      (forward-char)
-	      ;; keep our position in a buffer
-	      (save-excursion
-		;; Code comments and lines ending with `\par' are
-		;; included in filling.  Lines ending with `\\' are
-		;; skipped.
-		(if (match-string 1)
-		    (LaTeX-fill-region-as-para-do from (point) justify-flag)
-		  (LaTeX-fill-region-as-para-do
-		   from (line-beginning-position 0) justify-flag)
-		  ;; At least indent the line ending with `\\'.
-		  (indent-according-to-mode)))
-	      (setq from (point)))
-	  ;; ELSE part follows - loop termination relies on a fact
-	  ;; that (LaTeX-fill-region-as-para-do) moves point past
-	  ;; the filled region
-	  (LaTeX-fill-region-as-para-do from (point-max) justify-flag))))))
+  (let ((end-marker (save-excursion (goto-char to) (point-marker))))
+    (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+	    ;; This could be generalized, if there are more cases where
+	    ;; a special string at the start of a region to fill should
+	    ;; inhibit filling.
+	    (progn (save-excursion (goto-char from)
+				   (looking-at (concat TeX-comment-start-regexp
+						       "+[ \t]*"
+						       "Local Variables:")))))
+	;; Filling disabled, only do indentation.
+	(indent-region from to nil)
+      (save-restriction
+	(goto-char from)
+	(while (< (point) end-marker)
+	  (if (re-search-forward
+	       (concat "\\("
+		       ;; Code comments.
+		       "[^ \t%\n\r][ \t]*" comment-start-skip
+		       "\\|"
+		       ;; (lines with code comments looking like " {%")
+		       "^[ \t]*[^ \t%\n\r" TeX-esc"]" TeX-comment-start-regexp
+		       "\\|"
+		       ;; Lines ending with `\par'.
+		       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
+		       (regexp-quote (concat TeX-esc TeX-esc))
+		       "\\)*"
+		       (regexp-quote TeX-esc) "par[ \t]*"
+		       "\\({[ \t]*}\\)?[ \t]*$"
+		       "\\)\\|\\("
+		       ;; Lines ending with `\\'.
+		       (regexp-quote TeX-esc)
+		       (regexp-quote TeX-esc)
+		       "\\(\\s-*\\*\\)?"
+		       "\\(\\s-*\\[[^]]*\\]\\)?"
+		       "\\s-*$\\)")
+	       end-marker t)
+	      (progn
+		(goto-char (line-end-position))
+		(delete-horizontal-space)
+		;; I doubt very much if we want justify -
+		;; this is a line with \\
+		;; if you think otherwise - uncomment the next line
+		;; (and justify-flag (justify-current-line))
+		(forward-char)
+		;; keep our position in a buffer
+		(save-excursion
+		  ;; Code comments and lines ending with `\par' are
+		  ;; included in filling.  Lines ending with `\\' are
+		  ;; skipped.
+		  (if (match-string 1)
+		      (LaTeX-fill-region-as-para-do from (point) justify-flag)
+		    (LaTeX-fill-region-as-para-do
+		     from (line-beginning-position 0) justify-flag)
+		    ;; At least indent the line ending with `\\'.
+		    (indent-according-to-mode)))
+		(setq from (point)))
+	    ;; ELSE part follows - loop termination relies on a fact
+	    ;; that (LaTeX-fill-region-as-para-do) moves point past
+	    ;; the filled region
+	    (LaTeX-fill-region-as-para-do from end-marker justify-flag)))))))
 
 ;; The content of `LaTeX-fill-region-as-para-do' was copied from the
 ;; function `fill-region-as-paragraph' in `fill.el' (CVS Emacs,
@@ -2392,12 +2388,7 @@ space does not end a sentence, so don't break a line there."
 	(when use-hard-newlines
 	  (remove-list-of-text-properties from to '(hard)))
 	;; Make sure first line is indented (at least) to left margin...
-	(save-restriction
-	  ;; `LaTeX-indent-line' might otherwise calculate the wrong
-	  ;; indentation.  I think widening should be done here and
-	  ;; not in `LaTeX-indent-line' to avoid it being to rude.
-	  (widen)
-	  (indent-according-to-mode))
+	(indent-according-to-mode)
 	;; COMPATIBILITY for Emacs <= 21.1
 	(if (fboundp 'fill-delete-prefix)
 	    ;; Delete the fill-prefix from every line.
@@ -2453,31 +2444,29 @@ space does not end a sentence, so don't break a line there."
 		  (LaTeX-back-to-indentation)
 		  (TeX-re-search-forward-unescaped TeX-comment-start-regexp
 						   (line-end-position) t)))
-	  (save-restriction
-	    ;; The start of a code comment is a moving target during
-	    ;; filling, so we work with `narrow-to-region' and
-	    ;; `point-max'.  We use narrowing in non-code-comment
-	    ;; cases as well for the sake of simplicity.
-	    (narrow-to-region
-	     (point-min)
-	     (if code-comment-flag
-		 ;; Get the position right after the last non-comment-word.
+	  (let ((end-marker
 		 (save-excursion
-		   (goto-char (match-beginning 0))
-		   (skip-chars-backward " \t")
-		   (point))
-	       to))
+		   (goto-char (if code-comment-flag
+				  ;; Get the position right after the
+				  ;; last non-comment-word.
+				  (save-excursion
+				    (goto-char (match-beginning 0))
+				    (skip-chars-backward " \t")
+				    (point))
+				to))
+		   (point-marker))))
 	    ;; Fill until point is greater than the end point.  If there
 	    ;; is a code comment, use the code comment's start as a
 	    ;; limit.
-	    (while (and (< (point) (point-max))
+	    (while (and (< (point) (marker-position end-marker))
 			(or (not code-comment-flag)
 			    (and code-comment-flag
-				 (> (- (point-max) (line-beginning-position))
+				 (> (- (marker-position end-marker)
+				       (line-beginning-position))
 				    fill-column))))
 	      (setq linebeg (point))
 	      (move-to-column (current-fill-column))
-	      (if (when (< (point) (point-max))
+	      (if (when (< (point) (marker-position end-marker))
 		    ;; Find the position where we'll break the line.
 		    (forward-char 1) ; Use an immediately following
 				     ; space, if any.
@@ -2486,7 +2475,7 @@ space does not end a sentence, so don't break a line there."
 		    ;; Check again to see if we got to the end of
 		    ;; the paragraph.
  		    (skip-chars-forward " \t")
-		    (< (point) (point-max)))
+		    (< (point) (marker-position end-marker)))
 		  ;; Found a place to cut.
 		  (progn
 		    (LaTeX-fill-newline)
@@ -2496,7 +2485,7 @@ space does not end a sentence, so don't break a line there."
 			(forward-line -1)
 			(justify-current-line justify nil t))))
 
-		(goto-char (point-max))
+		(goto-char end-marker)
 		;; Justify this last line, if desired.
 		(if justify (justify-current-line justify t t)))))
 
