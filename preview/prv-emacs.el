@@ -142,9 +142,6 @@ specifies."
      'insert-in-front-hooks
      '(preview-handle-insert-in-front))
 
-(put 'preview-overlay
-     'preview-intangible t)
-
 ;; We have to fake our way around atomicity, but at least this is more
 ;; efficient than the XEmacs version which has to cope with not being
 ;; able to use local change hooks at all.
@@ -160,7 +157,7 @@ specifies."
   (ov after-change beg end &optional length)
   "Hook function for insert-in-front-hooks property."
   (when (and (not undo-in-progress) after-change)
-    (if (overlay-get ov 'preview-intangible)
+    (if (eq (overlay-get ov 'preview-state) 'active)
 	(move-overlay ov end (overlay-end ov))
       (overlay-put ov 'insert-in-front-hooks nil)
       (preview-disable ov))))
@@ -176,10 +173,10 @@ specifies."
 	(overlay-put ov 'insert-in-front-hooks nil)
 	(preview-disable ov)))))
 
-(put 'preview-overlay 'isearch-open-invisible 'preview-toggle)
+(put 'preview-overlay 'isearch-open-invisible #'preview-toggle)
 
 (put 'preview-overlay 'isearch-open-invisible-temporary
-     'preview-toggle)
+     #'preview-toggle)
 
 (defun preview-toggle (ov &rest args)
   "Toggle visibility of preview overlay OV.
@@ -191,14 +188,17 @@ but could change in future, for example displaying both preview
 and source text.  t makes the contents invisible, and 'toggle
 toggles it."
   (let ((old-urgent (preview-remove-urgentization ov))
-	(preview-intangible
-	 (if (eq 'toggle (car args))
-	     (not (overlay-get ov 'preview-intangible))
-	   (car args)))
+	(preview-state
+	 (if (if (eq (car args) 'toggle)
+		 (null (eq (overlay-get ov 'preview-state) 'active))
+	       (car args))
+	     'active
+	   'inactive))
 	(strings (overlay-get ov 'strings)))
-    (overlay-put ov 'preview-intangible preview-intangible)
-    (if preview-intangible
+    (overlay-put ov 'preview-state preview-state)
+    (if (eq preview-state 'active)
 	(progn
+	  (overlay-put ov 'category 'preview-overlay)
 	  (dolist (prop '(display local-map mouse-face help-echo))
 	    (overlay-put ov prop
 			 (get-text-property 0 prop (car strings))))
@@ -229,7 +229,7 @@ toggles it."
       (while (catch 'loop
 	       (dolist (ovr (overlays-at pt))
 		 (when (and
-			(overlay-get ovr 'preview-intangible)
+			(eq (overlay-get ovr 'preview-state) 'active)
 			(> pt (overlay-start ovr)))
 		   (setq pt (if backward
 				(overlay-start ovr)
