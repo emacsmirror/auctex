@@ -128,7 +128,7 @@ if test "$ENABLE8BIT"x = truex ; then
 fi
 
 # To match .sty, .def, .cfg, but _not_ .drv
-TEXMFGEN=["`sed -n 's/^%<installer>.*\\file{\([^}.]*\.[sdc][tef][yfg]\)}.*$/\1/p' | tr '\012' ' '`"]
+TEXMFGEN=["`sed -n 's/^%<installer>.*\\file{\([^}.]*\.[sdc][tef][yfg]\)}.*$/\1/p' latex/preview.dtx | tr '\012' ' '`"]
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
