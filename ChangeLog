@@ -1,3 +1,14 @@
+2004-06-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-comment-padding-string): New function.
+
+	* latex.el (LaTeX-newline): Do something sensible if point is
+	at the start of a commented line or inside of one and right at
+	the start of another one in the same line.
+	(LaTeX-insert-environment): Fix insertion of environments if
+	point is inside or right before a commented line.
+	(LaTeX-indent-line): Use `TeX-comment-padding-string'.
+
 2004-06-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-title-faces): New function.
