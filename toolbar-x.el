@@ -109,6 +109,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; First engine: Parsing buttons
 
+;; it obtains button information, process it and stores result in
+;; `toolbarx-internal-button-switches', which is a list with 1st
+;; element the symbol `:switches', the 2nd element as a list of
+;; processed buttons, and the 3rd element is used for Emacs to store
+;; the keys used in ``constant'' buttons.
+
+;; The 2nd element of `toolbarx-internal-button-switches' is a list
+;; where each element is either:
+;;  * a button-list, that is, a list with elements to define a button.
+;;  * a list where 1st elem is `:insert' and 2nd is a form, and the
+;; following elements are in the same format of the 2nd element of 
+;; `toolbarx-internal-button-switches'.
+
 ;;;###autoload
 (defun toolbarx-make-string-from-symbol (symbol)
   "Return a string from the name of a SYMBOL.
@@ -676,6 +689,7 @@ Convention: properties for the dropdown button should be formed
 with the strings \":dropdown-\" with the button property name
 without `:'. This is used on the implementation.")
 
+;;;###autoload
 (defun toolbarx-process-group-without-insert (group-without-props
 					      merged-props-without-insert
 					      meaning-alist switches)
@@ -706,74 +720,75 @@ with the internal properties that are in the end of GROUP.  If
 properties (after merge) contain a `:insert' property, return a
 list where the first and second elements are `:insert' and its
 value, and after that a list in the same format as SWITCHES."
-  ;; if DROPDOWN group
-  (if (eq (car group) :dropdown-group)
-      (toolbarx-process-dropdown-group group meaning-alist
-				       props switches)
-    ;; if EVAL group
-    (if (eq (car group) :eval-group)
-	(let ((current-switches switches))
-	  (dolist (elt (cdr group) current-switches)
-	    (let ((eval-elt (eval elt)))
-	      (setq current-switches
-		    (toolbarx-process-group (if (listp eval-elt)
-						eval-elt
-					      (list eval-elt))
-					    meaning-alist props
-					    current-switches)))))
-      ;; if normal group
-      (let* ((splited-props
-	      (toolbarx-separate-options
-	       group (append (nth 1 toolbarx-button-props)
-			     (nth 1 toolbarx-dropdown-props))))
-	     (intern-props (cdr splited-props))
-	     (group-without-props (car splited-props))
-	     (merged-props
-	      (toolbarx-merge-props intern-props props
-				    (append (nth 2 toolbarx-button-props)
-					    (nth 2 toolbarx-dropdown-props))
-				    (append (nth 3 toolbarx-button-props)
-					    (nth 3 toolbarx-dropdown-props)))))
-	;; check whether merged props have an `:insert'
-	(if (memq :insert merged-props)
-	    ;; if yes, prepend switches with a (:insert cond elements)
-	    (let* ((memq-ins (memq :insert merged-props))
-		   (ins-val (if (and (listp (cadr memq-ins))
-				     (eq :add-value-list
-					 (car (cadr memq-ins))))
-				;; if property is add-value property
-				(let* ((p (assq
-					   :insert
-					   (nth 0 toolbarx-button-props)))
-				       (add-list (list (cddr p)))
-				       (prop-good-val))
-				  (dolist (val (cdr (cadr memq-ins)))
-				    (setq prop-good-val (funcall (cadr p) val))
-				    (when (car prop-good-val)
-				      (setq add-list (cons (cdr prop-good-val)
-							   add-list))))
-				  ;; return: (nreverse add-list)
-				  (setq add-list (nreverse add-list))
-				  (if (eq 2 (length add-list))
-				      (cadr add-list) ; just 1 value, no
-				    add-list))	      ; add-function
-			      ;; if property is not add-value
-			      (cadr memq-ins)))
-		   (merged-props-without-insert
-		    (append (butlast merged-props (length memq-ins))
-			    (cddr memq-ins)))
-		   (group-switches
-		    (toolbarx-process-group-without-insert
-		     group-without-props merged-props-without-insert
-		     meaning-alist nil)))
-	      ;; return
-	      (nreverse (cons (append (list :insert ins-val)
-				      group-switches)
-			      (nreverse switches))))
-	  ;; if not, just append what is processed to switches
-	  (toolbarx-process-group-without-insert group-without-props
-						 merged-props meaning-alist
-						 switches))))))
+  (cond
+   ;; if DROPDOWN group
+   ((eq (car group) :dropdown-group)
+    (toolbarx-process-dropdown-group group meaning-alist props switches))
+   ;; if EVAL group
+   ((eq (car group) :eval-group)
+    (let ((current-switches switches))
+      (dolist (elt (cdr group) current-switches)
+	(let ((eval-elt (eval elt)))
+	  (setq current-switches
+		(toolbarx-process-group (if (listp eval-elt)
+					    eval-elt
+					  (list eval-elt))
+					meaning-alist props
+					current-switches))))))
+   ;; if normal group
+   (t 
+    (let* ((splited-props
+	    (toolbarx-separate-options
+	     group (append (nth 1 toolbarx-button-props)
+			   (nth 1 toolbarx-dropdown-props))))
+	   (intern-props (cdr splited-props))
+	   (group-without-props (car splited-props))
+	   (merged-props
+	    (toolbarx-merge-props intern-props props
+				  (append (nth 2 toolbarx-button-props)
+					  (nth 2 toolbarx-dropdown-props))
+				  (append (nth 3 toolbarx-button-props)
+					  (nth 3 toolbarx-dropdown-props)))))
+      ;; check whether merged props have an `:insert'
+      (if (memq :insert merged-props)
+	  ;; if yes, prepend switches with a (:insert cond elements)
+	  (let* ((memq-ins (memq :insert merged-props))
+		 (ins-val (if (and (listp (cadr memq-ins))
+				   (eq :add-value-list
+				       (car (cadr memq-ins))))
+			      ;; if property is add-value property
+			      (let* ((p (assq
+					 :insert
+					 (nth 0 toolbarx-button-props)))
+				     (add-list (list (cddr p)))
+				     (prop-good-val))
+				(dolist (val (cdr (cadr memq-ins)))
+				  (setq prop-good-val (funcall (cadr p) val))
+				  (when (car prop-good-val)
+				    (setq add-list (cons (cdr prop-good-val)
+							 add-list))))
+				;; return: (nreverse add-list)
+				(setq add-list (nreverse add-list))
+				(if (eq 2 (length add-list))
+				    (cadr add-list) ; just 1 value, no
+				  add-list))	    ; add-function
+			    ;; if property is not add-value
+			    (cadr memq-ins)))
+		 (merged-props-without-insert
+		  (append (butlast merged-props (length memq-ins))
+			  (cddr memq-ins)))
+		 (group-switches
+		  (toolbarx-process-group-without-insert
+		   group-without-props merged-props-without-insert
+		   meaning-alist nil)))
+	    ;; return
+	    (nreverse (cons (append (list :insert ins-val)
+				    group-switches)
+			    (nreverse switches))))
+	;; if not, just append what is processed to switches
+	(toolbarx-process-group-without-insert group-without-props
+					       merged-props meaning-alist
+					       switches))))))
 
 ;;;###autoload
 (defun toolbarx-process-symbol (symbol meaning-alist props switches)
@@ -788,12 +803,13 @@ the button.  Scope is given by GLOBAL-FLAG."
   ;; there are 3 situations: symbol is :new-line, there is an alias group
   ;; or a normal button
   (let ((button-assq (cdr (assq symbol meaning-alist))))
-    (if (eq (car button-assq) :alias)
-	;; button association is ALIAS GROUP is passed to
-	;; `toolbarx-process-group' as is but without the car.
-	;; return: (toolbarx-process-group... returns updates switch
-	(toolbarx-process-group (cdr button-assq) meaning-alist
-				props switches)
+    (cond 
+     ((eq (car button-assq) :alias)
+      ;; button association is ALIAS GROUP is passed to
+      ;; `toolbarx-process-group' as is but without the car.
+      ;; return: (toolbarx-process-group... returns updates switch
+      (toolbarx-process-group (cdr button-assq) meaning-alist props switches))
+     (t
       ;; NORMAL BUTTON (association is a list of properties)
       ;;
       ;; properties need to be processed, that is, merge internal
@@ -827,7 +843,7 @@ the button.  Scope is given by GLOBAL-FLAG."
 						 props-override
 						 props-add)))
 	;; return: 
-	(nreverse (cons (cons symbol merged-props) (nreverse switches)))))))
+	(nreverse (cons (cons symbol merged-props) (nreverse switches))))))))
 
 ;;;###autoload
 (defun toolbarx-process-dropdown-group (dropdown meaning-alist props switches)
@@ -1971,7 +1987,7 @@ this button is ignored."
 
 
 (defconst toolbarx-default-toolbar-meaning-alist
-  '((:sep :image "sep" :command t :enable nil :help "")
+  '((separator :image "sep" :command t :enable nil :help "")
     (open-file :image ["new" toolbar-file-icon]
 	       :command [find-file toolbar-open]
 	       :enable [(not (window-minibuffer-p
