@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.450 $"))
+	    (rev "$Revision: 5.451 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-09-16 17:56:40 $"))
+    (let ((date "$Date: 2004-09-22 16:19:34 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2130,16 +2130,23 @@ The algorithm is as follows:
   ;; call `TeX-update-style' on any file opened.  (The addition to the
   ;; hook has to be made here because its local value will be deleted
   ;; by `kill-all-local-variables' if it is added e.g. in `tex-mode'.)
-  (if (= emacs-major-version 20)
-      (make-local-hook 'find-file-hooks))
+  ;;
+  ;; `TeX-update-style' has to be called before
+  ;; `global-font-lock-mode', which may also be specified in
+  ;; `find-file-hooks', gets called.  Otherwise style-based
+  ;; fontification will break (in XEmacs).  That means, `add-hook'
+  ;; cannot be called with a non-nil value of the APPEND argument.
+  ;;
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
+  (if (= emacs-major-version 20)
+      (make-local-hook 'find-file-hooks))
   (add-hook 'find-file-hooks (lambda ()
 			       ;; Test if we are looking at a new file.
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))
-			       (TeX-update-style)) t t))
+			       (TeX-update-style)) nil t))
 
 ;; desktop-locals-to-save is broken by design.  Don't have
 ;; buffer-local values of it.
