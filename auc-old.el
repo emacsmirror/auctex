@@ -1,14 +1,14 @@
 ;;; auc-old.el - Compatibility with AUC TeX 6.*
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.08
+;; Version: 11.10
 ;;
-;; Copyright (C) 1991 Kresten Krab Thorup 
+;; Copyright (C) 1991, 2001 Kresten Krab Thorup 
 ;; Copyright (C) 1993 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 1, or (at your option)
+;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 ;; 
 ;; This program is distributed in the hope that it will be useful,
@@ -172,9 +172,8 @@ You should insert this in your TeX-mode-hook!"
     (save-excursion
       (goto-char (point-min))
       (if (not (re-search-forward "-\\*-.*-\\*-" 100 t))
-	  (insert-string (concat "% -*- "
-				 (substring (symbol-name major-mode) 0 -5)
-				 " -*-\n")))))
+	  (insert "% -*- " (substring (symbol-name major-mode) 0 -5)
+		  " -*-\n"))))
 
 (defun auc-tex-mode ()
   "Called when we have a mode line specification in first line."

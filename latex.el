@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.08
+;; Version: 11.10
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -1858,7 +1858,7 @@ indentation level in columns."
   :type 'regexp)
 
 (defcustom LaTeX-ignore-comment-regexp nil
-  "*Regexp matching comments that whose indentation should not be touched."
+  "*Regexp matching comments whose indentation should not be touched."
   :group 'LaTeX-indentation
   :type '(choice (const :tag "none" nil)
 		 (regexp :format "%v")))
