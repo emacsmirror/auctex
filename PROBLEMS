@@ -50,6 +50,19 @@ For various reasons, AUC TeX ignores the extension when it store
 information about a file, so you should use unique base names for your
 files.  E.g. rename `foo.bib' to `foob.bib'.
 
+* (La)TeX Interactive does not work.
+
+You need comint.el on Emacs 18.  Look at your favorite elisp archive.
+
+* TeX-save-document does not work.
+
+Make sure TeX-check-path contains "./" somewhere.
+
+* Ispell does not ignore TeX macros.
+
+GNU ispell 4.0 does not understand TeX.  Upgrade to International
+Ispell 3.0.09 which works much better on TeX documents.
+
 
 % Local Variables: 
 % mode: outline-minor

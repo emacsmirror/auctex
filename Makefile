@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.68 1993-09-14 21:42:51 amanda Exp $
+# $Id: Makefile,v 5.69 1993-09-17 21:06:01 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -90,11 +90,12 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = none
+REMOVE = map-euro.el  map-8859.el
 
-MINMAPFILES = remap.el    map-euro.el dvorak.el   map-tex.el \
-	      map-mnem.el map-8859.el map-case.el \
-	      min-mode.el min-ind.el  min-ispl.el column.el   
+MINMAPFILES = remap.el    min-mode.el min-ind.el  min-ispl.el column.el \
+	      latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
+	      dvorak.el   map-tex.el  map-mnem.el map-case.el 
+	      
 
 MINMAPSRC = $(MINMAPFILES)  easymenu.el min-map.el ltx-math.el \
 	    outln-18.el
@@ -284,6 +285,6 @@ dist:
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.tar.Z
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
-	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex-$(TAG).tar.Z
+	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
 	cp $(MINMAPSRC) $(FTPDIR) 

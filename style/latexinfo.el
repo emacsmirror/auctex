@@ -3,7 +3,7 @@
 ;; Copyright (C) 1993 Marc Gemis <makke@wins.uia.ac.be>
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
-;; Version: $Id: latexinfo.el,v 1.2 1993-09-09 23:49:39 amanda Exp $
+;; Version: $Id: latexinfo.el,v 1.3 1993-09-17 21:07:52 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -164,21 +164,21 @@ This fails when the user types in the label of something else"
 
     (make-local-variable 'TeX-font-list)
     (setq TeX-font-list
-	  (list (list ?\C-b (concat TeX-esc "b{" "}"))
-		(list ?\C-c (concat TeX-esc "sc{" "}"))
-		(list ?\C-e (concat TeX-esc "emph{" "}"))
-		(list ?\C-i (concat TeX-esc "i{" "}"))
-		(list ?\C-r (concat TeX-esc "r{" "}"))
-		(list ?\C-s (concat TeX-esc "samp{" "}"))
-		(list ?\C-t (concat TeX-esc "t{" "}"))
-		(list ?s    (concat TeX-esc "strong{" "}"))
-		(list ?\C-f (concat TeX-esc "file{" "}"))
-		(list ?\C-d (concat TeX-esc "dfn{" "}"))
-		(list ?\C-v (concat TeX-esc "var{" "}"))
-		(list ?k    (concat TeX-esc "key{" "}"))
-		(list ?\C-k (concat TeX-esc "kbd{" "}"))
-		(list ?c    (concat TeX-esc "code{" "}"))
-		(list ?C    (concat TeX-esc "cite{" "}"))))
+	  (list (list ?\C-b (concat TeX-esc "b{") "}")
+		(list ?\C-c (concat TeX-esc "sc{") "}")
+		(list ?\C-e (concat TeX-esc "emph{") "}")
+		(list ?\C-i (concat TeX-esc "i{") "}")
+		(list ?\C-r (concat TeX-esc "r{") "}")
+		(list ?\C-s (concat TeX-esc "samp{") "}")
+		(list ?\C-t (concat TeX-esc "t{") "}")
+		(list ?s    (concat TeX-esc "strong{") "}")
+		(list ?\C-f (concat TeX-esc "file{") "}")
+		(list ?\C-d (concat TeX-esc "dfn{") "}")
+		(list ?\C-v (concat TeX-esc "var{") "}")
+		(list ?k    (concat TeX-esc "key{") "}")
+		(list ?\C-k (concat TeX-esc "kbd{") "}")
+		(list ?c    (concat TeX-esc "code{") "}")
+		(list ?C    (concat TeX-esc "cite{") "}")))
 
     ;; need the following stuff to let xref and pxref work
     (make-local-variable 'LaTeX-section-label)

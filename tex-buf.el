@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.48 1993-09-14 21:43:25 amanda Exp $
+;; $Id: tex-buf.el,v 1.49 1993-09-17 21:06:46 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -29,23 +29,15 @@
   "*Use asynchronous processes.")
 
 (defvar TeX-shell
-  (cond ((eq system-type 'ms-dos)
-	  shell-file-name)
-	 ;; Please supply suitable values for other systems without
-	 ;; `/bin/sh'.
-	(nil		;What is system-type for OS/2?
-	 "cmd")
-	(t		;Unix
-	 "/bin/sh"))
+  (if (memq system-type '(ms-dos emx))
+      shell-file-name
+    "/bin/sh")
   "Name of shell used to parse TeX commands.")
 
 (defvar TeX-shell-command-option
-  (cond ((eq system-type 'ms-dos)
-	 shell-command-option)
-	 ;; Please supply suitable values for other systems without
-	 ;; `/bin/sh'.
-	(t
-	 "-c"))
+  (if (memq system-type '(ms-dos emx))
+      shell-command-option
+    "-c")
   "Shell argument indicating that next argument is the command.")
 
 (defvar TeX-debug-language '(("JTEX" "dbg-jp")
@@ -238,9 +230,9 @@ in TeX-check-path."
 			(mapconcat (function (lambda (dir)
 				      (regexp-quote (expand-file-name dir))))
 				   TeX-check-path "\\|")
-			"\\)\\("
+			"\\).*\\("
 			(mapconcat 'regexp-quote originals "\\|")
-			"\\).\\("
+			"\\)\\.\\("
 			(mapconcat 'regexp-quote extensions "\\|")
 			"\\)\\'"))
 	(buffers (buffer-list)))

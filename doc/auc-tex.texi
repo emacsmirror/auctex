@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.59 1993-09-14 21:43:45 amanda Exp $
+@c $Id: auc-tex.texi,v 1.60 1993-09-17 21:07:17 amanda Exp $
 
 @finalout
 @titlepage
@@ -529,7 +529,7 @@ A number of hooks are already defined.  Most likely, you will be able to
 get the desired functionality by choosing from these hooks.
 
 @ftable @code
-@item LaTeX-section-name
+@item LaTeX-section-heading
 Query the user about the name of the sectioning command.  Modifies
 @var{level} and @var{name}.
 @item LaTeX-section-title
@@ -550,7 +550,7 @@ To get a full featured @code{LaTeX-section} command, insert
 
 @lisp
 (setq LaTeX-section-hook
-      '(LaTeX-section-name
+      '(LaTeX-section-heading
         LaTeX-section-title
         LaTeX-section-toc
         LaTeX-section-section
@@ -597,15 +597,20 @@ environments available in a large number of styles.
 
 You insert an environment with @kbd{C-c C-e}, and select an environment
 type.  Depending on the environment, AUC @TeX{} may ask more questions
-about the optional parts of the selected environment type.
+about the optional parts of the selected environment type.  With
+@kbd{C-u C-c C-e} you will change the current environment.
 
-@deffn Command LaTeX-environment
+@deffn Command LaTeX-environment @var{arg}
 @kindex C-c C-e
 (@kbd{C-c C-e})  AUC @TeX{} will prompt you for an environment
 to insert.  At this prompt, you may press @key{TAB} or @key{SPC} to
 complete a partially written name, and/or to get a list of available
 environments.  After selection of a specific environment AUC @TeX{} may
 prompt you for further specifications.  
+
+If the optional argument @var{arg} is not-nil (i.e. you have given a
+prefix argument), the current environment is modified and no new
+environment is inserted.
 @end deffn
 
 As a default selection, AUC @TeX{} will suggest the environment last
@@ -2386,11 +2391,23 @@ Coordinater: Per Abrahamsen, 1993.
 Alpha testers (in order of appearance): Marc Gemis
 @samp{<makke@@wins.uia.ac.be>}, Shinji Kobayashi
 @samp{<koba@@flab.fujitsu.co.jp>}, Philippe Defert
-@samp{defert@@gnuisance.cern.ch}, and probably more.@refill
+@samp{<defert@@gnuisance.cern.ch>}, Richard Stanton
+@samp{<stanton@@haas.berkeley.edu>}, Norbert Kiesel
+@samp{<norbert@@i3.informatik.rwth-aachen.de>}, and probably
+more.@refill
 
 @itemize @bullet
 @item
-Added Nabla to LaTeX Math Mode.  Suggested by Bill Reynolds
+Added functions to hide (@code{LaTeX-hide-environment}) and show
+(@code{LaTeX-show-environment}) the current environment.
+
+@item
+@kbd{C-u C-c C-e} will now modify the current environment instead of
+inserting a new environment.  This is like the optional argument to the
+font commands.
+
+@item
+Added nabla to LaTeX Math Mode.  Suggested by Bill Reynolds
 @samp{<bill@@goshawk.lanl.gov>}. 
 
 @item
@@ -2414,7 +2431,10 @@ There are now a printer menu for emacs 19.
 Redesigned dependecy checking.  Now only checks dependencies for files
 loaded in the current emacs session.  This is much faster, but will not
 catch files that are edited outside this emacs session, or files edited
-in killed buffers.
+in killed buffers.  @strong{@code{TeX-check-path} must at least contain
+@file{.} for saving to work}.  If you have set @samp{TeX-check-path}
+in your @file{.emacs} file, remove it.  The default value is fast enough
+now.
 
 @item
 New variable @code{TeX-save-query} control if AUC @TeX{} will query you
@@ -3286,15 +3306,6 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
-Make sure buffers are saved when you run TeX from the menu.
-
-@item
-Printer menu.
-
-@item
-``Run default command with no questions asked'' shortcut.
-
-@item
 Allow @code{TeX-auto-private} and @code{TeX-style-private} to be lists
 to mimic @code{TeX-macro-private}.
 
@@ -3325,9 +3336,6 @@ stuff.  Suggested by John Interrante
 @samp{<interran@@uluru.Stanford.EDU>}. 
 
 @item
-Make AUC @TeX{} fast and stupid by default.
-
-@item
 Control @TeX{} compilation window.
 
 It is not good that half of the screen is wasted for the log when @TeX{}
@@ -3347,12 +3355,6 @@ an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
 An alternative is to have an @samp{Update} command that ensures the
 @samp{dvi} file is up to date.  This could be called before printing and
 previewing.
-
-@item
-The documentation of the minor modes should be separated.
-
-They are distributed independently of AUC @TeX{}, and should therefore
-also be documented independently of AUC @TeX{}.
 
 @item
 Documentation of variables that can be set in a style hook.
@@ -3397,11 +3399,6 @@ Optional special indentation after an @samp{\item}.
 
 @item
 Completion for counters and sboxes.
-
-@item
-Outline should be able to hide environments.
-
-Probably being one level below @code{LaTeX-lowest-level}.
 
 @item
 Outline should be (better) supported in @TeX{} mode.
