@@ -1,12 +1,12 @@
+@cindex @kbd{M-x preview-report-bug @key{RET}}
+@cindex @code{preview-report-bug}
+@cindex Report a bug
 Some of the known problems can be solved by moving to newer versions of
 the problematic software, by simple patches, or in one case, by changing
 OS(!). If you find something not mentioned here, please send a bug
 report using @kbd{M-x preview-report-bug @key{RET}}. This will fill in a
 lot of information interesting to us.
 
-@cindex @kbd{M-x preview-report-bug @key{RET}}
-@cindex @code{preview-report-bug}
-@cindex Report a bug
 Some bugs are being fixed as you read this, there is a mailing list for
 developers, look at
 @url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
@@ -95,7 +95,7 @@ work under it.
 Does not work yet.  Volunteers welcome.  Quite a bit of the necessary
 work has already been sorted out.
 
-@item GNU Emacs EPS handling
+@item GNU Emacs @acronym{EPS} handling
 
 Direct @acronym{EPS} rendering still is in need of improvement and very
 experimental, so the default setting of @code{preview-latex} replaces
@@ -126,7 +126,7 @@ To determine the position of a preview, preview-latex correlates error
 messages from @TeX{} with the input text. The delivered example file
 @file{circ.tex} contains @samp{ISO-8859-1} input characters (also called
 @samp{Latin-1}). If your language environment is not properly set up, or
-your TeX version is rather old, TeX will, for example, display
+your @TeX{} version is rather old, @TeX{} will, for example, display
 @samp{@"u} (German u-Umlaut) as @samp{^^fc}. In that case the
 correlation will fail, with the result that the preview images get
 misplaced. Personally, I have set the environment variable @env{LANG} to
