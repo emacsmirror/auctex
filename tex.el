@@ -476,6 +476,7 @@ Must be the car of an entry in TeX-command-list."
 (autoload 'TeX-next-error "tex-buf" no-doc t)
 (autoload 'TeX-toggle-debug-boxes "tex-buf" no-doc t)
 (autoload 'TeX-region-file "tex-buf" no-doc nil)
+(autoload 'TeX-current-offset "tex-buf" no-doc nil)
 
 (defvar TeX-trailer-start nil
   "Regular expression delimiting start of trailer in a TeX file.")
@@ -2267,7 +2268,7 @@ See match-data for details."
 
 (defun TeX-current-line ()
   "The current line number."
-  (format "%d" (count-lines (point-min) (point))))
+  (format "%d" (1+ (TeX-current-offset))))
 
 (defun TeX-current-file-name-nondirectory ()
   "Return current filename, without path."
