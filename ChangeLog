@@ -1,3 +1,10 @@
+2004-02-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-mode-menu): Insert customize option and
+	rearrange.
+
+	* tex.el (plain-TeX-mode-menu): Insert customize option.
+
 2004-02-26  David Kastrup  <dak@gnu.org>
 
 	* latex.el (doctex-mode): Make a minor mode.
