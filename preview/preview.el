@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.5 2001-09-22 20:03:01 dakas Exp $
+;; $Id: preview.el,v 1.6 2001-09-22 21:51:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -197,7 +197,8 @@ and tries to restart GhoscScript if necessary."
 
 (defun preview-gs-restart ()
   (when (or preview-gs-urgent preview-gs-queue)
-    (let ((process
+    (let* ((process-connection-type nil)
+	   (process
 	   (apply 'start-process "GS" (current-buffer)
 		  preview-gs-command
 		  preview-gs-command-line)))
@@ -237,6 +238,7 @@ and tries to restart GhoscScript if necessary."
 		   (format "prevnew.%03d" snippet) tempdir)
 		  (preview-extract-bb (overlay-get ov 'filename))
 		  thisimage))
+    (push ov preview-gs-queue)
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov) . nil))
     thisimage))
 		
@@ -288,7 +290,7 @@ and tries to restart GhoscScript if necessary."
 	  (let ((queue preview-gs-tq))
 	    (setq preview-gs-tq nil)
 	    (tq-close queue)		;both queues empty
-	  ))) ))
+	    nil))) ))
 
 
 (defcustom preview-scale-function (function preview-scale-from-face)
@@ -379,7 +381,7 @@ so that they match the current default face in height."
   :group 'preview
   :type 'face)
 
-(put 'preview-overlay 'face 'preview-face)
+(put 'preview-overlay 'face preview-face)
 
 (put 'preview-overlay 'invisible t)
 
