@@ -1,3 +1,21 @@
+2002-11-04  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Changes in order to preserve point in previews as follows:
+	* preview.el (preview-at-point): Pass selected window into
+	preview-toggle.
+	(preview-place-preview): Pass event into preview-toggle.
+	(preview-reinstate-preview): Same here.
+	* prv-emacs.el (preview-toggle): take additional argument (event
+	or window).
+	(preview-last-location): New variable, buffer-local.
+	(preview-mark-point): Remember point before moving out.
+	(preview-restore-position): New function.
+	* prv-xemacs.el (preview-toggle): take additional argument (event
+	or window).
+	(preview-last-location): New variable, buffer-local.
+	(preview-mark-point): Remember point before moving out.
+	(preview-restore-position): New function.
+
 2002-10-31  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.h: 
