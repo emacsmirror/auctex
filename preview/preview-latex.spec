@@ -118,7 +118,7 @@ for i in *emacs; do
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
   fi
-  %makeinstall 'infodir=%{_infodir}'
+  %makeinstall 'DESTDIR=%{buildroot}' infodir=%{_infodir}'
   popd
 done
 
