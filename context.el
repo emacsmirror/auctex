@@ -858,11 +858,9 @@ If OPTIONAL, only insert it if not empty, and then use square brackets."
   "Return a regexp matching macros that should have their own line."
   (concat
    (regexp-quote TeX-esc) "\\("
-   "\\[\\|\\]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
-   (ConTeXt-environment-start-name) "\\b\\|"
-   (ConTeXt-environment-stop-name) "\\b\\|start"
-   (mapconcat 'identity ConTeXt-section-block-list "\\b\\|start") "\\b\\|stop"
-   (mapconcat 'identity ConTeXt-section-block-list "\\b\\|stop") "\\b\\|"
+   "[][]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
+   (ConTeXt-environment-start-name) "\\|"
+   (ConTeXt-environment-stop-name) "\\|"
    (mapconcat 'car ConTeXt-section-list "\\b\\|") "\\b\\|"
    (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
    "\\b\\|"
