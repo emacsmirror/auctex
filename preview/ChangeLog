@@ -1,3 +1,20 @@
+2002-04-03  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-close): move.
+	(preview-gs-dvips-process-setup): New function for setting up
+	process just at the time of use.
+	(preview-dvips-abort): New function.
+	(preview-gs-dvips-sentinel): Overhaul.
+	(preview-gs-close): Overhaul in order to do the right thing
+	regardless of whether Dvips has finished or not.
+	(preview-eps-open): Some initial changes.  'postscript image
+	device likely to be broken by us (but it is broken in Emacs,
+	anyway).
+	(preview-parse-messages): Take `open-closure' as argument.
+	(preview-parse-messages): different hook semantics for fast
+	hooks.  We are still in negotiations over this...
+	(preview-parse-messages): change parsestate to list of vectors.
+
 2002-04-03  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/preview-latex.texi: documented showlabels
