@@ -372,9 +372,9 @@ use."
 	((eq type 'noarg)
 	 (if (listp face)
 	     `(,(intern (concat prefix name))
-	       (0 ',face))
+	       (1 ',face))
 	   `(,(intern (concat prefix name))
-	     . ,face)))
+	     (1 ,face))))
 	((eq type 'declaration)
 	 (if (listp face)
 	     `(,(intern (concat prefix name))
@@ -418,6 +418,12 @@ fontification regexp like so:
 		 ,(concat "Make or remake the variable `" prefix name "'.")
 		 (setq ,(intern (concat prefix name))
 		       (concat
+			;; To avoid the [^A-Za-z@*] part being
+			;; highlighted with 'noarg keywords, an
+			;; additional group is created and only
+			;; (match-string 1) is highlighted.  (See
+			;; `font-latex-keyword-matcher'.)
+			,(when (eq type 'noarg) "\\(")
 			"\\\\"
 			(let ((max-specpdl-size 1000)
 			      (fields
@@ -425,11 +431,17 @@ fontification regexp like so:
 				,(intern (concat prefix name "-keywords-local"))
 				,(intern (concat prefix name "-keywords")))))
 			  (regexp-opt fields t))
-			;; Warning keywords are currently the only ones
-			;; which should not use "\\>".  If there will be
-			;; more in the future, we should use a new element
-			;; in the variable `keywords-specs'.
-			(unless (string= ,name "warning") "\\>")))))
+			,(when (eq type 'noarg) "\\)")
+			;; Warning keywords can contain symbol
+			;; constituents which will not be matched if
+			;; "\\>" is used.  They are currently the only
+			;; ones which should not use "\\>".  If there
+			;; will be more in the future, we should use a
+			;; new element in the variable
+			;; `keywords-specs'.
+			(if (string= ,name "warning")
+			    "[^A-Za-z@*]"
+			  "\\>")))))
 
 	;; defcustom font-latex-match-*-keywords
 	(eval `(defcustom ,(intern (concat prefix name "-keywords")) nil
