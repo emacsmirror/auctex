@@ -8,7 +8,7 @@
 ;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
 ;; Version: 11.13
 
-;;; Commentary: 
+;;; Commentary:
 ;; This file was written by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; based on many patches developed by Japanese NetNews community.
 ;; Japanese message translation by MATUI Takao <mat@nuis.ac.jp>.
@@ -36,13 +36,13 @@
 	      'TeX-run-TeX nil t)
 	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
-	(list "Mendex" "mendex %s" 'TeX-run-command nil t)		    
+	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
 	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
   "Additional list of commands to execute in japanese-LaTeX-mode")
 
 (setq TeX-command-list
       (append japanese-TeX-command-list TeX-command-list))
-       
+
 ;; the following code is needed to change mode-menu in japanese-LaTeX-mode.
 (easy-menu-define TeX-mode-menu
     TeX-mode-map
@@ -82,23 +82,17 @@
 (if (featurep 'mule)
     (if (featurep 'xemacs)
 	(progn
-	  (defvar TeX-japanese-process-input-coding-system 
+	  (defvar TeX-japanese-process-input-coding-system
 	    (find-coding-system 'euc-japan)
 	    "TeX-process' coding system with standard input.")
-	  (defvar TeX-japanese-process-output-coding-system 
+	  (defvar TeX-japanese-process-output-coding-system
 	    (find-coding-system 'junet)
 	    "TeX-process' coding system with standard output."))
-      (if (>= emacs-major-version 20)
-	  (progn
-	    (defvar TeX-japanese-process-input-coding-system 'euc-japan
-	      "TeX-process' coding system with standard input.")
-	    (defvar TeX-japanese-process-output-coding-system 'junet
-	      "TeX-process' coding system with standard output."))
-	(progn
-	  (defvar TeX-japanese-process-input-coding-system *euc-japan*
-	    "TeX-process' coding system with standard input.")
-	  (defvar TeX-japanese-process-output-coding-system *junet*
-	    "TeX-process' coding system with standard output.")))))
+      ;; FSF Emacs 20 or later.
+      (defvar TeX-japanese-process-input-coding-system 'euc-japan
+	"TeX-process' coding system with standard input.")
+      (defvar TeX-japanese-process-output-coding-system 'junet
+	"TeX-process' coding system with standard output.")))
 
 (defvar japanese-TeX-command-default "jTeX"
   "The default command for TeX-command in the japanese-TeX mode.")
@@ -149,7 +143,7 @@
 (if (featurep 'mule)
 (progn
 
-(defconst LaTeX-auto-regexp-list 
+(defconst LaTeX-auto-regexp-list
   (append
    '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
       (2 4 5) LaTeX-auto-optional)
@@ -202,7 +196,7 @@
 
 ))
 
-(defconst TeX-auto-full-regexp-list 
+(defconst TeX-auto-full-regexp-list
   (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list)
   "Full list of regular expression matching TeX macro definitions.")
 
@@ -249,8 +243,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 
 ;;; MULE paragraph filling.
 
-(if (string-lessp "20" emacs-version)
-;; This function is copied from 
+;; This function is copied from
 ;; fill-region-as-paragraph in fill.el --- fill commands for Emacs
 ;; Copyright (C) 1985, 86, 92, 94, 95, 96, 1997 Free Software Foundation, Inc.
 (defun LaTeX-fill-region-as-para-do (from to justify)
@@ -274,7 +267,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 
     (beginning-of-line)
     (setq from (point))
-  
+
     ;; Delete all but one soft newline at end of region.
     ;; And leave TO before that one.
     (goto-char to)
@@ -538,7 +531,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 	;; Leave point after final newline.
 	(goto-char (point-max)))
       (unless (eobp)
-	(forward-char 1))))))
+	(forward-char 1)))))
 
 ;;; Support for various self-insert-command
 
@@ -561,7 +554,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 ;;; Error Messages
 
 (if japanese-TeX-error-messages
-    (setq TeX-error-description-list
+(setq TeX-error-description-list
   '(("Bad \\\\line or \\\\vector argument.*" .
 "線の傾きを指定する，\\lineまたは\\vectorの最初の引数が不正です．")
 
@@ -780,7 +773,7 @@ thebibliography環境で引数を忘れた場合にも生じます．")
 small capsフォントが呼びだされることになります．この問題は\\load命令を
 使えば解決できます．")
 
-    ("Font .* not found." .                                    
+    ("Font .* not found." .
 "未知のfamily/series/shape/sizeの組み合わせのフォントが指定されました．
 このエラーが起きるケースは2つ考えられます．
    1) \\sizeマクロで使えないサイズを選択しようとした．
@@ -819,11 +812,11 @@ TeXが持っている領域以上にハイフネーション情報を与えようとしています．
 あまり使わない単語の\\hyphenation命令を取り除いて，代わりに\\-命令を使っ
 てください．
 
-hash size 
+hash size
 =========
 命令名の定義または相互参照ラベルの定義が多すぎます．
 
-input stack size 
+input stack size
 ================
 このエラーはおそらく命令定義中の誤りによるものです．例えば，次の命令は
 再帰的定義となっており，自分自身を使って\\gnuを定義しています．
@@ -834,7 +827,7 @@ input stack size
 てその末尾をいつまでも追いつづけ，やがて``input stack''を使いきってし
 まいます．
 
-main memory size 
+main memory size
 ================
 これは，TeXが短いファイルを処理している時に使いきる可能性のあるメモリ
 のひとつです．main memoryを使いきるのは次の3つの場合のいずれかです．
@@ -859,7 +852,7 @@ TeXのメモリがいっぱいになっているのかもしれません．本当にTeXの容量を超
 $B終版を作る時までこの問題は棚上げしておきましょう．入力ファイルが変わる
 と問題が解消される場合もあるのです．
 
-pool size 
+pool size
 =========
 相互参照の\\labelが多すぎるか，命令の定義が多すぎるかのどちらかです．
 正確にいえば，定義したラベル名および命令名に使った文字数が多すぎるとい
@@ -867,7 +860,7 @@ pool size
 し，このエラーは，\\setcounterなどのカウンタ命令や\\newenvironment・
 \\newtheorem命令の引数の終わりを示す右括弧を忘れた場合にも生じます．
 
-save size 
+save size
 =========
 このエラーは，宣言の有効範囲や命令・環境があまりにも深く入れ子になって
 いる場合に生じます．たとえば，\\multiput命令の引数にpicture環境があり，
@@ -880,7 +873,7 @@ save size
 エディタによります．入力ファイルを調べてみて，指摘された文字が見つから
 ない場合にはローカルガイドを見てください．")
 
-    ("Undefined control sequence."   .  
+    ("Undefined control sequence."   .
 "TeXが未定義の命令名を発見しました．おそらく入力の誤りでしょう．もしこ
 のエラーがLaTeX命令の処理中に生じた場合は，その命令は間違った位置に置か
 れています．例えば，リスト環境の中でないのに\\item命令が使われた場合など
@@ -914,10 +907,10 @@ save size
 "ページを分割するための適切な場所が見つけられず，十分なテキストのない
 ページができてしまいました．")
 
-;; New list items should be placed here 
-;; 
-;; ("err-regexp" . "context") 
-;; 
+;; New list items should be placed here
+;;
+;; ("err-regexp" . "context")
+;;
 ;; the err-regexp item should match anything
 
     (".*" . "ごめんなさい．該当するヘルプメッセージがありません．"))))
