@@ -1,3 +1,91 @@
+@section News in 10.0
+
+@itemize @bullet
+
+@item
+Disabled @code{LaTeX-hide-environment}.
+Suggested by Christopher Allen <cpcallen@@ruah.dyndns.org>.
+
+@item
+Changed default to lazy evaluation of @code{TeX-view-style} and
+@code{LaTeX-command-style}.
+Suggested by Peter Neergaard <turtle@@cs.bu.edu>.
+
+@item
+Backindent when brace is at the start of a line.
+Patch by Masashi Shimbo <shimbo@@cis.ibaraki.ac.jp>.
+
+@item
+Added Emacs 21 font lock support.
+
+@item
+@kbd{,} and @kbd{.} no longer removes italic correction.
+
+@item
+@code{graphicx} and @code{graphics} style support.
+Donated by Ryuichi Arafune <arafune@@ushioda.riec.tohoku.ac.jp>.
+
+@item
+@code{LaTeX-math-abbrev-prefix} now accepts vector value.
+Reported by Jan Vroonhof <vroonhof@@math.ethz.ch>.
+
+@item
+Improved Texinfo support(more environments and html).
+Patch by Akim Demaille <akim@@epita.fr>.
+
+@item
+@code{danish} quotes support.
+Suggested by arne@@daimi.au.dk (Arne Joergensen).
+
+@item
+Some PDF support.
+
+@item
+New @file{tex-mik.el} file for Mik@TeX{} support.
+
+@item
+Some commands now have their own history.
+Suggested by Werner LEMBERG <sx0005@@sx2.HRZ.Uni-Dortmund.DE>.
+
+@item
+Use @code{\centering} instead of center environment in figures.
+Patch by Stefan Monnier <foo@@acm.com>.
+
+@item 
+New @code{dwim} setting for @code{TeX-master} attempts to guess
+a default master for new files.
+Patch by Stefan Monnier <foo@@acm.com>.
+
+@item 
+@code{ngerman} style support.
+Just a copy of the german style support.
+
+@item
+Removed support for Emacs 18 and 19.
+
+@item @code{mdwlist} support.
+Patch by Stephen Heilbronner <heilbron@@nm.informatik.uni-muenchen.de>.
+
+@item
+Fixed various bugs with the babel package.
+
+@item @code{amsart} and @code{amsbook} now loads @code{amsthm} by default.
+Patch by Rune Kleveland <runekl@@math.uio.no>.
+
+@item Fixed bug with file searching.
+Reported by Berwin Turlach <bturlach@@maths.adelaide.edu.au>.
+
+@item Finalized index support, added index-related style files.
+Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
+
+@item New style files for @file{varioref.sty} and @file{fancyref.sty}.
+Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
+
+@item @code{texmathp} recognizes additional macros like @code{\fbox}.
+Patch by Ulrik Vieth <vieth@@thphy.uni-duesseldorf.de>.
+
+@end itemize
+
 @section News in 9.9
 
 @itemize @bullet

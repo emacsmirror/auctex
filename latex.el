@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 10.0g
+;; Version: 11.01
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -2800,7 +2800,7 @@ larger than `LaTeX-menu-max-items'.
 This string should contain one %s for the name of the first entry and
 one %s for the name of the last entry in the submenu.
 If the value is a function, it should return the submenu name.  The
-function is be called with two arguments, the names of the first and
+function is called with two arguments, the names of the first and
 the last entry in the menu."
   :group 'LaTeX-environment
   :type '(choice (string :tag "Format string")
