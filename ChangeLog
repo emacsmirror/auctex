@@ -1,3 +1,11 @@
+2004-03-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/booktabs.el: New file.
+
+	* Makefile.in (STYLESRC): Add `booktabs.el'.
+
+	* doc/changes.texi: Advertise support for `booktabs.sty'.
+
 2004-03-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auc-tex.texi: Small corrections in `Viewing' section.
