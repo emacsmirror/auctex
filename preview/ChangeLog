@@ -1,5 +1,7 @@
 2001-10-30  David Kastrup  <David.Kastrup@t-online.de>
 
+	* TODO: add a few items.
+
 	* prv-emacs.el (preview-transparent-color): Make transparency
 	customizable.  Note that due to a bug everything except "None" is
 	treated the same as "Autodetect" in 21.1.  Fixed in CVS.
