@@ -1,3 +1,8 @@
+2001-10-15  Peter S Galbraith  <psg@debian.org>
+
+	* font-latex.el: Remove self-installation to LaTeX-mode-hook now
+	that TeX-install-font-lock does it.
+
 2001-10-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.06 released.
