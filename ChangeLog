@@ -1,5 +1,7 @@
 2005-03-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-current-environment): Doc fix.
+
 	* font-latex.el (font-latex-make-built-in-keywords): Make doc
 	string of `font-latex-match-*-keywords' more clear.
 
