@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001, 02, 03, 04  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04, 05  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.234 2005-02-25 16:39:42 dakas Exp $
+;; $Id: preview.el,v 1.235 2005-02-25 23:38:58 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -130,10 +130,9 @@ spec to avoid unnecessary evaluation time."
 (defvar preview-nonready-icon)
 
 (defcustom preview-error-icon-specs
-  '((:type xpm :min 24 :file "prverr24.xpm" :ascent 90)
-    (:type xpm :min 20 :file "prverr20.xpm" :ascent 90)
-    (:type xpm :min 16 :file "prverr16.xpm" :ascent 90)
-    (:type xpm         :file "prverr12.xpm" :ascent 90)
+  '((:type xpm :min 22 :file "prverr24.xpm" :ascent 90)
+    (:type xpm :min 18 :file "prverr20.xpm" :ascent 90)
+    (:type xpm         :file "prverr16.xpm" :ascent 90)
     (:type xbm         :file "prverr24.xbm" :ascent 90))
   "The icon used for PostScript errors.
 The spec must begin with `:type'.  File names are relative to
@@ -3263,7 +3262,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.234 $"))
+	(rev "$Revision: 1.235 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3274,7 +3273,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-25 16:39:42 $"))
+    (let ((date "$Date: 2005-02-25 23:38:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,10 @@
+2005-02-26  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-error-icon-specs): Choose somewhat oversized
+	errors. Adapt to set.
+
+	* Makefile.in (ICON_SOURCES): Adapt to existing set.
+
 2005-02-25  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-gs-options): Remove "-dDELAYSAFER" from
