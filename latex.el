@@ -469,6 +469,7 @@ It may be customized with the following variables:
 `LaTeX-table-label'               Your prefix to labels in tables.
 `LaTeX-figure-label'              Your prefix to labels in figures.
 `LaTeX-default-format'            Format for array and tabular.
+`LaTeX-default-width'             Width for minipage and tabular*.
 `LaTeX-default-position'          Position for array and tabular."
 
   (interactive "*P")
@@ -770,6 +771,12 @@ the label inserted, or nil if no label was inserted."
   :type 'string)
 (make-variable-buffer-local 'LaTeX-default-format)
 
+(defcustom LaTeX-default-width "1.0\\linewidth"
+  "Specifies the default width string minipage and tabular* environments."
+  :group 'LaTeX-environment
+  :type 'string)
+(make-variable-buffer-local 'LaTeX-default-format)
+
 (defcustom LaTeX-default-position ""
   "Specifies the default position string for array and tabular environments.
 If nil, act like the empty string is given, but don't prompt."
@@ -948,8 +955,8 @@ Just like array and tabular."
   "Insert ENVIRONMENT and prompt for label."
   (LaTeX-insert-environment environment)
   (when (LaTeX-label environment)
-       (LaTeX-newline)
-       (indent-according-to-mode))
+    (LaTeX-newline)
+    (indent-according-to-mode))
   (TeX-math-input-method-off))
 
 (defun LaTeX-env-list (environment)
@@ -965,13 +972,13 @@ Just like array and tabular."
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
   (let ((pos (read-string "Position: " LaTeX-default-position))
-	(width (read-string "Width: ")))
+	(width (read-string "Width: "  LaTeX-default-width)))
     (setq LaTeX-default-position pos)
-    (if (zerop (length width))
-	(setq width "4cm"))
+    (when (zerop (length width))
+      (setq width LaTeX-default-width))
     (LaTeX-insert-environment environment
-			      (concat (if (not (zerop (length pos)))
-					  (format "[%s]" pos))
+			      (concat (when (not (zerop (length pos)))
+					(format "[%s]" pos))
 				      (format "{%s}" width)))
     (end-of-line 0)
     (next-line 1)
@@ -979,18 +986,20 @@ Just like array and tabular."
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
-  (let ((width (and LaTeX-default-position(read-string "Width: ")))
+  (let ((width (read-string "Width: " LaTeX-default-width))
 	(pos (and LaTeX-default-position
 		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
+    (setq LaTeX-default-width (if (zerop (length width))
+				  LaTeX-default-width
+				width))
     (setq LaTeX-default-position (or pos ""))
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
 			      (concat
-			       (if (not (zerop (length width)))
-				   (format "{%s}" width))
-			       (if (not (zerop (length pos)))
-				   (format "[%s]" pos))
+			       (format "{%s}" width) ;; not optional!
+			       (when (not (zerop (length pos)))
+				 (format "[%s]" pos))
 			       (format "{%s}" fmt)))
     (end-of-line 0)
     (next-line 1)

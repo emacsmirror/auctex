@@ -1,5 +1,10 @@
 2004-10-13  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* latex.el (LaTeX-default-width): New variable.
+	(LaTeX-env-minipage, LaTeX-env-tabular*): Use it.
+	(LaTeX-environment): Mention it in the doc string.
+	(LaTeX-env-label): Reindent.
+
 	* tex.el (TeX-delete-dups): Use our own (faster) version.
 
 2004-10-12  Reiner Steib  <Reiner.Steib@gmx.de>
