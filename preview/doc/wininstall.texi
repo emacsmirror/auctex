@@ -63,13 +63,9 @@ repository but might still be in prerelease state.
 You need a copy of @uref{http://www.cs.wisc.edu/~ghost,GhostScript}.
 
 @item
-@uref{http://www.perl.org,Perl} is needed for building the
-documentation.  When we release tarballs for @previewlatex{}, we also
-pregenerate the documentation.  If you install the @samp{prebuilt-docs}
-tarball over the normal source after configuration is complete, the
-dependencies for the documentation will be satisfied without needing to
-run Perl.  If you are building @previewlatex{} from @acronym{CVS},
-however, you'll need Perl.
+@uref{http://www.perl.org,Perl} is needed for rebuilding the
+documentation if you are working with a copy from @acronym{CVS} or have
+touched documentation source files.
 
 @item
 Now the fun stuff starts.  Unpack the @previewlatex{} distribution into

@@ -246,7 +246,7 @@ AC_MSG_CHECKING([for TDS-compliant directory])
 pathoutput="`kpsepath -n latex tex`"
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
-  [['${datadir}/texmf' "${texprefix}/texmf-local" "${texprefix}/texmf"]],
+  [['${datadir}/texmf' "${texprefix}/share/texmf-local" "${texprefix}/share/texmf" "${texprefix}/texmf-local" "${texprefix}/texmf"]],
   [[(list nil)]],
   [[(mapcar (lambda(x)
               (and (string-match \"\\\\\`!*\\\\(.*\\\\)/tex/latex//+\\\\'\" x)
@@ -267,7 +267,7 @@ AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX directory hierarchy])
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
-  [['${datadir}/texmf' "${texprefix}"]],
+  [['${datadir}/texmf' "${texprefix}/share/texmf-local" "${texprefix}/share/texmf" "${texprefix}/texmf-local" "${texprefix}/texmf" '${datadir}' "${texprefix}/share" "${texprefix}"]],
   [[(list nil)]],
   [[(mapcar (lambda(x)
               (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)//+\\\\'\" x)
@@ -289,7 +289,7 @@ AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX input directory])
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
-  [['${datadir}/texmf' "${texprefix}"]],
+  [['${datadir}' "${texprefix}/share" "${texprefix}"]],
   [[(list nil)]],
   [[(mapcar (lambda(x)
               (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/?\\\\'\" x)

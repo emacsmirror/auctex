@@ -128,6 +128,36 @@ AC_PATH_PROG(MAKEINFO, makeinfo, :)
 MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
+AC_MSG_CHECKING([[for glaring installation conflicts]])
+EMACS_LISP(shadows,[[
+  (concat
+    (and (setq tmp (locate-library \"preview.elc\"))
+         (not (string= (file-truename tmp)
+	               (file-truename (expand-file-name \"preview.elc\"
+                                      packagelispdir))))
+         (format \"Conflicting previous installation in \`%s' found!\n\"
+                 (file-name-directory tmp)))
+    (and (setq tmp (locate-library \"preview-latex.el\"))
+         (not (string= (file-truename tmp)
+                       (file-truename (expand-file-name \"preview-latex.el\"
+                                      lispdir))))
+         (format \"Conflicting previous startup file \`%s' found!\n\" tmp)))]],,
+  [[packagelispdir lispdir]],[["${packagelispdir}" "${lispdir}"]])
+if test "NONE${shadows}" != NONE
+then
+  conflictsmsg="Conflicts with previous installations have been detected.
+Please fix them before continuing.
+"
+  AC_MSG_RESULT([[ouch!
+]])
+AC_MSG_WARN([[${shadows}
+]])
+else
+  conflictsmsg=
+  AC_MSG_RESULT([[probably none]])
+fi
+
+
 AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(previewtexmfdir)
@@ -153,5 +183,6 @@ cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.
 
+${conflictsmsg}
 Type "make" at the prompt to build preview.
 EOF

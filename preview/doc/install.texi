@@ -53,13 +53,12 @@ the file @file{INSTALL.windows}.
 @AUCTeX{} can be found at @uref{http://www.gnu.org/software/auctex}.
 This site now provides up-to-date tarballs as well as RPMs.  At the time
 of this writing, the latest version is 11.55.  You need at least 11.51
-to support PDF@LaTeX{}; versions older than 11.14 are not supported any
-more.
+to support PDF@LaTeX{} operation.
 
 @item A working @LaTeX{} installation
 
 Preview should work with nearly any @LaTeX{} installation which contains
-dvips, though most testing has taken place using te@TeX{}-based
+Dvips, though most testing has taken place using te@TeX{}-based
 distributions.
 
 @item A recent GhostScript
@@ -77,10 +76,9 @@ the @file{PROBLEMS} file.
 
 @item The @code{texinfo} package
 
-This is needed for building the documentation.  At least @w{version 4.0}
-is required.  If you don't have this, you may download a separate tar
-file with the prebuilt documentation from Sourceforge and install it
-over the main unpacked tar archive.
+This is needed for rebuilding the documentation in the @acronym{CVS}
+version or if you touched any source file.  At least @w{version 4.0} is
+required.
 @end itemize
 
 For some known issues with various software, see 

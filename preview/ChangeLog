@@ -1,3 +1,25 @@
+2005-04-02  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Mention that Perl is not needed if working
+	with the default tarball.
+
+	* doc/preview-latex.texi: Bump versions numbers, fix copyrights.
+
+	* doc/readme.texi (Activating preview-latex): Don't talk about
+	half a dozen non-sensical things.
+	(Availability): Change information to match move into AUCTeX.
+
+	* configure.in: Add check for load-path shadowing.
+
+	* aclocal.m4 (TEX_PATH_TEXMFDIR): We want "${texprefix}/share" in
+	most cases.
+
+2005-04-01  David Kastrup  <dak@gnu.org>
+
+	* doc/faq.texi: Some changes.  This thing really is an outdated
+	unmaintained abomination.  We need to do something about it at one
+	time.
+
 2005-04-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (EMACS_EXAMINE_INSTALLATION_DIR): Repair quoting.

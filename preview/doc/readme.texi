@@ -59,32 +59,18 @@ the background and providing fast interactive response.
 After installation, the package may need to be activated (and remember
 to activate @AUCTeX{} too).  In XEmacs, and in any prepackaged versions
 worth their salt, activation should be automatic upon installation.  If
-this seems not the case, complain to your installation provider and read
-on.  You might salvage this by adding the following activation line to
-your own @file{.emacs} file or to a site-wide initialization file:
+this seems not the case, complain to your installation provider.
+
+The usual activation (if it is not done automatically) would be
 
 @example
-(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+(load "preview-latex.el" nil t t)
 @end example
 
-@noindent
-There might still be missing an @code{autoload} form in which case you
-would have to add
-
-@example
-(autoload 'LaTeX-preview-setup "preview")
-@end example
-
-@noindent
-And in case the directory to which the Elisp files have
-been installed is not known to Emacs, a line like
-
-@example
-(add-to-list 'load-path "@var{/whatever/directory}")
-@end example
-
-@noindent
-needs to be added as well.  
+If you still don't get a ``Preview'' menu in @LaTeX{} mode in spite
+of @AUCTeX{} showing its ``Command'', your installation is broken.  One
+possible cause are duplicate Lisp files that might be detectable with
+@kbd{@key{M-x} list-load-path-shadows @key{RET}}.
 
 @node Getting started, Basic modes of operation, Activating preview-latex, Introduction
 @section Getting started
@@ -205,12 +191,15 @@ will display it.
 @cindex Download
 @cindex @sc{cvs} access
 
-The @previewlatex{} project is available at SourceForge.  In addition to
-the main source tarball, we provide prebuilt documentation files there
-for those lacking a recent enough version of makeinfo, and source and
-binary @file{.rpm} files suitable for a recent RedHat system. Anonymous
-@acronym{CVS} is available as well. The SourceForge project page of
-@previewlatex{} is @uref{http://sourceforge.net/projects/preview-latex}.
+The @previewlatex{} project is now part of @AUCTeX{} and accessible as
+part of the @uref{http://savannah.gnu.org/projects/auctex,@AUCTeX{}
+project page}.  You can get its files from
+@uref{ftp://ftp.gnu.org/pub/gnu/auctex,@AUCTeX{} download area}.  As of
+@w{@AUCTeX{} 11.80}, @previewlatex{} should already be integrated into
+@AUCTeX{}, so no separate download will be necessary.
+
+You will also find @file{.rpm} files there for Fedora and possibly
+SuSE. Anonymous @acronym{CVS} is available as well.
 
 @node  Contacts,  , Availability, Introduction
 @section Contacts
@@ -231,7 +220,7 @@ developers, there is the @email{auctex-devel@@gnu.org} list; it would
 probably make sense to direct feature requests and questions about
 internal details there.  There is a low-volume read-only announcement
 list available to which you can subscribe by sending a mail with
-``subscribe'' in the subject to @email{info-auctex@@gnu.org}.
+``subscribe'' in the subject to @email{info-auctex-request@@gnu.org}.
 
 Offers to support further development will be appreciated.  If you want
 to show your appreciation with a donation to the main developer, you can

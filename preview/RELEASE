@@ -75,5 +75,6 @@ contains build instructions.
 <URL:http://people.redhat.com/petersen/emacs/>.
 
 [5]  If making use of the precompiled variants is not an option for
-you, instructions for checking out can be found at
+you, instructions for checking out the CVS version straight from the
+GNU's mouth can be found at
 <URL:http://savannah.gnu.org/cvs/?group=emacs>
