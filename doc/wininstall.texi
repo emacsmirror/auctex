@@ -59,7 +59,9 @@ setting).
 
 @item --with-xemacs
 If you are using XEmacs, of course use @samp{--with-xemacs} in the same
-manner.
+manner.  It may also be necessary to specify this option if a copy of
+Emacs is in your path, but you wouldlike to install @AUCTeX{} for
+XEmacs, too.
 
 @item --with-lispdir=@var{/dir}
 This may be needed for GNU Emacs installation, but hopefully
@@ -74,20 +76,24 @@ should be installed. Again, hopefully this is not necessary to specify.
 which makes sure that (1) the AUCTeX manual will be installed in the
 @file{info/} directory of your Emacs installation and (2) the
 automatically generated global style hooks will be installed in the
-@file{var/} directory of your Emacs installation.
+@file{var/} directory of your Emacs installation.  If you are collecting
+stuff like that in a central directory hierarchy (not untypical with
+Cygwin), you might want to specify that here instead.
 
 @item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
 This option allows to specify the directories to be used for file
 searches, e.g. for completion of LaTeX or BibTeX style file names.  They
 will be used in the variable @code{TeX-macro-global}.
 
-@file{configure} will try to determine the right value for this option
+@file{configure} will usually figure out the right value for this option
 but will only succeed if it finds the necessary programs of the @TeX{}
-system in the system path.
+system in the system path.  Which should be there for running @AUCTeX{},
+anyway.
 
 @item --with-auto-dir=@var{/dir}
 Directory containing automatically generated information.  You should
-not normally need to set this.
+not normally need to set this, as @samp{--prefix} should take care of
+this.
 @end table
 
 Some additional information about the above options may be found in
