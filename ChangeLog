@@ -1,6 +1,8 @@
 2004-12-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (distclean): Remove generated `configure' file.
+	And revert again as it does not comply with the definition of
+	standard targets in the GNU make manual.
 
 	* style/jurabib.el ("jurabib"): Add further macros.
 
