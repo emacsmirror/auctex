@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.298 $"))
+	(rev "$Revision: 5.299 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-02 14:54:12 $"))
+    (let ((date "$Date: 2003-06-02 15:13:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2825,6 +2825,13 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
   (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"
 	  (regexp-quote TeX-dollar-string)))
 
+(defcustom TeX-math-toggle-off-input-method t
+  "*If non-nil, toggle off input method when entering math mode.
+Supported input methods are Canna, Wnn, SKK, and T-Code.
+Latin input methods for example latin-1-postfix are not turned off."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
@@ -2865,7 +2872,10 @@ With optional ARG, insert that many dollar signs."
 	     (car texmathp-why))))
    (t
     ;; Just somewhere in the text.
-    (insert "$"))))
+    (insert "$")))
+  (and TeX-math-toggle-off-input-method
+       (texmathp)
+       (TeX-toggle-off-input-method)))
 
 (defun TeX-point-is-escaped ()
   ;; Count backslashes before point and return t if number is odd.
@@ -2876,6 +2886,37 @@ With optional ARG, insert that many dollar signs."
           (forward-char -1)
           (setq odd (not odd)))))
     odd))
+
+(defun TeX-toggle-off-input-method ()
+  "Toggle off input method.
+Support LEIM function (toggle-input-method) and some Japanese
+Input Methods; Canna, Wnn, SKK.
+
+Code is copied from YaTeX package."
+  (interactive)
+  (cond
+   ;; Japanese Canna Support
+   ((and (boundp 'canna:*japanese-mode*) canna:*japanese-mode*)
+    (canna-toggle-japanese-mode))
+   ;; Japanese Wnn Support
+   ((and (boundp 'egg:*mode-on*) egg:*mode-on* egg:*input-mode*)
+    (egg:toggle-egg-mode-on-off))
+   ;; Japanese SKK Support
+   ((and (fboundp 'skk-mode) (boundp 'skk-mode) skk-mode)
+    (cond
+     ((fboundp 'skk-latin-mode)	(skk-latin-mode t))
+     ((fboundp 'skk-mode-off)	(skk-mode-off))
+     (t (j-mode-off))))
+   ;; LEIM Package Support
+   ((and (fboundp 'toggle-input-method)
+	 (member current-input-method 
+		 '("japanese-T-Code" "japanese-TUT-Code" "japanese"
+		   "japanese-ascii" "japanese-hankaku-kana" "japanese-hiragana"
+		   "japanese-katakana" "japanese-zenkaku")))
+    (toggle-input-method))
+   ((and (fboundp 'fep-force-off) (fep-force-off)))
+   (t );; do nothing
+   ))
 
 ;;; Simple Commands
 
