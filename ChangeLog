@@ -1,3 +1,15 @@
+Mon Jul 14 18:48:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8e released.
+
+Mon Jul 14 18:48:16 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (STYLESRC): Added `style/natbib.el'.
+
+Sun Jul 13 12:23:54 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+
+	* Added style support for natbib.sty
+
 Fri Jul 11 19:06:53 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8d released.

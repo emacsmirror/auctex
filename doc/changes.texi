@@ -1,6 +1,9 @@
 @section News in 9.8
 
 @itemize @bullet
+@item Added @code{natbib.el} to support natbib.sty by Patrick W. Daly.
+Submitted by Berwin A. Turlach @samp{<berwin.turlach@@anu.edu.au>}.
+
 @item
 More La@TeX{}2e support by Jan Vroonhof
 @samp{<vroonhof@@frege.math.ethz.ch>}.@refill
