@@ -1,3 +1,8 @@
+2001-11-30  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.texi, install.texi:
+	Autoload the package rather than require it.
+
 2001-11-30  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-emacs.el (preview-register-change): widen before getting
