@@ -1,9 +1,12 @@
 2004-08-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* aclocal.m4: Fix xemacs<->emacs mistake, restore path searching
+	when --without-packagedir is given
+
 	* configure.in: enable --without-packagedir
 
-	* aclocal.m4:
-	Barf if packagedir not found, don't bother with load-path on xemacs' lispdir
+	* aclocal.m4: Barf if packagedir not found, don't bother with
+	load-path on xemacs' lispdir
 
 2004-08-25  David Kastrup  <dak@gnu.org>
 
