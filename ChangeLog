@@ -1,5 +1,14 @@
 2004-08-23  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-section): Use an active region as title if available.
+	(LaTeX-section-title): Prompt with title if present.  Should we
+	ask at all?
+	(LaTeX-math-list): Add Unicode code point.
+	(LaTeX-math-menu-unicode): New customization variable for unicode
+	in math menu.  Only set in GTK Emacs for now.  Does not work on
+	XEmacs.  Use it for initializing the menus.  Also prefix menu
+	points with backslash.
+
 	* Makefile.in (.PHONY): Declare a bunch of phony targets to
 	protect against users making files/directories with that name (in
 	particular "lisp").
