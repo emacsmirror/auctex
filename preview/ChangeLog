@@ -1,3 +1,14 @@
+2002-04-01  Jan-Ake Larsson  <jalar@localhost.localdomain>
+
+	* Makefile.in: added texmf and elisp targets, also targets for
+	$TEXMFGEN
+
+	* preview-latex.spec: Initial stab at triple-rpm spec
+
+	* doc/Makefile.in: *.dvi and *.info cleaned again
+
+	* preview-latex.spec: Typo corrected
+
 2002-04-01  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): Remove our own
