@@ -1,3 +1,12 @@
+2004-03-25  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/README: Checkin updated README 
+
+	* dvipng/pk.c:
+	* dvipng/ft.c: Speed up color cache
+
+	* dvipng/dvipng.texi: Add info on resolution, change version number 
+
 2004-03-23  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.texi: Adjust for the new -D option
