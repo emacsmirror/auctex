@@ -1,3 +1,9 @@
+2004-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-backward-paragraph): Recognize if point is at
+	the end of a line when the test for a macro following a paragraph
+	command is carried out.
+
 2004-05-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-doctex-^^A): Add mistakenly deleted
