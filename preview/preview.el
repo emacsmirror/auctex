@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.137 2002-04-26 02:31:37 dakas Exp $
+;; $Id: preview.el,v 1.138 2002-04-26 21:48:19 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1500,7 +1500,7 @@ preview Emacs Lisp package something too stupid."))
 			(assoc "Generate Preview" TeX-command-list)))
    (easy-menu-add-item nil '("LaTeX")
 		       '("Preview"
-			 ["on/off at point" preview-at-point t]
+			 ["On/off at point" preview-at-point t]
 			 ["Environment" preview-environment t]
 			 ["Section" preview-section t]
 			 ["Region" preview-region (preview-mark-active)]
@@ -2001,7 +2001,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.137 $"))
+	(rev "$Revision: 1.138 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2012,7 +2012,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-26 02:31:37 $"))
+    (let ((date "$Date: 2002-04-26 21:48:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
