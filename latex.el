@@ -2899,7 +2899,6 @@ depends on the value of `LaTeX-syntactic-comments'."
 				    (re-search-forward comment-start-skip nil t)
 				    (point)))))))
 
-
 (defun LaTeX-fill-region (from to &optional justify what)
   "Fill and indent the text in region from FROM to TO as LaTeX text.
 Prefix arg (non-nil third arg JUSTIFY, if called from program)
@@ -2909,23 +2908,27 @@ formatting."
   (save-restriction
     (save-excursion
       (let ((to (set-marker (make-marker) to))
-	    end-of-buffer)
+	    (next-par (make-marker)))
 	(goto-char from)
 	(beginning-of-line)
 	(setq from (point))
-	(while (and (< (point) to)
-		    (not end-of-buffer))
-	  (message "Formatting%s ... %d%%"
-		   (or what "")
-		   (/ (* 100 (- (point) from)) (- to from)))
-	  (save-excursion (LaTeX-fill-paragraph justify))
-	  (LaTeX-forward-paragraph)
-	  (when (eobp) (setq end-of-buffer t))
-	  (LaTeX-forward-paragraph)
-	  (LaTeX-backward-paragraph)
-	  (while (and (not (eobp))
-		      (looking-at (concat "^[ \t]*" comment-start "*[ \t]*$")))
-	    (forward-line 1)))
+	(catch 'end-of-buffer
+	  (while (and (< (point) to))
+	    (message "Formatting%s ... %d%%"
+		     (or what "")
+		     (/ (* 100 (- (point) from)) (- to from)))
+	    (save-excursion (LaTeX-fill-paragraph justify))
+	    (if (marker-position next-par)
+		(goto-char (marker-position next-par))
+	      (LaTeX-forward-paragraph))
+	    (when (eobp) (throw 'end-of-buffer t))
+	    (LaTeX-forward-paragraph)
+	    (set-marker next-par (point))
+	    (LaTeX-backward-paragraph)
+	    (while (and (not (eobp))
+			(looking-at
+			 (concat "^[ \t]*" comment-start "*[ \t]*$")))
+	      (forward-line 1))))
 	(set-marker to nil)))
     (message "Finished")))
 
