@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-23 15:32:55 $|$Revision: 5.11 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-23 15:45:48 $|$Revision: 5.12 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.11 $  
+;; RCS status      : $Revision: 5.12 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Jan 18 16:15:45 1992
-;; Update Count    : 477
+;; Last Modified On: Thu Jan 23 16:43:53 1992
+;; Update Count    : 478
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -555,7 +555,7 @@ of LaTeX-mode-hook."
       (progn
 	(setq TeX-mode-syntax-table (make-syntax-table))
 	(set-syntax-table TeX-mode-syntax-table)
-	(modify-syntax-entry (string-to-char TeX-esc) "/")
+	(modify-syntax-entry (string-to-char TeX-esc) "\\")
 	(modify-syntax-entry ?\f ">")
 	(modify-syntax-entry ?\n ">")
 	(modify-syntax-entry ?$ "$$")
