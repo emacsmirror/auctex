@@ -2615,7 +2615,22 @@ space does not end a sentence, so don't break a line there."
 	    (concat "^[ \t]+\\|^[ \t]*" TeX-comment-start-regexp "+[ \t]*")
 	    (1- (line-beginning-position)))
 	   (goto-char (match-end 0))
-	   (skip-chars-forward "^ \n" (point-max)))))
+	   (skip-chars-forward "^ \n" (point-max))))
+    ;; This code was copied from the function `fill-move-to-break-point'
+    ;; in `fill.el' (CVS Emacs, 2005-02-22) and adapted accordingly.
+    (when (and (< linebeg (point))
+	       ;; If we are going to break the line after or
+	       ;; before a non-ascii character, we may have to
+	       ;; run a special function for the charset of the
+	       ;; character to find the correct break point.
+	       enable-multibyte-characters
+	       (not (and (eq (charset-after (1- (point))) 'ascii)
+		         (eq (charset-after (point)) 'ascii))))
+      ;; Make sure we take SOMETHING after the fill prefix if any.
+      (if (fboundp 'fill-find-break-point)
+	  (fill-find-break-point linebeg)
+	(when (fboundp 'kinsoku-process) ;XEmacs
+	  (kinsoku-process)))))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
   ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
