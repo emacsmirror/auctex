@@ -1,26 +1,28 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 ;; Keywords: wp
 ;; X-URL: http://www.nongnu.org/auctex/
 
 ;; Copyright 1991 Kresten Krab Thorup
 ;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
+;; Copyright 2003 Free Software Foundation
 ;; 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
+
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
 
@@ -395,7 +397,7 @@ The behaviour of this hook is controlled by `LaTeX-section-label'."
 ;;; Environments
 
 (defgroup LaTeX-environment nil
-  "Environments in AUC TeX."
+  "Environments in AUCTeX."
   :group 'LaTeX-macro)
 
 (defcustom LaTeX-default-environment "itemize"
@@ -628,7 +630,7 @@ Set to nil if you don't want any float."
   :type '(repeat (string :format "%v")))
 
 (defgroup LaTeX-label nil
-  "Adding labels for LaTeX commands in AUC TeX."
+  "Adding labels for LaTeX commands in AUCTeX."
   :group 'LaTeX)
 
 (defcustom LaTeX-label-function nil
@@ -1540,7 +1542,7 @@ the cdr is the brace used with \\right.")
 ;;; Indentation
 
 (defgroup LaTeX-indentation nil
-  "Indentation of LaTeX code in AUC TeX"
+  "Indentation of LaTeX code in AUCTeX"
   :group 'LaTeX
   :group 'TeX-indentation)
 
@@ -2057,7 +2059,7 @@ The point is supposed to be at the beginning of the current line."
 ;;; Math Minor Mode
 
 (defgroup LaTeX-math nil
-  "Mathematics in AUC TeX."
+  "Mathematics in AUCTeX."
   :group 'LaTeX-macro)
 
 (defcustom LaTeX-math-list nil
@@ -2878,7 +2880,7 @@ the last entry in the menu."
 	result))))
 
 (defun LaTeX-menu-update ()
-  "Update entries on AUC TeX menu."
+  "Update entries on AUCTeX menu."
   (or (not (eq major-mode 'latex-mode))
       (null LaTeX-menu-changed)
       (not (fboundp 'easy-menu-change))
@@ -2963,7 +2965,7 @@ the last entry in the menu."
 	      [ "Convert 209 to 2e" LaTeX-209-to-2e
 		:active (member "latex2" (TeX-style-list)) ]
 	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")
@@ -2995,7 +2997,7 @@ the last entry in the menu."
 ;;; Mode
 
 (defgroup LaTeX-macro nil
-  "Special support for LaTeX macros in AUC TeX."
+  "Special support for LaTeX macros in AUCTeX."
   :prefix "TeX-"
   :group 'LaTeX
   :group 'TeX-macro)
@@ -3033,7 +3035,7 @@ This happens when \\left is inserted."
 ;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
-See info under AUC TeX for full documentation.
+See info under AUCTeX for full documentation.
 
 Special commands:
 \\{LaTeX-mode-map}
@@ -3171,7 +3173,7 @@ of `LaTeX-mode-hook'."
    ;; other style files.  I'm to lazy to copy them to all the
    ;; corresponding .el files right now.
 
-   ;; This means that AUC TeX will complete e.g.
+   ;; This means that AUCTeX will complete e.g.
    ;; ``thebibliography'' in a letter, but I guess we can live with
    ;; that.
 
