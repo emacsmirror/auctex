@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.34 2001-10-25 00:58:03 dakas Exp $
+;; $Id: preview.el,v 1.35 2001-10-25 01:31:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -612,25 +612,24 @@ numbers (can be float if available)."
   "Search for the next interesting border for `preview-dwim'.
 Searches backwards if BACKWARDS is non-nil."
   (let (history preview-state (pt (point)))
-    (catch 'exit
       (while
-	  (progn
+	  (null
+	   (memq
 	    (setq preview-state
 		  (if backwards
-		      (if (setq pt
-				(previous-single-char-property-change
-				 pt 'preview-state))
+		      (if (> (setq pt
+				   (previous-single-char-property-change
+				    pt 'preview-state)) (point-min))
 			  (get-char-property (1- pt) 'preview-state)
-			(throw 'exit (or history (point-min))))
-		    (if (setq pt
-			      (next-single-char-property-change
-			       pt 'preview-state))
+			'active)
+		    (if (< (setq pt
+				 (next-single-char-property-change
+				  pt 'preview-state)) (point-max))
 			(get-char-property pt 'preview-state)
-		      (throw 'exit (or history (point-max))))))
-	    (if (memq preview-state '(active inactive))
-		(throw 'exit (or history pt)))
-	    t)
-	(setq history (and (not preview-state) pt))))))
+		      'active)))
+	    '(active inactive)))
+	(setq history (and (not preview-state) pt)))
+      (or history pt)))
 	     
 (defun preview-dwim ()
   "Do the appropriate thing for a preview.
@@ -1129,7 +1128,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.34 $"))
+	(rev "$Revision: 1.35 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
