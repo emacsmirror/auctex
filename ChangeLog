@@ -1,3 +1,19 @@
+2004-11-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-delete-dups-by-car): New name for `TeX-delete-dups'.
+	(TeX-delete-duplicate-strings, TeX-sort-strings): New functions.
+	Contributed by Reiner Steib and David Kastrup.
+
+	* font-latex.el: Require 'tex.
+	(font-latex-user-keyword-classes): Enhance :set function to tell
+	user which entry is duplicated.
+
+	* latex.el (TeX-arg-input-file): Use new name
+	`TeX-delete-dups-by-car' instead of `TeX-delete-dups'.
+
+	* style/graphicx.el (LaTeX-includegraphics-read-file-TeX): Use
+	new name `TeX-delete-dups-by-car' instead of `TeX-delete-dups'.
+
 2004-11-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-user-keywords): Add the "fixed"
