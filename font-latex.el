@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.77 2004-10-16 17:43:27 angeli Exp $
+;; Version:    $Id: font-latex.el,v 5.78 2004-10-18 13:27:53 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -395,7 +395,7 @@ keywords.  As a side effect, the variable `" prefix name "' is set.")
 		 (funcall ',(intern (concat prefix name "-make")))))
 
 	;; defcustom font-latex-match-*-keywords
-	(eval `(defcustom ,(intern (concat prefix name "-keywords")) keywords
+	(eval `(defcustom ,(intern (concat prefix name "-keywords")) ',keywords
 		 ,(concat "Font-latex keywords for " name " face.")
 		 :type '(repeat (string :tag "Keyword"))
 		 :set ',(intern (concat prefix name "-keywords-set"))
