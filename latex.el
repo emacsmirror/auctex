@@ -7,7 +7,7 @@
 
 ;; Copyright 1991 Kresten Krab Thorup
 ;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
-;; Copyright 2003 Free Software Foundation
+;; Copyright 2003, 2004 Free Software Foundation
 ;; 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ header is at the start of a line."
 	  "\\|" TeX-trailer-start))
 
 (defvar LaTeX-largest-level nil
-  "Largest sectioning level with current document style.")
+  "Largest sectioning level with current document class.")
 
 (make-variable-buffer-local 'LaTeX-largest-level)
 
@@ -435,8 +435,8 @@ With optional ARG, modify current environment.
 It may be customized with the following variables:
  
 `LaTeX-default-environment'       Your favorite environment.
-`LaTeX-default-style'             Your favorite document style.
-`LaTeX-default-options'           Your favorite document style options.
+`LaTeX-default-style'             Your favorite document class.
+`LaTeX-default-options'           Your favorite document class options.
 `LaTeX-float'                     Where you want figures and tables to float.
 `LaTeX-table-label'               Your prefix to labels in tables.
 `LaTeX-figure-label'              Your prefix to labels in figures.
@@ -654,16 +654,14 @@ With optional ARG>=1, find that outer level."
 ;;; Environment Hooks
 
 (defvar LaTeX-document-style-hook nil
-  "List of hooks to run when inserting a document style environment.
+  "List of hooks to run when inserting a document environment.
 
 To insert a hook here, you must insert it in the appropiate style file.")
 
 (defun LaTeX-env-document (&optional ignore)
   "Create new LaTeX document."
 
-  (TeX-insert-macro (if (string-equal LaTeX-version "2")
-			"documentstyle"
-		      "documentclass"))
+  (TeX-insert-macro "documentclass")
 
   (LaTeX-newline)
   (LaTeX-newline)
@@ -1055,7 +1053,7 @@ This is necessary since index entries may contain commands and stuff.")
 					   (TeX-split-string "," arg)))
 			       LaTeX-auto-bibliography)))
     
-  ;; Cleanup document styles and packages
+  ;; Cleanup document classes and packages
   (if (null LaTeX-auto-style)
       ()
     (while LaTeX-auto-style
@@ -1370,14 +1368,14 @@ ELSE as an argument list."
 			      ("scrlttr2")
 			      ("scrreprt")
 			      ("slides"))
-  "List of document styles."
+  "List of document classes."
   :group 'LaTeX-environment
   :type '(repeat (group (string :format "%v"))))
 
 (defun TeX-arg-document (optional &optional ignore)
-  "Insert arguments to documentstyle and documentclass."
+  "Insert arguments to documentclass."
   (let ((style (completing-read
-		(concat "Document style: (default " LaTeX-default-style ") ")
+		(concat "Document class: (default " LaTeX-default-style ") ")
 		LaTeX-style-list))
 	(options (read-string "Options: "
 			      (if (stringp LaTeX-default-options)
@@ -3455,7 +3453,7 @@ the last entry in the menu."
 
 (defun LaTeX-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
-  (or (not (eq major-mode 'latex-mode))
+  (or (not (memq major-mode '(latex-mode doctex-mode)))
       (null LaTeX-menu-changed)
       (not (fboundp 'easy-menu-change))
       (progn
@@ -3650,20 +3648,18 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
-(define-minor-mode doctex-mode
-  "Minor mode for editing .dtx files.
-Sets a few variables and runs the hooks in `doctex-mode-hook'."
-  nil "Doc" nil
-  (if doctex-mode
-      (progn
-	(unless (memq major-mode '(plain-tex-mode ams-tex-mode
-						  latex-mode
-						  context-mode))
-	  (tex-mode))
-	(set (make-local-variable 'LaTeX-insert-into-comments) t)
-	(set (make-local-variable 'LaTeX-fill-comment-syntax-aware) t))
-    (dolist (elt '(LaTeX-insert-into-comments LaTeX-fill-comment-syntax-aware))
-      (set elt (default-value elt)))))
+(defvar doctex-syntax-table
+  (let ((table (make-syntax-table LaTeX-mode-syntax-table)))
+    (modify-syntax-entry ?% "-" table)
+    table))
+
+(define-derived-mode doctex-mode latex-mode "DocTeX"
+  "Major mode for editing .dtx files derived from `LaTeX-mode'.
+Runs `latex-mode', sets a few variables and
+runs the hooks in `doctex-mode-hook'."
+  (set-syntax-table doctex-syntax-table)
+  (set (make-local-variable 'LaTeX-insert-into-comments) t)
+  (set (make-local-variable 'LaTeX-fill-comment-syntax-aware) t))
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
