@@ -1,3 +1,7 @@
+2002-04-02  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
+
+	* aclocal.m4: escaped usage of $texmfdir
+
 2002-04-01  Jan-Ake Larsson  <jalar@localhost.localdomain>
 
 	* Makefile.in: added texmf and elisp targets, also targets for
