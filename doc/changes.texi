@@ -35,10 +35,13 @@ customizing the variables @code{font-latex-match-function-keywords},
 @code{font-latex-match-warning-keywords}.
 
 @item
-FIXME: How can the changes in @code{german.el} and @code{ngerman.el}
-regarding @code{LaTeX-german-quote-after-quote},
-@code{LaTeX-german-open-quote}, @code{LaTeX-german-close-quote} be
-described?
+If you include the style files @file{german} or @file{ngerman} in a
+document (directly or via the @samp{babel} package), you should now
+customize @code{LaTeX-german-open-quote},
+@code{LaTeX-german-close-quote} and
+@code{LaTeX-german-quote-after-quote} instead of @code{TeX-open-quote},
+@code{TeX-close-quote} and @code{TeX-quote-after-quote} if you want to
+influence the type of quote insertion.
 
 @item
 AUC@TeX{} now includes support for ConTeXt.
