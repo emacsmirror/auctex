@@ -1,3 +1,11 @@
+2004-09-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/url.el: Add some (low-level) symbols for completion and
+	fontification.
+	(TeX-arg-urlstyle): New function.
+
+	* doc/todo.texi (Bugs): Remove some obsolete bug descriptions.
+
 2004-09-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-verbatim-environments): Change from
