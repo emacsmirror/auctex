@@ -48,18 +48,19 @@ The next sections are a short introduction to some `actual' features.
 For further information, refer to the built-in online documentation of
 AUC@TeX{}.
 
-@section Indentation and formatting
+@section Indentation and filling
 
 AUC@TeX{} may automatically indent your document as you write it. By
-pressing @key{lfd} instead of @key{ret} at the end of a line, the
+pressing @key{LFD} instead of @key{RET} at the end of a line, the
 current line is indented by two spaces according to the current
 environment level, and the cursor is moved down one line.  By pressing
-@key{tab}, the current line is indented, and the cursor stays where it
-is.  The well-known Emacs feature @code{format-paragraph} (@kbd{M-q}) is
-reimplemented especially for AUC@TeX{} to follow the indentation.  A
-special command @code{LaTeX-fill-buffer} lets you indent an entire
-document like the well-known C utility indent (this time, only according
-to the La@TeX{} structure @t{:-)}.
+@key{TAB}, the current line is indented, and the cursor stays where it
+is.  The well-known Emacs feature @code{fill-paragraph} (@kbd{M-q}) is
+reimplemented especially for AUC@TeX{} to follow the indentation (even
+in commented parts of the document).  A special command
+@code{LaTeX-fill-buffer} lets you indent an entire document like the
+well-known C utility indent (this time, only according to the La@TeX{}
+structure @t{:-)}.
 
 @section Completion
 
@@ -72,7 +73,7 @@ This `knowledge' of AUC@TeX{} is used for two purposes.
 @enumerate
 @item
 To make you able to `complete' partly written La@TeX{} commands. You may
-e.g. write @kbd{\renew} and press @kbd{M-@key{tab}}
+e.g. write @kbd{\renew} and press @kbd{M-@key{TAB}}
 (@code{TeX-complete-symbol}), and then AUC@TeX{} will complete the word
 @samp{\renewcommand} for you. In case of ambiguity it will display a
 list of possible completions.
