@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.169 2002-11-10 20:11:27 dakas Exp $
+;; $Id: preview.el,v 1.170 2002-11-20 01:19:36 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2055,21 +2055,6 @@ for definition of PROCESS and NAME."
 	  (error (preview-log-error err "LaTeX" process)))
 	(preview-reraise-error process))))
 
-(defcustom preview-dump-command "initex \"&%l\" %s.ini"
-  "*Command for dumping a format.
-See `TeX-expand-list' for a list of special characters.
-Always run on the master file."
-  :group 'preview-latex
-  :type 'string)
-
-(defcustom preview-undump-command "%l \"&%f\" %t"
-  "*Command for using a dumped format.
-See `TeX-expand-list' for a list of special characters.
-When this command is used, %f is specially defined to be the
-master file name without extension, to be used as format name."
-  :group 'preview-latex
-  :type 'string)
-
 (defcustom preview-format-extensions '(".fmt" ".efmt")
   "Possible extensions for format files.
 Those are just needed for cleanup."
@@ -2093,20 +2078,69 @@ Tries through `preview-format-extensions'."
 	      (file-name-nondirectory file))
     "prv_texput"))
 
+(defun preview-do-replacements (string replacements)
+  "Perform replacements in string.
+STRING is the input string, REPLACEMENTS is a list of replacements.
+A replacement is a cons-cell, where the car is the match string,
+and the cdr is a list of strings or symbols.  Symbols get dereferenced,
+and strings get evaluated as replacement strings."
+  (let (rep case-fold-search)
+    (while replacements
+      (setq rep (pop replacements))
+      (cond ((symbolp rep)
+	     (setq string (preview-do-replacements
+			   string (symbol-value rep))))
+	    ((string-match (car rep) string)
+	     (setq string
+		   (mapconcat (lambda(x)
+				(if (symbolp x)
+				    (symbol-value x)
+				  (replace-match x t nil string)))
+			      (cdr rep) ""))))))
+  string)
+
+(defcustom preview-LaTeX-command-replacements
+  '(("\\`\\(pdf\\)?\\(.*\\)\\'" "\\2"))
+  "Replacement for `preview-LaTeX-command' passed through
+`preview-do-replacements'"
+  :group 'preview-latex
+  :type '(repeat
+	  (choice (symbol :tag "Named replacement")
+		  (cons string (repeat (choice symbol string))))))
+
+(defvar preview-format-name)
+
+(defcustom preview-dump-replacements
+  '(("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\
+\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
+     . ("\\2initex\\4 \"&\\2\\3tex\" " preview-format-name ".ini \\7")))
+  "Generate a dump command from the usual preview command."
+  :group 'preview-latex
+  :type '(repeat
+	  (choice (symbol :tag "Named replacement")
+		  (cons string (repeat (choice symbol string))))))
+
+(defcustom preview-undump-replacements
+  '(("\\`\\(e?\\)\\(la\\)?tex\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
+\\input{\\([^}]*\\)}.*\\'"
+     . ("\\1virtex\\3 \"&" preview-format-name "\" \\6")))
+  "Use a dumped format for reading preamble."
+  :group 'preview-latex
+  :type '(repeat
+	  (choice (symbol :tag "Named replacement")
+		  (cons string (repeat (choice symbol string))))))
+
+
 (defun preview-cache-preamble ()
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
 on the same master file."
   (interactive)
-  (let* ((dump-file (preview-dump-file-name (TeX-master-file "ini")))
-	 (format-name (expand-file-name (TeX-master-file nil)))
+  (let* ((master (TeX-master-file))
+	 (preview-format-name (preview-dump-file-name master))
+	 (dump-file (concat preview-format-name ".ini"))
+	 (format-name (expand-file-name master))
 	 (master-file (TeX-master-file t))
-	 (LaTeX-command-style `(("."
-				 ,(TeX-command-expand
-				   preview-dump-command
-				   (lambda (&rest args)
-				     (preview-dump-file-name
-				      (apply 'TeX-master-file args)))))))
 	 (format-cons (assoc format-name preview-dumped-alist))
 	 (preview-auto-cache-preamble nil))
     (if format-cons
@@ -2119,20 +2153,28 @@ on the same master file."
     ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
     ;; in the tools bundle is an empty file.
     (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
+    (TeX-save-document master)
+    (setq TeX-current-process-region-p nil)
     (prog1
-	(preview-document)
+	(TeX-inline-preview
+	 "Cache preamble"
+	 (preview-do-replacements
+	  (TeX-command-expand preview-LaTeX-command 'TeX-master-file)
+	  preview-dump-replacements)
+	 master)
       (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
       (setq TeX-sentinel-function
 	    `(lambda (process string)
-	       (if (and (eq (process-status process) 'exit)
-			(zerop (process-exit-status process)))
-		   (preview-watch-preamble
-		    ,master-file
-		    ',format-cons)
-		 (preview-format-kill ',format-cons))
 	       (condition-case err
-		   (delete-file ,dump-file)
-		 (file-error (preview-log-error err "Dumping" process)))
+		   (progn
+		     (if (and (eq (process-status process) 'exit)
+			      (zerop (process-exit-status process)))
+			 (preview-watch-preamble
+			  ,master-file
+			  ',format-cons)
+		       (preview-format-kill ',format-cons))
+		     (delete-file ,dump-file))
+		 (error (preview-log-error err "Dumping" process)))
 	       (preview-reraise-error process))))))
 
 (defun preview-cache-preamble-off (&optional old-format)
@@ -2143,7 +2185,7 @@ stored in `preview-dumped-alist'."
   (interactive)
   (unless old-format
     (setq old-format
-	  (let ((format-file (expand-file-name (TeX-master-file nil))))
+	  (let ((format-file (expand-file-name (TeX-master-file))))
 	    (or (assoc format-file preview-dumped-alist)
 		(car (push (list format-file) preview-dumped-alist))))))
   (preview-unwatch-preamble old-format)
@@ -2153,15 +2195,18 @@ stored in `preview-dumped-alist'."
 (defun TeX-inline-preview (name command file)
   "Main function called by AUC TeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
+  (setq command (preview-do-replacements command
+					 preview-LaTeX-command-replacements))
   (let* ((commandbuff (current-buffer))
-	(pr-file (cons
-		  (if TeX-current-process-region-p
-		      'TeX-region-file
-		    'TeX-master-file)
-		  file))
-	(master-file (expand-file-name (TeX-master-file nil)))
-	(dumped-cons (assoc master-file
-			    preview-dumped-alist)))
+	 (pr-file (cons
+		   (if TeX-current-process-region-p
+		       'TeX-region-file
+		     'TeX-master-file)
+		   file))
+	 (master (TeX-master-file))
+	 (master-file (expand-file-name master))
+	 (dumped-cons (assoc master-file
+			     preview-dumped-alist)))
     (if (if dumped-cons
 	    (eq (cdr dumped-cons) t)
 	  (push (setq dumped-cons (cons master-file
@@ -2170,7 +2215,8 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 					  preview-auto-cache-preamble)))
 		preview-dumped-alist)
 	  (cdr dumped-cons))
-	(prog1 (preview-cache-preamble)
+	(prog1 (let (TeX-current-process-region-p)
+		 (preview-cache-preamble))
 	  (setq TeX-sentinel-function
 		`(lambda (process string)
 		   (funcall ,TeX-sentinel-function process string)
@@ -2178,59 +2224,57 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		    ,name ,command ,file
 		    ',pr-file ,commandbuff
 		    ',dumped-cons
+		    ',master
 		    (prog1
 			(buffer-string)
 		      (set-buffer ,commandbuff))))))
       (TeX-inline-preview-internal name command file
-				   pr-file commandbuff dumped-cons))))
+				   pr-file commandbuff dumped-cons master))))
 
 (defun TeX-inline-preview-internal (name command file pr-file
-					 commandbuff dumped-cons
+					 commandbuff dumped-cons master
 					 &optional str)
   "See doc of `TeX-inline-preview'.
 Should explain meaning of NAME, COMMAND, FILE, and
-PR-FILE, COMMANDBUFF and DUMPED-CONS are internal parameters, STR
-may be a log to insert into the current log."
-    (let ((process
-	   (TeX-run-command
-	    "Preview-LaTeX"
-	    (if (cdr dumped-cons)
-		(TeX-command-expand preview-undump-command
-				    (car pr-file)
-				    (cons '("%f"
-					    (lambda ()
-					      (preview-dump-file-name
-					       (TeX-master-file nil))))
-					  TeX-expand-list))
-	      command) file)))
-      (condition-case err
-	  (progn
-	    (when str
-	      (with-current-buffer (process-buffer process)
-		(save-excursion
-		  (goto-char (point-min))
-		  (insert str)
-		  (when (= (process-mark process) (point-min))
-		    (set-marker (process-mark process) (point))))))
-	    (preview-get-geometry commandbuff)
-	    (setq preview-gs-file pr-file)
-	    (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
-	    (when (featurep 'mule)
-	      (set-process-coding-system
-	       process
-	       (with-current-buffer commandbuff buffer-file-coding-system)))
-	    (TeX-parse-reset)
-	    (setq TeX-parse-function 'TeX-parse-TeX)
-	    (if TeX-process-asynchronous
-		process
-	      (TeX-synchronous-sentinel name file process)))
-	(error (preview-log-error err "Preview" process)
-	       (delete-process process)))
-      (preview-reraise-error process)))
+PR-FILE, COMMANDBUFF, DUMPED-CONS and MASTER are
+internal parameters, STR may be a log to insert into the current log."
+  (let*
+      ((preview-format-name (preview-dump-file-name master))
+       (process
+	(TeX-run-command
+	 "Preview-LaTeX"
+	 (if (cdr dumped-cons)
+	     (preview-do-replacements
+	      command preview-undump-replacements)
+	   command) file)))
+    (condition-case err
+	(progn
+	  (when str
+	    (with-current-buffer (process-buffer process)
+	      (save-excursion
+		(goto-char (point-min))
+		(insert str)
+		(when (= (process-mark process) (point-min))
+		  (set-marker (process-mark process) (point))))))
+	  (preview-get-geometry commandbuff)
+	  (setq preview-gs-file pr-file)
+	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
+	  (when (featurep 'mule)
+	    (set-process-coding-system
+	     process
+	     (with-current-buffer commandbuff buffer-file-coding-system)))
+	  (TeX-parse-reset)
+	  (setq TeX-parse-function 'TeX-parse-TeX)
+	  (if TeX-process-asynchronous
+	      process
+	    (TeX-synchronous-sentinel name file process)))
+      (error (preview-log-error err "Preview" process)
+	     (delete-process process)))
+    (preview-reraise-error process)))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.169 $"))
+	(rev "$Revision: 1.170 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2241,7 +2285,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-10 20:11:27 $"))
+    (let ((date "$Date: 2002-11-20 01:19:36 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
