@@ -1,3 +1,8 @@
+2002-03-22  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+
+	* doc/preview-latex.texi (preview-environment):
+	doc rewrite. Slight other layout changes
+
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
 	* TODO: Throw out stuff already implemented.
