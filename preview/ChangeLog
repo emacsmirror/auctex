@@ -1,3 +1,9 @@
+2003-10-13  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/fontmap.c:
+	* dvipng/psfontmap.c:
+	* dvipng/configure.ac: Rename psfontmap.c to fontmap.c
+
 2003-10-08  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/psfontmap.c: Add third bare word: encoding
