@@ -1,5 +1,13 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi (Emacs problems): Some updates.
+
+	* doc/preview-latex.texi (top): prepare for 0.7.2
+
+	* preview-latex.spec (Version): prepare for 0.7.2
+
+	* RELEASE: prepare for 0.7.2
+
 	* preview.el: Update Commentary, refer to docs in general.
 
 	* doc/install.texi (Advice for package providers): mention that
