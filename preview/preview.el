@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.99 2002-04-05 19:41:08 dakas Exp $
+;; $Id: preview.el,v 1.100 2002-04-07 00:30:58 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1578,7 +1578,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				    (nconc slow-hook (list lst)))))))
 		      (condition-case err
 			  (run-hooks 'slow-hook)
-			(error (message "Error in translation-hook: %s"
+			(error (message "Error in translation hook: %s"
 					(error-message-string err))))
 		      (push (vector file (+ line offset)
 				  string after-string
@@ -1611,8 +1611,9 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 	      (setq parsestate (nreverse parsestate))
 	      (condition-case err
 		  (dolist (fun fast-hook)
-		    (setq parsestate (funcall fun parsestate)))
-		(error (message "Error in translation-hook: %s"
+		    (setq parsestate
+			  (save-excursion (funcall fun parsestate))))
+		(error (message "Error in fast translation hook: %s"
 				(error-message-string err))))
 	      (setq snippet 0)
 	      (dolist (state parsestate)
@@ -1789,7 +1790,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.99 $"))
+	(rev "$Revision: 1.100 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)

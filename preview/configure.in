@@ -75,7 +75,7 @@ else
    fi
    AC_PATH_LISPDIR
    ICONFORM= # TODO: fill this in
-   icondir= # TODO: fill this in
+   icondir=${lispdir}
 fi
 
 AC_SUBST(PLAT_LISP)
