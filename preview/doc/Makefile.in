@@ -7,6 +7,9 @@ DVIPS=dvips
 MAKEINFO=@MAKEINFO@
 INSTALLINFO=install-info
 
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+
 all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: preview-latex.texi install.texi readme.texi \
