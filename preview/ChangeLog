@@ -1,5 +1,7 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* doc/Makefile.in (.PHONY): Add a few targets.
+
 	* doc/readme.texi (Basic modes of operation): Correct dvipng
 	information.
 
