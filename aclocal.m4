@@ -280,8 +280,8 @@ AC_DEFUN(AC_PATH_LISPDIR, [
 	fi
     done
   fi
-  if test -n "$1"; then 
-  	lispdir="$lispdir/$1"
+  if test -n "$2"; then 
+  	lispdir="$lispdir/$2"
   fi
   AC_MSG_RESULT($lispdir)
   AC_SUBST(lispdir)

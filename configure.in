@@ -16,7 +16,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    AC_MSG_RESULT([${lispdir}])
    infodir="${packagedir}/info"
 else
-   AC_PATH_LISPDIR([tex-site])
+   AC_PATH_LISPDIR([tex-site],[auctex])
 fi
 AC_SUBST(packagedir)
 
