@@ -1,6 +1,9 @@
 @section News in 9.10
 
 @itemize @bullet
+@item @code{mdwlist} support.
+Patch by Stephen Heilbronner <heilbron@@nm.informatik.uni-muenchen.de>.
+
 @item
 Fixed various bugs with the babel package.
 

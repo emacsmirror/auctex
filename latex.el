@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10g
+;; Version: 9.10h
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -982,9 +982,12 @@ This is necessary since index entries may contain commands and stuff.")
 
 	;; Treat documentclass/documentstyle specially.
 	(if (string-equal "package" class)
-	    (setq TeX-auto-file (cons style TeX-auto-file))
-
+	    (setq TeX-auto-file
+		  (append (TeX-split-string 
+			   "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+" style)
+			  TeX-auto-file))
 	  ;; And a special "art10" style file combining style and size.
+	  (setq TeX-auto-file (cons style TeX-auto-file))
 	  (setq TeX-auto-file
 		(cons (concat 
 		       (cond ((string-equal "article" style)

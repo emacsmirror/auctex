@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10g
+# Version: 9.10h
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -93,7 +93,7 @@ STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/amsmath.el   style/amstext.el  style/amsbsy.el \
 	   style/amsopn.el    style/amsthm.el	style/natbib.el \
 	   style/index.el     style/makeidx.el  style/multind.el \
-	   style/varioref.el  style/fancyref.el
+	   style/varioref.el  style/fancyref.el	style/mdwlist.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi

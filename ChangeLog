@@ -1,3 +1,21 @@
+1999-10-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10h released.
+
+1999-09-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-auto-cleanup): Allow multiple packages for
+	`usepackage'. 
+	Reported by Torsten Schuetze <schuetze@math.tu-dresden.de>.
+	(LaTeX-auto-cleanup): Also add "unmangled" documentstyle.
+	Reported by Cyril Humbert <humbert@phobos.univ-mlv.fr>.
+
+1999-09-09  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/mdwlist.el: New file.
+	Patch by Stephen Heilbronner <heilbron@nm.informatik.uni-muenchen.de>.
+	* Makefile (STYLESRC): Added it.
+
 1999-08-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10g released.
