@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.324 $"))
+	(rev "$Revision: 5.325 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-23 01:18:08 $"))
+    (let ((date "$Date: 2004-01-31 09:06:56 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2686,8 +2686,55 @@ of AmS-TeX-mode-hook."
 
 ;;; Comments
 
-(fset 'TeX-comment-region 'comment-dwim)
-(fset 'TeX-un-comment-region 'comment-dwim)
+;; As soon as support for GNU Emacsen before version 21.4 is
+;; discontinued, `TeX-comment-or-uncomment-region' can be replaced by
+;; `comment-or-uncomment-region'.  For now, there is compatibility
+;; code below.
+(fset 'TeX-comment-region 'TeX-comment-or-uncomment-region)
+(fset 'TeX-un-comment-region 'TeX-comment-or-uncomment-region)
+
+;; Start compatibility code
+(eval-and-compile
+  ;; `comment-or-uncomment-region' is not available before Emacs 21.4
+  (if (fboundp 'comment-or-uncomment-region)
+      (defalias 'TeX-comment-or-uncomment-region 'comment-or-uncomment-region)
+    ;; The following function was copied from `newcomment.el' on
+    ;; 2004-01-30 and adapted accordingly
+    (defun TeX-comment-or-uncomment-region (beg end &optional arg)
+      "Call `comment-region', unless the region only consists of comments,
+in which case call `uncomment-region'.  If a prefix arg is given, it
+is passed on to the respective function."
+      (interactive "*r\nP")
+      (funcall (if (save-excursion ;; check for already commented region
+                     (goto-char beg)
+                     ;; `comment-forward' is not available in Emacs 20
+                     (if (fboundp 'comment-forward)
+                         (comment-forward (point-max))
+                       (forward-comment (point-max)))
+                     (<= end (point)))
+                   'TeX-uncomment-region 'comment-region)
+               beg end arg)))
+
+  ;; `uncomment-region' is not available in Emacs 20.  Introduced in 21.1?
+  (if (fboundp 'uncomment-region)
+      (defalias 'TeX-uncomment-region 'uncomment-region)
+    (defun TeX-uncomment-region (beg end &optional arg)
+      "Remove comment characters from the beginning of each line
+in the region from BEG to END.  Numeric prefix arg ARG means use
+ARG comment characters.  If ARG is negative, delete that many
+comment characters instead."
+      (interactive "*r\nP")
+      (or arg
+          ;; Determine the number of comment characters at the
+          ;; beginning of the first commented line.
+          (setq arg
+                (save-excursion
+                  (goto-char beg)
+                  (re-search-forward
+                   (concat "^" comment-start "+") end t)
+                  (length (match-string 0)))))
+      (comment-region beg end (- arg)))))
+;; End compatibility code
 
 (defun TeX-un-comment ()
   "Delete comment characters from the beginning of each line in a comment."
