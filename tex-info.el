@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.5 1993-09-29 20:16:22 amanda Exp $
+;; $Id: tex-info.el,v 5.6 1993-09-30 23:04:54 amanda Exp $
 
 ;; Copyright (C) 1993 Per Abrahamsen 
 ;; 
@@ -60,7 +60,7 @@ When called interactively, prompt for an environment."
     ;; apply arguments
     ))
 
-;;; Outline:
+;;; TeXinfo
 
 (defvar TeXinfo-section-list
   '(("top" 0)

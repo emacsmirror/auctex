@@ -1,6 +1,6 @@
 ;;; TEXINFO.el - Special code for TeXinfo documents.
 
-;; $Id: TEXINFO.el,v 1.2 1993-09-06 22:28:14 amanda Exp $
+;; $Id: TEXINFO.el,v 1.3 1993-09-30 23:05:20 amanda Exp $
 
 ;;; Code:
 
@@ -183,7 +183,10 @@
      '("vskip" "Amount")
      '("w" "Text"))
 
-    (require 'outline)			;Must be loaded first.
+    (if (featurep 'tex-19)
+	(require 'outline)		;Must be loaded first.
+      (require 'outln-18))
+
     (make-local-variable 'outline-regexp)
     (setq outline-regexp TeXinfo-outline-regexp)
     (make-local-variable 'outline-level)

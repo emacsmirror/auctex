@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.62 1993-09-29 20:18:51 amanda Exp $
+@c $Id: auc-tex.texi,v 1.63 1993-09-30 23:05:13 amanda Exp $
 
 @finalout
 @titlepage
@@ -2547,8 +2547,8 @@ Only examine the first 10000 bytes to find out what @TeX{} mode to use.
 
 @item 
 Added @code{TeX-submit-bug-report} command to submit bug reports.  It
-uses @file{reporter.el} that is distributed with SuperCite, so it may
-not be available in some Emacs 18 installations.
+uses the @file{reporter.el} distributed with SuperCite, so it may not be
+available in some Emacs 18 installations.
 
 @item
 Speeded up parsing significantly by using a simpler regexp.
@@ -2586,9 +2586,8 @@ goodies by inserting
 @example
 (require 'out-xtra)
 @end example
-in your @file{.emacs} file.  This will use the default prefix key be
-@key{C-l}.  Look in the comments in @file{out-xtra.el} to see how to
-change that, and to get a list of features.
+in your @file{.emacs} file.  @file{out-xtra.el} will probably be
+unbundled from AUC @TeX{} in the future.
 
 @item
 Some fixes to AmS-@TeX{} mode by Ulf Juergens
