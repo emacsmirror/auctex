@@ -1,5 +1,7 @@
 2003-01-20  David Kastrup  <dakas@users.sourceforge.net>
 
+	* Release 0.7.8
+	
 	* latex/preview.dtx (subsection{The internals}): comment out color
 	setup.  That means that one might not be able to use color.sty for
 	setting up fore/background color, but it will also mean that
