@@ -32,11 +32,9 @@ primarily for RH 7.x. The RPM requires a few packages:
   release it can be downloaded from the RH7.2 updates,
   <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>
 
-* AUC TeX 10.0g can be found at rhcontrib, see
-  <URL:http://rhcontrib.bero.org/RPMS/i386/>, note that you need both
-  auctex-10.0g-4.i386.rpm and auctex-emacs-10.0g-4.i386.rpm, the
-  package is split. I had to use '--nodeps' when installing, but it
-  does work after that.
+* AUC TeX can be found at several places, but if you want the latest
+  11.11 (alpha, but stable AFAIK) with no known issues concerning
+  preview-latex, an RPM can be found at the project homepage.
 
 * Finally, Emacs-21.1 can be downloaded from rawhide,
   <URL:ftp://ftp.redhat.com/pub/redhat/linux/rawhide/i386/RedHat/RPMS/>.
