@@ -130,3 +130,7 @@
      "GetFileInfo"
      "filename"
      "fileinfo"))))
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:

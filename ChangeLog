@@ -1,3 +1,8 @@
+2004-08-03  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/alphanum.el, style/doc.el, style/jura.el,
+	style/ltx-base.el, style/ltxdoc.el: Added coding cookies.
+
 2004-08-03  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Change Source Special description and a few other
