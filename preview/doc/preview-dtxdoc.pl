@@ -5,7 +5,7 @@
 
 # Eat header 
 MUNGE: while (<STDIN>) {
-    last MUNGE if /^%.section/;
+    last MUNGE if /^% *.section/;
 }
 
 # Noindent is used sometimes after \end{quote} (see below) 
@@ -26,7 +26,7 @@ MAIN: while (<STDIN>) {
     s/EPS/\@acronym{EPS}/g;
     s/DVI/\@acronym{DVI}/g;
     s/~/\@w{ }/g;
-
+    s/^ *//;
     # Environments
     if (s/\\begin\{quote\}/\n\@example/) { 
 	$quote="yes" }
