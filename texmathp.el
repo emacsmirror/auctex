@@ -44,12 +44,12 @@
 ;;
 ;;  To install, put this file on your load-path and compile it.
 ;;
-;;  To use this in a lisp program, do
+;;  To use this in a Lisp program, do
 ;;
 ;;     (require 'texmathp)
 ;;
 ;;  You can then write code like this:
-;;    
+;;
 ;;     (if (texmathp) ...)
 ;;
 ;;  The call to `texmathp' leaves some extra information in the
@@ -105,7 +105,7 @@
   (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
       nil
     (defmacro defgroup (&rest args) nil)
-    (defmacro defcustom (var value doc &rest args) 
+    (defmacro defcustom (var value doc &rest args)
       (` (defvar (, var) (, value) (, doc))))))
 
 (defgroup texmathp nil
@@ -122,7 +122,7 @@ The structure of each entry is (NAME TYPE)
 - The first item in each entry is the name of an environment or macro.
   If it's a macro, include the backslash.
 
-- The second item is a symbol indicating how the command works: 
+- The second item is a symbol indicating how the command works:
     `env-on'     Environment: turns math mode for its body  on
     `env-off'    Environment: turns math mode for its body  off
     `arg-on'     Command: turns math mode for its arguments on
@@ -145,8 +145,7 @@ The structure of each entry is (NAME TYPE)
       (const :tag "Switch: toggles math mode of following text" sw-toggle)))))
 
 (defvar texmathp-tex-commands-default
-  '(
-    ;; Plain TeX
+  '(;; Plain TeX
     ("$$"            sw-toggle)   ("$"             sw-toggle)
     ("\\hbox"        arg-off)
     ("\\vbox"        arg-off)
@@ -182,7 +181,7 @@ Normally, you cannot have an empty line in a math environment in (La)TeX.
 The fastest method to test for math mode is then limiting the search
 backward to the nearest empty line.
 However, during editing it happens that such lines exist temporarily.
-Therefore we look a little further.  This variable determines how many 
+Therefore we look a little further.  This variable determines how many
 empty lines we go back to fix the search limit."
   :group 'texmathp
   :type 'number)
@@ -191,14 +190,14 @@ empty lines we go back to fix the search limit."
   "*Non-nil means, allow arguments of macros to be detached by whitespace.
 When this is t, `aaa' will be interpreted as an argument of \bb in the
 following construct:  \bbb [xxx] {aaa}
-This is legal in TeX. The disadvantage is that any number of braces expressions
+This is legal in TeX.  The disadvantage is that any number of braces expressions
 will be considered arguments of the macro independent of its definition."
   :group 'texmathp
   :type 'boolean)
 
 (defvar texmathp-why nil
   "After a call to `texmathp' this variable shows why math-mode is on or off.
-The value is a cons cell (MATCH . POSITION).  
+The value is a cons cell (MATCH . POSITION).
 MATCH is a string like a car of an entry in `texmathp-tex-commands', e.q.
 \"equation\" or \"\\ensuremath\" or \"\\[\" or \"$\".
 POSITION is the buffer position of the match.  If there was no match,
@@ -228,9 +227,7 @@ it points to the limit used for searches, usually two paragraphs up.")
   "Compile the value of `texmathp-tex-commands' into the internal lists.
 Call this when you have changed the value of that variable without using
 customize (customize calls it when setting the variable)."
-
   (interactive)
-
   ;; Extract lists and regexp.
   (setq texmathp-macros nil texmathp-environments nil)
   (setq texmathp-memory
@@ -248,7 +245,7 @@ customize (customize calls it when setting the variable)."
 		      ((memq type '(sw-toggle))      'togglers)))
       (set var (cons (car entry) (symbol-value var))))
     (setq texmathp-onoff-regexp
-	  (concat "[^\\\\]\\(" 
+	  (concat "[^\\\\]\\("
 		  (mapconcat 'regexp-quote switches "\\|")
 		  "\\)")
 	  texmathp-toggle-regexp
@@ -258,7 +255,7 @@ customize (customize calls it when setting the variable)."
 
 ;;;###autoload
 (defun texmathp ()
-  "Determine if point is inside (La)TeX math mode. 
+  "Determine if point is inside (La)TeX math mode.
 Returns t or nil.  Additional info is placed into `texmathp-why'.
 The functions assumes that you have (almost) syntactically correct (La)TeX in
 the buffer.
@@ -310,8 +307,8 @@ See the variable `texmathp-tex-commands' about which commands are checked."
     (and math-on t)))
 
 (defun texmathp-match-environment (bound)
-  ;; Find out if point is inside any of the math environments.
-  ;; Limit searched to BOUND.  The return value is like ("equation" . (point)).
+  "Find out if point is inside any of the math environments.
+Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
   (catch 'exit
     (save-excursion
       (and (null texmathp-environments) (throw 'exit nil))
@@ -329,8 +326,8 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 	nil))))
 
 (defun texmathp-match-macro (bound)
-  ;; Find out if point is within the arguments of any of the Math macros.
-  ;; Limit searches to BOUND.  The return value is like ("\\macro" . (point)).
+  "Find out if point is within the arguments of any of the Math macros.
+Limit searches to BOUND.  The return value is like (\"\\macro\" . (point))."
   (catch 'exit
     (and (null texmathp-macros) (throw 'exit nil))
     (let (pos cmd (syntax-table (syntax-table)))
@@ -342,29 +339,29 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 	      ;; Move back out of the current parenthesis
 	      (while (condition-case nil (progn (up-list -1) t) (error nil))
 		;; Move back over any touching sexps (in fact also non-touching)
-		(while 
-		    (and 
+		(while
+		    (and
 		     (cond
 		      ((memq (preceding-char) '(?\] ?\})))
-		      ((and 
+		      ((and
 			texmathp-allow-detached-args
-			(re-search-backward 
+			(re-search-backward
 			"[]}][ \t]*[\n\r]?\\([ \t]*%[^\n\r]*[\n\r]\\)*[ \t]*\\="
 			bound t))
 		       (goto-char (1+ (match-beginning 0))) t))
 		     (if (eq (preceding-char) ?\})
 			 ;; Jump back over {}
-			 (condition-case nil 
+			 (condition-case nil
 			     (progn (backward-sexp) t)
 			   (error nil))
 		       ;; Jump back over []. Modify syntax temporarily for this.
-		       (unwind-protect 
+		       (unwind-protect
 			   (progn
 			     (modify-syntax-entry ?\{ ".")
 			     (modify-syntax-entry ?\} ".")
 			     (modify-syntax-entry ?\[ "(]")
 			     (modify-syntax-entry ?\] ")[")
-			     (condition-case nil 
+			     (condition-case nil
 				 (progn (backward-sexp) t)
 			       (error nil)))
 			 (modify-syntax-entry ?\{ "(}")
@@ -384,13 +381,15 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 	(set-syntax-table syntax-table)))))
 
 (defun texmathp-match-switch (bound)
-  ;; Search backward for any of the math switches.
-  ;; Limit searched to BOUND.  The return value is like ("\\(" . (point)).
+  "Search backward for any of the math switches.
+Limit searched to BOUND."
+  ;; The return value is like ("\\(" . (point)).
   (save-excursion
     (if (re-search-backward texmathp-onoff-regexp bound t)
 	(cons (buffer-substring-no-properties (match-beginning 1) (match-end 1))
 	      (match-beginning 1))
       nil)))
 
-;;; texmathp.el end here
+(provide 'texmathp)
 
+;;; texmathp.el ends here

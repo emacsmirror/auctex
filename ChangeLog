@@ -1,7 +1,8 @@
 2004-08-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* texmathp.el (texmathp-tex-commands-default): Added \label.
-
+	Various checkdoc-related fixes.
+	
 2004-08-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-buffer-type): Use alternative way to
