@@ -1,3 +1,29 @@
+2004-06-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/faq.texi: New file.
+
+	* doc/auc-tex.texi (Filling): Add information about activating
+	`auto-fill-mode'.
+	(FAQ): Add node.
+
+	* doc/todo.texi (Bugs): Add bug when fontifying unmatched math
+	toggles in verbatim-like environments.
+
+	* doc/.cvsignore: Add `FAQ'.
+
+	* doc/Makefile.in (TEXIFILES): Add `faq.texi'.
+	(FAQ): New target.
+	(dist): Add `FAQ'.
+	(clean): Ditto.
+
+	* .cvsignore: Add `FAQ'.
+
+	* Makefile.in (DOCFILES): Add `doc/faq.texi'.
+	(EXTRAFILES): Remove `PROBLEMS'.
+	(tar-ball): Add `FAQ'.
+
+	* autogen.sh: Activate creation of `FAQ' from `doc/faq.texi'.
+
 2004-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fptex.el (TeX-command-list): Use correct expander for
