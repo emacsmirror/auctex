@@ -546,63 +546,56 @@ It may be customized with the following variables:
   (indent-according-to-mode))
 
 (defun LaTeX-insert-environment (environment &optional extra)
-  "Insert ENVIRONMENT of type ENV, with optional argument EXTRA."
-  (if (and (TeX-active-mark)
-	   (not (eq (mark) (point))))
-      (progn
-	(if (< (mark) (point))
-	    (exchange-point-and-mark))
-	(unless (TeX-looking-at-backward "^[ \t]*")
-	  (LaTeX-newline))
-	(when (and LaTeX-insert-into-comments
-		   (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
-	  (insert (match-string 1) (TeX-comment-padding-string)))
-	(insert TeX-esc "begin" TeX-grop environment TeX-grcl)
-	(indent-according-to-mode)
-	(if extra (insert extra))
-	(LaTeX-newline)
-	(goto-char (mark))
-	(unless (TeX-looking-at-backward
-		  (if (and LaTeX-insert-into-comments
-			   (TeX-in-commented-line)
-			   (not (bolp)))
-		      (concat "^" comment-start-skip "[ \t]*")
-		    "^[ \t]*"))
-	    (LaTeX-newline))
-	(when (and LaTeX-insert-into-comments
-		   (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
-	  (insert (match-string 1) (TeX-comment-padding-string)))
-	(insert TeX-esc "end" TeX-grop environment TeX-grcl)
-	(or (looking-at "[ \t]*$")
-	    (save-excursion (LaTeX-newline) (indent-according-to-mode)))
-	(indent-according-to-mode)
-	(end-of-line 0)
-	(or (assoc environment LaTeX-indent-environment-list)
-	    (LaTeX-fill-environment nil)))
+  "Insert LaTeX ENVIRONMENT with optional argument EXTRA."
+  (let ((active-mark (and (TeX-active-mark)
+			  (not (eq (mark) (point)))))
+	comment-flag prefix)
+    (when active-mark
+      (if (< (mark) (point))
+	  (exchange-point-and-mark)))
     (unless (TeX-looking-at-backward
 	     (if (and LaTeX-insert-into-comments
 		      (TeX-in-commented-line)
 		      (not (bolp)))
-		 (concat "^" comment-start-skip "[ \t]*")
+		 (concat "^[ \t]*" comment-start "+[ \t]*")
 	       "^[ \t]*"))
       (LaTeX-newline))
+    ;; Insert a linebreak at the end of the marked region if necessary.
+    ;; Do this before we insert anything which might alter the prefix.
+    (when active-mark
+      (save-excursion
+	(goto-char (mark))
+	(unless (progn (skip-chars-forward " \t") (eolp))
+	  (LaTeX-newline)
+	  (indent-according-to-mode))))
     (when (and LaTeX-insert-into-comments
 	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
-      (insert (match-string 1) (TeX-comment-padding-string)))
+      (setq comment-flag t)
+      (insert (setq prefix (match-string 1)) (TeX-comment-padding-string)))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
     (indent-according-to-mode)
     (if extra (insert extra))
     (LaTeX-newline)
-    (LaTeX-newline)
-    (when (and LaTeX-insert-into-comments
-	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
-      (insert (match-string 1) (TeX-comment-padding-string)))
+    (if active-mark
+	(progn
+	  (goto-char (mark))
+	  (unless (TeX-looking-at-backward
+		   (if (and LaTeX-insert-into-comments
+			    (TeX-in-commented-line)
+			    (not (bolp)))
+		       (concat "^" comment-start-skip "[ \t]*")
+		     "^[ \t]*"))
+	    (LaTeX-newline)))
+      (LaTeX-newline))
+    (when comment-flag
+      (insert prefix (TeX-comment-padding-string)))
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
     (indent-according-to-mode)
-    (or (looking-at "[ \t]*$")
-	(save-excursion (LaTeX-newline) (indent-according-to-mode)))
     (end-of-line 0)
-    (indent-according-to-mode)))
+    (if active-mark
+	(or (assoc environment LaTeX-indent-environment-list)
+	    (LaTeX-fill-environment nil))
+      (indent-according-to-mode))))
 
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
@@ -3024,11 +3017,8 @@ comments and verbatim environments"
   (save-excursion
     (LaTeX-mark-environment)
     (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-fill-region
-     (region-beginning)
-     (region-end)
-     justify
-     (concat " environment " (TeX-match-buffer 1)))))
+    (LaTeX-fill-region (region-beginning) (region-end) justify
+		       (concat " environment " (TeX-match-buffer 1)))))
 
 (defun LaTeX-fill-section (justify)
   "Fill and indent current logical section as LaTeX text."
@@ -3036,11 +3026,8 @@ comments and verbatim environments"
   (save-excursion
     (LaTeX-mark-section)
     (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-fill-region
-     (region-beginning)
-     (region-end)
-     justify
-     (concat " section " (TeX-match-buffer 1)))))
+    (LaTeX-fill-region (region-beginning) (region-end) justify
+		       (concat " section " (TeX-match-buffer 1)))))
 
 (defun LaTeX-mark-section ()
   "Set mark at end of current logical section, and point at top."
