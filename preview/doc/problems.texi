@@ -131,7 +131,7 @@ As of GNU Emacs 21.2, no image support is available in Emacs under
 Windows.  Without images, @previewlatex{} is useless.  The current
 @acronym{CVS} version of Emacs available from
 @uref{http://savannah.gnu.org/projects/emacs} now supports images
-including the @acronym{PNG} format, so @w{Emacs 21.4} should work out of
+including the @acronym{PNG} format, so @w{Emacs 22} should work out of
 the box once it is released.  Another option for Windows users might be
 to try XEmacs.  @previewlatex{} has successfully been installed with
 recent @acronym{CVS} versions of @w{GNU Emacs}, and both Cygwin XEmacs

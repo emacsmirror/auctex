@@ -1,5 +1,13 @@
 2005-02-09  David Kastrup  <dak@gnu.org>
 
+	* doc/faq.texi (Requirements): Stop talking about ancient XEmacs
+	versions.
+	(Requirements): Mention Emacs 22 instead of 21.4
+
+	* doc/install.texi (Prerequisites): same
+
+	* doc/problems.texi (Emacs problems): same
+
 	* preview-latex.spec (Conflicts): xemacs = 21.4.16
 
 	* RELEASE: Add some dvipng information, more detailed

@@ -34,17 +34,9 @@ to @email{preview-latex-devel@@lists.sourceforge.net}.
 See also the table at the end of the section.
 
 @previewlatex{} requires explicitely @w{GNU Emacs} with a version of at
-least 21.1. Concerning XEmacs, it is reported that it works for versions
-starting with 21.1.14 (with and without Mule). It is not expected to
-work with any with any version prior to this.  The operation of
-versions before 21.4.9 suffers from some `cosmetic' problems:
-
-@subsection Display Problem in XEmacs
-
-Vertical constructs such as superscripts are not displayed correctly
-in XEmacs. This is a known bug of the XEmacs display engine and
-supposed to be solved in version 21.4.9 for the X Window System
-version.  For @w{MS Windows}, this bug has been fixed in 21.4.8.
+least 21.1.  However, @w{Emacs 22} (currently under development) offers
+superior performance and wider platform support.  XEmacs versions before
+21.4.9 should not be used to avoid display problems.
 
 @subsection Which versions of GhostScript and @AUCTeX{} are needed?
 
@@ -81,7 +73,7 @@ Under Windows, you should try the most recent versions of
 @previewlatex{} since a lot of typical Windows problems have been ironed
 out lately.  Under XEmacs, both Cygwin and native ports should work.
 Image support for GNU Emacs under Windows is expected with @w{Emacs
-21.4} which has not yet been released at the time of this writing.
+22} which has not yet been released at the time of this writing.
 @acronym{CVS} versions of it already work, however.
 
 The entry "X11/Unix" currently means Linux, Solaris or HP/UX, as well

@@ -35,10 +35,10 @@ Since @previewlatex{} heavily exercises new features of Emacs 21,
 getting the newest release is a good idea.
  
 While image support for Emacs under Microsoft Windows has not been
-implemented as of @w{version 21.3}, it is under development and can be
+implemented as of @w{version 21.4}, it is under development and can be
 accessed by anonymous @acronym{CVS} at
 @uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
-before @w{Emacs 21.4} gets released.
+before @w{Emacs 22} gets released.
 
 There is additional information for Windows installations in
 @ifset rawfile
