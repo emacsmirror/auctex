@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.33 1993-04-09 20:52:32 amanda Exp $
+;;; $Id: tex-buf.el,v 1.34 1993-04-09 22:12:49 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -188,12 +188,17 @@ LIST default to TeX-expand-list."
 (defun TeX-check-dependency (derived original)
   "Return non-nil if DERIVED is older than ORIGINAL
 Also check if ORIGINAL is modified in a non-saved buffer."
-  (or (file-newer-than-file-p original derived)
-      (TeX-member original (buffer-list)
-		  (function (lambda (file buffer)
-			      (and (equal (expand-file-name file)
-					  (buffer-file-name buffer))
-				   (buffer-modified-p buffer)))))))
+  (mapcar (function (lambda (buffer)
+		      (and (equal (expand-file-name original)
+				  (buffer-file-name buffer))
+			   (y-or-n-p (concat "Save file "
+					     (buffer-file-name buffer)
+					     "? "))
+			   (save-excursion
+			     (set-buffer buffer)
+			     (save-buffer)))))
+	  (buffer-list))
+  (file-newer-than-file-p original derived))
 
 (defvar TeX-check-path (if TeX-fast
 			   nil
@@ -529,7 +534,6 @@ Return nil iff no process buffer exist."
   "Check if a process for the TeX document NAME already exist.
 If so, give the user the choice of aborting the process or the current
 command."
-  (save-some-buffers)
   (let ((process (TeX-process name)))
     (cond ((null process))
 	  ((not (eq (process-status process) 'run)))
