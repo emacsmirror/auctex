@@ -1,7 +1,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.6
-Release: 	0
+Release: 	1
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -50,12 +50,11 @@ set_here `grep ^AUCTEXDIR Makefile`
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/install-info --info-dir=%{_infodir} \
-	%{_infodir}/preview-latex.info
+install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
 texhash /usr/share/texmf
 
 %preun
-/sbin/install-info --info-dir=%{_infodir} --delete \
+install-info --info-dir=%{_infodir} --delete \
 	%{_infodir}/preview-latex.info 
 
 %files
