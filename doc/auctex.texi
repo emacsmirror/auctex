@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.179 2004-08-13 08:43:13 angeli Exp $
+@c $Id: auctex.texi,v 1.180 2004-08-13 14:20:33 angeli Exp $
 
 @finalout
 @titlepage
@@ -56,7 +56,7 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
-@ifinfo
+@ifnottex
 @node top, Copying, (dir), (dir)
 @top @AUCTeX{}
 
@@ -99,7 +99,7 @@ to @samp{auc-tex@@sunsite.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
 TeX-submit-bug-report} to report bugs if possible.
 
-@end ifinfo
+@end ifnottex
 
 @menu
 * Copying::                     Copying
