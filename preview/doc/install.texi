@@ -36,10 +36,11 @@ accessed by anonymous @acronym{CVS} at
 @uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
 before @w{Emacs 21.3} gets released.
 
-Another option is to try XEmacs for which we now have preliminary
-support available.  @strong{Please note:} Presently, the port to XEmacs
-is work in progress.  Don't expect too much, and be prepared to contact
-the developers.
+Another option is to try XEmacs, for which we now have support
+available.  @strong{Please note:} Presently, the port to XEmacs is work
+in progress.  Don't expect too much, and be prepared to contact the
+developers.  Problems with the XEmacs port are described in @ref{Known
+Problems}.
 
 @item A working @AUCTeX{} installation
 
@@ -124,7 +125,8 @@ configure is suggesting.
 @item --with-packagedir=@var{/dir}
 This tells where to install the XEmacs Package.  Again, this option is
 normally unnecessary, but may be used if you don't like the directory
-that configure is suggesting.
+that configure is suggesting, and you know that XEmacs regards the
+directory you specify as a package directory.
 
 @item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location, use this option
@@ -197,11 +199,11 @@ You need to place a few lines in your personal @file{.emacs} file (or
 a site-wide configuration file). Also, please remember to load
 @AUCTeX{}.
 
-If you used the option @code{--with-lispdir}, you have to make sure that
-the directory where you installed the lisp files of @previewlatex{} is
-in Emacs' @code{load-path} variable.  This could mean, for example,
-adding the line @code{(add-to-list 'load-path "~/elisp/preview")} to
-your @file{.emacs} file.
+Under Emacs, if you used the option @code{--with-lispdir}, you have to
+make sure that the directory where you installed the lisp files of
+@previewlatex{} is in Emacs' @code{load-path} variable.  This could
+mean, for example, adding the line @code{(add-to-list 'load-path
+"~/elisp/preview")} to your @file{.emacs} file.
 
 @cindex @file{.emacs} 
 Next put the following lines into your @file{.emacs} file:
@@ -217,6 +219,15 @@ into @AUCTeX{} when you first load a @LaTeX{} file (be sure to have
 you a graphics preview.  You can customize the default option set and
 other settings of the Emacs package by entering @kbd{M-x customize-group
 @key{RET} preview @key{RET}}.
+
+Under XEmacs, if you specified a valid package directory, or none at
+all, then restarting XEmacs should be enough to make the package
+visible, and @kbd{C-c C-c g @key{RET}} should produce previews as they
+do for Emacs.
+
+If you used @code{--with-packagedir}, you have to make sure that the
+directory @file{lisp/preview} under the directory you specified is in
+XEmacs's @code{load-path} variable.
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
