@@ -129,7 +129,7 @@ TEXMFGEN=["`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.[a-z][a-z][a-z]\)}.*$/\
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
-AC_PATH_PROG_REQUIRED(TEXHASH, texhash, /bin/true)
+AC_PATH_PROGS(TEXHASH, texhash mktexlsr MakeTeXls-R, /bin/true)
 AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
 
 AC_SUBST(auctexdir)
