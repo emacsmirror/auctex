@@ -4,7 +4,9 @@
 	new commands \PreviewMacro* and \PreviewEnvironment*.
 	(subsection{The internals}): New internal \pr@protect.
 	(subsection{Preview attaching commands}): Implement the new
-	*-forms.
+	`*'-forms.
+	(subsection{Preview attaching commands}): 
+	Also treat \end{env} in \PreviewEnvironment*.
 
 2001-11-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
