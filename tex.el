@@ -230,8 +230,7 @@ the respective mode names."
 			(boolean :tag "Prompt")
                         (choice :tag "Modes"
                                 (const :tag "All" t)
-                                (set :tag "Specific"
-                                     (const :tag "Plain TeX" plain-tex-mode)
+                                (set (const :tag "Plain TeX" plain-tex-mode)
                                      (const :tag "LaTeX" latex-mode)
                                      (const :tag "ConTeXt" context-mode)
                                      (const :tag "Texinfo" texinfo-mode)
@@ -515,7 +514,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.314 $"))
+	(rev "$Revision: 5.315 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +529,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-07 09:42:16 $"))
+    (let ((date "$Date: 2004-01-07 16:53:50 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
