@@ -24,7 +24,8 @@ platforms, use of it is advantageous.
 This version finally gets rid of all 8bit issues that plagued
 cooperation with several TeX distributions, and will also support
 utf-8 input files.  X-Symbol (as of 4.5.1-beta) will still require an
-8bit-transparent TeX executable.
+8bit-transparent TeX executable.  Icons now come in several sizes,
+blending better with the text display.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The

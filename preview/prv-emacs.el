@@ -374,10 +374,11 @@ purposes."
   (easy-menu-add preview-menu LaTeX-mode-map)
   (unless preview-tb-icon
     (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
-  (define-key LaTeX-mode-map [tool-bar preview]
-    `(menu-item "Preview at point" preview-at-point
-		:image ,preview-tb-icon
-		:help "Preview on/off at point"))
+  (when preview-tb-icon
+    (define-key LaTeX-mode-map [tool-bar preview]
+      `(menu-item "Preview at point" preview-at-point
+		  :image ,preview-tb-icon
+		  :help "Preview on/off at point")))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
 	   format-cons)

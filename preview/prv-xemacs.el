@@ -252,6 +252,8 @@ other hooks, such as major mode hooks, can do the job."
   '((:type xpm :file "prvtex-cap-up.xpm" :ascent 75)
     (:type xbm :file "prvtex24.xbm" :ascent 75)))
 
+(defvar preview-tb-icon nil)
+
 ;; Image frobbing.
 
 (defun preview-add-urgentization (fun ov &rest rest)
@@ -443,8 +445,6 @@ Pure borderless black-on-white will return quadruple NIL."
   :group 'preview-appearance
   :type 'boolean)
 
-(defvar preview-icon-toolbar-button nil)
-
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
   (set (make-local-variable 'desktop-save-buffer)
@@ -461,24 +461,28 @@ Pure borderless black-on-white will return quadruple NIL."
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
   (add-hook 'after-change-functions #'preview-handle-after-change nil t)
   (easy-menu-add preview-menu)
-  (unless preview-icon-toolbar-button
-    (setq preview-icon-toolbar-button
-	  (vector
-	   (list (preview-filter-specs preview-tb-icon-specs))
-	   #'preview-at-point
-	   t
-	   "Preview on/off at point")))
+  (unless preview-tb-icon
+    (setq preview-tb-icon (preview-filter-specs
+				       preview-tb-icon-specs))
+    (when preview-tb-icon
+      (setq preview-tb-icon
+	    (vector
+	     (list preview-tb-icon)
+	     #'preview-at-point
+	     t
+	     "Preview on/off at point"))))
 ;;; [Courtesy Stephen J. Turnbull, with some modifications
 ;;;  Message-ID: <87el9fglsj.fsf@tleepslib.sk.tsukuba.ac.jp>
 ;;;  I could not have figured this out for the world]
 ;;; Hm, there really ought to be a way to get the spec that would be
 ;;; instantiated in a given domain
-  (let ((tb (cdadar (or (specifier-spec-list default-toolbar (current-buffer))
-			(specifier-spec-list default-toolbar 'global)))))
-    (unless (member preview-icon-toolbar-button tb)
-      (set-specifier default-toolbar
-		     (append tb (list preview-icon-toolbar-button))
-		     (current-buffer))))
+  (when preview-tb-icon
+    (let ((tb (cdadar (or (specifier-spec-list default-toolbar (current-buffer))
+			  (specifier-spec-list default-toolbar 'global)))))
+      (unless (member preview-tb-icon tb)
+	(set-specifier default-toolbar
+		       (append tb (list preview-tb-icon))
+		       (current-buffer)))))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
 	   format-cons)

@@ -1,3 +1,16 @@
+2005-02-10  David Kastrup  <dak@gnu.org>
+
+	* prv-emacs.el (preview-mode-setup): Only define a preview toolbar
+	entry when the icon is valid.
+
+	* RELEASE: Mention the new icons.
+
+	* prv-xemacs.el (preview-tb-icon): Use this instead of
+	(preview-icon-toolbar-button): in order to match
+	`preview-tb-icon-specs', as in prv-emacs.el
+	(preview-mode-setup): Don't install a toolbar item when no icon
+	image can be generated properly.
+
 2005-02-09  David Kastrup  <dak@gnu.org>
 
 	* prv-xemacs.el (add-to-list): only provide definition for
