@@ -1,3 +1,12 @@
+2004-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-find-opening-brace): Don't match the char before the
+	brace.  This returns the correct position and fixes the handling
+	of the limit parameter.
+
+	* latex.el (LaTeX-fill-move-to-break-point): Don't match the char
+	before the char to find in case of backward searches.
+
 2004-03-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Use `TeX-esc' in
