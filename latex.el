@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.14 1994-04-26 18:22:46 amanda Exp $
+;; Version: $Id: latex.el,v 5.15 1994-04-27 16:28:10 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1523,16 +1523,16 @@ The second element in each entry is the function to calculate the
 indentation level in columns.")
 
 (defvar LaTeX-indent-environment-check t
-  "If non-nil, check for any special environments.")
+  "*If non-nil, check for any special environments.")
 
 (defvar LaTeX-left-comment-regexp "%%%"
-  "Regexp matching comments that should be placed on the left margin.")
+  "*Regexp matching comments that should be placed on the left margin.")
 
 (defvar LaTeX-right-comment-regexp "%[^%]"
-  "Regexp matching comments that should be placed to the right margin.")
+  "*Regexp matching comments that should be placed to the right margin.")
 
 (defvar LaTeX-ignore-comment-regexp nil
-  "Regexp matching comments that whose indentation should not be touched.")
+  "*Regexp matching comments that whose indentation should not be touched.")
 
 (defun LaTeX-indent-calculate ()
   ;; Return the correct indentation of line of LaTeX source. (I hope...)
@@ -1577,49 +1577,51 @@ indentation level in columns.")
 (defun LaTeX-indent-calculate-last ()
   "Return the correct indentation of a normal line of text.
 The point is supposed to be at the beginning of the current line."
-  (skip-chars-backward "\n\t ")
-  (move-to-column (current-indentation))
-
-  ;; Ignore comments.
-  (while (and (looking-at "%") (not (bobp)))
+  (save-restriction
+    (widen)
     (skip-chars-backward "\n\t ")
-    (if (not (bobp))
-	(move-to-column (current-indentation))))
+    (move-to-column (current-indentation))
 
-  (cond ((bobp)
-	 0)
-	((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
-	 ;; I dislike having all of the document indented...
-	 (current-indentation))
-	((looking-at (concat (regexp-quote TeX-esc) "begin"
-			     (regexp-quote TeX-grop)
-			     "verbatim\\*?"
-			     (regexp-quote TeX-grcl)))
-	 0)
-	((looking-at (concat (regexp-quote TeX-esc) "end"
-			     (regexp-quote TeX-grop)
-			     "verbatim\\*?"))
-	 ;; If I see an \end{verbatim} in the previous line I skip
-	 ;; back to the preceding \begin{verbatim}.
-	 (save-excursion
-	   (if (re-search-backward (concat (regexp-quote TeX-esc)
-					   "begin *"
+    ;; Ignore comments.
+    (while (and (looking-at "%") (not (bobp)))
+      (skip-chars-backward "\n\t ")
+      (if (not (bobp))
+	  (move-to-column (current-indentation))))
+
+    (cond ((bobp) 0)
+	  ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
+	   ;; I dislike having all of the document indented...
+	   (current-indentation))
+	  ((looking-at (concat (regexp-quote TeX-esc) "begin"
+			       (regexp-quote TeX-grop)
+			       "verbatim\\*?"
+			       (regexp-quote TeX-grcl)))
+	   0)
+	  ((looking-at (concat (regexp-quote TeX-esc) "end"
+			       (regexp-quote TeX-grop)
+			       "verbatim\\*?"))
+	   ;; If I see an \end{verbatim} in the previous line I skip
+	   ;; back to the preceding \begin{verbatim}.
+	   (save-excursion
+	     (if (re-search-backward (concat (regexp-quote TeX-esc)
+					     "begin *"
+					     (regexp-quote TeX-grop)
+					     "verbatim\\*?"
+					     (regexp-quote TeX-grcl)) 0 t)
+		 (LaTeX-indent-calculate-last)
+	       0)))
+	  (t (+ (TeX-brace-count-line)
+		(cond ((looking-at (concat "\\("
+					   (regexp-quote TeX-esc) "begin *"
 					   (regexp-quote TeX-grop)
-					   "verbatim\\*?"
-					   (regexp-quote TeX-grcl)) 0 t)
-	       (LaTeX-indent-calculate-last)
-	     0)))
-	(t (+ (TeX-brace-count-line)
-	      (cond ((looking-at (concat "\\("
-					 (regexp-quote TeX-esc) "begin *"
-					 (regexp-quote TeX-grop)
-					 "\\|"
-					 (regexp-quote TeX-esc) "left\\W\\)"))
-		     (+ (current-indentation) LaTeX-indent-level))
-		    ((looking-at (concat (regexp-quote TeX-esc)
-					 LaTeX-item-regexp))
-		     (- (current-indentation) LaTeX-item-indent))
-		    (t (current-indentation)))))))
+					   "\\|"
+					   (regexp-quote TeX-esc)
+					   "left\\W\\)"))
+		       (+ (current-indentation) LaTeX-indent-level))
+		      ((looking-at (concat (regexp-quote TeX-esc)
+					   LaTeX-item-regexp))
+		       (- (current-indentation) LaTeX-item-indent))
+		      (t (current-indentation))))))))
 
 ;;; Keymap
 
