@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10q
+;; Version: 9.10r
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2280,8 +2280,9 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   ;; From tex.el
   (define-key TeX-mode-map "\""       'TeX-insert-quote)
   (define-key TeX-mode-map "$"        'TeX-insert-dollar)
-  (define-key TeX-mode-map "."        'TeX-insert-punctuation)
-  (define-key TeX-mode-map ","        'TeX-insert-punctuation)
+  ;; Removed because LaTeX 2e have a better solution to italic correction.
+  ;; (define-key TeX-mode-map "."        'TeX-insert-punctuation)
+  ;; (define-key TeX-mode-map ","        'TeX-insert-punctuation)
   (define-key TeX-mode-map "\C-c{"    'TeX-insert-braces)
   (define-key TeX-mode-map "\C-c\C-f" 'TeX-font)
   (define-key TeX-mode-map "\C-c\C-m" 'TeX-insert-macro)
