@@ -2985,10 +2985,19 @@ the last entry in the menu."
 	(list "Miscellaneous"
 	      ["Math Mode" LaTeX-math-mode
 	       :style toggle :selected LaTeX-math-mode ]
-	      ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
 	      [ "Convert 209 to 2e" LaTeX-209-to-2e
-		:active (member "latex2" (TeX-style-list)) ]
+		:active (member "latex2" (TeX-style-list)) ])
+        "-"
+        (list "AUCTeX"
+              (list "Customize"
+                    ["Browse options"
+                     (customize-group 'AUCTeX)]
+                    ["Extend this menu"
+                     (easy-menu-add-item
+                      nil '("LaTeX")
+                      (customize-menu-create 'AUCTeX))])
+              ["Documentation" TeX-goto-info-page t]
+	      ["Submit bug report" TeX-submit-bug-report t]
 	      ["Reset Buffer" TeX-normal-mode t]
 	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
