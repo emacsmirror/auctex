@@ -1,3 +1,10 @@
+2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-replace-active-icon): Use
+	set-extend-end-glyph.
+	(preview-toggle): Use set-extent-begin-glyph and
+	set-extent-end-glyph and their ilk.
+
 2002-04-15  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Docs now goes in preview-latex-n.n-n
