@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1104}
+%\CheckSum{1112}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.70 $
+%  \rcskey \version CVS-$Revision: 1.71 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-11-28 20:42:41 $
+%\rcskey\next $Date: 2002-12-09 21:37:36 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -352,10 +352,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.70 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.71 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-11-28 20:42:41 $
+\reserved@a\next $Date: 2002-12-09 21:37:36 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -933,8 +933,8 @@
 %  First we write the definitions of these environments when |preview|
 %  is inactive.  We will redefine them if |preview| gets activated.
 %    \begin{macrocode}
-\newenvironment{preview}{\ignorespaces}{\unskip}
-\newenvironment{nopreview}{\ignorespaces}{\unskip}
+\newenvironment{preview}{\ignorespaces}{\ifhmode\unskip\fi}
+\newenvironment{nopreview}{\ignorespaces}{\ifhmode\unskip\fi}
 %    \end{macrocode}
 %\end{environment}
 %\end{environment}
@@ -953,8 +953,9 @@
    \pr@startbox{\begingroup\aftergroup\pr@endbox}%
                {\endgroup}%
    \ignorespaces}%
-   {\unskip\endgroup}
-\renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}{\unskip}
+   {\ifhmode\unskip\fi\endgroup}
+\renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}%
+  {\ifhmode\unskip\fi}
 %    \end{macrocode}
 %Try to keep \LaTeX\ from overwriting its information files:
 %    \begin{macrocode}
