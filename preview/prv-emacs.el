@@ -503,11 +503,20 @@ This makes it possible to add to them."
 	   (use-local-map LaTeX-mode-map) ,@bodyforms)
        (use-local-map save-map))))
 
-(defmacro preview-export-image (image)
-  image)
+(defun preview-export-image (image)
+  "Format an IMAGE into something printable."
+  (let ((plist (cdr image)))
+    (list (plist-get plist :file)
+	  (plist-get plist :type)
+	  (plist-get plist :ascent))))
 
-(defmacro preview-import-image (image)
-  image)
+(defun preview-import-image (image)
+  "Convert the printable IMAGE rendition back to an image."
+  (if (eq (car image) 'image)
+      image
+    (preview-create-icon (nth 0 image)
+			 (nth 1 image)
+			 (nth 2 image))))
 
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here

@@ -648,16 +648,22 @@ Disable it if that is the case.  Ignores text properties."
 		    end end beg 'end-in-region 'preview-state 'active)))
 
 (defun preview-export-image (image)
-  (list 'image :file (image-instance-file-name (glyph-image-instance image))
-	:type (glyph-image-type image)
-	:ascent (glyph-baseline-instance image)))
+  "Format an IMAGE into something printable."
+  (list (image-instance-file-name (glyph-image-instance image))
+	(glyph-image-type image)
+	(glyph-baseline-instance image)))
 
 (defun preview-import-image (image)
-  (let ((plist (cdr image)))
-    (preview-create-icon
-     (plist-get plist :file)
-     (plist-get plist :type)
-     (plist-get plist :ascent))))
+  "Convert the printable IMAGE rendition back to an image."
+  (if (eq (car image) 'image)
+      (let ((plist (cdr image)))
+	(preview-create-icon
+	 (plist-get plist :file)
+	 (plist-get plist :type)
+	 (plist-get plist :ascent)))
+    (preview-create-icon (nth 0 image)
+			 (nth 1 image)
+			 (nth 2 image))))
 
 ;; Now bind the list of compatibility macros into the compiled code.
 
