@@ -2885,13 +2885,14 @@ depends on the value of `LaTeX-syntactic-comments'."
 	    (save-excursion
 	      (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
       (setq fill-prefix
-	    (concat (if indent-tabs-mode
-			(concat (make-string (/ (current-column) 8) ?\t)
-				(make-string (% (current-column) 8) ?\ ))
-		      (make-string (current-column) ?\ ))
-		    (progn
-		      (looking-at (concat TeX-comment-start-regexp "+[ \t]*"))
-		      (buffer-substring (match-beginning 0) (match-end 0)))))
+	    (concat
+	     (if indent-tabs-mode
+		 (concat (make-string (/ (current-column) tab-width) ?\t)
+			 (make-string (% (current-column) tab-width) ?\ ))
+	       (make-string (current-column) ?\ ))
+	     (progn
+	       (looking-at (concat TeX-comment-start-regexp "+[ \t]*"))
+	       (buffer-substring (match-beginning 0) (match-end 0)))))
       (fill-region-as-paragraph beg end justify-flag  nil
 				(save-excursion
 				  (goto-char beg)
