@@ -1,5 +1,8 @@
 2003-02-14  Patrick Gundlach  <patrick@gundla.ch>
 
+	* context.el: Added basic environment support (insert-envrionment
+	and close-environment). Added basic interface support.
+
 	* tex.el, latex.el : moved TeX-arg-literal and TeX-near-bopb from
 	latex.el to tex.el. More will follow.
 
