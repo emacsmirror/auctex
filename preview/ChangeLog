@@ -1,3 +1,7 @@
+2003-11-05  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* preview.el: Primitive dvipng support. Lacking ascent and colors.
+
 2003-11-04  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/todo.texi: Add quite a few more wishes.  Actually, it would
