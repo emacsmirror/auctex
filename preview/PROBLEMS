@@ -20,7 +20,23 @@ processing a particular image, this image will be tagged with
 middle-clickable buttons for the error description and for the
 corresponding source file.
 
+The default options configurable with
+M-x customize-variable RET preview-gs-options
+
+include the options "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4".
+These options have been reported to make GhostScript 5.50 fail, but
+are reported to work under GhostScript 6.51 and later.  If you are
+experiencing problems, it might help to customize them away.  Of
+course, this also takes away the joy of antialiasing, so upgrading
+GhostScript might not be the worst idea after all.
+
 ** Various patches
+
+Cut those out and pipe them through the patch program in the
+appropriate directory.  Under Emacs, you can do this by first doing
+M-x cd RET and then entering the directory in which the file to patch
+resides, then marking the region in this file containing the patch and
+doing M-| patch RET.
 
 * Emacs-21.0.106 (don't use any earlier)
 
