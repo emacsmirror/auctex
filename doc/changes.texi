@@ -8,6 +8,11 @@ La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
 and the customization will not work correctly.
 
 @item
+Support for hiding and auto-revealing macros, e.g. footnotes or
+citations, in a buffer was added.  (The feature does not work
+flawlessly in XEmacs.)
+
+@item
 You can now control if indentation is done upon typing @key{RET} by
 customizing the variable @code{TeX-newline-function}.
 
