@@ -4050,7 +4050,7 @@ the last entry in the menu."
      ,(LaTeX-section-menu-create)
      ["Macro ..." TeX-insert-macro
       :help "Insert a macro and possibly arguments"]
-     ["Complete macro" TeX-complete-symbol
+     ["Complete Macro" TeX-complete-symbol
       :help "Complete the current macro or environment name"]
      (,LaTeX-environment-menu-name)
      (,LaTeX-environment-modify-menu-name)
@@ -4156,17 +4156,17 @@ the last entry in the menu."
 ;; Rats.  XEmacs does not like :visible.  We'll use
 ;; TeX-maybe-remove-help in order to convert it to :included
      ("Customize"
-      ["Browse options"
+      ["Browse Options"
        (customize-group 'AUCTeX)
        :help "Open the customization buffer for AUCTeX"]
-      ["Extend this menu"
+      ["Extend this Menu"
        (easy-menu-add-item
 	nil '("LaTeX")
 	(customize-menu-create 'AUCTeX))
        :help "Make this menu a full-blown customization menu"])
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
-     ["Report AUCTeX bug" TeX-submit-bug-report
+     ["Report AUCTeX Bug" TeX-submit-bug-report
       :help "Create a problem report for mailing"])))
 
 (defcustom LaTeX-font-list
