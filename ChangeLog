@@ -1,3 +1,32 @@
+2005-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Change maintainer address.
+	(font-latex-quotes, font-latex-make-built-in-keywords)
+	(font-latex-user-keyword-classes): Doc fix.  (Mention that setting
+	the variable directly does not take effect.)
+	(font-latex-make-match-defun, font-latex-make-built-in-keywords)
+	(font-latex-make-user-keywords): Doc strings of generated
+	variables and functions now refer to the creating functions.
+	(font-latex-warning-face, font-latex-sedate-face)
+	(font-latex-italic-face, font-latex-bold-face)
+	(font-latex-math-face, font-latex-string-face)
+	(font-latex-verbatim-face, font-latex-superscript-face)
+	(font-latex-subscript-face, font-latex-title-1-face)
+	(font-latex-title-2-face, font-latex-title-3-face)
+	(font-latex-title-4-face): Remove these face variables.
+	(font-latex-title-fontify): Remove :set function.
+	(font-latex-built-in-keyword-classes): Use
+	`font-lock-constant-face' instead of `font-lock-reference-face'
+	because the latter is deprecated in Emacs (and only an alias for
+	the former which will not work if the quoted face name is used).
+	Use new `title' specifier as type of keyword for the titling
+	keywords and mention it in the doc string.
+	(font-latex-keyword-matcher): Quote face specifiers in any case.
+	(font-latex-make-user-keywords)
+	(font-latex-syntactic-face-function): Quote face specifiers.
+	(font-latex-setup): Remove obsolete method for fontifying strings
+	or math respectively.
+
 2005-03-28  David Kastrup  <dak@gnu.org>
 
 	* tex.el: Change maintainer address.
