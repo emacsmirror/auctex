@@ -59,8 +59,8 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
-@summarycontents
-@c @contents
+@c @summarycontents
+@contents
 
 @ifnottex
 @node top, Introduction, (dir), (dir)
@@ -232,15 +232,17 @@ in use, it may operate entirely differently under XEmacs.
 In the @code{Preview Latex} group, check the box next to @code{textmath}
 in @code{Preview Default Option List}.
 
-@item The @code{showkeys} package
-@cindex @code{showkeys}
+@item Showing @code{\label}s
+@cindex @code{Showing @code{\label}s}
 
-When using @previewlatex{}, the @code{\label}s are hidden by the previews.
-To show them in the previews (yes, this is possible) use the @LaTeX{}
-package @code{showkeys}, by changing @code{Preview Default Preamble} in
-the @code{Preview Latex} group to include @code{\usepackage@{showkeys@}}
-before the @code{\RequirePackage[%P]@{preview@}} line (press the @key{Show}
-and the first @key{INS} buttons).
+When using @previewlatex{}, the @code{\label}s are hidden by the
+previews.  It is possible to make them visible in the output @file{.dvi}
+by using the @LaTeX{} package @code{showkeys} alternatively
+@code{showlabels}. However, the boxes of these labels will be outside
+the region @previewlatex{} considers as the preview image. To enable a
+similar mechanism internal to @previewlatex{}, enable the
+@code{showlabels} option in @code{Preview Default Option List} in the
+@code{Preview Latex} group.
 
 @item Open previews automatically
 
