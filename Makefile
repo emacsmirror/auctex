@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.108 1994-11-28 01:41:19 amanda Exp $
+# $Id: Makefile,v 5.109 1995-01-11 12:59:37 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -104,7 +104,7 @@ AUCSRC = auc-old.el  tex.el \
 
 STYLESRC = style/slides.el    style/foils.el \
 	   style/article.el   style/book.el     style/letter.el \
-	   style/report.el    style/amsart.el \
+	   style/report.el    style/amsart.el   style/amsbook.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
@@ -239,6 +239,8 @@ dist:
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
+	rm -f /user/amanda/lib/www/auctex/version
+	echo $(TAG) > /user/amanda/lib/www/auctex/version
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig

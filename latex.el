@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.34 1994-12-02 09:06:30 amanda Exp $
+;; Version: $Id: latex.el,v 5.35 1995-01-11 12:59:43 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -807,6 +807,8 @@ You may use LaTeX-item-list to change the routines used to insert the item."
      ("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (1 2) LaTeX-auto-arguments)
      ("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
+     ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\["
+      1 LaTeX-auto-environment)
      ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (1 2) LaTeX-auto-env-args)
      ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
@@ -1001,6 +1003,8 @@ It will setup BibTeX to store keys in an auto file."
   (setq TeX-auto-update 'BibTeX)
   (make-local-variable 'TeX-auto-untabify)
   (setq TeX-auto-untabify nil)
+  (make-local-variable 'TeX-auto-parse-length)
+  (setq TeX-auto-parse-length 999999)
   (make-local-variable 'TeX-auto-regexp-list)
   (setq TeX-auto-regexp-list BibTeX-auto-regexp-list))
 

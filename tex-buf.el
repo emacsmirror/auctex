@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.76 1994-12-02 09:06:37 amanda Exp $
+;; $Id: tex-buf.el,v 1.77 1995-01-11 12:59:51 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -99,7 +99,7 @@ not active, the new text in the previous used region will be used.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The document's header is all
-text after TeX-header-end.
+text before TeX-header-end.
 
 If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The document's trailer is
@@ -571,8 +571,28 @@ NAME is the name of the process.")
   (make-variable-buffer-local 'TeX-sentinel-function)
 
 (defun TeX-TeX-sentinel (process name)
+  "Cleanup TeX output buffer after running TeX."
+  (if (TeX-TeX-sentinel-check process name)
+      ()
+    (message (concat name ": formatted " (TeX-current-pages)))
+    (setq TeX-command-next TeX-command-Show)))
+
+(defun TeX-current-pages ()
+  ;; String indictating the number of pages formatted.
+  (cond ((null TeX-current-page)
+	 ("some pages."))
+	((string-match "[^0-9]1[^0-9]" TeX-current-page)
+	 (concat TeX-current-page " page."))
+	(t
+	 (concat TeX-current-page " pages."))))
+
+(defun TeX-TeX-sentinel-check (process name)
   "Cleanup TeX output buffer after running TeX.
 Return nil ifs no errors were found."
+  (save-excursion
+    (goto-char (point-max))
+    (if (re-search-backward "^Output written on.* (\\([0-9]+\\) page" nil t)
+	(setq TeX-current-page (concat "{" (TeX-match-buffer 1) "}"))))
   (if process (TeX-format-mode-line process))
   (if (re-search-forward "^! " nil t)
       (progn
@@ -585,7 +605,7 @@ Return nil ifs no errors were found."
 
 (defun TeX-LaTeX-sentinel (process name)
   "Cleanup TeX output buffer after running LaTeX."
-  (cond ((TeX-TeX-sentinel process name))
+  (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
 		(re-search-forward "^LaTeX Warning: Citation" nil t))
 	      (let ((current (current-buffer)))
@@ -595,24 +615,30 @@ Return nil ifs no errors were found."
 					(append TeX-file-extensions
 						BibTeX-file-extensions))
 		  (set-buffer current))))
-	 (message "You should run BibTeX to get citations right.")
+	 (message (concat "You should run BibTeX to get citations right, "
+                          (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-BibTeX))
 	((re-search-forward "^LaTeX Warning: Label(s)" nil t)
-	 (message "You should run LaTeX again to get references right.")
+	 (message (concat "You should run LaTeX again "
+			  "to get references right, "
+                          (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
-	 (message (concat name ": there were unresolved references."))
+	 (message (concat name ": there were unresolved references, "
+                          (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward "^LaTeX Warning: Citation" nil t)
-	 (message (concat name ": there were unresolved citations."))
+	 (message (concat name ": there were unresolved citations, "
+                          (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
 	 (message (concat name ": successfully formatted "
-			  (or TeX-current-page "some") " pages."))
+			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
-	 (message (concat name ": problems."))
+	 (message (concat name ": problems after "
+			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-default))))
 
 (defun TeX-BibTeX-sentinel (process name)
@@ -724,9 +750,7 @@ command."
     (save-excursion
       (save-match-data
 	(if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
-	    (let ((new (TeX-match-buffer 0)))
-	      (if (not (string-equal new TeX-current-page))
-		  (setq TeX-current-page new))))))
+	    (setq TeX-current-page (TeX-match-buffer 0)))))
     (TeX-format-mode-line process)))
 
 (defvar TeX-parse-function nil
@@ -801,37 +825,38 @@ original file."
 		   (save-excursion
 		     (save-restriction
 		       (set-buffer master-buffer)
-			   (save-excursion
-				 (save-restriction
-				   (widen)
-				   (goto-char (point-min))
-				   ;; NOTE: We use the local value of
-				   ;; TeX-header-end from the master file.
-				   (if (not (re-search-forward TeX-header-end nil t))
-					   ""
-					 (re-search-forward "[\r\n]" nil t)
-					 (buffer-substring (point-min) (point)))))))))
+		       (save-excursion
+			 (save-restriction
+			   (widen)
+			   (goto-char (point-min))
+			   ;; NOTE: We use the local value of
+			   ;; TeX-header-end from the master file.
+			   (if (not (re-search-forward TeX-header-end nil t))
+			       ""
+			     (re-search-forward "[\r\n]" nil t)
+			     (buffer-substring (point-min) (point)))))))))
 	 
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
 	 (trailer (if (string-match trailer-start region)
-				  ""
-				(save-excursion
-				  (save-restriction
-					(set-buffer master-buffer)
-					(save-excursion
-					  (save-restriction
-						(widen)
-						(goto-char (point-max))
-						;; NOTE: We use the local value of
-						;; TeX-trailer-start from the master file.
-						(if (not (re-search-backward TeX-trailer-start nil t))
-							""
-						  (beginning-of-line 1)
-						  (setq trailer-offset
-								(count-lines (point-min) (point)))
-						  (buffer-substring (point) (point-max))))))))))
+		      ""
+		    (save-excursion
+		      (save-restriction
+			(set-buffer master-buffer)
+			(save-excursion
+			  (save-restriction
+			    (widen)
+			    (goto-char (point-max))
+			    ;; NOTE: We use the local value of
+			    ;; TeX-trailer-start from the master file.
+			    (if (not (re-search-backward TeX-trailer-start nil t))
+				""
+			      ;;(beginning-of-line 1)
+			      (re-search-backward "[\r\n]" nil t)
+			      (setq trailer-offset
+				    (count-lines (point-min) (point)))
+			      (buffer-substring (point) (point-max))))))))))
     (save-excursion
       (set-buffer file-buffer)
       (setq original-content (buffer-string))

@@ -1,6 +1,53 @@
+Wed Jan 11 11:43:01 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-command-region): Comment fix.  Patch by
+	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger). 
+	(TeX-region-create): More outline-mode safe. Patch by
+	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger). 
+
+	* Makefile (dist): Put version number in WWW page.  Suggested by
+	several people. 
+
+	* latex.el (LaTeX-auto-regexp-list): Ignore first optional
+	argument to newenvironment if there is a second.  Problem reported
+	by schiotz@ltf.dth.dk (Jakob Schiotz).
+
+	* style/amsbook.el: New file.  Problem reported by Denby Wong
+	<3dw16@qlink.queensu.ca>.
+
+Wed Jan  4 02:34:11 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-TeX-sentinel-check): New function.  Updates
+	`TeX-current-page' with regexp by dodd@roebling.poly.edu (Lawrence
+	R. Dodd) 
+	(TeX-current-pages): New function.
+	(TeX-LaTeX-sentinel, TeX-TeX-sentinel): Use it.
+y	(TeX-format-filter): Removed unnecessary check before assignment.
+
+Tue Jan  3 03:38:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-LaTeX-sentinel): Write number of pages even
+	when labels or citations are missing.  Patch by
+	dodd@roebling.poly.edu (Lawrence R. Dodd).
+
+Wed Dec  7 11:47:56 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-directory-absolute-p): New function.  Should work on
+	both Unix and MS DOS.  Problem reported by schiotz@ltf.dth.dk
+	(Jakob Schiotz).
+	(TeX-parse-path): Use it.
+	(TeX-auto-generate): Use it.
+
+Mon Dec  5 12:11:12 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (BibTeX-auto-store): Set TeX-auto-parse-length to
+	999999 locally.  Problem reported by Christoph Wedler
+	<wedler@fmi.uni-passau.de>. 
+
 Fri Dec  2 08:20:10 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
-	* tex-buf.el (TeX-LaTeX-sentinel): 
+	* tex-buf.el (TeX-LaTeX-sentinel): Check whether the ".bbl" file
+	need to be udpated before setting TeX-command-next to "BibTeX".
 	(TeX-command-query): Remove previous change.
 
 Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>

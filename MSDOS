@@ -82,16 +82,7 @@ The directory names *must* end with a slash.")
 	parenthesis.
 
 
-STEP 3.	Fix an MS-DOS incompatibility in tex.el (may be fixed in your
-	copy). In the definition of the function TeX-auto-generate
-	find this line (line 1338 in my version):
-               (default-directory (concat (if (string-match "^/" tex)
-	change it to:
-               (default-directory (concat (if (string-match 
-					       "^\\([A-Za-z]:\\)?/" tex)
-	The problem is that AUC-TeX tests if a directory name is
-	absolute or relative by testing if it starts with "/". But in
-	MS-DOS there may be a drive letter and a colon too.
+STEP 3.	[ Fixed in 9.2 --Per ]
 
 
 STEP 4.	Add the following line to your _emacs file:
@@ -115,6 +106,7 @@ STEP 5. [OPTIONAL]
 	it should not work.
 	OR:
 	Ftp a copy of a DOS binary from ftp.iesd.auc.dk:/pub/packages/LaCheck.
+	[ This is an old version --Per ]
 
 
 STEP 6.	[OPTIONAL]
