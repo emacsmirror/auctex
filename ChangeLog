@@ -1,3 +1,8 @@
+2004-04-16  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (STYLESRC): Add jura.el and alphanum.el
+	style/jura.el, style/alphanum.el: contributed by Frank Küster.
+
 2004-04-16  Berend de Boer  <berend@pobox.com>
 
 	* context.el (context-guess-current-interface): support for
