@@ -75,7 +75,7 @@ but it should still be easy to move it elsewhere now.
 @item
 Ready for takeoff.  Start some shell (typically @file{bash}) capable of
 running @file{configure}, change into the installation directory and
-call @code{./configure} with appropriate options.
+call @command{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
@@ -127,7 +127,7 @@ If you need to use the prebuilt documentation (see above), now is the
 time to unpack it over the rest of the installation directory.
 
 @item
-Run @code{make} in the installation directory.
+Run @command{make} in the installation directory.
 	
 @item
 Run @code{make install} in the installation directory.

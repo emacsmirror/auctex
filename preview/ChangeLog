@@ -1,3 +1,9 @@
+2004-08-21  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/install.texi: Markup fixes, see "(texinfo)command".
+
+	* doc/wininstall.texi: Ditto.
+
 2004-08-09  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/preview-latex.texi: Bump version number.

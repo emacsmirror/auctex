@@ -4,8 +4,8 @@
 
 @end ifset
 @c -----------------------
-Installing @previewlatex{} should be simple: merely @code{./configure},
-@code{make}, and @code{make install}.  This does not yet activate the
+Installing @previewlatex{} should be simple: merely @command{./configure},
+@command{make}, and @code{make install}.  This does not yet activate the
 package, but merely makes it available.  See @ref{Loading the package}
 for the activation.  Note that unlike most emacs add-ins,
 @previewlatex{} consists of a @TeX{} part and an Emacs part (that uses
@@ -110,7 +110,7 @@ various files will be.  To do so, run
 @end example
 
 (Note: if you have fetched @previewlatex{} from @acronym{CVS} rather than
-a regular release, you will have to first generate @file{./configure} by
+a regular release, you will have to first generate @command{./configure} by
 running @code{autogen.sh} in the @file{preview} directory.)
 
 On many machines, you will not need to specify any options, but if
@@ -388,11 +388,11 @@ environment variable or an appropriate setting of a personal
 @samp{texmf.cnf} file.  It may well be that your site configuration
 already installs access to a personal user's @file{texmf} tree, in
 which case having specified the appropriate tree to
-@file{./configure} will have set up everything for yourself.
+@command{./configure} will have set up everything for yourself.
 If that personal tree is not located at the equivalent of
 @file{~myself/share/texmf}, it is a good idea to make this so with
 the help of a symbolic link, so that the usual @samp{--prefix}
-invocation to @file{./configure} is everything that is needed.
+invocation to @command{./configure} is everything that is needed.
 
 For others, you want to add something like
 
