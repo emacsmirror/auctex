@@ -1,3 +1,15 @@
+2004-08-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el: Change every occurence of "TeXinfo" to "Texinfo".
+	(Texinfo-environment-list): Add some missing environments.
+	(Texinfo-find-env-end, Texinfo-find-env-start): New functions.
+
+	* tex-fold.el (TeX-fold-buffer-type): Support folding of
+	environments in texinfo-mode.
+	(TeX-fold-item): Ditto.
+	(TeX-fold-hide-item): Display an error string of the macro
+	argument cannot be found.
+
 2004-08-14  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-command-list): rename `%(execmode)' to `%(execopts)'
