@@ -2,6 +2,12 @@
 
 @itemize @bullet
 @item
+The content of the command menu now depends on the mode (plain TeX,
+LaTeX, ConTeXt etc.).  Any former customization of the variable
+@code{TeX-command-menu} has to be erased.  Otherwise the command menu
+and the customization will not work correctly.
+
+@item
 Support for the KOMA-Script classes.
 Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
 
