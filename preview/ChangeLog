@@ -1,3 +1,23 @@
+2002-04-10  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* Makefile.in: Move the texmf part to latex/Makefile.in, fix the
+	'clean' target
+
+	* configure.in: preview.dtx has moved, generate latex/Makefile
+
+	* doc/Makefile.in: preview.dtx has moved
+
+	* latex/README-preview, README-preview:
+	Renamed README-preview to latex/README-preview
+
+	* latex/bootstrap.ins, bootstrap.ins:
+	Renamed bootstrap.ins to latex/bootstrap.ins
+
+	* latex/preview.dtx, preview.dtx:
+	Renamed preview.dtx to latex/preview.dtx
+
+	* latex/Makefile.in: Move latex style to subdir, Typo corrected
+
 2002-04-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-xemacs.el (face-attribute): GNU Emacs calculates face
