@@ -1,3 +1,12 @@
+2005-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-math-default): New entry and key for \colon.
+	New "Punctuation" category.  Get rid of some entries in
+	"delimiters" category already defined in "Arrows".  Get rid of
+	"delimiters" category and merge entries defined there into
+	"Delimiters.".
+	(LaTeX-math-menu): Remove "delimiters" and add "Punctuation".
+
 2005-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-user-keywords): Make XEmacs
