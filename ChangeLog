@@ -1,4 +1,19 @@
-2003-11-13 Ralf Angeli <angeli@iwi.uni-sb.de>
+2003-11-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (VirTeX-common-initialization): Disabled lines which set
+	`comment-add' to 1 to restore commenting with a single `%'.
+	(TeX-un-comment-region): Function code removed and function name
+	mapped to `comment-dwim'.
+	(TeX-un-comment): Allow searching for commented lines with
+	potential white space at the beginning.
+	(TeX-comment-paragraph): Partially rewritten to allow it to be
+	used for both commenting and uncommenting.
+	(TeX-in-commented-line): New function used in
+	`TeX-comment-paragraph'.
+
+	* doc/auc-tex.texi (Commenting): Reflect changes in `tex.el'.
+
+2003-11-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/paralist.el: New file.
 
