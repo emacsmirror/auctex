@@ -612,7 +612,8 @@ It may be customized with the following variables:
     (if active-mark
 	(or (assoc environment LaTeX-indent-environment-list)
 	    (LaTeX-fill-environment nil))
-      (indent-according-to-mode))))
+      (indent-according-to-mode)))
+  (TeX-math-input-method-off))
 
 (defun LaTeX-modify-environment (environment)
   "Modify current ENVIRONMENT."
