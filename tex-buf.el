@@ -1,10 +1,11 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1993, 1996, 2001, 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 1996, 2001, 2003, 2004,
+;;   2005 Free Software Foundation, Inc.
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auc-tex@sunsite.dk
-;; Keywords: tex
+;; Keywords: tex, wp
 
 ;; This file is part of AUCTeX.
 
@@ -25,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file provides support external commands.
+;; This file provides support for external commands.
 
 ;;; Code:
 
@@ -470,7 +471,7 @@ QUEUE is non-nil when we are checking for the printer queue."
 
 (defun TeX-view-output-file ()
   "Get the name of the current TeX output file"
-  (TeX-active-master (TeX-output-extension)))
+  (TeX-active-master (TeX-output-extension) t))
 
 (defun TeX-view-mouse (event)
   "Start `TeX-view' at mouse position."
@@ -1072,11 +1073,17 @@ command."
       (TeX-process-buffer (TeX-region-file))
     (TeX-process-buffer (TeX-master-file))))
 
-(defun TeX-active-master (&optional extension)
-  "The master file currently being compiled."
+(defun TeX-active-master (&optional extension nondirectory)
+  "The master file currently being compiled.
+
+If optional argument EXTENSION is non-nil, add that file extension to
+the name.  Special value t means use `TeX-default-extension'.
+
+If optional second argument NONDIRECTORY is non-nil, do not include
+the directory."
   (if TeX-current-process-region-p
-      (TeX-region-file extension)
-    (TeX-master-file extension)))
+      (TeX-region-file extension nondirectory)
+    (TeX-master-file extension nondirectory)))
 
 (defvar TeX-command-buffer nil
   "The buffer from where the last TeX command was issued.")
