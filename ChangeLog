@@ -1,3 +1,8 @@
+2003-09-18  Peter S Galbraith  <psg@debian.org>
+
+	* bib-cite.el: bib-cite-aux-inputs:  new defcustom.
+	Minor code cleanup for `match-string'.
+
 2003-09-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-master-file): Fix 'shared case.
