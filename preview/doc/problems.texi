@@ -1,5 +1,9 @@
 @c This is to enable generation of text-file from this file
 @ifnottex
+@unmacro AUCTeX
+@macro AUCTeX {}
+AUC@w{ }@TeX{}
+@end macro
 @unmacro LaTeX
 @unmacro previewlatex
 @macro LaTeX {}
@@ -121,14 +125,14 @@ and some bugs still might be lurking inside.
 @end itemize
 
 @node AUC TeX prior to 11.0, LaTeX international characters, Emacs problems, Known problems
-@section AUC @TeX{} prior to 11.0
+@section @AUCTeX{} prior to 11.0
 
-AUC @TeX{} versions up to and including 10.0g have a bug in the
+@AUCTeX{} versions up to and including 10.0g have a bug in the
 calculation of the offsets for the start of a region.  This affects
 @kbd{C-c C-r} commands where the start of the region does not lie on the
 start of a line.  It also affects regeneration of single previews.  To
 correct this, apply the patch in @file{patches/auctex-10.patch}.  It
-might be more prudent to install a more recent version of AUC @TeX{},
+might be more prudent to install a more recent version of @AUCTeX{},
 however.
 
 @node LaTeX international characters, x-symbol interoperation, AUC TeX prior to 11.0, Known problems
@@ -159,7 +163,7 @@ fails, pass the option @code{--disable-8bit-test} to configure.
 @section x-symbol interoperation
 
 Thanks to the work of Christoph Wedler, starting with version
-@samp{4.0h/beta} of x-symbol, the line parsing of AUC @TeX{} and
+@samp{4.0h/beta} of x-symbol, the line parsing of @AUCTeX{} and
 @previewlatex{} is fully supported.  Earlier versions exhibit problems.
 If you wonder about what x-symbol is, take a look at
 @uref{http://www.fmi.uni-passau.de/~wedler/x-symbol/emacs.html}.  In a

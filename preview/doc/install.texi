@@ -2,6 +2,10 @@
 @ifnottex
 @unmacro LaTeX
 @unmacro previewlatex
+@unmacro AUCTeX
+@macro AUCTeX {}
+AUC@w{ }@TeX{}
+@end macro
 @macro LaTeX {}
 La@TeX{}
 @end macro
@@ -13,7 +17,7 @@ preview-latex
 Installing @previewlatex{} should be simple: merely @code{./configure},
 @code{make}, and @code{make install}.  Note that unlike most emacs
 add-ins, @previewlatex{} consists of a @TeX{} part and an Emacs part (that
-uses AUC @TeX{}).  This makes configuration a bit trickier than normal.
+uses @AUCTeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
 
 @section Prerequisites
@@ -26,9 +30,9 @@ is Emacs-21.1.  Only very recent pretest versions before that have slight
 chances of working at all.  Since @previewlatex{} heavily exercises new
 features of Emacs 21, getting the newest release is a good idea.
 
-@item A working AUC @TeX{} installation
+@item A working @AUCTeX{} installation
 
-You need a working AUC @TeX{} installation.  AUC @TeX{} can be found at
+You need a working @AUCTeX{} installation.  @AUCTeX{} can be found at
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  All fairly recent
 versions should work.  Since at the time of this writing, the latest
 released version is 10.0g (with known issues), you should rather get an
@@ -74,7 +78,7 @@ If you are using a pretest which isn't in your @code{$PATH}, or
 it with this option.
 
 @item --with-tex-site=/dir
-If AUC @TeX{} is installed in a non-standard location (not in
+If @AUCTeX{} is installed in a non-standard location (not in
 @file{site-lisp}), use this option to specify the location of its
 @file{tex-site.el} file.
 
@@ -145,10 +149,10 @@ Next put the following lines into your @file{.emacs} file:
 @end example
 
 This will make Emacs load @file{preview.el} and let it install itself
-into AUC @TeX{} when you first load a @LaTeX{} file (be sure to have AUC
-@TeX{} up and working).  @kbd{C-c C-c g @key{RET}} should then give you a
-graphics preview.  You can customize the default option set and other
-settings of the Emacs package by entering @kbd{M-x customize-group
+into @AUCTeX{} when you first load a @LaTeX{} file (be sure to have
+@AUCTeX{} up and working).  @kbd{C-c C-c g @key{RET}} should then give
+you a graphics preview.  You can customize the default option set and
+other settings of the Emacs package by entering @kbd{M-x customize-group
 @key{RET} preview @key{RET}}.
 
 There is a sample file @file{circ.tex} which you can use for testing
