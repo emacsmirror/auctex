@@ -1,5 +1,11 @@
 2005-03-15  David Kastrup  <dak@gnu.org>
 
+	* doc/install.texi (Configure): Be somewhat more verbose.  Be
+	explicit about Emacs-only options.
+
+	* doc/wininstall.texi: Warn against Winzip.  Reorganize docs
+	somewhat and clarify about Emacs-only procedures.
+
 	* doc/preview-latex.texi (Keys and lisp): Document
 	preview-at-point allowing active region.
 

@@ -131,18 +131,20 @@ the name of the right XEmacs executable can be specified, complete with
 path if necessary.
 
 @item --with-packagedir=@var{/dir}
-is an XEmacs-only option giving the location of the package directory.
-This will install and activate the package.  Emacs uses a different
-installation scheme:
+This XEmacs-only option configures the directory for XEmacs packages.  A
+typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
+If this directory exists and is below @var{prefix}, it should be
+detected automatically.  This will install and activete the package.
+Emacs uses a different installation scheme:
 
 @item --with-lispdir=@var{/dir}
-This specifies the location of the startup file @file{preview-latex.el}
-which should be somewhere in the @var{load-path}.  @file{configure}
-should figure this out by itself.  However, some Emacs installations
-have a directory commonly called @file{site-start.d/} where files get
-automatically loaded.  If you want @previewlatex{} to be activated
-automatically, you can specify such a startup directory here.  If you do
-this, you'll also need
+This Emacs-only option specifies the location of the startup file
+@file{preview-latex.el} which should be somewhere in the
+@var{load-path}.  @file{configure} should figure this out by itself.
+However, some Emacs installations have a directory commonly called
+@file{site-start.d/} where files get automatically loaded.  If you want
+@previewlatex{} to be activated automatically, you can specify such a
+startup directory here.  If you do this, you'll also need
 
 @item --with-packagelispdir=@var{../preview}
 This is the directory where the bulk of the package gets located.  Since
@@ -239,7 +241,6 @@ That is all.  There are other ways of achieving the equivalent thing,
 but we don't mention them here any more since they are not better, and
 people got confused into trying everything at once.
 
-@file{preview-latex.el} itself is rather short, and loaded quite fast.
 When you first load a @LaTeX{} file, @file{preview.el} itself gets
 loaded (if you have @AUCTeX{} up and working).  @kbd{C-c C-p C-d} should
 then give you a graphics preview.  You can customize the default option
@@ -293,13 +294,11 @@ the line
 in his personal configuration file will be completely sufficient to keep
 his personal setup free from any impact of @previewlatex{}'s presence.
 
-For this reason we recommend installing the invocation provided in the
-file @file{preview-latex.el} at a place where it gets executed during
-the site startup phase of Emacs.  This will result in a default behavior
-of loading @previewlatex{} whenever @AUCTeX{} gets loaded.
-
-XEmacs uses a package system.  The default @previewlatex{} installation
-should cater for everything necessary in that case.
+For this reason we recommend automatically activating the package.  For
+Emacs, this is achieved by installing @file{preview-latex.el} in a
+@file{site-start.d} directory (if provided by your installation) like
+mentioned above.  For XEmacs' package system, the default
+@previewlatex{} installation will do something equivalent.
 
 For @acronym{RPM} files we include a @file{preview-latex.spec} file in
 the tarball distribution, suitable for recent RedHat systems, that

@@ -7,6 +7,13 @@ XEmacs.  Here are the steps to perform:
 
 @enumerate
 @item
+If you unpacked the distribution using Winzip or similar, you better
+restart using infozip on the @samp{.zip} file, or standard Unix tools
+(see the next point) on the @samp{.tar.gz} file: tools that make the
+mistake of turning Unix line endings into MSDOS line endings will cause
+trouble later in installation and operation.
+
+@item
 The installation of @previewlatex{} will require the MSYS tool set from
 @uref{http://www.mingw.org}.  If you have the Cygwin tool set from
 @uref{http://cygwin.com} installed, that should do just fine as well,
@@ -35,14 +42,14 @@ itself does not require a @w{C compiler} for installation.
 Install a current version of XEmacs (such as 21.4.10) from
 @uref{http://www.xemacs.org} or try getting and compiling an
 @acronym{CVS} version of @w{GNU Emacs} from
-@uref{http://savannah.gnu.org/cvs/?group=emacs}.  Precompiled versions
-happen to be available at @uref{http://www.crasseux.com/emacs/} and
-@uref{http://nqmacs.sf.net/}.
+@uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Precompiled
+versions happen to be available at @uref{http://www.crasseux.com/emacs/}
+and @uref{http://nqmacs.sf.net/}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
 Windows is @uref{http://www.miktex.org,Mik@TeX{}}.  Another much more
-extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
+extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} Live}}
 which is rather close to its Unix cousins.
 
 @item
@@ -112,15 +119,15 @@ the `Configure' section in the @file{INSTALL} file
 for more information about the available options.
 
 @item --with-packagedir=@var{/dir}
-This XEmacs-only option configures the directory for XEmacs packages.  A
-typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
-If this directory exists and is below @var{prefix}, it should be
-detected automatically.
+is an XEmacs-only option giving the location of the package directory.
+This will install and activate the package.  Emacs uses a different
+installation scheme:
 
 @item --with-lispdir=@var{/path/to/site-lisp}
-This tells where to install the setup file @file{preview-latex.el}.  The
-other files from @previewlatex{} will be installed in a subdirectory
-called @file{preview}.  If you have a @file{site-start.d} directory for
+This Emacs-only option tells where to install the setup file
+@file{preview-latex.el} (if not autodetected).  The other files from
+@previewlatex{} will be installed in a subdirectory called
+@file{preview}.  If you have a @file{site-start.d} directory for
 automatic package startup, please refer to the full installation
 instructions in
 @ifset rawfile
@@ -156,11 +163,14 @@ Run @command{make} in the installation directory.
 Run @code{make install} in the installation directory.
 
 @item
-The above should leave you with a file @file{preview-latex.el} in a
-suitable place in @var{load-path}.  If this is a special place where
-files get automatically loaded at startup, @previewlatex{} will be
-automatically enabled in LaTeX modes.  If this is not such a place, you
-can explicitly enable @previewlatex{} with the incantation
+In the case of XEmacs, the package directory setup creates startup files
+as necessary and you can skip to the next point.  If you are using
+Emacs, the installation procedure should have left you with a file
+@file{preview-latex.el} in a suitable place in @var{load-path}.  If this
+is a special place where files get automatically loaded at startup,
+@previewlatex{} will be automatically enabled in LaTeX modes.  If this
+is not such a place, you can explicitly enable @previewlatex{} with the
+incantation
 
 @example
 (load "preview-latex.el" nil t t)
