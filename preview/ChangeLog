@@ -1,5 +1,7 @@
 2005-03-03  David Kastrup  <dak@gnu.org>
 
+	* Release 0.9
+
 	* doc/wininstall.texi: Simplify, rearrange, adapt to new
 	installation scheme.  Add links to CVS precompiled versions.
 

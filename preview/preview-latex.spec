@@ -17,7 +17,7 @@ Summary: 	Emacs/LaTeX inline preview
 Name: 		preview-latex
 Version: 	0.9
 Release: 	1%{distri}
-Licence:        GPL
+License:        GPL
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
