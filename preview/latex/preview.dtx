@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1306}
+%\CheckSum{1321}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.85 $
+%  \rcskey \version CVS-$Revision: 1.86 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-11-02 14:00:58 $
+%\rcskey\next $Date: 2004-01-11 03:23:35 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -406,10 +406,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.85 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.86 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-11-02 14:00:58 $
+\reserved@a\next $Date: 2004-01-11 03:23:35 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1144,7 +1144,15 @@ Please complain to your document class author}%
 %  output.
 %    \begin{macrocode}
 \def\pr@typeinfos{\typeout{Preview: Fontsize \f@size pt}%
-  \ifnum\mag=\@m\else\typeout{Preview: Magnification \number\mag}\fi}
+  \ifnum\mag=\@m\else\typeout{Preview: Magnification \number\mag}\fi
+  \ifx\pdfoutput\@undefined \else
+    \ifx\pdfoutput\relax \else
+      \ifnum\pdfoutput>\z@
+        \typeout{Preview: PDFoutput}%
+      \fi
+    \fi
+  \fi
+}
 \AtBeginDocument{\pr@typeinfos}
 %    \end{macrocode}
 %\end{macro}
