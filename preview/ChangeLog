@@ -2,6 +2,10 @@
 
 	* preview.el (TeX-inline-preview): Use set-process-coding-system
 	only when Mule is active.
+	(preview-document): Save document if necessary.
+	(TeX-inline-preview): Some overhaul.
+	(TeX-inline-preview-internal): Separated out so that
+	region/format dumps don't interfere.
 
 	* prv-xemacs.el (preview-mode-setup): See below.
 	(preview-dump-threshold): See below.
