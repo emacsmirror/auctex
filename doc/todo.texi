@@ -52,6 +52,18 @@ language and look the error texts up in an appropriate index.  The user
 would then specify a preference list of languages, and the errors would
 be looked up in the catalogs in sequence until the were identified.
 
+@item Combining @samp{docTeX} with RefTeX
+
+Macro cross references should also be usable for document navigation
+using RefTeX.
+
+
+@end itemize
+
+@node Wishlist, Bugs, Mid-term Goals, ToDo
+@section Wishlist
+
+@itemize @bullet
 @item Quick error overviews
 
 An error overview window (extract from the log file with just the error
@@ -72,18 +84,10 @@ arbitrary control sequence, and get either the DVI viewer opened right
 at the definition of that macro (using Source Specials), or the source
 code of the @file{.dtx} file.
 
-@item Combining @samp{docTeX} with RefTeX
+@item Better plain TeX support
+For starters, @code{LaTeX-math-mode} is not very @LaTeX{}-specific in
+the first place, and similar holds for indentation and formatting.
 
-Macro cross references should also be usable for document navigation
-using RefTeX.
-
-
-@end itemize
-
-@node Wishlist, Bugs, Mid-term Goals, ToDo
-@section Wishlist
-
-@itemize @bullet
 @item
 Page count when compiling should (optionally) go to modeline of the
 window where the compilation command was invoked, instead of the output
@@ -94,6 +98,11 @@ window.  Suggested by Karsten Tinnefeld
 Command to insert a macrodefinition in the preamble, without moving
 point from the current location.  Suggested by
 "Jeffrey C. Ely" <ely@@nwu.edu>.
+
+@item
+A database of all commands defined in all stylefiles.  When a command or
+environment gets entered that is provided in one of the styles, insert
+the appropriate @code{\usepackage} in the preamble.
 
 @item
 A way to add and overwrite math mode entries in style files, and to
@@ -272,6 +281,10 @@ Hook up the letter environment with `bbdb.el'.
 @c FIXME: Are those bugs still present?  Especially the filling bugs?
 
 @itemize @bullet
+@item The parsed files and style hooks for @file{example.dtx},
+@file{example.sty}, @file{example.drv} and @file{example.bib} all
+clash.  Bad.
+
 @item
 Filling messes up comments, but only at the end of the file.  Reported
 by Juergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.

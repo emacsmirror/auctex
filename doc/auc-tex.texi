@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auc-tex.texi,v 1.171 2004-08-10 18:37:45 rsteib Exp $
+@c $Id: auc-tex.texi,v 1.172 2004-08-10 22:42:49 dak Exp $
 
 @finalout
 @titlepage
@@ -1464,13 +1464,13 @@ are controlled by the variable @code{TeX-command-list}.
 
 @deffn Command TeX-pin-region
 @kindex C-c C-t C-r
-If you don't have a mode like @code{transient-mark-mode} active, where
-marks get disabled automatically, the region would need to get properly
-set before each call to @code{TeX-command-region}.  If you fix the
-current region with @kbd{C-c C-t C-r}, then it will get used for more
-commands even though mark and point may change.  An explicitly activated
-mark, however, will always define a new region when calling
-@code{TeX-command-region}.
+(@kbd{C-c C-t C-r}) If you don't have a mode like
+@code{transient-mark-mode} active, where marks get disabled
+automatically, the region would need to get properly set before each
+call to @code{TeX-command-region}.  If you fix the current region with
+@kbd{C-c C-t C-r}, then it will get used for more commands even though
+mark and point may change.  An explicitly activated mark, however, will
+always define a new region when calling @code{TeX-command-region}.
 @end deffn
 
 @deffn Command TeX-command-buffer
@@ -1554,6 +1554,7 @@ Used when checking if any files have changed.
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
 @vindex TeX-PDF-mode
+(@kbd{C-c C-t C-p})
 This command toggles the @acronym{PDF} mode of @AUCTeX{}, a buffer-local
 minor mode.  You can customize @code{TeX-PDF-mode} to give it a
 different default.  The default is used when @AUCTeX{} does not have
@@ -1570,8 +1571,8 @@ packages like @samp{pdfcprot} even when producing @acronym{DVI} files.
 @deffn Command TeX-interactive-mode
 @kindex C-c C-t C-i
 @vindex TeX-interactive-mode
-This command, usually bound to @kbd{C-c C-t C-i}, toggles the
-interactive mode of @AUCTeX{}, a global minor mode.  You can customize
+(@kbd{C-c C-t C-i}) This command toggles the interactive mode of
+@AUCTeX{}, a global minor mode.  You can customize
 @code{TeX-interactive-mode} to give it a different default.  In
 interactive mode, @TeX{} will pause with an error prompt when errors are
 encountered and wait for the user to type something.
@@ -1580,11 +1581,11 @@ encountered and wait for the user to type something.
 @deffn Command TeX-source-specials-mode
 @kindex C-c C-t C-s
 @vindex TeX-source-specials-mode
-This command, bound to @kbd{C-c C-t C-s}, toggles Source Special
-support.  Source Specials will move the @acronym{DVI} viewer to the
-location corresponding to point (forward search), and it will use
-@samp{emacsclient} or @samp{gnuclient} to have the previewer move Emacs
-to a location corresponding to a control-click in the previewer window.
+(@kbd{C-c C-t C-s}) toggles Source Special support.  Source Specials
+will move the @acronym{DVI} viewer to the location corresponding to
+point (forward search), and it will use @samp{emacsclient} or
+@samp{gnuclient} to have the previewer move Emacs to a location
+corresponding to a control-click in the previewer window.
 
 You can permanently activate @code{TeX-source-specials-mode} with
 @lisp
