@@ -1,5 +1,12 @@
 2002-12-03  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* Makefile.in:
+	* prv-xemacs.el: handle the new toolbar image 
+
+	* images/preview-cap-up.xpm: toolbar image
+
+	* draw.c: unfinished change: repairing
+
 	* dvipng/draw.c: 
 	* dvipng/font.c: 	
 	* dvipng/vf.c: use void* in function call 
