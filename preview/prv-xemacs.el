@@ -362,16 +362,14 @@ FALLBACKS is unused."
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
   "This activates the LaTeX menus for the BODYFORMS
 so that one can add to them.
-XEmacs doesn't need any activation to speak of."
-  `(progn ,@bodyforms))
 
-;  `(let* ((save-menu current-menubar)
-;          (current-menubar 
-;  `(let ((save-map (current-local-map)))
-;     (unwind-protect
-;	 (progn
-;	   (use-local-map LaTeX-mode-map) ,@bodyforms)
-;       (use-local-map save-map))))
+Because of a bug in easymenu.el, we can only add items to the
+current menubar. So we temporarily add the TeX and LaTeX menus
+to the current menubar. This is a quite appalling kludge."
+  `(let* ((current-menubar (copy-sequence current-menubar)))
+     (add-submenu nil TeX-mode-menu)
+     (add-submenu nil LaTeX-mode-menu)
+     ,@bodyforms))
 
 (defun preview-gs-get-colors ()
   "Return color setup tokens for GhostScript.
