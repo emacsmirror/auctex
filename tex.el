@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.485 $"))
+	    (rev "$Revision: 5.486 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-12 14:11:57 $"))
+    (let ((date "$Date: 2005-03-04 01:03:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1440,6 +1440,14 @@ If REGEXP is nil, or \"\", an error will occur."
 
 (defun TeX-macro-global ()
   "Return directories containing the site's TeX macro and style files."
+  (TeX-macro-global-internal "latex" '("/tex/" "/bibtex/bst/")
+			     '("/usr/share/texmf/tex/" "/usr/share/texmf/bibtex/bst/")))
+
+(defun TeX-macro-global-internal (latex search default)
+  "Return directories containing the site's TeX macro and style files.
+LATEX: latex command
+SEARCH: search path under system texmf tree
+DEFAULT: fallback path list"
   (let ((tree-list '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST"))
 	path-list path exit-status input-dir-list)
     (condition-case nil
@@ -1450,7 +1458,7 @@ If REGEXP is nil, or \"\", an error will occur."
 			       (call-process
 				"kpsewhich"  nil
 				(list standard-output nil) nil
-				"--progname" "latex"
+				"--progname" latex
 				"--expand-braces" (nth i tree-list)))))
 	    (if (zerop exit-status)
 		(progn (add-to-list 'path-list path)
@@ -1460,7 +1468,7 @@ If REGEXP is nil, or \"\", an error will occur."
 				 (call-process
 				  "kpsewhich"  nil
 				  (list standard-output nil) nil
-				  "--progname" "latex"
+				  "--progname" latex
 				  "--expand-path" (nth i tree-list)))))
 	      (when (zerop exit-status) (add-to-list 'path-list path)))))
       (error nil))
@@ -1476,11 +1484,10 @@ If REGEXP is nil, or \"\", an error will occur."
 	    (setq item (substring item (match-end 0) (length item))))
 	  (when (string-match "/+$" item)
 	    (setq item (substring item 0 (match-beginning 0))))
-	  (dolist (subdir '("/tex/" "/bibtex/bst/"))
+	  (dolist (subdir search)
 	    (when (file-exists-p (file-name-as-directory (concat item subdir)))
 	      (add-to-list 'input-dir-list (concat item subdir)))))))
-    (or input-dir-list
-	'("/usr/share/texmf/tex/" "/usr/share/texmf/bibtex/bst/"))))
+    (or input-dir-list default)))
 
 (defcustom TeX-macro-global (TeX-macro-global)
   "Directories containing the site's TeX macro and style files.
@@ -2886,7 +2893,6 @@ t means autodetect, nil means kpathsea is disabled."
 (defcustom TeX-kpathsea-format-alist
   '(("tex" "${TEXINPUTS.latex}" TeX-file-extensions)
     ("eps" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
-    ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("png" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("jpg" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
