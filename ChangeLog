@@ -1,3 +1,25 @@
+2004-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Some clean-ups, rearrangements and performance
+	improvements.
+	(font-latex-verbatim-face): XEmacs does not like :inherit.
+	(font-latex-setup): Activate `font-latex-syntactic-face-function.
+	(font-latex-faces-present-p): New function.
+	(font-latex-match-command-outside-arguments): Use it.
+	(font-latex-bold-command-keywords)
+	(font-latex-italic-command-keywords)
+	(font-latex-math-command-keywords)
+	(font-latex-type-command-keywords): New variables.
+	(font-latex-match-font-outside-braces): Use them.
+	Check for comment and verbatim faces.
+	(font-latex-bold-declaration-keywords)
+	(font-latex-italic-declaration-keywords)
+	(font-latex-type-declaration-keywords): New variables.
+	(font-latex-match-font-inside-braces): Use them.
+	Check for comment and verbatim faces.
+	(font-latex-script): Use `font-latex-faces-present-p'.
+
+	* doc/changes.texi: Add some new features and fixed bugs.
 
 2004-09-29  Miguel Frasson <frasson@math.leidenuniv.nl>
 	
