@@ -1,3 +1,11 @@
+2004-05-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-indent-on-newline): New option.
+	(TeX-mode-map): Use it.
+
+	* doc/auc-tex.texi (Marking and formatting): Document
+	`TeX-indent-on-newline' plus small corrections.
+
 2004-05-25  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-command): Add `override-confirm' argument.
