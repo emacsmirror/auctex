@@ -51,24 +51,24 @@ AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
 
 
 STYLESRC = style/prosper.el \
-	   style/slides.el    style/foils.el    style/amstex.el \
-	   style/article.el   style/book.el     style/letter.el \
-	   style/report.el    style/amsart.el   style/amsbook.el \
-	   style/epsf.el      style/psfig.el    style/latexinfo.el \
-	   style/dutch.el     style/german.el   style/dk.el \
-	   style/j-article.el style/j-book.el   style/j-report.el \
-	   style/jarticle.el  style/jbook.el    style/jreport.el \
-	   style/dinbrief.el  style/virtex.el   style/plfonts.el \
-	   style/plhb.el      style/harvard.el	style/swedish.el \
-	   style/danish.el    style/slovak.el   style/czech.el \
-	   style/amsmath.el   style/amstext.el  style/amsbsy.el \
-	   style/amsopn.el    style/amsthm.el	style/natbib.el \
-	   style/index.el     style/makeidx.el  style/multind.el \
-	   style/varioref.el  style/fancyref.el	style/mdwlist.el \
-	   style/ngerman.el   style/graphicx.el	style/graphics.el \
-	   style/verbatim.el  style/scrbase.el  style/scrartcl.el \
-	   style/scrbook.el   style/scrreprt.el	style/scrlttr2.el \
-	   style/captcont.el  style/subfigure.el
+	   style/slides.el    style/foils.el     style/amstex.el \
+	   style/article.el   style/book.el      style/letter.el \
+	   style/report.el    style/amsart.el    style/amsbook.el \
+	   style/epsf.el      style/psfig.el     style/latexinfo.el \
+	   style/dutch.el     style/german.el    style/dk.el \
+	   style/j-article.el style/j-book.el    style/j-report.el \
+	   style/jarticle.el  style/jbook.el     style/jreport.el \
+	   style/dinbrief.el  style/virtex.el    style/plfonts.el \
+	   style/plhb.el      style/harvard.el	 style/swedish.el \
+	   style/danish.el    style/slovak.el    style/czech.el \
+	   style/amsmath.el   style/amstext.el   style/amsbsy.el \
+	   style/amsopn.el    style/amsthm.el	 style/natbib.el \
+	   style/index.el     style/makeidx.el   style/multind.el \
+	   style/varioref.el  style/fancyref.el	 style/mdwlist.el \
+	   style/ngerman.el   style/graphicx.el	 style/graphics.el \
+	   style/verbatim.el  style/scrbase.el   style/scrartcl.el \
+	   style/scrbook.el   style/scrreprt.el	 style/scrlttr2.el \
+	   style/captcont.el  style/subfigure.el style/paralist.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
