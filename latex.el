@@ -607,7 +607,7 @@ With optional ARG>=1, find that outer level."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let ((in-comment (TeX-in-commented-line)))
     ;; We should probably be more restrictive and not only test for
-    ;; `comment-start-skip' but for a fixed prefix so that changes in
+    ;; `comment-start' but for a fixed prefix so that changes in
     ;; the prefix which indicate a new part are recognized.
     (save-restriction
       (narrow-to-region
@@ -615,15 +615,15 @@ With optional ARG>=1, find that outer level."
            (point-min)
          (save-excursion
            (while (and (zerop (forward-line -1))
-                       (looking-at comment-start-skip)))
+                       (looking-at (concat "[ \t]*" comment-start))))
            (line-beginning-position
-            (if (looking-at comment-start-skip)
+            (if (looking-at (concat "[ \t]*" comment-start))
                 1 2))))
        (if (not in-comment)
            (point-max)
          (save-excursion
            (while (progn (forward-line 1)
-                         (looking-at comment-start-skip)))
+                         (looking-at (concat "[ \t]*" comment-start))))
            (point))))
       (save-excursion
         (while (and
@@ -1603,7 +1603,49 @@ the cdr is the brace used with \\right.")
                    TeX-left-right-braces)))
 	(indent-according-to-mode)))))
 
+
+;;; Formatting
+
+(defcustom LaTeX-format-comment-syntax-aware t
+  "If non-nil comments will be filled according to LaTeX syntax.
+Otherwise they will be filled like normal text."
+  :type 'boolean
+  :group 'LaTeX)
+
+
 ;;; Indentation
+
+;; We are distinguishing two different types of comments:
+;;
+;; 1) Comments starting in column one (line comments)
+;;
+;; 2) Comments starting after column one with only whitespace
+;;    preceding it.
+;;
+;; Additionally we are distinguishing two different types of
+;; indentation:
+;;
+;; a) Outer indentation: Indentation before the comment character(s).
+;;
+;; b) Inner indentation: Indentation after the comment character(s)
+;;    (taking into account possible comment padding).
+;;
+;; Comments can be filled syntax-aware or not.
+;;
+;; In `doctex-mode' line comments should always be indented
+;; syntax-aware and the comment character has to be anchored at the
+;; first column.  Other comments not in the documentation parts always
+;; start after the first column and can be indented syntax-aware or
+;; not.  If they are indented syntax-aware both the indentation before
+;; and after the comment character(s) have to be checked and adjusted.
+;; Indentation should not move the comment character(s) to the first
+;; column.  With `LaTeX-format-comment-syntax-aware' disabled, line
+;; comments should still be indented syntax-aware.
+;;
+;; In `latex-mode' comments starting in different columns don't have
+;; to be handled differently.  They don't have to be anchored in
+;; column one.  That means that in any case indentation before and
+;; after the comment characters has to be checked and adjusted.
 
 (defgroup LaTeX-indentation nil
   "Indentation of LaTeX code in AUCTeX"
@@ -1714,29 +1756,72 @@ Lines starting with an item is given an extra indentation of
                               ;; as a string.  We support both.
                               (if (integerp comment-padding)
                                   (make-string comment-padding ? )
-                                comment-padding)))))
-	 (indent (LaTeX-indent-calculate)))
+                                comment-padding))))))
     (save-excursion
-      (if (/= (LaTeX-current-indentation) indent)
-          (if fill-prefix
-              (progn
-                (move-to-left-margin)
-                (re-search-forward comment-start-skip (line-end-position) t)
-                (delete-region (line-beginning-position) (point))
-                (insert fill-prefix)
-                (indent-to (+ indent (length fill-prefix))))
-            (back-to-indentation)
-            (skip-syntax-forward " " (line-end-position))
-	    (backward-prefix-chars)
-            (delete-region (line-beginning-position) (point))
-	    (indent-to indent))))
-    (if (< (current-column) (+ indent (length fill-prefix)))
+      (cond ((and fill-prefix
+                  (TeX-in-line-comment)
+                  (eq major-mode 'doctex-mode))
+             ;; If point is in a line comment in `doctex-mode' we only
+             ;; consider the inner indentation.
+             (let ((inner-indent (LaTeX-indent-calculate 'inner)))
+               (when (/= (LaTeX-current-indentation 'inner) inner-indent)
+                 (LaTeX-indent-inner-do))))
+            ((and fill-prefix
+                  LaTeX-format-comment-syntax-aware)
+             ;; In any other case of a comment we have to consider
+             ;; outer and inner indentation if we do syntax-aware
+             ;; indentation.
+             (let ((inner-indent (LaTeX-indent-calculate 'inner))
+                   (outer-indent (LaTeX-indent-calculate 'outer)))
+               (when (/= (LaTeX-current-indentation 'inner) inner-indent)
+                   (LaTeX-indent-inner-do))
+               (when (/= (LaTeX-current-indentation 'outer) outer-indent)
+                   (LaTeX-indent-outer-do))))
+            (t
+             ;; The default is to adapt whitespace before any
+             ;; non-whitespace character, i.e. with distinction used
+             ;; above to do outer indentation.
+             (let ((outer-indent (LaTeX-indent-calculate 'outer)))
+               (when (/= (LaTeX-current-indentation 'outer) outer-indent)
+                   (LaTeX-indent-outer-do))))))
+    (if (< (current-column) (save-excursion
+                              (beginning-of-line)
+                              (re-search-forward
+                               (concat "^[ \t]*" comment-start "*[ \t]*"))
+                              (length (match-string 0))))
 	(LaTeX-back-to-indentation))))
+        
+(defun LaTeX-indent-inner-do ()
+  ;; Small helper function for `LaTeX-indent-line' to perform
+  ;; indentation after a comment character.  It requires that
+  ;; `LaTeX-indent-line' already set the appropriate variables and
+  ;; should not be used outside of `LaTeX-indent-line'.
+  (move-to-left-margin)
+  (re-search-forward comment-start-skip (line-end-position) t)
+  (delete-region (line-beginning-position) (point))
+  (insert fill-prefix)
+  (indent-to (+ inner-indent (length fill-prefix))))
 
-(defun LaTeX-indent-calculate ()
-  "Return the correct indentation of line of LaTeX source. (I hope...)"
+(defun LaTeX-indent-outer-do ()
+  ;; Small helper function for `LaTeX-indent-line' to perform
+  ;; indentation of normal lines or before a comment character in a
+  ;; commented line.  It requires that `LaTeX-indent-line' already set
+  ;; the appropriate variables and should not be used outside of
+  ;; `LaTeX-indent-line'.
+  (back-to-indentation)
+  (skip-syntax-forward " " (line-end-position))
+  (backward-prefix-chars)
+  (delete-region (line-beginning-position) (point))
+  (indent-to outer-indent))
+
+
+(defun LaTeX-indent-calculate (&optional force-type)
+  "Return the indentation of a line of LaTeX source.  FORCE-TYPE
+can be used to force the calculation of an inner or outer
+indentation in case of a commented line.  The symbols 'inner and
+'outer are recognized."
   (save-excursion
-    (LaTeX-back-to-indentation)
+    (LaTeX-back-to-indentation force-type)
     (cond ((looking-at (concat (regexp-quote TeX-esc)
                                "\\(begin\\|end\\){\\("
                                LaTeX-verbatim-regexp
@@ -1756,20 +1841,21 @@ Lines starting with an item is given an extra indentation of
                                LaTeX-end-regexp
                                "\\)"))
            ;; Backindent at \end.
-           (- (LaTeX-indent-calculate-last) LaTeX-indent-level))
+           (- (LaTeX-indent-calculate-last force-type) LaTeX-indent-level))
           ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
            ;; Backindent at \right.
-           (- (LaTeX-indent-calculate-last) LaTeX-left-right-indent-level))
+           (- (LaTeX-indent-calculate-last force-type)
+              LaTeX-left-right-indent-level))
           ((looking-at (concat (regexp-quote TeX-esc)
                                "\\("
                                LaTeX-item-regexp
                                "\\)"))
            ;; Items.
-           (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
+           (+ (LaTeX-indent-calculate-last force-type) LaTeX-item-indent))
           ((looking-at "}")
            ;; End brace in the start of the line.
-           (- (LaTeX-indent-calculate-last) TeX-brace-indent-level))
-          (t (LaTeX-indent-calculate-last)))))
+           (- (LaTeX-indent-calculate-last force-type) TeX-brace-indent-level))
+          (t (LaTeX-indent-calculate-last force-type)))))
 
 (defun LaTeX-indent-level-count ()
   "Count indentation change caused by all \\left, \\right, \\begin, and
@@ -1801,82 +1887,143 @@ Lines starting with an item is given an extra indentation of
 	    (forward-char 1))))
 	count))))
 
-(defun LaTeX-indent-calculate-last ()
+(defun LaTeX-indent-calculate-last (&optional force-type)
   "Return the correct indentation of a normal line of text.
-The point is supposed to be at the beginning of the current line."
-  (save-restriction
-    (widen)
-    (if (not (string=
-              (progn (beginning-of-line)
-                     (re-search-forward
-                      (concat "^[ \t]*" comment-start) (line-end-position) t)
-                     (match-string 0))
-              (progn (skip-chars-backward "%\n\t ")
-                     (beginning-of-line)
-                     (re-search-forward
-                      (concat "^[ \t]*" comment-start) (line-end-position) t)
-                     (match-string 0))))
-        0
-      (LaTeX-back-to-indentation)
-      (cond ((bobp) 0)
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "begin *{\\("
-                                 LaTeX-document-regexp
-                                 "\\)}"))
-             ;; I dislike having all of the document indented...
-             (LaTeX-current-indentation))
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "begin *{\\("
-                                 LaTeX-verbatim-regexp
-                                 "\\)}"))
-             0)
-            ((looking-at (concat (regexp-quote TeX-esc)
-                                 "end *{\\("
-                                 LaTeX-verbatim-regexp
-                                 "\\)}"))
-             ;; If I see an \end{verbatim} in the previous line I skip
-             ;; back to the preceding \begin{verbatim}.
-             (save-excursion
-               (if (re-search-backward (concat (regexp-quote TeX-esc)
-                                               "begin *{\\("
-                                               LaTeX-verbatim-regexp
-                                               "\\)}") 0 t)
-                   (LaTeX-indent-calculate-last)
-                 0)))
-            (t (+ (LaTeX-current-indentation)
-                  (TeX-brace-count-line)
-                  (LaTeX-indent-level-count)
-                  (cond ((looking-at (concat (regexp-quote TeX-esc)
-                                             "\\("
-                                             LaTeX-end-regexp
-                                             "\\)"))
-                         LaTeX-indent-level)
-                        ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
-                         LaTeX-left-right-indent-level)
-                        ((looking-at (concat (regexp-quote TeX-esc)
-                                             "\\("
-                                             LaTeX-item-regexp
-                                             "\\)"))
-                         (- LaTeX-item-indent))
-                        ((looking-at "}")
-                         TeX-brace-indent-level)
-                        (t 0))))))))
+The point is supposed to be at the beginning of the current line.
+FORCE-TYPE can be used to force the calculation of an inner or
+outer indentation in case of a commented line.  The symbols
+'inner and 'outer are recognized."
+  (let (line-comment-current-flag
+        line-comment-last-flag
+        comment-current-flag
+        comment-last-flag)
+    (save-restriction
+      ;; The following `widen' statement is necessary to cope with
+      ;; potentially narrowed region to indent or fill respectively.
+      (widen)
+      (beginning-of-line)
+      (setq line-comment-current-flag (TeX-in-line-comment)
+            comment-current-flag (TeX-in-commented-line))
+      (skip-chars-backward "%\n\t ")
+      (beginning-of-line)
+      (setq line-comment-last-flag (TeX-in-line-comment)
+            comment-last-flag (TeX-in-commented-line))
+      ;; Separate line comments and other stuff (normal text/code and
+      ;; code comments).  Additionally we don't want to compute inner
+      ;; indentation when a commented and a non-commented line are
+      ;; compared.
+      (if (or (and (eq major-mode 'doctex-mode)
+                   (or (and line-comment-current-flag
+                            (not line-comment-last-flag))
+                       (and (not line-comment-current-flag)
+                            line-comment-last-flag)))
+              (and force-type
+                   (eq force-type 'inner)
+                   (or (and comment-current-flag
+                            (not comment-last-flag))
+                       (and (not comment-current-flag)
+                            comment-last-flag))))
+          0
+        (LaTeX-back-to-indentation force-type)
+        (cond ((bobp) 0)
+              ((looking-at (concat (regexp-quote TeX-esc)
+                                   "begin *{\\("
+                                   LaTeX-document-regexp
+                                   "\\)}"))
+               ;; I dislike having all of the document indented...
+               (+ (LaTeX-current-indentation force-type)
+                  ;; Some people have opening braces at the end of the
+                  ;; line, e.g. in case of `\begin{letter}{%'.
+                  (TeX-brace-count-line)))
+              ((looking-at (concat (regexp-quote TeX-esc)
+                                   "begin *{\\("
+                                   LaTeX-verbatim-regexp
+                                   "\\)}"))
+               0)
+              ((looking-at (concat (regexp-quote TeX-esc)
+                                   "end *{\\("
+                                   LaTeX-verbatim-regexp
+                                   "\\)}"))
+               ;; If I see an \end{verbatim} in the previous line I skip
+               ;; back to the preceding \begin{verbatim}.
+               (save-excursion
+                 (if (re-search-backward (concat (regexp-quote TeX-esc)
+                                                 "begin *{\\("
+                                                 LaTeX-verbatim-regexp
+                                                 "\\)}") 0 t)
+                     (LaTeX-indent-calculate-last force-type)
+                   0)))
+              (t (+ (LaTeX-current-indentation force-type)
+                    (TeX-brace-count-line)
+                    (if (not (and force-type
+                                  (eq force-type 'outer)
+                                  (TeX-in-commented-line)))
+                      (LaTeX-indent-level-count)
+                      0)
+                    (cond ((looking-at (concat (regexp-quote TeX-esc)
+                                               "\\("
+                                               LaTeX-end-regexp
+                                               "\\)"))
+                           LaTeX-indent-level)
+                          ((looking-at
+                            (concat (regexp-quote TeX-esc) "right\\b"))
+                           LaTeX-left-right-indent-level)
+                          ((looking-at (concat (regexp-quote TeX-esc)
+                                               "\\("
+                                               LaTeX-item-regexp
+                                               "\\)"))
+                           (- LaTeX-item-indent))
+                          ((looking-at "}")
+                           TeX-brace-indent-level)
+                          (t 0)))))))))
 
-(defun LaTeX-current-indentation ()
-  "Return the indentation of a line.  Respect a fill prefix if it is set."
-  (save-excursion
-    (if fill-prefix
-        (progn
-          (move-to-left-margin)
-          (re-search-forward comment-start-skip (line-end-position) t)
-          (- (point) (line-beginning-position) (length fill-prefix)))
-      (current-indentation))))
+(defun LaTeX-current-indentation (&optional force-type)
+  "Return the indentation of line.  FORCE-TYPE can be used to
+force the calculation of an inner or outer indentation in case of
+a commented line.  The symbols 'inner and 'outer are recognized."
+  (if (and fill-prefix
+           (or (and force-type
+                    (eq force-type 'inner))
+               (and (not force-type)
+                    (or
+                     ;; If `LaTeX-format-comment-syntax-aware' is not
+                     ;; enabled, do conventional indentation
+                     LaTeX-format-comment-syntax-aware
+                     ;; Line comments in `doctex-mode' are always
+                     ;; indented syntax-aware so we need their inner
+                     ;; indentation.
+                     (and (TeX-in-line-comment)
+                          (eq major-mode 'doctex-mode))))))
+      ;; INNER indentation
+      (progn
+        (move-to-left-margin)
+        (re-search-forward
+         (concat "\\(\\(^\\|[^\\\n]\\)\\("
+                 (regexp-quote TeX-esc)
+                 (regexp-quote TeX-esc)
+                 "\\)*\\)\\(" comment-start "+\\([ \t]*\\)\\)")
+         (line-end-position) t)
+        (- (length (match-string 5)) (if (integerp comment-padding)
+                                         comment-padding
+                                       (length comment-padding))))
+    ;; OUTER indentation
+    (current-indentation)))
 
-(defun LaTeX-back-to-indentation ()
+(defun LaTeX-back-to-indentation (&optional force-type)
   "Move point to the first non-whitespace character on this line.
-If it is commented move point to the first non-whitespace
-character after the comment sign(s)."
-  (if (TeX-in-commented-line)
+If it is commented and comments are formatted syntax-aware move
+point to the first non-whitespace character after the comment
+character(s).  The optional argument FORCE-TYPE can be used to
+force point being moved to the inner or outer indentation in case
+of a commented line.  The symbols 'inner and 'outer are
+recognized."
+  (if (or (and force-type
+               (eq force-type 'inner))
+          (and (not force-type)
+               (or (and (TeX-in-line-comment)
+                        (eq major-mode 'doctex-mode))
+                   (and (TeX-in-commented-line)
+                        LaTeX-format-comment-syntax-aware))))
       (progn
         (move-to-left-margin)
         (re-search-forward comment-start-skip (line-end-position) t))
@@ -1884,12 +2031,6 @@ character after the comment sign(s)."
       
 
 ;;; Filling
-
-(defcustom LaTeX-fill-comment-syntax-aware t
-  "If non-nil comments will be filled according to LaTeX syntax.
-Otherwise they will be filled like normal text."
-  :type 'boolean
-  :group 'LaTeX)
 
 (defcustom LaTeX-fill-distinct-contents nil
   "List of contents which will be set apart by inserting
@@ -1904,8 +2045,10 @@ line."
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph.
 Break lines to fit `fill-column', but leave all lines ending with
-\\\\ \(plus its optional argument) and % alone.  Prefix arg means
-justify too.  From program, pass args FROM, TO and JUSTIFY-FLAG."
+\\\\ \(plus its optional argument) alone.  Lines with code
+comments and lines ending with `\par' are included in filling but
+act as boundaries.  Prefix arg means justify too.  From program,
+pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
   (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
       (save-restriction
@@ -1914,10 +2057,18 @@ justify too.  From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(while (not (eobp))
           (if (re-search-forward
                (concat "\\("
-                       "^.*[^ \t%\n\r].*"
-                       "[^" TeX-esc "\n\r]%+"
-                       ".*$"
+                       ;; Code comments.
+                       "^.*[^ \t%\n\r].*" comment-start-skip ".*$"
                        "\\|"
+                       ;; Lines ending with `\par'.
+                       "^.*"
+                       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
+                       (regexp-quote (concat TeX-esc TeX-esc))
+                       "\\)*"
+                       (regexp-quote TeX-esc) "par[ \t]*"
+                       "\\({[ \t]*}\\)?[ \t]*$"
+                       "\\|"
+                       ;; Lines ending with `\\'.
                        "^.*"
                        (regexp-quote TeX-esc)
                        (regexp-quote TeX-esc)
@@ -1935,13 +2086,19 @@ justify too.  From program, pass args FROM, TO and JUSTIFY-FLAG."
 		(forward-char)
 		;; keep our position in a buffer
 		(save-excursion
-		  (LaTeX-fill-region-as-para-do
-		   from (match-beginning 0) justify-flag))
+                  ;; Code comments and lines ending with `\par' are
+                  ;; included in filling.  Lines ending with `\\' are
+                  ;; skipped.
+                  (if (or (match-string 1)
+                          (match-string 2))
+                      (LaTeX-fill-region-as-para-do from (point) justify-flag)
+                    (LaTeX-fill-region-as-para-do
+                     from (match-beginning 0) justify-flag)))
 		(setq from (point)))
 	    ;; ELSE part follows - loop termination relies on a fact
 	    ;; that (LaTeX-fill-region-as-para-do) moves point past
 	    ;; the filled region
-	    (LaTeX-fill-region-as-para-do from to justify-flag)))
+	    (LaTeX-fill-region-as-para-do from (point-max) justify-flag)))
 	;; the following four lines are clearly optional, but I like my
 	;; LaTeX code that way
 	(goto-char (point-min))
@@ -2035,8 +2192,8 @@ space does not end a sentence, so don't break a line there."
 		  (fill-indent-to-left-margin))
 	      (forward-line 1)))
 
-	(if use-hard-newlines
-	    (remove-list-of-text-properties from to '(hard)))
+	(when use-hard-newlines
+          (remove-list-of-text-properties from to '(hard)))
 	;; Make sure first line is indented (at least) to left margin...
         (save-restriction
           ;; `LaTeX-indent-line' might otherwise calculate the wrong
@@ -2084,8 +2241,21 @@ space does not end a sentence, so don't break a line there."
 
 	;; This is the actual filling loop.
 	(goto-char from)
-	(let (linebeg)
-	  (while (< (point) to)
+	(let (linebeg
+              code-comment-pos)
+          (setq code-comment-pos
+                (save-excursion
+                  (forward-char (length fill-prefix))
+                  (re-search-forward comment-start-skip
+                                     (line-end-position) t)))
+          ;; Fill until point is greater than the end point.  If there
+          ;; is a code comment, use the code comment's start as a
+          ;; limit.
+	  (while (and (< (point) to)
+                      (or (not code-comment-pos)
+                          (and code-comment-pos
+                               (> (- code-comment-pos (line-beginning-position))
+                                  fill-column))))
 	    (setq linebeg (point))
 	    (move-to-column (current-fill-column))
 	    (if (when (< (point) to)
@@ -2108,7 +2278,23 @@ space does not end a sentence, so don't break a line there."
 
 	      (goto-char to)
 	      ;; Justify this last line, if desired.
-	      (if justify (justify-current-line justify t t))))))
+	      (if justify (justify-current-line justify t t))))
+          ;; Fill a code comment if necessary.  (Enable this code if
+          ;; you want the comment part in lines with code comments to
+          ;; be filled.  It is disabled because the current
+          ;; indentation code will indent the lines following the line
+          ;; with the code comment to the column of the comment
+          ;; starters.  That means, it will look like this:
+          ;; | code code code % comment
+          ;; |                % comment
+          ;; |                code code code
+          ;; Not nice, isn't it?  But in case indentation code changes,
+          ;; it might be useful, so I leave it here.)
+          ;; (when (and code-comment-pos
+          ;;            (> (- (line-end-position) (line-beginning-position))
+          ;;                  fill-column))
+          ;;   (LaTeX-fill-code-comment justify))
+          ))
       ;; Leave point after final newline.
       (goto-char to)
       (unless (eobp) (forward-char 1))
@@ -2294,8 +2480,13 @@ space does not end a sentence, so don't break a line there."
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like \\[fill-paragraph], but handle LaTeX comments.
 If any of the current line is a comment, fill the comment or the
-paragraph of it that point is in, preserving the comment's indentation
-and initial semicolons."
+paragraph of it that point is in.  Code comments, i.e. comments
+with uncommented code preceding them in the same line, will not
+be filled unless the cursor is placed on the line with the
+code comment.
+
+If LaTeX syntax is taken into consideration during filling
+depends on the value of `LaTeX-format-comments-syntax-aware'."
   (interactive "P")
   (if (save-excursion
         (beginning-of-line)
@@ -2303,7 +2494,7 @@ and initial semicolons."
       ;; Don't do anything if we look at an empty line and let
       ;; `fill-paragraph' think we successfully filled the paragraph.
       t
-    (let ( ;; Non-nil if the current line contains a comment.
+    (let (;; Non-nil if the current line contains a comment.
           has-comment
           ;; Non-nil if the current line contains code and a comment.
           has-code-and-comment
@@ -2314,136 +2505,68 @@ and initial semicolons."
       (save-excursion
         (beginning-of-line)
         (cond
-         ;; A line with nothing but a comment on it?
+         ;; A line only with potential whitespace followed by a
+         ;; comment on it?
          ((looking-at (concat "[ \t]*" comment-start "[" comment-start " \t]*"))
           (setq has-comment t
                 comment-fill-prefix (buffer-substring (match-beginning 0)
                                                       (match-end 0))))
-
-         ;; A line with some code, followed by a comment?  Remember that the
-         ;; semi which starts the comment shouldn't be part of a string or
-         ;; character.
+         ;; A line with some code, followed by a comment?  Remember
+         ;; that the semi which starts the comment shouldn't be part
+         ;; of a string or character.
          ((condition-case nil
               (save-restriction
-                (narrow-to-region (point-min)
-                                  (save-excursion (end-of-line) (point)))
+                (narrow-to-region (point-min) (line-end-position))
                 (while (not (looking-at (concat comment-start "\\|$")))
-                  (skip-chars-forward (concat "^" comment-start "\n\"\\\\?"))
-                  (cond
-                   ((eq (char-after (point)) ?\\) (forward-char 2))
-                   ((memq (char-after (point)) '(?\" ??)) (forward-sexp 1))))
-                (looking-at (concat comment-start "+[\t ]*")))
+                  (skip-chars-forward (concat "^" comment-start "\n\\"))
+                  (when (eq (char-after (point)) ?\\)
+                    (forward-char 2)))
+                (and (looking-at (concat comment-start "+[\t ]*"))
+                     ;; See if there is at least one non-whitespace
+                     ;; character before the comment starts.
+                     (save-excursion
+                       (re-search-backward "[^ \t\n]"
+                                           (line-beginning-position) t))))
             (error nil))
-          (setq has-comment t has-code-and-comment t)
-          (setq comment-fill-prefix
-                (concat (make-string (/ (current-column) 8) ?\t)
-                        (make-string (% (current-column) 8) ?\ )
-                        (buffer-substring (match-beginning 0) (match-end 0)))))))
+          (setq has-comment t
+                has-code-and-comment t))))
 
-      (if (and LaTeX-fill-comment-syntax-aware
-               (or (not has-comment)
-                   (not has-code-and-comment)))
-          (let* ((fill-prefix comment-fill-prefix)
-                 ;; `comstart' is used to differentiate regions which
-                 ;; start with different amount of whitespace or
-                 ;; comment characters at the beginning which indicates
-                 ;; regions not to be joined.  Indentation after
-                 ;; comment characters is ignored.
-                 (comstart (when (and fill-prefix
-                                      (string-match comment-start fill-prefix))
-                             (substring fill-prefix 0
-                                        (1+
-                                         (string-match
-                                          (concat "[ \t]*" comment-start "+")
-                                          fill-prefix))))))
-            (save-excursion
-              (beginning-of-line)
-              ;; For the determination of the start and end of the
-              ;; region to be filled only consider conjoint parts of
-              ;; commented or uncommented code respectively.
-              (narrow-to-region
-               (cond (has-code-and-comment
-                      (line-beginning-position))
-                     (has-comment
-                      (save-excursion
-                        (while (and (zerop (forward-line -1))
-                                    (looking-at comstart)))
-                        (line-beginning-position
-                         (if (looking-at comment-start-skip)
-                             1 2))))
-                     (t
-                      (save-excursion
-                        (while (and (zerop (forward-line -1))
-                                    (not (looking-at comment-start-skip))))
-                        (line-beginning-position
-                         (if (not (looking-at comment-start-skip))
-                             1 2)))))
-               ;; Find the beginning of the first line past the
-               ;; region to fill.
-               (cond (has-comment
-                      (save-excursion
-                        (while (and (zerop (forward-line 1))
-                                    (looking-at comstart)))
-                        (point)))
-                     (t
-                      (save-excursion
-                        (while (and (zerop (forward-line 1))
-                                    (not (looking-at comment-start-skip))))
-                        (point)))))
-              ;; Maybe we should also check if we are *inside* of one
-              ;; of the `LaTeX-paragraph' commands, i.e. not on the
-              ;; first line of a multi-line paragraph command.
-              ;; Currently there didn't pop up any problems so maybe
-              ;; the forward/backward paragraph method is working
-              ;; correctly here.
-              (let* ((paragraph-command-p (looking-at
-                                           (concat "%*[ \t]*"
-                                                   (regexp-quote TeX-esc)
-                                                   "\\("
-                                                   LaTeX-paragraph-commands
-                                                   "\\)")))
-                     ;; `LaTeX-paragraph-commands' should be placed in
-                     ;; their own line.  Because the forward/backward
-                     ;; paragraph mechanism would skip over adjacent
-                     ;; lines with `paragraph-start' or
-                     ;; `paragraph-separate' we handle them
-                     ;; separately.
-                     (end (if paragraph-command-p
-                              (progn
-                                (re-search-forward "}[ \t]*$" nil t)
-                                (forward-line)
-                                (point))
-                            (forward-paragraph)
-                            (or (bolp) (newline 1))
-                            (and (eobp) (not (bolp)) (open-line 1))
-                            (point-marker)))
-                     (start (if paragraph-command-p
-                                (re-search-backward
-                                 (concat "^%*[ \t]*"
-                                         (regexp-quote TeX-esc)
-                                         "\\("
-                                         LaTeX-paragraph-commands
-                                         "\\)"))
-                              (backward-paragraph)
-                              (beginning-of-line)
-                              ;; Skip over empty lines and don't fill
-                              ;; `LaTeX-paragraph-commands' together
-                              ;; with the paragraph in concern because
-                              ;; they require their own lines.
-                              (while (and (or (looking-at "%*[ \t]*$")
-                                              (looking-at
-                                               (concat "%*[ \t]*"
-                                                       (regexp-quote TeX-esc)
-                                                       "\\("
-                                                       LaTeX-paragraph-commands
-                                                       "\\)")))
-                                          (not (> (point) end)))
-                                (forward-line))
-                              (point))))
-                (widen)
-                (LaTeX-fill-region-as-paragraph start end justify))))
-
-        ;; Narrow to include only the comment, and then fill the region.
+      (cond
+       ;; Code comments.
+       ((and has-code-and-comment
+             (not (TeX-in-commented-line)))
+        (save-restriction
+          (narrow-to-region (line-beginning-position)
+                            (line-beginning-position 2))
+          (save-excursion
+            (when (save-excursion
+                    (beginning-of-line)
+                    (re-search-forward comment-start-skip (line-end-position) t)
+                    (skip-chars-backward (concat " \t" comment-start))
+                    (>= (- (point) (line-beginning-position)) fill-column))
+              (LaTeX-fill-region-as-paragraph (point-min) (point-max) justify)
+              (goto-char (point-max)))
+            (LaTeX-fill-code-comment justify))))
+       ;; Syntax-aware filling:
+       ;; * `LaTeX-format-comment-syntax-aware' enabled: Everything.
+       ;; * `LaTeX-format-comment-syntax-aware' disabled: Uncommented
+       ;;   code and line comments in `doctex-mode'.
+       ((or (or LaTeX-format-comment-syntax-aware
+                (and (not LaTeX-format-comment-syntax-aware)
+                     (not has-comment)))
+            (and (eq major-mode 'doctex-mode)
+                 (TeX-in-line-comment)))
+        (let ((fill-prefix comment-fill-prefix))
+          (save-excursion
+            (let* ((end (progn (LaTeX-forward-paragraph)
+                               (or (bolp) (newline 1))
+                               (and (eobp) (not (bolp)) (open-line 1))
+                               (point)))
+                   (start (progn (LaTeX-backward-paragraph)
+                                 (point))))
+              (LaTeX-fill-region-as-paragraph start end justify)))))
+        ;; Non-syntax-aware filling.
+       (t
         (save-excursion
           (save-restriction
             (beginning-of-line)
@@ -2461,26 +2584,22 @@ and initial semicolons."
                (while (progn (forward-line 1)
                              (looking-at (concat "^[ \t]*" comment-start))))
                (point)))
-
-            ;; Lines with only `%' characters on them can be paragraph
-            ;; boundaries.
+            ;; The definitions of `paragraph-start' and
+            ;; `paragraph-separate' will still make
+            ;; `forward-paragraph' and `backward-paragraph' stop at
+            ;; the respective (La)TeX commands.  If these should be
+            ;; disregarded, the definitions would have to be changed
+            ;; accordingly.  (Lines with only `%' characters on them
+            ;; can be paragraph boundaries.)
             (let* ((paragraph-start
                     (concat paragraph-start "\\|[ \t" comment-start "]*$"))
                    (paragraph-separate
-                    (concat paragraph-start "\\|[ \t" comment-start "]*$"))
+                    (concat paragraph-separate "\\|[ \t" comment-start "]*$"))
                    (fill-prefix comment-fill-prefix)
-                   (after-line (if has-code-and-comment
-                                   (save-excursion
-                                     (forward-line 1) (point))))
-                   (end (progn
-                          (forward-paragraph)
-                          (or (bolp) (newline 1))
-                          (point)))
-                   ;; If this comment starts on a line with code,
-                   ;; include that like in the filling.
+                   (end (progn (forward-paragraph)
+                               (or (bolp) (newline 1))
+                               (point)))
                    (beg (progn (backward-paragraph)
-                               (if (eq (point) after-line)
-                                   (forward-line -1))
                                (point))))
               (fill-region-as-paragraph
                beg end
@@ -2489,9 +2608,42 @@ and initial semicolons."
                  (goto-char beg)
                  (if (looking-at fill-prefix)
                      nil
-                   (re-search-forward comment-start-skip)
-                   (point))))))))
+                   (re-search-forward comment-start-skip nil t)
+                   (point)))))))))
       t)))
+
+(defun LaTeX-fill-code-comment (&optional justify-flag)
+  "Fill a line including code followed by a comment."
+  (let ((beg (line-beginning-position))
+        (end (line-beginning-position 2))
+        fill-prefix)
+    (indent-according-to-mode)
+    (when (save-restriction
+            (beginning-of-line)
+            (narrow-to-region beg end)
+            (while (not (looking-at (concat comment-start "\\|$")))
+              (skip-chars-forward (concat "^" comment-start "\n\\"))
+              (when (eq (char-after (point)) ?\\)
+                (forward-char 2)))
+            (and (looking-at (concat comment-start "+[\t ]*"))
+                 ;; See if there is at least one non-whitespace
+                 ;; character before the comment starts.
+                 (save-excursion
+                   (save-match-data
+                     (re-search-backward "[^ \t\n]"
+                                         (line-beginning-position) t)))))
+      (setq fill-prefix
+            (concat (make-string (/ (current-column) 8) ?\t)
+                    (make-string (% (current-column) 8) ?\ )
+                    (buffer-substring (match-beginning 0) (match-end 0))))
+      (fill-region-as-paragraph beg end justify-flag  nil
+                                (save-excursion
+                                  (goto-char beg)
+                                  (if (looking-at fill-prefix)
+                                      nil
+                                    (re-search-forward comment-start-skip nil t)
+                                    (point)))))))
+
 
 (defun LaTeX-fill-region (from to &optional justify what)
   "Fill and indent each of the paragraphs in the region as LaTeX text.
@@ -2519,9 +2671,9 @@ formatting."
                                    (forward-paragraph 2) (point)))
           ;; `forward-paragraph' and `backward-paragraph' will not
           ;; stop at points with adjacent commented and uncommented
-          ;; lines.  So we try to do this here.  Maybe this code
-          ;; should go into its own function which could also be used
-          ;; in `LaTeX-fill-paragraph'.
+          ;; lines.  So we try to do this here.  There are now the
+          ;; functions `LaTeX-forward-paragraph' and
+          ;; `LaTeX-backward-paragraph' which could be used instead.
           (if (< (setq comment-skip-point
                        (save-excursion
                          (TeX-forward-comment-skip 2 forward-par-point)
@@ -2636,6 +2788,64 @@ comments and verbatim environments"
      (point-max)
      justify
      (concat " buffer " (buffer-name)))))
+
+
+;;; Movement
+
+(defun LaTeX-forward-paragraph ()
+  "Move forward to end of paragraph."
+  (if (LaTeX-paragraph-command-p)
+      (progn
+        (goto-char (match-end 0))
+        (goto-char (TeX-find-closing-brace))
+        (forward-line))
+    (let (limit)
+      (goto-char (min (save-excursion
+                        (forward-paragraph)
+                        (setq limit (point)))
+                      (save-excursion
+                        (TeX-forward-comment-skip 1 limit)
+                        (point)))))))
+
+(defun LaTeX-backward-paragraph ()
+  "Move backward to beginning of paragraph."
+  (let ((start (line-beginning-position)))
+  (if (and (not (bolp))
+           (LaTeX-paragraph-command-p))
+      (re-search-backward
+       (concat "^[ \t]*" comment-start "*[ \t]*"
+               (regexp-quote TeX-esc)
+               "\\(" LaTeX-paragraph-commands "\\)"))
+    (let (limit)
+      (goto-char (max (save-excursion
+                        (backward-paragraph)
+                        (setq limit (point)))
+                      (save-excursion
+                        (TeX-backward-comment-skip 1 limit)
+                        (point)))))
+    (beginning-of-line)
+    ;; Skip over empty lines and don't fill `LaTeX-paragraph-commands'
+    ;; together with the paragraph in concern because they require
+    ;; their own lines.
+    (while (and (or (looking-at (concat comment-start "*[ \t]*$"))
+                    (looking-at
+                     (concat "[ \t]*"comment-start "*[ \t]*"
+                             (regexp-quote TeX-esc)
+                             "\\(" LaTeX-paragraph-commands "\\)")))
+                (not (> (point) start)))
+      (forward-line)))))
+
+(defun LaTeX-paragraph-command-p ()
+  "Determine if point is in a line containing a paragraph command.
+Paragraph commands, i.e. commands included in
+`LaTeX-paragraph-commands', should be placed in their own line."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at
+     (concat "[ \t]*" comment-start "*[ \t]*" (regexp-quote TeX-esc)
+             "\\(" LaTeX-paragraph-commands "\\)"
+             "\\([ \t]*" comment-start "*\n"
+             "[ \t]*" comment-start "*[ \t]*{\\|[ \t]*{\\)"))))
 
 
 ;;; Math Minor Mode
@@ -3669,7 +3879,7 @@ of `LaTeX-mode-hook'."
 Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
-  (set (make-local-variable 'LaTeX-fill-comment-syntax-aware) t))
+  (set (make-local-variable 'LaTeX-format-comment-syntax-aware) t))
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
@@ -3720,7 +3930,7 @@ runs the hooks in `doctex-mode-hook'."
 
   (setq paragraph-start
 	(concat
-	 "%*[ \t]*\\("
+	 "[ \t]*%*[ \t]*\\("
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands "\\|" LaTeX-item-regexp
@@ -3729,7 +3939,7 @@ runs the hooks in `doctex-mode-hook'."
 	 ))
   (setq paragraph-separate
 	(concat
-	 "%*[ \t]*\\("
+	 "[ \t]*%*[ \t]*\\("
 	 "\\$\\$" ; display math delimitor
 	 "\\|$\\)"))
 
