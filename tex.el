@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.47 1995-01-25 14:21:01 amanda Exp $
+;; Version: $Id: tex.el,v 5.48 1995-01-25 15:36:07 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -413,7 +413,9 @@ The value is actually the tail of LIST whose car is ELT."
 ;; you have a `%%% mode: latex' line in your file variable section,
 ;; and have latex-mode as your default mode for ".tex" files.
 ;; Unfortunately I have been unable to isolate the error further.
-(add-hook 'change-major-mode-hook '(lambda () (setq TeX-symbol-list nil)))
+(add-hook 'change-major-mode-hook
+	  '(lambda () (setq TeX-symbol-list nil
+			    LaTeX-environment-list nil)))
 
 ;; Lucid 19.6 grok this regexp, but you loose the ability to use
 ;; whitespace in your documentstyle command.
