@@ -1,3 +1,11 @@
+2003-09-08  Peter S Galbraith  <psg@debian.org>
+
+	* bib-cite.el: Ripping out off-topic imenu code.
+
+2003-09-07  Peter S Galbraith  <psg@debian.org>
+
+	* font-latex.el: Bug fix when font-lock-multiline is set to t.
+
 2003-08-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Changelog: Added coding cookie.

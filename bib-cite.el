@@ -5,7 +5,7 @@
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.20  (Aug 14 2003)
+;; Version:   3.21  (Sept 08 2003)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -164,40 +164,6 @@
 ;;    find the master file) and all \input and \include commands must be first
 ;;    on a line (not preceeded by any non-white text).
 ;;
-;;  imenu support  (Suggested key binding: Shift-Mouse-3)
-;;
-;;    The imenu facility (distributed with emacs) is supported by bib-cite
-;;    to move point to a LaTeX section (or chapter) or to a label
-;;    declaration.  When editing a multi-file document, all such
-;;    declarations within the document are displayed in the menu (again
-;;    using a TAGS file).  If you do not want to load imenu.el and use
-;;    these features, set bib-use-imenu to nil. (This feature is disabled
-;;    in xemacs because I'm told it doesn't have imenu).
-;;
-;;    If you want to bind imenu globally to Shift-Mouse-3, do so by adding the
-;;    following to your ~/.emacs
-;;
-;;     (require 'imenu)
-;;     (define-key global-map [S-mouse-3] 'imenu)
-;;
-;;    Another good place to define Imenu is in the menu-bar.  You can try this
-;;    manually with
-;;
-;;     M-x imenu-add-to-menubar RET Imenu RET
-;;
-;;      or in a hook such as:
-;;
-;;    (add-hook 'LaTeX-mode-hook '(lambda () (imenu-add-to-menubar "Imenu")))
-;;
-;;    Recent versions of Emacs also have a more direct method for adding an
-;;    imenu index to the menubar:
-;;
-;;     M-x imenu-add-menubar-index RET
-;;
-;;      or in a hook such as:
-;;
-;;    (add-hook 'LaTeX-mode-hook 'imenu-add-menubar-index)
-;;
 ;;  bib-make-bibliography:     Bound to `\C-c b m'
 ;;
 ;;   Extract citations used in the current document from the \bibliography{}
@@ -233,9 +199,7 @@
 ;;   Creates a TAGS file for auc-tex's multi-file document (or refreshes it).
 ;;   This is used by bib-find when editing multi-file documents.  The TAGS file
 ;;   is created automatically, but it isn't refreshed automatically.  So if
-;;   bib-find can't find something, try running bib-etags again.  The *rescan*
-;;   in imenu also calls bib-etags to refresh the TAGS file, so that is another
-;;   way to generate it.
+;;   bib-find can't find something, try running bib-etags again.
 ;;
 ;;  bib-create-auto-file:
 ;;
@@ -290,12 +254,6 @@
 ;;  command).
 ;;
 ;;    (setq bib-highlight-mouse-t nil)
-;;  ---
-;;  The imenu features will be disabled if you set this variable to nil
-;;
-;;    (setq bib-use-imenu nil)
-;;
-;;  This variable has no effect under XEmacs.
 ;;  ---
 ;;  The variable bib-switch-to-buffer-function sets the function used to
 ;;  select buffers (if they differ from the original) in bib-cite commands
@@ -364,6 +322,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.21 Sep 08 2003 - PSG
+;;  - Ripping out off-topic imenu code.
 ;; V3.20 Aug 14 2003 - PSG
 ;;  - psg-checkfor-file-list: Allow for relative directoties as entries in
 ;;    BIBINPUTS.
@@ -631,11 +591,6 @@ call a function in RefTeX to find or display the cross reference of a
   :group 'bib-cite
   :type 'boolean)
 
-(defcustom bib-use-imenu (fboundp 'imenu-add-to-menubar)
-  "*Use imenu package for LaTeX modes (coded in bib-cite)."
-  :group 'bib-cite
-  :type 'boolean)
-
 (defcustom bib-switch-to-buffer-function 'switch-to-buffer
   "*Function used to select buffers if they differ from the original.
 You may use `switch-to-buffer' `switch-to-buffer-other-window' or
@@ -753,6 +708,13 @@ with the curly bracket.")
 (defvar bib-highlight-mouse-keymap (make-sparse-keymap)
   "Keymap for mouse bindings in highlighted texts in bicite.")
 
+(defvar bib-ext-list nil
+  "xemacs buffer-local list of bib-cite extents.")
+(make-variable-buffer-local 'bib-ext-list)
+(put 'bib-ext-list 'permanent-local t)
+
+(defvar bib-cite-minor-mode-menu nil)
+
 ;;;###autoload
 (defun bib-cite-minor-mode (arg)
   "Toggle bib-cite mode.
@@ -772,17 +734,6 @@ runs bib-find, and [mouse-3] runs bib-display."
         (progn
           (make-local-variable 'tags-always-exact)
           (setq tags-always-exact nil)))
-    ;; imenu support
-    (if bib-use-imenu
-        (progn
-          ;; User who *never* uses multi-file documents could change this to:
-          ;;                              'imenu--create-LaTeX-index-for-buffer
-          (setq imenu-create-index-function 'imenu--create-LaTeX-index)
-          ;; Make sure that imenu-sort-function is nil
-          (and (boundp 'imenu-sort-function)
-               imenu-sort-function
-               (make-local-variable 'imenu-sort-function)
-               (setq imenu-sort-function nil))))
     ;; mouse overlay
     (if bib-highlight-mouse-t
         (progn
@@ -1028,11 +979,6 @@ runs bib-find, and [mouse-3] runs bib-display."
 (defvar bib-string-regexp
       "^[, \t]*[a-zA-Z]+[ \t]*=[ \t]*\\([a-zA-Z][^#%'(),={}\" \t\n]*\\)"
       "Regular expression for field containing a @string")
-
-(defvar bib-ext-list nil
-  "xemacs buffer-local list of bib-cite extents.")
-(make-variable-buffer-local 'bib-ext-list)
-(put 'bib-ext-list 'permanent-local t)
 
 (defun bib-display ()
   "Display BibTeX citation or matching \\ref or \\label command under point.
@@ -2147,14 +2093,6 @@ Comparison is case-insensitive."
 ;;   relative to the master file's directory (since the path is relative
 ;;   to where the BiBTeX program is actually ran).
 ;;
-;; imenu
-;;
-;;    Requires list of all tex files (complete with paths) to call etags on
-;;   them.
-;;    I used (TeX-style-list) to get the list of possible tex files, but
-;;   they are not in sorted order.  Therefore the imenu would be somewhat
-;;   confusing. I'll have to do the scan myself, except that I'll only be
-;;   looking at the master file for \include statements.
 
 ;; (See TeX-check-files, used in TeX-save-document.  All documents related
 ;;  files are returned by (TeX-style-list) and stored in TeX-active-styles.
@@ -2338,6 +2276,7 @@ Comparison is case-insensitive."
 
 (defun bib-return-aux-file-from-tex (texname ext)
 ;; given name.name.XXX return name.name.ext
+;; FIXME: Check if in ./, else search 
   (concat (substring texname 0 -3) ext))
 
 (defun bib-etags-find-noselect (tag &optional masterdir)
@@ -2365,215 +2304,6 @@ Comparison is case-insensitive."
       (set-buffer the-buffer)))
     new-buffer))
 
-;;---------------------------------------------------------------------------
-;; imenu stuff
-;; All of this should only be loaded if imenu is *already* loaded because
-;; we redefine imenu here.
-
-(cond
- (bib-use-imenu
-  (require 'imenu)
-  (require 'cl)
-
-  (defvar bib-imenu-document-counter nil
-    "bib-cite internal variable")
-
-  (defun imenu--create-LaTeX-index ()
-    ;; dispatch to proper function, depending on whether a multi-file document.
-    (let ((masterfile (bib-master-file)))
-      (if masterfile
-          (imenu--create-LaTeX-index-for-document masterfile)
-        (imenu--create-LaTeX-index-for-buffer))))
-
-  (defun imenu--create-LaTeX-index-for-document (masterfile)
-    ;; For a multi-file document in auctex only.
-    ;; Create imenu--index-alist for master file buffer and use the same
-    ;; for all input files?  This would be faster...  Maybe in next version?
-    ;;FIXME: How about parsing TAGS file instead of search through all files?
-    (bib-etags)                         ;Create a new TAGS file, user needs it.
-    (let ((tex-buffer (get-buffer-create "*imenu-tex*"))
-          (index-alist '())
-          (index-label-alist '())
-          (prev-pos (point-max)))
-      (save-excursion
-        (set-buffer tex-buffer)
-        ;; set its directory so relative includes work without expanding
-        (setq default-directory (file-name-directory masterfile))
-        (insert-file-contents masterfile)
-        (goto-char (point-min))
-        (while (re-search-forward
-                "^[ \t]*\\\\\\(input\\|include\\){\\([^}]*\\)}" nil t)
-          (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
-            (if (and (not (file-readable-p
-                           (expand-file-name the-file default-directory)))
-                     (not (string-match ".ltx$" the-file))
-                     (file-readable-p
-                      (expand-file-name (concat the-file ".ltx")
-                                        default-directory)))
-                (setq the-file (concat the-file ".ltx")))
-            (if (and (not (file-readable-p
-                           (expand-file-name the-file default-directory)))
-                     (not (string-match ".tex$" the-file)))
-                (setq the-file (concat the-file ".tex")))
-            (end-of-line)(insert "\n")
-            (insert-file-contents the-file)))
-        ;; Now, the document is like any other tex file
-        (setq bib-imenu-document-counter -99) ;IDs menu entries start at -100
-        (goto-char (point-max))
-        (imenu-progress-message prev-pos 0 t)
-        (while
-            (re-search-backward
-;;;          "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}"
-;;; Fixme: add `part'?
-             "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
-             nil t)
-          (imenu-progress-message prev-pos nil t)
-          (save-match-data
-            (save-excursion
-              (cond
-               ((looking-at "\\\\label")
-                (push (imenu--LaTeX-name-and-etags)
-                      index-label-alist))
-               (t
-                (push (imenu--LaTeX-name-and-etags)
-                    index-alist))))))
-        (kill-buffer tex-buffer)
-        (imenu-progress-message prev-pos 100 t)
-        ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
-        ;;Plus PSG's fix for 19.31 w/o imenu-create-submenu-name
-        (and index-label-alist
-             (push (cons (or (and (fboundp 'imenu-create-submenu-name)
-                                  (imenu-create-submenu-name "Labels"))
-                             "Labels")
-                       (sort (imenu--remove-LaTeX-keyword-list
-                              index-label-alist) 'imenu--label-cmp))
-                 index-alist))
-        ;;(and index-label-alist
-        ;;     (push (cons (imenu-create-submenu-name "Labels")
-        ;;                index-label-alist)
-        ;;         index-alist))
-        index-alist)))
-
-  (defun imenu--create-LaTeX-index-for-buffer ()
-    ;; For non-multi-file documents.
-    (let ((index-alist '())
-          (index-label-alist '())
-          (prev-pos (point-max)))
-      (setq bib-imenu-document-counter -99) ;IDs menu entries starting at -100
-      (goto-char (point-max))
-      (imenu-progress-message prev-pos 0 t)
-      (while
-          (re-search-backward
-;;; Better regexp, but slow
-;;;        "^[^;]*\\(\\\\\\)\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}"
-;;; Original regexp that would catch commented-out stuff
-;;;        "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}"
-;;; Fixme: add `part'?
-           "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
-           nil t)
-        (imenu-progress-message prev-pos nil t)
-        (save-match-data
-          (save-excursion
-            (cond
-             ((looking-at "\\\\label")
-              (push (imenu--LaTeX-name-and-position)
-                    index-label-alist))
-             (t
-              (push (imenu--LaTeX-name-and-position)
-                    index-alist))))))
-      (imenu-progress-message prev-pos 100 t)
-      ;;Michal Mnuk's add-on removes \label <Michal.Mnuk@risc.uni-linz.ac.at>
-      ;;Plus PSG's fix for 19.31 w/o imenu-create-submenu-name
-      (and index-label-alist
-           (push (cons (or (and (fboundp 'imenu-create-submenu-name)
-                                (imenu-create-submenu-name "Labels"))
-                           "Labels")
-                       (sort (imenu--remove-LaTeX-keyword-list
-                              index-label-alist) 'imenu--label-cmp))
-                 index-alist))
-      ;;(and index-label-alist
-      ;;     (push (cons (imenu-create-submenu-name "Labels")
-      ;;                index-label-alist)
-      ;;         index-alist))
-      index-alist))
-
-  ;;Michal Mnuk's three routines:
-  (defun imenu--remove-LaTeX-keyword-list (llist)
-    "Remove the LaTeX KEYWORD from car's of all elements in LLIST."
-    (mapcar
-     (function (lambda (element)
-                 (imenu--remove-LaTeX-keyword-el element "label")))
-     llist))
-
-  (defun imenu--remove-LaTeX-keyword-el (element keyword)
-    "Remove the LaTeX KEYWORD from car of ELEMENT."
-    (save-match-data
-      ;; Should I have extra option here: "[
-      (if (string-match (concat "\\\\" keyword "{\\(.*\\)}") (car element))
-          (cons
-           (substring (car element) (match-beginning 1) (match-end 1))
-           (cdr element)))))
-
-  (defun imenu--label-cmp (el1 el2)
-    "Predicate to compare labels in lists produced by
-     imenu--create-LaTeX-index."
-    (string< (car el1) (car el2)))
-
-  (defun imenu--LaTeX-name-and-position ()
-    (save-excursion
-      ;; We're on the opening slash
-      (let ((beg (point))
-            (end (progn (search-forward "{" nil t)
-                        (forward-char -1)
-                        (forward-sexp 1)
-                        (point)))
-            (marker (make-marker)))
-        (set-marker marker beg)
-        (cons (buffer-substring beg end) marker))))
-
-  (defun imenu--LaTeX-name-and-etags ()
-    (save-excursion
-      (setq bib-imenu-document-counter (1- bib-imenu-document-counter))
-      (cons (buffer-substring (point)
-                              (progn (search-forward "{")
-                                     (forward-char -1)
-                                     (forward-sexp 1)
-                                     (point)))
-            bib-imenu-document-counter)))
-
-  ;; Updated to imenu in Emacs 19.33
-  (defun imenu (index-item)
-    "Jump to a place in the buffer chosen using a buffer menu or mouse menu.
-See `imenu-choose-buffer-index' for more information."
-    (interactive
-     (list (save-restriction
-             (widen)
-             (imenu-choose-buffer-index))))
-    ;; Convert a string to an alist element.
-    (if (stringp index-item)
-        (setq index-item (assoc index-item (imenu--make-index-alist))))
-    (and index-item
-         (progn
-           (push-mark)
-           (cond
-            ((markerp (cdr index-item))
-             (if (or ( > (marker-position (cdr index-item)) (point-min))
-                     ( < (marker-position (cdr index-item)) (point-max)))
-                 ;; widen if outside narrowing
-                 (widen))
-             (goto-char (marker-position (cdr index-item))))
-            ;; PSG - Handle tags
-            ((and (numberp (cdr index-item))
-                  (< (cdr index-item) -99))
-             (find-tag (car index-item)))
-            (t
-             (if (or ( > (cdr index-item) (point-min))
-                     ( < (cdr index-item) (point-max)))
-                 ;; widen if outside narrowing
-                 (widen))
-             (goto-char (cdr index-item)))))))
-;;; end of bib-use-imenu stuff
-  ))
 ;; --------------------------------------------------------------------------
 ;; The following routines make a temporary bibliography buffer
 ;; holding all bibtex files found.
