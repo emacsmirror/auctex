@@ -39,9 +39,11 @@ CONTRIB = bib-cite.el tex-jp.el tex-fptex.el
 CONTRIBELC = bib-cite.elc 
 
 AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
-	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el
+	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
+	context.el
 AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
-	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc
+	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc \
+	context.elc
 
 
 STYLESRC = style/prosper.el \
