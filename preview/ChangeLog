@@ -1,5 +1,7 @@
 2002-03-24  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{The internals}): Spacing improvements.
+
 	* prv-emacs.el (replace-highlight): advise so that query-replace
 	works as reasonable.
 	(preview-query-replace-reveal): Option to make this customizable.
