@@ -107,40 +107,46 @@ if there was any urgentization."
 	  (car (cdr dispro))
 	  (overlay-put ov 'display (cdr (cdr dispro)))))))
 
-(defmacro preview-image-from-icon (icon)
-  "Generate a copy of the ICON that is \"editable\".
-Which means that `preview-replace-icon' can be called on the
-value returned here, and wherever the value was used, the new
-image will appear, while ICON itself is not changed.  Typical
-would be a CONS-cell."
-  `(cons 'image (cdr ,icon)))
+(defmacro preview-nonready-copy ()
+  "Prepare a later call of `preview-replace-active-icon'."
 
-(defmacro preview-string-from-image (image)
-  "Make a string displaying IMAGE."
-  `(propertize "x" 'display ,image))
+  ;; This is just a GNU Emacs specific efficiency hack because it
+  ;; is easy to do.  When porting, don't do anything complicated
+  ;; here, rather deliver just the unchanged icon and make
+  ;; `preview-replace-active-icon' do the necessary work of replacing
+  ;; the icon where it actually has been stored, probably
+  ;; in the car of the strings property of the overlay.  This string
+  ;; might probably serve as a begin-glyph as well, in which case
+  ;; modifying the string in the strings property would change that
+  ;; glyph automatically.
 
-(defmacro preview-replace-icon (icon replacement)
-  "Replace an ICON representation by REPLACEMENT, another icon."
-  `(setcdr ,icon (cdr ,replacement)))
+  '(cons 'image (cdr preview-nonready-icon)))
+
+(defmacro preview-replace-active-icon (ov replacement)
+  "Replace the active Icon in OV by REPLACEMENT, another icon."
+  `(setcdr (overlay-get ,ov 'preview-image)
+	   (cdr ,replacement)))
 
 (defvar preview-button-1 [mouse-2])
 (defvar preview-button-2 [mouse-3])
 
-(defmacro preview-make-clickable (&optional map string helpstring click1 click2)
+(defmacro preview-make-clickable (&optional map glyph helpstring click1 click2)
   "Generate a clickable string or keymap.
 If MAP is non-nil, it specifies a keymap to add to, otherwise
-a new one is created.  If STRING is given, the result is made
-a property of it.  In that case, HELPSTRING is a format string
-with one or two %s specifiers for preview's clicks, displayed
-as a help-echo.  CLICK1 and CLICK2 are functions to call
-on preview's clicks."
-  `(let (,@(if string `((res (copy-sequence ,string))))
+a new one is created.  If GLYPH is given, the result is made
+to display it, whether it is a string or image.  In that case,
+HELPSTRING is a format string with one or two %s specifiers
+for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
+are functions to call on preview's clicks."
+  `(let (,@(if glyph `((res (if (stringp ,glyph)
+				 (copy-sequence ,glyph)
+			       (propertize "x" 'display ,glyph)))))
 	   (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
 	   `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
 	   `((define-key resmap preview-button-2 ,click2)))
-     ,@(if string
+     ,@(if glyph
 	   `((add-text-properties
 	      0 (length res)
 	      (list 'mouse-face 'highlight
