@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.52 1995-01-26 23:09:10 amanda Exp $
+;; Version: $Id: tex.el,v 5.53 1995-01-27 16:57:25 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -392,7 +392,7 @@ The value is actually the tail of LIST whose car is ELT."
     (setq list (cdr list)))
   list)
 
-+;; An Emacs 19 macro.
+;; An Emacs 19 macro.
 (defmacro save-match-data (&rest body)
   "Execute the BODY forms, restoring the global value of the match data."
   (let ((original (make-symbol "match-data")))
