@@ -96,17 +96,26 @@
 
 (when (featurep 'mule)
 
-(defvar TeX-japanese-process-input-coding-system
-  (if (featurep 'xemacs)
-      (find-coding-system 'euc-japan)
+(defcustom TeX-japanese-process-input-coding-system
+  (if (boundp 'default-process-coding-system)
+      (cdr default-process-coding-system)
+    (set-default-coding-systems)
+    ;; Old XEmacs (ex. 21.1.2)
     'euc-jp)
-  "TeX-process' coding system with standard input.")
+  "TeX-process' coding system with standard input."
+  :group 'AUCTeX-jp
+  :type 'coding-system)
 
-(defvar TeX-japanese-process-output-coding-system
-  (if (featurep 'xemacs)
-      (find-coding-system 'junet)
-    'euc-jp)
-  "TeX-process' coding system with standard output."))
+(defcustom TeX-japanese-process-output-coding-system
+  (if (boundp 'default-process-coding-system)
+      (car default-process-coding-system)
+    ;; Old XEmacs (ex. 21.1.2)
+    'iso-2022-jp)
+  "TeX-process' coding system with standard output."
+  :group 'AUCTeX-jp
+  :type 'coding-system)
+
+)
 
 (defcustom japanese-TeX-command-default "pTeX"
   "*The default command for TeX-command in the japanese-TeX mode."
@@ -148,19 +157,12 @@
 ;;; Coding system
 
 (when (featurep 'mule)
-  (if (featurep 'xemacs)
-      (setq TeX-after-start-process-function
-	    (lambda (process)
-	      (set-process-input-coding-system process
-	       TeX-japanese-process-input-coding-system)
-	      (set-process-output-coding-system process
-	       TeX-japanese-process-output-coding-system)))
-    ;; FSF Emacs
-    (setq TeX-after-start-process-function
-	  (lambda (process)
-	    (set-process-coding-system process
-	     TeX-japanese-process-output-coding-system
-	     TeX-japanese-process-input-coding-system))))
+
+(setq TeX-after-start-process-function
+      (lambda (process)
+	(set-process-coding-system process
+	 TeX-japanese-process-output-coding-system
+	 TeX-japanese-process-input-coding-system)))
 )
 
 ;;; Japanese Parsing
