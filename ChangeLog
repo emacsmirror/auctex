@@ -1,3 +1,20 @@
+2003-11-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/scrbase.el (TeX-add-style-hook): Added further symbols to
+	`TeX-add-symbols' and rearranged them alphabetically.
+	Added macros with parameters to
+	`font-latex-match-<type>-keywords-local'.
+	Added `addsec' and `addpart' to
+	`font-latex-match-title-<num>-keywords-local'.
+
+	* style/scrbook.el (TeX-add-style-hook): Analogous.
+
+	* style/scrlttr2.el (TeX-add-style-hook): Analogous.
+
+	* style/scrreprt.el (TeX-add-style-hook): Analogous.
+
+	* style/scrpage2.el: New file.
+
 2003-11-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (VirTeX-common-initialization): Disabled lines which set
