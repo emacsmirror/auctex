@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.28 1993-03-17 22:11:16 amanda Exp $
+# $Id: Makefile,v 5.29 1993-03-17 23:01:07 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -80,7 +80,7 @@ MV = mv
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
 MINMAPSRC = min-map.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
-	    min-ind.el	min-ispl.el
+	    min-ind.el	min-ispl.el kill-fix.el
 
 MINMAPFILES = README_MINOR $(MINMAPSRC)
 
@@ -234,16 +234,16 @@ dist:
 	echo "----------------------------------------" >> FILELIST; \
 	ident $(AUCSRC) $(OTHERFILES) >> FILELIST )
 	OUT=auctex`echo $$TAG | sed s/release//`; \
-	tar -cf - auctex | compress -c > $$OUT.tar.Z
+	tar -cf - auctex | gzip > $$OUT.tar.z
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
 	(cd auctex; tar -cf - $(MINMAPFILES)) | \
-	compress -c >min-map_$$VER.tar.Z
+	gzip -c >min-map_$$VER.tar.z
 	rm -r auctex
 
 # Removed.  Don't mail them, send them the address of a ftpmail client. 
 #	if [ ! -d split ]; then mkdir split; else rm split/*; fi; \
 #	cp auctex/FILELIST split; \
-#	uuencode $$OUT.tar.Z $$OUT.tar.Z | split -200 - split/auc-tex-
+#	uuencode $$OUT.tar.z $$OUT.tar.z | split -200 - split/auc-tex-
 
 #mail:
 #	if [ "X$$WHO" = "X" ]; then echo "*** No reciepient(s) ***"; exit 1; fi
@@ -266,16 +266,16 @@ ftp:
 	@echo "** Making ftp copy of outline minor mode for $$TAG"
 	@echo "**********************************************************"
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	cp min-map_$$VER.tar.Z $(FTPDIR) ; \
+	cp min-map_$$VER.tar.z $(FTPDIR) ; \
 	cd $(FTPDIR) ; \
-	rm -f min-map.tar.Z min-out.tar.Z ; \
-	ln -s min-map_$$VER.tar.Z min-map.tar.Z ; \
-	ln -s min-map_$$VER.tar.Z min-out.tar.Z
+	rm -f min-map.tar.z min-out.tar.z ; \
+	ln -s min-map_$$VER.tar.z min-map.tar.z ; \
+	ln -s min-map_$$VER.tar.z min-out.tar.z
 	@echo "**********************************************************"
 	@echo "** Making ftp copy of auc-tex for  $$TAG"
 	@echo "**********************************************************"
 	OUT=`echo $$TAG | sed s/release_//` ; \
-	cp auctex_$$OUT.tar.Z $(FTPDIR) ; \
+	cp auctex_$$OUT.tar.z $(FTPDIR) ; \
 	cd $(FTPDIR) ; \
-	rm -f auctex.tar.Z ; \
-	ln -s auctex_$$OUT.tar.Z auctex.tar.Z
+	rm -f auctex.tar.z ; \
+	ln -s auctex_$$OUT.tar.z auctex.tar.z
