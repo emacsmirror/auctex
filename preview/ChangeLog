@@ -1,3 +1,8 @@
+2002-02-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-transact): Sigh.  Some refinements to the
+	SAFER stuff: restart gs on errors that seem to stop in SAFER mode.
+
 2002-02-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{Preview attaching commands}): Use
