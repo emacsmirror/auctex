@@ -39,7 +39,13 @@
 		'("alltt" current-indentation))
    (make-local-variable 'LaTeX-verbatim-regexp)
    (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|alltt"))
-   (add-to-list 'font-latex-verbatim-environments-local "alltt")
-   (font-latex-set-syntactic-keywords)))
+   ;; Fontification
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-verbatim-environments-local "alltt")
+     (font-latex-set-syntactic-keywords)
+     ;; Tell font-lock about the update.
+     (setq font-lock-set-defaults nil)
+     (font-lock-set-defaults))))
 
 ;;; alltt.el ends here

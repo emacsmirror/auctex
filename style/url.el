@@ -50,27 +50,32 @@
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
    ;; Fontification
-   (add-to-list 'font-latex-match-reference-keywords-local "url")
-   (font-latex-match-reference-make)
-   (mapcar (lambda (keyword)
-	     (add-to-list 'font-latex-match-variable-keywords-local keyword))
-	   '("Url"
-	     "UrlBigBreakPenalty"
-	     "UrlBigBreaks"
-	     "UrlBreakPenalty"
-	     "UrlBreaks"
-	     "UrlFont"
-	     "UrlLeft"
-	     "UrlNoBreaks"
-	     "UrlOrds"
-	     "UrlRight"
-	     "UrlSpecials"
-	     "urldef"
-	     "urlstyle"))
-   (font-latex-match-variable-make)
-   (add-to-list 'font-latex-verb-like-commands-local "url")
-   (add-to-list 'font-latex-verbatim-macros-local "url")
-   (font-latex-set-syntactic-keywords)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-reference-keywords-local "url")
+     (font-latex-match-reference-make)
+     (mapcar (lambda (keyword)
+	       (add-to-list 'font-latex-match-variable-keywords-local keyword))
+	     '("Url"
+	       "UrlBigBreakPenalty"
+	       "UrlBigBreaks"
+	       "UrlBreakPenalty"
+	       "UrlBreaks"
+	       "UrlFont"
+	       "UrlLeft"
+	       "UrlNoBreaks"
+	       "UrlOrds"
+	       "UrlRight"
+	       "UrlSpecials"
+	       "urldef"
+	       "urlstyle"))
+     (font-latex-match-variable-make)
+     (add-to-list 'font-latex-verb-like-commands-local "url")
+     (add-to-list 'font-latex-verbatim-macros-local "url")
+     (font-latex-set-syntactic-keywords)
+     ;; Tell font-lock about the update.
+     (setq font-lock-set-defaults nil)
+     (font-lock-set-defaults))))
 
 (defun TeX-arg-urlstyle (optional &optional prompt)
   "Prompt for style used in \\urlstyle with completion."

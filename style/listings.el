@@ -57,21 +57,26 @@
    (make-local-variable 'LaTeX-verbatim-regexp)
    (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|lstlisting"))
    ;; Fontification
-   (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
-   (font-latex-match-function-make)
-   (add-to-list 'font-latex-match-reference-keywords-local "lstinputlisting")
-   (font-latex-match-reference-make)
-   (add-to-list 'font-latex-match-textual-keywords-local "lstinline") ; Better
-								      ; idea?
-   (add-to-list 'font-latex-match-textual-keywords-local "lstlistoflistings")
-   (font-latex-match-textual-make)
-   (add-to-list 'font-latex-match-variable-keywords-local "lstalias")
-   (add-to-list 'font-latex-match-variable-keywords-local "lstdefinestyle")
-   (add-to-list 'font-latex-match-variable-keywords-local "lstset")
-   (font-latex-match-variable-make)
-   (add-to-list 'font-latex-verbatim-environments-local "lstlisting")
-   (add-to-list 'font-latex-verbatim-macros-local "lstinline")
-   (add-to-list 'font-latex-verb-like-commands-local "lstinline")
-   (font-latex-set-syntactic-keywords)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
+     (font-latex-match-function-make)
+     (add-to-list 'font-latex-match-reference-keywords-local "lstinputlisting")
+     (font-latex-match-reference-make)
+     (add-to-list 'font-latex-match-textual-keywords-local "lstinline")	; Better
+									; idea?
+     (add-to-list 'font-latex-match-textual-keywords-local "lstlistoflistings")
+     (font-latex-match-textual-make)
+     (add-to-list 'font-latex-match-variable-keywords-local "lstalias")
+     (add-to-list 'font-latex-match-variable-keywords-local "lstdefinestyle")
+     (add-to-list 'font-latex-match-variable-keywords-local "lstset")
+     (font-latex-match-variable-make)
+     (add-to-list 'font-latex-verbatim-environments-local "lstlisting")
+     (add-to-list 'font-latex-verbatim-macros-local "lstinline")
+     (add-to-list 'font-latex-verb-like-commands-local "lstinline")
+     (font-latex-set-syntactic-keywords)
+     ;; Tell font-lock about the update.
+     (setq font-lock-set-defaults nil)
+     (font-lock-set-defaults))))
 
 ;;; listings.el ends here
