@@ -3,6 +3,19 @@
 	* latex/preview.dtx: Make the end of snarfed environments behave
 	normally if the environment is not being snarfed.
 
+2004-10-14  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* doc/wininstall.texi: Adjust text to conform with the AUCTeX aclocal.
+
+	* configure.in: Add VALID_BUILD_DIR 
+
+2004-10-13  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* configure.in: Adjust for the aclocal.m4 sync with AUCTeX 
+
+	* aclocal.m4: Sync with AUCTeX. Well, almost. Don't
+	use the version test.
+
 2004-10-09  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-dvipng-command): Use -picky option.
