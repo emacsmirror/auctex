@@ -9,7 +9,7 @@ MY_LC_ALL=$LC_ALL
 MY_LANGUAGE=$LANGUAGE]
 AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7.3,preview-latex-bugs@lists.sourceforge.net)
+AC_INIT(preview-latex,0.7.4,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
