@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.157 2004-05-26 13:19:45 angeli Exp $
+@c $Id: auc-tex.texi,v 1.158 2004-05-27 07:54:46 angeli Exp $
 
 @finalout
 @titlepage
@@ -932,7 +932,7 @@ moves the cursor to an appropriate position by the left margin.
 Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
 tedious to type.  Therefore you can customize AUC@TeX{} to perform
 indentation (or to make coffee) upon pressing @key{RET} as well.  The
-respective option is called @code{TeX-newline}.
+respective option is called @code{TeX-newline-function}.
 
 @item C-j
 @kindex C-j
@@ -1025,7 +1025,7 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
-@defopt TeX-newline
+@defopt TeX-newline-function
 Used to specify the function which is called when @key{RET} is pressed.
 This will normally be @code{newline} which simply inserts a new line.
 In case you want to have AUC@TeX{} do indentation as well when you press
