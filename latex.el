@@ -1596,11 +1596,20 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
 		    '(("plain") ("empty") ("headings") ("myheadings")))
    optional))
 
+(defcustom LaTeX-default-verb-delimiter ?|
+  "Default delimiter for `\\verb' macros."
+  :group 'LaTeX-macro
+  :type 'character)
+
 (defun TeX-arg-verb (optional &optional ignore)
   "Prompt for delimiter and text."
-  (let ((del (read-quoted-char "Delimiter: "))
+  (let ((del (read-quoted-char
+	      (concat "Delimiter: (default "
+		      (char-to-string LaTeX-default-verb-delimiter) ") ")))
 	(text (read-from-minibuffer "Text: ")))
-    (insert del text del)))
+    (when (<= del ?\ ) (setq del LaTeX-default-verb-delimiter))
+    (insert del text del)
+    (setq LaTeX-default-verb-delimiter del)))
 
 (defun TeX-arg-pair (optional first second)
   "Insert a pair of number, prompted by FIRST and SECOND.
