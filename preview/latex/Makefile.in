@@ -11,6 +11,7 @@ previewtexmfdir = @previewtexmfdir@#
 previewdocdir = @previewdocdir@#
 TEXMFGEN = @TEXMFGEN@
 
+DESTDIR=
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
@@ -20,16 +21,16 @@ all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi
 install: install-texmf install-texmf-doc
 
 install-texmf: $(TEXMFGEN) 
-	-$(MKINSTALLDIRS) $(previewtexmfdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(previewtexmfdir)
 	for x in $(TEXMFGEN) ; do \
-	  echo $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
-	  $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
+	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(previewtexmfdir) ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(previewtexmfdir) ; \
 	done
 	-$(TEXHASH)
 
 install-texmf-doc: preview.dvi
-	-$(MKINSTALLDIRS) $(previewdocdir)
-	$(INSTALL_DATA) preview.dvi $(previewdocdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(previewdocdir)
+	$(INSTALL_DATA) preview.dvi $(DESTDIR)$(previewdocdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'

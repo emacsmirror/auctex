@@ -10,6 +10,7 @@ PERL=perl
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 
+DESTDIR=
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
@@ -64,11 +65,11 @@ TODO: todo.texi macros.texi
 		todo.texi --output TODO
 
 install: preview-latex.info
-	-$(MKINSTALLDIRS) $(infodir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
 	for x in preview-latex.info* ; do \
-		$(INSTALL_DATA) $$x $(infodir) ; \
+		$(INSTALL_DATA) $$x $(DESTDIR)$(infodir) ; \
 	done
-	-$(INSTALL_INFO)  --info-dir=$(infodir) preview-latex.info
+	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) preview-latex.info
 
 clean: 
 	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \

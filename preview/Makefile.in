@@ -23,6 +23,7 @@ icondir = @icondir@#
 datadir = @datadir@#
 packagedir = @packagedir@#
 auctexdir = @auctexdir@#
+DESTDIR=
 
 INSTALL = @INSTALL@#
 INSTALL_DATA = @INSTALL_DATA@#
@@ -47,7 +48,7 @@ install-hint:
 install: install-texmf install-el install-icons install-docs use-hint
 
 install-docs:
-	(cd doc ; $(MAKE) install)
+	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
 use-hint:
 	@echo "Installation completed."
@@ -61,24 +62,24 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-$(MKINSTALLDIRS) $(lispdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
 	for x in $(LISP_SOURCES) ; do \
-	  echo $(INSTALL_DATA) $$x $(lispdir) ; \
-	  $(INSTALL_DATA) $$x $(lispdir) ; \
-	  echo $(INSTALL_DATA) $${x}c $(lispdir) ; \
-	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
+	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(lispdir) ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(lispdir) ; \
+	  echo $(INSTALL_DATA) $${x}c $(DESTDIR)$(lispdir) ; \
+	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(lispdir) ; \
 	done
-	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES)
+	$(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES)
 
 install-icons: $(ICON_SOURCES)
-	-$(MKINSTALLDIRS) $(icondir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(icondir)
 	for x in $(ICON_SOURCES); do \
-	  echo $(INSTALL_DATA) $$x $(icondir) ; \
-	  $(INSTALL_DATA) $$x $(icondir) ; \
+	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(icondir) ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(icondir) ; \
 	done
 
 install-texmf:
-	(cd latex ; $(MAKE) install)
+	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
@@ -108,5 +109,7 @@ clean:
 
 distclean:
 	make clean
-	rm -f config.log config.cache config.status
+	rm -f config.log config.cache config.status config.h aclocal.m4 
+	rm -f configure *.png TAGS
 	rm -f Makefile */Makefile
+	autoconf
