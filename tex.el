@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.403 $"))
+	(rev "$Revision: 5.404 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-03 16:51:05 $"))
+    (let ((date "$Date: 2004-08-03 18:59:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -667,13 +667,11 @@ If nil, use (La)TeX's defaults."
 	       (repeat :inline t
 		       :tag "Other options"
 		       (string))))
-;; FIXME: We could also offer the WHERE value list.
 ;; From latex(1):
 ;; -src-specials            insert source specials into the DVI file
 ;; -src-specials=WHERE      insert source specials in certain places of
-;;                           the DVI file. WHERE is a comma-separated value
-;;                           list: cr display hbox math par parend vbox
-;; Anyhow, this variable should be customizable.
+;;                          the DVI file. WHERE is a comma-separated value
+;;                          list: cr display hbox math par parend vbox
 
 (defun TeX-source-specials-expand-options ()
   "Return source specials command line option for TeX commands.

@@ -1,3 +1,7 @@
+2004-08-03  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-source-specials-places): Change comment.
+
 2004-08-03  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-mode-menu): Add "Close Environment"
