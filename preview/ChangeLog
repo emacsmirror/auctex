@@ -2,7 +2,7 @@
 
 	* preview-latex.spec:
 	For 0.6. Included code to build from CVS and temporary fix to allow
-	build before autoconf includes docs.
+	build before autoconf includes docs, included patches subdir in %doc
 
 	* doc/Makefile: Typo corrected
 
