@@ -1,5 +1,8 @@
 2001-11-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-inherited-face-attribute): Add document
+	string, simplify some tests.
+
 	* preview.el: Add autoload magic comments.
 	(preview-compatibility-macros): avoid byte compiler warning.
 
