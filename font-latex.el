@@ -1,10 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-<<<<<<< font-latex.el
-;; Copyright (C) 1996-1999 Peter S. Galbraith
-=======
 ;; Copyright (C) 1996-2000 Peter S. Galbraith
->>>>>>> 5.7
  
 ;; Authors:    Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
 ;;                                <psg@debian.org>
@@ -12,18 +8,10 @@
 ;; Maintainer: Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
 ;;                                <psg@debian.org>
 ;; Created:    06 July 1996
-<<<<<<< font-latex.el
-;; Version:    0.700 (20 December 1999)
-=======
 ;; Version:    0.701 (30 March 2000)
->>>>>>> 5.7
 ;; Keywords:   LaTeX faces
 
-<<<<<<< font-latex.el
-;; RCS $Id: font-latex.el,v 5.8 2000-04-14 10:25:46 abraham Exp $
-=======
-;; RCS $Id: font-latex.el,v 5.8 2000-04-14 10:25:46 abraham Exp $
->>>>>>> 5.7
+;; RCS $Id: font-latex.el,v 5.9 2000-05-03 15:22:01 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -158,16 +146,11 @@
 ;;    instead of `highlighting 1: \(^\|[^\\]\)\(\\[a-zA-Z\\]+\)'
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
-<<<<<<< font-latex.el
-;; V0.700 20Dec99 PSG (RCS V1.62)
-;;    Added customize support.
-=======
 ;; V0.701 30Mar00 Stefan Monnier <monnier@rum.cs.yale.edu> (RCS V1.63)
 ;;    Removed tests against specific versions of Emacs, testing for 
 ;;    functions instead.
 ;; V0.700 20Dec99 PSG (RCS V1.62)
 ;;    Added customize support.
->>>>>>> 5.7
 ;; V0.603 02July98 PSG (RCS V1.61)
 ;;    Squashed another infinite loop.
 ;; V0.602 02July98 PSG (RCS V1.60)

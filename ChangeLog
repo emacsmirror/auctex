@@ -1,3 +1,8 @@
+2000-05-03  Peter Galbraith <psg@debian.org>
+
+	* font-latex.el: file was broken. Updated to 0.701 (30 Mar 2000).
+	* bib-cite.el: file was broken. Updated to 3.16 (20 Dec 99).
+
 2000-04-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10q released.

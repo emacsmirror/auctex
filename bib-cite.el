@@ -8,11 +8,7 @@
 ;; Version:   3.16 (20 Dec 99)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-<<<<<<< bib-cite.el
-;; RCS $Id: bib-cite.el,v 5.15 2000-04-14 10:25:45 abraham Exp $
-=======
-;; RCS $Id: bib-cite.el,v 5.15 2000-04-14 10:25:45 abraham Exp $
->>>>>>> 5.14
+;; RCS $Id: bib-cite.el,v 5.16 2000-05-03 15:22:01 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
