@@ -1,5 +1,8 @@
 2005-02-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-env-figure): Make function aware of active
+	selections.  There are still some indentation issues left.
+
 	* style/epsf.el ("epsf"): Do not add epsffig environment.  Fixes
 	error if latex.el(c) is not loaded.
 	(LaTeX-env-epsffigure): Remove.
