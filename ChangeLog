@@ -13,6 +13,7 @@
 
 	* font-latex.el (font-latex-script): Disable raising of characters
 	for older Emacsen.  Original patch by Reiner Steib.
+	Bump version and add change log entry.
 
 	* tex-fold.el (TeX-fold-unfolded-face): Make it look more blueish
 	on displays with 24bit color depth.
