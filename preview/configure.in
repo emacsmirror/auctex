@@ -13,7 +13,7 @@ EMACS_PROG_EMACS
 packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
-   EMACS_PATH_PACKAGEDIR([preview])
+   EMACS_PATH_PACKAGEDIR([preview],[preview])
    ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
    lispdir='${packagedir}/lisp/preview'
    icondir='${packagedir}/etc/preview'
@@ -29,7 +29,7 @@ else
       AC_MSG_RESULT([yes])
    fi
    
-   EMACS_PATH_LISPDIR([preview],[preview])
+   EMACS_PATH_LISPDIR(preview)
    ICONFORM= # TODO: fill this in
    icondir='${lispdir}'
 fi
