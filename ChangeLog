@@ -1,3 +1,38 @@
+
+2004-10-28  Miguel Frasson  <frasson@math.leidenuniv.nl>
+	
+	* tex-bar.el: Now requires tex-buf.el, for error handling.
+	Renamed symbols:
+	(LaTeX-install-toolbar): New name for `latex-install-toolbar'.
+	(tex-bar-latex-buttons): New name for `tex-bar-latex-buttons'.
+	(tex-bar-img-filename): New name for `tex-bar-img-filename'.
+	(TeX-tool-bar): New name for `tex-tool-bar' group.
+	(TeX-bar-LaTeX-buttons): New name for `tex-bar-latex-buttons'.
+	(TeX-bar-LaTeX-all-button-alists): New name for
+	`tex-bar-latex-all-button-alists'.
+	(TeX-tool-bar-button-definitions): New name for
+	`tex-tool-bar-button-definitions'.
+	(LaTeX-symbols-toolbar-switch-contents): New name for
+	`latex-symbols-toolbar-switch-contents'.
+	(LaTeX-symbols-toolbar-contents): New name for
+	`latex-symbols-toolbar-contents'
+	(LaTeX-install-toolbar): New name for `latex-install-toolbar'.
+
+	Use separator only in Emacs, while buildin separator is not
+	implemented for XEmacs.
+	(TeX-bar-help-from-command-list): New function, that returns the
+	:help string for ITEM from TeX-command-list.
+	(TeX-bar-error-handling-switches): New variable.
+	(TeX-run-TeX [tex-buf.el]): before-adviced to reset error
+	internals.
+	(TeX-TeX-sentinel-check [tex-buf.el]): after-adviced to set error
+	internals when error happens.
+	(TeX-bar-LaTeX-button-alist): New button next-error, which is
+	resp. visible/active when error detected on Emacs/XEmacs.  All
+	buttons received :help from TeX-command-list.
+	(TeX-bar-LaTeX-buttons): next-error is default, and file is no
+	longer default.
+	
 2004-10-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-auto-class-regexp-list): New variable.
