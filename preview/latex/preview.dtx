@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1131}
+%\CheckSum{1149}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.74 $
+%  \rcskey \version CVS-$Revision: 1.75 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-12-18 12:44:18 $
+%\rcskey\next $Date: 2002-12-19 16:17:06 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,6 +244,9 @@
 %period (|.|) if it is at the end.  The order of different diagnostics
 %like this being issued depends on the order of the specification of
 %the options when calling the package.
+%\item[|footnotes|] This makes footnotes render as previews, and only
+%as their footnote symbol.  A convenient editing feature inside of
+%Emacs.
 %\end{description}
 %The following options are just for debugging purposes of the package
 %and similar to the corresponding \TeX\ commands they allude to:
@@ -320,6 +323,21 @@
 %that manner instead of being thrown away.  An exception might be,
 %say, sort keys for \cmd{\cite}.
 %
+%A second optional command in braces can be used to declare any
+%default action to be taken instead.  This is for the sake of macros
+%that influence numbering: you would want to keep their effects in
+%that respect.  The default action might use |#1| for referring to the
+%original (not the patched) command with the parsed options appended.
+%
+%For example, you might want to specify
+%\begin{quote}
+%|\PreviewMacro*\footnote[{[]}][#1{}]|
+%\end{quote}
+%This will replace a footnote by an empty footnote, but taking any
+%optional parameter into account, since an optional paramter changes
+%the numbering scheme.  That way the real argument for the footnote
+%remains for processing by \previewlatex.
+%
 %\DescribeMacro{\PreviewEnvironment} The macro
 %\cmd{\PreviewEnvironment} works just as
 %\cmd{\PreviewMacro} does, only for environments.
@@ -352,10 +370,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.74 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.75 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-12-18 12:44:18 $
+\reserved@a\next $Date: 2002-12-19 16:17:06 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -655,19 +673,19 @@
 %    \end{macrocode}
 %  \end{macro}
 %\subsection{Parsing commands}
-%\begin{macro}{\pr@callafter}
 %\begin{macro}{\pr@parseit}
-%\begin{macro}{\pr@seq}
 %\begin{macro}{\pr@endparse}
+%\begin{macro}{\pr@callafter}
 %  The following stuff is for parsing the arguments of commands we want
 %  to somehow surround with stuff.  Usage is
 %    \begin{quote}
 %    \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\pr@endparse}\\
 %    \qquad\meta{macro}\meta{parameters}
 %    \end{quote}
-%  \meta{aftertoken} is stored in \cmd{\pr@seq} and gets placed after
-%  the completely parsed macro.  \meta{parsestring} would be, for
-%  example for the \cmd{\includegraphics} macro, |*[[!|, an optional
+%  \meta{aftertoken} is stored away and gets executed once parsing
+%  completes, with its first argument being the parsed material.
+%  \meta{parsestring} would be, for example for the
+%  \cmd{\includegraphics} macro, |*[[!|, an optional
 %  |*| argument followed by two optional arguments enclosed in |[]|,
 %  followed by one mandatory argument.
 %
@@ -678,13 +696,14 @@
 %  character for ending the parsing.
 %  The implementation is rather trivial.
 %    \begin{macrocode}
-\def\pr@callafter{%
-  \afterassignment\pr@parseit
-  \let\pr@seq= }
 \def\pr@parseit#1{\csname pr@parse#1\endcsname}
 \let\pr@endparse=\@percentchar
+\def\next#1{%
+\def\pr@callafter{%
+  \afterassignment\pr@parseit
+  \let#1= }}
+\expandafter\next\csname pr@parse\pr@endparse\endcsname
 %    \end{macrocode}
-%\end{macro}
 %\end{macro}
 %\end{macro}
 %\end{macro}
@@ -844,23 +863,34 @@
 %    \end{macrocode}
 %  The version without |*| is now rather straightforward.
 %  \begin{macro}{\pr@macro}
+%  \begin{macro}{\pr@endmacro}
 %    \begin{macrocode}
 \newcommand*\pr@macro[2][]{%
-   \pr@advise@ship{#2}{\pr@callafter\pr@endbox#1\pr@endparse}{}}
+   \pr@advise@ship{#2}{\pr@callafter\pr@endmacro#1\pr@endparse}{}}
+\def\pr@endmacro#1{#1\pr@endbox}
 %    \end{macrocode}
+%  \end{macro}
 %  \end{macro}
 %  \end{macro}
 %  \begin{macro}{PreviewMacro*}
 %  \begin{macro}{\pr@protect@star}
-%  \begin{macro}{\pr@stargobble}
 %  \begin{macro}{\pr@starmacro}
+%  \begin{macro}{\pr@starmacroii}
 %  The version with |*| has to parse the arguments, then throw them
-%  away.  Some internal macros first, then the interface call.
+%  away.  Some internal macros first, then the interface call.  This
+%  is somewhat complicated by the fact that we allow a second optional
+%  argument with alternate code to call.  That must be run without
+%  triggering any hooks, so we need to use |\pr@outerfalse|
+%  temporarily.
 %    \begin{macrocode}
-\def\pr@protect@star#1{\pr@protect{%
-    \pr@callafter\pr@seq!#1\pr@endparse\pr@stargobble}}
-\def\pr@stargobble#1\pr@seq{}
-\newcommand*\pr@starmacro[2][]{\pr@advise#2{\pr@protect@star{#1}}}
+\def\pr@protect@star#1#2{\pr@protect{%
+    \def\next##1{#2}%
+    \pr@callafter\next#1\pr@endparse}}
+\newcommand*\pr@starmacro[1][]{\def\next##1##2{%
+    \pr@advise##2{\pr@protect@star{#1}{##1}}}
+  \begingroup\pr@starmacroii}
+\newcommand*\pr@starmacroii[1][]{\endgroup
+  \next{#1}}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
@@ -873,8 +903,10 @@
 %  |\end{|\meta{environment}|}| as well.
 %    \begin{macrocode}
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
-\newcommand*\pr@starenv[2][]{\toks@{\pr@starmacro[{#1}]}%
-  \the\expandafter\toks@\csname#2\endcsname
+\newcommand*\pr@starenv[1][]{\def\next##1##2{\pr@starmacro[{#1}][{##2}]##1}%
+  \begingroup\pr@starenvii}
+\newcommand*\pr@startenvii[2][]{\endgroup
+  \expandafter\next\csname#2\endcsname{#1}%
   \expandafter\pr@starmacro\csname end#2\endcsname}
 \newcommand*{\pr@env}[2][]{\expandafter\pr@advise@ship
    \csname #2\endcsname{\begingroup\aftergroup\pr@endbox}{\endgroup}}
@@ -905,7 +937,7 @@
      \let\pr@ship@start\@empty
    \fi
   \pr@callafter\pr@startsnarf}
-\def\pr@startsnarf{\begingroup
+\def\pr@startsnarf#1{#1\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
    \ignorespaces}
 %</active>
@@ -1077,7 +1109,7 @@
 %And here we cater for several frequently used commands in
 %|prauctex.cfg|:
 %    \begin{macrocode}
-%<auccfg>\PreviewMacro*\footnote
+%<auccfg>\PreviewMacro*[[][#1{}]\footnote
 %<auccfg>\PreviewMacro*\emph
 %<auccfg>\PreviewMacro*\textrm
 %<auccfg>\PreviewMacro*\textit
@@ -1087,12 +1119,11 @@
 %<auccfg>\PreviewMacro*\texttt
 %<auccfg>\PreviewMacro*\textcolor
 %<auccfg>\PreviewMacro*\mbox
-%<auccfg>\PreviewMacro*\maketitle
-%<auccfg>\PreviewMacro*\author
-%<auccfg>\PreviewMacro*\title
+%<auccfg>\PreviewMacro*[][#1{}]\author
+%<auccfg>\PreviewMacro*[][#1{}]\title
 %<auccfg>\PreviewMacro*\and
 %<auccfg>\PreviewMacro*\thanks
-%<auccfg>\PreviewMacro*\caption
+%<auccfg>\PreviewMacro*[][#1{}]\caption
 %<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
 %<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
 %<auccfg>\PreviewMacro*\index
