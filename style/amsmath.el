@@ -19,7 +19,6 @@
      '("xalignat"   LaTeX-amsmath-env-alignat)
      '("xalignat*"  LaTeX-amsmath-env-alignat)
      '("xxalignat"  LaTeX-amsmath-env-alignat)
-     '("xxalignat*" LaTeX-amsmath-env-alignat)
      '("aligned"    LaTeX-amsmath-env-aligned)
      '("gathered"   LaTeX-amsmath-env-aligned)
      "align*" "gather*" "flalign*" "multline*" "equation*"
@@ -96,7 +95,8 @@
 (defun LaTeX-amsmath-env-alignat (env)
   (let ((ncols (read-string "Number of columns: ")))
     (LaTeX-insert-environment env (concat TeX-grop ncols TeX-grcl))
-    (and (LaTeX-label environment)
+    (and (not (string= "xxalignat" env))
+	 (LaTeX-label environment)
 	 (newline-and-indent))))
 
 (defun LaTeX-amsmath-env-aligned (env)
