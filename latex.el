@@ -2720,18 +2720,16 @@ formatting."
   (interactive "*r\nP")
   (save-restriction
     (save-excursion
-      (let ((length (- to from))
-	    (to (set-marker (make-marker) to))
+      (let ((to (set-marker (make-marker) to))
 	    end-of-buffer)
 	(goto-char from)
 	(beginning-of-line)
+	(setq from (point))
 	(while (and (< (point) to)
 		    (not end-of-buffer))
 	  (message "Formatting%s ... %d%%"
-		   (if (not what)
-		       ""
-		     what)
-		   (/ (* 100 (- (point) from)) length))
+		   (or what "")
+		   (/ (* 100 (- (point) from)) (- to from)))
 	  (save-excursion (LaTeX-fill-paragraph justify))
 	  (LaTeX-forward-paragraph)
 	  (when (eobp) (setq end-of-buffer t))
