@@ -1,7 +1,8 @@
 2005-03-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Add
-	general information about how to deal with bugs.
+	general information about how to deal with bugs.  Adapt version
+	numbers for Emacs.
 
 2005-03-31  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
