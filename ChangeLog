@@ -1,3 +1,8 @@
+2005-01-14  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/auctex.texi (European): Document all TeX-language-*-hook
+	variables.
+
 2005-01-14  David Kastrup  <dak@gnu.org>
 
 	* auctex.spec: Add and remove auctex.info instead of auctex in
@@ -5,11 +10,11 @@
 
 2005-01-13  David Kastrup  <dak@gnu.org>
 
-	* doc/changes.texi: 
-	* doc/auctex.texi (Font Locking): 
 	* font-latex.el (font-latex-set-title-face)
 	(font-latex-title-fontify): font-latex-title-fontify, not
 	fontity.  fontify, fontify, fontify.
+	* doc/changes.texi: Ditto.
+	* doc/auctex.texi (Font Locking): Ditto.
 
 2005-01-12  David Kastrup  <dak@gnu.org>
 
