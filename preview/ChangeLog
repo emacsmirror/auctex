@@ -14,15 +14,15 @@
 
 2001-11-29  Jan-Åke Larsson <jalar@imf.au.dk>
 
-	* doc/preview-latex.texi Created first draft
+	* doc/preview-latex.texi: Created first draft
 
-	* doc/readme.texi Created first draft
+	* doc/readme.texi: Created first draft
 
-	* doc/readme.texi Created first draft
+	* doc/readme.texi: Created first draft
 
-	* doc/copying.texi Created
+	* doc/copying.texi: Created
 
-	* doc/Makefile Created layout. Now for autoconf, Alan?
+	* doc/Makefile: Created layout. Now for autoconf, Alan?
 	
 2001-11-28  Alan Shutko  <ats@acm.org>
 
