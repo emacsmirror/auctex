@@ -1,12 +1,18 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.5 1993-07-07 00:41:47 amanda Exp $
+;;; $Id: latex.el,v 1.6 1993-07-24 20:57:43 amanda Exp $
 
 ;;; @@ Hook
 
 (TeX-add-style-hook "latex"
  (function
   (lambda ()
+
+    ;;Turn outline mode on
+    (setq outline-level-function 'LaTeX-outline-level)
+    (setq outline-regexp (LaTeX-outline-regexp t))
+    (outline-minor-mode 1)
+  
     (LaTeX-add-environments
      '("document" LaTeX-document-hook)
      '("enumerate" LaTeX-item-hook)

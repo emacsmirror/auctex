@@ -1,6 +1,6 @@
 ;;; @ auc-tex.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.48 1993-05-28 01:53:06 amanda Exp $
+;;; $Id: auc-tex.el,v 5.49 1993-07-24 20:57:23 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -35,7 +35,7 @@
 
 (defun TeX-define-key (key value)
   "OBSOLETE: Define KEY to VALUE in TeX and LaTeX mode."
-  (define-key TeX-mode-map key value)
+  (define-key plain-TeX-mode-map key value)
   (define-key LaTeX-mode-map key value))
 		
 (TeX-define-key "\n"       'TeX-terminate-paragraph)

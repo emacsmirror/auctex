@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.45 1993-07-21 15:40:43 amanda Exp $
+@c $Id: auc-tex.texi,v 1.46 1993-07-24 20:57:38 amanda Exp $
 
 @finalout
 @titlepage
@@ -2716,6 +2716,13 @@ pointing out this nice Vor@TeX{} feature.
 @item
 Added information about AUC @TeX{} mail addresses to the manual.  Thanks
 to Dave Smith @samp{<maa507@@computing.lancaster.ac.uk>}.
+
+@item
+Added menu to for plain @TeX{}.  Suggested by Tim Carlson
+@samp{<imsgtcar@@sinc.oscs.montana.edu>}. 
+
+@item
+Made the menus depend on @code{TeX-command-list}.
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History
