@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.5 1994-04-14 20:17:08 amanda Exp $
+;; Version: $Id: latex.el,v 5.6 1994-04-15 17:09:39 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1736,14 +1736,14 @@ of LaTeX-mode-hook."
 			  ("thebibliography" . LaTeX-item-bib)))
 
   (setq TeX-complete-list
-	(append '(("\\\\cite{\\([^{}\n\m\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\cite{\\([^{}\n\m\\%]*,\\)\\([^{}\n\m\\%,]\\)"
+	(append '(("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]\\)"
 		   2 LaTeX-bibitem-list)
-		  ("\\\\nocite{\\([^{}\n\m\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\nocite{\\([^{}\n\m\\%]*,\\)\\([^{}\n\m\\%,]\\)"
+		  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]\\)"
 		   2 LaTeX-bibitem-list)
-		  ("\\\\ref{\\([^{}\n\m\\%,]*\\)" 1 LaTeX-label-list "}")
-		  ("\\\\pageref{\\([^{}\n\m\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\renewcommand{\\\\\\([A-Za-z]*\\)"
