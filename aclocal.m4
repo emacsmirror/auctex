@@ -577,7 +577,7 @@ if test -z "$texinputdirs" ; then
       temp3=""
     fi
     for i in $temp1 $temp2 $temp3 ; do
-      if ! echo $i | grep -e '^[[A-Za-z]]:' > /dev/null && \
+      if ! echo $i | grep '^[[A-Za-z]]:' > /dev/null && \
 	 ! echo $i | grep ';' > /dev/null ; then
 	i=`echo $i | tr ':' ';'`
       fi
@@ -589,7 +589,7 @@ if test -z "$texinputdirs" ; then
       fi
     done
   else
-    if ! echo $temp | grep -e '^[[A-Za-z]]:' > /dev/null && \
+    if ! echo $temp | grep '^[[A-Za-z]]:' > /dev/null && \
        ! echo $temp | grep ';' > /dev/null ; then
       temp=`echo $temp | tr ':' ';'`
     fi
