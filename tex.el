@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.497 $"))
+	    (rev "$Revision: 5.498 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-05 18:15:17 $"))
+    (let ((date "$Date: 2005-04-06 06:59:39 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4482,10 +4482,9 @@ between."
 
 Don't hesitate to report any problems or inaccurate documentation.
 
-If you don't have setup sending mail from (X)Emacs, please copy
-the output buffer into your mail program, as is gives us
-important information about your AUCTeX version and AUCTeX
-configuration."
+If you don't have setup sending mail from (X)Emacs, please copy the
+output buffer into your mail program, as it gives us important
+information about your AUCTeX version and AUCTeX configuration."
   (interactive)
   (require 'reporter)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
