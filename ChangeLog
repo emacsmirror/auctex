@@ -1,5 +1,26 @@
 2004-12-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-keymap): Add key bindings for
+	`TeX-fold-paragraph' and `TeX-fold-clearout-paragraph'.
+	(TeX-fold-buffer): Now calls new `*-region' functions.
+	(TeX-fold-paragraph): New function.
+	(TeX-fold-buffer-type): Remove.
+	(TeX-fold-region): New function.  Basically encloses contents of
+	`TeX-fold-buffer-type' but type parameter is not mandatory
+	anymore.
+	(TeX-fold-clearout-buffer): Now calls `TeX-fold-clearout-region'.
+	(TeX-fold-clearout-paragraph, TeX-fold-clearout-region): New
+	functions.
+
+	* tex.el (TeX-fold-menu): Add menu entries for folding and
+	unfolding of paragraphs.
+
+	* doc/auctex.texi (Folding): Document folding and unfolding of
+	paragraphs.
+
+	* doc/changes.texi: Advertise folding and unfolding of
+	paragraphs.
+
 	* tex.el (TeX-comment-start-regexp): New variable.
 	(TeX-comment-or-uncomment-region, TeX-uncomment)
 	(TeX-forward-comment-skip, TeX-find-macro-end-helper): Use it.
