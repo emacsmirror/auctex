@@ -1,3 +1,17 @@
+2004-06-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-one-master): Add "dtx" extension.
+	(TeX-add-local-master): Insert \iffalse...\fi in docTeX mode.
+	(TeX-file-extensions): Add "dtx" extension.
+	(docTeX-default-extension): New variable.
+
+	* latex.el (LaTeX-find-macro-start): Use next whitespace if the
+	end of an opened macro cannot be determined.
+	(doctex-mode): Set `TeX-default-extension' to
+	`docTeX-default-extension'.
+
+	* doc/changes.texi: Add information about `TeX-newline-function'.
+
 2004-06-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/mdwlist.el (TeX-add-style-hook): Change variables only
