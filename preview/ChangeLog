@@ -1,3 +1,20 @@
+2002-10-21  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.h: Remove globals, fix message output
+
+	* dvipng/vf.c (SetVF, InitVF),
+	* dvipng/font.c (FontDef), 
+	* dvipng/draw.c (DrawCommand): Bugfix VF handling, fix message
+	output
+
+	* dvipng/pk.c (SetPK, InitPK), dvipng/dvi.c (DVIOpen): Fix message
+	output
+
+	* dvipng/papersiz.c: use int32_t, fix overflow
+
+	* dvipng/misc.c (DecodeArgs, Message): Fix -d option, remove
+	globals, fix message output 
+
 2002-10-16  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.h: Remove globals
