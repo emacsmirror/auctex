@@ -259,6 +259,15 @@ press the @key{Show} button and the last @key{INS} button, then add
 @end example
 
 in the space that just opened. 
+
+@item Don't preview inline math
+@cindex Inline math
+
+If you have performance problems because your document is full of
+inline math (@code{$@dots{}$}), or if your usage of @code{$} conflicts
+with @previewlatex{}'s, you can turn off inline math previews. In the
+@code{Preview Latex} group, remove the checkmark in the box next to
+@code{textmath} in @code{Preview Default Option List}.
 @end itemize
 
 @node Known problems, For advanced users, Simple customization, top
