@@ -1,5 +1,11 @@
 2002-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
+	* Version 11.13 released.
+
+2002-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Fixed CVS merge error.
+
 	* Version 11.12 released.
 
 2002-10-28  David Kastrup  <David.Kastrup@t-online.de>
