@@ -1,3 +1,11 @@
+2005-02-14  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4 (AC_LISPIFY_DIR): new function.
+	(AUCTEX_AUTO_DIR): Use it.
+
+	* tex-site.el.in (TeX-lisp-directory, TeX-auto-global): put
+	autoconfed expression on a line of its own.
+
 2005-02-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-region-as-para-do): Get rid of a space at

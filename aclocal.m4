@@ -537,6 +537,23 @@ AC_DEFUN(VALID_BUILD_DIR, [
   fi
 ])
 
+# AC_LISPIFY_DIR
+# First argument is a variable name where a lisp expression is to be
+# substituted with AC_SUBST.
+# Second argument is the original path in shell-quoted syntax, usually
+# something like [["${whatever}"]].
+# If the expression is not an absolute path, it is evaluated relative
+# to the current file name.
+
+AC_DEFUN(AC_LISPIFY_DIR,[
+EMACS_LISP([$1],[[(prin1-to-string
+ (if (file-name-absolute-p path)
+   (expand-file-name (file-name-as-directory path))
+  (backquote (expand-file-name (, (file-name-as-directory path))
+     (file-name-directory load-file-name)))))]],,-no-site-file,path,[$2])
+ AC_SUBST([$1])]
+)
+
 # AUCTEX_AUTO_DIR
 # ---------------
 # Set the directory containing AUCTeX automatically generated global style
@@ -559,6 +576,5 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 	      prefix="${oldprefix}" # restore prefix])
  AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
  AC_SUBST(autodir)
- EMACS_LISP(lispautodir,(prin1-to-string str),,,str,[["${autodir_expanded}"]])
- AC_SUBST(lispautodir)
+ AC_LISPIFY_DIR(lispautodir,[["${autodir_expanded}"]])
 ])

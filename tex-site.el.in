@@ -52,7 +52,8 @@
 Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
-(defvar TeX-lisp-directory @lispauctexdir@
+(defvar TeX-lisp-directory
+    @lispauctexdir@
    "*The directory where most of the AUCTeX lisp files are located.
 tex-site.el (wherein this variable is defined) resides in its parent
 directory. For the location of lisp files associated with styles, see
@@ -64,7 +65,8 @@ the variables TeX-style-* (hand-generated lisp) and TeX-auto-*
 			     TeX-lisp-directory)
   "*The directory where the AUCTeX images are located.")
 
-(defcustom TeX-auto-global @lispautodir@
+(defcustom TeX-auto-global
+    @lispautodir@
   "*Directory containing automatically generated information.
 Must end with a directory separator.
 
