@@ -1,5 +1,9 @@
 2005-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/auctex.texi (Font Locking): References are now fontified
+	with `font-lock-constant-face' because `font-lock-reference-face'
+	is deprecated.
+
 	* font-latex.el: Change maintainer address.
 	(font-latex-quotes, font-latex-make-built-in-keywords)
 	(font-latex-user-keyword-classes): Doc fix.  (Mention that setting
