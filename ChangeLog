@@ -1,3 +1,8 @@
+2004-01-25  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-TeX-command-list): Remove dummy code for
+	command menu.
+
 2004-01-23  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (japanese-TeX-command-list): Change single quotes to
