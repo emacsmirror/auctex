@@ -1,3 +1,11 @@
+2004-03-23  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi: Adjust for the new -D option
+
+2004-03-19  dakas  <dakas@users.sourceforge.net>
+
+	* dvipng/RELEASE: Remove spurious blanks.
+
 2004-03-19  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/RELEASE: Update, shorten
