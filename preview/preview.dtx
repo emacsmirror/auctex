@@ -450,11 +450,13 @@
 %  Ok, this looks complicated, but we have to start a group in order
 %  to be able to hook \cmd{\pr@endbox} into the game only when
 %  \cmd{\ifpr@outer} has triggered the start.
+%    \begin{macrocode}
 %<*active>
 \def\pr@startsnarf{\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
    \ignorespaces}
 %</active>
+%    \end{macrocode}
 %\begin{macro}{\pr@ship@start}
 %\begin{macro}{\pr@ship@end}
 %  The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
@@ -532,13 +534,18 @@
 %    \end{macrocode}
 %
 % \section{Various drivers}
-% The installer, in case it is missing.
+% The installer, in case it is missing.  If it is to be used via
+% |make|, we don't specify an installation path, since
+%\begin{quote}
+%|make install|
+%\end{quote}
+% is supposed to cater for the installation itself.
 %    \begin{macrocode}
 %<installer> \input docstrip
 %<installer> \askforoverwritefalse
 %<installer> \generate{
 %<installer>    \file{preview.drv}{\from{preview.dtx}{driver}}
-%<installer>    \usedir{tex/latex/preview}
+%<installer&!make>    \usedir{tex/latex/preview}
 %<installer>    \file{preview.sty}{\from{preview.dtx}{style}
 %<installer>                       \from{preview.dtx}{style,active}}
 %<installer>    \file{prauctex.def}{\from{preview.dtx}{auctex}}
