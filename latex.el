@@ -2158,7 +2158,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
   (if (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
       ;; Filling disabled, only do indentation.
-      (indent-region from to)
+      (indent-region from to nil)
     (save-restriction
       (narrow-to-region from to)
       (goto-char from)
