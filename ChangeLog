@@ -1,5 +1,25 @@
+2004-10-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
-2004-10-05  Miguel Frasson <frasson@math.leidenuniv.nl>
+	* texmathp.el (texmathp): Limit environment search with result of
+	macro search if possible.
+
+	* font-latex.el (font-latex-verb-like-commands): New variable.
+	(font-latex-set-syntactic-keywords): Use it.
+	(font-latex-match-command-outside-arguments)
+	(font-latex-match-font-outside-braces)
+	(font-latex-match-font-inside-braces): Check face at the beginning
+	of the match to make keyword fontification possible even if a
+	macro's argument was already fontified due to syntactic keyword
+	fontification.
+
+	* style/listings.el (TeX-add-style-hook): Suppress indentation in
+	lstlisting environments.  Fontify both \lstinline|...| and
+	\lstinline{...}.
+
+	* style/url.el (TeX-add-style-hook): Treat arguments \url|...| and
+	\url{...} as verbatim.
+
+2004-10-05  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	
 	* toolbarx.el (toolbarx-default-toolbar-meaning-alist): New
 	constant, providing a MEANING-ALIST for the insertion of the
@@ -10,7 +30,7 @@
 	* tex.el (TeX-output-view-style): Move more special items upwards.
 	Remove "a4" and "a5" styles.
 
-2004-10-04  Miguel Frasson <frasson@math.leidenuniv.nl>
+2004-10-04  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* toolbarx.el:
 	(toolbarx-emacs-add-button)
@@ -53,7 +73,7 @@
 
 	* doc/changes.texi: Add some new features and fixed bugs.
 
-2004-09-29  Miguel Frasson <frasson@math.leidenuniv.nl>
+2004-09-29  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	
 	* images/bibtex.xpm, images/dvipdf.xpm, images/dvips.xpm,
 	* images/error.xpm, images/exec.xpm, images/execbibtex.xpm,
@@ -77,7 +97,7 @@
 	(font-latex-check-cache): Do not check if cache is to be used.
 	(font-latex-setup): Set up multi-line font locking.
 
-2004-09-28  Miguel Frasson <frasson@math.leidenuniv.nl>
+2004-09-28  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* toolbarx.el: Support for grouping `:insert' clauses in the 3
 	engines (performance improvement.)  Better comments and
@@ -113,7 +133,7 @@
 
 	* doc/todo.texi (Wishlist): Macro spell checking mentioned.
 
-2004-09-26  Miguel Frasson <frasson@math.leidenuniv.nl>
+2004-09-26  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* toolbarx.el: Add to cvs (first version).
 
