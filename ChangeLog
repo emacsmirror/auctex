@@ -1,6 +1,8 @@
 2004-08-16  Jan-Åke Larsson  <jalar@mai.liu.se>
 
-	* aclocal.m4: Remove trailing slash from lispdir_expanded elisp string
+	* aclocal.m4 (EMACS_PROG_EMACS): Add "${prefix}/bin" for Windows users
+
+	* aclocal.m4 (EMACS_LISPDIR): Remove trailing slash from lispdir_expanded elisp string
 
 2004-08-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
