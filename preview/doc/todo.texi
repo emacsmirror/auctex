@@ -62,19 +62,10 @@ user properly accessing the same file.  In all fairness, the current
 In progress, most important first:
 
 @itemize @minus
-@item Make preview generation work
-
-Right now all you can see is the preview-nonready-icon. Not ideal.
-
-@item Fix the big bugs.
-
-Make highlighting, the local keymap, and preview-toggling from other
-than the first character in the preview region work.
-
 @item Enfeaturize.
 
-Handle fake-intangible areas, point-motion hooks and so on.  (Eliminate
-the use of one-character propertized strings, maybe.)
+Eliminate the use of one-character propertized strings, maybe.
+(I think this requires a change to the XEmacs core, though.)
 
 @end itemize
 
