@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.52 1993-07-14 19:16:18 amanda Exp $
+# $Id: Makefile,v 5.53 1993-07-14 19:39:29 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -51,7 +51,7 @@ autodir=$(aucdir)/auto
 EMACS=emacs -batch -q
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC= $(EMACS) -f batch-byte-compile
+ELC= $(EMACS) lpath.el -f eval-current-buffer -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
 AUTO= $(EMACS) -l tex-auto -f TeX-auto-generate-global
