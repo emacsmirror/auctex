@@ -5,6 +5,7 @@ ICONFORM=@ICONFORM@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
 AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
+GS=@GS@
 
 LISP_SOURCES := @PLAT_LISP@ preview.el
 LISP_OBJS := $(LISP_SOURCES:.el=.elc)
@@ -95,6 +96,11 @@ preview-latex.el: preview.el
 '(let ((generated-autoload-file (expand-file-name "$@"))) \
  (update-file-autoloads "preview.el")(save-buffers-kill-emacs t))' ; \
 	fi
+	if [ "$(GS)" != "gs" ]; then \
+	  echo '(setq preview-gs-command "$(GS)")' >> "$@"; \
+	fi
+	echo "(add-to-list 'load-path \"$(lispdir)\")"| \
+	  sed 's/\\/&&/g' >> "$@"
 
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
