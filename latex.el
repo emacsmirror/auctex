@@ -879,20 +879,26 @@ job to this function."
 					; do not prompt
 		    (read-string "(Optional) Float position: " LaTeX-float)))
 	(caption (read-string "Caption: "))
-	(center (y-or-n-p "Center? ")))
-
+	(center (y-or-n-p "Center? "))
+	(active-mark (and (TeX-active-mark)
+			  (not (eq (mark) (point)))))
+	start-marker end-marker)
+    (when active-mark
+      (if (< (mark) (point))
+	  (exchange-point-and-mark))
+      (setq start-marker (point-marker))
+      (set-marker-insertion-type start-marker t)
+      (setq end-marker (copy-marker (mark))))
     (setq LaTeX-float float)
-
     (LaTeX-insert-environment environment
 			      (unless (zerop (length float))
 				(concat LaTeX-optop float
 					LaTeX-optcl)))
-
+    (when active-mark (goto-char start-marker))
     (when center
       (insert TeX-esc "centering")
       (indent-according-to-mode)
       (LaTeX-newline))
-
     (if (member environment LaTeX-top-caption-list)
 	;; top caption -- do nothing if user skips caption
 	(unless (zerop (length caption))
@@ -906,6 +912,7 @@ job to this function."
 	    (indent-according-to-mode)))
       ;; bottom caption (default) -- do nothing if user skips caption
       (unless (zerop (length caption))
+	(when active-mark (goto-char end-marker))
 	(LaTeX-newline)
 	(indent-according-to-mode)
 	(insert TeX-esc "caption" TeX-grop caption TeX-grcl)
@@ -913,7 +920,11 @@ job to this function."
 	(indent-according-to-mode)
 	;; ask for a label -- if user skips label, remove the last new
 	;; line again
-	(unless (LaTeX-label environment)
+	(if (LaTeX-label environment)
+	    (progn
+	      (unless (looking-at "[ \t]*$")
+		(LaTeX-newline)
+		(end-of-line 0)))
 	  (delete-blank-lines)
 	  (end-of-line 0))
 	;; if there is a caption or a label, move point upwards again
@@ -928,9 +939,11 @@ job to this function."
 		(line-beginning-position) t)
 	  (end-of-line 0)
 	  (indent-according-to-mode))))
-
-    (if (member environment '("table" "table*"))
-	(LaTeX-env-array "tabular"))))
+    (when (and (member environment '("table" "table*"))
+	       ;; Suppose an existing tabular environment should just
+	       ;; be wrapped into a table if there is an actice region.
+	       (not active-mark))
+      (LaTeX-env-array "tabular"))))
 
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.
