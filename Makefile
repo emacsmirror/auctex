@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.1 1992-03-18 18:47:50 krab Exp $
+# $Id: Makefile,v 5.2 1992-03-18 18:59:22 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -14,7 +14,7 @@ TEX=tex
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
 	ltx-sec.el tex-buf.el tex-math.el tex-site.el
-OTHERFILES = COPYING INTRO README 
+OTHERFILES = COPYING INTRO README Makefile
 
 all: $(ELISPDIR) idetex refcard
 
@@ -48,16 +48,17 @@ clean:
 
 
 dist:	
-	echo "Make distribution"
 	if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
+	echo "Make distribution of auctex for release $$TAG"
 	cvs checkout -r $(TAG) auctex
 	rm -r auctex/CVS.adm
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
-	ident $(ELISPSRC) >> FILELIST )
+	ident $(ELISPSRC) $(OTHERFILES) >> FILELIST )
 	tar -cf - auctex | compress -c > $(TAG).Z
-	#rm -r auctex
+	cp auctex/FILELIST $(TAG).files
+	rm -r auctex
 
 	
 
