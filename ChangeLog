@@ -1,5 +1,7 @@
 2003-06-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* Makefile.in: Delete trailing whitespaces.
+
 	* tex.el (TeX-near-bobp): Undo last change.
 
 	* tex-jp.el: Fix some document.
