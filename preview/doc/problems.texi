@@ -2,7 +2,8 @@
 @ifset rawfile
 @c documentencoding is used by makeinfo in our --no-headers output.
 @documentencoding ISO-8859-1
-@chapter Known problems
+@node Known problems, Problems with GhostScript, (dir), (dir)
+@top Known problems
 
 @end ifset
 @c -----------------------
@@ -13,7 +14,6 @@ A number of issues are known concerning the interoperation with various
 other software. Some of the known problems can be solved by moving to
 newer versions of the problematic software or by simple patches.
 
-@ifclear rawfile
 @menu
 * Problems with GhostScript::   
 * Font problems with Dvips::    
@@ -23,7 +23,6 @@ newer versions of the problematic software or by simple patches.
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
 @end menu
-@end ifclear
 
 If you find something not mentioned here, please send a bug report using
 @kbd{M-x preview-report-bug @key{RET}}, which will fill in a lot of
@@ -31,8 +30,15 @@ information interesting to us and send it to the
 @email{bug-auctex@@gnu.org} list.  Please use the bug reporting commands
 if at all possible.
 
-@node Problems with GhostScript, Font problems with Dvips, , Known problems
+@ifset rawfile
+@node Problems with GhostScript, Font problems with Dvips, Known problems , Known problems
+@chapter Problems with GhostScript
+@raisesections
+@end ifset
+@ifclear rawfile
+@node Problems with GhostScript, Font problems with Dvips, Known problems , Known problems
 @section Problems with GhostScript
+@end ifclear
 
 Most of the problems encountered come from interaction with GhostScript.
 It is a good idea to have a fairly recent version of GhostScript
@@ -46,13 +52,6 @@ process images, you'll find the information at the end of the process
 buffer you can see with @kbd{C-c C-l}.  If GhostScript fails while
 processing a particular image, this image will be tagged with clickable
 buttons for the error description and for the corresponding source file.
-
-@strong{Important note:} Various versions of GhostScript have a security
-bug which could seriously affect @previewlatex{}.  Current versions of
-@previewlatex{} should work around this bug.  The symptom would be that
-one out of two previews will fail, and previews get generated quite
-slowly since @previewlatex{} starts a new GhostScript process after each
-failure.  Please report any reoccurence of the problem.
 
 The default options configurable with
 

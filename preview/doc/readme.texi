@@ -1,6 +1,7 @@
 @include macros.texi
 @ifset rawfile
-@chapter @previewlatex{} in a nutshell
+@node Introduction, What use is it?, (dir), (dir)
+@top @previewlatex{} in a nutshell
 
 @end ifset
 @c -----------------------
@@ -13,7 +14,6 @@ The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
 display math or figures into the source buffers and switch conveniently
 between source and image representation.
 
-@ifclear rawfile
 @menu
 * What use is it?::
 * Activating preview-latex::
@@ -23,7 +23,6 @@ between source and image representation.
 * Availability::
 * Contacts::
 @end menu
-@end ifclear
 
 @ifset rawfile
 If @previewlatex{} has not come in the form of a preinstalled package
@@ -31,8 +30,15 @@ for you, consult the @file{INSTALL} file for installation instructions
 (especially, read the Prerequisites section).
 @end ifset
 
-@node  What use is it?, Activating preview-latex, Introduction, Introduction
+@ifset rawfile
+@node What use is it?, Activating preview-latex, Introduction, Introduction
+@chapter What use is it?
+@raisesections
+@end ifset
+@ifclear rawfile
+@node What use is it?, Activating preview-latex, Introduction, Introduction
 @section What use is it?
+@end ifclear
 @cindex Philosophy of @previewlatex{}
 @acronym{WYSIWYG} (what you see is what you get) sometimes is considered
 all the rage, sometimes frowned upon.  Do we really want it?  Wrong

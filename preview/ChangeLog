@@ -1,4 +1,25 @@
+2005-04-03  David Kastrup  <dak@gnu.org>
+
+	* doc/readme.texi (What use is it?): 
+
+	* doc/problems.texi: 
+
+	* doc/install.texi (Top): Work around raisesection bug.
+
+	* doc/Makefile.in (../INSTALL, ../INSTALL.windows, ../README)
+	(../FAQ, ../TODO): Remove --no-validate option.
+	(../PROBLEMS): remove --no-validate option, and number sections.
+
+	* doc/faq.texi: Make validatable top entry.  Don't raise sections
+	until after the first chapter.  This is insane, but otherwise
+	everything will be unnumbered.
+
+	* configure.in: Expand `packagelispdir' and `lispdir' before
+	checking for conflicts.
+
 2005-04-02  David Kastrup  <dak@gnu.org>
+
+	* autogen.sh: Remove autom4te.cache
 
 	* doc/Makefile.in (.PHONY): Add a few targets.
 

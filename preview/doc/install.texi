@@ -1,6 +1,7 @@
 @include macros.texi
 @ifset rawfile
-@chapter Installing @previewlatex{}
+@node Top
+@top Installing @previewlatex{}
 
 @end ifset
 @c -----------------------
@@ -14,6 +15,16 @@ the package} for the activation.  Note that unlike most emacs add-ins,
 @AUCTeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
 
+@ifset rawfile
+@menu
+* Prerequisites::               
+* Configure::                   
+* Build/install::               
+* Loading the package::         
+* Advice for package providers::  
+* Advice for non-privileged users::
+@end menu
+@end ifset
 @ifclear rawfile
 @menu
 * Prerequisites::               
@@ -21,13 +32,20 @@ Please read through this document fully before installing anything.
 * Build/install::               
 * Loading the package::         
 * Advice for package providers::  
-* Advice for non-privileged users::  
-* Installation under MS Windows::  
+* Advice for non-privileged users::
+* Installation under MS Windows::
 @end menu
 @end ifclear
 
+@ifset rawfile
+@node Prerequisites
+@chapter Prerequisites
+@raisesections
+@end ifset
+@ifclear rawfile
 @node Prerequisites
 @section Prerequisites
+@end ifclear
 
 @itemize @bullet
 @item A recent version of @w{Emacs 21}, alternatively XEmacs
@@ -428,8 +446,8 @@ like te@TeX{}, this invocation will also do the right thing in case
 @samp{TEXINPUTS} has no previous value.
 
 @ifclear rawfile
-@node Installation under MS Windows
 @comment  node-name,  next,  previous,  up
+@node Installation under MS Windows
 @section Installation under MS Windows
 @include wininstall.texi
 @end ifclear

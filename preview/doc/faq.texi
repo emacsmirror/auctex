@@ -1,23 +1,32 @@
 @ifset rawfile
 @include macros.texi
-@node  Frequently Asked Questions About preview-latex, Introduction to FAQ
+
+@node Frequently Asked Questions, Introduction to FAQ, (dir), (dir)
 @top Frequently Asked Questions about @previewlatex{}
 
-@raisesections
 @contents
+
 @end ifset
 
-@ifclear rawfile
 @menu
 * Introduction to FAQ::         
 * Requirements::                
 * Installation Trouble::        
 * Customization::               
 @end menu
-@end ifclear
 
+@comment we need at least one chapter, or the numbers disappear in the
+@comment plain version of the FAQ.
+
+@ifset rawfile
+@node Introduction to FAQ, Requirements, Frequently Asked Questions, Frequently Asked Questions
+@chapter Introduction
+@raisesections
+@end ifset
+@ifclear rawfile
 @node Introduction to FAQ, Requirements, Frequently Asked Questions, Frequently Asked Questions
 @section Introduction
+@end ifclear
 
 @subsection How can I contribute to the FAQ?
 

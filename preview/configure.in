@@ -129,6 +129,11 @@ MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_MSG_CHECKING([[for glaring installation conflicts]])
+exppackagelispdir="$packagelispdir"
+AC_FULL_EXPAND(exppackagelispdir)
+explispdir="$lispdir"
+AC_FULL_EXPAND(explispdir)
+
 EMACS_LISP(shadows,[[
   (concat
     (and (setq tmp (locate-library \"preview.elc\"))
@@ -142,7 +147,7 @@ EMACS_LISP(shadows,[[
                        (file-truename (expand-file-name \"preview-latex.el\"
                                       lispdir))))
          (format \"Conflicting previous startup file \`%s' found!\n\" tmp)))]],,
-  [[packagelispdir lispdir]],[["${packagelispdir}" "${lispdir}"]])
+  [[packagelispdir lispdir]],[["${exppackagelispdir}" "${explispdir}"]])
 if test "NONE${shadows}" != NONE
 then
   conflictsmsg="Conflicts with previous installations have been detected.

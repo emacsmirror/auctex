@@ -48,27 +48,27 @@ preview-latex.info: $(TEXIFILES)
 disttexts: $(DISTTEXTS)
 
 ../INSTALL: install.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+	-$(MAKEINFO) -D rawfile --no-headers \
 		install.texi --output ../INSTALL
 
 ../INSTALL.windows: wininstall.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+	-$(MAKEINFO) -D rawfile --no-headers \
 		wininstall.texi --output ../INSTALL.windows
 
 ../README: readme.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+	-$(MAKEINFO) -D rawfile --no-headers  \
 		readme.texi --output ../README
 
 ../FAQ: faq.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+	-$(MAKEINFO) -D rawfile --no-headers  \
 		--number-sections faq.texi --output ../FAQ
 
 ../PROBLEMS: problems.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		problems.texi --output ../PROBLEMS
+	-$(MAKEINFO) -D rawfile --no-headers  \
+		--number-sections problems.texi --output ../PROBLEMS
 
 ../TODO: todo.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+	-$(MAKEINFO) -D rawfile --no-headers  \
 		todo.texi --output ../TODO
 
 .PHONY: install disttexts clean maintainer-clean html-docs all
