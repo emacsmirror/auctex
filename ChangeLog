@@ -1,3 +1,7 @@
+2003-11-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (STYLESRC): Added scrpage2.el.
+
 2003-11-17  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el (font-latex-keywords-2): Had forgotten to set
