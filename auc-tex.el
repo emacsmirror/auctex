@@ -6,7 +6,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.3 $  
+;; RCS status      : $Revision: 4.4 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
