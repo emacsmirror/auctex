@@ -1,3 +1,7 @@
+2004-04-12  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview-latex.spec: prepare for 0.8, bump XEmacs to 21.4.9.
+	
 2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-dvipng-color-string): Try to deliver border
