@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1032}
+%\CheckSum{1041}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.59 $
+%  \rcskey \version CVS-$Revision: 1.60 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-15 22:47:19 $
+%\rcskey\next $Date: 2002-07-22 13:54:38 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -323,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.59 $
+   \reserved@a\reserved@b CVS-$Revision: 1.60 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-07-15 22:47:19 $
+\reserved@a\next $Date: 2002-07-22 13:54:38 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1264,7 +1264,7 @@
 %    existing stuff.
 %    \begin{macrocode}
 %<showlabels>   \global\setbox\pr@labelbox\vbox{\unvbox\pr@labelbox
-%<showlabels>      \hbox{\framebox{#1}}}\fi\fi\fi\fi}
+%<showlabels>      \hbox{\framebox{\ttfamily\pr@lastlabel}}}\fi\fi\fi\fi}
 %    \end{macrocode}
 %  \end{macro}
 %  \begin{macro}{\pr@maketag}
@@ -1275,8 +1275,10 @@
 %<showlabels>\def\pr@maketag#1{\pr@@maketag{#1}%
 %<showlabels>  \ifx\protect\@typeset@protect{%
 %<showlabels>  \ifx\df@label\@empty\else
-%<showlabels>      \xdef\pr@lastlabel{\df@label}%
-%<showlabels>      {\setbox\z@\hbox{\framebox{\df@label}}%
+%<showlabels>      \protected@edef\next{\df@label}%
+%<showlabels>      \@onelevel@sanitize\next
+%<showlabels>      \global\let\pr@lastlabel\next
+%<showlabels>      {\setbox\z@\hbox{\framebox{\ttfamily\pr@lastlabel}}%
 %<showlabels>        \global\setbox\pr@labelbox\vbox{%
 %<showlabels>           \hrule\@width\wd\z@\@height\z@
 %<showlabels>           \unvbox\pr@labelbox}%
