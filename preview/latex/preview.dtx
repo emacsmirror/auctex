@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1520}
+% \CheckSum{1492}
 % \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.88 $
+%   \rcskey \version CVS-$Revision: 1.89 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2004-04-10 22:50:22 $
+% \rcskey\next $Date: 2004-04-11 18:17:47 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -206,10 +206,8 @@
 %   Dvips will in that case leave no bounding box information
 %   anywhere.
 % 
-%   The solution is to use the |tightpage| option together with the
-%   |dvips| option so that additional PostScript code gets written
-%   into the produced file that will set the device dimensions at the
-%   start of each output page.  That way a single command line like
+%   The solution is to use the |tightpage| option.  That way a single
+%   command line like
 %   \begin{quote}
 %     \raggedright
 %     \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
@@ -218,10 +216,21 @@
 %   \end{quote}
 %   will be able to produce tight graphics from a single PostScript
 %   file generated with Dvips \emph{without} use of the options
-%   |-E -i|, in a single run.  If you need this in a batch environment
-%   where you don't want to use |preview|'s automatic extraction
-%   facilities, no problem: just don't use any of the special options,
-%   and wrap everything to be previewed into |preview| environments.
+%   |-E -i|, in a single run.
+%
+%   The |tightpage| option actually also works when using the |pdftex|
+%   option and generating PDF files with PDF\TeX.  The resulting PDF
+%   file has separate page dimensions for every page and can directly
+%   be converted with one run of GhostScript into image files.
+%
+%   If neither |dvips| or |pdftex| have been specified, the
+%   corresponding option will get autodetected and invoked.
+%
+%   If you need this in a batch environment where you don't want to
+%   use |preview|'s automatic extraction facilities, no problem: just
+%   don't use any of the extraction options, and wrap everything to be
+%   previewed into |preview| environments.  This is how LyX does its
+%   math previews.
 % 
 %   If the pages under the |tightpage| option are just too tight, you
 %   can adjust by setting the length |\PreviewBorder| to a different
@@ -242,27 +251,19 @@
 %   amount.  The macro must contain 4~\TeX\ dimensions after another,
 %   and you may not omit the units if you specify them explicitly
 %   instead of by register.  PostScript points have the unit~|bp|.
-% \item[|tightpdf|] This option conditionally calls the |tightpages|
-%   option if PDF output has been selected.  This is for tools that
-%   don't fix the PDF/DVI decision but need the tightpage options for
-%   page dimensions in the PDF case.  If neither |dvips| or |pdftex|
-%   options have been called previously, it also executes the
-%   appropriate option of the two.
 % \item[|lyx|] This option is for the sake of LyX developers.  It will
 %   output a few diagnostics relevant for the sake of LyX' preview
-%   functionality (at the time of writing, just implemented for math
-%   insets, in the CVS version of LyX that will eventually be released
-%   as 1.3.0).
+%   functionality (at the time of writing, mostly implemented for math
+%   insets, in versions of LyX starting with 1.3.0).
 % \item[|counters|] This writes out diagnostics at the start and the
 %   end of previews.  Only the counters changed since the last output
-%   get written, and if no counters changed, nothing get written at
+%   get written, and if no counters changed, nothing gets written at
 %   all.  The list consists of counter name and value, both enclosed
-%   in |{}|
-%   braces, followed by a space.  The last such pair is followed by a
-%   colon (|:|) if it is at the start of the preview snippet, and by a
-%   period (|.|) if it is at the end.  The order of different
-%   diagnostics like this being issued depends on the order of the
-%   specification of the options when calling the package.
+%   in |{}| braces, followed by a space.  The last such pair is
+%   followed by a colon (|:|) if it is at the start of the preview
+%   snippet, and by a period (|.|) if it is at the end.  The order of
+%   different diagnostics like this being issued depends on the order
+%   of the specification of the options when calling the package.
 % 
 %   Systems like \previewlatex\ use this for keeping counters accurate
 %   when single previews are regenerated.
@@ -430,10 +431,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.88 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.89 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-04-10 22:50:22 $
+\reserved@a\next $Date: 2004-04-11 18:17:47 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1535,24 +1536,6 @@ Please complain to your document class author}%
 %<tightpage>\fi
 %    \end{macrocode}
 %
-%
-%\subsection{The \texttt{tightpdf} option}
-%
-%This option calls the |tightpage| option only if PDF output has been
-%selected.
-%
-%    \begin{macrocode}
-%<tightpdf>\ifnum\pr@graphicstype=\z@
-%<tightpdf>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
-%<tightpdf>    \ifnum\pdfoutput>\z@ \tw@ \fi \@ne
-%<tightpdf>  \or \ExecuteOptions{dvips}%
-%<tightpdf>  \or \ExecuteOptions{pdftex}%
-%<tightpdf>\fi
-%<tightpdf>\ifnum\pr@graphicstype=\tw@
-%<tightpdf>  \input{prtightpage.def}\relax
-%<tightpdf>\fi
-%    \end{macrocode}
-% 
 %\subsection{The \texttt{showlabels} option}
 %During the editing process, some people like to see the label names
 %in their equations, figures and the like.  Now if you are using Emacs
@@ -1706,7 +1689,6 @@ Please complain to your document class author}%
 %<installer>    \file{prshowlabels.def}{\from{preview.dtx}{showlabels}}
 %<installer>    \file{prtracingall.def}{\from{preview.dtx}{tracingall}}
 %<installer>    \file{prtightpage.def}{\from{preview.dtx}{tightpage}}
-%<installer>    \file{prtightpdf.def}{\from{preview.dtx}{tightpdf}}
 %<installer>    \file{prlyx.def}{\from{preview.dtx}{lyx}}
 %<installer>    \file{prcounters.def}{\from{preview.dtx}{counters}}
 %<installer>    \file{prfootnotes.def}{\from{preview.dtx}{footnotes}}
