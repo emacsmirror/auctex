@@ -3,6 +3,11 @@
 	* latex.el (LaTeX-fill-move-to-break-point): Use `TeX-esc' in
 	other, similar places not covered by the last check-in as well.
 
+	* doc/auc-tex.texi: Document `LaTeX-indent-environment-list',
+	`LaTeX-fill-comment-syntax-aware' and
+	`LaTeX-fill-distinct-contents' as well as slightly improve some
+	other parts in the section about `Marking and formatting'.
+
 2004-03-10  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Use TeX-esc in
