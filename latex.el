@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.12 1994-04-24 21:54:56 amanda Exp $
+;; Version: $Id: latex.el,v 5.13 1994-04-26 15:27:15 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1823,7 +1823,13 @@ of LaTeX-mode-hook."
   (setq mode-name "LaTeX")
   (setq major-mode 'latex-mode)  
   (setq TeX-command-default "LaTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
+  (and (boundp 'filladapt-function-table)
+       (eq auto-fill-function 'do-auto-fill)
+       (setq auto-fill-function
+	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))
 
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.
