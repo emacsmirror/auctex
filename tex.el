@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.475 $"))
+	    (rev "$Revision: 5.476 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-06 18:25:57 $"))
+    (let ((date "$Date: 2005-01-15 10:31:45 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1440,6 +1440,56 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (member entry (append '("/" "\\") TeX-macro-global))
 	  (setq answers (cons entry answers))))
     answers))
+
+(defun TeX-macro-global ()
+  "Return directories containing the site's TeX macro and style files."
+  (let ((tree-list '("$SYSTEXMF" "$TEXMFLOCAL" "$TEXMFMAIN" "$TEXMFDIST"))
+	path-list path exit-status input-dir-list)
+    (condition-case nil
+	(catch 'success
+	  (dotimes (i (safe-length tree-list))
+	    (setq path (with-output-to-string
+			 (setq exit-status
+			       (call-process
+				"kpsewhich"  nil
+				(list standard-output nil) nil
+				"--progname" "latex"
+				"--expand-braces" (nth i tree-list)))))
+	    (if (zerop exit-status)
+		(progn (add-to-list 'path-list path)
+		       (when (zerop i) (throw 'success nil)))
+	      (setq path (with-output-to-string
+			   (setq exit-status
+				 (call-process
+				  "kpsewhich"  nil
+				  (list standard-output nil) nil
+				  "--progname" "latex"
+				  "--expand-path" (nth i tree-list)))))
+	      (when (zerop exit-status) (add-to-list 'path-list path)))))
+      (error nil))
+    (dolist (elt path-list)
+      (let ((separators (if (string-match "^[A-Za-z]:" elt)
+			    "[\n\r;]"
+			  "[\n\r:]")))
+	(dolist (item (condition-case nil
+			  (split-string elt separators t)
+			;; COMPATIBILITY for XEmacs <= 21.4.15
+			(error (delete "" (split-string elt separators)))))
+	  (when (string-match "^!+" item)
+	    (setq item (substring item (match-end 0) (length item))))
+	  (when (string-match "/+$" item)
+	    (setq item (substring item 0 (match-beginning 0))))
+	  (dolist (subdir '("/tex/" "/bibtex/bst/"))
+	    (when (file-exists-p (file-name-as-directory (concat item subdir)))
+	      (add-to-list 'input-dir-list (concat item subdir)))))))
+    (or input-dir-list
+	'("/usr/share/texmf/tex/" "/usr/share/texmf/bibtex/bst/"))))
+
+(defcustom TeX-macro-global (TeX-macro-global)
+  "Directories containing the site's TeX macro and style files.
+The directory names *must* end with a directory separator."
+  :group 'TeX-file
+  :type '(repeat (directory :format "%v")))
 
 (defcustom TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
 				     (TeX-parse-path "BIBINPUTS"))
