@@ -15,12 +15,10 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.189 2004-11-20 11:05:42 angeli Exp $
-
 @finalout
 @titlepage
 @title @AUCTeX{}
-@subtitle A much enhanced @LaTeX{} mode for Emacs.
+@subtitle A much enhanced @TeX{}/@LaTeX{} mode for Emacs.
 @subtitle Version 11.53
 
 @author by Kresten Krab Thorup
@@ -97,7 +95,7 @@ Bug reports, suggestions for new features, and pleas for help should go
 to either @samp{auc-tex_mgr@@sunsite.dk} (the @AUCTeX{} managers), or
 to @samp{auc-tex@@sunsite.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
-TeX-submit-bug-report} to report bugs if possible.
+TeX-submit-bug-report RET} to report bugs if possible.
 
 @end ifnottex
 
@@ -107,16 +105,17 @@ TeX-submit-bug-report} to report bugs if possible.
 @menu
 * Copying::                     Copying
 * Introduction::                Introduction to @AUCTeX{}
+* Installation::                Installing @AUCTeX{}
 * Quick Start::                 Quick Start
 * Frequently Used Commands::    Inserting Frequently Used Commands
 * Advanced Features::           Advanced Editing Features
+* Display::                     Controlling the Display of Source Code
 * Running TeX and friends::     Starting processors, viewers and other programs
 * Multifile::                   Multifile Documents
 * Parsing Files::               Automatic Parsing of @TeX{} files
 * I18n::                        Internationalization
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
-* Installation::                How to install @AUCTeX{}
 * Changes::                     Changes and New Features
 * ToDo::                        Future Development
 * FAQ::                         Frequently Asked Questions
@@ -124,7 +123,6 @@ TeX-submit-bug-report} to report bugs if possible.
 * Function Index::              Function Index
 * Variable Index::              Variable Index
 * Concept Index::               Concept Index
-
 @end menu
 
 @node Copying
@@ -177,6 +175,8 @@ being distributed that relate to @AUCTeX{} are found in the General
 Public Licenses that accompany them.
 
 @include intro.texi
+
+@include install.texi
 
 @include quickstart.texi
 
@@ -704,7 +704,6 @@ through the document.
 * Commenting::                  Commenting text
 * Indenting::                   Reflecting syntactic constructs with whitespace
 * Filling::                     Automatic and manual line breaking
-* Show/Hide::                   Showing and Hiding Text in the Buffer
 @end menu
 
 @node Mathematics
@@ -770,10 +769,10 @@ command, usually bound to @kbd{M-@key{TAB}}.  Using
 names of long @LaTeX{} macros.
 
 In order to use @code{TeX-complete-symbol}, you should write a backslash
-and the start of the macro.  Typing @kbd{M-@key{TAB}} will now
-complete as much of the macro, as it unambiguously can.  For example, if
-you type `@samp{\renewc}' and then `@kbd{M-@key{TAB}}, it will expand
-to `@samp{\renewcommand}'.
+and the start of the macro.  Typing @kbd{M-@key{TAB}} will now complete
+as much of the macro, as it unambiguously can.  For example, if you type
+`@samp{\renewc}' and then @kbd{M-@key{TAB}}, it will expand to
+`@samp{\renewcommand}'.
 
 @deffn Command TeX-complete-symbol
 @kindex M-@key{TAB}
@@ -789,8 +788,9 @@ Some examples are listed below.
 
 @deffn Command TeX-insert-macro
 @kindex C-c C-m
-(@kbd{C-c C-m} or @kbd{C-c RET}) Prompt (with completion) for the name of a @TeX{} macro,
-and if @AUCTeX{} knows the macro, prompt for each argument.
+(@kbd{C-c C-m} or @kbd{C-c RET}) Prompt (with completion) for the name
+of a @TeX{} macro, and if @AUCTeX{} knows the macro, prompt for each
+argument.
 @end deffn
 
 As a default selection, @AUCTeX{} will suggest the macro last inserted
@@ -818,7 +818,8 @@ Default macro to insert when invoking @code{TeX-insert-macro} first time.
 @end defopt
 
 A faster alternative is to bind the function @code{TeX-electric-macro}
-to @samp{\}.  This can be done by setting the variable @code{TeX-electric-escape}
+to @samp{\}.  This can be done by setting the variable
+@code{TeX-electric-escape}
 
 @defopt TeX-electric-escape
 If this is non-nil when @AUCTeX{} is loaded, the @TeX{} escape
@@ -1201,32 +1202,369 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
-@node Show/Hide
-@section Showing and Hiding Text in the Buffer
+@node Display
+@chapter Controlling the Display of Source Code
 
-While you are editing your text you might find certain parts of it
-distracting or not worthwile to be displayed.  @AUCTeX{} lets you hide
-those parts and show them again at request.  There is a built-in support
-for hiding macros and environments which we call "folding" here, as well
-as support for Emacs' outline mode.
+It is often desirable to get visual help of what markup code in a text
+actually does whithout having to decipher it explicitely.  For this
+purpose Emacs and @AUCTeX{} provide font locking (also known as syntax
+highlighting) which visually sets off markup code like macros or
+environments by using different colors or fonts.  For example text to be
+typeset in italics can be displayed with an italic font in the editor as
+well, or labels and references get their own distinct color.
+
+While font locking helps you grasp the purpose of markup code and
+separate markup from content, the markup code can still be distracting.
+@AUCTeX{} lets you hide those parts and show them again at request with
+its built-in support for hiding macros and environments which we call
+folding here.
+
+Besides folding of macros and environments, @AUCTeX{} provides support
+for Emacs' outline mode which lets you narrow the buffer content to
+certain sections of your text by hiding the parts not belonging to these
+sections.
 
 @menu
-* Folding::                     Folding Macros
+* Font Locking::                Font Locking
+* Folding::                     Folding Macros and Environments
 * Outline::                     Outlining the Document
 @end menu
 
+@node Font Locking
+@section Font Locking
+@cindex Font Locking
+@cindex Syntax Highlighting
+@cindex font-latex
+
+Font locking is supposed to improve readability of the source code by
+highlighting certain keywords with different colors or fonts.  It
+thereby lets you recognize the function of markup code to a certain
+extent without having to read the markup command.  For general
+information on controlling font locking with Emacs' font lock mode,
+@xref{Font Lock, , Font Lock Mode, emacs, GNU Emacs Manual}.
+
+@defopt TeX-install-font-lock
+Once font locking is enabled globally or for the major modes provided by
+@AUCTeX{}, the font locking patterns and functionality of @fontlatex{}
+are activated by default.  You can switch to a different font locking
+scheme or disable font locking in @AUCTeX{} by customizing the variable
+@code{TeX-install-font-lock}.
+
+Besides @fontlatex{} @AUCTeX{} ships with a scheme which is derived
+from Emacs' default @LaTeX{} mode and activated by choosing
+@code{tex-font-setup}.  Be aware that this scheme is not coupled with
+@AUCTeX{}'s style system and not the focus of development.  Therefore
+and due to @fontlatex{} being much more feature-rich the following
+explanations will only cover @fontlatex{}.
+
+In case you want to hook in your own fontification scheme, you can
+choose @code{other} and insert the name of the function which sets up
+your font locking patterns.  If you want to disable fontification in
+@AUCTeX{} completely, choose @code{ignore}.
+@end defopt
+
+@fontlatex{} provides many options for customization which are
+accessible with @kbd{M-x customize-group RET font-latex RET}.  For this
+description the various options are explained in conceptional groups.
+
+@heading Macros
+
+Highlighting of macros can be customized by adapting keyword lists which
+can be found in the customization group @code{font-latex-keywords}.  The
+lists contain names of macros without the leading backslash.
+
+Three types of macros can be handled differently with respect to
+fontification:
+
+@enumerate
+@item
+Commands of the form @samp{\foo[bar]@{baz@}} which consist of the macro
+itself, optional arguments in square brackets and mandatory arguments in
+curly braces.  For the command itself the face
+@code{font-lock-keyword-face} will be used and for the optional
+arguments the face @code{font-lock-variable-name-face}.  The face
+applied to the mandatory argument depends on the macro class represented
+by the respective built-in variables.
+@item
+Declaration macros of the form @samp{@{\foo text@}} which consist of the
+macro which may be enclosed in a @TeX{} group together with text to be
+affected by the macro.  In case a @TeX{} group is present, the macro
+will get the face @code{font-lock-keyword-face} and the text will get
+the face configured for the respective macro class.  If no @TeX{} group
+is present, the latter face will be applied to the macro itself.
+@item
+Simple macros of the form @samp{\foo} which do not have any arguments or
+groupings.  The respective face will be applied to the macro itself.
+@end enumerate
+
+@subheading General macro classes
+
+@fontlatex{} provides keyword lists for different macro classes which
+are described in the following table:
+
+@vindex font-latex-match-function-keywords
+@vindex font-latex-match-reference-keywords
+@vindex font-latex-match-textual-keywords
+@vindex font-latex-match-variable-keywords
+@vindex font-latex-match-warning-keywords
+@table @code
+@item font-latex-match-function-keywords
+Keywords for macros defining or related to functions, like
+@samp{\newcommand}.@*
+Type: @samp{\macro[...]@{...@}}@*
+Face: @code{font-lock-function-name-face}
+
+@item font-latex-match-reference-keywords
+Keywords for macros defining or related to references, like
+@samp{\ref}.@*
+Type: @samp{\macro[...]@{...@}}@*
+Face: @code{font-lock-reference-face}
+
+@item font-latex-match-textual-keywords
+Keywords for macros specifying textual content, like @samp{\caption}.@*
+Type: @samp{\macro[...]@{...@}}@*
+Face: @code{font-lock-type-face}
+
+@item font-latex-match-variable-keywords
+Keywords for macros defining or related to variables, like
+@samp{\setlength}.@*
+Type: @samp{\macro[...]@{...@}@{...@}}@*
+Face: @code{font-lock-variable-name-face}
+
+@item font-latex-match-warning-keywords
+Keywords for important macros, e.g. affecting line or page break, like
+@samp{\clearpage}.@*
+Type: @samp{\macro}@*
+Face: @code{font-latex-warning-face}
+@end table
+
+@subheading Sectioning commands
+@cindex Sectioning commands, fontification of
+
+Sectioning commands are macros like @samp{\chapter} or @samp{\section}.
+For these commands there are two fontification schemes which may be
+selected by customizing the variable @code{font-latex-title-fontity}.
+
+@defopt font-latex-title-fontity
+Per default sectioning commands will be shown in a larger, proportional
+font, which corresponds to the value @samp{height} for this variable.
+The font size varies with the sectioning level, e.g. @samp{\part} will
+have a larger font than @samp{\subsection}.  @fontlatex{} provides four
+different levels.  The respective keyword lists are described in the
+following table.  If you rather like to use the base font and a
+different color, set the variable to @samp{color}.  In this case the
+face @code{font-lock-type-face} will be used to fontify the argument of
+the command.
+@end defopt
+
+@vindex font-latex-match-title-1-keywords
+@vindex font-latex-match-title-2-keywords
+@vindex font-latex-match-title-3-keywords
+@vindex font-latex-match-title-4-keywords
+@table @code
+@item font-latex-match-title-1-keywords
+Keywords for level 1 sectioning commands.@*
+Face: @code{font-latex-title-1-face}
+
+@item font-latex-match-title-2-keywords
+Keywords for level 2 sectioning commands.@*
+Face: @code{font-latex-title-2-face}
+
+@item font-latex-match-title-3-keywords
+Keywords for level 3 sectioning commands.@*
+Face: @code{font-latex-title-3-face}
+
+@item font-latex-match-title-4-keywords
+Keywords for level 4 sectioning commands.@*
+Face: @code{font-latex-title-4-face}
+@end table
+
+@subheading Commands for changing fonts
+
+@LaTeX{} provides various macros for changing fonts or font attributes.
+For example, you can select an italic font with @samp{\textit@{...@}} or
+bold with @samp{\textbf@{...@}}.  An alternative way to specify these
+fonts is to use special macros in @TeX{} groups, like @samp{@{\itshape
+...@}} for italics and @samp{@{\bfseries ...@}} for bold.  As mentioned
+above, we call the former variants commands and the latter
+declarations.
+
+Besides the macros for changing fonts provided by @LaTeX{} there is an
+infinite number of other macros---either defined by yourself for logical
+markup or defined by macro packages---which affect the font in the
+typeset text.  While @LaTeX{}'s built-in macros and macros of packages
+known by @AUCTeX{} are already handled by @fontlatex{}, different
+keyword lists per type style and macro type are provided for entering
+your own macros which are listed in the table below.
+
+@vindex font-latex-match-bold-command-keywords
+@vindex font-latex-match-italic-command-keywords
+@vindex font-latex-match-math-command-keywords
+@vindex font-latex-match-type-command-keywords
+@vindex font-latex-match-bold-declaration-keywords
+@vindex font-latex-match-italic-declaration-keywords
+@vindex font-latex-match-type-declaration-keywords
+@table @code
+@item font-latex-match-bold-command-keywords
+Keywords for commands specifying a bold type style.@*
+Face: @code{font-latex-bold-face}
+@item font-latex-match-italic-command-keywords
+Keywords for commands specifying an italic font.@*
+Face: @code{font-latex-italic-face}
+@item font-latex-match-math-command-keywords
+Keywords for commands specifying a math font.@*
+Face: @code{font-latex-math-face}
+@item font-latex-match-type-command-keywords
+Keywords for commands specifying a typewriter font.@*
+Face: @code{font-lock-type-face}
+@item font-latex-match-bold-declaration-keywords
+Keywords for declarations specifying a bold type style.@*
+Face: @code{font-latex-bold-face}
+@item font-latex-match-italic-declaration-keywords
+Keywords for declarations specifying an italic font.@*
+Face: @code{font-latex-italic-face}
+@item font-latex-match-type-declaration-keywords
+Keywords for declarations specifying a typewriter font.@*
+Face: @code{font-latex-type-face}
+@end table
+
+@subheading User-defined keyword classes
+
+In case the customization options explained above do not suffice for
+your needs, you can specify your own keyword classes by customizing the
+variable @code{font-latex-user-keyword-classes}.
+
+@defopt font-latex-user-keyword-classes
+Every keyword class consists of four parts, a name, a list of keywords,
+a face and a specifier for the type of macros to be highlighted.
+
+When adding new entries, you have to use unique values for the class
+names, i.e. they must not clash with names of the built-in keyword
+classes or other names given by you.  Additionally the names must not
+contain spaces.
+
+The keywords are names of commands you want to match omitting the
+leading backslash.
+
+The face argument can either be an existing face or font specifications
+made by you.  (The latter option is not available on XEmacs.)
+
+There are three alternatives for the type of keywords---``Command with
+arguments'', ``Declaration inside @TeX{} group'' and ``Command without
+arguments''---which correspond with the macro types explained above.
+@end defopt
+
+@heading Quotes
+@cindex Quotes, fontification of
+
+Text in quotation marks is displayed with the face
+@code{font-latex-string-face}.  Besides the various forms of opening and
+closing double and single quotation marks so-called guillemets (<<, >>)
+can be used for quoting.  Because there are two styles of using
+them---French style: << text >>; German style: >>text<<---you can
+customize the variable @code{font-latex-quotes} to tell @fontlatex{}
+which type you are using.
+
+@defopt font-latex-quotes
+Set the value to @samp{german} if you are using >>German quotes<< and to
+@samp{french} if you are using << French quotes >>.  @fontlatex{} will
+recognize the different ways these quotes can be given in your source
+code, i.e. (@samp{"<}, @samp{">}), (@samp{<<}, @samp{>>}) and the
+respective 8-bit variants.
+@end defopt
+
+@heading Subscript and superscript in math
+@cindex Subscript, fontification of
+@cindex Superscript, fontification of
+
+In order to make math constructs more readable, @fontlatex{} displays
+subscript and superscript parts in a smaller font and raised or lowered
+respectively.  This fontification feature can be controlled with the
+variables @code{font-latex-fontify-script} and
+@code{font-latex-script-display}.
+
+@defopt font-latex-fontify-script
+If non-nil, fontify subscript and superscript strings.
+
+Note that this feature is not available on XEmacs, for whicht it is
+disabled per default.  In GNU Emacs raising and lowering is not enabled
+for versions 21.3 and before due to it working not properly.
+@end defopt
+
+@defopt font-latex-script-display
+Display specification for subscript and superscript content.  The car is
+used for subscript, the cdr is used for superscript.  The feature is
+implemented using so-called display properties, see @ref{Other Display
+Specs, , Other Display Specifications, elisp, GNU Emacs Lisp Reference
+Manual} for information on what exactly to specify for the values.
+@end defopt
+
+@heading Verbatim macros and environments
+@cindex Verbatim, fontification of
+
+Usually it is not desirable to have content to be typeset verbatim
+highlighted according to @LaTeX{} syntax.  Therefore this content will
+be fontified uniformly with the face @code{font-latex-verbatim-face}.
+
+@fontlatex{} differentiates three different types of verbatim
+constructs for fontification and consequently provides three keyword
+lists for customization.
+
+@defopt font-latex-verb-like-commands
+List of commands with the form @samp{\foo|...|} to be fontified as
+verbatim without the leading backslash.  (The delimiters for the
+command's argument can be any character except an asterisk.)
+@end defopt
+
+@defopt font-latex-verbatim-macros
+List of macros with the form @samp{\foo@{...@}} to be fontified as
+verbatim without the leading backslash.  In contrast to
+@code{font-latex-verb-like-commands} the macro's argument is enclosed in
+a @TeX{} group and not two arbitrary characters.
+@end defopt
+
+@defopt font-latex-verbatim-environments
+List of environments the content of which should be fontified as
+verbatim.
+@end defopt
+
+@heading Multi-line fontification
+
+Font locking in @LaTeX{} source code often involves constructs spanning
+more than one line of text.  For these constructs to be handled
+correctly GNU Emacs as well as @fontlatex{} provide mechanisms for
+multi-line fontification which can be controlled by the variable
+@code{font-latex-do-multi-line}.
+
+@defopt font-latex-do-multi-line
+Control multi-line fontification.
+
+Setting the variable to t will enable @fontlatex{}'s mechanism, setting
+it to nil will disable it.  Setting it to @samp{try-font-lock} (the
+default) will use font-lock's mechanism if available and @fontlatex{}'s
+method if not.
+
+Setting this variable will only have effect after resetting buffers
+controlled by @fontlatex{} or restarting Emacs.
+@end defopt
+
+@heading Faces
+@cindex Faces
+
+In case you want to change the colors and fonts used by @fontlatex{}
+please refer to the faces mentioned in the explanations above and use
+@kbd{M-x customize-face RET <face> RET}.  All faces defined by
+@fontlatex{} are accessible through a customization group by typing
+@kbd{M-x customize-group RET font-latex-highlighting-faces RET}.
+
+
 @node Folding
-@subsection Folding
+@section Folding Macros and Environments
 @cindex Outlining
 @cindex Folding
 @cindex Reveal
 @cindex Auto-Reveal
 @cindex Hide Macros
-
-Are you often annoyed by footnotes and citations clobbering your text?
-Do you pull your hair when you cannot see what you are actually writing
-because of all those macros for font specification and logical mark-up?
-Then folding might be for you.
 
 There can be macros and environments which have content that is not part
 of the text body you are writing, like footnotes and citations.  Those
@@ -1357,7 +1695,7 @@ brackets is used as display string, otherwise the defaults specified in
 @end defopt
 
 @node Outline
-@subsection Outlining the Document
+@section Outlining the Document
 @cindex Outlining
 @cindex Headers
 @cindex Sections
@@ -1398,7 +1736,7 @@ better outline support.  It is available from your favorite emacs lisp
 archive.
 
 @node Running TeX and friends
-@chapter Starting processors, viewers and other programs
+@chapter Starting Processors, Viewers and Other Programs
 
 The most powerful features of @AUCTeX{} may be those allowing you to
 run (La)@TeX{}/@ConTeXt{} and other external commands like Bib@TeX{} and
@@ -2114,12 +2452,12 @@ of @TeX{} and Emacs are needed for Korean, Japanese, and Chinese.
 @c FIXME: Is Emacs 21.4 able to deal with CJK?
 
 @menu
-* European::                    Using @AUCTeX{} for European languages.
+* European::                    Using @AUCTeX{} with European Languages
 * Japanese::                    Japanese @TeX{}
 @end menu
 
 @node European
-@section Using @AUCTeX{} for European languages.
+@section Using @AUCTeX{} with European Languages
 @cindex Europe
 @cindex European Characters
 @cindex ISO 8859 Latin 1
@@ -2920,12 +3258,7 @@ List of functions to be called before parsing a @TeX{} file.
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
-@node Installation
-@chapter How to install @AUCTeX{}
-@include install.texi
-
 @node Changes
-@comment  node-name,  next,  previous,  up
 @appendix Changes and New Features
 
 @include changes.texi
@@ -2934,7 +3267,6 @@ List of functions to be called after parsing a @TeX{} file.
 See the file @file{history.texi} for older changes.
 
 @node ToDo
-@comment  node-name,  next,  previous,  up
 @appendix Future Development
 @include todo.texi
 
@@ -2943,25 +3275,21 @@ See the file @file{history.texi} for older changes.
 @include faq.texi
 
 @node Key Index
-@comment    node-name,         next,       previous, up
 @unnumbered Key Index
 
 @printindex ky
 
 @node Function Index
-@comment    node-name,         next,       previous, up
 @unnumbered Function Index
 
 @printindex fn
 
 @node Variable Index
-@comment    node-name,         next,       previous, up
 @unnumbered Variable Index
 
 @printindex vr
 
 @node Concept Index
-@comment      node-name, next,       previous, up
 @unnumbered Concept Index
 
 @printindex cp
