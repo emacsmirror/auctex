@@ -1,19 +1,20 @@
 ;;; -*- emacs-lisp -*-
 ;;; scrreprt.el -- AUC TeX style for scrreprt.cls
 
-;; Copyright (C) 2002 by Mark Trettin
+;; Copyright (C) 2002 Mark Trettin
+;; License: GPL, see the file COPYING in the base directory of AUC TeX
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrreprt.el,v 1.1 2002-10-02 00:02:24 dakas Exp $
+;; Version: $Id: scrreprt.el,v 1.2 2002-10-08 13:24:32 dakas Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
 
-;; This file adds support for the `scrreprt.cls'. This file needs
+;; This file adds support for `scrreprt.cls'. This file needs
 ;; `scrbase.el'.
 
-;; Thist file is intended to be used with the AUC TeX-Package by Per
+;; This file is intended to be used with the AUC TeX-Package by Per
 ;; Abrahamsen. Put this File into your TeX-style-path. You may also
 ;; byte-compile this file.
 

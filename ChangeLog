@@ -1,3 +1,8 @@
+2002-10-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* style/scrreprt.el, style/scrbase.el, style/scrartcl.el,
+	style/scrbook.el: header comments refer to COPYING.
+
 2002-10-02  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile (STYLESRC): Add compilation targets for Komascript

@@ -1,11 +1,12 @@
 ;;; -*- emacs-lisp -*-
 ;;; scrbase.el -- AUC TeX style for the KOMA-Script bundle
 
-;; Copyright (C) 2002 by Mark Trettin
+;; Copyright (C) 2002 Mark Trettin
+;; License: GPL, see the file COPYING in the base directory of AUC TeX
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.1 2002-10-02 00:02:24 dakas Exp $
+;; Version: $Id: scrbase.el,v 1.2 2002-10-08 13:24:33 dakas Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -17,7 +18,7 @@
 
 ;; scrlttr2.cls support is not yet implemented. Sorry.
 
-;; Thist file is intended to be used with the AUC TeX-Package by Per
+;; This file is intended to be used with the AUC TeX-Package by Per
 ;; Abrahamsen. Put this File into your TeX-style-path. You may also
 ;; byte-compile this file.
 
