@@ -2,6 +2,9 @@
 
 @itemize @bullet
 @item
+@kbd{,} and @kbd{.} no longer removes italic correction.
+
+@item
 @code{graphicsx} support.
 Donated by Ryuichi Arafune <arafune@@ushioda.riec.tohoku.ac.jp>.
 
