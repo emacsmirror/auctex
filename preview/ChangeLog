@@ -1,3 +1,7 @@
+2002-04-13  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.spec: Repair RedHat XEmacs braindamage
+
 2002-04-13  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-compatibility-macros):
