@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.29 1993-03-17 23:01:07 amanda Exp $
+# $Id: Makefile,v 5.30 1993-03-18 06:00:52 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -23,6 +23,10 @@ infodir = $(prefix)/info
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
+
+# Make sure that this is the same directory as specified by
+# TeX-lisp-directory in tex-site.el
+
 #aucdir=/user/amanda/lib/emacs/auctex
 #aucdir=$(prefix)/elisp/auctex
 aucdir=/home/pd/share/emacs/auctex7
@@ -37,6 +41,9 @@ elispdir=/home/dist/lib/emacs/lisp
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
 ##----------------------------------------------------------------------
+
+# Do not change the definition of autodir below, unless you also
+# update TeX-auto-global in tex-init.el
 
 # Where the automatically generated lisp files for your site go.
 autodir=$(aucdir)/auto
@@ -153,6 +160,11 @@ install-auto:
 	@echo "**********************************************************"
 	if [ ! -d $(autodir) ]; then mkdir $(autodir); fi
 	$(AUTO) 
+	@echo "**********************************************************"
+	@echo "** If this failed then check that you have set"
+	@echo "** TeX-lisp-directory correctly in tex-site.el"
+	@echo "**********************************************************"
+	@echo
 	@echo "**********************************************************"
 	@echo "** Byte compiling.  This will take a while..."
 	@echo "**********************************************************"

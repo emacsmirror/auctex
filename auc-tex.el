@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.41 1993-03-15 18:11:13 amanda Exp $
+;;; $Id: auc-tex.el,v 5.42 1993-03-18 06:00:55 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -58,7 +58,6 @@
 (TeX-define-key "\C-c$"    'TeX-run-lacheck)
 (TeX-define-key "\C-c;"    'TeX-comment-out-region)
 
-(define-key LaTeX-mode-map "\e\r"    'LaTeX-insert-item)
 (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
 (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
 (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
