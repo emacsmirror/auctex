@@ -1,5 +1,7 @@
 2001-10-23  David Kastrup  <David.Kastrup@t-online.de>
 
+	* PROBLEMS (AucTeX): remove patch for intangibility problem.
+
 	* preview.el (preview-regenerate): use preview-region
 	(preview-region): New user function.
 	(preview-environment): New user function.
