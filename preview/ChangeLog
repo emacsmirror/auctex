@@ -2,6 +2,10 @@
 
 	* preview.el (preview-environment, preview-parse-messages): byte
 	compiler warnings.
+	(preview-buffer-restore-internal): basically the previous
+	preview-buffer-restore.
+	(preview-buffer-restore): delay resinstating previews vie
+	desktop-delay-hook.
 
 	* prv-xemacs.el (face-attribute): Try getting calculation of
 	:height more correct.
