@@ -117,7 +117,7 @@ performed as specified in TeX-expand-list."
 	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-TeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%v " 'TeX-run-silent t nil)
+	    (list "View" "%V " 'TeX-run-silent t nil)
 	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
 	(list "Print" "%p %r " 'TeX-run-command t nil)
 	(list "Queue" "%q" 'TeX-run-background nil nil)
@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.296 $"))
+	(rev "$Revision: 5.297 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-04-10 11:19:40 $"))
+    (let ((date "$Date: 2003-04-15 20:19:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

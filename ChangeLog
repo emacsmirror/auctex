@@ -1,3 +1,9 @@
+2003-04-15  Patrick Gundlach  <patrick@gundla.ch>
+
+	* tex.el (TeX-command-list): Changed %v to %V in View. Now
+	TeX-output-view-style is used for setting viewer preferences. See
+	changes from 2003-02-06 below.
+
 2003-04-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* .cvsignore: Added INSTALL and INSTALL.windows
