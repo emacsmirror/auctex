@@ -140,7 +140,7 @@ looks there for per-user packages by default.
 If @AUCTeX{} is installed in a non-standard location, use this option
 to specify the location of its @file{tex-site.el} file.
 
-@item --with-texmf=@var{/dir}@*--with-tex-dir=@var{/dir}
+@item --with-texmf-dir=@var{/dir}@*--with-tex-dir=@var{/dir}
 Both of these options can be used to specify the location to install the
 preview @TeX{} files.  They are not necessary for most @TeX{} installs,
 but may be used if you don't like the directory that configure is
