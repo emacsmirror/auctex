@@ -1,5 +1,5 @@
 % -*- plain-tex -*- 
-% $Id: ref-card.tex,v 1.7 1993-03-15 18:12:23 amanda Exp $
+% $Id: ref-card.tex,v 1.8 1993-03-19 00:24:32 amanda Exp $
 % Reference Card for Auc TeX version 7.0
 %**start of header
 \newcount\columnsperpage
@@ -120,7 +120,7 @@ are preserved on all copies.
   \normalbaselineskip=.8\normalbaselineskip
   \normallineskip=.8\normallineskip
   \normallineskiplimit=.8\normallineskiplimit
-  \normalbaselines\rm		%make definitions take effect
+  \normalbaselines\rm           %make definitions take effect
 
   \if 2\ncolumns
     \let\maxcolumn=b
@@ -141,11 +141,11 @@ are preserved on all copies.
       %\immediate\write16{Column \folio\abc\space starts with \firstmark}
       \if \maxcolumn\abc \multicolumnformat \global\def\abc{a}
       \else\if a\abc
-	\global\setbox\columna\columnbox \global\def\abc{b}
+        \global\setbox\columna\columnbox \global\def\abc{b}
         %% in case we never use \columnb (two-column mode)
         \global\setbox\columnb\hbox to -\intercolumnskip{}
       \else
-	\global\setbox\columnb\columnbox \global\def\abc{c}\fi\fi}
+        \global\setbox\columnb\columnbox \global\def\abc{c}\fi\fi}
   \def\multicolumnformat{\shipout\vbox{\makeheadline
       \hbox{\box\columna\hskip\intercolumnskip
         \box\columnb\hskip\intercolumnskip\columnbox}
@@ -192,7 +192,7 @@ are preserved on all copies.
 
 \def\<#1>{$\langle${\rm #1}$\rangle$}
 
-\def\kbd#1{{\tt#1}\null}	%\null so not an abbrev even if period follows
+\def\kbd#1{{\tt#1}\null}        %\null so not an abbrev even if period follows
 
 \def\beginexample{\par\leavevmode\begingroup
   \obeylines\obeyspaces\parskip0pt\tt}
@@ -263,6 +263,7 @@ Commands you can run on the master file (with C-c C-c) or the region
 \key{Insert Section}{C-c C-s}
 \key{Insert LaTeX environment}{C-c C-e}
 \key{Insert item}{C-c LFD}
+\key{Close LaTeX environment}{C-c ]}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
 \key{Complete \TeX\ macro}{C-c TAB}

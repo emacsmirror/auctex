@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.32 1993-03-18 06:40:32 amanda Exp $
+# $Id: Makefile,v 5.33 1993-03-19 00:24:10 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -119,10 +119,10 @@ first:
 	@echo "	 and follow the instructions."
 	@echo 
 	@echo "	 Before you start, you should check that you have"
-	@echo "	 TeXinfo2 installed.  The version of TeXinfo distributed"
-	@echo "	 with GNU Emacs 18.xx is TeXinfo 1."
+	@echo "	 TeXinfo 2.16 or later installed.  The version of"
+	@echo "  TeXinfo distributed with GNU Emacs 18.xx is TeXinfo 1."
 	@echo
-	@echo "	 TeXinfo2 is available for fto at all major GNU sites."
+	@echo "	 TeXinfo2 is available for ftp at all major GNU sites."
 	@echo "	 TeXinfo2 will also be part of GNU Emacs 19.xx."
 	@echo
 

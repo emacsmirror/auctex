@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.43 1993-03-18 08:45:41 amanda Exp $
+;;; $Id: auc-tex.el,v 5.44 1993-03-19 00:24:12 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -66,7 +66,6 @@
 (define-key LaTeX-mode-map "\em"     'LaTeX-math-mode)
 (define-key LaTeX-mode-map "\es"     'LaTeX-format-section)
 (define-key LaTeX-mode-map "\e\C-e"  'LaTeX-mark-environment)
-(define-key LaTeX-mode-map "\C-c\C-f" 'LaTeX-close-environment)
 (define-key LaTeX-mode-map "\e\C-x"  'LaTeX-mark-section) 
 (define-key LaTeX-mode-map "\e\C-q"  'LaTeX-format-environment)
 
@@ -242,17 +241,6 @@ Inserts command at the start of the group."
   (save-excursion
     (goto-char end)   (insert TeX-grcl)
     (goto-char begin) (insert TeX-grop TeX-esc command " ")))
-
-(autoload 'LaTeX-current-environment "ltx-env" no-doc nil)
-
-(defun LaTeX-close-environment ()
-  "Creates an \\end{...} to match the current environment"
-  (interactive "*")
-  (end-of-line)
-  (insert "\n\n")
-  (insert "\\end{" (LaTeX-current-environment 1) "}\n")
-  (forward-line -2)
-  (LaTeX-indent-line))
 
 ;;; @@ Emacs
 

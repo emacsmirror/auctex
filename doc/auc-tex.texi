@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.20 1993-03-18 06:23:31 amanda Exp $
+@c $Id: auc-tex.texi,v 1.21 1993-03-19 00:24:29 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -593,6 +593,14 @@ may easily specify more, as described in `Customizing environments'.
 * Customizing environments::    Customizing environments
 @end menu
 
+You can close the current environment with @kbd{C-c ]}, but we suggest
+that you use @kbd{C-c C-e} to insert complete environments instead.
+
+@deffn Command LaTeX-close-environment
+@kindex C-c ]
+(@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment. 
+@end deffn
+
 @node Floats, Itemize-like,  , Environments
 @subsection Floats
 @cindex Floats
@@ -670,34 +678,8 @@ etc., you will be prompted for a template for that environment.
 @node Customizing environments,  , Tabular-like, Environments
 @subsection Customizing environments
 
-The known environments and special cases is controlled by the variable
-@code{LaTeX-environment-alist}.
-
-@defopt LaTeX-environment-alist
-A association list of all the possible environments in LaTeX mode. 
-
-Each entry is a cons-cell.  The car is a string containing the name of
-the name of the environment.  The cdr (if not nil), is taken to be a
-function to be called when starting LaTeX-environment.  The function is
-called with the car as argument.
-@end defopt
-
-You may add your own favorite environments, by setting
-@code{LaTeX-mode-hook} in your @file{.emacs} file.
-@vindex LaTeX-mode-hook
-
-@lisp 
-(setq LaTeX-mode-hook 
-      (function (lambda () (setq LaTeX-environment-alist
-                                 (append '(("myenv")
-                                           ("myenv2" . LaTeX-myenv2-hook))
-                                          LaTeX-environment-alist)))))
-@end lisp
-
-The function, (in this case @code{LaTeX-myenv2-hook}) will then simply
-be called with the actual environment name as the only argument, and it
-is free to do whatever you like. refer to the file @file{ltx-env.el}
-from the distribution for examples of use.
+@xref{Adding Environments}, for how to customize the list of known
+environments. 
 
 @node Advanced Features, Formatting, Frequently Used Commands, top
 @chapter Advanced Editing Features 
@@ -2051,6 +2033,9 @@ point inside braces.  Otherwise, each argument of this function should
 match an argument to the @TeX{} macro.  What is done depend on the argument
 type.
 
+If a macro is defined multiple times, AUC @TeX{} will chose the one with
+the longest definition.
+
 @table @code
 @item string
 Use the string as a prompt to prompt for the argument.
@@ -2210,6 +2195,9 @@ environment hook to insert the environment, but the function
 @code{LaTeX-insert-environment} may be to some help.  The hook will be
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to list after the hook.
+
+If a macro is defined multiple times, AUC @TeX{} will chose the one with
+the longest definition.
 
 @defun LaTeX-add-environments @var{env} @dots{}
 Add each @var{env} to list of loaded environments.
