@@ -293,10 +293,6 @@ Hook up the letter environment with @file{bbdb.el}.
 clash.  Bad.
 
 @item
-Filling messes up comments, but only at the end of the file.  Reported
-by Juergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
-
-@item
 @kbd{C-c `} should always stay in the current window, also when it finds
 a new file.
 
