@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10s
+;; Version: 9.10t
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -252,7 +252,7 @@ If so, return the second element, otherwise return nil."
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "\\{\\([^\}]*\\)\\}" (+ (point) 50) t)
+    (if (re-search-forward "{\\([^\}]*\\)}" (+ (point) 50) t)
 	(match-string 1)
       (buffer-substring (point) (+ 20 (point))))))
 
@@ -3054,7 +3054,7 @@ of `LaTeX-mode-hook'."
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands
-	 "\\|item\\b"
+	 "\\|\\(bib\\)?item\\b"
 	 "\\)"
 	 "\\|"
 	 "^[ \t]*\\$\\$" ; display math delimitor

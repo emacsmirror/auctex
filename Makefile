@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10s
+# Version: 9.10t
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -99,7 +99,7 @@ STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
-EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 WIN-NT Makefile ChangeLog \
+EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 WIN-NT IRIX Makefile ChangeLog \
 	lpath.el tex-site.el $(CONTRIB)
 
 all:	lisp

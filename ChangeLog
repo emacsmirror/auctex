@@ -1,3 +1,37 @@
+2000-10-09  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10t released.
+
+2000-10-09  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-outline-name): Don't escape `{' or `}' in
+	regexps. 
+	Patch by "Stefan Monnier" <monnier+gnu/emacs/news/@RUM.cs.yale.edu>.
+
+	* tex-mik.el (TeX-command-list): Use `TeX-run-discard' for "View"
+	command. 
+	Suggested by "Claus Dethlefsen" <c.dethlefsen@lancaster.ac.uk>.
+
+	* latex.el (LaTeX-common-initialization): `\bibitem' starts
+	paragraphs, just like `\item'.
+	Reported by Werner LEMBERG <sx0005@sx2.HRZ.Uni-Dortmund.DE>.
+
+2000-10-06  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-current-line): Return a string, not a number.
+	Reported by Julia Habel <julia.habel@gmx.de>.
+	Patch by Dirk.Ullrich@DaimlerChrysler.com.
+	
+2000-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-site.el: Require tex-mik after changing load-path.
+	Reported by "I. Jossang" <ij202@eng.cam.ac.uk>.
+
+2000-06-13  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* IRIX: New file.
+	* Makefile (EXTRAFILES): Added it.
+
 2000-05-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10s released.
