@@ -1,5 +1,8 @@
 2004-04-07  Berend de Boer  <berend@pobox.com>
 
+	* context.el (ConTeXt-current-interface): make now doesn't complain
+	anymore when byte compiling ConTeXt.
+
 	* tex.el now recognizes ConTeXt dutch interface.
 
 2004-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
