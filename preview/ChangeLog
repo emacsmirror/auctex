@@ -1,3 +1,9 @@
+2004-03-15  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-gs-color-string): Add missing space in
+	color setup (GhostScript syntax error).
+	(preview-gs-color-string): And another color setup bug.
+
 2004-03-11  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/readme.texi (Activating preview-latex): Make a few changes
