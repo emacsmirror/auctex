@@ -11,9 +11,9 @@ datadir = @datadir@
 infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
-auctexdir= $(lispdir)/auctex
+auctexdir= ${lispdir}/auctex
 autodir = @autodir@
-styledir = $(auctexdir)/style
+styledir = ${auctexdir}/style
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -220,9 +220,10 @@ full-release:
 	tar xzfO $(FTPDIR)/auctex-$(TAG).tar.gz auctex-$(TAG)/tex.el \
 	| fgrep -s '$$'"Name: release_`echo $(TAG)| sed -e 's/[.]/_/g'` " \
 	|| { echo "Not a properly tagged release!" >&2 ; exit 1 ; }
-	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz"
+	rm -f $(FTPDIR)/*.{directive,asc,sig}
+	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz" -
 	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-$(TAG)-* $(FTPDIR)
-	read -sp "Passphrase: " phrase
+	read -sp "Enter pass phrase: " phrase ; \
 	for i in $(FTPDIR)/*; do \
 	   echo "$$phrase" | gpg --passphrase-fd 0 --detach-sign $$i ; \
 	   case $$i in *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \

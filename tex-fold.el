@@ -201,7 +201,7 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 				      "[^A-Za-z@*]")))))
 	;; Start from the bottom so that it is easier to prioritize
 	;; nested macros.
-	(end-of-buffer)
+	(goto-char (point-max))
 	(while (re-search-backward regexp nil t)
 	  (let* ((item-start (match-beginning 0))
 		 (display-string-spec (cadr (assoc (match-string 1) fold-list)))

@@ -37,7 +37,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 		       (setq prefix (file-name-as-directory prefix))\
 		       (eq 0 (string-match (regexp-quote prefix)\
 					   package-dir))))\
-		(replace-match (file-name-as-directory \"\$(prefix)\") t t package-dir)\
+		(replace-match (file-name-as-directory \"\${prefix}\") t t package-dir)\
 	      package-dir))\
 	\"NONE\"))],
     [noecho],,[prefix],["${tmpprefix}"])])
@@ -74,8 +74,8 @@ AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
    if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
    fi
-   previewtexmfdir='$(texmfdir)/tex/latex/preview'
-   previewdocdir='$(texmfdir)/doc/latex/styles'
+   previewtexmfdir='${texmfdir}/tex/latex/preview'
+   previewdocdir='${texmfdir}/doc/latex/styles'
    ])
 
 AC_ARG_WITH(tex-dir,
@@ -113,11 +113,11 @@ EOF
     previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
-	    previewtexmfdir='$(texmfdir)'
-	    previewdocdir='$(texmfdir)'
+	    previewtexmfdir='${texmfdir}'
+	    previewdocdir='${texmfdir}'
 	fi
     else
-	previewdocdir='$(texmfdir)/doc/latex/styles'
+	previewdocdir='${texmfdir}/doc/latex/styles'
     fi
 # Next
 # kpsepath -n latex tex
@@ -138,8 +138,8 @@ do
   x="`echo $x | sed -e 's+//+/+g' -e 's+/\$++' `"
   if test -d "$x"  ; then
      texmfdir="`echo $x | sed -e 's+/tex/latex++'`"
-     previewdocdir='$(texmfdir)/doc/latex/styles'
-     previewtexmfdir='$(texmfdir)/tex/latex/preview'
+     previewdocdir='${texmfdir}/doc/latex/styles'
+     previewtexmfdir='${texmfdir}/tex/latex/preview'
      break
   fi
 done
@@ -153,8 +153,8 @@ for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir="$x"
-     previewtexmfdir='$(texmfdir)/preview'
-     previewdocdir='$(texmfdir)/preview'
+     previewtexmfdir='${texmfdir}/preview'
+     previewdocdir='${texmfdir}/preview'
      break
   fi
 done
@@ -168,7 +168,7 @@ for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir="$x"
-     previewdocdir='$(texmfdir)'
+     previewdocdir='${texmfdir}'
      break
   fi
 done

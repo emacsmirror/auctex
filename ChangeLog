@@ -1,6 +1,12 @@
 2004-08-18  David Kastrup  <dak@gnu.org>
 
-	* Version 11.52 released.
+	* tex-fold.el (TeX-fold-buffer-type): Don't use `end-of-buffer' as
+	it plays around with the current window point.
+
+	* Makefile.in (auctexdir, styledir): Use `${...}' for symmetry
+	with aclocal.m4
+
+	* aclocal.m4: Use `${...}' instead of `$(...)' everywhere.
 
 2004-08-18  Jan-Åke Larsson  <jalar@mai.liu.se>
 
