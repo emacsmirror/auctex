@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.370 $"))
+	(rev "$Revision: 5.371 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-25 10:51:12 $"))
+    (let ((date "$Date: 2004-05-26 08:00:31 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2677,6 +2677,14 @@ be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-indent-on-newline nil
+  "Wether and how indentation is done upon pressing `RET'."
+  :group 'TeX-indentation
+  :type '(choice (const :tag "Use default" nil)
+		 (const :tag "Indent after newline" after-newline)
+		 (const :tag "Indent before and after newline"
+			before-and-after-newline)))
+
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Standard
@@ -2722,6 +2730,12 @@ be bound to `TeX-electric-macro'."
     
     ;; Multifile
     (define-key map "\C-c_" 'TeX-master-file-ask)  ;*** temporary
+
+    ;; Indentation
+    (cond ((eq TeX-indent-on-newline 'after-newline)
+	   (define-key map "\r" 'newline-and-indent))
+	  ((eq TeX-indent-on-newline 'before-and-after-newline)
+	   (define-key map "\r" 'reindent-then-newline-and-indent)))
     map)
   "Keymap for common TeX and LaTeX commands.")
 
@@ -3015,6 +3029,22 @@ is given, do not move point to a position less than this value."
   "Indentation of TeX buffers in AUCTeX."
   :group 'AUCTeX)
 
+(defcustom TeX-brace-indent-level 2
+  "*The level of indentation produced by an open brace."
+  :group 'TeX-indentation
+  :type 'integer)
+
+(defun TeX-comment-indent ()
+  "Determine the indentation of a comment."
+  (if (looking-at "%%%")
+      (current-column)
+    (skip-chars-backward " \t")
+    (max (if (bolp) 0 (1+ (current-column)))
+	 comment-column)))
+
+
+;;; Braces
+
 (defun TeX-brace-count-line ()
   "Count number of open/closed braces."
   (save-excursion
@@ -3033,22 +3063,6 @@ is given, do not move point to a position less than this value."
 	   ((string= "}" (TeX-match-buffer 1))
 	    (setq count (- count TeX-brace-indent-level)))))
 	count))))
-
-(defcustom TeX-brace-indent-level 2
-  "*The level of indentation produced by a open brace."
-  :group 'TeX-indentation
-  :type 'integer)
-
-(defun TeX-comment-indent ()
-  ;; FIXME: Add doc-string.  -- rs
-  (if (looking-at "%%%")
-      (current-column)
-    (skip-chars-backward " \t")
-    (max (if (bolp) 0 (1+ (current-column)))
-	 comment-column)))
-
-
-;;; Braces
 
 (defun TeX-find-closing-brace (&optional arg limit)
   "Return the position of the closing brace in a TeX group.
