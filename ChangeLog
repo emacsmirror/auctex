@@ -1,3 +1,20 @@
+1998-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9l released.
+
+1998-12-01  Alastair Burt  <burt@dfki.de>
+
+	* doc/auc-tex.texi (Automatic): 
+
+	* lisp/tex.el: Extended the semantics of TeX-file-recurse
+	-- now accepts a positive integer as a bound on the recursion.
+	Functions TeX-search-files and TeX-auto-generate have been amended 
+	appropriately.
+
+1998-11-23  Carsten Dominik  <dominik@strw.leidenuniv.nl>
+
+	* texmathp.el (texmathp): Added autoload cookie.
+
 1998-11-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9k released.

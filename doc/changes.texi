@@ -1,6 +1,9 @@
 @section News in 9.9
 
 @itemize @bullet
+@item @code{TeX-file-recurse} now accepts an integer value, max depth of
+recursion.  Patch by Alastair Burt  <burt@@dfki.bde>.
+
 @item Simple imenu support for La@TeX{}.
 
 @item Workaround for 20.3 bugs. 

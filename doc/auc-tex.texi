@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.122 1998-11-20 13:55:40 abraham Exp $
+@c $Id: auc-tex.texi,v 1.123 1998-12-11 15:14:14 abraham Exp $
 
 @finalout
 @titlepage
@@ -1687,7 +1687,9 @@ By default, when AUC @TeX{} searches a directory for files, it will
 recursively search through subdirectories. 
 
 @defopt TeX-file-recurse
-If not nil, search @TeX{} directories recursively.
+Whether to search @TeX{} directories recursively: nil means do not
+recurse, a positive integer means go that far deep in the directory
+hierarchy, t means recurse indefinitely.
 @end defopt
 
 By default, AUC @TeX{} will ignore files name @file{.}, @file{..},

@@ -1,7 +1,7 @@
 ;; texmathp.el -- Code to check if point is inside LaTeX math environment
 ;; Copyright (c) 1998 Carsten Dominik
 
-;; $Id: texmathp.el,v 5.3 1998-06-24 12:11:51 abraham Exp $
+;; texmathp.el,v 1.28 1998/11/23 15:19:44 dominik Exp
 
 ;; Author: Carsten Dominik <dominik@strw.LeidenUniv.nl>
 ;; Keywords: tex
@@ -43,7 +43,7 @@
 ;;
 ;;  To install, put this file on your load-path and compile it.
 ;;
-;;  To use this in your lisp program, do
+;;  To use this in a lisp program, do
 ;;
 ;;     (require 'texmathp)
 ;;
@@ -72,8 +72,8 @@
 ;;    in LaTeX to pair \[ with $$ and \( with $, but this will confuse
 ;;    texmathp (and human readers as well).
 ;;
-;;  o However, texmathp will correctly work with nested delimiters,
-;;    e.g. something like this will be parsed correctly at any point:
+;;  o However, texmathp will correctly work with nested delimiters.
+;;    Something like the following will be parsed correctly at any point:
 ;;
 ;;       \begin{equation}
 ;;          x = y \mbox{abc \ensuremath{\alpha} cba $2^3$}
@@ -82,7 +82,7 @@
 ;;  o texmathp is somewhat forgiving if you have an empty line inside
 ;;    the current math environment, which is not legal in TeX but may
 ;;    easily happen during editing.  Depending upon the variable
-;;    `texmathp-search-n-paragraphs' we check several paragraphs,
+;;    `texmathp-search-n-paragraphs' several paragraphs are checked
 ;;    backwards, by default 2.  Paragraph here means something limited
 ;;    by an empty line.
 ;;--------------------------------------------------------------------------
@@ -115,14 +115,14 @@
 
 (defcustom texmathp-tex-commands nil
   "List of environments and macros influencing (La)TeX math mode.
-This user-defined list is used in additions to LaTeX and AMSLaTeX defaults.
+This user-defined list is used in addition to LaTeX and AMSLaTeX defaults.
 The structure of each entry is (NAME TYPE)
 
 - The first item in each entry is the name of an environment or macro.
   If it's a macro, include the backslash.
 
 - The second item is a symbol indicating how the command works: 
-    `env-on'     Environment, turns math mode for its body  on
+    `env-on'     Environment: turns math mode for its body  on
     `env-off'    Environment: turns math mode for its body  off
     `arg-on'     Command: turns math mode for its arguments on
     `arg-off'    Command: turns math mode for its arguments off
@@ -167,8 +167,8 @@ The structure of each entry is (NAME TYPE)
 (defcustom texmathp-search-n-paragraphs 2
   "*Number of paragraphs to check before point.
 Normally, you cannot have an empty line in a math environment in (La)TeX.
-Therefore, the fastest method to test for math mode is limiting the
-search backward to the nearest empty line.
+The fastest method to test for math mode is then limiting the search
+backward to the nearest empty line.
 However, during editing it happens that such lines exist temporarily.
 Therefore we look a little further.  This variable determines how many 
 empty lines we go back to fix the search limit."
@@ -177,10 +177,10 @@ empty lines we go back to fix the search limit."
 
 (defcustom texmathp-allow-detached-args nil
   "*Non-nil means, allow arguments of macros to be detached by whitespace.
-When this is t, `aaa' will be considered as argument of \bb in the following
-construct:  \bbb [xxx] {aaa}
-The disadvantage is that any number of braces expressions will be considered
-arguments of the macro independent of its definition."
+When this is t, `aaa' will be interpreted as an argument of \bb in the
+following construct:  \bbb [xxx] {aaa}
+This is legal in TeX. The disadvantage is that any number of braces expressions
+will be considered arguments of the macro independent of its definition."
   :group 'texmathp
   :type 'boolean)
 
@@ -192,6 +192,8 @@ MATCH is a string like a car of an entry in `texmathp-tex-commands', e.q.
 POSITION is the buffer position of the match.  If there was no match,
 it points to the limit used for searches, usually two paragraphs up.")
 
+;; Some internal variables which are computed from `texmathp-tex-commands'
+;; and `texmathp-tex-commands-default'.
 (defvar texmathp-environments nil)
 (defvar texmathp-macros nil)
 (defvar texmathp-onoff-regexp nil)
@@ -204,10 +206,11 @@ it points to the limit used for searches, usually two paragraphs up.")
 (defvar texmathp-syntax-table (make-syntax-table)
   "Syntax table used while texmathp is parsing.")
 (mapcar (lambda (x) (modify-syntax-entry (car x) (cdr x) texmathp-syntax-table))
-	'((?\\ . "\\") (?\f .">") (?\n . ">") (?% . "<")
-	  (?\[ . ".") (?\] . ".") (?\{ . "(}") (?\} . "){")
-	  (?\( . ".") (?\) . ".") (?\" . ".") (?& . ".") (?_ . ".")
-	  (?@ . "_") (?~ . " ") (?$ . "$") (?' . "w")))
+	'((?\\ . "\\") (?\f .">")  (?\n . ">")  (?% . "<")
+	  (?\[ . ".")  (?\] . ".") (?\{ . "(}") (?\} . "){")
+	  (?\( . ".")  (?\) . ".") (?\" . ".")  (?& . ".")   (?_ . ".")
+	  (?@ . "_")   (?~ . " ")  (?$ . "$")   (?' . "w")
+	  ))
 
 (defun texmathp-compile ()
   "Compile the value of `texmathp-tex-commands' into the internal lists.
@@ -241,6 +244,7 @@ customize (customize calls it when setting the variable)."
 		  (mapconcat 'regexp-quote togglers "\\|")
 		  "\\)"))))
 
+;;;###autoload
 (defun texmathp ()
   "Determine if point is inside (La)TeX math mode. 
 Returns t or nil.  Additional info is placed into `texmathp-why'.
@@ -249,8 +253,8 @@ the buffer.
 See the variable `texmathp-tex-commands' about which commands are checked."
   (interactive)
   (if (not (and (eq (car texmathp-memory) texmathp-tex-commands)
-	       (eq (cdr texmathp-memory) texmathp-tex-commands-default)))
-      (texmathp-compile))
+		(eq (cdr texmathp-memory) texmathp-tex-commands-default)))
+    (texmathp-compile))
   (let* ((pos (point)) math-on sw-match
 	 (bound (save-excursion
 		  (if (re-search-backward "[\n\t][ \t]*[\n\r]"
@@ -289,7 +293,8 @@ See the variable `texmathp-tex-commands' about which commands are checked."
     (and (interactive-p)
 	 (message "math-mode is %s: %s begins at buffer position %d"
 		  (if math-on "on" "off")
-		  (or (car match) "new paragraph") (cdr match)))
+		  (or (car match) "new paragraph")
+		  (cdr match)))
     (and math-on t)))
 
 (defun texmathp-match-environment (bound)
@@ -376,3 +381,4 @@ See the variable `texmathp-tex-commands' about which commands are checked."
       nil)))
 
 ;;; texmathp.el end here
+
