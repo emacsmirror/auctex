@@ -1,4 +1,3 @@
-;;; -*- emacs-lisp -*-
 ;;; paralist.el -- AUCTeX style for paralist.sty
 
 ;; License:  GPL, see the file COPYING in the base directory of AUCTeX
@@ -10,15 +9,13 @@
 
 ;; This file adds support for `paralist.sty'.
 
-;; This file is intended to be used with the AUCTeX package. Put this
-;; File into your TeX-style-path. You may also byte-compile this file.
-
 ;;; Code:
 
 ;; Insert an itemize-ish environment and ask for an optional label
-(defun pl-LaTeX-env-item-opt-label (env &rest ignore)
+(defun LaTeX-paralist-env-item-opt-label (environment)
+  "Insert ENVIRONMENT, an optional label and the first item."
   (LaTeX-insert-environment
-   env
+   environment
    (let ((label (read-string "(Optional) Label: ")))
      (concat (unless (zerop (length label))
                (format "[%s]" label)))))
@@ -50,14 +47,21 @@
 
    ;; New environments
    (LaTeX-add-environments
-    '("asparaenum" pl-LaTeX-env-item-opt-label)
-    '("inparaenum" pl-LaTeX-env-item-opt-label)
-    '("compactenum" pl-LaTeX-env-item-opt-label)
-    '("asparaitem" pl-LaTeX-env-item-opt-label)
-    '("inparaitem" pl-LaTeX-env-item-opt-label)
-    '("compactitem" pl-LaTeX-env-item-opt-label)
+    '("asparaenum" LaTeX-paralist-env-item-opt-label)
+    '("inparaenum" LaTeX-paralist-env-item-opt-label)
+    '("compactenum" LaTeX-paralist-env-item-opt-label)
+    '("asparaitem" LaTeX-paralist-env-item-opt-label)
+    '("inparaitem" LaTeX-paralist-env-item-opt-label)
+    '("compactitem" LaTeX-paralist-env-item-opt-label)
     '("compactdesc" LaTeX-env-item)
-    ;; Only defined when package is loaded with option `defblank':
+    ;; FIXME: Should not be available if package is loaded with option
+    ;; `olditem':
+    '("itemize" LaTeX-paralist-env-item-opt-label)
+    ;; FIXME: Should not be available if package is loaded with option
+    ;; `oldenum':
+    '("enumerate" LaTeX-paralist-env-item-opt-label)
+    ;; FIXME: Only defined if package is loaded with option
+    ;; `defblank':
     '("asparablank" LaTeX-env-item)
     '("inparablank" LaTeX-env-item))
 
