@@ -1,3 +1,7 @@
+2004-08-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Improve sectioning and add some more information.
+
 2004-08-05  David Kastrup  <dak@gnu.org>
 
 	* tex-site.el.in: don't require 'tex-mik on Windows, let the user
