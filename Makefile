@@ -50,6 +50,9 @@ AUTOC= $(ELC)
 # How to move the byte compiled files to their destination.  
 MV = mv
 
+# How to copy the lisp files to their distination.
+CP = cp
+
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
 ##----------------------------------------------------------------------
@@ -62,7 +65,7 @@ FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
 WWWDIR = $(HOME)/.public_html/auctex
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  ltx-help.el func-doc.el 
+REMOVE =  
 
 MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el \
 	multi-prompt.el
@@ -95,7 +98,10 @@ lisp:
 
 install:	install-lisp
 
-install-lisp:
+tex.elc:	tex.el
+	$(ELC) $(AUCSRC) $(STYLESRC)
+
+install-lisp:	tex.elc
 	if [ ! -d $(lispdir) ]; then mkdir $(lispdir); else true; fi ;
 	if [ -f $(lispdir)/tex-site.el ]; \
 	then \
@@ -111,6 +117,8 @@ install-lisp:
 	                                 else true; fi ; \
 	    $(MV) *.elc $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
+	    $(CP) *.el $(aucdir) ; \
+	    $(CP) style/*.el $(aucdir)/style ; \
 	else \
 	    echo "Leaving compiled files in place."; \
 	fi

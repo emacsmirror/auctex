@@ -1,3 +1,14 @@
+Fri Jan  3 13:49:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (install-lisp): Also install `.el' files.  Requested by
+	several people.
+
+Wed Dec 11 07:32:47 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (tex.elc): New entry.
+	(install-lisp): Use it.  Trevor Jim <tjim@saul.cis.upenn.edu>
+	reported that `make install' wouldn't make the elc files.
+
 Tue Dec 10 16:48:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7b released.
