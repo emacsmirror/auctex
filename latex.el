@@ -4682,7 +4682,124 @@ runs the hooks in `doctex-mode-hook'."
      clip keepaspectratio))
   "Controls for which optional arguments of \\includegraphics you get prompted.
 
-An alist, consisting of \(NUMBER . LIST\) pairs.  Valid elements of
+An alist, consisting of \(NUMBER . LIST\) pairs.  Valid elements of LIST are
+`width', `height', `keepaspectratio', `clip', `angle', `totalheight', `trim'
+and `bb' \(Bounding Box\).
+
+The list corresponding to 0 is used if no prefix is given.  Note that 4 \(one
+\\[universal-argument]\) and 16 \(two \\[universal-argument]'s\) are easy to
+type and should be used for frequently needed combinations."
+  :group 'LaTeX-macro
+  :type '(repeat (cons (integer :tag "Argument")
+		       (list (set :inline t
+				  (const height)
+				  (const totalheight)
+				  (const width)
+				  (const scale)
+				  (const angle)
+				  (const origin)
+				  (const :tag "Bounding Box" bb)
+				  ;;
+				  (const viewport)
+				  (const trim)
+				  ;;
+				  (const clip)
+				  (const keepaspectratio))))))
+
+(defcustom LaTeX-includegraphics-strip-extension-flag t
+  "Non-nil means to strip known extensions from image file name."
+  :group 'LaTeX-macro
+  :type 'boolean)
+
+(defcustom LaTeX-includegraphics-read-file
+  'LaTeX-includegraphics-read-file-TeX
+  "Function for reading \\includegraphics files.
+
+`LaTeX-includegraphics-read-file-TeX' lists all graphic files
+found in the TeX search path.
+
+`LaTeX-includegraphics-read-file-relative' lists all graphic files
+in the master directory and its subdirectories and inserts the
+relative file name.  This option doesn't works with Emacs 21.3 or
+XEmacs.
+
+The custom option `simple' works as
+`LaTeX-includegraphics-read-file-relative' but it lists all kind of
+files.
+
+Inserting the subdirectory in the filename (as
+`LaTeX-includegraphics-read-file-relative') is discouraged by
+`epslatex.ps'."
+;; ,----[ epslatex.ps; Section 12; (page 26) ]
+;; | Instead of embedding the subdirectory in the filename, there are two
+;; | other options
+;; |   1. The best method is to modify the TeX search path [...]
+;; |   2. Another method is to specify sub/ in a \graphicspath command
+;; |      [...].  However this is much less efficient than modifying the
+;; |      TeX search path
+;; `----
+;; See "Inefficiency" and "Unportability" in the same section for more
+;; information.
+  :group 'LaTeX-macro
+  :type '(choice (const :tag "TeX" LaTeX-includegraphics-read-file-TeX)
+		 (const :tag "relative"
+			LaTeX-includegraphics-read-file-relative)
+		 (const :tag "simple" (lambda ()
+					(file-relative-name
+					 (read-file-name "Image file: ")
+					 (TeX-master-directory))))
+		 (function :tag "other")))
+
+(defun LaTeX-imenu-create-index-function ()
+  "Imenu support function for LaTeX."
+  (TeX-update-style)
+  (let (entries level
+	(regexp (LaTeX-outline-regexp)))
+    (goto-char (point-max))
+    (while (re-search-backward regexp nil t)
+      (let* ((name (LaTeX-outline-name))
+	     (level (make-string (1- (LaTeX-outline-level)) ?\ ))
+	     (label (concat level level name))
+	     (mark (make-marker)))
+	(set-marker mark (point))
+	(set-text-properties 0 (length label) nil label)
+	(setq entries (cons (cons label mark) entries))))
+    entries))
+
+(defvar LaTeX-builtin-opts
+  '("12pt" "11pt" "10pt" "twocolumn" "twoside" "draft")
+  "Built in options for LaTeX standard styles.")
+
+(defun LaTeX-209-to-2e ()
+  "Make a stab at changing 2.09 doc header to 2e style."
+  (interactive)
+  (TeX-home-buffer)
+  (let (optstr optlist 2eoptlist 2epackages docline docstyle)
+    (goto-char (point-min))
+    (if
+	(search-forward-regexp
+	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
+	 (point-max) t)
+	(setq optstr (buffer-substring-no-properties (match-beginning 1) (match-end 1))
+	      docstyle (buffer-substring-no-properties (match-beginning 2)
+	      (match-end 2))
+	      optlist (TeX-split-string "," optstr))
+      (if (search-forward-regexp
+	   "\\documentstyle{\\([^}]*\\)}"
+	   (point-max) t)
+	  (setq docstyle (buffer-substring-no-properties (match-beginning 1)
+	  (match-end 1)))
+	(error "No documentstyle defined")))
+    (beginning-of-line 1)
+    (setq docline (point))
+    (insert "%%%")
+    (while optlist
+      (if (member (car optlist) LaTeX-builtin-opts)
+	  (setq 2eoptlist (cons (car optlist) 2eoptlist))
+	(setq 2epackages (cons (car optlist) 2epackages)))
+      (setq optlist (cdr optlist)))
+    ;;(message (format "%S %S" 2eoptlist 2epackages))
+    (goto-char docline)
     (next-line 1)
     (insert "\\documentclass")
     (if 2eoptlist
