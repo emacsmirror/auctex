@@ -1,5 +1,7 @@
 2005-02-09  David Kastrup  <dak@gnu.org>
 
+	* images/*: lots of renaming/moving stuff around.
+	
 	* configure.in: remove ICONFORM stuff.
 
 	* Makefile.in (ICONFORM): removed.
