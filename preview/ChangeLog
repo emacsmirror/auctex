@@ -1,3 +1,8 @@
+2002-04-15  Alan Shutko  <ats@acm.org>
+
+	* configure.in: Some minor message updates.  Remove -q from grep,
+	just direct it to /dev/null.
+
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/Makefile.in (preview-latex.info): Remove --no-split.

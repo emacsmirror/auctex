@@ -69,10 +69,14 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    icondir=${packagedir}/etc/preview
 else
    PLAT_LISP=prv-emacs.el
-   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))])
+   AC_MSG_CHECKING([if $EMACS supports images])
+   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))], "noecho")
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
       AC_MSG_ERROR("You need an Emacs that supports images")
+   else
+      AC_MSG_RESULT([present])
    fi
+   
    AC_PATH_LISPDIR
    ICONFORM= # TODO: fill this in
    icondir=${lispdir}
@@ -105,7 +109,7 @@ if test "$ENABLE8BIT"x = truex ; then
     export LANG
     export LC_CTYPE
     
-    if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep -q 'fc!$'
+    if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep 'fc!$' >/dev/null 2>/dev/null
     then
        AC_MSG_ERROR([
        LaTeX is not installed 8-bit clean.  Check the PROBLEMS file for details.])
@@ -115,7 +119,6 @@ if test "$ENABLE8BIT"x = truex ; then
 fi
 
 TEXMFGEN=[`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.\(sty\|def\|cfg\)\)}.*$/\1/p' latex/preview.dtx | tr '\n' ' '`]
-echo TEXMFGEN=$TEXMFGEN
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
