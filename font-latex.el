@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.927 (17 Sep 2004)
+;; Version:    0.928 (19 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.928 19Sep2004 Ralf Angeli
+;;  - `font-latex-set-syntactic-keywords': "*" is not allowed as a \verb
+;;    delimiter.
 ;; V0.927 17Sep2004 Ralf Angeli
 ;;  - `font-latex-verbatim-environments': Change from defvar to defcustom.
 ;;  - `font-latex-verbatim-environments-local', `font-latex-verbatim-macros'
@@ -1141,7 +1144,7 @@ have changed."
 	     (1 "<") (2 "|" t))
 	    (,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}\\(.?\\)")
 	     (1 "|" t) (2 "<"))
-	    (,(concat "\\\\\\(?:" verb-macros "\\)\\([^a-z@]\\).*?\\(\\1\\)")
+	    (,(concat "\\\\\\(?:" verb-macros "\\)\\([^a-z@*]\\).*?\\(\\1\\)")
 	     (1 "\"") (2 "\""))))))
 
 (defvar font-latex-syntactic-keywords
