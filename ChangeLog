@@ -1,3 +1,7 @@
+2004-09-15  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4 (EMACS_LISP): quote ${emacs}, Windows....
+
 2004-09-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Add changes from 11.51 up to now.
