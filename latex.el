@@ -3128,10 +3128,13 @@ comments and verbatim environments"
     "subsection" "subsubsection" "tableofcontents")
   "Internal list of LaTeX macros that should have their own line.")
 
-(defvar LaTeX-paragraph-commands-regexp
+(defun LaTeX-paragraph-commands-regexp-make ()
+  "Return a regular expression matching defined paragraph commands."
   (concat (regexp-quote TeX-esc)
-	  (regexp-opt LaTeX-paragraph-commands-internal t))
-  "Regular expression matching LaTeX macros that should have their own line.")
+	  (regexp-opt LaTeX-paragraph-commands-internal t)))
+
+(defvar LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)
+    "Regular expression matching LaTeX macros that should have their own line.")
 
 (defcustom LaTeX-paragraph-commands nil
   "List of LaTeX macros that should have their own line.
@@ -3141,10 +3144,21 @@ The list should contain macro names without the leading backslash."
   :set (lambda (symbol value)
          (set-default symbol value)
 	 (setq LaTeX-paragraph-commands-regexp
-	       (concat
-		(regexp-quote TeX-esc)
-		(regexp-opt (append LaTeX-paragraph-commands
-				    LaTeX-paragraph-commands-internal) t)))))
+	       (LaTeX-paragraph-commands-regexp-make))))
+
+(defun LaTeX-paragraph-commands-add-locally (commands)
+  "Make COMMANDS be recognized as paragraph commands.
+COMMANDS can be a single string or a list of strings which will
+be added to `LaTeX-paragraph-commands-internal'.  Additionally
+`LaTeX-paragraph-commands-regexp' will be updated and both
+variables will be made buffer-local.  This is mainly a
+convenience function which can be used in style files."
+  (make-local-variable 'LaTeX-paragraph-commands-internal)
+  (make-local-variable 'LaTeX-paragraph-commands-regexp)
+  (unless (listp commands) (setq commands (list commands)))
+  (dolist (elt commands)
+    (add-to-list 'LaTeX-paragraph-commands-internal elt))
+  (setq LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)))
 
 (defun LaTeX-forward-paragraph (&optional count)
   "Move forward to end of paragraph.
