@@ -8,6 +8,9 @@
 	Problem is that Cygwin absolute paths are not suitable for
 	passing into MikTeX.  Sigh.  But perhaps relative file names are
 	nicer, anyway.
+	(preview-parse-messages): Fix regexps for the sake of people
+	incompetent to make the run buffer not contain ^M everywhere.
+	Another Windows-related "fix".
 
 2002-11-07  Jan-Ake Larsson  <jalar@mai.liu.se>
 
