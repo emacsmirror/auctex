@@ -1,11 +1,11 @@
 ;;; auc-menu.el - Easy menu support for FSF and Lucid Emacs 19.
 ;; 
-;; $Id: auc-menu.el,v 5.4 1994-08-09 00:00:07 amanda Exp $
+;; $Id: auc-menu.el,v 5.5 1994-10-25 13:18:02 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; Easy menu support for FSF and Lucid Emacs 19|
-;; $Date: 1994-08-09 00:00:07 $|$Revision: 5.4 $|~/misc/auc-menu.el.gz|
+;; $Date: 1994-10-25 13:18:02 $|$Revision: 5.5 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
@@ -89,6 +89,12 @@
 
 ;;; Code:
 
+(cond 
+
+;;; Emacs 18
+
+((< (string-to-int emacs-version) 19)
+
 (defmacro easy-menu-define (symbol maps doc menu)
   "Define SYMBOL to be a menu for keymaps MAPS.
 DOC is the documentation string, and MENU is a Lucid style menu."
@@ -96,12 +102,6 @@ DOC is the documentation string, and MENU is a Lucid style menu."
        (require 'auc-menu)		;For `easy-menu-do-define'.
        (defvar (, symbol) nil (, doc))
        (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
-
-(cond 
-
-;;; Emacs 18
-
-((or (< (string-to-int emacs-version) 19) (null window-system))
 
 (defun easy-menu-do-define (symbol maps doc menu)
   (fset symbol (symbol-function 'ignore)))
@@ -112,11 +112,21 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 
 (defun easy-menu-change (path name items))
 
+(provide 'easymenu)
+
 )					;Emacs 18
 
 ;;; Lucid Emacs
 
 ((string-match "Lucid" emacs-version)
+
+(defmacro easy-menu-define (symbol maps doc menu)
+  "Define SYMBOL to be a menu for keymaps MAPS.
+DOC is the documentation string, and MENU is a Lucid style menu."
+  (` (progn
+       (require 'auc-menu)		;For `easy-menu-do-define'.
+       (defvar (, symbol) nil (, doc))
+       (easy-menu-do-define (quote (, symbol)) (, maps) (, doc) (, menu)))))
 
 (defun easy-menu-do-define (symbol maps doc menu)
   (set symbol menu)
@@ -153,106 +163,20 @@ DOC is the documentation string, and MENU is a Lucid style menu."
        (assoc (car menu) current-menubar)
        (delete-menu-item (list (car menu)))))
 
+(provide 'easymenu)
+
 )					;Lucid Emacs
 
 ;;; FSF Emacs 19
 
 (t
 
-(defun easy-menu-key-description (name key)
-  ;; Create menu description NAME with powerkey KEY.
-  (cond ((null key)
-	 name)
-	((eq system-type 'emx)
-	 (concat name "\t" key))
-	(t
-	 (concat name "  (" key ")"))))
-
-(defun easy-menu-create-keymaps (menu-name menu-items)
-  (let ((menu (make-sparse-keymap menu-name))
-	(loop menu-items))
-    ;; Process items in reverse order,
-    ;; since the define-key loop reverses them again.
-    (setq menu-items (reverse menu-items))
-
-    (while menu-items
-      (let* ((item (car menu-items))
-	     (callback (if (vectorp item) (aref item 1)))
-	     command name spaces keys)
-	(cond ((stringp item)
-	       (setq command nil)
-	       (setq name item))
-	      ((consp item)
-	       (setq command
-		     (easy-menu-create-keymaps (car item) (cdr item)))
-	       (setq name (concat (car item))))
-	      ((vectorp item)
-	       (let ((enable (aref item 2)))
-		 (setq command
-		       (if (symbolp callback)
-			   callback
-			 (list 'lambda () '(interactive) callback)))
-		 (setq name (aref item 0))
-		 (cond ((stringp enable)
-			(setq keys enable))
-		       ((memq enable '(nil t)))
-		       ((eq enable ':keys)
-			(setq keys (aref item 3)))
-		       ((eq (aref (symbol-name enable) 0) ?:)
-			(error "Unimplemented menu keyword: %s"))
-		       (t
-			(put enable 'menu-enable enable)
-			(fset enable command)
-			(setq command enable))))))
-	(if name 
-	    (define-key menu (vector (intern name))
-	      (cons (easy-menu-key-description name keys) command))))
-      (setq menu-items (cdr menu-items)))
-    menu))
-
-(defun easy-menu-do-define (symbol maps doc menu)
-  (set symbol (easy-menu-create-keymaps (car menu) (cdr menu)))
-  (fset symbol (` (lambda (event) (, doc) (interactive "@e")
-		    (easy-popup-menu event (, symbol)))))
-  (mapcar (function (lambda (map) 
-	    (define-key map (vector 'menu-bar (intern (car menu)))
-	      (cons (car menu) (symbol-value symbol)))))
-	  (if (keymapp maps) (list maps) maps)))
-
-(defun easy-popup-menu (event menu)
-  ;; At EVENT popup MENU and execute the selection.
-  (run-hooks 'activate-menubar-hook)
-  (let ((fun (lookup-key menu (apply 'vector (x-popup-menu event menu)))))
-    (if (commandp fun)
-	(call-interactively fun))))
-
-(defun easy-menu-change (path name items)
-  "Change menu found at PATH as item NAME to contain ITEMS.
-PATH is a list of strings for locating the menu containing NAME in the
-menu bar.  ITEMS is a list of Lucid style menu items.
-
-Call this from 'activate-menubar-hook' to implement dynamic menus."
-  (let ((map (key-binding (apply 'vector
-				 'menu-bar
-				 (mapcar 'intern (append path (list name)))))))
-    (if (keymapp map)
-	(setcdr map (cdr (easy-menu-create-keymaps name items)))
-      (error "Trying to change a non-menu"))))
-
-
-(defun easy-menu-remove (menu))
-
-(defun easy-menu-add (menu &optional map)
-  (and (string-match "^19\\.\\([0-9]+\\)" emacs-version)
-       (< 22 (string-to-int (substring emacs-version
-				       (match-beginning 1) (match-end 1))))
-       (x-popup-menu nil menu)))
+(require 'easymenu)
 
 )					;FSF Emacs 19
 
 )					;cond
 
-(provide 'easymenu)
 (provide 'auc-menu)
 
 ;;; auc-menu.el ends here

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.104 1994-10-22 12:57:19 amanda Exp $
+# $Id: Makefile,v 5.105 1994-10-25 13:17:55 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -91,14 +91,15 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  easymenu.el auc-tex.el reporter.el
+REMOVE =  NONE
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    auc-menu.el min-map.el  ltx-math.el maniac.el \
-	    outln-18.el xt-mouse.el min-map.el all.el  cpp.el      
+	    outln-18.el xt-mouse.el min-map.el all.el  cpp.el \
+	    easymenu.el
 
 AUCSRC = auc-old.el  auc-ver.el  tex.el \
-	 tex-buf.el  latex.el    tex-info.el auc-menu.el \
+	 tex-buf.el  latex.el    tex-info.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
 	 ltx-help.el
 

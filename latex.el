@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.30 1994-10-22 12:57:28 amanda Exp $
+;; Version: $Id: latex.el,v 5.31 1994-10-25 13:18:08 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1313,7 +1313,7 @@ the cdr is the brace used with \\right.")
 
 (defun TeX-arg-insert-braces (optional &optional prompt)
   (save-excursion
-    (backward-word)
+    (backward-word 1)
     (backward-char)
     (newline-and-indent)
     (beginning-of-line 0)
@@ -1328,14 +1328,15 @@ the cdr is the brace used with \\right.")
     (save-excursion
       (let ((right-brace (cdr (assoc left-brace
                                      TeX-braces-association))))
-	(newline-and-indent)
+	(newline)
         (insert TeX-esc "right")
         (if (and TeX-arg-right-insert-p
                  right-brace)
             (insert right-brace)
           (insert (completing-read
                    (TeX-argument-prompt optional prompt "Which brace")
-                   TeX-left-right-braces)))))))
+                   TeX-left-right-braces)))
+	(LaTeX-indent-line)))))
 
 ;;; Indentation
 
@@ -1827,17 +1828,12 @@ The point is supposed to be at the beginning of the current line."
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
-				 'TeX-command-master)
-	(TeX-command-create-menu "Command on Buffer  (C-c C-b)"
-				 'TeX-command-buffer)
-	(TeX-command-create-menu "Command on Region (C-c C-r)"
-				 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
-	      ["Toggle debug of boxes" TeX-toggle-debug-boxes t]
-	      ["Switch to original file" TeX-home-buffer t]
+	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	       :style toggle :selected TeX-debug-bad-boxes ]
+	      ["Switch to Original File" TeX-home-buffer t]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	"--"
 	(list "Formatting and Marking"
@@ -1940,6 +1936,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
   (use-local-map LaTeX-mode-map)
+  (easy-menu-add TeX-mode-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
 
   (or LaTeX-largest-level 
