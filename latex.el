@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7n
+;; Version: 9.7o
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -116,9 +116,10 @@ See also LaTeX-section for description of levels."
 	   (LaTeX-largest-level)))))
 
 (defun LaTeX-down-section ()
-  "Return the value of a section one level under the current. Tries to
-find what kind of section that have been used earlier in the text, If
-this fail, it will just return one less than the current section."
+  "Return the value of a section one level under the current. 
+Tries to find what kind of section that have been used earlier in the
+text, if this fail, it will just return one less than the current
+section." 
   (save-excursion 
     (let ((current (LaTeX-current-section))
 	  (next nil)
@@ -308,7 +309,7 @@ no label is inserted.")
 (defun LaTeX-section-heading ()
   "Hook to prompt for LaTeX section name.
 Insert this hook into LaTeX-section-hook to allow the user to change
-the name of the sectioning command inserted with M-x LaTeX-section."
+the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
 		 (concat "Select level: (default " name ") ")
 		 LaTeX-section-list
@@ -322,7 +323,7 @@ the name of the sectioning command inserted with M-x LaTeX-section."
 (defun LaTeX-section-title ()
   "Hook to prompt for LaTeX section title.
 Insert this hook into LaTeX-section-hook to allow the user to change
-the title of the section inserted with M-x LaTeX-section."
+the title of the section inserted with `\\[LaTeX-section]."
   (setq title (read-string "What title: ")))
 
 (defun LaTeX-section-toc ()
@@ -602,6 +603,14 @@ the label inserted, or nil if no label was inserted.")
   "Specifies the default position string for array and tabular environments.")
  (make-variable-buffer-local 'LaTeX-default-position)
 
+(defvar LaTeX-equation-label "eq:"
+  "*Default prefix to equation labels.")
+ (make-variable-buffer-local 'LaTeX-equation-label)
+
+(defvar LaTeX-eqnarray-label "eq:"
+  "*Default prefix to eqnarray labels.")
+ (make-variable-buffer-local 'LaTeX-eqnarray-label)
+
 (defun LaTeX-env-item (environment)
   "Insert ENVIRONMENT and the first item."
   (LaTeX-insert-environment environment)
@@ -628,6 +637,10 @@ job to this function."
 	     (cond
 	      ((string= "figure" environment) LaTeX-figure-label)
 	      ((string= "table"  environment) LaTeX-table-label)
+	      ((string= "figure*" environment) LaTeX-figure-label)
+	      ((string= "table*"  environment) LaTeX-table-label)
+	      ((string= "equation" environment) LaTeX-equation-label)
+	      ((string= "eqnarray"  environment) LaTeX-eqnarray-label)
 	      ((assoc environment LaTeX-section-list)
 	       (cond
 		((stringp LaTeX-section-label) LaTeX-section-label)
@@ -681,12 +694,13 @@ job to this function."
       (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
       (end-of-line 0)
       (LaTeX-indent-line))
-    
-    (if (string= environment "table") (LaTeX-env-array "tabular"))))
+
+    (if (member environment '("table" "table*"))
+	(LaTeX-env-array "tabular"))))
 
 (defun LaTeX-env-array (environment)
-  "Insert ENVIRONMENT with position and column specifications 
-like array and tabular."
+  "Insert ENVIRONMENT with position and column specifications.
+Just like array and tabular."
   (let ((pos (read-string "Position: "))
 	(fmt (read-string "Format: " LaTeX-default-format)))
     (setq LaTeX-default-position pos)
@@ -1328,7 +1342,8 @@ comma."
     ("\\langle" . "\\rangle")))
 
 (defvar TeX-braces-user-association nil
-  "A list of your personal association of brace symbols for \\left and \\right
+  "A list of your personal association of brace symbols.
+These are used for \\left and \\right.
 
 The car of each entry is the brace used with \\left,
 the cdr is the brace used with \\right.")
@@ -1405,9 +1420,9 @@ LaTeX-item-indent."
 	(back-to-indentation))))
 
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-  "Fill region as one paragraph: break lines to fit fill-column,
-but leave all lines ending with \\\\ (plus its optional argument) alone.
-Prefix arg means justify too.
+  "Fill region as one paragraph.
+Break lines to fit fill-column, but leave all lines ending with \\\\
+\(plus its optional argument) alone. Prefix arg means justify too.
 From program, pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
   (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
@@ -2330,7 +2345,7 @@ See also `LaTeX-math-menu'.")
     (nil "sideset" ("AMS" "Special"))))
 
 (defvar LaTeX-math-abbrev-prefix "`"
-  "Prefix key for use in LaTeX-math-mode.")
+  "Prefix key for use in `LaTeX-math-mode'.")
 
 (defvar LaTeX-math-keymap (make-sparse-keymap)
   "Keymap used for LaTeX-math-mode commands.")
@@ -2398,7 +2413,7 @@ the sequence by initializing this variable.")
   LaTeX-math-menu)
 
 (defvar LaTeX-math-mode nil
-  "Is LaTeX-math-mode on or off? non nil means on.")
+  "Is `LaTeX-math-mode' on or off?  Non nil means on.")
 
  (make-variable-buffer-local 'LaTeX-math-mode)
 
@@ -2656,8 +2671,8 @@ commands are defined:
 Otherwise, only ask in description environments.")
 
 (defvar TeX-arg-right-insert-p t
-  "*If non-nil, always insert automatically the corresponding
-\\right if \\left is inserted.")
+  "*If non-nil, always insert automatically the corresponding \\right.
+This happens when \\left is inserted.")
 
 (defvar LaTeX-paragraph-commands
   (concat "\\[\\|\\]\\|"  ; display math delimitors
@@ -2675,9 +2690,9 @@ See info under AUC TeX for full documentation.
 Special commands:
 \\{LaTeX-mode-map}
 
-Entering LaTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook."
+Entering LaTeX mode calls the value of `text-mode-hook',
+then the value of `TeX-mode-hook', and then the value
+of `LaTeX-mode-hook'."
   (interactive)
   (LaTeX-common-initialization)
   (setq mode-name "LaTeX")

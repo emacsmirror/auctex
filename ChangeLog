@@ -1,3 +1,29 @@
+Sun Apr 06 19:28:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7o released.
+
+Sun Apr  6 19:23:37 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-equation-label): New variable.
+	(LaTeX-eqnarray-label): New variable.
+	(LaTeX-label): Support `figure*', `label*', `equation', and
+	`eqnarray'.
+	(LaTeX-env-figure): Support `table*'.
+	Patch by Joes Staal <staal@geo.tudelft.nl>.
+	
+Fri Mar 28 12:23:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-down-section): Doc fix.
+	(LaTeX-section-heading): Ditto.
+	(LaTeX-section-title): Ditto.
+	(LaTeX-env-array): Ditto.
+	(TeX-braces-user-association): Ditto.
+	(LaTeX-fill-region-as-paragraph): Ditto.
+	(LaTeX-math-abbrev-prefix): Ditto.
+	(LaTeX-math-mode): Ditto.
+	(TeX-arg-right-insert-p): Ditto.
+	(latex-mode): Ditto.
+
 Wed Mar 26 21:14:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7n released.
