@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.186 2003-01-19 13:43:49 dakas Exp $
+;; $Id: preview.el,v 1.187 2003-01-24 16:47:57 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -474,7 +474,12 @@ and tries to restart GhostScript if necessary."
 			(eq status 'signal))
 		    ;; if process was killed explicitly by signal, or if nothing
 		    ;; was processed, we give up on the matter altogether.
-		    (preview-gs-queue-empty)
+		    (progn
+		      (when preview-ps-file
+			(condition-case nil
+			    (preview-delete-file preview-ps-file)
+			  (file-error nil)))
+		      (preview-gs-queue-empty))
 		  
 		  ;; restart only if we made progress since last call
 		  (setq preview-gs-queue (nconc preview-gs-outstanding
@@ -589,12 +594,12 @@ The usual PROCESS and COMMAND arguments for
 	       (if preview-ps-file
 		   (preview-prepare-fast-conversion))
 	       (when gsstart
-		 (when preview-ps-file
-		   (condition-case nil
-		       (preview-delete-file preview-ps-file)
-		     (file-error nil)))
 		 (if preview-gs-queue
-		     (preview-gs-restart))))
+		     (preview-gs-restart)
+		   (when preview-ps-file
+		     (condition-case nil
+			 (preview-delete-file preview-ps-file)
+		       (file-error nil))))))
 	      ((eq status 'signal)
 	       (delete-process process)
 	       (preview-dvips-abort))))
@@ -2509,7 +2514,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.186 $"))
+	(rev "$Revision: 1.187 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2520,7 +2525,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-01-19 13:43:49 $"))
+    (let ((date "$Date: 2003-01-24 16:47:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
