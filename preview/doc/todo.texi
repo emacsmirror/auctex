@@ -2,12 +2,8 @@
 @c -----------------------
 
 @itemize @bullet
-@item Modularize @AUCTeX{}'s error message parsing
 
-so that we do not need to steal code from @AUCTeX{}, but can use
-@AUCTeX{}'s routines directly.  Submit to @AUCTeX{} development.
-
-@item Alternatively: factor out @AUCTeX{} specific code
+@item Factor out @AUCTeX{} specific code
 
 and provide alternatives.  This could make @previewlatex{} work with
 Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
@@ -23,6 +19,12 @@ well.  There are plain-based formats like MusiX@TeX{} that could benefit
 a lot from @previewlatex{}.  The main part of the difficulties here is
 to adapt @file{preview.dtx} to produce stuff not requiring @LaTeX{}.
 
+@item Web page work
+
+Currently, @previewlatex{}'s web page is not structured at all.  Better
+navigation would be desirable, as well as separate News and Errata eye
+catchers.
+
 @item Manual improvements
 
 @itemize @minus
@@ -35,66 +37,24 @@ restricted to text descriptions, however.
 
 @item Fix duplicates
 
-The activation info is still duplicated.
-
-@item Customization
-
-The customization entries need to be documented and rearranged.
-
-@item XEmacs-specific docs
-
-Well, a lot needs to be done.
-
-@item Wrongly placed previews
-
-Rethink this section
+Various stuff appears several times.
 
 @end itemize
 
-@item Fix GhostScript rendering of Emacs
+@item Implement rendering pipelines for Emacs
 
-The current @file{gs.el} interface does not work well when multiple
-@acronym{EPS} images appear.  A new process is started for every single
-image, but the processes have to wait for one another.  See also code in
-@file{xdisp.c} from the Emacs distribution.
+The current @file{gs.el} interface is fundamentally flawed, not only
+because of a broken implementation.  A general batchable and
+daemonizable rendering infrastructure that can work on all kinds of
+preview images for embedding into buffers is warranted.  This is the
+best option for integrating the current work on @code{dvipng} and should
+also help with
 
-@item Think about temporary file handling
+@item Working via @acronym{PDF}
  
-The current solution may be suboptimal.  Perhaps a different dvi file
-from the main file would be preferable, perhaps compilation in a
-separate directory, perhaps support for more than one Emacs session or
-user properly accessing the same file.  In all fairness, the current
-@file{_region_} mechanism of @AUCTeX{} does not support this, either.
-
-@item Port to XEmacs
-
-In progress, most important first:
-
-@itemize @minus
-@item Enfeaturize.
-
-Eliminate the use of one-character propertized strings, maybe.
-(I think this requires a change to the XEmacs core, though.)
-
-@end itemize
-
-@item Explore possibilities for working via PDF
- 
-Going via latexpdf->GhostScript and a single file would certainly be
-faster than the current latex->dvips->GhostScript path.  The current
-implementation via Dvips, however, uses just a single PostScript file
-and spends rather little time in Dvips, and the Dvips-generated
-PostScript code is rather simple, so that there is not much hope in
-GhostScript being able to deal much faster with @acronym{PDF} than with
-PostScript in this case.  But could come handy for previewing documents
+Going via latexpdf/gs and a single file might be faster than the current
+latex/dvips/gs path and could come handy for previewing documents
 intended for use with pdflatex.
-
-@item Program a direct dvi->png rendering daemon
-
-that gets sent page requests and file names for both input and output
-and replaces the Dvips->GhostScript chain.  This could be done using
-DVIlib2 from the @TeX{}-Guy project.  The current performance of that,
-however, does not seem to offer any advantage.
 
 @item Integrate into ref@TeX{}
 
@@ -105,7 +65,35 @@ context menu.  Apropos:
 
 @item Implement context menus
 
-right mouse key currently just kills previews.  Offer more options than
+Right mouse key currently just kills previews.  Offer more options than
 that.
+
+@item Implement @LaTeX{} error indicators
+
+Previews on erroneous @LaTeX{} passages might gain a red border or similar.
+
+@item Pop up relevant online documentation for frequent errors
+
+A lot of errors are of the "badly configured" variety.  Perhaps the
+relevant info pages should be delivered in addition to the error
+message.
+
+@item Store cursor locations for closed previews, restore them when
+reopening them.
+
+@item Implement a table editing mode where every table cell gets output
+as a separate preview.  Alternatively, output the complete table
+metrics in a way that lets people click on individual cells for editing
+purposes.
+
+@item Benchmark and kill Emacs inefficiencies
+
+Both the @LaTeX{} run under Emacs control as well as actual image
+insertion in Emacs appear awfully slow.  Why?
+
+@item Make a sane gamma (non)correction image @acronym{API} for Emacs
+
+It is currently impossible to make Emacs screen colors and generated
+colors match exactly because of gamma correction issues.
 
 @end itemize
