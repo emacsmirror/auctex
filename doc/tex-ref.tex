@@ -8,6 +8,21 @@
 
 \columnsperpage=3
 
+% Papersize stuff.  Use default paper size for PDF, but switch
+% orientation.  Use papersize special for dvips.
+
+\ifcase\ifx\pdfoutput\undefined 1 \fi
+  \ifnum\pdfoutput=0 1 \fi 2
+\or
+%    \special{papersize 8.5in,11in}%
+     \special{papersize 297mm,210mm}%
+\or
+      \dimen0\pdfpagewidth
+      \pdfpagewidth\pdfpageheight
+      \pdfpageheight\dimen0
+\fi
+
+
 % This file is intended to be processed by plain TeX (TeX82).
 % compile-command: "tex tex-ref" or "pdftex tex-ref"
 %
@@ -76,9 +91,9 @@ are preserved on all copies.
   \def\makefootline{\baselineskip10pt\hsize6.5in\line{\the\footline}}
 \else
   \hsize 3.2in
-  \vsize 7.8in
+  \vsize 7.6in
   \hoffset -.75in
-  \voffset -.75in
+  \voffset -.8in
   \font\titlefont=cmbx10 \scaledmag2
   \font\headingfont=cmbx10 \scaledmag1
   \font\smallfont=cmr6
@@ -110,15 +125,6 @@ are preserved on all copies.
   \else \if 3\ncolumns
     \let\maxcolumn=c
     \nopagenumbers
-    \ifcase\ifx\pdfoutput\undefined 1 \fi
-      \ifnum\pdfoutput=0 1 \fi
-      2 \or
-        \special{landscape}%
-        \or
-          \dimen0\pdfpagewidth
-          \pdfpagewidth\pdfpageheight
-          \pdfpageheight\dimen0
-      \fi
   \else
     \errhelp{You must set \columnsperpage equal to 1, 2, or 3.}
     \errmessage{Illegal number of columns per page}
