@@ -1,5 +1,8 @@
 2004-08-20  David Kastrup  <dak@gnu.org>
 
+	* auctex.spec (Provides): Provide auctex as well to satisfy
+	preview-latex.  create package emacs nevertheless.
+
 	* Version 11.52 released.
 
 2004-08-20  David Kastrup  <dak@gnu.org>
