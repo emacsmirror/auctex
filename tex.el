@@ -997,13 +997,13 @@ FORCE is not nil."
  (make-variable-buffer-local 'TeX-remove-style-hook)
 
 (defun TeX-remove-style ()
-  "Remnove all style specific information."
+  "Remove all style specific information."
   (setq TeX-style-hook-applied-p nil)
   (run-hooks 'TeX-remove-style-hooks)
   (setq TeX-active-styles (list TeX-virgin-style)))
 
 (defun TeX-style-list ()
-  "Return a list of all styles (subfils) use by the current document."
+  "Return a list of all styles (subfiles) used by the current document."
   (TeX-update-style)
   TeX-active-styles)
 
