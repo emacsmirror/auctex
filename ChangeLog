@@ -1,3 +1,8 @@
+2004-05-19  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Comment EMACS_LISP.
+	(EMACS_TEST_LISPDIR): remove both trailing backslash and slash.
+
 2004-05-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Prevent infinite loop
