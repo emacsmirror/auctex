@@ -32,8 +32,9 @@ AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install pre
 dnl FIXME we should check that it's the right version
 AC_CHECK_PROG(EMACS, emacs, emacs)
 
-AC_CHECK_PROG(LATEX, latex, latex)
-AC_CHECK_PROG(TEX, tex, tex)
+AC_PATH_PROG(LATEX, latex, latex)
+AC_PATH_PROG(TEX, tex, tex)
+AC_PATH_PROG(TEXHASH, texhash, texhash)
 
 AC_PATH_TEXMFDIR
 AC_PATH_LISPDIR

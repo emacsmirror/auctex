@@ -3,6 +3,7 @@
 LATEX=@LATEX@
 TEX=@TEX@
 EMACS=@EMACS@
+TEXHASH=@TEXHASH@
 
 prefix = @prefix@
 lispdir = @lispdir@/preview
@@ -29,6 +30,7 @@ install-texmf: preview.sty prauctex.def
 	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
 #	$(INSTALL_DATA) preview.dvi $(previewdvidir)
+	-$(TEXHASH)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) -interaction nonstopmode bootstrap.ins
