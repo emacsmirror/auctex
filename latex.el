@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.13
+;; Version: 11.14
 ;; Keywords: wp
 ;; X-URL: http://www.nongnu.org/auctex/
 

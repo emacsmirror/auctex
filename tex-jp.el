@@ -6,7 +6,7 @@
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
-;; Version: 11.13
+;; Version: 11.14
 
 ;;; Commentary:
 ;; This file was written by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
