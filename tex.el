@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7l
+;; Version: 9.7m
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1623,6 +1623,9 @@ If TEX is a directory, generate style files for all files in the directory."
 			      (not (file-directory-p file)))
 			  (TeX-auto-generate file auto))))
                    files)))
+        ((not (file-newer-than-file-p tex
+                   (concat auto (if (string-match "/$" auto) "" "/")
+                      (TeX-strip-extension tex TeX-all-extensions t) ".el"))))
         ((TeX-match-extension tex (append TeX-file-extensions
 					  BibTeX-file-extensions))
          (save-excursion
@@ -1641,9 +1644,14 @@ If TEX is a directory, generate style files for all files in the directory."
 (defun TeX-auto-generate-global ()
   "Create global auto directory for global TeX macro definitions."
   (interactive)
-  (make-directory (if (string-match "/$" TeX-auto-global)
+  (if (file-directory-p 
+             (if (string-match "/$" TeX-auto-global)   
+                   (substring TeX-auto-global 0 -1)
+                    TeX-auto-global))
+	nil
+        (make-directory (if (string-match "/$" TeX-auto-global)
 		      (substring TeX-auto-global 0 -1)
-		    TeX-auto-global))
+		    TeX-auto-global)))
   (mapcar (function (lambda (macro) (TeX-auto-generate macro TeX-auto-global)))
           TeX-macro-global)
   (byte-recompile-directory TeX-auto-global 0))
