@@ -53,8 +53,14 @@
 	  ("^pdf$" "." "AcroRd32 %o") ; Use "start %o" instead?
 	  ("^html?$" "." "mozilla %o"))))
 
-(unless (get 'TeX-source-specials-viewer-flags 'saved-value)
-  (setq TeX-source-specials-viewer-flags "-s %n%b"))
+(unless (get 'TeX-source-specials-view-position-flags 'saved-value)
+  (setq TeX-source-specials-view-position-flags "-s %n%b"))
+
+;; Yap does not support a command line option for for inverse
+;; searching.  The editor command has to be configured inside Yap in
+;; "View/Options/Inverse Search" instead.
+(unless (get 'TeX-source-specials-view-editor-flags 'saved-value)
+  (setq TeX-source-specials-view-editor-flags ""))
 
 (provide 'tex-mik)
 (require 'tex-site)

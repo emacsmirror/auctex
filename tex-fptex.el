@@ -77,8 +77,11 @@
 	  ("^html?$" "." "mozilla %o"))))
 
 ;; WinDVI does not support source specials?
-(unless (get 'TeX-source-specials-viewer-flags 'saved-value)
-  (setq TeX-source-specials-viewer-flags ""))
+(unless (get 'TeX-source-specials-view-position-flags 'saved-value)
+  (setq TeX-source-specials-view-position-flags ""))
+
+(unless (get 'TeX-source-specials-view-editor-flags 'saved-value)
+  (setq TeX-source-specials-view-editor-flags ""))
 
 (provide 'tex-fptex)
 (require 'tex-site)
