@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.912 (08 Apr 2004)
+;; Version:    0.913 (08 May 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -59,7 +59,7 @@
 ;;   byte-compile it!) :
 ;;     M-x byte-compile-file
 ;;   and put the resulting font-latex.elc file in a directory listed in your
-;;   emacs load-path.  You may then enable it by adding this form to your
+;;   Emacs load-path.  You may then enable it by adding this form to your
 ;;   ~/.emacs file:
 ;;     (if window-system
 ;;         (require 'font-latex))
@@ -95,6 +95,19 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.913 08May2004 Ralf Angeli
+;;  - New variables and faces.: `font-latex-verbatim-face',
+;;    `font-latex-doctex-preprocessor-face',
+;;    `font-latex-doctex-documentation-face'
+;;  - New variables: `font-latex-verbatim-environments',
+;;    `font-latex-syntactic-keywords', `font-latex-doctex-syntactic-keywords',
+;;    `font-latex-doctex-keywords'
+;;  - New functions: `font-latex-set-syntactic-keywords'
+;;    `font-latex-syntactic-face-function', `font-latex-doctex-^^A'
+;;    `font-latex-doctex-syntactic-face-function'
+;;  - `font-latex-setup': Set special `font-lock-defaults' for docTeX mode.
+;;  - `font-latex-commented-outp': Don't classify line comments in docTeX
+;;     mode as "real" comments.
 ;; V0.912 08Apr2004 Peter S Galbraith
 ;;  - font-latex-setup: was overriding font-latex-string-face.
 ;;    Thanks to Reuben Thomas for finding the bug.
@@ -351,6 +364,8 @@ Also selects \"<quote\"> versus \">quote\"<."
   "Face to use for LaTeX math environments.")
 (defvar font-latex-string-face                  'font-latex-string-face
   "Face to use for strings.  This is set by Font LaTeX.")
+(defvar font-latex-verbatim-face                'font-latex-verbatim-face
+  "Face to use for text in verbatim macros or environments.")
 
 ;; These 4 faces are literally from info.el
 ;;  Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99, 2000, 2001
@@ -725,7 +740,7 @@ e.g. \\section[option]{key}
 
 
 ;;;--------------
-;;; Title level 3
+;;; Title level 4
 (defvar font-latex-match-title-4)
 (defvar font-latex-match-title-4-keywords)
 (defvar font-latex-match-title-4-keywords-local nil
@@ -957,6 +972,61 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 (eval-when-compile
   (require 'cl))
 
+
+;;; Syntactic keywords
+
+(defvar font-latex-verbatim-environments
+  '("verbatim" "verbatim*")
+  "Environments which should be fontified as verbatim.")
+
+(defun font-latex-set-syntactic-keywords ()
+  "Set the variable `font-latex-syntactic-keywords'.
+This function can be used to refresh the variable in case other
+variables influencing its value, like `font-latex-verbatim-environments',
+have changed."
+  (let ((verb-envs (regexp-opt font-latex-verbatim-environments)))
+    (setq font-latex-syntactic-keywords
+	  `((,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}\\(.?\\).*\\(\n\\)")
+	     (1 "<") (2 "|" t))
+	    (,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}\\(.?\\)")
+	     (1 "|" t) (2 "<"))
+	    ("\\\\verb\\*?\\([^a-z@]\\).*?\\(\\1\\)"
+	     (1 "\"") (2 "\""))))))
+
+(defvar font-latex-syntactic-keywords
+  (font-latex-set-syntactic-keywords)
+  "Syntactic keywords used by `font-latex'.")
+
+(defvar font-latex-doctex-syntactic-keywords
+  (append
+   font-latex-syntactic-keywords
+   ;; For docTeX comment-in-doc.
+   '(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
+
+
+;;; Syntactic fontification
+
+;; Copy and adaptation of `tex-font-lock-syntactic-face-function' in
+;; `tex-mode.el' of CVS Emacs (March 2004)
+(defun font-latex-syntactic-face-function (state)
+  (let ((char (nth 3 state)))
+    (cond
+     ((not char) font-lock-comment-face)
+     ((eq char ?$) font-latex-math-face)
+     (t
+      (when (char-valid-p char)
+	;; This is a \verb?...? construct.  Let's find the end and mark it.
+	(save-excursion
+	  (skip-chars-forward (string ?^ char)) ;; Use `end' ?
+	  (when (eq (char-syntax (preceding-char)) ?/)
+	    (put-text-property (1- (point)) (point) 'syntax-table '(1)))
+	  (unless (eobp)
+	    (put-text-property (point) (1+ (point)) 'syntax-table '(7)))))
+      font-latex-verbatim-face))))
+
+
+;;; Faces
+
 (defface font-latex-bold-face
   '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
     (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))
@@ -1020,6 +1090,15 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
   "Font Lock face for LaTeX major keywords."
   :group 'font-latex-highlighting-faces)
 
+(defface font-latex-verbatim-face
+  '((t :inherit font-latex-math-face
+       :family "courier"))
+  "Face used to highlight TeX verbatim environments."
+  :group 'font-latex-highlighting-faces)
+
+
+;;; Setup
+
 ;;;###autoload
 (defun font-latex-setup ()
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
@@ -1047,19 +1126,32 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
   ;; Tell Font Lock about the support.
   (make-local-variable 'font-lock-defaults)
-  ;; Parentheses () disabled because they should not delimit fontification
-  ;; in LaTeX text.
-  (setq font-lock-defaults
-	'((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-	  nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
-	  (font-lock-comment-start-regexp . "%")
-	  (font-lock-mark-block-function . mark-paragraph)
-          (font-lock-syntactic-keywords
-           . (("^\\\\begin *{verbatim\\*?}\\(.?\\).*\\(\n\\)" (1 "<") (2 "|" t))
-	      ("\\(\n\\)\\\\end *{verbatim\\*?}\\(.?\\)" (1 "|" t) (2 "<"))
-	      ("\\\\verb\\*?\\([^a-z@]\\).*?\\(\\1\\)" (1 "\"") (2 "\""))
-	      ))
-          )))
+  ;; The test for `major-mode' currently only works with docTeX mode
+  ;; because `TeX-install-font-lock' is called explicitely in
+  ;; `doctex-mode'.  In case other modes have to be distinguished as
+  ;; well, remove the call to `TeX-install-font-lock' from
+  ;; `VirTeX-common-initialization' and place it in the different
+  ;; `xxx-mode' calls instead, but _after_ `major-mode' is set.
+  (cond
+   ((eq major-mode 'doctex-mode)
+    (setq font-lock-defaults
+          '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2
+				 font-latex-doctex-keywords)
+            nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+            (font-lock-comment-start-regexp . "%")
+            (font-lock-mark-block-function . mark-paragraph)
+            (font-lock-syntactic-face-function
+             . font-latex-doctex-syntactic-face-function)
+            (font-lock-syntactic-keywords
+             . font-latex-doctex-syntactic-keywords))))
+   (t
+    (setq font-lock-defaults
+          '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+            nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+            (font-lock-comment-start-regexp . "%")
+            (font-lock-mark-block-function . mark-paragraph)
+            (font-lock-syntactic-keywords
+             . font-latex-syntactic-keywords))))))
 
 ;; Should not be necessary since XEmacs' font-lock also supports
 ;; Emacs' use of the `font-lock-defaults' local variable.   -Stefan
@@ -1194,7 +1286,9 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
       (save-match-data
         ;; Handle outlined code
         (re-search-backward "^\\|\C-m" (point-min) t)
-        (if (re-search-forward "^%\\|[^\\]%" limit t)
+        (if (or (and (not (eq major-mode 'doctex-mode))
+                     (looking-at "^%"))
+                (re-search-forward "[^\\\n\r]%" limit t))
             t
           nil)))))
 
@@ -1630,7 +1724,70 @@ set to french, and >> german << (and 8-bit) are used if set to german."
       (store-match-data (list beg (point)))
       t)))
 
-;; Install ourselves for non AUCTeX
+
+;;; docTeX
+
+(defvar font-latex-doctex-preprocessor-face
+  'font-latex-doctex-preprocessor-face
+  "Face used to highlight preprocessor directives in docTeX mode.")
+
+(defface font-latex-doctex-preprocessor-face
+  '((t :inherit (list font-latex-doctex-documentation-face
+                      font-lock-preprocessor-face)))
+  "Face used to highlight preprocessor directives in docTeX mode."
+  :group 'font-latex-highlighting-faces)
+
+(defvar font-latex-doctex-documentation-face
+  'font-latex-doctex-documentation-face
+  "Face used to highlight the documentation in docTeX mode.")
+
+(defface font-latex-doctex-documentation-face
+  '((((class mono)) (:inverse-video t))
+    (((class grayscale) (background dark)) (:background "#333"))
+    (((class color) (background dark)) (:background "#333"))
+    (t :background "#eeeeee"))
+  "Face used to highlight the documentation parts in docTeX mode."
+  :group 'font-latex-highlighting-faces)
+
+(defvar font-latex-doctex-keywords
+  (append font-latex-keywords-2
+	  '(("^%<[^>]*>" (0 font-latex-doctex-preprocessor-face t)))))
+
+;; Copy and adaptation of `doctex-font-lock-^^A' in `tex-mode.el' of
+;; CVS Emacs (March 2004)
+(defun font-latex-doctex-^^A ()
+  (if (eq (char-after (line-beginning-position)) ?\%)
+      (progn
+	(put-text-property
+	 (1- (match-beginning 1)) (match-beginning 1) 'syntax-table
+	 (if (= (1+ (line-beginning-position)) (match-beginning 1))
+	     ;; The `%' is a single-char comment, which Emacs
+	     ;; syntax-table can't deal with.  We could turn it
+	     ;; into a non-comment, or use `\n%' or `%^' as the comment.
+	     ;; Instead, we include it in the ^^A comment.
+	     (eval-when-compile (string-to-syntax "< b"))
+	   (eval-when-compile (string-to-syntax ">"))))
+	(let ((end (line-end-position)))
+	  (if (< end (point-max))
+	      (put-text-property end (1+ end) 'syntax-table
+	       (eval-when-compile (string-to-syntax "> b")))))
+	(eval-when-compile (string-to-syntax "< b")))))
+
+;; Copy and adaptation of `doctex-font-lock-syntactic-face-function'
+;; in `tex-mode.el' of CVS Emacs (March 2004)
+(defun font-latex-doctex-syntactic-face-function (state)
+  ;; Mark docTeX documentation, which is parsed as a style A comment
+  ;; starting in column 0.
+  (if (or (nth 3 state) (nth 7 state)
+	  (not (memq (char-before (nth 8 state))
+		     '(?\n nil))))
+      ;; Anything else is just as for LaTeX.
+      (font-latex-syntactic-face-function state)
+    font-latex-doctex-documentation-face))
+
+
+;;; Installation in non-AUCTeX LaTeX mode
+
 (add-hook 'latex-mode-hook 'font-latex-setup)
 ;; If font-latex is loaded using a latex-mode-hook, then the add-hook above
 ;; won't be called this time around.  Check for this now:
