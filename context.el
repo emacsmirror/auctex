@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: Wed Apr  9 20:14:02 2003
+;; Last Change: $Date: 2003-04-10 10:01:23 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
