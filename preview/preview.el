@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.180 2002-12-10 17:03:57 dakas Exp $
+;; $Id: preview.el,v 1.181 2002-12-13 17:26:59 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1636,7 +1636,8 @@ present."
 	       (repeat :inline t :tag "Others" string)))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
-					 "graphics" "textmath" "sections")
+					 "graphics" "textmath" "sections"
+					 "footnotes")
   "*Specifies default options to pass to preview package.
 These options are only used when the LaTeX document in question does
 not itself load the preview package, namely when you use preview
@@ -1657,6 +1658,7 @@ are selected."
 		    (const "graphics")
 		    (const "textmath")
 		    (const "sections")
+		    (const "footnotes")
 		    (const "showlabels")
 		    (const "psfixbb"))
 	       (set :tag "Expert options" :inline t
@@ -2422,7 +2424,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.180 $"))
+	(rev "$Revision: 1.181 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2433,7 +2435,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-10 17:03:57 $"))
+    (let ((date "$Date: 2002-12-13 17:26:59 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
