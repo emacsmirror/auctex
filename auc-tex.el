@@ -10,17 +10,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-07-22 19:30:20 $|$Revision: 5.36 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-09-09 20:55:36 $|$Revision: 5.37 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.36 1992-07-22 19:30:20 krab Exp $
+;; $Id: auc-tex.el,v 5.37 1992-09-09 20:55:36 amanda Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
-;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Jul 22 21:17:39 1992
-;; Buffer Position : 6589
-;; Update Count    : 614
+;; Last Modified By: Per Abrahamsen
+;; Last Modified On: Wed Sep  9 22:04:54 1992
+;; Update Count    : 626
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,7 +46,7 @@
 ;; HISTORY (Not being updated)
 ;; 30-Apr-1992		Kresten Krab Thorup	
 ;;    Last Modified: Thu Apr 30 05:36:59 1992 #519 (Kresten Krab Thorup)
-;;   Fixed LaTeX-mark-environmetn, as supposed by Denys Duchier. 
+;;   Fixed LaTeX-mark-environment, as supposed by Denys Duchier. 
 ;; 9-Dec-1991  (Last Mod: Mon Dec  9 10:04:18 1991 #461)  Kresten Krab Thorup
 ;;    Fixed a bug in LaTeX-style-options, which caused completion to
 ;;    crash when no optional arguments were available in
@@ -173,7 +172,7 @@
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
 
-(defvar TeX-display-copyright-message t
+(defvar TeX-display-copyright-message nil
   "Display AUC TeX copyright message at TeX/LaTeX mode invocation")
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -231,20 +230,15 @@ as the definition of this this function is placed in an external module."))
 ;; Keymaps
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun TeX-define-common-keys (keymap)
-  "Define the keys that we want defined both in TeX-mode
-and in the TeX-compilation."
-  (define-key keymap "\C-c\C-k"    'TeX-kill-job)
-  (define-key keymap "\C-c\C-l"    'TeX-recenter-output-buffer)
-  )
-
 (if TeX-mode-map 
     ()
   (setq TeX-mode-map (make-sparse-keymap))
-  (TeX-define-common-keys TeX-mode-map)
+  (define-key TeX-mode-map "\C-c\C-k"       'TeX-kill-job)
+  (define-key TeX-mode-map "\C-c\C-l"       'TeX-recenter-output-buffer)
   (define-key TeX-mode-map "\177"     'backward-delete-char-untabify)
   (define-key TeX-mode-map "\n"       'TeX-terminate-paragraph)
-  (define-key TeX-mode-map "\""       'TeX-insert-quote)
+  (if TeX-smart-quotes
+      (define-key TeX-mode-map "\""   'TeX-insert-quote))
   (define-key TeX-mode-map "\e}"      'up-list)
   (define-key TeX-mode-map "\e{"      'TeX-insert-braces)
   (define-key TeX-mode-map "\C-c;"    'TeX-comment-out-region)
@@ -279,7 +273,7 @@ and in the TeX-compilation."
   (setq LaTeX-mode-map (copy-keymap TeX-mode-map))
   (define-key LaTeX-mode-map "\n"       'reindent-then-newline-and-indent)
   (define-key LaTeX-mode-map "\t"       'LaTeX-indent-line)
-  (define-key LaTeX-mode-map "\M-\r"     'LaTeX-insert-item)
+  (define-key LaTeX-mode-map "\M-\r"    'LaTeX-insert-item)
   (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
   (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
@@ -290,7 +284,7 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\M-g"     'LaTeX-format-region)
   (define-key LaTeX-mode-map "\M-s"     'LaTeX-format-section)
   (define-key LaTeX-mode-map "\M-\C-e"  'LaTeX-mark-environment)
-  (define-key LaTeX-mode-map "\C-c\C-f"  'LaTeX-close-environment)
+  (define-key LaTeX-mode-map "\C-c\C-f" 'LaTeX-close-environment)
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
@@ -319,7 +313,8 @@ Tries to intuit whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
 
-   1) if the file is empty, TeX-default-mode is chosen
+   1) if the file is empty or TeX-force-default-mode is not set to nil, 
+      TeX-default-mode is chosen 
    2) If \documentstyle or \begin{, \section{, \part{ or \chapter{ is
       found, latex-mode is selected.
    3) Otherwise, use plain-tex-mode "
@@ -329,6 +324,9 @@ The algorithm is as follows:
      (goto-char (point-min))
      
      (cond ((equal (buffer-size) 0) ;; an empty file!
+	    TeX-default-mode)
+
+	   (TeX-force-default-mode  ;; force default mode
 	    TeX-default-mode)
 
 	   ((re-search-forward      ;; must be LaTeX
@@ -374,8 +372,7 @@ of plain-TeX-mode-hook."
   (use-local-map TeX-mode-map)
   (setq mode-name "TeX")
   (setq major-mode 'plain-TeX-mode)
-  (make-local-variable 'TeX-command)
-  (setq TeX-command "tex")
+  (setq TeX-command plain-TeX-command)
   (setq TeX-bibtex-command "bibtex")
   (setq TeX-index-command "makeindex")
   (setq paragraph-start
@@ -422,12 +419,12 @@ of plain-TeX-mode-hook."
 		TeX-esc "nonstopmode" TeX-grop TeX-grcl))
   (setq TeX-h2 (concat
 		TeX-esc "input"
-		TeX-grop TeX-auto-header TeX-grcl
+		" " TeX-auto-header " "
 		TeX-grop TeX-grcl))
   (setq TeX-t1 (concat TeX-grop TeX-grcl))
   (setq TeX-t2 (concat
 		TeX-esc "input"
-		TeX-grop TeX-auto-trailer TeX-grcl
+		" " TeX-auto-trailer " "
 		TeX-grop TeX-grcl))
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (if TeX-display-copyright-message
@@ -484,8 +481,7 @@ of LaTeX-mode-hook."
   (make-variable-buffer-local 'outline-regexp)
   (setq outline-regexp LaTeX-outline-regexp)
 
-  (make-local-variable 'TeX-command)
-  (setq TeX-command "latex")
+  (setq TeX-command LaTeX-command)
 
   (make-local-variable 'TeX-format-package)
   (setq TeX-format-package LaTeX-format-package)
@@ -1100,7 +1096,7 @@ If CHAR is nil, or \"\", an error will occur."
     (while (string-match regexp string start)
       (let ((match (string-match regexp string start)))
 	(setq result (cons (substring string start match) result))
-	(setq start (+ 1 match))))
+	(setq start (match-end 0))))
     (setq result (cons (substring string start nil) result))
     (nreverse result)))
 

@@ -6,7 +6,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.5 1992-07-22 19:30:27 krab Exp $
+@c $Id: auc-tex.texi,v 1.6 1992-09-09 20:56:04 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -41,10 +41,10 @@ notice identical to this one except for the removal of this paragraph
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 6.
+This file documents AUC @TeX{} version 6.1.
 
 Although AUC @TeX{} contains a large number of features, there are no
-reason to despair.  You can continue to write @TeX{} and La@TeX{}
+reasons to despair.  You can continue to write @TeX{} and La@TeX{}
 documents the way you are used to, and only start using the multiple
 features in small steps.  AUC @TeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
@@ -78,8 +78,8 @@ Inserting Frequently Used Commands
 Inserting Environment Templates
 
 * Floats::                      Floats
-* Itemize like::                Itemize like
-* Tabular like::                Tabular like
+* Itemize-like::                Itemize-like
+* Tabular-like::                Tabular-like
 * Customizing environments::    Customizing environments
 
 Advanced Editing Features 
@@ -199,7 +199,7 @@ overview' of a document.
  
 Apart from these special features, AUC @TeX{} provides an large range of
 handy Emacs macros, which in several different ways can help you write
-your LaTeX documents fast and painless.  Here's a short list of the
+your LaTeX documents fast and without pain.  Here's a short list of the
 major features:
 
 @itemize @bullet
@@ -239,27 +239,51 @@ control sequences.
 @node Frequently Used Commands, Advanced Features, Introduction, top
 @chapter Inserting Frequently Used Commands  
 
-The most common used commands/macros of AUC @TeX{} are those which
+The most commonly used commands/macros of AUC @TeX{} are those which
 simply insert templates for often used @TeX{} and/or La@TeX{}
-constructs, like font changes, handling of environments etc.
-Those features are very simple, and easy-to-learn, and helps you
+constructs, like font changes, handling of environments, etc.
+These features are very simple, and easy to learn, and help you
 avoiding stupid mistakes like mismatched braces, or
 @kbd{\begin@{@}}-@kbd{\end@{@}} pairs.@refill
 
 @menu
+* Quotes::			Inserting double quotes
 * Font Specifiers::             Inserting Font Specifiers 
 * Sectioning::                  Inserting chapters, sections, etc. 
 * Environments::                Inserting Environment Templates
 @end menu
 
-@node Font Specifiers, Sectioning,  , Frequently Used Commands
+@node Quotes, Font Specifiers,  , Frequently Used Commands
+@section Smart Insertion of Double Quotes 
+
+In @TeX{} literal double quotes @samp{"like this"} is seldom used,
+instead two single quotes is used @samp{``like this''}.  To help you
+insert these efficiently, AUC @TeX{} allows you to continue to press
+@key{"} to insert two single quotes.
+
+@deffn TeX-insert-quote
+Bound to @key{"}.  Insert @samp{``}, @samp{''} or @samp{"} according to
+preceding character.  With prefix argument, always insert @samp{"}
+characters.
+@end deffn
+
+A variable can prevent this keybinding to take place.
+
+@defvar TeX-smart-quotes
+If set to t, remap @samp{"} to insert either @samp{``} before a word, or
+@samp{''} after a word.  Users of @file{german.sty}, or other people who
+uses the literal @samp{"} often, will want to disable it by setting this
+variable to nil.
+@end defvar
+
+@node Font Specifiers, Sectioning, Quotes, Frequently Used Commands
 @section Inserting Font Specifiers 
 
-Perhaps the most used keyboard macros of AUC @TeX{} are the shorthands
-are available for easy insertion of font changing commands.  They are
+Perhaps the most used keyboard macros of AUC @TeX{} are the short-cuts
+available for easy insertion of font changing commands.  They are
 all alike, inserting a sequence of @kbd{@{\font @}} with the cursor
-placed just left of the @kbd{@}}.  The following keybindings are
-avilable:@refill 
+placed just left of the @kbd{@}}.  The following key-bindings are
+available:@refill 
 
 @table @kbd
 @item C-c C-r 
@@ -294,7 +318,7 @@ bound to @kbd{C-c C-x}.  Insert a sectioning command.
 
 When invoking @samp{LaTeX-section} you will be
 asked for a section command to insert.  An appropriate default is
-automatically selected by AUC @TeX{}, that is either: In the top of the
+automatically selected by AUC @TeX{}, that is either: at the top of the
 document; the top level sectioning for that document style, and any
 other place: The same as the last occurring sectioning command.
 
@@ -343,15 +367,15 @@ may easily specify more, as described in `Customizing environments'.
 
 @menu
 * Floats::                      Floats
-* Itemize like::                Itemize like
-* Tabular like::                Tabular like
+* Itemize-like::                Itemize-like
+* Tabular-like::                Tabular-like
 * Customizing environments::    Customizing environments
 @end menu
 
-@node Floats, Itemize like,  , Environments
+@node Floats, Itemize-like, , Environments
 @subsection Floats
 
-Figures and tables (i.e. floats) may also be inserted using AUC @TeX{}.
+Figures and tables (i.e., floats) may also be inserted using AUC @TeX{}.
 After choosing either `figure' or `table' in the environment list
 described above, you will be prompted for a number of additional things.
 In both cases the fields:
@@ -372,27 +396,27 @@ controlled by the variables @samp{LaTeX-figure-label} and
 @samp{LaTeX-table-label}.
 @end table
 
-will be prompted for.  More over, in the case of a `figure' environment,
+will be prompted for.  Moreover, in the case of a `figure' environment,
 you will be asked if you want to insert a `center' environment inside
 the figure.
 
-@node Itemize like, Tabular like, Floats, Environments
-@subsection Itemize like
+@node Itemize-like, Tabular-like, Floats, Environments
+@subsection Itemize-like
 
-In an itemize-like environment, nodes (i.e. @kbd{\item}s) may be
+In an itemize-like environment, nodes (i.e., @kbd{\item}s) may be
 inserted using @kbd{M-RET}.  This function will close the current item,
 move to the next line and insert an appropriate @kbd{\item} for the
 current environment. That is, `itemize' and `enumerate' will have
 @kbd{\item@{@}} inserted, while `description' will have @kbd{\item[]}
 inserted.
 
-@node Tabular like, Customizing environments, Itemize like, Environments
-@subsection Tabular like
+@node Tabular-like, Customizing environments, Itemize-like, Environments
+@subsection Tabular-like
 
-When inserting tabular like environments, that is, `tabular' `array'
+When inserting Tabular-like environments, that is, `tabular' `array'
 etc., you will be prompted for a template for that environment.
 
-@node Customizing environments,  , Tabular like, Environments
+@node Customizing environments,  , Tabular-like, Environments
 @subsection Customizing environments
 
 The environment mechanism may be customized by the variable:
@@ -438,14 +462,14 @@ indenting and navigating through the document.
 @node Mathematics, Completion,  , Advanced Features
 @section Entering Mathematics 
 
-@TeX{} is written by a mathematician, and has always contains good
-support for formatting mathematic text.  AUC @TeX{} supports this
+@TeX{} is written by a mathematician, and has always contained good
+support for formatting mathematical text.  AUC @TeX{} supports this
 tradition, by offering a special minor mode for entering text with many
 mathematic symbols.  You can enter this mode by typing @kbd{M-x
 LaTeX-math-mode}.@refill
 
 Then, to enter a mathematical symbol, press @kbd{`} followed by a single
-letter, (a mnemonic for the symbol).  You may e.g. press @kbd{` a}, to
+letter, (a mnemonic for the symbol).  You may, e.g., press @kbd{` a}, to
 have an @samp{\alpha} inserted.   To insert a @kbd{`} itself, press
 @kbd{`} twice.
 
@@ -472,9 +496,9 @@ Alist containing key-command mappings to use in LaTeX-math-mode.
 @node Completion, Commenting, Mathematics, Advanced Features
 @section Completion 
 
-Emacs lisp programmers probably knows the @samp{lisp-complete-symbol}
+Emacs lisp programmers probably know the @samp{lisp-complete-symbol}
 command, usually bound to @samp{M-TAB}.  Users of the wonderful ispell
-mode knows and love the @samp{ispell-complete-word} command from that
+mode know and love the @samp{ispell-complete-word} command from that
 package.  Similarly, AUC @TeX{} has a @samp{TeX-complete-symbol}
 command, usually bound to @kbd{M-TAB}.  Using
 @samp{LaTeX-complete-symbol} makes it easier to type and remember the
@@ -529,7 +553,7 @@ non-comment line is found.
 
 AUC @TeX{} contains very advanced handling of indentation and
 reformatting of the La@TeX{} source.   If you have already tried AUC
-@TeX{} with auto-fill-mode enabled, you may have noted, that the source
+@TeX{} with auto-fill-mode enabled, you may have noted that the source
 is automatically indented and formatted as you write it.  More over, AUC
 @TeX{} is able to format sections of text on demand.  
 
@@ -572,7 +596,7 @@ The following functions are available for formatting/indenting:
 @samp{LaTeX-indent-line} will indent the current line.
 
 @item LFD
-@samp{reinvent-then-newline-and-indent} indents the current line, and
+@samp{reindent-then-newline-and-indent} indents the current line, and
 then inserts a new line (much like @kbd{RET}) and move the cursor to an
 appropriate position by the left margin.
 
@@ -600,7 +624,7 @@ Minor mode for editing outlines with selective display.  Headings are
 lines which start with asterisks: one for major headings, two for
 sub headings, etc.  Lines not starting with asterisks are body lines.
 
-Body text or sub headings under a heading can be made temporarily
+Body text or sub-headings under a heading can be made temporarily
 invisible, or visible again.  Invisible lines are attached to the end of
 the heading, so they move with it, if the line is killed and yanked
 back.  A heading with text hidden under it is marked with an ellipsis
@@ -668,7 +692,7 @@ invisible. The sub headings remain visible.
 @samp{show-branches} make all sub headings at all levels visible.
 @end table
 
-The prefix char (@kbd{C-l}) is determinated by the value of
+The prefix char (@kbd{C-l}) is determined by the value of
 outline-prefix-char.  If outline-minor-keymap is set, it will be used
 instead of the default keymap.
 
@@ -739,13 +763,23 @@ the current region.  Depending on the current `mode' either of those are
 invoked.
 @end deffn
 
-In some cases it may be convenient to have @TeX{} run with certain
-arguments, in which case you may define the variable @samp{TeX-args}
+By default @TeX{} or La@TeX{} is invoked as @code{tex} or @code{latex}
+with the file name as the only argument.  If you want to invoke one or
+both under a different name, you can set the @var{plain-TeX-command} or
+@var{LaTeX-command} variable.
 
-@defvar TeX-args
-Alist of arguments applied to @TeX{} when it is run.  On a NeXT computer
-this may e.g. be @samp{'("-V")} which causes the dvi file to be
-displayed as it is being generated.
+@defvar plain-TeX-command
+The command used for formatting plain TeX documents.  If the string
+contains the two letters `@code{%s}', it will be replaced with the name
+of the plain TeX file to be formatted.  Otherwise, the name of the file
+will simply be appended to the string, separated with a space.
+@end defvar
+
+@defvar LaTeX-command
+The command used for formatting LaTeX documents.  If the string contains
+the two letters `@code{%s}', it will be replaced with the name of the
+plain TeX file to be formatted.  Otherwise, the name of the file will
+simply be appended to the string, separated with a space.
 @end defvar
 
 @node Debugging, Previewing, Invoking LaTeX, Formatting
@@ -765,7 +799,7 @@ Normally AUC @TeX{} will only report real errors, but you may as well
 ask it to report `bad boxes' as well.  This is done using:
 
 @deffn Command TeX-toggle-debug-bad-boxes
-Bound to @kbd{C-c C-w}.  Toggle weither AUC @TeX{} should stop at bad
+Bound to @kbd{C-c C-w}.  Toggle whether AUC @TeX{} should stop at bad
 boxes (i.e. over/under full boxes) as well as at normal errors.
 @end deffn
 
@@ -796,10 +830,16 @@ The function of the command @samp{TeX-preview} may be customized by
 the following variables:
 
 @defvar TeX-preview-alist
-Alist of REGEXP - SYMBOL pairs.  The list of REGEXPs are matched against
-the first line of the document, and if either matches the function bound
-to SYMBOL will be evaluated.  The last regexp should be something like
-@samp{.}, so that it will always match.
+An alist where the key is a regexp, and the value is the formatting
+command to be invoked if the regexp is found in the @TeX{} file.
+
+If the value string contains the two letters `@code{%s}', it will be
+replaced with the name of the DVI file to be previewed.  Otherwise, the
+name of the file will simply be appended to the string, separated with a
+space.
+
+The last regexp should be something like @samp{.}, so that it will
+always match.
 @end defvar
 
 See the file @samp{tex-site.el} for further customization parameters
@@ -812,19 +852,37 @@ Once you've formatted your document using the functions described in
 the section `Invoking LaTeX', you may print it using:
 
 @deffn Command TeX-print 
-Bound to @kbd{C-c !}.  You will be prompted for a printer and for
-eventual further options.
+Bound to @kbd{C-c !}.  Print the current document on a printer of your
+choice.
 @end deffn
 
 @samp{TeX-print} may be customized using the following two variables:
 
 @defvar TeX-printer-name-alist
-Alist of available printers in your system.  One of these will be
-added to your printing command line option @samp{-P}.
+Alist of available printers in your system.  You will be prompted for
+which to use when invoking @code{TeX-print}, unless the list is empty
+(@code{nil}).  In that case, @var{TeX-default-printer-name} is used.
+@end defvar
+
+@defvar TeX-default-printer-name
+The name of your favorite printer.
 @end defvar
 
 @defvar TeX-print-command
-Command used to invoke the your favorite printer filter.
+The command used for printing a DVI file.
+
+If the string contains the two letters `@code{%p}', it will be replaced with
+the name of the selected printer.  Otherwise, the name of the printer
+will be appended to the string, separated by ``@samp{ -P}''.
+
+See @var{TeX-default-printer-name} and @var{TeX-printer-name-alist} for
+the available printers.
+
+If the string contains the two letters `@code{%s}', it will be replaced
+with the name of the DVI file to be printed.  Otherwise, the name of the
+file will simply be appended to the string, separated with a space.
+
+Thus ``@samp{dvips}'' alone is equivalent to ``@samp{dvips -P%p %s}''.
 @end defvar
 
 @node MakeIndex, BibTeX, Printing, Formatting
@@ -869,11 +927,11 @@ formatted @TeX{} document.
 
 First, you should consult the file @samp{tex-site.el} and edit it to fit
 your local site.  The file is documented, so that shouldn't be that
-hard.  Don't worry if you dont understand some of it -- you can read
+hard.  Don't worry if you dot understand some of it -- you can read
 this documentation later to fine tune your installation.
 
 Next, edit the file @samp{Makefile} in the auctex directory to set up
-pathes for installation of the files. 
+paths for installation of the files. 
 
 Now type @samp{make all}, and the whole thing will be `made'.  If this
 succeeds, now type @samp{make install}, and it will all be installed.
@@ -903,14 +961,14 @@ automatically when you load a file width suffix @samp{.tex}.@refill
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Let tex-mode be called, if a `.tex' file is loaded.  The fuction
+;; Let tex-mode be called, if a `.tex' file is loaded.  The function
 ;; tex-mode will automatically select either plain-TeX or LaTeX mode
  
 (setq auto-mode-alist (append '(("\\.tex$" . tex-mode))
                               auto-mode-alist))
 @end lisp
 
-Also, you should insert the following in you .emacs file.  The following
+Also, you should insert the following in your .emacs file.  The following
 may have to be modified to fit personal taste:
 
 @lisp

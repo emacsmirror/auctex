@@ -1,5 +1,5 @@
 
-$Id: README,v 5.17 1992-07-22 19:30:17 krab Exp $
+$Id: README,v 5.18 1992-09-09 20:55:34 amanda Exp $
 
 AUC TeX 
 =======
@@ -7,6 +7,46 @@ AUC TeX
 AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
 
 ********** NEWS NEWS NEWS NEWS **********
+
+Version 6.1:
+
+TeX-region might work now (heard that before?).  Many people reported
+this one.  Especially thanks to Frank Burstall
+(F.E.Burstall@maths.bath.ac.uk) and Bill Schworm
+(bill@schworm.econ.ubc.ca).
+
+The specification format for the TeX command is more general.  See the
+documentation for LaTeX-command and plain-TeX-command.
+
+The specification format for the preview commands is more general, see
+their respective documentation.
+
+The specification format for the print command is more general.  See
+the documentation for TeX-print-command.
+
+TeX-args is marked as obsolete.
+
+The "Emergency stop ..." error some users of old TeX installations got
+might be fixed now.  Thanks to Philip Sterne (sterne@dublin.llnl.gov).
+
+It is now possible to change the preview command without loading
+TeX-site first.  Thanks to Tim Bradshaw (tim.bradshaw@edinburgh.ac.uk). 
+
+New variable TeX-smart-quotes allow german.sty users (and others) to
+disable the mapping of double quote (" to `` or '').  Thanks to Daniel
+Hernandez (danher@informatik.tu-muenchen.de).
+
+Many minor corrections to the documentation.  Thanks to Mainhard E.
+Mayer (hardy@golem.ps.uci.edu).
+
+Don't query for printer if TeX-printer-name-alist is nil.  Thanks to
+Bill Schworm (bill@schworm.econ.ubc.ca).
+
+Make test for HOSTTYPE case insensitive.  Thanks to Gisli Ottarsson
+(gisli@liapunov.eecs.umisc.edu)
+
+Set TeX-force-default-mode to avoid AUC TeX's attempts to infer the
+mode of the file by itself.
 
 Version 6:
 
@@ -93,7 +133,7 @@ To contact the current maintainer of auc-tex, Email:
 			auc-tex_mgr@iesd.auc.dk
 
 
-The address of the author is:
+The address of the main author is:
 
 			krab@iesd.auc.dk
 

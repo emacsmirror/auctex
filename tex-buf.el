@@ -7,64 +7,10 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.17 1992-09-04 13:28:46 amanda Exp $
+;; $Id: tex-buf.el,v 1.18 1992-09-09 20:55:42 amanda Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Per Abrahamsen
-;; Last Modified On: Fri Sep  4 15:27:49 1992
-;; Update Count    : 275
-;; 
-;; HISTORY
-;; 4-Sep-1992		Per Abrahamsen	
-;;    Last Modified: Fri Sep  4 15:26:43 1992 #274 (Per Abrahamsen)
-;;    max-point was used as a variable instead of a function in 
-;;    TeX-region.
-;; 30-Apr-1992		Kresten Krab Thorup	
-;;    Last Modified: Thu Apr 30 05:35:40 1992 #175 (Kresten Krab Thorup)
-;;    Changed TeX-region not to insert a newline after the preamble,
-;;    as described by Denys Duchier.
-;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
-;;    Changed TeX-default-jobname-prefix to "_". the `+' conflicted
-;;    with xdvi.
-;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
-;;    Added some preview function to take advantage of style option
-;;    knowledge. i.e. yoy may specify how to call the previewer using
-;;    landscape, or a5 style options. This part is easily extensible.
-;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:04:55 1992 #148)  Kresten Krab Thorup
-;;    Added Functionality to let `TeX-region' take advantage of the
-;;    `Master:' option.  It is very simple, but this, I think, is the
-;;    way to do it.  It may not work too good if you're using
-;;    texheader/textrailer files, however, such will soon be obsolete...
-;; 23-Jan-1992  (Last Mod: Thu Jan 23 18:23:34 1992 #129)  Kresten Krab Thorup
-;;    Fixed LaTeX-bibtex as proposed by handl@cs.uni-sb.de
-;; 17-Dec-1991  (Last Mod: Tue Dec 17 21:59:56 1991 #117)  Kresten Krab Thorup
-;;    Added %% Master: file-name, and fixed a bug in tex-buf.
-;; 14-Sep-1991  (Last Mod: Thu Sep  5 20:08:15 1991 #57)  Kresten Krab Thorup
-;;    The setting of TeX-preview-command is moved to tex-site.el The
-;;    variable TeX-default-preview-command is removed completely.
-;; 5-Sep-1991  (Last Mod: Thu Sep  5 20:02:21 1991 #55) George Ferguson
-;;    Changed TeX-buffer() so that it doesn't use a temporary file, but
-;;    rather runs the formatter in the directory as if it was run from
-;;    shell.
-;;    Changed Tex-preview() so that the previewer is run in the background,
-;;    and we can reformat and reload (for xdvi) without killing it.
-;; 1-Sep-1991  (Last Mod: Sun Sep  1 17:27:11 1991 #27)  Kresten Krab Thorup
-;;    Changed the default prefix from #tz to `+' 
-;; 31-May-1991  (Last Mod: Fri May 31 11:52:30 1991 #11)  Kresten Krab Thorup
-;;    Removed unnessecary " "'s in TeX-region, as suggested by Martin Simons
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; AUC TeX is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY.  No author or distributor
-;; accepts responsibility to anyone for the consequences of using it
-;; or for whether it serves any particular purpose or works at all,
-;; unless he says so in writing. 
-;;
-;; Everyone is granted permission to copy, modify and redistribute
-;; this file, but only under the conditions described in the
-;; document "GNU Emacs copying permission notice".   An exact copy
-;; of the document is supposed to have been given to you along with
 ;; this file so that you can know how you may redistribute it all.
 ;; It should be in a file named COPYING.  Among other things, the
 ;; copyright notice and this notice must be preserved on all copies.
@@ -131,6 +77,27 @@ TeX-index-command to use on TeX-master-file.")
     (save-excursion
       (set-buffer buffer)
       (setq default-directory directory))))
+
+(defun TeX-build-command (command file)
+  "Replace the substring %s in COMMAND with FILE if present, 
+otherwise append it separated by a space.  Return a list 
+containing each space separated word in the resulting string. 
+FILE is never split."
+  (if (string-match " *%s *" command)
+      (append (split-string "  *" (substring command 0 (match-beginning 0)))
+	      (list file)
+	      (if (< (match-end 0) (length command))
+		  (split-string "  *" (substring command (match-end 0)))
+		nil))
+    (append (split-string "  *" command) (list file))))
+
+(defun TeX-type-command (string command file)
+  "Print STRING followed by COMMAND with FILE inserted, as done by 
+TeX-build-command in the minibuffer."
+  (format string 
+	  (apply 'concat
+		 (mapcar '(lambda (a) (concat " " a))
+			 (TeX-build-command command file)))))
 
 (defun TeX-home-buffer ()
   "Go back to buffer most recent run by TeX"
@@ -351,21 +318,13 @@ Then the header/trailer will be searched in <file>."
     ;; And now - go for a run!
     ;;
     
-    (message (concat "Running " TeX-command))
-    (let ((TeX-command-with-args (append
-				  (list TeX-command)
-				  (if TeX-args
-				      (append
-				       TeX-args
-				       (list TeX-out-file))
-				    (list TeX-out-file)))))
-      (message (apply 'concat TeX-command-with-args))
+    (message (TeX-type-command "Running %s" TeX-command TeX-out-file))
       
-      (setq TeX-process
-	    (apply 'start-process 
-		   "TeX-run" 
-		   "*TeX-output*" 
-		   TeX-command-with-args)))
+    (setq TeX-process
+	  (apply 'start-process 
+		 "TeX-run" 
+		 "*TeX-output*"
+		 (TeX-build-command TeX-command TeX-out-file)))
     (with-output-to-temp-buffer "*TeX-output*"))
   
   (TeX-fix-process "Compilation")
@@ -469,27 +428,18 @@ TeX/LaTeX will be run on <file> instead of the current."
 	(zap-directory
 	 (file-name-as-directory (expand-file-name TeX-directory))))
     (message (concat "Formatting " TeX-original-file))
-    (let ((TeX-command-with-args (append
-				  (list TeX-command)
-				  (if TeX-args
-				      (append
-				       TeX-args
-				       (list "\\nonstopmode{}\\input "
-					     TeX-original-file))
-				    (list
-				     "\\nonstopmode{}\\input "
-				     TeX-original-file)))))
-      (setq TeX-process
-	    (apply 'start-process 
-		   "TeX-run" 
-		   "*TeX-output*" 
-		   TeX-command-with-args)))
+    (setq TeX-process
+	  (apply 'start-process 
+		 "TeX-run" 
+		 "*TeX-output*" 
+		 (TeX-build-command TeX-command
+				    (concat "\\nonstopmode{}\\input "
+					    TeX-original-file))))
     (with-output-to-temp-buffer "*TeX-output*"))
   (TeX-fix-process "Formatting")
   (setq TeX-new-run t)
   (setq TeX-running 'tex)
-  (setq TeX-start-directory (expand-file-name TeX-directory))
-  )
+  (setq TeX-start-directory (expand-file-name TeX-directory)))
 
 (defun TeX-kill-job ()
   "Kill the currently running TeX job."
@@ -567,16 +517,17 @@ line LINE of the window, or at bottom if LINE is nil."
       (if alist			; we have a match, set
 	  (setq TeX-preview-command (symbol-value (cdr (car alist)))))))
 ;;;
-  (let ((command (concat TeX-preview-command " " TeX-zap-file ".dvi")))
-    
-    (process-kill-without-query
-     (apply 'start-process
-	    "preview"
-	    "*TeX-output*"
-	    (split-string " " command)))
-    
-    (with-output-to-temp-buffer "*TeX-output*"
-      (princ (format "Started %s; process is \"preview\"\n" command)))))
+  (process-kill-without-query
+   (apply 'start-process
+	  "preview"
+	  "*TeX-output*"
+	  (TeX-build-command TeX-preview-command
+			     (concat TeX-zap-file ".dvi"))))
+
+  (with-output-to-temp-buffer "*TeX-output*"
+    (princ (TeX-type-command "Started %s; process is \"preview\"\n"
+			     TeX-preview-command
+			     (concat TeX-zap-file ".dvi")))))
 
 (defun TeX-print ()
   "Print the .dvi file made by \\[TeX-region] or \\[TeX-buffer].
@@ -585,38 +536,45 @@ This command will not work under bash"
   
   (TeX-test-process)
   
-  (let ((TeX-printer-name
-	 (completing-read
-	  (concat "Printer: (default "
-		  TeX-default-printer-name
-		  ") ")
-	  TeX-printer-name-alist))
-	(Options (read-from-minibuffer "Other printer options:")))
-    (if (string= TeX-printer-name "")
-	(setq TeX-printer-name TeX-default-printer-name))
-    
-    ;; 23/01/91 (krab)
+  (let* (				; Ask for a printer
+	 (tmp1 (if TeX-printer-name-alist
+		   (completing-read (concat "Printer: (default "
+					    TeX-default-printer-name
+					    ") ")
+				    TeX-printer-name-alist)
+		 ""))
+					; If "", use default
+	 (printer (if (string= tmp1 "")
+		      TeX-default-printer-name
+		    tmp1))
+					; Insert printer in command
+	 (tmp2 (if (string-match "%p" TeX-print-command)
+		   (concat (substring TeX-print-command
+				      0 (match-beginning 0))
+			   printer
+			   (substring TeX-print-command (match-end 0)))
+		 (concat TeX-print-command " -P" printer)))
+					; Insert file in command
+	 (tmp3 (if (string-match "%s" tmp2)
+		   (concat (substring tmp2 0 (match-beginning 0))
+			   TeX-zap-file ".dvi"
+			   (substring tmp2 (match-end 0)))
+		 (concat tmp2 " " TeX-zap-file ".dvi")))
+					; Make user confirm command
+	 (command (read-from-minibuffer "Print command: " tmp3)))
+	 
     ;; Let the last selected be the default from now on...
-    (setq TeX-default-printer-name TeX-printer-name)
+    (setq TeX-default-printer-name printer)
     
-    (let ((command (concat TeX-print-command
-			   " -P" TeX-printer-name
-			   (if (not (equal Options ""))
-			       (concat " " Options))
-			   " " TeX-zap-file ".dvi")))
-      
-      (cond ((y-or-n-p (concat "PRINT: "
-			       command
-			       "  sure? "))
-	     (setq TeX-process
-		   (apply 'start-process 
-			  "printing"
-			  "*TeX-output*"
-			  (split-string " " command)))
-	     (with-output-to-temp-buffer "*TeX-output*"
-	       (princ (format "Started %s; process is \"printing\"\n" command)))
-	     
-	     (TeX-fix-process "printing"))))))
+    (setq TeX-process
+	  (apply 'start-process 
+		 "printing"
+		 "*TeX-output*"
+		 (split-string "  *" command)))
+    (with-output-to-temp-buffer "*TeX-output*"
+      (princ (format "Started %s; process is \"printing\"\n" command)))
+    
+    (TeX-fix-process "printing")))
 
 (defun LaTeX-bibtex ()
   "Run BibTeX on file made by \\[TeX-region] or \\[TeX-buffer]."
