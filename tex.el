@@ -373,10 +373,11 @@ is not recommended because it is more powerful than
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  `(("^dvi$" ,(concat
-	      "^"
-	      (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
-	      "$")
+  `(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gv %f")
+    ("^dvi$" ,(concat
+	       "^"
+	       (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
+	       "$")
      "xdvi %d -paper a4")
     ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
 	      "^landscape$")
@@ -390,7 +391,6 @@ is not recommended because it is more powerful than
     ("^dvi$" "^legalpaper$" "xdvi %d -paper legal")
     ("^dvi$" "^executivepaper$" "xdvi %d -paper 7.25x10.5in")
     ("^dvi$" "^landscape$" "xdvi %d -paper a4r -s 0")
-    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips %d -o && gv %f")
     ("^dvi$" "." "xdvi %d")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
@@ -540,7 +540,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.350 $"))
+	(rev "$Revision: 5.351 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -555,7 +555,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-20 13:15:04 $"))
+    (let ((date "$Date: 2004-04-20 19:44:35 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

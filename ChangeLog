@@ -1,3 +1,9 @@
+2004-04-20  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-output-view-style): Move "dvips && gv" element to
+	the top of the list (not shadowed by a4paper anymore).  Added
+	"pst-" in this element.
+
 2004-04-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-current-environment): Respect value of
