@@ -83,7 +83,7 @@ clean:
 		prauctex.def preview.aux preview.dvi circ.log \
 		circ.dvi circ.aux texput.log testdocstrip.tex \
 		testdocstrip.log bootstrap.log preview-mk.ins preview-mk.log
-	(cd doc ; $(MAKE) all)
+	(cd doc ; $(MAKE) clean)
 
 
 distclean:
