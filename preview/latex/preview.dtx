@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{979}
+%\CheckSum{981}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.56 $
+%  \rcskey \version CVS-$Revision: 1.57 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-04-10 10:22:12 $
+%\rcskey\next $Date: 2002-04-13 02:05:25 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -323,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.56 $
+   \reserved@a\reserved@b CVS-$Revision: 1.57 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-04-10 10:22:12 $
+\reserved@a\next $Date: 2002-04-13 02:05:25 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1227,7 +1227,8 @@
 %    \end{macrocode}
 %    Ignore empty labels\dots
 %    \begin{macrocode}
-%<showlabels>   \edef\next{#1}\ifx\next\@empty\else
+%<showlabels>   \protected@edef\next{#1}\@onelevel@sanitize\next
+%<showlabels>   \ifx\next\@empty\else
 %    \end{macrocode}
 %    and labels equal to the last one.
 %    \begin{macrocode}
