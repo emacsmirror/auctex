@@ -496,7 +496,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.309 $"))
+	(rev "$Revision: 5.310 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -511,7 +511,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-12-30 16:26:51 $"))
+    (let ((date "$Date: 2004-01-03 10:54:15 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2573,7 +2573,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
 
   ;; Multifile
-  (define-key TeX-mode-map "\C-c!" 'TeX-master-file-ask)) ;*** temporary
+  (define-key TeX-mode-map "\C-c-" 'TeX-master-file-ask)) ;*** temporary
 
 (easy-menu-define TeX-mode-menu
     TeX-mode-map
