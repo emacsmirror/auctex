@@ -35,12 +35,46 @@
  (lambda ()
    ;; New symbols
    (TeX-add-symbols
-    "url" "urldef" "urlstyle")
+    "Url"
+    "UrlBigBreakPenalty"
+    "UrlBigBreaks"
+    "UrlBreakPenalty"
+    "UrlBreaks"
+    "UrlFont"
+    "UrlLeft"
+    "UrlNoBreaks"
+    "UrlOrds"
+    "UrlRight"
+    "UrlSpecials"
+    "url"
+    "urldef"
+    '("urlstyle" TeX-arg-urlstyle))
    ;; Fontification
    (add-to-list 'font-latex-match-reference-keywords-local "url")
    (font-latex-match-reference-make)
-   (add-to-list 'font-latex-match-function-keywords-local "urldef")
-   (add-to-list 'font-latex-match-function-keywords-local "urlstyle")
-   (font-latex-match-function-make)))
+   (mapcar (lambda (keyword)
+	     (add-to-list 'font-latex-match-variable-keywords-local keyword))
+	   '("Url"
+	     "UrlBigBreakPenalty"
+	     "UrlBigBreaks"
+	     "UrlBreakPenalty"
+	     "UrlBreaks"
+	     "UrlFont"
+	     "UrlLeft"
+	     "UrlNoBreaks"
+	     "UrlOrds"
+	     "UrlRight"
+	     "UrlSpecials"
+	     "urldef"
+	     "urlstyle"))
+   (font-latex-match-variable-make)))
+
+(defun TeX-arg-urlstyle (optional &optional prompt)
+  "Prompt for style used in \\urlstyle with completion."
+  (TeX-argument-insert
+   (completing-read (TeX-argument-prompt optional prompt "Style")
+		    (mapcar 'list '("rm" "same" "sf" "tt"))
+		    nil t)
+   optional))
 
 ;;; url.el ends here
