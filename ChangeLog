@@ -1,3 +1,9 @@
+2005-02-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (LaTeX-auto-regexp-list): Use
+	`LaTeX-auto-class-regexp-list'.
+	Patch by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (Texinfo-environment, Texinfo-modify-environment):
