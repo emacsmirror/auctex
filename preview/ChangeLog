@@ -4,6 +4,15 @@
 
 2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-make-clickable): Same change as in
+	prv-xemacs.el below.
+
+	* prv-xemacs.el (propertize): Throw out.  Too much potential for
+	conflicts of macro arguments and bindings.
+	(preview-create-icon): Revert desparate forced instantiation
+	attempt.
+	(preview-make-clickable): Be more careful about double evaluation.
+
 	* Release 0.7
 	
 	* doc/readme.texi (Getting started): Mention desktop instability
