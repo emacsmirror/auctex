@@ -1,16 +1,49 @@
-Mon Oct 20 16:35:31 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1998-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8l released.
+
+1998-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8k released.
+
+1998-02-12  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-list): Make tags match doc string.
+
+1998-01-28  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8j released.
+
+1998-01-28  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-jp.el: Added credit.  
+	Patch by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>.
+
+1997-12-10  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-site.el: Added `defcustom' kludge to tex-site.el.
+	Suggested by "Ralph J. Hangleiter" <hangleit@math.uni-goettingen.de>.
+
+1997-10-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (TeX-arg-input-file): Add trailing slash.
+	(TeX-arg-bibstyle): Ditto.
+	(TeX-arg-bibliography): Ditto.
+	Patch by Ching-Mo Chang <chang@wsu.edu>.
+
+1997-10-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8i released.
 
-Mon Oct 20 16:31:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-10-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8h released.
 
-Mon Oct 20 16:30:05 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-10-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8g released.
 
-Mon Oct 20 10:15:42 1997  Peter S Galbraith  <rhogee@mixing.qc.dfo.ca>
+1997-10-20  Peter S Galbraith  <rhogee@mixing.qc.dfo.ca>
 
 	* font-latex.el: Updated to V0.504 (Oct 20 97)
 
@@ -18,27 +51,27 @@ Mon Oct 20 10:15:42 1997  Peter S Galbraith  <rhogee@mixing.qc.dfo.ca>
 
 	* hilit-LaTeX.el: Updated to V1.17 (Sep 06 95)
 
-Wed Oct  1 21:44:21 1997  kifer@CS.SunySB.EDU (Michael Kifer)
+1997-10-01  kifer@CS.SunySB.EDU (Michael Kifer)
 
 	* tex.el (TeX-insert-punctuation): Expand abbrevs in the
 	beginning. 
 
-Thu Sep 11 11:46:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-09-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-run-silent): New function.
 
 	* tex.el (TeX-command-list): Changed default for view from
 	`TeX-run-background' to `TeX-run-silent'.
 
-Wed Sep 10 12:44:36 1997  "Dr. Werner Fink" <werner@suse.de>
+1997-09-10  "Dr. Werner Fink" <werner@suse.de>
 
 	* style/dinbrief.el: Updated.
 
-Mon Sep  8 15:59:43 1997  karlheg@inetarena.com (Karl M. Hegbloom)
+1997-09-08  karlheg@inetarena.com (Karl M. Hegbloom)
 
 	* tex-info.el (texinfo-mode): Regexp fix.
 
-Fri Aug 29 07:43:25 1997  David J. Rowe  <rowe@asys47.wdl.lmco.com>
+1997-08-29  David J. Rowe  <rowe@asys47.wdl.lmco.com>
 
 	* latex.el (LaTeX-auto-regexp-list): Added support so newcommand*,
 	renewcommand*, providecommand*, newenvironment* and
@@ -47,71 +80,71 @@ Fri Aug 29 07:43:25 1997  David J. Rowe  <rowe@asys47.wdl.lmco.com>
 	(LaTeX-common-initialization): Added all of above "starred"
 	commands to symbol list and added providecommand to symbol list.
 
-Fri Aug 29 09:38:21 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-08-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8f released.
 
-Fri Aug 29 09:14:03 1997  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
+1997-08-29  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
 
 	* amsmath.el ("amsmath"): Added environments xalignat and
 	xxalignat, and starred forms
 
-Fri Aug 22 18:28:59 1997  Christoph Wedler  <wedler@fmi.uni-passau.de>
+1997-08-22  Christoph Wedler  <wedler@fmi.uni-passau.de>
 
 	* tex-buf.el (TeX-region-create): Also bind `orig-buffer' which
 	might be useful in `TeX-region-hook'.
 
-Mon Jul 14 18:48:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-07-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8e released.
 
-Mon Jul 14 18:48:16 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-07-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (STYLESRC): Added `style/natbib.el'.
 
-Sun Jul 13 12:23:54 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+1997-07-13  Berwin Turlach  <berwin.turlach@anu.edu.au>
 
 	* Added style support for natbib.sty
 
-Fri Jul 11 19:06:53 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-07-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8d released.
 
-Fri Jul 11 19:02:00 1997  Jan Vroonhof <vroonhof@frege.math.ethz.ch>
+1997-07-11  Jan Vroonhof <vroonhof@math.ethz.ch>
 
-	* latex.el (LaTeX-auto-regexp-list): 
+	* latex.el (LaTeX-auto-regexp-list): More LaTeX2e support.
 
-Sat Jul  5 11:08:07 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+1997-07-05  Berwin Turlach  <berwin.turlach@anu.edu.au>
 
 	* latex.el (BibTeX-auto-store): make TeX-master a local variable
 	and set it to true.
 
-Thu Jul 03 18:06:22 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-07-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8c released.
 
-Thu Jul  3 14:44:55 1997  Carsten Dominik <dominik@strw.LeidenUniv.nl>
+1997-07-03  Carsten Dominik <dominik@strw.LeidenUniv.nl>
 
 	* style/amsmath.el ("amsmath"): Use `TeX-arg-ref' for eqref.
 
-Sun Jun 29 15:29:59 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+1997-06-29  Berwin Turlach  <berwin.turlach@anu.edu.au>
 
 	* harvard.el: Updated the support for harvard.el
 
-Mon Jun 30 17:04:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8b released.
 
-Sat Jun 28 14:27:30 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-LaTeX-sentinel): `natbib' support.
 	Patch by Berwin Turlach <berwin.turlach@anu.edu.au>.
 
-Fri Jun 27 19:16:34 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8a released.
 
-Tue Jun 24 17:03:06 1997  Christoph Wedler  <wedler@fmi.uni-passau.de>
+1997-06-24  Christoph Wedler  <wedler@fmi.uni-passau.de>
 
 	* tex.el (TeX-update-style): `TeX-auto-update' could be unbound.
 	(TeX-auto-x-parse-length): New variable.  Allows to use maximimum
@@ -163,13 +196,13 @@ Tue Jun 24 17:03:06 1997  Christoph Wedler  <wedler@fmi.uni-passau.de>
 	(LaTeX-math-insert-function): New variable.
 	(LaTeX-math-insert): Use it.
 
-Wed Jun 11 09:10:13 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (TeX-arg-ref): New alias.
 	(LaTeX-common-initialization): Use it.
 	Patch by Soren Dayton <csdayton@cs.uchicago.edu>.
 
-Thu Jun  5 13:56:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-auto-minimal-regexp-list): Added `usepackage'. 
 	(LaTeX-auto-minimal-regexp-list): Ditto.
@@ -183,28 +216,28 @@ Thu Jun  5 13:56:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	* Makefile (STYLESRC): Added them.
 	Files provided by Carsten Dominik <dominik@strw.LeidenUniv.nl>.
 
-Tue Jun  3 17:18:06 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-06-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* style/slovak.el: New file.
 	* style/czech.el: New file.
 	* Makefile (STYLESRC): Add them.
 	Files provided by Milan Zamazal <pdm@fi.muni.cz>.
 
-Thu Apr 17 14:25:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-04-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7p released.
 
-Sat Apr 12 22:38:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-04-12  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el: Added customize information.
 	* tex-buf.el: Ditto.
 	* latex.el: Ditto.
 	
-Sun Apr 06 19:28:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-04-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7o released.
 
-Sun Apr  6 19:23:37 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-04-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-equation-label): New variable.
 	(LaTeX-eqnarray-label): New variable.
@@ -213,7 +246,7 @@ Sun Apr  6 19:23:37 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(LaTeX-env-figure): Support `table*'.
 	Patch by Joes Staal <staal@geo.tudelft.nl>.
 	
-Fri Mar 28 12:23:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-down-section): Doc fix.
 	(LaTeX-section-heading): Ditto.
@@ -226,25 +259,25 @@ Fri Mar 28 12:23:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(TeX-arg-right-insert-p): Ditto.
 	(latex-mode): Ditto.
 
-Wed Mar 26 21:14:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7n released.
 
-Wed Mar 26 21:12:53 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-default): Fixed hebrew delimiters.
 	Patch by John Griffith <griffith@sfs.nphil.uni-tuebingen.de>.
 	
-Wed Mar 26 21:09:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-209-to-2e): Use `buffer-substring-no-properties'.
 	Reported by Graham Gough <graham@cs.man.ac.uk>.
 
-Mon Mar 17 13:35:46 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7m released.
 
-Mon Mar 17 13:25:45 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-auto-generate): Only generate when needed. 
 	(TeX-auto-generate-global): Ditto.
@@ -253,82 +286,82 @@ Mon Mar 17 13:25:45 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	* Makefile (install-contrib): Don't move elc files twice.  Patch
 	by Helmut Geyer <Helmut.Geyer@IWR.Uni-Heidelberg.De>.
 
-Thu Mar 13 12:10:03 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* style/danish.el: Copied from `style/dk.el'.
 	* Makefile (STYLESRC): Added `style/danish.el'.
 	Suggested by Lars Frellesen <frelle@math-tech.dk>.
 
-Tue Mar 04 11:29:23 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-04  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7l released.
 
-Tue Mar  4 11:27:43 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-03-04  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (some): Don't use `style/*.elc'.
 
-Thu Feb 27 11:02:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-electric-macro): Default to space after dot.
 
-Wed Feb 26 23:15:27 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7k released.
 
-Wed Feb 26 23:14:43 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-submit-bug-report): Fix address (sunsite, not iesd!).
 
-Tue Feb 25 17:36:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7j released.
 
-Fri Feb 21 09:29:20 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-21  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (some): New target.  
 	Suggested by Steven L Baur <steve@miranova.com>.
 
-Thu Feb 20 11:30:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7i released.
 
-Thu Feb 20 10:59:38 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el: Removed autoloads that conflicts with `tex-mode.el'.
 	(TeX-lisp-directory): Default to data-directory.
 
-Sat Feb 15 18:00:48 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7h released.
 
-Sat Feb 15 13:39:30 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-lisp-directory): Removed.
 
-Fri Feb 07 14:58:29 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-02-07  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7g released.
 
-Thu Feb  6 11:01:35 1997  Karl Eichwalder  <ke@ke.Central.DE>
+1997-02-06  Karl Eichwalder  <ke@ke.Central.DE>
 
 	* Makefile (install-lisp): Don't install $(aucdir)/lpath.el and
 	$(aucdir)/tex-site.el.
 	(contrib, install-contrib): New targets.
 	
-Thu Jan 30 06:59:57 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-default): uparow -> uparrow.  Reported by
 	Kyeong Soo Kim <kks@baekdu.rgit.wustl.edu>. 
 
-Wed Jan 29 04:57:42 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (AUCSRC): Removed `ltx-help.el'.
 
-Mon Jan 27 00:52:51 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7f released.
 
-Mon Jan 27 00:40:35 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-label-function): New variable.
 	(LaTeX-label): New function.
@@ -341,33 +374,33 @@ Mon Jan 27 00:40:35 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	* latex.el (LaTeX-env-figure): Don't insert \leavevmode, at the
 	request of David Carlisle <carlisle@ma.man.ac.uk>.
 
-Mon Jan 20 18:41:23 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7e released.
 
-Mon Jan 20 18:38:58 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-parse-error): Support LaTeX warnings.  Patch by
 	Frederic Devernay <devernay@istar.fr>.
 	(TeX-warning): Ditto.
 
-Fri Jan 17 17:42:20 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7d released.
 
-Fri Jan 17 17:40:39 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-17  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-jp.el: XEmacs 20 support by Soren Dayton
 	<csdayton@cs.uchicago.edu>. 
 
-Mon Jan 13 00:52:26 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (CP): Use `cp -p'.  Suggested by Graham Gough
 	<graham@cs.man.ac.uk>. 
 
 	* Version 9.7c released.
 
-Wed Jan  8 15:00:06 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-08  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* doc/intro.texi: Spelling fixes by Franklin Chen <chen@adi.com>. 
 
@@ -378,22 +411,22 @@ Wed Jan  8 15:00:06 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 	* latex.el (LaTeX-mode-menu): Added sans serif.  Patch by Ralf
 	Fassel <ralf@atg.venture.de>. 
 
-Fri Jan  3 13:49:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+1997-01-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (install-lisp): Also install `.el' files.  Requested by
 	several people.
 
-Wed Dec 11 07:32:47 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (tex.elc): New entry.
 	(install-lisp): Use it.  Trevor Jim <tjim@saul.cis.upenn.edu>
 	reported that `make install' wouldn't make the elc files.
 
-Tue Dec 10 16:48:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7b released.
 
-Tue Dec 10 07:49:54 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-run-format): Bind `buffer' before `process' to
 	avoid side effect.  Suggested by Frederic Devernay
@@ -401,52 +434,52 @@ Tue Dec 10 07:49:54 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7a released.
 
-Tue Dec 10 07:49:56 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-fill-region-as-para-do): Minimal support for
 	`sentence-end-double-space'.
 
-Mon Dec 09 14:58:18 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-09  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6m released.
 
-Sun Dec 01 17:33:49 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6l released.
 
-Sun Dec  1 17:31:48 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-jp.el: Patch from IKEMOTO Masahiro
 	<ikeyan@airlab.cs.ritsumei.ac.jp>. 
 
-Fri Nov 29 18:50:26 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6k released.
 
-Fri Nov 22 14:40:05 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-22  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-mode-menu): Made `LaTeX-math-mode' a toggle.
 
-Sat Nov 16 19:24:39 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6j released.
 
-Thu Nov 14 15:42:38 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-common-initialization): Added eqref to
 	LaTeX-label-list.  Suggested by Martin Hagstrom
 	<martinh@sto.foa.se>. 
 
-Wed Nov 13 16:15:36 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-region-create): Disable font lock.  Suggested by
 	several, patch by Christoph Wedler <wedler@fmi.uni-passau.de>.
 
-Tue Nov  5 20:21:07 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-11-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-file-extensions): Added "texinfo".
 
-Mon Sep 30 18:45:42 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-09-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-mode-map): Do not overwrite standard binding of
 	`M-g'. 
@@ -459,30 +492,30 @@ Mon Sep 30 18:45:42 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(LaTeX-env-figure): Don't insert float if nil.  Feature suggested
 	by Andre Eickler <eickler@db.fmi.uni-passau.de>.
 
-Mon Sep 16 17:17:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-09-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6i released.
 
-Mon Sep 16 17:15:02 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-09-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-mode-syntax-table): Made `$' have the syntax class
 	`$' at the suggestion of Mats Bengtsson <matsb@s3.kth.se>.
 
-Sat Aug 31 16:03:52 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-31  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (TeX-arg-cite): Use `multi-prompt' when asking for
 	entries. 
 	(TeX-arg-bibliography): Ditto.
 
-Thu Aug 29 22:22:14 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile: Simplified installation (I hope).
 
-Wed Aug 28 00:22:11 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-28  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile: Removed lacheck.
 
-Fri Aug 23 10:23:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-23  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-run-command): Change to master directory before
 	executing command.
@@ -496,7 +529,7 @@ Fri Aug 23 10:23:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(TeX-master-directory): New function.
 	* tex.el (TeX-auto-write): Write in master directory.
 
-Thu Aug 22 22:33:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-22  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-current-environment): Ignore comments.  Reported
 	by Stephen Eglen <stephene@cogs.susx.ac.uk>.
@@ -507,106 +540,106 @@ Thu Aug 22 22:33:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(TeX-shell-command-option): Added `emx' and `windows-nt'.
 	Reported by Ulrich Poetter <poetter@em.uni-frankfurt.d400.de>.
 
-Wed Aug 21 13:57:43 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-21  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (VirTeX-common-initialization): Removed duplicate
 	initialization of `words-include-escapes'.  Reperted by Mark Hovey
 	<hovey@math.mit.edu>. 
 
-Wed Aug 14 19:43:31 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-08-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (CONTRIB): Added `font-latex.el'.
 
-Tue Jul 30 12:19:01 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-07-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (aucdir): Changed `lib' to `share' per new emacs
 	conventions.  Reported by "Edward J. Huff"
 	<huffe@carbon.chem.nyu.edu>. 
 
-Tue Jul 16 20:18:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-fill-region-as-para-do):  Make sure `.}' gets
 	two spaces at end of sentence when filling.
 
-Mon Jul 15 12:13:36 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-07-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-parse-path): Ignore tralining //.  Suggested by
 	Göran Uddeborg <Göran.Uddeborg@carmen.se>.
 
-Sun May  5 11:06:37 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-05-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* all: Use version number instead of CVS id.
 
 	* tex.el (TeX-mode-map): Don't bind `del'.  We aren't supposed to
 	have any tabs in the first place.
 
-Thu May  2 01:28:52 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-05-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-mark-active, TeX-active-mark) [XEmacs]: The
 	definition of these two were swapped.  Bug reported by 
 	Vladimir Alexiev <vladimir@cs.ualberta.ca>.
 	
-Thu Apr 25 11:20:03 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-04-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-update-style): Don't run parent style hooks for
 	files that doesn't match `TeX-one-master'.  Suggested by many
 	people.
 
-Wed Apr 24 14:44:13 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-04-24  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-close-environment): Bind
 	`next-line-add-newlines' to t.  Patch by Fritz Knabe
 	<knabe@matecumbe.ing.puc.cl>.
 
-Mon Apr  1 16:36:04 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-04-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-fill-region-as-para-do): Fill `.}' as a sentence
 	end.  Patch by Fritz Knabe <knabe@matecumbe.ing.puc.cl>.
 
-Mon Mar 11 22:56:30 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-03-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-cal): Use `\mathcal{}' under LaTeX2e.
 	Reported by Mate Wierdl <wierdlm@zebra.msci.memphis.edu>. 
 
-Tue Mar  5 17:27:39 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-03-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-info.el (texinfo-mode): Rely on texinfo.el to provide the
 	outline regexp.
 
-Tue Feb 20 09:43:29 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-command-menu-queue, TeX-command-menu-queue-entry):
  	New functions supporting printer queue queries from the menu.  By
  	Ulrik Dickow <dickow@nbi.dk>
 	(TeX-command-menu-entry): Use them.
 
-Tue Feb 13 19:50:18 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+1996-02-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* style/swedish.el: Support for Swedish quotation style by "G\vran
 	Uddeborg" <gvran@uddeborg.pp.se>.
 
-Thu Dec 21 16:49:19 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-12-21  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-default): Added more definitions by Mehmet
 	Balcilar <MBALCIL@econ.wayne.edu>.
 
-Mon Dec 18 18:58:22 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-12-18  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Removed old version.
 	(LaTeX-math-menu): Redefined the math mode menu.
 
-Thu Dec 14 19:51:15 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-12-14  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-menu): New variable.
 	(LaTeX-mode-menu): Use it.  Suggested by Peter S Galbraith
 	<rhogee@mixing.qc.dfo.ca>.
 
-Mon Nov 13 23:49:16 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-11-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (VirTeX-common-initialization): Set `comment-multi-line'
 	to nil.
 
-Fri Oct 13 14:16:36 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-10-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* PROBLEMS: Some easymenu explanations.
 
@@ -622,12 +655,12 @@ Fri Oct 13 14:16:36 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
 	(LaTeX-close-environment): Work better when called on an empty
 	line.  Fixed by David Aspinall <da@dcs.ed.ac.uk>.
 
-Thu Oct 12 15:45:00 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+1995-10-12  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el ('LaTeX-math-mode): Autoload from latex.el instead of
 	ltx-math.el.  Reported by Richard Brankin <richard@num-alg-grp.co.uk>.
 
-Tue Feb 14 20:36:00 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-02-14  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Should now format \\
 	correctly.  Patch by michal@ellpspace.math.ualberta.ca (Michal
@@ -636,7 +669,7 @@ Tue Feb 14 20:36:00 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(LaTeX-fill-region-as-paragraph): Do not fill paragraphs inside
 	special environments. 
 
-Sun Feb 12 15:40:15 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-02-12  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-byte-compile): Make it default to nil.  Suggested by
 	michal@ellpspace.math.ualberta.ca (Michal Jaegermann).
@@ -647,7 +680,7 @@ Sun Feb 12 15:40:15 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(TeX-LaTeX-sentinel): Don't suggest BibTeX if there is no
 	bibliographies. Suggested by Piet van Oostrum <piet@cs.ruu.nl>.
 
-Sat Feb 11 21:44:19 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-02-11  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-run-format): Protect against being run from a
 	different buffer.  Patch by Michael Kifer
@@ -658,23 +691,23 @@ Sat Feb 11 21:44:19 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	Kastrup). 
 	* doc/math-ref.tex: Documented it.
 
-Thu Feb  2 11:24:46 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-02-02  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-home-buffer): Added interactive, reported by
 	edavid@lami.univ-evry.fr. 
 
-Wed Feb  1 11:12:35 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-02-01  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* hilit-LaTeX.el: Upgraded to 1.06.
 
 	* Makefile (CONTRIB, EXTRAFILES): Moved tex-jp.el to CONTRIB.
 
-Fri Jan 27 21:56:32 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-27  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-paragraph-commands): Incorrectly placed
 	parenthesis.  Reported by mic@cs.ucsd.edu (Michelangelo Grigni). 
 
-Thu Jan 26 13:39:56 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-26  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-fill-region): Use marker to mark end of region
 	instead of integer, as the formatting may change the size of the
@@ -687,7 +720,7 @@ Thu Jan 26 13:39:56 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(bibtex-mode-hook): Don't use add-hook yet.  Reported by
 	koba@flab.fujitsu.co.jp (Kobayashi Shinji).
 
-Wed Jan 25 14:59:57 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-25  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (change-major-mode-hook): Also clear
 	`LaTeX-environment-list'. 
@@ -705,12 +738,12 @@ Wed Jan 25 14:59:57 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	* tex-buf.el (TeX-current-pages): Removed extra parentheses.
 	Reported by mic@cs.ucsd.edu (Michelangelo Grigni).
 
-Tue Jan 24 23:37:35 1995  Per Abrahamsen  (abraham@iesd.auc.dk)
+1995-01-24  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex.el (change-major-mode-hook): Added workaround for error in
 	XEmacs 19.11's `kill-all-local-variables'.
 
-Mon Jan 23 16:03:35 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-23  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-common-initialization): Removed unnecessary
 	regexp quotes of `TeX-esc'.
@@ -721,18 +754,18 @@ Mon Jan 23 16:03:35 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	* Makefile (STYLESRC): Added it.
 	Suggested by vb1890@PLAY.CS.NYU.EDU (Victor Boyko). 
 
-Sun Jan 22 14:18:12 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-22  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el, ltx-math.el, Makefile: Integrated `ltx-math.el' in
 	`latex.el'. 
 	* tex-site.el: Removed autoload for `LaTeX-math-mode'.
 
-Thu Jan 19 12:31:45 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-19  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (latex-mode): Epoch fix by Martin Sjolin
 	<marsj@ida.liu.se>. 
 
-Tue Jan 17 15:12:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-17  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* bib-cite.el: New file contributed by Peter S. Galbraith
 	<rhogee@bathybius.meteo.mcgill.ca>.
@@ -752,7 +785,7 @@ Tue Jan 17 15:12:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	"\\\\par" from `paragraph-separate'.  Bug reported by
 	nijhof@th.rug.nl (Jeroen Nijhof). 
 
-Wed Jan 11 11:43:01 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-11  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-command-region): Comment fix.  Patch by
 	wlang@rs6000.mri.akh-wien.ac.at (Willi Langenberger). 
@@ -769,7 +802,7 @@ Wed Jan 11 11:43:01 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	* style/amsbook.el: New file.  Problem reported by Denby Wong
 	<3dw16@qlink.queensu.ca>.
 
-Wed Jan  4 02:34:11 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-04  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-TeX-sentinel-check): New function.  Updates
 	`TeX-current-page' with regexp by dodd@roebling.poly.edu (Lawrence
@@ -778,13 +811,13 @@ Wed Jan  4 02:34:11 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(TeX-LaTeX-sentinel, TeX-TeX-sentinel): Use it.
 y	(TeX-format-filter): Removed unnecessary check before assignment.
 
-Tue Jan  3 03:38:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+1995-01-03  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Write number of pages even
 	when labels or citations are missing.  Patch by
 	dodd@roebling.poly.edu (Lawrence R. Dodd).
 
-Wed Dec  7 11:47:56 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-12-07  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-directory-absolute-p): New function.  Should work on
 	both Unix and MS DOS.  Problem reported by schiotz@ltf.dth.dk
@@ -792,19 +825,19 @@ Wed Dec  7 11:47:56 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(TeX-parse-path): Use it.
 	(TeX-auto-generate): Use it.
 
-Mon Dec  5 12:11:12 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-12-05  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (BibTeX-auto-store): Set TeX-auto-parse-length to
 	999999 locally.  Problem reported by Christoph Wedler
 	<wedler@fmi.uni-passau.de>. 
 
-Fri Dec  2 08:20:10 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-12-02  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Check whether the ".bbl" file
 	need to be udpated before setting TeX-command-next to "BibTeX".
 	(TeX-command-query): Remove previous change.
 
-Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-28  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-209-to-2e): New function by
 	Graham Gough <graham@cs.man.ac.uk>. 
@@ -823,7 +856,7 @@ Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	Take into account that \end and \right at the beginning of the
 	line has immediate effect.
 
-Sun Nov 27 21:08:28 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-27  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (TeX-global-input-files): New variable.  Idea and
 	sample code by Christophe Mignot <Christophe.Mignot@loria.fr>.
@@ -856,7 +889,7 @@ Sun Nov 27 21:08:28 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	<thiemann@provence.informatik.uni-tuebingen.de>.
 	
 
-Tue Nov 22 14:21:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-22  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* MSDOS: Added.  Contributed by schiotz@ltf.dth.dk (Jakob
 	Schiotz). 
@@ -867,28 +900,28 @@ Tue Nov 22 14:21:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	`words-include-escapes' a local variable before setting it.
 	Reported by Bo Nygaard Bai <bai@iesd.auc.dk>.
 
-Tue Nov 15 11:12:38 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-15  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-auto-store): Change to functions that prevent the
 	auto file buffer from entering emacs-lisp-mode.
 	(TeX-auto-insert): Don't rely on emacs-lisp-mode for indentation.
 	Suggested by Stefan Schöf (schoef@informatik.uni-oldenburg.de).
 
-Fri Nov 11 16:37:54 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-11  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-macro-global): Change to `standard' path.
 
-Wed Nov  9 22:35:21 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-09  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-buf.el (TeX-command-query): Suggest TeX-command-default
 	again if bbl file is newer than dvi file.
 
-Mon Nov  7 19:16:07 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-11-07  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-submit-bug-report): Indicate LaTeX-version.
 	Suggested by schiotz@ltf.dth.dk (Jakob Schiotz).
 
-Wed Oct 26 15:37:53 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-26  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* Makefile (dist): Automatically update AUC-TeX-version and
 	AUC-TeX-date in tex.el
@@ -902,7 +935,7 @@ Wed Oct 26 15:37:53 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex-19.el, tex-18.el, tex-lcd.el: Files removed.
 
-Tue Oct 25 13:05:36 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-25  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* doc/auc-tex.texi (Projects): Removed an implemented item.
 
@@ -930,7 +963,7 @@ Tue Oct 25 13:05:36 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(TeXinfo-mode-menu): Use `toggle' for bad boxes.
 	(texinfo-mode): Enable TeXinfo-command-menu.
 
-Mon Oct 24 22:49:51 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-24  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* Makefile (AUCSRC): Removed auc-menu.el from AUC TeX distribution.
 	(MINMAPSRC): Added easymenu.el temporarily to min-map distribution.
@@ -946,7 +979,7 @@ Mon Oct 24 22:49:51 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	(easy-menu-remove): Make is a function instead of a macro.
 	(easy-menu-add): Ditto.
 
-Fri Oct 21 14:46:16 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-21  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* doc/auc-tex.texi (Completion): Less confusing BibTeX advice, I hope.
 
@@ -967,17 +1000,17 @@ Fri Oct 21 14:46:16 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	suggested by thiemann@informatik.uni-tuebingen.de (Peter
 	Thiemann). 
 
-Thu Oct 20 22:58:59 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-20  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (TeX-auto-list-information): Spelling error.
 
-Tue Oct 18 13:24:26 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-18  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-common-initialization): Make "LaTeX2e" the
 	default command if you have set `LaTeX-version' to "2" and is
 	using "\documentclass".
 
-Thu Oct  6 14:38:52 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-10-06  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-paragraph-commands): End each word with a "\\b"
 	to avoid accidentally matching longer macros.
@@ -995,16 +1028,16 @@ Thu Oct  6 14:38:52 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	* tex-buf.el (TeX-format-filter): Add `save-match-data'.  Patch by
 	David Aspinall <da@dcs.edinburgh.ac.uk>. 
 
-Wed Sep 14 10:53:15 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-09-14  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* cpp.el: Use RMS's version.
 
-Tue Sep 13 10:59:07 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+1994-09-13  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* doc/history.texi, doc/auc-tex.texi: Fixes from Chris Fearnley
 	<@vm.uni-c.dk:FEARNLCJ@DUVM>. 
 
-Fri Sep  9 13:15:33 1994  Per Abrahamsen  <abraham@research.att.com>
+1994-09-09  Per Abrahamsen  <abraham@research.att.com>
 
 	* latex.el (LaTeX-insert-environment): Don't fill environments
 	listed in `LaTeX-indent-environment-list'.  Suggestion by Graham
@@ -1013,12 +1046,12 @@ Fri Sep  9 13:15:33 1994  Per Abrahamsen  <abraham@research.att.com>
 	* tex.el (LaTeX-command-style): Made latex2e first in the list.
 	Suggested by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>. 
 
-Mon Sep  5 05:14:31 1994  Per Abrahamsen  <abraham@research.att.com>
+1994-09-05  Per Abrahamsen  <abraham@research.att.com>
 
 	* tex.el (TeX-file-extensions): Added LaTeX2 `cls' extension after
 	query by jmv@di.uminho.pt (Jose Manuel Valenca).
 
-Tue Aug 30 00:05:28 1994  Per Abrahamsen  <abraham@research.att.com>
+1994-08-30  Per Abrahamsen  <abraham@research.att.com>
 
 	* tex-jp.el: New version from koba@flab.fujitsu.co.jp (Kobayashi
 	Shinji).
@@ -1032,12 +1065,12 @@ Tue Aug 30 00:05:28 1994  Per Abrahamsen  <abraham@research.att.com>
 	(TeX-region-create): Only save file if the new content is
 	different than the original content.
 
-Mon Aug 29 13:41:59 1994  Per Abrahamsen  (abraham@research.att.com)
+1994-08-29  Per Abrahamsen  (abraham@research.att.com)
 
 	* tex-buf.el (TeX-warning): Use offset for line end.  Fixed by 
 	ddw2@sunbim.be (Dominique de Waleffe).
 
-Fri Aug 26 18:17:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-26  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/auc-tex.texi (Projects): Removed preceding item from
 	wishlist. 
@@ -1051,27 +1084,27 @@ Fri Aug 26 18:17:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex.el (TeX-function-p): Spelling error in doc.
 
-Tue Aug 23 11:00:35 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-23  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/intro.texi (Contacts): Some reformulations.
 
-Sun Aug 21 18:47:23 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-21  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex-jp.el (TeX-insert-punctuation): Japanese version from
 	koba@flab.fujitsu.co.jp (Kobayashi Shinji).
 
-Fri Aug 19 14:59:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-19  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/install.texi: The `site-lisp' directory is also available in
 	Lucide Emacs 19.10.  Reported by Tim Geisler
 	<geisler@pms.informatik.uni-muenchen.de>.
 
-Thu Aug 18 06:56:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-18  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (TeX-arg-cite): Prompt for multiple keys.  Suggested by
 	Masahiro Kitagawa <kitagawa@ee.es.osaka-u.ac.jp>.
 
-Wed Aug 17 14:00:16 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-17  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* style/german.el ("german"): Use `TeX-quote-after-quote'.
 	Suggested by te@informatik.uni-hannover.de (Thomas Esser).
@@ -1080,7 +1113,7 @@ Wed Aug 17 14:00:16 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	multiple arguments to `\cite', reported by Masahiro Kitagawa
 	<kitagawa@ee.es.osaka-u.ac.jp>.
 
-Wed Aug 17 01:24:55 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-17  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-env-figure): Put caption inside center
 	environment.  Suggested by Martin Wunderli <wunderli@inf.ethz.ch>. 
@@ -1092,18 +1125,18 @@ Wed Aug 17 01:24:55 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	a file name.  Reported finger@brachio.Informatik.Uni-Dortmund.DE
 	(Bernd Finger).
 
-Tue Aug 16 12:22:04 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-16  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-common-initialization): `eqnarray*' should not
 	have a label.  Reported by dodd@roebling.poly.edu (Lawrence R.
 	Dodd). 
 
-Thu Aug 11 16:00:18 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-11  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex-buf.el (TeX-background-filter): Always show background
 	output.
 
-Wed Aug 10 19:14:42 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-10  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* Makefile (MINMAPSRC): Added `all.el'.
 
@@ -1113,17 +1146,17 @@ Wed Aug 10 19:14:42 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	TeX-current-page is nil.  Reported by Michail Rozman
 	<roz@physik.uni-ulm.de>. 
 
-Tue Aug  9 01:26:58 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-09  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* auc-menu.el (easy-menu-add): Undid previous change.
 	(top level `cond'): Use Emacs 18 code if `window-system' is nil.
 	Patch by Patrice Belleville <patrice@cs.sfu.ca>.
 
-Mon Aug  8 21:40:01 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-08  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex.el (TeX-electric-macro): No electricity after `.' or `\'.
 
-Sat Aug  6 13:53:01 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-06  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-paragraph-commands): New variable.
 	(LaTeX-common-initialization): Use it.  Suggested by
@@ -1133,7 +1166,7 @@ Sat Aug  6 13:53:01 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	and that we are running under X before calling it.  Reported by
 	Adrian F. Clark <alien@essex.ac.uk>
 
-Thu Aug  4 19:14:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-04  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex-jp.el (LaTeX-fill-region-as-paragraph): Patch for Emacs 19
 	regexps by koba@flab.fujitsu.co.jp (Kobayashi Shinji) reported by
@@ -1142,7 +1175,7 @@ Thu Aug  4 19:14:53 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 	* doc/auc-tex.texi (European): Mention `iso-cvt.el' as suggested
 	by mike@vlsivie.tuwien.ac.at (Michael Gschwind).
 
-Wed Aug  3 15:36:02 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+1994-08-03  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/history.texi: New file.
 

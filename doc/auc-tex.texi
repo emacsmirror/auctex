@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.117 1997-06-27 17:17:08 abraham Exp $
+@c $Id: auc-tex.texi,v 1.118 1998-02-20 13:57:19 abraham Exp $
 
 @finalout
 @titlepage
@@ -84,7 +84,7 @@ of alpha releases, write to @samp{auc-tex-request@@sunsite.auc.dk} to join
 it.  Send contributions to @samp{auc-tex@@sunsite.auc.dk}.
 
 Bug reports, suggestions for new features, and pleas for help should go
-to either @samp{auc-tex_mgr@@iesd.auc.dk} (the AUC @TeX{} managers), or
+to either @samp{auc-tex_mgr@@sunsite.auc.dk} (the AUC @TeX{} managers), or
 to @samp{auc-tex@@sunsite.auc.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
 TeX-submit-bug-report} to report bugs if possible.@refill
@@ -1570,7 +1570,7 @@ Supports lots of different 7-bit and 8-bit character sets for GNU Emacs
 19.  Mostly useful if you have seldomly used character sets, or need to
 use different character set for keyboard, buffer, and display.  An
 overkill if you just need ISO 8859 Latin 1.  Currently in alpha test,
-but available by ftp from the host @t{ftp.iesd.auc.dk} in
+but available by ftp from the host @t{sunsite.auc.dk} in
 @file{/packages/auctex/}.
 
 To get dead keys for @TeX{}, install remap and insert the following in

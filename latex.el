@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8i
+;; Version: 9.8l
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1273,7 +1273,7 @@ If the flag is set, only complete with local files."
 		  (completing-read
 		   (TeX-argument-prompt optionel prompt "File")
 		   (append (mapcar 'list
-				   (TeX-search-files '(".")
+				   (TeX-search-files '("./")
 						     TeX-file-extensions
 						     t t))
 			   (if local
@@ -1306,7 +1306,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
   (TeX-argument-insert
    (completing-read (TeX-argument-prompt optional prompt "BibTeX style")
 		    (append (mapcar 'list
-				    (TeX-search-files '(".")
+				    (TeX-search-files '("./")
 						      BibTeX-style-extensions
 						      t t))
 			    BibTeX-global-style-files))
@@ -1329,7 +1329,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
 		 "," t
 		 (TeX-argument-prompt optional prompt "BibTeX files")
 		 (append (mapcar 'list
-				 (TeX-search-files '(".")
+				 (TeX-search-files '("./")
 						   BibTeX-file-extensions
 						   t t))
 			 BibTeX-global-files))))
@@ -1979,9 +1979,10 @@ the name of the submenu where the command should be added.
 
 See also `LaTeX-math-menu'."
   :group 'LaTeX-math
-  :type '(repeat (group (choice (const :tag "none")
+  :type '(repeat (group (choice :tag "Key"
+				(const :tag "none")
 				(character :format "%v\n"))
-			(string :tag "Symbol")
+			(string :tag "Value")
 			(choice :tag "Menu"
 				(string :tag "Name" :format "%v")
 				(repeat :tag "Path"

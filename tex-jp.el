@@ -1,4 +1,8 @@
 ;;; tex-jp.el - Support for Japanese TeX.
+;;
+;; Support for Japanese TeX by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
+;; based on many patches developed by Japanese NetNews community.
+;; Japanese message translation by MATUI Takao <mat@nuis.ac.jp>.
 
 ;;; Code:
 
