@@ -5,7 +5,7 @@
 
 ;; Author: Thomas Baumann <thomas.baumann@ch.tum.de>
 ;; Created: 2003-12-20
-;; Version: $Id: beamer.el,v 1.4 2005-03-03 09:05:38 angeli Exp $
+;; Version: $Id: beamer.el,v 1.5 2005-03-04 18:04:45 rsteib Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -78,8 +78,9 @@
     '("titlepage")
     '("titlegraphic" 1)
     '("uncover" TeX-arg-beamer-overlay-spec 1)
+    '("usetheme" LaTeX-arg-beamer-theme)
     '("visible" TeX-arg-beamer-overlay-spec 1))
-    
+
    (LaTeX-add-environments
     '("actionenv")
     '("alertblock" 1)
@@ -160,3 +161,49 @@ unconditionally."
     (unless (zerop (length options))
       (insert "[" options "]"))
     (indent-according-to-mode)))
+
+(defun LaTeX-beamer-search-themes (&optional regexp extensions length)
+  "Search for beamer themes matching REGEXP with EXTENSIONS.
+The function removes the first LENGTH characters and the
+extension of the file and returns a list of strings.  LENGTH may
+also be a string.  Then the length of the string is used."
+  (let* ((match (or regexp "^beamertheme[A-Z]"))
+	 (exts  (or extensions '("tex" "sty")))
+	 (chars (cond ((integerp length)
+		       length)
+		      ((stringp length)
+		       (string-width length))
+		      ;; Try some DWIM magic...
+		      ((and (not length)
+			    (string-match "beamer[A-Za-z0-9]*theme" match))
+		       (- (match-end 0) (match-beginning 0)))
+		      (t (error "Invalid length: `%s'" length)))))
+    ;; (message "match=`%s' chars=`%s'" match chars)
+    (TeX-delete-duplicate-strings
+     (delete nil
+	     (mapcar
+	      (lambda (file)
+		(let ((case-fold-search nil))
+		  (and (numberp (string-match match file))
+		       (substring file chars))))
+	      (TeX-search-files nil exts t t))))))
+
+(defun LaTeX-arg-beamer-theme (&rest ignore)
+  "Prompt for beamer theme with completion."
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt nil nil "Theme")
+    (mapcar 'list
+	    (cond ((eq LaTeX-beamer-themes 'local)
+		   (set (make-local-variable 'LaTeX-beamer-themes)
+			(LaTeX-beamer-search-themes)))
+		  ((functionp LaTeX-beamer-themes)
+		   (funcall LaTeX-beamer-themes))
+		  ((listp LaTeX-beamer-themes)
+		   LaTeX-beamer-themes)
+		  (t (error
+		      "`LaTeX-beamer-themes' should be a list: `%s'"
+		      LaTeX-beamer-themes))))
+    nil nil nil)
+   t))
+

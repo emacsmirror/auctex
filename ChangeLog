@@ -1,8 +1,16 @@
-2005-03-05  Ikumi Keita <ikumi@revery.net>  (tiny change?)
+2005-03-04  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/beamer.el (LaTeX-beamer-search-themes)
+	(LaTeX-arg-beamer-theme): New functions adding completion for
+	\usetheme.
+
+	* latex.el (LaTeX-beamer-themes): New variable.
+
+2005-03-05  Ikumi Keita <ikumi@revery.net>  (tiny change)
 
 	* tex-jp.el (japanese-TeX-command-list): Doc fix.
 
-2005-03-03  Ikumi Keita <ikumi@revery.net>  (tiny change?)
+2005-03-03  Ikumi Keita <ikumi@revery.net>
 
 	* tex.el (TeX-macro-global-internal): New function.
 	(TeX-macro-global): Use it.

@@ -4819,6 +4819,54 @@ Inserting the subdirectory in the filename (as
 					 (TeX-master-directory))))
 		 (function :tag "other")))
 
+(defcustom LaTeX-beamer-themes 'local
+  "Presentation themes for the LaTeX beamer package.
+It can be a list of themes or a function.  If it is the symbol
+`local', search only once per buffer."
+  :group 'LaTeX-macro
+  :type
+  '(choice
+    (const :tag "TeX search" LaTeX-beamer-search-themes)
+    (const :tag "Search once per buffer" local)
+    (function :tag "Other function")
+    (list
+     :value
+     ;; Work around (bug in customize?), see
+     ;; <news:v9is48jrj1.fsf@marauder.physik.uni-ulm.de>
+     ("Antibes" "Bergen" "Berkeley" "Berlin" "Boadilla" "Copenhagen"
+      "Darmstadt" "Dresden" "Frankfurt" "Goettingen" "Hannover"
+      "Ilmenau" "JuanLesPins" "Luebeck" "Madrid" "Malmoe" "Marburg"
+      "Montpellier" "PaloAlto" "Pittsburgh" "Rochester" "Singapore"
+      "Szeged" "Warsaw")
+     (set :inline t
+	  (const "Antibes")
+	  (const "Bergen")
+	  (const "Berkeley")
+	  (const "Berlin")
+	  (const "Boadilla")
+	  (const "Copenhagen")
+	  (const "Darmstadt")
+	  (const "Dresden")
+	  (const "Frankfurt")
+	  (const "Goettingen")
+	  (const "Hannover")
+	  (const "Ilmenau")
+	  (const "JuanLesPins")
+	  (const "Luebeck")
+	  (const "Madrid")
+	  (const "Malmoe")
+	  (const "Marburg")
+	  (const "Montpellier")
+	  (const "PaloAlto")
+	  (const "Pittsburgh")
+	  (const "Rochester")
+	  (const "Singapore")
+	  (const "Szeged")
+	  (const "Warsaw"))
+     (repeat :inline t
+	     :tag "Other"
+	     (string)))))
+
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
   (TeX-update-style)
