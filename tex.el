@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.384 $"))
+	(rev "$Revision: 5.385 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-13 20:17:49 $"))
+    (let ((date "$Date: 2004-06-14 15:01:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2824,8 +2824,10 @@ be bound to `TeX-electric-macro'."
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ])
 	    [ "Pin region" TeX-pin-region
-	      :active (or (and (boundp 'TeX-command-region-begin)
-			       (markerp TeX-command-region-begin))
+	      :active (or (if prefix-arg
+			      (<= (prefix-numeric-value prefix-arg) 0)
+			    (and (boundp 'TeX-command-region-begin)
+				 (markerp TeX-command-region-begin)))
 			  (TeX-mark-active))
 	      ;; :visible (eq TeX-command-current 'TeX-command-region)
 	      :style toggle
