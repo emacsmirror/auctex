@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.53 1993-07-14 19:39:29 amanda Exp $
+# $Id: Makefile,v 5.54 1993-07-16 04:33:57 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -25,8 +25,8 @@ infodir = $(prefix)/info
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located.
-#elispdir=/home/dist/lib/emacs/lisp
-elispdir=$(prefix)/lib/emacs/19.16/lisp
+elispdir=/home/dist/lib/emacs/lisp
+#elispdir=$(prefix)/lib/emacs/19.16/lisp
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -35,7 +35,8 @@ elispdir=$(prefix)/lib/emacs/19.16/lisp
 # TeX-lisp-directory in tex-site.el
 #
 #aucdir=/home/pd/share/emacs/auctex7.2
-aucdir=$(prefix)/lib/emacs/site-lisp/auctex
+#aucdir=$(prefix)/lib/emacs/site-lisp/auctex
+aucdir=/tmp
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -48,16 +49,16 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-EMACS=emacs -batch -q
+EMACS=/home/dist/bin/emacs -batch -q lpath.el -f eval-current-buffer
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC= $(EMACS) lpath.el -f eval-current-buffer -f batch-byte-compile
+ELC= $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
 AUTO= $(EMACS) -l tex-auto -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
-AUTOC= $(EMACS) -f batch-byte-compile
+AUTOC= $(ELC)
 
 # Using TeX in batch mode.
 TEX=tex
@@ -115,7 +116,7 @@ DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
 
 # dbg-jp.el can not be byte compiled with standard emacs
 OTHERFILES = COPYING README README_MINOR PROBLEMS Makefile dbg-jp.el \
-	 $(DOCFILES) $(LACHECKFILES)
+	 $(DOCFILES) $(LACHECKFILES) lpath.el
 
 
 first:
@@ -203,10 +204,11 @@ DocInstall: Doc
 LispInstall:
 	@echo "**********************************************************"
 	@echo "** Byte compiling AUC TeX.  This may take a while..."
+	@echo "** "
+	@echo "** Expect some harmless warnings about free variables and "
+	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
-	echo '(setq load-path (cons "." load-path) TeX-lisp-directory "<none>")' > lpath.el
 	$(ELC) $(AUCSRC) $(STYLESRC) $(FORMATSRC)
-	rm -f lpath.el
 	if [ "." != $(aucdir) ] ; \
 	then \
 	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; \

@@ -5,15 +5,16 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.40 1993-07-14 19:17:00 amanda Exp $
+@c $Id: auc-tex.texi,v 1.41 1993-07-16 04:34:36 amanda Exp $
 
+@finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle June 1993, for AUC @TeX{} Version 7.2
+@subtitle June 1993, for AUC @TeX{} Version 7.3
   
 @author by Kresten Krab Thorup
-@author updated for 7.2 by Per Abrahamsen
+@author updated for 7.3 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -51,7 +52,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 7.2.
+This file documents AUC @TeX{} version 7.3.
 
 The keybindings has changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -151,6 +152,7 @@ Writing Your own Style Support
 
 The History of AUC @TeX{}
 
+* Version 7.3::                 Version 7.3
 * Version 7.2::                 Version 7.2
 * Version 7.1::                 Version 7.1
 * Version 7.0::                 News in 7.0
@@ -303,28 +305,23 @@ press @kbd{"} twice.
 
 @deffn Command TeX-insert-quote @var{count}
 @kindex "
-(@kbd{"}) Insert @samp{``}, @samp{''} or @samp{"} according to preceding
-character.  With prefix argument, insert @var{count} @samp{"}
-characters.
+(@kbd{"}) Insert the appropriate quote marks for TeX.  
+
+Inserts the value of @code{tex-open-quote} (normally @samp{``}) or
+@code{tex-close-quote} (normally @samp{''}) depending on the context.
+With prefix argument, always inserts @samp{"} characters.@refill
 @end deffn
 
-@cindex @file{german.sty}
-@cindex German users
-Users of @file{german.sty}, or other people who uses the literal
-@samp{"} often, will want to disable this feature.  They can do that by
-inserting the following hook in their @file{.emacs} file.
+@defvar TeX-open-quote
+String inserted by typing @kbd{"} to open a quotation.
+@end defvar
 
-@lisp
-(setq TeX-mode-hook
-      (function (lambda () (local-set-key "\"" 'self-insert-command))))
-@end lisp
+@defvar TeX-close-quote
+String inserted by typing @kbd{"} to open a quotation.
+@end defvar
 
-The style hook file for @file{german.sty} will do this automatically, so
-if you use @samp{german} as a style option for @samp{\documentstyle}
-@kbd{"} will insert a literal @samp{"}, but only after the style hooks
-have been applied.   You can force the style hooks to be applied by
-pressing @kbd{C-c C-n}.
-@kindex C-c C-n
+If you include the style file @file{german} @code{TeX-open-quote} and
+@code{TeX-close-quote} will both be set to @samp{"}.
 
 To avoid unbalanced braces, it is useful to insert them pairwise.  You
 can do this by typing @kbd{C-c @{}.
@@ -2612,6 +2609,7 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
+* Version 7.3::                 Newest news in 7.3
 * Version 7.2::                 Newer news in 7.2
 * Version 7.1::                 New news in 7.1
 * Version 7.0::                 News in 7.0
@@ -2619,6 +2617,49 @@ this version, and for the authors, who get nostalgic at times.
 * Version 6.0::                 Older news in 6.0
 * Ancient History::             Ancient History
 @end menu
+
+@node Version 7.3, Version 7.1, History, History
+@comment  node-name,  next,  previous,  up
+@section News in 7.3
+
+Coordinater: Per Abrahamsen, 1993
+@itemize @bullet
+@item
+More robust installation, especially for Lucid Emacs (I hope).  Many
+people reported problems with this.
+
+@item
+Make `easymenu' work when byte-compiled.  Many people reported this
+bug.
+
+@item
+Minimally updated the @file{README} file from version 6.0 (sigh).
+Thanks to Boris Goldowsky @samp{<boris@@cs.rochester.edu>} for reporting
+this.
+
+@item
+Added @samp{@@finalout} to manual.  Reported by Henrik Drabol
+@samp{<hvd@@ens004.ens.min.dk>}.
+
+@item
+Fixed @kbd{M-q} to work after an @samp{\end@{@dots{}@}}.  It will not
+work at the end of the buffer, but there are usually the local variables
+so it should (hopefully) not matter.  Thanks to Shinji Kobayashi
+@samp{<koba@@flab.fujitsu.co.jp>} again.
+
+@item
+New variables @code{TeX-open-quote} and @code{TeX-close-quote} determine
+what is inserted by @code{TeX-insert-quote}.  The @file{german} style
+file now use those variables instead of changing the keymap.
+
+@item
+Changes to the default settings in @file{tex-site.el}, in particular a
+@sample{Queue} command is added to display the print queue.  Thanks to
+John Interrante @samp{<interran@@uluru.Stanford.EDU>} for code, and
+other members of the @samp{auc-tex@@iesd.auc.dk} mailing list for
+ideas.
+
+@end itemize
 
 @node Version 7.2, Version 7.1, History, History
 @comment  node-name,  next,  previous,  up

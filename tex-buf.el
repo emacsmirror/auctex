@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.39 1993-07-07 00:41:12 amanda Exp $
+;;; $Id: tex-buf.el,v 1.40 1993-07-16 04:34:06 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -272,9 +272,11 @@ in TeX-check-path."
 
  (make-variable-buffer-local 'TeX-command-next)
 
-(defun TeX-printer-query ()
-  "Query the user for a printer name."
-
+(defun TeX-printer-query (&optional command element)
+  "Query the user for a printer name.
+COMMAND is the default command to use if the entry for the printer in
+TeX-printer-list does not itself have it specified in the ELEMENT'th
+entry." 
   (let ((printer (if TeX-printer-list
 		     (let ((completion-ignore-case t))
 		       (completing-read (concat "Printer: (default "
@@ -286,9 +288,9 @@ in TeX-check-path."
       (setq TeX-printer-default printer))
 
     (let ((expansion (let ((entry (assoc printer TeX-printer-list)))
-		       (if (and entry (nth 1 entry))
-			   (nth 1 entry)
-			 TeX-print-command))))
+		       (if (and entry (nth element entry))
+			   (nth element entry)
+			 command))))
       (if (string-match "%p" printer)
 	  (error "Don't use %s in printer names." "%p"))
       (while (string-match "%p" expansion)
