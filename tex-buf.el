@@ -4,26 +4,34 @@
 ;; 
 ;; Copyright (C) 1991 Kresten Krab Thorup (krab@iesd.auc.dk).
 ;; 
+;; This file is part of the AUC TeX package.
 ;; 
-;; 
-;; $Revision: 1.5 $
+;; $Revision: 1.6 $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jan 27 15:48:46 1992
-;; Update Count    : 159
+;; Last Modified On: Mon Jan 27 17:00:44 1992
+;; Update Count    : 163
 ;; 
 ;; HISTORY
+;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
+;;    Changed TeX-default-jobname-prefix to "_". the `+' conflicted
+;;    with xdvi.
+;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
+;;    Added some preview function to take advantage of style option
+;;    knowledge. i.e. yoy may specify how to call the previewer using
+;;    landscape, or a5 style options. This part is easily extensible.
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:04:55 1992 #148)  Kresten Krab Thorup
 ;;    Added Functionality to let `TeX-region' take advantage of the
 ;;    `Master:' option.  It is very simple, but this, I think, is the
-;;    way to do it.
+;;    way to do it.  It may not work too good if you're using
+;;    texheader/textrailer files, however, such will soon be obsolete...
 ;; 23-Jan-1992  (Last Mod: Thu Jan 23 18:23:34 1992 #129)  Kresten Krab Thorup
 ;;    Fixed LaTeX-bibtex as proposed by handl@cs.uni-sb.de
 ;; 17-Dec-1991  (Last Mod: Tue Dec 17 21:59:56 1991 #117)  Kresten Krab Thorup
 ;;    Added %% Master: file-name, and fixed a bug in tex-buf.
 ;; 14-Sep-1991  (Last Mod: Thu Sep  5 20:08:15 1991 #57)  Kresten Krab Thorup
-;;    The setting od TeX-preview-command is moved to tex-site.el The
+;;    The setting of TeX-preview-command is moved to tex-site.el The
 ;;    variable TeX-default-preview-command is removed completely.
 ;; 5-Sep-1991  (Last Mod: Thu Sep  5 20:02:21 1991 #55) George Ferguson
 ;;    Changed TeX-buffer() so that it doesn't use a temporary file, but
@@ -72,13 +80,6 @@
 ;; Customization
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; further variables may be found in `tex-site.el'
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'tex-site)
-
-(defvar TeX-process nil)
-
 ;;;
 (defvar TeX-master-file nil "\
 Master file to run TeX-command on if different from buffer-file-name.")
@@ -100,6 +101,13 @@ TeX-bibtex-command to use on TeX-master-file.")
 TeX-index-command to use on TeX-master-file.")
 (make-variable-buffer-local 'TeX-index-command)
 ;;;
+
+;; further variables may be found in `tex-site.el'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'tex-site)
+
+(defvar TeX-process nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
