@@ -99,7 +99,6 @@
 (defcustom TeX-japanese-process-input-coding-system
   (if (boundp 'default-process-coding-system)
       (cdr default-process-coding-system)
-    (set-default-coding-systems)
     ;; Old XEmacs (ex. 21.1.2)
     'euc-jp)
   "TeX-process' coding system with standard input."
