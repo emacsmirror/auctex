@@ -1,3 +1,7 @@
+2001-11-11  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Release 0.5.8.2
+
 2001-11-11  Alan Shutko  <ats@acm.org>
 
 	* aclocal.m4 (AC_EMACS_CHECK_LIB_WITH_LIB): varient of
@@ -23,8 +27,6 @@
 	account that we previously got only half of requested width.
 	(preview-gs-get-colors): generate only necessary tokens.  Disable
 	stroke adjustment in order to get more even borders.
-
-	* Release 0.5.8.2	
 
 2001-11-10  David Kastrup  <David.Kastrup@t-online.de>
 
