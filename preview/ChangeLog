@@ -1,5 +1,17 @@
 2002-04-03  Jan-Ake Larsson  <jalar@imf.au.dk>
 
+	* doc/preview-latex.texi: documented showlabels
+
+	* doc/install.texi, doc/readme.texi: Slight edits
+
+	* doc/problems.texi: Document x-symbol.patch, slight other edits
+
+	* patches/x-symbol.patch: Initial version
+
+	* preview-latex.spec: Use texmfdir, slight other edits
+
+2002-04-03  Jan-Ake Larsson  <jalar@imf.au.dk>
+
 	* preview-latex.spec: Use texmfdir, slight other edits
 
 2002-04-02  Jan-Ake Larsson  <jalar@imf.au.dk>
