@@ -1,3 +1,13 @@
+2005-03-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-match-simple-command): New function.
+	(font-latex-make-user-keywords): Use it instead of specifying the
+	regexp directly.  Prevents stuff like "\foo\foo\foo\foo" from
+	being fontified like a zebra.
+	(font-latex-match-command-with-arguments): Check for limit when
+	looking at optional and mandatory arguments.  Prevents an infinite
+	loop in XEmacs when typing the "n" of \begin in "\begi\n[foo]".
+
 2005-03-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (AUCELC): Derive from AUCSRC.
