@@ -1,9 +1,9 @@
-%\CheckSum{437}
+%\CheckSum{446}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.19 $
+%  \rcskey \version CVS-$Revision: 1.20 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -12,7 +12,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-10-16 23:15:57 $
+%\rcskey\next $Date: 2001-10-19 09:57:30 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -63,6 +63,7 @@
 %characteristics in your document, and only activating them by calling
 %\LaTeX\ as
 %\begin{quote}
+%\raggedright
 %|latex '\PassOptionsToPackage{active}{preview}| |\input|\marg{filename}|'|
 %\end{quote}
 %\item[|displaymath|] will make all displayed math environments subject to
@@ -142,8 +143,8 @@
 %stop any included |[]| pairs from prematurely ending the optional
 %argument, and to make a single |{}| denoting an optional argument not
 %get stripped away by \TeX's argument parsing.
-%The
-%letters simply mean
+%
+%The letters simply mean
 %\begin{description}
 %\item[|*|] indicates an optional |*| modifier, as in
 %|\includegraphics*|.
@@ -177,7 +178,9 @@
 %|\else| and |\fi|.  
 %\StopEventually{}
 %\section{The Implementation}
-% Here we go:
+%Here we go:  the start is somewhat obtuse since we figure out
+%version number and date from RCS strings.  This should really be done
+%at docstrip time instead.  Takers?
 %    \begin{macrocode}
 %<*style>
 %<*!active>
@@ -186,7 +189,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.19 $
+   \reserved@a\reserved@b CVS-$Revision: 1.20 $
 \else
    \begingroup
       \lccode`-=`.
@@ -195,9 +198,9 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-10-16 23:15:57 $
-\edef\next{%
-  \noexpand\ProvidesPackage{preview}[\next\space preview-LaTeX \reserved@b]}
+\reserved@a\next $Date: 2001-10-19 09:57:30 $
+\edef\next{\noexpand\ProvidesPackage{preview}%
+  [\next\space preview-LaTeX \reserved@b]}
 \next
 %    \end{macrocode}
 %Since many parts here will not be needed as long as the package is
@@ -329,6 +332,10 @@
     \toks@{#2}%
     \edef\pr@cleanup{\the\toks@}%
     \setbox\pr@box\vbox\bgroup
+    \begingroup
+       \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+       \@begindvi
+    \endgroup
     \pr@outerfalse\color@setgroup
     \everypar{}%
     \expandafter\@firstofone
@@ -652,7 +659,9 @@
 %    \begin{macrocode}
 %<*active>
 \renewenvironment{preview}{\begingroup
-   \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}\ignorespaces}%
+   \pr@startbox{\begingroup\aftergroup\pr@endbox}%
+               {\endgroup}%
+   \ignorespaces}%
    {\unskip\endgroup}
 \renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}{\unskip}
 %    \end{macrocode}
