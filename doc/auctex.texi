@@ -754,6 +754,12 @@ prefix argument, the symbol will be surrounded by dollar signs.
 You can use another prefix key (instead of @kbd{`}) by  setting the
 variable @code{LaTeX-math-abbrev-prefix}.
 
+To enable LaTeX-math-mode by default, add the following in your
+@file{.emacs} file:
+@lisp
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+@end lisp
+
 @defopt LaTeX-math-abbrev-prefix
 A string containing the prefix of @code{LaTeX-math-mode} commands;
 This value defaults to @kbd{`}.
