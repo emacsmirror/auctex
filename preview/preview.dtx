@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{624}
+%\CheckSum{623}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.42 $
+%  \rcskey \version CVS-$Revision: 1.43 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-22 20:30:43 $
+%\rcskey\next $Date: 2002-03-23 00:55:19 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.42 $
+   \reserved@a\reserved@b CVS-$Revision: 1.43 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-22 20:30:43 $
+\reserved@a\next $Date: 2002-03-23 00:55:19 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -426,14 +426,11 @@
        \@begindvi
     \endgroup
     \pr@outerfalse\color@setgroup\@arrayparboxrestore
-    \everypar{{\setbox\@tempboxa\lastbox}\everypar{}}%
     \expandafter\@firstofone
   \else
      \expandafter \@gobble
   \fi{#1}}
 %    \end{macrocode}
-% \cmd{\everypar} is cleared here because of a surprising bug where an
-% \cmd{\item} label crept into a preview following it.
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@endbox}
@@ -569,14 +566,17 @@
 %    \end{macrocode}
 %\end{macro}
 %\subsection{Selection options}
-%  The |displaymath| option.
+%  The |displaymath| option.  The |equation| environments in
+%  AMS\LaTeX\ already do too much before our hook gets to interfere,
+%  so we hook earlier.
 %    \begin{macrocode}
 %<*!active>
 \DeclareOption{displaymath}{%
-  \preview@delay{%
-    \everydisplay\expandafter{\expandafter
-    \pr@startbox\expandafter{\expandafter$\expandafter$%
-      \the\everydisplay\aftergroup\pr@endbox}{$$}}}%
+  \preview@delay{\toks@{%
+      \pr@startbox{$$\aftergroup\pr@endbox}{$$}}%
+    \everydisplay\expandafter{\the\expandafter\toks@\the\everydisplay}}%
+  \PreviewEnvironment{equation}%
+  \PreviewEnvironment{equation*}%
 }
 %    \end{macrocode}
 %
@@ -695,7 +695,7 @@
   \the\expandafter\toks@\csname#1\endcsname
   \expandafter\pr@starmacro\csname end#1\endcsname}
 \newcommand*{\pr@env}[2][]{\expandafter\pr@advise@ship
-   \csname #2\endcsname{\aftergroup\pr@endbox}{}}
+   \csname #2\endcsname{\begingroup\aftergroup\pr@endbox}{\endgroup}}
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\PreviewSnarfEnvironment}
