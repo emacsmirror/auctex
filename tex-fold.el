@@ -218,6 +218,7 @@ TYPE specifies the type of item and can be one of the symbols
 					(goto-char item-start)
 					(TeX-find-macro-end)))
 				    (current-buffer) t nil)))
+	      (overlay-put ov 'priority (if (eq type 'env) 2 1))
 	      (TeX-fold-hide-item ov display-string)))))))
 
 (defun TeX-fold-clearout-buffer ()
