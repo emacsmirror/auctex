@@ -1,3 +1,17 @@
+Wed Mar 26 21:14:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7n released.
+
+Wed Mar 26 21:12:53 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-default): Fixed hebrew delimiters.
+	Patch by John Griffith <griffith@sfs.nphil.uni-tuebingen.de>.
+	
+Wed Mar 26 21:09:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-209-to-2e): Use `buffer-substring-no-properties'.
+	Reported by Graham Gough <graham@cs.man.ac.uk>.
+
 Mon Mar 17 13:35:46 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7m released.

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7m
+;; Version: 9.7n
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2075,10 +2075,11 @@ See also `LaTeX-math-menu'.")
     (nil "vec" "Accents")
     (nil "ddot" "Accents")
     (?~ "tilde" "Accents")
-    (nil "ulcorner" ("AMS" "Hebrew"))
-    (nil "urcorner" ("AMS" "Hebrew"))
-    (nil "llcorner" ("AMS" "Hebrew"))
-    (nil "lrcorner" ("AMS" "Hebrew"))
+    (nil "digamma" ("AMS" "Hebrew"))
+    (nil "varkappa" ("AMS" "Hebrew"))
+    (nil "beth" ("AMS" "Hebrew"))
+    (nil "daleth" ("AMS" "Hebrew"))
+    (nil "gimel" ("AMS" "Hebrew"))
     (nil "dashrightarrow" ("AMS" "Arrows"))
     (nil "dashleftarrow" ("AMS" "Arrows"))
     (nil "leftleftarrows" ("AMS" "Arrows"))
@@ -2301,6 +2302,10 @@ See also `LaTeX-math-menu'.")
     (nil "rvert" ("AMS" "Delimiters"))
     (nil "lVert" ("AMS" "Delimiters"))
     (nil "rVert" ("AMS" "Delimiters"))
+    (nil "ulcorner" ("AMS" "Delimiters"))
+    (nil "urcorner" ("AMS" "Delimiters"))
+    (nil "llcorner" ("AMS" "Delimiters"))
+    (nil "lrcorner" ("AMS" "Delimiters"))
     (nil "nobreakdash" ("AMS" "Special"))
     (nil "leftroot" ("AMS" "Special"))
     (nil "uproot" ("AMS" "Special"))
@@ -3034,14 +3039,14 @@ of LaTeX-mode-hook."
 	(search-forward-regexp
 	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
 	 (point-max) t)
-	(setq optstr (buffer-substring (match-beginning 1) (match-end 1))
-	      docstyle (buffer-substring (match-beginning 2)
+	(setq optstr (buffer-substring-no-properties (match-beginning 1) (match-end 1))
+	      docstyle (buffer-substring-no-properties (match-beginning 2)
 	      (match-end 2))
 	      optlist (TeX-split-string "," optstr))
       (if (search-forward-regexp
 	   "\\documentstyle{\\([^}]*\\)}"
 	   (point-max) t)
-	  (setq docstyle (buffer-substring (match-beginning 1)
+	  (setq docstyle (buffer-substring-no-properties (match-beginning 1)
 	  (match-end 1)))
 	(error "No documentstyle defined")))
     (beginning-of-line 1)
