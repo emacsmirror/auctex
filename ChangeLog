@@ -1,3 +1,16 @@
+2004-08-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* aclocal.m4 (VALID_BUILD_DIR): New function.
+
+	* configure.in: Use it.
+	Change AUCTeX version to 11.51.
+
+	* doc/tex-ref.tex: Change AUCTeX version to 11.51.
+
+	* doc/auctex.texi: Change AUCTeX version to 11.51.
+
+	* auctex.spec (Version): Change to 11.51.
+
 2004-08-15  David Kastrup  <dak@gnu.org>
 
 	* tex-info.el: Change Copyright notice to FSF
