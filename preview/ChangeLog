@@ -1,3 +1,11 @@
+2002-04-11  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-click-reroute): New routine to
+	discriminate between clicks on glyphs or else.
+	(preview-make-reroute): Generate a reroute map from original
+	glyph clickable keymap.
+	(preview-toggle): use the rerouter.
+
 2002-04-10  Jan-Ake Larsson  <jalar@localhost.localdomain>
 
 	* doc/preview-latex.texi: Added hint on getting custom
