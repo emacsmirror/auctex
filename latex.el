@@ -899,36 +899,45 @@ job to this function."
 	  (LaTeX-newline)))
 
     (if (member environment LaTeX-top-caption-list)
+	;; top caption
 	(progn
-	  (if (zerop (length caption))
-	      ()
-	    ;; NOTE: Caption is _inside_ center because that looks best typeset.
-	    (indent-according-to-mode)
+	  ;; do nothing if user skips caption
+	  (unless (zerop (length caption))
 	    (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
-	    (indent-according-to-mode))
-
-	  (LaTeX-newline) (indent-according-to-mode)
-	  (LaTeX-label environment)
-	  (indent-according-to-mode)
-	  (end-of-line 0)
-	  (LaTeX-newline) (indent-according-to-mode))
-      ;; not top caption but bottom caption (default).
-      (LaTeX-newline) (indent-according-to-mode)
-      (LaTeX-label environment)
-      (end-of-line 0)
-      (indent-according-to-mode)
-
-      (if (zerop (length caption))
-	  ()
-	;; NOTE: Caption is _inside_ center because that looks best typeset.
+	    (LaTeX-newline)
+	    (indent-according-to-mode)
+	    ;; ask for a label and insert a new line only if a label
+	    ;; is actually inserted
+	    (when (LaTeX-label environment)
+	      (LaTeX-newline)
+	      (indent-according-to-mode))))
+      ;; bottom caption (default) -- do nothing if user skips caption
+      (unless (zerop (length caption))
 	(LaTeX-newline)
 	(indent-according-to-mode)
 	(insert TeX-esc "caption" TeX-grop caption TeX-grcl)
-	(end-of-line 0)
-	(indent-according-to-mode)))
+	(LaTeX-newline)
+	(indent-according-to-mode)
+	;; ask for a label -- if user skips label, remove the last new
+	;; line again
+	(unless (LaTeX-label environment)
+	  (delete-blank-lines)
+	  (end-of-line 0))
+	;; if there is a caption or a label, move point upwards again
+	;; so that it is placed above the caption or the label (or
+	;; both) -- search the current line (even long captions are
+	;; inserted on a single line, even if auto-fill is turned on,
+	;; so it is enough to search the current line) for \label or
+	;; \caption and go one line upwards if any of them is found
+	(while (re-search-backward
+		(concat "^\\s-*" (regexp-quote TeX-esc)
+			"\\(label\\|caption\\)")
+		(line-beginning-position) t)
+	  (end-of-line 0)
+	  (indent-according-to-mode))))
 
-  (if (member environment '("table" "table*"))
-      (LaTeX-env-array "tabular"))))
+    (if (member environment '("table" "table*"))
+	(LaTeX-env-array "tabular"))))
 
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.
@@ -1441,6 +1450,7 @@ ELSE as an argument list."
 (defcustom LaTeX-style-list '(("amsart")
 			      ("amsbook")
 			      ("article")
+			      ("beamer")
 			      ("book")
 			      ("dinbrief")
 			      ("foils")
