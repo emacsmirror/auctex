@@ -1,4 +1,30 @@
-2004-01-07  Jan-Åke Larsson  <jalar@mai.liu.se>
+2004-01-07  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/color.c: 
+	* dvipng/draw.c: 
+	* dvipng/dvi.c: 
+	* dvipng/dvipng.c: 
+	* dvipng/dvipng.h:
+	* dvipng/enc.c:
+	* dvipng/font.c:
+	* dvipng/fontmap.c:
+	* dvipng/ft.c: 
+	* dvipng/pk.c: 
+	* dvipng/set.c: 
+	* dvipng/special.c: 
+	* dvipng/tfm.c: 
+	* dvipng/vf.c: Speedup DEBUG
+
+	* dvipng/pk.c: Fix subpixel offsets
+
+	* dvipng/dvipng.c: 
+	* dvipng/dvipng.h:
+	* dvipng/font.c:
+	* dvipng/misc.c: 
+	* dvipng/set.c: 
+	* dvipng/special.c: Fix flags
+
+	* dvipng/draw.c: Fix bbox
 
 	* dvipng/dvipng.h: Adjust for freetype >= 2.1.6
 
@@ -33,6 +59,12 @@
 	(preview-context-menu): Implement context menu and functionality.
 	(mail-header-encode-parameter): Add an autoload cookie for this
 	function taken from `mail-parse.el'.
+
+2003-12-15  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/tfm.c:
+	* dvipng/fontmap.c: 
+	* dvipng/font.c: Fix freeeeeeeeeing
 
 2003-12-08  Jan-Ake Larsson  <jalar@mai.liu.se>
 
