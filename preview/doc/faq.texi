@@ -76,11 +76,12 @@ Emacs.
 It is known to work under the X Window System for Linux and for several
 flavors of Unix: we have reports for HP and Solaris.
 
-It works for Win9x under the cygwin version of XEmacs; however it is
-very slow! According to recent reports, it should also work for the
-native port, starting with preview-latex 0.7.3.  It currently does not
-work for the GNU Emacs port to Win9x because of a lack of image support
-in currently released GNU Emacs versions under Win9x.
+Under Windows, you should try the most recent versions of
+@previewlatex{} since a lot of typical Windows problems have been ironed
+out lately.  Under XEmacs, both Cygwin and native ports should work.
+Image support for GNU Emacs under Windows is expected with @w{Emacs
+21.4} which has not yet been released at the time of this writing.
+@acronym{CVS} versions of it already work, however.
 
 The entry "X11/Unix" currently means Linux, Solaris or HP/UX, as well
 as the X-specific version for Mac/OSX.
@@ -88,8 +89,8 @@ as the X-specific version for Mac/OSX.
 @multitable {Win9x native} {Emacs version} {XEmacs version}
 @item OS @tab Emacs version @tab XEmacs version
 @item X11/Unix @tab 21.1 @tab 21.4.9
-@item Win9x cygwin @tab CVS? @tab 21.4.8
-@item Win9x native @tab CVS? @tab 21.4.8
+@item Win9x cygwin @tab 21.4? @tab 21.4.8
+@item Win9x native @tab 21.4? @tab 21.4.8
 @end multitable
 
 With display errors, XEmacs versions as early as 21.1.14 might also work.
