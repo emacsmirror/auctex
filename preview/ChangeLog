@@ -1,3 +1,10 @@
+2002-03-01  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-default-option-list): add new options.
+
+	* preview.dtx: add new package option psfixbb for getting better
+	bounding boxes in the presence of PStricks and the like.
+
 2002-02-28  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-inner-environments): New variable for
