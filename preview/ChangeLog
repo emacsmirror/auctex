@@ -1,3 +1,30 @@
+2003-06-19  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: Fix crash on file not found
+
+	* dvipng/set.c: Code reformatting 
+
+	* dvipng/misc.c: Fix switches, and send warnings/errors to stderr.
+
+	* dvipng/vf.c: 
+	* dvipng/pk.c: 
+	* dvipng/draw.c: Include header only used in this file, here. 
+
+	* dvipng/commands.h: Make draw.c compile without -DDEBUG
+
+	* dvipng/Makefile.in: Use --disable-debug, fix docs
+	generation/install, and add 'test' target. 
+
+	* dvipng/README: Update info 
+
+	* dvipng/configure.ac: Add --disable-debug
+
+	* dvipng/install.texi: Minor changes 
+
+	* dvipng/dvipng.texi: Document difference between -pp and -p + -l 
+
+	* dvipng/dvipng.h: Fix FreeBSD non-C99 header issue 
+
 2003-06-19  David Kastrup  <dakas@users.sourceforge.net>
 
 	* latex/preview.dtx: Make \long what needs to be \long in order
