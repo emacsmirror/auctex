@@ -20,12 +20,16 @@ If you do not want this, install/upgrade with 'rpm --nopre ...'
 (the activation is done in the preinstall script).
 
 %prep
-%setup -q
+%setup -c -q
 
 %build
-make
-make contrib
-( cd doc; make )
+# The below will make the package build from a tar straight from CVS
+# NOT RECOMMENDED, but useful for testing!
+test -f ./configure || ./autogen.sh
+# --with-texmf-dir overrides local docstrip configurations.
+# --with-packagedir repairs RedHat XEmacs braindamage
+%configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
+make 'infodir=%{_infodir}'
 
 %install
 rm -rf %{buildroot}
@@ -55,7 +59,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc CHANGES COPYING PROBLEMS ChangeLog INSTALLATION README
+%doc RELEASE COPYING INSTALL README
 %doc doc/*.dvi
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
