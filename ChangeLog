@@ -1,3 +1,11 @@
+2005-02-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (Texinfo-environment, Texinfo-modify-environment):
+	New functions.
+	(Texinfo-insert-environment): Not interactive anymore as it is now
+	called by `Texinfo-environment'.
+	(Texinfo-mode-map): `C-c C-e' now calls `Texinfo-environment'.
+
 2005-02-12  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-add-local-master): Insert "japanese-" before mode
