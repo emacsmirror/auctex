@@ -23,6 +23,9 @@
 	(plain-TeX-mode-map): Inherit instead of copy.
 	(AmSTeX-mode-map): Same here.
 
+	* doc/auc-tex.texi: Change info dir formatting, adapt copyrights
+	according to the assignment process.
+
 2004-05-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Configure): Remove unused option
@@ -31,10 +34,8 @@
 	* doc/wininstall.texi: Ditto.  Add information about new option
 	`--with-auto-dir'.
 
-2004-05-25  David Kastrup  <dak@gnu.org>
-
-	* doc/auc-tex.texi: Change info dir formatting, adapt copyrights
-	according to the assignment process.
+	* latex.el (LaTeX-backward-paragraph): Revert check-in of
+	2004-05-24.
 
 2004-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
