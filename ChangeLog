@@ -11,6 +11,8 @@
 	(TeX-source-specials-view-expand-client): New function.
 	(TeX-source-specials-view-expand-options): Expand options for
 	inverse search as well.  Correct return value.
+	(TeX-forward-comment-skip): Only consider consecutive comment
+	characters when comparing the comment prefix.
 
 	* doc/changes.texi: Avoid email addresses.
 
