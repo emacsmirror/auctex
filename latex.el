@@ -721,13 +721,16 @@ The compatibility argument IGNORE is ignored."
   (run-hooks 'LaTeX-document-style-hook)
   (setq LaTeX-document-style-hook nil))
 
-(defcustom LaTeX-float "htbp"
-  "*Default float when creating figure and table environments.
-Set to nil if you don't want any float."
+(defcustom LaTeX-float ""
+  "Default float position for figures and tables.
+If nil, act like the empty string is given, but do not prompt.
+\(The standard LaTeX classes use [tbp] as float position if the
+optional argument is omitted.)"
   :group 'LaTeX-environment
-  :type '(choice (const :tag "none" nil)
+  :type '(choice (const :tag "Do not prompt" nil)
+		 (const :tag "Empty" "")
 		 (string :format "%v")))
- (make-variable-buffer-local 'LaTeX-float)
+(make-variable-buffer-local 'LaTeX-float)
 
 (defcustom LaTeX-top-caption-list nil
   "*List of float environments with top caption."
@@ -758,19 +761,19 @@ the label inserted, or nil if no label was inserted."
   :type 'string)
 
 (defcustom LaTeX-default-format ""
-  "Specifies the default format for array and tabular environments."
+  "Default format for array and tabular environments."
   :group 'LaTeX-environment
   :type 'string)
 (make-variable-buffer-local 'LaTeX-default-format)
 
 (defcustom LaTeX-default-width "1.0\\linewidth"
-  "Specifies the default width for minipage and tabular* environments."
+  "Default width for minipage and tabular* environments."
   :group 'LaTeX-environment
   :type 'string)
 (make-variable-buffer-local 'LaTeX-default-width)
 
 (defcustom LaTeX-default-position ""
-  "Specifies the default position for array and tabular environments.
+  "Default position for array and tabular environments.
 If nil, act like the empty string is given, but don't prompt."
   :group 'LaTeX-environment
   :type '(choice (const :tag "Don't prompt" nil)
@@ -865,7 +868,9 @@ job to this function."
 
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\caption and \\label commands."
-  (let ((float (read-string "(Optional) Float to: " LaTeX-float))
+  (let ((float (and LaTeX-float		; LaTeX-float can be nil, i.e.
+					; do not prompt
+		    (read-string "(Optional) Float position: " LaTeX-float)))
 	(caption (read-string "Caption: "))
 	(center (y-or-n-p "Center? ")))
 
@@ -923,8 +928,8 @@ job to this function."
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.
 Just like array and tabular."
-  (let ((pos (and LaTeX-default-position ;; LaTeX-default-position can
-					 ;; be nil, i.e. do not prompt
+  (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
+					; be nil, i.e. do not prompt
 		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
     (setq LaTeX-default-position pos)
@@ -932,7 +937,7 @@ Just like array and tabular."
     (LaTeX-insert-environment environment
 			      (concat
 			       (unless (zerop (length pos))
-                                 (concat LaTeX-optop pos LaTeX-optcl))
+				 (concat LaTeX-optop pos LaTeX-optcl))
 			       (concat TeX-grop fmt TeX-grcl)))))
 
 (defun LaTeX-env-label (environment)
@@ -955,23 +960,23 @@ Just like array and tabular."
 
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
-  (let ((pos (and LaTeX-default-position ;; LaTeX-default-position can
-					 ;; be nil, i.e. do not prompt
-                  (read-string "(Optional) Position: " LaTeX-default-position)))
+  (let ((pos (and LaTeX-default-position ; LaTeX-default-position can
+					; be nil, i.e. do not prompt
+		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(width (read-string "Width: " LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width width)
-    (LaTeX-insert-environment environment 
-                              (concat
-                               (unless (zerop (length pos))
-                                 (concat LaTeX-optop pos LaTeX-optcl))
-                               (concat TeX-grop width TeX-grcl)))))
+    (LaTeX-insert-environment environment
+			      (concat
+			       (unless (zerop (length pos))
+				 (concat LaTeX-optop pos LaTeX-optcl))
+			       (concat TeX-grop width TeX-grcl)))))
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
   (let ((width (read-string "Width: " LaTeX-default-width))
-	(pos (and LaTeX-default-position ;; LaTeX-default-position can
-					 ;; be nil, i.e. do not prompt
+	(pos (and LaTeX-default-position ; LaTeX-default-position can
+					; be nil, i.e. do not prompt
 		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
     (setq LaTeX-default-width width)
@@ -996,10 +1001,10 @@ Just like array and tabular."
 	(setq y-offset "0"))
     (LaTeX-insert-environment environment
 			      (concat
-                               (format "(%s,%s)" width height)
-                               (if (not (and (string= x-offset "0")
-                                             (string= y-offset "0")))
-                                   (format "(%s,%s)" x-offset y-offset))))))
+			       (format "(%s,%s)" width height)
+			       (if (not (and (string= x-offset "0")
+					     (string= y-offset "0")))
+				   (format "(%s,%s)" x-offset y-offset))))))
 
 (defun LaTeX-env-bib (environment)
   "Insert ENVIRONMENT with label for bibitem."
