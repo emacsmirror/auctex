@@ -1,3 +1,9 @@
+2004-12-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* context.el (ConTeXt-paragraph-commands-regexp): Match any
+	command starting with "\start" or "\stop" and the respective
+	language variants.
+
 2004-12-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-keymap): Change key bindings for clearout
