@@ -10,6 +10,8 @@
 	(preview-gs-transact): Don't send to dead process.
 	(preview-parse-messages): Use error logger.
 	(preview-TeX-inline-sentinel): Same here.
+	(TeX-inline-preview): Catch initialization errors and abort.
+	Good for people without graphic display.
 
 2002-04-13  nixsf  <nixsf@punkthus221.au.dk>
 
