@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.17 2001-10-02 08:33:00 dakas Exp $
+;; $Id: preview.el,v 1.18 2001-10-02 22:03:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -48,32 +48,6 @@
   (defvar error)
   (require 'tex-buf)
   (defvar TeX-auto-file))
-
-(defun preview-report-bug () "Report a bug in the preview-latex package."
-  (interactive)
-  (let ((reporter-prompt-for-summary-p "Bug report subject: "))
-    (reporter-submit-bug-report
-     "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.17 $ $Name:  $"
-     '(AUC-TeX-version
-       image-types
-       preview-image-type
-       preview-image-creators
-       preview-gs-command
-       preview-gs-options
-       preview-gs-outstanding-limit
-       preview-scale-function
-       preview-default-option-list)
-     nil
-     (lambda ()
-       (insert (format "\nOutput from running `%s -h':\n"
-		       preview-gs-command))
-       (call-process preview-gs-command nil t nil "-h")
-       (insert "\n"))
-     "Remember to cover the basics.  Including a minimal LaTeX example
-file exhibiting the problem might help."
-     )))
-			
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -104,10 +78,13 @@ called.  Additional argument lists specified in here
 are passed to the functions before any additional
 arguments given to `preview-call-hook'."
   :group 'preview
-  :type '(alist :key-type symbol :value-type
-		(alist :key-type symbol
-		       :value-type (list function
-					 (repeat :inline t sexp))
+  :type '(alist :key-type (symbol :tag "Preview's image type")
+		:value-type
+		(alist :tag "Handler" :key-type (symbol :tag "Operation:")
+		       :value-type (list :tag "Handler"
+					 (function :tag "Handler function")
+					 (repeat :tag "Additional \
+function args" :inline t sexp))
 		       :options (open place close))))
 
 (defcustom preview-image-type 'png
@@ -164,7 +141,7 @@ that is."
   (with-temp-buffer
     (insert-file-contents-literally filename nil 0 preview-bb-filesize
 				    t)
-    (goto-char 1)
+    (goto-char (point-min))
     (when (search-forward-regexp "%%BoundingBox:\
  +\\([-+]?[0-9.]+\\)\
  +\\([-+]?[0-9.]+\\)\
@@ -200,11 +177,6 @@ that is."
 See also `preview-gs-command'."
   :group 'preview
   :type '(repeat string))
-
-(defvar preview-gs-urgent nil
-  "List of high priority overlays to convert using gs.
-Buffer-local to the appropriate TeX process buffer.")
-(make-variable-buffer-local 'preview-gs-urgent)
 
 (defvar preview-gs-queue nil
   "List of overlays to convert using gs.
@@ -260,19 +232,23 @@ YRES, the screen resolution in dpi."
 	  (* scale xres)
 	  (* scale yres)))
 
-(defun preview-gs-behead-outstanding (process string)
+(defun preview-gs-behead-outstanding (error)
   "Remove leading element of outstanding queue after error.
-Return element if non-nil.  PROCESS and STRING are the
-sentinel arguments."
+Return element if non-nil.  ERROR is the error string to
+show as response of GhostScript."
   (let ((ov (pop preview-gs-outstanding)))
     (when ov
-      (overlay-put ov 'queued nil)
-      (overlay-put ov 'after-string (propertize
-				     (format "%s: %s" process
-					     string)
-				     'face 'preview-error-face)))
+      (overlay-put
+       ov 'after-string
+       (preview-gs-error-string
+	(concat "GS>" (aref (overlay-get ov 'queued) 2) error)
+	(car (nth 0 (overlay-get ov 'filenames)))))
+      (overlay-put ov 'queued nil))
     ov))
     
+(defvar preview-gs-command-line nil)
+(make-variable-buffer-local 'preview-gs-command-line)
+
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
@@ -283,26 +259,34 @@ and tries to restart GhostScript if necessary."
       (when (memq status '(exit signal))
 	;; process died.
 	;;  Throw away culprit, go on.
-	;; Shut down queue
-	(delete-process process)
-	(if (or (null (preview-gs-behead-outstanding process string))
-		(eq status 'signal))
-	    ;; if process was killed explicitly by signal, or if nothing
-	    ;; was processed, we give up on the matter altogether.
-	    (progn
-	      (mapc (function preview-deleter) preview-gs-outstanding)
-	      (dolist (ov preview-gs-queue)
-		(if (overlay-get ov 'queued)
-		    (preview-deleter ov)))
-	      (setq preview-gs-outstanding nil)
-	      (setq preview-gs-urgent nil)
-	      (setq preview-gs-queue nil))
+	(let* ((error (concat preview-gs-answer "\n"
+			      (process-name process) " " string))
+	       (ov (preview-gs-behead-outstanding error)))
+	  (when (and (null ov) preview-gs-queue)
+	    (save-excursion
+	      (goto-char (process-mark process))
+	      (insert-before-markers preview-gs-command " "
+				     (mapconcat #'shell-quote-argument
+						preview-gs-command-line
+						" ") "\n" error)))
+	  (delete-process process)
+	  (if (or (null ov)
+		  (eq status 'signal))
+	      ;; if process was killed explicitly by signal, or if nothing
+	      ;; was processed, we give up on the matter altogether.
+	      (progn
+		(mapc #'preview-deleter preview-gs-outstanding)
+		(dolist (ov preview-gs-queue)
+		  (if (overlay-get ov 'queued)
+		      (preview-deleter ov)))
+		(setq preview-gs-outstanding nil)
+		(setq preview-gs-queue nil))
 	  
-	  ;; restart only if we made progress since last call
-	  (setq preview-gs-urgent (nconc preview-gs-outstanding
-					 preview-gs-urgent))
-	  (setq preview-gs-outstanding nil)
-	  (preview-gs-restart))))))
+	    ;; restart only if we made progress since last call
+	    (setq preview-gs-queue (nconc preview-gs-outstanding
+					  preview-gs-queue))
+	    (setq preview-gs-outstanding nil)
+	    (preview-gs-restart)))))))
 
 (defun preview-gs-filter (process string)
   "Filter function for processing GhostScript output.
@@ -316,27 +300,22 @@ Gets the usual PROCESS and STRING parameters, see
 	(setq preview-gs-answer (substring preview-gs-answer pos))
 	(preview-gs-transact process answer)))))
 
-
-(defvar preview-gs-command-line nil)
-(make-variable-buffer-local 'preview-gs-command-line)
-
 (defun preview-gs-restart ()
   "Start a new GhostScript conversion process."
-  (when (or preview-gs-urgent preview-gs-queue)
+  (when preview-gs-queue
     (let* ((process-connection-type nil)
 	   (process
-	    (apply (function start-process)
+	    (apply #'start-process
 		   "Preview-GhostScript"
 		   (current-buffer)
 		   preview-gs-command
 		   preview-gs-command-line)))
       (setq preview-gs-answer "")
-      (set-process-sentinel process (function preview-gs-sentinel))
-      (set-process-filter process (function preview-gs-filter))
+      (set-process-sentinel process #'preview-gs-sentinel)
+      (set-process-filter process #'preview-gs-filter)
       (TeX-command-mode-line process))))
 
-
-(defalias 'preview-gs-close (function preview-gs-restart))
+(defalias 'preview-gs-close #'preview-gs-restart)
 
 (defun preview-gs-open (imagetype gs-optionlist)
   "Start a GhostScript conversion pass.
@@ -352,8 +331,7 @@ example \"-sDEVICE=png256\" will go well with 'png."
 					preview-scale
 					(car preview-resolution)
 					(cdr preview-resolution)))))
-  (setq preview-gs-queue nil)
-  (setq preview-gs-urgent nil))
+  (setq preview-gs-queue nil))
 
 (defun preview-gs-urgentize (ov buff)
   "Make a displayed overlay render with higher priority.
@@ -362,11 +340,17 @@ for reordering the conversion order to prioritize on-screen
 images.  OV is the overlay in question, and BUFF is the
 GhostScript process buffer where the buffer-local queue
 is located."
+  ;; It does not matter that ov gets queued twice in that process: the
+  ;; first version to get rendered will clear the 'queued property.
+  ;; It cannot get queued more than twice since we remove the
+  ;; conditional display property responsible for requeuing here.
+  ;; We don't requeue if the overlay has been killed (its buffer made
+  ;; nil).  Not necessary, but while we are checking...
+  (overlay-put ov 'display nil)
   (when (and (overlay-get ov 'queued)
 	     (overlay-buffer ov))
     (with-current-buffer buff
-      (push ov preview-gs-urgent)))
-  (overlay-put ov 'display nil)
+      (push ov preview-gs-queue)))
   nil)
 
 (defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
@@ -386,11 +370,57 @@ are used for making the name of the file to be generated."
     (overlay-put ov 'queued
 		 (vector
 		  (preview-extract-bb (car (car filenames)))
-		  thisimage))
+		  thisimage
+		  nil))
     (push ov preview-gs-queue)
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
     thisimage))
 		
+(defun preview-gs-error-string (error file)
+"Make an appropriate string for error display.\
+ERROR and the guilty FILE are both strings."
+  (propertize
+   (concat
+    (propertize
+     "[Error]"
+     'mouse-face 'highlight
+     'local-map
+     (let ((map (make-sparse-keymap)))
+       (define-key map [mouse-2]
+	 `(lambda() (interactive)
+	    (let ((buff
+		   (generate-new-buffer
+		    "*Preview-GhostScript-Error*")))
+	      (with-current-buffer buff
+		(insert ,(concat preview-gs-command " "
+				 (mapconcat #'shell-quote-argument
+					    preview-gs-command-line
+					    " ")
+				 "\n" error)))
+	      (view-buffer-other-window
+	       buff nil 'kill-buffer))))
+       map)
+     'help-echo "mouse-2 views error message")
+    " in "
+    (propertize
+     "[EPS-file]"
+     'mouse-face 'highlight
+     'local-map
+     (let ((map (make-sparse-keymap)))
+       (define-key map [mouse-2]
+	 `(lambda() (interactive)
+	    (let ((default-major-mode
+		    #',(or
+			(assoc-default "x.eps" auto-mode-alist #'string-match)
+			default-major-mode)))
+	      (view-file-other-window
+	       ,file))
+	    (message "\
+Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
+       map)
+     'help-echo "mouse-2 views EPS file"))
+    'face 'preview-error-face))
+
 (defun preview-gs-transact (process answer)
   "Work off GhostScript transaction.
 This routine is the action routine called via the process filter.
@@ -411,40 +441,11 @@ given as ANSWER."
 		   (newfile (nth 1 filenames)))
 	      (overlay-put ov 'queued nil)
 	      (if have-error
-		  (overlay-put
-		   ov
-		   'after-string
-		   (propertize
-		    (format "%s: %s"
-			    (propertize
-			     (car oldfile)
-			     'mouse-face 'highlight
-			     'local-map
-			     (let ((map (make-sparse-keymap)))
-			       (define-key map [mouse-2]
-				 `(lambda() (interactive)
-				    (let ((default-major-mode 'ps-mode))
-				      (view-file-other-window
-				       ,(car oldfile)))
-				    (message "\
-Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
-			       map))
-			    (propertize
-			     answer
-			     'mouse-face 'highlight
-			     'local-map
-			     (let ((map (make-sparse-keymap)))
-			       (define-key map [mouse-2]
-				 `(lambda() (interactive)
-				    (let ((buff
-					   (generate-new-buffer
-					    "*Preview-GhostScript-Error*")))
-				      (with-current-buffer buff
-					(insert ,answer))
-				      (view-buffer-other-window
-				       buff nil 'kill-buffer))))
-			       map)))
-		    'face 'preview-error-face))
+		  (overlay-put ov
+		   'after-string (preview-gs-error-string
+				  (concat "GS>"
+					  (aref queued 2) answer)
+				  (car oldfile)))
  		(condition-case nil
  		    (preview-delete-file oldfile)
  		  (file-error nil))
@@ -456,9 +457,7 @@ Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
 					   bbox))))))
 	  (while (and (< (length preview-gs-outstanding)
 			 preview-gs-outstanding-limit)
-		      (setq ov
-			    (or (pop preview-gs-urgent)
-				(pop preview-gs-queue))))
+		      (setq ov (pop preview-gs-queue)))
 	    (let ((queued (overlay-get ov 'queued)))
 	      (when (and queued
 			 (not (memq ov preview-gs-outstanding))
@@ -466,30 +465,30 @@ Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
 		(let* ((filenames (overlay-get ov 'filenames))
 		       (oldfile (nth 0 filenames))
 		       (newfile (nth 1 filenames))
-		       (bbox (aref queued 0)))
+		       (bbox (aref queued 0))
+		       (gs-line (format
+				 "clear \
+/preview-LaTeX-state save def << \
+/PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
+>> setpagedevice (%s) run preview-LaTeX-state restore\n"
+				 (- (aref bbox 2) (aref bbox 0))
+				 (- (aref bbox 3) (aref bbox 1))
+				 (- (aref bbox 0)) (aref bbox 1)
+				 (car newfile)
+				 (car oldfile))))
 		  (setq preview-gs-outstanding
 			(nconc preview-gs-outstanding
 			       (list ov)))
+		  (aset queued 2 gs-line)
 		  (process-send-string
 		   process
-		   (format "clear \
-/preview-LaTeX-state save def \
-<< \
-/PageSize [%g %g] \
-/PageOffset [%g %g] \
-/OutputFile (%s) >> setpagedevice \
-(%s) run \
-preview-LaTeX-state restore\n"
-			     (- (aref bbox 2) (aref bbox 0))
-			     (- (aref bbox 3) (aref bbox 1))
-			     (- (aref bbox 0)) (aref bbox 1)
-			     (car newfile)
-			     (car oldfile)))))))
-	    (unless (or ov preview-gs-outstanding)
-	      (process-send-eof process)))
-	(error (insert (error-message-string whatgives))))))
+		   gs-line
+		   )))))
+	  (unless preview-gs-outstanding
+	    (process-send-eof process)))
+      (error (insert-before-markers (error-message-string whatgives))))))
 
-(defcustom preview-scale-function (function preview-scale-from-face)
+(defcustom preview-scale-function #'preview-scale-from-face
   "*Scale factor for included previews.
 This can be either a function to calculate the scale, or
 a fixed number."
@@ -638,6 +637,7 @@ function for modification hooks."
   "Generate a before-string for disabled preview overlay OV."
   (concat (propertize "x" 'display preview-icon
 	          'local-map (overlay-get ov 'preview-map)
+		  'mouse-face 'highlight
 		  'help-echo "mouse-2 regenerates preview
 mouse-3 kills preview")
 ;; icon on separate line only for stuff starting on its own line
@@ -690,7 +690,7 @@ the entire buffer."
     (if (eq (overlay-get ov 'category) 'preview-overlay)
 	(preview-deleter ov))))
 
-(add-hook 'kill-buffer-hook (function preview-clearout) nil nil)
+(add-hook 'kill-buffer-hook #'preview-clearout nil nil)
 
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
@@ -704,6 +704,7 @@ This is for overlays where the source text has been clicked
 visible."
   (concat
    (propertize "x" 'display preview-icon
+	       'mouse-face 'highlight
 	       'local-map (overlay-get ov 'preview-map)
 	       'help-echo "mouse-2 toggles preview
 mouse-3 kills preview")
@@ -1093,5 +1094,30 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	process
       (TeX-synchronous-sentinel name file process))))
 
+(defun preview-report-bug () "Report a bug in the preview-latex package."
+  (interactive)
+  (let ((reporter-prompt-for-summary-p "Bug report subject: "))
+    (reporter-submit-bug-report
+     "preview-latex-bugs@lists.sourceforge.net"
+     "$RCSfile: preview.el,v $ $Revision: 1.18 $ $Name:  $"
+     '(AUC-TeX-version
+       image-types
+       preview-image-type
+       preview-image-creators
+       preview-gs-command
+       preview-gs-options
+       preview-gs-outstanding-limit
+       preview-scale-function
+       preview-default-option-list)
+     nil
+     (lambda ()
+       (insert (format "\nOutput from running `%s -h':\n"
+		       preview-gs-command))
+       (call-process preview-gs-command nil t nil "-h")
+       (insert "\n"))
+     "Remember to cover the basics.  Including a minimal LaTeX example
+file exhibiting the problem might help."
+     )))
+			
 (provide 'preview)
 ;;; preview.el ends here
