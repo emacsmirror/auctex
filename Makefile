@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.8l
+# Version: 9.9a
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -61,11 +61,11 @@ CP = cp -p
 
 SHELL = /bin/sh
 
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
-#WWWDIR = $(HOME)/.public_html/auctex
-WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
+WWWDIR = $(HOME)/.public_html/auctex
+#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
 REMOVE =  ltx-help.el
 
