@@ -70,21 +70,27 @@
 
 (defconst LaTeX-auto-regexp-list 
   (append
-   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
-       (1 3) TeX-auto-arguments)
+   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]\
+\\[\\([^\]\\\\\n\r]+\\)\\]"
+      (1 3 4) LaTeX-auto-optional)
+     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
+      (1 3) LaTeX-auto-arguments)
      ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 TeX-auto-symbol)
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 3) TeX-auto-env-args)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1
-      LaTeX-auto-environment)
+      (1 3) LaTeX-auto-env-args)
+     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 LaTeX-auto-environment)
      ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\cj\\)+\\)}" 1 LaTeX-auto-environment)
-     ("\\\\input{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
-     ("\\\\include{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
-     ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}" 1
-      LaTeX-auto-bibitem)
+     ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+      1 TeX-auto-file)
+     ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+      1 TeX-auto-file)
+     ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
+{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
+      (2) LaTeX-auto-style)
+     ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+     ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
@@ -100,15 +106,16 @@
      2 TeX-auto-symbol)
     ("\\\\newfont{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 TeX-auto-symbol)
     ("\\\\typein\\[\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)\\]" 1 TeX-auto-symbol)
-    ("\\\\input +\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?" 1 TeX-auto-file)
+    ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
+     1 TeX-auto-file)
     ("\\\\mathchardef\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)[^a-zA-Z@]" 1
      TeX-auto-symbol))
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)" 1
-     LaTeX-auto-bibitem))
+    ("@[a-zA-Z]+[{(][ \t]*\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)"
+     1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 ))
@@ -118,21 +125,27 @@
 
 (defconst LaTeX-auto-regexp-list 
   (append
-   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
-       (1 3) TeX-auto-arguments)
+   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]\
+\\[\\([^\]\\\\\n\r]+\\)\\]"
+      (1 3 4) LaTeX-auto-optional)
+     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
+      (1 3) LaTeX-auto-arguments)
      ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 TeX-auto-symbol)
      ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 3) TeX-auto-env-args)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1
-      LaTeX-auto-environment)
+      (1 3) LaTeX-auto-env-args)
+     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 LaTeX-auto-environment)
      ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\z\\)+\\)}" 1 LaTeX-auto-environment)
-     ("\\\\input{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
-     ("\\\\include{\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
-     ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}" 1
-      LaTeX-auto-bibitem)
+     ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+      1 TeX-auto-file)
+     ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+      1 TeX-auto-file)
+     ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
+{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
+      (2) LaTeX-auto-style)
+     ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#\\\\\\.\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+     ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
@@ -148,15 +161,16 @@
      2 TeX-auto-symbol)
     ("\\\\newfont{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 TeX-auto-symbol)
     ("\\\\typein\\[\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)\\]" 1 TeX-auto-symbol)
-    ("\\\\input +\\([^#\\\\\\.\n\r]+\\)\\(\\.sty\\)?" 1 TeX-auto-file)
+    ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
+     1 TeX-auto-file)
     ("\\\\mathchardef\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
      TeX-auto-symbol))
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)" 1
-     LaTeX-auto-bibitem))
+    ("@[a-zA-Z]+[{(][ \t]*\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)"
+     1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
 ))

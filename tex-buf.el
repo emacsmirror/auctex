@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.67 1994-04-21 14:05:03 amanda Exp $
+;; $Id: tex-buf.el,v 1.68 1994-05-28 02:47:40 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -280,7 +280,8 @@ in TeX-check-path."
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
   (or TeX-command-force
-      (let* ((default (cond ((TeX-save-document (TeX-master-file))
+      (let* ((default (cond ((and (not (string-equal name TeX-region))
+				  (TeX-save-document (TeX-master-file)))
 			     TeX-command-default)
 			    ((and (eq major-mode 'latex-mode)
 				  (TeX-check-files (concat name ".bbl")
@@ -591,7 +592,7 @@ Return nil ifs no errors were found."
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
-	 (message (concat name ": successfully ended."))
+	 (message (concat name ": successfully ended [" TeX-current-page "]."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
 	 (message (concat name ": problems."))
@@ -1113,7 +1114,7 @@ Return nil if we gave a report."
 
 ;;; Error Messages
 
-(defconst TeX-error-description-list
+(defvar TeX-error-description-list
   '(("Bad \\\\line or \\\\vector argument.*" .
 "The first argument of a \\line or \\vector command, which specifies the
 slope, is illegal\.")

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.16 1994-05-04 22:54:19 amanda Exp $
+;; Version: $Id: latex.el,v 5.17 1994-05-28 02:47:33 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -222,8 +222,8 @@ If so, return the second element, otherwise return nil."
 
 (defun LaTeX-outline-level ()
   "Find the level of current outline heading in an LaTeX document."
-  (cond ((looking-at TeX-header-end) 1)
-	((looking-at TeX-trailer-start) 1)
+  (cond ((looking-at LaTeX-header-end) 1)
+	((looking-at LaTeX-trailer-start) 1)
 	((TeX-look-at TeX-outline-extra)
 	 (max 1 (+ (TeX-look-at TeX-outline-extra)
 		   (LaTeX-outline-offset))))
@@ -519,30 +519,27 @@ LaTeX-default-position          Position for array and tabular."
 
 (defun LaTeX-current-environment (&optional arg)
   "Return the name (a string) of the enclosing LaTeX environment.
-With optional ARG, find that outer level."
-  (setq arg (if arg arg 1))
+With optional ARG>=1, find that outer level."
+  (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (save-excursion
-    (if (re-search-backward
-	 (concat (regexp-quote TeX-esc) "\\(sub\\)*section"
-		 "\\|"
-		 (regexp-quote TeX-esc) "begin" (regexp-quote TeX-grop)
-		 "\\|"
-		 (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop)) nil t 1)
-	(cond ((looking-at (concat (regexp-quote TeX-esc)
-				   "end" (regexp-quote TeX-grop)))
-	       (LaTeX-current-environment (1+ arg)))
-	      ((looking-at (concat (regexp-quote TeX-esc)
-				   "\\(sub\\)*section"))
-	       "document")
-	      ((/= arg 1)
-	       (LaTeX-current-environment (1- arg)))
-	      (t
-	       (search-forward TeX-grop)
-	       (let ((beg (point)))
-		 (search-forward TeX-grcl)
-		 (backward-char 1)
-		 (buffer-substring beg (point)))))
-      "document")))
+    (while (and
+	    (/= arg 0)
+	    (re-search-backward
+	     (concat (regexp-quote TeX-esc) "begin" (regexp-quote TeX-grop)
+		     "\\|"
+		     (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop)) 
+	     nil t 1))
+      (if (looking-at (concat (regexp-quote TeX-esc)
+			      "end" (regexp-quote TeX-grop)))
+	  (setq arg (1+ arg))
+	(setq arg (1- arg))))
+    (if (/= arg 0)
+	"document"
+      (search-forward TeX-grop)
+      (let ((beg (point)))
+	(search-forward TeX-grcl)
+	(backward-char 1)
+	(buffer-substring beg (point))))))
 
 (defun TeX-near-bobp ()
   ;; Return t iff there's nothing but whitespace between (bob) and (point).
@@ -675,10 +672,9 @@ like array and tabular."
     (LaTeX-insert-environment environment)
     (if (not (zerop (length label)))
 	(progn
-	  (newline-and-indent)
 	  (insert TeX-esc "label" TeX-grop label TeX-grcl)
 	  (LaTeX-add-labels label)
-	  (end-of-line 0)))))
+	  (newline-and-indent)))))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
@@ -965,6 +961,13 @@ You may use LaTeX-item-list to change the routines used to insert the item."
   "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
   (apply 'LaTeX-add-bibliographies-auto bibliographies)
   (apply 'TeX-run-style-hooks bibliographies))
+
+(fset 'LaTeX-add-environments-auto
+      (symbol-function 'LaTeX-add-environments))
+(defun LaTeX-add-environments (&rest environments)
+  "Add ENVIRONMENTS to the list of known environments."
+  (apply 'LaTeX-add-environments-auto environments)
+  (setq LaTeX-menu-changed t))
 
 ;;; BibTeX
 
@@ -1721,25 +1724,31 @@ The point is supposed to be at the beginning of the current line."
   (append '("Section  (C-c C-s)")
 	  (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))
 
+(defvar LaTeX-menu-changed nil)
+;; Need to update LaTeX menu.
+(make-variable-buffer-local 'LaTeX-menu-changed)
+
 (defun LaTeX-menu-update ()
   ;; Update entries on AUC TeX menu.
-  (if (not (eq major-mode 'latex-mode))
-      ()
-    (TeX-update-style)
-    (mapcar 'LaTeX-section-enable LaTeX-section-list)
-    (easy-menu-change '("AUC TeX") LaTeX-environment-modify-menu-name
-		      (mapcar 'LaTeX-environment-modify-menu-entry
-			      (LaTeX-environment-list)))
-    (easy-menu-change '("AUC TeX") LaTeX-environment-menu-name
-		      (mapcar 'LaTeX-environment-menu-entry
-			      (LaTeX-environment-list)))))
+  (or (eq major-mode 'latex-mode)
+      (null LaTeX-menu-changed)
+      (progn
+	(TeX-update-style)
+	(setq LaTeX-menu-changed nil)
+	(mapcar 'LaTeX-section-enable LaTeX-section-list)
+	(easy-menu-change '("LaTeX") LaTeX-environment-modify-menu-name
+			  (mapcar 'LaTeX-environment-modify-menu-entry
+				  (LaTeX-environment-list)))
+	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
+			  (mapcar 'LaTeX-environment-menu-entry
+				  (LaTeX-environment-list))))))
 
 (add-hook 'activate-menubar-hook 'LaTeX-menu-update)
 
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
     "Menu used in LaTeX mode."
-  (list "AUC TeX"
+  (list "LaTeX"
 	(list LaTeX-environment-menu-name)
 	(list LaTeX-environment-modify-menu-name)
 	(LaTeX-section-menu-create)
@@ -1843,6 +1852,14 @@ of LaTeX-mode-hook."
        (setq auto-fill-function
 	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))
 
+(defvar LaTeX-header-end
+  (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
+  "Default end of header marker for LaTeX documents.")
+
+(defvar LaTeX-trailer-start
+  (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
+  "Default start of trailer marker for LaTeX documents.")
+
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.
   (VirTeX-common-initialization)
@@ -1855,10 +1872,8 @@ of LaTeX-mode-hook."
   (or LaTeX-largest-level 
       (setq LaTeX-largest-level (LaTeX-section-level "section")))
   
-  (setq TeX-header-end (concat (regexp-quote TeX-esc) "begin *"
-			       TeX-grop "document" TeX-grcl))
-  (setq TeX-trailer-start (concat (regexp-quote TeX-esc) "end *"
-				  TeX-grop "document" TeX-grcl))
+  (setq TeX-header-end LaTeX-header-end
+	TeX-trailer-start LaTeX-trailer-start)
 
   (require 'outline)
   (make-local-variable 'outline-level)
@@ -2017,12 +2032,12 @@ of LaTeX-mode-hook."
 		(TeX-arg-size [ TeX-arg-corner ] t)
 		([ "Length" ] [ TeX-arg-lr ] t)))
    '("multiput"
-     TeX-arg-coordinate-pair
+     TeX-arg-coordinate
      (TeX-arg-pair "X delta" "Y delta")
      "Number of copies"
      t)
    '("oval" TeX-arg-size [ TeX-arg-corner "Portion" ])
-   '("put" TeX-arg-coordinate-pair t)
+   '("put" TeX-arg-coordinate t)
    '("savebox" TeX-arg-define-savebox
      (TeX-arg-conditional
       (string-equal (LaTeX-current-environment) "picture")

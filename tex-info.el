@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.12 1994-04-24 21:54:58 amanda Exp $
+;; $Id: tex-info.el,v 5.13 1994-05-28 02:47:44 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -161,7 +161,7 @@ When called interactively, prompt for an environment."
 (easy-menu-define TeXinfo-mode-menu
     TeXinfo-mode-map
     "Menu used in TeXinfo mode."
-  (list "AUC TeX"
+  (list "TeXinfo"
 	["Environment..." TeXinfo-insert-environment t]
 	["Node..." texinfo-insert-@node t]
 	["Macro..." TeX-insert-macro t]

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.20 1994-05-04 22:54:25 amanda Exp $
+;; Version: $Id: tex.el,v 5.21 1994-05-28 02:47:49 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -444,8 +444,7 @@ This will be done when AUC TeX first try to use the master file.")
                                                         "End:")))
               (beginning-of-line 1)
               (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
-          (forward-line 1)
-          (insert "% Local " "Variables: \n"
+          (insert "\n% Local " "Variables: \n"
                   "% mode: " (substring (symbol-name major-mode) 0 -5)
 		  "\n"
                   "% TeX-master: " (prin1-to-string TeX-master) "\n"
@@ -782,7 +781,7 @@ Or alternatively:
  (make-variable-buffer-local 'TeX-default-macro)
 
 (defvar TeX-insert-braces t
-  "If non-nil, append a empty pair of braces after inserting a macro.")
+  "*If non-nil, append a empty pair of braces after inserting a macro.")
 
 (defun TeX-math-mode-p ()
   "Are we in TeX math mode?"
@@ -1502,7 +1501,7 @@ functions in TeX-auto-cleanup-hook after parsing."
 
 (defvar TeX-auto-end-symbol nil)
 
-(defun TeX-auto-symbol-check (symbol)
+(defun TeX-auto-symbol-check (match)
   "Add MATCH to TeX-auto-symbols.
 Check for potential LaTeX environments."
   (let ((symbol (if (listp match)
@@ -1810,7 +1809,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
     "Menu used in plain TeX mode."
-  (list "AUC TeX"
+  (list "TeX"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Save Document" TeX-save-document t]

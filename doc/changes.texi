@@ -3,12 +3,56 @@
 Coordinater: Per Abrahamsen, 1994.
 
 Alpha testers (in order of appearance): 
+Bernt Guldbrandtsen @samp{<bernt@@weinberg.pop.bio.aau.dk>},
+Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
+Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
+Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>},
+David Aspinall <da@@dcs.edinburgh.ac.uk>,
 and probably more.@refill
 
 @itemize @bullet
+@item
+Fixed position of @samp{\label} in environments.  Reported by Richard
+Stanton @samp{<stanton@@haas.berkeley.edu>}.
+
+@item
+Made the name of the AUC @TeX{} menu mode specific.
+
+@item
+More reliable guesses with @kbd{C-c C-r}.  Thanks to Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>}.
+
+@item
+Insert newline before inserting local variable section.  Thanks to
+Rajeev Gore' @samp{<rpg@@cs.man.ac.uk>}.
+
+@item
+Fixes to Japanese version.  Thanks to Kobayashi Shinji
+@samp{<koba@@flab.fujitsu.co.jp>}.
+
+@item
+Fixed bug in @samp{put} and @samp{multiput} macros.  Thanks to Kobayashi
+Shinji @samp{<koba@@flab.fujitsu.co.jp>} and Masayuki Kuwada
+<kuwada@@axion-gw.ee.uec.ac.jp>. 
+
+@item
+Display number of pages after end of La@TeX{} compilation.  Thanks to
+Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>}.
+
+@item
+Only update section and environment menus when the lists have changed.
+
+@item
+New variables @code{LaTeX-header-end} and @code{LaTeX-trailer-start}.
+
+@item
+Some Emacs 18 compatibility changes.  Thanks to Fran E. Burstall
+@samp{<F.E.Burstall@@maths.bath.ac.uk>}.
+
 @item 
-When determining the current environment, stop when you see a section.
-Thanks to David Aspinall @samp{<da@@dcs.edinburgh.ac.uk>}.
+Use nonrecursive function to determine the current environment.  This
+should solve problems with exceeding lisp max depth. Contributed by
+David Aspinall @samp{<da@@dcs.edinburgh.ac.uk>}.
 
 @item
 Fixed documentation for @kbd{` ~} in @file{math-ref.tex}.  Thanks to

@@ -143,7 +143,7 @@ requests to @samp{<ftpmail@@decwrl.dec.com>}.
 WWW users may want to check out the AUC @TeX{} page at
 
 @flushright
-@samp{http://www.iesd.auc.dk/~amanda/auc@TeX{}/}
+@samp{http://www.iesd.auc.dk/~amanda/auctex/}
 @end flushright
 
 @section Contacts
