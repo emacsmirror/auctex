@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6a
+;; Version: 9.6b
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -547,10 +547,13 @@ With optional ARG>=1, find that outer level."
 		     "\\|"
 		     (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop)) 
 	     nil t 1))
-      (if (looking-at (concat (regexp-quote TeX-esc)
-			      "end" (regexp-quote TeX-grop)))
-	  (setq arg (1+ arg))
-	(setq arg (1- arg))))
+      (cond ((TeX-in-comment)
+	     (beginning-of-line 1))
+	    ((looking-at (concat (regexp-quote TeX-esc)
+				 "end" (regexp-quote TeX-grop)))
+	     (setq arg (1+ arg)))
+	    (t
+	    (setq arg (1- arg)))))
     (if (/= arg 0)
 	"document"
       (search-forward TeX-grop)
@@ -1833,7 +1836,6 @@ The point is supposed to be at the beginning of the current line."
       (define-key outline "\C-z" 'LaTeX-hide-environment)
       (define-key outline "\C-x" 'LaTeX-show-environment))
 
-    ;; From tex-math.el
     (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
     
     map)

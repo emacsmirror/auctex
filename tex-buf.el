@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6a
+;; Version: 9.6b
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -38,13 +38,13 @@ Full documentation will be available after autoloading the function."
   "*Use asynchronous processes.")
 
 (defvar TeX-shell
-  (if (memq system-type '(ms-dos emx))
+  (if (memq system-type '(ms-dos emx windows-nt))
       shell-file-name
     "/bin/sh")
   "Name of shell used to parse TeX commands.")
 
 (defvar TeX-shell-command-option
-  (cond ((eq system-type 'ms-dos) 
+  (cond ((memq system-type '(ms-dos emx windows-nt) )
 	 (if (boundp 'shell-command-option)
 	     shell-command-option
 	   "/c"))
@@ -367,12 +367,14 @@ Used by Japanese TeX to set the coding system.")
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
   (let ((default TeX-command-default)
-	(buffer (TeX-process-buffer-name file)))
+	(buffer (TeX-process-buffer-name file))
+	(dir (TeX-master-directory)))
     (TeX-process-check file)		; Check that no process is running
     (setq TeX-command-buffer (current-buffer))
     (get-buffer-create buffer)
     (set-buffer buffer)
     (erase-buffer)
+    (cd dir)
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
     (if TeX-show-compilation
@@ -884,7 +886,7 @@ original file."
 	  (set-buffer-modified-p nil)
 	(save-buffer 0)))))
 
-(defun TeX-region-file (&optional extension)
+(defun TeX-region-file (&optional extension dummy)
   "Return TeX-region file name with EXTENSION."
   (cond ((eq extension t)
 	 (concat TeX-region "." TeX-default-extension))

@@ -1,3 +1,32 @@
+Fri Aug 23 10:23:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-run-command): Change to master directory before
+	executing command.
+	(TeX-region-file): Allow dummy second argument.
+
+	* tex.el (TeX-master-file): Allow second argument `NONDIRECTOPRY'.
+	(TeX-expand-list): Set second argument `NONDIRECTORY' to file
+	entries. 
+	(TeX-master-directory): New function.
+
+
+Thu Aug 22 22:33:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-current-environment): Ignore comments.  Reported
+	by Stephen Eglen <stephene@cogs.susx.ac.uk>.
+
+	* tex.el (TeX-directory-absolute-p): Added `windows-nt'.
+
+	* tex-buf.el (TeX-shell): Added `windows-nt'.
+	(TeX-shell-command-option): Added `emx' and `windows-nt'.
+	Reported by Ulrich Poetter <poetter@em.uni-frankfurt.d400.de>.
+
+Wed Aug 21 13:57:43 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (VirTeX-common-initialization): Removed duplicate
+	initialization of `words-include-escapes'.  Reperted by Mark Hovey
+	<hovey@math.mit.edu>. 
+
 Wed Aug 14 19:43:31 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (CONTRIB): Added `font-latex.el'.

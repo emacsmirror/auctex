@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.111 1996-08-14 17:45:20 abraham Exp $
+@c $Id: auc-tex.texi,v 1.112 1996-08-23 08:40:35 abraham Exp $
 
 @finalout
 @titlepage
@@ -1530,6 +1530,10 @@ use macros, or teach @TeX{} about the ISO character sets.  I prefer the
 later, it has the advantage that the usual the standard emacs word
 movement and case change commands will work.
 
+
+With LaTeX2e, just add @samp{\usepackage[latin1]{inputenc}}.  With older
+LaTeX versions, try: 
+
 @table @file
 @item isolatin1.sty
 Support for ISO 8859 Latin 1.  Available by ftp from the host
@@ -1599,6 +1603,11 @@ from @t{aida.intellektik.informatik.th-darmstadt.de} in the directory
 @item iso-cvt.el
 @cindex @file{iso-cvt.el}
 Much like @file{iso-tex.el} but is bundled with Emacs 19.23 and later.
+
+@item x-compose.el
+@cindex @file{x-compose.el}
+Similar package bundled with new versions of XEmacs.
+
 @end table
 
 AUC @TeX{} supports style files for several languages.  Each style file
@@ -2319,6 +2328,24 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+
+Filling messes up comments, but only at the end of the file.  Reported
+by uergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
+@item
+@kbd{C-c C-q C-e} doesn't work properly on nested itemize environments.
+Reported by  "Robert B. Love"  <rlove@@raptor.rmNUG.ORG>.
+
+@item 
+One suggestion for AUC-TeX: I think that the font command C-c C-f C-r,
+which produces \textrm{} in a LaTeX file, should instead produce
+either \textrm{} or \mathrm{}, depending on whether one is in math
+mode or not. --- John Palmieri <palmieri@@math.mit.edu>
+
+@item
+A way to add and overwrite math mode entries in style files, and to
+decide where they should be.  Suggested by Remo Badii <Remo.Badii@@psi.ch>.
+
 @item
 Create template for (first) line of tabular environment.
 
