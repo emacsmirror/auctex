@@ -152,7 +152,7 @@ clean:
 	(cd doc; $(MAKE) clean)
 
 distclean: clean
-	rm -f Makefile config.*
+	rm -f Makefile tex-site.el config.*
 
 wc:
 	wc $(AUCSRC) $(STYLESRC)
