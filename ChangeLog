@@ -1,3 +1,7 @@
+2005-02-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* bib-cite.el: Some doc fixes in the commentary section.
+
 2005-02-23  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/auctex.texi (I18n): Removed FIXME comment.
