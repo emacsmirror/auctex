@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.0 $  
+;; RCS status      : $Revision: 4.1 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Jun  8 19:36:04 1991
-;; Update Count    : 132
+;; Last Modified On: Sun Jun  9 18:39:44 1991
+;; Update Count    : 133
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -736,7 +736,7 @@ With prefix argument, always insert \" characters."
 	     (forward-char -1)
 	     (looking-at "[ \t\n]\\|\\s(")))
        "``")
-      ((= (preceding-char) TeX-esc)
+      ((= (preceding-char) (string-to-char TeX-esc))
        ?\")
       (t "''")))))
 
