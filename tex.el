@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.39 1994-12-02 09:06:44 amanda Exp $
+;; Version: $Id: tex.el,v 5.40 1995-01-11 12:58:55 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -781,7 +781,7 @@ If REGEXP is nil, or \"\", an error will occur."
       (setq entries (cdr entries))
       (or (string-match "/$" entry)
 	  (setq entry (concat entry "/")))
-      (or (not (string-match "^/" entry))
+      (or (not (TeX-directory-absolute-p entry))
 	  (member entry TeX-macro-global)
 	  (string-equal "/" entry)
 	  (setq answers (cons entry answers))))
@@ -1596,7 +1596,7 @@ If TEX is a directory, generate style files for all files in the directory."
 	((string-match TeX-ignore-file tex))
         ((file-directory-p tex)
          (let ((files (directory-files tex))
-               (default-directory (concat (if (string-match "^/" tex)
+               (default-directory (concat (if (TeX-directory-absolute-p tex)
                                               ""
                                             default-directory)
                                           (if (string-match "/$" tex)
@@ -1959,6 +1959,12 @@ See match-data for details."
 			       (if limit (max (point-min) (- (point) limit)))
 			       t)
 	   (eq (match-end 0) pos)))))
+
+(defun TeX-directory-absolute-p (dir)
+  ;; Non-nil iff DIR is the name of an absolute directory.
+  (if (memq system-type '(ms-dos emx))
+      (string-match "^\\([A-Za-z]:\\)?/" dir)
+    (string-match "^/" dir)))
 
 ;;; Syntax Table
 
