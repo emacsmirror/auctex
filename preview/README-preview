@@ -19,43 +19,19 @@ files.  It is easy to define what commands and constructs should be
 treated that way.
 
 To install the preview style file on its own without fetching the
-entire preview-latex package, you would typically use the following
-session:
-
+entire preview-latex package, run 
+tex preview.ins
+If preview.ins happens to be missing, you can regenerate it by running
 tex docstrip
-[...]
-****************************************************
-* First type the extension of your input file(s):  *
-\infileext=dtx
-****************************************************
+on preview.dtx with the option `installer'.
 
-****************************************************
-* Now type the extension of your output file(s)  : *
-\outfileext=ins
-****************************************************
-
-****************************************************
-* Now type the name(s) of option(s) to include   : *
-\Options=installer
-****************************************************
-
-****************************************************
-* Finally give the list of input file(s) without   *
-* extension seperated by commas if necessary     : *
-\filelist=preview
-****************************************************
-[...]
-More files to process (y/n)?
-\answer=n
-
-This will extract a file preview.ins.  Running TeX on that will then
-extract further files: preview.drv which you can run through LaTeX in
-order to get the documentation for preview.sty, preview.sty itself,
-and the option file prauctex.def that is mostly useful only when using
-the complete package.  In case your docstrip configuration has not
-already taken care of that, install the latter two files to a location
-where LaTeX will be able to find them, generate the documentation and
-have fun.
+Running TeX on preview.ins will then extract further files:
+preview.drv which you can run through LaTeX in order to get the
+documentation for preview.sty, preview.sty itself, and the option file
+prauctex.def that is mostly useful only when using the complete
+package.  In case your docstrip configuration has not already taken
+care of that, install the latter two files to a location where LaTeX
+will be able to find them, generate the documentation and have fun.
 
 The license of the original file is the GPL which you'll find a copy
 of in the complete preview-latex distribution.  The complete
