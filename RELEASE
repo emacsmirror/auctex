@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.53
+Release notes for AUCTeX 11.54
 ==============================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -20,18 +20,29 @@ reference material, sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-Another bug in connection with XEmacs and PDF modes has been
-uncovered.  GTK versions of GNU Emacs will now use Unicode characters
-in the LaTeX math menu.  No other platforms are affected.  The
-installation process tries to detect a few more things automatically.
+AUCTeX 11.54 is mainly a bug-fix release which takes care of problems
+introduced by new features in the 11.5x series, like the overlays-at
+bug in XEmacs and some performance issues with font locking and
+filling, but also other, long-standing issues, like broken
+fontification of verbatim environments.
 
-IMPORTANT: Many of the new features rely on special properties in the
-variable `TeX-command-list' and will not work if you customized this
-variable for a former release of AUCTeX.  If this is the case for you,
-please re-initialize the variable by erasing the customization,
-thereby setting the variable to the new default, and re-adding your
-changes afterwards.  Many such changes can be avoided by using other
-customization variables.
+In addition to the fixed bugs some new features crept in.  Font
+locking can now be customized to a great extent and support for the
+LaTeX packages url, listings, jurabib and csquotes was added.
+
+Two new sections were added to the manual.  The section "Quick Start"
+gives a short introduction for beginners and serves as a starting
+point for diving into the more sophisticated chapters of the manual
+once one is acquainted with the basic workings of AUCTeX.  The section
+"Font Locking" describes syntax highlighting in AUCTeX and its
+customization options.
+
+IMPORTANT: Many of the new features in the 11.5x series rely on
+special properties in the variable `TeX-command-list' and will not
+work if you customized this variable for a pre-11.5x release of
+AUCTeX.  If this is the case for you, please re-initialize the
+variable by erasing the customization, thereby setting the variable to
+the new default, and re-adding your changes afterwards.
 
 
 Requirements
