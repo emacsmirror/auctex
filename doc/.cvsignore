@@ -1,6 +1,6 @@
 *.aux *.cp *.cps *.dvi *.fn *.fns *.ky *.kys
 *.log *.pg *.toc *.tp *.vr *.vrs *.tmp *.ps *.pdf
-auctex auctex-?
+auctex.info auctex.info-?
 Makefile
 CHANGES
 HISTORY
