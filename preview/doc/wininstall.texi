@@ -133,13 +133,34 @@ to be done by hand.  No idea about what might have gone wrong there).
 Run @code{make install} in the installation directory.
 
 @item
-Load @file{circ.tex} into XEmacs and see if you can generate previews.
+The above will leave you with a file @file{preview-latex.el} in the
+installation directory.  Emacs must load this on startup.  It may be
+that your version of Emacs already has a place where it keeps such
+startup files.  If not, copy it into a place in your Emacs
+@code{load-path}, then put
+
+@example
+(load "preview-latex.el" nil t t)
+@end example
+
+into your @file{.emacs} file or, if you have more than one user using
+your system, into the global @file{default.el} file.
+
+@item
+Load @file{circ.tex} into Emacs or XEmacs and see if you can generate
+previews.
+
+If this barfs and tells you that image type @samp{png} is not
+supported, try adding the line
+
+@example
+(setq preview-image-type 'pnm)
+@end example
+
+at the end of your installed version of @file{preview-latex.el}.
+Current Emacs @acronym{CVS} versions do not yet support @acronym{PNG}
+images.  Which is a pity, because @acronym{PNM} files take away
+@strong{vast} amount of disk space, and thus also of load/save time.
 @end enumerate
 
-Note, sometimes the preview image file will be generated, but it will
-display as a blank line. I haven't found any reason why or why not, and
-it doesn't seem to matter what image format is chosen. If this happens,
-you might be able to get it to display by going @kbd{C-c C-p C-c C-p}
-(Clearout at point) @kbd{C-c C-p C-p} (Preview at Point) when the cursor
-is on that blank line.
-
+Well, that about is all.  Have fun!
