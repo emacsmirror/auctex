@@ -113,7 +113,8 @@ supported modes of @AUCTeX{} (@inforef{Key Index,,auctex}).  It will
 also add its own @samp{Preview} menu in the menu bar, as well as an icon
 in the toolbar.
 
-The following key bindings are supported:
+The following only describes the interactive use: view the documentation
+strings with @kbd{C-h f} if you need the Lisp information.
 
 @table @w
 @item @kbd{C-c C-p C-p}
@@ -129,24 +130,57 @@ either direction.
 @findex preview-at-point
 
 @item @kbd{<mouse-2>}
-@itemx @kbd{<mouse-3>}
 The middle mouse button has a similar action bound to it as
 @code{preview-at-point}, only that it knows which preview to apply it to
 according to the position of the click.  You can click either anywhere
 on a previewed image, or when the preview is opened and showing the
 source text, you can click on the icon preceding the source text.  In
 other areas, the usual mouse key action (typically: paste) is not
-affected.  The right mouse key pops up a context menu with several
-options.
+affected.
+
+@item @kbd{<mouse-3>}
+The right mouse key pops up a context menu with several options:
+toggling the preview, regenerating it, removing it (leaving the
+unpreviewed text), copying the text inside of the preview, and copying
+it in a form suitable for copying as an image into a mail or news
+article.  This is a one-image variant of the following command:
+
+@item @kbd{C-c C-p C-w}
+@itemx @code{preview-copy-region-as-mml}
+@itemx Copy a region as MML
+@kindex @kbd{C-c C-p C-w}
+@findex preview-copy-region-as-mml
+This command is also available as a variant in the context menu on the
+right mouse button (where the region is the preview that has been
+clicked on).  It copies the current region into the kill buffer in a
+form suitable for copying as a text including images into a mail or news
+article using mml-mode (@pxref{Composing,,Composing,emacs-mime,Emacs
+MIME}).
+
+If you regenerate or otherwise kill the preview in its source buffer
+before the mail or news gets posted, this will fail.  Also you should
+generate images you want to send with @var{preview-transparent-border}
+@vindex preview-transparent-border
+set to @samp{nil}, or the images will have an ugly border.
+@previewlatex{} detects this condition and asks whether to regenerate
+the region with borders switched off.  As this is an asynchronous
+operation running in the background, you'll need to call this command
+explicitly again to get the newly generated images into the kill ring.
+
+Preview your articles with @code{mml-preview} (on @kbd{M-m P}, or
+@kbd{C-c C-m P} in @w{Emacs 22})
+@kindex @kbd{M-m P}
+@kindex @kbd{C-c C-m P}
+to make sure they look fine.
 
 @item @kbd{C-c C-p C-e}
-@itemx @code{preview-environment (&optional count)}
+@itemx @code{preview-environment}
 @itemx Preview/Generate previews for environment
 Run preview on @LaTeX{} environment.  The environments in
 @code{preview-inner-environments} are treated as inner levels so that
 for instance, the @code{split} environment in
-@code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}} is
-properly displayed.  If called with an argument @code{count}, the
+@code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}}
+is properly displayed.  If called with a numeric argument, the
 corresponding number of outward nested environments is treated as inner
 levels.
 @kindex @kbd{C-c C-p C-e}
@@ -160,25 +194,23 @@ Run preview on this @LaTeX{} section.
 @findex preview-section
 
 @item @kbd{C-c C-p C-r}
-@itemx @code{preview-region (begin end)}
+@itemx @code{preview-region}
 @itemx Preview/Generate previews for region
-Run preview on current region (between point and mark). If called
-non-interactively, runs preview on region between @code{begin} and
-@code{end}.
+Run preview on current region.
 @kindex @kbd{C-c C-p C-r}
 @findex preview-region
 
 @item @kbd{C-c C-p C-b}
 @itemx @code{preview-buffer} 
 @itemx Preview/Generate previews for buffer
-Run preview on the present buffer.
+Run preview on the current buffer.
 @kindex @kbd{C-c C-p C-b}
 @findex preview-buffer
 
 @item @kbd{C-c C-p C-d}
 @itemx @code{preview-document} 
 @itemx Preview/Generate previews for document
-Run preview on the present document.
+Run preview on the current document.
 @kindex @kbd{C-c C-p C-d}
 @findex preview-document
 
@@ -197,25 +229,19 @@ Clear out (remove) the previews that are immediately adjacent to point.
 Clear out all previews in current section.
 
 @item @kbd{C-c C-p C-c C-r}
-@itemx @code{preview-clearout (&optional start end keep-dir)}
+@itemx @code{preview-clearout}
 @itemx Preview/Remove previews from region
 @kindex @kbd{C-c C-p C-c C-r}
 @findex preview-clearout
-Clear out all previews in the current region. When called interactively,
-the current region is used. Non-interactively, the region between
-@code{start} and @code{end} is affected. Those two values default to the
-borders of the entire buffer. If @code{keep-dir} is set to a value from
-@code{TeX-active-tempdir}, previews associated with that directory are
-kept.
+Clear out all previews in the current region.
 
 @item @kbd{C-c C-p C-c C-b}
-@itemx @code{preview-clearout-buffer (&optional buffer)}
+@itemx @code{preview-clearout-buffer}
 @itemx Preview/Remove previews from buffer
 @kindex @kbd{C-c C-p C-c C-b}
 @findex preview-clearout-buffer
 Clear out all previews in current buffer. This makes the current buffer
-lose all previews. If run non-interactively @code{buffer} is cleared out
-from previews, current buffer if nil.
+lose all previews.
 
 @item @kbd{C-c C-p C-c C-d}
 @itemx @code{preview-clearout-document}
@@ -248,26 +274,6 @@ tampered with.
 @findex preview-cache-preamble-off
 Clear the pregenerated format file and stop using preambles for the
 current document. If the caching gives you problems, use this.
-
-@item @kbd{C-c C-p C-w}
-@itemx @code{preview-copy-region-as-mml}
-@itemx Copy a region as MML
-@kindex @kbd{C-c C-p C-w}
-@findex preview-copy-region-as-mml
-This option is also available as a variant in the context menu on the
-right mouse button (where the region is the preview that has been
-clicked on).  It copies a string into the kill buffer that will in
-@acronym{MML} mode (as is used in gnus' message mode) cause the
-a reference to the respective image file to be inserted into the mail
-or news article.  If you regenerate or otherwise kill the preview in
-its source buffer before the mail or news gets posted, this will fail.
-Also you should generate images you want to send with
-@var{preview-transparent-border}
-@vindex preview-transparent-border
-set to @samp{nil}, or the images will have an ugly border.  Preview
-your mail with @kbd{M-m P}
-@kindex @kbd{M-m P}
-to make sure it looks fine.
 
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
@@ -322,8 +328,9 @@ artifacts at the edges of your previews.  Playing around with the option
 might improve things.  With some settings, the cursor may cover the
 whole background of a preview, however.
 
-Since this customization group is very specific to the display engine
-in use, you may see somewhat different options under XEmacs.
+This option is specific to the display engine in use.  Its default is
+different in @w{Emacs 21} and @w{Emacs 22}, and it is not available in
+XEmacs.
 
 @item Showing @code{\label}s
 @cindex Showing @code{\label}s
@@ -340,7 +347,6 @@ similar mechanism internal to @previewlatex{}, enable the
 It must be noted, however, that a much better idea may be to use the
 Ref@TeX{} package for managing references.  @xref{RefTeX in a
 Nutshell,,RefTeX in a Nutshell,reftex,The Ref@TeX{} Manual}.
-
 
 @item Open previews automatically
 
@@ -595,6 +601,18 @@ parsing the error messages, it activates all detected previews.  This
 entails throwing away any previous previews covering the same areas, and
 then replacing the text in its visual appearance by a placeholder
 looking like a roadworks sign.
+
+@item preview-nonready-icon-specs
+This is the roadworks sign displayed while previews are being prepared.
+You may want to customize the font sizes at which @previewlatex{}
+switches over between different icon sizes, and the ascent ratio which
+determines how high above the base line the icon gets placed.
+
+@item preview-error-icon-specs
+@itemx preview-icon-specs
+Those are icons placed before the source code of an opened preview and,
+respectively, the image specs to be used for PostScript errors, and a
+normal open preview in text representation.
 
 @item preview-inner-environments
 This is a list of environments that are regarded as inner levels of an

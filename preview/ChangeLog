@@ -1,14 +1,17 @@
 2005-02-11  David Kastrup  <dak@gnu.org>
 
-	* prv-xemacs.el (preview-specs-type): Type for specs defcustom.
-	(preview-tb-icon-specs): Make defcustom.
+	* doc/preview-latex.texi (Keys and lisp): Change descriptions to
+	cater only for interactive use.
+	(Keys and lisp): Explain mouse-3 better.
+	(Keys and lisp): Move preview-copy-region-as-mml explanation up.
+	Explain about the new border avoidance behavior.
+	(The Emacs interface): Explain about how to adapt the various
+	icon-specs.
 
-	* prv-emacs.el (preview-specs-type): Type for specs defcustom.
-	(preview-tb-icon-specs): Make defcustom.
+	* preview.el (preview-specs-type): Type for specs defcustom.
 
-	* preview.el (preview-nonready-icon-specs)
-	(preview-error-icon-specs, preview-icon-specs): move lower and
-	make defcustom from it.
+	(preview-nonready-icon-specs, preview-error-icon-specs)
+	(preview-icon-specs): move lower and make defcustom from it.
 
 2005-02-10  David Kastrup  <dak@gnu.org>
 

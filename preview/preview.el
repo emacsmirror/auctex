@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.228 2005-02-11 01:12:50 dakas Exp $
+;; $Id: preview.el,v 1.229 2005-02-11 03:47:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -83,6 +83,25 @@ preview-latex's bug reporting commands will probably not work.")))
   :group 'preview
   :prefix "preview-")
 
+(defconst preview-specs-type
+  '(repeat
+    (list :tag "Image spec"
+	  (const :format "" :type)
+	  (choice :tag "Image type"
+		  (const xpm)
+		  (const xbm)
+		  (symbol :tag "Other"))
+	  (set :inline t :tag "Minimum font size"
+	       (list :inline t :tag ""
+		     (const :format "" :min)
+		     (integer :tag "pixels")))
+	  (const :format "" :file) (string :tag "Filename")
+	  (set :inline t :tag "Ascent ratio"
+	       (list :inline t :tag ""
+		     (const :format "" :ascent)
+		     (integer :tag "percent of image"
+			      :value 50))))))
+
 (defcustom preview-nonready-icon-specs
   '((:type xpm :min 24 :file "prvwrk24.xpm" :ascent 90)
     (:type xpm :min 20 :file "prvwrk20.xpm" :ascent 90)
@@ -101,7 +120,7 @@ spec to avoid unnecessary evaluation time."
 
 (defvar preview-nonready-icon)
 
-(defvar preview-error-icon-specs
+(defcustom preview-error-icon-specs
   '((:type xpm :min 24 :file "prverr24.xpm" :ascent 90)
     (:type xpm :min 20 :file "prverr20.xpm" :ascent 90)
     (:type xpm :min 16 :file "prverr16.xpm" :ascent 90)
@@ -119,7 +138,7 @@ spec to avoid unnecessary evaluation time."
 
 (defvar preview-error-icon)
 
-(defvar preview-icon-specs
+(defcustom preview-icon-specs
   '((:type xpm :min 24 :file "prvtex24.xpm" :ascent 75)
     (:type xpm :min 20 :file "prvtex20.xpm" :ascent 75)
     (:type xpm :min 16 :file "prvtex16.xpm" :ascent 75)
@@ -3196,7 +3215,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.228 $"))
+	(rev "$Revision: 1.229 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3207,7 +3226,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-11 01:12:50 $"))
+    (let ((date "$Date: 2005-02-11 03:47:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
