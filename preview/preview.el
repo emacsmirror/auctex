@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.31 2001-10-15 00:58:29 dakas Exp $
+;; $Id: preview.el,v 1.32 2001-10-15 21:37:42 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -717,7 +717,7 @@ snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end)
-	      (make-overlay start end nil t nil))))
+	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
@@ -1046,7 +1046,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.31 $"))
+	(rev "$Revision: 1.32 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
