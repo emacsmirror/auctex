@@ -1,4 +1,11 @@
-2003-10-07  Jan-Ake Larsson  <jalar@mai.liu.se>
+2003-10-07  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/misc.c:
+	* dvipng/dvipng.texi: Allow for -- on options
+
+	* dvipng/configure.ac: Prepare for 0.7 
+
+	* dvipng/Makefile.in: Adjust hint
 
 	* dvipng/configure.ac:
 	* dvipng/config.h.in: Fix helptext in config.h.in
