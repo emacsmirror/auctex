@@ -1,3 +1,9 @@
+2002-04-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* problems.texi: Slight index change
+
+	* preview-latex.texi (Keys and lisp): Added the menu entries
+
 2002-04-23  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* autogen.sh: Test for unique file 'preview.el' in autoconf 2.13
