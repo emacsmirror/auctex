@@ -7,7 +7,7 @@
 	* doc/macros.texi: Compatibility macros, initial version 
 
 	* configure.in: Do the makeinfo tests, for compatibility with
-	texinfo 3.12
+	texinfo 3.12, test for tex
 
 	* doc/install.texi: Changed to document the autoconf stuff 
 
