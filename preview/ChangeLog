@@ -1,3 +1,9 @@
+2002-12-06  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-open): Another GhostScript security work
+	around, this time leaving off something that confuses 7.x
+	releases of AFPL GhostScript.
+
 2002-12-03  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in:
