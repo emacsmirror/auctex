@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.97 2002-04-04 21:06:54 nixsf Exp $
+;; $Id: preview.el,v 1.98 2002-04-05 13:15:44 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1630,32 +1630,37 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 		(save-excursion
 		  (save-restriction
 		    (widen)
-		    (if (and (eq (current-buffer) lbuffer)
-			     (<= lline line))
-			;; while Emacs does the perfectly correct
-			;; thing even when when the line differences
-			;; get zero or negative, I don't trust this
-			;; to be universally the case across other
-			;; implementations.  Besides, if the line
-			;; number gets smaller again, we are probably
-			;; rereading the file, and restarting from
-			;; the beginning will probably be faster.
+		    ;; a fast hook might have positioned us already:
+		    (if (number-or-marker-p string)
 			(progn
-			  (goto-char lpoint)
-			  (if (/= lline line)
-			      (if (eq selective-display t)
-				  (re-search-forward "[\n\C-m]" nil
-						     'end
-						     (- line lline))
-				(forward-line (- line lline)))))
-		      (goto-line line))
+			  (goto-char string)
+			  (setq lpoint (line-beginning-position)))
+		      (if (and (eq (current-buffer) lbuffer)
+			       (<= lline line))
+			  ;; while Emacs does the perfectly correct
+			  ;; thing even when when the line differences
+			  ;; get zero or negative, I don't trust this
+			  ;; to be universally the case across other
+			  ;; implementations.  Besides, if the line
+			  ;; number gets smaller again, we are probably
+			  ;; rereading the file, and restarting from
+			  ;; the beginning will probably be faster.
+			  (progn
+			    (goto-char lpoint)
+			    (if (/= lline line)
+				(if (eq selective-display t)
+				    (re-search-forward "[\n\C-m]" nil
+						       'end
+						       (- line lline))
+				  (forward-line (- line lline)))))
+			(goto-line line))
+		      (setq lpoint (point))
+		      (if (search-forward (concat string after-string)
+					  (line-end-position) t)
+			  (backward-char (length after-string))
+			(search-forward string (line-end-position) t)))
 		    (setq lline line
-			  lpoint (point)
 			  lbuffer (current-buffer))
-		    (if (search-forward (concat string after-string)
-					(line-end-position) t)
-			(backward-char (length after-string))
-		      (search-forward string (line-end-position) t))
 		    (if box
 			(progn
 			  (if (and lstart (= snippet lsnippet))
@@ -1781,7 +1786,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.97 $"))
+	(rev "$Revision: 1.98 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
