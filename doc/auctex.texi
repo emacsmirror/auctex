@@ -1361,7 +1361,7 @@ Face: @code{font-lock-function-name-face}
 Keywords for macros defining or related to references, like
 @samp{\ref}.@*
 Type: @samp{\macro[...]@{...@}}@*
-Face: @code{font-lock-reference-face}
+Face: @code{font-lock-constant-face}
 
 @item font-latex-match-textual-keywords
 Keywords for macros specifying textual content, like @samp{\caption}.@*
