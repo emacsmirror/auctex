@@ -2748,19 +2748,20 @@ formatting."
   "Move point to the \\end of the current environment."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
-	(level 1))
+	(level 1)
+	(in-comment (TeX-in-commented-line)))
     (save-excursion
       (skip-chars-backward "a-zA-Z \t{")
-      (if (bolp)
-	  nil
+      (unless (bolp)
 	(backward-char 1)
 	(and (looking-at regexp)
 	     (char-equal (char-after (1+ (match-beginning 0))) ?e)
 	     (setq level 0))))
     (while (and (> level 0) (re-search-forward regexp nil t))
-      (if (= (char-after (1+ (match-beginning 0))) ?b);;begin
-	  (setq level (1+ level))
-	(setq level (1- level))))
+      (when (eq in-comment (TeX-in-commented-line))
+	(if (= (char-after (1+ (match-beginning 0))) ?b);;begin
+	    (setq level (1+ level))
+	  (setq level (1- level)))))
     (if (= level 0)
 	(search-forward "}")
       (error "Can't locate end of current environment"))))
@@ -2769,7 +2770,8 @@ formatting."
   "Move point to the \\begin of the current environment."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
-	(level 1))
+	(level 1)
+	(in-comment (TeX-in-commented-line)))
     (skip-chars-backward "a-zA-Z \t{")
     (if (bolp)
 	nil
@@ -2778,9 +2780,10 @@ formatting."
 	   (char-equal (char-after (1+ (match-beginning 0))) ?b)
 	   (setq level 0)))
     (while (and (> level 0) (re-search-backward regexp nil t))
-      (if (= (char-after (1+ (match-beginning 0))) ?e);;end
-	  (setq level (1+ level))
-	(setq level (1- level))))
+      (when (eq in-comment (TeX-in-commented-line))
+	(if (= (char-after (1+ (match-beginning 0))) ?e);;end
+	    (setq level (1+ level))
+	  (setq level (1- level)))))
     (or (= level 0)
 	(error "Can't locate beginning of current environment"))))
 
