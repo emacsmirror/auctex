@@ -11,7 +11,7 @@
 ;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.11 2002-01-21 14:22:54 psg Exp $
+;; RCS $Id: font-latex.el,v 5.12 2002-12-07 16:29:12 dak Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -556,8 +556,10 @@ prone to infinite loop bugs.")))
 	  (font-lock-comment-start-regexp . "%")
 	  (font-lock-mark-block-function . mark-paragraph)
           (font-lock-syntactic-keywords 
-           . (("\\\\begin{verbatim}\\(\n\\)" (1 '(7)))
-              ("\\(\n\\)\\\\end{verbatim}" (1 '(7)))))
+           . (("^\\\\begin *{verbatim\\*?}\\(.?\\).*\\(\n\\)" (1 "<") (2 "|"))
+	      ("\\(\n\\)\\\\end *{verbatim\\*?}\\(.?\\)" (1 "|") (2 "<"))
+	      ("\\\\verb\\*?\\([^a-z@]\\).*?\\(\\1\\)" (1 "\"") (2 "\""))
+	      ))
           )))
 
 ;; Should not be necessary since XEmacs' font-lock also supports
