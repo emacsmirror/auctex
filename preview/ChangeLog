@@ -1,5 +1,12 @@
 2002-12-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-string-expand): Get optional separator
+	argument.
+	(preview-expandable-string): Change type somewhat.
+	(preview-clearout-document): doc change.
+	(preview-default-preamble, preview-LaTeX-command): Simplify to
+	changed definition of preview-expandable-string.
+
 	* prv-xemacs.el (preview-mode-setup, preview-watch-preamble) 
 	(preview-unwatch-preamble): Differentiate between unwanted formats
 	and formats without loaded master file.
