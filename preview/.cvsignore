@@ -1,6 +1,13 @@
+*.aux
 *.dvi
 *.log
-*.aux
 *.prv
-preview.ins
+config.cache
+config.status
+configure
+prauctex.def
+preview-mk.ins
 preview.drv
+preview.ins
+preview.sty
+testdocstrip.tex

@@ -1,0 +1,39 @@
+
+@SET_MAKE@
+LATEX=@LATEX@
+EMACS=@EMACS@
+
+prefix = @prefix@
+lispdir = @lispdir@/preview
+previewtexmfdir = @previewtexmfdir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+
+all: preview.sty prauctex.def preview.drv \
+   preview.ins preview.dvi preview.elc
+
+install: install-texmf install-el
+
+install-el: preview.elc preview.el
+	-mkdir -p $(lispdir)
+	$(INSTALL_DATA) preview.elc $(lispdir)
+	$(INSTALL_DATA) preview.el $(lispdir)
+
+install-texmf: preview.sty prauctex.def preview.drv
+	-mkdir -p $(previewtexmfdir)
+	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
+	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
+	$(INSTALL_DATA) preview.drv $(previewtexmfdir)
+
+preview.ins: preview.dtx
+	tex '\nonstopmode\def\jobname{ugh.ins}\input docstrip \askforoverwritefalse\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}\endbatchfile'
+
+preview.sty auctex.pde preview.drv: preview.dtx preview.ins ${INSTALLDIR}
+	TEXMFOUTPUT=${INSTALLDIR} tex preview.ins
+
+preview.dvi: preview.drv preview.dtx
+	latex -interaction nonstopmode preview.drv
+
+preview.elc: preview.el
+	$(EMACS) -batch -q -no-site-file -f batch-byte-compile preview.el
