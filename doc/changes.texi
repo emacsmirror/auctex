@@ -2,6 +2,10 @@
 
 @itemize @bullet
 @item
+Support for the KOMA-Script classes.
+Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
+
+@item
 Support for @file{prosper.sty}, see @url{http://prosper.sourceforge.net/}.
 Contributed by Phillip Lord <p.lord@@russet.org.uk>.
 
