@@ -48,7 +48,7 @@ preview.dvi: preview.drv preview.dtx
 	$(LATEX) -interaction nonstopmode preview.drv
 
 preview.elc: preview.el
-	$(ELCC) $(AUCTEXDIR) -f batch-byte-compile preview.el
+	$(ELCC) $(AUCTEX) -f batch-byte-compile preview.el
 
 
 clean:
