@@ -8,7 +8,7 @@
 #
 
 prefix = @prefix@
-datadir = @datadir@ 
+datadir = @datadir@
 infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
@@ -22,7 +22,7 @@ MKINSTALLDIRS = ./mkinstalldirs
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -l lpath.el
 
-.SUFFIXES: .el .elc .texi 
+.SUFFIXES: .el .elc .texi
 
 SHELL = /bin/sh
 
@@ -37,7 +37,7 @@ REMOVE =  MSDOS VMS OS2 WIN-NT
 MINMAPSRC = all.el multi-prompt.el
 
 CONTRIB = bib-cite.el tex-jp.el tex-fptex.el
-CONTRIBELC = bib-cite.elc 
+CONTRIBELC = bib-cite.elc
 
 AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
@@ -76,7 +76,7 @@ EXTRAFILES = COPYING PROBLEMS IRIX Makefile ChangeLog \
 all:	lisp
 
 lisp:
-	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) 
+	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
 
 some:	$(AUCELC) $(STYLESRC:.el=.elc)
 
@@ -136,9 +136,9 @@ distclean: clean
 	rm -f Makefile config.*
 
 wc:
-	wc $(AUCSRC) $(STYLESRC) 
+	wc $(AUCSRC) $(STYLESRC)
 
-dist:	
+dist:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	if [ "X$(OLD)" = "X" ]; then echo "No patch"; exit 1; fi
 	@echo "**********************************************************"
@@ -156,9 +156,9 @@ dist:
 	cat ChangeLog.old >> ChangeLog
 	cvs commit -m 'Release_$(TAG)'
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
-	mkdir auctex-$(TAG) 
+	mkdir auctex-$(TAG)
 	mkdir auctex-$(TAG)/style
-	mkdir auctex-$(TAG)/doc 
+	mkdir auctex-$(TAG)/doc
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) auctex-$(TAG)/style
 	touch auctex-$(TAG)/style/.nosearch
@@ -179,6 +179,6 @@ patch:
 		$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch; exit 0
 
 min-map:
-	-cvs add $(MINMAPSRC) 
+	-cvs add $(MINMAPSRC)
 	cvs commit -m "Update"
-	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR) 
+	cp $(MINMAPSRC) doc/math-ref.tex $(FTPDIR)
