@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.79 1994-02-25 05:53:55 amanda Exp $
+@c $Id: auc-tex.texi,v 1.80 1994-02-26 03:44:56 amanda Exp $
 
 @finalout
 @titlepage
@@ -2475,11 +2475,24 @@ this version, and for the authors, who get nostalgic at times.
 
 Coordinater: Per Abrahamsen, 1994.
 
-Alpha testers (in order of appearance):  Volker Dobler
-@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>},  Piet van Oostrum
-@samp{<piet@@cs.ruu.nl>}, and probably more.@refill
+Alpha testers (in order of appearance): Volker Dobler
+@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>}, Piet van Oostrum
+@samp{<piet@@cs.ruu.nl>}, Frederic Devernay
+@samp{<Frederic.Devernay@@sophia.inria.fr>} and probably more.@refill
 
 @itemize @bullet
+@item
+Filling will not let display math equations @samp{\[ ... \]} be on a
+line by themselves.  Reported by Matthew Morley
+@samp{<Matthew.Morley@@gmd.de>}. 
+
+@item
+Made @code{words-include-escapes} default to nil.  
+
+@item
+Made @code{TeX-expand-list} expansions case sensitive.  Thanks to Havard
+Rue @samp{<Havard.Rue@@sima.sintef.no>}.
+
 @item
 Fixed error in calculating indentation for lines starting with a brace.
 Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.

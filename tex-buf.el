@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.57 1994-02-25 05:53:37 amanda Exp $
+;; $Id: tex-buf.el,v 1.58 1994-02-26 03:44:44 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -224,7 +224,8 @@ LIST default to TeX-expand-list."
   (if (null list)
       (setq list TeX-expand-list))
   (while list
-    (let ((string (car (car list)))	;First element
+    (let ((case-fold-search nil) ; Do not ignore case.
+	  (string (car (car list)))	;First element
 	  (expansion (car (cdr (car list)))) ;Second element
 	  (arguments (cdr (cdr (car list))))) ;Remaining elements
       (while (string-match string command)
