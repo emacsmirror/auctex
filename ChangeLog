@@ -1,5 +1,9 @@
 2003-02-15  David Kastrup  <dak@gnu.org>
 
+	* README.CVS: Check in a first version.  Ok, it currently
+	contains a few lies, but the basics are not wrong, and hopefully
+	we will have soon what it takes to make it true.
+
 	* doc/auc-tex.texi: Name change of AUC TeX to AUCTeX.  A few
 	other cleanups.
 
