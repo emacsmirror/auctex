@@ -1,3 +1,12 @@
+Thu Apr 17 14:25:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7p released.
+
+Sat Apr 12 22:38:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Added customize information.
+	* tex-buf.el: Ditto.
+
 Sun Apr 06 19:28:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7o released.

@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7o
+;; Version: 9.7p
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -22,23 +22,24 @@
 
 ;;; Code:
 
-(defvar no-doc
-  "This function is part of AUC TeX, but has not yet been loaded.
-Full documentation will be available after autoloading the function."
-  "Documentation for autoload functions.")
+(require 'tex)
 
 ;;; Customization:
 
-(defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
-  "*Use asynchronous processes.")
+(defcustom TeX-process-asynchronous (not (eq system-type 'ms-dos))
+  "*Use asynchronous processes."
+  :group 'TeX-commands
+  :type 'boolean)
 
-(defvar TeX-shell
+(defcustom TeX-shell
   (if (memq system-type '(ms-dos emx windows-nt))
       shell-file-name
     "/bin/sh")
-  "Name of shell used to parse TeX commands.")
+  "Name of shell used to parse TeX commands."
+  :group 'TeX-commands
+  :type 'file)
 
-(defvar TeX-shell-command-option
+(defcustom TeX-shell-command-option
   (cond ((memq system-type '(ms-dos emx windows-nt) )
 	 (cond ((boundp 'shell-command-option)
 		shell-command-option)
@@ -48,7 +49,9 @@ Full documentation will be available after autoloading the function."
 		"/c")))
 	(t				;Unix & EMX (Emacs 19 port to OS/2)
 	 "-c"))
-  "Shell argument indicating that next argument is the command.")
+  "Shell argument indicating that next argument is the command."
+  :group 'TeX-commands
+  :type 'string)
 
 ;;; Interactive Commands
 ;;
@@ -270,8 +273,10 @@ in TeX-check-path."
 		  (setq found t))))))
     found))
 
-(defvar TeX-save-query t
-  "*If non-nil, ask user for permission to save files before starting TeX.")
+(defcustom TeX-save-query t
+  "*If non-nil, ask user for permission to save files before starting TeX."
+  :group 'TeX-commands
+  :type 'boolean)
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
@@ -358,8 +363,10 @@ entry."
   "Hooks to run after starting an asynchronous process.
 Used by Japanese TeX to set the coding system.")
 
-(defvar TeX-show-compilation nil
-  "*If non-nil, show output of TeX compilation in other window.")
+(defcustom TeX-show-compilation nil
+  "*If non-nil, show output of TeX compilation in other window."
+  :group 'TeX-commands
+  :type 'boolean)
 
 (defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
@@ -906,8 +913,10 @@ the directory."
 		(t
 		 TeX-region))))
 
-(defvar TeX-region "_region_"
-  "*Base name for temporary file for use with TeX-region.")
+(defcustom TeX-region "_region_"
+  "*Base name for temporary file for use with TeX-region."
+  :group 'TeX-commands
+  :type 'string)
 
 ;;; Parsing
 
@@ -1196,7 +1205,7 @@ Return nil if we gave a report."
 
 ;;; Error Messages
 
-(defvar TeX-error-description-list
+(defcustom TeX-error-description-list
   '(("Bad \\\\line or \\\\vector argument.*" .
 "The first argument of a \\line or \\vector command, which specifies the
 slope, is illegal\.")
@@ -1603,7 +1612,11 @@ page without enough text on it. ")
 \\{TeX-help-error} to display help-text on an error message or warning.
 err-regexp should be a regular expression matching the error message
 given from TeX/LaTeX, and context should be some lines describing that
-error")
+error"
+  :group 'TeX-output
+  :type '(repeat (cons :tag "Entry"
+		       (regexp :tag "Match")
+		       (string :format "Description:\n%v"))))
 
 (provide 'tex-buf)
 

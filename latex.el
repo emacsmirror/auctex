@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7o
+;; Version: 9.7p
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -38,14 +38,18 @@
 
 ;;; Style
 
-(defvar LaTeX-default-style "article"
-  "*Default when creating new documents.")
+(defcustom LaTeX-default-style "article"
+  "*Default when creating new documents."
+  :group 'LaTeX-environment
+  :type 'string)
 
   (make-variable-buffer-local 'LaTeX-default-style)
 
-(defvar LaTeX-default-options nil
-  "*Default options to documentstyle.
-A list of strings.")
+(defcustom LaTeX-default-options nil
+  "Default options to documentstyle.
+A list of strings."
+  :group 'LaTeX-environment
+  :type '(repeat (string :format "%v")))
 
  (make-variable-buffer-local 'LaTeX-default-options)
 
@@ -174,12 +178,15 @@ section."
 	(nth 1 entry)
       nil)))
 
-(defvar TeX-outline-extra nil
-  "*List of extra TeX outline levels.
+(defcustom TeX-outline-extra nil
+  "List of extra TeX outline levels.
 
 Each element is a list with two entries.  The first entry is the
 regular expression matching a header, and the second is the level of
-the header.  See LaTeX-section-list for existing header levels.")
+the header.  See LaTeX-section-list for existing header levels."
+  :group 'LaTeX
+  :type '(repeat (group (regexp :tag "Match")
+			(integer :tag "Level"))))
 
 (defun LaTeX-outline-regexp (&optional anywhere)
   "Return regexp for LaTeX sections.  
@@ -245,13 +252,13 @@ If so, return the second element, otherwise return nil."
 (add-hook 'TeX-remove-style-hook
 	  (function (lambda () (setq LaTeX-largest-level nil))))
 
-(defvar LaTeX-section-hook
+(defcustom LaTeX-section-hook
   '(LaTeX-section-heading
     LaTeX-section-title
 ;; LaTeX-section-toc		; Most people won't want this
     LaTeX-section-section
     LaTeX-section-label)
-  "*List of hooks to run when a new section is inserted.
+  "List of hooks to run when a new section is inserted.
 
 The following variables are set before the hooks are run
 
@@ -289,20 +296,37 @@ To get a full featured LaTeX-section command, insert
 	 LaTeX-section-section
 	 LaTeX-section-label))
 
-in your .emacs file.")
+in your .emacs file."
+  :type 'hook
+  :options '(LaTeX-section-heading
+	     LaTeX-section-title
+	     LaTeX-section-toc
+	     LaTeX-section-section
+	     LaTeX-section-label))
 
-(defvar LaTeX-section-label
+
+(defcustom LaTeX-section-label
   '(("chapter" . "cha:")
     ("section" . "sec:")
     ("subsection" . "sec:"))
-  "*Default prefix when asking for a label.
+  "Default prefix when asking for a label.
 
 If it is a string, it it used unchanged for all kinds of sections. 
 If it is nil, no label is inserted.
 If it is a list, the list is searched for a member whose car is equal
 to the name of the sectioning command being inserted.  The cdr is then
 used as the prefix.  If the name is not found, or if the cdr is nil,
-no label is inserted.")
+no label is inserted."
+  :group 'LaTeX-label
+  :type '(choice (const :tag "none" nil)
+		 (string :format "%v" :tag "Common")
+		 (repeat :menu-tag "Level specific"
+			 :format "\n%v%i"
+			 (cons :format "%v"
+			       (string :tag "Type")
+			       (choice :tag "Prefix"
+				       (const :tag "none" nil)
+				       (string  :format "%v"))))))
 
 ;;; Section Hooks.
 
@@ -364,8 +388,14 @@ The beaviour of this hook is controled by LaTeX-section-label."
 
 ;;; Environments
 
-(defvar LaTeX-default-environment "itemize"
-  "*The default environment when creating new ones with LaTeX-environment.")
+(defgroup LaTeX-environment nil
+  "Environments in AUC TeX."
+  :group 'LaTeX-macro)
+
+(defcustom LaTeX-default-environment "itemize"
+  "*The default environment when creating new ones with LaTeX-environment."
+  :group 'LaTeX-environment
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-default-environment)
 
 (defun LaTeX-environment (arg)
@@ -577,38 +607,61 @@ To insert a hook here, you must insert it in the appropiate style file.")
   (run-hooks 'LaTeX-document-style-hook)
   (setq LaTeX-document-style-hook nil))
 
-(defvar LaTeX-float "htbp"
+(defcustom LaTeX-float "htbp"
   "*Default float when creating figure and table environments.
-Set to nil if you don't want any float.")
+Set to nil if you don't want any float."
+  :group 'LaTeX-environment
+  :type '(choice (const :tag "none" nil)
+		 (string :format "%v")))
  (make-variable-buffer-local 'LaTeX-float)
 
-(defvar LaTeX-label-function nil
+(defgroup LaTeX-label nil
+  "Adding labels for LaTeX commands in AUC TeX."
+  :group 'LaTeX)
+
+(defcustom LaTeX-label-function nil
   "*A function inserting a label at point.
 Sole argument of the function is the environment. The function has to return
-the label inserted, or nil if no label was inserted.")
+the label inserted, or nil if no label was inserted."
+  :group 'LaTeX-label
+  :type 'function)
 
-(defvar LaTeX-figure-label "fig:"
-  "*Default prefix to figure labels.")
+(defcustom LaTeX-figure-label "fig:"
+  "*Default prefix to figure labels."
+  :group 'LaTeX-label
+  :group 'LaTeX-environment
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-figure-label)
 
-(defvar LaTeX-table-label "tab:"
-  "*Default prefix to table labels.")
+(defcustom LaTeX-table-label "tab:"
+  "*Default prefix to table labels."
+  :group 'LaTeX-label
+  :group 'LaTeX-environment
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-table-label)
 
-(defvar LaTeX-default-format ""
-  "Specifies the default format string for array and tabular environments.")
+(defcustom LaTeX-default-format ""
+  "Specifies the default format string for array and tabular environments."
+  :group 'LaTeX-environment
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-default-format)
 
-(defvar LaTeX-default-position ""
-  "Specifies the default position string for array and tabular environments.")
+(defcustom LaTeX-default-position ""
+  "Specifies the default position string for array and tabular environments."
+  :group 'LaTeX-environment
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-default-position)
 
-(defvar LaTeX-equation-label "eq:"
-  "*Default prefix to equation labels.")
+(defcustom LaTeX-equation-label "eq:"
+  "*Default prefix to equation labels."
+  :group 'LaTeX-label
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-equation-label)
 
-(defvar LaTeX-eqnarray-label "eq:"
-  "*Default prefix to eqnarray labels.")
+(defcustom LaTeX-eqnarray-label LaTeX-equation-label
+  "*Default prefix to eqnarray labels."
+  :group 'LaTeX-label
+  :type 'string)
  (make-variable-buffer-local 'LaTeX-eqnarray-label)
 
 (defun LaTeX-env-item (environment)
@@ -1159,12 +1212,14 @@ Used for specifying extra syntax for a macro."
   "Prompt for a LaTeX savebox."
   (TeX-arg-savebox optional prompt t))
 
-(defvar LaTeX-style-list '(("book")
-			   ("article")
-			   ("letter")
-			   ("slides")
-			   ("report"))
-  "*List of document styles.")
+(defcustom LaTeX-style-list '(("book")
+			      ("article")
+			      ("letter")
+			      ("slides")
+			      ("report"))
+  "List of document styles."
+  :group 'LaTeX-environment
+  :type '(repeat (group (string :format "%v"))))
 
   (make-variable-buffer-local 'LaTeX-style-list)
 
@@ -1192,7 +1247,7 @@ Used for specifying extra syntax for a macro."
   (TeX-update-style))
 
 (defvar TeX-global-input-files nil
-  "*List of the non-local TeX input files. 
+  "List of the non-local TeX input files. 
 
 Initialized once at the first time you prompt for an input file.
 May be reset with `C-u \\[TeX-normal-mode]'.")
@@ -1228,7 +1283,7 @@ If the flag is set, only complete with local files."
     (TeX-argument-insert file optionel)))
 
 (defvar BibTeX-global-style-files nil
-  "*Association list of BibTeX style files.
+  "Association list of BibTeX style files.
 
 Initialized once at the first time you prompt for an input file.
 May be reset with `C-u \\[TeX-normal-mode]'.")
@@ -1253,7 +1308,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
    optional))
 
 (defvar BibTeX-global-files nil
-  "*Association list of BibTeX files.
+  "Association list of BibTeX files.
 
 Initialized once at the first time you prompt for an BibTeX file.
 May be reset with `C-u \\[TeX-normal-mode]'.")
@@ -1341,12 +1396,17 @@ comma."
     ("\\lceil" . "\\rceil")
     ("\\langle" . "\\rangle")))
 
-(defvar TeX-braces-user-association nil
+(defcustom TeX-braces-user-association nil
   "A list of your personal association of brace symbols.
 These are used for \\left and \\right.
 
 The car of each entry is the brace used with \\left,
-the cdr is the brace used with \\right.")
+the cdr is the brace used with \\right."
+  :group 'LaTeX-macro
+  :group 'LaTeX-math
+  :type '(repeat (cons :format "%v"
+		       (string :tag "Left")
+		       (string :tag "Right"))))
 
 (defvar TeX-braces-association
   (append TeX-braces-user-association
@@ -1392,14 +1452,25 @@ the cdr is the brace used with \\right.")
 
 ;;; Indentation
 
-(defvar LaTeX-indent-level 2
-  "*Indentation of begin-end blocks in LaTeX.")
+(defgroup LaTeX-indentation nil
+  "Indentation of LaTeX code in AUC TeX"
+  :group 'LaTeX
+  :group 'TeX-indentation)
 
-(defvar LaTeX-item-indent (- LaTeX-indent-level)
-  "*Extra indentation for lines beginning with an item.")
+(defcustom LaTeX-indent-level 2
+  "*Indentation of begin-end blocks in LaTeX."
+  :group 'LaTeX-indentation
+  :type 'integer)
 
-(defvar LaTeX-item-regexp "\\(bib\\)?item\\b"
-  "*Regular expression matching macros considered items.")
+(defcustom LaTeX-item-indent (- LaTeX-indent-level)
+  "*Extra indentation for lines beginning with an item."
+  :group 'LaTeX-indentation
+  :type 'integer)
+
+(defcustom LaTeX-item-regexp "\\(bib\\)?item\\b"
+  "*Regular expression matching macros considered items."
+  :group 'LaTeX-indentation
+  :type 'regexp)
 
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
@@ -1685,17 +1756,26 @@ comments and verbatim environments"
 The second element in each entry is the function to calculate the
 indentation level in columns.")
 
-(defvar LaTeX-indent-environment-check t
-  "*If non-nil, check for any special environments.")
+(defcustom LaTeX-indent-environment-check t
+  "*If non-nil, check for any special environments."
+  :group 'LaTeX-indentation
+  :type 'boolean)
 
-(defvar LaTeX-left-comment-regexp "%%%"
-  "*Regexp matching comments that should be placed on the left margin.")
+(defcustom LaTeX-left-comment-regexp "%%%"
+  "*Regexp matching comments that should be placed on the left margin."
+  :group 'LaTeX-indentation
+  :type 'regexp)
 
-(defvar LaTeX-right-comment-regexp "%[^%]"
-  "*Regexp matching comments that should be placed to the right margin.")
+(defcustom LaTeX-right-comment-regexp "%[^%]"
+  "*Regexp matching comments that should be placed to the right margin."
+  :group 'LaTeX-indentation
+  :type 'regexp)
 
-(defvar LaTeX-ignore-comment-regexp nil
-  "*Regexp matching comments that whose indentation should not be touched.")
+(defcustom LaTeX-ignore-comment-regexp nil
+  "*Regexp matching comments that whose indentation should not be touched."
+  :group 'LaTeX-indentation
+  :type '(choice (const :tag "none" nil)
+		 (regexp :format "%v")))
 
 (defun LaTeX-indent-calculate ()
   ;; Return the correct indentation of line of LaTeX source. (I hope...)
@@ -1736,8 +1816,10 @@ indentation level in columns.")
 	   (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
 	  (t (LaTeX-indent-calculate-last)))))
 
-(defvar LaTeX-left-right-indent-level LaTeX-indent-level
-  "*The level of indentation produced by a \\left macro.")
+(defcustom LaTeX-left-right-indent-level LaTeX-indent-level
+  "*The level of indentation produced by a \\left macro."
+  :group 'LaTeX-indentation
+  :type 'integer)
 
 (defun LaTeX-indent-level-count ()
   ;; Count indentation change caused by all \left, \right, \begin, and
@@ -1817,7 +1899,11 @@ The point is supposed to be at the beginning of the current line."
 
 ;;; Math Minor Mode
 
-(defvar LaTeX-math-list nil
+(defgroup LaTeX-math nil
+  "Mathematics in AUC TeX."
+  :group 'LaTeX-macro)
+
+(defcustom LaTeX-math-list nil
   "AList of your personal LaTeX math symbols.  
 
 Each entry should be a list with three elements, KEY, VALUE, and MENU.
@@ -1826,7 +1912,15 @@ math minor mode, VALUE can be a string with the name of the macro to
 be inserted, or a function to be called.  The optional third element is
 the name of the submenu where the command should be added.
 
-See also `LaTeX-math-menu'.")
+See also `LaTeX-math-menu'."
+  :group 'LaTeX-math
+  :type '(repeat (group (choice (const :tag "none")
+				(character :format "%v\n"))
+			(string :tag "Symbol")
+			(choice :tag "Menu"
+				(string :tag "Name" :format "%v")
+				(repeat :tag "Path"
+					(string :format "%v"))))))
 
 (defconst LaTeX-math-default
   '((?a "alpha" "greek")
@@ -2344,8 +2438,10 @@ See also `LaTeX-math-menu'.")
     (nil "subarray" ("AMS" "Special"))
     (nil "sideset" ("AMS" "Special"))))
 
-(defvar LaTeX-math-abbrev-prefix "`"
-  "Prefix key for use in `LaTeX-math-mode'.")
+(defcustom LaTeX-math-abbrev-prefix "`"
+  "Prefix key for use in `LaTeX-math-mode'."
+  :group 'LaTeX-math
+  :type 'string)
 
 (defvar LaTeX-math-keymap (make-sparse-keymap)
   "Keymap used for LaTeX-math-mode commands.")
@@ -2643,7 +2739,7 @@ commands are defined:
 	      ["Reset Buffer" TeX-normal-mode t]
 	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
-(defvar LaTeX-font-list
+(defcustom LaTeX-font-list
   '((?\C-b "\\textbf{" "}")
     (?\C-c "\\textsc{" "}")
     (?\C-e "\\emph{" "}")
@@ -2656,23 +2752,43 @@ commands are defined:
     (?\C-t "\\texttt{" "}")
     (?\C-u "\\textup{" "}")
     (?\C-d "" "" t))
-  "Font commands used with LaTeX2e.  See `TeX-font-list'.")
+  "Font commands used with LaTeX2e.  See `TeX-font-list'."
+  :group 'LaTeX-macro
+  :type '(repeat (group (character :tag "Key")
+			(string :tag "Prefix")
+			(string :tag "Suffix")
+			(option (sexp :format "Replace\n" 
+				      :value t)))))
 
 ;;; Mode
 
-(defvar TeX-arg-cite-note-p nil
-  "*If non-nil, ask for optional note in citations.")
+(defgroup LaTeX-macro nil
+  "Special support for LaTeX macros in AUC TeX."
+  :prefix "TeX-"
+  :group 'LaTeX
+  :group 'TeX-macro)
 
-(defvar TeX-arg-footnote-number-p nil
-  "*If non-nil, ask for optional number in footnotes.")
+(defcustom TeX-arg-cite-note-p nil
+  "*If non-nil, ask for optional note in citations."
+  :type 'boolean
+  :group 'LaTeX-macro)
 
-(defvar TeX-arg-item-label-p nil
+(defcustom TeX-arg-footnote-number-p nil
+  "*If non-nil, ask for optional number in footnotes."
+  :type 'boolean
+  :group 'LaTeX-macro)
+
+(defcustom TeX-arg-item-label-p nil
   "*If non-nil, always ask for optional label in items.
-Otherwise, only ask in description environments.")
+Otherwise, only ask in description environments."
+  :type 'boolean
+  :group 'LaTeX-macro)
 
-(defvar TeX-arg-right-insert-p t
+(defcustom TeX-arg-right-insert-p t
   "*If non-nil, always insert automatically the corresponding \\right.
-This happens when \\left is inserted.")
+This happens when \\left is inserted."
+  :type 'boolean
+  :group 'LaTeX-macro)
 
 (defvar LaTeX-paragraph-commands
   (concat "\\[\\|\\]\\|"  ; display math delimitors
