@@ -15,8 +15,8 @@
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.8
-Release: 	2%{distri}
+Version: 	0.8.1
+Release: 	1%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
