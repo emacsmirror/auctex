@@ -1,3 +1,10 @@
+2005-03-03  Thomas Baumann  <thomas.baumann@ch.tum.de>
+
+	* style/beamer.el (LaTeX-beamer-item-overlay-flag): New variable.
+	Used for controling the insertion of overlays in
+	`LaTeX-item-beamer'.
+	(LaTeX-item-beamer): Use it.
+
 2005-03-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (I18n): Fix some markup errors.
