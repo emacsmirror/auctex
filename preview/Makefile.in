@@ -26,7 +26,7 @@ MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint
 
-elisp: $(LISP_OBJS)
+elisp: $(LISP_OBJS) preview-latex.el
 
 texmf: 
 	(cd latex ; $(MAKE) all)
@@ -56,20 +56,20 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-$(MKINSTALLDIRS) $(lispdir)
+	-$(MKINSTALLDIRS) "$(lispdir)"
 	for x in $(LISP_SOURCES) ; do \
 	  echo " $(INSTALL_DATA) $$x $(lispdir)" ; \
-	  $(INSTALL_DATA) $$x $(lispdir) ; \
+	  $(INSTALL_DATA) $$x "$(lispdir)" ; \
 	  echo " $(INSTALL_DATA) $${x}c $(lispdir)" ; \
-	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
+	  $(INSTALL_DATA) $${x}c "$(lispdir)" ; \
 	done; \
-	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES); \
+	$(ELCC) -l prv-install -f preview-make-package "$(packagedir)" $(LISP_SOURCES); \
 
 install-icons: $(ICON_SOURCES)
-	-$(MKINSTALLDIRS) $(icondir)
+	-$(MKINSTALLDIRS) "$(icondir)"
 	for x in $(ICON_SOURCES); do \
 	  echo " $(INSTALL_DATA) $$x $(icondir)" ; \
-	  $(INSTALL_DATA) $$x $(icondir) ; \
+	  $(INSTALL_DATA) $$x "$(icondir)" ; \
 	done
 
 install-texmf:
@@ -81,8 +81,15 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 	  $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
 	done
 
+preview-latex.el: preview.el
+	rm -f preview-latex.el
+	$(EMACS) -batch -no-site-file -no-init-file --eval \
+'(let ((generated-autoload-file "'"`pwd`"'/$@")) (update-file-autoloads \
+"preview.el")(save-buffers-kill-emacs t))'
+
 clean:
-	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex 
+	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
+	   preview-latex.el
 	rm -rf *.prv 
 	(cd doc ; $(MAKE) clean)
 	(cd latex ; $(MAKE) clean)
