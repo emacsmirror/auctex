@@ -1,5 +1,7 @@
 2002-10-21  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* configure.in: Fix texhash check 
+
 	* dvipng/dvipng.h: Remove globals, fix message output
 
 	* dvipng/vf.c (SetVF, InitVF),
