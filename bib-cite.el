@@ -1,13 +1,13 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995, 1996 Peter S. Galbraith
+;; Copyright (C) 1994, 1995, 1996, 1997 Peter S. Galbraith
  
 ;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
 ;; Created:   06 July 1994
-;; Version:   2.25 (23 September 96)
+;; Version:   2.28 (22 January 97)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.7 1996-11-29 17:50:45 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.8 1997-01-26 23:53:14 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; Everyone is granted permission to copy, modify and redistribute this
@@ -24,7 +24,7 @@
 ;; LCD Archive Entry:
 ;; bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
 ;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
-;; 29-July-1996|2.22|~/misc/bib-cite.el.gz|
+;; 22-Jan-1997|2.28|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -231,12 +231,29 @@
  
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
-;;  All you need to do is add this line to your .emacs file (optionally in 
-;;  your LaTeX-mode-hook for later loading):
+;;  If you use a menued environment (e.g. X Window System), bib-cite must be 
+;;  loaded *after* your LaTeX-mode menus are created in order to bypass an
+;;  annoying bug in bib-cite.  This is done by loading bib-cite via a 
+;;  mode-hook:
+;;  - If you are using AUC-TeX (http://sunsite.auc.dk/auctex/), add the 
+;;    following lines to your ~/.emacs file:
+;; 
+;;   (defun my-LaTeX-mode-hook ()
+;;     (require 'bib-cite))
+;;   (add-hook 'LaTeX-mode-hook 'my-LaTeX-mode-hook)
+;; 
+;;  - If you are using Emacs' regulare LaTeX-mode, use instead:
+;; 
+;;   (defun my-LaTeX-mode-hook ()
+;;     (require 'bib-cite))
+;;   (add-hook 'latex-mode-hook 'my-TeX-mode-hook)
+;; 
+;;  If you do not use a windowed environment, all you need to do is add this 
+;;  line to your .emacs file:
 ;;
 ;;    (require 'bib-cite)
 ;;
-;;  It can be used with auctex, or stand-alone.  If used with auctex on a
+;;  bib-cite can be used with auctex, or stand-alone.  If used with auctex on a
 ;;  multi-file document (and auctex's parsing is used), then all \bibliography
 ;;  commands in the document will be found and used.
 ;;  ---
@@ -338,6 +355,16 @@
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V2.28 Jan 22 97 - Peter Galbraith (RCS V1.9)
+;;  - Bug in bib-create-auto-file.
+;; V2.27 Dec 31 96 - Peter Galbraith (RCS V1.8)
+;;  - allow spaces between cite keys.
+;;  - Vladimir Alexiev <vladimir@cs.ualberta.ca> 
+;;     Allow () delimiters as well as {}.
+;;     Better check on bibtex-menu
+;;     Erase *bibtex-bibliography* buffer.
+;; V2.26 Sep 24 96 - Peter Galbraith (RCS V1.7)
+;;  imenu bug fix.
 ;; V2.25 Sep 23 96 - Anders Stenman <stenman@isy.liu.se> (RCS V1.6)
 ;;  XEmacs bib-cite-fontify-help-as-latex bug fix.
 ;; V2.24 Aug 19 96 - Peter Galbraith (RCS V1.3)
@@ -639,7 +666,7 @@ A TAGS file is created and used for multi-file documents under auctex."
   (let ((cite))
     (save-excursion
       (if (not (looking-at "\\\\"))
-          (re-search-backward "[ \\\n]" nil t))
+          (re-search-backward "[\\]" nil t))
       (if (looking-at "\\\\[a-zA-Z]*cite")
           (setq cite t)))
     (if cite
@@ -959,9 +986,19 @@ See variables bib-etags-command and bib-etags-filename"
           (set-extent-property extent 'start-open t)
           (set-extent-property extent 'keymap bib-highlight-mouse-keymap))
          (t
-          (let ((before-change-functions) (after-change-functions))
+          (let ((before-change-functions) (after-change-functions)
+                ;;(this-overlay (make-overlay s e))
+                )
+;;; Even using overlays doens't help here.  If bib-highlight-mouse-keymap
+;;; does not include the AucTeX menus, then these disappear when we click
+;;; onto a \cite command.  Perhaps using bib-cite as a minor mode will fix
+;;; this?  For now, bib-cite must be loaded after these menus are built.
+;;; It must therefore be loaded in a mode-hook.
             (put-text-property s e 'local-map bib-highlight-mouse-keymap)
-            (put-text-property s e 'mouse-face 'highlight)))))
+            (put-text-property s e 'mouse-face 'highlight)
+          ;;(overlay-put this-overlay 'local-map bib-highlight-mouse-keymap)
+          ;;(overlay-put this-overlay 'mouse-face 'highlight)
+            ))))
       (set-buffer-modified-p modified))))
 
 (defun bib-toggle-highlight () 
@@ -1048,7 +1085,7 @@ e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
       (set-buffer bib-buffer)
       (goto-char (point-min))
       (if (not (re-search-forward 
-                (concat "@[^{]+{[\t ]*" the-key "[ ,\n]") nil t))
+                (concat "@[^{(]+[{(][\t ]*" the-key "[ ,\n]") nil t))
           (progn 
             (kill-buffer bib-buffer)
             (error "Sorry, could not find bib entry for %s" the-key))
@@ -1058,7 +1095,7 @@ e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
 ;;; (find-file the-file)
     (funcall bib-switch-to-buffer-function (find-file-noselect the-file))
     (goto-char (point-min))             ;V2.19 fix
-    (re-search-forward (concat "@[^{]+{[\t ]*" the-key "[ ,\n]") nil t)))
+    (re-search-forward (concat "@[^{(]+[{(][\t ]*" the-key "[ ,\n]") nil t)))
 
 ;;--------------------------------------------------------------------------
 ;; Function for bib-apropos
@@ -1371,7 +1408,7 @@ Return the-warnings as text."
           (lambda (cite-key) 
             (goto-char (point-min))
             (if (re-search-forward 
-                 (concat "@[^{]+{[\t ]*" 
+                 (concat "@[^{(]+[{(][\t ]*" 
                          (regexp-quote (symbol-name cite-key)) 
                          "\\([, ]\\\|$\\)")
                 ;;            ^^     ^  comma, space or end-of-line
@@ -1417,7 +1454,7 @@ Return the-warnings as text."
                     ;; Not in keys-obarray, so not yet displayed.
                     (goto-char (point-min))
                     (if (re-search-forward 
-                         (concat "@[^{]+{[\t ]*" 
+                         (concat "@[^{(]+[{(][\t ]*" 
                                  (regexp-quote (symbol-name crossref-key)) 
                                  "\\(,\\|$\\)") 
                          nil t)
@@ -1457,7 +1494,7 @@ Return the-warnings as text."
               (goto-char (point-min))
               ;; search for @string{ key = {text}} or @string{ key = "text"}
               (if (re-search-forward
-                   (concat "^[ \t]*@string{"
+                   (concat "^[ \t]*@string[{(]"
                            (regexp-quote (symbol-name string-key))
                            "[\t ]*=[\t ]*\\(\"\\|\{\\)")
                    nil t)
@@ -1489,7 +1526,7 @@ Return the-warnings as text."
                             (concat the-text 
                                     (buffer-substring 
                                      (progn (forward-char 1)(point))
-                                     (re-search-backward "^[ \t]*@string{" 
+                                     (re-search-backward "^[ \t]*@string[{(]" 
                                                          nil t))
                                     "\n"))))
                 ;; @string entry not found
@@ -1872,11 +1909,9 @@ Return the-warnings as text."
             (save-excursion
               (cond
                ((looking-at "\\\\label")
-                (search-forward "}" nil t)
                 (push (imenu--LaTeX-name-and-etags)
                       index-label-alist))
                (t
-                (search-forward "}" nil t)
                 (push (imenu--LaTeX-name-and-etags)
                     index-alist))))))
         (kill-buffer tex-buffer)
@@ -1917,11 +1952,9 @@ Return the-warnings as text."
           (save-excursion
             (cond
              ((looking-at "\\\\label")
-              (search-forward "}" nil t)
               (push (imenu--LaTeX-name-and-position)
                     index-label-alist))
              (t
-              (search-forward "}" nil t)
               (push (imenu--LaTeX-name-and-position)
                     index-alist))))))
       (imenu-progress-message prev-pos 100 t)
@@ -1964,9 +1997,7 @@ Return the-warnings as text."
   
   (defun imenu--LaTeX-name-and-position ()
     (save-excursion
-      ;; We're just past a closing brace
-      (backward-sexp 1)
-      (search-backward "\\" nil t)
+      ;; We're on the opening slash
       (let ((beg (point))
             (end (progn (search-forward "{" nil t)
                         (forward-char -1)
@@ -1974,14 +2005,16 @@ Return the-warnings as text."
                         (point)))
             (marker (make-marker)))
         (set-marker marker beg)
-        (cons (buffer-substring beg end)
-              marker))))
+        (cons (buffer-substring beg end) marker))))
 
   (defun imenu--LaTeX-name-and-etags ()
     (save-excursion
       (setq bib-imenu-document-counter (1- bib-imenu-document-counter))
-      (cons (buffer-substring (search-backward "\\" nil t) 
-                              (search-forward "}" nil t))
+      (cons (buffer-substring (point)
+                              (progn (search-forward "{") 
+                                     (forward-char -1)
+                                     (forward-sexp 1)
+                                     (point)))
             bib-imenu-document-counter)))
 
   ;; Updated to imenu in Emacs 19.33
@@ -2050,7 +2083,8 @@ accents embeded in bibtex entries."
     (save-excursion                     
       ;; such that forward-sexp works with embeeded \" in german, 
       ;; and unbalanced ()
-      (set-buffer bib-buffer)           ;
+      (set-buffer bib-buffer)
+      (erase-buffer)
       (set-syntax-table text-mode-syntax-table)
 ;;      (if (boundp 'bibtex-mode-syntax-table)
 ;;          (set-syntax-table bibtex-mode-syntax-table)
@@ -2143,6 +2177,12 @@ although BiBTeX doesn't allow it!"
     ;;       as determined by 
     ;;         (member nil (mapcar 'TeX-auto-entry-clear-p TeX-auto-parser))
     ;;       then it creates the auto file.
+
+    ;; TeX-auto-write may call TeX-master-file which may fail if 
+    ;; TeX-header-end is unset (by LaTeX-common-initialization in latex-mode)
+    (if (not TeX-header-end)
+        (setq TeX-header-end LaTeX-header-end))
+
     (TeX-auto-write)))
 
 ;; ---------------------------------------------------------------------------
@@ -2212,17 +2252,21 @@ although BiBTeX doesn't allow it!"
     "Submenu of bibtex-mode menu, used by bib-cite.")
   
   (if (boundp 'bibtex-menu)
+      ;; Add menu now
       (setq bibtex-menu
 	    (append
 	     bibtex-menu
-	     bib-cite-xemacs-bibtex-mode-menu)))
-  (defun bib-cite-bibtex-mode-hook ()
-    (setq bibtex-menu
-	  (append
-	   bibtex-menu
-	   bib-cite-xemacs-bibtex-mode-menu))
-    (remove-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))
-  (add-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook)
+	     bib-cite-xemacs-bibtex-mode-menu))
+    ;; Setup to add menu later
+    (defun bib-cite-bibtex-mode-hook ()
+      (if (boundp 'bibtex-menu)
+          (progn
+            (setq bibtex-menu
+                  (append
+                   bibtex-menu
+                   bib-cite-xemacs-bibtex-mode-menu))
+            (remove-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))))
+    (add-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))
 ;;; Done - Add to bibtex.el's popup menu
 
 ;;  (eval-after-load 

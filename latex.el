@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7e
+;; Version: 9.7f
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -358,21 +358,8 @@ Insert this hook into LaTeX-section-hook to prompt for a label to be
 inserted after the sectioning command.
 
 The beaviour of this hook is controled by LaTeX-section-label."
-  (let ((prefix (cond ((null LaTeX-section-label)
-		       nil)
-		      ((stringp LaTeX-section-label)
-		       LaTeX-section-label)
-		      ((assoc level LaTeX-section-label)
-		       (cdr (assoc level LaTeX-section-label)))
-		      ((assoc name LaTeX-section-label)
-		       (cdr (assoc name LaTeX-section-label))))))
-    (if prefix
-	(let ((label (read-string "What label: " prefix)))
-	  (if (string-equal prefix label)
-	      ()				; Done - no label entered
-	    (insert TeX-esc "label" TeX-grop label TeX-grcl)
-	    (LaTeX-add-labels label)
-	    (newline))))))
+  (and (LaTeX-label name)
+       (newline)))
 
 ;;; Environments
 
@@ -594,6 +581,11 @@ To insert a hook here, you must insert it in the appropiate style file.")
 Set to nil if you don't want any float.")
  (make-variable-buffer-local 'LaTeX-float)
 
+(defvar LaTeX-label-function nil
+  "*A function inserting a label at point.
+Sole argument of the function is the environment. The function has to return
+the label inserted, or nil if no label was inserted.")
+
 (defvar LaTeX-figure-label "fig:"
   "*Default prefix to figure labels.")
  (make-variable-buffer-local 'LaTeX-figure-label)
@@ -622,18 +614,45 @@ Set to nil if you don't want any float.")
   (delete-horizontal-space)
   (LaTeX-insert-item))
 
+(defun LaTeX-label (environment)
+  "Insert a label for ENVIRONMENT at point.
+If LaTeX-label-function is a valid function, LaTeX label will transfer the
+job to this function."
+  (let (label)
+    (if (and (boundp 'LaTeX-label-function)
+	     LaTeX-label-function
+	     (fboundp LaTeX-label-function))
+
+	(setq label (funcall LaTeX-label-function environment))
+      (let ((prefix
+	     (cond
+	      ((string= "figure" environment) LaTeX-figure-label)
+	      ((string= "table"  environment) LaTeX-table-label)
+	      ((assoc environment LaTeX-section-list)
+	       (cond
+		((stringp LaTeX-section-label) LaTeX-section-label)
+		((and (listp LaTeX-section-label)
+		      (assoc environment LaTeX-section-label))
+		 (cdr (assoc environment LaTeX-section-label)))
+		(t nil)))
+	      (t ""))))
+	(if prefix
+	    (progn
+	      (setq label (read-string "What label: " prefix))
+	      (if (string= prefix label)
+		  (setq label nil)     ; No label eneterd
+		(insert TeX-esc "label" TeX-grop label TeX-grcl)))))
+      (if label
+	  (progn
+	    (LaTeX-add-labels label)
+	    label)
+	nil))))
+
+
 (defun LaTeX-env-figure (environment)
   "Create ENVIRONMENT with \\label and \\caption commands."
   (let ((float (read-string "Float to: " LaTeX-float))
 	(caption (read-string "Caption: "))
-	(label (completing-read "Label: "
-				(LaTeX-label-list)
-				nil nil
-				(cond ((string= "figure" environment)
-				       LaTeX-figure-label)
-				      ((string= "table" environment)
-				       LaTeX-table-label)
-				      (t nil))))
         (center (y-or-n-p "Center: ")))
 
     (setq LaTeX-float (if (zerop (length float))
@@ -648,21 +667,12 @@ Set to nil if you don't want any float.")
     
     (if center
 	(progn
-	  (LaTeX-insert-environment "center")
-	  (insert "\\leavevmode")
-	  (newline-and-indent)))
+	  (LaTeX-insert-environment "center")))
     
-    (if (or (zerop (length label))
-	    (and (string= "figure" environment)
-		 (equal LaTeX-figure-label label))
-	    (and (string= "table" environment)
-		 (equal LaTeX-table-label label)))
-	()
-      (newline-and-indent)
-      (insert TeX-esc "label" TeX-grop label TeX-grcl)
-      (LaTeX-add-labels label)
-      (end-of-line 0)
-      (LaTeX-indent-line))
+    (newline-and-indent)
+    (LaTeX-label environment)
+    (end-of-line 0)
+    (LaTeX-indent-line)
 
     (if (zerop (length caption))
 	()
@@ -692,13 +702,9 @@ like array and tabular."
 
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
-  (let ((label (completing-read "Label: " (LaTeX-label-list))))
-    (LaTeX-insert-environment environment)
-    (if (not (zerop (length label)))
-	(progn
-	  (insert TeX-esc "label" TeX-grop label TeX-grcl)
-	  (LaTeX-add-labels label)
-	  (newline-and-indent)))))
+  (LaTeX-insert-environment environment)
+  (and (LaTeX-label environment)
+       (newline-and-indent)))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
