@@ -4,7 +4,7 @@
 	for generating a mode-specific command menu.
 	(plain-TeX-mode-map): New map to be used by plain-tex-mode.
 	(plain-TeX-mode-command-menu): New menu used instead of
-	`TeX-mode-menu' and yielding `TeX-mode-specific-command-menu'.
+	`TeX-mode-menu' which utilizes `TeX-mode-specific-command-menu'.
 	(TeX-mode-menu): Removed in favor of
 	`plain-TeX-mode-command-menu'.
 	(AmSTeX-mode-map): New map to be used by ams-tex-mode.
@@ -30,9 +30,9 @@
 	* tex-jp.el (japanese-TeX-command-menu): Added symbols to command
 	definitions needed for assigning them to the respective mode.
 	(TeX-mode-menu): Removed.
-	(plain-TeX-mode-command-menu): New menu yielding
+	(plain-TeX-mode-command-menu): New menu utilizing
 	`TeX-mode-specific-command-menu'.
-	(LaTeX-mode-command-menu): New menu yielding
+	(LaTeX-mode-command-menu): New menu utilizing
 	`TeX-mode-specific-command-menu'.
 	(LaTeX-mode-map): Removed key definition for `TeX-mode-menu'.
 
@@ -41,6 +41,10 @@
 	Changed `LaTeX PDF' to `PDFLaTeX'.
 
 	* tex-mik.el (TeX-command-list): Ditto.
+
+	* doc/changes.texi: Mention the change to a mode-specific command
+	menu and the need for the deletion of any former customization of
+	`TeX-command-list'.
 
 2004-01-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
