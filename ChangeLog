@@ -1,3 +1,9 @@
+2003-03-24  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* Makefile.in (CONTRIB): Remove hilit-LaTeX.el because it is
+	obsolete.
+	(contrib): Remove compile code for hilit-LaTeX.el.
+
 2003-03-13  David Kastrup  <dak@gnu.org>
 
 	* style/german.el (LaTeX-german-quote-after-quote)
