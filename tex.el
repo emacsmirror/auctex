@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9n
+;; Version: 9.9o
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -66,7 +66,9 @@
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
 
-(defcustom TeX-lisp-directory (concat data-directory "auctex/")
+(defcustom TeX-lisp-directory (or (and (fboundp 'locate-data-directory)
+				       (locate-data-directory "auctex"))
+				  (concat data-directory "auctex/"))
   "The directory where the AUC TeX lisp files are located."
   :group 'TeX-file
   :type 'directory)
@@ -125,7 +127,7 @@ performed as specified in TeX-expand-list."
 	;; Uncomment the above line and comment out the next line to
 	;; use `chktex' instead of `lacheck'. 
 	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
 	(list "Other" "" 'TeX-run-command t t)
 	;; Not part of standard TeX.
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
@@ -339,8 +341,8 @@ the name of the file being processed, with an optional extension."
 
 ;;; Import
 
-(or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
-    (setq load-path (cons TeX-lisp-directory load-path)))
+;;(or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
+;;    (setq load-path (cons TeX-lisp-directory load-path)))
 
 (defvar no-doc
   "This function is part of AUC TeX, but has not yet been loaded.
@@ -1025,16 +1027,16 @@ active.")
   ;; Load FILE checking for a lisp extensions.
   (let ((el (concat file ".el"))
 	(elc (concat file ".elc")))
-    (cond ((and (null TeX-byte-compile)
-		(file-readable-p el))
-	   (load-file el))
-	  ((file-newer-than-file-p el elc)
-	   (if (not (file-writable-p elc))
-	       (load-file el)
-	     (save-excursion
-	       ;; `byte-compile-file' switches buffer in Emacs 20.3.
-	       (byte-compile-file el))
-	     (load-file elc)))
+    (cond ((file-newer-than-file-p el elc)
+	   (if (file-readable-p el)
+	       (if (and TeX-byte-compile
+			(file-writable-p elc)
+			(save-excursion
+			  ;; `byte-compile-file' switches buffer in Emacs 20.3.
+			  (byte-compile-file el))
+			(file-readable-p elc))
+		   (load-file elc)
+		 (load-file el))))
 	  ((file-readable-p elc)
 	   (load-file elc))
 	  ((file-readable-p el)
@@ -1227,7 +1229,7 @@ Or alternatively:
 (defcustom TeX-insert-braces t
   "*If non-nil, append a empty pair of braces after inserting a macro."
   :group 'TeX-macro
-  :type 'string)
+  :type 'boolean)
 
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro with completion.
