@@ -8,10 +8,10 @@
 ;; Maintainer: Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
 ;;                                <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.702 (15 October 2001)
+;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.10 2001-10-15 16:50:16 psg Exp $
+;; RCS $Id: font-latex.el,v 5.11 2002-01-21 14:22:54 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -100,6 +100,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.800 01Nov01 PSG
+;;  - Added font-lock-syntactic-keywords to font-lock-defaults to handle
+;;    verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
 ;; V0.702 15Oct01 PSG
 ;;  - remove LaTeX-mode-hook self-installation, since auc-tex can now install
 ;;    font-latex by itself. 
@@ -551,7 +554,11 @@ prone to infinite loop bugs.")))
 	'((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
 	  nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
 	  (font-lock-comment-start-regexp . "%")
-	  (font-lock-mark-block-function . mark-paragraph))))
+	  (font-lock-mark-block-function . mark-paragraph)
+          (font-lock-syntactic-keywords 
+           . (("\\\\begin{verbatim}\\(\n\\)" (1 '(7)))
+              ("\\(\n\\)\\\\end{verbatim}" (1 '(7)))))
+          )))
 
 ;; Should not be necessary since XEmacs' font-lock also supports
 ;; Emacs' use of the `font-lock-defaults' local variable.   -Stefan
@@ -703,6 +710,13 @@ prone to infinite loop bugs.")))
 ;;;    is found or set another cache at the new limit
 ;;;  - the scheme must allow a newline to be correctly fontified, and well
 ;;;    as new characters on the same line as the first cache.  (How?)
+
+;;; Hacker's note (2001-11-02) : It's possible that the caching system is
+;;; no longer needed using font-lock-multiline in Emacs21.  I should
+;;; disable it and try.  Also, now that I look at this, I wonder why I
+;;; didn't use text-properties to be able to set many unterminated
+;;; fontification matches in a given buffer.  Perhaps it was portability to
+;;; XEmacs?
 
 (defun font-latex-set-cache (cache-id kbeg kend limit keywords match-list)
   "cache in symbol CACHE-ID the following info:
