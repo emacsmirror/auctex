@@ -167,7 +167,7 @@ This uses Emacs built-in PostScript image support for
 rendering the preview image in EPS file FILENAME, with
 a scale factor of SCALE indicating the relation of desired
 image size on-screen to the size the PostScript code
-specifies. If BOX is present, it is the bounding box info."
+specifies.  If BOX is present, it is the bounding box info."
   (unless box
     (setq box (preview-extract-bb filename)))
 ;; should the following 2 be rather intbb?
@@ -278,8 +278,7 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
     (preview-register-change ov)))
 
 (defcustom preview-auto-reveal 'reveal-mode
-  "*If set, this will cause previews to open automatically
-when entered instead of treating them as a single character.
+  "*Cause previews to open automatically when entered.
 Set to t or nil, or to a symbol which will be consulted
 if defined.  The default is to follow the setting of
 `reveal-mode'."
@@ -288,10 +287,26 @@ if defined.  The default is to follow the setting of
 		 (const :tag "On" t)
 		 symbol))
 
+(defadvice replace-highlight (before preview)
+  "Make `query-replace' open preview text about to be replaced."
+  (preview-open-overlays
+   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+
+(defcustom preview-query-replace-reveal t
+  "*Make `query-replace' autoreveal previews."
+  :group 'preview-appearance
+  :type 'boolean
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (if value
+	     (ad-enable-advice 'replace-highlight 'before 'preview)
+	   (ad-disable-advice 'replace-highlight 'before 'preview))
+	 (ad-activate 'replace-highlight))
+  :initialize #'custom-initialize-reset)
 
 (defun preview-toggle (ov &optional arg)
   "Toggle visibility of preview overlay OV.
-ARGS can be one of the following: t displays the overlay,
+ARG can be one of the following: t displays the overlay,
 nil displays the underlying text, and 'toggle toggles."
   (let ((old-urgent (preview-remove-urgentization ov))
 	(preview-state
@@ -354,27 +369,35 @@ nil displays the underlying text, and 'toggle toggles."
 		  (preview-toggle ov t)
 		  nil)
 		(push ov newlist))))
-    (when (eq (marker-buffer preview-marker) (current-buffer))
-      (let* ((backward (< pt (marker-position preview-marker)))
-	     (just-open (or disable-point-adjustment
-			    global-disable-point-adjustment
-			    (and (boundp preview-auto-reveal)
-				 (symbol-value preview-auto-reveal)))))
+    (if (or disable-point-adjustment
+	    global-disable-point-adjustment
+	    (and (boundp preview-auto-reveal)
+		 (symbol-value preview-auto-reveal)))
+	(preview-open-overlays (overlays-at pt))
+      (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
+			   (< pt (marker-position preview-marker)))))
 	(while (catch 'loop
 		 (dolist (ovr (overlays-at pt))
 		   (when (and
 			  (eq (overlay-get ovr 'preview-state) 'active)
 			  (> pt (overlay-start ovr)))
-		     (if just-open
-			 (progn
-			   (preview-toggle ovr)
-			   (push ovr preview-temporary-opened))
-		       (setq pt (if backward
-				    (overlay-start ovr)
-				  (overlay-end ovr))))
+		     (setq pt (if backward
+				  (overlay-start ovr)
+				(overlay-end ovr)))
 		     (throw 'loop t))))
 	  nil)
 	(goto-char pt)))))
+
+(defun preview-open-overlays (list &optional pos)
+  "Open all previews in LIST, optionally restricted to enclosing POS."
+  (dolist (ovr list)
+    (when (and (eq (overlay-get ovr 'preview-state) 'active)
+	       (or (null pos)
+		   (and
+		    (> pos (overlay-start ovr))
+		    (< pos (overlay-end ovr)))))
+      (preview-toggle ovr)
+      (push ovr preview-temporary-opened))))
 
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
@@ -457,8 +480,8 @@ Pure borderless black-on-white will return NIL."
   mark-active)
 
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
-  "This activates the LaTeX menus for the BODYFORMS
-so that one can add to them."
+  "Activates the LaTeX menus for the BODYFORMS.
+This makes it possible to add to them."
   `(let ((save-map (current-local-map)))
      (unwind-protect
 	 (progn
