@@ -7,6 +7,12 @@
 
 	* tex.el (TeX-delete-dups): Use our own (faster) version.
 
+	* latex.el (LaTeX-env-array, LaTeX-env-minipage)
+	(LaTeX-env-tabular*): Don't delete whitespace after inserting the
+	environment.  Cursor position corresponds to proper indentation
+	now.  From Christian Schlauer <cschl@arcor.de> with some
+	modifications.
+
 2004-10-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Completion): Mention `C-c RET' for

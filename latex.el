@@ -946,10 +946,7 @@ Just like array and tabular."
 			      (concat
 			       (if (not (zerop (length pos)))
 				   (format "[%s]" pos))
-			       (format "{%s}" fmt)))
-    (end-of-line 0)
-    (next-line 1)
-    (delete-horizontal-space)))
+			       (format "{%s}" fmt)))))
 
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
@@ -979,10 +976,7 @@ Just like array and tabular."
     (LaTeX-insert-environment environment
 			      (concat (when (not (zerop (length pos)))
 					(format "[%s]" pos))
-				      (format "{%s}" width)))
-    (end-of-line 0)
-    (next-line 1)
-    (delete-horizontal-space)))
+				      (format "{%s}" width)))))
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
@@ -1000,10 +994,7 @@ Just like array and tabular."
 			       (format "{%s}" width) ;; not optional!
 			       (when (not (zerop (length pos)))
 				 (format "[%s]" pos))
-			       (format "{%s}" fmt)))
-    (end-of-line 0)
-    (next-line 1)
-    (delete-horizontal-space)))
+			       (format "{%s}" fmt)))))
 
 (defun LaTeX-env-picture (environment)
   "Insert ENVIRONMENT with width, height specifications."
