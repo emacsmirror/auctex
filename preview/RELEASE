@@ -71,6 +71,6 @@ Additional files can be found at
 The RPMs require a few packages that should be readily available in
 current distributions.  As of RH 7.3, Emacs-21.2 and GhostScript-6.52
 are included.  The current RedHat beta "Limbo" contains the
-security-impaired GhostScript-7.05 (see above).  XEmacs in with those
-RedHat versions will still be affected with a serious display bug, see
+security-impaired GhostScript-7.05 (see above).  XEmacs in those
+distributions will still be affected with a serious display bug, see
 the PROBLEMS file or the respective manual section.
