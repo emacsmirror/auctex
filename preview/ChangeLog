@@ -1,3 +1,8 @@
+2003-02-05  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (section{Package options}): Correct doc of
+	\PreviewBbAdjust.
+
 2003-02-05  Alan Shutko  <ats@acm.org>
 
 	* doc/problems.texi: Add documentencoding.
