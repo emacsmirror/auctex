@@ -1,3 +1,8 @@
+2004-06-02  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-format-filter): Don't use split-string which
+	appears to trigger an XEmacs bug.
+
 2004-06-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-insert-macro-default-style): Fixed typo in doc-string.
