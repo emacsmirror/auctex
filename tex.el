@@ -1,36 +1,35 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
-;; Version: 11.14
-;; Keywords: wp
-;; X-URL: http://www.gnu.org/software/auctex/
-
 ;; Copyright (C) 1985, 1986, 2000,
 ;;   2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen
-;;
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
+
+;; Maintainer: auc-tex@sunsite.dk
+;; Keywords: tex
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
-
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
 
 ;;; Commentary:
 
 ;; This file provides AUCTeX support for plain TeX as well as basic
-;; functions used by other AUCTeX modes (e.g. for LaTeX, TeXinfo and
+;; functions used by other AUCTeX modes (e.g. for LaTeX, Texinfo and
 ;; ConTeXt).
 
 ;;; Code:
@@ -547,7 +546,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.356 $"))
+	(rev "$Revision: 5.357 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -562,7 +561,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-29 14:11:01 $"))
+    (let ((date "$Date: 2004-05-02 16:55:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -852,10 +851,6 @@ the beginning of the file, but that feature will be phased out."
 		(beginning-of-line)
 		(kill-line 1)
 		(TeX-add-local-master))))
-
-	 ;; Is this a master file?
-	 ((and TeX-header-end (re-search-forward TeX-header-end 10000 t))
-	  (setq TeX-master my-name))
 
 	 ;; Ask the user (but add it as a local variable).
 	 (ask (TeX-master-file-ask)))))
