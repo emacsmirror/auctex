@@ -1,3 +1,7 @@
+2004-08-18  David Kastrup  <dak@gnu.org>
+
+	* Version 11.52 released.
+
 2004-08-18  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4 (EMACS_LISPDIR): Output expanded lispdir
