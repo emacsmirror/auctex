@@ -1,3 +1,8 @@
+2004-08-04  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-fontify-script): Default to nil in
+	XEmacs.
+
 2004-08-04  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-common-initialization): Add style hook for

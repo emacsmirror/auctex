@@ -1047,7 +1047,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 ;;; Subscript and superscript
 
-(defcustom font-latex-fontify-script t
+(defcustom font-latex-fontify-script (not (featurep 'xemacs))
   "Non-nil means do not fontify subscript or superscript strings.
 Fontification will only work if texmathp.el is available.
 This feature does not work in XEmacs."
