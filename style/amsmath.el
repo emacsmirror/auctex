@@ -64,7 +64,7 @@
      '("boxed" t)
      "overleftarrow"  "overrightarrow"  "overleftrightarrow"
      "underleftarrow" "underrightarrow" "underleftrightarrow"
-     "dotssc" "dotssb" "dotssm" "nobreakdash" 
+     "dots" "dotsb" "dotsc" "dotsi" "dotsm" "nobreakdash" 
      "Hat" "Check" "Tilde" "Acute" "Grave" "Dot" "Ddot" "Breve" "Bar" "Vec"
      "dddot" "ddddot"
      "lvert" "rvert" "lVert" "rVert" 
