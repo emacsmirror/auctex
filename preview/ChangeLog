@@ -1,3 +1,8 @@
+2002-01-18  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview.el (preview-make-preamble): Simplified the code by sorting
+	TeX-expand-list better.
+
 2002-01-18  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/preview-latex.texi: document preview-at-point
