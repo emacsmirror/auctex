@@ -1,3 +1,29 @@
+2004-02-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-comment-region): Map to `comment-region' instead of
+	`TeX-comment-or-uncomment-region'.
+	(TeX-uncomment-region): New name for `TeX-un-comment-region'.  Not
+	mapped to `TeX-comment-or-uncomment-region' anymore.
+	(TeX-uncomment): New name for `TeX-un-comment'.  Use
+	`TeX-uncomment-region' instead of `uncomment-region' which is not
+	available in Emacs 20.
+	(TeX-comment-or-uncomment-paragraph): New name for
+	`TeX-comment-paragraph' which explains its function better.  Use
+	new name `TeX-uncomment'.
+	(TeX-mode-map): Bind key chains to `TeX-comment-or-uncomment-*'
+	functions.
+	(plain-TeX-mode-menu): Adapt function calls in menu entries.
+
+	* tex-info.el (TeXinfo-mode-map): Bind key chains to
+	`TeX-comment-or-uncomment-*' functions.
+	(TeXinfo-mode-menu): Adapt function calls in menu entries.
+
+	* latex.el (LaTeX-mode-menu): Adapt function calls in menu
+	entries.  Small enhancements.
+
+	* doc/auc-tex.texi (Commenting): Adapt documentation to reflect
+	changes in commenting interface.
+
 2004-01-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-comment-or-uncomment-region): New function or alias
