@@ -165,6 +165,13 @@ other hooks, such as major mode hooks, can do the job."
              (append (symbol-value list-var) (list element))
            (cons element (symbol-value list-var))))))
 
+(defvar null-device (or (and (boundp 'grep-null-device)
+			     grep-null-device)
+			(if (memq system-type '(ms-dos windows-nt))
+			    "NUL"
+			  "/dev/null"))
+  "The system null device.")
+
 ;; We have to pick the image-specifier's inst-list apart by hand.  This code
 ;; won't work if there are multiple valid image types in a single glyph in a
 ;; single (locale * domain): but we don't care, because only the first of those
