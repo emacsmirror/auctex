@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.103 1994-10-06 17:44:37 amanda Exp $
+# $Id: Makefile,v 5.104 1994-10-22 12:57:19 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -32,7 +32,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.25
+EMACS=emacs-19.27
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -264,6 +264,8 @@ dist:
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
+	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
+	cp ChangeLog $(FTPDIR)
 	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip

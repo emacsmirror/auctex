@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.25 1994-10-06 17:27:54 amanda Exp $
+;; Version: $Id: tex.el,v 5.26 1994-10-22 12:57:41 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1251,7 +1251,7 @@ separate type of information in the parser."
 		(next (car (cdr entry))))
 	    (if (not (string-equal (car this) (car next)))
 		(setq entry (cdr entry))
-	      ;; We have to equal symbols.  Use the one with
+	      ;; We have two equal symbols.  Use the one with
 	      ;; most arguments.
 	      (if (> (length next) (length this))
 		  (setcdr this (cdr next)))
@@ -1676,10 +1676,11 @@ Return nil if ELT is not a member of LIST."
 
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
-
 See match-data for details."
   (if (match-beginning n)
-      (buffer-substring (match-beginning n) (match-end n))
+      (let ((str (buffer-substring (match-beginning n) (match-end n))))
+	(set-text-properties 0 (length str) nil str)
+	(copy-sequence str))
     ""))
 
 (defun TeX-function-p (arg)

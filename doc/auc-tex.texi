@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.97 1994-10-06 17:28:02 amanda Exp $
+@c $Id: auc-tex.texi,v 1.98 1994-10-22 12:57:50 amanda Exp $
 
 @finalout
 @titlepage
@@ -773,8 +773,9 @@ example existing labels when you enter a @samp{\ref} macro with
 entries when you enter a @samp{\cite} macro.  For this kind of
 completion to work, parsing must be enabled as described in
 @pxref{Parsing Files}.  For @samp{\cite} you must also make sure that
-the Bib@TeX{} files can be found in @code{TeX-style-path} and have been
-saved at least once after you enabled automatic parsing on save.
+the Bib@TeX{} files have been saved at least once after you enabled
+automatic parsing on save, and that the basename of the Bib@TeX{} file
+does not conflict with the basename of one of @TeX{} files.
 
 @node Commenting, Marking and formatting, Completion, Advanced Features
 @section Commenting 
@@ -2320,6 +2321,38 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+Suggest @samp{makindex} when appropriate.
+
+@item
+Maybe the regexp for matching a TeX symbol during parsing should be
+@samp{"\\\\\\([a-zA-Z]+\\|.\\)"} ---
+@samp{<thiemann@@informatik.uni-tuebingen.de>} Peter Thiemann.
+
+@item
+AUC TeX should be able to parse La@TeX{}2e @file{.cls} files.  Here are
+the regesps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
+Thiemann. 
+
+@example
+     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\
+\\[\\([^\]\\\\\n\r]+\\)\\]"
+      (1 2 3) LaTeX-auto-optional)
+     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+      (1 2) LaTeX-auto-arguments)
+     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
+     ("\\\\DeclareFixedFont{?\\\\\\([a-zA-Z]+\\)}?"
+      1 TeX-auto-symbol)
+     ("\\\\Declare\\(Text\\|Old\\)FontCommand{?\\\\\\([a-zA-Z]+\\)}?"
+      2 TeX-auto-symbol)
+     ("\\\\DeclareMath\\(Symbol\\|Delimiter\\|Accent\\|Radical\\){?\\\\\\([a-zA-Z]+\\)}?"
+      2 TeX-auto-symbol)
+     ;;; it is also valid to declare just a single symbol, e.g. <,
+     ;;; with \DeclareMathSymbol but it is not necessary to register that here
+     ("\\\\DeclareText\\(Command\\|Symbol\\|Accent\\|Composite\\){?\\\\\\([a-zA-Z]+\\)}?"
+      2 TeX-auto-symbol)
+@end example
+
 @item
 Use index files (when available) to speed up @kbd{C-c C-m include
 @key{ret}}. 

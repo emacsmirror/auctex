@@ -1,7 +1,14 @@
 @section News in 9.2
 
 @itemize @bullet
+@item Bug fixes.
+
 @item
+@kbd{C-c C-m cite @key{ret}} will prompt for multiple keys.
+
+@item
+Better handling of @samp{"} with @file{german.sty}.
+
 @item
 New variable @code{LaTeX-paragraph-commands} lists La@TeX{} commands
 that shouldn't be formatted as part of a paragraph.

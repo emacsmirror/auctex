@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.29 1994-10-06 17:27:42 amanda Exp $
+;; Version: $Id: latex.el,v 5.30 1994-10-22 12:57:28 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1312,14 +1312,24 @@ the cdr is the brace used with \\right.")
   "List of symbols which can follow the \\left or \\right command")
 
 (defun TeX-arg-insert-braces (optional &optional prompt)
+  (save-excursion
+    (backward-word)
+    (backward-char)
+    (newline-and-indent)
+    (beginning-of-line 0)
+    (if (looking-at "^[ \t]*$")
+	(progn (delete-horizontal-space)
+	       (delete-char 1))))
   (let ((left-brace (completing-read
                      (TeX-argument-prompt optional prompt "Which brace")
                      TeX-left-right-braces)))
-    (insert left-brace " ")
+    (insert left-brace)
+    (newline-and-indent)
     (save-excursion
       (let ((right-brace (cdr (assoc left-brace
                                      TeX-braces-association))))
-        (insert " " TeX-esc "right")
+	(newline-and-indent)
+        (insert TeX-esc "right")
         (if (and TeX-arg-right-insert-p
                  right-brace)
             (insert right-brace)
@@ -1551,7 +1561,22 @@ comments and verbatim environments"
 
 (defvar LaTeX-indent-environment-list
   '(("verbatim" current-indentation)
-    ("verbatim*" current-indentation))
+    ("verbatim*" current-indentation)
+    ;; The following should have there own, smart indentation function.
+    ;; Some other day.
+    ("alltt")
+    ("array")
+    ("displaymath")
+    ("eqnarray")
+    ("eqnarray*")
+    ("equation")
+    ("equation*")
+    ("picture")
+    ("tabbing")
+    ("table")
+    ("table*")
+    ("tabular")
+    ("tabular*"))
     "Alist of environments with special indentation.
 The second element in each entry is the function to calculate the
 indentation level in columns.")
@@ -1593,7 +1618,9 @@ indentation level in columns.")
 		;; Special environments.
 		(let ((entry (assoc (LaTeX-current-environment)
 				    LaTeX-indent-environment-list)))
-		  (and entry (funcall (nth 1 entry))))))
+		  (and entry
+		       (nth 1 entry)
+		       (funcall (nth 1 entry))))))
 	  ((looking-at (concat "\\("
 			       (regexp-quote TeX-esc)
 			       "end *"
@@ -2201,6 +2228,8 @@ of LaTeX-mode-hook."
    ;; Use new fonts for `\documentclass' documents.
    (function (lambda ()
      (setq TeX-font-list LaTeX-font-list)
+     (if (equal LaTeX-version "2")
+	 (setq TeX-command-default "LaTeX2e"))
      (run-hooks 'LaTeX2e-hook))))
   
   (TeX-add-style-hook "latex2"
