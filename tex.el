@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.379 $"))
+	(rev "$Revision: 5.380 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-01 18:45:51 $"))
+    (let ((date "$Date: 2004-06-02 08:13:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1344,7 +1344,7 @@ optional arguments of TeX marcos.  If set to `mandatory-args-only',
 When `TeX-insert-macro' is called with \\[universal-argument], it's the other
 way round.
 
-Note that for some macros, there are special mechanism, see e.g.
+Note that for some macros, there are special mechanisms, see e.g.
 `LaTeX-includegraphics-options-alist'."
   :group 'TeX-macro
   :type '(choice (const mandatory-args-only)

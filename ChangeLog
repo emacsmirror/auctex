@@ -1,3 +1,7 @@
+2004-06-02  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-insert-macro-default-style): Fixed typo in doc-string.
+
 2004-06-01  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-no-braces-modes): Removed.  Revert unintened
