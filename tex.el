@@ -568,7 +568,6 @@ Full documentation will be available after autoloading the function."
 (autoload 'LaTeX-math-mode "latex" no-doc t)
 (autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
 (autoload 'japanese-latex-mode "tex-jp" no-doc t)
-(autoload 'japanese-slitex-mode "tex-jp" no-doc t)
 (autoload 'texinfo-mode "tex-info" no-doc t)
 (autoload 'latex-mode "latex" no-doc t)
 
@@ -633,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.484 $"))
+	    (rev "$Revision: 5.485 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-12 14:10:37 $"))
+    (let ((date "$Date: 2005-02-12 14:11:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
