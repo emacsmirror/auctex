@@ -1,3 +1,7 @@
+2002-03-28  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview-latex.spec (%configure): Use --with-texmf-dir.
+
 2002-03-27  Alan Shutko  <ats@acm.org>
 
 	* doc/install.texi (Configure): Reflect changes in configure
