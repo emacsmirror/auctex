@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.87 2002-03-27 19:57:16 dakas Exp $
+;; $Id: preview.el,v 1.88 2002-03-29 21:47:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1191,29 +1191,22 @@ and the corresponding topdir."
       (preview-toggle ov t)))
   tempdirlist)
 
-(defun preview-back-command (&optional posn buffer)
-  "Move backward a TeX token from POSN in BUFFER.
-Actually, this does not move but only returns the position.
-Defaults to point in current buffer."
-  (save-excursion
-    (if buffer (set-buffer buffer))
-    (save-restriction
-      (widen)
-      (if posn (goto-char posn))
-      (condition-case nil
-	  (or (search-backward-regexp "\\(\\$\\$?\
+(defun preview-back-command ()
+  "Move backward a TeX token."
+  (let ((oldpos (point)) old-point)
+    (condition-case nil
+	(or (search-backward-regexp "\\(\\$\\$?\
 \\|\\\\[^a-zA-Z@]\
 \\|\\\\[a-zA-Z@]+\
 \\|\\\\begin[ \t]*{[^}]+}\
 \\)\\=" (line-beginning-position) t)
-	      (progn
-		(while
-		    (let ((oldpoint (point)))
-		      (backward-sexp)
-		      (and (not (eq oldpoint (point)))
-			   (eq ?\( (char-syntax (char-after))))))
-		(point)))
-	(error nil)))))
+	    (while
+		(progn
+		  (setq oldpoint (point))
+		  (backward-sexp)
+		  (and (not (eq oldpoint (point)))
+		       (eq ?\( (char-syntax (char-after)))))))
+      (error (goto-char oldpos)))))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
 					 "graphics" "sections")
@@ -1418,7 +1411,7 @@ the placement hook."
     (let (TeX-error-file TeX-error-offset snippet box
 	  file line buffer
 	  (lsnippet 0) lstart lfile lline lbuffer lpoint
-	  string after-string next-point error context-start
+	  string after-string error context-start
 	  context offset
 	  parsestate (case-fold-search nil)
 	  (run-buffer (current-buffer))
@@ -1587,9 +1580,12 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				  (nconc
 				   (preview-place-preview
 				    snippet
-				    (or (and (/= lpoint lstart)
-					     (preview-back-command lstart))
-					lstart)
+				    (if (/= (point) lstart)
+					(save-excursion
+					  (goto-char lstart)
+					  (preview-back-command)
+					  (point))
+				      lstart)
 				    (point)
 				    (preview-TeX-bb box)
 				    tempdir
@@ -1702,7 +1698,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.87 $"))
+	(rev "$Revision: 1.88 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
