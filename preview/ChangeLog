@@ -1,3 +1,9 @@
+2005-03-23  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* configure.in: Add check for perl
+
+	* doc/Makefile.in: Use the configure-provided $PERL
+
 2005-03-22  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-counter-find): Coerce `begin' to integer to
