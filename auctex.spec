@@ -46,7 +46,7 @@ install/upgrade with 'rpm --nopre ...'  (the activation is done in the
 preinstall script).
 
 %prep
-%setup
+%setup -n %{pkgname}-%{version}
 
 %build
 # The below will make the package build from a tar straight from CVS
