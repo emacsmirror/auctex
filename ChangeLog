@@ -1,3 +1,17 @@
+
+2004-09-29  Miguel Frasson <frasson@math.leidenuniv.nl>
+	
+	* images/bibtex.xpm, images/dvipdf.xpm, images/dvips.xpm,
+	* images/error.xpm, images/exec.xpm, images/execbibtex.xpm,
+	* images/execdvips.xpm, images/execerror.xpm,
+	* images/execpdftex.xpm, images/exectex.xpm,
+	* images/execviewdvi.xpm, images/execviewpdf.xpm,
+	* images/execviewps.xpm, images/gv.xpm, images/jumpdvi.xpm,
+	* images/pdftex.xpm, images/pspdf.xpm, images/sep.xpm,
+	* images/tex.xpm, images/view.xpm, images/viewdvi.xpm,
+	* images/viewpdf.xpm, images/viewps.xpm: Add designed images for
+	toolbar buttons.
+	
 2004-09-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-do-multi-line): Add new option and use
@@ -9,6 +23,22 @@
 	(font-latex-check-cache): Do not check if cache is to be used.
 	(font-latex-setup): Set up multi-line font locking.
 
+2004-09-28  Miguel Frasson <frasson@math.leidenuniv.nl>
+
+	* toolbarx.el: Support for grouping `:insert' clauses in the 3
+	engines (performance improvement.)  Better comments and
+	docstrings.
+	(toolbarx-process-symbol): Fix `nreverse'-missing bug.
+
+	* auctb.el: Fix Copyright notice (to FSF).  Remove "AMS Special"
+	from ppup menu.  Simplify.  Remove garbage comments from end.
+	(auctb-img-filename): Remove "symb-pics/" from return.  Add
+	"symb-pics/" explicitly where it is needed in the defconst's.
+
+	* images, images/dropdown.xpm, images/ltx-symb-turn-off.xpm,
+	* images/ltx-symb-turn-on.xpm: Add designed images for symbol
+	toolbar.
+	
 2004-09-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Add change log entries and bump version.
@@ -29,6 +59,13 @@
 
 	* doc/todo.texi (Wishlist): Macro spell checking mentioned.
 
+2004-09-26  Miguel Frasson <frasson@math.leidenuniv.nl>
+
+	* toolbarx.el: Add to cvs (first version).
+
+	* auctb.el: Add to cvs (first version); features only a symbol
+	toolbar.
+	
 2004-09-24  Davide G. M. Salvetti  <salve@debian.org>
 
 	* configure.in: Add `--(en|dis)able-build-dir-test' switch to
