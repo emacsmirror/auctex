@@ -1,3 +1,31 @@
+2004-01-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-command-list): Changed defcustom definition to one
+	which allows the specification of several modes for one command
+	and adapted the defaults to it.  Thanks to David Kastrup for most
+	of the code.
+	(plain-TeX-command-menu): Adapted the call to
+	`TeX-mode-specific-command-menu'.
+	(AmSTeX-mode-command-menu): Ditto.
+
+	* latex.el (LaTeX-mode-command-menu): Adapted the call to
+	`TeX-mode-specific-command-menu'.
+
+	* context.el (ConTeXt-mode-command-menu): Ditto.
+
+	* tex-info.el (TeXinfo-mode-command-menu): Ditto.
+
+	* tex-jp.el (japanese-TeX-command-list): Adapted list entries
+	according to defcustom changes in `tex.el'.
+	(plain-TeX-mode-command-menu): Adapted the call to
+	`TeX-mode-specific-command-menu'.
+	(LaTeX-mode-command-menu): Ditto.
+
+	* tex-mik.el (TeX-command-list): Adapted list entries
+	according to defcustom changes in `tex.el'.
+
+	* tex-fptex.el (TeX-command-list): Ditto.
+
 2004-01-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-command-list): Get rid of the superfluous sixth
