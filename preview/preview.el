@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.1 2001-09-12 23:18:41 dakas Exp $
+;; $Id: preview.el,v 1.2 2001-09-14 14:43:44 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -41,13 +41,27 @@
 
 ;;; Code:
 
+(defun shell-command-to-string (command)
+  "Execute shell command COMMAND and return its output as a string."
+  (with-output-to-string
+    (with-current-buffer
+      standard-output
+      (call-process shell-file-name nil t nil shell-command-switch command))))
 
 
 (defun preview-extract-bb (filename)
-  (let ((str (shell-command-to-string (concat "grep '^%%BoundingBox:' -- " filename))))
-    (if (string-match   "^%%BoundingBox:\
- +\\([0-9.]+\\) +\\([0-9.]+\\) +\\([0-9.]+\\) +\\([0-9.]+\\)"
-			str)
+  "Extract EPS bounding box vector from FILENAME."
+  (let ((str
+	 (with-output-to-string
+	   (with-current-buffer
+	       standard-output
+	     (call-process "grep" filename '(t nil) nil "^%%\\(HiRes\\)\\?BoundingBox:")))))
+    (if (or (string-match   "^%%HiResBoundingBox:\
+ +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\)"
+			    str)
+	    (string-match   "^%%BoundingBox:\
+ +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\) +\\([-+]?[0-9.]+\\)"
+			    str))
 	(list
 	 (string-to-number (match-string 1 str))
 	 (string-to-number (match-string 2 str))
@@ -58,12 +72,63 @@
     )
 )
 
+(defgroup preview nil "Embed Preview images into LaTeX buffers."
+  :group 'AUC-TeX)
+
+(defcustom preview-scale (function preview-scale-from-face)
+  "*Scale factor for included previews.
+This can be either a function to calculate the scale, or
+a fixed number." 
+  :group 'preview
+  :type '(choice (function-item preview-scale-from-face)
+		 (const 1.0)
+		 (number :value 1.0)
+		 (function :value preview-scale-from-face)))
+
+(defun preview-document-pt ()
+  "Calculate the default font size of document.
+If packages, classes or styles were called with an option
+like 10pt, size is taken from the first such option if you
+had let your document be parsed by AucTeX.  Otherwise
+the value is taken from `preview-default-document-pt'."
+  (or (and (boundp 'TeX-auto-file)
+	   (catch 'return (dolist (elt TeX-auto-file nil)
+			    (if (string-match "\\`\\([0-9]+\\)pt\\'" elt)
+				(throw 'return
+				       (string-to-number
+					(match-string 1 elt)))))) )
+      preview-default-document-pt))
+
+(defcustom preview-default-document-pt 10
+  "*Assumed document point size for `preview-scale-from-face'.
+If the point size (such as 11pt) of the document cannot be
+determined from the document options itself, assume this size.
+This is for matching screen font size and previews."
+  :group 'preview
+  :type
+          '(choice (const :tag "10pt" 10)
+                  (const :tag "11pt" 11)
+                  (const :tag "12pt" 12)
+                  (number :tag "Other" :value 11.0))
+)
+
+(defun preview-scale-from-face ()
+  "Calculate preview scale from default face.
+This calculates the scale of EPS images from a document assumed
+to have a default font size given by function `preview-document-pt'
+so that they match the current default face in height."
+  (/ (face-attribute 'default :height) 10.0 (preview-document-pt)))
+
+
 (defun preview-ps-image (filename)
   (let* ((filename (expand-file-name filename))
 	 (bb (preview-extract-bb filename))
+	 (scale (funcall preview-scale))
 	 (ptw (- (elt bb 2) (elt bb 0)))
 	 (pth (- (elt bb 3) (elt bb 1))))
-    (create-image filename 'postscript nil :pt-width ptw :pt-height pth
+    (create-image filename 'postscript nil
+		  :pt-width (round (* scale ptw))
+		  :pt-height (round (* scale pth))
 		  :bounding-box bb :ascent (if (and (<= (elt bb 1) 720) (> (elt bb 3) 720)) (round (* 100.0 (/ (- (elt bb 3) 720.0) pth))) 100)
 		  :heuristic-mask '(65535 65535 65535)
 		  )
