@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.115 1995-02-14 19:43:53 amanda Exp $
+# $Id: Makefile,v 5.116 1995-11-08 17:37:34 abraham Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -32,7 +32,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.28
+EMACS=emacs-19.29
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -89,19 +89,19 @@ LIBS=
 
 SHELL = /bin/sh
 
-FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
 
-REMOVE =  double.el min-ispl.el min-map.el  ltx-math.el 
+REMOVE =  easymenu.el cpp.el
 
-MINMAPSRC = column.el   auc-menu.el maniac.el \
-	    outln-18.el auc-html.el easymenu.el \
-	    xt-mouse.el all.el  cpp.el
+MINMAPSRC = auc-menu.el maniac.el \
+	    outln-18.el auc-html.el \
+	    xt-mouse.el all.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el 
 
 AUCSRC = auc-old.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
-	 ltx-help.el easymenu.el auc-menu.el
+	 ltx-help.el 
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -212,6 +212,9 @@ LispInstall:
 	else true; \
 	fi
 
+.el.elc:
+	$(ELC) $<
+
 TLaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck"
@@ -240,8 +243,8 @@ dist:
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
-	rm -f /user/amanda/lib/www/auctex/version
-	echo $(TAG) > /user/amanda/lib/www/auctex/version
+#	rm -f /user/amanda/lib/www/auctex/version
+#	echo $(TAG) > /user/amanda/lib/www/auctex/version
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
@@ -269,7 +272,7 @@ dist:
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
 	cp ChangeLog $(FTPDIR)
-	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
+#	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz

@@ -1,3 +1,24 @@
+Fri Oct 13 14:16:36 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* PROBLEMS: Some easymenu explanations.
+
+	* tex.el: Require easymenu.el instead of auc-menu.el.
+	* Makefile (AUCSRC): Removed easymenu.el and auc-menu.el.
+	(MINMAPSRC): Removed easymenu.el, column.el and cpp.el.
+	* easymenu.el: File deleted.
+	* column.el: File deleted.
+	* cpp.el: File deleted.
+	
+	* latex.el (LaTeX-math-insert): Don't check if `TeX-insert-macro'
+	is defined.
+	(LaTeX-close-environment): Work better when called on an empty
+	line.  Fixed by David Aspinall <da@dcs.ed.ac.uk>.
+
+Thu Oct 12 15:45:00 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el ('LaTeX-math-mode): Autoload from latex.el instead of
+	ltx-math.el.  Reported by Richard Brankin <richard@num-alg-grp.co.uk>.
+
 Tue Feb 14 20:36:00 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Should now format \\

@@ -1,3 +1,22 @@
+* Your Emacs is missing easymenu.el.
+
+Please upgrade.
+
+If that is absolutely impossible, you can try installing 
+
+	<URL:ftp://ftp.iesd.aud.dk/pub/emacs-lisp/auc-menu.el>
+
+under the name easymenu.el at some place where emacs can find it.  
+The best place is in the standard Emacs lisp directory, because that
+will automatically be removed when you upgrade.
+
+* Missing menus or menus containing just the word "Bug".
+
+You probably have an old version of easymenu.el or auc-menu.el.  Find
+it, delete it, and recompile AUC TeX.  If you are using an old Emacs,
+the easymenu.el may have been distributed with it.  In that case, see
+the previous point.
+
 * You are not using UNIX or can't figure out how to install.
 
 0. Delete any old version you have.

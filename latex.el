@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.41 1995-02-14 19:44:09 amanda Exp $
+;; Version: $Id: latex.el,v 5.42 1995-11-08 17:37:39 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -447,13 +447,18 @@ LaTeX-default-position          Position for array and tabular."
 (defun LaTeX-close-environment ()
   "Creates an \\end{...} to match the current environment."
   (interactive "*")
-  (if (not (save-excursion
-             (beginning-of-line)
-             (looking-at "^[ \t]*$")))
+  (if (> (point)
+	 (save-excursion
+	   (beginning-of-line)
+	   (skip-chars-forward " \t")
+	   (point)))
       (insert "\n"))
   (insert "\\end{" (LaTeX-current-environment 1) "}")
   (LaTeX-indent-line)
-  (insert "\n")
+  (if (not (looking-at "[ \t]*$"))
+      (insert "\n")
+    (next-line 1)
+    (beginning-of-line))
   (LaTeX-indent-line))
 
 (autoload 'outline-flag-region "outline")
@@ -2621,11 +2626,7 @@ commands are defined:
 (defun LaTeX-math-insert (string dollar)
   ;; Inserts \STRING{}. If DOLLAR is non-nil, put $'s around it.
   (if dollar (insert "$"))
-  ;; Allow `ltx-math.el' to be used without AUC TeX.
-  (if (fboundp 'TeX-insert-macro)
-      (TeX-insert-macro string)
-    (insert "\\" string))
-
+  (TeX-insert-macro string)
   (if dollar (insert "$")))
 
 (defun LaTeX-math-cal (char dollar)
