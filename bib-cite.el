@@ -6,7 +6,7 @@
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.27  (Feb 09 2005)
+;; Version:   3.28  (Feb 23 2005)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -47,7 +47,7 @@
 ;; AUCTeX users:
 ;;  AUCTeX is a super-charged LaTeX mode for emacs. Get it at:
 ;;
-;;    ftp://www.gnu.org/pub/gnu/auctex/
+;;    ftp://ftp.gnu.org/pub/gnu/auctex/
 ;;
 ;;  WWW users may want to check out the AUCTeX page at
 ;;    http://www.gnu.org/software/auctex/
@@ -56,16 +56,16 @@
 ;;  you use AUCTeX and didn't obtained bib-cite.el separately, make sure
 ;;  that you are actually using the more recent version.
 
-;; reftex users:
-;;  reftex is a package with similar functions to bib-cite.
+;; RefTeX users:
+;;  RefTeX is a package with similar functions to bib-cite.
 ;;    http://www.astro.uva.nl/~dominik/Tools/reftex/
 ;;  RefTeX is bundled and preinstalled with Emacs since version 20.2.
 ;;  It was also bundled with XEmacs 19.16--20.x.
 ;;
-;;  I suggest that you use reftex to help you type-in text as it's functions
+;;  I suggest that you use RefTeX to help you type-in text as it's functions
 ;;  are better suited to this task than bib-cite, and use bib-cite's features
 ;;  when you proof-read the text.
-;;  If you wish bib-cite to use reftex's reftex-view-crossref command to
+;;  If you wish bib-cite to use RefTeX's reftex-view-crossref command to
 ;;  display and find \label's and \cite bibliography entries, set the variable
 ;;  bib-cite-use-reftex-view-crossref to t.
 
@@ -94,7 +94,7 @@
 ;;    bib-etags              - Refreshes (or builds) the TAGS files for
 ;;                             multi-file documents.
 ;;    bib-create-auto-file   - Used in bibtex-mode to create cite key
-;;                             completion .el file for auctex.
+;;                             completion .el file for AUCTeX.
 ;;    bib-highlight-mouse    - Highlight \cite, \ref and \label commands in
 ;;                             green when the mouse is over them.
 
@@ -161,19 +161,19 @@
 ;;    The next occurrence of a \ref or \eqref command may be found by invoking
 ;;    bib-find-next, usually bound to `C-c b n'.
 ;;
-;;    For multi-file documents, you must be using auctex (so that bib-cite can
+;;    For multi-file documents, you must be using AUCTeX (so that bib-cite can
 ;;    find the master file) and all \input and \include commands must be first
 ;;    on a line (not preceeded by any non-white text).
 ;;
 ;;  bib-make-bibliography:     Bound to `\C-c b m'
 ;;
 ;;   Extract citations used in the current document from the \bibliography{}
-;;   file(s).  Put them into a new suitably-named buffer.  In a auctex
+;;   file(s).  Put them into a new suitably-named buffer.  In a AUCTeX
 ;;   multi-file document, the .aux files are used to find the cite keys (for
 ;;   speed).  You will be warned if these are out of date.
 ;;
 ;;   This buffer is not saved to a file.  It is your job to save it to whatever
-;;   name you wish.  Note that auctex has a unique name space for LaTeX and
+;;   name you wish.  Note that AUCTeX has a unique name space for LaTeX and
 ;;   BiBTeX files, so you should *not* name the bib file associated with
 ;;   example.tex as example.bib!  Rather, name it something like
 ;;   example-bib.bib.
@@ -219,8 +219,8 @@
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
 ;;  bib-cite is a minor-mode, so you could invoke it in a LaTeX-mode hook.
-;;  e.g. If you are using AUCTeX (http://www.gnu.org/auctex/), you could
-;;  use:
+;;  e.g. If you are using AUCTeX (http://www.gnu.org/software/auctex/), you
+;;  could use:
 ;;
 ;;   (autoload 'turn-on-bib-cite "bib-cite")
 ;;   (add-hook 'LaTeX-mode-hook 'turn-on-bib-cite)
@@ -230,8 +230,8 @@
 ;;   (autoload 'turn-on-bib-cite "bib-cite")
 ;;   (add-hook 'latex-mode-hook 'turn-on-bib-cite)
 ;;
-;;  bib-cite can be used with auctex, or stand-alone.  If used with auctex on a
-;;  multi-file document (and auctex's parsing is used), then all \bibliography
+;;  bib-cite can be used with AUCTeX, or stand-alone.  If used with AUCTeX on a
+;;  multi-file document (and AUCTeX's parsing is used), then all \bibliography
 ;;  commands in the document will be found and used.
 ;;  ---
 ;;  The following variable can be unset (like shown) to tell bib-cite to
@@ -240,7 +240,7 @@
 ;;
 ;;    (setq bib-novice nil)
 ;;  ---
-;;  If you wish bib-cite to use reftex's reftex-view-crossref command to
+;;  If you wish bib-cite to use RefTeX's reftex-view-crossref command to
 ;;  display and find \label's and \cite bibliography entries, set the variable
 ;;  bib-cite-use-reftex-view-crossref to t:
 ;;
@@ -318,11 +318,13 @@
 ;; - use  `kpsewhich -expand-path='$BIBINPUTS'`  instead of BIBINPUTS.
 ;; - jmv@di.uminho.pt (Jose Manuel Valenca) wants:
 ;;   - prompt for \cite as well as \label and \ref
-;;     (and use auctex's completion list)
+;;     (and use AUCTeX's completion list)
 ;;   - implement string concatenation, with #[ \t\n]*STRING_NAME
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.28 Feb 23 2005 - Ralf Angeli
+;;  - Some doc fixes in the commentary section.
 ;; V3.27 Feb 09 2005 - PSG
 ;;  - Patch from Peter Heslin.  TeX-master can now have symbol values.
 ;; V3.26 Aug 06 2004 - Reiner Steib
