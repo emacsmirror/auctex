@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.373 $"))
+	(rev "$Revision: 5.374 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-26 15:01:57 $"))
+    (let ((date "$Date: 2004-05-26 15:32:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1545,6 +1545,29 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
   (concat (if optional "(Optional) " "")
 	  (if prompt prompt default)
 	  (if complete "" ": ")))
+
+(defun TeX-string-divide-number-unit (string)
+  "Divide number and unit in STRING.
+Return the number as car and unit as cdr."
+  (if (string-match "[0-9]*\\.?[0-9]+" string)
+      (list (substring string 0 (string-match "[^.0-9]" string))
+	    (substring string (if (string-match "[^.0-9]" string)
+				  (string-match "[^.0-9]" string)
+				(length string))))
+    (list "" string)))
+
+(defcustom TeX-default-unit-for-image "cm"
+  "Default unit when prompting for an image size."
+  :group 'TeX-macro
+  :type '(choice (const "cm")
+		 (const "in")
+		 (const "\\linewidth")
+		 (string :tag "Other")))
+
+(defun TeX-arg-maybe (symbol list form)
+  "Evaluates FORM, if SYMBOL is an element of LIST."
+  (when (memq symbol list)
+    (eval form)))
 
 ;;; The Mode
 

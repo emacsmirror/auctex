@@ -53,7 +53,7 @@ A list of strings."
   :group 'LaTeX-environment
   :type '(repeat (string :format "%v")))
 
- (make-variable-buffer-local 'LaTeX-default-options)
+(make-variable-buffer-local 'LaTeX-default-options)
 
 (defcustom LaTeX-insert-into-comments t
   "*Whether insertion commands stay in comments.
@@ -4600,6 +4600,64 @@ runs the hooks in `doctex-mode-hook'."
 
   (set (make-local-variable 'imenu-create-index-function)
        'LaTeX-imenu-create-index-function))
+
+(defcustom LaTeX-includegraphics-extensions
+  '("eps" "jpe?g" "pdf" "png")
+  "Extensions for images files used by \\includegraphics."
+  :group 'LaTeX-macro
+  :type '(list (set :inline t
+		    (const "eps")
+		    (const "jpe?g")
+		    (const "pdf")
+		    (const "png"))
+	       (repeat :inline t
+		       :tag "Other"
+		       (string))))
+
+(defcustom LaTeX-includegraphics-options-alist
+  '((0 width)
+    ;; (1 width height clip)
+    ;; (2 width height keepaspectratio clip)
+    (4) ;; --> (4 nil)
+    (5 trim)
+    (16
+     ;; Table 1 in epslatex.ps: ``includegraphics Options''
+     height totalheight width scale angle origin bb
+     ;; Table 2 in epslatex.ps: ``cropping Options''
+     viewport trim
+     ;; Table 3 in epslatex.ps: ``Boolean Options''
+     ;; [not implemented:] noclip draft final
+     clip keepaspectratio))
+  "Controls for which optional arguments of \\includegraphics you get prompted.
+
+An alist, consisting of \(NUMBER . LIST\) pairs.  Valid elements of LIST are
+`width', `height', `keepaspectratio', `clip', `angle', `totalheight', `trim'
+and `bb' \(Bounding Box\).
+
+The list corresponding to 0 is used if no prefix is given.  Note that 4 \(one
+\\[universal-argument]\) and 16 \(two \\[universal-argument]'s\) are easy to
+type and should be used for frequently needed combinations."
+  :group 'LaTeX-macro
+  :type '(repeat (cons (integer :tag "Argument")
+		       (list (set :inline t
+				  (const height)
+				  (const totalheight)
+				  (const width)
+				  (const scale)
+				  (const angle)
+				  (const origin)
+				  (const :tag "Bounding Box" bb)
+				  ;;
+				  (const viewport)
+				  (const trim)
+				  ;;
+				  (const clip)
+				  (const keepaspectratio))))))
+
+(defcustom LaTeX-includegraphics-strip-extension-flag t
+  "If non-nil, strip known extensions from image file name."
+  :group 'LaTeX-macro
+  :type 'boolean)
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
