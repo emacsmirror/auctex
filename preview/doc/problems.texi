@@ -58,13 +58,18 @@ source of included PostScript code, rather install a recent version of
 AFPL GhostScript (v7.04 is known to work).  If a newer version of GNU
 GhostScript has been released since this has been written, you can try
 that out too: if the bug persists, one out of two previews will fail.
-If not, PostScript code will be executed in a secure setting.
+In that case, you will need to customize the variable
+@code{preview-gs-broken-security}
+@vindex preview-gs-broken-security
+in order to tell @previewlatex{} to keep ignoring security for GNU
+GhostScript versions later than 7.05 as well.
 
 The default options configurable with
 
 @display
 @kbd{M-x customize-variable @key{RET} preview-gs-options @key{RET}}
 @end display
+@vindex preview-gs-options
 @noindent
 include the options @option{-dTextAlphaBits=4} and
 @option{-dGraphicsAlphaBits=4}.  These options have been reported to
@@ -75,13 +80,20 @@ upgrading GhostScript might not be the worst idea after all.
 
 The device names have changed over time, so when using an old
 GhostScript, you may have problems with the devices demanded by the
-customizable variable @code{preview-image-creators}. In that case, make
-sure they fit your version of GhostScript, at least the entry
-corresponding to the current value of @code{preview-image-type}.  While
-not being best in file size and image quality, setting
+customizable variable @code{preview-image-creators}.
+@vindex preview-image-creators
+In that case, make sure they fit your version of GhostScript, at least
+the entry corresponding to the current value of
+@code{preview-image-type}.
+@vindex preview-image-type
+While not being best in file size and image quality, setting
 @code{preview-image-creators} to @code{jpeg} should probably be one of
-the best bets, since that device name has not changed in quite some
-time.
+the best bets for the purpose of checking basic operation, since that
+device name has not changed in quite some time.  But @acronym{JPEG} is
+not intended for text, but for photographic images.  On a more
+permanent time scale, the best choice is to use @acronym{PNG} and
+complain to your suppliers if either Emacs or GhostScript fail to
+properly accommodate this format.
 
 @node Font problems with Dvips, Emacs problems, Problems with GhostScript, Known problems
 @section Font problems with Dvips
