@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.125 2002-04-17 01:40:03 dakas Exp $
+;; $Id: preview.el,v 1.126 2002-04-17 15:19:53 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -397,7 +397,9 @@ and tries to restart GhostScript if necessary."
 		     (ov (preview-gs-behead-outstanding err)))
 		(when (and (null ov) preview-gs-queue)
 		  (save-excursion
-		    (goto-char (process-mark process))
+		    (goto-char (if (marker-buffer (process-mark process))
+				   (process-mark process)
+				 (point-max)))
 		    (insert-before-markers preview-gs-command " "
 					   (mapconcat #'shell-quote-argument
 						      preview-gs-command-line
@@ -1776,7 +1778,7 @@ Those are put in local variables `preview-scale' and
 `preview-resolution'.  Calculation is done in source buffer
 specified by BUFF."
   (let (scale res colors)
-    (condition-case nil
+    (condition-case err
 	(with-current-buffer buff
 	  (setq scale (if (functionp preview-scale-function)
 			  (funcall preview-scale-function)
@@ -1786,7 +1788,8 @@ specified by BUFF."
 			  (/ (* 25.4 (display-pixel-height))
 			     (display-mm-height)))
 		colors (preview-gs-get-colors)))
-      (error (error "Display geometry unavailable")))
+      (error (error "Display geometry unavailable: %s")
+	     (error-message-string err)))
     (setq preview-scale scale)
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
@@ -1872,7 +1875,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.125 $"))
+	(rev "$Revision: 1.126 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1883,7 +1886,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-17 01:40:03 $"))
+    (let ((date "$Date: 2002-04-17 15:19:53 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
