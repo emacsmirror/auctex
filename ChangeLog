@@ -1,3 +1,17 @@
+2004-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auc-tex.texi (Japanese): Refer to `INSTALL' instead of
+	`INSTALLATION'.
+
+	* doc/intro.texi: Refer to `INSTALL' and `INSTALL.windows'
+	instead of `INSTALLATION'.
+
+	* IRIX: Removed.
+	
+	* Makefile.in (EXTRAFILES): Removed IRIX.
+
+	* COPYING: Updated to current incarnation.
+
 2004-04-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (install-el, dist): Add .nosearch in style/ and
