@@ -449,10 +449,8 @@ string."
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
 		     (TeX-style-check LaTeX-command-style)))
-	(list "%S" (lambda ()
-		     (TeX-source-specials-expand-options)))
-	(list "%dS" (lambda ()
-		      (TeX-source-specials-expand-view-options)))
+	(list "%S" 'TeX-source-specials-expand-options)
+	(list "%dS" 'TeX-source-specials-expand-view-options)
 	;; `file' means to call `TeX-master-file'
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
@@ -556,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.387 $"))
+	(rev "$Revision: 5.388 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -571,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-17 11:54:18 $"))
+    (let ((date "$Date: 2004-06-17 12:24:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
