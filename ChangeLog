@@ -1,4 +1,46 @@
-2003-12-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+2004-01-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-mode-specific-command-menu): New function to be used
+	for generating a mode-specific command menu.
+	(plain-TeX-mode-map): New map to be used by plain-tex-mode.
+	(plain-TeX-mode-command-menu): New menu used instead of
+	`TeX-mode-menu' and yielding `TeX-mode-specific-command-menu'.
+	(TeX-mode-menu): Removed in favor of
+	`plain-TeX-mode-command-menu'.
+	(AmSTeX-mode-map): New map to be used by ams-tex-mode.
+	(AmSTeX-mode-command-menu): New menu.
+	(ams-tex-mode): Moved and grouped with other AmSTeX-related code.
+	Added code to use new menu.
+	(TeX-command-list): Added new choice for the selection of the mode
+	for the respective command.  Adapted doc string.  Added respective
+	symbols to command definitions.  Rearranged command definitions.
+	
+	* latex.el (LaTeX-mode-command-menu): New menu used instead of
+	`TeX-mode-menu'.
+	(LaTeX-common-initialization): Activate it.
+
+	* context.el (ConTeXt-mode-command-menu): New menu used instead of
+	`TeX-mode-menu'.
+	(context-mode): Activate it.
+
+	* tex-info.el (TeXinfo-command-menu): Adapted for using
+	`TeX-mode-specific-command-menu'.
+
+	* tex-jp.el (japanese-TeX-command-menu): Added symbols to command
+	definitions needed for assigning them to the respective mode.
+	(TeX-mode-menu): Removed.
+	(plain-TeX-mode-command-menu): New menu yielding
+	`TeX-mode-specific-command-menu'.
+	(LaTeX-mode-command-menu): New menu yielding
+	`TeX-mode-specific-command-menu'.
+	(LaTeX-mode-map): Removed key definition for `TeX-mode-menu'.
+
+	* tex-fptex.el (TeX-command-list): Added symbols to command
+	definitions needed for assigning them to the respective mode.
+
+	* tex-mik.el (TeX-command-list): Ditto.
+
+2004-01-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-mode-map): Use `C-c -' as a key binding for
 	`TeX-master-file-ask' as `C-c !' is already used in `context.el'.
@@ -31,6 +73,7 @@
 	(TeX-mode-menu): Took out redundant entry for `TeX-home-buffer'.
 	Added entry "Set Master File" for `TeX-master-file-ask'.  Grouped
 	menu entries relevant for multifile handling.
+
 	* latex.el (LaTeX-mode-menu): Changed analogously to
 	`TeX-mode-menu'.
 
@@ -66,7 +109,9 @@
 2003-12-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/scrbase.el (TeX-add-symbols): Remove redundant entries.
+
 	* style/scrlttr2.el (TeX-add-symbols): Remove redundant entry.
+
 	* style/scrpage2.el: Remove unnecessary coding cookie and text in
 	introductory comment.
 	
