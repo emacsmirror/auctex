@@ -1,3 +1,10 @@
+2004-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-view-style): Fix it after it was accidently
+	and incorrectly changed with the last check-in.  Patch by David
+	Kastrup <dak@gnu.org>.
+	(TeX-view-style): Ditto.
+
 2004-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-find-opening-brace): Don't match the char before the
