@@ -1482,7 +1482,7 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 ;; Provide ourselves:
 (provide 'font-latex)
 
-;; Local Variabes:
+;; Local Variables:
 ;; coding: iso-8859-1
 ;; End:
 
