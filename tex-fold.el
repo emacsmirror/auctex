@@ -253,12 +253,12 @@ may be altered to prevent overfull lines."
 		       (skip-chars-forward " \t")
 		       (point))
 		   ov-end))
-	 (display-string (concat display-string (when overfull "\n"))))
-    (let ((ov (make-overlay ov-start ov-end (current-buffer) t nil)))
-      ;; Give environments a higher priority so that their display
-      ;; string overrides those of possibly enclosed macros.
-      (overlay-put ov 'priority (if (eq type 'env) 2 1))
-      (TeX-fold-hide-item ov display-string))))
+	 (display-string (concat display-string (when overfull "\n")))
+	 (ov (make-overlay ov-start ov-end (current-buffer) t nil)))
+    ;; Give environments a higher priority so that their display
+    ;; string overrides those of possibly enclosed macros.
+    (overlay-put ov 'priority (if (eq type 'env) 2 1))
+    (TeX-fold-hide-item ov display-string)))
 
 (defun TeX-fold-hide-item (ov &optional display-string)
   "Hide a single macro or environment.
