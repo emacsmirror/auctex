@@ -320,7 +320,7 @@ AC_ARG_WITH(tex-site,[  --with-tex-site=DIR       Location of AUC-TeX's tex-site
 ])
 if test -z "$AUCTEXDIR" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
-  AC_EMACS_CHECK_REQUIRE(tex_site)
+  AC_EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
   	EMACS_cv_ACCEPTABLE_AUCTEX=yes
   else
@@ -338,5 +338,5 @@ if test -z "$AUCTEXDIR" ; then
 fi
 
    AC_SUBST(AUCTEXDIR)
-   AC_MSG_RESULT("${AUCTEXDIR}")
+   AC_MSG_RESULT(${AUCTEXDIR}tex-site.el)
 ])
