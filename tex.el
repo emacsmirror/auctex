@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10t
+;; Version: 10.0a
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -371,41 +371,41 @@ Full documentation will be available after autoloading the function."
 
 ;;; Special support for XEmacs 
 
-(cond ((or (string-match "Lucid" emacs-version)
-	   (string-match "XEmacs" emacs-version))
+(when (featurep 'xemacs)
 
-(defadvice popup-mode-menu (before LaTeX-update activate)
-  "Run `LaTeX-menu-update' before showing menu."
-  (and (fboundp 'LaTeX-menu-update)
-       (LaTeX-menu-update)))
+  (defadvice popup-mode-menu (before LaTeX-update activate)
+    "Run `LaTeX-menu-update' before showing menu."
+    (and (fboundp 'LaTeX-menu-update)
+	 (LaTeX-menu-update)))
 
-(defun TeX-mark-active ()
-  ;; In Lucid (mark) returns nil when not active.
-  (if zmacs-regions 
-      (mark)
-    (mark t)))
+  (defun TeX-mark-active ()
+    ;; In Lucid (mark) returns nil when not active.
+    (if zmacs-regions 
+	(mark)
+      (mark t)))
 
-(defun TeX-active-mark ()
-  (and zmacs-regions (mark)))
+  (defun TeX-active-mark ()
+    (and zmacs-regions (mark)))
 
-(fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
+  (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
 
-)
-;;; Special support for GNU Emacs 19
+  )
 
-(t
+;;; Special support for GNU Emacs
 
-(defun TeX-mark-active ()
-  ;; In FSF 19 mark-active indicates if mark is active.
-  mark-active)
+(unless (featurep 'xemacs)
 
-(defun TeX-active-mark ()
-  (and transient-mark-mode mark-active))
+  (defun TeX-mark-active ()
+    ;; In FSF 19 mark-active indicates if mark is active.
+    mark-active)
 
-(defun TeX-activate-region ()
-  nil)
+  (defun TeX-active-mark ()
+    (and transient-mark-mode mark-active))
 
-))
+  (defun TeX-activate-region ()
+    nil)
+
+  )
 
 ;;; Version 
 
@@ -1272,6 +1272,126 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 	  (if prompt prompt default)
 	  (if complete "" ": ")))
 
+;;; Font-Lock support
+;;
+;; Stolen from Emacs 21.
+
+(unless (featurep 'xemacs)
+
+  (defconst tex-font-lock-keywords-1
+    (eval-when-compile
+      (let* (;; Names of commands whose arg should be fontified as heading, etc.
+	     (headings (regexp-opt
+			'("title"  "begin" "end" "chapter" "part"
+			  "section" "subsection" "subsubsection"
+			  "paragraph" "subparagraph" "subsubparagraph"
+			  "newcommand" "renewcommand" "newenvironment"
+			  "newtheorem")
+			t))
+	     (variables (regexp-opt
+			 '("newcounter" "newcounter*" "setcounter" "addtocounter"
+			   "setlength" "addtolength" "settowidth")
+			 t))
+	     (includes (regexp-opt
+			'("input" "include" "includeonly" "bibliography"
+			  "epsfig" "psfig" "epsf" "nofiles" "usepackage"
+			  "includegraphics" "includegraphics*")
+			t))
+	     ;; Miscellany.
+	     (slash "\\\\")
+	     (opt "\\(\\[[^]]*\\]\\)?")
+	     (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
+	(list
+	 ;; Heading args.
+	 (list (concat slash headings "\\*?" opt arg)
+	       ;; If ARG ends up matching too much (if the {} don't match, f.ex)
+	       ;; jit-lock will do funny things: when updating the buffer
+	       ;; the re-highlighting is only done locally so it will just
+	       ;; match the local line, but defer-contextually will
+	       ;; match more lines at a time, so ARG will end up matching
+	       ;; a lot more, which might suddenly include a comment
+	       ;; so you get things highlighted bold when you type them
+	       ;; but they get turned back to normal a little while later
+	       ;; because "there's already a face there".
+	       ;; Using `keep' works around this un-intuitive behavior as well
+	       ;; as improves the behavior in the very rare case where you do have
+	       ;; a comment in ARG.
+	       3 'font-lock-function-name-face 'keep)
+	 ;; Variable args.
+	 (list (concat slash variables arg) 2 'font-lock-variable-name-face)
+	 ;; Include args.
+	 (list (concat slash includes opt arg) 3 'font-lock-builtin-face)
+	 ;; Definitions.  I think.
+	 '("^[ \t]*\\\\def\\\\\\(\\(\\w\\|@\\)+\\)"
+	   1 font-lock-function-name-face))))
+    "Subdued expressions to highlight in TeX modes.")
+
+  (defconst tex-font-lock-keywords-2
+    (append tex-font-lock-keywords-1
+	    (eval-when-compile
+	      (let* (;;
+		     ;; Names of commands whose arg should be fontified with fonts.
+		     (bold (regexp-opt '("textbf" "textsc" "textup"
+					 "boldsymbol" "pmb") t))
+		     (italic (regexp-opt '("textit" "textsl" "emph") t))
+		     (type (regexp-opt '("texttt" "textmd" "textrm" "textsf") t))
+		     ;;
+		     ;; Names of commands whose arg should be fontified as a citation.
+		     (citations (regexp-opt
+				 '("label" "ref" "pageref" "vref" "eqref"
+				   "cite" "nocite" "index" "glossary"
+				   ;; These are text, rather than citations.
+				   ;; "caption" "footnote" "footnotemark" "footnotetext"
+				   )
+				 t))
+		     ;;
+		     ;; Names of commands that should be fontified.
+		     (specials (regexp-opt
+				'("\\"
+				  "linebreak" "nolinebreak" "pagebreak" "nopagebreak"
+				  "newline" "newpage" "clearpage" "cleardoublepage"
+				  "displaybreak" "allowdisplaybreaks" "enlargethispage")
+				t))
+		     (general "\\([a-zA-Z@]+\\**\\|[^ \t\n]\\)")
+		     ;;
+		     ;; Miscellany.
+		     (slash "\\\\")
+		     (opt "\\(\\[[^]]*\\]\\)?")
+		     (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
+		(list
+		 ;;
+		 ;; Citation args.
+		 (list (concat slash citations opt arg) 3 'font-lock-constant-face)
+		 ;;
+		 ;; Command names, special and general.
+		 (cons (concat slash specials) 'font-lock-warning-face)
+		 (concat slash general)
+		 ;;
+		 ;; Font environments.  It seems a bit dubious to use `bold' etc. faces
+		 ;; since we might not be able to display those fonts.
+		 (list (concat slash bold arg) 2 '(quote bold) 'append)
+		 (list (concat slash italic arg) 2 '(quote italic) 'append)
+		 ;; (list (concat slash type arg) 2 '(quote bold-italic) 'append)
+		 ;;
+		 ;; Old-style bf/em/it/sl.  Stop at `\\' and un-escaped `&', for tables.
+		 (list (concat "\\\\\\(\\(bf\\)\\|em\\|it\\|sl\\)\\>"
+			       "\\(\\([^}&\\]\\|\\\\[^\\]\\)+\\)")
+		       3 '(if (match-beginning 2) 'bold 'italic) 'append)))))
+    "Gaudy expressions to highlight in TeX modes.")
+
+  (defvar tex-font-lock-keywords tex-font-lock-keywords-1
+    "Default expressions to highlight in TeX modes.")
+
+
+  (defface tex-math-face
+    '((t :inherit font-lock-string-face))
+    "Face used to highlight TeX math expressions.")
+  (defvar tex-math-face 'tex-math-face)
+
+  ;; Use string syntax but math face for $...$.
+  (defun tex-font-lock-syntactic-face-function (state)
+    (if (nth 3 state) tex-math-face font-lock-comment-face))
+  )
 ;;; The Mode
 
 (defvar TeX-format-list
@@ -1311,7 +1431,7 @@ content."
   :group 'AUC-TeX
   :type 'boolean)
 
-;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
+;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
   "Major mode for editing files of input for TeX or LaTeX.
 Tries to guess whether this file is for plain TeX or LaTeX.
@@ -1348,7 +1468,7 @@ The algorithm is as follows:
                      answer
                    TeX-default-mode))))))
 
-;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
+;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun plain-tex-mode ()
   "Major mode for editing files of input for plain TeX.
 See info under AUC TeX for documentation.
@@ -1433,6 +1553,17 @@ of AmS-TeX-mode-hook."
 		    1 'TeX-symbol-list (if TeX-insert-braces "{}"))
 	      (list "" TeX-complete-word)))
   
+  ;; Support Font Lock for Emacs 21+.
+  (unless (featurep 'xemacs)
+    (set (make-local-variable 'font-lock-defaults)
+	 '((tex-font-lock-keywords
+	    tex-font-lock-keywords-1 tex-font-lock-keywords-2)
+	   nil nil ((?$ . "\"")) nil
+	   ;; Who ever uses that anyway ???
+	   (font-lock-mark-block-function . mark-paragraph)
+	   (font-lock-syntactic-face-function
+	    . tex-font-lock-syntactic-face-function))))
+
   ;; We want this to be early in the list, so we do not add it before
   ;; we enter TeX mode  the first time.
   (if (boundp 'local-write-file-hooks)
