@@ -1,3 +1,17 @@
+2003-10-03  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/readme.texi: Document new font support and switches
+
+	* dvipng/psfontmap.c: Redesign psfontmap loading to use the syntax
+	from dvips' docs
+
+	* dvipng/font.c: Enhance TrueType font finding
+
+	* dvipng/draw.c: Warn if setting char from null font 
+
+	* dvipng/dvipng.h:
+	* dvipng/color.c: Load and use psnames.def 
+
 2003-09-28  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/misc.c: Warn for all bad options 
