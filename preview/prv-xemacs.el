@@ -345,7 +345,13 @@ toggles it."
       (if old-urgent
           (apply 'preview-add-urgentization old-urgent)))))
 
-; Does FALLBACKS need to be implemented?
+(defun preview-gs-color-value (value)
+  "Return string to be used as color value for an RGB component.
+Conversion from Emacs color numbers (0 to 65535) in VALUE
+to GhostScript floats."
+  (format "%g" (/ value 65535.0)))
+
+; Does FALLBACKS need to be implemented? Likely not.
 (defun preview-inherited-face-attribute (face attribute &optional
                                               fallbacks)
   "Fetch face attribute while adhering to inheritance.
