@@ -95,9 +95,11 @@ Return non-nil if document need to be re-TeX'ed."
   (save-restriction
     (widen)
     (save-excursion
-      (if pos (goto-char pos))
-      (+ (count-lines (point-min) (point))
-	 (if (bolp) 0 -1)))))
+      (let ((inhibit-point-motion-hooks t)
+	    (inhibit-field-text-motion t))
+	(if pos (goto-char pos))
+	(+ (count-lines (point-min) (point))
+	   (if (bolp) 0 -1))))))
 
 (defun TeX-command-region (&optional old)
   "Run TeX on the current region.
