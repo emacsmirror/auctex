@@ -1,5 +1,8 @@
 2004-04-16  Berend de Boer  <berend@pobox.com>
 
+	* Makefile.in: AUCSRC includes the new context-en.el and context-nl.el.
+	Ditto fo AUCELC.
+
 	* context.el: English interface macro's moved to context-en.el.
 	All defmacro's are now replaced by defvars which are set to the
 	proper language dependent interface as a local buffer variable.
