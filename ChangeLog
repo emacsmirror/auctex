@@ -1,3 +1,13 @@
+2003-02-13  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (clean): Remove .elc files.
+	(distclean): new target.
+
+	* aclocal.m4 (EMACS_EXAMINE_PACKAGEDIR): make this work properly
+	more or less.
+	(EMACS_CHECK_AUCTEX): use auctexdir instead of AUCTEXDIR (synch
+	with preview-latex aclocal.m4) and strip trailing slash.
+
 2003-02-11  Peter S Galbraith  <psg@debian.org>
 
 	* hilit-LaTeX.el: Removed.  It's obsolete.  Use font-latex.el instead.
