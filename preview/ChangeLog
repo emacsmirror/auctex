@@ -1,3 +1,26 @@
+2002-07-29  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-parsed-font-size) 
+	(preview-parsed-magnification): new variables set from
+	preview.sty
+	(preview-get-magnification): consults
+	preview-parsed-magnification.
+	(preview-gs-resolution): consult preview-get-magnification.
+	(preview-gs-open): Delay setup of preview-gs-command-line
+	(preview-gs-dvips-process-setup): complete it.
+	(preview-hook-enquiry): New function.
+	(preview-document-pt-list): Sources of document-pt.
+	(preview-auctex-font-size): Previously preview-document-pt
+	(preview-document-pt): Uses preview-document-pt-list
+	(preview-scale-from-face): defer part of calculation.
+	(preview-parse-variables): Variable list set from preview.sty
+	(preview-parse-messages): Clear them at start of parse.
+	(preview-parse-messages): New pattern for variable list.
+	(preview-parse-messages): magnification for PS bounding box.
+	(preview-parse-messages): Parse variables from preview.sty
+	(preview-get-geometry): Use preview-hook-enquiry for call of
+	preview-scale-function.
+
 2002-07-28  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (subsection{Preview attaching commands}): Fix
