@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.93 1994-07-30 05:39:52 amanda Exp $
+@c $Id: auc-tex.texi,v 1.94 1994-08-02 04:56:30 amanda Exp $
 
 @finalout
 @titlepage
@@ -3702,6 +3702,9 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+Installation procedure written purely in emacs lisp.
+
 @item
 Format La@TeX{} comment blocks.
 

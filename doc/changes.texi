@@ -13,6 +13,11 @@ Robert Estes @samp{<estes@@ece.ucdavis.edu>},
 Peter Whaite @samp{<peta@@cim.mcgill.ca>},
 Karl Eichwalder @samp{<karl@@pertron.central.de>},
 John Interrante @samp{<interran@@uluru.Stanford.EDU>},
+James A. Robinson @samp{<jimr@@simons-rock.edu>},
+Tim Carlson @samp{<imsgtcar@@mathfs.math.montana.edu>},
+Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>},
+Manoj Srivastava @samp{<srivasta@@pilgrim.umass.edu>},
+Richard Stanton @samp{<stanton@@haas.berkeley.edu>},
 and probably more.@refill
 
 @itemize @bullet

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.23 1994-07-30 05:39:21 amanda Exp $
+;; Version: $Id: latex.el,v 5.24 1994-08-02 04:56:24 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -912,8 +912,10 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 		      TeX-auto-file)))
 
 	;; The third argument if "class" indicates LaTeX2e features.
-	(if (equal class "class")
-	    (setq TeX-auto-file (cons "latex2e" TeX-auto-file))))))
+	(cond ((equal class "class")
+	       (setq TeX-auto-file (cons "latex2e" TeX-auto-file)))
+	      ((equal class "style")
+	       (setq TeX-auto-file (cons "latex2" TeX-auto-file)))))))
     
   ;; Cleanup optional arguments
   (mapcar (function (lambda (entry)
@@ -2144,9 +2146,7 @@ of LaTeX-mode-hook."
    '("usebox" TeX-arg-savebox)
    '("vspace*" "Length")
    '("vspace" "Length")
-   '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
    '("documentstyle" TeX-arg-document)
-   '("documentclass" TeX-arg-document)
    '("include" (TeX-arg-input-file "File" t))
    '("includeonly" t)
    '("input" TeX-arg-input-file)
@@ -2180,8 +2180,10 @@ of LaTeX-mode-hook."
 
   (TeX-run-style-hooks "LATEX")
 
+  (make-local-variable 'TeX-font-list)
   (if (string-equal LaTeX-version "2")
       ()
+    (setq TeX-font-list LaTeX-font-list)
     (TeX-add-symbols
      '("newcommand" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
@@ -2193,9 +2195,14 @@ of LaTeX-mode-hook."
   (TeX-add-style-hook "latex2e"
    ;; Use new fonts for `\documentclass' documents.
    (function (lambda ()
-     (make-local-variable 'TeX-font-list)
      (setq TeX-font-list LaTeX-font-list)
-     (run-hooks 'LaTeX2e-hook)))))
+     (run-hooks 'LaTeX2e-hook))))
+  
+  (TeX-add-style-hook "latex2"
+   ;; Use old fonts for `\documentstyle' documents.
+   (function (lambda ()
+     (setq TeX-font-list (default-value 'TeX-font-list))
+     (run-hooks 'LaTeX2-hook)))))
 
 (provide 'latex)
 

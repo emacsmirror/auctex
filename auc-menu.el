@@ -1,18 +1,18 @@
 ;;; auc-menu.el - Easy menu support for FSF and Lucid Emacs 19.
 ;; 
-;; $Id: auc-menu.el,v 5.1 1994-07-30 05:39:07 amanda Exp $
+;; $Id: auc-menu.el,v 5.2 1994-08-02 04:56:19 amanda Exp $
 ;;
 ;; LCD Archive Entry:
 ;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; Easy menu support for FSF and Lucid Emacs 19|
-;; $Date: 1994-07-30 05:39:07 $|$Revision: 5.1 $|~/misc/auc-menu.el.gz|
+;; $Date: 1994-08-02 04:56:19 $|$Revision: 5.2 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen <abraham@iesd.auc.dk>
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 1, or (at your option)
+;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 ;; 
 ;; This program is distributed in the hope that it will be useful,
@@ -123,6 +123,7 @@ DOC is the documentation string, and MENU is a Lucid style menu."
   (fset symbol (list 'lambda '(e)
 		     doc
 		     '(interactive "@e")
+		     '(run-hooks 'activate-menubar-hook)
 		     '(setq zmacs-region-stays 't)
 		     (list 'popup-menu symbol)))
   (mapcar (function (lambda (map) (define-key map 'button3 symbol)))
@@ -220,6 +221,7 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 
 (defun easy-popup-menu (event menu)
   ;; At EVENT popup MENU and execute the selection.
+  (run-hooks 'activate-menubar-hook)
   (let ((fun (lookup-key menu (apply 'vector (x-popup-menu event menu)))))
     (if (commandp fun)
 	(call-interactively fun))))
@@ -241,7 +243,10 @@ Call this from 'activate-menubar-hook' to implement dynamic menus."
 (defun easy-menu-remove (menu))
 
 (defun easy-menu-add (menu &optional map)
-  (x-popup-menu nil menu))
+  (and (string-match "^19\\.\\([0-9]+\\)" emacs-version)
+       (< 22 (string-to-int (substring emacs-version
+				       (match-beginning 1) (match-end 1))))
+       (x-popup-menu nil menu)))
 
 )					;FSF Emacs 19
 
