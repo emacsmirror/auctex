@@ -1,5 +1,16 @@
 2002-03-04  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi (Package options): doc changes, psfixbb
+	documented.
+
+	* doc/problems.texi: doc changes.
+
+	* doc/readme.texi: doc changes (@AUCTeX).
+
+	* doc/install.texi: doc changes.
+
+	* doc/preview-latex.texi: some documentation amendments.
+
 	* preview.el (preview-dissect): improve false desktop cleanups.
 	(desktop-buffer-preview): handle file load oneself.
 	(preview-place-preview): subtle bug leading to empty previews
