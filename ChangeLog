@@ -1,3 +1,8 @@
+2004-10-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* aclocal.m4 (TEX_INPUT_DIRS): Do not use -e command line option
+	for grep.
+
 2004-10-18  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/quickstart.texi: Fix markup.
