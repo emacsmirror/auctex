@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.31 1993-03-18 06:06:02 amanda Exp $
+# $Id: Makefile,v 5.32 1993-03-18 06:40:32 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -35,8 +35,6 @@ aucdir=/home/pd/share/emacs/auctex7
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located
-# For Lucid Emacs and perhaps Emacs 19 this will be a : separated path, 
-# which should include the directory containing the byte compiler. 
 elispdir=/home/dist/lib/emacs/lisp
 #elispdir=$(prefix)/lib/emacs/lisp
 
@@ -54,14 +52,14 @@ autodir=$(aucdir)/auto
 EMACS=emacs -batch
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC=env EMACSLOADPATH=.:$(elispdir) $(EMACS) -f batch-byte-compile
+ELC=env EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
 AUTO= env EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) \
 	-l tex-auto -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
-AUTOC= env EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) -f batch-byte-compile
+AUTOC= env EMACSLOADPATH=$(aucdir):$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
 
 # Using TeX in batch mode.
 TEX=tex
