@@ -50,6 +50,14 @@
 	* latex.el: Set fill-space nonsticky.
 	(LaTeX-fill-delete-newlines): Check text property 'fill-space.
 
+2005-03-04  David Kastrup  <dak@gnu.org>
+
+	* Organizational: preview-latex development has been moved from
+	<URL:http://sourceforge.net/projects/preview-latex> into the
+	AUCTeX CVS Archive on
+	<URL:http://savannah.gnu.org/projects/auctex> in subdirectory
+	auctex/preview.
+	
 2005-03-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (I18n): Try to make text more clear.

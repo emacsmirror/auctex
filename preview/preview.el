@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.237 2005-03-02 07:56:52 dakas Exp $
+;; $Id: preview.el,v 1.238 2005-03-08 11:01:14 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -699,9 +699,11 @@ SETUP may contain a parser setup function."
 null eq {pop{pop}bind}if def \
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
-/preview-do{[count 3 roll save]3 1 roll{setpagedevice}stopped\
-{handleerror quit}if cvx \
-stopped{handleerror quit}if count 1 ne{quit}if \
+/preview-do{[count 3 roll save]3 1 roll dup length 0 eq\
+{pop}{{setpagedevice}stopped{handleerror quit}if}ifelse \
+systemdict /.runandhide known{{.runandhide}}if \
+stopped{handleerror quit}if count 1 gt\
+{pop/exec errordict/stackoverflow get exec}if \
 aload pop restore}bind def "
 		  (preview-gs-color-string preview-colors)))
     (preview-gs-queue-empty)
@@ -1222,9 +1224,9 @@ given as ANSWER."
 				preview-gs-dsc))
 		     (format "%s(r)file cvx"
 			     (preview-ps-quote-filename
-			      (if (listp (car oldfile))
-				  (car (last (car oldfile)))
-				(car oldfile)))))
+			      (if (listp oldfile)
+				  (car (last oldfile))
+				oldfile))))
 		   (if preview-parsed-tightpage
 		       ""
 		     (format "/PageSize[%g %g]/PageOffset[%g \
@@ -3282,7 +3284,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.237 $"))
+	(rev "$Revision: 1.238 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3293,7 +3295,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-02 07:56:52 $"))
+    (let ((date "$Date: 2005-03-08 11:01:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3307,7 +3309,7 @@ In the form of yyyy.mmdd")
   (interactive)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
-     "preview-latex-bugs@lists.sourceforge.net"
+     "auc-tex@sunsite.dk"
      preview-version
      '(AUC-TeX-version
        LaTeX-command-style

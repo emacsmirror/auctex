@@ -1,3 +1,9 @@
+2005-03-07  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-gs-open): Make better error message for junk
+	left over on PostScript stack, so that we may better pass the
+	buck.
+
 2005-03-05  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Fix psfixbb option that must have become
@@ -6,6 +12,13 @@
 	* doc/install.texi (Loading the package): Explain that
 	preview-latex.el should already be installed in-place.
 
+2005-03-04  David Kastrup  <dak@gnu.org>
+
+	* Organizational: preview-latex development has been moved from
+	<URL:http://sourceforge.net/projects/preview-latex> into the
+	AUCTeX CVS Archive on
+	<URL:http://savannah.gnu.org/projects/auctex>.
+	
 2005-03-03  David Kastrup  <dak@gnu.org>
 
 	* Release 0.9
