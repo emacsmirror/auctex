@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 
 ;; Copyright (C) 1985, 1986, 2000,
-;;   2001, 2002, 2003 Free Software Foundation, Inc.
+;;   2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.326 $"))
+	(rev "$Revision: 5.327 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-03 09:23:39 $"))
+    (let ((date "$Date: 2004-02-26 00:41:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -731,14 +731,11 @@ the beginning of the file, but that feature will be phased out."
 	  (setq TeX-master my-name))
 
 	 ;; Ask the user (but add it as a local variable).
-	 (ask (TeX-master-file-ask))
-
-	 ;; Default option.
-	 (t (setq TeX-master t)))))
+	 (ask (TeX-master-file-ask)))))
   
-    (let ((name (if (eq TeX-master t)
-		    my-name
-		  TeX-master)))
+    (let ((name (if (stringp TeX-master)
+		    TeX-master
+		  my-name)))
       
       (if (TeX-match-extension name)
       ;; If it already have an extension...
