@@ -1,6 +1,6 @@
 ;;; multi-prompt.el --- completing read of multiple strings.
 
-;; Copyright (C) 1996, 1997, 2000 Per Abrahamsen.
+;; Copyright (C) 1996, 1997, 2000 Free Software Foundation
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: extensions

@@ -1,8 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen
+;; Copyright (C) 1993, 1996, 2001, 2003, 2004 Free Software Foundation, Inc.
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex

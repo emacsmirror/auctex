@@ -1,12 +1,12 @@
 ;;; -*- emacs-lisp -*-
-;;; scrbook.el -- AUC TeX style for scrbook.cls
+;;; scrbook.el -- AUCTeX style for scrbook.cls
 
-;; Copyright (C) 2002 Mark Trettin
-;; License: GPL, see the file COPYING in the base directory of AUC TeX
+;; Copyright (C) 2002 Free Software Foundation
+;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbook.el,v 1.3 2003-11-17 13:14:30 angeli Exp $
+;; Version: $Id: scrbook.el,v 1.4 2004-08-15 20:11:21 dak Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -14,9 +14,7 @@
 ;; This file adds support for `scrbook.cls'. This file needs
 ;; `scrbase.el'.
 
-;; This file is intended to be used with the AUC TeX-Package by Per
-;; Abrahamsen. Put this File into your TeX-style-path. You may also
-;; byte-compile this file. 
+;; This file is part of AUCTeX.
 
 ;;; Code:
 (TeX-add-style-hook "scrbook"

@@ -1,8 +1,8 @@
 ;;; latex.el --- Support for LaTeX documents.
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
-;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000,
+;;               2003, 2004 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex

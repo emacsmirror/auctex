@@ -1,5 +1,29 @@
 2004-08-15  David Kastrup  <dak@gnu.org>
 
+	* font-latex.el: Change Copyright notice to FSF
+
+	* multi-prompt.el: Change Copyright notice to FSF
+
+	* tex-buf.el: Change Copyright notice to FSF
+
+	* tex-site.el.in: Change Copyright notice to FSF
+
+	* style/scrartcl.el: Change Copyright notice to FSF
+
+	* style/scrbook.el: Change Copyright notice to FSF
+
+	* style/scrlttr2.el: Change Copyright notice to FSF
+
+	* style/scrreprt.el: Change Copyright notice to FSF
+
+	* latex.el: Change Copyright notice to FSF
+
+	* tex-info.el: Change Copyright notice to FSF
+
+	* tex-mik.el: Change Copyright notice to FSF
+
+	* tex.el: Change Copyright notice to FSF
+
 	* bib-cite.el: Change Copyright notice and URLs.
 
 2004-08-15  Dan Nicolaescu  <dann@ics.uci.edu>

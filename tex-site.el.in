@@ -1,8 +1,8 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
 ;; Copyright (C) 1991, 2000, 2001 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1997, 1999 Per Abrahamsen
-;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 1994, 1997, 1999,
+;;               2003, 2004 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auc-tex@sunsite.dk

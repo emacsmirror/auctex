@@ -1,6 +1,6 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2003 Peter S. Galbraith
+;; Copyright (C) 1996-2003, 2004 Free Software Foundation.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
