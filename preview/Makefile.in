@@ -63,9 +63,9 @@ use-hint:
 install-el: $(LISP_OBJS)
 	-$(MKINSTALLDIRS) $(lispdir)
 	for x in $(LISP_SOURCES) ; do \
-	  echo ' $(INSTALL_DATA) $$x $(lispdir)' ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
 	  $(INSTALL_DATA) $$x '$(lispdir)' ; \
-	  echo ' $(INSTALL_DATA) $${x}c $(lispdir)' ; \
+	  echo ' $(INSTALL_DATA)' $${x}c '$(lispdir)' ; \
 	  $(INSTALL_DATA) $${x}c '$(lispdir)' ; \
 	done
 	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES)
@@ -73,7 +73,7 @@ install-el: $(LISP_OBJS)
 install-icons: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(icondir)
 	for x in $(ICON_SOURCES); do \
-	  echo ' $(INSTALL_DATA) $$x $(icondir)' ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(icondir)' ; \
 	  $(INSTALL_DATA) $$x '$(icondir)' ; \
 	done
 
