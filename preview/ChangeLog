@@ -1,5 +1,20 @@
 2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
 
+	* latex/preview.dtx (section{Package options}): Document
+	`footnotes' option.
+	(section{Provided Commands}): Document new second optional
+	argument to \PreviewMacro*.
+	(subsection{Parsing commands}): Obliterate \pr@seq and make
+	\pr@callafter have different semantics.
+	(subsection{Preview attaching commands}): New macroo \pr@endmacro
+	needed for new \pr@callafter semantics.
+	(subsection{Preview attaching commands}): Implement the new
+	second argument to \PreviewMacro* and \PreviewEnvironment*.
+	(subsection{Preview attaching commands}): Make \pr@startsnarf
+	adapt to new \pr@callafter semandtics.
+	(subsection{The \texttt{auctex} option}): Use the new semantics
+	in a number of cases.
+
 	* doc/install.texi (Loading the package): Make this more
 	fool-proof by leaving out alternatives and reordering.
 
