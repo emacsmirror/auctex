@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.69 $
+%  \rcskey \version CVS-$Revision: 1.70 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-11-22 00:24:28 $
+%\rcskey\next $Date: 2002-11-28 20:42:41 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -352,10 +352,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.69 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.70 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2002-11-22 00:24:28 $
+\reserved@a\next $Date: 2002-11-28 20:42:41 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1103,7 +1103,7 @@
 %registers in backup macros starting with |\pr@c@| in their name.  A
 %checkpoint first writes out all changed counters (previously
 %unchecked counters are not written out unless different from zero),
-%then saves all involved counter values.  LaTeX tracks its counters
+%then saves all involved counter values.  \LaTeX\ tracks its counters
 %in the global variable \cmd{\cl@ckpt}.
 %    \begin{macrocode}
 %<counters>\ifPreview\else\expandafter\endinput\fi
@@ -1123,7 +1123,7 @@
 %Those are for debugging the operation of |preview|, and thus are
 %mostly of interest for people that want to use |preview| for their
 %own purposes.  Since debugging output is potentially confusing to the
-%error message parsing from AUC~TeX, you should not turn on
+%error message parsing from AUC~\TeX, you should not turn on
 %|\tracingonline| or switch from |\nonstopmode| unless you are certain
 %your package will never be used with \previewlatex.
 %
