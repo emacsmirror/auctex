@@ -515,7 +515,7 @@ This makes it possible to add to them."
 			 (nth 2 image))))
 
 (defsubst preview-supports-image-type (imagetype)
-  "Check if image type is supported."
+  "Check if IMAGETYPE is supported."
   (image-type-available-p imagetype))
 
 (provide 'prv-emacs)
