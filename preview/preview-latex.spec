@@ -87,7 +87,8 @@ for i in *emacs; do
   # --with-texmf-dir overrides local docstrip configurations.
   # --with-packagedir repairs RedHat XEmacs braindamage
   %configure --with-$i --with-texmf-dir=\$\{datadir\}/texmf \
-	--with-packagedir=\$\{libdir\}/xemacs/site-packages 
+	--with-packagedir=\$\{libdir\}/xemacs/site-packages \
+        --disable-8bit-test
   make
   popd
 done
