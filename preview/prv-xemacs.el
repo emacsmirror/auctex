@@ -81,7 +81,7 @@ is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
 (preview-defmacro face-attribute (face attr)
   `(cond
     ((eq ,attr :height)
-     (* 10.0 (face-height ,face)))
+     (round (/ (* 720.0 (face-height ,face) (device-mm-height)) (device-pixel-height) 25.4)))
     ((eq ,attr :foreground)
      (face-foreground-instance ,face))
     ((eq ,attr :background)
@@ -390,12 +390,12 @@ to GhostScript floats."
   (format "%g" (/ value 65535.0)))
 
 ; Does FALLBACKS need to be implemented? Likely not.
-(defun preview-inherited-face-attribute (face attribute &optional
+(defmacro preview-inherited-face-attribute (face attribute &optional
                                               fallbacks)
   "Fetch face attribute while adhering to inheritance.
 This searches FACE and all its ancestors for an ATTRIBUTE.
 FALLBACKS is unused."
-  (face-attribute face attribute))
+  `(face-attribute ,face ,attribute))
 
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
   "Activates the LaTeX menus for the BODYFORMS.
