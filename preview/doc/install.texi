@@ -144,12 +144,12 @@ to specify the location of its @file{tex-site.el} file.
 Both of these options can be used to specify the location to install the
 preview @TeX{} files.  They are not necessary for most @TeX{} installs,
 but may be used if you don't like the directory that configure is
-suggesting.  Using @code{--with-texmf=@var{/dir}} you can specify where the
-@TeX{} @acronym{TDS} directory hierarchy resides, and the @TeX{} files
-will be installed in @code{@var{/dir}/tex/latex/preview}.  If you want to
-specify an exact directory for the preview @TeX{} files, use
-@code{--with-tex-dir=@var{/dir}}. In this case, the files will be placed
-in @file{@var{/dir}}.
+suggesting.  Using @code{--with-texmf-dir=@var{/dir}} you can specify
+where the @TeX{} @acronym{TDS} directory hierarchy resides, and the
+@TeX{} files will be installed in @code{@var{/dir}/tex/latex/preview}.
+If you want to specify an exact directory for the preview @TeX{} files,
+use @code{--with-tex-dir=@var{/dir}}. In this case, the files will be
+placed in @file{@var{/dir}}.
 
 @item --with-doc-dir=@var{/dir}
 This option may be used to specify where the @TeX{} documentation goes.
