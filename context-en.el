@@ -164,7 +164,8 @@ of context-mode-hook."
   (ConTeXt-en-mode-initialization)
 
   ;; set mode line
-  (setq mode-name "ConTeXt-en"))
+  (setq TeX-base-mode-name "ConTeXt-en")
+  (TeX-set-mode-name))
 
 (provide 'context-en)
 
