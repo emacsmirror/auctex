@@ -53,7 +53,7 @@ install-hint:
 .PHONY: install
 
 install: install-texmf install-el install-icons \
-         install-docs install-startup use-hint
+         install-startup install-docs use-hint
 
 install-docs:
 	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install)

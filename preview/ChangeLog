@@ -1,5 +1,7 @@
 2005-03-22  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (install): Install startup file before docs.
+
 	* doc/Makefile.in (preview-latex/index.html): Don't ignore exit
 	status of makeinfo (this target is on-demand only, anyway).
 
