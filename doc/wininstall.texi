@@ -3,6 +3,7 @@
 Installation of @AUCTeX{} is a bit more complicated, but we are working
 to resolve the issues involved. Please report success/failure to us at
 @samp{auc-tex@@sunsite.dk}. Here are the steps to perform:
+
 @enumerate
 @item
 The installation of @AUCTeX{} will require the MSYS tool set from
@@ -114,4 +115,5 @@ following line to your @file{.emacs} file:
 Load a @file{.tex} file Emacs or XEmacs and see if you get the
 @samp{Command} menu. Try using that to @LaTeX{} the file.
 
+@end enumerate
 Well, that about is all.  Have fun!
