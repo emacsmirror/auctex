@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.209 2004-05-08 17:29:00 dakas Exp $
+;; $Id: preview.el,v 1.210 2004-05-08 18:23:02 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2110,22 +2110,25 @@ This can be used to send inline images in mail and news when
 using MML mode.  If there is nothing current available,
 NIL is returned."
   (and (memq (overlay-get ov 'preview-state) '(active inactive))
-       (not (overlay-get ov 'queued)))
-  (let ((text (with-current-buffer (overlay-buffer ov)
-		(buffer-substring (overlay-start ov)
-				  (overlay-end ov))))
-	(file (car (car (last (overlay-get ov 'filenames))))))
-    (format "<#part type=\"image/%s\" disposition=inline
+       (not (overlay-get ov 'queued))
+       (let ((text (with-current-buffer (overlay-buffer ov)
+		     (buffer-substring (overlay-start ov)
+				       (overlay-end ov))))
+	     (file (car (car (last (overlay-get ov 'filenames))))))
+	 (require 'mailcap)
+	 (format "<#part type=\"%s\" disposition=inline
 description=\"%s\"
 filename=%s>
 <#/part>"
-	    preview-image-type
-	    (if (string-match "[\n\"]" text)
-		"preview-latex image"
-	      text)
-	    (if (string-match "[ \n<>]" file)
-		(concat "\"" file "\"")
-	      file))))
+		 (mailcap-extension-to-mime
+		  (and (string-match "\\.[^.]*\\'" file)
+		       (match-string 0 file)))
+		 (if (string-match "[\n\"]" text)
+		     "preview-latex image"
+		   text)
+		 (if (string-match "[ \n<>]" file)
+		     (concat "\"" file "\"")
+		   file)))))
 
 
 (defun preview-active-contents (ov)
@@ -2977,7 +2980,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.209 $"))
+	(rev "$Revision: 1.210 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2988,7 +2991,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-08 17:29:00 $"))
+    (let ((date "$Date: 2004-05-08 18:23:02 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
