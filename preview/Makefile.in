@@ -5,15 +5,21 @@ TEX=@TEX@
 TEXHASH=@TEXHASH@
 
 EMACS=@EMACS@
-ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))'
+ICONFORM=@ICONFORM@
+ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
 AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
 LISP_SOURCES := @PLAT_LISP@ preview.el
 LISP_OBJS := $(LISP_SOURCES:.el=.elc)
 
+ICON_XPM_SOURCES := images/prevwork.xpm images/preview.xpm
+ICON_XBM_SOURCES := ${ICON_XPM_SOURCES:.xpm=.xbm}
+ICON_SOURCES := $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES)
+
 prefix = @prefix@
 lispdir = @lispdir@
+icondir = @icondir@
 datadir = @datadir@
 texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
@@ -24,6 +30,7 @@ TEXMFGEN = @TEXMFGEN@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint
 
@@ -40,7 +47,7 @@ install-hint:
 	@echo "Now, run \"make install\" as root, or whatever user has permissions"
 	@echo "to write to the install directory."
 
-install: install-texmf install-el install-docs use-hint
+install: install-texmf install-el install-icons install-docs use-hint
 
 install-docs:
 	(cd doc ; $(MAKE) install)
@@ -56,7 +63,7 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-mkdir -p $(lispdir)
+	-$(MKINSTALLDIRS) $(lispdir)
 	for x in $(LISP_SOURCES) ; do \
 	  echo " $(INSTALL_DATA) $$x $(lispdir)" ; \
 	  $(INSTALL_DATA) $$x $(lispdir) ; \
@@ -65,9 +72,15 @@ install-el: $(LISP_OBJS)
 	done; \
 	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES); \
 
+install-icons: $(ICON_SOURCES)
+	-$(MKINSTALLDIRS) $(icondir)
+	for x in $(ICON_SOURCES); do \
+	  echo " $(INSTALL_DATA) $$x $(icondir)" ; \
+	  $(INSTALL_DATA) $$x $(icondir) ; \
+	done
 
 install-texmf: $(TEXMFGEN) install-texmf-doc
-	-mkdir -p $(previewtexmfdir)
+	-$(MKINSTALLDIRS) $(previewtexmfdir)
 	for x in $(TEXMFGEN) ; do \
 	  echo " $(INSTALL_DATA) $$x $(previewtexmfdir)" ; \
 	  $(INSTALL_DATA) $$x $(previewtexmfdir) ; \
@@ -75,7 +88,7 @@ install-texmf: $(TEXMFGEN) install-texmf-doc
 	-$(TEXHASH) $(texmfdir)
 
 install-texmf-doc: preview.dvi
-	-mkdir -p $(previewdocdir)
+	-$(MKINSTALLDIRS) $(previewdocdir)
 	$(INSTALL_DATA) preview.dvi $(previewdocdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
