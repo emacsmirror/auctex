@@ -1,5 +1,12 @@
 2002-04-21  Nix  <nix@esperi.demon.co.uk>
 
+	* prv-emacs.el: Remove comment regarding XEmacs's lack of local
+	change hooks; it has them and we use them.
+
+	* doc/problems.texi (XEmacs): Mention the process-liveness patch.
+	Fix some grammar.  Call the support `quite new' rather than
+	`very new'.
+
 	* configure.in (infodir): Define for XEmacs; point to the info
 	location in the package tree.
 
