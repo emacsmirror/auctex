@@ -11,6 +11,8 @@
 
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* auctex.spec (Release): Well, change version number.  retag.
+
 	* Version 11.14 released.
 
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
