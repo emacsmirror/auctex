@@ -2148,10 +2148,9 @@ space does not end a sentence, so don't break a line there."
                 (and (memq 'braced LaTeX-fill-distinct-contents)
                      (string= (substring match-string -1) "[")
 		     (re-search-forward
-		      (concat
-		       "\\(\\=\\|[^" TeX-esc "]\\)\\("
-		       (regexp-quote (concat TeX-esc TeX-esc))
-		       "\\)*\\][ \t]*{")
+		      (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
+                              (regexp-quote (concat TeX-esc TeX-esc))
+                              "\\)*\\][ \t]*{")
 		      (line-end-position) t)
                      (> (- (or (TeX-find-closing-brace)
                                (line-end-position))
@@ -2178,12 +2177,14 @@ space does not end a sentence, so don't break a line there."
                 ;; argument and to jump to the start and end brackets.
                 (when (save-excursion
                         (re-search-forward
-                         (concat
-                          "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*\\][ \t]*"
-                          "\\(\\\\\\\\\\)*{")
+                         (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
+                                 (regexp-quote (concat TeX-esc TeX-esc))
+                                 "\\)*\\][ \t]*{")
                          orig-breakpoint t))
                   (re-search-backward
-                   "\\(\\=\\|[^\\]\\)\\(\\\\\\\\\\)*\\["
+                   (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
+                           (regexp-quote (concat TeX-esc TeX-esc))
+                           "\\)*\\[")
                    (line-beginning-position) t)
                   (skip-chars-backward "^ \n"))
                 (when (> (point) start-point)
