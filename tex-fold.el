@@ -120,6 +120,10 @@ string for any unspecified macro or environment."
   :type 'boolean
   :group 'TeX-fold)
 
+(defcustom TeX-fold-help-echo-max-length 70
+  "Maximum length of help echo message for folded overlays.
+Set it to zero in order to disable help echos.")
+
 (defface TeX-fold-folded-face
   '((((class color) (background light))
      (:foreground "SlateBlue"))
@@ -460,6 +464,9 @@ be altered to prevent overfull lines."
     (overlay-put ov 'TeX-fold-type type)
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
     (overlay-put ov 'TeX-fold-display-string display-string)
+    (overlay-put ov 'TeX-fold-help-echo
+		 (unless (zerop TeX-fold-help-echo-max-length)
+		   (TeX-fold-make-help-echo ov-start ov-end)))
     ov))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end)
@@ -545,6 +552,26 @@ Like `buffer-substring' but copy overlay display strings as well."
 							  end))))))
       result)))
 
+(defun TeX-fold-make-help-echo (start end)
+  "Return a string to be used as the help echo of folded overlays.
+The text between START and END will be used for this but cropped
+to the length defined by `TeX-fold-help-echo-max-length'.  Line
+breaks will be replaced by spaces."
+  (let* ((spill (+ start TeX-fold-help-echo-max-length))
+	 (lines (split-string
+		 (buffer-substring-no-properties start (min end spill)) "\n"))
+	 (result (pop lines)))
+    (dolist (line lines)
+      ;; Strip leading whitespace
+      (when (string-match "^[ \t]+" line)
+	(setq line (replace-match "" nil nil line)))
+      ;; Strip trailing whitespace
+      (when (string-match "[ \t]+$" line)
+	(setq line (replace-match "" nil nil line)))
+      (setq result (concat result " " line)))
+    (when (> end spill) (setq result (concat result " ...")))
+    result))
+
 
 ;;; Removal
 
@@ -617,7 +644,8 @@ That means, put respective properties onto overlay OV."
 	  (set-extent-property ov 'end-glyph glyph))
       (when font-lock-mode
 	(overlay-put ov 'face TeX-fold-folded-face))
-      (overlay-put ov 'display display-string))))
+      (overlay-put ov 'display display-string)
+      (overlay-put ov 'help-echo (overlay-get ov 'TeX-fold-help-echo)))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.
@@ -628,6 +656,7 @@ Remove the respective properties from the overlay OV."
 	(set-extent-property ov 'end-glyph nil)
 	(overlay-put ov 'invisible nil))
     (overlay-put ov 'display nil)
+    (overlay-put ov 'help-echo nil)
     (when font-lock-mode
       (overlay-put ov 'face TeX-fold-unfolded-face))))
 
