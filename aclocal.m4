@@ -523,14 +523,14 @@ if test -z "$texinputdirs" ; then
     temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST`
     for i in $temp1 $temp2 $temp3 ; do
       if ! echo $i | grep -e '^[A-Za-z]:' > /dev/null && \
-         ! echo $i | grep ';' > /dev/null ; then
-        i=`echo $i | tr ':' ';'`
+	 ! echo $i | grep ';' > /dev/null ; then
+	i=`echo $i | tr ':' ';'`
       fi
       if ! test -z "$i" ; then
-        if ! test -z "$temp" ; then
-          temp=$temp";"
-        fi
-        temp="$temp""$i"
+	if ! test -z "$temp" ; then
+	  temp=$temp";"
+	fi
+	temp="$temp""$i"
       fi
     done
   else
@@ -544,10 +544,10 @@ if test -z "$texinputdirs" ; then
     for y in "/tex/" "/bibtex/bst/" ; do
       tempy="$x""$y"
       if test -e "$tempy" ; then
-        if test "${texinputdirs}" != "" ; then
+	if test "${texinputdirs}" != "" ; then
 	  texinputdirs="${texinputdirs}""\" \""
-        fi
-        texinputdirs="${texinputdirs}""$tempy"
+	fi
+	texinputdirs="${texinputdirs}""$tempy"
       fi
     done
   done
@@ -564,9 +564,22 @@ AC_SUBST(texinputdirs)
 # Set the directory containing AUCTeX automatically generated global style
 # hooks.
 AC_DEFUN(AUCTEX_AUTO_DIR,
-[AC_ARG_WITH(auto-dir,
+[AC_MSG_CHECKING([where automatically generated global style hooks go])
+ AC_ARG_WITH(auto-dir,
 	     [  --with-auto-dir=DIR     directory containing AUCTeX automatically generated
-                          global style hooks],
-	     [autodir="${withval}"], [autodir="${auctexdir}/auto/"])
+			  global style hooks],
+	     [autodir="${withval}"
+	      autodir_expanded="${autodir}"
+	      AC_FULL_EXPAND(autodir_expanded)],
+	     [autodir="${localstatedir}/auctex"
+	      oldprefix="${prefix}" # save prefix
+	      if test "${prefix}" = "NONE"
+		then prefix="${ac_default_prefix}" # temporarily set it
+	      fi
+	      autodir_expanded="${autodir}"
+	      AC_FULL_EXPAND(autodir_expanded)
+	      prefix="${oldprefix}" # restore prefix])
+ AC_MSG_RESULT(["${autodir}, expanded to ${autodir_expanded}"])
  AC_SUBST(autodir)
+ AC_SUBST(autodir_expanded)
 ])
