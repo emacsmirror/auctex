@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.134 2003-02-14 23:23:47 dak Exp $
+@c $Id: auc-tex.texi,v 1.135 2003-06-14 21:11:01 dak Exp $
 
 @finalout
 @titlepage
@@ -1457,12 +1457,16 @@ style hooks again.  Save buffer first including style information.  With
 optional argument, also reload the style hooks.
 @end deffn
 
-When AUC TeX saves your buffer, it will by default convert all tabs in
-your buffer into spaces.  To disable this behaviour, insert the
-following in your @file{.emacs} file.
+When AUC@TeX{} saves your buffer, it can optionally convert all tabs in
+your buffer into spaces.
+Tabs confuse AUC@TeX{}'s error message parsing and so should generally be
+avoided.  However, tabs are significant in some environments, and so by
+default AUC@TeX{} does not remove them.
+To convert tabs to spaces when saving a buffer, insert the
+following in your @file{.emacs} file:
 
 @lisp
-(setq TeX-auto-untabify nil)
+(setq TeX-auto-untabify t)
 @end lisp
 
 @defopt TeX-auto-untabify
