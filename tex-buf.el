@@ -6,12 +6,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Revision: 1.7 $
+;; $Revision: 1.8 $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jan 27 17:00:44 1992
-;; Update Count    : 163
+;; Last Modified On: Tue Jan 28 15:36:15 1992
+;; Update Count    : 165
 ;; 
 ;; HISTORY
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
@@ -75,12 +75,8 @@
 ;;  Ralf Handl                <handl@cs.uni-sb.de>
 ;;  Sven Mattisson            <sven@tde.lth.se>
 ;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Customization
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;
 (defvar TeX-master-file nil "\
 Master file to run TeX-command on if different from buffer-file-name.")
 (make-variable-buffer-local 'TeX-master-file)
@@ -102,7 +98,6 @@ TeX-index-command to use on TeX-master-file.")
 (make-variable-buffer-local 'TeX-index-command)
 ;;;
 
-;; further variables may be found in `tex-site.el'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'tex-site)
@@ -129,7 +124,7 @@ TeX-index-command to use on TeX-master-file.")
    (t (message "TeX hasn't been run..."))))
 
 (defun TeX-test-process ()
-  ""
+  "Internal function to test if a TeX process is already running"
   (if TeX-process
       (if (or (not (eq (process-status TeX-process) 'run))
 	      (y-or-n-p (concat "Process \""
@@ -168,7 +163,7 @@ before the file is sent to TeX. Used by \\[TeX-region].")
 (defvar TeX-end-of-header nil
   "String used by \\[TeX-region] to delimit the end of the file's header.")
 
-(defvar TeX-directory "."
+(defconst TeX-directory "."
   "Directory in which to run TeX subjob.  Temporary files are
 created in this directory. Should always be \".\"")
 
@@ -364,7 +359,7 @@ Then the header/trailer will be searched in <file>."
 			       (re-search-forward "^! " nil t))
 			  (message
 			   (concat mode-name ": ERRORS                      "
-				   "    (NB: use C-c ` to display)")))
+				   "    (NB: use C-c C-n to display)")))
 			 ((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
 			  (message (concat "You should run LaTeX again"
 					   " to get references right.")))
@@ -402,12 +397,6 @@ Then the header/trailer will be searched in <file>."
 		   (goto-char opoint))
 	       (set-buffer obuf))))))
   
-  ;; gf: Used to just use TeX-region(), but we can do better.
-  ;;(defun TeX-buffer ()
-  ;;  "Run TeX on current buffer.  See \\[TeX-region] for more information.
-  ;;  (interactive)
-  ;;  (TeX-region (point-min) (point-max)))
-  
   (defun TeX-buffer ()
     "Run TeX on current buffer.  See \\[TeX-region] for more information.
 This function was heavily modified by gf so that when formatting an
@@ -416,7 +405,9 @@ some strange temporary file. Thus, the results are just like running the
 formatter from the shell.
 
 If a line in the first 500 bytes of the buffer is:
+
 %% Master: <file>
+
 TeX/LaTeX will be run on <file> instead of the current."
     (interactive)
     (save-some-buffers)
@@ -493,8 +484,9 @@ line LINE of the window, or at bottom if LINE is nil."
     "Preview the .dvi file made by \\[TeX-region] or \\[TeX-buffer]."
     (interactive)
     
-    (or TeX-original-file
-	(error "TeX has not been run on this document..."))
+    (if (and (not TeX-original-file)
+	     (buffer-file-name))
+	(setq TeX-original-file (buffer-file-name)))
 
     (TeX-test-process)
     
@@ -502,18 +494,19 @@ line LINE of the window, or at bottom if LINE is nil."
     (hack-local-variables)
     (if TeX-master-preview-command
 	(setq TeX-preview-command TeX-master-preview-command)
+      (let ((alist TeX-preview-alist)
+	    (do-search t))
       (save-excursion
 	(save-restriction
-	  (set-buffer (get-file-buffer TeX-original-file))
+	    (set-buffer (find-file-noselect TeX-original-file))
 	  (widen)
 	  (goto-char (point-min))
-	  (let ((alist TeX-preview-alist))
-	    (while alist
+	    (while (and do-search alist)
 	      (if (not (re-search-forward (car (car alist)) (point-max) t))
 		  (setq alist (cdr alist))	; try next regexp
-					; found one, set and quit
-		(setq TeX-preview-command (symbol-value (cdr (car alist))))
-		(setq alist nil)))))))
+		(setq do-search nil))))) ; found one, quit master-buffer
+	(if alist			; we have a match, set
+	    (setq TeX-preview-command (symbol-value (cdr (car alist)))))))
 ;;;
     (let ((command (concat TeX-preview-command " " TeX-zap-file ".dvi")))
       
