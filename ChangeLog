@@ -1,3 +1,7 @@
+2004-08-25  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el: Autoload `TeX-process-set-variable' and `TeX-region-file'.
+
 2004-08-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: Fix xemacs<->emacs mistake, restore path searching

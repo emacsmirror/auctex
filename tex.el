@@ -40,6 +40,10 @@
 (eval-when-compile
   (require 'cl))
 
+;; Don't require `tex-buf' because `tex-buf' requires `tex'.
+(autoload 'TeX-process-set-variable "tex-buf")
+(autoload 'TeX-region-file "tex-buf")
+
 (defgroup AUCTeX nil
   "A (La)TeX environment."
   :tag "AUCTeX"
@@ -606,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.441 $"))
+	    (rev "$Revision: 5.442 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -621,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-25 00:40:55 $"))
+    (let ((date "$Date: 2004-08-25 12:06:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
