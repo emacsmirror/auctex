@@ -1,5 +1,8 @@
 2003-02-25  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (dist): Version info in tex.el gets automatically
+	calculated from CVS tags.
+
 	* tex.el: Some changes for dir slashiness.
 	(TeX-master-directory): return a proper directory name, not a
 	file name.
