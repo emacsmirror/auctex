@@ -2237,7 +2237,7 @@ does not fit into the line."
   :group 'LaTeX
   :type 'boolean)
 
-(defcustom LaTeX-nospace-between-char-regexp
+(defvar LaTeX-nospace-between-char-regexp
   (if (featurep 'xemacs)
     (if (and (boundp 'word-across-newline) word-across-newline)
 	word-across-newline
@@ -2248,9 +2248,7 @@ does not fit into the line."
       "\\(\\cj\\|\\cc\\|\\ct\\)")
     "\\c|")
   "Regexp matching a character where no interword space is necessary.
-Words formed by such characters can be broken across newlines."
-  :group 'LaTeX
-  :type 'regexp)
+Words formed by such characters can be broken across newlines.")
 
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph.
