@@ -1,18 +1,19 @@
-%\CheckSum{398}
-%\def\next#1Name: #2${\def\next{#2}}
-%\next $Name:  $
-%\ifx\next\empty
-%  \def\next#1Revision: #2${\def\version{CVS-#2}}
-%  \next $Revision: 1.18 $
+%\CheckSum{437}
+%\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
+%\def\rcsstrip #1 #2${#1}
+%\rcskey \version $Name:  $
+%\ifx\version\empty
+%  \rcskey \version CVS-$Revision: 1.19 $
 %\else
-%  \def\version rel-#2 {\def\version{#2}}
-%  \expandafter\version\next 
-%  \begingroup \lccode`-=`.
-%  \edef\next{\lowercase{\endgroup\def\noexpand\version{\next}}}
+%  \begingroup
+%    \lccode`-=`.
+%    \def\next rel-{}
+%    \edef\next{\lowercase{\endgroup
+%       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\def\next#1Date: #2${\date{#2}}
-%\next $Date: 2001-10-16 21:31:44 $
+%\rcskey\next $Date: 2001-10-16 23:15:57 $
+%\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
 %\maketitle
@@ -181,7 +182,23 @@
 %<*style>
 %<*!active>
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{preview}[2001/10/05 version 0.5+]
+\def\reserved@a #1#2$#3: #4${\edef#1{\reserved@c #2#4 $}}
+\def\reserved@c #1 #2${#1}
+\reserved@a\reserved@b $Name:  $
+\ifx\reserved@b\@empty
+   \reserved@a\reserved@b CVS-$Revision: 1.19 $
+\else
+   \begingroup
+      \lccode`-=`.
+      \def\next rel-{}
+      \edef\next{\lowercase{\endgroup
+          \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
+   \next
+\fi
+\reserved@a\next $Date: 2001-10-16 23:15:57 $
+\edef\next{%
+  \noexpand\ProvidesPackage{preview}[\next\space preview-LaTeX \reserved@b]}
+\next
 %    \end{macrocode}
 %Since many parts here will not be needed as long as the package is
 %inactive, we will include them enclosed with |<*active>| and
