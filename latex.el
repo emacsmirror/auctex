@@ -2442,9 +2442,8 @@ space does not end a sentence, so don't break a line there."
 	  ;; For Japanese (FIXED on 2005-02-11)
 	  (when (featurep 'mule)
 	    (goto-char from)
-	    (while (re-search-forward "\\(\\cj\\)\n" to t)
-	      (replace-match "\\1")
-	      (setq to (1- to))))
+	    (while (re-search-forward "\\(\\cj\\)\n\\(\\cj\\)" to t)
+	      (replace-match "\\1\\2")))
 	  ;; Make sure sentences ending at end of line get an extra space.
 	  (if (or (not (boundp 'sentence-end-double-space))
 		  sentence-end-double-space)
