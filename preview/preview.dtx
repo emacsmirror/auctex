@@ -1,6 +1,20 @@
 %\CheckSum{398}
+%\def\next#1Name: #2${\def\next{#2}}
+%\next $Name:  $
+%\ifx\next\empty
+%  \def\next#1Revision: #2${\def\version{CVS-#2}}
+%  \next $Revision: 1.18 $
+%\else
+%  \def\version rel-#2 {\def\version{#2}}
+%  \expandafter\version\next 
+%  \begingroup \lccode`-=`.
+%  \edef\next{\lowercase{\endgroup\def\noexpand\version{\next}}}
+%  \next
+%\fi
+%\def\next#1Date: #2${\date{#2}}
+%\next $Date: 2001-10-16 21:31:44 $
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
-%\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
+%\title{The \texttt{preview} Package for \LaTeX\\Version \version}
 %\maketitle
 %\section{Introduction}
 %The main purpose of this package is the extraction of certain
@@ -48,7 +62,7 @@
 %characteristics in your document, and only activating them by calling
 %\LaTeX\ as
 %\begin{quote}
-%|latex '\PassOptionsToPackage{active}{preview} \input|\marg{filename}|'|
+%|latex '\PassOptionsToPackage{active}{preview}| |\input|\marg{filename}|'|
 %\end{quote}
 %\item[|displaymath|] will make all displayed math environments subject to
 %preview processing.  This will typically be the most desired option.
@@ -585,6 +599,15 @@
 %<auctex>    Just hit Return and be gone.}}
 %<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
 %<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended}}
+%    \end{macrocode}
+%Since over/underfull boxes are about the messiest things to parse, we
+%disable them by setting the appropriate badness limits and making the
+%variables point to junk.
+%    \begin{macrocode}
+%<auctex>\hbadness=10000
+%<auctex>\vbadness=10000
+%<auctex>\newcount\hbadness
+%<auctex>\newcount\vbadness
 %<auctex>\fi
 %    \end{macrocode}
 %
@@ -630,15 +653,6 @@
   \let\@elt\relax
   \xdef\@freelist{\@currlist\@freelist}%
   \global\let\@currlist\@empty}
-%    \end{macrocode}
-%Since over/underfull boxes are about the messiest things to parse, we
-%disable them by setting the appropriate badness limits and making the
-%variables point to junk.
-%    \begin{macrocode}
-\hbadness=10000
-\vbadness=10000
-\newcount\hbadness
-\newcount\vbadness
 %</active>
 %</style>
 %    \end{macrocode}
