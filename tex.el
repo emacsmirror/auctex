@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.487 $"))
+	    (rev "$Revision: 5.488 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-07 20:45:45 $"))
+    (let ((date "$Date: 2005-03-09 20:49:21 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3676,6 +3676,15 @@ no whitespace before the comment sign."
     (string= (buffer-substring-no-properties
 	      (point) (min (point-max) (+ (point) (length comment-start))))
 	     comment-start)))
+
+(defun TeX-comment-prefix ()
+  "Return the comment prefix of the current line.
+If there are no comment starters after potential whitespace at
+the beginning of the line, return nil."
+  (save-excursion
+    (beginning-of-line)
+    (when (looking-at (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
+      (match-string 0))))
 
 (defun TeX-forward-comment-skip (&optional count limit)
   "Move forward to the next comment skip.
