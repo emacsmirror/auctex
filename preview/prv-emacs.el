@@ -238,5 +238,17 @@ toggles it."
       nil)
       (goto-char pt))))
 
+(defun preview-get-colors ()
+  (let
+      ((bg (color-values (face-background 'default)))
+       (fg (color-values (face-foreground 'default))))
+    (if (and (equal '(65535 65535 65535) bg)
+	     (equal '(0 0 0) fg))
+	""
+      (apply #'format
+"%g %g %g setrgbcolor clippath fill %g %g %g setrgbcolor "
+	      (mapcar (lambda (x) (/ x 65535.0))
+			 (append bg fg))))))
+
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
