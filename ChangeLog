@@ -1,3 +1,11 @@
+2004-12-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (hack-one-local-variable): Advise it in order to call
+	minor mode functions for AUCTeX minor modes activated by
+	file-local minor mode variables.
+
+	* latex.el (LaTeX-math-mode): Define using `define-minor-mode'.
+
 2004-12-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/csquotes.el (LaTeX-csquotes-quote-after-quote): Avoid
