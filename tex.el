@@ -1,8 +1,9 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6h
+;; Version: 9.6i
 ;; Keywords: wp
+;; X-URL: http://sunsite.auc.dk/auctex
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
@@ -1982,6 +1983,7 @@ See match-data for details."
   (modify-syntax-entry ?_  "."  TeX-mode-syntax-table)
   (modify-syntax-entry ?@  "_"  TeX-mode-syntax-table)
   (modify-syntax-entry ?~  " "  TeX-mode-syntax-table)
+  (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table))
 
 ;;; Menu Support
