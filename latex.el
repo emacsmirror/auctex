@@ -1611,9 +1611,11 @@ the cdr is the brace used with \\right.")
 
 ;;; Formatting
 
-(defcustom LaTeX-format-comment-syntax-aware t
-  "If non-nil comments will be filled according to LaTeX syntax.
-Otherwise they will be filled like normal text."
+(defcustom LaTeX-syntactic-comments t
+  "If non-nil comments will be handled according to LaTeX syntax.
+This variable influences, among others, the behavior of
+indentation and filling which will take LaTeX syntax into
+consideration just as is in the non-commented source code."
   :type 'boolean
   :group 'LaTeX)
 
@@ -1649,8 +1651,8 @@ Otherwise they will be filled like normal text."
 ;; indented syntax-aware both the indentation before and after the
 ;; comment character(s) have to be checked and adjusted.  Indentation
 ;; should not move the comment character(s) to the first column.  With
-;; `LaTeX-format-comment-syntax-aware' disabled, line comments should
-;; still be indented syntax-aware.
+;; `LaTeX-syntactic-comments' disabled, line comments should still be
+;; indented syntax-aware.
 ;;
 ;; In `latex-mode' comments starting in different columns don't have
 ;; to be handled differently.  They don't have to be anchored in
@@ -1789,7 +1791,7 @@ Lines starting with an item is given an extra indentation of
 	       (when (/= (LaTeX-current-indentation 'inner) inner-indent)
 		 (LaTeX-indent-inner-do inner-indent))))
 	    ((and fill-prefix
-		  LaTeX-format-comment-syntax-aware)
+		  LaTeX-syntactic-comments)
 	     ;; In any other case of a comment we have to consider
 	     ;; outer and inner indentation if we do syntax-aware
 	     ;; indentation.
@@ -2038,9 +2040,9 @@ a commented line.  The symbols 'inner and 'outer are recognized."
 		    (eq force-type 'inner))
 	       (and (not force-type)
 		    (or
-		     ;; If `LaTeX-format-comment-syntax-aware' is not
-		     ;; enabled, do conventional indentation
-		     LaTeX-format-comment-syntax-aware
+		     ;; If `LaTeX-syntactic-comments' is not enabled,
+		     ;; do conventional indentation
+		     LaTeX-syntactic-comments
 		     ;; Line comments in `doctex-mode' are always
 		     ;; indented syntax-aware so we need their inner
 		     ;; indentation.
@@ -2075,7 +2077,7 @@ recognized."
 	       (or (and (TeX-in-line-comment)
 			(eq major-mode 'doctex-mode))
 		   (and (TeX-in-commented-line)
-			LaTeX-format-comment-syntax-aware))))
+			LaTeX-syntactic-comments))))
       (progn
 	(beginning-of-line)
 	(re-search-forward comment-start-skip (line-end-position) t))
@@ -2614,7 +2616,7 @@ be filled unless the cursor is placed on the line with the
 code comment.
 
 If LaTeX syntax is taken into consideration during filling
-depends on the value of `LaTeX-format-comments-syntax-aware'."
+depends on the value of `LaTeX-syntactic-comments'."
   (interactive "P")
   (if (save-excursion
 	(beginning-of-line)
@@ -2677,11 +2679,11 @@ depends on the value of `LaTeX-format-comments-syntax-aware'."
 	      (goto-char (point-max)))
 	    (LaTeX-fill-code-comment justify))))
        ;; Syntax-aware filling:
-       ;; * `LaTeX-format-comment-syntax-aware' enabled: Everything.
-       ;; * `LaTeX-format-comment-syntax-aware' disabled: Uncommented
-       ;;   code and line comments in `doctex-mode'.
-       ((or (or LaTeX-format-comment-syntax-aware
-		(and (not LaTeX-format-comment-syntax-aware)
+       ;; * `LaTeX-syntactic-comments' enabled: Everything.
+       ;; * `LaTeX-syntactic-comments' disabled: Uncommented code and
+       ;;   line comments in `doctex-mode'.
+       ((or (or LaTeX-syntactic-comments
+		(and (not LaTeX-syntactic-comments)
 		     (not has-comment)))
 	    (and (eq major-mode 'doctex-mode)
 		 (TeX-in-line-comment)))
@@ -4101,7 +4103,7 @@ of `LaTeX-mode-hook'."
 Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
-  (set (make-local-variable 'LaTeX-format-comment-syntax-aware) t))
+  (set (make-local-variable 'LaTeX-syntactic-comments) t))
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
