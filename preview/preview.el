@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.138 2002-04-26 21:48:19 jalar Exp $
+;; $Id: preview.el,v 1.139 2002-04-28 20:57:46 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1487,6 +1487,7 @@ preview Emacs Lisp package something too stupid."))
   (define-key LaTeX-mode-map "\C-c\C-p\C-b" #'preview-buffer)
   (define-key LaTeX-mode-map "\C-c\C-p\C-d" #'preview-document)
   (define-key LaTeX-mode-map "\C-c\C-p\C-f" #'preview-dump-format)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-f" #'preview-clear-format)
   (define-key LaTeX-mode-map "\C-c\C-p\C-i" #'preview-goto-info-page)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
@@ -1509,8 +1510,7 @@ preview Emacs Lisp package something too stupid."))
 			 ["Clearout region" preview-clearout (preview-mark-active)]
 			 ["Clearout buffer" preview-clearout-buffer t]
 			 ["Cache preamble" preview-dump-format t]
-			 ["Cache preamble off" (preview-dump-format '(4))
-			  :keys "C-u \\[preview-dump-format]"]
+			 ["Cache preamble off" preview-clear-format t]
 			 ("Customize"
 			  ["Browse options"
 			   (customize-group 'preview) t]
@@ -1935,11 +1935,10 @@ Tries through `preview-format-extensions'."
 	(delete-file (concat format-file ext))
       (file-error nil))))
 
-(defun preview-dump-format (arg) (interactive "P")
+(defun preview-dump-format () (interactive)
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
-on the same master file.  With prefix ARG, the use of the
-format file is discontinued."
+on the same master file."
   (let* ((dump-file (TeX-master-file "ini"))
 	 (format-file (expand-file-name (TeX-master-file nil)))
 	 (master-buffer (find-file-noselect (TeX-master-file t)))
@@ -1948,23 +1947,28 @@ format file is discontinued."
 				   preview-dump-command
 				   'TeX-master-file)))))
     (setq preview-dumped-list (delete format-file preview-dumped-list))
-    (if arg
-	(preview-format-kill format-file)
-      ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
-      ;; in the tools bundle is an empty file.
-      (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
-      (preview-document)
-      (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
-      (setq TeX-sentinel-function
-	    `(lambda (process string)
-	       (push ,format-file preview-dumped-list)
-	       (condition-case err
-		   (delete-file ,dump-file)
-		 (file-error (preview-log-error err "Dumping" process)))
-	       (preview-reraise-error process))))))
+    ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
+    ;; in the tools bundle is an empty file.
+    (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
+    (preview-document)
+    (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
+    (setq TeX-sentinel-function
+	  `(lambda (process string)
+	     (push ,format-file preview-dumped-list)
+	     (condition-case err
+		 (delete-file ,dump-file)
+	       (file-error (preview-log-error err "Dumping" process)))
+	     (preview-reraise-error process)))))
+
+(defun preview-clear-format () (interactive)
+  "Clear the pregenerated format file.  
+The use of the format file is discontinued."
+  (let ((format-file (expand-file-name (TeX-master-file nil))))
+    (setq preview-dumped-list (delete format-file preview-dumped-list))
+    (preview-format-kill format-file)))
 
 (defun TeX-inline-preview (name command file)
-  "Main function called by AucTeX.
+  "Main function called by AUC TeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let* ((commandbuff (current-buffer))
 	(pr-file (cons
@@ -2001,7 +2005,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.138 $"))
+	(rev "$Revision: 1.139 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2012,7 +2016,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-26 21:48:19 $"))
+    (let ((date "$Date: 2002-04-28 20:57:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
