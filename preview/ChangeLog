@@ -1,3 +1,33 @@
+2003-06-10  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/README:
+	* dvipng/RELEASE:
+	* dvipng/Makefile.in:
+	* dvipng/configure.ac:
+	* dvipng/dvipng.texi: Prepare for 0.3 
+
+	* dvipng/vf.c:
+	* dvipng/set.c:
+	* dvipng/pk.c:
+	* dvipng/font.c:
+	* dvipng/dvi.c:
+	* dvipng/draw.c: simplify DEBUG_PRINT
+
+	* dvipng/configure.ac: Look for gs
+
+	* dvipng/special.c: Fixes to gs interaction
+
+	* dvipng/set.c: Enable -o for output file, no segfault on empty
+	image, reposition rule to match dvips
+
+	* dvipng/draw.c: simplify DEBUG_PRINT macro
+
+	* dvipng/dvi.c:
+	* dvipng/misc.c: Enable -o for output file 
+
+	* dvipng/dvipng.h: Enable -o for output file, simplify DEBUG_PRINT
+	macro
+
 2003-05-13  David Kastrup  <dakas@users.sourceforge.net>
 
 	* configure.in: Really bail if 8bit test fails.
