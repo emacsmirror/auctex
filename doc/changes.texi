@@ -63,7 +63,7 @@ Made @kbd{M-q} skip block comments.  Sugested by Peter Whaite
 Code cleanup:  Renamed @samp{-format-} functions to @samp{-fill-}. 
 
 @item
-Made @key{,} and @kbd{.} remove any preceding italic correction.
+Made @kbd{,} and @kbd{.} remove any preceding italic correction.
 
 @item
 Changes in math mode: @samp{setminus} moved to @key{\}, @samp{not} moved
