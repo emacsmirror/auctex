@@ -120,7 +120,7 @@ for i in *emacs; do
     mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/preview'
     touch .nosearch
     install -c -m 644 .nosearch \
-      '%{buildroot}%{_datadir}/emacs/site-lisp/preview
+      '%{buildroot}%{_datadir}/emacs/site-lisp/preview'
     %makeinstall
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
