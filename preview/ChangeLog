@@ -1,5 +1,7 @@
 2002-04-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi (Advice for non-privileged users): new section.
+
 	* configure.in: Quote TEXMFGEN.
 
 	* doc/readme.texi (Getting started): mention the mouse buttons.
