@@ -1,3 +1,27 @@
+2002-03-27  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el: Complete overhaul of parsing to avoid (costly)
+	buffer switches.
+	(preview-gs-close): Transfer queue to
+	preview-gs-queue.
+	(preview-gs-open): Pass arglist to preview-parse-messages for
+	place functions.
+	(preview-eps-open): Same.
+	(preview-gs-place): Completely different args in order to avoid
+	buffer switching.  Different return value.
+	(preview-inactive-string): Different semantics (were valid before
+	by accident, so no change in callers necessary).
+	(preview-eps-place): Rearranged to avoid buffer switching.
+	(preview-make-filename): require tempdir.
+	(preview-delete-file): changed API to avoid buffer switching.
+	(preview-place-preview): Same.
+	(preview-parse-messages): New args passed into place routines.
+	Completely rearranged and merged preview-analyze-error into it.
+	(preview-start-dvips): Pass tempdir to preview-make-filename
+
+	* prv-emacs.el (preview-add-urgentization): Changed API, but it
+	turns out this gets called just like it did before.
+
 2002-03-27  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* doc/.cvsignore: Ignore preview-dtxdoc.texi
