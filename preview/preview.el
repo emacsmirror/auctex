@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.170 2002-11-20 01:19:36 dakas Exp $
+;; $Id: preview.el,v 1.171 2002-11-22 00:42:23 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -830,7 +830,8 @@ given as ANSWER."
 		 (gs-line
 		  (format
 		   "%s \
-<</PageSize[%g %g]/PageOffset[%g %g]/OutputFile%s>>preview-latex-do\n"
+<</PageSize[%g %g]/PageOffset[%g %g[1 1 dtransform exch]\
+{0 ge{neg}if exch}forall]/OutputFile%s>>preview-latex-do\n"
 		   (if preview-ps-file
 		       (concat "dup "
 			       (preview-gs-dsc-cvx
@@ -840,7 +841,7 @@ given as ANSWER."
 			     (preview-ps-quote-filename (car oldfile))))
 		   (- (aref bbox 2) (aref bbox 0))
 		   (- (aref bbox 3) (aref bbox 1))
-		   (- (aref bbox 0)) (aref bbox 1)
+		   (aref bbox 0) (aref bbox 1)
 		   (preview-ps-quote-filename (car newfile)))))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
@@ -2101,8 +2102,8 @@ and strings get evaluated as replacement strings."
 
 (defcustom preview-LaTeX-command-replacements
   '(("\\`\\(pdf\\)?\\(.*\\)\\'" "\\2"))
-  "Replacement for `preview-LaTeX-command' passed through
-`preview-do-replacements'"
+  "Replacement for `preview-LaTeX-command'.
+This is passed through `preview-do-replacements'."
   :group 'preview-latex
   :type '(repeat
 	  (choice (symbol :tag "Named replacement")
@@ -2274,7 +2275,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.170 $"))
+	(rev "$Revision: 1.171 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2285,7 +2286,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-20 01:19:36 $"))
+    (let ((date "$Date: 2002-11-22 00:42:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
