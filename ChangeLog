@@ -1,3 +1,38 @@
+2004-07-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-macro-spec-list): Extend default.  Add
+	specification for argument number.
+	(TeX-fold-env-spec-list): Ditto.
+	(TeX-fold-folded-face): Renamed from
+	`TeX-fold-display-string-face'.
+	(TeX-fold-unfolded-face): New face and variable.
+	(TeX-fold-buffer-type): Move through buffer from bottom to top in
+	a single run in order to allow easier prioritization of nested
+	overlays.
+	(TeX-fold-item): Compute display string via
+	`TeX-fold-macr-nth-arg'.
+	(TeX-fold-make-overlay): Consider the length of the display string
+	as well when judging if a line is overfull.  Let priority be
+	computed by `TeX-fold-macr-nth-arg'.  Do not call
+	`TeX-fold-hide-item'.
+	(TeX-fold-macro-nth-arg): New function.
+	(TeX-fold-priority-step): New variable.
+	(TeX-fold-prioritize): New function.
+	(TeX-fold-hide-item): Set mouse-face.
+	(TeX-fold-show-item): Ditto.  Do not set face twice.
+	(TeX-fold-post-command): Recognize mouse clicks as well.
+
+	* tex.el (TeX-find-macro-boundaries): New function.
+	(TeX-find-macro-end-helper): Find macro arguments with a preceding
+	linebreak as well.
+
+	* doc/auc-tex.texi (Folding): Document new functionality.
+
+	* latex.el (LaTeX-fill-region): Improve performance by avoiding
+	unnecessary calls to `LaTeX-forward-paragraph'.
+
+	* font-latex.el (font-latex-fontify-script): Doc fix.
+
 2004-07-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-make-overlay): New function.
