@@ -5,6 +5,8 @@
 	* tex.el (TeX-command-list): Set a default value which will not
 	lead to an inactive menu entry.
 	(plain-TeX-mode-menu): Add some help strings.
+	(tex-source-specials-mode): New alias for
+	`TeX-source-specials-mode'.
 
 	* latex.el (LaTeX-mode-menu): Rearrange and insert help strings.
 
