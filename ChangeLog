@@ -1,5 +1,7 @@
 2004-05-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (TEX_INPUT_DIRS): Repair quoting.
+
 	* tex.el (TeX-kpathsea-format-alist): Rename.  Formerly known as
 	`TeX-kpathsea-directory-alist'.  Add information to every format
 	about the file extensions to be found.
