@@ -1,3 +1,9 @@
+2005-01-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-forward-paragraph): Allow finding paragraph
+	commands even if they are preceded by whitespace and comment
+	starters.
+
 2005-01-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-forward-comment-skip): Differentiate prefixes with
