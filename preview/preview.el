@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.39 2001-10-29 23:58:23 dakas Exp $
+;; $Id: preview.el,v 1.40 2001-10-30 15:37:58 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -268,40 +268,41 @@ show as response of GhostScript."
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
 and tries to restart GhostScript if necessary."
-  (with-current-buffer (process-buffer process)
-    (TeX-command-mode-line process)
-    (let ((status (process-status process)))
-      (when (memq status '(exit signal))
-	;; process died.
-	;;  Throw away culprit, go on.
-	(let* ((err (concat preview-gs-answer "\n"
+  (when (buffer-name (process-buffer process))
+    (with-current-buffer (process-buffer process)
+      (TeX-command-mode-line process)
+      (let ((status (process-status process)))
+	(when (memq status '(exit signal))
+	  ;; process died.
+	  ;;  Throw away culprit, go on.
+	  (let* ((err (concat preview-gs-answer "\n"
 			      (process-name process) " " string))
 	       (ov (preview-gs-behead-outstanding err)))
-	  (when (and (null ov) preview-gs-queue)
-	    (save-excursion
-	      (goto-char (process-mark process))
-	      (insert-before-markers preview-gs-command " "
-				     (mapconcat #'shell-quote-argument
-						preview-gs-command-line
-						" ") "\n" err)))
-	  (delete-process process)
-	  (if (or (null ov)
-		  (eq status 'signal))
-	      ;; if process was killed explicitly by signal, or if nothing
-	      ;; was processed, we give up on the matter altogether.
-	      (progn
-		(mapc #'preview-delete preview-gs-outstanding)
-		(dolist (ov preview-gs-queue)
-		  (if (overlay-get ov 'queued)
-		      (preview-delete ov)))
-		(setq preview-gs-outstanding nil)
-		(setq preview-gs-queue nil))
-	  
-	    ;; restart only if we made progress since last call
-	    (setq preview-gs-queue (nconc preview-gs-outstanding
-					  preview-gs-queue))
-	    (setq preview-gs-outstanding nil)
-	    (preview-gs-restart)))))))
+	    (when (and (null ov) preview-gs-queue)
+	      (save-excursion
+		(goto-char (process-mark process))
+		(insert-before-markers preview-gs-command " "
+				       (mapconcat #'shell-quote-argument
+						  preview-gs-command-line
+						  " ") "\n" err)))
+	    (delete-process process)
+	    (if (or (null ov)
+		    (eq status 'signal))
+		;; if process was killed explicitly by signal, or if nothing
+		;; was processed, we give up on the matter altogether.
+		(progn
+		  (mapc #'preview-delete preview-gs-outstanding)
+		  (dolist (ov preview-gs-queue)
+		    (if (overlay-get ov 'queued)
+			(preview-delete ov)))
+		  (setq preview-gs-outstanding nil)
+		  (setq preview-gs-queue nil))
+	      
+	      ;; restart only if we made progress since last call
+	      (setq preview-gs-queue (nconc preview-gs-outstanding
+					    preview-gs-queue))
+	      (setq preview-gs-outstanding nil)
+	      (preview-gs-restart))))))))
 
 (defun preview-gs-filter (process string)
   "Filter function for processing GhostScript output.
@@ -326,6 +327,7 @@ Gets the usual PROCESS and STRING parameters, see
 		   preview-gs-command
 		   preview-gs-command-line)))
       (setq preview-gs-answer "")
+      (process-kill-without-query process)
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
       (TeX-command-mode-line process))))
@@ -803,9 +805,6 @@ snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end)
-	      ;; the following is a desparate measure since otherwise too many
-	      ;; internals of other packages break.
-;;	      (set (make-local-variable 'inhibit-point-motion-hooks) t)
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
@@ -983,10 +982,9 @@ See `TeX-parse-TeX' for documentation of REPARSE."
       
 (defvar preview-snippet nil
   "Number of current preview snippet.")
-(make-variable-buffer-local 'preview-snippet)
+
 (defvar preview-snippet-start nil
   "Point of start of current preview snippet.")
-(make-variable-buffer-local 'preview-snippet-start)
 
 (defun preview-parse-messages ()
   "Turn all preview snippets into overlays.
@@ -1119,16 +1117,18 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 				      (line-end-position) t)
 		      (backward-char (length after-string))
 		    (search-forward string (line-end-position) t))
-		  (or (and startflag (preview-back-command))
-		      (point))))))
+		  (point)))))
 	(if startflag
 	    (setq preview-snippet-start next-point)
 	  (if preview-snippet-start
 	      (progn
-		(preview-place-preview snippet
-				       buffer
-				       preview-snippet-start
-				       next-point)
+		(preview-place-preview
+		 snippet
+		 buffer
+		 (if (eq next-point preview-snippet-start)
+		     preview-snippet-start
+		   (preview-back-command preview-snippet-start buffer))
+		 next-point)
 		(setq preview-snippet-start nil))
 	    (message "Unexpected end of Preview snippet %d" snippet)))))))
 
@@ -1174,7 +1174,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.39 $"))
+	(rev "$Revision: 1.40 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
