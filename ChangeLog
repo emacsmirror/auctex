@@ -1,3 +1,11 @@
+2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex.el (TeX-command-list): Change single quotes to double.
+	That way, we will get reasonable results under both Windows and
+	Unix.  File names with double quotes in them will break stuff,
+	just like file names with single quotes in them did so
+	previously.  Tough.
+
 2002-12-18  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex-buf.el (TeX-run-shell): Start shell from TeX process buffer
