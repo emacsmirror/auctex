@@ -1,5 +1,8 @@
 2004-10-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-macro-spec-list): Add starred sectioning
+	commands.
+
 	* latex.el (LaTeX-fill-region-as-paragraph): Do not add linebreaks
 	after "$$ " at the end of paragraph filling.
 	(LaTeX-fill-move-to-break-point): Simplify.  Add support for
