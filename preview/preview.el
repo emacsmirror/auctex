@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.196 2004-01-14 05:19:41 dakas Exp $
+;; $Id: preview.el,v 1.197 2004-03-02 04:52:15 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -91,7 +91,8 @@ preview-latex's bug reporting commands will probably not work.")))
      (place preview-eps-place))
     (dvipng
      (open preview-dvipng-open)
-     (place preview-dvipng-place))
+     (place preview-gs-place)
+     (close preview-dvipng-close))
     (png (open preview-gs-open png ("-sDEVICE=png16m"))
 	 (place preview-gs-place)
 	 (close preview-gs-close))
@@ -396,7 +397,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng %d -o %m/preview.%03d"
+  "dvipng %d -o %m/prev%03d.png"
   "*Command used for converting to separate PNG images."
   :group 'preview-latex
   :type 'string)
@@ -410,6 +411,12 @@ be consulted recursively.")
 (defcustom preview-fast-dvips-command
   "dvips -Pwww %d -o %m/preview.ps"
   "*Command used for converting to a single PS file."
+  :group 'preview-latex
+  :type 'string)
+
+(defcustom preview-pdftodsc-command
+  "pdf2dsc %s.pdf %m/preview.dsc"
+  "*Command used for generating dsc from a PDF file."
   :group 'preview-latex
   :type 'string)
 
@@ -571,7 +578,21 @@ aload pop restore<</OutputFile%s>>setpagedevice}bind def "
 					(cdr preview-resolution)))))
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (list process (current-buffer) TeX-active-tempdir preview-ps-file)))
+    (list process (current-buffer) TeX-active-tempdir preview-ps-file
+	  preview-image-type)))
+
+(defun preview-dvipng-open ()
+  "Place everything nicely for direct PNG rendering."
+  (unless (preview-supports-image-type 'png)
+    (error "This Emacs lacks 'png image support"))
+  (preview-parse-messages #'preview-dvipng-process-setup))
+
+(defun preview-dvipng-process-setup ()
+  "Set up dvipng process for conversion."
+  (let ((process (preview-start-dvipng)))
+    (setq TeX-sentinel-function #'preview-dvipng-sentinel)
+    (list process (current-buffer) TeX-active-tempdir t
+	  'png)))
 
 (defun preview-dvips-abort ()
   "Abort a Dvips run."
@@ -587,6 +608,9 @@ aload pop restore<</OutputFile%s>>setpagedevice}bind def "
 	  (preview-delete-file preview-ps-file)
 	(file-error nil)))
   (setq TeX-sentinel-function nil))
+
+(defalias 'preview-dvipng-abort 'preview-dvips-abort
+  "Abort a DviPNG run.")
 
 (defun preview-gs-dvips-sentinel (process command &optional gsstart)
   "Sentinel function for indirect rendering DviPS process.
@@ -645,17 +669,51 @@ The usual PROCESS and COMMAND arguments for
 	(unless (eq (process-status process) 'signal)
 	  (preview-dvips-abort)))))
 
-(defun preview-dvipng-open ()
-  "Place everything nicely for direct PNG rendering."
-  (preview-parse-messages #'preview-dvipng-process-setup))
+(defun preview-dvipng-sentinel (process command &optional placeall)
+  "Sentinel function for indirect rendering DviPNG process.
+The usual PROCESS and COMMAND arguments for
+`TeX-sentinel-function' apply.  Places all snippets if PLACEALL is set."
+  (condition-case err
+      (let ((status (process-status process))
+	    (gsfile preview-gs-file))
+	(cond ((eq status 'exit)
+	       (delete-process process)
+	       (setq TeX-sentinel-function nil)
+	       (condition-case nil
+		   (delete-file
+		    (with-current-buffer TeX-command-buffer
+		      (funcall (car gsfile) "dvi")))
+		 (file-error nil))
+	       (when placeall
+		 (if preview-gs-queue
+		     (preview-dvipng-place-all))))
+	      ((eq status 'signal)
+	       (delete-process process)
+	       (preview-dvipng-abort))))
+    (error (preview-log-error err "DviPNG sentinel" process)))
+  (preview-reraise-error process))
 
-(defun preview-dvipng-process-setup ()
-  "Set up dvipng process for direct PNG rendering."
-  (let* ((TeX-process-asynchronous nil)
-	 (process (preview-start-dvipng)))
-    (TeX-synchronous-sentinel "Preview-DviPNG" (cdr preview-gs-file)
-			      process)
-    (list process TeX-active-tempdir preview-scale)))
+(defun preview-dvipng-close (process closedata)
+  "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
+  (setq preview-gs-queue (nconc preview-gs-queue closedata))
+  (if process
+      (if preview-gs-queue
+	  (if TeX-process-asynchronous
+	      (if (and (eq (process-status process) 'exit)
+		       (null TeX-sentinel-function))
+		  ;; Process has already finished and run sentinel
+		    (preview-dvipng-place-all)
+		(setq TeX-sentinel-function (lambda (process command)
+					      (preview-dvipng-sentinel
+					       process
+					       command
+					       t))))
+	    (TeX-synchronous-sentinel "Preview-DviPNG" (cdr preview-gs-file)
+				      process))
+    ;; pathological case: no previews although we sure thought so.
+	(delete-process process)
+	(unless (eq (process-status process) 'signal)
+	  (preview-dvipng-abort)))))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
@@ -767,7 +825,7 @@ is located."
   t)
 
 
-(defun preview-gs-place (ov snippet box run-buffer tempdir ps-file)
+(defun preview-gs-place (ov snippet box run-buffer tempdir ps-file imagetype)
   "Generate an image placeholder rendered over by GhostScript.
 This enters OV into all proper queues in order to make it render
 this image for real later, and returns the overlay after setting
@@ -776,16 +834,19 @@ snippet in question for the file to be generated.
 BOX is a bounding box if we already know one via TeX.
 RUN-BUFFER is the buffer of the TeX process,
 TEMPDIR is the correct copy of `TeX-active-tempdir',
-PS-FILE is a copy of `preview-ps-file'."
+PS-FILE is a copy of `preview-ps-file', IMAGETYPE is the image type
+for the file extension."
   (overlay-put ov 'filenames
-	       (list
-		(preview-make-filename
-		 (or ps-file
-		     (format "preview.%03d" snippet))
-		 tempdir)
-		(preview-make-filename
-		 (format "prev%03d.%s" snippet preview-image-type)
-		 tempdir)))
+	       (append
+		(unless (eq ps-file t)
+		      (list
+		       (preview-make-filename
+			(or ps-file
+			    (format "preview.%03d" snippet))
+			tempdir)))
+		(list (preview-make-filename
+		       (format "prev%03d.%s" snippet imagetype)
+		       tempdir))))
   (overlay-put ov 'queued
 	       (vector box nil snippet))
   (overlay-put ov 'preview-image
@@ -1532,23 +1593,22 @@ is already selected and unnarrowed."
 	 (goto-char (overlay-start ov))
 	 (if (bolp) "\n" ""))))))
 
-(defun preview-dvipng-place (ov snippet box tempdir scale)
-  "Generate an image via direct EPS rendering.
-Since OV already carries all necessary information,
-the argument SNIPPET passed via a hook mechanism is ignored.
-BOX is a bounding box from TeX if we know one.  TEMPDIR is used
-for creating the file name, and SCALE is a copy
-of `preview-scale' necessary for `preview-ps-image."
-  (let ((filename (preview-make-filename
-		   (format "preview.%03d" snippet)
-		   tempdir)))
-    (overlay-put ov 'filenames (list filename))
-    (overlay-put ov 'preview-image
-		 (preview-create-icon (car filename)
-				      'png
-				      0)))
-  nil)
-
+(defun preview-dvipng-place-all ()
+  (let (filename queued)
+    (dolist (ov preview-gs-queue)
+      (when (setq queued (overlay-get ov 'queued))
+	(setq filename (car (overlay-get ov 'filenames)))
+	(overlay-put ov 'preview-image
+		     (preview-create-icon (car filename)
+					  'png
+					  (preview-ascent-from-bb
+					   (aref queued 0))))
+	(overlay-put ov 'queued nil)
+	(overlay-put ov 'strings
+		     (list (preview-active-string ov)))
+	(preview-toggle ov t))))
+  (setq preview-gs-queue nil))
+   
 (defun preview-eps-place (ov snippet box tempdir scale)
   "Generate an image via direct EPS rendering.
 Since OV already carries all necessary information,
@@ -1591,6 +1651,12 @@ gets converted into a CONS-cell with a name and a reference count."
     (cons (expand-file-name file (nth 0 tempdir))
 	  tempdir)))
 
+(defun preview-attach-filename (attached file)
+  "Attaches the absolute file name ATTACHED to FILE."
+  (if (listp (caar file))
+      (setcdr (last (caar file)) attached)
+    (setcar (car file) (list (caar file) attached))))
+
 (defun preview-delete-file (file)
   "Delete a preview FILE.
 See `preview-make-filename' for a description of the data
@@ -1604,7 +1670,9 @@ it gets deleted as well."
 	   (car file))))
     (if filename
 	(unwind-protect
-	    (delete-file filename)
+	    (if (listp filename)
+		(dolist (elt filename) (delete-file elt))
+	      (delete-file filename))
 	  (let ((tempdir (cdr file)))
 	    (when tempdir
 	      (if (> (nth 2 tempdir) 1)
@@ -1903,12 +1971,13 @@ NIL is returned."
 	(file (car (car (last (overlay-get ov 'filenames))))))
     (format "<#part type=\"image/%s\" disposition=inline
 description=\"%s\"
-filename=%s><#/part>"
+filename=%s>
+<#/part>"
 	    preview-image-type
 	    (if (string-match "[\n\"]" text)
 		"preview-latex image"
 	      text)
-	    (if (string-match "[ \n]" file)
+	    (if (string-match "[ \n<>]" file)
 		(concat "\"" file "\"")
 	      file))))
 
@@ -2697,7 +2766,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.196 $"))
+	(rev "$Revision: 1.197 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2708,7 +2777,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-14 05:19:41 $"))
+    (let ((date "$Date: 2004-03-02 04:52:15 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
