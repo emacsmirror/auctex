@@ -2902,33 +2902,32 @@ Prefix arg (non-nil third arg JUSTIFY, if called from program)
 means justify as well.  Fourth arg WHAT is a word to be displayed when
 formatting."
   (interactive "*r\nP")
-  (save-restriction
-    (save-excursion
-      (let ((to (set-marker (make-marker) to))
-	    (next-par (make-marker)))
-	(goto-char from)
-	(beginning-of-line)
-	(setq from (point))
-	(catch 'end-of-buffer
-	  (while (and (< (point) to))
-	    (message "Formatting%s ... %d%%"
-		     (or what "")
-		     (/ (* 100 (- (point) from)) (- to from)))
-	    (save-excursion (LaTeX-fill-paragraph justify))
-	    (if (marker-position next-par)
-		(goto-char (marker-position next-par))
-	      (LaTeX-forward-paragraph))
-	    (when (eobp) (throw 'end-of-buffer t))
-	    (LaTeX-forward-paragraph)
-	    (set-marker next-par (point))
-	    (LaTeX-backward-paragraph)
-	    (while (and (not (eobp))
-			(looking-at
-			 (concat "^\\($\\|[ \t]+$\\|[ \t]*"
-				 TeX-comment-start-regexp "+[ \t]*$\\)")))
-	      (forward-line 1))))
-	(set-marker to nil)))
-    (message "Finished")))
+  (save-excursion
+    (let ((to (set-marker (make-marker) to))
+	  (next-par (make-marker)))
+      (goto-char from)
+      (beginning-of-line)
+      (setq from (point))
+      (catch 'end-of-buffer
+	(while (and (< (point) to))
+	  (message "Formatting%s ... %d%%"
+		   (or what "")
+		   (/ (* 100 (- (point) from)) (- to from)))
+	  (save-excursion (LaTeX-fill-paragraph justify))
+	  (if (marker-position next-par)
+	      (goto-char (marker-position next-par))
+	    (LaTeX-forward-paragraph))
+	  (when (eobp) (throw 'end-of-buffer t))
+	  (LaTeX-forward-paragraph)
+	  (set-marker next-par (point))
+	  (LaTeX-backward-paragraph)
+	  (while (and (not (eobp))
+		      (looking-at
+		       (concat "^\\($\\|[ \t]+$\\|[ \t]*"
+			       TeX-comment-start-regexp "+[ \t]*$\\)")))
+	    (forward-line 1))))
+      (set-marker to nil)))
+  (message "Finished"))
 
 (defun LaTeX-find-matching-end ()
   "Move point to the \\end of the current environment.
