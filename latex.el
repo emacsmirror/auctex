@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.18 1994-06-01 21:30:05 amanda Exp $
+;; Version: $Id: latex.el,v 5.19 1994-06-03 04:49:29 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -187,7 +187,7 @@ header is at the start of a line."
   (concat (if anywhere "" "^")
 	  "[ \t]*"
 	  (regexp-quote TeX-esc)
-	  "\\(appendix\\|documentstyle\\|"
+	  "\\(appendix\\|documentstyle\\|documentclass\\|"
 	  (mapconcat 'car LaTeX-section-list "\\|")
 	  "\\)\\b"
 	  (if TeX-outline-extra
@@ -233,6 +233,7 @@ If so, return the second element, otherwise return nil."
 	  (forward-char 1)
 	  (cond ((looking-at "appendix") 1)
 		((looking-at "documentstyle") 1)
+		((looking-at "documentclass") 1)
 		((TeX-look-at LaTeX-section-list)
 		 (max 1 (+ (TeX-look-at LaTeX-section-list)
 			   (LaTeX-outline-offset))))
@@ -1206,7 +1207,7 @@ If nil, AUC TeX will search for them.")
     (if (string-equal file "")
 	()
       (let ((styles (TeX-split-string "," file)))
-	(LaTeX-add-bibliographies styles)))))
+	(apply 'LaTeX-add-bibliographies styles)))))
 
 (defun TeX-arg-corner (optional &optional prompt)
   "Prompt for a LaTeX side or corner position with completion."
@@ -1751,7 +1752,7 @@ The point is supposed to be at the beginning of the current line."
     "Menu used in LaTeX mode."
   (list "LaTeX"
 	(list LaTeX-environment-menu-name
-	      ~Upgrade `easymenu.el'~)
+	      "Upgrade `easymenu.el'")
 	(list LaTeX-environment-modify-menu-name
 	      "Upgrade `easymenu.el'")
 	(LaTeX-section-menu-create)

@@ -33,7 +33,7 @@
      (if (not (zerop (length figwidth)))
 	 (insert ",width=" figwidth))
      (if (not (zerop (length figheight)))
-	 (insert ",width=" figheight))
+	 (insert ",height=" figheight))
      (insert TeX-grcl)
      )
    )
@@ -57,27 +57,23 @@
     (LaTeX-insert-environment "figure"
 			      (concat LaTeX-optop LaTeX-float LaTeX-optcl))
 
-    (if (or (zerop (length label))
-	    (equal LaTeX-figure-label label))
-	()
-      (newline-and-indent)
-      (insert TeX-esc "label" TeX-grop label TeX-grcl)
-      (end-of-line 0)
-      (LaTeX-indent-line))
-
-
-    (newline-and-indent)
     (insert TeX-esc "centerline" TeX-grop TeX-esc "psfig" TeX-grop
 	    "figure=" psfile)
     (if (not (zerop (length figwidth)))
 	(insert ",width=" figwidth))
     (if (not (zerop (length figheight)))
-	(insert ",width=" figheight))
+	(insert ",height=" figheight))
     (insert TeX-grcl TeX-grcl)
     (if (zerop (length caption))
 	()
       (newline-and-indent)
       (insert TeX-esc "caption" TeX-grop caption TeX-grcl))
-    (forward-line 5)))
+    (if (or (zerop (length label))
+	    (equal LaTeX-figure-label label))
+	()
+      (newline-and-indent)
+      (insert TeX-esc "label" TeX-grop label TeX-grcl))
+
+    (forward-line 2)))
 
 ;;; psfig.el ends here

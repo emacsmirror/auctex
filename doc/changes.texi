@@ -7,10 +7,24 @@ Bernt Guldbrandtsen @samp{<bernt@@weinberg.pop.bio.aau.dk>},
 Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
 Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
 Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>},
-David Aspinall <da@@dcs.edinburgh.ac.uk>,
+David Aspinall @samp{<da@@dcs.edinburgh.ac.uk>},
+Frederic Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>},
+Robert Estes @samp{<estes@@ece.ucdavis.edu>},
 and probably more.@refill
 
 @itemize @bullet
+@item
+Outline support for La@TeX{}2e fixed by Robert Estes
+@samp{<estes@@ece.ucdavis.edu>}. 
+
+@item
+@samp{bibliography} macro now works.  Thanks to Frederic Devernay
+@samp{<Frederic.Devernay@@sophia.inria.fr>}. 
+
+@item
+Fixes to @file{psfig} support by Thomas Graichen
+@samp{<graichen@@sirius.physik.fu-berlin.de>}. 
+
 @item
 Fixed position of @samp{\label} in environments.  Reported by Richard
 Stanton @samp{<stanton@@haas.berkeley.edu>}.
