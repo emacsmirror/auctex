@@ -37,12 +37,26 @@ preview-LaTeX.  Preview-LaTeX calls dvips by default with the option
 using antialiasing, however, the results might be sufficiently nice
 with bitmapped fonts, anyway.  You might try -Ppdf for another stab at
 scalable fonts, or other printer definitions.  Use
-M-x customize-variable RET preview-LaTeX-command RET
+M-x customize-variable RET preview-dvips-command RET
 in order to customize this.
 
 * GNU Emacs versions prior to 21.1
 
 Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
+
+* GNU Emacs under Windows operating systems
+
+As of GNU Emacs 21.1, no image support is available in Emacs under
+Windows.  Without images, preview-latex is useless.  If it is
+important to you, support the Emacs developer crew with regard to
+image support (PostScript image support is *not* necessary).  I do not
+use Windows myself, but will accept patches necessary to make
+preview-latex work under it.
+
+* XEmacs
+
+Does not work yet.  Volunteers welcome.  Quite a bit of the necessary
+work has already been sorted out.
 
 * AucTeX up to 10.0g
 
@@ -82,6 +96,18 @@ patch RET.
   (defun TeX-command-buffer ()
 
 
+* LaTeX
+
+preview-latex requires to correlate error messages from TeX with the
+input text.  The delivered example file circ.tex contains ISO-8859-1
+input characters (also called Latin-1).  If your language environment
+is not properly set up, or your TeX version is rather old, TeX will,
+for example, display ü (German u-Umlaut) as ^^fc.  In that case the
+correlation will fail, with the result that the preview images get
+misplaced.  Personally, I have set the environment variable LANG to
+the string 'en_US.ISO8859-1'.  Your system may have different ways of
+achieving something similar.
+
 * x-symbol
 
 Current versions of x-symbol confuse the line parsing of
@@ -89,3 +115,24 @@ preview-LaTeX.  They also confuse that of Auc-TeX, but with less
 glaring consequences.  A solution is being worked on, but this depends
 on a few factors that will probably lead to some changed APIs in
 AucTeX.
+
+* flyspell.el
+
+flyspell-mode has a bug afflicting preview-latex operation.  The
+following patch will help:
+
+--- /usr/local/emacs-21/share/emacs/21.1/lisp/textmodes/flyspell.el.old	Mon Jul 16 14:22:59 2001
++++ /usr/local/emacs-21/share/emacs/21.1/lisp/textmodes/flyspell.el	Wed Nov  7 16:18:54 2001
+@@ -378,9 +378,7 @@
+ 	  (setq minor-mode-map-alist
+ 		(cons (cons 'flyspell-mode flyspell-mode-map)
+ 		      minor-mode-map-alist)))
+-  (define-key flyspell-mode-map "\M-\t" 'flyspell-auto-correct-word)
+-  (define-key flyspell-mode-map [(mouse-2)]
+-    (function flyspell-correct-word/local-keymap)))
++  (define-key flyspell-mode-map "\M-\t" 'flyspell-auto-correct-word))
+ 
+ 
+ ;; the name of the overlay property that defines the keymap
+
+
