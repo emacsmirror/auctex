@@ -1,5 +1,13 @@
 2002-04-09  Nix  <nix@esperi.demon.co.uk>
 
+	* prv-xemacs.el: Remove crufty destructive-copy stuff.
+
+	(map-plist, destructive-replace-glyph, copy-glyph): Removed.
+	(preview-replace-active-icon): Just set the new image property rather than
+	destructively copying it.
+
+2002-04-09  Nix  <nix@esperi.demon.co.uk>
+
 	* prv-xemacs.el (preview-nonready-icon): Fix baseline.
 	(preview-icon): Likewise.
 
