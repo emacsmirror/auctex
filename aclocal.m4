@@ -303,8 +303,8 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_ARG_WITH(lispdir,
     [  --with-lispdir=DIR      Where to install lisp files],
     [lispdir="${withval}"
-     # Store expanded path, may be added to (X)Emacs load-path
-     lispdir_expanded=$lispdir
+     # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
+     lispdir_expanded=`echo $lispdir | sed 's/\/$//'`
      AC_FULL_EXPAND(lispdir_expanded)
     ],
     [
