@@ -1,3 +1,12 @@
+2004-10-18  Christian Schlauer  <cschl@arcor.de>
+
+	* latex.el (LaTeX-env-figure, LaTeX-env-minipage): Point out to
+	the user that the placement (figure) and position (minipage)
+	specifiers are optional arguments.
+	(LaTeX-env-figure): Simplified.  Do not insert the (optional)
+	placement specifier `LaTeX-float' into the buffer if the user
+	entered the empty string when asked for `float'.
+
 2004-10-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-keywords): Correctly evaluate
