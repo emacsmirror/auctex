@@ -483,6 +483,9 @@ Pure borderless black-on-white will return NIL."
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
+  (mapc #'(lambda (hook) (make-local-hook hook))
+        '(pre-command-hook post-command-hook
+          before-change-functions after-change-functions))
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
   (unless (and (boundp 'balloon-help-mode)
@@ -525,7 +528,8 @@ defaults to off."
 		  (unless (and (overlay-buffer ov)
 			       (eq (overlay-get ov 'preview-state) 'inactive))
 		    (throw 'keep nil))
-		  (unless (eq (overlay-buffer ov) (current-buffer))
+		  (unless (and (eq (overlay-buffer ov) (current-buffer))
+                               (not (extent-detached-p ov)))
 		    (throw 'keep t))
 		  (when (and (>= pt (overlay-start ov))
 			     (< pt (overlay-end ov)))
