@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.57 2002-02-07 20:49:35 dakas Exp $
+;; $Id: preview.el,v 1.58 2002-02-08 01:24:01 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -544,11 +544,12 @@ given as ANSWER."
 				   (preview-extract-bb (car oldfile))))
 		       (gs-line (format
 				 "clear \
-/preview-LaTeX-state save def << \
+<< \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
->> setpagedevice %s (%s) \
-systemdict /.setsafe known { .setsafe } if \
-run preview-LaTeX-state restore\n"
+>> setpagedevice [ save ] %s (%s) (r) file cvx \
+systemdict /.setsafe known { .setsafe { .runandhide count 1 roll } } if \
+stopped { handleerror quit } if count 1 sub \
+{ pop } repeat cleardictstack 0 get restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
 				 (- (aref bbox 3) (aref bbox 1))
 				 (- (aref bbox 0)) (aref bbox 1)
@@ -1324,7 +1325,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.57 $"))
+	(rev "$Revision: 1.58 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
