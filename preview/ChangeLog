@@ -1,3 +1,18 @@
+2002-04-10  Jan-Ake Larsson  <jalar@localhost.localdomain>
+
+	* doc/preview-latex.texi: Added hint on getting custom
+	environments previewed due to John Jones, remove the textmath hint
+
+	* latex/.cvsignore: New
+
+	* .cvsignore: Changed due to the 'latex' subdir
+
+	* patches/x-symbol.patch: Removed
+
+	* preview-latex.spec: Simplifications from using a 'latex' subdir
+
+	* doc/Makefile.in: Use mkinstalldirs
+
 2002-04-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-default-option-list): set textmath per
