@@ -39,8 +39,7 @@
 
 (require 'custom)
 (eval-when-compile
-  (require 'cl)
-  (require 'tex-site))
+  (require 'cl))
 
 (defgroup AUCTeX nil
   "A (La)TeX environment."
@@ -554,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.367 $"))
+	(rev "$Revision: 5.368 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-13 07:15:15 $"))
+    (let ((date "$Date: 2004-05-13 08:35:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -938,16 +937,7 @@ Return nil otherwise."
 
 (setq TeX-lisp-directory (file-name-as-directory TeX-lisp-directory))
 
-(defcustom TeX-auto-global (file-name-as-directory
-			    (concat TeX-lisp-directory "auto"))
-
-  "*Directory containing automatically generated information.
-Must end with a directory separator.
-
-For storing automatic extracted information about the TeX macros
-shared by all users of a site."
-  :group 'TeX-file
-  :type 'directory)
+(setq TeX-auto-global (file-name-as-directory TeX-auto-global))
 
 (defcustom TeX-style-global (file-name-as-directory
 			     (concat TeX-lisp-directory "style"))
