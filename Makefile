@@ -10,7 +10,7 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-prefix=/usr/local
+prefix=/usr/local/emacs-21
 
 # Where info files go.
 infodir = $(prefix)/info
@@ -97,7 +97,7 @@ STYLESRC = style/prosper.el \
 	   style/varioref.el  style/fancyref.el	style/mdwlist.el \
 	   style/ngerman.el   style/graphicx.el	style/graphics.el \
 	   style/verbatim.el  style/scrbase.el  style/scrartcl.el \
-	   style/scrbook.el   style/scrreprt.el   
+	   style/scrbook.el   style/scrreprt.el	style/scrlttr2.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
