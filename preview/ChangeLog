@@ -1,5 +1,7 @@
 2002-04-23  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7.2b
+
 	* Makefile.in (preview-latex.el): Quickfix
 
 	* Release 0.7.2
