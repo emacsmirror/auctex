@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.26 1994-08-16 10:36:14 amanda Exp $
+;; Version: $Id: latex.el,v 5.27 1994-08-16 23:57:42 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -623,7 +623,6 @@ To insert a hook here, you must insert it in the appropiate style file.")
 				      ((string= "table" environment)
 				       LaTeX-table-label)
 				      (t nil))))
-        ; gf: ask if this should be centered
         (center (y-or-n-p "Center: ")))
 
     (setq LaTeX-float (if (zerop (length float))
@@ -632,6 +631,12 @@ To insert a hook here, you must insert it in the appropiate style file.")
 	  
     (LaTeX-insert-environment environment
 			      (concat LaTeX-optop LaTeX-float LaTeX-optcl))
+    
+    (if center
+	(progn
+	  (LaTeX-insert-environment "center")
+	  (insert "\\leavevmode")
+	  (newline-and-indent)))
     
     (if (or (zerop (length label))
 	    (and (string= "figure" environment)
@@ -647,19 +652,12 @@ To insert a hook here, you must insert it in the appropiate style file.")
 
     (if (zerop (length caption))
 	()
+      ;; NOTE: Caption is _inside_ center because that looks best typeset.
       (newline-and-indent)
       (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
       (end-of-line 0)
       (LaTeX-indent-line))
     
-    ;; gf: add center if requested
-    (if center
-	(progn
-	  (LaTeX-insert-environment "center")
-	  (insert "\\leavevmode")
-	  (newline-and-indent)))
-    
-    ;; gf: Add tabular if we're in a floating table
     (if (string= environment "table") (LaTeX-env-array "tabular"))))
 
 (defun LaTeX-env-array (environment)

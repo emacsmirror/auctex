@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.23 1994-08-09 00:00:13 amanda Exp $
+;; Version: $Id: tex.el,v 5.24 1994-08-16 23:57:48 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -355,7 +355,7 @@ the beginning of the file, but that feature will be phased out."
 		 (read-file-name "Master file: (default this file) "
 				 nil "///")
 		 (list TeX-default-extension)
-		 t))
+		 'path))
 	  (if (or (string-equal TeX-master "///")
 		  (string-equal TeX-master ""))
 	      (setq TeX-master t)))
@@ -388,7 +388,7 @@ the beginning of the file, but that feature will be phased out."
 				     nil "<default>")
 		   (quit "<quit>"))
 		 (list TeX-default-extension)
-		 t))
+		 'path))
 	  (cond ((string-equal TeX-master "<quit>")
 		 (setq TeX-master t))
 		((or (string-equal TeX-master "<default>")
@@ -1582,7 +1582,9 @@ TeX-file-extensions is used instead."
 
 (defun TeX-strip-extension (&optional string extensions nodir nostrip)
   "Return STRING without any trailing extension in EXTENSIONS.
-If NODIR is set, also remove directory part of STRING. 
+If NODIR is `t', also remove directory part of STRING. 
+If NODIR is `path', remove directory part of STRING if it is equal to
+the current directory, TeX-macro-private or TeX-macro-global. 
 If NOSTRIP is set, do not remove extension after all.
 STRING defaults to the name of the current buffer.
 EXTENSIONS defaults to TeX-file-extensions."
@@ -1593,11 +1595,15 @@ EXTENSIONS defaults to TeX-file-extensions."
   (if (null extensions)
       (setq extensions TeX-file-extensions))
   
-  (let ((strip (if (and (not nostrip)
-                        (TeX-match-extension string extensions))
-                   (substring string 0 (match-beginning 0))
-                 string)))
-    (if nodir
+  (let* ((strip (if (and (not nostrip)
+			 (TeX-match-extension string extensions))
+		    (substring string 0 (match-beginning 0))
+		  string))
+	 (dir (file-name-directory (expand-file-name strip))))
+    (if (or (eq nodir t)
+	    (string-equal dir (expand-file-name "./"))
+	    (member dir TeX-macro-global)
+	    (member dir TeX-macro-private))
         (file-name-nondirectory strip)
       strip)))
 

@@ -1,15 +1,27 @@
-Tue Aug 16 12:22:04 1994  Per Abrahamsen  (amanda@verdande)
+Wed Aug 17 01:24:55 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* latex.el (LaTeX-env-figure): Put caption inside center
+	environment.  Suggested by Martin Wunderli <wunderli@inf.ethz.ch>. 
+
+	* tex.el (TeX-strip-extension): If NODIR is set to `path', remove
+	the directory part iff it is equal to the current directory, or is
+	a member of either `TeX-macro-global' or `TeX-macro-private'.
+	(TeX-master-file): Use `path' for NODIR when querying the user for
+	a file name.  Reported finger@brachio.Informatik.Uni-Dortmund.DE
+	(Bernd Finger).
+
+Tue Aug 16 12:22:04 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* latex.el (LaTeX-common-initialization): `eqnarray*' should not
 	have a label.  Reported by dodd@roebling.poly.edu (Lawrence R.
 	Dodd). 
 
-Thu Aug 11 16:00:18 1994  Per Abrahamsen  (amanda@verdande)
+Thu Aug 11 16:00:18 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* tex-buf.el (TeX-background-filter): Always show background
 	output.
 
-Wed Aug 10 19:14:42 1994  Per Abrahamsen  (amanda@verdande)
+Wed Aug 10 19:14:42 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* Makefile (MINMAPSRC): Added `all.el'.
 
