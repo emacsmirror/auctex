@@ -1,3 +1,14 @@
+2004-01-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-command-list): Get rid of the superfluous sixth
+	element in the defcustom and menu/command definitions.
+
+	* tex-jp.el (japanese-TeX-command-list): Ditto.
+
+	* tex-mik.el (TeX-command-list): Ditto.
+
+	* tex-fptex.el (TeX-command-list): Ditto.
+	
 2004-01-05  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-common-initialization): Add \item to the
@@ -32,7 +43,7 @@
 	* tex-info.el (TeXinfo-command-menu): Adapted for using
 	`TeX-mode-specific-command-menu'.
 
-	* tex-jp.el (japanese-TeX-command-menu): Added symbols to command
+	* tex-jp.el (japanese-TeX-command-list): Added symbols to command
 	definitions needed for assigning them to the respective mode.
 	(TeX-mode-menu): Removed.
 	(plain-TeX-mode-command-menu): New menu utilizing
