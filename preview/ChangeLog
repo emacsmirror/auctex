@@ -1,7 +1,11 @@
-2004-03-25  Jan-Åke Larsson  <jalar@mai.liu.se>
+2004-03-26  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/papersiz.c: Remove compiler warning
 
 	* dvipng/dvipng.texi: 
 	* dvipng/misc.c: Change year
+
+2004-03-25  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/special.c: Revert change, not only resolution but also
 	offset is needed when generating png from ps
