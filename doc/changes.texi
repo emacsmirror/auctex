@@ -20,8 +20,8 @@ appearance, i.e. the usage of a different color instead of a change in
 size.
 
 @item
-Support for @code{alphanum.sty}, @code{emp.sty}, @code{paralist.sty} and
-@code{booktabs.sty} was added.
+Support for @code{alphanum.sty}, @code{beamer.cls}, @code{booktabs.sty},
+@code{emp.sty} and @code{paralist.sty} was added.
 
 @item
 AUC@TeX{} may now be customized to fontify either >>German<< or
