@@ -1,3 +1,8 @@
+2003-12-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-mode-map): Use `C-c -' as a key binding for
+	`TeX-master-file-ask' as `C-c !' is already used in `context.el'.
+
 2004-01-02  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-left-comment-regexp)
