@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.448 $"))
+	    (rev "$Revision: 5.449 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-09-05 20:40:02 $"))
+    (let ((date "$Date: 2004-09-16 11:21:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3639,7 +3639,9 @@ regardless of its data type."
 ;;; Navigation
 
 (defvar TeX-search-syntax-table
-  (let ((table (make-syntax-table (make-char-table 'syntax-table))))
+  (let ((table (make-syntax-table (make-char-table (if (featurep 'xemacs)
+						       'syntax
+						     'syntax-table)))))
     (modify-syntax-entry ?\f ">" table)
     (modify-syntax-entry ?\n ">" table)
     table)
