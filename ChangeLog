@@ -1,3 +1,7 @@
+2005-02-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Simplify.
+
 2005-02-14  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4 (AC_LISPIFY_DIR): new function.
