@@ -1,3 +1,15 @@
+2004-01-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auc-tex.texi: AUC TeX to AUCTeX.  Use `%%%' instead of a
+	single `%' character in examples for Local Variables.  Add
+	information about new behavior in respect to the query for the
+	master file.  Explain new function `TeX-master-file-ask'.
+
+	* doc/changes.texi: Advertise new master file behavior.  Remove
+	news about new commenting behavior which is not true anymore.
+
+	* doc/intro.tex.: AUC TeX to AUCTeX.
+
 2004-01-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-command-list): Changed defcustom definition to one
