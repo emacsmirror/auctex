@@ -1,3 +1,19 @@
+2003-02-25  David Kastrup  <dak@gnu.org>
+
+	* tex.el: Some changes for dir slashiness.
+	(TeX-master-directory): return a proper directory name, not a
+	file name.
+
+	* tex-buf.el (TeX-quote-filename): Return the changed file!
+	Yikes!  How could this ever have worked?
+
+2003-02-24  David Kastrup  <dak@gnu.org>
+
+	* tex.el (AUCTeX-version): Generate automatically from CVS
+	variables.
+	(TeX-master-directory): somewhat more defensive version (final
+	goal is to be able to make a TeX minor mode).
+
 2003-02-22  David Kastrup  <dak@gnu.org>
 
 	* tex-wizard.el: A first sketch of the idea.
