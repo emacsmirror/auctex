@@ -298,7 +298,8 @@ Disable it if that is the case.  Ignores text properties."
 		(preview-delete ov)
 	      (unless
 		  (or (eq (overlay-get ov 'preview-state) 'disabled)
-		      (string= text (overlay-get ov 'preview-prechange)))
+		      (preview-relaxed-string=
+		       text (overlay-get ov 'preview-prechange)))
 		(overlay-put ov 'insert-in-front-hooks nil)
 		(overlay-put ov 'insert-behind-hooks nil)
 		(preview-disable ov)))))
