@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.152 2004-05-04 19:53:54 angeli Exp $
+@c $Id: auc-tex.texi,v 1.153 2004-05-13 08:36:49 salve Exp $
 
 @finalout
 @titlepage
@@ -26,6 +26,7 @@
 @author updated for almost 12 by David Kastrup
 @page
 @vskip 0pt plus 1filll
+Copyright @copyright{} 2004 Free Software Foundation, Inc.
 Copyright @copyright{} 2002 David Kastrup
 Copyright @copyright{} 1993, 1994, 1995, 2001 Per Abrahamsen
 Copyright @copyright{} 1992  Kresten Krab Thorup @*
@@ -279,11 +280,7 @@ to type inside of them.
 @cindex Specifying a font
 
 Perhaps the most used keyboard commands of AUC@TeX{} are the short-cuts
-available for easy insertion of font changing macros.  They all put the
-font change inside a @TeX{} group, a practice that help preventing
-subtle errors.  The most significant advantage of using these command
-instead of typing it in yourself, is that the braces will always match
-correctly.
+available for easy insertion of font changing macros.
 
 If you give an argument (that is, type @kbd{C-u}) to the font command,
 the innermost font will be replaced, i.e. the font in the @TeX{} group
@@ -470,10 +467,10 @@ To get a full featured @code{LaTeX-section} command, insert
 @lisp
 (setq LaTeX-section-hook
       '(LaTeX-section-heading
-        LaTeX-section-title
-        LaTeX-section-toc
-        LaTeX-section-section
-        LaTeX-section-label))
+	LaTeX-section-title
+	LaTeX-section-toc
+	LaTeX-section-section
+	LaTeX-section-label))
 @end lisp
 
 in your @file{.emacs} file.
@@ -994,7 +991,7 @@ Number of spaces to add to the indentation for each @samp{@{} not
 matched by a @samp{@}}.
 @end defopt
 
-@defopt LaTeX-format-comment-syntax-aware
+@defopt LaTeX-syntactic-comments
 If non-nil comments will be filled and indented according to LaTeX
 syntax.  Otherwise they will be filled like normal text.
 @end defopt
@@ -1064,7 +1061,7 @@ and @samp{\item} being below @samp{\subparagraph}.
 @example
 (setq TeX-outline-extra
       '(("[ \t]*\\\\\\(bib\\)?item\\b" 7)
-        ("\\\\bibliography\\b" 2)))
+	("\\\\bibliography\\b" 2)))
 @end example
 
 You may want to check out the unbundled @file{out-xtra} package for even
@@ -1720,7 +1717,7 @@ including the @file{dk.sty} file.  This requires parsing to be enabled,
 
 @lisp
 (add-hook 'TeX-language-dk-hook
-          (function (lambda () (ispell-change-dictionary "danish"))))
+	  (function (lambda () (ispell-change-dictionary "danish"))))
 @end lisp
 
 The following style files are recognized.
@@ -1742,6 +1739,10 @@ Runs style hook @code{TeX-language-pl-hook}.
 Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
 @samp{"}.  Pressing @key{"} twice will insert @samp{"<} or @samp{">}
 depending on context.
+
+@item italian
+Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
+insert @samp{«} or @samp{»} depending on context.
 @end table
 
 @node Japanese,  , European, I18n
@@ -2034,7 +2035,7 @@ Here is a simple example of a style file.
 
 (TeX-add-style-hook "book"
  (function (lambda () (setq LaTeX-largest-level
-                            (LaTeX-section-level ("chapter"))))))
+			    (LaTeX-section-level ("chapter"))))))
 
 @end lisp
 
@@ -2098,11 +2099,11 @@ the longest definition (i.e. the one with the most arguments).
 
 Thus, to overwrite
 @example
-        '("tref" 1) ; one argument
+	'("tref" 1) ; one argument
 @end example
 you can specify
 @example
-        '("tref" TeX-arg-label ignore) ; two arguments
+	'("tref" TeX-arg-label ignore) ; two arguments
 @end example
 
 @code{ignore} is a function that does not do anything, so when you
@@ -2389,11 +2390,11 @@ defined.  We can specify this information in a style hook file.
 (defun TeX-macro-cleanup ()
   ;; Move symbols from `TeX-auto-multi' to `TeX-auto-symbol'.
   (mapcar (function (lambda (list)
-            (mapcar (function (lambda (symbol)
-                      (setq TeX-auto-symbol
-                            (cons symbol TeX-auto-symbol))))
-                    list)))
-          TeX-auto-multi))
+	    (mapcar (function (lambda (symbol)
+		      (setq TeX-auto-symbol
+			    (cons symbol TeX-auto-symbol))))
+		    list)))
+	  TeX-auto-multi))
 
 (defun TeX-macro-prepare ()
   ;; Clear `Tex-auto-multi' before use.
@@ -2407,11 +2408,11 @@ defined.  We can specify this information in a style hook file.
   (lambda ()
     (TeX-auto-add-regexp TeX-newmacro-regexp)
     (TeX-add-symbols '("newmacro"
-                       TeX-arg-macro
-                       (TeX-arg-macro "Capitalized macro: \\")
-                       t
-                       "BibTeX entry: "
-                       nil)))))
+		       TeX-arg-macro
+		       (TeX-arg-macro "Capitalized macro: \\")
+		       t
+		       "BibTeX entry: "
+		       nil)))))
 
 ;;; macro.el ends here
 @end lisp
