@@ -1,5 +1,11 @@
 2004-05-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (TEX_INPUT_DIRS): Use `--expand-braces' instead of
+	`--show-path' in the kpsewhich calls.  Use `--expand-path' as a
+	fallback e.g. for MikTeX.  Assume that we are dealing with a
+	TDS-compliant TeX system and add "/tex/" and "/bibtex/bst/"
+	subdirectories to the output of the kpsewhich calls accordingly.
+
 	* latex.el (LaTeX-fill-newline): Don't use code specific to GNU
 	Emacs for XEmacs.  Call `newline-and-indent' instead.
 
