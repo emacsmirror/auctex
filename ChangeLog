@@ -1,3 +1,21 @@
+2004-04-16  Berend de Boer  <berend@pobox.com>
+
+	* context.el: English interface macro's moved to context-en.el.
+	All defmacro's are now replaced by defvars which are set to the
+	proper language dependent interface as a local buffer variable.
+	Some changes to make the context mode actually multi-lingual.
+	(ConTeXt-mode-common-initialization): new routine with
+	initialization common to all ConTeXt modes.
+	(context-mode): guesses current interface for en and nl interfaces.
+	(context-guess-current-interface): new routine that determines
+	what ConTeXt language interface is in use.
+
+	* context-nl.el: new file containing Dutch interfaces macro's
+	previously in context.el. Use context-nl-mode to activate.
+
+	* context-en.el: new file containing English interfaces macro's
+	previously in context.el. Use context-en-mode to activate.
+
 2004-04-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-mode-specific-command-menu): Now holds the logic for
@@ -75,7 +93,7 @@
 	instead of `INSTALLATION'.
 
 	* IRIX: Removed.
-	
+
 	* Makefile.in (EXTRAFILES): Removed IRIX.
 
 	* COPYING: Updated to current incarnation.
