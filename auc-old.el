@@ -1,29 +1,31 @@
-;;; auc-old.el - Compatibility with AUC TeX 6.*
+;;; auc-old.el - Compatibility with AUCTeX 6.*
 ;;
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 ;;
 ;; Copyright (C) 1991, 2001 Kresten Krab Thorup 
 ;; Copyright (C) 1993 Per Abrahamsen 
+;; Copyright (C) 2003 Free Software Foundation
 ;; 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
+
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
 
 ;; This file contains an alternative keymapping, compatible with
-;; older versions of AUC TeX.  You are strongly suggested to try the
+;; older versions of AUCTeX.  You are strongly suggested to try the
 ;; new keyboard layout, as we would like this file to go away
 ;; eventually. 
 
@@ -158,7 +160,7 @@
   (insert TeX-grop TeX-esc "sc " TeX-grcl)
   (backward-char 1))
 
-;;; AUC (La)TeX Mode
+;;; AUC(La)TeX Mode
 ;;
 ;; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support
 ;; automatic mode change after using insert-mode-line hook. Also
