@@ -54,13 +54,10 @@ might be made to work with less than optimal results.
 @item A working @AUCTeX{} installation
 
 @AUCTeX{} can be found at @uref{http://www.gnu.org/software/auctex}.
-This site now provides up-to-date beta and stable versions as well as
-RPMs.  At the time of this writing, the latest version is 11.14 which is
-necessary for multi-directory documents.  Apply the patch in
-@file{patches/auctex-11.13.patch} for 11.13 or earlier in case you are
-hit by this bug.  Apply the patch in @file{patches/auctex-10.patch} for
-versions before 11.0 if you really must, but complain to whoever stuck
-you with them.
+This site now provides up-to-date tarballs as well as RPMs.  At the time
+of this writing, the latest version is 11.55.  You need at least 11.51
+to support PDF@LaTeX{}; versions older than 11.14 are not supported any
+more.
 
 @item A working @LaTeX{} installation
 

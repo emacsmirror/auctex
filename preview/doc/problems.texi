@@ -42,7 +42,9 @@ devel team).
 
 Most of the problems encountered come from interaction with GhostScript.
 It is a good idea to have a fairly recent version of GhostScript
-installed.  
+installed.  One problem occurs if you have specified the wrong
+executable under Windows: the command line version of GhostScript is
+called @file{GSWIN32C.EXE}, not @file{GSWIN32.EXE}.
 
 When GhostScript fails, the necessary information and messages from
 Ghostscript go somewhere.  If GhostScript fails before starting to
@@ -234,25 +236,13 @@ environment or, as a last resort, customize the variable
 @node Middle-clicks paste instead of toggling,  , x-symbol interoperation, Known problems
 @section Middle-clicks paste instead of toggling
 
-This is probably the fault of your favorite package.  In Emacs-21.1, the
-following culprits are known; Emacs-21.2 inherits those bugs, as of
-21.3, they will be fixed.  The patches have been thoroughly tested and
-applying them is hardly likely to cause any adverse effect.
+This is probably the fault of your favorite package.  @file{flyspell.el}
+and @file{mouse-drag.el} are known to be affected in versions before
+@w{Emacs 21.3}.  Upgrade to the most recent version.
 
-@itemize @bullet
-@item flyspell.el
-
-Apply the patch in @file{patches/flyspell.patch}.
-
-@item mouse-drag.el
-
-Apply the patch in @file{patches/mouse-drag.patch}.
-
-@item isearch.el
-
-This is one complicated mess to dig through.  Better just end the search
-with @kbd{@key{RET}} before toggling and resume with @kbd{C-s C-s} or
-similar afterwards.  Since previews over the current match will
-auto-open, anyway, this should not be much of a problem.
-
-@end itemize
+@file{isearch.el} also shows this effect while searches are in progress,
+but the code is such a complicated mess that no patch is in sight.
+Better just end the search with @kbd{@key{RET}} before toggling and
+resume with @kbd{C-s C-s} or similar afterwards.  Since previews over
+the current match will auto-open, anyway, this should not be much of a
+problem in practice.

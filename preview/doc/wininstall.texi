@@ -19,8 +19,14 @@ might also help to use forward slashes instead of the backward slashes
 more typical for @w{MS Windows}: while backward slashes are supposed to
 work if properly escaped in the shell, this is one area easily
 overlooked by the developers.  The same holds for file or directory
-names with spaces in them.  Of course, we want to hear about any
-problems in that area.
+names with spaces in them.  Another noteworthy problem is that you
+should be consistent with regard to using upper and lower case
+characters for directory names: while Windows ignores any differences in
+that area, the configuration scripts don't.
+
+It is appreciated if you report any problems you experienced when
+installing @previewlatex{}, as we are trying our best to make it work
+even for platforms that we don't use ourselves.
 
 Compiling Emacs is outside of the scope of this manual.  @previewlatex{}
 itself does not require a @w{C compiler} for installation.

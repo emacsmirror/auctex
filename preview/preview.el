@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.232 2005-02-18 02:01:27 dakas Exp $
+;; $Id: preview.el,v 1.233 2005-02-18 19:07:49 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -102,11 +102,18 @@ preview-latex's bug reporting commands will probably not work.")))
 		     (integer :tag "percent of image"
 			      :value 50))))))
 
+(defun preview-specs-setter (symbol value)
+  "Set SYMBOL to VALUE and clear `preview-min-alist' property.
+This is used in icon specs, so that customizing will
+clear cached icons."
+  (put symbol 'preview-min-alist nil)
+  (set-default symbol value))
+
 (defcustom preview-nonready-icon-specs
-  '((:type xpm :min 24 :file "prvwrk24.xpm" :ascent 90)
-    (:type xpm :min 20 :file "prvwrk20.xpm" :ascent 90)
-    (:type xpm :min 16 :file "prvwrk16.xpm" :ascent 90)
-    (:type xpm :min 14 :file "prvwrk14.xpm" :ascent 90)
+  '((:type xpm :min 26 :file "prvwrk24.xpm" :ascent 90)
+    (:type xpm :min 22 :file "prvwrk20.xpm" :ascent 90)
+    (:type xpm :min 17 :file "prvwrk16.xpm" :ascent 90)
+    (:type xpm :min 15 :file "prvwrk14.xpm" :ascent 90)
     (:type xpm         :file "prvwrk12.xpm" :ascent 90)
     (:type xbm         :file "prvwrk24.xbm" :ascent 90))
   "The icon used for previews to be generated.
@@ -117,7 +124,8 @@ will be considered.  Since evaluating the `:file' spec takes
 considerable time under XEmacs, it should come after the `:min'
 spec to avoid unnecessary evaluation time."
   :group 'preview-appearance
-  :type preview-specs-type)
+  :type preview-specs-type
+  :set #'preview-specs-setter)
 
 (defvar preview-nonready-icon)
 
@@ -135,7 +143,9 @@ will be considered.  Since evaluating the `:file' spec takes
 considerable time under XEmacs, it should come after the `:min'
 spec to avoid unnecessary evaluation time."
   :group 'preview-appearance
-  :type preview-specs-type)
+  :type preview-specs-type
+  :set #'preview-specs-setter
+)
 
 (defvar preview-error-icon)
 
@@ -155,7 +165,8 @@ will be considered.  Since evaluating the `:file' spec takes
 considerable time under XEmacs, it should come after the `:min'
 spec to avoid unnecessary evaluation time."
   :group 'preview-appearance
-  :type preview-specs-type)
+  :type preview-specs-type
+  :set #'preview-specs-setter)
 
 (defvar preview-icon)
 
@@ -3223,7 +3234,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.232 $"))
+	(rev "$Revision: 1.233 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3234,7 +3245,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-18 02:01:27 $"))
+    (let ((date "$Date: 2005-02-18 19:07:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
