@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.917 20Jul2004 Reiner Steib
+;;  - (font-latex-set-title-face): New function.
+;;  - (font-latex-title-fontity): Use it to make customization work
+;;  - during a session.
+;;  - (font-latex-title-*-face): Use it to simplify the initialization.
 ;; V0.916 08Jul2004 Ralf Angeli
 ;;  - `font-latex-superscript-face', `font-latex-subscript-face': New faces.
 ;;  - `font-latex-script-keywords'): New constant.
@@ -444,27 +449,32 @@ Also selects \"<quote\"> versus \">quote\"<."
   "Face for LaTeX titles at level 4."
   :group 'font-latex-highlighting-faces)
 
+(defun font-latex-set-title-face (level)
+  "Set fontification of LaTeX titles at LEVEL."
+  (cond
+   ((equal font-latex-title-fontity 'height)
+    (set (intern (format "font-latex-title-%d-face" level))
+	 (intern (format "font-latex-title-%d-face" level))))
+   ((equal font-latex-title-fontity 'color)
+    (set (intern (format "font-latex-title-%d-face" level))
+	 'font-lock-type-face))))
+
 (defcustom font-latex-title-fontity 'height
   "Whether to fontity LaTeX titles with varying height faces or a color face."
   :type '(choice (const height)
                  (const color))
+  :set (lambda (symbol value)
+	 (set symbol value)
+	 (dotimes (i 4) (font-latex-set-title-face (1+ i))))
   :group 'font-latex)
 
-(defvar font-latex-title-1-face (if (equal font-latex-title-fontity 'height)
-                                    'font-latex-title-1-face
-                                  'font-lock-type-face)
+(defvar font-latex-title-1-face (font-latex-set-title-face 1)
   "Face for LaTeX titles at level 1.")
-(defvar font-latex-title-2-face (if (equal font-latex-title-fontity 'height)
-                                    'font-latex-title-2-face
-                                  'font-lock-type-face)
+(defvar font-latex-title-2-face (font-latex-set-title-face 2)
   "Face for LaTeX titles at level 2.")
-(defvar font-latex-title-3-face (if (equal font-latex-title-fontity 'height)
-                                    'font-latex-title-3-face
-                                  'font-lock-type-face)
+(defvar font-latex-title-3-face (font-latex-set-title-face 3)
   "Face for LaTeX titles at level 3.")
-(defvar font-latex-title-4-face (if (equal font-latex-title-fontity 'height)
-                                    'font-latex-title-4-face
-                                  'font-lock-type-face)
+(defvar font-latex-title-4-face (font-latex-set-title-face 4)
   "Face for LaTeX titles at level 4.")
 
 (defvar font-latex-match-variable)

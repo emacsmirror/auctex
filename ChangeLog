@@ -1,3 +1,10 @@
+2004-07-20  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-set-title-face): New function.
+	(font-latex-title-fontity): Use it to make customization work
+	during a session.
+	(font-latex-title-*-face): Use it to simplify the initialization.
+	
 2004-07-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): New name for
