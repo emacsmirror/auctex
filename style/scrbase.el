@@ -1,24 +1,20 @@
-;;; -*- emacs-lisp -*-
-;;; scrbase.el -- AUC TeX style for the KOMA-Script bundle
+;;; scrbase.el --- AUCTeX style for the KOMA-Script bundle.
 
 ;; Copyright (C) 2002 Mark Trettin
-;; License: GPL, see the file COPYING in the base directory of AUC TeX
+;; Copyright (C) 2004 Free Software Foundation, Inc.
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.5 2003-12-26 18:48:52 uid69014 Exp $
+;; Version: $Id: scrbase.el,v 1.6 2004-05-14 14:26:22 angeli Exp $
 ;; Keywords: tex
+;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
 ;;; Commentary:
 
-;; This file adds support for the KOMA-Script bundle. This file
+;; This file adds support for the KOMA-Script bundle.  This file
 ;; contains the base definitions that work with all KOMA-Script
 ;; classes (scrarctl.cls, scrreprt.cls, scrbook.cls and scrlttr2.cls).
 ;; You need this file since it's loaded from the class-styles.
-
-;; This file is intended to be used with the AUC TeX-Package by Per
-;; Abrahamsen. Put this File into your TeX-style-path. You may also
-;; byte-compile this file.
 
 ;;; Code:
 (TeX-add-style-hook "scrbase"
@@ -131,16 +127,13 @@
     ;; Textual keywords
     (setq font-latex-match-textual-keywords-local
           (append font-latex-match-textual-keywords-local
-                  '("addpart"
-                    "addsec"
-                    "captionabove"
+                  '("captionabove"
                     "captionbelow"
                     "dedication"
                     "extratitle"
                     "lowertitleback"
                     "maketitle"
                     "marginline"
-                    "minisec"
                     "publishers"
                     "subject"
                     "sectionmark"
@@ -183,7 +176,9 @@
     (add-to-list 'font-latex-match-title-1-keywords-local "addpart")
     (font-latex-match-title-1-make)
     (add-to-list 'font-latex-match-title-2-keywords-local "addsec")
-    (font-latex-match-title-2-make)))
+    (font-latex-match-title-2-make)
+    (add-to-list 'font-latex-match-title-4-keywords-local "minisec")
+    (font-latex-match-title-4-make)))
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."
