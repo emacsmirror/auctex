@@ -1,5 +1,20 @@
 2004-04-07  Berend de Boer  <berend@pobox.com>
 
+	* Lots of enhancements to context.el. There is now a ConTeXt
+	specific menu which lists ConTeXt specific macro's for inserting
+	start/stop pairs, project structure and setup of things. Menu also
+	let's you jump to the etexshow definition if you have that
+	installed. Querying for macro parameters is non-existent or
+	flaky. outline and imenu support added. You can close an XML tag
+	if you're editing XML in ConTeXt with C-c /.
+	List of environments is now complete.
+	Paragraph formatting works in certain cases, but is really slow or
+	doesn't work in certain cases.
+	Indenting the same: works sometimes, but still flaky.
+	Bugs fix: start/stop insertion works now.
+
+	* documentation now mentions ConTeXt sometimes.
+
 	* context.el (ConTeXt-current-interface): make now doesn't complain
 	anymore when byte compiling ConTeXt.
 
