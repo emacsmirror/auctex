@@ -4,10 +4,12 @@
 # autoconf 2.52
 AC_DIVERT_PUSH(DEFAULTS)dnl
 [MY_LANG=$LANG
-MY_LC_CTYPE=$LC_CTYPE]
+MY_LC_CTYPE=$LC_CTYPE
+MY_LC_ALL=$LC_ALL
+MY_LANGUAGE=$LANGUAGE]
 AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7.2,preview-latex-bugs@lists.sourceforge.net)
+AC_INIT(preview-latex,0.7.3,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
@@ -107,8 +109,12 @@ if test "$ENABLE8BIT"x = truex ; then
 # Restore the locale variables saved on startup
     LANG=$MY_LANG
     LC_CTYPE=$MY_LC_CTYPE
+    LANGUAGE=$MY_LANGUAGE
+    LC_ALL=$MY_LC_ALL
     export LANG
     export LC_CTYPE
+    export LANGUAGE
+    export LC_ALL
     
     if latex '\nonstopmode\message{^^fc!}' 2>&1 | tee latex.out | grep 'fc!$' >/dev/null 2>/dev/null
     then
