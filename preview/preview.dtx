@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{620}
+%\CheckSum{624}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.40 $
+%  \rcskey \version CVS-$Revision: 1.41 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-21 15:11:19 $
+%\rcskey\next $Date: 2002-03-22 12:30:22 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -101,6 +101,12 @@
 %|/dev/null| as a graphic file in the ultimate upper left and lower
 %right corner of the previewed box.  This will make Dvips generate an
 %appropriate bounding box.
+%\item[|dvips|] If this option is specified as a class option or to
+%other packages, several packages pass things like page size
+%information to Dvips, or cause crop marks or
+%draft messages written on pages.  This seriously hampers the
+%usability of previews.  If this option is specified, the changes will
+%be undone if possible.
 %\item[|displaymath|] will make all displayed math environments subject to
 %preview processing.  This will typically be the most desired option.
 %\item[|floats|] will make all float objects subject to preview
@@ -238,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.40 $
+   \reserved@a\reserved@b CVS-$Revision: 1.41 $
 \else
    \begingroup
       \lccode`-=`.
@@ -247,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-21 15:11:19 $
+\reserved@a\next $Date: 2002-03-22 12:30:22 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -350,9 +356,16 @@
   \newbox\pr@markerbox
   \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}
 }
-%</!active>
 %    \end{macrocode}
 %\end{macro}
+%  The |dvips| option redefines the |bop-hook| to reset the page size.
+%    \begin{macrocode}
+\DeclareOption{dvips}{%
+  \preview@delayed{\AtBeginDvi{%
+    \special{!userdict begin/bop-hook{/isls false def%
+    /vsize 792 def/hsize 612 def}def end}}}}
+%</!active>
+%    \end{macrocode}
 %
 %\subsection{The internals}
 %
