@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.21 1993-02-16 04:08:55 amanda Exp $
+;;; $Id: tex-buf.el,v 1.22 1993-02-17 07:13:12 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -79,18 +79,17 @@ all text after TeX-trailer-start."
 The last line of the buffer is displayed on line LINE of the window, or
 at bottom if LINE is nil." 
   (interactive "P")
-  (let ((process (TeX-active-process)))
-    (if process
-	(let ((TeX-buffer (process-buffer process))
-	      (old-buffer (current-buffer)))
-	  (pop-to-buffer TeX-buffer t)
-	  (bury-buffer TeX-buffer)
+  (let ((buffer (TeX-active-buffer)))
+    (if buffer
+	(let ((old-buffer (current-buffer)))
+	  (pop-to-buffer buffer t)
+	  (bury-buffer buffer)
 	  (goto-char (point-max))
 	  (recenter (if line
 			(prefix-numeric-value line)
 		      (/ (window-height) 2)))
 	  (pop-to-buffer old-buffer))
-      (message "No process currently running for this document."))))
+      (message "No process for this document."))))
 
 (defun TeX-kill-job ()
   "Kill the currently running TeX job."
@@ -370,7 +369,7 @@ command."
 
 (defun TeX-process-buffer-name (name)
   "Return name of AUC TeX buffer associated with the document NAME."
-  (concat "*" name " output*"))
+  (concat "*" (expand-file-name name) " output*"))
 
 (defun TeX-process-buffer (name)
   "Return the AUC TeX buffer associated with the document NAME."

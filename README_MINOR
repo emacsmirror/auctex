@@ -1,6 +1,6 @@
 * README_MINOR - Introduction to minor modes.
 
-$Id: README_MINOR,v 5.1 1993-02-16 04:08:39 amanda Exp $
+$Id: README_MINOR,v 5.2 1993-02-17 07:13:04 amanda Exp $
 
 ** min-map.el:  Minor Keymaps 
 
@@ -88,6 +88,26 @@ macroes.
     (keyboard-set-mapping "Danish" "Keyboard Layout" "TeX" t)
     (keyboard-mode 1)))
 
+** min-ind.el:  Automatic indentation
+
+Auto-indent mode works by invoking indent-relative for TAB, and using
+indent-relative-maybe as the indent-line-function for auto-fill, and
+NEWLINE. Enter and leave with M-x auto-indent-mode.
+
+To use, add to your init file:
+
+(autoload 'auto-indent-mode "min-ind" "Toggle auto-indent-mode." t)
+
+** min-ispl.el: Automatic ispell of words
+
+In auto-ispell-mode `space' or `return' automatically trigger
+`ispell-word' on previously typed word.  M-TAB will make an ispell
+completion. Enter and leave with M-x auto-ispell-mode.
+
+To use, add to your init file:
+
+(autoload 'auto-ispell-mode "min-ispl" "Toggle auto-ispell-mode." t)
+
 ** ltx-dead.el: Accent's in LaTeX
 
 Get TeX accent on letters by typing accent key followed by letter.
@@ -107,6 +127,34 @@ To use, add to your init file:
 
 (setq LaTeX-math-abbrev-prefix "`") ; Change if you like ` as is.
 (autoload 'LaTeX-math-mode "tex-math" "Toggle math mode." t)
+
+** For your init file.
+
+;;; Outline Minor Mode
+(autoload 'outline-minor-mode "min-out" "Toggle outline minor mode." t)
+(make-variable-buffer-local 'outline-prefix-char)
+(setq-default outline-prefix-char "\C-c\C-o") ; Change to get a better prefix
+(make-variable-buffer-local 'outline-regexp)
+(setq-default outline-regexp "[*\^l]+")
+(make-variable-buffer-local 'outline-level-function)
+(setq-default outline-level-function 'outline-level-default)
+
+;;; Mapping the keyboard layout
+(autoload 'keyboard-mode "min-key" "Toggle keyboard-mode." t)
+(autoload 'keyboard-query-mapping "min-key" "Query keyboard-mode." t)
+(autoload 'convert-character-query "min-key" "Convert between encodings." t)
+
+;;; Accent's in LaTeX
+(setq LaTeX-dead-keys '(?' ?` ?\" ?^ ?~)) ; Remove those you don't need
+(autoload 'LaTeX-dead-mode "ltx-dead" "Toggle LaTeX-dead-mode." t)
+
+;;; Mathematical macros in TeX
+(setq LaTeX-math-abbrev-prefix "`") ; Change if you like ` as is.
+(autoload 'LaTeX-math-mode "tex-math" "Toggle math mode." t)
+
+;;; Other minor modes
+(autoload 'auto-indent-mode "min-ind" "Toggle auto-indent-mode." t)
+(autoload 'auto-ispell-mode "min-ispl" "Toggle auto-ispell-mode." t)
 
 ** Emacs
 

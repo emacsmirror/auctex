@@ -1,6 +1,6 @@
 * README - Introduction to AUC TeX.
 
-$Id: README,v 5.21 1993-02-16 04:08:37 amanda Exp $
+$Id: README,v 5.22 1993-02-17 07:13:02 amanda Exp $
 
 ** Copyright
 
@@ -166,6 +166,11 @@ single prefix key:
 ** History
 
 *** Version 7.0:
+
+**** Alpha testers
+
+Piet van Oostrum <piet@cs.ruu.nl>
+sven@tde.lth.se (Sven Mattisson)
 
 **** Updated documentation
 
@@ -379,10 +384,6 @@ quote (" to `` or '').  Thanks to Daniel Hernandez
 
 Thanks to Mainhard E.  Mayer (hardy@golem.ps.uci.edu).
 
-**** Don't query for printer if TeX-printer-name-alist is nil.  
-
-Thanks to Bill Schworm (bill@schworm.econ.ubc.ca).
-
 **** Make test for HOSTTYPE case insensitive.  
 
 Thanks to Gisli Ottarsson (gisli@liapunov.eecs.umisc.edu)
@@ -439,7 +440,7 @@ If you want to contact the auc-tex mailing list, mail:
 	Requests:	auc-tex-request@iesd.auc.dk
 
 
-To contact the current maintainers of auc-tex, Email:
+To contact the current maintainers directly of auc-tex, Email:
 
 			auc-tex_mgr@iesd.auc.dk
 
@@ -460,7 +461,8 @@ developing the AUC-TeX system.  Especially all the people on the
 auc-tex mailing list, who have been very helpful commenting and
 pointing out weak points and errors.
 
-Some of the contributers are:
+Some of the contributers are listed below.  Others are mentioned in
+the individual files or in the History section.
 
 Denys Duchier                     <dduchier@csi.UOttawa.CA>
 George Ferguson		          <ferguson@cs.rochester.edu>
@@ -573,10 +575,15 @@ Use master file, and general cleanup.
 
 **** change environment
 
-
 When LaTeX-environment is given an argument, change the current
 environment.  Be smart about item[] <-> item and labels like fig: <->
 tab:.
+
+*** tex-cpl.el
+
+**** Lightening completion
+
+check out if lightening completion from ultra-tex is anything for us. 
 
 *** Miscellaneous
 
@@ -598,6 +605,57 @@ the current document (the master file and all files \include'ed or
 
 Cooperate with the BibTeX-mode maintainer about support for
 \site{...}. 
+
+**** style dependend code
+
+should be read from lisp files, one lisp for for each style or style
+option, and perhaps optionally one for each TeX file you include.  
+
+E.g. if you use document style `article', the file `style/article.el'
+will be read.
+
+Variables to be defined in or substituted by those files:
+
+	TeX-names
+	LaTeX-environment-alist (env-names)
+	LaTeX-style-list
+	LaTeX-largest-level
+
+All uses of LaTeX-document-style and LaTeX-style-options should be
+replaced.  
+
+Style files like a5 or times may modify the command used to view or
+print document.
+
+The user should be able to add or substitute his own style files,
+perhaps by having "style" directory in the load path or an "emacs"
+directory in the tex directory.  Files input'ed or included in the
+preamble should also have optional lisp equivalents.  Maybe even for
+included files or for the main file itself. 
+
+Special treatment for symbols to be used for completion may be
+necessary.  Meybe put it in separate files, not loaded until you
+actually try to complete.
+
+A way to load a file in the path if present is needed. 
+
+A way to combine information from the different files differently for
+different master files is needed.  Without having to reload the file
+(a cache) C-c C-n could then clear the cache.
+
+Hopefully this wont slow everything down to much.
+
+**** TeXinfo mode
+
+Would be nice.
+
+**** BibTeX mode
+
+Would also be nice.
+
+**** SliTeX, AMSTeX support
+
+May also be nice.
 
 ** Emacs
 

@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.21 1993-02-16 05:37:15 amanda Exp $
+# $Id: Makefile,v 5.22 1993-02-17 07:12:59 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -25,8 +25,12 @@ elispdir=/user/abraham/lib/emacs/auctex
 # Where manual pages go.
 mandir=$(prefix)/man/man1
 
-# We run both Emacs and TeX in batch mode
-EMACS=emacs
+# Using emacs in batch mode.
+# The -q should avoid finding old version of emacs when generating
+# byte compiled files.
+EMACS=emacs -q -batch
+
+# Using TeX in batch mode.
 TEX=tex
 
 # Need K&R compiler.  Either `cc' or `gcc -traditional'
@@ -50,6 +54,8 @@ LEX = flex -8  lacheck.lex
 FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp/alpha
 
 MINMAPSRC = min-map.el min-out.el min-key.el ltx-dead.el tex-math.el
+
+MINMAPFILES = README_MINOR $(MINMAPSRC)
 
 ELISPSRC= $(MINMAPSRC) auc-tex.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el tex-dbg.el tex-names.el vir-symb.el \
@@ -125,7 +131,7 @@ $(elispdir): $(ELISPSRC)  Makefile
 	echo "(byte-compile-file \"$(elispdir)/$$EL\")" \
               >> /tmp/auc.$$$$; \
 	done; \
-	$(EMACS) -batch -l /tmp/auc.$$$$; \
+	$(EMACS) -l /tmp/auc.$$$$; \
 	rm -f /tmp/auc.$$$$ )
 	(for EL in $(ELISPSRC); do \
 	chmod 644 $(elispdir)/$${EL}c; \
@@ -177,7 +183,7 @@ dist:
 	OUT=auctex`echo $$TAG | sed s/release//`; \
 	tar -cf - auctex | compress -c > $$OUT.tar.Z; \
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	(cd auctex; tar -cf - $(MINMAPSRC) README_MINOR) | \
+	(cd auctex; tar -cf - $(MINMAPFILES) | \
 	compress -c >min-map_$$VER.tar.Z
 	rm -r auctex
 
