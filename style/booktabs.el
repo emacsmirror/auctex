@@ -35,6 +35,18 @@ PROMPT is the value of the prompt to be shown."
       "Column(s)")
     '("addlinespace" [ "Height" ])
     '("morecmidrules")
-    '("specialrule" "Thickness" "Space above" "Space below"))))
+    '("specialrule" "Thickness" "Space above" "Space below"))
+
+   ;; Fontification
+   (setq font-latex-match-function-keywords-local
+         (append font-latex-match-function-keywords-local
+                 '("toprule"
+                   "midrule"
+                   "bottomrule"
+                   "cmidrule"
+                   "addlinespace"
+                   "morecmidrule"
+                   "specialrule")))
+   (font-latex-match-function-make)))
 
 ;;; booktabs.el ends here
