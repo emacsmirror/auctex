@@ -1,5 +1,8 @@
 2004-05-08  David Kastrup  <dakas@users.sourceforge.net>
 
+	* preview.el (preview-format-mml): Determine MIME format from
+	file name properly.  And don't return anything for bad overlays.
+
 	* Split ChangeLog.1 off, create dvipng/ChangeLog.
 
 	* preview.el (preview-gs-sentinel): Add info about GhostScript
