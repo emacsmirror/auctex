@@ -42,7 +42,7 @@ PROBLEMS: problems.texi
 
 install: preview-latex.info
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
-	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex
+	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
 clean: 
 	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README PROBLEMS
