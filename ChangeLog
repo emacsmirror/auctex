@@ -8,6 +8,7 @@
 	* tex-fold.el (TeX-fold-buffer-type): Use alternative way to
 	determine end of search pattern.  Fixes problem with starred
 	macros.
+	Fix compile errors and add further match alternatives.
 	(TeX-fold-item): Recognize starred macros as well.
 	XEmacs does not know `match-string-no-properties'.
 	(TeX-fold-make-overlay): Do not alter `display-string' before
