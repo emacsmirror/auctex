@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.50 $
+%  \rcskey \version CVS-$Revision: 1.51 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-30 19:49:24 $
+%\rcskey\next $Date: 2002-03-30 21:42:56 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -135,19 +135,97 @@
 %This relaxes the requirement to be loading the |preview| package as
 %last package.
 %\item[\meta{driver}] loads a special driver file
-%|pr|\meta{driver}|.def|.  Currently the only supported driver is
-%|auctex|.  This driver will produce fake error messages at the start and
-%end of every preview environment that enable a special Emacs package in
-%connection with AUC~\TeX\ to pinpoint the exact source location where
-%the previews have originated.  Unfortunately, there is no other
-%reliable means of passing the current \TeX\ input position
-%\emph{in} a line to external programs.
+%|pr|\meta{driver}|.def|.  The remaining options are implemented
+%through the use of driver files.
+%\item[|auctex|]  This driver will produce fake error messages at the
+%start and end of every preview environment that enable the Emacs
+%package Preview-\LaTeX\ in connection with AUC~\TeX\ to pinpoint the
+%exact source location where the previews have originated.
+%Unfortunately, there is no other reliable means of passing the
+%current \TeX\ input position %\emph{in} a line to external programs.
+%In order to make the parsing more robust, this option also switches
+%off quite a few diagnostics that could be misinterpreted.
+%
 %You should not specify this option manually, since it will only be
 %needed by automated runs that want to parse the pseudo error
 %messages.  Those runs will then use \cmd{\PassOptionsToPackage} in
 %order to effect the desired behaviour.  In addition, |prauctex.cfg|
 %will get loaded unless inhibited by the |noconfig| option.  This
-%caters for the most frequently encountered problematic commmands.
+%caters for the most frequently encountered problematic commands.
+%\item[|showlabels|] During the editing process, some people like to
+%see the label names in their equations, figures and the like.  Now if
+%you are using Emacs for editing, and in particular Preview-\LaTeX,
+%I'd strongly recommend that you check out the ref\TeX\ package which
+%pretty much obliterates the need for this kind of functionality.  If
+%you still want it, standard \LaTeX\ provides it with the |showkeys|
+%package, and there is also the less encompassing |showlabels|
+%package.  Unfortunately, since those go to some pain not to change
+%the page layout and spacing, they also don't change |preview|'s idea
+%of the \TeX\ dimensions of the involved boxes.  So if you are using
+%|preview| for determing bounding boxes, those packages are mostly
+%useless.  The option |showlabels| offers a substitute for them.
+%\item[|tightpage|] It is not uncommon to want to use the results of
+%|preview| as graphic images for some other application.  One
+%possibility is to generate a flurry of EPS files with
+%\begin{quote}
+%  |dvips -E -i -Pwww -o| \meta{outputfile}|.000| \meta{inputfile}
+%\end{quote}
+%However, in case those are to be processed further into graphic image
+%files by GhostScript, this process is inefficient since all of those
+%files need to be processed one by one.  In addition, it is necessary
+%to extract the bounding box comments from the EPS files and convert
+%them into page dimension parameters for GhostScript in order to avoid
+%full-page graphics.  This is not even possible if you wanted to use
+%GhostScript in a~\emph{single} run for generating the files from a
+%single PostScript file, since Dvips will in that case leave no
+%bounding box information anywhere.
+%
+%The solution is to use the |tightpage| option which will write
+%additional PostScript code into the produced file that will set the
+%device dimensions at the start of each output page.  That way a
+%single command line like
+%\begin{quote}
+%\raggedright
+%  \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
+%  -dGraphicsAlphaBits=4 -dSAFER -q -dNOPAUSE \meta{inputfile}.ps
+%  -sOutputFile=\meta{outputfile}\%d.png}
+%\end{quote}
+%will be able to produce tight graphics from a single PostScript file
+%generated with Dvips \emph{without} use of the options |-E -i|, in a
+%single run.  If you need this in a batch environment where you don't
+%want to use |preview|'s automatic extraction facilities, no problem:
+%just don't use any of the special options, and wrap everything to be
+%previewed into |preview| environments.
+%
+%If the pages under the |tightpage|
+%option are just too tight, you can adjust by setting the length
+%|\PreviewBorder| to a different value (the default value is |0.5bp|,
+%which is half of a usual PostScript point) by using \cmd{\setlength}.
+%If you need finer control, you can adjust the bounding box dimensions
+%individually by changing the macro |\PreviewBbAdjust| with the help
+%of |\renewcommand|.  Its default value is
+%\begin{quote}
+%\raggedright
+%  |\newcommand| |\PreviewBbAdjust|
+%     |{-\PreviewBbAdjust| |-\PreviewBbAdjust|
+%       |\PreviewBbAdjust|  |\PreviewBbAdjust}|
+%\end{quote}
+%This adjusts the left, lower, right and upper borders by the given
+%amount.  The macro must contain 4~\TeX\ dimensions after another, and
+%you may not omit the units if you specify them explicitly instead of
+%by register.  PostScript points have the unit~|bp|.
+%
+%The following options are just for debugging purposes of the package
+%and similar to the corresponding \TeX\ commands they allude to:
+%\item[|tracingall|]
+%causes lots of diagnostic output to appear in the log file during the
+%preview collecting phases of \TeX's operation.  In contrast to the
+%similarly named \TeX\ command, it will not switch to
+%|\errorstopmode|, nor will it change the setting of |\tracingonline|.
+%\item[|showbox|] This option will show the contents of the boxes
+%shipped out to the DVI files.  It also sets |\showboxbreadth| and
+%|\showboxdepth| to their maximum values at the end of loading this
+%package, but you may reset them if you don't like that.
 %\end{description}
 %\section{Provided Commands}
 %\DescribeEnv{preview} The |preview| environment causes its contents to
@@ -245,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.50 $
+   \reserved@a\reserved@b CVS-$Revision: 1.51 $
 \else
    \begingroup
       \lccode`-=`.
@@ -254,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-30 19:49:24 $
+\reserved@a\next $Date: 2002-03-30 21:42:56 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
