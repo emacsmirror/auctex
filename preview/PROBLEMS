@@ -106,7 +106,11 @@ for example, display ü (German u-Umlaut) as ^^fc.  In that case the
 correlation will fail, with the result that the preview images get
 misplaced.  Personally, I have set the environment variable LANG to
 the string 'en_US.ISO8859-1'.  Your system may have different ways of
-achieving something similar.
+achieving something similar.  If you have a graphical login screen,
+chances are that it offers a "Language" setting.  It may help to
+choose "US English" or similar instead of the plain "English" setting.
+This problem has also been reported as being caused by teTeX compiled
+against libc5 libraries.
 
 * x-symbol
 
@@ -116,10 +120,16 @@ glaring consequences.  A solution is being worked on, but this depends
 on a few factors that will probably lead to some changed APIs in
 AucTeX.
 
-* flyspell.el
+* Middle-clicking pastes instead of toggling previews
 
-flyspell-mode has a bug afflicting preview-latex operation.  The
-following patch will help:
+This is probably the fault of your favorite package.  In Emacs-21.1,
+the following culprits are known, later versions might have this
+corrected already, so apply the patches only if you encounter the
+problem.
+
+** flyspell.el
+
+Patch as follows:
 
 --- /usr/local/emacs-21/share/emacs/21.1/lisp/textmodes/flyspell.el.old	Mon Jul 16 14:22:59 2001
 +++ /usr/local/emacs-21/share/emacs/21.1/lisp/textmodes/flyspell.el	Wed Nov  7 16:18:54 2001
@@ -135,4 +145,74 @@ following patch will help:
  
  ;; the name of the overlay property that defines the keymap
 
+** mouse-drag.el
 
+Patch as follows:
+
+--- mouse-drag.el.old	Mon Jan  8 20:12:12 2001
++++ mouse-drag.el	Tue Nov 13 22:47:36 2001
+@@ -208,7 +208,7 @@
+ 	 (start-col (car (posn-col-row start-posn)))
+ 	 (old-selected-window (selected-window))
+ 	 event end row mouse-delta scroll-delta
+-	 have-scrolled point-event-p old-binding
++	 have-scrolled
+ 	 window-last-row
+ 	 col mouse-col-delta window-last-col
+ 	 (scroll-col-delta 0)
+@@ -261,18 +261,13 @@
+ 	      (mouse-drag-safe-scroll scroll-delta scroll-col-delta)
+ 	      (mouse-drag-repeatedly-safe-scroll scroll-delta scroll-col-delta))))) ;xxx
+     ;; If it was a click and not a drag, prepare to pass the event on.
+-    ;; Note:  We must determine the pass-through event before restoring
+-    ;; the window, but invoke it after.  Sigh.
++    ;; Is there a more correct way to reconstruct the event?
+     (if (and (not have-scrolled)
+ 	     (mouse-drag-events-are-point-events-p start-posn end))
+-	(setq point-event-p t
+-	      old-binding (key-binding
+-			   (vector (event-basic-type start-event)))))
++	(push (cons (event-basic-type start-event) (cdr start-event))
++	      unread-command-events))
+     ;; Now restore the old window.
+-    (select-window old-selected-window)
+-    ;; For clicks, call the old function.
+-    (if point-event-p
+-	(call-interactively old-binding))))
++    (select-window old-selected-window)))
+ 
+ (defun mouse-drag-drag (start-event)
+   "\"Drag\" the page according to a mouse drag.
+@@ -297,7 +292,7 @@
+ 	 (start-col (car (posn-col-row start-posn)))
+ 	 (old-selected-window (selected-window))
+ 	 event end row mouse-delta scroll-delta
+-	 have-scrolled point-event-p old-binding
++	 have-scrolled
+ 	 window-last-row
+ 	 col mouse-col-delta window-last-col
+ 	 (scroll-col-delta 0)
+@@ -335,18 +330,14 @@
+ 		(setq have-scrolled t)
+ 		(mouse-drag-safe-scroll scroll-delta scroll-col-delta)))))))
+     ;; If it was a click and not a drag, prepare to pass the event on.
+-    ;; Note:  We must determine the pass-through event before restoring
+-    ;; the window, but invoke it after.  Sigh.
++    ;; Is there a more correct way to reconstruct the event?
+     (if (and (not have-scrolled)
+ 	     (mouse-drag-events-are-point-events-p start-posn end))
+-	(setq point-event-p t
+-	      old-binding (key-binding
+-			   (vector (event-basic-type start-event)))))
++	(push (cons (event-basic-type start-event) (cdr start-event))
++	      unread-command-events))
+     ;; Now restore the old window.
+-    (select-window old-selected-window)
+-    ;; For clicks, call the old function.
+-    (if point-event-p
+-	(call-interactively old-binding))))
++    (select-window old-selected-window)))
++
+ 
+ (provide 'mouse-drag)
+ 
