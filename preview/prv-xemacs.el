@@ -284,11 +284,12 @@ if there was any urgentization."
 
 (defmacro preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
-  `(progn
-     (set-extent-property ,ov 'preview-image ,replacement)
-     (add-text-properties 0 1 (list 'end-glyph ,replacement)
+  `(let ((replacement ,replacement))
+     (set-extent-property ,ov 'preview-image replacement)
+     (add-text-properties 0 1 (list 'end-glyph replacement)
 			  (car (extent-property ,ov 'strings)))
-     (preview-toggle ,ov t)))
+     (if (eq (extent-property ,ov 'preview-state) 'active)
+	 (set-extent-property ,ov 'end-glyph replacement))))
 
 (defvar preview-button-1 'button2)
 (defvar preview-button-2 'button3)
@@ -320,7 +321,10 @@ are functions to call on preview's clicks."
 	     (add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
-              'preview-balloon-help (format ,helpstring preview-button-1 preview-button-2)
+              'preview-balloon-help
+	      ,(if (stringp helpstring)
+		   (format helpstring preview-button-1 preview-button-2)
+		 `(format ,helpstring preview-button-1 preview-button-2))
               'preview-keymap resmap)
               res)
              res)
@@ -400,6 +404,8 @@ nil displays the underlying text, and 'toggle toggles."
 				      mouse-face preview-balloon-help))
               (set-extent-property ov prop
                                    (get-text-property 0 prop (car strings)))))
+	(unless (cdr strings)
+	  (setcdr strings (preview-inactive-string ov)))
         (set-extent-properties ov `(face preview-face
                                     begin-glyph ,(get-text-property
 						  0 'end-glyph (cdr strings))
