@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.113 2002-04-14 01:46:38 dakas Exp $
+;; $Id: preview.el,v 1.114 2002-04-14 12:10:28 nixsf Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -57,7 +57,7 @@
   (defvar error))
 
 (require (if (string-match "XEmacs" (emacs-version))
-	     'prv-xemacs 'prv-emacs))
+            'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX
@@ -1536,14 +1536,14 @@ call, and in its CDR the final stuff for the placement hook."
 )+\\( \\|$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
-;;; Ok, here is a line by line downbreak: match-alternative 1:
+;;; Ok, here is a line by line breakdown: match-alternative 1:
 ;;; \(^! \)
 ;;; exclamation point at start of line followed by blank: TeX error
 ;;; match-alternative 2:
 ;;; \(?:^\| \)(\([^()\n ]+\))*\(?: \|$\)
-;;; Deep breath: an opening paren either at the start od the line or
+;;; Deep breath: an opening paren either at the start of the line or
 ;;; preceded by a space, followed by a file name (which we take to be
-;;; consiting of anything but parens, space or newline), followed
+;;; consisting of anything but space, newline, or parens), followed
 ;;; immediately by 0 or more closing parens followed by
 ;;; either a space or the end of the line: a just opened file.
 ;;; Position for searching immediately after the file name so as to
@@ -1595,7 +1595,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			  
 			  ;; And the line number to position the cursor.
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
-;;; to be favorable.  Will XEmacs like this kind of regexp?
+;;; to be favorable.
 			  line (and (re-search-forward "\
 ^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*?\\)
 \\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
@@ -1857,7 +1857,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.113 $"))
+	(rev "$Revision: 1.114 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
