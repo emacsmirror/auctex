@@ -10,6 +10,7 @@ INSTALLINFO=@INSTALL_INFO@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
+MKINSTALLDIRS = ../mkinstalldirs
 
 all: preview-latex.dvi preview-latex.info
 
@@ -53,7 +54,7 @@ TODO: todo.texi macros.texi
 		todo.texi --output TODO
 
 install: preview-latex.info
-	-mkdir -p $(infodir)
+	-$(MKINSTALLDIRS) $(infodir)
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
