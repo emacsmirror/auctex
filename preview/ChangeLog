@@ -1,3 +1,10 @@
+2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-make-clickable): Revert changes.
+	(preview-auto-reveal): revert default: reveal.el might be loaded
+	after preview.el, and we still want the default to follow
+	reveal-mode in that case.
+
 2002-04-13  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-nonready-icon):
@@ -17,6 +24,11 @@
 	* doc/todo.texi: Update XEmacs status: most things are now done.
 
 2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-next-border): Fix a weird error where
+	regions beyond the file were demanded.
+	(preview-at-point): Include previews immediately before point for
+	toggling.
 
 	* prv-xemacs.el (preview-toggle): Make isearch open the invisible
 	stuff, and make isearch-invisible track invisible so that isearch
