@@ -1,3 +1,15 @@
+2004-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-code-comment): Respect `indent-tabs-mode'.
+	Fix partially taken from GNU Emacs' fill.el.
+
+	* tex.el (TeX-mode-specific-command-list): New function.
+	(TeX-mode-specific-command-menu): Use it.
+
+	* tex-buf.el (TeX-command-query): Use
+	`TeX-mode-specific-command-list' to get a command list specific
+	to the current mode for command completion.
+
 2004-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (docTeX-indent-inner-fixed): New var.
