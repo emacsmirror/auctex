@@ -1,9 +1,16 @@
 2001-11-06  Alan Shutko  <ats@acm.org>
 
+	* aclocal.m4 (AC_CHECK_AUCTEX): Revert the previous change, since
+	it was horribly broken, and fix --with-auctex, so that it doesn't
+	do the check if --with-auctex was specified.
+
+2001-11-06  Alan Shutko  <ats@acm.org>
+
 	* aclocal.m4 (AC_CHECK_AUCTEX): Try looking for tex-site instead
 	of tex-buf... this may help since we're sure it's in load-path,
 	but I'm afraid that the contents of tex-site may not be standard
 	enough across installations.
+	
 
 2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
 

@@ -214,30 +214,31 @@ dnl Perform sanity checking and try to locate the W3 package
 dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for acceptable AUC-TeX version)
-AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
-dnl AC_EMACS_CHECK_LIB(tex_buf, TeX-command-master,"noecho")
-AC_EMACS_CHECK_LIB(tex_site, TeX-auto-generate,"noecho")
-if test "${HAVE_tex_site}" = "yes"; then
-	EMACS_cv_ACCEPTABLE_AUCTEX=yes
-else
-	EMACS_cv_ACCEPTABLE_AUCTEX=no
-fi
-
-if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
-	AC_EMACS_LISP(auctex_dir,(file-name-directory (locate-library \"tex-buf\")),"noecho")
-	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
-else
-	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])
-fi
-])
-
 AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standard], 
  [ AUCTEXDIR=${withval} ; 
    if test ! -d $AUCTEXDIR  ; then
       AC_MSG_ERROR([--with-auctex=$AUCTEXDIR: Directory does not exist])
    fi
 ])
+if test -z "$AUCTEXDIR" ; then
+  AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
+  AC_EMACS_CHECK_LIB(tex_buf, TeX-command-master,"noecho")
+  if test "${HAVE_tex_buf}" = "yes"; then
+  	EMACS_cv_ACCEPTABLE_AUCTEX=yes
+  else
+	EMACS_cv_ACCEPTABLE_AUCTEX=no
+  fi
+
+  if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
+	AC_EMACS_LISP(auctex_dir,(file-name-directory (locate-library \"tex-buf\")),"noecho")
+	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
+  else
+	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])
+  fi
+  ])
    AUCTEXDIR=${EMACS_cv_ACCEPTABLE_AUCTEX}
+fi
+
    AC_SUBST(AUCTEXDIR)
    AC_MSG_RESULT("${AUCTEXDIR}")
 ])
