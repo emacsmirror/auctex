@@ -16,17 +16,17 @@ ICON_XBM_SOURCES = $(ICON_XPM_SOURCES:.xpm=.xbm)
 ICON_SOURCES = $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES) \
 	images/preview-cap-up.xpm
 
-prefix = @prefix@#
-lispdir = @lispdir@#
-loadlispdir = @lispdir@#
-icondir = @icondir@#
-datadir = @datadir@#
-packagedir = @packagedir@#
-auctexdir = @auctexdir@#
+prefix = @prefix@$(null)
+lispdir = @lispdir@$(null)
+loadlispdir = @lispdir@$(null)
+icondir = @icondir@$(null)
+datadir = @datadir@$(null)
+packagedir = @packagedir@$(null)
+auctexdir = @auctexdir@$(null)
 DESTDIR=
 
-INSTALL = @INSTALL@#
-INSTALL_DATA = @INSTALL_DATA@#
+INSTALL = @INSTALL@$(null)
+INSTALL_DATA = @INSTALL_DATA@$(null)
 MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint
