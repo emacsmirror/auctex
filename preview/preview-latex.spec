@@ -27,7 +27,7 @@ at least Emacs-21.1, XEmacs porters welcome.
 %build
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
-./autogen.sh; rm -r patches/CVS # Simplifies the files section
+#./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
 %configure
 make
@@ -69,7 +69,7 @@ texhash /usr/share/texmf
 %doc patches
 
 %changelog
-* Thu Feb 14 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+* Thu Feb 18 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Adjusted for 0.6
 
 * Wed Jan 23 2002 Jan-Ake Larsson <jalar@imf.au.dk>
