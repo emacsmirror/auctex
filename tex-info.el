@@ -118,6 +118,11 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\C-s" 'texinfo-insert-@node)
   (define-key TeXinfo-mode-map "\C-c]" 'texinfo-insert-@end))
 
+(easy-menu-define TeXinfo-command-menu
+  TeXinfo-mode-map
+  "Menu used in TeXinfo mode for external commands."
+  (TeX-mode-specific-command-menu 'texinfo))
+
 (easy-menu-define TeXinfo-mode-menu
     TeXinfo-mode-map
     "Menu used in TeXinfo mode."
@@ -163,13 +168,7 @@ When called interactively, prompt for an environment."
 	["Switch to Master file" TeX-home-buffer t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
-
-(easy-menu-define TeXinfo-command-menu
-    TeXinfo-mode-map
-    "Menu used in TeXinfo mode for external commands."
-  (append '("Command")
-	  (mapcar 'TeX-command-menu-entry TeX-command-list)))
+	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")
@@ -250,7 +249,7 @@ value of `TeXinfo-mode-hook'."
     (make-local-variable 'outline-level)
     (setq outline-level 'texinfo-outline-level))
   
-  ;; Mostly AUC TeX stuff
+  ;; Mostly AUCTeX stuff
   (easy-menu-add TeXinfo-command-menu TeXinfo-mode-map)
   (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
   (make-local-variable 'TeX-command-current)
