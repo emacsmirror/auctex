@@ -1,3 +1,7 @@
+2003-02-11  Peter S Galbraith  <psg@debian.org>
+
+	* hilit-LaTeX.el: Removed.  It's obsolete.  Use font-latex.el instead.
+
 2003-02-11  Patrick Gundlach  <patrick@gundla.ch>
 
 	* tex.el (TeX-command-list): Changed TeX-run-LaTeX to
