@@ -416,6 +416,7 @@ value of `Texinfo-mode-hook'."
    '("dmn" "Dimension")
    '("dots")
    '("emph" "Text")
+   '("email" "Email address")
    '("equiv")
    '("error")
    '("evenfooting" Texinfo-lrc-argument-hook)
