@@ -1,6 +1,9 @@
 @section News in 9.9
 
 @itemize @bullet
+@item Update of @file{natbib.el} style file by Carsten Dominik
+<dominik@@strw.LeidenUniv.nl>.
+
 @item Much better detection of @TeX{} math mode.  Patch by Carsten Dominik
 <dominik@@strw.LeidenUniv.nl>.
 

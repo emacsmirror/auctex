@@ -36,7 +36,7 @@ auc-tex.dvi: auc-tex.texi
 
 # dvips spews two error lines.  I don't know why.
 auc-tex.ps: auc-tex.dvi
-	dvips auc-tex.dvi | tail +3 > auc-tex.ps
+	dvips auc-tex.dvi -o auc-tex.ps
 
 auctex: auc-tex.texi install.texi intro.texi changes.texi
 	-makeinfo auc-tex.texi

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9d
+;; Version: 9.9e
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -892,6 +892,13 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
   '(("\\\\label{\\([^\n\r%\\{}]+\\)}" 1 LaTeX-auto-label))
   "List of regular expression matching LaTeX labels only.")
 
+(defvar LaTeX-auto-index-regexp-list
+  (list "\\\\index{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
+	1 'LaTeX-auto-index-entry)
+  "List of regular expression matching LaTeX index entries only.
+Regexp allows for up to 3 levels of parenthesis inside the index argument.
+This is necessary since index entries may contain commands and stuff.")
+
 (defvar LaTeX-auto-regexp-list 
   (append
    '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
@@ -914,6 +921,7 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
       1 LaTeX-auto-bibitem)
      ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
+   LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
@@ -1062,6 +1070,7 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 (TeX-auto-add-type "bibitem" "LaTeX")
 (TeX-auto-add-type "environment" "LaTeX")
 (TeX-auto-add-type "bibliography" "LaTeX" "bibliographies")
+(TeX-auto-add-type "index-entry" "LaTeX" "index-entries")
 
 (fset 'LaTeX-add-bibliographies-auto
       (symbol-function 'LaTeX-add-bibliographies))
@@ -1140,6 +1149,16 @@ Used for specifying extra syntax for a macro."
     (TeX-argument-insert label optional optional)))
 
 (defalias 'TeX-arg-ref 'TeX-arg-label)
+
+(defun TeX-arg-define-index (optional &optional prompt definition)
+  (TeX-arg-index optional prompt t))
+(defun TeX-arg-index (optional &optional prompt definition)
+  "Prompt for an index entry completing with known entries."
+  (let ((entry (completing-read (TeX-argument-prompt optional prompt "Key")
+				(LaTeX-index-entry-list))))
+    (if (and definition (not (string-equal "" entry)))
+	(LaTeX-add-index-entries entry))
+    (TeX-argument-insert entry optional optional)))
 
 (defun TeX-arg-macro (optional &optional prompt definition)
   "Prompt for a TeX macro with completion."
@@ -2825,7 +2844,8 @@ the last entry in the menu."
 	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
 	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
 	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
+	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
 	(list "Change Font"
 	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
 	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
@@ -2834,7 +2854,8 @@ the last entry in the menu."
 	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
 	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
 	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
 	["Next Error" TeX-next-error t]
@@ -2870,26 +2891,32 @@ the last entry in the menu."
 	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
 (defcustom LaTeX-font-list
-  '((?\C-b "\\textbf{" "}")
-    (?\C-c "\\textsc{" "}")
-    (?\C-e "\\emph{" "}")
-    (?\C-f "\\textsf{" "}")
-    (?\C-i "\\textit{" "}")
-    (?\C-m "\\textmd{" "}")
-    (?\C-n "\\textnormal{" "}")
-    (?\C-r "\\textrm{" "}")
-    (?\C-s "\\textsl{" "}")
-    (?\C-t "\\texttt{" "}")
-    (?\C-u "\\textup{" "}")
+  '((?\C-a ""              ""  "\\mathcal{"    "}")
+    (?\C-b "\\textbf{"     "}" "\\mathbf{"     "}")
+    (?\C-c "\\textsc{"     "}")
+    (?\C-e "\\emph{"       "}")
+    (?\C-f "\\textsf{"     "}" "\\mathsf{"     "}")
+    (?\C-i "\\textit{"     "}" "\\mathit{"     "}")
+    (?\C-m "\\textmd{"     "}")
+    (?\C-n "\\textnormal{" "}" "\\mathnormal{" "}")
+    (?\C-r "\\textrm{"     "}" "\\mathrm{"     "}")
+    (?\C-s "\\textsl{"     "}")
+    (?\C-t "\\texttt{"     "}" "\\mathtt{"     "}")
+    (?\C-u "\\textup{"     "}")
     (?\C-d "" "" t))
   "Font commands used with LaTeX2e.  See `TeX-font-list'."
   :group 'LaTeX-macro
-  :type '(repeat (group (character :tag "Key")
-			(string :tag "Prefix")
-			(string :tag "Suffix")
-			(option (sexp :format "Replace\n" 
-				      :value t)))))
-
+  :type '(repeat 
+	   (group 
+	    :value (?\C-a "" "")
+	    (character :tag "Key")
+	    (string :tag "Prefix")
+	    (string :tag "Suffix")
+	    (option (group
+		     :inline t
+		     (string :tag "Math Prefix")
+		     (string :tag "Math Suffix")))
+	    (option (sexp :format "Replace\n" :value t)))))
 ;;; Mode
 
 (defgroup LaTeX-macro nil
@@ -2969,7 +2996,7 @@ of `LaTeX-mode-hook'."
 	(if (/= ?\\ (following-char))
 	    (skip-chars-backward "a-zA-Z "))
 	(skip-chars-backward "\\\\")
-	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\){")
+	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\|math[a-z]+\\){")
 	    (throw 'done t)
 	  (up-list -1))))
     (forward-sexp 2)
@@ -3243,7 +3270,7 @@ of `LaTeX-mode-hook'."
    '("verb" TeX-arg-verb)
    '("verb*" TeX-arg-verb)
    '("extracolsep" t)
-   '("index" t)
+   '("index" TeX-arg-define-index)
    '("glossary" t)
    '("numberline" "Section number" "Heading")
    '("caption" t)

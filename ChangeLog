@@ -1,3 +1,42 @@
+1998-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9e released.
+
+1998-06-15  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/Makefile (auc-tex.ps): Use `-o' to specify output file.
+	Suggested by Paul McJones <mcjones@pa.dec.com>.
+
+1998-06-12  Carsten Dominik  <dominik@strw.leidenuniv.nl>
+
+	* latex.el (LaTeX-font-list): Default value now contains special
+	math font commands.
+	(LaTeX2e-font-replace): Added support for math fonts.
+
+	* tex.el (TeX-font-list): Docstring changed.  Extra prefix and
+	suffix for math fonts allowed.
+	(TeX-describe-font-entry): Adapted to extended `TeX-font-list'.
+	(TeX-font): Detects math mode (using `texmathp') and inserts
+	special math font commands when available.
+
+1998-06-11  Carsten Dominik  <dominik@strw.leidenuniv.nl>
+
+	* tex.el: (TeX-insert-dollar):  Rewritten with `texmathp'.
+	(TeX-dollar-verify, TeX-locate-delimiter, TeX-bouncing-point):
+	Obsolete functions removed.
+
+1998-06-11  Carsten Dominik  <dominik@strw.leidenuniv.nl>
+
+	* latex.el: Made index entries available for global completion
+	like labels and citation keys.
+	(TeX-arg-index, TeX-arg-define-index): New functions.
+
+1998-06-10  Carsten Dominik  <dominik@strw.leidenuniv.nl>
+
+	* natbib.el ("natbib"): Rewritten to allow for more flexible
+          control of optional note arguments.  New macros in NatBib 6
+          supported.  Added support for RefTeX. 
+
 1998-06-10  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9d released.
