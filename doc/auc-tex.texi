@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.72 1994-01-29 18:59:34 amanda Exp $
+@c $Id: auc-tex.texi,v 1.73 1994-01-29 21:05:14 amanda Exp $
 
 @finalout
 @titlepage
@@ -2325,6 +2325,12 @@ this version, and for the authors, who get nostalgic at times.
 
 @itemize @bullet
 @item
+Created workaround for bug in the regexp handler in some Emacs 18
+versions and older versions of Lucid Emacs.  The workaround
+means you cannot use space in the documentstyle command in Emacs and
+Lucid Emacs earlier than version 19.9.
+
+@item
 Added file @file{ISO-TEX} with suggestions for how to handle European
 character sets.
 
@@ -2346,7 +2352,7 @@ Make the use of @code{write-file-hooks} more safe, and use
 
 @item
 Don't indent @samp{\begin@{verbatim@}} and @samp{\end@{verbatim@}},
-since any space before @samp{\end@{verbatim@} is significant.  Thanks to
+since any space before @samp{\end@{verbatim@}} is significant.  Thanks to
 Peter Thiemann @samp{<thiemann@@informatik.uni-tuebingen.de>} for the
 patch.
 
