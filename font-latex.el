@@ -311,7 +311,7 @@ Also selects \"<quote\"> versus \">quote\"<."
      font-latex-title-2-face 2 (command 1 t))
     ("title-3"
      ("subsection")
-     font-latex-title-1-face 2 (command 1 t))
+     font-latex-title-3-face 2 (command 1 t))
     ("title-4"
      ("subsubsection" "paragraph" "subparagraph" "subsubparagraph")
      font-latex-title-4-face 2 (command 1 t))
