@@ -1,3 +1,8 @@
+2002-10-14  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/misc.c, dvipng/dvipng.h, dvipng/draw.c:
+	Added '-T tight' switch
+
 2002-10-11  Angus Leeming  <leeming@lyx.org>
 
 	* dvipng/draw.c:
