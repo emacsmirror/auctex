@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.22 1993-03-23 11:40:23 amanda Exp $
+@c $Id: auc-tex.texi,v 1.23 1993-03-23 12:10:30 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1550,7 +1550,7 @@ example.
   (interactive "P")
   (require 'min-key)
   (if (or (and (null arg) keyboard-mode)
-	  (<= (prefix-numeric-value arg) 0))
+          (<= (prefix-numeric-value arg) 0))
       (keyboard-mode -1)
     (keyboard-set-mapping "Danish" "Keyboard Layout" "TeX" t)
     (keyboard-mode 1)))
@@ -1976,7 +1976,7 @@ Here is a simple example if a style file.
 
 (TeX-add-style-hook "book"
  (function (lambda () (setq LaTeX-largest-level
-			    (LaTeX-section-level ("chapter"))))))
+                            (LaTeX-section-level ("chapter"))))))
 
 @end lisp
 
@@ -2325,8 +2325,8 @@ defined.  We can specify this information in a style hook file.
 
 (or (assoc TeX-newmacro-regexp TeX-auto-regexp-list)
     (setq TeX-auto-regexp-list 
-	  (cons  (list TeX-newmacro-regexp '(1 2) 'TeX-auto-multi)
-		 TeX-auto-regexp-list)))
+          (cons  (list TeX-newmacro-regexp '(1 2) 'TeX-auto-multi)
+                 TeX-auto-regexp-list)))
 
 (defvar TeX-auto-multi nil
   "Temporary for parsing \newmacro definitions.")
@@ -2335,16 +2335,16 @@ defined.  We can specify this information in a style hook file.
   "Support for \\newmacro macro."
   
   (mapcar (function (lambda (list)
-		      (mapcar (function (lambda (symbol)
-					  (setq TeX-auto-symbol
-						(cons symbol
-						      TeX-auto-symbol))))
-			      list)))
-	  TeX-auto-multi))
+                      (mapcar (function (lambda (symbol)
+                                          (setq TeX-auto-symbol
+                                                (cons symbol
+                                                      TeX-auto-symbol))))
+                              list)))
+          TeX-auto-multi))
 
 (setq TeX-auto-prepare-hooks (cons (function (lambda ()
-					         (setq TeX-auto-multi nil)))
-				   TeX-auto-prepare-hooks))
+                                                 (setq TeX-auto-multi nil)))
+                                   TeX-auto-prepare-hooks))
 
 (setq TeX-auto-cleanup-hooks (cons 'TeX-macro-cleanup TeX-auto-cleanup-hooks))
 
@@ -2354,11 +2354,11 @@ defined.  We can specify this information in a style hook file.
  (function
   (lambda ()
     (TeX-add-symbols '("newmacro"
-		       TeX-argument-macro-hook
-		       (TeX-argument-macro-hook "Capitalized macro: \\")
-		       t
-		       "BibTeX entry: "
-		       nil)))))
+                       TeX-argument-macro-hook
+                       (TeX-argument-macro-hook "Capitalized macro: \\")
+                       t
+                       "BibTeX entry: "
+                       nil)))))
 @end lisp
 
 When this file is first loaded, it adds a new entry to
@@ -3186,7 +3186,7 @@ by Martin Sjolin @samp{<marsj@@ida.liu.se>}.
 
 @item
 Hook naming should be accoriding to the Emacs (19) guidelines.
-Specifically, only the hook @em{variable} should be names @samp{-hook}.
+Specifically, only the hook @emph{variable} should be names @samp{-hook}.
 The hook functions should have other names.
 
 @item
@@ -3308,22 +3308,22 @@ Here is one suggestion.
 If there are minor modes loaded, ask the user which mode to describe."
 
   (interactive)
-	  
+          
   (let ((mode
-	 (if minor-modes
-	     (let ((mode-name
-		    (completing-read
-		     (format "Modes: %s: " (cons major-mode minor-modes))
-		     (or (cons (list (symbol-name major-mode))
-			       (mapcar '(lambda (s) (list (symbol-name s)))
-				       minor-modes))
-			 (error "There is no current minor mode."))
-		     nil t)))
-	       (if (string= mode-name "")
-		   major-mode
-		 (intern mode-name)))
-	   major-mode)))
-	  
+         (if minor-modes
+             (let ((mode-name
+                    (completing-read
+                     (format "Modes: %s: " (cons major-mode minor-modes))
+                     (or (cons (list (symbol-name major-mode))
+                               (mapcar '(lambda (s) (list (symbol-name s)))
+                                       minor-modes))
+                         (error "There is no current minor mode."))
+                     nil t)))
+               (if (string= mode-name "")
+                   major-mode
+                 (intern mode-name)))
+           major-mode)))
+          
     (with-output-to-temp-buffer "*Help*"
       (princ mode)
       (princ " Mode:\n")
