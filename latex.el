@@ -2037,10 +2037,9 @@ recognized."
 linebreaks before and after them if they do not fit into one
 line."
   :group 'LaTeX
-  :type '(choice (const :tag "None" nil)
-                 (set :tag "Contents"
-                      (const :tag "Braced" braced)
-                      (const :tag "Math" math))))
+  :type '(set :tag "Contents"
+	      (const :tag "Braced" braced)
+	      (const :tag "Math" math)))
 
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph.
