@@ -23,18 +23,16 @@ other software.
 @end ifclear
 
 Some of the known problems can be solved by moving to newer versions of
-the problematic software, by simple patches, or in one case, by changing
-OS(!). If you find something not mentioned here, please send a bug
-report using @kbd{M-x preview-report-bug @key{RET}}. This will fill in a
-lot of information interesting to us.
-
-Some bugs are being fixed as you read this, there is a mailing list for
-developers, look at
+the problematic software or by simple patches. If you find something not
+mentioned here, please send a bug report using @kbd{M-x
+preview-report-bug @key{RET}}, which will fill in a lot of information
+interesting to us.  Some bugs are being fixed as you read this, there is
+a mailing list for developers, look at
 @uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
-For more information, send a message with just the word ``help'' as
-subject or body to
-@email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
-for new features, and pleas for help should go to
+For more information on the mailing list, send a message with just the
+word ``help'' as subject or body to
+@email{preview-latex-devel-request@@lists.sourceforge.net}. Questions,
+suggestions for new features, and pleas for help should go to
 @email{preview-latex-devel@@lists.sourceforge.net} (the @previewlatex{}
 devel team).
 
@@ -85,6 +83,7 @@ stab at scalable fonts, or other printer definitions.  Use
 @display
 @kbd{M-x customize-variable @key{RET} preview-fast-dvips-command @key{RET}}
 @end display
+@noindent
 and
 @display
 @kbd{M-x customize-variable @key{RET} preview-dvips-command @key{RET}}
