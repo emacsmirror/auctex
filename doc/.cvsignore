@@ -1,5 +1,5 @@
 *.aux *.cp *.cps *.dvi *.fn *.fns *.ky *.kys
-*.log *.pg *.toc *.tp *.vr *.vrs *.tmp
+*.log *.pg *.toc *.tp *.vr *.vrs *.tmp *.ps *.pdf
 auctex auctex-?
 Makefile
 CHANGES
@@ -9,5 +9,4 @@ INSTALL.windows
 README
 TODO
 FAQ
-auc-tex*.html
-auc-tex.ps
+auctex*.html

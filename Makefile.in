@@ -36,10 +36,10 @@ CONTRIB_MULE = tex-jp.el
 COMPILE_MULE = @COMPILE_MULE@
 CONTRIB_MULEELC = @CONTRIB_MULEELC@
 
-AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
+AUCSRC = tex.el tex-buf.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el
-AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
+AUCELC = tex.elc tex-buf.elc latex.elc tex-info.elc \
 	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc \
 	context.elc context-en.elc context-nl.elc tex-fold.elc
 
@@ -68,7 +68,7 @@ STYLESRC = style/prosper.el \
 	   style/alltt.el     style/italian.el   style/doc.el \
 	   style/ltxdoc.el    style/ltx-base.el
 
-DOCFILES = doc/Makefile.in doc/auc-tex.texi doc/intro.texi doc/install.texi \
+DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/history.texi \
 	doc/wininstall.texi doc/todo.texi doc/faq.texi doc/macros.texi
 
@@ -207,7 +207,7 @@ tar-ball:
 		../auctex-$(TAG)/ )
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
-	cp doc/auc-tex.ps $(FTPDIR)
+	cp doc/auctex.ps $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz

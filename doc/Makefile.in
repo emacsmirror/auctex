@@ -12,16 +12,16 @@ TEXIHTML=texi2html
 TEXINDEX=texindex
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=dvips
-TEXIFILES = auc-tex.texi install.texi wininstall.texi intro.texi \
+TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 	changes.texi todo.texi faq.texi
 
-all: auc-tex.dvi tex-ref.dvi auctex
+all: auctex.dvi tex-ref.dvi auctex
 
 dist: auctex INSTALL INSTALL.windows README CHANGES TODO FAQ \
-	auc-tex_toc.html auc-tex.ps
+	auctex_toc.html auctex.ps
 
-auc-tex_toc.html: auc-tex.texi
-	$(TEXIHTML) -split_node auc-tex.texi
+auctex_toc.html: auctex.texi
+	$(TEXIHTML) -split_node auctex.texi
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref
@@ -29,25 +29,25 @@ tex-ref.dvi: tex-ref.tex
 	@echo "** doc/tex-ref.dvi may now be printed (1 page)"
 	@echo "**********************************************************"
 
-auc-tex.dvi: auc-tex.texi
-	-$(TEX) "\nonstopmode\input auc-tex.texi"
-	-$(TEXINDEX) auc-tex.ky
-	-$(TEXINDEX) auc-tex.fn
-	-$(TEXINDEX) auc-tex.vr
-	-$(TEXINDEX) auc-tex.cp
-	-$(TEX) "\nonstopmode\input auc-tex.texi"
+auctex.dvi: auctex.texi
+	-$(TEX) "\nonstopmode\input auctex.texi"
+	-$(TEXINDEX) auctex.ky
+	-$(TEXINDEX) auctex.fn
+	-$(TEXINDEX) auctex.vr
+	-$(TEXINDEX) auctex.cp
+	-$(TEX) "\nonstopmode\input auctex.texi"
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
 	@echo "** a newer version of texinfo?"
-	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
+	@echo "** doc/auctex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
 # dvips spews two error lines.  I don't know why.
-auc-tex.ps: auc-tex.dvi
-	$(DVIPS) auc-tex.dvi -o auc-tex.ps
+auctex.ps: auctex.dvi
+	$(DVIPS) auctex.dvi -o auctex.ps
 
 auctex: $(TEXIFILES)
-	-$(MAKEINFO) auc-tex.texi
+	-$(MAKEINFO) auctex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
 	@echo "** a newer version of texinfo?"

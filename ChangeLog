@@ -1,5 +1,13 @@
 2004-08-11  David Kastrup  <dak@gnu.org>
 
+	* doc/Makefile.in (TEXIFILES): refer to auctex.texi instead of
+	auc-tex.texi.  Change all dependent stuff, too.
+
+	* Makefile.in (DOCFILES): refer to doc/auctex.texi instead of
+	doc/auc-tex.texi
+
+	* doc/auc-tex.texi: renamed into doc/auctex.texi.
+
 	* doc/auc-tex.texi (Commands): Some rewording.
 
 	* doc/todo.texi (Wishlist): Some rearrangements and additions.
