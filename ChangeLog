@@ -1,3 +1,9 @@
+2005-02-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-delete-newlines): Call search-forward,
+	which is copied from `fill-delete-newlines', with BOUND TO.
+	Patch by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Japanese): Fix bogus macro.
