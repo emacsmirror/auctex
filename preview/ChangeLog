@@ -5,6 +5,8 @@
 	* Makefile.in: Fixed 'make clean' in doc subdir, install info
 	files too
 
+	* doc/Makefile.in: Typo corrected
+
 2002-02-17  Alan Shutko  <ats@acm.org>
 
 	* doc/Makefile.in: New file, replacing the former ad-hoc build.
