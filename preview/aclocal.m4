@@ -1,22 +1,33 @@
 # serial 1
 
-
-dnl wholly stolen from emacs-w3m, credit to Katsumi Yamaoka
+dnl mostly stolen from emacs-w3m, credit to Katsumi Yamaoka
 dnl <yamaoka@jpl.org>
 
 AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
   AC_EMACS_LISP(packagedir,
-    (let ((prefix \"${prefix}\")\
-	  package-dir)\
-      (if (boundp (quote early-packages))\
-	  (let ((dirs (append (if early-package-load-path early-packages)\
+    (let* ((prefix \"${prefix}\")\
+           (putative-existing-lisp-dir (locate-library \"preview\"))\
+           (putative-existing-package-dir\
+           (and putative-existing-lisp-dir\
+                (string-match \"lisp/preview/preview\.elc?\$\"\
+                              putative-existing-lisp-dir)\
+                 (replace-in-string putative-existing-lisp-dir\
+                                    \"lisp/preview/preview\.elc?\$\" \"\")))\
+           package-dir)\
+      (if (and (boundp (quote early-packages))\
+               (not putative-existing-package-dir))\
+	  (let ((dirs (append (if putative-existing-package-dir\
+                                  (list putative-existing-package-dir))\
+                              (if early-package-load-path early-packages)\
 			      (if late-package-load-path late-packages)\
 			      (if last-package-load-path last-packages))))\
 	    (while (and dirs (not package-dir))\
 	      (if (file-directory-p (car dirs))\
 		  (setq package-dir (car dirs)\
 			dirs (cdr dirs))))))\
+      (if putative-existing-package-dir\
+          (setq package-dir putative-existing-package-dir))\
       (if package-dir\
 	  (progn\
 	    (if (string-match \"/\$\" package-dir)\
@@ -41,7 +52,7 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
       [if test "${withval}" = yes -o -z "${withval}"; then
 	AC_EXAMINE_PACKAGEDIR
       else
-	packagedir="${withval}"
+	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
       fi],
       AC_EXAMINE_PACKAGEDIR)
     if test -z "${packagedir}"; then
