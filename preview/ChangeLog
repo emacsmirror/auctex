@@ -1,3 +1,8 @@
+2002-07-30  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/wininstall.texi: New file documenting XEmacs/Windows,
+	courtesy of Anthony Williams.
+
 2002-07-29  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-parsed-font-size) 
