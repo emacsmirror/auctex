@@ -92,7 +92,7 @@ install-texmf:
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
 install-startup:
-	if $(packagedir) = no; then \
+	if test $(packagedir) = no; then \
 	  $(MAKE) preview-latex.el && \
 	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir) ; \
 	fi
