@@ -1,3 +1,21 @@
+2004-07-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Autoload `texmathp'.
+	(font-latex-keywords-2): Add `font-latex-match-script'.
+	(font-latex-script-keywords): Remove.
+	(font-latex-fontify-script): Remove :set function.
+	(font-latex-match-script): New function.
+
+	* tex-mik.el (TeX-view-style): Remove unconditional source
+	specials option for yap.
+	(TeX-output-view-style): Set it.
+	(TeX-source-specials-viewer-flags): Ditto.
+
+	* tex-fptex.el (TeX-view-style): Adapt options to WinDVI
+	documentation.
+	(TeX-output-view-style): Set it.
+	(TeX-source-specials-viewer-flags): Ditto.
+
 2004-07-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (tar-ball): Remove warning which often confuses
