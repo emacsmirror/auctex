@@ -1,3 +1,11 @@
+2004-01-02  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-left-comment-regexp)
+	(LaTeX-right-comment-regexp, LaTeX-ignore-comment-regexp): revert
+	an inadvertant change two checkins ago.  I was just experimenting
+	with something that did not yet work (as if the original did) and
+	did not intend checking it in.
+
 2003-12-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-master-file): Added new parameter `ask' which is
