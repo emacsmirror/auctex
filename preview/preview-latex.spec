@@ -6,11 +6,11 @@
 %if %{FOR_SUSE}
 %define distri      .suse
 %define commongroup Productivity/Editors/Emacs
-%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%define xemacspkgdir %{datadir}/xemacs/xemacs-packages
 %else
 %define distri      .fedora
 %define commongroup Applications/Editors
-%define xemacspkgdir %{_datadir}/xemacs/site-packages
+%define xemacspkgdir %{datadir}/xemacs/site-packages
 %endif
 
 Summary: 	Emacs/LaTeX inline preview 
@@ -99,7 +99,7 @@ for i in *emacs; do
   test -f ./configure || ./autogen.sh
   # --with-packagedir repairs RedHat XEmacs braindamage
   if [ $i = "emacs" ]; then
-    %configure '--with-lispdir=%{_datadir}/emacs/site-lisp/site-start.d' \
+    %configure '--with-lispdir=%{datadir}/emacs/site-lisp/site-start.d' \
       --with-packagelispdir=../preview
   else
     %configure --with-xemacs
