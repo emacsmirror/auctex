@@ -227,8 +227,8 @@ other hooks, such as major mode hooks, can do the job."
   (let ((glyph
          (make-glyph
           (list
-           `[xpm :file ,(locate-data-file "help.xpm")]
-           `[xbm :file ,(locate-data-file "help.xbm")]))))
+           `[xpm :file ,(locate-data-file "prevwork.xpm")]
+           `[xbm :file ,(locate-data-file "prevwork.xbm")]))))
     (set-glyph-baseline glyph 80)
     glyph)
   "The symbol used for previews to be generated.
@@ -238,7 +238,8 @@ Usually a question mark.")
   (let ((glyph
          (make-glyph
           (list
-           `[xpm :file ,(locate-data-file "search.xpm")])))) 
+           `[xpm :file ,(locate-data-file "preview.xpm")]
+           `[xbm :file ,(locate-data-file "preview.xbm")])))) 
     (set-glyph-baseline glyph 100)
     glyph)
   "The symbol used for an open preview.
