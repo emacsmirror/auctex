@@ -83,31 +83,6 @@ If there is no help, the empty string is returned."
   (let ((help (nth 1 (memq :help (assoc item TeX-command-list)))))
     (if help help "")))
 
-;; detecting error
-
-(defvar TeX-bar-error-handling-switches nil
-  "Plist of master files and error situation.")
-
-(defadvice TeX-run-TeX (before TeX-bar-reset-error activate)
-  "Mark master file as free of compile errors."
-  (let ((current-master (TeX-master-file)))
-    (setq TeX-bar-error-handling-switches
-	  (plist-put TeX-bar-error-handling-switches
-		     'TeX-current-master current-master))
-    (setq TeX-bar-error-handling-switches
-	  (plist-put TeX-bar-error-handling-switches
-		     (intern current-master) nil))))
-
-(defadvice TeX-TeX-sentinel-check (after TeX-bar-error-happened activate)
-  "Prepair to mark master file as with compile errors."
-  (when (not (equal TeX-command-next TeX-command-Show))
-    (setq TeX-bar-error-handling-switches
-	  (plist-put TeX-bar-error-handling-switches
-		     (intern (plist-get
-			      TeX-bar-error-handling-switches
-			      'TeX-current-master))
-		     t))))
-
 (defgroup TeX-tool-bar nil
   "Tool bar support in AUCTeX."
   :group 'AUCTeX)
@@ -183,9 +158,9 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 	      :help (lambda nil (TeX-bar-help-from-command-list "PDFLaTeX")))
     (next-error :image "error"
 		:command TeX-next-error
-		:enable (plist-get TeX-bar-error-handling-switches
+		:enable (plist-get TeX-error-report-switches
 				   (intern (TeX-master-file)))
-		:visible (plist-get TeX-bar-error-handling-switches
+		:visible (plist-get TeX-error-report-switches
 				    (intern (TeX-master-file))))
     (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
