@@ -245,6 +245,22 @@ other hooks, such as major mode hooks, can do the job."
       glyph))
   "The symbol used for an open preview.")
 
+(defvar preview-tb-icon
+  (let ((glyph-xpm-filename (locate-data-file "preview-cap-up.xpm"))
+        (glyph-xbm-filename (locate-data-file "preview.xbm")))
+    (if (not glyph-xpm-filename)
+        (cerror 'file-error "Image not installed" "preview-cap-up.xpm"))
+    (if (not glyph-xbm-filename)
+        (cerror 'file-error "Image not installed" "preview.xbm"))
+    (let ((glyph
+           (make-glyph
+            (list
+             `[xpm :file ,glyph-xpm-filename]
+             `[xbm :file ,glyph-xbm-filename]))))
+      (set-glyph-baseline glyph 75)
+      glyph))
+  "The symbol used for the toolbar button.")
+
 ;; Image frobbing.
 
 (defun preview-add-urgentization (fun ov &rest rest)
@@ -468,7 +484,7 @@ Pure borderless black-on-white will return NIL."
   :type 'boolean)
 
 (defvar preview-icon-toolbar-button
-  (vector (list preview-icon)
+  (vector (list preview-tb-icon)
 	  #'preview-at-point
 	  t
 	  "Preview on/off at point"))
