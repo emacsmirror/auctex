@@ -1,3 +1,8 @@
+2004-12-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-auto-parse-region): Do not add element to `symbol'
+	if it is already contained.
+
 2004-12-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-indent-outer-do): Remove redundant code.
