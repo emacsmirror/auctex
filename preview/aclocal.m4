@@ -36,12 +36,12 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
 	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
       fi],
       [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
-    if test -z "${packagedir}"; then
+    if test "${packagedir}" = NONE -o -z "${packagedir}"; then
       AC_MSG_ERROR([not found, exiting!])
     fi
     AC_MSG_RESULT(${packagedir})
   else
-    packagedir=
+    packagedir=no
   fi
   AC_SUBST(packagedir)])
 
@@ -286,25 +286,15 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
                           that most of the package will be relative to it.],
     [[lispdir="${withval}"]],
     [
-     # Save prefix
-     oldprefix=${prefix}
-     oldexec_prefix=${exec_prefix}
-     if test "${prefix}" = "NONE"; then
-       # Set prefix temporarily
-       prefix="${ac_default_prefix}"
-     fi
-     if test "${exec_prefix}" = "NONE"; then
-       # Set exec_prefix temporarily
-	exec_prefix="${prefix}"
-     fi
      if test "${EMACS_FLAVOR}" = 'emacs' -o "${packagedir}" = 'no'; then
        # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
        if test "$lispdir" = "NONE"; then
 	 # No? Test paths relative to binary
+	 tmpprefix="$prefix"
 	 EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
-	 exec_prefix="${prefix}"
 	 EMACS_TEST_LISPDIR
+	 prefix="$tmpprefix"
        fi
        if test "$lispdir" = "NONE"; then
 	 # No? notify user.
@@ -315,8 +305,6 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
        # XEmacs
        lispdir="${packagedir}/lisp"
      fi
-     prefix=${oldprefix}
-     exec_prefix=${oldexec_prefix}
     ])
   AC_MSG_RESULT([[${lispdir}]])
   AC_SUBST(lispdir)
@@ -539,19 +527,26 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 # to the current file name.
 
 AC_DEFUN(AC_LISPIFY_DIR,[
-EMACS_LISP([$1],[[(prin1-to-string
- (if (file-name-absolute-p path)
-   (expand-file-name (file-name-as-directory path))
-  (backquote (expand-file-name (, (file-name-as-directory path))
-     (file-name-directory load-file-name)))))]],-no-site-file,path,[$2])
- AC_SUBST([$1])])
+ tmpdir="$2"
+ AC_FULL_EXPAND(tmpdir)
+EMACS_LISP([$1],[[(progn (setq path (directory-file-name path))
+  (unless (string= (car load-path) (directory-file-name (car load-path)))
+    (setq path (file-name-as-directory path)))
+  (prin1-to-string
+   (if (file-name-absolute-p path)
+     (expand-file-name path)
+    (backquote (expand-file-name (, path)
+       (file-name-directory load-file-name))))))]],-no-site-file,path,["[$]tmpdir"])
+   AC_SUBST([$1])])
 
 # AC_MAKE_FILENAME_ABSOLUTE
 # This makes variable $1 absolute if it is not already so, by prepending
 # $2 as a string.  This won't work in Windows with drive-relative path names.
 # Just don't use them.
 AC_DEFUN(AC_MAKE_FILENAME_ABSOLUTE,[
-     case "[$]$1" in
+     tmpdir="[$]$1"
+     AC_FULL_EXPAND(tmpdir)
+     case "[$]tmpdir" in
        [[\\/]]* | ?:[[\\/]]* ) # Absolute
           ;;
        *)

@@ -74,8 +74,8 @@ install-el: $(LISP_OBJS)
 	  echo $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done
-	if test -n $(packagedir); then \
-	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES) \
+	if test $(packagedir) != no; then \
+	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES) ; \
 	fi
 install-icons: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(icondir)

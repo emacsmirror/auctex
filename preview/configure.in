@@ -8,7 +8,18 @@ ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
 
 AC_SET_MAKE
 AC_PROG_INSTALL
+
+if test "$prefix" = NONE
+then
+   prefix="$ac_prefix_default"
+fi
+if test "$exec_prefix" = NONE
+then
+   exec_prefix='$prefix'
+fi
+
 EMACS_PROG_EMACS
+
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
 # never need to modify the default behavior.
@@ -20,20 +31,24 @@ AC_ARG_ENABLE([build-dir-test],
    fi],
   [VALID_BUILD_DIR])
 
-packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    EMACS_PATH_PACKAGEDIR([preview],[preview])
+else
+   PLAT_LISP=prv-emacs.el
+   packagedir=no
+fi
+
+if test "$packagedir" = no
+then
+   EMACS_PATH_LISPDIR([preview-latex])
+   icondir=preview
+   packagelispdir=preview
+else
    lispdir="$packagedir/lisp/preview"
    packagelispdir=.
    icondir=../../etc/preview
    infodir=../../info
-else
-   PLAT_LISP=prv-emacs.el
-   
-   EMACS_PATH_LISPDIR([preview-latex])
-   icondir=preview
-   packagelispdir=preview
 fi
 
 AC_MSG_CHECKING([where the bulk of the package lisp files go])
@@ -47,6 +62,12 @@ EMACS_LISP_RELATIVE(lispdir,icondir,
 	[the icon files])
 AC_MSG_RESULT([[${icondir}]])
 AC_SUBST(icondir)
+
+AC_MSG_CHECKING([where the info files go])
+EMACS_LISP_RELATIVE(lispdir,infodir,
+	[the info files])
+AC_MSG_RESULT([[${infodir}]])
+AC_SUBST(infodir)
 
 AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)

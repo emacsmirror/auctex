@@ -1,5 +1,13 @@
 2005-03-02  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (install-el): no means no for packagedir.
+
+	* configure.in: Set prefix.
+
+	* aclocal.m4: Use "no" for no packagedir in XEmacs.
+	Don't save prefix and stuff.
+	Expand stuff at some points.
+
 	* doc/wininstall.texi: Use executable name directly to save
 	confusion.
 
