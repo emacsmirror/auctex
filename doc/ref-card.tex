@@ -1,5 +1,5 @@
 % -*- plain-tex -*- 
-% $Id: ref-card.tex,v 1.1 1992-07-22 13:06:40 krab Exp $
+% $Id: ref-card.tex,v 1.2 1992-07-22 17:54:11 krab Exp $
 % Reference Card for Auc TeX version 5.4 for Emacs Lisp
 %**start of header
 \newcount\columnsperpage
@@ -26,26 +26,13 @@
 %    For this you need a dvi device driver that can print sideways.
 % Which mode to use is controlled by setting \columnsperpage above.
 
-%                   Author of Auc-TeX Reference Card
-%
-%		  		\ ! /
-%			       -- O --
-%			  __    / ! \   __
-%			  \   /\     /\  /
-%			   \ /  \===/  \/
-%				/   \
-%			       /  x  \
-%			      /   x   \
-%				   
-%       Terrence Brannon, PO Box 5027, Bethlehem, PA 18015 , USA
-%  internet: tb06@pl118f.cc.lehigh.edu  (215) 758-1720 (215) 758-2104
 
 %
 % Thanks to Stephen Gildea
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{5.4}
+\def\versionnumber{5.7}
 \def\year{1992}
 \def\version{January \year\ v\versionnumber}
 
@@ -55,9 +42,8 @@
 
 \def\copyrightnotice{
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ \year\ Free Software Foundation, Inc.}
-\centerline{designed by Terrence Brannon, \version}
-\centerline{for GNU Emacs version 18 on Unix systems}
+\centerline{Copyright \copyright\ \year\ Kresten Krab Thorup}
+\centerline{for AUC \TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
 this card provided the copyright notice and this permission notice
@@ -216,9 +202,9 @@ are preserved on all copies.
 %**end of header
 
 
-\title{AUC La\TeX\ Reference Card}
+\title{AUC \TeX\ Reference Card}
 
-\centerline{(for version 5.4)}
+\centerline{(for version 5.7)}
 
 \section{Conventions Used}
 
@@ -243,26 +229,27 @@ of LaTeX-mode-hook.
 \key{Next error in \TeX/LaTeX session}{C-c C-n}
 \key{Run Bib\TeX\ on buffer}{C-c @}
 \key{Run makeindex on buffer}{C-c \#}
+\key{Run LaCheck on buffer}{C-c !}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
-\key{Toggle Debug Boxes}{C-c C-w}
+\key{Toggle Debug overfull/underfull Boxes}{C-c C-w}
 \key{Home Buffer}{C-c C-h}
 
 \section{Automatic Command Insertion}
 
-\key{Insert Brace}{M-\{}
+\key{Insert double brace}{M-\{}
 \key{Insert {\bf bold} syntax}{C-c C-b}
-\key{Insert {\it italics\/}syntax}{C-c C-i}
+\key{Insert {\it italics\/} syntax}{C-c C-i}
 \key{Insert {\rm roman} syntax}{C-c C-r}
-\key{Insert emphasized syntax}{C-c C-e}
+\key{Insert {\it emphasized} syntax}{C-c C-e}
 \key{Insert {\tt typewriter} syntax}{C-c C-t}
 \key{Insert {\sl slanted\/} syntax}{C-c C-s}
 \key{Insert small caps syntax}{C-c C-y}
-\key{Insert Section/Chapter/etc syntax}{C-c C-x}
-\key{Insert \kbd{\\begin\{\} ... \\end\{\}} environment}{C-c C-c}
+\key{Insert Section/Chapter/etc.}{C-c C-x}
+\key{Insert La\TeX\ environment}{C-c C-c}
+\key{Close off the current Environment}{C-c C-f}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c RET}
-\key{\TeX command on region \kbd{\{\\ \}}}{C-c C-o}
-
+  
 \section{Automatic Commenting}
 
 \key{Comment out a region}{C-c ;}
@@ -278,8 +265,25 @@ of LaTeX-mode-hook.
 \key{Mark a section}{M-C-x}
 \key{Format a section}{M-s}
 \key{Mark an Environment}{M-C-e}
-\key{Close off an Environment}{C-c C-f}
 \key{Format an Environment}{M-C-q}
+
+\section{Outline minor mode}
+
+\key{Enter/leave outline-minor-mode}{C-c C-o}
+
+\key{Make all text invisible (excluding headings)}{C-l C-t}
+\key{Show all text}{C-l C-a}
+\key{Hide subtree}{C-l C-h}
+\key{Show subtree}{C-l C-s}
+\key{Show children (inventory)}{C-l C-i}
+\key{Hide entry}{C-l C-e}
+\key{Show entry}{C-l C-l}
+
+\key{Goto next visible heading}{C-l C-n}
+\key{Goto previous visible heading}{C-l C-p}
+\key{Goto next entry at same level}{C-l C-f}
+\key{Previous heading at same level}{C-l C-b}
+\key{Move up one level}{C-l C-u}
 
 \section{Miscellany}
 
@@ -287,12 +291,13 @@ of LaTeX-mode-hook.
 \key{Up-list}{M-\}}
 \key{Terminate Paragraph}{RET}
 \key{Smart ``Quote'' Insert}{"}
-\key{LaTeX-indent-line}{TAB}
+\key{Indent current line}{TAB}
 \key{Reindent, then newline and indent}{LFD}
 \key{Terminate paragraph}{C-c LFD}
 
-Type \kbd{TeX-validate-buffer} to insure that the \$ and braces
-match up within paragraphs.
+Type \kbd{M-x TeX-validate-buffer} to insure that the \$ and braces
+match up within paragraphs.  Also \kbd{C-c \$} (LaCheck) is usefull for
+checking such.
 
 \copyrightnotice
 
