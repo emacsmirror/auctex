@@ -1,3 +1,8 @@
+2004-11-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Use correct
+	face for `font-latex-match-title-3'.
+
 2004-11-04  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* images/amstex.xpm: Added.  Contains symbolic color
