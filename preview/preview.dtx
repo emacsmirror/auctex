@@ -214,8 +214,6 @@
 %\end{macro}
 %\end{macro}
 %\end{macro}
-%What the \dots!?!  Well the |\@gobble| is just circumvention of a
-%\LaTeX\ bug.  ignore it.
 %\begin{macro}{\pr@adviseii}
 %  Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
 %  recursive definitions, we advise only macros that are not yet
@@ -274,11 +272,14 @@
     \edef\pr@cleanup{\the\toks@}%
     \setbox\pr@box\vbox\bgroup
     \pr@outerfalse\color@setgroup
+    \everypar{}%
     \expandafter\@firstofone
   \else
      \expandafter \@gobble
   \fi{#1}}
 %    \end{macrocode}
+% \cmd{\everypar} is cleared here because of a surprising bug where an
+% \cmd{\item} label crept into a preview following it.
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@endbox}
