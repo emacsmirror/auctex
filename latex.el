@@ -2928,14 +2928,8 @@ the last entry in the menu."
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "LaTeX"
-	(list LaTeX-environment-menu-name
-	      :filter (lambda (ignored)
-			(LaTeX-menu-update LaTeX-environment-menu-name))
-	      "Bug.")
-	(list LaTeX-environment-modify-menu-name
-	      :filter (lambda (ignored)
-			(LaTeX-menu-update LaTeX-environment-modify-menu-name))
-	      "Bug.")
+	(list LaTeX-environment-menu-name)
+	(list LaTeX-environment-modify-menu-name)
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
@@ -3120,6 +3114,10 @@ of `LaTeX-mode-hook'."
   (make-local-variable 'TeX-auto-full-regexp-list)
   (setq TeX-auto-full-regexp-list
 	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
+
+  (if (= emacs-major-version 20)
+      (make-local-hook 'activate-menubar-hook))
+  (add-hook 'activate-menubar-hook 'LaTeX-menu-update nil t)
 
   (setq paragraph-start
 	(concat
