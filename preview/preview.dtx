@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.37 $
+%  \rcskey \version CVS-$Revision: 1.38 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-15 03:36:08 $
+%\rcskey\next $Date: 2002-03-19 23:12:40 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -186,7 +186,7 @@
 %\item[|*|] indicates an optional |*| modifier, as in
 %|\includegraphics*|.
 %\item[|[|] indicates an optional argument in brackets.  This syntax
-%is somewhat disingenious, but brief.
+%is somewhat baroque, but brief.
 %\item[{|[]|}] also indicates an optional argument in brackets.  Be
 %sure to have encluded the entire optional argument specification in
 %an additional pair of braces as described above.
@@ -238,7 +238,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.37 $
+   \reserved@a\reserved@b CVS-$Revision: 1.38 $
 \else
    \begingroup
       \lccode`-=`.
@@ -247,7 +247,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-15 03:36:08 $
+\reserved@a\next $Date: 2002-03-19 23:12:40 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
