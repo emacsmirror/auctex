@@ -84,7 +84,8 @@ for i in *emacs; do
   # NOT RECOMMENDED, but useful for testing!
   test -f ./configure || ./autogen.sh
   # --with-packagedir repairs RedHat XEmacs braindamage
-  %configure --with-$i --with-packagedir=\$\{libdir\}/xemacs/site-packages 
+  # --with-texmf-dir overrides local docstrip configurations.
+  %configure --with-$i --with-texmf-dir=\$\{datadir\}/texmf --with-packagedir=\$\{libdir\}/xemacs/site-packages 
   make
   popd
 done
