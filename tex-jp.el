@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'tex-init)
+(require 'tex-auto)
 
 ;;; Customization
 
@@ -43,18 +44,7 @@
 (if (boundp 'MULE)
 (progn
 
-(defvar LaTeX-auto-minimal-regexp-list 
-  '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-     (2 1) TeX-auto-style)
-    ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) TeX-auto-style))
-  "Minimal list of regular expressions matching LaTeX macro definitions.")
-
-(defvar LaTeX-auto-label-regexp-list
-  '(("\\\\label{\\(\\([]a-zA-Z0-9.:;,?!`'()[---/*@_]\\|\\cj\\)+\\)}" 1
-     TeX-auto-label))
-  "List of regular expression matching LaTeX labels only.")
-     
-(defvar LaTeX-auto-regexp-list 
+(defconst LaTeX-auto-regexp-list 
   (append
    '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
        (1 3) TeX-auto-arguments)
@@ -75,7 +65,7 @@
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
-(defvar plain-TeX-auto-regexp-list
+(defconst plain-TeX-auto-regexp-list
   '(("\\\\def\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)[^a-zA-Z@]" 1
      TeX-auto-symbol-check)
     ("\\\\let\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)[^a-zA-Z@]" 1
@@ -91,7 +81,7 @@
      TeX-auto-symbol))
   "List of regular expression matching common LaTeX macro definitions.")
 
-(defvar BibTeX-auto-regexp-list
+(defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)" 1
      TeX-auto-bibitem))
@@ -102,18 +92,7 @@
 (if (boundp 'NEMACS)
 (progn
 
-(defvar LaTeX-auto-minimal-regexp-list 
-  '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-     (2 1) TeX-auto-style)
-    ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) TeX-auto-style))
-  "Minimal list of regular expressions matching LaTeX macro definitions.")
-
-(defvar LaTeX-auto-label-regexp-list
-  '(("\\\\label{\\(\\([]a-zA-Z0-9.:;,?!`'()[---/*@_]\\|\\z\\)+\\)}" 1
-     TeX-auto-label))
-  "List of regular expression matching LaTeX labels only.")
-     
-(defvar LaTeX-auto-regexp-list 
+(defconst LaTeX-auto-regexp-list 
   (append
    '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
        (1 3) TeX-auto-arguments)
@@ -134,7 +113,7 @@
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
-(defvar plain-TeX-auto-regexp-list
+(defconst plain-TeX-auto-regexp-list
   '(("\\\\def\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
      TeX-auto-symbol-check)
     ("\\\\let\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
@@ -150,7 +129,7 @@
      TeX-auto-symbol))
   "List of regular expression matching common LaTeX macro definitions.")
 
-(defvar BibTeX-auto-regexp-list
+(defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)" 1
      TeX-auto-bibitem))
@@ -158,6 +137,9 @@
 
 ))
 
+(defconst TeX-auto-full-regexp-list 
+  (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list)
+  "Full list of regular expression matching TeX macro definitions.")
 
 ;;; Japanese LaTeX initialization
 

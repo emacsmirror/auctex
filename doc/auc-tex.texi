@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.56 1993-09-06 22:41:37 amanda Exp $
+@c $Id: auc-tex.texi,v 1.57 1993-09-09 23:49:32 amanda Exp $
 
 @finalout
 @titlepage
@@ -90,19 +90,74 @@ TeX-submit-bug-report} to report bugs.@refill
 * Formatting::                  Formatting and Printing 
 * Multifile::                   Multifile Documents
 * Parsing Files::               Automatic Parsing of @TeX{} files.
-* Internationalization::        The Anti-American Conspiracy
+* Japanese::                    Japanese @TeX{}.
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Installation::                Installation of AUC @TeX{}
 * History::                     The History of AUC @TeX{}
-* Minor Modes::                 Various Minor Modes
-* Supported symbols::           Currently supported symbols in LaTeX-math-mode
 * Projects::                    Wishlist
 * Credit::                      Credit 
 * Key Index::                   Key Index
 * Function Index::              Function Index
 * Variable Index::              Variable Index
 * Concept Index::               Concept Index
+
+ --- The Detailed Node Listing ---
+
+Inserting Frequently Used Commands  
+
+* Quotes::                      Inserting double quotes
+* Font Specifiers::             Inserting Font Specifiers 
+* Sectioning::                  Inserting chapters, sections, etc. 
+* Environments::                Inserting Environment Templates
+
+Inserting Environment Templates
+
+* Floats::                      Floats
+* Itemize-like::                Itemize-like
+* Tabular-like::                Tabular-like
+* Customizing environments::    Customizing environments
+
+Advanced Editing Features 
+
+* Mathematics::                 Entering Mathematics 
+* Completion::                  Completion 
+* Commenting::                  Commenting 
+* Marking and formatting::      Marking, Formatting and Indenting
+* Outline::                     
+
+Formatting and Printing 
+
+* Commands::                    Invoking external commands.
+* Debugging::                   Debugging @TeX{} and La@TeX{} output.
+* Checking::                    Checking the document.
+* Control::                     Controlling the processes.
+
+Automatic Customization
+
+* Automatic Global::            Automatic Customization for the Site
+* Automatic Private::           Automatic Customization for a User
+* Automatic Local::             Automatic Customization for a Directory
+
+Writing Your own Style Support
+
+* Simple Style::                A Simple Style File
+* Adding Macros::               Adding Support for Macros
+* Adding Environments::         Adding Support for Environments
+* Adding Other::                Adding Other Information
+* Format Packages::             Supporting Other Format Packages
+* Hacking the Parser::          Automatic Extraction of New Things
+
+The History of AUC @TeX{}
+
+* Version 8.0::                 News in 8.0
+* Version 7.3::                 News in 7.3
+* Version 7.2::                 News in 7.2
+* Version 7.1::                 News in 7.1
+* Version 7.0::                 News in 7.0
+* Version 6.1::                 News in 6.1
+* Version 6.0::                 News in 6.0
+* Ancient History::             Ancient History
 @end menu
 
 @node Copying, Introduction, top, top
@@ -474,7 +529,7 @@ A number of hooks are already defined.  Most likely, you will be able to
 get the desired functionality by choosing from these hooks.
 
 @ftable @code
-@item LaTeX-section-level
+@item LaTeX-section-name
 Query the user about the name of the sectioning command.  Modifies
 @var{level} and @var{name}.
 @item LaTeX-section-title
@@ -495,7 +550,7 @@ To get a full featured @code{LaTeX-section} command, insert
 
 @lisp
 (setq LaTeX-section-hook
-      '(LaTeX-section-level
+      '(LaTeX-section-name
         LaTeX-section-title
         LaTeX-section-toc
         LaTeX-section-section
@@ -697,7 +752,7 @@ mathematic symbols.  You can enter this mode by typing @kbd{C-c
 (@kbd{C-c ~}) Toggle LaTeX-math-mode.  This is a minor mode rebinding
 the key @code{LaTeX-math-abbrev-prefix} to allow easy typing of
 mathematical symbols.  @kbd{`} will read a character from the keyboard,
-and insert the symbol as specified in @code{LaTeX-mathlist}.  If given a
+and insert the symbol as specified in @code{LaTeX-math-list}.  If given a
 prefix argument, the symbol will be surrounded by dollar signs.@refill
 @end deffn
 
@@ -709,12 +764,27 @@ A string containing the prefix of @code{LaTeX-math-mode} commands;
 This value defaults to @kbd{`}. @refill
 @end defopt
 
-The variable @code{LaTeX-mathlist} holds the actual mapping.
+By default the symbol will be inserted using @code{TeX-insert-macro},
+which normally means the symbol will be terminated by an empty set
+braces. 
 
-@defopt LaTeX-mathlist
-A list containing key-command mappings to use in @code{LaTeX-math-mode}.
+@defopt LaTeX-math-braces
+Insert braces after LaTeX math symbols.
+
+If this variable is nil, never insert braces.  If it is true, always
+insert braces.  Otherwise, only insert braces if we can use the AUC
+@TeX{} function @code{TeX-insert-macro} to do the job.
+@end defopt
+
+The variable @code{LaTeX-math-list} holds the actual mapping.
+
+@defopt LaTeX-math-list
+A list containing key command mappings to use in @code{LaTeX-math-mode}.
 The car of each element is the key and the cdr is the macro name. 
 @end defopt
+
+The AUC @TeX{} distributions includes a reference card for
+@code{LaTeX-math-mode} with a list of all math mode commands.
 
 @node Completion, Commenting, Mathematics, Advanced Features
 @section Completion 
@@ -959,7 +1029,7 @@ Mode, emacs, GNU Emacs Manual}.  By default
 also used by AUC @TeX{}, so it is suggested that you choose another
 prefix key by inserting 
 @lisp
-  (setq outline-minor-mode-prefix "\C-c\C-o")
+  (setq outline-minor-mode-prefix "\C-c\C-o") ; Or whatever...
 @end lisp
 in your @file{.emacs} file.
 
@@ -1335,7 +1405,7 @@ you don't do this, the other files in the document will not know
 anything about each other, except for the name of the master file.
 @xref{Automatic Local}.
 
-@node Parsing Files, Internationalization, Multifile, top
+@node Parsing Files, Japanese, Multifile, top
 @chapter Automatic Parsing of @TeX{} files.
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
@@ -1469,361 +1539,8 @@ Parse common plain @TeX{} commands.
 Parse all @TeX{} and La@TeX{} commands that AUC @TeX{} can use.
 @end defvr
 
-@node Internationalization, Automatic, Parsing Files, top
-@chapter The Anti-American Conspiracy
-@cindex Internationalization
-@cindex Europe
-@cindex Character set
-@cindex Japan
-
-AUC @TeX{} contains some support for ease the use of various European
-character sets.  This support is contained in two packages ``Keymap
-Mode'' in @file{min-key.el}, which support general remapping of the
-keyboard, as well as converting between various character set encodings,
-and ``Dead Key Mode'' in @file{ltx-dead.el}, which support dead keys for
-entering accents.  Both packages depend on the ``Minor Mode Keymap''
-support in @file{min-bind.el}, but at least ``Keymap Mode'' is otherwise
-useful even outside AUC @TeX{}.
-
-If you have the necessary software, AUC @TeX{} will also work with some
-Japanese versions of @TeX{} and Emacs.
-
-@menu
-* Scandinavian::                Support for the Scandinavian Languages
-* Russian::                     Support for Russian
-* Dvorak::                      Dvorak and QWERTY
-* Accents::                     Accents on Dead Keys
-* Converting::                  Converting Between Encodings of a Character Set
-* Japanese::                    
-@end menu
-
-@node Scandinavian, Russian, Internationalization, Internationalization
-@section Support for the Scandinavian Languages
-@cindex Keyboard remapping
-@cindex Remapping the keyboard
-@cindex Denmark
-@cindex Danish
-@cindex Sweden
-@cindex Swedish
-@cindex Germany
-@cindex German
-@cindex Norway
-@cindex Norwegian
-@cindex Nordic
-@cindex Double mode
-@cindex Double keystroke
-@cindex Letters
-@cindex National letters
-@cindex @samp{\o}
-@cindex @samp{\aa}
-@cindex @samp{\ae}
-@cindex @samp{\"@{o@}}
-@cindex @samp{\"@{a@}}
-@cindex @file{min-key.el}
-
-For some languages, it makes sense to remap the keyboard.  This is true
-for languages that add a small set of regular letters compared to the
-English character set.  The Scandinavian languages belong to this
-category.  Danish, Norwegian, and Swedish each add three extra letters
-compared to English, all of which are equal to the other letters in the
-alphabet.  They are @strong{not} considered accented versions of the
-``regular'' letters.
-
-Since these letters have a well defined place on any Scandinavian
-keyboard, it makes sense to remap these keys to insert the equivalent
-@TeX{} macros.  This can also be done on a keyboard with international
-layout, just map the keys at the locations where the national letters
-normally are found.
-
-In order to get the original binding of the keys, we can use a little
-trick.  If you press one of the national keys twice, the national letter
-will first be inserted, and then replaced with the original binding of
-the key.  This works since these national letters practically never
-occur twice in row in a Scandinavian word.
-
-The keyboard mapping is implemented as a minor mode.  To enter the minor
-mode for the first time, type @kbd{M-x keyboard-query-mapping}.  It will
-first prompt you for a language to use.  Currently only Danish,
-Swedish, German, and Russian are defined, so you have to chose one of
-those.  Norway use the same character set as Denmark.@refill
-
-Next, it will prompt you for what encoding of the language's character
-set to use for the keyboard and screen.  The same encodings are
-available for both the keyboard and screen, but they are not equally
-good.  Choosing e.g. @TeX{} for the keyboard encoding is not very useful.
-Below is a table of currently supported encodings.
-
-@table @samp
-@item ISO 646 (DK or SE)
-
-If your terminal thinks @{, |, and @} are letters, this is the encoding
-for you.  You can use it for either Keyboard or Screen encoding.
-
-@item Keyboard Layout
-
-If you have an international keyboard layout, use this for the keyboard
-encoding.  If you do not have an international keyboard layout -- but
-wish you had -- you can use it for the Screen encoding instead.
-
-@item Digraphs
-
-Two letter combinations that form poor substitutes for the real national
-letters.  It can be used as the Screen encoding, if you for example are
-sending electronic mail to someone on an unknown machine.
-
-@item TeX
-
-This is what you want to use for the Screen encoding when writing a
-@TeX{} document.
-
-@item ISO 8859 Latin 1
-
-Only useful if you have hacked Emacs to understand 8-bit characters.  
-
-@end table
-
-Finally, it will ask you if you want to get the original binding by
-pressing a key twice.  For the Scandinavian languages, you want this.
-
-@deffn Command keyboard-query-mapping
-@kindex M-x keyboard-query-mapping
-(@kbd{M-x keyboard-query-mapping}) Query the user for what mapping to
-use, and use it.@refill
-@end deffn
-
-After you have entered @code{keyboard-mode} once, you can leave and
-enter it with @kbd{M-x keyboard-mode}.  It will use the same mapping as
-last time you called @code{keyboard-query-mapping}.
-
-@deffn Command keyboard-query-mapping
-@kindex M-x keyboard-mode 
-(@kbd{M-x keyboard-mode}) Toggle keyboard-mode.
-With prefix arg, turn keyboard-mode on iff arg is positive.
-@end deffn
-
-This is still inconvenient, so you may want to define a special function
-to turn your favorite mapping on and of, as shown in the following
-example. 
-
-@lisp
-(defun tex-dk-double-mode (arg)
-  "DK TeX keys on international keyboard."
-  (interactive "P")
-  (require 'min-key)
-  (if (or (and (null arg) keyboard-mode)
-          (<= (prefix-numeric-value arg) 0))
-      (keyboard-mode -1)
-    (keyboard-set-mapping "Danish" "Keyboard Layout" "TeX" t)
-    (keyboard-mode 1)))
-@end lisp
-
-To enter new character sets or new encodings, you must edit the variable
-@code{language-encodings} in the file @file{min-key.el}.  Please send
-any new useful additions to me.
-
-@defopt language-encodings
-Language dependent mapping between different encodings.
-
-This list determines how to map between different encodings of the
-character set of a language.
-
-Each element in the list is itself a list.  
-
-The first element is the name of the language.
-
-The second element is a short name of the language.
-
-The third element is a list of short strings, each representing a
-possible encoding of the language's character set.
-
-The fourth element is a list of long strings, each representing the
-same encodings of the language's character set.
-
-The remaining elements each represent the encodings of one character.
-The encodings must appear in the same sequence as they were found in
-the second element.
-@end defopt
-
-@node Russian, Dvorak, Scandinavian, Internationalization
-@section Support for Russian
-@cindex Cyrillic
-@cindex Russian
-@cindex KOI8
-@cindex JCUKEN
-@cindex YAWERTY
-
-@xref{Scandinavian} for a general explanation of keyboard remapping. 
-
-For Russian it not only makes sense to remap the keyboard.  You have to
-do it, in order to get the Cyrillic character set from an ordinary
-QWERTY keyboard.  AUC @TeX{} will map QWERTY into the Russian keyboard
-layout YAWERTY, either with AMS Cyrillic encoding or the KOI8 character
-set encoding.  The standard Russian keyboard layout JCUKEN is not
-implemented, contributions welcome.
-
-The Russian character set encodings were kindly contributed by Justin R.
-Smith @samp{<jsmith@@king.mcs.drexel.edu>}, please direct questions to
-him.
-
-You can get a Cyrillic font for X11 from Serge Vakulenko
-@samp{<vak@@kiae.su>}.  You will need an Emacs capable of displaying 8
-bit characters to use it.
-
-@example
-        ---------------------------------------------
-        | English        Russian         Mixed      |
-        | keyboard       keyboard       keyboard    |
-        |                                           |
-        |  qwerty         jcuken        yawerty     |
-        |-------------------------------------------|
-        |   q Q      i-short I-short     ya Ya      |
-        |   w W          tse Tse         ve ve      |
-        |   e E            u U           ie Ie      |
-        |   r R           ka Ka          ar Er      |
-        |   t T           ie Ie          te Te      |
-        |   y Y           en En        iery Iery    |
-        |   u U          ghe Ghe          u U       |
-        |   i I          sha Sha          i I       |
-        |   o O        shcha Shcha        o O       |
-        |   p P            z Z           pe Pe      |
-        |   a A           ef Ef           a A       |
-        |   s S         iery Iery        es Es      |
-        |   d D           ve ve          de De      |
-        |   f F            a A           ef Ef      |
-        |   g G           pe Pe          ge Ge      |
-        |   h H           er Er         kha Kha     |
-        |   j J            o O      i-short I-short |
-        |   k K           el El          ka Ka      |
-        |   l L           de De          el El      |
-        |   z Z           ya Ya           z Z       |
-        |   x X          che Che        ier Ier     |
-        |   c C           es Es         tse Tse     |
-        |   v V           em Em         zhe Zhe     |
-        |   b B            i I           be Be      |
-        |   n N           te Te          en En      |
-        |   m M        ierik Ierik       em Em      |
-        |                                           |
-        |   [ @{          kha Kha        sha Sha     |
-        |   ] @}          ier Ier      shcha Shcha   |
-        |   ; :          zhe Zhe                    |
-        |   ' "        e-rev E-rev                  |
-        |   , <           be Be                     |
-        |   . >           yu Yu                     |
-        |   ` ~                          yu Yu      |
-        |   3 #                           3 ier     |
-        |   4 $            4 "                      |
-        |   5 %            5 :                      |
-        |   6 ^            6 ,                      |
-        |   7 &            7 .                      |
-        |   = +                         che Che     |
-        |   \ |                       e-rev E-rev   |
-        ---------------------------------------------
-@end example
-
-@node Dvorak, Accents, Russian, Internationalization
-@section Dvorak and QWERTY
-@cindex QWERTY
-@cindex Dvorak
-@cindex Keyboard layout
-@cindex Layout of the keyboard
-
-QWERTY is a well established standard for how the keys on a keyboard are
-placed.  It is almost universally accepted, most countries use it with
-only minor modifications to allow for any additional letters.  However,
-it is far from optimal.  It is even said that QWERTY was purposefully
-designed to slow down the typist, in order to protect the early
-typewriters.
-
-Modern research has shown that large speedups in typing can be obtained
-by designing a new keyboard radically different from the current
-standard.  Specifically, it should be split in two, and characters
-should be entered by pressing several keys at once.
-
-However, some small speedups can be obtained simply by remapping the
-keys using the same physical layout.  The Dvorak layout is an example of
-this.  It is usually not worth the frustration of having to master a
-different keyboard layout, but some people have made the effort.  
-
-With @code{keyboard-mode} you can use QWERTY layout on a Dvorak
-keyboard, or vice versa.  Simply type @kbd{M-x keyboard-query-mapping},
-select the ``language'' @samp{Keyboard Layout}, and specify the layout
-on the keyboard, and what layout you want on the screen.  Answer @kbd{n}
-when it asks you about pressing the key twice to get the original
-binding.  You can then switch between QWERTY and Dvorak with @kbd{M-x
-keyboard-mode}.@refill
-
-@xref{Scandinavian} for a more detailed description of these
-functions. 
-
-@node Accents, Converting, Dvorak, Internationalization
-@section Accents on Dead Keys
-@cindex @file{ltx-dead.el}
-@cindex Accented characters
-@cindex Accents
-
-In some languages, like German and Dutch, you can make variants of
-certain letters by giving them an accent mark.  A common way to enter
-these combined characters on a typewriter is by first typing a ``dead''
-key which prints the accent mark without moving the printers head, and
-then typing the letter.  In AUC @TeX{} we simulate this by marking
-certain keys as dead.  When you press one of those keys, it will wait
-for another key to be pressed.  To enter the accent by itself, press the
-dead key twice.  Examples: @kbd{' e} inserts @samp{\'@{e@}}.  @kbd{' '}
-inserts @samp{'}.  @kbd{' i} inserts @samp{\'@{\i@}}.@refill
-
-To enable this feature, you must first specify what accents you are
-interested in.  This is done by setting the variable
-@code{LaTeX-dead-keys}.
-
-@defopt LaTeX-dead-keys
-List of characters used as dead keys.  Valid characters are @samp{'},
-@samp{`}, @samp{"}, @samp{^}, and @samp{~}.  By default, all the valid
-characters are used.
-@end defopt
-
-This is best done in your @file{.emacs} file.  Then, you simply enable
-the dead keys with @kbd{M-x LaTeX-dead-mode}.
-
-@deffn Command LaTeX-dead-mode
-@kindex M-x LaTeX-dead-mode
-(@kbd{M-x LaTeX-dead-mode}) Toggle @code{LaTeX-dead-mode}.
-With prefix arg, turn @code{LaTeX-dead-mode} on iff arg is positive.
-
-This mode allows users to conveniently enter characters with accents,
-as found in some European languages.
-
-The supported accents are defined by @code{LaTeX-dead-keys}.  Modify
-that variable to change the list of dead keys. (You most likely want to
-do that).
-@end deffn
-
-@node Converting, Japanese, Accents, Internationalization
-@section Converting Between Encodings of a Character Set
-@cindex Converting 
-@cindex Character set conversions
-
-You can convert between any of the encodings for any of the supported
-character sets, even the special character set called @samp{Keyboard
-Layout}.  However, the most useful conversion is for the Latin1
-character set.  You convert the current region by typing
-@kbd{convert-character-query}.  It will ask you for a character set and
-two encodings of the character set. 
-
-@deffn Command convert-character-query
-@kindex M-x convert-character-query
-(@kbd{convert-character-query}) Convert characters in region, query user
-for character set and two encodings.
-@end deffn
-
-This function can be useful, not only when you want to import a file
-written with a different character set encoding, but also when you
-write @TeX{} documents normally.  You can use this function to edit the
-@TeX{} document using a character set that your terminal will display
-correctly, and then convert the file to @TeX{} format before you format
-it. 
-
-@node Japanese,  , Converting, Internationalization
-@section Japanese @TeX{} 
+@node Japanese, Automatic, Parsing Files, top
+@chapter Japanese @TeX{} 
 @cindex Japan
 @cindex Japanese
 @cindex Nippon
@@ -1843,8 +1560,7 @@ everything should work.  If not, send mail to Shinji Kobayashi
 (@samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
 supporting Japanese in AUC @TeX{}.  None of the primary AUC @TeX{}
 maintainers understand Japanese, so they can not help you.
-
-@node Automatic, Style Files, Internationalization, top
+@node Automatic, Style Files, Japanese, top
 @chapter Automatic Customization
 @cindex Automatic Customization
 @cindex Extracting @TeX{} symbols
@@ -2640,7 +2356,7 @@ insert
 @end lisp
 in their @file{.emacs}
 
-@node History, Minor Modes, Installation, top
+@node History, Projects, Installation, top
 @comment  node-name,  next,  previous,  up
 @appendix The History of AUC @TeX{}
 
@@ -2664,7 +2380,21 @@ this version, and for the authors, who get nostalgic at times.
 
 Coordinater: Per Abrahamsen, 1993.
 
+Alpha testers (in order of appearance): Marc Gemis
+@samp{<makke@@wins.uia.ac.be>}.  Shinji Kobayashi
+@samp{<koba@@flab.fujitsu.co.jp>}.@refill
+
 @itemize @bullet
+@item 
+Cleaned up all minor modes, also made them use @file{min-map.el} or
+@file{min-mode.el} instead of @file{min-bind.el}.
+
+@item
+Removed information about minor modes from this document.
+
+@item
+Cleaned up release management.
+
 @item
 AUC TeX will not longer be confused when you rewrite a file under a new
 name. 
@@ -2731,14 +2461,8 @@ R. Dodd @samp{<dodd@@roebling.poly.edu>}.
 
 @item
 No longer install a separate @code{outline-minor-mode} by default, as
-the FSF Emacs 19.19 @code{outline-minor-mode} is adequate.  The file
-@file{min-out.el} now emulates the FSF Emacs 19.19 mode under FSF Emacs
-18.  To anable it, install @file{min-out.el} somewhere in your
-@code{load-path}, and insert the following in your @file{.emacs} file.
-
-@lisp
-  (require 'min-out)
-@end lisp
+the FSF Emacs 19.19 @code{outline-minor-mode} is adequate.  The included
+file @file{outln-18.el} emulates the FSF Emacs 19.19 mode under Emacs 18.
 
 The FSF Emacs 19.19 @code{outline-minor-mode} use the @kbd{C-c} prefix
 instead of @kbd{C-c C-o} by default, and does not bind as many keys as
@@ -2746,8 +2470,8 @@ the @code{outline-minor-mode} distributed with earlier versions of AUC
 @TeX{} did.
 
 @lisp
-  (setq outline-minor-mode-prefix "\C-c\C-o)
-  (require 'outline) ; Replace with `min-out' for Emacs 18.
+  (setq outline-minor-mode-prefix "\C-c\C-o")
+  (require 'outline) ; Replace with `outln-18' for Emacs 18.
   (define-key outline-minor-mode-map "\C-c\C-o\C-t" 'hide-body)
   (define-key outline-minor-mode-map "\C-c\C-o\C-a" 'show-all)
   (define-key outline-minor-mode-map "\C-c\C-o\C-c" 'hide-entry)
@@ -3511,268 +3235,7 @@ Leonard Roseman
 Special thanks to Leslie Lamport for supplying the source for the LaTeX
 error messages in the @file{tex-dbg.el} file.
 
-@node Minor Modes, Supported symbols, History, top
-@appendix Various Minor Modes
-
-A number of minor modes are distributed with AUC @TeX{} for no good
-reason, except that they use @file{min-bind.el} and they are so small
-that it does not matter.
-
-Some of the minor modes have already been described elsewhere, the
-remaining will be described here.
-
-@menu
-* Auto Indent::                 Auto Indent Mode
-* Auto Ispell::                 Auto Ispell Mode
-@end menu
-
-@node Auto Indent, Auto Ispell, Minor Modes, Minor Modes
-@section Auto Indent Mode
-@cindex Indentation minor mode.
-@cindex Automatic indentation
-
-This is a minor mode version of @code{indented-text-mode}.
-Enter and leave with @kbd{M-x auto-indent-mode}.
-
-@deffn Command auto-indent-mode
-Toggle auto indent mode.
-With prefix arg, turn auto indent mode on iff arg is positive.
-
-Auto indent mode works by invoking @code{indent-relative} for @key{TAB},
-and using @code{indent-relative-maybe} as the
-@code{indent-line-function} for @code{auto-fill}, and @key{LFD}.@refill
-@end deffn
-@findex indent-relative
-@findex indent-line-function
-
-@node Auto Ispell,  , Auto Indent, Minor Modes
-@section Auto Ispell Mode
-@cindex Spelling
-@cindex Automatic spell checking
-@cindex Spell checking
-
-In @code{auto-ispell-mode} @key{SPC} or @key{RET} automatically trigger
-@code{ispell-word} on previously typed word.  @kbd{M-@key{TAB}} will
-make an ispell completion.@refill
-@findex ispell-word
-@findex ispell-complete-word
-
-Enter and leave with @kbd{M-x auto-ispell-mode}.
-
-@deffn Command auto-ispell-mode 
-(@kbd{M-x auto-ispell-mode}) Toggle auto-ispell-mode.
-With prefix arg, turn @code{auto-ispell-mode} on iff arg is positive.
-
-In @code{auto-ispell-mode}, inserting a space or a newline applies
-@code{ispell-word} on the previous word.@refill
-
-Pressing Esc-Tab activates ispell-complete-word.
-@end deffn
-
-@node Supported symbols, Projects, Minor Modes, top
-@appendix Currently supported symbols in LaTeX-math-mode
-
-@table @kbd
-@item ` ?
-Help, list of math symbols.
-
-@item ` a
-@samp{\alpha}
-
-@item ` b
-@samp{\beta}
-
-@item ` d
-@samp{\delta}
-
-@item ` e
-@samp{\epsilon}
-
-@item ` f
-@samp{\phi}
-
-@item ` g
-@samp{\gamma}
-
-@item ` h
-@samp{\eta}
-
-@item ` k
-@samp{\kappa}
-
-@item ` l
-@samp{\lambda}
-
-@item ` m
-@samp{\mu}
-
-@item ` n
-@samp{\nu}
-
-@item ` o
-@samp{\omega}
-
-@item ` p
-@samp{\pi}
-
-@item ` q
-@samp{\theta}
-
-@item ` r
-@samp{\rho}
-
-@item ` s
-@samp{\sigma}
-
-@item ` t
-@samp{\tau}
-
-@item ` u
-@samp{\upsilon}
-
-@item ` x
-@samp{\chi}
-
-@item ` y
-@samp{\psi}
-
-@item ` z
-@samp{\zeta}
-
-@item ` D
-@samp{\Delta}
-
-@item ` G
-@samp{\Gamma}
-
-@item ` Q
-@samp{\Theta}
-
-@item ` L
-@samp{\Lambda}
-
-@item ` Y
-@samp{\Psi}
-
-@item ` P
-@samp{\Pi}
-
-@item ` S
-@samp{\Sigma}
-
-@item ` U
-@samp{\Upsilon}
-
-@item ` V
-@samp{\Phi}
-
-@item ` O
-@samp{\Omega}
-
-@item ` C-f
-@samp{\rightarrow}
-
-@item ` C-b
-@samp{\leftarrow}
-
-@item ` C-p
-@samp{\uparrow}
-
-@item ` C-n
-@samp{\downarrow}
-
-@item ` <
-@samp{\leq}
-
-@item ` >
-@samp{\geq}
-
-@item ` ~
-@samp{\tilde}
-
-@item ` I
-@samp{\infty}
-
-@item ` A
-@samp{\forall}
-
-@item ` E
-@samp{\exists}
-
-@item ` !
-@samp{\not}
-
-@item ` i
-@samp{\in}
-
-@item ` *
-@samp{\times}
-
-@item ` .
-@samp{\cdot}
-
-@item ` @{
-@samp{\subset}
-
-@item ` @}
-@samp{\supset}
-
-@item ` [
-@samp{\subseteq}
-
-@item ` ]
-@samp{\supseteq}
-
-@item ` \
-@samp{\backslash}
-
-@item ` /
-@samp{\setminus}
-
-@item ` +
-@samp{\cup}
-
-@item ` -
-@samp{\cap}
-
-@item ` (
-@samp{\langle}
-
-@item ` )
-@samp{\rangle}
-
-@item ` C-e
-@samp{\exp}
-
-@item ` C-s
-@samp{\sin}
-
-@item ` C-c
-@samp{\cos}
-
-@item ` C-^
-@samp{\sup}
-
-@item ` C-_
-@samp{\inf}
-
-@item ` C-d
-@samp{\det}
-
-@item ` C-l
-@samp{\lim}
-
-@item ` C-t
-@samp{\tan}
-
-@item ` ^
-@samp{\hat}
-
-@item ` v
-@samp{\vee}
-@end table
-
-@node Projects, Credit, Supported symbols, top
+@node Projects, Credit, History, top
 @comment  node-name,  next,  previous,  up
 @appendix Wishlist
 

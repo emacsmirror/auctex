@@ -1,6 +1,6 @@
 % -*- plain-tex -*- 
-% $Id: ref-card.tex,v 1.12 1993-09-09 23:49:37 amanda Exp $
-% Reference Card for Auc TeX version 7
+% $Id: math-ref.tex,v 1.1 1993-09-09 23:49:35 amanda Exp $
+% Reference Card for LaTeX Math Minor Mode
 %**start of header
 \newcount\columnsperpage
 
@@ -10,8 +10,8 @@
 \columnsperpage=2
 
 % This file is intended to be processed by plain TeX (TeX82).
-% compile-command: "tex ref-card.tex"
-%
+% compile-command: "tex auc-tex-ref.tex"
+
 % Original author of Auc-TeX Reference Card:
 %                                  
 %       Terrence Brannon, PO Box 5027, Bethlehem, PA 18015 , USA
@@ -24,7 +24,7 @@
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{8}
+\def\versionnumber{5.2}
 \def\year{1993}
 \def\version{February \year\ v\versionnumber}
 
@@ -42,7 +42,6 @@
 Permission is granted to make and distribute copies of
 this card provided the copyright notice and this permission notice
 are preserved on all copies.
-
 
 \endgroup}
 
@@ -196,87 +195,92 @@ are preserved on all copies.
 %**end of header
 
 
-\title{AUC \TeX\ Reference Card}
+\title{Math Mode Reference Card}
 
 \centerline{(for version \versionnumber)}
 
-\section{Conventions Used}
+\section{Variables}
 
-\key{Carriage Return}{RET}
-\key{Tabular}{TAB}
-\key{Linefeed}{LFD}
+All math mode commands are under the prefix key specified by
+LaTeX-math-abbrev-prefix, default is "`".
 
-Mode variables: You want to change the variables found in the file
-`{\tt tex-site.el}' in the AUC-\TeX\ distribution for your site.  The
-other variables should be set by the individual user.  
+You can define your own math mode commands by setting the variable
+LaTeX-math-list before loading LaTeX-math-mode.
 
-Entering LaTeX mode calls the value of text-mode-hook, then the value
-of TeX-mode-hook, and then the value of LaTeX-mode-hook.
+\section{Greek Letters}
 
-\section{Shell Interaction}
+\key{alpha}{a}
+\key{beta}{b}
+\key{delta}{d}
+\key{epsilon}{e}
+\key{phi}{f}
+\key{gamma}{g}
+\key{eta}{h}
+\key{kappa}{k}
+\key{lambda}{l}
+\key{mu}{m}
+\key{nu}{n}
+\key{omega}{o}
+\key{pi}{p}
+\key{theta}{q}
+\key{rho}{r}
+\key{sigma}{s}
+\key{tau}{t}
+\key{upsilon}{u}
+\key{chi}{x}
+\key{psi}{y}
+\key{zeta}{z}
+\key{Delta}{D}
+\key{Gamma}{G}
+\key{Theta}{Q}
+\key{Lambda}{L}
+\key{Psi}{Y}
+\key{Pi}{P}
+\key{Sigma}{S}
+\key{Upsilon}{U}
+\key{Phi}{V}
+\key{Omega}{O}
 
-\key{Run a command on the master file}{C-c C-c}
-\key{Run a command on the region}{C-c C-r}
-\key{Kill job}{C-c C-k}
-\key{Recenter output buffer}{C-c C-l}
-\key{Next error in \TeX/LaTeX session}{C-c `}
-\key{Toggle debug of wonderful boxes}{C-c C-w}
-\key{Switch to master file or active buffer}{C-c ^}
+\section{Symbols}
 
-Commands you can run on the master file (with C-c C-c) or the region
-(with C-c C-r) include the following.
+\key{rightarrow}{C-f}
+\key{leftarrow}{C-b}
+\key{uparrow}{C-p}
+\key{downarrow}{C-n}
+\key{leq}{<}
+\key{geq}{>}
+\key{tilde}{~}
+\key{infty}{I}
+\key{forall}{A}
+\key{exists}{E}
+\key{not}{!}
+\key{in}{i}
+\key{times}{*}
+\key{cdot}{.}
+\key{subset}{\{}
+\key{supset}{\}}
+\key{subseteq}{[}
+\key{supseteq}{]}
+\key{backslash}{\\}
+\key{setminus}{/}
+\key{cup}{+}
+\key{cap}{-}
+\key{langle}{(}
+\key{rangle}{)}
+\key{exp}{C-e}
+\key{sin}{C-s}
+\key{cos}{C-c}
+\key{sup}{C-^}
+\key{inf}{C-_}
+\key{det}{C-d}
+\key{lim}{C-l}
+\key{tan}{C-t}
+\key{hat}{^}
+\key{vee}{v}
 
-\key{\TeX}{TeX}
-\key{LaTeX}{LaTeX}
-\key{SliTeX}{SliTeX}
-\key{A previewer}{View}
-\key{Printing the DVI file}{Print}
-\key{Bib\TeX}{BibTeX}
-\key{MakeIndex}{Index}
-\key{LaCheck}{Check}
+\section{Miscellanious}
 
-\section{Command Insertion}
-
-\key{Insert Section}{C-c C-s}
-\key{Insert LaTeX environment}{C-c C-e}
-\key{Insert item}{C-c LFD}
-\key{Close LaTeX environment}{C-c ]}
-\key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
-\key{Insert double brace}{C-c \{}
-\key{Complete \TeX\ macro}{C-c TAB}
-\key{Smart ``quote''}{"}
-\key{Smart ``dollar''}{\$}
-  
-\section{Font Selection}
-
-\key{Insert {\bf bold} text}{C-c C-f C-b}
-\key{Insert {\it italics\/} text}{C-c C-f C-i}
-\key{Insert {\rm roman} text}{C-c C-f C-r}
-\key{Insert {\it emphasized} text}{C-c C-f C-e}
-\key{Insert {\tt typewriter} text}{C-c C-f C-t}
-\key{Insert {\sl slanted\/} text}{C-c C-f C-s}
-\key{Insert small caps text}{C-c C-f C-c}
-
-\section{Source Formatting}
-
-\key{Indent current line}{TAB}
-\key{Indent next line}{LFD}
-
-\key{Format a paragraph}{C-c C-q C-p}
-\key{Format a region}{C-c C-q C-r}
-\key{Format a section}{C-c C-q C-s}
-\key{Format an environment}{C-c C-q C-e}
-
-\key{Mark an environment}{C-c .}
-\key{Mark a section}{C-c *}
-
-\key{(Un)comment region}{C-c ;}
-\key{(Un)comment paragraph}{C-c \%}
-
-\section{Miscellaneous}
-
-\key{Math Mode}{C-c ~}
-\key{Reset AUC TeX}{C-c C-n}
+\key{cal letters}{c {\rm LETTER}}
 
 \copyrightnotice
 

@@ -2,9 +2,15 @@
 infodir=/usr/local/info
 TEX=tex
 
-all: auc-tex.dvi ref-card.dvi auc-info
+all: auc-tex.dvi ref-card.dvi math-ref.dvi auc-info
 
 dist: auc-info
+
+math-ref.dvi: math-ref.tex
+	$(TEX) math-ref
+	@echo "**********************************************************"
+	@echo "** doc/math-ref.dvi may now be printed (1 page)"
+	@echo "**********************************************************"
 
 ref-card.dvi: ref-card.tex
 	$(TEX) ref-card

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.45 1993-09-06 22:27:23 amanda Exp $
+;; $Id: tex-buf.el,v 1.46 1993-09-09 23:49:04 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -150,7 +150,7 @@ the master file."
 
   (if (or (null TeX-command-buffer)
 	  (eq TeX-command-buffer (current-buffer)))
-      (find-file (TeX-master-file "tex"))
+      (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
 
 (defun TeX-next-error (reparse)
@@ -715,7 +715,7 @@ original file."
 	 (trailer-start TeX-trailer-start)
 	 
 	 ;; We seach for header and trailer in the master file.
-	 (master-name (TeX-master-file "tex"))
+	 (master-name (TeX-master-file TeX-default-extension))
 	 (master-buffer (find-file-noselect master-name))
 	 
 	 ;; And insert them into the FILE buffer.

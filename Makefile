@@ -1,6 +1,6 @@
+# Makefile - for the AUC TeX distribution.
 #
-# Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.65 1993-09-06 22:41:24 amanda Exp $
+# $Id: Makefile,v 5.66 1993-09-09 23:48:44 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -26,7 +26,7 @@ mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located.
 #elispdir=/home/dist/lib/emacs/lisp
-elispdir=$(prefix)/lib/emacs/19.17/lisp
+elispdir=$(prefix)/lib/emacs/19.19/lisp
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -34,7 +34,7 @@ elispdir=$(prefix)/lib/emacs/19.17/lisp
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 #
-#aucdir=/home/pd/share/emacs/auctex7.2
+#aucdir=/home/pd/share/emacs/auctex8.0
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
@@ -90,17 +90,18 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = tex-math.el
+REMOVE = outline.v18
 
-MINMAPSRC = min-map.el  remap.el    map-euro.el dvorak.el map-tex.el \
-	    min-ind.el	min-ispl.el column.el # outline.el
+MINMAPSRC = min-map.el  remap.el    map-euro.el dvorak.el   map-tex.el \
+	    min-ind.el	min-ispl.el column.el   outln-18.el easymenu.el \
+	    ltx-math.el 
 
-MINMAPFILES = $(MINMAPSRC) outline.v18
+MINMAPFILES = $(MINMAPSRC)
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el  tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
-	 ltx-math.el  ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el \
-	 loaddefs.el  
+	 ltx-misc.el  ltx-env.el  ltx-sec.el  tex-info.el \
+	 loaddefs.el  tex-18.el   tex-19.el   tex-lcd.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
@@ -120,9 +121,9 @@ LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 
 LACHECKGEN = lacheck.c lacheck.1 test.old
 
-DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex
+DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex doc/math-ref.tex
 
-EXTRAFILES = COPYING README PROBLEMS Makefile dbg-jp.el lpath.el outline.v18
+EXTRAFILES = COPYING README PROBLEMS Makefile dbg-jp.el lpath.el
 
 first:
 	@echo ""
@@ -145,6 +146,8 @@ all: main
 	@echo "** Before running \`make install' you should edit the "
 	@echo "** file \`tex-site.el' in this directory to suit your"
 	@echo "** local needs.  Then run: \`make install'"
+	@echo "** "
+	@echo "** Expect some warnings from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 
 main: Doc LaCheck
@@ -264,7 +267,7 @@ dist:
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
 	-(cd format; cvs add `echo $(FORMATSRC) | sed -e s@format/@@g` )
 	cvs commit 
-	cvs tag release_$(TAG) 
+	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style auctex-$(TAG)/format 
 	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
