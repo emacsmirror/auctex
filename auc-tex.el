@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-23 15:46:40 $|$Revision: 5.13 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-23 16:32:51 $|$Revision: 5.14 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.13 $  
+;; RCS status      : $Revision: 5.14 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Jan 23 16:43:53 1992
-;; Update Count    : 478
+;; Last Modified On: Thu Jan 23 17:27:39 1992
+;; Update Count    : 480
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,7 +112,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Thanks a lot to Leslie Lamport for supplying the source 
-;;  for the LaTeX error messages in the tex-debug.el module
+;;  for the LaTeX error messages in the tex-dbg.el module
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -131,11 +131,11 @@
 ;; Futher variables for customization are found in the individual
 ;; modules:
 ;; 
-;; latex-section       : Smart sectioning
-;; latex-environment   : Smart handling of environments 
-;; tex-buffer          : Invoking TeX/LaTeX from an inferior shell
+;; ltx-sec       : Smart sectioning
+;; ltx-env   : Smart handling of environments 
+;; tex-buf          : Invoking TeX/LaTeX from an inferior shell
 ;;                       includes also print/preview/makeindex etc.
-;; tex-debug           : Debugging documents, when they have been run
+;; tex-dbg           : Debugging documents, when they have been run
 ;; tex-misc            : Miscellaneous functions
 ;; tex-math            : Smart bindings for math symbols
 ;;
@@ -191,28 +191,28 @@ as the definition of this this function is placed in an external module."))
   (autoload 'outline-minor-mode "outline-m" no-doc t)
 
   ;; sectioning commands
-  (autoload 'LaTeX-section "latex-section" no-doc t)
+  (autoload 'LaTeX-section "ltx-sec" no-doc t)
 
   ;; environment commands
-  (autoload 'LaTeX-environment "latex-environment" no-doc t)
-  (autoload 'LaTeX-insert-item "latex-environment" no-doc t)
-  (autoload 'LaTeX-close-environment "latex-environment" no-doc t)
+  (autoload 'LaTeX-environment "ltx-env" no-doc t)
+  (autoload 'LaTeX-insert-item "ltx-env" no-doc t)
+  (autoload 'LaTeX-close-environment "ltx-env" no-doc t)
 
   ;; invoking tex
-  (autoload 'TeX-home-buffer "tex-buffer" no-doc t)
-  (autoload 'TeX-region "tex-buffer" no-doc t)
-  (autoload 'TeX-buffer "tex-buffer" no-doc t)
-  (autoload 'TeX-kill-job "tex-buffer" no-doc t)
-  (autoload 'TeX-recenter-output-buffer "tex-buffer" no-doc t)
-  (autoload 'TeX-preview "tex-buffer" no-doc t)
-  (autoload 'TeX-print "tex-buffer" no-doc t)
-  (autoload 'LaTeX-bibtex "tex-buffer" no-doc t)
-  (autoload 'LaTeX-makeindex "tex-buffer" no-doc t)
+  (autoload 'TeX-home-buffer "tex-buf" no-doc t)
+  (autoload 'TeX-region "tex-buf" no-doc t)
+  (autoload 'TeX-buffer "tex-buf" no-doc t)
+  (autoload 'TeX-kill-job "tex-buf" no-doc t)
+  (autoload 'TeX-recenter-output-buffer "tex-buf" no-doc t)
+  (autoload 'TeX-preview "tex-buf" no-doc t)
+  (autoload 'TeX-print "tex-buf" no-doc t)
+  (autoload 'LaTeX-bibtex "tex-buf" no-doc t)
+  (autoload 'LaTeX-makeindex "tex-buf" no-doc t)
   
   ;; `debugging' commands
-  (autoload 'TeX-next-error "tex-debug" no-doc t)
-  (autoload 'TeX-toggle-debug-boxes "tex-debug" no-doc t)
-  (autoload 'TeX-help-error "tex-debug" no-doc t)
+  (autoload 'TeX-next-error "tex-dbg" no-doc t)
+  (autoload 'TeX-toggle-debug-boxes "tex-dbg" no-doc t)
+  (autoload 'TeX-help-error "tex-dbg" no-doc t)
   
   ;; miscellaneous
   (autoload 'TeX-comment-out-region "tex-misc" no-doc t)
@@ -221,7 +221,7 @@ as the definition of this this function is placed in an external module."))
   (autoload 'TeX-un-comment-region "tex-misc" no-doc t)
   (autoload 'TeX-validate-buffer "tex-misc" no-doc t)
   (autoload 'TeX-terminate-paragraph "tex-misc" no-doc t)
-  (autoload 'TeX-complete-symbol "tex-complete" no-doc t)
+  (autoload 'TeX-complete-symbol "tex-cpl" no-doc t)
   )
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
