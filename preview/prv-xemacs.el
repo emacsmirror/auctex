@@ -634,6 +634,12 @@ Disable it if that is the case.  Ignores text properties."
 		    ov (extent-start-position ov) maparg)) nil
 		    end end beg 'end-in-region 'preview-state 'active)))
 
+;; Now bind the list of compatibility macros into the compiled code.
+
+(defvar preview-compatibility-macros
+  (eval-when-compile preview-compatibility-macros)
+    "List of macros only present when compiling/loading.")
+
 (provide 'prv-xemacs)
 
 ;;; Local variables:
