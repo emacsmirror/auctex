@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10h
+;; Version: 9.10i
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -408,6 +408,8 @@ The beaviour of this hook is controled by `LaTeX-section-label'."
   :type 'string)
  (make-variable-buffer-local 'LaTeX-default-environment)
 
+(defvar LaTeX-environment-history nil)
+
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
 With optional ARG, modify current environment.
@@ -429,7 +431,9 @@ It may be customized with the following variables:
                                                    "document"
                                                  LaTeX-default-environment)
                                                ") ")
-                                       (LaTeX-environment-list))))
+				      (LaTeX-environment-list)
+				      nil nil nil
+				      'LaTeX-environment-history)))
     ;; Get default
     (cond ((and (zerop (length environment))
                 (TeX-near-bobp))
@@ -465,8 +469,8 @@ It may be customized with the following variables:
 	     (while prompts
 	       (setq args (concat args
 				  TeX-grop
-				  (read-from-minibuffer (concat (car prompts)
-								": "))
+				  (read-from-minibuffer 
+				   (concat (car prompts) ": "))
 				  TeX-grcl))
 	       (setq prompts (cdr prompts)))
 	     (LaTeX-insert-environment environment args)))

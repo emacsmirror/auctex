@@ -1,3 +1,26 @@
+1999-10-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10i released.
+
+1999-10-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-master-directory): Call `substitute-in-file-name'.
+	Patch by Alexander Holt <alexander.holt@ed.ac.uk>.
+	
+	* style/ngerman.el: New style.
+	Suggested by Torsten Schuetze <schuetze@math.tu-dresden.de>.
+	* Makefile (STYLESRC): Added it.
+
+	* tex-buf.el (TeX-command-query): Added history argument.
+	Suggested by Werner LEMBERG <sx0005@sx2.HRZ.Uni-Dortmund.DE>.
+
+	* latex.el (LaTeX-environment): Added history argument.
+
+	* tex.el (TeX-add-style-hook): Don't add the same hook twice.
+	Suggested by Jarl Friis <jarl@diku.dk>.
+
+	* text.el: Removed portability code for old Emacsen.
+
 1999-10-25  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10h released.

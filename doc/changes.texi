@@ -1,6 +1,12 @@
 @section News in 9.10
 
 @itemize @bullet
+@item @code{ngerman} style support.
+Just a copy of the german style support.
+
+@item
+Removed support for emacsen older than XEmacs 19.14 and Emacs 19.30.
+
 @item @code{mdwlist} support.
 Patch by Stephen Heilbronner <heilbron@@nm.informatik.uni-muenchen.de>.
 

@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10h
+;; Version: 9.10i
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -212,7 +212,8 @@ command."
     ;; Verify the expanded command
     (if confirm
 	(setq command
-	      (read-from-minibuffer (concat name " command: ") command)))
+	      (read-from-minibuffer (concat name " command: ") command
+				    nil nil)))
     
     ;; Now start the process
     (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
@@ -309,6 +310,8 @@ in TeX-check-path."
   :group 'TeX-commands
   :type 'boolean)
 
+(defvar TeX-command-history nil)
+
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
   (let* ((default (cond ((if (string-equal name TeX-region)
@@ -332,7 +335,8 @@ in TeX-check-path."
 	 (answer (or TeX-command-force
 		     (completing-read
 		      (concat "Command: (default " default ") ")
-		      TeX-command-list nil t))))
+		      TeX-command-list nil t
+		      nil 'TeX-command-history))))
     ;; If the answer "latex" it will not be expanded to "LaTeX"
     (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
     (if (and answer
