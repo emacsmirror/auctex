@@ -1,3 +1,11 @@
+2004-01-14  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-parsed-pdfoutput): Add detection for PDF
+	output from preview.sty.
+	(mail-header-encode-parameter): Encode the header ourselves: it
+	seems that versions of the library are not good at that.
+	(preview-parse-variables): Add `preview-parsed-pdfoutput'.
+
 2004-01-12  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* RELEASE: Prepare for 0.9
