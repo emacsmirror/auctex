@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.157 2002-07-30 22:38:19 dakas Exp $
+;; $Id: preview.el,v 1.158 2002-08-03 23:49:32 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1451,8 +1451,10 @@ and the corresponding topdir."
       (preview-toggle ov t)))
   tempdirlist)
 
-(defun preview-back-command ()
-  "Move backward a TeX token."
+(defun preview-back-command (&optional nocomplex)
+  "Move backward a TeX token.
+If NOCOMPLEX is set, only basic tokens and no argument sequences
+will be skipped over backwards."
   (let ((oldpos (point)) oldpoint)
     (condition-case nil
 	(or (search-backward-regexp "\\(\\$\\$?\
@@ -1460,6 +1462,7 @@ and the corresponding topdir."
 \\|\\\\[a-zA-Z@]+\
 \\|\\\\begin[ \t]*{[^}]+}\
 \\)\\=" (line-beginning-position) t)
+	    nocomplex
 	    (if (eq ?\) (char-syntax (char-before)))
 		(while
 		    (progn
@@ -1913,12 +1916,12 @@ name(\\([^)]+\\))\\)\\|\
 				    (nconc
 				     (preview-place-preview
 				      snippet
-				      (if (/= (point) lstart)
-					  (save-excursion
-					    (goto-char lstart)
-					    (preview-back-command)
-					    (point))
-					lstart)
+				      (save-excursion
+					(preview-back-command
+					 (= (prog1 (point)
+					      (goto-char lstart))
+					    lstart))
+					(point))
 				      (point)
 				      (preview-TeX-bb box)
 				      tempdir
@@ -2144,7 +2147,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.157 $"))
+	(rev "$Revision: 1.158 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2155,7 +2158,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-30 22:38:19 $"))
+    (let ((date "$Date: 2002-08-03 23:49:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
