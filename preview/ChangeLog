@@ -1,3 +1,19 @@
+2002-02-11  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/problems.texi: Minor changes
+
+	* doc/readme.texi: Shortened
+
+	* doc/Makefile: Added --no-validate on README
+
+	* doc/install.texi: Layout changes, xref to PROBLEMS shortened
+
+	* doc/problems.texi:
+	Layout changes, added text on bug reports and GS EPS handling
+
+	* doc/preview-latex.texi:
+	Layout changes, install-info fix, index additions
+
 2002-02-11  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/Makefile (install): install the renamed info files.
