@@ -1,3 +1,16 @@
+2004-10-23  Miguel Frasson  <frasson@math.leidenuniv.nl>
+
+	* toolbar-x.el:
+	(toolbarx-emacs-mount-popup-menu): Nil cannot be a menu key
+	anymore (fixed).
+	(toolbarx-test-image-type): Improve comments.  Add support for
+	variables defined with `defimage', which are considered a simple
+	value for the :image property.
+	(toolbarx-emacs-refresh): Nil cannot be a toolbar (menu) key
+	anymore (fixed).
+	(toolbarx-install-toolbar): Improved documentation for the :image
+	property.
+	
 2004-10-22  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* tex-bar.el: Improve comments.  Symbol-toolbar code moved to the
