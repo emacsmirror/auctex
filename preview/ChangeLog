@@ -1,3 +1,8 @@
+2002-02-17  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/problems.texi (LaTeX international characters): Mention
+	that configure might barf.
+
 2002-02-15  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* RELEASE: RPM info added, "for RH 7.x"
