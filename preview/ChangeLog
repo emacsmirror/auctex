@@ -1,5 +1,8 @@
 2002-11-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi: Remove preview-gs-broken-security docs.  See
+	below.
+
 	* preview.el (require): Don't abort compilation if desktop or
 	reporter packages are not installed.
 	(preview-gs-broken-security): Removed:
