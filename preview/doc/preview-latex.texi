@@ -1,6 +1,6 @@
 \input texinfo
 @setfilename preview-latex
-@settitle Preview-LaTeX
+@settitle preview-latex
 @direntry
 * Preview: (preview-latex).      A LaTeX preview mode for AUC TeX in Emacs.
 @end direntry
@@ -8,7 +8,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 @iftex
-@tolerance 10000
+@tolerance 10000 @emergencystretch 3em
 @end iftex
 
 @finalout
@@ -311,43 +311,43 @@ the preview package is loaded using default options from
 
 This run produces a dvi file where every preview is on a separate page.
 As usual with AUC @TeX{}, you can continue working while this is going
-on.  It is not a good idea to change the file until after Preview
-La@TeX{} has established where to place the previews which it can only
-do after the La@TeX{} run completes.  This run produces a host of
-pseudo-error messages that get parsed by Preview La@TeX at the end of the
-La@TeX{} run and give it the necessary information about where in the
-source file the La@TeX{} code for the various previews is located
-exactly. The parsing takes a moment and will render Emacs busy. Before
-Emacs starts the parsing of the error messages, it starts conversion of
-the previews into PostScript @acronym{eps} files, by calling the configurable
+on.  It is not a good idea to change the file until after preview-latex
+has established where to place the previews which it can only do after
+the La@TeX{} run completes.  This run produces a host of pseudo-error
+messages that get parsed by preview-latex at the end of the La@TeX{} run
+and give it the necessary information about where in the source file the
+La@TeX{} code for the various previews is located exactly. The parsing
+takes a moment and will render Emacs busy. Before Emacs starts the
+parsing of the error messages, it starts conversion of the previews into
+PostScript @acronym{EPS} files, by calling the configurable
 @code{preview-dvips-command}. The printer specified in there is
 @code{-Pwww} by default, which will usually get you scalable fonts where
 available. If you are experiencing problems, you might want to try
-playing around with dvips options @inforef{Command-line options,,dvips}.
+playing around with Dvips options @inforef{Command-line options,,dvips}.
 
 When Emacs has finished parsing the error messages, it activates all
 detected previews.  This entails throwing away any previous previews
 covering the same areas, and then replacing the text in its visual
 appearance by a placeholder looking like a question mark.
 
-What happens when dvips is finished depends on the configuration of
+What happens when Dvips is finished depends on the configuration of
 @code{preview-image-type}. If this is set to @code{'postscript},
-preview-latex will simply tell Emacs about where it can find the @acronym{eps}
-files for each image and will then be finished. Emacs runs GhostScript
-whenever it finds it needs to have one image displayed. It turns out
-that at the time of writing, the implementation in Emacs causes this to
-make editing painfully slow and non-responsive. This is because Emacs
-starts one GhostScript process per image. For this reason,
+preview-latex will simply tell Emacs about where it can find the
+@acronym{EPS} files for each image and will then be finished. Emacs runs
+GhostScript whenever it finds it needs to have one image displayed. It
+turns out that at the time of writing, the implementation in Emacs
+causes this to make editing painfully slow and non-responsive. This is
+because Emacs starts one GhostScript process per image. For this reason,
 @code{preview-image-type} defaults to @code{'png}. This makes
 preview-latex start up a single GhostScript process on its own and feeds
-it the various @acronym{eps} files in sequence for conversion into PNG format
-which can be displayed much faster by Emacs. Actually, not in sequence
-but backwards since you are most likely editing at the end of the
-document. And as an added convenience, any preview that happens to be
-on-screen is given higher priority so that preview-latex will first
-cater for the images that are displayed. There are various options
-customizable concerning aspects of that operation, see the customization
-group @code{preview-gs} for this.
+it the various @acronym{EPS} files in sequence for conversion into
+@acronym{PNG} format which can be displayed much faster by
+Emacs. Actually, not in sequence but backwards since you are most likely
+editing at the end of the document. And as an added convenience, any
+preview that happens to be on-screen is given higher priority so that
+preview-latex will first cater for the images that are displayed. There
+are various options customizable concerning aspects of that operation,
+see the customization group @code{preview-gs} for this.
 
 Running and feeding GhostScript from preview-latex happens
 asynchronously again: you can resume editing while the images arrive.
@@ -357,14 +357,14 @@ afterwards will not take away your attention and will eventually
 guarantee that jumping around in the document will encounter only
 prerendered images.
 
-@section On @acronym{eps} previews
+@section On @acronym{EPS} previews
 
 @cindex @code{preview-image-type}
 @cindex @code{preview-image-creators}
 As mentioned above, preview-latex's default mechanism calls GhostScript
 itself for first rendering all preview images into png format, then the
 rendered images get used instead of making use of Emacs' builtin
-@acronym{eps} support. For this to work, your version of GhostScript
+@acronym{EPS} support. For this to work, your version of GhostScript
 needs to support the @option{png256} device. Other options are available
 by customizing @code{preview-image-type}. The appropriate type must be
 supported in the @code{preview-image-creators} variable which you can
@@ -374,7 +374,7 @@ using should be possible if you take the existing settings as
 example. Please send information about such devices to the addresses
 mentioned in the README file so that we can improve preview-latex.
 
-IF you want to use Emacs' embedded @acronym{eps} rendering support
+IF you want to use Emacs' embedded @acronym{EPS} rendering support
 (which is @emph{not} the default), you almost certainly want to put
 @code{(setq gs-device "x11alpha")} into your @file{.emacs} file. This
 will turn on anti-aliasing.
@@ -419,7 +419,7 @@ of those previews is goofed up, you will not be able to regenerate them
 by clicking on them. The default behaviour is thus somewhat undesirable.
 
 The solution (like with other preview problems) is to tell the La@TeX{}
-\samp{preview} package how to tackle this problem. You know the
+@samp{preview} package how to tackle this problem. You know the
 @code{\PreviewMacro} command explained above (cough, cough). There is a
 variant @code{\PreviewMacro*} and its cousin @code{\PreviewEnvironment*}
 that do just the opposite. @code{\PreviewMacro\somecommand} puts the
