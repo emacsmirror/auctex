@@ -1,3 +1,17 @@
+2004-01-04  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-equality-transforms)
+	(preview-relaxed-string=, preview-walk-document)
+	(preview-required-option-list): Doc changes.
+	(preview-disabled-string, preview-inactive-string)
+	(preview-active-string, preview-place-preview)
+	(preview-reinstate-preview): Use new context menus and give help
+	strings for them.
+	(preview-copy-text, preview-copy-mml, preview-active-contents)
+	(preview-context-menu): Implement context menu and functionality.
+	(mail-header-encode-parameter): Add an autoload cookie for this
+	function taken from `mail-parse.el'.
+
 2003-12-08  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.texi: 
