@@ -464,9 +464,6 @@ be altered to prevent overfull lines."
     (overlay-put ov 'TeX-fold-type type)
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
     (overlay-put ov 'TeX-fold-display-string display-string)
-    (overlay-put ov 'TeX-fold-help-echo
-		 (unless (zerop TeX-fold-help-echo-max-length)
-		   (TeX-fold-make-help-echo ov-start ov-end)))
     ov))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end)
@@ -558,8 +555,7 @@ The text between START and END will be used for this but cropped
 to the length defined by `TeX-fold-help-echo-max-length'.  Line
 breaks will be replaced by spaces."
   (let* ((spill (+ start TeX-fold-help-echo-max-length))
-	 (lines (split-string
-		 (buffer-substring-no-properties start (min end spill)) "\n"))
+	 (lines (split-string (buffer-substring start (min end spill)) "\n"))
 	 (result (pop lines)))
     (dolist (line lines)
       ;; Strip leading whitespace
@@ -645,7 +641,9 @@ That means, put respective properties onto overlay OV."
       (when font-lock-mode
 	(overlay-put ov 'face TeX-fold-folded-face))
       (overlay-put ov 'display display-string)
-      (overlay-put ov 'help-echo (overlay-get ov 'TeX-fold-help-echo)))))
+      (unless (zerop TeX-fold-help-echo-max-length)
+	(overlay-put ov 'help-echo (TeX-fold-make-help-echo
+				    (overlay-start ov) (overlay-end ov)))))))
 
 (defun TeX-fold-show-item (ov)
   "Show a single LaTeX macro or environment.
