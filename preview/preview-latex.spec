@@ -1,18 +1,29 @@
 %define HAVE_EMACS  %(which emacs  >/dev/null 2>/dev/null && echo 1 || echo 0)
 %define HAVE_XEMACS %(which xemacs >/dev/null 2>/dev/null && echo 1 || echo 0)
 
+%define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
+
+%if %{FOR_SUSE}
+%define distri      SuSE_9.0
+%define commongroup Productivity/Editors/Emacs
+%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%else
+%define distri      Redhat_9.0
+%define commongroup Applications/Editors
+%define xemacspkgdir %{_libdir}/xemacs/site-packages
+%endif
+
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.7.8
-Release: 	1
+Release: 	1.%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 License: 	GPL
-Group: 		Applications/Editors
+Group: 		%{commongroup}
 BuildRoot: 	%{_tmppath}/%{name}-root
 Prereq:		info
-Requires:	auctex >= 11.0
 Requires:	ghostscript >= 6.51
 Requires:	tetex tetex-dvips
 BuildRequires:	texinfo >= 4.0
@@ -24,7 +35,7 @@ LaTeX equations right into the editing window where they belong.
 
 %package common
 Summary: 	Emacs/LaTeX inline preview (LaTeX style and docs)
-Group: 		Applications/Editors
+Group: 		%{commongroup}
 
 %description common
 Does your neck hurt from turning between previewer windows and the
@@ -35,9 +46,10 @@ This package contains the LaTeX style files and the documentation.
 
 %package emacs
 Summary:	Emacs/LaTeX inline preview (GNU Emacs lisp files)
-Group: 		Applications/Editors
+Group: 		%{commongroup}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	emacs >= 21.1
+Requires:	auctex >= 11.0
 Obsoletes:	preview-latex
 
 %description emacs
@@ -49,7 +61,7 @@ This package contains the lisp modules for GNU Emacs 21.1 or higher.
 
 %package xemacs
 Summary:	Emacs/LaTeX inline preview (XEmacs lisp files)
-Group: 		Applications/Editors
+Group: 		%{commongroup}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	xemacs >= 21.1.14
 
@@ -86,58 +98,57 @@ for i in *emacs; do
   test -f ./configure || ./autogen.sh
   # --with-texmf-dir overrides local docstrip configurations.
   # --with-packagedir repairs RedHat XEmacs braindamage
-  %configure --with-$i --with-texmf-dir=\$\{datadir\}/texmf \
-	--with-packagedir=\$\{libdir\}/xemacs/site-packages \
-        --disable-8bit-test
-  make
+  %configure "--with-$i" '--with-texmf-dir=%{_datadir}/texmf' \
+	'--with-packagedir=%{xemacspkgdir}'
+  make 'infodir=%{_infodir}'
   popd
 done
 
 %install 
 
-rm -rf %{buildroot}
+rm -rf '%{buildroot}'
 for i in *emacs; do
   pushd $i
   if [ $i == "emacs" ]; then 
     # Install GNU Emacs site-start.d file for RedHat
-    mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+    mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
     install -c -m 644 preview-latex.el \
-      %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+      '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
-    mkdir -p %{buildroot}%{_libdir}/xemacs/site-packages/pkginfo
+    mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
   fi
-  %makeinstall
+  %makeinstall 'infodir=%{_infodir}'
   popd
 done
 
 # Package documentation in /usr/share/doc/preview-latex-n.n
 # rather than /usr/share/doc/preview-latex-common-n.n
 %define docs	    %{_defaultdocdir}/%{name}-%{version}
-mkdir -p %{buildroot}%{docs}
+mkdir -p '%{buildroot}%{docs}'
 pushd %{name}-%{version}
 for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
     latex/README-preview RELEASE TODO doc/preview-latex.dvi patches; do
-  cp -R $i %{buildroot}%{docs}
+  cp -R "$i" '%{buildroot}%{docs}'
 done
 
 # Remove dir file that has been created by the makeinfo calls because this
 # file will not been included in the rpm distribution (make RPM 4.1+ happy)
-rm %{buildroot}/usr/share/info/dir
+rm '%{buildroot}%{_infodir}/dir'
 
 %clean
-rm -rf %{buildroot}
+rm -rf '%{buildroot}'
 
 %post common
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
+/sbin/install-info '--info-dir=%{_infodir}' '%{_infodir}/preview-latex.info'
 texhash /usr/share/texmf
 
 %preun common
 # $1 is the number of versions of this package installed
 # after this uninstallation
 if [ $1 -eq 0 ]; then
-  /sbin/install-info --info-dir=%{_infodir} --delete \
-    %{_infodir}/preview-latex.info 
+  /sbin/install-info '--info-dir=%{_infodir}' --delete \
+    '%{_infodir}/preview-latex.info'
 fi
 
 %files common
@@ -160,12 +171,16 @@ fi
 %if %{HAVE_XEMACS}
 %files xemacs
 %defattr(-,root,root)
-%{_libdir}/xemacs/site-packages/lisp/preview
-%{_libdir}/xemacs/site-packages/etc/preview
-%verify() %{_libdir}/xemacs/site-packages/pkginfo/MANIFEST.preview
+%{xemacspkgdir}/lisp/preview
+%{xemacspkgdir}/etc/preview
+%verify() %{xemacspkgdir}/pkginfo/MANIFEST.preview
 %endif
 
 %changelog
+* Thu Jan 29 2004 Jan-Åke Larsson <jalar@mai.liu.se>
+- add support for SuSE 
+   (kudos to Martin Väth <vaeth@mathematik.uni-wuerzburg.de>)
+
 * Wed Aug  7 2002 David Kastrup <David.Kastrup@t-online.de>
 - add FAQ
 
