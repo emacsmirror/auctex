@@ -1,3 +1,21 @@
+2004-10-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-search-forward-unescaped)
+	(TeX-search-backward-unescaped, TeX-re-search-forward-unescaped)
+	(TeX-search-unescaped, TeX-escaped-p): New functions.
+	(TeX-find-macro-boundaries): Use `TeX-escaped-p'.
+
+	* latex.el (LaTeX-newline, LaTeX-current-indentation)
+	(LaTeX-fill-region-as-para-do, LaTeX-fill-move-to-break-point):
+	Use new search functions from tex.el.
+
+	* tex-fold.el (TeX-fold-make-overlay, TeX-fold-hide-item)
+	(TeX-fold-show-item): Respect `font-lock-mode'.
+
+	* style/amstex.el: Add copyright and license information.
+	("amstex"): Do not load amsmath.el in `plain-tex-mode' or
+	`ams-tex-mode'.
+
 2004-10-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp): Limit environment search with result of
