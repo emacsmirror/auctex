@@ -6,12 +6,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.11 1992-03-18 17:34:34 krab Exp $
+;; $Id: tex-buf.el,v 1.12 1992-03-23 23:20:26 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Mar 18 18:33:19 1992
-;; Update Count    : 172
+;; Last Modified On: Tue Mar 24 00:19:27 1992
+;; Update Count    : 173
 ;; 
 ;; HISTORY
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
@@ -236,7 +236,8 @@ Then the header/trailer will be searched in <file>."
 	  (save-excursion
 	    (goto-char (point-min))
 	    (setq master-buffer
-		  (if (re-search-forward "^%% *[Mm]aster:? *\\([^ ]+\\)" 500 t)
+		  (if (re-search-forward 
+		       "^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
 		      (find-file-noselect (buffer-substring (match-beginning 1)
 							    (match-end 1)))
 		    (current-buffer))))
@@ -423,7 +424,8 @@ TeX/LaTeX will be run on <file> instead of the current."
     (save-excursion
       (goto-char (point-min))
       (setq TeX-original-file 
-	    (if (re-search-forward "^%% *[Mm]aster:? *\\([^ ]+\\)" 500 t)
+	    (if (re-search-forward 
+		 "^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
 		(buffer-substring (match-beginning 1) (match-end 1))
 	      (file-name-nondirectory buffer-file-name))))
     (hack-local-variables)

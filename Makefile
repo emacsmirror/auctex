@@ -1,9 +1,9 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.7 1992-03-19 13:35:05 krab Exp $
+# $Id: Makefile,v 5.8 1992-03-23 23:20:23 krab Exp $
 #
 
-ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
+ELISPDIR=/home/local/lib/emacs/local/auctex
 BINDIR=/home/local/pd/bin
 
 CC = gcc

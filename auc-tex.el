@@ -9,16 +9,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-19 13:35:07 $|$Revision: 5.29 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-23 23:20:24 $|$Revision: 5.30 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.29 1992-03-19 13:35:07 krab Exp $
+;; $Id: auc-tex.el,v 5.30 1992-03-23 23:20:24 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Mar 19 14:34:24 1992
-;; Update Count    : 503
+;; Last Modified On: Tue Mar 24 00:17:32 1992
+;; Buffer Position : 13680
+;; Update Count    : 510
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -188,7 +189,7 @@ as the definition of this this function is placed in an external module."))
 
   ;; minor modes
   (autoload 'LaTeX-math-mode "tex-math" no-doc t)
-  (autoload 'outline-minor-mode "outline-m" no-doc t)
+  (autoload 'outline-minor-mode "min-out" no-doc t)
 
   ;; sectioning commands
   (autoload 'LaTeX-section "ltx-sec" no-doc t)
@@ -324,7 +325,9 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 		       "\\(\\(begin\\|section\\|part\\|chapter\\){"
 		       "\\|documentstyle\\)") nil t)
 	      'latex-mode
-	    TeX-default-mode))))
+	    'plain-tex-mode
+;;mj	    TeX-default-mode
+	    ))))
     (if mode (funcall mode)
       (funcall TeX-default-mode))))
 
@@ -463,6 +466,7 @@ of LaTeX-mode-hook."
   (use-local-map LaTeX-mode-map)
   (setq mode-name "LaTeX")
   (setq major-mode 'LaTeX-mode)  
+
   (setq outline-level-function 'LaTeX-outline-level)
 
   (make-variable-buffer-local 'outline-regexp)
@@ -998,7 +1002,7 @@ If CHAR is nil, or \"\", an error will occur."
 
 (defvar LaTeX-last-sty '("")
   "last used LaTeX-style")
-
+ 
 
 (defun TeX-mode-help ()
   "Put up window describing TeX-mode."
