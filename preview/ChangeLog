@@ -1,5 +1,9 @@
 2002-07-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-ps-quote): New function.
+	(preview-prepare-fast-conversion): Use it.
+	(preview-gs-transact): Use it.
+
 	* latex/preview.dtx (subsection{The \texttt{auctex} option}):
 	Output font size.
 	(subsection{The \texttt{lyx} option}): New option.
