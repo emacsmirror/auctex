@@ -1,3 +1,7 @@
+2003-04-14  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Customizing): hilit-LaTeX.el deleted.
+
 2003-04-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* autogen.sh: Generate INSTALL and INSTALL.windows 
