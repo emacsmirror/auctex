@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.916 (08 Jul 2004)
+;; Version:    0.918 (29 Jul 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,8 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.918 29Jul2004 Ralf Angeli
+;;  Doc fix.
 ;; V0.917 20Jul2004 Reiner Steib
 ;;  - (font-latex-set-title-face): New function.
 ;;  - (font-latex-title-fontity): Use it to make customization work
@@ -1047,6 +1049,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 (defcustom font-latex-fontify-script t
   "Non-nil means do not fontify subscript or superscript strings.
+You have to restart Emacs for this setting to take effect.
 This feature is not available in XEmacs."
   :type 'boolean
   :set (lambda (symbol value)
