@@ -1,3 +1,9 @@
+2002-04-11  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.spec: Adjustments for xemacs
+
+	* doc/preview-latex.texi: Reinstate (reverse) textmath hint
+
 2002-04-11  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-environment, preview-parse-messages): byte
