@@ -29,16 +29,16 @@
 
 ;; The MikTeX commands.
 (setq TeX-command-list
-  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t t)
-	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex t)
-	(list "PDFLaTeX" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex t)
-	(list "View" "%v" 'TeX-run-discard nil nil nil)
-	(list "Print" "gsview32 %f" 'TeX-run-command t nil nil)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t nil nil)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil nil)
-	(list "Index" "makeindex %s" 'TeX-run-command nil nil t)
-	(list "Check" "lacheck %s" 'TeX-run-compile nil nil t)
-	(list "Other" "" 'TeX-run-command t nil t)))
+  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
+	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex)
+	(list "PDFLaTeX" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil 'latex)
+	(list "View" "%v" 'TeX-run-discard nil nil)
+	(list "Print" "gsview32 %f" 'TeX-run-command t nil)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
+	(list "Index" "makeindex %s" 'TeX-run-command nil nil)
+	(list "Check" "lacheck %s" 'TeX-run-compile nil nil)
+	(list "Other" "" 'TeX-run-command t nil)))
 
 ;; DVI to source correspondence (stolen from the German magazine c't).
 (setq LaTeX-command-style '(("." "latex --src-specials")))
