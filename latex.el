@@ -4599,8 +4599,6 @@ runs the hooks in `doctex-mode-hook'."
    (lambda ()
      (setq TeX-font-list LaTeX-font-list)
      (setq TeX-font-replace-function 'TeX-font-replace-macro)
-     (if (equal LaTeX-version "2")
-	 (setq TeX-command-default "LaTeX2e"))
      (run-hooks 'LaTeX2e-hook)))
 
   (TeX-add-style-hook "latex2"
@@ -4620,10 +4618,16 @@ runs the hooks in `doctex-mode-hook'."
   (TeX-add-style-hook "psfrag" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdf" 'TeX-PDF-mode-off)
   (TeX-add-style-hook "dvipdfm" 'TeX-PDF-mode-off)
-  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
+;;  (TeX-add-style-hook "DVIoutput" 'TeX-PDF-mode-off)
+;;
+;;  Well, DVIoutput indicates that we want to run PDFTeX and expect to
+;;  get DVI output.  Ugh.
   (TeX-add-style-hook "ifpdf" (lambda ()
 				(TeX-PDF-mode-on)
 				(TeX-PDF-mode-off)))
+;; ifpdf indicates that we cater for either.  So calling both
+;; functions will make sure that the default will get used unless the
+;; user overrode it.
 
   (set (make-local-variable 'imenu-create-index-function)
        'LaTeX-imenu-create-index-function))

@@ -1,3 +1,13 @@
+2004-08-09  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-common-initialization): There is no "LaTeX2e"
+	command anymore, so don't set it.  Don't do anything on
+	"DVIoutput".  doc fixes.
+
+	* doc/auc-tex.texi (Commands): Explain `TeX-command-buffer',
+	`TeX-pin-region', `TeX-PDF-mode', `TeX-interactive-mode',
+	`TeX-source-specials'.
+
 2004-08-09  Berend de Boer  <berend@pobox.com>
 
 	* context.el (ConTeXt-current-environment): now properly skips

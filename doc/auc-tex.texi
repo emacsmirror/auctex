@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auc-tex.texi,v 1.167 2004-08-05 18:53:46 rsteib Exp $
+@c $Id: auc-tex.texi,v 1.168 2004-08-09 02:23:01 dak Exp $
 
 @finalout
 @titlepage
@@ -1408,7 +1408,10 @@ require running an external command.
 
 There are two ways to run an external command, you can either run it on
 all of the current documents with @code{TeX-command-master}, or on the
-current region with @code{TeX-command-region}.
+current region with @code{TeX-command-region}.  A special case of
+running @TeX{} on a region is @code{TeX-command-buffer} which differs
+from @code{TeX-command-master} if the current buffer is not its own
+master file.
 
 @deffn Command TeX-command-master
 @kindex C-c C-c
@@ -1428,19 +1431,38 @@ controlled by the variable @code{TeX-command-list}.
 (@kbd{C-c C-r}) Query the user for a command, and run it on the ``region
 file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
 will write the current region into the region file, after extracting the
-header and tailer from the master file.  If mark is not active, use the
-old region.  The name of the region file is controlled by the variable
-@code{TeX-region}.  The name of the master file is controlled by the
-variable @code{TeX-master}.  The header is all text up to the line
-matching the regular expression @code{TeX-header-end}.  The trailer is
-all text from the line matching the regular expression
-@code{TeX-trailer-start}.  The available commands are controlled by the
-variable @code{TeX-command-list}.
+header and tailer from the master file.  If mark is inactive (which can
+happen with @code{transient-mark-mode}), use the old region.  The name
+of the region file is controlled by the variable @code{TeX-region}.  The
+name of the master file is controlled by the variable @code{TeX-master}.
+The header is all text up to the line matching the regular expression
+@code{TeX-header-end}.  The trailer is all text from the line matching
+the regular expression @code{TeX-trailer-start}.  The available commands
+are controlled by the variable @code{TeX-command-list}.
 @vindex TeX-region
 @vindex TeX-header-end
 @vindex TeX-trailer-start
 @vindex TeX-master
 @vindex TeX-command-list
+@end deffn
+
+@deffn Command TeX-pin-region
+@kindex C-c C-t C-r
+If you don't have a mode like @code{transient-mark-mode} active, where
+marks get disabled automatically, the region would need to get properly
+set before each call to @code{TeX-command-region}.  If you fix the
+current region with @kbd{C-c C-t C-r}, then it will get used for more
+commands even though mark and point may change.  An explicitly activated
+mark, however, will always define a new region when calling
+@code{TeX-command-region}.
+@end deffn
+
+@deffn Command TeX-command-buffer
+@kindex C-c C-b
+(@kbd{C-c C-b}) Query the user for a command, and run it on the ``region
+file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
+will write the current buffer into the region file, after extracting the
+header and tailer from the master file.  See above for details.
 @end deffn
 
 @AUCTeX{} will allow one process for each document, plus one process
@@ -1513,6 +1535,44 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
+@deffn Command TeX-PDF-mode
+@kindex C-c C-t C-p
+@vindex TeX-PDF-mode
+This command toggles the @acronym{PDF} mode of @AUCTeX{}, a buffer-local
+minor mode.  You can customize @code{TeX-PDF-mode} to give it a
+different default.  The default is used when @AUCTeX{} does not have
+additional clue about what a document might want.  This option usually
+results in calling either PDF@TeX{} or ordinary @TeX{}.
+@end deffn
+
+@defopt TeX-DVI-via-PDFTeX
+If this is set, @acronym{DVI} will also be produced by calling
+PDF@TeX{}, setting @code{\pdfoutput=0}.  This makes it possible to use
+packages like @samp{pdfcprot} even when producing @acronym{DVI} files.
+@end defopt
+
+@deffn Command TeX-interactive-mode
+@kindex C-c C-t C-i
+@vindex TeX-interactive-mode
+This command, usually bound to @kbd{C-c C-t C-i}, toggles the
+interactive mode of @AUCTeX{}, a global minor mode.  You can customize
+@code{TeX-interactive-mode} to give it a different default.  In
+interactive mode, @TeX{} will pause with an error prompt when errors are
+encountered and wait for the user to type something.
+@end deffn
+
+@deffn Command TeX-source-specials
+@kindex C-c C-t C-s
+@vindex TeX-source-specials
+This command, bound to @kbd{C-c C-t C-s}, toggles Source Special
+support.  Source Specials will move the @acronym{DVI} viewer to the
+location corresponding to point (forward search), and it will use
+@samp{emacsclient} or @samp{gnuclient} to have the previewer move Emacs
+to a location corresponding to a control-click in the previewer window.
+There is a bunch of customization options, use @code{customize-group} on
+the group @samp{TeX-source-specials} to find out more.
+@end deffn
+
 @node Viewing, Debugging, Commands, Running TeX and friends
 @section Viewing the formatted output
 @cindex Viewing
@@ -1524,17 +1584,18 @@ document.  These are normally invoked by pressing @kbd{C-c C-c} once
 the document is formatted or via the respective entry in the Command
 menu.
 
-@AUCTeX{} will try to guess which type of viewer (DVI, PostScript or
-PDF) has to be used and what options are to be passed over to it.  This
-decision is based on the output files present in the working directory
-as well as the class and style options used in the document.  For
-example, if there is a DVI file in your working directory, a DVI viewer
-will be invoked.  In case of a PDF file it will be a PDF viewer.  If you
-specified a special paper format like @samp{a5paper} or use the
-@samp{landscape} option, this will be passed to the viewer by the
-appropriate options.  Especially some DVI viewers depend on this kind of
-information in order to display your document correctly.  In case you
-are using @samp{pstricks} or @samp{psfrag} in your document, a DVI
+@AUCTeX{} will try to guess which type of viewer (@acronym{DVI},
+PostScript or @acronym{PDF}) has to be used and what options are to be
+passed over to it.  This decision is based on the output files present
+in the working directory as well as the class and style options used in
+the document.  For example, if there is a @acronym{DVI} file in your
+working directory, a @acronym{DVI} viewer will be invoked.  In case of a
+@acronym{PDF} file it will be a @acronym{PDF} viewer.  If you specified
+a special paper format like @samp{a5paper} or use the @samp{landscape}
+option, this will be passed to the viewer by the appropriate options.
+Especially some @acronym{DVI} viewers depend on this kind of information
+in order to display your document correctly.  In case you are using
+@samp{pstricks} or @samp{psfrag} in your document, a @acronym{DVI}
 viewer cannot display the contents correctly and a PostScript viewer
 will be invoked instead.
 
