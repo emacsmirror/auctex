@@ -1,3 +1,19 @@
+2002-05-30  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/misc.c: Transparent border: '-bd'
+
+	* dvipng/dvipng.h, dvipng/set.c: Tiding up + transparent border
+
+	* dvipng/dvipng.c, dvipng/font.c: Tidying up
+
+2002-05-29  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/color.c: Fix cmyk->rgb.
+
+	* dvipng/misc.c: Add '-fg' and '-bg'.
+
+	* dvipng/font.c: Tidy up
+
 2002-05-29  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/dvipng.h: Tidying up, and new global vars
