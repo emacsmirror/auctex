@@ -149,10 +149,12 @@ string for any unspecified macro or environment."
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-o\C-b" 'TeX-fold-buffer)
+    (define-key map "\C-c\C-o\C-r" 'TeX-fold-region)
     (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
     (define-key map "\C-c\C-o\C-m" 'TeX-fold-macro)
     (define-key map "\C-c\C-o\C-e" 'TeX-fold-env)
     (define-key map "\C-c\C-o\C-x" 'TeX-fold-clearout-buffer)
+    (define-key map "\C-c\C-o\C-y" 'TeX-fold-clearout-region)
     (define-key map "\C-c\C-o\C-v" 'TeX-fold-clearout-paragraph)
     (define-key map "\C-c\C-o\C-c" 'TeX-fold-clearout-item)
     map))
@@ -184,6 +186,7 @@ and environments in `TeX-fold-env-spec-list'."
 If optional parameter TYPE is given, fold only items of the
 specified type.  TYPE can be one of the symbols 'env for
 environments or 'macro for macros."
+  (interactive "r")
   (if (null type)
       (progn
 	(TeX-fold-region start end 'env)
