@@ -129,10 +129,9 @@ patch against XEmacs-21.4.6 to fix this is available from
 This patch may be included in XEmacs-21.4.8, but won't be present in any
 earlier version.
 
-In addition, users of a new @file{desktop.el} may notice problems
-immediately after loading a desktop containing a file with previews; all
-the preview areas will be blank and empty. Regenerating the previews
-should fix it.
+Previews will only remain from one session to the next if you have
+version 1.81 or above of the @file{edit-utils} package, first released
+in the 2002-03-12 sumo tarball.
 
 The package hasn't been tested under either the Cygwin or native builds
 for Windows: if you try it and it works, please say!
