@@ -1,3 +1,19 @@
+2005-04-05  Christian Schlauer  <cschl@arcor.de>
+
+	* tex.el (TeX-submit-bug-report): Fix typo in doc string, fill doc
+	string.
+
+	* latex.el: Change maintainer address.
+	(LaTeX-section): Fix typo in doc string.  Remove code that almost
+	always inserts a new line.
+	(LaTeX-section-section): Fix doc string.  Add code that
+	conditionally inserts a new line (which also bundles the
+	modification of the buffer in this function).
+	(LaTeX-section-hook): Fix typo in doc string.
+	(LaTeX-default-position): Use `do not' instead of `don't' in doc
+	string and customize value menu (as in `LaTeX-float).
+	(LaTeX-item-list): Fix typo in doc string.
+
 2005-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-PDF-mode, TeX-interactive-mode, TeX-Omega-mode): Set
