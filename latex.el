@@ -3098,14 +3098,10 @@ If COUNT is non-nil, do it COUNT times."
 		     (looking-at LaTeX-paragraph-commands-regexp)))
 	      (match-beginning 0))
 	     ;; Point is before a paragraph command in the same line.
-	     ((and (not macro-start)
-		   (save-excursion
-		     (beginning-of-line)
-		     (looking-at
-		      (concat "[ \t]*" TeX-comment-start-regexp "*[ \t]*"
-			      "\\(" LaTeX-paragraph-commands-regexp "\\)"))))
-	      (match-beginning 1))
-	     (t nil)))
+	     ((looking-at
+	       (concat "[ \t]*\\(?:" TeX-comment-start-regexp "+[ \t]*\\)*"
+		       "\\(" LaTeX-paragraph-commands-regexp "\\)"))
+	      (match-beginning 1))))
 	   macro-end)
       ;; If a paragraph command is encountered there are two cases to be
       ;; distinguished:
