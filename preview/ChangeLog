@@ -1,5 +1,9 @@
 2001-10-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx: Include \ProvidesPackage and \CheckSum
+	(subsection{Preview attaching commands}): put \unskip in
+	\end{preview} where it will make a difference.
+
 	* prv-xemacs.el: require overlay
 	preview-compatibility-macros added
 	(find-image): some changes of compilation
