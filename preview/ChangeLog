@@ -1,3 +1,9 @@
+2003-11-08  Stephen Reindl  <sr@stephenreindl.de>
+
+	* preview-latex.spec (%install): rm texinfo 'dir' file because
+	this file is not needed for distribution (rpm 4.1+ complains about
+	this 'missing' file).
+
 2003-11-07  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* preview.el: Fix dvipng resolution
