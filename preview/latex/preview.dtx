@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.65 $
+%  \rcskey \version CVS-$Revision: 1.66 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-30 22:48:07 $
+%\rcskey\next $Date: 2002-08-05 10:16:25 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -199,8 +199,10 @@
 %
 %If the pages under the |tightpage|
 %option are just too tight, you can adjust by setting the length
-%|\PreviewBorder| to a different value (the default value is |0.5bp|,
-%which is half of a usual PostScript point) by using \cmd{\setlength}.
+%|\PreviewBorder| to a different value by using \cmd{\setlength}.  The
+%default value is |0.50001bp|, which is half of a usual PostScript
+%point, rounded up.  If you go below this value, the resulting page
+%size may drop below |1bp|, and GhostScript does not seem to like that.
 %If you need finer control, you can adjust the bounding box dimensions
 %individually by changing the macro |\PreviewBbAdjust| with the help
 %of |\renewcommand|.  Its default value is
@@ -324,21 +326,13 @@
 %    \begin{macrocode}
 %<*style>
 %<*!active>
-\NeedsTeXFormat{LaTeX2e}
-\def\reserved@a #1#2$#3: #4${\edef#1{\reserved@c #2#4 $}}
-\def\reserved@c #1 #2${#1}
-\reserved@a\reserved@b $Name:  $
-\ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.65 $
-\else
-   \begingroup
-      \lccode`-=`.
-      \def\next rel-{}
-      \edef\next{\lowercase{\endgroup
-          \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
-   \next
-\fi
-\reserved@a\next $Date: 2002-07-30 22:48:07 $
+\NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
+#4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
+\reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
+\reserved@a\reserved@b CVS-$Revision: 1.66 $ \else \begingroup
+\lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
+    \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
+\reserved@a\next $Date: 2002-08-05 10:16:25 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1150,7 +1144,7 @@
 %  redefinitions and assignments to them will always work:
 %    \begin{macrocode}
 %<tightpage>\newdimen\PreviewBorder
-%<tightpage>\PreviewBorder=0.5bp
+%<tightpage>\PreviewBorder=0.50001bp
 %<tightpage>\def\PreviewBbAdjust{-\PreviewBorder -\PreviewBorder
 %<tightpage>  \PreviewBorder \PreviewBorder}
 %    \end{macrocode}
