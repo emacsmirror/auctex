@@ -1,3 +1,8 @@
+2005-02-09  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (LaTeX-auto-regexp-list): Removed `usepackage' because
+	it is defined in `LaTeX-auto-minimal-regexp-list'.
+
 2005-02-08  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* style/alphanum.el: Added `Local Variables'.
