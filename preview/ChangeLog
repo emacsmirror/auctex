@@ -1,5 +1,7 @@
 2002-02-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi: fat overhaul.
+
 	* preview.dtx (section{The Implementation}): Simplify \pr@advise,
 	it broke the delayed option.
 	(subsection{Preview attaching commands}): Same.
