@@ -160,9 +160,14 @@ Previews will only remain from one session to the next if you have
 version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 
-The package hasn't been tested under the native build of XEmacs for
-Windows: if you try it and it works, please let us know!  For the
-Cygwin status, see above.
+Preliminary tests of XEmacs under Windows (i.e. not Cygwin-XEmacs but
+native Windows-XEmacs) indicate that it does not support the
+@code{png} image format. In this case, you can try using the
+@code{pnm} image format, but we recommend that you get an XEmacs
+version that supports @code{png} images (and if none is available we
+recommend that you complain to your XEmacs deliverer).
+
+Under Cygwin, the package works better; see above.
 
 This support is quite new and still changing frequently. Please test it
 and report any problems you may be experiencing.
