@@ -931,7 +931,7 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;    [opt]
       (2 font-lock-reference-face append t))                 ;;;         {key}
-     (font-latex-match-function                               ;;;\documentclass
+     (font-latex-match-function                              ;;;\documentclass
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
       (2 font-lock-function-name-face append t))             ;;;        {text}
@@ -1780,7 +1780,7 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 				'(12)))))
 	(let ((end (line-end-position)))
 	  (if (< end (point-max))
-	      (put-text-propertyend (1+ end) 'syntax-table
+	      (put-text-property end (1+ end) 'syntax-table
 				    ;; COMPATIBILITY for Emacs 20 and XEmacs
 				    (eval-when-compile
 				      (if (fboundp 'string-to-syntax)
