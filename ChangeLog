@@ -1,3 +1,8 @@
+2005-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-code-comment): Compute the end of the
+	region to be filled _after_ indentation happened.
+
 2005-02-07  David Kastrup  <dak@gnu.org>
 
 	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Be quite
