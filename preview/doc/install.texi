@@ -129,6 +129,13 @@ normally unnecessary, but may be used if you don't like the directory
 that configure is suggesting, and you know that XEmacs regards the
 directory you specify as a package directory.
 
+If you are installing @previewlatex{} for a single user, and you have
+installed no XEmacs packages as that user before, then configure may try
+to install @previewlatex{} in the systemwide package directory (that it
+cannot write to), causing installation to fail.  In that case, a good
+value for this option is @file{~/.xemacs/xemacs-packages}, as XEmacs
+looks there for per-user packages by default.
+
 @item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location, use this option
 to specify the location of its @file{tex-site.el} file.
