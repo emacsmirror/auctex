@@ -1,3 +1,8 @@
+2004-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-view-style): Remove option for landscape in
+	case of PDF output.
+
 2004-03-26  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-fill-region): Correct percentage display.
