@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6a
+;; Version: 9.6b
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -218,10 +218,10 @@ string.")
 		     (TeX-printer-query TeX-queue-command 2))))
 	(list "%v" 'TeX-style-check TeX-view-style)
 	(list "%l" 'TeX-style-check LaTeX-command-style)
-	(list "%s" 'file)
-	(list "%t" 'file 't)
-	(list "%d" 'file "dvi")
-	(list "%f" 'file "ps"))
+	(list "%s" 'file nil t)
+	(list "%t" 'file 't t)
+	(list "%d" 'file "dvi" t)
+	(list "%f" 'file "ps" t))
   "*List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
@@ -546,11 +546,14 @@ file variable, it does not need to ask next time you edit the file.
 If you dislike AUC TeX automatically modifying your files, you can set
 this variable to \"<none>\".")
 
-(defun TeX-master-file (&optional extension)
+(defun TeX-master-file (&optional extension nondirectory)
   "Return the name of the master file for the current document.
 
 If optional argument EXTENSION is non-nil, add that file extension to
 the name.  Special value `t' means use `TeX-default-extension'.
+
+If optional second argument NONDIRECTORY is non-nil, do not include
+the directory.
 
 Currently is will check for the presence of a ``Master:'' line in
 the beginning of the file, but that feature will be phased out."
@@ -629,10 +632,18 @@ the beginning of the file, but that feature will be phased out."
 	      (setq extension nil)
 	    ;; Otherwise drop it.
 	    (setq name (TeX-strip-extension name))))
+      
+      ;; Remove directory if needed.
+      (if nondirectory
+	  (setq name (file-name-nondirectory name)))
 
       (if extension
 	  (concat name "." extension)
 	name))))
+
+(defun TeX-master-directory ()
+  "Directory of master file."
+  (file-name-directory (TeX-master-file)))
 
 (defvar TeX-master t
   "*The master file associated with the current buffer.
@@ -735,7 +746,7 @@ If REGEXP is nil, or \"\", an error will occur."
 
 (defun TeX-directory-absolute-p (dir)
   ;; Non-nil iff DIR is the name of an absolute directory.
-  (if (memq system-type '(ms-dos emx))
+  (if (memq system-type '(ms-dos emx windows-nt))
       (string-match "^\\([A-Za-z]:\\)?/" dir)
     (string-match "^/" dir)))
 
@@ -1307,8 +1318,6 @@ of AmS-TeX-mode-hook."
   (kill-all-local-variables)
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
-  (make-local-variable 'words-include-escapes)
-  (setq words-include-escapes t)
 
   ;; Ispell support
   (make-local-variable 'ispell-parser)
@@ -1536,7 +1545,8 @@ separate type of information in the parser."
   (if TeX-auto-untabify
       (untabify (point-min) (point-max)))
   (if (and TeX-auto-save TeX-auto-local)
-      (let* ((file (concat TeX-auto-local
+      (let* ((file (concat (TeX-master-directory)
+			   TeX-auto-local
 			   (if (string-match "/$" TeX-auto-local) "" "/")
 			   (TeX-strip-extension nil TeX-all-extensions t)
 			   ".el"))
