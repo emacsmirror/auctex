@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.5 2001-10-19 06:02:16 arafune Exp $
+;; Version: $Id: graphicx.el,v 1.6 2001-10-19 13:45:26 arafune Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -66,7 +66,7 @@
       (setq maybe-comma ",")
       (setq maybe-left-brace ""))
     (when (not (zerop (length figheight)))
-      (insert maybe-left-brace "heigt=" (car (TeX-string-divide-nuber-unit figheight))
+      (insert maybe-left-brace maybe-comma "height=" (car (TeX-string-divide-nuber-unit figheight))
 	      (if (zerop (length (car (cdr (TeX-string-divide-nuber-unit figheight)))))
 		  TeX-default-unit-for-image (car (cdr (TeX-string-divide-nuber-unit figheight)))))
       (setq maybe-comma ",")
