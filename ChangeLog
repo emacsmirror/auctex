@@ -1,3 +1,9 @@
+2004-11-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-math-default, LaTeX-math-menu): Use "Greek
+	Uppercase" instead of "Greek" and "Greek Lowercase" instead of
+	"greek".
+
 2004-11-02  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-paragraph-commands): Make `\maketitle' a
