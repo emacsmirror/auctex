@@ -1,3 +1,16 @@
+2005-01-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Added information about fixed bugs and added features
+	in AUCTeX 11.54.
+
+	* auctex.spec (Version): Bump to 11.54.
+
+	* configure.ac: Bump version info to 11.54.
+
+	* doc/auctex.texi: Bump version info to 11.54.
+
+	* doc/tex-ref.tex: Bump version info to 11.54.
+
 2005-01-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-forward-paragraph): Allow finding paragraph
