@@ -1,11 +1,13 @@
 2002-02-18  Jan-Ake Larsson  <jalar@imf.au.dk>
 
+	* preview-latex.spec: For 0.6 proper
+
 	* RELEASE: Mention AUC TeX RPM on project site
 
 	* Makefile.in: Fixed 'make clean' in doc subdir, install info
 	files too
 
-	* doc/Makefile.in: Typo corrected
+	* doc/Makefile.in: Typo corrected, fixed INSTALL_DATA
 
 2002-02-17  Alan Shutko  <ats@acm.org>
 
