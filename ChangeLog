@@ -6,27 +6,6 @@
 	* texmathp.el (texmathp-tex-commands-default): Added more default
 	macros.
 
-<<<<<<< ChangeLog
-1999-03-12  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
-
-	* latex.el (TeX-arg-index-tag): New function, to be used by the
- 	index.el and multind.el style files.
-	(LaTeX-auto-index-regexp-list): Now matches both \index and
- 	\glossary.
-	(TeX-arg-index): Renamed from TeX-arg-define-index.
-	(TeX-arg-define-index): Now an alias for `TeX-arg-index'.
-	(LaTeX-common-initialization): Added a regexp for index and
-	glossary to `TeX-complete-list'.  Added entry for glossary with
-	`Tex-add-symbols'.
-	* style/index.el New file.
-	* style/makeidx.el New file.
-	* style/multind.el New file.
-	* style/varioref.el New file.
-	* style/fancyref.el New file.
-	* Makefile (STYLESRC): Added `style/index.el', `style=makeidx.el', 
-	`style/multind.el', `style/varioref.el', `style/fancyref.el'.
-	
-=======
 1999-03-12  Carsten Dominik  <dominik@strw.LeidenUniv.nl>
 
 	* latex.el (TeX-arg-index-tag): New function, to be used by the
@@ -46,7 +25,6 @@
 	* Makefile (STYLESRC): Added `style/index.el', `style=makeidx.el', 
 	`style/multind.el', `style/varioref.el', `style/fancyref.el'.
 	
->>>>>>> 5.91
 1999-02-23  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-search-files): `nconc' the result.
