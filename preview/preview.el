@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.88 2002-03-29 21:47:19 dakas Exp $
+;; $Id: preview.el,v 1.89 2002-03-30 19:45:23 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1193,7 +1193,7 @@ and the corresponding topdir."
 
 (defun preview-back-command ()
   "Move backward a TeX token."
-  (let ((oldpos (point)) old-point)
+  (let ((oldpos (point)) oldpoint)
     (condition-case nil
 	(or (search-backward-regexp "\\(\\$\\$?\
 \\|\\\\[^a-zA-Z@]\
@@ -1698,7 +1698,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.88 $"))
+	(rev "$Revision: 1.89 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
