@@ -63,18 +63,20 @@
   "*List of Japanese document styles.")
 (make-variable-buffer-local 'japanese-LaTeX-style-list)
 
-;;; Hilighting
+;;; Coding system
 
-(if (boundp 'hilit-patterns-alist)
-    (let ((latex-patterns (cdr-safe (assq 'latex-mode hilit-patterns-alist)))
-	  (plain-tex-patterns (cdr-safe (assq 'plain-tex-mode
-					      hilit-patterns-alist))))
-      (if (and latex-patterns plain-tex-patterns)
-	  (setq hilit-patterns-alist
-		(append (list (cons 'japanese-plain-tex-mode plain-tex-patterns))
-			(list (cons 'japanese-latex-mode latex-patterns))
-			(list (cons 'japanese-slitex-mode latex-patterns))
-			hilit-patterns-alist)))))
+(if (boundp 'MULE)
+    (setq TeX-after-start-process-function
+	  (function (lambda (process)
+		      (set-process-coding-system
+		       process
+		       TeX-japanese-process-input-coding-system
+		       TeX-japanese-process-output-coding-system)))))
+(if (boundp 'NEMACS)
+    (setq TeX-after-start-process-function
+	  (function
+	   (lambda (process)
+	     (set-process-kanji-code process TeX-process-kanji-code)))))
 
 ;;; Japanese Parsing
 
@@ -192,90 +194,65 @@
   (append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list)
   "Full list of regular expression matching TeX macro definitions.")
 
-;;; Japanese LaTeX initialization
-
-(defun japanese-TeX-initialization ()
-  "Initialization for Japanese TeX."
-  (if (boundp 'MULE)
-      (setq TeX-after-start-process-function
-	    (function (lambda (process)
-			(set-process-coding-system
-			 process
-			 TeX-japanese-process-input-coding-system
-			 TeX-japanese-process-output-coding-system)))))
-  (if (boundp 'NEMACS)
-      (setq TeX-after-start-process-function
-	    (function
-	     (lambda (process)
-	       (set-process-kanji-code process TeX-process-kanji-code))))))
-
-(defun japanese-LaTeX-initialization ()
-  "Initialization for Japanese LaTeX."
-  (japanese-TeX-initialization)
-  (setq LaTeX-default-style japanese-LaTeX-default-style)
-  (setq LaTeX-style-list japanese-LaTeX-style-list)
-  (setq-default TeX-command-BibTeX "jBibTeX"))
-
 ;;; Japanese TeX modes
+
+(defvar japanese-TeX-mode nil
+  "Flag to determine if Japanese initialization is needed.")
+
+(add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
 (defun japanese-plain-tex-mode ()
   "Major mode for editing files of input for Japanese plain TeX.
-See info under AUC TeX for full documentation.
-
-Special commands:
-\\{TeX-mode-map}
- 
-Entering japanese-plain-tex-mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of plain-tex-mode-hook."
+Set japanese-TeX-mode to t, and enters plain-tex-mode."
   (interactive)
-  (plain-TeX-common-initialization)
-  (setq mode-name "jtex")
-  (setq major-mode 'japanese-plain-tex-mode)
-  (setq TeX-command-default "jTeX")
-  (japanese-TeX-initialization)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
+  (setq japanese-TeX-mode t)
+  (plain-tex-mode))
+
+(defun japanese-plain-tex-mode-initialization ()
+  "Japanese plain-TeX specific initializations."
+  (if japanese-TeX-mode
+      (setq TeX-command-default "jTeX")))
+
+(add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
 ;;;###autoload
 (defun japanese-latex-mode ()
-  "Major mode for editing files of input for Japanese LaTeX.
-See info under AUC TeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
-
-Entering japanese-LaTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook."
+  "Major mode for editing files of input for Japanese plain TeX.
+Set japanese-TeX-mode to t, and enters latex-mode."
   (interactive)
-  (LaTeX-common-initialization)
-  (japanese-LaTeX-initialization)
-  (setq mode-name "jlatex")
-  (setq major-mode 'japanese-latex-mode)  
-  (setq TeX-command-default "jLaTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
+  (setq japanese-TeX-mode t)
+  (latex-mode))
+
+(defun japanese-latex-mode-initialization ()
+  "Japanese LaTeX specific initializations."
+  (if japanese-TeX-mode
+      (progn
+	(setq TeX-command-default "jLaTeX")
+	(setq LaTeX-default-style japanese-LaTeX-default-style)
+	(setq LaTeX-style-list japanese-LaTeX-style-list)
+	(setq TeX-command-BibTeX "jBibTeX")
+	(setq japanese-TeX-mode nil))))
+
+(add-hook 'SLiTeX-mode-hook 'japanese-slitex-mode-initialization)
 
 ;;;###autoload
 (defun japanese-slitex-mode ()
-  "Major mode for editing files of input for Japanese SliTeX.
-See info under AUC TeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
-
-Entering japanese-SLiTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook. and then the value of SliTeX-mode-hook."
+  "Major mode for editing files of input for Japanese plain TeX.
+Set japanese-TeX-mode to t, and enters slitex-mode."
   (interactive)
-  (japanese-LaTeX-initialization)
-  (LaTeX-common-initialization)
-  (setq mode-name "jSliTeX")
-  (setq major-mode 'japanese-slitex-mode)
-  (setq TeX-command-default "jSliTeX")
-  (setq LaTeX-default-style "jslides")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook
-	     'SliTeX-mode-hook))
+  (setq japanese-TeX-mode t)
+  (slitex-mode))
+
+(defun japanese-slitex-mode-initialization ()
+  "Japanese SLiTeX specific initializations."
+  (if japanese-TeX-mode
+      (progn
+	(setq TeX-command-default "jSLiTeX")
+	(setq LaTeX-default-style "jslides")
+	(setq LaTeX-style-list japanese-LaTeX-style-list)
+	(setq TeX-command-BibTeX "jBibTeX")
+	(setq japanese-TeX-mode nil))))
 
 ;;; MULE and NEMACS paragraph filling.
 
@@ -285,7 +262,7 @@ of LaTeX-mode-hook. and then the value of SliTeX-mode-hook."
   "Fill region as one paragraph: break lines to fit fill-column.
 Prefix arg means justify too.
 From program, pass args FROM, TO and JUSTIFY-FLAG."
-  (interactive "r\nP")
+  (interactive "*r\nP")
   (save-restriction
     (goto-char from)
     (skip-chars-forward "\n")
@@ -1006,5 +983,3 @@ save size
 (provide 'tex-jp)
 
 ;;; tex-jp.el ends here
-
-

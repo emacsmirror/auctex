@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.28 1994-08-20 05:44:02 amanda Exp $
+;; Version: $Id: latex.el,v 5.29 1994-10-06 17:27:42 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -493,7 +493,7 @@ LaTeX-default-position          Position for array and tabular."
 	    (save-excursion (newline-and-indent)))
 	(LaTeX-indent-line)
 	(end-of-line 0)
-	(or (string-match "^verbatim" environment)
+	(or (assoc environment LaTeX-indent-environment-list)
 	    (LaTeX-fill-environment nil)))
     (or (TeX-looking-at-backward "^[ \t]*")
 	(newline))
@@ -1868,10 +1868,10 @@ Otherwise, only ask in description environments.")
 
 (defvar LaTeX-paragraph-commands
   (concat "\\[\\|\\]\\|"  ; display math delimitors
-	  "begin\\|end\\|part\\|chapter\\|label\\|caption\\|"
-	  "section\\|subsection\\|subsubsection\\|par\\|noindent\\|"
-	  "paragraph\\|include\\|includeonly\\|"
-	  "tableofcontents\\|appendix"
+	  "begin\\b\\|end\\b\\|part\\b\\|chapter\\b\\|label\\b\\|"
+	  "caption\\b\\|section\\b\\|subsection\\b\\|subsubsection\\b\\|"
+	  "par\\b\\|noindent\\b\\|paragraph\\b\\|include\\b\\|"
+	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b"
   "Regexp matching names of LaTeX macros that should have their own line."))
 
 ;;;###autoload
@@ -1934,7 +1934,7 @@ of LaTeX-mode-hook."
   (setq paragraph-start
 	(concat
 	 "\\("
-	 "^.*[^" (regexp-quote TeX-esc) "]%.*$\\|"
+	 "^.*[^" (regexp-quote TeX-esc) "\n]%.*$\\|"
 	 "^%.*$\\|"
 	 "^[ \t]*$"
 	 "\\|"
@@ -1942,7 +1942,7 @@ of LaTeX-mode-hook."
 	 (regexp-quote TeX-esc)
 	 "\\("
 	 LaTeX-paragraph-commands
-	 "\\|item\\|" (regexp-quote TeX-esc)
+	 "\\|item\\b\\|" (regexp-quote TeX-esc)
 	 "\\)"
 	 "\\|"
 	 "^[ \t]*\\$\\$" ; display math delimitor
@@ -1950,7 +1950,7 @@ of LaTeX-mode-hook."
   (setq paragraph-separate
 	(concat
 	 "\\("
-	 "^.*[^" (regexp-quote TeX-esc) "]%.*$\\|"
+	 "^.*[^" (regexp-quote TeX-esc) "\n]%.*$\\|"
 	 "^%.*$\\|"
 	 (regexp-quote TeX-esc)
 	 "par\\|"

@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.96 1994-08-06 12:42:43 amanda Exp $
+@c $Id: auc-tex.texi,v 1.97 1994-10-06 17:28:02 amanda Exp $
 
 @finalout
 @titlepage
@@ -728,7 +728,7 @@ Default macro to insert when invoking @code{TeX-insert-macro} first time.
 @end defopt
 
 A faster alternative is to bind the function @code{TeX-electric-macro}
-to @samp{\}.  This can by setting the variable @code{TeX-electric-escape}
+to @samp{\}.  This can be done by setting the variable @code{TeX-electric-escape}
 
 @defopt TeX-electric-escape
 If this is non-nil when AUC @TeX{} is loaded, the @TeX{} escape
@@ -1030,13 +1030,13 @@ and moreover allowing you to @emph{debug} your documents.
 @cindex Previewing
 @cindex Starting a previewer
 
-Formatting the document with @TeX{} or La@TeX{}, viewing with a a
+Formatting the document with @TeX{} or La@TeX{}, viewing with a
 previewer, printing the document, running Bib@TeX{}, making an index, or
 checking the document with @code{lacheck} all require running an
 external command.
 
 There are two ways to run an external command, you can either run it on
-all of the current document with @code{TeX-command-master}, or on the
+all of the current documents with @code{TeX-command-master}, or on the
 current region with @code{TeX-command-region}.@refill
 
 @deffn Command TeX-command-master
@@ -1443,7 +1443,7 @@ values for the buffer local variables @code{TeX-auto-regexp-list} and
 @end lisp
 
 This example will speed the parsing up significantly, but AUC @TeX{}
-will not longer be able to provide completion for labels, macros,
+will no longer be able to provide completion for labels, macros,
 environments, or bibitems specified in the document, nor will it know
 what files belong to the document.
 
@@ -1458,7 +1458,7 @@ the file local variables.
 @end example
 
 @defopt TeX-auto-regexp-list
-List of regular expresions used for parsing the current file.
+List of regular expressions used for parsing the current file.
 @end defopt
 
 @defopt TeX-auto-parse-length
@@ -1499,7 +1499,7 @@ Parse all @TeX{} and La@TeX{} commands that AUC @TeX{} can use.
 @cindex National letters
 
 There are several problems associated with editing non-English @TeX{}
-with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are useable for
+with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are usable for
 European (Latin, Cyrillic, Greek) based languages, but special versions
 of TeX and Emacs are needed for Korean, Japanes, and Chinese. 
 
@@ -1526,7 +1526,7 @@ of TeX and Emacs are needed for Korean, Japanes, and Chinese.
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
-later, it has the adventage that the usual the standard emacs word
+later, it has the advantage that the usual the standard emacs word
 movement and case change commands will work.
 
 @table @file
@@ -1680,7 +1680,7 @@ useful style files for your own use.  The local level is for a specific
 directory, and deals with writing customization for the files for your
 normal @TeX{} documents.
 
-If you compare with the environment variable @code{TEXINPUTS}, the
+If compared with the environment variable @code{TEXINPUTS}, the
 global level corresponds to the directories built into @TeX{}.  The
 private level corresponds to the directories you add yourself, except for
 @file{.}, which is the local level.
@@ -1924,7 +1924,7 @@ Add each @var{symbol} to the list of known symbols.
 @end defun
 
 Each argument to @code{TeX-add-symbols} is a list describing one symbol.
-The head of the list is the name if the symbol, the remaining elements
+The head of the list is the name of the symbol, the remaining elements
 describe each argument.
 
 If there are no additional elements, the symbol will be inserted with
@@ -2104,10 +2104,10 @@ argument, an environment hook.  The example is again a short version of
 @end lisp 
 
 @findex LaTeX-env-item
-The only hook that is general useful is @code{LaTeX-env-item}, which is
+The only hook that is generally useful is @code{LaTeX-env-item}, which is
 used for environments that contain items.  It is completely up to the
 environment hook to insert the environment, but the function
-@code{LaTeX-insert-environment} may be to some help.  The hook will be
+@code{LaTeX-insert-environment} may be of some help.  The hook will be
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to a list after the hook.
 
@@ -2264,11 +2264,11 @@ also declares a variable to contain the data collected during parsing.
 Finally, it adds a style hook which describes the @samp{newmacro} macro,
 as we have seen it before.
 
-So the general strategy is: Add new entry to @code{TeX-newmacro-regexp}.
-Declare variable to contain intermediate data during parsing.  Add hook
+So the general strategy is: Add a new entry to @code{TeX-newmacro-regexp}.
+Declare a variable to contain intermediate data during parsing.  Add hook
 to be called before and after parsing.  In this case, the hook before
-parsing just initialize the variable, and the hook after parsing
-collect the data from the variable, and add them to the list of symbols
+parsing just initializes the variable, and the hook after parsing
+collects the data from the variable, and adds them to the list of symbols
 found.  
 
 @defvar TeX-auto-regexp-list
@@ -2321,6 +2321,16 @@ mail me first, though.
 
 @itemize @bullet
 @item
+Use index files (when available) to speed up @kbd{C-c C-m include
+@key{ret}}. 
+
+@item
+AUC @TeX{} should not parse verbatim environments.
+
+@item
+Font menu should be created from @code{TeX-font-list}.
+
+@item
 Installation procedure written purely in emacs lisp.
 
 @item
@@ -2346,10 +2356,6 @@ LaTeX macros, available from the menu bar.
 @item
 Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
 simply self insert if not in a math context.
-
-@item
-@code{LaTeX-fill-paragraph} gets confused when two blocks of text are
-separated by an empty comment only.
 
 @item
 Make @code{TeX-insert-dollar} more robust.  Currently it can be fooled
@@ -2400,8 +2406,8 @@ stuff.  Suggested by John Interrante
 Make features.
 
 A new command @code{TeX-update} (@kbd{C-c C-u}) could be used to create
-an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
-(La)@TeX{}, until an error occur or we are done.
+an up-to-date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
+(La)@TeX{}, until an error occurs or we are done.
 
 An alternative is to have an @samp{Update} command that ensures the
 @samp{dvi} file is up to date.  This could be called before printing and
@@ -2482,11 +2488,11 @@ environment.  Be smart about @samp{\item[]} versus @samp{\item } and
 labels like @samp{fig:} versus @samp{tab:}.
 
 @item
-Check out if lightening completion from Ultra @TeX{} is anything for us.
+Check out if lightning completion from Ultra @TeX{} is anything for us.
 
 @item
-Finish the @TeX{}info mode.  For one think, many @TeX{}info mode
-commands does not accept braces around their arguments.
+Finish the @TeX{}info mode.  For one thing, many @TeX{}info mode
+commands do not accept braces around their arguments.
 
 @item
 BibTeX mode.
@@ -2495,9 +2501,9 @@ BibTeX mode.
 Support for AMSLaTeX style files.
 
 @item
-Better LaTeX letter environment.
+Hook up the letter environment with `bbdb.el'.
 
-Make a database system for addresses in the letter environment
+@item
 Make the letter environment hook produce `documentstyle' too.
 
 @end itemize

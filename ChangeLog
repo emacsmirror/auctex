@@ -1,3 +1,86 @@
+Thu Oct  6 14:38:52 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (LaTeX-paragraph-commands): End each word with a "\\b"
+	to avoid accidentally matching longer macros.
+
+	* tex.el (TeX-add-local-master): Use three %'s when adding buffer
+	local variables.  Suggested by Raymond Toy <toy@rtp.ericsson.se>. 
+
+	* tex.el (TeX-format-list): Added entry for AmSTeX by Ulf Juergens
+	<ulf@Mathematik.Uni-Bielefeld.DE>.
+
+	* tex.el (ams-tex-mode): Run AmS-TeX-mode-hook, not
+	plain-TeX-mode-hook.  Reported by Ulf Juergens
+	<ulf@Mathematik.Uni-Bielefeld.DE>.
+
+	* tex-buf.el (TeX-format-filter): Add `save-match-data'.  Patch by
+	David Aspinall <da@dcs.edinburgh.ac.uk>. 
+
+Wed Sep 14 10:53:15 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* cpp.el: Use RMS's version.
+
+Tue Sep 13 10:59:07 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* doc/history.texi, doc/auc-tex.texi: Fixes from Chris Fearnley
+	<@vm.uni-c.dk:FEARNLCJ@DUVM>. 
+
+Fri Sep  9 13:15:33 1994  Per Abrahamsen  <abraham@research.att.com>
+
+	* latex.el (LaTeX-insert-environment): Don't fill environments
+	listed in `LaTeX-indent-environment-list'.  Suggestion by Graham
+	Gough <graham@cs.man.ac.uk>.
+
+	* tex.el (LaTeX-command-style): Made latex2e first in the list.
+	Suggested by Frederic Devernay <Frederic.Devernay@sophia.inria.fr>. 
+
+Mon Sep  5 05:14:31 1994  Per Abrahamsen  <abraham@research.att.com>
+
+	* tex.el (TeX-file-extensions): Added LaTeX2 `cls' extension after
+	query by jmv@di.uminho.pt (Jose Manuel Valenca).
+
+Tue Aug 30 00:05:28 1994  Per Abrahamsen  <abraham@research.att.com>
+
+	* tex-jp.el: New version from koba@flab.fujitsu.co.jp (Kobayashi
+	Shinji).
+
+	* tex.el (TeX-command-list): Fifth element is now ignored.
+
+	* tex-buf.el (TeX-command-query): Check if region file is newer
+	than dvi file.
+	(TeX-command-region): Only query for command _after_ region file
+	is created.  
+	(TeX-region-create): Only save file if the new content is
+	different than the original content.
+
+Mon Aug 29 13:41:59 1994  Per Abrahamsen  (abraham@research.att.com)
+
+	* tex-buf.el (TeX-warning): Use offset for line end.  Fixed by 
+	ddw2@sunbim.be (Dominique de Waleffe).
+
+Fri Aug 26 18:17:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* doc/auc-tex.texi (Projects): Removed preceding item from
+	wishlist. 
+
+	* latex.el (LaTeX-common-initialization): Fix to comments
+	separating paragraphs by koba@flab.fujitsu.co.jp (Kobayashi
+	Shinji). 
+
+	* tex-jp.el (LaTeX-fill-region-as-paragraph): New version for MULE
+	2.0 by Tomotake FURUHATA <furuhata@trl.ibm.co.jp>.
+
+	* tex.el (TeX-function-p): Spelling error in doc.
+
+Tue Aug 23 11:00:35 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* doc/intro.texi (Contacts): Some reformulations.
+
+Sun Aug 21 18:47:23 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
+
+	* tex-jp.el (TeX-insert-punctuation): Japanese version from
+	koba@flab.fujitsu.co.jp (Kobayashi Shinji).
+
 Fri Aug 19 14:59:57 1994  Per Abrahamsen  (abraham@iesd.auc.dk)
 
 	* doc/install.texi: The `site-lisp' directory is also available in

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.71 1994-08-11 15:48:32 amanda Exp $
+;; $Id: tex-buf.el,v 1.72 1994-10-06 17:27:47 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -105,27 +105,25 @@ If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The document's trailer is
 all text after TeX-trailer-start."
   (interactive "P")
-  (let ((command (TeX-command-query (TeX-region-file))))
-    (if (null (nth 4 (assoc command TeX-command-list)))
-	()
-      (if (and (TeX-mark-active) (not old))
-	  (let ((begin (min (point) (mark)))
-		 (end (max (point) (mark))))
-	    (if TeX-command-region-begin
-		()
-	      (setq TeX-command-region-begin (make-marker)
-		    TeX-command-region-end (make-marker)))
-	    (set-marker TeX-command-region-begin begin)
-	    (set-marker TeX-command-region-end end)))
-      (if (null TeX-command-region-begin)
-	  (error "Mark not set"))
-      (let ((begin (marker-position TeX-command-region-begin))
-	    (end (marker-position TeX-command-region-end)))
-	(TeX-region-create (TeX-region-file TeX-default-extension)
-			   (buffer-substring begin end)
-			   (file-name-nondirectory (buffer-file-name))
-			   (count-lines (save-restriction (widen) (point-min)) begin))))
-    (TeX-command command 'TeX-region-file)))
+  (if (and (TeX-mark-active) (not old))
+      (let ((begin (min (point) (mark)))
+	     (end (max (point) (mark))))
+	(if TeX-command-region-begin
+	    ()
+	  (setq TeX-command-region-begin (make-marker)
+		TeX-command-region-end (make-marker)))
+	(set-marker TeX-command-region-begin begin)
+	(set-marker TeX-command-region-end end)))
+  (if (null TeX-command-region-begin)
+      (error "Mark not set"))
+  (let ((begin (marker-position TeX-command-region-begin))
+	(end (marker-position TeX-command-region-end)))
+    (TeX-region-create (TeX-region-file TeX-default-extension)
+		       (buffer-substring begin end)
+		       (file-name-nondirectory (buffer-file-name))
+		       (count-lines (save-restriction (widen) (point-min))
+				    begin)))
+  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
 
 (defun TeX-command-buffer ()
   "Run TeX on the current buffer.
@@ -280,8 +278,11 @@ in TeX-check-path."
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
   (or TeX-command-force
-      (let* ((default (cond ((and (not (string-equal name TeX-region))
-				  (TeX-save-document (TeX-master-file)))
+      (let* ((default (cond ((if (string-equal name TeX-region)
+				 (TeX-check-files (concat name ".dvi")
+						  (list name)
+						  TeX-file-extensions)
+			       (TeX-save-document (TeX-master-file)))
 			     TeX-command-default)
 			    ((and (eq major-mode 'latex-mode)
 				  (TeX-check-files (concat name ".bbl")
@@ -708,11 +709,12 @@ command."
       (goto-char (process-mark process))
       (insert-before-markers string)
       (set-marker (process-mark process) (point))) 
-    (save-excursion 
-      (if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
-	  (let ((new (TeX-match-buffer 0)))
-	    (if (not (string-equal new TeX-current-page))
-		(setq TeX-current-page new)))))
+    (save-excursion
+      (save-match-data
+	(if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
+	    (let ((new (TeX-match-buffer 0)))
+	      (if (not (string-equal new TeX-current-page))
+		  (setq TeX-current-page new))))))
     (TeX-format-mode-line process)))
 
 (defvar TeX-parse-function nil
@@ -777,7 +779,9 @@ original file."
 	 
 	 ;; And insert them into the FILE buffer.
 	 (file-buffer (find-file-noselect file))
-	 
+	 ;; But remember original content.
+	 original-content
+
 	 ;; We search for the header from the master file, if it is
 	 ;; not present in the region.
 	 (header (if (string-match header-end region)
@@ -818,6 +822,7 @@ original file."
 						  (buffer-substring (point) (point-max))))))))))
     (save-excursion
       (set-buffer file-buffer)
+      (setq original-content (buffer-string))
       (erase-buffer)
       (insert "\\message{ !name(" master-name ")}"
 	      header
@@ -831,7 +836,9 @@ original file."
 				(count-lines (point-min) (point))))
 	      ") }\n"
 	      trailer)
-      (save-buffer 0))))
+      (if (string-equal (buffer-string) original-content)
+	  (set-buffer-modified-p nil)
+	(save-buffer 0)))))
 
 (defun TeX-region-file (&optional extension)
   "Return TeX-region file name with EXTENSION."
@@ -1066,7 +1073,7 @@ Return nil if we gave a report."
 	  (goto-line (+ offset line))
 	  (beginning-of-line 0)
 	  (let ((start (point)))
-	    (goto-line line-end)
+	    (goto-line (+ offset line-end))
 	    (end-of-line)
 	    (search-backward string start t)
 	    (search-forward string nil t))

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.24 1994-08-16 23:57:48 amanda Exp $
+;; Version: $Id: tex.el,v 5.25 1994-10-06 17:27:54 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -135,8 +135,7 @@ create an asynchronous process.
 If the fourth element is non-nil, the user will get a chance to
 modify the expanded string.
 
-If the fifth element is non-nil, the TeX-region file will be rebuild
-before the command is started.")
+The fifth element is obsolete and ignored.")
 
 ;; You may want to change the default LaTeX version for your site.
 (defvar LaTeX-version "2e"
@@ -148,11 +147,11 @@ before the command is started.")
 (defvar LaTeX-command-style
   (if (string-equal LaTeX-version "2")
       ;; There is a lot of different LaTeX 2 based formats.
-      '(("^foils$" "foiltex")
+      '(("^latex2e$" "latex2e")
+	("^foils$" "foiltex")
 	("^ams" "amslatex")
 	("^slides$" "slitex")
 	("^plfonts\\|plhb$" "platex")
-	("^latex2e$" "latex2e")
 	("." "latex"))
     ;; They have all been combined in LaTeX 2e.
     '(("." "latex")))
@@ -453,11 +452,11 @@ This will be done when AUC TeX first try to use the master file.")
                                                         "End:")))
               (beginning-of-line 1)
               (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
-          (insert "\n% Local " "Variables: \n"
-                  "% mode: " (substring (symbol-name major-mode) 0 -5)
+          (insert "\n%%% Local " "Variables: \n"
+                  "%%% mode: " (substring (symbol-name major-mode) 0 -5)
 		  "\n"
-                  "% TeX-master: " (prin1-to-string TeX-master) "\n"
-                  "% End: \n")))))
+                  "%%% TeX-master: " (prin1-to-string TeX-master) "\n"
+                  "%%% End: \n")))))
 
 ;;; Style Paths
 
@@ -489,7 +488,7 @@ Must end with a slash.
 
 These correspond to TeX macros found in the current directory.")
 
-(defun TeX-split-string (char string)
+(defun TeX-split-string (regexp string)
   "Returns a list of strings. given REGEXP the STRING is split into 
 sections which in string was seperated by REGEXP.
 
@@ -502,10 +501,9 @@ Examples:
 
           -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
 
-If CHAR is nil, or \"\", an error will occur."
+If REGEXP is nil, or \"\", an error will occur."
 
-  (let ((regexp char)
-        (start 0)
+  (let ((start 0)
         (result '()))
     (while (string-match regexp string start)
       (let ((match (string-match regexp string start)))
@@ -971,7 +969,9 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 ;;; The Mode
 
 (defvar TeX-format-list
-  '(("LATEX" latex-mode 
+  '(("AMSTEX" ams-tex-mode
+     "\\\\document\\b")
+    ("LATEX" latex-mode 
      "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
   "*List of format packages to consider when choosing a TeX mode.
@@ -1065,7 +1065,7 @@ of AmS-TeX-mode-hook."
   (setq mode-name "AmS TeX")
   (setq major-mode 'ams-tex-mode)
   (setq TeX-command-default "AmSTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook))
 
 (defun VirTeX-common-initialization ()
   ;; Initialize
@@ -1540,7 +1540,7 @@ Check for potential LaTeX environments."
   "*List of regular expresions used for parsing the current file.")
   (make-variable-buffer-local 'TeX-auto-regexp-list)
 
-(defvar TeX-file-extensions '("tex" "sty" "ltx" "texi")
+(defvar TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi")
   "*File extensions used by manually generated TeX files.")
 
 (defvar TeX-all-extensions '("[^.\n]+")
@@ -1683,7 +1683,7 @@ See match-data for details."
     ""))
 
 (defun TeX-function-p (arg)
-  "Return non-nil if ARG is collable as a function."
+  "Return non-nil if ARG is callable as a function."
   (or (and (fboundp 'byte-code-function-p)
 	   (byte-code-function-p arg))
       (and (listp arg)

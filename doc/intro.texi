@@ -148,11 +148,11 @@ WWW users may want to check out the AUC @TeX{} page at
 
 @section Contacts
 
-There has been established a mailing list for discussion of the
-evaluation of AUC @TeX{}.  You're very welcome to join.  Traffic average
-at an article by day, but they come in bursts.  If you are only
-interested in information on updates, you could refer to the newsgroups
-@samp{comp.text.tex} and @samp{gnu.emacs.sources}.
+There has been established a mailing list for help, bug reports, feature
+requests and general discussion about AUC @TeX{}.  You're very welcome
+to join.  Traffic average at an article by day, but they come in bursts.
+If you are only interested in information on updates, you could refer to
+the newsgroups @samp{comp.text.tex} and @samp{gnu.emacs.sources}.
 
 If you want to contact the AUC @TeX{} mailing list, send mail to
 @samp{<auc-tex-request@@iesd.auc.dk>} in order to join.  Articles should
