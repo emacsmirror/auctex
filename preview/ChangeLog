@@ -1,5 +1,10 @@
 2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi (Font problems with Dvips): Changed pounds
+	sign.  Not much of an improvement (we get the wrong character),
+	but 7bit safe.  If Jan-Åke finds this as desirable as to have his
+	own name mangled, we should follow at least make it pay off.
+
 	* doc/preview-latex.texi (On EPS previews): png16m is default
 	instead of png256.
 

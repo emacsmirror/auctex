@@ -1,24 +1,20 @@
-Release notes for version 0.6 of the preview-latex package:
+Release notes for version 0.6.1 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  It is released under the GNU
 Public License (GPL).  At the current point of time, GNU Emacs-21.1,
 AUC TeX, a working LaTeX installation and GhostScript are required.
-XEmacs support is not yet operative, and contributions would be
-welcome.  Due to missing image support of Emacs-21.1 under Microsoft
-Windows, this platform is not usable at the current point of time,
-either.
+XEmacs support has been intermittedly worked on.  If you are planning
+on contributing, please contact the developers' list.  Due to missing
+image support of Emacs-21.1 under Microsoft Windows, this platform is
+not usable at the current point of time, either.
 
-Release focus is user interface improvements and documentation.  Main
-point has been an attempt to refrain from disabling previews unless
-the text under it has indeed changed and not just been replaced by
-something identical or decorated with font-lock.  This makes
-preview-latex behave better when filling paragraphs, for example.
-Menu entries for clearing out previews again have been added, and
-temporary directories are removed when leaving Emacs.  A TeXinfo manual
-has been started.  Provision has been made for configuration files
-prdefault.cfg and prauctex.cfg for commonly defined operations.  The
-latter file is provided and installed.
+Release focus have been user interface improvements and documentation.
+The TeXinfo documentation now also contains instructions for the used
+LaTeX style, and users of Emacs' desktop package will have previews
+survive into their next Emacs session.  The LaTeX style now has an
+option for making TeX bounding boxes known to Dvips in case there is
+a disagreement (frequent with packages like PStricks).
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
