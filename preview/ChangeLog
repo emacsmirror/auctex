@@ -1,3 +1,24 @@
+2002-04-16  Nix  <nix@esperi.demon.co.uk>
+
+	* doc/install.texi (Configure):
+	Describe what to pass to configure when you are a normal user,
+	but you have installed no packages before so your local package directory
+	doesn't exist.
+
+	* doc/problems.texi (Problems with GhostScript):
+	The error buttons are right-clickable too.
+
+	* prv-xemacs.el (preview-create-icon):
+	Cater for file-handlers (as in dired) forcing coding-system autodetection
+	at glyph-instantiation time if the glyph must be read from a file;
+	read it by hand.
+
+	(preview-extents-at): New, cater for nonexistent `extents-at' in
+	XEmacs-21.1.
+	(preview-move-point): Use it.
+
+	(preview-balloon-reroute): Typo fix.
+
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-place): Generate nicer file names.
