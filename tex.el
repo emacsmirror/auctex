@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9k
+;; Version: 9.9l
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1818,38 +1818,52 @@ If TEX is a directory, generate style files for all files in the directory."
                            (expand-file-name (read-file-name
                                               "AUTO lisp directory: "
                                               TeX-auto-default
-                                              TeX-auto-default 'confirm)))))
+                                              TeX-auto-default
+                                              'confirm)))))
+  (TeX-auto-generate-1 tex auto
+		       (cond 
+			((and (numberp TeX-file-recurse)
+			      (> TeX-file-recurse 0))
+			 TeX-file-recurse)
+			((null TeX-file-recurse) 1)
+			(t -1))))
+
+(defun TeX-auto-generate-1 (tex auto recursion-depth) 
   (cond ((not (file-readable-p tex)))
 	((string-match TeX-ignore-file tex))
-        ((file-directory-p tex)
-         (let ((files (directory-files tex))
-               (default-directory (concat (if (TeX-directory-absolute-p tex)
-                                              ""
-                                            default-directory)
-                                          (if (string-match "/$" tex)
-                                              tex
-                                            (concat tex "/")))))
-           (mapcar (function (lambda (file)
-		      (if (or TeX-file-recurse
-			      (not (file-directory-p file)))
-			  (TeX-auto-generate file auto))))
-                   files)))
-        ((not (file-newer-than-file-p tex
-                   (concat auto (if (string-match "/$" auto) "" "/")
-                      (TeX-strip-extension tex TeX-all-extensions t) ".el"))))
-        ((TeX-match-extension tex (append TeX-file-extensions
+	((and (file-directory-p tex)
+	      (not (eq recursion-depth 0)))
+
+	 (let ((files (directory-files tex))
+	       (default-directory
+		 (concat (if (TeX-directory-absolute-p tex)
+			     ""
+			   default-directory)
+			 (if (string-match "/$" tex)
+			     tex
+			   (concat tex "/")))))
+	   (mapcar (function (lambda (file)
+			       (TeX-auto-generate-1 file auto 
+						    (1- recursion-depth))))
+		   files)))
+	((not (file-newer-than-file-p
+	       tex
+	       (concat auto (if (string-match "/$" auto) "" "/")
+		       (TeX-strip-extension tex TeX-all-extensions t)
+		       ".el"))))
+	((TeX-match-extension tex (append TeX-file-extensions
 					  BibTeX-file-extensions))
-         (save-excursion
-           (set-buffer (find-file-noselect tex))
-           (message "Parsing %s..." tex)
-           (TeX-auto-store (concat auto
-                                   (if (string-match "/$" auto) "" "/")
-                                   (TeX-strip-extension tex
+	 (save-excursion
+	   (set-buffer (find-file-noselect tex))
+	   (message "Parsing %s..." tex)
+	   (TeX-auto-store (concat auto
+				   (if (string-match "/$" auto) "" "/")
+				   (TeX-strip-extension tex
 							TeX-all-extensions
 							t)
-                                   ".el"))
-           (kill-buffer (current-buffer))
-           (message "Parsing %s... done" tex)))))
+				   ".el"))
+	   (kill-buffer (current-buffer))
+	   (message "Parsing %s... done" tex)))))
 
 ;;;###autoload
 (defun TeX-auto-generate-global ()
@@ -2121,9 +2135,13 @@ TeX files in a directory."
   :type 'regexp)
 
 (defcustom TeX-file-recurse t
-  "*If not nil, search TeX directories recursivly."
+  "*Whether to search TeX directories recursively: 'nil' means do not
+recurse, a positive integer means go that far deep in the directory
+hierarchy, 't' means recurse indefinitely."  
   :group 'TeX-parse
-  :type 'boolean)
+  :type '(choice (const :tag "On" t)
+		 (const :tag "Off" nil)
+		 (integer :tag "Depth" :value 1))
 
 (defun TeX-match-extension (file &optional extensions)
   "Return non-nil if FILE has an one of EXTENSIONS.
@@ -2174,43 +2192,51 @@ If optional argument STRIP is set, remove file extension.
 If optional argument DIRECTORIES is set, search in those directories. 
 Otherwise, search in all TeX macro directories.
 If optional argument EXTENSIONS is not set, use TeX-file-extensions"
-
   (if (null extensions)
       (setq extensions TeX-file-extensions))
-  
   (if (null directories)
       (setq directories
 	    (cons "./" (append TeX-macro-private TeX-macro-global))))
-  
-  (let (match)
-    
-    (while directories
-      (let* ((directory (car directories))
-             (content (and directory
-			   (file-readable-p directory)
-			   (file-directory-p directory)
-			   (directory-files directory))))
-        
-        (setq directories (cdr directories))
-	
-        (while content
-          (let ((file (concat directory (car content))))
-	    
-            (setq content (cdr content))
-            (cond ((string-match TeX-ignore-file file))
-		  ((not (file-readable-p file)))
-                  ((file-directory-p file)
-		   (if TeX-file-recurse
-		       (setq directories
-			     (cons (concat file "/") directories))))
-                  ((TeX-match-extension file extensions)
-                   (setq match (cons (TeX-strip-extension file
-							  extensions
-							  nodir
-							  (not strip))
-                                     match))))))))
-    
-    match))
+  (mapcan (function
+	   (lambda (dir)
+	     (TeX-search-files-1 dir extensions nodir strip
+			      (cond 
+			       ((and (numberp TeX-file-recurse)
+				     (> TeX-file-recurse 0))
+				TeX-file-recurse)
+			       ((null TeX-file-recurse) 1)
+			       (t -1)))))
+	  directories))
+
+(defun TeX-search-files-1 (directory extensions nodir strip
+				     recursion-depth) 
+  (unless (eq recursion-depth 0)
+    (let* ((content (and directory
+			 (file-readable-p directory)
+			 (file-directory-p directory)
+			 (directory-files directory)))
+	   match)
+      (while content
+	(let ((file (concat directory (car content))))
+	  
+	  (setq content (cdr content))
+	  (cond ((string-match TeX-ignore-file file))
+		((not (file-readable-p file)))
+		((file-directory-p file)
+		 (setq match
+		       (nconc match
+			       (TeX-search-files-1 (concat file "/")
+						   extensions
+						   nodir strip
+						   (1- recursion-depth)))))
+		((TeX-match-extension file extensions)
+		 (setq match (cons (TeX-strip-extension file
+							extensions
+							nodir
+							(not strip))
+				   match))))))
+
+    match)))
 
 (defun TeX-car-string-lessp (a b)
   (string-lessp (car a) (car b)))
