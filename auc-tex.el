@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.9 $  
+;; RCS status      : $Revision: 3.10 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jun  3 08:17:26 1991
-;; Update Count    : 328
+;; Last Modified On: Tue Jun  4 03:52:34 1991
+;; Update Count    : 330
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -527,7 +527,7 @@ means justify as well."
 	    (goto-char (point-min))
 	    (replace-regexp "^[ \t]+\\\\" "\\\\")
 	    (goto-char (point-min))
-	    (replace-regexp "[ \t]+\\\\" "\n\\&")
+	    (replace-regexp "[ \t]+\\\\[^\\\\]" "\n\\&")
 	    (goto-char (point-max))
 	    (widen)
 	    (if is-percent
@@ -538,8 +538,8 @@ means justify as well."
 			   (point)))))))
       (while (and (<= (point) (marker-position the-end))
 		  (not (eobp)))
-	(re-search-forward "\\(^[ \t]*\\\\\\|\\'\\)")
-	(if (looking-at "begin *{verbatim}")
+	(re-search-forward "\\(^[ \t]*|\\'\\)")
+	(if (looking-at "\\\\begin *{verbatim}")
 	    (re-search-forward "\\\\end *{verbatim}"))
 	(LaTeX-indent-line)
 	(message "Formatting%s (take one)... %d%%"
