@@ -1237,7 +1237,7 @@ Return nil if we gave a report."
 
   (let ((old-buffer (current-buffer))
 	(log-file (TeX-active-master "log"))
-	(TeX-error-pointer 1))
+	(TeX-error-pointer 0))
 
     ;; Find help text entry.
     (while (not (string-match (car (nth TeX-error-pointer 
