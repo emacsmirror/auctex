@@ -7,7 +7,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
   tmpprefix="${prefix}"
   AC_FULL_EXPAND(tmpprefix)
-  AC_EMACS_LISP(packagedir,
+  EMACS_LISP(packagedir,
     [(let* (\
            (putative-existing-lisp-dir (locate-library \"$1\"))\
            (package-dir\
@@ -454,7 +454,7 @@ dnl					[, ACTION-IF-NOT-FOUND]])
 dnl
 AC_DEFUN(MAKEINFO_CHECK_MACROS,
 [for ac_macro in $1; do
-    TEXINFO_CHECK_MACRO_MAKEINFO($ac_macro, $2, 
+    MAKEINFO_CHECK_MACRO($ac_macro, $2, 
 	[MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
 	$3])dnl
   done
