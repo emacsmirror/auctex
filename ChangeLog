@@ -1,3 +1,8 @@
+2004-08-19  David Kastrup  <dak@gnu.org>
+
+	* tex.el (AmSTeX-mode-map): Derive from plain-TeX-mode-map so that
+	Emacs users get a "TeX" menu.  Even if it is in a strange place.
+
 2004-08-19  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec (description): Overhauled.

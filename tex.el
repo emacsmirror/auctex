@@ -646,7 +646,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.433 $"))
+	(rev "$Revision: 5.434 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -661,7 +661,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-19 17:20:52 $"))
+    (let ((date "$Date: 2004-08-19 17:42:47 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3323,7 +3323,7 @@ be bound to `TeX-electric-macro'."
 
 (defvar AmSTeX-mode-map
   (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map TeX-mode-map)
+    (set-keymap-parent map plain-TeX-mode-map)
     map)
   "Keymap used in `AmSTeX-mode'.")
 
@@ -3349,8 +3349,8 @@ of `AmS-TeX-mode-hook'."
   (use-local-map AmSTeX-mode-map)
 
   ;; Menu
-  (easy-menu-add plain-TeX-mode-menu AmSTeX-mode-map)
   (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
+  (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
 
   (setq TeX-base-mode-name "AmS-TeX")
   (setq major-mode 'ams-tex-mode)
