@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.50 2001-12-03 13:55:44 dakas Exp $
+;; $Id: preview.el,v 1.51 2002-01-17 09:28:52 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -928,10 +928,30 @@ upgraded to a fancier version of just the LaTeX style."
   "Create default option list to pass into LaTeX preview package."
   (mapconcat #'identity preview-default-option-list ","))
 
+(defcustom preview-default-preamble '("\\RequirePackage[%P]{preview}"
+"\\PreviewMacro*\\emph" "\\PreviewMacro*\\footnote")
+  "*Specifies default preamble to add to a LaTeX document. 
+If the document does not itself load the preview package, that is,
+when you use preview on a document not configured for preview, this
+list of LaTeX commands is inserted just before \\begin{document}. "
+  :group 'preview-latex
+  :type '(list (repeat :inline t :tag "Preamble commands" (string))))
+
+(defun preview-expand-command (command)
+  "Expand a command (from preview-default-preamble) using 
+TeX-expand-list."
+  ; This is necessary because the expansion is not recursive (?)
+  (TeX-command-expand command ""))      ; The file special will 
+					; never be used here
+
+(defun preview-make-preamble ()
+  "Create default preamble to add to LaTeX document."
+  (mapconcat #'preview-expand-command preview-default-preamble "\n"))
+
 (defcustom preview-LaTeX-command "%l '\\nonstopmode\
 \\PassOptionsToPackage{auctex,active}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined\
-\\RequirePackage[%P]{preview}\\fi}\\input{%t}'"
+%D\\fi}\\input{%t}'"
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -972,6 +992,8 @@ preview Emacs Lisp package something too stupid."))
 	       '("%m" preview-create-subdirectory) t)
   (add-to-list 'TeX-expand-list
 	       '("%P" preview-make-options) t)
+  (add-to-list 'TeX-expand-list
+	       '("%D" preview-make-preamble) t)
 ;;;  (easy-menu-add-item TeX-mode-menu nil
 ;;;		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
 ;;; The following ugliness is necessary because LaTeX-mode-map starts
@@ -1306,7 +1328,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.50 $"))
+	(rev "$Revision: 1.51 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
