@@ -126,6 +126,59 @@ When called interactively, prompt for an environment."
 	  (goto-char (match-beginning 0))
 	(error "Can't locate start of current environment")))))
 
+(defun Texinfo-insert-node ()
+  "Insert a Texinfo node in the current buffer.
+That means, insert the string `@node' and prompt for current,
+next, previous and upper node.  If there is an active region, use
+this for the current node and inhibit the prompt for it.  Insert
+a comment on the following line indicating the order of arguments
+for @node."
+  (interactive)
+  (let ((active-mark (and (TeX-active-mark) (not (eq (mark) (point)))))
+	nodes node-name next-node preview-node up-node)
+    ;; Build list of nodes in current buffer.
+    ;; (What about using `imenu--index-alist'?)
+    ;; FIXME: Support multi-file documents.
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^@node\\b" nil t)
+	(skip-chars-forward " \t")
+	(add-to-list 'nodes
+		     (buffer-substring-no-properties
+		      (point) (progn (skip-chars-forward "^,") (point))))))
+    (unless active-mark
+      (setq node-name (read-string "Node name: ")))
+    ;; FIXME: What if key binding for `minibuffer-complete' was changed?
+    ;; `substitute-command-keys' doesn't return the correct value.
+    (setq next-node (completing-read "Next node (TAB completes): " nodes))
+    (setq previous-node
+	  (completing-read "Previous node (TAB completes): " nodes))
+    (setq up-node (completing-read "Upper node (TAB completes): " nodes))
+    (when (and active-mark
+	       (< (mark) (point)))
+      (exchange-point-and-mark))
+    (insert "@node ")
+    (if active-mark
+	(goto-char (mark))
+      (insert node-name))
+    (insert ", " next-node ", " previous-node ", " up-node
+	    "\n@comment  node-name,  next,  previous,  up\n")
+    ;; Position point at first empty field.
+    (unless (and (or (> (length node-name) 0) active-mark)
+		 (> (length next-node) 0)
+		 (> (length previous-node) 0)
+		 (> (length  up-node) 0))
+      (forward-line -2)
+      (forward-char 6)
+      (catch 'break
+	(if (or (> (length node-name) 0) active-mark)
+	    (progn (skip-chars-forward "^,") (forward-char 2))
+	  (throw 'break nil))
+	(dolist (node (list next-node previous-node up-node))
+	  (if (> (length node) 0)
+	      (progn (skip-chars-forward "^,") (forward-char 2))
+	    (throw 'break nil)))))))
+
 
 ;;; Keymap:
 
@@ -146,7 +199,7 @@ When called interactively, prompt for an environment."
     (define-key map "\C-c\n"   'texinfo-insert-@item)
     (or (key-binding "\e\r")
 	(define-key map "\e\r" 'texinfo-insert-@item)) ;*** Alias
-    (define-key map "\C-c\C-s" 'texinfo-insert-@node)
+    (define-key map "\C-c\C-s" 'Texinfo-insert-node)
     (define-key map "\C-c]" 'texinfo-insert-@end)
     map)
   "Keymap for Texinfo mode.")
