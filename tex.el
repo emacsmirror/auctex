@@ -382,12 +382,12 @@ string."
      "xdvi %d -paper a5")
     ("^dvi$" "^b5paper$" "xdvi %d -paper b5")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-     "dvips -t landscape %d -o && gv %s.ps")
+     "dvips -t landscape %d -o && gv %f")
     ("^dvi$" "^letterpaper$" "xdvi %d -paper us")
     ("^dvi$" "^legalpaper$" "xdvi %d -paper legal")
     ("^dvi$" "^executivepaper$" "xdvi %d -paper 7.25x10.5in")
     ("^dvi$" "^landscape$" "xdvi %d -paper a4r -s 0")
-    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips %d -o && gv %s.ps")
+    ("^dvi$" "^pstricks$\\|^psfrag$" "dvips %d -o && gv %f")
     ("^dvi$" "." "xdvi %d")
     ("^pdf$" "^landscape$" "xpdf -papertype a4r %o")
     ("^pdf$" "." "xpdf %o")
@@ -535,7 +535,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.335 $"))
+	(rev "$Revision: 5.336 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -550,7 +550,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-14 20:16:37 $"))
+    (let ((date "$Date: 2004-03-18 10:13:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2602,7 +2602,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
 
   ;; Multifile
-  (define-key TeX-mode-map "\C-c-" 'TeX-master-file-ask)) ;*** temporary
+  (define-key TeX-mode-map "\C-c_" 'TeX-master-file-ask)) ;*** temporary
 
 (defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
   "Keymap used in plain TeX mode.")
