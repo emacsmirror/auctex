@@ -93,7 +93,7 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 * Customization::               Fitting it in.
 * Internals::                   Under the hood.
 * Credits::                     Contributors.
-* Index::                       
+* Index::                       A menu of many topics.             
 @end menu
 
 @node Copying, Introduction, top, top
@@ -137,8 +137,8 @@ and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 @node Keys and lisp, Customization, Getting started, top
 @chapter Key bindings and user-level lisp functions 
 
-To the functions and key bindings in AUC @TeX{}, the
-following are added:
+To the functions and key bindings in AUC @TeX{} (hyperlink into AUC
+@TeX{} info file), the following are added:
 
 @table @w
 @item @kbd{C-c C-c g RET} 
@@ -159,6 +159,15 @@ last such preview.
 @cindex @kbd{C-c C-p C-p}
 @cindex @code{preview-at-point}
 @cindex De/Preview at point
+
+@item @kbd{C-c C-k}
+@itemx Kill preview-generating process
+This is really an AUC @TeX{} keybinding, but it is included here as a
+hint. If you start generating a preview and then make a change that
+affects the number of lines in the buffer, preview-latex may be
+confused and place the previews wrong.
+@cindex @kbd{C-c C-k}
+@cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
@@ -214,8 +223,8 @@ Report a bug in the preview-latex package.
 @cindex Customization
 
 Customization options can be found by typing @kbd{M-x customize-group
-RET preview RET}. The list can be made very long, but some suggestions
-are:
+RET preview RET}. The list of suggestions can be made very long, but
+some are:
 
 @itemize @bullet
 @item Adjust the smoothening of the previews
@@ -241,9 +250,10 @@ in @code{Preview Default Option List}.  Beware if you use
 
 When using preview-latex, the \labels are hidden by the previews. To
 show them in the previews (yes, this is possible) use the La@TeX{}
-package @code{showkeys}, by changing @code{Preview Latex Command} in the
-@code{Preview Latex} group to include @code{\usepackage@{showkeys@}} in
-between @code{\AtBeginDocument@{} and @code{\ifx\ifPreview\undefined}
+package @code{showkeys}, by changing @code{Preview Default Preamble} in
+the @code{Preview Latex} group to include @code{\usepackage@{showkeys@}}
+before the @code{\RequirePackage[%P]@{preview@}} line (press the [Show] and
+the first [INS] buttons).
 
 @end itemize
  
@@ -277,10 +287,11 @@ AUC @TeX{}'s command list).
 This command passes options @code{auctex} and @code{active} to the
 preview package so that the user need not supply these by himself in
 case he wants to be able to still compile his document without it
-turning into an incoherent mass of little pictures. It also tells LaTeX
-to load the preview package with the options configured in
-@code{preview-default-option-list} if the document does not call in the
-package itself (via @code{\usepackage}) in the preamble.
+turning into an incoherent mass of little pictures. If the document does
+not call in the package itself (via @code{\usepackage}) in the preamble,
+the preview package is loaded using default options from
+@code{preview-default-option-list} and additional commands specified in
+@code{preview-default-preamble}.
 
 This run produces a dvi file where every preview is on a separate page.
 As usual with AUC @TeX{}, you can continue editing while this is going
