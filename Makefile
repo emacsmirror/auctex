@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.119 1996-02-27 18:50:27 abraham Exp $
+# $Id: Makefile,v 5.120 1996-02-29 13:56:19 abraham Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -90,6 +90,10 @@ LIBS=
 SHELL = /bin/sh
 
 FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+
+WWWDIR = $(HOME)/.public_html/auctex
+#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
 REMOVE =  easymenu.el cpp.el
 
@@ -242,8 +246,8 @@ dist:
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
-#	rm -f /user/amanda/lib/www/auctex/version
-#	echo $(TAG) > /user/amanda/lib/www/auctex/version
+	rm -f $(WWWDIR)/version
+	echo $(TAG) > $(WWWDIR)/version
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
@@ -271,12 +275,12 @@ dist:
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
 	cp ChangeLog $(FTPDIR)
-#	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
+	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
-#	zip -r $(FTPDIR)/auctex auctex-$(TAG)
+	zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
 	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
 	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \

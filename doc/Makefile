@@ -4,10 +4,10 @@ TEX=tex
 
 all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
-dist: auctex INSTALLATION README CHANGES # auc-tex_toc.html
+dist: auctex INSTALLATION README CHANGES auc-tex_toc.html
 
 auc-tex_toc.html: auc-tex.texi
-	perl -S texi2html -split_node auc-tex.texi
+	texi2html -split_node auc-tex.texi
 
 math-ref.dvi: math-ref.tex
 	$(TEX) math-ref

@@ -4,7 +4,7 @@ Please upgrade.
 
 If that is absolutely impossible, you can try installing 
 
-	<URL:ftp://ftp.sunsite.auc.dk/packages/auctex/auc-menu.el>
+	<URL:ftp://sunsite.auc.dk/packages/auctex/auc-menu.el>
 
 under the name easymenu.el at some place where emacs can find it.  
 The best place is in the standard Emacs lisp directory, because that
@@ -57,7 +57,7 @@ Mule-1.0-KIRITSUBO fails to parse some of the style files.
 
 NeXT Emacs is broken, a workaround is available by ftp:
 
-host: ftp.sunsite.auc.dk
+host: sunsite.auc.dk
 file: /packages/auctex/get-proc-env.el.z (gzip'ed)
 
 * You are mixing Emacs 18, FSF Emacs 19, and Lucid Emacs 19.

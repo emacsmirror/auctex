@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.107 1996-02-27 18:50:37 abraham Exp $
+@c $Id: auc-tex.texi,v 1.108 1996-02-29 13:56:25 abraham Exp $
 
 @finalout
 @titlepage
@@ -939,7 +939,7 @@ matched by a @samp{@}}.@refill
 GNU Emacs earlier than version 19.19 does not have a useful outline
 mode.  If you want to use outlines with old versions of emacs, please
 get the file @file{outln-18.el} from
-@file{ftp.sunsite.auc.dk:/packages/auctex/outln-18.el}.  It is a port of the
+@file{sunsite.auc.dk:/packages/auctex/outln-18.el}.  It is a port of the
 Emacs 19.19 outline mode to Emacs 18 and Lucid Emacs.@refill
 
 AUC @TeX{} supports the standard outline minor mode using La@TeX{}
