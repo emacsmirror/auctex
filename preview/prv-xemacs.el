@@ -525,7 +525,7 @@ Pure borderless black-on-white will return NIL."
 			  filename)
 	(setq filename (substring filename 0 (match-beginning 0))))
       (setq format-cons (assoc filename preview-dumped-alist))
-      (when format-cons
+      (when (eq (cdr format-cons) 'watch)
 	(preview-watch-preamble (current-buffer) format-cons)))))
 
 (defvar preview-marker (make-marker)
@@ -675,21 +675,23 @@ format dump handler."
   (let ((buffer (if (bufferp file)
 		    file
 		  (find-buffer-visiting file))))
-    (when buffer
-      (with-current-buffer buffer
-	(save-excursion
-	  (save-restriction
-	    (widen)
-	    (goto-char (point-min))
-	    (unless (re-search-forward preview-dump-threshold nil t)
-	      (error "Can't find preamble of `%s'" file))
-	    (setcdr format-cons (point))
-	    (setq preview-preamble-format-cons format-cons)))))))
+    (if buffer
+	(with-current-buffer buffer
+	  (save-excursion
+	    (save-restriction
+	      (widen)
+	      (goto-char (point-min))
+	      (unless (re-search-forward preview-dump-threshold nil t)
+		(error "Can't find preamble of `%s'" file))
+	      (setcdr format-cons (point))
+	      (setq preview-preamble-format-cons format-cons))))
+      (setcdr format-cons 'watch))))
 
 (defun preview-unwatch-preamble (format-cons)
   "Stop watching a format on FORMAT-CONS.
 The watch has been set up by `preview-watch-preamble'."
-  (when (number-or-marker-p (cdr format-cons))
+  (when (or (number-or-marker-p (cdr format-cons))
+	    (eq 'watch (cdr format-cons)))
     (setcdr format-cons nil)))
 
 (defun preview-register-change (ov map-arg)
