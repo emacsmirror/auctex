@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.147 2002-05-28 10:47:13 dakas Exp $
+;; $Id: preview.el,v 1.148 2002-05-28 13:27:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1132,6 +1132,12 @@ the given value of TIMESTAMP."
       (with-current-buffer buffer (preview-clearout))
     (preview-clearout)))
 
+(defun preview-clearout-at-point ()
+  "Clearout any preview at point."
+  (interactive)
+  (preview-clearout (max (point-min) (1- (point)))
+		    (min (point-max) (1+ (point)))))
+
 (defun preview-kill-buffer-cleanup (&optional buf)
   "This is a cleanup function just for use in hooks.
 Cleans BUF or current buffer.  The difference to
@@ -1504,6 +1510,7 @@ preview Emacs Lisp package something too stupid."))
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
   (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-p" #'preview-clearout-at-point)
   (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-r" #'preview-clearout)
   (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-b" #'preview-clearout-buffer)
   (preview-with-LaTeX-menus
@@ -1513,25 +1520,26 @@ preview Emacs Lisp package something too stupid."))
 			(assoc "Generate Preview" TeX-command-list)))
    (easy-menu-add-item nil '("LaTeX")
 		       '("Preview"
-			 ["On/off at point" preview-at-point t]
-			 ["Environment" preview-environment t]
-			 ["Section" preview-section t]
+			 ["On/off at point" preview-at-point]
+			 ["Environment" preview-environment]
+			 ["Section" preview-section]
 			 ["Region" preview-region (preview-mark-active)]
 			 ["Buffer" preview-buffer]
 			 ["Document" preview-document]
+			 ["Clearout at point" preview-clearout-at-point]
 			 ["Clearout region" preview-clearout (preview-mark-active)]
-			 ["Clearout buffer" preview-clearout-buffer t]
-			 ["Cache preamble" preview-dump-format t]
-			 ["Cache preamble off" preview-clear-format t]
+			 ["Clearout buffer" preview-clearout-buffer]
+			 ["Cache preamble" preview-dump-format]
+			 ["Cache preamble off" preview-clear-format]
 			 ("Customize"
 			  ["Browse options"
-			   (customize-group 'preview) t]
+			   (customize-group 'preview)]
 			  ["Generate custom menu"
 			   (easy-menu-add-item
 			    nil '("LaTeX" "Preview")
-			    (customize-menu-create 'preview)) t])
-			 ["Read documentation" preview-goto-info-page t]
-			 ["Report Bug" preview-report-bug t])
+			    (customize-menu-create 'preview))])
+			 ["Read documentation" preview-goto-info-page]
+			 ["Report Bug" preview-report-bug])
 		       "Miscellaneous"))
   (if (boundp 'desktop-buffer-misc)
       (preview-buffer-restore desktop-buffer-misc)))
@@ -2038,7 +2046,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.147 $"))
+	(rev "$Revision: 1.148 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2049,7 +2057,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-05-28 10:47:13 $"))
+    (let ((date "$Date: 2002-05-28 13:27:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
