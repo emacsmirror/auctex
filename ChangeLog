@@ -1,3 +1,8 @@
+2004-04-09  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (install-el, dist): Add .nosearch in style/ and
+	auto/.
+
 2004-04-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* context.el (ConTeXt-current-interface): eval-and-compile instead

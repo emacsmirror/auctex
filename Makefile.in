@@ -78,6 +78,8 @@ DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 EXTRAFILES = COPYING PROBLEMS IRIX Makefile ChangeLog \
 	lpath.el tex-site.el $(CONTRIB) $(CONTRIB_MULE)
 
+NOSEARCH = style/.nosearch
+
 all:	lisp
 
 lisp:
@@ -108,11 +110,13 @@ install-el:
 	  $(INSTALL_DATA) $$x $(auctexdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(styledir)
+	$(INSTALL_DATA) $(NOSEARCH) $(styledir)
 	for x in $(STYLESRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(styledir)' ; \
 	  $(INSTALL_DATA) $$x $(styledir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(autodir)
+	$(INSTALL_DATA) $(NOSEARCH) $(autodir)
 
 install-lisp:	some install-el
 	for x in $(AUCSRC) ; do \
@@ -176,11 +180,13 @@ dist:
 	cvs commit -m 'Release_$(TAG)'
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG)
+	mkdir auctex-$(TAG)/auto
 	mkdir auctex-$(TAG)/style
 	mkdir auctex-$(TAG)/doc
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) auctex-$(TAG)/style
-	touch auctex-$(TAG)/style/.nosearch
+	cp $(NOSEARCH) auctex-$(TAG)/auto
+	cp $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
