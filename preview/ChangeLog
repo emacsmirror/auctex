@@ -1,3 +1,11 @@
+2002-04-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (face-attribute): GNU Emacs calculates face
+	heights differently.
+	(preview-replace-active-icon): For now do the full inefficient
+	stuff.  Working this out later should be easy.  XEmacs now
+	displays previews, but that's about all.
+
 2002-04-09  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el: Remove crufty destructive-copy stuff.
