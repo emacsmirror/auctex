@@ -1,5 +1,7 @@
 2004-05-13  Davide G. M. Salvetti  <salve@debian.org>
 
+	* Makefile.in (DOCFILES): Added doc/macros.texi.
+
 	* doc/Makefile.in (distclean): New.
 
 2004-05-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
