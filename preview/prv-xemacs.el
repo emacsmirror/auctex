@@ -198,6 +198,19 @@ other hooks, such as major mode hooks, can do the job."
              (append (symbol-value list-var) (list element))
            (cons element (symbol-value list-var))))))
 
+;; We have to pick the image-specifier's inst-list apart by hand.  This code
+;; won't work if there are multiple valid image types in a single glyph in a
+;; single (locale * domain): but we don't care, because only the first of those
+;; will ever be rendered (and make-glyph probably can't create such images
+;; anyway).
+;; How horrible.
+
+(defmacro glyph-image-type (image)
+  "Return GLYPH's image type."
+  `(map-specifier (glyph-image ,image)
+                  #'(lambda (spec locale inst-list null)
+                      (elt (cdr (assoc (list (device-type)) inst-list)) 0))))
+
 ;; Images.
 
 ;; TODO: Generalize this so we can create the fixed icons using it.
@@ -636,7 +649,7 @@ Disable it if that is the case.  Ignores text properties."
 
 (defun preview-export-image (image)
   (list 'image :file (image-instance-file-name (glyph-image-instance image))
-	:type 'png
+	:type (glyph-image-type image)
 	:ascent (glyph-baseline-instance image)))
 
 (defun preview-import-image (image)
