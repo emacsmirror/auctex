@@ -5,6 +5,10 @@
 Bug fixes.
 
 @item
+Press @kbd{M-x LaTeX-209-to-2e @key{ret}} to make a stab at converting a
+La@TeX{} 2.09 header to La@TeX{}2e.
+
+@item
 @kbd{C-c C-m input @key{ret}} should be faster now on second try.
 
 @item

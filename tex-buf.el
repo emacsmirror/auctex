@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.74 1994-11-28 01:41:32 amanda Exp $
+;; $Id: tex-buf.el,v 1.75 1994-11-28 02:58:15 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -162,12 +162,10 @@ at bottom if LINE is nil."
       ;; Should test for TeX background process here.
       (error "No TeX process to kill"))))
 
-(defun TeX-home-buffer (arg)
+(defun TeX-home-buffer ()
   "Go to the buffer where you last issued a TeX command.  
 If there is no such buffer, or you already are in that buffer, find
 the master file."
-  (interactive "P")
-
   (if (or (null TeX-command-buffer)
 	  (eq TeX-command-buffer (current-buffer)))
       (find-file (TeX-master-file TeX-default-extension))

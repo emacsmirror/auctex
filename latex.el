@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.32 1994-11-28 01:41:25 amanda Exp $
+;; Version: $Id: latex.el,v 5.33 1994-11-28 02:58:08 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1902,6 +1902,8 @@ The point is supposed to be at the beginning of the current line."
 	["Math Mode" LaTeX-math-mode t]
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
+	[ "Convert 209 to 2e" LaTeX-209-to-2e
+	  :active (member "latex2" (TeX-style-list)) ]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
@@ -2303,6 +2305,58 @@ of LaTeX-mode-hook."
      (setq TeX-font-replace-function
 	   (default-value 'TeX-font-replace-function))
      (run-hooks 'LaTeX2-hook)))))
+
+(defvar LaTeX-builtin-opts 
+  '("12pt" "11pt" "10pt" "twocolumn" "twoside" "draft")
+  "Built in options for LaTeX standard styles")
+
+(defun LaTeX-209-to-2e ()
+  "Make a stab at changing 2.09 doc header to 2e style."
+  (interactive)
+  (TeX-home-buffer)
+  (let (optstr optlist 2eoptlist 2epackages docline docstyle)
+    (goto-char (point-min))
+    (if 
+	(search-forward-regexp
+	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
+	 (point-max) t)
+	(setq optstr (buffer-substring (match-beginning 1) (match-end 1))
+	      docstyle (buffer-substring (match-beginning 2)
+	      (match-end 2))
+	      optlist (TeX-split-string "," optstr))
+      (if (search-forward-regexp
+	   "\\documentstyle{\\([^}]*\\)}"
+	   (point-max) t)
+	  (setq docstyle (buffer-substring (match-beginning 1)
+	  (match-end 1)))
+	(error "No documentstyle defined")))
+    (beginning-of-line 1)
+    (setq docline (point))
+    (insert "%%%")
+    (while optlist
+      (if (member (car optlist) LaTeX-builtin-opts)
+	  (setq 2eoptlist (cons (car optlist) 2eoptlist))
+	(setq 2epackages (cons (car optlist) 2epackages)))
+      (setq optlist (cdr optlist)))
+    ;;(message (format "%S %S" 2eoptlist 2epackages))
+    (goto-char docline)
+    (next-line 1)
+    (insert "\\documentclass")
+    (if 2eoptlist
+	(insert "[" 
+		(mapconcat (function (lambda (x) x)) 
+			   (nreverse 2eoptlist) ",") "]"))
+    (insert "{" docstyle "}\n")
+    (if 2epackages
+	(insert "\\usepackage{" 
+		(mapconcat (function (lambda (x) x)) 
+			   (nreverse 2epackages) "}\n\\usepackage{") "}\n"))
+    (if (equal docstyle "slides")
+      (progn
+	(goto-char (point-min))
+	(while (re-search-forward "\\\\blackandwhite{" nil t)
+      (replace-match "\\\\input{" nil nil)))))
+  (TeX-normal-mode nil))
 
 (provide 'latex)
 

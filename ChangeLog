@@ -1,5 +1,10 @@
 Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
+	* latex.el (LaTeX-209-to-2e): New function by
+	carlisle@cs.man.ac.uk (David Carlisle). 
+
+	* tex-buf.el (TeX-home-buffer): Don't take arg.
+
 	* latex.el (LaTeX-left-right-indent-level): New variable
 	controling indentation for \left \right blocks.
 	(LaTeX-indent-level-count): New function.  Previously only LaTeX
@@ -26,7 +31,7 @@ Sun Nov 27 21:08:28 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	to load-path.  Patch by Michael Ernst
 	<mernst@research.microsoft.com>. 
 
-	* tex-buf.el (TeX-LaTeX-sentinel): Don't rerun LaTeX if on missing
+	* tex-buf.el (TeX-LaTeX-sentinel): Don't rerun LaTeX on missing
 	references, unless they have changed.  Patch by schiotz@ltf.dth.dk
 	(Jakob Schiotz).
 
