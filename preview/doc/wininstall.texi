@@ -3,27 +3,27 @@
 Installation of @previewlatex{} has been verified to work (in order of
 increasing operating speed) with current @acronym{CVS} versions of
 @w{GNU Emacs}, and with both Cygwin and native versions of XEmacs.
-Since various fixes in the installation procedure have been
-incorporated for Windows lately, you should install the current release
-of @previewlatex{}.
+Here are the steps to perform:
 
-Ok, here are the steps to perform:
 @enumerate
 @item
 The installation of @previewlatex{} will require the MSYS tool set from
 @uref{http://www.mingw.org}.  If you have the Cygwin tool set from
 @uref{http://cygwin.com} installed, that should do just fine as well,
-but it is quite larger and slower.  If you need to compile Emacs/XEmacs
-from source, you'll also need compilers and stuff that are also
-available for both of those tool sets.  Compiling Emacs is outside of
-the scope of this manual: good luck.  @previewlatex{} itself does not
-(yet) require a @w{C compiler} for installation.  Without either of
-those tool sets, however, you would need to generate your various
-@file{Makefile} copies from the respective @file{Makefile.in} files by
-hand, and that would mean quite a lot of guesswork.  There is no sense
-going into too much details here: the instructions would change severely
-between versions, and the above tool sets are easy enough to acquire to
-make manual configuration unnecessary.
+but it is quite larger and slower.  
+
+If you are installing @previewlatex{} with one of those sets for an Emacs
+compiled in a different one, you should try to avoid tool-specific path
+names like @file{/cygwin/c}.  Instead, use the @file{c:} syntax.  It
+might also help to use forward slashes instead of the backward slashes
+more typical for @w{MS Windows}: while backward slashes are supposed to
+work if properly escaped in the shell, this is one area easily
+overlooked by the developers.  The same holds for file or directory
+names with spaces in them.  Of course, we want to hear about any
+problems in that area.
+
+Compiling Emacs is outside of the scope of this manual.  @previewlatex{}
+itself does not require a @w{C compiler} for installation.
 
 @item
 Install a current version of XEmacs (such as 21.4.10) from
@@ -79,6 +79,12 @@ call @command{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
+@item --prefix=@var{drive:/path/to/emacs-directory}
+which tells @file{configure} where to perform the installation. It may
+also make @file{configure} find (X)Emacs automatically, if this doesn't
+happen try one of @samp{--with-emacs} or @samp{--with-xemacs}  as
+described below. 
+
 @item --with-emacs
 if you are installing Emacs.  You can use
 @samp{--with-emacs=@var{/path/to/emacs}} to specify the name of the
