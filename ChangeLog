@@ -1,3 +1,8 @@
+2004-08-26  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-plain-tex-mode, japanese-latex-mode): Use
+	`TeX-defun' for getting version info into mode doc.
+
 2004-08-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-mik.el: Use `start' instead of the respective executable for
