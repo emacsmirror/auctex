@@ -112,39 +112,6 @@ diff -u -r1.162 -r1.172
  	      trailer)
        (run-hooks 'TeX-region-hook)
 
-* AucTeX versions from 11.01 up to version 11.05:
-
-The following patch is necessary:
-
-Index: tex-buf.el
-===================================================================
-RCS file: /pack/anoncvs/auctex/tex-buf.el,v
-retrieving revision 1.171
-retrieving revision 1.172
-diff -u -r1.171 -r1.172
---- tex-buf.el	2001/10/13 10:08:02	1.171
-+++ tex-buf.el	2001/10/13 20:32:53	1.172
-@@ -95,9 +95,11 @@
-   (save-restriction
-     (widen)
-     (save-excursion
--      (if pos (goto-char pos))
--      (+ (count-lines (point-min) (point))
--	 (if (bolp) 0 -1)))))
-+      (let ((inhibit-point-motion-hooks t)
-+	    (inhibit-field-text-motion t))
-+	(if pos (goto-char pos))
-+	(+ (count-lines (point-min) (point))
-+	   (if (bolp) 0 -1))))))
- 
- (defun TeX-command-region (&optional old)
-   "Run TeX on the current region.
-
-
-The CVS version of AucTeX is already fixed with regard to that
-particular bug.
-
-
 * x-symbol
 
 Current versions of x-symbol confuse the line parsing of
