@@ -541,12 +541,15 @@ dnl Determine directories which hold TeX input files.
 dnl
 AC_DEFUN(TEX_INPUT_DIRS,
  [
-AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
+AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs="DIRS"
 			  semicolon-separated DIRS for TeX file searches],
  [ texinputdirs="${withval}" ;
    AC_FULL_EXPAND(withval)
    texinputdirsout=""
-   for x in `echo ${texinputdirs} | sed -e 's/\;/\\n/g'` ; do
+   OLDIFS="$IFS"
+   IFS=";"
+   for x in ${texinputdirs} ; do
+     IFS="$OLDIFS"
      if test ! -d "$x" ; then
        AC_MSG_ERROR([--with-tex-input-dirs="$x": Directory does not exist])
      fi
@@ -554,7 +557,9 @@ AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
        texinputdirsout="${texinputdirsout} "
      fi
      texinputdirsout="${texinputdirsout}\"$x\""
+     IFS=";"
    done
+   IFS="$OLDIFS"
    texinputdirs="${texinputdirsout}"
    ])
 
