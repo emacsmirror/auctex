@@ -1,5 +1,8 @@
 2002-02-17  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi: Mention problems with 8-bit-uncleanliness.
+	We need an override still.
+
 	* doc/problems.texi (LaTeX international characters): Mention
 	that configure might barf.
 
