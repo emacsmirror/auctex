@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.41 1995-01-11 12:59:59 amanda Exp $
+;; Version: $Id: tex.el,v 5.42 1995-01-17 14:28:31 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -768,6 +768,12 @@ If REGEXP is nil, or \"\", an error will occur."
         (setq start (match-end 0))))
     (setq result (cons (substring string start nil) result))
     (nreverse result)))
+
+(defun TeX-directory-absolute-p (dir)
+  ;; Non-nil iff DIR is the name of an absolute directory.
+  (if (memq system-type '(ms-dos emx))
+      (string-match "^\\([A-Za-z]:\\)?/" dir)
+    (string-match "^/" dir)))
 
 (defun TeX-parse-path (env)
   ;; Return a list if private TeX directories found in environment
@@ -1959,12 +1965,6 @@ See match-data for details."
 			       (if limit (max (point-min) (- (point) limit)))
 			       t)
 	   (eq (match-end 0) pos)))))
-
-(defun TeX-directory-absolute-p (dir)
-  ;; Non-nil iff DIR is the name of an absolute directory.
-  (if (memq system-type '(ms-dos emx))
-      (string-match "^\\([A-Za-z]:\\)?/" dir)
-    (string-match "^/" dir)))
 
 ;;; Syntax Table
 
