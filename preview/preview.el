@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.90 2002-03-31 00:25:12 dakas Exp $
+;; $Id: preview.el,v 1.91 2002-03-31 15:20:07 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -333,6 +333,15 @@ set to `postscript'."
   :group 'preview-latex
   :type 'string)
 
+(defun preview-gs-queue-empty ()
+  "Kill off everything remaining in `preview-gs-queue'."
+  (mapc #'preview-delete preview-gs-outstanding)
+  (dolist (ov preview-gs-queue)
+    (if (overlay-get ov 'queued)
+	(preview-delete ov)))
+  (setq preview-gs-outstanding nil)
+  (setq preview-gs-queue nil))
+  
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
@@ -361,13 +370,7 @@ and tries to restart GhostScript if necessary."
 		    (eq status 'signal))
 		;; if process was killed explicitly by signal, or if nothing
 		;; was processed, we give up on the matter altogether.
-		(progn
-		  (mapc #'preview-delete preview-gs-outstanding)
-		  (dolist (ov preview-gs-queue)
-		    (if (overlay-get ov 'queued)
-			(preview-delete ov)))
-		  (setq preview-gs-outstanding nil)
-		  (setq preview-gs-queue nil))
+		(preview-gs-queue-empty)
 	      
 	      ;; restart only if we made progress since last call
 	      (setq preview-gs-queue (nconc preview-gs-outstanding
@@ -411,6 +414,7 @@ Gets the usual PROCESS and STRING parameters, see
 
 (defun preview-gs-close (closedata)
   "Set up the queue accumulated in CLOSEDATA in the TeX run buffer."
+  (preview-gs-queue-empty)
   (setq preview-gs-queue closedata))
 
 (defun preview-gs-open (imagetype gs-optionlist)
@@ -434,15 +438,22 @@ systemdict/.runandhide known revision 700 ge and{.setsafe{.runandhide}}if \
 stopped{handleerror quit}if count 1 ne{quit}if \
 aload pop restore}def "
 		(mapconcat #'identity preview-gs-colors " ")))
-  (setq preview-gs-queue nil)
+  (preview-gs-queue-empty)
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (preview-parse-messages (current-buffer) TeX-active-tempdir
-			    preview-ps-file)
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
-				process))))
+    (unwind-protect
+	(preview-parse-messages (current-buffer) TeX-active-tempdir
+				preview-ps-file)
+      (if TeX-process-asynchronous
+	  (if (and (eq (process-status process) 'exit)
+		   (null TeX-sentinel-function))
+	      ;; Process has already finished and run sentinel
+	      (if preview-gs-queue
+		  (preview-gs-restart)
+		(error "No images found"))
+	    process)
+	(TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
+				  process)))))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
@@ -500,12 +511,14 @@ object corresponding to the wanted page."
   
 (defun preview-prepare-fast-conversion ()
   "This fixes up all parameters for fast conversion."
-  (setq preview-gs-dsc (preview-dsc-parse (car (car preview-ps-file))))
-  (setq preview-gs-init-string
-	(concat preview-gs-init-string
-		(format "(%s)(r)file dup %s exec "
-			(car (car preview-ps-file))
-			(preview-gs-dsc-cvx 0 preview-gs-dsc)))))
+  (let ((file (if (consp (car preview-ps-file))
+		  (caar preview-ps-file) (car preview-ps-file))))
+    (setq preview-gs-dsc (preview-dsc-parse file))
+    (setq preview-gs-init-string
+	  (concat preview-gs-init-string
+		  (format "(%s)(r)file dup %s exec "
+			  file
+			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
 (defun preview-gs-dvips-sentinel (process command)
   "Sentinel function for indirect rendering DviPS process.
@@ -514,19 +527,15 @@ The usual PROCESS and COMMAND arguments for
   (let ((status (process-status process)))
     (cond ((eq status 'exit)
 	   (delete-process process)
-	   (unless preview-gs-queue
-	     (setq compilation-in-progress
-		   (delq process compilation-in-progress))
-	     (error "No preview images found"))
+	   (setq TeX-sentinel-function nil)
 	   (if preview-ps-file
 	       (preview-prepare-fast-conversion))
-	   (preview-gs-restart))
+	   (if preview-gs-queue
+	       (preview-gs-restart)))
 	  ((eq status 'signal)
 	   (delete-process process)
-	   (dolist (ov preview-gs-queue)
-	     (if (overlay-get ov 'queued)
-		 (preview-delete ov)))
-	   (setq preview-gs-queue nil)
+	   (preview-gs-queue-empty)
+	   (preview-delete-file preview-ps-file)
 	   (preview-clean-subdir (nth 0 TeX-active-tempdir))))))
 
 (defun preview-gs-urgentize (ov buff)
@@ -1706,7 +1715,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.90 $"))
+	(rev "$Revision: 1.91 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
