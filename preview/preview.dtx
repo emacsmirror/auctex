@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{497}
+%\CheckSum{539}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.30 $
+%  \rcskey \version CVS-$Revision: 1.31 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-02-09 00:19:08 $
+%\rcskey\next $Date: 2002-02-18 16:48:01 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -41,7 +41,7 @@
 %The main purpose of this package is the extraction of certain
 %environments (most notably displayed formulas) for use in different
 %contexts.  While the erstwhile application has been the embedding of
-%those preview fragments into Emacs source buffers under the Auc\TeX\
+%those preview fragments into Emacs source buffers under the AUC~\TeX\
 %editing environment, other applications are easily imaginable.
 %
 %In particular it should be noted that producing EPS files with
@@ -58,12 +58,11 @@
 %|dvips -E -i|
 %\end{quote}
 %and get a single EPS file with shrink-wrapped bounding box for every
-%generated image of a LaTeX run.  The possibility for generating a
+%generated image of a \LaTeX\ run.  The possibility for generating a
 %whole set of graphics with a single run of \LaTeX\ and Dvips
 %increases both speed and robustness of applications.  It is to be
 %hoped that applications like \LaTeX HTML will be able to make use of
-%this package in future.  For this reason, once it stabilizes, it will
-%be submitted to CTAN.
+%this package in future.
 %
 %\section{Package options}
 %The package is included with the customary
@@ -86,6 +85,14 @@
 %\raggedright
 %|latex '\PassOptionsToPackage{active}{preview}| |\input|\marg{filename}|'|
 %\end{quote}
+%\item[|noconfig|] Usually the file |prdefault.cfg| gets loaded whenever
+%the |preview| package gets activated.  |prdefault.cfg| is supposed to
+%contain definitions that can cater for otherwise bad results, for
+%example, if a certain document class would otherwise lead to
+%trouble.  In addition, there may be configuration files specific for
+%certain |preview| options like |auctex| which have more immediate
+%needs.  The |noconfig| option suppresses loading of those option
+%files, too.
 %\item[|displaymath|] will make all displayed math environments subject to
 %preview processing.  This will typically be the most desired option.
 %\item[|floats|] will make all float objects subject to preview
@@ -94,7 +101,7 @@
 %\cmd{\PreviewSnarfEnvironment} command on the floats you want to have
 %previewed.
 %\item[|textmath|] will make all text math subject to previews.  Since
-%math mode is used throughly inside of LaTeX even for other purposes,
+%math mode is used throughly inside of \LaTeX\ even for other purposes,
 %this works by redefining \cmd\(, \cmd\) and |$|.  Only occurences of
 %these text math delimiters in later loaded packages and in the main
 %document will thus be affected.
@@ -116,14 +123,16 @@
 %|pr|\meta{driver}|.def|.  Currently the only supported driver is
 %|auctex|.  This driver will produce fake error messages at the start and
 %end of every preview environment that enable a special Emacs package in
-%connection with Auc\TeX\ to pinpoint the exact source location where
+%connection with AUC~\TeX\ to pinpoint the exact source location where
 %the previews have originated.  Unfortunately, there is no other
 %reliable means of passing the current \TeX\ input position
 %\emph{in} a line to external programs.
 %You should not specify this option manually, since it will only be
 %needed by automated runs that want to parse the pseudo error
 %messages.  Those runs will then use \cmd{\PassOptionsToPackage} in
-%order to effect the desired behaviour.
+%order to effect the desired behaviour.  In addition, |prauctex.cfg|
+%will get loaded unless inhibited by the |noconfig| option.  This
+%caters for the most frequently encountered problematic commmands.
 %\end{description}
 %\section{Provided Commands}
 %\DescribeEnv{preview} The |preview| environment causes its contents to
@@ -221,7 +230,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.30 $
+   \reserved@a\reserved@b CVS-$Revision: 1.31 $
 \else
    \begingroup
       \lccode`-=`.
@@ -230,9 +239,9 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-02-09 00:19:08 $
+\reserved@a\next $Date: 2002-02-18 16:48:01 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space preview-LaTeX \reserved@b]}
+  [\next\space preview-latex \reserved@b]}
 \next
 %    \end{macrocode}
 %Since many parts here will not be needed as long as the package is
@@ -277,11 +286,16 @@
 %  inside of a box to be created before the original macro gets
 %  executed, the third one specifies actions after the original macro
 %  got executed.
+%\begin{macro}{\pr@loadcfg}
+%  The macro \cmd{\pr@loadcfg} is used for loading in configuration
+%  files, unless disabled by the |noconfig| option.
 %    \begin{macrocode}
 %<*!active>
 \let\preview@delay=\@gobble
 \let\pr@advise=\@gobbletwo
 \def\pr@advise@ship#1#2#3{}
+\def\pr@loadcfg#1{\InputIfFileExists{#1.cfg}{}{}}
+\DeclareOption{noconfig}{\let\pr@loadcfg=\@gobble}
 %    \end{macrocode}
 %  These commands get more interesting when |preview| is active:
 %    \begin{macrocode}
@@ -290,8 +304,10 @@
   \def\pr@advise#1{%
     \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
   \def\pr@advise@ship#1#2#3{\pr@advise#1{\pr@protect@ship{#2}{#3}}}%
-  \let\preview@delay\@firstofone}
+  \let\preview@delay\@firstofone
+  \pr@loadcfg{prdefault}}
 %    \end{macrocode}
+%\end{macro}
 %\end{macro}
 %\end{macro}
 %\end{macro}
@@ -397,7 +413,7 @@
 %  value of \cmd{\voffset} or \cmd{\hoffset} will have any influence
 %  of the positioning of our box.  Second we shift the box such that
 %  its basepoint will exactly be at the (1in,1in)~mark defined by
-%  TeX.  That way we can properly take ascenders into account.
+%  \TeX.  That way we can properly take ascenders into account.
 %    \begin{macrocode}
    {\let\protect\noexpand
    \voffset=-\ht\pr@box
@@ -633,7 +649,7 @@
    \csname #2\endcsname{\aftergroup\pr@endbox}{}}
 %    \end{macrocode}
 %\end{macro}
-%\begin{macro}{\PreviewSnarfEnvironment}[2][]
+%\begin{macro}{\PreviewSnarfEnvironment}
 %  This is a nuisance since we have to advise \emph{both} the
 %  environment and its end.
 %    \begin{macrocode}
@@ -680,8 +696,8 @@
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
-%The Auc\TeX\ option will cause error messages to spew.  We want them
-%on the terminal, but we don't want LaTeX to stop its automated run.
+%The AUC~\TeX\ option will cause error messages to spew.  We want them
+%on the terminal, but we don't want \LaTeX\ to stop its automated run.
 %We delay \cmd{\nonstopmode} in case the user has any
 %pseudo-interactive folderol like reading in of file names in his
 %preamble.  Because we are so good-hearted, we will not break this as
@@ -707,7 +723,28 @@
 %<auctex>\vbadness=10000
 %<auctex>\newcount\hbadness
 %<auctex>\newcount\vbadness
+%<auctex>\pr@loadcfg{prauctex}
 %<auctex>\fi
+%    \end{macrocode}
+%And here we cater for several frequently used commands in
+%|prauctex.cfg|:
+%    \begin{macrocode}
+%<auccfg>\PreviewMacro*\footnote
+%<auccfg>\PreviewMacro*\emph
+%<auccfg>\PreviewMacro*\textrm
+%<auccfg>\PreviewMacro*\textit
+%<auccfg>\PreviewMacro*\textsc
+%<auccfg>\PreviewMacro*\textsf
+%<auccfg>\PreviewMacro*\textsl
+%<auccfg>\PreviewMacro*\texttt
+%<auccfg>\PreviewMacro*\textcolor
+%<auccfg>\PreviewMacro*\mbox
+%<auccfg>\PreviewMacro*\maketitle
+%<auccfg>\PreviewMacro*\author
+%<auccfg>\PreviewMacro*\title
+%<auccfg>\@ifundefined{pr@@startsection}{%
+%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}
+%<auccfg>\PreviewMacro*\index
 %    \end{macrocode}
 %
 %\begin{environment}{preview}
@@ -774,6 +811,7 @@
 %<installer>    \file{preview.sty}{\from{preview.dtx}{style}
 %<installer>                       \from{preview.dtx}{style,active}}
 %<installer>    \file{prauctex.def}{\from{preview.dtx}{auctex}}
+%<installer>    \file{prauctex.cfg}{\from{preview.dtx}{auccfg}}
 %<installer> }
 %<installer> \endbatchfile
 %    \end{macrocode}
