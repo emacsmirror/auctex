@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.177 2004-08-13 02:56:32 dak Exp $
+@c $Id: auctex.texi,v 1.178 2004-08-13 08:18:50 angeli Exp $
 
 @finalout
 @titlepage
@@ -1596,7 +1596,7 @@ or by customizing the variable @code{TeX-source-specials-mode}.
 There is a bunch of customization options, use @code{customize-group} on
 the group @samp{TeX-source-specials} to find out more.
 
-It has to stressed @emph{very} strongly however, that Source Specials
+It has to be stressed @emph{very} strongly however, that Source Specials
 can cause differences in page breaks, in spacing, can seriously
 interfere with various packages and should thus @emph{never} be used for
 the final version of a document.  In particular, fine-tuning the page
