@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.181 2002-12-13 17:26:59 dakas Exp $
+;; $Id: preview.el,v 1.182 2002-12-15 12:05:14 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1265,6 +1265,25 @@ the given value of TIMESTAMP."
   (preview-clearout (max (point-min) (1- (point)))
 		    (min (point-max) (1+ (point)))))
 
+(defun preview-walk-document (func)
+  "Cycle through all buffers belonging to current document,
+calling each buffer with the same master file."
+  (let ((buffers (buffer-list))
+	(master (expand-file-name (TeX-master-file t))))
+    (while buffers
+      (with-current-buffer (pop buffers)
+	(and (memq major-mode '(plain-tex-mode latex-mode))
+	     (or (stringp TeX-master)
+		 (eq TeX-master t))
+	     (string= (expand-file-name (TeX-master-file t))
+		      master)
+	     (funcall func))))))
+
+(defun preview-clearout-document ()
+  "Clearout previews in entire document."
+  (interactive)
+  (preview-walk-document #'preview-clearout-buffer))
+
 (defun preview-kill-buffer-cleanup (&optional buf)
   "This is a cleanup function just for use in hooks.
 Cleans BUF or current buffer.  The difference to
@@ -1712,6 +1731,7 @@ See description of `TeX-command-list' for details."
     (define-key map "\C-c\C-p" #'preview-clearout-at-point)
     (define-key map "\C-c\C-r" #'preview-clearout)
     (define-key map "\C-c\C-b" #'preview-clearout-buffer)
+    (define-key map "\C-c\C-d" #'preview-clearout-document)
     map))
 
 ;;;###autoload
@@ -1736,6 +1756,7 @@ to add the preview functionality."
       ["Clearout at point" preview-clearout-at-point]
       ["Clearout region" preview-clearout (preview-mark-active)]
       ["Clearout buffer" preview-clearout-buffer]
+      ["Clearout document" preview-clearout-document]
       ["Cache preamble" preview-cache-preamble]
       ["Cache preamble off" preview-cache-preamble-off]
       ("Customize"
@@ -2424,7 +2445,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.181 $"))
+	(rev "$Revision: 1.182 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2435,7 +2456,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-13 17:26:59 $"))
+    (let ((date "$Date: 2002-12-15 12:05:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
