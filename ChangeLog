@@ -1,3 +1,29 @@
+2005-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (texinfo-mode): Get rid of hyphens in prompts.
+	Add @xref command.
+
+	* latex.el (LaTeX-babel-hyphen, LaTeX-babel-hyphen-after-hyphen):
+	Doc fix.
+	(LaTeX-babel-hyphen-language-alist): Use t as default value for
+	insertion behavior.
+
+	* tex.el (TeX-quote-language-alist): Use t as default value for
+	insertion behavior.
+
+	* doc/auctex.texi: New tag line.
+	(Quotes): Replace description about (n)german.sty-specific quote
+	insertion by a generalized one and refer to section about European
+	languages.
+	(European): Add subsections.  Add information about new
+	functionality and customization options for language-specific
+	quote and hyphen insertion.
+	(Folding): Add information about help echo.
+	(Viewing): Add subsection heading.  A single one does not really
+	make sense.
+
+	* doc/changes.texi: Add some news.
+
 2005-04-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-help-echo-max-length): New variable.
