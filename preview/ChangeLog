@@ -1,5 +1,22 @@
 2005-03-03  David Kastrup  <dak@gnu.org>
 
+	* doc/wininstall.texi: Simplify, rearrange, adapt to new
+	installation scheme.  Add links to CVS precompiled versions.
+
+	* doc/install.texi (Prerequisites): Revamp.
+	(Configure): Add explanations.
+
+	* preview-latex.spec: Change rpm name to include "fedora".  Adapt
+	to new configure stuff.  Use pdf doc instead of DVI.
+
+	* configure.in: icondir is absolute, reorder some stuff to
+	maintain directory locality.
+
+	* aclocal.m4: Change a lot of $x to ${x}.
+	Simplify some stuff.
+
+	* RELEASE: Add information for release.
+
 	* configure.in: Correct prefix check.  Add Emacs version check.
 
 	* aclocal.m4: Move several functions around, completely overhaul

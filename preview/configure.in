@@ -11,12 +11,12 @@ AC_PROG_INSTALL
 
 if test "${prefix}" = NONE -o -z "${prefix}"
 then
-   prefix="$ac_default_prefix"
+   prefix="${ac_default_prefix}"
 fi
 
 EMACS_PROG_EMACS
 
-if test $EMACS_FLAVOR = xemacs
+if test ${EMACS_FLAVOR} = xemacs
 then
   EMACS_CHECK_VERSION(21,4)
 else
@@ -33,7 +33,7 @@ AC_ARG_ENABLE([build-dir-test],
    fi],
   [VALID_BUILD_DIR])
 
-if test $EMACS_FLAVOR = "xemacs"  ; then
+if test ${EMACS_FLAVOR} = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    EMACS_PATH_PACKAGEDIR([preview],[preview])
 else
@@ -41,39 +41,49 @@ else
    packagedir=no
 fi
 
-if test "$packagedir" = no
+if test "${packagedir}" = no
 then
    EMACS_PATH_LISPDIR([preview-latex])
-   icondir=preview
    packagelispdir=preview
+   icondir='${packagelispdir}'/images
 else
-   lispdir="$packagedir/lisp/preview"
+   lispdir="${packagedir}/lisp/preview"
    packagelispdir=.
-   icondir=../../etc/preview
-   infodir=../../info
+   icondir='${packagelispdir}'/../../etc/preview
+   infodir="${packagedir}/info"
 fi
 
-AC_MSG_CHECKING([where the bulk of the package lisp files go])
-EMACS_LISP_RELATIVE(lispdir,packagelispdir,
-	[the package lisp files])
+AC_MSG_CHECKING([[
+The place for the startup file]])
+AC_MSG_RESULT([[${lispdir}
+
+Startup file relative directories:]])
+
+AC_MSG_CHECKING([where the package lisp files go])
+AC_ARG_WITH(packagelispdir,
+[[  --with-packagelispdir=DIR    Where to find the package lisp files
+      relative to the Lisp startup file.]],
+  [packagelispdir=["${withval}"]])
+AC_LISPIFY_DIR(packagelispdir)
 AC_MSG_RESULT([[${packagelispdir}]])
-AC_SUBST(packagelispdir)
 
 AC_MSG_CHECKING([where the icon files go])
-EMACS_LISP_RELATIVE(lispdir,icondir,
-	[the icon files])
-AC_MSG_RESULT([[${icondir}]])
-AC_SUBST(icondir)
+AC_ARG_WITH(icondir,
+[[  --with-icon=DIR    Where the icon files go
+      relative to the Lisp startup file.]],
+  [icon=["${withval}"]])
+AC_LISPIFY_DIR(icondir)
+AC_MSG_RESULT([[${icondir}
+]])
 
-AC_MSG_CHECKING([where the info files go])
-EMACS_LISP_RELATIVE(lispdir,infodir,
-	[the info files])
+AC_MAKE_FILENAME_ABSOLUTE(packagelispdir,[["${lispdir}/"]])
+AC_MAKE_FILENAME_ABSOLUTE(icondir,[["${lispdir}/"]])
+
+AC_MSG_CHECKING(Where the info files go)
 AC_MSG_RESULT([[${infodir}]])
-AC_SUBST(infodir)
 
 AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)
-
 
 EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
@@ -82,7 +92,7 @@ AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE,
 [GhostScript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
 
-EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["$GS"]])
+EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["${GS}"]])
 AC_SUBST(lispGS)
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
@@ -98,7 +108,7 @@ AC_PATH_PROG(PDFLATEX, pdflatex)
 # To match .sty, .def, .cfg, but _not_ .drv
 TEXMFGEN=[`sed -n 's/^%<installer>.*file[{]\\([^}.]*\\.[sdc][tef][yfg]\\)[}].*/\\1/p' latex/preview.dtx`]
 # Replace newlines with spaces.
-TEXMFGEN=`echo $TEXMFGEN`
+TEXMFGEN="`echo ${TEXMFGEN}`"
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
@@ -107,9 +117,9 @@ AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 # MikTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
 AC_PATH_PROG(TEXHASH, texhash)
-if test -z "$TEXHASH"; then
+if test -z "${TEXHASH}"; then
   AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
-  if test -z "$TEXHASH"; then
+  if test -z "${TEXHASH}"; then
     AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
   fi
 fi
@@ -118,7 +128,7 @@ TEX_PATH_TEXMFDIR
 
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
 MAKEINFO_CHECK_MACROS(acronym env option)
-AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
+AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)

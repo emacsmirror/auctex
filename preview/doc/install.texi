@@ -28,18 +28,16 @@ Please read through this document fully before installing anything.
 @section Prerequisites
 
 @itemize @bullet
-@item A recent version of Emacs 21, alternatively XEmacs
+@item A recent version of @w{Emacs 21}, alternatively XEmacs
 
-The first version known to work with @previewlatex{} is Emacs-21.1.
-Since @previewlatex{} heavily exercises new features of Emacs 21,
-getting the newest release is a good idea.
+The first version known to work with @previewlatex{} is @w{Emacs 21.1}.
+Since @previewlatex{} heavily exercises newer features, getting the
+latest release is a good idea.  Developer versions of @w{Emacs 22} are
+mostly preferable to the released versions of @w{Emacs 21} due to
+performance and handling reasons.  XEmacs (21.4.15 or later, but not the
+withdrawn 21.4.16) is supported nominally, but is not particularly
+recommended because of handling, image quality and stability reasons.
  
-While image support for Emacs under Microsoft Windows has not been
-implemented as of @w{version 21.4}, it is under development and can be
-accessed by anonymous @acronym{CVS} at
-@uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
-before @w{Emacs 22} gets released.
-
 There is additional information for Windows installations in
 @ifset rawfile
 the file @file{INSTALL.windows}.
@@ -47,9 +45,6 @@ the file @file{INSTALL.windows}.
 @ifclear rawfile
 @xref{Installation under MS Windows}.
 @end ifclear
-
-For XEmacs, at least version 21.4.9 is recommended.  Earlier versions
-might be made to work with less than optimal results.
 
 @item A working @AUCTeX{} installation
 
@@ -68,11 +63,9 @@ distributions.
 @item A recent GhostScript
 
 This is not really needed to @emph{install} the package, but will be
-required for stable operation of it.  Most problems we have encountered
-come from interaction with not so recent versions of GhostScript, so it
-is a good idea to have, say GhostScript 6.51 or later installed.
-@previewlatex{} should in its current version work with most versions
-after that.  If you encounter problems, check
+required for stable operation of it.  Most versions of GhostScript
+nowadays in use should work fine (version 7.0 and newer).  If you
+encounter problems, check
 @ifset rawfile
 the @file{PROBLEMS} file.
 @end ifset
@@ -115,6 +108,18 @@ On many machines, you will not need to specify any options, but if
 help it out with one of these options:
 
 @table @code
+@item --prefix=@file{/usr/local}
+All automatic placements for package components will be chosen from
+sensible existing hierarchies below this.  @file{/usr/local} is the
+default setting for site-wide installation.  If you are packaging this
+as an operating system component for distribution, the setting
+@file{/usr} will probably be the right choice.  If you are planning to
+install the package as a single non-priviledged user, you will typically
+set @var{prefix} to your home directory.  And if you have installed an
+alternative version of Emacs for testing purposes, the prefix (something
+like @file{/usr/local/emacs-22}) will be the same you used when
+installing Emacs.
+
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
 @code{configure} is not finding the right Emacs executable, you can
@@ -125,27 +130,34 @@ Configure for generation under XEmacs (Emacs is the default).  Again,
 the name of the right XEmacs executable can be specified, complete with
 path if necessary.
 
-@item --with-lispdir=@var{/dir}
-This tells where to install Emacs Lisp files.  Normally, this option is
-unnecessary, but may be used if you don't like the directory that
-configure is suggesting.
-
 @item --with-packagedir=@var{/dir}
-This tells where to install the XEmacs Package.  Again, this option is
-normally unnecessary, but may be used if you don't like the directory
-that configure is suggesting, and you know that XEmacs regards the
-directory you specify as a package directory.
+is an XEmacs-only option giving the location of the package directory.
+This will install and activate the package.  Emacs uses a different
+installation scheme:
 
-If you are installing @previewlatex{} for a single user, and you have
-installed no XEmacs packages as that user before, then @code{configure}
-may try to install @previewlatex{} in the systemwide package directory
-(that it cannot write to), causing installation to fail.  In that case,
-a good value for this option is @file{~/.xemacs/xemacs-packages}, as
-XEmacs looks there for per-user packages by default.
+@item --with-lispdir=@var{/dir}
+This specifies the location of the startup file @file{preview-latex.el}
+which should be somewhere in the @var{load-path}.  @file{configure}
+should figure this out by itself.  However, some Emacs installations
+have a directory commonly called @file{site-start.d/} where files get
+automatically loaded.  If you want @previewlatex{} to be activated
+automatically, you can specify such a startup directory here.  If you do
+this, you'll also need
+
+@item --with-packagelispdir=@var{../preview}
+This is the directory where the bulk of the package gets located.  Since
+@file{preview-latex.el} already adds this into @var{load-path}, you
+don't need to place it in the search path.  You might want to place an
+empty file called @var{.nosearch} in this directory to speed up
+searches.  If this directory is given with a relative path, it is
+considered @emph{relative} to the @var{lispdir} variable.  The proposed
+setting would be typical if you set @var{lispdir} to some
+@file{site-lisp/site-start.d/} directory.
 
 @item --with-tex-site=@var{/dir}
-If @AUCTeX{} is installed in a non-standard location, use this option
-to specify the location of its @file{tex-site.el} file.
+If @AUCTeX{} is installed in a non-standard location, use this option to
+specify the location of its @file{tex-site.el} file so that it can be
+found during compilation.
 
 @item --with-texmf-dir=@var{/dir}@*--with-tex-dir=@var{/dir}
 Both of these options can be used to specify the location to install the
@@ -153,7 +165,7 @@ preview @TeX{} files.  They are not necessary for most @TeX{} installs,
 but may be used if you don't like the directory that configure is
 suggesting.  Using @code{--with-texmf-dir=@var{/dir}} you can specify
 where the @TeX{} @acronym{TDS} directory hierarchy resides, and the
-@TeX{} files will be installed in @code{@var{/dir}/tex/latex/preview}.
+@TeX{} files will be installed in @file{@var{/dir}/tex/latex/preview/}.
 If you want to specify an exact directory for the preview @TeX{} files,
 use @code{--with-tex-dir=@var{/dir}}. In this case, the files will be
 placed in @file{@var{/dir}}.

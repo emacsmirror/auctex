@@ -1,9 +1,9 @@
 @include macros.texi
 
-Installation of @previewlatex{} has been verified to work (in order of
-increasing operating speed) with current @acronym{CVS} versions of
-@w{GNU Emacs}, and with both Cygwin and native versions of XEmacs.
-Here are the steps to perform:
+Installation of @previewlatex{} under Windows has been verified to work
+with current @acronym{CVS} versions of @w{GNU Emacs} (no released
+version 21.x will work), and with both Cygwin and native versions of
+XEmacs.  Here are the steps to perform:
 
 @enumerate
 @item
@@ -34,8 +34,10 @@ itself does not require a @w{C compiler} for installation.
 @item
 Install a current version of XEmacs (such as 21.4.10) from
 @uref{http://www.xemacs.org} or try getting and compiling an
-@acronym{CVS} version of GNU Emacs from
-@uref{http://savannah.gnu.org/cvs/?group=emacs}.
+@acronym{CVS} version of @w{GNU Emacs} from
+@uref{http://savannah.gnu.org/cvs/?group=emacs}.  Precompiled versions
+happen to be available at @uref{http://www.crasseux.com/emacs/} and
+@uref{http://nqmacs.sf.net/}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
@@ -45,17 +47,10 @@ which is rather close to its Unix cousins.
 
 @item
 Install @uref{http://www.gnu.org/software/auctex,@AUCTeX{}} according to
-its instructions.  It is recommended that you install at least 11.14.
-At the current point of time this means that you should forego
-installing @AUCTeX{} from the XEmacs package repository (version 1.35):
-it is not up to date.  If you insist, there are patch instructions for
-older versions of @AUCTeX{} in
-@ifset rawfile
-the @file{INSTALL} file.
-@end ifset
-@ifclear rawfile
-@ref{Prerequisites}.
-@end ifclear
+its instructions.  It is recommended that you install at least 11.55:
+PDF support starts with 11.51, and various bugs in particular for XEmacs
+are fixed in 11.55.  This package is available from the XEmacs package
+repository but might still be in prerelease state.
 
 @item
 You need a copy of @uref{http://www.cs.wisc.edu/~ghost,GhostScript}.
@@ -88,8 +83,9 @@ Typical options you'll want to specify will be
 @item --prefix=@var{drive:/path/to/emacs-directory}
 which tells @file{configure} where to perform the installation. It may
 also make @file{configure} find (X)Emacs automatically, if this doesn't
-happen try one of @samp{--with-emacs} or @samp{--with-xemacs}  as
-described below. 
+happen try one of @samp{--with-emacs} or @samp{--with-xemacs} as
+described below.  All automatic detection of files and directories
+restricts itself to directories below the @var{prefix}.
 
 @item --with-emacs
 if you are installing Emacs.  You can use
@@ -115,16 +111,29 @@ the `Configure' section in the @file{INSTALL} file
 @end ifclear
 for more information about the available options.
 
-@item --with-lispdir=@var{/dir}
-This may be needed for GNU Emacs installation, but hopefully
-@file{configure} should figure this out by itself.  Don't use this for
-XEmacs, rather use
-
 @item --with-packagedir=@var{/dir}
-which gives the location of the package directory for XEmacs where
-stuff should be installed.  Again, hopefully this is not necessary to
-specify.
+This XEmacs-only option configures the directory for XEmacs packages.  A
+typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
+If this directory exists and is below @var{prefix}, it should be
+detected automatically.
+
+@item --with-lispdir=@var{/path/to/site-lisp}
+This tells where to install the setup file @file{preview-latex.el}.  The
+other files from @previewlatex{} will be installed in a subdirectory
+called @file{preview}.  If you have a @file{site-start.d} directory for
+automatic package startup, please refer to the full installation
+instructions in
+@ifset rawfile
+the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Configure}
+@end ifclear
+in order to make use of it.
 @end table
+
+Calling @file{./configure --help} will tell about other options, but
+those are almost never required.
 
 Some executables might not be found in your path.  That is not a good
 idea, but you can get around by specifying environment variables to
@@ -147,19 +156,18 @@ Run @command{make} in the installation directory.
 Run @code{make install} in the installation directory.
 
 @item
-The above will leave you with a file @file{preview-latex.el} in the
-installation directory.  Emacs must load a copy of this on startup.  It
-may be that your version of Emacs already has a place where it keeps
-such startup files; if it does, copy @file{preview-latex.el} to that
-directory.  If not, you need to have it explicitly loaded: copy it into
-a place in your Emacs @code{load-path}, then put
+The above should leave you with a file @file{preview-latex.el} in a
+suitable place in @var{load-path}.  If this is a special place where
+files get automatically loaded at startup, @previewlatex{} will be
+automatically enabled in LaTeX modes.  If this is not such a place, you
+can explicitly enable @previewlatex{} with the incantation
 
 @example
 (load "preview-latex.el" nil t t)
 @end example
 
-into your @file{.emacs} file or, if you have more than one user using
-your system, into the global @file{site-start.el} file.
+in your personal @file{.emacs} file or, if you have more than one user
+using your system, in the global @file{site-start.el} file.
 
 @item
 Load @file{circ.tex} into Emacs or XEmacs and see if you can generate

@@ -8,7 +8,7 @@
 %define commongroup Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
-%define distri      %{?thisshouldbeempty:}
+%define distri      .fedora
 %define commongroup Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
 %endif
@@ -16,7 +16,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.9
-Release: 	0%{distri}
+Release: 	1%{distri}
 Licence:        GPL
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
@@ -98,11 +98,14 @@ for i in *emacs; do
   # The below will make the package build from a tar straight from CVS
   # NOT RECOMMENDED, but useful for testing!
   test -f ./configure || ./autogen.sh
-  # --with-texmf-dir overrides local docstrip configurations.
   # --with-packagedir repairs RedHat XEmacs braindamage
-  %configure "--with-$i" '--with-texmf-dir=%{_datadir}/texmf' \
-	'--with-packagedir=%{xemacspkgdir}'
-  make 'infodir=%{_infodir}'
+  if [ $i = "emacs" ]; then
+    %configure '--with-lispdir=%{_datadir}/emacs/site-lisp/site-start.d' \
+      --with-packagelispdir=../preview
+  else
+    %configure --with-xemacs '--with-packagedir=%{xemacspkgdir}'
+  fi
+  make 'infodir=%{_infodir}' doc/preview-latex.pdf
   popd
 done
 
@@ -112,10 +115,11 @@ rm -rf '%{buildroot}'
 for i in *emacs; do
   pushd $i
   if [ $i == "emacs" ]; then 
-    # Install GNU Emacs site-start.d file for RedHat
-    mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
-    install -c -m 644 preview-latex.el \
-      '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
+    # Make directory non-searchable.
+    mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/preview'
+    touch .nosearch
+    install -c -m 644 .nosearch \
+      '%{buildroot}%{_datadir}/emacs/site-lisp/preview
     %makeinstall
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
@@ -131,7 +135,7 @@ done
 mkdir -p '%{buildroot}%{docs}'
 pushd %{name}-%{version}
 for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
-    latex/README-preview RELEASE TODO doc/preview-latex.dvi patches; do
+    latex/README-preview RELEASE TODO doc/preview-latex.pdf; do
   cp -R "$i" '%{buildroot}%{docs}'
 done
 
@@ -161,7 +165,7 @@ fi
 %{_datadir}/texmf/tex/latex/preview/*.sty
 %{_datadir}/texmf/tex/latex/preview/*.def
 %config %{_datadir}/texmf/tex/latex/preview/*.cfg
-%doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
+%doc %{_datadir}/texmf/doc/latex/styles/preview.pdf
 %doc %{_infodir}/preview-latex.info*
 %doc %{docs}
 
