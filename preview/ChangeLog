@@ -1,3 +1,11 @@
+2001-11-30  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (section{Provided Commands}): Add descriptions of
+	new commands \PreviewMacro* and \PreviewEnvironment*.
+	(subsection{The internals}): New internal \pr@protect.
+	(subsection{Preview attaching commands}): Implement the new
+	*-forms.
+
 2001-11-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.texi, install.texi:
