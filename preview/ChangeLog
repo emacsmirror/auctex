@@ -1,5 +1,8 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview-latex.spec (Requires): XEmacs at least 21.1.14 (regexp
+	problem).
+
 	* preview.el: Rip personal Email address
 
 	* prv-install.el: Rip personal Email address
