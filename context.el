@@ -978,12 +978,13 @@ header is at the start of a line."
 (defvar ConTeXt-indent-item ConTeXt-indent-basic)
 (defvar ConTeXt-indent-item-re "\\\\\\\(item\\|setup[a-zA-Z]*\\)\\>")
 
-(easy-mmode-defsyntax ConTeXt-indent-syntax-table
-		      '((?$ . ".")
-			(?\( . ".")
-			(?\) . "."))
-		      "Syntax table used while computing indentation."
-		      :copy TeX-mode-syntax-table)
+(defvar ConTeXt-indent-syntax-table (make-syntax-table TeX-mode-syntax-table)
+  "Syntax table used while computing indentation.")
+
+(progn
+  (modify-syntax-entry ?$ "." ConTeXt-indent-syntax-table)
+  (modify-syntax-entry ?\( "." ConTeXt-indent-syntax-table)
+  (modify-syntax-entry ?\) "." ConTeXt-indent-syntax-table))
 
 (defun ConTeXt-indent-line (&optional arg)
   (with-syntax-table ConTeXt-indent-syntax-table
