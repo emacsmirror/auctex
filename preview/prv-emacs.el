@@ -55,7 +55,7 @@ to the default background in most other cases."
 			(const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
-(defcustom preview-transparent-border 3
+(defcustom preview-transparent-border 1.5
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
@@ -68,7 +68,7 @@ by PostScript as meaning a single pixel, other widths are
 interpreted as PostScript points (1/72 of 1in)"
   :group 'preview-appearance
   :type '(choice (const :value nil :tag "No border")
-		 (number :value 3 :tag "Border width in pt")))
+		 (number :value 1.5 :tag "Border width in pt")))
 
 (defun preview-get-heuristic-mask ()
   "Get heuristic-mask to use for previews.
@@ -333,28 +333,39 @@ floats."
   "Return color setup tokens for GhostScript.
 Fetches the current screen colors and makes a list of tokens
 suitable for passing into GhostScript as arguments.
-Returns NIL for black-on-white."
+Pure borderless black-on-white will return NIL."
   (let
       ((bg (color-values (preview-inherited-face-attribute
 			  'preview-reference-face :background 'default)))
        (fg (color-values (preview-inherited-face-attribute
 			  'preview-reference-face :foreground 'default)))
        (mask (preview-get-heuristic-mask)))
-    (unless (and (equal '(65535 65535 65535) bg)
-		 (equal '(0 0 0) fg)
-		 (null preview-transparent-border))
-      (append
-       (mapcar #'preview-gs-color-value bg)
-       '("setrgbcolor" "clippath" "fill")
-       (when (and (numberp preview-transparent-border)
-		  (consp mask) (integerp (car mask)))
+    (if (equal '(65535 65535 65535) bg)
+	(setq bg nil))
+    (if (equal '(0 0 0) fg)
+	(setq fg nil))
+    (unless (and (numberp preview-transparent-border)
+		 (consp mask) (integerp (car mask)))
+      (setq mask nil))
+    (append
+     (if (or mask (and bg (not fg)))
+	 '("gsave"))
+     (if bg
+	 (append
+	  (mapcar #'preview-gs-color-value bg)
+	  '("setrgbcolor" "clippath" "fill")))
+     (if mask
 	 (append
 	  (mapcar #'preview-gs-color-value mask)
-	  '("setrgbcolor" "currentlinewidth")
-	  (list (format "%g" preview-transparent-border))
-	  '("setlinewidth" "clippath" "strokepath" "fill" "setlinewidth")))
-       (mapcar #'preview-gs-color-value fg)
-       '("setrgbcolor")))))
+	  '("setrgbcolor" "false" "setstrokeadjust")
+	  (list (number-to-string (* 2 preview-transparent-border)))
+	  '("setlinewidth" "clippath" "strokepath" "fill")))
+     (if (or mask (and bg (not fg)))
+	 '("grestore"))
+     (if fg
+	 (append
+	  (mapcar #'preview-gs-color-value fg)
+	  '("setrgbcolor"))))))
 
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
