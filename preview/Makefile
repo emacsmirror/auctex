@@ -1,15 +1,17 @@
 INSTALLDIR=/usr/share/texmf.local/tex/latex/preview
 
-all: ${INSTALLDIR}/preview.sty ${INSTALLDIR}/prauctex.def preview.drv \
-   preview.ins preview.dvi
+all: preview.sty prauctex.def preview.drv \
+   preview-mk.ins preview.dvi
 
-preview.ins: preview.dtx
-	tex '\nonstopmode\def\jobname{ugh.ins}\input docstrip \askforoverwritefalse\generate{\file{preview.ins}{\from{preview.dtx}{installer}}}\endbatchfile'
-${INSTALLDIR}/preview.sty ${INSTALLDIR}/auctex.pde preview.drv: preview.dtx preview.ins ${INSTALLDIR}
-	TEXMFOUTPUT=${INSTALLDIR} tex preview.ins
+preview-mk.ins: preview.dtx bootstrap.ins
+	tex -interaction nonstopmode bootstrap.ins
+preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
+	tex -interaction nonstopmode preview-mk.ins
 
-${INSTALLDIR}:
-	mkdir -p $@
+install: preview.sty prauctex.def
+	-mkdir -p ${INSTALLDIR}
+	cp preview.sty prauctex.def ${INSTALLDIR}
+
 
 preview.dvi: preview.drv preview.dtx
 	latex -interaction nonstopmode preview.drv
