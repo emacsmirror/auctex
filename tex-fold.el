@@ -26,8 +26,8 @@
 
 ;;; Commentary:
 
-;; This file provides support to hide and unhide TeX, LaTeX, ContTeXt,
-;; Texinfo and similar macros inside of AUCTeX.
+;; This file provides support for hiding and unhiding TeX, LaTeX,
+;; ContTeXt, Texinfo and similar macros inside of AUCTeX.
 
 ;;; Code:
 
@@ -36,7 +36,7 @@
 
 (defgroup TeX-fold nil
   "Fold TeX macros."
-  :group 'LaTeX)
+  :group 'AUCTeX)
 
 (defcustom TeX-fold-spec-list
   '(("[F]" ("footnote"))
