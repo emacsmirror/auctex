@@ -6,12 +6,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.10 1992-03-12 22:56:28 krab Exp $
+;; $Id: tex-buf.el,v 1.11 1992-03-18 17:34:34 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Mar 12 23:06:24 1992
-;; Update Count    : 166
+;; Last Modified On: Wed Mar 18 18:33:19 1992
+;; Update Count    : 172
 ;; 
 ;; HISTORY
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
@@ -196,7 +196,7 @@ Then the header/trailer will be searched in <file>."
   (TeX-test-process)
   (setq TeX-original-file (buffer-name nil))
   (setq TeX-zap-file (make-temp-name TeX-default-jobname-prefix))
-  (let ((tex-out-file (concat TeX-zap-file ".tex"))
+  (let ((TeX-out-file (concat TeX-zap-file ".tex"))
 	(temp-buffer (get-buffer-create " TeX-Output-Buffer"))
 	(zap-directory
 	 (file-name-as-directory (expand-file-name TeX-directory)))
@@ -214,7 +214,7 @@ Then the header/trailer will be searched in <file>."
       (erase-buffer)
       (insert h1)
       (set-buffer-directory temp-buffer zap-directory)
-      (write-region (point-min) (point-max) tex-out-file nil "no msg")
+      (write-region (point-min) (point-max) TeX-out-file nil "no msg")
       (setq TeX-header-lines (- (count-lines (point-min) (point-max)) 1)))
     
     ;;
@@ -236,7 +236,7 @@ Then the header/trailer will be searched in <file>."
 	  (save-excursion
 	    (goto-char (point-min))
 	    (setq master-buffer
-		  (if (re-search-forward "^%% *[Mm]aster:? *\\([a-zA-Z\.\/\-]+\\)" 500 t)
+		  (if (re-search-forward "^%% *[Mm]aster:? *\\([^ ]+\\)" 500 t)
 		      (find-file-noselect (buffer-substring (match-beginning 1)
 							    (match-end 1)))
 		    (current-buffer))))
@@ -261,7 +261,7 @@ Then the header/trailer will be searched in <file>."
 		      (progn
 			(insert "\n")
 			(setq hend (point)) ;mark end of header
-			(write-region (min hbeg beg) hend tex-out-file t nil)
+			(write-region (min hbeg beg) hend TeX-out-file t nil)
 			(setq TeX-header-lines
 			      (+ TeX-header-lines
 				 (count-lines (min hbeg beg) hend) 1))
@@ -280,7 +280,7 @@ Then the header/trailer will be searched in <file>."
 		       (set-buffer-directory temp-buffer zap-directory)
 		       (write-region (point-min)
 				     (point-max)
-				     (concat tex-out-file) t "no msg")
+				     (concat TeX-out-file) t "no msg")
 		       ;; Increment the line number
 		       (setq TeX-header-lines
 			     (+ TeX-header-lines
@@ -290,7 +290,7 @@ Then the header/trailer will be searched in <file>."
 	  ;; Now, append the main body of the document to the file
 	  ;;
 	    
-	  (write-region (max beg hend) end tex-out-file t "no msg"))
+	  (write-region (max beg hend) end TeX-out-file t "no msg"))
 
 	  ;;
 	  ;; For the trailer, we'll see if we can find it...
@@ -308,7 +308,7 @@ Then the header/trailer will be searched in <file>."
 		   (set-buffer-directory temp-buffer zap-directory)
 		   (write-region (point-min)
 				 (point-max)
-				 tex-out-file t "no msg"))
+				 TeX-out-file t "no msg"))
 		  (t
 		   (set-buffer temp-buffer)
 		   (erase-buffer)
@@ -318,7 +318,7 @@ Then the header/trailer will be searched in <file>."
 		   (set-buffer-directory temp-buffer zap-directory)
 		   (write-region (point-min)
 				 (point-max)
-				 tex-out-file t "no msg"))))))
+				 TeX-out-file t "no msg"))))))
       (setq TeX-start-line (- TeX-start-line TeX-header-lines))
 
       ;; 
@@ -331,8 +331,8 @@ Then the header/trailer will be searched in <file>."
 				    (if TeX-args
 					(append
 					 TeX-args
-					 (list tex-out-file))
-				      (list tex-out-file)))))
+					 (list TeX-out-file))
+				      (list TeX-out-file)))))
 	(message (apply 'concat TeX-command-with-args))
 
 	(setq TeX-process
@@ -423,7 +423,7 @@ TeX/LaTeX will be run on <file> instead of the current."
     (save-excursion
       (goto-char (point-min))
       (setq TeX-original-file 
-	    (if (re-search-forward "^%% *[Mm]aster:? *\\([a-zA-Z\.\/\-]+\\)" 500 t)
+	    (if (re-search-forward "^%% *[Mm]aster:? *\\([^ ]+\\)" 500 t)
 		(buffer-substring (match-beginning 1) (match-end 1))
 	      (file-name-nondirectory buffer-file-name))))
     (hack-local-variables)
@@ -472,12 +472,12 @@ TeX/LaTeX will be run on <file> instead of the current."
 The last line of the buffer is displayed on
 line LINE of the window, or at bottom if LINE is nil."
     (interactive "P")
-    (let ((tex-shell (get-buffer "*TeX-output*"))
+    (let ((TeX-shell (get-buffer "*TeX-output*"))
 	  (old-buffer (current-buffer)))
-      (if (null tex-shell)
+      (if (null TeX-shell)
 	  (message "No TeX output buffer")
-	(pop-to-buffer tex-shell)
-	(bury-buffer tex-shell)
+	(pop-to-buffer TeX-shell)
+	(bury-buffer TeX-shell)
 	(goto-char (point-max))
 	(recenter (if linenum
 		      (prefix-numeric-value linenum)

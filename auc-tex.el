@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-12 22:56:24 $|$Revision: 5.25 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-18 17:34:29 $|$Revision: 5.26 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.25 1992-03-12 22:56:24 krab Exp $
+;; $Id: auc-tex.el,v 5.26 1992-03-18 17:34:29 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Mar 12 23:07:09 1992
-;; Update Count    : 487
+;; Last Modified On: Wed Mar 18 18:26:48 1992
+;; Update Count    : 501
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -248,7 +248,7 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c'"    'TeX-comment-out-paragraph)
   (define-key TeX-mode-map "\C-c:"    'TeX-un-comment-region)
   (define-key TeX-mode-map "\C-c\""   'TeX-un-comment)
-  (define-key TeX-mode-map "\C-c\C-o" 'Tex-cmd-on-region)
+  (define-key TeX-mode-map "\C-c\C-o" 'TeX-cmd-on-region)
   (define-key TeX-mode-map "\C-c\C-b" 'TeX-bold)
   (define-key TeX-mode-map "\C-c\C-i" 'TeX-italic)
   (define-key TeX-mode-map "\C-c\C-s" 'TeX-slanted)
@@ -287,19 +287,6 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
-(if (boundp 'texinfo-mode-map)
-    ()
-  (setq texinfo-mode-map (copy-keymap TeX-mode-map))
-  (define-key texinfo-mode-map "\M-\C-d" 'texinfo-format-region)
-  (define-key texinfo-mode-map "\M-\C-a" 'texinfo-format-buffer)
-  (define-key texinfo-mode-map "\C-c\C-v"    'texinfo-insert-@var)
-  (define-key texinfo-mode-map "\C-c\C-s"    'texinfo-insert-@samp)
-  (define-key texinfo-mode-map "\C-c\C-e"    'texinfo-insert-@emph)
-  (define-key texinfo-mode-map "\C-c\C-x"    'texinfo-insert-@node)
-  (define-key texinfo-mode-map "\C-c\C-="    'texinfo-insert-@dfn)
-  (define-key texinfo-mode-map "\C-c\C-t"    'texinfo-insert-@code)
-  )
-
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TeX / LaTeX modes
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -332,11 +319,10 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 	  (if (re-search-forward 
 	       (concat "^[^%\n]*"
 		       (regexp-quote TeX-esc)
-		       "\\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
+		       "\\(\\(begin\\|section\\|part\\|chapter\\){"
+		       "\\|documentstyle\\)") nil t)
 	      'latex-mode
-	    (if nil
-		'texinfo-mode
-	      TeX-default-mode)))))
+	    TeX-default-mode))))
     (if mode (funcall mode)
       (funcall TeX-default-mode))))
 
@@ -372,7 +358,7 @@ of plain-TeX-mode-hook."
   (interactive)
   (TeX-common-initialization)
   (use-local-map TeX-mode-map)
-  (setq mode-name "AUC-TeX")
+  (setq mode-name "TeX")
   (setq major-mode 'plain-TeX-mode)
   (make-local-variable 'TeX-command)
   (setq TeX-command "tex")
@@ -429,7 +415,8 @@ of plain-TeX-mode-hook."
 		TeX-esc "input"
 		TeX-grop TeX-auto-trailer TeX-grcl
 		TeX-grop TeX-grcl))
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
+  (message "AUC TeX TeX mode -- Copyright (C) 1992 Kresten Krab Thorup"))
 
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
@@ -472,7 +459,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'LaTeX-indent-line)
   (use-local-map LaTeX-mode-map)
-  (setq mode-name "AUC-LaTeX")
+  (setq mode-name "LaTeX")
   (setq major-mode 'LaTeX-mode)  
   (setq outline-level-function 'LaTeX-outline-level)
 
@@ -557,15 +544,14 @@ of LaTeX-mode-hook."
 		TeX-grop TeX-auto-trailer TeX-grcl
 		TeX-grop TeX-grcl))
   (setq indent-tabs-mode nil)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+  (message "AUC TeX LaTeX mode -- Copyright (C) 1992 Kresten Krab Thorup"))
 
 (defun TeX-common-initialization ()
   "Initialization common to TeX and LaTeX modes."
   (kill-all-local-variables)
   (use-local-map TeX-mode-map)
   (setq local-abbrev-table text-mode-abbrev-table)
-  (setq ispell-filter-hook "idetex")
-  (setq ispell-filter-hook-args '())
   (if (null TeX-mode-syntax-table)
       (progn
 	(setq TeX-mode-syntax-table (make-syntax-table))
@@ -854,7 +840,7 @@ comments and verbatim environments"
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defun Tex-cmd-on-region (begin end command)
+(defun TeX-cmd-on-region (begin end command)
   "Reads a (La)TeX-command. Makes current region a TeX-group.
 Inserts command at the start of the group."
   (interactive "*r\ns(La)TeX-command on region: ")
