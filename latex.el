@@ -2060,6 +2060,9 @@ pass args FROM, TO and JUSTIFY-FLAG."
                        ;; Code comments.
                        "^.*[^ \t%\n\r].*" comment-start-skip ".*$"
                        "\\|"
+                       ;; (lines with code comments looking like " {%")
+                       "^[ \t]*[^ \t%\n\r" TeX-esc"]" comment-start ".*$"
+                       "\\|"
                        ;; Lines ending with `\par'.
                        "^.*"
                        "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
@@ -2090,7 +2093,8 @@ pass args FROM, TO and JUSTIFY-FLAG."
                   ;; included in filling.  Lines ending with `\\' are
                   ;; skipped.
                   (if (or (match-string 1)
-                          (match-string 2))
+                          (match-string 2)
+                          (match-string 3))
                       (LaTeX-fill-region-as-para-do from (point) justify-flag)
                     (LaTeX-fill-region-as-para-do
                      from (match-beginning 0) justify-flag)))
@@ -2351,8 +2355,14 @@ space does not end a sentence, so don't break a line there."
              ((save-excursion
                 (and (memq 'braced LaTeX-fill-distinct-contents)
                      (string= (substring match-string -1) "{")
-                     (> (- (or (TeX-find-closing-brace)
-                               (line-end-position))
+                     (> (- (save-excursion
+                             ;; `TeX-find-closing-brace' is not enough
+                             ;; if there is no breakpoint in form of
+                             ;; whitespace after the brace.
+                             (goto-char (or (TeX-find-closing-brace)
+                                            (line-end-position)))
+                             (skip-chars-forward "^ \t\n")
+                             (point))
                            (line-beginning-position))
                         fill-column)))
               (save-excursion
