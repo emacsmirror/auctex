@@ -385,10 +385,6 @@ purposes."
   "Setup proper buffer hooks and behavior for previews."
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
-  (easy-menu-add-item nil
-		      '("Command")
-		      (TeX-command-menu-entry
-		       (assoc "Generate Preview" TeX-command-list)))
   (easy-menu-add preview-menu LaTeX-mode-map)
   ;;The following is a crock, but it does not load tool-bar-mode in case
   ;;nobody else does, and it should work with any Emacs-21.  Fixing
