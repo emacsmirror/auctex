@@ -1,3 +1,18 @@
+2004-12-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el: Add coding cookie.
+	Use punctuation syntax for "«" and "»" characters.
+	(TeX-parse-argument): Deactivate mark after insertion of first
+	pair of braces.  Fixes problems with the insertion of macros with
+	more than one brace and an active selection.
+
+	* style/csquotes.el (LaTeX-csquotes-open-quote)
+	(LaTeX-csquotes-close-quote): Doc fix.
+	("csquotes"): Repair quoting.  Use completing-read where
+	possible.  Use a stricter test for usage of quotes.
+
+	* doc/auctex.texi (Quotes): Document csquotes.el.
+
 2004-11-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/csquotes.el: New file.
