@@ -1217,7 +1217,7 @@ Used for specifying extra syntax for a macro."
 	(LaTeX-add-index-entries entry))
     (TeX-argument-insert entry optional optional)))
 
-(defalias 'TeX-arg-define-index 'Tex-arg-index)
+(defalias 'TeX-arg-define-index 'TeX-arg-index)
 
 (defun TeX-arg-macro (optional &optional prompt definition)
   "Prompt for a TeX macro with completion."
