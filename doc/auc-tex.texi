@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.163 2004-07-20 08:36:33 angeli Exp $
+@c $Id: auc-tex.texi,v 1.164 2004-07-29 08:58:45 angeli Exp $
 
 @finalout
 @titlepage
@@ -1187,15 +1187,27 @@ as support for Emacs' outline mode.
 @cindex Auto-Reveal
 @cindex Hide Macros
 
-There can be La@TeX{} macros and environments which have content that is
-not part of the text body you are writing.  Prominent examples are
-macros for footnotes and citations or figures or comments.  Those
+Are you often annoyed by footnotes and citations clobbering your text?
+Do you pull your hair when you cannot see what you are actually writing
+because of all those macros for font specification and logical mark-up?
+Then folding might be for you.
+
+There can be macros and environments which have content that is not part
+of the text body you are writing, like footnotes and citations.  Those
 enclose text which you often only want to see while actually editing it
-and which otherwise distracts your view of the document body.  AUC@TeX{}
-lets you collapse those items and display a placeholder (also called
-display string) instead.  If you want to make the text visible again in
-order to view or edit it, move point sideways onto the placeholder.  The
-macro or environment will unfold automatically, stay open as long as
+and which otherwise distract your view of the document body.  Similarly
+there are macros where you are not interested in viewing the macro
+besides its content but rather want to see the content only, like font
+specifiers where the content might already be fontified in a special way
+by font locking.
+
+With AUC@TeX{}'s folding functionality you can collapse those items and
+replace them by either a fixed string or the content of one of their
+arguments instead.  If you want to make the original text visible again
+temporarily in order to view or edit it, move point sideways onto the
+placeholder (also called display string) or left-click with the mouse
+pointer on it.  (The latter is currently only supported on GNU Emacs.)
+The macro or environment will unfold automatically, stay open as long as
 point is inside of it and collapse again once you move point out of it.
 (Note that folding of environments currently does not work in every
 AUC@TeX{} mode.)
@@ -1269,15 +1281,25 @@ consideration which are specified in the variable
 respectively.
 
 @defopt TeX-fold-macro-spec-list
-List of display strings and macros to fold.  The default tries to be
-unobtrusive and specifies placeholders only for footnotes and citations
-but you can as well use it to beautify your La@TeX{} source by using
-@samp{"*"} as a display string for @samp{\item} or @samp{"..."} for
-@samp{\dots} etc.
+List of display strings or argument numbers and macros to fold.  If you
+specify a number, the content of the first mandatory argument of a
+La@TeX{} macro will be used as the placeholder.
+
+The placeholder is made by copying the text from the buffer together with
+its properties, i.e. its face as well.  If fontification has not
+happened when this is done (e.g. because of lazy font locking) the
+intended fontification will not show up.  As a workaround you can leave
+Emacs idle a few seconds and wait for stealth font locking to finish
+before you fold the buffer.  Or you just re-fold the buffer with
+@code{TeX-fold-buffer} when you notice a wrong fontification.
 @end defopt
 
 @defopt TeX-fold-env-spec-list
-List of display strings and environments to fold.
+List of display strings or argument numbers and environments to fold.
+Argument numbers refer to the @samp{\begin} statement.  That means if
+you have e.g. @samp{\begin@{tabularx@}@{\linewidth@}@{XXX@} ...
+\end@{tabularx@}} and specify 3 as the argument number, the resulting
+display string will be ``XXX''.
 @end defopt
 
 @defopt TeX-fold-unspec-macro-display-string
