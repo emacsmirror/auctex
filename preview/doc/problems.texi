@@ -1,3 +1,22 @@
+Some of the known problems can be solved by moving to newer versions of
+the problematic software, by simple patches, or in one case, by changing
+OS(!). If you find something not mentioned here, please send a bug
+report using @kbd{M-x preview-report-bug @key{RET}}. This will fill in a
+lot of information interesting to us.
+
+@cindex @kbd{M-x preview-report-bug @key{RET}}
+@cindex @code{preview-report-bug}
+@cindex Report a bug
+Some bugs are being fixed as you read this, there is a mailing list for
+developers, look at
+@url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
+For more information, send a message with just the word ``help'' as
+subject or body to
+@email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
+for new features, and pleas for help should go to
+@email{preview-latex-devel@@lists.sourceforge.net} (the Preview La@TeX{}
+devel team).
+
 @node Problems with GhostScript, Font problems with Dvips, Known problems, Known problems
 @section Problems with GhostScript
 
@@ -54,14 +73,15 @@ using the @option{-Ppdf} switch) contain the @option{G} option for
 `character shifting'.  This option will result in @samp{fi} being
 rendered as @samp{@pounds{}} in several fonts.
 
-@node Emacs problems, AUC @TeX{} prior to 11.0, Font problems with Dvips, Known problems
+@node Emacs problems, AUC TeX prior to 11.0, Font problems with Dvips, Known problems
 @section Emacs problems
 
-@subsection GNU Emacs versions prior to 21.1
+@itemize @bullet
+@item GNU Emacs versions prior to 21.1
 
 Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
 
-@subsection GNU Emacs under Windows operating systems
+@item GNU Emacs under Windows operating systems
 
 As of GNU Emacs 21.1, no image support is available in Emacs under
 Windows.  Without images, preview-latex is useless.  If it is important
@@ -70,12 +90,25 @@ to you, support the Emacs developer crew with regard to image support
 Windows myself, but will accept patches necessary to make preview-latex
 work under it.
 
-@subsection XEmacs
+@item XEmacs
 
 Does not work yet.  Volunteers welcome.  Quite a bit of the necessary
 work has already been sorted out.
 
-@node AUC @TeX{} prior to 11.0, La@TeX{} international characters, Emacs problems, Known problems
+@item GNU Emacs EPS handling
+
+Direct @acronym{EPS} rendering still is in need of improvement and very
+experimental, so the default setting of @code{preview-latex} replaces
+Emacs' internal @acronym{EPS} handling by an indirect rendering
+mechanism. If you feel capable of helping out with Emacs' @acronym{EPS}
+interface (meaning that the APIs connecting GhostScript and viewers such
+as GhostView and Xdvi are not a book with seven seals for you), feel
+free to do so. Report bugs you can reproduce along with the files needed
+to reproduce them. The new display engine for 21.1 is quite powerful,
+and some bugs still might be lurking inside.
+@end itemize
+
+@node AUC TeX prior to 11.0, LaTeX international characters, Emacs problems, Known problems
 @section AUC @TeX{} prior to 11.0
 
 AUC @TeX{} versions up to and including 10.0g have a bug in the
@@ -86,25 +119,25 @@ correct this, apply the patch in @file{patches/auctex-10.patch}.  It
 might be more prudent to install a more recent version of AUC @TeX{},
 however.
 
-@node La@TeX{} international characters, x-symbol interoperation, AUC @TeX{} prior to 11.0, Known problems
+@node LaTeX international characters, x-symbol interoperation, AUC TeX prior to 11.0, Known problems
 @section La@TeX{} international characters
 
-preview-latex requires to correlate error messages from @TeX{} with the
-input text.  The delivered example file @file{circ.tex} contains
-@samp{ISO-8859-1} input characters (also called @samp{Latin-1}).  If
-your language environment is not properly set up, or your TeX version is
-rather old, TeX will, for example, display @samp{@"u} (German u-Umlaut) as
-@samp{^^fc}.  In that case the correlation will fail, with the result
-that the preview images get misplaced.  Personally, I have set the
-environment variable @env{LANG} to the string @code{en_US.ISO8859-1}.
-Your system may have different ways of achieving something similar.  If
-you have a graphical login screen, chances are that it offers a
-@samp{Language} setting.  It may help to choose @samp{US English} or
-similar instead of the plain @samp{English} setting.  This problem has
-also been reported as being caused by te@TeX{} compiled against
-@samp{libc5} libraries.
+To determine the position of a preview, preview-latex correlates error
+messages from @TeX{} with the input text. The delivered example file
+@file{circ.tex} contains @samp{ISO-8859-1} input characters (also called
+@samp{Latin-1}). If your language environment is not properly set up, or
+your TeX version is rather old, TeX will, for example, display
+@samp{@"u} (German u-Umlaut) as @samp{^^fc}. In that case the
+correlation will fail, with the result that the preview images get
+misplaced. Personally, I have set the environment variable @env{LANG} to
+the string @code{en_US.ISO8859-1}. Your system may have different ways
+of achieving something similar. If you have a graphical login screen,
+chances are that it offers a @samp{Language} setting. It may help to
+choose @samp{US English} or similar instead of the plain @samp{English}
+setting. This problem has also been reported as being caused by te@TeX{}
+compiled against @samp{libc5} libraries.
 
-@node x-symbol interoperation, Middle-clicks paste instead of toggling, La@TeX{} international characters, Known problems
+@node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
 @section x-symbol interoperation
 
 Thanks to the work of Christoph Wedler, starting with version
@@ -123,10 +156,12 @@ This is probably the fault of your favorite package.  In Emacs-21.1, the
 following culprits are known; later versions might have this corrected
 already, so apply the patches only if you encounter the problem.
 
-@subsection flyspell.el
+@itemize @bullet
+@item flyspell.el
 
 Apply the patch in @file{patches/flyspell.patch}.
 
-@subsection mouse-drag.el
+@item mouse-drag.el
 
 Apply the patch in @file{patches/mouse-drag.patch}.
+@end itemize
