@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10k
+;; Version: 9.10l
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -733,7 +733,7 @@ job to this function."
   "Create ENVIRONMENT with \\label and \\caption commands."
   (let ((float (read-string "Float to: " LaTeX-float))
 	(caption (read-string "Caption: "))
-        (center (y-or-n-p "Center: ")))
+        (center (y-or-n-p "Center? ")))
 
     (setq LaTeX-float (if (zerop (length float))
 			  LaTeX-float
@@ -747,7 +747,9 @@ job to this function."
     
     (if center
 	(progn
-	  (LaTeX-insert-environment "center")))
+	  (insert TeX-esc "centering")
+	  (indent-according-to-mode)
+	  (newline)))
     
     (newline-and-indent)
     (LaTeX-label environment)

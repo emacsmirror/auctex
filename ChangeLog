@@ -1,3 +1,36 @@
+1999-11-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10l released.
+
+1999-11-26  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-env-figure): Use `\centering' instead of
+	`center' envirnment.
+	Patch by Stefan Monnier <foo@acm.com>.
+
+1999-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-mik.el (tex-mik): Add provide.
+
+	* tex-site.el: Automatically require `tex-mik.el' under NT.
+
+1999-11-12  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-current-file-name-nondirectory): New function.
+	(TeX-expand-list): Use it.
+
+1999-11-10  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/auc-tex.texi: Fixed references.
+	Patch by Stefan Monnier <foo@acm.com>.
+	* tex.el (TeX-lisp-directory): Use `locate-library' to find
+	default under Emacs.
+	Patch by Stefan Monnier <foo@acm.com>.
+	(TeX-dwim-master): New function.
+	(TeX-master-file): Use it.
+	(TeX-master): Document it.
+	Patch by Stefan Monnier <foo@acm.com>.
+	
 1999-11-06  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10k released.

@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.124 1999-02-11 11:29:45 abraham Exp $
+@c $Id: auc-tex.texi,v 1.125 1999-11-26 13:03:46 abraham Exp $
 
 @finalout
 @titlepage
@@ -1052,7 +1052,7 @@ controlled by the variable @code{TeX-command-list}.@refill
 @vindex TeX-command-list
 @end deffn
 
-@xref{Installation} for a discussion about @code{TeX-command-list} and
+@xref{Installation}, for a discussion about @code{TeX-command-list} and
 @ref{Multifile} for a discussion about @code{TeX-master}.
 
 @deffn Command TeX-command-region
@@ -1823,7 +1823,7 @@ These correspond to @TeX{} macros found in the current directory.
 @cindex Style hooks
 @cindex @file{style}
 
-@xref{Automatic} for a discussion about automatically generated global,
+@xref{Automatic}, for a discussion about automatically generated global,
 private, and local style files.  The hand generated style files are
 equivalent, except that they by default are found in @file{style}
 directories instead of @file{auto} directories. 

@@ -1,7 +1,13 @@
 @section News in 9.10
 
 @itemize @bullet
-@item @code{ngerman} style support.
+@item 
+New @code{dwim} setting for @code{TeX-master} attempts to guess
+a default master for new files.
+Patch by Stefan Monnier <foo@@acm.com>.
+
+@item 
+@code{ngerman} style support.
 Just a copy of the german style support.
 
 @item
