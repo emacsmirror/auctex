@@ -92,9 +92,9 @@ David Kastrup, Alan Shutko, and Jan-Åke Larsson
 * Basic Usage::                 Keys, customization.
 * Internals::                   Under the hood.
 * Credits::                     Contributors.
-* Key Index::                   
-* Function Index::              
-* Variable Index::              
+* Key Index::                   A menu covering many topics.
+* Function Index::              A menu covering many topics.
+* Variable Index::              A menu covering many topics.
 * Concept Index::               A menu covering many topics.
 @end menu
 
@@ -133,9 +133,8 @@ this is going on. When the process is finished you will see the objects
 typeset in your buffer.
 
 To see/edit the La@TeX{} code for a specific object, put the point (the
-cursor) on it and press @kbd{C-c C-p C-p}. Now you can
-edit the code, and generate a new preview by again pressing
-@kbd{C-c C-p C-p}.
+cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
+and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
 @node Basic Usage, Internals, Getting started, top
 @chapter Basic Usage
@@ -145,63 +144,129 @@ what is available and how to customize it. Dig in!
 
 @menu
 * Key bindings::                
+* User-level lisp functions::   
 * Customization::               
 @end menu
 
-@node Key bindings, Customization, Basic Usage, Basic Usage
+@node Key bindings, User-level lisp functions, Basic Usage, Basic Usage
 @section Key bindings
 
 All the key bindings in AUC @TeX{} are present, of course. To these, the
 following are added:
 
 @table @kbd
-@item C-c C-p C-p	
-@kindex C-c C-p C-p
-@findex @code{preview-dwim}
-@cindex De/Preview ``this''
+@item C-c C-c g RET	
+Generate preview. This command generates previews for all appropriate
+objects in the current buffer. Already preset previews are re-generated.
+@kindex C-c C-c g RET
+@cindex Generate Preview
+
+@item C-c C-p C-p
 De/Preview ``this''. If the cursor is positioned on or inside of a
 preview area, this toggles its visibility, regenerating the preview if
 necessary. If not, it will run the surroundings through preview. The
 surroundings include all areas up to the next valid preview, unless
 invalid previews occur before, in which case the area will include the
 last such preview.
+@kindex C-c C-p C-p
+@findex @code{preview-dwim}
+@cindex De/Preview ``this''
 
 @item C-c C-p C-s
-@kindex C-c C-p C-s
-@cindex Preview section 
 Run preview on this LaTeX section.
+@kindex C-c C-p C-s
+@findex @code{preview-section}
+@cindex Preview section 
 
 @item C-c C-p C-e
+Run preview on this LaTeX environment.
 @kindex C-c C-p C-e
 @findex @code{preview-environment}
 @cindex Preview environment
-Run preview on this LaTeX environment.
 
 @item C-c C-p C-r	
+Run preview on current region.
 @kindex C-c C-p C-r
 @findex @code{preview-region}
 @cindex Preview region
-Run preview on current region.
 
 @item C-c C-p C-c
-@kindex C-c C-p C-c
-@cindex Prefix Command
 Key in this to type a preview-latex command. (Currently available
 commands are ...)
+@kindex C-c C-p C-c
+@cindex Prefix Command
 
 @item C-c C-p C-c C-b			
+Clear out all previews in current buffer.
 @kindex C-c C-p C-c C-b
 @findex @code{preview-clearout-buffer}
 @cindex Clearout previews
-Clear out all previews in current buffer.
 
 @item C-c C-p C-c C-r			
+Clear out all previews in the current region.
 @kindex C-c C-p C-c C-r
 @findex @code{preview-clearout}
-Clear out all previews in the current region.
 @end table
 
-@node Customization,  , Key bindings, Basic Usage
+@node User-level lisp functions, Customization, Key bindings, Basic Usage
+@section User-level lisp functions
+
+Remember to look at the functions in AUC @TeX{} too. To these, the
+following are added:
+
+@table @code
+@item preview-dwim
+De/Preview ``this''. If the cursor is positioned on or inside of a
+preview area, this toggles its visibility, regenerating the preview if
+necessary. If not, it will run the surroundings through preview. The
+surroundings include all areas up to the next valid preview, unless
+invalid previews occur before, in which case the area will include the
+last such preview.
+@kindex C-c C-p C-p
+@findex @code{preview-dwim}
+@cindex De/Preview ``this''
+
+@item preview-section
+Run preview on this LaTeX section.
+@kindex C-c C-p C-s
+@findex @code{preview-section}
+@cindex Preview section 
+
+@item preview-environment
+Run preview on this LaTeX environment.
+@kindex C-c C-p C-e
+@findex @code{preview-environment}
+@cindex Preview environment
+
+@item preview-region (begin end)
+Run preview on region between BEGIN and END. 
+@kindex C-c C-p C-r
+@findex @code{preview-region}
+@cindex Preview region
+
+@item preview-clearout-buffer (&optional buffer)
+Clearout BUFFER from previews, current buffer if nil.
+@kindex C-c C-p C-c C-b
+@findex @code{preview-clearout-buffer}
+@cindex Clearout previews
+
+@item preview-clearout (&optional start end keep-dir)
+Clear out all previews in the current region. When called interactively,
+the current region is used. Non-interactively, the region between START
+and END is affected. Those two values default to the borders of the
+entire buffer. If KEEP-DIR is set to a value from `TeX-active-tempdir',
+previews associated with that directory are kept.
+@kindex C-c C-p C-c C-r
+@findex @code{preview-clearout}
+
+@item preview-report-bug
+Report a bug in the preview-latex package.
+@kindex M-x preview-report-bug RET
+@findex @code{preview-report-bug}
+@cindex Report a bug
+@end table
+
+@node Customization,  , User-level lisp functions, Basic Usage
 @section Customization
 @cindex Customization
 
@@ -209,7 +274,7 @@ Customization options can be found by typing @kbd{M-x customize-group
 RET preview RET}. The list can be made very long, but some suggestions
 are:
 
-@itemize
+@itemize @bullet
 @item Adjust the smoothening of the previews
 
 In the @code{Preview Gs} group, change @code{Preview Gs Options}: try
@@ -233,9 +298,9 @@ in @code{Preview Default Option List}.  Beware if you use
 
 When using preview-latex, the \labels are hidden by the previews. To
 show them in the previews (yes, this is possible) use the La@TeX{}
-package @code{showkeys}, by changing @code{Preview Latex Command} to include
-@code{\usepackage@{showkeys@}} in between 
-@code{\AtBeginDocument@{} and @code{\ifx\ifPreview\undefined}
+package @code{showkeys}, by changing @code{Preview Latex Command} in the
+@code{Preview Latex} group to include @code{\usepackage@{showkeys@}} in
+between @code{\AtBeginDocument@{} and @code{\ifx\ifPreview\undefined}
 
 @end itemize
  
