@@ -3104,13 +3104,10 @@ If COUNT is non-nil, do it COUNT times."
 				  ;; distinction see
 				  ;; `LaTeX-forward-paragraph'.
 				  (if (save-match-data
-					(and (not (eolp))
-					     (looking-at
-					      (concat
-					       (regexp-quote TeX-esc)
-					       "[@A-Za-z]+\\|"
-					       "[ \t]*\\($\\|" comment-start
-					       "\\)"))))
+					(looking-at
+					 (concat
+					  (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
+					  "[ \t]*\\($\\|" comment-start "\\)")))
 				      (progn
 					(forward-line 1)
 					(setq end-point (if (< (point) start)
@@ -3123,6 +3120,10 @@ If COUNT is non-nil, do it COUNT times."
 			      0))))))
       (beginning-of-line))))
 
+;; The way `LaTeX-paragraph-command-p' is used in
+;; `LaTeX-forward-paragraph' and `LaTeX-backward-paragraph', it should
+;; probably check if it is inside of a paragraph command which can
+;; span multiple lines.
 (defun LaTeX-paragraph-command-p ()
   "Determine if point is in a line containing a paragraph command.
 Paragraph commands, i.e. commands included in
