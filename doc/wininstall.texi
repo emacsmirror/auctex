@@ -121,6 +121,18 @@ following line to your @file{.emacs} file:
 (require 'tex-site)
 @end example
 
+The configuration for Windows systems is probably not quite fitting.
+Instead of loading @file{tex-site.el} in that manner, you might want to
+load @file{tex-mik.el} (for Mik@TeX{}) or @file{tex-fptex} (for
+fp@TeX{}) instead.  Those will lead to somewhat more appropriate values
+for your system.  You can always use
+
+@example
+  @kbd{M-x customize-group @key{RET} AUCTeX @key{RET}}
+@end example
+
+in order to customize more stuff, or use the @samp{Customize} menu.
+
 @item
 Load a @file{.tex} file Emacs or XEmacs and see if you get the
 @samp{Command} menu. Try using that to @LaTeX{} the file.
