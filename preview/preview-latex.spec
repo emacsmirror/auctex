@@ -107,7 +107,7 @@ for i in *emacs; do
     %configure '--with-lispdir=${datadir}/emacs/site-lisp/site-start.d' \
       --with-packagelispdir=../preview
   else
-    %configure --with-xemacs
+    %configure --with-xemacs '--with-packagedir=%{xemacspkgdir}'
   fi
   make 'infodir=%{_infodir}'
   cd doc
@@ -141,9 +141,10 @@ done
 mkdir -p '%{buildroot}%{docs}'
 pushd %{name}-%{version}
 for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
-    latex/README-preview RELEASE TODO doc/preview-latex.pdf; do
+    RELEASE TODO doc/preview-latex.pdf; do
   cp -R "$i" '%{buildroot}%{docs}'
 done
+cp latex/README '%{buildroot}%{docs}/README-preview'
 
 # Remove dir file that has been created by the makeinfo calls because this
 # file will not been included in the rpm distribution (make RPM 4.1+ happy)
