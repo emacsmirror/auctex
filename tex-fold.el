@@ -122,7 +122,9 @@ string for any unspecified macro or environment."
 
 (defcustom TeX-fold-help-echo-max-length 70
   "Maximum length of help echo message for folded overlays.
-Set it to zero in order to disable help echos.")
+Set it to zero in order to disable help echos."
+  :type 'integer
+  :group 'TeX-fold)
 
 (defface TeX-fold-folded-face
   '((((class color) (background light))
