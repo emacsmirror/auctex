@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.419 $"))
+	(rev "$Revision: 5.420 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 13:47:13 $"))
+    (let ((date "$Date: 2004-08-10 14:32:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3123,7 +3123,7 @@ be bound to `TeX-electric-macro'."
 	:keys "C-c C-r" :style radio
 	:selected (eq TeX-command-current 'TeX-command-region)
 	:help "Commands in this menu work on the region"]
-      [ "Fix the region" TeX-pin-region
+      [ "Fix the Region" TeX-pin-region
 	:active (or (if prefix-arg
 			(<= (prefix-numeric-value prefix-arg) 0)
 		      (and (boundp 'TeX-command-region-begin)
@@ -3142,14 +3142,14 @@ be bound to `TeX-electric-macro'."
       ["Next Error" TeX-next-error
        :help "Jump to the next error of the last TeX run"]
       "-"
-      ("TeXing options"
-       [ "PDF mode" TeX-PDF-mode
+      ("TeXing Options"
+       [ "PDF Mode" TeX-PDF-mode
 	 :style toggle :selected TeX-PDF-mode
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode
 	 :help "Stop on errors in a TeX run"]
-       [ "Source specials" TeX-source-specials-mode
+       [ "Source Specials" TeX-source-specials-mode
 	 :style toggle :selected TeX-source-specials-mode
 	 :help "Enable forward and inverse search in the previewer"]
        ["Debug Bad Boxes" TeX-toggle-debug-boxes
@@ -3229,17 +3229,17 @@ be bound to `TeX-electric-macro'."
 	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
 	 :help "Reset buffer and reload AUCTeX style files"])
        ("Customize"
-	["Browse options"
+	["Browse Options"
 	 (customize-group 'AUCTeX)
 	 :help "Open the customization buffer for AUCTeX"]
-	["Extend this menu"
+	["Extend this Menu"
 	 (easy-menu-add-item
 	  nil '("TeX")
 	  (customize-menu-create 'AUCTeX))
 	 :help "Make this menu a full-blown customization menu"])
-       ["Read the AUCTeX manual" TeX-goto-info-page
+       ["Read the AUCTeX Manual" TeX-goto-info-page
 	:help "Everything worth reading"]
-       ["Report AUCTeX bug" TeX-submit-bug-report
+       ["Report AUCTeX Bug" TeX-submit-bug-report
 	:help "Create a problem report for mailing"])))
 
 ;;; AmSTeX
