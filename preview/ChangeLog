@@ -1,4 +1,12 @@
-2002-06-13  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+2002-06-24  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/Makefile: Cleaned. Vacuumed, in fact.
+
+2002-06-19  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/pagelist.c: remove Debug bug (!)
+
+2002-06-13  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/Makefile: new object files
 
