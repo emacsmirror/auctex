@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.456 $"))
+	    (rev "$Revision: 5.457 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-12 12:07:14 $"))
+    (let ((date "$Date: 2004-10-13 13:03:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -697,22 +697,24 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
   (defun TeX-activate-region ()
     nil))
 
-(cond
- ((fboundp 'delete-dups) ;; Emacs 21.4
-  (defalias 'TeX-delete-dups 'delete-dups))
- ((fboundp 'delete-duplicates) ;; cl.el, XEmacs
-  (defalias 'TeX-delete-dups 'delete-duplicates))
- (t ;; Fallback from `subr.el' of Emacs 21.3.50
-  (defun TeX-delete-dups (list)
-    "Destructively remove `equal' duplicates from LIST.
-Store the result in LIST and return it.  LIST must be a proper list.
-Of several `equal' occurrences of an element in LIST, the first
-one is kept."
-    (let ((tail list))
-      (while tail
-	(setcdr tail (delete (car tail) (cdr tail)))
-	(setq tail (cdr tail))))
-    list)))
+(defun TeX-delete-dups (alist &optional keep-list)
+  "Return a list of all elements in ALIST, but each car only once.
+Elements of KEEP-LIST are not removed even if duplicate."
+  ;; Copy of `reftex-uniquify-by-car' (written by David Kastrup).
+  (setq keep-list (sort (copy-sequence keep-list) #'string<))
+  (setq alist (sort (copy-sequence alist)
+		    (lambda (a b)
+		      (string< (car a) (car b)))))
+  (let ((new alist) elt)
+    (while new
+      (setq elt (caar new))
+      (while (and keep-list (string< (car keep-list) elt))
+	(setq keep-list (cdr keep-list)))
+      (unless (and keep-list (string= elt (car keep-list)))
+	(while (string= elt (car (cadr new)))
+	  (setcdr new (cddr new))))
+      (setq new (cdr new))))
+  alist)
 
 ;;; Buffer
 

@@ -1,3 +1,7 @@
+2004-10-13  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-delete-dups): Use our own (faster) version.
+
 2004-10-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Completion): Mention `C-c RET' for
