@@ -2,9 +2,11 @@
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Fix separation of
 	lines with code comments looking like " {%".
-	(LaTeX-fill-move-to-break-point): Fix determination of break
-	point for an opening brace where there is no break point
-	immediately after the respective closing brace.
+	(LaTeX-fill-move-to-break-point): Fix determination of break point
+	for an opening brace where there is no break point immediately
+	after the respective closing brace.
+	(LaTeX-fill-region-as-para-do): Fix determination of code comment
+	begin in filling loop.
 
 2004-03-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
