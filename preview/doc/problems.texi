@@ -61,6 +61,7 @@ that out too: if the bug persists, one out of two previews will fail.
 If not, PostScript code will be executed in a secure setting.
 
 The default options configurable with
+
 @display
 @kbd{M-x customize-variable @key{RET} preview-gs-options @key{RET}}
 @end display
