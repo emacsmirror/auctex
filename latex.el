@@ -311,10 +311,16 @@ in your .emacs file."
 
 
 (defcustom LaTeX-section-label
-  '(("chapter" . "cha:")
+  '(("part" . "part:")
+    ("chapter" . "chap:")
     ("section" . "sec:")
-    ("subsection" . "sec:"))
+    ("subsection" . "sec:")
+    ("subsubsection" . "sec:"))
   "Default prefix when asking for a label.
+
+Some LaTeX packages \(such as `fancyref'\) look at the prefix to generate some
+text around cross-references automatically.  When using those packages, you
+should not change this variable.
 
 If it is a string, it it used unchanged for all kinds of sections.
 If it is nil, no label is inserted.
