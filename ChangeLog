@@ -1,3 +1,9 @@
+2004-03-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-insert-environment): Fix insertion of newlines
+	for the case where `LaTeX-insert-into-comments' is activated but
+	point is not inside a comment.
+
 2004-02-28  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (install-lisp): Overwrite old tex-site.el if it has
