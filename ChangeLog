@@ -1,3 +1,8 @@
+2004-10-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-match-command-in-braces): Remove
+	references to non-existent variables.
+
 2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-math-list): Improve doc string and custom type.
