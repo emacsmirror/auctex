@@ -6,7 +6,7 @@
 ;; 
 ;; 
 ;; 
-;; $Revision: 1.4 $
+;; $Revision: 1.5 $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
