@@ -1,3 +1,10 @@
+2003-11-02  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (subsection{Selection options}): Fix the
+	carnage broken document classes like elsart.cls and IEEEtran.cls
+	do to \endfigure and \endtable, and complain about it in
+	appropriate warning messages.
+
 2003-10-17  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/misc.c:
