@@ -1,3 +1,12 @@
+2002-03-02  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-transact): Don't use .setsafe unless
+	.runandhide is defined.  There might be no way back to unsafer
+	mode otherwise.
+	(preview-create-subdirectory): Be more forgiving about users
+	messing up the directory organization of preview-latex, by
+	manually deleting stuff under its control.
+
 2002-03-01  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-default-option-list): add new options.
