@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.116 2002-04-14 16:20:00 dakas Exp $
+;; $Id: preview.el,v 1.117 2002-04-15 15:49:55 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1019,16 +1019,18 @@ such preview."
 %s kills preview"
 	   `(lambda() (interactive) (preview-regenerate ,ov)))
 ;; icon on separate line only for stuff starting on its own line
-	  (save-excursion
-	    (with-current-buffer
-		(overlay-buffer ov)
-	      (goto-char (overlay-start ov))
-	      (if (bolp) "\n" "")))))
+	  (with-current-buffer (overlay-buffer ov)
+	    (save-excursion
+	      (save-restriction
+		(widen)
+		(goto-char (overlay-start ov))
+		(if (bolp) "\n" ""))))))
 
 (defun preview-disable (ovr)
   "Change overlay behaviour of OVR after source edits."
   (overlay-put ovr 'queued nil)
   (preview-remove-urgentization ovr)
+  (overlay-put ovr 'preview-image nil)
   (overlay-put ovr 'timestamp nil)
   (setcdr (overlay-get ovr 'strings) (preview-disabled-string ovr))
   (preview-toggle ovr)
@@ -1169,10 +1171,12 @@ is already selected and unnarrowed."
 %s redisplays preview
 %s kills preview")
 ;; icon on separate line only for stuff starting on its own line
-   (save-excursion
-     (goto-char (overlay-start ov))
-     (if (bolp) "\n" ""))))
-
+   (with-current-buffer (overlay-buffer ov)
+     (save-excursion
+       (save-restriction
+	 (widen)
+	 (goto-char (overlay-start ov))
+	 (if (bolp) "\n" ""))))))
 
 (defun preview-eps-place (ov snippet box tempdir scale)
   "Generate an image via direct EPS rendering.
@@ -1259,8 +1263,7 @@ to the close hook."
     (prog1 (apply #'preview-call-hook 'place ov snippet box
 		  place-opts)
       (overlay-put ov 'strings
-		   (cons (preview-active-string ov)
-			 (preview-inactive-string ov)))
+		   (list (preview-active-string ov)))
       (preview-toggle ov t))))
 
 (defun preview-reinstate-preview (tempdirlist start end image filename)
@@ -1291,8 +1294,7 @@ and the corresponding topdir."
       (overlay-put ov 'filenames (list filename))
       (overlay-put ov 'preview-image (preview-import-image image))
       (overlay-put ov 'strings
-		   (cons (preview-active-string ov)
-			 (preview-inactive-string ov)))
+		   (list (preview-active-string ov)))
       (preview-toggle ov t)))
   tempdirlist)
 
@@ -1857,7 +1859,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.116 $"))
+	(rev "$Revision: 1.117 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
