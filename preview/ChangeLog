@@ -1,5 +1,8 @@
 2002-02-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi: Write Å instead of @AA (x-symbol sneaked
+	that in).
+
 	* doc/install.texi: Use @previewlatex.
 
 	* doc/problems.texi: Use @previewlatex and @uref.
