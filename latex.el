@@ -1870,13 +1870,13 @@ Lines starting with an item is given an extra indentation of
 	 ;; Compute a fill prefix.  Whitespace after the comment
 	 ;; characters will be disregarded and replaced by
 	 ;; `comment-padding'.
-	 (fill-prefix (and (TeX-in-commented-line)
-			   (save-excursion
-			     (beginning-of-line)
-			     (looking-at (concat "[ \t]*"
-						 TeX-comment-start-regexp "+"))
-			     (concat (match-string 0)
-				     (TeX-comment-padding-string)))))
+	 (fill-prefix
+	  (and (TeX-in-commented-line)
+	       (save-excursion
+		 (beginning-of-line)
+		 (looking-at
+		  (concat "\\([ \t]*" TeX-comment-start-regexp "+\\)+"))
+		 (concat (match-string 0) (TeX-comment-padding-string)))))
 	 (overlays (when (featurep 'xemacs)
 		     ;; Isn't that fun?  In Emacs an `(overlays-at
 		     ;; (line-beginning-position))' would do the
@@ -1933,7 +1933,8 @@ Lines starting with an item is given an extra indentation of
   ;; `LaTeX-indent-line' already set the appropriate variables and
   ;; should not be used outside of `LaTeX-indent-line'.
   (move-to-left-margin)
-  (re-search-forward comment-start-skip (line-end-position) t)
+  (TeX-re-search-forward-unescaped
+   (concat "\\(" TeX-comment-start-regexp "+[ \t]*\\)+") (line-end-position) t)
   (delete-region (line-beginning-position) (point))
   (insert fill-prefix)
   (indent-to (+ inner-indent (length fill-prefix))))
@@ -2168,14 +2169,11 @@ outer indentation in case of a commented line.  The symbols
 		     (and (TeX-in-line-comment)
 			  (eq major-mode 'doctex-mode))))))
       ;; INNER indentation
-      (progn
-	(move-to-left-margin)
-	(TeX-re-search-forward-unescaped
-	 (concat TeX-comment-start-regexp "+\\([ \t]*\\)")
-	 (line-end-position) t)
-	(- (length (match-string 1)) (if (integerp comment-padding)
-					 comment-padding
-				       (length comment-padding))))
+      (save-excursion
+	(beginning-of-line)
+	(looking-at (concat "\\(?:[ \t]*" TeX-comment-start-regexp "+\\)+"
+			    "\\([ \t]*\\)"))
+	(- (length (match-string 1)) (length (TeX-comment-padding-string))))
     ;; OUTER indentation
     (current-indentation)))
 
@@ -2196,7 +2194,10 @@ recognized."
 			LaTeX-syntactic-comments))))
       (progn
 	(beginning-of-line)
-	(re-search-forward comment-start-skip (line-end-position) t))
+	;; Should this be anchored at the start of the line?
+	(TeX-re-search-forward-unescaped
+	 (concat "\\(?:" TeX-comment-start-regexp "+[ \t]*\\)+")
+	 (line-end-position) t))
     (back-to-indentation)))
 
 
