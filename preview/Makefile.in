@@ -7,12 +7,12 @@ AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 GS=@GS@
 
-LISP_SOURCES := @PLAT_LISP@ preview.el
-LISP_OBJS := $(LISP_SOURCES:.el=.elc)
+LISP_SOURCES = @PLAT_LISP@ preview.el
+LISP_OBJS = $(LISP_SOURCES:.el=.elc)
 
-ICON_XPM_SOURCES := images/prevwork.xpm images/preview.xpm images/preverr.xpm
-ICON_XBM_SOURCES := ${ICON_XPM_SOURCES:.xpm=.xbm}
-ICON_SOURCES := $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES) \
+ICON_XPM_SOURCES = images/prevwork.xpm images/preview.xpm images/preverr.xpm
+ICON_XBM_SOURCES = $(ICON_XPM_SOURCES:.xpm=.xbm)
+ICON_SOURCES = $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES) \
 	images/preview-cap-up.xpm
 
 prefix = @prefix@
