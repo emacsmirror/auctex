@@ -605,7 +605,7 @@
 	(TeX-directory-absolute-p): removed, since file-name-absolute-p
 	serves the same purpose.
 
-2003-06-06  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-06-06  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in: Added datadir
 
@@ -673,7 +673,7 @@
 
 	* Makefile.in (STYLESRC): Added captcont.el and subfigure.el
 
-2003-04-15  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-04-15  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* doc/wininstall.texi: Corrected download info for GNU Emacs
 
@@ -692,7 +692,7 @@
 
 	* doc/install.texi (Customizing): hilit-LaTeX.el deleted.
 
-2003-04-14  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-04-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* autogen.sh: Generate INSTALL and INSTALL.windows 
 
@@ -725,7 +725,7 @@
 
 	* Makefile.in: Added context.el(c)
 
-2003-04-09  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-04-09  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: More sane emacs-macro path-searching.
 
@@ -734,7 +734,7 @@
 	* tex.el (TeX-kpathsea-directory-alist): Fix bad kpathsea
 	searchpath name for LaTeX files.
 
-2003-04-03  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-04-03  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: Make the emacs-macro path-searching tests run, and
 	make EMACS_PROG_EMACS fail gracefully when no binary executable is
@@ -931,7 +931,7 @@
 	(TeX-output-view-style, TeX-command-output-list): new variables
 	(TeX-expand-list): adapted for pdf output.
 
-2003-01-31  Jan-Ã…ke Larsson  <jalar@mai.liu.se>
+2003-01-31  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Use new lispdir check. 
 
@@ -1501,7 +1501,7 @@
 	Contributed by ataka@milk.freemail.ne.jp (Masayuki Ataka).
 
 	* tex-info.el (texinfo-mode): Comment out cindex.
-	Reported by Kai.Grossjohann@CS.Uni-Dortmund.DE (Kai GroÃŸjohann)
+	Reported by Kai.Grossjohann@CS.Uni-Dortmund.DE (Kai Großjohann)
 
 	* style/amsmath.el (LaTeX-item-equation, LaTeX-item-equations):
 	New functions.
@@ -1782,7 +1782,7 @@
 1999-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* style/danish.el ("danish"): Support Danish quotes.
-	Suggested by arne@daimi.au.dk (Arne JÃ¸rgensen).
+	Suggested by arne@daimi.au.dk (Arne Jørgensen).
 
 1999-12-03  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -2898,7 +2898,7 @@
 1996-07-15  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-parse-path): Ignore tralining //.  Suggested by
-	GÃ¶ran Uddeborg <GÃ¶ran.Uddeborg@carmen.se>.
+	Göran Uddeborg <Göran.Uddeborg@carmen.se>.
 
 1996-05-05  Per Abrahamsen  <abraham@dina.kvl.dk>
 
@@ -3239,7 +3239,7 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	* tex.el (TeX-auto-store): Change to functions that prevent the
 	auto file buffer from entering emacs-lisp-mode.
 	(TeX-auto-insert): Don't rely on emacs-lisp-mode for indentation.
-	Suggested by Stefan SchÃ¶f (schoef@informatik.uni-oldenburg.de).
+	Suggested by Stefan Schöf (schoef@informatik.uni-oldenburg.de).
 
 1994-11-11  Per Abrahamsen  <abraham@iesd.auc.dk>
 
@@ -3531,5 +3531,5 @@ y	(TeX-format-filter): Removed unnecessary check before assignment.
 	* Version 9.1 released.
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: iso-8859-1
 ;; End:
