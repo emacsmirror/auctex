@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.39 1993-07-08 17:51:57 amanda Exp $
+@c $Id: auc-tex.texi,v 1.40 1993-07-14 19:17:00 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -160,7 +160,6 @@ The History of AUC @TeX{}
 
 Various Minor Modes
 
-* Minor Mode Keymaps::          Minor Mode Keymaps
 * Auto Indent::                 Auto Indent Mode
 * Auto Ispell::                 Auto Ispell Mode
 @end menu
@@ -1466,7 +1465,7 @@ Mode'' in @file{min-key.el}, which support general remapping of the
 keyboard, as well as converting between various character set encodings,
 and ``Dead Key Mode'' in @file{ltx-dead.el}, which support dead keys for
 entering accents.  Both packages depend on the ``Minor Mode Keymap''
-support in @file{min-map.el}, but at least ``Keymap Mode'' is otherwise
+support in @file{min-bind.el}, but at least ``Keymap Mode'' is otherwise
 useful even outside AUC @TeX{}.
 
 If you have the necessary software, AUC @TeX{} will also work with some
@@ -3202,49 +3201,18 @@ error messages in the @file{tex-dbg.el} file.
 @appendix Various Minor Modes
 
 A number of minor modes are distributed with AUC @TeX{} for no good
-reason, except that they use @file{min-map.el} and they are so small
+reason, except that they use @file{min-bind.el} and they are so small
 that it does not matter.
 
 Some of the minor modes has already been described elsewhere, the
 remaining will be described here.
 
 @menu
-* Minor Mode Keymaps::          Minor Mode Keymaps
 * Auto Indent::                 Auto Indent Mode
 * Auto Ispell::                 Auto Ispell Mode
 @end menu
 
-@node Minor Mode Keymaps, Auto Indent, Minor Modes, Minor Modes
-@section Minor Mode Keymaps
-@cindex Minor mode keymap
-@cindex Minor keymaps
-@cindex Keymaps
-@cindex Rebinding keys in minor modes
-
-For authors of minor modes, who need to rebind one or more keys while in
-the minor mode.  You can do this by hiding the old binding in a
-variable, and then restore the binding when you leave the mode.
-Unfortunately, this will usually not work if more than one minor mode
-try to rebind the key.  You can solve this problem, by using the
-following functions to bind keys in minor modes.  See the documentation
-string for the individual functions for details.
-
-Put in @code{(require 'min-map)} in the start of the file containing
-your minor mode.
-
-Use @code{minor-set-key} to set a key in the minor keymap for a given minor
-mode.
-@findex minor-set-key
-
-Use @code{minor-call-shadow} to call the key binding shadowed by a given
-minor mode.
-@findex minor-call-shadow
-
-Use @code{unbind-minor-mode} to remove all key definitions for a given
-minor mode.
-@findex unbind-minor-mode
-
-@node Auto Indent, Auto Ispell, Minor Mode Keymaps, Minor Modes
+@node Auto Indent, Auto Ispell, Minor Modes, Minor Modes
 @section Auto Indent Mode
 @cindex Indentation minor mode.
 @cindex Automatic indentation
