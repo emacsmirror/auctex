@@ -157,10 +157,12 @@ supported, try adding the line
 (setq preview-image-type 'pnm)
 @end example
 
-at the end of your installed version of @file{preview-latex.el}.
-Current Emacs @acronym{CVS} versions do not yet support @acronym{PNG}
-images.  Which is a pity, because @acronym{PNM} files take away
-@strong{vast} amount of disk space, and thus also of load/save time.
+at the end of your installed version of @file{preview-latex.el}.  If
+this helps, complain to wherever you got your Emacs: all current
+Emacs/XEmacs versions capable of running @previewlatex{} by now can be
+compiled to support @acronym{PNG} images.  Which is important, because
+@acronym{PNM} files take away @strong{vast} amount of disk space, and
+thus also of load/save time.
 @end enumerate
 
 Well, that about is all.  Have fun!
