@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001, 2002  Free Software Foundation, Inc.
+;; Copyright (C) 2001-2003  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.184 2002-12-29 22:13:09 dakas Exp $
+;; $Id: preview.el,v 1.185 2003-01-10 15:30:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1793,7 +1793,7 @@ to add the preview functionality."
       ("Customize"
        ["Browse options"
 	(customize-group 'preview)]
-       ["Generate custom menu here"
+       ["Extend this menu"
 	(easy-menu-add-item
 	 nil '("Preview")
 	 (customize-menu-create 'preview))])
@@ -2476,7 +2476,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.184 $"))
+	(rev "$Revision: 1.185 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2487,7 +2487,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-29 22:13:09 $"))
+    (let ((date "$Date: 2003-01-10 15:30:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
