@@ -1,3 +1,13 @@
+1999-08-18  Hidenobu Nabetani  <nabe@debian.or.jp>
+
+	* tex-jp.el (TeX-command-list): Add "jLaTeX" and "pLaTeX".
+	(TeX-mode-menu): Fix the problem that menu "TeX" is unchanged.
+	(TeX-japanese-process-input-coding-system): Update for Emacs 20.
+	(TeX-japanese-process-output-coding-system): Update for Emacs 20.
+	(TeX-command-default): Change from "j-article" to "jarticle".
+	(LaTeX-fill-region-as-para-do): Fix the problem that fill mode 
+	don't work in Emacs 20.
+
 1999-07-16  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10f released.
