@@ -559,5 +559,6 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 	      prefix="${oldprefix}" # restore prefix])
  AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
  AC_SUBST(autodir)
- AC_SUBST(autodir_expanded)
+ EMACS_LISP(lispautodir,(prin1-to-string str),,,str,[["${autodir_expanded}"]])
+ AC_SUBST(lispautodir)
 ])

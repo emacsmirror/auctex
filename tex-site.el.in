@@ -64,7 +64,7 @@ the variables TeX-style-* (hand-generated lisp) and TeX-auto-*
 			     TeX-lisp-directory)
   "*The directory where the AUCTeX images are located.")
 
-(defcustom TeX-auto-global "@autodir_expanded@"
+(defcustom TeX-auto-global @lispautodir@
   "*Directory containing automatically generated information.
 Must end with a directory separator.
 

@@ -22,7 +22,7 @@ EMACS_PATH_PACKAGEDIR([tex-site],[auctex])
 EMACS_PATH_LISPDIR([tex-site])
 
 auctexdir=${lispdir_expanded}/auctex
-EMACS_LISP(lispauctexdir,(format \"%S\" str),,,str,[["${auctexdir}"]])
+EMACS_LISP(lispauctexdir,(prin1-to-string str),,,str,[["${auctexdir}"]])
 AC_SUBST(auctexdir)
 AC_SUBST(lispauctexdir)
 
