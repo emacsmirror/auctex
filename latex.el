@@ -3123,7 +3123,7 @@ of `LaTeX-mode-hook'."
 	 "%*[ \t]*\\("
 	 (regexp-quote TeX-esc)
 	 "\\("
-	 LaTeX-paragraph-commands
+	 LaTeX-paragraph-commands "\\|item\\b"
 	 "\\)\\|$"
 	 "\\)"
 	 ))
