@@ -1,3 +1,7 @@
+2003-01-18  David Kastrup  <dak@gnu.org>
+
+	* configure.in: Announce AUC TeX, not preview.
+
 2003-01-16  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* style/varioref.el ("varioref"): Fixed typo.
