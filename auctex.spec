@@ -1,13 +1,15 @@
 %define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
 
 %if %{FOR_SUSE}
-%define distri      .suse
-%define commongroup Productivity/Editors/Emacs
+%define distri       .suse
+%define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{name}.el
 %else
-%define distri      %{?thisshouldbeempty:}
-%define commongroup Applications/Editors
+%define distri       %{?thisshouldbeempty:}
+%define commongroup  Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
+%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
 %endif
 
 Summary: 	Enhanced LaTeX mode for Emacs
@@ -15,11 +17,12 @@ Name: 		auctex
 Version: 	11.52
 Release: 	1%{distri}
 License: 	GPL
-Group: 		Applications/Editors
+Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
 Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
 Requires: 	emacs >= 21
 #BuildRequires: 	emacs-X11
+Obsoletes:      ge_auc emacs-auctex
 BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
 
@@ -57,12 +60,10 @@ mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 rm -f '%{buildroot}%{_infodir}/dir'
 
 %pre
-echo "; Autoactivation of AUCTeX" > \
-  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
+echo "; Autoactivation of AUCTeX" > %{startupfile}
 echo "; Created for %{name}-%{version}-%{release}.noarch.rpm" >> \
-  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
-echo "(require 'tex-site)" >> \
-  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
+  %{startupfile}
+echo "(require 'tex-site)" >> %{startupfile}
 
 %post
 /sbin/install-info --info-dir=%{_infodir} %{_infodir}/auctex
@@ -72,7 +73,7 @@ echo "(require 'tex-site)" >> \
 # after this uninstallation
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/auctex
-  rm -f %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
+  rm -f %{startupfile}
 fi
 %clean
 rm -rf %{buildroot}
