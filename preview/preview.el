@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.102 2002-04-10 15:27:45 dakas Exp $
+;; $Id: preview.el,v 1.103 2002-04-11 14:13:27 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -905,7 +905,7 @@ argument COUNT, the corresponding level of outward nested
 environments is selected."
   (interactive "p")
   (save-excursion
-    (let (currenv pos startp endp)
+    (let (currenv)
       (dotimes (i (1- count))
 	(setq currenv (LaTeX-current-environment))
 	(if (string= currenv "document")
@@ -916,9 +916,9 @@ environments is selected."
 	(LaTeX-find-matching-begin))
       (if (string= currenv "document")
 	  (error "No enclosing outer environment found"))
-      (let ((startp (save-excursion (LaTeX-find-matching-begin) (point)))
-	    (endp (save-excursion (LaTeX-find-matching-end) (point))))
-	(preview-region startp endp)))))
+      (preview-region
+       (save-excursion (LaTeX-find-matching-begin) (point))
+       (save-excursion (LaTeX-find-matching-end) (point))))))
 
 (defun preview-section ()
   "Run preview on LaTeX section." (interactive)
@@ -1458,7 +1458,7 @@ to return in its CAR the PROCESS parameter for the CLOSE
 call, and in its CDR the final stuff for the placement hook."
   (with-temp-message "locating previews..."
     (let (TeX-error-file TeX-error-offset snippet box
-	  file line buffer
+	  file line
 	  (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
 	  string after-string error context-start
 	  context offset
@@ -1788,7 +1788,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.102 $"))
+	(rev "$Revision: 1.103 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
