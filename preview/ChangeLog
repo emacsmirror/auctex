@@ -1,3 +1,9 @@
+2002-02-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-options): Remove -DSAFER option that
+	causes OutputFile selection of GhostScript to fail (starting with
+	7.04).  This cannot be the final fix.
+
 2002-02-06  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* readme.texi: Index and layout changes
