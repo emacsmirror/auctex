@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.80 2004-11-01 12:40:31 angeli Exp $
+;; Version:    $Id: font-latex.el,v 5.81 2004-11-01 18:27:43 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -492,10 +492,10 @@ fontification regexp like so:
 			       (if (listp type) (car type) type))))
 	  (add-to-list (intern (concat "font-latex-keywords-"
 				       (number-to-string level)))
-		       keywords-entry)
+		       keywords-entry t)
 	  (when (= level 1)
 	    (add-to-list (intern (concat "font-latex-keywords-2"))
-			 keywords-entry)))))
+			 keywords-entry t)))))
 
     ;; Add the "fixed" matchers and highlighters.
     (dolist (item
@@ -618,7 +618,7 @@ are missing, the face will be applied to the command itself.
 	;; Add the matcher to `font-latex-keywords-2'.
 	(add-to-list 'font-latex-keywords-2
 		     (font-latex-keyword-matcher prefix name face
-		      (if (listp type) (car type) type)))))))
+		      (if (listp type) (car type) type)) t)))))
 (font-latex-make-user-keywords)
 
 (defvar font-latex-keywords font-latex-keywords-1
