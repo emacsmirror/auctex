@@ -2,6 +2,8 @@
 
 	* preview.el (LaTeX-preview-setup, preview-parse-messages): cater
 	to abbreviated locator error message.
+	(preview-clearout-at-point): New function.
+	(LaTeX-preview-setup): add to menus and cleanup unnecessary flags.
 
 	* latex/preview.dtx: replace "Package Preview Error" with
 	"Preview": too many people got confused.
