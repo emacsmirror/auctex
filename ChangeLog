@@ -1,6 +1,7 @@
 2005-04-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-help-echo-max-length): New variable.
+	Add :type and :group specs.
 	(TeX-fold-make-help-echo): New function.
 	No space before ellipsis.
 	Okay, color does not look too bad.
