@@ -8,7 +8,7 @@ before installing anything.
 
 @section Prerequisites
 
-@itemize
+@itemize @bullet
 @item A recent version of Emacs 21
 
 The first version without known quirks and bugs affecting preview-latex
@@ -46,25 +46,16 @@ On many machines, you will not need to specify any options, but if
 configure cannot determine something on its own, you'll need to help
 it out with one of these options
 
-@example
---with-emacs=/path/to/emacs
-@end example
-
+@table @code
+@item --with-emacs=/path/to/emacs
 If you are using a pretest which isn't in your $PATH, or configure is
 not finding the right emacs binary, you can specify it with this option.
 
-@example
---with-auctex=/dir
-@end example
-
+@item --with-auctex=/dir
 If AUC-TeX is installed in a non-standard location (not in site-lisp),
 use this option to specify the location.
 
-@example
---with-texmf=/dir
---with-preview-dir=/dir
-@end example
-
+@item --with-texmf=/dir@*--with-preview-dir=/dir
 Both of these options can be used to specify the location to install the
 preview TeX files. They are not necessary for most TeX installs, but may
 be used if you don't like the directory that configure is suggesting.
@@ -74,13 +65,11 @@ directory hierarchy resides, and the @TeX{} files will be installed in
 for the preview @TeX{} files, use @code{--with-preview-dir=/dir}. In
 this case, the files will be placed in /dir.
 
-@example
---with-lispdir=/dir
-@end example
-
+@item --with-lispdir=/dir
 This tells where to install Emacs Lisp files. Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
+@end table
 
 @section Building files
 
@@ -96,14 +85,15 @@ and build the documentation DVI file.
 
 @section Installing files
 
+To install the files into the locations chosen earlier, type
+
 @example
 make install
 @end example
 
 @noindent 
-will install the files into the locations chosen earlier.  You may
-need special privileges to install, e.g. if you are installing into
-system directories.
+You may need special privileges to install, e.g. if you are installing
+into system directories.
 
 @section Loading the package
 
