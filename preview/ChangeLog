@@ -1,3 +1,8 @@
+2002-03-26  David Kastrup  <David.Kastrup@t-online.de>
+
+	* TODO (Integrate into refTeX): bemoan another shortcoming, or
+	rather feature wish.
+
 2002-03-25  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-dvips-sentinel): Treat absence of
