@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.79 1994-01-30 13:52:39 amanda Exp $
+# $Id: Makefile,v 5.80 1994-01-30 21:17:00 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -9,7 +9,6 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-#prefix=/home/local/sys/gnu
 prefix=/usr/local
 
 # Where architecture dependent local software go
@@ -30,11 +29,9 @@ mandir=$(prefix)/man/man1
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 #
-#aucdir=/home/pd/share/emacs/auctex8.0
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-#EMACS=/home/dist/bin/emacs
 EMACS=emacs-19.22
 
 # For OS/2 use
@@ -114,7 +111,8 @@ STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
 	   style/jarticle.el  style/jbook.el    style/jreport.el \
-	   style/dinbrief.el  style/virtex.el
+	   style/dinbrief.el  style/virtex.el   style/plfonts.el \
+	   style/plhb.el
 
 LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 	       lacheck/test.tex

@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.74 1994-01-30 13:52:50 amanda Exp $
+@c $Id: auc-tex.texi,v 1.75 1994-01-30 21:17:20 amanda Exp $
 
 @finalout
 @titlepage
@@ -62,6 +62,14 @@ features in small steps.  AUC @TeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
 an environment where you will make very few LaTeX errors, and makes it
 easy to find the errors that may slip through anyway.
+
+If you want to make AUC TeX aware of style files and multi-file
+documents right away, insert the following in your @file{.emacs} file.
+@lisp
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+@end lisp
 
 NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
@@ -1570,6 +1578,7 @@ of TeX and Emacs are needed for Korean, Japanes, and Chinese.
 @cindex Holland
 @cindex Dutch
 @cindex Germany
+@cindex Poland
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
@@ -1601,6 +1610,34 @@ use different character set for keyboard, buffer, and display.  An
 overkill if you just need ISO 8859 Latin 1.  Currently in alpha test,
 but available by ftp from the host @t{ftp.iesd.auc.dk} in
 @file{/pub/emacs-lisp} or @file{/pub/emacs-lisp/alpha}.
+
+To get dead keys for @TeX{}, install remap and insert the following in
+your @file{.emacs} or @file{site-start.el} file.
+
+@lisp
+(require 'remap)
+
+(defvar all-dead-keys "~'`^"
+  "Dead keys used by remap")
+
+(remap-define-map "Dead Key"
+  (apply 'append (mapcar 'remap-dead-map all-dead-keys)))
+
+(remap-define-map "TeX Dead Key"
+  (remap-map "Dead Key" (remap-add "Ascii" "~TeX")))
+
+(setq remap-setup-alist
+      '(("7-bit"  "Raw"          "L1" "US" "Ctrl" "~TeX")
+        ("8-bit"  "Raw"          "L1" "L1" "Ctrl" "Raw")
+        ("Dead/7" "Dead Key"     "L1" "L1" "Ctrl" "~TeX")
+        ("Dead/8" "Dead Key"     "L1" "US" "Ctrl" "Raw")
+        ("TeX"    "TeX Dead Key" "L1" "US" "Ctrl" "Raw")))
+@end lisp
+
+You can now enable TeX dead keys with 
+@example
+@kbd{M-x remap-setup-choose RET TeX RET}
+@end example
 @end table
 
 A compromise is to use use an European character set when editing the
@@ -1636,9 +1673,16 @@ Runs style hook @code{TeX-language-dk-hook}.
 Runs style hook @code{TeX-language-nl-hook}.
 
 @item german
-Runs style hook @code{TeX-language-nl-hook}.
+Runs style hook @code{TeX-language-de-hook}.
 Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
 @samp{"}.  
+
+@item plfonts
+@itemx plhb
+Runs style hook @code{TeX-language-pl-hook}.
+Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
+@samp{"}.  Pressing @key{"} twice will insert @samp{"<} or @samp{">}
+depending on context.
 @end table
 
 @node Japanese,  , European, I18n
@@ -2425,9 +2469,21 @@ this version, and for the authors, who get nostalgic at times.
 @comment  node-name,  next,  previous,  up
 @section News in 8.1
 
-Coordinater: Per Abrahamsen, 1993.
+Coordinater: Per Abrahamsen, 1994.
 
 @itemize @bullet
+@item
+Added variable @code{TeX-quote-after-quote} which causes
+@code{TeX-insert-quote} to insert literal @samp{"} except when after
+another @samp{"}, in which case it will expand to @code{TeX-open-quote}
+or @code{TeX-close-quote}.  This code was contributed by Piotr Filip
+Sawicki @samp{<pfs@@mimuw.edu.pl>}.
+
+@item
+Added support for Polish style files @file{plfonts.sty} and
+@file{plhb.sty}, contributed by Piotr Filip
+Sawicki @samp{<pfs@@mimuw.edu.pl>}.
+ 
 @item
 Added section with suggestions for how to handle European
 character sets.
