@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.473 $"))
+	    (rev "$Revision: 5.474 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-16 09:44:28 $"))
+    (let ((date "$Date: 2004-12-28 00:40:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2644,10 +2644,9 @@ See `TeX-auto-x-parse-length'."
 		    (match (nth 1 entry)))
 	       (if (fboundp symbol)
 		   (funcall symbol match)
-		 (set symbol (cons (if (listp match)
-				       (mapcar 'TeX-match-buffer match)
-				     (TeX-match-buffer match))
-				   (symbol-value symbol))))))))))
+		 (add-to-list symbol (if (listp match)
+					 (mapcar 'TeX-match-buffer match)
+				       (TeX-match-buffer match))))))))))
 
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.
