@@ -1,7 +1,7 @@
 Summary: 	Enhanced LaTeX mode for GNU Emacs
 Name: 		auctex
 Version: 	11.50
-Release: 	0
+Release: 	1
 License: 	GPL
 Group: 		Applications/Editors
 URL: 		http://www.gnu.org/software/auctex/
@@ -12,8 +12,10 @@ BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
 
 %description 
-AUC TeX is a comprehensive, customizable, integrated environment for
+AUCTeX is a comprehensive, customizable, integrated environment for
 writing, editing and processing input files for LaTeX using GNU Emacs.
+
+For XEmacs, use XEmacs' own package system for installation.
 
 This .rpm enables AUCTeX system-wide.  
 If you do not want this, install/upgrade with 'rpm --nopre ...' 
@@ -31,6 +33,7 @@ test -f ./configure || ./autogen.sh
 make 'infodir=%{_infodir}'
 pushd doc
 make 'infodir=%{_infodir}'
+make auctex tex-ref.pdf
 popd
 
 %install
@@ -65,8 +68,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc RELEASE COPYING INSTALL README
-%doc doc/*.dvi
+%doc RELEASE COPYING INSTALL README TODO FAQ
+%doc doc/tex-ref.pdf
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
 %config(noreplace) %{_datadir}/emacs/site-lisp/tex-site.el

@@ -35,6 +35,9 @@
 (unless (get 'TeX-queue-command 'saved-value)
   (setq TeX-queue-command nil))
 
+(unless (get 'TeX-printer-list 'saved-value)
+  (setq TeX-printer-list nil))
+
 (unless (get 'TeX-print-command 'saved-value)
   (setq TeX-print-command
 	"gsview32 %f"))
