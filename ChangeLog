@@ -1,3 +1,8 @@
+2004-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-paragraph): Fix check for code comment.
+	(LaTeX-fill-code-comment): Ditto.
+
 2004-04-08  Berend de Boer  <berend@pobox.com>
 
 	* latex.el (LaTeX-outline-name): could reach past end of buffer
