@@ -1,9 +1,9 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7h
+;; Version: 9.7i
 
-;; Copyright (C) 1993, 1994 Per Abrahamsen 
+;; Copyright (C) 1993, 1994, 1997 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ When called interactively, prompt for an environment."
   
 ;;; Mode:
 
-;;;###autoload
+;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun texinfo-mode ()
   "Major mode for editing files of input for TeXinfo.
 

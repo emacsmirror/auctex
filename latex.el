@@ -1,12 +1,12 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7h
+;; Version: 9.7i
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
 ;; Copyright 1991 Kresten Krab Thorup
-;; Copyright 1993, 1994, 1995, 1996 Per Abrahamsen
+;; Copyright 1993, 1994, 1995, 1996, 1997 Per Abrahamsen
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -2662,7 +2662,7 @@ Otherwise, only ask in description environments.")
 	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
   "Regexp matching names of LaTeX macros that should have their own line.")
 
-;;;###autoload
+;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
 See info under AUC TeX for full documentation.

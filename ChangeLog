@@ -1,3 +1,12 @@
+Thu Feb 20 11:30:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7i released.
+
+Thu Feb 20 10:59:38 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Removed autoloads that conflicts with `tex-mode.el'.
+	(TeX-lisp-directory): Default to data-directory.
+
 Sat Feb 15 18:00:48 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7h released.
