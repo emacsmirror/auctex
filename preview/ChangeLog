@@ -1,3 +1,16 @@
+2001-11-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-start-dvips): fix bug WRT free variable
+	`buffer'.
+
+	* prv-emacs.el (preview-transparent-color): change default for a
+	new default transparency scheme.
+	(preview-get-heuristic-mask): bug fix for specified color
+	(preview-create-icon): adjust for new policy
+	(preview-ps-image): same here
+	(preview-transparent-border): new option
+	(preview-gs-get-colors): heed this
+
 2001-11-08  David Kastrup  <David.Kastrup@t-online.de>
 
 	* PROBLEMS: Recommend customizing new variable
