@@ -1,3 +1,7 @@
+2004-11-19  Miguel Frasson  <frasson@math.leidenuniv.nl>
+
+	* tex-buf.el (TeX-run-TeX): Improve comments.
+
 2004-11-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-TeX-sentinel-check): Use only the letters after
