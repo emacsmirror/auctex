@@ -1,3 +1,9 @@
+2004-10-08  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-update-style, TeX-parse-arguments)
+	(TeX-parse-argument, VirTeX-common-initialization)
+	(TeX-auto-parse-region): Simplify code by using `unless'.
+
 2004-10-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-search-forward-unescaped)

@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.454 $"))
+	    (rev "$Revision: 5.455 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-08 11:06:20 $"))
+    (let ((date "$Date: 2004-10-08 16:45:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1585,10 +1585,10 @@ active.")
 Only do this if it has not been done before, or if optional argument
 FORCE is not nil."
 
-  (if (or (and (boundp 'TeX-auto-update)
-	       (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
-	  (and (not force) TeX-style-hook-applied-p))
-      ()
+  (unless (or (and (boundp 'TeX-auto-update)
+		   (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
+	      (and (not force)
+		   TeX-style-hook-applied-p))
     (setq TeX-style-hook-applied-p t)
     (message "Applying style hooks...")
     (TeX-run-style-hooks (TeX-strip-extension nil nil t))
@@ -1861,8 +1861,7 @@ See `TeX-parse-macro' for details."
 
     (while args
       (if (vectorp (car args))
-	  (if last-optional-rejected
-	      ()
+	  (unless last-optional-rejected
 	    (let ((< LaTeX-optop)
 		  (> LaTeX-optcl))
 	      (TeX-parse-argument t (if (equal (length (car args)) 1)
@@ -1884,8 +1883,7 @@ See `TeX-parse-macro' for details."
   (cond ((stringp arg)
 	 (TeX-arg-string optional arg))
 	((numberp arg)
-	 (if (< arg 1)
-	     ()
+	 (unless (< arg 1)
 	   (TeX-parse-argument optional t)
 	   (while (> arg 1)
 	     (TeX-parse-argument optional nil)
@@ -2098,8 +2096,7 @@ The algorithm is as follows:
   (make-local-variable 'comment-multi-line)
   (setq comment-multi-line nil)
   (make-local-variable 'compile-command)
-  (if (boundp 'compile-command)
-      ()
+  (unless (boundp 'compile-command)
     (setq compile-command "make"))
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes nil)
@@ -2589,8 +2586,7 @@ See `TeX-auto-x-parse-length'."
 			     "\\)")))
 	 (goto-char (if end (min end (point-max)) (point-max)))
 	 (while (re-search-backward regexp beg t)
-	   (if (TeX-in-comment)
-	       ()
+	   (unless (TeX-in-comment)
 	     (let* ((entry (TeX-member nil regexp-list
 				       (lambda (a b)
 					 (looking-at (nth 0 b)))))
