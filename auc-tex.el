@@ -1,37 +1,37 @@
-;;; @ auc-tex.el - Compatibility with AUC TeX 6.*
-;;;
-;;; $Id: auc-tex.el,v 5.49 1993-07-24 20:57:23 amanda Exp $
-;;;
-;;; This file contains an alternative keymapping, compatible with
-;;; older versions of AUC TeX.  You are strongly suggested to try the
-;;; new keyboard layout, as we would like this file to go away
-;;; eventually. 
+;;; auc-tex.el - Compatibility with AUC TeX 6.*
+;;
+;; $Id: auc-tex.el,v 5.50 1993-09-06 22:26:44 amanda Exp $
+;;
+;; Copyright (C) 1991 Kresten Krab Thorup 
+;; Copyright (C) 1993 Per Abrahamsen 
+;; 
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 1, or (at your option)
+;; any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-(provide 'auc-tex)
+;;; Commentary:
+
+;; This file contains an alternative keymapping, compatible with
+;; older versions of AUC TeX.  You are strongly suggested to try the
+;; new keyboard layout, as we would like this file to go away
+;; eventually. 
+
+;;; Code:
+
 (require 'tex-init)
-(require 'tex-misc)
 (require 'ltx-misc)
 
-;;; @@ Copyright
-;;;
-;;; Copyright (C) 1991 Kresten Krab Thorup 
-;;; Copyright (C) 1993 Per Abrahamsen 
-;;; 
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 1, or (at your option)
-;;; any later version.
-;;; 
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;; 
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; if not, write to the Free Software
-;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-;;; @@ Keymaps
+;;; Keymaps
 
 (defun TeX-define-key (key value)
   "OBSOLETE: Define KEY to VALUE in TeX and LaTeX mode."
@@ -41,7 +41,6 @@
 (TeX-define-key "\n"       'TeX-terminate-paragraph)
 (TeX-define-key "\e}"     'up-list)
 (TeX-define-key "\e{"     'TeX-insert-braces)
-;(TeX-define-key "\C-c\C-o" 'outline-minor-mode)
 (TeX-define-key "\C-c\C-b" 'TeX-bold)
 (TeX-define-key "\C-c\C-i" 'TeX-italic)
 (TeX-define-key "\C-c\C-s" 'TeX-slanted)
@@ -69,7 +68,7 @@
 (define-key LaTeX-mode-map "\e\C-x"  'LaTeX-mark-section) 
 (define-key LaTeX-mode-map "\e\C-q"  'LaTeX-format-environment)
 
-;;; @@ Buffer
+;;; Buffer
 
 (defun TeX-region (begin end)
   "OBSOLETE: Run TeX-command-default on current region."
@@ -123,7 +122,7 @@
   (interactive)
   (TeX-run-command "Index"))
 
-;;; @@ Fonts
+;;; Fonts
 
 (defun TeX-bold ()
   (interactive "*")
@@ -160,12 +159,12 @@
   (insert TeX-grop TeX-esc "sc " TeX-grcl)
   (backward-char 1))
 
-;;; @@ AUC (La)TeX Mode
-;;;
-;;; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support
-;;; automatic mode change after using insert-mode-line hook. Also
-;;; modified regexp to choose tex mode to be more aware of latex
-;;; (documentstyle is uniq, isn'it)
+;;; AUC (La)TeX Mode
+;;
+;; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support
+;; automatic mode change after using insert-mode-line hook. Also
+;; modified regexp to choose tex mode to be more aware of latex
+;; (documentstyle is uniq, isn'it)
 
 (defun insert-mode-line ()
     "This little macro inserts `% -*- mode-name -*-' if not present.
@@ -188,7 +187,7 @@ You should insert this in your TeX-mode-hook!"
   (interactive)
   (latex-mode))
 
-;;; @@ Validation
+;;; Validation
 
 (defun TeX-validate-buffer ()
   "Check current buffer for paragraphs containing mismatched $'s.
@@ -235,7 +234,7 @@ A prefix arg inhibits the checking."
   (reindent-then-newline-and-indent)
   (newline-and-indent))
 
-;;; @@ Miscellaneous
+;;; Miscellaneous
 
 (defun TeX-cmd-on-region (begin end command)
   "Reads a (La)TeX-command. Makes current region a TeX-group.
@@ -245,12 +244,6 @@ Inserts command at the start of the group."
     (goto-char end)   (insert TeX-grcl)
     (goto-char begin) (insert TeX-grop TeX-esc command " ")))
 
-;;; @@ Emacs
+(provide 'auc-tex)
 
-(run-hooks 'TeX-after-auc-tex-hook)
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; auc-tex.el ends here

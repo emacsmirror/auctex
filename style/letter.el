@@ -1,14 +1,14 @@
-;;; @ letter.el - Special code for letter style.
-;;;
-;;; $Id: letter.el,v 1.1 1993-03-15 18:12:58 amanda Exp $
+;;; letter.el - Special code for letter style.
 
-;;; @@ Hook
+;; $Id: letter.el,v 1.2 1993-09-06 22:28:48 amanda Exp $
+
+;;; Code:
 
 (TeX-add-style-hook "letter"
  (function
   (lambda ()
     (LaTeX-add-environments
-     '("letter" LaTeX-recipient-hook))
+     '("letter" LaTeX-env-recipient))
     (TeX-add-symbols
      '("name" "Sender: ") 
      '("address" "Sender address: ")
@@ -16,9 +16,7 @@
      '("opening" "Opening: ")
      '("closing" "Closing: ")))))
 
-;;; @@ Help
-
-(defun LaTeX-recipient-hook (environment)
+(defun LaTeX-env-recipient (environment)
   "Insert ENVIRONMENT and prompt for recipient and address."
   (let ((sender (read-input "Sender: " (user-full-name)))
 	(sender-address (read-input "Sender address: "))
@@ -114,10 +112,4 @@
 		(setq day (concat "0" day)))))
       (format "%s-%s-%s" year month day))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; letter.el ends here

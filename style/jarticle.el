@@ -1,16 +1,10 @@
-;;; @ jarticle.el - Special code for jarticle style.
-;;;
-;;; $Id: jarticle.el,v 1.1 1993-03-27 22:15:47 amanda Exp $
+;;; jarticle.el - Special code for jarticle style.
 
-;;; @@ Hook
+;; $Id: jarticle.el,v 1.2 1993-09-06 22:28:40 amanda Exp $
+
+;;; Code:
 
 (TeX-add-style-hook "jarticle"
  (function (lambda () (setq LaTeX-largest-level 2))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; jarticle.el ends here

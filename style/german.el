@@ -1,8 +1,12 @@
-;;; @ german.el - Special use of double quotes.
-;;;
-;;; $Id: german.el,v 1.3 1993-07-27 18:53:36 amanda Exp $
+;;; german.el - Setup AUC TeX for editing German text.
 
-;;; @@ Hook
+;; $Id: german.el,v 1.4 1993-09-06 22:28:34 amanda Exp $
+
+;;; Commentary:
+;;
+;; `german.sty' use `"' to give next character an umlaut.
+
+;;; Code:
 
 (defvar LaTeX-german-mode-syntax-table
   (copy-syntax-table LaTeX-mode-syntax-table)
@@ -12,16 +16,11 @@
 
 (TeX-add-style-hook "german"
  (function (lambda ()
+   (TeX-ispell-change-dictionary "german")
    (set-syntax-table LaTeX-german-mode-syntax-table)
    (make-local-variable 'TeX-open-quote)
    (make-local-variable 'TeX-close-quote)
    (setq TeX-open-quote "\"")
    (setq TeX-close-quote "\""))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; german.el ends here

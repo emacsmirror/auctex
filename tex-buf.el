@@ -1,47 +1,84 @@
-;;; @ tex-buf.el - External commands for AUC TeX.
-;;;
-;;; $Id: tex-buf.el,v 1.44 1993-07-27 18:44:25 amanda Exp $
+;;; tex-buf.el - External commands for AUC TeX.
+;;
+;; $Id: tex-buf.el,v 1.45 1993-09-06 22:27:23 amanda Exp $
 
-(provide 'tex-buf)
+;; Copyright (C) 1991 Kresten Krab Thorup
+;; Copyright (C) 1993 Per Abrahamsen 
+;; 
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 1, or (at your option)
+;; any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Code:
+
 (require 'tex-site)
 
-;;; @@ Copyright
-;;;
-;;; Copyright (C) 1991 Kresten Krab Thorup
-;;; Copyright (C) 1993 Per Abrahamsen 
-;;; 
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 1, or (at your option)
-;;; any later version.
-;;; 
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;; 
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; if not, write to the Free Software
-;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-;;; @@ Customization
+;;; Customization
 
 (defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
   "*Use asynchronous processes.")
 
-;;; @@ Interactive Commands
-;;;
-;;; The general idea is, that there is one process and process buffer
-;;; associated with each master file, and one process and process buffer
-;;; for running TeX on a region.   Thus, if you have N master files, you
-;;; can run N + 1 processes simultaneously.  
-;;;
-;;; Some user commands operates on ``the'' process.  The following
-;;; algorithm determine what ``the'' process is.
-;;;
-;;; IF   last process started was on a region 
-;;; THEN ``the'' process is the region process
-;;; ELSE ``the'' process is the master file (of the current buffer) process
+(defvar TeX-shell
+  (cond ((eq system-type 'ms-dos)
+	  shell-file-name)
+	 ;; Please supply suitable values for other systems without
+	 ;; `/bin/sh'.
+	(nil		;What is system-type for OS/2?
+	 "cmd")
+	(t		;Unix
+	 "/bin/sh"))
+  "Name of shell used to parse TeX commands.")
+
+(defvar TeX-shell-command-option
+  (cond ((eq system-type 'ms-dos)
+	 shell-command-option)
+	 ;; Please supply suitable values for other systems without
+	 ;; `/bin/sh'.
+	(t
+	 "-c"))
+  "Shell argument indicating that next argument is the command.")
+
+(defvar TeX-command-BibTeX "BibTeX"
+  "*The name of the BibTeX entry in TeX-command-list.")
+  (make-variable-buffer-local 'TeX-command-BibTeX)
+
+(defvar TeX-command-Show "View"
+  "*The default command to show (view or print) a TeX file.
+Must be the car of an entry in TeX-command-list.")
+  (make-variable-buffer-local 'TeX-command-Show)
+
+(defvar TeX-debug-language '(("JTEX" "dbg-jp")
+			     ("JLATEX" "dbg-jp")
+			     ("JSLITEX" "dbg-jp")
+			     ("." "dbg-eng"))
+  "*List of style options and languages for debug messages.  If the
+first element (a regular expresion) matches the name of one of the
+style files, the error messages will be loaded from the file specified
+by the second element.  The first match will be used.")
+
+;;; Interactive Commands
+;;
+;; The general idea is, that there is one process and process buffer
+;; associated with each master file, and one process and process buffer
+;; for running TeX on a region.   Thus, if you have N master files, you
+;; can run N + 1 processes simultaneously.  
+;;
+;; Some user commands operates on ``the'' process.  The following
+;; algorithm determine what ``the'' process is.
+;;
+;; IF   last process started was on a region 
+;; THEN ``the'' process is the region process
+;; ELSE ``the'' process is the master file (of the current buffer) process
 
 (defun TeX-command-master ()
   "Run command on the current document."
@@ -122,7 +159,7 @@ Prefix by C-u to start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
       (error "No TeX output buffer.")
-    (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-hook)
+    (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
 	     reparse)))
 
 (defun TeX-toggle-debug-boxes ()
@@ -135,7 +172,7 @@ Prefix by C-u to start from the beginning of the errors."
   (message (concat "TeX-debug-bad-boxes: " (cond (TeX-debug-bad-boxes "on")
 						 (t "off")))))
 
-;;; @@ Command Query
+;;; Command Query
 
 (defun TeX-command (name file)
   "Run command NAME on the file you get by calling FILE.
@@ -255,7 +292,7 @@ in TeX-check-path."
 	 (completion-ignore-case t)
 	 (answer (completing-read (concat "Command: (default " default  ") ")
 				  TeX-command-list nil t)))
-    ;;; If the answer "latex" it will not be expanded to "LaTeX"
+    ;; If the answer "latex" it will not be expanded to "LaTeX"
     (setq answer
 	  (car (let ((case-fold-search t))
 		 (TeX-member answer TeX-command-list
@@ -312,13 +349,13 @@ entry."
       (nth 1 (car styles))
     ""))
 
-;;; @@ Command Hooks
+;;; Command Hooks
 
-(defvar TeX-after-start-process-hook nil
+(defvar TeX-after-start-process-function nil
   "Hooks to run after starting an asynchronous process.
 Used by Japanese TeX to set the coding system.")
 
-(defun TeX-command-hook (name command file)
+(defun TeX-run-command (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
   (let ((default TeX-command-default)
@@ -329,16 +366,16 @@ Return the new process."
     (set-buffer buffer)
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (setq mode-name name)
-    (setq TeX-parse-hook 'TeX-parse-command)
+    (setq TeX-parse-function 'TeX-parse-command)
     (setq TeX-command-default default)
-    (setq TeX-sentinel-hook
+    (setq TeX-sentinel-function
 	  (function (lambda (process name)
 		      (message (concat name ": done.")))))
     (if TeX-process-asynchronous
 	(let ((process (start-process name buffer TeX-shell
 				      TeX-shell-command-option command)))
-	  (if TeX-after-start-process-hook
-	      (funcall TeX-after-start-process-hook process))
+	  (if TeX-after-start-process-function
+	      (funcall TeX-after-start-process-function process))
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
@@ -350,13 +387,13 @@ Return the new process."
       (call-process TeX-shell nil buffer nil
 		    TeX-shell-command-option command))))
 
-(defun TeX-format-hook (name command file)
+(defun TeX-run-format (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-command-hook name command file)))
+  (let ((process (TeX-run-command name command file)))
     ;; Hook to TeX debuger.
     (TeX-parse-reset)
-    (setq TeX-parse-hook 'TeX-parse-TeX)
-    (setq TeX-sentinel-hook 'TeX-TeX-sentinel)
+    (setq TeX-parse-function 'TeX-parse-TeX)
+    (setq TeX-sentinel-function 'TeX-TeX-sentinel)
     (if TeX-process-asynchronous
 	(progn
 	  ;; Updating the mode line.
@@ -365,57 +402,57 @@ Return the new process."
 	  (set-process-filter process 'TeX-format-filter)))
     process))
 
-(defun TeX-TeX-hook (name command file)
+(defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-format-hook name command file)))
+  (let ((process (TeX-run-format name command file)))
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel name file process))))
 
-(defun TeX-LaTeX-hook (name command file)
+(defun TeX-run-LaTeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-format-hook name command file)))
-    (setq TeX-sentinel-hook 'TeX-LaTeX-sentinel)
+  (let ((process (TeX-run-format name command file)))
+    (setq TeX-sentinel-function 'TeX-LaTeX-sentinel)
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel name file process))))
 
-(defun TeX-BibTeX-hook (name command file)
+(defun TeX-run-BibTeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with BibTeX."
-  (let ((process (TeX-command-hook name command file)))
-    (setq TeX-sentinel-hook 'TeX-BibTeX-sentinel)
+  (let ((process (TeX-run-command name command file)))
+    (setq TeX-sentinel-function 'TeX-BibTeX-sentinel)
     (if TeX-process-asynchronous
 	process
       (TeX-synchronous-sentinel name file process))))
 
-(defun TeX-compile-hook (name command file)
+(defun TeX-run-compile (name command file)
   "Ignore first and third argument, start compile with second argument."
   (compile command))
 
-(defun TeX-shell-hook (name command file)
+(defun TeX-run-shell (name command file)
   "Ignore first and third argument, start shell-command with second argument."
   (shell-command command)
   (if (eq system-type 'ms-dos)
       (redraw-display)))
 
-(defun TeX-discard-hook (name command file)
+(defun TeX-run-discard (name command file)
   "Start process with second argument, discarding its output."
   (process-kill-without-query (start-process (concat name " discard")
 					     nil TeX-shell
 					     TeX-shell-command-option
 					     command)))
 
-(defun TeX-background-hook (name command file)
+(defun TeX-run-background (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((process (start-process (concat name " background")
 				nil TeX-shell
 				TeX-shell-command-option command)))
-    (if TeX-after-start-process-hook
-	(funcall TeX-after-start-process-hook process))
+    (if TeX-after-start-process-function
+	(funcall TeX-after-start-process-function process))
     (set-process-filter process 'TeX-background-filter)
     (process-kill-without-query process)))
 
-;;; @@ Command Sentinels
+;;; Command Sentinels
 
 (defun TeX-synchronous-sentinel (name file result)
   "Process TeX command output buffer after the process dies."
@@ -433,7 +470,7 @@ Return the new process."
       ;; Do command specific actions.
       (setq TeX-command-next TeX-command-Show)
       (goto-char (point-min))
-      (apply TeX-sentinel-hook nil name nil)
+      (apply TeX-sentinel-function nil name nil)
       
       ;; Force mode line redisplay soon
       (set-buffer-modified-p (buffer-modified-p)))))
@@ -461,7 +498,7 @@ Return the new process."
 	     (TeX-command-mode-line process)
 	     (setq TeX-command-next TeX-command-Show)
 	     (goto-char (point-min))
-	     (apply TeX-sentinel-hook process name nil)
+	     (apply TeX-sentinel-function process name nil)
 	     
 	     
 	     ;; If buffer and mode line will show that the process
@@ -474,11 +511,11 @@ Return the new process."
   (setq compilation-in-progress (delq process compilation-in-progress)))
 
 
-(defvar TeX-sentinel-hook (function (lambda (process name)))
+(defvar TeX-sentinel-function (function (lambda (process name)))
   "Hook to cleanup TeX command buffer after temination of PROCESS.
 NAME is the name of the process.")
 
- (make-variable-buffer-local 'TeX-sentinel-hook)
+  (make-variable-buffer-local 'TeX-sentinel-function)
 
 (defun TeX-TeX-sentinel (process name)
   "Cleanup TeX output buffer after running TeX.
@@ -515,10 +552,10 @@ Return nil ifs no errors were found."
   (message "You should perhaps run LaTeX again to get citations right.")
   (setq TeX-command-next TeX-command-default))
 
-;;; @@ Process Control
+;;; Process Control
 
 
-;;; This variable is chared with `compile.el'.
+;; This variable is chared with `compile.el'.
 (defvar compilation-in-progress nil
   "List of compilation processes now running.")
 
@@ -580,7 +617,7 @@ command."
   (and TeX-process-asynchronous
        (get-buffer-process (TeX-process-buffer name))))
 
-;;; @@ Process Filters
+;;; Process Filters
 
 (defun TeX-command-mode-line (process)
   "Format the mode line for a buffer containing output from PROCESS."
@@ -621,10 +658,9 @@ command."
 		(setq TeX-current-page new)))))
     (TeX-format-mode-line process)))
 
-(defvar TeX-parse-hook nil
+(defvar TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
-
- (make-variable-buffer-local 'TeX-parse-hook)
+ (make-variable-buffer-local 'TeX-parse-function)
 
 (defun TeX-background-filter (process string)
   "Filter to process background output."
@@ -636,7 +672,7 @@ command."
     (select-window old-window)))
 
 
-;;; @@ Active Process
+;;; Active Process
 
 (defvar TeX-current-process-region-p nil
   "This variable is set to t iff the last TeX command is on a region.")
@@ -662,7 +698,7 @@ command."
 (defvar TeX-command-buffer nil
   "The buffer from where the last TeX command was issued.")
 
-;;; @@ Region File
+;;; Region File
 
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION
@@ -720,17 +756,17 @@ original file."
     (save-excursion
       (set-buffer file-buffer)
       (erase-buffer)
-      (insert "\\message{ @name<" master-name ">}"
+      (insert "\\message{ !name(" master-name ")}"
 	      header
-	      "\n\\message{ @name<" original "> @offset<")
+	      "\n\\message{ !name(" original ") !offset(")
       (insert (int-to-string (- offset
 				(count-lines (point-min) (point))))
-	      "> }\n"
+	      ") }\n"
 	      region
-	      "\n\\message{ @name<"  master-name "> @offset<")
+	      "\n\\message{ !name("  master-name ") !offset(")
       (insert (int-to-string (- trailer-offset
 				(count-lines (point-min) (point))))
-	      "> }\n"
+	      ") }\n"
 	      trailer)
       (save-buffer 0))))
 
@@ -743,9 +779,9 @@ original file."
 (defvar TeX-region "_region_"
   "*Base name for temporary file for use with TeX-region.")
 
-;;; @@ Parsing
+;;; Parsing
 
-;;; @@@ Customization
+;;; - Customization
 
 (defvar TeX-display-help t
   "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
@@ -753,7 +789,7 @@ original file."
 (defvar TeX-debug-bad-boxes nil
   "*Non-nil means also find overfull/underfull boxes warnings with TeX-next-error")
 
-;;; @@@ Global Parser Variables
+;;; - Global Parser Variables
 
 (defvar TeX-error-point nil
   "How far we have parsed until now.")
@@ -776,7 +812,7 @@ original file."
   (setq TeX-error-offset nil)
   (setq TeX-error-file nil))
 
-;;; @@@ Parsers Hooks
+;;; - Parsers Hooks
 
 (defun TeX-parse-command (reparse)
   "We can't parse anything but TeX."
@@ -799,7 +835,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
     (goto-char TeX-error-point)
     (TeX-parse-error old-buffer)))
 
-;;; @@@ Parsing (La)TeX
+;;; - Parsing (La)TeX
 
 (defvar TeX-translate-location-hook nil
   "List of functions to be called before showing an error or warning.
@@ -816,8 +852,8 @@ You might want to examine and modify the free variables `file',
 				     "(\\|"
 				     ")\\|"
 				     "\\'\\|"
-				     "@offset<[---0-9]*>\\|"
-				     "@name<[^>]*>\\|"
+				     "!offset([---0-9]*)\\|"
+				     "!name([^)]*)\\|"
 				     "^.*erfull \\\\.*[0-9]*--[0-9]*"
 				     "\\)"))
 	  (let ((string (TeX-match-buffer 1)))
@@ -847,7 +883,7 @@ You might want to examine and modify the free variables `file',
 		   t)
 
 		  ;; Hook to change line numbers
-		  ((string-match "@offset<\\([---0-9]*\\)>" string)
+		  ((string-match "!offset(\\([---0-9]*\\))" string)
 		   (rplaca TeX-error-offset
 			   (string-to-int (substring string
 						     (match-beginning 1)
@@ -855,7 +891,7 @@ You might want to examine and modify the free variables `file',
 		   t)
 
 		  ;; Hook to change file name
-		  ((string-match "@name<\\([^>]*\\)>" string)
+		  ((string-match "!name(\\([^)]*\\))" string)
 		   (rplaca TeX-error-file (substring string
 						     (match-beginning 1)
 						     (match-end 1)))
@@ -975,7 +1011,7 @@ Return nil if we gave a report."
 	  nil)
       t)))
 
-;;; @@@ Help
+;;; - Help
 
 (defvar TeX-last-debug "dbg-none"
   "Language last used for debug messages.")
@@ -1027,14 +1063,7 @@ Return nil if we gave a report."
 			  TeX-error-description-list)))))
     (goto-char (point-min))
     (pop-to-buffer old-buffer)))
-  
 
-;;; @@ Emacs
+(provide 'tex-buf)
 
-(run-hooks 'TeX-after-tex-buf-hook)
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; tex-buf.el ends here

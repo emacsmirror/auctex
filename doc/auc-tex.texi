@@ -5,16 +5,16 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.54 1993-08-17 18:53:11 amanda Exp $
+@c $Id: auc-tex.texi,v 1.55 1993-09-06 22:27:54 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle June 1993, for AUC @TeX{} Version 7.4
+@subtitle September 1993, for AUC @TeX{} Version 8.0
   
 @author by Kresten Krab Thorup
-@author updated for 7.4 by Per Abrahamsen
+@author updated for 8.0 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -44,15 +44,14 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
-
 @ifinfo
 @node top, Copying, (dir), (dir)
 @top AUC @TeX{}
  
-AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
+AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 7.4.
+This file documents AUC @TeX{} version 8.0.
 
 The keybindings have changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -68,7 +67,7 @@ NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.@refill
 
-Kresten Krab Thorup (6.0 original)
+Kresten Krab Thorup (6.0) @*
 Per Abrahamsen (later updates)
 
 There is a mailing list for discussion about AUC @TeX{} and announcement
@@ -78,7 +77,8 @@ it.  Send contributions to @samp{auc-tex@@iesd.auc.dk}.
 Bug reports, suggestions for new features, and pleas for help should go
 to either @samp{auc-tex_mgr@@iesd.auc.dk} (the AUC @TeX{} managers), or
 to @samp{auc-tex@@iesd.auc.dk} (the mailing list) if they might have
-general interest.
+general interest.  Under Emacs 19, please use @kbd{M-x
+TeX-submit-bug-report} to report bugs.@refill
 
 @end ifinfo
 
@@ -170,8 +170,8 @@ files.
  
 AUC @TeX{} automatically indents your `LaTeX-source', not only as you
 write it---you can also let it indent and format an entire document.  It
-has a special outline feature, which can greatly help you `getting the
-overview' of a document.
+supports the standard outline minor mode, which can greatly help you
+`getting the overview' of a document.
  
 Apart from these special features, AUC @TeX{} provides a large range of
 handy Emacs macros, which in several different ways can help you write
@@ -401,7 +401,7 @@ sectioning command.
 Next, you will be asked for the actual name of that section, and
 last you will be asked for a label to be associated with that section.
 The label will be prefixed by the value specified in
-@code{LaTeX-section-hooks}.
+@code{LaTeX-section-hook}.
 
 @deffn Command LaTeX-section @var{arg}
 @kindex C-c C-s
@@ -440,7 +440,7 @@ If @var{arg} is positive or zero, use absolute level:
 The following variables can be set to customize the function.
 
 @vtable @code
-@item LaTeX-section-hooks
+@item LaTeX-section-hook
 Hooks to be run when inserting a section.
 @item LaTeX-section-label       
 Prefix to all section references.
@@ -449,9 +449,9 @@ Prefix to all section references.
 @end deffn
 
 The precise behavior of @code{LaTeX-section} is defined by the contents
-of @code{LaTeX-section-hooks}.
+of @code{LaTeX-section-hook}.
 
-@defopt LaTeX-section-hooks
+@defopt LaTeX-section-hook
 List of hooks to run when a new section is inserted.
 
 The following variables are set before the hooks are run
@@ -474,19 +474,19 @@ A number of hooks are already defined.  Most likely, you will be able to
 get the desired functionality by choosing from these hooks.
 
 @ftable @code
-@item LaTeX-section-level-hook
+@item LaTeX-section-level
 Query the user about the name of the sectioning command.  Modifies
 @var{level} and @var{name}.
-@item LaTeX-section-title-hook
+@item LaTeX-section-title
 Query the user about the title of the section. Modifies @var{title}.
-@item LaTeX-section-toc-hook
+@item LaTeX-section-toc
 Query the user for the toc entry.  Modifies @var{toc}.
-@item LaTeX-section-section-hook
+@item LaTeX-section-section
 Insert La@TeX{} section command according to @var{name}, @var{title},
 and @var{toc}.  If @var{toc} is nil, no toc entry is inserted.  If
 @var{toc} or @var{title} are empty strings, @var{done-mark} will be
 placed at the point they should be inserted.
-@item LaTeX-section-label-hook
+@item LaTeX-section-label
 Insert a label after the section command.  Controlled by the variable
 @code{LaTeX-section-label}.
 @end ftable 
@@ -494,18 +494,18 @@ Insert a label after the section command.  Controlled by the variable
 To get a full featured @code{LaTeX-section} command, insert 
 
 @lisp
-(setq LaTeX-section-hooks
-      '(LaTeX-section-level-hook
-        LaTeX-section-title-hook
-        LaTeX-section-toc-hook
-        LaTeX-section-section-hook
-        LaTeX-section-label-hook))
+(setq LaTeX-section-hook
+      '(LaTeX-section-level
+        LaTeX-section-title
+        LaTeX-section-toc
+        LaTeX-section-section
+        LaTeX-section-label))
 @end lisp
 
 in your @file{.emacs} file.
 @end defopt
 
-The behavior of @code{LaTeX-section-label-hook} is determined by the
+The behavior of @code{LaTeX-section-label} is determined by the
 variable @code{LaTeX-section-label}.@refill
 
 @defopt LaTeX-section-label
@@ -677,7 +677,7 @@ indenting and navigating through the document.
 * Completion::                  Completion 
 * Commenting::                  Commenting 
 * Marking and formatting::      Marking, Formatting and Indenting
-* Outline::                     Outlining the Document
+* Outline::                     
 @end menu
 
 @node Mathematics, Completion, Advanced Features, Advanced Features
@@ -952,141 +952,16 @@ matched by a @samp{@}}.@refill
 @cindex Overview
 @cindex Folding
 
-Minor mode for editing outlines with selective display.  Headings are
-lines which start with asterisks: one for major headings, two for
-sub-headings, etc.  Lines not starting with asterisks are body lines.
-
-Body text or sub-headings under a heading can be made temporarily
-invisible, or visible again.  Invisible lines are attached to the end of
-the heading, so they move with it, if the line is killed and yanked
-back.  A heading with text hidden under it is marked with an ellipsis
-(@dots{}).
-
-@table @kbd
-@item C-c C-o C-n   
-@kindex C-c C-o C-n   
-@findex outline-next-visible-heading
-@code{outline-next-visible-heading} move by visible headings
-
-@item C-c C-o C-p
-@findex outline-previous-visible-heading
-@kindex C-c C-o C-p
-@code{outline-previous-visible-heading}
-
-@item C-c C-o C-f
-@findex outline-forward-same-level
-@kindex C-c C-o C-f
-@code{outline-forward-same-level} similar but skip sub-headings
-
-@item C-c C-o C-b
-@findex outline-backward-same-level
-@kindex C-c C-o C-b
-@code{outline-backward-same-level}
-
-@item C-c C-o C-u
-@findex outline-up-heading move from
-@kindex C-c C-o C-u
-@code{outline-up-heading move from} sub heading to heading
-
-@item C-c C-o C-t
-@findex hide-body
-@kindex C-c C-o C-t
-@code{hide-body} make all text invisible (not headings).
-
-@item C-c C-o C-a
-@findex show-all
-@kindex C-c C-o C-a
-@code{show-all} make everything in buffer visible.
-
-@item C-c C-o C-o
-@findex outline-minor-mode
-@kindex C-c C-o C-o
-@code{outline-minor-mode} leave outline mode.
-@end table
-
-The remaining commands are used when point is on a heading line.
-They apply to some of the body or sub-headings of that heading.
-
-@table @kbd
-@item C-c C-o C-h
-@findex hide-subtree
-@kindex C-c C-o C-h
-@code{hide-subtree} make body and sub-headings invisible.
-
-@item C-c C-o C-s
-@findex show-subtree
-@kindex C-c C-o C-s
-@code{show-subtree} make body and sub-headings visible.
-
-@item C-c C-o C-i
-@findex show-children
-@kindex C-c C-o C-i
-@code{show-children} make direct sub-headings visible.  No effect on
-body, or sub-headings 2 or more levels down. With arg N, affects
-sub-headings N levels down.
-
-@item C-c C-o C-c
-@findex hide-entry
-@kindex C-c C-o C-c
-@code{hide-entry} make immediately following body invisible.
-
-@item C-c C-o C-e
-@findex show-entry
-@kindex C-c C-o C-e
-@code{show-entry} make it visible.
-
-@item C-c C-o C-l
-@findex hide-leaves
-@kindex C-c C-o C-l
-@code{hide-leaves} make body under heading and under its sub-headings
-invisible. The sub-headings remain visible.
-
-@item C-c C-o C-x
-@findex show-branches
-@kindex C-c C-o C-x
-@code{show-branches} make all sub-headings at all levels visible.
-@end table
-
-@defopt outline-prefix-char
-@kindex C-c C-o
-The prefix char (@kbd{C-c C-o}) used to activate the outline commands.
-You most likely want to set this to something shorter.
-@end defopt 
-
-In La@TeX{} mode the default headings are the sectioning commands, and
-as top level headings @samp{\documentstyle}, @samp{\appendix},
-@code{TeX-trailer-start}, and @code{TeX-header-end}.  You can also
-define extra headings at any level, by setting the variable
-@code{TeX-outline-extra}. 
-@vindex TeX-trailer-start
-@vindex TeX-header-end
-
-@defopt TeX-outline-extra
-List of extra @TeX{} outline levels.
-
-Each element is a list with two entries.  The first entry is the regular
-expression matching a header, and the second is the level of the header.
-See @code{LaTeX-section-list} for existing header levels.
-@end defopt
-
-You can use outlining in other modes as well, the function to do this is
-@code{outline-minor-mode}. 
-
-@deffn Command outline-minor-mode  @var{prefix}
-Enters outline minor mode.  With @var{prefix}: non-nil: turn outline mode
-on.  nil: turn outline mode off.
-@end deffn
-
-@defopt outline-regexp
-Regular expression matching header lines.  When using outline-minor mode
-outside AUC @TeX{}, this is per default set to lines beginning with one
-or more stars.
-@end defopt
-
-@defopt outline-level-function
-Function calculating the level of a header.  Outside AUC @TeX{}, this is
-per default the length of the string matched by @code{outline-regexp}.
-@end defopt
+AUC @TeX{} supports the standard outline minor mode using La@TeX{}
+sectioning commands as header lines.  @xref{Outline Mode, , Outline
+Mode, emacs, GNU Emacs Manual}.  By default
+@code{outline-minor-mode} will use the prefix key @kbd{C-c} which is
+also used by AUC @TeX{}, so it is suggested that you choose another
+prefix key by inserting 
+@lisp
+  (setq outline-minor-mode-prefix "\C-c\C-o")
+@end lisp
+in your @file{.emacs} file.
 
 @node Formatting, Multifile, Advanced Features, top
 @chapter Formatting and Printing 
@@ -1231,6 +1106,30 @@ formatted text near the end of the file.
 % End: 
 @end example
 
+AUC @TeX{} will try to save any buffers related to the document, and
+check if the document needs to be reformatted.  By default it will only
+check the current buffer, but if you set the variable
+@code{TeX-check-path} it will check buffers associated with files used
+in the document, located in the directories in @code{TeX-check-path}.
+Suggested values are
+
+@lisp
+(setq TeX-check-path '("./"))
+@end lisp
+
+or 
+
+@lisp
+(setq TeX-check-path (append '("./") TeX-macro-private))
+@end lisp
+
+@defopt TeX-check-path
+Directory path to search for dependencies.
+
+If nil, just check the current file.
+Used when checking if any files have changed.
+@end defopt
+
 @node Debugging, Checking, Commands, Formatting
 @section Catching the errors
 @cindex Debugging
@@ -1351,15 +1250,23 @@ files may also include other files themselves.  However, to format the
 document you must run the commands on the top level file.@refill
 
 When you for example ask AUC @TeX{} to run a command on the master file,
-it has no way to know what the name of the master file is.  If it finds
-the line indicating the end of the header in a master file
-(@code{TeX-header-end}), it can figure out for itself that this is a
-master file.  Otherwise, it will ask for the name of the master file
-associated with the buffer.  To avoid asking you again, AUC @TeX{} will
-automatically insert the name of the master file as a file variable
-(@pxref{File Variables,,,emacs,The Emacs Editor}).  You can also insert
-the file variable yourself, by putting the following text at the end of
-your files.  
+it has no way to know what the name of the master file is.  By default
+it will assume that the current file is the master file.  If you insert
+the following in your @file{.emacs} file AUC @TeX{} will use a more
+advanced algorithm.
+
+@lisp
+(setq-default TeX-master nil) ; Query for master file.
+@end lisp
+
+If AUC @TeX{} finds the line indicating the end of the header in a
+master file (@code{TeX-header-end}), it can figure out for itself that
+this is a master file.  Otherwise, it will ask for the name of the
+master file associated with the buffer.  To avoid asking you again, AUC
+@TeX{} will automatically insert the name of the master file as a file
+variable (@pxref{File Variables,,,emacs,The Emacs Editor}).  You can
+also insert the file variable yourself, by putting the following text at
+the end of your files.@refill
 @findex TeX-header-end
 
 @example
@@ -1369,13 +1276,8 @@ your files.
 @end example
 
 You should always set this variable to the top level document.  If you
-always use single file documents, or always use the same name for your
-top level documents, you can set this variable in your @file{.emacs}
-file.
-
-@lisp
-(setq-default TeX-master t) ; Only use single file douments.
-@end lisp
+always use the same name for your top level documents, you can set
+@code{TeX-master} in your @file{.emacs} file.
 
 @lisp
 (setq-default TeX-master "master") ; All master files called "master".
@@ -1437,47 +1339,45 @@ anything about each other, except for the name of the master file.
 @chapter Automatic Parsing of @TeX{} files.
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
+@cindex Tabs
+@cindex Tabify
+@cindex Untabify
 
-AUC @TeX{} depends heavely on being able to extract information from the
+AUC @TeX{} depends heavily on being able to extract information from the
 buffers by parsing them.  Since parsing the buffer can be somewhat slow,
-AUC @TeX{} will store the parsed information in an @file{auto}
-subdirectory in the directory where the @TeX{} files are stored,
-@pxref{Automatic Local}.  The information in the @file{auto} directory
-is also useful for multifile documents @pxref{Multifile}, since it
-allows each file to access the parsed information from all the other
-files in the document.  This is done by first reading the information
-from the master file, and then recursively the information from each
-file stored in the master file.@refill
-
-When you issue the first AUC @TeX{} command on a new buffer, AUC @TeX{}
-will try to read the information about the file from the @file{auto}
-directory.  If this fails, for example if you have not edited the file
-before, it will parse the current buffer.  
-
-When you save the buffer it will be parsed again, and the information
-will be placed in the @file{auto} directory for use next time the file
--- or another file in the document -- is edited.
-
-It is possible to disable the parsing by setting the buffer local
-variables @code{TeX-parse-self} and @code{TeX-auto-save}.
+the parsing is initially disabled.  You are encouraged to enable them by
+adding the following lines to your @file{.emacs} file.
 
 @lisp
-(setq-default TeX-parse-self nil) ; Disable parse on load.
-(setq-default TeX-auto-save nil) ; Disable parse on save.
+(setq TeX-parse-self t) ; Enable parse on load.
+(setq TeX-auto-save t) ; Enable parse on save.
 @end lisp
 
-This can also be done on a per file basis, by changing the file local
-variables. 
+The later command will make AUC @TeX{} store the parsed information in
+an @file{auto} subdirectory in the directory each time the @TeX{} files
+are stored, @pxref{Automatic Local}.  If AUC @TeX{} finds the pre-parsed
+information when loading a file, it will not need to reparse the buffer.
+The information in the @file{auto} directory is also useful for
+multifile documents @pxref{Multifile}, since it allows each file to
+access the parsed information from all the other files in the document.
+This is done by first reading the information from the master file, and
+then recursively the information from each file stored in the master
+file.@refill
+
+The variables can also be done on a per file basis, by changing the file
+local variables.
 
 @example
 % Local Variables: 
-% TeX-parse-self: nil
-% TeX-auto-save: nil
+% TeX-parse-self: t
+% TeX-auto-save: t
 % End: 
 @end example
 
 Even when you have disabled the automatic parsing, you can force the
-generation of style information by pressing @kbd{C-c C-n}.
+generation of style information by pressing @kbd{C-c C-n}.  This is
+often the best choice, as you will be able to decide when it is
+necessary to reparse the file.
 
 @defopt TeX-parse-self
 Parse file after loading it if no style hook is found for it.
@@ -1494,6 +1394,18 @@ style hooks again.  Save buffer first including style information.  With
 optional argument, also reload the style hooks.
 @end deffn
 
+When AUC TeX saves your buffer, it will by default convert all tabs in
+your buffer into spaces.  To disable this behaviour, insert the
+following in your @file{.emacs} file.
+
+@lisp
+(setq TeX-auto-untabify nil)
+@end lisp
+
+@defopt TeX-auto-untabify
+Automatically remove all tabs from a file before saving it.
+@end defopt
+
 Instead of disabling the parsing entirely, you can also speed it
 significantly up by limiting the information it will search for (and
 store) when parsing the buffer.  You can do this by setting the default
@@ -1509,7 +1421,7 @@ values for the buffer local variables @code{TeX-auto-regexp-list} and
 
 This example will speed the parsing up significantly, but AUC @TeX{}
 will not longer be able to provide completion for labels, macros,
-environments, or bibitems specified in the document, not will it know
+environments, or bibitems specified in the document, nor will it know
 what files belong to the document.
 
 These variables can also be specified on a per file basis, by changing
@@ -1532,6 +1444,10 @@ Maximal length of TeX file that will be parsed.
 
 The pre-specified lists of regexps are defined below.  You can use these
 before loading AUC @TeX{} by quoting them, as in the example above.
+
+@defvr Constant TeX-auto-empty-regexp-list
+Parse nothing
+@end defvr
 
 @defvr Constant LaTeX-auto-minimal-regexp-list
 Only parse documentstyle.
@@ -2180,13 +2096,13 @@ Here are a few examples from @file{latex.el}.
  (function
   (lambda ()
      (TeX-add-symbols
-     '("arabic" TeX-argument-counter-hook)
-     '("label" TeX-argument-define-label-hook)
-     '("ref" TeX-argument-label-hook)
-     '("newcommand" TeX-argument-define-macro-hook [ "Number of arguments" ] t)
-     '("newtheorem" TeX-argument-define-environment-hook
-       [ TeX-argument-environment-hook "Numbered like" ]
-       t [ TeX-argument-counter-hook "Within counter" ])))))
+     '("arabic" TeX-arg-counter)
+     '("label" TeX-arg-define-label)
+     '("ref" TeX-arg-label)
+     '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+     '("newtheorem" TeX-arg-define-environment
+       [ TeX-arg-environment "Numbered like" ]
+       t [ TeX-arg-counter "Within counter" ])))))
 @end lisp
 
 @defun TeX-add-symbols @var{symbol} @dots{}
@@ -2211,7 +2127,7 @@ Thus, to overwrite
 @end example
 you can specify 
 @example
-        '("tref" TeX-argument-label-hook ignore) ; two arguments
+        '("tref" TeX-arg-label ignore) ; two arguments
 @end example
 
 @code{ignore} is a function that does not do anything, so when you
@@ -2253,94 +2169,94 @@ any.  Typically the next argument is used to overwrite the default
 prompt. 
 
 @ftable @code
-@item TeX-argument-conditional-hook
+@item TeX-arg-conditional
 Implements if EXPR THEN ELSE.  If EXPR evaluates to true, parse THEN as an
 argument list, else parse ELSE as an argument list.
 
-@item TeX-argument-literal-hook
+@item TeX-arg-literal
 Insert its arguments into the buffer.  Used for specifying extra syntax
 for a macro.
 
-@item TeX-argument-free-hook
+@item TeX-arg-free
 Parse its arguments but use no braces when they are inserted.
 
-@item TeX-argument-eval-hook
+@item TeX-arg-eval
 Evaluate arguments and insert the result in the buffer.
 
-@item TeX-argument-file-hook
+@item TeX-arg-file
 Prompt for a tex or sty filename, and use it without the extension. Run
 the file hooks defined for it.
 
-@item TeX-argument-label-hook
+@item TeX-arg-label
 Prompt for a label completing with known labels.
 
-@item TeX-argument-macro-hook
+@item TeX-arg-macro
 Prompt for a @TeX{} macro with completion.
 
-@item TeX-argument-environment-hook
+@item TeX-arg-environment
 Prompt for a La@TeX{} environment with completion.
 
-@item TeX-argument-cite-hook
+@item TeX-arg-cite
 Prompt for a Bib@TeX{} citation.
 
-@item TeX-argument-counter-hook
+@item TeX-arg-counter
 Prompt for a La@TeX{} counter.
 
-@item TeX-argument-savebox-hook
+@item TeX-arg-savebox
 Prompt for a La@TeX{} savebox.
 
-@item TeX-argument-file-hook
+@item TeX-arg-file
 Prompt for a filename in the current directory, and use it without the
 extension.
 
-@item TeX-argument-input-file-hook
+@item TeX-arg-input-file
 Prompt for a filename in the current directory, and use it without the
 extension.  Run the style hooks for the file.
 
-@item TeX-argument-define-label-hook
+@item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
 defined labels.
 
-@item TeX-argument-define-macro-hook
+@item TeX-arg-define-macro
 Prompt for a @TeX{} macro with completion.  Add macro to list of defined
 macros.
 
-@item TeX-argument-define-environment-hook
+@item TeX-arg-define-environment
 Prompt for a La@TeX{} environment with completion.  Add environment to
 list of defined environments.
 
-@item TeX-argument-define-cite-hook
+@item TeX-arg-define-cite
 Prompt for a Bib@TeX{} citation.
 
-@item TeX-argument-define-counter-hook
+@item TeX-arg-define-counter
 Prompt for a La@TeX{} counter.
 
-@item TeX-argument-define-savebox-hook
+@item TeX-arg-define-savebox
 Prompt for a La@TeX{} savebox.
 
-@item TeX-argument-corner-hook
+@item TeX-arg-corner
 Prompt for a La@TeX{} side or corner position with completion.
 
-@item TeX-argument-lr-hook
+@item TeX-arg-lr
 Prompt for a La@TeX{} side with completion.
 
-@item TeX-argument-tb-hook
+@item TeX-arg-tb
 Prompt for a La@TeX{} side with completion.
 
-@item TeX-argument-pagestyle-hook
+@item TeX-arg-pagestyle
 Prompt for a La@TeX{} pagestyle with completion.
 
-@item TeX-argument-verb-hook
+@item TeX-arg-verb
 Prompt for delimiter and text.
 
-@item TeX-argument-pair-hook
+@item TeX-arg-pair
 Insert a pair of numbers, use arguments for prompt. The numbers are
 surrounded by parentheses and separated with a comma.
 
-@item TeX-argument-size-hook
+@item TeX-arg-size
 Insert width and height as a pair.  No arguments.
 
-@item TeX-argument-coordinate-hook
+@item TeX-arg-coordinate
 Insert x and y coordinates as a pair.  No arguments.
 @end ftable
 
@@ -2367,14 +2283,14 @@ argument, an environment hook.  The example is again a short version of
  (function
   (lambda ()
     (LaTeX-add-environments
-     '("document" LaTeX-document-hook)
-     '("enumerate" LaTeX-item-hook)
-     '("itemize" LaTeX-item-hook)
-     '("list" LaTeX-list-hook)))))
+     '("document" LaTeX-env-document)
+     '("enumerate" LaTeX-env-item)
+     '("itemize" LaTeX-env-item)
+     '("list" LaTeX-env-list)))))
 @end lisp 
 
-@findex LaTeX-item-hook
-The only hook that is general useful is @code{LaTeX-item-hook}, which is
+@findex LaTeX-env-item
+The only hook that is general useful is @code{LaTeX-env-item}, which is
 used for environments that contain items.  It is completely up to the
 environment hook to insert the environment, but the function
 @code{LaTeX-insert-environment} may be to some help.  The hook will be
@@ -2415,12 +2331,12 @@ the appropriate style directory.
  (function
   (lambda ()
     (LaTeX-add-environments
-     '("enumerate" LaTeX-enumerate-hook foo)))))
+     '("enumerate" LaTeX-env-enumerate foo)))))
 
-(defun LaTeX-enumerate-hook (environment &optional ignore) ...)
+(defun LaTeX-env-enumerate (environment &optional ignore) ...)
 @end lisp
 
-The symbol @code{foo} will be passed to @code{LaTeX-enumerate-hook} as
+The symbol @code{foo} will be passed to @code{LaTeX-env-enumerate} as
 the second argument, but since we only added it to overwrite the
 definition in @file{latex.el} it is just ignored.
 
@@ -2541,47 +2457,46 @@ defined.  We can specify this information in a style hook file.
 @lisp
 ;;; macro.el - Special code for my own macro file.
 
-;;; New Macro Definition Command
+;;; Code:
 
 (require 'tex-auto)
 
 (defvar TeX-newmacro-regexp
-  '("\\\\newmacro@{\\\\\\([a-zA-Z]+\\)@}@{\\\\\\([a-zA-Z]+\\)@}"
+  '("\\\\newmacro{\\\\\\([a-zA-Z]+\\)}{\\\\\\([a-zA-Z]+\\)}"
     (1 2) TeX-auto-multi)
   "Matches \newmacro definitions.")
 
 (defvar TeX-auto-multi nil
-  "Temporary for parsing \newmacro definitions.")
+  "Temporary for parsing \\newmacro definitions.")
 
 (defun TeX-macro-cleanup ()
-  "Support for \\newmacro macro."
-  
+  ;; Move symbols from `TeX-auto-multi' to `TeX-auto-symbol'.
   (mapcar (function (lambda (list)
-                      (mapcar (function (lambda (symbol)
-                                          (setq TeX-auto-symbol
-                                                (cons symbol
-                                                      TeX-auto-symbol))))
-                              list)))
+            (mapcar (function (lambda (symbol)
+                      (setq TeX-auto-symbol
+                            (cons symbol TeX-auto-symbol))))
+                    list)))
           TeX-auto-multi))
 
-(setq TeX-auto-prepare-hooks (cons (function (lambda ()
-                                                 (setq TeX-auto-multi nil)))
-                                   TeX-auto-prepare-hooks))
+(defun TeX-macro-prepare ()
+  ;; Clear `Tex-auto-multi' before use.
+  (setq TeX-auto-multi nil))
 
-(setq TeX-auto-cleanup-hooks (cons 'TeX-macro-cleanup TeX-auto-cleanup-hooks))
-
-;;; HOOK
+(add-hook 'TeX-auto-prepare-hook 'TeX-macro-prepare)
+(add-hook 'TeX-auto-cleanup-hook 'TeX-macro-cleanup)
 
 (TeX-add-style-hook "macro"
  (function
   (lambda ()
     (TeX-auto-add-regexp TeX-newmacro-regexp)
     (TeX-add-symbols '("newmacro"
-                       TeX-argument-macro-hook
-                       (TeX-argument-macro-hook "Capitalized macro: \\")
+                       TeX-arg-macro
+                       (TeX-arg-macro "Capitalized macro: \\")
                        t
                        "BibTeX entry: "
                        nil)))))
+
+;;; macro.el ends here
 @end lisp
 
 When this file is first loaded, it adds a new entry to
@@ -2617,12 +2532,12 @@ data.  The matched data (a string if MATCH is a number, a list of
 strings if MATCH is a list of numbers) is put in front of the table.
 @end defvar
 
-@defvar TeX-auto-prepare-hooks nil
-List of hooks to be called before parsing a @TeX{} file.
+@defvar TeX-auto-prepare-hook nil
+List of functions to be called before parsing a @TeX{} file.
 @end defvar
 
-@defvar TeX-auto-cleanup-hooks nil
-List of hooks to be called after parsing a @TeX{} file.
+@defvar TeX-auto-cleanup-hook nil
+List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
 @node Installation, History, Style Files, top
@@ -2733,7 +2648,7 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
-* Version 7.4::                 News in 7.4
+* Version 8.0::                 News in 8.0
 * Version 7.3::                 News in 7.3
 * Version 7.2::                 News in 7.2
 * Version 7.1::                 News in 7.1
@@ -2743,13 +2658,108 @@ this version, and for the authors, who get nostalgic at times.
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 7.4, Version 7.3, History, History
+@node Version 8.0, Version 7.3, History, History
 @comment  node-name,  next,  previous,  up
-@section News in 7.4
+@section News in 8.0
 
 Coordinater: Per Abrahamsen, 1993.
 
 @itemize @bullet
+@item
+AUC TeX will not longer be confused when you rewrite a file under a new
+name. 
+
+@item
+The choice of ispell dictionary is now done in the when loading the
+style files, instead of when starting ispell.
+
+@item
+Lots of code cleanup, involving reformating the source and renaming all
+@samp{-hook} variables and functions to conform with the Emacs 19
+guidelines. 
+
+@item 
+Can now parse Japanese characters in labels and macros when you use
+Japanese @TeX{}.  Thanks to Shinji Kobayashi
+@samp{<koba@@flab.fujitsu.co.jp>}.
+
+@item 
+Made it safe to quit when AUC @TeX{} asks for the name of the master
+file.  It will simply assume the file itself is the master, and continue
+without inserting any file local variables.
+
+@item
+Support for @code{epsf} and @code{psfig} style files.  Thanks to Marc
+Gemis @samp{<makke@@wins.uia.ac.be>}.
+
+@item
+Support for La@TeXinfo.  Thanks to Marc Gemis
+@samp{<makke@@wins.uia.ac.be>}.
+
+@item
+Only examine the first 10000 bytes to find out what @TeX{} mode to use.
+
+@item 
+Added @code{TeX-submit-bug-report} command to submit bug reports.  It
+uses @file{reporter.el} that is distributed with SuperCite, so it may
+not be available in some Emacs 18 installations.
+
+@item
+Speeded up parsing significantly by using a simpler regexp.
+
+@item
+Added variable @code{TeX-auto-untabify}.  Set it to nil to prevent
+untabifying the buffer when it is saved.  Several people wanted this. 
+
+@item
+Changed defaults to @emph{not} do any automatic parsing, nor prompt for
+a master file or check for dependencies.  @xref{Parsing Files},
+@ref{Multifile}, and @ref{Formatting and Printing} for information about
+how ot correct this.  In short, insert the following in your
+@file{.emacs} file.
+
+@lisp
+(setq TeX-check-path '("./"))
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-master nil)
+@end lisp
+
+@item
+Some grammatical fixes to the @file{PROBLEMS} file.  Thanks to Lawrence
+R. Dodd @samp{<dodd@@roebling.poly.edu>}.
+
+@item
+No longer install a separate @code{outline-minor-mode} by default, as
+the FSF Emacs 19.19 @code{outline-minor-mode} is adequate.  The file
+@file{min-out.el} now emulates the FSF Emacs 19.19 mode under FSF Emacs
+18.  To anable it, install @file{min-out.el} somewhere in your
+@code{load-path}, and insert the following in your @file{.emacs} file.
+
+@lisp
+  (require 'min-out)
+@end lisp
+
+The FSF Emacs 19.19 @code{outline-minor-mode} use the @kbd{C-c} prefix
+instead of @kbd{C-c C-o} by default, and does not bind as many keys as
+the @code{outline-minor-mode} distributed with earlier versions of AUC
+@TeX{} did.
+
+@lisp
+  (setq outline-minor-mode-prefix "\C-c\C-o)
+  (require 'outline) ; Replace with `min-out' for Emacs 18.
+  (define-key outline-minor-mode-map "\C-c\C-o\C-t" 'hide-body)
+  (define-key outline-minor-mode-map "\C-c\C-o\C-a" 'show-all)
+  (define-key outline-minor-mode-map "\C-c\C-o\C-c" 'hide-entry)
+  (define-key outline-minor-mode-map "\C-c\C-o\C-e" 'show-entry)
+  (define-key outline-minor-mode-map "\C-c\C-o\C-l" 'hide-leaves)
+  (define-key outline-minor-mode-map "\C-c\C-o\C-x" 'show-branches)
+@end lisp
+
+@item
+Some fixes to AmS-@TeX{} mode by Ulf Juergens
+@samp{<ulf@@mathematik.uni-bielefeld.de>}.
+
 @item
 Make @samp{plain-TeX-mode-menu} work in Lucid Emacs.  Thanks to Anthony
 Rossini @samp{rossini@@hsph.harvard.edu} for reporting this.
@@ -2798,7 +2808,7 @@ Please remember to update your @file{dir} file to reflect this change.
 Delete auto file instead of saving an empty file.
 @end itemize
 
-@node Version 7.3, Version 7.2, Version 7.4, History
+@node Version 7.3, Version 7.2, Version 8.0, History
 @comment  node-name,  next,  previous,  up
 @section News in 7.3
 
@@ -3773,6 +3783,15 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+Make sure buffers are saved when you run TeX from the menu.
+
+@item
+Printer menu.
+
+@item
+``Run default command with no questions asked'' shortcut.
+
+@item
 Allow @code{TeX-auto-private} and @code{TeX-style-private} to be lists
 to mimic @code{TeX-macro-private}.
 
@@ -3827,11 +3846,6 @@ An alternative is to have an @samp{Update} command that ensures the
 previewing.
 
 @item
-Hook naming should be accoriding to the Emacs (19) guidelines.
-Specifically, only the hook @emph{variable} should be names @samp{-hook}.
-The hook functions should have other names.
-
-@item
 The documentation of the minor modes should be separated.
 
 They are distributed independently of AUC @TeX{}, and should therefore
@@ -3868,7 +3882,7 @@ Correct indentation for table, math, and array environments.
 Customizable indentation for verbatim-like user defined environments.
 
 @item 
-Special indentation after an @samp{\item}.
+Optional special indentation after an @samp{\item}.
 
 @example
 \begin@{itemize@}
@@ -3879,9 +3893,7 @@ Special indentation after an @samp{\item}.
 @end example 
 
 @item
-Completion for citations, counters, and sboxes.
-
-The two latter is easy the first is useful.
+Completion for counters and sboxes.
 
 @item
 Outline should be able to hide environments.
@@ -3892,12 +3904,6 @@ Probably being one level below @code{LaTeX-lowest-level}.
 Outline should be (better) supported in @TeX{} mode.
 
 At least, support headers, trailers, as well as TeX-outline-extra. 
-
-@item
-Outline Minor Mode should support non-regexp outlines better.
-
-Something like TeX-outline-extra should be standard support in
-@file{min-out.el}. 
 
 @item
 @code{TeX-header-start} and @code{TeX-trailer-end}.
@@ -3944,10 +3950,8 @@ Support for AMSLaTeX style files.
 Better LaTeX letter environment.
 
 Make a database system for addresses in the letter environment
-Make the letter environment hook produce `documentstyle' too
+Make the letter environment hook produce `documentstyle' too.
 
-@item
-Add code for submitting a report, using BAW's @file{reporter.el}.
 @end itemize
 
 @node Credit, Key Index, Projects, top
@@ -4020,7 +4024,4 @@ All in all I am pleased with your package.  Thanks a lot.
 @contents
 @bye
 
-@comment Local Variables:
-@comment mode: texinfo
-@comment outline-regexp: "@node "
-@comment End:
+

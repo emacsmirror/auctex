@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.63 1993-08-17 19:25:31 amanda Exp $
+# $Id: Makefile,v 5.64 1993-09-06 22:26:40 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -38,7 +38,7 @@ elispdir=$(prefix)/lib/emacs/19.17/lisp
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.17
+EMACS=emacs-19.19
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -90,35 +90,39 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-MINMAPSRC = min-bind.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
-	    min-ind.el	min-ispl.el kill-fix.el easymenu.el
+REMOVE = tex-math.el
 
-MINMAPFILES = README_MINOR $(MINMAPSRC)
+MINMAPSRC = min-map.el  remap.el    map-euro.el dvorak.el map-tex.el \
+	    min-ind.el	min-ispl.el column.el # outline.el
+
+MINMAPFILES = $(MINMAPSRC) outline.v18
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
-	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-jp.el \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el
+	 tex-auto.el  tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
+	 ltx-math.el  ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el \
+	 loaddefs.el  
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
 	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
 	    format/FOILTEX.el format/AMSTEX.el format/AMSLATEX.el
 
-STYLESRC = style/latex.el   style/slitex.el style/report.el \
-	   style/article.el style/book.el    style/letter.el \
-	   style/foiltex.el style/german.el \
-	   style/j-article.el style/j-book.el style/j-report.el \
-	   style/jarticle.el style/jbook.el style/jreport.el
+STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
+	   style/article.el   style/book.el     style/letter.el \
+	   style/report.el \
+	   style/epsf.el      style/psfig.el    style/latexinfo.el \
+	   style/dutch.el     style/german.el   style/dk.el \
+	   style/j-article.el style/j-book.el   style/j-report.el \
+	   style/jarticle.el  style/jbook.el    style/jreport.el
 
-LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
-	lacheck/lacheck.man lacheck/lacheck.c lacheck/test.tex
+LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
+	       lacheck/test.tex
 
-DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
+LACHECKGEN = lacheck.c lacheck.1 test.old
 
-# dbg-jp.el can not be byte compiled with standard emacs
-OTHERFILES = COPYING README README_MINOR PROBLEMS Makefile dbg-jp.el \
-	 $(DOCFILES) $(LACHECKFILES) lpath.el
+DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex
 
+EXTRAFILES = COPYING README PROBLEMS Makefile dbg-jp.el lpath.el outline.v18
 
 first:
 	@echo ""
@@ -242,55 +246,37 @@ clean:
 
 dist:	
 	-(cd lacheck; $(MAKE) dist)
-	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
+	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
-	@echo "** Making distribution of auctex for release $$TAG"
+	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	rm  -f auc-ver.el
-	if [ -d auctex ]; then rm -r auctex; fi
-	OUT=`echo $$TAG | sed s/release_//`; \
-	   echo "(defconst AUC-TeX-version \"$$OUT\" \
-	   \"AUC TeX version number\")" \
-	   "(defconst AUC-TeX-date \"`date`\" \
-	   \"AUC TeX release date\")" \
-	   "(provide 'auc-ver)"	 > auc-ver.el
-	cvs checkout -r $(TAG) auctex
-	find auctex -name CVS -print | xargs rm -rf
-	cp auc-ver.el auctex
-	(cd auctex/doc; $(MAKE) auc-info)
-	(cd auctex/lacheck; $(MAKE) lacheck.c lacheck.1 test.old; rm lacheck lacheck.o )
-	(cd auctex;  \
-	echo AUC TeX $$TAG on `date` > FILELIST; \
-	echo "----------------------------------------" >> FILELIST; \
-	ident $(AUCSRC) $(OTHERFILES) >> FILELIST )
-	OUT=auctex`echo $$TAG | sed s/release//`; \
-	tar -cf - auctex | gzip > $$OUT.tar.gz
-	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	(cd auctex; tar -cf - $(MINMAPFILES)) | \
-	gzip -c >min-map_$$VER.tar.gz
-	rm -r auctex
-
-ftp:	
-	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
-	@echo "**********************************************************"
-	@echo "** Making ftp copy of lacheck for whatever release it is"
-	@echo "**********************************************************"
-	-(cd lacheck; $(MAKE) ftp)
-	@echo "**********************************************************"
-	@echo "** Making ftp copy of minor maps for $$TAG"
-	@echo "** Making ftp copy of outline minor mode for $$TAG"
-	@echo "**********************************************************"
-	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	cp min-map_$$VER.tar.gz $(FTPDIR) ; \
-	cd $(FTPDIR) ; \
-	rm -f min-map.tar.gz min-out.tar.gz ; \
-	ln -s min-map_$$VER.tar.gz min-map.tar.gz ; \
-	ln -s min-map_$$VER.tar.gz min-out.tar.gz
-	@echo "**********************************************************"
-	@echo "** Making ftp copy of auc-tex for  $$TAG"
-	@echo "**********************************************************"
-	OUT=`echo $$TAG | sed s/release_//` ; \
-	cp auctex_$$OUT.tar.gz $(FTPDIR) ; \
-	cd $(FTPDIR) ; \
-	rm -f auctex.tar.gz ; \
-	ln -s auctex_$$OUT.tar.gz auctex.tar.gz
+	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
+	echo "(defconst AUC-TeX-version \"$(TAG)\"" > auc-ver.el
+	echo '  "AUC TeX version number")'         >> auc-ver.el
+	echo "(defconst AUC-TeX-date \"`date`\""   >> auc-ver.el
+	echo '  "AUC TeX release date")'           >> auc-ver.el
+	echo "(provide 'auc-ver)"	           >> auc-ver.el
+	emacs -batch -f batch-update-autoloads .
+	-cvs remove $(REMOVE) 
+	-cvs add $(AUCSRC) $(EXTRAFILES) 
+	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
+	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
+	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
+	-(cd format; cvs add `echo $(FORMATSRC) | sed -e s@format/@@g` )
+	cvs commit 
+	cvs tag release_$(TAG) 
+	mkdir auctex-$(TAG) 
+	mkdir auctex-$(TAG)/style auctex-$(TAG)/format 
+	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
+	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
+	cp $(FORMATSRC) auctex-$(TAG)/format
+	cp $(STYLESRC) auctex-$(TAG)/style
+	cp $(LACHECKFILES) auctex-$(TAG)/lacheck
+	(cd lacheck; $(MAKE) $(LACHECKGEN); \
+	 cp $(LACHECKGEN) ../auctex-$(TAG)/lacheck )
+	cp $(DOCFILES)  auctex-$(TAG)/doc
+	(cd doc; $(MAKE) auc-info; cp auc-info* ../auctex-$(TAG)/doc )
+	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
+	tar -cf - auctex-$(TAG)  | gzip > $(FTPDIR)/auctex-$(TAG).tar.gz
+	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)

@@ -1,17 +1,11 @@
-;;; @ article.el - Special code for article style.
-;;;
-;;; $Id: article.el,v 1.2 1993-07-07 00:41:41 amanda Exp $
+;;; article.el - Special code for article style.
 
-;;; @@ Hook
+;; $Id: article.el,v 1.3 1993-09-06 22:28:24 amanda Exp $
+
+;;; Code:
 
 (TeX-add-style-hook "article"
  (function (lambda ()
   (setq LaTeX-largest-level (LaTeX-section-level "section")))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; article.el ends here

@@ -1,31 +1,30 @@
-;;; @ tex-info.el - Support for editing TeXinfo source.
-;;;
-;;; $Id: tex-info.el,v 5.1 1993-08-17 16:54:16 amanda Exp $
+;;; tex-info.el - Support for editing TeXinfo source.
+;;
+;; $Id: tex-info.el,v 5.2 1993-09-06 22:27:27 amanda Exp $
 
-(provide 'tex-info)
-(require 'tex-misc)
+;; Copyright (C) 1993 Per Abrahamsen 
+;; 
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Code:
+
+(require 'tex-init)
 (require 'texinfo)
 (require 'easymenu)
 
-;;; @@ Copyright
-;;;
-;;; Copyright (C) 1993 Per Abrahamsen 
-;;; 
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 1, or (at your option)
-;;; any later version.
-;;; 
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;; 
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; if not, write to the Free Software
-;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-;;; @@ Environments
+;;; Environments:
 
 (defvar TeXinfo-environment-list
   '(("cartouche")
@@ -45,7 +44,7 @@
   (concat "^@\\("
 	  (mapconcat 'car TeXinfo-environment-list "\\|")
 	  "\\|end\\)")
-  "Regexp for environment-like TexInfo list commands.
+  "Regexp for environment-like TeXinfo list commands.
 Subexpression 1 is what goes into the corresponding `@end' statement.")
 
 (defun TeXinfo-insert-environment (env)
@@ -59,7 +58,48 @@ When called interactively, prompt for an environment."
     ;; apply arguments
     ))
 
-;;; @@ Keymap
+;;; Outline:
+
+(defvar TeXinfo-section-list
+  '(("top" 0)
+    ("majorheading" 0)
+    ("chapter" 1)
+    ("unnumbered" 1)
+    ("appendix" 1)
+    ("chapheading" 1)
+    ("section" 2)
+    ("unnumberedsec" 2)
+    ("appendixsec" 2)
+    ("heading" 2)
+    ("subsection" 3)
+    ("unnumberedsubsec" 3)
+    ("appendixsubsec" 3)
+    ("subheading" 3)
+    ("subsubsection" 4)
+    ("unnumberedsubsubsec" 4)
+    ("appendixsubsubsec" 4)
+    ("subsubheading" 4))
+  "Alist of sectioning commands and their relative level.")
+
+(defvar TeXinfo-outline-regexp
+  (concat "@\\("
+	  (mapconcat 'car TeXinfo-section-list "\\|")
+	  "\\)")
+  "Regular expression matching TeXinfo outline headers.")
+
+(defun TeXinfo-outline-level ()
+  ;; Calculate level of current TeXinfo outline heading.
+  (save-excursion
+    (if (bobp)
+	0
+      (forward-char 1)
+    (let* ((word (buffer-substring (point) (progn (forward-word 1) (point))))
+	   (entry (assoc word TeXinfo-section-list)))
+      (if entry
+	  (nth 1 entry)
+	5)))))
+
+;;; Keymap:
 
 (defvar TeXinfo-mode-map nil
   "Keymap for TeXinfo mode.")
@@ -88,7 +128,7 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\C-n" 'TeX-normal-mode)
   (define-key TeXinfo-mode-map "\C-c?"    'describe-mode)
   
-  ;; From tex-misc.el
+  ;; From tex-init.el
   (define-key TeXinfo-mode-map "\C-c{"    'TeX-insert-braces)
   (define-key TeXinfo-mode-map "\C-c\C-f" 'TeX-font)
 
@@ -202,8 +242,9 @@ When called interactively, prompt for an environment."
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "  C-u C-c C-n"]))
 
-;;; @@ The Mode
+;;; Mode:
 
+;;;###autoload
 (defun texinfo-mode ()
   "Major mode for editing files of input for TeXinfo.
 
@@ -216,14 +257,6 @@ TeXinfo-mode-hook."
   (interactive)
   (VirTeX-mode "TEXINFO"))
 
-(fset 'TeXinfo-mode 'texinfo-mode)
+(provide 'tex-info)
 
-;;; @@ Emacs
-
-(run-hooks 'TeX-after-tex-info-hook)
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; tex-info.el ends here

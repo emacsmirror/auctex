@@ -1,17 +1,11 @@
-;;; @ j-report.el - Special code for j-report style.
-;;;
-;;; $Id: j-report.el,v 1.1 1993-07-07 00:41:45 amanda Exp $
+;;; j-report.el - Special code for j-report style.
 
-;;; @@ Hook
+;; $Id: j-report.el,v 1.2 1993-09-06 22:28:39 amanda Exp $
+
+;;; Code:
 
 (TeX-add-style-hook "j-report"
  (function (lambda () (setq LaTeX-largest-level
 			    (LaTeX-section-level "chapter")))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; j-report.el ends here

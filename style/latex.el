@@ -1,32 +1,26 @@
-;;; @ latex.el - Special code for LaTeX.
-;;;
-;;; $Id: latex.el,v 1.7 1993-08-17 16:55:21 amanda Exp $
+;;; latex.el - Special code for LaTeX.
 
-;;; @@ Hook
+;; $Id: latex.el,v 1.8 1993-09-06 22:28:45 amanda Exp $
+
+;;; Code:
 
 (TeX-add-style-hook "latex"
  (function
   (lambda ()
-
-    ;;Turn outline mode on
-    (setq outline-level-function 'LaTeX-outline-level)
-    (setq outline-regexp (LaTeX-outline-regexp t))
-    (outline-minor-mode 1)
-  
     (LaTeX-add-environments
-     '("document" LaTeX-document-hook)
-     '("enumerate" LaTeX-item-hook)
-     '("itemize" LaTeX-item-hook)
-     '("list" LaTeX-list-hook)
-     '("trivlist" LaTeX-item-hook)
-     '("picture" LaTeX-picture-hook)
-     '("tabular" LaTeX-array-hook)
-     '("tabular*" LaTeX-array-hook)
-     '("array" LaTeX-array-hook)
-     '("eqnarray" LaTeX-label-hook)
-     '("eqnarray*" LaTeX-label-hook)
-     '("equation" LaTeX-label-hook)
-     '("minipage" LaTeX-minipage-hook)
+     '("document" LaTeX-env-document)
+     '("enumerate" LaTeX-env-item)
+     '("itemize" LaTeX-env-item)
+     '("list" LaTeX-env-list)
+     '("trivlist" LaTeX-env-item)
+     '("picture" LaTeX-env-picture)
+     '("tabular" LaTeX-env-array)
+     '("tabular*" LaTeX-env-array)
+     '("array" LaTeX-env-array)
+     '("eqnarray" LaTeX-env-label)
+     '("eqnarray*" LaTeX-env-label)
+     '("equation" LaTeX-env-label)
+     '("minipage" LaTeX-env-minipage)
 
      ;; The following have no special support, but are included in
      ;; case the auto files are missing. 
@@ -43,84 +37,84 @@
      ;; ``thebibliography'' in a letter, but I guess we can live with
      ;; that.  
      
-     '("description" LaTeX-item-hook)
-     '("figure" LaTeX-figure-hook)
-     '("figure*" LaTeX-figure-hook)
-     '("table" LaTeX-figure-hook)
-     '("table*" LaTeX-figure-hook)
-     '("thebibliography" LaTeX-bib-hook)
-     '("theindex" LaTeX-item-hook))
+     '("description" LaTeX-env-item)
+     '("figure" LaTeX-env-figure)
+     '("figure*" LaTeX-env-figure)
+     '("table" LaTeX-env-figure)
+     '("table*" LaTeX-env-figure)
+     '("thebibliography" LaTeX-env-bib)
+     '("theindex" LaTeX-env-item))
 
     (TeX-add-symbols
-     '("addtocounter" TeX-argument-counter-hook "Value")
-     '("alph" TeX-argument-counter-hook)
-     '("arabic" TeX-argument-counter-hook)
-     '("fnsymbol" TeX-argument-define-counter-hook)
-     '("newcounter" TeX-argument-define-counter-hook
-       [ TeX-argument-counter-hook "Within counter" ])
-     '("roman" TeX-argument-counter-hook)
-     '("setcounter" TeX-argument-counter-hook "Value")
-     '("usecounter" TeX-argument-counter-hook)
-     '("value" TeX-argument-counter-hook)
-     '("stepcounter" TeX-argument-counter-hook)
-     '("refstepcounter" TeX-argument-counter-hook)
-     '("label" TeX-argument-define-label-hook)
-     '("pageref" TeX-argument-label-hook)
-     '("ref" TeX-argument-label-hook)
-     '("newcommand" TeX-argument-define-macro-hook [ "Number of arguments" ] t)
-     '("renewcommand" TeX-argument-macro-hook [ "Number of arguments" ] t)
-     '("newenvironment" TeX-argument-define-environment-hook
+     '("addtocounter" TeX-arg-counter "Value")
+     '("alph" TeX-arg-counter)
+     '("arabic" TeX-arg-counter)
+     '("fnsymbol" TeX-arg-define-counter)
+     '("newcounter" TeX-arg-define-counter
+       [ TeX-arg-counter "Within counter" ])
+     '("roman" TeX-arg-counter)
+     '("setcounter" TeX-arg-counter "Value")
+     '("usecounter" TeX-arg-counter)
+     '("value" TeX-arg-counter)
+     '("stepcounter" TeX-arg-counter)
+     '("refstepcounter" TeX-arg-counter)
+     '("label" TeX-arg-define-label)
+     '("pageref" TeX-arg-label)
+     '("ref" TeX-arg-label)
+     '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+     '("renewcommand" TeX-arg-macro [ "Number of arguments" ] t)
+     '("newenvironment" TeX-arg-define-environment
        [ "Number of arguments"] t t)
-     '("renewenvironment" TeX-argument-environment-hook
+     '("renewenvironment" TeX-arg-environment
        [ "Number of arguments"] t t)
-     '("newtheorem" TeX-argument-define-environment-hook
-       [ TeX-argument-environment-hook "Numbered like" ]
-       t [ TeX-argument-counter-hook "Within counter" ])
-     '("newfont" TeX-argument-define-macro-hook t)
+     '("newtheorem" TeX-arg-define-environment
+       [ TeX-arg-environment "Numbered like" ]
+       t [ TeX-arg-counter "Within counter" ])
+     '("newfont" TeX-arg-define-macro t)
      '("circle" "Diameter")
      '("circle*" "Diameter")
-     '("dashbox" "Dash Length" TeX-argument-size-hook
-       [ TeX-argument-corner-hook ] t)
+     '("dashbox" "Dash Length" TeX-arg-size
+       [ TeX-arg-corner ] t)
      '("frame" t)
-     '("framebox" (TeX-argument-conditional-hook 
+     '("framebox" (TeX-arg-conditional 
 		   (string-equal (LaTeX-current-environment) "picture")
-		   (TeX-argument-size-hook [ TeX-argument-corner-hook ] t)
-		   ([ "Length" ] [ TeX-argument-lr-hook ] t)))
-     '("line" (TeX-argument-pair-hook "X slope" "Y slope") "Length")
+		   (TeX-arg-size [ TeX-arg-corner ] t)
+		   ([ "Length" ] [ TeX-arg-lr ] t)))
+     '("line" (TeX-arg-pair "X slope" "Y slope") "Length")
      '("linethickness" "Dimension")
-     '("makebox" (TeX-argument-conditional-hook 
+     '("makebox" (TeX-arg-conditional 
 		  (string-equal (LaTeX-current-environment) "picture")
-		  (TeX-argument-size-hook [ TeX-argument-corner-hook ] t)
-		  ([ "Length" ] [ TeX-argument-lr-hook ] t)))
+		  (TeX-arg-size [ TeX-arg-corner ] t)
+		  ([ "Length" ] [ TeX-arg-lr ] t)))
      '("multiput"
        TeX-argument-coordinate-pair
-       (TeX-argument-pair-hook "X delta" "Y delta")
+       (TeX-arg-pair "X delta" "Y delta")
        "Number of copies"
        t)
-     '("oval" TeX-argument-size-hook [ TeX-argument-corner-hook "Portion" ])
+     '("oval" TeX-arg-size [ TeX-arg-corner "Portion" ])
      '("put" TeX-argument-coordinate-pair t)
-     '("savebox" TeX-argument-define-savebox-hook
-       (TeX-argument-conditional-hook
+     '("savebox" TeX-arg-define-savebox
+       (TeX-arg-conditional
 	(string-equal (LaTeX-current-environment) "picture")
-	(TeX-argument-size-hook [ TeX-argument-corner-hook ] t)
-	([ "Length" ] [ TeX-argument-lr-hook ] t)))
-     '("shortstack" [ TeX-argument-lr-hook ] t)
-     '("vector" (TeX-argument-pair-hook "X slope" "Y slope") "Length")
+	(TeX-arg-size [ TeX-arg-corner ] t)
+	([ "Length" ] [ TeX-arg-lr ] t)))
+     '("shortstack" [ TeX-arg-lr ] t)
+     '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
      '("cline" "Span `i-j'")
      '("multicolumn" "Columns" "Position" t)
      '("item" [ "Item label" ])
-     '("bibitem" [ "Bibitem label" ] TeX-argument-define-cite-hook)
-     '("cite" [ "Note" ] TeX-argument-cite-hook)
-     '("nocite" TeX-argument-cite-hook)
-     '("bibliographystyle" TeX-argument-bibstyle-hook)
-     '("bibliography" TeX-argument-bibligraphy-hook)
+     '("bibitem" [ "Bibitem label" ] TeX-arg-define-cite)
+     '("cite" [ "Note" ] TeX-arg-cite)
+     '("nocite" TeX-arg-cite)
+     '("bibliographystyle" TeX-arg-bibstyle)
+     '("bibliography" TeX-arg-bibligraphy)
      '("footnote" [ "Number" ] t)
      '("footnotetext" [ "Number" ] t)
      '("footnotemark" [ "Number" ])
-     '("newlength" TeX-argument-define-macro-hook)
-     '("setlength" TeX-argument-macro-hook "Length")
-     '("addtolength" TeX-argument-macro-hook "Length")
-     '("settowidth" TeX-argument-macro-hook t)
+     '("newlength" TeX-arg-define-macro)
+     '("setlength" TeX-arg-macro "Length")
+     '("addtolength" TeX-arg-macro "Length")
+     '("settowidth" TeX-arg-macro t)
      '("\\" [ "Space" ])
      '("\\*" [ "Space" ])
      '("hyphenation" t)
@@ -140,38 +134,38 @@
      '("date" t)
      '("thanks" t)
      '("title" t)
-     '("pagenumbering" (TeX-argument-eval-hook
+     '("pagenumbering" (TeX-arg-eval
 			completing-read "Numbering style: "
 			'(("arabic") ("roman") ("Roman") ("alph") ("Alph"))))
-     '("pagestyle" TeX-argument-pagestyle-hook)
+     '("pagestyle" TeX-arg-pagestyle)
      '("markboth" t nil)
      '("markright" t)
-     '("thispagestyle" TeX-argument-pagestyle-hook)
+     '("thispagestyle" TeX-arg-pagestyle)
      '("addvspace" "Length")
      '("fbox" t)
      '("hspace*" "Length")
      '("hspace" "Length")
      '("mbox" t)
-     '("newsavebox" TeX-argument-define-savebox-hook)
-     '("parbox" [ TeX-argument-tb-hook] "Width" t)
+     '("newsavebox" TeX-arg-define-savebox)
+     '("parbox" [ TeX-arg-tb] "Width" t)
      '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
      '("rule" [ "Raise" ] "Width" "Thickness")
-     '("sbox" TeX-argument-define-savebox-hook t)
-     '("usebox" TeX-argument-savebox-hook)
+     '("sbox" TeX-arg-define-savebox t)
+     '("usebox" TeX-arg-savebox)
      '("vspace*" "Length")
      '("vspace" "Length")
-     '("include" (TeX-argument-input-file-hook "File" t))
+     '("include" (TeX-arg-input-file "File" t))
      '("includeonly" t)
-     '("input" TeX-argument-input-file-hook)
-     '("addcontentsline" TeX-argument-file-hook
-       (TeX-argument-eval-hook
+     '("input" TeX-arg-input-file)
+     '("addcontentsline" TeX-arg-file
+       (TeX-arg-eval
 	completing-read "Numbering style: " LaTeX-section-list)
        t)
-     '("addtocontents" TeX-argument-file-hook t)
+     '("addtocontents" TeX-arg-file t)
      '("typeout" t)
-     '("typein" [ TeX-argument-define-macro-hook ] t)
-     '("verb" TeX-argument-verb-hook)
-     '("verb*" TeX-argument-verb-hook)
+     '("typein" [ TeX-arg-define-macro ] t)
+     '("verb" TeX-arg-verb)
+     '("verb*" TeX-arg-verb)
      '("extracolsep" t)
      '("index" t)
      '("glossary" t)
@@ -190,10 +184,4 @@
      "raggedbottom" "flushbottom" "sloppy" "fussy" "newpage"
      "clearpage" "cleardoublepage" "twocolumn" "onecolumn"))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; latex.el ends here

@@ -1,20 +1,19 @@
-;;; @ TEXINFO.el - Special code for TeXinfo documents.
-;;;
-;;; $Id: TEXINFO.el,v 1.1 1993-08-17 16:54:59 amanda Exp $
+;;; TEXINFO.el - Special code for TeXinfo documents.
+
+;; $Id: TEXINFO.el,v 1.2 1993-09-06 22:28:14 amanda Exp $
+
+;;; Code:
 
 (require 'tex-info)
-(require 'tex-misc)
-
-;;; @@ Hook
 
 (TeX-add-style-hook "TEXINFO"
  (function
   (lambda ()
     ;; Mostly stolen from texinfo.el
     (setq mode-name "TeXinfo")
-    (setq major-mode 'TeXinfo-mode)
+    (setq major-mode 'texinfo-mode)
     (use-local-map TeXinfo-mode-map)
-    (easy-menu-add TeX-mode-menu plain-TeX-mode-map)
+    (easy-menu-add TeX-mode-menu TeXinfo-mode-map)
     (set-syntax-table texinfo-mode-syntax-table)
     (make-local-variable 'page-delimiter)
     (setq page-delimiter 
@@ -35,7 +34,7 @@
     (make-local-variable 'comment-start)
     (setq comment-start "@c ")
     (make-local-variable 'comment-start-skip)
-    (setq comment-start-skip "@c +")
+    (setq comment-start-skip "@c +\\|@comment +")
     (make-local-variable 'words-include-escapes)
     (setq words-include-escapes t)
 
@@ -44,15 +43,15 @@
 
     ;; Mostly AUC TeX stuff
     (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
-    (setq TeX-command-default "TeX")
+
     (make-local-variable 'TeX-esc)
     (setq TeX-esc "@")
-    (make-local-variable 'TeX-parse-self)
-    (setq TeX-parse-self nil)
-    (make-local-variable 'TeX-auto-save)
-    (setq TeX-auto-save nil)
-    (make-local-variable 'TeX-header-end)
+    (make-local-variable 'TeX-auto-regexp-list)
+    (setq TeX-auto-regexp-list 'TeX-auto-empty-regexp-list)
+
+    (setq TeX-command-default "TeX")
     (setq TeX-header-end "%**end")
+    (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
 
     (make-local-variable 'TeX-font-list)
     (setq TeX-font-list '((?\C-b "@b{" "}")
@@ -66,8 +65,8 @@
 			  (?\C-f "@file{" "}")
 			  (?\C-d "@dfn{" "}")
 			  (?\C-v "@var{" "}")
-			  (?\C-k "@key{" "}")
-			  (?k    "@kbd{" "}")
+			  (?k    "@key{" "}")
+			  (?\C-k "@kbd{" "}")
 			  (?c    "@code{" "}")
 			  (?C    "@cite{" "}")))
 
@@ -184,12 +183,12 @@
      '("vskip" "Amount")
      '("w" "Text"))
 
+    (require 'outline)			;Must be loaded first.
+    (make-local-variable 'outline-regexp)
+    (setq outline-regexp TeXinfo-outline-regexp)
+    (make-local-variable 'outline-level)
+    (setq outline-level 'TeXinfo-outline-level)
+
     (run-hooks 'text-mode-hook 'TeXinfo-mode-hook))))
 
-;;; @@ Emacs
-
-;;; Local Variables:
-;;; mode: emacs-lisp
-;;; mode: outline-minor
-;;; outline-regexp: ";;; @+\\|(......"
-;;; End:
+;;; TEXINFO.el ends here

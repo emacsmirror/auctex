@@ -2,9 +2,9 @@
 infodir=/usr/local/info
 TEX=tex
 
-all: auc-tex.dvi ref-card.dvi auc-tex.info
+all: auc-tex.dvi ref-card.dvi auc-info
 
-dist: auc-tex.info
+dist: auc-info
 
 ref-card.dvi: ref-card.tex
 	$(TEX) ref-card
@@ -32,7 +32,7 @@ auc-info: auc-tex.texi
 	@echo "** a newer version of texinfo?
 	@echo "**********************************************************"
 
-install: auc-tex.info
+install: auc-info
 	cp auc-info* $(infodir)
 	@echo "**********************************************************"
 	@echo "** auc-info may now be installed"
