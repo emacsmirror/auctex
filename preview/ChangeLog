@@ -1,5 +1,9 @@
 2003-01-17  David Kastrup  <dakas@users.sourceforge.net>
 
+	* aclocal.m4 (AC_SHELL_QUOTIFY): c\:\\bin is correct, but ugly.
+	Don't quote : specifically, it is not likely to be a special
+	shell character.
+
 	* doc/Makefile.in (infodir): Add a few missing environment
 	variables.
 
