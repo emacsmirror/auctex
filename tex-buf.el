@@ -935,7 +935,7 @@ command."
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."
   (with-current-buffer (process-buffer process)
-    (let (old-match str end (pt (marker-position (process-mark process))))
+    (let (old-match str pos end (pt (marker-position (process-mark process))))
       (unwind-protect
 	  (save-excursion
 	    (goto-char pt)
@@ -950,13 +950,12 @@ command."
 	      (when (and (eq ?\[ (char-before))
 			 (not (eq ?\] (char-after)))
 			 (progn
-			   (setq str
-				 (apply #'concat
-					(split-string
-					 (buffer-substring (1- (point)) end)
-					 "\n")))
 			   (unless old-match
 			     (setq old-match (list (match-data))))
+			   (setq str (buffer-substring (1- (point)) end)
+				 pos nil)
+			   (while (setq pos (string-match "\n" str pos))
+			     (setq str (replace-match "" t t str)))
 			   (string-match
 			    "\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]"
 			    str)))
