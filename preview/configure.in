@@ -119,10 +119,6 @@ AC_PATH_PROG(MAKEINFO, makeinfo, :)
 AC_CHECK_MACROS_MAKEINFO(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
-AC_SUBST(auctexdir)
-
-AC_PATH_TEXMFDIR
-
 AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(previewtexmfdir)
