@@ -1,3 +1,11 @@
+2005-03-08  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-toggle-off-input-method): Turn off input method iff
+	`current-input-method' starts one of "chinese", "japanese", and
+	"korean".  Use `inactivate-input-method' instead of
+	`toggle-input-method'.  Doc fix.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2005-03-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-style.el: New file.  defcustoms for style/*.el should go
@@ -4684,7 +4692,7 @@
 
 	* tex.el (TeX-toggle-off-input-method): Removed some Japanese
 	input methods (Canna, Wnn, SKK) because their code is copied from
-	YaTeX that is not GPL program.  Toggle off CJK (Chinese, Japanese,
+	YaTeX, which is not GPL program.  Toggle off CJK (Chinese, Japanese,
 	Korean) input methods in LEIM.
 	(TeX-math-toggle-off-input-method): Doc fix.
 
