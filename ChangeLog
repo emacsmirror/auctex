@@ -1,3 +1,17 @@
+2004-08-19  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Really remove trailing slashes/backslashes.
+	Don't expand `lispdir'.
+	(library): Surround `texinputdirs' with quotes.  Output it
+	enclosed in parens.
+	(library): Let `autodir' refer unexpanded to `localstatedir'.
+
+	* doc/Makefile.in (DESTDIR): introduce `DESTDIR' into installation
+	targets.
+
+	* Makefile.in (DESTDIR): introduce `DESTDIR' into installation
+	targets.
+
 2004-08-18  David Kastrup  <dak@gnu.org>
 
 	* tex-fold.el (TeX-fold-buffer-type): Don't use `end-of-buffer' as

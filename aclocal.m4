@@ -305,7 +305,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
     [  --with-lispdir=DIR      Where to install lisp files],
     [lispdir="${withval}"
      # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
-     lispdir_expanded="`echo $lispdir | sed 's/[\/\\]$//'`"
+     lispdir_expanded="`echo $lispdir | sed 's/[[\/\\]]$//'`"
      AC_FULL_EXPAND(lispdir_expanded)
     ],
     [
@@ -321,7 +321,6 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        # No? Test paths relative to binary
        EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
        EMACS_TEST_LISPDIR
-       AC_FULL_EXPAND(lispdir)
      fi
      if test "$lispdir" = "NONE"; then
        # No? notify user.
@@ -538,11 +537,11 @@ AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
        AC_MSG_ERROR([--with-tex-input-dirs="$x": Directory does not exist])
      fi
      if test "${texinputdirsout}" != "" ; then
-       texinputdirsout="${texinputdirsout}""\" \""
+       texinputdirsout="${texinputdirsout} "
      fi
-     texinputdirsout="${texinputdirsout}""$x"
+     texinputdirsout="${texinputdirsout}\"$x\""
    done
-   texinputdirs=${texinputdirsout}
+   texinputdirs="${texinputdirsout}"
    ])
 
 if test -z "$texinputdirs" ; then
@@ -587,16 +586,16 @@ if test -z "$texinputdirs" ; then
       tempy="$x""$y"
       if test -e "$tempy" ; then
 	if test "${texinputdirs}" != "" ; then
-	  texinputdirs="${texinputdirs}""\" \""
+	  texinputdirs="${texinputdirs} "
 	fi
-	texinputdirs="${texinputdirs}""$tempy"
+	texinputdirs="${texinputdirs}\"${tempy}\""
       fi
     done
   done
   if test -z "$texinputdirs" ; then
-    texinputdirs="/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/"
+    texinputdirs="\"/usr/share/texmf/tex/\" \"/usr/share/texmf/bibtex/bst/\""
   fi
-  AC_MSG_RESULT("${texinputdirs}")
+  AC_MSG_RESULT((${texinputdirs}))
 fi
 AC_SUBST(texinputdirs)
 ])
@@ -613,7 +612,7 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 	     [autodir="${withval}"
 	      autodir_expanded="${autodir}"
 	      AC_FULL_EXPAND(autodir_expanded)],
-	     [autodir="${localstatedir}/auctex"
+	     [autodir='${localstatedir}/auctex'
 	      oldprefix="${prefix}" # save prefix
 	      if test "${prefix}" = "NONE"
 		then prefix="${ac_default_prefix}" # temporarily set it

@@ -9,6 +9,7 @@ MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
+DESTDIR=
 TEXI2HTML=@TEXI2HTML@
 TEXI2DVI=@TEXI2DVI@
 TEXI2PDF=@TEXI2PDF@
@@ -83,14 +84,14 @@ FAQ: faq.texi macros.texi
 		faq.texi --output FAQ
 
 install: auctex
-	-$(MKINSTALLDIRS) $(infodir)
-	$(INSTALL_DATA) auctex $(infodir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
+	$(INSTALL_DATA) auctex $(DESTDIR)$(infodir)
 	for x in auctex-*; do \
 	  if [ -r $$x ]; then \
-	    $(INSTALL_DATA) $$x $(infodir) ; \
+	    $(INSTALL_DATA) $$x $(DESTDIR)$(infodir) ; \
 	  fi; \
 	done
-	-$(INSTALL_INFO)  --info-dir=$(infodir) auctex
+	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) auctex
 
 clean:
 	rm -f *.dvi *.ps *.pdf *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \

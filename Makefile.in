@@ -18,6 +18,7 @@ styledir = ${auctexdir}/style
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ./mkinstalldirs
+DESTDIR=
 
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -l lpath.el
@@ -93,55 +94,55 @@ contrib:
 	$(ELCC) -f batch-byte-compile $(CONTRIB) $(COMPILE_MULE)
 
 install-el:
-	-$(MKINSTALLDIRS) $(lispdir)
-	rm -f $(auctexdir)/tex-site.el # Remove old (CVS-version) mistakes
-	if [ -f $(lispdir)/tex-site.el ]; then \
-	   if grep -q "tex-site.*Don't edit." $(lispdir)/tex-site.el; then \
+	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
+	rm -f $(DESTDIR)$(auctexdir)/tex-site.el # Remove old (CVS-version) mistakes
+	if [ -f $(DESTDIR)$(lispdir)/tex-site.el ]; then \
+	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
 	   else \
 	    echo "Renaming old texsite.el to texsite.el.save" ; \
-	    mv $(lispdir)/tex-site.el $(lispdir)/texsite.el.save ; \
+	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/texsite.el.save ; \
 	   fi; \
 	fi; \
-	$(INSTALL_DATA) tex-site.el $(lispdir)
-	-$(MKINSTALLDIRS) $(auctexdir)
+	$(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(auctexdir)
 	for x in $(AUCSRC) ; do \
-	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
 	done;
-	-$(MKINSTALLDIRS) $(styledir)
-	$(INSTALL_DATA) $(NOSEARCH) $(styledir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(styledir)
+	$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(styledir)
 	for x in $(STYLESRC) ; do \
-	  echo ' $(INSTALL_DATA)' $$x '$(styledir)' ; \
-	  $(INSTALL_DATA) $$x $(styledir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(styledir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(styledir) ; \
 	done;
-	-$(MKINSTALLDIRS) $(autodir)
-	$(INSTALL_DATA) $(NOSEARCH) $(autodir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(autodir)
+	$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp:	some install-el
 	for x in $(AUCSRC) ; do \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(auctexdir)' ; \
-	  $(INSTALL_DATA) $${x}c $(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(auctexdir)' ; \
+	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(auctexdir) ; \
 	done;
 	for x in $(STYLESRC) ; do \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(styledir)' ; \
-	  $(INSTALL_DATA) $${x}c $(styledir) ; \
+	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
+	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(styledir) ; \
 	done;
 
 install-contrib-el:
 	for x in $(CONTRIB) $(CONTRIB_MULE); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
 	done;
 
 install-contrib:	install-contrib-el $(CONTRIBELC) $(CONTRIB_MULEELC)
 	for x in $(CONTRIBELC) $(CONTRIB_MULEELC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
 	done;
 
 install-info:
-	-cd doc; $(MAKE) install
+	-cd doc; $(MAKE) 'DESTDIR=$(DESTDIR)' install
 
 
 install-auto:
