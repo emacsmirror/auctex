@@ -1,5 +1,16 @@
 2002-03-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{The internals}): Remove spurious space
+	via \vsplit.
+	(subsection{The internals}): Set \deadcycles to avoid TeX
+	interfering with our \output fake.
+	(subsection{Selection options}): Implement hooking into equations
+	differently.  Somewhat ugly hack to circumvent amslatex/3425 bug.
+	(subsection{Preview attaching commands}): keep \showboxbreadth
+	and \showboxdepth operative, though set to minimal values.
+	(\cmd{\everypar}): Cater for ugly LaTeX commands that hide things
+	like the startup code of \paragraph in \everypar.
+
 	* doc/problems.texi (x-symbol interoperation): Update Web address.
 
 	* doc/readme.texi (Contacts): Remove personal Email address from
