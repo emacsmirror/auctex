@@ -3,6 +3,7 @@
 	* latex.el (LaTeX-insert-environment): Insert a simple newline
 	character instead of using `newline'.  Fixes insertion of
 	environment end at wrong place in XEmacs.
+	(LaTeX-fill-region): Remove superfluous `save-restriction'.
 
 2005-01-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
