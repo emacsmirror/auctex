@@ -1,5 +1,8 @@
 2004-04-16  Berend de Boer  <berend@pobox.com>
 
+	* context.el (context-guess-current-interface): support for
+	recognizing interface=XX in comment to determine language to use.
+
 	* tex.el (TeX-format-list): recognize ConTeXt dutch interface.
 
 	* Makefile.in: AUCSRC includes the new context-en.el and context-nl.el.
