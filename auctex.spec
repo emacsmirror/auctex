@@ -68,7 +68,7 @@ test -f ./configure || ./autogen.sh
 %configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
 make
 pushd doc
-make auctex tex-ref.pdf
+make auctex.info tex-ref.pdf
 popd
 
 %install
