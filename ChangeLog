@@ -1,3 +1,13 @@
+2004-07-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el: Do not require tex-fold.el.
+	Autoload `TeX-fold-mode'.
+	(TeX-mode-map): Add keybinding for `TeX-fold-mode'.
+
+	* tex-fold.el: Do not add keybinding for `TeX-fold-mode' with
+	`TeX-mode-hook'.
+	(TeX-fold-post-command): Do not hijack other overlays.
+
 2004-07-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el: New file.
