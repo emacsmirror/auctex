@@ -30,11 +30,9 @@
 
 (defvar LaTeX-optop "["
   "The LaTeX optional argument opening character.")
-(make-variable-buffer-local 'LaTeX-optop)
 
 (defvar LaTeX-optcl "]"
   "The LaTeX optional argument closeing character.")
-(make-variable-buffer-local 'LaTeX-optcl)
 
 ;;; Style
 
@@ -42,8 +40,6 @@
   "*Default when creating new documents."
   :group 'LaTeX-environment
   :type 'string)
-
-  (make-variable-buffer-local 'LaTeX-default-style)
 
 (defcustom LaTeX-default-options nil
   "Default options to documentstyle.
@@ -653,14 +649,12 @@ the label inserted, or nil if no label was inserted."
   :group 'LaTeX-label
   :group 'LaTeX-environment
   :type 'string)
- (make-variable-buffer-local 'LaTeX-figure-label)
 
 (defcustom LaTeX-table-label "tab:"
   "*Default prefix to table labels."
   :group 'LaTeX-label
   :group 'LaTeX-environment
   :type 'string)
- (make-variable-buffer-local 'LaTeX-table-label)
 
 (defcustom LaTeX-default-format ""
   "Specifies the default format string for array and tabular environments."
@@ -678,13 +672,11 @@ the label inserted, or nil if no label was inserted."
   "*Default prefix to equation labels."
   :group 'LaTeX-label
   :type 'string)
- (make-variable-buffer-local 'LaTeX-equation-label)
 
 (defcustom LaTeX-eqnarray-label LaTeX-equation-label
   "*Default prefix to eqnarray labels."
   :group 'LaTeX-label
   :type 'string)
- (make-variable-buffer-local 'LaTeX-eqnarray-label)
 
 (defun LaTeX-env-item (environment)
   "Insert ENVIRONMENT and the first item."
@@ -1325,8 +1317,6 @@ Used for specifying extra syntax for a macro."
   "List of document styles."
   :group 'LaTeX-environment
   :type '(repeat (group (string :format "%v"))))
-
-  (make-variable-buffer-local 'LaTeX-style-list)
 
 (defun TeX-arg-document (optional &optional ignore)
   "Insert arguments to documentstyle and documentclass."
