@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.77 2002-03-19 23:16:36 nixsf Exp $
+;; $Id: preview.el,v 1.78 2002-03-21 14:05:43 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -191,6 +191,28 @@ that is."
        (string-to-number (match-string 3))
        (string-to-number (match-string 4))
        ))))
+
+(defcustom preview-prefer-TeX-bb nil
+  "*Prefer TeX bounding box to EPS one if available."
+  :group 'preview-gs
+  :type 'boolean)
+
+(defcustom preview-TeX-bb-border 0.5
+  "*Additional space in pt around Bounding Box from TeX."
+  :group 'preview-gs
+  :type 'number)
+
+(defun preview-TeX-bb (list)
+  "Calculate bounding box from (ht dp wd) LIST
+of TeX dimensions in sp (1/65536 TeX point)."
+  (and
+   (consp list)
+   (let ((dims (vconcat (mapcar (lambda (x) (/ x 65781.76)) list))))
+     (vector
+      (+ 72 (- preview-TeX-bb-border) (min 0 (aref dims 2)))
+      (+ 720 (- preview-TeX-bb-border) (min (aref dims 0) (- (aref dims 1)) 0))
+      (+ 72 preview-TeX-bb-border (max 0 (aref dims 2)))
+      (+ 720 preview-TeX-bb-border (max (aref dims 0) (- (aref dims 1)) 0))))))
 
 (defcustom preview-gs-command "gs"
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
@@ -425,12 +447,13 @@ is located."
   t)
 
 
-(defun preview-gs-place (ov snippet)
+(defun preview-gs-place (ov snippet box)
   "Generate an image placeholder rendered over by GhostScript.
 This enters OV into all proper queues in order to make it render
 this image for real later, and returns a substitute image
 to be placed as a first measure.  `TeX-active-tempdir' and
-SNIPPET are used for making the name of the file to be generated."
+SNIPPET are used for making the name of the file to be generated.
+BOX is a bounding box if we already know one via TeX."
   (let ((thisimage (preview-image-from-icon preview-nonready-icon))
 	(filenames (overlay-get ov 'filenames)))
     (setcdr filenames
@@ -438,7 +461,7 @@ SNIPPET are used for making the name of the file to be generated."
 		   (format "prevnew.%03d" snippet))))
     (overlay-put ov 'queued
 		 (vector
-		  nil
+		  box
 		  nil))
     (push ov preview-gs-queue)
     (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
@@ -549,7 +572,13 @@ given as ANSWER."
 		       (oldfile (nth 0 filenames))
 		       (newfile (nth 1 filenames))
 		       (bbox (aset queued 0
-				   (preview-extract-bb (car oldfile))))
+				   (or (and preview-prefer-TeX-bb
+					    (aref queued 0))
+				       (and (stringp (car oldfile))
+					    (preview-extract-bb
+					     (car oldfile)))
+				       (aref queued 0)
+				       (error "No bounding box"))))
 		       (gs-line (format
 				 "clear \
 << \
@@ -917,11 +946,14 @@ visible."
        (if (bolp) "\n" "")))))
 
 
-(defun preview-eps-place (ov snippet)
+(defun preview-eps-place (ov snippet box)
   "Generate an image via direct EPS rendering.
 Since OV already carries all necessary information,
-the argument SNIPPET passed via a hook mechanism is ignored."
-  (preview-ps-image (car (nth 0 (overlay-get ov 'filenames))) preview-scale))
+the argument SNIPPET passed via a hook mechanism is ignored.
+BOX is a bounding box from TeX if we know one."
+  (preview-ps-image (car (nth 0 (overlay-get ov 'filenames)))
+		    preview-scale
+		    (and preview-prefer-TeX-bb box)))
 
 (defun preview-active-string (ov image)
   "Generate before-string for active image overlay OV.
@@ -937,26 +969,40 @@ The IMAGE for clicking is passed in as an argument."
 Those consist of a CONS-cell with absolute file name as CAR
 and `TeX-active-tempdir' as CDR.  `TeX-active-tempdir' is a
 list with the directory name, the reference count and its top directory
-name elements."
-  (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
-  (cons (expand-file-name file (nth 0 TeX-active-tempdir))
-	TeX-active-tempdir))
+name elements.  If FILE is already in that form, the file name itself
+gets converted into a CONS-cell with a name and a reference count."
+  (if (consp file)
+      (progn
+	(if (consp (car file))
+	    (setcdr (car file) (1+ (cdr (car file))))
+	  (setcar file (cons (car file) 1)))
+	file)
+    (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
+    (cons (expand-file-name file (nth 0 TeX-active-tempdir))
+	  TeX-active-tempdir)))
 
 (defun preview-delete-file (file)
   "Delete a preview FILE.
 See `preview-make-filename' for a description of the data
 structure.  If the containing directory becomes empty,
 it gets deleted as well."
-  (unwind-protect
-      (delete-file (car file))
-    (let ((tempdir (cdr file)))
-      (when tempdir
-	(if (> (nth 2 tempdir) 1)
-	    (setcar (nthcdr 2 tempdir) (1- (nth 2 tempdir)))
-	  (setcdr file nil)
-	  (delete-directory (nth 0 tempdir)))))))
+  (let ((filename
+	 (if (consp (car file))
+	     (and (zerop
+		   (setcdr (car file) (1- (cdr (car file)))))
+		  (car (car file)))
+	   (car file))))
+    (if filename
+	(unwind-protect
+	    (delete-file filename)
+	  (let ((tempdir (cdr file)))
+	    (when tempdir
+	      (if (> (nth 2 tempdir) 1)
+		  (setcar (nthcdr 2 tempdir) (1- (nth 2 tempdir)))
+		(setcdr file nil)
+		(delete-directory (nth 0 tempdir)))))))))
 
-(defun preview-place-preview (snippet source start end)
+(defun preview-place-preview (snippet source start end box)
   "Generate and place an overlay preview image.
 This generates the EPS filename used in `TeX-active-tempdir'
 \(see `preview-make-filename' for its definition) for preview
@@ -976,7 +1022,7 @@ region between START and END."
     (overlay-put ov 'filenames (list (preview-make-filename
 				      (format "preview.%03d" snippet))))
     (overlay-put ov 'preview-image
-		 (setq image (preview-call-hook 'place ov snippet)))
+		 (setq image (preview-call-hook 'place ov snippet box)))
     (overlay-put ov 'strings
 		 (cons (preview-active-string ov image)
 		       (preview-inactive-string ov)))
@@ -1262,11 +1308,20 @@ name(\\([^)]+\\))\\)" nil t)
 	    (cond
 	     ((match-beginning 1)
 	      (if (looking-at "\
-Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\.")
+Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
+\(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
 		  (setq parsestate
 			(apply #'preview-analyze-error
 			       (string-to-int (match-string 1))
-			       (string= (match-string 2) "started")
+			       (unless
+				   (string= (match-string 2) "started")
+				 (if (match-string 4)
+				     (mapcar #'string-to-int
+					     (list
+					      (match-string 4)
+					      (match-string 5)
+					      (match-string 6)))
+				   t))
 			       parsestate))
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
@@ -1292,10 +1347,11 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\.")
 	      (preview-clean-subdir (nth 0 TeX-active-tempdir))) )
       (preview-call-hook 'close))))
 
-(defun preview-analyze-error (snippet start lsnippet lstart lfile lline lbuffer lpoint)
+(defun preview-analyze-error (snippet box lsnippet lstart lfile lline lbuffer lpoint)
   "Analyze a preview diagnostic for snippet SNIPPET.
-The diagnostic is for the start of the snippet if STARTFLAG
-is set, and an overlay will be generated for the corresponding
+The diagnostic is for the end of the snippet if BOX
+is set (TeX dimensions in sp if present in the diagnostic, T else),
+and an overlay will be generated for the corresponding
 file dvips put into the directory indicated by `TeX-active-tempdir'."
   
   (let* (;; We need the error message to show the user.
@@ -1354,12 +1410,12 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
     (if (null file)
 	(error "Error occurred after last TeX file closed"))
     (run-hooks 'TeX-translate-location-hook)
-    (if start
-	(unless (eq snippet (1+ lsnippet))
-	  (message "Preview snippet %d out of sequence" snippet))
-      (unless (eq snippet lsnippet)
-	(message "End of Preview snippet %d unexpected" snippet)
-	(setq lstart nil)))
+    (if box
+	(unless (eq snippet lsnippet)
+	  (message "End of Preview snippet %d unexpected" snippet)
+	  (setq lstart nil))
+      (unless (eq snippet (1+ lsnippet))
+	(message "Preview snippet %d out of sequence" snippet)))
     (when line
       (setq line (+ line offset))
       (let* ((buffer (if (string= lfile file)
@@ -1386,8 +1442,7 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 			(backward-char (length after-string))
 		      (search-forward string (line-end-position) t))
 		    (point))))))
-	(if start
-	    (setq lstart next-point)
+	(if box
 	  (if lstart
 	      (progn
 		(preview-place-preview
@@ -1398,9 +1453,11 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 		   (or
 		    (preview-back-command lstart buffer)
 		    lstart))
-		 next-point)
+		 next-point
+		 (preview-TeX-bb box))
 		(setq lstart nil))
-	    (message "Unexpected end of Preview snippet %d" snippet))))))
+	    (message "Unexpected end of Preview snippet %d" snippet))
+	  (setq lstart next-point)))))
   (list snippet lstart lfile lline lbuffer lpoint))
 
 (defun preview-get-geometry (buff)
@@ -1492,7 +1549,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.77 $"))
+	(rev "$Revision: 1.78 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
