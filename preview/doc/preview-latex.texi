@@ -61,8 +61,8 @@ approved by the Free Software Foundation.
 @c @summarycontents
 @contents
 
-@ifnottex
 @node top, Introduction, (dir), (dir)
+@ifnottex
 @top preview-latex
  
 @previewlatex{} is a package that allows extraction of certain

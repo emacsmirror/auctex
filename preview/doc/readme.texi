@@ -151,7 +151,7 @@ will display it.
 @node  Availability, Contacts, More documentation, Introduction
 @section Availability
 @cindex Download
-@cindex @acronym{CVS} access
+@cindex @sc{cvs} access
 
 The @previewlatex{} project is available at SourceForge.  In addition to
 the main source tarball, we provide prebuilt documentation files there
