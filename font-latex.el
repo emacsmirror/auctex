@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.925 (12 Sep 2004)
+;; Version:    0.926 (16 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,8 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.926 16Sep2004 Ralf Angeli
+;;  - `font-latex-commented-outp': Reimplement for better performance.
 ;; V0.925 12Sep2004 Ralf Angeli
 ;;  - `font-latex-keywords-1': Add highlighter for math macros.
 ;;  - `font-latex-keywords-2': Use regexp for matching instead of
@@ -1417,17 +1419,22 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
 ;;    the match-data before it calls (font-latex-commented-outp) knowing
 ;;    that is would trash the list.
 (defun font-latex-commented-outp ()
-  "Return t is comment character is found between bol and point."
+  "Return t if comment character is found between bol and point."
   (save-excursion
-    (let ((limit (point)))
-      (save-match-data
-        ;; Handle outlined code
-        (re-search-backward "^\\|\C-m" (point-min) t)
-        (if (or (and (not (eq major-mode 'doctex-mode))
-                     (looking-at "^%"))
-                (re-search-forward "[^\\\n\r]%" limit t))
-            t
-          nil)))))
+    (let ((limit (point))
+	  (esc-char (if (and (boundp 'TeX-esc) TeX-esc) TeX-esc "\\")))
+      (forward-line 0)
+      (if (eq (char-after) ?\%)
+	  (not (eq major-mode 'doctex-mode))
+	(catch 'found
+	  (while (progn (skip-chars-forward "^%" limit)
+			(< (point) limit))
+	    (when (save-excursion
+		    (zerop
+		     (mod (skip-chars-backward (regexp-quote esc-char)) 2)))
+	      (throw 'found t))
+	    (forward-char)))))))
+
 
 ;;;;------------------
 ;;;; Cache Method:
