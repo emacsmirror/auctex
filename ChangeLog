@@ -1,3 +1,7 @@
+2004-09-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-search-syntax-table): Make XEmacs happy.
+
 2004-09-15  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4 (EMACS_LISP): quote ${emacs}, Windows....
