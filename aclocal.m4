@@ -564,10 +564,9 @@ AC_SUBST(texinputdirs)
 # Set the directory containing AUCTeX automatically generated global style
 # hooks.
 AC_DEFUN(AUCTEX_AUTO_DIR,
-[AC_ARG_WITH([auto-dir],
-	     AS_HELP_STRING([--with-auto-dir=DIR],
-			    [directory containing AUCTeX automatically
-			     generated global style hooks]),
+[AC_ARG_WITH(auto-dir,
+	     [  --with-auto-dir=DIR     directory containing AUCTeX automatically generated
+                          global style hooks],
 	     [autodir="${withval}"], [autodir="${auctexdir}/auto/"])
  AC_SUBST(autodir)
 ])

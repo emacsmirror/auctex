@@ -1,3 +1,8 @@
+2004-05-17  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* aclocal.m4 (AUCTEX_AUTO_DIR): Avoid AS_HELP_STRING for
+	compatibility with autoconf < 2.58.
+
 2004-05-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (TEX_INPUT_DIRS): Use `--expand-braces' instead of
