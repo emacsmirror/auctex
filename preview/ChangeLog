@@ -1,3 +1,22 @@
+2001-10-25  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el: replace preview-intangible by preview-state.
+	(preview-handle-insert-in-front): Same here.
+	(preview-toggle): Same here.
+	(preview-toggle): Let preview-toggle handle setting of category.
+	That way category is not set/used outside of prv-emacs.el.
+	(preview-move-point): replace preview-intangible by
+	preview-state.
+	
+	* preview.el (preview-dwim): replaces preview-again.
+	Excruciatingly useful function bound to C-c C-p C-p.  Will do just
+	what you want whenever you call it.
+	(preview-next-border): Helper-function for that
+	(preview-disable): set property 'preview-state
+	(preview-clearout): use 'preview-state instead of 'category
+	(preview-place-preview): same here.
+	(LaTeX-preview-setup): use preview-dwim in keyboard bindings
+
 2001-10-23  David Kastrup  <David.Kastrup@t-online.de>
 
 	*  Release 0.5.8
