@@ -1,3 +1,13 @@
+2002-12-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el (preview-mode-setup, preview-watch-preamble) 
+	(preview-unwatch-preamble): Differentiate between unwanted formats
+	and formats without loaded master file.
+
+	* prv-emacs.el (preview-watch-preamble, preview-unwatch-preamble,
+	preview-mode-setup): Differentiate between unwanted formats and
+	formats without loaded master file.
+
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile.in (preview-latex.el): Avoid putting the output of pwd
