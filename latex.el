@@ -2623,8 +2623,9 @@ space does not end a sentence, so don't break a line there."
  	    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
  	    ;; `LaTeX-nospace-between-char-regexp'.
  	    (backward-char 1)
- 	  (re-search-backward (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp) linebeg t)
- 	  (forward-char 1))
+ 	  (if (re-search-backward (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp) linebeg t)
+	      (forward-char 1)
+	    (skip-chars-backward "^ \n")))
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
     ;; while searching backward, search forward again.
