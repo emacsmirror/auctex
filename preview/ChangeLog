@@ -2,6 +2,8 @@
 
 	* doc/todo.texi: Update XEmacs status.
 
+	* configure.in: Substitute the packagedir.
+
 	* Makefile.in (packagedir): New variable, used by...
 	(install-el): ... this new package-installation handling.
 
