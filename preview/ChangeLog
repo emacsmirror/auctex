@@ -1,5 +1,7 @@
 2002-08-03  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: update RedHat distro info.
+
 	* doc/preview-latex.texi: Remove documentlanguage setting: English
 	is the default anyway, and declaring it breaks the broken TeXlive 7
 	texinfo distribution.
