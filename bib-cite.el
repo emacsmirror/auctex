@@ -322,6 +322,9 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.22 Sep 17 2003 - PSG
+;;  - bib-cite-aux-inputs:  new defcustom.
+;;  - minor cleanup for `match-string'.
 ;; V3.21 Sep 08 2003 - PSG
 ;;  - Ripping out off-topic imenu code.
 ;; V3.20 Aug 14 2003 - PSG
@@ -626,6 +629,13 @@ use semi-colon (;) for DOS or OS/2 if you set bib-dos-or-os2-variable to `t'."
   "*List of directories to search for .bib files.
 This is in addition to those listed in the environment variable specified by
 `bib-bibtex-env-variable'."
+  :group 'bib-cite
+  :type '(repeat (file :format "%v")))
+
+(defcustom bib-cite-aux-inputs nil
+  "*List of directories to search for .aux files.
+MikTeX has the LaTeX option -aux-directory to store .aux files in an alternate
+directory.  You may set this variable to let bib-cite find these .aux files."
   :group 'bib-cite
   :type '(repeat (file :format "%v")))
 
@@ -1346,8 +1356,7 @@ See variables bib-etags-command and bib-etags-filename"
     (save-excursion
       (if (not (re-search-backward "[\n\^M]" nil t))
           nil                           ;Play safe
-        (if (string-equal (buffer-substring (match-beginning 0)(match-end 0))
-                          "\n")
+        (if (string-equal (match-string 0) "\n")
             nil
           t)))))
 
@@ -1514,7 +1523,7 @@ e.g.: \cite{Wadhams81,Bourke.et.al87,SchneiderBudeus94}
             (kill-buffer bib-buffer)
             (error "Sorry, could not find bib entry for %s" the-key))
         (re-search-backward "%%%Filename: \\([^\n]*\\)" nil t)
-        (setq the-file (buffer-substring (match-beginning 1)(match-end 1)))
+        (setq the-file (match-string 1))
         (kill-buffer bib-buffer)))
 ;;; (find-file the-file)
     (funcall bib-switch-to-buffer-function (find-file-noselect the-file))
@@ -1739,8 +1748,7 @@ Does not save excursion."
                 (re-search-forward "\\(^\\|\^M\\)[ \t]*\\\\end{\\([^}]*\\)}"
                                    nil t))
       (setq end-point (point))
-      (setq the-environment (buffer-substring (match-beginning 2)
-                                              (match-end 2)))
+      (setq the-environment (match-string 2))
       (and (not (string-match "document" the-environment))
            (re-search-backward (concat "\\(^\\|\^M\\)[ \t]*\\\\begin{"
                                        (regexp-quote the-environment) "}"))
@@ -1772,7 +1780,7 @@ Does not save excursion."
            "\\(^\\|\^M\\)[ \t]*\\\\\\(\\(sub\\)*section\\|chapter\\|part\\)\\*?\
 {\\([^}]*\\)}"
            nil t)
-          (message (buffer-substring (match-beginning 0)(match-end 0)))
+          (message (match-string 0))
         (error
          "Sorry, could not find an environment or section declaration")))))
 
@@ -1863,12 +1871,10 @@ Return the-warnings as text."
         (while (re-search-forward
                 "[, \t]*crossref[ \t]*=[ \t]*\\(\"\\|\{\\)" nil t)
           ;;handle {text} or "text" cases
-          (if (string-equal "{" (buffer-substring (match-beginning 1)
-                                                  (match-end 1)))
+          (if (string-equal "{" (match-string 1))
               (re-search-forward "[^\}]+" nil t)
             (re-search-forward "[^\"]+" nil t))
-          (intern (buffer-substring (match-beginning 0)(match-end 0))
-                  crossref-obarray))
+          (intern (match-string 0) crossref-obarray))
         ;; Now find the corresponding keys,
         ;; but add them only if not already in `keys-obarray'
         (set-buffer bib-buffer)
@@ -1908,8 +1914,7 @@ Return the-warnings as text."
       ;; Ex:  journal =      JPO,
       (let ((strings-obarray (make-vector 201 0)))
         (while (re-search-forward bib-string-regexp nil t)
-          (intern (buffer-substring (match-beginning 1)(match-end 1))
-                  strings-obarray))
+          (intern (match-string 1) strings-obarray))
         ;; Now find the corresponding @String commands
         ;; Collect either the @string commands, or the string to substitute
         (set-buffer bib-buffer)
@@ -1930,10 +1935,7 @@ Return the-warnings as text."
                         ;;handle {text} or "text" cases
                         (the-string-end
                          (cond
-                          ((string-equal "\""
-                                         (buffer-substring (match-beginning 1)
-                                                           (match-end 1)))
-
+                          ((string-equal "\"" (match-string 1))
                            (re-search-forward "[^\\]\"" nil t)
                            (point))
                           (t
@@ -2024,18 +2026,15 @@ Comparison is case-insensitive."
             ;;skip over any optional arguments to \cite[][]{key} command
             (skip-chars-forward "a-zA-Z")
             (while (looking-at "\\[")
-                (forward-list 1))
+              (forward-list 1))
             (re-search-forward "{[ \n]*\\([^,} \n]+\\)" nil t)
-            (intern (buffer-substring (match-beginning 1)(match-end 1))
-                    keys-obarray)
+            (intern (match-string 1) keys-obarray)
             (while (and (skip-chars-forward " \n") ;no effect on while
                         (looking-at ","))
               (forward-char 1)
               ;;The following re-search skips over leading spaces
               (re-search-forward "\\([^,} \n]+\\)" nil t)
-              (intern (buffer-substring (match-beginning 1)(match-end 1))
-                      keys-obarray)))
-
+              (intern (match-string 1) keys-obarray)))
         ;; Assume we are on the keyword
         (goto-char the-point)
         (let ((the-start (re-search-backward "[\n{, ]" nil t))
@@ -2063,15 +2062,13 @@ Comparison is case-insensitive."
         ;; then lookup first key
         (if (looking-at "{[ \n]*\\([^,} \n]+\\)")
             (progn
-              (intern (buffer-substring (match-beginning 1)(match-end 1))
-                      keys-obarray)
+              (intern (match-string 1) keys-obarray)
               (goto-char (match-end 1))
               (while (and (skip-chars-forward " \n")
                           (looking-at ","))
                 (forward-char 1)
                 (re-search-forward "\\([^,} \n]+\\)" nil t)
-                (intern (buffer-substring (match-beginning 1)(match-end 1))
-                        keys-obarray)))))
+                (intern (match-string 1) keys-obarray)))))
       (if keys-obarray
           keys-obarray
         (error "Sorry, could not find any citation keys in this buffer.")))))
@@ -2186,7 +2183,7 @@ Comparison is case-insensitive."
       (goto-char (point-min))
       (while (re-search-forward "^[ \t]*\\\\\\(input\\|include\\){\\(.*\\)}"
                                 nil t)
-        (let ((the-file (buffer-substring (match-beginning 2)(match-end 2))))
+        (let ((the-file (match-string 2)))
           (if (string-match ".sty$" the-file) ;Skip over style files!
               nil
             (if (and (not (file-readable-p (expand-file-name the-file dir)))
@@ -2237,7 +2234,7 @@ Comparison is case-insensitive."
           ;; bib-make-bibliography will need this also to find .bib files
           ;; look for \@input{chap1/part1.aux}
           (while (re-search-forward "^\\\\@input{\\(.*\\)}$" nil t)
-            (let* ((auxfile (buffer-substring(match-beginning 1)(match-end 1)))
+            (let* ((auxfile (match-string 1))
                    (texfile (bib-return-aux-file-from-tex auxfile "tex")))
               (if (not (file-readable-p auxfile))
                   (setq bib-document-citekeys-obarray-warnings
@@ -2253,8 +2250,7 @@ Comparison is case-insensitive."
                             "Warning: %s is out of date relative to %s.\n"
                             auxfile texfile))))
                 (end-of-line)(insert "\n")
-                (insert-file-contents (buffer-substring (match-beginning 1)
-                                                        (match-end 1))))))
+                (insert-file-contents auxfile))))
           (goto-char 1)
 
 ;;; Patched by calvanes@dis.uniroma1.it (Diego Calvanese)
@@ -2265,7 +2261,7 @@ Comparison is case-insensitive."
           ;; look for \citation{gertsenshtein59,vardi88,...,ullmann90}
           ;; comma-separation generated by certain LaTeX styles.
           (while (re-search-forward "^\\\\citation{\\(.*\\)}$" nil t)
-	    (let ((string (buffer-substring (match-beginning 1)(match-end 1)))
+	    (let ((string (match-string 1))
 		  (start 0))
 	      (while (string-match "\\([^,\n]+\\)" string start)
 		(intern (substring string (match-beginning 1) (match-end 1))
@@ -2277,7 +2273,17 @@ Comparison is case-insensitive."
 (defun bib-return-aux-file-from-tex (texname ext)
 ;; given name.name.XXX return name.name.ext
 ;; FIXME: Check if in ./, else search 
-  (concat (substring texname 0 -3) ext))
+  (let* ((filename (if (string-match "\\(.*\\)\\.[^\\.]+" texname)
+                       (concat (match-string 1 texname) "." ext)
+                     (concat texname "." ext)))
+         (sansdir (file-name-nondirectory filename)))
+    (if (file-exists-p filename)
+        filename
+      ;; Search bib-cite-aux-inputs path
+      (let ((filename (psg-checkfor-file-list sansdir bib-cite-aux-inputs)))
+        (if (and filename (file-exists-p filename))
+            filename
+          (error "Could not find file %s" sansdir))))))
 
 (defun bib-etags-find-noselect (tag &optional masterdir)
 ;; Returns a buffer with point on `tag'.  buffer is not selected.
@@ -2395,8 +2401,7 @@ although BiBTeX doesn't allow it!"
     (if (not (re-search-forward "^[ \t]*\\\\bibliography{[ \t]*\\([^},]+\\)"
                                 nil t))
         (error "Sorry, can't find \\bibliography command anywhere")
-      (let ((the-list (list (buffer-substring
-                             (match-beginning 1)(match-end 1))))
+      (let ((the-list (list (match-string 1)))
             (doNext t))
         (while doNext
           (if (looking-at ",")
