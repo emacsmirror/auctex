@@ -4,11 +4,11 @@
 %define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
 
 %if %{FOR_SUSE}
-%define distri      SuSE_9.0
+%define distri      .suse
 %define commongroup Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
-%define distri      Redhat_9.0
+%define distri
 %define commongroup Applications/Editors
 %define xemacspkgdir %{_libdir}/xemacs/site-packages
 %endif
@@ -16,7 +16,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.8
-Release: 	1.%{distri}
+Release: 	1%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
