@@ -1,3 +1,9 @@
+2004-04-30  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-command-expand): Add "%%" expansion, make order
+	of TeX-expand-list irrelevant, make the whole junk work
+	efficiently.
+
 2004-04-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el: New header.
