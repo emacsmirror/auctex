@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.305 $"))
+	(rev "$Revision: 5.306 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-09-15 15:55:11 $"))
+    (let ((date "$Date: 2003-11-16 14:09:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1545,8 +1545,9 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
 	 "\\)*\\)\\(%+ *\\)"))
-  (make-local-variable 'comment-add)
-  (setq comment-add 1)			;default to `%%' in comment-region
+  ;; Removed as commenting in (La)TeX is done with one `%' not two
+  ;; (make-local-variable 'comment-add)
+  ;; (setq comment-add 1) ;default to `%%' in comment-region
   (make-local-variable 'comment-indent-function)
   (setq comment-indent-function 'TeX-comment-indent)
   (make-local-variable 'comment-multi-line)
@@ -2584,34 +2585,41 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 
 ;;; Comments
 
-(defun TeX-un-comment-region (start end level)
-  "Remove up to LEVEL comment characters from each line in the region."
-  (interactive "*r\np") 
-  (comment-region start end (- level)))
+(fset 'TeX-comment-region 'comment-dwim)
+(fset 'TeX-un-comment-region 'comment-dwim)
 
-(defun TeX-un-comment (level)
-  "Delete up to LEVEL %'s from the beginning of each line in a comment."
-  (interactive "*p")
+(defun TeX-un-comment ()
+  "Delete comment characters from the beginning of each line in a comment."
+  (interactive)
   (save-excursion
     ; Find first comment line
-    (re-search-backward (concat "^[^" comment-start "]") nil 'limit)
+    (beginning-of-line)
+    (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (bobp)))
+      (forward-line -1))
     (let ((beg (point)))
       (forward-line 1)
       ; Find last comment line
-      (re-search-forward (concat "^[^" comment-start "]") nil 'limit)
+      (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (eobp)))
+        (forward-line 1))
       ; Uncomment region
-      (comment-region beg (point) (- level)))))
+      (uncomment-region beg (point)))))
 
-(fset 'TeX-comment-region 'comment-region)
-
-(defun TeX-comment-paragraph (level)
-  "Inserts LEVEL %'s at the beginning of every line in the current paragraph."
-  (interactive "*p")
-  (if (< level 0)
-      (TeX-un-comment (- level))
+(defun TeX-comment-paragraph ()
+  "Inserts or removes comment characters at the beginning of every line
+in the current paragraph."
+  (interactive)
+  (if (TeX-in-commented-line)
+      (TeX-un-comment)
     (save-excursion
-      (mark-paragraph)
-      (comment-region (point) (mark) level))))
+      (beginning-of-line)
+      ;; Don't do anything if we are in an empty line.  If this line
+      ;; is followed by a lot of commented lines, this shall prevent
+      ;; that mark-paragraph skips over these lines and marks a
+      ;; paragraph outside the visible window which might get
+      ;; commented without the user noticing.
+      (unless (looking-at "^[ \t]*$")
+        (mark-paragraph)
+        (comment-region (point) (mark))))))
 
 (defun TeX-in-comment ()
   ;; Return non-nil if point is in a comment.
@@ -2624,6 +2632,15 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	(re-search-backward "^\\|\r" nil t)
 	(or (looking-at comment-start-skip)
 	    (re-search-forward comment-start-skip pos t))))))
+
+(defun TeX-in-commented-line ()
+  ;; Return non-nil if point is in a line consisting only of a comment
+  ;; with some potential whitespace at its beginning.
+  (save-excursion
+    (re-search-backward "^\\|\r" nil t)
+    (if (looking-at (concat "[ \t]*" comment-start))
+        t
+      nil)))
 
 ;;; Indentation
 
