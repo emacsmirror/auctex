@@ -35,7 +35,7 @@ preview-latex.ps: preview-latex.dvi
 
 preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
 	problems.texi preview-dtxdoc.texi macros.texi todo.texi
-	-$(MAKEINFO) --no-split preview-latex.texi
+	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
@@ -55,7 +55,9 @@ TODO: todo.texi macros.texi
 
 install: preview-latex.info
 	-$(MKINSTALLDIRS) $(infodir)
-	-$(INSTALL_DATA) preview-latex.info $(infodir)
+	for x in preview-latex.info* ; do \
+		$(INSTALL_DATA) $$x $(infodir) ; \
+	done
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
 clean: 
