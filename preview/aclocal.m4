@@ -20,26 +20,18 @@ AC_DEFUN(EMACS_LISP, [
   rm -f ${OUTPUT}
 ])
 
-# This generates two prefix variables $1 and $2 from the executable in
-# $3.  The executable is searched in PATH, and a potential bin/ or
-$ bin/architecture/ component is stripped from it.
+# This generates a prefix variables $1 from the executable in $2.
+# The executable is searched in PATH, and a potential bin/ or
+# bin/architecture/ component is stripped from it.
 AC_DEFUN(EMACS_PATH_PREFIX,[
-  EMACS_LISP(tmppathprefix,[[(let*
+  EMACS_LISP([$1],[[(condition-case nil (let*
     ((prefix (directory-file-name (file-name-directory (executable-find cmd))))
      (parent (directory-file-name (file-name-directory prefix))))
     (if (string= (file-name-nondirectory prefix) \"bin\")
         (setq prefix parent)
       (if (string= (file-name-nondirectory parent) \"bin\")
          (setq prefix (directory-file-name (file-name-directory parent)))))
-    prefix)]],[[-no-site-file]],[[cmd]],[$3])
-  if test "x${prefix}" = xNONE -o "x${prefix}" = x
-  then
-    $1="${tmppathprefix}"
-    $2='${prefix}'
-  else
-    $1='${prefix}'
-    $2="${tmppathprefix}"
-  fi ])
+    prefix) (error "NONE"))]],[[-no-site-file]],[[cmd]],[$2])])
 
 AC_DEFUN(EMACS_PROG_EMACS, [
 # Check for (X)Emacs, report its path, flavor and prefix
@@ -83,9 +75,9 @@ fi
   AC_MSG_RESULT(${XEMACS})
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
-  AC_MSG_CHECKING([for ${EMACS_NAME} prefixes])
-  EMACS_PATH_PREFIX(emacsprefix1,emacsprefix2,"${EMACS}")
-  AC_MSG_RESULT([["${emacsprefix1}" "${emacsprefix2}"]])
+  AC_MSG_CHECKING([for ${EMACS_NAME} prefix])
+  EMACS_PATH_PREFIX([[emacsprefix]],[["${EMACS}"]])
+  AC_MSG_RESULT([["${emacsprefix}"]])
 ])
 
 AC_DEFUN(EMACS_CHECK_VERSION, [
@@ -101,31 +93,48 @@ then
 fi
 ])
 
-dnl Look for an installation directory under emacsprefix, datadir and prefix.
+dnl Look for an installation directory under given prefixes.
 dnl $1 is the variable name we are looking for.
-dnl $2 is a Lisp expression giving a list of directories names
-dnl $3 is Lisp expression giving a list of locations where to find them
-dnl $4,$5,$6 are additional arguments for the elisp call
+dnl $2 is a list of prefixes to try as a list of shell words
+dnl $3 is a Lisp expression giving a list of directory names
+dnl    those should be be either nil or a relative path like "tex/latex".
+dnl   Those names are tried in turn, and every one of them is matched
+dnl   against the tail of each location in $4.  nil matches everything,
+dnl   it is a wildcard.
+dnl $4 is Lisp expression giving a list of locations where to find names.
+dnl   A location is only considered if it is nonnil, an existing
+dnl   absolute directory,
+dnl   and is a subdirectory of one of the given prefixes.
+dnl $5,$6,$7 are additional arguments for the elisp call
 AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
- [  for currentprefix in '${emacsprefix}' '${datadir}' '${prefix}'
+ [  for currentprefix in $2
   do
   expprefix="${currentprefix}"
   AC_FULL_EXPAND(expprefix)
   EMACS_LISP([$1],
     [(catch 22
-       (let ((dirs $3))
-	  (dolist (name $2 \"NONE\")
+       (let ((dirs $4))
+	  (dolist (name $3 \"NONE\")
 	    (dolist (dir dirs)
-	      (setq dir (directory-file-name dir))
-	      (and (file-name-absolute-p dir)
-	           (file-directory-p dir)
-	           (not (string-match \"\\\\\`\\\\.\\\\.\"
-                          (file-relative-name dir expanded)))
-	           (or (null name)
-                     (string= name (file-name-nondirectory dir)))
+	      (when (and dir
+	      	         (setq dir (directory-file-name dir))
+                         (file-name-absolute-p dir)
+	      	         (file-directory-p dir)
+	                 (not (string-match \"\\\\\`\\\\.\\\\.\"
+                           (file-relative-name dir expanded)))
+                         (let ((name name) (dir dir))
+		           (while (and dir name
+		                       (string= (file-name-nondirectory dir)
+		                                (file-name-nondirectory name))
+                              (setq dir (file-name-directory dir)
+				   name (file-name-directory name))
+			      (if (and dir name)
+			         (setq dir (directory-file-name dir)
+			              name (directory-file-name name)))))
+		            (null name))
 		   (throw 22 (concat (file-name-as-directory prefix)
-		     (file-relative-name dir expanded))))))))],[$4],
-  [prefix expanded $5],["${currentprefix}" "${expprefix}" $6])
+		     (file-relative-name dir expanded)))))))))],[$5],
+  [prefix expanded $6],["${currentprefix}" "${expprefix}" $7])
   if test "[$]$1" != NONE; then break; fi; done])
 
 AC_DEFUN(EMACS_PATH_PACKAGEDIR,
@@ -135,9 +144,11 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
     [if test ${EMACS_FLAVOR} = xemacs; then
       AC_MSG_CHECKING([for XEmacs package directory])
       EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
-        [[(list \"site-packages\" \"xemacs-packages\")]],
+        [['${datadir}' '${libdir}' "${emacsprefix}"]],
+        [[(list \"xemacs/site-packages\" \"xemacs/xemacs-packages\"
+                \"site-packages\" \"xemacs-packages\")]],
         [[(append late-packages last-packages early-packages)]])
-      if test "${packagedir}" = NONE -o -z "${packagedir}"; then
+      if test "x${packagedir}" = xNONE -o -z "${packagedir}"; then
         AC_MSG_ERROR([not found, exiting!])
       fi
       AC_MSG_RESULT(${packagedir})
@@ -155,7 +166,10 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
     [if test "${EMACS_FLAVOR}" = 'emacs'; then
        # Test paths relative to prefixes
        EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
-	 [[(list \"site-lisp\" \"site-packages\")]], load-path)
+         [['${datadir}/emacs' '${libdir}/emacs' "${emacsprefix}/share/emacs" \
+           '${datadir}' '${libdir}' "${emacsprefix}"]],
+	 [[(list \"emacs/site-lisp\" \"emacs/site-packages\"
+	         \"site-lisp\" \"site-packages\")]], load-path)
        if test "${lispdir}" = "NONE"; then
 	 # No? notify user.
 	 AC_MSG_ERROR([Cannot locate lisp directory,
@@ -216,36 +230,33 @@ AC_ARG_WITH(doc-dir,
 
 if test -z "${previewtexmfdir}" -o "${previewtexmfdir}" = no  ; then
 
+AC_MSG_CHECKING([for prefix from kpsepath])
+
+EMACS_PATH_PREFIX(texprefix,kpsepath)
+
+if test "x${texprefix}" != "xNONE"
+then
+
+AC_MSG_RESULT([["${texprefix}"]])
+
 AC_MSG_CHECKING([for TDS-compliant directory])
 
 pathoutput="`kpsepath -n latex tex`"
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [['${datadir}/texmf' "${texprefix}"]],
   [[(list nil)]],
-  [[(let (lst)
-      (dolist (d (append (split-string pathoutput \";\")
-        (split-string pathoutput \":\")) (nreverse lst))
-          (and (string-match \"\\\\\`!*\\\\(.*/texmf\\\\)/tex/latex//+\\\\'\" d)
-	       (push (match-string 1 d) lst))))]],
+  [[(mapcar (lambda(x)
+              (and (string-match \"\\\\\`!*\\\\(.*\\\\)/tex/latex//+\\\\'\" x)
+	           (match-string 1 x)))
+      (append (split-string pathoutput \";\")
+             (split-string pathoutput \":\")))]],
     [[-no-site-file]],
     [[pathoutput]],[["${pathoutput}"]])
-
-if test -z "${texmfdir}" -o "${texmfdir}" = "NONE" ; then
-EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
-  [[(list nil)]],
-  [[(let (lst)
-      (dolist (d (append (split-string pathoutput \";\")
-        (split-string pathoutput \":\")) (nreverse lst))
-          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/tex/latex//+\\\\'\" d)
-	       (push (match-string 1 d) lst))))]],
-    [[-no-site-file]],
-    [[pathoutput]],[["${pathoutput}"]])
-fi
 
 if test -n "${texmfdir}" -a "${texmfdir}" != "NONE" ; then
    previewdocdir='${texmfdir}/doc/latex/styles'
    previewtexmfdir='${texmfdir}/tex/latex/preview'
-fi
 fi
 
 if test -z "${previewtexmfdir}" -o "${previewtexmfdir}" = no  ; then
@@ -254,12 +265,13 @@ AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX directory hierarchy])
 
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [['${datadir}/texmf' "${texprefix}"]],
   [[(list nil)]],
-  [[(let (lst)
-      (dolist (d (append (split-string pathoutput \";\")
-        (split-string pathoutput \":\")) (nreverse lst))
-          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)//+\\\\'\" d)
-	       (push (match-string 1 d) lst))))]],
+  [[(mapcar (lambda(x)
+              (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)//+\\\\'\" x)
+	           (match-string 1 x)))
+      (append (split-string pathoutput \";\")
+             (split-string pathoutput \":\")))]],
     [[-no-site-file]],
     [[pathoutput]],[["${pathoutput}"]])
 
@@ -273,19 +285,23 @@ if test -z "${previewtexmfdir}" -o "${previewtexmfdir}" = no  ; then
 
 AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX input directory])
+
 EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [['${datadir}/texmf' "${texprefix}"]],
   [[(list nil)]],
-  [[(let (lst)
-      (dolist (d (append (split-string pathoutput \";\")
-        (split-string pathoutput \":\")) (nreverse lst))
-          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/?\\\\'\" d)
-	       (push (match-string 1 d) lst))))]],
+  [[(mapcar (lambda(x)
+              (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/?\\\\'\" x)
+	           (match-string 1 x)))
+      (append (split-string pathoutput \";\")
+             (split-string pathoutput \":\")))]],
     [[-no-site-file]],
     [[pathoutput]],[["${pathoutput}"]])
 
 if test -n "${texmfdir}" -a "${texmfdir}" != "NONE" ; then
    previewtexmfdir='${texmfdir}'
    previewdocdir='${texmfdir}'
+fi
+fi
 fi
 fi
 

@@ -5,11 +5,11 @@ PDFLATEX=@PDFLATEX@
 TEX=@TEX@
 TEXHASH=@TEXHASH@
 
-prefix=@prefix@#
-datadir=@datadir@#
-texmfdir=@texmfdir@#
-previewtexmfdir = @previewtexmfdir@#
-previewdocdir = @previewdocdir@#
+prefix=@prefix@$(null)
+datadir=@datadir@$(null)
+texmfdir=@texmfdir@$(null)
+previewtexmfdir = @previewtexmfdir@$(null)
+previewdocdir = @previewdocdir@$(null)
 TEXMFGEN = @TEXMFGEN@
 
 DESTDIR=

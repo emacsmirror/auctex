@@ -1,3 +1,21 @@
+2005-04-01  David Kastrup  <dak@gnu.org>
+
+	* latex/Makefile.in (prefix, datadir, texmfdir, previewtexmfdir)
+	(previewdocdir): Use (null) to mask Windows backslashes.
+
+	* configure.in: Adjust version info.
+
+	* aclocal.m4 (EMACS_PATH_PREFIX): just generate a single output.
+	(EMACS_PROG_EMACS): Check for `emacsprefix'.
+	(EMACS_EXAMINE_INSTALLATION_DIR): accept list of prefix variables
+	as second argument.  Decompose and compare directory names
+	starting from the back.
+	(EMACS_PATH_PACKAGEDIR): search in several prefixes.
+	(EMACS_PATH_LISPDIR): same.
+	(TEX_PATH_TEXMFDIR): set `texprefix' from kpsepath.
+	Use new `EMACS_EXAMINE_INSTALLATION_DIR' for getting TeX
+	directories.
+
 2005-03-31  David Kastrup  <dak@gnu.org>
 
 	* configure.in: Don't set prefix if it is not set.
