@@ -1,3 +1,16 @@
+2003-07-10  David Kastrup  <dakas@users.sourceforge.net>
+
+	* doc/wininstall.texi: fix web page of AUCTeX.
+
+	* doc/install.texi (Prerequisites): fix web page of AUCTeX.
+
+	* preview.el (LaTeX-preview-setup, preview-parse-messages)
+	(TeX-inline-preview): Fix references to AUCTeX.
+
+	* aclocal.m4 (library): Fix references to AUCTeX.
+
+	* RELEASE: Fix references to AUCTeX.
+
 2003-07-01  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/draw.c, dvipng/set.c:
