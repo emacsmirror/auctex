@@ -1854,9 +1854,9 @@ value."
 
 (defvar docTeX-indent-inner-fixed
   `((,(concat (regexp-quote TeX-esc)
-	     "\\(begin\\|end\\)[ \t]*{macrocode}") 4 t)
+	     "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") 4 t)
     (,(concat (regexp-quote TeX-esc)
-	     "\\(begin\\|end\\)[ \t]*{macro}") 0 nil))
+	     "\\(begin\\|end\\)[ \t]*{\\(macro\\|environment\\)\\*?}") 0 nil))
   "List of items which should have a fixed inner indentation.
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
@@ -2108,7 +2108,7 @@ outer indentation in case of a commented line.  The symbols
 	      (TeX-brace-count-line)))
 	  ((and (eq major-mode 'doctex-mode)
 		(looking-at (concat (regexp-quote TeX-esc)
-				    "end[ \t]*{macrocode}"))
+				    "end[ \t]*{macrocode\\*?}"))
 		fill-prefix
 		(TeX-in-line-comment))
 	   ;; Reset indentation to zero after a macrocode
