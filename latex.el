@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
-;; Copyright (C) 2003, 2004 Free Software Foundation
+;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex
@@ -1803,8 +1803,8 @@ value."
 The items consist of three parts.  The first is a regular
 expression which should match the respective string.  The second
 is the amount of spaces to be used for indentation.  The third
-toggles if comment padding is relevant or not.  If `t' padding is
-part of the amount given, if `nil' the amount of spaces will be
+toggles if comment padding is relevant or not.  If t padding is
+part of the amount given, if nil the amount of spaces will be
 inserted after potential padding.")
 
 (defun LaTeX-indent-line ()
@@ -2094,9 +2094,10 @@ outer indentation in case of a commented line.  The symbols
 			(t 0))))))))
 
 (defun LaTeX-current-indentation (&optional force-type)
-  "Return the indentation of line.  FORCE-TYPE can be used to
-force the calculation of an inner or outer indentation in case of
-a commented line.  The symbols 'inner and 'outer are recognized."
+  "Return the indentation of a line.
+FORCE-TYPE can be used to force the calculation of an inner or
+outer indentation in case of a commented line.  The symbols
+'inner and 'outer are recognized."
   (if (and fill-prefix
 	   (or (and force-type
 		    (eq force-type 'inner))
@@ -2242,7 +2243,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
 
 (defun LaTeX-fill-region-as-para-do (from to &optional justify
 					  nosqueeze squeeze-after)
-  "Fill the region as one paragraph.
+  "Fill the region defined by FROM and TO as one paragraph.
 It removes any paragraph breaks in the region and extra newlines at the end,
 indents and fills lines between the margins given by the
 `current-left-margin' and `current-fill-column' functions.
@@ -2860,9 +2861,9 @@ depends on the value of `LaTeX-syntactic-comments'."
 
 
 (defun LaTeX-fill-region (from to &optional justify what)
-  "Fill and indent each of the paragraphs in the region as LaTeX text.
-Prefix arg (non-nil third arg, if called from program)
-means justify as well. Fourth arg WHAT is a word to be displayed when
+  "Fill and indent the text in region from FROM to TO as LaTeX text.
+Prefix arg (non-nil third arg JUSTIFY, if called from program)
+means justify as well.  Fourth arg WHAT is a word to be displayed when
 formatting."
   (interactive "*r\nP")
   (save-restriction
@@ -2964,8 +2965,8 @@ see the documentation of `LaTeX-current-environment'."
 	  (error "Can't locate beginning of current environment")))))
 
 (defun LaTeX-mark-environment ()
-  "Set mark to end of current environment and point to the matching begin
-will not work properly if there are unbalanced begin-end pairs in
+  "Set mark to end of current environment and point to the matching begin.
+Will not work properly if there are unbalanced begin-end pairs in
 comments and verbatim environments"
   (interactive)
   (let ((cur (point)))
@@ -4655,7 +4656,7 @@ type and should be used for frequently needed combinations."
 				  (const keepaspectratio))))))
 
 (defcustom LaTeX-includegraphics-strip-extension-flag t
-  "If non-nil, strip known extensions from image file name."
+  "Non-nil means to strip known extensions from image file name."
   :group 'LaTeX-macro
   :type 'boolean)
 
