@@ -1,5 +1,13 @@
 2002-03-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-dvips-sentinel): Treat absence of
+	previews in buffer more graciously.
+	(preview-parse-messages): require space before !name and !offset
+	tags from AUC TeX.
+
+	* prv-emacs.el (preview-auto-reveal, replace-highlight) 
+	(preview-query-replace-reveal): moved.
+
 	* preview.dtx (subsection{The internals}): Remove spurious space
 	via \vsplit.
 	(subsection{The internals}): Set \deadcycles to avoid TeX
