@@ -18,6 +18,7 @@ MAIN: while (<STDIN>) {
     s/\\%/%/g;
 
     # Text-substitution macros
+    s/\@/\@\@/g;
     s/AUC~\\TeX[\\ ]?/\@AUCTeX{}/g;
     s/\\LaTeX[\\ ]?/\@LaTeX{}/g;
     s/\\TeX[\\ ]?/\@TeX{}/g;
@@ -46,12 +47,12 @@ MAIN: while (<STDIN>) {
 
     # Formatting (\cmd is special within {quote})
     s/\\texttt/\@option/g;
-    s/\\marg/ \@var/g;
+    s/\\marg\{([^}]+)\}/\@{\@var{$1}\@}/g;
     s/\\meta/\@var/g;
     s/\\emph/\@emph/g;
     s/\\cmd(\\[\(\)\w]+)/|$1|/g;
     s/\\cmd\{(.*?)\}/|$1|/g;
-    s/\\oarg\{(\w+?)\}/\[\@var{$1}\]/g;
+    s/\\oarg\{([^}]+?)\}/\[\@var{$1}\]/g;
     s/\\char.//g;
     s/\\raggedright\n//g;
     s/\\DescribeEnv\{(.*?)\} /\@item \\begin\@{$1\@}\@dots{}\\end\@{$1\@}\n/;
