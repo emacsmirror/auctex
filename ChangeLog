@@ -1,10 +1,25 @@
 2001-10-01  David Kastrup  <David.Kastrup@t-online.de>
 
-	* Really fixed line number calculation.
+	* tex-buf.el (TeX-region-create):
+	Oops, broke more than I fixed.  Offset calculation must be for the
+	line following the offset message.  This worked before since we always
+	were in the middle of a line (only the offset calculation for the C-c
+	C-r command itself was definitely sometimes wrong).  Corrected that.
 
-	* Fixed line number calculations, introduced
-	TeX-current-offset.  Typo fix in styles/graphicx.el that the byte
-	compiler complained about.
+	* style/graphicx.el (TeX-arg-includegraphics):
+	Fixed an obvious typo complained about by the byte-compiler.  checkdoc
+	removed a few spaces.
+
+	* auc-old.el (TeX-region): Correct offset calculation.
+
+	* tex.el (TeX-current-line):
+	Correct line number calculation when at beginning of line for %n
+	flag.  Autoload TeX-current-offset for that if necessary.
+
+	* tex-buf.el (TeX-current-offset, TeX-command-region,
+	              TeX-region-create):
+	Correct offset calculations when not at start of line.  New function
+	TeX-current-offset for that.
 
 2001-04-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
