@@ -1,3 +1,28 @@
+2001-10-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.02 released.
+
+2001-10-03  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-top-caption-list): New option.
+	(LaTeX-env-figure): Use it.
+	Patch by ataka@milk.freemail.ne.jp (Masayuki Ataka).
+	
+	* style/graphicx.el (TeX-string-numberp): New function.
+	(TeX-arg-includegraphics): Call it.
+	Patch by ataka@milk.freemail.ne.jp (Masayuki Ataka).
+
+	* style/verbatim.sty: New file.
+	Contributed by ataka@milk.freemail.ne.jp (Masayuki Ataka).
+
+	* tex-info.el (texinfo-mode): Comment out cindex.
+	Reported by Kai.Grossjohann@CS.Uni-Dortmund.DE (Kai Groﬂjohann)
+
+	* style/amsmath.el (LaTeX-item-equation, LaTeX-item-equations):
+	New functions.
+	("amsmath"): Add new item types.
+	Patch by ataka@milk.freemail.ne.jp (Masayuki Ataka).
+
 2001-10-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.01 released.

@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-# Version: 11.01
+# Version: 11.02
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -94,7 +94,8 @@ STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/amsopn.el    style/amsthm.el	style/natbib.el \
 	   style/index.el     style/makeidx.el  style/multind.el \
 	   style/varioref.el  style/fancyref.el	style/mdwlist.el \
-	   style/ngerman.el   style/graphicx.el	style/graphics.el
+	   style/ngerman.el   style/graphicx.el	style/graphics.el \
+	   style/verbatim.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
@@ -210,6 +211,7 @@ dist:
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
+foo:
 	rm -f $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex auctex-$(TAG)

@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@ushioda.riec.tohoku.ac.jp>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.2 2001-10-01 10:41:06 dakas Exp $
+;; Version: $Id: graphicx.el,v 1.3 2001-10-03 15:48:05 abraham Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -59,14 +59,23 @@
     (if (or (not (zerop (length figwidth))) (not (zerop (length figheight))) keepaspectratio clip)
 	(progn (insert "[") (setq left-brace-flag t)))
     (if (not (zerop (length figwidth)))
-	(progn (insert "width="figwidth"cm")
-	       (setq width-flag t)))
+	(progn 
+	  (if (TeX-string-numberp figwidth)
+	      (insert "width="figwidth"cm")
+	    (insert "width="figwidth))
+	  (setq width-flag t)))
     (if (and (not (zerop (length figheight))) width-flag)
-	(progn (insert ",height="figheight"cm")
-	       (setq height-flag t))
+	(progn 
+	  (if (TeX-string-numberp figheight)
+	      (insert ",height="figheight"cm")
+	    (insert ",height="figheight))
+	  (setq height-flag t))
       (if (not (zerop (length figheight)))
-	  (progn (insert "height="figheight"cm")
-		 (setq height-flag t))))
+	  (progn
+	    (if (TeX-string-numberp figheight)
+		(insert "height="figheight"cm")
+	      (insert "height="figheight))
+	    (setq height-flag t))))
     (if (not (and height-flag width-flag))
 	(if (and keepaspectratio (or width-flag height-flag))
 	    (insert ",keepaspectratio")
@@ -110,5 +119,9 @@
     (TeX-insert-braces 0)
     (insert psfile)
     ))
+
+(defun TeX-string-numberp (string)
+  (if (string-match "[0-9]*\\.?[0-9]+" string)
+      (not (string-match "[a-zA-Z]" string))))
 
 ;;; graphicx.el ends here

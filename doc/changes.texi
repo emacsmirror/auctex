@@ -1,6 +1,26 @@
 @section News in 11.01
 
 @itemize @bullet
+@item
+New user option @code{LaTeX-top-caption-list} specifies environments
+where the caption should go at top.
+Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+
+@item
+Allow explicit dimensions in @file{graphicx.sty}.
+Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+
+@item
+Limited support for @file{verbatim.sty}.
+Contributed by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+
+@item
+Better support for asmmath items.
+Patch by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
+
+@item
+More accurate error parsing.
+Added by David Kastrup <David.Kastrup@@t-online.de>.
 
 @item
 Bug fixes.
