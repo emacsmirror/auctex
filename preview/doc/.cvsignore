@@ -11,6 +11,7 @@
 *.tp
 *.vr
 INSTALL
+INSTALL.windows
 Makefile
 PROBLEMS
 README

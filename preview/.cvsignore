@@ -3,6 +3,7 @@
 *.log
 *.prv
 INSTALL
+INSTALL.windows
 Makefile
 PROBLEMS
 README
