@@ -983,7 +983,8 @@ The hooks are run in the region buffer, you may use the variable
 	    pos (1+ pos)))
     (while (setq pos (string-match "[~#]" file pos))
       (setq file (replace-match "\\\\string\\&" t nil file 0)
-	    pos (+ pos 8)))))
+	    pos (+ pos 8))))
+  file)
 
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION
