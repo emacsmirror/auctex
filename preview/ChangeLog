@@ -1,3 +1,10 @@
+2002-04-17  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-xemacs.el (preview-supports-image-type):
+	Check against total set of supported image
+	instantiator formats (image types), not just those supported in the
+	current domain.
+
 2002-04-17  Alan Shutko  <ats@acm.org>
 
 	* configure.in: Changes to make TEXMFGEN work on Solaris.  Solaris
