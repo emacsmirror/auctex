@@ -1,5 +1,7 @@
 2004-08-20  David Kastrup  <dak@gnu.org>
 
+	* tex.el (desktop): Save TeX-Omega-mode, too.
+
 	* Makefile.in (full-release): Source rpm is auctex, not
 	auctex-emacs.
 

@@ -606,7 +606,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.436 $"))
+	    (rev "$Revision: 5.437 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -621,7 +621,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-20 00:32:59 $"))
+    (let ((date "$Date: 2004-08-20 04:25:54 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2121,7 +2121,8 @@ The algorithm is as follows:
 
 (eval-after-load 'desktop
   '(progn
-     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode))
+     (dolist (elt '(TeX-master TeX-PDF-mode TeX-interactive-mode
+			       TeX-Omega-mode))
        (unless (member elt (default-value 'desktop-locals-to-save))
 	 (setq-default desktop-locals-to-save
 		       (cons elt (default-value 'desktop-locals-to-save)))))
