@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.5 1994-02-09 00:01:07 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.6 1994-02-10 14:38:03 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-02-09 00:01:07 $|$Revision: 5.5 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-02-10 14:38:03 $|$Revision: 5.6 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -173,8 +173,11 @@ html-read-url.")
 			  nil nil
 			  'html-read-text-history)))
 
+(defvar html-use-w3-build-url nil
+  "*Use `w3-build-url' when prompting for an URL.")
+
 (defun html-read-url (att default)
-  (if (fboundp 'w3-build-url)
+  (if (and html-use-w3-build-url (fboundp 'w3-build-url))
       (call-interactively 'w3-build-url)
     (html-read-text att default)))
 
@@ -787,17 +790,17 @@ insert a `>'. With prefix argument, insert that many `>' characters."
   (if (or arg (bobp) (not (= (preceding-char) ?>)))
       (self-insert-command (prefix-numeric-value arg))
     (delete-backward-char 1)
-    (insert "&lt;")))
+    (insert "&gt;")))
 
 (defun html-insert-ampersand (arg)
   "Insert ampersand for HTML.
-If the cursor is just after a `&', change it to `&lt;', otherwise
+If the cursor is just after a `&', change it to `&amph;', otherwise
 insert a `&'. With prefix argument, insert that many `&' characters."
   (interactive "*P")
   (if (or arg (bobp) (not (= (preceding-char) ?&)))
       (self-insert-command (prefix-numeric-value arg))
     (delete-backward-char 1)
-    (insert "&lt;")))
+    (insert "&amph;")))
 
 (defun html-complete-word ()
   "Complete HTML tag or word before point."
