@@ -8,6 +8,10 @@
 	(preview-delete): after deleting files, set files in overlay to
 	nil since in connection with urgentization we can get multiple
 	deletions.
+	(preview-parse-messages): initialize lfile to "", so that line
+	number caching does not fail when the filename is "nil".
+	(preview-parse-messages): AAAAAARGGG!!!.  Fix the typo that
+	caused O(n^2) parsing time.
 
 2002-04-03  David Kastrup  <David.Kastrup@t-online.de>
 
