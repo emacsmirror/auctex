@@ -522,7 +522,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.343 $"))
+	(rev "$Revision: 5.344 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -537,7 +537,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-28 13:34:01 $"))
+    (let ((date "$Date: 2004-04-05 07:23:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2604,21 +2604,23 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
-	  (let ((file 'TeX-command-on-current);; is this actually needed?
-		(command-list
-		 ((lambda (full-list)
-		    (let (out-list)
-		      (while (car full-list)
-			(let ((entry (pop full-list)))
-			  ;; `(nth 4 entry)' may be either an
-			  ;; atom in case of which the entry
-			  ;; should be present in any mode or a
-			  ;; list of major modes.
-			  (if (or (atom (nth 4 entry))
-				  (memq mode (nth 4 entry)))
-			      (setq out-list (append out-list (list entry))))))
-		      out-list)) TeX-command-list)))
-	    (mapcar 'TeX-command-menu-entry command-list))))
+	  (let ((file 'TeX-command-on-current));; is this actually needed?
+	    (mapcar 'TeX-command-menu-entry
+                    (TeX-mode-specific-command-list mode)))))
+
+(defun TeX-mode-specific-command-list (mode)
+  "Return the list of commands available in the given MODE."
+  (let ((full-list (copy-sequence TeX-command-list))
+        out-list
+        entry)
+    (while (car full-list)
+      (setq entry (pop full-list))
+      ;; `(nth 4 entry)' may be either an atom in case of which the
+      ;; entry should be present in any mode or a list of major modes.
+      (if (or (atom (nth 4 entry))
+              (memq mode (nth 4 entry)))
+          (setq out-list (append out-list (list entry)))))
+    out-list))
 
 ;;; Menus for plain TeX mode
 (easy-menu-define plain-TeX-mode-command-menu
