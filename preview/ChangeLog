@@ -1,3 +1,10 @@
+2001-11-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs): and other groups: set :prefix in
+	defgroup
+	(preview-get-geometry): Oops, make it work if
+	preview-scale-function is a constant instead of a function.
+
 2001-11-06  Alan Shutko  <ats@acm.org>
 
 	* aclocal.m4 (AC_CHECK_AUCTEX): Revert the previous change, since
