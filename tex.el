@@ -143,8 +143,7 @@ performed as specified in TeX-expand-list."
 	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil t)
 	;; --purge %s does not work on unix systems with current texutil
 	;; check again october 2003 --pg
-	;; (list "ConTeXt Clean" "texutil --purge %s" 'TeX-run-interactive nil t))
-	(list "ConTeXt Clean" "texutil --purge" 'TeX-run-interactive nil t))
+	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil t))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -501,7 +500,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.294 $"))
+	(rev "$Revision: 5.295 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +515,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-04-07 13:54:26 $"))
+    (let ((date "$Date: 2003-04-09 18:26:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
