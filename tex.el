@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.376 $"))
+	(rev "$Revision: 5.377 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-29 16:12:27 $"))
+    (let ((date "$Date: 2004-06-01 18:31:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1333,11 +1333,6 @@ Or alternatively:
   "*If non-nil, append a empty pair of braces after inserting a macro."
   :group 'TeX-macro
   :type 'boolean)
-
-(defcustom TeX-no-braces-modes '(texinfo-mode)
-  "List of modes where braces are not useful."
-  :group 'TeX-macro
-  :type '(repeat (symbol :tag "Mode")))
 
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro SYMBOL with completion.

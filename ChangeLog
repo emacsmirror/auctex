@@ -1,3 +1,8 @@
+2004-06-01  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-no-braces-modes): Removed.  Revert unintened
+	addition from 2004-04-19 commit.
+
 2004-05-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-source-specials-map): Fix key binding for XEmacs.
