@@ -115,14 +115,15 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 @node Keys and lisp, Simple customization, Installation, top
 @chapter Key bindings and user-level lisp functions 
 
-To the functions and key bindings in @AUCTeX{} (@inforef{Key
-Index,,auctex}), the following are added:
+@cindex Menu entries
+To the key bindings, lisp functions and menu entries in @AUCTeX{}
+(@inforef{Key Index,,auctex}), the following are added:
 
 @table @w
 @item @kbd{C-c C-c g @key{RET}} 
-Generate preview. This command generates previews for all appropriate
-objects in the current document. Already preset previews are
-re-generated.
+@itemx Command/Generate preview. 
+This command generates previews for all appropriate objects in the
+current document. Already preset previews are re-generated.
 
 You can use the @AUCTeX{} variants starting with @kbd{C-c C-b g
 @key{RET}} and @kbd{C-c C-r g @key{RET}} for generating previews just in
@@ -130,34 +131,36 @@ the current buffer of the document, or a region of it.
 @kindex @kbd{C-c C-c g @key{RET}}
 @kindex @kbd{C-c C-b g @key{RET}}
 @kindex @kbd{C-c C-r g @key{RET}}
-@cindex Generate Preview
 
 @item @kbd{C-c C-p C-d}
 @itemx @code{preview-document} 
+@itemx LaTeX/Preview/Document 
 Run preview on the present document.
 @kindex @kbd{C-c C-p C-d}
 @findex preview-document
 
 @item @kbd{C-c C-p C-b}
 @itemx @code{preview-buffer} 
+@itemx LaTeX/Preview/Buffer
 Run preview on the present buffer.
 @kindex @kbd{C-c C-p C-b}
 @findex preview-buffer
 
 @item @kbd{C-c C-p C-p}
 @itemx @code{preview-at-point}
-On/off at point. If the cursor is positioned on or inside of a preview
-area, this toggles its visibility, regenerating the preview if
-necessary. If not, it will run the surroundings through preview. The
-surroundings include all areas up to the next valid preview, unless
-invalid previews occur before, in which case the area will include the
-last such preview.
+@itemx LaTeX/Preview/On/off at point
+If the cursor is positioned on or inside of a preview area, this
+toggles its visibility, regenerating the preview if necessary. If not,
+it will run the surroundings through preview. The surroundings include
+all areas up to the next valid preview, unless invalid previews occur
+before, in which case the area will include the last such preview.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
 @cindex On/off at point
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
+@itemx LaTeX/Preview/Section
 Run preview on this @LaTeX{} section.
 @kindex @kbd{C-c C-p C-s}
 @findex preview-section
@@ -165,6 +168,7 @@ Run preview on this @LaTeX{} section.
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment (&optional count)}
+@itemx LaTeX/Preview/Environment
 Run preview on @LaTeX{} environment.  The environments in
 @code{preview-inner-environments} are treated as inner levels so that
 for instance, the @code{split} environment in
@@ -178,14 +182,17 @@ levels.
 
 @item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
-Run preview on current region. If called non-interactively, runs preview
-on region between @code{begin} and @code{end}.
+@itemx LaTeX/Preview/Region
+Run preview on current region (between point and mark). If called
+non-interactively, runs preview on region between @code{begin} and
+@code{end}.
 @kindex @kbd{C-c C-p C-r}
 @findex preview-region
 @c @cindex Preview region
 
 @item @kbd{C-c C-p C-i}
 @itemx @code{preview-goto-info-page}
+@itemx LaTeX/Preview/Read Documentation
 Read
 @ifinfo
 this
@@ -194,19 +201,20 @@ this
 the
 @end ifnotinfo
 info manual.
-@kindex @kbd{C-c C-k}
-@cindex Kill preview-generating process
+@kindex @kbd{C-c C-p C-i}
 
 @item @kbd{C-c C-k}
-Kill preview-generating process. This is really an @AUCTeX{} keybinding,
-but it is included here as a hint. If you sart generating a preview and
-then make a change to the buffer, @previewlatex{} may be confused and
-place the previews wrong.
+@itemx LaTeX/TeX Output/Kill Job
+Kills the preview-generating process. This is really an @AUCTeX{}
+keybinding, but it is included here as a hint. If you are generating
+a preview and then make a change to the buffer, @previewlatex{} may be
+confused and place the previews wrong.
 @kindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
+@itemx LaTeX/Preview/Clearout Buffer
 Clear out all previews in current buffer. This makes the current buffer
 lose all previews. If run non-interactively @code{buffer} is cleared out
 from previews, current buffer if nil.
@@ -216,6 +224,7 @@ from previews, current buffer if nil.
 
 @item @kbd{C-c C-p C-c C-r}
 @itemx @code{preview-clearout (&optional start end keep-dir)}
+@itemx LaTeX/Preview/Clearout Region
 Clear out all previews in the current region. When called interactively,
 the current region is used. Non-interactively, the region between
 @code{start} and @code{end} is affected. Those two values default to the
@@ -224,6 +233,18 @@ borders of the entire buffer. If @code{keep-dir} is set to a value from
 kept.
 @kindex @kbd{C-c C-p C-c C-r}
 @findex preview-clearout
+
+@item @kbd{M-x preview-report-bug @key{RET}}
+@itemx @code{preview-report-bug}
+@itemx LaTeX/Preview/Report Bug
+This is the preferred way of reporting bugs as it will fill in what
+version of @previewlatex{} you are using as well as versions of
+relevant other software, and also some of the more important
+settings. Please use this method of reporting, if at all possible and
+before reporting a bug, have a look at @ref{Known problems}.
+@kindex @kbd{M-x preview-report-bug @key{RET}}
+@findex preview-report-bug
+@cindex Report a bug
 @end table
 
 @node Simple customization, Known problems, Keys and lisp, top
