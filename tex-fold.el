@@ -245,14 +245,15 @@ TeX-fold-mode lets you hide and unhide LaTeX macros.
 Interactively, with no prefix argument, toggle the mode.
 With universal prefix ARG (or if ARG is nil) turn mode on.
 With zero or negative ARG turn mode off."
-  nil (global-TeX-fold-mode nil " Fold") TeX-fold-keymap
+  nil nil TeX-fold-keymap
   (if TeX-fold-mode
       (progn
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t))
     (kill-local-variable 'search-invisible)
     (TeX-fold-clearout-buffer)
-    (remove-hook 'post-command-hook 'TeX-fold-post-command t)))
+    (remove-hook 'post-command-hook 'TeX-fold-post-command t))
+  (TeX-set-mode-name))
 
 (provide 'tex-fold)
 
