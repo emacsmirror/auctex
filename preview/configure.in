@@ -3,10 +3,12 @@
 # 8-bit LaTeX test below.  This test only works with
 # autoconf 2.52
 AC_DIVERT_PUSH(DEFAULTS)dnl
-[MY_LANG=$LANG
-MY_LC_CTYPE=$LC_CTYPE
-MY_LC_ALL=$LC_ALL
-MY_LANGUAGE=$LANGUAGE]
+[if test -z "$MY_LANG$MY_LC_CTYPE$MY_LANGUAGE$MY_LC_ALL"; then 
+  MY_LANG=$LANG; export MY_LANG
+  MY_LC_CTYPE=$LC_CTYPE; export MY_LC_CTYPE
+  MY_LANGUAGE=$LANGUAGE; export MY_LANGUAGE
+  MY_LC_ALL=$LC_ALL; export MY_LC_ALL
+fi]
 AC_DIVERT_POP()
 
 AC_INIT(preview-latex,0.7.5,preview-latex-bugs@lists.sourceforge.net)
@@ -125,7 +127,8 @@ if test "$ENABLE8BIT"x = truex ; then
     fi
 fi
 
-TEXMFGEN=["`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.[a-z][a-z][a-z]\)}.*$/\1/p' latex/preview.dtx |egrep '(sty|def|cfg)$' | tr '\012' ' '`"]
+# To match .sty, .def, .cfg, but _not_ .drv
+TEXMFGEN=["`sed -n 's/^%<installer>.*\\file{\([^}.]*\.[sdc][tef][yfg]\)}.*$/\1/p' | tr '\012' ' '`"]
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
