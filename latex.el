@@ -4069,6 +4069,7 @@ commands are defined:
 
     (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
 
+    (define-key map "-" 'LaTeX-babel-insert-hyphen)
     map)
   "Keymap used in `LaTeX-mode'.")
 
@@ -4308,6 +4309,100 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 		     (string :tag "Math Prefix")
 		     (string :tag "Math Suffix")))
 	    (option (sexp :format "Replace\n" :value t)))))
+
+
+;;; Simple Commands
+
+(defcustom LaTeX-babel-hyphen "\"="
+  "String to be used when typing `-'.
+This usually is a hyphen alternatives or hyphenation aid
+provided by (n)german.sty, like \"=, \"~ or \"-.
+
+Set it to an empty string or nil in order to disable this
+feature.  Alter `LaTeX-babel-hyphen-language-alist' in case you
+want to change the behavior for a specific language only."
+  :group 'LaTeX-macro
+  :type 'string)
+
+(defcustom LaTeX-babel-hyphen-after-hyphen t
+  "Control insertion of hyphen strings.
+If non-nil insert normal hyphen on first key press and swap it
+with the (n)german.sty-specific hyphen string specified in the
+variable `LaTeX-babel-hyphen' on second key press.
+If nil do it the other way round."
+  :group 'LaTeX-macro
+  :type 'boolean)
+
+(defcustom LaTeX-babel-hyphen-language-alist nil
+  "Alist controlling hyphen insertion for specific languages.
+It may be used to override the defaults given by `LaTeX-babel-hyphen'
+and `LaTeX-babel-hyphen-after-hyphen' respectively.  The first item
+in each element is a string specifying the language as set by the
+language-specific style file.  The second item is the string to be
+used instead of `LaTeX-babel-hyphen'.  The third element is the
+value overriding `LaTeX-bybel-hyphen-after-hyphen'."
+  :group 'LaTeX-macro
+  :type '(alist :key-type (string :tag "Language")
+		:value-type (group (string :tag "Hyphen string")
+				   (boolean :tag "Insert plain hyphen first"))))
+
+(defvar LaTeX-babel-hyphen-language nil
+  "String determining language-specific behavior of hyphen insertion.
+It serves as an indicator that the babel hyphenation string
+should be used and as a means to find a potential customization
+in `LaTeX-babel-hyphen-language-alist' related to the active
+language.  It is usually set by language-related style files.")
+(make-variable-buffer-local 'LaTeX-babel-hyphen-language)
+
+(defun LaTeX-babel-insert-hyphen (force)
+  "Insert a hyphen string.
+The string can be either a normal hyphen or the string specified
+in `LaTeX-babel-hyphen'.  Wether one or the other is chosen
+depends on the value of `LaTeX-babel-hyphen-after-hyphen' and
+the buffer context.
+If prefix argument FORCE is non-nil, always insert a regular hyphen."
+  (interactive "*P")
+  (if (or force
+	  (zerop (length LaTeX-babel-hyphen))
+	  (not LaTeX-babel-hyphen-language)
+	  ;; FIXME: It would be nice to check for verbatim constructs in the
+	  ;; non-font-locking case, but things like `LaTeX-current-environment'
+	  ;; are rather expensive in large buffers.
+	  (and (fboundp 'font-latex-faces-present-p)
+	       (font-latex-faces-present-p '(font-latex-verbatim-face
+					     font-latex-math-face
+					     font-lock-comment-face)))
+	  (texmathp)
+	  (TeX-in-comment))
+      (call-interactively 'self-insert-command)
+    (let* ((lang (assoc LaTeX-babel-hyphen-language
+			LaTeX-babel-hyphen-language-alist))
+	   (hyphen (if lang (nth 1 lang) LaTeX-babel-hyphen))
+	   (h-after-h (if lang (nth 2 lang) LaTeX-babel-hyphen-after-hyphen))
+	   (hyphen-length (length hyphen)))
+      (cond
+       ;; "= --> -- / -
+       ((string= (buffer-substring (- (point) hyphen-length) (point))
+		 hyphen)
+	(if h-after-h
+	    (progn (delete-backward-char hyphen-length)
+		   (insert "--"))
+	  (delete-backward-char hyphen-length)
+	  (call-interactively 'self-insert-command)))
+       ;; -- --> [+]-
+       ((string= (buffer-substring (- (point) 2) (point)) "--")
+	(call-interactively 'self-insert-command))
+       ;; - --> "= / [+]-
+       ((eq (char-before) ?-)
+	(if h-after-h
+	    (progn (delete-backward-char 1)
+		   (insert hyphen))
+	  (call-interactively 'self-insert-command)))
+       (h-after-h
+	(call-interactively 'self-insert-command))
+       (t (insert hyphen))))))
+
+
 ;;; Mode
 
 (defgroup LaTeX-macro nil
