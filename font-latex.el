@@ -1,23 +1,24 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996 Peter S. Galbraith
+;; Copyright (C) 1996, 1997, 1998 Peter S. Galbraith
  
-;; Authors:    Peter S. Galbraith <galbraith@mixing.qc.dfo.ca>
+;; Authors:    Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
-;; Maintainer: Peter S. Galbraith <galbraith@mixing.qc.dfo.ca>
+;; Maintainer: Peter S. Galbraith <GalbraithP@df0-mpo.gc.ca>
 ;; Created:    06 July 1996
-;; Version:    0.504 (20 Oct 97)
+;; Version:    0.603 (02 July 1998)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.4 1997-10-20 14:30:15 abraham Exp $
+;; RCS $Id: font-latex.el,v 5.5 1998-12-11 16:47:13 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; LCD Archive Entry: (Not yet submitted!)
-;; font-latex|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
+;; font-latex|Peter Galbraith|GalbraithP@df0-mpo.gc.ca|
 ;; LaTeX fontification for font-lock|
 ;; 06-Jul-1996|0.01|~/modes/font-latex.el|
 
-;; The archive is archive.cis.ohio-state.edu in /pub/gnu/emacs/elisp-archive.
+;; The archive is ftp://archive.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive/
+;;            or http://ftp.digital.com/pub/GNU/elisp-archive/
 
 ;;; This file is not part of GNU Emacs.
 
@@ -41,6 +42,11 @@
 
 ;; New versions of this package (if they exist) may be found at:
 ;;  ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/font-latex.el
+
+;; ** Infinite loops !? **
+;;  If you get an infinite loop, send me a bug report!
+;;  Then set the following in your ~/.emacs file to keep on working:
+;;   (setq font-latex-do-multi-line nil)
 
 ;; Description:
 ;;  This package enhances font-lock fontification patterns for LaTeX.
@@ -138,6 +144,33 @@
 ;;    instead of `highlighting 1: \(^\|[^\\]\)\(\\[a-zA-Z\\]+\)'
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.603 02July98 PSG (RCS V1.61)
+;;    Squashed another infinite loop.
+;; V0.602 02July98 PSG (RCS V1.60)
+;;    Added 'font and 'infont keywords to narrow cache triggers.
+;; V0.601 02July98 PSG (RCS V1.59)
+;;    Added new font-latex-find-matching-close function to replace scan-sexp.
+;;    It now searches for matching {} or [] when scan-sexp fails.
+;; V0.600 16June98 PSG (RCS V1.58)
+;;    Rewrote the cache method again.
+;; V0.512 07Apr98 Stephen R. Anderson <sra@bloch.ling.yale.edu> (RCS V1.57)
+;;    xemacs beta 20.5 sets the major version to 21.
+;; V0.511 07Apr98 PSG (RCS V1.55)
+;;    {\bf ...} multi-line cache related infinite loop fixed.
+;; V0.510 19Mar98 PSG (RCS V1.54)
+;;    More multi-line cache related infinite loops fixed.
+;; V0.509 20Feb98 PSG (RCS V1.53)
+;;    XEmacs infinite loop in font-latex-match-font-inside-braces cache.
+;; V0.508 06Feb98 PSG (RCS V1.51)
+;;    Created font-latex-match-textual; changed font-latex-math-face colour.
+;; V0.507 30Jan98 PSG (RCS V1.50)
+;;    Removed font-latex-find-matching-close because it broke the cache.
+;;    Rewrote the cache method.  Ouch!
+;; V0.506 08Jan98 PSG (RCS V1.48)
+;;    Added variables font-latex-match-variable, font-latex-match-function
+;;    font-latex-match-reference (built using reexp-opt).
+;; V0.505 07Jan98 PSG (RCS V1.47)
+;;    XEmacs20 has defface.
 ;; V0.504 20Oct97 Kevin Ruland <kruland@seistl.com> (RCS V1.46)
 ;;    Fixed the real bug in font-latex-match-command-outside-arguments
 ;; V0.503 16Oct97 PSG (RCS V1.45)
@@ -227,6 +260,10 @@
 ;;; Code:
 (require 'font-lock)
 
+(defvar font-latex-do-multi-line t
+  "*Set this to nil to disable the multi-line fontification 
+prone to infinite loop bugs.")
+
 (defvar font-latex-warning-face			'font-latex-warning-face
   "Face to use for LaTeX major keywords.")
 (defvar font-latex-sedate-face			'font-latex-sedate-face
@@ -238,6 +275,133 @@
 (defvar font-latex-math-face			'font-latex-math-face
   "Face to use for LaTeX math environments.")
 
+(defvar font-latex-match-variable
+  (concat 
+   "\\\\" "\\("
+;;;(regexp-opt
+;;; '("setlength" "settowidth" "setcounter" "addtolength" "addtocounter"))
+   "addto\\(counter\\|length\\)\\|set\\(counter\\|length\\|towidth\\)"
+   "\\)\\>")
+  "font-latex regexp to match LaTeX variable keywords.")
+
+(defvar font-latex-match-reference
+  (concat 
+   "\\\\" "\\("
+;;;(regexp-opt
+;;; '("nocite" "cite" "label" "pageref" "vref" "eqref" "ref"
+;;;   "include" "input" "bibliography"
+;;;   "index" "glossary" "footnote" "footnotemark" "footnotetext"))
+   "bibliography\\|cite[a-zA-Z]*\\|eqref\\|footnote\\(mark\\|text\\)?\\|"
+   "glossary\\|in\\(clude\\|dex\\|put\\)\\|label\\|nocite\\|pageref\\|ref\\|"
+   "vref"
+   "\\)\\>")
+  "font-latex regexp to match reference keywords.")
+  
+(defvar font-latex-match-function
+  (concat 
+   "\\\\" "\\("
+;;;(regexp-opt
+;;; '("begin" "end"
+;;;   "pagenumbering"
+;;;   "thispagestyle" "pagestyle"
+;;;   "nofiles" "includeonly"
+;;;   "bibliographystyle" "documentstyle" "documentclass"
+;;;   "newenvironment" "newcommand" "newlength" "newtheorem" "newcounter"
+;;;   "renewenvironment" "renewcommand" "renewlength" "renewtheorem" 
+;;;   "renewcounter"
+;;;   "usepackage" "fbox" "mbox" "sbox" "vspace" "hspace"))
+   "b\\(egin\\|ibliographystyle\\)\\|document\\(class\\|style\\)\\|"
+   "end\\|fbox\\|hspace\\|includeonly\\|mbox\\|"
+   "n\\(ew\\(co\\(mmand\\|unter\\)\\|environment\\|length\\|theorem\\)"
+       "\\|ofiles\\)\\|"
+    "page\\(numbering\\|style\\)\\|"
+    "renew\\(co\\(mmand\\|unter\\)\\|environment\\|length\\|theorem\\)\\|"
+    "sbox\\|thispagestyle\\|usepackage\\|vspace"
+   "\\)\\>")
+  "font-latex regexp to match LaTeX function keywords.")
+
+(defvar font-latex-match-textual
+  (concat 
+   "\\\\" "\\("
+;;;(regexp-opt
+;;; '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
+;;;   "part" "chapter" "section" "subsection" "subsubsection" 
+;;;   "paragraph" "subparagraph" "subsubparagraph" 
+;;;   "title" "author" "date" "thanks" "address"
+;;;   "caption"))
+   "a\\(ddress\\|uthor\\)\\|c\\(aption\\|hapter\\)\\|date\\|item\\|"
+   "par\\(agraph\\|t\\)\\|"
+   "s\\(ection\\|"
+       "ub\\(paragraph\\|s\\(ection\\|ub\\(paragraph\\|section\\)\\)\\)\\)\\|"
+   "t\\(hanks\\|itle\\)"
+   "\\)\\>")
+  "font-latex regexp to match LaTeX function with text arguemnt.")
+
+
+(defvar font-latex-keywords-1
+  (list
+   ;; FIXME: Maybe I should put this in a function, use override but let
+   ;;        the function determine if commented-out.
+   (list (concat 
+          "\\\\" "\\("
+;;; (regexp-opt
+;;;  '("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
+;;;    "enlargethispage" "nolinebreak" "linebreak" "newline"
+;;;    "-" "\\" "\\*" "displaybreak" "allowdisplaybreaks"))
+          "\\\\\\*\\|allowdisplaybreaks\\|clear\\(doublepage\\|page\\)\\|"
+          "displaybreak\\|enlargethispage\\|linebreak\\|"
+          "n\\(ew\\(line\\|page\\)\\|o\\(linebreak\\|pagebreak\\)\\)\\|"
+          "pagebreak\\|[\\-]"
+          
+          "\\)")
+	 '(0 font-latex-warning-face))
+   '("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)        ;;; $$...$$
+   '(font-latex-match-quotation . font-latex-string-face)     ;;; ``...''
+   '(font-latex-match-font-outside-braces		      ;;;\textit{text}
+     (0 font-lock-keyword-face
+        append                         ;Override? [t 'keep 'prepend 'append]
+        ;; Can't use prepend because that overwrites syntax fontification
+        ;; e.g. comments.
+        t)                              ;Laxmatch? if t, do not signal error
+     (1 font-latex-italic-face append t)
+     (2 font-latex-bold-face append t)
+     (3 font-lock-type-face append t))
+   '(font-latex-match-font-inside-braces		      ;;;{\it text}
+     (0 font-lock-keyword-face append t)
+     (1 font-latex-italic-face append t)
+     (2 font-latex-bold-face append t)
+     (3 font-lock-type-face append t)))
+  "Subdued level highlighting for LaTeX modes.")
+
+(defvar font-latex-keywords-2
+  (append font-latex-keywords-1
+   '((font-latex-match-reference                              ;;;\cite
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;    [opt]
+      (2 font-lock-reference-face append t))                 ;;;         {key}
+     (font-latex-match-function                               ;;;\documentclass
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-lock-function-name-face append t))             ;;;        {text}
+     (font-latex-match-textual                               ;;;\section
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-lock-type-face append t))                      ;;;        {text}
+     (font-latex-match-variable
+      (0 font-lock-keyword-face nil t)
+      (1 font-lock-variable-name-face append t)
+      (2 font-lock-variable-name-face append t))
+     (font-latex-match-math-env 
+      (0 font-latex-math-face append t))         	      ;;;\(...\)
+     (font-latex-match-math-envII                             ;;;Math environ.
+      (0 font-latex-math-face append t))
+     ("\\\\[@A-Za-z]+"                                        ;;;Other commands
+      (0 font-latex-sedate-face append))))
+  "High level highlighting for LaTeX modes.")
+
+(defvar font-latex-keywords font-latex-keywords-1
+  "Default expressions to highlight in TeX mode.")
+
 ;; End-User can stop reading here.
 
 ;; Make sure font-latex.el is supported.  I don't claim to have tested this...
@@ -246,11 +410,22 @@
       (and (= emacs-major-version 19) (< emacs-minor-version 29)))
     (error "`font-latex' was written for Emacs 19.29/XEmacs 19.14 or later"))
 
-(defvar font-latex-is-XEmacs
-  (not (null (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))))
-
+(defvar font-latex-is-XEmacs19
+  (and (not (null (save-match-data 
+                    (string-match "XEmacs\\|Lucid" emacs-version))))
+       (= 19 emacs-major-version)))
+(defvar font-latex-is-XEmacs20
+  (and (not (null (save-match-data 
+                    (string-match "XEmacs\\|Lucid" emacs-version))))
+       (<= 20 emacs-major-version)))    ;xemacs-beta-20.5 sets it to version 21
+(defvar font-latex-is-Emacs19
+  (and (not font-latex-is-XEmacs19) 
+       (not font-latex-is-XEmacs20) 
+       (= 19 emacs-major-version)))
 (defvar font-latex-is-Emacs20
-  (and (not font-latex-is-XEmacs) (= 20 emacs-major-version)))
+  (and (not font-latex-is-XEmacs19) 
+       (not font-latex-is-XEmacs20) 
+       (= 20 emacs-major-version)))
 
 (defvar font-latex-string-face nil
   "Face to use for strings.  This is set by Font LaTeX.")
@@ -262,7 +437,8 @@
   (require 'cl))
 
 (cond
- (font-latex-is-Emacs20
+ ((or font-latex-is-Emacs20 
+      font-latex-is-XEmacs20)
   (defface font-latex-bold-face
     '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
       (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))
@@ -291,8 +467,8 @@
        (:foreground "DimGray" :underline t))
       (((class grayscale) (background dark)) 
        (:foreground "LightGray" :underline t))
-      (((class color) (background light)) (:foreground "green4"))
-      (((class color) (background dark))  (:foreground "LightSeaGreen"))
+      (((class color) (background light)) (:foreground "SaddleBrown"))
+      (((class color) (background dark))  (:foreground "burlywood"))
       (t (:underline t)))
     "Font Lock mode face used to highlight math in LaTeX."
     :group 'font-latex-highlighting-faces)
@@ -307,13 +483,20 @@
     "Font Lock mode face used to highlight sedate stuff in LaTeX."
     :group 'font-latex-highlighting-faces)
 
-  (copy-face 'font-lock-warning-face 'font-latex-warning-face)
-  (copy-face 'font-lock-string-face 'font-latex-string-face))
- ((not font-latex-is-XEmacs)
-  ;;; emacs:
-  ;; Otherwise I overwrite fock-lock-face-attributes.
-  ;; font-lock.el needs a better way to add these faces!        
+  (copy-face 'font-lock-string-face 'font-latex-string-face)
+  (if font-latex-is-Emacs20
+      (copy-face 'font-lock-warning-face 'font-latex-warning-face)
+    (defface font-latex-warning-face
+      '((((class grayscale)(background light))(:foreground "DimGray" :bold t))
+        (((class grayscale)(background dark))(:foreground "LightGray" :bold t))
+        (((class color)(background light))(:foreground "red" :bold t ))
+        (((class color)(background dark))(:foreground "red" :bold t ))
+        (t (:bold t)))
+      "Font Lock for LaTeX major keywords."
+      :group 'font-latex-highlighting-faces)))
+ (font-latex-is-Emacs19
   (if (not font-lock-face-attributes)
+      ;; Otherwise I overwrite fock-lock-face-attributes.
       (font-lock-make-faces))
   (unless (assq 'font-latex-sedate-face font-lock-face-attributes)
     (cond 
@@ -340,7 +523,7 @@
                  ;;;       Should I change to a (copy-face) scheme?
             '((font-latex-bold-face "DarkOliveGreen" nil t nil nil)
               (font-latex-italic-face "DarkOliveGreen" nil nil t nil)
-              (font-latex-math-face "green4")
+              (font-latex-math-face "SaddleBrown")
               (font-latex-sedate-face "grey50")
               (font-latex-warning-face "red" nil t nil nil)))))
     (t			; dark colour background
@@ -349,12 +532,12 @@
             font-lock-face-attributes
             '((font-latex-bold-face "OliveDrab" nil t nil nil)
               (font-latex-italic-face "OliveDrab" nil nil t nil)
-              (font-latex-math-face "LightSeaGreen")
+              (font-latex-math-face "burlywood")
 	      ;; good are > LightSeaGreen, LightCoral, coral, orchid, orange
               (font-latex-sedate-face "grey60")
               (font-latex-warning-face "red" nil t nil nil))))))))
  (t
-  ;;; XEmacs:
+  ;;; XEmacs19:
   (make-face 'font-latex-string-face "Face to use for LaTeX string.")
   (copy-face 'font-lock-string-face 'font-latex-string-face)
 
@@ -394,7 +577,7 @@
 	    nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
 	    (font-lock-comment-start-regexp . "%")
 	    (font-lock-mark-block-function . mark-paragraph))))
-   (font-latex-is-XEmacs
+   ((or font-latex-is-XEmacs19 font-latex-is-XEmacs20)
     ;; Cool patch from Christoph Wedler...
     (let (instance)
       (mapcar (function
@@ -424,7 +607,7 @@
 	    (font-lock-comment-start-regexp . "%")
 	    (font-lock-mark-block-function . mark-paragraph))))))
 
-(when font-latex-is-XEmacs
+(when (or font-latex-is-XEmacs19 font-latex-is-XEmacs20)
     (put 'latex-mode 'font-lock-defaults
          '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
            nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
@@ -436,132 +619,86 @@
     (put 'japanese-LaTeX-mode 'font-lock-defaults 'latex-mode)
     (put 'LATeX-MoDe	'font-lock-defaults 'latex-mode)
     (put 'lATEx-mODe	'font-lock-defaults 'latex-mode))
-
-(defconst font-latex-keywords-1
-  (list
-   ;; FIXME: Maybe I should put this in a function, use override but let
-   ;;        the function determine if commented-out.
-   (list (concat "\\\\\\(\\(no\\)?pagebreak\\|\\(new\\|clear\\(double\\)?\\)"
-		 "page\\|enlargethispage\\|\\(no\\)?linebreak\\|newline\\|"
-		 "-\\|\\\\\\(\*\\)?\\|displaybreak\\|allowdisplaybreaks\\)")
-	 '(0 font-latex-warning-face))
-   '("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)        ;;; $$...$$
-   '(font-latex-match-quotation . font-latex-string-face)     ;;; ``...''
-   '(font-latex-match-font-outside-braces		      ;;;\textit{text}
-     (0 font-lock-keyword-face
-        append                         ;Override? [t 'keep 'prepend 'append]
-        ;; Can't use prepend because that overwrites syntax fontification
-        ;; e.g. comments.
-        t)                              ;Laxmatch? if t, do not signal error
-     (1 font-latex-italic-face append t)
-     (2 font-latex-bold-face append t)
-     (3 font-lock-type-face append t))
-   '(font-latex-match-font-inside-braces		      ;;;{\it text}
-     (0 font-lock-keyword-face append t)
-     (1 font-latex-italic-face append t)
-     (2 font-latex-bold-face append t)
-     (3 font-lock-type-face append t)))
-  "Subdued level highlighting for LaTeX modes.")
-
-(defconst font-latex-keywords-2
-  (append font-latex-keywords-1
-   '((font-latex-match-reference                              ;;;\cite
-      (0 font-lock-keyword-face append t)
-      (1 font-lock-variable-name-face append t)              ;;;    [opt]
-      (2 font-lock-reference-face append t))                 ;;;         {key}
-     (font-latex-match-function                               ;;;\section
-      (0 font-lock-keyword-face append t)
-      (1 font-lock-variable-name-face append t)              ;;;   [opt]
-      (2 font-lock-function-name-face append t))             ;;;        {text}
-     (font-latex-match-variable
-      (0 font-lock-keyword-face nil t)
-      (1 font-lock-variable-name-face nil t)
-      (2 font-lock-variable-name-face nil t))
-     (font-latex-match-math-env 
-      (0 font-latex-math-face append t))         	      ;;;\(...\)
-     (font-latex-match-math-envII                             ;;;Math environ.
-      (0 font-latex-math-face append t))
-     ("\\\\[@A-Za-z]+"                                        ;;;Other commands
-      (0 font-latex-sedate-face append))))
-  "High level highlighting for LaTeX modes.")
-
-(defvar font-latex-keywords font-latex-keywords-1
-  "Default expressions to highlight in TeX mode.")
 
 
 (defun font-latex-match-reference (limit)
-  (font-latex-match-command-outside-arguments
-   (eval-when-compile
-     (concat "\\\\" "\\("
-	     (mapconcat 'identity 
-	      '("[A-Za-z]*cite[A-Za-z]*" "label" "\\(page\\|v\\|eq\\)?ref"
-		"index" "glossary" "\\(footnote\\(mark\\|text\\)?\\)")
-	      "\\|")
-      "\\)\\>"))
-   limit nil nil))
+  (if font-latex-match-reference
+      (font-latex-match-command-outside-arguments font-latex-match-reference
+;;;   (eval-when-compile
+;;;     (concat "\\\\" "\\("
+;;;             (mapconcat 'identity 
+;;;              '("[A-Za-z]*cite[A-Za-z]*" "label" "\\(page\\|v\\|eq\\)?ref"
+;;;                "index" "glossary" "\\(footnote\\(mark\\|text\\)?\\)")
+;;;              "\\|")
+;;;      "\\)\\>"))
+                                                  limit nil nil)))
 
 (defun font-latex-match-function (limit)
+  "Fontify things like \\documentclass{article}"
+  (if font-latex-match-function
+      (font-latex-match-command-outside-arguments font-latex-match-function
+                                                  limit nil t)))
+(defun font-latex-match-textual (limit)
   "Fontify things like \\section{text}"
-  (font-latex-match-command-outside-arguments
-   (eval-when-compile
-     (concat "\\\\" "\\("
-      (mapconcat 'identity 
-       ;; \\*? doesn't work with \\> at the end of the regexp.
-       ;; Instead, allow `*' for all commands (!)
-       '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
-         "include" "input" "bibliography"
-	 "part" "chapter" "\\(sub\\)*section" "\\(sub\\)*paragraph"
-	 "begin" "end"
-	 "title" "author" "date" "thanks" "address"
-	 "pagenumbering"
-	 "\\(this\\)?pagestyle"
-	 "nofiles" "includeonly"
-	 "bibliographystyle" "\\(document\\(style\\|class\\)\\)"
-	 "\\(re\\)?new\\(environment\\|command\\|length\\|theorem\\|counter\\)"
-	 "usepackage" "caption" "\\(f\\|m\\|s\\)box" "\\(v\\|h\\)space")
-       "\\|")
-      "\\)\\>"))
-   limit nil t))
-
+  (if font-latex-match-textual
+      (font-latex-match-command-outside-arguments font-latex-match-textual
+                                                  limit nil t)))
 (defun font-latex-match-variable (limit)
   "Fontify things like \\newcommand{stuff}"
-  (font-latex-match-command-outside-arguments
-   (eval-when-compile
-     (concat "\\\\" "\\("
-	     "set\\(length\\|towidth\\|counter\\)\\|"
-	     "addto\\(length\\|counter\\)"
-             "\\)\\>"))
-   limit t nil))
+  (if font-latex-match-variable
+      (font-latex-match-command-outside-arguments font-latex-match-variable
+                                                  limit t nil)))
 
-;;
 ;; font-latex-find-matching-close is a little helper function which
 ;; is used like scan-sexp.  It skips over matching
 ;; pairs of '{' and '}'.  As an added benefit, it ignores any characters
 ;; which occur after the tex comment character %.
-(defun font-latex-find-matching-close (closechar)
-"*Skip over matching pairs of '{' and '}', ignoring
-any characters in comments, until closechar is found.  If the end of file
-is reached, return nil."
-  (save-excursion
-    (save-match-data
-      (let ((mycount 1))
-	(while (and (> mycount 0)
-		    (progn
-		      (backward-char 1)
-		      (re-search-forward
-		       (concat "[^\\\\]["
-			       ;; closechar might be ]
-			       ;; and therefor must be first in regexp
-			       (char-to-string closechar)
-			       "{}%]")
-		       nil t)))
-	  (if (= (preceding-char) ?%) ;; Found a comment
-	      (forward-line 1)
-	    (setq mycount (if (= (preceding-char) ?{)
-			      (+ mycount 1)
-			    (- mycount 1)))))
-	(if (= mycount 0)
-	    (point))))))
+(defun font-latex-find-matching-close (openchar closechar)
+  "Skip over matching pairs of { } or [ ], ignoring comments"
+  (let ((parse-sexp-ignore-comments t) ; scan-sexps ignores comments
+        (init-point (point))
+        (status))
+    (if (condition-case nil
+            (goto-char (scan-sexps (point) 1))
+          (error))
+        ;; No error code.  See if closechar is quoted
+        (if (save-excursion (backward-char 1) (= (preceding-char) ?\\))
+            (setq status nil)
+          (setq status t))
+      ;; Terminated in error -- Try ourselves
+      (setq status nil))
+    (if status
+        t
+      (goto-char init-point)
+      (let ((target)
+            (mycount 1))
+        (save-excursion
+          (save-match-data
+            (forward-char 1)
+            (while (and (> mycount 0)
+                        (progn
+                          (re-search-forward
+                           (concat "["
+                                   ;; closechar might be ]
+                                   ;; and therefor must be first in regexp
+                                   (char-to-string closechar)
+                                   (char-to-string openchar)
+                                   "]")
+                           nil t)))
+              (cond 
+               ((font-latex-commented-outp)
+                (forward-line 1))
+               ((save-excursion (backward-char 1) (= (preceding-char) ?\\))
+                nil)
+               (t
+                (setq mycount (if (= (preceding-char) openchar)
+                                  (+ mycount 1)
+                                (- mycount 1))))))
+            (setq target (point))
+            (if (not (= mycount 0))
+                nil)))
+        (if (= mycount 0)
+            (goto-char target))))))
 
 ;; FIXME: --About font-latex-commented-outp--
 ;; Fontification is *slower* for affected functions (in particular
@@ -586,23 +723,118 @@ is reached, return nil."
             t
           nil)))))
 
-(defvar font-latex-match-command-cache-state nil
-  "Cache state of unterminated match to fontify")
-(defvar font-latex-match-command-cache-start nil
-  "Cache start of unterminated match to fontify")
-(defvar font-latex-match-command-cache-limit nil
-  "Cache end of unterminated match to fontify")
-(defvar font-latex-match-command-cache-keywords nil
-  "Cache keywords of unterminated match to fontify")
-(make-variable-buffer-local 'font-latex-match-command-cache-state)
-(make-variable-buffer-local 'font-latex-match-command-cache-start)
-(make-variable-buffer-local 'font-latex-match-command-cache-limit)
-(make-variable-buffer-local 'font-latex-match-command-cache-keywords)
+;;;;------------------
+;;;; Cache Method:
+;;;
+;;; This works:
+;;; 
+;;; (defun font-latex-set-cache (cache-id)
+;;;   (let ((cache (intern cache-id)))
+;;;     (set cache (list (point) (point-max)))))
+;;; (defun font-latex-get-cache (cache-id item)
+;;;   (let ((cache (intern cache-id)))
+;;;     (nth item (symbol-value cache))))
+;;; (font-latex-set-cache "font-latex-match-command-cache")
+;;; (font-latex-get-cache "font-latex-match-command-cache" 1)
+;;;
+;;; but let's use symbols instead:
+
+;;; Hacker's note: I haven't tested extensively using lazy-lock, which
+;;; apparently fontifies the entire visble page instead of just the current
+;;; line.  This could actually be slower than not using lazy-lock using the
+;;; current code.  Perhaps there's an opportunity to take advantage of
+;;; lazy-lock with alternate coding.
+
+;;; Hacker's note: If this method leads to infinite loops again, I could
+;;; change the cache method to something like:
+;;;  - When the pattern is un-finished, simply store the limit in the cache.
+;;;    and the regexp to match the termination.
+;;;  - When checking the cache, check to see if we're at the limit, and if
+;;;    so fontify the text directly like at point limit-1 (instead of
+;;;    letting font-lock itself set the font!) until either the regexp match
+;;;    is found or set another cache at the new limit
+;;;  - the scheme must allow a newline to be correctly fontified, and well
+;;;    as new characters on the same line as the first cache.  (How?)
+
+(defun font-latex-set-cache (cache-id kbeg kend limit keywords match-list)
+  "cache in symbol CACHE-ID the following info:
+KBEG and KEND: beginning and end points of the LaTeX keyword (e.g. \"section\")
+LIMIT:         up to where fontification is done.
+KEYWORDS:      the font-lock regexp that initiated the cache.
+MATCH LIST:    the match list that was returned to font-lock
+
+The INITIAL POINT from which we last moved is stored in the same cache, but 
+it's done elsewhere.  We will never fontify the same MATCH LIST twice in a 
+row from same INITIAL POINT."
+;debug  (message "Setting cache!")
+  (let ((ini-point (nth 5 (symbol-value cache-id)))
+        (oldlimit (nth 6 (symbol-value cache-id))))
+    (set cache-id 
+         (list kbeg kend limit keywords match-list ini-point oldlimit))))
+
+(defun font-latex-get-cache (cache-id item)
+"Retrieve info from cache in symbol CACHE-ID
+ 0: kbegin
+ 1: kend
+ 2: limit
+ 3: keywords
+ 4: match-list from last succesful cache
+ 5: initial point from which we last moved
+ 6: limit when we last moved"
+  (let ((cache (symbol-value cache-id)))
+    (nth item cache)))
+
+(defun font-latex-check-cache (cache-id keywords limit)
+  "Check that current parameters are consistent with cache to move point.
+If we move point, alter the last entry in the cache to indicate from where 
+we moved and the current limit.
+Return t if we move, false if we don't."
+  (let ((the-point (point))
+        (kbeg (font-latex-get-cache cache-id 0))
+        (inip (or (font-latex-get-cache cache-id 5) 0))
+        (oldlimit (or (font-latex-get-cache cache-id 6) 0)))
+    (when 
+        (and 
+         font-latex-do-multi-line
+         kbeg                           ;; Check that cache is actually set
+         (equal keywords (font-latex-get-cache cache-id 3))
+;debug   (message "1- cache: %s" (symbol-name cache-id))
+;debug   (message "1- keywords are the same; next compare point %s to %s" 
+;debug            the-point (font-latex-get-cache cache-id 1))
+         (not (= the-point (font-latex-get-cache cache-id 1)))
+;debug   (message "2- Not on end of keyword %s != %s; next after kbeg %s" 
+;debug            the-point (font-latex-get-cache cache-id 1) kbeg)
+         (< kbeg the-point)
+;debug   (message "3- After beginning of keyword at %s; next within limit %s"
+;debug            kbeg (font-latex-get-cache cache-id 2))
+         (<= the-point (font-latex-get-cache cache-id 2))
+;debug   (message "4- Within limit at %s" (font-latex-get-cache cache-id 2))
+;debug   (message "5- Same limit as last time?: %s vs %s  Point greater? %s > %s" 
+;debug            limit oldlimit the-point inip)
+         (or (< the-point inip) (not (= limit oldlimit)))
+;debug   (message "6- Is %s on same line as %s?" the-point kbeg)
+         (font-latex-not-on-same-line-as kbeg))
+;debug   (message "7- moving from %s to %s!" the-point kbeg)
+      (goto-char kbeg)
+      (let* ((cache (symbol-value cache-id))
+             (e0 kbeg)
+             (e1 (nth 1 cache))
+             (e2 (nth 2 cache))
+             (e3 (nth 3 cache))
+             (e4 (nth 4 cache)))
+        (set cache-id (list e0 e1 e2 e3 e4 the-point limit)))
+      t)))
+
+;;;;-----
+
+(defvar font-latex-match-command-cache nil
+  "Cache for font-latex-match-command")
+(make-variable-buffer-local 'font-latex-match-command-cache)
 
 ;; FIXME - Note to myself 
 ;; In call to font-latex-match-command-outside-arguments, I could arrange
 ;; such that keywords which cannot use [options] have this set to nil.
-;; LaTeX code woulldn't fontify if options are used illegally in commands,
+;; LaTeX code wouldn't fontify if options are used illegally in commands,
 ;; cuing users in that they are doing something wrong.  (See RCS V1.11 for
 ;; useopt option)
 ;;
@@ -624,95 +856,77 @@ Sets `match-data' so that:
  subexpression 1 is the contents of any following [...] forms 
  subexpression 2 is the contents of any following {...} forms.  
 Returns nil if none of KEYWORDS is found."
-  ;; Prior incomplete match?
-  (if font-latex-match-command-cache-state
-      (setq font-latex-match-command-cache-state nil) ;Stop now!
-    (when (and font-latex-match-command-cache-keywords
-               (equal font-latex-match-command-cache-keywords keywords)
-               (>= font-latex-match-command-cache-limit (point))
-               (<  font-latex-match-command-cache-start (point)))
-      (goto-char font-latex-match-command-cache-start)
-      (setq font-latex-match-command-cache-state 'stop)) ;Can only do once
+  (let ((we-moved (font-latex-check-cache 
+                   'font-latex-match-command-cache keywords limit)))
     (when (re-search-forward keywords limit t)
-      (let ((this-start (match-beginning 0)))
-        (cond
-         ((font-latex-commented-outp)
-          ;; Return a nul match such that we skip over this pattern.
-          ;; (Would be better to skip over internally to this function)
-          (store-match-data (list nil nil))
-          t)
-         (t
-          (let ((kbeg (match-beginning 0))
-                (kend (match-end 0)) 
-                sbeg send cbeg cend)
-            (goto-char kend)            ;May be moved by asterix
-            (if (and asterix (eq (following-char) ?\*))
-                (forward-char 1)) 
-            (skip-chars-forward " \n\t" limit)
-            (setq kend (point))
-            (while (eq (following-char) ?\[)
-              (setq sbeg (1+ kend))   ;Be shure to set sbeg relative to kend
-              (forward-char 1)
-              (save-restriction
-                ;; Restrict to LIMIT.
-                (narrow-to-region (point-min) limit)
-                (if (condition-case nil
-                        (goto-char (or (font-latex-find-matching-close ?\])
-				       (point-max)))
-                      (error))
-                    (setq send (1- (point)))
-                  (setq send (point-max))
-                  (goto-char send)
-                  (setq font-latex-match-command-cache-state 'stop))))
+      (cond
+       ((font-latex-commented-outp)
+        ;; Return a nul match such that we skip over this pattern.
+        ;; (Would be better to skip over internally to this function)
+        (store-match-data (list nil nil))
+        t)
+       (t
+        (let ((kbeg (match-beginning 0)) 
+              kend sbeg send cbeg cend
+              cache-reset
+              (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
+          (goto-char (match-end 0))
+          (if (and asterix (eq (following-char) ?\*))
+              (forward-char 1)) 
+          (skip-chars-forward " \n\t" limit)
+          (setq kend (point))
+          (while (eq (following-char) ?\[)
+            (setq sbeg kend)
+            (save-restriction
+              ;; Restrict to LIMIT.
+              (narrow-to-region (point-min) limit)
+              (if (font-latex-find-matching-close ?\[ ?\])
+                  (setq send (point))
+                (setq cache-reset t)
+                (setq send (point-max))
+                (goto-char send))))
+          (skip-chars-forward " \n\t" limit)
+          (when (eq (following-char) ?\{)
+            (setq cbeg (point))
+            (save-restriction
+              ;; Restrict to LIMIT.
+              (narrow-to-region (point-min) limit)
+              (if (font-latex-find-matching-close ?\{ ?\})
+                  (setq cend (point))
+                (setq cache-reset t)
+                (setq cend (point-max))
+                (goto-char cend))))
+          (when twoargs
             (skip-chars-forward " \n\t" limit)
             (when (eq (following-char) ?\{)
-              (forward-char 1)
-              (setq cbeg (point))
               (save-restriction
                 ;; Restrict to LIMIT.
                 (narrow-to-region (point-min) limit)
-                (if (condition-case nil
-                        (goto-char (or (font-latex-find-matching-close ?\})
-                                       (point-max)))
-                      (error))
-                    (setq cend (1- (point)))
+                (if (font-latex-find-matching-close ?\{ ?\})
+                    (setq cend (point))
+                  (setq cache-reset t)
                   (setq cend (point-max))
-                  (goto-char cend)
-                  (setq font-latex-match-command-cache-state 'stop))))
-            (when twoargs
-              (skip-chars-forward " \n\t" limit)
-              (when (eq (following-char) ?\{)
-                (forward-char 1)
-                (save-restriction
-                  ;; Restrict to LIMIT.
-                  (narrow-to-region (point-min) limit)
-                  (if (condition-case nil
-                          (goto-char (or (font-latex-find-matching-close ?\})
-                                         (point-max)))
-                        (error))
-                      (setq cend (1- (point)))
-                    (setq cend (point-max))
-                    (goto-char cend)
-                    (setq font-latex-match-command-cache-state 'stop)))))
-            (store-match-data (list kbeg kend sbeg send cbeg cend))
-            (when font-latex-match-command-cache-state
-              (setq font-latex-match-command-cache-start this-start)
-              (setq font-latex-match-command-cache-limit (point))
-              (setq font-latex-match-command-cache-keywords keywords))
-            t)))))))
+                  (goto-char cend)))))
+          (store-match-data (list kbeg kend sbeg send cbeg cend))
+          
+          ;; Handle cache
+;          (if (and we-moved
+;                   (equal (list kbeg kend sbeg send cbeg cend)
+;                          (font-latex-get-cache 
+;                           'font-latex-match-command-cache 4)))
+;              (progn
+;                (message "pattern cancelled... twice in a row")
+;                nil) ;; Return a nul search (cancel this fontification)
 
-(defvar font-latex-match-font-cache-state nil
-  "Cache state of unterminated match to fontify")
-(defvar font-latex-match-font-cache-start nil
-  "Cache start of unterminated match to fontify")
-(defvar font-latex-match-font-cache-limit nil
-  "Cache end of unterminated match to fontify")
-(defvar font-latex-match-font-cache-keywords nil
-  "Cache keywords of unterminated match to fontify")
-(make-variable-buffer-local 'font-latex-match-font-cache-state)
-(make-variable-buffer-local 'font-latex-match-font-cache-start)
-(make-variable-buffer-local 'font-latex-match-font-cache-limit)
-(make-variable-buffer-local 'font-latex-match-font-cache-keywords)
+          (when (and font-latex-do-multi-line cache-reset)
+            (font-latex-set-cache 
+             'font-latex-match-command-cache 
+             kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
+          t))))))
+
+(defvar font-latex-match-font-cache nil
+  "Cache start of unterminated LaTeX font-changing commands to fontify")
+(make-variable-buffer-local 'font-latex-match-font-cache)
 
 (defun font-latex-match-font-outside-braces (limit)
   "Search for font-changing command like \textbf{fubar} before LIMIT.  
@@ -722,81 +936,65 @@ Sets `match-data' so that:
  subexpression 2 is the content to fontify in bold.
  subexpression 3 is the content to fontify in type-face.
 Returns nil if no font-changing command is found."
-  (if font-latex-match-font-cache-state
-      (setq font-latex-match-font-cache-state nil) ;Stop now!
-    (when (and font-latex-match-font-cache-keywords
-               (equal font-latex-match-font-cache-keywords keywords)
-               (>= font-latex-match-font-cache-limit (point))
-               (<  font-latex-match-font-cache-start (point)))
-      (goto-char font-latex-match-font-cache-start)
-      (setq font-latex-match-font-cache-state 'stop)) ;Can only do once
-    (when (re-search-forward
-           (eval-when-compile
-             (concat "\\\\" "\\("
-		     "\\(emph\\)\\|"			      ;;; 2 - italic
-		     "\\(text\\("
-		                "\\(it\\|sl\\)\\|"	      ;;; 5 - italic
-		                "\\(md\\|rm\\|sf\\|tt\\)\\|"  ;;; 6 - type
-		                "\\(bf\\|sc\\|up\\)"	      ;;; 7 - bold
-		     "\\)\\)\\|"
-		     "\\(boldsymbol\\|pmb\\)"		      ;;; 8 - bold
-		     "\\)" "{"))
-           limit t)
-      (cond
-       ((font-latex-commented-outp)
-        ;; Return a nul match such that we skip over this pattern.
-        ;; (Would be better to skip over internally to this function)
-        ;; Using `prepend' won't help here, because the problem is that
-        ;; scan-sexp *fails* to find a commented-out matching bracket!
-        (store-match-data (list nil nil))
-        t)
-       (t
-        (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
-              (beg  (match-end 0)) end itbeg itend bfbeg bfend ttbeg ttend)
+  (font-latex-check-cache 'font-latex-match-font-cache 'font limit)
+  (when (re-search-forward
+         (eval-when-compile
+           (concat "\\\\" "\\("
+                   "\\(emph\\)\\|"			      ;;; 2 - italic
+                   "\\(text\\("
+                               "\\(it\\|sl\\)\\|"	      ;;; 5 - italic
+                               "\\(md\\|rm\\|sf\\|tt\\)\\|" ;;; 6 - type
+                               "\\(bf\\|sc\\|up\\)"	      ;;; 7 - bold
+                          "\\)\\)\\|"
+                   "\\(boldsymbol\\|pmb\\)"		      ;;; 8 - bold
+                   "\\)" "{"))
+         limit t)
+    (cond
+     ((font-latex-commented-outp)
+      ;; Return a nul match such that we skip over this pattern.
+      ;; (Would be better to skip over internally to this function)
+      ;; Using `prepend' won't help here, because the problem is that
+      ;; scan-sexp *fails* to find a commented-out matching bracket!
+      (store-match-data (list nil nil))
+      t)
+     (t
+      (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
+            (beg  (1- (match-end 0)))   ;Include openning bracket
+            end itbeg itend bfbeg bfend ttbeg ttend
+            (parse-sexp-ignore-comments t) ; scan-sexps ignores comments
+            cache-reset)
+        (goto-char kend)
+        (save-restriction
+          ;; Restrict to LIMIT.
+          (narrow-to-region (point-min) limit)
+          (if (font-latex-find-matching-close ?\{ ?\})
+              (setq end (point))
+            (setq cache-reset t)
+            (setq end (point-max))
+            (goto-char end)))
+        (cond ((or (match-beginning 2) (match-beginning 5))
+               (setq itbeg beg  itend end))
+              ((match-beginning 6)
+               (setq ttbeg beg  ttend end))
+              (t
+               (setq bfbeg beg  bfend end)))
+        (store-match-data 
+         (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend))
+        ;; Start the subsequent search immediately after this keyword.
           (goto-char kend)
-          (save-restriction
-            ;; Restrict to LIMIT.
-            (narrow-to-region (point-min) limit)
-	    (re-search-forward "{" nil t)
-            (if (condition-case nil
-                    (goto-char (or (font-latex-find-matching-close ?\})
-				   (point-max)))
-                  (error))
-                (setq end (1- (point)))
-              (setq end (point-max))
-              (goto-char end)
-              (setq font-latex-match-font-cache-state 'stop)))
-          (cond ((or (match-beginning 2) (match-beginning 5))
-                 (setq itbeg beg
-                       itend end))
-                ((match-beginning 6)
-                 (setq ttbeg beg
-                       ttend end))
-                (t
-                 (setq bfbeg beg
-                       bfend end)))
-          (store-match-data 
-           (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend))
-          (when font-latex-match-font-cache-state
-            (setq font-latex-match-font-cache-start kbeg)
-            (setq font-latex-match-font-cache-limit (point))
-            (setq font-latex-match-font-cache-keywords keywords))
-          ;; Start the subsequent search immediately after this keyword.
-          (goto-char kend)
-          t))))))
-
-(defvar font-latex-match-infont-cache-state nil
-  "Cache state of unterminated match to fontify")
-(defvar font-latex-match-infont-cache-start nil
-  "Cache start of unterminated match to fontify")
-(defvar font-latex-match-infont-cache-limit nil
-  "Cache end of unterminated match to fontify")
-(defvar font-latex-match-infont-cache-keywords nil
-  "Cache keywords of unterminated match to fontify")
-(make-variable-buffer-local 'font-latex-match-infont-cache-state)
-(make-variable-buffer-local 'font-latex-match-infont-cache-start)
-(make-variable-buffer-local 'font-latex-match-infont-cache-limit)
-(make-variable-buffer-local 'font-latex-match-infont-cache-keywords)
+          
+        (when (and font-latex-do-multi-line cache-reset)
+          (goto-char limit)             ;Avoid infinite loops?
+          (font-latex-set-cache 
+           'font-latex-match-font-cache 
+           kbeg kend limit 'font 
+           (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend)))
+        
+        t)))))
+  
+(defvar font-latex-match-infont-cache nil
+  "Cache start of unterminated LaTeX font-changing commands to fontify")
+(make-variable-buffer-local 'font-latex-match-infont-cache)
 
 (defun font-latex-match-font-inside-braces (limit)
   "Search for font-changing command like {\bf fubar} before LIMIT.  
@@ -806,72 +1004,79 @@ Sets `match-data' so that:
  subexpression 2 is the content to fontify in bold.
  subexpression 3 is the content to fontify in type-face.
 Returns nil if no font-changing command is found."
-  (if font-latex-match-infont-cache-state
-      (setq font-latex-match-infont-cache-state nil) ;Stop now!
-    (when (and font-latex-match-infont-cache-keywords
-               (equal font-latex-match-infont-cache-keywords keywords)
-               (>= font-latex-match-infont-cache-limit (point))
-               (<  font-latex-match-infont-cache-start (point)))
-      (goto-char font-latex-match-infont-cache-start)
-      (setq font-latex-match-infont-cache-state 'stop)) ;Can only do once
-    (when (re-search-forward
-           (eval-when-compile
-	     (concat "\\\\" "\\("
+  (font-latex-check-cache 'font-latex-match-infont-cache 'infont limit)
+  (when (re-search-forward
+         (eval-when-compile
+           (concat "\\\\" "\\("
                                                               ;;; 2 - italic
-	             "\\(em\\|it\\(shape\\)?\\|sl\\(shape\\)?\\)\\|"
+                   "\\(em\\|it\\(shape\\)?\\|sl\\(shape\\)?\\)\\|"
 	                                                      ;;; 5 - bold
-	             "\\(bf\\(series\\)?\\|upshape\\|sc\\(shape\\)?\\)\\|"
-	             "mdseries\\|tt\\(family\\)?\\|"
-                     "sf\\(family\\)?\\|rm\\(family\\)?\\|"
-                     "tiny\\|scriptsize\\|footnotesize\\|"
-                     "small\\|normalsize\\|large\\|Large\\|LARGE\\|huge\\|Huge"
-	             "\\)\\>[ \t]*"))
-           limit t)
-      (cond
-       ((font-latex-commented-outp)
-        ;; Return a nul match such that we skip over this pattern.
-        ;; (Would be better to skip over internally to this function)
-        ;; Using `prepend' won't help here, because the problem is that
-        ;; scan-sexp *fails* to find a commented-out matching bracket!
-        (store-match-data (list nil nil))
-        t)
-       (t
-        (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
-              (beg  (match-end 0)) end itbeg itend bfbeg bfend ttbeg ttend)
-          (goto-char (match-beginning 0))
-          (cond 
-           ((not (eq (preceding-char) ?\{))
-            ;; Fontify only the keyword as bf/it/type (no argument found).
-            (cond ((match-beginning 2) (setq itbeg kbeg itend kend))
-                  ((match-beginning 5) (setq bfbeg kbeg bfend kend))
-                  (t                   (setq ttbeg kbeg ttend kend)))
-            (goto-char (match-end 0))
-            (store-match-data 
-             (list nil nil itbeg itend bfbeg bfend ttbeg ttend))
-            t)
-           (t
-            (save-restriction
-              ;; Restrict to LIMIT.
-              (narrow-to-region (point-min) limit)
-              (if (condition-case nil
-                      (goto-char (or (font-latex-find-matching-close ?\})
-				     (point-max)))
-                    (error))
-                  (setq end (1- (point)))
-                (setq end (point-max))
-                (goto-char end)
-                (setq font-latex-match-infont-cache-state 'stop)))
-            (cond ((match-beginning 2) (setq itbeg beg itend end))
-                  ((match-beginning 5) (setq bfbeg beg bfend end))
-                  (t             	   (setq ttbeg beg ttend end)))
+                   "\\(bf\\(series\\)?\\|upshape\\|sc\\(shape\\)?\\)\\|"
+                   "mdseries\\|tt\\(family\\)?\\|"
+                   "sf\\(family\\)?\\|rm\\(family\\)?\\|"
+                   "tiny\\|scriptsize\\|footnotesize\\|"
+                   "small\\|normalsize\\|large\\|Large\\|LARGE\\|huge\\|Huge"
+                   "\\)\\>[ \t]*"))
+         limit t)
+    (cond
+     ((font-latex-commented-outp)
+      ;; Return a nul match such that we skip over this pattern.
+      ;; (Would be better to skip over internally to this function)
+      ;; Using `prepend' won't help here, because the problem is that
+      ;; scan-sexp *fails* to find a commented-out matching bracket!
+      (store-match-data (list nil nil))
+      t)
+     (t
+      (let ((kbeg (match-beginning 0)) (kend (match-end 1)) 
+            (beg  (match-end 0))
+            end itbeg itend bfbeg bfend ttbeg ttend
+            cache-reset
+            (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
+        (goto-char kbeg)
+        (cond
+         ((not (eq (preceding-char) ?\{))
+          ;; Fontify only the keyword as bf/it/type (no argument found).
+          (cond ((match-beginning 2) (setq itbeg kbeg itend kend))
+                ((match-beginning 5) (setq bfbeg kbeg bfend kend))
+                (t                   (setq ttbeg kbeg ttend kend)))
+          (goto-char (match-end 0))
+          (store-match-data 
+           (list nil nil itbeg itend bfbeg bfend ttbeg ttend))
+          t)
+         (t
+          ;; There's an opening bracket
+          (save-restriction
+            ;; Restrict to LIMIT.
+            (narrow-to-region (point-min) limit)
+            (forward-char -1)           ;Move on the opening bracket
+            (if (font-latex-find-matching-close ?\{ ?\})
+                (setq end (point))
+              (setq cache-reset t)
+              (setq end (point-max))
+              (goto-char end))
+            (cond ((match-beginning 2) (setq itbeg beg  itend end))
+                  ((match-beginning 5) (setq bfbeg beg  bfend end))
+                  (t                   (setq ttbeg beg  ttend end)))
             (store-match-data 
              (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend))
-            (when font-latex-match-infont-cache-state
-              (setq font-latex-match-infont-cache-start kbeg)
-              (setq font-latex-match-infont-cache-limit (point))
-              (setq font-latex-match-infont-cache-keywords keywords))
+            
             ;; Start the subsequent search immediately after this keyword.
-            (goto-char kend)))))))))
+            (goto-char kend)
+
+            (when (and font-latex-do-multi-line cache-reset)
+              (goto-char limit)             ;Avoid infinite loops?
+              (font-latex-set-cache 
+               'font-latex-match-infont-cache 
+               kbeg kend limit 'infont
+               (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend)))
+
+            t))))))))
+
+(defun font-latex-not-on-same-line-as (cache-start)
+  "Return t if point is not on same line as CACHE-START."
+  (save-excursion
+    (not (= (progn (beginning-of-line)(point))
+            (progn (goto-char cache-start) (beginning-of-line)(point))))))
 
 ;;; FIXME: Add caches for math-env, math-envII and quotations.
 (defun font-latex-match-math-env (limit)

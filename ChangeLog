@@ -1,5 +1,12 @@
 1998-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
+	* Version 9.9m released.
+
+1998-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* font-latex.el: Updated.
+	* bib-cite.el: Ditto.
+
 	* Version 9.9l released.
 
 1998-12-01  Alastair Burt  <burt@dfki.de>
