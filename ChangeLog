@@ -1,6 +1,9 @@
 2005-02-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Simplify.
+	(LaTeX-fill-region-as-para-do): Cater for the situation where
+	there is a line ending with Japanese characters and the following
+	line starts with a non-Japanese character.
 
 2005-02-14  David Kastrup  <dak@gnu.org>
 
