@@ -1,3 +1,8 @@
+2001-11-02  Masayuki Ataka  <m1378502@zack.math.sci.hiroshima-u.ac.jp>
+
+	* style/graphicx.el (TeX-arg-includegraphics): Accept prefix
+	argument and find all files. dvipdfm image file support.
+
 2001-10-19  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (japanese-TeX-command-list): Fixed for mendex.

@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.7 2001-10-22 04:41:42 arafune Exp $
+;; Version: $Id: graphicx.el,v 1.8 2001-11-01 21:35:54 ataka Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -52,10 +52,21 @@
   "Ask for file name (eps file only), width, height, keepaspectratio, and clip. Insert includegraphics macro"
   (let ((maybe-left-brace "[") (maybe-comma "")
 	(psfile 
-	 (completing-read "PS (eps only) file: " 
-			  (mapcar 'list (directory-files "./" nil "\\.eps$" nil))
-			  nil nil
-			  (car (car (mapcar 'list (directory-files "./" nil "\\.eps$" nil))))))
+	 (if current-prefix-arg
+	     (read-file-name "Image file: " "" "" t)
+	   (cond
+	    ;; dvipdfm support.
+	    ((member "dvipdfm" TeX-active-styles)
+	     (completing-read "Image file: "
+			      (mapcar 'list (directory-files "./" nil
+					       "\\.eps$\\|\\.jpe?g$\\|\\.pdf$\\|\\.png$" nil))
+			      nil nil
+			      (caar (mapcar 'list (directory-files "./" nil
+					       "\\.eps$\\|\\.jpe?g$\\|\\.pdf$\\|\\.png$" nil)))))
+	    (t (completing-read "PS (eps only) file: "
+				(mapcar 'list (directory-files "./" nil "\\.eps$" nil))
+				nil nil
+				(caar (mapcar 'list (directory-files "./" nil "\\.eps$" nil))))))))
 	(figwidth (read-input (concat "Figure width ("TeX-default-unit-for-image"): ")))
 	(figheight (read-input (concat "Figure height ("TeX-default-unit-for-image"): ")))
 	(keepaspectratio (y-or-n-p "Keep Aspectratio ? "))
