@@ -1,3 +1,13 @@
+2003-06-03  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-math-toggle-off-input-method): New user option.
+	(TeX-toggle-off-input-method): New function.
+	(TeX-insert-dollar): Use it.
+
+2003-06-02  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-near-bobp): Fixed typo in doc-string.
+
 2003-05-27  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* latex.el (LaTeX-auto-minimal-regexp-list): Changed regexp to
