@@ -164,7 +164,7 @@ and environments in `TeX-fold-env-spec-list'."
   "Fold all items of type TYPE in buffer.
 TYPE can be one of the symbols 'env for environments or 'macro for macros."
   (when (or (and (eq type 'env)
-		 (memq major-mode '(latex-mode doctex-mode context-mode)))
+		 (not (eq major-mode 'plain-tex-mode)))
 	    (eq type 'macro))
     (save-excursion
       (let (fold-list item-list regexp)
@@ -178,6 +178,10 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 				 (eq major-mode 'context-mode))
 			    (concat (regexp-quote TeX-esc)
 				    "start" (regexp-opt item-list t)))
+			   ((and (eq type 'env)
+				 (eq major-mode 'texinfo-mode))
+			    (concat (regexp-quote TeX-esc)
+				    (regexp-opt item-list t)))
 			   ((eq type 'env)
 			    (concat (regexp-quote TeX-esc)
 				    "begin[ \t]*{"
@@ -196,6 +200,12 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 				  (save-excursion
 				    (goto-char (match-end 0))
 				    (ConTeXt-find-matching-stop)
+				    (point)))
+				 ((and (eq type 'env)
+				       (eq major-mode 'texinfo-mode))
+				  (save-excursion
+				    (goto-char (match-end 0))
+				    (Texinfo-find-env-end)
 				    (point)))
 				 ((eq type 'env)
 				  (save-excursion
@@ -233,13 +243,17 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 TYPE specifies the type of item and can be one of the symbols
 'env for environments or 'macro for macros."
   (if (and (eq type 'env)
-	   (not (memq major-mode '(latex-mode doctex-mode context-mode))))
+	   (eq major-mode 'plain-tex-mode))
       (message
        "Folding of environments is not supported in current mode")
     (let ((item-start (cond ((and (eq type 'env)
 				  (eq major-mode 'context-mode))
 			     (save-excursion
 			       (ConTeXt-find-matching-start) (point)))
+			    ((and (eq type 'env)
+				  (eq major-mode 'texinfo-mode))
+			     (save-excursion
+			       (Texinfo-find-env-start) (point)))
 			    ((eq type 'env)
 			     (condition-case nil
 				 (save-excursion
@@ -258,6 +272,10 @@ TYPE specifies the type of item and can be one of the symbols
 					 (eq major-mode 'context-mode))
 				    (concat (regexp-quote TeX-esc)
 					    "start\\([A-Za-z]+\\)"))
+				   ((and (eq type 'env)
+					 (eq major-mode 'texinfo-mode))
+				    (concat (regexp-quote TeX-esc)
+					    "\\([A-Za-z]+\\)"))
 				   ((eq type 'env)
 				    (concat (regexp-quote TeX-esc)
 					    "begin[ \t]*{"
@@ -288,6 +306,12 @@ TYPE specifies the type of item and can be one of the symbols
 				(save-excursion
 				  (goto-char (match-end 0))
 				  (ConTeXt-find-matching-stop)
+				  (point)))
+			       ((and (eq type 'env)
+				     (eq major-mode 'texinfo-mode))
+				(save-excursion
+				  (goto-char (match-end 0))
+				  (Texinfo-find-env-end)
 				  (point)))
 			       ((eq type 'env)
 				(save-excursion
@@ -466,10 +490,11 @@ That means, put respective properties onto overlay OV."
 			   ;; an integer, recompute the display string
 			   ;; in order to have an up-to-date string if
 			   ;; the content has changed.
-			   (TeX-fold-macro-nth-arg
-			    display-string-spec (overlay-start ov)
-			    (when (eq (overlay-get ov 'TeX-fold-type) 'macro)
-			      (overlay-end ov))))))
+			   (or (TeX-fold-macro-nth-arg
+				display-string-spec (overlay-start ov)
+				(when (eq (overlay-get ov 'TeX-fold-type) 'macro)
+				  (overlay-end ov)))
+			       "[Error: No content found]"))))
     (overlay-put ov 'mouse-face 'highlight)
     (if (featurep 'xemacs)
 	(let ((glyph (make-glyph display-string))
