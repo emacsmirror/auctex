@@ -2751,8 +2751,10 @@ depends on the value of `LaTeX-format-comments-syntax-aware'."
 		     (re-search-backward "[^ \t\n]"
 					 (line-beginning-position) t)))))
       (setq fill-prefix
-	    (concat (make-string (/ (current-column) 8) ?\t)
-		    (make-string (% (current-column) 8) ?\ )
+	    (concat (if indent-tabs-mode
+                        (concat (make-string (/ (current-column) 8) ?\t)
+                                (make-string (% (current-column) 8) ?\ ))
+                      (make-string (current-column) ?\ ))
 		    (buffer-substring (match-beginning 0) (match-end 0))))
       (fill-region-as-paragraph beg end justify-flag  nil
 				(save-excursion
