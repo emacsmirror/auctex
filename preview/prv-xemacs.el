@@ -634,6 +634,18 @@ Disable it if that is the case.  Ignores text properties."
 		    ov (extent-start-position ov) maparg)) nil
 		    end end beg 'end-in-region 'preview-state 'active)))
 
+(defun preview-export-image (image)
+  (list 'image :file (image-instance-file-name (glyph-image-instance image))
+	:type 'png
+	:ascent (glyph-baseline-instance image)))
+
+(defun preview-import-image (image)
+  (let ((plist (cdr image)))
+    (preview-create-icon
+     (plist-get plist :file)
+     (plist-get plist :type)
+     (plist-get plist :ascent))))
+
 ;; Now bind the list of compatibility macros into the compiled code.
 
 (defvar preview-compatibility-macros
