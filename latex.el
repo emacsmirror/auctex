@@ -3104,10 +3104,13 @@ If COUNT is non-nil, do it COUNT times."
 				  ;; distinction see
 				  ;; `LaTeX-forward-paragraph'.
 				  (if (save-match-data
-					(looking-at
-					 (concat
-					  (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
-					  "[ \t]*\\($\\|" comment-start "\\)")))
+					(and (not (eolp))
+					     (looking-at
+					      (concat
+					       (regexp-quote TeX-esc)
+					       "[@A-Za-z]+\\|"
+					       "[ \t]*\\($\\|" comment-start
+					       "\\)"))))
 				      (progn
 					(forward-line 1)
 					(setq end-point (if (< (point) start)
