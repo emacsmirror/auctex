@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.81 1994-02-03 15:12:33 amanda Exp $
+# $Id: Makefile,v 5.82 1994-02-27 10:36:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -112,7 +112,7 @@ STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
 	   style/jarticle.el  style/jbook.el    style/jreport.el \
 	   style/dinbrief.el  style/virtex.el   style/plfonts.el \
-	   style/plhb.el
+	   style/plhb.el      style/harvard.el
 
 LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 	       lacheck/test.tex

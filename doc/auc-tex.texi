@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.80 1994-02-26 03:44:56 amanda Exp $
+@c $Id: auc-tex.texi,v 1.81 1994-02-27 10:37:05 amanda Exp $
 
 @finalout
 @titlepage
@@ -2481,6 +2481,10 @@ Alpha testers (in order of appearance): Volker Dobler
 @samp{<Frederic.Devernay@@sophia.inria.fr>} and probably more.@refill
 
 @itemize @bullet
+@item
+Added support for @file{harvard.sty} by Berwin Turlach
+@samp{<berwin@@core.ucl.ac.be>}.
+
 @item
 Filling will not let display math equations @samp{\[ ... \]} be on a
 line by themselves.  Reported by Matthew Morley
