@@ -9,6 +9,7 @@
 	(subsection{Preview attaching commands}): Corrected
 	\PreviewEnvironment which must have led to error messages for
 	months.  Seems nobody cares.
+	(subsection{Selection options}): Still more displaymath cosmetics.
 
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
