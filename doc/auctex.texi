@@ -260,7 +260,7 @@ this package, either directly or by loading a language-specific style
 file, you should also use the special commands for quote insertion
 instead of the standard quotes shown above.  @AUCTeX{} is able to
 recognize several of these languages and will change quote insertion
-accordingly.  @xref{European} for details about this feature and how to
+accordingly.  @xref{European}, for details about this feature and how to
 control it.
 
 @vindex LaTeX-csquotes-open-quote
@@ -2707,27 +2707,34 @@ hyphen insertion you can change it by customizing the variables
 @code{LaTeX-babel-hyphen-language-alist} respectively.
 
 @defopt TeX-quote-language-alist
-Used for overriding the default language-specific quote insertion.  You
-may add items to this list specifying the affected language, opening and
-closing quotation marks to be used, and the behavior of quote insertion,
-i.e. if the special quotation marks should be inserted with the first
-key press or the second, i.e. inserting the literal character first.
+Used for overriding the default language-specific quote insertion.  This
+is an alist where each element is a list consisting of three items.  The
+first item is the name of the language in concern as a string.  The
+second item is a cons cell containing the opening and closing quotation
+marks as strings.  The third item is a boolean controlling quote
+insertion.  It should be non-nil if if the special quotes should only be
+used after inserting a literal @samp{"} character first, i.e. on second
+key press.
 @end defopt
 
 @defopt LaTeX-babel-hyphen-language-alist
 Used for overriding the behavior of hyphen insertion for specific
-languages.  The defaults are defined by the variables
-@code{LaTeX-babel-hyphen} and @code{LaTeX-babel-hyphen-after-hyphen}
-respectively.  Every item in this list should specify the affected
-language as well as the hyphen string to be used and the behavior of
-hyphen insertion, i.e. if the special hyphen should be inserted at first
-or second key press.
+languages.  Every element in this alist is a list of three items.  The
+first item should specify the affected language as a string.  The second
+item denotes the hyphen string to be used as a string.  The third item,
+a boolean, controls the behavior of hyphen insertion and should be
+non-nil if the special hyphen should be inserted after inserting a
+literal @samp{-} character, i.e. on second key press.
 @end defopt
 
+The defaults of hyphen insertion are defined by the variables
+@code{LaTeX-babel-hyphen} and @code{LaTeX-babel-hyphen-after-hyphen}
+respectively.
+
 @defopt LaTeX-babel-hyphen
-String to be used when typing @key{-} This usually is a hyphen
+String to be used when typing @key{-}.  This usually is a hyphen
 alternative or hyphenation aid provided by @samp{babel} and the related
-language style files, like \"=, \"~ or \"-.
+language style files, like @samp{"=}, @samp{"~} or @samp{"-}.
 
 Set it to an empty string or nil in order to disable language-specific
 hyphen insertion.
