@@ -64,7 +64,7 @@ shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
-(defcustom TeX-macro-global '("@texinputdirs@")
+(defcustom TeX-macro-global '(@texinputdirs@)
   "Directories containing the sites TeX macro files and style files.
 The directory names *must* end with a slash."
   :group 'TeX-file

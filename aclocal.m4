@@ -15,7 +15,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 	   (and putative-existing-lisp-dir\
 		(setq putative-existing-lisp-dir\
 		      (file-name-directory putative-existing-lisp-dir))\
-		(string-match \"[\\\\/]\\\\(lisp[\\\\/]\\\\)?\\\\($2[\\\\/]\\\\)?\$\"\
+		(string-match \"[[\\\\/]]\\\\(lisp[[\\\\/]]\\\\)?\\\\($2[[\\\\/]]\\\\)?\$\"\
 			       putative-existing-lisp-dir)\
 		(replace-match \"\" t t putative-existing-lisp-dir))))\
       (if (and (boundp (quote early-packages))\
@@ -29,7 +29,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 		  (setq	dirs (cdr dirs))))))\
       (if package-dir\
 	  (progn\
-	    (if (string-match \"[\\\\/]\$\" package-dir)\
+	    (if (string-match \"[[\\\\/]]\$\" package-dir)\
 		(setq package-dir (substring package-dir 0\
 					     (match-beginning 0))))\
 	    (if (and prefix\
@@ -434,10 +434,10 @@ if test -z "$auctexdir" ; then
   EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
     EMACS_LISP(EMACS_cv_ACCEPTABLE_AUCTEX,
-	[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
+	[[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
 	   (if (string-match \"[\\\\/]\$\" aucdir)\
 	       (replace-match \"\" t t aucdir)\
-	       aucdir))], "noecho")
+	       aucdir))]], "noecho")
   else
 	AC_MSG_ERROR([Can't find AUCTeX!  Please install it!
 Check the PROBLEMS file for details.])
