@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-09 11:14:08 $
+;; Last Change: $Date: 2004-04-12 15:20:33 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1459,7 +1459,7 @@ of context-mode-hook."
 	(set (make-local-variable 'fill-indent-according-to-mode) t)
 
 	;; Paragraph formatting
-	(set (make-local-variable 'LaTeX-format-comment-syntax-aware) nil)
+	(set (make-local-variable 'LaTeX-syntactic-comments) nil)
 	(set (make-local-variable 'LaTeX-paragraph-commands)
        (ConTeXt-paragraph-commands))
 	;;(setq LaTeX-paragraph-commands "par\\b\\|crlf\\b")
