@@ -1,5 +1,7 @@
 2003-10-13  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/font.c: Fix font searching order
+
 	* dvipng/RELEASE: Prepare for 0.7
 
 	* dvipng/fontmap.c:
