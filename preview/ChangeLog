@@ -1,5 +1,7 @@
 2005-04-03  David Kastrup  <dak@gnu.org>
 
+	* Release 0.9.1
+
 	* latex/preview.dtx: Don't let negative dimensions into tightpage
 	comment.
 
