@@ -87,7 +87,7 @@ One particular problem is that several printer setup files (typically in
 a file called @file{/usr/share/texmf/dvips/config/config.pdf} if you are
 using the @option{-Ppdf} switch) contain the @option{G} option for
 `character shifting'.  This option will result in @samp{fi} being
-rendered as @samp{£} in several fonts.
+rendered as @samp{@pounds{}} (British Pounds sign) in several fonts.
 
 @node Emacs problems, AUC TeX prior to 11.0, Font problems with Dvips, Known problems
 @section Emacs problems
