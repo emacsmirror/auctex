@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.92 1994-06-22 14:49:42 amanda Exp $
+@c $Id: auc-tex.texi,v 1.93 1994-07-30 05:39:52 amanda Exp $
 
 @finalout
 @titlepage
@@ -3703,6 +3703,13 @@ mail me first, though.
 
 @itemize @bullet
 @item
+Format La@TeX{} comment blocks.
+
+@item
+Included PostScript files should also be counted as part of the
+document. 
+
+@item
 The argument to @samp{\verb} may be broken when filling if it contains a
 space.  This should be fixed or documented.  Suggested by several
 people.
@@ -3710,11 +3717,6 @@ people.
 @item
 The parser should catch warnings about undefined crossreferences.
 Suggested by Richard Hirsch @samp{i3080501@@ws.rz.tu-bs.de}.
-
-@item
-Change name of @file{easymenu.el} to @file{auc-menu.el} to avoid
-conflict with RMS's version.  Keep the interface and do a @code{(provide
-'easymenu)}.
 
 @item
 A nice hierarchical by-topic organization of all officially documented
@@ -3766,7 +3768,7 @@ spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@@ucsd.edu>}.
 
 @item
 Make @key{.} check for abbreviations and sentences ending with capital
-letters.  Make @key{,} and @key{.} remove italic correction.  
+letters.
 
 @item
 Use Emacs 19 minibuffer history to choose between previewers, and other
@@ -3862,7 +3864,8 @@ labels like @samp{fig:} versus @samp{tab:}.
 Check out if lightening completion from Ultra @TeX{} is anything for us.
 
 @item
-Finish the TeXinfo mode.
+Finish the @TeX{}info mode.  For one think, many @TeX{}info mode
+commands does not accept braces around their arguments.
 
 @item
 BibTeX mode.

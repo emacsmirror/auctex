@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.6 1994-02-10 14:38:03 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.7 1994-07-30 05:39:04 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-02-10 14:38:03 $|$Revision: 5.6 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-07-30 05:39:04 $|$Revision: 5.7 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@
 
 ;;; Code:
 
-(require 'easymenu)
+(require 'auc-menu)
 
 ;;; Attributes
 

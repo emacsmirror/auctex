@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.21 1994-05-28 02:47:49 amanda Exp $
+;; Version: $Id: tex.el,v 5.22 1994-07-30 05:39:43 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -138,15 +138,24 @@ modify the expanded string.
 If the fifth element is non-nil, the TeX-region file will be rebuild
 before the command is started.")
 
+;; You may want to change the default LaTeX version for your site.
+(defvar LaTeX-version "2e"
+  "Default LaTeX version.  Currently recognized is \"2\" and \"2e\".")
+
 ;; You may want special options to the view command depending on the
 ;; style options.  Only works if parsing is enabled.
 
 (defvar LaTeX-command-style
-  '(("^ams" "amslatex")
-    ("^foils$" "foiltex")
-    ("^slides$" "slitex")
-    ("^plfonts\\|plhb$" "platex")
-    ("." "latex"))
+  (if (string-equal LaTeX-version "2")
+      ;; There is a lot of different LaTeX 2 based formats.
+      '(("^foils$" "foiltex")
+	("^ams" "amslatex")
+	("^slides$" "slitex")
+	("^plfonts\\|plhb$" "platex")
+	("^latex2e$" "latex2e")
+	("." "latex"))
+    ;; They have all been combined in LaTeX 2e.
+    '(("." "latex")))
   "*List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
@@ -228,7 +237,7 @@ the name of the file being processed, with an optional extension.")
     (setq load-path (cons TeX-lisp-directory load-path)))
 
 (require 'auc-ver)
-(require 'easymenu)
+(require 'auc-menu)
 
 (cond ((< (string-to-int emacs-version) 19)
        (require 'tex-18))
@@ -869,6 +878,12 @@ Space will complete and exit."
 		(not (TeX-math-mode-p)))
 	   (insert TeX-grop TeX-grcl)))))
 
+(defun TeX-arg-string (optional &optional prompt input)
+  "Prompt for a string."
+  (TeX-argument-insert
+   (read-string (TeX-argument-prompt optional prompt "Text") input)
+   optional))
+
 (defun TeX-parse-arguments (args)
   "Parse TeX macro arguments.
 
@@ -920,9 +935,9 @@ See TeX-parse-macro for details."
 		  (apply 'TeX-arg-string optional arg))
 		 ((symbolp head)
 		  (apply head optional tail))
-		 (t (error "Unknown list argument type %s."
+		 (t (error "Unknown list argument type %s"
 			   (prin1-to-string head))))))
-	(t (error "Unknown argument type %s." (prin1-to-string arg)))))
+	(t (error "Unknown argument type %s" (prin1-to-string arg)))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
@@ -1184,10 +1199,10 @@ separate type of information in the parser."
 	 (change (intern (concat prefix "-" name "-changed"))))
     (setq TeX-auto-parser
 	  (cons (list name tmp add local change) TeX-auto-parser))
-    (make-variable-buffer-local local)
     (set local nil)
-    (make-variable-buffer-local change)
+    (make-variable-buffer-local local)
     (set change nil)
+    (make-variable-buffer-local change)
     (fset add (list 'lambda '(&rest entries)
 		    (concat "Add information about " (upcase name)
 			    " to the current buffer.")
@@ -1499,7 +1514,7 @@ functions in TeX-auto-cleanup-hook after parsing."
   ;; Set the temporary variable in ENTRY to nil.
   (set (nth TeX-auto-parser-temporary entry) nil))
 
-(defvar TeX-auto-end-symbol nil)
+(defvar LaTeX-auto-end-symbol nil)
 
 (defun TeX-auto-symbol-check (match)
   "Add MATCH to TeX-auto-symbols.
@@ -1509,9 +1524,9 @@ Check for potential LaTeX environments."
                   (TeX-match-buffer match))))
     (if (and (stringp symbol)
              (string-match "^end\\(.+\\)$" symbol))
-        (setq TeX-auto-end-symbol
+        (setq LaTeX-auto-end-symbol
               (cons (substring symbol (match-beginning 1) (match-end 1))
-                    TeX-auto-end-symbol))
+                    LaTeX-auto-end-symbol))
       (setq TeX-auto-symbol (cons symbol TeX-auto-symbol)))))
 
 ;;; Utilities
@@ -1729,6 +1744,8 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
   ;; From tex.el
   (define-key TeX-mode-map "\""       'TeX-insert-quote)
   (define-key TeX-mode-map "$"        'TeX-insert-dollar)
+  (define-key TeX-mode-map "."        'TeX-insert-punctuation)
+  (define-key TeX-mode-map ","        'TeX-insert-punctuation)
   (define-key TeX-mode-map "\C-c{"    'TeX-insert-braces)
   (define-key TeX-mode-map "\C-c\C-f" 'TeX-font)
   (define-key TeX-mode-map "\C-c\C-m" 'TeX-insert-macro)
@@ -1791,13 +1808,15 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	   (let ((command TeX-print-command)
 		 (lookup 1))
 	     (append (list TeX-command-Print)
-		     (mapcar 'TeX-command-menu-printer-entry TeX-printer-list))))
+		     (mapcar 'TeX-command-menu-printer-entry
+			     TeX-printer-list))))
 	  ((and (string-equal name TeX-command-Queue)
 		TeX-printer-list)
 	   (let ((command TeX-queue-command)
 		 (lookup 2))
 	     (append (list TeX-command-Queue)
-		     (mapcar 'TeX-command-menu-printer-entry TeX-printer-list))))
+		     (mapcar 'TeX-command-menu-printer-entry
+			     TeX-printer-list))))
 	  (t
 	   (vector name (list 'TeX-command-menu name (list 'quote file)) t)))))
 
@@ -1832,7 +1851,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
+	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 ;;; Comments
 
@@ -1859,9 +1878,11 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 (defun TeX-comment-paragraph (level)
   "Inserts LEVEL %'s at the beginning of every line in the current paragraph."
   (interactive "*p")
-  (save-excursion
-    (mark-paragraph)
-    (comment-region (point) (mark) level)))
+  (if (< level 0)
+      (TeX-un-comment (- level))
+    (save-excursion
+      (mark-paragraph)
+      (comment-region (point) (mark) level))))
 
 (defun TeX-in-comment ()
   ;; Return non-nil if point is in a comment.
@@ -1935,6 +1956,7 @@ point.  An optional fourth element means always replace if not nil.")
 If REPLACE is not nil, replace current font.  WHAT determines the font
 to use, as specified by TeX-font-list."
   (interactive "*P\nc")
+  (TeX-update-style)
   (let* ((entry (assoc what TeX-font-list)))
     (setq replace (or replace (nth 3 entry)))
     (cond ((null entry)
@@ -2211,6 +2233,13 @@ With prefix argument, always inserts \" characters."
 ;; For the sake of BibTeX...
 ;;;###autoload
 (fset 'tex-insert-quote 'TeX-insert-quote)
+
+(defun TeX-insert-punctuation ()
+  "Insert point or comma, cleaning up preceding space."
+  (interactive)
+  (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
+      (replace-match "\\1" t))
+  (call-interactively 'self-insert-command))
 
 (defun TeX-insert-braces (arg)
   "Make a pair of braces around next ARG sexps and leave point inside.

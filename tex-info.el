@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.14 1994-06-03 21:33:46 amanda Exp $
+;; $Id: tex-info.el,v 5.15 1994-07-30 05:39:35 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -24,7 +24,7 @@
 (condition-case nil			;Lucid is not providing.
     (require 'texinfo)
   (error))
-(require 'easymenu)
+(require 'auc-menu)
 
 ;;; Environments:
 
@@ -141,7 +141,6 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\""   'TeX-un-comment) ;*** Old way
 
   ;; From tex-buf.el
-  (define-key TeXinfo-mode-map "\C-c\C-r" 'TeX-command-region)
   (define-key TeXinfo-mode-map "\C-c\C-c" 'TeX-command-master)
   (define-key TeXinfo-mode-map "\C-c\C-k" 'TeX-kill-job)
   (define-key TeXinfo-mode-map "\C-c\C-l" 'TeX-recenter-output-buffer)
@@ -168,29 +167,25 @@ When called interactively, prompt for an environment."
 	["Complete" TeX-complete-symbol t]
 	["Item" texinfo-insert-@item t]
 	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) "C-c C-f C-c"]
-	      ["Italic"     (TeX-font nil ?\C-i) "C-c C-f C-i"]
-	      ["Sample"    (TeX-font nil ?\C-s) "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) "C-c C-f C-r"])
+	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+	      ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
 	(list "Change Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) "C-u C-c C-f C-c"]
-	      ["Italic"     (TeX-font t ?\C-i) "C-u C-c C-f C-i"]
-	      ["Sample"    (TeX-font t ?\C-s) "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) "C-u C-c C-f C-r"])
+	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+	      ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
 	"-"
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
+	(TeX-command-create-menu "Command on File  (C-c C-c)"
 				 'TeX-command-master)
-	(TeX-command-create-menu "Command on Buffer  (C-c C-b)"
-				 'TeX-command-buffer)
-	(TeX-command-create-menu "Command on Region  (C-c C-r)"
-				 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
@@ -208,7 +203,7 @@ When called interactively, prompt for an environment."
 	["Switch to Master file" TeX-home-buffer t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
+	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")
@@ -288,6 +283,11 @@ TeXinfo-mode-hook."
   (setq TeX-header-end "%**end")
   (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
   
+  (make-local-variable 'TeX-complete-list)
+  (setq TeX-complete-list
+	(list (list "@\\([a-zA-Z]*\\)" 1 'TeX-symbol-list nil)
+	      (list "" TeX-complete-word)))
+
   (make-local-variable 'TeX-font-list)
   (setq TeX-font-list TeXinfo-font-list)
   

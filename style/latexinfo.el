@@ -3,7 +3,7 @@
 ;; Copyright (C) 1993 Marc Gemis <makke@wins.uia.ac.be>
 
 ;; Author: Marc Gemis <makke@wins.uia.ac.be>
-;; Version: $Id: latexinfo.el,v 1.4 1994-04-07 21:08:48 amanda Exp $
+;; Version: $Id: latexinfo.el,v 1.5 1994-07-30 05:40:07 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'latex)
-(require 'min-map)
 
 ;;; LaTeXinfo mode
 
@@ -94,7 +93,6 @@ This fails when the user types in the label of something else"
 
     (require 'min-map)
     (setq LaTeXinfo-mode t)
-    (minor-mode-rehash)
     
     (TeX-auto-add-regexp TeX-latexinfo-node-regexp)
 

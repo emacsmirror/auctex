@@ -71,7 +71,7 @@ Make sure TeX-check-path contains "./" somewhere.
 * Ispell does not ignore TeX macros.
 
 GNU ispell 4.0 does not understand TeX.  Upgrade to International
-Ispell 3.0.09 which works much better on TeX documents.
+Ispell 3.1 which works much better on TeX documents.
 
 
 % Local Variables: 

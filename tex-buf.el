@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.68 1994-05-28 02:47:40 amanda Exp $
+;; $Id: tex-buf.el,v 1.69 1994-07-30 05:39:30 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -118,7 +118,7 @@ all text after TeX-trailer-start."
 	    (set-marker TeX-command-region-begin begin)
 	    (set-marker TeX-command-region-end end)))
       (if (null TeX-command-region-begin)
-	  (error "Mark not set."))
+	  (error "Mark not set"))
       (let ((begin (marker-position TeX-command-region-begin))
 	    (end (marker-position TeX-command-region-end)))
 	(TeX-region-create (TeX-region-file TeX-default-extension)
@@ -162,7 +162,7 @@ at bottom if LINE is nil."
     (if process
 	(kill-process process)
       ;; Should test for TeX background process here.
-      (error "No TeX process to kill."))))
+      (error "No TeX process to kill"))))
 
 (defun TeX-home-buffer (arg)
   "Go to the buffer where you last issued a TeX command.  
@@ -180,7 +180,7 @@ the master file."
 Prefix by C-u to start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
-      (error "No TeX output buffer.")
+      (error "No TeX output buffer")
     (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
 	     reparse)))
 
@@ -238,7 +238,7 @@ LIST default to TeX-expand-list."
 				      ((boundp expansion)
 				       (apply (eval expansion) arguments))
 				      (t
-				       (error "Nonexpansion %s." expansion)))
+				       (error "Nonexpansion %s" expansion)))
 				postfix)))))
     (setq list (cdr list)))
   command)
@@ -334,7 +334,7 @@ entry."
 			   (nth element entry)
 			 command))))
       (if (string-match "%p" printer)
-	  (error "Don't use %s in printer names." "%p"))
+	  (error "Don't use %s in printer names" "%p"))
       (while (string-match "%p" expansion)
 	(setq expansion (concat (substring expansion 0 (match-beginning 0))
 				printer
@@ -454,7 +454,7 @@ Return the new process."
 					     command)))
 
 (defun TeX-run-dviout (name command file)
-  "Call process with second argument, discarding its output. With support
+  "Call process wbith second argument, discarding its output. With support
 for the dviout previewer, especially when used with PC-9801 series."
     (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
       (send-string-to-terminal "\e[2J")) ; clear screen
@@ -465,6 +465,9 @@ for the dviout previewer, especially when used with PC-9801 series."
 
 (defun TeX-run-background (name command file)
   "Start process with second argument, show output when and if it arrives."
+  (save-excursion
+    (set-buffer (get-buffer-create "*TeX background*"))
+    (erase-buffer))
   (let ((process (start-process (concat name " background")
 				nil TeX-shell
 				TeX-shell-command-option command)))
@@ -592,7 +595,8 @@ Return nil ifs no errors were found."
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
-	 (message (concat name ": successfully ended [" TeX-current-page "]."))
+	 (message (concat name ": successfully formatted "
+			  TeX-current-page " pages."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
 	 (message (concat name ": problems."))
@@ -653,7 +657,7 @@ command."
 				"' running, kill it? "))
 	   (delete-process process))
 	  (t
-	   (error "Cannot have two processes for the same document.")))))
+	   (error "Cannot have two processes for the same document")))))
 
 (defun TeX-process-buffer-name (name)
   "Return name of AUC TeX buffer associated with the document NAME."
@@ -719,7 +723,10 @@ command."
   "Filter to process background output."
   (let ((old-window (selected-window))
 	(pop-up-windows t))
-    (pop-to-buffer "*TeX background*")
+    (if TeX-show-compilation
+	(pop-to-buffer "*TeX background*")
+      (set-buffer "*TeX background*"))
+    (goto-char (point-max))
     (insert string)
     (select-window old-window)))
 
@@ -780,33 +787,37 @@ original file."
 		   (save-excursion
 		     (save-restriction
 		       (set-buffer master-buffer)
-		       (widen)
-		       (goto-char (point-min))
-		       ;; NOTE: We use the local value of
-		       ;; TeX-header-end from the master file.
-		       (if (not (re-search-forward TeX-header-end nil t))
-			   ""
-			 (re-search-forward "[\r\n]" nil t)
-			 (buffer-substring (point-min) (point)))))))
+			   (save-excursion
+				 (save-restriction
+				   (widen)
+				   (goto-char (point-min))
+				   ;; NOTE: We use the local value of
+				   ;; TeX-header-end from the master file.
+				   (if (not (re-search-forward TeX-header-end nil t))
+					   ""
+					 (re-search-forward "[\r\n]" nil t)
+					 (buffer-substring (point-min) (point)))))))))
 	 
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
 	 (trailer (if (string-match trailer-start region)
-		      ""
-		    (save-excursion
-		      (save-restriction
-			(set-buffer master-buffer)
-			(widen)
-			(goto-char (point-max))
-			;; NOTE: We use the local value of
-			;; TeX-trailer-start from the master file.
-			(if (not (re-search-backward TeX-trailer-start nil t))
-			    ""
-			  (beginning-of-line 1)
-			  (setq trailer-offset
-				(count-lines (point-min) (point)))
-			  (buffer-substring (point) (point-max))))))))
+				  ""
+				(save-excursion
+				  (save-restriction
+					(set-buffer master-buffer)
+					(save-excursion
+					  (save-restriction
+						(widen)
+						(goto-char (point-max))
+						;; NOTE: We use the local value of
+						;; TeX-trailer-start from the master file.
+						(if (not (re-search-backward TeX-trailer-start nil t))
+							""
+						  (beginning-of-line 1)
+						  (setq trailer-offset
+								(count-lines (point-min) (point)))
+						  (buffer-substring (point) (point-max))))))))))
     (save-excursion
       (set-buffer file-buffer)
       (erase-buffer)
@@ -873,7 +884,7 @@ original file."
 
 (defun TeX-parse-command (reparse)
   "We can't parse anything but TeX."
-  (error "I cannot parse %s output, sorry."
+  (error "I cannot parse %s output, sorry"
 	 (if (TeX-active-process)
 	     (process-name (TeX-active-process))
 	   "this")))
@@ -996,7 +1007,7 @@ You might want to examine and modify the free variables `file',
 
     ;; Find the error.
     (if (null file)
-	(error "Error occured after last TeX file closed."))
+	(error "Error occured after last TeX file closed"))
     (run-hooks 'TeX-translate-location-hook)
     (find-file-other-window file)
     (goto-line (+ offset line))

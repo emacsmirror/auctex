@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.22 1994-06-22 14:49:20 amanda Exp $
+;; Version: $Id: latex.el,v 5.23 1994-07-30 05:39:21 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -238,7 +238,7 @@ If so, return the second element, otherwise return nil."
 		 (max 1 (+ (TeX-look-at LaTeX-section-list)
 			   (LaTeX-outline-offset))))
 		(t
-		 (error "Unrecognized header.")))))))
+		 (error "Unrecognized header")))))))
 
 (add-hook 'TeX-remove-style-hook
 	  (function (lambda () (setq LaTeX-largest-level nil))))
@@ -474,26 +474,37 @@ LaTeX-default-position          Position for array and tabular."
 
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert environment of type ENV, with optional argument EXTRA."
-  (if (TeX-active-mark)
+  (if (and (TeX-active-mark)
+	   (not (eq (mark) (point))))
       (progn 
 	(if (< (mark) (point))
 	    (exchange-point-and-mark))
+	(or (TeX-looking-at-backward "^[ \t]*")
+	    (newline))
 	(insert TeX-esc "begin" TeX-grop environment TeX-grcl)
 	(LaTeX-indent-line)
 	(if extra (insert extra))
 	(newline)
 	(goto-char (mark))
+	(or (TeX-looking-at-backward "^[ \t]*")
+	    (newline))
 	(insert TeX-esc "end" TeX-grop environment TeX-grcl)
+	(or (looking-at "[ \t]*$")
+	    (save-excursion (newline-and-indent)))
 	(LaTeX-indent-line)
 	(end-of-line 0)
 	(or (string-match "^verbatim" environment)
-	    (LaTeX-format-environment nil)))
+	    (LaTeX-fill-environment nil)))
+    (or (TeX-looking-at-backward "^[ \t]*")
+	(newline))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
     (LaTeX-indent-line)
     (if extra (insert extra))
     (newline-and-indent)
     (newline)
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
+    (or (looking-at "[ \t]*$")
+	(save-excursion (newline-and-indent)))
     (LaTeX-indent-line)
     (end-of-line 0)))
 
@@ -783,7 +794,7 @@ You may use LaTeX-item-list to change the routines used to insert the item."
   '(("\\\\document\\(style\\|class\\)\
 \\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)\\]\\)?\
 {\\([^#\\\\\\.\n\r]+\\)}"
-     (3 5) LaTeX-auto-style))
+     (3 5 1) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
 
 (defvar LaTeX-auto-label-regexp-list
@@ -842,7 +853,8 @@ You may use LaTeX-item-list to change the routines used to insert the item."
     (while LaTeX-auto-style
       (let* ((entry (car LaTeX-auto-style))
 	     (options (nth 0 entry))
-	     (style (nth 1 entry)))
+	     (style (nth 1 entry))
+	     (class (nth 2 entry)))
 
 	;; Next document style.
 	(setq LaTeX-auto-style (cdr LaTeX-auto-style))
@@ -897,7 +909,11 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 			      "12")
 			     (t
 			      "10")))
-		      TeX-auto-file))))))
+		      TeX-auto-file)))
+
+	;; The third argument if "class" indicates LaTeX2e features.
+	(if (equal class "class")
+	    (setq TeX-auto-file (cons "latex2e" TeX-auto-file))))))
     
   ;; Cleanup optional arguments
   (mapcar (function (lambda (entry)
@@ -1015,12 +1031,6 @@ ELSE as an argument list."
   "Insert its arguments into the buffer.  
 Used for specifying extra syntax for a macro."
   (apply 'insert args))
-
-(defun TeX-arg-string (optional &optional prompt input)
-  "Prompt for a string."
-  (TeX-argument-insert
-   (read-string (TeX-argument-prompt optional prompt "Text") input)
-   optional))
 
 (defun TeX-arg-eval (optional &rest args)
   "Evaluate args and insert value in buffer."
@@ -1404,12 +1414,14 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
       (delete-horizontal-space))))
 
 
-(defun LaTeX-format-paragraph (prefix)
+(defun LaTeX-fill-paragraph (prefix)
   "Fill and indent paragraph at or after point.
 Prefix arg means justify as well."
   (interactive "*P")
   (save-excursion
     (beginning-of-line)
+    (if (looking-at "[ \t]*%]")
+	(re-search-forward "^[ \t]*[^% \t\n]"))
     (forward-paragraph)
     (or (bolp) (newline 1))
     (and (eobp) (open-line 1))
@@ -1419,7 +1431,7 @@ Prefix arg means justify as well."
 		   (point))))
       (LaTeX-fill-region-as-paragraph start end prefix))))
 
-(defun LaTeX-format-region (from to &optional justify what)
+(defun LaTeX-fill-region (from to &optional justify what)
   "Fill and indent each of the paragraphs in the region as LaTeX text.
 Prefix arg (non-nil third arg, if called from program)
 means justify as well. Fourth arg WHAT is a word to be displayed when
@@ -1436,7 +1448,7 @@ formatting."
 		       ""
 		     what)
 		   (/ (* 100 (- (point) from)) length))
-	  (save-excursion (LaTeX-format-paragraph justify))
+	  (save-excursion (LaTeX-fill-paragraph justify))
 	  (forward-paragraph 2)
 	  (if (not (eobp))
 	      (backward-paragraph)))))
@@ -1486,25 +1498,25 @@ comments and verbatim environments"
     (LaTeX-find-matching-begin)
     (TeX-activate-region)))
 
-(defun LaTeX-format-environment (justify)
+(defun LaTeX-fill-environment (justify)
   "Fill and indent current environment as LaTeX text."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-environment)
     (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-format-region
+    (LaTeX-fill-region
      (region-beginning)
      (region-end)
      justify
      (concat " environment " (TeX-match-buffer 1)))))
 
-(defun LaTeX-format-section (justify)
+(defun LaTeX-fill-section (justify)
   "Fill and indent current logical section as LaTeX text."
   (interactive "*P")
   (save-excursion
     (LaTeX-mark-section)
     (re-search-forward "{\\([^}]+\\)}")
-    (LaTeX-format-region
+    (LaTeX-fill-region
      (region-beginning)
      (region-end)
      justify
@@ -1521,11 +1533,11 @@ comments and verbatim environments"
 			      "\\|\\`\\)"))
   (TeX-activate-region))
 
-(defun LaTeX-format-buffer (justify)
+(defun LaTeX-fill-buffer (justify)
   "Fill and indent current buffer as LaTeX text."
   (interactive "*P")
   (save-excursion
-    (LaTeX-format-region
+    (LaTeX-fill-region
      (point-min)
      (point-max)
      justify
@@ -1599,7 +1611,7 @@ The point is supposed to be at the beginning of the current line."
     (move-to-column (current-indentation))
 
     ;; Ignore comments.
-    (while (and (looking-at "%") (not (bobp)))
+    (while (and (looking-at (regexp-quote comment-start)) (not (bobp)))
       (skip-chars-backward "\n\t ")
       (if (not (bobp))
 	  (move-to-column (current-indentation))))
@@ -1649,15 +1661,15 @@ The point is supposed to be at the beginning of the current line."
     
     ;; From latex.el
     (define-key map "\t"      'LaTeX-indent-line)
-    (define-key map "\eq"     'LaTeX-format-paragraph) ;*** Alias
-    (define-key map "\eg"     'LaTeX-format-region) ;*** Alias
+    (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
+    (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
     (define-key map "\e\C-e"  'LaTeX-find-matching-end)
     (define-key map "\e\C-a"  'LaTeX-find-matching-begin)
     
-    (define-key map "\C-c\C-q\C-p" 'LaTeX-format-paragraph)
-    (define-key map "\C-c\C-q\C-r" 'LaTeX-format-region)
-    (define-key map "\C-c\C-q\C-s" 'LaTeX-format-section)
-    (define-key map "\C-c\C-q\C-e" 'LaTeX-format-environment)
+    (define-key map "\C-c\C-q\C-p" 'LaTeX-fill-paragraph)
+    (define-key map "\C-c\C-q\C-r" 'LaTeX-fill-region)
+    (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
+    (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
     
     (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
     (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
@@ -1757,31 +1769,29 @@ The point is supposed to be at the beginning of the current line."
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "LaTeX"
-	(list LaTeX-environment-menu-name
-	      "Upgrade `easymenu.el'")
-	(list LaTeX-environment-modify-menu-name
-	      "Upgrade `easymenu.el'")
+	(list LaTeX-environment-menu-name "Bug.")
+	(list LaTeX-environment-modify-menu-name "Bug.")
 	(LaTeX-section-menu-create)
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Item" LaTeX-insert-item t]
 	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) "C-c C-f C-c"]
-	      ["Italic"     (TeX-font nil ?\C-i) "C-c C-f C-i"]
-	      ["Slanted"    (TeX-font nil ?\C-s) "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) "C-c C-f C-r"])
+	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
 	(list "Change Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) "C-u C-c C-f C-c"]
-	      ["Italic"     (TeX-font t ?\C-i) "C-u C-c C-f C-i"]
-	      ["Slanted"    (TeX-font t ?\C-s) "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) "C-u C-c C-f C-r"])
-	["Delete Font" (TeX-font t ?\C-d) "C-c C-f C-d"]
+	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
 	["Save Document" TeX-save-document t]
 	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
@@ -1798,10 +1808,10 @@ The point is supposed to be at the beginning of the current line."
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	"--"
 	(list "Formatting and Marking"
-	      ["Format Environment" LaTeX-format-environment t]
-	      ["Format Paragraph" LaTeX-format-paragraph t]
-	      ["Format Region" LaTeX-format-region t]
-	      ["Format Section" LaTeX-format-section t]
+	      ["Format Environment" LaTeX-fill-environment t]
+	      ["Format Paragraph" LaTeX-fill-paragraph t]
+	      ["Format Region" LaTeX-fill-region t]
+	      ["Format Section" LaTeX-fill-section t]
 	      ["Mark Environment" LaTeX-mark-environment t]
 	      ["Mark Section" LaTeX-mark-section t]
 	      ["Beginning of Environment" LaTeX-find-matching-begin t]
@@ -1817,7 +1827,7 @@ The point is supposed to be at the beginning of the current line."
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
+	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 (defvar LaTeX-font-list
   '((?\C-b "\\textbf{" "}")
@@ -1835,9 +1845,6 @@ The point is supposed to be at the beginning of the current line."
   "Font commands used with LaTeX2e.  See `TeX-font-list'.")
 
 ;;; Mode
-
-(defvar LaTeX-version "2"
-  "LaTeX version.  Currently recognized is \"2\" and \"2e\".")
 
 (defvar TeX-arg-cite-note-p nil
   "*If non-nil, ask for optional note in citations.")
@@ -1952,11 +1959,6 @@ of LaTeX-mode-hook."
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
 			  ("thebibliography" . LaTeX-item-bib)))
-
-  (if (string-equal LaTeX-version "2")
-      ()
-    (make-local-variable 'TeX-font-list)
-    (setq TeX-font-list LaTeX-font-list))
 
   (setq TeX-complete-list
 	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
@@ -2186,7 +2188,14 @@ of LaTeX-mode-hook."
      '("renewcommand" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
-     '("documentclass" TeX-arg-document))))
+     '("documentclass" TeX-arg-document)))
+
+  (TeX-add-style-hook "latex2e"
+   ;; Use new fonts for `\documentclass' documents.
+   (function (lambda ()
+     (make-local-variable 'TeX-font-list)
+     (setq TeX-font-list LaTeX-font-list)
+     (run-hooks 'LaTeX2e-hook)))))
 
 (provide 'latex)
 

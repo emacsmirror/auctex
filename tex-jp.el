@@ -63,6 +63,19 @@
   "*List of Japanese document styles.")
 (make-variable-buffer-local 'japanese-LaTeX-style-list)
 
+;;; Hilighting
+
+(if (boundp 'hilit-patterns-alist)
+    (let ((latex-patterns (cdr-safe (assq 'latex-mode hilit-patterns-alist)))
+	  (plain-tex-patterns (cdr-safe (assq 'plain-tex-mode
+					      hilit-patterns-alist))))
+      (if (and latex-patterns plain-tex-patterns)
+	  (setq hilit-patterns-alist
+		(append (list (cons 'japanese-plain-tex-mode plain-tex-patterns))
+			(list (cons 'japanese-latex-mode latex-patterns))
+			(list (cons 'japanese-slitex-mode latex-patterns))
+			hilit-patterns-alist)))))
+
 ;;; Japanese Parsing
 
 (if (boundp 'MULE)
@@ -261,7 +274,6 @@ of LaTeX-mode-hook. and then the value of SliTeX-mode-hook."
   (setq major-mode 'japanese-slitex-mode)
   (setq TeX-command-default "jSliTeX")
   (setq LaTeX-default-style "jslides")
-  (setq TeX-delayed-style-hooks (cons "slitex" TeX-delayed-style-hooks))
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook
 	     'SliTeX-mode-hook))
 

@@ -10,9 +10,81 @@ Michelangelo Grigni @samp{<mic@@cs.ucsd.edu>},
 David Aspinall @samp{<da@@dcs.edinburgh.ac.uk>},
 Frederic Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>},
 Robert Estes @samp{<estes@@ece.ucdavis.edu>},
+Peter Whaite @samp{<peta@@cim.mcgill.ca>},
+Karl Eichwalder @samp{<karl@@pertron.central.de>},
+John Interrante @samp{<interran@@uluru.Stanford.EDU>},
 and probably more.@refill
 
 @itemize @bullet
+@item
+La@TeX{}2e is now default.  Set @code{LaTeX-version} to @samp{"2"} to
+disable this.
+
+@item
+Better handling of @samp{*TeX background*} buffer.  Suggested by John
+Interrante @samp{<interran@@uluru.Stanford.EDU>}. 
+
+@item
+Parser did not recognise the use of @samp{\def} to create La@TeX{}
+environments.  Reported by Frederic Devernay
+@samp{<Frederic.Devernay@@sophia.inria.fr>}. 
+
+@item
+Minor cleanup in some error messages.
+
+@item
+Fixed bug in @code{TeX-comment-paragraph} when called with a negative
+argument.  Reported by Markus Kramer @samp{<kramer@@inf.fu-berlin.de>}. 
+
+@item
+Don't move point in master file when running a command on the region in
+an included file.  Thanks to Karl Wilhelm Langenberger
+@samp{<wlang@@rs6000.mri.akh-wien.ac.at>} for the patch.
+
+@item
+@code{LaTeX-math-mode} no longer works on Emacs 18 or older Lucid
+versions.  This change allowed me to unbundle @file{min-map.el}.
+
+@item
+Made @kbd{C-c C-e} more robust, especially when applied on an empty
+active region.  Reported by Andrew Senior @samp{<aws@@eng.cam.ac.uk>}.
+
+@item
+@kbd{C-c C-m section RET} and @kbd{M-@key{tab}} should work now in
+@TeX{}info mode.  @kbd{C-c C-b} and @kbd{C-c C-r} removed, since they
+did not work.  Reported by Karl Eichwalder
+@samp{<karl@@pertron.central.de>}.
+
+@item
+Made @kbd{M-q} skip block comments.  Sugested by Peter Whaite
+@samp{<peta@@cim.mcgill.ca>}. 
+
+@item
+Code cleanup:  Renamed @samp{-format-} functions to @samp{-fill-}. 
+
+@item
+Made @key{,} and @kbd{.} remove any preceding italic correction.
+
+@item
+Changes in math mode: @samp{setminus} moved to @key{\}, @samp{not} moved
+to @key{/}, and @samp{wedge, @samp{vee}, and @samp{neg} installed on
+@key{&}, @kbd{|}, and @kbd{!} to make writing logic easier for C
+programmers.
+
+@item
+Renamed @file{auc-tex.el} to @file{auc-old.el} to make it less likely
+that new users load it by mistake.
+
+@item
+Changed name of @file{easymenu.el} to @file{auc-menu.el} to avoid
+conflict with RMS's version.  Updated it to handle the Lucid
+@code{:keys} keyword argument.  Defines a popup menu for both FSF and
+Lucid emacs, although it is only installed in Lucid Emacs.  Added David
+Aspinall's @samp{<da@@dcs.edinburgh.ac.uk>} patch to handle an empty
+menu bar under Lucid Emacs.  The interface is still a superset of
+@file{easymenu.el}.  This version should no longer prevent the sharing
+of byte compiled files between FSF and Lucid emacs.
+
 @item
 Marking a section or environment now highlight it in Lucid Emacs.  It
 already worked in GNU Emacs.  Thanks to Andreas Ernst
@@ -20,7 +92,8 @@ already worked in GNU Emacs.  Thanks to Andreas Ernst
 
 @item
 Font support for La@TeX{}2e.  Many people suggested this.
-Set @code{LaTeX-version} to @samp{2e} to activate it.
+Automatically activated for all documents defined with
+@samp{\documentclass}. 
 
 @item
 Outline support for La@TeX{}2e fixed by Robert Estes
@@ -95,3 +168,5 @@ first item inside the environment.  Thanks to Berwin A. Turlach
 Fixed bug in right button menu under Lucid.  Reported by Frederic
 Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>}.
 @end itemize
+
+
