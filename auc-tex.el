@@ -9,11 +9,11 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-23 16:32:51 $|$Revision: 5.14 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-23 16:35:36 $|$Revision: 5.15 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.14 $  
+;; RCS status      : $Revision: 5.15 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
