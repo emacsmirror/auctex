@@ -1,3 +1,12 @@
+Tue Feb 25 17:36:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7j released.
+
+Fri Feb 21 09:29:20 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (some): New target.  
+	Suggested by Steven L Baur <steve@miranova.com>.
+
 Thu Feb 20 11:30:50 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7i released.

@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.7i
+# Version: 9.7j
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -98,10 +98,9 @@ all:	lisp
 lisp:
 	$(ELC) $(AUCSRC) $(STYLESRC)
 
-install:	install-lisp
+some:	$(AUCELC) style/*.elc
 
-tex.elc:	tex.el
-	$(ELC) $(AUCSRC) $(STYLESRC)
+install:	install-lisp
 
 contrib:
 	$(ELC) bib-cite.el
@@ -109,7 +108,7 @@ contrib:
 # 	$(ELC) tex-jp.el              # Doesn't compile without MULE
 # 	$(ELC) hilit-LaTeX.el         # Doesn't compile without X
 
-install-lisp:	tex.elc
+install-lisp:	some
 	if [ ! -d $(lispdir) ]; then mkdir $(lispdir); else true; fi ;
 	if [ -f $(lispdir)/tex-site.el ]; \
 	then \
