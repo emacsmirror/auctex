@@ -56,10 +56,9 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
       fi],
       [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
     if test -z "${packagedir}"; then
-      AC_MSG_RESULT(not found)
-    else
-      AC_MSG_RESULT(${packagedir})
+      AC_MSG_ERROR([not found, exiting!])
     fi
+    AC_MSG_RESULT(${packagedir})
   else
     packagedir=
   fi
@@ -273,12 +272,14 @@ fi
 ])
 
 
+
+dnl "\${packagedir}/lisp"
+dnl "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" 
+dnl "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" 
+
 AC_DEFUN(EMACS_TEST_LISPDIR, [
-  for i in "\${packagedir}/lisp" \
-	   "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
+  for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
 	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
 	   "\${prefix}/site-lisp" ; do
     lispdir="$i"
     AC_FULL_EXPAND(i)
@@ -316,18 +317,22 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        # Set prefix temporarily
        prefix="${ac_default_prefix}"
      fi
-     # Test paths relative to prefixes
-     EMACS_TEST_LISPDIR
-     if test "$lispdir" = "NONE"; then
-       # No? Test paths relative to binary
-       EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+     if test ${EMACS_FLAVOR} = xemacs; then
+       # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
-     fi
-     if test "$lispdir" = "NONE"; then
-       # No? notify user.
-       AC_MSG_ERROR([Cannot locate lisp directory,
-use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs),
---libdir (xemacs), or possibly --prefix to rectify this])
+       if test "$lispdir" = "NONE"; then
+         # No? Test paths relative to binary
+         EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+         EMACS_TEST_LISPDIR
+       fi
+       if test "$lispdir" = "NONE"; then
+         # No? notify user.
+         AC_MSG_ERROR([Cannot locate lisp directory,
+use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
+       fi
+     else
+       # XEmacs
+       lispdir=${packagedir}/lisp
      fi
      # Store expanded path, may be added to (X)Emacs load-path
      lispdir_expanded="$lispdir"
