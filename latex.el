@@ -2000,6 +2000,20 @@ outer indentation in case of a commented line.  The symbols
 	  (skip-chars-backward "%\n\t ")
 	(skip-chars-backward "\n\t "))
       (beginning-of-line)
+      ;; If we are in called in a non-comment line, skip over comment
+      ;; lines.  The computation of indentation should in this case
+      ;; rather take the last non-comment line into account.
+      ;; Otherwise there might arise problems with e.g. multi-line
+      ;; code comments.  This behavior is not enabled in docTeX mode
+      ;; where large amounts of line comments may have to be skipped
+      ;; and indentation should not be influenced by unrelated code in
+      ;; other macrocode environments.
+      (while (and (not (eq major-mode 'doctex-mode))
+		  (not comment-current-flag)
+		  (TeX-in-commented-line)
+		  (not (bobp)))
+	(skip-chars-backward "\n\t ")
+	(beginning-of-line))
       (setq line-comment-last-flag (TeX-in-line-comment)
 	    comment-last-flag (TeX-in-commented-line))
       (LaTeX-back-to-indentation force-type)
