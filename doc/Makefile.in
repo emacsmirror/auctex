@@ -12,10 +12,13 @@ TEXIHTML=texi2html
 TEXINDEX=texindex
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=dvips
+TEXIFILES = auc-tex.texi install.texi wininstall.texi intro.texi \
+	changes.texi todo.texi
 
 all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
-dist: auctex INSTALL INSTALL.windows README CHANGES auc-tex_toc.html auc-tex.ps
+dist: auctex INSTALL INSTALL.windows README CHANGES TODO \
+	auc-tex_toc.html auc-tex.ps
 
 auc-tex_toc.html: auc-tex.texi
 	$(TEXIHTML) -split_node auc-tex.texi
@@ -49,7 +52,7 @@ auc-tex.dvi: auc-tex.texi
 auc-tex.ps: auc-tex.dvi
 	$(DVIPS) auc-tex.dvi -o auc-tex.ps
 
-auctex: auc-tex.texi install.texi wininstall.texi intro.texi changes.texi
+auctex: $(TEXIFILES)
 	-$(MAKEINFO) auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
@@ -57,19 +60,28 @@ auctex: auc-tex.texi install.texi wininstall.texi intro.texi changes.texi
 	@echo "**********************************************************"
 
 INSTALL: install.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate install.texi --output INSTALL
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		install.texi --output INSTALL
 
 INSTALL.windows: wininstall.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate wininstall.texi --output INSTALL.windows
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		wininstall.texi --output INSTALL.windows
 
 README: intro.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate intro.texi --output README
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		intro.texi --output README
 
 CHANGES: changes.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate changes.texi --output CHANGES
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		changes.texi --output CHANGES
 
 HISTORY: history.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate history.texi --output HISTORY
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		history.texi --output HISTORY
+
+TODO: todo.texi macros.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		todo.texi --output TODO
 
 install: auctex
 	-$(MKINSTALLDIRS) $(infodir)
@@ -84,4 +96,7 @@ install: auctex
 	-$(INSTALL_INFO)  --info-dir=$(infodir) auctex
 
 clean:
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.tmp auctex auctex-? *.html INSTALLATION README CHANGES HISTORY
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \
+		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
+		*.fns *.vrs *.pgs *.tmp auctex auctex-? *.html INSTALL \
+		INSTALL.windows README CHANGES HISTORY TODO
