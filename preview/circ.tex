@@ -319,7 +319,6 @@ circle(int x0, int y0, int r)
 \end{fframe}
 \end{table}
 \begin{figure}
-\label{zeich}
 \begin{picture}(\ones,\ones)
 \put(0,0){\usebox{\raster}}
 \newcount\x
@@ -346,7 +345,7 @@ circle(int x0, int y0, int r)
 \ifnum \ones > 0
 \repeat
 \end{picture}
-\caption{Viertelkreise}
+\caption{Viertelkreise}\label{zeich}
 \end{figure}
 
 \section{Einfache Hyperbeln}
@@ -382,8 +381,8 @@ Für $d'$ ergeben sich dann die folgenden Werte:
 \end{eqnarray*}
 Daraus ergibt sich der in Tabelle~\ref{halg} angegebene Hyperbel%
 algorithmus für den ersten Oktanten.
-\begin{table}\label{halg}
-\caption{Hyperbelalgorithmus}
+\begin{table}
+\caption{Hyperbelalgorithmus}\label{halg}
 \begin{fframe}
 \begin{enumerate}
 \item Setze $d \leftarrow r$, $x \leftarrow r$, $y \leftarrow r$
@@ -434,7 +433,6 @@ hyperb(int x0, int y0, int r, int dx)
 \end{fframe}
 \end{table}
 \begin{figure}
-\label{hzeich}
 \begin{picture}(\ones,\ones)
 \put(0,0){\usebox{\raster}}
 \newcount\x
@@ -464,6 +462,6 @@ hyperb(int x0, int y0, int r, int dx)
         \repeat}
 \repeat
 \end{picture}
-\caption{Hyperbeln}
+\caption{Hyperbeln}\label{hzeich}
 \end{figure}
 \end{document}
