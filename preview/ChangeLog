@@ -1,3 +1,6 @@
+2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
+	* configure.in: Try fixing the emacs flavor detection.
+
 2001-10-12  Alan Shutko  <ats@acm.org>
 
 	* configure.in: Change AC_PATH_PROG of emacs to AC_CHECK_PROG, as
