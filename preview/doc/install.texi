@@ -5,9 +5,11 @@
 @end ifset
 @c -----------------------
 Installing @previewlatex{} should be simple: merely @code{./configure},
-@code{make}, and @code{make install}.  Note that unlike most emacs
-add-ins, @previewlatex{} consists of a @TeX{} part and an Emacs part (that
-uses @AUCTeX{}).  This makes configuration a bit trickier than normal.
+@code{make}, and @code{make install}.  This does not yet activate the
+package, but merely makes it available.  See @ref{Loading the package}
+for the activation.  Note that unlike most emacs add-ins,
+@previewlatex{} consists of a @TeX{} part and an Emacs part (that uses
+@AUCTeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
 
 @ifclear rawfile
@@ -28,23 +30,17 @@ Please read through this document fully before installing anything.
 @itemize @bullet
 @item A recent version of Emacs 21, alternatively XEmacs
 
-The first version without known quirks and bugs affecting @previewlatex{}
-is Emacs-21.1.  Only very recent pretest versions before that have slight
-chances of working at all.  Since @previewlatex{} heavily exercises new
-features of Emacs 21, getting the newest release is a good idea.
+The first version known to work with @previewlatex{} is Emacs-21.1.
+Since @previewlatex{} heavily exercises new features of Emacs 21,
+getting the newest release is a good idea.
  
 While image support for Emacs under Microsoft Windows has not been
 implemented as of @w{version 21.2}, it is under development and can be
 accessed by anonymous @acronym{CVS} at
 @uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
-before @w{Emacs 21.3} gets released.
+before @w{Emacs 21.4} gets released.
 
-Another option is to try XEmacs, for which we now have support
-available.  @strong{Please note:} Presently, the port to XEmacs is work
-in progress.  Don't expect too much, and be prepared to contact the
-developers.  Problems with the XEmacs port are described in @ref{Known
-problems}.  There is additional information for XEmacs/Windows
-installation in
+There is additional information for Windows installations in
 @ifset rawfile
 the file @file{INSTALL.windows}.
 @end ifset
@@ -87,12 +83,8 @@ This is not really needed to @emph{install} the package, but will be
 required for stable operation of it.  Most problems we have encountered
 come from interaction with not so recent versions of GhostScript, so it
 is a good idea to have, say GhostScript 6.51 or later installed.
-@previewlatex{} will in its current version work with both AFPL and GNU
-GhostScript.  Unfortunately, up and including version 7.05, GNU
-GhostScript has no way of working in a secure setting with
-@previewlatex{}: you should not use it if malicious code integrated into
-@LaTeX{} documents could be an issue for you.  In that case, rather use
-a recent version of AFPL GhostScript.  For more information, see
+@previewlatex{} should in its current version work with most versions
+after that.  If you encounter problems, check
 @ifset rawfile
 the @file{PROBLEMS} file.
 @end ifset
@@ -128,21 +120,21 @@ various files will be.  To do so, run
 
 (Note: if you have fetched @previewlatex{} from @acronym{CVS} rather than
 a regular release, you will have to first generate @file{./configure} by
-running @code{autogen.sh} in the preview directory.)
+running @code{autogen.sh} in the @file{preview} directory.)
 
 On many machines, you will not need to specify any options, but if
-configure cannot determine something on its own, you'll need to help
-it out with one of these options
+@code{configure} cannot determine something on its own, you'll need to
+help it out with one of these options:
 
 @table @code
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
-@code{configure} is not finding the right emacs binary, you can specify
+@code{configure} is not finding the right Emacs binary, you can specify
 it with this option.
 
 @item --with-xemacs[=@var{/path/to/xemacs}]
 Configure for generation under xemacs (emacs is the default). Again, the
-path to the right xemacs binary can be specified with this option.
+path to the right XEmacs binary can be specified with this option.
 
 @item --with-lispdir=@var{/dir}
 This tells where to install Emacs Lisp files.  Normally, this option is
@@ -156,11 +148,11 @@ that configure is suggesting, and you know that XEmacs regards the
 directory you specify as a package directory.
 
 If you are installing @previewlatex{} for a single user, and you have
-installed no XEmacs packages as that user before, then configure may try
-to install @previewlatex{} in the systemwide package directory (that it
-cannot write to), causing installation to fail.  In that case, a good
-value for this option is @file{~/.xemacs/xemacs-packages}, as XEmacs
-looks there for per-user packages by default.
+installed no XEmacs packages as that user before, then @code{configure}
+may try to install @previewlatex{} in the systemwide package directory
+(that it cannot write to), causing installation to fail.  In that case,
+a good value for this option is @file{~/.xemacs/xemacs-packages}, as
+XEmacs looks there for per-user packages by default.
 
 @item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location, use this option
@@ -253,21 +245,26 @@ Next put the following lines into your @file{.emacs} file:
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
+Alternatively, you can copy the generated file @file{preview-latex.el}
+from the installation directory to a place where automatically loaded
+Emacs startup files are kept: often distribution vendors arrange for
+such directories.
+
 This will make Emacs load @file{preview.el} and let it install itself
 into @AUCTeX{} when you first load a @LaTeX{} file (be sure to have
-@AUCTeX{} up and working).  @kbd{C-c C-c g @key{RET}} should then give
-you a graphics preview.  You can customize the default option set and
-other settings of the Emacs package by entering @kbd{M-x customize-group
+@AUCTeX{} up and working).  @kbd{C-c C-p C-d} should then give you a
+graphics preview.  You can customize the default option set and other
+settings of the Emacs package by entering @kbd{M-x customize-group
 @key{RET} preview @key{RET}}.
 
 Under XEmacs, if you specified a valid package directory, or none at
 all, then restarting XEmacs should be enough to make the package
-visible, and @kbd{C-c C-c g @key{RET}} should produce previews as they
-do for Emacs.
+visible, and @kbd{C-c C-p C-d} should produce previews as they do for
+Emacs.
 
 If you used @code{--with-packagedir}, you have to make sure that the
 directory @file{lisp/preview} under the directory you specified is in
-XEmacs's @code{load-path} variable.
+XEmacs' @code{load-path} variable.
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
@@ -454,9 +451,9 @@ within Emacs.
 
 But at least for people just interested in @previewlatex{} from inside
 of Emacs, the augmentation of @samp{TEXINPUTS} will be helpful.
-Although it does not appear like it, under te@TeX{}-based systems,
-this invocation will also do the right thing in case @samp{TEXINPUTS}
-has no previous value.
+Although it does not appear like it, under @code{web2c}-based systems
+like te@TeX{}, this invocation will also do the right thing in case
+@samp{TEXINPUTS} has no previous value.
 
 @ifclear rawfile
 @node Installation under MS Windows
