@@ -1,3 +1,28 @@
+2004-08-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-buffer-type): Use alternative way to
+	determine end of search pattern.  Fixes problem with starred
+	macros.
+	(TeX-fold-item): Recognize starred macros as well.
+	XEmacs does not know `match-string-no-properties'.
+	(TeX-fold-make-overlay): Do not alter `display-string' before
+	`face' is set.
+	(TeX-fold-hide-item): Get only the string part of
+	`display-string'.
+
+	* tex.el (TeX-fold-menu): Wrap value in `TeX-menu-with-help'.
+	Fixes XEmacs start-up error.
+
+	* tex-mik.el: Fix typo in comment.
+
+	* auctex.spec (Version): Change to 11.52.
+
+	* configure.in: Change AUCTeX version to 11.52.
+
+	* doc/tex-ref.tex: Change AUCTeX version to 11.52.
+
+	* doc/auctex.texi: Change AUCTeX version to 11.52.
+
 2004-08-17  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (full-release): Fix a few things.
