@@ -1,6 +1,6 @@
 ;;; slides.el - Special code for slitex.
 ;;
-;; $Id: slides.el,v 1.3 1999-07-16 13:48:18 abraham Exp $
+;; $Id: slides.el,v 1.4 2004-04-20 09:27:37 salve Exp $
 
 ;;; Code:
 
@@ -13,7 +13,7 @@
 			    '("overlay" LaTeX-env-slide))
     (TeX-run-style-hooks "SLITEX"))))
 
-(defvar LaTeX-slide-color "" 
+(defvar LaTeX-slide-color ""
   "*Default slide color.")
 
  (make-variable-buffer-local 'LaTeX-slide-color)
@@ -21,7 +21,7 @@
 (defun LaTeX-style-slides ()
   "Prompt for and insert SliTeX options."
   (let ((slide-file (read-input "Slide file: "))
-	(slide-colors (read-input "Slide colors (comma separetade list): "
+	(slide-colors (read-input "Slide colors (comma separated list): "
 				  "black")))
     (save-excursion
       (goto-char (point-min))		; insert before \end{document}
