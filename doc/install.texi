@@ -27,7 +27,7 @@ installing anything.
 @section Prerequisites
 
 @itemize @bullet
-@item A recent version of Emacs 20 or 21, alternatively XEmacs 20 or 21
+@item A recent version of Emacs 21, alternatively XEmacs 21
 
 There is additional information for Windows installations in
 @ifset rawfile
