@@ -2587,7 +2587,7 @@ space does not end a sentence, so don't break a line there."
     ;; `LaTeX-fill-move-to-break-point' if the char before point matches
     ;; `LaTeX-nospace-between-char-regexp'.
     (if (and (featurep 'mule)
-	     (TeX-looking-at-backward LaTeX-nospace-between-char-regexp))
+	     (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
 	(backward-char 1)
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
