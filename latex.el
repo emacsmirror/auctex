@@ -4357,9 +4357,9 @@ runs the hooks in `doctex-mode-hook'."
   (setq TeX-auto-full-regexp-list
 	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
 
-  (if (= emacs-major-version 20)
-      (make-local-hook 'activate-menubar-hook))
   (add-hook 'activate-menubar-hook 'LaTeX-menu-update nil t)
+  (when (boundp 'activate-popup-menu-hook) ; for XEmacs
+    (add-hook 'activate-popup-menu-hook 'LaTeX-menu-update nil t))
 
   (setq paragraph-start
 	(concat
