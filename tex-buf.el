@@ -394,8 +394,9 @@ entry."
 				(substring expansion (match-end 0)))))
       expansion)))
 
-(defun TeX-style-check (styles)
-  "Check STYLES compared to the current style options."
+(defun TeX-style-check (styles &optional source-spec)
+  "Check STYLES compared to the current style options.
+If SOURCE-SPEC, add source specials support if available."
 
   (let ((files (TeX-style-list)))
     (while (and styles
@@ -403,8 +404,10 @@ entry."
       (setq styles (cdr styles))))
   (if styles
       (let ((ret (nth 1 (car styles))))
-	(cond ((eq LaTeX-command-style styles)
+	(cond (source-spec
 	       ;; Maybe add source specials:
+	       (message "Checking for source specials... %s"
+			(if TeX-source-specials-active-flag "yes" "no"))
 	       (concat
 		ret
 		(if TeX-source-specials-active-flag

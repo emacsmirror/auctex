@@ -444,7 +444,7 @@ string."
 	(list "%r" (lambda ()
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
-		     (TeX-style-check LaTeX-command-style)))
+		     (TeX-style-check LaTeX-command-style t)))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -547,7 +547,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.355 $"))
+	(rev "$Revision: 5.356 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -562,7 +562,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-27 13:54:54 $"))
+    (let ((date "$Date: 2004-04-29 14:11:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

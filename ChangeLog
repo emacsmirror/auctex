@@ -1,3 +1,10 @@
+2004-04-29  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-buf.el (TeX-style-check): New optional argument.  This fixes
+	an error in the last commit.
+
+	* tex.el (TeX-expand-list): Use it.
+
 2004-04-27  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-buf.el (TeX-style-check, TeX-output-style-check): Check for
