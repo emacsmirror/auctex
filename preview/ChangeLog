@@ -1,3 +1,9 @@
+2002-05-06    <dak@lola.goethe.zz>
+
+	* preview.el (preview-back-command): Changed semantics in order
+	not to backstep over punctuation.
+	(preview-get-geometry): Bad error message format.
+
 2002-04-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview.el (preview-dump-format):
