@@ -9,6 +9,10 @@
 	* latex.el (LaTeX-fill-paragraph): Fix check for code comment.
 	(LaTeX-fill-code-comment): Ditto.
 
+	* tex.el (TeX-in-commented-line): Don't alter match data.  Fixes
+	problems with `LaTeX-find-matching-end'.
+	(TeX-in-line-comment): Ditto.  (Prophylactic.)
+
 2004-04-08  Berend de Boer  <berend@pobox.com>
 
 	* latex.el (LaTeX-outline-name): could reach past end of buffer
@@ -32,7 +36,7 @@
 2004-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-break-at-separators): New name.  Formerly
-	know as `LaTeX-fill-distinct-contents'.
+	known as `LaTeX-fill-distinct-contents'.
 	Changed 'braced and 'math options to various symbols for opening
 	and closing separators (braces, brackets, math switches) which
 	can be activated independently.
