@@ -1,3 +1,11 @@
+2002-04-26  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): Menu entries and keybindings
+	for preview-dump-format.
+	(preview-dumped-list): New variable: dumped formats.
+	(preview-dump-format): New command for pregenerating format files.
+	(TeX-inline-preview): Use dumped format if present.
+
 2002-04-24  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* problems.texi: Slight index change
