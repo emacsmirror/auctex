@@ -1,3 +1,16 @@
+2004-10-29  Miguel Frasson  <frasson@math.leidenuniv.nl>
+
+	* tex-buf.el:  Add simple error report system.
+	(TeX-error-report-switches): New variable (plist).
+	(TeX-run-TeX),
+	(TeX-TeX-sentinel-check): Use it, updating error state,
+	where property is (intern (TeX-master-file)).
+
+	* tex-bar.el: Remove defadvice's to TeX-run-TeX and
+	TeX-TeX-sentinel-check.
+	(TeX-bar-error-handling-switches): Removed.
+	(TeX-bar-LaTeX-button-alist): next-error updated.
+	
 2004-10-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-bar.el (TeX-bar-LaTeX-button-alist): Add `TeX-save-document'.
