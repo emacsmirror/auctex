@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 10.0b
+;; Version: 10.0c
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1276,122 +1276,126 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 ;;
 ;; Stolen from Emacs 21.
 
-(unless (featurep 'xemacs)
+(eval-and-compile
+  (unless (featurep 'xemacs)
 
-  (defconst tex-font-lock-keywords-1
-    (eval-when-compile
-      (let* (;; Names of commands whose arg should be fontified as heading, etc.
-	     (headings (regexp-opt
-			'("title"  "begin" "end" "chapter" "part"
-			  "section" "subsection" "subsubsection"
-			  "paragraph" "subparagraph" "subsubparagraph"
-			  "newcommand" "renewcommand" "newenvironment"
-			  "newtheorem")
-			t))
-	     (variables (regexp-opt
-			 '("newcounter" "newcounter*" "setcounter" "addtocounter"
-			   "setlength" "addtolength" "settowidth")
-			 t))
-	     (includes (regexp-opt
-			'("input" "include" "includeonly" "bibliography"
-			  "epsfig" "psfig" "epsf" "nofiles" "usepackage"
-			  "includegraphics" "includegraphics*")
-			t))
-	     ;; Miscellany.
-	     (slash "\\\\")
-	     (opt "\\(\\[[^]]*\\]\\)?")
-	     (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
-	(list
-	 ;; Heading args.
-	 (list (concat slash headings "\\*?" opt arg)
-	       ;; If ARG ends up matching too much (if the {} don't match, f.ex)
-	       ;; jit-lock will do funny things: when updating the buffer
-	       ;; the re-highlighting is only done locally so it will just
-	       ;; match the local line, but defer-contextually will
-	       ;; match more lines at a time, so ARG will end up matching
-	       ;; a lot more, which might suddenly include a comment
-	       ;; so you get things highlighted bold when you type them
-	       ;; but they get turned back to normal a little while later
-	       ;; because "there's already a face there".
-	       ;; Using `keep' works around this un-intuitive behavior as well
-	       ;; as improves the behavior in the very rare case where you do have
-	       ;; a comment in ARG.
-	       3 'font-lock-function-name-face 'keep)
-	 ;; Variable args.
-	 (list (concat slash variables arg) 2 'font-lock-variable-name-face)
-	 ;; Include args.
-	 (list (concat slash includes opt arg) 3 'font-lock-builtin-face)
-	 ;; Definitions.  I think.
-	 '("^[ \t]*\\\\def\\\\\\(\\(\\w\\|@\\)+\\)"
-	   1 font-lock-function-name-face))))
-    "Subdued expressions to highlight in TeX modes.")
+    (defconst tex-font-lock-keywords-1
+      (eval-when-compile
+	(let* (;; Names of commands whose arg should be fontified as heading, etc.
+	       (headings (regexp-opt
+			  '("title"  "begin" "end" "chapter" "part"
+			    "section" "subsection" "subsubsection"
+			    "paragraph" "subparagraph" "subsubparagraph"
+			    "newcommand" "renewcommand" "newenvironment"
+			    "newtheorem")
+			  t))
+	       (variables (regexp-opt
+			   '("newcounter" "newcounter*" "setcounter" "addtocounter"
+			     "setlength" "addtolength" "settowidth")
+			   t))
+	       (includes (regexp-opt
+			  '("input" "include" "includeonly" "bibliography"
+			    "epsfig" "psfig" "epsf" "nofiles" "usepackage"
+			    "includegraphics" "includegraphics*")
+			  t))
+	       ;; Miscellany.
+	       (slash "\\\\")
+	       (opt "\\(\\[[^]]*\\]\\)?")
+	       (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
+	  (list
+	   ;; Heading args.
+	   (list (concat slash headings "\\*?" opt arg)
+		 ;; If ARG ends up matching too much (if the {} don't match, f.ex)
+		 ;; jit-lock will do funny things: when updating the buffer
+		 ;; the re-highlighting is only done locally so it will just
+		 ;; match the local line, but defer-contextually will
+		 ;; match more lines at a time, so ARG will end up matching
+		 ;; a lot more, which might suddenly include a comment
+		 ;; so you get things highlighted bold when you type them
+		 ;; but they get turned back to normal a little while later
+		 ;; because "there's already a face there".
+		 ;; Using `keep' works around this un-intuitive behavior as well
+		 ;; as improves the behavior in the very rare case where you do have
+		 ;; a comment in ARG.
+		 3 'font-lock-function-name-face 'keep)
+	   ;; Variable args.
+	   (list (concat slash variables arg) 2 'font-lock-variable-name-face)
+	   ;; Include args.
+	   (list (concat slash includes opt arg) 3 'font-lock-builtin-face)
+	   ;; Definitions.  I think.
+	   '("^[ \t]*\\\\def\\\\\\(\\(\\w\\|@\\)+\\)"
+	     1 font-lock-function-name-face))))
+      "Subdued expressions to highlight in TeX modes.")
 
-  (defconst tex-font-lock-keywords-2
-    (append tex-font-lock-keywords-1
-	    (eval-when-compile
-	      (let* (;;
-		     ;; Names of commands whose arg should be fontified with fonts.
-		     (bold (regexp-opt '("textbf" "textsc" "textup"
-					 "boldsymbol" "pmb") t))
-		     (italic (regexp-opt '("textit" "textsl" "emph") t))
-		     (type (regexp-opt '("texttt" "textmd" "textrm" "textsf") t))
-		     ;;
-		     ;; Names of commands whose arg should be fontified as a citation.
-		     (citations (regexp-opt
-				 '("label" "ref" "pageref" "vref" "eqref"
-				   "cite" "nocite" "index" "glossary"
-				   ;; These are text, rather than citations.
-				   ;; "caption" "footnote" "footnotemark" "footnotetext"
-				   )
-				 t))
-		     ;;
-		     ;; Names of commands that should be fontified.
-		     (specials (regexp-opt
-				'("\\"
-				  "linebreak" "nolinebreak" "pagebreak" "nopagebreak"
-				  "newline" "newpage" "clearpage" "cleardoublepage"
-				  "displaybreak" "allowdisplaybreaks" "enlargethispage")
-				t))
-		     (general "\\([a-zA-Z@]+\\**\\|[^ \t\n]\\)")
-		     ;;
-		     ;; Miscellany.
-		     (slash "\\\\")
-		     (opt "\\(\\[[^]]*\\]\\)?")
-		     (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
-		(list
-		 ;;
-		 ;; Citation args.
-		 (list (concat slash citations opt arg) 3 'font-lock-constant-face)
-		 ;;
-		 ;; Command names, special and general.
-		 (cons (concat slash specials) 'font-lock-warning-face)
-		 (concat slash general)
-		 ;;
-		 ;; Font environments.  It seems a bit dubious to use `bold' etc. faces
-		 ;; since we might not be able to display those fonts.
-		 (list (concat slash bold arg) 2 '(quote bold) 'append)
-		 (list (concat slash italic arg) 2 '(quote italic) 'append)
-		 ;; (list (concat slash type arg) 2 '(quote bold-italic) 'append)
-		 ;;
-		 ;; Old-style bf/em/it/sl.  Stop at `\\' and un-escaped `&', for tables.
-		 (list (concat "\\\\\\(\\(bf\\)\\|em\\|it\\|sl\\)\\>"
-			       "\\(\\([^}&\\]\\|\\\\[^\\]\\)+\\)")
-		       3 '(if (match-beginning 2) 'bold 'italic) 'append)))))
-    "Gaudy expressions to highlight in TeX modes.")
+    (defconst tex-font-lock-keywords-2
+      (append tex-font-lock-keywords-1
+	      (eval-when-compile
+		(let* (;;
+		       ;; Names of commands whose arg should be fontified with fonts.
+		       (bold (regexp-opt '("textbf" "textsc" "textup"
+					   "boldsymbol" "pmb") t))
+		       (italic (regexp-opt '("textit" "textsl" "emph") t))
+		       (type (regexp-opt '("texttt" "textmd" "textrm" "textsf") t))
+		       ;;
+		       ;; Names of commands whose arg should be fontified as a citation.
+		       (citations (regexp-opt
+				   '("label" "ref" "pageref" "vref" "eqref"
+				     "cite" "nocite" "index" "glossary"
+				     ;; These are text, rather than citations.
+				     ;; "caption" "footnote" "footnotemark" "footnotetext"
+				     )
+				   t))
+		       ;;
+		       ;; Names of commands that should be fontified.
+		       (specials (regexp-opt
+				  '("\\"
+				    "linebreak" "nolinebreak" "pagebreak" "nopagebreak"
+				    "newline" "newpage" "clearpage" "cleardoublepage"
+				    "displaybreak" "allowdisplaybreaks" "enlargethispage")
+				  t))
+		       (general "\\([a-zA-Z@]+\\**\\|[^ \t\n]\\)")
+		       ;;
+		       ;; Miscellany.
+		       (slash "\\\\")
+		       (opt "\\(\\[[^]]*\\]\\)?")
+		       (arg "{\\(\\(?:[^{}\\]+\\|\\\\.\\|{[^}]*}\\)+\\)"))
+		  (list
+		   ;;
+		   ;; Citation args.
+		   (list (concat slash citations opt arg) 3 'font-lock-constant-face)
+		   ;;
+		   ;; Command names, special and general.
+		   (cons (concat slash specials) 'font-lock-warning-face)
+		   (concat slash general)
+		   ;;
+		   ;; Font environments.  It seems a bit dubious to use `bold' etc. faces
+		   ;; since we might not be able to display those fonts.
+		   (list (concat slash bold arg) 2 '(quote bold) 'append)
+		   (list (concat slash italic arg) 2 '(quote italic) 'append)
+		   ;; (list (concat slash type arg) 2 '(quote bold-italic) 'append)
+		   ;;
+		   ;; Old-style bf/em/it/sl.  Stop at `\\' and un-escaped `&', for tables.
+		   (list (concat "\\\\\\(\\(bf\\)\\|em\\|it\\|sl\\)\\>"
+				 "\\(\\([^}&\\]\\|\\\\[^\\]\\)+\\)")
+			 3 '(if (match-beginning 2) 'bold 'italic) 'append)))))
+      "Gaudy expressions to highlight in TeX modes.")
 
-  (defvar tex-font-lock-keywords tex-font-lock-keywords-1
-    "Default expressions to highlight in TeX modes.")
+    (defvar tex-font-lock-keywords tex-font-lock-keywords-1
+      "Default expressions to highlight in TeX modes.")
 
 
-  (defface tex-math-face
-    '((t :inherit font-lock-string-face))
-    "Face used to highlight TeX math expressions.")
-  (defvar tex-math-face 'tex-math-face)
+    (if (> emacs-major-version 20)
+	(defface tex-math-face
+	  '((t :inherit font-lock-string-face))
+	  "Face used to highlight TeX math expressions.")
+      (require 'font-lock)
+      (copy-face 'font-lock-string-face 'tex-math-face))
+    (defvar tex-math-face 'tex-math-face)
 
-  ;; Use string syntax but math face for $...$.
-  (defun tex-font-lock-syntactic-face-function (state)
-    (if (nth 3 state) tex-math-face font-lock-comment-face))
-  )
+    ;; Use string syntax but math face for $...$.
+    (defun tex-font-lock-syntactic-face-function (state)
+      (if (nth 3 state) tex-math-face font-lock-comment-face))
+    ))
 ;;; The Mode
 
 (defvar TeX-format-list
