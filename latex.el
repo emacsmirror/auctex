@@ -2431,7 +2431,7 @@ space does not end a sentence, so don't break a line there."
 		  sentence-end-double-space)
 	      (progn
 		(goto-char from)
-		(while (re-search-forward "[.?!][]})\"']*$" nil t)
+		(while (re-search-forward "[.?!][]})\"']*$" to t)
 		  (insert ? ))))
 	  ;; Then change all newlines to spaces.
 	  (let ((point-max (progn
