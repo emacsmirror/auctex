@@ -1,3 +1,9 @@
+2002-10-24  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.c (main):
+	* dvipng/dvipng.h:
+	* dvipng/misc.c (DecodeString): Improve stdin parser 
+
 2002-10-21  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* configure.in: Fix texhash check 
