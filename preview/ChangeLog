@@ -1,3 +1,10 @@
+2004-04-05  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.1: 
+	* dvipng/readme.texi: 
+	* dvipng/dvipng.texi:
+	* dvipng/Makefile.in: Add man page 
+
 2004-03-27  Jan-Åke Larsson  <jalar@mai.liu.se>
 	
 	* dvipng.texi: Fix debug documentations
