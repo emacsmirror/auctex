@@ -566,7 +566,7 @@ It may be customized with the following variables:
       (save-excursion
 	(goto-char (mark))
 	(unless (progn (skip-chars-forward " \t") (eolp))
-	  (LaTeX-newline)
+	  (if (bolp) (newline) (LaTeX-newline))
 	  (indent-according-to-mode))))
     (when (and LaTeX-insert-into-comments
 	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
