@@ -4050,14 +4050,14 @@ the last entry in the menu."
      ,(LaTeX-section-menu-create)
      ["Macro ..." TeX-insert-macro
       :help "Insert a macro and possibly arguments"]
-     ["Complete Macro" TeX-complete-symbol
-      :help "Complete the current macro"]
-     ,(list LaTeX-environment-menu-name)
-     ,(list LaTeX-environment-modify-menu-name)
+     ["Complete macro" TeX-complete-symbol
+      :help "Complete the current macro or environment name"]
+     (,LaTeX-environment-menu-name)
+     (,LaTeX-environment-modify-menu-name)
      ["Close Environment" LaTeX-close-environment
       :help "Insert the \\end part of the current environment"]
      ["Item" LaTeX-insert-item
-      :help "Insert a new \\item"]
+      :help "Insert a new \\item into current environment"]
      "-"
      ("Insert Font"
       ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"
@@ -4084,10 +4084,10 @@ the last entry in the menu."
      "-"
      ["Comment or Uncomment Region"
       TeX-comment-or-uncomment-region
-      :help "Comment or uncomment the currently selected region"]
+      :help "Make the selected region outcommented or active again"]
      ["Comment or Uncomment Paragraph"
       TeX-comment-or-uncomment-paragraph
-      :help "Comment or uncomment the current paragraph"]
+      :help "Make the current paragraph outcommented or active again"]
      ("Formatting and Marking"
       ["Format Environment" LaTeX-fill-environment
        :help "Fill and indent the current environment"]

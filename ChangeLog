@@ -1,3 +1,11 @@
+2004-08-10  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-mode-menu): A few changed help strings and other
+	small fry.
+
+	* context.el (ConTeXt-mode-menu): Rework menu, reorganize it, add
+	help strings.
+
 2004-08-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (TeXinfo-mode-menu): Add help strings.

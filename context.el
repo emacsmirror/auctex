@@ -1236,83 +1236,103 @@ There might be text before point."
 (easy-menu-define ConTeXt-mode-menu
   ConTeXt-mode-map
   "Menu used in ConTeXt mode."
-  (list "ConTeXt"
-	(list ConTeXt-environment-menu-name)
-	(list ConTeXt-environment-modify-menu-name)
-	(list ConTeXt-setup-menu-name)
-	"-"
-	(list ConTeXt-project-structure-menu-name)
-	(list ConTeXt-section-block-menu-name)
-	(list ConTeXt-section-menu-name)
-	["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
-	"-"
-	["Macro..." TeX-insert-macro t]
-	["Complete" TeX-complete-symbol t]
-	["Item" ConTeXt-insert-item t]
-	["Show ConTeXt macro definition" ConTeXt-etexshow t]
-	"-"
-	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-	(list "Replace Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	"-"
-	(list "Commenting"
-	      ["Comment or Uncomment Region"
-	       TeX-comment-or-uncomment-region t]
-	      ["Comment or Uncomment Paragraph"
-	       TeX-comment-or-uncomment-paragraph t])
-	(list "Show/Hide"
-	      ["Fold Mode" TeX-fold-mode
-	       :style toggle
-	       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)]
-	      "-"
-	      ["Hide All" TeX-fold-buffer
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-b"]
-	      ["Hide Current Macro" TeX-fold-macro
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-m"]
-	      "-"
-	      ["Show All" TeX-fold-clearout-buffer
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-x"]
-	      ["Show Current Item" TeX-fold-clearout-item
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-c"])
-	"-"
-	(list "Multifile/Parsing"
-	      ["Save Document" TeX-save-document t]
-	      ["Switch to Master File" TeX-home-buffer t]
-	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))]
-	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
-	(list "Customize"
-	      ["Browse options"
-	       (customize-group 'AUCTeX)]
-	      ["Extend this menu"
-	       (easy-menu-add-item
-		nil '("ConTeXt")
-		(customize-menu-create 'AUCTeX))])
-	["Documentation" TeX-goto-info-page t]
-	["Submit bug report" TeX-submit-bug-report t]))
+  (TeX-maybe-remove-help
+   `("ConTeXt"
+     (,ConTeXt-project-structure-menu-name)
+     (,ConTeXt-section-block-menu-name)
+     (,ConTeXt-section-menu-name)
+     ["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
+     "-"
+     ["Macro..." TeX-insert-macro
+      :help "Insert a macro and possibly arguments"]
+     ["Complete" TeX-complete-symbol
+      :help "Complete the current macro or environment name"]
+     ["Show ConTeXt macro definition" ConTeXt-etexshow]
+     "-"
+     (,ConTeXt-environment-menu-name)
+     (,ConTeXt-environment-modify-menu-name)
+     ["Item" ConTeXt-insert-item
+      :help "Insert a new \\item into current environment"]
+     (,ConTeXt-setup-menu-name)
+     "-"
+     ("Insert Font"
+      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+     ("Replace Font"
+      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     "-"
+     ["Comment or Uncomment Region"
+      TeX-comment-or-uncomment-region
+      :help "Make the selected region outcommented or active again"]
+     ["Comment or Uncomment Paragraph"
+      TeX-comment-or-uncomment-paragraph
+      :help "Make the current paragraph outcommented or active again"]
+     ("Show/Hide"
+      ["Fold Mode" TeX-fold-mode
+       :style toggle
+       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :help "Toggle folding mode"]
+      "-"
+      ["Hide All" TeX-fold-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-b"
+       :help "Hide all configured TeX constructs in the current buffer"]
+      ["Hide Current Macro" TeX-fold-macro
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-m"
+       :help "Hide the LaTeX macro containing point"]
+      "-"
+      ["Show All" TeX-fold-clearout-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-x"
+       :help "Permanently show all folded content again"]
+      ["Show Current Item" TeX-fold-clearout-item
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-c"
+       :help "Permanently show the item containing point"])
+     "-"
+     ("Multifile/Parsing"
+      ["Switch to Master File" TeX-home-buffer
+       :help "Switch to buffer of Master File, or buffer of last TeX command"]
+      ["Save Document" TeX-save-document
+       :help "Save all buffers associated with the current Master File"]
+      ["Set Master File" TeX-master-file-ask
+       :active (not (TeX-local-master-p))
+       :help "Set the main file to run TeX commands on"]
+      ["Reset Buffer" TeX-normal-mode
+       :help "Save and reparse the current buffer for style information"]
+      ["Reset AUCTeX" (TeX-normal-mode t)
+       :keys "\\[universal-argument] \\[TeX-normal-mode]"
+       :help "Reset buffer and reload AUCTeX style files"])
+     ("Customize"
+      ["Browse options"
+       (customize-group 'AUCTeX)
+       :help "Open the customization buffer for AUCTeX"]
+      ["Extend this menu"
+       (easy-menu-add-item
+	nil '("ConTeXt")
+	(customize-menu-create 'AUCTeX))
+       :help "Make this menu a full-blown customization menu"])
+     ["Read the AUCTeX Manual" TeX-goto-info-page
+      :help "Everything worth reading"]
+     ["Submit bug report" TeX-submit-bug-report
+      :help "Create a problem report for mailing"])))
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
