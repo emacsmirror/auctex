@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.22 2001-10-04 22:16:14 dakas Exp $
+;; $Id: preview.el,v 1.23 2001-10-07 15:00:40 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -54,7 +54,8 @@
     "List of macros only present when compiling/loading.")
 
   (if (string-match "XEmacs" (emacs-version))
-      (load-file "prv-xemacs.elc")))
+      (let ((load-path (cons "." load-path)))
+	(require 'prv-xemacs))))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -1061,9 +1062,7 @@ file dvips put into the directory indicated by TEMPDIR."
 		(save-excursion
 		  (goto-line (+ offset line))
 		  (if (search-forward (concat string after-string)
-				      (save-excursion
-					(end-of-line)
-					(point)) t)
+				      (line-end-position) t)
 		      (backward-char (length after-string)))
 		  (or (and startflag (preview-back-command))
 		      (point))))))
@@ -1116,7 +1115,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.22 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.23 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
