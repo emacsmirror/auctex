@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.163 2002-11-04 20:28:48 dakas Exp $
+;; $Id: preview.el,v 1.164 2002-11-05 15:06:09 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -45,8 +45,14 @@
   (require 'tex-site)
   (require 'tex-buf)
   (require 'latex)
-  (require 'desktop)
-  (require 'reporter)
+  (condition-case nil
+      (require 'desktop)
+    (file-error (message "Missing desktop package:
+preview-latex buffers will not survive across sessions.")))
+  (condition-case nil
+      (require 'reporter)
+    (file-error (message "Missing reporter library, probably from the mail-lib package:
+preview-latex's bug reporting commands will probably not work.")))
   (require 'info)
   (defvar error))
 
@@ -2231,7 +2237,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.163 $"))
+	(rev "$Revision: 1.164 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2242,7 +2248,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-04 20:28:48 $"))
+    (let ((date "$Date: 2002-11-05 15:06:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
