@@ -1,3 +1,11 @@
+2005-02-08  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* style/alphanum.el: Added `Local Variables'.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
+	* font-latex.el: Fix typo in `Local Variables'.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 2005-02-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/faq.texi (Frequently Asked Questions About AUCTeX): Fix typo
