@@ -1,12 +1,17 @@
 The preview.sty style file:
 
-This style file is part of the preview-latex project with home page
-<URL:http://preview-latex.sourceforge.net>.  The project page at
-<URL:http://sourceforge.net/projects/preview-latex> offers downloads
-and anonymous CVS access for cutting edge versions.  The entire
-package also is available from CTAN at location
-CTAN:support/preview-latex and separate README and INSTALL files exist
-for the complete distribution.
+This style file is part of the AUCTeX project with home page
+<URL:http://www.gnu.org/software/auctex>.  The project page at
+<URL:http://savannah.gnu.org/projects/auctex> offers downloads and
+anonymous CVS access for cutting edge versions.  It is part of
+AUCTeX's preview-latex module: since AUCTeX's download area at
+<URL:ftp://ftp.gnu.org/pub/gnu/auctex> is mirrored at
+CTAN:support/auctex, you can find preview-latex tarballs there, with
+separate README and INSTALL files.  Older versions can be found at
+CTAN:support/preview-latex.  Starting with AUCTeX 11.80, preview-latex
+will also be distributed as an integral part of AUCTeX, requiring no
+separate download.  The unbundled preview.sty can be downloaded from
+CTAN:macros/latex/contrib/preview if required.
 
 While the primary focus of the package has been the support of editing
 in Emacs buffers augmented with preview images, its possible uses are
@@ -45,8 +50,8 @@ documentation and have fun.
 
 The license of the original file is the GPL which you'll find a copy
 of in the complete preview-latex distribution.  The complete
-distribution will also unpack and install the respective LaTeX files
-with an autoconf-supported mechanism, so you might consider using
-that.
+preview-latex distribution will also unpack and install the respective
+LaTeX files with an autoconf-supported mechanism, so you might
+consider using that.
 
-David Kastrup <URL:mailto:dakas@users.sourceforge.net>
+David Kastrup <URL:mailto:dak@gnu.org>

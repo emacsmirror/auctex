@@ -1,5 +1,8 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* latex/README: Renamed from latex/README-preview.  Overhaul
+	availability.
+
 	* doc/macros.texi: Synchronize to AUCTeX.
 
 	* Makefile.in (tarball-ready): Remove this target for now: it
