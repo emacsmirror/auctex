@@ -1,5 +1,9 @@
 2004-08-13  David Kastrup  <dak@gnu.org>
 
+	* Version 11.50 released.
+
+2004-08-13  David Kastrup  <dak@gnu.org>
+
 	* doc/wininstall.texi: Changes to --prefix and --with-auto-dir,
 	partly by Christian Schlauer.
 	Add a few words of my own after suggestions.
