@@ -505,6 +505,14 @@ when this is needed is in
 @code{\begin@{equation@}\begin@{split@}@dots{}\end@{split@}\end@{equation@}}, and
 accordingly @code{split} is one entry in
 @code{preview-inner-environments}.
+
+@item preview-use-balloon-help
+This XEmacs-only option defaults to `on', and will activate balloon
+help.  Customizing it to `off' might make sense if you find
+@code{balloon-help-mode} disruptive.  The equivalent in @w{GNU Emacs}
+(tooltips) is not a mode of its own, not optional and much less
+bothersome, anyway.
+
 @end vtable
 
 @node On EPS previews, Misplaced previews, The Emacs interface, For advanced users
