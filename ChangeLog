@@ -1,3 +1,12 @@
+2005-03-09  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-insert-environment): Call
+	`TeX-math-input-method-off'.
+	* style/amsmath.el (LaTeX-amsmath-env-alignat)
+	(LaTeX-amsmath-env-aligned): Do not call
+	`TeX-math-input-method-off' from here.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 2005-03-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-current-environment): Doc fix.
