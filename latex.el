@@ -784,7 +784,7 @@ job to this function."
 	  (indent-according-to-mode)
 	  (end-of-line 0)
 	  (newline-and-indent))
-      ;; not top capton but bottom caption (default).
+      ;; not top caption but bottom caption (default).
       (newline-and-indent)
       (LaTeX-label environment)
       (end-of-line 0)
