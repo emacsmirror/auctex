@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.76 1994-01-31 12:13:42 amanda Exp $
+@c $Id: auc-tex.texi,v 1.77 1994-02-02 12:44:06 amanda Exp $
 
 @finalout
 @titlepage
@@ -1582,7 +1582,8 @@ of TeX and Emacs are needed for Korean, Japanes, and Chinese.
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
-later.  
+later, it has the adventage that the usual the standard emacs word
+movement and case change commands will work.
 
 @table @file
 @item isolatin1.sty
@@ -1629,8 +1630,8 @@ your @file{.emacs} or @file{site-start.el} file.
 (setq remap-setup-alist
       '(("7-bit"  "Raw"          "L1" "US" "Ctrl" "~TeX")
         ("8-bit"  "Raw"          "L1" "L1" "Ctrl" "Raw")
-        ("Dead/7" "Dead Key"     "L1" "L1" "Ctrl" "~TeX")
-        ("Dead/8" "Dead Key"     "L1" "US" "Ctrl" "Raw")
+        ("Dead/7" "Dead Key"     "L1" "US" "Ctrl" "~TeX")
+        ("Dead/8" "Dead Key"     "L1" "L1" "Ctrl" "Raw")
         ("TeX"    "TeX Dead Key" "L1" "US" "Ctrl" "Raw")))
 @end lisp
 

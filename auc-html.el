@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.3 1994-01-31 12:13:02 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.4 1994-02-02 12:43:55 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-01-31 12:13:02 $|$Revision: 5.3 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-02-02 12:43:55 $|$Revision: 5.4 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -146,9 +146,9 @@ html-read-url.")
   ;; html-attribute-list.
   (cond ((listp att)
 	 att)
-	((assoc att html-attribute-alist))
+	((assoc (downcase att) html-attribute-alist))
 	(t
-	 (list att))))
+	 (list (downcase att)))))
   
 (defvar html-max-attribute-length
   ;; Length of longest attribute in html-attribute-alist.
@@ -318,7 +318,6 @@ html-read-url.")
 
 (defun html-tag-description (entry)
   ;; Extract description field from ENTRY in html-tag-alist.
-  (if (stringp entry) (setq entry (assoc entry html-tag-alist)))
   (or (nth 1 (html-tag-entry entry))
       "Purpose unkown"))
 
@@ -332,9 +331,9 @@ html-read-url.")
   ;; html-tag-list.
   (cond ((listp tag)
 	 tag)
-	((assoc tag html-tag-alist))
+	((assoc (downcase tag) html-tag-alist))
 	(t
-	 (list tag))))
+	 (list (downcase tag)))))
   
 (defun html-tag-recommended-attributes (entry)
   ;; Return list of recommeneded attributes for ENTRY in
@@ -487,7 +486,7 @@ html-read-url.")
   "Insert html attribute ATT."
   (interactive (let* ((minibuffer-local-completion-map
 		       html-attribute-completion-map)
-		      (entry (assoc (html-current-tag) html-tag-alist))
+		      (entry (html-tag-entry (html-current-tag)))
 		      (prompt (concat "Attribute: (press "
 				      (key-description (vector help-char))
 				      " for help) "))
@@ -496,7 +495,8 @@ html-read-url.")
 					    html-insert-attribute-history)))
 		 (list att)))
   (let ((arg (html-attribute-argument att))
-	(old (html-attribute-value att)))
+	(old (html-attribute-value att))
+	(case-fold-search t))
     (if old
 	()
       (re-search-forward ">")
@@ -512,7 +512,7 @@ html-read-url.")
 (defun html-identify-attribute (att)
   ;; Return entry for attribute ATT, using free variable TAG for a
   ;; suitable list.
-  (or (assoc att (html-tag-attributes tag))
+  (or (assoc (downcase att) (html-tag-attributes tag))
       (html-attribute-entry att)))
 
 (defun html-current-attributes ()
@@ -531,9 +531,10 @@ html-read-url.")
 		 (goto-char (match-end 0))
 		 (while (and (re-search-forward regexp nil t)
 			     (not (eq (preceding-char) ?>)))
-		   (setq atts (cons (buffer-substring (match-beginning 1)
-						      (match-end 1))
-				    atts)))
+		   (setq atts
+			 (cons (downcase (buffer-substring (match-beginning 1)
+							   (match-end 1)))
+			       atts)))
 		 (mapcar 'html-identify-attribute atts)))
 	      (t
 	       (error "Nameless tag.")))
@@ -564,6 +565,7 @@ html-read-url.")
   ;; Query the user for an attribute suitable for the current tag.
   (let* ((table (or (html-current-attributes)
 		    (error "No tags.")))
+	 (case-fold-search t)
 	 (default (html-current-attribute))
 	 (minibuffer-local-must-match-map html-attribute-completion-map)
 	 (prompt (concat "Attribute: "
@@ -578,24 +580,25 @@ html-read-url.")
 (defun html-attribute-value (att)
   ;; Return the value of attribute ATT in current tag.
   ;; `match-data' will contain the portion of the buffer used by ATT.
-  (save-excursion
-    (if (re-search-backward "[<>]" nil t)
-	(cond ((looking-at ">")
-	       (error "Not in a tag."))
-	      ((looking-at "</")
-	       (error "End tag."))
-	      ((looking-at "<\\([a-zA-Z]+\\)")
-	       (and (re-search-forward (concat ">\\|\\b"
-					       (regexp-quote att)
-					       "\\(=\"\\([^\"]*\\)\"\\)?")
-				       nil t)
-		    (not (eq (preceding-char) ?>))
-		    (match-beginning 2)
-		    (buffer-substring (match-beginning 2)
-				      (match-end 2))))
-	      (t
-	       (error "Nameless tag.")))
-      (error "No tag."))))
+  (let ((case-fold-search t))
+    (save-excursion
+      (if (re-search-backward "[<>]" nil t)
+	  (cond ((looking-at ">")
+		 (error "Not in a tag."))
+		((looking-at "</")
+		 (error "End tag."))
+		((looking-at "<\\([a-zA-Z]+\\)")
+		 (and (re-search-forward (concat ">\\|\\b"
+						 (regexp-quote att)
+						 "\\(=\"\\([^\"]*\\)\"\\)?")
+					 nil t)
+		      (not (eq (preceding-char) ?>))
+		      (match-beginning 2)
+		      (buffer-substring (match-beginning 2)
+					(match-end 2))))
+		(t
+		 (error "Nameless tag.")))
+	(error "No tag.")))))
 
 (defun html-delete-attribute (att)
   "Delete attribute ATT in current tag."
@@ -686,7 +689,8 @@ html-read-url.")
       (setq tag html-default-tag)
     (setq html-default-tag tag))
 	    
-  (let ((entry (assoc tag html-tag-alist)))
+  (let ((entry (html-tag-entry tag))
+	(case-fold-search t))
     (if entry
 	(let ((type (html-tag-type entry)))
 	  (cond ((memq type '(environment body))
@@ -828,7 +832,6 @@ With ARG always delete tag."
   (save-excursion
     (back-to-indentation)
     (let* ((case-fold-search t)
-
 	   ;; Speciel effects at the for text at the beginning of this line.
 	   (offset (cond ((looking-at ">")
 			  (- html-angle-indent))
@@ -906,49 +909,50 @@ With ARG always delete tag."
 (defun html-fill-paragraph ()
   "Fill paragraph at or after point."
   (interactive "*")
-  (save-excursion
-    (cond ((or (looking-at html-paragraph-separate)
-	       (not (looking-at html-paragraph-start)))
-	   ;; Move to the start of the paragraph unless we are already there.
-	   (re-search-backward html-paragraph-start nil t))
-	  ((html-looking-at-backward "^[ \t]*"))
-	  (t
-	   ;; Make sure paragraphs start at a new line.
-	   (newline)))
-    (let ((end (save-excursion
-		 (if (not (eobp)) (forward-char 1))
-		 (if (re-search-forward html-paragraph-start nil t)
-		     (match-beginning 0)
-		   (point-max)))))
-      (html-indent-line)
-      (while (< (point) end)
-	(if (or (looking-at html-header-regexp)
-		(looking-at html-open-environment-regexp)
-		(looking-at html-close-environment-regexp)
-		(looking-at html-break-regexp))
-	    ;; Certain tags start forces a line break.
-	    (let ((par (looking-at "<[Pp]\\b")))
-	      (forward-sexp 1)
-	      (if (looking-at "[ \t]*$")
-		  (skip-chars-forward " \t\n")
-		(newline (if par 2 1)))
-	      (html-indent-line))
-	  (skip-chars-forward "^ \t\n")
-	  (and (< (point) end)
-	       (re-search-forward "[ \t\n]*" end t)
-	       (replace-match " " t t)))
-	(if (> (current-column) fill-column)
-	    (progn			;Fill if needed.
-	      (do-auto-fill)
-	      (html-indent-line)))
-	(skip-chars-forward " \t\n")
-	(if (or (looking-at html-header-regexp)
-		(looking-at html-open-environment-regexp)
-		(looking-at html-close-environment-regexp)
-		(looking-at html-item-regexp))
-	    (progn 
-	      (newline)
-	      (html-indent-line)))))))
+  (let ((case-fold-search t))
+    (save-excursion
+      (cond ((or (looking-at html-paragraph-separate)
+		 (not (looking-at html-paragraph-start)))
+	     ;; Move to the start of the paragraph unless we are already there.
+	     (re-search-backward html-paragraph-start nil t))
+	    ((html-looking-at-backward "^[ \t]*"))
+	    (t
+	     ;; Make sure paragraphs start at a new line.
+	     (newline)))
+      (let ((end (save-excursion
+		   (if (not (eobp)) (forward-char 1))
+		   (if (re-search-forward html-paragraph-start nil t)
+		       (match-beginning 0)
+		     (point-max)))))
+	(html-indent-line)
+	(while (< (point) end)
+	  (if (or (looking-at html-header-regexp)
+		  (looking-at html-open-environment-regexp)
+		  (looking-at html-close-environment-regexp)
+		  (looking-at html-break-regexp))
+	      ;; Certain tags start forces a line break.
+	      (let ((par (looking-at "<[Pp]\\b")))
+		(forward-sexp 1)
+		(if (looking-at "[ \t]*$")
+		    (skip-chars-forward " \t\n")
+		  (newline (if par 2 1)))
+		(html-indent-line))
+	    (skip-chars-forward "^ \t\n")
+	    (and (< (point) end)
+		 (re-search-forward "[ \t\n]*" end t)
+		 (replace-match " " t t)))
+	  (if (> (current-column) fill-column)
+	      (progn			;Fill if needed.
+		(do-auto-fill)
+		(html-indent-line)))
+	  (skip-chars-forward " \t\n")
+	  (if (or (looking-at html-header-regexp)
+		  (looking-at html-open-environment-regexp)
+		  (looking-at html-close-environment-regexp)
+		  (looking-at html-item-regexp))
+	      (progn 
+		(newline)
+		(html-indent-line))))))))
 
 ;;; Keymap and Menubar
 
