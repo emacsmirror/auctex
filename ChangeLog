@@ -1,3 +1,11 @@
+2004-11-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/csquotes.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/csquotes.el.
+
+	* doc/changes.texi: Advertise support for csquotes.sty.
+
 2004-11-29  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-auto-insert): Added SKIP argument.
