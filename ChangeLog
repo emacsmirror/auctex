@@ -1,3 +1,7 @@
+2005-03-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-buffer-substring): Better safe than sorry.
+
 2005-03-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-title-faces): According to
