@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.10l
+# Version: 9.10m
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -75,9 +75,9 @@ CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el
 CONTRIBELC = bib-cite.elc font-latex.elc
 
 AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el \
-	texmathp.el multi-prompt.el
+	texmathp.el multi-prompt.el tex-mik.el
 AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
-	texmathp.elc multi-prompt.elc
+	texmathp.elc multi-prompt.elc tex-mik.elc
 
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10l
+;; Version: 9.10m
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 

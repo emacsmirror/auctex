@@ -1,3 +1,11 @@
+1999-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10m released.
+
+1999-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (AUCSRC, AUCELC): Added `tex-mik.el'.
+
 1999-11-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10l released.
@@ -5,7 +13,7 @@
 1999-11-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-env-figure): Use `\centering' instead of
-	`center' envirnment.
+	`center' environment.
 	Patch by Stefan Monnier <foo@acm.com>.
 
 1999-11-25  Per Abrahamsen  <abraham@dina.kvl.dk>
