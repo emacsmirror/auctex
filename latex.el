@@ -865,40 +865,35 @@ job to this function."
 	nil))))
 
 (defun LaTeX-env-figure (environment)
-  "Create ENVIRONMENT with \\label and \\caption commands."
-  (let ((float (read-string "Float to: " LaTeX-float))
+  "Create ENVIRONMENT with \\caption and \\label commands."
+  (let ((float (read-string "(Optional) Float to: " LaTeX-float))
 	(caption (read-string "Caption: "))
 	(center (y-or-n-p "Center? ")))
 
-    (setq LaTeX-float (if (zerop (length float))
-			  LaTeX-float
-			float))
+    (unless (zerop (length float))
+      (setq LaTeX-float float))
 
     (LaTeX-insert-environment environment
-			      (and LaTeX-float
-				   (concat LaTeX-optop
-					   LaTeX-float
-					   LaTeX-optcl)))
+			      (unless (zerop (length float))
+				(concat LaTeX-optop float
+					LaTeX-optcl)))
 
-    (if center
-	(progn
-	  (insert TeX-esc "centering")
-	  (indent-according-to-mode)
-	  (LaTeX-newline)))
+    (when center
+      (insert TeX-esc "centering")
+      (indent-according-to-mode)
+      (LaTeX-newline))
 
     (if (member environment LaTeX-top-caption-list)
-	;; top caption
-	(progn
-	  ;; do nothing if user skips caption
-	  (unless (zerop (length caption))
-	    (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	;; top caption -- do nothing if user skips caption
+	(unless (zerop (length caption))
+	  (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
+	  (LaTeX-newline)
+	  (indent-according-to-mode)
+	  ;; ask for a label and insert a new line only if a label is
+	  ;; actually inserted
+	  (when (LaTeX-label environment)
 	    (LaTeX-newline)
-	    (indent-according-to-mode)
-	    ;; ask for a label and insert a new line only if a label
-	    ;; is actually inserted
-	    (when (LaTeX-label environment)
-	      (LaTeX-newline)
-	      (indent-according-to-mode))))
+	    (indent-according-to-mode)))
       ;; bottom caption (default) -- do nothing if user skips caption
       (unless (zerop (length caption))
 	(LaTeX-newline)
@@ -961,8 +956,8 @@ Just like array and tabular."
 
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
-  (let ((pos (read-string "Position: " LaTeX-default-position))
-	(width (read-string "Width: "  LaTeX-default-width)))
+  (let ((pos (read-string "(Optional) Position: " LaTeX-default-position))
+	(width (read-string "Width: " LaTeX-default-width)))
     (setq LaTeX-default-position pos)
     (setq LaTeX-default-width (if (zerop (length width))
      				  LaTeX-default-width
