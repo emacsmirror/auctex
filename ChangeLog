@@ -1,3 +1,8 @@
+2004-08-25  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4:
+	Barf if packagedir not found, don't bother with load-path on xemacs' lispdir
+
 2004-08-25  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-command): Call `TeX-process-set-variable' with
