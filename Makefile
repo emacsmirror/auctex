@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 10.0a
+# Version: 10.0b
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -210,9 +210,8 @@ dist:
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip
+	rm -f $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
-	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	-zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
 	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \

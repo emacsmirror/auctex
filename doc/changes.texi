@@ -2,6 +2,9 @@
 
 @itemize @bullet
 @item
+Added Emacs 21 font lock support.
+
+@item
 @kbd{,} and @kbd{.} no longer removes italic correction.
 
 @item
