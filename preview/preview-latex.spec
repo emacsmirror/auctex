@@ -83,7 +83,8 @@ for i in *emacs; do
   # The below will make the package build from a tar straight from CVS
   # NOT RECOMMENDED, but useful for testing!
   test -f ./configure || ./autogen.sh
-  %configure --with-$i
+  # --with-packagedir repairs RedHat XEmacs braindamage
+  %configure --with-$i --with-packagedir=\$\{libdir\}/xemacs/site-packages 
   make
   popd
 done
@@ -92,12 +93,16 @@ done
 rm -rf %{buildroot}
 for i in *emacs; do
   pushd $i
-  %makeinstall texmfdir=%{buildroot}%{_datadir}/texmf 
   if [ $i == "emacs" ]; then 
+    # Install GNU Emacs site-start.d file for RedHat
     mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
     install -c -m 644 preview-latex.el \
       %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+  else
+    # XEmacs MANIFEST doesn't get created unless the target dir exists
+    mkdir -p %{buildroot}%{_libdir}/xemacs/site-packages/pkginfo
   fi
+  %makeinstall texmfdir=%{buildroot}%{_datadir}/texmf 
   popd
 done
 
