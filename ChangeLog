@@ -1,3 +1,13 @@
+2005-03-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-current-environment, LaTeX-find-matching-end)
+	(LaTeX-find-matching-begin): Rather than using the start or end of
+	a commented region as a boundary, look further for other commented
+	regions with the same prefix possibly containing an environment
+	start or end respectively.
+	(LaTeX-mode-menu): An empty help string is useless and may lead to
+	an empty tooltip.
+
 2005-03-09  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* style/amsmath.el ("amsmath"): Fixed typo: "dotssc" -> "dotsc".
