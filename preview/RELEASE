@@ -29,9 +29,11 @@ combination yet.
 
 Release 0.7.3 is a consolidation release containing mostly bug fixes.
 It has to disable a broken security implementation that persists into
-version 7.05 of GNU GhostScript.  If security of third-party generated
-DVI/PostScript is an issue for you, at the current point of time you
-will have to resort to an AFPL GhostScript release.
+version 7.05 of GNU GhostScript.  A complete lack of developer
+response makes it likely that future versions of GhostScript will not
+work unless preview-latex gets configured to disable security for them
+as well.  For further information, please read the PROBLEMS file or
+the respective manual section.
 
 One new feature is dumping of precompiled preambles in order to
 facilitate faster regeneration of previews.  You can do this via a key
@@ -66,16 +68,9 @@ Additional files can be found at
   Linux.  For the binary RPMs, you will need the preview-latex-common
   RPM as well as the Emacs-flavor specific RPM.
 
-The RPMs require a few packages:
+The RPMs require a few packages that should be readily available in
+current distributions.  As of RH 7.3, Emacs-21.2 and GhostScript-6.52
+are included.  The current beta "Limbo" contains the security-impaired
+GhostScript-7.05.  For further details and possible problems with
+future GhostScript releases, see the PROBLEMS file.
 
-* GhostScript 6.51 is included in RH 7.2, but if you use an earlier
-  release it can be downloaded from the RH7.2 updates,
-  <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>.
-  The current beta of RedHat 7.3 (see below) includes GhostScript 6.53.
-
-* Emacs-21.2 is part of the beta release for RedHat 7.3 at
-  <URL:ftp://ftp.redhat.com/pub/redhat/linux/beta/skipjack/en/os/i386/RedHat/RPMS/>
-  unless it has already been superceded by the regular release.
-  I installed this using 'rpm -i --nodeps --force', which worked for
-  me, but since it does not follow the usual emacs + emacs-X11 +
-  emacs-nox, YMMV.
