@@ -1,9 +1,12 @@
 2004-10-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-auto-class-regexp-list): New variable.
+	Match "\DeclareRobustCommand\foo" besides
+	"\DeclareRobustCommand{\foo}" as well.
 	(LaTeX-auto-regexp-list): Use it.
-	(LaTeX-auto-cleanup): Do not consider key=value options.
-	Check for "Package" in addition to "package".
+	(LaTeX-auto-cleanup): Do not consider key=value options.  Check
+	for "Package" in addition to "package".
+	(LaTeX-auto-class-regexp-list):
 
 2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
