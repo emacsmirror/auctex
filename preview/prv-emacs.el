@@ -321,7 +321,12 @@ nil displays the underlying text, and 'toggle toggles."
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
-  (add-hook 'post-command-hook #'preview-move-point nil t))
+  (add-hook 'post-command-hook #'preview-move-point nil t)
+  (easy-menu-add-item nil
+		      '("Command")
+		      (TeX-command-menu-entry
+		       (assoc "Generate Preview" TeX-command-list)))
+  (easy-menu-add preview-menu LaTeX-mode-map))
 
 
 (defvar preview-marker (make-marker)
@@ -489,15 +494,6 @@ Pure borderless black-on-white will return NIL."
 (defmacro preview-mark-active ()
   "Return t if the mark is active."
   'mark-active)
-
-(defmacro preview-with-LaTeX-menus (&rest bodyforms)
-  "Activates the LaTeX menus for the BODYFORMS.
-This makes it possible to add to them."
-  `(let ((save-map (current-local-map)))
-     (unwind-protect
-	 (progn
-	   (use-local-map LaTeX-mode-map) ,@bodyforms)
-       (use-local-map save-map))))
 
 (defun preview-export-image (image)
   "Format an IMAGE into something printable."
