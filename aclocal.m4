@@ -7,13 +7,13 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
   AC_EMACS_LISP(packagedir,
     (let* ((prefix \"${prefix}\")\
-           (putative-existing-lisp-dir (locate-library \"auctex\"))\
+           (putative-existing-lisp-dir (locate-library \"$1\"))\
            (putative-existing-package-dir\
            (and putative-existing-lisp-dir\
-                (string-match \"lisp/auctex/tex-buf\.elc?\$\"\
+                (string-match \"lisp/$1\.elc?\$\"\
                               putative-existing-lisp-dir)\
                  (replace-in-string putative-existing-lisp-dir\
-                                    \"lisp/auctex/tex-buf\.elc?\$\" \"\")))\
+                                    \"lisp/$1\.elc?\$\" \"\")))\
            package-dir)\
       (if (and (boundp (quote early-packages))\
                (not putative-existing-package-dir))\
@@ -50,11 +50,11 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
     AC_ARG_WITH(packagedir,
       [  --with-packagedir=DIR   package DIR for XEmacs],
       [if test "${withval}" = yes -o -z "${withval}"; then
-	AC_EXAMINE_PACKAGEDIR
+	AC_EXAMINE_PACKAGEDIR($1)
       else
 	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
       fi],
-      AC_EXAMINE_PACKAGEDIR)
+      AC_EXAMINE_PACKAGEDIR($1))
     if test -z "${packagedir}"; then
       AC_MSG_RESULT(not found)
     else
@@ -64,6 +64,104 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
     packagedir=NONE
   fi
   AC_SUBST(packagedir)])
+
+
+AC_DEFUN(AC_PATH_TEXMFDIR,
+ [
+# First check for docstrip.cfg information
+
+if test -z "$previewtexmfdir" ; then
+    AC_MSG_CHECKING([for docstrip directory configuration])
+    cat > testdocstrip.tex <<EOF
+\input docstrip
+\ifx\basedir\undefined\else
+   \message{^^J--preview-tex-dir=\showdirectory{tex/latex/preview}^^J%
+               --texmf-prefix=\basedir^^J}
+\fi
+\endbatchfile
+EOF
+    $LATEX '\nonstopmode \input testdocstrip' >&5 2>&1
+    texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>&5`
+    previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
+    if test -z "$previewtexmfdir"  ; then
+	if test ! -z "$texmfdir"  ; then
+	    previewtexmfdir=\$\(texmfdir\)
+	    previewdocdir=\$\(texmfdir\)
+	    
+	fi
+    else
+	previewdocdir=$texmfdir/doc/latex/styles
+    fi
+# Next 
+# kpsepath -n latex tex
+# and then go for the following in its output:
+# a) first absolute path component ending in tex/latex// (strip trailing
+# // and leading !!):  "Searching for TDS-compliant directory."  Install
+# in preview subdirectory.
+# b) first absolute path component ending in // "Searching for directory
+# hierarchy"  Install in preview subdirectory.
+# c) anything absolute.  Install both files directly there.
+
+if test -z "$previewtexmfdir"  ; then
+AC_MSG_RESULT([no])
+AC_MSG_CHECKING([for TDS-compliant directory])
+for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+ 		grep '^/.*/tex/latex//$' `
+do
+  x=`echo $x | sed -e 's+//+/+g' -e 's+/$++' `
+  if test -d "$x"  ; then
+     texmfdir=`echo $x | sed -e 's+/tex/latex++'`
+     previewdocdir=\$\(texmfdir\)/doc/latex/styles
+     previewtexmfdir=\$\(texmfdir\)/tex/latex/preview
+     break
+  fi
+done
+fi
+
+if test -z "$previewtexmfdir"  ; then
+AC_MSG_RESULT([no])
+AC_MSG_CHECKING([for TeX directory hierarchy])
+for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+ 		grep '^/.*//$'`
+do
+  if test -d "$x"  ; then
+     texmfdir=$x
+     previewtexmfdir=\$\(texmfdir\)/preview
+     previewdocdir=\$\(texmfdir\)/preview
+     break
+  fi
+done
+fi
+
+if test -z "$previewtexmfdir"  ; then
+AC_MSG_RESULT([no])
+AC_MSG_CHECKING([for TeX input directory])
+for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+ 		grep '^/'`
+do
+  if test -d "$x"  ; then
+     texmfdir=$x
+     previewdocdir=\$\(texmfdir\)
+     break
+  fi
+done
+fi
+
+if test -z "$previewtexmfdir"  ; then
+AC_MSG_RESULT([no])
+	AC_MSG_ERROR([Cannot find the texmf directory!  Please use --with-texmf-dir=dir to specify where the preview tex files go])
+fi
+     AC_MSG_RESULT($texmfdir)
+fi
+
+echo Preview will be placed in $previewtexmfdir
+echo Preview docs will be placed in $previewdocdir
+AC_SUBST(texmfdir)
+AC_SUBST(previewtexmfdir)
+AC_SUBST(previewdocdir)])
+
+
+
 
 
 dnl AC_EMACS_LISP AC_XEMACS_P AC_PATH_LISPDIR and AC_EMACS_CHECK_LIB
@@ -128,10 +226,42 @@ AC_DEFUN(AC_PATH_LISPDIR, [
 	fi
     done
   fi
-  lispdir="$lispdir/auctex"
+  if test -n "$1"; then 
+  	lispdir="$lispdir/$1"
+  fi
   AC_MSG_RESULT($lispdir)
   AC_SUBST(lispdir)
 ])
+
+AC_DEFUN(AC_CHECK_PROG_REQUIRED, [
+AC_CHECK_PROG($1, $2, NONE)
+if test "${$1}"x = NONEx ; then
+   AC_MSG_ERROR([$3])
+fi
+])
+
+AC_DEFUN(AC_CHECK_PROGS_REQUIRED, [
+AC_CHECK_PROGS($1, $2, NONE)
+if test "${$1}"x = NONEx ; then
+   AC_MSG_ERROR([$3])
+fi
+])
+
+
+AC_DEFUN(AC_PATH_PROG_REQUIRED, [
+AC_PATH_PROG($1, $2, NONE)
+if test "${$1}"x = NONEx ; then
+   AC_MSG_ERROR([$3])
+fi
+])
+
+AC_DEFUN(AC_PATH_PROGS_REQUIRED, [
+AC_PATH_PROGS($1, $2, NONE)
+if test "${$1}"x = NONEx ; then
+   AC_MSG_ERROR([$3])
+fi
+])
+
 
 dnl
 dnl Check whether a function exists in a library
@@ -157,7 +287,7 @@ fi
 ])
 
 dnl
-dnl Check whether a function exists in a library
+dnl Check whether a library is require'able
 dnl All '_' characters in the first argument are converted to '-'
 dnl
 AC_DEFUN(AC_EMACS_CHECK_REQUIRE, [
@@ -184,7 +314,7 @@ dnl Perform sanity checking and try to locate the W3 package
 dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for acceptable AUC-TeX version)
-AC_ARG_WITH(tex-site,[  --with-tex-site=DIR       Location of AUC-TeX's tex-site.el, if not standard], 
+AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC-TeX's tex-site.el, if not standard], 
  [ AUCTEXDIR=${withval} ; 
    if test ! -d $AUCTEXDIR  ; then
       AC_MSG_ERROR([--with-tex-site=$AUCTEXDIR: Directory does not exist])
@@ -210,8 +340,8 @@ if test -z "$AUCTEXDIR" ; then
 fi
 
    AC_MSG_RESULT(in ${AUCTEXDIR})
-echo ${AUCTEXDIR}
-  [echo ${AUCTEXDIR} | sed 's/\\/&&/g']
+   #echo ${AUCTEXDIR}
+   #  [echo ${AUCTEXDIR} | sed 's/\\/&&/g']
 	#   AUCTEXDIR=`echo ${AUCTEXDIR} | sed 's/\\\\/&&/g'`
    AC_SUBST(AUCTEXDIR)
 ])
@@ -219,7 +349,8 @@ echo ${AUCTEXDIR}
 
 dnl AC_CHECK_MACRO_MAKEINFO(MACRO, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
-[AC_MSG_CHECKING([if $MAKEINFO understands @$1{}])
+[if test -n "$MAKEINFO" -a "$makeinfo" != ":"; then
+  AC_MSG_CHECKING([if $MAKEINFO understands @$1{}])
   echo \\\\input texinfo >test.texi
   echo @$1{test} >>test.texi
   if $MAKEINFO test.texi > /dev/null 2> /dev/null; then
@@ -230,24 +361,15 @@ AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
     ifelse([$3], , :, [$3])
   fi
   rm -f test.texi test.info
+fi
 ])
 
 dnl AC_CHECK_MACROS_MAKEINFO(FUNCTION... [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_CHECK_MACROS_MAKEINFO,
-[if test -n "$MAKEINFO"; then
-  for ac_macro in $1; do
+[for ac_macro in $1; do
     AC_CHECK_MACRO_MAKEINFO($ac_macro, $2, [MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
     $3])dnl
   done
-fi
 AC_SUBST(MAKEINFO_MACROS)
 ])
 
-
-
-AC_DEFUN(AC_PATH_PROGS_REQUIRED, [
-AC_PATH_PROGS($1, $2, NONE)
-if test "${$1}"x = NONEx ; then
-   AC_MSG_ERROR([$3])
-fi
-])
