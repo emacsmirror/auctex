@@ -73,7 +73,7 @@ When called interactively, prompt for an environment."
 	(goto-char (mark))
 	(unless (TeX-looking-at-backward "^[ \t]*")
 	  (newline))
-	(insert "@end" env)
+	(insert "@end " env)
 	(save-excursion (newline))
 	(end-of-line 0))
     (insert "@" env "\n\n@end " env "\n")
