@@ -1,3 +1,8 @@
+2002-04-16  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
+
+	* preview-latex.spec: Fix info direntry removal.
+	Problem persists in old rpms, though.
+
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
 	* configure.in: for 0.7.1.
