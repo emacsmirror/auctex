@@ -143,23 +143,26 @@ to display it, whether it is a string or image.  In that case,
 HELPSTRING is a format string with one or two %s specifiers
 for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
 are functions to call on preview's clicks."
-  `(let (,@(if glyph `((res (if (stringp ,glyph)
-				 (copy-sequence ,glyph)
-			       (propertize "x" 'display ,glyph)))))
-	   (resmap ,(or map '(make-sparse-keymap))))
+  `(let (,@(and glyph `((glyph ,glyph) res))
+           (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
-	   `((define-key resmap preview-button-1 ,click1)))
+           `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
-	   `((define-key resmap preview-button-2 ,click2)))
+           `((define-key resmap preview-button-2 ,click2)))
      ,@(if glyph
-	   `((add-text-properties
-	      0 (length res)
-	      (list 'mouse-face 'highlight
-	      'help-echo (format ,helpstring preview-button-1 preview-button-2)
-	      'keymap resmap)
-	      res)
-	     res)
-	 '(resmap))))
+           `((if (stringp glyph)
+		 (setq res (copy-sequence glyph))
+	       (setq res (copy-sequence "x"))
+	       (add-text-properties 0 1 (list 'display glyph)
+				    res))
+	     (add-text-properties
+              0 (length res)
+              (list 'mouse-face 'highlight
+              'help-echo (format ,helpstring preview-button-1 preview-button-2)
+              'keymap resmap)
+              res)
+             res)
+         '(resmap))))
 
 (defun preview-int-bb (bb)
   "Make integer bounding box from possibly float BB."
