@@ -1,5 +1,8 @@
 2002-04-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi (Simple customization): mention some
+	more auto reveal possibilities.
+
 	* doc/problems.texi (Emacs problems): Some updates.
 
 	* doc/preview-latex.texi (top): prepare for 0.7.2
