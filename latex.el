@@ -3518,10 +3518,11 @@ See also `LaTeX-math-menu'."
     (nil "searrow" "Arrows" 8600) ;; #X2198
     (nil "swarrow" "Arrows" 8601) ;; #X2199
     (nil "nwarrow" "Arrows" 8598) ;; #X2196
-    (nil "ldots" "Misc Symbol" 8230) ;; #X2026
-    (nil "cdots" "Misc Symbol" 8943) ;; #X22EF
-    (nil "vdots" "Misc Symbol" 8942) ;; #X22EE
-    (nil "ddots" "Misc Symbol" 8945) ;; #X22F1
+    (nil "ldots" "Punctuation" 8230) ;; #X2026
+    (nil "cdots" "Punctuation" 8943) ;; #X22EF
+    (nil "vdots" "Punctuation" 8942) ;; #X22EE
+    (nil "ddots" "Punctuation" 8945) ;; #X22F1
+    (?: "colon" "Punctuation" 58) ;; #X003A
     (?N "nabla" "Misc Symbol" 8711) ;; #X2207
     (nil "aleph" "Misc Symbol" 8501) ;; #X2135
     (nil "prime" "Misc Symbol" 8242) ;; #X2032
@@ -3601,26 +3602,20 @@ See also `LaTeX-math-menu'."
     (?\C-^ "sup" "Log-like")
     (?\C-t "tan" "Log-like")
     (nil "tanh" "Log-like")
-    (nil "uparrow" "delimiters" 8593) ;; #X2191
-    (nil "Uparrow" "delimiters" 8657) ;; #X21D1
-    (nil "downarrow" "delimiters" 8595) ;; #X2193
-    (nil "Downarrow" "delimiters" 8659) ;; #X21D3
-    (nil "{" "delimiters")
-    (nil "}" "delimiters")
-    (nil "updownarrow" "delimiters" 8597) ;; #X2195
-    (nil "Updownarrow" "delimiters" 8661) ;; #X21D5
-    (nil "lfloor" "delimiters" 8970) ;; #X230A
-    (nil "rfloor" "delimiters" 8971) ;; #X230B
-    (nil "lceil" "delimiters" 8968) ;; #X2308
-    (nil "rceil" "delimiters" 8969) ;; #X2309
-    (?\( "langle" "delimiters" 10216) ;; #X27E8
-    (?\) "rangle" "delimiters" 10217) ;; #X27E9
-    (nil "backslash" "delimiters" 92) ;; #X005C
-    (nil "|" "delimiters")
+    (nil "{" "Delimiters")
+    (nil "}" "Delimiters")
+    (nil "lfloor" "Delimiters" 8970) ;; #X230A
+    (nil "rfloor" "Delimiters" 8971) ;; #X230B
+    (nil "lceil" "Delimiters" 8968) ;; #X2308
+    (nil "rceil" "Delimiters" 8969) ;; #X2309
+    (?\( "langle" "Delimiters" 10216) ;; #X27E8
+    (?\) "rangle" "Delimiters" 10217) ;; #X27E9
     (nil "rmoustache" "Delimiters" 9137) ;; #X23B1
     (nil "lmoustache" "Delimiters" 9136) ;; #X23B0
     (nil "rgroup" "Delimiters")
     (nil "lgroup" "Delimiters")
+    (nil "backslash" "Delimiters" 92) ;; #X005C
+    (nil "|" "Delimiters")
     (nil "arrowvert" "Delimiters")
     (nil "Arrowvert" "Delimiters")
     (nil "bracevert" "Delimiters")
@@ -3913,7 +3908,7 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 (defvar LaTeX-math-menu
   '("Math"
     ("Greek Uppercase") ("Greek Lowercase") ("Binary Op") ("Relational")
-    ("Arrows") ("Misc Symbol") ("Var Symbol") ("Log-like") ("delimiters")
+    ("Arrows") ("Punctuation") ("Misc Symbol") ("Var Symbol") ("Log-like")
     ("Delimiters") ("Constructs") ("Accents") ("AMS"))
   "Menu containing LaTeX math commands.
 The menu entries will be generated dynamically, but you can specify
