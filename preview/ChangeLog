@@ -1,5 +1,7 @@
 2002-02-18  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: explain about configuration files.
+
 	* doc/preview-latex.texi: dircategory Emacs
 
 	* doc/Makefile.in (install): correct install target for
