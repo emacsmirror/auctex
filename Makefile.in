@@ -233,7 +233,7 @@ tar-ball:
 	cp RELEASE $(FTPDIR)/RELEASE-$(TAG)
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
-	cp doc/auctex/*.html $(WWWDIR)/doc
+	cp doc/html/*.html $(WWWDIR)/doc
 	chmod -R go-w+rX auctex-$(TAG)
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)

@@ -2,6 +2,11 @@
 
 	* Version 11.55 released.
 
+	* Makefile.in (tar-ball): 
+
+	* doc/Makefile.in (clean, html/auctex_toc.html, dist): Move HTML
+	stuff into html directory.
+
 2005-02-04  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Some more Emacspeak blurb.

@@ -21,10 +21,13 @@ TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 all: auctex.dvi tex-ref.dvi auctex.info
 
 dist: auctex.info INSTALL INSTALL.windows README CHANGES TODO FAQ \
-	auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
+	html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
-auctex_toc.html: auctex.texi
-	$(TEXI2HTML) -split_node auctex.texi
+html/auctex_toc.html: auctex.texi
+	rm -rf html
+	mkdir html
+	cd html; $(TEXI2HTML) -split_node ../auctex.texi && \
+	if [ -d auctex ];then mv auctex/* .; rm -rf auctex; fi
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref
@@ -92,6 +95,7 @@ clean:
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.tmp auctex.info auctex.info-* *.html \
 		INSTALL INSTALL.windows README CHANGES HISTORY TODO FAQ
+	rm -rf html
 
 distclean: clean
 	rm -f Makefile
