@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.476 $"))
+	    (rev "$Revision: 5.477 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-15 10:31:45 $"))
+    (let ((date "$Date: 2005-01-19 08:59:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -687,14 +687,11 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
   "Call minor mode function if minor mode variable is found."
   (let ((var (ad-get-arg 0))
 	(val (ad-get-arg 1)))
-    (when (if (boundp 'minor-mode-list)
-	      ;; Test which does not require maintenance but `minor-mode-list'.
-	      (and (memq var minor-mode-list)
-		   (string-match "^\\(La\\)*TeX-.+-mode$" (symbol-name var)))
-	    ;; "Manual" test requiring adaption when minor modes change.
-	    (memq var '(TeX-PDF-mode TeX-source-specials-mode
-				     TeX-interactive-mode TeX-Omega-mode
-				     TeX-fold-mode LaTeX-math-mode)))
+    ;; Instead of checking for each mode explicitely `minor-mode-list'
+    ;; could be used.  But this may make the byte compiler pop up.
+    (when (memq var '(TeX-PDF-mode
+		      TeX-source-specials-mode TeX-interactive-mode
+		      TeX-Omega-mode TeX-fold-mode LaTeX-math-mode))
       (if (symbol-value val) (funcall var 1) (funcall var 0)))))
 
 
@@ -3204,6 +3201,7 @@ be bound to `TeX-electric-macro'."
   :type '(choice (const newline)
 		 (const newline-and-indent)
 		 (const reindent-then-newline-and-indent)
+		 (const LaTeX-reindent-then-newline-and-indent)
 		 (sexp :tag "Other")))
 
 (defun TeX-newline ()
