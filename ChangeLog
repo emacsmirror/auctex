@@ -1,3 +1,9 @@
+2005-03-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Do not skip
+	LaTeX-nospace-between-char-regexp.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 2005-03-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-buffer-substring): Better safe than sorry.
