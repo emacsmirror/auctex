@@ -2618,12 +2618,14 @@ space does not end a sentence, so don't break a line there."
   ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
-    ;; Cancel `forward-char' which is called just before
-    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
-    ;; `LaTeX-nospace-between-char-regexp'.
-    (if (and (featurep 'mule)
-	     (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
-	(backward-char 1)
+    (if (featurep 'mule)
+ 	(if (TeX-looking-at-backward (concat LaTeX-nospace-between-char-regexp ".?") 2)
+ 	    ;; Cancel `forward-char' which is called just before
+ 	    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
+ 	    ;; `LaTeX-nospace-between-char-regexp'.
+ 	    (backward-char 1)
+ 	  (re-search-backward (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp) linebeg t)
+ 	  (forward-char 1))
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
     ;; while searching backward, search forward again.
