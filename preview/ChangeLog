@@ -1,5 +1,9 @@
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-log-error): Be really anal and careful
+	about what information the process might still be providing.
+	Christ, is this silly.
+
 	* prv-xemacs.el (preview-replace-active-icon): Use
 	set-extend-end-glyph.
 	(preview-toggle): Use set-extent-begin-glyph and
