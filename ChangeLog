@@ -1,3 +1,8 @@
+2004-04-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-view-style): Enhance documentation string.
+	(TeX-output-view-style): Ditto.
+
 2004-04-16  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-info.el (TeXinfo-command-menu): Use
