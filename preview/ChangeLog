@@ -1,3 +1,10 @@
+2001-12-03  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview-latex.texi:
+	Keymap documentation and general text on emacs interface added
+
+	* readme.texi, install.texi: Layout changes
+
 2001-12-03  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-clearout): add optional argument keep-dir.
