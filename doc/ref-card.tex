@@ -1,5 +1,5 @@
 % -*- plain-tex -*- 
-% $Id: ref-card.tex,v 1.6 1993-02-16 04:09:42 amanda Exp $
+% $Id: ref-card.tex,v 1.7 1993-03-15 18:12:23 amanda Exp $
 % Reference Card for Auc TeX version 7.0
 %**start of header
 \newcount\columnsperpage
@@ -25,8 +25,23 @@
 %    ready-to-use 8.5 x 11 inch reference card.
 %    For this you need a dvi device driver that can print sideways.
 % Which mode to use is controlled by setting \columnsperpage above.
-
-
+%
+%                   Author of Auc-TeX Reference Card
+%
+%                               \ ! /
+%                              -- O --
+%                         __    / ! \   __
+%                         \   /\     /\  /
+%                          \ /  \===/  \/
+%                               /   \
+%                              /  x  \
+%                             /   x   \
+%                                  
+%       Terrence Brannon, PO Box 5027, Bethlehem, PA 18015 , USA
+%  internet: tb06@pl118f.cc.lehigh.edu  (215) 758-1720 (215) 758-2104
+%
+% Kresten Krab Thorup updated the reference card to 6.*
+% Per Abrahamsen updated the reference card to 7.*
 %
 % Thanks to Stephen Gildea
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
@@ -45,7 +60,7 @@
 \centerline{Copyright \copyright\ 1987 Free Software Foundation, Inc.}
 \centerline{Copyright \copyright\ 1992 Kresten Krab Thorup}
 \centerline{Copyright \copyright\ \year\ Per Abrahamsen}
-\\centerline{for AUC \TeX\ version \versionnumber}
+\centerline{for AUC \TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
 this card provided the copyright notice and this permission notice
@@ -225,20 +240,32 @@ of TeX-mode-hook, and then the value of LaTeX-mode-hook.
 
 \key{Run a command on the master file}{C-c C-c}
 \key{Run a command on the region}{C-c C-r}
-\key{Next error in \TeX/LaTeX session}{C-c `}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
+\key{Next error in \TeX/LaTeX session}{C-c `}
 \key{Toggle debug of wonderful boxes}{C-c C-w}
 \key{Switch to master file or active buffer}{C-c C-h}
+
+Commands you can run on the master file (with C-c C-c) or the region
+(with C-c C-r) include the following.
+
+\key{\TeX}{TeX}
+\key{LaTeX}{LaTeX}
+\key{SliTeX}{SliTeX}
+\key{A previewer}{View}
+\key{Printing the DVI file}{Print}
+\key{Bib\TeX}{BibTeX}
+\key{MakeIndex}{Index}
+\key{LaCheck}{Check}
 
 \section{Command Insertion}
 
 \key{Insert Section}{C-c C-s}
-\key{Insert La\TeX\ environment}{C-c C-e}
+\key{Insert LaTeX environment}{C-c C-e}
 \key{Insert item}{C-c LFD}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
-\key{Complete TeX macro}{C-c TAB}
+\key{Complete \TeX\ macro}{C-c TAB}
 \key{Smart ``quote''}{"}
   
 \section{Font Selection}
@@ -286,7 +313,7 @@ of TeX-mode-hook, and then the value of LaTeX-mode-hook.
 \key{Move up one level}{C-c C-o C-u}
 \key{Up-list}{C-c \}}
 
-\section{Miscellany}
+\section{Miscellaneous}
 
 \key{Normal mode}{C-c C-n}
 \key{Describe mode}{C-c ?}
