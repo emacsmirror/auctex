@@ -38,7 +38,9 @@
   (error "AUCTeX requires Emacs 20 or later"))
 
 (require 'custom)
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (require 'cl)
+  (require 'tex-site))
 
 (defgroup AUCTeX nil
   "A (La)TeX environment."
@@ -72,14 +74,6 @@
 ;; site.  It is suggested that you do this by *not* changing this
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'.
-
-;; Change this to point to the place where the TeX macros are stored
-;; at your site.
-(defcustom TeX-macro-global '("/usr/local/lib/texmf/tex/")
-  "Directories containing the sites TeX macro files and style files.
-The directory names *must* end with a slash."
-  :group 'TeX-file
-  :type '(repeat (directory :format "%v")))
 
 ;; How to print.
 
@@ -560,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.362 $"))
+	(rev "$Revision: 5.363 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -575,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-09 14:38:27 $"))
+    (let ((date "$Date: 2004-05-09 16:20:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
