@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.4 $  
+;; RCS status      : $Revision: 4.5 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jun 10 02:46:40 1991
-;; Update Count    : 333
+;; Last Modified On: Thu Jun 13 20:27:50 1991
+;; Update Count    : 334
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -582,8 +582,9 @@ You should insert this in your TeX-mode-hook!"
 
 (defvar LaTeX-outline-regexp
   (concat "[ \t]*" (regexp-quote TeX-esc)
-	  "\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\|subsubsection\\|paragraph\\|subparagraph\\)"
-  "Regular expresion to use for outlines."))
+          "\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\
+|subsubsection\\|paragraph\\|subparagraph\\)")
+  "Regular expresion to use for outlines.")
 
 (defun LaTeX-outline-level ()
   "Find the level of current outline heading in an LaTeX document."
