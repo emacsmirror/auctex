@@ -1,3 +1,22 @@
+2002-01-17  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* preview.el (preview-default-preamble): Added default preamble
+	for use when a document not configured for preview-latex is
+	previewed in AUC TeX. 
+	
+	* preview-latex.texi (section Misplaced previews): Info on \emph
+	and \PreviewMacro*.
+
+2001-12-05  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* Makefile: Corrected dependencies
+
+	* preview-latex.texi: Added new section: User-level lisp functions
+
+	* install.texi: Layout improvements
+
+	* Makefile: Typo corrected
+
 2001-12-05  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.texi: Added new section: User-level lisp functions
