@@ -50,6 +50,9 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
+@summarycontents
+@c @contents
+
 @ifinfo
 @node top, Copying, (dir), (dir)
 @top Preview La@TeX{}
@@ -85,10 +88,13 @@ David Kastrup, Alan Shutko, and Jan-Åke Larsson
 * Copying::                     Your rights.
 * Introduction::                What is it good for?
 * Installation::                Installation.
-* Simple usage::                Getting started.
-* Customization::               How to do it and some suggestions.
+* Getting started::             Simple and fast.
+* Basic Usage::                 Keys, customization.
 * Internals::                   Under the hood.
 * Credits::                     Contributors.
+* Key Index::                   
+* Function Index::              
+* Variable Index::              
 * Concept Index::               A menu covering many topics.
 @end menu
 
@@ -102,13 +108,13 @@ David Kastrup, Alan Shutko, and Jan-Åke Larsson
 @c Used as @file{README} as well: in separate file
 @include readme.texi
 
-@node Installation, Simple usage, Introduction, top
+@node Installation, Getting started, Introduction, top
 @chapter Installation 
 @c Used as @file{INSTALL} as well: in separate file
 @include install.texi
 
-@node Simple usage, Customization, Installation, top
-@chapter Simple usage (Getting started)
+@node Getting started, Basic Usage, Installation, top
+@chapter Getting started
 
 The simplest way to use Preview La@TeX{} is to insert the following in
 your @file{.emacs} file:
@@ -118,26 +124,90 @@ your @file{.emacs} file:
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
-Now, load a La@TeX{} document, and press @kbd{@key{C-c} @key{C-c} g
-@key{RET}} (for ``Generate Preview'') or press @kbd{@key{C-c} @key{C-p}
-@key{C-p}} (for ``De/Preview This''). Previews will now be generated for
-various objects in your document. You'll see them change into a large
-question-mark when the process is half finished. Note that you can
-freely edit the buffer while this is going on. When the process is
-finished you will see the objects typeset in your buffer.
+Now, load a La@TeX{} document, and press @kbd{C-c C-c g RET} (for
+``Generate Preview'') or press @kbd{C-c C-p C-p} (for ``De/Preview
+This''). Previews will now be generated for various objects in your
+document. You'll see them change into a large question-mark when the
+process is half finished. Note that you can freely edit the buffer while
+this is going on. When the process is finished you will see the objects
+typeset in your buffer.
 
 To see/edit the La@TeX{} code for a specific object, put the point (the
-cursor) on it and press @kbd{@key{C-c} @key{C-p} @key{C-p}}. Now you can
+cursor) on it and press @kbd{C-c C-p C-p}. Now you can
 edit the code, and generate a new preview by again pressing
-@kbd{@key{C-c} @key{C-p} @key{C-p}}.
+@kbd{C-c C-p C-p}.
 
+@node Basic Usage, Internals, Getting started, top
+@chapter Basic Usage
 
-@node Customization, Internals, Simple usage, top
-@chapter Customization
+Once you've got things working, you'll want this brief description of
+what is available and how to customize it. Dig in!
 
-Customization options can be found by typing @kbd{@key{M-x}
-customize-group @key{RET} preview @key{RET}}. The list can be made very
-long, but some suggestions are:
+@menu
+* Key bindings::                
+* Customization::               
+@end menu
+
+@node Key bindings, Customization, Basic Usage, Basic Usage
+@section Key bindings
+
+All the key bindings in AUC @TeX{} are present, of course. To these, the
+following are added:
+
+@table @kbd
+@item C-c C-p C-p	
+@kindex C-c C-p C-p
+@findex @code{preview-dwim}
+@cindex De/Preview ``this''
+De/Preview ``this''. If the cursor is positioned on or inside of a
+preview area, this toggles its visibility, regenerating the preview if
+necessary. If not, it will run the surroundings through preview. The
+surroundings include all areas up to the next valid preview, unless
+invalid previews occur before, in which case the area will include the
+last such preview.
+
+@item C-c C-p C-s
+@kindex C-c C-p C-s
+@cindex Preview section 
+Run preview on this LaTeX section.
+
+@item C-c C-p C-e
+@kindex C-c C-p C-e
+@findex @code{preview-environment}
+@cindex Preview environment
+Run preview on this LaTeX environment.
+
+@item C-c C-p C-r	
+@kindex C-c C-p C-r
+@findex @code{preview-region}
+@cindex Preview region
+Run preview on current region.
+
+@item C-c C-p C-c
+@kindex C-c C-p C-c
+@cindex Prefix Command
+Key in this to type a preview-latex command. (Currently available
+commands are ...)
+
+@item C-c C-p C-c C-b			
+@kindex C-c C-p C-c C-b
+@findex @code{preview-clearout-buffer}
+@cindex Clearout previews
+Clear out all previews in current buffer.
+
+@item C-c C-p C-c C-r			
+@kindex C-c C-p C-c C-r
+@findex @code{preview-clearout}
+Clear out all previews in the current region.
+@end table
+
+@node Customization,  , Key bindings, Basic Usage
+@section Customization
+@cindex Customization
+
+Customization options can be found by typing @kbd{M-x customize-group
+RET preview RET}. The list can be made very long, but some suggestions
+are:
 
 @itemize
 @item Adjust the smoothening of the previews
@@ -169,9 +239,13 @@ package @code{showkeys}, by changing @code{Preview Latex Command} to include
 
 @end itemize
  
-@node Internals, Credits, Customization, top
+@node Internals, Credits, Basic Usage, top
 @chapter Internals/more customization
-(Somebody should write this)
+
+This package consists of two parts. A La@TeX{} style that splits the
+output into appropriate parts with one preview object on each page, and
+an emacs-lisp part integrating the thing into emacs (aided by AUC
+@TeX{}).
 
 @menu
 * The LaTeX style file::        
@@ -186,72 +260,125 @@ package @code{showkeys}, by changing @code{Preview Latex Command} to include
 @node The emacs interface,  , The LaTeX style file, Internals
 @section The emacs interface
 
-(To be written)
+When you generate previews on a buffer or a region, the command in
+@code{preview-LaTeX-command} gets run (that variable should only be
+changed with @code{M-x customize RET} so that changes get propagated to
+AUC @TeX{}'s command list).
+
+This command passes options @code{auctex} and @code{active} to the
+preview package so that the user need not supply these by himself in
+case he wants to be able to still compile his document without it
+turning into an incoherent mass of little pictures. It also tells LaTeX
+to load the preview package with the options configured in
+@code{preview-default-option-list} if the document does not call in the
+package itself (via @code{\usepackage}) in the preamble.
+
+This run produces a dvi file where every preview is on a separate page.
+As usual with AUC @TeX{}, you can continue editing while this is going
+on. It produces a host of pseudo-error messages that get parsed by
+preview-latex at the end of the La@TeX{} run and give it the necessary
+information about where in the source file the La@TeX{} code for the
+various previews is located exactly. The parsing takes a moment and will
+render Emacs busy. Before Emacs starts the parsing of the error
+messages, it starts conversion of the previews into PostScript EPS
+files, by calling the configurable @code{preview-dvips-command}. The
+printer specified in there is @code{-Pwww} by default, which will
+usually get you scalable fonts where available. If you are experiencing
+problems, you might want to try playing around with dvips options
+(hyperlink to dvips info file?).
+
+When Emacs has finished parsing the error messages, it activates all
+detected previews.  This entails throwing away any previous previews
+covering the same areas, and then replacing the text in its visual
+appearance by a placeholder looking like a question mark.
+
+What happens when dvips is finished depends on the configuration of
+@code{preview-image-type}. If this is set to @code{'postscript},
+preview-latex will simply tell Emacs about where it can find the EPS
+files for each image and will then be finished. Emacs runs GhostScript
+whenever it finds it needs to have one image displayed. It turns out
+that at the time of writing, the implementation in Emacs causes this to
+make editing painfully slow and non-responsive. This is because Emacs
+starts one GhostScript process per image. For this reason,
+@code{preview-image-type} defaults to @code{'png}. This makes
+preview-latex start up a single GhostScript process on its own and feeds
+it the various EPS files in sequence for conversion into PNG format
+which can be displayed much faster by Emacs. Actually, not in sequence
+but backwards since you are most likely editing at the end of the
+document. And as an added convenience, any preview that happens to be
+on-screen is given higher priority so that preview-latex will first
+cater for the images that are displayed. There are various options
+customizable concerning aspects of that operation, see the customization
+group @code{preview-gs} for this.
+
+Running and feeding GhostScript from preview-latex happens
+asynchronously again: you can resume editing while the images arrive.
+While those pretty pictures filling in the blanks on screen tend to
+make one marvel instead of work, rendering the non-displayed images
+afterwards will not take away your attention and will eventually
+guarantee that jumping around in the document will encounter only
+prerendered images.
 
 @section On EPS previews
 
-Currently, preview-latex's default mechanism calls GhostScript itself
-for first rendering all preview images into png format, then the
+@vindex @code{preview-image-type}
+@vindex @code{preview-image-creators}
+As mentioned above, preview-latex's default mechanism calls GhostScript
+itself for first rendering all preview images into png format, then the
 rendered images get used instead of making use of Emacs' builtin EPS
 support. For this to work, your version of GhostScript needs to support
-the png256 device. Other options are available by using customize (as
-mentioned above) on preview-image-type. The appropriate type must be
-supported in the preview-image-creators variable which you can customize
-as well, so adding a suitable device or changing an existing one in a
-way to better suit the version of GhostScript you happen to be using
-should be possible if you take the existing settings as example. Please
-send information about such devices to the addresses mentioned in the
-README file so that we can improve preview-latex.
+the png256 device. Other options are available by customizing
+@code{preview-image-type}. The appropriate type must be supported in the
+@code{preview-image-creators} variable which you can customize as well,
+so adding a suitable device or changing an existing one in a way to
+better suit the version of GhostScript you happen to be using should be
+possible if you take the existing settings as example. Please send
+information about such devices to the addresses mentioned in the README
+file so that we can improve preview-latex.
 
-IF you want to use Emacs' embedded EPS rendering support (this is NOT
+IF you want to use Emacs' embedded EPS rendering support (which is NOT
 the default), you almost certainly want to put @code{(setq gs-device
 "x11alpha")} into your @file{.emacs} file. This will turn on
 anti-aliasing.
 
 If you are using GS 6.63 or later, you may get better output using the
 following.
+@vindex @code{gs-device}
+@vindex @code{gs-options}
 
 @lisp
 (require 'gs)
 (setq gs-device "x11")
 (setq gs-options 
       (append 
-       '("-dTextAlphaBits=4" "-dGraphicsAlphaBits=2" 
+       '("-dTextAlphaBits=4" 
+         "-dGraphicsAlphaBits=2" 
          "-dMaxBitmap=10000000") 
        gs-options))
 @end lisp
 
-@c @node History, TODO, Installation, top
-@c @appendix The (Brief) History of Preview La@TeX{}
-@c @c Use @file{../ChangeLog}, verbatim for now
-@c @display
-@c @include ../ChangeLog
-@c AAAAAAAAAAAAAAAAAAAAAARGH "{{{{{{{{{{{{{{{{"
-@c Nevermind, we dont want this here anyway(?)
-@c @end display
-
-@c @node TODO, Credit, History, top
-@c @appendix Wishlist
-@c 
-@c This is a list of projects for Preview La@TeX{}. Bug reports and
-@c requests we can not fix or honor right away will be added to this list.
-@c Offers to support further development will be appreciated.
-@c 
-@c @c Used as @file{../TODO}, verbatim for now
-@c @display
-@c @include ../TODO
-@c @end display
-
-@node Credits, Concept Index, Internals, top
+@node Credits, Key Index, Internals, top
 @appendix Credits 
 
-@node Concept Index,  , Credits, top
+@node Key Index, Function Index, Credits, top
+@unnumbered Key Index
+
+@printindex ky
+
+@node Function Index, Variable Index, Key Index, top
+@unnumbered Function Index
+
+@printindex fn
+
+@node Variable Index, Concept Index, Function Index, top
+@unnumbered Variable Index
+
+@printindex vr
+
+@node Concept Index,  , Variable Index, top
 @unnumbered Concept Index
 
 @printindex cp
-
-@summarycontents
-@contents
 @bye
 
 
