@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.903 (18 Sept 2003)
+;; Version:    0.905 (18 Oct 2003)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,16 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.905 18Oct2003 PSG
+;;  - New defcustom `font-latex-title-fontity' defaults to use varying font
+;;    height in sectioning commands.
+;;  - New variables and faces `font-latex-title-1-face' to
+;;    `font-latex-title-4-face'
+;;  - New defcustoms `font-latex-match-title-1-keywords' to
+;;    `font-latex-match-title-4-keywords'
+;;  - New elisp developer local variables
+;;    `font-latex-match-title-1-keywords-local' to
+;;    `font-latex-match-title-4-keywords-local'
 ;; V0.904 18Oct2003 PSG
 ;;  - checkdoc cleaning (almost clean now).
 ;; V0.903 18Sep2003 PSG
@@ -314,6 +324,56 @@ Also selects \"<quote\"> versus \">quote\"<."
 (defvar font-latex-math-face			'font-latex-math-face
   "Face to use for LaTeX math environments.")
 
+;; These 4 faces are literally from info.el
+;;  Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99, 2000, 2001
+;;  Free Software Foundation, Inc.
+(defface font-latex-title-1-face
+  '((((type tty pc) (class color)) (:foreground "yellow" :weight bold))
+    (t (:height 1.2 :inherit font-latex-title-2-face)))
+  "Face for LaTeX titles at level 1."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-title-2-face
+  '((((type tty pc) (class color)) (:foreground "lightblue" :weight bold))
+    (t (:height 1.2 :inherit font-latex-title-3-face)))
+  "Face for LaTeX titles at level 2."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-title-3-face
+  '((((type tty pc) (class color)) (:weight bold))
+    (t (:height 1.2 :inherit font-latex-title-4-face)))
+  "Face for LaTeX titles at level 3."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-title-4-face
+  '((((type tty pc) (class color)) (:weight bold))
+    (t (:weight bold :inherit variable-pitch)))
+  "Face for LaTeX titles at level 4."
+  :group 'font-latex-highlighting-faces)
+
+(defcustom font-latex-title-fontity 'height
+  "Whether to fontity LaTeX titles with varying height faces or a color face."
+  :type '(choice (const height)
+                 (const color))
+  :group 'font-latex)
+
+(defvar font-latex-title-1-face (if (equal font-latex-title-fontity 'height)
+                                    'font-latex-title-1-face
+                                  'font-lock-type-face)
+  "Face for LaTeX titles at level 1.")
+(defvar font-latex-title-2-face (if (equal font-latex-title-fontity 'height)
+                                    'font-latex-title-2-face
+                                  'font-lock-type-face)
+  "Face for LaTeX titles at level 2.")
+(defvar font-latex-title-3-face (if (equal font-latex-title-fontity 'height)
+                                    'font-latex-title-3-face
+                                  'font-lock-type-face)
+  "Face for LaTeX titles at level 3.")
+(defvar font-latex-title-4-face (if (equal font-latex-title-fontity 'height)
+                                    'font-latex-title-4-face
+                                  'font-lock-type-face)
+  "Face for LaTeX titles at level 4.")
+
 (defvar font-latex-match-variable)
 (defvar font-latex-match-variable-keywords)
 (defvar font-latex-match-variable-keywords-local nil
@@ -472,6 +532,213 @@ e.g. \\newcommand[option]{key}
   :set 'font-latex-match-function-keywords-set
   :group 'font-latex)
 
+;;;--------------
+;;; Title level 1
+(defvar font-latex-match-title-1)
+(defvar font-latex-match-title-1-keywords)
+(defvar font-latex-match-title-1-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-title-1-keywords'.
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-title-1-make'.  This variable is not for end users; they
+should customize `font-latex-match-title-1-keywords' instead.  It is for
+authors of Lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
+
+ (add-to-list 'font-latex-match-title-1-keywords-local \"somesection\")
+ (font-latex-match-title-1-make)")
+(make-variable-buffer-local 'font-latex-match-title-1-keywords-local)
+
+(defun font-latex-match-title-1-make ()
+  "Make or remake the variable `font-latex-match-title-1'.
+Done using `font-latex-match-title-1-keywords' as input."
+  (setq font-latex-match-title-1
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-title-1-keywords-local
+                        font-latex-match-title-1-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-title-1-keywords-set (symbol value)
+  "Update `font-latex-match-title-1'.
+The function is called with SYMBOL bound to
+`font-latex-match-title-1-keywords' and VALUE is the the list of
+keywords.  As a side effect, the variable `font-latex-match-title-1' is set."
+  (set-default symbol value)
+  (font-latex-match-title-1-make))
+
+(defcustom font-latex-match-title-1-keywords
+  '("part" "chapter")
+  "Font-latex keywords for title level 1 face.
+e.g. \\section[option]{key}
+  -> \\section appears in `font-lock-keyword-face'
+  -> [opt] appears in `font-lock-variable-name-face'
+  -> {key} appears in `font-lock-type-face'"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-title-1-keywords-set
+  :group 'font-latex)
+
+;;;--------------
+;;; Title level 2
+(defvar font-latex-match-title-2)
+(defvar font-latex-match-title-2-keywords)
+(defvar font-latex-match-title-2-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-title-2-keywords'.
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-title-2-make'.  This variable is not for end users; they
+should customize `font-latex-match-title-2-keywords' instead.  It is for
+authors of Lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
+
+ (add-to-list 'font-latex-match-title-2-keywords-local \"somesection\")
+ (font-latex-match-title-2-make)")
+(make-variable-buffer-local 'font-latex-match-title-2-keywords-local)
+
+(defun font-latex-match-title-2-make ()
+  "Make or remake the variable `font-latex-match-title-2'.
+Done using `font-latex-match-title-2-keywords' as input."
+  (setq font-latex-match-title-2
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-title-2-keywords-local
+                        font-latex-match-title-2-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-title-2-keywords-set (symbol value)
+  "Update `font-latex-match-title-2'.
+The function is called with SYMBOL bound to
+`font-latex-match-title-2-keywords' and VALUE is the the list of
+keywords.  As a side effect, the variable `font-latex-match-title-2' is set."
+  (set-default symbol value)
+  (font-latex-match-title-2-make))
+
+(defcustom font-latex-match-title-2-keywords
+  '("section")
+  "Font-latex keywords for title level 2 face.
+e.g. \\section[option]{key}
+  -> \\section appears in `font-lock-keyword-face'
+  -> [opt] appears in `font-lock-variable-name-face'
+  -> {key} appears in `font-lock-type-face'"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-title-2-keywords-set
+  :group 'font-latex)
+
+
+;;;--------------
+;;; Title level 3
+(defvar font-latex-match-title-3)
+(defvar font-latex-match-title-3-keywords)
+(defvar font-latex-match-title-3-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-title-3-keywords'.
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-title-3-make'.  This variable is not for end users; they
+should customize `font-latex-match-title-3-keywords' instead.  It is for
+authors of Lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
+
+ (add-to-list 'font-latex-match-title-3-keywords-local \"somesection\")
+ (font-latex-match-title-3-make)")
+(make-variable-buffer-local 'font-latex-match-title-3-keywords-local)
+
+(defun font-latex-match-title-3-make ()
+  "Make or remake the variable `font-latex-match-title-3'.
+Done using `font-latex-match-title-3-keywords' as input."
+  (setq font-latex-match-title-3
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-title-3-keywords-local
+                        font-latex-match-title-3-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-title-3-keywords-set (symbol value)
+  "Update `font-latex-match-title-3'.
+The function is called with SYMBOL bound to
+`font-latex-match-title-3-keywords' and VALUE is the the list of
+keywords.  As a side effect, the variable `font-latex-match-title-3' is set."
+  (set-default symbol value)
+  (font-latex-match-title-3-make))
+
+(defcustom font-latex-match-title-3-keywords
+  '("subsection")
+;; "subsubsection"
+;;; "paragraph" "subparagraph" "subsubparagraph"
+  "Font-latex keywords for title level 3 face.
+e.g. \\section[option]{key}
+  -> \\section appears in `font-lock-keyword-face'
+  -> [opt] appears in `font-lock-variable-name-face'
+  -> {key} appears in `font-lock-type-face'"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-title-3-keywords-set
+  :group 'font-latex)
+
+
+;;;--------------
+;;; Title level 3
+(defvar font-latex-match-title-4)
+(defvar font-latex-match-title-4-keywords)
+(defvar font-latex-match-title-4-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-title-4-keywords'.
+This must be a list of keyword strings \(not regular expressions\) omitting
+the leading backslash.  It will get transformed into a regexp using
+`font-latex-match-title-4-make'.  This variable is not for end users; they
+should customize `font-latex-match-title-4-keywords' instead.  It is for
+authors of Lisp files that get loaded when LaTeX style files are used in the
+current buffer.  They should add keywords to this list and rebuild the
+fontification regexp like so:
+
+ (add-to-list 'font-latex-match-title-4-keywords-local \"somesection\")
+ (font-latex-match-title-4-make)")
+(make-variable-buffer-local 'font-latex-match-title-4-keywords-local)
+
+(defun font-latex-match-title-4-make ()
+  "Make or remake the variable `font-latex-match-title-4'.
+Done using `font-latex-match-title-4-keywords' as input."
+  (setq font-latex-match-title-4
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-title-4-keywords-local
+                        font-latex-match-title-4-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-title-4-keywords-set (symbol value)
+  "Update `font-latex-match-title-4'.
+The function is called with SYMBOL bound to
+`font-latex-match-title-4-keywords' and VALUE is the the list of
+keywords.  As a side effect, the variable `font-latex-match-title-4' is set."
+  (set-default symbol value)
+  (font-latex-match-title-4-make))
+
+(defcustom font-latex-match-title-4-keywords
+  '("subsubsection" "paragraph" "subparagraph" "subsubparagraph")
+  "Font-latex keywords for title level 3 face.
+e.g. \\section[option]{key}
+  -> \\section appears in `font-lock-keyword-face'
+  -> [opt] appears in `font-lock-variable-name-face'
+  -> {key} appears in `font-lock-type-face'"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-title-4-keywords-set
+  :group 'font-latex)
 (defvar font-latex-match-textual)
 (defvar font-latex-match-textual-keywords)
 (defvar font-latex-match-textual-keywords-local nil
@@ -512,8 +779,8 @@ keywords.  As a side effect, the variable `font-latex-match-textual' is set."
 
 (defcustom font-latex-match-textual-keywords
   '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
-    "part" "chapter" "section" "subsection" "subsubsection"
-    "paragraph" "subparagraph" "subsubparagraph"
+;;; "part" "chapter" "section" "subsection" "subsubsection"
+;;; "paragraph" "subparagraph" "subsubparagraph"
     "title" "author" "date" "thanks" "address"
     "caption")
   "Font-latex keywords for textual face.
@@ -612,7 +879,23 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
       (2 font-lock-function-name-face append t))             ;;;        {text}
-     (font-latex-match-textual                               ;;;\section
+     (font-latex-match-title-1                               ;;;\chapter
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-latex-title-1-face t))                         ;;;        {text}
+     (font-latex-match-title-2                               ;;;\section
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-latex-title-2-face t))                         ;;;        {text}
+     (font-latex-match-title-3                               ;;;\subsection
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-latex-title-3-face t))                         ;;;        {text}
+     (font-latex-match-title-4                               ;;;\subsubsection
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-latex-title-4-face t))                         ;;;        {text}
+     (font-latex-match-textual                               ;;;\title
       (0 font-lock-keyword-face append t)
       (1 font-lock-variable-name-face append t)              ;;;   [opt]
       (2 font-lock-type-face append t))                      ;;;        {text}
@@ -774,9 +1057,29 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
       (font-latex-match-command-outside-arguments font-latex-match-function
                                                   limit nil t)))
 (defun font-latex-match-textual (limit)
-  "Fontify things like \\section{text} up to LIMIT."
+  "Fontify things like \\title{text} up to LIMIT."
   (if font-latex-match-textual
       (font-latex-match-command-outside-arguments font-latex-match-textual
+                                                  limit nil t)))
+(defun font-latex-match-title-1 (limit)
+  "Fontify things like \\chapter{text} up to LIMIT."
+  (if font-latex-match-textual
+      (font-latex-match-command-outside-arguments font-latex-match-title-1
+                                                  limit nil t)))
+(defun font-latex-match-title-2 (limit)
+  "Fontify things like \\section{text} up to LIMIT."
+  (if font-latex-match-textual
+      (font-latex-match-command-outside-arguments font-latex-match-title-2
+                                                  limit nil t)))
+(defun font-latex-match-title-3 (limit)
+  "Fontify things like \\subsection{text} up to LIMIT."
+  (if font-latex-match-textual
+      (font-latex-match-command-outside-arguments font-latex-match-title-3
+                                                  limit nil t)))
+(defun font-latex-match-title-4 (limit)
+  "Fontify things like \\subsubsection{text} up to LIMIT."
+  (if font-latex-match-textual
+      (font-latex-match-command-outside-arguments font-latex-match-title-4
                                                   limit nil t)))
 (defun font-latex-match-variable (limit)
   "Fontify things like \\newcommand{stuff} up to LIMIT."
