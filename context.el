@@ -491,7 +491,7 @@ nil, go to the point just past the \\start... macro."
 (easy-menu-define ConTeXt-mode-command-menu
     ConTeXt-mode-map
     "Command menu used in ConTeXt mode."
-    (TeX-mode-specific-command-menu 'context))
+    (TeX-mode-specific-command-menu 'context-mode))
 
 
 ;;; Mode
