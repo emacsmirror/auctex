@@ -1,5 +1,9 @@
 2002-04-14  Nix  <nix@esperi.demon.co.uk>
 
+	* prv-xemacs.el (preview-mode-setup): Make the various hooks local.
+	(preview-move-point): Do not try to redisplay a detached extent (as happens
+	if a preview is killed while auto-revealed).
+
 	* doc/readme.texi (Activation):
 	Mention that XEmacs installations normally don't need
 	activation.
