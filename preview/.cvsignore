@@ -8,6 +8,7 @@ INSTALL.windows
 Makefile
 PROBLEMS
 README
+TODO
 _region_.tex
 auto
 autom4te.cache
@@ -15,6 +16,6 @@ config.cache
 config.status
 configure
 latex.out
-testdocstrip.tex
+patches/
 preview-latex.el
-TODO
+testdocstrip.tex
