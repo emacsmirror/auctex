@@ -46,7 +46,7 @@
    (setq LaTeX-end-regexp (concat LaTeX-end-regexp "\\|suspend\\b"))
    (make-local-variable 'paragraph-start)
    (setq paragraph-start (concat paragraph-start
-				 "\\|[ \t]*" comment-start "*[ \t]*"
+				 "\\|[ \t]*" TeX-comment-start-regexp "*[ \t]*"
 				 (regexp-quote TeX-esc)
 				 "\\(resume\\b\\|suspend\\b\\)"))
    ;; Fontification
