@@ -1,3 +1,16 @@
+<<<<<<< ChangeLog
+2004-04-23  David Kastrup  <dak@gnu.org>
+
+	* Source special support by Dan Nicolaescu <dann@ics.uci.edu>:
+	* tex.el (TeX-command-list): start viewer with TeX-run-discard
+	(TeX-expand-list): Add source special flags to viewer call.
+	(TeX-expand-list): Add source special flags to LaTeX call.
+	Various new functions.
+	(TeX-current-file-name-master-relative): New function replacing
+	TeX-current-file-name-nondirectory (which is not really needed, I
+	guess).  This change sole fault of dak.
+	(TeX-mode-specific-command-menu-entries): Source Special entry.
+
 2004-04-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Fix call to
