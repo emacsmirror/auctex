@@ -1,5 +1,7 @@
 2003-08-04  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/dvipng.h: Argh!, fix image cache
+
 	* dvipng/dvipng.texi:
 	* dvipng/configure.ac:
 	* dvipng/RELEASE: Prepare for 0.5 
