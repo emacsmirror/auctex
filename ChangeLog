@@ -1,3 +1,8 @@
+2004-04-19  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el, latex.el: Make almost checkdoc clean.  See "FIXME" for
+	remaining issues.
+
 2004-04-19  Berend de Boer  <berend@pobox.com>
 
 	* context-en.el (ConTeXt-default-environment-en): added default
@@ -94,7 +99,7 @@
 
 	* Makefile.in (dist): Split into `check-dist', `release-commit'
 	and `tar-ball'.
-	(snapshot'): New: use `check-dist' and `tar-ball'.
+	(snapshot): New.  Use `check-dist' and `tar-ball'.
 	(release-commit): Fix mail address.
 	(REMOVE, MINMAPSRC, min-map): Removed.
 	(DIST_PREFIX): Derive FTPDIR and WWWDIR from this.

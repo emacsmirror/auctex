@@ -24,6 +24,11 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+
+;;; Commentary:
+
+;; This file provides AUCTeX support for LaTeX.
+
 ;;; Code:
 
 (require 'tex)
@@ -85,7 +90,7 @@ This depends on `LaTeX-insert-into-comments'."
 Determinate the type of section to be inserted, by the argument ARG.
 
 If ARG is nil or missing, use the current level.
-If ARG is a list (selected by C-u), go downward one level.
+If ARG is a list (selected by \\[universal-argument]), go downward one level.
 If ARG is negative, go up that many levels.
 If ARG is positive or zero, use absolute level:
 
@@ -99,8 +104,8 @@ If ARG is positive or zero, use absolute level:
 
 The following variables can be set to customize:
 
-LaTeX-section-hook	Hooks to run when inserting a section.
-LaTeX-section-label	Prefix to all section labels."
+`LaTeX-section-hook'	Hooks to run when inserting a section.
+`LaTeX-section-label'	Prefix to all section labels."
 
   (interactive "*P")
   (let* ((val (prefix-numeric-value arg))
@@ -224,6 +229,8 @@ header is at the start of a line."
 (make-variable-buffer-local 'LaTeX-largest-level)
 
 (defun LaTeX-largest-level ()
+  "Return largest sectioning level with current document class.
+Run style hooks before it has not been done."
   (TeX-update-style)
   LaTeX-largest-level)
 
@@ -293,7 +300,7 @@ LaTeX-section-heading: Query the user about the name of the
 sectioning command.  Modifies `level' and `name'.
 
 LaTeX-section-title: Query the user about the title of the
-section. Modifies `title'.
+section.  Modifies `title'.
 
 LaTeX-section-toc: Query the user for the toc entry.  Modifies
 `toc'.
@@ -410,7 +417,7 @@ assumes the section already is inserted."
 Insert this hook into `LaTeX-section-hook' to prompt for a label to be
 inserted after the sectioning command.
 
-The behaviour of this hook is controlled by `LaTeX-section-label'."
+The behaviour of this hook is controlled by variable `LaTeX-section-label'."
   (and (LaTeX-label name)
        (LaTeX-newline)))
 
@@ -581,7 +588,7 @@ It may be customized with the following variables:
     (indent-according-to-mode)))
 
 (defun LaTeX-modify-environment (environment)
-  "Modify current environment."
+  "Modify current ENVIRONMENT."
   (save-excursion
     (LaTeX-find-matching-end)
     (re-search-backward (concat (regexp-quote TeX-esc)
@@ -661,8 +668,8 @@ With optional ARG>=1, find that outer level."
 To insert a hook here, you must insert it in the appropiate style file.")
 
 (defun LaTeX-env-document (&optional ignore)
-  "Create new LaTeX document."
-
+  "Create new LaTeX document.
+The compatibility argument IGNORE is ignored."
   (TeX-insert-macro "documentclass")
 
   (LaTeX-newline)
@@ -891,7 +898,7 @@ Just like array and tabular."
   (LaTeX-insert-item))
 
 (defun LaTeX-env-minipage (environment)
-  "Create new LaTeX minipage."
+  "Create new LaTeX minipage or minipage-like ENVIRONMENT."
   (let ((pos (read-string "Position: " LaTeX-default-position))
 	(width (read-string "Width: ")))
     (setq LaTeX-default-position pos)
@@ -1233,6 +1240,9 @@ It will setup BibTeX to store keys in an auto file."
   "List of regexp-list expressions matching BibTeX items.")
 
 ;;; Macro Argument Hooks
+
+;; FIXME: Make doc-strings of the following functions checkdoc clean.
+;; Especially the "optional" argument.  -- rs
 
 (defun TeX-arg-conditional (optional expr then else)
   "Implement if EXPR THEN ELSE.

@@ -26,6 +26,13 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+
+;;; Commentary:
+
+;; This file provides AUCTeX support for plain TeX as well as basic
+;; functions used by other AUCTeX modes (e.g. for LaTeX, TeXinfo and
+;; ConTeXt).
+
 ;;; Code:
 
 (when (< emacs-major-version 20)
@@ -76,16 +83,16 @@ The directory names *must* end with a slash."
 (defcustom TeX-print-command "dvips %s -P%p"
   "*Command used to print a file.
 
-First %p is expanded to the printer name, then ordinary expansion is
-performed as specified in TeX-expand-list."
+First `%p' is expanded to the printer name, then ordinary expansion is
+performed as specified in `TeX-expand-list'."
   :group 'TeX-command
   :type 'string)
 
 (defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue.
 
-First %p is expanded to the printer name, then ordinary expansion is
-performed as specified in TeX-expand-list."
+First `%p' is expanded to the printer name, then ordinary expansion is
+performed as specified in `TeX-expand-list'."
   :group 'TeX-command
   :type 'string)
 
@@ -147,7 +154,7 @@ as it will be presented to the user.
 
 The second element is the string handed to the shell after being
 expanded.  The expansion is done using the information found in
-TeX-expand-list.
+`TeX-expand-list'.
 
 The third element is the function which actually start the process.
 Several such hooks has been defined:
@@ -189,7 +196,7 @@ If the fourth element is non-nil, the user will get a chance to
 modify the expanded string.
 
 The fifth element indicates in which mode(s) the command should be
-present in the Command menu.  Use `t' if it should be active in any
+present in the Command menu.  Use t if it should be active in any
 mode.  If it should only be present in some modes, specify a list with
 the respective mode names."
   :group 'TeX-command
@@ -237,7 +244,7 @@ file.
 The second element is either a string or a list with a string as element.
 If it is a string this is the default file extension that will be expected
 for output files that are produced by commands that match the first
-element. The real file extension will be obtained from the logging output
+element.  The real file extension will be obtained from the logging output
 if possible, defaulting to the given string.
 If it is a list, the element of the list will be the fixed extension used
 without looking at the logging output.
@@ -280,9 +287,9 @@ The executable `latex' is LaTeX version 2e."
   "List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
-the style files, any occurrence of the string %l in a command in
-TeX-command-list will be replaced with the second element.  The first
-match is used, if no match is found the %l is replaced with the empty
+the style files, any occurrence of the string `%l' in a command in
+`TeX-command-list' will be replaced with the second element.  The first
+match is used, if no match is found the `%l' is replaced with the empty
 string."
   :group 'TeX-command
   :type '(repeat (group :value ("" "")
@@ -299,14 +306,14 @@ string."
 The first element of each entry is the printer name.
 
 The second element is the command used to print to this
-printer.  It defaults to the value of TeX-print-command.
+printer.  It defaults to the value of `TeX-print-command'.
 
 The third element is the command used to examine the print queue for
-this printer.  It defaults to the value of TeX-queue-command.
+this printer.  It defaults to the value of `TeX-queue-command'.
 
 Any occurrence of `%p' in the second or third element is expanded to
 the printer name given in the first element, then ordinary expansion
-is performed as specified in TeX-expand-list."
+is performed as specified in `TeX-expand-list'."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(option (group :inline t
@@ -325,7 +332,7 @@ is performed as specified in TeX-expand-list."
 				   (and TeX-printer-list
 					(car (car TeX-printer-list)))
 				   "lw")
-  "*Default printer to use with TeX-command."
+  "*Default printer to use with `TeX-command'."
   :group 'TeX-command
   :type 'string)
 
@@ -394,7 +401,7 @@ file extension, and the second element (a regular expression)
 matches the name of one of the style options, any occurrence of
 the string `%V' in a command in `TeX-command-list' will be
 replaced with the third element.  The first match is used; if no
-match is found the `%V' is replaced with `%v'.  The outcome of %v
+match is found the `%V' is replaced with `%v'.  The outcome of `%v'
 is determined by the settings in `TeX-view-style' which therefore
 serves as a fallback for `TeX-output-view-style'.  The second
 element may also be a list of regular expressions, in which case
@@ -411,9 +418,9 @@ all the regular expressions must match for the element to apply."
   "List of style options and print options.
 
 If the first element (a regular expresion) matches the name of one of
-the style files, any occurrence of the string %r in a command in
-TeX-command-list will be replaced with the second element.  The first
-match is used, if no match is found the %r is replaced with the empty
+the style files, any occurrence of the string `%r' in a command in
+`TeX-command-list' will be replaced with the second element.  The first
+match is used, if no match is found the `%r' is replaced with the empty
 string."
   :group 'TeX-command
   :type '(repeat (group regexp (string :tag "Command"))))
@@ -533,7 +540,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.348 $"))
+	(rev "$Revision: 5.349 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -548,7 +555,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-16 14:50:35 $"))
+    (let ((date "$Date: 2004-04-19 14:28:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -585,25 +592,25 @@ In the form of yyyy.mmdd")
   :group 'TeX-command)
 
 (defcustom TeX-command-BibTeX "BibTeX"
-  "*The name of the BibTeX entry in TeX-command-list."
+  "*The name of the BibTeX entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
   (make-variable-buffer-local 'TeX-command-BibTeX)
 
 (defcustom TeX-command-Show "View"
   "*The default command to show (view or print) a TeX file.
-Must be the car of an entry in TeX-command-list."
+Must be the car of an entry in `TeX-command-list'."
   :group 'TeX-command-name
   :type 'string)
   (make-variable-buffer-local 'TeX-command-Show)
 
 (defcustom TeX-command-Print "Print"
-  "The name of the Print entry in TeX-command-Print."
+  "The name of the Print entry in `TeX-command-Print'."
   :group 'TeX-command-name
   :type 'string)
 
 (defcustom TeX-command-Queue "Queue"
-  "The name of the Queue entry in TeX-command-Queue."
+  "The name of the Queue entry in `TeX-command-Queue'."
   :group 'TeX-command-name
   :type 'string)
 
@@ -632,7 +639,7 @@ Must be the car of an entry in TeX-command-list."
  (make-variable-buffer-local 'TeX-header-end)
 
 (defvar TeX-command-default nil
-  "The default command for TeX-command in the current major mode.")
+  "The default command for `TeX-command' in the current major mode.")
 
  (make-variable-buffer-local 'TeX-command-default)
 
@@ -838,8 +845,8 @@ This will be done when AUCTeX first try to use the master file.")
 		  "%%% End: \n")))))
 
 (defun TeX-local-master-p ()
-  "Returns `t' if there is a `TeX-master' entry in the local variables
-section, `nil' otherwise."
+  "Return t if there is a `TeX-master' entry in the local variables section.
+Return nil otherwise."
   (save-excursion
     (goto-char (point-max))
     (if (re-search-backward "^%+ *TeX-master:" nil t)
@@ -889,7 +896,7 @@ be relative to that."
   :type 'string)
 
 (defun TeX-split-string (regexp string)
-  "Returns a list of strings.
+  "Return a list of strings.
 Given REGEXP the STRING is split into sections which in string was
 seperated by REGEXP.
 
@@ -914,8 +921,7 @@ If REGEXP is nil, or \"\", an error will occur."
     (nreverse result)))
 
 (defun TeX-parse-path (env)
-  ;; Return a list if private TeX directories found in environment
-  ;; variable ENV.
+  "Return a list if private TeX directories found in environment variable ENV."
   (let* ((value (getenv env))
 	 (entries (and value
 		       (TeX-split-string
@@ -1004,7 +1010,7 @@ active.")
   :type 'boolean)
 
 (defun TeX-load-style (style)
-  "Search for and load each definition for STYLE in TeX-style-path."
+  "Search for and load each definition for STYLE in `TeX-style-path'."
   (cond ((assoc style TeX-style-hook-list)) ; We already found it
 	((string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style) ;Complex path
 	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
@@ -1032,7 +1038,7 @@ active.")
 		 TeX-style-path))))
 
 (defun TeX-load-style-file (file)
-  ;; Load FILE checking for a lisp extensions.
+  "Load FILE checking for a Lisp extensions."
   (let ((el (concat file ".el"))
 	(elc (concat file ".elc")))
     (cond ((file-newer-than-file-p el elc)
@@ -1089,7 +1095,7 @@ active.")
  (make-variable-buffer-local 'TeX-active-styles)
 
 (defun TeX-run-style-hooks (&rest styles)
-  "Run the TeX following style hooks."
+  "Run the TeX style hooks STYLES."
   (mapcar (lambda (style)
 	    (if (TeX-member style TeX-active-styles 'string-equal)
 		()			;Avoid recursion.
@@ -1175,7 +1181,7 @@ FORCE is not nil."
   :group 'AUCTeX)
 
 (defcustom TeX-complete-word 'ispell-complete-word
-  "*Function to call for completing non-macros in tex-mode."
+  "*Function to call for completing non-macros in `tex-mode'."
   :group 'TeX-macro)
 
 (defvar TeX-complete-list nil
@@ -1234,7 +1240,7 @@ Or alternatively:
       (funcall (nth 1 entry)))))
 
 (defcustom TeX-default-macro "ref"
-  "*The default macro when creating new ones with TeX-insert-macro."
+  "*The default macro when creating new ones with `TeX-insert-macro'."
   :group 'TeX-macro
   :type 'string)
 
@@ -1245,8 +1251,13 @@ Or alternatively:
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-no-braces-modes '(texinfo-mode)
+  "List of modes where braces are not useful."
+  :group 'TeX-macro
+  :type '(repeat (symbol :tag "Mode")))
+
 (defun TeX-insert-macro (symbol)
-  "Insert TeX macro with completion.
+  "Insert TeX macro SYMBOL with completion.
 
 AUCTeX knows of some macros, and may query for extra arguments."
   (interactive (list (completing-read (concat "Macro (default "
@@ -1284,41 +1295,41 @@ Space will complete and exit."
 	   (call-interactively 'TeX-insert-macro)))))
 
 (defun TeX-parse-macro (symbol args)
-  "How to parse TeX macros which takes one or more arguments."
+  "How to parse TeX macros which takes one or more arguments.
 
-  ;; First argument is the name of the macro.
+First argument SYMBOL is the name of the macro.
 
-  ;; If called with no additional arguments, insert macro with point
-  ;; inside braces.  Otherwise, each argument of this function should
-  ;; match an argument to the TeX macro.  What is done depend on the
-  ;; argument type.
+If called with no additional arguments, insert macro with point
+inside braces.  Otherwise, each argument of this function should
+match an argument to the TeX macro.  What is done depend on the
+type of ARGS:
 
-  ;; string: Use the string as a prompt to prompt for the argument.
+  string: Use the string as a prompt to prompt for the argument.
 
-  ;; number: Insert that many braces, leave point inside the first.
+  number: Insert that many braces, leave point inside the first.
 
-  ;; nil: Insert empty braces.
+  nil: Insert empty braces.
 
-  ;; t: Insert empty braces, leave point between the braces.
+  t: Insert empty braces, leave point between the braces.
 
-  ;; other symbols: Call the symbol as a function.  You can define
-  ;; your own hook, or use one of the predefined argument hooks.  If
-  ;; you add new hooks, you can assume that point is placed directly
-  ;; after the previous argument, or after the macro name if this is
-  ;; the first argument.  Please leave point located efter the
-  ;; argument you are inserting.  If you want point to be located
-  ;; somewhere else after all hooks have been processed, set the value
-  ;; of `exit-mark'.  It will point nowhere, until the argument hook
-  ;; set it.  By convention, these hook all start with `TeX-arg-'.
+  other symbols: Call the symbol as a function.  You can define
+  your own hook, or use one of the predefined argument hooks.  If
+  you add new hooks, you can assume that point is placed directly
+  after the previous argument, or after the macro name if this is
+  the first argument.  Please leave point located efter the
+  argument you are inserting.  If you want point to be located
+  somewhere else after all hooks have been processed, set the value
+  of `exit-mark'.  It will point nowhere, until the argument hook
+  set it.  By convention, these hook all start with `TeX-arg-'.
 
-  ;; list: If the car is a string, insert it as a prompt and the next
-  ;; element as initial input.  Otherwise, call the car of the list
-  ;; with the remaining elements as arguments.
+  list: If the car is a string, insert it as a prompt and the next
+  element as initial input.  Otherwise, call the car of the list
+  with the remaining elements as arguments.
 
-  ;; vector: Optional argument.  If it has more than one element,
-  ;; parse it as a list, otherwise parse the only element as above.
-  ;; Use square brackets instead of curly braces, and is not inserted
-  ;; on empty user input.
+  vector: Optional argument.  If it has more than one element,
+  parse it as a list, otherwise parse the only element as above.
+  Use square brackets instead of curly braces, and is not inserted
+  on empty user input."
 
   (if (and (TeX-active-mark)
 	   (> (point) (mark)))
@@ -1342,20 +1353,23 @@ Space will complete and exit."
 	     (insert TeX-grcl)
 	     (backward-char))))))
 
-(defun TeX-arg-string (optional &optional prompt input)
-  "Prompt for a string."
+(defun TeX-arg-string (optional &optional prompt initial-input)
+  "Prompt for a string.
+
+If OPTIONAL is not nil then the PROMPT will start with ``(Optional) ''.
+INITIAL-INPUT is a string to insert before reading input."
   (TeX-argument-insert
    (if (and (not optional) (TeX-active-mark))
        (let ((TeX-argument (buffer-substring (point) (mark))))
 	 (delete-region (point) (mark))
 	 TeX-argument)
-     (read-string (TeX-argument-prompt optional prompt "Text") input))
+     (read-string (TeX-argument-prompt optional prompt "Text") initial-input))
    optional))
 
 (defun TeX-parse-arguments (args)
-  "Parse TeX macro arguments.
+  "Parse TeX macro arguments ARGS.
 
-See TeX-parse-macro for details."
+See `TeX-parse-macro' for details."
   (let ((last-optional-rejected nil))
     (while args
       (if (vectorp (car args))
@@ -1377,7 +1391,7 @@ See TeX-parse-macro for details."
 If OPTIONAL is set, only insert if there is anything to insert, and
 then use square brackets.
 
-See TeX-parse-macro for details."
+See `TeX-parse-macro' for details."
 
   (cond ((stringp arg)
 	 (TeX-arg-string optional arg))
@@ -1415,7 +1429,8 @@ See TeX-parse-macro for details."
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
 
-If OPTIONAL, only insert it if not empty, and then use square brackets."
+If OPTIONAL, only insert it if not empty, and then use square brackets.
+If PREFIX is given, insert it before NAME."
   (if (and optional (string-equal name ""))
       (setq last-optional-rejected t)
     (insert <)
@@ -1463,20 +1478,18 @@ Each entry is a list with three elements.
 2. The name of the major mode.
 3. A regexp typically matched in the beginning of the file.
 
-When entering tex-mode, each regexp is tried in turn in order to find
+When entering `tex-mode', each regexp is tried in turn in order to find
 when major mode to enter.")
 
 (defcustom TeX-default-mode 'latex-mode
-  "*Mode to enter for a new file when it can't be determined whether
-the file is plain TeX or LaTeX or what."
+  "*Mode to enter for a new file when it can't be determined otherwise."
   :group 'AUCTeX
   :type '(radio (function-item latex-mode)
 		(function-item plain-tex-mode)
 		(function :tag "Other")))
 
 (defcustom TeX-force-default-mode nil
-  "*If set to nil, try to infer the mode of the file from its
-content."
+  "*If set to nil, try to infer the mode of the file from its content."
   :group 'AUCTeX
   :type 'boolean)
 
@@ -1487,11 +1500,11 @@ Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
 
-   1) if the file is empty or TeX-force-default-mode is not set to nil,
-      TeX-default-mode is chosen
+   1) if the file is empty or `TeX-force-default-mode' is not set to nil,
+      `TeX-default-mode' is chosen
    2) If \\documentstyle or \\begin{, \\section{, \\part{ or \\chapter{ is
-      found, latex-mode is selected.
-   3) Otherwise, use plain-tex-mode "
+      found, `latex-mode' is selected.
+   3) Otherwise, use `plain-tex-mode'"
   (interactive)
 
   (funcall (if (or (equal (buffer-size) 0)
@@ -1525,7 +1538,7 @@ See info under AUCTeX for documentation.
 Special commands:
 \\{TeX-mode-map}
 
-Entering plain-tex-mode calls the value of text-mode-hook,
+Entering `plain-tex-mode' calls the value of `text-mode-hook',
 then the value of TeX-mode-hook, and then the value
 of plain-TeX-mode-hook."
   (interactive)
@@ -1553,7 +1566,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 		(function :tag "Other")))
 
 (defun VirTeX-common-initialization ()
-  ;; Initialize
+  "Perform basic initialization."
   (kill-all-local-variables)
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
@@ -1638,7 +1651,7 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 			       (TeX-update-style)) nil t))
 
 (defun plain-TeX-common-initialization ()
-  ;; Common initialization for plain TeX like modes.
+  "Common initialization for plain TeX like modes."
   (VirTeX-common-initialization)
   (use-local-map plain-TeX-mode-map)
   (easy-menu-add plain-TeX-mode-command-menu plain-TeX-mode-map)
@@ -1713,10 +1726,10 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 (defconst TeX-auto-parser-change 4)
 
 (defun TeX-auto-add-type (name prefix &optional plural)
-  "Add information about name to the parser using PREFIX.
+  "Add information about NAME to the parser using PREFIX.
 
 Optional third argument PLURAL is the plural form of TYPE.
-By default just add  a `s'.
+By default just add an `s'.
 
 This function create a set of variables and functions to maintain a
 separate type of information in the parser."
@@ -1745,7 +1758,7 @@ Generated by `TeX-auto-add-type'.")
 	      `(lambda nil (setq ,(symbol-name local) nil)))))
 
 (defun TeX-auto-add-information (name entries)
-  ;; For NAME in `TeX-auto-parser' add ENTRIES.
+  "For NAME in `TeX-auto-parser' add ENTRIES."
   (let* ((entry (assoc name TeX-auto-parser))
 	 (change (nth TeX-auto-parser-change entry))
 	 (change-value (symbol-value change))
@@ -1757,7 +1770,7 @@ Generated by `TeX-auto-add-type'.")
       (set local (list entries local-value)))))
 
 (defun TeX-auto-list-information (name)
-  ;; Return information in `TeX-auto-parser' about NAME.
+  "Return information in `TeX-auto-parser' about NAME."
   (TeX-update-style)
   (let* ((entry (assoc name TeX-auto-parser))
 	 (change (nth TeX-auto-parser-change entry))
@@ -1793,19 +1806,19 @@ Generated by `TeX-auto-add-type'.")
   "Hook run when a buffer is parsed and the information is applied.")
 
 (defun TeX-auto-apply ()
-  ;; Parse and apply TeX information in the current buffer.
+  "Parse and apply TeX information in the current buffer."
   (TeX-auto-parse)
   (run-hooks 'TeX-auto-apply-hook)
   (mapcar 'TeX-auto-apply-entry TeX-auto-parser))
 
 (defun TeX-auto-apply-entry (entry)
-  ;; Apply the information in an entry in `TeX-auto-parser'.
+  "Apply the information in ENTRY in `TeX-auto-parser'."
   (let ((value (symbol-value (nth TeX-auto-parser-temporary entry)))
 	(add (nth TeX-auto-parser-add entry)))
     (if value (apply add value))))
 
 (defun TeX-safe-auto-write ()
-  ;; Call TeX-auto-write safely
+  "Call `TeX-auto-write' safely."
   (condition-case name
       (and (boundp 'TeX-auto-update)
 	   TeX-auto-update
@@ -1825,7 +1838,7 @@ Generated by `TeX-auto-add-type'.")
   :type 'boolean)
 
 (defun TeX-auto-write ()
-  ;; Save all relevant TeX information from the current buffer.
+  "Save all relevant TeX information from the current buffer."
   (if TeX-auto-untabify
       (untabify (point-min) (point-max)))
   (if (and TeX-auto-save TeX-auto-local)
@@ -1916,7 +1929,7 @@ If TEX is a directory, generate style files for all files in the directory."
   (byte-recompile-directory TeX-auto-global 0))
 
 (defun TeX-auto-store (file)
-  ;; Extract information for auc tex from current buffer and store it in FILE.
+  "Extract information for AUCTeX from current buffer and store it in FILE."
   (TeX-auto-parse)
 
   (if (member nil (mapcar 'TeX-auto-entry-clear-p TeX-auto-parser))
@@ -1937,11 +1950,12 @@ If TEX is a directory, generate style files for all files in the directory."
 	(delete-file file))))
 
 (defun TeX-auto-entry-clear-p (entry)
-  ;; Check if the temporary for `TeX-auto-parser' entry ENTRY is clear.
+  "Check if the temporary for `TeX-auto-parser' entry ENTRY is clear."
+  ;; FIXME: This doc-string isn't clear to me.  -- rs
   (null (symbol-value (nth TeX-auto-parser-temporary entry))))
 
 (defun TeX-auto-insert (entry)
-  ;; Insert code to initialize ENTRY from `TeX-auto-parser'.
+  "Insert code to initialize ENTRY from `TeX-auto-parser'."
   (let ((name (symbol-name (nth TeX-auto-parser-add entry)))
 	(list (symbol-value (nth TeX-auto-parser-temporary entry))))
     (if (null list)
@@ -1964,7 +1978,7 @@ If TEX is a directory, generate style files for all files in the directory."
   "List of symbols to ignore when scanning a TeX style file.")
 
 (defun TeX-auto-add-regexp (regexp)
-  "Add REGEXP to TeX-auto-regexp-list if not already a member."
+  "Add REGEXP to `TeX-auto-regexp-list' if not already a member."
   (if (symbolp TeX-auto-regexp-list)
       (setq TeX-auto-regexp-list (symbol-value TeX-auto-regexp-list)))
   (or (memq regexp TeX-auto-regexp-list)
@@ -2029,8 +2043,7 @@ See `TeX-auto-x-parse-length'."
   (make-variable-buffer-local 'TeX-auto-x-regexp-list)
 
 (defun TeX-auto-parse-region (regexp-list beg end)
-  "Parse TeX information in region between BEG and END.
-Parse according to REGEXP-LIST."
+  "Parse TeX information according to REGEXP-LIST between BEG and END."
   (if (symbolp regexp-list)
       (setq regexp-list (and (boundp regexp-list) (symbol-value regexp-list))))
    (if regexp-list
@@ -2057,8 +2070,8 @@ Parse according to REGEXP-LIST."
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.
 
-Call the functions in TeX-auto-prepare-hook before parsing, and the
-functions in TeX-auto-cleanup-hook after parsing."
+Call the functions in `TeX-auto-prepare-hook' before parsing, and the
+functions in `TeX-auto-cleanup-hook' after parsing."
 
   (let ((case-fold-search nil))
 
@@ -2089,7 +2102,7 @@ functions in TeX-auto-cleanup-hook after parsing."
     (run-hooks 'TeX-auto-cleanup-hook)))
 
 (defun TeX-auto-clear-entry (entry)
-  ;; Set the temporary variable in ENTRY to nil.
+  "Set the temporary variable in ENTRY to nil."
   (set (nth TeX-auto-parser-temporary entry) nil))
 
 (defvar LaTeX-auto-end-symbol nil)
@@ -2150,15 +2163,16 @@ Check for potential LaTeX environments."
   (make-variable-buffer-local 'TeX-default-extension)
 
 (defvar TeX-output-extension "dvi"
-  "Extension of TeX output file. This is either a string or a list with
-a string as element. Its value is obtained from `TeX-command-output-list'.
+  "Extension of TeX output file.
+This is either a string or a list with
+a string as element.  Its value is obtained from `TeX-command-output-list'.
 Access to the value should be through the function `TeX-output-extension'.")
 
   (make-variable-buffer-local 'TeX-output-extension)
 
 (defvar TeX-view-extension "dvi"
-  "Extension of TeX output file for viewing. If nil, (`TeX-output-extension')
-is used. This variable could be changed by running File commands,
+  "Extension of TeX output file for viewing.  If nil, (`TeX-output-extension')
+is used.  This variable could be changed by running File commands,
 like dvips.
 Access to the value should be through the function `TeX-view-extension'.")
 
@@ -2183,9 +2197,9 @@ TeX files in a directory."
   :type 'regexp)
 
 (defcustom TeX-file-recurse t
-  "*Whether to search TeX directories recursively: 'nil' means do not
-recurse, a positive integer means go that far deep in the directory
-hierarchy, 't' means recurse indefinitely."
+  "*Whether to search TeX directories recursively.
+nil means do not recurse, a positive integer means go that far deep in the
+directory hierarchy, t means recurse indefinitely."
   :group 'TeX-parse
   :type '(choice (const :tag "On" t)
 		 (const :tag "Off" nil)
@@ -2195,7 +2209,7 @@ hierarchy, 't' means recurse indefinitely."
   "Return non-nil if FILE has an one of EXTENSIONS.
 
 If EXTENSIONS is not specified or nil, the value of
-TeX-file-extensions is used instead."
+`TeX-file-extensions' is used instead."
 
   (if (null extensions)
       (setq extensions TeX-file-extensions))
@@ -2208,12 +2222,12 @@ TeX-file-extensions is used instead."
 
 (defun TeX-strip-extension (&optional string extensions nodir nostrip)
   "Return STRING without any trailing extension in EXTENSIONS.
-If NODIR is `t', also remove directory part of STRING.
+If NODIR is t, also remove directory part of STRING.
 If NODIR is `path', remove directory part of STRING if it is equal to
-the current directory, TeX-macro-private or TeX-macro-global.
+the current directory, `TeX-macro-private' or `TeX-macro-global'.
 If NOSTRIP is set, do not remove extension after all.
 STRING defaults to the name of the current buffer.
-EXTENSIONS defaults to TeX-file-extensions."
+EXTENSIONS defaults to `TeX-file-extensions'."
 
   (if (null string)
       (setq string (or (buffer-file-name) "<none>")))
@@ -2251,7 +2265,7 @@ NIL means kpathsea is disabled."
   :type '(alist :key-type string :value-type string))
 
 (defun TeX-search-files-kpathsea (extensions nodir strip)
-  "kpathsea-enabled version of `TeX-search-files'.
+  "The kpathsea-enabled version of `TeX-search-files'.
 Except for DIRECTORIES (a kpathsea string), the arguments for
 EXTENSIONS, NODIR and STRIP are explained there."
   (and TeX-kpathsea-path-delimiter
@@ -2305,7 +2319,7 @@ If optional argument NODIR is set, remove directory part.
 If optional argument STRIP is set, remove file extension.
 If optional argument DIRECTORIES is set, search in those directories.
 Otherwise, search in all TeX macro directories.
-If optional argument EXTENSIONS is not set, use TeX-file-extensions"
+If optional argument EXTENSIONS is not set, use `TeX-file-extensions'"
 
   (if (null extensions)
       (setq extensions TeX-file-extensions))
@@ -2353,31 +2367,35 @@ If optional argument EXTENSIONS is not set, use TeX-file-extensions"
 
 	match)))
 
-(defun TeX-car-string-lessp (a b)
-  (string-lessp (car a) (car b)))
+(defun TeX-car-string-lessp (s1 s2)
+  "Compare the cars of S1 and S2 in lexicographic order.
+Return t if first is less than second in lexicographic order."
+  (string-lessp (car s1) (car s2)))
 
-(defun TeX-listify (a)
-  (if (listp a) a (list a)))
+(defun TeX-listify (elt)
+  "Return a newly created list with element ELT.
+If ELT already is a list, return ELT."
+  (if (listp elt) elt (list elt)))
 
 (defun TeX-member (elt list how)
-  "Returns the member ELT in LIST.  Comparison done with HOW.
-
+  "Return the member ELT in LIST.  Comparison done with HOW.
 Return nil if ELT is not a member of LIST."
   (while (and list (not (funcall how elt (car list))))
     (setq list (cdr list)))
   (car-safe list))
 
-(defun TeX-assoc (elem list)
-  "Like assoc, except case incentive."
+(defun TeX-assoc (key list)
+  "Return non-nil if KEY is `equal' to the car of an element of LIST.
+Like assoc, except case insensitive."
   (let ((case-fold-search t))
-    (TeX-member elem list
+    (TeX-member key list
 		(lambda (a b)
 		  (string-match (concat "^" (regexp-quote a) "$")
 				(car b))))))
 
 (defun TeX-match-buffer (n)
   "Return the substring corresponding to the N'th match.
-See match-data for details."
+See `match-data' for details."
   (if (match-beginning n)
       (let ((str (buffer-substring (match-beginning n) (match-end n))))
 	(set-text-properties 0 (length str) nil str)
@@ -2394,9 +2412,9 @@ See match-data for details."
 	   (fboundp arg))))
 
 (defun TeX-looking-at-backward (regexp &optional limit)
-  ;; Return non-nil if the text before point matches REGEXP.
-  ;; Optional second argument LIMIT gives a max number of characters
-  ;; to look backward for.
+  "Return non-nil if the text before point matches REGEXP.
+Optional second argument LIMIT gives a max number of characters
+to look backward for."
   (let ((pos (point)))
     (save-excursion
       (and (re-search-backward regexp
@@ -2420,11 +2438,10 @@ See match-data for details."
     (bobp)))
 
 (defun TeX-arg-literal (optional &rest args)
-  "Insert its arguments into the buffer.
+  "Insert its arguments ARGS into the buffer.
 Used for specifying extra syntax for a macro."
+  ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
   (apply 'insert args))
-
-
 
 ;;; Syntax Table
 
@@ -2455,20 +2472,24 @@ Used for specifying extra syntax for a macro."
 
 ;;; Menu Support
 
-(defvar TeX-command-current 'TeX-command-master)
+(defvar TeX-command-current 'TeX-command-master
+  "Specify whether to run command on master, buffer or region.")
 ;; Function used to run external command.
 
 (defun TeX-command-select-master ()
+  "Determine that the next command will be on the master file."
   (interactive)
-  (message "Next command will be on the master file")
+  (message "Next command will be on the master file.")
   (setq TeX-command-current 'TeX-command-master))
 
 (defun TeX-command-select-buffer ()
+  "Determine that the next command will be on the buffer."
   (interactive)
   (message "Next command will be on the buffer")
   (setq TeX-command-current 'TeX-command-buffer))
 
 (defun TeX-command-select-region ()
+  "Determine that the next command will be on the region."
   (interactive)
   (message "Next command will be on the region")
   (setq TeX-command-current 'TeX-command-region))
@@ -2478,19 +2499,19 @@ Used for specifying extra syntax for a macro."
 ;; variable instead of quering the user.
 
 (defun TeX-command-menu (name)
-  ;; Execute TeX-command-list NAME from a menu.
+  "Execute `TeX-command-list' NAME from a menu."
   (let ((TeX-command-force name))
     (funcall TeX-command-current)))
 
 (defun TeX-command-menu-print (printer command name)
-  ;; Print on PRINTER using method COMMAND to run NAME.
+  "Print on PRINTER using method COMMAND to run NAME."
   (let ((TeX-printer-default printer)
 	(TeX-printer-list nil)
 	(TeX-print-command command))
     (TeX-command-menu name)))
 
 (defun TeX-command-menu-printer-entry (entry)
-  ;; Return TeX-printer-list ENTRY as a menu item.
+  "Return `TeX-printer-list' ENTRY as a menu item."
   (vector (nth 0 entry)
 	  (list 'TeX-command-menu-print
 		(nth 0 entry)
@@ -2502,14 +2523,14 @@ Used for specifying extra syntax for a macro."
 ;; to make queue command usable.  Easy but ugly code duplication again.
 
 (defun TeX-command-menu-queue (printer command name)
-  ;; Show queue for PRINTER using method COMMAND to run NAME.
+  "Show queue for PRINTER using method COMMAND to run NAME."
   (let ((TeX-printer-default printer)
 	(TeX-printer-list nil)
 	(TeX-queue-command command))
     (TeX-command-menu name)))
 
 (defun TeX-command-menu-queue-entry (entry)
-  ;; Return TeX-printer-list ENTRY as a menu item.
+  "Return `TeX-printer-list' ENTRY as a menu item."
   (vector (nth 0 entry)
 	  (list 'TeX-command-menu-queue
 		(nth 0 entry)
@@ -2520,7 +2541,7 @@ Used for specifying extra syntax for a macro."
 ;; End fix part 1.
 
 (defun TeX-command-menu-entry (entry)
-  ;; Return TeX-command-list ENTRY as a menu item.
+  "Return `TeX-command-list' ENTRY as a menu item."
   (let ((name (car entry)))
     (cond ((and (string-equal name TeX-command-Print)
 		TeX-printer-list)
@@ -2540,14 +2561,14 @@ Used for specifying extra syntax for a macro."
 	   (vector name (list 'TeX-command-menu name) t)))))
 
 (defconst TeX-command-menu-name "Command"
-  "Name to be displayed for the command menu in all modes defined
-  by AUCTeX")
+  "Name to be displayed for the command menu in all modes defined by AUCTeX.")
 
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
-  "If this is non-nil when AUCTeX is loaded, the TeX escape
-character ``\\'' will be bound to `TeX-electric-macro'."
+  "Specify whether ``\\'' will be bound to `TeX-electric-macro'.
+If this is non-nil when AUCTeX is loaded, the TeX escape character ``\\'' will
+be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
@@ -2705,7 +2726,7 @@ See info under AUCTeX for documentation.
 Special commands:
 \\{AmSTeX-mode-map}
 
-Entering AmS-tex-mode calls the value of text-mode-hook,
+Entering AmS-tex-mode calls the value of `text-mode-hook',
 then the value of TeX-mode-hook, and then the value
 of AmS-TeX-mode-hook."
   (interactive)
@@ -2783,8 +2804,7 @@ comment characters instead."
       (TeX-uncomment-region beg (point)))))
 
 (defun TeX-comment-or-uncomment-paragraph ()
-  "Inserts or removes comment characters at the beginning of every line
-in the current paragraph."
+  "Comment or uncomment current paragraph."
   (interactive)
   (if (TeX-in-commented-line)
       (TeX-uncomment)
@@ -2800,7 +2820,7 @@ in the current paragraph."
 	(comment-region (point) (mark))))))
 
 (defun TeX-in-comment ()
-  ;; Return non-nil if point is in a comment.
+  "Return non-nil if point is in a comment."
   (if (or (bolp)
 	  (null comment-start-skip)
 	  (eq (preceding-char) ?\r))
@@ -2811,9 +2831,11 @@ in the current paragraph."
 	(or (looking-at comment-start-skip)
 	    (re-search-forward comment-start-skip pos t))))))
 
+;; FIXME: The following defuns aren't checkdoc clean:  -- rs
+
 (defun TeX-in-commented-line ()
-  ;; Return non-nil if point is in a line consisting only of a comment
-  ;; with some potential whitespace at its beginning.
+  "Return non-nil if point is in a line consisting only of a comment with
+some potential whitespace at its beginning."
   (save-excursion
     (save-match-data
       (re-search-backward "^\\|\r" nil t)
@@ -2822,8 +2844,8 @@ in the current paragraph."
         nil))))
 
 (defun TeX-in-line-comment ()
-  ;; Return non-nil if point is in a line consisting only of a comment
-  ;; with no whitespace at its beginning.
+  "Return non-nil if point is in a line consisting only of a comment
+with no whitespace at its beginning."
   (save-excursion
     (save-match-data
       (move-to-left-margin)
@@ -2906,6 +2928,7 @@ position less than this value."
   :type 'integer)
 
 (defun TeX-comment-indent ()
+  ;; FIXME: Add doc-string.  -- rs
   (if (looking-at "%%%")
       (current-column)
     (skip-chars-backward " \t")
@@ -2966,7 +2989,7 @@ LIMIT is non-nil, search up to this position in the buffer."
 			   (?\C-s "{\\sl " "\\/}")
 			   (?\C-t "{\\tt " "}")
 			   (?\C-d "" "" t))
-  "List of fonts used by TeX-font.
+  "List of fonts used by `TeX-font'.
 
 Each entry is a list.
 The first element is the key to activate the font.
@@ -2992,7 +3015,7 @@ An optional fourth (or sixth) element means always replace if t."
   "Determines the function which is called when a font should be replaced.")
 
 (defun TeX-describe-font-entry (entry)
-  ;; A textual description of an ENTRY in TeX-font-list.
+  "A textual description of an ENTRY in `TeX-font-list'."
   (concat (format "%16s  " (key-description (char-to-string (nth 0 entry))))
 	  (if (or (eq t (nth 3 entry)) (eq t (nth 5 entry)))
 	      "-- delete font"
@@ -3004,7 +3027,7 @@ An optional fourth (or sixth) element means always replace if t."
 (defun TeX-font (replace what)
   "Insert template for font change command.
 If REPLACE is not nil, replace current font.  WHAT determines the font
-to use, as specified by TeX-font-list."
+to use, as specified by `TeX-font-list'."
   (interactive "*P\nc")
   (TeX-update-style)
   (let* ((entry (assoc what TeX-font-list))
@@ -3122,7 +3145,7 @@ Show matching dollar sign if this dollar sign ends the TeX math mode.
 Ensure double dollar signs match up correctly by inserting extra
 dollar signs when needed.
 
-With raw C-u prefix, insert exactly one dollar sign.
+With raw \\[universal-argument] prefix, insert exactly one dollar sign.
 With optional ARG, insert that many dollar signs."
   (interactive "P")
   (cond
@@ -3158,7 +3181,7 @@ With optional ARG, insert that many dollar signs."
   (TeX-math-input-method-off))
 
 (defun TeX-point-is-escaped ()
-  ;; Count backslashes before point and return t if number is odd.
+  "Count backslashes before point and return t if number is odd."
   (let (odd)
     (save-excursion
       (while (equal (preceding-char) ?\\)
@@ -3189,7 +3212,8 @@ Only support LEIM package (toggle-input-method)."
 (defun TeX-normal-mode (arg)
   "Remove all information about this buffer, and apply the style hooks again.
 Save buffer first including style information.
-With optional argument, also reload the style hooks."
+With optional argument ARG, also reload the style hooks."
+  ;; FIXME: Shouldn't it be (&optional arg)?  -- rs
   (interactive "*P")
   (if arg
       (setq TeX-style-hook-list nil
@@ -3218,21 +3242,21 @@ With optional argument, also reload the style hooks."
   :type 'string)
 
 (defcustom TeX-quote-after-quote nil
-  "*Behaviour of \\[TeX-insert-quote]. Nil means standard behaviour;
+  "*Behaviour of \\[TeX-insert-quote].  Nil means standard behaviour;
 when non-nil, opening and closing quotes are inserted only after \"."
   :group 'TeX-quote
   :type 'boolean)
 
 ;;;###autoload
-(defun TeX-insert-quote (arg)
+(defun TeX-insert-quote (force)
   "Insert the appropriate quote marks for TeX.
 Inserts the value of `TeX-open-quote' (normally ``) or `TeX-close-quote'
 \(normally '') depending on the context.  If `TeX-quote-after-quote'
 is non-nil, this insertion works only after \".
-With prefix argument, always inserts \" characters."
+With prefix argument FORCE, always inserts \" characters."
   (interactive "*P")
-  (if arg
-      (self-insert-command (prefix-numeric-value arg))
+  (if force
+      (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
     (if TeX-quote-after-quote
 	(insert (cond ((bobp)
@@ -3305,7 +3329,7 @@ between."
 
 ;;;###autoload
 (defun TeX-submit-bug-report ()
-  "Submit via mail a bug report on AUCTeX"
+  "Submit a bug report on AUCTeX via mail."
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
@@ -3322,6 +3346,8 @@ between."
 what in fact did happen."))
 
 ;;; Ispell Support
+
+;; FIXME: Document those functions and variables.  -- rs
 
 ;; The FSF ispell.el use this.
 (defun ispell-tex-buffer-p ()
