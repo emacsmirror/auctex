@@ -1,5 +1,7 @@
 2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el: checkdoc compliance.
+
 	* preview.el (preview-disabled-string): slightly more correct
 	excursion.
 	(preview-disable): Clear image for garbage collecting if no
