@@ -1,3 +1,15 @@
+2004-06-13  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-pin-region): Add autoload form.
+	(TeX-mode-map): Add keybinding for TeX-pin-region.
+	(TeX-mode-specific-command-menu-entries): Add menu entry for it.
+
+	* tex-buf.el (TeX-command-master, TeX-command-region)
+	(TeX-command-buffer): Add `override-confirm' prefix argument.
+	(TeX-pin-region): New function to replace previous interactive
+	prefix for TeX-command-region.  Change TeX-region semantics
+	accordingly.
+
 2004-06-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/faq.texi: New file.

@@ -86,10 +86,14 @@ Return non-nil if document need to be re-TeX'ed."
 		   (cons name (TeX-style-list))
 		   TeX-file-extensions))
 
-(defun TeX-command-master ()
-  "Run command on the current document."
-  (interactive)
-  (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file))
+(defun TeX-command-master (&optional override-confirm)
+  "Run command on the current document.
+
+If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
+depend on it being positive instead of the entry in `TeX-command-list'."
+  (interactive "P")
+  (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file
+	       override-confirm))
 
 (defvar TeX-command-region-begin nil)
 (defvar TeX-command-region-end nil)
@@ -109,14 +113,48 @@ Return non-nil if document need to be re-TeX'ed."
 	(+ (count-lines (point-min) (point))
 	   (if (bolp) 0 -1))))))
 
-(defun TeX-command-region (&optional old)
+(defun TeX-pin-region (begin end)
+  "Pin the TeX region specified by BEGIN and END.
+If BEGIN is nil, the region is unpinned.
+
+In interactive use, a positive prefix arg will pin the region,
+a non-positive one will unpin it.  Without a prefix arg, if
+a region is actively marked, it will get pinned.  If not, a
+pinned region will get unpinned and vice versa."
+  (interactive
+   (if
+       (if current-prefix-arg
+	   (> (prefix-numeric-value current-prefix-arg) 0)
+	 (or (TeX-active-mark)
+	     (null TeX-command-region-begin)))
+       (list (region-beginning) (region-end))
+     '(nil nil)))
+  (if begin
+      (progn
+	(unless (markerp TeX-command-region-begin)
+	  (setq TeX-command-region-begin (make-marker))
+	  (setq TeX-command-region-end (make-marker)))
+	(set-marker TeX-command-region-begin begin)
+	(set-marker TeX-command-region-end end)
+	(message "TeX region pinned."))
+    (set-marker TeX-command-region-begin nil)
+    (set-marker TeX-command-region-end nil)
+    (setq TeX-command-region-begin nil)
+    (setq TeX-command-region-end nil)
+    (message "TeX region unpinned.")))
+
+(defun TeX-command-region (&optional override-confirm)
   "Run TeX on the current region.
 
 Query the user for a command to run on the temporary file specified by
-the variable TeX-region.  If the chosen command is so marked in
-TeX-command-list, and no argument (or nil) is given to the command,
-the region file file be recreated with the current region.  If mark is
-not active, the new text in the previous used region will be used.
+the variable `TeX-region'.  If there is an explicitly active region,
+it is stored for later commands.  If not, a previously stored region
+\(can be also be set with `TeX-pin-region') overrides the current region,
+if present.
+
+If a prefix argument OVERRIDE-CONFIRM is given, prompting will
+ignore the prompting flag from `TeX-command-list' and instead
+will prompt iff the prefix is positive.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The document's header is all
@@ -126,35 +164,34 @@ If the master file for the document has a trailer, it is written to
 the temporary file before the region itself.  The document's trailer is
 all text after TeX-trailer-start."
   (interactive "P")
-  (if (and (TeX-mark-active) (not old))
-      (let ((begin (min (point) (mark)))
-	     (end (max (point) (mark))))
-	(if TeX-command-region-begin
-	    ()
-	  (setq TeX-command-region-begin (make-marker)
-		TeX-command-region-end (make-marker)))
-	(set-marker TeX-command-region-begin begin)
-	(set-marker TeX-command-region-end end)))
-  (if (null TeX-command-region-begin)
-      (error "Mark not set"))
-  (let ((begin (marker-position TeX-command-region-begin))
-	(end (marker-position TeX-command-region-end)))
+  ;; Note that TeX-command-region-begin is not a marker when called
+  ;; from TeX-command-buffer.
+  (and (or (null TeX-command-region-begin)
+	   (markerp TeX-command-region-begin))
+       (TeX-active-mark)
+       (TeX-pin-region (region-beginning) (region-end)))
+  (let ((begin (or TeX-command-region-begin (region-beginning)))
+	(end (or TeX-command-region-end (region-end))))
     (TeX-region-create (TeX-region-file TeX-default-extension)
 		       (buffer-substring begin end)
 		       (file-name-nondirectory (buffer-file-name))
 		       (TeX-current-offset begin)))
-  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
+  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
+	       override-confirm))
 
-(defun TeX-command-buffer ()
+(defun TeX-command-buffer (&optional override-confirm)
   "Run TeX on the current buffer.
 
 Query the user for a command to run on the temporary file specified by
 the variable TeX-region.  The region file file be recreated from the
-visible part of the buffer."
-  (interactive)
-  (let ((TeX-command-region-begin (point-min-marker))
-	(TeX-command-region-end (point-max-marker)))
-    (TeX-command-region t)))
+visible part of the buffer.
+
+If a prefix argument OVERRIDE-CONFIRM is given, confirmation will
+depend on it being positive instead of the entry in `TeX-command-list'."
+  (interactive "P")
+  (let ((TeX-command-region-begin (point-min))
+	(TeX-command-region-end (point-max)))
+    (TeX-command-region override-confirm)))
 
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.

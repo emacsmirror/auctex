@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.383 $"))
+	(rev "$Revision: 5.384 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-07 20:40:37 $"))
+    (let ((date "$Date: 2004-06-13 20:17:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -718,6 +718,7 @@ Must be the car of an entry in `TeX-command-list'."
 (autoload 'TeX-region-create "tex-buf" no-doc nil)
 (autoload 'TeX-save-document "tex-buf" no-doc t)
 (autoload 'TeX-home-buffer "tex-buf" no-doc t)
+(autoload 'TeX-pin-region "tex-buf" no-doc t)
 (autoload 'TeX-command-region "tex-buf" no-doc t)
 (autoload 'TeX-command-buffer "tex-buf" no-doc t)
 (autoload 'TeX-command-master "tex-buf" no-doc t)
@@ -2774,6 +2775,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials)
+    (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
     (define-key map "\C-c\C-v" 'TeX-view)
     ;; From tex-buf.el
     (define-key map "\C-c\C-d" 'TeX-save-document)
@@ -2821,6 +2823,14 @@ be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ])
+	    [ "Pin region" TeX-pin-region
+	      :active (or (and (boundp 'TeX-command-region-begin)
+			       (markerp TeX-command-region-begin))
+			  (TeX-mark-active))
+	      ;; :visible (eq TeX-command-current 'TeX-command-region)
+	      :style toggle
+	      :selected (and (boundp 'TeX-command-region-begin)
+			     (markerp TeX-command-region-begin))]
 	    [ "Source specials" TeX-source-specials
 	      :style toggle :selected TeX-source-specials ])
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
