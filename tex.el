@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.481 $"))
+	    (rev "$Revision: 5.482 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-01 12:02:00 $"))
+    (let ((date "$Date: 2005-02-01 16:22:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3784,7 +3784,9 @@ regardless of its data type."
 						     'syntax-table)))))
     ;; Preset mode-independent syntax entries.  (Mode-dependent
     ;; entries are set in the function `TeX-search-syntax-table'.)
-    (dolist (elt '((?\f . ">") (?\n . ">") (?\" . ".")))
+    ;; ?\" explicitely gets whitespace syntax because Emacs 21.3 and
+    ;; XEmacs don't generate a completely empty syntax table.
+    (dolist (elt '((?\f . ">") (?\n . ">") (?\" . " ")))
       (modify-syntax-entry (car elt) (cdr elt) table))
     table)
   "Syntax table used for searching purposes.
