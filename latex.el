@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.43 1995-12-18 13:47:48 abraham Exp $
+;; Version: $Id: latex.el,v 5.44 1995-12-18 19:10:19 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1396,8 +1396,6 @@ LaTeX-item-indent."
     (if (< (current-column) indent)
 	(back-to-indentation))))
 
-;; New version by michal@ellpspace.math.ualberta.ca (Michal Jaegermann):
-
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph: break lines to fit fill-column,
 but leave all lines ending with \\\\ (plus its optional argument) alone.
@@ -1443,10 +1441,6 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(while (search-forward "$$ " nil t)
 	  (replace-match "$$\n" t t)
 	  (LaTeX-indent-line)))))
-
-;;; the code below differs from an original (LaTeX-fill-region-as-paragraph)
-;;; only by extra (< from to) comparison and required all arguments
-;;;
 
 (defun LaTeX-fill-region-as-para-do (from to justify-flag)
   "Fill region as one paragraph: break lines to fit fill-column."
@@ -1511,71 +1505,6 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	)
       (goto-char (point-max))
       (delete-horizontal-space))))))
-
-;; Old version:
-
-;(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-;  "Fill region as one paragraph: break lines to fit fill-column.
-;Prefix arg means justify too.
-;From program, pass args FROM, TO and JUSTIFY-FLAG."
-;  (interactive "*r\nP")
-;  (save-restriction
-;    (goto-char from)
-;    (skip-chars-forward " \n")
-;    (LaTeX-indent-line)
-;    (beginning-of-line)
-;    (narrow-to-region (point) to)
-;    (setq from (point))
-
-;    ;; from is now before the text to fill,
-;    ;; but after any fill prefix on the first line.
-
-;    ;; Make sure sentences ending at end of line get an extra space.
-;    (goto-char from)
-;    (while (re-search-forward "[.?!][])\"']*$" nil t)
-;      (insert ? ))
-;    ;; The change all newlines to spaces.
-;    (subst-char-in-region from (point-max) ?\n ?\ )
-;    ;; Flush excess spaces, except in the paragraph indentation.
-;    (goto-char from)
-;    (skip-chars-forward " \t")
-;    (while (re-search-forward "   *" nil t)
-;      (delete-region
-;       (+ (match-beginning 0)
-;	  (if (save-excursion
-;		(skip-chars-backward " ])\"'")
-;		(memq (preceding-char) '(?. ?? ?!)))
-;	      2 1))
-;       (match-end 0)))
-;    (goto-char (point-max))
-;    (delete-horizontal-space)
-;    (insert "  ")
-;    (goto-char (point-min))
-;    (let ((prefixcol 0))
-;      (while (not (eobp))
-;	(move-to-column (1+ fill-column))
-;	(if (eobp)
-;	    nil
-;	  (skip-chars-backward "^ \n")
-;	  (if (if (zerop prefixcol)
-;		  (bolp)
-;		(>= prefixcol (current-column)))
-;	      (skip-chars-forward "^ \n")
-;	    (forward-char -1)))
-;	(delete-horizontal-space)
-;	(if (equal (preceding-char) ?\\)
-;	    (insert ? ))
-;	(insert ?\n)
-;	(LaTeX-indent-line)
-;	(setq prefixcol (current-column))
-;	(and justify-flag (not (eobp))
-;	     (progn
-;	       (forward-line -1)
-;	       (justify-current-line)
-;	       (forward-line 1)))
-;	)
-;      (goto-char (point-max))
-;      (delete-horizontal-space))))
 
 (defun LaTeX-fill-paragraph (prefix)
   "Fill and indent paragraph at or after point.
@@ -1860,170 +1789,6 @@ The point is supposed to be at the beginning of the current line."
 		       (- LaTeX-item-indent))
 		      (t 0)))))))
 
-;;; Math Minor Mode
-
-(defvar LaTeX-math-list nil
-  "AList of your personal LaTeX math symbols.  
-The car of each entry is th key to be bound, the cdr is the value. 
-The value can be a string or a function.")
-
-(defconst LaTeX-math-default
-  '(( ?a . "alpha" )
-    ( ?b . "beta" )
-    ( ?c . LaTeX-math-cal)
-    ( ?d . "delta" )
-    ( ?e . "epsilon" )
-    ( ?f . "phi" )
-    ( ?g . "gamma" )
-    ( ?h . "eta" )
-    ( ?k . "kappa" )
-    ( ?l . "lambda" )
-    ( ?m . "mu" )
-    ( ?N . "nabla" )
-    ( ?n . "nu" )
-    ( ?o . "omega" )
-    ( ?p . "pi" )
-    ( ?q . "theta" )
-    ( ?r . "rho" )
-    ( ?s . "sigma" )
-    ( ?t . "tau" )
-    ( ?u . "upsilon" )
-    ( ?x . "chi" )
-    ( ?y . "psi" )
-    ( ?z . "zeta" )
-    ( ?D . "Delta" )
-    ( ?F . "Phi" )
-    ( ?G . "Gamma" )
-    ( ?Q . "Theta" )
-    ( ?L . "Lambda" )
-    ( ?Y . "Psi" )
-    ( ?P . "Pi" )
-    ( ?S . "Sigma" )
-    ( ?U . "Upsilon" )
-    ( ?O . "Omega" )
-    ( ?\C-f . "rightarrow" )
-    ( ?\C-b . "leftarrow" )
-    ( ?\C-p . "uparrow" )
-    ( ?\C-n . "downarrow" )
-    ( ?< . "leq" )
-    ( ?> . "geq" )
-    ( ?~ . "tilde" )
-    ( ?I . "infty" )
-    ( ?A . "forall" )
-    ( ?E . "exists" )
-    ( ?! . "neg" )
-    ( ?i . "in" )
-    ( ?* . "times" )
-    ( ?. . "cdot" )
-    ( ?{ . "subset" )
-    ( ?} . "supset" )
-    ( ?\[ . "subseteq" )
-    ( ?\] . "supseteq" )
-    ( ?/ . "not" )
-    ( ?\\ . "setminus" )
-    ( ?+ . "cup" )
-    ( ?- . "cap" )
-    ( ?& . "wedge" )
-    ( ?| . "vee" )
-    ( ?\( . "langle")
-    ( ?\) . "rangle")
-    ( ?\C-e . "exp")
-    ( ?\C-s . "sin")
-    ( ?\C-c . "cos")  
-    ( ?\C-^ . "sup" )
-    ( ?\C-_ . "inf" )
-    ( ?\C-d . "det" )
-    ( ?\C-l . "lim" )
-    ( ?\C-t . "tan" )
-    ( ?^ . "hat")
-    ( ?v . "vee")
-    ( ?0 . "emptyset" )))
-
-(defvar LaTeX-math-abbrev-prefix "`"
-  "Prefix key for use in LaTeX-math-mode.")
-
-(defvar LaTeX-math-keymap (make-sparse-keymap)
-  "Keymap used for LaTeX-math-mode commands.")
-
-(defvar LaTeX-math-menu nil
-  "Menu containing LaTeX math commands.")
-
-(define-key LaTeX-math-keymap
-  (concat LaTeX-math-abbrev-prefix LaTeX-math-abbrev-prefix)
-  'LaTeX-math-insert-prefix)
-
-(let ((math (append LaTeX-math-default LaTeX-math-list))
-      (menu nil)
-      (map (lookup-key LaTeX-math-keymap LaTeX-math-abbrev-prefix)))
-
-  (while math
-    (let* ((entry (car math))
-	   (key (car entry))
-	   (keys (key-description
-		  (apply 'vector 
-			 (append LaTeX-math-abbrev-prefix (list key)))))
-	   (value (cdr entry)))
-      (setq math (cdr math))
-      (if (stringp value)
-	  (let ((name (intern (concat "LaTeX-math-" value))))
-	    (setq menu (cons (vector value name ':keys keys) menu))
-	    (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
-			     (list 'LaTeX-math-insert value 'arg)))
-	    (setq value name))
-	(setq menu (cons (vector "Other" value ':keys keys) menu)))
-      (define-key map (if (numberp key)
-			  (char-to-string key)
-			(vector key)) value))) 
-  (setq LaTeX-math-menu (cons "Insert Math" menu)))
-
-(defvar LaTeX-math-mode nil
-  "Is LaTeX-math-mode on or off? non nil means on.")
-
- (make-variable-buffer-local 'LaTeX-math-mode)
-
-(or (assoc 'LaTeX-math-mode minor-mode-alist)
-    (setq minor-mode-alist (cons '(LaTeX-math-mode " Math") minor-mode-alist)))
-
-(or (assoc 'LaTeX-math-mode minor-mode-map-alist)
-    (setq minor-mode-map-alist
-	  (cons (cons 'LaTeX-math-mode LaTeX-math-keymap)
-		minor-mode-map-alist)))
-
-(defun LaTeX-math-mode (&optional arg)
-  "A minor mode with easy acces to TeX math macros. 
-
-Easy insertion of LaTeX math symbols.  If you give a prefix argument,
-the symbols will be surrounded by dollar signs.  The following
-commands are defined:
-
-\\{LaTeX-math-keymap}"
-  (interactive "P")
-  (setq LaTeX-math-mode
-	(not (or (and (null arg) LaTeX-math-mode)
-		 (<= (prefix-numeric-value arg) 0))))
-  (set-buffer-modified-p (buffer-modified-p)))
-
-(fset 'latex-math-mode 'LaTeX-math-mode)
-
-(defun LaTeX-math-insert-prefix ()
-  "Insert the value of `LaTeX-math-abbrev-prefix'."
-  (interactive "*")
-  (let (LaTeX-math-mode)
-    (call-interactively (key-binding LaTeX-math-abbrev-prefix))))
-
-(defun LaTeX-math-insert (string dollar)
-  ;; Inserts \STRING{}. If DOLLAR is non-nil, put $'s around it.
-  (if dollar (insert "$"))
-  (TeX-insert-macro string)
-  (if dollar (insert "$")))
-
-(defun LaTeX-math-cal (char dollar)
-  "Inserts a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it."
-  (interactive "*c\nP")
-  (if dollar (insert "$"))
-  (insert "{\\cal " (char-to-string char) "}")
-  (if dollar (insert "$")))
-
 ;;; Keymap
 
 (defvar LaTeX-mode-map
@@ -2165,7 +1930,6 @@ commands are defined:
 	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
 	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	LaTeX-math-menu
 	"-"
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
@@ -2645,6 +2409,194 @@ of LaTeX-mode-hook."
 	(while (re-search-forward "\\\\blackandwhite{" nil t)
       (replace-match "\\\\input{" nil nil)))))
   (TeX-normal-mode nil))
+
+;;; Math Minor Mode
+
+(defvar LaTeX-math-list nil
+  "AList of your personal LaTeX math symbols.  
+
+Each entry should be a list with three elements, KEY, VALUE, and MENU.
+KEY is the key to be redefined (under `LaTeX-math-abbrev-prefix' in
+math minor mode, VALUE can be a string with the name of the macro to
+be inserted, or a function to be called.  The optional third element is
+the name of the submenu where the command should be added.
+
+See also `LaTeX-math-menu'.")
+
+(defconst LaTeX-math-default
+  '((?a "alpha" "greek")
+    (?b "beta" "greek")
+    (?c LaTeX-math-cal "Cal-whatever")
+    (?d "delta" "greek")
+    (?e "epsilon" "greek")
+    (?f "phi" "greek")
+    (?g "gamma" "greek")
+    (?h  "eta" "greek")
+    (?k "kappa" "greek")
+    (?l "lambda" "greek")
+    (?m "mu" "greek")
+    (?N "nabla" "greek")
+    (?n "nu" "greek")
+    (?o "omega" "greek")
+    (?p "pi" "greek")
+    (?q "theta" "greek")
+    (?r "rho" "greek")
+    (?s "sigma" "greek")
+    (?t "tau" "greek")
+    (?u "upsilon" "greek")
+    (?x "chi" "greek")
+    (?y "psi" "greek")
+    (?z "zeta" "greek")
+    (?D "Delta" "Greek")
+    (?F "Phi" "Greek")
+    (?G "Gamma" "Greek")
+    (?Q "Theta" "Greek")
+    (?L "Lambda" "Greek")
+    (?Y "Psi" "Greek")
+    (?P "Pi" "Greek")
+    (?S "Sigma" "Greek")
+    (?U "Upsilon" "Greek")
+    (?O "Omega" "Greek")
+    (?\C-f "rightarrow" "Symbol")
+    (?\C-b "leftarrow" "Symbol")
+    (?\C-p "uparrow" "Symbol")
+    (?\C-n "downarrow" "Symbol")
+    (?< "leq" "Symbol")
+    (?> "geq" "Symbol")
+    (?~ "tilde" "Symbol")
+    (?I "infty" "Symbol")
+    (?A "forall" "Symbol")
+    (?E "exists" "Symbol")
+    (?! "neg" "Symbol")
+    (?i "in" "Symbol")
+    (?* "times" "Symbol")
+    (?. "cdot" "Symbol")
+    (?{ "subset" "Symbol")
+    (?} "supset" "Symbol")
+    (?\[ "subseteq" "Symbol")
+    (?\] "supseteq" "Symbol")
+    (?/ "not" "Symbol")
+    (?\\ "setminus" "Symbol")
+    (?+ "cup" "Symbol")
+    (?- "cap" "Symbol")
+    (?& "wedge" "Symbol")
+    (?| "vee" "Symbol")
+    (?\( "langle" "Symbol")
+    (?\) "rangle" "Symbol")
+    (?\C-e "exp" "Symbol")
+    (?\C-s "sin" "Symbol")
+    (?\C-c "cos" "Symbol")  
+    (?\C-^ "sup" "Symbol")
+    (?\C-_ "inf" "Symbol")
+    (?\C-d "det" "Symbol")
+    (?\C-l "lim" "Symbol")
+    (?\C-t "tan" "Symbol")
+    (?^ "hat" "Symbol")
+    (?v "vee" "Symbol")
+    (?0 "emptyset" "Symbol")))
+
+(defvar LaTeX-math-abbrev-prefix "`"
+  "Prefix key for use in LaTeX-math-mode.")
+
+(defvar LaTeX-math-keymap (make-sparse-keymap)
+  "Keymap used for LaTeX-math-mode commands.")
+
+(defvar LaTeX-math-menu '("Math" ("greek") ("Greek") ("Symbol"))
+  "Menu containing LaTeX math commands.
+The menu entries will be generated dynamically, but you can specify
+the sequence by initializing this variable.")
+
+(define-key LaTeX-math-keymap
+  (concat LaTeX-math-abbrev-prefix LaTeX-math-abbrev-prefix)
+  'LaTeX-math-insert-prefix)
+
+(let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
+      (map (lookup-key LaTeX-math-keymap LaTeX-math-abbrev-prefix)))
+  (while math
+    (let* ((entry (car math))
+	   (key (nth 0 entry))
+	   value menu name)
+      (setq math (cdr math))
+      (if (listp (cdr entry))
+	  (setq value (nth 1 entry)
+		menu (nth 2 entry))
+	(setq value (cdr entry)
+	      menu nil))
+      (setq key (if (numberp key) (char-to-string key) (vector key)))
+      (if (stringp value)
+	  (progn
+	   (setq name (intern (concat "LaTeX-math-" value)))
+	   (fset name (list 'lambda (list 'arg) (list 'interactive "*P")
+			    (list 'LaTeX-math-insert value 'arg))))
+	(setq name value))
+      (define-key map key name)
+      (if menu
+	  (let ((sub (assoc menu LaTeX-math-menu)))
+	    (if sub 
+		(if (stringp value)
+		    (setcdr sub (cons (vector value name t) (cdr sub)))
+		  (error "Cannot have multiple special math menu items"))
+	      (setcdr LaTeX-math-menu
+		      (cons (if (stringp value)
+				(list menu (vector value name t))
+			      (vector menu name t))
+			    (cdr LaTeX-math-menu)))))))))
+
+(easy-menu-define LaTeX-math-mode-menu
+    LaTeX-math-keymap
+    "Menu used in math minor mode."
+  LaTeX-math-menu)
+
+(defvar LaTeX-math-mode nil
+  "Is LaTeX-math-mode on or off? non nil means on.")
+
+ (make-variable-buffer-local 'LaTeX-math-mode)
+
+(or (assoc 'LaTeX-math-mode minor-mode-alist)
+    (setq minor-mode-alist (cons '(LaTeX-math-mode " Math") minor-mode-alist)))
+
+(or (assoc 'LaTeX-math-mode minor-mode-map-alist)
+    (setq minor-mode-map-alist
+	  (cons (cons 'LaTeX-math-mode LaTeX-math-keymap)
+		minor-mode-map-alist)))
+
+(defun LaTeX-math-mode (&optional arg)
+  "A minor mode with easy acces to TeX math macros. 
+
+Easy insertion of LaTeX math symbols.  If you give a prefix argument,
+the symbols will be surrounded by dollar signs.  The following
+commands are defined:
+
+\\{LaTeX-math-keymap}"
+  (interactive "P")
+  (setq LaTeX-math-mode
+	(not (or (and (null arg) LaTeX-math-mode)
+		 (<= (prefix-numeric-value arg) 0))))
+  (if LaTeX-math-mode
+      (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
+    (easy-menu-remove LaTeX-math-mode-menu))
+  (set-buffer-modified-p (buffer-modified-p)))
+
+(fset 'latex-math-mode 'LaTeX-math-mode)
+
+(defun LaTeX-math-insert-prefix ()
+  "Insert the value of `LaTeX-math-abbrev-prefix'."
+  (interactive "*")
+  (let (LaTeX-math-mode)
+    (call-interactively (key-binding LaTeX-math-abbrev-prefix))))
+
+(defun LaTeX-math-insert (string dollar)
+  ;; Inserts \STRING{}. If DOLLAR is non-nil, put $'s around it.
+  (if dollar (insert "$"))
+  (TeX-insert-macro string)
+  (if dollar (insert "$")))
+
+(defun LaTeX-math-cal (char dollar)
+  "Inserts a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it."
+  (interactive "*c\nP")
+  (if dollar (insert "$"))
+  (insert "{\\cal " (char-to-string char) "}")
+  (if dollar (insert "$")))
 
 (provide 'latex)
 

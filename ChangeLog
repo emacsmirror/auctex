@@ -1,3 +1,8 @@
+Mon Dec 18 18:58:22 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-fill-region-as-paragraph): Removed old version.
+	(LaTeX-math-menu): Redefined the math mode menu.
+
 Thu Dec 14 19:51:15 1995  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* latex.el (LaTeX-math-menu): New variable.
