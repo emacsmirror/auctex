@@ -6,6 +6,9 @@
 
 	* latex.el (LaTeX-fill-move-to-break-point): Don't match the char
 	before the char to find in case of backward searches.
+	(LaTeX-fill-region-as-paragraph): Make the regular expression,
+	which serves searching for lines with code comments, match the
+	whole line.
 
 2004-03-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
