@@ -3,7 +3,7 @@ prefix=@prefix@#
 datadir=@datadir@#
 infodir=@infodir@#
 TEX=@TEX@
-MAKEINFO=@MAKEINFO@
+MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -55,17 +55,20 @@ auctex: auc-tex.texi install.texi intro.texi changes.texi
 	@echo "** a newer version of texinfo?"
 	@echo "**********************************************************"
 
-INSTALLATION: install.texi
-	-$(MAKEINFO) --no-headers install.texi --output INSTALLATION
+INSTALL: install.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate install.texi --output INSTALL
+
+INSTALL.windows: wininstall.texi
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate wininstall.texi --output INSTALL.windows
 
 README: intro.texi
-	-$(MAKEINFO) --no-headers intro.texi --output README
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate intro.texi --output README
 
 CHANGES: changes.texi
-	-$(MAKEINFO) --no-headers changes.texi --output CHANGES
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate changes.texi --output CHANGES
 
 HISTORY: history.texi
-	-$(MAKEINFO) --no-headers history.texi --output HISTORY
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate history.texi --output HISTORY
 
 install: auctex
 	-$(MKINSTALLDIRS) $(infodir)
