@@ -297,11 +297,7 @@ Filling messes up comments, but only at the end of the file.  Reported
 by Juergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
 
 @item
-@kbd{C-c C-q C-e} doesn't work properly on nested itemize environments.
-Reported by  "Robert B. Love"  <rlove@@raptor.rmNUG.ORG>.
-
-@item
-@kbd{C-c `} should always stay in the current window, also when it find
+@kbd{C-c `} should always stay in the current window, also when it finds
 a new file.
 
 @item
@@ -333,24 +329,6 @@ Make @code{TeX-insert-dollar} more robust.  Currently it can be fooled
 by @samp{\mbox}'es and escaped double dollar for example.
 
 @item
-Fix bug with @code{TeX-show-environment} from hidden document
-environment.
-
-@item
 Correct indentation for tabular, tabbing, table, math, and array
 environments.
-
-@item
-If there are unmatched $ characters in @samp{verbatim} or similar
-environments, the rest of the buffer gets fontified with the math face
-(usually in brown).  A good way to fix this bug would be to have
-conditional font locking, i.e. different (syntactical) keywords are used
-inside certain environments.  This would allow special fontification of
-programming languages in @samp{lstlisting} environments as well.
-Unfortunately such conditional font locking is not provided yet by
-Emacs.  As a workaround you can insert @samp{%$} after the end of the
-environment in concern.
-@c Might be fixed as described in
-@c <news:v9smle4ge8.fsf@marauder.physik.uni-ulm.de>
-@c http://thread.gmane.org/gmane.emacs.auc-tex/1018
 @end itemize
