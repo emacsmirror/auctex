@@ -1,5 +1,8 @@
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-filter): Don't remove from "Compilation"
+	tag if just in filter routine.
+
 	* patches/flyspell.patch, patches/mouse-drag.patch: update
 	inflicted Emacs version number.
 
