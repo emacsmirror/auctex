@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.159 2002-08-13 03:14:56 dakas Exp $
+;; $Id: preview.el,v 1.160 2002-08-13 15:23:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1065,6 +1065,7 @@ Returns non-NIL if called by one of the commands in LIST."
 (defun preview-document ()
   "Run preview on master document."
   (interactive)
+  (TeX-save-document (TeX-master-file))
   (TeX-command "Generate Preview" 'TeX-master-file))
 		       
 (defcustom preview-inner-environments '("Bmatrix" "Vmatrix" "aligned"
@@ -2126,7 +2127,7 @@ on the same master file."
 (defun preview-clear-format (&optional old-format)
   "Clear the pregenerated format file.
 The use of the format file is discontinued.
-OLD_FORMAT may already contain a format-cons as
+OLD-FORMAT may already contain a format-cons as
 stored in `preview-dumped-alist'."
   (interactive)
   (unless old-format
@@ -2147,33 +2148,56 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		      'TeX-region-file
 		    'TeX-master-file)
 		  file))
-	(dumped-cons (assoc (expand-file-name (TeX-master-file nil))
-			    preview-dumped-alist))
-	process)
+	(master-file (expand-file-name (TeX-master-file nil)))
+	(dumped-cons (assoc master-file
+			    preview-dumped-alist)))
     (if (if dumped-cons
 	    (eq (cdr dumped-cons) t)
-	  (if (eq preview-dump-default 'ask)
-	      (y-or-n-p "Cache preamble? ")
-	    preview-dump-default))
+	  (push (setq dumped-cons (cons master-file
+					(if (eq preview-dump-default 'ask)
+					    (y-or-n-p "Cache preamble? ")
+					  preview-dump-default)))
+		preview-dumped-alist)
+	  (cdr dumped-cons))
 	(prog1 (preview-dump-format)
 	  (setq TeX-sentinel-function
 		`(lambda (process string)
 		   (funcall ,TeX-sentinel-function process string)
-		   (with-current-buffer ,commandbuff
-		     (TeX-inline-preview ,name ,command ,file)))))
-      (setq process
-	    (TeX-run-command
-	     "Preview-LaTeX"
-	     (if (cdr dumped-cons)
-		 (TeX-command-expand preview-undump-command
-				     (car pr-file)
-				     (cons '("%f"
-					     (lambda ()
-					       (TeX-master-file nil)))
-					   TeX-expand-list))
-	       command) file))
+		   (TeX-inline-preview-internal
+		    ,name ,command ,file
+		    ',pr-file ,commandbuff
+		    ',dumped-cons
+		    (prog1
+			(buffer-string)
+		      (set-buffer ,commandbuff))))))
+      (TeX-inline-preview-internal name command file
+				   pr-file commandbuff dumped-cons))))
+
+(defun TeX-inline-preview-internal (name command file pr-file
+					 commandbuff dumped-cons
+					 &optional str)
+  "See doc of `TeX-inline-preview'.
+Should explain meaning of NAME, COMMAND, FILE, and
+PR-FILE, COMMANDBUFF and DUMPED-CONS are internal parameters, STR
+may be a log to insert into the current log."
+    (let ((process
+	   (TeX-run-command
+	    "Preview-LaTeX"
+	    (if (cdr dumped-cons)
+		(TeX-command-expand preview-undump-command
+				    (car pr-file)
+				    (cons '("%f"
+					    (lambda ()
+					      (TeX-master-file nil)))
+					  TeX-expand-list))
+	      command) file)))
       (condition-case err
 	  (progn
+	    (when str
+	      (with-current-buffer (process-buffer process)
+		(save-excursion
+		  (goto-char (point-min))
+		  (insert-before-markers str))))
 	    (preview-get-geometry commandbuff)
 	    (setq preview-gs-file pr-file)
 	    (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
@@ -2188,11 +2212,11 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	      (TeX-synchronous-sentinel name file process)))
 	(error (preview-log-error err "Preview" process)
 	       (delete-process process)))
-      (preview-reraise-error process))))
+      (preview-reraise-error process)))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.159 $"))
+	(rev "$Revision: 1.160 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2203,7 +2227,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-08-13 03:14:56 $"))
+    (let ((date "$Date: 2002-08-13 15:23:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
