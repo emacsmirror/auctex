@@ -1,8 +1,8 @@
 -*- text -*-
 
 Modularize AucTeX's error message parsing
-so that we do not need to steal code from AucTeX, but can use
-AucTeX's routines directly.  Submit to AucTeX development.
+ so that we do not need to steal code from AucTeX, but can use
+ AucTeX's routines directly.  Submit to AucTeX development.
 
 x-symbol compatibility
  Error messages from TeX and buffer contents from the file do not agree
@@ -28,3 +28,10 @@ Port to XEmacs
 
 Start documentation
  A texinfo manual would be nice to have.
+
+Integrate better
+ We should get into AucTeX's menus, and the "compiling" prompt is not
+ active as long as appropriate.  Temporary directories should only be
+ allocated once	dvips gets run.  The bottom line of the process buffer
+ should change from "Preview-LaTeX" to "Preview-DviPS" to
+ "Preview-GhostScript".
