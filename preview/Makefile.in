@@ -34,6 +34,7 @@ install-hint:
 	@echo "to write to the install directory."
 
 install: install-texmf install-el use-hint
+	(cd doc ; $(MAKE) install)
 
 use-hint:
 	@echo "Installation completed."
