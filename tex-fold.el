@@ -515,7 +515,8 @@ of surrounding overlays and higher than the maximum of enclosed
 overlays."
   (let (outer-priority inner-priority)
     (dolist (ov (overlays-in start end))
-      (when (eq (overlay-get ov 'category) 'TeX-fold)
+      (when (or (eq (overlay-get ov 'category) 'TeX-fold)
+		(eq (overlay-get ov 'category) 'preview-overlay))
 	(let ((ov-priority (overlay-get ov 'priority)))
 	  (if (>= (overlay-start ov) start)
 	      (setq inner-priority (max ov-priority (or inner-priority
