@@ -1,5 +1,16 @@
 2002-04-12  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (LaTeX-preview-setup): call preview-mode-setup
+	and/or put it in LaTeX-mode-hook.
+
+	* prv-xemacs.el (preview-mode-setup): New function.  Enable
+	balloon help.
+
+	* prv-emacs.el (preview-toggle): Move hook setup to
+	preview-mode-setup.
+	(preview-mode-setup): New function.
+	(preview-mark-active): make macro.
+
 	* Makefile.in: New icons.
 
 	* images/preverr.xbm, images/preverr.xpm: New icons.
