@@ -2,12 +2,10 @@
 
 	* Version 9.10r released.
 
-<<<<<<< ChangeLog
 2000-05-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-mode-map): Don't bind `.' and `,' by default.
 
-=======
 2000-05-03  Peter Galbraith <psg@debian.org>
 
 	* font-latex.el: file was broken. Updated to 0.701 (30 Mar 2000).
@@ -17,7 +15,6 @@
 
 	* Version 9.10q released.
 
->>>>>>> 5.113
 2000-03-30  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* style/graphicsx.el: New file.
