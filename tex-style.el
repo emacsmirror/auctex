@@ -115,18 +115,16 @@ It can be a list of themes or a function.  If it is the symbol
 (defcustom LaTeX-csquotes-open-quote ""
   "Opening quotation mark to be used with the csquotes package.
 The specified string will be used for `TeX-open-quote' (and override
-the value of `LaTeX-german-open-quote' if the german or ngerman
-package is used) only if both `LaTeX-csquotes-open-quote' and
-`LaTeX-csquotes-close-quote' are non-empty strings."
+any language-specific setting) only if both `LaTeX-csquotes-open-quote'
+and `LaTeX-csquotes-close-quote' are non-empty strings."
   :type 'string
   :group 'LaTeX-style)
 
 (defcustom LaTeX-csquotes-close-quote ""
   "Closing quotation mark to be used with the csquotes package.
 The specified string will be used for `TeX-close-quote' (and override
-the value of `LaTeX-german-close-quote' if the german or ngerman
-package is used) only if both `LaTeX-csquotes-open-quote' and
-`LaTeX-csquotes-close-quote' are non-empty strings."
+any language-specific setting) only if both `LaTeX-csquotes-open-quote'
+and `LaTeX-csquotes-close-quote' are non-empty strings."
   :type 'string
   :group 'LaTeX-style)
 
@@ -138,40 +136,6 @@ When disabled, you have to use mpost on the mp files automatically
 produced by emp.sty and then re-LaTeX the document."
   :type 'boolean
   :group 'LaTeX-style)
-
-;; style/german.el
-
-(defcustom LaTeX-german-quote-after-quote t
-  "Initial value of `TeX-quote-after-quote' for `german.el'."
-  :group 'LaTeX-style
-  :type 'boolean)
-
-(defcustom LaTeX-german-open-quote "\"`"
-  "Initial value of `TeX-open-quote' for `german.el'."
-  :group 'LaTeX-style
-  :type 'string)
-
-(defcustom LaTeX-german-close-quote "\"'"
-  "Initial value of `TeX-close-quote' for `german.el'."
-  :group 'LaTeX-style
-  :type 'string)
-
-(defcustom LaTeX-german-hyphen "\"="
-  "String to be used when typing `-'.
-This usually is a hyphen alternatives or hyphenation aid
-provided by (n)german.sty, like \"=, \"~ or \"-.
-Set it to an empty string or nil in order to disable this feature."
-  :group 'LaTeX-style
-  :type 'string)
-
-(defcustom LaTeX-german-hyphen-after-hyphen t
-  "Control insertion of hyphen strings.
-If non-nil insert normal hyphen on first key press and swap it
-with the (n)german.sty-specific hyphen string specified in the
-variable `LaTeX-german-hyphen' on second key press.
-If nil do it the other way round."
-  :group 'LaTeX-style
-  :type 'boolean)
 
 ;; style/graphicx.el
 
