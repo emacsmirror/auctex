@@ -605,12 +605,30 @@ Return the new process."
 	    (set-process-filter process 'TeX-format-filter)))
       process)))
 
+(defvar TeX-error-report-switches nil
+  "Reports presence of errors after `TeX-run-TeX'.
+To test whether the current buffer has an compile error from last
+run of `TeX-run-TeX', use
+  (plist-get TeX-error-report-switches (intern (TeX-master-file)))")
+
 (defun TeX-run-TeX (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
+
+  ;; save information in TeX-error-report-switches
+  (let ((current-master (TeX-master-file)))
+    ;; the current master file is saved because error routines are
+    ;; parsed in other buffers;
+    (setq TeX-error-report-switches
+	  (plist-put TeX-error-report-switches
+		     'TeX-current-master current-master))
+    (setq TeX-error-report-switches
+	  (plist-put TeX-error-report-switches
+		     (intern current-master) nil)))
 
   ;; can we assume that TeX-sentinel-function will not be changed
   ;; during (TeX-run-format ..)? --pg
   ;; rather use let* ? --pg
+
   (if TeX-interactive-mode
       (TeX-run-interactive name command file)
     (let ((sentinel-function TeX-sentinel-default-function))
@@ -835,6 +853,12 @@ Return nil ifs no errors were found."
 	(message (concat name " errors in `" (buffer-name)
 			 "'. Use C-c ` to display."))
 	(setq TeX-command-next TeX-command-default)
+	;; error reported to TeX-error-report-switches
+	(setq TeX-error-report-switches
+	  (plist-put TeX-error-report-switches
+		     (intern (plist-get TeX-error-report-switches
+					'TeX-current-master))
+		     t))
 	t)
     (setq TeX-command-next TeX-command-Show)
     nil))
