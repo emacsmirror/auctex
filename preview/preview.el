@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001-2003  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.217 2004-10-09 00:18:03 dakas Exp $
+;; $Id: preview.el,v 1.218 2004-10-18 13:45:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -86,10 +86,7 @@ preview-latex's bug reporting commands will probably not work.")))
   :prefix "preview-")
 
 (defcustom preview-image-creators
-  '((postscript
-     (open preview-eps-open)
-     (place preview-eps-place))
-    (dvipng
+  '((dvipng
      (open preview-gs-open preview-dvipng-process-setup)
      (place preview-gs-place)
      (close preview-dvipng-close))
@@ -134,8 +131,7 @@ function args" :inline t sexp))
     (dvipng png "-sDEVICE=png16m")
     (jpeg jpeg "-sDEVICE=jpeg")
     (pnm pbm "-sDEVICE=pnmraw")
-    (tiff tiff "-sDEVICE=tiff12nc")
-    (postscript png "-sDEVICE=png16m"))
+    (tiff tiff "-sDEVICE=tiff12nc"))
   "*Alist of image types and corresponding GhostScript options.
 The `dvipng' and `postscript' (don't use) entries really specify
 a fallback device when images can't be processed by the requested
@@ -149,9 +145,8 @@ method, like when PDFTeX was used."
   "*Image type to be used in images."
   :group 'preview-gs
   :type (append '(choice)
-		(delete '(const postscript)
-			(mapcar (lambda (symbol) (list 'const (car symbol)))
-				preview-image-creators))
+		(mapcar (lambda (symbol) (list 'const (car symbol)))
+			preview-image-creators)
 		'((symbol :tag "Other"))))
 
 (defun preview-call-hook (symbol &rest rest)
@@ -642,14 +637,14 @@ pathforall pop fill "
 	   (mapconcat #'preview-gs-color-value fg " ")
 	   " setrgbcolor")))))
 
-(defun preview-dvipng-color-string (colors)
+(defun preview-dvipng-color-string (colors res)
   "Return color setup tokens for dvipng.
 Makes a string of options suitable for passing to dvipng.
 Pure borderless black-on-white will return an empty string."
   (let
       ((bg (aref colors 0))
        (fg (aref colors 1))
-       (mask (aref colors 2))
+       ;; (mask (aref colors 2))
        (border (aref colors 3)))
     (concat
      (and bg
@@ -659,7 +654,7 @@ Pure borderless black-on-white will return an empty string."
 	  (format "--fg 'rgb %s' "
 		  (mapconcat #'preview-gs-color-value fg " ")))
      (and border
-	  (format "--bd %d" (max 1 border))))))
+	  (format "--bd %d" (max 1 (round (/ (* res border) 72.0))))))))
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
@@ -758,8 +753,7 @@ The usual PROCESS and COMMAND arguments for
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
   (condition-case err
-      (let ((status (process-status process))
-	    (gsfile preview-gs-file))
+      (let ((status (process-status process)))
 	(cond ((eq status 'exit)
 	       (delete-process process)
 	       (setq TeX-sentinel-function nil)
@@ -848,18 +842,6 @@ The usual PROCESS and COMMAND arguments for
 	  (unless (eq (process-status process) 'signal)
 	    (preview-dvipng-abort))))))
 
-(defun preview-eps-open ()
-  "Place everything nicely for direct PostScript rendering."
-  (preview-parse-messages #'preview-eps-dvips-process-setup))
-
-(defun preview-eps-dvips-process-setup ()
-  "Set up Dvips process for direct EPS rendering."
-  (let* ((TeX-process-asynchronous nil)
-	 (process (preview-start-dvips)))
-    (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
-			      process)
-    (list process TeX-active-tempdir preview-scale)))
-  
 (defun preview-dsc-parse (file)
   "Parse DSC comments of FILE.
 Returns a vector with offset/length pairs corresponding to
@@ -986,7 +968,7 @@ for the file extension."
   (overlay-put ov 'queued
 	       (vector box nil snippet))
   (overlay-put ov 'preview-image
-	       (preview-nonready-copy))
+	       (list (preview-nonready-copy)))
   (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
   (list ov))
 
@@ -1085,7 +1067,8 @@ given as ANSWER."
 	       (preview-create-icon (car newfile)
 				    preview-gs-image-type
 				    (preview-ascent-from-bb
-				     bbox))))
+				     bbox)
+				    (aref preview-colors 2))))
 	    (overlay-put ov 'queued nil)))))
     (while (and (< (length preview-gs-outstanding)
 		   preview-gs-outstanding-limit)
@@ -1469,9 +1452,9 @@ For cursor restoration purposes, WINDOW can be specified with a
 window or an event.  It defaults to the selected window."
   (interactive)
   (catch 'exit
-    (dolist (if ovr (list ovr)
-	      (overlays-in (max (point-min) (1- (point)))
-			   (min (point-max) (1+ (point)))))
+    (dolist (ovr (if ovr (list ovr)
+		   (overlays-in (max (point-min) (1- (point)))
+				(min (point-max) (1+ (point))))))
       (let ((preview-state (overlay-get ovr 'preview-state)))
 	(when preview-state
 	  (if (eq preview-state 'disabled)
@@ -1643,7 +1626,7 @@ on first use.")
     (overlay-put ov 'timestamp timestamp)
     (list (overlay-start ov)
 	  (overlay-end ov)
-	  (preview-export-image (overlay-get ov 'preview-image))
+	  (cdr (overlay-get ov 'preview-image))
 	  filenames
 	  (let ((ctr (overlay-get ov 'preview-counters)))
 	    (and ctr
@@ -1748,15 +1731,14 @@ Deletes the dvi file when finished."
 		 (setq filename (car (overlay-get ov 'filenames))))
 	(if (file-exists-p (car filename))
 	    (progn
-	      (overlay-put ov 'preview-image
-			   (preview-create-icon (car filename)
-						preview-dvipng-image-type
-						(preview-ascent-from-bb
-						 (aref queued 0))))
-	      (overlay-put ov 'queued nil)
-	      (overlay-put ov 'strings
-			   (list (preview-active-string ov)))
-	      (preview-toggle ov t))
+	      (preview-replace-active-icon
+	       ov
+	       (preview-create-icon (car filename)
+				    preview-dvipng-image-type
+				    (preview-ascent-from-bb
+				     (aref queued 0))
+				    nil))
+	      (overlay-put ov 'queued nil))
 	  (setq oldfiles (nconc (overlay-get ov 'filenames)
 				oldfiles))
 	  (overlay-put ov 'filenames nil)
@@ -1791,28 +1773,11 @@ Deletes the dvi file when finished."
 	       (funcall (car gsfile) "dvi"))))
 	(file-error nil)))))
    
-(defun preview-eps-place (ov snippet box tempdir scale)
-  "Generate an image via direct EPS rendering.
-Since OV already carries all necessary information,
-the argument SNIPPET passed via a hook mechanism is ignored.
-BOX is a bounding box from TeX if we know one.  TEMPDIR is used
-for creating the file name, and SCALE is a copy
-of `preview-scale' necessary for `preview-ps-image."
-  (let ((filename (preview-make-filename
-		   (format "preview.%03d" snippet)
-		   tempdir)))
-    (overlay-put ov 'filenames (list filename))
-    (overlay-put ov 'preview-image
-		 (preview-ps-image (car filename)
-				   scale
-				   (and preview-prefer-TeX-bb box))))
-  nil)
-
 (defun preview-active-string (ov)
   "Generate before-string for active image overlay OV."
   (preview-make-clickable
    (overlay-get ov 'preview-map)
-   (overlay-get ov 'preview-image)
+   (car (overlay-get ov 'preview-image))
    "%s opens text
 %s more options"))
 
@@ -1982,7 +1947,8 @@ if any."
 			    (preview-parse-counters (cdr counters)))))))
 	(setq preview-buffer-has-counters t))
       (overlay-put ov 'filenames (list filename))
-      (overlay-put ov 'preview-image (preview-import-image image))
+      (overlay-put ov 'preview-image (cons (preview-import-image image)
+					   image))
       (overlay-put ov 'strings
 		   (list (preview-active-string ov)))
       (overlay-put ov 'timestamp timestamp)
@@ -2671,9 +2637,11 @@ is done in source buffer specified by BUFF."
   "Start a DviPNG process.."
   (let* ((file preview-gs-file)
 	 tempdir
-	 (colors (preview-dvipng-color-string preview-colors))
-	 (resolution (format " -D%d " (* (car preview-resolution)
-					 (preview-hook-enquiry preview-scale))))
+	 (res (/ (* (car preview-resolution)
+		    (preview-hook-enquiry preview-scale))
+		 (preview-get-magnification)))
+	 (resolution  (format " -D%d " res))
+	 (colors (preview-dvipng-color-string preview-colors res))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
 			(concat (TeX-command-expand preview-dvipng-command
@@ -3067,7 +3035,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.217 $"))
+	(rev "$Revision: 1.218 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3078,7 +3046,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-09 00:18:03 $"))
+    (let ((date "$Date: 2004-10-18 13:45:00 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,36 @@
+2004-10-18  David Kastrup  <dakas@users.sourceforge.net>
+
+	* prv-xemacs.el (glyph-image-type): Removed.
+	(preview-create-icon-1, preview-create-icon): like in prv-emacs.el.
+	(preview-replace-active-icon): Use defsubst.
+	(preview-ps-image): Removed.
+	(preview-move-point): Reorganized.
+	(preview-export-image): Removed.
+	(preview-import-image): Changed to new preview-image semantics.
+
+	* prv-emacs.el (preview-create-icon): replace macro with defsubst,
+	add border argument.
+	(preview-replace-active-icon): defsubst, and cater for new
+	preview-image structure.
+	(preview-int-bb, preview-ps-image): Removed, only needed for
+	postscript device.
+	(preview-move-point): Reorganized.
+	(preview-export-image): Removed.
+
+	* preview.el (preview-image-creators): Remove postscript device,
+	it did not work, anyway.
+	(preview-dvipng-color-string): Add resolution to args in order to
+	properly convert border thickness.
+	(preview-gs-dvips-sentinel): Delete unused `gsfile' variable.
+	(preview-eps-open, preview-eps-dvips-process-setup,
+	preview-eps-place): Removed.
+	(preview-gs-place, preview-gs-transact, preview-dissect)
+	(preview-dvipng-place-all, preview-active-string)
+	(preview-reinstate-preview): add construction info to
+	`preview-image' property.
+	(preview-start-dvipng): Calculate resolution info correctly.
+	(preview-at-point): Fix an awful typo.
+
 2004-10-14  David Kastrup  <dakas@users.sourceforge.net>
 
 	* latex/preview.dtx: Make the end of snarfed environments behave

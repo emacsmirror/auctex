@@ -86,13 +86,19 @@ Consults `preview-transparent-color'."
 			  (nth 1 preview-transparent-color)
 			  'default)))))
 
-(defmacro preview-create-icon (file type ascent)
-  "Create an icon from FILE, image TYPE and ASCENT."
-  `(list 'image
-	 :file ,file
-	 :type ,type
-	 :ascent ,ascent
-	 :heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask))))
+(defsubst preview-create-icon-1 (file type ascent border)
+  `(image
+    :file ,file
+    :type ,type
+    :ascent ,ascent
+    ,@(and border
+	   `(:mask (heuristic ,border)))))
+
+(defun preview-create-icon (file type ascent border)
+  "Create an icon from FILE, image TYPE, ASCENT and BORDER."
+  (list
+   (preview-create-icon-1 file type ascent border)
+   file type ascent border))
 
 (defun preview-add-urgentization (fun ov &rest rest)
   "Cause FUN (function call form) to be called when redisplayed.
@@ -110,9 +116,9 @@ if there was any urgentization."
     (when (eq (car dispro) 'when)
       (prog1
 	  (car (cdr dispro))
-	  (overlay-put ov 'display (cdr (cdr dispro)))))))
+	(overlay-put ov 'display (cdr (cdr dispro)))))))
 
-(defmacro preview-nonready-copy ()
+(defsubst preview-nonready-copy ()
   "Prepare a later call of `preview-replace-active-icon'."
 
   ;; This is just a GNU Emacs specific efficiency hack because it
@@ -125,12 +131,13 @@ if there was any urgentization."
   ;; modifying the string in the strings property would change that
   ;; glyph automatically.
 
-  '(cons 'image (cdr preview-nonready-icon)))
+  (cons 'image (cdr preview-nonready-icon)))
 
-(defmacro preview-replace-active-icon (ov replacement)
+(defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
-  `(setcdr (overlay-get ,ov 'preview-image)
-	   (cdr ,replacement)))
+  (let ((img (overlay-get ov 'preview-image)))
+    (setcdr (car img) (cdar replacement))
+    (setcdr img (cdr replacement))))
 
 (defvar preview-button-1 [mouse-2])
 (defvar preview-button-2 [mouse-3])
@@ -159,36 +166,6 @@ are functions to call on preview's clicks."
 	       `(format ,helpstring preview-button-1 preview-button-2))
 	    'keymap resmap)
 	'resmap)))
-
-(defun preview-int-bb (bb)
-  "Make integer bounding box from possibly float BB."
-  ;; Due to a bug in earlier Emacs versions, we make this a list instead
-  ;; of a vector
-  (when bb
-    (list
-     (floor (aref bb 0))
-     (floor (aref bb 1))
-     (ceiling (aref bb 2))
-     (ceiling (aref bb 3)))))
-
-(defun preview-ps-image (filename scale &optional box)
-  "Place a PostScript image directly by Emacs.
-This uses Emacs built-in PostScript image support for
-rendering the preview image in EPS file FILENAME, with
-a scale factor of SCALE indicating the relation of desired
-image size on-screen to the size the PostScript code
-specifies.  If BOX is present, it is the bounding box info."
-  (unless box
-    (setq box (preview-extract-bb filename)))
-;; should the following 2 be rather intbb?
-  (create-image filename 'postscript nil
-		:pt-width (round
-			   (* scale (- (aref box 2) (aref box 0))))
-		:pt-height (round
-			    (* scale (- (aref box 3) (aref box 1))))
-		:bounding-box (preview-int-bb box)
-		:ascent (preview-ascent-from-bb box)
-		:heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask))))
 
 (defvar preview-overlay nil)
 
@@ -450,34 +427,30 @@ overlays not in the active window."
   (let (newlist (pt (point)))
     (setq preview-temporary-opened
 	  (dolist (ov preview-temporary-opened newlist)
-	    (if (catch 'keep
-		  (unless (and (overlay-buffer ov)
-			       (eq (overlay-get ov 'preview-state) 'inactive))
-		    (throw 'keep nil))
-		  (unless (eq (overlay-buffer ov) (current-buffer))
-		    (throw 'keep t))
-		  (when (and (> pt (overlay-start ov))
-			     (< pt (overlay-end ov)))
-		    (throw 'keep t))
-		  (preview-toggle ov t)
-		  nil)
-		(push ov newlist))))
+	    (and (overlay-buffer ov)
+		 (eq (overlay-get ov 'preview-state) 'inactive)
+		 (if (and (eq (overlay-buffer ov) (current-buffer))
+			  (or (<= pt (overlay-start ov))
+			      (>= pt (overlay-end ov))))
+		     (preview-toggle ov t)
+		   (push ov newlist)))))
     (if (or disable-point-adjustment
 	    global-disable-point-adjustment
 	    (preview-auto-reveal-p preview-auto-reveal))
 	(preview-open-overlays (overlays-at pt))
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
-			   (< pt (marker-position preview-marker)))))
-	(while (catch 'loop
-		 (dolist (ovr (overlays-at pt))
-		   (when (and
-			  (eq (overlay-get ovr 'preview-state) 'active)
-			  (> pt (overlay-start ovr)))
+			   (< pt (marker-position preview-marker))))
+	    (lst (overlays-at pt)))
+	(while lst
+	  (setq lst
+		(if (and
+		     (eq (overlay-get (car lst) 'preview-state) 'active)
+		     (> pt (overlay-start (car lst))))
+		    (overlays-at
 		     (setq pt (if backward
-				  (overlay-start ovr)
-				(overlay-end ovr)))
-		     (throw 'loop t))))
-	  nil)
+				  (overlay-start (car lst))
+				(overlay-end (car lst)))))
+		  (cdr lst))))
 	(goto-char pt)))))
 
 (defun preview-open-overlays (list &optional pos)
@@ -560,26 +533,22 @@ The fourth value is the transparent border thickness."
     (unless (and (numberp preview-transparent-border)
 		 (consp mask) (integerp (car mask)))
       (setq mask nil))
-    (vector bg fg mask (and mask preview-transparent-border))))
+    (vector bg fg mask preview-transparent-border)))
 
 (defmacro preview-mark-active ()
   "Return t if the mark is active."
   'mark-active)
 
-(defun preview-export-image (image)
-  "Format an IMAGE into something printable."
-  (let ((plist (cdr image)))
-    (list (plist-get plist :file)
-	  (plist-get plist :type)
-	  (plist-get plist :ascent))))
-
 (defun preview-import-image (image)
   "Convert the printable IMAGE rendition back to an image."
   (if (eq (car image) 'image)
       image
-    (preview-create-icon (nth 0 image)
-			 (nth 1 image)
-			 (nth 2 image))))
+    (preview-create-icon-1 (nth 0 image)
+			   (nth 1 image)
+			   (nth 2 image)
+			   (if (< (length image) 4)
+			       (preview-get-heuristic-mask)
+			     (nth 3 image)))))
 
 (defsubst preview-supports-image-type (imagetype)
   "Check if IMAGETYPE is supported."

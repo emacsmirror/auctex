@@ -172,19 +172,6 @@ other hooks, such as major mode hooks, can do the job."
 			  "/dev/null"))
   "The system null device.")
 
-;; We have to pick the image-specifier's inst-list apart by hand.  This code
-;; won't work if there are multiple valid image types in a single glyph in a
-;; single (locale * domain): but we don't care, because only the first of those
-;; will ever be rendered (and make-glyph probably can't create such images
-;; anyway).
-;; How horrible.
-
-(defmacro glyph-image-type (glyph)
-  "Return GLYPH's image type."
-  `(map-specifier (glyph-image ,glyph)
-                  #'(lambda (spec locale inst-list null)
-                      (elt (cdr (assoc (list (device-type)) inst-list)) 0))))
-
 ;; Images.
 
 ;; TODO: Generalize this so we can create the fixed icons using it.
@@ -192,7 +179,7 @@ other hooks, such as major mode hooks, can do the job."
 ;; Argh, dired breaks :file :(
 ;; This is a temporary kludge to get around that until a fixed dired
 ;; or a fixed XEmacs is released.
-(defsubst preview-create-icon (file type ascent)
+(defun preview-create-icon-1 (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
   (let ((glyph
 	 (make-glyph
@@ -203,6 +190,13 @@ other hooks, such as major mode hooks, can do the job."
 			  (buffer-string))))))
     (set-glyph-baseline glyph ascent)
     glyph))
+
+(defun preview-create-icon (file type ascent border)
+  "Create an icon from FILE, image TYPE, ASCENT and BORDER."
+  (list
+   (preview-create-icon-1 file type ascent)
+   file type ascent border))
+
 
 (defvar preview-nonready-icon
   (let ((glyph-xpm-filename (locate-data-file "prevwork.xpm"))
@@ -293,14 +287,13 @@ if there was any urgentization."
   "Prepare for a later call of `preview-replace-active-icon'."
   'preview-nonready-icon)
 
-(defmacro preview-replace-active-icon (ov replacement)
+(defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
-  `(let ((replacement ,replacement))
-     (set-extent-property ,ov 'preview-image replacement)
-     (add-text-properties 0 1 (list 'end-glyph replacement)
-			  (car (extent-property ,ov 'strings)))
-     (if (eq (extent-property ,ov 'preview-state) 'active)
-	 (set-extent-end-glyph ,ov replacement))))
+  (set-extent-property ov 'preview-image replacement)
+  (add-text-properties 0 1 (list 'end-glyph (car replacement))
+		       (car (extent-property ov 'strings)))
+  (if (eq (extent-property ov 'preview-state) 'active)
+      (set-extent-end-glyph ov (car replacement))))
 
 (defvar preview-button-1 'button2)
 (defvar preview-button-2 'button3)
@@ -362,18 +355,6 @@ are functions to call on preview's clicks."
   "Give balloon help only if over glyph of OV."
   (and (eq ov (event-glyph-extent (mouse-position-as-motion-event)))
        (extent-property ov 'preview-balloon-help)))
-
-(defun preview-ps-image (filename scale &optional box)
-  "Place a PostScript image directly by Emacs.
-This uses XEmacs built-in PostScript image support for
-rendering the preview image in EPS file FILENAME, with
-a scale factor of SCALE indicating the relation of desired
-image size on-screen to the size the PostScript code
-specifies.  If BOX is present, it is the bounding box info.
-
-Since there is, as yet, no such support, this is stubbed out.
-This will not be so forever."
-  (error 'image-conversion-error "PostScript images are not supported."))
 
 ;; Most of the changes to this are junking the use of overlays;
 ;; a bit of it is different, and there's a little extra paranoia.
@@ -557,19 +538,14 @@ overlays not in the active window."
   (let (newlist (pt (point)))
     (setq preview-temporary-opened
 	  (dolist (ov preview-temporary-opened newlist)
-	    (if (catch 'keep
-		  (unless (and (overlay-buffer ov)
-			       (eq (overlay-get ov 'preview-state) 'inactive))
-		    (throw 'keep nil))
-		  (unless (and (eq (overlay-buffer ov) (current-buffer))
-                               (not (extent-detached-p ov)))
-		    (throw 'keep t))
-		  (when (and (>= pt (overlay-start ov))
-			     (< pt (overlay-end ov)))
-		    (throw 'keep t))
-		  (preview-toggle ov t)
-		  nil)
-		(push ov newlist))))
+	    (and (extent-object ov)
+		 (not (extent-detached-p ov))
+		 (eq (extent-property ov 'preview-state) 'inactive)
+		 (if (and (eq (extent-object ov) (current-buffer))
+			  (or (<= pt (extent-start-position ov))
+			      (>= pt (extent-end-position ov))))
+		     (preview-toggle ov t)
+		   (push ov newlist)))))
     (if	(preview-auto-reveal-p preview-auto-reveal)
 	(map-extents #'preview-open-overlay nil
 		     pt pt nil nil 'preview-state 'active)
@@ -744,21 +720,15 @@ of an insertion."
 		    ov (extent-start-position ov) maparg)) nil
 		    end end beg 'end-in-region 'preview-state 'active)))
 
-(defun preview-export-image (image)
-  "Format an IMAGE into something printable."
-  (list (image-instance-file-name (glyph-image-instance image))
-	(glyph-image-type image)
-	(glyph-baseline-instance image)))
-
 (defun preview-import-image (image)
   "Convert the printable IMAGE rendition back to an image."
   (if (eq (car image) 'image)
       (let ((plist (cdr image)))
-	(preview-create-icon
+	(preview-create-icon-1
 	 (plist-get plist :file)
 	 (plist-get plist :type)
 	 (plist-get plist :ascent)))
-    (preview-create-icon (nth 0 image)
+    (preview-create-icon-1 (nth 0 image)
 			 (nth 1 image)
 			 (nth 2 image))))
 
