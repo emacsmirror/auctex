@@ -1,3 +1,18 @@
+2002-03-30  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/Makefile.in: New dependency on macros.texi
+
+	* doc/install.texi, doc/readme.texi, doc/copying.texi: 
+	Macros in separate file
+
+	* doc/problems.texi: Typo corrected, macros in separate file
+
+	* doc/preview-dtxdoc.pl: Changed slightly wrt \cmd translation
+
+	* doc/macros.texi: Macros for the texinfo generation
+
+	* doc/preview-latex.texi: Typos corrected, macros in separate file.
+
 2002-03-30  Alan Shutko  <ats@acm.org>
 
 	* Makefile.in (TEXMFGEN): Use new variable.
