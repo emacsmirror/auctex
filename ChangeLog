@@ -1,3 +1,8 @@
+2003-09-15  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-master-file): Fix 'shared case.
+	Tiny patch from Shiro Takeda <zbc08106@park.zero.ad.jp>.
+
 2003-09-08  Peter S Galbraith  <psg@debian.org>
 
 	* bib-cite.el: Ripping out off-topic imenu code.

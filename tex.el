@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.304 $"))
+	(rev "$Revision: 5.305 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-21 06:41:17 $"))
+    (let ((date "$Date: 2003-09-15 15:55:11 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -660,9 +660,9 @@ the beginning of the file, but that feature will be phased out."
 		(TeX-strip-extension
 		 (let ((default (or (TeX-dwim-master) "this file")))
 		   (read-file-name (format "Master file: (default %s) " default)
-				   nil default)
+				   nil default))
 		 (list TeX-default-extension)
-		 'path)))
+		 'path))
 	  (if (or (string-equal TeX-master "this file")
 		  (string-equal TeX-master ""))
 	      (setq TeX-master t)))
