@@ -1,5 +1,8 @@
 2002-08-07  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview-latex.spec (Release): Set to 9 (prerelease)
+	(Requires): Add FAQ to docs.
+
 	*  doc/faq.texi: FAQ added.
 
 2002-08-06  David Kastrup  <David.Kastrup@t-online.de>
