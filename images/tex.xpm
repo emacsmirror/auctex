@@ -1,7 +1,7 @@
 /* XPM */
 static char * tex6_xpm[] = {
 "24 24 233 2",
-"  	c None",
+"  	c None s backgroundToolBarColor",
 ". 	c #3D9944",
 "+ 	c #3E9842",
 "@ 	c #3DA243",

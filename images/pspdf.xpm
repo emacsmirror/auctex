@@ -1,7 +1,7 @@
 /* XPM */
 static char * pspdf5_xpm[] = {
 "24 24 56 1",
-" 	c None",
+" 	c None s backgroundToolBarColor",
 ".	c #869CB4",
 "+	c #00244C",
 "@	c #000000",

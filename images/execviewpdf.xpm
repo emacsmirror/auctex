@@ -1,7 +1,7 @@
 /* XPM */
 static char * execviewpdf4_xpm[] = {
 "24 24 15 1",
-" 	c None",
+" 	c None s backgroundToolBarColor",
 ".	c #B50000",
 "+	c #AA7979",
 "@	c #000000",

@@ -1,7 +1,7 @@
 /* XPM */
 static char * bibtex14_xpm[] = {
 "24 24 55 1",
-" 	c None",
+" 	c None s backgroundToolBarColor",
 ".	c #353535",
 "+	c #877D55",
 "@	c #B9AD74",

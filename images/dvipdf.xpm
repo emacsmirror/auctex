@@ -1,7 +1,7 @@
 /* XPM */
 static char * dvipdf4_xpm[] = {
 "24 24 38 1",
-" 	c None",
+" 	c None s backgroundToolBarColor",
 ".	c #4C4C4C",
 "+	c #000000",
 "@	c #7C7C7C",

@@ -1,7 +1,7 @@
 /* XPM */
 static char * execpdftex11_xpm[] = {
 "24 24 178 2",
-"  	c None",
+"  	c None s backgroundToolBarColor",
 ". 	c #3E9543",
 "+ 	c #409644",
 "@ 	c #3D9D45",

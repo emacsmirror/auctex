@@ -1,7 +1,7 @@
 /* XPM */
 static char * viewdvi11_xpm[] = {
 "24 24 31 1",
-" 	c None",
+" 	c None s backgroundToolBarColor",
 ".	c #090909",
 "+	c #000000",
 "@	c #292929",
