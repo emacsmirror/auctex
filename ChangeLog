@@ -1,5 +1,11 @@
 2004-01-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-view-style, TeX-output-view-style): Use a regexp
+	which matches `a5', `a5comb' and `a5paper' instead of the old
+	which matches only `a5'.
+
+2004-01-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
 	* tex.el (TeX-command-menu-name): New constant.
 	(TeX-mode-specific-command-menu): Reimplemented the loop which
 	builds the menu.
