@@ -1,3 +1,8 @@
+2004-08-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi (top): We want the introduction to appear in
+	HTML output as well.
+
 2004-08-13  David Kastrup  <dak@gnu.org>
 
 	* Version 11.50 released.
