@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.149 2002-07-10 23:53:40 dakas Exp $
+;; $Id: preview.el,v 1.150 2002-07-16 00:30:29 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -630,6 +630,14 @@ object corresponding to the wanted page."
     (format "dup %d setfileposition %d()/SubFileDecode filter cvx"
 	    (1- (car curpage)) (nth 1 curpage))))
   
+(defun preview-ps-quote (str)
+  "Make a PostScript string."
+  (let ((index 0))
+    (while (setq index (string-match "[\\()]" str index))
+      (setq str (replace-match "\\\\\\&" t nil str)
+	    index (+ 2 index)))
+    (concat "(" str ")")))
+
 (defun preview-prepare-fast-conversion ()
   "This fixes up all parameters for fast conversion."
   (let ((file (if (consp (car preview-ps-file))
@@ -637,8 +645,8 @@ object corresponding to the wanted page."
     (setq preview-gs-dsc (preview-dsc-parse file))
     (setq preview-gs-init-string
 	  (concat preview-gs-init-string
-		  (format "(%s)(r)file dup %s exec "
-			  file
+		  (format "%s(r)file dup %s exec "
+			  (preview-ps-quote file)
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
 (defun preview-gs-urgentize (ov buff)
@@ -808,17 +816,17 @@ given as ANSWER."
 		 (gs-line
 		  (format
 		   "%s \
-<</PageSize[%g %g]/PageOffset[%g %g]/OutputFile(%s)>>preview-latex-do\n"
+<</PageSize[%g %g]/PageOffset[%g %g]/OutputFile%s>>preview-latex-do\n"
 		   (if preview-ps-file
 		       (concat "dup "
 			       (preview-gs-dsc-cvx
 				snippet
 				preview-gs-dsc))
-		     (format "(%s)(r)file cvx" (car oldfile)))
+		     (format "%s(r)file cvx" (preview-ps-quote (car oldfile))))
 		   (- (aref bbox 2) (aref bbox 0))
 		   (- (aref bbox 3) (aref bbox 1))
 		   (- (aref bbox 0)) (aref bbox 1)
-		   (car newfile))))
+		   (preview-ps-quote (car newfile)))))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
 			 (list ov)))
@@ -2057,7 +2065,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.149 $"))
+	(rev "$Revision: 1.150 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2068,7 +2076,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-10 23:53:40 $"))
+    (let ((date "$Date: 2002-07-16 00:30:29 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
