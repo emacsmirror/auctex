@@ -1,3 +1,19 @@
+2004-08-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-source-specials): New customization group.
+	(TeX-source-specials, TeX-source-specials-tex-flags)
+	(TeX-source-specials-places)
+	(TeX-source-specials-view-start-server): Use it
+	(TeX-source-specials-view-position-flags)
+	(TeX-source-specials-view-gnuclient-flags)
+	(TeX-source-specials-view-emacsclient-flags): Change defvar to
+	defcustom.
+	(TeX-source-specials-view-editor-flags): New customize option.
+	(TeX-source-specials-view-expand-client): Return not only client
+	but options as well.
+	(TeX-source-specials-view-expand-options): Use
+	`TeX-source-specials-view-editor-flags'.
+
 2004-08-03  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-source-specials-places): Change comment.
