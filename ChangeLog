@@ -1,3 +1,11 @@
+2002-01-24  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-format-list): Support t(article|report|book) class file.
+
+	* tex-jp.el (japanese-TeX-command-list): Undo last change.
+	(LaTeX-command-style): Support t(article|report|book) class file.
+	(japanese-LaTeX-style-list): Ditto.
+
 2002-01-21  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el: Updated to V0.800.
@@ -46,7 +54,7 @@
 	* tex-buf.el (TeX-command-sentinel): insert post-mortem info
 	before any markers in order to keep markers/point at end of file.
 
-2001-11-02  Masayuki Ataka  <m1378502@zack.math.sci.hiroshima-u.ac.jp>
+2001-11-02  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* style/graphicx.el (TeX-arg-includegraphics): Accept prefix
 	argument and find all files. dvipdfm image file support.
