@@ -4,8 +4,8 @@
 
 @end ifset
 @c -----------------------
-Installing @AUCTeX{} should be simple: merely @code{./configure},
-@code{make}, and @code{make install}. This does not yet activate the
+Installing @AUCTeX{} should be simple: merely @command{./configure},
+@command{make}, and @code{make install}. This does not yet activate the
 package, but merely makes it available. See @ref{Loading the package}
 for the activation. Please read through this document fully before
 installing anything.  The installation procedure has changed as
@@ -72,17 +72,17 @@ various files will be.  To do so, run
 @end example
 
 (Note: if you have fetched @AUCTeX{} from @acronym{CVS} rather than
-a regular release, you will have to first generate @file{./configure} by
-running @code{autogen.sh} in the @file{auctex} directory.)
+a regular release, you will have to first generate @command{./configure} by
+running @command{autogen.sh} in the @file{auctex} directory.)
 
 On many machines, you will not need to specify any options, but if
-@code{configure} cannot determine something on its own, you'll need to
+@command{configure} cannot determine something on its own, you'll need to
 help it out with one of these options:
 
 @table @code
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
-@code{configure} is not finding the right Emacs executable, you can
+@command{configure} is not finding the right Emacs executable, you can
 specify it with this option.
 
 @item --with-xemacs[=@var{/path/to/xemacs}]
@@ -102,7 +102,7 @@ that configure is suggesting, and you know that XEmacs regards the
 directory you specify as a package directory.
 
 If you are installing @AUCTeX{} for a single user, and you have
-installed no XEmacs packages as that user before, then @code{configure}
+installed no XEmacs packages as that user before, then @command{configure}
 may try to install @AUCTeX{} in the systemwide package directory
 (that it cannot write to), causing installation to fail.  In that case,
 a good value for this option is @file{~/.xemacs/xemacs-packages}, as
@@ -128,7 +128,7 @@ configure is suggesting.
 
 @item --help
 This is not an option specific to @AUCTeX{}. A number of standard
-options to @file{configure} exist, and we do not have the room to
+options to @command{configure} exist, and we do not have the room to
 describe them here; a short description of each is available, using
 @code{--help}.
 
@@ -140,7 +140,7 @@ describe them here; a short description of each is available, using
 @cindex Installation
 @cindex Make
 
-Once @file{configure} has been run, simply enter
+Once @command{configure} has been run, simply enter
 
 @example
 make
@@ -246,37 +246,37 @@ should do just that.
 
 Often people without system administration privileges want to install
 software for their private use.  In that case you need to specify more
-options top the @file{configure} script.  For XEmacs users, this is
+options top the @command{configure} script.  For XEmacs users, this is
 fairly easy, because the XEmacs package system has been designed to make
 this sort of thing practical: but GNU Emacs users (and XEmacs users for
 whom the package system is for some reason misbehaving) may need to do a
 little more work.
 
 GNU Emacs users can solve this problem by using the @option{--prefix}
-option to the @file{configure} script, and let it point to the personal
+option to the @command{configure} script, and let it point to the personal
 home directory.  In that way, resulting binaries will be installed under
 the @file{bin} subdirectory of your home directory, manual pages under
 @file{man} and so on.  That way, it is reasonably easy to maintain a
 bunch of additional packages, since the prefix argument is supported by
-most @file{configure} scripts.
+most @command{configure} scripts.
 
 You'll have to add something like
 @file{/home/myself/share/emacs/site-lisp} to your @code{load-path}
 variable, if it isn't there already.
 
-XEmacs users can achieve the same end by pointing @file{configure} at an
+XEmacs users can achieve the same end by pointing @command{configure} at an
 appropriate package directory (normally
 @option{--with-packagedir=~/.xemacs/xemacs-packages} will serve).  This
 should only need to be done once, and should be needed fairly rarely; if
-you have installed any personal XEmacs packages before, @file{configure}
+you have installed any personal XEmacs packages before, @command{configure}
 should detect that, and automatically install @AUCTeX{} there too;
 equally, if you have installed @AUCTeX{} somewhere searched by
 XEmacs, @AUCTeX{} should be automatically reinstalled over that
 copy.
 
-(@file{configure} may guess wrong if the site administrator has
+(@command{configure} may guess wrong if the site administrator has
 installed @AUCTeX{} somewhere else: if so, just use the
-@option{--with-packagedir} option to override @file{configure}'s
+@option{--with-packagedir} option to override @command{configure}'s
 choice.)
 
 But there is another problem: perhaps you want to make it easy for other
@@ -407,7 +407,7 @@ Support for Japanese.
 
 @end table
 
-They can be installed together with @AUCTeX{} by executing @code{make
-contrib} and @code{make install-contrib}.  Read the comments in the
+They can be installed together with @AUCTeX{} by executing @command{make
+contrib} and @command{make install-contrib}.  Read the comments in the
 start of each file for more information about how to use the files, what
 they do, and who wrote and maintains them.

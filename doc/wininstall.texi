@@ -44,9 +44,9 @@ this, you probably have already unpacked @AUCTeX{}, but it should still
 be easy to move it elsewhere now.
 
 @item
-Ready for takeoff. Start some shell (typically @file{bash}) capable of
-running @file{configure}, change into the installation directory and
-call @code{./configure} with appropriate options.
+Ready for takeoff. Start some shell (typically @command{bash}) capable of
+running @command{configure}, change into the installation directory and
+call @command{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
@@ -76,7 +76,7 @@ XEmacs, too.
 
 @item --with-lispdir=@var{/dir}
 This may be needed for GNU Emacs installation, but hopefully
-@file{configure} should figure this out by itself. Don't use this for
+@command{configure} should figure this out by itself. Don't use this for
 XEmacs, rather use
 
 @item --with-packagedir=@var{/dir}
@@ -88,7 +88,7 @@ This option allows to specify the directories to be used for file
 searches, e.g. for completion of LaTeX or BibTeX style file names.  They
 will be used in the variable @code{TeX-macro-global}.
 
-@file{configure} will usually figure out the right value for this option
+@command{configure} will usually figure out the right value for this option
 but will only succeed if it finds the necessary programs of the @TeX{}
 system in the system path.  Which should be there for running @AUCTeX{},
 anyway.
@@ -110,7 +110,7 @@ the `Configure' section in the @file{INSTALL} file.
 @ignore
 Some executables might not be found in your path. That is not a good
 idea, but you can get around by specifying environment variables to
-@file{configure}:
+@command{configure}:
 @example
 GS="@var{/path/to/GhostScript}" ./configure @dots{}
 @end example
@@ -122,7 +122,7 @@ If you need to use the prebuilt documentation (see above), now is the
 time to unpack it over the rest of the installation directory.
 
 @item
-Run @code{make} in the installation directory (we have had one report
+Run @command{make} in the installation directory (we have had one report
 that Emacs did not manage to byte compile the Elisp files, and that had
 to be done by hand.  No idea about what might have gone wrong there).
 	

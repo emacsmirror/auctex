@@ -1,3 +1,9 @@
+2004-08-19  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/install.texi: Markup fixes, see "(texinfo)command".
+
+	* doc/wininstall.texi: Ditto.
+
 2004-08-19  David Kastrup  <dak@gnu.org>
 
 	* configure.in: export `localstatedir'.
