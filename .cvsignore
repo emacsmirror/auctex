@@ -1,0 +1,8 @@
+*.log
+config.*
+*~
+Makefile
+configure
+autom4te.*
+#*
+*.elc
