@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.469 $"))
+	    (rev "$Revision: 5.470 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-10 17:45:51 $"))
+    (let ((date "$Date: 2004-12-11 10:25:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3331,19 +3331,19 @@ be bound to `TeX-electric-macro'."
      "-"
      ["Show All in Current Buffer" TeX-fold-clearout-buffer
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-x"
+      :keys "C-c C-o b"
       :help "Permanently show all folded content again"]
      ["Show All in Current Region" TeX-fold-clearout-region
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-y"
+      :keys "C-c C-o r"
       :help "Permanently show all folded content in marked region"]
      ["Show All in Current Paragraph" TeX-fold-clearout-paragraph
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-v"
+      :keys "C-c C-o p"
       :help "Permanently show all folded content in paragraph containing point"]
      ["Show Current Item" TeX-fold-clearout-item
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-      :keys "C-c C-o C-c"
+      :keys "C-c C-o i"
       :help "Permanently show the item containing point"]
      "-"
      ["Hide or Show Current Item" TeX-fold-dwim
