@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.178 2002-12-09 22:55:37 dakas Exp $
+;; $Id: preview.el,v 1.179 2002-12-10 13:34:44 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1516,7 +1516,7 @@ to the close hook."
 ;; called.
 
 (defun preview-counter-find ()
-  "Fetch the next preceding preview-counters property.
+  "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
 not use in advice."
   (or (car (get-char-property begin 'preview-counters))
@@ -1528,6 +1528,9 @@ not use in advice."
 		 (1- (previous-single-char-property-change
 		      begin
 		      'preview-counters)))
+	    'preview-counters))
+      (car (get-char-property
+	    (next-single-char-property-change begin 'preview-counters)
 	    'preview-counters))))
 
 (defadvice TeX-region-create (around preview-counters preactivate)
@@ -2418,7 +2421,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.178 $"))
+	(rev "$Revision: 1.179 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2429,7 +2432,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-09 22:55:37 $"))
+    (let ((date "$Date: 2002-12-10 13:34:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
