@@ -3878,17 +3878,7 @@ the sequence by initializing this variable.")
     "Menu used in math minor mode."
   LaTeX-math-menu)
 
-(defvar LaTeX-math-mode nil
-  "Is `LaTeX-math-mode' on or off?  Non nil means on.")
-
- (make-variable-buffer-local 'LaTeX-math-mode)
-
-(or (assoc 'LaTeX-math-mode minor-mode-map-alist)
-    (setq minor-mode-map-alist
-	  (cons (cons 'LaTeX-math-mode LaTeX-math-keymap)
-		minor-mode-map-alist)))
-
-(defun LaTeX-math-mode (&optional arg)
+(define-minor-mode LaTeX-math-mode
   "A minor mode with easy acces to TeX math macros.
 
 Easy insertion of LaTeX math symbols.  If you give a prefix argument,
@@ -3896,16 +3886,12 @@ the symbols will be surrounded by dollar signs.  The following
 commands are defined:
 
 \\{LaTeX-math-keymap}"
-  (interactive "P")
-  (setq LaTeX-math-mode
-	(not (or (and (null arg) LaTeX-math-mode)
-		 (<= (prefix-numeric-value arg) 0))))
+  :keymap LaTeX-math-keymap
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
     (easy-menu-remove LaTeX-math-mode-menu))
   (TeX-set-mode-name))
-
-(fset 'latex-math-mode 'LaTeX-math-mode)
+(defalias 'latex-math-mode 'LaTeX-math-mode)
 
 (defun LaTeX-math-insert-prefix ()
   "Insert the value of `LaTeX-math-abbrev-prefix'."
