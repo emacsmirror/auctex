@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.172 2002-11-22 10:18:28 dakas Exp $
+;; $Id: preview.el,v 1.173 2002-11-28 17:14:36 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -56,8 +56,15 @@ preview-latex's bug reporting commands will probably not work.")))
   (require 'info)
   (defvar error))
 
+;; we need the compatibility macros which do _not_ get byte-compiled.
+(eval-when-compile
+  (if (string-match "XEmacs" (emacs-version))
+      (load-library "prv-xemacs.el")))
+
+;; if the above load-library kicked in, this will not cause anything
+;; to get loaded.
 (require (if (string-match "XEmacs" (emacs-version))
-            'prv-xemacs 'prv-emacs))
+	     'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX
@@ -2276,7 +2283,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.172 $"))
+	(rev "$Revision: 1.173 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2287,7 +2294,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-22 10:18:28 $"))
+    (let ((date "$Date: 2002-11-28 17:14:36 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2326,7 +2333,7 @@ In the form of yyyy.mmdd")
 file exhibiting the problem might help."
      )))
 
-(eval-and-compile
+(eval-when-compile
   (when (boundp 'preview-compatibility-macros)
     (mapc #'fmakunbound preview-compatibility-macros)))
 
