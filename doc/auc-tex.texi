@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.155 2004-05-25 08:36:13 dak Exp $
+@c $Id: auc-tex.texi,v 1.156 2004-05-26 08:00:00 angeli Exp $
 
 @finalout
 @titlepage
@@ -926,19 +926,27 @@ sections.
 
 @item @key{LFD}
 @kindex @key{LFD}
-@code{reindent-then-newline-and-indent} indents the current line, and
-then inserts a new line (much like @key{RET}) and move the cursor to an
-appropriate position by the left margin.
+@code{newline-and-indent} inserts a new line (much like @key{RET}) and
+moves the cursor to an appropriate position by the left margin.
 
-@item M-q
-@kindex M-q
-Alias for @kbd{C-c C-q C-p}
+Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
+tedious to type.  Therefore you can customize AUC@TeX{} to perform
+indentation upon pressing @key{RET} as well.  The respective option is
+called @code{TeX-indent-on-newline}.
+
+@item C-j
+@kindex C-j
+Alias for @key{LFD}
 
 @item C-c C-q C-p
 @kindex C-c C-q C-p
 @findex LaTeX-fill-paragraph
 @code{LaTeX-fill-paragraph} will reformat or `fill' the current
 paragraph.
+
+@item M-q
+@kindex M-q
+Alias for @kbd{C-c C-q C-p}
 
 @item C-c C-q C-e
 @kindex C-c C-q C-e
@@ -953,14 +961,14 @@ the entire document will be formatted.
 @code{LaTeX-fill-section} will reformat or `fill' the current
 logical sectional unit.
 
-@item M-g
-@kindex M-g
-Alias for @kbd{C-c C-q C-r}
-
 @item C-c C-q C-r
 @kindex C-c C-q C-r
 @findex LaTeX-fill-region
 @code{LaTeX-fill-region} will format or `fill' the current region.
+
+@item M-g
+@kindex M-g
+Alias for @kbd{C-c C-q C-r}
 @end table
 
 @defopt LaTeX-indent-environment-list
@@ -978,6 +986,13 @@ they get filled.
 @defopt LaTeX-indent-level
 Number of spaces to add to the indentation for each @samp{\begin} not
 matched by a @samp{\end}.
+@end defopt
+
+@defopt TeX-indent-on-newline
+Used to determine if and how indentation happens when @key{RET} is
+pressed.  You can specify that your default for @key{RET} is used, that
+only the new line after pressing @key{RET} should be indented or that
+both the current line and the new line should be indented.
 @end defopt
 
 @defopt LaTeX-item-indent
