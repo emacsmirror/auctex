@@ -91,11 +91,13 @@ Consults `preview-transparent-color'."
 	 :ascent ,ascent
 	 :heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask))))
 
-(defun preview-add-urgentization (fun ov buff)
-  "Cause FUN to be called with OV and BUFF when redisplayed."
-  (let ((dispro (overlay-get ov 'display)))
+(defun preview-add-urgentization (fun ov &rest rest)
+  "Cause FUN (function call form) to be called when redisplayed.
+FUN must be a form with OV as first argument,
+REST as the remainder, returning T."
+  (let* ((dispro (overlay-get ov 'display)))
     (unless (eq (car dispro) 'when)
-      (overlay-put ov 'display `(when (,fun ,ov ,buff) . ,dispro)))))
+      (overlay-put ov 'display `(when (,fun ,ov ,@rest)  . ,dispro)))))
 
 (defun preview-remove-urgentization (ov)
   "Undo urgentization of OV by `preview-add-urgentization'.
