@@ -138,7 +138,7 @@ install-info --info-dir=%{_infodir} --delete \
 %{_datadir}/texmf/tex/latex/preview/*.def
 %config %{_datadir}/texmf/tex/latex/preview/*.cfg
 %doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
-%doc %{_infodir}/preview-latex.info.gz
+%doc %{_infodir}/preview-latex.info*.gz
 %doc %{docs}
 
 %if %{HAVE_EMACS}
