@@ -1,3 +1,14 @@
+2004-07-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-indent-line): Temporarily make invisible
+	overlays visible in XEmacs.
+
+	* tex.el (TeX-comment-region): Use a real function instead of an
+	`fset' and temporarily change `comment-start' for certain XEmacs
+	releases.
+	(TeX-comment-or-uncomment-region): Use it.
+	(TeX-comment-or-uncomment-paragraph): Ditto.
+
 2004-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-display-string-face): Remove `min-colors'
