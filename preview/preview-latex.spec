@@ -6,11 +6,15 @@
 %if %{FOR_SUSE}
 %define distri      .suse
 %define commongroup Productivity/Editors/Emacs
+# This is awful, but I don't have the clue to avoid it:
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%define xemacspkgconfdir ${datadir}/xemacs/xemacs-packages
 %else
 %define distri      .fedora
 %define commongroup Applications/Editors
+# This is awful, but I don't have the clue to avoid it:
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%define xemacspkgconfdir ${datadir}/xemacs/xemacs-packages
 %endif
 
 # we use xemacs-packages because the system packages can be found
@@ -107,7 +111,7 @@ for i in *emacs; do
     %configure '--with-lispdir=${datadir}/emacs/site-lisp/site-start.d' \
       --with-packagelispdir=../preview
   else
-    %configure --with-xemacs '--with-packagedir=%{xemacspkgdir}'
+    %configure --with-xemacs '--with-packagedir=%{xemacspkgconfdir}'
   fi
   make 'infodir=%{_infodir}'
   cd doc
