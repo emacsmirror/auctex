@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.108 2002-04-12 16:01:59 dakas Exp $
+;; $Id: preview.el,v 1.109 2002-04-13 02:04:04 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -995,9 +995,9 @@ such preview."
   (overlay-put ovr 'queued nil)
   (preview-remove-urgentization ovr)
   (overlay-put ovr 'timestamp nil)
+  (setcdr (overlay-get ovr 'strings) (preview-disabled-string ovr))
   (preview-toggle ovr)
   (overlay-put ovr 'preview-state 'disabled)
-  (overlay-put ovr 'before-string (preview-disabled-string ovr))
   (dolist (filename (overlay-get ovr 'filenames))
     (condition-case nil
 	(preview-delete-file filename)
@@ -1809,7 +1809,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.108 $"))
+	(rev "$Revision: 1.109 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
