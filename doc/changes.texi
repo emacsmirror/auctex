@@ -9,7 +9,9 @@
 
 @itemize @bullet
 @item
-Folding can now be done for single paragraphs as well.
+Folding can now be done for paragraphs and regions as well.  With the
+new @code{TeX-fold-dwim} command content can be hidden or shown with a
+single key chain.
 
 @item
 Info files of the manual now have a .info extension.
