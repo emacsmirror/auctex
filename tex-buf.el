@@ -6,12 +6,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Revision: 1.8 $
+;; $Id: tex-buf.el,v 1.9 1992-03-12 22:11:11 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Tue Jan 28 15:36:15 1992
-;; Update Count    : 165
+;; Last Modified On: Thu Mar 12 23:06:24 1992
+;; Update Count    : 166
 ;; 
 ;; HISTORY
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup

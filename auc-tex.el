@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-27 16:19:45 $|$Revision: 5.23 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-12 22:11:04 $|$Revision: 5.24 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.23 $  
+;; $Id: auc-tex.el,v 5.24 1992-03-12 22:11:04 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jan 27 16:53:33 1992
-;; Update Count    : 486
+;; Last Modified On: Thu Mar 12 23:07:09 1992
+;; Update Count    : 487
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -315,7 +315,7 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 	(save-excursion
 	  (goto-char (point-min))
 	  (if (re-search-forward 
-	       (concat "^[^%]*"
+	       (concat "^[^%\n]*"
 		       (regexp-quote TeX-esc)
 		       "\\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
 	      'latex-mode
