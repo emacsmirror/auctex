@@ -1,3 +1,31 @@
+2004-07-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (tar-ball): Remove warning which often confuses
+	users.
+
+	* aclocal.m4 (EMACS_MAJOR_VERSION): New test and variable.
+
+	* configure.in: Fix AUCTeX version.
+
+	* tex-site.el.in: At least (X)Emacs 21 is required.
+
+	* tex.el: Ditto.
+
+	* doc/Makefile.in (install): Remove warning which often confuses
+	users.
+
+	* doc/auc-tex.texi: Fix version numbers.
+	(Changes): New name.  Formerly known as "History".
+	(ToDo): New heading.
+
+	* doc/changes.texi: Add heading for `rawfile'.  Change `section'
+	to `heading'.
+
+	* doc/faq.texi (Frequently Asked Questions About AUCTeX): At
+	least (X)Emacs 21 is needed.
+
+	* doc/install.texi (Prerequisites): Ditto.
+
 2004-07-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Extend default.  Add
