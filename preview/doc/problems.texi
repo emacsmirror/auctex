@@ -104,11 +104,16 @@ Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
 @item GNU Emacs under Windows operating systems
 
 As of GNU Emacs 21.2, no image support is available in Emacs under
-Windows.  Without images, @previewlatex{} is useless.  If it is important
-to you, support the Emacs developer crew with regard to image support
-(PostScript image support is @emph{not} necessary).  I do not use
-Windows myself, but will accept patches necessary to make @previewlatex{}
-work under it.
+Windows.  Without images, @previewlatex{} is useless.  The current
+@acronym{CVS} version of Emacs available from
+@uref{http://savannah.gnu.org/projects/emacs} now is supposed to support
+images, so it is likely that @w{Emacs 21.3} will have a reasonable
+chance of working once it is out.  If it is important to you and you
+have the necessary technical skills, support the Emacs developer crew by
+checking out the current version and trying to get @previewlatex{} to
+run on it.  Reasonable patches necessary to make @previewlatex{} work
+under Windows will gladly be accepted.  Another option for Windows users
+might be to try XEmacs.
 
 @item XEmacs
 
