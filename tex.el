@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.445 $"))
+	    (rev "$Revision: 5.446 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-25 19:43:03 $"))
+    (let ((date "$Date: 2004-08-27 17:57:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2765,6 +2765,12 @@ t means autodetect, nil means kpathsea is disabled."
 
 (defcustom TeX-kpathsea-format-alist
   '(("tex" "${TEXINPUTS.latex}" TeX-file-extensions)
+    ("eps" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
+    ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
+    ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
+    ("png" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
+    ("jpg" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
+    ("jpeg" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("bib" "$BIBINPUTS" BibTeX-file-extensions)
     ("bst" "$BSTINPUTS" BibTeX-style-extensions))
   "Formats to search for expansion using kpathsea.
@@ -2841,52 +2847,46 @@ If optional argument STRIP is set, remove file extension.
 If optional argument DIRECTORIES is set, search in those directories.
 Otherwise, search in all TeX macro directories.
 If optional argument EXTENSIONS is not set, use `TeX-file-extensions'"
-
   (if (null extensions)
       (setq extensions TeX-file-extensions))
-
   (or (TeX-search-files-kpathsea extensions nodir strip)
-      (if (null directories)
-	  (setq directories
-		(cons "./" (append TeX-macro-private TeX-macro-global))))
-
-      (let (match
-	    (TeX-file-recurse (cond ((symbolp TeX-file-recurse)
-				     TeX-file-recurse)
-				    ((zerop TeX-file-recurse)
-				     nil)
-				    ((1- TeX-file-recurse)))))
-	(while directories
-	  (let* ((directory (car directories))
-		 (content (and directory
-			       (file-readable-p directory)
-			       (file-directory-p directory)
-			       (directory-files directory))))
-
-	    (setq directories (cdr directories))
-
-	    (while content
-	      (let ((file (concat directory (car content))))
-
-		(setq content (cdr content))
-		(cond ((string-match TeX-ignore-file file))
-		      ((not (file-readable-p file)))
-		      ((file-directory-p file)
-		       (if TeX-file-recurse
-			   (setq match
-				 (append match
-					 (TeX-search-files
-					  (list (file-name-as-directory file))
-					  extensions
-					  nodir strip)))))
-		      ((TeX-match-extension file extensions)
-		       (setq match (cons (TeX-strip-extension file
-							      extensions
-							      nodir
-							      (not strip))
-					 match))))))))
-
-	match)))
+      (progn
+	(if (null directories)
+	    (setq directories
+		  (cons "./" (append TeX-macro-private TeX-macro-global))))
+	(let (match
+	      (TeX-file-recurse (cond ((symbolp TeX-file-recurse)
+				       TeX-file-recurse)
+				      ((zerop TeX-file-recurse)
+				       nil)
+				      ((1- TeX-file-recurse)))))
+	  (while directories
+	    (let* ((directory (car directories))
+		   (content (and directory
+				 (file-readable-p directory)
+				 (file-directory-p directory)
+				 (directory-files directory))))
+	      (setq directories (cdr directories))
+	      (while content
+		(let ((file (concat directory (car content))))
+		  (setq content (cdr content))
+		  (cond ((string-match TeX-ignore-file file))
+			((not (file-readable-p file)))
+			((file-directory-p file)
+			 (if TeX-file-recurse
+			     (setq match
+				   (append match
+					   (TeX-search-files
+					    (list (file-name-as-directory file))
+					    extensions
+					    nodir strip)))))
+			((TeX-match-extension file extensions)
+			 (setq match (cons (TeX-strip-extension file
+								extensions
+								nodir
+								(not strip))
+					   match))))))))
+	  match))))
 
 (defun TeX-car-string-lessp (s1 s2)
   "Compare the cars of S1 and S2 in lexicographic order.

@@ -1,3 +1,12 @@
+2004-08-27  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-kpathsea-format-alist): Added
+	LaTeX-includegraphics-extensions.
+	(TeX-search-files): Fix non-kpathsea case.
+
+	* style/graphicx.el (LaTeX-includegraphics-read-file): Use
+	completion based on TeX-search-files.
+
 2004-08-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex): Add to AUCTeX's customization group.

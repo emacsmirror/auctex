@@ -56,15 +56,8 @@
   (completing-read
    "Image file: "
    (mapcar 'list
-	   (directory-files
-	    "./" nil
-	    (LaTeX-includegraphics-extensions) nil))
-   nil nil
-   ;;    (caar (mapcar 'list
-   ;; 		 (directory-files
-   ;; 		  "./" nil
-   ;; 		  (LaTeX-includegraphics-extensions) nil)))
-   nil))
+	   (TeX-search-files nil LaTeX-includegraphics-extensions t t))
+   nil nil nil))
 
 (defun LaTeX-arg-includegraphics (prefix)
   "Ask for mandantory and optional arguments for the \\includegraphics command.
