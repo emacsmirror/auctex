@@ -1,5 +1,7 @@
 2004-08-09  David Kastrup  <dak@gnu.org>
 
+	* RELEASE (Requirements): some additions.
+
 	* tex.el (TeX-set-mode-name): Actually use `reset' (patch by Ralf
 	Angeli).
 
