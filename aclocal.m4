@@ -282,7 +282,11 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
     [  --with-lispdir=DIR      Where to install lisp files], 
-    [lispdir="${withval}"],
+    [lispdir="${withval}"
+     # Store expanded path, may be added to (X)Emacs load-path
+     lispdir_expanded=$lispdir
+     AC_FULL_EXPAND(lispdir_expanded)
+    ],
     [
      # Save prefix
      oldprefix=${prefix}
