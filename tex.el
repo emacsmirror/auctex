@@ -589,7 +589,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.417 $"))
+	(rev "$Revision: 5.418 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -604,7 +604,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 08:23:09 $"))
+    (let ((date "$Date: 2004-08-10 10:45:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -718,6 +718,7 @@ details."
 		     (and TeX-source-specials-mode
 			  TeX-source-specials-map))
   (TeX-set-mode-name 'TeX-source-specials-mode t t))
+(defalias 'tex-source-specials-mode 'TeX-source-specials-mode)
 
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials-mode minor-mode-map-alist)
