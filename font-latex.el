@@ -516,9 +516,9 @@ are missing, the face will be applied to the command itself.
 			       ;; Maps to
 			       ;;`font-latex-match-command-with-arguments'
 			       (list :tag "Command with arguments"
+				     :value (command 1)
 				     (const command)
-				     (integer :tag "Number of arguments"
-					      :value 1))
+				     (integer :tag "Number of arguments"))
 			       ;; Maps to
 			       ;;`font-latex-match-command-in-braces'
 			       (const :tag "Declaration inside TeX group"
