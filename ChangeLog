@@ -1,6 +1,7 @@
 2003-04-10  David Kastrup  <dak@gnu.org>
 
 	* context.el: Fix AUCTeX URL.
+	Make modification date RCS tag.
 
 2003-04-09  Patrick Gundlach  <patrick@gundla.ch>
 
