@@ -7,9 +7,7 @@
 ;;; Customization
 
 (setq TeX-format-list
-      (append '(("JSLITEX" japanese-slitex-mode
-		 "\\\\documentstyle[^%\n]*{jslides}")
-		("JLATEX" japanese-latex-mode "\\\\documentstyle[^%\n]*{j")
+      (append '(("JLATEX" japanese-latex-mode "\\\\documentstyle[^%\n]*{j")
 		("JTEX" japanese-plain-tex-mode
 		 "-- string likely in Japanese TeX --"))
 	      TeX-format-list))
@@ -17,17 +15,19 @@
 (setq TeX-command-list
       (append (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
 			  'TeX-run-TeX nil t)
-		    (list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-			  'TeX-run-LaTeX nil t)
-		    (list "jSliTeX" "jslitex '\\nonstopmode\\input{%t}'"
-			  'TeX-run-LaTeX nil t)
-		    (list "AmSjTeX" "amsjtex '\\nonstopmode\\input %t'"
-			  'TeX-run-TeX nil t)
-		    (list "AmSjLaTeX" "amsjlatex '\\nonstopmode\\input{%t}'"
-			  'TeX-run-LaTeX nil t)
 		    (list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
 	      TeX-command-list))
        
+(setq LaTeX-command-style
+      (if (string-equal LaTeX-version "2")
+	  (append '(("^ams" "amsjlatex")
+		    ("^jslides$" "jslitex")
+		    ("^j-?\\(article\\|report\\|book\\)$" "jlatex"))
+		  LaTeX-command-style)))
+
+(setcdr (assoc "%l" TeX-expand-list)
+	(list 'TeX-style-check LaTeX-command-style))
+
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
 
@@ -228,28 +228,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
   "Japanese LaTeX specific initializations."
   (if japanese-TeX-mode
       (progn
-	(setq TeX-command-default "jLaTeX")
 	(setq LaTeX-default-style japanese-LaTeX-default-style)
-	(setq LaTeX-style-list japanese-LaTeX-style-list)
-	(setq TeX-command-BibTeX "jBibTeX")
-	(setq japanese-TeX-mode nil))))
-
-(add-hook 'SLiTeX-mode-hook 'japanese-slitex-mode-initialization)
-
-;;;###autoload
-(defun japanese-slitex-mode ()
-  "Major mode for editing files of input for Japanese plain TeX.
-Set japanese-TeX-mode to t, and enters slitex-mode."
-  (interactive)
-  (setq japanese-TeX-mode t)
-  (slitex-mode))
-
-(defun japanese-slitex-mode-initialization ()
-  "Japanese SLiTeX specific initializations."
-  (if japanese-TeX-mode
-      (progn
-	(setq TeX-command-default "jSLiTeX")
-	(setq LaTeX-default-style "jslides")
 	(setq LaTeX-style-list japanese-LaTeX-style-list)
 	(setq TeX-command-BibTeX "jBibTeX")
 	(setq japanese-TeX-mode nil))))
