@@ -1,5 +1,10 @@
 2004-04-11  David Kastrup  <dakas@users.sourceforge.net>
 
+	* circ.tex: Format with AUCTeX.
+
+	* preview.el (preview-gs-open): Bypass page initialization if
+	page is 1bp times 1bp (that is: not yet set).
+
 	* latex/preview.dtx: Remove tightpdf option again. Better
 	explanation for tightpage.
 
