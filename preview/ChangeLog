@@ -1,5 +1,7 @@
 2002-03-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview-latex.spec (BuildRequires): changes for 0.6.1.
+
 	* doc/install.texi: Some changes for 0.6.1.
 
 	* RELEASE: Some adjustments for 0.6.1.
