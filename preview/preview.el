@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.37 2001-10-26 00:30:43 dakas Exp $
+;; $Id: preview.el,v 1.38 2001-10-26 14:08:29 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -409,7 +409,7 @@ SNIPPET are used for making the name of the file to be generated."
       (if (eq major-mode 'ps-mode)
 	  (message "%s" (substitute-command-keys "\
 Try \\[ps-run-start] \\[ps-run-buffer] and \
-\\<ps-run-mode-map>>\\[ps-run-mouse-goto-error] on error offset." ))))))
+\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset." ))))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
@@ -1096,13 +1096,13 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 	     (next-point
 	      (with-current-buffer buffer
 		(save-excursion
-		  (let ((inhibit-point-motion-hooks t))
-		    (goto-line (+ offset line))
-		    (if (search-forward (concat string after-string)
-					(line-end-position) t)
-			(backward-char (length after-string)))
-		    (or (and startflag (preview-back-command))
-			(point)))))))
+		  (goto-line (+ offset line))
+		  (if (search-forward (concat string after-string)
+				      (line-end-position) t)
+		      (backward-char (length after-string))
+		    (search-forward string (line-end-position) t))
+		  (or (and startflag (preview-back-command))
+		      (point))))))
 	(if startflag
 	    (setq preview-snippet-start next-point)
 	  (if preview-snippet-start
@@ -1155,7 +1155,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.37 $"))
+	(rev "$Revision: 1.38 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
