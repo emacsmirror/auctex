@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.913 (08 May 2004)
+;; Version:    0.914 (10 May 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,12 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.914 10May2004 Ralf Angeli
+;;  - `font-latex-doctex-^^A': Add compatibility code for Emacs 20 and
+;;     XEmacs to fix compile error.
+;;  - `font-latex-verbatim-face', `font-latex-doctex-preprocessor-face',
+;;    `font-latex-doctex-documentation-face': Add parentheses to fix error
+;;    with Emacs 20.
 ;; V0.913 08May2004 Ralf Angeli
 ;;  - New variables and faces.: `font-latex-verbatim-face',
 ;;    `font-latex-doctex-preprocessor-face',
