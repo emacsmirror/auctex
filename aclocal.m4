@@ -201,6 +201,16 @@ dnl "
 dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
 dnl adapted from w3.
 
+dnl EMACS_LISP takes 6 arguments.  $1 is the name of the shell
+dnl variable to assign a value, $2 is a Lisp expression to evaluate.
+dnl The expression is passed to Emacs placed inside of double quotes:
+dnl that means that shell variables will get expanded and double
+dnl quotes itself need to be quoted.  $3 is ignored; it is there for
+dnl historical reasons.  $4 is placed into the Emacs command line
+dnl before the expression in $2 is evaluated, $5 is a list of Elisp
+dnl variables that is assigned from command line arguments following
+dnl the expression, and those are listed in $6.
+
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
@@ -264,11 +274,12 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
     AC_FULL_EXPAND(i)
     EMACS_LISPDIR=""
     EMACS_LISP(EMACS_LISPDIR,
-      [(let ((load-path load-path))
-	 (while (and load-path (not (string-match \"^${i}/\?\$\"
+      [[(let ((load-path load-path)
+             (pattern \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\"))
+	 (while (and load-path (not (string-match pattern
 						  (car load-path))))
 		(setq load-path (cdr load-path)))
-	 (if load-path \"yes\" \"no\"))])
+	 (if load-path \"yes\" \"no\"))]],,,[cmdpath],["$i"])
     if test "$EMACS_LISPDIR" = "yes"; then
       break
     fi
@@ -310,7 +321,7 @@ use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs),
 --libdir (xemacs), or possibly --prefix to rectify this])
      fi
      # Store expanded path, may be added to (X)Emacs load-path
-     lispdir_expanded=$lispdir
+     lispdir_expanded="$lispdir"
      AC_FULL_EXPAND(lispdir_expanded)
      # Restore prefix
      prefix=${oldprefix}
