@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.15 2001-09-30 16:00:35 dakas Exp $
+;; $Id: preview.el,v 1.16 2001-10-02 00:26:51 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -54,7 +54,7 @@
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.15 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.16 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
@@ -278,9 +278,9 @@ sentinel arguments."
 Gets the default PROCESS and STRING arguments
 and tries to restart GhostScript if necessary."
   (with-current-buffer (process-buffer process)
-    (TeX-format-mode-line process)
+    (TeX-command-mode-line process)
     (let ((status (process-status process)))
-      (when (or (eq status 'exit) (eq status 'signal))
+      (when (memq status '(exit signal))
 	;; process died.
 	;;  Throw away culprit, go on.
 	;; Shut down queue
@@ -305,6 +305,9 @@ and tries to restart GhostScript if necessary."
 	  (preview-gs-restart))))))
 
 (defun preview-gs-filter (process string)
+  "Filter function for processing GhostScript output.
+Gets the usual PROCESS and STRING parameters, see
+`set-process-filter' for a description."
   (with-current-buffer (process-buffer process)
     (setq preview-gs-answer (concat preview-gs-answer string))
     (while (string-match "GS\\(<[0-9+]\\)?>" preview-gs-answer)
@@ -322,12 +325,15 @@ and tries to restart GhostScript if necessary."
   (when (or preview-gs-urgent preview-gs-queue)
     (let* ((process-connection-type nil)
 	   (process
-	    (apply (function start-process) "GS-bg" (current-buffer)
+	    (apply (function start-process)
+		   "Preview-GhostScript"
+		   (current-buffer)
 		   preview-gs-command
 		   preview-gs-command-line)))
       (setq preview-gs-answer "")
       (set-process-sentinel process (function preview-gs-sentinel))
-      (set-process-filter process (function preview-gs-filter)))))
+      (set-process-filter process (function preview-gs-filter))
+      (TeX-command-mode-line process))))
 
 
 (defalias 'preview-gs-close (function preview-gs-restart))
@@ -588,19 +594,29 @@ function for modification hooks."
     (TeX-region-create (TeX-region-file TeX-default-extension)
 		       (buffer-substring begin end)
 		       (file-name-nondirectory (buffer-file-name))
-		       (1- (count-lines 1
-				    (1+ begin)))))
-  (TeX-command "Graphic Preview" 'TeX-region-file))
+		       (save-restriction
+			 (widen)
+			 (+ (count-lines (point-min) begin)
+			    (save-excursion
+			      (goto-char begin)
+			      (if (bolp) 0 -1))))))
+  (TeX-command "Generate Preview" 'TeX-region-file))
 
 (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
 			(:type pbm :file "search.pbm" :ascent 100)))
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
-  (propertize "x" 'display preview-icon
+  (concat (propertize "x" 'display preview-icon
 	          'local-map (overlay-get ov 'preview-map)
 		  'help-echo "mouse-2 regenerates preview
-mouse-3 kills preview"))
+mouse-3 kills preview")
+;; icon on separate line only for stuff starting on its own line
+	  (save-excursion
+	    (with-current-buffer
+		(overlay-buffer ov)
+	      (goto-char (overlay-start ov))
+	      (if (bolp) "\n" "")))))
 
 (defun preview-disable (ovr &rest ignored)
   "Change overlay behaviour of OVR after source edits.
@@ -661,7 +677,13 @@ visible."
 	       'local-map (overlay-get ov 'preview-map)
 	       'help-echo "mouse-2 toggles preview
 mouse-3 kills preview")
-   "\n") )
+;; icon on separate line only for stuff starting on its own line
+   (save-excursion
+     (with-current-buffer
+	 (overlay-buffer ov)
+       (goto-char (overlay-start ov))
+       (if (bolp) "\n" "")))))
+
 
 (defun preview-eps-place (ov tempdir snippet)
   "Generate an image via direct Emacs EPS rendering.
@@ -767,8 +789,6 @@ upgraded to a fancier version of just the LaTeX style."
 		    (const "textmath"))
 	       (repeat :inline t :tag "Other options" (string))))
 
-(make-variable-buffer-local 'preview-default-option-list)
-
 (defun preview-make-options ()
   "Create default option list to pass into LaTeX preview package."
   (mapconcat 'identity preview-default-option-list ","))
@@ -781,7 +801,7 @@ to add the preview functionality."
   (require 'tex-buf)
   (setq TeX-command-list
        (append TeX-command-list
-	       '(("Graphic Preview"
+	       '(("Generate Preview"
 		  "%l '\\nonstopmode\\PassOptionsToPackage{auctex,active}{preview}\\AtBeginDocument{\\ifx\\ifPreview\\undefined\\RequirePackage[%P]{preview}\\fi}\\input{%t}';dvips -Pwww -i -E %d -o %m/preview.000"
 		  TeX-inline-preview nil))))
   (setq TeX-error-description-list
@@ -856,10 +876,10 @@ See `TeX-parse-TeX' for documentation of REPARSE."
       
 (defvar preview-snippet nil
   "Number of current preview snippet.")
-(make-local-variable 'preview-snippet)
+(make-variable-buffer-local 'preview-snippet)
 (defvar preview-snippet-start nil
   "Point of start of current preview snippet.")
-(make-local-variable 'preview-snippet-start)
+(make-variable-buffer-local 'preview-snippet-start)
 
 (defun preview-parse-messages ()
   "Turn all preview snippets into overlays.
@@ -936,7 +956,7 @@ file dvips put into the directory indicated by TEMPDIR."
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
 ;;; to be favorable.  Will XEmacs like this kind of regexp?
 	 (line (and (re-search-forward "\
-^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*\\)
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*?\\)
 \\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
 		    (string-to-int (match-string 1))))
 	 ;; And a string of the context to search for.
@@ -985,28 +1005,31 @@ file dvips put into the directory indicated by TEMPDIR."
 	(message "End of Preview snippet %d unexpected" snippet)
 	(setq preview-snippet-start nil)))
     (setq preview-snippet snippet)
-    (let* ((buffer (find-file-noselect file))
-	   (case-fold-search nil)
-	   (next-point
-	    (with-current-buffer buffer
-	      (save-excursion
-		(goto-line (+ offset line))
-		(if (search-forward (concat string after-string)
-				    (line-end-position) t)
-		    (backward-char (length after-string)))
-		(or (and startflag (preview-back-command))
-		    (point))))))
-      (if startflag
-	  (setq preview-snippet-start next-point)
-	(if preview-snippet-start
-	    (progn
-	      (preview-place-preview tempdir
-				     snippet
-				     buffer
-				     preview-snippet-start
-				     next-point)
-	      (setq preview-snippet-start nil))
-	  (message "Unexpected end of Preview snippet %d" snippet))))))
+    (when line
+      (let* ((buffer (find-file-noselect file))
+	     (case-fold-search nil)
+	     (next-point
+	      (with-current-buffer buffer
+		(save-excursion
+		  (goto-line (+ offset line))
+		  (if (search-forward (concat string after-string)
+				      (save-excursion
+					(end-of-line)
+					(point)) t)
+		      (backward-char (length after-string)))
+		  (or (and startflag (preview-back-command))
+		      (point))))))
+	(if startflag
+	    (setq preview-snippet-start next-point)
+	  (if preview-snippet-start
+	      (progn
+		(preview-place-preview tempdir
+				       snippet
+				       buffer
+				       preview-snippet-start
+				       next-point)
+		(setq preview-snippet-start nil))
+	    (message "Unexpected end of Preview snippet %d" snippet)))))))
 
 (defun preview-get-geometry (process)
   "Transfer display geometry parameters of current display.
@@ -1022,7 +1045,7 @@ Those are put in local variables `preview-scale' and
 
 (defun preview-TeX-inline-sentinel (process name)
   "Sentinel function for preview.
-See `TeX-sentienel-function' and `set-process-sentinel'
+See `TeX-sentinel-function' and `set-process-sentinel'
 for definition of PROCESS and NAME."
   (if process (TeX-format-mode-line process))
   (if (eq (process-status process) 'exit)
@@ -1032,7 +1055,7 @@ for definition of PROCESS and NAME."
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
-  (let ((process (TeX-run-format name command file)))
+  (let ((process (TeX-run-format "Preview-LaTeX" command file)))
     (preview-get-geometry process)
     (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
     (setq TeX-parse-function 'preview-parse-TeX)
