@@ -65,6 +65,7 @@ Summary:	Emacs/LaTeX inline preview (XEmacs lisp files)
 Group: 		%{commongroup}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	xemacs >= 21.4.9
+Conflicts:      xemacs = 21.4.16
 
 %description xemacs
 Does your neck hurt from turning between previewer windows and the

@@ -1,5 +1,10 @@
 2005-02-09  David Kastrup  <dak@gnu.org>
 
+	* preview-latex.spec (Conflicts): xemacs = 21.4.16
+
+	* RELEASE: Add some dvipng information, more detailed
+	recommendations.
+
 	* preview.el (preview-region, preview-buffer, TeX-region-create)
 	(preview-document, preview-environment, preview-section): Move
 	down to avoid byte compiler warnings.

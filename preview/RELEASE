@@ -1,9 +1,9 @@
 Release notes for version 0.9 of the preview-latex package:
 
-preview-latex dresses up your LaTeX source by pasting judiciously
-selected chunks (such as single formulas) chopped from unwieldy
-preview pages right over their source in the Emacs/XEmacs buffer.  You
-get to have your eye candy and edit it, too.
+preview-latex makes LaTeX a tightly integrated component of your
+editing workflow by visualizing selected source chunks (such as single
+formulas or graphics) directly as images in the Emacs/XEmacs buffer.
+You get to have your eye candy and edit it, too.
 
 The employed style file `preview.sty' is independently useful for
 extraction of selected text elements as images.  EPS Graphics that
@@ -16,14 +16,15 @@ current point of time, at least GNU Emacs-21.1 under the X window
 system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.51 or
 later required for PDF support), a working LaTeX installation and
 GhostScript are required.  dvipng (version 1.4 or later), a very fast
-dvi converter available from the same CVS archive, can also be used
-for conversion.  Recent CVS versions of GNU Emacs for Windows or MacOS
-Carbon should also work.
+dvi converter, can also be used for conversion.  For Windows, MacOS
+Carbon or native GTK+ toolkit support, a developer version of GNU
+Emacs (to be released as 22.1) is definitely required; for other
+platforms, use of it is advantageous.
 
 This version finally gets rid of all 8bit issues that plagued
 cooperation with several TeX distributions, and will also support
-utf-8 input files.  This does not extend to the use of X-Symbol (as of
-4.5.1-beta).
+utf-8 input files.  X-Symbol (as of 4.5.1-beta) will still require an
+8bit-transparent TeX executable.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -34,6 +35,8 @@ instructions for users of that operating system.
 The home page is <URL:http://preview-latex.sourceforge.net>, the
 SourceForge project page that among others offers anonymous CVS access
 is located at <URL:http://sourceforge.net/projects/preview-latex>.
+However, development and CVS access are scheduled to be folded into
+the AUCTeX project (located at Savannah) shortly after this release.
 
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
@@ -51,6 +54,9 @@ Additional files can be found at
   RedHat Linux.  For the binary RPMs, you will need the
   preview-latex-common RPM as well as the Emacs-flavor specific RPM.
 
-* AUCTeX is now located at <URL:http://www.gnu.org/software/auctex>.  The
-  download area should also provide you with RPMs if you are using
+* AUCTeX is now located at <URL:http://www.gnu.org/software/auctex>.
+  The download area should also provide you with RPMs if you are using
   RedHat Linux.
+
+* dvipng is currently available via its current project page
+  <URL:http://sourceforge.net/projects/dvipng> and from CTAN.
