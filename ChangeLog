@@ -1,3 +1,7 @@
+2004-11-16  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Clarify --with-xemacs.
+
 2004-11-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-paragraph-commands): Now is a customizable list
