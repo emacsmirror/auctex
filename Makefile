@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.7f
+# Version: 9.7g
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -65,14 +65,17 @@ FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
 WWWDIR = $(HOME)/.public_html/auctex
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  auc-html.el 
+REMOVE =  ltx-help.el
 
 MINMAPSRC = auc-menu.el maniac.el outln-18.el all.el multi-prompt.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el
+CONTRIBELC = bib-cite.elc font-latex.elc
 
-AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el ltx-help.el \
-	multi-prompt.el
+AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el multi-prompt.el
+AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
+	multi-prompt.elc
+
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -100,6 +103,12 @@ install:	install-lisp
 tex.elc:	tex.el
 	$(ELC) $(AUCSRC) $(STYLESRC)
 
+contrib:
+	$(ELC) bib-cite.el
+	$(ELC) font-latex.el
+# 	$(ELC) tex-jp.el              # Doesn't compile without MULE
+# 	$(ELC) hilit-LaTeX.el         # Doesn't compile without X
+
 install-lisp:	tex.elc
 	if [ ! -d $(lispdir) ]; then mkdir $(lispdir); else true; fi ;
 	if [ -f $(lispdir)/tex-site.el ]; \
@@ -114,13 +123,19 @@ install-lisp:	tex.elc
 	then \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; \
 	                                 else true; fi ; \
-	    $(MV) *.elc $(aucdir) ; \
+	    $(MV) $(AUCELC) $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
-	    $(CP) *.el $(aucdir) ; \
+	    $(CP) $(AUCSRC) $(aucdir) ; \
 	    $(CP) style/*.el $(aucdir)/style ; \
 	else \
 	    echo "Leaving compiled files in place."; \
 	fi
+
+install-contrib:
+	$(MV) $(CONTRIBELC) $(aucdir)
+	$(MV) bib-cite.elc $(aucdir)
+	$(MV) font-latex.elc $(aucdir)
+	$(CP) $(CONTRIB) $(aucdir)
 
 install-info:
 	-(cd doc; $(MAKE) install infodir=$(infodir))

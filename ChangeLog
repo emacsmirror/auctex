@@ -1,3 +1,22 @@
+Fri Feb 07 14:58:29 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7g released.
+
+Thu Feb  6 11:01:35 1997  Karl Eichwalder  <ke@ke.Central.DE>
+
+	* Makefile (install-lisp): Don't install $(aucdir)/lpath.el and
+	$(aucdir)/tex-site.el.
+	(contrib, install-contrib): New targets.
+	
+Thu Jan 30 06:59:57 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-default): uparow -> uparrow.  Reported by
+	Kyeong Soo Kim <kks@baekdu.rgit.wustl.edu>. 
+
+Wed Jan 29 04:57:42 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (AUCSRC): Removed `ltx-help.el'.
+
 Mon Jan 27 00:52:51 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7f released.

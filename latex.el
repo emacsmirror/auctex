@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7f
+;; Version: 9.7g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1940,7 +1940,7 @@ See also `LaTeX-math-menu'.")
     (nil "hookrightarrow" "Arrows")
     (nil "rightharpoonup" "Arrows")
     (nil "rightharpoondown" "Arrows")
-    (?\C-p "uparow" "Arrows")
+    (?\C-p "uparrow" "Arrows")
     (nil "Uparrow" "Arrows")
     (?\C-n "downarrow" "Arrows")
     (nil "Downarrow" "Arrows")
