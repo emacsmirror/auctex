@@ -20,8 +20,8 @@ preview-latex/index.html: preview-latex.texi install.texi readme.texi \
 
 html-docs: preview-latex/index.html
 
-preview-dtxdoc.texi: ../preview.dtx preview-dtxdoc.pl
-	-$(PERL) preview-dtxdoc.pl < ../preview.dtx > preview-dtxdoc.texi
+preview-dtxdoc.texi: ../latex/preview.dtx preview-dtxdoc.pl
+	-$(PERL) preview-dtxdoc.pl < ../latex/preview.dtx > preview-dtxdoc.texi
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
 	problems.texi preview-dtxdoc.texi macros.texi todo.texi
