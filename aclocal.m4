@@ -202,20 +202,18 @@ dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
 dnl adapted from w3.
 
 dnl EMACS_LISP takes 6 arguments.  $1 is the name of the shell
-dnl variable to assign a value, $2 is a Lisp expression to evaluate.
-dnl The expression is passed to Emacs placed inside of double quotes:
-dnl that means that shell variables will get expanded and double
-dnl quotes itself need to be quoted.  $3 is ignored; it is there for
-dnl historical reasons.  $4 is placed into the Emacs command line
-dnl before the expression in $2 is evaluated, $5 is a list of Elisp
-dnl variables that is assigned from command line arguments following
-dnl the expression, and those are listed in $6.
+dnl variable to assign a value, $2 is a Lisp expression placed into
+dnl shell double quotes (which has consequences for quoting and
+dnl variable expansion).  $3 is ignored; it is there for historical
+dnl reasons.  $4 is a list of Emacs options evaluated before the
+dnl expression itself, $5 is a list of Elisp variables that is
+dnl assigned from the command line arguments from $6.
 
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x (quote ignore)) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x (quote ignore)) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}
@@ -379,7 +377,7 @@ if test -z "$3"; then
 	AC_MSG_CHECKING(for $2 in $1)
 fi
 library=`echo $1 | tr _ -`
-EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
+EMACS_LISP(EMACS_cv_SYS_$1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi
