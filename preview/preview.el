@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.204 2004-04-11 18:13:44 dakas Exp $
+;; $Id: preview.el,v 1.205 2004-04-11 18:34:01 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -579,7 +579,8 @@ SETUP may contain a parser setup function."
 	(format "\
 /.preview-BP currentpagedevice/BeginPage get dup \
 null eq {pop{pop}bind}if def \
-<</BeginPage{.preview-BP %s}bind/PageSize[1 1]>>setpagedevice\
+<</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
+{.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
 /preview-do{[count 3 roll save]3 1 roll{setpagedevice}stopped\
 {handleerror quit}if cvx systemdict/.runandhide known{.setsafe\
 \(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
@@ -2952,7 +2953,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.204 $"))
+	(rev "$Revision: 1.205 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2963,7 +2964,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-11 18:13:44 $"))
+    (let ((date "$Date: 2004-04-11 18:34:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
