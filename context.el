@@ -686,16 +686,19 @@ An entry looks like: (\"environment\" . function)")
 (defun ConTeXt-current-environment ()
   "Return the name of the current environment."
   ;; don't make this interactive.
-  (let ((beg)
-	(end))
-
+  (let ((beg))
     (save-excursion
-      (re-search-backward (concat (regexp-quote TeX-esc)
-				  (ConTeXt-environment-start-name)))
+      (ConTeXt-last-unended-start)
+      (setq beg (+ (point) (length (ConTeXt-environment-start-name))))
       (goto-char (match-end 0))
-      (setq beg (point))
       (skip-chars-forward "a-zA-Z")
       (buffer-substring beg (point)))))
+
+(defun ConTeXt-last-unended-start ()
+  "Leave point at the beginning of the last `\\start...' that is unstopped looking from the current cursor."
+  (while (and (re-search-backward "\\\\start[a-zA-Z]*\\|\\\\stop[a-zA-Z]*")
+              (looking-at "\\\\stop[a-zA-Z]*"))
+    (ConTeXt-last-unended-start)))
 
 (defun ConTeXt-mark-environment (&optional inner)
   "Set mark to end of current environment (\\start...-\\stop...) and
