@@ -1,3 +1,14 @@
+2002-04-04  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-dvips-process-setup): Correct deletion
+	of dvi file.
+	(preview-dvips-abort): don't unnecessarily clean subdirs.
+	(preview-gs-dvips-sentinel): get the delete semantics right.
+	(preview-gs-close): same here.
+	(preview-delete): after deleting files, set files in overlay to
+	nil since in connection with urgentization we can get multiple
+	deletions.
+
 2002-04-03  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-close): move.
