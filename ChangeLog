@@ -1,3 +1,8 @@
+2004-04-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-region-as-paragraph): Indent lines ending
+	with `\\' upon filling a region.
+
 2004-04-24  David Kastrup  <dak@gnu.org>
 
 	* style/natbib.el ("natbib"): Add fontification for regexps.
