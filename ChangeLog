@@ -19,6 +19,8 @@
 
 2004-08-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-info.el (TeXinfo-mode-menu): Capitalize menu entries.
+
 	* context.el (ConTeXt-project-structure-menu-name)
 	(ConTeXt-section-block-menu-name, ConTeXt-mode-menu): Capitalize
 	menu entries.
