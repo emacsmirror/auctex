@@ -1,5 +1,8 @@
 2003-01-10  David Kastrup  <dakas@users.sourceforge.net>
 
+	* preview.el (LaTeX-preview-setup): Change menu name for
+	generating customize menu to "Extend this menu".
+
 	* configure.in (TEXMFGEN): Make this possibly more portable (at
 	the very least, we had some potential quoting problems).
 
