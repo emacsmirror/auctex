@@ -1,3 +1,11 @@
+2004-04-07  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-run-command): Turn off line number mode in the
+	run-buffer effectively by setting line-number-display-limit
+	locally to 0.
+	(TeX-format-filter): Use a more sophisticated procedure for
+	fishing out page numbers in order to have fast matches.
+
 2004-04-07  Berend de Boer  <berend@pobox.com>
 
 	* Lots of enhancements to context.el. There is now a ConTeXt
