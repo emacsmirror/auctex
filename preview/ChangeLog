@@ -1,3 +1,20 @@
+2003-01-15  Jan-Ake Larsson  <jalar@localhost.localdomain>
+
+	* dvipng/misc.c: Use autoconf's stuff, use atoi, fix warning
+	message
+
+	* dvipng/dvipng.c:
+	* dvipng/dvipng.h: Localize position and spacing to draw.c. Fix
+	timing
+	
+	* dvipng/pk.c: 
+	* dvipng/set.c: 
+	* dvipng/special.c: 
+	* dvipng/vf.c: 
+	* dvipng/draw.c: Localize position and spacing to draw.c 
+
+	* dvipng/configure.ac: Require gd and kpathsea 
+
 2003-01-10  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in: Make Solaris make grok the remaining long lines
