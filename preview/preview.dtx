@@ -194,7 +194,6 @@
 %  inside of a box to be created before the original macro gets
 %  executed, the third one specifies actions after the original macro
 %  got executed.
-
 %    \begin{macrocode}
 %<*!active>
 \let\preview@delay=\@gobble
@@ -333,8 +332,10 @@
 %\end{macro}
 %\begin{macro}{\pr@parse*}
 %  Straightforward, same mechanism \LaTeX\ itself employs.
+%    \begin{macrocode}
 \expandafter\def\csname pr@parse*\endcsname#1\endcsname#2{%
   \@ifstar{\pr@parseit#1\endcsname{#2*}}{\pr@parseit#1\endcsname{#2}}}
+%    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@parse[}
 %\begin{macro}{\pr@brace}
