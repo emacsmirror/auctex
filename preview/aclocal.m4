@@ -6,7 +6,7 @@ dnl <yamaoka@jpl.org>
 AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
   AC_EMACS_LISP(packagedir,
-    (let* ((prefix \"${prefix}\")\
+    [(let* ((prefix \"${prefix}\")\
            (putative-existing-lisp-dir (locate-library \"$1\"))\
            (putative-existing-package-dir\
            (and putative-existing-lisp-dir\
@@ -40,8 +40,8 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
 					   package-dir))))\
 		(replace-match \"\$(prefix)/\" nil nil package-dir)\
 	      package-dir))\
-	\"NONE\")),
-    noecho)])
+	\"NONE\"))],
+    [noecho])])
 
 AC_DEFUN(AC_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
@@ -54,7 +54,7 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
       else
 	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
       fi],
-      AC_EXAMINE_PACKAGEDIR($1))
+      [AC_EXAMINE_PACKAGEDIR($1)])
     if test -z "${packagedir}"; then
       AC_MSG_RESULT(not found)
     else
@@ -69,18 +69,20 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
 AC_DEFUN(AC_PATH_TEXMFDIR,
  [
 AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
- [ texmfdir="${withval}" ; 
-   if test ! -d "`eval echo "$texmfdir"`"  ; then
+ [ texmfdir="${withval}" ;
+   AC_FULL_EXPAND(withval) 
+   if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
    fi
-   previewtexmfdir=$texmfdir/tex/latex/preview
-   previewdocdir=$texmfdir/doc/latex/styles
+   previewtexmfdir='$texmfdir/tex/latex/preview'
+   previewdocdir='$texmfdir/doc/latex/styles'
    ])
 
 AC_ARG_WITH(tex-dir,
  [  --with-tex-dir=DIR      Location to install preview TeX sources],
  [ previewtexmfdir="${withval}" ; 
-   if test ! -d "`eval echo "$previewtexmfdir"`"  ; then
+   AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
    fi
    ])
@@ -88,7 +90,8 @@ AC_ARG_WITH(tex-dir,
 AC_ARG_WITH(doc-dir,
   [  --with-doc-dir=DIR      Location to install preview.dvi],
   [ previewdocdir="${withval}" ; 
-   if test ! -d "`eval echo "$previewdocdir"`"  ; then
+    AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
    fi
    ])
@@ -97,7 +100,7 @@ AC_ARG_WITH(doc-dir,
 
 if test -z "$previewtexmfdir" ; then
     AC_MSG_CHECKING([for docstrip directory configuration])
-    cat > testdocstrip.tex <<EOF
+    cat > testdocstrip.tex <<\EOF
 \input docstrip
 \ifx\basedir\undefined\else
    \message{^^J--preview-tex-dir=\showdirectory{tex/latex/preview}^^J%
@@ -105,17 +108,17 @@ if test -z "$previewtexmfdir" ; then
 \fi
 \endbatchfile
 EOF
-    $LATEX '\nonstopmode \input testdocstrip' >&5 2>&1
+    "$LATEX" '\nonstopmode \input testdocstrip' >&5 2>&1
     texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>&5`
     previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
-	    previewtexmfdir=\$\(texmfdir\)
-	    previewdocdir=\$\(texmfdir\)
+	    previewtexmfdir='$(texmfdir)'
+	    previewdocdir='$(texmfdir)'
 	    
 	fi
     else
-	previewdocdir=$texmfdir/doc/latex/styles
+	previewdocdir='$texmfdir/doc/latex/styles'
     fi
 # Next 
 # kpsepath -n latex tex
@@ -130,14 +133,14 @@ EOF
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TDS-compliant directory])
-for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
  		grep '^/.*/tex/latex//$' `
 do
-  x=`echo $x | sed -e 's+//+/+g' -e 's+/$++' `
+  x="`echo $x | sed -e 's+//+/+g' -e 's+/\$++' `"
   if test -d "$x"  ; then
-     texmfdir=`echo $x | sed -e 's+/tex/latex++'`
-     previewdocdir=\$\(texmfdir\)/doc/latex/styles
-     previewtexmfdir=\$\(texmfdir\)/tex/latex/preview
+     texmfdir="`echo $x | sed -e 's+/tex/latex++'`"
+     previewdocdir='$(texmfdir)/doc/latex/styles'
+     previewtexmfdir='$(texmfdir)/tex/latex/preview'
      break
   fi
 done
@@ -146,13 +149,13 @@ fi
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX directory hierarchy])
-for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
  		grep '^/.*//$'`
 do
   if test -d "$x"  ; then
-     texmfdir=$x
-     previewtexmfdir=\$\(texmfdir\)/preview
-     previewdocdir=\$\(texmfdir\)/preview
+     texmfdir="$x"
+     previewtexmfdir='$(texmfdir)/preview'
+     previewdocdir='$(texmfdir)/preview'
      break
   fi
 done
@@ -161,12 +164,12 @@ fi
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
 AC_MSG_CHECKING([for TeX input directory])
-for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
+for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
  		grep '^/'`
 do
   if test -d "$x"  ; then
-     texmfdir=$x
-     previewdocdir=\$\(texmfdir\)
+     texmfdir="$x"
+     previewdocdir='$(texmfdir)'
      break
   fi
 done
@@ -187,6 +190,12 @@ AC_SUBST(previewtexmfdir)
 AC_SUBST(previewdocdir)])
 
 
+AC_DEFUN(AC_FULL_EXPAND,
+[ while :;do case "[$]$1" in *\[$]*) eval "$1=\"`sed 's/[[\\\`"]]/\\\\&/' <<EOF
+[$]$1
+EOF
+`\"" ;; *) break ;; esac; done ])
+
 
 
 
@@ -201,9 +210,9 @@ if test -z "$3"; then
 fi
 AC_CACHE_VAL(EMACS_cv_SYS_$1,[
 	OUTPUT=./conftest-$$
-	echo ${EMACS} -batch -eval "(let ((x ${elisp})) (write-region (if (stringp x) (princ x) (prin1-to-string x)) nil \"${OUTPUT}\"))" >& AC_FD_CC 2>&1  
-	${EMACS} -batch -eval "(let ((x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"nil 5))" >& AC_FD_CC 2>&1
-	retval=`cat ${OUTPUT}`
+	echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+	${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+	retval="`cat ${OUTPUT}`"
 	echo "=> ${retval}" >& AC_FD_CC 2>&1
 	rm -f ${OUTPUT}
 	EMACS_cv_SYS_$1=$retval
@@ -264,22 +273,23 @@ AC_DEFUN(AC_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
      [  --with-lispdir=DIR      Where to install lisp files], 
-     lispdir=${withval},
-     dnl Set default value
-     theprefix=$prefix
+     [lispdir="${withval}"],
+[    dnl Set default value
+     theprefix="$prefix"
      if test "x$theprefix" = "xNONE"; then
-        theprefix=$ac_default_prefix
+        theprefix="$ac_default_prefix"
      fi
      lispdir="\$(datadir)/${EMACS_FLAVOR}/site-lisp"
      for thedir in share lib; do
-        if test -d ${theprefix}/${thedir}/${EMACS_FLAVOR}/site-lisp; then
+	AC_FULL_EXPAND(withval)
+	if test -d "${withval}"; then
            lispdir="\$(prefix)/${thedir}/${EMACS_FLAVOR}/site-lisp"
            break
         fi
      done
      if test -n "$2"; then 
         lispdir="$lispdir/$2"
-     fi)
+     fi])
   AC_MSG_RESULT($lispdir)
   AC_SUBST(lispdir)
 ])
@@ -368,8 +378,9 @@ dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
 AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
- [ AUCTEXDIR=${withval} ; 
-   if test ! -d $AUCTEXDIR  ; then
+ [ AUCTEXDIR="${withval}" ; 
+   AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-tex-site=$AUCTEXDIR: Directory does not exist])
    fi
 ])
@@ -435,3 +446,8 @@ AC_DEFUN(AC_CHECK_MACROS_MAKEINFO,
 AC_SUBST(MAKEINFO_MACROS)
 ])
 
+AC_DEFUN(AC_SHELL_QUOTIFY,
+[$1=["`sed 's/[^-0-9a-zA-Z_./$]/\\\\&/g;s/[$]\\\\[{(]\\([^)}]*\\)\\\\[})]/${\\1}/g' <<EOF]
+[$]$1
+EOF
+`"])

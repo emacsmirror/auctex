@@ -1,10 +1,9 @@
-
 @SET_MAKE@
 EMACS=@EMACS@
 ICONFORM=@ICONFORM@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
-AUCTEX=-eval '(if (not (string-equal "'$(AUCTEXLISP)'" "")) \
-                (setq load-path (cons "'$(AUCTEXLISP)'" load-path)))'
+AUCTEX=-eval '(let ((dir (pop command-line-args-left))) \
+  (if (not (string-equal dir "")) (push dir load-path)))' $(AUCTEXDIR)
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
 		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
 GS=@GS@
@@ -17,16 +16,16 @@ ICON_XBM_SOURCES = $(ICON_XPM_SOURCES:.xpm=.xbm)
 ICON_SOURCES = $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES) \
 	images/preview-cap-up.xpm
 
-prefix = @prefix@
-lispdir = @lispdir@
-icondir = @icondir@
-datadir = @datadir@
-packagedir = @packagedir@
-AUCTEXDIR = @AUCTEXDIR@
-AUCTEXLISP = "`echo '$(AUCTEXDIR)'|sed 's/\\\\/&&/g'`"
+prefix = @prefix@#
+lispdir = @lispdir@#
+loadlispdir = @lispdir@#
+icondir = @icondir@#
+datadir = @datadir@#
+packagedir = @packagedir@#
+AUCTEXDIR = @AUCTEXDIR@#
 
-INSTALL = @INSTALL@
-INSTALL_DATA = @INSTALL_DATA@
+INSTALL = @INSTALL@#
+INSTALL_DATA = @INSTALL_DATA@#
 MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint
@@ -62,17 +61,17 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-$(MKINSTALLDIRS) '$(lispdir)'
+	-$(MKINSTALLDIRS) $(lispdir)
 	for x in $(LISP_SOURCES) ; do \
 	  echo ' $(INSTALL_DATA) $$x $(lispdir)' ; \
 	  $(INSTALL_DATA) $$x '$(lispdir)' ; \
 	  echo ' $(INSTALL_DATA) $${x}c $(lispdir)' ; \
 	  $(INSTALL_DATA) $${x}c '$(lispdir)' ; \
-	done; \
-	$(ELCC) -l prv-install -f preview-make-package '$(packagedir)' $(LISP_SOURCES); \
+	done
+	$(ELCC) -l prv-install -f preview-make-package $(packagedir) $(LISP_SOURCES)
 
 install-icons: $(ICON_SOURCES)
-	-$(MKINSTALLDIRS) '$(icondir)'
+	-$(MKINSTALLDIRS) $(icondir)
 	for x in $(ICON_SOURCES); do \
 	  echo ' $(INSTALL_DATA) $$x $(icondir)' ; \
 	  $(INSTALL_DATA) $$x '$(icondir)' ; \
@@ -90,17 +89,15 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 preview-latex.el: preview.el
 	rm -f preview-latex.el
 	-$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
-	if [ ! -r "$@" ]; then \
-	echo ";; Auto-generated preview-latex.el" >"$@" ; \
-	echo "" >>"$@" ; \
+	if test ! -r $@; then \
+	echo ";; Auto-generated preview-latex.el" > $@ ; \
+	echo "" >> $@ ; \
 	$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
 	fi
-	if [ '$(GS)' != 'gs' ]; then \
-	  echo '(setq preview-gs-command "$(GS)")' | \
-	  sed 's/\\/&&/g' >> "$@" ; \
+	if test $(GS) != "gs"; then \
+	  $(ELCC) --eval '(prin1 `(setq preview-gs-command ,(pop command-line-args-left)))' $(GS) >> $@ ; \
 	fi
-	echo '(add-to-list '"'"'load-path "$(lispdir)")' | \
-	  sed 's/\\/&&/g' >> "$@"
+	$(ELCC) --eval '(prin1 `(add-to-list '\''load-path ,(pop command-line-args-left)))' $(loadlispdir) >> $@
 
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
