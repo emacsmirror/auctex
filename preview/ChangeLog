@@ -1,3 +1,32 @@
+2002-08-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (TeX-inline-preview): Use set-process-coding-system
+	only when Mule is active.
+
+	* prv-xemacs.el (preview-mode-setup): See below.
+	(preview-dump-threshold): See below.
+	(preview-preamble-format-cons): File local variable for watching.
+	(preview-preamble-check-change, preview-watch-preamble) 
+	(preview-unwatch-preamble): See below.
+	(preview-handle-before-change): Call
+	preview-preamble-check-change.
+
+	* prv-emacs.el (preview-dump-threshold): Regexp ending dump.
+	(preview-preamble-changed-function): New function.
+	(preview-watch-preamble): New function.
+	(preview-unwatch-preamble): New function.
+	(preview-mode-setup): Check whether we open a watched file.
+
+	* preview.el (preview-buffer): Move region exclusion into advice
+	for TeX-region-create.
+	(preview-dump-default): New variable, tells us whether we should
+	dump formats automatically.
+	(preview-dumped-alist): Semantics change.
+	(preview-dump-format): Use watch functions from prv-*.el
+	(preview-clear-format): new optional argument, save last wanted
+	state.
+	(TeX-inline-preview): Use preview-dump-default.
+
 2002-08-07  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* autogen.sh: Fixed autoconf-fix message
