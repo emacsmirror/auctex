@@ -347,7 +347,7 @@ is performed as specified in TeX-expand-list."
 ;; You may want special options to the view command depending on the
 ;; style options.  Only works if parsing is enabled.
 
-(defcustom TeX-view-style '(("^a5$" "xdvi %d -paper a5")
+(defcustom TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "xdvi %d -paper a5")
 			    ("^landscape$" "xdvi %d -paper a4r -s 4")
 			    ;; The latest xdvi can show embedded postscript.
 			    ;; If you don't have that, uncomment next line.
@@ -364,8 +364,9 @@ string."
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  '(("^dvi$" ("^a5$" "^landscape$") "xdvi \"%d\" -paper a5r -s 4")
-    ("^dvi$" "^a5$" "xdvi \"%d\" -paper a5")
+  '(("^dvi$" ("^a5\\(?:comb\\|paper\\)?$" "^landscape$")
+     "xdvi \"%d\" -paper a5r -s 4")
+    ("^dvi$" "^a5\\(?:comb\\|paper\\)?$" "xdvi \"%d\" -paper a5")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
                         "dvips -t landscape -f \"%d\" | gv")
     ("^dvi$" "^landscape$" "xdvi \"%d\" -paper a4r -s 4")
@@ -514,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.319 $"))
+	(rev "$Revision: 5.320 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -529,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-12 20:27:34 $"))
+    (let ((date "$Date: 2004-01-12 21:26:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
