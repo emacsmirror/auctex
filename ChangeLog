@@ -1,3 +1,16 @@
+2004-04-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-current-environment): Respect value of
+	`LaTeX-syntactic-comments' and mode by narrowing the region if
+	necessary and checking necessary conditions.  Use
+	`TeX-forward-comment-skip' and `TeX-backward-comment-skip' for
+	narrowing.
+	(LaTeX-find-matching-end): Ditto.
+	(LaTeX-find-matching-begin): Ditto.
+	(docTeX-in-macrocode-p): New function.
+
+	* tex.el: More checkdoc-related fixes.
+
 2004-04-20  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (STYLESRC): Add style/beamer.el.
