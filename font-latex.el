@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.934 (06 Oct 2004)
+;; Version:    0.935 (10 Oct 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,12 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.935 10Oct2004 Ralf Angeli
+;;  - Do not autoload `texmathp'.
+;;  - `font-latex-fontify-script': Doc fix.
+;;  - `font-latex-script': Do without `texmathp'.
+;;  - `font-latex-syntactic-keywords': Default to nil.  Make buffer-local.
+;;  - `font-latex-setup': Set syntactic keywords.
 ;; V0.934 06Oct2004 Ralf Angeli
 ;;  - `font-latex-verb-like-commands': New variable.
 ;;  - `font-latex-set-syntactic-keywords': Use it.
@@ -424,7 +430,6 @@
 ;; ----------------------------------------------------------------------------
 ;;; Code:
 (require 'font-lock)
-(autoload 'texmathp "texmathp")
 
 (defgroup font-latex nil
   "Font-latex text highlighting package."
@@ -1154,7 +1159,6 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 (defcustom font-latex-fontify-script (not (featurep 'xemacs))
   "If non-nil, fontify subscript and superscript strings.
-Fontification will only work correctly if texmathp.el is available.
 This feature does not work in XEmacs."
   :type 'boolean
   :group 'font-latex)
@@ -2107,22 +2111,17 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 ;; GNU Emacs on 2004-07-07.
 (defun font-latex-script (pos)
   "Return face and display spec for subscript and superscript content."
-  (unless (or (font-latex-faces-present-p '(font-lock-constant-face
-					    font-lock-builtin-face
-					    font-lock-comment-face
-					    font-latex-verbatim-face) pos)
-	      ;; Check for math (but only if we don't already know
-	      ;; because of an existing fontification).
-	      (and (not (font-latex-faces-present-p
-			 'font-latex-math-face pos))
-		   (not (save-match-data
-			  (condition-case nil (texmathp) (error nil)))))
-	      ;; Check for backslash quoting
-	      (let ((odd nil)
-		    (pos pos))
-		(while (eq (char-before pos) ?\\)
-		  (setq pos (1- pos) odd (not odd)))
-		odd))
+  (when (and (font-latex-faces-present-p 'font-latex-math-face pos)
+	     (not (font-latex-faces-present-p '(font-lock-constant-face
+						font-lock-builtin-face
+						font-lock-comment-face
+						font-latex-verbatim-face) pos))
+	     ;; Check for backslash quoting
+	     (not (let ((odd nil)
+			(pos pos))
+		    (while (eq (char-before pos) ?\\)
+		      (setq pos (1- pos) odd (not odd)))
+		    odd)))
     ;; Adding other text properties than `face' is supported by
     ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
     ;; Emacs 21.4 respectively.  With the introduction of this feature
