@@ -1,6 +1,10 @@
 2004-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el: Change spaces to tabs in indentation.
+	(LaTeX-fill-region-as-paragraph): Filling is disabled for
+	environments listed in `LaTeX-indent-environment-list'.  To be
+	consistent with filling of other environments where indentation
+	occurs, at least indent those environments.
 
 	* tex.el: Ditto.
 
