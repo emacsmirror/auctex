@@ -221,12 +221,6 @@ whole background of a preview, however.
 Since this customization group is very specific to the display engine
 in use, it may operate entirely differently under XEmacs.
 
-@item Preview inline math
-@cindex Inline math
-
-In the @code{Preview Latex} group, check the box next to @code{textmath}
-in @code{Preview Default Option List}.
-
 @item Showing @code{\label}s
 @cindex @code{Showing @code{\label}s}
 
