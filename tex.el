@@ -107,22 +107,24 @@ performed as specified in `TeX-expand-list'."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
+  (list (list "TeX" "tex %S \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil
 	      (list 'plain-tex-mode))
-	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil
+	(list "TeX Interactive" "tex %S %t" 'TeX-run-interactive nil
 	      (list 'plain-tex-mode))
+	(list "PDFTeX" "pdftex %S \"\\nonstopmode\\input %t\""
+	      'TeX-run-TeX nil (list 'plain-tex-mode))
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
-	(list "LaTeX Interactive" "%l \"\\input{%t}\"" 'TeX-run-interactive nil
-	      (list 'latex-mode 'doctex-mode))
+	(list "LaTeX Interactive" "%l \"\\input{%t}\""
+	      'TeX-run-interactive nil (list 'latex-mode 'doctex-mode))
 	;; Not part of standard TeX.
-	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
+	(list "PDFLaTeX" "pdflatex %S \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-TeX nil (list 'latex-mode 'doctex-mode))
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
 	      (list 'texinfo-mode))
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
 	      (list 'texinfo-mode))
-	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
+	(list "AmSTeX" "amstex %S \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil (list 'ams-tex-mode))
 	;; support for ConTeXt  --pg
 	;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -279,14 +281,14 @@ The executable `latex' is LaTeX version 2e."
 (defcustom LaTeX-command-style
   (if (string-equal LaTeX-version "2")
       ;; There is a lot of different LaTeX 2 based formats.
-      '(("^latex2e$" "latex2e")
+      '(("^latex2e$" "latex2e %S")
 	("^foils$" "foiltex")
-	("^ams" "amslatex")
+	("^ams" "amslatex %S")
 	("^slides$" "slitex")
-	("^plfonts\\|plhb$" "platex")
-	("." "latex"))
+	("^plfonts\\|plhb$" "platex %S")
+	("." "latex %S"))
     ;; They have all been combined in LaTeX 2e.
-    '(("." "latex")))
+    '(("." "latex %S")))
   "List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
@@ -443,7 +445,9 @@ string."
 	(list "%r" (lambda ()
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
-		     (TeX-style-check LaTeX-command-style t)))
+		     (TeX-style-check LaTeX-command-style)))
+	(list "%S" (lambda ()
+		     (TeX-source-specials-expand-options)))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -546,7 +550,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.357 $"))
+	(rev "$Revision: 5.358 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -561,7 +565,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-02 16:55:22 $"))
+    (let ((date "$Date: 2004-05-04 19:54:31 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -687,6 +691,21 @@ See `TeX-source-specials-active-flag'."
 	  supports-sourceposition))
     ;; not cached, check if positive
     (> TeX-source-specials-xdvi-p 0)))
+
+(defun TeX-source-specials-expand-options ()
+  "Return source specials command line option for TeX commands.
+The return value depends on the value of `TeX-source-specials-active-flag'.
+If this is `nil', an empty string will be returned."
+  (if TeX-source-specials-active-flag
+      (concat
+       TeX-source-specials-tex-flags
+       (if TeX-source-specials-places
+	   (concat
+	    "="
+	    (mapconcat 'identity
+		       TeX-source-specials-places
+		       ","))))
+    ""))
 
 (defgroup TeX-command-name nil
   "Names for external commands in AUCTeX."
