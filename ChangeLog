@@ -4,6 +4,8 @@
 	Map (function (lambda ...)) to (lambda ...) for better
 	readability.
 
+	* doc/intro.texi: Minor fix.
+
 2004-03-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-indent-line): Use `looking-at' instead of
