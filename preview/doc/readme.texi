@@ -1,29 +1,29 @@
 @cindex Readme
 Does your neck hurt from turning between previewer windows and the
-source too often? This Elisp/La@TeX{} package will render your displayed
-La@TeX{} equations right into the editing window where they belong.
+source too often? This Elisp/@LaTeX{} package will render your displayed
+@LaTeX{} equations right into the editing window where they belong.
 
-The purpose of preview-latex is to embed La@TeX{} environments such as
-display math or figures into the source buffers. By mouse-clicking, you
-can open the original text. After editing, another click will just run
-the region in question through La@TeX{} and redisplay the new results.
+The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
+display math or figures into the source buffers.  By mouse-clicking, you
+can open the original text.  After editing, another click will just run
+the region in question through @LaTeX{} and redisplay the new results.
 
 For installation instructions, see the @file{INSTALL} file or
-@ref{Installation}. The La@TeX{} style used is documented in a dvi style
-produced by the installation process.
+@ref{Installation}.  The @LaTeX{} style used is documented in
+@file{preview.dvi} as produced by the installation process.
 
 @section Prerequisites
 
-Most importantly, you need to get access to a version of Emacs 21. The
-public release 21.1 is known to work. Pretest versions before that have
-problems. You also need La@TeX{}, of course, but most installs that
-includes dvips should work. A fairly recent AUC @TeX{} is also needed.
+Most importantly, you need to get access to a version of Emacs 21.  The
+public release 21.1 is known to work.  Pretest versions before that have
+problems.  You also need @LaTeX{}, of course, but most installs that
+includes dvips should work.  A fairly recent AUC @TeX{} is also needed.
 You also need a recent Ghostscript, and this is the most common source
-of problems. Version 6.51 is known to work well, whereas earlier
+of problems.  Version 6.51 is known to work well, whereas earlier
 versions have problems.
 
 @strong{Please note:} At the current point of time, XEmacs is not
-supported. Work is underway to change that in future versions,
+supported.  Work is underway to change that in future versions,
 contributions would be welcome.
 
 For some known problems with various software, see the file
@@ -33,11 +33,12 @@ For some known problems with various software, see the file
 @cindex Download
 @cindex @acronym{CVS} access
 
-The preview-latex project is available at Sourceforge, where the source
-tarball can be downloaded and also a binary .rpm suitable for a recent
-RedHat system. See @url{http://sourceforge.net/projects/preview-latex}.
+The @previewlatex{} project is available at Sourceforge, where the
+source tarball can be downloaded and also a binary @file{.rpm}
+suitable for a recent RedHat system.  See
+@uref{http://sourceforge.net/projects/preview-latex}.
 
-Anonymous @acronym{CVS} is available as well. See the Sourceforge web
+Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
 pages for more information, but here are the basic instructions (when
 prompted for a password for anonymous, simply press the @key{RET} key.)
 
@@ -54,7 +55,7 @@ cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview
 
 Updates from within the preview directory do not need the @option{-d}
 parameter.  A simple @code{cvs update} from within that directory will
-make your @acronym{CVS} mirror up to date again. For developer access,
+make your @acronym{CVS} mirror up to date again.  For developer access,
 ask on @email{preview-latex-devel@@lists.sourceforge.net} (see below).
 
 
@@ -64,15 +65,15 @@ ask on @email{preview-latex-devel@@lists.sourceforge.net} (see below).
 
 Bug reports should be sent by using
 @kbd{M-x preview-report-bug @key{RET}}, as this will fill in a lot of
-information interesting to us. There is a mailing list for developers,
+information interesting to us.  There is a mailing list for developers,
 look at
 @uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
 For more information, send a message with just the word @samp{help} as
 subject or body to
-@email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
+@email{preview-latex-devel-request@@lists.sourceforge.net}.  Suggestions
 for new features, and pleas for help should go to
-@email{preview-latex-devel@@lists.sourceforge.net} (the preview-latex
-devel team). Please use the command
+@email{preview-latex-devel@@lists.sourceforge.net} (the @previewlatex{}
+devel team).  Please use the command
 @kbd{M-x preview-report-bug @key{RET}} to report bugs if possible.
 
 @noindent
