@@ -180,6 +180,7 @@ If there is no such buffer, or you already are in that buffer, find
 the master file."
   (interactive)
   (if (or (null TeX-command-buffer)
+	  (null (buffer-name TeX-command-buffer))
 	  (eq TeX-command-buffer (current-buffer)))
       (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
