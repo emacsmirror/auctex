@@ -4244,8 +4244,8 @@ runs the hooks in `doctex-mode-hook'."
   (setq adaptive-fill-mode nil)
 
   (use-local-map LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
+  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
 
   (or LaTeX-largest-level
       (setq LaTeX-largest-level (LaTeX-section-level "section")))

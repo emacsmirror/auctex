@@ -300,8 +300,8 @@ value of `Texinfo-mode-hook'."
     (setq outline-level 'texinfo-outline-level))
   
   ;; Mostly AUCTeX stuff
-  (easy-menu-add Texinfo-command-menu Texinfo-mode-map)
   (easy-menu-add Texinfo-mode-menu Texinfo-mode-map)
+  (easy-menu-add Texinfo-command-menu Texinfo-mode-map)
   (make-local-variable 'TeX-command-current)
   (setq TeX-command-current 'TeX-command-master)
 

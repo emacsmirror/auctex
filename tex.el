@@ -646,7 +646,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.434 $"))
+	(rev "$Revision: 5.435 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -661,7 +661,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-19 17:42:47 $"))
+    (let ((date "$Date: 2004-08-19 21:31:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2129,8 +2129,11 @@ then the value of `TeX-mode-hook', and then the value
 of plain-TeX-mode-hook."
   (interactive)
   (plain-TeX-common-initialization)
-  (setq TeX-base-mode-name "TeX")
   (setq major-mode 'plain-tex-mode)
+  (use-local-map plain-TeX-mode-map)
+  (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
+  (easy-menu-add plain-TeX-mode-command-menu plain-TeX-mode-map)
+  (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
@@ -2139,9 +2142,6 @@ of plain-TeX-mode-hook."
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
   (VirTeX-common-initialization)
-  (use-local-map plain-TeX-mode-map)
-  (easy-menu-add plain-TeX-mode-command-menu plain-TeX-mode-map)
-  (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
   (set-syntax-table TeX-mode-syntax-table)
   (setq paragraph-start
 	(concat
@@ -3266,13 +3266,17 @@ be bound to `TeX-electric-macro'."
        :help "Save and reparse the current buffer for style information"]
       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
        :help "Reset buffer and reload AUCTeX style files"])
-     ("Customize"
-      :filter (lambda (entries) (or TeX-customization-menu entries))
+     ("Customize AUCTeX"
       ["Browse Options"
        (customize-group 'AUCTeX)
        :help "Open the customization buffer for AUCTeX"]
       ["Extend this Menu"
-       (setq TeX-customization-menu (customize-menu-create 'AUCTeX))
+       (progn
+	 (easy-menu-add-item
+	  nil (list TeX-base-mode-name)
+	  (or TeX-customization-menu
+	      (setq TeX-customization-menu
+		    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
        :help "Make this menu a full-blown customization menu"])
      ["Read the AUCTeX Manual" TeX-goto-info-page
       :help "Everything worth reading"]
@@ -3280,50 +3284,52 @@ be bound to `TeX-electric-macro'."
       :help ,(format "Problems with AUCTeX %s? Mail us!"
 		     AUCTeX-version)])))
 
+(defvar plain-TeX-menu-entries
+  (TeX-menu-with-help
+   `(["Macro ..." TeX-insert-macro
+      :help "Insert a macro and possibly arguments"]
+     ["Complete" TeX-complete-symbol
+      :help "Complete the current macro"]
+     "-"
+     ("Insert Font"
+      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+     ("Replace Font"
+      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     "-"
+     ["Comment or Uncomment Region" TeX-comment-or-uncomment-region
+      :help "Comment or uncomment the currently selected region"]
+     ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
+      :help "Comment or uncomment the paragraph containing point"]
+     ,TeX-fold-menu
+     "-" . ,TeX-common-menu-entries)))
+
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
     "Menu used in plain TeX mode."
-    (TeX-menu-with-help
-     `("TeX"
-       ["Macro ..." TeX-insert-macro
-	:help "Insert a macro and possibly arguments"]
-       ["Complete" TeX-complete-symbol
-	:help "Complete the current macro"]
-       "-"
-	("Insert Font"
-	 ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	 ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	 ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	 ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	 ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-	 ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	 ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	 ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-	 ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-	("Replace Font"
-	 ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	 ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	 ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	 ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	 ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-	 ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	 ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	 ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-	 ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	"-"
-	["Comment or Uncomment Region" TeX-comment-or-uncomment-region
-	 :help "Comment or uncomment the currently selected region"]
-	["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph
-	 :help "Comment or uncomment the paragraph containing point"]
-	,TeX-fold-menu
-	"-" . ,TeX-common-menu-entries)))
+    (cons "TeX" plain-TeX-menu-entries))
 
 ;;; AmSTeX
 
 (defvar AmSTeX-mode-map
   (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map plain-TeX-mode-map)
+    (set-keymap-parent map TeX-mode-map)
     map)
   "Keymap used in `AmSTeX-mode'.")
 
@@ -3332,6 +3338,11 @@ be bound to `TeX-electric-macro'."
     AmSTeX-mode-map
     "Command menu used in AmsTeX mode."
     (TeX-mode-specific-command-menu 'ams-tex-mode))
+
+(easy-menu-define AmSTeX-mode-menu
+  AmSTeX-mode-map
+  "Menu used in AMS-TeX mode."
+  (cons "AmS-TeX" plain-TeX-menu-entries))
 
 ;;;###autoload
 (defun ams-tex-mode ()
@@ -3346,14 +3357,14 @@ then the value of `TeX-mode-hook', and then the value
 of `AmS-TeX-mode-hook'."
   (interactive)
   (plain-TeX-common-initialization)
+  (setq major-mode 'ams-tex-mode)
   (use-local-map AmSTeX-mode-map)
 
   ;; Menu
+  (easy-menu-add AmSTeX-mode-menu AmSTeX-mode-map)
   (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
-  (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
 
   (setq TeX-base-mode-name "AmS-TeX")
-  (setq major-mode 'ams-tex-mode)
   (setq TeX-command-default "AmSTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
   (TeX-set-mode-name))

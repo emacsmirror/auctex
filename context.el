@@ -1367,6 +1367,7 @@ There might be text before point."
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
   (plain-TeX-common-initialization)
+  (setq major-mode 'context-mode)
 
   ;; Make language specific variables buffer local
   (dolist (symbol ConTeXt-language-variable-list)
@@ -1415,8 +1416,8 @@ There might be text before point."
 
   ;; Keybindings and menu
   (use-local-map ConTeXt-mode-map)
-  (easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
   (easy-menu-add ConTeXt-mode-menu ConTeXt-mode-map)
+  (easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
   (setq ConTeXt-menu-changed t)
 
   (if (= emacs-major-version 20)
@@ -1436,7 +1437,6 @@ There might be text before point."
        'ConTeXt-imenu-create-index-function)
 
   ;; run hooks
-  (setq major-mode 'context-mode)
   (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))

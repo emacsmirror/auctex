@@ -1,7 +1,27 @@
 2004-08-19  David Kastrup  <dak@gnu.org>
 
-	* tex.el (AmSTeX-mode-map): Derive from plain-TeX-mode-map so that
-	Emacs users get a "TeX" menu.  Even if it is in a strange place.
+	* tex.el (plain-tex-mode): Move menu initializiation here instead
+	of `plain-TeX-common-initialization'.  We don't want "TeX" menus
+	in `ConTeXt-mode' or `AmSTeX-mode'.
+	(plain-TeX-common-initialization): remove `easy-menu-add' here.
+	(TeX-common-menu-entries): Change "Customize" strategy again.
+	(plain-TeX-menu-entries): Move from `plain-TeX-menu'.
+	(plain-TeX-mode-menu): Use `plain-TeX-menu-entries'.
+	(AmSTeX-mode-map): Derive from `TeX-mode-map' not
+	`plain-TeX-mode-map'.
+	(AmSTeX-mode-menu): Define menu for `AmSTeX-mode'.
+	(ams-tex-mode): Add menus in proper order.
+
+	* tex-info.el (texinfo-mode): Swap order of `easy-menu-add'.
+
+	* latex.el (LaTeX-common-initialization): Swap order of
+	`easy-menu-add'.
+
+	* context.el (ConTeXt-mode-common-initialization): Swap order of
+	`easy-menu-add', move `major-mode' init to front.
+
+	* latex.el (LaTeX-common-initialization): Exchange order of
+	`easy-menu-add' to get better menu layout in XEmacs.
 
 2004-08-19  Reiner Steib  <Reiner.Steib@gmx.de>
 
