@@ -1,3 +1,11 @@
+2004-03-14  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-command-list): Change interactive calls to use
+	\input, so that pdflatex \pdfoutput=0 becomes a legal way to call
+	LaTeX.
+	(VirTeX-common-initialization): Save TeX-master if desktop
+	package is used.
+
 2004-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-output-view-style): Fix it after it was accidently
