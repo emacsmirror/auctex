@@ -211,7 +211,7 @@ dnl assigned from the command line arguments from $6.
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
@@ -278,7 +278,7 @@ dnl "\${packagedir}/lisp"
 AC_DEFUN(EMACS_TEST_LISPDIR, [
   for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
 	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \ 
+	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
 	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
 	   "\${prefix}/site-lisp" ; do
     lispdir="$i"
@@ -326,15 +326,15 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
        if test "$lispdir" = "NONE"; then
-         # No? Test paths relative to binary
-         EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+	 # No? Test paths relative to binary
+	 EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
 	 exec_prefix=${prefix}
-         EMACS_TEST_LISPDIR
+	 EMACS_TEST_LISPDIR
 	 AC_FULL_EXPAND(lispdir)
        fi
        if test "$lispdir" = "NONE"; then
-         # No? notify user.
-         AC_MSG_ERROR([Cannot locate lisp directory,
+	 # No? notify user.
+	 AC_MSG_ERROR([Cannot locate lisp directory,
 use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
        fi
      else
