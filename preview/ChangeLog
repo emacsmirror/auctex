@@ -1,5 +1,7 @@
 2002-07-26  David Kastrup  <David.Kastrup@t-online.de>
 
+	* circ.tex: Demonstrate showlabels (and fix a math oversight).
+
 	* latex/preview.dtx (subsection{The \texttt{showlabels} option}):
 	Changes, different look, more robust.
 
