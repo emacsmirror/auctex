@@ -1,5 +1,7 @@
 2001-10-26  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.5.8.1
+
 	* preview.el (preview-mouse-open-eps): fix a typo in help
 	message.
 	(preview-analyze-error): Remove traces of inhibit-point-motion
