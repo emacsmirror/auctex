@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.25 1993-03-15 19:08:22 amanda Exp $
+# $Id: Makefile,v 5.26 1993-03-15 20:01:34 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -34,7 +34,7 @@ elispdir=$(prefix)/lib/emacs/lisp
 ##----------------------------------------------------------------------
 
 # Where the automatically generated lisp files for your site go.
-autodir=$(autodir)/auto
+autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
 EMACS=emacs -batch
@@ -43,11 +43,11 @@ EMACS=emacs -batch
 ELC=env EMACSLOADPATH=.:$(elispdir) $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= env EMACSLOADPATH=$(aucdir) $(EMACS) \
+AUTO= env EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) \
 	-l tex-auto -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
-AUTOC= env EMACSLOADPATH=$(aucdir) $(EMACS) -f batch-byte-compile
+AUTOC= env EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) -f batch-byte-compile
 
 # Using TeX in batch mode.
 TEX=tex
@@ -147,6 +147,7 @@ install-auto:
 	@echo "**********************************************************"
 	@echo "** Extracting site information.	This may take a while..."
 	@echo "**********************************************************"
+	if [ ! -d $(autodir) ]; then mkdir $(autodir); fi
 	$(AUTO) 
 	@echo "**********************************************************"
 	@echo "** Byte compiling.  This will take a while..."
