@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@debian.org>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.6 2001-10-19 13:45:26 arafune Exp $
+;; Version: $Id: graphicx.el,v 1.7 2001-10-22 04:41:42 arafune Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -45,7 +45,8 @@
 (defvar TeX-include-graphics-simple t
   "if nil, AUC TeX asks the following arguments: Bounding box (bb), Rotation angle (angle), Total height (totalheight) in addition to the normal arguments.")
 
-(defvar TeX-default-unit-for-image "cm")
+(defvar TeX-default-unit-for-image "cm"
+  "default unit for includegraphics command")
 
 (defun TeX-arg-includegraphics (optional)
   "Ask for file name (eps file only), width, height, keepaspectratio, and clip. Insert includegraphics macro"
@@ -55,8 +56,8 @@
 			  (mapcar 'list (directory-files "./" nil "\\.eps$" nil))
 			  nil nil
 			  (car (car (mapcar 'list (directory-files "./" nil "\\.eps$" nil))))))
-	(figwidth (read-input "Figure width (cm): "))
-	(figheight (read-input "Figure height (cm): "))
+	(figwidth (read-input (concat "Figure width ("TeX-default-unit-for-image"): ")))
+	(figheight (read-input (concat "Figure height ("TeX-default-unit-for-image"): ")))
 	(keepaspectratio (y-or-n-p "Keep Aspectratio ? "))
 	(clip (y-or-n-p "Clipping figure ? ")))
     (when (not (zerop (length figwidth)))
@@ -82,7 +83,7 @@
 ;;; Insert more arguments when TeX-include-graphics-simple is nil
     (if (not TeX-include-graphics-simple)
 	(let ((angle (read-input "Rotation angle: "))
-	      (totalheight (read-input "Total Height (cm): "))
+	      (totalheight (read-input (concat "Total Height ("TeX-default-unit-for-image"): ")))
 	      (bbset-flag (y-or-n-p "Set Bounding Box : "))
 	      (bbllx nil) (bblly nil) (bburx nil) (bbury nil))
 	  (when bbset-flag
