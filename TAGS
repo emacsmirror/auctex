@@ -1,0 +1,214 @@
+
+auc-tex.el,1957
+(defun LaTeX-document-style 925,31919
+(defun LaTeX-find-matching-begin 729,26391
+(defun LaTeX-find-matching-end 713,25886
+(defun LaTeX-format-buffer 783,27843
+(defun LaTeX-format-environment 745,26766
+(defun LaTeX-format-paragraph 660,24161
+(defun LaTeX-format-region 681,24801
+(defun LaTeX-format-section 759,27148
+(defvar LaTeX-indent-level 146,6431
+(defun LaTeX-indent-line 642,23573
+(defvar LaTeX-item-indent 149,6509
+(defvar LaTeX-last-opt 992,34149
+(defvar LaTeX-last-sty 995,34214
+(defun LaTeX-mark-environment 703,25552
+(defun LaTeX-mark-section 772,27519
+(defvar LaTeX-mode-map 184,7640
+(defvar LaTeX-optcl 174,7337
+(defvar LaTeX-optop 171,7220
+(defun LaTeX-outline-level 621,22920
+(defvar LaTeX-outline-regexp615,22676
+(defun LaTeX-style-options 942,32490
+(defvar TeX-auto-header 152,6597
+(defvar TeX-auto-trailer 156,6731
+(defun TeX-bold 863,30434
+(defun TeX-comment-indent 829,29488
+(defun TeX-common-initialization 551,20269
+(defvar TeX-compilation-map 187,7700
+(defvar TeX-complete-word 142,6234
+(defun TeX-define-common-keys 245,9839
+(defun TeX-emphasize 883,30864
+(defvar TeX-esc 162,6937
+(defvar TeX-grcl 168,7123
+(defvar TeX-grop 165,7026
+(defun TeX-insert-braces 856,30263
+(defun TeX-insert-macro 851,30161
+(defun TeX-insert-quote 903,31371
+(defun TeX-italic 868,30534
+(defvar TeX-last-fmt 989,34078
+(defvar TeX-mode-map 181,7584
+(defvar TeX-mode-syntax-table 177,7455
+(defvar TeX-mode-syntax-table 190,7773
+(defun TeX-roman 878,30763
+(defun TeX-slanted 873,30648
+(defun TeX-small-caps 893,31087
+(defun TeX-typewriter 888,30981
+(defun Tex-cmd-on-region 843,29838
+(defun calculate-LaTeX-indentation 793,28083
+(defun calculate-normal-LaTeX-indentation 811,28778
+(defvar dummy 609,22490
+(defvar dummy 636,23389
+(defvar dummy 836,29663
+(defun insert-mode-line 600,22162
+(defun latex-mode 418,16235
+(defun plain-tex-mode 327,13454
+(defun split-string 959,33071
+(defun tex-mode 308,12838
+
+latex-environment.el,1118
+(defun LaTeX-array-hook 304,10930
+(defvar LaTeX-center-floats 254,9180
+(defun LaTeX-close-environment 572,19618
+(defun LaTeX-current-environment 454,15916
+(defun LaTeX-document-hook 219,8041
+(defun LaTeX-environment 167,6126
+(defvar LaTeX-environment-alist	'(103,4144
+(defun LaTeX-figure-hook 258,9297
+(defun LaTeX-insert-environment 208,7674
+(defun LaTeX-insert-item 473,16623
+(defvar LaTeX-item-alist 158,5691
+(defun LaTeX-item-argument-hook 484,17023
+(defun LaTeX-item-hook 245,8921
+(defun LaTeX-label-hook 310,11208
+(defvar LaTeX-last-environment 163,5948
+(defvar LaTeX-last-format 301,10823
+(defun LaTeX-minipage-hook 444,15532
+(defun LaTeX-recipient-hook 320,11519
+(defvar LaTeX-slide-color 77,3204
+(defun LaTeX-slide-hook 437,15271
+(defun LaTeX-slides-hook 416,14567
+(defvar LaTeX-style-alist 82,3387
+(defvar LaTeX-style-hook-alist 93,3728
+(defun LaTeX-today 387,13594
+(defun LaTeX-update-environments 525,18302
+(defvar env-names 568,19503
+(defun get-environments 497,17404
+(defun near-bobp 491,17243
+(defun recursive-add-environments 508,17718
+(defun string-list-sorter 564,19440
+
+latex-section.el,439
+(defun LaTeX-current-section 155,5302
+(defvar LaTeX-default-section 65,2504
+(defun LaTeX-down-section 178,6057
+(defvar LaTeX-expected-style 69,2640
+(defun LaTeX-insert-section 124,4325
+(defvar LaTeX-largest-level 85,3268
+(defun LaTeX-largest-level 170,5745
+(defun LaTeX-section 89,3382
+(defvar LaTeX-section-alist 75,2840
+(defun LaTeX-section-name 147,5081
+(defvar LaTeX-section-vector 80,3057
+(defun LaTeX-up-section 199,6812
+
+minor-map.el,135
+(defun make-minor-keymap 62,2210
+(defun minor-set-key 86,3079
+(defun unbind-minor-entry 111,3863
+(defun unbind-minor-mode 104,3639
+
+outline-m.el,173
+(defun hide-region-body 73,2497
+(defun outline-flag-region 58,1985
+(defun outline-level 97,3299
+(defun outline-level-default 89,2991
+(defun outline-minor-mode 122,4573
+
+tex-buffer.el,733
+(defun LaTeX-bibtex 459,15767
+(defun LaTeX-makeindex 470,16080
+(defun TeX-buffer 350,12183
+(defun TeX-compilation-sentinel 290,9974
+(defvar TeX-directory 135,5145
+(defvar TeX-end-of-header 132,5038
+(defun TeX-fix-process 105,4098
+(defun TeX-home-buffer 81,3420
+(defun TeX-index-sentinel 488,16652
+(defun TeX-kill-job 384,13569
+(defvar TeX-original-file 127,4895
+(defun TeX-preview 407,14305
+(defun TeX-print 423,14756
+(defvar TeX-process 68,2972
+(defun TeX-recenter-output-buffer 389,13696
+(defun TeX-region 149,5669
+(defvar TeX-start-of-header 129,4927
+(defun TeX-test-process 89,3656
+(defvar TeX-trailer 122,4657
+(defvar TeX-zap-file 139,5286
+(defun insert-file-p 116,4433
+(defun set-buffer-directory 72,3068
+
+tex-complete.el,203
+(defun TeX-complete-symbol 63,1819
+(defun TeX-update-completion 96,2990
+(defun get-symbols 33,938
+(defun recursive-add-symbols 46,1266
+(defun string-list-sorter 136,4142
+(defvar tex-names 139,4204
+
+tex-debug.el,607
+(defvar TeX-debug-bad-boxes 52,2127
+(defvar TeX-display-help 49,2016
+(defun TeX-error 167,5190
+(defconst TeX-error-description-list385,11458
+(defvar TeX-error-file 69,2594
+(defvar TeX-error-file-name 72,2671
+(defvar TeX-error-message 57,2312
+(defvar TeX-error-string 63,2454
+(defvar TeX-error-word 66,2526
+(defun TeX-help-error 314,9229
+(defvar TeX-new-run 60,2379
+(defvar TeX-new-run-point 75,2755
+(defun TeX-next-error 80,2890
+(defun TeX-parse-error 112,3810
+(defun TeX-show-help 371,11046
+(defun TeX-toggle-debug-boxes 236,7058
+(defun TeX-warning 246,7366
+(defun kill-buffer-p 160,5045
+
+tex-math.el,171
+(defun LaTeX-abbrev-math 186,5640
+(defvar LaTeX-math-abbrev-prefix 51,1978
+(defun LaTeX-math-mode 68,2453
+(defun set-docstring 106,3565
+(defvar tex-math-mode 60,2182
+
+tex-misc.el,299
+(defun TeX-comment-out-paragraph 103,3555
+(defun TeX-comment-out-region 56,2307
+(defun TeX-terminate-paragraph 151,4974
+(defun TeX-un-comment 89,3137
+(defun TeX-un-comment-region 76,2779
+(defun TeX-validate-buffer 121,4072
+(defun TeX-validate-paragraph 141,4759
+(defun get-subfiles 167,5477
+
+tex-site.el,747
+(defvar LaTeX-default-environment 74,2164
+(defvar LaTeX-default-style 78,2286
+(defvar LaTeX-default-style-options 81,2368
+(defvar LaTeX-figure-label 87,2539
+(defvar LaTeX-float 84,2447
+(defvar LaTeX-format-package 99,2893
+(defvar LaTeX-section-label 93,2685
+(defvar LaTeX-table-label 90,2613
+(defvar TeX-bibtex-command 54,1401
+(defvar TeX-command 47,1182
+(defvar TeX-compilation-cd-command 66,1825
+(defvar TeX-default-jobname-prefix 44,1084
+(defvar TeX-default-mode 70,2015
+(defvar TeX-default-printer-name 63,1704
+(defvar TeX-format-package 101,2937
+(defvar TeX-index-command 57,1470
+(defvar TeX-index-suffix 60,1587
+(defvar TeX-preview-command 106,2984
+(defvar TeX-print-command 51,1324
+(defvar TeX-printer-name-alist 26,734
+
+tex-symbols.el,26
+(defvar tex-symbols 2,23
+
+virtex-symbols.el,36
+(defconst TeX-virgin-symbols26,761
