@@ -20,7 +20,7 @@ If you do not want this, install/upgrade with 'rpm --nopre ...'
 (the activation is done in the preinstall script).
 
 %prep
-%setup -c -q
+%setup
 
 %build
 # The below will make the package build from a tar straight from CVS
