@@ -21,7 +21,7 @@ auc-tex.dvi: auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install
 	@echo "** a newer version of texinfo?
-	@echo "** doc/auc-tex.dvi may now be printed (35 pages)"
+	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
 auc-tex.info: auc-tex.texi

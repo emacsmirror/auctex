@@ -42,3 +42,16 @@ will suggest "LaTeX" if any of the style files have changed.
 	(setq TeX-check-path
 	      (append '("./") TeX-macro-private TeX-macro-global))
 
+* Only the master file knows about styles, macros, etc.
+
+Create a `auto' subdirectory, and save the master file.  This will put
+the necessary information in the `auto' subdirectory, and the other
+files in the document will read this information when they apply the
+style hooks.
+
+* After I write the file under a new name, AUC TeX still use the old!
+
+AUC @TeX{} cache a lot of information for efficiency, press C-c C-n to
+flush the cache after changing the name of a file.  Save the file, and
+press C-u C-c C-n to flush everything.
+

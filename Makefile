@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.43 1993-04-12 22:47:40 amanda Exp $
+# $Id: Makefile,v 5.44 1993-04-17 04:53:00 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -98,7 +98,7 @@ FORMATSRC = format/VIRTEX.el \
 
 STYLESRC = style/latex.el   style/slitex.el \
 	   style/article.el style/book.el    style/letter.el \
-	   style/foiltex.el
+	   style/foiltex.el style/german.el
 
 LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
@@ -121,8 +121,9 @@ first:
 	@echo "	 and follow the instructions."
 	@echo 
 	@echo "	 Before you start, you should check that you have"
-	@echo "	 TeXinfo 2.16 or later installed.  The version of"
-	@echo "  TeXinfo distributed with GNU Emacs 18.xx is TeXinfo 1."
+	@echo "	 TeXinfo package 2.16 or later installed (the texinfo.tex"
+	@echo "	 file from 2.16 has version 2.86).  The version of"
+	@echo "	 TeXinfo distributed with GNU Emacs 18.xx is TeXinfo 1."
 	@echo
 	@echo "	 TeXinfo2 is available for ftp at all major GNU sites."
 	@echo "	 TeXinfo2 will also be part of GNU Emacs 19.xx."

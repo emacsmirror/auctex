@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.32 1993-04-13 02:45:26 amanda Exp $
+@c $Id: auc-tex.texi,v 1.33 1993-04-17 04:53:18 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -278,7 +278,7 @@ simply insert templates for often used @TeX{} and/or La@TeX{}
 constructs, like font changes, handling of environments, etc.
 These features are very simple, and easy to learn, and help you
 avoiding stupid mistakes like mismatched braces, or
-x@samp{\begin@{@}}-@samp{\end@{@}} pairs.@refill
+@samp{\begin@{@}}-@samp{\end@{@}} pairs.@refill
 
 @menu
 * Quotes::                      Inserting double quotes
@@ -318,6 +318,13 @@ inserting the following hook in their @file{.emacs} file.
 (setq TeX-mode-hook
       (function (lambda () (local-set-key "\"" 'self-insert-command))))
 @end lisp
+
+The style hook file for @file{german.sty} will do this automatically, so
+if you use @samp{german} as a style option for @samp{\documentstyle}
+@kbd{"} will insert a literal @samp{"}, but only after the style hooks
+have been applied.   You can force the style hooks to be applied by
+pressing @kbd{C-c C-n}.
+@kindex C-c C-n
 
 To avoid unbalanced braces, it is useful to insert them pairwise.  You
 can do this by typing @kbd{C-c @{}.
@@ -1417,6 +1424,25 @@ set this variable to @samp{"<none>"}. By default, AUC @TeX{} will modify
 any file with an extension of @samp{.tex}.@refill
 @end defopt
 
+AUC @TeX{} keeps track of what macros, environments, labels, and style
+files that are used in a given document.  For this to work with
+multifile documents, AUC @TeX{} has to have a place to put the
+information about the files in the document.  This is done by having an
+@file{auto} subdirectory placed in the directory where your document is
+located.  Each time you save a file, AUC @TeX{} will write information
+about the file into the @file{auto} directory.  When you load a file,
+AUC @TeX{} will then read the information in the @file{auto} directory
+about the file you loaded, @emph{and the master file specified by
+@code{TeX-master}}.  Since the master file (perhaps indirectly) includes
+all other files in the document, AUC @TeX{} will get information from
+all files in the document.  This means that you from each file will get
+e.g. completion for all labels defined anywhere in the document.
+
+You must create the @file{auto} directory manually for this to work.  If
+you don't do this, the other files in the document will not know
+anything about each other, except for the name of the master file.
+@xref{Automatic Local}.
+
 @node Internationalization, Automatic, Multifile, top
 @chapter The Anti-American Conspiracy
 @cindex Internationalization
@@ -1442,7 +1468,7 @@ Japanese versions of @TeX{} and Emacs.
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
-* Japanese ::                   Japanese @TeX{} 
+* Japanese::                    Japanese @TeX{} 
 @end menu
 
 @node Scandinavian, Russian,  , Internationalization
@@ -2587,6 +2613,11 @@ this version, and for the authors, who get nostalgic at times.
 Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
+@item
+New style hook for @file{german.sty}.
+
+Disable smart quotes.  Press @kbd{C-c C-n} to make it take effect.
+
 @item
 Allow files to have other extensions than ``tex''.
 
