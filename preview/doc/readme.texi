@@ -26,7 +26,6 @@ the region in question through @LaTeX{} and redisplay the new results.
 @menu
 * Activating preview-latex::    
 * Getting started::             
-@c * Prerequisites::               
 * More documentation::               
 * Availability::                
 * Contacts::                    
@@ -71,7 +70,6 @@ been installed is not known to Emacs, a line like
 @noindent
 needs to be added as well.  
 
-@c @node Getting started, Prerequisites, Activating preview-latex, Introduction
 @node Getting started, More documentation, Activating preview-latex, Introduction
 @section Getting started
 
@@ -97,47 +95,9 @@ To see/edit the @LaTeX{} code for a specific object, put the point (the
 cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
 and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
-@ignore
-@node  Prerequisites, More documentation, Getting started, Introduction
-@section Prerequisites
+If you are using the @code{desktop} package, previews will remain from
+one session to the next as long as you don't kill your buffer.
 
-Currently, @previewlatex{} is known to work with @w{Emacs 21} under
-X-windows.  While image support for Emacs under Microsoft Windows has
-not been implemented as of @w{version 21.2}, it is present in the
-@acronym{CVS} version at @uref{http://savannah.gnu.org/projects/emacs};
-please help in testing it before @w{Emacs 21.3} gets released.  Another
-option is to try XEmacs for which we now have preliminary support
-available.
-
-We have been using te@TeX{} with @previewlatex{}, but other @TeX{}
-distributions containing Dvips are not likely to cause major
-difficulties.  You need @AUCTeX{} in version 11.0 or later, which at the
-time of this writing means an alpha-test version.  You can get it from
-@uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  A suitable version
-also is available from the download section of @previewlatex{}'s home
-page 
-@ifset rawfile
-(see below).
-@end ifset
-@ifclear rawfile
-(@pxref{Availability}).
-@end ifclear
-You also need GhostScript, at least @w{version 6.51}.
-
-@strong{Please note:} Presently, the port to XEmacs is work in progress.
-Don't expect too much, and be prepared to contact the developers' list
-mentioned below.
-
-For some known issues with various software, see 
-@ifset rawfile
-the @file{PROBLEMS} file.
-@end ifset
-@ifclear rawfile
-@ref{Known problems}.
-@end ifclear
-@end ignore
-
-@c @node More documentation, Availability, Prerequisites, Introduction
 @node More documentation, Availability, Getting started, Introduction
 @section More documentation
 After the installation, documentation in the form of 
@@ -206,14 +166,14 @@ Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
 pages for more information.
 
 For developer access, or if you are having access difficulties, ask on
-@email{preview-latex-devel@@lists.sourceforge.net} (@c
+@email{preview-latex-devel@@lists.sourceforge.net} 
 @ifset rawfile
-see below@c
+(see below).
 @end ifset
 @ifclear rawfile
-@pxref{Contacts}@c
+(@pxref{Contacts}).
 @end ifclear
-).
+
 @node  Contacts,  , Availability, Introduction
 @section Contacts
 @cindex Contacts
