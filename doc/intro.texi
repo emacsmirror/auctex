@@ -15,15 +15,15 @@ changes can be found in the @file{CHANGES} file.  If you are upgrading
 from an older version, read the History chapter in the AUC@TeX{} manual.
 
 AUC@TeX{} is a comprehensive customizable integrated environment for
-writing input files for @TeX{}/La@TeX{} using GNU Emacs.
+writing input files for @TeX{}/La@TeX{}/Con@TeX{}t using GNU Emacs.
 
-AUC@TeX{} lets you run @TeX{}/La@TeX{} and other La@TeX{}-related
-tools, such as a output filters or post processor from inside Emacs.
-Especially `running La@TeX{}' is interesting, as AUC@TeX{} lets you
-browse through the errors @TeX{} reported, while it moves the cursor
-directly to the reported error, and displays some documentation for that
-particular error.  This will even work when the document is spread over
-several files.
+AUC@TeX{} lets you run @TeX{}/La@TeX{}/Con@TeX{}t and
+La@TeX{}/Con@TeX{}t-related tools, such as a output filters or post
+processor from inside Emacs.  Especially `running La@TeX{}' is
+interesting, as AUC@TeX{} lets you browse through the errors @TeX{}
+reported, while it moves the cursor directly to the reported error, and
+displays some documentation for that particular error.  This will even
+work when the document is spread over several files.
 
 AUC@TeX{} automatically indents your `La@TeX{}-source', not only as you
 write it --- you can also let it indent and format an entire document.
@@ -32,7 +32,7 @@ overview' of a document.
 
 Apart from these special features, AUC@TeX{} provides a large range of
 handy Emacs macros, which in several different ways can help you write
-your La@TeX{} documents fast and painlessly.
+your La@TeX{}/Con@TeX{}t documents fast and painlessly.
 
 All features of AUC@TeX{} are documented using the GNU Emacs online
 documentation system.  That is, documentation for any command is just
