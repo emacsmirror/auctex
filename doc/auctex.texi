@@ -4,7 +4,7 @@
 @dircategory Emacs
 @dircategory TeX
 @direntry
-* AUCTeX: (auctex).     A much enhanced TeX/LaTeX mode for Emacs.
+* AUCTeX: (auctex).     A sophisticated TeX environment for Emacs.
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -18,7 +18,7 @@
 @finalout
 @titlepage
 @title @AUCTeX{}
-@subtitle A much enhanced @TeX{}/@LaTeX{} mode for Emacs.
+@subtitle A sophisticated @TeX{} environment for Emacs.
 @subtitle Version 11.55
 
 @author by Kresten Krab Thorup
@@ -66,8 +66,8 @@ approved by the Free Software Foundation.
 @end ifhtml
 
 @ifnottex
-@AUCTeX{} is an integrated environment for editing @LaTeX{} and
-@TeX{} files.
+@AUCTeX{} is an integrated environment for editing @LaTeX{}, @ConTeXt{},
+doc@TeX{}, Texinfo, and @TeX{} files.
 
 This file documents @AUCTeX{} version 11.55.
 
@@ -125,7 +125,7 @@ sending ``subscribe'' in the subject of a mail to
 * Frequently Used Commands::    Inserting Frequently Used Commands
 * Advanced Features::           Advanced Editing Features
 * Display::                     Controlling the Display of Source Code
-* Running TeX and friends::     Starting processors, viewers and other programs
+* Running TeX and friends::     Starting Processors, Viewers and Other Programs
 * Multifile::                   Multifile Documents
 * Parsing Files::               Automatic Parsing of @TeX{} files
 * I18n::                        Internationalization
@@ -254,29 +254,25 @@ will insert a literal double quote.  The respective values of
 after typing @kbd{"} once again.
 @end defopt
 
-@vindex LaTeX-german-open-quote
-@vindex LaTeX-german-close-quote
-@vindex LaTeX-german-quote-after-quote
-If you include the style files @file{german} or @file{ngerman}
-@code{TeX-open-quote} and @code{TeX-close-quote} will be set to the
-values of @code{LaTeX-german-open-quote} and
-@code{LaTeX-german-close-quote} respectively.
-@code{TeX-quote-after-quote} will be set to the value of
-@code{LaTeX-german-quote-after-quote}.  If you write texts which
-facilitate the style files mentioned before, you should customize
-those special variables instead of the standard variables.
+The @samp{babel} package provides special support for the requirements
+of typesetting quotation marks in many different languages.  If you use
+this package, either directly or by loading a language-specific style
+file, you should also use the special commands for quote insertion
+instead of the standard quotes shown above.  @AUCTeX{} is able to
+recognize several of these languages and will change quote insertion
+accordingly.  @xref{European} for details about this feature and how to
+control it.
 
 @vindex LaTeX-csquotes-open-quote
 @vindex LaTeX-csquotes-close-quote
 @vindex LaTeX-csquotes-quote-after-quote
-Similarly you should customize @code{LaTeX-csquotes-open-quote},
-@code{LaTeX-csquotes-close-quote} and
-@code{LaTeX-csquotes-quote-after-quote} if you use the @samp{csquotes}
-package.  The quotation characters will only be used if both
-variables---@code{LaTeX-csquotes-open-quote} and
+In case you are using the @samp{csquotes} package, you should customize
+@code{LaTeX-csquotes-open-quote}, @code{LaTeX-csquotes-close-quote} and
+@code{LaTeX-csquotes-quote-after-quote}.  The quotation characters will
+only be used if both variables---@code{LaTeX-csquotes-open-quote} and
 @code{LaTeX-csquotes-close-quote}---are non-empty strings.  But then the
 @samp{csquotes}-related values will take precedence over the
-@samp{(n)german}-related ones.
+language-specific ones.
 
 In @AUCTeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
@@ -1768,6 +1764,19 @@ brackets is used as display string, otherwise the defaults specified in
 @code{TeX-fold-unspec-env-display-string} respectively.
 @end defopt
 
+When you hover with the mouse pointer over folded content, its original
+text will be shown in a tooltip or the echo area depending on Tooltip
+mode being activate.  In order to avoid exorbitantly big tooltips and to
+cater for the limited space in the echo area the content will be cropped
+after a certain amount of characters defined by the variable
+@code{TeX-fold-help-echo-max-length}.
+
+@defopt TeX-fold-help-echo-max-length
+Maximum length of original text displayed in a tooltip or the echo area
+for folded content.  Set it to zero in order to disable this feature.
+@end defopt
+
+
 @node Outline
 @section Outlining the Document
 @cindex Outlining
@@ -2061,6 +2070,8 @@ This command toggles the use of the Omega @tex
 @cindex Viewing
 @cindex Previewing
 @cindex Starting a previewer
+
+@subsection Starting viewers and customizing their invokation
 
 @AUCTeX{} allows you to start external programs for previewing your
 document.  These are normally invoked by pressing @kbd{C-c C-c} once
@@ -2574,6 +2585,8 @@ yet) if you need @acronym{CJK}.
 @cindex Latin 2
 @cindex ANSI
 
+@subsection Typing and Displaying Non-ASCII Characters
+
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
 latter, it has the advantage that the usual standard emacs word
@@ -2604,8 +2617,9 @@ Similar package bundled with new versions of XEmacs.
 @cindex X-Symbol
 a much more complete package for both Emacs and XEmacs that can also
 handle a lot of mathematical characters and input methods.
-
 @end table
+
+@subsection Style Files for Different Languages
 
 @cindex ispell
 @AUCTeX{} supports style files for several languages.  Each style file
@@ -2618,10 +2632,11 @@ This requires parsing to be enabled, @pxref{Parsing Files}.
 
 @lisp
 (add-hook 'TeX-language-dk-hook
-	  (function (lambda () (ispell-change-dictionary "danish"))))
+	  (lambda () (ispell-change-dictionary "danish")))
 @end lisp
 
-The following style files are recognized.
+The following style files are recognized:
+
 @c In alphabetic order of the hooks:
 @vindex TeX-language-cz-hook
 @vindex TeX-language-dk-hook
@@ -2649,7 +2664,9 @@ insert @samp{\uv@{} and @samp{@}} depending on context.
 @c Is the difference between dk and danish really intented?
 @item danish
 Runs style hook @code{TeX-language-dk-hook}.  Pressing @key{"} will
-insert @samp{"`} and @samp{"'} depending on context.
+insert @samp{"`} and @samp{"'} depending on context.  Typing @key{-}
+twice will insert @samp{"=}, i.e. a hyphen string allowing hyphenation
+in the composing words.
 @c dk.sty seems to be obsolete, so we don't want to encourage using it.
 @c @item dk
 @c Runs style hook @code{TeX-language-dk-hook}.
@@ -2661,14 +2678,12 @@ Runs style hook @code{TeX-language-nl-hook}.
 @itemx ngerman
 Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
 syntax, makes the @key{"} key insert a literal @samp{"}, and pressing it
-twice will give you opening or closing german quotes (@samp{"`} or
-@samp{"'}), if you have configured @code{TeX-open-quote} and
-@code{TeX-close-quote} accordingly.  @xref{Quotes}.
+twice will give you opening or closing German quotes (@samp{"`} or
+@samp{"'}).  Typing @key{-} twice will insert @samp{"=}.
 
 @item italian
 Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
-insert @samp{"<} (@code{LaTeX-italian-open-quote}) and @samp{">}
-(@code{LaTeX-italian-close-quote}) depending on context.
+insert @samp{"<} and @samp{">} depending on context.
 
 @item plfonts
 @itemx plhb
@@ -2683,8 +2698,47 @@ insert @samp{\uv@{} and @samp{@}} depending on context.
 
 @item swedish
 Runs style hook @code{TeX-language-sv-hook}.  Pressing @key{"} will
-insert @samp{''}.
+insert @samp{''}.  Typing @key{-} twice will insert @samp{"=}.
 @end table
+
+In case you are not satisfied with the suggested behavior of quote and
+hyphen insertion you can change it by customizing the variables
+@code{TeX-quote-language-alist} and
+@code{LaTeX-babel-hyphen-language-alist} respectively.
+
+@defopt TeX-quote-language-alist
+Used for overriding the default language-specific quote insertion.  You
+may add items to this list specifying the affected language, opening and
+closing quotation marks to be used, and the behavior of quote insertion,
+i.e. if the special quotation marks should be inserted with the first
+key press or the second, i.e. inserting the literal character first.
+@end defopt
+
+@defopt LaTeX-babel-hyphen-language-alist
+Used for overriding the behavior of hyphen insertion for specific
+languages.  The defaults are defined by the variables
+@code{LaTeX-babel-hyphen} and @code{LaTeX-babel-hyphen-after-hyphen}
+respectively.  Every item in this list should specify the affected
+language as well as the hyphen string to be used and the behavior of
+hyphen insertion, i.e. if the special hyphen should be inserted at first
+or second key press.
+@end defopt
+
+@defopt LaTeX-babel-hyphen
+String to be used when typing @key{-} This usually is a hyphen
+alternative or hyphenation aid provided by @samp{babel} and the related
+language style files, like \"=, \"~ or \"-.
+
+Set it to an empty string or nil in order to disable language-specific
+hyphen insertion.
+@end defopt
+
+@defopt LaTeX-babel-hyphen-after-hyphen
+Control insertion of hyphen strings.  If non-nil insert normal hyphen on
+first key press and swap it with the language-specific hyphen string
+specified in the variable @code{LaTeX-babel-hyphen} on second key press.
+If nil do it the other way round.
+@end defopt
 
 @node Japanese
 @section Using @AUCTeX{} with Japanese @TeX{}
