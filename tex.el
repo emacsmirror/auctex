@@ -633,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.483 $"))
+	    (rev "$Revision: 5.484 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -648,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-12 10:22:37 $"))
+    (let ((date "$Date: 2005-02-12 14:10:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1339,13 +1339,15 @@ This will be done when AUCTeX first try to use the master file.")
 	  (beginning-of-line 1)
 	  (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
       (let ((comment-prefix (cond ((eq major-mode 'texinfo-mode) "@c ")
-				  (t "%%% "))))
+				  (t "%%% ")))
+	    (mode (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode "japanese-")
+			  (substring (symbol-name major-mode) 0 -5))))
 	(newline)
 	(when (eq major-mode 'doctex-mode)
 	  (insert "% " TeX-esc "iffalse\n"))
 	(insert
 	 comment-prefix "Local " "Variables: \n"
-	 comment-prefix "mode: " (substring (symbol-name major-mode) 0 -5) "\n"
+	 comment-prefix "mode: " mode "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
 	 comment-prefix "End: \n")
       (when (eq major-mode 'doctex-mode)
