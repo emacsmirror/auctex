@@ -1,5 +1,8 @@
 2003-01-07  David Kastrup  <dakas@users.sourceforge.net>
 
+	* autogen.sh: Make much more simple, so that this will work with
+	more sed versions.
+
 	* doc/wininstall.texi: Major overhaul, taking also GNU Emacs CVS
 	into account.
 
