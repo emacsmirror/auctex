@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.03
+;; Version: 11.04
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -115,7 +115,7 @@ performed as specified in TeX-expand-list."
 	(if (or window-system (getenv "DISPLAY"))
 	    (list "View" "%v " 'TeX-run-silent t nil)
 	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
-	(list "Print" "%p " 'TeX-run-command t nil)
+	(list "Print" "%p %r " 'TeX-run-command t nil)
 	(list "Queue" "%q" 'TeX-run-background nil nil)
 	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
@@ -308,6 +308,19 @@ string."
   :group 'TeX-command
   :type '(repeat (group regexp (string :tag "Command"))))
 
+;;Same for printing.
+
+(defcustom TeX-print-style '(("^landscape$" "-t landscape"))
+  "List of style options and print options.
+
+If the first element (a regular expresion) matches the name of one of
+the style files, any occurrence of the string %r in a command in
+TeX-command-list will be replaced with the second element.  The first
+match is used, if no match is found the %r is replaced with the empty
+string."
+  :group 'TeX-command
+  :type '(repeat (group regexp (string :tag "Command"))))
+
 ;; This is the list of expansion for the commands in
 ;; TeX-command-list.  Not likely to be changed, but you may e.g. want
 ;; to handle .ps files. 
@@ -318,6 +331,8 @@ string."
 		     (TeX-printer-query TeX-queue-command 2))))
 	(list "%v" (lambda () 
 		     (TeX-style-check TeX-view-style)))
+	(list "%r" (lambda () 
+		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
 		     (TeX-style-check LaTeX-command-style)))
 	(list "%s" 'file nil t)
