@@ -194,7 +194,8 @@ the printer has no corresponding command."
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
-    ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+    ("File" "%(o?)dvips %d -o %f " TeX-run-command t t
+     :help "Generate PostScript file")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ;; (list "Check" "chktex -v3 %s" TeX-run-compile nil t :help "Check )
     ;; Uncomment the above line and comment out the next line to
@@ -432,24 +433,25 @@ is not recommended because it is more powerful than
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  `(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
+  `(("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
+     "%(o?)dvips -t landscape %d -o && gv %f")
+    ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
+    ("^dvi$" (,(concat
+		"^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
+	      "^landscape$")
+     "%(o?)xdvi %dS -paper a4r -s 0 %d")
     ("^dvi$" ,(concat
-	       "^"
-	       (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
-	       "$")
+	       "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
      "%(o?)xdvi %dS -paper a4 %d")
-    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+    ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
 	      "^landscape$")
      "%(o?)xdvi %dS -paper a5r -s 0 %d")
-    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+    ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
      "%(o?)xdvi %dS -paper a5 %d")
     ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
-    ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-     "%(o?)dvips -t landscape %d -o && gv %f")
     ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
     ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
     ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-    ("^dvi$" "^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
     ("^dvi$" "." "%(o?)xdvi %dS %d")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
@@ -610,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.452 $"))
+	    (rev "$Revision: 5.453 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-09-27 18:28:53 $"))
+    (let ((date "$Date: 2004-10-05 13:38:48 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
