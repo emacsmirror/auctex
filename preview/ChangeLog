@@ -1,3 +1,13 @@
+2002-09-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex/preview.dtx (section{Introduction}): Mention tightpage
+	option for image conversion already here.
+	(\pr@endbox): set \reserved@a to something harmless for skipping
+	(if it was set to a conditional, we got into trouble).
+	(subsection{Selection options}): Redo the textmath option because
+	the exscale package (for example) does dirty things within
+	\frozen@everymath.
+
 2002-09-06  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/faq.texi: Explain about 'Preview-LaTeX exited abnormally
