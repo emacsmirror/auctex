@@ -266,7 +266,7 @@ If so, return the second element, otherwise return nil."
   (save-excursion
     (if (re-search-forward "{\\([^\}]*\\)}" (+ (point) fill-column 10) t)
 	(match-string 1)
-      (buffer-substring (point) (+ 20 (point))))))
+      (buffer-substring (point) (min (point-max) (+ 20 (point)))))))
 
 (add-hook 'TeX-remove-style-hook
 	  (lambda () (setq LaTeX-largest-level nil)))
@@ -1985,7 +1985,7 @@ outer indentation in case of a commented line.  The symbols
                 fill-prefix
                 (TeX-in-line-comment))
              ;; Reset indentation to zero after a macrocode
-             ;; environment.             
+             ;; environment.
              0)
 	    ((looking-at (concat (regexp-quote TeX-esc)
 				 "begin *{\\("
