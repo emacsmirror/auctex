@@ -97,8 +97,6 @@
 
 ;;; Code:
 
-(provide 'texmathp)
-
 ;; Safety-check for the old customize package.
 (eval-and-compile
   (condition-case () (require 'custom) (error nil))
