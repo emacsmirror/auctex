@@ -1141,7 +1141,7 @@ There might be text before point."
   "Create an entry for the change environment menu."
   (vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
 
-;; ConTeXt setup macro's
+;; ConTeXt setup macros
 (defvar ConTeXt-setup-menu-name "Setup")
 
 (defun ConTeXt-setup-menu-entry (entry)
@@ -1281,6 +1281,17 @@ There might be text before point."
 	       TeX-comment-or-uncomment-region t]
 	      ["Comment or Uncomment Paragraph"
 	       TeX-comment-or-uncomment-paragraph t])
+	(list "Show/Hide"
+	      ["Macro Fold Mode" TeX-fold-mode
+	       :style toggle :selected TeX-fold-mode]
+	      ["Hide All Macros" TeX-fold-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-o"]
+	      ["Show All Macros" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      ["Hide Current Macro" TeX-fold-macro
+	       :active TeX-fold-mode :keys "C-c C-o C-c"]
+	      ["Show Current Macro" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-e"])
 	"-"
 	(list "AUCTeX"
 	      (list "Customize"
