@@ -1,5 +1,13 @@
 2002-02-18  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi (Misplaced previews): explain about
+	prauctex.cfg.
+
+	* doc/install.texi: Write @LaTeX instead of La@TeX
+
+	* preview.el (preview-default-preamble): Shorten stuff out that
+	sits now in prauctex.cfg.
+
 	* Makefile.in (all): cater for prauctex.cfg.  Same for other
 	targets.
 
