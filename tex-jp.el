@@ -99,7 +99,7 @@
 (defcustom TeX-japanese-process-input-coding-system
   (if (boundp 'default-process-coding-system)
       (cdr default-process-coding-system)
-    ;; Old XEmacs (ex. 21.1.2)
+    ;; Old XEmacs < 21.5?
     'euc-jp)
   "TeX-process' coding system with standard input."
   :group 'AUCTeX-jp
@@ -108,7 +108,7 @@
 (defcustom TeX-japanese-process-output-coding-system
   (if (boundp 'default-process-coding-system)
       (car default-process-coding-system)
-    ;; Old XEmacs (ex. 21.1.2)
+    ;; Old XEmacs < 21.5?
     'iso-2022-jp)
   "TeX-process' coding system with standard output."
   :group 'AUCTeX-jp
