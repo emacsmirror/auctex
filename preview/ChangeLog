@@ -1,3 +1,7 @@
+2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-place): Generate nicer file names.
+
 2002-04-16  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Fix info direntry removal.
