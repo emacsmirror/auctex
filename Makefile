@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6m
+# Version: 9.7a
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -56,11 +56,11 @@ MV = mv
 
 SHELL = /bin/sh
 
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
-#WWWDIR = $(HOME)/.public_html/auctex
-WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
+WWWDIR = $(HOME)/.public_html/auctex
+#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
 REMOVE =  ltx-help.el func-doc.el 
 

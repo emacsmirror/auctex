@@ -1,3 +1,12 @@
+Tue Dec 10 07:49:54 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7a released.
+
+Tue Dec 10 07:49:56 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-fill-region-as-para-do): Minimal support for
+	`sentence-end-double-space'.
+
 Mon Dec 09 14:58:18 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6m released.

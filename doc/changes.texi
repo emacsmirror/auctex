@@ -1,37 +1,9 @@
-@section News in 9.6
+@section News in 9.7
 
 @itemize @bullet
-@item
-@file{func-doc.el} unbundled, as @file{word-help.el} will be added to
-the standard Emacs distribution.  See @url{http://www.ifi.uio.no/~jensthi/}.
-
 @item 
-@samp{$} is now of the syntax class `matched pair', suggested by Mats
-Bengtsson @samp{<matsb@@s3.kth.se>}.
+Added minimal support for @code{sentence-end-double-space}.
 
-@item 
-Now use @kbd{,} to enter multiple arguments to a @samp{\cite} or
-@samp{\bibliography} command instead of @kbd{@key{ret}}.
-
-@item
-Installation procedure is changed, read the @file{INSTALLATION} file. 
-
-@item
-LaCheck is unbundled.  You can get @code{lacheck} from
-@file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>} or alternatively
-@code{chktex} from
-@file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
-`chktex' in @file{tex.el} to see how to switch between them.@refill
-
-@item 
-Insert @code{(require 'font-latex)} to get better font lock support. 
-
-@item
-Bug fixes.
-
-@item
-Better handling of subdirectories, suggested by Frederic Devernay
-<Frederic.Devernay@@sophia.inria.fr> and many others.
 @end itemize
 
 

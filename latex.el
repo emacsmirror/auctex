@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6m
+;; Version: 9.7a
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1462,9 +1462,12 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	  ;; but after any fill prefix on the first line.
 
 	  ;; Make sure sentences ending at end of line get an extra space.
-	  (goto-char from)
-	  (while (re-search-forward "[.?!][]})\"']*$" nil t)
-	    (insert ? ))
+	  (if (or (not (boundp 'sentence-end-double-space))
+		  sentence-end-double-space)
+	      (progn
+		(goto-char from)
+		(while (re-search-forward "[.?!][]})\"']*$" nil t)
+		  (insert ? ))))
 	  ;; The change all newlines to spaces.
     (subst-char-in-region from (point-max) ?\n ?\ )
     ;; Flush excess spaces, except in the paragraph indentation.
