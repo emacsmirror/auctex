@@ -275,7 +275,7 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
     EMACS_LISPDIR=""
     EMACS_LISP(EMACS_LISPDIR,
       [[(let ((load-path load-path)
-             (pattern \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\"))
+             (pattern (concat \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\")))
 	 (while (and load-path (not (string-match pattern
 						  (car load-path))))
 		(setq load-path (cdr load-path)))
