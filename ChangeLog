@@ -1,3 +1,8 @@
+2005-03-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-built-in-keywords): Make doc
+	string of `font-latex-match-*-keywords' more clear.
+
 2005-03-08  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-toggle-off-input-method): Turn off input method iff
