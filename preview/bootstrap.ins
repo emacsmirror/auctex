@@ -1,6 +1,8 @@
 \input docstrip
 \askforoverwritefalse
 \generate{\file{preview-mk.ins}{\from{preview.dtx}{installer,make}}}
-\message{^^J--preview-tex-dir=\showdirectory{tex/latex/preview}^^J%
-            --texmf-prefix=\basedir^^J}
+\ifx\basedir\undefined\else
+   \message{^^J--preview-tex-dir=\showdirectory{tex/latex/preview}^^J%
+               --texmf-prefix=\basedir^^J}
+\fi
 \endbatchfile
