@@ -1,3 +1,11 @@
+2002-03-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (require): avoid compiler warning.
+	(preview-goto-info-page): new function
+	(LaTeX-preview-setup): add preview-goto-info-page binding
+	(info): add preview prefix for C-h F lookup
+	(LaTeX-preview-setup): add documentation and customization menu.
+
 2002-03-11  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Release 0.6.1
