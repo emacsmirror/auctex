@@ -349,11 +349,19 @@ is performed as specified in TeX-expand-list."
     ("." "xdvi %d"))
   "List of style options and view options.
 
-If the first element (a regular expresion) matches the name of one of
-the style files, any occurrence of the string %v in a command in
-TeX-command-list will be replaced with the second element.  The first
-match is used, if no match is found the %v is replaced with the empty
-string."
+If the first element (a regular expresion) matches the name of
+one of the style files, any occurrence of the string `%v' in a
+command in TeX-command-list will be replaced with the second
+element.  The first match is used, if no match is found the `%v'
+is replaced with the empty string.
+
+As a default, the \"View\" command in `TeX-command-list' is set
+to `%V'.  This means that `TeX-output-view-style' will be
+consulted before `TeX-view-style'.  Only if no match is found in
+`TeX-output-view-style' the settings in `TeX-view-style' will be
+considered.  If you want to bypass `TeX-output-view-style', which
+is not recommended because it is more powerful than
+`TeX-view-style', use `%v' in the \"View\" command."
   :group 'TeX-command
   :type '(repeat (group regexp (string :tag "Command"))))
 
@@ -381,12 +389,15 @@ string."
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
-If the first element (a regular expresion) matches the output file
-extension, and the second element (a regular expresion) matches the name of
-one of the style options, any occurrence of the string %V in a command in
-TeX-command-list will be replaced with the third element. The first match
-is used; if no match is found the %V is replaced with %v.
-The second element may also be a list of regular expressions, in which case
+If the first element (a regular expresion) matches the output
+file extension, and the second element (a regular expression)
+matches the name of one of the style options, any occurrence of
+the string `%V' in a command in `TeX-command-list' will be
+replaced with the third element.  The first match is used; if no
+match is found the `%V' is replaced with `%v'.  The outcome of %v
+is determined by the settings in `TeX-view-style' which therefore
+serves as a fallback for `TeX-output-view-style'.  The second
+element may also be a list of regular expressions, in which case
 all the regular expressions must match for the element to apply."
   :group 'TeX-command
   :type '(repeat (group
@@ -522,7 +533,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.347 $"))
+	(rev "$Revision: 5.348 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -537,7 +548,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-16 07:36:38 $"))
+    (let ((date "$Date: 2004-04-16 14:50:35 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
