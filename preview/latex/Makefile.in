@@ -17,7 +17,7 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
 
-all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi
+all: $(TEXMFGEN) preview.drv preview-mk.ins preview.pdf
 
 install: install-texmf install-texmf-doc
 
@@ -29,9 +29,9 @@ install-texmf: $(TEXMFGEN)
 	done
 	-$(TEXHASH)
 
-install-texmf-doc: preview.dvi
+install-texmf-doc: preview.pdf
 	-$(MKINSTALLDIRS) $(DESTDIR)$(previewdocdir)
-	$(INSTALL_DATA) preview.dvi $(DESTDIR)$(previewdocdir)
+	$(INSTALL_DATA) preview.pdf $(DESTDIR)$(previewdocdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) '\nonstopmode \input bootstrap.ins'
