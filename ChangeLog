@@ -1,3 +1,9 @@
+2004-03-22  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4, configure.in: Fix bug for the case $prefix=NONE
+
+	* Makefile.in: distclean target removes tex-site.el
+
 2004-03-22  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-fill-distinct-contents): Simplify customization
