@@ -63,8 +63,12 @@ font-latex
     Con\TeX t}
 \toks0\expandafter{\indexnofonts
   \def\TeX#1{TeX}%
-  \def\LaTeX#1{LaTeX}\gdef\previewlatex{preview-latex}}
+  \def\LaTeX#1{LaTeX}\def\previewlatex#1{preview-latex}}
 \xdef\indexnofonts{\the\toks0}
+\toks0\expandafter{\commondummies
+  \def\TeX#1{TeX}%
+  \def\LaTeX#1{LaTeX}\def\previewlatex#1{preview-latex}}
+\xdef\commondummies{\the\toks0}
 \ifx\acronym\undefined \gdef\acronym#1{{\smallcaps \lowercase{#1}}} \fi
 \ifx\env\undefined \global\let\env=\code \fi
 \ifx\option\undefined \global\let\option=\samp \fi

@@ -1,5 +1,8 @@
 2005-04-03  David Kastrup  <dak@gnu.org>
 
+	* doc/macros.texi: Make @previewlatex swallow argument in links.
+	Don't scrap sf declaration.  Make it correct in links.
+
 	* doc/readme.texi (What use is it?): 
 
 	* doc/problems.texi: 
