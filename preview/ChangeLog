@@ -1,3 +1,21 @@
+2002-06-13  Jan-Ake Larsson  <jalar@jalar.imf.au.dk>
+
+	* dvipng/Makefile: new object files
+
+	* dvipng/special.c, dvipng/set.c, dvipng/dvipng.h: cleanup
+
+	* dvipng/misc.c (ActualFactor): moved to font.c + cleanup
+
+	* dvipng/font.c (ActualFactor): moved here from misc.c
+
+	* dvipng/draw.c, dvipng/dvipng.c, dvipng/pagelist.c:
+	functionality from dvipng.c spread to these three
+
+	* dvipng/pagequeue.c, dvipng/pages.c:
+	functionality moved from pages.c to pagequeue.c
+
+	* dvipng/commands.h: minor adjustments
+
 2002-06-12  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/special.c: on unimplemented \special, give pixel position
