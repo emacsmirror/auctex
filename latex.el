@@ -2436,35 +2436,7 @@ space does not end a sentence, so don't break a line there."
 	;; FROM, and point, are now before the text to fill,
 	;; but after any fill prefix on the first line.
 
-	;; COMPATIBILITY for Emacs <= 21.1
-	(if (fboundp 'fill-delete-newlines)
-	    (fill-delete-newlines from to justify nosqueeze squeeze-after)
-	  ;; For Japanese (FIXED on 2005-02-11)
-	  (when (featurep 'mule)
-	    (goto-char from)
-	    (while (re-search-forward "\\(\\cj\\)\n\\(\\cj\\)" to t)
-	      (replace-match "\\1\\2")))
-	  ;; Make sure sentences ending at end of line get an extra space.
-	  (if (or (not (boundp 'sentence-end-double-space))
-		  sentence-end-double-space)
-	      (progn
-		(goto-char from)
-		(while (re-search-forward "[.?!][]})\"']*$" to t)
-		  (insert ? ))))
-	  ;; Then change all newlines to spaces.
-	  (let ((point-max (progn
-			     (goto-char to)
-			     (skip-chars-backward "\n")
-			     (point))))
-	    (subst-char-in-region from point-max ?\n ?\ ))
-	  (goto-char from)
-	  (skip-chars-forward " \t")
-	  ;; Remove extra spaces between words.
-	  (unless (and nosqueeze (not (eq justify 'full)))
-	    (canonically-space-region (or squeeze-after (point)) to)
-	    ;; Remove trailing whitespace.
-	    (goto-char (line-end-position))
-	    (delete-char (- (skip-chars-backward " \t")))))
+	(LaTeX-fill-delete-newlines from to justify nosqueeze squeeze-after)
 
 	;; This is the actual FILLING LOOP.
 	(goto-char from)
@@ -2557,6 +2529,47 @@ space does not end a sentence, so don't break a line there."
       (unless (eobp) (forward-char 1))
       ;; Return the fill-prefix we used
       fill-prefix)))
+
+(defun LaTeX-fill-delete-newlines (from to justify nosqueeze squeeze-after)
+  ;; COMPATIBILITY for Emacs < 22.1 and XEmacs
+  (if (fboundp 'fill-delete-newlines)
+      (fill-delete-newlines from to justify nosqueeze squeeze-after)
+    (if (featurep 'xemacs)
+	(when (featurep 'mule)
+	  (goto-char from)
+	  (while (re-search-forward "\\(\\cj\\|\\cc\\|\\ct\\)\n\\(\\cj\\|\\cc\\|\\ct\\)" to t)
+	    (skip-chars-backward "^\n")
+	    (delete-char -1)))
+      ;; This else-sentence was copied from the function `fill-delete-newlines'
+      ;; in `fill.el' (CVS Emacs, 2005-02-17) and adapted accordingly.
+      (while (search-forward "\n" nil t)
+	(let ((prev (char-before (match-beginning 0)))
+	      (next (following-char)))
+	  (when (or (aref (char-category-set next) ?|)
+		    (aref (char-category-set prev) ?|))
+	    (delete-char -1)))))
+
+    ;; Make sure sentences ending at end of line get an extra space.
+    (if (or (not (boundp 'sentence-end-double-space))
+	    sentence-end-double-space)
+	(progn
+	  (goto-char from)
+	  (while (re-search-forward "[.?!][]})\"']*$" to t)
+	    (insert ? ))))
+    ;; Then change all newlines to spaces.
+    (let ((point-max (progn
+		       (goto-char to)
+		       (skip-chars-backward "\n")
+		       (point))))
+      (subst-char-in-region from point-max ?\n ?\ ))
+    (goto-char from)
+    (skip-chars-forward " \t")
+    ;; Remove extra spaces between words.
+    (unless (and nosqueeze (not (eq justify 'full)))
+      (canonically-space-region (or squeeze-after (point)) to)
+      ;; Remove trailing whitespace.
+      (goto-char (line-end-position))
+      (delete-char (- (skip-chars-backward " \t"))))))
 
 (defun LaTeX-fill-move-to-break-point (linebeg)
   "Move to the position where the line should be broken."
