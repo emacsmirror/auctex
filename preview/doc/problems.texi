@@ -117,14 +117,28 @@ have the necessary technical skills, support the Emacs developer crew by
 checking out the current version and trying to get @previewlatex{} to
 run on it.  Reasonable patches necessary to make @previewlatex{} work
 under Windows will gladly be accepted.  Another option for Windows users
-might be to try XEmacs.
+might be to try XEmacs, although preview-latex is untested there, too.
 
 @item XEmacs
 
-We have preliminary support of XEmacs in place, but you should not
-expect any miracles.  Please test it and report any problems you may be
-experiencing.  Volunteers welcome.  Ask on the developers' list how you
-may contribute.
+XEmacs support should now work.  There is one current problem known with
+the XEmacs core, which leads to seriously mispositioned baselines and
+previews hanging far above other text on the same line. An alpha-quality
+patch against XEmacs-21.4.6 to fix this is available from
+@uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00129.html}.
+This patch may be included in XEmacs-21.4.8, but won't be present in any
+earlier version.
+
+In addition, users of a new @file{desktop.el} may notice problems
+immediately after loading a desktop containing a file with previews; all
+the preview areas will be blank and empty. Regenerating the previews
+should fix it.
+
+The package hasn't been tested under either the Cygwin or native builds
+for Windows: if you try it and it works, please say!
+
+This support is very new and still changing frequently. Please test it
+and report any problems you may be experiencing.
 
 @end itemize
 
