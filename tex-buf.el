@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6e
+;; Version: 9.6f
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -473,17 +473,16 @@ for the dviout previewer, especially when used with PC-9801 series."
 (defun TeX-run-background (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((dir (TeX-master-directory)))
-    (save-excursion
-      (set-buffer (get-buffer-create "*TeX background*"))
-      (if dir (cd dir))
-      (erase-buffer)))
-  (let ((process (start-process (concat name " background")
-				nil TeX-shell
-				TeX-shell-command-option command)))
-    (if TeX-after-start-process-function
-	(funcall TeX-after-start-process-function process))
-    (set-process-filter process 'TeX-background-filter)
-    (process-kill-without-query process)))
+    (set-buffer (get-buffer-create "*TeX background*"))
+    (if dir (cd dir))
+    (erase-buffer)
+    (let ((process (start-process (concat name " background")
+				  nil TeX-shell
+				  TeX-shell-command-option command)))
+      (if TeX-after-start-process-function
+	  (funcall TeX-after-start-process-function process))
+      (set-process-filter process 'TeX-background-filter)
+      (process-kill-without-query process))))
 
 (defun TeX-run-interactive (name command file)
   "Run TeX interactively.

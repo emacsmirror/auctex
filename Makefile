@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6e
+# Version: 9.6f
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -15,13 +15,16 @@ prefix=/usr/local
 # Where info files go.
 infodir = $(prefix)/info
 
+# Where local lisp files go.
+lispdir = $(prefix)/share/emacs/site-lisp
+
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
 #
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 #
-aucdir=$(prefix)/share/emacs/site-lisp/auctex
+aucdir=$(lispdir)/auctex
 
 # Name of your emacs binary
 EMACS=emacs
@@ -162,6 +165,14 @@ LispInstall:
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) $(STYLESRC)
+	if [ ! -d $(lispdir) ]; then mkdir $(lispdir); else true; fi ;
+	if [ -f $(lispdir)/tex-site.el ]; \
+	then \
+	    echo "Leaving old tex-site.el alone."; \
+	else \
+	    sed -e 's#@AUCDIR#$(aucdir)/#' tex-site.el \
+	    > $(lispdir)/tex-site.el ; \
+        fi
 	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); else true; fi ; 
 	if [ `/bin/pwd` != `(cd $(aucdir) && /bin/pwd)` ] ; \
 	then \
@@ -169,7 +180,8 @@ LispInstall:
 	                                 else true; fi ; \
 	    $(MV) *.elc $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
-	else true; \
+	else \
+	    echo "Leaving compiled files in place."; \
 	fi
 
 .el.elc:
