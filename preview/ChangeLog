@@ -1,5 +1,8 @@
 2003-01-10  David Kastrup  <dakas@users.sourceforge.net>
 
+	* configure.in (TEXMFGEN): Make this possibly more portable (at
+	the very least, we had some potential quoting problems).
+
 	* autogen.sh, configure.in: Ok, darn them all.  We now have a
 	configure.in that does no longer need to get patched up after
 	autoconf, regardless of which autoconf version gets used between
