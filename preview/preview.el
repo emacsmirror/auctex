@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.187 2003-01-24 16:47:57 dakas Exp $
+;; $Id: preview.el,v 1.188 2003-07-10 21:56:09 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1798,8 +1798,8 @@ See description of `TeX-command-list' for details."
 
 ;;;###autoload
 (defun LaTeX-preview-setup ()
-  "Hook function for embedding the preview package into Auc-TeX.
-This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
+  "Hook function for embedding the preview package into AUCTeX.
+This is called by `LaTeX-mode-hook' and changes AUCTeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
@@ -1986,9 +1986,9 @@ name(\\([^)]+\\))\\)\\|\
 ;;; match-alternative 5, so that the match on first char is slightly
 ;;; faster):
 ;;; !offset(\([---0-9]+\))
-;;; an AUC TeX offset message. (match-string 4) is the offset itself
+;;; an AUCTeX offset message. (match-string 4) is the offset itself
 ;;; !name(\([^)]+\))
-;;; an AUC TeX file name message.  (match-string 5) is the file name
+;;; an AUCTeX file name message.  (match-string 5) is the file name
 ;;; TODO: Actually, the latter two should probably again match only
 ;;; after a space or newline, since that it what \message produces.
 ;;;disabled in prauctex.def:
@@ -2424,7 +2424,7 @@ stored in `preview-dumped-alist'."
   (setcdr old-format nil))
 
 (defun TeX-inline-preview (name command file)
-  "Main function called by AUC TeX.
+  "Main function called by AUCTeX.
 NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let* ((commandbuff (current-buffer))
 	 (pr-file (cons
@@ -2514,7 +2514,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.187 $"))
+	(rev "$Revision: 1.188 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2525,7 +2525,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-01-24 16:47:57 $"))
+    (let ((date "$Date: 2003-07-10 21:56:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
