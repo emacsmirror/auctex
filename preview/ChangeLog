@@ -1,10 +1,12 @@
 2002-04-09  Jan-Ake Larsson  <jalar@imf.au.dk>
 
-	* preview-latex.texi: Put Nick in authors, slight other changes
+	* preview-latex.spec: Install icons
 
-	* problems.texi: Added entry on fast conversion and bounding boxes
+	* doc/preview-latex.texi: Put Nick in authors, slight other changes
 
-	* todo.texi: Added manual stuff
+	* doc/problems.texi: Added entry on fast conversion and bounding boxes
+
+	* doc/todo.texi: Added manual stuff
 
 2002-04-08  David Kastrup  <David.Kastrup@t-online.de>
 
