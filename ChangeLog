@@ -1,3 +1,8 @@
+2004-09-24  Davide G. M. Salvetti  <salve@debian.org>
+
+	* configure.in: Add `--(en|dis)able-build-dir-test' switch to
+	allow disabling `VALID_BUILD_DIR'.
+
 2004-09-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (VirTeX-common-initialization): Revert last change.
