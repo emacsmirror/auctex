@@ -1,4 +1,12 @@
+Tue Dec 10 16:48:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7b released.
+
 Tue Dec 10 07:49:54 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-run-format): Bind `buffer' before `process' to
+	avoid side effect.  Suggested by Frederic Devernay
+	<devernay@istar.fr>. 
 
 	* Version 9.7a released.
 

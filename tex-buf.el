@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7a
+;; Version: 9.7b
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -404,8 +404,8 @@ Return the new process."
 
 (defun TeX-run-format (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
-  (let ((process (TeX-run-command name command file))
-	(buffer (TeX-process-buffer-name file)))
+  (let ((buffer (TeX-process-buffer-name file))
+	(process (TeX-run-command name command file)))
     ;; Hook to TeX debuger.
     (save-excursion
       (set-buffer buffer)
