@@ -1,11 +1,11 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 10.0d
+;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
+;; Version: 10.0e
 ;; Keywords: wp
-;; X-URL: http://sunsite.auc.dk/auctex
+;; X-URL: http://sunsite.dk/auctex
 
-;; Copyright (C) 1985, 1986, 2000 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 2000, 2001 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
@@ -36,7 +36,7 @@
   "A (La)TeX environment."
   :tag "AUC TeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "http://sunsite.auc.dk/auctex/")
+  :link '(url-link :tag "Home Page" "http://sunsite.dk/auctex/")
   :prefix "TeX-"
   :group 'tex)
 
@@ -316,8 +316,10 @@ string."
   (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
 	(list "%q" (function (lambda ()
 		     (TeX-printer-query TeX-queue-command 2))))
-	(list "%v" 'TeX-style-check TeX-view-style)
-	(list "%l" 'TeX-style-check LaTeX-command-style)
+	(list "%v" (lambda () 
+		     (TeX-style-check TeX-view-style)))
+	(list "%l" (lambda ()
+		     (TeX-style-check LaTeX-command-style)))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -2896,7 +2898,7 @@ between."
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
-   "auc-tex@sunsite.auc.dk"
+   "auc-tex@sunsite.dk"
    (concat "AUC TeX " AUC-TeX-version)
    (list 'window-system
 	 'LaTeX-version
