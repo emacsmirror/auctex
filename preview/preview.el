@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.241 2005-03-17 17:21:30 dak Exp $
+;; $Id: preview.el,v 1.242 2005-03-18 08:29:12 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -46,8 +46,8 @@
 (require 'tex-buf)
 (require 'latex)
 
-(unless (boundp 'TeX-overlay-prioritize)
-  (defalias 'TeX-overlay-priorize 'ignore))
+(unless (fboundp 'TeX-overlay-prioritize)
+  (defalias 'TeX-overlay-prioritize 'ignore))
 
 (eval-when-compile
   (condition-case nil
@@ -565,7 +565,8 @@ is to be used."
 		       (point-max)))
 	(insert-before-markers
 	 (format "%s: %s\n"
-		 context (error-message-string err))))))
+		 context (error-message-string err)))
+	(display-buffer (current-buffer)))))
   (setq preview-error-condition err))
 
 (defun preview-reraise-error (&optional process)
@@ -3290,7 +3291,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.241 $"))
+	(rev "$Revision: 1.242 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3301,7 +3302,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-17 17:21:30 $"))
+    (let ((date "$Date: 2005-03-18 08:29:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,14 @@
+2005-03-18  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi: Mention that "the usual procedure" is for
+	site-wide installation.
+	(Advice for package providers): Mention site-start.el.
+	(Advice for non-privileged users): Adapt to new conventions.
+	Some other small changes.
+
+	* preview.el (TeX-overlay-prioritize): correct stupid typo.
+	(preview-log-error): Pop up run buffer in case of error.
+
 2005-03-17  David Kastrup  <dak@gnu.org>
 
 	* preview.el (tex-site): Require loads of stuff at the beginning:
