@@ -4,11 +4,6 @@ Modularize AucTeX's error message parsing
  so that we do not need to steal code from AucTeX, but can use
  AucTeX's routines directly.  Submit to AucTeX development.
 
-x-symbol compatibility
- Error messages from TeX and buffer contents from the file do not agree
- when x-symbol is active.  That renders the textmath option of the
- preview package mostly useless.  This should be fixed for AucTeX as well.
-
 Fix GhostScript rendering of Emacs
  The current gs.el interface does not work well when multiple EPS
  images appear.  A new process is started for every single image, but
@@ -26,18 +21,21 @@ Port to XEmacs
  Very much wanted since we then would get a non-pretest audience for
  preview-latex.
 
-Start documentation
- A texinfo manual would be nice to have.
-
-Integrate better
- The "compiling" prompt is not active as long as
- appropriate.  Temporary directories should only be allocated once
- dvips gets run.  The bottom line of the process buffer should change
- from "Preview-LaTeX" to "Preview-DviPS" to "Preview-GhostScript".
-
 Explore possibilities for generating a single PS file
- Can we get at the page boundaries then with some PostScript trickery?
+ Can we get at the page boundaries then with some PostScript
+ trickery?  Or should we write them into the log as part of the
+ preview error messages?  Would probably make implementing the
+ next point easier:
 
 Explore possibilities for working via PDF
  Going via latexpdf->GhostScript and a single file would certainly be
  faster than the current latex->dvips->GhostScript path.
+
+Explore using DSC comments for reordering of processing
+ That's just desirable for the last two proposals working from a
+ single file.
+
+Add style options for marking bounding box
+ Add options in TeX file to output zero-width rules around the shipped
+ box so that, for example, PStricks pictures have a chance of getting
+ a good bounding box.
