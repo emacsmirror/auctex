@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.380 $"))
+	(rev "$Revision: 5.381 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-02 08:13:58 $"))
+    (let ((date "$Date: 2004-06-03 11:46:21 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2735,6 +2735,10 @@ be bound to `TeX-electric-macro'."
 		 (const reindent-then-newline-and-indent)
 		 (sexp :tag "Other")))
 
+(defun TeX-newline ()
+  "Call the function specified by the variable `TeX-newline-function'."
+  (interactive) (funcall TeX-newline-function))
+
 (defvar TeX-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Standard
@@ -2744,8 +2748,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
     (define-key map "\C-c?"    'describe-mode)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
-    (define-key map "\r" (lambda nil
-			   (interactive) (funcall TeX-newline-function)))
+    (define-key map "\r"       'TeX-newline)
     
     ;; From tex.el
     (define-key map "\""       'TeX-insert-quote)
