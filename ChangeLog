@@ -1,3 +1,10 @@
+2004-04-13  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Try something in AC_FULL_EXPAND that does not
+	require bash.
+	Replace ' with quote in EMACS_LISP
+	Correct a few instances of misspelled AUCTeX.
+
 2004-04-13  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (DOCFILES, EXTRAFILES): Added files needed for the
