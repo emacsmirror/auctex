@@ -2228,7 +2228,13 @@ comments and lines ending with `\par' are included in filling but
 act as boundaries.  Prefix arg means justify too.  From program,
 pass args FROM, TO and JUSTIFY-FLAG."
   (interactive "*r\nP")
-  (if (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+  (if (or (assoc (LaTeX-current-environment) LaTeX-indent-environment-list)
+	  ;; This could be generalized, if there are more cases where
+	  ;; a special string at the start of a region to fill should
+	  ;; inhibit filling.
+	  (progn (save-excursion (goto-char from)
+				 (looking-at (concat comment-start "+[ \t]*"
+						     "Local Variables:")))))
       ;; Filling disabled, only do indentation.
       (indent-region from to nil)
     (save-restriction
