@@ -256,9 +256,13 @@ value of `TeXinfo-mode-hook'."
     (setq imenu-generic-expression texinfo-imenu-generic-expression))
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults
-	'(texinfo-font-lock-keywords nil nil nil backward-paragraph
-				     (font-lock-syntactic-keywords
-				      . texinfo-font-lock-syntactic-keywords)))
+	;; COMPATIBILITY for Emacs 20
+	(if (boundp 'texinfo-font-lock-syntactic-keywords)
+	    '(texinfo-font-lock-keywords
+	      nil nil nil backward-paragraph
+	      (font-lock-syntactic-keywords
+	       . texinfo-font-lock-syntactic-keywords))
+	  '(texinfo-font-lock-keywords t)))
   (if (not (boundp 'texinfo-section-list))
       ;; This was included in 19.31.
       ()
