@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.139 2002-04-28 20:57:46 jalar Exp $
+;; $Id: preview.el,v 1.140 2002-04-29 19:35:13 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -964,7 +964,11 @@ Returns non-NIL if called by one of the commands in LIST."
 (defun preview-buffer ()
   "Run preview on current buffer."
   (interactive)
-  (preview-region (point-min) (point-max)))
+  (save-excursion 
+    (goto-char (point-min)) 
+    (search-forward-regexp "^\\begin{document}" nil t)
+    (preview-region (point) (point-max))))
+;;  (preview-region (point-min) (point-max)))
 
 (defun preview-document ()
   "Run preview on master document."
@@ -1935,10 +1939,11 @@ Tries through `preview-format-extensions'."
 	(delete-file (concat format-file ext))
       (file-error nil))))
 
-(defun preview-dump-format () (interactive)
+(defun preview-dump-format () 
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
 on the same master file."
+  (interactive)
   (let* ((dump-file (TeX-master-file "ini"))
 	 (format-file (expand-file-name (TeX-master-file nil)))
 	 (master-buffer (find-file-noselect (TeX-master-file t)))
@@ -1960,9 +1965,10 @@ on the same master file."
 	       (file-error (preview-log-error err "Dumping" process)))
 	     (preview-reraise-error process)))))
 
-(defun preview-clear-format () (interactive)
+(defun preview-clear-format ()
   "Clear the pregenerated format file.  
 The use of the format file is discontinued."
+  (interactive)
   (let ((format-file (expand-file-name (TeX-master-file nil))))
     (setq preview-dumped-list (delete format-file preview-dumped-list))
     (preview-format-kill format-file)))
@@ -2005,7 +2011,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.139 $"))
+	(rev "$Revision: 1.140 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2016,7 +2022,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-28 20:57:46 $"))
+    (let ((date "$Date: 2002-04-29 19:35:13 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
