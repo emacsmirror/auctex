@@ -106,8 +106,8 @@ install-el:
 	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
 	   else \
-	    echo "Renaming old texsite.el to texsite.el.save" ; \
-	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/texsite.el.save ; \
+	    echo "Renaming old tex-site.el to tex-site.el.save" ; \
+	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/tex-site.el.save ; \
 	   fi; \
 	fi; \
 	$(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir)
