@@ -10,6 +10,7 @@
 *.toc
 *.tp
 *.vr
+FAQ
 INSTALL
 INSTALL.windows
 Makefile
