@@ -1,3 +1,7 @@
+2003-06-03  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-macro): Set group 'AUCTeX.
+
 2003-06-03  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-mode-menu): Replace "Change Font" with "Replace
