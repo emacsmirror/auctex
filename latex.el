@@ -3080,6 +3080,17 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
+(define-minor-mode doctex-mode
+  "Minor mode for editing .dtx files.
+Sets a few variables and runs the hooks in `doctex-mode-hook'."
+  nil "Doc" nil
+  (if doctex-mode
+      (progn
+	(unless (memq major-mode '(plain-tex-mode ams-tex-mode
+						  latex-mode
+						  context-mode))
+	  (tex-mode)))))
+
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
   "Default end of header marker for LaTeX documents.")
