@@ -2,9 +2,15 @@
 @documentencoding ISO-8859-1
 @documentlanguage en
 @setfilename preview-latex
+@settitle Preview-LaTeX
 @settitle preview-latex
+@dircategory TeX
 @direntry
-* Preview: (preview-latex).      A LaTeX preview mode for AUC TeX in Emacs.
+* Preview LaTeX: (preview-latex).       A preview mode for GNU Emacs
+@end direntry
+@dircategory GNU Emacs
+@direntry
+* Preview LaTeX: (preview-latex).       To preview LaTeX constructs
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -53,8 +59,8 @@ approved by the Free Software Foundation.
 @summarycontents
 @c @contents
 
-@ifinfo
-@node top, Copying, (dir), (dir)
+@ifnottex
+@node top, Introduction, (dir), (dir)
 @top preview-latex
  
 preview-latex is a package that allows extraction of certain
@@ -80,6 +86,7 @@ the following in your @file{.emacs} file.  This will make Emacs load
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
+@cindex Xemacs
 @strong{Please note:} Currently XEmacs support is not yet operative.
 
 This documentation is preliminary. It should however cover most
@@ -88,41 +95,31 @@ important points. Corrections or perhaps rewrites of sections are
 
 David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 
-@end ifinfo
+@end ifnottex
 
 @menu
-* Copying::                     License.
 * Introduction::                What is it good for?
-* Installation::                Installation.
 * Getting started::             Simple and fast.
+* Installation::                Make Install.
 * Keys and lisp::               Key bindings and user-level lisp functions.
 * Customization::               Fitting it in.
 * Known problems::              When things go wrong.
 * Internals::                   Under the hood.
-* Credits::                     Contributors.
+* License::                     GPL.
 * Index::                       A menu of many topics.             
 @end menu
 
-@node Copying, Introduction, top, top
-@c Not to be changed often, I think: in separate file.
-@unnumbered Copying
-@include copying.texi
-
-@node Introduction, Installation, Copying, top
-@chapter Introduction 
+@node Introduction, Getting started, top, top
 @c Used as @file{README} as well: in separate file
+@chapter Introduction
 @include readme.texi
 
-@node Installation, Getting started, Introduction, top
-@chapter Installation 
-@c Used as @file{INSTALL} as well: in separate file
-@include install.texi
-
-@node Getting started, Keys and lisp, Installation, top
+@node Getting started, Installation, Introduction, top
 @chapter Getting started
 
-The simplest way to use preview-latex is to insert the following in
-your @file{.emacs} file: 
+If someone already has installed Preview La@TeX{} for you
+(@pxref{Installation}), the simplest way to use Preview La@TeX{} is to
+insert the following in your @file{.emacs} file:
 @cindex @file{.emacs}
 
 @lisp
@@ -147,7 +144,12 @@ To see/edit the La@TeX{} code for a specific object, put the point (the
 cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
 and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
-@node Keys and lisp, Customization, Getting started, top
+@node Installation, Keys and lisp, Getting started, top
+@c Used as @file{INSTALL} as well: in separate file
+@chapter Installation 
+@include install.texi
+
+@node Keys and lisp, Customization, Installation, top
 @chapter Key bindings and user-level lisp functions 
 
 To the functions and key bindings in AUC @TeX{} @inforef{Key
@@ -155,8 +157,8 @@ Index,,auctex}, the following are added:
 
 @table @w
 @item @kbd{C-c C-c g RET} 
-``Generate preview''. This command generates previews for all
-appropriate objects in the current document. Already preset previews are
+Generate preview. This command generates previews for all appropriate
+objects in the current document. Already preset previews are
 re-generated.
 
 You can use the AUC @TeX{} variants starting with @kbd{C-c C-b g
@@ -189,14 +191,14 @@ buffer, preview-latex may be confused and place the previews wrong.
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
-Run preview on this LaTeX section.
+Run preview on this La@TeX{} section.
 @cindex @kbd{C-c C-p C-s}
 @cindex @code{preview-section}
 @cindex Preview section 
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment}
-Run preview on this LaTeX environment.
+Run preview on this La@TeX{} environment.
 @cindex @kbd{C-c C-p C-e}
 @cindex @code{preview-environment}
 @cindex Preview environment
@@ -227,13 +229,6 @@ entire buffer. If KEEP-DIR is set to a value from `TeX-active-tempdir',
 previews associated with that directory are kept.
 @cindex @kbd{C-c C-p C-c C-r}
 @cindex @code{preview-clearout}
-
-@item @kbd{M-x preview-report-bug @key{RET}}
-@itemx @code{preview-report-bug}
-Report a bug in the preview-latex package.
-@cindex @kbd{M-x preview-report-bug @key{RET}}
-@cindex @code{preview-report-bug}
-@cindex Report a bug
 @end table
 
 @node Customization, Known problems, Keys and lisp, top
@@ -247,6 +242,7 @@ long, but some are:
 @itemize @bullet
 @item Adjust the smoothening of the previews
 
+@cindex Ghostscript options
 In the @code{Preview Gs} group, change @code{Preview Gs Options}: try
 setting @code{-dGraphicsAlphaBits=2}, for instance.
 
@@ -260,6 +256,7 @@ whole background of a preview, but you'll have to live with that.
 
 @item Preview inline math
 
+@cindex Inline math
 In the @code{Preview Latex} group, check the box next to @code{textmath}
 in @code{Preview Default Option List}.  Beware if you use
 @code{x-symbol}, there is a known issue with that package if you are
@@ -267,6 +264,7 @@ using a version before 4.0h/beta.
 
 @item The @code{showkeys} package
 
+@cindex @code{showkeys}
 When using preview-latex, the @code{\label}s are hidden by the previews.
 To show them in the previews (yes, this is possible) use the La@TeX{}
 package @code{showkeys}, by changing @code{Preview Default Preamble} in
@@ -286,14 +284,14 @@ other software.
 * Problems with GhostScript::   
 * Font problems with Dvips::    
 * Emacs problems::              
-* AUC @TeX{} prior to 11.0::    
-* La@TeX{} international characters::  
+* AUC TeX prior to 11.0::    
+* LaTeX international characters::  
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
 @end menu
 @include problems.texi
 
-@node Internals, Credits, Known problems, top
+@node Internals, License, Known problems, top
 @chapter Internals/more customization
 
 This package consists of two parts. A La@TeX{} style that splits the
@@ -304,6 +302,7 @@ an Emacs-lisp part integrating the thing into emacs (aided by AUC
 @menu
 * The LaTeX style file::        
 * The emacs interface::         
+* On EPS previews::             
 * Misplaced previews::          
 @end menu
 
@@ -312,7 +311,7 @@ an Emacs-lisp part integrating the thing into emacs (aided by AUC
 
 (To be written, or at least copied from preview.dtx)
 
-@node The emacs interface, Misplaced previews, The LaTeX style file, Internals
+@node The emacs interface, On EPS previews, The LaTeX style file, Internals
 @section The emacs interface
 
 When you generate previews on a buffer or a region, the command in
@@ -320,6 +319,9 @@ When you generate previews on a buffer or a region, the command in
 changed with @code{M-x customize @key{RET}} so that changes get propagated to
 AUC @TeX{}'s command list).
 
+
+@cindex @code{preview-default-option-list}
+@cindex @code{preview-default-preamble}
 This command passes options @code{auctex} and @code{active} to the
 preview package so that the user need not supply these by himself in
 case he wants to be able to still compile his document without it
@@ -329,6 +331,7 @@ the preview package is loaded using default options from
 @code{preview-default-option-list} and additional commands specified in
 @code{preview-default-preamble}.
 
+@cindex @code{preview-dvips-command}
 This run produces a dvi file where every preview is on a separate page.
 As usual with AUC @TeX{}, you can continue working while this is going
 on.  It is not a good idea to change the file until after preview-latex
@@ -350,6 +353,7 @@ detected previews.  This entails throwing away any previous previews
 covering the same areas, and then replacing the text in its visual
 appearance by a placeholder looking like a question mark.
 
+@cindex @code{preview-image-type}
 What happens when Dvips is finished depends on the configuration of
 @code{preview-image-type}. If this is set to @code{'postscript},
 preview-latex will simply tell Emacs about where it can find the
@@ -377,6 +381,7 @@ afterwards will not take away your attention and will eventually
 guarantee that jumping around in the document will encounter only
 prerendered images.
 
+@node On EPS previews, Misplaced previews, The emacs interface, Internals
 @section On @acronym{EPS} previews
 
 @cindex @code{preview-image-type}
@@ -415,7 +420,7 @@ using the following.
        gs-options))
 @end lisp
 
-@node Misplaced previews,  , The emacs interface, Internals
+@node Misplaced previews,  , On EPS previews, Internals
 @section Misplaced previews
 
 As explained previously, Emacs uses pseudo-error messages generated by
@@ -438,6 +443,9 @@ possible that the order changes between runs). And since the placement
 of those previews is goofed up, you will not be able to regenerate them
 by clicking on them. The default behaviour is thus somewhat undesirable.
 
+@cindex @code{\PreviewMacro}
+@cindex @code{\PreviewMacro*}
+@cindex @code{\PreviewEnvironment*}
 The solution (like with other preview problems) is to tell the La@TeX{}
 @samp{preview} package how to tackle this problem. You know the
 @code{\PreviewMacro} command explained above (cough, cough). There is a
@@ -469,10 +477,15 @@ in the Preview Latex group. This currently contains @code{\emph} and
 @code{\footnote} but the plan is that it eventually will contain most
 common cases.
 
-@node Credits, Index, Internals, top
-@appendix Credits 
+@node License, Index, Internals, top
+@c Not to be changed often, I think: in separate file.
+@appendix License
+@include copying.texi
 
-@node Index,  , Credits, top
+@c @node Credits, Index, Internals, top
+@c @appendix Credits 
+
+@node Index,  , License, top
 @unnumbered Index
 
 @printindex cp
