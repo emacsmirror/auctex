@@ -1,4 +1,4 @@
-%\CheckSum{392}
+%\CheckSum{398}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
 %\maketitle
@@ -630,6 +630,15 @@
   \let\@elt\relax
   \xdef\@freelist{\@currlist\@freelist}%
   \global\let\@currlist\@empty}
+%    \end{macrocode}
+%Since over/underfull boxes are about the messiest things to parse, we
+%disable them by setting the appropriate badness limits and making the
+%variables point to junk.
+%    \begin{macrocode}
+\hbadness=10000
+\vbadness=10000
+\newcount\hbadness
+\newcount\vbadness
 %</active>
 %</style>
 %    \end{macrocode}
