@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8f
+;; Version: 9.8g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -114,7 +114,7 @@ performed as specified in TeX-expand-list."
 	(list "LaTeX2e" "latex2e '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%v " 'TeX-run-background t nil)
+	    (list "View" "%v " 'TeX-run-silent t nil)
 	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
 	(list "Print" "%p " 'TeX-run-command t nil)
 	(list "Queue" "%q" 'TeX-run-background nil nil)
@@ -168,6 +168,8 @@ output.
 TeX-run-background: Start the process in the background, show output
 in other window.
 
+TeX-run-silent: Start the process in the background.
+
 TeX-run-dviout: Special hook for the Japanese dviout previewer for
 PC-9801.
 
@@ -195,6 +197,7 @@ The fifth element is obsolete and ignored."
 				(function-item TeX-run-shell)
 				(function-item TeX-run-discard)
 				(function-item TeX-run-background)
+				(function-item TeX-run-silent)
 				(function-item TeX-run-dviout)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
@@ -2587,6 +2590,7 @@ to use, as specified by TeX-font-list."
 	   (insert (nth 1 entry))
 	   (save-excursion
 	     (insert (nth 2 entry)))))))
+
 (defun TeX-font-replace (start end)
   "Replace font specification around point with START and END."
   (save-excursion
@@ -2855,6 +2859,7 @@ With prefix argument, always inserts \" characters."
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
+  (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
   (call-interactively 'self-insert-command))
