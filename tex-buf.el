@@ -466,14 +466,9 @@ entry."
 				TeX-output-extension)
 	TeX-output-extension)))
 
-(defun TeX-view-extension ()
-  "Get the extension of the current view output file"
-  (or TeX-view-extension
-      (TeX-output-extension)))
-
 (defun TeX-view-output-file ()
   "Get the name of the current TeX output file"
-  (TeX-active-master (TeX-view-extension)))
+  (TeX-active-master (TeX-output-extension)))
 
 (defun TeX-view-mouse (event)
   "Start `TeX-view' at mouse position."
@@ -580,7 +575,6 @@ Return the new process."
 (defun TeX-run-set-command (name command)
   "Remember TeX command to use to NAME and set corresponding output extension"
   (setq TeX-command-default name
-	TeX-view-extension nil
 	TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (let ((case-fold-search t)
 	(lst TeX-command-output-list))
