@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.44 1993-07-18 20:01:08 amanda Exp $
+@c $Id: auc-tex.texi,v 1.45 1993-07-21 15:40:43 amanda Exp $
 
 @finalout
 @titlepage
@@ -70,6 +70,15 @@ are VERY WELCOME.@refill
 
 Kresten Krab Thorup (6.0 original)
 Per Abrahamsen (later updates)
+
+There is a mailing list for discussion about AUC @TeX{} and announcement
+of alpha releases, write to @samp{auc-tex-request@@iesd.auc.dk} to join
+it.  Send contributions to @samp{auc-tex@@iesd.auc.dk}.
+
+Bug reports, suggestions for new features, and pleas for help should go
+to either @samp{auc-tex_mgr@@iesd.auc.dk} (the AUC @TeX{} managers), or
+to @samp{auc-tex@@iesd.auc.dk} (the mailing list) if they might have
+general interest.
 
 @end ifinfo
 
@@ -2703,6 +2712,10 @@ to be Vor@TeX{}, since I lifted the code directly from Vor@TeX{}.
 Thanks to Pehong Chen @samp{<phc@@renoir.berkeley.edu>} for writing the
 Vor@TeX{} code.  Thanks to Jak Kirman @samp{<jak@@cs.brown.edu>} for
 pointing out this nice Vor@TeX{} feature.
+
+@item
+Added information about AUC @TeX{} mail addresses to the manual.  Thanks
+to Dave Smith @samp{<maa507@@computing.lancaster.ac.uk>}.
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History
@@ -3581,13 +3594,14 @@ A new command @code{TeX-update} (@kbd{C-c C-u}) could be used to create
 an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
 (La)@TeX{}, until an error occur or we are done.
 
+An alternative is to have an @samp{Update} command that ensures the
+@samp{dvi} file is up to date.  This could be called before printing and
+previewing.
+
 @item
 Hook naming should be accoriding to the Emacs (19) guidelines.
 Specifically, only the hook @emph{variable} should be names @samp{-hook}.
 The hook functions should have other names.
-
-@item
-Define @code{TeX-add-hook} while we wait for Stallman.
 
 @item
 The documentation of the minor modes should be separated.
@@ -3729,14 +3743,10 @@ If there are minor modes loaded, ask the user which mode to describe."
 @end lisp
 
 @item
-The minor mode keymap support should be able to add and remove prefix
-characters conveniently.
-
-@item
 Make @code{TeX-next-error} parse ahead and store the results in a list,
 using markers to remember buffer positions in order to be more robust
 with regard to line numbers and changed files.  This is what
-@code{next-error} does.
+@code{next-error} does. (Or did, until Emacs 19).
 
 @item
 When @code{LaTeX-environment} is given an argument, change the current
