@@ -1,3 +1,7 @@
+2004-01-27  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (TeX-command-list): Fixed previous change.
+
 2004-01-25  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (japanese-TeX-command-list): Remove dummy code for
