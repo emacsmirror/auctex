@@ -2,6 +2,15 @@
 
 	* Release 0.9
 
+	* prv-install.el (preview-make-package-xemacs): Add directory
+	information from autoe.el to autoloads.
+
+	* Makefile.in (elisp): generate preview-latex.el only when no
+	package system.
+	(install-el): Depend on auto.el
+	(install-startup): Make and install preview-latex.el only when no
+	package system.
+
 	* prv-emacs.el (preview-create-icon-1): Use adaptive heuristic
 	mask for transparency.
 

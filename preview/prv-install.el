@@ -100,6 +100,9 @@ number of Lisp files to generate autoloads from."
         (update-autoloads-from-directory lisp-dir)
       (fset 'message si:message))
     (when (file-exists-p generated-autoload-file)
+      (with-temp-buffer (insert-file "auto.el")
+			(append-to-file (point-min) (point-max)
+					(generated-autoload-file)))
       (byte-compile-file generated-autoload-file)
       (push "auto-autoloads.el" els))
     ; Some people delete the pkginfo directory; this should not break

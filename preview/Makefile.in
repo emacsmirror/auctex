@@ -32,7 +32,10 @@ MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint
 
-elisp: $(LISP_OBJS) preview-latex.el
+elisp: $(LISP_OBJS)
+	if test $(packagedir) = no ; then \
+	  $(MAKE) preview-latex.el ; \
+	fi
 
 texmf: 
 	(cd latex ; $(MAKE) all)
@@ -66,7 +69,7 @@ use-hint:
 	@echo "Please use M-x preview-report-bug if you experience any"
 	@echo "problems not mentioned in there."
 
-install-el: $(LISP_OBJS)
+install-el: $(LISP_OBJS) auto.el
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
 	for x in $(LISP_SOURCES) ; do \
 	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
@@ -77,6 +80,7 @@ install-el: $(LISP_OBJS)
 	if test $(packagedir) != no; then \
 	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES) ; \
 	fi
+
 install-icons: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(icondir)
 	for x in $(ICON_SOURCES); do \
@@ -87,8 +91,11 @@ install-icons: $(ICON_SOURCES)
 install-texmf:
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
-install-startup: preview-latex.el
-	$(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir)
+install-startup:
+	if $(packagedir) = no; then \
+	  $(MAKE) preview-latex.el && \
+	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir) \
+	fi
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
