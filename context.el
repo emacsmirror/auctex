@@ -1283,33 +1283,7 @@ There might be text before point."
      ["Comment or Uncomment Paragraph"
       TeX-comment-or-uncomment-paragraph
       :help "Make the current paragraph outcommented or active again"]
-     ("Show/Hide"
-      ["Fold Mode" TeX-fold-mode
-       :style toggle
-       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :help "Toggle folding mode"]
-      "-"
-      ["Hide All" TeX-fold-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-b"
-       :help "Hide all configured ConTeXt constructs in the current buffer"]
-      ["Hide Current Macro" TeX-fold-macro
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-m"
-       :help "Hide the ConTeXt macro containing point"]
-      ["Hide Current Environment" TeX-fold-env
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-e"
-       :help "Hide the environment containing point"]
-      "-"
-      ["Show All" TeX-fold-clearout-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-x"
-       :help "Permanently show all folded content again"]
-      ["Show Current Item" TeX-fold-clearout-item
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-c"
-       :help "Permanently show the item containing point"])
+     ,TeX-fold-menu
      "-"
      ("Multifile/Parsing"
       ["Switch to Master File" TeX-home-buffer
