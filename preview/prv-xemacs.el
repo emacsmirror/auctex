@@ -26,147 +26,379 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'overlay))
+(require 'overlay)
 
-(defvar preview-compatibility-macros nil
-  "List of macros only present when compiling/loading.")
+;; Compatibility macros and functions.
 
-(defmacro preview-defmacro (name &rest rest)
-  (unless (fboundp name)
-    (push name preview-compatibility-macros)
-    `(defmacro ,name ,@rest)))
-(push 'preview-defmacro preview-compatibility-macros))
+(eval-when-compile
+  (defvar preview-compatibility-macros nil
+    "List of macros only present when compiling/loading.")
 
+  (defmacro preview-defmacro (name &rest rest)
+    (unless (fboundp name)
+      (push name preview-compatibility-macros)
+      `(defmacro ,name ,@rest)))
+  (push 'preview-defmacro preview-compatibility-macros))
+
+;; TODO: This is not as elegant as I'd like; the `list' should
+;; be evalled at macroexpand time.
 (preview-defmacro propertize (string &rest properties)
-		  `(let ((res (copy-sequence ,string)))
-		     (add-text-properties 0 (length res) ,properties res)
-		     res))
+  `(let ((res (copy-sequence ,string)))
+     (add-text-properties 0 (length res)
+                          (list ,@properties) res)
+     res))
 
 (preview-defmacro assoc-default (key alist test)
-		  `(cdr (assoc* ,key ,alist
-				:test #'(lambda(a b) (funcall ,test b a)))))
+  `(cdr (assoc* ,key ,alist
+                :test #'(lambda(a b) (funcall ,test b a)))))
 
 (preview-defmacro display-mm-height () '(device-mm-height))
 (preview-defmacro display-mm-width () '(device-mm-width))
 (preview-defmacro display-pixel-height () '(device-pixel-height))
 (preview-defmacro display-pixel-width () '(device-pixel-width))
-(preview-defmacro face-attribute (face attr)
-		  (unless (eq attr :height)
-		    (error "Know only how to fake face-height"))
-		  `(face-height ,face))
 (preview-defmacro line-beginning-position () '(point-at-bol))
 (preview-defmacro line-end-position () '(point-at-eol))
 
-(unless (fboundp 'find-image)
-  (defun find-image (specs)
-    "Find an image, choosing one of a list of image specifications.
+(preview-defmacro easy-menu-create-menu (menu-name menu-items)
+  "Return a menu called MENU-NAME with items described in MENU-ITEMS.
+MENU-NAME is a string, the name of the menu.  MENU-ITEMS is a list of items
+as described in `easy-menu-define'. The syntax of the list returned
+is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
+  `(list ,menu-name ,@(eval menu-items)))
 
-SPECS is a list of image specifications.
-
-Each image specification in SPECS is a property list.  The contents of
-a specification are image type dependent.  All specifications must at
-least contain the properties `:type TYPE' and either `:file FILE' or
-`:data DATA', where TYPE is a symbol specifying the image type,
-e.g. `xbm', FILE is the file to load the image from, and DATA is a
-string containing the actual image data.  The specification whose TYPE
-is supported, and FILE exists, is used to construct the image
-specification to be returned.  Return nil if no specification is
-satisfied.
-
-The image is looked for first on `load-path' and then in `data-directory'."
-    (let (image)
-      (while (and specs (null image))
-	(let* ((spec (car specs))
-	       (type (plist-get spec :type))
-	       (data (plist-get spec :data))
-	       (file (plist-get spec :file))
-	       found)
-	  (when (if (fboundp 'valid-image-instantiator-format-p)
-		    (valid-image-instantiator-format-p type)
-		  (image-type-available-p type))
-	    (cond ((stringp file)
-		   (let ((path load-path))
-		     (while (and (not found) path)
-		       (let ((try-file (expand-file-name file (car path))))
-			 (when (file-readable-p try-file)
-			   (setq found try-file)))
-		       (setq path (cdr path)))
-		     (unless found
-		       (let ((try-file (expand-file-name file data-directory)))
-			 (if (file-readable-p try-file)
-			     (setq found try-file))))
-		     (if found
-			 (setq image
-			       (cons 'image (plist-put (copy-sequence spec)
-						       :file found))))))
-		  ((not (null data))
-		   (setq image (cons 'image spec)))))
-	  (setq specs (cdr specs))))
-      image)))
-  
-(preview-defmacro defimage (symbol specs &optional doc)
-  "Define SYMBOL as an image.
-
-SPECS is a list of image specifications.  DOC is an optional
-documentation string.
-
-Each image specification in SPECS is a property list.  The contents of
-a specification are image type dependent.  All specifications must at
-least contain the properties `:type TYPE' and either `:file FILE' or
-`:data DATA', where TYPE is a symbol specifying the image type,
-e.g. `xbm', FILE is the file to load the image from, and DATA is a
-string containing the actual image data.  The first image
-specification whose TYPE is supported, and FILE exists, is used to
-define SYMBOL.
-
-Example:
-
-   (defimage test-image ((:type xpm :file \"~/test1.xpm\")
-                         (:type xbm :file \"~/test1.xbm\")))"
-      `(defvar ,symbol (find-image ',specs) ,doc))
+(preview-defmacro face-attribute (face attr)
+  `(cond
+    ((eq ,attr :height)
+     (face-height ,face))
+    ((eq ,attr :foreground)
+     (face-foreground-instance ,face))
+    ((eq ,attr :background)
+     (face-background-instance ,face))
+    (t
+     (error (concat "Don't know how to fake " (symbol-name ,attr))))))
 
 (preview-defmacro make-temp-file (prefix dir-flag)
-		  (if (not dir-flag)
-		      (error "Can only fake make-temp-file for directories"))
-		  `(let (file)
-		     (while (condition-case ()
-				(progn
-				  (setq file
-					(make-temp-name ,prefix))
-				  (make-directory file)
-				  nil)
-			      (file-already-exists t))
-		       nil)
-		     file))
+  (if (not dir-flag)
+      (error "Can only fake make-temp-file for directories"))
+  `(let (file)
+     (while (condition-case ()
+                (progn
+                  (setq file
+                        (make-temp-name ,prefix))
+                  (make-directory file)
+                  nil)
+              (file-already-exists t))
+       nil)
+     file))
 
-(defun preview-add-urgentization (ov fun buff)
-  (set-extent-property ov 'initial-redisplay-function
-		       `(lambda (ov) (,fun ov ,buff))))
+(preview-defmacro next-single-char-property-change (pos prop &optional object limit)
+  "Return the position of next property change for a specific property.
 
-(defun preview-remove-urgentization (ov)
-  (set-extent-property ov 'initial-redisplay-function nil))
+This is like `next-single-property-change', except that if no
+change is found before the end of the OBJECT, it returns the
+maximum valid position in OBJECT rather than `nil'."
+  `(or (next-single-property-change ,pos ,prop ,object ,limit)
+       ;; The lack of checking that object isa buffer-or-string is safe;
+       ;; `next-single-property-change' throws a noncontinuable error
+       ;; if this is not so.
+       (and (sequencep ,object)
+            (length ,object))
+       (and (bufferp ,object)
+            (point-max ,object))))
 
-;; Must be something similar to this.
+(preview-defmacro previous-single-char-property-change (pos prop &optional object limit)
+  "Return the position of previous property change for a specific property.
+
+This is like `next-single-char-property-change', but scans back
+from POS instead of forward, and returns the minimum valid
+position in OBJECT if no change is found."
+  `(or (previous-single-property-change ,pos ,prop ,object ,limit)
+       ;; The lack of checking that object isa buffer-or-string is safe;
+       ;; `next-single-property-change' throws a noncontinuable error
+       ;; if this is not so.
+       (and (sequencep ,object)
+            0)
+       (and (bufferp ,object)
+            (point-min ,object))))
+
+
+(preview-defmacro with-temp-message (message &rest body)
+  "Display MESSAGE temporarily if non-nil while BODY is evaluated.
+The original message is restored to the echo area after BODY has finished.
+The value returned is the value of the last form in BODY.
+MESSAGE is written to the message log buffer if `message-log-max' is non-nil.
+If MESSAGE is nil, the echo area and message log buffer are unchanged.
+Use a MESSAGE of \"\" to temporarily clear the echo area.
+
+The message is displayed with label `progress'; see `display-message'."
+  (let ((current-message (make-symbol "current-message"))
+        (temp-message (make-symbol "with-temp-message")))
+    `(let ((,temp-message ,message)
+           (,current-message))
+       (unwind-protect
+           (progn
+             (when ,temp-message
+               (setq ,current-message (current-message))
+               (display-message 'progress ,temp-message))
+             ,@body)
+         (and ,temp-message
+              (if ,current-message
+                  (display-message 'progress ,current-message)
+                (message nil)))))))
+
+(defun preview-mark-active ()
+  "Return t if the mark is active."
+  (and (mark)
+       t))
+
+;; Stuff missing from XEmacs that should really be there.
+;; In time, this will hopefully all migrate into XEmacs.
+
+(defmacro map-plist (function plist)
+  "Map FUNCTION over a property list PLIST.
+FUNCTION should take one argument, a cons cell."
+  `(check-valid-plist ,plist)
+  `(mapc ,function (plist-to-alist ,plist)))
+
+(defun destructive-replace-glyph (glyph new-glyph)
+  "Destructively replace the contents of GLYPH with those of NEW-GLYPH."
+  (map-plist #'(lambda (property)
+                 ; XEmacs hands out nil properties that can't be set :(
+                 (and (cdr property)
+                      (set-glyph-property new-glyph (car property) (cdr property))))
+             (object-plist glyph))
+  new-glyph)
+
+(defun copy-glyph (glyph)
+  "Return a deep copy of GLYPH."
+  (destructive-replace-glyph glyph (make-glyph nil (glyph-type glyph))))
+
+; XEmacs's `add-to-list' takes only two arguments.
+(defun add-to-list (list-var element &optional append)
+  "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
+The test for presence of ELEMENT is done with `equal'.
+If ELEMENT is added, it is added at the beginning of the list,
+unless the optional argument APPEND is non-nil, in which case
+ELEMENT is added at the end.
+
+If you want to use `add-to-list' on a variable that is not defined
+until a certain package is loaded, you should put the call to `add-to-list'
+into a hook function that will be run only after loading the package.
+`eval-after-load' provides one way to do this.  In some cases
+other hooks, such as major mode hooks, can do the job."
+  (if (member element (symbol-value list-var))
+      (symbol-value list-var)
+    (set list-var
+         (if append
+             (append (symbol-value list-var) (list element))
+           (cons element (symbol-value list-var))))))
+
+;; Images.
+
+;; TODO: Generalize this so we can create the fixed icons using it.
+
+(defmacro preview-create-icon (file type ascent)
+  "Create an icon from FILE, image TYPE and ASCENT."
+  `(let ((glyph
+          (make-glyph
+           (vector ,type
+                   :file ,file))))
+     (set-glyph-baseline glyph ,ascent)
+     glyph))
+
 (defvar preview-nonready-icon
   (let ((glyph
-	 (make-glyph (list [xpm :file "help.xpm"]
-			   [xbm :file "help.xbm"]))))
+         (make-glyph
+          (list
+           `[xpm :file ,(locate-data-file "help.xpm")]
+           `[xbm :file ,(locate-data-file "help.xbm")]))))
     (set-glyph-baseline glyph 80)
-    glyph))
-  
+    glyph)
+  "The symbol used for previews to be generated.
+Usually a question mark.")
 
-;; That's the original Emacs stuff...
-;; (defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
-;; 				 (:type pbm :file "help.pbm" :ascent
-;; 					80))
-;;   "The symbol used for previews to be generated.
-;; Usually a question mark")
+(defvar preview-icon
+  (let ((glyph
+         (make-glyph
+          (list
+           `[xpm :file ,(locate-data-file "search.xpm")])))) 
+    (set-glyph-baseline glyph 100)
+    glyph)
+  "The symbol used for an open preview.
+Usually a magnifying glass.")
 
-;; (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
-;; 			(:type pbm :file "search.pbm" :ascent 100))
-;;   "The symbol used for an open preview.
-;; Usually a magnifying glass.")
+;; Image frobbing.
 
-	
+(defun preview-add-urgentization (fun ov buff)
+  "Cause FUN to be called with OV and BUFF when redisplayed."
+  (set-extent-property ov 'initial-redisplay-function
+                       `(lambda (ov) (,fun ov ,buff))))
+
+(defun preview-remove-urgentization (ov)
+  "Undo urgentization of OV by `preview-add-urgentization'."
+  (set-extent-property ov 'initial-redisplay-function nil))
+
+(defmacro preview-image-from-icon (icon)
+  "Generate a copy of the ICON that is \"editable\".
+Which means that `preview-replace-icon' can be called on the
+value returned here, and wherever the value was used, the new
+image will appear, while ICON itself is not changed."
+  `(copy-glyph ,icon))
+
+;; TODO: Shouldn't this be renamed to something like `preview-image-property'?
+;; We don't *need* to create a silly one-character string with contents that are
+;; never seen...
+(defmacro preview-string-from-image (image)
+  "Make a string displaying IMAGE."
+  `(propertize "x" 'begin-glyph ,image))
+
+(defmacro preview-replace-icon (icon replacement)
+  "Replace an ICON representation by REPLACEMENT, another icon."
+  `(destructive-replace-glyph ,icon (copy-glyph ,replacement)))
+
+(defvar preview-button-1 [mouse-2])
+(defvar preview-button-2 [mouse-3])
+
+;; TODO: doesn't seem quite to work yet; the image is highlighted
+;;       but not click-responsive.
+;; This is so similar to the GNU Emacs function that some refactoring
+;; is probably called for.
+(defmacro preview-make-clickable (&optional map string helpstring click1 click2)
+  "Generate a clickable string or keymap.
+If MAP is non-nil, it specifies a keymap to add to, otherwise
+a new one is created.  If STRING is given, the result is made
+a property of it.  In that case, HELPSTRING is a format string
+with one or two %s specifiers for preview's clicks, displayed
+via balloon-help.  CLICK1 and CLICK2 are functions to call
+on preview's clicks."
+  `(let (,@(if string `((res (copy-sequence ,string))))
+           (resmap ,(or map '(make-sparse-keymap))))
+     ,@(if click1
+           `((define-key resmap preview-button-1 ,click1)))
+     ,@(if click2
+           `((define-key resmap preview-button-2 ,click2)))
+     ,@(if string
+           `((add-text-properties
+              0 (length res)
+              (list 'mouse-face 'highlight
+              'balloon-help (lambda (extent)
+                              (format ,helpstring preview-button-1 preview-button-2))
+              'keymap resmap)
+              res)
+             res)
+         '(resmap))))
+
+(defun preview-ps-image (filename scale)
+  "Place a PostScript image directly by Emacs.
+This uses XEmacs built-in PostScript image support for
+rendering the preview image in EPS file FILENAME, with
+a scale factor of SCALE indicating the relation of desired
+image size on-screen to the size the PostScript code
+specifies.
+
+Since there is, as yet, no such support, this is stubbed out.
+This will not be so forever."
+  (error 'image-conversion-error "PostScript images are not supported."))
+
+;; TODO: Everything to do with point-motion and calling `preview-disable'.
+
+;; Most of the changes to this are junking the use of overlays;
+;; a bit of it is different, and there's a little extra paranoia.
+(defun preview-toggle (ov &optional args)
+  "Toggle visibility of preview overlay OV.
+ARGS can be one of the following, in order to make this most
+useful for isearch hooks: nothing, which means making the
+overlay contents visible.  nil currently means the same (this
+is the value used when isearch temporarily opens the overlay)
+but could change in future, for example displaying both preview
+and source text.  t makes the contents invisible, and 'toggle
+toggles it."
+  (if (not (bufferp (extent-object ov)))
+      (error 'wrong-type-argument ov))
+  (let ((old-urgent (preview-remove-urgentization ov))
+        (preview-state
+         (if (if (eq args 'toggle)
+                 (not (eq (extent-property ov 'preview-state) 'active))
+               args)
+             'active
+           'inactive))
+        (strings (extent-property ov 'strings)))
+    (unless (eq (extent-property ov 'preview-state) 'disabled)
+      (set-extent-property ov 'preview-state preview-state)
+      (if (eq preview-state 'active)
+          (progn
+            (set-extent-property ov 'invisible t)
+            (if (eq (extent-start-position ov) (extent-end-position ov))
+                (set-extent-properties `(begin-glyph ,(car strings)
+                                         begin-glyph-layout text))
+              (dolist (prop '(begin-glyph keymap mouse-face balloon-help))
+                (set-extent-property ov prop
+                                     (get-text-property 0 prop (caar strings)))))
+            (set-extent-property ov 'face nil)
+;            (with-current-buffer (overlay-object ov)  ; not yet implemented
+;              (add-hook 'pre-command-hook #'preview-mark-point nil t)
+;              (add-hook 'post-command-hook #'preview-move-point nil t))
+            )
+        (dolist (prop '(keymap mouse-face balloon-help invisible))
+          (set-extent-property ov prop nil))
+        (set-extent-properties ov `(face preview-face begin-glyph ,(cadr strings))))
+      (if old-urgent
+          (apply 'preview-add-urgentization old-urgent)))))
+
+; Does FALLBACKS need to be implemented?
+(defun preview-inherited-face-attribute (face attribute &optional
+                                              fallbacks)
+  "Fetch face attribute while adhering to inheritance.
+This searches FACE and all its ancestors for an ATTRIBUTE.
+FALLBACKS is unused."
+  (face-attribute face attribute))
+
+(defmacro preview-with-LaTeX-menus (&rest bodyforms)
+  "This activates the LaTeX menus for the BODYFORMS
+so that one can add to them.
+XEmacs doesn't need any activation to speak of."
+  `(progn ,@bodyforms))
+
+;  `(let* ((save-menu current-menubar)
+;          (current-menubar 
+;  `(let ((save-map (current-local-map)))
+;     (unwind-protect
+;	 (progn
+;	   (use-local-map LaTeX-mode-map) ,@bodyforms)
+;       (use-local-map save-map))))
+
+(defun preview-gs-get-colors ()
+  "Return color setup tokens for GhostScript.
+Fetches the current screen colors and makes a list of tokens
+suitable for passing into GhostScript as arguments.
+Pure borderless black-on-white will return NIL."
+  (let
+      ((bg (color-instance-rgb-components (preview-inherited-face-attribute
+             'preview-reference-face :background 'default)))
+       (fg (color-instance-rgb-components (preview-inherited-face-attribute
+                                           'preview-reference-face :foreground 'default))))
+    (if (equal '(65535 65535 65535) bg)
+        (setq bg nil))
+    (if (equal '(0 0 0) fg)
+        (setq fg nil))
+    (append
+     (if (and bg (not fg))
+         '("gsave"))
+     (if bg
+         (append
+          (mapcar #'preview-gs-color-value bg)
+          '("setrgbcolor" "clippath" "fill")))
+     (if (and bg (not fg))
+         '("grestore"))
+     (if fg
+         (append
+          (mapcar #'preview-gs-color-value fg)
+          '("setrgbcolor"))))))
+
+(provide 'prv-xemacs)
+
+;;; Local variables:
+;;; eval: (put 'preview-defmacro 'lisp-indent-function 'defun)
+;;; end:
 
 ;;; prv-xemacs.el ends here
