@@ -17,7 +17,7 @@ might provide an abstraction layer that would make it possible to embed
 @item Pepper the manual with screen shots and graphics
 This will be of interest for the @acronym{HTML} and @TeX{} renditions
 of the texinfo manual.  Except for maybe autoconverted ASCII art
-versions of the @{xbm} icons, the info rendition will usually be
+versions of the @acronym{XBM} icons, the info rendition will usually be
 restricted to text descriptions, however.
 
 @item Fix GhostScript rendering of Emacs
