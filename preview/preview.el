@@ -22,24 +22,27 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.48 2001-11-15 13:19:11 dakas Exp $
+;; $Id: preview.el,v 1.49 2001-11-20 11:19:40 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
-;; into LaTeX source code.  The current usage is to put
-;; (require 'preview)
-;; into your .emacs file and the file somewhere into your load-path.
-;; Auc-TeX is required as to now.
+;; into LaTeX source code.  Please see the README and INSTALL files
+;; for further instruction.  If you know what you are doing, in a
+;; nutshell
+;;
+;; (autoload 'LaTeX-preview-setup "preview")
+;; (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+;;
+;; at the correct location will enable this mode.
+;;
 ;; Please use the usual configure script for installation.
 ;; Quite a few things with regard to its operation can be configured
 ;; by using
 ;; M-x customize-group RET preview RET
 ;; LaTeX needs to access a special style file "preview.sty".  For the
 ;; installation of this style file, use the provided configure and
-;; install scripts.
+;; INSTALL scripts.
 ;;
 ;; Please report bugs with M-x preview-report-bug RET
-;;
-;;; History:
 ;;
 
 ;;; Code:
@@ -1300,7 +1303,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.48 $"))
+	(rev "$Revision: 1.49 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
