@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.443 $"))
+	    (rev "$Revision: 5.444 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-25 14:19:10 $"))
+    (let ((date "$Date: 2004-08-25 16:02:41 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3651,10 +3651,8 @@ If LIMIT is non-nil, search up to this position in the buffer."
       (while (and (/= arg 0)
 		  (re-search-backward "{\\|}" limit t 1))
 	(setq brace (match-string 0))
-	(when (not (TeX-looking-at-backward
-		    (concat (regexp-quote TeX-esc) "\\("
-			    (regexp-quote (concat TeX-esc TeX-esc))
-			    "\\)*")))
+	(when (save-excursion
+		 (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2)))
 	  (cond ((string= brace "}")
 		 (setq arg (1+ arg)))
 		(t
