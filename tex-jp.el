@@ -226,8 +226,8 @@
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
-(defun japanese-plain-tex-mode ()
-  "Major mode for editing Japanese plain TeX files.
+(TeX-defun japanese-plain-tex-mode ()
+  "Major mode in %s for editing Japanese plain TeX files.
 Set japanese-TeX-mode to t, and enters plain-tex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
@@ -241,8 +241,8 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 (add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
 ;;;###autoload
-(defun japanese-latex-mode ()
-  "Major mode for editing Japanese LaTeX files.
+(TeX-defun japanese-latex-mode ()
+  "Major mode in %s for editing Japanese LaTeX files.
 Set japanese-TeX-mode to t, and enters latex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
