@@ -59,16 +59,15 @@ CP = cp
 
 SHELL = /bin/sh
 
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
 WWWDIR = $(HOME)/.public_html/auctex
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  
+REMOVE =  auc-html.el 
 
-MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el \
-	multi-prompt.el
+MINMAPSRC = auc-menu.el maniac.el outln-18.el all.el multi-prompt.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el
 

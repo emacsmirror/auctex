@@ -79,26 +79,7 @@ The directory names *must* end with a slash.")
 	parenthesis.
 
 
-[ This should be unnecessary in 9.6 --Per ]
-STEP 3.	Edit the file tex-buf.el and insert the string windows-nt as
-	indicated below. This will make Auc-Tex chose Tex-Shell to 
-	become cmd and TeX-shell-command-option /c. 
-
-	(defvar TeX-shell
-	  (if (memq system-type '(ms-dos emx windows-nt))
-	shell-file-name
-	"/bin/sh" )
-	"Name of shell used to parse TeX commands.")
-
-	(defvar TeX-shell-command-option
-	(cond ((eq system-type '(ms-dos windows-nt)) 
-		 (if (boundp 'shell-command-option)
-		     shell-command-option
-		   "-c"))
-		(t			;Unix & EMX (Emacs 19 port to OS/2)
-		 "/c"))
-	  "Shell argument indicating that next argument is the command.")
-
+STEP 3.	[ This should be unnecessary in 9.6 --Per ]
 
 STEP 4.	Add the following line to your _emacs file:
 	(require 'tex-site)
@@ -113,16 +94,7 @@ STEP 4.	Byte-compile AUC-TeX: Go to the auctex directory, start Emacs,
 	byte-recompile-directory).
 
 
-STEP 5. [OPTIONAL]
-	EITHER:
-	Compile the LaCheck utility using your favourite C compiler.
-	Look in the .../auctex/lacheck/makefile file to see what should be
-	done. I have not tried this, but I cannot see any reasons why
-	it should not work.
-	OR:
-	Ftp a copy of a DOS binary from ftp.iesd.auc.dk:/pub/packages/LaCheck.
-	[ This is an old version --Per ]
-
+STEP 5. [ Look in  the manual for information about LaCheck and texchk. ]
 
 STEP 6.	[OPTIONAL]
 	Print the manual. If there is no .dvi file in the doc
