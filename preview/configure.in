@@ -19,17 +19,17 @@ dnl Now we use the old AC_INIT macro for versions 2.0 to 2.19.  That
 dnl should make the proper split between 2.13 and 2.49a.
 dnl
 ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
-  [AC_INIT(preview-latex,0.7.8,preview-latex-bugs@lists.sourceforge.net)],
+  [AC_INIT(preview-latex,0.7.9,preview-latex-bugs@lists.sourceforge.net)],
   [AC_INIT(preview.el)])
 
 AC_SET_MAKE
 AC_PROG_INSTALL
-AC_PROG_EMACS
+EMACS_PROG_EMACS
 
 packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
-   AC_PATH_PACKAGEDIR([preview])
+   EMACS_PATH_PACKAGEDIR([preview])
    ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
    lispdir='${packagedir}/lisp/preview'
    icondir='${packagedir}/etc/preview'
@@ -37,7 +37,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
 else
    PLAT_LISP=prv-emacs.el
    AC_MSG_CHECKING([if $EMACS supports images])
-   AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types)\
+   EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types)\
 		 (error \"This Emacs does not support images\"))], "noecho")
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
       AC_MSG_ERROR("You need an Emacs that supports images")
@@ -45,7 +45,7 @@ else
       AC_MSG_RESULT([yes])
    fi
    
-   AC_PATH_LISPDIR([preview],[preview])
+   EMACS_PATH_LISPDIR([preview],[preview])
    ICONFORM= # TODO: fill this in
    icondir='${lispdir}'
 fi
@@ -55,7 +55,7 @@ AC_SUBST(ICONFORM)
 AC_SUBST(packagedir)
 AC_SUBST(icondir)
 
-AC_CHECK_AUCTEX
+EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
 
 AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE, 
@@ -113,10 +113,10 @@ if test -z "$TEXHASH"; then
   fi
 fi
 
-AC_PATH_TEXMFDIR
+TEX_PATH_TEXMFDIR
 
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
-AC_CHECK_MACROS_MAKEINFO(acronym env option)
+MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
 AC_SHELL_QUOTIFY(texmfdir)

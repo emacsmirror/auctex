@@ -3,7 +3,7 @@
 dnl mostly stolen from emacs-w3m, credit to Katsumi Yamaoka
 dnl <yamaoka@jpl.org>
 
-AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
+AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
   tmpprefix="${prefix}"
   AC_FULL_EXPAND(tmpprefix)
@@ -41,18 +41,18 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
 	\"NONE\"))],
     [noecho],,[prefix],["${tmpprefix}"])])
 
-AC_DEFUN(AC_PATH_PACKAGEDIR,
+AC_DEFUN(EMACS_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
   if test ${EMACS_FLAVOR} = xemacs; then
     AC_MSG_CHECKING([for XEmacs package directory])
     AC_ARG_WITH(packagedir,
       [  --with-packagedir=DIR   package DIR for XEmacs],
       [if test "${withval}" = yes -o -z "${withval}"; then
-	AC_EXAMINE_PACKAGEDIR($1)
+	EMACS_EXAMINE_PACKAGEDIR($1)
       else
 	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
       fi],
-      [AC_EXAMINE_PACKAGEDIR($1)])
+      [EMACS_EXAMINE_PACKAGEDIR($1)])
     if test -z "${packagedir}"; then
       AC_MSG_RESULT(not found)
     else
@@ -64,11 +64,11 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
   AC_SUBST(packagedir)])
 
 
-AC_DEFUN(AC_PATH_TEXMFDIR,
+AC_DEFUN(TEX_PATH_TEXMFDIR,
  [
 AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
  [ texmfdir="${withval}" ;
-   AC_FULL_EXPAND(withval) 
+   AC_FULL_EXPAND(withval)
    if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
    fi
@@ -88,7 +88,7 @@ AC_ARG_WITH(tex-dir,
 AC_ARG_WITH(doc-dir,
   [  --with-doc-dir=DIR      Location to install preview.dvi],
   [ previewdocdir="${withval}" ; 
-    AC_FULL_EXPAND(withval)
+   AC_FULL_EXPAND(withval)
    if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
    fi
@@ -113,7 +113,6 @@ EOF
 	if test ! -z "$texmfdir"  ; then
 	    previewtexmfdir='$(texmfdir)'
 	    previewdocdir='$(texmfdir)'
-	    
 	fi
     else
 	previewdocdir='$(texmfdir)/doc/latex/styles'
@@ -187,7 +186,6 @@ AC_SUBST(texmfdir)
 AC_SUBST(previewtexmfdir)
 AC_SUBST(previewdocdir)])
 
-
 AC_DEFUN(AC_FULL_EXPAND,
 [ while :;do case "[$]$1" in *\[$]*) eval "$1=\"`sed 's/[[\\\`"]]/\\\\&/' <<EOF
 [$]$1
@@ -197,11 +195,10 @@ EOF
 
 
 
-dnl AC_EMACS_LISP AC_XEMACS_P AC_PATH_LISPDIR and AC_EMACS_CHECK_LIB
-dnl are stolen from w3.
-dnl AC_PATH_LISPDIR obsoletes AM_PATH_LISPDIR.
+dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
+dnl adapted from w3.
 
-AC_DEFUN(AC_EMACS_LISP, [
+AC_DEFUN(EMACS_LISP, [
 elisp="$2"
 if test -z "$3"; then
 	AC_MSG_CHECKING(for $1)
@@ -222,7 +219,7 @@ fi
 ])
 
 
-AC_DEFUN(AC_PROG_EMACS, [
+AC_DEFUN(EMACS_PROG_EMACS, [
 # Check for (x)emacs, report its' path and flavour
 
 # Apparently, if you run a shell window in Emacs, it sets the EMACS
@@ -247,7 +244,7 @@ if test -z "$EMACS"; then
 fi
 
 AC_MSG_CHECKING([if $EMACS is XEmacs])
-AC_EMACS_LISP(XEMACS,
+EMACS_LISP(XEMACS,
 	[(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\")],quiet)
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
@@ -260,37 +257,53 @@ fi
 ])
 
 
-AC_DEFUN(AC_PATH_LISPDIR, [
-  if test "$prefix" = "NONE"; then
-     AC_MSG_CHECKING([prefix for your Emacs])
-     AC_EMACS_LISP(prefix,(expand-file-name \"..\" invocation-directory),
-		   "noecho")
-     prefix=${EMACS_cv_SYS_prefix}
-     AC_MSG_RESULT($prefix)
-  fi
+AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
      [  --with-lispdir=DIR      Where to install lisp files], 
-     [lispdir="${withval}"],
-[    dnl Set default value
-     theprefix="$prefix"
-     if test "x$theprefix" = "xNONE"; then
-        theprefix="$ac_default_prefix"
+     lispdir="${withval}",
+     [EMACS_PREFIX="${prefix}"	
+     if test "$EMACS_PREFIX" = "NONE"; then
+        EMACS_LISP(EMACS_PREFIX,
+                   (expand-file-name \"..\" invocation-directory), silent)
      fi
-     lispdir="\$(datadir)/${EMACS_FLAVOR}/site-lisp"
-     for thedir in share lib; do
-	AC_FULL_EXPAND(withval)
-	if test -d "${withval}"; then
-           lispdir="\$(prefix)/${thedir}/${EMACS_FLAVOR}/site-lisp"
-           break
+     EMACS_DATADIR="${EMACS_PREFIX}/\\\\(share\\\\|lib\\\\)"
+     if test $EMACS_FLAVOR = emacs; then
+        if test "$datadir" != '${prefix}/share'; then
+           EMACS_DATADIR="$datadir"
         fi
-     done
-     if test -n "$2"; then 
-        lispdir="$lispdir/$2"
+	EMACS_LISPDIR="${EMACS_DATADIR}/emacs/site-lisp"
+     fi
+     if test $EMACS_FLAVOR = xemacs; then
+        if test "$libdir" != '${exec_prefix}/lib'; then
+	   EMACS_DATADIR="$libdir"
+        fi
+	EMACS_LISPDIR="${EMACS_DATADIR}/xemacs/site-packages/lisp"
+        if test -n "$packagedir"; then
+  	   EMACS_LISPDIR="$packagedir/lisp"
+        fi
+     fi
+     EMACS_LISP(lispdir,
+        [(let ((load-path load-path))
+            (while (and load-path (not (string-match 
+                  		\"^${EMACS_LISPDIR}/?\$\" (car load-path))))
+                   (setq load-path (cdr load-path))) 
+            (if load-path 
+                (substring (car load-path) 0 
+			   (string-match \"/\$\" (car load-path))) 
+		\"\"))], silent)
+     if test -z "$lispdir"; then
+	AC_MSG_ERROR([Cannot locate lisp directory
+
+Use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs), 
+--libdir (xemacs), or possibly --prefix to rectify this])
+     fi
+     if test -n "$1"; then 
+        lispdir="$lispdir/$1"
      fi])
   AC_MSG_RESULT($lispdir)
-  AC_SUBST(lispdir)
-])
+  AC_SUBST(lispdir)]
+)
 
 AC_DEFUN(AC_CHECK_PROG_REQUIRED, [
 AC_CHECK_PROG($1, $2, NONE)
@@ -326,12 +339,12 @@ dnl
 dnl Check whether a function exists in a library
 dnl All '_' characters in the first argument are converted to '-'
 dnl
-AC_DEFUN(AC_EMACS_CHECK_LIB, [
+AC_DEFUN(EMACS_CHECK_LIB, [
 if test -z "$3"; then
 	AC_MSG_CHECKING(for $2 in $1)
 fi
 library=`echo $1 | tr _ -`
-AC_EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
+EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi
@@ -349,12 +362,12 @@ dnl
 dnl Check whether a library is require'able
 dnl All '_' characters in the first argument are converted to '-'
 dnl
-AC_DEFUN(AC_EMACS_CHECK_REQUIRE, [
+AC_DEFUN(EMACS_CHECK_REQUIRE, [
 if test -z "$2"; then
 	AC_MSG_CHECKING(for $1)
 fi
 library=`echo $1 | tr _ -`
-AC_EMACS_LISP($1, 
+EMACS_LISP($1, 
 	[(condition-case nil (require '$library ) \
 	(error (prog1 nil (message \"$library not found\"))))],"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
@@ -373,7 +386,7 @@ fi
 dnl
 dnl Perform sanity checking and try to locate the W3 package
 dnl
-AC_DEFUN(AC_CHECK_AUCTEX, [
+AC_DEFUN(EMACS_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
 AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
  [ auctexdir="${withval}" ; 
@@ -384,7 +397,7 @@ AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.e
 ])
 if test -z "$auctexdir" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
-  AC_EMACS_CHECK_REQUIRE(tex_site,silent)
+  EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
   	EMACS_cv_ACCEPTABLE_AUCTEX=yes
   else
@@ -392,7 +405,7 @@ if test -z "$auctexdir" ; then
   fi
 
   if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
-	AC_EMACS_LISP(auctex_dir, 
+	EMACS_LISP(auctex_dir, 
 		[(let ((aucdir (file-name-directory\
                          (locate-library \"tex-site\"))))\
                          (if (string-match \"[\\\\/]\$\" aucdir)\
@@ -416,32 +429,32 @@ fi
 ])
 
 dnl
-dnl AC_CHECK_MACRO_MAKEINFO( MACRO, [ACTION-IF-FOUND 
+dnl MAKEINFO_CHECK_MACRO( MACRO, [ACTION-IF-FOUND 
 dnl					[, ACTION-IF-NOT-FOUND]])
 dnl
-AC_DEFUN(AC_CHECK_MACRO_MAKEINFO,
+AC_DEFUN(MAKEINFO_CHECK_MACRO,
 [if test -n "$MAKEINFO" -a "$makeinfo" != ":"; then
   AC_MSG_CHECKING([if $MAKEINFO understands @$1{}])
-  echo \\\\input texinfo >test.texi
-  echo @$1{test} >>test.texi
-  if $MAKEINFO test.texi > /dev/null 2> /dev/null; then
+  echo \\\\input texinfo > conftest.texi
+  echo @$1{test} >> conftest.texi
+  if $MAKEINFO conftest.texi > /dev/null 2> /dev/null; then
     AC_MSG_RESULT(yes)	
     ifelse([$2], , :, [$2])
   else  
     AC_MSG_RESULT(no)	
     ifelse([$3], , :, [$3])
   fi
-  rm -f test.texi test.info
+  rm -f conftest.texi conftest.info
 fi
 ])
 
 dnl
-dnl AC_CHECK_MACROS_MAKEINFO( MACRO ... [, ACTION-IF-FOUND 
+dnl MAKEINFO_CHECK_MACROS( MACRO ... [, ACTION-IF-FOUND 
 dnl					[, ACTION-IF-NOT-FOUND]])
 dnl
-AC_DEFUN(AC_CHECK_MACROS_MAKEINFO,
+AC_DEFUN(MAKEINFO_CHECK_MACROS,
 [for ac_macro in $1; do
-    AC_CHECK_MACRO_MAKEINFO($ac_macro, $2, 
+    TEXINFO_CHECK_MACRO_MAKEINFO($ac_macro, $2, 
 	[MAKEINFO_MACROS="-D no-$ac_macro $MAKEINFO_MACROS"
 	$3])dnl
   done
