@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.94 1994-05-04 22:54:14 amanda Exp $
+# $Id: Makefile,v 5.95 1994-05-05 14:51:15 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -168,7 +168,7 @@ install: LispInstall LaInstall DocInstall
 	@echo "** storage, depending on your the TeX style files. "
 	@echo "** It is possible to use AUC TeX without this information."
 	@echo "** "
-	@echo "** To do this start emacs and type
+	@echo "** To do this start emacs and type"
 	@echo "** \"M-x TeX-auto-generate-global RET\"."
 	@echo "** INPORTANT:  You must install tex-site.el first!"
 	@echo "** "
