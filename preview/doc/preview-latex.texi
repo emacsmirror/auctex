@@ -443,7 +443,7 @@ the original paper output scaled by the specified factor, at least if
 Emacs' information about screen size and resolution are correct.  The
 default is to let @code{preview-scale-from-face} determine the scale
 function.  This function determines the scale factor by making the
-size of the default font in the document math that of the on-screen
+size of the default font in the document match that of the on-screen
 fonts.
 
 The size of the screen fonts is deduced from the font
