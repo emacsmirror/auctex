@@ -51,14 +51,14 @@ This package contains the lisp modules for GNU Emacs 21.1 or higher.
 Summary:	Emacs/LaTeX inline preview (XEmacs lisp files)
 Group: 		Applications/Editors
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	xemacs >= 21.4
+Requires:	xemacs >= 21.1
 
 %description xemacs
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
-This package contains the lisp modules for XEmacs 21.4 or higher.  
+This package contains the lisp modules for XEmacs 21.1 or higher.  
 
 %prep
 %setup -c -q
