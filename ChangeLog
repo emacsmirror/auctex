@@ -1,3 +1,8 @@
+2004-03-26  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-format-filter): Strictly restrict backward
+	searches for page number patterns.
+
 2004-03-26  Davide G. M. Salvetti  <salve@debian.org>
 
 	* bib-cite.el, latex.el, tex-buf.el, tex-jp.el, tex.el:
