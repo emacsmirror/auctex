@@ -36,9 +36,9 @@ alpha test version.  11.11 is known to work well.  If this option is not
 available to you, try the patch described in the @file{PROBLEMS} file or
 @ref{Known problems}).
 
-@item A working La@TeX{} installation
+@item A working @LaTeX{} installation
 
-Preview should work with nearly any La@TeX{} installation which contains
+Preview should work with nearly any @LaTeX{} installation which contains
 dvips, though most testing has taken place using tetex-based
 distributions.
 
@@ -145,7 +145,7 @@ Next put the following lines into your @file{.emacs} file:
 @end example
 
 This will make Emacs load @file{preview.el} and let it install itself
-into AUC @TeX{} when you first load a La@TeX{} file (be sure to have AUC
+into AUC @TeX{} when you first load a @LaTeX{} file (be sure to have AUC
 @TeX{} up and working).  @kbd{C-c C-c g @key{RET}} should then give you a
 graphics preview.  You can customize the default option set and other
 settings of the Emacs package by entering @kbd{M-x customize-group
