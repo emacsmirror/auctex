@@ -54,6 +54,8 @@
 	* doc/auc-tex.texi (Commands): Change `TeX-source-specials' to
 	`TeX-source-specials-mode' where appropriate.
 
+	* RELEASE: Include contributors.  (Hopefully I got everybody.)
+
 2004-08-10  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-set-mode-name, TeX-source-specials-map)
