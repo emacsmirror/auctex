@@ -217,18 +217,19 @@ tar-ball:
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 
 full-release:
-	tar -xzfO $(FTPDIR)/auctex-$(TAG).tar.gz auctex-$(TAG)/tex.el \
+	tar xzfO $(FTPDIR)/auctex-$(TAG).tar.gz auctex-$(TAG)/tex.el \
 	| fgrep -s '$$'"Name: release_`echo $(TAG)| sed -e 's/[.]/_/g'` " \
 	|| { echo "Not a properly tagged release!" >&2 ; exit 1 ; }
 	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz"
 	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-$(TAG)-* $(FTPDIR)
-	gpg --multifile --detach-sign $(FTPDIR)/*
+	read -sp "Passphrase: " phrase
 	for i in $(FTPDIR)/*; do \
-	   case $$i in *.sig) ;; \
-	      *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \
+	   echo "$$phrase" | gpg --passphrase-fd 0 --detach-sign $$i ; \
+	   case $$i in *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \
 	      *) echo "directory: auctex/$(TAG)-extra" >$$i.directive ;; \
-	   esac
-	gpg --multifile --clearsign $(FTPDIR)/*.directive
+	   esac ; \
+	   echo "$$phrase" | gpg --passphrase-fd 0 --clearsign $$i.directive ; \
+	done
 	rm $(FTPDIR)/*.directive
 
 patch:

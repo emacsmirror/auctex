@@ -1,5 +1,7 @@
 2004-08-17  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (full-release): Fix a few things.
+
 	* Version 11.51 released.
 
 2004-08-17  David Kastrup  <dak@gnu.org>
