@@ -1,5 +1,7 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (emacsprefix): Remove.
+
 	* preview-latex.spec: Change version number.  Change directory
 	choice to "xemacs-packages" on fedora.
 

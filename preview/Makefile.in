@@ -20,7 +20,6 @@ ICON_SOURCES = \
 DISTTEXTS = README INSTALL PROBLEMS TODO INSTALL.windows FAQ
 
 prefix = @prefix@$(null)
-emacsprefix = @emacsprefix@$(null)
 lispdir = @lispdir@$(null)
 icondir = @icondir@$(null)
 datadir = @datadir@$(null)
