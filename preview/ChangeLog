@@ -3,6 +3,8 @@
 	* preview.dtx: Include \ProvidesPackage and \CheckSum
 	(subsection{Preview attaching commands}): put \unskip in
 	\end{preview} where it will make a difference.
+	(section{Various drivers}): \askforoverwritefalse only generated
+	for make-intended installer.
 
 	* prv-xemacs.el: require overlay
 	preview-compatibility-macros added
