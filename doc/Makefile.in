@@ -28,9 +28,6 @@ auctex_toc.html: auctex.texi
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref
-	@echo "**********************************************************"
-	@echo "** doc/tex-ref.dvi may now be printed (1 page)"
-	@echo "**********************************************************"
 
 tex-ref.ps: tex-ref.dvi
 	$(DVIPS) tex-ref.dvi -Ppdf -o tex-ref.ps
@@ -39,10 +36,10 @@ tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
 
 auctex.dvi: $(TEXIFILES)
-	$(TEXI2DVI) auctex.texi
+	MAKEINFO="$(MAKEINFO)" $(TEXI2DVI) auctex.texi
 
 auctex.pdf: $(TEXIFILES)
-	$(TEXI2PDF) auctex.texi
+	MAKEINFO="$(MAKEINFO)" $(TEXI2PDF) auctex.texi
 
 # dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
@@ -50,10 +47,6 @@ auctex.ps: auctex.dvi
 
 auctex: $(TEXIFILES)
 	-$(MAKEINFO) auctex.texi
-	@echo "**********************************************************"
-	@echo "** If this gave trouble, maybe you need to install"
-	@echo "** a newer version of texinfo?"
-	@echo "**********************************************************"
 
 INSTALL: install.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
