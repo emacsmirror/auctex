@@ -1,5 +1,9 @@
 2004-08-28  David Kastrup  <dak@gnu.org>
 
+	* Version 11.53 released.
+
+2004-08-28  David Kastrup  <dak@gnu.org>
+
 	* doc/tex-ref.tex: Bump version.
 
 	* configure.in: Bump version number.
