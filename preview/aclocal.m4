@@ -74,8 +74,8 @@ AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
    if test ! -d "$withval"  ; then
       AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
    fi
-   previewtexmfdir='$texmfdir/tex/latex/preview'
-   previewdocdir='$texmfdir/doc/latex/styles'
+   previewtexmfdir='$(texmfdir)/tex/latex/preview'
+   previewdocdir='$(texmfdir)/doc/latex/styles'
    ])
 
 AC_ARG_WITH(tex-dir,
@@ -118,7 +118,7 @@ EOF
 	    
 	fi
     else
-	previewdocdir='$texmfdir/doc/latex/styles'
+	previewdocdir='$(texmfdir)/doc/latex/styles'
     fi
 # Next 
 # kpsepath -n latex tex
