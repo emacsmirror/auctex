@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.2 1992-03-18 18:59:22 krab Exp $
+# $Id: Makefile,v 5.3 1992-03-18 19:04:13 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -56,8 +56,8 @@ dist:
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
 	ident $(ELISPSRC) $(OTHERFILES) >> FILELIST )
-	tar -cf - auctex | compress -c > $(TAG).Z
-	cp auctex/FILELIST $(TAG).files
+	OUT=auctex`echo $$TAG | sed s/release//`; \
+	tar -cf - auctex | compress -c > $$OUT.Z; \
 	rm -r auctex
 
 	
