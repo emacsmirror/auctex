@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.36 1995-01-17 14:29:16 amanda Exp $
+;; Version: $Id: latex.el,v 5.37 1995-01-22 12:47:08 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1968,6 +1968,7 @@ of LaTeX-mode-hook."
 
   ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
   (and (boundp 'filladapt-function-table)
+       (boundp 'auto-fill-function)
        (eq auto-fill-function 'do-auto-fill)
        (setq auto-fill-function
 	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))

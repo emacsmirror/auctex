@@ -1,4 +1,19 @@
+Thu Jan 19 12:31:45 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* latex.el (latex-mode): Epoch fix by Martin Sjolin
+	<marsj@ida.liu.se>. 
+
 Tue Jan 17 15:12:54 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* bib-cite.el: New file contributed by Peter S. Galbraith
+	<rhogee@bathybius.meteo.mcgill.ca>.
+
+	* hilit-LaTeX.el: New file contributed by Peter S. Galbraith
+	<rhogee@bathybius.meteo.mcgill.ca>. 
+
+	* Makefile (CONTRIB): New macro for user contributed emacs lisp
+	packages, initialized with `bib-cite.el' and `hilit-LaTeX.el'. 
+	(EXTRAFILES): Added $(CONTRIB) to the list.
 
 	* tex.el (TeX-directory-absolute-p): Moved definition before
 	`TeX-macro-private'.  Reported by Frederic Devernay

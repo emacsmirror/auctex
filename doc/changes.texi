@@ -5,6 +5,20 @@
 Bug fixes.
 
 @item
+New file @file{bib-cite.el} contributed by Peter S. Galbraith
+@samp{<rhogee@@bathybius.meteo.mcgill.ca>}.  This file is not installed
+or enabled by default and is not part of the basic AUC @TeX{}
+package. If you have problems, questions, or suggestions, please direct
+them to Peter.
+
+@item
+New file @file{hilit-LaTeX.el} contributed by Peter S. Galbraith
+@samp{<rhogee@@bathybius.meteo.mcgill.ca>}.  This file is not installed
+or enabled by default and is not part of the basic AUC @TeX{}
+package. If you have problems, questions, or suggestions, please direct
+them to Peter.
+
+@item
 AUC @TeX{} is now less likely to suggest running Bib@TeX{} when it is
 not needed.
 
