@@ -208,7 +208,7 @@
   \def\pr@advise#1{%
     \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
   \def\pr@advise@ship#1#2#3{\toks@{\pr@protect@ship{#2}{#3}}%
-     \pr@advise#1{\the\toks@##1}}
+     \pr@advise#1{\the\toks@##1}}%
   \let\preview@delay\@firstofone}
 %    \end{macrocode}
 %\end{macro}
