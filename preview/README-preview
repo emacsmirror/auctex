@@ -14,12 +14,12 @@ not limited to that.  The package extracts indicated pieces from a
 source file (typically displayed equations, figures and graphics) and
 typesets with their base point at the (1in,1in) magic location,
 shipping out the individual pieces on separate pages without any page
-markup, thus eligible for letting DviPS -i -E create separate EPS
+markup, thus eligible for letting Dvips -i -E create separate EPS
 files.  It is easy to define what commands and constructs should be
 treated that way.
 
 To install the preview style file on its own without fetching the
-entire preview-latex package, run 
+entire preview-latex package, run
 tex preview.ins
 If preview.ins happens to be missing, you can regenerate it by running
 tex docstrip
@@ -27,11 +27,12 @@ on preview.dtx with the option `installer'.
 
 Running TeX on preview.ins will then extract further files:
 preview.drv which you can run through LaTeX in order to get the
-documentation for preview.sty, preview.sty itself, and the option file
-prauctex.def that is mostly useful only when using the complete
-package.  In case your docstrip configuration has not already taken
-care of that, install the latter two files to a location where LaTeX
-will be able to find them, generate the documentation and have fun.
+documentation for preview.sty, preview.sty itself, the option file
+prauctex.def and the configuration file prauctex.cfg that is mostly
+useful only when using the complete package.  In case your docstrip
+configuration has not already taken care of that, install the latter
+two files to a location where LaTeX will be able to find them,
+generate the documentation and have fun.
 
 The license of the original file is the GPL which you'll find a copy
 of in the complete preview-latex distribution.  The complete
@@ -39,4 +40,4 @@ distribution will also unpack and install the respective LaTeX files
 with an autoconf-supported mechanism, so you might consider using
 that.
 
-David Kastrup
+David Kastrup <URL:mailto:dakas@users.sourceforge.net>
