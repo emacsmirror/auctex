@@ -126,6 +126,7 @@ fi
 
 TEX_PATH_TEXMFDIR
 
+AC_PATH_PROG(PERL, perl, :)
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
 MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
