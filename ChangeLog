@@ -1,3 +1,10 @@
+2005-03-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-parse-argument): Deactivate mark after insertion of
+	first mandatory argument.  Fixes insertion of braces at wrong
+	places for multi-argument macros like \parbox and \multicolumn.
+	See also change from 2004-12-01 which obviously did not suffice.
+
 2005-03-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Prevent line break
