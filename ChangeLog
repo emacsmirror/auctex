@@ -1,3 +1,27 @@
+2004-08-15  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex: Add Omega entry, rearrange.
+
+	* tex.el (TeX-print-command): Use `%(o?)'.
+	(TeX-command, TeX-Omega-command, LaTeX-command)
+	(LaTeX-Omega-command, ConTeXt-engine, ConTeXt-Omega-engine): New
+	customization strings to implement various expanders.
+	(TeX-command-list): Use them.
+	(LaTeX-command-style): Same here.
+	(TeX-printer-list, TeX-view-style, TeX-output-view-style): Use
+	`%(o?)'.
+	(TeX-expand-list): New entries.
+	(TeX-PDF-mode): Don't switch on in Omega mode.
+	(TeX-Omega-mode): New minor mode.
+	(tex-omega-mode): alias for it.
+	(TeX-mode-map): Keybinding for it.
+	(TeX-mode-specific-command-menu-entries): Add quick viewer entry.
+	(TeX-mode-specific-command-menu-entries): Add Omega toggle and
+	inactivate PDF when Omega is on.
+
+	* context.el (ConTeXt-expand-options): New function for generating
+	`texexec' options.
+
 2004-08-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-fold-menu): New variable.

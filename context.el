@@ -1356,6 +1356,28 @@ There might be text before point."
 	(and menu (easy-menu-return-item ConTeXt-mode-menu menu))
 	)))
 
+;;; Option expander
+
+(defun ConTeXt-expand-options ()
+  "Expand options for texexec command."
+  (concat
+   (and TeX-PDF-mode "--pdf ")
+   (if TeX-Omega-mode
+       (and ConTeXt-Omega-engine
+	    (format "--tex=%s " ConTeXt-Omega-engine))
+     (and ConTeXt-engine
+	  (format "--tex=%s " ConTeXt-engine)))
+   (unless (eq ConTeXt-current-interface "en")
+     (format "--interface=%s " ConTeXt-current-interface))
+   (if TeX-source-specials-mode
+       (format
+	"--passon=\"%s\" "
+	(concat
+	 TeX-source-specials-tex-flags
+	 (unless TeX-interactive-mode
+	   " -interaction=nonstopmode")))
+     (unless TeX-interactive-mode
+       "--passon=\"-interaction=nonstopmode\" "))))
 
 ;;; Mode
 

@@ -87,7 +87,7 @@
 
 ;; How to print.
 
-(defcustom TeX-print-command "dvips -P%p %r %s"
+(defcustom TeX-print-command "%(o?)dvips -P%p %r %s"
   "*Command used to print a file.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
@@ -96,6 +96,40 @@ then customization is requested."
   :group 'TeX-command
   :type '(choice (string :tag "Print command")
 		 (const :tag "No print command customized" nil)))
+
+(defcustom TeX-command "tex"
+  "Command to run plain TeX."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom TeX-Omega-command "omega"
+  "Command to run plain TeX on Omega."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom LaTeX-command "latex"
+  "Command to run LaTeX."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom LaTeX-Omega-command "lambda"
+  "Command to run LaTeX on Omega."
+  :group 'TeX-command
+  :type 'string)
+
+(defcustom ConTeXt-engine nil
+  "Engine to use for --tex in the texexec command.
+If nil, none is specified."
+  :group 'TeX-command
+  :type '(choice (const :tag "Unspecified" nil)
+		 string))
+
+(defcustom ConTeXt-Omega-engine TeX-Omega-command
+  "Engine to use for --tex in the texexec command in Omega mode.
+If nil, none is specified."
+  :group 'TeX-command
+  :type '(choice (const :tag "Unspecified" nil)
+		 string))
 
 (defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue.
@@ -125,7 +159,7 @@ the printer has no corresponding command."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  `(("TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
+  `(("TeX" "%(PDF)%(tex) %S%(PDFout) \"%(mode)\\input %t\""
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%l \"%(mode)\\input{%t}\""
@@ -136,7 +170,7 @@ the printer has no corresponding command."
      (texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "amstex %S \"%(mode)\\input %t\""
+    ("AmSTeX" "%(PDF)amstex %S%(PDFout) \"%(mode)\\input %t\""
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -151,13 +185,13 @@ the printer has no corresponding command."
      (context-mode) :help "Clean temporary ConTeXt files")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ,(if (or window-system (getenv "DISPLAY"))
-	'("View" "%V " TeX-run-discard t t :help "Run Viewer")
-       '("View" "dvi2tty -q -w 132 %s " TeX-run-command t t
+	'("View" "%V" TeX-run-discard t t :help "Run Viewer")
+       '("View" "dvi2tty -q -w 132 %s" TeX-run-command t t
 	 :help "Run Text viewer"))
     ("Print" "%p" TeX-run-command t t :help "Print the file")
     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
      :visible TeX-queue-command)
-    ("File" "dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+    ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ;; (list "Check" "chktex -v3 %s" TeX-run-compile nil t :help "Check )
     ;; Uncomment the above line and comment out the next line to
@@ -303,7 +337,7 @@ The executable `latex' is LaTeX version 2e."
 
 (defcustom LaTeX-command-style
   ;; They have all been combined in LaTeX 2e.
-  '(("" "%(PDF)latex %S%(PDFout)"))
+  '(("" "%(PDF)%(latex) %S%(PDFout)"))
 "List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
@@ -319,7 +353,7 @@ string."
 ;; you only have one printer.
 
 (defcustom TeX-printer-list
-  '(("Default" "dvips -f %s | lpr" "lpq"))
+  '(("Default" "%(o?)dvips -f %s | lpr" "lpq"))
   "List of available printers.
 
 The first element of each entry is the printer name.
@@ -364,18 +398,18 @@ get consulted."
 (defcustom TeX-view-style
   `((,(concat
       "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
-     "xdvi %dS -paper a4 %d")
+     "%(o?)xdvi %dS -paper a4 %d")
     (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %dS -paper a5 %d")
-    ("^b5paper$" "xdvi %dS -paper b5 %d")
-    ("^letterpaper$" "xdvi %dS -paper us %d")
-    ("^legalpaper$" "xdvi %dS -paper legal %d")
-    ("^executivepaper$" "xdvi %dS -paper 7.25x10.5in %d")
-    ("^landscape$" "xdvi %dS -paper a4r -s 0 %d")
+     "%(o?)xdvi %dS -paper a5 %d")
+    ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
+    ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
+    ("^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
+    ("^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
+    ("^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
     ;; The latest xdvi can show embedded postscript.  If you don't
     ;; have that, uncomment next line.
     ;; ("^epsf$" "ghostview %f")
-    ("." "xdvi %dS %d"))
+    ("." "%(o?)xdvi %dS %d"))
   "List of style options and view options.
 
 If the first element (a regular expresion) matches the name of
@@ -395,25 +429,25 @@ is not recommended because it is more powerful than
   :type '(repeat (group regexp (string :tag "Command"))))
 
 (defcustom TeX-output-view-style
-  `(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gv %f")
+  `(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
     ("^dvi$" ,(concat
 	       "^"
 	       (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4"))
 	       "$")
-     "xdvi %dS -paper a4 %d")
+     "%(o?)xdvi %dS -paper a4 %d")
     ("^dvi$" (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
 	      "^landscape$")
-     "xdvi %dS -paper a5r -s 0 %d")
+     "%(o?)xdvi %dS -paper a5r -s 0 %d")
     ("^dvi$" ,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
-     "xdvi %dS -paper a5 %d")
-    ("^dvi$" "^b5paper$" "xdvi %dS -paper b5 %d")
+     "%(o?)xdvi %dS -paper a5 %d")
+    ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
     ("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
-     "dvips -t landscape %d -o && gv %f")
-    ("^dvi$" "^letterpaper$" "xdvi %dS -paper us %d")
-    ("^dvi$" "^legalpaper$" "xdvi %dS -paper legal %d")
-    ("^dvi$" "^executivepaper$" "xdvi %dS -paper 7.25x10.5in %d")
-    ("^dvi$" "^landscape$" "xdvi %dS -paper a4r -s 0 %d")
-    ("^dvi$" "." "xdvi %dS %d")
+     "%(o?)dvips -t landscape %d -o && gv %f")
+    ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
+    ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
+    ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
+    ("^dvi$" "^landscape$" "%(o?)xdvi %dS -paper a4r -s 0 %d")
+    ("^dvi$" "." "%(o?)xdvi %dS %d")
     ("^pdf$" "." "xpdf %o")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
@@ -464,12 +498,14 @@ string."
     ("%l" (lambda ()
 	    (TeX-style-check LaTeX-command-style)))
     ("%(PDF)" (lambda ()
-		(if (or TeX-PDF-mode
-			TeX-DVI-via-PDFTeX)
+		(if (and (not TeX-Omega-mode)
+			 (or TeX-PDF-mode
+			     TeX-DVI-via-PDFTeX))
 		    "pdf"
 		  "")))
     ("%(PDFout)" (lambda ()
-		   (if (and (not TeX-PDF-mode)
+		   (if (and (not TeX-Omega-mode)
+			    (not TeX-PDF-mode)
 			    TeX-DVI-via-PDFTeX)
 		       " \"\\pdfoutput=0 \""
 		     "")))
@@ -477,21 +513,14 @@ string."
 		 (if TeX-interactive-mode
 		     ""
 		   "\\nonstopmode")))
-    ("%(execopts)" (lambda ()
-		     (concat
-		      (and TeX-PDF-mode "--pdf ")
-		      (unless (eq ConTeXt-current-interface "en")
-			(format "--interface=%s " ConTeXt-current-interface))
-		      (unless TeX-interactive-mode "--nonstop ")
-		      (if TeX-source-specials-mode
-			  (format
-			   "--passon=\"%s\" "
-			   (concat
-			    TeX-source-specials-tex-flags
-			    (unless TeX-interactive-mode
-			      " -interaction=nonstopmode")))
-			(unless TeX-interactive-mode
-			  "--passon=\"-interaction=nonstopmode\" ")))))
+    ("%(o?)" (lambda () (if TeX-Omega-mode "o" "")))
+    ("%(tex)" (lambda () (if TeX-Omega-mode
+			     TeX-Omega-command
+			   TeX-command)))
+    ("%(latex)" (lambda () (if TeX-Omega-mode
+			       LaTeX-Omega-command
+			     LaTeX-command)))
+    ("%(execopts)" ConTeXt-expand-options)
     ("%S" TeX-source-specials-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
@@ -624,7 +653,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.428 $"))
+	(rev "$Revision: 5.429 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -639,7 +668,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-15 10:02:02 $"))
+    (let ((date "$Date: 2004-08-15 15:42:47 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -702,10 +731,12 @@ If RESET is non-nil, `TeX-command-next' is reset to
 	     (with-current-buffer buffer (TeX-set-mode-name nil nil reset))))
     (if TeX-mode-p
 	(let ((trailing-flags
-	       (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
-		       (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
-		       (and TeX-interactive-mode "I")
-		       (and TeX-source-specials-mode "S"))))
+	       (concat
+		(and TeX-Omega-mode "O")
+		(and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
+		(and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
+		(and TeX-interactive-mode "I")
+		(and TeX-source-specials-mode "S"))))
 	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
 				  TeX-base-mode-name
 				  (when (> (length trailing-flags) 0)
@@ -934,8 +965,10 @@ See `TeX-global-PDF-mode' for toggling the default value."
 ;; nil t   : stably set state
 ;; t   t   : non-conflicting parsed info
   (interactive "P")
-  (setq arg (if arg (> (prefix-numeric-value arg) 0)
-	      (not TeX-PDF-mode)))
+  (if TeX-Omega-mode
+      (setq parsed nil arg nil)
+    (setq arg (if arg (> (prefix-numeric-value arg) 0)
+		(not TeX-PDF-mode))))
   (if parsed
       (if TeX-PDF-mode-parsed
 	  (unless (eq TeX-PDF-mode arg)
@@ -973,6 +1006,18 @@ See `TeX-global-PDF-mode' for toggling the default value."
   nil nil nil
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode 'TeX-interactive-mode)
+
+(defcustom TeX-Omega-mode nil nil
+  :group 'TeX-command
+  :set 'TeX-mode-set
+  :type 'boolean)
+
+(define-minor-mode TeX-Omega-mode
+  "Minor mode for using the Omega engine."
+  nil nil nil
+  (TeX-PDF-mode 0)
+  (TeX-set-mode-name 'TeX-Omega-mode t t))
+(defalias 'tex-omega-mode 'TeX-Omega-mode)
 
 ;;; Commands
 
@@ -3057,6 +3102,7 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c;"    'TeX-comment-or-uncomment-region)
     (define-key map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
     
+    (define-key map "\C-c\C-t\C-o"   'TeX-Omega-mode)
     (define-key map "\C-c\C-t\C-p"   'TeX-PDF-mode)
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials-mode)
@@ -3133,10 +3179,16 @@ be bound to `TeX-electric-macro'."
        :help "Kill the current TeX process"]
       ["Next Error" TeX-next-error
        :help "Jump to the next error of the last TeX run"]
+      ["Quick View" TeX-view
+       :help "Start a viewer without prompting"]
       "-"
       ("TeXing Options"
+       [ "Use Omega" TeX-Omega-mode
+	 :style toggle :selected TeX-Omega-mode
+	 :help "Use the Omega engine for compiling"]
        [ "PDF Mode" TeX-PDF-mode
 	 :style toggle :selected TeX-PDF-mode
+	 :active (not TeX-Omega-mode)
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
        [ "Run Interactively" TeX-interactive-mode
 	 :style toggle :selected TeX-interactive-mode

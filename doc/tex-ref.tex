@@ -103,6 +103,7 @@ are preserved on all copies.
   \font\eightit=cmti8
   \font\eighttt=cmtt8
   \font\eightsl=cmsl8
+  \font\eightsc=cmcsc8
   \font\eightsy=cmsy8
   \textfont0=\eightrm
   \textfont2=\eightsy
@@ -111,6 +112,7 @@ are preserved on all copies.
   \def\it{\eightit}
   \def\tt{\eighttt}
   \def\sl{\eightsl}
+  \def\sc{\eightsl}
   \normalbaselineskip=.8\normalbaselineskip
   \ht\strutbox.8\ht\strutbox
   \dp\strutbox.8\dp\strutbox
@@ -213,6 +215,9 @@ are preserved on all copies.
 \def\threecol#1#2#3{\hskip\keyindent\relax#1\hfil&\kbd{#2}\quad
   &\kbd{#3}\quad\cr}
 
+\def\LaTeX{%
+    L\kern-.36em\raise.3ex\hbox{\sc{a}}\kern-.15em\TeX}
+
 %**end of header
 
 \title{AUC\TeX\ Reference Card}
@@ -233,7 +238,7 @@ are preserved on all copies.
 \key{Fix the region}{C-c C-t C-r}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
-\key{Next error in \TeX/LaTeX session}{C-c `}
+\key{Next error in \TeX/\LaTeX\ session}{C-c `}
 \key{Toggle debug of wonderful boxes}{C-c C-w} % wonderful?
 \key{View output file}{C-c C-v}
 
@@ -243,7 +248,7 @@ are not available in all modes):
 
 \def\star{\llap{\rm*}}
 \key{\TeX}{\star TeX}
-\key{LaTeX}{\star LaTeX}
+\key{\LaTeX}{\star LaTeX}
 \key{Con\TeX{}t (once)}{\star ConTeXt}
 \key{Con\TeX{}t Full}{\star ConTeXt Full}
 \key{Makeinfo}{\star Makeinfo}
@@ -260,17 +265,31 @@ are not available in all modes):
 \TeX\ runs can come in various types, which may be toggled and are
 indicated in the mode line.
 
+\key{$\Omega$ mode}{C-c C-t C-o}
 \key{PDF/DVI mode}{C-c C-t C-p}
 \key{Stop on errors (Interactive mode)}{C-c C-t C-i}
 \key{Use Source Specials for viewer control}{C-c C-t C-s}
 
+\section{Miscellaneous}
+
+\key{Read AUC\TeX\ manual}{C-c TAB}
+\key{Math Mode}{C-c \string~}
+\key{Reset Buffer}{C-c C-n}
+\key{Reset AUC\TeX}{C-u C-c C-n}
+
+\section{Multifile Handling}
+
+\key{Save Document}{C-c C-d}
+\key{Switch to master file or active buffer}{C-c ^}
+\key{Query for a master file}{C-c \_}
+
 \section{Command Insertion}
 
 \key{Insert Section}{C-c C-s}
-\key{Insert LaTeX environment}{C-c C-e}
+\key{Insert \LaTeX\ environment}{C-c C-e}
 \key{Insert item}{C-c LFD}
 \key{Insert item (alias)}{M-RET}
-\key{Close LaTeX environment}{C-c ]}
+\key{Close \LaTeX\ environment}{C-c ]}
 \key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
 \key{Insert double brace}{C-c \{}
 \key{Complete \TeX\ macro}{M-TAB}
@@ -304,12 +323,6 @@ indicated in the mode line.
 \key{Comment or uncomment region}{C-c ;}
 \key{Comment or uncomment paragraph}{C-c \%}
 
-\section{Multifile Handling}
-
-\key{Save Document}{C-c C-d}
-\key{Switch to master file or active buffer}{C-c ^}
-\key{Query for a master file}{C-c \_}
-
 \section{Source Display}
 
 \key{Toggle folding mode}{C-c C-o C-f}
@@ -318,13 +331,6 @@ indicated in the mode line.
 \key{Hide current environment}{C-c C-o C-e}
 \key{Show all items in buffer permanently}{C-c C-o C-x}
 \key{Show current item permanently}{C-c C-o C-c}
-
-\section{Miscellaneous}
-
-\key{Show documentation}{C-c TAB}
-\key{Math Mode}{C-c \string~}
-\key{Reset Buffer}{C-c C-n}
-\key{Reset AUC\TeX}{C-u C-c C-n}
 
 \copyrightnotice
 \penalty-9000
@@ -351,84 +357,86 @@ LaTeX-math-list before loading LaTeX-math-mode.
   \advance\dimen0\baselineskip
   \setbox2\vsplit0to0.5\dimen0
   \vtop{\unvbox2}\hfill\raise \ht\strutbox \vtop {\unvbox0}}}}
+\def\keycs#1#2#{\keycsii#1{#2}}
+\def\keycsii#1#2#3{\key{\disp{#1#2} ({\tt\string#1})}{#3}}
 
 \twocol
-\key{\disp{\alpha} (alpha)}{a}
-\key{\disp{\beta} (beta)}{b}
-\key{\disp{\gamma} (gamma)}{g}
-\key{\disp{\delta} (delta)}{d}
-\key{\disp{\epsilon} (epsilon)}{e}
-\key{\disp{\zeta} (zeta)}{z}
-\key{\disp{\eta} (eta)}{h}
-\key{\disp{\theta} (theta)}{j}
-\key{\disp{\kappa} (kappa)}{k}
-\key{\disp{\lambda} (lambda)}{l}
-\key{\disp{\mu} (mu)}{m}
-\key{\disp{\nu} (nu)}{n}
-\key{\disp{\xi} (xi)}{x}
-\key{\disp{\pi} (pi)}{p}
-\key{\disp{\rho} (rho)}{r}
-\key{\disp{\sigma} (sigma)}{s}
-\key{\disp{\tau} (tau)}{t}
-\key{\disp{\upsilon} (upsilon)}{u}
-\key{\disp{\phi} (phi)}{f}
-\key{\disp{\chi} (chi)}{q}
-\key{\disp{\psi} (psi)}{y}
-\key{\disp{\omega} (omega)}{w}
-\key{\disp{\Delta} (Delta)}{D}
-\key{\disp{\Gamma} (Gamma)}{G}
-\key{\disp{\Theta} (Theta)}{Q}
-\key{\disp{\Lambda} (Lambda)}{L}
-\key{\disp{\Pi} (Pi)}{P}
-\key{\disp{\Sigma} (Sigma)}{S}
-\key{\disp{\Upsilon} (Upsilon)}{U}
-\key{\disp{\Phi} (Phi)}{F}
-\key{\disp{\Psi} (Psi)}{Y}
-\key{\disp{\Omega} (Omega)}{W}
+\keycs\alpha{a}
+\keycs\beta{b}
+\keycs\gamma{g}
+\keycs\delta{d}
+\keycs\epsilon{e}
+\keycs\zeta{z}
+\keycs\eta{h}
+\keycs\theta{j}
+\keycs\kappa{k}
+\keycs\lambda{l}
+\keycs\mu{m}
+\keycs\nu{n}
+\keycs\xi{x}
+\keycs\pi{p}
+\keycs\rho{r}
+\keycs\sigma{s}
+\keycs\tau{t}
+\keycs\upsilon{u}
+\keycs\phi{f}
+\keycs\chi{q}
+\keycs\psi{y}
+\keycs\omega{w}
+\keycs\Delta{D}
+\keycs\Gamma{G}
+\keycs\Theta{Q}
+\keycs\Lambda{L}
+\keycs\Pi{P}
+\keycs\Sigma{S}
+\keycs\Upsilon{U}
+\keycs\Phi{F}
+\keycs\Psi{Y}
+\keycs\Omega{W}
 
 \section{Symbols}
 
 \twocol
-\key{\disp{\rightarrow} (rightarrow)}{C-f}
-\key{\disp{\leftarrow} (leftarrow)}{C-b}
-\key{\disp{\uparrow} (uparrow)}{C-p}
-\key{\disp{\downarrow} (downarrow)}{C-n}
-\key{\disp{\leq} (leq)}{<}
-\key{\disp{\geq} (geq)}{>}
-\key{\disp{\tilde{x}} (tilde)}{\string~}
-\key{\disp{\nabla} (nabla)}{N}
-\key{\disp{\infty} (infty)}{I}
-\key{\disp{\forall} (forall)}{A}
-\key{\disp{\exists} (exists)}{E}
-\key{\disp{\not } (not)}{/}
-\key{\disp{\in} (in)}{i}
-\key{\disp{\times} (times)}{*}
-\key{\disp{\cdot} (cdot)}{.}
-\key{\disp{\subset} (subset)}{\{}
-\key{\disp{\supset} (supset)}{\}}
-\key{\disp{\subseteq} (subseteq)}{[}
-\key{\disp{\supseteq} (supseteq)}{]}
-\key{\disp{\emptyset} (emptyset)}{0}
-\key{\disp{\setminus} (setminus)}{\\}
-\key{\disp{\cup} (cup)}{+}
-\key{\disp{\cap} (cap)}{-}
-\key{\disp{\langle} (langle)}{(}
-\key{\disp{\rangle} (rangle)}{)}
-\key{\disp{\exp} (exp)}{C-e}
-\key{\disp{\sin} (sin)}{C-s}
-\key{\disp{\cos} (cos)}{C-c}
-\key{\disp{\sup} (sup)}{C-^}
-\key{\disp{\inf} (inf)}{C-_}
-\key{\disp{\det} (det)}{C-d}
-\key{\disp{\lim} (lim)}{C-l}
-\key{\disp{\tan} (tan)}{C-t}
-\key{\disp{\hat{x}} (hat)}{^}
-\key{\disp{\vee} (vee)}{|}
-\key{\disp{\wedge} (wedge)}{\&}
+\keycs\rightarrow{C-f}
+\keycs\leftarrow{C-b}
+\keycs\uparrow{C-p}
+\keycs\downarrow{C-n}
+\keycs\leq{<}
+\keycs\geq{>}
+\keycs\tilde x{\string~}
+\keycs\nabla{N}
+\keycs\infty{I}
+\keycs\forall{A}
+\keycs\exists{E}
+\keycs\not \ {/}
+\keycs\in{i}
+\keycs\times{*}
+\keycs\cdot{.}
+\keycs\subset{\{}
+\keycs\supset{\}}
+\keycs\subseteq{[}
+\keycs\supseteq{]}
+\keycs\emptyset{0}
+\keycs\setminus{\\}
+\keycs\cup{+}
+\keycs\cap{-}
+\keycs\langle{(}
+\keycs\rangle{)}
+\keycs\exp{C-e}
+\keycs\sin{C-s}
+\keycs\cos{C-c}
+\keycs\sup{C-^}
+\keycs\inf{C-_}
+\keycs\det{C-d}
+\keycs\lim{C-l}
+\keycs\tan{C-t}
+\keycs\hat x{^}
+\keycs\vee{|}
+\keycs\wedge{\&}
 
 \section{Miscellaneous}
 
-\key{cal letters}{c {\rm LETTER}}
+\key{cal letters}{c \<letter>}
 
 \bye
 
