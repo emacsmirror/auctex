@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.78 $
+%  \rcskey \version CVS-$Revision: 1.79 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-01-19 13:36:20 $
+%\rcskey\next $Date: 2003-01-19 23:42:16 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -170,7 +170,7 @@
 %\item[|showlabels|] During the editing process, some people like to
 %see the label names in their equations, figures and the like.  Now if
 %you are using Emacs for editing, and in particular \previewlatex,
-%I'd strongly recommend that you check out the ref\TeX\ package which
+%I'd strongly recommend that you check out the Ref\TeX\ package which
 %pretty much obliterates the need for this kind of functionality.  If
 %you still want it, standard \LaTeX\ provides it with the |showkeys|
 %package, and there is also the less encompassing |showlabels|
@@ -405,10 +405,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.78 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.79 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-01-19 13:36:20 $
+\reserved@a\next $Date: 2003-01-19 23:42:16 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1401,7 +1401,7 @@
 %During the editing process, some people like to see the label names
 %in their equations, figures and the like.  Now if you are using Emacs
 %for editing, and in particular \previewlatex, I'd strongly recommend
-%that you check out the ref\TeX\ package which pretty much obliterates
+%that you check out the Ref\TeX\ package which pretty much obliterates
 %the need for this kind of functionality.  If you still want it,
 %standard \LaTeX\ provides it with the |showkeys| package, and there is
 %also the less encompassing |showlabels| package.  Unfortunately,

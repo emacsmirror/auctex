@@ -56,7 +56,7 @@ Going via latexpdf/gs and a single file might be faster than the current
 latex/dvips/gs path and could come handy for previewing documents
 intended for use with pdflatex.
 
-@item Integrate into ref@TeX{}
+@item Integrate into Ref@TeX{}
 
 When referencing to equations and the like, the preview-images of the
 source rather than plain text should be displayed.  If the preview in
