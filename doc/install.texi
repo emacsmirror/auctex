@@ -352,52 +352,46 @@ are normally in @file{~/.xemacs/xemacs-packages/info}.)
 @cindex Customization
 @cindex Customization, personal
 @cindex Customization, site
-Next, you should edit the file @file{tex-site.el} to fit your local
-site. You do this by looking at the customization section in the
-beginning of @file{tex.el} and copy the definitions that are wrong for
-your site to @file{tex-site.el}. Do @emph{not} edit @file{tex.el}
-directly, or you will have to do all the work over again when you
-upgrade @AUCTeX{}. @AUCTeX{} will not overwrite your old
-@file{tex-site.el} file next time you install, so you will be able to
-keep all your customizations.
+Most of the site-specific customization should already have happened
+during configuration of @AUCTeX{}.  Any further customization can be
+done with customization buffers directly in Emacs.  Just type @kbd{M-x
+customize-group RET AUCTeX RET} to open the customization group for
+@AUCTeX{} or use the menu entries provided in the mode menus.  Editing
+the file @file{tex-site.el} as suggested in former versions of @AUCTeX{}
+should not be done anymore because the installation routine will
+overwrite those changes.
 
-There are two variables with a special significance.
+You might check some variables with a special significance.  They are
+accessible directly by typing @kbd{M-x customize-variable RET <variable>
+RET}.
 
 @defopt TeX-lisp-directory
 The directory where you installed the @AUCTeX{} lisp files.
 @end defopt
 
-This variable is set automatically by the @code{make install} command.
-If you don't issue a @code{make install}, for example if you don't want
-to install @AUCTeX{} in a different place, you will have to set this
-variable manually to the location of the compiled files.
+This variable is set automatically during configuration.  If you don't
+issue a @code{make install}, for example if you don't want to install
+@AUCTeX{} in a different place, you will have to set this variable
+manually to the location of the compiled files.  It is generally
+advisable to do a full installation including @code{make install}
+because program and documentation files will be copied to their proper
+places.
 
 @defopt TeX-macro-global
 Directories containing the site's @TeX{} style files.
 @end defopt
 
-Normally, @AUCTeX{} will only allow you to complete a short list of
-built-in macros and environments and on the macros you define yourself.
-If you issue the @kbd{M-x TeX-auto-generate-global} command after
-loading @AUCTeX{}, you will be able to complete on all macros available
-in the standard style files used by your document. To do this, you must
-set this variable to a list of directories where the standard style
-files are located. The directories will be searched recursively, so
-there is no reason to list subdirectories explicitly.
-
-You probably also need to change @code{TeX-command-list} to make sure
-that the commands used for starting @TeX{}, printing, etc. work on your
-system.  Copy the definition from @file{tex.el} to @file{tex-site.el}
-and edit the command names appropriately.
-@vindex TeX-command-list
-
-Finally, copy and edit @code{TeX-printer-list} to contain the printers
-available at your site.
-@vindex TeX-printer-list
-
-To extract information from your sites @TeX{} macros, type @kbd{M-x
-TeX-auto-generate-global} in your emacs.  This will only work if you
-have set @code{TeX-macro-global} correctly in @file{tex-site.el}.
+Normally, @AUCTeX{} will only allow you to complete macros and
+environments which are built-in, specified in @AUCTeX{} style files or
+defined by yourself.  If you issue the @kbd{M-x
+TeX-auto-generate-global} command after loading @AUCTeX{}, you will be
+able to complete on all macros available in the standard style files
+used by your document.  To do this, you must set this variable to a list
+of directories where the standard style files are located.  The
+directories will be searched recursively, so there is no reason to list
+subdirectories explicitly.  Automatic configuration will already have
+set the variable for you if it could use the program @samp{kpsewhich}.
+In this case you normally don't have to alter anything.
 
 @section Contributed files
 
@@ -413,5 +407,7 @@ Support for Japanese.
 
 @end table
 
-Read the comments in the start of each file for more information about
-how to install, what they do, and who wrote and maintains them.
+They can be installed together with @AUCTeX{} by executing @code{make
+contrib} and @code{make install-contrib}.  Read the comments in the
+start of each file for more information about how to use the files, what
+they do, and who wrote and maintains them.
