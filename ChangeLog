@@ -1,5 +1,7 @@
 2004-08-23  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: Some updates.
+
 	* latex.el (LaTeX-section): Use an active region as title if available.
 	(LaTeX-section-title): Prompt with title if present.  Should we
 	ask at all?
