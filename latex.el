@@ -2079,14 +2079,18 @@ recognized."
 
 ;;; Filling
 
-(defcustom LaTeX-fill-distinct-contents nil
-  "List of contents which will be set apart by inserting
-linebreaks before and after them if they do not fit into one
-line."
+(defcustom LaTeX-fill-break-at-separators nil
+  "List of separators before or after which respectively a line
+break will be inserted if they do not fit into one line."
   :group 'LaTeX
   :type '(set :tag "Contents"
-	      (const :tag "Braced" braced)
-	      (const :tag "Math" math)))
+	      (const :tag "Opening Brace" \{)
+	      (const :tag "Closing Brace" \})
+	      (const :tag "Opening Bracket" \[)
+	      (const :tag "Opening Inline Math Switches" \\\()
+	      (const :tag "Closing Inline Math Switches" \\\))
+	      (const :tag "Opening Display Math Switch" \\\[)
+	      (const :tag "Closing Display Math Switch" \\\])))
 
 (defcustom LaTeX-fill-break-before-code-comments t
   "If non-nil, a line with some code followed by a comment will
@@ -2403,7 +2407,7 @@ space does not end a sentence, so don't break a line there."
     (skip-chars-backward "^ \n")
     (when (bolp)
       (skip-chars-forward "^ \n" (point-max))))
-  (when LaTeX-fill-distinct-contents
+  (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
 	  start-point
@@ -2412,7 +2416,7 @@ space does not end a sentence, so don't break a line there."
 	(beginning-of-line)
 	(LaTeX-back-to-indentation)
 	(setq start-point (point))
-	;; Find occurences of `$', `{', `}', `\(', `\)', `\[' or `\]'.
+	;; Find occurences of `[', `$', `{', `}', `\(', `\)', `\[' or `\]'.
 	(while (and (= final-breakpoint orig-breakpoint)
 		    (re-search-forward
 		     (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
@@ -2427,7 +2431,7 @@ space does not end a sentence, so don't break a line there."
 	     ;; already be handled implicitely by the code for the
 	     ;; opening brace.)
 	     ((save-excursion
-		(and (memq 'braced LaTeX-fill-distinct-contents)
+		(and (memq '\[ LaTeX-fill-break-at-separators)
 		     (string= (substring match-string -1) "[")
 		     (not (string= match-string "\["))
 		     (re-search-forward
@@ -2445,7 +2449,7 @@ space does not end a sentence, so don't break a line there."
 		  (setq final-breakpoint (point)))))
 	     ;; { (opening brace)
 	     ((save-excursion
-		(and (memq 'braced LaTeX-fill-distinct-contents)
+		(and (memq '\{ LaTeX-fill-break-at-separators)
 		     (string= (substring match-string -1) "{")
 		     (> (- (save-excursion
 			     ;; `TeX-find-closing-brace' is not enough
@@ -2483,7 +2487,7 @@ space does not end a sentence, so don't break a line there."
 		  (setq final-breakpoint (point)))))
 	     ;; } (closing brace)
 	     ((save-excursion
-		(and (memq 'braced LaTeX-fill-distinct-contents)
+		(and (memq '\} LaTeX-fill-break-at-separators)
 		     (string= (substring match-string -1) "}")
 		     (save-excursion
 		       (backward-char 2)
@@ -2495,17 +2499,20 @@ space does not end a sentence, so don't break a line there."
 		  (setq final-breakpoint (point)))))
 	     ;; $ or \( or \[ (opening math)
 	     ((save-excursion
-		(and (memq 'math LaTeX-fill-distinct-contents)
-		     (or (and (string= (setq math-sep
+		(and (or (and (memq '\\\( LaTeX-fill-break-at-separators)
+                              (string= (setq math-sep
 					     (substring match-string -1)) "$")
 			      (texmathp))
-			 (and (> (length match-string) 1)
-			      (or (string= (setq math-sep
+			 (and (memq '\\\( LaTeX-fill-break-at-separators)
+                              (> (length match-string) 1)
+			      (string= (setq math-sep
 						 (substring match-string -2))
-					   "\\(")
-				  (string= (setq math-sep
-						 (substring match-string -2))
-					   "\\["))))
+					   "\\("))
+			 (and (memq '\\\[ LaTeX-fill-break-at-separators)
+                              (> (length match-string) 1)
+                              (string= (setq math-sep
+                                             (substring match-string -2))
+                                       "\\[")))
 		     (> (- (save-excursion
 			     (re-search-forward
 			      (cond
@@ -2526,17 +2533,20 @@ space does not end a sentence, so don't break a line there."
 		  (setq final-breakpoint (point)))))
 	     ;; $ or \) or \] (closing math)
 	     ((save-excursion
-		(and (memq 'math LaTeX-fill-distinct-contents)
-		     (or (and (string= (setq math-sep
+		(and (or (and (memq '\\\) LaTeX-fill-break-at-separators)
+                              (string= (setq math-sep
 					     (substring match-string -1)) "$")
 			      (not (texmathp)))
-			 (and (> (length match-string) 1)
-			      (or (string= (setq math-sep
-						 (substring match-string -2))
-					   "\\)")
-				  (string= (setq math-sep
-						 (substring match-string -2))
-					   "\\]"))))
+			 (and (memq '\\\) LaTeX-fill-break-at-separators)
+                              (> (length match-string) 1)
+			      (string= (setq math-sep
+                                             (substring match-string -2))
+                                       "\\)"))
+			 (and (memq '\\\] LaTeX-fill-break-at-separators)
+                              (> (length match-string) 1)
+                              (string= (setq math-sep
+                                             (substring match-string -2))
+                                       "\\]")))
 		     (if (string= math-sep "$")
 			 (save-excursion
 			   (backward-char 2)
