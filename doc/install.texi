@@ -1,8 +1,334 @@
-@chapter Installation of AUC @TeX{}
+@include macros.texi
+@ifset rawfile
+@chapter Installing @AUCTeX{}
+
+@end ifset
+@c -----------------------
+Installing @AUCTeX{} should be simple: merely @code{./configure},
+@code{make}, and @code{make install}. This does not yet activate the
+package, but merely makes it available. See @ref{Loading the package}
+for the activation. Please read through this document fully before
+installing anything.
+
+@ifclear rawfile
+@menu
+* Prerequisites::               
+* Configure::                   
+* Build/install::               
+* Loading the package::         
+* Advice for package providers::  
+* Advice for non-privileged users::  
+* Installation under MS Windows::  
+@end menu
+@end ifclear
+
+@node Prerequisites
+@section Prerequisites
+
+@itemize @bullet
+@item A recent version of Emacs 20 or 21, alternatively XEmacs 20 or 21
+
+There is additional information for Windows installations in
+@ifset rawfile
+the file @file{INSTALL.windows}.
+@end ifset
+@ifclear rawfile
+@xref{Installation under MS Windows}.
+@end ifclear
+
+@item A working @LaTeX{} installation
+
+This is not really needed to @emph{install} the package, but will be
+required for useful operation of it. The elisp of @AUCTeX{} will probably
+run without @LaTeX{}, but you will find relatively little use it.
+
+@item The @code{texinfo} package
+
+This is needed for building the documentation. If you don't have this,
+or you have a too old version of it (try building and you'll find out),
+you may download a separate tar file with the prebuilt documentation
+from Savannah and install it over the main unpacked tar archive.
+@end itemize
+
+For some known issues with various software, see 
+@ifset rawfile
+the @file{PROBLEMS} file.
+@end ifset
+@ifclear rawfile
+@ref{Known problems}.
+@end ifclear
+
+@node Configure
+@section Configure
+
+The first step is to configure the source code, telling it where
+various files will be.  To do so, run
+
+@example
+./configure @var{options}
+@end example
+
+(Note: if you have fetched @AUCTeX{} from @acronym{CVS} rather than
+a regular release, you will have to first generate @file{./configure} by
+running @code{autogen.sh} in the @file{auctex} directory.)
+
+On many machines, you will not need to specify any options, but if
+@code{configure} cannot determine something on its own, you'll need to
+help it out with one of these options:
+
+@table @code
+@item --with-emacs[=@var{/path/to/emacs}]
+If you are using a pretest which isn't in your @code{$PATH}, or
+@code{configure} is not finding the right Emacs executable, you can
+specify it with this option.
+
+@item --with-xemacs[=@var{/path/to/xemacs}]
+Configure for generation under XEmacs (Emacs is the default).  Again,
+the name of the right XEmacs executable can be specified, complete with
+path if necessary.
+
+@item --with-lispdir=@var{/dir}
+This tells where to install Emacs Lisp files.  Normally, this option is
+unnecessary, but may be used if you don't like the directory that
+configure is suggesting.
+
+@item --with-packagedir=@var{/dir}
+This tells where to install the XEmacs Package.  Again, this option is
+normally unnecessary, but may be used if you don't like the directory
+that configure is suggesting, and you know that XEmacs regards the
+directory you specify as a package directory.
+
+If you are installing @AUCTeX{} for a single user, and you have
+installed no XEmacs packages as that user before, then @code{configure}
+may try to install @AUCTeX{} in the systemwide package directory
+(that it cannot write to), causing installation to fail.  In that case,
+a good value for this option is @file{~/.xemacs/xemacs-packages}, as
+XEmacs looks there for per-user packages by default.
+
+@item --with-texmf-dir=@var{/dir}
+This option can be used to specify the location of the @TeX{}
+@acronym{TDS} directory hierarchy resides. It is not necessary for most
+@TeX{} installs, but may be used if you don't like the directory that
+configure is suggesting.
+
+@item --help
+This is not an option specific to @AUCTeX{}. A number of standard
+options to @file{configure} exist, and we do not have the room to
+describe them here; a short description of each is available, using
+@code{--help}.
+
+@end table
+
+@node Build/install
+@section Build/install
+
 @cindex Installation
 @cindex Make
-@cindex @file{Makefile}
+
+Once @file{configure} has been run, simply enter
+
+@example
+make
+@end example
+@noindent 
+at the prompt to byte-compile the lisp files, and build the
+documentation files. To install the files into the locations chosen
+earlier, type
+
+@example
+make install
+@end example
+
+@noindent 
+You may need special privileges to install, e.g., if you are installing
+into system directories. 
+
+@node Loading the package
+@section Loading the package
+
 @cindex @file{.emacs}
+
+First you should make sure that @AUCTeX{} gets loaded.  You then need to
+place a few lines in your personal @file{.emacs} file (or a site-wide
+configuration file).
+
+For XEmacs, if you specified a valid package directory during
+installation, or none at all, then XEmacs installation should do
+everything necessary in order to install @AUCTeX{} as a package
+and activate it.  Restarting XEmacs should then make the package
+visible, and @kbd{C-c C-c} should give you a command prompt.
+
+If you used @code{--with-packagedir}, you have to make sure that the
+directory @file{lisp/auctex} under the directory you specified is in
+XEmacs' @code{load-path} variable.
+
+For GNU Emacs, the recommended way to activate @AUCTeX{} is to add the
+following line to your @file{.emacs} file:
+
+@example
+(require 'tex-site)
+@end example
+
+If you used {--with-lispdir} , you have to make sure that the directory
+specified is in Emacs' @code{load-path} variable, so that you would
+instead use, e.g.,
+
+@example
+(setq load-path (cons "~/elisp" load-path))
+(require 'tex-site)
+@end example
+
+For site-wide activation in GNU Emacs, see 
+@ifset rawfile
+below.
+@end ifset
+@ifclear rawfile
+@xref{Advice for package providers}.
+@end ifclear
+
+That is all.  There are other ways of achieving the equivalent thing,
+but we don't mention them here any more since they are not better, and
+people got confused into trying everything at once.
+
+@node Advice for package providers
+@section Providing @AUCTeX{} as a package
+
+As a package provider, you should make sure that your users will be
+served best according to their intentions, and keep in mind that a
+system might be used by more than one user, with different preferences.
+The use of packages should in general not impact performance negatively
+if a user chooses not to employ it, but should be as convenient as
+possible. The policy with regard to @AUCTeX{} has been to @emph{refrain}
+from activating it automatically when it is installed as a package. This
+is reasonable because
+
+@itemize @bullet
+@item Emacs comes with a simpler default @TeX{} mode with different
+keybindings.  Some users might prefer that.
+@item @AUCTeX{} is activated via @code{(require 'tex-site)}.  Once this
+has happened, it is not possible to get back the original @TeX{} mode.
+A site-wide default would for this reason be hard to override.
+@end itemize
+
+If, however, you are certain that the users all prefer @AUCTeX{}, you
+may place the following line in @file{default.el}:
+
+@example
+(require 'tex-site)
+@end example
+
+XEmacs uses a package system.  The default @AUCTeX{} installation
+should cater for everything necessary in that case.
+
+@ignore
+For @acronym{RPM} files we include a @file{preview-latex.spec} file in
+the tarball distribution, suitable for recent RedHat systems, that
+should do just that.
+@end ignore
+
+@node Advice for non-privileged users
+@section Installation for non-privileged users
+
+Often people without system administration privileges want to install
+software for their private use.  In that case you need to specify more
+options top the @file{configure} script.  For XEmacs users, this is
+fairly easy, because the XEmacs package system has been designed to make
+this sort of thing practical: but GNU Emacs users (and XEmacs users for
+whom the package system is for some reason misbehaving) may need to do a
+little more work.
+
+GNU Emacs users can solve this problem by using the @option{--prefix}
+option to the @file{configure} script, and let it point to the personal
+home directory.  In that way, resulting binaries will be installed under
+the @file{bin} subdirectory of your home directory, manual pages under
+@file{man} and so on.  That way, it is reasonably easy to maintain a
+bunch of additional packages, since the prefix argument is supported by
+most @file{configure} scripts.
+
+You'll have to add something like
+@file{/home/myself/share/emacs/site-lisp} to your @code{load-path}
+variable, if it isn't there already.
+
+XEmacs users can achieve the same end by pointing @file{configure} at an
+appropriate package directory (normally
+@option{--with-packagedir=~/.xemacs/xemacs-packages} will serve).  This
+should only need to be done once, and should be needed fairly rarely; if
+you have installed any personal XEmacs packages before, @file{configure}
+should detect that, and automatically install @AUCTeX{} there too;
+equally, if you have installed @AUCTeX{} somewhere searched by
+XEmacs, @AUCTeX{} should be automatically reinstalled over that
+copy.
+
+(@file{configure} may guess wrong if the site administrator has
+installed @AUCTeX{} somewhere else: if so, just use the
+@option{--with-packagedir} option to override @file{configure}'s
+choice.)
+
+But there is another problem: perhaps you want to make it easy for other
+users to share parts of your personal Emacs configuration.  In general,
+you can do this by writing @samp{~myself/} anywhere where you specify
+paths to something installed in your personal subdirectories, not merely
+@samp{~/}, since the latter, when used by other users, will point to
+non-existent files.
+
+For yourself, it will do to manipulate environment variables in your
+@file{.profile} resp.@: @file{.login} files.  But if people will be
+copying just Elisp files, their copies will not work.  While it would
+in general be preferable if the added components where available from
+a shell level, too (like when you call the standalone info reader, or
+try using @file{preview.sty} for functionality besides of Emacs
+previews), it will be a big help already if things work from inside
+of Emacs.
+
+Here is how to do the various parts:
+
+@subheading Making the Elisp available
+
+In XEmacs, you should ask the other users to add symbolic links in their
+@file{~/.xemacs/xemacs-packages/lisp},
+@file{~/.xemacs/xemacs-packages/info} and
+@file{~/.xemacs/xemacs-packages/etc} directories. (Alas, there is
+presently no easy programmatic way to do this, except to have a script
+do the symlinking for them.)
+
+In GNU Emacs, you'll want the invocation lines described 
+@ifset rawfile
+above. 
+@end ifset
+@ifclear rawfile
+in @xref{Loading the package}.
+@end ifclear
+In addition, you'll want a line such as
+
+@lisp
+(add-to-list 'load-path "~myself/share/emacs/site-lisp/preview")
+@end lisp
+
+@subheading Making the Info files available
+
+While for yourself, you'll probably want to manipulate the
+@samp{INFOPATH} variable; for access inside of Elisp something like
+the following might be convenient:
+
+@lisp
+(eval-after-load 'info
+   '(add-to-list 'Info-directory-list "~myself/info"))
+@end lisp
+
+In XEmacs, as long as XEmacs can see the package, there should be no
+need to do anything at all; the info files should be immediately
+visible.  However, you might want to set @samp{INFOPATH} anyway, for the
+sake of standalone readers outside of XEmacs. (The info files in XEmacs
+are normally in @file{~/.xemacs/xemacs-packages/info}.)
+
+@ifclear rawfile
+@node Installation under MS Windows
+@comment  node-name,  next,  previous,  up
+@section Installation under MS Windows
+@include wininstall.texi
+@end ifclear
+
+@section Customizing
 @cindex Site initialization
 @cindex Initialization
 @cindex @file{tex-site.el}
@@ -11,96 +337,37 @@
 @cindex Customization
 @cindex Customization, personal
 @cindex Customization, site
-
-@section Compiling
-
-The following describes how to install AUC @TeX{} under Unix.  You may
-also be able to do use these instructions under some other operating
-systems, if you have already installed the proper GNU tools, such as
-@file{make}. 
-
-To install AUC @TeX{} for an entire site (which may just be your own
-personal Linux box), issue the following two commands as root:
-
-@example
-make 
-make lispdir=/usr/local/share/emacs/site-lisp install
-@end example
-
-except that instead of @t{/usr/local/...} you should use the location of
-your sites emacs installation.  AUC @TeX{} will then be installed in a
-subdirectory named @file{auctex} of the @file{site-lisp} directory, and
-the file @file{tex-site.el} will be stored directly in the
-@file{site-lisp}.  You can now tell your users to enable AUC @TeX{} by
-adding 
-
-@example
-(require 'tex-site)
-@end example
-
-to their @file{.emacs} file.
-
-If you use xemacs instead, or if your emacs binary is named something
-else than @file{emacs}, specify this by using the commands
-
-@example
-make EMACS=xemacs
-make lispdir=/usr/local/share/emacs/site-lisp install
-@end example
-
-to install.
-
-If you want to install AUC @TeX{} in your personal account, you should
-chose a directory for all your emacs add-ons, for example an
-@file{elisp} subdirectory in your home directory.  You can then install
-AUC @TeX{} with the commands
-
-@example
-make 
-make lispdir=$HOME/elisp install
-@end example
-
-You will then need to add the following lines to your @file{.emacs}
-file:
-
-@example
-(setq load-path (cons "~/elisp" load-path))
-(require 'tex-site)
-@end example
-
-@section Customizing
-
 Next, you should edit the file @file{tex-site.el} to fit your local
-site.  You do this by looking at the customization section in the
+site. You do this by looking at the customization section in the
 beginning of @file{tex.el} and copy the definitions that are wrong for
-your site to @file{tex-site.el}.  Do @emph{not} edit @file{tex.el}
+your site to @file{tex-site.el}. Do @emph{not} edit @file{tex.el}
 directly, or you will have to do all the work over again when you
-upgrade AUC @TeX{}.  AUC @TeX{} will not overwrite your old
+upgrade @AUCTeX{}. @AUCTeX{} will not overwrite your old
 @file{tex-site.el} file next time you install, so you will be able to
 keep all your customizations.
 
 There are two variables with a special significance.
 
 @defopt TeX-lisp-directory
-The directory where you want to install the AUC @TeX{} lisp files. 
+The directory where you installed the @AUCTeX{} lisp files. 
 @end defopt
 
 This variable is set automatically by the @code{make install} command.
 If you don't issue a @code{make install}, for example if you don't want
-to install AUC @TeX{} in a different place, you will have to set this
+to install @AUCTeX{} in a different place, you will have to set this
 variable manually to the location of the compiled files.
 
 @defopt TeX-macro-global
 Directories containing the site's @TeX{} style files.
 @end defopt
 
-Normally, AUC @TeX{} will only allow you to complete a short list of
+Normally, @AUCTeX{} will only allow you to complete a short list of
 built-in macros and environments and on the macros you define yourself.
 If you issue the @kbd{M-x TeX-auto-generate-global} command after
-loading AUC @TeX{}, you will be able to complete on all macros available
-in the standard style files used by your document.  To do this, you must
+loading @AUCTeX{}, you will be able to complete on all macros available
+in the standard style files used by your document. To do this, you must
 set this variable to a list of directories where the standard style
-files are located.  The directories will be searched recursively, so
+files are located. The directories will be searched recursively, so
 there is no reason to list subsirectories explicitly.
 
 You probably also need to change @code{TeX-command-list} to make sure
@@ -119,8 +386,8 @@ have set @code{TeX-macro-global} correctly in @file{tex-site.el}.
 
 @section Contributed files
 
-There are several files that are not part of AUC @TeX{} proper, but
-included in the distribution in case they are useful.  
+There are several files that are not part of @AUCTeX{} proper, but
+included in the distribution in case they are useful.
 
 @table @file
 @item hilit-LaTeX.el
