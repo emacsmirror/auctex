@@ -15,3 +15,16 @@ Fix GhostScript rendering of Emacs
  the processes have to wait for one another.  See also code in
  xdisp.c from the Emacs distribution.
 
+Think about temporary file handling
+ The current solution may be suboptimal.  Perhaps a different dvi file
+ from the main file would be preferable, perhaps compilation in a
+ separate directory, perhaps support for more than one Emacs session
+ or user properly accessing the same file.  In all fairness, the
+ current _region_ mechanism of AucTeX does not support this, either.
+
+Port to XEmacs
+ Very much wanted since we then would get a non-pretest audience for
+ preview-latex.
+
+Start documentation
+ A texinfo manual would be nice to have.
