@@ -1,8 +1,17 @@
 2002-02-07  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{Preview attaching commands}): Use
+	\nofiles instead of \@fileswfalse in order to suppress erroneous
+	log file output.
+
 	* preview.el (preview-gs-options): Remove -DSAFER option that
 	causes OutputFile selection of GhostScript to fail (starting with
 	7.04).  This cannot be the final fix.
+	(preview-gs-options): Ok, so it isn't.  Restored -dSAFER and added
+	-dDELAYSAFER (which should be ignored by earlier GhostScript
+	versions).  Also:
+	(preview-gs-transact): call .setsafe procedure if defined in
+	systemdict, so we don't get unsafer in GhostScript 7.04.
 
 2002-02-06  Jan-Ake Larsson  <jalar@imf.au.dk>
 
