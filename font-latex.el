@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.933 (02 Oct 2004)
+;; Version:    0.934 (06 Oct 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,15 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.934 06Oct2004 Ralf Angeli
+;;  - `font-latex-verb-like-commands': New variable.
+;;  - `font-latex-set-syntactic-keywords': Use it.
+;;  - `font-latex-match-command-outside-arguments'
+;;    `font-latex-match-font-outside-braces'
+;;    `font-latex-match-font-inside-braces': Check face at the beginning
+;;    of the match to make keyword fontification possible even if a
+;;    macro's argument was already fontified due to syntactic keyword
+;;    fontification.
 ;; V0.933 02Oct2004 Ralf Angeli
 ;;  - Some clean-ups, rearrangements and performance improvements.
 ;; `font-latex-verbatim-face': XEmacs does not like :inherit.
@@ -1179,9 +1188,25 @@ add keywords to this list and rebuild the variable
 `font-latex-set-syntactic-keywords'.")
 (make-variable-buffer-local 'font-latex-verbatim-environments-local)
 
-(defcustom font-latex-verbatim-macros
+(defcustom font-latex-verb-like-commands
   '("verb" "verb*")
-  "Macros which should be fontified as verbatim."
+  "Commands with the form \\foo|...| to be fontified as verbatim."
+  :type '(repeat (string))
+  :group 'font-latex)
+
+(defvar font-latex-verb-like-commands-local nil
+  "Buffer-local keywords to add to `font-latex-verb-like-commands'.
+This must be a list of strings.  The variable is not for end
+users; they should customize `font-latex-verb-like-commands'
+instead.  It is for authors of Lisp files that get loaded when
+LaTeX style files are used in the current buffer.  They should
+add keywords to this list and rebuild the variable
+`font-latex-syntactic-keywords' by calling the function
+`font-latex-set-syntactic-keywords'.")
+(make-variable-buffer-local 'font-latex-verb-like-commands-local)
+
+(defcustom font-latex-verbatim-macros nil
+  "Macros with the form \\foo{...} to be fontified as verbatim."
   :type '(repeat (string))
   :group 'font-latex)
 
@@ -1204,16 +1229,32 @@ have changed."
   (let ((verb-envs (regexp-opt
 		    (append font-latex-verbatim-environments
 			    font-latex-verbatim-environments-local)))
+	(verb-like-commands (regexp-opt
+			     (append font-latex-verb-like-commands
+				     font-latex-verb-like-commands-local)))
 	(verb-macros (regexp-opt
 		      (append font-latex-verbatim-macros
 			      font-latex-verbatim-macros-local))))
-    (setq font-latex-syntactic-keywords
-	  `((,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}\\(.?\\).*\\(\n\\)")
-	     (1 "<") (2 "|" t))
-	    (,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}\\(.?\\)")
-	     (1 "|" t) (2 "<"))
-	    (,(concat "\\\\\\(?:" verb-macros "\\)\\([^a-z@*]\\).*?\\(\\1\\)")
-	     (1 "\"") (2 "\""))))))
+    (setq font-latex-syntactic-keywords nil)
+    (unless (= (length verb-envs) 0)
+      (add-to-list 'font-latex-syntactic-keywords
+		   `(,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}"
+			      "\\(.?\\).*\\(\n\\)")
+		     (1 "<") (2 "|" t)))
+      (add-to-list 'font-latex-syntactic-keywords
+		   `(,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}"
+			      "\\(.?\\)")
+		     (1 "|" t) (2 "<"))))
+    (unless (= (length verb-like-commands) 0)
+      (add-to-list 'font-latex-syntactic-keywords
+		   `(,(concat "\\\\\\(?:" verb-like-commands "\\)"
+			      "\\([^a-z@*]\\).*?\\(\\1\\)")
+		     (1 "\"") (2 "\""))))
+    (unless (= (length verb-macros) 0)
+      (add-to-list 'font-latex-syntactic-keywords
+		   `(,(concat "\\\\\\(?:" verb-macros "\\)"
+			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
+		     (1 "|") (2 "|"))))))
 
 (defvar font-latex-syntactic-keywords
   (font-latex-set-syntactic-keywords)
@@ -1698,7 +1739,8 @@ Returns nil if none of KEYWORDS is found."
   (when (re-search-forward keywords limit t)
     (cond
      ((or (font-latex-faces-present-p '(font-lock-comment-face
-					font-latex-verbatim-face))
+					font-latex-verbatim-face)
+				      (match-beginning 0))
 	  (font-latex-commented-outp))
       ;; Return a dummy match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
@@ -1830,7 +1872,8 @@ Returns nil if no font-changing command is found."
          limit t)
     (cond
      ((or (font-latex-faces-present-p '(font-lock-comment-face
-					font-latex-verbatim-face))
+					font-latex-verbatim-face)
+				      (match-beginning 0))
 	  (font-latex-commented-outp))
       ;; Return a nul match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
@@ -1930,7 +1973,8 @@ Returns nil if no font-changing command is found."
          limit t)
     (cond
      ((or (font-latex-faces-present-p '(font-lock-comment-face
-					font-latex-verbatim-face))
+					font-latex-verbatim-face)
+				      (match-beginning 0))
 	  (font-latex-commented-outp))
       ;; Return a nul match such that we skip over this pattern.
       ;; (Would be better to skip over internally to this function)
