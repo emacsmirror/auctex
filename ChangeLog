@@ -7,16 +7,14 @@
 
 	* bib-cite.el: Some doc fixes in the commentary section.
 
-2005-02-23  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+2005-02-23  Ikumi Keita <ikumi@revery.net>  (tiny change)
 
 	* doc/auctex.texi (I18n): Removed FIXME comment.
-	Patch by Ikumi Keita <ikumi@revery.net>.
 
-2005-02-22  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+2005-02-22  Ikumi Keita <ikumi@revery.net>  (tiny change)
 
 	* latex.el (LaTeX-fill-delete-newlines): Call search-forward,
 	which is copied from `fill-delete-newlines', with BOUND TO.
-	Patch by Ikumi Keita <ikumi@revery.net>.
 
 2005-02-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
@@ -98,9 +96,10 @@
 	text is written in Japanese (e.g. long Japanese line).
 	Reported by Ikumi Keita <ikumi@revery.net>.
 
+2005-02-14  Ikumi Keita <ikumi@revery.net>  (tiny change)
+
 	* tex-jp.el (LaTeX-auto-regexp-list): Use
 	`LaTeX-auto-class-regexp-list'.
-	Patch by Ikumi Keita <ikumi@revery.net>.
 
 2005-02-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
@@ -5700,10 +5699,12 @@
 	JLATEX mode if the class file starts with the letter `j'.
 	Reported by Joe Reinhardt <jmr@everest.radiology.uiowa.edu>.
 
+	* tex-jp.el (LaTeX-command-style): Support js(article|book).
+
+2002-01-21  Atsuhito Kohda  <kohda@pm.tokushima-u.ac.jp>  (tiny change)
+
 	* tex-jp.el (japanese-TeX-command-list): Use `%l' instead
 	of [pj]latex command.
-	Patch by Atsuhito Kohda	<kohda@pm.tokushima-u.ac.jp>.
-	(LaTeX-command-style): Support js(article|book).
 
 2002-01-18  Per Abrahamsen  <abraham@dina.kvl.dk>
 
