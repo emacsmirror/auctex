@@ -6,7 +6,7 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Revision: 1.6 $
+;; $Revision: 1.7 $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
