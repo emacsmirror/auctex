@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9i
+;; Version: 9.9j
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -272,6 +272,37 @@ in TeX-check-path."
 	      (if (file-newer-than-file-p name derived)
 		  (setq found t))))))
     found))
+
+(defun TeX-run-ispell-on-document (command ignored name)
+  "Run ispell on  all files belonging to the current document."
+  (interactive)
+  (TeX-ispell-document ""))
+
+(defun TeX-ispell-document (name)
+  "Run ispell on  all files belonging to the current document."
+  (interactive (list (TeX-master-file)))
+  (if (string-equal name "")
+      (setq name (TeX-master-file)))
+  
+  (let ((found nil)
+	(regexp (concat "\\`\\("
+			(mapconcat (function (lambda (dir)
+				      (regexp-quote (expand-file-name dir))))
+				   TeX-check-path "\\|")
+			"\\).*\\("
+			(mapconcat 'regexp-quote (cons name (TeX-style-list)) "\\|")
+			"\\)\\.\\("
+			(mapconcat 'regexp-quote TeX-file-extensions "\\|")
+			"\\)\\'"))
+	(buffers (buffer-list)))
+    (while buffers
+      (let* ((buffer (car buffers))
+	     (name (buffer-file-name buffer)))
+	(setq buffers (cdr buffers))
+	(if (and name (string-match regexp name))
+	    (progn
+	      (save-excursion (switch-to-buffer buffer) (ispell-buffer))
+	      (setq found t)))))))
 
 (defcustom TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX."

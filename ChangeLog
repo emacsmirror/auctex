@@ -1,5 +1,14 @@
 1998-07-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
+	* Version 9.9j released.
+
+1998-07-29  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-run-ispell-on-document, TeX-ispell-document):
+	New functions.
+	* tex.el (TeX-command-list): Use them.
+	Patch by Jason Stewart <jasons@cs.unm.edu>.
+
 	* Version 9.9i released.
 
 1998-07-29  Per Abrahamsen  <abraham@dina.kvl.dk>
