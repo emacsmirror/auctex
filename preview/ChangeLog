@@ -1,5 +1,18 @@
 2004-08-09  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/preview-latex.texi: Bump version number.
+	(top): Change preview-latex typesetting convention.
+	(Keys and lisp): AUCTeX menus are not changed.
+	(Simple customization): Don't talk about `.dvi'.
+	(For advanced users): Menu `The preview images' instead of `On EPS
+	previews'.
+	(The Emacs interface): Take PDF into account.
+	(The preview images): Describe `preview-gs-image-type-alist',
+	`preview-dvipng-image-type'.
+	
+	* doc/faq.texi (Introduction to FAQ): Change submission address to
+	preview-latex-devel since this appears to better reflect reality.
+
 	* latex/preview.dtx (showlabels): work around ntheorem/amsmath
 	bug.
 
