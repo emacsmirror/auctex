@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-15 22:46:26 $
+;; Last Change: $Date: 2004-04-16 07:40:19 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -81,8 +81,8 @@
 
 (defcustom ConTeXt-default-interface "en"
 	"Default interface to be used when running ConTeXt."
-  :group 'ConTeXt
-  :type 'string)
+	:group 'ConTeXt
+	:type 'string)
 
 (defvar ConTeXt-current-interface "en"
 	"Interface to be used for inserting macros and ConTeXt run")
@@ -805,8 +805,8 @@ nil, go to the point just past the \\start... macro."
 (defun ConTeXt-insert-item ()
 	"Insert a new item. "
 	(interactive "*")
-  (or (TeX-looking-at-backward "^[ \t]*")
-      (newline))
+	(or (TeX-looking-at-backward "^[ \t]*")
+			(newline))
 	(TeX-insert-macro "item")
 	(indent-according-to-mode))
 
@@ -918,16 +918,16 @@ header is at the start of a line."
 	(concat
 	 (regexp-quote TeX-esc)
 	 (ConTeXt-environment-start-name)
-   ConTeXt-text
-   )
-  )
+	 ConTeXt-text
+	 )
+	)
 
 (defun ConTeXt-trailer-start ()
 	"Default start of trailer marker for ConTeXt documents."
 	(concat
 	 (regexp-quote TeX-esc)
 	 (ConTeXt-environment-stop-name)
-   ConTeXt-text
+	 ConTeXt-text
 	 )
 )
 
@@ -968,31 +968,31 @@ header is at the start of a line."
 ;; Imenu support
 
 (defun ConTeXt-outline-name ()
-  "Guess a name for the current header line."
-  (save-excursion
-    (if (re-search-forward "{\\([^\}]*\\)}" (point-at-eol) t)
-        (match-string 1)
-      (buffer-substring-no-properties (point) (point-at-eol))
-      )
-    ))
+	"Guess a name for the current header line."
+	(save-excursion
+		(if (re-search-forward "{\\([^\}]*\\)}" (point-at-eol) t)
+				(match-string 1)
+			(buffer-substring-no-properties (point) (point-at-eol))
+			)
+		))
 
 ;; This imenu also includes commented out chapters. Perhaps a feature
 ;; for LaTeX, not sure we want or need that for ConTeXt.
 
 (defun ConTeXt-imenu-create-index-function ()
-  "Imenu support function for ConTeXt."
-  (TeX-update-style)
-  (let (entries level (regexp (ConTeXt-outline-regexp)))
-    (goto-char (point-max))
-    (while (re-search-backward regexp nil t)
-      (let* ((name (ConTeXt-outline-name))
-             (level (make-string (1- (ConTeXt-outline-level)) ?\ ))
-             (label (concat level level name))
-             (mark (make-marker)))
-        (set-marker mark (point))
-        (set-text-properties 0 (length label) nil label)
-        (setq entries (cons (cons label mark) entries))))
-    entries))
+	"Imenu support function for ConTeXt."
+	(TeX-update-style)
+	(let (entries level (regexp (ConTeXt-outline-regexp)))
+		(goto-char (point-max))
+		(while (re-search-backward regexp nil t)
+			(let* ((name (ConTeXt-outline-name))
+						 (level (make-string (1- (ConTeXt-outline-level)) ?\ ))
+						 (label (concat level level name))
+						 (mark (make-marker)))
+				(set-marker mark (point))
+				(set-text-properties 0 (length label) nil label)
+				(setq entries (cons (cons label mark) entries))))
+		entries))
 
 
 ;; Indentation, copied from Berend's context mode.
@@ -1135,7 +1135,7 @@ There might be text before point."
 		(or (key-binding "\e\r")
 				(define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
 		(define-key map "\C-c]" 'ConTeXt-close-environment)
-    (define-key map "\C-c\C-s" 'ConTeXt-section)
+		(define-key map "\C-c\C-s" 'ConTeXt-section)
 		;; XML in ConTeXt support
 		(define-key map "\C-c/" 'ConTeXt-close-xml-tag)
 		map)
@@ -1232,21 +1232,21 @@ There might be text before point."
 ;; etexshow support
 
 (defun ConTeXt-etexshow ()
-  "Call etexshow, if available, to show the definition of a ConText macro."
-  (interactive)
+	"Call etexshow, if available, to show the definition of a ConText macro."
+	(interactive)
 	(if (fboundp 'etexshow)
-      (let ()
-        (require 'etexshow)
-        (funcall (symbol-function 'etexshow-cmd)))
-    (error "etexshow is not installed. Get it from http://levana.de/emacs/"))
+			(let ()
+				(require 'etexshow)
+				(funcall (symbol-function 'etexshow-cmd)))
+		(error "etexshow is not installed. Get it from http://levana.de/emacs/"))
 )
 
 ;; menu itself
 
 (easy-menu-define ConTeXt-mode-command-menu
-  ConTeXt-mode-map
-  "Command menu used in ConTeXt mode."
-  (TeX-mode-specific-command-menu 'context-mode))
+	ConTeXt-mode-map
+	"Command menu used in ConTeXt mode."
+	(TeX-mode-specific-command-menu 'context-mode))
 
 ;; it seems the menu is evaluated at compile/load-time
 ;; we don't have ConTeXt-current-interface at that time
@@ -1260,10 +1260,10 @@ There might be text before point."
 	(list ConTeXt-environment-modify-menu-name)
 	(list ConTeXt-setup-menu-name)
 	"-"
-  (list ConTeXt-project-structure-menu-name)
-  (list ConTeXt-section-block-menu-name)
-  (list ConTeXt-section-menu-name)
-  ["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
+	(list ConTeXt-project-structure-menu-name)
+	(list ConTeXt-section-block-menu-name)
+	(list ConTeXt-section-menu-name)
+	["Add table of contents to Emacs menu" (imenu-add-to-menubar "TOC") t]
 	"-"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
@@ -1358,7 +1358,7 @@ There might be text before point."
 																	 ConTeXt-section-list)))
 				(message "Updating...done")
 				(and menu (easy-menu-return-item ConTeXt-mode-menu menu))
-        ))
+				))
 )
 
 
@@ -1368,29 +1368,29 @@ There might be text before point."
 ;; They are mapped to interface specific variables
 
 (defvar ConTeXt-language-variable-list
-  '(ConTeXt-setup-list ConTeXt-project-structure-list ConTeXt-section-block-list ConTeXt-section-list ConTeXt-text ConTeXt-item-list))
+	'(ConTeXt-setup-list ConTeXt-project-structure-list ConTeXt-section-block-list ConTeXt-section-list ConTeXt-text ConTeXt-item-list))
 
 
 (defun ConTeXt-mode-common-initialization ()
-  "Initialization code that is common for all ConTeXt interfaces."
+	"Initialization code that is common for all ConTeXt interfaces."
 	(plain-TeX-common-initialization)
 
-  ;; Make language specific variables buffer local
-  (dolist (symbol ConTeXt-language-variable-list)
-    (make-variable-buffer-local symbol))
+	;; Make language specific variables buffer local
+	(dolist (symbol ConTeXt-language-variable-list)
+		(make-variable-buffer-local symbol))
 
-  (require (intern (concat "context-" ConTeXt-current-interface)))
-  (dolist (symbol ConTeXt-language-variable-list)
-    (set symbol (symbol-value (intern (concat (symbol-name symbol) "-" ConTeXt-current-interface)))))
+	(require (intern (concat "context-" ConTeXt-current-interface)))
+	(dolist (symbol ConTeXt-language-variable-list)
+		(set symbol (symbol-value (intern (concat (symbol-name symbol) "-" ConTeXt-current-interface)))))
 
 
 	;; What's the deepest level at we can collapse a document?
 	;; set only if user has not set it. Need to be set before menu is created.
-  ;; level 2 is "section"
+	;; level 2 is "section"
 	(or ConTeXt-largest-level
 			(setq ConTeXt-largest-level 2))
 
-  ;; keybindings
+	;; keybindings
 	(use-local-map ConTeXt-mode-map)
 
 	;; Indenting
@@ -1400,7 +1400,7 @@ There might be text before point."
 	;; Paragraph formatting
 	(set (make-local-variable 'LaTeX-syntactic-comments) nil)
 	(set (make-local-variable 'LaTeX-paragraph-commands)
-       (ConTeXt-paragraph-commands))
+			 (ConTeXt-paragraph-commands))
 	(set (make-local-variable 'paragraph-ignore-fill-prefix) t)
 	(set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
 	(set (make-local-variable 'adaptive-fill-mode) nil)
@@ -1423,7 +1423,7 @@ There might be text before point."
 	(use-local-map ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-menu ConTeXt-mode-map)
-  (setq ConTeXt-menu-changed t)
+	(setq ConTeXt-menu-changed t)
 
 	(if (= emacs-major-version 20)
 			(make-local-hook 'activate-menubar-hook))
@@ -1437,11 +1437,11 @@ There might be text before point."
 	(setq TeX-header-end (ConTeXt-header-end)
 				TeX-trailer-start (ConTeXt-trailer-start))
 
-  ;; imenu support
-  (set (make-local-variable 'imenu-create-index-function)
-       'ConTeXt-imenu-create-index-function)
+	;; imenu support
+	(set (make-local-variable 'imenu-create-index-function)
+			 'ConTeXt-imenu-create-index-function)
 
-  ;; run hooks
+	;; run hooks
 	(setq major-mode 'context-mode)
 	(setq TeX-command-default "ConTeXt")
 	(setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
@@ -1449,19 +1449,20 @@ There might be text before point."
 )
 
 (defun context-guess-current-interface ()
-  "Guess what ConTeXt interface the current buffer is using."
+	"Guess what ConTeXt interface the current buffer is using."
 
-  (save-excursion
-    (goto-char (point-min))
-    (if (re-search-forward "\\\\starttext" (+ 1024 (point)) t)
-        (setq ConTeXt-current-interface "en")
-      (if (re-search-forward "\\\\starttekst" (+ 1024 (point)) t)
-          (setq ConTeXt-current-interface "nl")
-        (setq ConTeXt-current-interface ConTeXt-default-interface)
-        )
-      )
-    )
-  )
+	(save-excursion
+		(goto-char (point-min))
+		(if (re-search-forward "%.*?interface=en" (+ 512 (point)) t)
+				(setq ConTeXt-current-interface "en")
+			(if (re-search-forward "%.*?interface=nl" (+ 512 (point)) t)
+					(setq ConTeXt-current-interface "nl")
+				(if (re-search-forward "\\\\starttext" (+ 1024 (point)) t)
+						(setq ConTeXt-current-interface "en")
+					(if (re-search-forward "\\\\starttekst" (+ 1024 (point)) t)
+							(setq ConTeXt-current-interface "nl")
+						(setq ConTeXt-current-interface ConTeXt-default-interface)
+					))))))
 
 (defun context-mode ()
 	"Major mode for editing files of input for ConTeXt.
@@ -1473,9 +1474,9 @@ Entering context-mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value
 of context-mode-hook."
 	(interactive)
-  (context-guess-current-interface)
-  (require (intern (concat "context-" ConTeXt-current-interface)))
-  (funcall (intern (concat "context-" ConTeXt-current-interface "-mode")))
+	(context-guess-current-interface)
+	(require (intern (concat "context-" ConTeXt-current-interface)))
+	(funcall (intern (concat "context-" ConTeXt-current-interface "-mode")))
 )
 
 (provide 'context)
