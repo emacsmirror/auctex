@@ -1,3 +1,9 @@
+2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/problems.texi (Middle-clicks paste instead of toggling):
+	Alas, those bugs persist into 21.2 although the CVS has had it
+	fixed for half a year almost.  "Stable release" policies.  Ha.
+
 2002-04-14  Nix  <nix@esperi.demon.co.uk>
 
 	* preview.el (preview-parse-messages):
