@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-19 16:15:19 $
+;; Last Change: $Date: 2004-04-23 18:25:28 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1276,13 +1276,12 @@ There might be text before point."
 		     (customize-group 'AUCTeX)]
 		    ["Extend this menu"
 		     (easy-menu-add-item
-		      nil '("ConTeXt")
+		      nil '("ConTeXt" "AUCTeX")
 		      (customize-menu-create 'AUCTeX))])
 	      ["Documentation" TeX-goto-info-page t]
 	      ["Submit bug report" TeX-submit-bug-report t]
 	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
-	))
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
 (defun ConTeXt-menu-update (&optional menu)
   "Update entries on AUCTeX menu."
