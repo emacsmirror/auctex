@@ -1,3 +1,11 @@
+2003-02-13  David Kastrup  <dakas@users.sourceforge.net>
+
+	* configure.in: Remove redundant checks/substs.
+
+	* aclocal.m4 (AC_EXAMINE_PACKAGEDIR): lots of fixes with regard
+	to quoting, bad code and other stuff.
+	(AC_CHECK_AUCTEX): remove trailing slash.
+
 2003-02-10  Alan Shutko  <ats@acm.org>
 
 	* aclocal.m4: Changed all references of AUCTEXDIR to auctexdir.
