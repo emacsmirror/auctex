@@ -1,3 +1,8 @@
+2004-12-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-source-specials-view-position-flags): Fix syntax for
+	xdvi.
+
 2004-12-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (top): Duplicate top node and wrap it in @ifinfo
