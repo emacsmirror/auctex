@@ -6,9 +6,11 @@
 %if %{FOR_SUSE}
 %define distri      .suse
 %define commongroup Productivity/Editors/Emacs
+%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
 %define distri      .fedora
 %define commongroup Applications/Editors
+%define xemacspkgdir %{_datadir}/xemacs/site-packages
 %endif
 
 Summary: 	Emacs/LaTeX inline preview 
