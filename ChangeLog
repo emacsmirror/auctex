@@ -1,5 +1,7 @@
 2004-03-26  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-fill-region): Correct percentage display.
+
 	* tex-buf.el (TeX-format-filter): Strictly restrict backward
 	searches for page number patterns.
 
