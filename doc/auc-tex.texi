@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.98 1994-10-22 12:57:50 amanda Exp $
+@c $Id: auc-tex.texi,v 1.99 1994-10-22 13:07:37 amanda Exp $
 
 @finalout
 @titlepage
@@ -2335,21 +2335,21 @@ the regesps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
 Thiemann. 
 
 @example
-     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\
+     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?\\[\\([0-9]+\\)\\]\
 \\[\\([^\]\\\\\n\r]+\\)\\]"
       (1 2 3) LaTeX-auto-optional)
-     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?\\[\\([0-9]+\\)\\]"
       (1 2) LaTeX-auto-arguments)
-     ("\\\\DeclareRobustCommand{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
-     ("\\\\DeclareFixedFont{?\\\\\\([a-zA-Z]+\\)}?"
+     ("\\\\DeclareRobustCommand@{?\\\\\\([a-zA-Z]+\\)@}?" 1 TeX-auto-symbol)
+     ("\\\\DeclareFixedFont@{?\\\\\\([a-zA-Z]+\\)@}?"
       1 TeX-auto-symbol)
-     ("\\\\Declare\\(Text\\|Old\\)FontCommand{?\\\\\\([a-zA-Z]+\\)}?"
+     ("\\\\Declare\\(Text\\|Old\\)FontCommand@{?\\\\\\([a-zA-Z]+\\)@}?"
       2 TeX-auto-symbol)
-     ("\\\\DeclareMath\\(Symbol\\|Delimiter\\|Accent\\|Radical\\){?\\\\\\([a-zA-Z]+\\)}?"
+     ("\\\\DeclareMath\\(Symbol\\|Delimiter\\|Accent\\|Radical\\)@{?\\\\\\([a-zA-Z]+\\)@}?"
       2 TeX-auto-symbol)
      ;;; it is also valid to declare just a single symbol, e.g. <,
      ;;; with \DeclareMathSymbol but it is not necessary to register that here
-     ("\\\\DeclareText\\(Command\\|Symbol\\|Accent\\|Composite\\){?\\\\\\([a-zA-Z]+\\)}?"
+     ("\\\\DeclareText\\(Command\\|Symbol\\|Accent\\|Composite\\)@{?\\\\\\([a-zA-Z]+\\)@}?"
       2 TeX-auto-symbol)
 @end example
 
