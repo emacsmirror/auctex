@@ -1,5 +1,8 @@
 2005-01-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/todo.texi (Wishlist): Remove bug regarding parsing of LaTeX
+	class files.
+
 	* tex.el (TeX-macro-global): New function.
 	(TeX-macro-global): (the variable) Moved here from tex-site.el.in.
 	Use new `TeX-macro-global' function.
@@ -23,6 +26,8 @@
 	character instead of using `newline'.  Fixes insertion of
 	environment end at wrong place in XEmacs.
 	(LaTeX-fill-region): Remove superfluous `save-restriction'.
+	(LaTeX-auto-class-regexp-list): Add patterns for commands
+	described in "LaTeX2e font selection" (fntguide).
 
 2005-01-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
