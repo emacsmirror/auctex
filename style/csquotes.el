@@ -35,11 +35,19 @@
   :type 'boolean)
 
 (defcustom LaTeX-csquotes-open-quote ""
-  "Opening quotation mark to be used with the csquotes package."
+  "Opening quotation mark to be used with the csquotes package.
+The specified string will be used for `TeX-open-quote' (and override
+the value of `LaTeX-german-open-quote' if the german or ngerman
+package is used) only if both `LaTeX-csquotes-open-quote' and
+`LaTeX-csquotes-close-quote' are non-empty strings."
   :type 'string)
 
 (defcustom LaTeX-csquotes-close-quote ""
-  "Closing quotation mark to be used with the csquotes package."
+  "Closing quotation mark to be used with the csquotes package.
+The specified string will be used for `TeX-close-quote' (and override
+the value of `LaTeX-german-close-quote' if the german or ngerman
+package is used) only if both `LaTeX-csquotes-open-quote' and
+`LaTeX-csquotes-close-quote' are non-empty strings."
   :type 'string)
 
 (TeX-add-style-hook
@@ -62,11 +70,11 @@
       '("blockquote" ["Line threshold"] 2)
       '("foreignblockquote" t ["Line threshold"] nil nil)
       '("hyphenblockquote" t ["Line threshold"] nil nil)
-      '("setquotestyle"
+      `("setquotestyle"
 	[ (TeX-arg-eval completing-read "Quote style variant: "
-			quote-style-variant-list) ]
+			',quote-style-variant-list) ]
 	(TeX-arg-eval completing-read "Quote style name or alias: "
-		      quote-style-name-list))
+		      ',quote-style-name-list))
       '("MakeInnerQuote" "Character")
       '("MakeOuterQuote" "Character")
       '("MakeAutoQuote" "Opening quotation mark" "Closing quotation mark")
@@ -75,17 +83,21 @@
       '("MakeHyphenQuote" "Babel's language name"
 	"Opening quotation mark" "Closing quotation mark")
       "RestoreQuotes"
-      '("DeclareQuoteStyle" ["Quote style variant"] "Quote style name"
+      `("DeclareQuoteStyle"
+	[ (TeX-arg-eval completing-read "Quote style variant: "
+			',quote-style-variant-list) ]
+	(TeX-arg-eval completing-read "Quote style name: "
+		      ',quote-style-name-list)
 	["Outer quote initialization"] ["Inner quote initialization"]
 	"Opening outer quotation mark" ["Middle outer quotation mark"]
 	"Closing outer quotation mark" ["Kerning between adjoining marks"]
 	"Opening inner quotation mark" ["Middle inner quotation mark"]
 	"Closing inner quotation mark")
-      '("DeclareQuoteAlias"
+      `("DeclareQuoteAlias"
 	[ (TeX-arg-eval completing-read "Quote style variant: "
-			quote-style-variant-list) ]
+			',quote-style-variant-list) ]
 	(TeX-arg-eval completing-read "Quote style name: "
-		      quote-style-name-list)
+		      ',quote-style-name-list)
 	"Alias name")
     '("DeclareQuoteOption" 1)
     '("DeclarePlainStyle" "Outer quotation mark" "Inner quotation mark")
@@ -96,8 +108,8 @@
    (LaTeX-add-environments
     "quoteblock")
    ;; Quotation marks
-   (when (and (/= (length LaTeX-csquotes-open-quote) 0)
-	      (/= (length LaTeX-csquotes-close-quote) 0))
+   (when (and (> (length LaTeX-csquotes-open-quote) 0)
+	      (> (length LaTeX-csquotes-close-quote) 0))
      (make-local-variable 'TeX-open-quote)
      (setq TeX-open-quote LaTeX-csquotes-open-quote)
      (make-local-variable 'TeX-close-quote)
