@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.152 2002-07-19 08:42:11 dakas Exp $
+;; $Id: preview.el,v 1.153 2002-07-23 11:48:16 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -85,7 +85,7 @@
     (pnm (open preview-gs-open pbm ("-sDEVICE=pnmraw"))
 	  (place preview-gs-place)
 	  (close preview-gs-close))
-    (tiff (open preview-gs-open tiff ("-sDEVICE=tiffpack"))
+    (tiff (open preview-gs-open tiff ("-sDEVICE=tiff12nc"))
 	  (place preview-gs-place)
 	  (close preview-gs-close)))
   "Define functions for generating images.
@@ -2065,7 +2065,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.152 $"))
+	(rev "$Revision: 1.153 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2076,7 +2076,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-19 08:42:11 $"))
+    (let ((date "$Date: 2002-07-23 11:48:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
