@@ -1,14 +1,14 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10i
+;; Version: 9.10j
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1996, 1997 Per Abrahamsen 
+;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;;; Code:
+
+(when (< emacs-major-version 20)
+  (error "AUC TeX requires Emacs 20 or later"))
 
 (require 'custom)
 
@@ -363,10 +366,6 @@ Full documentation will be available after autoloading the function."
 (cond ((or (string-match "Lucid" emacs-version)
 	   (string-match "XEmacs" emacs-version))
 
-(and (<= emacs-major-version 19)
-     (<= emacs-minor-version 13)
-     (error "AUC TeX requires XEmacs 19.14 or later"))
-
 (defadvice popup-mode-menu (before LaTeX-update activate)
   "Run `LaTeX-menu-update' before showing menu."
   (and (fboundp 'LaTeX-menu-update)
@@ -387,11 +386,6 @@ Full documentation will be available after autoloading the function."
 ;;; Special support for GNU Emacs 19
 
 (t
-
-(if (or (< emacs-major-version 19)
-	(and (= emacs-major-version 19)
-	     (<= emacs-minor-version 29)))
-    (error "AUC TeX requires Emacs 19.30 or later"))
 
 (defun TeX-mark-active ()
   ;; In FSF 19 mark-active indicates if mark is active.
