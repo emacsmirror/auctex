@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.221 2004-11-05 01:36:36 dakas Exp $
+;; $Id: preview.el,v 1.222 2005-01-24 09:32:31 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2313,23 +2313,23 @@ will not get matched, usually."
 		    (regexp-quote (substring string
 					     0
 					     (- (match-beginning 1) 2)))
-		    "\\(?:" (regexp-quote
-			     (substring string
-					(- (match-beginning 1) 2)
-					(match-end 0)))
-		    "\\|"
-		    (progn
-		      (setq char
-			    (char-to-string
-			     (if (match-beginning 2)
-				 (logxor (aref string (match-beginning 2)) 64)
-			       (string-to-number (match-string 1 string) 16))))
-		      (if (fboundp 'decode-coding-string)
-			  (decode-coding-string char buffer-file-coding-system)
-			char))
-		    "\\)")
+		    (if (match-beginning 2)
+			(concat
+			 "\\(?:" (regexp-quote
+				  (substring string
+					     (- (match-beginning 1) 2)
+					     (match-end 0)))
+			 "\\|"
+			 (char-to-string
+			  (logxor (aref (string (match-beginning 2))) 64))
+			 "\\)")
+		      (char-to-string
+		       (string-to-number (match-string 1 string) 16))))
 	    string (substring string (match-end 0))))
-    (concat output (regexp-quote string))))
+    (setq output (concat output (regexp-quote string)))
+    (if (fboundp 'decode-coding-string)
+	(decode-coding-string output buffer-file-coding-system)
+      output)))
 
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
@@ -2578,13 +2578,31 @@ name(\\([^)]+\\))\\)\\|\
 			(backward-char (length after-string)))
 		       ;;ok, transform ^^ sequences
 		       ((search-forward-regexp
-			 (concat "\\(" (preview-error-quote string) "\\)"
-				 (preview-error-quote after-string))
+			 (concat "\\("
+				 (setq string (preview-error-quote string))
+				 "\\)"
+				 (setq after-string
+				       (preview-error-quote after-string)))
+			 (line-end-position) t)
+			(goto-char (match-end 1)))
+		       ((search-forward-regexp
+			 (concat "\\("
+				 (if (string-match
+				      "^[^\0-\177]\\{1,6\\}" string)
+				     (setq string
+					   (substring string (match-end 0)))
+				   string)
+				 "\\)"
+				 (if (string-match
+				      "[^\0-\177]\\{1,6\\}$" after-string)
+				     (setq after-string
+					   (substring after-string
+						      0 (match-beginning 0)))))
 			 (line-end-position) t)
 			(goto-char (match-end 1)))
 		       (t (search-forward-regexp
-			 (preview-error-quote string)
-			 (line-end-position) t))))
+			   string
+			   (line-end-position) t))))
 		    (setq lline line
 			  lbuffer (current-buffer))
 		    (if box
@@ -3035,8 +3053,7 @@ internal parameters, STR may be a log to insert into the current log."
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
 	  (when (featurep 'mule)
 	    (set-process-coding-system
-	     process
-	     (with-current-buffer commandbuff buffer-file-coding-system)))
+	     process 'raw-text))
 	  (TeX-parse-reset)
 	  (setq TeX-parse-function 'TeX-parse-TeX)
 	  (if TeX-process-asynchronous
@@ -3048,7 +3065,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.221 $"))
+	(rev "$Revision: 1.222 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3059,7 +3076,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-11-05 01:36:36 $"))
+    (let ((date "$Date: 2005-01-24 09:32:31 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

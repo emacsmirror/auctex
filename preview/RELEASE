@@ -1,4 +1,4 @@
-Release notes for version 0.8.2 of the preview-latex package:
+Release notes for version 0.9 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by pasting judiciously
 selected chunks (such as single formulas) chopped from unwieldy
@@ -13,16 +13,17 @@ The package is released under the GNU Public License (GPL).  At the
 current point of time, at least GNU Emacs-21.1 under the X window
 system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.14 or
 later recommended, see below), a working LaTeX installation and
-GhostScript are required.  dvipng (version 1.0 or later), a very fast
+GhostScript are required.  dvipng (version 1.4 or later), a very fast
 dvi converter available from the same CVS archive, can also be used
 for conversion.  Recent CVS versions of GNU Emacs for Windows or MacOS
 Carbon should also work.
 
-0.8.2 gets rid of the 8bit-cleanness installation issues that proved a
-recurring problem for several TeX distributions.  You'll still require
-a clean installation for cooperating with current versions of X-Symbol
-(4.5.1-beta) until the fixes get incorporated there.  But
-preview-latex does no longer check for this.
+This version finally gets rid of all 8bit-cleanness issues that
+plagued cooperation with several TeX distributions, though cooperation
+with current versions of X-Symbol (4.5.1-beta) still requires
+8bit-cleanliness until the fixes get incorporated there.  But
+preview-latex does no longer check for this.  utf-8 buffers are now
+also supported.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The

@@ -1,3 +1,14 @@
+2005-01-24  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Ask for dvipng 1.4, mention utf-8 capability.
+
+	* preview.el (preview-error-quote): Don't regexp codes out of the
+	ASCII range, and convert the resulting string using the buffer
+	encoding.  This makes for utf-8.
+	(preview-parse-messages): Change match mechanism.
+	(TeX-inline-preview-internal): Set process encoding to raw-text
+	since TeX may deliver mixtures of encoded and clean bytes.
+
 2005-01-19  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4: sync with AUCTeX
