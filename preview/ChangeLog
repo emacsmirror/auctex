@@ -1,3 +1,11 @@
+2001-10-05  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el: require overlay
+	preview-compatibility-macros added
+	(find-image): some changes of compilation
+	(defimage): define using preview-defmacro
+	(make-temp-file): ignore temporary-filename: not needed in here.
+
 2001-10-04  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el: first stab at XEmacs compatibility.
