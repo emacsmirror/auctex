@@ -1,3 +1,12 @@
+1998-12-12  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9n released.
+
+1998-12-12  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-file-recurse): Added right parenthesis.
+	Reported by Bernt Guldbrandtsen <bernt@stat.washington.edu>.
+	
 1998-12-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9m released.
