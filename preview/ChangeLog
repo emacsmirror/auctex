@@ -1,3 +1,8 @@
+2003-03-30  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* configure.in (EMACS_PROG_EMACS): Make the test fail gracefully
+	when no binary executable is found.
+	
 2003-03-30  David Kastrup  <dakas@users.sourceforge.net>
 
 	* doc/install.texi (Configure), doc/wininstall.texi: explain
