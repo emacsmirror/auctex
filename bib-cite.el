@@ -1,12 +1,12 @@
 ;;; bib-cite.el --- test
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003
+;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003, 2004
 ;; Peter S. Galbraith
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.24  (Oct 28 2003)
+;; Version:   3.25  (Feb 15 2004)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -323,6 +323,9 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.25 Feb 15 2004 - PSG
+;;  - Check existence of font-lock-unset-defaults; no longer defined in CVS
+;;    Emacs. Thanks to Adrian Lanz for reporting the problem.
 ;; V3.24 Oct 28 2003 - PSG
 ;;  - bib-cite-file-directory-p: new function to replace ff-paths code.
 ;; V3.23 Oct 09 2003 - PSG
@@ -1259,7 +1262,7 @@ to create a bibtex file containing only the references used in the document."
                nil t ((?$ . "\"")(?\" . ".")))))
         (if font-lock-mode
             (font-lock-mode)
-          (font-lock-unset-defaults)
+          (if (fboundp 'font-lock-unset-defaults) (font-lock-unset-defaults))
           (font-lock-unfontify-buffer))
         (font-lock-fontify-buffer))))))
 
@@ -1293,7 +1296,7 @@ to create a bibtex file containing only the references used in the document."
                '(tex-font-lock-keywords nil nil ((?$ . "\""))))))
         (if font-lock-mode
             (font-lock-mode)
-          (font-lock-unset-defaults)
+          (if (fboundp 'font-lock-unset-defaults) (font-lock-unset-defaults))
           (font-lock-unfontify-buffer))
         (font-lock-fontify-buffer))))))
 

@@ -1,3 +1,10 @@
+2004-02-15  Peter S Galbraith  <psg@debian.org>
+
+	* bib-cite.el (bib-cite-fontify-help-as-bibtex)
+	(bib-cite-fontify-help-as-latex): Check existence of
+	font-lock-unset-defaults; no longer defined in CVS Emacs.
+	Thanks to Adrian Lanz for reporting the problem.
+
 2004-02-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-title-4-face): Use different colors
