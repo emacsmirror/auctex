@@ -289,7 +289,7 @@ Hook up the letter environment with @file{bbdb.el}.
 @node Bugs, , Wishlist, ToDo
 @section Bugs
 
-@c FIXME: Are those bugs still present?  Especially the filling bugs?
+@c FIXME: Are those bugs still present?
 
 @itemize @bullet
 @item The parsed files and style hooks for @file{example.dtx},
@@ -313,9 +313,6 @@ Maybe the regexp for matching a TeX symbol during parsing should be
 @AUCTeX{} should not parse verbatim environments.
 
 @item
-@LaTeX{} formatting should skip @code{verbatim} environments.
-
-@item
 Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
 simply self insert if not in a math context.
 
@@ -326,4 +323,22 @@ by @samp{\mbox}'es and escaped double dollar for example.
 @item
 Correct indentation for tabular, tabbing, table, math, and array
 environments.
+
+@item
+Syntax highlighting of @LaTeX{} constructs spanning more than one line
+sometimes stops in the middle of the construct.  Highlighting can get
+lost during typing. (XEmacs only)
+
+@item
+No syntactic font locking of verbatim macros and environments. (XEmacs
+only)
+
+@item
+Font locking inside of verbatim macros and environments is not
+inhibited.  This may result in syntax highlighting of unbalanced dollar
+signs and the like spilling out of the verbatim content. (XEmacs only)
+
+@item
+Folding of @LaTeX{} constructs spanning more than one line may result in
+overfull lines. (XEmacs only)
 @end itemize
