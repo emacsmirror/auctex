@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.206 2004-04-11 19:18:22 dakas Exp $
+;; $Id: preview.el,v 1.207 2004-04-11 19:58:08 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -271,7 +271,8 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
   :type 'string)
 
 (defcustom preview-gs-options '("-q" "-dSAFER" "-dDELAYSAFER" "-dNOPAUSE"
-				"-DNOPLATFONTS" "-dTextAlphaBits=4"
+				"-DNOPLATFONTS" "-dPrinted"
+				"-dTextAlphaBits=4"
 				"-dGraphicsAlphaBits=4")
   "*Options with which to call gs for conversion from EPS.
 See also `preview-gs-command'."
@@ -676,6 +677,12 @@ Pure borderless black-on-white will return an empty string."
 
 
 (defun preview-pdf2dsc-process-setup ()
+  (setq preview-gs-command-line (append
+				 preview-gs-command-line
+				 (list (preview-gs-resolution
+					(preview-hook-enquiry preview-scale)
+					(car preview-resolution)
+					(cdr preview-resolution)))))
   (let ((process (preview-start-pdf2dsc)))
     (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
     (list process (current-buffer) TeX-active-tempdir preview-ps-file
@@ -2957,7 +2964,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.206 $"))
+	(rev "$Revision: 1.207 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2968,7 +2975,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-11 19:18:22 $"))
+    (let ((date "$Date: 2004-04-11 19:58:08 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
