@@ -1,3 +1,8 @@
+2004-11-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-close-environment): Insert a newline at the end
+	of the environment if an uncommented line follows a commented one.
+
 2004-11-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (docTeX-in-macrocode-p): Search backward for an
