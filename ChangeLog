@@ -2,6 +2,7 @@
 
 	* tex-info.el (TeXinfo-insert-environment): Support enclosure of
 	a selected region by the environment to be inserted.
+	Don't eat newline at the end of the environment.
 	(TeXinfo-mode-map): Bind `C-c C-e' to `TeXinfo-insert-environemt'
 	analogous to LaTeX mode.
 
