@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.69 2002-03-05 02:08:07 dakas Exp $
+;; $Id: preview.el,v 1.70 2002-03-08 00:41:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -547,7 +547,7 @@ given as ANSWER."
 << \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
 >> setpagedevice [save] %s (%s) (r) file cvx \
-systemdict /.runandhide known {.setsafe {.runandhide}} if \
+systemdict /.runandhide known revision 700 ge and {.setsafe {.runandhide}} if \
 stopped {handleerror quit} if count 1 ne {quit} if \
 cleardictstack 0 get restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
@@ -1458,7 +1458,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.69 $"))
+	(rev "$Revision: 1.70 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
