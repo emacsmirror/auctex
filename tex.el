@@ -1429,7 +1429,11 @@ Unless optional argument COMPLETE is non-nil, ``: '' will be appended."
 ;;; The Mode
 
 (defvar TeX-format-list
-  '(("AMSTEX" ams-tex-mode
+  '(("JLATEX" japanese-latex-mode
+     "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
+    ("JTEX" japanese-plain-tex-mode
+     "-- string likely in Japanese TeX --")
+    ("AMSTEX" ams-tex-mode
      "\\\\document\\b")
     ("LATEX" latex-mode 
      "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")

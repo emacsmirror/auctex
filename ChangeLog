@@ -1,3 +1,9 @@
+1999-08-20  Hidenobu Nabetani  <nabe@debian.or.jp>
+
+	* tex.el (TeX-format-list): Add "JLATEX" and "JTEX" which is needed
+	to load tex-jp.el automatically.
+	* tex-jp.el (TeX-format-list): Remove "JLATEX" and "JTEX".
+
 1999-08-18  Hidenobu Nabetani  <nabe@debian.or.jp>
 
 	* tex-jp.el (TeX-command-list): Add "jLaTeX" and "pLaTeX".

@@ -11,12 +11,12 @@
 ;;; Customization
 
 ;; TeX-format-list need to be set in tex.el, not tex-jp.el.
-(setq TeX-format-list
-      (append '(("JLATEX" japanese-latex-mode
-		 "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
-		("JTEX" japanese-plain-tex-mode
-		 "-- string likely in Japanese TeX --"))
-	      TeX-format-list))
+;(setq TeX-format-list
+;      (append '(("JLATEX" japanese-latex-mode
+;		 "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
+;		("JTEX" japanese-plain-tex-mode
+;		 "-- string likely in Japanese TeX --"))
+;	      TeX-format-list))
 
 (setq TeX-command-list
       (append (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
