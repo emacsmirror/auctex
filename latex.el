@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.6 1994-04-15 17:09:39 amanda Exp $
+;; Version: $Id: latex.el,v 5.7 1994-04-16 16:31:12 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -790,9 +790,9 @@ You may use LaTeX-item-list to change the routines used to insert the item."
       (1 2) LaTeX-auto-env-args)
      ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
      ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 LaTeX-auto-environment)
-     ("\\\\input{\\([^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+     ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
-     ("\\\\include{\\([^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+     ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
      ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
 {\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
