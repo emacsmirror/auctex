@@ -573,7 +573,9 @@ It may be customized with the following variables:
       (save-excursion
 	(goto-char (mark))
 	(unless (progn (skip-chars-forward " \t") (eolp))
-	  (if (bolp) (newline) (LaTeX-newline))
+	  ;; Use `(insert "\n")' instead of `(newline)' because in contrast
+	  ;; to Emacs, XEmacs moves the mark if `newline' is used.
+	  (if (bolp) (insert "\n") (LaTeX-newline))
 	  (indent-according-to-mode))))
     (when (and LaTeX-insert-into-comments
 	       (looking-at
