@@ -1,5 +1,8 @@
 2005-03-22  David Kastrup  <dak@gnu.org>
 
+	* preview.el (preview-counter-find): Coerce `begin' to integer to
+	work around an Emacs 21.x bug.
+
 	* Makefile.in (install): Install startup file before docs.
 
 	* doc/Makefile.in (preview-latex/index.html): Don't ignore exit

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.244 2005-03-18 23:24:23 dak Exp $
+;; $Id: preview.el,v 1.245 2005-03-22 16:02:08 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1987,6 +1987,9 @@ to the close hook."
   "Fetch the next preceding or next preview-counters property.
 Factored out because of compatibility macros XEmacs would
 not use in advice."
+  ;; The following two lines are bug workaround for Emacs < 22.1.
+  (if (markerp begin)
+      (setq begin (marker-position (marker))))
   (or (car (get-char-property begin 'preview-counters))
       (cdr (get-char-property (max (point-min)
 				   (1- begin))
@@ -3305,7 +3308,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.244 $"))
+	(rev "$Revision: 1.245 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3316,7 +3319,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-18 23:24:23 $"))
+    (let ((date "$Date: 2005-03-22 16:02:08 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
