@@ -1,5 +1,11 @@
 2001-11-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-back-command): Make token backer somewhat
+	more robust.
+	(preview-analyze-error): Don't bomb out if no token matches.
+
+	* README-preview: first draft.
+
 	* prv-emacs.el (preview-int-bb): moved from preview.el
 
 	* preview.el (preview-preserve-indentation): New option, on per
