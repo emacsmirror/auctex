@@ -1,5 +1,8 @@
 2004-08-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-unspec-use-name): New variable.
+	(TeX-fold-item): Use it.
+
 	* RELEASE: Add warning about `TeX-command-list'.
 
 	* doc/auctex.texi (Commands): Add "be".
