@@ -5,6 +5,8 @@
 
 2002-01-18  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: Document a few changes.
+
 	* doc/preview-latex.texi: document preview-at-point
 
 	* preview.el (preview-next-border): Doc change.
