@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.921 05Aug2004 Reiner Steib
+;;  - (font-latex-script-display): New variable.  Make raise of
+;;    sub-/superscripts customizable.
+;;    (font-latex-unfontify-region, font-latex-script): Use it.
+;;  - (font-latex-fontify-script): Default to nil in XEmacs.
 ;; V0.920 04Aug2004 Ralf Angeli
 ;;  - `font-latex-unfontify-region': New function.
 ;;  - `font-latex-setup': Use it.
