@@ -289,5 +289,14 @@ environment.
 Correct indentation for tabular, tabbing, table, math, and array
 environments.
 
-
+@item
+If there are unmatched $ characters in @samp{verbatim} or similar
+environments, the rest of the buffer gets fontified with the math face
+(usually in brown).  A good way to fix this bug would be to have
+conditional font locking, i.e. different (syntactical) keywords are used
+inside certain environments.  This would allow special fontification of
+programming languages in @samp{lstlisting} environments as well.
+Unfortunately such conditional font locking is not provided yet by
+Emacs.  As a workaround you can insert @samp{%$} after the end of the
+environment in concern.
 @end itemize
