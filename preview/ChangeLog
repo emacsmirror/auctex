@@ -1,3 +1,10 @@
+2002-01-18  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-next-border): Doc change.
+	(preview-at-point): renamed from preview-dwim.
+	(LaTeX-preview-setup): use preview-at-point.
+	(LaTeX-preview-setup): menu change.
+
 2002-01-17  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview.el (preview-default-preamble): Added default preamble
