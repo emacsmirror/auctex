@@ -1,7 +1,7 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 1991, 2000, 2001 Kresten Krab Thorup 
-;; Copyright (C) 1993, 1994, 1997, 1999 Per Abrahamsen 
+;; Copyright (C) 1991, 2000, 2001 Kresten Krab Thorup
+;; Copyright (C) 1993, 1994, 1997, 1999 Per Abrahamsen
 ;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
@@ -54,6 +54,15 @@ Full documentation will be available after autoloading the function."
 
 (defvar TeX-lisp-directory "@auctexdir@"
   "*The directory where the AUCTeX lisp files are located.")
+
+(defcustom TeX-auto-global "@autodir@"
+  "*Directory containing automatically generated information.
+Must end with a directory separator.
+
+For storing automatic extracted information about the TeX macros
+shared by all users of a site."
+  :group 'TeX-file
+  :type 'directory)
 
 (defcustom TeX-macro-global '("@texinputdirs@")
   "Directories containing the sites TeX macro files and style files.
