@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-06 05:01:31 $
+;; Last Change: $Date: 2004-04-06 20:11:39 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@
 
 (defvar ConTeXt-current-interface "en"
 	"Interface to be used for inserting macros and ConTeXt run")
-(make-variable-buffer-local 'ConTeXt-current-interface)
+(eval-when-compile (make-variable-buffer-local 'ConTeXt-current-interface))
 
 (defvar ConTeXt-menu-changed nil)
 ;; Need to update ConTeXt menu.
