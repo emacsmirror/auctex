@@ -1,3 +1,7 @@
+2005-03-01  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/auctex.texi (I18n): Revised.
+
 2005-02-28  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (TeX-japanese-process-input-coding-system)
