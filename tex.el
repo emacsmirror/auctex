@@ -514,7 +514,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.316 $"))
+	(rev "$Revision: 5.317 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -529,7 +529,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-09 09:31:13 $"))
+    (let ((date "$Date: 2004-01-12 18:52:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2517,6 +2517,10 @@ Used for specifying extra syntax for a macro."
 	  (t
 	   (vector name (list 'TeX-command-menu name) t)))))
 
+(defconst TeX-command-menu-name "Command"
+  "Name to be displayed for the command menu in all modes defined
+  by AUCTeX")
+
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
@@ -2579,8 +2583,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 
 (defun TeX-mode-specific-command-menu (mode)
   "Return a Command menu specific to the major MODE."
-  (append '("Command")
-	  '(("Command on"
+  (append '(("Command on"
 	     [ "Master File" TeX-command-select-master
 	       :keys "C-c C-c" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-master) ]
@@ -2590,27 +2593,26 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
-	  (let ((file 'TeX-command-on-current)
+	  (let ((file 'TeX-command-on-current);; is this actually needed?
                 (command-list
                  ((lambda (full-list)
                     (let (out-list)
-                      (mapcar (lambda (entry)
-                                ;; `(nth 4 entry)' may be either an
-                                ;; atom in case of which the entry
-                                ;; should be present in any mode or a
-                                ;; list of major modes.
-                                (if (or (atom (nth 4 entry))
-                                        (memq mode (nth 4 entry)))
-                                    (setq out-list
-                                          (append entry out-list))))
-                              full-list))) TeX-command-list)))
+                      (while (car full-list)
+                        (let ((entry (pop full-list)))
+                          (if (or (atom (nth 4 entry))
+                                  (memq mode (nth 4 entry)))
+                              (setq out-list (append out-list (list entry))))))
+                      out-list)) TeX-command-list)))
 	    (mapcar 'TeX-command-menu-entry command-list))))
 
 ;;; Menus for plain TeX mode
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (TeX-mode-specific-command-menu 'plain-tex-mode))
+    (list TeX-command-menu-name
+          :filter (lambda (&rest ignored)
+                    (TeX-mode-specific-command-menu 'plain-tex-mode))
+          "Bug."))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -2648,7 +2650,10 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 (easy-menu-define AmSTeX-mode-command-menu
     AmSTeX-mode-map
     "Command menu used in AmsTeX mode."
-    (TeX-mode-specific-command-menu 'ams-tex-mode))
+    (list TeX-command-menu-name
+          :filter (lambda (&rest ignored)
+                    (TeX-mode-specific-command-menu 'ams-tex-mode))
+          "Bug."))
 
 ;;;###autoload
 (defun ams-tex-mode ()
