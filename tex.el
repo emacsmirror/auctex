@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.55 1995-01-27 21:07:06 amanda Exp $
+;; Version: $Id: tex.el,v 5.56 1995-02-14 19:43:14 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -810,7 +810,7 @@ Each entry is a list where the first element is the name of the style,
 and the remaining elements are hooks to be run when that style is
 active.")
 
-(defvar TeX-byte-compile t
+(defvar TeX-byte-compile nil
   "*Not nil means try to byte compile auto files before loading.")
 
 (defun TeX-load-style (style)
