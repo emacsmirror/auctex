@@ -1,3 +1,10 @@
+2005-03-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-title-faces): According to
+	upstream `font-size' is likely to vanish.  So back to
+	`face-height' but scale it down a bit to better match actual font
+	size.
+
 2005-03-17  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-overlay-priority-step): New variable, previously in
