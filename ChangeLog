@@ -1,3 +1,11 @@
+2003-01-08  Jan-Ake Larsson  <jalar@gnu.org>
+
+	* Makefile.in: From Makefile
+
+	* configure.in, aclocal.m4: Initial version
+
+	* mkinstalldirs, install-sh: Prepare for autoconf
+
 2002-12-29  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex.el: Add support for Info-goto-emacs-command-node and
