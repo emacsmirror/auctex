@@ -40,21 +40,6 @@
       `(defmacro ,name ,@rest)))
   (push 'preview-defmacro preview-compatibility-macros))
 
-;; TODO: This is not as elegant as I'd like; the `list' should
-;; be evalled at macroexpand time.
-(preview-defmacro propertize (string &rest properties)
-  "Add PROPERTIES to the STRING.
-If STRING is zero-length, a zero-length extent is created instead."
-  `(let ((res (copy-sequence ,string)))
-     (if (eq 0 (length res))
-         (set-extent-properties (make-extent 0 0 res)
-                                (list ,@properties))
-       (add-text-properties 0 (length res)
-                            (append (list ,@properties)
-                                    '(duplicable t))
-                                    res))
-     res))
-
 (preview-defmacro assoc-default (key alist test)
   `(cdr (assoc* ,key ,alist
                 :test #'(lambda(a b) (funcall ,test b a)))))
@@ -219,9 +204,8 @@ other hooks, such as major mode hooks, can do the job."
   "Create an icon from FILE, image TYPE and ASCENT."
   `(let ((glyph
 	  (make-glyph
-	   (cons (selected-device)
-		 (vector ,type
-			 :file ,file)) 'buffer)))
+	   (vector ,type
+		   :file ,file))))
      (set-glyph-baseline glyph ,ascent)
      glyph))
 
@@ -316,21 +300,24 @@ if there was any urgentization."
 (defmacro preview-make-clickable (&optional map glyph helpstring click1 click2)
   "Generate a clickable string or keymap.
 If MAP is non-nil, it specifies a keymap to add to, otherwise
-+a new one is created.  If GLYPH is given, the result is made
-+to display it, whether it is a string or image.  In that case,
-+HELPSTRING is a format string with one or two %s specifiers
-+for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
-+are functions to call on preview's clicks."
-  `(let (,@(if glyph `((res (if (stringp ,glyph)
-                                (copy-sequence ,glyph)
-                              (propertize "x" 'end-glyph ,glyph)))))
+a new one is created.  If GLYPH is given, the result is made
+to display it, whether it is a string or image.  In that case,
+HELPSTRING is a format string with one or two %s specifiers
+for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
+are functions to call on preview's clicks."
+  `(let (,@(and glyph `((glyph ,glyph) res))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
            `((define-key resmap preview-button-2 ,click2)))
      ,@(if glyph
-           `((add-text-properties
+           `((if (stringp glyph)
+		 (setq res (copy-sequence glyph))
+	       (setq res (copy-sequence "x"))
+	       (add-text-properties 0 1 (list 'end-glyph glyph)
+				    res))
+	     (add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
               'preview-balloon-help (format ,helpstring preview-button-1 preview-button-2)
