@@ -124,23 +124,34 @@ Windows in some XEmacs versions.
 
 @item XEmacs
 
-XEmacs support should now work.  There is one current problem known with
-the XEmacs core, which leads to seriously mispositioned baselines and
-previews hanging far above other text on the same line. An alpha-quality
-patch against XEmacs-21.4.6 to fix this is available from
+XEmacs support should now work.
+
+There is are two current problems known with the XEmacs core.  One leads
+to seriously mispositioned baselines and previews hanging far above
+other text on the same line.  An alpha-quality patch against
+XEmacs-21.4.6 to fix this is available from
 @uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00129.html}.
 This patch may be included in XEmacs-21.4.8, but won't be present in any
 earlier version.
+
+The other core bug causes a huge delay when XEmacs's idea of the state of
+processes (like ghostscript) is wrong, and can lead to nasty spurious
+error messages.  An alpha-quality patch against 21.4.6 to fix this is
+available from
+@uref{http://list-archive.xemacs.org/xemacs-patches/200204/msg00148.html}.
+The patch hasn't yet been reviewed, so it might be wrong: but it seems
+to work.  It isn't known what XEmacs release, if any, this patch will
+appear in.
 
 Previews will only remain from one session to the next if you have
 version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 
-The package hasn't been tested under either the native build for
-Windows: if you try it and it works, please say!  For the Cygwin
-status, see above.
+The package hasn't been tested under the native build of XEmacs for
+Windows: if you try it and it works, please say!  For the Cygwin status,
+see above.
 
-This support is very new and still changing frequently. Please test it
+This support is quite new and still changing frequently. Please test it
 and report any problems you may be experiencing.
 
 @end itemize
