@@ -2,7 +2,7 @@
 @ifnottex
 @unmacro AUCTeX
 @macro AUCTeX {}
-AUC@w{ }@TeX{}
+@w{AUC @TeX{}}
 @end macro
 @unmacro LaTeX
 @unmacro previewlatex
@@ -15,25 +15,85 @@ preview-latex
 @end ifnottex
 @c -----------------------
 @cindex Readme
+@section @previewlatex{} in a nutshell
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/@LaTeX{} package will render your displayed
 @LaTeX{} equations right into the editing window where they belong.
 
-The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
+Purpose of @previewlatex{} is to embed @LaTeX{} environments such as
 display math or figures into the source buffers.  By mouse-clicking, you
 can open the original text.  After editing, another click will just run
 the region in question through @LaTeX{} and redisplay the new results.
 
-For installation instructions, see the @file{INSTALL} file
-(@ref{Installation}).  The @LaTeX{} style used is documented in
-@file{preview.dvi} as produced by the installation process.
+If @previewlatex{} has not come in the form of a preinstalled package
+for you, consult
+@ifset rawfile
+the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Installation}.
+@end ifclear
+After the installation, documentation in the form of an info manual will
+be available.  You can access it with the standalone info reader with
+
+@example
+info preview-latex
+@end example
+@noindent
+or with
+
+@example
+@kbd{C-h i d m preview-latex @key{RET}}
+@end example
+@noindent
+from inside Emacs.  Once @previewlatex{} is activated, the
+documentation is also available from the @samp{LaTeX/Preview/Read
+documentation} menu.
+
+Detailed documentation for the @LaTeX{} style used for extracting the
+preview images is placed in @file{preview.dvi} in a suitable directory
+during installation; on typical teTeX-based systems,
+
+@example
+texdoc preview
+@end example
+@noindent
+will display it.
+
+@cindex Activation
+@section Activating @previewlatex{}
+After the installation process completes, you need to activate
+@previewlatex{} (prepackaged versions might already do that).  The
+activation line that needs to be added to your own @file{.emacs} file
+or to a site-wide initialization file is
+
+@example
+(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+@end example
+@noindent
+For a well-configured prepackaged version, this should be the all you
+need to do.  If you installed @previewlatex{} yourself, at least the
+line
+
+@example
+(autoload 'LaTeX-preview-setup "preview")
+@end example
+@noindent
+is also needed.  And in case the directory to which the Elisp files have
+been installed is not known to Emacs, a line like
+
+@example
+(add-to-list 'load-path @var{"/whatever/directory"})
+@end example
+@noindent
+needs to be added, as well.
 
 @section Prerequisites
 
 Most importantly, you need to get access to a version of Emacs 21.  The
 public release 21.1 is known to work.  Pretest versions before that have
 problems.  You also need @LaTeX{}, of course, but most installs that
-includes dvips should work.  A fairly recent @AUCTeX{} is also needed.
+include Dvips should work.  A fairly recent @AUCTeX{} is also needed.
 You also need a recent Ghostscript, and this is the most common source
 of problems.  Version 6.51 is known to work well, whereas earlier
 versions have problems.
@@ -45,8 +105,13 @@ things work smooth and naturally.  The same is to be expected for
 XEmacs.  If you are interested in contributing to this or any other
 area, please contact the developers' list mentioned below.
 
-For some known issues with various software, see the file
-@file{PROBLEMS} (@ref{Known problems}).
+For some known issues with various software, see
+@ifset rawfile
+the file @file{PROBLEMS}.
+@end ifset
+@ifclear rawfile
+@ref{Known problems}.
+@end ifclear
 
 @section Availability
 @cindex Download
@@ -59,24 +124,10 @@ binary @file{.rpm} files suitable for a recent RedHat system.  See
 @uref{http://sourceforge.net/projects/preview-latex}.
 
 Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
-pages for more information, but here are the basic instructions (when
-prompted for a password for anonymous, simply press the @key{RET} key).
+pages for more information.
 
-@example
-@iftex
-@nobreak @hskip-100pt cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
-@nobreak @hskip-100pt cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
-@end iftex 
-@ifnottex
-cvs -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex login
-cvs -z3 -d:pserver:anonymous@@cvs.preview-latex.sourceforge.net:/cvsroot/preview-latex co preview
-@end ifnottex 
-@end example
-
-Updates from within the preview directory do not need the @option{-d}
-parameter.  A simple @code{cvs update} from within that directory will
-make your @acronym{CVS} mirror up to date again.  For developer access,
-ask on @email{preview-latex-devel@@lists.sourceforge.net} (see below).
+For developer access, or if you are having access difficulties, ask on
+@email{preview-latex-devel@@lists.sourceforge.net} (see below).
 
 @section Contacts
 @cindex Contacts
