@@ -24,6 +24,8 @@
 	(preview-gs-get-colors): generate only necessary tokens.  Disable
 	stroke adjustment in order to get more even borders.
 
+	* Release 0.5.8.2	
+
 2001-11-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Make reassignment of
