@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Created:    06 July 1996
-;; Keywords:   LaTeX faces
+;; Keywords:   tex, wp, faces
 
 ;;; This file is not part of GNU Emacs.
 
@@ -26,71 +26,16 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
-;;  This package enhances font-lock fontification patterns for LaTeX.
-
-;; New versions of this package (if they exist) may be found at:
-;;  http://people.debian.org/~psg/elisp/font-latex.el
-;; or in AUCTeX's CVS archive.
-
+;;
+;; This package enhances font-lock fontification patterns for LaTeX.
+;; font-lock mode is a minor mode that causes your comments to be
+;; displayed in one face, strings in another, reserved words in
+;; another, and so on.
+;;
 ;; ** Infinite loops !? **
-;;  If you get an infinite loop, send me a bug report!
-;;  Then set the following in your ~/.emacs file to keep on working:
+;; If you get an infinite loop, send a bug report!
+;; Then set the following in your ~/.emacs file to keep on working:
 ;;   (setq font-latex-do-multi-line nil)
-
-;; Description:
-;;  This package enhances font-lock fontification patterns for LaTeX.
-;;  font-lock mode is a minor mode that causes your comments to be
-;;  displayed in one face, strings in another, reserved words in another,
-;;  and so on.
-;;
-;;  Please see the accompanying file font-latex.tex for a demo of what
-;;  font-latex is supposed to do at different fontification levels.
-
-;; Installation instructions:
-;;
-;;  AUCTeX users:  <URL:http://www.gnu.org/auctex/>
-;;   You don't have to do anything special as it gets installed
-;;   along with the rest of AUCTeX and gets enabled by default via the
-;;   customizable variable TeX-install-font-lock.
-;;
-;;  Other users:
-;;   You should byte-compile font-latex.el (It runs faster when you
-;;   byte-compile it!) :
-;;     M-x byte-compile-file
-;;   and put the resulting font-latex.elc file in a directory listed in your
-;;   Emacs load-path.  You may then enable it by adding this form to your
-;;   ~/.emacs file:
-;;     (if window-system
-;;         (require 'font-latex))
-;;
-;; Turning on font-latex:
-;;
-;;  After font-latex is loaded (or `required'), it will be automatically
-;;  used whenever you enter `font-lock-mode' on a LaTeX buffer.  This
-;;  fontification is done automatically in recent versions of Emacs and
-;;  XEmacs, e.g. via a toggle switch in the menu-bar's Option menu, or by
-;;  customizing the variable global-font-lock-mode in Emacs:
-;;    M-x customize-variable RET global-font-lock-mode RET
-;;
-;; Fontification Levels:
-;;
-;;  There are two levels of fontification, selected by the value of the
-;;  font-lock variable font-lock-maximum-decoration.  There are ways
-;;  documented in font-latex.el to set this differently for each mode that
-;;  uses font-lock, but if you are unsure and are running on a fast enough
-;;  machine, try putting this in your ~/.emacs file:
-;;    (setq font-lock-maximum-decoration t)
-;;  It probably best to put it before the `(require 'font-latex)' statement
-;;  if you use that.
-;;
-;; Changing colours
-;;
-;;  Okay, so you hate the colours I picked.  How do you change them you ask?
-;;  First, find the font name to change using the command:
-;;    M-x list-text-properties-at
-;;  Then, suppose you got `font-latex-math-face', edit ~/.Xdefaults and add:
-;;    Emacs.font-latex-math-face.attributeForeground: blue
-;;  without the semi-colon I'm using here ascomment delimiters, of course.
 
 ;;; Code:
 
@@ -353,7 +298,24 @@ Also selects \"<quote\"> versus \">quote\"<."
       "tiny" "scriptsize" "footnotesize" "small" "normalsize"
       "large" "Large" "LARGE" "huge" "Huge")
      font-lock-type-face 1 declaration))
-  "Built-in keywords and specifications for font locking.")
+  "Built-in keywords and specifications for font locking.
+
+The first element of each item is the name of the keyword class.
+
+The second element is a list of keywords (macros without an
+escape character) to highlight.
+
+The third element is the face to be used.
+
+The fourth element is the fontification level.
+
+The fifth element is the type of construct to be matched.  It can
+be one of 'noarg which will match simple macros without
+arguments (like \"\\foo\"), 'declaration which will match macros
+inside a TeX group (like \"{\\bfseries foo}\") or a list of the
+form `(command <numer of mandatory arguments> <flag determining
+if trailing asterisk should be fontified>)' which will match
+macros of the form \"\\foo[bar]{baz}\".")
 
 (defun font-latex-make-match-defun (prefix name type)
   "Return a function definition for keyword matching.
@@ -1182,11 +1144,11 @@ Return t if we move, false if we don't."
 ;;  multi-line incomplete patterns, because the first character of the
 ;;  pattern on the first line has a face.  I must use `prepend'.
 (defun font-latex-match-command-with-arguments (keywords limit arg-count
-							 asterix)
+							 asterisk)
   "Search for regexp command KEYWORDS[opt]{arg} before LIMIT.
 The integer ARG-COUNT specifies the number of mandatory arguments
 in curly braces.
-If ASTERIX is t, fontify trailing asterix in command.
+If ASTERISK is t, fontify trailing asterisk in command.
 Sets `match-data' so that:
  subexpression 0 is the keyword,
  subexpression 1 is the contents of any following [...] forms
@@ -1217,7 +1179,7 @@ Returns nil if none of KEYWORDS is found."
 	    cache-reset
 	    (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
 	(goto-char (match-end 0))
-	(if (and asterix (eq (following-char) ?\*))
+	(if (and asterisk (eq (following-char) ?\*))
 	    (forward-char 1))
 	(skip-chars-forward " \n\t" limit)
 	(setq kend (point))
