@@ -4,6 +4,8 @@
 
 2004-08-18  David Kastrup  <dak@gnu.org>
 
+	* configure.in: Shell-quote autodir.
+
 	* RELEASE: Some minor changes.
 
 2004-08-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
