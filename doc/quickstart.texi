@@ -34,8 +34,8 @@ is not very slow, you will probably find the following code in your
 (require 'font-latex)
 @end example
 
-And if you often use @kbd{\include} or @kbd{\input}, @AUCTeX{} will ask
-you (and remember) the master file with @kbd{(setq-default TeX-master
+And if you often use @code{\include} or @code{\input}, @AUCTeX{} will ask
+you (and remember) the master file with @code{(setq-default TeX-master
 nil)}. 
 
 
@@ -75,10 +75,10 @@ do a pretty syntax highlighting. It will also try to display text in a
 different screen font if it will use a different font in the printout,
 like @b{bold} text or the arguments of sectioning commands.
 
-@AUCTeX{} will switch to @kbd{auto-fill-mode} and automatically wrap
+@AUCTeX{} will switch to @code{auto-fill-mode} and automatically wrap
 long lines while you type, and it will indent the new lines to indicate
 their syntactical relationships to the surrounding text. For example,
-the text of a @kbd{\footnote} or inside an environment will be indented
+the text of a @code{\footnote} or inside an environment will be indented
 relative to the text around it. If the indenting has gotten wrong after
 adding or deleting some characters, use @key{TAB} to reindent the line,
 or @kbd{M-q} for the whole paragraph, or @kbd{M-x LaTeX-fill-buffer} for
@@ -197,7 +197,7 @@ then invoke the commands. If no region is selected, the command will be
 inserted with empty braces, and you can start typing the changed text.
 
 Most of those commands will also work in math mode, but then macros like
-@kbd{\mathbf} will be inserted.
+@code{\mathbf} will be inserted.
 
 
 @node Misc
@@ -209,7 +209,7 @@ signs for your language, dollar signs to typeset maths, or pairs of
 braces. It offers shortcuts for commenting out text (@kbd{C-c ;} for the
 current region or @kbd{C-c %} for the paragraph you are in). The same
 keystrokes will remove the % signs if the region or paragraph is
-commented out yet. With @kbd{TeX-fold-mode}, you can hide certain parts
+commented out yet. With @code{TeX-fold-mode}, you can hide certain parts
 (like footnotes, references etc.) that you do not edit currently.
 Alternatively, @AUCTeX{} comes with support for Emacs' outline mode,
 which lets you browse the sectioning structure of your document, while
@@ -240,19 +240,19 @@ If you have typed some text and want to run @LaTeX{} (or @TeX{}, or
 other programs---see below) on it, press @kbd{C-c C-c}. If applicable,
 you will be asked whether you want to save changes, and asked for a
 program to run. In many cases, the choice that @AUCTeX{} suggests will
-be just what you want: first @kbd{latex}, then a viewer. If a
-@kbd{latex} run produces or changes input files for @kbd{makeindex}, the
-next suggestion will be to run that program, and @AUCTeX{} knows that
-you need to run @kbd{latex} again afterwards---the same holds for
-Bib@TeX{}.
+be just what you want: first @command{latex}, then a viewer. If a
+@command{latex} run produces or changes input files for
+@command{makeindex}, the next suggestion will be to run that program,
+and @AUCTeX{} knows that you need to run @command{latex} again
+afterwards---the same holds for Bib@TeX{}.
 
 If the output file has stabilized, @AUCTeX{} will suggest to run a
-viewer, or you can chose to create a PostScript file using @file{dvips},
-or to directly print it.
+viewer, or you can chose to create a PostScript file using
+@command{dvips}, or to directly print it.
 
 At this place, a warning needs to be given: First, although @AUCTeX{} is
 really good in detecting the standard situations when an additional
-@kbd{latex} run is necessary, it cannot detect it always. Second, the
+@command{latex} run is necessary, it cannot detect it always. Second, the
 creation of PostScript files or direct printing currently only works
 when your output file was a dvi file, not a pdf file.
 
@@ -262,10 +262,10 @@ Ah, you didn't know you can do both? That brings us to the next topic:
 @comment  node-name,  next,  previous,  up
 @subsection Which kind of output file do you want?
 
-From a @LaTeX{} file, you can produce @kbd{dvi} output, or a @kbd{pdf}
-file directly @i{via} @kbd{pdflatex}. You can switch on Source Specials
-for easier navigation in the output file, or tell @kbd{latex} to stop
-after an error (usually @kbd{\noninteractive} is used, to allow you to
+From a @LaTeX{} file, you can produce @code{dvi} output, or a @code{pdf}
+file directly @i{via} @command{pdflatex}. You can switch on Source Specials
+for easier navigation in the output file, or tell @command{latex} to stop
+after an error (usually @code{\noninteractive} is used, to allow you to
 detect all errors in a single run).
 
 These options are controlled by toggles, the keystrokes should be easy
@@ -273,7 +273,7 @@ to memorize:
 
 @table @kbd
 @item @kbd{C-c C-t C-p}
-This command toggles between @kbd{dvi} and @acronym{PDF} output
+This command toggles between @code{dvi} and @acronym{PDF} output
 
 @item @kbd{C-c C-t C-i}
 toggles interactive mode
@@ -292,7 +292,7 @@ toggle use of Omega/lambda.
 
 When @AUCTeX{} runs a program, it splits the window, and displays the
 output in the lower window.  If there is a syntactical error in your
-file, @kbd{latex} will not complete successfully. @AUCTeX{} will you
+file, @command{latex} will not complete successfully. @AUCTeX{} will you
 tell that, and you can get to the place in the output where the first
 error occured by pressing @kbd{C-c `} (the last character is a
 backtick). You can then try to fix it, and use the same keystrokes to
@@ -317,9 +317,9 @@ a region and use @kbd{C-c C-r}. It behaves just like @kbd{C-c C-c}, just
 that it only uses the document preamble and the region you marked.
 
 
-If you are using @kbd{\include} or @kbd{\input} to structure your
+If you are using @code{\include} or @code{\input} to structure your
 document, try @kbd{C-c C-b} while you are editing one of the included
-files. It will run @kbd{latex} only on the current buffer, using the
+files. It will run @command{latex} only on the current buffer, using the
 preamble from the master file.
 @c does this also work with input? why not?
 

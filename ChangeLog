@@ -1,3 +1,7 @@
+2004-10-18  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/quickstart.texi: Fix markup.
+
 2004-10-18  Frank Küster <frank@kuesterei.ch>
 
 	* doc/quickstart.texi: New chapter.
