@@ -98,6 +98,8 @@
 ;; V0.931 28Sep2004 Ralf Angeli
 ;;  - Add change log entries and bump version
 ;;  - `font-latex-find-matching-close': Fix typo in last commit.
+;;  - `font-latex-match-font-inside-braces': Set actual numbers in the
+;;    match, not nil.  Fixes errors with `font-lock-multiline' enabled.
 ;; V0.930 27Sep2004 David Kastrup
 ;;  - `font-latex-find-matching-close': Simplify.
 ;; V0.929 22Sep2004 Ralf Angeli
@@ -1819,7 +1821,7 @@ Returns nil if no font-changing command is found."
                 (t                   (setq ttbeg kbeg ttend kend)))
           (goto-char (match-end 0))
           (store-match-data
-           (list nil nil itbeg itend bfbeg bfend ttbeg ttend))
+           (list (point) (point) itbeg itend bfbeg bfend ttbeg ttend))
           t)
          (t
           ;; There's an opening bracket
