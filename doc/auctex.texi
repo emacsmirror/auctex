@@ -643,7 +643,10 @@ value will default to the value of @code{LaTeX-float}.
 @vindex LaTeX-float
 
 @item caption
-This is the caption of the float.
+This is the caption of the float.  The caption will be inserted at the
+bottom of the float, which is controlled by the variable
+`LaTeX-top-caption-list'.
+@vindex LaTeX-top-caption-list
 
 @item label
 The label of this float.  The label will have a default prefix, which is
@@ -672,6 +675,10 @@ Prefix to use for figure labels.
 @defopt LaTeX-table-label
 Prefix to use for table labels.
 @end defopt
+
+@defopt LaTeX-top-caption-list
+List of float environments with top caption.
+@end defop
 
 @node Itemize-like
 @subsection Itemize-like
