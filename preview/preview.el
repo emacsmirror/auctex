@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.81 2002-03-22 12:34:52 dakas Exp $
+;; $Id: preview.el,v 1.82 2002-03-22 18:54:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -166,7 +166,7 @@ that is."
 
 (defcustom preview-bb-filesize 1024
   "Size of file area scanned for bounding box information."
-  :group 'preview :type 'integer)
+  :group 'preview-gs :type 'integer)
 
 (defcustom preview-preserve-indentation t
   "*Whether to keep additional whitespace at the left of a line."
@@ -1316,7 +1316,8 @@ preview Emacs Lisp package something too stupid."))
 			   (easy-menu-add-item
 			    nil '("LaTeX" "Preview")
 			    (customize-menu-create 'preview)) t])
-			 ["Read documentation" preview-goto-info-page t])
+			 ["Read documentation" preview-goto-info-page t]
+			 ["Report Bug" preview-report-bug t])
 		       "Miscellaneous"))
   (if (boundp 'desktop-buffer-misc)
       (preview-buffer-restore desktop-buffer-misc)))
@@ -1661,7 +1662,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.81 $"))
+	(rev "$Revision: 1.82 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1682,10 +1683,14 @@ If not a regular release, CVS revision of `preview.el'.")
        preview-image-creators
        preview-gs-command
        preview-gs-options
-       preview-gs-outstanding-limit
+       preview-fast-conversion
+       preview-prefer-TeX-bb
        preview-dvips-command
+       preview-fast-dvips-command
        preview-scale-function
-       preview-default-option-list)
+       preview-LaTeX-command
+       preview-default-option-list
+       preview-default-preamble)
      nil
      (lambda ()
        (insert (format "\nOutput from running `%s -h':\n"
