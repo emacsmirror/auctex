@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10j
+;; Version: 9.10k
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -123,6 +123,8 @@ performed as specified in TeX-expand-list."
 	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
 	(list "Other" "" 'TeX-run-command t t)
 	;; Not part of standard TeX.
+	(list "LaTeX PDF" "pdflatex '\\nonstopmode\\input{%t}'"
+	      'TeX-run-LaTeX nil t)
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "AmSTeX" "amstex '\\nonstopmode\\input %t'"
 	      'TeX-run-TeX nil t))
