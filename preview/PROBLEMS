@@ -139,33 +139,119 @@ diff -c -r1.670 -r1.671
 AucTeX versions up to 10.0g have a bug in the calculation of the
 offsets for the start of a region.  This affects C-c C-r commands
 where the start of the region does not lie on the start of a line.  To
-correct this, apply the following patch:
+correct this, apply the following patch (since I have edited around in
+it, you'll get messages about offsets).
 
-*** tex-buf.el.~1.163.~	Mon Oct  1 15:40:31 2001
---- tex-buf.el	Mon Oct  1 15:45:27 2001
-***************
-*** 123,130 ****
-      (TeX-region-create (TeX-region-file TeX-default-extension)
-  		       (buffer-substring begin end)
-  		       (file-name-nondirectory (buffer-file-name))
-! 		       (count-lines (save-restriction (widen) (point-min))
-! 				    begin)))
-    (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
-  
-  (defun TeX-command-buffer ()
---- 123,131 ----
-      (TeX-region-create (TeX-region-file TeX-default-extension)
-  		       (buffer-substring begin end)
-  		       (file-name-nondirectory (buffer-file-name))
-! 		       (+ (count-lines (save-restriction (widen) (point-min))
-! 				    begin)
-! 			  (save-excursion (goto-char begin) (if (bolp) 0 -1)))))
-    (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
-  
-  (defun TeX-command-buffer ()
+Index: tex-buf.el
+===================================================================
+RCS file: /pack/anoncvs/auctex/tex-buf.el,v
+retrieving revision 1.162
+retrieving revision 1.172
+diff -u -r1.162 -r1.172
+--- tex-buf.el	2001/04/11 11:53:25	1.162
++++ tex-buf.el	2001/10/13 20:32:53	1.172
+@@ -90,6 +90,17 @@
+ (make-variable-buffer-local 'TeX-command-region-begin)
+ (make-variable-buffer-local 'TeX-command-region-end)
+ 
++(defun TeX-current-offset (&optional pos)
++  "Calculate line offset of POS, or of point if POS is nil."
++  (save-restriction
++    (widen)
++    (save-excursion
++      (let ((inhibit-point-motion-hooks t)
++	    (inhibit-field-text-motion t))
++	(if pos (goto-char pos))
++	(+ (count-lines (point-min) (point))
++	   (if (bolp) 0 -1))))))
++
+ (defun TeX-command-region (&optional old)
+   "Run TeX on the current region.
+ 
+@@ -123,8 +134,7 @@
+     (TeX-region-create (TeX-region-file TeX-default-extension)
+ 		       (buffer-substring begin end)
+ 		       (file-name-nondirectory (buffer-file-name))
+-		       (count-lines (save-restriction (widen) (point-min))
+-				    begin)))
++		       (TeX-current-offset begin)))
+   (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
+ 
+ (defun TeX-command-buffer ()
+@@ -546,11 +558,13 @@
+   (let ((default TeX-command-default)
+ 	(buffer (TeX-process-buffer-name file))
+ 	(process nil)
+-	(dir (TeX-master-directory)))
++	(dir (TeX-master-directory))
++	(command-buff (current-buffer)))
+     (TeX-process-check file)		; Check that no process is running
+-    (setq TeX-command-buffer (current-buffer))
++    (setq-default TeX-command-buffer command-buff)
+     (with-output-to-temp-buffer buffer)
+     (set-buffer buffer)
++    (set (make-local-variable 'TeX-command-buffer) command-buff)
+     (setq buffer-read-only nil)
+     (if dir (cd dir))
+     (insert "Running `" name "' on `" file "' with ``" command "''\n")
+@@ -946,8 +959,7 @@
+ 				""
+ 			      ;;(beginning-of-line 1)
+ 			      (re-search-backward "[\r\n]" nil t)
+-			      (setq trailer-offset
+-				    (count-lines (point-min) (point)))
++			      (setq trailer-offset (TeX-current-offset))
+ 			      (buffer-substring (point) (point-max))))))))))
+     (save-excursion
+       (set-buffer file-buffer)
+@@ -959,12 +971,12 @@
+ 	      TeX-region-extra
+ 	      "\n\\message{ !name(" original ") !offset(")
+       (insert (int-to-string (- offset
+-				(count-lines (point-min) (point))))
++				(1+ (TeX-current-offset))))
+ 	      ") }\n"
+ 	      region
+ 	      "\n\\message{ !name("  master-name ") !offset(")
+       (insert (int-to-string (- trailer-offset
+-				(count-lines (point-min) (point))))
++				(1+ (TeX-current-offset))))
+ 	      ") }\n"
+ 	      trailer)
+       (run-hooks 'TeX-region-hook)
+
+* AucTeX versions from 11.01 up to version 11.05:
+
+The following patch is necessary:
+
+Index: tex-buf.el
+===================================================================
+RCS file: /pack/anoncvs/auctex/tex-buf.el,v
+retrieving revision 1.171
+retrieving revision 1.172
+diff -u -r1.171 -r1.172
+--- tex-buf.el	2001/10/13 10:08:02	1.171
++++ tex-buf.el	2001/10/13 20:32:53	1.172
+@@ -95,9 +95,11 @@
+   (save-restriction
+     (widen)
+     (save-excursion
+-      (if pos (goto-char pos))
+-      (+ (count-lines (point-min) (point))
+-	 (if (bolp) 0 -1)))))
++      (let ((inhibit-point-motion-hooks t)
++	    (inhibit-field-text-motion t))
++	(if pos (goto-char pos))
++	(+ (count-lines (point-min) (point))
++	   (if (bolp) 0 -1))))))
+ 
+ (defun TeX-command-region (&optional old)
+   "Run TeX on the current region.
+
 
 The CVS version of AucTeX is already fixed with regard to that
 particular bug.
+
 
 * x-symbol
 
