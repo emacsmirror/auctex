@@ -1,3 +1,8 @@
+2002-01-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): quote created directory name
+	in %m fields.
+
 2002-01-18  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Try catering for output
