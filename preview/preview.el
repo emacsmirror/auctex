@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.160 2002-08-13 15:23:19 dakas Exp $
+;; $Id: preview.el,v 1.161 2002-08-14 01:19:49 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1316,12 +1316,12 @@ BUFFER-MISC is the appropriate data to be used."
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
-(defcustom preview-dump-default nil
-  "*Whether to dump formats automatically.
+(defcustom preview-auto-cache-preamble 'ask
+  "*Whether to generate a preamble cache format automatically.
 Possible values are NIL, T, and 'ask."
   :group 'preview-latex
-  :type '(choice (const :tag "Dump" t)
-		 (const :tag "Don't dump" nil)
+  :type '(choice (const :tag "Cache" t)
+		 (const :tag "Don't cache" nil)
 		 (const :tag "Ask" ask)))
 
 (defvar preview-dumped-alist nil
@@ -1580,8 +1580,8 @@ See description of `TeX-command-list' for details."
     (define-key map "\C-r" #'preview-region)
     (define-key map "\C-b" #'preview-buffer)
     (define-key map "\C-d" #'preview-document)
-    (define-key map "\C-f" #'preview-dump-format)
-    (define-key map "\C-c\C-f" #'preview-clear-format)
+    (define-key map "\C-f" #'preview-cache-preamble)
+    (define-key map "\C-c\C-f" #'preview-cache-preamble-off)
     (define-key map "\C-i" #'preview-goto-info-page)
     ;;  (define-key map "\C-q" #'preview-paragraph)
     (define-key map "\C-e" #'preview-environment)
@@ -1613,8 +1613,8 @@ to add the preview functionality."
       ["Clearout at point" preview-clearout-at-point]
       ["Clearout region" preview-clearout (preview-mark-active)]
       ["Clearout buffer" preview-clearout-buffer]
-      ["Cache preamble" preview-dump-format]
-      ["Cache preamble off" preview-clear-format]
+      ["Cache preamble" preview-cache-preamble]
+      ["Cache preamble off" preview-cache-preamble-off]
       ("Customize"
        ["Browse options"
 	(customize-group 'preview)]
@@ -2084,7 +2084,7 @@ Tries through `preview-format-extensions'."
 	(delete-file (concat (car format-cons) ext))
       (file-error nil))))
 
-(defun preview-dump-format ()
+(defun preview-cache-preamble ()
   "Dump a pregenerated format file.
 For the rest of the session, this file is used when running
 on the same master file."
@@ -2097,7 +2097,7 @@ on the same master file."
 				   preview-dump-command
 				   'TeX-master-file))))
 	 (format-cons (assoc format-name preview-dumped-alist))
-	 (preview-dump-default nil))
+	 (preview-auto-cache-preamble nil))
     (if format-cons
 	(progn
 	  (preview-unwatch-preamble format-cons)
@@ -2124,7 +2124,7 @@ on the same master file."
 		 (file-error (preview-log-error err "Dumping" process)))
 	       (preview-reraise-error process))))))
 
-(defun preview-clear-format (&optional old-format)
+(defun preview-cache-preamble-off (&optional old-format)
   "Clear the pregenerated format file.
 The use of the format file is discontinued.
 OLD-FORMAT may already contain a format-cons as
@@ -2154,12 +2154,12 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
     (if (if dumped-cons
 	    (eq (cdr dumped-cons) t)
 	  (push (setq dumped-cons (cons master-file
-					(if (eq preview-dump-default 'ask)
+					(if (eq preview-auto-cache-preamble 'ask)
 					    (y-or-n-p "Cache preamble? ")
-					  preview-dump-default)))
+					  preview-auto-cache-preamble)))
 		preview-dumped-alist)
 	  (cdr dumped-cons))
-	(prog1 (preview-dump-format)
+	(prog1 (preview-cache-preamble)
 	  (setq TeX-sentinel-function
 		`(lambda (process string)
 		   (funcall ,TeX-sentinel-function process string)
@@ -2197,7 +2197,9 @@ may be a log to insert into the current log."
 	      (with-current-buffer (process-buffer process)
 		(save-excursion
 		  (goto-char (point-min))
-		  (insert-before-markers str))))
+		  (insert str)
+		  (when (= (process-mark process) (point-min))
+		    (set-marker (process-mark process) (point))))))
 	    (preview-get-geometry commandbuff)
 	    (setq preview-gs-file pr-file)
 	    (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
@@ -2216,7 +2218,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.160 $"))
+	(rev "$Revision: 1.161 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2227,7 +2229,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-08-13 15:23:19 $"))
+    (let ((date "$Date: 2002-08-14 01:19:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
