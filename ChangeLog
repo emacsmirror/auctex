@@ -20,9 +20,12 @@
 	(TeX-source-specials-view-emacsclient-flags): New variable.
 	(TeX-source-specials-view-expand-client): New function.
 	(TeX-source-specials-view-expand-options): Expand options for
-	inverse search as well.  Correct return value.
+	inverse search as well.
+	Correct return value.
+	Use `TeX-source-specials-view-guess-server'.
 	(TeX-forward-comment-skip): Only consider consecutive comment
 	characters when comparing the comment prefix.
+	(TeX-source-specials-view-guess-server): New function.
 
 	* doc/changes.texi: Avoid email addresses.
 
