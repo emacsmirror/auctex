@@ -1,5 +1,7 @@
 2002-02-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/copying.texi: Change Preview La@TeX{} to preview-latex
+
 	* preview.el (preview-image-creators): Change png default device
 	to png16m due to popular request.
 
