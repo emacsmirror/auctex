@@ -9,6 +9,8 @@ ELCC=$(EMACS) -batch -q -no-site-file -no-init-file
 AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
+LISP_SOURCES = preview.el @PLAT_LISP@
+
 prefix = @prefix@
 lispdir = @lispdir@/preview
 datadir = @datadir@
@@ -21,14 +23,18 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
 all: preview.sty prauctex.def preview.drv \
-   preview-mk.ins preview.dvi preview.elc
+   preview-mk.ins preview.dvi elc
 
 install: install-texmf install-el
 
-install-el: preview.elc preview.el
+install-el: elc
 	-mkdir -p $(lispdir)
-	$(INSTALL_DATA) preview.elc $(lispdir)
-	$(INSTALL_DATA) preview.el $(lispdir)
+	for x in $(LISP_SOURCES) ; do \
+	  echo " $(INSTALL_DATA) $$x $(lispdir)" ; \
+	  $(INSTALL_DATA) $$x $(lispdir) ; \
+	  echo " $(INSTALL_DATA) $${x}c $(lispdir)" ; \
+	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
+	done
 
 install-texmf: preview.sty prauctex.def 
 	-mkdir -p $(previewtexmfdir)
@@ -47,9 +53,11 @@ preview.sty prauctex.def preview.drv: preview.dtx preview-mk.ins
 preview.dvi: preview.drv preview.dtx
 	$(LATEX) '\nonstopmode \input preview.drv'
 
-preview.elc: preview.el
-	$(ELCC) $(AUCTEX) -f batch-byte-compile preview.el
-
+elc:	$(LISP_SOURCES)
+	for x in $(LISP_SOURCES) ; do \
+	  echo "$(ELCC) $(AUCTEX) -f batch-byte-compile $$x" ; \
+	  $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
+	done
 
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.drv

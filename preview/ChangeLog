@@ -1,3 +1,15 @@
+2001-10-11  Alan Shutko  <ats@acm.org>
+
+	* configure.in: Added --with-xemacs option.  Added AC_XEMACS_P to
+	determine if we're using xemacs.  Added PLAT_LISP substitution
+	with the flavor-specific lisp file.
+
+	* Makefile.in (LISP_SOURCES): New variable, listing files needing
+	byte-compilation.
+	(all): Depend on "elc" target to capture all the emacs files.
+	(install-el): Install more lisp files.
+	(elc): New target, compile all relevant files.
+
 2001-10-11  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Introduce count

@@ -13,6 +13,8 @@ fi
 
 AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
+AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
+	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
 
 AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standard], 
  [ auctexdir=${withval} ; 
@@ -37,7 +39,16 @@ AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install pre
 
 
 dnl FIXME we should check that it's the right version
-AC_PATH_PROG(EMACS, emacs, emacs)
+AC_PATH_PROG(EMACS, emacs, emacs, xemacs)
+AC_XEMACS_P
+
+if test $EMACS_FLAVOR = "xemacs"  ; then
+   PLAT_LISP=prv-xemacs.el
+else		
+   PLAT_LISP=prv-emacs.el
+fi
+
+AC_SUBST(PLAT_LISP)
 
 AC_PATH_PROG(LATEX, latex, latex)
 AC_PATH_PROG(TEX, tex, tex)
