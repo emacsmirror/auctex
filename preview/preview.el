@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.171 2002-11-22 00:42:23 dakas Exp $
+;; $Id: preview.el,v 1.172 2002-11-22 10:18:28 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -122,9 +122,10 @@ function args" :inline t sexp))
   "*Image type to be used in images."
   :group 'preview-gs
   :type (append '(choice)
-	      (mapcar (lambda (symbol) (list 'const (car symbol)))
-		      preview-image-creators)
-	      '((symbol :tag "Other"))))
+		(delete '(const postscript)
+			(mapcar (lambda (symbol) (list 'const (car symbol)))
+				preview-image-creators))
+		'((symbol :tag "Other"))))
 
 (defun preview-call-hook (symbol &rest rest)
   "Call a function from `preview-image-creators'.
@@ -2275,7 +2276,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.171 $"))
+	(rev "$Revision: 1.172 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2286,7 +2287,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-22 00:42:23 $"))
+    (let ((date "$Date: 2002-11-22 10:18:28 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
