@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.458 $"))
+	    (rev "$Revision: 5.459 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-26 19:18:37 $"))
+    (let ((date "$Date: 2004-10-29 09:00:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2638,10 +2638,12 @@ Check for potential LaTeX environments."
 		  (TeX-match-buffer match))))
     (if (and (stringp symbol)
 	     (string-match "^end\\(.+\\)$" symbol))
-	(setq LaTeX-auto-end-symbol
-	      (cons (substring symbol (match-beginning 1) (match-end 1))
-		    LaTeX-auto-end-symbol))
-      (setq TeX-auto-symbol (cons symbol TeX-auto-symbol)))))
+	(add-to-list 'LaTeX-auto-end-symbol
+		     (substring symbol (match-beginning 1) (match-end 1)))
+      (if (listp symbol)
+	  (dolist (elt symbol)
+	    (add-to-list 'TeX-auto-symbol elt))
+	(add-to-list 'TeX-auto-symbol symbol)))))
 
 ;;; Utilities
 ;;
