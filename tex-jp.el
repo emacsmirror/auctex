@@ -33,16 +33,16 @@
 
 (defvar japanese-TeX-command-list
   (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t)
+	      'TeX-run-TeX nil (list 'plain-tex-mode))
 	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil 'latex)
+	      'TeX-run-LaTeX nil (list 'latex-mode))
 	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t)
+	      'TeX-run-TeX nil (list 'plain-tex-mode))
 	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil 'latex)
-	(list "Mendex" "mendex %s" 'TeX-run-command nil nil)
-	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil)
-        (list "-" "" nil nil nil))
+	      'TeX-run-LaTeX nil (list 'latex-mode))
+	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
+	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil t)
+        (list "-" "" nil nil t))
   "Additional list of commands to execute in japanese-LaTeX-mode")
 
 (setq TeX-command-list
@@ -53,12 +53,12 @@
 (easy-menu-define plain-TeX-mode-command-menu
     plain-TeX-mode-map
     "Command menu used in TeX mode."
-    (TeX-mode-specific-command-menu t))
+    (TeX-mode-specific-command-menu 'plain-tex-mode))
 
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
-    (TeX-mode-specific-command-menu 'latex))
+    (TeX-mode-specific-command-menu 'latex-mode))
 
 
 (setq LaTeX-command-style
