@@ -1,3 +1,7 @@
+2004-12-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-indent-outer-do): Remove redundant code.
+
 2004-12-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Add coding cookie.
