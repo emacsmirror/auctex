@@ -1,3 +1,9 @@
+2004-08-19  David Kastrup  <dak@gnu.org>
+
+	* configure.in: export `localstatedir'.
+
+	* Makefile.in (localstatedir): import `localstatedir'.
+
 2004-08-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Customizing): tex-site.el should be edited no

@@ -35,6 +35,7 @@ AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
 
 AC_SHELL_QUOTIFY(prefix)
+AC_SHELL_QUOTIFY(localstatedir)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(lispdir)
 AC_SHELL_QUOTIFY(auctexdir)
