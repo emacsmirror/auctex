@@ -93,6 +93,7 @@ rm -rf %{buildroot}
 %doc doc/tex-ref.pdf
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{pkgname}
+%{_localstatedir}/%{pkgname}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
