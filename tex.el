@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.327 $"))
+	(rev "$Revision: 5.328 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-26 00:41:42 $"))
+    (let ((date "$Date: 2004-02-26 01:13:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -815,7 +815,9 @@ This will be done when AUCTeX first try to use the master file.")
               (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
           (insert "\n%%% Local " "Variables: \n"
                   "%%% mode: " (substring (symbol-name major-mode) 0 -5)
-		  "\n"
+		  (if doctex-mode
+		      "\n%%% mode: doctex\n"
+		    "\n")
                   "%%% TeX-master: " (prin1-to-string TeX-master) "\n"
                   "%%% End: \n")))))
 
