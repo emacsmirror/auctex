@@ -1,5 +1,8 @@
 2002-12-12  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* aclocal.m4, configure.in, doc/Makefile.in, doc/macros.texi:
+	Sanitize makeinfo macro tests
+	
 	* configure.in: Make LANG and LC_CTYPE saving work across recursive call of
 	./configure (2.52)
 	
