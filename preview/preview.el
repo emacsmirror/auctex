@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.18 2001-10-02 22:03:03 dakas Exp $
+;; $Id: preview.el,v 1.19 2001-10-03 21:49:34 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -387,16 +387,17 @@ ERROR and the guilty FILE are both strings."
      'local-map
      (let ((map (make-sparse-keymap)))
        (define-key map [mouse-2]
-	 `(lambda() (interactive)
-	    (let ((buff
-		   (generate-new-buffer
-		    "*Preview-GhostScript-Error*")))
+	 `(lambda() (interactive "@")
+	    (let ((buff (generate-new-buffer
+			 "*Preview-GhostScript-Error*")))
 	      (with-current-buffer buff
+		(setq buffer-undo-list t)
 		(insert ,(concat preview-gs-command " "
 				 (mapconcat #'shell-quote-argument
 					    preview-gs-command-line
 					    " ")
-				 "\n" error)))
+				 "\n" error))
+		(goto-char (point-min)))
 	      (view-buffer-other-window
 	       buff nil 'kill-buffer))))
        map)
@@ -408,15 +409,18 @@ ERROR and the guilty FILE are both strings."
      'local-map
      (let ((map (make-sparse-keymap)))
        (define-key map [mouse-2]
-	 `(lambda() (interactive)
+	 `(lambda() (interactive "@")
 	    (let ((default-major-mode
 		    #',(or
 			(assoc-default "x.eps" auto-mode-alist #'string-match)
-			default-major-mode)))
-	      (view-file-other-window
-	       ,file))
-	    (message "\
-Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
+			default-major-mode))
+		  (buff (get-file-buffer ,file)))
+	      (save-excursion
+		(if buff
+		    (pop-to-buffer buff)
+		  (view-file-other-window ,file))
+	       (message "\
+Try C-c C-s C-c C-b and [mouse-2] on error offset.")))))
        map)
      'help-echo "mouse-2 views EPS file"))
     'face 'preview-error-face))
@@ -618,17 +622,18 @@ function for modification hooks."
   "Pass the modified region in OVR again through LaTeX."
   (let ((begin (overlay-start ovr))
 	(end (overlay-end ovr)))
-    (preview-deleter ovr)
-    (TeX-region-create (TeX-region-file TeX-default-extension)
-		       (buffer-substring begin end)
-		       (file-name-nondirectory (buffer-file-name))
-		       (save-restriction
-			 (widen)
-			 (+ (count-lines (point-min) begin)
-			    (save-excursion
-			      (goto-char begin)
-			      (if (bolp) 0 -1))))))
-  (TeX-command "Generate Preview" 'TeX-region-file))
+    (with-current-buffer (overlay-buffer ovr)
+      (preview-deleter ovr)
+      (TeX-region-create (TeX-region-file TeX-default-extension)
+			 (buffer-substring begin end)
+			 (file-name-nondirectory (buffer-file-name))
+			 (save-restriction
+			   (widen)
+			   (+ (count-lines (point-min) begin)
+			      (save-excursion
+				(goto-char begin)
+				(if (bolp) 0 -1))))))
+    (TeX-command "Generate Preview" 'TeX-region-file)))
 
 (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
 			(:type pbm :file "search.pbm" :ascent 100)))
@@ -734,33 +739,28 @@ and expects an image property as result."
 	      'help-echo "mouse-2 opens text
 mouse-3 kills preview") )
 
-(defun preview-make-filename (file tempdir &optional dont-register)
+(defun preview-make-filename (file tempdir)
   "Generate a preview filename from FILE and TEMPDIR.
 Those consist of a CONS-cell with absolute file name as CAR
 and TEMPDIR as CDR.  TEMPDIR is a CONS-cell with the directory
-name as CAR and the reference count as CDR.  The reference count
-is not incremented if DONT-REGISTER is non-NIL."
+name as CAR and the reference count as CDR."
 
-  (unless dont-register
-    (setcdr tempdir (1+ (cdr tempdir))))
+  (setcdr tempdir (1+ (cdr tempdir)))
   (cons (expand-file-name file (car tempdir)) tempdir))
 
-(defun preview-delete-file (file &optional dont-register)
+(defun preview-delete-file (file)
   "Delete a preview FILE.
-If DONT-REGISTER is non-nil, the reference count of its
-directory is not adjusted.  See `preview-make-filename'
-for a description of the data structure.  If the directory
-becomes empty, it gets deleted."
+See `preview-make-filename' for a description of the data
+structure.  If the containing directory becomes empty,
+it gets deleted as well."
   (unwind-protect
       (delete-file (car file))
     (let ((tempdir (cdr file)))
       (when tempdir
-	(unless (or dont-register (zerop (cdr tempdir)))
-	  (setcdr tempdir (1- (cdr tempdir))))
-	(when (zerop (cdr tempdir))
-	  (unwind-protect
-	      (delete-directory (car tempdir))
-	    (setcdr file nil)))))))
+	(if (> (cdr tempdir) 1)
+	    (setcdr tempdir (1- (cdr tempdir)))
+	  (setcdr file nil)
+	  (delete-directory (car tempdir)))))))
 
 (defun preview-place-preview (tempdir snippet source start end)
   "Generate and place an overlay preview image.
@@ -1099,7 +1099,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.18 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.19 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
