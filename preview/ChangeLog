@@ -1,3 +1,8 @@
+2002-12-12  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* configure.in: Make LANG and LC_CTYPE saving work across recursive call of
+	./configure (2.52)
+	
 2002-12-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (subsection{The internals}): Kill insertions
