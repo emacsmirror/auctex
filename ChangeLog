@@ -1,5 +1,7 @@
 2004-05-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (TEX_INPUT_DIRS): Quote regexps with square brackets.
+
 	* tex.el (TeX-newline-function): Rename.  Formerly known as
 	`TeX-newline'.
 	(TeX-mode-map): Use new name.
