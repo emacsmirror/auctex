@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.77 $
+%  \rcskey \version CVS-$Revision: 1.78 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-01-06 23:58:02 $
+%\rcskey\next $Date: 2003-01-19 13:36:20 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -66,7 +66,8 @@
 %dimensions into the PostScript code, obliterating the need to use the
 %|-E -i| options to Dvips.  You can then produce all image files with
 %a single run of GhostScript from a single PostScript file for all
-%images at once.
+%images at once.  The |tightpage| option requires setting the |dvips|
+%option as well.
 %
 %Various options exist that will pass \TeX\ dimensions and other
 %information about the respective shipped out material (including
@@ -194,10 +195,10 @@
 %single PostScript file, since Dvips will in that case leave no
 %bounding box information anywhere.
 %
-%The solution is to use the |tightpage| option which will write
-%additional PostScript code into the produced file that will set the
-%device dimensions at the start of each output page.  That way a
-%single command line like
+%The solution is to use the |tightpage| option together with the
+%|dvips| option so that additional PostScript code gets written into
+%the produced file that will set the device dimensions at the start of
+%each output page.  That way a single command line like
 %\begin{quote}
 %\raggedright
 %  \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
@@ -404,10 +405,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.77 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.78 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-01-06 23:58:02 $
+\reserved@a\next $Date: 2003-01-19 13:36:20 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1303,8 +1304,8 @@
 %appropriately.  That way, a single pass of Dvips followed by a single
 %pass of GhostScript will be sufficient for generating all images.
 %
-%You will usually want to use the |dvips| option along with this
-%option, so that the page size is not being tampered with.
+%You need to use to use the |dvips| option along with this option, or
+%you'll get PostScript errors.
 %
 %  \begin{macro}{\PreviewBorder}
 %  \begin{macro}{\PreviewBbAdjust}
