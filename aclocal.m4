@@ -52,7 +52,7 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
       [if test "${withval}" = yes -o -z "${withval}"; then
 	EMACS_EXAMINE_PACKAGEDIR($1,$2)
       else
-	packagedir="`echo ${withval} | sed 's/~\//${HOME}\//'`"
+	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
       fi],
       [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
     if test -z "${packagedir}"; then

@@ -7,6 +7,7 @@
 	* aclocal.m4: `putative-existing-lisp-dir' is not a package
 	directory if `lisp' is not a path component.  Normalize
 	whitespace.
+	Remove trailing slash from packagedir.
 
 	* tex-site.el.in (TeX-macro-global): Don't quote texinputdirs
 	additionally.
