@@ -1,5 +1,8 @@
 2004-08-20  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (full-release): Source rpm is auctex, not
+	auctex-emacs.
+
 	* auctex.spec (Provides): Provide auctex as well to satisfy
 	preview-latex.  create package emacs nevertheless.
 
