@@ -1,5 +1,7 @@
 2005-03-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auctex.texi (I18n): Try to make text more clear.
+
 	* style/beamer.el (LaTeX-beamer-search-themes)
 	(LaTeX-arg-beamer-theme): New functions adding completion for
 	\usetheme.

@@ -2528,25 +2528,32 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @cindex MULE-UCS
 
 @TeX{} and Emacs are usable for European (Latin, Cyrillic, Greek) based
-languages.  Some @LaTeX{} packages and EmacsLisp are available for easy
-typesetting and editing European languages.
+languages.  Some @LaTeX{} and EmacsLisp packages are available for easy
+typesetting and editing documents in European languages.
 
-For @acronym{CJK, Chinese, Japanese, and Korean} languages,
-@acronym{MULE, MULtilingual Enhancement to GNU Emacs} supported Emacsen
-are needed.  @acronym{MULE} is part of GNU Emacs from Emacs 20; XEmacs
-should be configured with @samp{--with-mule} option.  Special versions
-of @TeX{} are needed for @acronym{CJK} languages; C@TeX{} and
-China@TeX{} for Chinese; ASCII p@TeX{} and NTT j@TeX{} for Japanese;
-H@LaTeX{} and k@TeX{} for Korean; and @acronym{CJK}-@LaTeX{} package for
-supporting multiple @acronym{CJK} scripts within a single
-document.
+@c Some Texinfo macros are not used because the require quite recent
+@c texinfo versions (2005-03-05):
+@c Second arg of @acronym is available with 4.7, @abbr and @comma are
+@c available in 4.8.
+@c -> @abbr{MULE, MULtilingual Enhancement to GNU Emacs}
+@c -> @acronym{CJK, Chinese@comma{} Japanese@comma{} and Korean}
 
-Note that UNICODE is not fully supported in Emacs 21 and XEmacs;
-@acronym{CJK} characters are not usable.  Use
-@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 (not
-available).
+For @acronym{CJK} (Chinese, Japanese, and Korean) languages, Emacs or
+XEmacs with @acronym{MULE} (MULtilingual Enhancement to GNU Emacs)
+support is required.  @acronym{MULE} is part of Emacs by default since
+Emacs 20.  XEmacs has to be configured with the @samp{--with-mule}
+option.  Special versions of @TeX{} are needed for @acronym{CJK}
+languages: C@TeX{} and China@TeX{} for Chinese, ASCII p@TeX{} and NTT
+j@TeX{} for Japanese, H@LaTeX{} and k@TeX{} for Korean.  The
+@acronym{CJK}-@LaTeX{} package is required for supporting multiple
+@acronym{CJK} scripts within a single document.
 
-@c FIXME  We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
+Note that Unicode is not fully supported in Emacs 21 and XEmacs 21.
+@acronym{CJK} characters are not usable.  Please use the
+@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 (not released
+yet) if you need @acronym{CJK}.
+
+@c FIXME: We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
 
 @menu
 * European::                    Using @AUCTeX{} with European Languages
