@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.135 2003-06-14 21:11:01 dak Exp $
+@c $Id: auc-tex.texi,v 1.136 2003-11-16 14:08:20 angeli Exp $
 
 @finalout
 @titlepage
@@ -817,27 +817,24 @@ It is often necessary to comment out temporarily a region of @TeX{} or
 La@TeX{} code.  This can be done with the commands @kbd{C-c ;} and
 @kbd{C-c %}.  @kbd{C-c ;} will comment out all lines in the current
 region, while @kbd{C-c %} will comment out the current paragraph.  To
-uncomment, simply type @kbd{C-u - C-c ;} to uncomment all lines in the
-region, or @kbd{C-u - C-c %} uncomment all comment lines around point.  
+uncomment, simply type @kbd{C-c ;} again to uncomment all lines of a
+commented region, or @kbd{C-c %} again to uncomment all comment lines
+around point.  These commands will insert or remove a single @samp{%}
+respectively.
 
-By default, these commands will insert or remove a single @samp{%}.  To
-insert more than one, give an argument. @kbd{C-u 5 C-c %} will add five
-@samp{%} to each line, while @kbd{C-u - 5 C-c %} will remove up to 5
-@samp{%} from each line.
-
-@deffn Command TeX-comment-region @var{count}
+@deffn Command TeX-comment-region
 @kindex C-c ;
 (@kbd{C-c ;}) Add or remove @samp{%} from the beginning of each line in
-the current region, as specified by @var{count}.
+the current region.  Uncommenting works only if the region encloses
+solely commented lines.
 @end deffn
 
-@deffn Command TeX-comment-paragraph @var{count}
+@deffn Command TeX-comment-paragraph
 @kindex C-c %
 (@kbd{C-c %}) Add or remove @samp{%} from the beginning of each line in
-the current paragraph, as specified by @var{count}.  When removing
-@samp{%}'s the paragraph is considered to consist of all preceding and
-succeeding lines starting with a @samp{%}, until the first non-comment
-line.
+the current paragraph.  When removing @samp{%}'s the paragraph is
+considered to consist of all preceding and succeeding lines starting
+with a @samp{%}, until the first non-comment line.
 @end deffn
 
 @node Marking and formatting, Outline, Commenting, Advanced Features
