@@ -1,5 +1,11 @@
 2002-05-28  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (LaTeX-preview-setup, preview-parse-messages): cater
+	to abbreviated locator error message.
+
+	* latex/preview.dtx: replace "Package Preview Error" with
+	"Preview": too many people got confused.
+
 	* doc/preview-latex.texi (Simple customization): Document new
 	auto-reveal default.
 	(Simple customization): Document a better way for default
