@@ -1,3 +1,14 @@
+2004-07-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* texmathp.el (texmathp-match-environment): Let environments be
+	added more than once.
+
+	* font-latex.el (font-latex-superscript-face)
+	(font-latex-subscript-face): New faces.
+	(font-latex-suscript-keywords): New constant.
+	(font-latex-fontify-suscript): New customize option.
+	(font-latex-suscript): New function.
+
 2004-07-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-view): Inform the user if the output file is
