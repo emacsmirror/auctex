@@ -3080,7 +3080,8 @@ comments and verbatim environments"
   "Regular expression matching LaTeX macros that should have their own line.")
 
 (defcustom LaTeX-paragraph-commands nil
-  "List of LaTeX macros that should have their own line."
+  "List of LaTeX macros that should have their own line.
+The list should contain macro names without the leading backslash."
   :group 'LaTeX-macro
   :type '(repeat (string))
   :set (lambda (symbol value)
