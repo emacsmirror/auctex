@@ -54,6 +54,8 @@
    (make-local-variable 'LaTeX-indent-environment-list)
    (add-to-list 'LaTeX-indent-environment-list
 		'("lstlisting" current-indentation))
+   (make-local-variable 'LaTeX-verbatim-regexp)
+   (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|lstlisting"))
    ;; Fontification
    (add-to-list 'font-latex-match-function-keywords-local "lstnewenvironment")
    (font-latex-match-function-make)
