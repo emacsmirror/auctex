@@ -166,7 +166,8 @@ of context-mode-hook."
   (ConTeXt-nl-mode-initialization)
 
   ;; set mode line
-  (setq mode-name "ConTeXt-nl"))
+  (setq TeX-base-mode-name "ConTeXt-nl")
+  (TeX-set-mode-name))
 
 (provide 'context-nl)
 
