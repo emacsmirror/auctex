@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.5 1992-03-19 12:18:30 krab Exp $
+# $Id: Makefile,v 5.6 1992-03-19 13:29:56 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -57,10 +57,10 @@ dist:
 	echo "----------------------------------------" >> FILELIST; \
 	ident $(ELISPSRC) $(OTHERFILES) >> FILELIST )
 	OUT=auctex`echo $$TAG | sed s/release//`; \
-	tar -cf - auctex | compress -c > $$OUT.Z; \
+	tar -cf - auctex | compress -c > $$OUT.tar.Z; \
 	if [ ! -d split ]; then mkdir split; else rm split/*; fi; \
 	cp auctex/FILELIST split; \
-	uuencode $$OUT.Z $$OUT.Z | split -200 - split/auc-tex-
+	uuencode $$OUT.tar.Z $$OUT.tar.Z | split -200 - split/auc-tex-
 	rm -r auctex
 
 mail:
