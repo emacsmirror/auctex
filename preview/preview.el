@@ -1,6 +1,6 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 2002  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup <David.Kastrup@t-online.de>
 ;; Keywords: tex, wp, convenience
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.68 2002-03-04 02:08:06 dakas Exp $
+;; $Id: preview.el,v 1.69 2002-03-05 02:08:07 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -773,6 +773,7 @@ such preview."
   "Change overlay behaviour of OVR after source edits."
   (overlay-put ovr 'queued nil)
   (preview-remove-urgentization ovr)
+  (overlay-put ovr 'timestamp nil)
   (preview-toggle ovr)
   (overlay-put ovr 'preview-state 'disabled)
   (overlay-put ovr 'before-string (preview-disabled-string ovr))
@@ -791,22 +792,24 @@ a hook in some cases"
     (dolist (filename filenames)
       (condition-case nil
 	  (preview-delete-file filename)
-	(file-error nil)))
-    (overlay-put ovr 'filenames nil)))
+	(file-error nil)))))
 
-(defun preview-clearout (&optional start end keep-dir)
+(defun preview-clearout (&optional start end keep-dir timestamp)
   "Clear out all previews in the current region.
 When called interactively, the current region is used.
 Non-interactively, the region between START and END is
 affected.  Those two values default to the borders of
 the entire buffer.  If KEEP-DIR is set to a value from
 `TeX-active-tempdir', previews associated with that
-directory are kept."
+directory are kept.  The same holds for previews with
+the given value of TIMESTAMP."
   (interactive "r")
   (dolist (ov (overlays-in (or start (point-min))
 			   (or end (point-max))))
     (and (overlay-get ov 'preview-state)
 	 (not (rassq keep-dir (overlay-get ov 'filenames)))
+	 (not (and timestamp
+		   (equal timestamp (overlay-get ov 'timestamp))))
 	 (preview-delete ov))))
 
 (defun preview-clearout-buffer (&optional buffer)
@@ -816,29 +819,33 @@ directory are kept."
       (with-current-buffer buffer (preview-clearout))
     (preview-clearout)))
 
-(add-hook 'kill-buffer-hook #'preview-clearout-buffer)
-(add-hook 'before-revert-hook #'preview-clearout-buffer)
+(defun preview-kill-buffer-cleanup (&optional buf)
+  "This is a cleanup function just for use in hooks.
+Cleans BUF or current buffer.  The difference to
+`preview-clearout-buffer' is that previews
+associated with the last buffer modification time are
+kept."
+  (with-current-buffer (or buf (current-buffer))
+    (save-restriction
+      (widen)
+      (preview-clearout (point-min) (point-max) nil (visited-file-modtime)))))
+
+(add-hook 'kill-buffer-hook #'preview-kill-buffer-cleanup)
+(add-hook 'before-revert-hook #'preview-kill-buffer-cleanup)
 
 (defun desktop-buffer-preview-misc-data ()
   "Hook function that extracts previews for persistent sessions."
-  (save-restriction
-    (widen)
-    (let (process save-info)
-      (dolist (ov (overlays-in (point-min) (point-max)))
-	(when (and (memq (overlay-get ov 'preview-state) '(active inactive))
-		   (null (overlay-get ov 'queued))
-		   (eq 1 (length (overlay-get ov 'filenames))))
-	  (when (and (null save-info)
-		     (setq process (get-buffer-process (current-buffer))))
-	    (while process
-	      (delete-process process)
-	      (setq process (get-buffer-process (current-buffer))))
-	    (sit-for 0 0 t))
-	  (push (preview-dissect ov) save-info)))
-      (preview-clearout-buffer)
-      (and save-info
-	   (cons 'preview (cons (nth 5 (file-attributes (buffer-file-name)))
-				save-info))))))
+  (unless (buffer-modified-p)
+    (save-restriction
+      (widen)
+      (let (save-info (timestamp (visited-file-modtime)))
+	(dolist (ov (overlays-in (point-min) (point-max)))
+	  (when (and (memq (overlay-get ov 'preview-state) '(active inactive))
+		     (null (overlay-get ov 'queued))
+		     (eq 1 (length (overlay-get ov 'filenames))))
+	    (push (preview-dissect ov timestamp) save-info)))
+	(and save-info
+	     (cons 'preview (cons timestamp save-info)))))))
 
 (add-hook 'desktop-buffer-misc-functions #'desktop-buffer-preview-misc-data)
 
@@ -848,31 +855,33 @@ Any directory not in this list will be cleared out by preview
 on first use."
 )
 
-(defun preview-dissect (ov)
-  "Extract all persistent data from OV and delete it."
+(defun preview-dissect (ov timestamp)
+  "Extract all persistent data from OV and TIMESTAMP it."
   (let ((filenames (butlast (nth 0 (overlay-get ov 'filenames)))))
-    (setq preview-temp-dirs (delete (nth 2 filenames) preview-temp-dirs))
-    (prog1
-	(list (overlay-start ov)
-	      (overlay-end ov)
-	      (overlay-get ov 'preview-image)
-	      filenames)
-      (delete-overlay ov))))
+    (overlay-put ov 'timestamp timestamp)
+    (list (overlay-start ov)
+	  (overlay-end ov)
+	  (overlay-get ov 'preview-image)
+	  filenames)))
 
+(defun preview-buffer-restore (buffer-misc)
+  "Restore previews from BUFFER-MISC if proper."
+  (and (eq 'preview (pop desktop-buffer-misc))
+       (equal (pop desktop-buffer-misc)
+	      (visited-file-modtime))
+       (let (tempdirlist)
+	 (dolist (ovdata desktop-buffer-misc)
+	   (setq tempdirlist
+		 (apply #'preview-reinstate-preview tempdirlist ovdata))))))
+  
 (defun desktop-buffer-preview ()
   "Hook function for restoring persistent previews into a buffer."
-  (let (buf tempdirlist)
-    (and (eq (car desktop-buffer-misc) 'preview)
-	 desktop-buffer-file-name
-	 (file-readable-p desktop-buffer-file-name)
-	 (setq buf (find-file-noselect desktop-buffer-file-name))
+  (and (eq (car desktop-buffer-misc) 'preview)
+       desktop-buffer-file-name
+       (file-readable-p desktop-buffer-file-name)
+       (let ((buf (find-file-noselect desktop-buffer-file-name)))
 	 (with-current-buffer buf
-	   (pop desktop-buffer-misc)
-	   (when (equal (pop desktop-buffer-misc)
-			(nth 5 (file-attributes desktop-buffer-file-name)))
-	     (dolist (ovdata desktop-buffer-misc)
-	       (setq tempdirlist
-		     (apply #'preview-reinstate-preview tempdirlist ovdata))))
+	   (preview-buffer-restore desktop-buffer-misc)
 	   buf))))
 
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
@@ -880,7 +889,7 @@ on first use."
 (defun preview-cleanout-tempfiles ()
   "Clean out all directories with non-persistent previews.
 This is called as a hook when exiting Emacs."
-  (mapc #'preview-clean-topdir preview-temp-dirs))
+  (mapc #'preview-kill-buffer-cleanup (buffer-list)))
 
 (defun preview-inactive-string (ov)
   "Generate before-string for an inactive preview overlay OV.
@@ -1132,7 +1141,9 @@ preview Emacs Lisp package something too stupid."))
 			 ["Region" preview-region mark-active]
 			 ["Clearout region" preview-clearout mark-active]
 			 ["Clearout buffer" preview-clearout-buffer t]))
-		      "Miscellaneous"))
+		      "Miscellaneous")
+  (if (boundp 'desktop-buffer-misc)
+      (preview-buffer-restore desktop-buffer-misc)))
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
@@ -1447,7 +1458,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.68 $"))
+	(rev "$Revision: 1.69 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
