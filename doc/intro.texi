@@ -133,16 +133,13 @@ functionality.
 The most recent version is always available by ftp at
 
 @flushright
-@samp{ftp://ftp.iesd.auc.dk/pub/emacs-lisp/auctex.tar.gz}
+@url{ftp://sunsite.dk/packages/auctex/auctex.tar.gz}
 @end flushright
-
-In case you don't have access anonymous ftp, you can get it by email
-requests to @samp{<ftpmail@@decwrl.dec.com>}.
 
 WWW users may want to check out the AUC @TeX{} page at
 
 @flushright
-@samp{http://www.iesd.auc.dk/~amanda/auctex/}
+@url{http://sunsite.dk/auctex/}
 @end flushright
 
 @section Contacts
@@ -154,20 +151,9 @@ If you are only interested in information on updates, you could refer to
 the newsgroups @samp{comp.text.tex} and @samp{gnu.emacs.sources}.
 
 If you want to contact the AUC @TeX{} mailing list, send mail to
-@samp{<auc-tex-request@@iesd.auc.dk>} in order to join.  Articles should
-be sent to @samp{<auc-tex@@iesd.auc.dk>}.
+@url{mailto:auc-tex-subscribe@@sunsite.dk} in order to join.  Articles
+should be sent to @url{mailto:auc-tex@@sunsite.dk}.
 
 To contact the current maintainers of AUC @TeX{} directly, email
-@samp{<auc-tex_mgr@@iesd.auc.dk>}.
-
-@example
-        AUC @TeX{} development
-        c/o Kresten Krab Thorup 
-
-        Mathematics and Computer Science
-        University of Aalborg
-        DK 9000 Aalborg
-        Denmark
-@end example
-
+@url{mailto:auc-tex_mgr@@sunsite.dk}.
 

@@ -1,7 +1,7 @@
 ;;; tex-info.el - Support for editing Texinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.06
+;; Version: 11.08
 
 ;; Copyright (C) 1993, 1994, 1997, 2000, 2001 Per Abrahamsen 
 ;; 

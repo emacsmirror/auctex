@@ -1,3 +1,24 @@
+2001-10-17  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.08 released.
+
+2001-10-17  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/intro.texi, doc/install.texi: Updated contact info.
+	Reported by Henrik Holm <h.holm@spray.no>.
+
+2001-10-16  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.07 released.
+
+2001-10-16  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (VirTeX-common-initialization): Set `comment-add' in
+	order to get "%%" by default by comment region like Lisp mode.
+	Suggested by "Davide G. M. Salvetti" <salve@debian.org>.
+	Change `comment-indent-hook' to `comment-indent-function'.
+
+	
 2001-10-15  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el: Remove self-installation to LaTeX-mode-hook now

@@ -11,20 +11,20 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.128 2001-10-02 11:44:38 abraham Exp $
+@c $Id: auc-tex.texi,v 1.129 2001-10-18 17:27:39 abraham Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle Version 11.01
+@subtitle Version 11
   
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 11.01 by Per Abrahamsen
+@author updated for 6.1 to 11 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1992, Kresten Krab Thorup @*
 Copyright @copyright{} 1993, 1994, 1995, 2001 Per Abrahamsen
+Copyright @copyright{} 1992  Kresten Krab Thorup @*
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -57,7 +57,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 11.01.
+This file documents AUC @TeX{} version 11.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}

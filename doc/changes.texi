@@ -1,6 +1,10 @@
-@section News in 11.01
+@section News in 11
 
 @itemize @bullet
+@item
+@code{comment-region} now inserts @t{%%} by default.
+Suggested by "Davide G. M. Salvetti" <salve@@debian.org>.
+
 @item
 You can now switch between using the @file{font-latex} (all emacsen),
 the @file{tex-font} (Emacs 21 only) or no special package for font

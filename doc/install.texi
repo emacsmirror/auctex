@@ -126,17 +126,11 @@ included in the distribution in case they are useful.
 @item hilit-LaTeX.el
 Better highlighting for the obsolete @file{hilit19} package.
 
-@item font-latex.el
-Better highlighting for the @sc{font-lock} package.
-
 @item bib-cite.el
 Better support for bibliographies and much more.
 
 @item tex-jp.el
 Support for Japanese.
-
-@item func-doc.el
-Support for context sensitive online help for various languages.
 
 @end table
 
