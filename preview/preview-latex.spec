@@ -32,14 +32,14 @@ version is for GNU Emacs 21.
 # and you won't get those pesky CVS directories.
 #./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
-%configure
+%configure --texmfdir=%{_datadir}/texmf
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_infodir}
 # To buildroot special paths not contained in makeinstall  
-set_here () { export $1=$RPM_BUILD_ROOT/$3; }
+set_here () { export $1=${RPM_BUILD_ROOT}$3; }
 set_here `grep ^texmfdir Makefile`
 set_here `grep ^previewtexmfdir Makefile`
 set_here `grep ^previewdocdir Makefile`
@@ -65,12 +65,12 @@ install-info --info-dir=%{_infodir} --delete \
 
 %files
 %defattr(-,root,root)
-%dir /usr/share/texmf/tex/latex/preview
-%config /usr/share/texmf/tex/latex/preview/prauctex.cfg
-/usr/share/texmf/tex/latex/preview/prauctex.def
-/usr/share/texmf/tex/latex/preview/preview.sty
-/usr/share/texmf/doc/latex/styles/preview.dvi
-/usr/share/emacs/site-lisp/preview
+%dir %{_datadir}/texmf/tex/latex/preview
+%config %{_datadir}/texmf/tex/latex/preview/prauctex.cfg
+%{_datadir}/texmf/tex/latex/preview/prauctex.def
+%{_datadir}/texmf/tex/latex/preview/preview.sty
+%{_datadir}/texmf/doc/latex/styles/preview.dvi
+%{_datadir}/emacs/site-lisp/preview
 %{_datadir}/emacs/site-lisp/site-start.d/preview-latex.el 
 %{_infodir}/preview-latex.info.gz
 %doc ChangeLog circ.tex COPYING INSTALL PROBLEMS README
