@@ -1,7 +1,7 @@
 @section News in 9.3
 
 @itemize @bullet
-@item 
+@item There is now a menu in @code{LaTeX-math-minor-mode}.
 Bug fixes.
 
 @end itemize
