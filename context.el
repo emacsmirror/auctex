@@ -1,12 +1,12 @@
 ;;; context.el --- Support for ConTeXt documents.
 ;;
-;; Maintainer: Patrick Gundlach <pg@levana.de>
+;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Version: 11.14
 ;; Keywords: wp
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: 05/03/03 19:45:38
+;; Last Change: $Date: 2004-04-05 03:19:04 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,20 +25,31 @@
 
 ;;; Notes:
 
-;; This is the very basic context support for AUCTeX. It will be
-;; extended in the near future.
+;; This is in progress ConTeXt support for AUCTeX. Please report
+;; anomalies or things you believe should be added.
 
 ;; AUCTeX is closely intervowen with LaTeX. We have to split up
 ;; things without breaking 'em.
 
 ;;; Code:
 
-;; some parts are stolen from latex.el and adapted to ConTeXt
+;; some parts are stolen from latex.el and adapted to ConTeXt.
 
 ;; TODO
 ;; 1. indentation still bad.
 ;; 2. paragraph refilling doesn't work 100%, and is very slow.
 ;; 3. menu item for context setup commands
+;; 4. Remove dependency on LaTeX by moving LaTeX commands to TeX.
+;; 5. Most ConTeXt macro's don't currently have lisp code to query for
+;;    arguments. As ConTeXt arguments are quite complex, the LaTeX way
+;;    of querying for arguments just doesn't cut it.
+;; 6. Check auto-parsing: does it detect % interface=nl for example?
+;; 7. Complete adding ConTeXt macro's. Perhaps parse cont-en.xml and
+;;    generate the interfaces?
+;; 8. Integrate etexshow?
+
+;; TODO Documentation
+;; 1. multifile done differently with ConTeXt
 
 (require 'tex-buf)
 (require 'tex)
@@ -56,14 +67,42 @@
 
 ;; ConText macro names
 
+(defvar ConTeXt-en-setup-list
+	'("align" "arranging" "background" "backgrounds" "blackrules"
+		"blank" "block" "bodyfont" "bodyfontenvironment" "bottom"
+		"bottomtexts" "buffer" "capitals" "caption" "captions" "color"
+		"colors" "columns" "combinations" "combinedlist" "descriptions"
+		"enumerations" "externalfigure" "fillinlines" "fillinrules" "float"
+		"floats" "footer" "footertexts" "footnodedefinition" "footnotes"
+		"framed" "framedtexts" "head" "header" "headertexts" "headnumber"
+		"heads" "headtext" "hyphenmark" "indentations" "indenting" "inmargin"
+		"inerlinespace" "itemize" "items" "labeltext" "language" "layout"
+		"linenumbering" "lines" "list" "makeup" "marginblocks"
+		"marginrules" "marking" "narrower" "oppositeplacing" "pagenumber"
+		"pagenumbering" "palet" "papersize" "paragraphs" "quote" "referencing"
+		"register" "screens" "section" "sectionblock" "sorting" "spacing"
+		"subpagenumber" "synonyms" "text" "textrules" "texttexts" "thinrules"
+		"tolerance" "top" "toptexts" "type" "typing" "underbar" "whitespace")
+	"List of the names of ConTeXt en interface  macro's that setup things.")
+
+(defun ConTeXt-en-setup-command (what)
+	"The ConTeXt en interface way of creating a setup command."
+	(concat "setup" what)
+	)
+
 (defvar ConTeXt-en-project-structure-list
 	'("project" "environment" "product" "component")
-  "List of the names of ConTeXt project structure elements for its en interface. List should be in logical order.")
+	"List of the names of ConTeXt project structure elements for its en interface. List should be in logical order.")
 
 (defvar ConTeXt-en-section-block-list
 	'("frontmatter" "bodymatter" "appendices" "backmatter")
-  "List of the names of ConTeXt section blocks for its en interface. List should be in logical order.")
+	"List of the names of ConTeXt section blocks for its en interface. List should be in logical order.")
 
+;; TODO:
+;; ConTeXt has alternative sections like title and subject. Currently
+;; the level is used to find the section name, so the alternative
+;; names are never found. Have to start using the section name instead
+;; of the number.
 (defvar ConTeXt-en-section-list
 	'(("part" 0)
 		("chapter" 1)
@@ -76,15 +115,15 @@
 ;; 		("subsubject" 3)
 ;; 		("subsubsubject" 4)
 		)
-  "List of the names of ConTeXt sections for its en interface."
+	"List of the names of ConTeXt sections for its en interface."
 )
 
 (defvar ConTeXt-en-text "text"
-  "The ConTeXt en interface body text group.")
+	"The ConTeXt en interface body text group.")
 
 (defvar ConTeXt-en-item-list
-  '("item" "its" "mar" "ran" "sub" "sym")
-  "The ConTeXt macro's that are variants of item")
+	'("item" "its" "mar" "ran" "sub" "sym")
+	"The ConTeXt macro's that are variants of item")
 
 ;; Emacs en menu names and labels should go here
 ;; to be done
@@ -93,10 +132,23 @@
 ;;; nl (Dutch) interface
 
 (defvar ConTeXt-nl-text "tekst"
-  "The ConTeXt  interface body text group.")
+	"The ConTeXt  interface body text group.")
 
 
-;; variables
+;;; variables
+
+;; globals used in certain macro's.
+(defvar done-mark nil
+	"Position of point afterwards, default nil (meaning end).")
+
+(defvar reference nil
+	"Set by ConTeXt-section-ref, used by ConTeXt-section-section")
+
+(defvar title nil
+	"Set by ConTeXt-section-title, used by ConTeXt-section-section")
+
+
+;; others
 
 (setq ConTeXt-known-interfaces '("nl" "en" "de" "cz" "it" "ro"))
 
@@ -121,89 +173,6 @@
 	ConTeXt-largest-level)
 
 
-;;; functions to create menu entries
-
-;; ConTeXt \start... \stop... pairs
-(defvar ConTeXt-environment-menu-name "Insert Environment  (C-c C-e)")
-
-(defun ConTeXt-environment-menu-entry (entry)
-	"Create an entry for the environment menu."
-	(vector (car entry) (list 'ConTeXt-environment-menu (car entry)) t))
-
-(defvar ConTeXt-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
-
-(defun ConTeXt-environment-modify-menu-entry (entry)
-	"Create an entry for the change environment menu."
-	(vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
-
-
-;; meta-structure project structure menu entries
-
-(defun ConTeXt-project-structure-menu (project-structure)
-	"Insert project structure from menu."
-  (ConTeXt-project-structure
-   (let ((l (ConTeXt-project-structure-list)))
-     (- (length l) (length (member project-structure l)))))
-  )
-
-(defun ConTeXt-project-structure-menu-entry (entry)
-	"Create an ENTRY for the project structure menu."
-  (vector entry (list 'ConTeXt-project-structure-menu entry))
-  )
-
-(defun ConTeXt-project-structure-menu-create ()
-	"Create a menu over ConTeXt project structures."
-	(append '("Project structure")
-		(mapcar 'ConTeXt-project-structure-menu-entry (ConTeXt-project-structure-list))))
-
-
-;; meta-structure section blocks menu entries
-
-(defun ConTeXt-section-block-menu (section-block)
-	"Insert section block from menu."
-  (ConTeXt-section-block section-block))
-
-(defun ConTeXt-section-block-menu-entry (entry)
-	"Create an ENTRY for the section block menu."
-  (vector entry (list 'ConTeXt-section-block-menu entry))
-  )
-
-(defun ConTeXt-section-block-menu-create ()
-	"Create a menu over ConTeXt section blocks."
-	(append '("Section block")
-		(mapcar 'ConTeXt-section-block-menu-entry (ConTeXt-section-block-list))))
-
-
-;; section menu entries
-
-(defun ConTeXt-section-enable-symbol (level)
-	"Symbol used to enable section LEVEL in the menu bar."
-	(intern (concat "ConTeXt-section-" (int-to-string level) "-enable")))
-
-(defun ConTeXt-section-enable (entry)
-	"Enable or disable section ENTRY from `ConTeXt-section-list'."
-	(let ((level (nth 1 entry)))
-		(set (ConTeXt-section-enable-symbol level)
-				 (>= level ConTeXt-largest-level))))
-
-(defun ConTeXt-section-menu (level)
-	"Insert section from menu."
-	(let ((ConTeXt-section-hook (delq 'ConTeXt-section-heading
-					(copy-sequence ConTeXt-section-hook))))
-		(ConTeXt-section level)))
-
-(defun ConTeXt-section-menu-entry (entry)
-	"Create an ENTRY for the section menu."
-	(let ((enable (ConTeXt-section-enable-symbol (nth 1 entry))))
-		(set enable t)
-		(vector (car entry) (list 'ConTeXt-section-menu (nth 1 entry)) enable)))
-
-(defun ConTeXt-section-menu-create ()
-	"Create a menu over ConTeXt sections."
-	(append '("Section  (C-c C-s)")
-		(mapcar 'ConTeXt-section-menu-entry (ConTeXt-section-list))))
-
-
 ;;; Syntax
 
 (defvar ConTeXt-optop "["
@@ -211,6 +180,26 @@
 
 (defvar ConTeXt-optcl "]"
 	"The ConTeXt optional argument closing character.")
+
+
+;; Support for ConTeXt setup macro's
+
+(defmacro ConTeXt-setup-list ()
+	"Calls ConTeXt-XX-setup-list where XX is the current interface."
+	(intern (concat "ConTeXt-" ConTeXt-current-interface "-setup-list")))
+
+(defun ConTeXt-setup-command (what)
+	"The ConTeXt macro to setup WHAT."
+	(funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-setup-command")) what)
+)
+
+(defun ConTeXt-insert-setup (setup)
+	"Insert the ConTeXt setup macro SETUP."
+	(insert TeX-esc (ConTeXt-setup-command setup))
+	(newline)
+	(indent-according-to-mode)
+	(ConTeXt-arg-setup nil)
+)
 
 
 ;;; Project structure
@@ -221,72 +210,68 @@
 
 (defun ConTeXt-project-structure (N)
 	"Insert a ConTeXt project structure where N is in index into ConTeXt-project-structure-list."
-  (funcall (intern(concat
-                   "ConTeXt-project-"
-                   (nth N ConTeXt-en-project-structure-list)
-                   "-insert")))
+	(funcall (intern(concat
+									 "ConTeXt-project-"
+									 (nth N ConTeXt-en-project-structure-list)
+									 "-insert")))
 )
 
-;;                    (int-to-string
-;;                     (let ((l (ConTeXt-project-structure-list)))
-;;                       (- (length l) (length (member project-structure l)))))
-
 (defun ConTeXt-project-project-insert ()
-  "Insert a basic template for a new ConTeXt project."
-  (save-excursion
-    (insert "% The following names are examples only\n")
-    (insert TeX-esc (ConTeXt-environment-start-name) (nth 0 (ConTeXt-project-structure-list)) " myproject")
-    (newline 2)
-    (insert TeX-esc (nth 1 (ConTeXt-project-structure-list)) " myenvironment")
-    (newline 2)
-    (insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
-    (newline 2)
-    (insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct2")
-    (newline 2)
-    (insert TeX-esc (ConTeXt-environment-stop-name) (nth 0 (ConTeXt-project-structure-list)))
-    )
-  )
+	"Insert a basic template for a new ConTeXt project."
+	(save-excursion
+		(insert "% The following names are examples only\n")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 0 (ConTeXt-project-structure-list)) " myproject")
+		(newline 2)
+		(insert TeX-esc (nth 1 (ConTeXt-project-structure-list)) " myenvironment")
+		(newline 2)
+		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(newline 2)
+		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct2")
+		(newline 2)
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 0 (ConTeXt-project-structure-list)))
+		)
+	)
 
 (defun ConTeXt-project-environment-insert ()
-  "Insert a basic template for the environment of a ConTeXt project."
-  (save-excursion
-    (insert "% The name 'myenvironment' is an example only.\n% It must match the name in your project file.\n")
-    (insert TeX-esc (ConTeXt-environment-start-name) (nth 1 (ConTeXt-project-structure-list)) " myenvironment\n\n")
-    (insert "% Put environment charateristics that must be defined at the highest level here\n\n")
-    (insert TeX-esc (ConTeXt-environment-stop-name) (nth 1 (ConTeXt-project-structure-list)))
-    )
+	"Insert a basic template for the environment of a ConTeXt project."
+	(save-excursion
+		(insert "% The name 'myenvironment' is an example only.\n% It must match the name in your project file.\n")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 1 (ConTeXt-project-structure-list)) " myenvironment\n\n")
+		(insert "% Put environment charateristics that must be defined at the highest level here\n\n")
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 1 (ConTeXt-project-structure-list)))
+		)
 )
 
 (defun ConTeXt-project-product-insert ()
-  "Insert a basic template for a product of a ConTeXt project."
-  (save-excursion
-    (insert "% The following names are examples only\n")
-    (insert TeX-esc (ConTeXt-environment-start-name) (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
-    (newline 2)
-    (insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject")
-    (newline 2)
-    (insert "% Components are optional. You can also just start your document here.\n")
-    (insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
-    (newline 2)
-    (insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent2")
-    (newline 2)
-    (insert TeX-esc (ConTeXt-environment-stop-name) (nth 2 (ConTeXt-project-structure-list)))
-    )
+	"Insert a basic template for a product of a ConTeXt project."
+	(save-excursion
+		(insert "% The following names are examples only\n")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(newline 2)
+		(insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject")
+		(newline 2)
+		(insert "% Components are optional. You can also just start your document here.\n")
+		(insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
+		(newline 2)
+		(insert TeX-esc (nth 3 (ConTeXt-project-structure-list)) " mycomponent2")
+		(newline 2)
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 2 (ConTeXt-project-structure-list)))
+		)
 )
 
 (defun ConTeXt-project-component-insert ()
-  "Insert a basic template for a component of a ConTeXt project."
-  (save-excursion
-    (insert "% The following names are examples only\n")
-    (insert TeX-esc (ConTeXt-environment-start-name) (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
-    (newline 2)
-    (insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject\n")
-    (insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
-    (newline 2)
-    (insert "% ... text here ...")
-    (newline 2)
-    (insert TeX-esc (ConTeXt-environment-stop-name) (nth 3 (ConTeXt-project-structure-list)))
-    )
+	"Insert a basic template for a component of a ConTeXt project."
+	(save-excursion
+		(insert "% The following names are examples only\n")
+		(insert TeX-esc (ConTeXt-environment-start-name) (nth 3 (ConTeXt-project-structure-list)) " mycomponent1")
+		(newline 2)
+		(insert TeX-esc (nth 0 (ConTeXt-project-structure-list)) " myproject\n")
+		(insert TeX-esc (nth 2 (ConTeXt-project-structure-list)) " myproduct1")
+		(newline 2)
+		(insert "% ... text here ...")
+		(newline 2)
+		(insert TeX-esc (ConTeXt-environment-stop-name) (nth 3 (ConTeXt-project-structure-list)))
+		)
 )
 
 
@@ -298,7 +283,7 @@
 
 (defun ConTeXt-section-block (section-block)
 	"Insert the ConTeXt section block SECTION-BLOCK."
-  (ConTeXt-environment-menu section-block)
+	(ConTeXt-environment-menu section-block)
 )
 
 
@@ -330,7 +315,7 @@ Or:
 The following variables can be set to customize:
 
 ConTeXt-section-hook    Hooks to run when inserting a section.
-ConTeXt-section-label   Prefix to all section labels."
+ConTeXt-section-ref   Prefix to all section references."
 
 	(interactive "*P")
 	(let* ((val (prefix-numeric-value arg))
@@ -359,9 +344,9 @@ ConTeXt-section-label   Prefix to all section labels."
 See also `ConTeXt-section' for description of levels."
 	(save-excursion
 		(min (ConTeXt-largest-level)
-         (if (re-search-backward outline-regexp nil t)
-             (+ 1 (- (ConTeXt-outline-level) (ConTeXt-outline-offset)))
-           (ConTeXt-largest-level)))))
+				 (if (re-search-backward outline-regexp nil t)
+						 (+ 1 (- (ConTeXt-outline-level) (ConTeXt-outline-offset)))
+					 (ConTeXt-largest-level)))))
 
 (defun ConTeXt-down-section ()
 	"Return the value of a section one level under the current.
@@ -370,20 +355,20 @@ text, if this fail, it will just return one less than the current
 section."
 	(save-excursion
 		(let ((current (ConTeXt-current-section))
-          (next nil)
-          (regexp outline-regexp))
+					(next nil)
+					(regexp outline-regexp))
 			(if (not (re-search-backward regexp nil t))
-          (1+ current)
-        (while (not next)
-          (cond
-           ((eq (ConTeXt-current-section) current)
-            (if (re-search-forward regexp nil t)
-                (if (<= (setq next (ConTeXt-current-section)) current) ;Wow!
-                    (setq next (1+ current)))
-              (setq next (1+ current))))
-           ((not (re-search-backward regexp nil t))
-            (setq next (1+ current)))))
-        next))))
+					(1+ current)
+				(while (not next)
+					(cond
+					 ((eq (ConTeXt-current-section) current)
+						(if (re-search-forward regexp nil t)
+								(if (<= (setq next (ConTeXt-current-section)) current) ;Wow!
+										(setq next (1+ current)))
+							(setq next (1+ current))))
+					 ((not (re-search-backward regexp nil t))
+						(setq next (1+ current)))))
+				next))))
 
 (defun ConTeXt-up-section (arg)
 	"Return the value of the section ARG levels above this one."
@@ -424,7 +409,7 @@ section."
 (defcustom ConTeXt-section-hook
 	'(ConTeXt-section-heading
 		ConTeXt-section-title
-    ConTeXt-section-label
+		ConTeXt-section-ref
 		ConTeXt-section-section)
 	"List of hooks to run when a new section is inserted.
 
@@ -444,26 +429,26 @@ ConTeXt-section-title: Query the user about the title of the
 section. Modifies `title'.
 
 ConTeXt-section-section: Insert ConTeXt section command according to
-`name', `title', and `label'.  If `title' is an empty string,
+`name', `title', and `reference'.  If `title' is an empty string,
 `done-mark' will be placed at the point they should be inserted.
 
-ConTeXt-section-label: Insert a label for this section command.
+ConTeXt-section-ref: Insert a reference for this section command.
 
 To get a full featured `ConTeXt-section' command, insert
 
  (setq ConTeXt-section-hook
 			 '(ConTeXt-section-heading
-	       ConTeXt-section-title
-      	 ConTeXt-section-section
-      	 ConTeXt-section-label))
+				 ConTeXt-section-title
+				 ConTeXt-section-section
+				 ConTeXt-section-ref))
 
 in your .emacs file."
 	:type 'hook
 	:options
-  '(ConTeXt-section-heading
-    ConTeXt-section-title
-    ConTeXt-section-label
-    ConTeXt-section-section))
+	'(ConTeXt-section-heading
+		ConTeXt-section-title
+		ConTeXt-section-ref
+		ConTeXt-section-section))
 
 (defun ConTeXt-section-heading ()
 	"Hook to prompt for ConTeXt section name.
@@ -473,12 +458,9 @@ the name of the sectioning command inserted with `\\[ConTeXt-section]'."
 								 (concat "Select level: (default " name ") ")
 								 (ConTeXt-section-list)
 								 nil nil nil)))
-    ;; Update name
+		;; Update name
 		(if (not (zerop (length string)))
 				(setq name string))
-    ;; Update level
-		;; @@BdB: what is level?
-		(setq level (ConTeXt-section-level name))
 		)
 )
 
@@ -491,16 +473,16 @@ the title of the section inserted with `\\[ConTeXt-section]."
 (defun ConTeXt-section-section ()
 	"Hook to insert ConTeXt section command into the file.
 Insert this hook into `ConTeXt-section-hook' after those hooks which sets
-the `name', `title', and `label' variables, but before those hooks which
+the `name', `title', and `reference' variables, but before those hooks which
 assumes the section already is inserted."
 	(insert TeX-esc name)
-	(cond ((null label))
-				((zerop (length label))
+	(cond ((null reference))
+				((zerop (length reference))
 				 (insert ConTeXt-optop)
 				 (set-marker done-mark (point))
 				 (insert ConTeXt-optcl))
 				(t
-				 (insert ConTeXt-optop label ConTeXt-optcl)))
+				 (insert ConTeXt-optop reference ConTeXt-optcl)))
 	(insert TeX-grop)
 	(if (zerop (length title))
 			(set-marker done-mark (point)))
@@ -508,20 +490,20 @@ assumes the section already is inserted."
 	(newline)
 	;; If RefTeX is available, tell it that we've just made a new section
 	(and (fboundp 'reftex-notice-new-section)
-			 (reftex-notice-new-section))
+			 (funcall (symbol-function 'reftex-notice-new-section)))
 )
 
-(defun ConTeXt-section-label ()
-	"Hook to insert a label after the sectioning command.
+(defun ConTeXt-section-ref ()
+	"Hook to insert a reference after the sectioning command.
 Insert this hook into `ConTeXt-section-hook' to prompt for a label to be
 inserted after the sectioning command."
 
-	(setq label (completing-read
-							 (TeX-argument-prompt t nil "Comma separated list of labels")
+	(setq reference (completing-read
+							 (TeX-argument-prompt t nil "Comma separated list of references")
 							 (LaTeX-label-list) nil nil))
-	;; No label or empty string entered?
-	(if (string= "" label)
-			(setq label nil))
+	;; No reference or empty string entered?
+	(if (string-equal "" reference)
+			(setq reference nil))
 )
 
 
@@ -614,15 +596,15 @@ inserted after the sectioning command."
 With optional ARG, modify current environment."
 	(interactive "*P")
 	(let ((environment (
-      completing-read (concat "Environment type: (default "
-                              (if (TeX-near-bobp)
-                                  "text"
-                                ConTeXt-default-environment)
-                              ") ")
-                      (ConTeXt-environment-list)
-                      nil nil nil
-                      'ConTeXt-environment-history)
-                     ))
+			completing-read (concat "Environment type: (default "
+															(if (TeX-near-bobp)
+																	"text"
+																ConTeXt-default-environment)
+															") ")
+											(ConTeXt-environment-list)
+											nil nil nil
+											'ConTeXt-environment-history)
+										 ))
 		;; Get default
 		(cond ((and (zerop (length environment))
 								(TeX-near-bobp))
@@ -634,10 +616,10 @@ With optional ARG, modify current environment."
 
 		(let ((entry (assoc environment (ConTeXt-environment-list))))
 			(when (null entry)
-        (ConTeXt-add-environments (list environment)))
+				(ConTeXt-add-environments (list environment)))
 			(if arg
-          (ConTeXt-modify-environment environment)
-        (ConTeXt-environment-menu environment))))
+					(ConTeXt-modify-environment environment)
+				(ConTeXt-environment-menu environment))))
 )
 
 (defun ConTeXt-modify-environment (environment)
@@ -664,81 +646,81 @@ With optional ARG, modify current environment."
 	"Insert ENVIRONMENT around point or region."
 	(let ((entry (assoc environment (ConTeXt-environment-list))))
 		(cond ((not (and entry (nth 1 entry)))
-           (ConTeXt-insert-environment environment))
-          ((numberp (nth 1 entry))
-           (let ((count (nth 1 entry))
-                 (args ""))
-             (while (> count 0)
-               (setq args (concat args TeX-grop TeX-grcl))
-               (setq count (- count 1)))
-             (ConTeXt-insert-environment environment args)))
-          ((stringp (nth 1 entry))
-           (let ((prompts (cdr entry))
-                 (args ""))
-             (while prompts
-               (setq args (concat args
-                                  TeX-grop
-                                  (read-from-minibuffer
-                                   (concat (car prompts) ": "))
-                                  TeX-grcl))
+					 (ConTeXt-insert-environment environment))
+					((numberp (nth 1 entry))
+					 (let ((count (nth 1 entry))
+								 (args ""))
+						 (while (> count 0)
+							 (setq args (concat args TeX-grop TeX-grcl))
+							 (setq count (- count 1)))
+						 (ConTeXt-insert-environment environment args)))
+					((stringp (nth 1 entry))
+					 (let ((prompts (cdr entry))
+								 (args ""))
+						 (while prompts
+							 (setq args (concat args
+																	TeX-grop
+																	(read-from-minibuffer
+																	 (concat (car prompts) ": "))
+																	TeX-grcl))
 				 (setq prompts (cdr prompts)))
-             (ConTeXt-insert-environment environment args)))
-          (t
-           (apply (nth 1 entry) environment (nthcdr 2 entry)))))
+						 (ConTeXt-insert-environment environment args)))
+					(t
+					 (apply (nth 1 entry) environment (nthcdr 2 entry)))))
 )
 
 (defun ConTeXt-close-environment ()
 	"Insert \\stop... to match the current environment."
 	(interactive "*")
-  (beginning-of-line)
-  (let ((empty-line (looking-at "[ \t]*$")))
-    (end-of-line)
-    (if (not empty-line)
-        (newline))
-    )
-  (insert TeX-esc (ConTeXt-environment-stop-name) (ConTeXt-current-environment))
-  ;; indent broken, so don't do it.
-  ;;(indent-according-to-mode)
-  (end-of-line)
-  (newline)
-  )
+	(beginning-of-line)
+	(let ((empty-line (looking-at "[ \t]*$")))
+		(end-of-line)
+		(if (not empty-line)
+				(newline))
+		)
+	(insert TeX-esc (ConTeXt-environment-stop-name) (ConTeXt-current-environment))
+	;; indent broken, so don't do it.
+	;;(indent-according-to-mode)
+	(end-of-line)
+	(newline)
+	)
 
 (defun ConTeXt-insert-environment (environment &optional extra)
 	"Insert ENVIRONMENT, with optional argument EXTRA."
 	(if (and (TeX-active-mark)
-           (not (eq (mark) (point))))
+					 (not (eq (mark) (point))))
 			(save-excursion
-        (if (< (mark) (point))
-            (exchange-point-and-mark))
-        (insert TeX-esc (ConTeXt-environment-start-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        (if extra (insert extra))
-        (goto-char (mark))
-        (or (TeX-looking-at-backward "^[ \t]*")
-            (newline))
-        (insert TeX-esc (ConTeXt-environment-stop-name) environment)
-        (newline)
-        (forward-line -1)
-        (indent-according-to-mode)
-        ;;(goto-char (point))
-        )
+				(if (< (mark) (point))
+						(exchange-point-and-mark))
+				(insert TeX-esc (ConTeXt-environment-start-name) environment)
+				(newline)
+				(forward-line -1)
+				(indent-according-to-mode)
+				(if extra (insert extra))
+				(goto-char (mark))
+				(or (TeX-looking-at-backward "^[ \t]*")
+						(newline))
+				(insert TeX-esc (ConTeXt-environment-stop-name) environment)
+				(newline)
+				(forward-line -1)
+				(indent-according-to-mode)
+				;;(goto-char (point))
+				)
 		(or (TeX-looking-at-backward "^[ \t]*")
-        (newline))
+				(newline))
 		(insert TeX-esc (ConTeXt-environment-start-name) environment)
 		(indent-according-to-mode)
 		(if extra (insert extra))
-    (end-of-line)
+		(end-of-line)
 		(newline-and-indent)
 		(newline)
 		(insert TeX-esc (ConTeXt-environment-stop-name) environment)
 		(or (looking-at "[ \t]*$")
-        (save-excursion (newline-and-indent)))
+				(save-excursion (newline-and-indent)))
 		(indent-according-to-mode)
 		(end-of-line 0)
-    )
-  )
+		)
+	)
 
 
 ;; with the following we can call a function on an environment. Say
@@ -912,37 +894,83 @@ nil, go to the point just past the \\start... macro."
 	(indent-according-to-mode))
 
 
+;;; Macro Argument Hooks
+
+(defun ConTeXt-optional-argument-insert (arg &optional prefix)
+	"Insert ARG surrounded by square brackets."
+	(insert ConTeXt-optop)
+	(insert arg)
+	(insert ConTeXt-optcl)
+)
+
+(defun ConTeXt-required-argument-insert (arg &optional prefix)
+	"Insert ARG surrounded by curly braces."
+	(insert TeX-grop)
+	(insert arg)
+	(insert TeX-grcl)
+)
+
+(defun ConTeXt-argument-insert (arg optional &optional prefix)
+	"Insert ARG surrounded by curly braces.
+
+If OPTIONAL, only insert it if not empty, and then use square brackets."
+	(if optional
+			(if
+					(not (string-equal arg ""))
+					(ConTeXt-optional-argument-insert arg prefix))
+		(ConTeXt-required-argument-insert arg prefix)
+		)
+	)
+
+(defun ConTeXt-arg-ref (optional &optional prompt definition)
+	"Prompt for a reference completing with known references."
+	(let ((ref (completing-read (TeX-argument-prompt optional prompt "ref")
+																(LaTeX-label-list))))
+		(if (and definition (not (string-equal "" ref)))
+				(LaTeX-add-labels ref))
+		(ConTeXt-argument-insert ref optional)))
+
+(defun ConTeXt-arg-define-ref (&optional prompt)
+	"Prompt for an optional reference completing with known references."
+	(ConTeXt-arg-ref t prompt t))
+
+(defun ConTeXt-arg-setup (optional &optional prompt)
+	"Prompt for setup arguments."
+	(let ((setup (read-from-minibuffer (TeX-argument-prompt optional prompt "setup"))))
+		(ConTeXt-argument-insert setup t)))
+
+
 ;; paragraph (re)-formatting
 
 (defmacro ConTeXt-item-list ()
-  "List of macro's considered items."
-  (intern (concat "ConTeXt-" ConTeXt-current-interface "-item-list")))
+	"List of macro's considered items."
+	(intern (concat "ConTeXt-" ConTeXt-current-interface "-item-list")))
 
 (defvar ConTeXt-extra-paragraph-commands
-  '("crlf" "par")
-  "List of ConTeXt macros that should have their own line besides the section(-block) commands.")
+	'("crlf" "par")
+	"List of ConTeXt macros that should have their own line besides the section(-block) commands.")
 
 (defun ConTeXt-paragraph-commands ()
-  "Regexp matching names of LaTeX macros that should have their own line."
-  (concat
-   "\\[\\|\\]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
-   (ConTeXt-environment-start-name) "\\b\\|"
-   (ConTeXt-environment-stop-name) "\\b\\|start"
-   (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|start") "\\b\\|stop"
-   (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|stop") "\\b\\|"
-   (mapconcat 'car (ConTeXt-section-list) "\\b\\|") "\\b\\|"
-   (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
-   "\\b\\|"
-   (mapconcat 'identity (ConTeXt-item-list) "\\b\\|") "\\b"
-   )
-  )
+	"Regexp matching names of LaTeX macros that should have their own line."
+	(concat
+	 "\\[\\|\\]\\|"  ; display math delimitors (is this applicable to ConTeXt??)
+	 (ConTeXt-environment-start-name) "\\b\\|"
+	 (ConTeXt-environment-stop-name) "\\b\\|start"
+	 (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|start") "\\b\\|stop"
+	 (mapconcat 'identity (ConTeXt-section-block-list) "\\b\\|stop") "\\b\\|"
+	 (mapconcat 'car (ConTeXt-section-list) "\\b\\|") "\\b\\|"
+	 (mapconcat 'identity ConTeXt-extra-paragraph-commands "\\b\\|")
+	 "\\b\\|"
+	 (mapconcat 'identity (ConTeXt-item-list) "\\b\\|") "\\b"
+	 )
+	)
 
 
 ;; Outline support
 
 (defun ConTeXt-environment-full-start-name (environment)
-  "Return the ConTeXt macro name that starts ENVIRONMENT. It is interface aware"
-  (concat (ConTeXt-environment-start-name) environment)
+	"Return the ConTeXt macro name that starts ENVIRONMENT. It is interface aware"
+	(concat (ConTeXt-environment-start-name) environment)
 )
 
 ;; (defun ConTeXt-environment-full-start-names (environments)
@@ -951,77 +979,77 @@ nil, go to the point just past the \\start... macro."
 ;; )
 
 (defun ConTeXt-outline-regexp (&optional anywhere)
-  "Return regexp for ConTeXt section blocks and sections.
+	"Return regexp for ConTeXt section blocks and sections.
 
 If optional argument ANYWHERE is not nil, do not require that the
 header is at the start of a line."
-  (concat
-   (if anywhere "" "^")
-   "[ \t]*"
-   (regexp-quote TeX-esc)
-   "\\("
-   (mapconcat 'ConTeXt-environment-full-start-name (ConTeXt-section-block-list) "\\|") "\\|"
-   (mapconcat 'car (ConTeXt-section-list) "\\|")
-   "\\)\\b"
-   (if TeX-outline-extra
-       "\\|"
-     "")
-   (mapconcat 'car TeX-outline-extra "\\|")
-   "\\|" (ConTeXt-header-end) "\\b"
-   "\\|" (ConTeXt-trailer-start) "\\b"
-   )
-  )
+	(concat
+	 (if anywhere "" "^")
+	 "[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 (mapconcat 'ConTeXt-environment-full-start-name (ConTeXt-section-block-list) "\\|") "\\|"
+	 (mapconcat 'car (ConTeXt-section-list) "\\|")
+	 "\\)\\b"
+	 (if TeX-outline-extra
+			 "\\|"
+		 "")
+	 (mapconcat 'car TeX-outline-extra "\\|")
+	 "\\|" (ConTeXt-header-end) "\\b"
+	 "\\|" (ConTeXt-trailer-start) "\\b"
+	 )
+	)
 
-(defmacro ConTeXt-header-end ()
-  "Default end of header marker for ConTeXt documents."
-  (concat
-   (regexp-quote TeX-esc)
-   (ConTeXt-environment-start-name)
-   (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
-   )
+(defun ConTeXt-header-end ()
+	"Default end of header marker for ConTeXt documents."
+	(concat
+	 (regexp-quote TeX-esc)
+	 (ConTeXt-environment-start-name)
+	 (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
+	 )
 )
 
-(defmacro ConTeXt-trailer-start ()
-  "Default start of trailer marker for ConTeXt documents."
-  (concat
-   (regexp-quote TeX-esc)
-   (ConTeXt-environment-stop-name)
-   (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
-   )
+(defun ConTeXt-trailer-start ()
+	"Default start of trailer marker for ConTeXt documents."
+	(concat
+	 (regexp-quote TeX-esc)
+	 (ConTeXt-environment-stop-name)
+	 (symbol-value (intern (concat "ConTeXt-" ConTeXt-current-interface "-text")))
+	 )
 )
 
 (defun ConTeXt-outline-offset ()
-  "Offset to add to `ConTeXt-section-list' levels to get outline level."
-  (- 4 (ConTeXt-largest-level)))
+	"Offset to add to `ConTeXt-section-list' levels to get outline level."
+	(- 4 (ConTeXt-largest-level)))
 
 (defun ConTeXt-start-environment-regexp (list)
-  "Regular expression that matches a start of all environments mentioned in LIST"
-  (concat
-   "start\\("
-   (mapconcat 'identity list "\\|")
-   "\\)\\b")
+	"Regular expression that matches a start of all environments mentioned in LIST"
+	(concat
+	 "start\\("
+	 (mapconcat 'identity list "\\|")
+	 "\\)\\b")
 )
 
 ;; The top headings are \starttext, \startfrontmatter, \startbodymatter etc.
 ;; \part, \chapter etc. are children of that.
 (defun ConTeXt-outline-level ()
-  "Find the level of current outline heading in an ConTeXt document."
-  (cond ((looking-at (concat (ConTeXt-header-end) "\\b")) 1)
-        ((looking-at (concat (ConTeXt-trailer-start) "\\b")) 1)
-        ((TeX-look-at TeX-outline-extra)
-         (max 1 (+ (TeX-look-at TeX-outline-extra)
-                   (ConTeXt-outline-offset))))
-        (t
-         (save-excursion
-           (skip-chars-forward " \t")
-           (forward-char 1)
-           (cond ((looking-at (ConTeXt-start-environment-regexp (ConTeXt-section-block-list))) 1)
-                 ((TeX-look-at (ConTeXt-section-list))
-                  (max 1 (+ (TeX-look-at (ConTeXt-section-list))
-                            (ConTeXt-outline-offset))))
-                 (t
-                  (error "Unrecognized header"))))))
-  )
+	"Find the level of current outline heading in an ConTeXt document."
+	(cond ((looking-at (concat (ConTeXt-header-end) "\\b")) 1)
+				((looking-at (concat (ConTeXt-trailer-start) "\\b")) 1)
+				((TeX-look-at TeX-outline-extra)
+				 (max 1 (+ (TeX-look-at TeX-outline-extra)
+									 (ConTeXt-outline-offset))))
+				(t
+				 (save-excursion
+					 (skip-chars-forward " \t")
+					 (forward-char 1)
+					 (cond ((looking-at (ConTeXt-start-environment-regexp (ConTeXt-section-block-list))) 1)
+								 ((TeX-look-at (ConTeXt-section-list))
+									(max 1 (+ (TeX-look-at (ConTeXt-section-list))
+														(ConTeXt-outline-offset))))
+								 (t
+									(error "Unrecognized header"))))))
+	)
 
 
 ;; Indentation, copied from Berend's context mode.
@@ -1033,70 +1061,70 @@ header is at the start of a line."
 (defvar ConTeXt-indent-item-re "\\\\\\\(item\\|setup[a-zA-Z]*\\)\\>")
 
 (easy-mmode-defsyntax ConTeXt-indent-syntax-table
-  '((?$ . ".")
-    (?\( . ".")
-    (?\) . "."))
-  "Syntax table used while computing indentation."
-  :copy TeX-mode-syntax-table)
+	'((?$ . ".")
+		(?\( . ".")
+		(?\) . "."))
+	"Syntax table used while computing indentation."
+	:copy TeX-mode-syntax-table)
 
 (defun ConTeXt-indent-line (&optional arg)
-  (with-syntax-table ConTeXt-indent-syntax-table
-    ;; TODO: Rather than ignore $, we should try to be more clever about it.
-    (let ((indent
-           (save-excursion
-             (beginning-of-line)
-             (ConTeXt-find-indent))))
-      (if (< indent 0) (setq indent 0))
-      (if (<= (current-column) (current-indentation))
-          (indent-line-to indent)
-        (save-excursion (indent-line-to indent))))))
+	(with-syntax-table ConTeXt-indent-syntax-table
+		;; TODO: Rather than ignore $, we should try to be more clever about it.
+		(let ((indent
+					 (save-excursion
+						 (beginning-of-line)
+						 (ConTeXt-find-indent))))
+			(if (< indent 0) (setq indent 0))
+			(if (<= (current-column) (current-indentation))
+					(indent-line-to indent)
+				(save-excursion (indent-line-to indent))))))
 
 (defun ConTeXt-find-indent (&optional virtual)
-  "Find the proper indentation of text after point.
+	"Find the proper indentation of text after point.
 VIRTUAL if non-nil indicates that we're only trying to find the indentation
-  in order to determine the indentation of something else.
+	in order to determine the indentation of something else.
 There might be text before point."
-  (save-excursion
-    (skip-chars-forward " \t")
-    (or
-     ;; Trust the current indentation, if such info is applicable.
-     (and virtual (>= (current-indentation) (current-column))
-          (current-indentation))
-     ;; Put leading close-paren where the matching open brace would be.
-     (and (eq (char-syntax (char-after)) ?\))
-          (ignore-errors
-            (save-excursion
-              (skip-syntax-forward " )")
-              (backward-sexp 1)
-              (ConTeXt-find-indent 'virtual))))
-     ;; Default (maybe an argument)
-     (let ((pos (point))
-           (char (char-after))
-	   ;; Outdent \item if necessary.
-	   (indent (if (looking-at ConTeXt-indent-item-re) (- ConTeXt-indent-item) 0))
-	   up-list-pos)
-       ;; Find the previous point which determines our current indentation.
-       (condition-case err
-	   (progn
-	     (backward-sexp 1)
-	     (while (> (current-column) (current-indentation))
-	       (backward-sexp 1)))
+	(save-excursion
+		(skip-chars-forward " \t")
+		(or
+		 ;; Trust the current indentation, if such info is applicable.
+		 (and virtual (>= (current-indentation) (current-column))
+					(current-indentation))
+		 ;; Put leading close-paren where the matching open brace would be.
+		 (and (eq (char-syntax (char-after)) ?\))
+					(ignore-errors
+						(save-excursion
+							(skip-syntax-forward " )")
+							(backward-sexp 1)
+							(ConTeXt-find-indent 'virtual))))
+		 ;; Default (maybe an argument)
+		 (let ((pos (point))
+					 (char (char-after))
+		 ;; Outdent \item if necessary.
+		 (indent (if (looking-at ConTeXt-indent-item-re) (- ConTeXt-indent-item) 0))
+		 up-list-pos)
+			 ;; Find the previous point which determines our current indentation.
+			 (condition-case err
+		 (progn
+			 (backward-sexp 1)
+			 (while (> (current-column) (current-indentation))
+				 (backward-sexp 1)))
 	 (scan-error
-	  (setq up-list-pos (nth 2 err))))
-       (cond
+		(setq up-list-pos (nth 2 err))))
+			 (cond
 	((= (point-min) pos) 0) ; We're really just indenting the first line.
 	((integerp up-list-pos)
 	 ;; Have to indent relative to the open-paren.
 	 (goto-char up-list-pos)
 	 (if (and (not ConTeXt-indent-allhanging)
-		  (> pos (progn (down-list 1)
+			(> pos (progn (down-list 1)
 				(forward-comment (point-max))
 				(point))))
-	     ;; Align with the first element after the open-paren.
-	     (current-column)
-	   ;; We're the first element after a hanging brace.
-	   (goto-char up-list-pos)
-	   (+ indent ConTeXt-indent-basic (ConTeXt-find-indent 'virtual))))
+			 ;; Align with the first element after the open-paren.
+			 (current-column)
+		 ;; We're the first element after a hanging brace.
+		 (goto-char up-list-pos)
+		 (+ indent ConTeXt-indent-basic (ConTeXt-find-indent 'virtual))))
 	;; We're now at the "beginning" of a line.
 	((not (and (not virtual) (eq (char-after) ?\\)))
 	 ;; Nothing particular here: just keep the same indentation.
@@ -1107,46 +1135,46 @@ There might be text before point."
 	 (+ indent (current-column) ConTeXt-indent-item))
 	(t
 	 (let ((col (current-column)))
-	   (if (not (eq (char-syntax char) ?\())
-	       ;; If the first char was not an open-paren, there's
-	       ;; a risk that this is really not an argument to the
-	       ;; macro at all.
-	       (+ indent col)
-	     (forward-sexp 1)
-	     (if (< (line-end-position)
-		    (save-excursion (forward-comment (point-max))
-				    (point)))
+		 (if (not (eq (char-syntax char) ?\())
+				 ;; If the first char was not an open-paren, there's
+				 ;; a risk that this is really not an argument to the
+				 ;; macro at all.
+				 (+ indent col)
+			 (forward-sexp 1)
+			 (if (< (line-end-position)
+				(save-excursion (forward-comment (point-max))
+						(point)))
 		 ;; we're indenting the first argument.
 		 (min (current-column) (+ ConTeXt-indent-arg col))
-	       (skip-syntax-forward " ")
-	       (current-column))))))))))
+				 (skip-syntax-forward " ")
+				 (current-column))))))))))
 
 
 ;; XML inside ConTeXt support
 
 (defun ConTeXt-last-unended-start-xml ()
-  "Leave point at the beginning of the last `tag' that is unstopped."
-  (while (and (re-search-backward "<[_A-Za-z][-:._A-Za-z0-9]*\\([ \t\r\n]\\|[_A-Za-z][-:._A-Za-z0-9]*\=\"[^\"]*\"\\)*>\\|</[_A-Za-z][-:_A-Za-z0-9]*>")
-              (looking-at "</[_A-Za-z][-:._A-Za-z0-9]*>"))
-    (ConTeXt-last-unended-start-xml)))
+	"Leave point at the beginning of the last `tag' that is unstopped."
+	(while (and (re-search-backward "<[_A-Za-z][-:._A-Za-z0-9]*\\([ \t\r\n]\\|[_A-Za-z][-:._A-Za-z0-9]*\=\"[^\"]*\"\\)*>\\|</[_A-Za-z][-:_A-Za-z0-9]*>")
+							(looking-at "</[_A-Za-z][-:._A-Za-z0-9]*>"))
+		(ConTeXt-last-unended-start-xml)))
 
 (defun ConTeXt-close-xml-tag ()
-  "Creates an </...> to match the last unclosed <...>. Not fool-proof."
-  (interactive "*")
-  (let ((new-line-needed (bolp)) text indentation)
-    (save-excursion
-      (condition-case nil
-          (ConTeXt-last-unended-start-xml)
-        (error (error "Couldn't find unended XML tag")))
-      (setq indentation (current-column))
-      (re-search-forward "<\\([_A-Za-z][-:._A-Za-z0-9]*\\)")
+	"Creates an </...> to match the last unclosed <...>. Not fool-proof."
+	(interactive "*")
+	(let ((new-line-needed (bolp)) text indentation)
+		(save-excursion
+			(condition-case nil
+					(ConTeXt-last-unended-start-xml)
+				(error (error "Couldn't find unended XML tag")))
+			(setq indentation (current-column))
+			(re-search-forward "<\\([_A-Za-z][-:._A-Za-z0-9]*\\)")
 			(setq text (buffer-substring (match-beginning 1) (match-end 1)))
-      )
-    (indent-to indentation)
-    (insert "</" text ">")
-    (if new-line-needed (insert ?\n))
-    )
-  )
+			)
+		(indent-to indentation)
+		(insert "</" text ">")
+		(if new-line-needed (insert ?\n))
+		)
+	)
 
 
 ;; Key bindings
@@ -1154,24 +1182,131 @@ There might be text before point."
 (defvar ConTeXt-mode-map
 	(let ((map (copy-keymap TeX-mode-map)))
 
-    (define-key map "\C-c\C-s" 'ConTeXt-section)
-    (define-key map "\C-c\C-s" 'TeX-output-view-style)
+		(define-key map "\C-c\C-s" 'ConTeXt-section)
+		(define-key map "\C-c\C-s" 'TeX-output-view-style)
 		(define-key map "\e\C-a"  'ConTeXt-find-matching-start)
 		(define-key map "\e\C-e"  'ConTeXt-find-matching-stop)
-    ;; likely to change in the future
+		;; likely to change in the future
 		(define-key map "\C-c!"    'ConTeXt-work-on-environment)
 		(define-key map "\C-c\C-e" 'ConTeXt-environment)
 		(define-key map "\C-c\n"   'ConTeXt-insert-item)
 		(or (key-binding "\e\r")
-        (define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
+				(define-key map "\e\r"    'ConTeXt-insert-item)) ;*** Alias
 		(define-key map "\C-c]" 'ConTeXt-close-environment)
-    ;; XML in ConTeXt support
-    (define-key map "\C-c/" 'ConTeXt-close-xml-tag)
+		;; XML in ConTeXt support
+		(define-key map "\C-c/" 'ConTeXt-close-xml-tag)
 		map)
 	"Keymap used in `ConTeXt-mode'.")
 
 
-;;; Menu
+;;; Menu building
+
+;; functions to create menu entries
+
+;; ConTeXt \start... \stop... pairs
+(defvar ConTeXt-environment-menu-name "Insert Environment  (C-c C-e)")
+
+(defun ConTeXt-environment-menu-entry (entry)
+	"Create an entry for the environment menu."
+	(vector (car entry) (list 'ConTeXt-environment-menu (car entry)) t))
+
+(defvar ConTeXt-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
+
+(defun ConTeXt-environment-modify-menu-entry (entry)
+	"Create an entry for the change environment menu."
+	(vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
+
+;; ConTeXt setup macro's
+(defvar ConTeXt-setup-menu-name "Setup")
+
+(defun ConTeXt-setup-menu-entry (entry)
+	"Create an entry for the setup menu."
+	(vector entry (list 'ConTeXt-setup-menu entry)))
+
+(defun ConTeXt-setup-menu (setup)
+	"Insert SETUP from menu."
+	(ConTeXt-insert-setup setup))
+
+
+;; meta-structure project structure menu entries
+
+(defun ConTeXt-project-structure-menu (project-structure)
+	"Insert project structure from menu."
+	(ConTeXt-project-structure
+	 (let ((l (ConTeXt-project-structure-list)))
+		 (- (length l) (length (member project-structure l)))))
+	)
+
+(defun ConTeXt-project-structure-menu-entry (entry)
+	"Create an ENTRY for the project structure menu."
+	(vector entry (list 'ConTeXt-project-structure-menu entry))
+	)
+
+(defun ConTeXt-project-structure-menu-create ()
+	"Create a menu over ConTeXt project structures."
+	(append '("Project structure")
+		(mapcar 'ConTeXt-project-structure-menu-entry (ConTeXt-project-structure-list))))
+
+
+;; meta-structure section blocks menu entries
+
+(defun ConTeXt-section-block-menu (section-block)
+	"Insert section block from menu."
+	(ConTeXt-section-block section-block))
+
+(defun ConTeXt-section-block-menu-entry (entry)
+	"Create an ENTRY for the section block menu."
+	(vector entry (list 'ConTeXt-section-block-menu entry))
+	)
+
+(defun ConTeXt-section-block-menu-create ()
+	"Create a menu over ConTeXt section blocks."
+	(append '("Section block")
+		(mapcar 'ConTeXt-section-block-menu-entry (ConTeXt-section-block-list))))
+
+
+;; section menu entries
+
+(defun ConTeXt-section-enable-symbol (level)
+	"Symbol used to enable section LEVEL in the menu bar."
+	(intern (concat "ConTeXt-section-" (int-to-string level) "-enable")))
+
+(defun ConTeXt-section-enable (entry)
+	"Enable or disable section ENTRY from `ConTeXt-section-list'."
+	(let ((level (nth 1 entry)))
+		(set (ConTeXt-section-enable-symbol level)
+				 (>= level ConTeXt-largest-level))))
+
+(defun ConTeXt-section-menu (level)
+	"Insert section from menu."
+	(let ((ConTeXt-section-hook (delq 'ConTeXt-section-heading
+					(copy-sequence ConTeXt-section-hook))))
+		(ConTeXt-section level)))
+
+(defun ConTeXt-section-menu-entry (entry)
+	"Create an ENTRY for the section menu."
+	(let ((enable (ConTeXt-section-enable-symbol (nth 1 entry))))
+		(set enable t)
+		(vector (car entry) (list 'ConTeXt-section-menu (nth 1 entry)) enable)))
+
+(defun ConTeXt-section-menu-create ()
+	"Create a menu over ConTeXt sections."
+	(append '("Section  (C-c C-s)")
+		(mapcar 'ConTeXt-section-menu-entry (ConTeXt-section-list))))
+
+
+;; etexshow support
+
+(defun ConTeXt-etexshow ()
+  "Call etexshow, if available, to show the definition of a ConText macro."
+  (interactive)
+	(if (fboundp 'etexshow-cmd)
+			 (funcall (symbol-function 'etexshow-cmd))
+    (error "etexshow is not installed. Get it from http://levana.de/emacs/"))
+)
+
+;; menu itself
+
 (easy-menu-define ConTeXt-mode-command-menu
 		ConTeXt-mode-map
 		"Command menu used in ConTeXt mode."
@@ -1186,13 +1321,16 @@ There might be text before point."
 	(list "ConTeXt"
 	(list ConTeXt-environment-menu-name)
 	(list ConTeXt-environment-modify-menu-name)
+	(list ConTeXt-setup-menu-name)
 	"-"
 	(ConTeXt-project-structure-menu-create)
 	(ConTeXt-section-block-menu-create)
 	(ConTeXt-section-menu-create)
+	"-"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Item" LaTeX-insert-item t]
+	["Show definition" ConTeXt-etexshow t]
 	"-"
 	(list "Insert Font"
 				["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
@@ -1218,26 +1356,26 @@ There might be text before point."
 	"-"
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	       :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
-  (list "Commenting"
-	      ["Comment Region" TeX-comment-region t]
-	      ["Uncomment Region" TeX-uncomment-region t])
-  "-"
-  (list "AUCTeX"
-        (list "Customize"
-              ["Browse options"
-               (customize-group 'AUCTeX)]
-              ["Extend this menu"
-               (easy-menu-add-item
-                nil '("ConTeXt")
-                (customize-menu-create 'AUCTeX))])
-        ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
-	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
+				["Kill Job" TeX-kill-job t]
+				["Debug Bad Boxes" TeX-toggle-debug-boxes
+				 :style toggle :selected TeX-debug-bad-boxes ]
+				["Recenter Output Buffer" TeX-recenter-output-buffer t])
+	(list "Commenting"
+				["Comment Region" TeX-comment-region t]
+				["Uncomment Region" TeX-uncomment-region t])
+	"-"
+	(list "AUCTeX"
+				(list "Customize"
+							["Browse options"
+							 (customize-group 'AUCTeX)]
+							["Extend this menu"
+							 (easy-menu-add-item
+								nil '("ConTeXt")
+								(customize-menu-create 'AUCTeX))])
+				["Documentation" TeX-goto-info-page t]
+				["Submit bug report" TeX-submit-bug-report t]
+				["Reset Buffer" TeX-normal-mode t]
+				["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
 ))
 
 (defun ConTeXt-menu-update (&optional menu)
@@ -1260,6 +1398,11 @@ There might be text before point."
 													(LaTeX-split-long-menu
 													 (mapcar 'ConTeXt-environment-modify-menu-entry
 																	 (ConTeXt-environment-list))))
+				(message "Updating setup menu...")
+				(easy-menu-change '("ConTeXt") ConTeXt-setup-menu-name
+													(LaTeX-split-long-menu
+													 (mapcar 'ConTeXt-setup-menu-entry
+																	 (ConTeXt-setup-list))))
 				(message "Updating...done")
 				(and menu (easy-menu-return-item ConTeXt-mode-menu menu)))))
 
@@ -1278,37 +1421,37 @@ of context-mode-hook."
 	(plain-TeX-common-initialization)
 	(use-local-map ConTeXt-mode-map)
 
-  ;; Indenting
-  (make-local-variable 'indent-line-function)
-  (set (make-local-variable 'indent-line-function) 'ConTeXt-indent-line)
-  (set (make-local-variable 'fill-indent-according-to-mode) t)
+	;; Indenting
+	(make-local-variable 'indent-line-function)
+	(set (make-local-variable 'indent-line-function) 'ConTeXt-indent-line)
+	(set (make-local-variable 'fill-indent-according-to-mode) t)
 
-  ;; Paragraph formatting
-  (make-local-variable 'LaTeX-format-comment-syntax-aware)
-  (setq LaTeX-format-comment-syntax-aware nil)
-  (make-local-variable 'LaTeX-paragraph-commands)
-  (setq LaTeX-paragraph-commands (ConTeXt-paragraph-commands))
-  ;;(setq LaTeX-paragraph-commands "par\\b\\|crlf\\b")
-  (make-local-variable 'paragraph-ignore-fill-prefix)
-  (setq paragraph-ignore-fill-prefix t)
-  (make-local-variable 'fill-paragraph-function)
-  (setq fill-paragraph-function 'LaTeX-fill-paragraph)
-  (make-local-variable 'adaptive-fill-mode)
-  (setq adaptive-fill-mode nil)
-  (setq paragraph-start
-        (concat
-         "[ \t]*\\("
-         (regexp-quote TeX-esc)
-         "\\("
-         (ConTeXt-paragraph-commands)
-         "\\)\\|$"
-         "\\)"
-         ))
-  (setq paragraph-separate
-        (concat
-         "[ \t]*\\("
-         "\\$\\$" ; display math delimitor
-         "\\|$\\)"))
+	;; Paragraph formatting
+	(make-local-variable 'LaTeX-format-comment-syntax-aware)
+	(setq LaTeX-format-comment-syntax-aware nil)
+	(make-local-variable 'LaTeX-paragraph-commands)
+	(setq LaTeX-paragraph-commands (ConTeXt-paragraph-commands))
+	;;(setq LaTeX-paragraph-commands "par\\b\\|crlf\\b")
+	(make-local-variable 'paragraph-ignore-fill-prefix)
+	(setq paragraph-ignore-fill-prefix t)
+	(make-local-variable 'fill-paragraph-function)
+	(setq fill-paragraph-function 'LaTeX-fill-paragraph)
+	(make-local-variable 'adaptive-fill-mode)
+	(setq adaptive-fill-mode nil)
+	(setq paragraph-start
+				(concat
+				 "[ \t]*\\("
+				 (regexp-quote TeX-esc)
+				 "\\("
+				 (ConTeXt-paragraph-commands)
+				 "\\)\\|$"
+				 "\\)"
+				 ))
+	(setq paragraph-separate
+				(concat
+				 "[ \t]*\\("
+				 "\\$\\$" ; display math delimitor
+				 "\\|$\\)"))
 ;;   (setq paragraph-start "[ \t\n]")
 ;;   (setq paragraph-separate
 ;;         (concat
@@ -1320,7 +1463,7 @@ of context-mode-hook."
 
 
 	;; Keybindings and menu
-  (use-local-map ConTeXt-mode-map)
+	(use-local-map ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-command-menu ConTeXt-mode-map)
 	(easy-menu-add ConTeXt-mode-menu ConTeXt-mode-map)
 
@@ -1328,27 +1471,24 @@ of context-mode-hook."
 			(make-local-hook 'activate-menubar-hook))
 	(add-hook 'activate-menubar-hook 'ConTeXt-menu-update nil t)
 
-  ;; Outline support
-  (require 'outline)
-  (make-local-variable 'outline-level)
-  (setq outline-level 'ConTeXt-outline-level)
-  (make-local-variable 'outline-regexp)
-  (setq outline-regexp (ConTeXt-outline-regexp t))
-  ;;(make-local-variable 'outline-heading-end-regexp)
-  (setq TeX-header-end (ConTeXt-header-end)
-        TeX-trailer-start (ConTeXt-trailer-start))
+	;; Outline support
+	(require 'outline)
+	(make-local-variable 'outline-level)
+	(setq outline-level 'ConTeXt-outline-level)
+	(make-local-variable 'outline-regexp)
+	(setq outline-regexp (ConTeXt-outline-regexp t))
+	;;(make-local-variable 'outline-heading-end-regexp)
+	(setq TeX-header-end (ConTeXt-header-end)
+				TeX-trailer-start (ConTeXt-trailer-start))
 
-  ;; What's the deepest level at we can collapse a document?
-  ;; set only if user has not set it.
-  (or ConTeXt-largest-level
-      (setq ConTeXt-largest-level (ConTeXt-section-level "section")))
+	;; What's the deepest level at we can collapse a document?
+	;; set only if user has not set it.
+	(or ConTeXt-largest-level
+			(setq ConTeXt-largest-level (ConTeXt-section-level "section")))
 
 	;; other initializations
 	(funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-mode")))
 
-	;; todo: make interface aware!
-	(TeX-add-symbols
-	 '("item" (TeX-arg-literal "  ")))
 	(setq mode-name "ConTeXt")
 	(setq major-mode 'context-mode)
 	(setq TeX-command-default "ConTeXt")
@@ -1387,16 +1527,28 @@ of context-mode-hook."
 		"standardmakeup"
 		"table" "tabulate" "text" "textbackground" "typing"
 		"unpacked"
-    ;; project structure
-    "component" "environment" "product" "project"
-    ;; flowcharts, if you have loaded this module
-    "FLOWcell" "FLOWchart"
-    ;; typesetting computer languages
-    "EIFFEL" "JAVA" "JAVASCRIPT" "MP" "PASCAL" "PERL" "SQL" "TEX" "XML"
-    ;; some metapost environments
-    "MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
-    "uniqueMPgraphic"
-    "buffer" "narrower" "tabulate")
+		;; project structure
+		"component" "environment" "product" "project"
+		;; flowcharts, if you have loaded this module
+		"FLOWcell" "FLOWchart"
+		;; typesetting computer languages
+		"EIFFEL" "JAVA" "JAVASCRIPT" "MP" "PASCAL" "PERL" "SQL" "TEX" "XML"
+		;; some metapost environments
+		"MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
+		"uniqueMPgraphic"
+		"buffer" "narrower" "tabulate")
+
+	(TeX-add-symbols
+	 '("but" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+	 '("item" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+	 '("items" (ConTeXt-arg-setup t) (TeX-arg-string "Comma separated list"))
+	 '("its" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+	 '("nop" (TeX-arg-literal " "))
+	 '("ran" TeX-arg-string (TeX-arg-literal " "))
+	 '("sub" ConTeXt-arg-define-ref (TeX-arg-literal " "))
+	 '("sym" (TeX-arg-string "Symbol") (TeX-arg-literal " "))
+	 )
 )
+
 
 ;;; context.el ends here
