@@ -1,4 +1,4 @@
-;;;* Last edited: Apr 30 05:36 1992 (krab)
+;;;* Last edited: Jun 12 21:08 1992 (krab)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; tex-buf.el - Invoking TeX from an inferior shell
@@ -7,12 +7,12 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.13 1992-04-30 03:39:42 krab Exp $
+;; $Id: tex-buf.el,v 1.14 1992-06-12 19:14:25 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Apr 30 05:36:38 1992
-;; Update Count    : 176
+;; Last Modified On: Fri Jun 12 21:08:32 1992
+;; Update Count    : 250
 ;; 
 ;; HISTORY
 ;; 30-Apr-1992		Kresten Krab Thorup	
@@ -102,6 +102,11 @@ TeX-bibtex-command to use on TeX-master-file.")
 (defvar TeX-master-index-command nil "\
 TeX-index-command to use on TeX-master-file.")
 (make-variable-buffer-local 'TeX-index-command)
+
+(defvar TeX-current-page ""
+  "The pagenumber currently being formatted, enclosed in brackets")
+
+
 ;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -153,7 +158,9 @@ TeX-index-command to use on TeX-master-file.")
     (fundamental-mode)
     (setq mode-name mode)
     ;; Make log buffer's mode line show process state
-    (setq mode-line-process '(": %s"))
+    (setq TeX-current-page "[0]")
+    (TeX-update-process-mode-line TeX-process)
+    ;(set-process-filter TeX-process 'TeX-process-filter)
     (goto-char (point-min))))
 
 (defvar TeX-trailer nil
@@ -297,121 +304,121 @@ Then the header/trailer will be searched in <file>."
 	  ;;
 	  ;; Now, append the main body of the document to the file
 	  ;;
-	    
+	  
 	  (write-region (max beg hend) end TeX-out-file t "no msg"))
-
-	  ;;
-	  ;; For the trailer, we'll see if we can find it...
-	  ;;
-	  (save-excursion
-	    (set-buffer master-buffer)
-	    (goto-char end)  ;; end of given region
-	    (cond ((and (not (equal end (point-max)))
-			(search-forward trailer nil t))
-		   (set-buffer temp-buffer)
-		   (erase-buffer)
-		   ;; make sure trailer isn't hidden by a comment
-		   (insert "\n")
-		   (insert trailer)
-		   (set-buffer-directory temp-buffer zap-directory)
-		   (write-region (point-min)
-				 (point-max)
-				 TeX-out-file t "no msg"))
-		  (t
-		   (set-buffer temp-buffer)
-		   (erase-buffer)
-		   ;; make sure trailer isn't hidden by a comment
-		   (insert "\n")
-		   (insert t2)
-		   (set-buffer-directory temp-buffer zap-directory)
-		   (write-region (point-min)
-				 (point-max)
-				 TeX-out-file t "no msg"))))))
-      (setq TeX-start-line (- TeX-start-line TeX-header-lines))
-
-      ;; 
-      ;; And now - go for a run!
-      ;;
-      
-      (message (concat "Running " TeX-command))
-      (let ((TeX-command-with-args (append
-				    (list TeX-command)
-				    (if TeX-args
-					(append
-					 TeX-args
-					 (list TeX-out-file))
-				      (list TeX-out-file)))))
-	(message (apply 'concat TeX-command-with-args))
-
-	(setq TeX-process
-	      (apply 'start-process 
-		     "TeX-run" 
-		     "*TeX-output*" 
-		     TeX-command-with-args)))
-      (with-output-to-temp-buffer "*TeX-output*"))
+	
+	;;
+	;; For the trailer, we'll see if we can find it...
+	;;
+	(save-excursion
+	  (set-buffer master-buffer)
+	  (goto-char end)  ;; end of given region
+	  (cond ((and (not (equal end (point-max)))
+		      (search-forward trailer nil t))
+		 (set-buffer temp-buffer)
+		 (erase-buffer)
+		 ;; make sure trailer isn't hidden by a comment
+		 (insert "\n")
+		 (insert trailer)
+		 (set-buffer-directory temp-buffer zap-directory)
+		 (write-region (point-min)
+			       (point-max)
+			       TeX-out-file t "no msg"))
+		(t
+		 (set-buffer temp-buffer)
+		 (erase-buffer)
+		 ;; make sure trailer isn't hidden by a comment
+		 (insert "\n")
+		 (insert t2)
+		 (set-buffer-directory temp-buffer zap-directory)
+		 (write-region (point-min)
+			       (point-max)
+			       TeX-out-file t "no msg"))))))
+    (setq TeX-start-line (- TeX-start-line TeX-header-lines))
     
-    (TeX-fix-process "Compilation")
-    (setq TeX-new-run t)
-    (setq TeX-start-directory (expand-file-name TeX-directory)))
+    ;; 
+    ;; And now - go for a run!
+    ;;
+    
+    (message (concat "Running " TeX-command))
+    (let ((TeX-command-with-args (append
+				  (list TeX-command)
+				  (if TeX-args
+				      (append
+				       TeX-args
+				       (list TeX-out-file))
+				    (list TeX-out-file)))))
+      (message (apply 'concat TeX-command-with-args))
+      
+      (setq TeX-process
+	    (apply 'start-process 
+		   "TeX-run" 
+		   "*TeX-output*" 
+		   TeX-command-with-args)))
+    (with-output-to-temp-buffer "*TeX-output*"))
   
+  (TeX-fix-process "Compilation")
+  (setq TeX-new-run t)
+  (setq TeX-start-directory (expand-file-name TeX-directory)))
+
 (defun TeX-compilation-sentinel (proc msg)
-    (cond ((null (buffer-name (process-buffer proc)))
-	   ;; buffer killed
-	   (set-process-buffer proc nil))
-	  ((memq (process-status proc) '(signal exit))
-	   (let* ((obuf (current-buffer))
-		  omax opoint)
-	     ;; save-excursion isn't the right thing if
-	     ;;  process-buffer is current-buffer
-	     (unwind-protect
-		 (progn
-		   (set-buffer (process-buffer proc))
-		   (goto-char (point-min))
-		   (cond ((and (or (string= mode-name "Compilation")
-				   (string= mode-name "Formatting"))
-			       (re-search-forward "^! " nil t))
-			  (message
-			   (concat mode-name ": ERRORS                      "
-				   "    (NB: use C-c C-n to display)")))
-			 ((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
-			  (message (concat "You should run LaTeX again"
-					   " to get references right.")))
-			 ((re-search-forward "^LaTeX Warning: Citation" nil t)
-			  (message (concat "You should run BibTeX"
-					   " to get citations right.")))
-			 ((and (or (string= mode-name "Compilation")
-				   (string= mode-name "Formatting"))
-			       (re-search-forward "^LaTeX Version" nil t))
-			  (message
-			   (concat mode-name ": successfully ended.")))
-			 ((string= mode-name "BibTeX")
-			  (message (concat "You should perhaps run LaTeX again"
-					   " to get citations right."))))
-		   
-		   ;; Write something in *compilation* and hack its mode line,
-		   (setq omax (point-max) opoint (point))
-		   (goto-char (point-max))
-		   (insert ?\n mode-name " " msg)
-		   (forward-char -1)
-		   (insert " at "
-			   (substring (current-time-string) 0 -5))
-		   (forward-char 1)
-		   (setq mode-line-process
-			 (concat ": "
-				 (symbol-name (process-status proc))))
-		   ;; If buffer and mode line will show that the process
-		   ;; is dead, we can delete it now.  Otherwise it
-		   ;; will stay around until M-x list-processes.
-		   (delete-process proc)
-		   (setq compilation-process nil)
-		   ;; Force mode line redisplay soon
-		   (set-buffer-modified-p (buffer-modified-p)))
-	       (if (and opoint (< opoint omax))
-		   (goto-char opoint))
-	       (set-buffer obuf))))))
-  
-  (defun TeX-buffer ()
-    "Run TeX on current buffer.  See \\[TeX-region] for more information.
+  (cond ((null (buffer-name (process-buffer proc)))
+	 ;; buffer killed
+	 (set-process-buffer proc nil))
+	((memq (process-status proc) '(signal exit))
+	 (let* ((obuf (current-buffer))
+		omax opoint)
+	   ;; save-excursion isn't the right thing if
+	   ;;  process-buffer is current-buffer
+	   (unwind-protect
+	       (progn
+		 (set-buffer (process-buffer proc))
+		 (goto-char (point-min))
+		 (cond ((and (or (string= mode-name "Compilation")
+				 (string= mode-name "Formatting"))
+			     (re-search-forward "^! " nil t))
+			(message
+			 (concat mode-name ": ERRORS                      "
+				 "    (NB: use C-c C-n to display)")))
+		       ((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
+			(message (concat "You should run LaTeX again"
+					 " to get references right.")))
+		       ((re-search-forward "^LaTeX Warning: Citation" nil t)
+			(message (concat "You should run BibTeX"
+					 " to get citations right.")))
+		       ((and (or (string= mode-name "Compilation")
+				 (string= mode-name "Formatting"))
+			     (re-search-forward "^LaTeX Version" nil t))
+			(message
+			 (concat mode-name ": successfully ended.")))
+		       ((string= mode-name "BibTeX")
+			(message (concat "You should perhaps run LaTeX again"
+					 " to get citations right."))))
+		 
+		 ;; Write something in *compilation* and hack its mode line,
+		 (setq omax (point-max) opoint (point))
+		 (goto-char (point-max))
+		 (insert ?\n mode-name " " msg)
+		 (forward-char -1)
+		 (insert " at "
+			 (substring (current-time-string) 0 -5))
+		 (forward-char 1)
+
+		 (TeX-update-process-mode-line proc)
+		 
+		 ;; If buffer and mode line will show that the process
+		 ;; is dead, we can delete it now.  Otherwise it
+		 ;; will stay around until M-x list-processes.
+		 (delete-process proc)
+		 (setq compilation-process nil)
+		 ;; Force mode line redisplay soon
+		 (set-buffer-modified-p (buffer-modified-p)))
+	     (if (and opoint (< opoint omax))
+		 (goto-char opoint))
+	     (set-buffer obuf))))))
+
+(defun TeX-buffer ()
+  "Run TeX on current buffer.  See \\[TeX-region] for more information.
 This function was heavily modified by gf so that when formatting an
 entire file, it uses the normal auxiliary and output files rather than
 some strange temporary file. Thus, the results are just like running the
@@ -422,155 +429,180 @@ If a line in the first 500 bytes of the buffer is:
 %% Master: <file>
 
 TeX/LaTeX will be run on <file> instead of the current."
-    (interactive)
-    (save-some-buffers)
-    (TeX-test-process)
-    ;; no need to calculate this for whole buffer
-    (setq TeX-start-line 0)
-    (setq TeX-header-lines 0)
-    (save-excursion
-      (goto-char (point-min))
-      (setq TeX-original-file 
-	    (if (re-search-forward 
-		 "^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
-		(buffer-substring (match-beginning 1) (match-end 1))
-	      (file-name-nondirectory buffer-file-name))))
-    (hack-local-variables)
-    (if TeX-master-file
-	(setq TeX-original-file (file-name-nondirectory TeX-master-file)))
-    ;; no temp file needed since we're doing it all
-    (setq TeX-zap-file (substring TeX-original-file 0
-				  (string-match ".[^.]*$" TeX-original-file)))
+  (interactive)
+  (save-some-buffers)
+  (TeX-test-process)
+  ;; no need to calculate this for whole buffer
+  (setq TeX-start-line 0)
+  (setq TeX-header-lines 0)
+  (save-excursion
+    (goto-char (point-min))
+    (setq TeX-original-file 
+	  (if (re-search-forward 
+	       "^%% *[Mm]aster:?[ \t]*\\([^ \t\n]+\\)" 500 t)
+	      (buffer-substring (match-beginning 1) (match-end 1))
+	    (file-name-nondirectory buffer-file-name))))
+  (hack-local-variables)
+  (if TeX-master-file
+      (setq TeX-original-file (file-name-nondirectory TeX-master-file)))
+  ;; no temp file needed since we're doing it all
+  (setq TeX-zap-file (substring TeX-original-file 0
+				(string-match ".[^.]*$" TeX-original-file)))
 ;;; Find out what TeX-command to use
-    (if TeX-master-command
-	(setq TeX-command TeX-master-command))
+  (if TeX-master-command
+      (setq TeX-command TeX-master-command))
 ;;;
-    ;; no header/trailer garbage either
-    (let ((temp-buffer (get-buffer-create " TeX-Output-Buffer"))
-	  (zap-directory
-	   (file-name-as-directory (expand-file-name TeX-directory))))
-      (message (concat "Formatting " TeX-original-file))
-      (let ((TeX-command-with-args (append
-				    (list TeX-command)
-				    (if TeX-args
-					(append
-					 TeX-args
-					 (list "\\nonstopmode{}\\input "
-					       TeX-original-file))
-				      (list
-				       "\\nonstopmode{}\\input "
-				       TeX-original-file)))))
-	(setq TeX-process
-	      (apply 'start-process 
-		     "TeX-run" 
-		     "*TeX-output*" 
-		     TeX-command-with-args)))
-      (with-output-to-temp-buffer "*TeX-output*"))
-    (TeX-fix-process "Formatting")
-    (setq TeX-new-run t)
-    (setq TeX-start-directory (expand-file-name TeX-directory))
-    )
-  
-  (defun TeX-kill-job ()
-    "Kill the currently running TeX job."
-    (interactive)
-    (quit-process (process-name TeX-process) t))
-  
-  (defun TeX-recenter-output-buffer (linenum)
-    "Redisplay buffer of TeX job output so that most recent output can be seen.
+  ;; no header/trailer garbage either
+  (let ((temp-buffer (get-buffer-create " TeX-Output-Buffer"))
+	(zap-directory
+	 (file-name-as-directory (expand-file-name TeX-directory))))
+    (message (concat "Formatting " TeX-original-file))
+    (let ((TeX-command-with-args (append
+				  (list TeX-command)
+				  (if TeX-args
+				      (append
+				       TeX-args
+				       (list "\\nonstopmode{}\\input "
+					     TeX-original-file))
+				    (list
+				     "\\nonstopmode{}\\input "
+				     TeX-original-file)))))
+      (setq TeX-process
+	    (apply 'start-process 
+		   "TeX-run" 
+		   "*TeX-output*" 
+		   TeX-command-with-args)))
+    (with-output-to-temp-buffer "*TeX-output*"))
+  (TeX-fix-process "Formatting")
+  (setq TeX-new-run t)
+  (setq TeX-start-directory (expand-file-name TeX-directory))
+  )
+
+(defun TeX-kill-job ()
+  "Kill the currently running TeX job."
+  (interactive)
+  (quit-process (process-name TeX-process) t))
+
+(defun TeX-recenter-output-buffer (linenum)
+  "Redisplay buffer of TeX job output so that most recent output can be seen.
 The last line of the buffer is displayed on
 line LINE of the window, or at bottom if LINE is nil."
-    (interactive "P")
-    (let ((TeX-shell (get-buffer "*TeX-output*"))
-	  (old-buffer (current-buffer)))
-      (if (null TeX-shell)
-	  (message "No TeX output buffer")
-	(pop-to-buffer TeX-shell)
-	(bury-buffer TeX-shell)
-	(goto-char (point-max))
-	(recenter (if linenum
-		      (prefix-numeric-value linenum)
-		    (/ (window-height) 2)))
-	(pop-to-buffer old-buffer)
-	)))
-  
-  (defun TeX-preview ()
-    "Preview the .dvi file made by \\[TeX-region] or \\[TeX-buffer]."
-    (interactive)
-    
-    (if (and (not TeX-original-file)
-	     (buffer-file-name))
-	(setq TeX-original-file (buffer-file-name)))
+  (interactive "P")
+  (let ((TeX-shell (get-buffer "*TeX-output*"))
+	(old-buffer (current-buffer)))
+    (if (null TeX-shell)
+	(message "No TeX output buffer")
+      (pop-to-buffer TeX-shell)
+      (bury-buffer TeX-shell)
+      (goto-char (point-max))
+      (recenter (if linenum
+		    (prefix-numeric-value linenum)
+		  (/ (window-height) 2)))
+      (pop-to-buffer old-buffer)
+      )))
 
-    (TeX-test-process)
-    
+(defun TeX-process-filter (proc str)
+  (let ((cur (selected-window))
+	(pos))
+    (set-buffer (process-buffer proc))
+    (goto-char (point-max))
+    (insert str)
+    (save-excursion
+      (cond ((re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
+	     (setq TeX-current-page
+		   (buffer-substring (match-beginning 0)
+				     (match-end 0)))
+	     (TeX-update-process-mode-line proc)
+	     ;; Return to last position
+	     (goto-char (point-max)))))
+    (set-buffer-modified-p (buffer-modified-p))
+    (select-window cur)))
+
+(defun TeX-update-process-mode-line (proc)
+  (setq mode-line-process (concat ;; TeX-current-page
+			   ": "
+				  (symbol-name
+				   (process-status proc))))
+  ;; Force mode line redisplay soon
+  (set-buffer-modified-p (buffer-modified-p)))
+
+(defun TeX-preview ()
+  "Preview the .dvi file made by \\[TeX-region] or \\[TeX-buffer]."
+  (interactive)
+  
+  (if (and (not TeX-original-file)
+	   (buffer-file-name))
+      (setq TeX-original-file (buffer-file-name)))
+  
+  (TeX-test-process)
+  
 ;;; Find out what preview command to use
-    (hack-local-variables)
-    (if TeX-master-preview-command
-	(setq TeX-preview-command TeX-master-preview-command)
-      (let ((alist TeX-preview-alist)
-	    (do-search t))
+  (hack-local-variables)
+  (if TeX-master-preview-command
+      (setq TeX-preview-command TeX-master-preview-command)
+    (let ((alist TeX-preview-alist)
+	  (do-search t))
       (save-excursion
 	(save-restriction
-	    (set-buffer (find-file-noselect TeX-original-file))
+	  (set-buffer (find-file-noselect TeX-original-file))
 	  (widen)
 	  (goto-char (point-min))
-	    (while (and do-search alist)
-	      (if (not (re-search-forward (car (car alist)) (point-max) t))
-		  (setq alist (cdr alist))	; try next regexp
-		(setq do-search nil))))) ; found one, quit master-buffer
-	(if alist			; we have a match, set
-	    (setq TeX-preview-command (symbol-value (cdr (car alist)))))))
+	  (while (and do-search alist)
+	    (if (not (re-search-forward (car (car alist)) (point-max) t))
+		(setq alist (cdr alist))	; try next regexp
+	      (setq do-search nil))))) ; found one, quit master-buffer
+      (if alist			; we have a match, set
+	  (setq TeX-preview-command (symbol-value (cdr (car alist)))))))
 ;;;
-    (let ((command (concat TeX-preview-command " " TeX-zap-file ".dvi")))
-      
-      (process-kill-without-query
-       (apply 'start-process
-	      "preview"
-	      "*TeX-output*"
-	      (split-string " " command)))
-      
-      (with-output-to-temp-buffer "*TeX-output*"
-	(princ (format "Started %s; process is \"preview\"\n" command)))))
-  
-  (defun TeX-print ()
-    "Print the .dvi file made by \\[TeX-region] or \\[TeX-buffer].
+  (let ((command (concat TeX-preview-command " " TeX-zap-file ".dvi")))
+    
+    (process-kill-without-query
+     (apply 'start-process
+	    "preview"
+	    "*TeX-output*"
+	    (split-string " " command)))
+    
+    (with-output-to-temp-buffer "*TeX-output*"
+      (princ (format "Started %s; process is \"preview\"\n" command)))))
+
+(defun TeX-print ()
+  "Print the .dvi file made by \\[TeX-region] or \\[TeX-buffer].
 This command will not work under bash"
-    (interactive)
+  (interactive)
+  
+  (TeX-test-process)
+  
+  (let ((TeX-printer-name
+	 (completing-read
+	  (concat "Printer: (default "
+		  TeX-default-printer-name
+		  ") ")
+	  TeX-printer-name-alist))
+	(Options (read-from-minibuffer "Other printer options:")))
+    (if (string= TeX-printer-name "")
+	(setq TeX-printer-name TeX-default-printer-name))
     
-    (TeX-test-process)
+    ;; 23/01/91 (krab)
+    ;; Let the last selected be the default from now on...
+    (setq TeX-default-printer-name TeX-printer-name)
     
-    (let ((TeX-printer-name
-	   (completing-read
-	    (concat "Printer: (default "
-		    TeX-default-printer-name
-		    ") ")
-	    TeX-printer-name-alist))
-	  (Options (read-from-minibuffer "Other printer options:")))
-      (if (string= TeX-printer-name "")
-	  (setq TeX-printer-name TeX-default-printer-name))
+    (let ((command (concat TeX-print-command
+			   " -P" TeX-printer-name
+			   (if (not (equal Options ""))
+			       (concat " " Options))
+			   " " TeX-zap-file ".dvi")))
       
-      ;; 23/01/91 (krab)
-      ;; Let the last selected be the default from now on...
-      (setq TeX-default-printer-name TeX-printer-name)
-      
-      (let ((command (concat TeX-print-command
-			     " -P" TeX-printer-name
-			     (if (not (equal Options ""))
-				 (concat " " Options))
-			     " " TeX-zap-file ".dvi")))
-	
-	(cond ((y-or-n-p (concat "PRINT: "
-				 command
-				 "  sure? "))
-	       (setq TeX-process
+      (cond ((y-or-n-p (concat "PRINT: "
+			       command
+			       "  sure? "))
+	     (setq TeX-process
 		   (apply 'start-process 
 			  "printing"
 			  "*TeX-output*"
 			  (split-string " " command)))
 	     (with-output-to-temp-buffer "*TeX-output*"
 	       (princ (format "Started %s; process is \"printing\"\n" command)))
-
+	     
 	     (TeX-fix-process "printing"))))))
 
 (defun LaTeX-bibtex ()

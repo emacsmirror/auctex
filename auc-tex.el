@@ -1,4 +1,4 @@
-;;;* Last edited: Apr 30 05:38 1992 (krab)
+;;;* Last edited: Jun 12 20:55 1992 (krab)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -10,17 +10,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-04-30 03:39:39 $|$Revision: 5.32 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-06-12 19:14:21 $|$Revision: 5.33 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.32 1992-04-30 03:39:39 krab Exp $
+;; $Id: auc-tex.el,v 5.33 1992-06-12 19:14:21 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Apr 30 05:38:05 1992
-;; Buffer Position : 2202
-;; Update Count    : 520
+;; Last Modified On: Fri Jun 12 20:55:15 1992
+;; Buffer Position : 33391
+;; Update Count    : 597
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -177,6 +177,9 @@
 
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
+
+(defvar TeX-display-copyright-message t
+  "Display AUC TeX copyright message at TeX/LaTeX mode invocation")
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Autoload modules
@@ -405,7 +408,7 @@ of plain-TeX-mode-hook."
 	 "begin\\|end\\|label\\|caption\\|part\\|chapter\\|"
 	 "section\\|subsection\\|subsubsection\\|"
 	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix"
+	 "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
 	 "\\)"
 	 "\\)"))
   (setq comment-start-skip
@@ -429,7 +432,10 @@ of plain-TeX-mode-hook."
 		TeX-grop TeX-auto-trailer TeX-grcl
 		TeX-grop TeX-grcl))
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
-  (message "AUC TeX TeX mode -- Copyright (C) 1992 Kresten Krab Thorup"))
+  (if TeX-display-copyright-message
+      (progn
+	(message "AUC TeX TeX mode -- Copyright (C) 1992 Kresten Krab Thorup")
+	(setq TeX-display-copyright-message nil))))
 
 (defun latex-mode ()
   "Major mode for editing files of input for LaTeX.
@@ -532,7 +538,7 @@ of LaTeX-mode-hook."
 	 "begin\\|end\\|part\\|chapter\\|label\\|caption\\|"
 	 "section\\|subsection\\|subsubsection\\|"
 	 "paragraph\\|include\\|includeonly\\|"
-	 "tableofcontents\\|appendix"
+	 "tableofcontents\\|appendix\\|" (regexp-quote TeX-esc)
 	 "\\)"
 	 "\\)"))
   (setq comment-start-skip
@@ -559,7 +565,10 @@ of LaTeX-mode-hook."
 		TeX-grop TeX-grcl))
   (setq indent-tabs-mode nil)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
-  (message "AUC TeX LaTeX mode -- Copyright (C) 1992 Kresten Krab Thorup"))
+  (if TeX-display-copyright-message
+      (progn 
+	(message "AUC TeX LaTeX mode -- Copyright (C) 1992 Kresten Krab Thorup")
+	(setq TeX-display-copyright-message nil))))
 
 (defun TeX-common-initialization ()
   "Initialization common to TeX and LaTeX modes."
@@ -671,26 +680,83 @@ LaTeX-item-indent."
   (if (< (current-column) (calculate-LaTeX-indentation))
       (back-to-indentation)))
 
+(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
+  "Fill region as one paragraph: break lines to fit fill-column.
+Prefix arg means justify too.
+From program, pass args FROM, TO and JUSTIFY-FLAG."
+  (interactive "r\nP")
+  (save-restriction
+    (goto-char from)
+    (skip-chars-forward " \n")
+    (LaTeX-indent-line)
+    (beginning-of-line)
+    (narrow-to-region (point) to)
+    (setq from (point))
+
+    ;; from is now before the text to fill,
+    ;; but after any fill prefix on the first line.
+
+    ;; Make sure sentences ending at end of line get an extra space.
+    (goto-char from)
+    (while (re-search-forward "[.?!][])""']*$" nil t)
+      (insert ? ))
+    ;; The change all newlines to spaces.
+    (subst-char-in-region from (point-max) ?\n ?\ )
+    ;; Flush excess spaces, except in the paragraph indentation.
+    (goto-char from)
+    (skip-chars-forward " \t")
+    (while (re-search-forward "   *" nil t)
+      (delete-region
+       (+ (match-beginning 0)
+	  (if (save-excursion
+	       (skip-chars-backward " ])\"'")
+	       (memq (preceding-char) '(?. ?? ?!)))
+	      2 1))
+       (match-end 0)))
+    (goto-char (point-max))
+    (delete-horizontal-space)
+    (insert "  ")
+    (goto-char (point-min))
+    (let ((prefixcol 0))
+      (while (not (eobp))
+	(move-to-column (1+ fill-column))
+	(if (eobp)
+	    nil
+	  (skip-chars-backward "^ \n")
+	  (if (if (zerop prefixcol)
+		  (bolp)
+		(>= prefixcol (current-column)))
+	      (skip-chars-forward "^ \n")
+	    (forward-char -1)))
+	(delete-horizontal-space)
+	(if (equal (preceding-char) ?\\)
+	    (insert ? ))
+	(insert ?\n)
+	(LaTeX-indent-line)
+	(setq prefixcol (current-column))
+	(and justify-flag (not (eobp))
+	     (progn
+	       (forward-line -1)
+	       (justify-current-line)
+	       (forward-line 1)))
+	)
+      (goto-char (point-max))
+      (delete-horizontal-space))))
+
+
 (defun LaTeX-format-paragraph (prefix)
 "Fill and indent paragraph at or after point.
 Prefix arg means justify as well."
   (interactive "P")
-  (let ((where (point))
-	(word (progn
-		(re-search-forward "[^ \t]")
-		(buffer-substring (match-beginning 0)
-				  (match-end 0)))))
-    (goto-char where)
-    (save-excursion
-      (LaTeX-indent-line)
-      (let ((indent-val (calculate-LaTeX-indentation)))
-	(mark-paragraph)
-	(setq fill-column (- fill-column indent-val))
-	(fill-paragraph prefix)
-	(indent-region (region-beginning) (region-end) nil)
-	(setq fill-column (+ fill-column indent-val))))
-    (search-forward word)
-    (backward-char)))
+  (save-excursion
+    (beginning-of-line)
+    (forward-paragraph)
+    (or (bolp) (newline 1))
+    (let ((end (point-marker))
+	  (start (progn
+		   (backward-paragraph)
+		   (point))))
+      (LaTeX-fill-region-as-paragraph start end prefix))))
   
 (defun LaTeX-format-region (from to &optional justify what)
  "Fill and indent each of the paragraphs in the region as LaTeX text.
@@ -710,8 +776,11 @@ formatting."
 		       ""
 		     what)
 		   (/ (* 100 (- (point) from)) length))
-	  (LaTeX-format-paragraph justify)
-	  (re-search-forward (concat "\\(" LaTeX-paragraph-start-command "\\|^ +$\\|\\'\\)" ) (point-max) t)))))
+	  (save-excursion (LaTeX-format-paragraph justify))
+	  (re-search-forward (concat "\\("
+				     LaTeX-paragraph-start-command
+				     "\\|^ +$\\|\\'\\)" )
+			     (point-max) t)))))
   (message "Finished"))
 
 (defun LaTeX-find-matching-end ()
@@ -725,7 +794,7 @@ formatting."
 	(setq level (1- level))))
     (if (= level 0)
 	(search-forward "}")
-      (error "Can't locate current environment - end"))))
+      (error "Can't locate end of current environment"))))
 
 (defun LaTeX-find-matching-begin ()
   "Move point to the \\begin of the current environment"
@@ -737,7 +806,7 @@ formatting."
 	  (setq level (1+ level))
 	(setq level (1- level))))
     (or (= level 0)
-	(error "Can't locate current environment - begin"))))
+	(error "Can't locate beginning of current environment"))))
 
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
@@ -819,22 +888,60 @@ comments and verbatim environments"
 	  (t (calculate-normal-LaTeX-indentation)))))
 
 (defun calculate-normal-LaTeX-indentation ()
-  "Return the correct indentation of a normal line of text."
+  "Return the correct indentation of a normal line of text.
+The point is supposed to be at the beginning of the current line."
   (skip-chars-backward "\n\t ")
   (move-to-column (current-indentation))
-  (cond ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
-	 ;; I dislike having all of the document indented...
-	 (current-indentation))
-	((looking-at (concat (regexp-quote TeX-esc) "begin"
-			     (regexp-quote TeX-grop)
-			     "verbatim"))
-	 0)
-	((looking-at (concat (regexp-quote TeX-esc) "begin"
-			     (regexp-quote TeX-grop)))
-	 (+ (current-indentation) LaTeX-indent-level))
-	((looking-at (concat (regexp-quote TeX-esc) "item\\W"))
-	 (- (current-indentation) LaTeX-item-indent))
-	(t (current-indentation))))
+  (let ((balance (TeX-brace-count-line)))
+    (cond ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
+	   ;; I dislike having all of the document indented...
+	   (current-indentation))
+	  ((looking-at (concat (regexp-quote TeX-esc) "begin"
+			       (regexp-quote TeX-grop)
+			       "verbatim"))
+	   0)
+	  (t (+ (TeX-brace-count-line)
+		(cond 
+		 ((looking-at (concat (regexp-quote TeX-esc) "begin"
+				      (regexp-quote TeX-grop)))
+		  (+ (current-indentation) LaTeX-indent-level))
+		 ((looking-at (concat (regexp-quote TeX-esc) "item\\W"))
+		  (- (current-indentation) LaTeX-item-indent))
+		 (t (current-indentation))))))))
+
+(defun TeX-brace-count-line ()
+  "Count number of open/closed braces."
+  (if (looking-at "%")
+      0
+    (save-excursion
+      (save-restriction
+	(let ((count 0))
+	  (narrow-to-region (point)
+			    (save-excursion
+			      (re-search-forward "[^\\\\]%\\|\n\\|\\'")
+			      (backward-char)
+			      (point)))
+
+	  (if (looking-at "\\({\\|}\\)")
+	    (if (string= "{" (buffer-substring (match-beginning 1)
+					       (match-end 1)))
+		(setq count (+ TeX-quote-indent-level count))
+	      (setq count (- count TeX-quote-indent-level))))
+	      
+	  (while (re-search-forward "[^\\\\]\\({\\|}\\)" nil t)
+	    (if (string= "{" (buffer-substring (match-beginning 1)
+					       (match-end 1)))
+		(setq count (+ TeX-quote-indent-level count))
+	      (setq count (- count TeX-quote-indent-level)))
+	    (if (looking-at "\\({\\|}\\)")
+		(if (string= "{" (buffer-substring (match-beginning 1)
+						   (match-end 1)))
+		    (setq count (+ TeX-quote-indent-level count))
+		  (setq count (- count TeX-quote-indent-level)))))
+	  count)))))
+
+(defvar TeX-quote-indent-level 2
+  "*The level of indentation produced by a open brace")
 
 (defun TeX-comment-indent ()
   (if (looking-at "%%%")
