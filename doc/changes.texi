@@ -79,9 +79,10 @@ size.
 
 @item
 Support for @code{alphanum.sty}, @code{beamer.cls}, @code{booktabs.sty},
-@code{captcont.sty}, @code{emp.sty}, @code{paralist.sty} and
-@code{subfigure.el} was added.  Credits go to the authors mentioned in
-the respective @AUCTeX{} style files.
+@code{captcont.sty}, @code{emp.sty}, @code{paralist.sty},
+@code{subfigure.sty} and @code{units.sty}/@code{nicefrac.sty} was added.
+Credits go to the authors mentioned in the respective @AUCTeX{} style
+files.
 
 @item
 Inserting graphics with @kbd{C-c RET \includegraphics RET} was improved.

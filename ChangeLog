@@ -1,3 +1,12 @@
+2004-08-13  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Changes to --prefix and --with-auto-dir,
+	partly by Christian Schlauer.
+
+	* doc/changes.texi, style/units.el, style/nicefrac.el,
+	Makefile.in: Add contributed styles for units.sty and
+	nicefrac.sty from Christian Schlauer.
+
 2004-08-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-unspec-use-name): New variable.
