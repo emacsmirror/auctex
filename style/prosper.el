@@ -62,7 +62,7 @@
 
 
 (defconst LaTeX-prosper-version
-  "$Id: prosper.el,v 1.2 2002-11-25 14:35:23 abraham Exp $"
+  "$Id: prosper.el,v 1.3 2004-05-10 09:04:14 angeli Exp $"
   "prosper.el version.")
 
 (defconst LaTeX-prosper-transition-styles '("Split"
@@ -140,7 +140,7 @@
              (if (search-backward "{" 0 t) 
                  (progn 
                    (goto-char (+ 1 (point))) 
-                   (insert "%"))))) 
+                   (insert "%\n"))))) 
   (let ((title (read-input "Title: "))) 
     (LaTeX-insert-environment "slide" (concat TeX-grop title TeX-grcl)))) 
 
