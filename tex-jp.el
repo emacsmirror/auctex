@@ -33,16 +33,16 @@
 
 (defvar japanese-TeX-command-list
   (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t t)
+	      'TeX-run-TeX nil t)
 	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil 'latex t)
+	      'TeX-run-LaTeX nil 'latex)
 	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
-	      'TeX-run-TeX nil t t)
+	      'TeX-run-TeX nil t)
 	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
-	      'TeX-run-LaTeX nil 'latex t)
-	(list "Mendex" "mendex %s" 'TeX-run-command nil nil t)
-	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil nil)
-        (list "-" "" nil nil nil nil))
+	      'TeX-run-LaTeX nil 'latex)
+	(list "Mendex" "mendex %s" 'TeX-run-command nil nil)
+	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil)
+        (list "-" "" nil nil nil))
   "Additional list of commands to execute in japanese-LaTeX-mode")
 
 (setq TeX-command-list
