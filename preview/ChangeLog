@@ -1,3 +1,7 @@
+2002-04-18  David Kastrup  <David.Kastrup@t-online.de>
+	* preview.el (preview-dsc-parse): Newly written for better error
+	messages and more acribic adherence to DSC conventions.
+
 2002-04-17  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-supports-image-type):
