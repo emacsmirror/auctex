@@ -2,6 +2,8 @@
 
 	* latex.el (LaTeX-indent-line): Use XEmacs' functions to deal with
 	extents/overlays.  Avoids dependence on overlay.el.
+	(LaTeX-fill-region-as-paragraph): Inhibit filling of "Local
+	Variables" section, if to be filled as a paragraph.
 
 	* style/url.el: Add some (low-level) symbols for completion and
 	fontification.
