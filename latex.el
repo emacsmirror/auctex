@@ -537,25 +537,6 @@ It may be customized with the following variables:
       (beginning-of-line)))
   (indent-according-to-mode))
 
-(autoload 'outline-flag-region "outline")
-
-(defun LaTeX-hide-environment ()
-  "Hide current LaTeX environment using selective display."
-  (interactive)
-  (outline-flag-region (save-excursion (LaTeX-find-matching-begin) (point))
-		       (save-excursion (LaTeX-find-matching-end) (point))
-		       (if (featurep 'noutline) t ?\r)))
-
-(unless (widget-plist-member (symbol-plist 'LaTeX-hide-environment) 'disabled)
-  (put 'LaTeX-hide-environment 'disabled t))
-
-(defun LaTeX-show-environment ()
-  "Show current LaTeX environment."
-  (interactive)
-  (outline-flag-region (save-excursion (LaTeX-find-matching-begin) (point))
-		       (save-excursion (LaTeX-find-matching-end) (point))
-		       (if (featurep 'noutline) nil ?\n)))
-
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert ENVIRONMENT of type ENV, with optional argument EXTRA."
   (if (and (TeX-active-mark)
@@ -3914,19 +3895,6 @@ commands are defined:
     (define-key map "\C-c]" 'LaTeX-close-environment)
     (define-key map "\C-c\C-s" 'LaTeX-section)
 
-    ;; Outline commands...
-    ;; We want to use the right prefix, if possible.
-    (let ((outline (cond ((not (boundp 'outline-minor-mode-prefix))
-			  (lookup-key map "\C-c"))
-			 ((keymapp (lookup-key map outline-minor-mode-prefix))
-			  (lookup-key map outline-minor-mode-prefix))
-			 (t
-			  (define-key map
-			    outline-minor-mode-prefix (make-sparse-keymap))
-			  (lookup-key map outline-minor-mode-prefix)))))
-      (define-key outline "\C-z" 'LaTeX-hide-environment)
-      (define-key outline "\C-x" 'LaTeX-show-environment))
-
     (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
 
     map)
@@ -4121,19 +4089,20 @@ the last entry in the menu."
 	      ["Beginning of Environment" LaTeX-find-matching-begin t]
 	      ["End of Environment" LaTeX-find-matching-end t])
 	(list "Show/Hide"
-	      ["Macro Fold Mode" TeX-fold-mode
+	      ["Fold Mode" TeX-fold-mode
 	       :style toggle :selected TeX-fold-mode]
-	      ["Hide All Macros" TeX-fold-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-o"]
-	      ["Show All Macros" TeX-fold-remove-all-overlays
-	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      "-"
+	      ["Hide All" TeX-fold-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-b"]
 	      ["Hide Current Macro" TeX-fold-macro
-	       :active TeX-fold-mode :keys "C-c C-o C-c"]
-	      ["Show Current Macro" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-m"]
+	      ["Hide Current Environment" TeX-fold-env
 	       :active TeX-fold-mode :keys "C-c C-o C-e"]
 	      "-"
-	      ["Hide Environment" LaTeX-hide-environment t]
-	      ["Show Environment" LaTeX-show-environment t])
+	      ["Show All" TeX-fold-clearout-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-x"]
+	      ["Show Current Item" TeX-fold-clearout-item
+	       :active TeX-fold-mode :keys "C-c C-o C-c"])
 	(list "Miscellaneous"
 	      ["Math Mode" LaTeX-math-mode
 	       :style toggle :selected LaTeX-math-mode ]
