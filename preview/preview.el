@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.242 2005-03-18 08:29:12 dak Exp $
+;; $Id: preview.el,v 1.243 2005-03-18 18:24:13 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2010,7 +2010,7 @@ not use in advice."
 		#'identity
 		(cons
 		 ""
-		 (preview-counter-find begin))
+		 (preview-counter-find (symbol-value 'begin)))
 		"\\setcounter"))
 	  TeX-region-extra)))
     ad-do-it))
@@ -3291,7 +3291,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.242 $"))
+	(rev "$Revision: 1.243 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3302,7 +3302,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-18 08:29:12 $"))
+    (let ((date "$Date: 2005-03-18 18:24:13 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

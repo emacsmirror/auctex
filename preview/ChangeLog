@@ -1,5 +1,8 @@
 2005-03-18  David Kastrup  <dak@gnu.org>
 
+	* preview.el (TeX-region-create): Try shutting up the byte
+	compiler at load time.
+
 	* doc/install.texi: Mention that "the usual procedure" is for
 	site-wide installation.
 	(Advice for package providers): Mention site-start.el.
