@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.382 $"))
+	(rev "$Revision: 5.383 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-04 15:25:12 $"))
+    (let ((date "$Date: 2004-06-07 20:40:37 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3073,6 +3073,15 @@ is given, do not move point to a position less than this value."
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-min)))
   (TeX-forward-comment-skip (- count) limit))
+
+(defun TeX-comment-padding-string ()
+  "Return  comment padding as a string.
+The variable `comment-padding' can hold an integer or a string.
+This function will return the appropriate string representation
+regardless of its data type."
+  (if (integerp comment-padding)
+      (make-string comment-padding ? )
+    comment-padding))
 
 
 ;;; Indentation
