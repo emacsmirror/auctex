@@ -1,5 +1,22 @@
 2001-10-02  David Kastrup  <dakas@users.sourceforge.net>
 
+        * release 0.5
+
+	* PROBLEMS: Completed summary of patches and made an outline-mode file.
+
+	* INSTALL:
+	Gearing up for a release.  Last modifications and clarifications.
+
+	* preview.el:
+	Lots of cleanups for getting to release quality.  Made good error
+	reporting with things masquerading as actual GhostScript sessions,
+	including command line, prompt, messages, the works.
+
+	Removed preview-gs-urgent which actually has never been anything
+	but the front of preview-gs-queue.
+
+	* TODO: Some more wishes.
+
 	* preview.el: Make active error display.
 
 	* preview.el:
