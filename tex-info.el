@@ -160,7 +160,7 @@ When called interactively, prompt for an environment."
   Texinfo-mode-map
   "Menu used in Texinfo mode."
   (TeX-menu-with-help
-   '("Texinfo"
+   `("Texinfo"
      ["Node ..." texinfo-insert-@node
       :help "Insert a node"]
      ["Macro ..." TeX-insert-macro
@@ -208,29 +208,7 @@ When called interactively, prompt for an environment."
       ["Comment or Uncomment Paragraph"
        TeX-comment-or-uncomment-paragraph
        :help "Comment or uncomment the current paragraph"])
-     ("Show/Hide"
-      ["Fold Mode" TeX-fold-mode
-       :style toggle
-       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :help "Toggle folding mode"]
-      "-"
-      ["Hide All" TeX-fold-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-b"
-       :help "Hide all configured TeX constructs in the current buffer"]
-      ["Hide Current Macro" TeX-fold-macro
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-m"
-       :help "Hide the LaTeX macro containing point"]
-      "-"
-      ["Show All" TeX-fold-clearout-buffer
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-x"
-       :help "Permanently show all folded content again"]
-      ["Show Current Item" TeX-fold-clearout-item
-       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-       :keys "C-c C-o C-c"
-       :help "Permanently show the item containing point"])
+     ,TeX-fold-menu
      "-"
      ("Multifile/Parsing"
       ["Switch to Master File" TeX-home-buffer
