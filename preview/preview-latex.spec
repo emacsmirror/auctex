@@ -65,10 +65,7 @@ install-info --info-dir=%{_infodir} --delete \
 
 %files
 %defattr(-,root,root)
-%dir %{_datadir}/texmf/tex/latex/preview
-%config %{_datadir}/texmf/tex/latex/preview/prauctex.cfg
-%{_datadir}/texmf/tex/latex/preview/prauctex.def
-%{_datadir}/texmf/tex/latex/preview/preview.sty
+%{_datadir}/texmf/tex/latex/preview
 %{_datadir}/texmf/doc/latex/styles/preview.dvi
 %{_datadir}/emacs/site-lisp/preview
 %{_datadir}/emacs/site-lisp/site-start.d/preview-latex.el 
@@ -78,6 +75,9 @@ install-info --info-dir=%{_infodir} --delete \
 %doc patches
 
 %changelog
+* Sun Mar 31 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+- Prepare for 0.7
+
 * Sun Mar 10 2002 David Kastrup <David.Kastrup@t-online.de>
 - Prepare for 0.6.1
 
