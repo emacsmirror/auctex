@@ -1,3 +1,8 @@
+2004-08-03  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Change Source Special description and a few other
+	things.
+
 2004-08-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-expand-list): New %cS expander for

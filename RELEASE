@@ -48,17 +48,14 @@ commands and a few other goodies.
 ConTeXt is a supported format now.
 
 Syntax highlighting has become smarter and supports sub- and
-superscripts.  Forward search support for viewers using Source
-specials can be toggled with C-c C-t C-s and is made more convenient
-by the new C-c C-v keybinding shortcut that immediately starts or
-notifies the viewer without prompting.  Inverse search using
-emacsclient or gnuclient still requires setting appropriate
-environment variables or command lines and starting the respective
-server.
+superscripts.  Inverse and forward search work out of the box with
+viewers supporting Source.  Their use can be toggled with C-c C-t C-s
+and is made more convenient by the new C-c C-v viewer shortcut.  For
+inverse search, emacsclient or gnuclient are used if available.
 
 The menus have been reorganized and cleaned up (and you'll see a few
 changes and additions in keybindings there), and the Command menu will
 now only offer commands relevant to the current major mode.
 
 A new autoconf-based installation makes configuring and installing
-AUCTeX into a mostly automatic process.
+AUCTeX a mostly automatic process.
