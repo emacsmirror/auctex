@@ -61,10 +61,10 @@ CP = cp -p
 
 SHELL = /bin/sh
 
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+FTPDIR = /home/tmp/auctex-ftp
 #FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
-WWWDIR = $(HOME)/.public_html/auctex
+WWWDIR = /home/tmp/auctex-www
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
 REMOVE =  MSDOS VMS OS2 WIN-NT
@@ -175,8 +175,6 @@ dist:
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
-	rm -f $(WWWDIR)/version
-	echo $(TAG) > $(WWWDIR)/version
 	perl -pi.bak -e "s/Version: $(OLD)/Version: $(TAG)/" \
 	    $(AUCSRC) $(EXTRAFILES)
 	mv ChangeLog ChangeLog.old
@@ -192,11 +190,6 @@ dist:
 	sed -e '/defconst AUC-TeX-date/s/"[^"]*"/"'"`date`"'"/' \
 	    -e '/defconst AUC-TeX-version/s/"[^"]*"/"'$(TAG)'"/' \
 	    < tex.el.orig > tex.el
-	rm -f $(REMOVE) 
-	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) $(EXTRAFILES)
-	-(cd doc; auc add `echo $(DOCFILES) | sed -e s@doc/@@g` )
-	-(cd style; auc add `echo $(STYLESRC) | sed -e s@style/@@g` )
 	cvs commit -m 'Release_$(TAG)'
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
@@ -215,16 +208,7 @@ dist:
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
-	-zip -r $(FTPDIR)/auctex auctex-$(TAG)
-	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
-#	diff -u auctex-$(OLD) auctex-$(TAG) > \
-#		$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch; exit 0
-#	cvs diff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
-#	         -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
-#		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
-#	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
-#	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
-#		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
+	-zip -r $(FTPDIR)/auctex-$(TAG) auctex-$(TAG)
 
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) > \
