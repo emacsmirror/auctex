@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.141 2002-04-29 19:45:07 jalar Exp $
+;; $Id: preview.el,v 1.142 2002-04-30 09:41:26 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -966,12 +966,11 @@ Returns non-NIL if called by one of the commands in LIST."
   (interactive)
   (save-excursion 
     (goto-char (point-min))
-    ;; If \begin{document} is found point is put just after it,
-    ;; otherwise point remains as point-min.  Fragile wrt
-    ;; %\begin{document}, just like LaTeX-find-matching-begin
-    (search-forward "\\begin{document}" nil t)
+    ;; Exclude header. Included again in `TeX-region-create', which
+    ;; puts a correct !offset _after_ \begin{document} to cooperate
+    ;; with format caching.
+    (re-search-forward TeX-header-end nil t)
     (preview-region (point) (point-max))))
-;;  (preview-region (point-min) (point-max)))
 
 (defun preview-document ()
   "Run preview on master document."
@@ -2014,7 +2013,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.141 $"))
+	(rev "$Revision: 1.142 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2025,7 +2024,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-29 19:45:07 $"))
+    (let ((date "$Date: 2002-04-30 09:41:26 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
