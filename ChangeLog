@@ -8,6 +8,40 @@
 	(TeX-mode-specific-command-menu-entries): Move source specials
 	toggle up to first level of command menu.
 
+2004-05-12  Davide G. M. Salvetti  <salve@debian.org>
+
+	* aclocal.m4 (AUTO_DIR): New function.
+
+	* configure.in: Use `AUTO_DIR' to expand `@autodir@' in
+	`tex-site.el.in'.
+
+	* Makefile.in (autodir): Use `@autodir@'.
+
+	* tex-site.el.in (TeX-auto-global): Definition moved from
+	`tex.el'.  Use `@autodir@'.
+
+	* tex.el (TeX-auto-global): Definition moved to `tex-site.el.in'.
+
+	* lpath.el: Bind `TeX-auto-global'.
+
+	* style/italian.el: New file.
+
+	* doc/auc-tex.texi (Font Specifiers): Removed two sentences
+	referring to the old behavior of the short-cuts for easy
+	insertions of fonts changing macros.  (At that time they added
+	things like `{\it --!--}', now they add things like
+	`\textit{--!--}'.)
+	(Marking and formatting): Reflect renaming of
+	`LaTeX-format-comment-syntax-aware' to `LaTeX-syntactic-comments'.
+	(European): Document `italian.el'.
+
+	* Makefile.in (STYLESRC): Added `italian.el'.
+
+	* lpath.el: Bind `TeX-macro-global'.
+
+	* tex.el: No need to `(require 'tex-site)' at compilation time,
+	see `lpath.el'.
+
 2004-05-12  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-source-specials-active-flag)
@@ -268,7 +302,7 @@
 	(TeX-source-specials-check-function, TeX-source-specials-xdvi-p):
 	New (renamed) variables.  Tried to clarify doc-strings and
 	variable names.
-	
+
 2004-04-23  David Kastrup  <dak@gnu.org>
 
 	Source special support by Dan Nicolaescu <dann@ics.uci.edu>:
@@ -289,7 +323,7 @@
 
 	* context.el (ConTeXt-mode-menu): Fix menu extension for
 	customization.
-	
+
 	* tex-info.el (TeXinfo-insert-environment): Support enclosure of
 	a selected region by the environment to be inserted.
 	Don't eat newline at the end of the environment.
