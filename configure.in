@@ -1,4 +1,6 @@
-AC_INIT(auc-tex,11.14,auc-tex@sunsite.dk)
+ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
+  [AC_INIT(auctex,11.14,auc-tex@sunsite.dk)],
+  [AC_INIT(auctex.spec)])
 
 AC_SET_MAKE
 AC_PROG_INSTALL
@@ -43,10 +45,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
 else
    AC_PATH_LISPDIR([tex-site])
 fi
-
-AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)
-AC_SUBST(icondir)
 
 AC_OUTPUT(Makefile)
 cat >&2 <<EOF
