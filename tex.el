@@ -3,9 +3,10 @@
 ;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 ;; Keywords: wp
-;; X-URL: http://www.nongnu.org/auctex/
+;; X-URL: http://www.gnu.org/software/auctex/
 
-;; Copyright (C) 1985, 1986, 2000-2003 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 2000,
+;;   2001, 2002, 2003 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
@@ -37,7 +38,7 @@
   "A (La)TeX environment."
   :tag "AUCTeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "<URL:http://www.nongnu.org/auctex/>")
+  :link '(url-link :tag "Home Page" "<URL:http://www.gnu.org/software/auctex/>")
   :prefix "TeX-"
   :group 'tex)
 
@@ -500,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.295 $"))
+	(rev "$Revision: 5.296 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -515,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-04-09 18:26:49 $"))
+    (let ((date "$Date: 2003-04-10 11:19:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
