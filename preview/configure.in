@@ -22,8 +22,8 @@ if test "${EMACS}" = "t"; then
 fi
 
 AC_ARG_ENABLE(8bit-test,[  --disable-8bit-test            Disable LaTeX 8-bit test], 
-	[ if $enablevel = no ; then ENABLE8BIT=false ; 
-	  else ENABLE8BIT = true ; fi  ], [ ENABLE8BIT=true ])
+	[ if test "$enableval" = no ; then ENABLE8BIT=false ; 
+	  else ENABLE8BIT=true ; fi  ], [ ENABLE8BIT=true ])
 
 AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
