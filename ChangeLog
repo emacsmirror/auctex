@@ -1,5 +1,7 @@
 2003-01-15  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* configure.in, aclocal.m4: Compatibility fix
+
 	* aclocal.m4 (AC_PROG_EMACS): New. File is now identical to that
 	of preview-latex.
 
