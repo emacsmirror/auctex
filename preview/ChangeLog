@@ -1,3 +1,8 @@
+2005-03-24  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* doc/Makefile.in: Add *.pdf to clean target and
+	preview-dtxdoc.texi to maintainer-clean
+
 2005-03-23  jalar  <jalar@mai.liu.se>
 
 	* doc/Makefile.in:
