@@ -8,7 +8,7 @@ Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 License: 	GPL
 Group: 		Applications/Editors
 BuildRoot: 	%{_tmppath}/%{name}-root
-Prereq:		/sbin/install-info
+Prereq:		info
 Requires:	emacs >= 21.1
 Requires:	auctex
 Requires:	ghostscript >= 6.51
@@ -45,6 +45,9 @@ set_here `grep ^AUCTEXDIR Makefile`
 	previewtexmfdir=$previewtexmfdir \
 	previewdocdir=$previewdocdir \
 	AUCTEXDIR=$AUCTEXDIR 
+install -d $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d
+install -c -m 644 preview-latex.el \
+  $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,16 +62,23 @@ install-info --info-dir=%{_infodir} --delete \
 
 %files
 %defattr(-,root,root)
-/usr/share/texmf/tex/latex/preview
+%dir /usr/share/texmf/tex/latex/preview
+%config /usr/share/texmf/tex/latex/preview/prauctex.cfg
+/usr/share/texmf/tex/latex/preview/prauctex.def
+/usr/share/texmf/tex/latex/preview/preview.sty
 /usr/share/texmf/doc/latex/styles/preview.dvi
 /usr/share/emacs/site-lisp/preview
+%{_datadir}/emacs/site-lisp/site-start.d/preview-latex.el 
 %{_infodir}/preview-latex.info.gz
 %doc ChangeLog circ.tex COPYING INSTALL PROBLEMS README
 %doc README-preview RELEASE TODO doc/preview-latex.dvi
 %doc patches
 
 %changelog
-* Thu Feb 18 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+* Tue Feb 19 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+- Added site-start.d support and prauctex.cfg config file
+
+* Thu Feb 14 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Adjusted for 0.6
 
 * Wed Jan 23 2002 Jan-Ake Larsson <jalar@imf.au.dk>
