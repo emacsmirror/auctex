@@ -470,7 +470,15 @@ Pure borderless black-on-white will return NIL."
 	  (mapcar #'preview-gs-color-value mask)
 	  '("setrgbcolor" "false" "setstrokeadjust")
 	  (list (number-to-string (* 2 preview-transparent-border)))
-	  '("setlinewidth" "clippath" "strokepath" "fill")))
+	  ;; I hate antialiasing.  Warp border to integral coordinates.
+	  '("setlinewidth" "clippath" "strokepath"
+	    "matrix" "setmatrix" "true"
+	    "{" "2" "index" "{" "newpath" "}" "if"
+	    "round" "exch" "round" "exch" "moveto" "pop" "false" "}"
+	    "{" "round" "exch" "round" "exch" "lineto" "}"
+	    "{" "curveto" "}"
+	    "{" "closepath" "}"
+	    "pathforall" "pop" "fill")))
      (if (or mask (and bg (not fg)))
 	 '("grestore"))
      (if fg
