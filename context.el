@@ -3,12 +3,11 @@
 ;; Maintainer: Patrick Gundlach <pg@levana.de>
 ;; Version: 11.14
 ;; Keywords: wp
-;; X-URL: http://www.nongnu.org/auctex/
+;; X-URL: http://www.gnu.org/auctex/
+;; Copyright 2003 Free Software Foundation
 
-;; Last Change: Fri Feb 14 17:10:01 2003
+;; Last Change: Wed Apr  9 20:14:02 2003
 
-;; Copyright 2003 Patrick Gundlach
-;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -26,10 +25,10 @@
 
 ;;; Notes:
 
-;; This is the very basic context support for auctex. It will be
+;; This is the very basic context support for AUCTeX. It will be
 ;; extended in the near future. 
 
-;; Auctex is closely intervowen with LaTeX. We have to split up
+;; AUCTeX is closely intervowen with LaTeX. We have to split up
 ;; things without breaking 'em. 
 
 ;;; Code:
@@ -39,7 +38,7 @@
 (require 'tex)
 
 (defgroup ConTeXt-macro nil
-  "Special support for ConTeXt macros in AUC TeX."
+  "Special support for ConTeXt macros in AUCTeX."
   :prefix "TeX-"
   :group 'ConTeXt
   :group 'TeX-macro)
@@ -82,7 +81,7 @@
 (make-variable-buffer-local 'ConTeXt-current-interface)
 
 (defgroup ConTeXt-environment nil
-  "Environments in AUC TeX."
+  "Environments in AUCTeX."
   :group 'ConTeXt-macro)
 
 ;; todo: interface awareness
@@ -106,7 +105,7 @@
 ;; is it safe to return nil? --pg
 (defmacro ConTeXt-add-environments (&rest args)
   "Calls ConTeXt-XX-add-environments where XX is the current interface."
-  (apply (intern (concat "ConTeXt-" 
+  `(apply (intern (concat "ConTeXt-" 
 			 ConTeXt-current-interface
 			 "-add-environments"))
 	 (mapcar 'eval args))
@@ -141,14 +140,12 @@
 (defun ConTeXt-environment (arg)
   "Make ConTeXt environment (\\start...-\\stop... pair).
 With optional ARG, modify current environment. (currently not supported --pg)"
-
- 
   (interactive "*P")
   (let ((environment (completing-read (concat "Environment type: (default "
-                                               (if (TeX-near-bobp)
-                                                   "text"
-                                                 ConTeXt-default-environment)
-                                               ") ")
+					      (if (TeX-near-bobp)
+						  "text"
+						ConTeXt-default-environment)
+					      ") ")
 				      (ConTeXt-environment-list)
 				      nil nil nil
 				      'ConTeXt-environment-history)))
@@ -162,9 +159,8 @@ With optional ARG, modify current environment. (currently not supported --pg)"
            (setq ConTeXt-default-environment environment)))
  
     (let ((entry (assoc environment (ConTeXt-environment-list))))
-      (if (null entry)
-          (ConTeXt-add-environments (list environment)))
- 
+      (when (null entry)
+	(ConTeXt-add-environments (list environment)))
       ;; (if arg
       ;;   (ConTeXt-modify-environment environment)
       (ConTeXt-environment-menu environment)
@@ -321,14 +317,17 @@ of context-mode-hook."
 
   ;; initializations
   (ConTeXt-en-add-environments
-   "itemize" "text" "typing")
+   "itemize" "text" "typing" "linenumbering"
+   ;; some metapost environments
+   "MPpositiongraphic" "useMPgraphic" "MPcode" "reusableMPgraphic"
+   "buffer" "narrower" "tabulate")
 
   ;; todo: make interface aware! 
   (TeX-add-symbols
    '("item" (TeX-arg-literal "  ")))
   (setq mode-name "ConTeXt") 
   (setq major-mode 'context-mode) 
-  (setq TeX-command-default "ConTeXt Interactive")
+  (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
 
