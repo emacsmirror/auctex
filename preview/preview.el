@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.19 2001-10-03 21:49:34 dakas Exp $
+;; $Id: preview.el,v 1.20 2001-10-04 08:06:07 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -238,11 +238,7 @@ Return element if non-nil.  ERROR is the error string to
 show as response of GhostScript."
   (let ((ov (pop preview-gs-outstanding)))
     (when ov
-      (overlay-put
-       ov 'after-string
-       (preview-gs-error-string
-	(concat "GS>" (aref (overlay-get ov 'queued) 2) error)
-	(car (nth 0 (overlay-get ov 'filenames)))))
+      (preview-gs-flag-error ov error)
       (overlay-put ov 'queued nil))
     ov))
     
@@ -376,54 +372,67 @@ are used for making the name of the file to be generated."
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
     thisimage))
 		
-(defun preview-gs-error-string (error file)
-"Make an appropriate string for error display.\
-ERROR and the guilty FILE are both strings."
-  (propertize
-   (concat
-    (propertize
-     "[Error]"
-     'mouse-face 'highlight
-     'local-map
-     (let ((map (make-sparse-keymap)))
-       (define-key map [mouse-2]
-	 `(lambda() (interactive "@")
-	    (let ((buff (generate-new-buffer
-			 "*Preview-GhostScript-Error*")))
-	      (with-current-buffer buff
-		(setq buffer-undo-list t)
-		(insert ,(concat preview-gs-command " "
-				 (mapconcat #'shell-quote-argument
-					    preview-gs-command-line
-					    " ")
-				 "\n" error))
-		(goto-char (point-min)))
-	      (view-buffer-other-window
-	       buff nil 'kill-buffer))))
-       map)
-     'help-echo "mouse-2 views error message")
-    " in "
-    (propertize
-     "[EPS-file]"
-     'mouse-face 'highlight
-     'local-map
-     (let ((map (make-sparse-keymap)))
-       (define-key map [mouse-2]
-	 `(lambda() (interactive "@")
-	    (let ((default-major-mode
-		    #',(or
-			(assoc-default "x.eps" auto-mode-alist #'string-match)
-			default-major-mode))
-		  (buff (get-file-buffer ,file)))
-	      (save-excursion
-		(if buff
-		    (pop-to-buffer buff)
-		  (view-file-other-window ,file))
-	       (message "\
-Try C-c C-s C-c C-b and [mouse-2] on error offset.")))))
-       map)
-     'help-echo "mouse-2 views EPS file"))
-    'face 'preview-error-face))
+(defun preview-mouse-open-error (string)
+  "Display STRING in a new view buffer on click."
+  (let ((buff (generate-new-buffer
+	       "*Preview-GhostScript-Error*")))
+    (with-current-buffer buff
+      (setq buffer-undo-list t)
+      (insert string)
+      (goto-char (point-min)))
+    (view-buffer-other-window
+     buff nil 'kill-buffer)))
+
+(defun preview-mouse-open-eps (file)
+  "Display eps FILE in a view buffer on click."
+  (let ((default-major-mode
+	  `,(or
+	     (assoc-default "x.ps" auto-mode-alist #'string-match)
+	     default-major-mode))
+	(buff (get-file-buffer file)))
+    (save-excursion
+      (if buff
+	  (pop-to-buffer buff)
+	(view-file-other-window file))
+      (message "\
+Try C-c C-s C-c C-b and [mouse-2] on error offset."))))
+
+(defun preview-gs-flag-error (ov error)
+  "Make an eps error flag in overlay OV for ERROR string."
+  (overlay-put
+   ov 'after-string
+   (propertize
+    (concat
+     (propertize
+      "[Error]"
+      'mouse-face 'highlight
+      'local-map
+      (let ((map (make-sparse-keymap)))
+	(define-key map [mouse-2]
+	  `(lambda() (interactive "@")
+	     (preview-mouse-open-error
+	      ,(concat preview-gs-command " "
+		       (mapconcat #'shell-quote-argument
+				  preview-gs-command-line
+				  " ")
+		       "\nGS>"
+		       (aref (overlay-get ov 'queued) 2)
+		       error))))
+	map)
+      'help-echo "mouse-2 views error message")
+     " in "
+     (propertize
+      "[EPS-file]"
+      'mouse-face 'highlight
+      'local-map
+      (let ((map (make-sparse-keymap)))
+	(define-key map [mouse-2]
+	  `(lambda() (interactive "@")
+	     (preview-mouse-open-eps
+	      ,(car (nth 0 (overlay-get ov 'filenames))))))
+	map)
+      'help-echo "mouse-2 views EPS file"))
+    'face 'preview-error-face)))
 
 (defun preview-gs-transact (process answer)
   "Work off GhostScript transaction.
@@ -443,13 +452,8 @@ given as ANSWER."
 		   (filenames (overlay-get ov 'filenames))
 		   (oldfile (nth 0 filenames))
 		   (newfile (nth 1 filenames)))
-	      (overlay-put ov 'queued nil)
 	      (if have-error
-		  (overlay-put ov
-		   'after-string (preview-gs-error-string
-				  (concat "GS>"
-					  (aref queued 2) answer)
-				  (car oldfile)))
+		  (preview-gs-flag-error ov answer)
  		(condition-case nil
  		    (preview-delete-file oldfile)
  		  (file-error nil))
@@ -458,7 +462,8 @@ given as ANSWER."
 				  :type preview-gs-image-type
 				  :heuristic-mask t
 				  :ascent (preview-ascent-from-bb
-					   bbox))))))
+					   bbox))))
+	      (overlay-put ov 'queued nil)))
 	  (while (and (< (length preview-gs-outstanding)
 			 preview-gs-outstanding-limit)
 		      (setq ov (pop preview-gs-queue)))
@@ -1099,7 +1104,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.19 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.20 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
