@@ -1,5 +1,11 @@
 2004-11-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-info.el (texinfo-mode): Add `@command' macro.
+
+	* doc/auctex.texi (Commands): Correct key binding for
+	`TeX-Omega-mode'.  Add index entry.  Use `@command' instead of
+	`@code' where appropriate.
+
 	* font-latex.el (font-latex-built-in-keyword-classes): Use correct
 	face for `font-latex-match-title-3'.
 
