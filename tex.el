@@ -34,8 +34,8 @@
 
 ;;; Code:
 
-(when (< emacs-major-version 20)
-  (error "AUCTeX requires Emacs 20 or later"))
+(when (< emacs-major-version 21)
+  (error "AUCTeX requires Emacs 21 or later"))
 
 (require 'custom)
 (eval-when-compile
@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.397 $"))
+	(rev "$Revision: 5.398 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-29 08:59:03 $"))
+    (let ((date "$Date: 2004-07-30 11:25:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

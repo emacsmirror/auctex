@@ -44,8 +44,8 @@
 
 ;;; Code:
 
-(if (< emacs-major-version 20)
-  (error "AUCTeX requires Emacs 20 or later"))
+(if (< emacs-major-version 21)
+  (error "AUCTeX requires Emacs 21 or later"))
 
 (defvar no-doc
   "This function is part of AUCTeX, but has not yet been loaded.
