@@ -1,3 +1,15 @@
+2004-01-23  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-TeX-command-list): Change single quotes to
+	double.  We get reasonable results under both Windows and Unix.
+	See also log of TeX-command-list in tex.el on 2002-12-19.
+
+	* tex.el (TeX-toggle-off-input-method): Removed some Japanese
+	input methods (Canna, Wnn, SKK) because their code is copied from
+	YaTeX that is not GPL program.  Toggle off CJK (Chinese, Japanese,
+	Korean) input methods in LEIM.
+	(TeX-math-toggle-off-input-method): Doc fix.
+
 2004-01-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-mode-menu): Removed menu filters in the submenus
