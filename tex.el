@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.395 $"))
+	(rev "$Revision: 5.396 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-18 08:16:45 $"))
+    (let ((date "$Date: 2004-07-22 14:44:43 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2976,7 +2976,22 @@ of `AmS-TeX-mode-hook'."
 
 ;;; Comments
 
-(fset 'TeX-comment-region 'comment-region)
+(defun TeX-comment-region (beg end &optional arg)
+  "Comment each line in the region from BEG to END.
+Numeric prefix arg ARG means use ARG comment characters.
+If ARG is negative, delete that many comment characters instead."
+  (interactive "*r\nP")
+  ;; `comment-padding' will not be recognized in the XEmacs' (21.4)
+  ;; `comment-region', so we temporarily modify `comment-start' to get
+  ;; proper spacing.  Unfortunately we have to check for the XEmacs
+  ;; version and cannot test if `comment-padding' is bound as this
+  ;; gets initialized in `VirTeX-common-initialization'.
+  (let ((comment-start (if (and (featurep 'xemacs)
+				(= emacs-major-version 21)
+				(<= emacs-minor-version 4))
+			   (concat comment-start (TeX-comment-padding-string))
+			 comment-start)))
+    (comment-region beg end arg)))
 
 (eval-and-compile
   ;; COMPATIBILITY for Emacs <= 21.3
@@ -2985,9 +3000,10 @@ of `AmS-TeX-mode-hook'."
     ;; The following function was copied from `newcomment.el' on
     ;; 2004-01-30 and adapted accordingly
     (defun TeX-comment-or-uncomment-region (beg end &optional arg)
-      "Call `comment-region', unless the region only consists of comments,
-in which case call `uncomment-region'.  If a prefix arg is given, it
-is passed on to the respective function."
+      "Comment or uncomment a the region from BEG to END.
+Call `TeX-comment-region', unless the region only consists of
+comments, in which case call `TeX-uncomment-region'.  If a prefix
+arg ARG is given, it is passed on to the respective function."
       (interactive "*r\nP")
       (funcall (if (save-excursion ;; check for already commented region
 		     (goto-char beg)
@@ -2996,7 +3012,7 @@ is passed on to the respective function."
 			 (comment-forward (point-max))
 		       (forward-comment (point-max)))
 		     (<= end (point)))
-		   'TeX-uncomment-region 'comment-region)
+		   'TeX-uncomment-region 'TeX-comment-region)
 	       beg end arg)))
 
   ;; COMPATIBILITY for Emacs <= 20.  (Introduced in 21.1?)
@@ -3049,7 +3065,7 @@ comment characters instead."
       ;; commented without the user noticing.
       (unless (looking-at "^[ \t]*$")
 	(mark-paragraph)
-	(comment-region (point) (mark))))))
+	(TeX-comment-region (point) (mark))))))
 
 (defun TeX-in-comment ()
   "Return non-nil if point is in a comment."
