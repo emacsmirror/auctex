@@ -1,5 +1,7 @@
 2005-03-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-comment-prefix): New function.
+
 	* latex.el (LaTeX-current-environment, LaTeX-find-matching-end)
 	(LaTeX-find-matching-begin): Rather than using the start or end of
 	a commented region as a boundary, look further for other commented
