@@ -204,8 +204,17 @@ libraries.
 
 @code{configure} currently tries checking for an 8-bit-clean
 configuration of @LaTeX{} and refuses to continue until you have fixed
-it.  If you know your configuration is 8-bit-clean and the test still
-fails, pass the option @code{--disable-8bit-test} to configure.
+it.  If nothing else works and you would not need to have an 8-bit
+clean installation, pass the option @code{--disable-8bit-test} to
+configure.  This will usually result in @file{circ.tex} and other files
+with 8-bit characters not being properly previewed.
+
+As a very last resort, when all of the regular attempts of getting your
+system recognized as being able to deal with 8-bit characters by the
+@code{latex} executable fail, you might try to use @kbd{M-x
+customize-variable} on the variable @code{LaTeX-command-style} and
+replace the command @code{latex} with @code{latex
+-translate-file=cp8bit}.
 
 @node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
 @section x-symbol interoperation
@@ -226,11 +235,9 @@ few input methods handy especially for dealing with math. Take a look at
 @section Middle-clicks paste instead of toggling
 
 This is probably the fault of your favorite package.  In Emacs-21.1, the
-following culprits are known; Emacs-21.2 inherits those bugs.  The
-@acronym{CVS} version has had them fixed for a long time already; so
-they are not expected to persist into 21.3.  The patches have been
-thoroughly tested and applying them is hardly likely to cause any
-adverse effect.
+following culprits are known; Emacs-21.2 inherits those bugs, as of
+21.3, they will be fixed.  The patches have been thoroughly tested and
+applying them is hardly likely to cause any adverse effect.
 
 @itemize @bullet
 @item flyspell.el
