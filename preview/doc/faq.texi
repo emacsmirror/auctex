@@ -102,8 +102,22 @@ With display errors, XEmacs versions as early as 21.1.14 might also work.
 Note that the binaries require @acronym{RPM} version 3. 
 
 
-@subsection After Installation of the binaries nothing happened
+@subsection I just get @samp{LaTeX found no preview images}.
 
+The reason for this is that @LaTeX{} found no preview images in the
+document in question.
+
+One reason might be that there are no previews to be seen.  If you have
+not used @previewlatex{} before, you might not know its manner of
+operation.  One sure-fire way to test if you just have a document where
+no previews are to be found is to use the provided example document
+@file{circ.tex} (you will have to copy it to some directory where you
+have write permissions).  If the symptom persists, you have a problem,
+and the problem is most likely a @LaTeX{} problem.  Here are possible
+reasons:
+
+@table @asis
+@item Incompatible @acronym{RPM} installation
 The @acronym{RPM} packages are intended to run on a Redhat system. So
 the TeX files, provided by package @file{preview-latex-common} go into
 @file{/usr/share/texmf/tex/latex/preview} and
@@ -116,9 +130,40 @@ appropriate @samp{rpm} command for building @acronym{RPM}s from a tar
 archive.  If this works, please don't forget to send us the spec file,
 so that we may be able to help others with your platform.
 
+@item Filename database not updated
+Various @TeX{} distributions have their own ways of knowing where the
+files are without actually searching directories.  The normal
+@previewlatex{} installation should detect common tools for that purpose
+and use them.  If this goes wrong, or if the files get installed into a
+place where they are not looked for, the @LaTeX{} run will fail.
+
+@item An incomplete manual installation
+This should not happen if you followed installation instructions.
+Unfortunately, people know better all the time.  If only
+@file{preview.sty} gets installed without a set of supplementary files
+also in the @file{latex} subdirectory, @previewlatex{} runs will not
+generate any errors, but they will not produce any previews, either.
+
+@item An outdated @file{preview} installation
+The @file{preview.sty} package is useful for more than just
+@previewlatex{}.  For example, it is part of @TeX{}live.  So you have
+to make sure that @previewlatex{} does not get to work with outdated
+style and configuration files: some newer features will not work with
+older @TeX{} style files, and really old files will make
+@previewlatex{} fail completely.  There usual is a local @file{texmf}
+tree, or even a user-specific tree that are searched before the default
+tree.  Make sure that the first version of those files that gets found
+is the correct one.
+@end table
+
+@subsection I have problems with the XEmacs installation
+Please note that the XEmacs installation is different, since XEmacs has
+a package system that gets used here.  Please make sure that you read
+and follow the installation instructions for XEmacs.
+
 The XEmacs Lisp files provided by the @file{preview-latex-xemacs}
-package are in XEmacs package format and will be installed in
-@file{/usr/lib/xemacs/site-packages}. If on your system the Lisp 
+@acronym{RPM} package are in XEmacs package format and will be installed
+in @file{/usr/lib/xemacs/site-packages}. If on your system the Lisp
 files are in different places, you have to set appropriate links.
 
 Alternatively you could install them locally in your home directory 
@@ -131,17 +176,21 @@ Most likely you installed the @acronym{RPM} files and you have an XEmacs
 version which uses a different architecture of directories, (SuSE is
 known to have a no standard architecture, besides it changes it from
 SuSE version to SuSE version). Additionally you have set in your init
-file:
+file an invocation of @previewlatex{} according to the installation
+instructions in
+@ifclear rawfile
+@ref{Installation}.
+@end ifclear
+@ifset rawfile
+@file{INSTALL}.
+@end ifset
 
-@example
-(autoload 'LaTeX-preview-setup "preview")
-(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-@end example
-@noindent
-Since XEmacs does not find @previewlatex{} but is supposed to do so,
-it will not turn on @AUCTeX{} mode. So we recommend not to use the above
-lines for XEmacs unless you compiled the Lisp files by yourself and know
-perfectly what you are doing.
+Since those demand the loading of @previewlatex{} when entering an
+@AUCTeX{} mode, but the load fails because of @previewlatex{} being in a
+different directory, this will make turning on an @AUCTeX{} mode
+fail.  Please notice that the installation instructions for Emacs and
+XEmacs differ.  Please follow the respective installation instructions
+to the letter unless you know perfectly what you are doing.
 
 @node Customization,  , Installation Trouble, Frequently Asked Questions
 @section Customization
