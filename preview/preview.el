@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.128 2002-04-20 11:24:05 dakas Exp $
+;; $Id: preview.el,v 1.129 2002-04-20 13:27:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1801,8 +1801,10 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				      snippet)) "Parser")))
 			  (setq lstart nil))
 		      ;; else-part of if box
-			  (setq lstart (point))
-		      (unless (= snippet (1+ lsnippet))
+		      (setq lstart (point))
+		      ;; >= because snippets in between might have
+		      ;; been ignored because of TeX-default-extension
+		      (unless (>= snippet (1+ lsnippet))
 			(with-current-buffer run-buffer
 			  (preview-log-error
 			   (list 'error
@@ -1915,7 +1917,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.128 $"))
+	(rev "$Revision: 1.129 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1926,7 +1928,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-20 11:24:05 $"))
+    (let ((date "$Date: 2002-04-20 13:27:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
