@@ -15,7 +15,7 @@
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.7.8
+Version: 	0.8
 Release: 	1.%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
@@ -63,14 +63,14 @@ This package contains the lisp modules for GNU Emacs 21.1 or higher.
 Summary:	Emacs/LaTeX inline preview (XEmacs lisp files)
 Group: 		%{commongroup}
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	xemacs >= 21.1.14
+Requires:	xemacs >= 21.4.9
 
 %description xemacs
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
-This package contains the lisp modules for XEmacs 21.1 or higher.  
+This package contains the lisp modules for XEmacs 21.4.9 or higher.  
 
 %prep
 %setup -c -q
@@ -177,6 +177,9 @@ fi
 %endif
 
 %changelog
+* Mon Apr 12 2004 David Kastrup <dak@gnu.org>
+- bump XEmacs requirements to 21.4.9
+
 * Thu Jan 29 2004 Jan-Åke Larsson <jalar@mai.liu.se>
 - add support for SuSE 
    (kudos to Martin Väth <vaeth@mathematik.uni-wuerzburg.de>)
