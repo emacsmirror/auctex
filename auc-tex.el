@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.42 1993-03-18 06:00:55 amanda Exp $
+;;; $Id: auc-tex.el,v 5.43 1993-03-18 08:45:41 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -179,7 +179,7 @@ You should insert this in your TeX-mode-hook!"
 (defun auc-tex-mode ()
   "Called when we have a mode line specification in first line."
   (interactive)
-  (plain-tex-defun))
+  (plain-tex-mode))
 
 (defun auc-latex-mode ()
   "Called when we have a mode line specification in first line."
