@@ -2,16 +2,60 @@
 
 @itemize @bullet
 @item
-The content of the command menu now depends on the mode (plain TeX,
-LaTeX, ConTeXt etc.).  Any former customization of the variable
+The content of the command menu now depends on the mode (plain @TeX{},
+La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
 @code{TeX-command-menu} has to be erased.  Otherwise the command menu
 and the customization will not work correctly.
 
 @item
-If @code{TeX-master} is set to @code{t}, AUCTeX will now query for a
-master file only when a new file is opened.  Existing files will be left
-alone.  The new function @code{TeX-master-file-ask} is provided for
-adding the variable manually.
+If @code{TeX-master} is set to @code{t}, AUC@TeX{} will now query for
+a master file only when a new file is opened.  Existing files will be
+left alone.  The new function @code{TeX-master-file-ask} is provided
+for adding the variable manually.
+
+@item
+Sectioning commands are now shown in a larger font.  The variable
+@code{font-latex-title-fontity} can be customized to restore the old
+appearance, i.e. the usage of a different color instead of a change in
+size.
+
+@item
+Support for @code{paralist.sty} was added.
+
+@item
+AUC@TeX{} may now be customized to fontify either >>German<< or
+<<French>> quotes by changing the variable @code{font-latex-quotes}.
+
+@item
+Certain @TeX{}/La@TeX{} function, reference, variable and warning
+keywords will now be fontified.  Own keywords may be added by
+customizing the variables @code{font-latex-match-function-keywords},
+@code{font-latex-match-reference-keywords},
+@code{font-latex-match-variable-keywords} and
+@code{font-latex-match-warning-keywords}.
+
+@item
+FIXME: How can the changes in @code{german.el} and @code{ngerman.el}
+regarding @code{LaTeX-german-quote-after-quote},
+@code{LaTeX-german-open-quote}, @code{LaTeX-german-close-quote} be
+described?
+
+@item
+AUC@TeX{} now includes support for ConTeXt.
+
+@item
+AUC@TeX{} now is able to determine automatically which viewer to
+choose and what parameters to pass to it by looking at the extension
+of the output file and certain options used in the source file.  The
+behavior can be adapted or extended respectively by customizing the
+variable @code{TeX-output-view-style}.
+
+@item
+@code{TeX-run-discard} is now able to completely detach a process that
+it started.
+
+@item
+The build process was enhanced and is now based on @code{autoconf}.
 
 @item
 Support for the KOMA-Script classes.
