@@ -3,19 +3,18 @@ Release notes for AUCTeX 11.52
 
 AUCTeX provides by far the most wide-spread and sophisticated
 environment for editing LaTeX, TeX, ConTeXt and Texinfo documents with
-Emacs or XEmacs.  When combined with packages like RefTeX,
-preview-latex, flyspell and others, it is pretty much without peer as
-a comprehensive authoring solution for a large variety of operating
-system platforms and TeX distributions.  It supports
-document-dependent completion and syntax highlighting, easily
-accessible menus, jumping to error locations in the source file, a
-number of editing shortcuts, and intelligent indentation and filling
-of the text while you enter it.
+Emacs or XEmacs.  Combined with packages like RefTeX, preview-latex,
+flyspell and others it is pretty much without peer as a comprehensive
+authoring solution for a large variety of operating system platforms
+and TeX distributions.  It supports document-dependent completion and
+syntax highlighting, easily accessible menus, jumping to error
+locations in the source file, a number of editing shortcuts, and
+intelligent indentation and filling of the text during entry.
 
-Documentation and interfaces in this release are still a moving
-target, partly due to a lack of volunteers for non-programming tasks:
-documentation writing, tutorials, translations, reference material,
-sleuth work, testing.  The usual ``volunteers welcome'' applies here.
+Interfaces in this release remain a moving target with the
+documentation lagging somewhat.  We need volunteers in particular for
+non-programming tasks: documentation writing, tutorials, translations,
+reference material, sleuth work, testing.
 
 
 New features and fixed bugs in this release
@@ -23,10 +22,11 @@ New features and fixed bugs in this release
 
 Third time's the charm.  This is another big bad bug fix release to
 the major release 11.50 from Friday 13th.  Installation and menus
-under XEmacs work again.  Fontification of subscripts and superscripts
-is now disabled when the fontification engine is not able to support
-it properly.  As a consequence, currently this feature is only
-available for developer versions of GNU Emacs.
+under XEmacs work again (maybe for the first time).  Fontification of
+subscripts and superscripts is now disabled when the fontification
+engine is not able to support it properly.  As a consequence,
+currently this feature is only available for developer versions of
+Emacs.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
