@@ -38,12 +38,12 @@ extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
 which is rather close to its Unix cousins.
 
 @item
-Install @uref{http://www.nongnu.org,@AUCTeX{}} according to its
-instructions.  It is recommended that you install at least 11.14.  At
-the current point of time this means that you should forego installing
-@AUCTeX{} from the XEmacs package repository: it may just be too old.
-If you insist, there are patch instructions for older versions of
-@AUCTeX{} in
+Install @uref{http://www.gnu.org/software/auctex,@AUCTeX{}} according to
+its instructions.  It is recommended that you install at least 11.14.
+At the current point of time this means that you should forego
+installing @AUCTeX{} from the XEmacs package repository (version 1.35):
+it is not up to date.  If you insist, there are patch instructions for
+older versions of @AUCTeX{} in
 @ifset rawfile
 the @file{INSTALL} file.
 @end ifset
