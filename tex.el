@@ -523,7 +523,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.341 $"))
+	(rev "$Revision: 5.342 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -538,7 +538,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-26 14:16:04 $"))
+    (let ((date "$Date: 2004-03-26 14:48:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1916,10 +1916,9 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (set-buffer (generate-new-buffer file))
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook \"" style "\"\n"
-		  " (function\n"
-		  "  (lambda ()")
+		  " (lambda ()")
 	  (mapcar 'TeX-auto-insert TeX-auto-parser)
-	  (insert ")))\n\n")
+	  (insert "))\n\n")
 	  (write-region (point-min) (point-max) file nil 'silent)
 	  (kill-buffer (current-buffer))))
     (if (file-exists-p (concat file "c"))
