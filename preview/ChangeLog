@@ -1,3 +1,27 @@
+2003-09-16  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/tfm.c:
+	* dvipng/psfontmap.c:
+	* dvipng/ft.c:
+	* dvipng/enc.c: Added for postscript font handling with freetype
+
+	* dvipng/font.c: Use freetype font loading
+
+	* dvipng/dvipng.h: Add freetype-related types and declarations,
+	and simplify glyph rendering
+
+	* dvipng/pk.c: Simplify glyph rendering
+
+	* dvipng/dvipng.c: Init freetype  
+
+	* dvipng/dvi.c: Fix strlen bugs 
+
+	* dvipng/draw.c: Add FONT_TYPE_FT drawing
+
+	* dvipng/configure.ac:
+	* dvipng/config.h.in:
+	* dvipng/Makefile.in: Adjust for freetype things 
+
 2003-08-26  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/RELEASE, dvipng/dvipng.texi, dvipng/configure.ac:
