@@ -1,3 +1,7 @@
+2005-03-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-view-style): Remove support for "a4" and "a5".
+
 2005-03-14  David Kastrup  <dak@gnu.org>
 
 	* latex.el (docTeX-indent-inner-fixed)
