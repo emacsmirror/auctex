@@ -1,7 +1,7 @@
 @section News in 9.9
 
 @itemize @bullet
-@item Much better detection of @TeX math mode.  Patch by Carsten Dominik
+@item Much better detection of @TeX{} math mode.  Patch by Carsten Dominik
 <dominik@@strw.LeidenUniv.nl>.
 
 @item New @samp{%n} escape in @code{TeX-command-list} for entering the
