@@ -4,6 +4,31 @@
 
 @end ifset
 
+@heading News in 11.xx
+
+@itemize @bullet
+@item
+Folded content now reveals part of its original text in a tooltip or the
+echo area when hovering with the mouse pointer over it.
+
+@item
+The language-specific insertion of quotation marks was generalized.  The
+variables @code{LaTeX-german-open-quote},
+@code{LaTeX-german-close-quote}, @code{LaTeX-german-quote-after-quote},
+@code{LaTeX-italian-open-quote}, @code{LaTeX-italian-close-quote}, and
+@code{LaTeX-italian-quote-after-quote} are now obsolete.  If you are not
+satisfied with the default settings, you should customize
+@code{TeX-quote-language-alist} instead.
+
+@item
+Similar to language-specific quote insertion, @AUCTeX{} now helps you
+with hyphens in different languages as well.  @xref{European} for
+details.
+
+@item
+Of course a lot of bugs have been fixed.
+@end itemize
+
 @heading News in 11.55
 
 @itemize @bullet
