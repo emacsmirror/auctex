@@ -1,3 +1,8 @@
+2004-12-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi (top): Duplicate top node and wrap it in @ifinfo
+	and @ifhtml environments respectively.
+
 2004-12-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* context.el (ConTeXt-paragraph-commands-regexp): Match any
