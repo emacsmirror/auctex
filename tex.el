@@ -5,53 +5,54 @@
 ;; Keywords: wp
 ;; X-URL: http://www.nongnu.org/auctex/
 
-;; Copyright (C) 1985, 1986, 2000, 2001, 2002 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 2000-2003 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen 
 ;; 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
+
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
 
 (when (< emacs-major-version 20)
-  (error "AUC TeX requires Emacs 20 or later"))
+  (error "AUCTeX requires Emacs 20 or later"))
 
 (require 'custom)
 (eval-when-compile (require 'cl))
 
-(defgroup AUC-TeX nil
+(defgroup AUCTeX nil
   "A (La)TeX environment."
-  :tag "AUC TeX"
+  :tag "AUCTeX"
   :link '(custom-manual "(auctex)Top")
   :link '(url-link :tag "Home Page" "<URL:http://www.nongnu.org/auctex/>")
   :prefix "TeX-"
   :group 'tex)
 
 (defgroup TeX-file nil
-  "Files used by AUC TeX."
-  :group 'AUC-TeX)
+  "Files used by AUCTeX."
+  :group 'AUCTeX)
 
 (defgroup TeX-command nil
-  "Calling external commands from AUC TeX."
-  :group 'AUC-TeX)
+  "Calling external commands from AUCTeX."
+  :group 'AUCTeX)
 
 (defgroup LaTeX nil
-  "LaTeX support in AUC TeX."
+  "LaTeX support in AUCTeX."
   :tag "LaTeX"
-  :group 'AUC-TeX)
+  :group 'AUCTeX)
 
 ;;; Site Customization
 ;;
@@ -66,7 +67,7 @@
 				       (let ((f (locate-library "tex")))
 					 (and f (file-name-directory f))))
 				  (concat data-directory "auctex/"))
-  "The directory where the AUC TeX Lisp files are located."
+  "The directory where the AUCTeX Lisp files are located."
   :group 'TeX-file
   :type 'directory)
 
@@ -425,7 +426,7 @@ the name of the file being processed, with an optional extension."
 ;;    (setq load-path (cons TeX-lisp-directory load-path)))
 
 (defvar no-doc
-  "This function is part of AUC TeX, but has not yet been loaded.
+  "This function is part of AUCTeX, but has not yet been loaded.
 Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
@@ -500,18 +501,22 @@ Full documentation will be available after autoloading the function."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "11.14"
-  "AUC TeX version number.")
+(defconst AUCTeX-version "11.14"
+  "AUCTeX version number.")
+(defconst AUC-TeX-version AUCTeX-version
+  "Obsolete.  Replaced by `AUCTeX-version'.")
 
-(defconst AUC-TeX-date "Sun Dec 15 03:14:51 CET 2002"
-  "AUC TeX release date.")
+(defconst AUCTeX-date "Sun Dec 15 03:14:51 CET 2002"
+  "AUCTeX release date.")
+(defconst AUC-TeX-date AUCTeX-date
+  "Obsolete.  Replaced by `AUCTeX-date'."
 
 ;;; Buffer
 
 (defgroup TeX-output nil
   "Parsing TeX output."
   :prefix "TeX-"
-  :group 'AUC-TeX)
+  :group 'AUCTeX)
 
 (defcustom TeX-display-help t
   "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]."
@@ -524,7 +529,7 @@ Full documentation will be available after autoloading the function."
   :type 'boolean)
 
 (defgroup TeX-command-name nil
-  "Names for external commands in AUC TeX."
+  "Names for external commands in AUCTeX."
   :group 'TeX-command)
 
 (defcustom TeX-command-BibTeX "BibTeX"
@@ -587,10 +592,10 @@ Must be the car of an entry in TeX-command-list."
 
 You should set this variable to match the name of all files, where
 automatically adding a file variable with the name of the master file
-is a good idea.  When AUC TeX add the name of the master file as a
+is a good idea.  When AUCTeX add the name of the master file as a
 file variable, it does not need to ask next time you edit the file.  
 
-If you dislike AUC TeX automatically modifying your files, you can set
+If you dislike AUCTeX automatically modifying your files, you can set
 this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
@@ -715,18 +720,18 @@ the beginning of the file, but that feature will be phased out."
 (defcustom TeX-master t
   "*The master file associated with the current buffer.
 If the file being edited is actually included from another file, you
-can tell AUC TeX the name of the master file by setting this variable.
+can tell AUCTeX the name of the master file by setting this variable.
 If there are multiple levels of nesting, specify the top level file. 
 
-If this variable is nil, AUC TeX will query you for the name.
+If this variable is nil, AUCTeX will query you for the name.
 
-If the variable is t, AUC TeX will assume the file is a master file
+If the variable is t, AUCTeX will assume the file is a master file
 itself.
 
-If the variable is 'shared, AUC TeX will query for the name, but not
+If the variable is 'shared, AUCTeX will query for the name, but not
 change the file.
 
-If the variable is 'dwim, AUC TeX will try to avoid querying by
+If the variable is 'dwim, AUCTeX will try to avoid querying by
 attempting to `do what I mean'; and then change the file.
 
 It is suggested that you use the File Variables (see the info node in
@@ -743,7 +748,7 @@ the Emacs manual) to set this variable permanently for each file."
 
 (defvar TeX-convert-master t
   "*If not nil, automatically convert ``Master:'' lines to file variables.
-This will be done when AUC TeX first try to use the master file.")
+This will be done when AUCTeX first try to use the master file.")
 
 (defun TeX-add-local-master ()
   "Add local variable for `TeX-master'."
@@ -899,7 +904,7 @@ These correspond to the personal TeX macros."
 		    TeX-auto-private TeX-style-private
 		    (list TeX-auto-local TeX-style-local)))
     path)
-  "List of directories to search for AUC TeX style files."
+  "List of directories to search for AUCTeX style files."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
 
@@ -1094,7 +1099,7 @@ FORCE is not nil."
 ;; Must be before keymaps.
 
 (defgroup TeX-macro nil
-  "Support for TeX macros in AUC TeX."
+  "Support for TeX macros in AUCTeX."
   :prefix "TeX-"
   :group 'TeX)
 
@@ -1172,7 +1177,7 @@ Or alternatively:
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro with completion.
 
-AUC TeX knows of some macros, and may query for extra arguments."
+AUCTeX knows of some macros, and may query for extra arguments."
   (interactive (list (completing-read (concat "Macro (default "
 					      TeX-default-macro
 					      "): " 
@@ -1194,7 +1199,7 @@ AUC TeX knows of some macros, and may query for extra arguments."
 (defun TeX-electric-macro ()
   "Insert TeX macro with completion.
 
-AUC TeX knows of some macros, and may query for extra arguments.
+AUCTeX knows of some macros, and may query for extra arguments.
 Space will complete and exit."
   (interactive)
   (cond ((eq (preceding-char) ?\\)
@@ -1393,7 +1398,7 @@ when major mode to enter.")
 (defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
 the file is plain TeX or LaTeX or what."
-  :group 'AUC-TeX
+  :group 'AUCTeX
   :type '(radio (function-item latex-mode)
 		(function-item plain-tex-mode)
 		(function :tag "Other")))
@@ -1401,7 +1406,7 @@ the file is plain TeX or LaTeX or what."
 (defcustom TeX-force-default-mode nil
   "*If set to nil, try to infer the mode of the file from its
 content."
-  :group 'AUC-TeX
+  :group 'AUCTeX
   :type 'boolean)
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
@@ -1444,7 +1449,7 @@ The algorithm is as follows:
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun plain-tex-mode ()
   "Major mode for editing files of input for plain TeX.
-See info under AUC TeX for documentation.
+See info under AUCTeX for documentation.
 
 Special commands:
 \\{TeX-mode-map}
@@ -1464,7 +1469,7 @@ of plain-TeX-mode-hook."
 ;;;###autoload
 (defun ams-tex-mode ()
   "Major mode for editing files of input for AmS TeX.
-See info under AUC TeX for documentation.
+See info under AUCTeX for documentation.
 
 Special commands:
 \\{TeX-mode-map}
@@ -1488,8 +1493,8 @@ This only works with Emacs 21." t)
 
 (defcustom TeX-install-font-lock 'font-latex-setup
   "Function to call to install font lock support.
-Choose `ignore' if you don't want AUC TeX to install support for font locking."
-  :group 'AUC-TeX
+Choose `ignore' if you don't want AUCTeX to install support for font locking."
+  :group 'AUCTeX
   :type '(radio (function-item font-latex-setup)
 		(function-item tex-font-setup)
 		(function-item ignore)
@@ -1612,8 +1617,8 @@ Choose `ignore' if you don't want AUC TeX to install support for font locking."
 ;;; Parsing
 
 (defgroup TeX-parse nil
-  "Parsing TeX files from AUC TeX."
-  :group 'AUC-TeX)
+  "Parsing TeX files from AUCTeX."
+  :group 'AUCTeX)
 
 (defvar TeX-auto-parser '((styles TeX-auto-file TeX-run-style-hooks)))
 ;; Alist of parsed information.  
@@ -2055,7 +2060,7 @@ Check for potential LaTeX environments."
   (make-variable-buffer-local 'TeX-auto-regexp-list)
 
 (defgroup TeX-file-extension nil
-  "File extensions recognized by AUC TeX."
+  "File extensions recognized by AUCTeX."
   :group 'TeX-file)  
 
 (defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo")
@@ -2151,7 +2156,7 @@ EXTENSIONS defaults to TeX-file-extensions."
 			 (TeX-match-extension string extensions))
 		    (substring string 0 (match-beginning 0))
 		  string))
-	 (dir (file-name-directory (expand-file-name strip))))
+	 (dir (expand-file-name (or (file-name-directory strip) "./"))))
     (if (or (eq nodir t)
 	    (string-equal dir (expand-file-name "./"))
 	    (member dir TeX-macro-global)
@@ -2468,7 +2473,7 @@ Used for specifying extra syntax for a macro."
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
-  "If this is non-nil when AUC TeX is loaded, the TeX escape
+  "If this is non-nil when AUCTeX is loaded, the TeX escape
 character ``\\'' will be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
@@ -2560,7 +2565,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
 ;;; Comments
 
@@ -2608,8 +2613,8 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 ;;; Indentation
 
 (defgroup TeX-indentation nil
-  "Indentation of TeX buffers in AUC TeX."
-  :group 'AUC-TeX)
+  "Indentation of TeX buffers in AUCTeX."
+  :group 'AUCTeX)
 
 (defun TeX-brace-count-line ()
   "Count number of open/closed braces."
@@ -2867,8 +2872,8 @@ With optional argument, also reload the style hooks."
   (TeX-update-style))
 
 (defgroup TeX-quote nil
-  "Quoting in AUC TeX."
-  :group 'AUC-TeX)
+  "Quoting in AUCTeX."
+  :group 'AUCTeX)
 
 (defcustom TeX-open-quote "``"
   "*String inserted by typing \\[TeX-insert-quote] to open a quotation."
@@ -2961,19 +2966,19 @@ between."
     (insert TeX-grcl)))
 
 (defun TeX-goto-info-page ()
-  "Read documentation for AUC TeX in the info system."
+  "Read documentation for AUCTeX in the info system."
   (interactive)
   (require 'info)
   (Info-goto-node "(auctex)"))
 
 ;;;###autoload
 (defun TeX-submit-bug-report ()
-  "Submit via mail a bug report on AUC TeX"
+  "Submit via mail a bug report on AUCTeX"
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
    "auc-tex@sunsite.dk"
-   (concat "AUC TeX " AUC-TeX-version)
+   (concat "AUCTeX " AUCTeX-version)
    (list 'window-system
 	 'LaTeX-version
 	 'TeX-style-path
