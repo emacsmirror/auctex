@@ -5,6 +5,10 @@
 
 2004-08-04  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-base-mode-name, TeX-set-mode-name): Move to front,
+	add catering for global mode switches.
+	(TeX-source-specials, global-TeX-PDF-mode): Use this.
+
 	* latex.el (LaTeX-common-initialization): Add style hook for
 	"ifpdf".
 

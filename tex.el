@@ -555,7 +555,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.407 $"))
+	(rev "$Revision: 5.408 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -570,7 +570,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-04 03:48:29 $"))
+    (let ((date "$Date: 2004-08-04 16:13:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -603,6 +603,34 @@ In the form of yyyy.mmdd")
   :group 'TeX-output
   :type 'boolean)
 
+;;; Mode names.
+
+(defvar TeX-base-mode-name nil
+  "Base name of mode.")
+
+(defun TeX-set-mode-name (&optional changed)
+  "Build and set the mode name.
+The base mode name will be concatenated with indicators for
+helper modes where appropriate.
+
+If CHANGED is non-nil, it indicates which global mode
+may have changed so that all corresponding buffers
+without a local value might get their name updated."
+  (if changed
+      (dolist (buffer (buffer-list))
+	(and (local-variable-p 'TeX-mode-p buffer)
+	     (not (local-variable-p changed buffer))
+	     (with-current-buffer buffer (TeX-set-mode-name))))
+    (if TeX-mode-p
+	(let ((trailing-flags
+	       (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
+		       (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
+		       (and TeX-source-specials "S"))))
+	  (setq mode-name (concat (and TeX-PDF-mode "PDF")
+				  TeX-base-mode-name
+				  (when (> (length trailing-flags) 0)
+				    (concat "/" trailing-flags))))
+	  (set-buffer-modified-p (buffer-modified-p))))))
 
 ;;; Source Specials
 
@@ -643,7 +671,7 @@ details."
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials
 			  TeX-source-specials-map))
-  (TeX-set-mode-name))
+  (TeX-set-mode-name 'TeX-source-specials))
 
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials minor-mode-map-alist)
@@ -810,9 +838,7 @@ not been called before: call `TeX-PDF-mode-toggle' instead for
 buffer-local use."
   :global t
   (setq-default TeX-PDF-mode global-TeX-PDF-mode)
-  (when TeX-mode-p
-      (TeX-set-mode-name)
-      (set-buffer-modified-p (buffer-modified-p)))
+  (TeX-set-mode-name 'TeX-PDF-mode)
   global-TeX-PDF-mode)
 
 (global-TeX-PDF-mode (if global-TeX-PDF-mode 1 0))
@@ -839,9 +865,7 @@ the default will be used instead."
     (if TeX-PDF-mode-parsed
 	(setq TeX-PDF-mode-parsed nil))
     (setq TeX-PDF-mode arg))
-  (when TeX-mode-p
-    (TeX-set-mode-name)
-    (set-buffer-modified-p (buffer-modified-p)))
+  (TeX-set-mode-name)
   TeX-PDF-mode)
 
 (defun TeX-PDF-mode-on ()
@@ -1788,9 +1812,6 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 
 ;;; The Mode
 
-(defvar TeX-base-mode-name nil
-  "Base name of mode.")
-
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
      "\\\\\\(documentstyle\\|documentclass\\)[^%\n]*{\\(j[s-]?\\|t\\)\\(article\\|report\\|book\\|slides\\)")
@@ -1827,19 +1848,6 @@ when major mode to enter.")
   "*If set to nil, try to infer the mode of the file from its content."
   :group 'TeX-misc
   :type 'boolean)
-
-(defun TeX-set-mode-name ()
-  "Build and set the mode name.
-The base mode name will be concatenated with indicators for
-helper modes where appropriate."
-  (let ((trailing-flags
-	 (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
-		 (and (boundp 'LaTeX-math-mode) LaTeX-math-mode "M")
-		 (and TeX-source-specials "S"))))
-    (setq mode-name (concat (and TeX-PDF-mode "PDF")
-			    TeX-base-mode-name
-			    (when (> (length trailing-flags) 0)
-			      (concat "/" trailing-flags))))))
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
