@@ -1,3 +1,18 @@
+1999-05-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10e released.
+
+1999-05-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: (TeX-auto-generate): Reimplemented support for numeric
+	`TeX-file-recurse'. 
+	(TeX-search-files): Ditto.
+
+1999-05-03  Rune Kleveland <runekl@math.uio.no>
+
+	* style/amsart.el ("amsart"): Load `amsthm.el'.
+	* style/amsbook.el ("amsbook"): Ditto.
+
 1999-03-29  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.10d released.

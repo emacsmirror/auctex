@@ -1,6 +1,9 @@
 @section News in 9.10
 
 @itemize @bullet
+@item @code{amsart} and @code{amsbook} now loads @code{amsthm} by default.
+Patch by Rune Kleveland <runekl@@math.uio.no>.
+
 @item Fixed bug with file searching.
 Reported by Berwin Turlach <bturlach@@maths.adelaide.edu.au>.
 
