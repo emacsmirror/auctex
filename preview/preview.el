@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.193 2003-11-10 08:31:13 jalar Exp $
+;; $Id: preview.el,v 1.194 2004-01-04 01:11:19 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1090,7 +1090,8 @@ Returns non-NIL if called by one of the commands in LIST."
 
 (defcustom preview-equality-transforms '(identity
 					 preview-canonical-spaces)
-"These functions are tried in turn on the strings from the
+"Transformation functions for region changes.
+These functions are tried in turn on the strings from the
 regions of a preview to decide whether a preview is to be considered
 changed.  If any transform leads to equal results, the preview is
 considered unchanged."
@@ -1098,6 +1099,10 @@ considered unchanged."
   :type '(repeat function))
 
 (defun preview-relaxed-string= (&rest args)
+"Check for functional equality of arguments.
+The arguments ARGS are checked for equality by using
+`preview-equality-transforms' on them until it is exhausted
+or one transform returns equality."
   (let ((lst preview-equality-transforms))
     (while (and lst (not (apply #'string= (mapcar (car lst) args))))
       (setq lst (cdr lst)))
@@ -1269,7 +1274,7 @@ such preview."
 	   preview-icon
 	   "\
 %s regenerates preview
-%s kills preview"
+%s more options"
 	   `(lambda() (interactive) (preview-regenerate ,ov)))
 ;; icon on separate line only for stuff starting on its own line
 	  (with-current-buffer (overlay-buffer ov)
@@ -1345,8 +1350,9 @@ the given value of TIMESTAMP."
 		    (min (point-max) (1+ (point)))))
 
 (defun preview-walk-document (func)
-  "Cycle through all buffers belonging to current document,
-calling each buffer with the same master file."
+  "Cycle through all buffers belonging to current document.
+Each buffer having the same master file as the current file
+has FUNC called with its current buffer being set to it."
   (let ((buffers (buffer-list))
 	(master (expand-file-name (TeX-master-file t))))
     (while buffers
@@ -1506,7 +1512,7 @@ is already selected and unnarrowed."
 			   preview-icon
 			   "\
 %s redisplays preview
-%s kills preview")
+%s more options")
 ;; icon on separate line only for stuff starting on its own line
    (with-current-buffer (overlay-buffer ov)
      (save-excursion
@@ -1526,7 +1532,7 @@ of `preview-scale' necessary for `preview-ps-image."
 		   (format "preview.%03d" snippet)
 		   tempdir)))
     (overlay-put ov 'filenames (list filename))
-    (overlay-put ov 'preview-image 
+    (overlay-put ov 'preview-image
 		 (preview-create-icon (car filename)
 				      'png
 				      0)))
@@ -1555,7 +1561,7 @@ of `preview-scale' necessary for `preview-ps-image."
    (overlay-get ov 'preview-map)
    (overlay-get ov 'preview-image)
    "%s opens text
-%s kills preview"))
+%s more options"))
 
 (defun preview-make-filename (file tempdir)
   "Generate a preview filename from FILE and TEMPDIR.
@@ -1598,7 +1604,7 @@ it gets deleted as well."
 (defvar preview-buffer-has-counters nil)
 (make-variable-buffer-local 'preview-buffer-has-counters)
 
-(defun preview-place-preview (snippet start end 
+(defun preview-place-preview (snippet start end
 				      box counters tempdir place-opts)
   "Generate and place an overlay preview image.
 This generates the filename for the preview
@@ -1619,7 +1625,8 @@ to the close hook."
 		  nil nil nil
 		  `(lambda(event) (interactive "e")
 		     (preview-toggle ,ov 'toggle event))
-		  `(lambda() (interactive) (preview-delete ,ov))))
+		  `(lambda(event) (interactive "e")
+		     (preview-context-menu ,ov event))))
     (when (cdr counters)
       (overlay-put ov 'preview-counters counters)
       (setq preview-buffer-has-counters t))
@@ -1695,7 +1702,8 @@ if any."
 		    nil nil nil
 		    `(lambda(event) (interactive "e")
 		       (preview-toggle ,ov 'toggle event))
-		    `(lambda() (interactive) (preview-delete ,ov))))
+		    `(lambda(event) (interactive "e")
+		       (preview-context-menu ,ov event))))
       (when counters
 	(overlay-put
 	 ov 'preview-counters
@@ -1742,9 +1750,9 @@ will be skipped over backwards."
       (error (goto-char oldpos)))))
 
 (defcustom preview-required-option-list '("active" "dvips" "auctex")
-  "Specifies options passed to the preview package regardless
-of whether there is an explicit \\usepackage of that package
-present."
+  "Specifies required options passed to the preview package.
+These are passed regardless of whether there is an explicit
+\\usepackage of that package present."
   :group 'preview-latex
   :type '(list (set :inline t :tag "Required options"
 		    (const "active")
@@ -1834,6 +1842,56 @@ See description of `TeX-command-list' for details."
     (define-key map "\C-c\C-d" #'preview-clearout-document)
     map))
 
+(defun preview-copy-text (ov)
+  "Copy the text of OV into the kill buffer."
+  (save-excursion
+    (set-buffer (overlay-buffer ov))
+    (copy-region-as-kill (overlay-start ov) (overlay-end ov))))
+
+(autoload 'mail-header-encode-parameter "mail-parse")
+
+(defun preview-copy-mml (ov)
+  "Copy an MML representation of OV into the kill buffer.
+This can be used to send inline images in mail and news when
+using MML mode."
+  (if (and (memq (overlay-get ov 'preview-state) '(active inactive))
+	   (not (overlay-get ov 'queued)))
+      (let* ((text (with-current-buffer (overlay-buffer ov)
+		     (buffer-substring (overlay-start ov)
+				       (overlay-end ov))))
+	     (file (car (car (last (overlay-get ov 'filenames)))))
+	     (string
+	      (format "<#part type=\"image/%s\" %s disposition=inline %s>
+<#/part>"
+		      preview-image-type
+		      (mail-header-encode-parameter "filename" file)
+		      (mail-header-encode-parameter
+		       "description"
+		       (if (string-match "\n" text)
+			  "preview-latex image"
+			 text)))))
+	(if (eq last-command 'kill-region)
+	    (kill-append string nil)
+	  (kill-new string)))
+    (error "No image file available")))
+
+(defun preview-active-contents (ov)
+  "Check whether we have a valid image associated with OV."
+  (and (memq (overlay-get ov 'preview-state) '(active inactive)) t))
+
+(defun preview-context-menu (ov ev)
+  "Pop up a menu for OV at position EV."
+  (popup-menu
+   `("Preview"
+     ["Toggle" (preview-toggle ,ov 'toggle ',ev)
+      (preview-active-contents ,ov)]
+     ["Regenerate" (preview-regenerate ,ov)]
+     ["Remove" (preview-delete ,ov)]
+     ["Copy text" (preview-copy-text ,ov)]
+     ["Copy MIME" (preview-copy-mml ,ov)
+      (preview-active-contents ,ov)])
+   ev))
+
 ;;;###autoload
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into AUCTeX.
@@ -1919,7 +1977,7 @@ If necessary, generates a fitting top
 directory or cleans out an existing one (if not yet
 visited in this session), then returns the name of
 the created subdirectory relative to the master directory,
-in shell-quoted form. `TeX-active-tempdir' is
+in shell-quoted form.  `TeX-active-tempdir' is
 set to the corresponding TEMPDIR descriptor as described
 in `preview-make-filename'.  The directory is registered
 in `preview-temp-dirs' in order not to be cleaned out
@@ -2272,12 +2330,12 @@ specified by BUFF."
 	 tempdir
 	 (colors (mapconcat #'identity (preview-dvipng-get-colors) " "))
 	 (resolution (progn (preview-get-geometry (current-buffer))
-			    (format " -D%d " (* 3 (car preview-resolution) 
+			    (format " -D%d " (* 3 (car preview-resolution)
 						(preview-hook-enquiry preview-scale)))))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
 			(concat (TeX-command-expand preview-dvipng-command
-						    (car file)) 
+						    (car file))
 				" " colors resolution)
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPNG"))
@@ -2593,7 +2651,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.193 $"))
+	(rev "$Revision: 1.194 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2604,7 +2662,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2003-11-10 08:31:13 $"))
+    (let ((date "$Date: 2004-01-04 01:11:19 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
