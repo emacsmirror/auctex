@@ -1,3 +1,10 @@
+2003-12-01  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/ppagelist.c:
+	* dvipng/misc.c:
+	* dvipng/dvipng.texi: Make negative pages render. Now -pp handles
+	negative pages gracefully too. Remove -pp code taken from dvips.
+	
 2003-11-30  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/draw.c: 
