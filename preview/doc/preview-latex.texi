@@ -205,9 +205,9 @@ kept.
 @chapter Simple customization
 
 Customization options can be found by typing @kbd{M-x customize-group
-@key{RET} preview @key{RET}}. The list of suggestions can be made very
-long (and is covered in detail in @ref{For advanced users}),
-but some are:
+@key{RET} preview @key{RET}}. Remember to set the option when you have
+changed it. The list of suggestions can be made very long (and is
+covered in detail in @ref{For advanced users}), but some are:
 
 @itemize @bullet
 @item Change the color of the preview background
@@ -247,6 +247,24 @@ enable @code{reveal-mode}. The preview will close again when the cursor
 leaves the preview unless you change it, in which case you will have to
 regenerate the preview (via e.g., @kbd{C-c C-p C-p}).
 
+@item Preview your favourite @LaTeX{} constructs
+
+If you have a certain macro or environment that you want to preview,
+first check if it can be chosen in the @code{Preview Default Options
+List} in the @code{Preview Latex} group. 
+
+If it is not available there, you can add it to @code{Preview Default
+Preamble} also in the @code{Preview Latex} group, by adding a
+@code{\PreviewMacro} or @code{\PreviewEnvironment} entry
+(@pxref{Provided commands}) @emph{after} the @code{\RequirePackage}
+line. For example, if you want to preview the @code{center} environment,
+press the @key{Show} button and the last @key{INS} button, then add
+
+@example
+\PreviewEnvironment@{center@}
+@end example
+
+in the space that just opened. 
 @end itemize
 
 @node Known problems, For advanced users, Simple customization, top
