@@ -90,12 +90,10 @@
    ;; Quotation marks
    (when (and (> (length LaTeX-csquotes-open-quote) 0)
 	      (> (length LaTeX-csquotes-close-quote) 0))
-     (make-local-variable 'TeX-open-quote)
-     (setq TeX-open-quote LaTeX-csquotes-open-quote)
-     (make-local-variable 'TeX-close-quote)
-     (setq TeX-close-quote LaTeX-csquotes-close-quote)
-     (make-local-variable 'TeX-quote-after-quote)
-     (setq TeX-quote-after-quote LaTeX-csquotes-quote-after-quote))
+     (setq TeX-quote-language
+	   `(override
+	     (,LaTeX-csquotes-open-quote . ,LaTeX-csquotes-close-quote)
+	     ,LaTeX-csquotes-quote-after-quote)))
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
