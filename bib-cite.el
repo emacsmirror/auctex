@@ -2,7 +2,7 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
 ;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003, 2004
-;; Peter S. Galbraith
+;; Free Software Foundation
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
@@ -46,11 +46,11 @@
 
 ;; AUCTeX users:
 ;;  AUCTeX is a super-charged LaTeX mode for emacs. Get it at:
-;;    http://savannah.gnu.org/download/auctex/stable.pkg/  <-stable release
-;;    http://savannah.gnu.org/download/auctex/beta.pkg <-alpha/beta release
+;;
+;;    ftp://www.gnu.org/pub/gnu/auctex/
 ;;
 ;;  WWW users may want to check out the AUCTeX page at
-;;    http://www.gnu.org/auctex/
+;;    http://www.gnu.org/software/auctex/
 ;;
 ;;  bib-cite.el is included in the AUCTeX distribution.  Therefore, if
 ;;  you use AUCTeX and didn't obtained bib-cite.el separately, make sure

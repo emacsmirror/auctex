@@ -4309,8 +4309,6 @@ runs the hooks in `doctex-mode-hook'."
 	 "\\$\\$" ; display math delimitor
 	 "\\|$\\)"))
 
-  (setq selective-display t)
-
   (make-local-variable 'LaTeX-item-list)
   (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
 			  ("thebibliography" . LaTeX-item-bib)))

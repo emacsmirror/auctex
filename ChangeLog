@@ -1,5 +1,14 @@
 2004-08-15  David Kastrup  <dak@gnu.org>
 
+	* bib-cite.el: Change Copyright notice and URLs.
+
+2004-08-15  Dan Nicolaescu  <dann@ics.uci.edu>
+
+        * latex.el (LaTeX-common-initialization): Don't set
+        `selective-display'.
+
+2004-08-15  David Kastrup  <dak@gnu.org>
+
 	* doc/tex-ref.tex: Add Omega entry, rearrange.
 
 	* tex.el (TeX-print-command): Use `%(o?)'.
