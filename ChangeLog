@@ -1,6 +1,7 @@
 2004-07-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-make-overlay): New function.
+	Remove superfluous `let'.
 	(TeX-fold-buffer-type, TeX-fold-item): Use it.
 	(TeX-fold-mode): Call `TeX-fold-clearout-buffer' after clearing
 	`post-command-hook'.
