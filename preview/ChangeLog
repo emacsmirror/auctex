@@ -1,3 +1,26 @@
+2003-09-17  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/psfontmap.c:
+	* dvipng/dvipng.c:
+	* dvipng/configure.ac: Fix SELFAUTO... variables if dvipng is not
+	being installed in main texmf tree. This will make it find config
+	files and fonts anyway. 
+
+2003-08-29  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: fix color handling 
+
+	* dvipng/dvipng.c: Increase TIMING output 
+
+	* dvipng/misc.c: 
+	* dvipng/draw.c: small speedups 
+
+	* dvipng/dvipng.h: 
+	* dvipng/configure.ac:
+	* dvipng/config.h.in: 
+	* dvipng/Makefile.in: Change handling of the DEBUG and TIMING
+	flags
+
 2003-09-16  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/tfm.c:
