@@ -111,10 +111,10 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\C-m" 'TeX-insert-macro)
   (define-key TeXinfo-mode-map "\e\t"     'TeX-complete-symbol) 
 
-  (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
-  (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
-  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
   (define-key TeXinfo-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
+  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
+  (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
   (define-key TeXinfo-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
 
   ;; From tex-buf.el
@@ -150,6 +150,7 @@ When called interactively, prompt for an environment."
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Item" texinfo-insert-@item t]
+	"-"
 	(list "Insert Font"
 	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
 	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
@@ -166,27 +167,54 @@ When called interactively, prompt for an environment."
 	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
 	      ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
 	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
-	["Save Document" TeX-save-document t]
-	["Next Error" TeX-next-error t]
-	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	        :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Switch to original file" TeX-home-buffer t]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
-	"--"
 	["Create Master Menu" texinfo-master-menu t]
 	["Create Menu" texinfo-make-menu t]
 	["Update Node" texinfo-update-node t]
 	["Update Every Node" texinfo-every-node-update t]
 	["Update All Menus" texinfo-all-menus-update t]
-	["Comment Region" TeX-comment-region t]
-	["Uncomment Region" TeX-uncomment-region t]
-	["Switch to Master file" TeX-home-buffer t]
-	["Submit bug report" TeX-submit-bug-report t]
-	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+	"-"
+	["Next Error" TeX-next-error t]
+	(list "TeX Output"
+	      ["Kill Job" TeX-kill-job t]
+	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	        :style toggle :selected TeX-debug-bad-boxes ]
+	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
+	(list "Commenting"
+	      ["Comment or Uncomment Region"
+	       TeX-comment-or-uncomment-region t]
+	      ["Comment or Uncomment Paragraph"
+	       TeX-comment-or-uncomment-paragraph t])
+	(list "Multifile"
+	      ["Save Document" TeX-save-document t]
+	      ["Switch to Master file" TeX-home-buffer t]
+	      ["Set Master File" TeX-master-file-ask
+	       :active (not (TeX-local-master-p))])
+	(list "Show/Hide"
+	      ["Macro Fold Mode" TeX-fold-mode
+	       :style toggle :selected TeX-fold-mode]
+	      ["Hide All Macros" TeX-fold-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-o"]
+	      ["Show All Macros" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      ["Hide Current Macro" TeX-fold-macro
+	       :active TeX-fold-mode :keys "C-c C-o C-c"]
+	      ["Show Current Macro" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-e"])
+	"-"
+	(list "AUCTeX"
+	      (list "Customize"
+		    ["Browse options"
+		     (customize-group 'AUCTeX)]
+		    ["Extend this menu"
+		     (easy-menu-add-item
+		      nil '("LaTeX" "AUCTeX")
+		      (customize-menu-create 'AUCTeX))])
+	      ["Documentation" TeX-goto-info-page t]
+	      ["Submit bug report" TeX-submit-bug-report t]
+	      ["Reset Buffer" TeX-normal-mode t]
+	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")
