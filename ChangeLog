@@ -1,3 +1,9 @@
+2005-02-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/epsf.el ("epsf"): Do not add epsffig environment.  Fixes
+	error if latex.el(c) is not loaded.
+	(LaTeX-env-epsffigure): Remove.
+
 2005-02-11  David Kastrup  <dak@gnu.org>
 
 	* tex-site.el.in (TeX-lisp-directory): Use `@lispauctexdir'
