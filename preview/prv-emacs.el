@@ -301,7 +301,14 @@ Conversion from Emacs color numbers (0 to 65535) to GhostScript
 floats."
   (format "%g" (/ value 65535.0)))
 
-(defun preview-inherited-face-attribute (face attribute &optional fallbacks)
+(defun preview-inherited-face-attribute (face attribute &optional
+					      fallbacks)
+  "Fetch face attribute while adhering to inheritance.
+This searches FACE for an ATTRIBUTE.  If it is 'unspecified,
+first inheritance is consulted (if FALLBACKS is non-NIL), then
+FALLBACKS is searched if it is a face or a list of faces.
+Relative specs are evaluated recursively until they get absolute or
+are not resolvable.  Relative specs are float values."
   (let ((value (face-attribute face attribute)))
     (when fallbacks
       (setq fallbacks
@@ -315,9 +322,7 @@ floats."
 	  ((floatp value)
 	   (let ((avalue
 		  (preview-inherited-face-attribute
-		   (car fallbacks) attribute (or (null (cdr
-							fallbacks))
-						 (cdr fallbacks)))))
+		   (car fallbacks) attribute (or (cdr fallbacks) t))))
 	     (cond ((integerp avalue)
 		    (round (* avalue value)))
 		   ((floatp avalue)
@@ -325,8 +330,7 @@ floats."
 		   (t value))))
 	  ((eq value 'unspecified)
 	   (preview-inherited-face-attribute
-	    (car fallbacks) attribute (or (null (cdr fallbacks))
-					  (cdr fallbacks))))
+	    (car fallbacks) attribute (or (cdr fallbacks) t)))
 	  (t value))))
 
 (defun preview-gs-get-colors ()
