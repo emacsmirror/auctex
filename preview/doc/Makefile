@@ -11,9 +11,6 @@ preview-latex_toc.html: preview-latex.texi install.texi readme.texi copying.texi
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
-	-texindex preview-latex.ky
-	-texindex preview-latex.fn
-	-texindex preview-latex.vr
 	-texindex preview-latex.cp
 	-$(TEX) "\nonstopmode\input preview-latex.texi"
 
@@ -36,6 +33,7 @@ install: preview-latex
 	@echo "** Edit \`$(infodir)/dir'"
 	@echo "** to add an entry for file \`preview-latex'"
 	@echo "**********************************************************"
+	# install-info should be used.
 
 clean: 
 	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README ChangeLog
