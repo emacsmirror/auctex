@@ -1,3 +1,29 @@
+2002-03-21  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}, subsection{Preview
+	attaching commands}): provide additional bounding box info.
+	(subsection{The internals}): move location of \pr@shipend to
+	before shipping out \pr@box so that we may measure/change it.
+	(subsection{Selection options}): slightly changed call of old
+	\everydisplay hook.
+	(subsection{Preview attaching commands}): disable more warnings
+	in order to decrease possible parse errors of preview.el.
+
+	* preview.el (preview-prefer-TeX-bb): New option to fish bounding
+	box from TeX output.  Not enabled by default until we get to fix
+	a particular problem occuring with split environment nested in
+	equation.
+	(preview-TeX-bb-border): Additional slop around bounding box.
+	(preview-TeX-bb): New function to calculate PostScript bb from
+	TeX box dimensions in sp.
+	(preview-gs-place, preview-eps-place, preview-place-preview):
+	accept additional box argument.
+	(preview-gs-transact): consider more box sources.
+	(preview-delete-file, preview-make-filename): new semantics for
+	reference-counting files.
+	(preview-parse-messages, preview-analyze-error): Parse additional
+	bounding box information from AUC TeX run.
+
 2002-03-20  Nix  <nix@esperi.demon.co.uk>
 
 	* prv-xemacs.el (preview-with-LaTeX-menus): Handle the case
