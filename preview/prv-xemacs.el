@@ -169,14 +169,6 @@ other hooks, such as major mode hooks, can do the job."
 		(append (symbol-value list-var) (list element))
 	      (cons element (symbol-value list-var))))))))
      
-(unless (boundp 'null-device)
-  (defvar null-device (or (and (boundp 'grep-null-device)
-			       grep-null-device)
-			  (if (memq system-type '(ms-dos windows-nt))
-			      "NUL"
-			    "/dev/null"))
-    "The system null device."))
-
 (defvar preview-transparent-border)
 
 ;; Images.

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.233 2005-02-18 19:07:49 dakas Exp $
+;; $Id: preview.el,v 1.234 2005-02-25 16:39:42 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -347,7 +347,7 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
   :group 'preview-gs
   :type 'string)
 
-(defcustom preview-gs-options '("-q" "-dSAFER" "-dDELAYSAFER" "-dNOPAUSE"
+(defcustom preview-gs-options '("-q" "-dSAFER" "-dNOPAUSE"
 				"-DNOPLATFONTS" "-dPrinted"
 				"-dTextAlphaBits=4"
 				"-dGraphicsAlphaBits=4")
@@ -389,6 +389,10 @@ follow changes in the displayed buffer area faster."
 (defvar preview-gs-image-type nil
   "Image type for gs produced images.")
 (make-variable-buffer-local 'preview-gs-image-type)
+
+(defvar preview-gs-sequence nil
+  "Pair of sequence numbers for gs produced images.")
+(make-variable-buffer-local 'preview-gs-sequence)
 
 (defvar preview-scale nil
   "Screen scale of images.
@@ -600,10 +604,7 @@ and tries to restart GhostScript if necessary."
 		    (goto-char (if (marker-buffer (process-mark process))
 				   (process-mark process)
 				 (point-max)))
-		    (insert-before-markers preview-gs-command " "
-					   (mapconcat #'shell-quote-argument
-						      preview-gs-command-line
-						      " ") "\n" err)))
+		    (insert-before-markers err)))
 		(delete-process process)
 		(if (or (null ov)
 			(eq status 'signal))
@@ -617,6 +618,13 @@ and tries to restart GhostScript if necessary."
 		      (preview-gs-queue-empty))
 		  
 		  ;; restart only if we made progress since last call
+		  (let (filenames)
+		    (dolist (ov preview-gs-outstanding)
+		      (setq filenames (overlay-get ov 'filenames))
+		      (condition-case nil
+			  (preview-delete-file (nth 1 filenames))
+			(file-error nil))
+		      (setcdr filenames nil)))
 		  (setq preview-gs-queue (nconc preview-gs-outstanding
 						preview-gs-queue))
 		  (setq preview-gs-outstanding nil)
@@ -642,18 +650,31 @@ Gets the usual PROCESS and STRING parameters, see
 (defun preview-gs-restart ()
   "Start a new GhostScript conversion process."
   (when preview-gs-queue
+    (if preview-gs-sequence
+	(setcar preview-gs-sequence (1+ (car preview-gs-sequence)))
+      (setq preview-gs-sequence (list 1)))
+    (setcdr preview-gs-sequence 1)
     (let* ((process-connection-type nil)
+	   (outfile (format "-dOutputFile=%s"
+			    (preview-ps-quote-filename
+			     (format "%s/pv%d-%%d.%s"
+				     (car TeX-active-tempdir)
+				     (car preview-gs-sequence)
+				     preview-gs-image-type))))
 	   (process
 	    (apply #'start-process
 		   "Preview-GhostScript"
 		   (current-buffer)
 		   preview-gs-command
+		   outfile
 		   preview-gs-command-line)))
       (goto-char (point-max))
       (insert-before-markers "Running `Preview-GhostScript' with ``"
-			     preview-gs-command " "
 			     (mapconcat #'shell-quote-argument
-					preview-gs-command-line
+					(append
+					 (list preview-gs-command
+					       outfile)
+					 preview-gs-command-line)
 					" ") "''\n")
       (setq preview-gs-answer "")
       (process-kill-without-query process)
@@ -671,22 +692,21 @@ Gets the usual PROCESS and STRING parameters, see
 SETUP may contain a parser setup function."
   (let ((image-info (assq preview-image-type preview-gs-image-type-alist)))
     (setq preview-gs-image-type (nth 1 image-info))
+    (setq preview-gs-sequence nil)
     (setq preview-gs-command-line (append
 				   preview-gs-options
 				   (nthcdr 2 image-info))
 	  preview-gs-init-string
-	  (format "\
+	  (format "{DELAYSAFER{.setsafe}if}stopped pop\
 /.preview-BP currentpagedevice/BeginPage get dup \
 null eq {pop{pop}bind}if def \
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
 /preview-do{[count 3 roll save]3 1 roll{setpagedevice}stopped\
-{handleerror quit}if cvx systemdict/.runandhide known{.setsafe\
-\(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
+{handleerror quit}if cvx \
 stopped{handleerror quit}if count 1 ne{quit}if \
-aload pop restore<</OutputFile%s>>setpagedevice}bind def "
-		  (preview-gs-color-string preview-colors)
-		  (preview-ps-quote-filename null-device t)))
+aload pop restore}bind def "
+		  (preview-gs-color-string preview-colors)))
     (preview-gs-queue-empty)
     (preview-parse-messages (or setup #'preview-gs-dvips-process-setup))))
 
@@ -1047,16 +1067,12 @@ TEMPDIR is the correct copy of `TeX-active-tempdir',
 PS-FILE is a copy of `preview-ps-file', IMAGETYPE is the image type
 for the file extension."
   (overlay-put ov 'filenames
-	       (append
-		(unless (eq ps-file t)
-		      (list
-		       (preview-make-filename
-			(or ps-file
-			    (format "preview.%03d" snippet))
-			tempdir)))
-		(list (preview-make-filename
-		       (format "prev%03d.%s" snippet imagetype)
-		       tempdir))))
+	       (unless (eq ps-file t)
+		 (list
+		  (preview-make-filename
+		   (or ps-file
+		       (format "preview.%03d" snippet))
+		   tempdir))))
   (overlay-put ov 'queued
 	       (vector box nil snippet))
   (overlay-put ov 'preview-image
@@ -1100,14 +1116,20 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
-  (let* ((file (car (nth 0 (overlay-get ov 'filenames))))
+  (let* ((filenames (overlay-get ov 'filenames))
+	 (file (car (nth 0 filenames)))
+	 (outfile (format "-dOutputFile=%s"
+			  (preview-ps-quote-filename
+			   (car (nth 1 filenames)))))
 	 (ps-open
 	  `(lambda() (interactive "@")
 	     (preview-mouse-open-error
 	      ,(concat
 		(mapconcat #'shell-quote-argument
-			    (cons preview-gs-command
-				  preview-gs-command-line)
+			    (append (list
+				     preview-gs-command
+				     outfile)
+				    preview-gs-command-line)
 			    " ")
 		 "\nGS>"
 		 preview-gs-init-string
@@ -1175,8 +1197,15 @@ given as ANSWER."
 		   (not (memq ov preview-gs-outstanding))
 		   (overlay-buffer ov))
 	  (let* ((filenames (overlay-get ov 'filenames))
-		 (oldfile (car (nth 0 filenames)))
-		 (newfile (car (nth 1 filenames)))
+		 (oldfile (car (nth 0
+				    (nconc filenames
+					   (list
+					    (preview-make-filename
+					     (format "pv%d-%d.%s"
+						     (car preview-gs-sequence)
+						     (cdr preview-gs-sequence)
+						     preview-gs-image-type)
+					     TeX-active-tempdir))))))
 		 (bbox (aset queued 0
 			     (or (and preview-prefer-TeX-bb
 				      (aref queued 0))
@@ -1188,8 +1217,7 @@ given as ANSWER."
 		 (snippet (aref queued 2))
 		 (gs-line
 		  (format
-		   "%s \
-<<%s/OutputFile%s>>preview-do\n"
+		   "%s<<%s>>preview-do\n"
 		   (if preview-ps-file
 		       (concat "dup "
 			       (preview-gs-dsc-cvx
@@ -1206,8 +1234,8 @@ given as ANSWER."
 %g[1 1 dtransform exch]{0 ge{neg}if exch}forall]"
 			     (- (aref bbox 2) (aref bbox 0))
 			     (- (aref bbox 3) (aref bbox 1))
-			     (aref bbox 0) (aref bbox 1)))
-		   (preview-ps-quote-filename newfile))))
+			     (aref bbox 0) (aref bbox 1))))))
+	    (setcdr preview-gs-sequence (1+ (cdr preview-gs-sequence)))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
 			 (list ov)))
@@ -1785,9 +1813,14 @@ Deletes the dvi file when finished."
   (let (filename queued oldfiles snippet)
     (dolist (ov (prog1 preview-gs-queue (setq preview-gs-queue nil)))
       (when (and (setq queued (overlay-get ov 'queued))
-		 (setq filename (car (overlay-get ov 'filenames))))
+		 (setq snippet (aref (overlay-get ov 'queued) 2))
+		 (setq filename (preview-make-filename
+				 (format "prev%03d.%s"
+					 snippet preview-dvipng-image-type)
+				 TeX-active-tempdir)))
 	(if (file-exists-p (car filename))
 	    (progn
+	      (overlay-put ov 'filenames (list filename))
 	      (preview-replace-active-icon
 	       ov
 	       (preview-create-icon (car filename)
@@ -1796,8 +1829,7 @@ Deletes the dvi file when finished."
 				     (aref queued 0))
 				    (aref preview-colors 2)))
 	      (overlay-put ov 'queued nil))
-	  (setq oldfiles (nconc (overlay-get ov 'filenames)
-				oldfiles))
+	  (push filename oldfiles)
 	  (overlay-put ov 'filenames nil)
 	  (push ov preview-gs-queue))))
     (if (setq preview-gs-queue (nreverse preview-gs-queue))
@@ -1815,9 +1847,6 @@ Deletes the dvi file when finished."
 			  (preview-make-filename
 			   (or preview-ps-file
 			       (format "preview.%03d" snippet))
-			   TeX-active-tempdir)
-			  (preview-make-filename
-			   (format "prev%03d.%s" snippet preview-gs-image-type)
 			   TeX-active-tempdir))))
 	  (while (setq filename (pop oldfiles))
 	    (condition-case nil
@@ -3234,7 +3263,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.233 $"))
+	(rev "$Revision: 1.234 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3245,7 +3274,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-18 19:07:49 $"))
+    (let ((date "$Date: 2005-02-25 16:39:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

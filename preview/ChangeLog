@@ -1,4 +1,46 @@
+2005-02-25  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-gs-options): Remove "-dDELAYSAFER" from
+	option list.
+	(preview-gs-sequence): New variable.
+	(preview-gs-sentinel): Don't repeat startup echo if GhostScript
+	fails before prompting the first time.
+	(preview-gs-sentinel): When restarting, remove expected file names
+	from `preview-gs-outstanding'.
+	(preview-gs-restart): generate a unique output file name pattern
+	from `preview-gs-sequence'
+	(preview-gs-restart): list start command quoted.
+	(preview-gs-open): initialize `preview-gs-sequence'.
+	(preview-gs-open): if historic "DELAYSAFER" is still configured,
+	start safe mode manually.  Remove all settings of OutputFile, and
+	all runandhide stuff.
+	(preview-gs-place): Don't generate a filename that might not be
+	needed.
+	(preview-gs-flag-error): Generate a synthetic OutputFile option.
+	Use it in error messages.
+	(preview-gs-transact): generate output file name in outstanding
+	queue.  Don't fiddle with OutputFile settings.  Advance
+	`preview-gs-sequence'.
+	(preview-dvipng-place-all): Generate file name.
+
+	* prv-xemacs.el (null-device): Remove compatibility definition.
+
 2005-02-18  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-specs-setter): New function.
+	(preview-nonready-icon-specs): Choose slightly smaller icons.
+	(preview-nonready-icon-specs, preview-error-icon-specs)
+	(preview-icon-specs): Use `preview-specs-setter'.
+
+	* doc/wininstall.texi: Mention case problems.
+
+	* doc/install.texi (Prerequisites): Update AUCTeX version info.
+
+	* doc/problems.texi (Middle-clicks paste instead of toggling):
+	Remove reference to patches directory.  Should no longer be
+	necessary.
+	(Problems with GhostScript): Mention use of gswin32.exe instead of
+	gswin32c.exe as a problem source.
 
 	* preview.el (preview-nonready-icon-specs): Add size 14.
 
