@@ -26,11 +26,11 @@
 (defvar japanese-TeX-command-list
   (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
 	      'TeX-run-TeX nil t)
-	(list "jLaTeX" "%l '\\nonstopmode\\input{%t}'"
+	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
 	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
 	      'TeX-run-TeX nil t)
-	(list "pLaTeX" "%l '\\nonstopmode\\input{%t}'"
+	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
 	      'TeX-run-LaTeX nil t)
 	(list "Mendex" "mendex %s" 'TeX-run-command nil t)		    
 	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
@@ -66,7 +66,7 @@
 		    ("^jslides$" "jslitex")
 		    ("^j-?\\(article\\|report\\|book\\)$" "jlatex"))
                 '(("^j-\\(article\\|report\\|book\\)$" "jlatex")
-                  ("^js?\\(article\\|report\\|book\\)$" "platex")))
+                  ("^[jt]s?\\(article\\|report\\|book\\)$" "platex")))
 	      LaTeX-command-style))
 
 (setcdr (assoc "%l" TeX-expand-list)
@@ -120,7 +120,10 @@
     ("j-article")
     ("jslides")
     ("jreport")
-    ("j-report"))
+    ("j-report")
+    ("tarticle")
+    ("treport")
+    ("tbook"))
   "*List of Japanese document styles.")
 (make-variable-buffer-local 'japanese-LaTeX-style-list)
 
