@@ -7,6 +7,13 @@
 
 2004-08-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (VirTeX-common-initialization): Use "%" instead of
+	`comment-start' for `comment-start-skip'.
+	(TeX-find-opening-brace): Do not use an inverse matcher but negate
+	the whole expression.
+	(TeX-find-macro-start-helper): Reimplement.  Should be much faster
+	now.
+
 	* latex.el (LaTeX-current-environment): Use
 	`buffer-substring-no-properties'.
 	(LaTeX-indent-line): Revert last change.  Only multi-line overlays
