@@ -4043,98 +4043,130 @@ the last entry in the menu."
     (TeX-mode-specific-command-menu 'latex-mode))
 
 (easy-menu-define LaTeX-mode-menu
-    LaTeX-mode-map
-    "Menu used in LaTeX mode."
-  (list "LaTeX"
-	["Macro..." TeX-insert-macro t]
-	["Complete" TeX-complete-symbol t]
-	(list LaTeX-environment-menu-name)
-	(list LaTeX-environment-modify-menu-name)
-	["Close Environment" LaTeX-close-environment t]
-	["Item" LaTeX-insert-item t]
-	(LaTeX-section-menu-create)
-	"-"
-	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-	(list "Replace Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	"-"
-	["Comment or Uncomment Region"
-	 TeX-comment-or-uncomment-region t]
-	["Comment or Uncomment Paragraph"
-	 TeX-comment-or-uncomment-paragraph t]
-	(list "Formatting and Marking"
-	      ["Format Environment" LaTeX-fill-environment t]
-	      ["Format Paragraph" LaTeX-fill-paragraph t]
-	      ["Format Region" LaTeX-fill-region t]
-	      ["Format Section" LaTeX-fill-section t]
-	      "-"
-	      ["Mark Environment" LaTeX-mark-environment t]
-	      ["Mark Section" LaTeX-mark-section t]
-	      "-"
-	      ["Beginning of Environment" LaTeX-find-matching-begin t]
-	      ["End of Environment" LaTeX-find-matching-end t])
-	(list "Show/Hide"
-	      ["Fold Mode" TeX-fold-mode
-	       :style toggle
-	       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)]
-	      "-"
-	      ["Hide All" TeX-fold-buffer
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-b"]
-	      ["Hide Current Macro" TeX-fold-macro
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-m"]
-	      ["Hide Current Environment" TeX-fold-env
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-e"]
-	      "-"
-	      ["Show All" TeX-fold-clearout-buffer
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-x"]
-	      ["Show Current Item" TeX-fold-clearout-item
-	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-	       :keys "C-c C-o C-c"])
-	["Math Mode" LaTeX-math-mode
-	 :style toggle :selected LaTeX-math-mode ]
-	"-"
-	(list "Multifile/Parsing"
-	      ["Switch to Master File" TeX-home-buffer t]
-	      ["Save Document" TeX-save-document t]
-	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))]
-	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t)
-	       :keys "\\[universal-argument] \\[TeX-normal-mode]"])
-;;	[ "Convert 209 to 2e" LaTeX-209-to-2e
-;;	  :visible (member "latex2" (TeX-style-list)) ]
+  LaTeX-mode-map
+  "Menu used in LaTeX mode."
+  (TeX-menu-with-help
+   `("LaTeX"
+     ,(LaTeX-section-menu-create)
+     ["Macro ..." TeX-insert-macro
+      :help "Insert a macro and possibly arguments"]
+     ["Complete Macro" TeX-complete-symbol
+      :help "Complete the current macro"]
+     ,(list LaTeX-environment-menu-name)
+     ,(list LaTeX-environment-modify-menu-name)
+     ["Close Environment" LaTeX-close-environment
+      :help "Insert the \\end part of the current environment"]
+     ["Item" LaTeX-insert-item
+      :help "Insert a new \\item"]
+     "-"
+     ("Insert Font"
+      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"
+       :help ""]
+      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+     ("Replace Font"
+      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     "-"
+     ["Comment or Uncomment Region"
+      TeX-comment-or-uncomment-region
+      :help "Comment or uncomment the currently selected region"]
+     ["Comment or Uncomment Paragraph"
+      TeX-comment-or-uncomment-paragraph
+      :help "Comment or uncomment the current paragraph"]
+     ("Formatting and Marking"
+      ["Format Environment" LaTeX-fill-environment
+       :help "Fill and indent the current environment"]
+      ["Format Paragraph" LaTeX-fill-paragraph
+       :help "Fill and ident the current paragraph"]
+      ["Format Region" LaTeX-fill-region
+       :help "Fill and indent the currently selected region"]
+      ["Format Section" LaTeX-fill-section
+       :help "Fill and indent the current section"]
+      "-"
+      ["Mark Environment" LaTeX-mark-environment
+       :help "Mark the current environment"]
+      ["Mark Section" LaTeX-mark-section
+       :help "Mark the current section"]
+      "-"
+      ["Beginning of Environment" LaTeX-find-matching-begin
+       :help "Move point to the beginning of the current environment"]
+      ["End of Environment" LaTeX-find-matching-end
+       :help "Move point to the end of the current environment"])
+     ("Show/Hide"
+      ["Fold Mode" TeX-fold-mode
+       :style toggle
+       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :help "Toggle folding mode"]
+      "-"
+      ["Hide All" TeX-fold-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-b"
+       :help "Hide all configured TeX constructs in the current buffer"]
+      ["Hide Current Macro" TeX-fold-macro
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-m"
+       :help "Hide the LaTeX macro containing point"]
+      ["Hide Current Environment" TeX-fold-env
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-e"
+       :help "Hide the environment containing point"]
+      "-"
+      ["Show All" TeX-fold-clearout-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-x"
+       :help "Permanently show all folded content again"]
+      ["Show Current Item" TeX-fold-clearout-item
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-c"
+       :help "Permanently show the item containing point"])
+     ["Math Mode" LaTeX-math-mode
+      :style toggle :selected LaTeX-math-mode
+      :help "Toggle math mode"]
+     "-"
+     ("Multifile/Parsing"
+      ["Switch to Master File" TeX-home-buffer
+       :help "Switch to buffer of Master File, or buffer of last TeX command"]
+      ["Save Document" TeX-save-document
+       :help "Save all buffers associated with the current Master File"]
+      ["Set Master File" TeX-master-file-ask
+       :active (not (TeX-local-master-p))
+       :help "Set the main file to run TeX commands on"]
+      ["Reset Buffer" TeX-normal-mode
+       :help "Save and reparse the current buffer for style information"]
+      ["Reset AUCTeX" (TeX-normal-mode t)
+       :keys "\\[universal-argument] \\[TeX-normal-mode]"
+       :help "Reset buffer and reload AUCTeX style files"])
+;;      [ "Convert 209 to 2e" LaTeX-209-to-2e
+;;        :visible (member "latex2" (TeX-style-list)) ]
 ;; Rats.  XEmacs does not like :visible.
-	(list "Customize"
-	      ["Browse options"
-	       (customize-group 'AUCTeX)]
-	      ["Extend this menu"
-	       (easy-menu-add-item
-		nil '("LaTeX")
-		(customize-menu-create 'AUCTeX))])
-	["Documentation" TeX-goto-info-page t]
-	["Submit bug report" TeX-submit-bug-report t]))
+     ("Customize"
+      ["Browse options"
+       (customize-group 'AUCTeX)
+       :help "Open the customization buffer for AUCTeX"]
+      ["Extend this menu"
+       (easy-menu-add-item
+	nil '("LaTeX")
+	(customize-menu-create 'AUCTeX))
+       :help "Make this menu a full-blown customization menu"])
+     ["Read the AUCTeX Manual" TeX-goto-info-page
+      :help "Everything worth reading"]
+     ["Submit bug report" TeX-submit-bug-report
+      :help "Create a problem report for mailing"])))
 
 (defcustom LaTeX-font-list
   '((?\C-a ""              ""  "\\mathcal{"    "}")
