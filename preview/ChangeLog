@@ -5,6 +5,10 @@
 	(mail-header-encode-parameter): Encode the header ourselves: it
 	seems that versions of the library are not good at that.
 	(preview-parse-variables): Add `preview-parsed-pdfoutput'.
+	(preview-map): Add keybinding for `preview-copy-region-as-mml'.
+	(preview-copy-mml): factor out `preview-format-mml'.
+	(preview-copy-region-as-mml): New function.
+	(preview-format-mml): New function.
 
 2004-01-12  Jan-Ake Larsson  <jalar@mai.liu.se>
 
