@@ -1,5 +1,7 @@
 2001-10-11  Alan Shutko  <ats@acm.org>
 
+	* Makefile.in (ELCC): Bug 469742: Include . in load path.
+
 	* configure.in: Added --with-xemacs option.  Added AC_XEMACS_P to
 	determine if we're using xemacs.  Added PLAT_LISP substitution
 	with the flavor-specific lisp file.

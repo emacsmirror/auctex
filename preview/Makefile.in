@@ -5,7 +5,7 @@ TEX=@TEX@
 TEXHASH=@TEXHASH@
 
 EMACS=@EMACS@
-ELCC=$(EMACS) -batch -q -no-site-file -no-init-file
+ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))'
 AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
                 (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
