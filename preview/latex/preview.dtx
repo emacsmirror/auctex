@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1519}
+% \CheckSum{1524}
 % \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.93 $
+%   \rcskey \version CVS-$Revision: 1.94 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2004-10-14 20:35:10 $
+% \rcskey\next $Date: 2004-11-05 01:36:34 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -431,10 +431,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.93 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.94 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-10-14 20:35:10 $
+\reserved@a\next $Date: 2004-11-05 01:36:34 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -564,8 +564,11 @@
 \DeclareOption{dvips}{%
   \let\pr@graphicstype\@ne
   \preview@delay{\AtBeginDvi{%
-      \special{!userdict begin/bop-hook{/isls false def%
-          /vsize 792 def/hsize 612 def}def end}}}}
+      \special{!userdict begin/preview-bop-level 0 def%
+      /bop-hook{/preview-bop-level dup load dup 0 le{/isls false def%
+          /vsize 792 def/hsize 612 def}if 1 add store}bind def%
+      /eop-hook{/preview-bop-level dup load dup 0 gt{1 sub}if
+        store}bind def end}}}}
 %    \end{macrocode}
 % The |pdftex| option just sets \cmd{\pr@graphicstype}.
 %    \begin{macrocode}
@@ -1460,6 +1463,7 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\z@
 %<tightpage>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
+%<tightpage>    \ifx\pdfoutput\relax \@ne\fi
 %<tightpage>    \ifnum\pdfoutput>\z@ \tw@\fi \@ne \or
 %<tightpage>    \ExecuteOptions{dvips}\relax \or
 %<tightpage>    \ExecuteOptions{pdftex}\relax\fi\fi
@@ -1503,6 +1507,7 @@ Please complain to your document class author}%
 %<tightpage>\ifnum\pr@graphicstype=\@ne
 %<tightpage>\preview@delay{\AtBeginDvi{%
 %<tightpage>  \special{!userdict begin/bop-hook{%
+%<tightpage>  preview-bop-level 0 le{%
 %<tightpage>     7{currentfile token not{stop}if
 %<tightpage>       65781.76 div DVImag mul}repeat
 %    \end{macrocode}
@@ -1535,7 +1540,7 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
 %<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
-%<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice%
+%<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice}if%
 %    \end{macrocode}
 %So we now bind the old definition of |bop-hook| into our new
 %definition and finish it.

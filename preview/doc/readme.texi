@@ -10,12 +10,12 @@ source too often? This Elisp/@LaTeX{} package will render your displayed
 @LaTeX{} equations right into the editing window where they belong.
 
 The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
-display math or figures into the source buffers.  By mouse-clicking, you
-can open the original text.  After editing, another click will just run
-the region in question through @LaTeX{} and redisplay the new results.
+display math or figures into the source buffers and switch conveniently
+between source and image representation.
 
 @ifclear rawfile
 @menu
+* What use is it?::
 * Activating preview-latex::
 * Getting started::
 * Basic modes of operation::
@@ -31,7 +31,29 @@ for you, consult the @file{INSTALL} file for installation instructions
 (especially, read the Prerequisites section).
 @end ifset
 
-@node  Activating preview-latex, Getting started, Introduction, Introduction
+@node  What use is it?, Activating preview-latex, Introduction, Introduction
+@section What use is it?
+@cindex Philosophy of @previewlatex{}
+@acronym{WYSIWYG} (what you see is what you get) sometimes is considered
+all the rage, sometimes frowned upon.  Do we really want it?  Wrong
+question.  The right question is @emph{what} we want from it.  Except
+when finetuning the layout, we don't want to use printer fonts for
+on-screen text editing.  The low resolution and contrast of a computer
+screen render all but the coarsest printer fonts (those for low-quality
+newsprint) unappealing, and the margins and pagination of the print are
+not wanted on the screen, either.  On the other hand, more complex
+visual compositions like math formulas and tables can't easily be taken
+in when seen only in the source.  @previewlatex{} strikes a balance: it
+only uses graphic renditions of the output for certain, configurable
+constructs, does this only when told, and then right in the source code.
+Switching back and forth between the source and preview is easy and
+natural and can be done for each image independently.  Behind the scenes
+of @previewlatex{}, a sophisticated framework of other programs like
+@samp{dvipng}, Dvips and GhostScript are employed together with a
+special @LaTeX{} style file for extracting the material of interest in
+the background and providing fast interactive response.
+
+@node  Activating preview-latex, Getting started, What use is it?, Introduction
 @section Activating @previewlatex{}
 @cindex Activation
 After installation, the package may need to be activated (and remember

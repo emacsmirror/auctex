@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.220 2004-10-23 16:54:52 dakas Exp $
+;; $Id: preview.el,v 1.221 2004-11-05 01:36:36 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2038,7 +2038,7 @@ are selected."
 
 (defcustom preview-default-preamble
   '("\\RequirePackage[" ("," . preview-default-option-list)
-				      "]{preview}")
+				      "]{preview}[2004/11/05]")
   "*Specifies default preamble code to add to a LaTeX document.
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
@@ -3048,7 +3048,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.220 $"))
+	(rev "$Revision: 1.221 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3059,7 +3059,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-23 16:54:52 $"))
+    (let ((date "$Date: 2004-11-05 01:36:36 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

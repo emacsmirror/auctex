@@ -533,7 +533,7 @@ bounding box problem and want to get Dvips' angle on that matter.
 @itemx preview-reference-face
 @itemx preview-document-pt-list
 @itemx preview-default-document-pt
-@code{preview-scale-function} determines by what factor PostScript
+@code{preview-scale-function} determines by what factor
 images should be scaled when appearing on the screen.  If you specify a
 numerical value here, the physical size on the screen will be that of
 the original paper output scaled by the specified factor, at least if
@@ -624,9 +624,8 @@ What happens when @LaTeX{} is finished depends on the configuration of
 @code{preview-image-type}.  What to do for each of the various settings
 is specified in the variable @code{preview-image-creators}.  The options
 to pass into GhostScript and what Emacs image type to use is specified
-in @code{preview-gs-image-type-alist}.  The setting @code{postscript} is
-not offered when customizing @code{preview-image-type} since it is
-mostly of historic interest and will not work satisfactorily.
+in @code{preview-gs-image-type-alist}.
+
 @code{preview-image-type} defaults to @code{png}.  For this to work,
 your version of GhostScript needs to support the @option{png16m} device.
 If you are experiencing problems here, you might want to reconfigure
@@ -648,17 +647,24 @@ customizable concerning aspects of that operation, see the customization
 group @code{Preview Gs} for this.
 
 Another noteworthy setting of @code{preview-image-type} is
-@samp{dvipng}: in this case, the @samp{dvipng} @pindex{dvipng} program
-will get run on @acronym{DVI} output (or GhostScript with a
-@acronym{PNG} device on @acronym{PDF} output).  This is in general much
-faster than Dvips and GhostScript.  In that case, the option
+@samp{dvipng}: in this case, the @samp{dvipng}@pindex{dvipng} program
+will get run on @acronym{DVI} output (see below for @acronym{PDF}).
+This is in general much faster than Dvips and GhostScript.  In that
+case, the option
 
 @item preview-dvipng-command
 will get run for doing the conversion, and it is expected that
 
 @item preview-dvipng-image-type
-images get produced (@code{dvipng} might be configured for other image
-types as well).
+images get produced (@samp{dvipng} might be configured for other image
+types as well).  You will notice that @code{preview-gs-image-type-alist}
+contains an entry for @code{dvipng}: this actually has nothing to with
+@samp{dvipng} itself but specifies the image type and GhostScript device
+option to use when @samp{dvipng} can't be used.  This will obviously be
+the case for @acronym{PDF} output by PDF@LaTeX{}, but it will also happen
+if the @acronym{DVI} file contains PostScript specials in which case the
+affected images will get run through Dvips and GhostScript once
+@samp{dvipng} finishes.
 
 @item preview-gs-options
 Most interesting to the user perhaps is the setting of this variable.
