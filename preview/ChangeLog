@@ -1,5 +1,8 @@
 2002-03-13  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{The internals}): Use
+	\@arrayparboxrestore for better reset of spacing.
+
 	* preview.el (require): avoid compiler warning.
 	(preview-goto-info-page): new function
 	(LaTeX-preview-setup): add preview-goto-info-page binding
