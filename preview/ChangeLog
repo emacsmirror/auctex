@@ -1,3 +1,9 @@
+2002-11-18  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-mode-setup): Add preview-at-point to the
+	toolbar, for those people that have not seen fit to disable it.
+	Volunteers for the XEmacs equivalent?
+
 2002-11-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-ps-quote-filename): New function replacing
