@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1991-12-07 15:24:43 $|$Revision: 4.11 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1991-12-07 23:43:03 $|$Revision: 5.0 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 4.11 $  
+;; RCS status      : $Revision: 5.0 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sat Dec  7 16:22:45 1991
-;; Update Count    : 445
+;; Last Modified On: Sat Dec  7 22:15:04 1991
+;; Update Count    : 459
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -139,24 +139,6 @@
 ;;
 ;; 
 
-(defvar TeX-complete-word (key-binding "\e\t")
-  "*Function to call if M-t is invoked on a word which does not start 
-with a backslash. Default is the meaning of M-t when latex-mode was called.")
-
-(defvar LaTeX-indent-level 2
-  "*Indentation of begin-end blocks in LaTeX.")
-
-(defvar LaTeX-item-indent -2
-  "*Extra indentation for lines beginning with \\item{.")
-
-(defvar TeX-auto-header "texheader"
-  "*filename for TeX-headers. \input by TeX, so the real file should have
-the extention `.tex'")
-
-(defvar TeX-auto-trailer "textrailer"
-  "*filename for TeX-trailers \input by TeX, so the real file should have
-the extention `.tex'")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar TeX-esc "\\" "The TeX escape character.")
@@ -194,6 +176,8 @@ the extention `.tex'")
 ;; Autoload modules
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; first load the site-default settings for auc-tex
+
 (require 'tex-site)
 
 (let ((no-doc
@@ -210,7 +194,7 @@ as the definition of this this function is placed in an external module."))
   ;; environment commands
   (autoload 'LaTeX-environment "latex-environment" no-doc t)
   (autoload 'LaTeX-insert-item "latex-environment" no-doc t)
-  (autoload 'LaTeX-close-block "latex-environment" no-doc t)
+  (autoload 'LaTeX-close-environment "latex-environment" no-doc t)
 
   ;; invoking tex
   (autoload 'TeX-home-buffer "tex-buffer" no-doc t)
@@ -235,9 +219,7 @@ as the definition of this this function is placed in an external module."))
   (autoload 'TeX-un-comment-region "tex-misc" no-doc t)
   (autoload 'TeX-validate-buffer "tex-misc" no-doc t)
   (autoload 'TeX-terminate-paragraph "tex-misc" no-doc t)
-  (if TeX-use-completion
-      (autoload 'TeX-complete-symbol "tex-complete" no-doc t)
-    )
+  (autoload 'TeX-complete-symbol "tex-complete" no-doc t)
   )
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -282,9 +264,7 @@ and in the TeX-compilation."
   (define-key TeX-mode-map "\C-c\C-h" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
   (define-key TeX-mode-map "\C-c!"    'TeX-print)
-  (if TeX-use-completion
-      (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
-  )
+  (define-key TeX-mode-map "\e\t"     'TeX-complete-symbol))
 
 (if LaTeX-mode-map
     ()
@@ -301,7 +281,7 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\M-g"     'LaTeX-format-region)
   (define-key LaTeX-mode-map "\M-s"     'LaTeX-format-section)
   (define-key LaTeX-mode-map "\M-\C-e"  'LaTeX-mark-environment)
-  (define-key LaTeX-mode-map "\M-\C-f"  'LaTeX-close-block)
+  (define-key LaTeX-mode-map "\C-c\C-f"  'LaTeX-close-environment)
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
@@ -322,7 +302,7 @@ calls plain-tex-mode or latex-mode.  If it cannot be determined
 	  (if (re-search-forward 
 	       (concat "^[^%]*"
 		       (regexp-quote TeX-esc)
-		       \\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
+		       "\\(begin[^a-z]\\|section\s*{\\|part\\|chapter\\)") nil t)
 	      'latex-mode
 	    TeX-default-mode))))
     (if mode (funcall mode)
@@ -427,31 +407,26 @@ Makes \" insert `` when it seems to be the beginning of a quotation,
 and '' when it appears to be the end; it inserts \" only after a \\.
 LFD and TAB indent lines as with programming modes.
 
-Use \\[TeX-region] to run LaTeX on the current region, plus the preamble
-copied from the top of the file (containing \\documentstyle, etc.),
-running LaTeX under a special subshell.  \\[TeX-buffer] does the whole buffer.
-Use \\[TeX-preview] to preview the .dvi file made by either of these.
+Use \\[TeX-region] to run LaTeX on the current region, plus the
+preamble copied from the top of the file (containing \\documentstyle,
+etc.).  \\[TeX-buffer] does the whole buffer.  Use \\[TeX-preview] to
+preview the .dvi file made by either of these.
 
-Use \\[TeX-next-error] to trace through the errors. When found one, use 
-\\[TeX-error-help] to give some help on that particular error. 
+Use \\[TeX-next-error] to trace through the errors. 
 
 See LaTeX-section and LaTeX-environment for a description of customization.
 
 Use \\[TeX-validate-buffer] to check buffer for paragraphs containing
 mismatched $'s or braces.
 
-TAB is forced insert spaces, as TeX ignores ordinary tab's.
+TAB is forced to insert spaces, as TeX ignores ordinary tab's.
 
 Special commands:
 \\{LaTeX-mode-map}
 
 Mode variables:
 
-TeX-default-mode
-        Mode to enter when I cannot determine which mode to use.
-
-TeX-display-help
-        Non-nil means always to display errors. (default)
+	Refer to `tex-site.el' for customization
 
 Entering LaTeX mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value

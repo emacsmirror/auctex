@@ -4,8 +4,8 @@ AUC TeX
 
 AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
 
-No real  documentation has been written  so  far, but according  to my
-planning, it will be available around august 1991.
+No real documentation has been written so far, but it may be available
+any year now.
 
 However, you're welcome to direct questions to the current maintainer,
 whose address is at the bottom of this file.
@@ -14,25 +14,22 @@ Files in this distribution
 --------------------------
 
 	README			This file
-	
-	auc-tex.el		The main file of AUC TeX
+	COPYING			The GNU emacs copyright notice
+	INTRO			A short introduction to AUC-TeX
+	TAGS			Tags file for crossreference 
 
+	auc-tex.el		The main file of AUC TeX
+	tex-site.el		Site specific setup
 	latex-environment.el	Environment functions
 	latex-section.el	Sectioning functions
 	tex-buffer.el		Invoking LaTeX from inside Emacs
 	tex-debug.el		Debugging LaTeX and TeX documents
 	tex-misc.el		Miscellaneous utility functions
-
 	outline-m.el		Outline mode as minor mode
 	tex-math.el		Smart math minor mode for writing
 				lots of LaTeX math symbols
 	minor-map.el		Management of keymaps for minor modes
 
-	latex-names.el		Names of (La)TeX commands, to use for
-	tex-commands.el		completion (tex-misc)
-
-	compile-dist.el		batch file used to byte compile
-				the distribution files.
 
 Installation
 ------------
@@ -66,80 +63,96 @@ when you load a file width suffix `.tex'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Now you should   set  your personal   defaults  of the  user-definable
-variables.  These are listed in the elisp `.el'  files, and are marked
-with   `*' in the beginning  of  the documentation string.   E.g.  you
-should set the default printer name:
+Now you should set your personal defaults of the user-definable
+variables.  These are listed in the elisp `tex-site.el' file, and are
+marked with `*' in the beginning of the documentation string.  E.g.
+you should set the default printer name:
 
 	(setq TeX-default-printer-name "lw")
 
-These settings should be placed in your init `.emacs' file
-
-Also -- you may want to setup some  keybindings for outline-minor-mode
-and LaTeX-math-mode.  Since those are minor modes, the key definitions
-for invoking them should be set by you.  Here's how I do it myself.
+Also -- you should include something like the following in your .emacs
+or site-setup file. This is what I use:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Personal keybindings of $USER
+;; Note:  C-c <letter> sequences are reserved for users own bindings
+;;
 
 (defun Ctl-C-prefix ()			; Use Ctl-C as a command prefix
   Ctl-C-keymap)
 (setq Ctl-C-keymap (make-keymap))	; allocate Ctl-C keymap table
 (global-set-key "\C-c" (Ctl-C-prefix))	; define Ctl-C function
 
-(define-key Ctl-C-keymap "O" 'outline-minor-mode) 
-(define-key Ctl-C-keymap "M" 'LaTeX-math-mode)
-
-(autoload 'outline-minor-mode "outline-m" t)
+(define-key Ctl-C-keymap "m" 'LaTeX-math-mode)
 (autoload 'LaTeX-math-mode "tex-math" t)
 
-;; Note:  C-c <letter> sequences are reserved for users own bindings
+;;
+;;  Setup outline-minor-mode
+;; 
+
+(define-key Ctl-C-keymap "o" 'outline-minor-mode) 
+(autoload 'outline-minor-mode "outline-m" t)
+
+(make-variable-buffer-local 'outline-prefix-char)
+(setq-default outline-prefix-char "\C-l")
+(make-variable-buffer-local 'outline-regexp)
+(setq-default outline-regexp "[*\^l]+")
+(make-variable-buffer-local 'outline-level-function)
+(setq-default outline-level-function 'outline-level-default)
+
+;;
+;; Personal defaults for AUC-TeX mode
+;;
+
+(setq LaTeX-figure-label "fig:")
+(setq LaTeX-table-label "tab:")
+(setq LaTeX-section-label "sec:")
+(setq LaTeX-default-style-options "a4,12pt,dk")
+(setq LaTeX-float "hbtp")
+
+(setq TeX-mode-hook  ;; NB: invoking (la)tex-mode also runs text-mode-hook
+      '(lambda ()
+         (dansk-double-mode 1)))
+
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-For efficiency of auc-tex, you should byte compile the .el  files.  To
-byte compile  all the distribution   files in one  take,  stand in the
-directory below auc-tex  (where  the  file compile-dist.el is placed),
-and type:
+For efficiency of auc-tex, you should byte compile the .el files.
 
-	emacs -batch -l compile-dist.el -kill
-
-Now awnser yes (press y <return>)  at the questions ... 
 
 Warranty
 --------
 
 AUC TeX is distributed in the hope that it will be useful, but WITHOUT
-ANY  WARRANTY.   No author  or  distributor accepts  responsibility to
-anyone for the consequences of  using it or for  whether it serves any
+ANY WARRANTY.  No author or distributor accepts responsibility to
+anyone for the consequences of using it or for whether it serves any
 particular purpose or works at all.
 
-Everyone  is granted permission to  copy, modify and redistribute this
-file,  but only under  the  conditions described in the  document "GNU
-Emacs  copying permission notice".  An  exact copy  of the document is
-supposed  to have been given  to you along with  this file so that you
-can know  how you may  redistribute it all.  It should  be  in a  file
-named COPYING.  Among   other things, the  copyright notice  and  this
+Everyone is granted permission to copy, modify and redistribute this
+file, but only under the conditions described in the document "GNU
+Emacs copying permission notice".  An exact copy of the document is
+supposed to have been given to you along with this file so that you
+can know how you may redistribute it all.  It should be in a file
+named COPYING.  Among other things, the copyright notice and this
 notice must be preserved on all copies.
 
-This software was written as part of the author's  official duty as an
-employee of the University of Aalborg (denmark)  and is  in the public
-domain.  You are free  to use this software as  you wish,  but WITHOUT
-ANY  WARRANTY WHATSOEVER.  It would  be  nice, though if  when you use
-this code, you give due credit to the author.
+Availability
+------------
 
+AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
+"/pub/emacs-lisp/auc-tex-NN.NN.tar.Z" (where `NN.NN' is the number of
+the release).  Also, it should be available at major TeX and Elisp
+archives around the world.  In case you don't have access anonymous
+ftp, you can get it by Email requests to `auc-tex_mgr@iesd.auc.dk'.
 
 Contacts
 --------
 
-Mailing list:	
-
-There  has been  established a  mailing    list for discussion  of the
-evaluation of auc-tex.  You're very welcome to  join.  However, If you
-are only  interested in updates  information, you should  refer to the
-newsgroups comp.text.tex and gnu.emacs.announce.
+There has been established a mailing list for discussion of the
+evaluation of auc-tex.  You're very welcome to join.  However, If you
+are only interested in information on updates, you should refer to the
+newsgroups comp.text.tex and gnu.emacs.sources.
 
 If you want to contact the auc-tex mailing list, mail:
 
@@ -153,7 +166,7 @@ To contact the current maintainer of auc-tex, Email:
 			auc-tex_mgr@iesd.auc.dk
 
 
-The direct address to the author is:
+The address of the author is:
 
 			krab@iesd.auc.dk
 
