@@ -4,6 +4,8 @@
 	syntax.  Prevents parenthetical characters from being hidden from
 	`TeX-find-opening-brace' if they happen to be enclosed between two
 	quotation marks.
+	Better use whitespace syntax for ?\" as this is the equivalent of
+	a nil entry in the syntax table.
 	(TeX-search-syntax-table): Remove superfluous possibility to
 	specify comment and escape characters as arguments.
 
