@@ -30,8 +30,6 @@ AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build],
 AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
 
-datadir=
-
 AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR        TEXMF tree to install into],
  [ texmfdir=${withval} ; 
    if test ! -d $texmfdir  ; then
@@ -55,7 +53,6 @@ AC_ARG_WITH(doc-dir,[  --with-doc-dir=DIR        Location to install preview.dvi
    fi
    ])
 
-AC_SUBST(datadir)
 
 dnl FIXME we should check that it's the right version
 AC_CHECK_PROGS_REQUIRED(EMACS, emacs xemacs, [(X)Emacs not found!  Aborting!  
