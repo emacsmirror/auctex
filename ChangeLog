@@ -35,6 +35,17 @@
 	assignments to let quoted backslashes at their end remain quoted.
 	(auctexdir): Get from configure.
 
+2005-02-10  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el: Fix bug that once japanese-plain-tex-mode entered,
+	plain-tex-mode do as japanese-plain-tex-mode.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+	(japanese-TeX-mode): Doc fix.  Make variable buffer local and
+	permanent-local.
+	(japanese-plain-tex-mode-initialization)
+	(japanese-latex-mode-initialization): Do not initialize
+	japanese-TeX-mode.  Use `when' instead of `if'.
+
 2005-02-09  Peter S Galbraith  <psg@debian.org>
 
 	* bib-cite.el (bib-master-file): Apply patch from Peter Heslin.
