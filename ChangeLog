@@ -1,3 +1,15 @@
+2004-06-04  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-view-mouse): New function.
+
+	* tex.el (TeX-source-specials-map): Outcomment madcap mouse
+	bindings.
+	(minor-mode-map-alist): Remove TeX-source-specials manually, as I
+	can't figure out how to not get it placed there by
+	define-minor-mode.
+	(TeX-split-string): Correct docs.  Simplify.
+	(TeX-parse-path): Fix pattern.
+
 2004-06-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-newline): New function.

@@ -435,6 +435,14 @@ entry."
   "Get the name of the current TeX output file"
   (TeX-active-master (TeX-view-extension)))
 
+(defun TeX-view-mouse (event)
+  "Start `TeX-view' at mouse position."
+  (interactive "e")
+  (save-excursion
+    (set-buffer (window-buffer (posn-window (event-start event))))
+    (goto-char (posn-point (event-start event)))
+    (TeX-view)))
+
 (defun TeX-view ()
   "Start a viewer without confirmation.
 The viewer is started either on region or master file,

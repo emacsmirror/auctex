@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.381 $"))
+	(rev "$Revision: 5.382 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-03 11:46:21 $"))
+    (let ((date "$Date: 2004-06-04 15:25:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -602,11 +602,12 @@ In the form of yyyy.mmdd")
 
 (defvar TeX-source-specials-map
   (let ((map (make-sparse-keymap)))
-    (if (featurep 'xemacs)
-	(define-key map	[(control button1)] #'TeX-view)
-      (define-key map [C-down-mouse-1] #'TeX-view))
+    ;; (if (featurep 'xemacs)
+    ;;	   (define-key map [(control button1)] #'TeX-view-mouse)
+    ;;   (define-key map [C-down-mouse-1] #'TeX-view-mouse))
     map)
-  "Keymap that is active when source specials are enabled.")
+  "Keymap for `TeX-source-specials' mode.
+You could use this for unusual mouse bindings.")
 
 (define-minor-mode TeX-source-specials
   "Minor mode for generating and using LaTeX source specials.
@@ -633,6 +634,10 @@ details."
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials
 			  TeX-source-specials-map)))
+
+(setq minor-mode-map-alist (delq
+		       (assq 'TeX-source-specials minor-mode-map-alist)
+		       minor-mode-map-alist))
 
 (defcustom TeX-source-specials-tex-flags "-src-specials"
   "Extra flags to pass to TeX commands to generate source specials."
@@ -988,19 +993,17 @@ Examples:
       (TeX-split-string \"\:\" \"abc:def:ghi\")
 	  -> (\"abc\" \"def\" \"ghi\")
 
-      (TeX-split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
+      (TeX-split-string \" +\" \"dvips  -Plw -p3 -c4 testfile.dvi\")
 
 	  -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
 
 If REGEXP is nil, or \"\", an error will occur."
 
-  (let ((start 0)
-	(result '()))
-    (while (string-match regexp string start)
-      (let ((match (string-match regexp string start)))
-	(setq result (cons (substring string start match) result))
-	(setq start (match-end 0))))
-    (setq result (cons (substring string start nil) result))
+  (let ((start 0) result match)
+    (while (setq match (string-match regexp string start))
+      (push (substring string start match) result)
+      (setq start (match-end 0)))
+    (push (substring string start) result)
     (nreverse result)))
 
 (defun TeX-parse-path (env)
@@ -1016,7 +1019,7 @@ If REGEXP is nil, or \"\", an error will occur."
       (setq entry (car entries))
       (setq entries (cdr entries))
       (setq entry (file-name-as-directory
-		   (if (string-match "/?/?\\'$" entry)
+		   (if (string-match "/?/?\\'" entry)
 		       (substring entry 0 (match-beginning 0))
 		     entry)))
       (or (not (file-name-absolute-p entry))
