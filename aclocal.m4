@@ -599,7 +599,7 @@ if test -z "$texinputdirs" ; then
       temp=`echo $temp | tr ':' ';'`
     fi
   fi
-  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//'` ; do
+  for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' -e 's+/$++'` ; do
     # We assume that we are dealing with a TDS-compliant TeX system.
     for y in "/tex/" "/bibtex/bst/" ; do
       tempy="$x""$y"
