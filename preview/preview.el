@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.105 2002-04-12 05:57:26 dakas Exp $
+;; $Id: preview.el,v 1.106 2002-04-12 08:13:56 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1336,6 +1336,9 @@ See description of `TeX-command-list' for details."
 This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+  (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
+  (if (eq major-mode 'latex-mode)
+      (preview-mode-setup))
   (require 'tex-buf)
   (require 'latex)
   (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
@@ -1784,7 +1787,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.105 $"))
+	(rev "$Revision: 1.106 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
