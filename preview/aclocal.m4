@@ -160,6 +160,7 @@ AC_DEFUN(AC_PATH_LISPDIR, [
 	fi
     done
   fi
+  lispdir="$lispdir/preview"
   AC_MSG_RESULT($lispdir)
   AC_SUBST(lispdir)
 ])
@@ -213,22 +214,21 @@ dnl
 dnl Check whether a function exists in a library
 dnl All '_' characters in the first argument are converted to '-'
 dnl
-AC_DEFUN(AC_EMACS_CHECK_LIB_WITH_LIB, [
-if test -z "$3"; then
-	AC_MSG_CHECKING(for $2 in $1)
+AC_DEFUN(AC_EMACS_CHECK_REQUIRE, [
+if test -z "$2"; then
+	AC_MSG_CHECKING(for $1)
 fi
 library=`echo $1 | tr _ -`
-prereq=`echo $4 | tr _ -`
-AC_EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$prereq ) (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
+AC_EMACS_LISP($1,[(condition-case nil (require '$library ) (error (prog1 nil (message \"$library not found\"))))],"noecho")
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi
-if test "${EMACS_cv_SYS_$1}" = "t"; then
+if test "${EMACS_cv_SYS_$1}" = "$library"; then
 	EMACS_cv_SYS_$1=yes
 fi
 HAVE_$1=${EMACS_cv_SYS_$1}
 AC_SUBST(HAVE_$1)
-if test -z "$3"; then
+if test -z "$2"; then
 	AC_MSG_RESULT($HAVE_$1)
 fi
 ])
@@ -246,15 +246,15 @@ AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standa
 ])
 if test -z "$AUCTEXDIR" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
-  AC_EMACS_CHECK_LIB_WITH_LIB(tex_buf, TeX-command-master,"noecho", tex_site)
-  if test "${HAVE_tex_buf}" = "yes"; then
+  AC_EMACS_CHECK_REQUIRE(tex_site)
+  if test "${HAVE_tex_site}" = "yes"; then
   	EMACS_cv_ACCEPTABLE_AUCTEX=yes
   else
 	EMACS_cv_ACCEPTABLE_AUCTEX=no
   fi
 
   if test "${EMACS_cv_ACCEPTABLE_AUCTEX}" = "yes"; then
-	AC_EMACS_LISP(auctex_dir,(file-name-directory (locate-library \"tex-buf\")),"noecho")
+	AC_EMACS_LISP(auctex_dir, [(file-name-directory (locate-library \"tex-site\"))] ,"noecho")
 	EMACS_cv_ACCEPTABLE_AUCTEX=$EMACS_cv_SYS_auctex_dir
   else
 	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])

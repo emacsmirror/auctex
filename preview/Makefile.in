@@ -13,7 +13,7 @@ LISP_SOURCES := @PLAT_LISP@ preview.el
 LISP_OBJS := $(LISP_SOURCES:.el=.elc)
 
 prefix = @prefix@
-lispdir = @lispdir@/preview
+lispdir = @lispdir@
 datadir = @datadir@
 texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
