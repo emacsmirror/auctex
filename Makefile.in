@@ -129,7 +129,7 @@ install-auto:
 	$(ELCC) -f batch-byte-compile $<
 
 clean:
-	rm -rf *~ #*# *.elc
+	rm -rf *~ \#*\# *.elc style/*.elc
 	(cd doc; $(MAKE) clean)
 
 distclean: clean
