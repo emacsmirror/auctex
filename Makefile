@@ -10,7 +10,7 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-prefix=/usr/local/emacs-21
+prefix=/usr/local
 
 # Where info files go.
 infodir = $(prefix)/info
