@@ -18,6 +18,10 @@ load of new options.  It is now possible to generate all image files
 for a document with a single run of GhostScript on a single PostScript
 file from Dvips.
 
+The README file has been changed in order to provide adequate
+information for preinstalled distributions.  In that case, including
+the separate INSTALL file will not be necessary.
+
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
 <URL:http://preview-latex.sourceforge.net>, the SourceForge project
