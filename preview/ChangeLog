@@ -1,3 +1,16 @@
+2001-11-12  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-restart): Use push.
+	(preview-clearout-buffer): New function.  Use in kill-buffer-hook.
+	(kill-emacs-hook): add cleanout of temp directories when leaving
+	Emacs.
+	(preview-make-options): cosmetics
+	(LaTeX-preview-setup): add keybindings for clearing buffer
+	(preview-clean-subdir): cosmetic changes.
+	(preview-clean-topdir): new function.
+	(preview-create-subdirectory): use it.
+	(preview-report-bug): report preview-dvips-command.
+
 2001-11-11  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Release 0.5.8.2
