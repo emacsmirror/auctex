@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.926 (16 Sep 2004)
+;; Version:    0.927 (17 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.927 17Sep2004 Ralf Angeli
+;;  - `font-latex-verbatim-environments': Change from defvar to defcustom.
+;;  - `font-latex-verbatim-environments-local', `font-latex-verbatim-macros'
+;;    `font-latex-verbatim-macros-local': New variables.
+;;  - `font-latex-set-syntactic-keywords': Use them.
 ;; V0.926 16Sep2004 Ralf Angeli
 ;;  - `font-latex-commented-outp': Reimplement for better performance.
 ;; V0.925 12Sep2004 Ralf Angeli
@@ -1086,22 +1091,57 @@ This feature does not work in XEmacs."
 
 ;;; Syntactic keywords
 
-(defvar font-latex-verbatim-environments
+(defcustom font-latex-verbatim-environments
   '("verbatim" "verbatim*")
-  "Environments which should be fontified as verbatim.")
+  "Environments which should be fontified as verbatim."
+  :type '(repeat (string))
+  :group 'font-latex)
+
+(defvar font-latex-verbatim-environments-local nil
+  "Buffer-local keywords to add to `font-latex-verbatim-environments'.
+This must be a list of strings.  The variable is not for end
+users; they should customize `font-latex-verbatim-environments'
+instead.  It is for authors of Lisp files that get loaded when
+LaTeX style files are used in the current buffer.  They should
+add keywords to this list and rebuild the variable
+`font-latex-syntactic-keywords' by calling the function
+`font-latex-set-syntactic-keywords'.")
+(make-variable-buffer-local 'font-latex-verbatim-environments-local)
+
+(defcustom font-latex-verbatim-macros
+  '("verb" "verb*")
+  "Macros which should be fontified as verbatim."
+  :type '(repeat (string))
+  :group 'font-latex)
+
+(defvar font-latex-verbatim-macros-local nil
+  "Buffer-local keywords to add to `font-latex-verbatim-macros'.
+This must be a list of strings.  The variable is not for end
+users; they should customize `font-latex-verbatim-macros'
+instead.  It is for authors of Lisp files that get loaded when
+LaTeX style files are used in the current buffer.  They should
+add keywords to this list and rebuild the variable
+`font-latex-syntactic-keywords' by calling the function
+`font-latex-set-syntactic-keywords'.")
+(make-variable-buffer-local 'font-latex-verbatim-macros-local)
 
 (defun font-latex-set-syntactic-keywords ()
   "Set the variable `font-latex-syntactic-keywords'.
 This function can be used to refresh the variable in case other
 variables influencing its value, like `font-latex-verbatim-environments',
 have changed."
-  (let ((verb-envs (regexp-opt font-latex-verbatim-environments)))
+  (let ((verb-envs (regexp-opt
+		    (append font-latex-verbatim-environments
+			    font-latex-verbatim-environments-local)))
+	(verb-macros (regexp-opt
+		      (append font-latex-verbatim-macros
+			      font-latex-verbatim-macros-local))))
     (setq font-latex-syntactic-keywords
 	  `((,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}\\(.?\\).*\\(\n\\)")
 	     (1 "<") (2 "|" t))
 	    (,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}\\(.?\\)")
 	     (1 "|" t) (2 "<"))
-	    ("\\\\verb\\*?\\([^a-z@]\\).*?\\(\\1\\)"
+	    (,(concat "\\\\\\(?:" verb-macros "\\)\\([^a-z@]\\).*?\\(\\1\\)")
 	     (1 "\"") (2 "\""))))))
 
 (defvar font-latex-syntactic-keywords
