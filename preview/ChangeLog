@@ -1,3 +1,10 @@
+2002-04-05  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-xemacs.el (preview-add-urgentization): Use
+	`set-extent-initial-redisplay-function' to force immediate
+	redisplay if already on-screen.
+	(preview-remove-urgentization): Likewise.
+
 2002-04-05  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-xemacs.el (preview-remove-urgentization): proper return
