@@ -23,7 +23,8 @@ related problems.
 If this did not help, you can send a bug report to the @AUCTeX{} bug
 reporting list by using the command @kbd{M-x TeX-submit-bug-report RET}.
 But before you do this, you can try to get more information about the
-problem at hand which might also help you locate the error yourself.
+problem at hand which might also help you locate the cause of the error
+yourself.
 
 First, you can try to generate a so-called backtrace which shows
 functions involved in a program error.  In order to do this, start Emacs
@@ -40,20 +41,20 @@ up showing the backtrace.  If you get such a backtrace, please include
 it in the bug report.
 
 Second, you can try to figure out if something in your personal or site
-configuration triggers the error by starting Emacs with no such
-customizations only activating @AUCTeX{}.  You can do this by starting
-Emacs with the command line @samp{emacs -q -no-site-file}.  Once Emacs
-is running copy the line
+configuration triggers the error by starting Emacs without such
+customizations.  You can do this by invoking Emacs with the command line
+@samp{emacs -q -no-site-file}.  Once Emacs is running, copy the line
 
 @lisp
 (require 'tex-site)
 @end lisp
 
 into the @samp{*scratch*} buffer and type @kbd{M-x eval-buffer RET}.
-After you have done so, you can load the file triggering the error.  If
-everything is working now, you know that you have to search either in
-the site configuration file your personal init file for statements
-related to the error.
+This makes sure that @AUCTeX{} will be used for the file types it
+supports.  After you have done so, you can load the file triggering the
+error.  If everything is working now, you know that you have to search
+either in the site configuration file or your personal init file for
+statements related to the problem.
 
 @item
 What versions of Emacs and XEmacs are supported?
