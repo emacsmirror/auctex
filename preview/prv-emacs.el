@@ -29,20 +29,6 @@
 (defvar preview-compatibility-macros nil
   "List of macros only present when compiling/loading.")
 
-(defimage preview-nonready-icon ((:type xpm :file "prevwork.xpm" :ascent 90)
-				 (:type xbm :file "prevwork.xbm" :ascent
-					90))
-  "The symbol used for previews to be generated.")
-
-(defimage preview-error-icon ((:type xpm :file "preverr.xpm" :ascent 90)
-			      (:type xbm :file "preverr.xbm" :ascent
-				     90))
-  "The symbol used for PostScript errors.")
-
-(defimage preview-icon ((:type xpm :file "preview.xpm" :ascent 75)
-			(:type xbm :file "preview.xbm" :ascent 75))
-  "The symbol used for an open preview.")
-
 (defcustom preview-transparent-color '(highlight :background)
   "Color to appear transparent in previews.
 Set this to something unusual when using `preview-transparent-border',
@@ -104,6 +90,23 @@ Consults `preview-transparent-color'."
    (preview-create-icon-1 file type ascent border)
    file type ascent border))
 
+
+(defun preview-filter-specs (spec-list)
+  "Find the first of the fitting specs and make an image."
+  (find-image
+    (delq nil
+	  (mapcar
+	   #'(lambda (x)
+	       (catch 'preview-filter-specs
+		 (preview-filter-specs-1 x)))
+	   spec-list))))
+
+(defvar preview-tb-icon-specs
+  '((:type xpm :file "prvtex24.xpm")
+    (:type xbm :file "prvtex24.xbm")))
+
+(defvar preview-tb-icon nil)
+
 (defun preview-add-urgentization (fun ov &rest rest)
   "Cause FUN (function call form) to be called when redisplayed.
 FUN must be a form with OV as first argument,
@@ -122,7 +125,7 @@ if there was any urgentization."
 	  (car (cdr dispro))
 	(overlay-put ov 'display (cdr (cdr dispro)))))))
 
-(defsubst preview-nonready-copy ()
+(defsubst preview-icon-copy (icon)
   "Prepare a later call of `preview-replace-active-icon'."
 
   ;; This is just a GNU Emacs specific efficiency hack because it
@@ -135,7 +138,7 @@ if there was any urgentization."
   ;; modifying the string in the strings property would change that
   ;; glyph automatically.
 
-  (cons 'image (cdr preview-nonready-icon)))
+  (cons 'image (cdr icon)))
 
 (defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
@@ -369,15 +372,11 @@ purposes."
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
   (easy-menu-add preview-menu LaTeX-mode-map)
-  ;;The following is a crock, but it does not load tool-bar-mode in case
-  ;;nobody else does, and it should work with any Emacs-21.  Fixing
-  ;;up the ascent of preview-icon is butt-ugly, but faster than using
-  ;;another defimage.
+  (unless preview-tb-icon
+    (setq preview-tb-icon (preview-filter-specs preview-tb-icon-specs)))
   (define-key LaTeX-mode-map [tool-bar preview]
     `(menu-item "Preview at point" preview-at-point
-		:image ,(let ((image (copy-sequence preview-icon)))
-			  (plist-put (cdr image) :ascent 50)
-			  image)
+		:image ,preview-tb-icon
 		:help "Preview on/off at point"))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))

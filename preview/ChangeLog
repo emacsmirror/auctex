@@ -1,3 +1,39 @@
+2005-02-09  David Kastrup  <dak@gnu.org>
+
+	* configure.in: remove ICONFORM stuff.
+
+	* Makefile.in (ICONFORM): removed.
+	(ICON_SOURCES): Change to different list.
+
+	* prv-xemacs.el (preview-nonready-icon, preview-error-icon)
+	(preview-icon, preview-tb-icon): Removed in this form.
+	(preview-ascent-spec): New symbol for storing minimal data when
+	parsing specs.
+	(preview-filter-specs): New function.
+	(preview-icon-copy): Replaces `preview-nonready-copy'.
+	(preview-mode-setup): Create toolbar button.
+
+	* prv-emacs.el (preview-nonready-icon, preview-error-icon)
+	(preview-icon): removed.
+	(preview-filter-specs): New function.
+	(preview-tb-icon-specs, preview-tb-icon): New variables for the
+	toolbar icon.
+	(preview-icon-copy): replaces `preview-nonready-copy'
+	(preview-mode-setup): Initialize `preview-tb-icon'
+
+	* preview.el (preview-nonready-icon-specs)
+	(preview-nonready-icon, preview-error-icon-specs)
+	(preview-error-icon, preview-icon-specs, preview-icon)
+	(preview-min-spec): New variables.
+	(preview-gs-place): Use `preview-icon-copy' instead of
+	`preview-nonready-copy'
+	(preview-make-image): New function.
+	(preview-filter-specs-1): New function.
+	(preview-buffer-restore-internal): Call `preview-get-geometry' for
+	having size information.  This may be incorrect at restore time.
+	(preview-get-geometry): Also constitute `preview-icon',
+	`preview-error-icon' and `preview-nonready-icon'.
+
 2005-02-06  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Add note about `gswin32c.exe'.

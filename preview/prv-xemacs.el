@@ -197,70 +197,46 @@ other hooks, such as major mode hooks, can do the job."
    (preview-create-icon-1 file type ascent)
    file type ascent border))
 
+(defvar preview-ascent-spec)
 
-(defvar preview-nonready-icon
-  (let ((glyph-xpm-filename (locate-data-file "prevwork.xpm"))
-        (glyph-xbm-filename (locate-data-file "prevwork.xbm")))
-    (if (not glyph-xpm-filename)
-        (cerror 'file-error "Image not installed" "prevwork.xpm"))
-    (if (not glyph-xbm-filename)
-        (cerror 'file-error "Image not installed" "prevwork.xbm"))
-    (let ((glyph
-           (make-glyph
-            (list
-             `[xpm :file ,glyph-xpm-filename]
-             `[xbm :file ,glyph-xbm-filename]))))
-      (set-glyph-baseline glyph 90)
-      glyph))
-  "The symbol used for previews to be generated.")
+(defun preview-filter-specs (spec-list)
+  "Find the first fitting spec and create an image."
+  (let (preview-ascent-spec glyph)
+    (while (and spec-list
+		(not (setq glyph
+			   (catch 'preview-filter-specs
+			     (preview-filter-specs-1 (car (spec-list)))))))
+      (setq spec-list (cdr spec-list)))
+    (and glyph preview-ascent-spec
+	 (set-glyph-baseline preview-ascent-spec))
+    glyph))
 
-(defvar preview-error-icon
-  (let ((glyph-xpm-filename (locate-data-file "preverr.xpm"))
-        (glyph-xbm-filename (locate-data-file "preverr.xbm")))
-    (if (not glyph-xpm-filename)
-        (cerror 'file-error "Image not installed" "preverr.xpm"))
-    (if (not glyph-xbm-filename)
-        (cerror 'file-error "Image not installed" "preverr.xbm"))
-    (let ((glyph
-           (make-glyph
-            (list
-             `[xpm :file ,glyph-xpm-filename]
-           `[xbm :file ,glyph-xbm-filename]))))
-      (set-glyph-baseline glyph 90)
-      glyph))
-  "The symbol used for PostScript errors.")
+(put 'preview-filter-specs :type
+     #'(lambda (keyword value &rest args)
+	 (if (preview-supports-image-type value)
+	     `[,value
+	       ,@(preview-filter-specs-1 args)]
+	   (throw 'preview-filter-specs nil))))
 
-(defvar preview-icon
-  (let ((glyph-xpm-filename (locate-data-file "preview.xpm"))
-        (glyph-xbm-filename (locate-data-file "preview.xbm")))
-    (if (not glyph-xpm-filename)
-        (cerror 'file-error "Image not installed" "preview.xpm"))
-    (if (not glyph-xbm-filename)
-        (cerror 'file-error "Image not installed" "preview.xbm"))
-    (let ((glyph
-           (make-glyph
-            (list
-             `[xpm :file ,glyph-xpm-filename]
-             `[xbm :file ,glyph-xbm-filename]))))
-      (set-glyph-baseline glyph 75)
-      glyph))
-  "The symbol used for an open preview.")
+(put 'preview-filter-specs :file
+     #'(lambda (keyword value &rest args)
+	 (setq value (locate-data-file value))
+	 (if value
+	     `(:file ,value
+;; 		     :data ,(with-temp-buffer
+;; 			      (insert-file-contents-literally value)
+;; 			      (buffer-string))
+		     ,@(preview-filter-specs-1 args))
+	   (throw 'preview-filter-specs nil))))
 
-(defvar preview-tb-icon
-  (let ((glyph-xpm-filename (locate-data-file "preview-cap-up.xpm"))
-        (glyph-xbm-filename (locate-data-file "preview.xbm")))
-    (if (not glyph-xpm-filename)
-        (cerror 'file-error "Image not installed" "preview-cap-up.xpm"))
-    (if (not glyph-xbm-filename)
-        (cerror 'file-error "Image not installed" "preview.xbm"))
-    (let ((glyph
-           (make-glyph
-            (list
-             `[xpm :file ,glyph-xpm-filename]
-             `[xbm :file ,glyph-xbm-filename]))))
-      (set-glyph-baseline glyph 75)
-      glyph))
-  "The symbol used for the toolbar button.")
+(put 'preview-filter-specs :ascent
+     #'(lambda (keyword value &rest args)
+	 (setq preview-ascent-spec value)
+	 (preview-filter-specs-1 args)))
+
+(defvar preview-tb-icon-specs
+  '((:type xpm :file "prvtex-cap-up.xpm" :ascent 75)
+    (:type xbm :file "prvtex24.xbm" :ascent 75)))
 
 ;; Image frobbing.
 
@@ -283,9 +259,9 @@ if there was any urgentization."
   (prog1 (list (extent-property ov 'initial-redisplay-function) ov)
     (set-extent-initial-redisplay-function ov nil)))
 
-(defmacro preview-nonready-copy ()
+(defsubst preview-icon-copy (icon)
   "Prepare for a later call of `preview-replace-active-icon'."
-  'preview-nonready-icon)
+  icon)
 
 (defsubst preview-replace-active-icon (ov replacement)
   "Replace the active Icon in OV by REPLACEMENT, another icon."
@@ -453,11 +429,7 @@ Pure borderless black-on-white will return quadruple NIL."
   :group 'preview-appearance
   :type 'boolean)
 
-(defvar preview-icon-toolbar-button
-  (vector (list preview-tb-icon)
-	  #'preview-at-point
-	  t
-	  "Preview on/off at point"))
+(defvar preview-icon-toolbar-button nil)
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
@@ -475,6 +447,13 @@ Pure borderless black-on-white will return quadruple NIL."
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
   (add-hook 'after-change-functions #'preview-handle-after-change nil t)
   (easy-menu-add preview-menu)
+  (unless preview-icon-toolbar-button
+    (setq preview-icon-toolbar-button
+	  (vector (list (preview-filter-specs preview-tb-icon-specs)
+			#'preview-at-point
+			t
+			"Preview on/off at point"))))
+
 ;;; [Courtesy Stephen J. Turnbull, with some modifications
 ;;;  Message-ID: <87el9fglsj.fsf@tleepslib.sk.tsukuba.ac.jp>
 ;;;  I could not have figured this out for the world]
