@@ -221,6 +221,16 @@ other hooks, such as major mode hooks, can do the job."
     glyph)
   "The symbol used for previews to be generated.")
 
+(defvar preview-error-icon
+  (let ((glyph
+         (make-glyph
+          (list
+           `[xpm :file ,(locate-data-file "preverr.xpm")]
+           `[xbm :file ,(locate-data-file "preverr.xbm")]))))
+    (set-glyph-baseline glyph 90)
+    glyph)
+  "The symbol used for PostScript errors.")
+
 (defvar preview-icon
   (let ((glyph
          (make-glyph
@@ -267,8 +277,6 @@ if there was any urgentization."
 (defvar preview-button-1 'button2)
 (defvar preview-button-2 'button3)
 
-;; TODO: doesn't seem quite to work yet; the image is highlighted
-;;       but not click-responsive.
 ;; The `x' and invisible junk is because XEmacs doesn't bother to insert
 ;; the extents of a zero-length string. Bah.
 ;; When this is fixed, we'll autodetect this case and use zero-length
@@ -293,32 +301,36 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
            `((add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
-              'balloon-help (format ,helpstring preview-button-1 preview-button-2)
-              'keymap resmap)
+              'preview-balloon-help (format ,helpstring preview-button-1 preview-button-2)
+              'preview-keymap resmap)
               res)
              res)
          '(resmap))))
 
-(defun preview-click-reroute (ov map event)
+(defun preview-click-reroute (ov event)
   "Pass only clicks on glyphs."
   (let ((oldmap (extent-keymap ov)))
     (unwind-protect
 	(progn
-	  (set-extent-keymap
-	   ov (and (event-over-glyph-p event) map))
+	  (set-extent-keymap ov
+			     (and (event-over-glyph-p event)
+				  (extent-property ov 'preview-keymap)))
 	  (dispatch-event event))
       (set-extent-keymap ov oldmap))))
 
-(defun preview-make-reroute (ov map)
-  "Generate a reroute map from an original one."
-  (and map
-       (let ((newmap (make-sparse-keymap)))
-	 (map-keymap `(lambda (key binding)
-			(define-key ,newmap key
-			  (lambda (event) (interactive "e")
-			    (preview-click-reroute ,ov ,map event))))
-		     map)
-	 newmap)))
+(defun preview-reroute-map (ov)
+  "Get rerouting keymap."
+  (let ((map (make-sparse-keymap))
+	(fun `(lambda (event)
+		(interactive "e")
+		(preview-click-reroute ,ov event))))
+    (define-key map preview-button-1 fun)
+    (define-key map preview-button-2 fun)
+    map))
+
+(defun preview-balloon-reroute (ov)
+  (and (eq ov (event-glyph-extent (mouse-position-as-motion-event)))
+       (extent-property ov 'preview-balloon-help)))
 
 (defun preview-ps-image (filename scale &optional box)
   "Place a PostScript image directly by Emacs.
@@ -358,28 +370,34 @@ nil displays the underlying text, and 'toggle toggles."
       (set-extent-property ov 'preview-state preview-state)
       (if (eq preview-state 'active)
           (progn
+	    (unless (extent-keymap ov)
+	      (set-extent-keymap ov (preview-reroute-map ov))
+	      (set-extent-property ov 'balloon-help #'preview-balloon-reroute))
             (set-extent-properties ov `(invisible t
                                         face nil
                                         begin-glyph nil
-                                        begin-glyph-layout text
-                                        end-glyph ,(get-text-property 0 'end-glyph (car strings))))
-            (dolist (prop '(keymap mouse-face balloon-help))
+                                        begin-glyph-layout text))
+            (dolist (prop '(end-glyph preview-keymap
+				      mouse-face preview-balloon-help))
               (set-extent-property ov prop
                                    (get-text-property 0 prop (car strings))))
 ;            (with-current-buffer (overlay-object ov)  ; not yet implemented
 ;              (add-hook 'pre-command-hook #'preview-mark-point nil t)
 ;              (add-hook 'post-command-hook #'preview-move-point nil t))
             )
-        (dolist (prop '(keymap mouse-face balloon-help invisible))
+        (dolist (prop '(mouse-face invisible))
           (set-extent-property ov prop nil))
         (set-extent-properties ov `(face preview-face
                                     begin-glyph ,(get-text-property
 						  0 'end-glyph (cdr strings))
                                     begin-glyph-layout text
                                     end-glyph nil
-				    keymap ,(preview-make-reroute
-					     ov (get-text-property
-						 0 'keymap (cdr strings))))))
+				    preview-keymap
+				    ,(get-text-property
+				     0 'preview-keymap (cdr strings))
+				    preview-balloon-help
+				    ,(get-text-property
+				     0 'preview-balloon-help (cdr strings)))))
       (if old-urgent
           (apply 'preview-add-urgentization old-urgent)))))
 
