@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.16 2001-10-02 00:26:51 dakas Exp $
+;; $Id: preview.el,v 1.17 2001-10-02 08:33:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -54,7 +54,7 @@
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.16 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.17 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
@@ -411,15 +411,44 @@ given as ANSWER."
 		   (newfile (nth 1 filenames)))
 	      (overlay-put ov 'queued nil)
 	      (if have-error
-		  (overlay-put ov 'after-string
-			       (propertize
-				(format "%s: %s" (car oldfile)
-					answer)
-				'face 'preview-error-face))
-		(condition-case nil
-		    (preview-delete-file oldfile)
-		  (file-error nil))
-		(overlay-put ov 'filenames (cdr filenames))
+		  (overlay-put
+		   ov
+		   'after-string
+		   (propertize
+		    (format "%s: %s"
+			    (propertize
+			     (car oldfile)
+			     'mouse-face 'highlight
+			     'local-map
+			     (let ((map (make-sparse-keymap)))
+			       (define-key map [mouse-2]
+				 `(lambda() (interactive)
+				    (let ((default-major-mode 'ps-mode))
+				      (view-file-other-window
+				       ,(car oldfile)))
+				    (message "\
+Try C-c C-s C-c C-b and [mouse-2] on error offset.")))
+			       map))
+			    (propertize
+			     answer
+			     'mouse-face 'highlight
+			     'local-map
+			     (let ((map (make-sparse-keymap)))
+			       (define-key map [mouse-2]
+				 `(lambda() (interactive)
+				    (let ((buff
+					   (generate-new-buffer
+					    "*Preview-GhostScript-Error*")))
+				      (with-current-buffer buff
+					(insert ,answer))
+				      (view-buffer-other-window
+				       buff nil 'kill-buffer))))
+			       map)))
+		    'face 'preview-error-face))
+ 		(condition-case nil
+ 		    (preview-delete-file oldfile)
+ 		  (file-error nil))
+ 		(overlay-put ov 'filenames (cdr filenames))
 		(setcdr img (list :file (car newfile)
 				  :type preview-gs-image-type
 				  :heuristic-mask t
@@ -626,6 +655,7 @@ used in change hooks."
     `(lambda () (interactive) (preview-regenerate ,ovr)))
   (let ((str (preview-disabled-string ovr)))
     (overlay-put ovr 'before-string str)
+    (overlay-put ovr 'after-string nil)
     (overlay-put ovr 'invisible nil)
     (overlay-put ovr 'strings (cons str str))
     (overlay-put ovr 'insert-in-front-hooks nil)
