@@ -3033,9 +3033,9 @@ If COUNT is non-nil, do it COUNT times."
       ;; If a paragraph command is encountered there are two cases to be
       ;; distinguished:
       ;; 1) If the end of the paragraph command coincides (apart from
-      ;;    potential whitespace) with the end of the line or is only
-      ;;    followed by a comment, it is assumed that it should be
-      ;;    handled separately.
+      ;;    potential whitespace) with the end of the line, is only
+      ;;    followed by a comment or is directly followed by a macro,
+      ;;    it is assumed that it should be handled separately.
       ;; 2) If the end of the paragraph command is followed by other
       ;;    code, it is assumed that it should be included with the rest
       ;;    of the paragraph.
@@ -3048,7 +3048,8 @@ If COUNT is non-nil, do it COUNT times."
 		   "\\(" LaTeX-paragraph-commands "\\)"))
 		 (goto-char (match-beginning 1))
 		 (setq macro-end (goto-char (LaTeX-find-macro-end)))
-		 (looking-at (concat "[ \t]*\\($\\|" comment-start "\\)"))))
+		 (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
+				     "[ \t]*\\($\\|" comment-start "\\)"))))
 	  (progn
 	    (goto-char macro-end)
 	    (forward-line))
@@ -3104,8 +3105,9 @@ If COUNT is non-nil, do it COUNT times."
 				  ;; `LaTeX-forward-paragraph'.
 				  (if (save-match-data
 					(looking-at
-					 (concat "[ \t]*\\($\\|"
-						 comment-start "\\)")))
+					 (concat
+					  (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
+					  "[ \t]*\\($\\|" comment-start "\\)")))
 				      (progn
 					(forward-line 1)
 					(setq end-point (if (< (point) start)
