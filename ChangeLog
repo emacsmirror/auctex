@@ -1,3 +1,8 @@
+2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (LaTeX-math-list): Improve doc string and custom type.
+	(LaTeX-math-default): Added doc string.
+
 2004-10-26  Frank Küster <frank@kuesterei.ch>
 
 	* doc/quickstart.texi: Don't use so many nodes.  Several fixes.

@@ -3195,25 +3195,42 @@ If COUNT is non-nil, do it COUNT times."
   :group 'LaTeX-macro)
 
 (defcustom LaTeX-math-list nil
-  "AList of your personal LaTeX math symbols.
+  "Alist of your personal LaTeX math symbols.
 
-Each entry should be a list with three elements, KEY, VALUE, and MENU.
-KEY is the key to be redefined (under `LaTeX-math-abbrev-prefix' in
-math minor mode, VALUE can be a string with the name of the macro to
-be inserted, or a function to be called.  The optional third element is
-the name of the submenu where the command should be added.  The fourth
-element may be a Unicode character position for menu display.
+Each entry should be a list with upto four elements, KEY, VALUE,
+MENU and CHARACTER.
+
+KEY is the key (after `LaTeX-math-abbrev-prefix') to be redefined
+in math minor mode.  If KEY is nil, the symbol has no associated
+keystroke \(it is available in the menu, though\).
+
+VALUE can be a string with the name of the macro to be inserted,
+or a function to be called.  The macro must be given without the
+leading backslash.
+
+The third element MENU is the name of the submenu where the
+command should be added.  MENU can be either a string
+\(e.g. \"greek\"\), a list (e.g. \(\"AMS\" \"Delimiters\"\)\) or
+nil.  If MENU is nil, no menu item will be created.
+
+The fourth element CHARACTER is a Unicode character position for
+menu display.  When nil, no character is shown.
 
 See also `LaTeX-math-menu'."
   :group 'LaTeX-math
   :type '(repeat (group (choice :tag "Key"
-				(const :tag "none")
-				(character :format "%v\n"))
-			(string :tag "Value")
+				(const :tag "none" nil)
+				(character))
+			(choice :tag "Value"
+				(string :tag "Macro")
+				(function))
 			(choice :tag "Menu"
-				(string :tag "Name" :format "%v")
-				(repeat :tag "Path"
-					(string :format "%v"))))))
+				(string :tag "Top level menu" )
+				(repeat :tag "Submenu"
+					(string :tag "Menu")))
+			(choice :tag "Unicode character"
+				(const :tag "none" nil)
+				(integer :tag "Number")))))
 
 (defconst LaTeX-math-default
   '((?a "alpha" "greek" 945) ;; #X03B1
@@ -3737,7 +3754,11 @@ See also `LaTeX-math-menu'."
     (nil "intertext" ("AMS" "Special"))
     (nil "substack" ("AMS" "Special"))
     (nil "subarray" ("AMS" "Special"))
-    (nil "sideset" ("AMS" "Special"))))
+    (nil "sideset" ("AMS" "Special")))
+  "Alist of LaTeX math symbols.
+
+Each entry should be a list with upto four elements, KEY, VALUE,
+MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defcustom LaTeX-math-abbrev-prefix "`"
   "Prefix key for use in `LaTeX-math-mode'."
