@@ -1,55 +1,41 @@
-Release notes for version 0.7.3 of the preview-latex package:
+Release notes for version 0.7.4 of the preview-latex package:
 
-preview-latex could be the greatest thing since sliced bread, were it
-not just the same.  Sliced bread provides you with a handle on
-conveniently sized chunks of the real matter as well as unhampered
-creative freedom for the space in between.  It obliterates the
-unwieldy handling of loaf-sized chunks and puts the bread right on
-your plate where it belongs.  preview-latex similarly chops unwieldy
-pages of subpixel-accurate LaTeX previews into handily sized fully
-dressed chunks (such as single formulas) that get placed right into
-your Emacs/XEmacs source buffer, freeing the desktop space otherwise
-required for separate carving plates, while keeping the original
-source readily accessible.  You get to have your eye candy and edit
-it, too.
+preview-latex dresses up your LaTeX source by placing right into its
+Emacs/XEmacs buffer judiciously selected chunks (such as single
+formulas) chopped from unwieldy preview pages, while keeping the
+original source readily accessible.  You get to have your eye candy
+and edit it, too.
 
 The employed style file preview.sty is independently useful for
 extraction of selected text elements as images.  The package is
 released under the GNU Public License (GPL).  At the current point of
 time, at least GNU Emacs-21.1 under the X window system, AUC TeX
 (11.11 recommended, see below), a working LaTeX installation and
-GhostScript are required.  This version also supports XEmacs-21.  For
-best results, at least version 21.4.9 is recommended since it
-incorporates several fixes necessary for proper operation of
-preview-latex.  Under the Windows operating system, we have had
-positive reports for both native and Cygwin ports of XEmacs.  Recent
-CVS versions of GNU Emacs could conceivably be made to run
+GhostScript are required.  This version also supports XEmacs-21, best
+in version 21.4.9 or later.  Under the Windows operating system, we
+have had positive reports for both native and Cygwin ports of XEmacs.
+Recent CVS versions of GNU Emacs could conceivably be made to run
 preview-latex under Windows, but we have had no reports for this
 combination yet.
 
-Release 0.7.3 is a consolidation release containing mostly bug fixes.
-It has to disable a broken security implementation that persists into
-version 7.05 of GNU GhostScript.  A complete lack of developer
-response makes it likely that future versions of GhostScript will not
-work unless preview-latex gets configured to disable security for them
-as well.  For further information, please read the PROBLEMS file or
-the respective manual section.
+Release 0.7.4 is a consolidation release containing mostly bug fixes.
+The quest to work around broken security implementations of
+GhostScript hopefully has lead to safer and more reliable results.
+Under GNU Emacs, preview-at-point has been added to the tool-bar.
 
-One new feature is dumping of precompiled preambles in order to
-facilitate faster regeneration of previews.  You can do this via a key
-combination or from the `Preview' menu which has been moved to the
-menu bar from the `LaTeX' menu.  This further improves the already
-impressive performance even on bottom-line computers.
+The previous release lead to problems when buffers without associated
+file name were put into LaTeX-mode.  If this occured while first
+loading preview-latex, compatibility macros caused further problems
+with various other packages in XEmacs.
 
-The README file provides adequate information for preinstalled
-distributions.  The INSTALL file contains a special section with
-advice for package providers.
+The README file provides adequate information for firing up
+preinstalled distributions, and pointers how to provide feedback.  The
+INSTALL file contains a special section with advice for package
+providers.
 
-User feedback about errors and suggested feature improvements is
-welcome and heeded.  The home page is
-<URL:http://preview-latex.sourceforge.net>, the SourceForge project
-page that among others offers anonymous CVS access is located at
-<URL:http://sourceforge.net/projects/preview-latex>.
+The home page is <URL:http://preview-latex.sourceforge.net>, the
+SourceForge project page that among others offers anonymous CVS access
+is located at <URL:http://sourceforge.net/projects/preview-latex>.
 
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
@@ -69,8 +55,8 @@ Additional files can be found at
   RPM as well as the Emacs-flavor specific RPM.
 
 The RPMs require a few packages that should be readily available in
-current distributions.  As of RH 7.3, Emacs-21.2 and GhostScript-6.52
-are included.  The current RedHat beta "Limbo" contains the
-security-impaired GhostScript-7.05 (see above).  XEmacs in those
+current distributions.  RedHat 7.3 contains Emacs-21.2 and
+GhostScript-6.52 which are about the minimum versions to be
+recommended.  Later releases should work fine.  XEmacs in current
 distributions will still be affected with a serious display bug, see
 the PROBLEMS file or the respective manual section.
