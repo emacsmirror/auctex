@@ -1,3 +1,10 @@
+2002-02-28  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-inner-environments): New variable for
+	avoiding ugly environments.
+	(preview-environment): Accept a count, and avoid bad environments.
+	(preview-section): Doc string fixed.
+
 2002-02-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (require): suppress desktop warnings
