@@ -89,8 +89,6 @@ This package contains the lisp modules for XEmacs 21.4.9 or higher.
   popd
 %endif
 
-export `locale|grep '^LC_CTYPE'`
-
 %build
 
 for i in *emacs; do
@@ -101,7 +99,7 @@ for i in *emacs; do
   # --with-texmf-dir overrides local docstrip configurations.
   # --with-packagedir repairs RedHat XEmacs braindamage
   %configure "--with-$i" '--with-texmf-dir=%{_datadir}/texmf' \
-	'--with-packagedir=%{xemacspkgdir}'
+	'--with-packagedir=%{xemacspkgdir}' '--disable-8bit-test'
   make 'infodir=%{_infodir}'
   popd
 done
