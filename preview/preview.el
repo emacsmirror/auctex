@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.210 2004-05-08 18:23:02 dakas Exp $
+;; $Id: preview.el,v 1.211 2004-07-15 03:12:59 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2111,25 +2111,26 @@ using MML mode.  If there is nothing current available,
 NIL is returned."
   (and (memq (overlay-get ov 'preview-state) '(active inactive))
        (not (overlay-get ov 'queued))
-       (let ((text (with-current-buffer (overlay-buffer ov)
+       (let* ((text (with-current-buffer (overlay-buffer ov)
 		     (buffer-substring (overlay-start ov)
 				       (overlay-end ov))))
-	     (file (car (car (last (overlay-get ov 'filenames))))))
-	 (require 'mailcap)
-	 (format "<#part type=\"%s\" disposition=inline
+	      (file (car (car (last (overlay-get ov 'filenames)))))
+	      (type (progn (require 'mailcap)
+			   (mailcap-extension-to-mime
+			    (file-name-extension file)))))
+	 (format "<#part %s
 description=\"%s\"
 filename=%s>
 <#/part>"
-		 (mailcap-extension-to-mime
-		  (and (string-match "\\.[^.]*\\'" file)
-		       (match-string 0 file)))
+		 (if type
+		     (format "type=\"%s\" disposition=inline" type)
+		   "disposition=attachment")
 		 (if (string-match "[\n\"]" text)
 		     "preview-latex image"
 		   text)
 		 (if (string-match "[ \n<>]" file)
 		     (concat "\"" file "\"")
 		   file)))))
-
 
 (defun preview-active-contents (ov)
   "Check whether we have a valid image associated with OV."
@@ -2282,6 +2283,22 @@ later while in use."
      ".*" 0 preview-parse-counters)
     ("Tightpage" preview-parsed-tightpage
      "\\` *\\(-?[0-9]+ *\\)\\{4\\}\\'" 0 preview-parse-tightpage)))
+
+(defun preview-error-quote (string)
+  "Turn STRING with potential ^^ sequences into a regexp."
+  (let (output)
+    (while (string-match "\\^\\^\\([@-_?]\\|[8-9a-f][0-9a-f]\\)" string)
+      (setq output
+	    (concat output "\\(?:" (regexp-quote (match-string 0 string))
+		    "\\|"
+		    (regexp-quote
+		     (char-to-string
+		      (if (= (match-end 0) 3)
+			  (- (aref string 2) 64)
+			(string-to-number (match-string 1 string) 16))))
+		    "\\)")
+	    string (substring string (match-end 0))))
+    (concat output (regexp-quote string))))
 
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
@@ -2522,10 +2539,20 @@ name(\\([^)]+\\))\\)\\|\
 				  (forward-line (- line lline)))))
 			(goto-line line))
 		      (setq lpoint (point))
-		      (if (search-forward (concat string after-string)
-					  (line-end-position) t)
-			  (backward-char (length after-string))
-			(search-forward string (line-end-position) t)))
+		      (cond
+		       ((search-forward (concat string after-string)
+					(line-end-position) t)
+			(backward-char (length after-string)))
+		       ;;ok, transform ^^ sequences
+		       ((search-forward-regexp
+			 (concat "\\(" (preview-error-quote string) "\\)"
+				 (preview-error-quote after-string))
+			 (line-end-position) t)
+			(goto-char (match-end 1)))
+		       ((search-forward-regexp
+			 (preview-error-quote string)
+			 (line-end-position) t)
+			(goto-char (match-end 0)))))
 		    (setq lline line
 			  lbuffer (current-buffer))
 		    (if box
@@ -2980,7 +3007,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.210 $"))
+	(rev "$Revision: 1.211 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2991,7 +3018,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-08 18:23:02 $"))
+    (let ((date "$Date: 2004-07-15 03:12:59 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

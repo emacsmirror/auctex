@@ -1,3 +1,11 @@
+2004-07-15  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-format-mml): Somewhat different code.
+	(preview-error-quote): New function for generating a matching
+	regexp to deal with ^^ type error messages.  In short: forget
+	about 8-bit-cleanliness.
+	(preview-parse-messages): Use it.
+
 2004-05-08  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-format-mml): Determine MIME format from
