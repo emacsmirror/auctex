@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.182 2002-12-15 12:05:14 dakas Exp $
+;; $Id: preview.el,v 1.183 2002-12-16 17:24:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -349,32 +349,45 @@ set to `postscript'."
   :group 'preview-latex
   :type 'boolean)
 
-(defun preview-string-expand (arg)
+(defun preview-string-expand (arg &optional separator)
   "Expand ARG as a string.
-It can already be a string.  Or it can be a list, then the first
-element of the list is the string separator, and the cdr of the
-list gets concatenated after being expanded recursively.  If the
-cdr is a symbol, it is dereferenced and the resulting list gets
-expanded element by element."
+It can already be a string.  Or it can be a list, then it is
+recursively evaluated using SEPARATOR as separator.  If a list
+element is in itself a CONS cell, the CAR of the list is used
+as a separator.  ARG can be a symbol, and so can be the CDR
+of a cell used for string concatenation.  SEPARATOR is passed
+through top symbol dereferences, but not otherwise."
   (cond
    ((null arg) (error "Bad string expansion"))
    ((stringp arg) arg)
-   ((consp arg) (mapconcat #'preview-string-expand
-			   (if (symbolp (cdr arg))
-			       (symbol-value (cdr arg))
-			     (cdr arg))
-			   (car arg)))
+   ((consp arg) (mapconcat (lambda(x)
+			     (if (consp x)
+				 (preview-string-expand (cdr x) (car x))
+			       (preview-string-expand x)))
+			   arg
+			   separator))
    ((and (symbolp arg) (boundp arg))
-    (preview-string-expand (symbol-value arg)))))
+    (preview-string-expand (symbol-value arg) separator))))
 
 (defconst preview-expandable-string
-  '(choice
-    string
-    (cons (string :tag "Separator")
-	  (choice (variable-item :tag "Variable to concatenate.")
-		  (list :tag "Explicit elements"
-			(repeat :inline t sexp))))
-    (variable-item :tag "Indirect variable")))
+  ((lambda (f) (funcall f (funcall f 'sexp)))
+   (lambda (x)
+     `(choice
+       string
+       (repeat :tag "Concatenate"
+	(choice
+	 string
+	 (cons :tag "Separated list" (string :tag "Separator") ,x)
+	 (symbol :tag "Indirect variable (no separator)")))
+       (symbol :tag "Indirect variable (with separator)"))))
+  "Type to be used for `preview-string-expand'.
+Just a hack until we get to learn how to do this properly.
+Recursive definitions are not popular with Emacs,
+so we define this type just two levels deep.  This
+kind of expandible string can either be just a string, or a
+cons cell with a separator string in the CAR, and either
+an explicit list of elements in the CDR, or a symbol to
+be consulted recursively.")
 
 (defcustom preview-dvips-command
   "dvips -Pwww -i -E %d -o %m/preview.000"
@@ -1280,7 +1293,10 @@ calling each buffer with the same master file."
 	     (funcall func))))))
 
 (defun preview-clearout-document ()
-  "Clearout previews in entire document."
+  "Clear out all previews in current document.
+The document consists of all buffers that have the same master file
+as the current buffer.  This makes the current document lose
+all previews."
   (interactive)
   (preview-walk-document #'preview-clearout-buffer))
 
@@ -1689,19 +1705,19 @@ are selected."
 	       (repeat :inline t :tag "Other options" (string))))
 
 (defcustom preview-default-preamble
-  '(("" "\\RequirePackage[" ("," . preview-default-option-list)
-				      "]{preview}"))
-  "*Specifies default preamble lines to add to a LaTeX document.
+  '("\\RequirePackage[" ("," . preview-default-option-list)
+				      "]{preview}")
+  "*Specifies default preamble code to add to a LaTeX document.
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
 list of LaTeX commands is inserted just before \\begin{document}."
   :group 'preview-latex
   :type preview-expandable-string)
 
-(defcustom preview-LaTeX-command '("" "%l \"\\nonstopmode\
+(defcustom preview-LaTeX-command '("%l \"\\nonstopmode\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-("\n" . preview-default-preamble) "\\fi}\\input{%t}\"")
+preview-default-preamble "\\fi}\\input{%t}\"")
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -2445,7 +2461,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.182 $"))
+	(rev "$Revision: 1.183 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2456,7 +2472,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-15 12:05:14 $"))
+    (let ((date "$Date: 2002-12-16 17:24:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
