@@ -37,7 +37,7 @@ README: readme.texi
 PROBLEMS: problems.texi
 	-$(MAKEINFO) --no-headers --no-validate problems.texi --output PROBLEMS
 
-install: preview-latex
+install: preview-latex.info
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex
 
