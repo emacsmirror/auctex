@@ -1,3 +1,9 @@
+2004-03-18  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* Makefile.in, configure.in, tex-site.el, tex-site.el.in:
+	Move tex-site.el to tex-site.el.in, generate tex-site.el at configure
+	time rather than at install time
+
 2004-03-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-output-view-style): Use `%f' instead of `%s.ps' for
