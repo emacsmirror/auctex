@@ -4,7 +4,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.7
-Release: 	1
+Release: 	2
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -78,6 +78,7 @@ This package contains the lisp modules for XEmacs 21.1 or higher.
 %endif
 
 %build
+
 for i in *emacs; do
   pushd $i
   # The below will make the package build from a tar straight from CVS
@@ -92,6 +93,7 @@ for i in *emacs; do
 done
 
 %install 
+
 rm -rf %{buildroot}
 for i in *emacs; do
   pushd $i
@@ -108,6 +110,15 @@ for i in *emacs; do
   popd
 done
 
+# Package documentation in /usr/share/doc/preview-latex-n.n-n
+# rather than /usr/share/doc/preview-latex-common-n.n-n
+%define docs	    %{_defaultdocdir}/%{name}-%{version}-%{release}
+mkdir -p %{buildroot}%{docs}
+pushd %{name}-%{version}
+for i in ChangeLog circ.tex COPYING INSTALL PROBLEMS README \
+    latex/README-preview RELEASE TODO doc/preview-latex.dvi patches; do
+  cp -R $i %{buildroot}%{docs}
+done
 
 %clean
 rm -rf %{buildroot}
@@ -128,17 +139,7 @@ install-info --info-dir=%{_infodir} --delete \
 %config %{_datadir}/texmf/tex/latex/preview/*.cfg
 %doc %{_datadir}/texmf/doc/latex/styles/preview.dvi
 %doc %{_infodir}/preview-latex.info.gz
-%doc %{name}-%{version}/ChangeLog
-%doc %{name}-%{version}/circ.tex
-%doc %{name}-%{version}/COPYING
-%doc %{name}-%{version}/INSTALL
-%doc %{name}-%{version}/PROBLEMS
-%doc %{name}-%{version}/README
-%doc %{name}-%{version}/latex/README-preview
-%doc %{name}-%{version}/RELEASE
-%doc %{name}-%{version}/TODO
-%doc %{name}-%{version}/doc/preview-latex.dvi
-%doc %{name}-%{version}/patches
+%doc %{docs}
 
 %if %{HAVE_EMACS}
 %files emacs
@@ -156,6 +157,9 @@ install-info --info-dir=%{_infodir} --delete \
 %endif
 
 %changelog
+* Mon Apr 15 2002 Jan-Ake Larsson <jalar@imf.au.dk>
+- Docs now goes in preview-latex-n.n-n directory
+
 * Wed Apr 10 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Triple-rpm simplifications
 
