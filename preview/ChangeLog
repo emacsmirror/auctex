@@ -1,5 +1,10 @@
 2002-05-28  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi (Simple customization): Document new
+	auto-reveal default.
+	(Simple customization): Document a better way for default
+	options.
+
 	* preview.el (preview-gs-open): bind preview-latex-do PostScript
 	operator.
 	(preview-auto-reveal): Change default to auto-open on move
