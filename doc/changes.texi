@@ -13,8 +13,8 @@ You can customize the completion for graphic files with
 @code{LaTeX-includegraphics-read-file}.
 
 @item
-@file{url.sty} is now supported with command completion and
-fontification.
+@file{url.sty} and @file{listings.sty} is now (basically) supported with
+command completion and fontification.
 
 @item
 Performance of fontification and filling was improved.
