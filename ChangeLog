@@ -11,6 +11,7 @@
 	sensibly when in comments.  The previous behavior is just awful,
 	and caused a lot of inadvertant damage when using things like
 	`fill-paragraph' within comments.
+	(LaTeX-common-initialization): Remove syntax error, sorry.
 
 <<<<<<< variant A
 2003-12-29  David Kastrup  <dak@gnu.org>
