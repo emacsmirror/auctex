@@ -1,5 +1,14 @@
 2004-08-09  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-set-mode-name): Add LOCAL argument.
+	(TeX-source-specials, TeX-mode-set, TeX-global-PDF-mode)
+	(TeX-PDF-mode, TeX-interactive-mode): Use it.
+	(plain-tex-mode): Move `TeX-set-mode-name' to after running the
+	hooks.
+
+	* latex.el (latex-mode): Move setting the mode name to after
+	running the hooks.
+
 	* tex.el (TeX-maybe-remove-help): new function (noop on Emacs).
 	(TeX-menu-with-help): new macro (noop on Emacs).
 	(TeX-mode-specific-command-menu-entries): Add a lot of help strings.

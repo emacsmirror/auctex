@@ -581,7 +581,7 @@ but does nothing in Emacs."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.413 $"))
+	(rev "$Revision: 5.414 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -596,7 +596,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-09 20:15:54 $"))
+    (let ((date "$Date: 2004-08-09 21:54:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -635,7 +635,7 @@ In the form of yyyy.mmdd")
   "Base name of mode.")
 (make-variable-buffer-local 'TeX-base-mode-name)
 
-(defun TeX-set-mode-name (&optional changed reset)
+(defun TeX-set-mode-name (&optional changed local reset)
   "Build and set the mode name.
 The base mode name will be concatenated with indicators for
 helper modes where appropriate.
@@ -644,13 +644,19 @@ If CHANGED is non-nil, it indicates which global mode
 may have changed so that all corresponding buffers
 without a local value might get their name updated.
 A value ot `t' will thus update all buffer names.
+
+If LOCAL is non-nil and CHANGED is buffer-local, only
+a local change has been performed and only the local
+name is to be updated.
+
 If RESET is non-nil, `TeX-command-next' is reset to
-`TeX-command-default' in affected buffers."
-  (if changed
+`TeX-command-default' in updated buffers."
+  (if (and changed
+	   (not (and local (local-variable-p changed))))
       (dolist (buffer (buffer-list))
 	(and (local-variable-p 'TeX-mode-p buffer)
 	     (not (local-variable-p changed buffer))
-	     (with-current-buffer buffer (TeX-set-mode-name nil reset))))
+	     (with-current-buffer buffer (TeX-set-mode-name nil nil reset))))
     (if TeX-mode-p
 	(let ((trailing-flags
 	       (concat (and (boundp 'TeX-fold-mode) TeX-fold-mode "F")
@@ -703,7 +709,7 @@ details."
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials
 			  TeX-source-specials-map))
-  (TeX-set-mode-name 'TeX-source-specials t))
+  (TeX-set-mode-name 'TeX-source-specials t t))
 
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials minor-mode-map-alist)
@@ -854,7 +860,7 @@ If this is nil, an empty string will be returned."
 
 (defun TeX-mode-set (var value)
   (set-default var value)
-  (TeX-set-mode-name var t))
+  (TeX-set-mode-name var nil t))
 
 (defcustom TeX-PDF-mode nil nil
   :group 'TeX-command
@@ -875,7 +881,7 @@ function `TeX-global-PDF-mode' for toggling this value.")
       (setq-default TeX-PDF-mode
 		    (if arg (> (prefix-numeric-value arg) 0)
 		      (not (default-value 'TeX-PDF-mode))))
-    (TeX-set-mode-name 'TeX-PDF-mode t)))
+    (TeX-set-mode-name 'TeX-PDF-mode nil t)))
 
 (defun TeX-PDF-mode (arg &optional parsed)
   "Toggles PDF mode.
@@ -906,7 +912,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
     (if TeX-PDF-mode-parsed
 	(setq TeX-PDF-mode-parsed nil))
     (setq TeX-PDF-mode arg))
-  (TeX-set-mode-name nil t)
+  (TeX-set-mode-name 'TeX-PDF-mode t t)
   TeX-PDF-mode)
 
 (defun TeX-PDF-mode-on ()
@@ -928,7 +934,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
   nil nil nil
-  (TeX-set-mode-name nil t))
+  (TeX-set-mode-name 'TeX-interactive-mode t t))
 
 ;;; Commands
 
@@ -2047,11 +2053,11 @@ of plain-TeX-mode-hook."
   (interactive)
   (plain-TeX-common-initialization)
   (setq TeX-base-mode-name "TeX")
-  (TeX-set-mode-name)
   (setq major-mode 'plain-tex-mode)
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
+  (TeX-set-mode-name))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
