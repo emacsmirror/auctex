@@ -1,3 +1,4 @@
+es
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
 ;; Copyright (C) 2001  Free Software Foundation, Inc.
@@ -168,14 +169,6 @@ other hooks, such as major mode hooks, can do the job."
          (if append
              (append (symbol-value list-var) (list element))
            (cons element (symbol-value list-var))))))
-
-;; Replacement for `extents-at', which does not exist in XEmacs-21.1.
-(defsubst preview-extents-at (pos &optional object property)
-  "Returns all extents at POS in OBJECT which have PROPERTY set."
-  (let ((extents))
-    (map-extents #'(lambda (extent unused)
-                     (setq extents (nconc extents (list extent))))
-                 object pos (1+ pos) nil 'start-or-end-in-region property)))
 
 ;; We have to pick the image-specifier's inst-list apart by hand.  This code
 ;; won't work if there are multiple valid image types in a single glyph in a
@@ -535,18 +528,24 @@ defaults to off."
 	(map-extents #'preview-open-overlay nil
 		     pt pt nil nil 'preview-state 'active)
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
-			   (< pt (marker-position preview-marker)))))
-	(while (catch 'loop
-		 (dolist (ovr (preview-extents-at pt nil 'preview-state))
-		   (when (and
-			  (eq (overlay-get ovr 'preview-state) 'active))
-		     (setq pt (if (and backward
-				       (> (overlay-start ovr) (point-min)))
-				  (1- (overlay-start ovr))
-				(overlay-end ovr)))
-		     (throw 'loop t))))
-	  nil)
+			   (< pt (marker-position preview-marker))))
+	    newpt)
+	(while (setq newpt
+		     (map-extents #'preview-skip-overlay nil
+				  pt pt backward nil
+				  'preview-state 'active))
+	  (setq pt newpt))
 	(goto-char pt)))))
+
+(defun preview-skip-overlay (ovr backward)
+  "Skip point over OVR, BACKWARD is set if backwards.
+Returns new position or NIL."
+  (if backward
+      (and (> (extent-start-position ovr) (point-min))
+	   (1- (extent-start-position ovr)))
+    (and (<= (extent-end-position ovr) (point-max))
+	 (> (extent-end-position ovr) (extent-start-position ovr))
+	 (extent-end-position ovr))))
 
 (defun preview-open-overlay (ovr ignored)
   "Open the active preview OVR, IGNORED gets ignored.
