@@ -9,9 +9,12 @@
 
 2004-08-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-preserve-comments): New variable.
+	(TeX-fold-buffer-type): Use it.
+
 	* font-latex.el (font-latex): Add to AUCTeX's customization group.
 	(font-latex-find-matching-close): Correctly recognize multiple
-	escape characters.
+	escape characters.  Add missing paren.
 
 2004-08-26  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
