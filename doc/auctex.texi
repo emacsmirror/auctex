@@ -554,7 +554,7 @@ If the document is empty, or the cursor is placed at the top of the
 document, @AUCTeX{} will default to insert a `document' environment.
 
 Most of these are described further in the following sections, and you
-may easily specify more, as described in `Customizing environments'.
+may easily specify more.  @xref{Customizing environments}.
 
 @menu
 * Equations::                   Equations
@@ -840,7 +840,7 @@ Space will complete and exit.
 By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
 This can be stopped by entering @code{LaTeX-math-mode},
-@pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil
+@pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil.
 
 @defopt TeX-insert-braces
 If non-nil, append a empty pair of braces after inserting a macro.
@@ -1240,8 +1240,8 @@ Font locking is supposed to improve readability of the source code by
 highlighting certain keywords with different colors or fonts.  It
 thereby lets you recognize the function of markup code to a certain
 extent without having to read the markup command.  For general
-information on controlling font locking with Emacs' font lock mode,
-@xref{Font Lock, , Font Lock Mode, emacs, GNU Emacs Manual}.
+information on controlling font locking with Emacs' font lock mode, see
+@ref{Font Lock, , Font Lock Mode, emacs, GNU Emacs Manual}.
 
 @defopt TeX-install-font-lock
 Once font locking is enabled globally or for the major modes provided by
@@ -1494,9 +1494,9 @@ for versions 21.3 and before due to it working not properly.
 @defopt font-latex-script-display
 Display specification for subscript and superscript content.  The car is
 used for subscript, the cdr is used for superscript.  The feature is
-implemented using so-called display properties, see @ref{Other Display
-Specs, , Other Display Specifications, elisp, GNU Emacs Lisp Reference
-Manual} for information on what exactly to specify for the values.
+implemented using so-called display properties.  For information on what
+exactly to specify for the values, see @ref{Other Display Specs, , Other
+Display Specifications, elisp, GNU Emacs Lisp Reference Manual}.
 @end defopt
 
 @heading Verbatim macros and environments
@@ -2531,7 +2531,7 @@ Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
 syntax, makes the @key{"} key insert a literal @samp{"}, and pressing it
 twice will give you opening or closing german quotes (@samp{"`} or
 @samp{"'}), if you have configured @code{TeX-open-quote} and
-@code{TeX-close-quote} accordingly @xref{Quotes}.
+@code{TeX-close-quote} accordingly.  @xref{Quotes}.
 
 @item italian
 Runs style hook @code{TeX-language-it-hook}.  Pressing @key{"} will
