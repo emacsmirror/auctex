@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.105 1995-02-14 19:44:38 amanda Exp $
+@c $Id: auc-tex.texi,v 1.106 1995-04-07 02:45:07 amanda Exp $
 
 @finalout
 @titlepage
@@ -2319,6 +2319,10 @@ solution to one of the following problems.  It might be a good idea to
 mail me first, though.
 
 @itemize @bullet
+@item
+@kbd{C-c '} should alway stay in the current window, also when it find a
+new file.
+
 @item
 @code{LaTeX-fill-environment} does not indent the closing @samp{\end}.
 
