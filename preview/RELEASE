@@ -1,22 +1,19 @@
-Release notes for version 0.6.1 of the preview-latex package:
+Release notes for version 0.7 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  It is released under the GNU
-Public License (GPL).  At the current point of time, GNU Emacs-21.1,
+Public License (GPL).  At the current point of time, GNU Emacs-21,
 AUC TeX, a working LaTeX installation and GhostScript are required.
-XEmacs support is again being worked on.  If you are planning on
-contributing, please contact the developers' list.  Due to missing
-image support of Emacs-21.1 under Microsoft Windows, this platform is
-not usable at the current point of time.
+There is preliminary support for XEmacs available.  If you are
+planning on contributing, please contact the developers' list.  Since
+nobody is currently working on image support for Emacs-21 under
+Microsoft Windows, this platform remains unusable for preview-latex.
 
-Release focus have been user interface improvements and documentation.
-The TeXinfo documentation now also contains instructions for the used
-LaTeX style, and users of Emacs' desktop package will have previews
-survive into their next Emacs session.  The LaTeX style now has an
-option for making TeX bounding boxes known to Dvips in case it gets
-them wrong (frequent with packages like PStricks).  Due to a defective
-backport of security handling, GNU GhostScript-6.53 failed to work
-with version 0.6.  We now don't use the incomplete functionality.
+Release focus have been documentation improvements and staggering
+performance enhancements.  For the first time, workable XEmacs support
+is included.  The LaTeX style has a new `dvips' option that will
+override page geometry settings introduced by geometry.sty and
+similar, so that the output is positioned reliably.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
