@@ -14,6 +14,13 @@
 	* tex-info.el (Texinfo-insert-node): Emacs 21.3 and earlier
 	expect a list of lists.
 
+	* tex.el: Cater for `delete-selection-mode'.
+	`eval-after-load' (used for support of desktop.el) in Emacs 21.3
+	and earlier expects a string, not a symbol.
+	(TeX-point-is-escaped): Remove.  Implementation of
+	`TeX-escaped-p', which does the same, is slightly nicer.
+	(TeX-insert-dollar): Use `TeX-escaped-p'.
+
 2004-10-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Small clean-ups and rearrangements.
