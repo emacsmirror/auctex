@@ -1,5 +1,5 @@
 \input texinfo
-@setfilename auctex
+@setfilename auctex.info
 @settitle AUCTeX
 @dircategory Emacs
 @dircategory TeX
