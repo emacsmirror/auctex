@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.10 2001-09-26 20:39:37 dakas Exp $
+;; $Id: preview.el,v 1.11 2001-09-27 01:23:34 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -36,7 +36,9 @@
 ;; LaTeX needs to access a special style file "preview.sty".  For the
 ;; installation of this style file, use the provided configure and
 ;; install scripts.
-
+;;
+;; Please report bugs with M-x preview-report-bug RET
+;;
 ;;; History:
 ;;
 
@@ -47,6 +49,31 @@
   (require 'tex-buf)
   (defvar TeX-auto-file)
   (require 'tq))
+
+(defun preview-report-bug () "Report a bug in the preview-latex package."
+  (interactive)
+  (let ((reporter-prompt-for-summary-p "Bug report subject: "))
+    (reporter-submit-bug-report
+     "preview-latex-bugs@lists.sourceforge.net"
+     "$RCSfile: preview.el,v $ $Revision: 1.11 $ $Name:  $"
+     '(AUC-TeX-version
+       preview-image-type
+       preview-image-creators
+       preview-gs-command
+       preview-gs-options
+       preview-gs-outstanding-limit
+       preview-scale-function
+       preview-default-option-list)
+     nil
+     (lambda ()
+       (insert (format "\nOutput from running `%s -h':\n"
+		       preview-gs-command))
+       (call-process preview-gs-command nil t nil "-h")
+       (insert "\n"))
+     "Remember to cover the basics.  Including a minimal LaTeX example
+file exhibiting the problem might help."
+     )))
+			
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
