@@ -1,5 +1,6 @@
 ;; texmathp.el -- Code to check if point is inside LaTeX math environment
 ;; Copyright (c) 1998 Carsten Dominik
+;; Copyright (C) 2004 Free Software Foundation, Inc.
 
 ;; texmathp.el,v 1.28 1998/11/23 15:19:44 dominik Exp
 
@@ -159,6 +160,7 @@ The structure of each entry is (NAME TYPE)
     ("displaymath"   env-on)
     ("\\fbox"        arg-off)
     ("\\mbox"        arg-off)
+    ("\\label"       arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
     ("\\ensuremath"  arg-on)
