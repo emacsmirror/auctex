@@ -1,12 +1,12 @@
 # serial 1
 
 
-dnl wholly stolen from emacs-w3m, credit dnl to Katsumi Yamaoka
+dnl wholly stolen from emacs-w3m, credit to Katsumi Yamaoka
 dnl <yamaoka@jpl.org>
 
 AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
- [dnl Examine PACKAGEDIR.
-  AC_EMACS_LISP(PACKAGEDIR,
+ [dnl Examine packagedir.
+  AC_EMACS_LISP(packagedir,
     (let ((prefix \"${prefix}\")\
 	  package-dir)\
       (if (boundp (quote early-packages))\
@@ -33,7 +33,7 @@ AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
     noecho)])
 
 AC_DEFUN(AC_PATH_PACKAGEDIR,
- [dnl Check for PACKAGEDIR.
+ [dnl Check for packagedir.
   if test ${EMACS_FLAVOR} = xemacs; then
     AC_MSG_CHECKING([where the XEmacs package is])
     AC_ARG_WITH(packagedir,
@@ -41,18 +41,18 @@ AC_DEFUN(AC_PATH_PACKAGEDIR,
       [if test "${withval}" = yes -o -z "${withval}"; then
 	AC_EXAMINE_PACKAGEDIR
       else
-	PACKAGEDIR="${withval}"
+	packagedir="${withval}"
       fi],
       AC_EXAMINE_PACKAGEDIR)
-    if test -z "${PACKAGEDIR}"; then
+    if test -z "${packagedir}"; then
       AC_MSG_RESULT(not found)
     else
-      AC_MSG_RESULT(${PACKAGEDIR})
+      AC_MSG_RESULT(${packagedir})
     fi
   else
-    PACKAGEDIR=NONE
+    packagedir=NONE
   fi
-  AC_SUBST(PACKAGEDIR)])
+  AC_SUBST(packagedir)])
 
 
 AC_DEFUN(AC_PATH_TEXMFDIR,
