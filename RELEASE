@@ -26,9 +26,11 @@ bug in XEmacs and some performance issues with font locking and
 filling, but also other, long-standing issues, like broken
 fontification of verbatim environments.
 
-In addition to the fixed bugs some new features crept in.  Font
-locking can now be customized to a great extent and support for the
-LaTeX packages url, listings, jurabib and csquotes was added.
+Besides bug-fixes some new features crept in.  Font locking can now be
+customized to a great extent and support for the LaTeX packages url,
+listings, jurabib and csquotes was added.  The parser now understands
+additional commands common in LaTeX packages and classes, like
+\DeclareRobustCommand.
 
 Two new sections were added to the manual.  The section "Quick Start"
 gives a short introduction for beginners and serves as a starting
