@@ -1,3 +1,14 @@
+2001-04-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 10.0g released.
+
+2001-04-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-site.el: Don't enable tex-info.el by default.
+
+	* latex.el (LaTeX-hide-environment): Disabled by default.
+	Suggested by Christopher Allen <cpcallen@ruah.dyndns.org>.
+
 2001-03-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 10.0f released.

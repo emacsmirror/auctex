@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 10.0f
+;; Version: 10.0g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -503,6 +503,9 @@ It may be customized with the following variables:
   (outline-flag-region (save-excursion (LaTeX-find-matching-begin) (point))
 		       (save-excursion (LaTeX-find-matching-end) (point))
 		       (if (featurep 'noutline) t ?\r)))
+
+(unless (widget-plist-member (symbol-plist 'LaTeX-hide-environment) 'disabled)
+  (put 'LaTeX-hide-environment 'disabled t))
 
 (defun LaTeX-show-environment ()
   "Show current LaTeX environment."

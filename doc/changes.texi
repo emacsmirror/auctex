@@ -1,6 +1,20 @@
 @section News in 10.0
 
 @itemize @bullet
+
+@item
+Disabled @code{LaTeX-hide-environment}.
+Suggested by Christopher Allen <cpcallen@@ruah.dyndns.org>.
+
+@item
+Changed default to lazy evaluation of @code{TeX-view-style} and
+@code{LaTeX-command-style}.
+Suggested by Peter Neergaard <turtle@@cs.bu.edu>.
+
+@item
+Backindent when brace is at the start of a line.
+Patch by Masashi Shimbo <shimbo@@cis.ibaraki.ac.jp>.
+
 @item
 Added Emacs 21 font lock support.
 
