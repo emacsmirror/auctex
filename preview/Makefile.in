@@ -43,3 +43,16 @@ preview.dvi: preview.drv preview.dtx
 
 preview.elc: preview.el
 	$(EMACS) -batch -q -no-site-file -f batch-byte-compile preview.el
+
+
+clean:
+	rm -f preview.elc
+	rm -f docstrip.log preview.ins preview.log preview.drv preview.sty \
+		prauctex.def preview.aux preview.dvi circ.log \
+		circ.dvi circ.aux texput.log testdocstrip.tex \
+		testdocstrip.log bootstrap.log preview-mk.ins preview-mk.log
+
+distclean:
+	make clean
+	rm -f config.log config.cache config.status
+	rm -f Makefile
