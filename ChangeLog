@@ -1,3 +1,8 @@
+2004-02-17  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-title-4-face): Added missing :weight
+	and :inherit for color displays.
+
 2004-02-15  Peter S Galbraith  <psg@debian.org>
 
 	* bib-cite.el (bib-cite-fontify-help-as-bibtex)

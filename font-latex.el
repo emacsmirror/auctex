@@ -95,11 +95,13 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.911 17Feb2004 Reiner Steib
+;;  - font-latex-title-4-face: Added missing :weight and :inherit.
 ;; V0.910 15Feb2004 Reiner Steib
 ;;  - font-latex-title-4-face: Use different colors depending on background.
 ;; V0.909 25Nov2003 Reiner Steib
 ;;  - font-latex-match-function-keywords: Added spacing commands, "nonumber",
-;;  "centering", "TeX", and "LaTeX".
+;;    "centering", "TeX", and "LaTeX".
 ;;  - font-latex-match-textual-keywords: Added textsuperscript.
 ;; V0.908 17Nov2003 PSG
 ;;  - font-latex-keywords-2: Had forgotten to set LAXMATCH on all title
@@ -369,8 +371,10 @@ Also selects \"<quote\"> versus \">quote\"<."
 
 (defface font-latex-title-4-face
   '((((type tty pc) (class color)) (:weight bold))
-    (((class color) (background light)) (:foreground "blue4"))
-    (((class color) (background dark))  (:foreground "yellow"))
+    (((class color) (background light))
+     (:weight bold :inherit variable-pitch :foreground "blue4"))
+    (((class color) (background dark))
+     (:weight bold :inherit variable-pitch :foreground "yellow"))
     (t (:weight bold :inherit variable-pitch)))
   "Face for LaTeX titles at level 4."
   :group 'font-latex-highlighting-faces)
