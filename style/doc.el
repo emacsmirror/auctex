@@ -44,26 +44,6 @@
  "doc"
  (function
   (lambda ()
-    (LaTeX-add-index-entries
-     "#1\\actualchar{\\protect\\ttfamily#1}
-           (environment)\\encapchar usage"
-     "environments:\\levelchar{\\protect\\ttfamily#1}\\encapchar
-           usage"
-     "#1\\actualchar#2"
-     "#1\\levelchar
-                                 \\ifx\\saved@macroname\\@empty
-                                   \\space
-                                   \\actualchar
-                                   \\generalname
-                                 \\else
-                                   \\expandafter\\@gobble
-                                   \\saved@macroname
-                                   \\actualchar
-                                   \\string\\verb\\quotechar*%
-                                   \\verbatimchar\\saved@macroname
-                                   \\verbatimchar
-                                 \\fi
-                                 :\\levelchar #3")
     (LaTeX-add-environments
      "theglossary"
      '("macrocode" LaTeX-env-no-comment)
