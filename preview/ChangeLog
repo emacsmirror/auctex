@@ -1,5 +1,8 @@
 2002-04-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-parse-messages): Another addition to the
+	fast location hook semantics.
+
 	* prv-emacs.el (preview-add-urgentization): Cosmetic change.
 
 	* Additional frobbing of urgentization.
