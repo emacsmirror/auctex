@@ -54,10 +54,18 @@ approved by the Free Software Foundation.
 @end titlepage
 @page
 
+@c Use @ifinfo _and_ @ifhtml here because Texinfo 3 cannot cope with
+@c @ifnottex around a top node.
+@ifinfo
 @node top
 @top @AUCTeX{}
-@ifnottex
+@end ifinfo
+@ifhtml
+@node top
+@top @AUCTeX{}
+@end ifhtml
 
+@ifnottex
 @AUCTeX{} is an integrated environment for editing @LaTeX{} and
 @TeX{} files.
 
@@ -73,6 +81,7 @@ easy to find the errors that may slip through anyway.
 
 If you want to make @AUCTeX{} aware of style files and multi-file
 documents right away, insert the following in your @file{.emacs} file.
+
 @lisp
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
