@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.6 $  
+;; RCS status      : $Revision: 3.7 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Sun Jun  2 16:30:25 1991
-;; Update Count    : 147
+;; Last Modified On: Sun Jun  2 17:11:23 1991
+;; Update Count    : 150
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -386,6 +386,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'paragraph-separate)
   (setq paragraph-separate (concat
 			    "\\(" "\\\\par.*$"
+			    "\\|" "\\\\\\\\.*$"
 			    "\\|" "^[ \t]*$"
 			    "\\|" "^[ \t]*\\\\"
 			     "\\("
@@ -399,6 +400,7 @@ of LaTeX-mode-hook."
   (make-local-variable 'paragraph-start)
   (setq paragraph-start (concat
                           "\\(^[ \t]*$"
+                          "\\|\\\\\\\\.*[^.]"
                           "\\|^[ \t]*\\\\\\(item\\|[[]\\).*$"
 			  "\\|\\$\\$"
 			  "\\|" paragraph-separate "\\)" ))
@@ -468,8 +470,8 @@ LaTeX-item-indent."
 	  (back-to-indentation)
 	  (delete-region beg (point))
 	  (indent-to indent)))))
-  (if (looking-at "^[ \t]*$")
-      (end-of-line)))
+  (if (< (current-column) (calculate-LaTeX-indentation))
+      (back-to-indentation)))
 
 (defun LaTeX-fill-paragraph (prefix)
 "Fill paragraph at or after point.
@@ -517,7 +519,7 @@ Prefix arg means justify as well."
   "Set mark to beginning of current
 environment and point to the matching end"
   (interactive)
-  (if (re-search-backward "\\\\begin{.+}" nil t)
+  (if (re-search-backward "\\\\begin[ \t]*{.+}" nil t)
       (progn
 	(set-mark-command nil)
 	(LaTeX-find-matching-end 0))
