@@ -1,3 +1,8 @@
+2004-03-23  David Kastrup  <dak@gnu.org>
+
+	* tex.el (VirTeX-common-initialization): Back out last change
+	about sentence-end-double-space.
+
 2004-03-22  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4, configure.in: Fix bug for the case $prefix=NONE
