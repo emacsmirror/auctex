@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.21 2001-10-04 14:23:06 dakas Exp $
+;; $Id: preview.el,v 1.22 2001-10-04 22:16:14 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -51,10 +51,10 @@
 
 (eval-and-compile
   (defvar preview-compatibility-macros nil
-"List of macros only present when compiling/loading.")
+    "List of macros only present when compiling/loading.")
 
   (if (string-match "XEmacs" (emacs-version))
-      (require 'prv-xemacs )))
+      (load-file "prv-xemacs.elc")))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -357,7 +357,10 @@ is located."
   nil)
 
 (defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
-				 (:type pbm :file "help.pbm" :ascent 80)))
+				 (:type pbm :file "help.pbm" :ascent
+					80))
+  "The symbol used for previews to be generated.
+Usually a question mark")
 
 (defun preview-gs-place (ov tempdir snippet)
   "Generate an image placeholder rendered over by GhostScript.
@@ -648,7 +651,9 @@ function for modification hooks."
     (TeX-command "Generate Preview" 'TeX-region-file)))
 
 (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
-			(:type pbm :file "search.pbm" :ascent 100)))
+			(:type pbm :file "search.pbm" :ascent 100))
+  "The symbol used for an open preview.
+Usually a magnifying glass.")
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
@@ -1111,7 +1116,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.21 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.22 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
@@ -1132,8 +1137,9 @@ file exhibiting the problem might help."
      )))
 
 (eval-and-compile
-  (mapc #'fmakunbound preview-compatibility-macros)
-  (makunbound 'preview-compatibility-macros))
+  (when (boundp 'preview-compatibility-macros)
+    (mapc #'fmakunbound preview-compatibility-macros)
+    (makunbound 'preview-compatibility-macros)))
 
 (provide 'preview)
 ;;; preview.el ends here
