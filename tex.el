@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10s
+;; Version: 9.10t
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2134,7 +2134,7 @@ See match-data for details."
 
 (defun TeX-current-line ()
   "The current line number."
-  (count-lines (point-min) (point)))
+  (format "%d" (count-lines (point-min) (point))))
 
 (defun TeX-current-file-name-nondirectory ()
   "Return current filename, without path."
