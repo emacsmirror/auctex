@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.16 1993-03-17 22:11:44 amanda Exp $
+@c $Id: auc-tex.texi,v 1.17 1993-03-17 22:24:33 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1621,7 +1621,7 @@ Smith @samp{<jsmith@@king.mcs.drexel.edu>}, please direct questions to
 him.
 
 You can get a Cyrillic font for X11 from Serge Vakulenko
-@samp{<vak@kiae.su>}.  You will need an Emacs capable of displaying 8
+@samp{<vak@@kiae.su>}.  You will need an Emacs capable of displaying 8
 bit characters to use it.
 
 @example
@@ -2038,7 +2038,7 @@ Here is a few examples from @file{latex.el}.
        t [ TeX-argument-counter-hook "Within counter" ])))))
 @end lisp
 
-@defun TeX-add-symbols @var{symbol} @dots
+@defun TeX-add-symbols @var{symbol} @dots{}
 Add each @var{symbol} to the list of known symbols.
 @end defun
 
@@ -2208,7 +2208,7 @@ environment hook to insert the environment, but the function
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to list after the hook.
 
-@defun LaTeX-add-environments @var{env} @dots
+@defun LaTeX-add-environments @var{env} @dots{}
 Add each @var{env} to list of loaded environments.
 @end defun
 
@@ -2232,11 +2232,11 @@ You can also specify bibliographical databases and labels in the style
 file.  This is probably of little use, since this information will
 usually be automatically generated from the @TeX{} file anyway.
 
-@defun LaTeX-add-bibliographies @var{bibliography} @dots
+@defun LaTeX-add-bibliographies @var{bibliography} @dots{}
 Add each @var{bibliography} to list of loaded bibliographies.
 @end defun
 
-@defun LaTeX-add-labels @var{label} @dots
+@defun LaTeX-add-labels @var{label} @dots{}
 Add each @var{label} to the list of known labels.
 @end defun
 
