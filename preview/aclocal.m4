@@ -19,8 +19,8 @@ EOF
     previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
-	    previewtexmfdir=$texmfdir
-	    previewdocdir=$texmfdir
+	    previewtexmfdir=\$\(texmfdir\)
+	    previewdocdir=\$\(texmfdir\)
 	    
 	fi
     else
@@ -45,8 +45,8 @@ do
   x=`echo $x | sed -e 's+//+/+g' -e 's+/$++' `
   if test -d "$x"  ; then
      texmfdir=`echo $x | sed -e 's+/tex/latex++'`
-     previewdocdir=$texmfdir/doc/latex/styles
-     previewtexmfdir=$texmfdir/tex/latex/preview
+     previewdocdir=\$\(texmfdir\)/doc/latex/styles
+     previewtexmfdir=\$\(texmfdir\)/tex/latex/preview
      break
   fi
 done
@@ -60,8 +60,8 @@ for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir=$x
-     previewtexmfdir=$texmfdir/preview
-     previewdocdir=$texmfdir/preview
+     previewtexmfdir=\$\(texmfdir\)/preview
+     previewdocdir=\$\(texmfdir\)/preview
      break
   fi
 done
@@ -75,7 +75,7 @@ for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir=$x
-     previewdocdir=$texmfdir
+     previewdocdir=\$\(texmfdir\)
      break
   fi
 done
