@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.62 1993-08-17 18:58:31 amanda Exp $
+# $Id: Makefile,v 5.63 1993-08-17 19:25:31 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -258,7 +258,7 @@ dist:
 	find auctex -name CVS -print | xargs rm -rf
 	cp auc-ver.el auctex
 	(cd auctex/doc; $(MAKE) auc-info)
-	(cd auctex/lacheck; $(MAKE) lacheck.c lacheck.1 test.old; rm lacheck)
+	(cd auctex/lacheck; $(MAKE) lacheck.c lacheck.1 test.old; rm lacheck lacheck.o )
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
