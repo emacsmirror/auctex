@@ -1,3 +1,8 @@
+2002-12-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-counter-find): Take counters by searching
+	forward if searching backwards does not avail us.
+
 2002-12-09  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-counter-find): Factor out stuff from advice
