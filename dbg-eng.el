@@ -1,6 +1,6 @@
 ;;; @ dbg-eng.el - English LaTeX error messages
 ;;;
-;;; $Id: dbg-eng.el,v 5.1 1993-03-28 15:40:53 amanda Exp $
+;;; $Id: dbg-eng.el,v 5.2 1993-05-28 01:53:08 amanda Exp $
 
 (provide 'dbg-eng)
 (require 'tex-buf)
@@ -272,7 +272,7 @@ by using a \\load command.")
     ("Font .* not found." .                                    
 "You requested a family/series/shape/size combination that is totally
 unknown.  There are two cases in which this error can occur:
-  1) You used the \size macro to select a size that is not available.
+  1) You used the \\size macro to select a size that is not available.
   2) If you did not do that, go to your local `wizard' and
      complain fiercely that the font selection tables are corrupted!")
  

@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.37 1993-04-21 18:13:09 amanda Exp $
+;;; $Id: tex-buf.el,v 1.38 1993-05-28 01:53:31 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -199,14 +199,6 @@ Also check if ORIGINAL is modified in a non-saved buffer."
 	  (buffer-list))
   (file-newer-than-file-p original derived))
 
-(defvar TeX-check-path (if TeX-fast
-			   (list "./")
-			 (cons "./" TeX-macro-private))
-  "*Directory path to search for dependencies.
-
-If nil, just check the current file.
-Used when checking if any files have changed.")
-
 (defun TeX-dependencies (files extensions)
   "Return a combined list of FILES with EXTENSIONS in TeX-check-path."
   (apply 'append
@@ -287,8 +279,7 @@ in TeX-check-path."
 		     (let ((completion-ignore-case t))
 		       (completing-read (concat "Printer: (default "
 						TeX-printer-default ") ")
-					TeX-printer-list
-					nil t))
+					TeX-printer-list))
 		   "")))
     (if (string-equal "" printer)
 	(setq printer TeX-printer-default)
@@ -298,11 +289,13 @@ in TeX-check-path."
 		       (if (and entry (nth 1 entry))
 			   (nth 1 entry)
 			 TeX-print-command))))
-      (if (string-match "%p" expansion)
-	  (concat (substring expansion 0 (match-beginning 0))
-		  printer
-		  (substring expansion (match-end 0)))
-	expansion))))
+      (if (string-match "%p" printer)
+	  (error "Don't use %s in printer names." "%p"))
+      (while (string-match "%p" expansion)
+	(setq expansion (concat (substring expansion 0 (match-beginning 0))
+				printer
+				(substring expansion (match-end 0)))))
+      expansion)))
 
 (defun TeX-style-check (styles)
   "Check STYLES compared to the current style options."
@@ -334,7 +327,9 @@ Return the new process."
     (setq mode-name name)
     (setq TeX-parse-hook 'TeX-parse-command)
     (setq TeX-command-default default)
-    (setq TeX-sentinel-hook (function (lambda (a b))))
+    (setq TeX-sentinel-hook
+	  (function (lambda (process name)
+		      (message (concat name ": done.")))))
     (if TeX-process-asynchronous
 	(let ((process (start-process name buffer TeX-shell
 				      TeX-shell-command-option command)))
@@ -885,6 +880,8 @@ already in an Emacs buffer) and the cursor is placed at the error."
     (setq TeX-error-point (point))
 
     ;; Find the error.
+    (if (null file)
+	(error "Error occured after last TeX file closed."))
     (find-file-other-window file)
     (goto-line (+ offset line))
     (if (not (string= string " "))

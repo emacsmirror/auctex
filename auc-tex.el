@@ -1,6 +1,6 @@
-;;; @ auc-old.el - Compatibility with AUC TeX 6.*
+;;; @ auc-tex.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.47 1993-04-21 18:13:02 amanda Exp $
+;;; $Id: auc-tex.el,v 5.48 1993-05-28 01:53:06 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the

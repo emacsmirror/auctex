@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.44 1993-04-17 04:53:00 amanda Exp $
+# $Id: Makefile,v 5.45 1993-05-28 01:53:00 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -18,21 +18,21 @@ exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 
 # Where info files go.
-infodir = $(prefix)/lib/emacs/info
-
-# Where the AUC TeX emacs lisp files go.
-# Set this to "." to specify current directory.
+infodir = $(prefix)/info
 
 # Where manual pages go.
 mandir=$(prefix)/man/man1
 
-# Where the standard emacs lisp files are located
-elispdir=$(prefix)/lib/emacs/lisp
+# Where the standard emacs lisp files are located.
+elispdir=$(prefix)/lib/emacs/19.8/lisp
 
+# Where the AUC TeX emacs lisp files go.
+# Set this to "." to specify current directory.
+#
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
-
-aucdir=$(elispdir)/auctex
+#
+aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -45,23 +45,23 @@ aucdir=$(elispdir)/auctex
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-EMACS=emacs -batch -q
+EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp emacs -batch -q
 
 # Specify the byte-compiler for compiling AUC TeX files
-ELC=env EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
+ELC= $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) \
-	-l tex-auto -f TeX-auto-generate-global
+AUTO= $(EMACS) -l tex-auto -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
-AUTOC= EMACSLOADPATH=$(aucdir):$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
+AUTOC= $(EMACS) -f batch-byte-compile
 
 # Using TeX in batch mode.
 TEX=tex
 
 # Need K&R compiler.  Either `cc' or `gcc -traditional'
-CC = gcc -traditional
+#CC = gcc -traditional
+CC = cc
 
 # Cflags.. Include `-DNEED_STRSTR' if you don't have strstr() in libc
 CFLAGS = -O # -DNEED_STRSTR 
@@ -82,7 +82,7 @@ MV = mv
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-MINMAPSRC = min-map.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
+MINMAPSRC = min-bind.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
 	    min-ind.el	min-ispl.el kill-fix.el
 
 MINMAPFILES = README_MINOR $(MINMAPSRC)
@@ -125,21 +125,12 @@ first:
 	@echo "	 file from 2.16 has version 2.86).  The version of"
 	@echo "	 TeXinfo distributed with GNU Emacs 18.xx is TeXinfo 1."
 	@echo
-	@echo "	 TeXinfo2 is available for ftp at all major GNU sites."
-	@echo "	 TeXinfo2 will also be part of GNU Emacs 19.xx."
-	@echo
 
 all: main
 	@echo "**********************************************************"
 	@echo "** Before running \`make install' you should edit the "
 	@echo "** file \`tex-site.el' in this directory to suit your"
-	@echo "** local needs.	Print out the file \`doc/auc-tex.dvi'"
-	@echo "** and read the section \`Installation' if in doubt." 
-	@echo "** Alternatively you may run \`make DocInstall' and read"
-	@echo "** that information via Emacs' info system"
-	@echo "** Then run: \`make install'"
-	@echo "** The Emacs Lisp files will only be recompiled, if"
-	@echo "** you have set aucdir to a different directory."
+	@echo "** local needs.  Then run: \`make install'"
 	@echo "**********************************************************"
 
 main: Doc LaCheck
@@ -213,14 +204,14 @@ LispInstall:
 
 LaCheck:
 	@echo "**********************************************************"
-	@echo "** Building LaCheck
+	@echo "** Building LaCheck"
 	@echo "**********************************************************"
 	-(cd lacheck; make bindir=$(bindir) \
 	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
 
 Doc: 
 	@echo "**********************************************************"
-	@echo "** Making AUC TeX documentation
+	@echo "** Making AUC TeX documentation"
 	@echo "**********************************************************"
 	-(cd doc; make)
 

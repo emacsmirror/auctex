@@ -1,28 +1,24 @@
 * README_MINOR - Introduction to minor modes.
 
-$Id: README_MINOR,v 5.4 1993-03-16 02:24:14 amanda Exp $
+$Id: README_MINOR,v 5.5 1993-05-28 01:53:03 amanda Exp $
 
-** min-map.el:  Minor Keymaps 
+** min-bind.el:  Keymap, variable, and syntax bindings in minor modes
 
-For authors of minor modes, who need to rebind one or more keys while
-in the minor mode.  You can do this by hiding the old binding in a
-variable, and then restore the binding when you leave the mode.
-Unfortunately, this will usually not work if more than one minor mode
-try to rebind the key.  You can solve this problem, by using the
-following functions to bind keys in minor modes.  See the
-documentation string for the individual functions for details.
+Minor modes that bind a key, set a variable, or change a syntax entry
+are inheritly unsafe.  While the minor mode may store the old binding
+and restore it when you leave the mode, this will only work if it is
+the only minor mode that bind that particular key, variable, or syntax
+entry.
 
-Put in (require 'min-map) in the start of the file containing your
-minor mode. 
+Authors of minor modes are therefore encouraged to use the
+features of min-bind.el, which will handle conflicts and ensure that
+the proper value is restored when you exit from a minor mode.  Besides
+being much more safe, the functions defined in min-bind.el are also
+more convenient to use.  So you have no excuse for not using them when
+you write a minor mode.
 
-Use minor-set-key to set a key in the minor keymap for a given minor
-mode.
-
-Use minor-call-shadow to call the key binding shadowed by a given
-minor mode.
-
-Use unbind-minor-mode to remove all key definitions for a given minor
-mode.
+All the minor modes mentioned in this file are build upon
+min-bind.el.
 
 ** min-out.el:  Outline Minor Mode
 
