@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.144 2004-03-18 10:16:39 angeli Exp $
+@c $Id: auc-tex.texi,v 1.145 2004-03-19 12:08:02 angeli Exp $
 
 @finalout
 @titlepage
@@ -985,9 +985,9 @@ Number of spaces to add to the indentation for each @samp{@{} not
 matched by a @samp{@}}. 
 @end defopt
 
-@defopt LaTeX-fill-comment-syntax-aware
-If non-nil comments will be filled according to LaTeX syntax.
-Otherwise they will be filled like normal text.
+@defopt LaTeX-format-comment-syntax-aware
+If non-nil comments will be filled and indented according to LaTeX
+syntax.  Otherwise they will be filled like normal text.
 @end defopt
 
 @defopt LaTeX-fill-distinct-contents
