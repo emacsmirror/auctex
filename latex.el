@@ -2025,7 +2025,7 @@ recognized."
 		   (and (TeX-in-commented-line)
 			LaTeX-format-comment-syntax-aware))))
       (progn
-	(move-to-left-margin)
+	(beginning-of-line)
 	(re-search-forward comment-start-skip (line-end-position) t))
     (back-to-indentation)))
 
@@ -2266,28 +2266,30 @@ space does not end a sentence, so don't break a line there."
 		    t
 		  nil))
 	  (save-restriction
-	    (when code-comment-flag
-	      ;; The start of a code comment is a moving target during
-	      ;; filling, so we work with `narrow-to-region' and
-	      ;; `point-max'.
-	      (narrow-to-region
-	       (point-min)
-	       ;; Get the position right after the last
-	       ;; non-comment-word.
-	       (if (match-string 1)
-		   (match-beginning 1)
-		 (match-beginning 5))))
+            ;; The start of a code comment is a moving target during
+            ;; filling, so we work with `narrow-to-region' and
+            ;; `point-max'.  We use narrowing in non-code-comment
+            ;; cases as well for the sake of simplicity.
+            (narrow-to-region
+             (point-min)
+             (if code-comment-flag
+                 ;; Get the position right after the last
+                 ;; non-comment-word.
+                 (if (match-string 1)
+                     (match-beginning 1)
+                   (match-beginning 5))
+               to))
 	    ;; Fill until point is greater than the end point.  If there
 	    ;; is a code comment, use the code comment's start as a
 	    ;; limit.
-	    (while (and (< (point) to)
+	    (while (and (< (point) (point-max))
 			(or (not code-comment-flag)
 			    (and code-comment-flag
 				 (> (- (point-max) (line-beginning-position))
 				    fill-column))))
 	      (setq linebeg (point))
 	      (move-to-column (current-fill-column))
-	      (if (when (< (point) to)
+	      (if (when (< (point) (point-max))
 		    ;; Find the position where we'll break the line.
 		    (forward-char 1) ; Use an immediately following
 				     ; space, if any.
@@ -2296,7 +2298,7 @@ space does not end a sentence, so don't break a line there."
 		    ;; Check again to see if we got to the end of
 		    ;; the paragraph.
 		    (skip-chars-forward " \t")
-		    (< (point) to))
+                    (< (point) (point-max)))
 		  ;; Found a place to cut.
 		  (progn
 		    (LaTeX-fill-newline)
@@ -2306,7 +2308,7 @@ space does not end a sentence, so don't break a line there."
 			(forward-line -1)
 			(justify-current-line justify nil t))))
 
-		(goto-char to)
+		(goto-char (point-max))
 		;; Justify this last line, if desired.
 		(if justify (justify-current-line justify t t)))))
 
@@ -2351,7 +2353,9 @@ space does not end a sentence, so don't break a line there."
   ;; COMPATIBILITY for Emacs <= 21.2
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
-    (skip-chars-backward "^ \n"))
+    (skip-chars-backward "^ \n")
+    (when (bolp)
+      (skip-chars-forward "^ \n" (point-max))))
   (when LaTeX-fill-distinct-contents
     (let ((orig-breakpoint (point))
 	  (final-breakpoint (point))
