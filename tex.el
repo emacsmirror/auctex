@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9i
+;; Version: 9.9j
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -125,7 +125,7 @@ performed as specified in TeX-expand-list."
 	;; Uncomment the above line and comment out the next line to
 	;; use `chktex' instead of `lacheck'. 
 	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell nil nil)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document)
 	(list "Other" "" 'TeX-run-command t t)
 	;; Not part of standard TeX.
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
