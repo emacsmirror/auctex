@@ -1,5 +1,11 @@
 2002-03-21  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{Preview attaching commands}): Backward
+	compatible message with TeX bounding box.
+
+	* preview.el (preview-parse-messages): Backward compatible
+	message parsing.
+
 	* preview.dtx (subsection{The internals}, subsection{Preview
 	attaching commands}): provide additional bounding box info.
 	(subsection{The internals}): move location of \pr@shipend to
