@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.463 $"))
+	    (rev "$Revision: 5.464 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-11-29 20:26:11 $"))
+    (let ((date "$Date: 2004-12-01 00:04:25 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1912,13 +1912,20 @@ See `TeX-parse-macro' for details."
 	       (setq arg (- arg 1)))))
 	  ((null arg)
 	   (insert opening-brace)
-	   (if (and (not optional) (TeX-active-mark))
-	       (exchange-point-and-mark))
+	   (when (and (not optional) (TeX-active-mark))
+	     (exchange-point-and-mark)
+	     (if (featurep 'xemacs)
+		 (zmacs-deactivate-region)
+	       (deactivate-mark)))
 	   (insert closing-brace))
 	  ((eq arg t)
 	   (insert opening-brace)
 	   (if (and (not optional) (TeX-active-mark))
-	       (exchange-point-and-mark)
+	       (progn
+		 (exchange-point-and-mark)
+		 (if (featurep 'xemacs)
+		     (zmacs-deactivate-region)
+		   (deactivate-mark)))
 	     (set-marker exit-mark (point)))
 	   (insert closing-brace))
 	  ((symbolp arg)
@@ -3030,7 +3037,9 @@ Used for specifying extra syntax for a macro."
   (modify-syntax-entry ?@  "_"  TeX-mode-syntax-table)
   (modify-syntax-entry ?~  " "  TeX-mode-syntax-table)
   (modify-syntax-entry ?$  "$"  TeX-mode-syntax-table)
-  (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table))
+  (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table)
+  (modify-syntax-entry ?«  "."  TeX-mode-syntax-table)
+  (modify-syntax-entry ?»  "."  TeX-mode-syntax-table))
 
 ;;; Menu Support
 
@@ -4328,5 +4337,9 @@ Your bug report will be posted to the AUCTeX mailing list."))
 
 
 (provide 'tex)
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:
 
 ;;; tex.el ends here
