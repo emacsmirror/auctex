@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{981}
+%\CheckSum{1032}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.58 $
+%  \rcskey \version CVS-$Revision: 1.59 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-05-28 10:40:48 $
+%\rcskey\next $Date: 2002-07-15 22:47:19 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -323,7 +323,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.58 $
+   \reserved@a\reserved@b CVS-$Revision: 1.59 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +332,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-05-28 10:40:48 $
+\reserved@a\next $Date: 2002-07-15 22:47:19 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1035,6 +1035,11 @@
 %<auctex>\let\vfuzz=\hfuzz
 %<auctex>\showboxdepth=-1
 %<auctex>\showboxbreadth=-1
+%    \end{macrocode}
+%Ok, now we cater for outputting the size info at document start, and
+%load a possible configuration file.
+%    \begin{macrocode}
+%<auctex>\AtBeginDocument{\typeout{Preview: Fontsize \f@size pt}}
 %<auctex>\pr@loadcfg{prauctex}
 %    \end{macrocode}
 %And here we cater for several frequently used commands in
@@ -1058,6 +1063,18 @@
 %<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
 %<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
 %<auccfg>\PreviewMacro*\index
+%    \end{macrocode}
+%
+%\subsection{The \texttt{lyx} option}
+%The following is the option providing LyX with info for its
+%preview implementation.
+%    \begin{macrocode}
+%<lyx>\ifPreview\else\expandafter\endinput\fi
+%<lyx>\pr@loadcfg{prlyx}
+%<lyx>\AtBeginDocument{\typeout{Preview: Fontsize \f@size pt}}
+%<lyx>\g@addto@macro\pr@ship@end{\typeout{Preview:
+%<lyx>  Snippet \number\pr@snippet\space
+%<lyx>  \number\ht\pr@box\space \number\dp\pr@box \space\number\wd\pr@box}}
 %    \end{macrocode}
 %
 %\subsection{Debugging options}
@@ -1127,7 +1144,7 @@
 %Here is stuff used for parsing this:
 %    \begin{macrocode}
 %<tightpage>\ifPreview\else\expandafter\endinput\fi
-%<tightpage>\def\pr@nextbb{\edef\next{\next\number\dimen@\space}%
+%<tightpage>\def\pr@nextbb{\edef\next{\next\space\number\dimen@}%
 %<tightpage>  \advance\count@\m@ne\ifnum\count@>\z@
 %<tightpage>  \afterassignment\pr@nextbb\dimen@\fi}
 %    \end{macrocode}
@@ -1139,12 +1156,20 @@
 %appropriate header section, anyhow, so this ensures that we come
 %right after the bop section.  We insert the 7~numbers here: the
 %4~bounding box adjustments, and the 3~\TeX\ box dimensions.
+%In case the box adjustments have changed since the last time, we
+%write them out to the console.
 %    \begin{macrocode}
-%<tightpage>\g@addto@macro\pr@ship@end{\setbox\pr@box\hbox{%
-%<tightpage>  \let\next\@empty
+%<tightpage>\global\let\pr@bbadjust\@empty
+%<tightpage>\pr@addto@front\pr@ship@end{\begingroup
+%<tightpage>  \let\next\@gobble
 %<tightpage>  \count@4\afterassignment\pr@nextbb
 %<tightpage>  \dimen@\PreviewBbAdjust
-%<tightpage>  \special{ps::\next\number\ht\pr@box\space
+%<tightpage>  \ifx\pr@bbadjust\next
+%<tightpage>  \else \global\let\pr@bbadjust\next
+%<tightpage>  \typeout{Preview: Tightpage \pr@bbadjust}%
+%<tightpage>  \fi\endgroup}
+%<tightpage>\g@addto@macro\pr@ship@end{\setbox\pr@box\hbox{%
+%<tightpage>  \special{ps::\pr@bbadjust\space\number\ht\pr@box\space
 %<tightpage>  \number\dp\pr@box\space\number\wd\pr@box}\box\pr@box}}
 %    \end{macrocode}
 %Ok, here comes the beef.  First we fish the 7~numbers from the
@@ -1173,7 +1198,7 @@
 %<tightpage>     3 1 roll
 %    \end{macrocode}
 %Ok, we now have the bounding box on the stack in the proper order
-%llx,lly, urx, ury.  We add the adjustments:
+%llx, lly, urx, ury.  We add the adjustments:
 %    \begin{macrocode}
 %<tightpage>    4{5 -1 roll add 4 1 roll}repeat
 %    \end{macrocode}
@@ -1308,6 +1333,7 @@
 %<installer>    \file{prshowlabels.def}{\from{preview.dtx}{showlabels}}
 %<installer>    \file{prtracingall.def}{\from{preview.dtx}{tracingall}}
 %<installer>    \file{prtightpage.def}{\from{preview.dtx}{tightpage}}
+%<installer>    \file{prlyx.def}{\from{preview.dtx}{lyx}}
 %<installer> }
 %<installer> \endbatchfile
 %    \end{macrocode}
