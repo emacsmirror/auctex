@@ -59,13 +59,14 @@ AC_CHECK_PROGS_REQUIRED(EMACS, emacs xemacs, [(X)Emacs not found!  Aborting!
 You must install Emacs 21 or XEmacs for preview to work.])
 
 AC_XEMACS_P
+packagedir=
 
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    AC_PATH_PACKAGEDIR
    lispdir=${packagedir}/lisp/preview
    icondir=${packagedir}/etc/preview
-else		
+else
    PLAT_LISP=prv-emacs.el
    AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))])
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
@@ -75,6 +76,7 @@ else
 fi
 
 AC_SUBST(PLAT_LISP)
+AC_SUBST(packagedir)
 
 AC_CHECK_AUCTEX
 AC_PATH_PROG(INSTALL_INFO, install-info, /bin/true, $PATH:/usr/sbin:/sbin)
