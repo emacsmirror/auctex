@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auc-tex.texi,v 1.168 2004-08-09 02:23:01 dak Exp $
+@c $Id: auc-tex.texi,v 1.169 2004-08-10 06:21:55 angeli Exp $
 
 @finalout
 @titlepage
@@ -1561,9 +1561,9 @@ interactive mode, @TeX{} will pause with an error prompt when errors are
 encountered and wait for the user to type something.
 @end deffn
 
-@deffn Command TeX-source-specials
+@deffn Command TeX-source-specials-mode
 @kindex C-c C-t C-s
-@vindex TeX-source-specials
+@vindex TeX-source-specials-mode
 This command, bound to @kbd{C-c C-t C-s}, toggles Source Special
 support.  Source Specials will move the @acronym{DVI} viewer to the
 location corresponding to point (forward search), and it will use
