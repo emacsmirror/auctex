@@ -665,6 +665,9 @@ of an insertion."
 			 (nth 1 image)
 			 (nth 2 image))))
 
+(defsubst preview-supports-image-type (imagetype)
+  (valid-image-instantiator-format-p imagetype))
+
 ;; Now bind the list of compatibility macros into the compiled code.
 
 (defvar preview-compatibility-macros
