@@ -1,5 +1,7 @@
 2002-03-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Makefile.in: Add preview.ins target.
+
 	* doc/install.texi: Brown paper bag.
 
 	* autogen.sh: don't prebuild doc.  We offer a separate download
