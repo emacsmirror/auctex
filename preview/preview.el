@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.214 2004-08-02 00:39:32 dakas Exp $
+;; $Id: preview.el,v 1.215 2004-08-03 17:14:17 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -74,10 +74,6 @@ preview-latex's bug reporting commands will probably not work.")))
   :link '(url-link :tag "Homepage" "http://preview-latex.sourceforge.net"))
 
 (defgroup preview-gs nil "Preview's GhostScript renderer."
-  :group 'preview
-  :prefix "preview-")
-
-(defgroup preview-dvipng nil "Preview's Dvipng renderer."
   :group 'preview
   :prefix "preview-")
 
@@ -411,9 +407,9 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng -no-image-on-warn %d -o %m/prev%03d.png"
+  "dvipng -no-image-on-warn -noghostscript %d -o %m/prev%03d.png"
   "*Command used for converting to separate PNG images."
-  :group 'preview-dvipng
+  :group 'preview-latex
   :type 'string)
 
 (defcustom preview-dvips-command
@@ -1552,16 +1548,20 @@ the given value of TIMESTAMP."
   "Cycle through all buffers belonging to current document.
 Each buffer having the same master file as the current file
 has FUNC called with its current buffer being set to it."
-  (let ((buffers (buffer-list))
-	(master (expand-file-name (TeX-master-file t))))
+  (let* ((buffers (buffer-list))
+	 (master (expand-file-name (TeX-master-file t)))
+	 (default-buffers (list (current-buffer)
+				(find-buffer-visiting master))))
     (while buffers
       (with-current-buffer (pop buffers)
-	(and (memq major-mode '(plain-tex-mode latex-mode))
-	     (or (stringp TeX-master)
-		 (eq TeX-master t))
-	     (string= (expand-file-name (TeX-master-file t))
-		      master)
-	     (funcall func))))))
+	(when
+	    (or (memq (current-buffer) default-buffers)
+		(and (memq major-mode '(plain-tex-mode latex-mode))
+		     (or (stringp TeX-master)
+			 (eq TeX-master t))
+		     (string= (expand-file-name (TeX-master-file t))
+			      master)))
+	  (funcall func))))))
 
 (defun preview-clearout-document ()
   "Clear out all previews in current document.
@@ -3034,7 +3034,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.214 $"))
+	(rev "$Revision: 1.215 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3045,7 +3045,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-02 00:39:32 $"))
+    (let ((date "$Date: 2004-08-03 17:14:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,11 @@
+2004-08-03  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-walk-document): Current buffer and its
+	master are always considered part of the document.
+	(preview-dvipng-command): Use -noghostscript option.
+	(preview-dvipng): Remove the almost unused customization group
+	'preview-dvipng.
+
 2004-08-02  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-extract-bb): remove old outcommented version.
