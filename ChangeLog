@@ -8,6 +8,10 @@
 
 2004-08-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-buffer-type): Support folding of
+	environments in ConTeXt mode as well.
+	(TeX-fold-item): Ditto.
+
 	* tex-info.el (TeXinfo-mode-menu): Add help strings.
 
 	* tex.el (TeX-command-list): Set a default value which will not
