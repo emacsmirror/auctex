@@ -1,17 +1,17 @@
 ;;; column.el --- display line and column in the mode line
 
-;; Copyright (C) 1993 Per Abrahamsen.
+;; Copyright (C) 1993, 1994 Per Abrahamsen.
 ;; Copyright abandoned.  This file is donated to the public domain.
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
-;; Version: 0.3
+;; Version: 0.4
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
 ;; LCD Archive Entry:
 ;; column|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; Display line and column in the mode line|
-;; 1993-12-31|0.3|~/misc/column.el.Z|
+;; 1994-01-11|0.4|~/misc/column.el.Z|
 
 ;;; Commentary:
 
@@ -19,9 +19,14 @@
 ;;   (autoload 'display-column-mode "column" nil t)
 ;; in your `.emacs' file, restart FSF Emacs 19 then activate with 
 ;;   M-x display-column-mode RET
+;; If you want it activated by default, insert
+;;   (display-column-mode 1)
+;; after the autoload.
 
 ;;; Change Log:
 ;;
+;; Tue Jan 11 14:33:48 1994
+;;      * Add a bit more documentation for how to customize it.
 ;; Fri Dec 31 14:02:47 1993
 ;;      * Replace update-column-function variable with
 ;;        do-update-column function.
@@ -46,18 +51,21 @@
   (setq current-column (int-to-string (current-column)))
   (set-buffer-modified-p (buffer-modified-p)))
 
-(defvar display-column-mode nil
-  "Show current column and line in mode line if non-nil.")
+;; Show current column and line in mode line if non-nil.
+(defvar display-column-mode nil)
 
 (defvar display-column-format '(current-column "/%l--")
-  "Format for displaying the column in the mode line.")
+  "Format for displaying the column in the mode line.
+See documentation for `mode-line-format'.  Must be set before
+`column.el' is loaded.")
 
 ;; Entry for column mode in mode line.
 (defconst display-column-entry
   (list 'display-column-mode (cons "" display-column-format)))
 
 (defvar display-column-after ")%]--"
-  "Display column after this element in the mode line.")
+  "Display column after this element in `mode-line-format'.  
+Must be set before `column.el' is loaded.")
 
 ;; Add display-column-format to mode-line-format after display-column-after.
 (or (member display-column-entry mode-line-format)
@@ -70,7 +78,10 @@
 With prefix arg, turn display column mode on iff arg is positive.
 
 When display column mode is on, the current column and line number are
-displayed in the mode line."
+displayed in the mode line.
+
+You can set `display-column-format' and `display-column-after' to
+change how the column is displayed."
   (interactive "P")
   (if (or (and (null arg) display-column-mode)
 	  (<= (prefix-numeric-value arg) 0))

@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.67 1994-01-05 19:09:04 amanda Exp $
+@c $Id: auc-tex.texi,v 1.68 1994-01-11 23:01:16 amanda Exp $
 
 @finalout
 @titlepage
@@ -2443,11 +2443,13 @@ Tim Carlson @samp{<tim@@math.montana.edu>}, John Daschbach
 @samp{<tmgeisle@@faui80.informatik.uni-erlangen.de>}, Tim Carlson
 @samp{<imsgtcar@@mathfs.math.montana.edu>}, Sridhar Anandakrishnan
 @samp{<sak@@essc.psu.edu>}, Peter Thiemann
-@samp{thiemann@@provence.informatik.uni-tuebingen.de}, Pedro Quaresma
-@samp{pedro@@mat.uc.pt}, Christian Lynbech
+@samp{<thiemann@@provence.informatik.uni-tuebingen.de>}, Pedro Quaresma
+@samp{<pedro@@mat.uc.pt>}, Christian Lynbech
 @samp{<lynbech@@daimi.aau.dk>}, Kevin Scott
 @samp{<scottkj@@prl.philips.co.uk>}, Bodo Huckestein
-@samp{bodo@@eu10.mpi-hd.mpg.de}, and probably more.@refill
+@samp{<bodo@@eu10.mpi-hd.mpg.de>}, Cengiz Alaettinoglu
+@samp{<ca@@cs.UMD.EDU>}, Jakob Schiotz
+@samp{<schiotz@@fysik.dth.dk>}, and probably more.@refill
 
 @itemize @bullet
 @item

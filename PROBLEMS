@@ -20,6 +20,13 @@ during the compilation.  Make sure to remove all old versions, and try
 again.  The Emacs 19 byte-compiler will give warning about free
 variables and unknown functions.  Ignore them.
 
+tex-jp.el will fail unless you have an emacs that understands japanese. 
+
+NEmacs-3.3.2 cannot `make install-auto', use `M-x TeX-auto-generate-global'
+instead.
+
+Mule-1.0-KIRITSUBO fails to parse some of the style files.
+
 * You are using NeXT Emacs.
 
 NeXT Emacs is broken, a workaround is available by ftp:

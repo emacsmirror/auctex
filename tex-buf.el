@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.53 1994-01-05 19:08:49 amanda Exp $
+;; $Id: tex-buf.el,v 1.54 1994-01-11 23:01:04 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -578,7 +578,7 @@ Return nil ifs no errors were found."
 	 (message "You should run LaTeX again to get references right.")
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
-	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
+	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
 	 (message (concat name ": successfully ended."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t

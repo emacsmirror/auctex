@@ -1,28 +1,3 @@
-[[ My comments in double square brackets --Per ]]
-
-Newsgroups: comp.emacs
-From: schiotz@fysik.dth.dk (Jakob Schiotz)
-Subject: TeX/LaTeX mode for OEMACS: Summary
-Reply-To: schiotz@fysik.dth.dk
-Organization: Physics Department, Techn. Univ. of Denmark
-Date: Mon, 1 Nov 1993 15:04:41 GMT
-Nntp-Posting-Host: oersted.ltf.dth.dk
-
-
-I few weeks ago, I asked here if anybody had a working TeX/LaTeX mode
-for OEMACS (GNU Emacs 19.19 for MS-DOS). I wanted a TeX-mode, where it
-was possible to call LaTeX, TeX and the dvi viewer without leaving
-Emacs. The standard tex-mode.el does not work under DOS. I promised to
-summarize my results: 
-It was suggested, that I should use AUC TeX, since it should be
-relatively easy to make it work under DOS. That turned out to be a
-good idea.
-
-AUC TeX is a much improved tex-mode, I recommend it for both DOS and
-Unix users! It includes features such as error parsing, command
-completion, outlining and a lot of other nice stuff, all very well
-documented in the 70+ pages manual.
-
 Here is a short description of how to make AUC TeX work for OEMACS:
 (A similar method should work for DEMACS)
 
@@ -40,6 +15,11 @@ STEP 1. Install the files at your PC. You can obtain AUC TeX by
 	in case you are going to use it under MS-DOS ver. 1.X :-) ).
 	This will prevent byte-compiling. You may have to delete the
 	^Z characters manually.
+	ANOTHER WARNING: The names of the info files are too long for a
+	DOS computer. If you want to install the info files, you
+	should rename "auc-info" to "auc", and "auc-info-[123]" to 
+	"auc-[123]".
+	
 
 STEP 2.	Edit the file tex-site.el:
 	Set the variable TeX-lisp-directory to the directory where you
@@ -53,48 +33,29 @@ The directory name *must* end with a slash.")
   '("c:/emtex/texinput/")
   "*Directories containing the sites TeX macro files and style files.
 The directory names *must* end with a slash.")
-	
-	Near the end of tex-site.el (around line 329) the variables
-	TeX-shell and TeX-shell-command-option should be changed to
-	reflect the MS-DOS environment: (Do NOT follow the
-	instructions in the comments for DEMACS if you have OEMACS)
-
-[[ This should not be necessary in version 8 --Per ]]
-
-;;;;(defvar TeX-shell "/bin/sh"
-(defvar TeX-shell shell-file-name
-  "Name of shell used to parse TeX commands.")
-;;;;(defvar TeX-shell-command-option "-c"
-(defvar TeX-shell-command-option "/c"
-  "Shell argument indicating that next argument is the command.")
 
 	The list TeX-command-list should be updated. You will need to
 	remove single quotes (') from the command arguments, since
 	COMMAND.COM does not do that, and does not (mis-)interpret the
 	argument. You will probably also need to update the View
-	command (the variable windows-system is set to pc, ie. true)
+	command. It is the dvi2tty line that you should change. (the
+	variable windows-system is set to 'pc).
+	You should also comment away the lines with (La)TeX Interactive,
+	as these commands don't work under DOS anyway.
 
 (defvar TeX-command-list
-  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-TeX-hook nil t)
-	(list "LaTeX" "latex \\nonstopmode\\input{%t}" 'TeX-LaTeX-hook nil t)
+  ;; You may have to remove the single quotes around the command
+  ;; arguments if you use DOS.
+  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
+;;	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
+	(list "LaTeX" "latex \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
+;;	(list "LaTeX Interactive" "latex %t" 'TeX-run-interactive nil t)
 	(list "SliTeX" "slitex \\nonstopmode\\input{%t}"
-	      'TeX-LaTeX-hook nil t)  
-	(if window-system
-	    (list "View" "dviscr @scr.cnf %s " 'TeX-command-hook t nil)
-	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-command-hook t nil))
+	      'TeX-run-LaTeX nil t)  
+	(if (or window-system (getenv "DISPLAY"))
+	    (list "View" "dviscr @scr.cnf %s " 'TeX-run-command t nil)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
 
-	If you are using emTeX, or another "international" LaTeX, that
-	identifies itself as ILaTeX in stead of LaTeX, you should
-	change a regexp in the file tex-buf.el (near line 506).
-	Otherwise AUC TeX will report "LaTeX: problems" if LaTeX runs
-	without errors, and believe you want to run LaTeX again before
-	viewing the .dvi file.
-
-[[ Fixed in version 8 --Per ]]
-
-	((re-search-forward
-;;;;	  "^\\(\\*\\* \\)?J?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
-	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
 
 STEP 3. [OPTIONAL, BUT STRONGLY RECOMMENDED]
 	Byte-compile AUC TeX. Start Emacs from the auctex directory.
@@ -103,26 +64,39 @@ STEP 3. [OPTIONAL, BUT STRONGLY RECOMMENDED]
 	C-u 0 M-x byte-recompile-directory RET RET
 	Errors like "end of file while parsing top level" probably
 	means that you have a ^Z character in the end of your file.
+	Remove them and try again.
+	The file dbg-jp.el cannot compile. If you don't write
+	Japanese, you won't miss it.
 
 STEP 4.	Add the following line to your _emacs file
         (load-library "auctex/tex-site")
 	
-	You should also add the lines
+	You should probably also add the lines
 	(setq tex-default-mode 'latex-mode)
 	(setq text-mode-hook 'turn-on-auto-fill) 
 
 STEP 5. [OPTIONAL]
+	EITHER:
 	Compile the LaCheck utility using your favourite C compiler.
 	Look in the .../auctex/lacheck/makefile file to see what should be
 	done. I have not tried this, but I cannot see any reasons why
 	it should not work.
-
-[[ You can ftp a DOS binary from ftp.iesd.auc.dk:/pub/TeX/LaTeX --Per ]]
+	OR:
+	Ftp a copy of a DOS binary from ftp.iesd.auc.dk:/pub/TeX/LaTeX
 
 STEP 6. [OPTIONAL]
 	Print the manual (approx. 75 pages). The dvi file is in the
 	doc directory. The manual is worth reading, AUC TeX can do
 	things you wouldn't suspect you need :-)
+
+STEP 7. [OPTIONAL]
+	Install the info files (did yu rename them before copying them
+	to your DOS computer?). Move them to your info directory, and 
+	add the following line to the menu in the dir file:
+* AUC TeX: (auc).	AUC TeX. Improved TeX/LaTeX mode.
+	In the file auc, you should replace the string "auc-info" by
+	"auc". The string appears 4 times among the first 10 lines.
+
 
 The whole package will use 1.2 MB of your precious harddisk space ---
 but it's worth it! You could of course compress / delete everything
@@ -138,8 +112,10 @@ once it has started since it then uses direct keyboard reads.
 2) When the dvi viewer terminates, it changes from graphics mode to 25
 lines text mode. If Emacs was in 43 or 50 lines mode, the screen is
 now in 25 lines mode, but Emacs believes there are 43 (50) lines!
+This has been reported to Darryl Okahata (the OEMACS maintainer), and
+may be fixed in future versions of OEMACS.
 
-Jakob Schiotz
+Jakob Schi{\o}tz
 Physics Department
 Technical University of Denmark
-schiotz@fysik.dth.dk
+Email: schiotz@fysik.dth.dk (at least until 1. aug 1994)

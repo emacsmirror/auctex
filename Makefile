@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.75 1994-01-05 19:08:40 amanda Exp $
+# $Id: Makefile,v 5.76 1994-01-11 23:00:53 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -120,7 +120,8 @@ STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
-	   style/jarticle.el  style/jbook.el    style/jreport.el
+	   style/jarticle.el  style/jbook.el    style/jreport.el \
+	   style/dinbrief.el
 
 LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 	       lacheck/test.tex
@@ -300,6 +301,7 @@ dist:	tex-load.el
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.Z
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
+	/home/pd/bin/zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
 
 min-map:
