@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.25 2001-10-07 21:55:31 dakas Exp $
+;; $Id: preview.el,v 1.26 2001-10-07 23:05:53 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -45,7 +45,6 @@
 ;;; Code:
 
 (eval-when-compile
-  (defvar error)
   (require 'tex-buf))
 
 (eval-and-compile
@@ -239,13 +238,13 @@ YRES, the screen resolution in dpi."
 	  (* scale xres)
 	  (* scale yres)))
 
-(defun preview-gs-behead-outstanding (error)
+(defun preview-gs-behead-outstanding (err)
   "Remove leading element of outstanding queue after error.
-Return element if non-nil.  ERROR is the error string to
+Return element if non-nil.  ERR is the error string to
 show as response of GhostScript."
   (let ((ov (pop preview-gs-outstanding)))
     (when ov
-      (preview-gs-flag-error ov error)
+      (preview-gs-flag-error ov err)
       (overlay-put ov 'queued nil))
     ov))
     
@@ -262,16 +261,16 @@ and tries to restart GhostScript if necessary."
       (when (memq status '(exit signal))
 	;; process died.
 	;;  Throw away culprit, go on.
-	(let* ((error (concat preview-gs-answer "\n"
+	(let* ((err (concat preview-gs-answer "\n"
 			      (process-name process) " " string))
-	       (ov (preview-gs-behead-outstanding error)))
+	       (ov (preview-gs-behead-outstanding err)))
 	  (when (and (null ov) preview-gs-queue)
 	    (save-excursion
 	      (goto-char (process-mark process))
 	      (insert-before-markers preview-gs-command " "
 				     (mapconcat #'shell-quote-argument
 						preview-gs-command-line
-						" ") "\n" error)))
+						" ") "\n" err)))
 	  (delete-process process)
 	  (if (or (null ov)
 		  (eq status 'signal))
@@ -407,8 +406,8 @@ are used for making the name of the file to be generated."
       (message "\
 Try C-c C-s C-c C-b and [mouse-2] on error offset."))))
 
-(defun preview-gs-flag-error (ov error)
-  "Make an eps error flag in overlay OV for ERROR string."
+(defun preview-gs-flag-error (ov err)
+  "Make an eps error flag in overlay OV for ERR string."
   (overlay-put
    ov 'after-string
    (propertize
@@ -427,7 +426,7 @@ Try C-c C-s C-c C-b and [mouse-2] on error offset."))))
 				  " ")
 		       "\nGS>"
 		       (aref (overlay-get ov 'queued) 2)
-		       error))))
+		       err))))
 	map)
       'help-echo "mouse-2 views error message")
      " in "
@@ -1114,7 +1113,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.25 $"))
+	(rev "$Revision: 1.26 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
