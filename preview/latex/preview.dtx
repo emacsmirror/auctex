@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1242}
+%\CheckSum{1263}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.82 $
+%  \rcskey \version CVS-$Revision: 1.83 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-02-05 16:44:21 $
+%\rcskey\next $Date: 2003-06-19 10:43:08 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -405,10 +405,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.82 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.83 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-02-05 16:44:21 $
+\reserved@a\next $Date: 2003-06-19 10:43:08 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -462,14 +462,14 @@
 %<*!active>
 \let\preview@delay=\@gobble
 \let\pr@advise=\@gobbletwo
-\def\pr@advise@ship#1#2#3{}
+\long\def\pr@advise@ship#1#2#3{}
 \def\pr@loadcfg#1{\InputIfFileExists{#1.cfg}{}{}}
 \DeclareOption{noconfig}{\let\pr@loadcfg=\@gobble}
 %    \end{macrocode}
 %\begin{macro}{\pr@addto@front}
 %  This adds code globally to the front of a macro.
 %    \begin{macrocode}
-\def\pr@addto@front#1#2{%
+\long\def\pr@addto@front#1#2{%
   \toks@{#2}\toks@\expandafter{\the\expandafter\toks@#1}%
   \xdef#1{\the\toks@}}
 %    \end{macrocode}
@@ -480,7 +480,7 @@
   \let\ifPreview\iftrue
   \def\pr@advise#1{%
     \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
-  \def\pr@advise@ship#1#2#3{\pr@advise#1{\pr@protect@ship{#2}{#3}}}%
+  \long\def\pr@advise@ship#1#2#3{\pr@advise#1{\pr@protect@ship{#2}{#3}}}%
   \let\preview@delay\@firstofone}
 %    \end{macrocode}
 %\end{macro}
@@ -494,9 +494,9 @@
 %  advised.  Or, more exactly, we throw away the old advice and only
 %  take the new one.
 %    \begin{macrocode}
-\def\pr@adviseii#1#2#3{\preview@delay{%
+\long\def\pr@adviseii#1#2#3{\preview@delay{%
   \ifx#1\relax \let#1#2\fi
-  \toks@{#3#1}\edef#2{\the\toks@}}}
+  \toks@{#3#1}\long\edef#2{\the\toks@}}}
 %    \end{macrocode}
 %\end{macro}
 %
@@ -598,7 +598,7 @@
 %  reason we start off the box with an optimal break point.
 %    \begin{macrocode}
 \newbox\pr@box
-\def\pr@startbox#1#2{%
+\long\def\pr@startbox#1#2{%
   \ifpr@outer
     \toks@{#2}%
     \edef\pr@cleanup{\the\toks@}%
@@ -746,7 +746,7 @@
 %\begin{macro}{\pr@parse*}
 %  Straightforward, same mechanism \LaTeX\ itself employs.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse*\endcsname#1\pr@endparse#2{%
+\long\expandafter\def\csname pr@parse*\endcsname#1\pr@endparse#2{%
   \@ifstar{\pr@parseit#1\pr@endparse{#2*}}%
           {\pr@parseit#1\pr@endparse{#2}}}
 %    \end{macrocode}
@@ -759,10 +759,11 @@
 %  lost.  There will be no harm if such braces were not there at the
 %  start.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse[\endcsname#1\pr@endparse#2{%
+\long\expandafter\def\csname pr@parse[\endcsname#1\pr@endparse#2{%
   \@ifnextchar[{\pr@bracket#1\pr@endparse{#2}}%
                {\pr@parseit#1\pr@endparse{#2}}}
-\def\pr@bracket#1\pr@endparse#2[#3]{\pr@parseit#1\pr@endparse{#2[{#3}]}}
+\long\def\pr@bracket#1\pr@endparse#2[#3]{%
+   \pr@parseit#1\pr@endparse{#2[{#3}]}}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
@@ -778,7 +779,7 @@
 %\begin{macro}{\pr@parse!}
 %  Mandatory arguments are perhaps easiest to parse.
 %    \begin{macrocode}
-\def\pr@parse#1\pr@endparse#2#3{%
+\long\def\pr@parse#1\pr@endparse#2#3{%
   \pr@parseit#1\pr@endparse{#2{#3}}}
 \expandafter\let\csname pr@parse!\endcsname=\pr@parse
 %    \end{macrocode}
@@ -789,13 +790,13 @@
 %  This does an explicit call of |\@ifnextchar| and forks into the
 %  given two alternatives as a result.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse?\endcsname#1#2\pr@endparse#3{%
+\long\expandafter\def\csname pr@parse?\endcsname#1#2\pr@endparse#3{%
   \begingroup\toks@{#2\pr@endparse{#3}}
   \@ifnextchar#1{\pr@parsecond\@firstoftwo}%
                 {\pr@parsecond\@secondoftwo}}
-\def\pr@parsecond#1{\edef\next{%
-  \endgroup\noexpand\expandafter
-  \noexpand\pr@parseit\noexpand#1\the\toks@}\next}
+\def\pr@parsecond#1{\expandafter\endgroup
+  \expandafter\expandafter\expandafter\pr@parseit
+  \expandafter#1\the\toks@}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
@@ -803,7 +804,7 @@
 %  This makes it possible to insert literal material into the argument
 %  list.
 %    \begin{macrocode}
-\def\pr@parse@#1#2\pr@endparse#3{%
+\long\def\pr@parse@#1#2\pr@endparse#3{%
   \pr@parseit #2\pr@endparse{#3#1}}
 %</active>
 %    \end{macrocode}
@@ -924,15 +925,15 @@
 %  \begin{macro}{\pr@macroii}
 %  \begin{macro}{\pr@endmacro}
 %    \begin{macrocode}
-\def\pr@domacro#1#2{%
-   \def\next##1{#2}%
+\long\def\pr@domacro#1#2{%
+   \long\def\next##1{#2}%
    \pr@callafter\next#1\pr@endparse}
-\newcommand*\pr@macro[1][]{%
-   \def\next[##1]##2{%
+\newcommand\pr@macro[1][]{%
+   \long\def\next[##1]##2{%
    \pr@advise@ship{##2}{\pr@domacro{#1}{##1\pr@endbox}}{}}%
    \@ifnextchar[\next\pr@macroii}
 \def\pr@macroii{\next[##1]}
-\def\pr@endmacro#1{#1\pr@endbox}
+\long\def\pr@endmacro#1{#1\pr@endbox}
 %    \end{macrocode}
 %  \end{macro}
 %  \end{macro}
@@ -945,10 +946,10 @@
 %  The version with |*| has to parse the arguments, then throw them
 %  away.  Some internal macros first, then the interface call.
 %    \begin{macrocode}
-\def\pr@protect@domacro#1#2{\pr@protect{%
-    \def\next##1{#2}%
+\long\def\pr@protect@domacro#1#2{\pr@protect{%
+    \long\def\next##1{#2}%
     \pr@callafter\next#1\pr@endparse}}
-\newcommand*\pr@starmacro[1][]{\def\next[##1]##2{%
+\newcommand\pr@starmacro[1][]{\long\def\next[##1]##2{%
     \pr@advise##2{\pr@protect@domacro{#1}{##1}}}%
     \@ifnextchar[\next{\next[]}}
 %    \end{macrocode}
@@ -963,11 +964,12 @@
 %  The version without |*| is now rather straightforward.
 %  \begin{macro}{\pr@open}
 %    \begin{macrocode}
-\newcommand*\pr@open[1][]{%
-   \def\next[##1]##2{%
+\newcommand\pr@open[1][]{%
+   \long\def\next[##1]##2{%
    \pr@advise##2{\begingroup
-     \pr@protect@ship{\pr@domacro{#1}{\begingroup\aftergroup\pr@endbox##1}}%
-                     {\endgroup}}}%
+     \pr@protect@ship
+        {\pr@domacro{#1}{\begingroup\aftergroup\pr@endbox##1}}%
+        {\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
 %\end{macro}
@@ -980,8 +982,8 @@
 %  The version without |*| is now rather straightforward.
 %  \begin{macro}{\pr@close}
 %    \begin{macrocode}
-\newcommand*\pr@close[1][]{%
-  \def\next[##1]##2{%
+\newcommand\pr@close[1][]{%
+  \long\def\next[##1]##2{%
    \pr@advise{##2}{\pr@domacro{#1}{##1\endgroup}}}%
    \@ifnextchar[\next\pr@macroii}
 %    \end{macrocode}
@@ -994,13 +996,14 @@
 %  |\end{|\meta{environment}|}| as well.
 %    \begin{macrocode}
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
-\newcommand*\pr@starenv[1][]{\def\next##1##2{\pr@starmacro[{#1}][{##2}]##1}%
+\newcommand\pr@starenv[1][]{\long\def\next##1##2{%
+    \pr@starmacro[{#1}][{##2}]##1}%
   \begingroup\pr@starenvii}
-\newcommand*\pr@starenvii[2][]{\endgroup
+\newcommand\pr@starenvii[2][]{\endgroup
   \expandafter\next\csname#2\endcsname{#1}%
   \expandafter\pr@starmacro\csname end#2\endcsname}
-\newcommand*\pr@env[1][]{%
-   \def\next[##1]##2{%
+\newcommand\pr@env[1][]{%
+   \long\def\next[##1]##2{%
    \expandafter\pr@advise@ship\csname##2\endcsname{\pr@domacro{#1}%
       {\begingroup\aftergroup\pr@endbox##1}}{\endgroup}}%
    \@ifnextchar[\next\pr@macroii %]
@@ -1011,7 +1014,7 @@
 %  This is a nuisance since we have to advise \emph{both} the
 %  environment and its end.
 %    \begin{macrocode}
-\newcommand*{\PreviewSnarfEnvironment}[2][]{%
+\newcommand{\PreviewSnarfEnvironment}[2][]{%
   \expandafter\pr@advise
    \csname #2\endcsname{\pr@snarfafter#1\pr@endparse}%
  \expandafter\pr@advise
