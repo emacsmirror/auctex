@@ -510,7 +510,7 @@ Full documentation will be available after autoloading the function."
 (defconst AUCTeX-date "Sun Dec 15 03:14:51 CET 2002"
   "AUCTeX release date.")
 (defconst AUC-TeX-date AUCTeX-date
-  "Obsolete.  Replaced by `AUCTeX-date'."
+  "Obsolete.  Replaced by `AUCTeX-date'.")
 
 ;;; Buffer
 
