@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.423 $"))
+	(rev "$Revision: 5.424 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-11 17:07:51 $"))
+    (let ((date "$Date: 2004-08-11 17:49:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3091,8 +3091,8 @@ be bound to `TeX-electric-macro'."
   ;; COMPATIBILITY for Emacs < 21
   (if (and (not (featurep 'xemacs))
 	   (= emacs-major-version 20))
-      (append (list TeX-command-menu-name)
-	      (TeX-mode-specific-command-menu-entries mode))
+      (cons TeX-command-menu-name
+	    (TeX-mode-specific-command-menu-entries mode))
     (list TeX-command-menu-name
 	  :filter `(lambda (&rest ignored)
 		     (TeX-mode-specific-command-menu-entries ',mode))
@@ -3149,8 +3149,9 @@ be bound to `TeX-electric-macro'."
 	:help "Make \"Next Error\" show bad boxes"])))
    (let ((file 'TeX-command-on-current));; is this actually needed?
      (TeX-maybe-remove-help
-      (mapcar 'TeX-command-menu-entry
-	     (TeX-mode-specific-command-list mode))))))
+      (delq nil
+	    (mapcar 'TeX-command-menu-entry
+		    (TeX-mode-specific-command-list mode)))))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."

@@ -1,3 +1,11 @@
+2004-08-11  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-mode-specific-command-menu): Tiny optimization.
+	(TeX-mode-specific-command-menu-entries): Make it legal for
+	`TeX-command-mode-menu-entry' to return nil for indicating no menu
+	entry at all (so that entries like "Print" or "Queue" may be
+	dynamically removed).
+
 2004-08-11  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Commands): Adjust references.
