@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.12 2001-09-27 15:14:38 dakas Exp $
+;; $Id: preview.el,v 1.13 2001-09-29 02:08:10 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -55,7 +55,7 @@
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.12 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.13 $ $Name:  $"
      '(AUC-TeX-version
        preview-image-type
        preview-image-creators
@@ -567,8 +567,8 @@ function for modification hooks."
     (TeX-region-create (TeX-region-file TeX-default-extension)
 		       (buffer-substring begin end)
 		       (file-name-nondirectory (buffer-file-name))
-		       (count-lines (save-restriction (widen) (point-min))
-				    begin)))
+		       (1- (count-lines 1
+				    (1+ begin)))))
   (TeX-command "Graphic Preview" 'TeX-region-file))
 
 (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
@@ -902,32 +902,54 @@ is set, and an overlay will be generated for the corresponding
 file dvips put into the directory indicated by TEMPDIR."
   
   (let* (;; We need the error message to show the user.
+	 op                            ;; temporary variable
 	 (error (progn
-		  (re-search-forward "\\(.*\\)")
-		  (TeX-match-buffer 1)))
+		  (setq op (point))
+		  (end-of-line)
+		  (buffer-substring op (point))))
 
 	 ;; And the context for the help window.
 	 (context-start (point))
 
 	 ;; And the line number to position the cursor.
-	 (line (if (re-search-forward "l\\.\\([0-9]+\\)" nil t)
-		   (string-to-int (TeX-match-buffer 1))
-		 1))
+;;; variant 1: profiling seems to indicate the regexp-heavy solution
+;;; to be favorable.  Will XEmacs like this kind of regexp?
+	 (line (and (re-search-forward "\
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*\\)
+\\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
+		    (string-to-int (match-string 1))))
 	 ;; And a string of the context to search for.
-	 (string (progn
-		   (beginning-of-line)
-		   (re-search-forward " \\(\\.\\.\\.\\)?\\(.*$\\)")
-		   (TeX-match-buffer 2)))
+	 (string (and line (match-string 3)))
+	 (after-string (and line (buffer-substring
+				  (+ (match-beginning 4)
+				     (- (match-end 3)
+					(match-beginning 0)))
+				  (match-end 4))))
+;; variant 2:
+;; 	 (line (and (re-search-forward "^l\\.\\([0-9]+\\) \
+;; \\(\\.\\.\\.\\)?" nil t)
+;; 		    (string-to-int (match-string 1))))
+;; 	 (string (when line
+;; 		   (setq op (point))
+;; 		   (end-of-line)
+;; 		   (buffer-substring op (point))))
+;; 	 (after-string (when line
+;; 			 (setq op (point))
+;; 			 (forward-line)
+;; 			 (setq op (+ (point) (- op (match-beginning 0))))
+;; 			 (end-of-line)
+;; 			 (setq op (buffer-substring op (point)))
+;; 			 (if (and (> (length op) 2)
+;; 				  (string= (substring op -3) "..."))
+;; 			     (substring op 0 -3)
+;; 			   op)))
 
 	 ;; And we have now found to the end of the context.
-	 (context (buffer-substring context-start (progn
-						    (forward-line 1)
-						    (end-of-line)
-						    (point))))
+	 (context (buffer-substring context-start (point)))
 	 ;; We may use these in another buffer.
 	 (offset (car TeX-error-offset) )
 	 (file (car TeX-error-file)))
-	 
+  
     ;; Remember where we was.
     (setq TeX-error-point (point))
 
@@ -943,11 +965,14 @@ file dvips put into the directory indicated by TEMPDIR."
 	(setq preview-snippet-start nil)))
     (setq preview-snippet snippet)
     (let* ((buffer (find-file-noselect file))
+	   (case-fold-search nil)
 	   (next-point
 	    (with-current-buffer buffer
 	      (save-excursion
 		(goto-line (+ offset line))
-		(search-forward string (line-end-position) t)
+		(if (search-forward (concat string after-string)
+				    (line-end-position) t)
+		    (backward-char (length after-string)))
 		(or (and startflag (preview-back-command))
 		    (point))))))
       (if startflag
