@@ -1,3 +1,21 @@
+2004-11-03  Christian Schlauer  <cschl@arcor.de>
+
+	* latex.el (LaTeX-env-figure, LaTeX-env-minipage)
+	(LaTeX-env-tabular*): Do always accept the user's input as the new
+	buffer-local values for `LaTeX-float' and `LaTeX-default-width',
+	even if the user entered the empty string.
+	(LaTeX-env-minipage): Do not ask for the (optional) position if
+	`LaTeX-default-position' is set to `nil'.  Behaviour agrees with
+	LaTeX-env-array and LaTeX-env-tabular* now.
+	(LaTeX-env-array, LaTeX-env-tabular*): Changed `setq'-assignment
+	of `LaTeX-default-position' so that it works not only the first
+	time in buffers with `LaTeX-default-position' set to `nil'.
+	(LaTeX-env-array, LaTeX-env-minipage, LaTeX-env-tabular*): Use
+	`LaTeX-optop', `TeX-grop', etc. instead of `{', `['.
+	(LaTeX-env-picture): Don't delete whitespace after inserting the
+	environment.  Cursor position corresponds to proper indentation
+	now.
+
 2004-11-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-delete-dups-by-car): New name for `TeX-delete-dups'.
