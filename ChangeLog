@@ -1,3 +1,13 @@
+2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-arg-opening-brace, TeX-arg-closing-brace): New
+	variables.
+	(TeX-parse-arguments, TeX-parse-argument, TeX-argument-insert):
+	Use them.
+
+	* latex.el (TeX-arg-free): Temporarily bind
+	`TeX-arg-opening-brace' and `TeX-arg-closing-brace'.
+
 2004-12-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-source-specials-view-position-flags): Fix syntax for
