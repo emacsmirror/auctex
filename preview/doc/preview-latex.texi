@@ -89,13 +89,11 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 * Introduction::                What is it good for?
 * Installation::                Installation.
 * Getting started::             Simple and fast.
-* Basic Usage::                 Keys, customization.
+* Keys and lisp::               Key bindings and user-level lisp functions.
+* Customization::               Fitting it in.
 * Internals::                   Under the hood.
 * Credits::                     Contributors.
-* Key Index::                   A menu covering many topics.
-* Function Index::              A menu covering many topics.
-* Variable Index::              A menu covering many topics.
-* Concept Index::               A menu covering many topics.
+* Index::                       
 @end menu
 
 @node Copying, Introduction, top, top
@@ -113,7 +111,7 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 @c Used as @file{INSTALL} as well: in separate file
 @include install.texi
 
-@node Getting started, Basic Usage, Installation, top
+@node Getting started, Keys and lisp, Installation, top
 @chapter Getting started
 
 The simplest way to use Preview La@TeX{} is to insert the following in
@@ -136,133 +134,83 @@ To see/edit the La@TeX{} code for a specific object, put the point (the
 cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
 and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
-@node Basic Usage, Internals, Getting started, top
-@chapter Basic Usage
+@node Keys and lisp, Customization, Getting started, top
+@chapter Key bindings and user-level lisp functions 
 
-Once you've got things working, you'll want this brief description of
-what is available and how to customize it. Dig in!
-
-@menu
-* Key bindings::                
-* User-level lisp functions::   
-* Customization::               
-@end menu
-
-@node Key bindings, User-level lisp functions, Basic Usage, Basic Usage
-@section Key bindings
-
-All the key bindings in AUC @TeX{} are present, of course. To these, the
+To the functions and key bindings in AUC @TeX{}, the
 following are added:
 
-@table @kbd
-@item C-c C-c g RET	
-Generate preview. This command generates previews for all appropriate
-objects in the current buffer. Already preset previews are re-generated.
-@kindex C-c C-c g RET
+@table @w
+@item @kbd{C-c C-c g RET} 
+@itemx Generate preview
+This command generates previews for all appropriate objects in the
+current buffer. Already preset previews are re-generated.
+@cindex @kbd{C-c C-c g RET}
 @cindex Generate Preview
 
-@item C-c C-p C-p
+@item @kbd{C-c C-p C-p}
+@itemx @code{preview-at-point}
 De/Preview at point. If the cursor is positioned on or inside of a
 preview area, this toggles its visibility, regenerating the preview if
 necessary. If not, it will run the surroundings through preview. The
 surroundings include all areas up to the next valid preview, unless
 invalid previews occur before, in which case the area will include the
 last such preview.
-@kindex C-c C-p C-p
-@findex @code{preview-at-point}
+@cindex @kbd{C-c C-p C-p}
+@cindex @code{preview-at-point}
 @cindex De/Preview at point
 
-@item C-c C-p C-s
+@item @kbd{C-c C-p C-s}
+@itemx @code{preview-section} 
 Run preview on this LaTeX section.
-@kindex C-c C-p C-s
-@findex @code{preview-section}
+@cindex @kbd{C-c C-p C-s}
+@cindex @code{preview-section}
 @cindex Preview section 
 
-@item C-c C-p C-e
+@item @kbd{C-c C-p C-e}
+@itemx @code{preview-environment}
 Run preview on this LaTeX environment.
-@kindex C-c C-p C-e
-@findex @code{preview-environment}
+@cindex @kbd{C-c C-p C-e}
+@cindex @code{preview-environment}
 @cindex Preview environment
 
-@item C-c C-p C-r	
-Run preview on current region.
-@kindex C-c C-p C-r
-@findex @code{preview-region}
+@item @kbd{C-c C-p C-r}	
+@itemx @code{preview-region (begin end)}
+Run preview on current region. If called non-interactively, runs preview
+on region between BEGIN and END.
+@cindex @kbd{C-c C-p C-r}
+@cindex @code{preview-region}
 @cindex Preview region
 
-@item C-c C-p C-c C-b			
-Clear out all previews in current buffer.  This makes the current buffer
-lose all previews.
-@kindex C-c C-p C-c C-b
-@findex @code{preview-clearout-buffer}
+@item @kbd{C-c C-p C-c C-b}
+@itemx @code{preview-clearout-buffer (&optional buffer)}
+Clear out all previews in current buffer. This makes the current buffer
+lose all previews. If run non-interactively BUFFER is cleared out from
+previews, current buffer if nil.
+@cindex @kbd{C-c C-p C-c C-b}
+@cindex @code{preview-clearout-buffer}
 @cindex Clearout previews
 
-@item C-c C-p C-c C-r			
-Clear out all previews in the current region.
-@kindex C-c C-p C-c C-r
-@findex @code{preview-clearout}
-@end table
-
-@node User-level lisp functions, Customization, Key bindings, Basic Usage
-@section User-level lisp functions
-
-Remember to look at the functions in AUC @TeX{} too. To these, the
-following are added:
-
-@table @code
-@item preview-at-point
-De/Preview at point. If the cursor is positioned on or inside of a
-preview area, this toggles its visibility, regenerating the preview if
-necessary. If not, it will run the surroundings through preview. The
-surroundings include all areas up to the next valid preview, unless
-invalid previews occur before, in which case the area will include the
-last such preview.
-@kindex C-c C-p C-p
-@findex @code{preview-at-point}
-@cindex De/Preview at-point
-
-@item preview-section
-Run preview on this LaTeX section.
-@kindex C-c C-p C-s
-@findex @code{preview-section}
-@cindex Preview section 
-
-@item preview-environment
-Run preview on this LaTeX environment.
-@kindex C-c C-p C-e
-@findex @code{preview-environment}
-@cindex Preview environment
-
-@item preview-region (begin end)
-Run preview on region between BEGIN and END. 
-@kindex C-c C-p C-r
-@findex @code{preview-region}
-@cindex Preview region
-
-@item preview-clearout-buffer (&optional buffer)
-Clearout BUFFER from previews, current buffer if nil.
-@kindex C-c C-p C-c C-b
-@findex @code{preview-clearout-buffer}
-@cindex Clearout previews
-
-@item preview-clearout (&optional start end keep-dir)
+@item @kbd{C-c C-p C-c C-r}
+@itemx @code{preview-clearout (&optional start end keep-dir)}
 Clear out all previews in the current region. When called interactively,
 the current region is used. Non-interactively, the region between START
 and END is affected. Those two values default to the borders of the
 entire buffer. If KEEP-DIR is set to a value from `TeX-active-tempdir',
 previews associated with that directory are kept.
-@kindex C-c C-p C-c C-r
-@findex @code{preview-clearout}
+@cindex @kbd{C-c C-p C-c C-r}
+@cindex @code{preview-clearout}
 
-@item preview-report-bug
+@item @kbd{M-x preview-report-bug RET}
+@itemx @code{preview-report-bug}
 Report a bug in the preview-latex package.
-@kindex M-x preview-report-bug RET
-@findex @code{preview-report-bug}
+@cindex @kbd{M-x preview-report-bug RET}
+@cindex @code{preview-report-bug}
 @cindex Report a bug
 @end table
 
-@node Customization,  , User-level lisp functions, Basic Usage
-@section Customization
+@node Customization, Internals, Keys and lisp, top
+@chapter Customization
 @cindex Customization
 
 Customization options can be found by typing @kbd{M-x customize-group
@@ -299,7 +247,7 @@ between @code{\AtBeginDocument@{} and @code{\ifx\ifPreview\undefined}
 
 @end itemize
  
-@node Internals, Credits, Basic Usage, top
+@node Internals, Credits, Customization, top
 @chapter Internals/more customization
 
 This package consists of two parts. A La@TeX{} style that splits the
@@ -428,7 +376,7 @@ preview material happens to lie in macro arguments, like the contents of
 @code{\emph}. Those macros first read in their entire argument, munge it
 through, perhaps transform it somehow, process it and perhaps then
 typeset something. When they finally typeset something, where is the
-location where the stuff originated? @TeX, having read in the entire
+location where the stuff originated? @TeX{}, having read in the entire
 argument before, does not know and actually there would be no sane way
 of defining it. 
 
@@ -450,13 +398,13 @@ entire @code{\somecommand} in one box to be previewed. For macros like
 @code{\emph} this is pretty inappropriate since the result for a larger
 passage gets unwieldy for display and editing. But you don't need
 @code{\emph} do anything at all during previews! So the solution is to
-use \code{\PreviewMacro*\emph} in the preamble of your document which
-will make La@TeX ignore @code{\emph} completely as long as it is not part of a
-larger preview (in which case it gets typeset as usual). Its argument
-thus becomes ordinary text and gets treated like ordinary text. 
+use @code{\PreviewMacro*\emph} in the preamble of your document which
+will make La@TeX{} ignore @code{\emph} completely as long as it is not
+part of a larger preview (in which case it gets typeset as usual). Its
+argument thus becomes ordinary text and gets treated like ordinary text.
 
 Note that it would be a bad idea to declare
-@code{\PreviewMacro*[{{}}]\emph} since then both @code{\emph} as well as
+@code{\PreviewMacro*[@{@{@}@}]\emph} since then both @code{\emph} as well as
 its argument would be ignored instead of previewed. For user-level
 macros, this is almost never wanted, but there may be internal macros
 where you might want to ignore internal arguments.
@@ -472,26 +420,11 @@ every of those commands by hand in your document preamble.
 cases)
 
 
-@node Credits, Key Index, Internals, top
+@node Credits, Index, Internals, top
 @appendix Credits 
 
-@node Key Index, Function Index, Credits, top
-@unnumbered Key Index
-
-@printindex ky
-
-@node Function Index, Variable Index, Key Index, top
-@unnumbered Function Index
-
-@printindex fn
-
-@node Variable Index, Concept Index, Function Index, top
-@unnumbered Variable Index
-
-@printindex vr
-
-@node Concept Index,  , Variable Index, top
-@unnumbered Concept Index
+@node Index,  , Credits, top
+@unnumbered Index
 
 @printindex cp
 @bye
