@@ -1,6 +1,6 @@
 ;;; tex-bar.el --- toolbar icons on AUC-TeX in GNU emacs and XEmacs
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@
 ;; Keywords: tool-bar, tex, latex
 
 ;;; Commentary:
-;; 
+;;
 
 ;; This package also needs `toolbar-x.el', and `latex.el' for the
 ;; symbol-toolbar.
@@ -66,14 +66,14 @@
 ;; for error handling
 (require 'tex-buf)
 
-;; For the symbol toolbar 
+;; For the symbol toolbar
 (require 'latex)
 
 ;;; Standard buttons
 
 ;; help strings
 (defun TeX-bar-help-from-command-list (item)
-  "Return the help string of ITEM in TeX-command-list.
+  "Return the help string of ITEM in `TeX-command-list'.
 If there is no help, the empty string is returned."
   (let ((help (nth 1 (memq :help (assoc item TeX-command-list)))))
     (if help help "")))

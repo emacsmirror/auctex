@@ -1,6 +1,6 @@
 ;;; toolbar-x.el --- fancy toolbar handling in Emacs and XEmacs
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -36,7 +36,7 @@
 ;; `toolbarx-install-toolbar').
 
 ;; * Supported properties:
-;; - All editors: `:insert', `:image', `:command', `:help', `:enable', 
+;; - All editors: `:insert', `:image', `:command', `:help', `:enable',
 ;;		  `:append-command' and `:prepend-command';
 ;; - Emacs only: `:visible' and `:button';
 ;; - XEmacs only: `:toolbar'.
@@ -119,7 +119,7 @@
 ;; where each element is either:
 ;;  * a button-list, that is, a list with elements to define a button.
 ;;  * a list where 1st elem is `:insert' and 2nd is a form, and the
-;; following elements are in the same format of the 2nd element of 
+;; following elements are in the same format of the 2nd element of
 ;; `toolbarx-internal-button-switches'.
 
 ;;;###autoload
@@ -233,7 +233,7 @@ are the properties, inner properties first."
 			     (list prop (cons :add-value-list
 					      (append inner-prop
 						      outer-prop)))))))))
-  
+
 ;;;###autoload
 (defun toolbarx-make-command (comm prep app)
   "Return a command made from COMM, PREP and APP.
@@ -261,7 +261,7 @@ command, COMM is returned."
 ;;;###autoload
 (defun toolbarx-emacs-mount-popup-menu
   (strings var type &optional title save)
-  "Return a interactive `lambda'-expression that shows a popup menu.
+  "Return an interactive `lambda'-expression that shows a popup menu.
 This function is the action of `toolbarx-mount-popup-menu' if
 inside Emacs. See documentation of that function for more."
   ;; making the menu keymap by adding each menu-item definition
@@ -332,7 +332,7 @@ inside Emacs. See documentation of that function for more."
 ;;;###autoload
 (defun toolbarx-xemacs-mount-popup-menu
   (strings var type &optional title save)
-  "Return a interactive `lambda'-expression that shows a popup menu.
+  "Return an interactive `lambda'-expression that shows a popup menu.
 This function is the action of `toolbarx-mount-popup-menu' if
 inside XEmacs. See documentation of that function for more."
   (let* ((menu (if (and title (stringp title))
@@ -469,7 +469,7 @@ documentation of function `toolbarx-process-symbol')."
 		       ;; if XEmacs
 		       (or (stringp val) ; a string
 			   (glyphp val)  ; or a glyph
-			   (and (symbolp val) ; or a symbol bound to a 
+			   (and (symbolp val) ; or a symbol bound to a
 				(boundp val)  ; glyph-list
 				(check-toolbar-button-syntax
 				 (vector val
@@ -488,7 +488,7 @@ documentation of function `toolbarx-process-symbol')."
 		     (or (stringp val)	  ; string
 			 (and (consp val) ; or image descriptor
 			      (eq (car val) 'image))
-			 (and (symbolp val) ; or a symbol bound to a 
+			 (and (symbolp val) ; or a symbol bound to a
 			      (boundp val)  ; image descriptor
 					    ; (defined with `defimage')
 			      (consp (eval val))
@@ -697,7 +697,7 @@ without `:'. This is used on the implementation.")
 (defun toolbarx-process-group-without-insert (group-without-props
 					      merged-props-without-insert
 					      meaning-alist switches)
-  "Return an updated version of SWITCHES. 
+  "Return an updated version of SWITCHES.
 GROUP-WITHOUT-PROPS and MERGED-PROPS-WITHOUT-INSERT are
 preprocessed variables in `toolbarx-process-group'."
   (let ((current-switches switches))
@@ -740,7 +740,7 @@ value, and after that a list in the same format as SWITCHES."
 					meaning-alist props
 					current-switches))))))
    ;; if normal group
-   (t 
+   (t
     (let* ((splited-props
 	    (toolbarx-separate-options
 	     group (append (nth 1 toolbarx-button-props)
@@ -796,7 +796,7 @@ value, and after that a list in the same format as SWITCHES."
 
 ;;;###autoload
 (defun toolbarx-process-symbol (symbol meaning-alist props switches)
-  "Procces a button given by SYMBOL in MEANING-ALIST.
+  "Process a button given by SYMBOL in MEANING-ALIST.
 The processed button is appended in SWITCHES, which is returned.
 Look for a association of SYMBOL in MEANING-ALIST for collecting
 properties.  Such association is a list that represents either a
@@ -807,7 +807,7 @@ the button.  Scope is given by GLOBAL-FLAG."
   ;; there are 3 situations: symbol is :new-line, there is an alias group
   ;; or a normal button
   (let ((button-assq (cdr (assq symbol meaning-alist))))
-    (cond 
+    (cond
      ((eq (car button-assq) :alias)
       ;; button association is ALIAS GROUP is passed to
       ;; `toolbarx-process-group' as is but without the car.
@@ -846,7 +846,7 @@ the button.  Scope is given by GLOBAL-FLAG."
 	     (merged-props (toolbarx-merge-props button-props props
 						 props-override
 						 props-add)))
-	;; return: 
+	;; return:
 	(nreverse (cons (cons symbol merged-props) (nreverse switches))))))))
 
 ;;;###autoload
@@ -934,7 +934,7 @@ in the end of SWITCHES, which is returned."
 		    (setq props (append (list new-pr val) props))))))
 	    (unless (memq :image props)
 	      (setq props (append (list :image "dropdown") props)))
-	    props))	 
+	    props))
 	 (dropdown-button-without-command
 	  (cons 'dropdown dropdown-button-props))
 	 ;; `:type' defaults to `radio'
@@ -1219,17 +1219,17 @@ side effect."
 	  (setq tool-bar-map (copy-sequence temp-tool-bar-map))))
 ;;       ((eq symbol :sep)  )
        (t
-	;; symbol is not :new-line, therefore a normal button       
+	;; symbol is not :new-line, therefore a normal button
 	(let* ((image (cadr (memq :image filtered-props)))
 	       (image-descriptor
 		(when (memq :image filtered-props)
-		  (cond 
+		  (cond
 		   ((stringp image) 	; string
 		    (toolbarx-find-image image))
 		   ((and (consp image)	; or image descriptor
 			 (eq (car image) 'image))
 		    image)
-		   ((and (symbolp image) ; or a symbol bound to a 
+		   ((and (symbolp image) ; or a symbol bound to a
 			 (boundp image)  ; image descriptor (defined
 				       ; with `defimage')g
 			 (consp (eval image))
@@ -1300,9 +1300,9 @@ been used as keys in the keymap `tool-bar-map'."
 	  (toolbarx-emacs-refresh-process-button-or-insert-list (cddr button)
 								used-keys))
       (toolbarx-emacs-add-button button used-keys))))
-  
 
-  
+
+
 
 ;;;###autoload
 (defun toolbarx-emacs-refresh (&optional global-flag)
@@ -1524,7 +1524,7 @@ with the same properties updated."
       (if (eq (car button) :insert)
 	  (when (eval (cadr button))
 	    ;; if insert group, process `cddr'
-	    (progn 
+	    (progn
 	      (setq toolbar-props-temp
 		    (toolbarx-xemacs-refresh-process-button-or-insert-list
 		     (cddr button)
@@ -2025,8 +2025,8 @@ this button is ignored."
 		 :visible (or buffer-file-name
 			      (not (eq 'special
 				       (get major-mode 'mode-class)))))
-    
-    ;; Emacs only 
+
+    ;; Emacs only
     (write-file :image "saveas"
 		:command write-file
 		:enable (not
@@ -2065,16 +2065,16 @@ this button is ignored."
 
     ;; Emacs only
     (search-forward :command nonincremental-search-forward
-		    :help "Search forward for a string" 
+		    :help "Search forward for a string"
 		    :image "search"
 		    :insert [t nil])
-    
-    (search-replace 
+
+    (search-replace
      :image ["search-replace" toolbar-replace-icon]
      :command [query-replace toolbar-replace]
      :help ["Replace string interactively, ask about each occurrence"
 	    "Search & Replace"])
-    
+
     (print-buffer :image ["print" toolbar-printer-icon]
 		  :command [print-buffer toolbar-print]
 		  :help ["Print current buffer with page headings"
@@ -2101,7 +2101,7 @@ this button is ignored."
 
     ;; Emacs only
     (exit-emacs :image "exit"
-		:command save-buffers-kill-emacs 
+		:command save-buffers-kill-emacs
 		:help "Offer to save unsaved buffers, then exit Emacs"
 		:insert [t nil])
 
@@ -2118,19 +2118,19 @@ this button is ignored."
 	  :command toolbar-mail
 	  :help "Read mail"
 	  :insert [nil t])
-    
+
     ;; XEmacs only
     (compile :image toolbar-compile-icon
 	     :command toolbar-compile
 	     :help "Start a compilation"
 	     :insert [nil t])
-    
+
     ;; XEmacs only
     (debug :image toolbar-debug-icon
 	   :command toolbar-debug
 	   :help "Start a debugger"
 	   :insert [nil t])
-    
+
     ;; XEmacs only
     (news :image toolbar-news-icon
 	  :command toolbar-news

@@ -1,7 +1,12 @@
 2005-01-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* toolbar-x.el (toolbarx-default-toolbar-meaning-alist): Some
+	checkdoc related fixes.  Still not checkdoc clean.
+
 	* tex-bar.el (Commentary): Don't mention stuff done by
 	configure/make in the instructions.
+	(TeX-bar-help-from-command-list): Quote symbols in doc string.
+	File is checkdoc clean now.
 
 	* doc/auctex.texi: Update copyright.
 	(Mathematics): Explain how to enable LaTeX-math-mode by default.
