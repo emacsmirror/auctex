@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.64 2002-02-28 02:21:08 dakas Exp $
+;; $Id: preview.el,v 1.65 2002-03-01 16:22:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1018,7 +1018,9 @@ upgraded to a fancier version of just the LaTeX style."
 		    (const "floats")
 		    (const "graphics")
 		    (const "textmath")
-		    (const "sections"))
+		    (const "sections")
+		    (const "noconfig")
+		    (const "psfixbb"))
 	       (repeat :inline t :tag "Other options" (string))))
 
 (defun preview-make-options ()
@@ -1422,7 +1424,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.64 $"))
+	(rev "$Revision: 1.65 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
