@@ -5,6 +5,16 @@
 
 2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi: Edits.
+
+	* doc/install.texi: Lots of editing
+
+	* doc/readme.texi: same here
+
+	* doc/preview-latex.texi: same here
+
+	* RELEASE: Changes for 0.7.
+
 	* TODO: Throw out stuff already implemented.
 
 	* preview.el (preview-prefer-TeX-bb): Doc cosmetic.
