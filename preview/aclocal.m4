@@ -24,6 +24,8 @@ EOF
 	    previewdocdir=$texmfdir
 	    
 	fi
+    else
+	previewdocdir=$texmfdir/doc/latex/styles
     fi
 # Next 
 # kpsepath -n latex tex
@@ -43,8 +45,9 @@ for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
 do
   x=`echo $x | sed -e 's+//+/+g' -e 's+/$++' `
   if test -d "$x"  ; then
-     texmfdir=$x
-     previewtexmfdir=$texmfdir/preview
+     texmfdir=`echo $x | sed -e 's+/tex/latex++'`
+     previewdocdir=$texmfdir/doc/latex/styles
+     previewtexmfdir=$texmfdir/tex/latex/preview
      break
   fi
 done
@@ -59,6 +62,7 @@ do
   if test -d "$x"  ; then
      texmfdir=$x
      previewtexmfdir=$texmfdir/preview
+     previewdocdir=$texmfdir/preview
      break
   fi
 done
@@ -72,7 +76,7 @@ for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
 do
   if test -d "$x"  ; then
      texmfdir=$x
-     previewtexmfdir=$texmfdir
+     previewdocdir=$texmfdir
      break
   fi
 done
@@ -86,7 +90,10 @@ fi
 fi
 
 echo Preview will be placed in $previewtexmfdir
-AC_SUBST(previewtexmfdir)])
+echo Preview docs will be placed in $previewdocdir
+AC_SUBST(texmfdir)
+AC_SUBST(previewtexmfdir)
+AC_SUBST(previewdocdir)])
 
 
 
@@ -158,84 +165,3 @@ AC_DEFUN(AC_PATH_LISPDIR, [
   AC_SUBST(lispdir)
 ])
 
-AC_DEFUN(AC_PATH_ETCDIR, [
-  AC_ARG_WITH(etcdir,[  --with-etcdir=DIR       Where to install etc files], etcdir=${withval})
-  AC_MSG_CHECKING([where etc files should go])
-  if test -z "$etcdir"; then
-    dnl Set default value
-    etcdir="\$(lispdir)/../etc"
-  fi
-  AC_MSG_RESULT($etcdir)
-  AC_SUBST(etcdir)
-])
-
-dnl
-dnl Check whether a function exists in a library
-dnl All '_' characters in the first argument are converted to '-'
-dnl
-AC_DEFUN(AC_EMACS_CHECK_LIB, [
-if test -z "$3"; then
-	AC_MSG_CHECKING(for $2 in $1)
-fi
-library=`echo $1 | tr _ -`
-AC_EMACS_LISP($1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
-if test "${EMACS_cv_SYS_$1}" = "nil"; then
-	EMACS_cv_SYS_$1=no
-fi
-if test "${EMACS_cv_SYS_$1}" = "t"; then
-	EMACS_cv_SYS_$1=yes
-fi
-HAVE_$1=${EMACS_cv_SYS_$1}
-AC_SUBST(HAVE_$1)
-if test -z "$3"; then
-	AC_MSG_RESULT($HAVE_$1)
-fi
-])
-
-dnl
-dnl Perform sanity checking and try to locate the W3 package
-dnl
-AC_DEFUN(AC_CHECK_W3, [
-AC_MSG_CHECKING(for acceptable W3 version)
-AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_W3,[
-AC_EMACS_CHECK_LIB(w3_forms, w3-form-encode-xwfu,"noecho")
-if test "${HAVE_w3_forms}" = "yes"; then
-	EMACS_cv_ACCEPTABLE_W3=yes
-else
-	EMACS_cv_ACCEPTABLE_W3=no
-fi
-
-if test "${EMACS_cv_ACCEPTABLE_W3}" = "yes"; then
-	AC_EMACS_LISP(w3_dir,(file-name-directory (locate-library \"w3-forms\")),"noecho")
-	EMACS_cv_ACCEPTABLE_W3=$EMACS_cv_SYS_w3_dir
-fi
-])
-   AC_ARG_WITH(w3,[  --with-w3=DIR           Specify where to find the w3 package], [ EMACS_cv_ACCEPTABLE_W3=`( cd $withval && pwd || echo "$withval" ) 2> /dev/null` ])
-   W3=${EMACS_cv_ACCEPTABLE_W3}
-   AC_SUBST(W3)
-   AC_MSG_RESULT("${W3}")
-])
-
-dnl
-dnl Perform sanity checking and try to locate the W3 package
-dnl
-AC_DEFUN(AC_CHECK_URL, [
-AC_MSG_CHECKING(for acceptable URL version)
-AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_URL,[
-AC_EMACS_CHECK_LIB(url, url-retrieve, "noecho")
-if test "${HAVE_url}" = "yes"; then
-	EMACS_cv_ACCEPTABLE_URL=yes
-else
-	EMACS_cv_ACCEPTABLE_URL=no
-fi
-
-if test "${EMACS_cv_ACCEPTABLE_URL}" = "yes"; then
-	AC_EMACS_LISP(url_dir,(file-name-directory (locate-library \"url\")),"noecho")
-	EMACS_cv_ACCEPTABLE_URL=$EMACS_cv_SYS_url_dir
-fi
-])
-   AC_ARG_WITH(url,[  --with-url=DIR          Specify where to find the url package], [ EMACS_cv_ACCEPTABLE_URL=`( cd $withval && pwd || echo "$withval" ) 2> /dev/null` ])
-   URL=${EMACS_cv_ACCEPTABLE_URL}
-   AC_SUBST(URL)
-   AC_MSG_RESULT("${URL}")
-])

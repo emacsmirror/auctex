@@ -14,6 +14,13 @@ fi
 AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
 
+AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standard], 
+ [ auctexdir=${withval} ; 
+   if test ! -d $auctexdir  ; then
+      AC_MSG_ERROR([--with-auctex=$auctexdir: Directory does not exist])
+   fi
+])
+
 AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
  [ texmfdir=${withval} ; 
    if test ! -d $texmfdir  ; then
@@ -30,11 +37,13 @@ AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install pre
 
 
 dnl FIXME we should check that it's the right version
-AC_CHECK_PROG(EMACS, emacs, emacs)
+AC_PATH_PROG(EMACS, emacs, emacs)
 
 AC_PATH_PROG(LATEX, latex, latex)
 AC_PATH_PROG(TEX, tex, tex)
 AC_PATH_PROG(TEXHASH, texhash, texhash)
+
+AC_SUBST(auctexdir)
 
 AC_PATH_TEXMFDIR
 AC_PATH_LISPDIR

@@ -2,15 +2,20 @@
 @SET_MAKE@
 LATEX=@LATEX@
 TEX=@TEX@
-EMACS=@EMACS@
 TEXHASH=@TEXHASH@
+
+EMACS=@EMACS@
+ELCC=$(EMACS) -batch -q -no-site-file -no-init-file
+AUCTEX=-eval '(if (not (string-match "$(AUCTEXDIR)" "")) \
+                (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
 
 prefix = @prefix@
 lispdir = @lispdir@/preview
 datadir = @datadir@
+texmfdir = @texmfdir@
 previewtexmfdir = @previewtexmfdir@
 previewdocdir = @previewdocdir@
-
+AUCTEXDIR = @auctexdir@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -30,7 +35,7 @@ install-texmf: preview.sty prauctex.def
 	$(INSTALL_DATA) preview.sty $(previewtexmfdir)
 	$(INSTALL_DATA) prauctex.def $(previewtexmfdir)
 #	$(INSTALL_DATA) preview.dvi $(previewdvidir)
-	-$(TEXHASH)
+	-$(TEXHASH) $(texmfdir)
 
 preview-mk.ins: preview.dtx bootstrap.ins
 	$(TEX) -interaction nonstopmode bootstrap.ins
@@ -42,11 +47,11 @@ preview.dvi: preview.drv preview.dtx
 	$(LATEX) -interaction nonstopmode preview.drv
 
 preview.elc: preview.el
-	$(EMACS) -batch -q -no-site-file -f batch-byte-compile preview.el
+	$(ELCC) $(AUCTEXDIR) -f batch-byte-compile preview.el
 
 
 clean:
-	rm -f preview.elc
+	rm -f *.elc *~ *.aux *.dvi *.drv
 	rm -f docstrip.log preview.ins preview.log preview.drv preview.sty \
 		prauctex.def preview.aux preview.dvi circ.log \
 		circ.dvi circ.aux texput.log testdocstrip.tex \
