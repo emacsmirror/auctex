@@ -98,7 +98,7 @@ performed as specified in `TeX-expand-list'."
   :group 'TeX-misc)
 
 (defcustom AmS-TeX-mode-hook nil
-  "A hook run in AmS TeX mode buffers."
+  "A hook run in AmS-TeX mode buffers."
   :type 'hook
   :group 'TeX-misc)
 
@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.394 $"))
+	(rev "$Revision: 5.395 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-17 09:31:46 $"))
+    (let ((date "$Date: 2004-07-18 08:16:45 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -630,11 +630,11 @@ details."
   :group 'TeX-command
   ;; FIXME: There's nothing about source-specials there yet:
   ;; :link '(custom-manual "(auctex)Viewing")
-  :lighter (TeX-mode-p "^")
   :global t
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials
-			  TeX-source-specials-map)))
+			  TeX-source-specials-map))
+  (TeX-set-mode-name))
 
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials minor-mode-map-alist)
@@ -1606,7 +1606,30 @@ Return the number as car and unit as cdr."
   (when (memq symbol list)
     (eval form)))
 
+
+;;; Font Locking
+
+(autoload 'font-latex-setup "font-latex"
+  "Font locking optimized for LaTeX.
+Should work with all Emacsen." t)
+(autoload 'tex-font-setup "tex-font"
+  "Copy of Emacs 21 standard tex-mode font lock support.
+This only works with Emacs 21." t)
+
+(defcustom TeX-install-font-lock 'font-latex-setup
+  "Function to call to install font lock support.
+Choose `ignore' if you don't want AUCTeX to install support for font locking."
+  :group 'TeX-misc
+  :type '(radio (function-item font-latex-setup)
+		(function-item tex-font-setup)
+		(function-item ignore)
+		(function :tag "Other")))
+
+
 ;;; The Mode
+
+(defvar TeX-base-mode-name nil
+  "Base name of mode.")
 
 (defvar TeX-format-list
   '(("JLATEX" japanese-latex-mode
@@ -1633,6 +1656,10 @@ Each entry is a list with three elements.
 When entering `tex-mode', each regexp is tried in turn in order to find
 when major mode to enter.")
 
+(defvar TeX-mode-p nil
+  "This indicates a TeX mode being active.")
+(make-variable-buffer-local 'TeX-mode-p)
+
 (defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined otherwise."
   :group 'TeX-misc
@@ -1644,6 +1671,18 @@ when major mode to enter.")
   "*If set to nil, try to infer the mode of the file from its content."
   :group 'TeX-misc
   :type 'boolean)
+
+(defun TeX-set-mode-name ()
+  "Build and set the mode name.
+The base mode name will be concatenated with indicators for
+helper modes where appropriate."
+  (let ((trailing-flags
+	 (concat (when (and (boundp 'TeX-fold-mode) TeX-fold-mode) "F")
+		 (when (and (boundp 'LaTeX-math-mode) LaTeX-math-mode) "M")
+		 (when TeX-source-specials "S"))))
+    (setq mode-name (concat TeX-base-mode-name
+			    (when (> (length trailing-flags) 0)
+			      (concat "/" trailing-flags))))))
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
@@ -1681,45 +1720,6 @@ The algorithm is as follows:
 		 (if answer
 		     answer
 		   TeX-default-mode))))))
-
-;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(defun plain-tex-mode ()
-  "Major mode for editing files of input for plain TeX.
-See info under AUCTeX for documentation.
-
-Special commands:
-\\{plain-TeX-mode-map}
-
-Entering `plain-tex-mode' calls the value of `text-mode-hook',
-then the value of `TeX-mode-hook', and then the value
-of plain-TeX-mode-hook."
-  (interactive)
-  (plain-TeX-common-initialization)
-  (setq mode-name "TeX")
-  (setq major-mode 'plain-tex-mode)
-  (setq TeX-command-default "TeX")
-  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
-
-(autoload 'font-latex-setup "font-latex"
-  "Font locking optimized for LaTeX.
-Should work with all Emacsen." t)
-(autoload 'tex-font-setup "tex-font"
-  "Copy of Emacs 21 standard tex-mode font lock support.
-This only works with Emacs 21." t)
-
-(defcustom TeX-install-font-lock 'font-latex-setup
-  "Function to call to install font lock support.
-Choose `ignore' if you don't want AUCTeX to install support for font locking."
-  :group 'TeX-misc
-  :type '(radio (function-item font-latex-setup)
-		(function-item tex-font-setup)
-		(function-item ignore)
-		(function :tag "Other")))
-
-(defvar TeX-mode-p nil
-  "This indicates a TeX mode being active.")
-(make-variable-buffer-local 'TeX-mode-p)
 
 (defun VirTeX-common-initialization ()
   "Perform basic initialization."
@@ -1806,6 +1806,29 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))
 			       (TeX-update-style)) nil t))
+
+
+;;; Plain TeX mode
+
+;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
+(defun plain-tex-mode ()
+  "Major mode for editing files of input for plain TeX.
+See info under AUCTeX for documentation.
+
+Special commands:
+\\{plain-TeX-mode-map}
+
+Entering `plain-tex-mode' calls the value of `text-mode-hook',
+then the value of `TeX-mode-hook', and then the value
+of plain-TeX-mode-hook."
+  (interactive)
+  (plain-TeX-common-initialization)
+  (setq TeX-base-mode-name "TeX")
+  (TeX-set-mode-name)
+  (setq major-mode 'plain-tex-mode)
+  (setq TeX-command-default "TeX")
+  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
 (defun plain-TeX-common-initialization ()
   "Common initialization for plain TeX like modes."
@@ -2928,7 +2951,7 @@ be bound to `TeX-electric-macro'."
 
 ;;;###autoload
 (defun ams-tex-mode ()
-  "Major mode for editing files of input for AmS TeX.
+  "Major mode for editing files of input for AmS-TeX.
 See info under AUCTeX for documentation.
 
 Special commands:
@@ -2944,7 +2967,8 @@ of `AmS-TeX-mode-hook'."
   ;; Menu
   (easy-menu-add AmSTeX-mode-command-menu AmSTeX-mode-map)
 
-  (setq mode-name "AmS TeX")
+  (setq TeX-base-mode-name "AmS-TeX")
+  (TeX-set-mode-name)
   (setq major-mode 'ams-tex-mode)
   (setq TeX-command-default "AmSTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook))
