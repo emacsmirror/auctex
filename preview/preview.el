@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.29 2001-10-10 11:53:03 dakas Exp $
+;; $Id: preview.el,v 1.30 2001-10-13 21:46:26 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -48,13 +48,8 @@
   (require 'tex-buf)
   (defvar error))
 
-(eval-and-compile
-  (defvar preview-compatibility-macros nil
-    "List of macros only present when compiling/loading.")
-
-  (if (string-match "XEmacs" (emacs-version))
-      (let ((load-path (cons "." load-path)))
-	(require 'prv-xemacs))))
+(require (if (string-match "XEmacs" (emacs-version))
+	     'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -282,10 +277,10 @@ and tries to restart GhostScript if necessary."
 	      ;; if process was killed explicitly by signal, or if nothing
 	      ;; was processed, we give up on the matter altogether.
 	      (progn
-		(mapc #'preview-deleter preview-gs-outstanding)
+		(mapc #'preview-delete preview-gs-outstanding)
 		(dolist (ov preview-gs-queue)
 		  (if (overlay-get ov 'queued)
-		      (preview-deleter ov)))
+		      (preview-delete ov)))
 		(setq preview-gs-outstanding nil)
 		(setq preview-gs-queue nil))
 	  
@@ -353,18 +348,14 @@ is located."
   ;; conditional display property responsible for requeuing here.
   ;; We don't requeue if the overlay has been killed (its buffer made
   ;; nil).  Not necessary, but while we are checking...
-  (overlay-put ov 'display nil)
+  ;; We must return t.
+  (preview-remove-urgentization ov)
   (when (and (overlay-get ov 'queued)
 	     (overlay-buffer ov))
     (with-current-buffer buff
       (push ov preview-gs-queue)))
-  nil)
+  t)
 
-(defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
-				 (:type pbm :file "help.pbm" :ascent
-					80))
-  "The symbol used for previews to be generated.
-Usually a question mark")
 
 (defun preview-gs-place (ov snippet)
   "Generate an image placeholder rendered over by GhostScript.
@@ -372,7 +363,7 @@ This enters OV into all proper queues in order to make it render
 this image for real later, and returns a substitute image
 to be placed as a first measure.  `TeX-active-tempdir' and
 SNIPPET are used for making the name of the file to be generated."
-  (let ((thisimage (cons 'image (cdr preview-nonready-icon)))
+  (let ((thisimage (preview-image-from-icon preview-nonready-icon))
 	(filenames (overlay-get ov 'filenames)))
     (setcdr filenames
 	    (list (preview-make-filename
@@ -383,7 +374,7 @@ SNIPPET are used for making the name of the file to be generated."
 		  thisimage
 		  nil))
     (push ov preview-gs-queue)
-    (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
+    (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
     thisimage))
 		
 (defun preview-mouse-open-error (string)
@@ -402,16 +393,18 @@ SNIPPET are used for making the name of the file to be generated."
 (defun preview-mouse-open-eps (file)
   "Display eps FILE in a view buffer on click."
   (let ((default-major-mode
-	  `,(or
-	     (assoc-default "x.ps" auto-mode-alist #'string-match)
-	     default-major-mode))
+	  (or
+	   (assoc-default "x.ps" auto-mode-alist #'string-match)
+	   default-major-mode))
 	(buff (get-file-buffer file)))
     (save-excursion
       (if buff
 	  (pop-to-buffer buff)
 	(view-file-other-window file))
-      (message "\
-Try C-c C-s C-c C-b and [mouse-2] on error offset."))))
+      (if (eq major-mode 'ps-mode)
+	  (message "%s" (substitute-command-keys "\
+Try \\[ps-run-start] \\[ps-run-buffer] and \
+\\<ps-run-mode-map>>\\[ps-run-mouse-goto-error] on error offset." ))))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
@@ -419,36 +412,28 @@ Try C-c C-s C-c C-b and [mouse-2] on error offset."))))
    ov 'after-string
    (propertize
     (concat
-     (propertize
+     (preview-make-clickable
+      nil
       "[Error]"
-      'mouse-face 'highlight
-      'local-map
-      (let ((map (make-sparse-keymap)))
-	(define-key map [mouse-2]
-	  `(lambda() (interactive "@")
-	     (preview-mouse-open-error
-	      ,(concat preview-gs-command " "
-		       (mapconcat #'shell-quote-argument
-				  preview-gs-command-line
-				  " ")
-		       "\nGS>"
-		       (aref (overlay-get ov 'queued) 2)
-		       err))))
-	map)
-      'help-echo "mouse-2 views error message")
+      "%s views error message"
+      `(lambda() (interactive "@")
+	 (preview-mouse-open-error
+	  ,(concat preview-gs-command " "
+		   (mapconcat #'shell-quote-argument
+			      preview-gs-command-line
+			      " ")
+		   "\nGS>"
+		   (aref (overlay-get ov 'queued) 2)
+		   err))))
      " in "
-     (propertize
+     (preview-make-clickable
+      nil
       "[EPS-file]"
-      'mouse-face 'highlight
-      'local-map
-      (let ((map (make-sparse-keymap)))
-	(define-key map [mouse-2]
-	  `(lambda() (interactive "@")
-	     (preview-mouse-open-eps
-	      ,(car (nth 0 (overlay-get ov 'filenames))))))
-	map)
-      'help-echo "mouse-2 views EPS file"))
-    'face 'preview-error-face)))
+      "%s views EPS file"
+      `(lambda() (interactive "@")
+	 (preview-mouse-open-eps
+	  ,(car (nth 0 (overlay-get ov 'filenames)))))))
+     'face 'preview-error-face)))
 
 (defun preview-gs-transact (process answer)
   "Work off GhostScript transaction.
@@ -461,25 +446,27 @@ given as ANSWER."
     (condition-case whatgives
 	(let ((ov (pop preview-gs-outstanding))
 	      (have-error (not (string= answer "GS>"))))
-	  (when ov
-	    (let* ((queued (overlay-get ov 'queued))
-		   (bbox (aref queued 0))
-		   (img (aref queued 1))
-		   (filenames (overlay-get ov 'filenames))
-		   (oldfile (nth 0 filenames))
-		   (newfile (nth 1 filenames)))
-	      (if have-error
-		  (preview-gs-flag-error ov answer)
- 		(condition-case nil
- 		    (preview-delete-file oldfile)
- 		  (file-error nil))
- 		(overlay-put ov 'filenames (cdr filenames))
-		(setcdr img (list :file (car newfile)
-				  :type preview-gs-image-type
-				  :heuristic-mask t
-				  :ascent (preview-ascent-from-bb
+	  (when (and ov (overlay-buffer ov))
+	    (let ((queued (overlay-get ov 'queued)))
+	      (when queued
+		(let* ((bbox (aref queued 0))
+		       (img (aref queued 1))
+		       (filenames (overlay-get ov 'filenames))
+		       (oldfile (nth 0 filenames))
+		       (newfile (nth 1 filenames)))
+		  (if have-error
+		      (preview-gs-flag-error ov answer)
+		    (condition-case nil
+			(preview-delete-file oldfile)
+		      (file-error nil))
+		    (overlay-put ov 'filenames (cdr filenames))
+		    (preview-replace-icon
+		     img
+		     (preview-create-icon (car newfile)
+					  preview-gs-image-type
+					  (preview-ascent-from-bb
 					   bbox))))
-	      (overlay-put ov 'queued nil)))
+		  (overlay-put ov 'queued nil)))))
 	  (while (and (< (length preview-gs-outstanding)
 			 preview-gs-outstanding-limit)
 		      (setq ov (pop preview-gs-queue)))
@@ -575,35 +562,6 @@ numbers (can be float if available)."
 	(round (* 100.0 (/ (- top 720.0) (- top bottom))))
       100)))
 
-(defun preview-ps-image (filename scale)
-  "Place a PostScript image directly by Emacs.
-This uses Emacs built-in PostScript image support for
-rendering the preview image in EPS file FILENAME, with
-a scale factor of SCALE indicating the relation of desired
-image size on-screen to the size the PostScript code
-specifies."
-  (let ((bb (preview-extract-bb filename)))
-;; should the following 2 be rather intbb?
-    (create-image filename 'postscript nil
-		  :pt-width (round
-			     (* scale (- (aref bb 2) (aref bb 0))))
-		  :pt-height (round
-			      (* scale (- (aref bb 3) (aref bb 1))))
-		  :bounding-box (preview-int-bb bb)
-		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask '(65535 65535 65535)
-		  )
-    ))
-
-(defvar preview-overlay nil)
-
-(put 'preview-overlay
-     'modification-hooks
-     '(preview-disable) )
-
-(put 'preview-overlay
-     'insert-in-front-hooks
-     '(preview-disable) )
 
 (defface preview-face '((t (:background "lightgray")))
   "Face to use for the source of preview."
@@ -613,61 +571,34 @@ specifies."
   "Face for displaying error message overlays."
   :group 'preview)
 
-(put 'preview-overlay 'face 'preview-face)
-
-(put 'preview-overlay 'invisible t)
-
-(defun preview-toggle (ov &rest ignored)
-  "Toggle visibility of preview overlay OV.
-The argument IGNORED is ignored so that you can use this
-function for modification hooks."
-  (let ((invisible (null (overlay-get ov 'invisible)))
-	(strings (overlay-get ov 'strings)))
-    (overlay-put ov 'invisible invisible)
-    (overlay-put ov 'before-string (if invisible
-				       (car strings)
-				     (cdr strings)))
-    ))
-
-(put 'preview-overlay 'isearch-open-invisible 'preview-toggle)
-(put 'preview-overlay 'isearch-open-invisible-temporary 'preview-toggle)
-
-(defun preview-make-map (ovr)
-  "Make an initial keymap for preview overlay OVR."
-  (let ((map (make-sparse-keymap)))
-    (define-key map [mouse-2] `(lambda () (interactive) (preview-toggle ,ovr)))
-    (define-key map [mouse-3] `(lambda () (interactive) (preview-deleter ,ovr)))
-    map))
-
 (defun preview-regenerate (ovr)
   "Pass the modified region in OVR again through LaTeX."
   (let ((begin (overlay-start ovr))
 	(end (overlay-end ovr)))
     (with-current-buffer (overlay-buffer ovr)
-      (preview-deleter ovr)
+      (preview-delete ovr)
       (TeX-region-create (TeX-region-file TeX-default-extension)
 			 (buffer-substring begin end)
 			 (file-name-nondirectory (buffer-file-name))
 			 (save-restriction
 			   (widen)
-			   (+ (count-lines (point-min) begin)
-			      (save-excursion
-				(goto-char begin)
-				(if (bolp) 0 -1))))))
+			   (let ((inhibit-point-motion-hooks t)
+				 (inhibit-field-text-motion t))
+			     (+ (count-lines (point-min) begin)
+				(save-excursion
+				  (goto-char begin)
+				  (if (bolp) 0 -1)))))))
     (TeX-command "Generate Preview" 'TeX-region-file)))
-
-(defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
-			(:type pbm :file "search.pbm" :ascent 100))
-  "The symbol used for an open preview.
-Usually a magnifying glass.")
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
-  (concat (propertize "x" 'display preview-icon
-	          'local-map (overlay-get ov 'preview-map)
-		  'mouse-face 'highlight
-		  'help-echo "mouse-2 regenerates preview
-mouse-3 kills preview")
+  (concat (preview-make-clickable
+	   (overlay-get ov 'preview-map)
+	   (preview-string-from-image preview-icon)
+	   "\
+%s regenerates preview
+%s kills preview"
+	   `(lambda() (interactive) (preview-regenerate ,ov)))
 ;; icon on separate line only for stuff starting on its own line
 	  (save-excursion
 	    (with-current-buffer
@@ -675,26 +606,19 @@ mouse-3 kills preview")
 	      (goto-char (overlay-start ov))
 	      (if (bolp) "\n" "")))))
 
-(defun preview-disable (ovr &rest ignored)
-  "Change overlay behaviour of OVR after source edits.
-IGNORED gets ignored so that `preview-disable' might be
-used in change hooks."
-  (define-key (overlay-get ovr 'preview-map) [mouse-2]
-    `(lambda () (interactive) (preview-regenerate ,ovr)))
-  (let ((str (preview-disabled-string ovr)))
-    (overlay-put ovr 'before-string str)
-    (overlay-put ovr 'after-string nil)
-    (overlay-put ovr 'invisible nil)
-    (overlay-put ovr 'strings (cons str str))
-    (overlay-put ovr 'insert-in-front-hooks nil)
-    (overlay-put ovr 'modification-hooks nil))
+(defun preview-disable (ovr)
+  "Change overlay behaviour of OVR after source edits."
+  (overlay-put ovr 'queued nil)
+  (preview-remove-urgentization ovr)
+  (preview-toggle ovr)
+  (overlay-put ovr 'before-string (preview-disabled-string ovr))
   (dolist (filename (overlay-get ovr 'filenames))
     (condition-case nil
 	(preview-delete-file filename)
       (file-error nil))
     (overlay-put ovr 'filenames nil)))
     
-(defun preview-deleter (ovr &rest ignored)
+(defun preview-delete (ovr &rest ignored)
   "Delete preview overlay OVR, taking any associated file along.
 IGNORED arguments are ignored, making this function usable as
 a hook in some cases"
@@ -716,7 +640,7 @@ the entire buffer."
   (dolist (ov (overlays-in (or start 1)
 			   (or end (1+ (buffer-size)))))
     (if (eq (overlay-get ov 'category) 'preview-overlay)
-	(preview-deleter ov))))
+	(preview-delete ov))))
 
 (add-hook 'kill-buffer-hook #'preview-clearout nil nil)
 
@@ -731,11 +655,11 @@ on first use."
 This is for overlays where the source text has been clicked
 visible."
   (concat
-   (propertize "x" 'display preview-icon
-	       'mouse-face 'highlight
-	       'local-map (overlay-get ov 'preview-map)
-	       'help-echo "mouse-2 toggles preview
-mouse-3 kills preview")
+   (preview-make-clickable (overlay-get ov 'preview-map)
+			   (preview-string-from-image preview-icon)
+			   "\
+%s redisplays preview
+%s kills preview")
 ;; icon on separate line only for stuff starting on its own line
    (save-excursion
      (with-current-buffer
@@ -755,11 +679,11 @@ the argument SNIPPET passed via a hook mechanism is ignored."
 This calls the `place' hook indicated by `preview-image-type'
 in `preview-image-creators' with OV and SNIPPET
 and expects an image property as result."
-  (propertize "x" 'display
-	      (preview-call-hook 'place ov snippet)
-	      'local-map (overlay-get ov 'preview-map)
-	      'help-echo "mouse-2 opens text
-mouse-3 kills preview") )
+  (preview-make-clickable
+   (overlay-get ov 'preview-map)
+   (preview-string-from-image (preview-call-hook 'place ov snippet))
+   "%s opens text
+%s kills preview"))
 
 (defun preview-make-filename (file)
   "Generate a preview filename from FILE and `TeX-active-tempdir'.
@@ -788,21 +712,24 @@ it gets deleted as well."
 (defun preview-place-preview (snippet source start end)
   "Generate and place an overlay preview image.
 This generates the EPS filename used in `TeX-active-tempdir'
-(see `preview-make-filename' for its definition) for preview
+\(see `preview-make-filename' for its definition) for preview
 snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end)
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'category 'preview-overlay)
-    (overlay-put ov 'preview-map (preview-make-map ov))
+    (overlay-put ov 'preview-map
+		 (preview-make-clickable
+		  nil nil nil
+		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
+		  `(lambda() (interactive) (preview-delete ,ov))))
     (overlay-put ov 'filenames (list (preview-make-filename
 				      (format "preview.%03d" snippet))))
-    (let ((active (preview-active-string ov snippet)))
-      (overlay-put ov 'strings
-		   (cons active
-			 (preview-inactive-string ov)))
-      (overlay-put ov 'before-string active))))
+    (overlay-put ov 'strings
+		 (cons (preview-active-string ov snippet)
+		       (preview-inactive-string ov)))
+    (preview-toggle ov t)))
 
 
 (defun preview-back-command (&optional posn buffer)
@@ -1118,7 +1045,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.29 $"))
+	(rev "$Revision: 1.30 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
