@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.54 2002-01-18 13:33:16 jalar Exp $
+;; $Id: preview.el,v 1.55 2002-01-22 13:17:07 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -981,7 +981,9 @@ see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
   (add-hook 'TeX-translate-location-hook #'preview-translate-location)
   (add-to-list 'TeX-expand-list
-	       '("%m" preview-create-subdirectory) t)
+	       '("%m" (lambda ()
+			(shell-quote-argument
+			 (preview-create-subdirectory)))) t)
   (add-to-list 'TeX-expand-list
 	       '("%D" preview-make-preamble) t)
   (add-to-list 'TeX-expand-list
@@ -1320,7 +1322,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.54 $"))
+	(rev "$Revision: 1.55 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
