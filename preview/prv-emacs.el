@@ -95,7 +95,7 @@ Consults `preview-transparent-color'."
   "Cause FUN (function call form) to be called when redisplayed.
 FUN must be a form with OV as first argument,
 REST as the remainder, returning T."
-  (let* ((dispro (overlay-get ov 'display)))
+  (let ((dispro (overlay-get ov 'display)))
     (unless (eq (car dispro) 'when)
       (overlay-put ov 'display `(when (,fun ,ov ,@rest)  . ,dispro)))))
 
