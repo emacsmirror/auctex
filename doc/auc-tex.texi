@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.34 1993-04-21 18:13:35 amanda Exp $
+@c $Id: auc-tex.texi,v 1.35 1993-05-28 01:54:30 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2616,6 +2616,11 @@ Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
 @item
+Allow multiple @samp{%p} in print commands.
+
+Suggested by Cliff Krumvieda @samp{<cliff@@cs.cornell.edu>}.
+
+@item
 Improved backward compatibility in @file{auc-tex.el}.  Thanks to Ralf
 Handl @samp{<handl@@cs.uni-sb.de>}.
 
@@ -2719,7 +2724,8 @@ Burstall @samp{<F.E.Burstall@@maths.bath.ac.uk>}, Alastair Burt
 @samp{<uk@@iesd.auc.dk>}, Kurt Swanson @samp{Kurt.Swanson@@dna.lth.se},
 Mark Utting @samp{<marku@@cs.uq.oz.au>}, Per Norman Oma
 @samp{perno@@itk.unit.no}, Naji Mouawad
-@samp{<nmouawad@@math.uwaterloo.ca>}, and probably more.
+@samp{<nmouawad@@math.uwaterloo.ca>}, Bo Nygaard Bai
+@samp{<bai@@iesd.auc.dk>}, and probably more.
 
 @itemize @bullet
 @item
