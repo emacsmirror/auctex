@@ -1,3 +1,11 @@
+2001-10-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex-buf.el (TeX-current-offset): The number of things that can
+	go wrong for a simple task like determining the current line
+	number is simply amazing.  count-lines skips over newlines in
+	intangible text-properties or overlays.  Fixed for GNU Emacs,
+	don't know whether XEmacs has problems with it.
+
 2001-10-13  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.05 released.
