@@ -1,3 +1,11 @@
+2002-05-27  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* special.c, set.c, postamble.c, pk.c, misc.c, io.c, font.c,
+	dvipng.c, color.c, commands.h, dvipng.h: Initial version
+
+	* config.h, Makefile: Initial version, to be replaced by
+	autoconf'ism
+
 2002-05-08  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/todo.texi: add request for other TeX formats.
