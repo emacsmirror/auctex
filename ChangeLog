@@ -1,5 +1,7 @@
 2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
 
+	* tex-buf.el (TeX-home-buffer): Don't home to deleted buffers.
+
 	* tex.el (TeX-command-list): Change single quotes to double.
 	That way, we will get reasonable results under both Windows and
 	Unix.  File names with double quotes in them will break stuff,
