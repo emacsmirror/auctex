@@ -1,3 +1,8 @@
+2002-04-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/preview-latex.texi (The Emacs interface): Add documentation
+	about the scaling variables/issues from preview-latex.
+
 2002-04-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-parse-messages): Error message cosmetics
