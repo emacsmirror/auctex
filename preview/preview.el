@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.11 2001-09-27 01:23:34 dakas Exp $
+;; $Id: preview.el,v 1.12 2001-09-27 15:14:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -55,7 +55,7 @@
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.11 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.12 $ $Name:  $"
      '(AUC-TeX-version
        preview-image-type
        preview-image-creators
@@ -244,17 +244,17 @@ YRES, the screen resolution in dpi."
 	  (* scale xres)
 	  (* scale yres)))
 
-(defun preview-gs-behead-outstanding ()
+(defun preview-gs-behead-outstanding (process string)
   "Remove leading element of outstanding queue after error.
-Return element if non-nil."
+Return element if non-nil.  PROCESS and STRING are the
+sentinel arguments."
   (let ((ov (pop preview-gs-outstanding)))
     (when ov
-      (condition-case nil
-	  (preview-delete-file
-	   (aref (overlay-get ov 'queued) 0)
-	   t)
-	(error nil))
-      (preview-deleter ov))
+      (overlay-put ov 'queued nil)
+      (overlay-put ov 'after-string (propertize
+				     (format "%s: %s" process
+					     string)
+				     'face 'preview-error-face)))
     ov))
     
 (defun preview-gs-sentinel (process string)
@@ -269,13 +269,15 @@ and tries to restart GhostScript if necessary."
       (with-current-buffer (process-buffer process)
 	;; Shut down queue
 	(tq-close preview-gs-tq)
-	(if (or (null (preview-gs-behead-outstanding))
+	(if (or (null (preview-gs-behead-outstanding process string))
 		(eq status 'signal))
 	  ;; if process was killed explicitly by signal, or if nothing
 	  ;; was processed, we give up on the matter altogether.
 	    (progn
 	      (mapc (function preview-deleter) preview-gs-outstanding)
-	      (mapc (function preview-deleter) preview-gs-queue)
+	      (dolist (ov preview-gs-queue)
+		(if (overlay-get ov 'queued)
+		    (preview-deleter ov)))
 	      (setq preview-gs-outstanding nil)
 	      (setq preview-gs-urgent nil)
 	      (setq preview-gs-queue nil))
@@ -295,7 +297,7 @@ and tries to restart GhostScript if necessary."
     (let* ((buff (current-buffer))
 	   (process-connection-type nil)
 	   (process
-	    (apply (function start-process) "GS" buff
+	    (apply (function start-process) "GS-bg" buff
 		   preview-gs-command
 		   preview-gs-command-line)))
       (set-process-sentinel process (function preview-gs-sentinel))
@@ -345,12 +347,14 @@ This enters OV into all proper queues in order to make it
 render this image for real later, and returns a substitute
 image to be placed as a first measure.  TEMPDIR and SNIPPET
 are used for making the name of the file to be generated."
-  (let ((thisimage (cons 'image (cdr preview-nonready-icon))))
+  (let ((thisimage (cons 'image (cdr preview-nonready-icon)))
+	(filenames (overlay-get ov 'filenames)))
+    (setcdr filenames
+	    (list (preview-make-filename
+		   (format "prevnew.%03d" snippet) tempdir)))
     (overlay-put ov 'queued
 		 (vector
-		  (preview-make-filename
-		   (format "prevnew.%03d" snippet) tempdir t)
-		  (preview-extract-bb (car (overlay-get ov 'filename)))
+		  (preview-extract-bb (car (car filenames)))
 		  thisimage))
     (push ov preview-gs-queue)
     (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
@@ -365,38 +369,45 @@ proceed to feed GhostScript with further rendering commands."
   (with-current-buffer buff
     (save-excursion
       (goto-char (point-max))
-      (unless (string= answer "GS>")
-	(insert answer))
       (condition-case whatgives
-	  (let ((ov (pop preview-gs-outstanding)))
+	  (let ((ov (pop preview-gs-outstanding))
+		(have-error (not (string= answer "GS>"))))
 	    (when ov
-	      (condition-case nil
-		  (preview-delete-file (overlay-get ov 'filename) t)
-		(file-error nil))
 	      (let* ((queued (overlay-get ov 'queued))
-		     (newfile (aref queued 0))
-		     (bbox (aref queued 1))
-		     (img (aref queued 2)))
+		     (bbox (aref queued 0))
+		     (img (aref queued 1))
+		     (filenames (overlay-get ov 'filenames))
+		     (oldfile (nth 0 filenames))
+		     (newfile (nth 1 filenames)))
 		(overlay-put ov 'queued nil)
-		(overlay-put ov 'filename newfile)
-		(setcdr img (list :file (car newfile)
-				  :type preview-gs-image-type
-				  :heuristic-mask t
-				  :ascent (preview-ascent-from-bb bbox)))))
-	    (while
-		(and
-		 (< (length preview-gs-outstanding)
-		    preview-gs-outstanding-limit)
-		 (setq ov
-		       (or (pop preview-gs-urgent)
-			   (pop preview-gs-queue))))
+		(if have-error
+		    (overlay-put ov 'after-string
+				 (propertize
+				  (format "%s: %s" (car oldfile)
+					  answer)
+				  'face 'preview-error-face))
+		  (condition-case nil
+		      (preview-delete-file oldfile)
+		    (file-error nil))
+		  (overlay-put ov 'filenames (cdr filenames))
+		  (setcdr img (list :file (car newfile)
+				    :type preview-gs-image-type
+				    :heuristic-mask t
+				    :ascent (preview-ascent-from-bb
+					     bbox))))))
+	    (while (and (< (length preview-gs-outstanding)
+			   preview-gs-outstanding-limit)
+			(setq ov
+			      (or (pop preview-gs-urgent)
+				  (pop preview-gs-queue))))
 	      (let ((queued (overlay-get ov 'queued)))
 		(when (and queued
 			   (not (memq ov preview-gs-outstanding))
 			   (overlay-buffer ov))
-		  (let ((newfile (aref queued 0))
-			(bbox (aref queued 1))
-			(oldfile (overlay-get ov 'filename)))
+		  (let* ((filenames (overlay-get ov 'filenames))
+			 (oldfile (nth 0 filenames))
+			 (newfile (nth 1 filenames))
+			 (bbox (aref queued 0)))
 		    (setq preview-gs-outstanding
 			  (nconc preview-gs-outstanding
 				 (list ov)))
@@ -514,12 +525,15 @@ specifies."
      'insert-in-front-hooks
      '(preview-disable) )
 
-(defcustom preview-face 'highlight
-  "Face to use for preview."
-  :group 'preview
-  :type 'face)
+(defface preview-face '((t (:background "lightgray")))
+  "Face to use for the source of preview."
+  :group 'preview)
 
-(put 'preview-overlay 'face preview-face)
+(defface preview-error-face '((t (:background "red")))
+  "Face for displaying error message overlays."
+  :group 'preview)
+
+(put 'preview-overlay 'face 'preview-face)
 
 (put 'preview-overlay 'invisible t)
 
@@ -579,24 +593,23 @@ used in change hooks."
     (overlay-put ovr 'strings (cons str str))
     (overlay-put ovr 'insert-in-front-hooks nil)
     (overlay-put ovr 'modification-hooks nil))
-  (let ((filename (overlay-get ovr 'filename)))
-    (when filename
-      (overlay-put ovr 'filename nil)
-      (condition-case nil
-	  (preview-delete-file filename)
-	(file-error nil)))))
+  (dolist (filename (overlay-get ovr 'filenames))
+    (condition-case nil
+	(preview-delete-file filename)
+      (file-error nil))
+    (overlay-put ovr 'filenames nil)))
     
 (defun preview-deleter (ovr &rest ignored)
   "Delete preview overlay OVR, taking any associated file along.
 IGNORED arguments are ignored, making this function usable as
 a hook in some cases"
-  (let ((filename (overlay-get ovr 'filename)))
+  (let ((filenames (overlay-get ovr 'filenames)))
     (delete-overlay ovr)
-    (when filename
-      (overlay-put ovr 'filename nil)
+    (dolist (filename filenames)
       (condition-case nil
 	  (preview-delete-file filename)
-	(file-error nil)))))
+	(file-error nil)))
+    (overlay-put ovr 'filenames nil)))
 
 (defun preview-clearout (&optional start end)
   "Clear out all previews in the current region.
@@ -634,7 +647,7 @@ mouse-3 kills preview")
 Since OV already carries all necessary information,
  the arguments TEMPDIR and SNIPPET passed via a hook
 mechanism are ignored."
-  (preview-ps-image (car (overlay-get ov 'filename)) preview-scale))
+  (preview-ps-image (car (nth 0 (overlay-get ov 'filenames))) preview-scale))
 
 (defun preview-active-string (ov tempdir snippet)
   "Generate before-string for active image overlay OV.
@@ -664,10 +677,16 @@ If DONT-REGISTER is non-nil, the reference count of its
 directory is not adjusted.  See `preview-make-filename'
 for a description of the data structure.  If the directory
 becomes empty, it gets deleted."
-  (delete-file (car file))
-  (when (and (null dont-register)
-	     (zerop (setcdr (cdr file) (1- (cdr (cdr file))))))
-    (delete-directory (car (cdr file)))))
+  (unwind-protect
+      (delete-file (car file))
+    (let ((tempdir (cdr file)))
+      (when tempdir
+	(unless (or dont-register (zerop (cdr tempdir)))
+	  (setcdr tempdir (1- (cdr tempdir))))
+	(when (zerop (cdr tempdir))
+	  (unwind-protect
+	      (delete-directory (car tempdir))
+	    (setcdr file nil)))))))
 
 (defun preview-place-preview (tempdir snippet source start end)
   "Generate and place an overlay preview image.
@@ -680,8 +699,9 @@ region between START and END."
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map (preview-make-map ov))
-    (overlay-put ov 'filename (preview-make-filename
-			       (format "preview.%03d" snippet) tempdir))
+    (overlay-put ov 'filenames (list (preview-make-filename
+				      (format "preview.%03d" snippet)
+				      tempdir)))
     (let ((active (preview-active-string ov tempdir snippet)))
       (overlay-put ov 'strings
 		   (cons active
