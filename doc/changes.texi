@@ -1,6 +1,47 @@
 @section News in 9.8
 
 @itemize @bullet
+@item
+Support for `natbib' package.
+By Berwin Turlach @samp{<berwin.turlach@@anu.edu.au>}. 
+
+@item 
+Finer control of automatic parsing of @TeX{} files: new variables
+@code{TeX-auto-x-parse-length} and @code{TeX-auto-x-regexp-list}.
+By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
+
+@item 
+Finer control of indentation: new variables @code{LaTeX-document-regexp},
+@code{LaTeX-verbatim-regexp}, @code{LaTeX-begin-regexp},
+@code{LaTeX-end-regexp} and @code{LaTeX-indent-comment-start-regexp}.
+By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
+
+@item 
+When running La@TeX{} on a region, do not complain about undefined
+citations.  See variable @code{TeX-region-extra}.
+By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
+
+@item 
+Split menu for LaTeX environments into submenus if number of
+environments is larger than the value of the new variable
+@code{LaTeX-menu-max-items}.
+By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
+
+@item
+More reftex support.
+By Soren Dayton @samp{<csdayton@@cs.uchicago.edu>},
+
+@item
+Minimal parser now recognize @code{usepackage}.
+By Carsten Dominik @samp{<dominik@@strw.LeidenUniv.nl>}.
+
+@item
+More amstex styles recognized.
+By Carsten Dominik @samp{<dominik@@strw.LeidenUniv.nl>}.
+
+@item
+Czech and Slovak support.
+By Milan Zamazal @samp{<pdm@@fi.muni.cz>}. 
 
 @end itemize
 

@@ -1,3 +1,12 @@
+Mon Jun 30 17:04:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8b released.
+
+Sat Jun 28 14:27:30 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-LaTeX-sentinel): `natbib' support.
+	Patch by Berwin Turlach <berwin.turlach@anu.edu.au>.
+
 Fri Jun 27 19:16:34 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8a released.

@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8a
+;; Version: 9.8b
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -623,7 +623,9 @@ Return nil ifs no errors were found."
   "Cleanup TeX output buffer after running LaTeX."
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
-		(re-search-forward "^LaTeX Warning: Citation" nil t))
+		(or
+                 (re-search-forward "^LaTeX Warning: Citation" nil t)
+                 (re-search-forward "^Package natbib Warning: Citation" nil t)))
 	      (let ((current (current-buffer)))
 		(set-buffer TeX-command-buffer)
 		(prog1 (and (LaTeX-bibliography-list)
@@ -635,7 +637,9 @@ Return nil ifs no errors were found."
 	 (message (concat "You should run BibTeX to get citations right, "
                           (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-BibTeX))
-	((re-search-forward "^LaTeX Warning: Label(s)" nil t)
+	((or
+          (re-search-forward "^LaTeX Warning: Label(s)" nil t)
+          (re-search-forward "^Package natbib Warning: Citation(s)" nil t))
 	 (message (concat "You should run LaTeX again "
 			  "to get references right, "
                           (TeX-current-pages)))
@@ -644,7 +648,9 @@ Return nil ifs no errors were found."
 	 (message (concat name ": there were unresolved references, "
                           (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
-	((re-search-forward "^LaTeX Warning: Citation" nil t)
+	((or
+          (re-search-forward "^LaTeX Warning: Citation" nil t)
+          (re-search-forward "^Package natbib Warning:.*undefined citations" nil t))
 	 (message (concat name ": there were unresolved citations, "
                           (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
