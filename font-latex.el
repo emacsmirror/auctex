@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.902 (07 Sept 2003)
+;; Version:    0.903 (18 Sept 2003)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -283,7 +283,8 @@
   "List matching end quotes for `font-latex-quote-regexp-beg'.")
 
 (defcustom font-latex-quotes 'french
-  "Whether to fontify << french quotes >> or >> german quotes <<."
+  "Whether to fontify << french quotes >> or >> german quotes <<.
+Also selects \"<quote\"> versus \">quote\"<."
   :type '(choice (const french) (const german))
   :set (lambda (symbol value)
          (set-default symbol value)
@@ -294,10 +295,10 @@
                    font-latex-quote-end-list
                    `("''" "\">" "\"'" ">>" ,(char-to-string 187)))
            (setq font-latex-quote-regexp-beg
-                 (concat "\\(``\\)\\|\\(\"<\\)\\|\\(\"`\\)\\|\\(>>\\)\\|"
+                 (concat "\\(``\\)\\|\\(\">\\)\\|\\(\"`\\)\\|\\(>>\\)\\|"
                          "\\(" (char-to-string 187) "\\)") ; An 8-bit ">>"
                  font-latex-quote-end-list
-                 `("''" "\">" "\"'" "<<" ,(char-to-string 171)))))
+                 `("''" "\"<" "\"'" "<<" ,(char-to-string 171)))))
   :group 'font-latex)
 
 (defvar font-latex-warning-face			'font-latex-warning-face
