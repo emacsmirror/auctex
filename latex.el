@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.8 1994-04-16 16:47:09 amanda Exp $
+;; Version: $Id: latex.el,v 5.9 1994-04-16 17:24:32 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1736,7 +1736,9 @@ of LaTeX-mode-hook."
 			  ("thebibliography" . LaTeX-item-bib)))
 
   (setq TeX-complete-list
-	(append '(("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+		   1 LaTeX-bibitem-list "}")
+		  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
 		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]\\)"
 		   2 LaTeX-bibitem-list)
 		  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
