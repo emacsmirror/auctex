@@ -1,5 +1,9 @@
 2002-04-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (face-attribute): Try getting calculation of
+	:height more correct.
+	(preview-inherited-face-attribute): Make a macro.
+
 	* prv-install.el (preview-make-package): Avoid Emacs
 	unnecessarily loading all command line arguments as files.
 
