@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7o
+;; Version: 9.7p
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -26,6 +26,39 @@
 
 ;;; Code:
 
+(eval-and-compile
+  (condition-case ()
+      (require 'custom)
+    (error nil))
+  (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
+      nil ;; We've got what we needed
+    ;; We have the old custom-library, hack around it!
+    (defmacro defgroup (&rest args)
+      nil)
+    (defmacro defcustom (var value doc &rest args) 
+      (` (defvar (, var) (, value) (, doc))))))
+
+(defgroup AUC-TeX nil
+  "A (La)TeX environment."
+  :tag "AUC TeX"
+  :link '(custom-manual "(auctex)Top")
+  :link '(url-link :tag "Home Page" "http://sunsite.auc.dk/auctex/")
+  :prefix "TeX-"
+  :group 'tex)
+
+(defgroup TeX-file nil
+  "Files used by AUC TeX."
+  :group 'AUC-TeX)
+
+(defgroup TeX-command nil
+  "Calling external commands from AUC TeX."
+  :group 'AUC-TeX)
+
+(defgroup LaTeX nil
+  "LaTeX support in AUC TeX."
+  :tag "LaTeX"
+  :group 'AUC-TeX)
+
 ;;; Site Customization
 ;;
 ;; The following variables are likely to need to be changed for your
@@ -33,29 +66,36 @@
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
 
-(defvar TeX-lisp-directory (concat data-directory "auctex/")
-  "*The directory where the AUC TeX lisp files are located.")
+(defcustom TeX-lisp-directory (concat data-directory "auctex/")
+  "The directory where the AUC TeX lisp files are located."
+  :group 'TeX-file
+  :type 'directory)
 
 ;; Change this to point to the place where the TeX macros are stored
 ;; at yourt site.
-(defvar TeX-macro-global '("/usr/local/lib/texmf/tex/")
-  "*Directories containing the sites TeX macro files and style files.
-
-The directory names *must* end with a slash.")
+(defcustom TeX-macro-global '("/usr/local/lib/texmf/tex/")
+  "Directories containing the sites TeX macro files and style files.
+The directory names *must* end with a slash."
+  :group 'TeX-file
+  :type '(repeat (directory :format "%v")))
 
 ;; How to print.
 
-(defvar TeX-print-command "dvips %s -P%p"
+(defcustom TeX-print-command "dvips %s -P%p"
   "*Command used to print a file. 
 
 First %p is expanded to the printer name, then ordinary expansion is
-performed as specified in TeX-expand-list.")
+performed as specified in TeX-expand-list."
+  :group 'TeX-command
+  :type 'string)
 
-(defvar TeX-queue-command "lpq -P%p"
+(defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue. 
 
 First %p is expanded to the printer name, then ordinary expansion is
-performed as specified in TeX-expand-list.")
+performed as specified in TeX-expand-list."
+  :group 'TeX-command
+  :type 'string)
 
 ;; This is the major configuration variable.  Most sites will only
 ;; need to change the second string in each entry, which is the name
@@ -63,7 +103,7 @@ performed as specified in TeX-expand-list.")
 ;; like AMSLaTeX or AMSTeX, you can add those to the list.  See
 ;; TeX-expand-list for a description of the % escapes
 
-(defvar TeX-command-list
+(defcustom TeX-command-list
   ;; You may have to remove the single quotes around the command
   ;; arguments if you use DOS.
   (list (list "TeX" "tex '\\nonstopmode\\input %t'" 'TeX-run-TeX nil t)
@@ -91,7 +131,7 @@ performed as specified in TeX-expand-list.")
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "AmSTeX" "amstex '\\nonstopmode\\input %t'"
 	      'TeX-run-TeX nil t))
-  "*List of commands to execute on the current document.
+  "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
 as it will be presented to the user.  
@@ -139,16 +179,49 @@ create an asynchronous process.
 If the fourth element is non-nil, the user will get a chance to
 modify the expanded string.
 
-The fifth element is obsolete and ignored.")
+The fifth element is obsolete and ignored."
+  :group 'TeX-command
+  :type '(repeat (group (string :tag "Name")
+			(string :tag "Command")
+			(choice :tag "How"
+				:value TeX-run-command
+				(function-item TeX-run-command)
+				(function-item TeX-run-format)
+				(function-item TeX-run-TeX)
+				(function-item TeX-run-LaTeX)
+				(function-item TeX-run-interactive)
+				(function-item TeX-run-BibTeX)
+				(function-item TeX-run-compile)
+				(function-item TeX-run-shell)
+				(function-item TeX-run-discard)
+				(function-item TeX-run-background)
+				(function-item TeX-run-dviout)
+				(function :tag "Other"))
+			(boolean :tag "Prompt")
+			(sexp :format "End\n"))))
+		       
 
 ;; You may want to change the default LaTeX version for your site.
-(defvar LaTeX-version "2e"
-  "Default LaTeX version.  Currently recognized is \"2\" and \"2e\".")
+(defcustom LaTeX-version "2e"
+  "Default LaTeX version.  Currently recognized is \"2\" and \"2e\"."
+  :group 'LaTeX
+  :type '(radio (const :format "%v\n%h"
+		       :doc "\
+The executable `latex' is LaTeX version 2."
+		       "2")
+		(const :format "%v\n%h"
+		       :doc "\
+The executable `latex' is LaTeX version 2e.
+Do *not* select this if you need to run `latex2e' in order to get
+LaTeX version 2e."
+		       "2e")
+		(string :tag "Other")))
+		
 
 ;; You may want special options to the view command depending on the
 ;; style options.  Only works if parsing is enabled.
 
-(defvar LaTeX-command-style
+(defcustom LaTeX-command-style
   (if (string-equal LaTeX-version "2")
       ;; There is a lot of different LaTeX 2 based formats.
       '(("^latex2e$" "latex2e")
@@ -159,21 +232,24 @@ The fifth element is obsolete and ignored.")
 	("." "latex"))
     ;; They have all been combined in LaTeX 2e.
     '(("." "latex")))
-  "*List of style options and LaTeX commands.
+  "List of style options and LaTeX commands.
 
 If the first element (a regular expresion) matches the name of one of
 the style files, any occurrence of the string %l in a command in
 TeX-command-list will be replaced with the second element.  The first
 match is used, if no match is found the %l is replaced with the empty
-string.")
+string."
+  :group 'TeX-command
+  :type '(repeat (group :value ("" "")
+			regexp (string :tag "Style"))))
 
 ;; Enter the names of the printers available at your site, or nil if
 ;; you only have one printer.
 
-(defvar TeX-printer-list
+(defcustom TeX-printer-list
   '(("Local" "dvips -f %s | lpr" "lpq")
     ("lw") ("ps"))
-  "*List of available printers.
+  "List of available printers.
 
 The first element of each entry is the printer name.
 
@@ -185,38 +261,53 @@ this printer.  It defaults to the value of TeX-queue-command.
 
 Any occurence of `%p' in the second or third element is expanded to
 the printer name given in the first element, then ordinary expansion
-is performed as specified in TeX-expand-list.")
+is performed as specified in TeX-expand-list."
+  :group 'TeX-command
+  :type '(repeat (group (string :tag "Name")
+			(option (group :inline t
+				       :extra-offset -4
+				       (choice :tag "Print"
+					       (const :tag "default")
+					       (string :format "%v"))
+				       (option (choice :tag "Queue"
+						       (const :tag "default")
+						       (string 
+							:format "%v"))))))))
 
 ;; The name of the most used printer.  
 
-(defvar TeX-printer-default (or (getenv "PRINTER")
-				(and TeX-printer-list
-				     (car (car TeX-printer-list)))
-				"lw")
-  "*Default printer to use with TeX-command.")
+(defcustom TeX-printer-default (or (getenv "PRINTER")
+				   (and TeX-printer-list
+					(car (car TeX-printer-list)))
+				   "lw")
+  "*Default printer to use with TeX-command."
+  :group 'TeX-command
+  :type 'string)
 
 ;; You may want special options to the view command depending on the
 ;; style options.  Only works if parsing is enabled.
 
-(defvar TeX-view-style '(("^a5$" "xdvi %d -paper a5")
-			 ("^landscape$" "xdvi %d -paper a4r -s 4")
-			 ;; The latest xdvi can show embedded postscript.
-			 ;; If you don't have that, uncomment next line.
-			 ;; ("^epsf$" "ghostview %f")
-			 ("." "xdvi %d"))
-  "*List of style options and view options.
+(defcustom TeX-view-style '(("^a5$" "xdvi %d -paper a5")
+			    ("^landscape$" "xdvi %d -paper a4r -s 4")
+			    ;; The latest xdvi can show embedded postscript.
+			    ;; If you don't have that, uncomment next line.
+			    ;; ("^epsf$" "ghostview %f")
+			    ("." "xdvi %d"))
+  "List of style options and view options.
 
 If the first element (a regular expresion) matches the name of one of
 the style files, any occurrence of the string %v in a command in
 TeX-command-list will be replaced with the second element.  The first
 match is used, if no match is found the %v is replaced with the empty
-string.")
+string."
+  :group 'TeX-command
+  :type '(repeat (group regexp (string :tag "Command"))))
 
 ;; This is the list of expansion for the commands in
 ;; TeX-command-list.  Not likely to be changed, but you may e.g. want
 ;; to handle .ps files. 
 
-(defvar TeX-expand-list 
+(defcustom TeX-expand-list 
   (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
 	(list "%q" (function (lambda ()
 		     (TeX-printer-query TeX-queue-command 2))))
@@ -226,13 +317,19 @@ string.")
 	(list "%t" 'file 't t)
 	(list "%d" 'file "dvi" t)
 	(list "%f" 'file "ps" t))
-  "*List of expansion strings for TeX command names.
+  "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
 the string to be expanded.  The second element is the name of a
 function returning the expanded string when called with the remaining
 elements as arguments.  The special value `file' will be expanded to
-the name of the file being processed, with an optional extension.")
+the name of the file being processed, with an optional extension."
+  :group 'TeX-command
+  :type '(repeat (group (string :tag "Key")
+			(sexp :tag "Expander")
+			(repeat :inline t
+				:tag "Arguments"
+				(sexp :format "%v")))))
 
 ;; End of Site Customization.
 
@@ -494,26 +591,49 @@ The value is actually the tail of LIST whose car is ELT."
 
 ;;; Buffer
 
-(defvar TeX-display-help t
-  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
+(defgroup TeX-output nil
+  "Parsing TeX output."
+  :prefix "TeX-"
+  :group 'AUC-TeX)
 
-(defvar TeX-debug-bad-boxes nil
-  "*Non-nil means also find overfull/underfull boxes warnings with TeX-next-error")
+(defcustom TeX-display-help t
+  "*Non-nil means popup help when stepping thrugh errors with
+\\[TeX-next-error]"
+  :group 'TeX-output
+  :type 'boolean)
 
-(defvar TeX-command-BibTeX "BibTeX"
-  "*The name of the BibTeX entry in TeX-command-list.")
+(defcustom TeX-debug-bad-boxes nil
+  "*Non-nil means also find overfull/underfull boxes warnings with
+TeX-next-error"
+  :group 'TeX-output
+  :type 'boolean)
+
+(defgroup TeX-command-name nil
+  "Names for external commands in AUC TeX."
+  :group 'TeX-command)
+
+(defcustom TeX-command-BibTeX "BibTeX"
+  "*The name of the BibTeX entry in TeX-command-list."
+  :group 'TeX-command-name
+  :type 'string)
   (make-variable-buffer-local 'TeX-command-BibTeX)
 
-(defvar TeX-command-Show "View"
+(defcustom TeX-command-Show "View"
   "*The default command to show (view or print) a TeX file.
-Must be the car of an entry in TeX-command-list.")
+Must be the car of an entry in TeX-command-list."
+  :group 'TeX-command-name
+  :type 'string)
   (make-variable-buffer-local 'TeX-command-Show)
 
-(defvar TeX-command-Print "Print"
-  "The name of the Print entry in TeX-command-Print.")
+(defcustom TeX-command-Print "Print"
+  "The name of the Print entry in TeX-command-Print."
+  :group 'TeX-command-name
+  :type 'string)
 
-(defvar TeX-command-Queue "Queue"
-  "The name of the Queue entry in TeX-command-Queue.")
+(defcustom TeX-command-Queue "Queue"
+  "The name of the Queue entry in TeX-command-Queue."
+  :group 'TeX-command-name
+  :type 'string)
 
 (autoload 'TeX-region-create "tex-buf" no-doc nil)
 (autoload 'TeX-save-document "tex-buf" no-doc t)
@@ -546,7 +666,7 @@ Must be the car of an entry in TeX-command-list.")
 
 ;;; Master File
 
-(defvar TeX-one-master "\\.tex$"
+(defcustom TeX-one-master "\\.tex$"
   "*Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, where
@@ -555,7 +675,9 @@ is a good idea.  When AUC TeX add the name of the master file as a
 file variable, it does not need to ask next time you edit the file.  
 
 If you dislike AUC TeX automatically modifying your files, you can set
-this variable to \"<none>\".")
+this variable to \"<none>\"."
+  :group 'TeX-command
+  :type 'regexp)
 
 (defun TeX-master-file (&optional extension nondirectory)
   "Return the name of the master file for the current document.
@@ -659,7 +781,7 @@ the beginning of the file, but that feature will be phased out."
     (concat (file-name-directory buffer-file-name)
 	    (file-name-directory (TeX-master-file))))))
 
-(defvar TeX-master t
+(defcustom TeX-master t
   "*The master file associated with the current buffer.
 If the file being edited is actually included from another file, you
 can tell AUC TeX the name of the master file by setting this variable.
@@ -674,7 +796,13 @@ If the variable is 'shared, AUC TeX will query for the name, but not
 change the file.  
 
 It is suggested that you use the File Variables (see the info node in
-the Emacs manual) to set this variable permanently for each file.")
+the Emacs manual) to set this variable permanently for each file."
+  :group 'TeX-command
+  :group 'TeX-parse
+  :type '(choice (const :tag "Query" nil)
+		 (const :tag "This file" t)
+		 (const :tag "Shared" shared)
+		 (string :format "%v")))
 
  (make-variable-buffer-local 'TeX-master)
 
@@ -709,30 +837,38 @@ This will be done when AUC TeX first try to use the master file.")
 (or (string-match "/\\'" TeX-lisp-directory)
     (setq TeX-lisp-directory (concat TeX-lisp-directory "/")))
 
-(defvar TeX-auto-global (concat TeX-lisp-directory "auto/")
+(defcustom TeX-auto-global (concat TeX-lisp-directory "auto/")
   "*Directory containing automatically generated information.
 Must end with a slash.
 
 For storing automatic extracted information about the TeX macros
-shared by all users of a site.")  
+shared by all users of a site."
+  :group 'TeX-file
+  :type 'directory)
 
-(defvar TeX-style-global (concat TeX-lisp-directory "style/")
+(defcustom TeX-style-global (concat TeX-lisp-directory "style/")
   "*Directory containing hand generated TeX information.
 Must end with a slash.
 
-These correspond to TeX macros shared by all users of a site.")
+These correspond to TeX macros shared by all users of a site."
+  :group 'TeX-file
+  :type 'directory)
 
-(defvar TeX-auto-local "auto/"
+(defcustom TeX-auto-local "auto/"
   "*Directory containing automatically generated TeX information.
 Must end with a slash.
 
-This correspond to TeX macros found in the current directory.")
+This correspond to TeX macros found in the current directory."
+  :group 'TeX-file
+  :type 'string)
 
-(defvar TeX-style-local "style/"
+(defcustom TeX-style-local "style/"
   "*Directory containing hand generated TeX information.
 Must end with a slash.
 
-These correspond to TeX macros found in the current directory.")
+These correspond to TeX macros found in the current directory."
+  :group 'TeX-file
+  :type 'string)
 
 (defun TeX-split-string (regexp string)
   "Returns a list of strings. given REGEXP the STRING is split into 
@@ -784,48 +920,59 @@ If REGEXP is nil, or \"\", an error will occur."
 	  (setq answers (cons entry answers))))
     answers))
 
-(defvar TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
-				  (TeX-parse-path "BIBINPUTS"))
-  "*Directories where you store your personal TeX macros.
-Each must end with a slash.")
+(defcustom TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
+				     (TeX-parse-path "BIBINPUTS"))
+  "Directories where you store your personal TeX macros.
+Each must end with a slash."
+  :group 'TeX-file
+  :type '(repeat (file :format "%v")))
 
-(defvar TeX-auto-private (mapcar (function (lambda (entry)
-					     (concat entry TeX-auto-local)))
-				 TeX-macro-private)
-  "*List of directories containing automatically generated information.
+(defcustom TeX-auto-private (mapcar (function (lambda (entry)
+						(concat entry TeX-auto-local)))
+				    TeX-macro-private)
+  "List of directories containing automatically generated information.
 Must end with a slash.
 
-These correspond to the personal TeX macros.")
+These correspond to the personal TeX macros."
+  :group 'TeX-file
+  :type '(repeat (file :format "%v")))
 
 (if (stringp TeX-auto-private)		;Backward compatibility
     (setq TeX-auto-private (list TeX-auto-private)))
 
-(defvar TeX-style-private (mapcar (function (lambda (entry)
-					      (concat entry
-						      TeX-style-local)))
-				  TeX-macro-private)
-  "*List of directories containing hand generated information.
+(defcustom TeX-style-private (mapcar (function (lambda (entry)
+						 (concat entry
+							 TeX-style-local)))
+				     TeX-macro-private)
+  "List of directories containing hand generated information.
 Must end with a slash.
 
-These correspond to the personal TeX macros.")
+These correspond to the personal TeX macros."
+  :group 'TeX-file
+  :type '(repeat (file :format "%v")))
 
 (if (stringp TeX-style-private)		;Backward compatibility
     (setq TeX-style-private (list TeX-style-private)))
 
-(defvar TeX-style-path
+(defcustom TeX-style-path
   (let ((path))
     (mapcar (function (lambda (file) (if file (setq path (cons file path)))))
 	    (append (list TeX-auto-global TeX-style-global)
 		    TeX-auto-private TeX-style-private
 		    (list TeX-auto-local TeX-style-local)))
     path)
-  "*List of directories to search for AUC TeX style files.")
+  "List of directories to search for AUC TeX style files."
+  :group 'TeX-file
+  :type '(repeat (file :format "%v")))
 
-(defvar TeX-check-path (append (list "./") TeX-macro-private TeX-macro-global)
-  "*Directory path to search for dependencies.
+(defcustom TeX-check-path
+  (append (list "./") TeX-macro-private TeX-macro-global)
+  "Directory path to search for dependencies.
 
 If nil, just check the current file.
-Used when checking if any files have changed.")
+Used when checking if any files have changed."
+  :group 'TeX-file
+  :type '(repeat (file :format "%v")))
 
 ;;; Style Files
 
@@ -836,8 +983,10 @@ Each entry is a list where the first element is the name of the style,
 and the remaining elements are hooks to be run when that style is
 active.")
 
-(defvar TeX-byte-compile nil
-  "*Not nil means try to byte compile auto files before loading.")
+(defcustom TeX-byte-compile nil
+  "*Not nil means try to byte compile auto files before loading."
+  :group 'TeX-parse
+  :type 'boolean)
 
 (defun TeX-load-style (style)
   "Search for and load each definition for style in TeX-style-path."
@@ -894,11 +1043,13 @@ active.")
              (setq entry (cdr entry)))
            (setcdr entry (cdr (cdr entry)))))))
 
-(defvar TeX-virgin-style (if (and TeX-auto-global
-				  (file-directory-p TeX-auto-global))
-			     "virtex"
-			   "NoVirtexSymbols")
-  "Style all documents use.")
+(defcustom TeX-virgin-style (if (and TeX-auto-global
+				     (file-directory-p TeX-auto-global))
+				"virtex"
+			      "NoVirtexSymbols")
+  "Style all documents use."
+  :group 'TeX-parse
+  :type 'string)
 
 (defvar TeX-active-styles nil
   "List of styles currently active in the document.")
@@ -921,8 +1072,10 @@ active.")
 		       (cdr-safe (assoc style TeX-style-hook-list))))))
 	  styles))
 
-(defvar TeX-parse-self nil
-  "*Parse file after loading it if no style hook is found for it.")
+(defcustom TeX-parse-self nil
+  "Parse file after loading it if no style hook is found for it."
+  :group 'TeX-parse
+  :type 'boolean)
 
 (defvar TeX-style-hook-applied-p nil
   "Nil, unless the style specific hooks have been applied.")
@@ -984,8 +1137,14 @@ FORCE is not nil."
 
 ;; Must be before keymaps.
 
-(defvar TeX-complete-word 'ispell-complete-word
-  "*Function to call for completing non-macros in tex-mode.")
+(defgroup TeX-macro nil
+  "Support for TeX macros in AUC TeX."
+  :prefix "TeX-"
+  :group 'TeX)
+
+(defcustom TeX-complete-word 'ispell-complete-word
+  "*Function to call for completing non-macros in tex-mode."
+  :group 'TeX-macro)
 
 (defvar TeX-complete-list nil
   "List of ways to complete the preceding text.
@@ -1042,13 +1201,17 @@ Or alternatively:
 		 (message "Making completion list...done"))))
       (funcall (nth 1 entry)))))
 
-(defvar TeX-default-macro "ref"
-  "*The default macro when creating new ones with TeX-insert-macro.")
+(defcustom TeX-default-macro "ref"
+  "*The default macro when creating new ones with TeX-insert-macro."
+  :group 'TeX-macro
+  :type 'string)
 
  (make-variable-buffer-local 'TeX-default-macro)
 
-(defvar TeX-insert-braces t
-  "*If non-nil, append a empty pair of braces after inserting a macro.")
+(defcustom TeX-insert-braces t
+  "*If non-nil, append a empty pair of braces after inserting a macro."
+  :group 'TeX-macro
+  :type 'string)
 
 (defun TeX-math-mode-p ()
   "Are we in TeX math mode?"
@@ -1252,12 +1415,19 @@ Each entry is a list with three elements.
 When entering tex-mode, each regexp is tried in turn in order to find
 when major mode to enter.")
 
-(defvar TeX-default-mode 'latex-mode
+(defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
-the file is plain TeX or LaTeX or what.")
+the file is plain TeX or LaTeX or what."
+  :group 'AUC-TeX
+  :type '(radio (function-item latex-mode)
+		(function-item plain-tex-mode)
+		(function :tag "Other")))
 
-(defvar TeX-force-default-mode nil
-  "*If set to nil, try to infer the mode of the file from its content.")
+(defcustom TeX-force-default-mode nil
+  "*If set to nil, try to infer the mode of the file from its
+content."
+  :group 'AUC-TeX
+  :type 'boolean)
 
 ;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun tex-mode ()
@@ -1444,6 +1614,10 @@ of AmS-TeX-mode-hook."
 
 ;;; Parsing
 
+(defgroup TeX-parse nil
+  "Parsing TeX files from AUC TeX."
+  :group 'AUC-TeX)
+
 (defvar TeX-auto-parser '((styles TeX-auto-file TeX-run-style-hooks)))
 ;; Alist of parsed information.  
 ;; Each entry is a list with the following elements:
@@ -1560,11 +1734,15 @@ separate type of information in the parser."
   ;; Continue with the other write file hooks.
   nil)
 
-(defvar TeX-auto-save nil
-  "*Automatically save style information when saving the buffer.")
+(defcustom TeX-auto-save nil
+  "*Automatically save style information when saving the buffer."
+  :group 'TeX-parse
+  :type 'boolean)
 
-(defvar TeX-auto-untabify t
-  "*Automatically untabify when saving the buffer.")
+(defcustom TeX-auto-untabify t
+  "*Automatically untabify when saving the buffer."
+  :group 'TeX-parse
+  :type 'boolean)
 
 (defun TeX-auto-write ()
   ;; Save all relevant TeX information from the current buffer.
@@ -1588,11 +1766,15 @@ separate type of information in the parser."
 	      (TeX-auto-store file))
 	  (message "Can't write style information.")))))
 
-(defvar TeX-macro-default (car-safe TeX-macro-private)
-  "*Default directory to search for TeX macros.")
+(defcustom TeX-macro-default (car-safe TeX-macro-private)
+  "*Default directory to search for TeX macros."
+  :group 'TeX-file
+  :type 'directory)
 
-(defvar TeX-auto-default (car-safe TeX-auto-private)
-  "*Default directory to place automatically generated TeX information.")
+(defcustom TeX-auto-default (car-safe TeX-auto-private)
+  "*Default directory to place automatically generated TeX information."
+  :group 'TeX-file
+  :type 'directory)
 
 ;;;###autoload
 (defun TeX-auto-generate (tex auto)
@@ -1739,8 +1921,10 @@ If TEX is a directory, generate style files for all files in the directory."
 (defvar TeX-auto-cleanup-hook nil
   "List of hooks to be called after parsing a TeX file.")
 
-(defvar TeX-auto-parse-length 999999
-  "*Maximal length of TeX file that will be parsed.")
+(defcustom TeX-auto-parse-length 999999
+  "*Maximal length of TeX file that will be parsed."
+  :group 'TeX-parse
+  :type 'integer)
   (make-variable-buffer-local 'TeX-auto-parse-length)
 
 (defun TeX-auto-parse ()
@@ -1817,35 +2001,65 @@ Check for potential LaTeX environments."
 ;; Some of these functions has little to do with TeX, but nonetheless we
 ;; should use the "TeX-" prefix to avoid name clashes.
 
-(defvar TeX-auto-regexp-list 'TeX-auto-full-regexp-list
-  "*List of regular expresions used for parsing the current file.")
+(defcustom TeX-auto-regexp-list 'TeX-auto-full-regexp-list
+  "*List of regular expresions used for parsing the current file."
+  :type '(radio (variable-item TeX-auto-empty-regexp-list)
+		(variable-item TeX-auto-full-regexp-list)
+		(variable-item plain-TeX-auto-regexp-list)
+		(variable-item LaTeX-auto-minimal-regexp-list)
+		(variable-item LaTeX-auto-label-regexp-list)
+		(variable-item LaTeX-auto-regexp-list)
+		(symbol :tag "Other")
+		(repeat :tag "Specify"
+			(group (regexp :tag "Match")
+			       (sexp :tag "Groups")
+			       symbol)))
+  :group 'TeX-parse)
   (make-variable-buffer-local 'TeX-auto-regexp-list)
 
-(defvar TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo")
-  "*File extensions used by manually generated TeX files.")
+(defgroup TeX-file-extension nil
+  "File extensions recognized by AUC TeX."
+  :group 'TeX-file)  
 
-(defvar TeX-all-extensions '("[^.\n]+")
-  "All possible file extensions.")
+(defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo")
+  "*File extensions used by manually generated TeX files."
+  :group 'TeX-file-extension
+  :type '(repeat (string :format "%v")))
 
-(defvar TeX-default-extension "tex"
-  "*Default extension for TeX files.")
+(defcustom TeX-all-extensions '("[^.\n]+")
+  "All possible file extensions."
+  :group 'TeX-file-extension
+  :type '(repeat (regexp :format "%v")))
+
+(defcustom TeX-default-extension "tex"
+  "*Default extension for TeX files."
+  :group 'TeX-file-extension
+  :type 'string)
 
   (make-variable-buffer-local 'TeX-default-extension)
 
-(defvar BibTeX-file-extensions '("bib")
-  "Valid file extensions for BibTeX files.")
+(defcustom BibTeX-file-extensions '("bib")
+  "Valid file extensions for BibTeX files."
+  :group 'TeX-file-extension
+  :type '(repeat (string :format "%v")))
 
-(defvar BibTeX-style-extensions '("bst")
-  "Valid file extensions for BibTeX styles.")
+(defcustom BibTeX-style-extensions '("bst")
+  "Valid file extensions for BibTeX styles."
+  :group 'TeX-file-extension
+  :type '(repeat (string :format "%v")))
 
-(defvar TeX-ignore-file "\\(^\\|/\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\)$"
+(defcustom TeX-ignore-file "\\(^\\|/\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\)$"
   "*Regular expression matching file names to ignore.
 
 These files or directories will not be considered when searching for
-TeX files in a directory.")
+TeX files in a directory."
+  :group 'TeX-parse
+  :type 'regexp)
 
-(defvar TeX-file-recurse t
-  "*If not nil, search TeX directories recursivly.")
+(defcustom TeX-file-recurse t
+  "*If not nil, search TeX directories recursivly."
+  :group 'TeX-parse
+  :type 'boolean)
 
 (defun TeX-match-extension (file &optional extensions)
   "Return non-nil if FILE has an one of EXTENSIONS.
@@ -2099,9 +2313,11 @@ See match-data for details."
 
 ;;; Keymap
 
-(defvar TeX-electric-escape nil
+(defcustom TeX-electric-escape nil
   "If this is non-nil when AUC TeX is loaded, the TeX escape
-character ``\\'' will be bound to `TeX-electric-macro'.")
+character ``\\'' will be bound to `TeX-electric-macro'."
+  :group 'TeX-macro
+  :type 'boolean)
 
 (defvar TeX-mode-map nil
   "Keymap for common TeX and LaTeX commands.")
@@ -2236,6 +2452,10 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 
 ;;; Indentation
 
+(defgroup TeX-indentation nil
+  "Indentation of TeX buffers in AUC TeX."
+  :group 'AUC-TeX)
+
 (defun TeX-brace-count-line ()
   "Count number of open/closed braces."
   (save-excursion
@@ -2255,8 +2475,10 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	    (setq count (- count TeX-brace-indent-level)))))
 	count))))
 
-(defvar TeX-brace-indent-level 2
-  "*The level of indentation produced by a open brace.")
+(defcustom TeX-brace-indent-level 2
+  "*The level of indentation produced by a open brace."
+  :group 'TeX-indentation
+  :type 'integer)
 
 (defun TeX-comment-indent ()
   (if (looking-at "%%%")
@@ -2267,20 +2489,26 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 
 ;;; Fonts
 
-(defvar TeX-font-list '((?\C-b "{\\bf " "}")
-			(?\C-c "{\\sc " "}")
-			(?\C-e "{\\em " "\\/}")
-			(?\C-i "{\\it " "\\/}")
-			(?\C-r "{\\rm " "}")
-			(?\C-s "{\\sl " "\\/}")
-			(?\C-t "{\\tt " "}")
-			(?\C-d "" "" t))
-  "*List of fonts used by TeX-font.
+(defcustom TeX-font-list '((?\C-b "{\\bf " "}")
+			   (?\C-c "{\\sc " "}")
+			   (?\C-e "{\\em " "\\/}")
+			   (?\C-i "{\\it " "\\/}")
+			   (?\C-r "{\\rm " "}")
+			   (?\C-s "{\\sl " "\\/}")
+			   (?\C-t "{\\tt " "}")
+			   (?\C-d "" "" t))
+  "List of fonts used by TeX-font.
 
 Each entry is a list with three elements.  The first element is the
 key to active the font.  The second element is the string to insert
 before point, and the third element is the string to insert after
-point.  An optional fourth element means always replace if not nil.")
+point.  An optional fourth element means always replace if not nil."
+  :group 'TeX-macro
+  :type '(repeat (group (character :tag "Key")
+			(string :tag "Prefix")
+			(string :tag "Suffix")
+			(option (sexp :format "Replace\n" 
+				      :value t)))))
 
 (defvar TeX-font-replace-function 'TeX-font-replace
   "Determines the function which is called when a font should be replaced.")
@@ -2512,15 +2740,25 @@ With optional argument, also reload the style hooks."
   (normal-mode)
   (TeX-update-style))
 
-(defvar TeX-open-quote "``"
-  "*String inserted by typing \\[TeX-insert-quote] to open a quotation.")
+(defgroup TeX-quote nil
+  "Quoting in AUC TeX."
+  :group 'AUC-TeX)
 
-(defvar TeX-close-quote "''"
-  "*String inserted by typing \\[TeX-insert-quote] to close a quotation.")
+(defcustom TeX-open-quote "``"
+  "*String inserted by typing \\[TeX-insert-quote] to open a quotation."
+  :group 'TeX-quote
+  :type 'string)
 
-(defvar TeX-quote-after-quote nil
+(defcustom TeX-close-quote "''"
+  "*String inserted by typing \\[TeX-insert-quote] to close a quotation."
+  :group 'TeX-quote
+  :type 'string)
+
+(defcustom TeX-quote-after-quote nil
   "*Behaviour of \\[TeX-insert-quote]. Nil means standard behaviour;
-when non-nil, opening and closing quotes are inserted only after \".")
+when non-nil, opening and closing quotes are inserted only after \"."
+  :group 'TeX-quote
+  :type 'boolean)
 
 ;;;###autoload
 (defun TeX-insert-quote (arg)
