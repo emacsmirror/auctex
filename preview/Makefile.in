@@ -9,7 +9,7 @@ AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
 LISP_SOURCES := @PLAT_LISP@ preview.el
 LISP_OBJS := $(LISP_SOURCES:.el=.elc)
 
-ICON_XPM_SOURCES := images/prevwork.xpm images/preview.xpm
+ICON_XPM_SOURCES := images/prevwork.xpm images/preview.xpm images/preverr.xpm
 ICON_XBM_SOURCES := ${ICON_XPM_SOURCES:.xpm=.xbm}
 ICON_SOURCES := $(ICON_XPM_SOURCES) $(ICON_XBM_SOURCES)
 
