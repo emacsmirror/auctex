@@ -1,6 +1,6 @@
 ;;; italian.el --- Setup AUCTeX for editing Italian text.
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Davide G. M. Salvetti <salve@debian.org>
 ;; Maintainer: Davide G. M. Salvetti <salve@debian.org>
@@ -31,22 +31,26 @@
 
 ;;; Code:
 
-(defvar LaTeX-italian-open-quote "\"<"
-  "Initial value of `TeX-open-quote' for `italian.el'")
-(defvar LaTeX-italian-close-quote "\">"
-  "Initial value of `TeX-close-quote' for `italian.el'")
 (defvar TeX-language-it-hook nil
   "Hook run for Italian texts.")
 
 (TeX-add-style-hook
  "italian"
  (lambda ()
-   (unless (local-variable-p 'TeX-open-quote (current-buffer))
-     (set (make-local-variable 'TeX-open-quote)
-	  LaTeX-italian-open-quote))
-   (unless (local-variable-p 'TeX-close-quote (current-buffer))
-     (set (make-local-variable 'TeX-close-quote)
-	  LaTeX-italian-close-quote))
+   ;; XXX: Handle former customizations of the now defunct
+   ;; Italian-specific variables.  References to the respective
+   ;; variables are to be deleted in future versions. (now = 2005-04-01)
+   (unless (eq (car TeX-quote-language) 'override)
+     (let ((open-quote (if (and (boundp 'LaTeX-italian-open-quote)
+				LaTeX-italian-open-quote)
+			   LaTeX-italian-open-quote
+			 "\"<"))
+	   (close-quote (if (and (boundp 'LaTeX-italian-close-quote)
+				 LaTeX-italian-close-quote)
+			    LaTeX-italian-close-quote
+			  "\">")))
+       (setq TeX-quote-language
+	     `("italian" (,open-quote . ,close-quote) TeX-quote-after-quote))))
    (run-hooks 'TeX-language-it-hook)))
 
 ;;; italian.el ends here
