@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.185 2004-10-12 09:13:39 rsteib Exp $
+@c $Id: auctex.texi,v 1.186 2004-10-18 17:51:16 rsteib Exp $
 
 @finalout
 @titlepage
@@ -57,7 +57,7 @@ approved by the Free Software Foundation.
 @page
 
 @ifnottex
-@node top, Copying, (dir), (dir)
+@node top
 @top @AUCTeX{}
 
 @AUCTeX{} is an integrated environment for editing @LaTeX{} and
@@ -101,9 +101,13 @@ TeX-submit-bug-report} to report bugs if possible.
 
 @end ifnottex
 
+@shortcontents
+@contents
+
 @menu
 * Copying::                     Copying
 * Introduction::                Introduction to @AUCTeX{}
+* Quick Start::                 Quick Start
 * Frequently Used Commands::    Inserting Frequently Used Commands
 * Advanced Features::           Advanced Editing Features
 * Running TeX and friends::     Starting processors, viewers and other programs
@@ -123,7 +127,7 @@ TeX-submit-bug-report} to report bugs if possible.
 
 @end menu
 
-@node Copying, Introduction, top, top
+@node Copying
 @unnumbered Copying
 @cindex Copying
 @cindex Copyright
@@ -172,10 +176,11 @@ The precise conditions of the licenses for the programs currently
 being distributed that relate to @AUCTeX{} are found in the General
 Public Licenses that accompany them.
 
-@node Introduction, Frequently Used Commands, Copying, top
 @include intro.texi
 
-@node Frequently Used Commands, Advanced Features, Introduction, top
+@include quickstart.texi
+
+@node Frequently Used Commands
 @chapter Inserting Frequently Used Commands
 
 The most commonly used commands/macros of @AUCTeX{} are those which
@@ -192,7 +197,7 @@ pairs.
 * Environments::                Inserting Environment Templates
 @end menu
 
-@node Quotes, Font Specifiers, Frequently Used Commands, Frequently Used Commands
+@node Quotes
 @section Insertion of Quotes, Dollars, and Braces
 
 @cindex Quotes
@@ -273,7 +278,7 @@ can do this by typing @kbd{C-c @{}.
 to type inside of them.
 @end deffn
 
-@node Font Specifiers, Sectioning, Quotes, Frequently Used Commands
+@node Font Specifiers
 @section Inserting Font Specifiers
 
 @cindex Fonts
@@ -291,11 +296,6 @@ commands, with @code{@point{}} indicating the position where the text
 will be inserted.
 
 @table @kbd
-@item C-c C-f C-r
-@kindex C-c C-f C-r
-@cindex @code{\textrm}
-Insert roman @r{\textrm@{@point{}@}} text.
-
 @item C-c C-f C-b
 @kindex C-c C-f C-b
 @cindex @code{\textbf}
@@ -315,6 +315,16 @@ Insert @i{emphasized} @samp{\emph@{@point{}@}} text.
 @kindex C-c C-f C-s
 @cindex @code{\textsl}
 Insert @i{slanted} @samp{\textsl@{@point{}@}} text.
+
+@item C-c C-f C-r
+@kindex C-c C-f C-r
+@cindex @code{\textrm}
+Insert roman @r{\textrm@{@point{}@}} text.
+
+@item C-c C-f C-f
+@kindex C-c C-f C-f
+@cindex @code{\textsf}
+Insert @sans{sans serif} @samp{\textsf@{@point{}@}} text.
 
 @item C-c C-f C-t
 @kindex C-c C-f C-t
@@ -350,7 +360,7 @@ before point, and the third element is the string to insert after
 point.  An optional fourth element means always replace if not nil.
 @end defopt
 
-@node Sectioning, Environments, Font Specifiers, Frequently Used Commands
+@node Sectioning
 @section Inserting chapters, sections, etc.
 @cindex Sectioning
 @cindex Sections
@@ -499,7 +509,7 @@ subsections have a prefix of @samp{sec:}.  Labels are not automatically
 inserted for other types of sections.
 @end defopt
 
-@node Environments,  , Sectioning, Frequently Used Commands
+@node Environments
 @section Inserting Environment Templates
 @cindex Environments
 @cindex @samp{\begin}
@@ -562,7 +572,7 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment.
 @end deffn
 
-@node Equations, Floats, Environments, Environments
+@node Equations
 @subsection Equations
 @cindex Equations
 @cindex Equation
@@ -586,7 +596,7 @@ Prefix to use for amsmath equation labels.  Amsmath equations include
 @samp{flalign} and @samp{gather}.
 @end defopt
 
-@node Floats, Itemize-like, Equations, Environments
+@node Floats
 @subsection Floats
 @cindex Floats
 @cindex Figures
@@ -635,7 +645,7 @@ Prefix to use for figure labels.
 Prefix to use for table labels.
 @end defopt
 
-@node Itemize-like, Tabular-like, Floats, Environments
+@node Itemize-like
 @subsection Itemize-like
 @cindex Itemize
 @cindex Enumerates
@@ -654,7 +664,7 @@ insert an appropriate @samp{\item} for the current environment. That is,
 `description' will have @samp{\item[]} inserted.
 @end deffn
 
-@node Tabular-like, Customizing environments, Itemize-like, Environments
+@node Tabular-like
 @subsection Tabular-like
 
 When inserting Tabular-like environments, that is, `tabular' `array'
@@ -670,13 +680,13 @@ Default position string for array and tabular environments.  If nil,
 act like the empty string is given, but don't prompt for a position.
 @end defopt
 
-@node Customizing environments,  , Tabular-like, Environments
+@node Customizing environments
 @subsection Customizing environments
 
 @xref{Adding Environments}, for how to customize the list of known
 environments.
 
-@node Advanced Features, Running TeX and friends, Frequently Used Commands, top
+@node Advanced Features
 @chapter Advanced Editing Features
 @cindex Advanced features
 
@@ -695,7 +705,7 @@ through the document.
 * Show/Hide::                   Showing and Hiding Text in the Buffer
 @end menu
 
-@node Mathematics, Completion, Advanced Features, Advanced Features
+@node Mathematics
 @section Entering Mathematics
 @cindex Mathematics
 @cindex Symbols
@@ -740,7 +750,7 @@ this feature.
 @AUCTeX{}'s reference card @file{tex-ref.tex} includes a list of all
 math mode commands.
 
-@node Completion, Commenting, Mathematics, Advanced Features
+@node Completion
 @section Completion
 @cindex Completion
 @cindex Expansion
@@ -855,7 +865,7 @@ the Bib@TeX{} files have been saved at least once after you enabled
 automatic parsing on save, and that the basename of the Bib@TeX{} file
 does not conflict with the basename of one of @TeX{} files.
 
-@node Commenting, Indenting, Completion, Advanced Features
+@node Commenting
 @section Commenting
 
 It is often necessary to comment out temporarily a region of @TeX{} or
@@ -884,7 +894,7 @@ paragraph is considered to consist of all preceding and succeeding
 lines starting with a @samp{%}, until the first non-comment line.
 @end deffn
 
-@node Indenting, Filling, Commenting, Advanced Features
+@node Indenting
 @section Indenting
 @cindex Formatting
 @cindex Indenting
@@ -1030,7 +1040,7 @@ function additionally indents the current line.  If you choose
 @end defopt
 
 
-@node Filling, Show/Hide, Indenting, Advanced Features
+@node Filling
 @section Filling
 @cindex Filling
 @cindex Formatting
@@ -1189,7 +1199,7 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
-@node Show/Hide, , Filling, Advanced Features
+@node Show/Hide
 @section Showing and Hiding Text in the Buffer
 
 While you are editing your text you might find certain parts of it
@@ -1203,7 +1213,7 @@ as support for Emacs' outline mode.
 * Outline::                     Outlining the Document
 @end menu
 
-@node Folding, Outline, , Show/Hide
+@node Folding
 @subsection Folding
 @cindex Outlining
 @cindex Folding
@@ -1344,7 +1354,7 @@ brackets is used as display string, otherwise the defaults specified in
 @code{TeX-fold-unspec-env-display-string} respectively.
 @end defopt
 
-@node Outline,  , Folding, Show/Hide
+@node Outline
 @subsection Outlining the Document
 @cindex Outlining
 @cindex Headers
@@ -1385,7 +1395,7 @@ You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
 
-@node Running TeX and friends, Multifile, Advanced Features, top
+@node Running TeX and friends
 @chapter Starting processors, viewers and other programs
 
 The most powerful features of @AUCTeX{} may be those allowing you to
@@ -1401,7 +1411,7 @@ and moreover allowing you to @emph{debug} your documents.
 * Control::                     Controlling the processes.
 @end menu
 
-@node Commands, Viewing, Running TeX and friends, Running TeX and friends
+@node Commands
 @section Executing Commands
 @cindex Formatting
 @cindex Running @LaTeX{}
@@ -1579,7 +1589,9 @@ results in calling either PDF@TeX{} or ordinary @TeX{}.
 @defopt TeX-DVI-via-PDFTeX
 If this is set, @acronym{DVI} will also be produced by calling
 PDF@TeX{}, setting @code{\pdfoutput=0}.  This makes it possible to use
-packages like @samp{pdfcprot} even when producing @acronym{DVI} files.
+packages like @samp{pdfcprot} even when producing @acronym{DVI}
+files. Some modern @TeX{} distributions, e.g. te@TeX{} 3.0, do this
+anyway, so that you need not enable it within @AUCTeX{}.
 @end defopt
 
 @deffn Command TeX-interactive-mode
@@ -1617,7 +1629,19 @@ the final version of a document.  In particular, fine-tuning the page
 breaks should be done with Source Specials switched off.
 @end deffn
 
-@node Viewing, Debugging, Commands, Running TeX and friends
+@deffn Command TeX-Omega-mode
+@kindex C-c C-t C-o
+@vindex TeX-Omega-mode
+(@kbd{C-c C-t C-p})
+This command toggles the use of the Omega @tex
+(@math{\Omega})
+@end tex
+ mode of @AUCTeX{}, a buffer-local
+minor mode.  If it is switched on, @kbd{omega} will be used instead of
+@kbd{tex}, and @kbd{lambda} instead of @kbd{latex}.
+@end deffn
+
+@node Viewing
 @section Viewing the formatted output
 @cindex Viewing
 @cindex Previewing
@@ -1700,7 +1724,7 @@ if the server should never be started.  Inverse search will not be
 available in the latter case.
 @end defopt
 
-@node Debugging, Checking, Viewing, Running TeX and friends
+@node Debugging
 @section Catching the errors
 @cindex Debugging
 @cindex Errors
@@ -1742,7 +1766,7 @@ When non-nil @AUCTeX{} will automatically display a help text whenever
 an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
 @end defopt
 
-@node Checking, Control, Debugging, Running TeX and friends
+@node Checking
 @section Checking for problems
 @cindex Checking
 @cindex @code{lacheck}
@@ -1775,7 +1799,7 @@ alternatively @code{chktex} from
 @file{<URL:ftp://ftp.ctan.org/tex-archive/support/chktex/>}.  Search for
 `chktex' in @file{tex.el} to see how to switch between them.
 
-@node Control,  , Checking, Running TeX and friends
+@node Control
 @section Controlling the output
 @cindex Controlling the output
 @cindex Output
@@ -1810,7 +1834,7 @@ the current buffer, or if already there, to the file where the current
 process was started.
 @end deffn
 
-@node Multifile, Parsing Files, Running TeX and friends, top
+@node Multifile
 @chapter Multifile Documents
 @cindex Multifile Documents
 @cindex Documents
@@ -1935,7 +1959,7 @@ If non-nil, then query the user before saving each file with
 @end defopt
 
 
-@node Parsing Files, I18n, Multifile, top
+@node Parsing Files
 @chapter Automatic Parsing of @TeX{} files
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
@@ -2073,7 +2097,7 @@ Parse common plain @TeX{} commands.
 Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @end defvr
 
-@node I18n, Automatic, Parsing Files, top
+@node I18n
 @chapter Internationalization
 @cindex Internationalization
 @cindex Character set
@@ -2091,7 +2115,7 @@ of @TeX{} and Emacs are needed for Korean, Japanese, and Chinese.
 * Japanese::                    Japanese @TeX{}
 @end menu
 
-@node European, Japanese, I18n, I18n
+@node European
 @section Using @AUCTeX{} for European languages.
 @cindex Europe
 @cindex European Characters
@@ -2180,7 +2204,7 @@ Gives  @samp{"} word syntax and makes the @key{"} key insert a literal
 depending on context.
 @end table
 
-@node Japanese,  , European, I18n
+@node Japanese
 @section Japanese @TeX{}
 @cindex Japan
 @cindex Japanese
@@ -2251,7 +2275,7 @@ The default value is @samp{j-article}.
 
 See @file{tex-jp.el} for more information.
 
-@node Automatic, Style Files, I18n, top
+@node Automatic
 @chapter Automatic Customization
 @cindex Automatic Customization
 @cindex Extracting @TeX{} symbols
@@ -2317,7 +2341,7 @@ These files or directories will not be considered when searching for
 @TeX{} files in a directory.
 @end defopt
 
-@node Automatic Global, Automatic Private, Automatic, Automatic
+@node Automatic Global
 @section Automatic Customization for the Site
 @cindex Global style hook directory
 @cindex Global macro directory
@@ -2355,7 +2379,7 @@ For storing automatic extracted information about the @TeX{} macros
 shared by all users of a site.
 @end defopt
 
-@node Automatic Private, Automatic Local, Automatic Global, Automatic
+@node Automatic Private
 @section Automatic Customization for a User
 @cindex Private style hook directory
 @cindex Private macro directory
@@ -2399,7 +2423,7 @@ Must end with a slash.
 These correspond to the personal @TeX{} macros.
 @end defopt
 
-@node Automatic Local,  , Automatic Private, Automatic
+@node Automatic Local
 @section Automatic Customization for a Directory
 @cindex Local style hooks
 @cindex Updating style hooks
@@ -2432,7 +2456,7 @@ Must end with a slash.
 These correspond to @TeX{} macros found in the current directory.
 @end defopt
 
-@node Style Files, Installation, Automatic, top
+@node Style Files
 @chapter Writing Your own Style Support
 @cindex Style files
 @cindex Style hooks
@@ -2454,7 +2478,7 @@ directories instead of @file{auto} directories.
 If you write some useful support for a public @TeX{} style file, please
 send it to us.
 
-@node Simple Style, Adding Macros, Style Files, Style Files
+@node Simple Style
 @section A Simple Style File
 @cindex @file{book.el}
 @cindex Sample style file
@@ -2490,7 +2514,7 @@ Add @var{hook} to the list of functions to run when we use the @TeX{}
 file @var{style}.
 @end defun
 
-@node Adding Macros, Adding Environments, Simple Style, Style Files
+@node Adding Macros
 @section Adding Support for Macros
 @cindex Adding macros
 @cindex Macros, adding
@@ -2678,7 +2702,7 @@ inserting.  If you want point to be located somewhere else after all
 hooks have been processed, set the value of @code{exit-mark}.  It will
 point nowhere, until the argument hook sets it.
 
-@node Adding Environments, Adding Other, Adding Macros, Style Files
+@node Adding Environments
 @section Adding Support for Environments
 @cindex Adding environments
 @cindex Environments, adding
@@ -2759,7 +2783,7 @@ Add each @var{env} to list of loaded environments.
 Insert environment of type @var{env}, with optional argument @var{extra}.
 @end defun
 
-@node Adding Other, Hacking the Parser, Adding Environments, Style Files
+@node Adding Other
 @section Adding Other Information
 @cindex Adding bibliographies
 @cindex Bibliographies, adding
@@ -2783,7 +2807,7 @@ Add each @var{bibliography} to list of loaded bibliographies.
 Add each @var{label} to the list of known labels.
 @end defun
 
-@node Hacking the Parser,  , Adding Other, Style Files
+@node Hacking the Parser
 @section Automatic Extraction of New Things
 @cindex Parsing new macros
 @cindex @file{macro.tex}
@@ -2893,11 +2917,11 @@ List of functions to be called before parsing a @TeX{} file.
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
-@node Installation, Changes, Style Files, top
+@node Installation
 @chapter How to install @AUCTeX{}
 @include install.texi
 
-@node Changes, ToDo, Installation, top
+@node Changes
 @comment  node-name,  next,  previous,  up
 @appendix Changes and New Features
 
@@ -2906,39 +2930,37 @@ List of functions to be called after parsing a @TeX{} file.
 @heading Older versions
 See the file @file{history.texi} for older changes.
 
-@node ToDo, FAQ, Changes, top
+@node ToDo
 @comment  node-name,  next,  previous,  up
 @appendix Future Development
 @include todo.texi
 
-@node FAQ, Key Index, ToDo, top
+@node FAQ
 @appendix Frequently Asked Questions
 @include faq.texi
 
-@node Key Index, Function Index, FAQ, top
+@node Key Index
 @comment    node-name,         next,       previous, up
 @unnumbered Key Index
 
 @printindex ky
 
-@node Function Index, Variable Index, Key Index, top
+@node Function Index
 @comment    node-name,         next,       previous, up
 @unnumbered Function Index
 
 @printindex fn
 
-@node Variable Index, Concept Index, Function Index, top
+@node Variable Index
 @comment    node-name,         next,       previous, up
 @unnumbered Variable Index
 
 @printindex vr
 
-@node Concept Index,  , Variable Index, top
+@node Concept Index
 @comment      node-name, next,       previous, up
 @unnumbered Concept Index
 
 @printindex cp
 
-@summarycontents
-@contents
 @bye

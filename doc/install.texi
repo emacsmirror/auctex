@@ -31,7 +31,7 @@ the file @file{INSTALL.windows}.
 @end menu
 @end ifclear
 
-@node Prerequisites, Configure,, Installation
+@node Prerequisites
 @section Prerequisites
 
 @itemize @bullet
@@ -69,7 +69,7 @@ the @file{PROBLEMS} file.
 @end ifclear
 @end ignore
 
-@node Configure, Build/install, Prerequisites, Installation
+@node Configure
 @section Configure
 
 The first step is to configure the source code, telling it where
@@ -142,7 +142,7 @@ describe them here; a short description of each is available, using
 
 @end table
 
-@node Build/install, Loading the package, Configure, Installation
+@node Build/install
 @section Build/install
 
 @cindex Installation
@@ -166,7 +166,7 @@ make install
 You may need special privileges to install, e.g., if you are installing
 into system directories.
 
-@node Loading the package, Advice for package providers, Build/install, Installation
+@node Loading the package
 @section Loading the package
 
 @cindex @file{.emacs}
@@ -213,7 +213,7 @@ That is all.  There are other ways of achieving the equivalent thing,
 but we don't mention them here any more since they are not better, and
 people got confused into trying everything at once.
 
-@node Advice for package providers, Advice for non-privileged users, Loading the package, Installation
+@node Advice for package providers
 @section Providing @AUCTeX{} as a package
 
 As a package provider, you should make sure that your users will be
@@ -249,7 +249,7 @@ the tarball distribution, suitable for recent RedHat systems, that
 should do just that.
 @end ignore
 
-@node Advice for non-privileged users, Installation under MS Windows, Advice for package providers, Installation
+@node Advice for non-privileged users
 @section Installation for non-privileged users
 
 Often people without system administration privileges want to install
@@ -345,12 +345,12 @@ sake of standalone readers outside of XEmacs. (The info files in XEmacs
 are normally in @file{~/.xemacs/xemacs-packages/info}.)
 
 @ifclear rawfile
-@node Installation under MS Windows, Customizing, Advice for non-privileged users, Installation
+@node Installation under MS Windows
 @section Installation under MS Windows
 @include wininstall.texi
 @end ifclear
 
-@node Customizing,  , Installation under MS Windows, Installation
+@node Customizing
 @section Customizing
 @cindex Site initialization
 @cindex Initialization

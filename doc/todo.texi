@@ -20,7 +20,7 @@ changes on the mailing list of @AUCTeX{} first.
 @end menu
 @end ifclear
 
-@node Mid-term Goals, Wishlist,, ToDo
+@node Mid-term Goals
 @section Mid-term Goals
 
 @itemize @bullet
@@ -60,7 +60,7 @@ using RefTeX.
 
 @end itemize
 
-@node Wishlist, Bugs, Mid-term Goals, ToDo
+@node Wishlist
 @section Wishlist
 
 @itemize @bullet
@@ -286,7 +286,7 @@ Hook up the letter environment with @file{bbdb.el}.
 
 @end itemize
 
-@node Bugs, , Wishlist, ToDo
+@node Bugs
 @section Bugs
 
 @c FIXME: Are those bugs still present?

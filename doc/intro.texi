@@ -1,4 +1,5 @@
 @include macros.texi
+@node Introduction
 @chapter Introduction to @AUCTeX{}
 
 This section of the @AUCTeX{} manual gives a brief overview of what
@@ -48,86 +49,6 @@ License' and may therefore almost freely be copied and redistributed.
 The next sections are a short introduction to some `actual' features.
 For further information, refer to the built-in online documentation of
 @AUCTeX{}.
-
-@section Indentation and filling
-
-@AUCTeX{} may automatically indent your document as you write it. By
-pressing @key{LFD} instead of @key{RET} at the end of a line, the
-current line is indented by two spaces according to the current
-environment level, and the cursor is moved down one line.  By pressing
-@key{TAB}, the current line is indented, and the cursor stays where it
-is.  The well-known Emacs feature @code{fill-paragraph} (@kbd{M-q}) is
-reimplemented especially for @AUCTeX{} to follow the indentation (even
-in commented parts of the document).  A special command
-@code{LaTeX-fill-buffer} lets you indent an entire document like the
-well-known C utility indent (this time, only according to the @LaTeX{}
-structure @t{:-)}.
-
-@section Completion
-
-By studying your @samp{\documentclass} command (in the top of your
-document), and consulting a precompiled list of (La)@TeX{} symbols from
-a large number of @TeX{} and @LaTeX{} files, @AUCTeX{} is aware of the
-@LaTeX{} commands you should be able to use in this particular document.
-This `knowledge' of @AUCTeX{} is used for two purposes.
-
-@enumerate
-@item
-To make you able to `complete' partly written @LaTeX{} commands. You may
-e.g. write @kbd{\renew} and press @kbd{M-@key{TAB}}
-(@code{TeX-complete-symbol}), and then @AUCTeX{} will complete the word
-@samp{\renewcommand} for you. In case of ambiguity it will display a
-list of possible completions.
-@item
-To aid you inserting environments, that is \begin - \end pairs. This is
-done by pressing C-c C-e (@LaTeX{}-environment), and you will be
-prompted for which `environment' to insert.
-@end enumerate
-
-@section Editing your document
-
-A number of more or less intelligent keyboard macros have been defined
-to aid you editing your document.  The most important are listed below.
-
-@table @code
-@item LaTeX-environment
-(@kbd{C-c C-e}) Insert a @samp{\begin@{@}} --- @samp{\end@{@}} pair as
-described above.
-@item LaTeX-section
-(@kbd{C-c C-s}) Insert one of @samp{\chapter}, @samp{\section}, etc.
-@item TeX-font
-(@kbd{C-c C-f C-r}, @kbd{C-c C-f C-i}, @kbd{C-c C-f C-b}) Insert one of
-@samp{\textrm@{ @}}), @samp{\textit@{ \/@}} @samp{\textbf@{ @}} etc.
-@end table
-
-A number of additional functions are available.  But it would be far too
-much to write about here.  Refer to the rest of the @AUCTeX{}
-documentation for further information.
-
-@section Running @LaTeX{}
-
-When invoking one of the commands @code{TeX-command-master} (@kbd{C-c
-C-c}) or @code{TeX-command-region} (@kbd{C-c C-r}) @LaTeX{} is run on
-either the entire current document or a given region of it.  The Emacs
-view is split in two, and the output of @TeX{} is printed in the second
-half of the screen, as you may simultaneously continue editing your
-document.  In case @TeX{} finds any errors when processing your input
-you can call the function @code{TeX-next-error} (@kbd{C-c `}) which will
-move the cursor to the first given error, and display a short
-explanatory text along with the message @TeX{} gave.  This procedure may
-be repeated until all errors have been displayed.  By pressing @kbd{C-c
-C-w} (@code{TeX-toggle-debug-boxes}) you can toggle whether the browser
-also should notify over-full/under-full boxes or not.
-
-Once you've successfully formatted your document, you may preview or
-print it by invoking @code{TeX-command-master} again.
-
-@section Outlines
-
-Along with @AUCTeX{} comes support for outline mode for Emacs, which
-lets you browse the sectioning structure of your document, while you
-will still be able to use the full power of the rest of the @AUCTeX{}
-functionality.
 
 @section Availability
 

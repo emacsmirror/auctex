@@ -16,7 +16,7 @@ TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi faq.texi macros.texi
+	changes.texi todo.texi faq.texi macros.texi quickstart.texi
 
 all: auctex.dvi tex-ref.dvi auctex
 

@@ -369,7 +369,7 @@ The history section will now only contain user level changes.  If you
 send me a patch, please also provide a ChangeLog entry.
 @end itemize
 
-@node Version 9.1, Version 9.0, Version 9.2, History
+@node Version 9.1
 @section News in 9.1
 
 Coordinater: Per Abrahamsen, 1994.
@@ -547,7 +547,7 @@ Fixed bug in right button menu under Lucid.  Reported by Frederic
 Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>}.
 @end itemize
 
-@node Version 9.0, Version 8.0, Version 9.1, History
+@node Version 9.0
 @section News in 9.0
 
 Coordinator: Per Abrahamsen, 1994.
@@ -883,7 +883,7 @@ slightly different semantics.
 @end itemize
 
 
-@node Version 8.0, Version 7.3, Version 9.0, History
+@node Version 8.0
 @comment  node-name,  next,  previous,  up
 @section News in 8.0
 
@@ -1213,7 +1213,7 @@ Please remember to update your @file{dir} file to reflect this change.
 Delete auto file instead of saving an empty file.
 @end itemize
 
-@node Version 7.3, Version 7.2, Version 8.0, History
+@node Version 7.3
 @comment  node-name,  next,  previous,  up
 @section News in 7.3
 
@@ -1338,7 +1338,7 @@ which are reserved in Emacs 19.  Suggested by Chris Moore
 @samp{<Chris.Moore@@src.bae.co.uk>}.
 @end itemize
 
-@node Version 7.2, Version 7.1, Version 7.3, History
+@node Version 7.2
 @comment  node-name,  next,  previous,  up
 @section News in 7.2
 
@@ -1451,7 +1451,7 @@ from AUC @TeX{} instead of the standard @code{tex-mode}.
 @samp{<peta@@Thunder.McRCIM.McGill.EDU>} for reporting this.
 @end itemize
 
-@node Version 7.1, Version 7.0, Version 7.2, History
+@node Version 7.1
 @comment  node-name,  next,  previous,  up
 @section News in 7.1
 
@@ -1544,7 +1544,7 @@ Many people.
 
 @end itemize
 
-@node Version 7.0, Version 6.1, Version 7.1, History
+@node Version 7.0
 @comment  node-name,  next,  previous,  up
 @section Version 7.0
 
@@ -1765,7 +1765,7 @@ history section and a new chapter on multifile documents
 
 @end itemize
 
-@node Version 6.1, Version 6.0, Version 7.0, History
+@node Version 6.1
 @comment node-name,  next,  previous,  up
 @section Version 6.1
 
@@ -1835,7 +1835,7 @@ itself.
 
 @end itemize
 
-@node Version 6.0, Ancient History, Version 6.1, History
+@node Version 6.0
 @comment node-name,  next,  previous,  up
 @section Version 6.0
 
@@ -1867,7 +1867,7 @@ Removed. @kbd{C-c C-o} used for @code{outline-minor-mode} instead.
 
 And some additional minor fixes...
 
-@node Ancient History,  , Version 6.0, History
+@node Ancient History
 @comment  node-name,  next,  previous,  up
 @section Ancient History
 

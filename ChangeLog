@@ -1,5 +1,29 @@
 2004-10-18  Frank Küster <frank@kuesterei.ch>
 
+	* doc/quickstart.texi: New chapter.
+
+	* doc/changes.texi: Mention `Quick Start'.
+
+	* doc/auctex.texi (Font Specifiers): Add \textrm and \textsf
+	(Commands): Add TeX-Omega-mode
+	(top): Print contents near at the beginning.
+
+	* doc/macros.texi: New macro @sans.
+
+	* doc/intro.texi (Introduction): Removed sections obsoleted by
+	`Quick Start' (Indentation and filling, Completion, Editing your
+	document, Outlines).
+
+2004-10-18  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/todo.texi, doc/install.texi, doc/history.texi,
+	doc/changes.texi, doc/auctex.texi: Remove optional arguments of
+	all @node commands.
+
+	* doc/Makefile.in (TEXIFILES): Added quickstart.texi.
+
+2004-10-18  Frank Küster <frank@kuesterei.ch>
+
 	* doc/Makefile.in (TEXIFILES): Add macros.texi.
 	(auctex.dvi, auctex.pdf): Depend on TEXIFILES.
 

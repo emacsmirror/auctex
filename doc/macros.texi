@@ -32,6 +32,14 @@ preview-latex
 @end macro
 @end ifset
 @end ifnottex
+@macro sans {text}@c
+@iftex
+{@textsf \text\}@c
+@end iftex
+@ifnottex
+\text\@c
+@end ifnottex
+@end macro
 @tex
 \global\let\savedTeX\TeX
 \gdef\TeX#1{\savedTeX#1}
