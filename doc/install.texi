@@ -12,14 +12,14 @@ installing anything.
 
 @ifclear rawfile
 @menu
-* Prerequisites::               
-* Configure::                   
-* Build/install::               
-* Loading the package::         
-* Advice for package providers::  
-* Advice for non-privileged users::  
-* Installation under MS Windows::  
-* Customizing::                 
+* Prerequisites::
+* Configure::
+* Build/install::
+* Loading the package::
+* Advice for package providers::
+* Advice for non-privileged users::
+* Installation under MS Windows::
+* Customizing::
 @end menu
 @end ifclear
 
@@ -52,7 +52,7 @@ from Savannah and install it over the main unpacked tar archive.
 @end itemize
 
 @ignore
-For some known issues with various software, see 
+For some known issues with various software, see
 @ifset rawfile
 the @file{PROBLEMS} file.
 @end ifset
@@ -114,6 +114,12 @@ This option can be used to specify the location of the @TeX{}
 @TeX{} installs, but may be used if you don't like the directory that
 configure is suggesting.
 
+@item --with-auto-dir=@var{/dir}
+You can use this option to specify the directory containing
+automatically generated information.  It is not necessary for most
+@TeX{} installs, but may be used if you don't like the directory that
+configure is suggesting.
+
 @item --help
 This is not an option specific to @AUCTeX{}. A number of standard
 options to @file{configure} exist, and we do not have the room to
@@ -133,7 +139,7 @@ Once @file{configure} has been run, simply enter
 @example
 make
 @end example
-@noindent 
+@noindent
 at the prompt to byte-compile the lisp files, and build the
 documentation files. To install the files into the locations chosen
 earlier, type
@@ -142,9 +148,9 @@ earlier, type
 make install
 @end example
 
-@noindent 
+@noindent
 You may need special privileges to install, e.g., if you are installing
-into system directories. 
+into system directories.
 
 @node Loading the package, Advice for package providers, Build/install, Installation
 @section Loading the package
@@ -181,7 +187,7 @@ would instead use, e.g.,
 (require 'tex-site)
 @end example
 
-For site-wide activation in GNU Emacs, see 
+For site-wide activation in GNU Emacs, see
 @ifset rawfile
 below.
 @end ifset
@@ -294,9 +300,9 @@ In XEmacs, you should ask the other users to add symbolic links in their
 presently no easy programmatic way to do this, except to have a script
 do the symlinking for them.)
 
-In GNU Emacs, you'll want the invocation lines described 
+In GNU Emacs, you'll want the invocation lines described
 @ifset rawfile
-above. 
+above.
 @end ifset
 @ifclear rawfile
 in @xref{Loading the package}.
@@ -352,7 +358,7 @@ keep all your customizations.
 There are two variables with a special significance.
 
 @defopt TeX-lisp-directory
-The directory where you installed the @AUCTeX{} lisp files. 
+The directory where you installed the @AUCTeX{} lisp files.
 @end defopt
 
 This variable is set automatically by the @code{make install} command.
@@ -371,7 +377,7 @@ loading @AUCTeX{}, you will be able to complete on all macros available
 in the standard style files used by your document. To do this, you must
 set this variable to a list of directories where the standard style
 files are located. The directories will be searched recursively, so
-there is no reason to list subsirectories explicitly.
+there is no reason to list subdirectories explicitly.
 
 You probably also need to change @code{TeX-command-list} to make sure
 that the commands used for starting @TeX{}, printing, etc. work on your
