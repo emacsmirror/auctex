@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.37 1993-07-08 02:18:40 amanda Exp $
+@c $Id: auc-tex.texi,v 1.38 1993-07-08 16:34:30 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1824,7 +1824,7 @@ both, as well as with the two Japanese-aware Emacses, NEMACS and MULE.
 To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
 @code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
 everything should work.  If not, send mail to Shinji Kobayashi
-(@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}, who kindly donated the code for
+(@samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
 supporting Japanese in AUC @TeX{}.  None of the primary AUC @TeX{}
 maintainers understand Japanese, so they can not help you.
 
@@ -2630,7 +2630,7 @@ Coordinater: Per Abrahamsen, 1993
 @itemize @bullet
 @item
 Minor fixes to the documentation.  Thanks to Shinji Kobayashi
-@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+@samp{<koba@@flab.fujitsu.co.jp>}.
 
 @item
 Add @samp{Compiling} to the mode line of all buffers, while there is a
@@ -2656,7 +2656,7 @@ Recognize @samp{abstract}, @samp{center}, @samp{titlepage},
 
 @item
 Fix to @samp{newsavebox} macro.  Thanks to Shinji Kobayashi
-@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>} for reporting this.
+@samp{<koba@@flab.fujitsu.co.jp>} for reporting this.
 
 @item
 Menu support for GNU Emacs 19 and Lucid Emacs.  Thanks to Alastair Burt
@@ -2677,12 +2677,12 @@ instead.
 
 @item
 Chapter recognized as largest heading in the report style.  Thanks to
-Shinji Kobayashi @samp{<koba@@keisu-s.t.u-tokyo.ac.jp>} for reporting
+Shinji Kobayashi @samp{<koba@@flab.fujitsu.co.jp>} for reporting
 this. 
 
 @item
 More support for Japanese style files.  Thanks to Shinji Kobayashi
-@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+@samp{<koba@@flab.fujitsu.co.jp>}.
 
 @item
 No longer put @samp{Outline} in the mode line whenever
@@ -2701,7 +2701,7 @@ Thanks to Alastair Burt @samp{<burt@@dfki.uni-kl.de>} and Olaf Burkart
 
 @item
 Support for dviout preview on PC-9801.  Thanks to Shinji Kobayashi
-@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+@samp{<koba@@flab.fujitsu.co.jp>}.
 
 @item
 Inserting environment in empty buffer should work now.  Thanks to
@@ -2712,7 +2712,7 @@ Default float for figures changed from @samp{tbp} to @samp{htbp}.
 
 @item
 @code{LaTeX-format-environment} may work now.  Thanks to Shinji
-Kobayashi @samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+Kobayashi @samp{<koba@@flab.fujitsu.co.jp>}.
 
 @item
 Better @code{LaTeX-close-environment}.  Thanks to Thorbjoern Hansen
