@@ -496,7 +496,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.308 $"))
+	(rev "$Revision: 5.309 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -511,7 +511,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-12-03 17:40:19 $"))
+    (let ((date "$Date: 2003-12-30 16:26:51 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -624,8 +624,34 @@ this variable to \"<none>\"."
 		   (stringp TeX-master)))
 	(return (with-current-buffer buf TeX-master))))))
 
-(defun TeX-master-file (&optional extension nondirectory)
-  "Return the name of the master file for the current document.
+(defun TeX-master-file-ask ()
+  "Ask for master file, set `TeX-master' and add local variables."
+  (interactive)
+  (if (TeX-local-master-p)
+      (error "Master file already set.")
+    (setq TeX-master
+          (let ((default (TeX-dwim-master)))
+            (or
+             (and (eq 'dwim TeX-master) default)
+             (TeX-strip-extension
+              (condition-case name
+                  (read-file-name (format "Master file: (default %s) "
+                                          (or default "this file"))
+                                  nil (or default "<default>"))
+                (quit "<quit>"))
+              (list TeX-default-extension)
+              'path))))
+    (cond ((string-equal TeX-master "<quit>")
+           (setq TeX-master t))
+          ((or (string-equal TeX-master "<default>")
+               (string-equal TeX-master ""))
+           (setq TeX-master t)
+           (TeX-add-local-master))
+          (t
+           (TeX-add-local-master)))))
+
+(defun TeX-master-file (&optional extension nondirectory ask)
+  "Set and return the name of the master file for the current document.
 
 If optional argument EXTENSION is non-nil, add that file extension to
 the name.  Special value t means use `TeX-default-extension'.
@@ -633,8 +659,12 @@ the name.  Special value t means use `TeX-default-extension'.
 If optional second argument NONDIRECTORY is non-nil, do not include
 the directory.
 
+If optional third argument ASK is non-nil, ask the user for the
+name of master file if it cannot be determined otherwise.
+
 Currently it will check for the presence of a ``Master:'' line in
 the beginning of the file, but that feature will be phased out."
+  (interactive)
   (if (eq extension t)
       (setq extension TeX-default-extension))
   (let ((my-name (if (buffer-file-name)
@@ -650,7 +680,7 @@ the beginning of the file, but that feature will be phased out."
 	  (setq TeX-master t))
 
 	 ;; For files shared between many documents.
-	 ((eq 'shared TeX-master)
+	 ((and (eq 'shared TeX-master) ask)
 	  (setq TeX-master
 		(TeX-strip-extension
 		 (let ((default (or (TeX-dwim-master) "this file")))
@@ -682,27 +712,10 @@ the beginning of the file, but that feature will be phased out."
 	  (setq TeX-master my-name))
 
 	 ;; Ask the user (but add it as a local variable).
-	 (t
-	  (setq TeX-master
-		(let ((default (TeX-dwim-master)))
-		  (or
-		   (and (eq 'dwim TeX-master) default)
-		   (TeX-strip-extension
-		    (condition-case name
-			(read-file-name (format "Master file: (default %s) "
-						(or default "this file"))
-					nil (or default "<default>"))
-		      (quit "<quit>"))
-		    (list TeX-default-extension)
-		    'path))))
-	  (cond ((string-equal TeX-master "<quit>")
-		 (setq TeX-master t))
-		((or (string-equal TeX-master "<default>")
-		     (string-equal TeX-master ""))
-		 (setq TeX-master t)
-		 (TeX-add-local-master))
-		(t
-		 (TeX-add-local-master)))))))
+	 (ask (TeX-master-file-ask))
+
+	 ;; Default option.
+	 (t (setq TeX-master t)))))
   
     (let ((name (if (eq TeX-master t)
 		    my-name
@@ -789,6 +802,15 @@ This will be done when AUCTeX first try to use the master file.")
 		  "\n"
                   "%%% TeX-master: " (prin1-to-string TeX-master) "\n"
                   "%%% End: \n")))))
+
+(defun TeX-local-master-p ()
+  "Returns `t' if there is a `TeX-master' entry in the local variables
+section, `nil' otherwise."
+  (save-excursion
+    (goto-char (point-max))
+    (if (re-search-backward "^%%+ *TeX-master:" nil t)
+        t
+      nil)))
 
 ;;; Style Paths
 
@@ -1460,11 +1482,7 @@ The algorithm is as follows:
 		     (setq entry (cdr entry))))
                  (if answer
                      answer
-                   TeX-default-mode)))))
-  ;; Make `TeX-master-file' being called as soon as a file is opened.
-  (if (= emacs-major-version 20)
-      (make-local-hook 'hack-local-variables-hook))
-  (add-hook 'hack-local-variables-hook 'TeX-master-file nil t))
+                   TeX-default-mode))))))
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
 (defun plain-tex-mode ()
@@ -1580,7 +1598,22 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
       (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
     (add-hook 'write-file-hooks 'TeX-safe-auto-write))
   (make-local-variable 'TeX-auto-update)
-  (setq TeX-auto-update t))
+  (setq TeX-auto-update t)
+
+  ;; Let `TeX-master-file' be called after a new file was opened and
+  ;; call `TeX-update-style' on any file opened.  (The addition to the
+  ;; hook has to be made here because its local value will be deleted
+  ;; by `kill-all-local-variables' if it is added e.g. in `tex-mode'.)
+  (if (= emacs-major-version 20)
+      (make-local-hook 'find-file-hooks))
+  ;; `(TeX-master-file nil nil t)' has to be called *before*
+  ;; `TeX-update-style' as the latter will call `TeX-master-file'
+  ;; without the `ask' bit set.
+  (add-hook 'find-file-hooks (lambda ()
+                               ;; Test if we are looking at a new file.
+                               (unless (file-exists-p (buffer-file-name))
+                                 (TeX-master-file nil nil t))
+                               (TeX-update-style)) nil t))
 
 (defun plain-TeX-common-initialization ()
   ;; Common initialization for plain TeX like modes.
@@ -2537,7 +2570,10 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   (define-key TeX-mode-map "\C-c\C-l" 'TeX-recenter-output-buffer)
   (define-key TeX-mode-map "\C-c^" 'TeX-home-buffer)
   (define-key TeX-mode-map "\C-c`"    'TeX-next-error)
-  (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes))
+  (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
+
+  ;; Multifile
+  (define-key TeX-mode-map "\C-c!" 'TeX-master-file-ask)) ;*** temporary
 
 (easy-menu-define TeX-mode-menu
     TeX-mode-map
@@ -2565,18 +2601,20 @@ character ``\\'' will be bound to `TeX-electric-macro'."
   (list "TeX"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
-	["Save Document" TeX-save-document t]
 	["Next Error" TeX-next-error t]
 	["Kill Job" TeX-kill-job t]
 	["Debug Bad Boxes" TeX-toggle-debug-boxes
 	 :style toggle :selected TeX-debug-bad-boxes ]
-	["Switch to Original File" TeX-home-buffer t]
 	["Recenter Output Buffer" TeX-recenter-output-buffer t]
 	;; ["Uncomment" TeX-un-comment t]
 	["Uncomment Region" TeX-un-comment-region t]
 	;; ["Comment Paragraph" TeX-comment-paragraph t]
 	["Comment Region" TeX-comment-region t]
-	["Switch to Master file" TeX-home-buffer t]
+        (list "Multifile"
+	      ["Switch to Master File" TeX-home-buffer t]
+              ["Save Document" TeX-save-document t]
+              ["Set Master File" TeX-master-file-ask
+               :active (not (TeX-local-master-p))])
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
