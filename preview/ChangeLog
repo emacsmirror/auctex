@@ -1,5 +1,21 @@
 2004-03-02  David Kastrup  <dakas@users.sourceforge.net>
 
+	* preview.el (preview-image-creators): dvipng now uses different
+	place and close routines.
+	(preview-dvipng-command): Fix file name default.
+	(preview-pdf2dsc-command): for PDFLaTeX support
+	(preview-gs-dvips-process-setup): Pass image type.
+	(preview-dvipng-open), (preview-dvipng-process-setup),
+	(preview-dvipng-abort),	(preview-dvipng-sentinel),
+	(preview-dvipng-close): New functions
+	(preview-gs-place): get imagetype as argument.
+	(preview-gs-place): don't create temporary file names for dvipng.
+	(preview-dvipng-place): deleted.
+	(preview-dvipng-place-all): New function.
+	(preview-attach-filename): New function for PDF support.
+	(preview-delete-file): Support attached files.
+	(preview-format-mml): Slight formatting changes.
+
 	* dvipng/dvi.c (DVIOpen): Fix a buffer overrun error.
 
 2004-01-16  Jan-Åke Larsson  <jalar@mai.liu.se>
