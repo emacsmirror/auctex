@@ -10,6 +10,9 @@
 
 	* doc/intro.tex.: AUC TeX to AUCTeX.
 
+	* tex.el (TeX-local-master-p): Removed one `%' character in regexp
+	to let it find "% TeX-master:" as well.
+
 2004-01-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-command-list): Changed defcustom definition to one
