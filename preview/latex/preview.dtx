@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1507}
+% \CheckSum{1519}
 % \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.92 $
+%   \rcskey \version CVS-$Revision: 1.93 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2004-08-09 01:22:41 $
+% \rcskey\next $Date: 2004-10-14 20:35:10 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -431,10 +431,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.92 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.93 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-08-09 01:22:41 $
+\reserved@a\next $Date: 2004-10-14 20:35:10 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -898,10 +898,10 @@
     \everydisplay\expandafter{\the\expandafter\toks@
       \expandafter{\the\everydisplay}}}%
   \pr@advise@ship\equation{\begingroup\aftergroup\pr@endbox
-    \def\dt@ptrue{\m@ne=\m@ne}\noindent}
+    \def\dt@ptrue{\m@ne=\m@ne}\noindent}%
     {\endgroup}%
   \pr@advise@ship\equation*{\begingroup\aftergroup\pr@endbox
-    \def\dt@ptrue{\m@ne=\m@ne}\noindent}
+    \def\dt@ptrue{\m@ne=\m@ne}\noindent}%
     {\endgroup}%
   \PreviewOpen[][\def\dt@ptrue{\m@ne=\m@ne}\noindent#1]\[%
   \PreviewClose\]%
@@ -1112,30 +1112,36 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 \newcommand{\PreviewSnarfEnvironment}[2][]{%
   \expandafter\pr@advise
-   \csname #2\endcsname{\pr@snarfafter#1\pr@endparse}%
+   \csname #2\endcsname{\pr@snarfafter{#1}}%
  \expandafter\pr@advise
-   \csname end#2\endcsname{\endgroup}}
+   \csname end#2\endcsname{\pr@endsnarf}}
 %</!active>
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@snarfafter}
 %\begin{macro}{\pr@startsnarf}
+%\begin{macro}{\pr@endsnarf}
 %  Ok, this looks complicated, but we have to start a group in order
 %  to be able to hook \cmd{\pr@endbox} into the game only when
 %  \cmd{\ifpr@outer} has triggered the start.  And we need to get our
 %  start messages out before parsing the arguments.
 %    \begin{macrocode}
 %<*active>
-\def\pr@snarfafter{\ifpr@outer
+\let\pr@endsnarf\relax
+\long\def\pr@snarfafter#1{\ifpr@outer
      \pr@ship@start
-     \let\pr@ship@start\@empty
+     \let\pr@ship@start\relax
+     \let\pr@endsnarf\endgroup
+   \else
+     \let\pr@endsnarf\relax
    \fi
-  \pr@callafter\pr@startsnarf}
+  \pr@protect{\pr@callafter\pr@startsnarf#1\pr@endparse}}
 \def\pr@startsnarf#1{#1\begingroup
    \pr@startbox{\begingroup\aftergroup\pr@endbox}{\endgroup}%
    \ignorespaces}
 %</active>
 %    \end{macrocode}
+%\end{macro}
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@ship@start}

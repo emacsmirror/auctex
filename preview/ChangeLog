@@ -1,3 +1,8 @@
+2004-10-14  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx: Make the end of snarfed environments behave
+	normally if the environment is not being snarfed.
+
 2004-10-09  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-dvipng-command): Use -picky option.
