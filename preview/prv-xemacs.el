@@ -518,7 +518,8 @@ defaults to off."
 		(push ov newlist))))
     (if	(and (boundp preview-auto-reveal)
 	     (symbol-value preview-auto-reveal))
-	(preview-open-overlays (extents-at pt nil 'preview-state))
+	(map-extents #'preview-open-overlay nil
+		     pt pt nil nil 'preview-state 'active)
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
 			   (< pt (marker-position preview-marker)))))
 	(while (catch 'loop
@@ -533,22 +534,19 @@ defaults to off."
 	  nil)
 	(goto-char pt)))))
 
-(defun preview-open-overlays (list &optional pos)
-  "Open all previews in LIST, optionally restricted to enclosing POS."
-  (dolist (ovr list)
-    (when (and (eq (overlay-get ovr 'preview-state) 'active)
-	       (or (null pos)
-		   (and
-		    (>= pos (overlay-start ovr))
-		    (< pos (overlay-end ovr)))))
-      (preview-toggle ovr)
-      (push ovr preview-temporary-opened))))
+(defun preview-open-overlay (ovr ignored)
+  "Open the active preview OVR, IGNORED gets ignored.
+NIL is returned: this is for `map-extents'."
+  (preview-toggle ovr)
+  (push ovr preview-temporary-opened)
+  nil)
 
 (defadvice isearch-highlight (before preview protect disable)
   "Make isearch open preview text that's a search hit.
 Also make `query-replace' open preview text about to be replaced."
-  (preview-open-overlays
-   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+  (map-extents #'preview-open-overlay nil
+	       (ad-get-arg 0) (ad-get-arg 1)
+	       nil nil 'preview-state 'active))
 
 (defcustom preview-query-replace-reveal t
   "*Make `isearch' and `query-replace' autoreveal previews."
