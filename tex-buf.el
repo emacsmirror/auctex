@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.63 1994-04-13 12:55:54 amanda Exp $
+;; $Id: tex-buf.el,v 1.64 1994-04-14 14:22:52 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -83,7 +83,7 @@ Return non-nil if document need to be re-TeX'ed."
 (make-variable-buffer-local 'TeX-command-region-end)
 
 ;;;###autoload
-(defun TeX-command-region (old)
+(defun TeX-command-region (&optional old)
   "Run TeX on the current region.
 
 Query the user for a command to run on the temporary file specified by
@@ -278,30 +278,35 @@ in TeX-check-path."
 (defvar TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX.")
 
+(defvar TeX-command-force nil)
+;; If non-nil, TeX-command-query will return the value of this
+;; variable instead of quering the user. 
+
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (cond ((TeX-save-document (TeX-master-file))
-			 TeX-command-default)
-			((and (eq major-mode 'latex-mode)
-			      (TeX-check-files (concat name ".bbl")
-					       (mapcar 'car
-						       (LaTeX-bibliography-list))
-					       BibTeX-file-extensions))
-			 ;; We should check for bst files here as well.
-			 TeX-command-BibTeX)
-			((TeX-process-get-variable name
-						   'TeX-command-next
-						   TeX-command-Show))
-			(TeX-command-Show)))
-	 (completion-ignore-case t)
-	 (answer (completing-read (concat "Command: (default " default  ") ")
-				  TeX-command-list nil t)))
-    ;; If the answer "latex" it will not be expanded to "LaTeX"
-    (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
-    (if (and answer
-	     (not (string-equal answer "")))
-	answer
-      default)))
+  (or TeX-command-force
+      (let* ((default (cond ((TeX-save-document (TeX-master-file))
+			     TeX-command-default)
+			    ((and (eq major-mode 'latex-mode)
+				  (TeX-check-files (concat name ".bbl")
+						   (mapcar 'car
+							   (LaTeX-bibliography-list))
+						   BibTeX-file-extensions))
+			     ;; We should check for bst files here as well.
+			     TeX-command-BibTeX)
+			    ((TeX-process-get-variable name
+						       'TeX-command-next
+						       TeX-command-Show))
+			    (TeX-command-Show)))
+	     (completion-ignore-case t)
+	     (answer (completing-read (concat "Command: (default " default  ") ")
+				      TeX-command-list nil t)))
+	;; If the answer "latex" it will not be expanded to "LaTeX"
+	(setq answer (car-safe (TeX-assoc answer TeX-command-list)))
+	(if (and answer
+		 (not (string-equal answer "")))
+	    answer
+	  default))))
 
 (defvar TeX-command-next nil
   "The default command next time TeX-command is invoked.")

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 
-;; Version: $Id: harvard.el,v 1.4 1994-04-07 21:08:47 amanda Exp $
+;; Version: $Id: harvard.el,v 1.5 1994-04-14 14:23:03 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,9 +35,16 @@
      '("thebibliography" LaTeX-env-harvardbib ignore))
 
     (TeX-add-symbols
+     "harvardand"
      '("citeasnoun"
        (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
+     '("possessivecite"
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
+       TeX-arg-cite)
+     '("citeaffixed"
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
+       TeX-arg-cite "Affix")
      '("citeyear"
        (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
@@ -46,32 +53,37 @@
        TeX-arg-cite)
      '("citationstyle"
        (TeX-arg-eval completing-read "Citation style: " '(("agsm") ("dcu"))))
+     '("citationmode"
+       (TeX-arg-eval completing-read "Citation mode: "
+                     '(("full") ("abbr") ("default"))))
+     '("harvardparenthesis"
+       (TeX-arg-eval completing-read "Harvardparenthesis: "
+                     '(("round") ("curly") ("angle") ("square"))))
      '("bibliographystyle"
        (TeX-arg-eval
-	completing-read "Bibliography style: " '(("agsm") ("kluwer") ("dcu")))
+	completing-read "Bibliography style: "
+        '(("agsm") ("dcu") ("jmr") ("jphysicsB") ("kluwer") ("nederlands")))
        ignore)
      '("harvarditem" [ "Short citation" ]
        "Complete citation" "Year" TeX-arg-define-cite))
 
-  (setq TeX-complete-list
-	(append '(("\\\\citeasnoun{\\([^{}\n\m\\%]*\\)"
-		   1 'LaTeX-bibitem-list "}")
-		  ("\\\\citeyear{\\([^{}\n\m\\%]*\\)"
-		   1 'LaTeX-bibitem-list "}")
-		  ("\\\\citename{\\([^{}\n\m\\%]*\\)"
-		   1 'LaTeX-bibitem-list "}"))
-		TeX-complete-list))
+    (setq TeX-complete-list
+	  (append '(("\\\\citeasnoun{\\([^{}\n\m\\%]*\\)"
+		     1 LaTeX-bibitem-list "}")
+		    ("\\\\citeyear{\\([^{}\n\m\\%]*\\)"
+		     1 LaTeX-bibitem-list "}")
+		    ("\\\\citename{\\([^{}\n\m\\%]*\\)"
+		     1 LaTeX-bibitem-list "}"))
+		  TeX-complete-list))
 
     (setq LaTeX-item-list
-	  (cons '("thebibliography" LaTeX-item-harvardbib)
+	  (cons '("thebibliography" . LaTeX-item-harvardbib)
 		LaTeX-item-list)))))
 
 (defun LaTeX-env-harvardbib (environment &optional ignore)
   "Insert ENVIRONMENT with label for harvarditem."
   (LaTeX-insert-environment environment
-			    (concat TeX-grop
-				    "xx"
-				    TeX-grcl))
+			    (concat TeX-grop "xx" TeX-grcl))
   (end-of-line 0)
   (delete-char 1)
   (delete-horizontal-space)

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.3 1994-04-13 12:56:07 amanda Exp $
+;; Version: $Id: tex.el,v 5.4 1994-04-14 14:22:59 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1167,22 +1167,6 @@ If TEX is a directory, generate style files for all files in the directory."
       (if (> (current-column) fill-column)
 	  (do-auto-fill)))))
 
-;;;###autoload
-(defun BibTeX-auto-store ()
-  "This function should be called from bibtex-mode-hook.
-It will setup BibTeX to store keys in an auto file."
-  ;; We want this to be early in the list, so we do not
-  ;; add it before we enter BibTeX mode the first time. 
-  (if (boundp 'local-write-file-hooks)
-      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
-    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
-  (make-local-variable 'TeX-auto-update)
-  (setq TeX-auto-update 'BibTeX)
-  (make-local-variable 'TeX-auto-untabify)
-  (setq TeX-auto-untabify nil)
-  (make-local-variable 'TeX-auto-regexp-list)
-  (setq TeX-auto-regexp-list BibTeX-auto-regexp-list))
-
 (defvar TeX-auto-ignore
   '("csname" "filedate" "fileversion" "docdate" "next" "labelitemi"
     "labelitemii" "labelitemiii" "labelitemiv" "labelitemv"
@@ -1218,12 +1202,6 @@ It will setup BibTeX to store keys in an auto file."
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
   "Full list of regular expression matching TeX macro definitions.")
-
-(defvar BibTeX-auto-regexp-list
-  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+[{(][ \t]*\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)"
-     1 LaTeX-auto-bibitem))
-  "List of regexp-list expressions matching BibTeX items.")
 
 (defvar TeX-auto-prepare-hook nil
   "List of hooks to be called before parsing a TeX file.")
@@ -1548,32 +1526,15 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 
 (defun TeX-command-menu (name file)
   ;; Execute TeX-command-list NAME on FILE from a menu.
-  (if (nth 4 (assoc name TeX-command-list))
-      (cond ((and (eq file 'TeX-region-file)
-		  (mark))
-	     (let ((begin (min (point) (mark)))
-		   (end (max (point) (mark))))
-	       (setq TeX-current-process-region-p t)
-	       (TeX-region-create (TeX-region-file "tex")
-				  (buffer-substring begin end)
-				  (file-name-nondirectory (buffer-file-name))
-				  (count-lines (point-min) begin))))
-	    ((eq file 'buffer)
-	     (TeX-region-create (TeX-region-file "tex")
-				(buffer-substring (point-min) (point-max))
-				(file-name-nondirectory (buffer-file-name))
-				0)
-	     (setq file 'TeX-region-file))
-	    (t
-	     (TeX-save-document (TeX-master-file)))))
-  (TeX-command name file))
+  (let ((TeX-command-force name))
+    (funcall file)))
 
 (defun TeX-command-menu-print (printer command name file)
   ;; On PRINTER print FILE from a menu.
   (let ((TeX-printer-default printer)
 	(TeX-printer-list nil)
 	(TeX-print-command command))
-    (TeX-command name file)))
+    (TeX-command-menu name file)))
 
 (defun TeX-command-menu-printer-entry (entry)
   ;; Return TeX-printer-list ENTRY as a menu item.
@@ -1582,7 +1543,7 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 		(nth 0 entry)
 		(or (nth lookup entry) command)
 		name
-		(list 'quote (if (eq file 'buffer) 'TeX-region-file file)))
+		(list 'quote file))
 	  t))
 
 (defun TeX-command-menu-entry (entry)
@@ -1615,9 +1576,9 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File" 'TeX-master-file)
-	(TeX-command-create-menu "Command on Buffer" 'buffer)
-	(TeX-command-create-menu "Command on Region" 'TeX-region-file)
+	(TeX-command-create-menu "Command on Master File" 'TeX-command-master)
+	(TeX-command-create-menu "Command on Buffer" 'TeX-command-buffer)
+	(TeX-command-create-menu "Command on Region" 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	["Kill Job" TeX-kill-job t]
 	["Toggle debug of boxes" TeX-toggle-debug-boxes t]

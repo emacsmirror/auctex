@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.87 1994-04-13 12:55:41 amanda Exp $
+# $Id: Makefile,v 5.88 1994-04-14 14:22:42 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -93,7 +93,7 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  doc/ref-card.texi out-xtra.el
+REMOVE =  none
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    easymenu.el min-map.el  ltx-math.el \
@@ -295,6 +295,10 @@ dist:	tex-load.el
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	/home/pd/bin/zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
+	@if [ "X$(OLD)" = "X" ]; then echo "No patch"; exit 1; fi \
+	cvs diff -c -r  release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	            -r  release_`echo $(TAG) | sed -e 's/[.]/_/g'` \
+		> $(FTPDIR)/auctex-$(OLD)-to-$(NEW).patch
 
 min-map:
 	-cvs add $(MINMAPSRC) 

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.2 1994-04-13 12:55:50 amanda Exp $
+;; Version: $Id: latex.el,v 5.3 1994-04-14 14:22:48 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -955,6 +955,30 @@ You may use LaTeX-item-list to change the routines used to insert the item."
   "Add BIBLIOGRAPHIES to the list of known bibliographies and style files."
   (apply 'LaTeX-add-bibliographies-auto bibliographies)
   (apply 'TeX-run-style-hooks bibliographies))
+
+;;; BibTeX
+
+;;;###autoload
+(defun BibTeX-auto-store ()
+  "This function should be called from bibtex-mode-hook.
+It will setup BibTeX to store keys in an auto file."
+  ;; We want this to be early in the list, so we do not
+  ;; add it before we enter BibTeX mode the first time. 
+  (if (boundp 'local-write-file-hooks)
+      (add-hook 'local-write-file-hooks 'TeX-safe-auto-write)
+    (add-hook 'write-file-hooks 'TeX-safe-auto-write))
+  (make-local-variable 'TeX-auto-update)
+  (setq TeX-auto-update 'BibTeX)
+  (make-local-variable 'TeX-auto-untabify)
+  (setq TeX-auto-untabify nil)
+  (make-local-variable 'TeX-auto-regexp-list)
+  (setq TeX-auto-regexp-list BibTeX-auto-regexp-list))
+
+(defvar BibTeX-auto-regexp-list
+  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
+    ("@[a-zA-Z]+[{(][ \t]*\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)"
+     1 LaTeX-auto-bibitem))
+  "List of regexp-list expressions matching BibTeX items.")
 
 ;;; Macro Argument Hooks
 
