@@ -27,7 +27,7 @@
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1993, 1994, 1995,
-                       2001, 2002, 2004 Free Software Foundation, Inc.
+                       2001, 2002, 2004, 2005 Free Software Foundation, Inc.
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
 
 Permission is granted to make and distribute verbatim copies of
@@ -1097,9 +1097,9 @@ all text modes with @code{text-mode-hook}, for all @AUCTeX{} modes with
 you want to enable @code{auto-fill-mode} in @code{LaTeX-mode}, put the
 following into your init file:
 
-@example
+@lisp
 (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
-@end example
+@end lisp
 
 You can manually fill explicitely marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
@@ -1786,11 +1786,11 @@ The following example add @samp{\item} and @samp{\bibliography} headers,
 with @samp{\bibliography} at the same outline level as @samp{\section},
 and @samp{\item} being below @samp{\subparagraph}.
 
-@example
+@lisp
 (setq TeX-outline-extra
       '(("[ \t]*\\\\\\(bib\\)?item\\b" 7)
 	("\\\\bibliography\\b" 2)))
-@end example
+@end lisp
 
 You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp

@@ -1,8 +1,10 @@
 2005-01-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
-	* doc/auctex.texi (Mathematics): Explain how to enable
-	LaTeX-math-mode by default.  Suggested by Chris Wallace
-	<c.wallace@qmul.ac.uk>.
+	* doc/auctex.texi: Update copyright.
+	(Mathematics): Explain how to enable LaTeX-math-mode by default.
+	Suggested by Chris Wallace <c.wallace@qmul.ac.uk>.
+	(Filling, Outline): Markup fixes: Use @lisp instead of @example
+	where appropriate.
 
 2004-12-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
