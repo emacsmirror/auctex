@@ -1,3 +1,12 @@
+2002-04-22  Nix  <nix@esperi.demon.co.uk>
+
+	* doc/install.texi (Advice for non-privileged users):
+	Add XEmacs-specific instructions.
+
+	* aclocal.m4 (AC_EXAMINE_PACKAGEDIR): Locate an existing preview-latex
+	package and install over it if found.
+	(AC_PATH_PACKAGEDIR): Support ~/ in package directory names.
+
 2002-04-22  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/install.texi (Advice for non-privileged users): new section.
