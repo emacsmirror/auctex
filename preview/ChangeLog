@@ -1,5 +1,15 @@
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-export-image): New macro.
+	(preview-import-image): New macro.
+
+	* preview.el (preview-reinstate-preview): use
+	preview-import-image.
+	(preview-dissect): Use preview-export-image.
+
+	* prv-xemacs.el (preview-export-image, preview-import-image): New
+	functions for desktop.el.
+
 	* doc/Makefile.in (preview-latex.info): In the interest of
 	release sanity, add --no-split option so that we have to cater
 	for just a single info file.  Needs to be reverted later.
