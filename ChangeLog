@@ -1,3 +1,13 @@
+2004-09-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-search-syntax-table): New function and variable.
+	(TeX-find-balanced-brace): New function.
+	(TeX-find-closing-brace): Use `TeX-find-balanced-brace'.
+	(TeX-find-opening-brace): Ditto.
+	(TeX-find-macro-boundaries): Add `lower-bound' argument.
+	(TeX-find-macro-start-helper): Add `limit' argument.
+	(TeX-find-macro-start): Ditto.
+
 2004-08-31  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/changes.texi: Add `LaTeX-includegraphics-read-file'.
