@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.468 $"))
+	    (rev "$Revision: 5.469 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-10 12:04:55 $"))
+    (let ((date "$Date: 2004-12-10 17:45:51 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3344,7 +3344,12 @@ be bound to `TeX-electric-macro'."
      ["Show Current Item" TeX-fold-clearout-item
       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
       :keys "C-c C-o C-c"
-      :help "Permanently show the item containing point"]))
+      :help "Permanently show the item containing point"]
+     "-"
+     ["Hide or Show Current Item" TeX-fold-dwim
+      :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+      :keys "C-c C-o C-o"
+      :help "Hide or show the item containing point"]))
    "Menu definition for commands from tex-fold.el.")
 
 
