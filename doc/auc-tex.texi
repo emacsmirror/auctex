@@ -11,18 +11,20 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.130 2001-10-19 11:58:35 ataka Exp $
+@c $Id: auc-tex.texi,v 1.131 2002-12-10 22:57:49 dak Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle Version 11
+@subtitle Version 12
   
 @author by Kresten Krab Thorup
 @author updated for 6.1 to 11 by Per Abrahamsen
+@author updated for 12 by David Kastrup
 @page
 @vskip 0pt plus 1filll
+Copyright @copyright{} 2002 David Kastrup
 Copyright @copyright{} 1993, 1994, 1995, 2001 Per Abrahamsen
 Copyright @copyright{} 1992  Kresten Krab Thorup @*
  
@@ -57,7 +59,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 11.
+This file documents AUC @TeX{} version 12.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -80,7 +82,8 @@ important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.@refill
 
 Kresten Krab Thorup (6.0) @*
-Per Abrahamsen (later updates)
+Per Abrahamsen (updates to 11)
+David Kastrup (updates from 12)
 
 There is a mailing list for discussion about AUC @TeX{} and announcement
 of alpha releases, write to @samp{auc-tex-request@@sunsite.dk} to join
@@ -1535,30 +1538,17 @@ of TeX and Emacs are needed for Korean, Japanese, and Chinese.
 
 First you will need a way to write non-ASCII characters.  You can either
 use macros, or teach @TeX{} about the ISO character sets.  I prefer the
-later, it has the advantage that the usual standard emacs word
+latter, it has the advantage that the usual standard emacs word
 movement and case change commands will work.
 
-
-With LaTeX2e, just add @samp{\usepackage[latin1]@{inputenc@}}.  With older
-LaTeX versions, try: 
-
-@table @file
-@item isolatin1.sty
-Support for ISO 8859 Latin 1.  Available by ftp from the host
-@t{ftp.uni-stuttgart.de} as
-@file{/pub/tex/macros/latex/contrib/misc/isolatin1.sty}. 
-
-@item latin2.sty
-Support for ISO 8859 Latin 2.  Available by ftp from the host
-@t{ftp.uni-stuttgart.de} as
-@file{/pub/tex/macros/latex/contrib/latin2.sty}.
-@end table
+With LaTeX2e, just add @samp{\usepackage[latin1]@{inputenc@}}.  Other
+languages than Western European ones will probably have other encoding
+needs.
 
 To be able to display non-ASCII characters you will need an appropriate
 font and a version of GNU Emacs capable of displaying 8-bit characters.
-I believe all emacs versions except plain Emacs 18 are capable of this.
-For GNU Emacs 19, @pxref{European Display,,,emacs, The GNU Emacs
-Editor}.  
+The manner in which this is supported differs between Emacsen, so you
+need to take a look at your respective documentation.
 
 A compromise is to use use an European character set when editing the
 file, and convert to @TeX{} macros when reading and writing the files.
@@ -1571,6 +1561,11 @@ Much like @file{iso-tex.el} but is bundled with Emacs 19.23 and later.
 @item x-compose.el
 @cindex @file{x-compose.el}
 Similar package bundled with new versions of XEmacs.
+
+@item X-Symbol
+@cindex X-Symbol
+a much more complete package for both Emacs and XEmacs that can also
+handle a lot of mathematical characters and input methods.
 
 @end table
 
