@@ -1,5 +1,7 @@
 2005-02-18  David Kastrup  <dak@gnu.org>
 
+	* preview.el (preview-nonready-icon-specs): Add size 14.
+
 	* images/prvwrk24.xpm: New icon, dimmer, better shape.
 
 	* images/prvwrk20.xpm: New icon

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.231 2005-02-15 16:55:33 dakas Exp $
+;; $Id: preview.el,v 1.232 2005-02-18 02:01:27 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -106,6 +106,7 @@ preview-latex's bug reporting commands will probably not work.")))
   '((:type xpm :min 24 :file "prvwrk24.xpm" :ascent 90)
     (:type xpm :min 20 :file "prvwrk20.xpm" :ascent 90)
     (:type xpm :min 16 :file "prvwrk16.xpm" :ascent 90)
+    (:type xpm :min 14 :file "prvwrk14.xpm" :ascent 90)
     (:type xpm         :file "prvwrk12.xpm" :ascent 90)
     (:type xbm         :file "prvwrk24.xbm" :ascent 90))
   "The icon used for previews to be generated.
@@ -3222,7 +3223,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.231 $"))
+	(rev "$Revision: 1.232 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3233,7 +3234,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-15 16:55:33 $"))
+    (let ((date "$Date: 2005-02-18 02:01:27 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
