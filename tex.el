@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9h
+;; Version: 9.9i
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1302,6 +1302,9 @@ Space will complete and exit."
   ;; Use square brackets instead of curly braces, and is not inserted
   ;; on empty user input.
 
+  (if (and (TeX-active-mark)
+	   (> (point) (mark)))
+      (exchange-point-and-mark))
   (insert TeX-esc symbol)
   (let ((exit-mark (make-marker))
 	(position (point)))
@@ -1313,12 +1316,22 @@ Space will complete and exit."
 		(equal position (point))
 		(string-match "[a-zA-Z]+" symbol)
 		(not (texmathp)))
-	   (insert TeX-grop TeX-grcl)))))
+	   (insert TeX-grop)
+ 	   (if (TeX-active-mark)
+ 	       (progn
+ 		 (exchange-point-and-mark)
+ 		 (insert TeX-grcl))
+ 	     (insert TeX-grcl)
+ 	     (backward-char))))))
 
 (defun TeX-arg-string (optional &optional prompt input)
   "Prompt for a string."
   (TeX-argument-insert
-   (read-string (TeX-argument-prompt optional prompt "Text") input)
+   (if (and (not optional) (TeX-active-mark))
+       (let ((TeX-argument (buffer-substring (point) (mark))))
+ 	 (delete-region (point) (mark))
+ 	 TeX-argument)
+     (read-string (TeX-argument-prompt optional prompt "Text") input))
    optional))
 
 (defun TeX-parse-arguments (args)
@@ -1358,10 +1371,15 @@ See TeX-parse-macro for details."
 	     (TeX-parse-argument optional nil)
 	     (setq arg (- arg 1)))))
 	((null arg)
-	 (insert < >))
+	 (insert <)
+	 (if (and (not optional) (TeX-active-mark))
+	     (exchange-point-and-mark))
+	 (insert >))
 	((eq arg t)
 	 (insert  < )
-	 (set-marker exit-mark (point))
+	 (if (and (not optional) (TeX-active-mark))
+	     (exchange-point-and-mark)
+	   (set-marker exit-mark (point)))
 	 (insert >))
 	((symbolp arg)
 	 (funcall arg optional))
@@ -1912,7 +1930,7 @@ If TEX is a directory, generate style files for all files in the directory."
     ("\\\\let\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol-check)
     ("\\\\font\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
     ("\\\\chardef\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
-    ("\\\\new\\(count|dimen|muskip|skip\\)\\\\\\([a-z]+\\)[^a-zA-Z@]"
+    ("\\\\new\\(count\\|dimen\\|muskip\\|skip\\)\\\\\\([a-z]+\\)[^a-zA-Z@]"
      2 TeX-auto-symbol)
     ("\\\\newfont{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
     ("\\\\typein\\[\\\\\\([a-zA-Z]+\\)\\]" 1 TeX-auto-symbol)
