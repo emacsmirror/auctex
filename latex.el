@@ -66,7 +66,22 @@ the lines are outcommented, like in dtx files."
   "Start a new line potentially staying within comments.
 This depends on `LaTeX-insert-into-comments'."
   (if LaTeX-insert-into-comments
-      (indent-new-comment-line)
+      (cond ((and (looking-at (concat "[ \t]*" comment-start "+"))
+		  (TeX-looking-at-backward "^[ \t]*"))
+	     (beginning-of-line)
+	     (looking-at (concat "[ \t]*" comment-start "+"))
+	     (insert (match-string 0))
+	     (newline))
+	    ((and (not (bolp))
+		  (not (TeX-looking-at-backward
+			(concat "\\("
+				(regexp-quote TeX-esc) (regexp-quote TeX-esc)
+				"\\)*" (regexp-quote TeX-esc))))
+		  (looking-at (concat "[ \t]*" comment-start "+[ \t]*")))
+	     (delete-region (match-beginning 0) (match-end 0))
+	     (indent-new-comment-line))
+	    (t
+	     (indent-new-comment-line)))
     (newline)))
 
 ;;; Syntax Table
@@ -548,8 +563,11 @@ It may be customized with the following variables:
       (progn
 	(if (< (mark) (point))
 	    (exchange-point-and-mark))
-	(or (TeX-looking-at-backward "^[ \t]*")
-	    (LaTeX-newline))
+	(unless (TeX-looking-at-backward "^[ \t]*")
+	  (LaTeX-newline))
+	(when (and LaTeX-insert-into-comments
+		   (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
+	  (insert (match-string 1) (TeX-comment-padding-string)))
 	(insert TeX-esc "begin" TeX-grop environment TeX-grcl)
 	(indent-according-to-mode)
 	(if extra (insert extra))
@@ -557,10 +575,14 @@ It may be customized with the following variables:
 	(goto-char (mark))
 	(unless (TeX-looking-at-backward
 		  (if (and LaTeX-insert-into-comments
-			   (TeX-in-commented-line))
+			   (TeX-in-commented-line)
+			   (not (bolp)))
 		      (concat "^" comment-start-skip "[ \t]*")
 		    "^[ \t]*"))
 	    (LaTeX-newline))
+	(when (and LaTeX-insert-into-comments
+		   (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
+	  (insert (match-string 1) (TeX-comment-padding-string)))
 	(insert TeX-esc "end" TeX-grop environment TeX-grcl)
 	(or (looking-at "[ \t]*$")
 	    (save-excursion (LaTeX-newline) (indent-according-to-mode)))
@@ -570,19 +592,26 @@ It may be customized with the following variables:
 	    (LaTeX-fill-environment nil)))
     (unless (TeX-looking-at-backward
 	     (if (and LaTeX-insert-into-comments
-		      (TeX-in-commented-line))
+		      (TeX-in-commented-line)
+		      (not (bolp)))
 		 (concat "^" comment-start-skip "[ \t]*")
 	       "^[ \t]*"))
       (LaTeX-newline))
+    (when (and LaTeX-insert-into-comments
+	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
+      (insert (match-string 1) (TeX-comment-padding-string)))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
     (indent-according-to-mode)
     (if extra (insert extra))
     (LaTeX-newline)
     (LaTeX-newline)
+    (when (and LaTeX-insert-into-comments
+	       (looking-at (concat "[ \t]*\\(" comment-start "+\\)")))
+      (insert (match-string 1) (TeX-comment-padding-string)))
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
+    (indent-according-to-mode)
     (or (looking-at "[ \t]*$")
 	(save-excursion (LaTeX-newline) (indent-according-to-mode)))
-    (indent-according-to-mode)
     (end-of-line 0)
     (indent-according-to-mode)))
 
@@ -1823,12 +1852,7 @@ Lines starting with an item is given an extra indentation of
 			     (looking-at (concat "[ \t]*" comment-start "+"))
 			     (concat
 			      (match-string 0)
-			      ;; `comment-padding' formerly was an
-			      ;; integer and now can also be defined
-			      ;; as a string.  We support both.
-			      (if (integerp comment-padding)
-				  (make-string comment-padding ? )
-				comment-padding))))))
+			      (TeX-comment-padding-string))))))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
