@@ -2133,7 +2133,7 @@ space does not end a sentence, so don't break a line there."
         ;; Find occurences of `$', `{', `}', `\(' or `\)'.
         (while (and (= final-breakpoint orig-breakpoint)
                     (re-search-forward
-                     (concat "\\(\\=\\|[^" TeX-esc "\\]\\)\\("
+                     (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
 			     (regexp-quote (concat TeX-esc TeX-esc))
 			     "\\)*"
                              "\\([[{}$]\\|"
@@ -2181,11 +2181,14 @@ space does not end a sentence, so don't break a line there."
                                  (regexp-quote (concat TeX-esc TeX-esc))
                                  "\\)*\\][ \t]*{")
                          orig-breakpoint t))
-                  (re-search-backward
-                   (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-                           (regexp-quote (concat TeX-esc TeX-esc))
-                           "\\)*\\[")
-                   (line-beginning-position) t)
+                  (when (save-excursion
+                          (and (re-search-backward "\\["
+                                (line-beginning-position) t)
+                               (TeX-looking-at-backward
+                                (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
+                                        (regexp-quote (concat TeX-esc TeX-esc))
+                                        "\\)*"))))
+                    (goto-char (match-end 0)))
                   (skip-chars-backward "^ \n"))
                 (when (> (point) start-point)
                   (setq final-breakpoint (point)))))
@@ -2238,10 +2241,14 @@ space does not end a sentence, so don't break a line there."
                      (if (string= math-sep "$")
                          (save-excursion
                            (backward-char 2)
-                           (not (re-search-backward
-                                 (concat "[^" (regexp-quote TeX-esc) "]"
-                                         (regexp-quote "$"))
-                                 (line-beginning-position) t)))
+                           (not (and (re-search-backward
+                                      (regexp-quote "$")
+                                      (line-beginning-position) t)
+                                     (TeX-looking-at-backward
+                                      (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
+                                              (regexp-quote
+                                               (concat TeX-esc TeX-esc))
+                                              "\\)*")))))
                        (texmathp-match-switch (line-beginning-position)))))
               (save-excursion
                 (skip-chars-forward "^ \n")
