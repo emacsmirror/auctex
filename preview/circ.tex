@@ -2,7 +2,7 @@
 \usepackage[german]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
-\usepackage[sections,floats,textmath,displaymath]{preview}
+\usepackage[showlabels,sections,floats,textmath,displaymath]{preview}
 \newbox\chaos
 \newdimen\tdim
 \def\fframe{%
@@ -88,7 +88,7 @@ zu~$f < 0.5$ equivalente Bedingung.
 Für ungerade Werte von~$\Delta x$ ist $f < 0.5$ equivalent zu $d + 0.5 < 0$.
 Da $d$ stets eine ganze Zahl ist, ist dies wieder zu $d < 0$ equivalent.
 
-Wird nun $\ifPreview\special{ps: junk}\fi f >= 0.5$, wie sich durch
+Wird nun $\ifPreview\special{ps: junk}\fi f \geq 0.5$, wie sich durch
 den Vergleich $d \stackrel{?}{<} 0$ feststellen läßt, so muß man
 korrigieren, indem man $f$ um~1 erniedrigt und $e$ um~$1$ erhöht.
 $\ifPreview\special{ps: quit}\fi d$ muß dann auch entsprechend
