@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.26 1993-03-30 00:25:17 amanda Exp $
+@c $Id: auc-tex.texi,v 1.27 1993-03-30 00:46:59 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -151,6 +151,7 @@ Writing Your own Style Support
 
 The History of AUC @TeX{}
 
+* Version 7.1::                 Version 7.1
 * Version 7.0::                 News in 7.0
 * Version 6.1::                 Old news in 6.1
 * Version 6.0::                 Older news in 6.0
@@ -2545,13 +2546,14 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
+* Version 7.1::                 Version 7.1
 * Version 7.0::                 News in 7.0
 * Version 6.1::                 Old news in 6.1
 * Version 6.0::                 Older news in 6.0
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 7.1, , , 
+@node Version 7.1, Version 7.0,  , History
 @comment  node-name,  next,  previous,  up
 @section Version 7.1
 
@@ -2599,7 +2601,7 @@ Many people.
 
 @end itemize
 
-@node Version 7.0, Version 6.1,  , History
+@node Version 7.0, Version 6.1, Version 7.1, History
 @comment  node-name,  next,  previous,  up
 @section Version 7.0
 
