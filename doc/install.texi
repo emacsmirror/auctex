@@ -393,9 +393,6 @@ There are several files that are not part of @AUCTeX{} proper, but
 included in the distribution in case they are useful.
 
 @table @file
-@item hilit-LaTeX.el
-Better highlighting for the obsolete @file{hilit19} package.
-
 @item bib-cite.el
 Better support for bibliographies and much more.
 
