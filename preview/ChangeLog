@@ -1,3 +1,7 @@
+2003-12-07  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* enc.c: Encodings are _ps_header_s
+
 2003-12-05  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/misc.c:
