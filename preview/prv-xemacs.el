@@ -249,17 +249,21 @@ Usually a magnifying glass.")
 (defun preview-add-urgentization (fun ov &rest rest)
   "Cause FUN (function call form) to be called when redisplayed.
 FUN must be a form with OV as first argument,
-REST as the remainder, returning T."
-  (set-extent-initial-redisplay-function ov `(lambda (ov) (,fun ,ov ,@rest))))
+REST as the remainder, returning T.  An alternative is to give
+what preview-remove-urgentization returns, this will reinstate
+the previous state."
+  (set-extent-initial-redisplay-function
+   ov
+   (if (null rest)
+       fun
+     `(lambda (ov) (,fun ,ov ,@rest)))))
 
 (defun preview-remove-urgentization (ov)
   "Undo urgentization of OV by `preview-add-urgentization'.
 Returns the old arguments to `preview-add-urgentization'
 if there was any urgentization."
-  (let ((old-urgent (extent-property ov 'initial-redisplay-function)))
-    (set-extent-initial-redisplay-function ov nil)
-    (and (consp old-urgent)
-	 (nth 2 old-urgent))))
+  (prog1 (list (extent-property ov 'initial-redisplay-function) ov)
+    (set-extent-initial-redisplay-function ov nil)))
 
 (defmacro preview-image-from-icon (icon)
   "Generate a copy of the ICON that is \"editable\".
