@@ -1,3 +1,19 @@
+2004-08-31  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Add `LaTeX-includegraphics-read-file'.
+	Mention use of `start' for MikTeX and fpTeX.
+
+	* latex.el (LaTeX-includegraphics-read-file): New variable.
+
+	* tex.el (TeX-delete-dups): New defun or defalias.
+
+	* style/graphicx.el (LaTeX-includegraphics-read-file-TeX): Renamed
+	from `LaTeX-includegraphics-read-file'.  Remove duplicates using
+	`TeX-delete-dups'.
+	(LaTeX-includegraphics-read-file-relative): Insert relative
+	filename.  From Dan Nicolaescu <dann@ics.uci.edu>.
+	(LaTeX-arg-includegraphics): Use funcall for image-file.
+
 2004-08-28  David Kastrup  <dak@gnu.org>
 
 	* Version 11.53 released.

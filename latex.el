@@ -4699,6 +4699,45 @@ type and should be used for frequently needed combinations."
   :group 'LaTeX-macro
   :type 'boolean)
 
+(defcustom LaTeX-includegraphics-read-file
+  'LaTeX-includegraphics-read-file-TeX
+  "Function for reading \\includegraphics files.
+
+`LaTeX-includegraphics-read-file-TeX' lists all graphic files
+found in the TeX search path.
+
+`LaTeX-includegraphics-read-file-relative' lists all graphic files
+in the master directory and its subdirectories and inserts the
+relative file name.  This option doesn't works with Emacs 21.3 or
+XEmacs.
+
+The custom option `simple' works as
+`LaTeX-includegraphics-read-file-relative' but it lists all kind of
+files.
+
+Inserting the subdirectory in the filename (as
+`LaTeX-includegraphics-read-file-relative') is discouraged by
+`epslatex.ps'."
+;; ,----[ epslatex.ps; Section 12; (page 26) ]
+;; | Instead of embedding the subdirectory in the filename, there are two
+;; | other options
+;; |   1. The best method is to modify the TeX search path [...]
+;; |   2. Another method is to specify sub/ in a \graphicspath command
+;; |      [...].  However this is much less efficient than modifying the
+;; |      TeX search path
+;; `----
+;; See "Inefficiency" and "Unportability" in the same section for more
+;; information.
+  :group 'LaTeX-macro
+  :type '(choice (const :tag "TeX" LaTeX-includegraphics-read-file-TeX)
+		 (const :tag "relative"
+			LaTeX-includegraphics-read-file-relative)
+		 (const :tag "simple" (lambda ()
+					(file-relative-name
+					 (read-file-name "Image file: ")
+					 (TeX-master-directory))))
+		 (function :tag "other")))
+
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
   (TeX-update-style)

@@ -610,7 +610,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.446 $"))
+	    (rev "$Revision: 5.447 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -625,7 +625,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-27 17:57:06 $"))
+    (let ((date "$Date: 2004-08-31 12:40:23 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -694,6 +694,23 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
 
   (defun TeX-activate-region ()
     nil))
+
+(cond
+ ((fboundp 'delete-dups) ;; Emacs 21.4
+  (defalias 'TeX-delete-dups 'delete-dups))
+ ((fboundp 'delete-duplicates) ;; cl.el, XEmacs
+  (defalias 'TeX-delete-dups 'delete-duplicates))
+ (t ;; Fallback from `subr.el' of Emacs 21.3.50
+  (defun TeX-delete-dups (list)
+    "Destructively remove `equal' duplicates from LIST.
+Store the result in LIST and return it.  LIST must be a proper list.
+Of several `equal' occurrences of an element in LIST, the first
+one is kept."
+    (let ((tail list))
+      (while tail
+	(setcdr tail (delete (car tail) (cdr tail)))
+	(setq tail (cdr tail))))
+    list)))
 
 ;;; Buffer
 

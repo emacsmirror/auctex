@@ -50,14 +50,34 @@
 		     "$\\|\\.")
 	  "$"))
 
-(defun LaTeX-includegraphics-read-file ()
-  "Read image file for \\includegraphics."
+(defun LaTeX-includegraphics-read-file-TeX ()
+  "Read image file for \\includegraphics.
+Offers all graphic files found in the TeX search path.  See
+`LaTeX-includegraphics-read-file' for more."
   ;; Drop latex/pdflatex differences for now.  Might be (re-)included later.
   (completing-read
    "Image file: "
-   (mapcar 'list
-	   (TeX-search-files nil LaTeX-includegraphics-extensions t t))
+   (TeX-delete-dups
+    (mapcar 'list
+	    (TeX-search-files nil LaTeX-includegraphics-extensions t t)))
    nil nil nil))
+
+(defun LaTeX-includegraphics-read-file-relative ()
+  "Read image file for \\includegraphics.
+
+Lists all graphic files in the master directory and its
+subdirectories and inserts the relative file name.  This option
+doesn't works with Emacs 21.3 or XEmacs.  See
+`LaTeX-includegraphics-read-file' for more."
+  (file-relative-name
+   (read-file-name
+    "Image file: " nil nil nil nil
+    ;; FIXME: Emacs 21.3 and XEmacs 21.4.15 dont have PREDICATE as the sixth
+    ;; argument (Emacs 21.3: five args; XEmacs 21.4.15: sixth is HISTORY).
+    (lambda (fname)
+      (or (file-directory-p fname)
+ 	  (string-match (LaTeX-includegraphics-extensions) fname))))
+   (TeX-master-directory)))
 
 (defun LaTeX-arg-includegraphics (prefix)
   "Ask for mandantory and optional arguments for the \\includegraphics command.
@@ -67,7 +87,7 @@ The extent of the optional arguments is determined by the prefix argument and
   (let* ((maybe-left-brace "[")
 	 (maybe-comma "")
 	 show-hint
-	 (image-file (LaTeX-includegraphics-read-file))
+	 (image-file (funcall LaTeX-includegraphics-read-file))
 	 (incl-opts
 	  (cond
 	   ((numberp

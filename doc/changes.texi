@@ -5,6 +5,15 @@
 @end ifset
 @c -----------------------
 
+@heading News in 11.54
+
+@itemize @bullet
+@item
+You can customize the completion for graphic files with 
+@code{LaTeX-includegraphics-read-file}.
+@end itemize
+
+
 @heading News in 11.53
 
 @itemize @bullet
@@ -15,9 +24,18 @@ built supports it.  See the variable @code{LaTeX-math-menu-unicode},
 
 @item
 Bug fixes for XEmacs.
+
+@c The following items weren't present at release time of 11.53:
+@item
+Completion for graphic files in the TeX search path has been added.
+
+@item
+@command{start} is used for the viewer for Mik@TeX{} and fp@TeX{}.
+
 @end itemize
 
 @heading News in 11.52
+@c Not present at release time of 11.52.
 
 @itemize @bullet
 @item
@@ -33,6 +51,7 @@ Bug fixes in the build process.
 @end itemize
 
 @heading News in 11.51
+@c Not present at release time of 11.51.
 
 @itemize @bullet
 @item
