@@ -2566,7 +2566,7 @@ space does not end a sentence, so don't break a line there."
 	      (delete-char -1))))
       ;; This else-sentence was copied from the function `fill-delete-newlines'
       ;; in `fill.el' (CVS Emacs, 2005-02-17) and adapted accordingly.
-      (while (search-forward "\n" nil t)
+      (while (search-forward "\n" to t)
 	(let ((prev (char-before (match-beginning 0)))
 	      (next (following-char)))
 	  (when (or (aref (char-category-set next) ?|)
