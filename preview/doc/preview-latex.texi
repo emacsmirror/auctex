@@ -13,6 +13,8 @@
 @c footnotestyle separate
 @c paragraphindent 2
 @syncodeindex vr cp
+@syncodeindex ky cp
+@syncodeindex fn cp
 @comment %**end of header 
 @iftex
 @tolerance 10000 @emergencystretch 3em
@@ -105,17 +107,15 @@ This file documents @previewlatex{} version 0.7
 @strong{Please note:} XEmacs support is preliminary and not yet covered
 in this manual.
 
-This documentation is preliminary. It should however cover most
-important points. Corrections or perhaps rewrites of sections are
-@emph{very welcome}.
+This documentation should cover most important points. However,
+corrections or perhaps rewrites of sections are @emph{very welcome}.
 
 David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 
 @end ifnottex
 
 @menu
-* Introduction::                What is it good for?
-* Getting started::             Simple and fast.
+* Introduction::                Getting started.
 * Installation::                Make Install.
 * Keys and lisp::               Key bindings and user-level lisp functions.
 * Customization::               Fitting it in.
@@ -125,41 +125,12 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 * Index::                       A menu of many topics.             
 @end menu
 
-@node Introduction, Getting started, top, top
+@node Introduction, Installation, top, top
 @c Used as @file{README} as well: in separate file
 @chapter Introduction
 @include readme.texi
 
-@node Getting started, Installation, Introduction, top
-@chapter Getting started
-
-If you or somebody else already has configured and installed
-@previewlatex{} for you (@pxref{Installation}), and if you have followed
-the instructions for activating it (@pxref{Introduction}), you are
-all set to go.  If you load a @LaTeX{} document, you should be able to
-spot ``Preview'' in @AUCTeX{}'s menus.
-
-Now press @kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or press
-@kbd{C-c C-p C-p} (for ``On/off at point'').  You may also use the
-appropriate menu entries.  Previews will now be generated for various
-objects in your document. You'll see them change into a large
-question-mark when the process is half finished. Note that you can
-freely navigate the buffer while this is going on. When the process is
-finished you will see the objects typeset in your buffer.
-
-It is a bad idea, however, to edit the buffer before the question marks
-appear, since that is the moment when the correlation between the
-original text and the buffer locations gets established.  If the buffer
-changes before that point of time, the previews will not be placed where
-they belong. If you do want to change some obvious error you just
-spotted we recommend you stop the background process by pressing
-@kbd{C-c C-k}.
-
-To see/edit the @LaTeX{} code for a specific object, put the point (the
-cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
-and generate a new preview by again pressing @kbd{C-c C-p C-p}.
-
-@node Installation, Keys and lisp, Getting started, top
+@node Installation, Keys and lisp, Introduction, top
 @c Used as @file{INSTALL} as well: in separate file
 @chapter Installation 
 @include install.texi
@@ -179,9 +150,9 @@ re-generated.
 You can use the @AUCTeX{} variants starting with @kbd{C-c C-b g
 @key{RET}} and @kbd{C-c C-r g @key{RET}} for generating previews just in
 the current buffer of the document, or a region of it.
-@cindex @kbd{C-c C-c g @key{RET}}
-@cindex @kbd{C-c C-b g @key{RET}}
-@cindex @kbd{C-c C-r g @key{RET}}
+@kindex @kbd{C-c C-c g @key{RET}}
+@kindex @kbd{C-c C-b g @key{RET}}
+@kindex @kbd{C-c C-r g @key{RET}}
 @cindex Generate Preview
 
 @item @kbd{C-c C-p C-p}
@@ -192,24 +163,24 @@ necessary. If not, it will run the surroundings through preview. The
 surroundings include all areas up to the next valid preview, unless
 invalid previews occur before, in which case the area will include the
 last such preview.
-@cindex @kbd{C-c C-p C-p}
-@cindex @code{preview-at-point}
-@cindex De/Preview at point
+@kindex @kbd{C-c C-p C-p}
+@findex preview-at-point
+@cindex On/off at point
 
 @item @kbd{C-c C-k}
 Kill preview-generating process. This is really an @AUCTeX{} keybinding,
 but it is included here as a hint. If you start generating a preview and
 then make a change to the buffer, @previewlatex{} may be confused and
 place the previews wrong.
-@cindex @kbd{C-c C-k}
+@kindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-s}
 @itemx @code{preview-section} 
 Run preview on this @LaTeX{} section.
-@cindex @kbd{C-c C-p C-s}
-@cindex @code{preview-section}
-@cindex Preview section 
+@kindex @kbd{C-c C-p C-s}
+@findex preview-section
+@c @cindex Preview section 
 
 @item @kbd{C-c C-p C-e}
 @itemx @code{preview-environment (&optional count)}
@@ -220,26 +191,26 @@ for instance, the @code{split} environment in
 properly displayed.  If called with an argument @code{count}, the
 corresponding number of outward nested environments is treated as inner
 levels.
-@cindex @kbd{C-c C-p C-e}
-@cindex @code{preview-environment}
-@cindex Preview environment
+@kindex @kbd{C-c C-p C-e}
+@findex preview-environment
+@c @cindex Preview environment
 
 @item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
 Run preview on current region. If called non-interactively, runs preview
 on region between @code{begin} and @code{end}.
-@cindex @kbd{C-c C-p C-r}
-@cindex @code{preview-region}
-@cindex Preview region
+@kindex @kbd{C-c C-p C-r}
+@findex preview-region
+@c @cindex Preview region
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
 Clear out all previews in current buffer. This makes the current buffer
 lose all previews. If run non-interactively @code{buffer} is cleared out
 from previews, current buffer if nil.
-@cindex @kbd{C-c C-p C-c C-b}
-@cindex @code{preview-clearout-buffer}
-@cindex Clearout previews
+@kindex @kbd{C-c C-p C-c C-b}
+@findex preview-clearout-buffer
+@c @cindex Clearout previews
 
 @item @kbd{C-c C-p C-c C-r}
 @itemx @code{preview-clearout (&optional start end keep-dir)}
@@ -249,13 +220,13 @@ the current region is used. Non-interactively, the region between
 borders of the entire buffer. If @code{keep-dir} is set to a value from
 @code{TeX-active-tempdir}, previews associated with that directory are
 kept.
-@cindex @kbd{C-c C-p C-c C-r}
-@cindex @code{preview-clearout}
+@kindex @kbd{C-c C-p C-c C-r}
+@findex preview-clearout
 @end table
 
 @node Customization, Known problems, Keys and lisp, top
 @chapter Customization
-@cindex Customization
+@c @cindex Customization
 
 Customization options can be found by typing @kbd{M-x customize-group
 @key{RET} preview @key{RET}}. The list of suggestions can be made very
@@ -366,7 +337,6 @@ several things that other packages may also provide. Note that if you
 are using @AUCTeX{}, the package is loaded automatically, so you don't
 need to do it yourself unless you have something advanced in mind.
 
-
 @menu
 * Package options::             
 * Provided Commands::           
@@ -472,7 +442,7 @@ unless inhibited by the @option{noconfig} option.  This caters for the
 most frequently encountered problematic commmands.  
 @end table
 
-@node Provided Commands
+@node Provided Commands,  , Package options, The LaTeX style file
 @subsection Provided Commands
 
 @table @code
@@ -495,7 +465,7 @@ not active.  If you need something typeset conditionally, use the
 @code{\ifPreview} conditional for it.
 
 @item \PreviewMacro
-@cindex @code{\PreviewMacro}
+@findex \PreviewMacro
 If you want to make a macro like @code{\includegraphics} (actually, this
 is what is done by the @option{graphics} option to @samp{preview})
 produce a preview image, you put a declaration like 
@@ -553,7 +523,7 @@ manner instead of being thrown away.  An exception might be, say, sort
 keys for @code{\cite}.
 
 @item \PreviewEnvironment 
-@cindex @code{\PreviewEnvironment}
+@findex \PreviewEnvironment
 The macro @code{\PreviewEnvironment} works just as @code{\PreviewMacro}
 does, only for environments.  
 
