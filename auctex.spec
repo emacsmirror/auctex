@@ -1,7 +1,7 @@
 Summary: 	Enhanced LaTeX mode for GNU Emacs
 Name: 		auctex
-Version: 	11.13
-Release: 	2
+Version: 	11.14
+Release: 	1
 License: 	GPL
 Group: 		Applications/Editors
 URL: 		http://www.nongnu.org/auctex/
