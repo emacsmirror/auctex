@@ -37,12 +37,12 @@ install: install-texmf install-el use-hint
 use-hint:
 	@echo "Installation completed."
 	@echo
-	@echo "Please read the PROBLEMS file if you use\
-a) AucTeX with a version less than 11.0\
-b) GNU Emacs with a version less than 21.2\
-c) GhostScript with a version less than 6.51\
-Please use M-x preview-report-bug if you experience any\
-problems not mentioned in there."
+	@echo "Please read the PROBLEMS file if you use"
+	@echo "a) AucTeX with a version less than 11.0"
+	@echo "b) GNU Emacs with a version less than 21.2"
+	@echo "c) GhostScript with a version less than 6.51"
+	@echo "Please use M-x preview-report-bug if you experience any"
+	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
 	-mkdir -p $(lispdir)

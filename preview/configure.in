@@ -21,7 +21,9 @@ AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
    if test ! -d $texmfdir  ; then
       AC_MSG_ERROR([--with-texmf=$texmfdir: Directory does not exist])
    fi
-   previewtexmfdir=$texmfdir/preview])
+   previewtexmfdir=$texmfdir/tex/latex/preview
+   previewdocdir=$texmfdir/doc/latex/styles
+   ])
 
 AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install preview],
  [ previewtexmfdir=${withval} ; 
