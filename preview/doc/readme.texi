@@ -34,25 +34,26 @@ for you, consult the @file{INSTALL} file for installation instructions
 @section Activating @previewlatex{}
 @cindex Activation
 After installation, the package may need to be activated (and remember
-to activate @AUCTeX{} too).  In XEmacs, and in some prepackaged versions
-for GNU Emacs, activation is automatic upon installation, but otherwise,
-the activation line that needs to be added to your own @file{.emacs}
-file or to a site-wide initialization file is
+to activate @AUCTeX{} too).  In XEmacs, and in any prepackaged versions
+worth their salt, activation should be automatic upon installation.  If
+this seems not the case, complain to your installation provider and read
+on.  You might salvage this by adding the following activation line to
+your own @file{.emacs} file or to a site-wide initialization file:
 
 @example
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
 @noindent
-For a well-configured prepackaged version, no more than that should be
-required.  If you installed @previewlatex{} yourself, at least the line
+There might still be missing an @code{autoload} form in which case you
+would have to add
 
 @example
 (autoload 'LaTeX-preview-setup "preview")
 @end example
 
 @noindent
-is also needed.  And in case the directory to which the Elisp files have
+And in case the directory to which the Elisp files have
 been installed is not known to Emacs, a line like
 
 @example
