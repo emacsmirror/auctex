@@ -1,3 +1,13 @@
+2004-12-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* context.el (ConTeXt-paragraph-commands-regexp): New name for
+	`ConTeXt-paragraph-commands'.  Doc fix.  Match escape character at
+	front as well.
+	(ConTeXt-mode-common-initialization): Use it.  Set
+	`LaTeX-paragraph-commands-regexp' instead of
+	`LaTeX-paragraph-commands'.  Adapt definition of
+	`paragraph-start'.
+
 2004-12-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (hack-one-local-variable): Advise it in order to call
