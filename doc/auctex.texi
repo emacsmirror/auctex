@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.182 2004-08-17 09:36:58 angeli Exp $
+@c $Id: auctex.texi,v 1.183 2004-08-24 14:12:08 rsteib Exp $
 
 @finalout
 @titlepage
@@ -729,6 +729,12 @@ The variable @code{LaTeX-math-list} holds the actual mapping.
 @defopt LaTeX-math-list
 A list containing key command mappings to use in @code{LaTeX-math-mode}.
 The car of each element is the key and the cdr is the macro name.
+@end defopt
+
+@defopt LaTeX-math-menu-unicode
+Whether the LaTeX menu should try using Unicode for effect.  Your Emacs
+built must be able to display include Unicode characters in menus for
+this feature.
 @end defopt
 
 @AUCTeX{}'s reference card @file{tex-ref.tex} includes a list of all
@@ -2893,9 +2899,10 @@ List of functions to be called after parsing a @TeX{} file.
 @comment  node-name,  next,  previous,  up
 @appendix Changes and New Features
 
-See the file @file{history.texi} for older changes.
-
 @include changes.texi
+
+@heading Older versions
+See the file @file{history.texi} for older changes.
 
 @node ToDo, FAQ, Changes, top
 @comment  node-name,  next,  previous,  up

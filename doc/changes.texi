@@ -5,6 +5,47 @@
 @end ifset
 @c -----------------------
 
+@heading News in 11.53
+
+@itemize @bullet
+@item
+The @LaTeX{} math menu can include Unicode characters if your Emacs
+built supports it.  See the variable @code{LaTeX-math-menu-unicode},
+@ref{Mathematics}.
+
+@item
+Bug fixes for XEmacs.
+@end itemize
+
+@heading News in 11.52
+
+@itemize @bullet
+@item
+Installation and menus under XEmacs work again (maybe for the first
+time).
+
+@item
+Fontification of subscripts and superscripts is now disabled when the
+fontification engine is not able to support it properly.
+
+@item
+Bug fixes in the build process.
+@end itemize
+
+@heading News in 11.51
+
+@itemize @bullet
+@item
+PDFTeX and Source Special support did not work with ConTeXt,
+this has been fixed.  Similar for Source Special support under Windows.
+
+@item
+Omega support has been added.
+
+@item
+Bug fixes in the build process.
+@end itemize
+
 @heading News in 11.50
 
 @itemize @bullet
