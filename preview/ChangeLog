@@ -1,3 +1,11 @@
+2004-10-09  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-dvipng-command): Use -picky option.
+	(preview-error-quote): Convert character to buffer encoding if
+	mule allows it.
+	(preview-parse-messages): Strip incomplete 8bit character
+	transliterations from the error context.
+
 2004-08-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/install.texi: Markup fixes, see "(texinfo)command".

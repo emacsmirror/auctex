@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.216 2004-08-09 01:22:42 dakas Exp $
+;; $Id: preview.el,v 1.217 2004-10-09 00:18:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -409,7 +409,7 @@ an explicit list of elements in the CDR, or a symbol to
 be consulted recursively.")
 
 (defcustom preview-dvipng-command
-  "dvipng -no-image-on-warn -noghostscript %d -o \"%m/prev%%03d.png\""
+  "dvipng -picky -noghostscript %d -o \"%m/prev%%03d.png\""
   "*Command used for converting to separate PNG images.
 
 You might specify options for converting to other image types,
@@ -2326,7 +2326,7 @@ later while in use."
 To preserve sanity, additional ^ prefixes are matched literally,
 so the character represented by ^^^ preceding extended characters
 will not get matched, usually."
-  (let (output case-fold-search)
+  (let (output case-fold-search char)
     (while (string-match "\\^\\{2,\\}\\(\\([@-_?]\\)\\|[8-9a-f][0-9a-f]\\)"
 			 string)
       (setq output
@@ -2339,10 +2339,15 @@ will not get matched, usually."
 					(- (match-beginning 1) 2)
 					(match-end 0)))
 		    "\\|"
-		    (char-to-string
-		     (if (match-beginning 2)
-			 (logxor (aref string (match-beginning 2)) 64)
-		       (string-to-number (match-string 1 string) 16)))
+		    (progn
+		      (setq char
+			    (char-to-string
+			     (if (match-beginning 2)
+				 (logxor (aref string (match-beginning 2)) 64)
+			       (string-to-number (match-string 1 string) 16))))
+		      (if (fboundp 'decode-coding-string)
+			  (decode-coding-string char buffer-file-coding-system)
+			char))
 		    "\\)")
 	    string (substring string (match-end 0))))
     (concat output (regexp-quote string))))
@@ -2445,10 +2450,12 @@ name(\\([^)]+\\))\\)\\|\
 			  
 			  ;; And the line number to position the cursor.
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
-;;; to be favorable.
+;;; to be favorable.  Removing incomplete characters from the error
+;;; context is an absolute nuisance.
 			  line (and (re-search-forward "\
-^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\([^\n\r]*?\\)\r?
-\\([^\n\r]*?\\)\\(\\.\\.\\.\\)?\r?$" nil t)
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^?\\(?:[89a-f][0-9a-f]\\|[@-_?]\\)\\|\
+\[0-9a-f]?\\)\\)?\\([^\n\r]*?\\)\r?
+\\([^\n\r]*?\\)\\(\\.\\.\\.\\|\\^\\(?:\\^[89a-f]?\\)?\\.\\.\\.\\)?\r?$" nil t)
 				    (string-to-int (match-string 1)))
 			  ;; And a string of the context to search for.
 			  string (and line (match-string 3))
@@ -3060,7 +3067,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.216 $"))
+	(rev "$Revision: 1.217 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3071,7 +3078,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-09 01:22:42 $"))
+    (let ((date "$Date: 2004-10-09 00:18:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
