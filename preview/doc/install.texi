@@ -31,9 +31,10 @@ chances of working at all.  Since @previewlatex{} heavily exercises new
 features of Emacs 21, getting the newest release is a good idea.
  
 While image support for Emacs under Microsoft Windows has not been
-implemented as of @w{version 21.2}, it is present in the @acronym{CVS}
-version at @uref{http://savannah.gnu.org/projects/emacs}; please help in
-testing it before @w{Emacs 21.3} gets released.  
+implemented as of @w{version 21.2}, it is under development and can be
+accessed by anonymous @acronym{CVS} at
+@uref{http://savannah.gnu.org/projects/emacs}; please help in testing it
+before @w{Emacs 21.3} gets released.
 
 Another option is to try XEmacs for which we now have preliminary
 support available.  @strong{Please note:} Presently, the port to XEmacs
@@ -42,7 +43,7 @@ the developers.
 
 @item A working @AUCTeX{} installation
 
-You need a working @AUCTeX{} installation.  @AUCTeX{} can be found at
+@AUCTeX{} can be found at
 @uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  All fairly recent
 versions should work.  Since at the time of this writing, the latest
 released version is 10.0g (with known issues), you should rather get
@@ -106,33 +107,33 @@ configure cannot determine something on its own, you'll need to help
 it out with one of these options
 
 @table @code
-@item --with-emacs=/path/to/emacs
+@item --with-emacs=@var{/path/to/emacs}
 If you are using a pretest which isn't in your @code{$PATH}, or
 @code{configure} is not finding the right emacs binary, you can specify
 it with this option.
 
-@item --with-tex-site=/dir
+@item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location (not in
 @file{site-lisp}), use this option to specify the location of its
 @file{tex-site.el} file.
 
-@item --with-texmf=/dir@*--with-tex-dir=/dir
+@item --with-texmf=@var{/dir}@*--with-tex-dir=@var{/dir}
 Both of these options can be used to specify the location to install the
 preview @TeX{} files.  They are not necessary for most @TeX{} installs,
 but may be used if you don't like the directory that configure is
-suggesting.  Using @code{--with-texmf=/dir} you can specify where the
+suggesting.  Using @code{--with-texmf=@var{/dir}} you can specify where the
 @TeX{} @acronym{TDS} directory hierarchy resides, and the @TeX{} files
-will be installed in @code{/dir/tex/latex/preview}.  If you want to
+will be installed in @code{@var{/dir}/tex/latex/preview}.  If you want to
 specify an exact directory for the preview @TeX{} files, use
-@code{--with-tex-dir=/dir}. In this case, the files will be placed
-in @file{/dir}.
+@code{--with-tex-dir=@var{/dir}}. In this case, the files will be placed
+in @file{@var{/dir}}.
 
-@item --with-doc-dir=/dir
+@item --with-doc-dir=@var{/dir}
 This option may be used to specify where the @TeX{} documentation goes.
 It is normally not necessary, but can be useful if you are using
-@code{--with-tex-dir=/dir}.
+@code{--with-tex-dir=@var{/dir}}.
 
-@item --with-lispdir=/dir
+@item --with-lispdir=@var{/dir}
 This tells where to install Emacs Lisp files.  Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
