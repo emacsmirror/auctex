@@ -170,8 +170,8 @@ and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 @node Keys and lisp, Customization, Installation, top
 @chapter Key bindings and user-level lisp functions 
 
-To the functions and key bindings in @AUCTeX{} @inforef{Key
-Index,,auctex}, the following are added:
+To the functions and key bindings in @AUCTeX{} (@inforef{Key
+Index,,auctex}), the following are added:
 
 @table @w
 @item @kbd{C-c C-c g @key{RET}} 
@@ -348,7 +348,7 @@ baseline and no page decorations.  Thus you can safely use @code{dvips
 box for every generated image of a @LaTeX{} run.  The possibility for
 generating a whole set of graphics with a single run of @LaTeX{} and
 Dvips increases both speed and robustness of applications.  It is to be
-hoped that applications like @LaTeX{}HTML will be able to make use of
+hoped that applications like @LaTeX{}2HTML will be able to make use of
 this package in future.
 
 The package is included with the customary
@@ -516,9 +516,9 @@ The letters simply mean
 @item * 
 indicates an optional @code{*} modifier, as in @code{\includegraphics*}.
 
-@item ] 
+@item [ 
 indicates an optional argument in brackets.  This syntax
-is somewhat disingenious, but brief.
+is somewhat baroque, but brief.
 
 @item []
 also indicates an optional argument in brackets.  Be sure to have
