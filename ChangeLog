@@ -1,5 +1,9 @@
 2004-08-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fptex.el: Do not overwrite customized variables.
+
+	* tex-mik.el: Ditto.
+
 	* Makefile.in (STYLESRC): Add new style files.
 
 	* aclocal.m4: Synchronize with preview-latex.
