@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.470 $"))
+	    (rev "$Revision: 5.471 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-11 10:25:12 $"))
+    (let ((date "$Date: 2004-12-15 09:50:08 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -919,7 +919,7 @@ If this is nil, an empty string will be returned."
   :group 'TeX-source-specials)
 
 (defcustom TeX-source-specials-view-position-flags
-  "-sourceposition %n:%b"
+  "-sourceposition \"%n %b\""
   "Flags to pass to the DVI viewer commands for the position in the source."
   :group 'TeX-source-specials
   :type 'string)
