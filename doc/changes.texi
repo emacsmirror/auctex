@@ -4,6 +4,9 @@
 @item Bug fixes.
 
 @item
+Moved external commands to new menu.
+
+@item
 @kbd{C-c C-m cite @key{ret}} will prompt for multiple keys.
 
 @item

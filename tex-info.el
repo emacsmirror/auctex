@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.15 1994-07-30 05:39:35 amanda Exp $
+;; $Id: tex-info.el,v 5.16 1994-10-25 13:53:12 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -24,7 +24,6 @@
 (condition-case nil			;Lucid is not providing.
     (require 'texinfo)
   (error))
-(require 'auc-menu)
 
 ;;; Environments:
 
@@ -184,12 +183,11 @@ When called interactively, prompt for an environment."
 	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
 	"-"
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on File  (C-c C-c)"
-				 'TeX-command-master)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
-	      ["Toggle debug of boxes" TeX-toggle-debug-boxes t]
+	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	        :style toggle :selected TeX-debug-bad-boxes ]
 	      ["Switch to original file" TeX-home-buffer t]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
 	"--"
@@ -204,6 +202,12 @@ When called interactively, prompt for an environment."
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+
+(easy-menu-define TeXinfo-command-menu
+    TeXinfo-mode-map
+    "Menu used in TeXinfo mode for external commands."
+  (append '("Command")
+	  (mapcar 'TeX-command-menu-entry TeX-command-list)))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")
@@ -240,7 +244,6 @@ TeXinfo-mode-hook."
   (setq mode-name "TeXinfo")
   (setq major-mode 'texinfo-mode)
   (use-local-map TeXinfo-mode-map)
-  (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
   (set-syntax-table texinfo-mode-syntax-table)
   (make-local-variable 'page-delimiter)
   (setq page-delimiter 
@@ -268,8 +271,11 @@ TeXinfo-mode-hook."
   (setq words-include-escapes t)
   
   ;; Mostly AUC TeX stuff
+  (easy-menu-add TeXinfo-command-menu TeXinfo-mode-map)
   (easy-menu-add TeXinfo-mode-menu TeXinfo-mode-map)
-  
+  (make-local-variable 'TeX-command-current)
+  (setq TeX-command-current 'TeX-command-master)
+
   (setq TeX-default-extension "texi")
   (make-local-variable 'TeX-esc)
   (setq TeX-esc "@")

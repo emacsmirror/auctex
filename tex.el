@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.26 1994-10-22 12:57:41 amanda Exp $
+;; Version: $Id: tex.el,v 5.27 1994-10-25 13:53:16 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -236,7 +236,6 @@ the name of the file being processed, with an optional extension.")
     (setq load-path (cons TeX-lisp-directory load-path)))
 
 (require 'auc-ver)
-(require 'auc-menu)
 
 (cond ((< (string-to-int emacs-version) 19)
        (require 'tex-18))
@@ -267,6 +266,12 @@ Full documentation will be available after autoloading the function."
 (autoload 'latex-mode "latex" no-doc t)
 
 ;;; Buffer
+
+(defvar TeX-display-help t
+  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
+
+(defvar TeX-debug-bad-boxes nil
+  "*Non-nil means also find overfull/underfull boxes warnings with TeX-next-error")
 
 (defvar TeX-command-BibTeX "BibTeX"
   "*The name of the BibTeX entry in TeX-command-list.")
@@ -1120,6 +1125,7 @@ of AmS-TeX-mode-hook."
   ;; Common initialization for plain TeX like modes.
   (VirTeX-common-initialization)
   (use-local-map plain-TeX-mode-map)
+  (easy-menu-add TeX-mode-menu plain-TeX-mode-map)
   (easy-menu-add plain-TeX-mode-menu plain-TeX-mode-map)
   (set-syntax-table TeX-mode-syntax-table)
   (setq paragraph-start
@@ -1729,6 +1735,71 @@ See match-data for details."
   (modify-syntax-entry ?~  " "  TeX-mode-syntax-table)
   (modify-syntax-entry ?'  "w"  TeX-mode-syntax-table))
 
+;;; Menu Support
+
+(defvar TeX-command-current 'TeX-command-master)
+;; Function used to run external command.
+
+(defun TeX-command-select-master ()
+  (interactive)
+  (message "Next command will be on the master file")
+  (setq TeX-command-current 'TeX-command-master))
+
+(defun TeX-command-select-buffer ()
+  (interactive)
+  (message "Next command will be on the buffer")
+  (setq TeX-command-current 'TeX-command-buffer))
+
+(defun TeX-command-select-region ()
+  (interactive)
+  (message "Next command will be on the region")
+  (setq TeX-command-current 'TeX-command-region))
+
+(defvar TeX-command-force nil)
+;; If non-nil, TeX-command-query will return the value of this
+;; variable instead of quering the user. 
+
+(defun TeX-command-menu (name)
+  ;; Execute TeX-command-list NAME from a menu.
+  (let ((TeX-command-force name))
+    (funcall TeX-command-current)))
+
+(defun TeX-command-menu-print (printer command name)
+  ;; Print on PRINTER using method COMMAND to run NAME.
+  (let ((TeX-printer-default printer)
+	(TeX-printer-list nil)
+	(TeX-print-command command))
+    (TeX-command-menu name)))
+
+(defun TeX-command-menu-printer-entry (entry)
+  ;; Return TeX-printer-list ENTRY as a menu item.
+  (vector (nth 0 entry)
+	  (list 'TeX-command-menu-print
+		(nth 0 entry)
+		(or (nth lookup entry) command)
+		name)
+	  t))
+
+(defun TeX-command-menu-entry (entry)
+  ;; Return TeX-command-list ENTRY as a menu item.
+  (let ((name (car entry)))
+    (cond ((and (string-equal name TeX-command-Print)
+		TeX-printer-list)
+	   (let ((command TeX-print-command)
+		 (lookup 1))
+	     (append (list TeX-command-Print)
+		     (mapcar 'TeX-command-menu-printer-entry
+			     TeX-printer-list))))
+	  ((and (string-equal name TeX-command-Queue)
+		TeX-printer-list)
+	   (let ((command TeX-queue-command)
+		 (lookup 2))
+	     (append (list TeX-command-Queue)
+		     (mapcar 'TeX-command-menu-printer-entry
+			     TeX-printer-list))))
+	  (t
+	   (vector name (list 'TeX-command-menu name) t)))))
+
 ;;; Keymap
 
 (defvar TeX-electric-escape nil
@@ -1780,59 +1851,25 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
   (define-key TeX-mode-map "\C-c`"    'TeX-next-error)
   (define-key TeX-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes))
 
+(easy-menu-define TeX-mode-menu
+    TeX-mode-map
+    "Menu used in TeX mode."
+  (append '("Command")
+	  '(("Command on"
+	     [ "Master File" TeX-command-select-master
+	       :keys "C-c C-c" :style radio
+	       :selected (eq TeX-command-current 'TeX-command-master) ]
+	     [ "Buffer" TeX-command-select-buffer
+	       :keys "C-c C-b" :style radio
+	       :selected (eq TeX-command-current 'TeX-command-buffer) ]
+	     [ "Region" TeX-command-select-region
+	       :keys "C-c C-r" :style radio
+	       :selected (eq TeX-command-current 'TeX-command-region) ]))
+	  (let ((file 'TeX-command-on-current))
+	    (mapcar 'TeX-command-menu-entry TeX-command-list))))
+
 (defvar plain-TeX-mode-map (copy-keymap TeX-mode-map)
   "Keymap used in plain TeX mode.")
-
-(defvar TeX-command-force nil)
-;; If non-nil, TeX-command-query will return the value of this
-;; variable instead of quering the user. 
-
-(defun TeX-command-menu (name file)
-  ;; Execute TeX-command-list NAME on FILE from a menu.
-  (let ((TeX-command-force name))
-    (funcall file)))
-
-(defun TeX-command-menu-print (printer command name file)
-  ;; On PRINTER print FILE from a menu.
-  (let ((TeX-printer-default printer)
-	(TeX-printer-list nil)
-	(TeX-print-command command))
-    (TeX-command-menu name file)))
-
-(defun TeX-command-menu-printer-entry (entry)
-  ;; Return TeX-printer-list ENTRY as a menu item.
-  (vector (nth 0 entry)
-	  (list 'TeX-command-menu-print
-		(nth 0 entry)
-		(or (nth lookup entry) command)
-		name
-		(list 'quote file))
-	  t))
-
-(defun TeX-command-menu-entry (entry)
-  ;; Return TeX-command-list ENTRY as a menu item.
-  (let ((name (car entry)))
-    (cond ((and (string-equal name TeX-command-Print)
-		TeX-printer-list)
-	   (let ((command TeX-print-command)
-		 (lookup 1))
-	     (append (list TeX-command-Print)
-		     (mapcar 'TeX-command-menu-printer-entry
-			     TeX-printer-list))))
-	  ((and (string-equal name TeX-command-Queue)
-		TeX-printer-list)
-	   (let ((command TeX-queue-command)
-		 (lookup 2))
-	     (append (list TeX-command-Queue)
-		     (mapcar 'TeX-command-menu-printer-entry
-			     TeX-printer-list))))
-	  (t
-	   (vector name (list 'TeX-command-menu name (list 'quote file)) t)))))
-
-(defun TeX-command-create-menu (name file)
-  ;; Create menu NAME for each entry TeX-command-list for FILE.
-  (append (list name)
-	  (mapcar 'TeX-command-menu-entry TeX-command-list)))
 
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
@@ -1841,16 +1878,11 @@ character ``\\'' will be bound to `TeX-electric-macro'.")
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
-				 'TeX-command-master)
-	(TeX-command-create-menu "Command on Buffer  (C-c C-b)"
-				 'TeX-command-buffer)
-	(TeX-command-create-menu "Command on Region  (C-c C-r)"
-				 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	["Kill Job" TeX-kill-job t]
-	["Toggle debug of boxes" TeX-toggle-debug-boxes t]
-	["Switch to original file" TeX-home-buffer t]
+	["Debug Bad Boxes" TeX-toggle-debug-boxes
+	 :style toggle :selected TeX-debug-bad-boxes ]
+	["Switch to Original File" TeX-home-buffer t]
 	["Recenter Output Buffer" TeX-recenter-output-buffer t]
 	;; ["Uncomment" TeX-un-comment t]
 	["Uncomment Region" TeX-un-comment-region t]

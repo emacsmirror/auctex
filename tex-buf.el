@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.72 1994-10-06 17:27:47 amanda Exp $
+;; $Id: tex-buf.el,v 1.73 1994-10-25 13:53:09 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -853,14 +853,6 @@ original file."
   "*Base name for temporary file for use with TeX-region.")
 
 ;;; Parsing
-
-;;; - Customization
-
-(defvar TeX-display-help t
-  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
-
-(defvar TeX-debug-bad-boxes nil
-  "*Non-nil means also find overfull/underfull boxes warnings with TeX-next-error")
 
 ;;; - Global Parser Variables
 

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.105 1994-10-25 13:17:55 amanda Exp $
+# $Id: Makefile,v 5.106 1994-10-25 13:52:59 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -101,7 +101,7 @@ MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 AUCSRC = auc-old.el  auc-ver.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
-	 ltx-help.el
+	 ltx-help.el easymenu.el
 
 STYLESRC = style/slides.el    style/foils.el \
 	   style/article.el   style/book.el     style/letter.el \
