@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.918 (29 Jul 2004)
+;; Version:    0.919 (31 Jul 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,12 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.919 31Jul2004 Ralf Angeli
+;;  - Autoload `texmathp'.
+;;  - `font-latex-keywords-2': Add `font-latex-match-script'.
+;;  - `font-latex-script-keywords': Remove.
+;;  - `font-latex-fontify-script': Remove :set function.
+;;  - `font-latex-match-script': New function.
 ;; V0.918 29Jul2004 Ralf Angeli
 ;;  Doc fix.
 ;; V0.917 20Jul2004 Reiner Steib
@@ -335,6 +341,7 @@
 ;; ----------------------------------------------------------------------------
 ;;; Code:
 (require 'font-lock)
+(autoload 'texmathp "texmathp")
 
 (defgroup font-latex nil
   "Font-latex text highlighting package."
@@ -1018,7 +1025,9 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
      (font-latex-match-math-envII                             ;;;Math environ.
       (0 font-latex-math-face append t))
      ("\\\\[@A-Za-z]+"                                        ;;;Other commands
-      (0 font-latex-sedate-face append))))
+      (0 font-latex-sedate-face append))
+     (font-latex-match-script
+      (1 (font-latex-script (match-beginning 0)) append))))
   "High level highlighting for LaTeX modes.")
 
 (defvar font-latex-keywords font-latex-keywords-1
@@ -1035,33 +1044,11 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 ;;; Subscript and superscript
 
-;; Copy and adaption of `tex-font-lock-keywords-3' from tex-mode.el in
-;; GNU Emacs on 2004-07-07.
-(defconst font-latex-script-keywords
-  (eval-when-compile
-    (let ((general "\\([a-zA-Z@]+\\|[^ \t\n]\\)")
-	  (slash "\\\\")
-	  (arg "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*"))
-      `((,(concat "[_^] *\\([^\n\\{}]\\|" slash general "\\|" arg "}\\)")
-	 (1 (font-latex-script (match-beginning 0))
-	    append)))))
-  "Keyword definition for highlighting sub- and superscript in LaTeX modes.")
-
 (defcustom font-latex-fontify-script t
   "Non-nil means do not fontify subscript or superscript strings.
-You have to restart Emacs for this setting to take effect.
-This feature is not available in XEmacs."
+Fontification will only work if texmathp.el is available.
+This feature does not work in XEmacs."
   :type 'boolean
-  :set (lambda (symbol value)
-	 (set-default symbol value)
-	 (unless (featurep 'xemacs)
-	   (if value
-	       (setq font-latex-keywords-2
-		     (append font-latex-keywords-2
-			     font-latex-script-keywords))
-	     (setq font-latex-keywords-2
-		   (remove (car font-latex-script-keywords)
-			   font-latex-keywords-2)))))
   :group 'font-latex)
 
 
@@ -1816,6 +1803,26 @@ set to french, and >> german << (and 8-bit) are used if set to german."
        limit 'move)
       (store-match-data (list beg (point)))
       t)))
+
+(defun font-latex-match-script (limit)
+  "Match subscript and superscript patterns up to LIMIT."
+    (when (and font-latex-fontify-script
+	       (not (featurep 'xemacs))
+	       (re-search-forward
+		(eval-when-compile
+		  ;; Regexp taken from `tex-font-lock-keywords-3'
+		  ;; from tex-mode.el in GNU Emacs on 2004-07-07.
+		  (concat "[_^] *\\([^\n\\{}]\\|" "\\\\"
+			  "\\([a-zA-Z@]+\\|[^ \t\n]\\)" "\\|"
+			  "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*" "}\\)"))
+		limit t))
+      (goto-char (match-end 0))
+      (if (save-match-data (condition-case nil (texmathp) (error nil)))
+	  (set-match-data (list (match-beginning 0) (match-end 0)
+				(match-beginning 1) (match-end 1)))
+	;; Not in a math environment.  Return an empty match.
+	(set-match-data (list 1 1 1 1)))
+      t))
 
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
