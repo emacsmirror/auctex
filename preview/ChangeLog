@@ -1,5 +1,8 @@
 2001-10-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-next-border): Can't get everything right
+	first try now, can I?
+
 	* prv-emacs.el: replace preview-intangible by preview-state.
 	(preview-handle-insert-in-front): Same here.
 	(preview-toggle): Same here.
