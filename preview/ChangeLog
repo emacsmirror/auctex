@@ -1,3 +1,8 @@
+2002-04-12  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/preview-latex.texi (Simple customization): expound on the
+	center example.
+
 2002-04-11  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Adjustments for xemacs
