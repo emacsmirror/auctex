@@ -1,5 +1,7 @@
 2002-04-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-add-urgentization): Cosmetic change.
+
 	* Additional frobbing of urgentization.
 
 2002-04-05  Nix  <nix@esperi.demon.co.uk>
