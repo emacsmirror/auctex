@@ -501,16 +501,18 @@ Return the new process."
 
 (defun TeX-run-shell (name command file)
   "Ignore first and third argument, start shell-command with second argument."
-  (shell-command command)
-  (if (eq system-type 'ms-dos)
-      (redraw-display)))
+  (with-current-buffer (TeX-process-buffer file)
+    (shell-command command)
+    (if (eq system-type 'ms-dos)
+	(redraw-display))))
 
 (defun TeX-run-discard (name command file)
   "Start process with second argument, discarding its output."
-  (process-kill-without-query (start-process (concat name " discard")
-					     nil TeX-shell
-					     TeX-shell-command-option
-					     command)))
+  (with-current-buffer (TeX-process-buffer file)
+    (process-kill-without-query (start-process (concat name " discard")
+					       nil TeX-shell
+					       TeX-shell-command-option
+					       command))))
 
 (defun TeX-run-dviout (name command file)
   "Call process wbith second argument, discarding its output. With support
