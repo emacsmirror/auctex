@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-23 18:25:28 $
+;; Last Change: $Date: 2004-04-26 17:01:22 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1418,19 +1418,19 @@ There might be text before point."
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
-
   (save-excursion
     (goto-char (point-min))
-    (if (re-search-forward "%.*?interface=en" (+ 512 (point)) t)
-	(setq ConTeXt-current-interface "en")
-      (if (re-search-forward "%.*?interface=nl" (+ 512 (point)) t)
-	  (setq ConTeXt-current-interface "nl")
-	(if (re-search-forward "\\\\starttext" (+ 1024 (point)) t)
-	    (setq ConTeXt-current-interface "en")
-	  (if (re-search-forward "\\\\starttekst" (+ 1024 (point)) t)
-	      (setq ConTeXt-current-interface "nl")
-	    (setq ConTeXt-current-interface ConTeXt-default-interface)
-	    ))))))
+    (setq ConTeXt-current-interface
+	  (cond ((re-search-forward "%.*?interface=en" (+ 512 (point)) t)
+		 "en")
+		((re-search-forward "%.*?interface=nl" (+ 512 (point)) t)
+		 "nl")
+		((re-search-forward "\\\\starttext" (+ 1024 (point)) t)
+		 "en")
+		((re-search-forward "\\\\starttekst" (+ 1024 (point)) t)
+		 "nl")
+		(t
+		 ConTeXt-default-interface)))))
 
 (defun context-mode ()
   "Major mode for editing files of input for ConTeXt.
