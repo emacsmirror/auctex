@@ -250,15 +250,14 @@ Usually a magnifying glass.")
   "Cause FUN (function call form) to be called when redisplayed.
 FUN must be a form with OV as first argument,
 REST as the remainder, returning T."
-  (set-extent-property ov 'initial-redisplay-function
-                       `(lambda (ov) (,fun ,ov ,@rest))))
+  (set-extent-initial-redisplay-function ov `(lambda (ov) (,fun ,ov ,@rest))))
 
 (defun preview-remove-urgentization (ov)
   "Undo urgentization of OV by `preview-add-urgentization'.
 Returns the old arguments to `preview-add-urgentization'
 if there was any urgentization."
   (let ((old-urgent (extent-property ov 'initial-redisplay-function)))
-    (set-extent-property ov 'initial-redisplay-function nil)
+    (set-extent-initial-redisplay-function ov nil)
     (and (consp old-urgent)
 	 (nth 2 old-urgent))))
 
