@@ -1,4 +1,4 @@
-@section News in 12
+@section News in 11.50
 
 @itemize @bullet
 @item
@@ -8,29 +8,55 @@ La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
 and the customization will not work correctly.
 
 @item
-If @code{TeX-master} is set to @code{t}, AUC@TeX{} will now query for
-a master file only when a new file is opened.  Existing files will be
-left alone.  The new function @code{TeX-master-file-ask} is provided
-for adding the variable manually.
+Limited support for @code{doc.sty} (@samp{dtx} files) was added.  The
+new doc@TeX{} mode provides functionality for editing documentation
+parts.  This includes formatting (indenting and filling), adding macros
+and environments while staying in comments as well as syntax
+highlighting.  Please note that the mode is by for not finished yet.
 
 @item
-Sectioning commands are now shown in a larger font.  The variable
+Support for Con@TeX{}t with a separate Con@TeX{}t mode is now included.
+Macro definitions for completion are available in Dutch and English.
+
+@item
+The filling and indentation code was overhauled and is now able to
+format commented parts of the source syntactically correct.  Newly
+available functionality and customization options are explained in the
+manual.
+
+@item
+If @code{TeX-master} is set to @code{t}, AUC@TeX{} will now query for a
+master file only when a new file is opened.  Existing files will be left
+alone.  The new function @code{TeX-master-file-ask} (bound to @kbd{C-c
+_} is provided for adding the variable manually.
+
+@item
+Sectioning commands are now shown in a larger font on display devices
+which support such fontification.  The variable
 @code{font-latex-title-fontity} can be customized to restore the old
 appearance, i.e. the usage of a different color instead of a change in
 size.
 
 @item
 Support for @code{alphanum.sty}, @code{beamer.cls}, @code{booktabs.sty},
-@code{emp.sty} and @code{paralist.sty} was added.
+@code{emp.sty} and @code{paralist.sty} was added.  Credits go to the
+authors mentioned in the respective AUC@TeX{} style files.
 
 @item
-AUC@TeX{} may now be customized to fontify either >>German<< or
-<<French>> quotes by changing the variable @code{font-latex-quotes}.
+The commenting functionality was fixed.  The separate functions for
+commenting and uncommenting were unified in one function for paragraphs
+and regions respectively which do both.
 
 @item
-Certain @TeX{}/La@TeX{} function, reference, variable and warning
-keywords will now be fontified.  Own keywords may be added by
-customizing the variables @code{font-latex-match-function-keywords},
+Syntax highlighting can be customized to fontify quotes delimited by
+either >>German<< or <<French>> quotation marks by changing the variable
+@code{font-latex-quotes}.
+
+@item
+Certain @TeX{}/La@TeX{} keywords for functions, references, variables
+and warnings will now be fontified specially.  You may add your own
+keywords by customizing the variables
+@code{font-latex-match-function-keywords},
 @code{font-latex-match-reference-keywords},
 @code{font-latex-match-variable-keywords} and
 @code{font-latex-match-warning-keywords}.
@@ -45,12 +71,9 @@ customize @code{LaTeX-german-open-quote},
 influence the type of quote insertion.
 
 @item
-AUC@TeX{} now includes support for ConTeXt.
-
-@item
-AUC@TeX{} now is able to determine automatically which viewer to
-choose and what parameters to pass to it by looking at the extension
-of the output file and certain options used in the source file.  The
+Upon viewing an output file, the right viewer and command line options
+for it are now determined automatically by looking at the extension of
+the output file and certain options used in the source file.  The
 behavior can be adapted or extended respectively by customizing the
 variable @code{TeX-output-view-style}.
 
@@ -60,32 +83,69 @@ it started.
 
 @item
 The build process was enhanced and is now based on @code{autoconf}.
+@end itemize
 
-@item
-Support for the KOMA-Script classes.
-Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
 
+@section News in 11.14
+
+@itemize @bullet
 @item
 Many more LaTeX and LaTeX2e commands are supported.
 Done by Masayuki Ataka  <ataka@@milk.freemail.ne.jp>
+@end itemize
 
+@section News in 11.12
+
+@itemize @bullet
+@item
+Support for the KOMA-Script classes.
+Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
+@end itemize
+
+@section News in 11.11
+
+@itemize @bullet
 @item
 Support for @file{prosper.sty}, see @url{http://prosper.sourceforge.net/}.
 Contributed by Phillip Lord <p.lord@@russet.org.uk>.
+@end itemize
 
+@section News in 11.10
+
+@itemize @bullet
+@item
+@code{comment-region} now inserts @t{%%} by default.
+Suggested by "Davide G. M. Salvetti" <salve@@debian.org>.
+@end itemize
+
+@section News in 11.06
+
+@itemize @bullet
 @item
 You can now switch between using the @file{font-latex} (all emacsen),
 the @file{tex-font} (Emacs 21 only) or no special package for font
 locking.  Customize @code{TeX-install-font-lock} for this.
+@end itemize
 
+@section News in 11.04
+
+@itemize @bullet
 @item
 Now use @t{-t landscape} by default when landscape option appears.
 Suggested by Erik Frisk <frisk@@isy.liu.se>.
+@end itemize
 
+@section News in 11.03
+
+@itemize @bullet
 @item
 Use @file{tex-fptex.el} for fpTeX support.
 Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
+@end itemize
 
+@section News in 11.02
+
+@itemize @bullet
 @item
 New user option @code{LaTeX-top-caption-list} specifies environments
 where the caption should go at top.
@@ -106,8 +166,11 @@ Patch by ataka@@milk.freemail.ne.jp (Masayuki Ataka).
 @item
 More accurate error parsing.
 Added by David Kastrup <David.Kastrup@@t-online.de>.
+@end itemize
 
+@section News in 11.01
+
+@itemize @bullet
 @item
 Bug fixes.
-
 @end itemize
