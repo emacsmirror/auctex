@@ -188,6 +188,7 @@
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
      ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+   LaTeX-auto-class-regexp-list
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list)
