@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.86 1994-04-13 12:56:16 amanda Exp $
+@c $Id: auc-tex.texi,v 1.87 1994-04-16 13:34:56 amanda Exp $
 
 @finalout
 @titlepage
@@ -3409,10 +3409,6 @@ exists.
 @item
 Make AUC @TeX{} work with @samp{crypt++}.  Suggested by Chris Moore
 @samp{<Chris.Moore@@src.bae.co.uk>}.
-
-@item
-Make it possible to use absolute paths when including bibliographies or
-style files.
 
 @item
 Fix bug with @code{TeX-show-environment} from hidden document

@@ -32,6 +32,10 @@ those variables you need to customize from @file{tex.el} to
 @file{tex-site.el}. 
 
 @item
+Made it possible to use absolute paths when including bibliographies or
+style files.
+
+@item
 Fixed problem with parsing errors after running La@TeX{} on the region
 from the menu.  Thanks to Peter Barth @samp{<barth@@mpi-sb.mpg.de>} for
 finding this one.

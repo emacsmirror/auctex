@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.7 1994-04-15 16:35:09 amanda Exp $
+;; Version: $Id: tex.el,v 5.8 1994-04-16 13:34:49 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -553,32 +553,40 @@ active.")
 
 (defun TeX-load-style (style)
   "Search for and load each definition for style in TeX-style-path."
-  (if (assoc style TeX-style-hook-list)
-      ;; We already found it
-      ()
-    ;; Insert empty list to mark the fact that we have searched.
-    (setq TeX-style-hook-list (cons (list style) TeX-style-hook-list))
-    ;; Now check each element of the path
-    (mapcar (function
-             (lambda (name)
-               (let* ((name (if (string-match "/$" name)
-                                name
-                              (concat name "/")))
-                      (el (concat name style ".el"))
-                      (elc (concat name style ".elc")))
-                 (cond ((and (null TeX-byte-compile)
-			     (file-readable-p el))
-			(load-file el))
-		       ((file-newer-than-file-p el elc)
-			(if (not (file-writable-p elc))
-			    (load-file el)
-			  (byte-compile-file el)
-			  (load-file elc)))
-		       ((file-readable-p elc)
-			(load-file elc))
-		       ((file-readable-p el)
-			(load-file el))))))
-            TeX-style-path)))
+  (cond ((assoc style TeX-style-hook-list)) ; We already found it
+	((string-match "\\`\\(/.+/\\)\\([^/]*\\)\\'" style) ;Absolute path
+	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
+		(style (substring style (match-beginning 2) (match-end 2)))
+		(TeX-style-path (append (list (concat dir TeX-auto-local)
+					      (concat dir TeX-style-local))
+					TeX-style-path)))
+	   (TeX-load-style style)))
+	(t				;Relative path
+	 ;; Insert empty list to mark the fact that we have searched.
+	 (setq TeX-style-hook-list (cons (list style) TeX-style-hook-list))
+	 ;; Now check each element of the path
+	 (mapcar (function (lambda (name)
+		    (TeX-load-style-file (if (string-match "/$" name)
+					     (concat name style)
+					   (concat name "/" style)))))
+		 TeX-style-path))))
+
+(defun TeX-load-style-file (file)
+  ;; Load FILE checking for a lisp extensions.
+  (let ((el (concat file ".el"))
+	(elc (concat file ".elc")))
+    (cond ((and (null TeX-byte-compile)
+		(file-readable-p el))
+	   (load-file el))
+	  ((file-newer-than-file-p el elc)
+	   (if (not (file-writable-p elc))
+	       (load-file el)
+	     (byte-compile-file el)
+	     (load-file elc)))
+	  ((file-readable-p elc)
+	   (load-file elc))
+	  ((file-readable-p el)
+	   (load-file el)))))
 
 (defun TeX-add-style-hook (style hook)
   "Give STYLE yet another HOOK to run."
@@ -618,6 +626,9 @@ active.")
 	       (setq TeX-active-styles
 		     (cons style TeX-active-styles))
 	       (TeX-load-style style)
+	       (if (string-match "\\`\\(/.+/\\)\\([^/]*\\)\\'" style)
+		   (setq style		; Absolute path
+			 (substring style (match-beginning 2) (match-end 2))))
 	       (mapcar 'funcall
 		       (cdr-safe (assoc style TeX-style-hook-list))))))
 	  styles))
