@@ -299,7 +299,7 @@
    {\let\protect\noexpand
    \voffset=-\ht\pr@box
    \hoffset=\z@
-   \shipout\box\pr@box}
+   \shipout\box\pr@box}%
    \pr@ship@end
    \global\advance\c@page\@ne
    \pr@cleanup
@@ -473,15 +473,23 @@
 %\end{macro}
 %The Auc\TeX\ option will cause error messages to spew.  We want them
 %on the terminal, but we don't want LaTeX to stop its automated run.
+%We delay \cmd{\nonstopmode} in case the user has any
+%pseudo-interactive folderol like reading in of file names in his
+%preamble.  Because we are so good-hearted, we will not break this as
+%long as the document has not started, but after that we need the
+%error message mechanism operative.
+%
 %So here is the contents of the |prauctex.def| file:
 %    \begin{macrocode}
-%<auctex>\nonstopmode
+%<auctex>\ifPreview
+%<auctex>\preview@delay{\nonstopmode}
 %<auctex>\def\pr@msg#1{\PackageError{Preview}%
 %<auctex>   {Snippet \number\c@page\space#1}%
 %<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
 %<auctex>    Just hit Return and be gone.}}
 %<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
 %<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended}}
+%<auctex>\fi
 %    \end{macrocode}
 %
 %\begin{environment}{preview}
