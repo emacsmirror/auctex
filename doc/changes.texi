@@ -8,11 +8,16 @@ La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
 and the customization will not work correctly.
 
 @item
+You can now control if indentation is done upon typing @key{RET} by
+customizing the variable @code{TeX-newline-function}.
+
+@item
 Limited support for @code{doc.sty} (@samp{dtx} files) was added.  The
 new doc@TeX{} mode provides functionality for editing documentation
 parts.  This includes formatting (indenting and filling), adding macros
 and environments while staying in comments as well as syntax
-highlighting.  Please note that the mode is by for not finished yet.
+highlighting.  Please note that the mode is by far not finished yet.
+For example syntax highlighting does not work yet in XEmacs.
 
 @item
 Support for Con@TeX{}t with a separate Con@TeX{}t mode is now included.
