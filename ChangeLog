@@ -1,3 +1,8 @@
+2005-02-09  Peter S Galbraith  <psg@debian.org>
+
+	* bib-cite.el (bib-master-file): Apply patch from Peter Heslin.
+	TeX-master can now have symbol values (other than t or nil).
+
 2005-02-09  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (LaTeX-auto-regexp-list): Removed `usepackage' because

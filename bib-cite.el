@@ -1,12 +1,12 @@
 ;;; bib-cite.el --- test
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003, 2004
+;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2003, 2004, 2005
 ;; Free Software Foundation
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.25  (Feb 15 2004)
+;; Version:   3.27  (Feb 09 2005)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -323,6 +323,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.27 Feb 09 2005 - PSG
+;;  - Patch from Peter Heslin.  TeX-master can now have symbol values.
 ;; V3.26 Aug 06 2004 - Reiner Steib
 ;;  - Changed URL of AUCTeX. Use "AUCTeX", not "auc-tex" (skipped Change log).
 ;; V3.25 Feb 15 2004 - PSG
@@ -2122,7 +2124,7 @@ If no master file, then return current default."
 	   ;; This buffer doesn't know what a master file is, so return now.
 	   nil)
 	  ((and TeX-master              ;Set, but not to t
-		(not (eq TeX-master 't))) ; then we have an actual name
+		(not (symbolp TeX-master))) ; then we have an actual name
 	   (expand-file-name TeX-master))
 	  ((and (eq TeX-master 't)      ;Test if master file itself
 		(progn                  ;But also require at least one \include
