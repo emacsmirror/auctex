@@ -1,7 +1,7 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
 ;; Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-;;               2004, 2005 Free Software Foundation.
+;;   2004, 2005 Free Software Foundation.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -587,8 +587,8 @@ are missing, the face will be applied to the command itself.
 	      (0 font-latex-math-face append t))
 	     (font-latex-match-math-envII
 	      (0 font-latex-math-face append t))
-	     ("\\(?:^\\|[^\\]\\)\\(?:\\\\\\\\\\)*\\(\\\\[@A-Za-z]+\\)"
-	      (1 font-latex-sedate-face append))
+	     (font-latex-match-simple-command
+	      (0 font-latex-sedate-face append))
 	     (font-latex-match-script
 	      (1 (font-latex-script (match-beginning 0)) append))))
     (add-to-list 'font-latex-keywords-2 item t)))
@@ -1210,7 +1210,8 @@ Returns nil if none of KEYWORDS is found."
 	(skip-chars-forward " \n\t" limit)
 	(setq kend (point))
 	;; Optional arguments [...]
-	(while (eq (following-char) ?\[)
+	(while (and (< (point) limit)
+		    (eq (following-char) ?\[))
 	  (setq sbeg kend)
 	  (save-restriction
 	    ;; Restrict to LIMIT.
@@ -1223,7 +1224,8 @@ Returns nil if none of KEYWORDS is found."
 	;; Mandatory arguments {...}
 	(dotimes (i arg-count)
 	  (skip-chars-forward " \n\t" limit)
-	  (when (eq (following-char) ?\{)
+	  (when (and (< (point) limit)
+		     (eq (following-char) ?\{))
 	    (when (= i 0) (setq cbeg (point)))
 	    (save-restriction
 	      ;; Restrict to LIMIT.
@@ -1306,6 +1308,10 @@ Returns nil if no command is found."
                (list kbeg kend cbeg cend)))
 
             t))))))))
+
+(defun font-latex-match-simple-command (limit)
+  "Search for command like \\foo before LIMIT."
+  (TeX-re-search-forward-unescaped "\\\\[@A-Za-z]+" limit t))
 
 ;;; FIXME: Add caches for math-env, math-envII and quotations.
 (defun font-latex-match-math-env (limit)
@@ -1392,11 +1398,11 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 		      (setq pos (1- pos) odd (not odd)))
 		    odd)))
     ;; Adding other text properties than `face' is supported by
-    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28 or
-    ;; Emacs 21.4 respectively.  With the introduction of this feature
-    ;; the variable `font-lock-extra-managed-props' was introduced and
-    ;; serves here for feature checking.  XEmacs (CVS and 21.4.15)
-    ;; currently (2004-08-18) does not support this feature.
+    ;; `font-lock-apply-highlight' in CVS Emacsen since 2001-10-28.
+    ;; With the introduction of this feature the variable
+    ;; `font-lock-extra-managed-props' was introduced and serves here
+    ;; for feature checking.  XEmacs (CVS and 21.4.15) currently
+    ;; (2004-08-18) does not support this feature.
     (let ((extra-props-flag (boundp 'font-lock-extra-managed-props)))
       (if (eq (char-after pos) ?_)
 	  (if extra-props-flag
