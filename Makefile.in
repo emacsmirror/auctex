@@ -36,17 +36,17 @@ REMOVE =  MSDOS VMS OS2 WIN-NT
 
 MINMAPSRC = all.el multi-prompt.el
 
-CONTRIB = bib-cite.el tex-fptex.el
-CONTRIBELC = bib-cite.elc tex-fptex.elc
+CONTRIB = bib-cite.el tex-fptex.el tex-mik.el
+CONTRIBELC = bib-cite.elc tex-fptex.elc tex-mik.el
 CONTRIB_MULE = tex-jp.el
 COMPILE_MULE = @COMPILE_MULE@
 CONTRIB_MULEELC = @CONTRIB_MULEELC@
 
 AUCSRC = tex.el tex-buf.el latex.el auc-old.el tex-info.el \
-	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
+	texmathp.el multi-prompt.el font-latex.el tex-font.el \
 	context.el
 AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
-	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc \
+	texmathp.elc multi-prompt.elc font-latex.elc tex-font.elc \
 	context.elc
 
 

@@ -14,6 +14,7 @@
 	(TeX-command-list): Added new choice for the selection of the mode
 	for the respective command.  Adapted doc string.  Added respective
 	symbols to command definitions.  Rearranged command definitions.
+	Changed `LaTeX PDF' to `PDFLaTeX'.
 	
 	* latex.el (LaTeX-mode-command-menu): New menu used instead of
 	`TeX-mode-menu'.
@@ -37,8 +38,12 @@
 
 	* tex-fptex.el (TeX-command-list): Added symbols to command
 	definitions needed for assigning them to the respective mode.
+	Changed `LaTeX PDF' to `PDFLaTeX'.
 
 	* tex-mik.el (TeX-command-list): Ditto.
+
+	* Makefile.in (AUCSRC, CONTRIB): Moved `tex-mik.el' from AUCTeX
+	core to contributed files.
 
 2004-01-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
