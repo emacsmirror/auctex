@@ -3844,8 +3844,7 @@ commands are defined:
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
     (easy-menu-remove LaTeX-math-mode-menu))
-  (TeX-set-mode-name)
-  (set-buffer-modified-p (buffer-modified-p)))
+  (TeX-set-mode-name))
 
 (fset 'latex-math-mode 'LaTeX-math-mode)
 
