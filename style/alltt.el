@@ -38,6 +38,10 @@
    (add-to-list 'LaTeX-indent-environment-list
 		'("alltt" current-indentation))
    (make-local-variable 'LaTeX-verbatim-regexp)
-   (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|alltt"))))
+   (setq LaTeX-verbatim-regexp (concat LaTeX-verbatim-regexp "\\|alltt"))
+   (make-local-variable 'font-latex-verbatim-environments)
+   (setq font-latex-verbatim-environments
+	 (append font-latex-verbatim-environments '("alltt")))
+   (font-latex-set-syntactic-keywords)))
 
 ;;; alltt.el ends here
