@@ -1,7 +1,8 @@
 2004-03-26  Davide G. M. Salvetti  <salve@debian.org>
 
 	* bib-cite.el, latex.el, tex-buf.el, tex-jp.el, tex.el:
-	Map (function (lambda ...)) to (lambda ...) for better readability.
+	Map (function (lambda ...)) to (lambda ...) for better
+	readability.
 
 2004-03-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
