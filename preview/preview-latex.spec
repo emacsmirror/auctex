@@ -106,12 +106,15 @@ for i in *emacs; do
   # The below will make the package build from a tar straight from CVS
   # NOT RECOMMENDED, but useful for testing!
   test -f ./configure || ./autogen.sh
-  # --with-packagedir repairs RedHat XEmacs braindamage
+  # --with-packagedir repairs RedHat XEmacs braindamage texmf-dir
+  # moves the installation to a location searched before the (possibly
+  # conflicting) system tree.  Unfortunately, this is the site-wide
+  # tree that we should not really be touching.  Sigh.
   if [ $i = "emacs" ]; then
     %configure '--with-lispdir=${datadir}/emacs/site-lisp/site-start.d' \
-      --with-packagelispdir=../preview
+      --with-packagelispdir=../preview '--with-texmf-dir=${prefix}/local/share/texmf'
   else
-    %configure --with-xemacs '--with-packagedir=%{xemacspkgconfdir}'
+    %configure --with-xemacs '--with-packagedir=%{xemacspkgconfdir}' '--with-texmf-dir=${prefix}/local/share/texmf'
   fi
   make 'infodir=%{_infodir}'
   cd doc
