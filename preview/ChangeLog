@@ -1,3 +1,7 @@
+2002-04-14  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* install.texi: Added --with-xemacs
+
 2002-04-14  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-error-condition): New variable for last
