@@ -1,3 +1,9 @@
+2001-11-10  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}): Make reassignment of
+	\@tempboxa that lead to missing section headers local.
+	Interesting bug.
+
 2001-11-09  David Kastrup  <David.Kastrup@t-online.de>
 
 	* RELEASE: initial stab at release notes.
