@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.225 2005-02-09 11:55:45 dakas Exp $
+;; $Id: preview.el,v 1.226 2005-02-09 13:35:34 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1406,60 +1406,6 @@ Removes comments and collapses white space, except for multiple newlines."
       (preview-delete ovr)
       (preview-region begin end))))
 
-(defun preview-region (begin end)
-  "Run preview on region between BEGIN and END."
-  (interactive "r")
-  (TeX-region-create (TeX-region-file TeX-default-extension)
-		     (buffer-substring begin end)
-		     (if buffer-file-name
-			 (file-name-nondirectory buffer-file-name)
-		       "<none>")
-		     (save-restriction
-		       (widen)
-		       (let ((inhibit-point-motion-hooks t)
-			     (inhibit-field-text-motion t))
-			 (+ (count-lines (point-min) begin)
-			    (save-excursion
-			      (goto-char begin)
-			      (if (bolp) 0 -1))))))
-  (preview-generate-preview t (TeX-region-file nil t)
-			    preview-LaTeX-command-replacements))
-
-(defun preview-buffer ()
-  "Run preview on current buffer."
-  (interactive)
-  (preview-region (point-min) (point-max)))
-
-;; We have a big problem: When we are dumping preambles, diagnostics
-;; issued in later runs will not make it to the output when the
-;; predumped format skips the preamble.  So we have to place those
-;; after \begin{document}.  This we can only do if regions never
-;; include the preamble.  We could do this in our own functions, but
-;; that would not extend to the operation of C-c C-r g RET.  So we
-;; make this preamble skipping business part of TeX-region-create.
-;; This will fail if the region is to contain just part of the
-;; preamble -- a bad idea anyhow.
-
-(defadvice TeX-region-create (before preview-preamble preactivate)
-  "Skip preamble for the sake of predumped formats."
-  (when (string-match TeX-header-end (ad-get-arg 1))
-    (ad-set-arg 1
- 		(prog1 (substring (ad-get-arg 1) (match-end 0))
- 		  (ad-set-arg 3
-			      (with-temp-buffer
-				(insert (substring (ad-get-arg 1)
-						   0 (match-end 0)))
-				(+ (ad-get-arg 3)
-				   (count-lines (point-min) (point-max))
-				   (if (bolp) 0 -1))))))))
-
-(defun preview-document ()
-  "Run preview on master document."
-  (interactive)
-  (TeX-save-document (TeX-master-file))
-  (preview-generate-preview nil (TeX-master-file nil t)
-			    preview-LaTeX-command-replacements))
-		       
 (defcustom preview-inner-environments '("Bmatrix" "Vmatrix" "aligned"
 					"array" "bmatrix" "cases"
 					"gathered" "matrix" "pmatrix"
@@ -1469,35 +1415,6 @@ Removes comments and collapses white space, except for multiple newlines."
   :group 'preview-latex
   :type '(repeat string))
 
-
-(defun preview-environment (count)
-  "Run preview on LaTeX environment.
-This avoids running environments through preview that are
-indicated in `preview-inner-environments'.  If you use a prefix
-argument COUNT, the corresponding level of outward nested
-environments is selected."
-  (interactive "p")
-  (save-excursion
-    (let (currenv)
-      (dotimes (i (1- count))
-	(setq currenv (LaTeX-current-environment))
-	(if (string= currenv "document")
-	    (error "No enclosing outer environment found"))
-	(LaTeX-find-matching-begin))
-      (while (member (setq currenv (LaTeX-current-environment))
-		     preview-inner-environments)
-	(LaTeX-find-matching-begin))
-      (if (string= currenv "document")
-	  (error "No enclosing outer environment found"))
-      (preview-region
-       (save-excursion (LaTeX-find-matching-begin) (point))
-       (save-excursion (LaTeX-find-matching-end) (point))))))
-
-(defun preview-section ()
-  "Run preview on LaTeX section." (interactive)
-  (save-excursion
-    (LaTeX-mark-section)
-    (preview-region (region-beginning) (region-end))))
 
 (defun preview-next-border (backwards)
   "Search for the next interesting border for `preview-at-point'.
@@ -3084,6 +3001,90 @@ stored in `preview-dumped-alist'."
   (preview-format-kill old-format)
   (setcdr old-format nil))
 
+(defun preview-region (begin end)
+  "Run preview on region between BEGIN and END."
+  (interactive "r")
+  (TeX-region-create (TeX-region-file TeX-default-extension)
+		     (buffer-substring begin end)
+		     (if buffer-file-name
+			 (file-name-nondirectory buffer-file-name)
+		       "<none>")
+		     (save-restriction
+		       (widen)
+		       (let ((inhibit-point-motion-hooks t)
+			     (inhibit-field-text-motion t))
+			 (+ (count-lines (point-min) begin)
+			    (save-excursion
+			      (goto-char begin)
+			      (if (bolp) 0 -1))))))
+  (preview-generate-preview t (TeX-region-file nil t)
+			    preview-LaTeX-command-replacements))
+
+(defun preview-buffer ()
+  "Run preview on current buffer."
+  (interactive)
+  (preview-region (point-min) (point-max)))
+
+;; We have a big problem: When we are dumping preambles, diagnostics
+;; issued in later runs will not make it to the output when the
+;; predumped format skips the preamble.  So we have to place those
+;; after \begin{document}.  This we can only do if regions never
+;; include the preamble.  We could do this in our own functions, but
+;; that would not extend to the operation of C-c C-r g RET.  So we
+;; make this preamble skipping business part of TeX-region-create.
+;; This will fail if the region is to contain just part of the
+;; preamble -- a bad idea anyhow.
+
+(defadvice TeX-region-create (before preview-preamble preactivate)
+  "Skip preamble for the sake of predumped formats."
+  (when (string-match TeX-header-end (ad-get-arg 1))
+    (ad-set-arg 1
+ 		(prog1 (substring (ad-get-arg 1) (match-end 0))
+ 		  (ad-set-arg 3
+			      (with-temp-buffer
+				(insert (substring (ad-get-arg 1)
+						   0 (match-end 0)))
+				(+ (ad-get-arg 3)
+				   (count-lines (point-min) (point-max))
+				   (if (bolp) 0 -1))))))))
+
+(defun preview-document ()
+  "Run preview on master document."
+  (interactive)
+  (TeX-save-document (TeX-master-file))
+  (preview-generate-preview nil (TeX-master-file nil t)
+			    preview-LaTeX-command-replacements))
+		       
+(defun preview-environment (count)
+  "Run preview on LaTeX environment.
+This avoids running environments through preview that are
+indicated in `preview-inner-environments'.  If you use a prefix
+argument COUNT, the corresponding level of outward nested
+environments is selected."
+  (interactive "p")
+  (save-excursion
+    (let (currenv)
+      (dotimes (i (1- count))
+	(setq currenv (LaTeX-current-environment))
+	(if (string= currenv "document")
+	    (error "No enclosing outer environment found"))
+	(LaTeX-find-matching-begin))
+      (while (member (setq currenv (LaTeX-current-environment))
+		     preview-inner-environments)
+	(LaTeX-find-matching-begin))
+      (if (string= currenv "document")
+	  (error "No enclosing outer environment found"))
+      (preview-region
+       (save-excursion (LaTeX-find-matching-begin) (point))
+       (save-excursion (LaTeX-find-matching-end) (point))))))
+
+(defun preview-section ()
+  "Run preview on LaTeX section." (interactive)
+  (save-excursion
+    (LaTeX-mark-section)
+    (preview-region (region-beginning) (region-end))))
+
+
 (defun TeX-inline-preview (name command file)
   "Main function called by AUCTeX.
 Deprecated.
@@ -3189,7 +3190,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.225 $"))
+	(rev "$Revision: 1.226 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3200,7 +3201,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-09 11:55:45 $"))
+    (let ((date "$Date: 2005-02-09 13:35:34 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
