@@ -1,3 +1,15 @@
+@c This is to enable generation of text-file from this file
+@ifnottex
+@unmacro LaTeX
+@unmacro previewlatex
+@macro LaTeX {}
+La@TeX{}
+@end macro
+@macro previewlatex {}
+preview-latex
+@end macro
+@end ifnottex
+@c -----------------------
 @cindex Readme
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/@LaTeX{} package will render your displayed

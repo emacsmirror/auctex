@@ -1,3 +1,15 @@
+@c This is to enable generation of text-file from this file
+@ifnottex
+@unmacro LaTeX
+@unmacro previewlatex
+@macro LaTeX {}
+La@TeX{}
+@end macro
+@macro previewlatex {}
+preview-latex
+@end macro
+@end ifnottex
+@c -----------------------
 @cindex Copying
 @cindex Copyright
 @cindex GPL

@@ -1,3 +1,15 @@
+@c This is to enable generation of text-file from this file
+@ifnottex
+@unmacro LaTeX
+@unmacro previewlatex
+@macro LaTeX {}
+La@TeX{}
+@end macro
+@macro previewlatex {}
+preview-latex
+@end macro
+@end ifnottex
+@c -----------------------
 Installing @previewlatex{} should be simple: merely @code{./configure},
 @code{make}, and @code{make install}.  Note that unlike most emacs
 add-ins, @previewlatex{} consists of a @TeX{} part and an Emacs part (that
