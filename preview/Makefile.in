@@ -3,8 +3,8 @@
 EMACS=@EMACS@
 ICONFORM=@ICONFORM@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))' $(ICONFORM)
-AUCTEX=-eval '(if (not (string-equal "$(AUCTEXDIR)" "")) \
-                (setq load-path (cons "$(AUCTEXDIR)" load-path)))'
+AUCTEX=-eval '(if (not (string-equal "'$(AUCTEXLISP)'" "")) \
+                (setq load-path (cons "'$(AUCTEXLISP)'" load-path)))'
 GS=@GS@
 
 LISP_SOURCES = @PLAT_LISP@ preview.el
@@ -21,6 +21,7 @@ icondir = @icondir@
 datadir = @datadir@
 packagedir = @packagedir@
 AUCTEXDIR = @AUCTEXDIR@
+AUCTEXLISP = "`echo '$(AUCTEXDIR)'|sed s/\\/&&/g`"
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -37,10 +38,10 @@ docs:
 	(cd doc ; $(MAKE) all)
 
 install-hint:
-	@echo "Congratulations!  Build is complete."
+	@echo 'Congratulations!  Build is complete.'
 	@echo 
-	@echo "Now, run \"make install\" as root, or whatever user has permissions"
-	@echo "to write to the install directory."
+	@echo 'Now, run "make install" as root, or whatever user has permissions'
+	@echo 'to write to the install directory.'
 
 install: install-texmf install-el install-icons install-docs use-hint
 
@@ -59,20 +60,20 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-$(MKINSTALLDIRS) "$(lispdir)"
+	-$(MKINSTALLDIRS) '$(lispdir)'
 	for x in $(LISP_SOURCES) ; do \
-	  echo " $(INSTALL_DATA) $$x $(lispdir)" ; \
-	  $(INSTALL_DATA) $$x "$(lispdir)" ; \
-	  echo " $(INSTALL_DATA) $${x}c $(lispdir)" ; \
-	  $(INSTALL_DATA) $${x}c "$(lispdir)" ; \
+	  echo ' $(INSTALL_DATA) $$x $(lispdir)' ; \
+	  $(INSTALL_DATA) $$x '$(lispdir)' ; \
+	  echo ' $(INSTALL_DATA) $${x}c $(lispdir)' ; \
+	  $(INSTALL_DATA) $${x}c '$(lispdir)' ; \
 	done; \
-	$(ELCC) -l prv-install -f preview-make-package "$(packagedir)" $(LISP_SOURCES); \
+	$(ELCC) -l prv-install -f preview-make-package '$(packagedir)' $(LISP_SOURCES); \
 
 install-icons: $(ICON_SOURCES)
-	-$(MKINSTALLDIRS) "$(icondir)"
+	-$(MKINSTALLDIRS) '$(icondir)'
 	for x in $(ICON_SOURCES); do \
-	  echo " $(INSTALL_DATA) $$x $(icondir)" ; \
-	  $(INSTALL_DATA) $$x "$(icondir)" ; \
+	  echo ' $(INSTALL_DATA) $$x $(icondir)' ; \
+	  $(INSTALL_DATA) $$x '$(icondir)' ; \
 	done
 
 install-texmf:
@@ -80,7 +81,7 @@ install-texmf:
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
-	  echo "$(ELCC) $(AUCTEX) -f batch-byte-compile $$x" ; \
+	  echo $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
 	  $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
 	done
 
@@ -96,10 +97,11 @@ preview-latex.el: preview.el
 '(let ((generated-autoload-file (expand-file-name "$@"))) \
  (update-file-autoloads "preview.el")(save-buffers-kill-emacs t))' ; \
 	fi
-	if [ "$(GS)" != "gs" ]; then \
-	  echo '(setq preview-gs-command "$(GS)")' >> "$@"; \
+	if [ '$(GS)' != 'gs' ]; then \
+	  echo '(setq preview-gs-command "$(GS)")' | \
+	  sed 's/\\/&&/g' >> "$@" ; \
 	fi
-	echo "(add-to-list 'load-path \"$(lispdir)\")"| \
+	echo '(add-to-list '"'"'load-path "$(lispdir)")' | \
 	  sed 's/\\/&&/g' >> "$@"
 
 clean:
