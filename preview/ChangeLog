@@ -4,7 +4,8 @@
 
 	* readme.texi: Typo corrected
 
-	* preview-latex.texi: Document preview-default-preamble
+	* preview-latex.texi: Document preview-default-preamble, bumped
+	release number, typos corrected.
 
 	* doc/Makefile: Simpler index generation
 
