@@ -212,33 +212,51 @@ other hooks, such as major mode hooks, can do the job."
      glyph))
 
 (defvar preview-nonready-icon
-  (let ((glyph
-         (make-glyph
-          (list
-           `[xpm :file ,(locate-data-file "prevwork.xpm")]
-           `[xbm :file ,(locate-data-file "prevwork.xbm")]))))
-    (set-glyph-baseline glyph 90)
-    glyph)
+  (let ((glyph-xpm-filename (locate-data-file "prevwork.xpm"))
+        (glyph-xbm-filename (locate-data-file "prevwork.xbm")))
+    (if (not glyph-xpm-filename)
+        (cerror 'file-error "Image not installed" "prevwork.xpm"))
+    (if (not glyph-xbm-filename)
+        (cerror 'file-error "Image not installed" "prevwork.xbm"))
+    (let ((glyph
+           (make-glyph
+            (list
+             `[xpm :file ,glyph-xpm-filename]
+             `[xbm :file ,glyph-xbm-filename]))))
+      (set-glyph-baseline glyph 90)
+      glyph))
   "The symbol used for previews to be generated.")
 
 (defvar preview-error-icon
-  (let ((glyph
-         (make-glyph
-          (list
-           `[xpm :file ,(locate-data-file "preverr.xpm")]
-           `[xbm :file ,(locate-data-file "preverr.xbm")]))))
-    (set-glyph-baseline glyph 90)
-    glyph)
+  (let ((glyph-xpm-filename (locate-data-file "preverr.xpm"))
+        (glyph-xbm-filename (locate-data-file "preverr.xbm")))
+    (if (not glyph-xpm-filename)
+        (cerror 'file-error "Image not installed" "preverr.xpm"))
+    (if (not glyph-xbm-filename)
+        (cerror 'file-error "Image not installed" "preverr.xbm"))
+    (let ((glyph
+           (make-glyph
+            (list
+             `[xpm :file ,glyph-xpm-filename]
+           `[xbm :file ,glyph-xbm-filename]))))
+      (set-glyph-baseline glyph 90)
+      glyph))
   "The symbol used for PostScript errors.")
 
 (defvar preview-icon
-  (let ((glyph
-         (make-glyph
-          (list
-           `[xpm :file ,(locate-data-file "preview.xpm")]
-           `[xbm :file ,(locate-data-file "preview.xbm")])))) 
-    (set-glyph-baseline glyph 75)
-    glyph)
+  (let ((glyph-xpm-filename (locate-data-file "preview.xpm"))
+        (glyph-xbm-filename (locate-data-file "preview.xbm")))
+    (if (not glyph-xpm-filename)
+        (cerror 'file-error "Image not installed" "preview.xpm"))
+    (if (not glyph-xbm-filename)
+        (cerror 'file-error "Image not installed" "preview.xbm"))
+    (let ((glyph
+           (make-glyph
+            (list
+             `[xpm :file ,glyph-xpm-filename]
+             `[xbm :file ,glyph-xbm-filename]))))
+      (set-glyph-baseline glyph 75)
+      glyph))
   "The symbol used for an open preview.")
 
 ;; Image frobbing.
@@ -291,7 +309,8 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
 +are functions to call on preview's clicks."
   `(let (,@(if glyph `((res (if (stringp ,glyph)
                                 (copy-sequence ,glyph)
-                              (propertize "x" 'end-glyph ,glyph 'invisible t)))))
+                              (propertize "x" 'end-glyph ,glyph 'invisible t
+                                          'isearch-open-invisible t)))))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
@@ -344,8 +363,6 @@ Since there is, as yet, no such support, this is stubbed out.
 This will not be so forever."
   (error 'image-conversion-error "PostScript images are not supported."))
 
-;; TODO: Everything to do with point-motion and calling `preview-disable'.
-
 ;; Most of the changes to this are junking the use of overlays;
 ;; a bit of it is different, and there's a little extra paranoia.
 
@@ -373,9 +390,8 @@ nil displays the underlying text, and 'toggle toggles."
 	    (unless (extent-keymap ov)
 	      (set-extent-keymap ov (preview-reroute-map ov))
 	      (set-extent-property ov 'balloon-help #'preview-balloon-reroute))
-            (set-extent-properties ov '(invisible t
-					isearch-open-invisible ignore
-					isearch-invisible t
+            (set-extent-properties ov `(invisible t
+                                        isearch-open-invisible t
                                         face nil
                                         begin-glyph nil
                                         begin-glyph-layout text))
@@ -475,11 +491,11 @@ Pure borderless black-on-white will return NIL."
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
-(defcustom preview-auto-reveal 'reveal-mode
+(defcustom preview-auto-reveal (if (boundp 'reveal-mode) 'reveal-mode t)
   "*Cause previews to open automatically when entered.
 Set to t or nil, or to a symbol which will be consulted
 if defined.  The default is to follow the setting of
-`reveal-mode'."
+`reveal-mode', if it exists or true if it doesn't.."
   :group 'preview-appearance
   :type '(choice (const :tag "Off" nil)
 		 (const :tag "On" t)
@@ -531,14 +547,9 @@ if defined.  The default is to follow the setting of
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
 
-(when (fboundp 'replace-highlight)
-  (defadvice replace-highlight (before preview)
-    "Make `query-replace' open preview text about to be replaced."
-    (preview-open-overlays
-     (overlays-in (ad-get-arg 0) (ad-get-arg 1)))))
-
-(defadvice isearch-highlight (before preview)
-  "Make `query-replace' open preview text about to be replaced."
+(defadvice isearch-highlight (before preview protect disable)
+  "Make isearch open preview text that's a search hit.
+ Also make `query-replace' open preview text about to be replaced."
   (preview-open-overlays
    (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
 
@@ -556,17 +567,16 @@ if defined.  The default is to follow the setting of
   :initialize #'custom-initialize-reset)
 
 (defcustom preview-query-replace-reveal t
-  "*Make `query-replace' autoreveal previews."
+  "*Make `query-replace' and isearch autoreveal previews."
   :group 'preview-appearance
   :type 'boolean
   :require 'preview
   :set (lambda (symbol value)
 	 (set-default symbol value)
-	 (when (fboundp 'replace-highlight)
-	   (if value
-	       (ad-enable-advice 'replace-highlight 'before 'preview)
-	     (ad-disable-advice 'replace-highlight 'before 'preview))
-	   (ad-activate 'replace-highlight)))
+	 (if value
+	     (ad-enable-advice 'isearch-highlight 'before 'preview)
+	   (ad-disable-advice 'isearch-highlight 'before 'preview))
+	 (ad-activate 'isearch-highlight))
   :initialize #'custom-initialize-reset)
 
 ;; Here is the beef: for best intuitiveness, we want to have
