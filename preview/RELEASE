@@ -1,27 +1,33 @@
-Release notes for version 0.7.5 of the preview-latex package:
+Release notes for version 0.7.6 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by placing judiciously
 selected chunks (such as single formulas) chopped from unwieldy
 preview pages right into its Emacs/XEmacs buffer, while keeping the
 original source readily accessible.  You get to have your eye candy
-and edit it, too.
+and edit it, too.  Since only the display of the text is affected, you
+can safely test-drive on important documents right away.  There are no
+physical withdrawal symptoms to be feared if you chose to quit using
+it, but you'll find yourself unable to do so.
 
 The employed style file preview.sty is independently useful for
 extraction of selected text elements as images.  The package is
 released under the GNU Public License (GPL).  At the current point of
 time, at least GNU Emacs-21.1 under the X window system, AUC TeX
-(11.11 recommended, see below), a working LaTeX installation and
+(11.14 recommended, see below), a working LaTeX installation and
 GhostScript are required.  This version also supports XEmacs-21, best
 in version 21.4.9 or later.  The various Windows ports of XEmacs
 should work out of the box.  Recent CVS versions of Windows GNU Emacs
-could conceivably be made to work, too, but the jury is still out on
-that one.
+can reportedly be made to work, too.
 
-Release 0.7.5 is a bug fix release for XEmacs.  Compatibility macros
-caused several conflicts with other packages when preview-latex was
-loaded after them.  In addition, the preview icon could appear doubly
-in the toolbar.  GNU Emacs users were not affected by either bug and
-need not upgrade from 0.7.4.
+Release 0.7.6 is another consolidation release since AFPL GhostScript
+releases 7.x were inexplicably affected negatively by the latest bug
+workarounds for GNU GhostScript versions.  Treatment of
+multi-directory projects has been corrected, but you need at least
+AUCTeX-11.14 to make use of it.  An added feature can be customized
+into the new `preview-required-option-list' variable: checking the
+`counters' option will make it possible to retain correct equation and
+section numbering even when you are regenerating single previews.  The
+XEmacs toolbar icon is nicer, too.
 
 The README file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -41,13 +47,13 @@ Additional files can be found at
 * If you don't have texinfo 4.0 or later installed, prebuilt
   documentation files can be found there.
 
-* AUC TeX can be found at several places, but if you want the latest
-  11.11 (alpha, but stable AFAIK) with no known issues concerning
-  preview-latex, you can find it there as well.
+* Tarballs of preview-latex for all users, alternatively RPMs for
+  RedHat Linux.  For the binary RPMs, you will need the
+  preview-latex-common RPM as well as the Emacs-flavor specific RPM.
 
-* RPMs for preview-latex and AUC TeX are provided for users of RedHat
-  Linux.  For the binary RPMs, you will need the preview-latex-common
-  RPM as well as the Emacs-flavor specific RPM.
+* AUC TeX is now located at <URL:http://www.nongnu.org/auctex>.  The
+  download area should also provide you with RPMs if you are using
+  RedHat Linux.
 
 The RPMs require a few packages that should be readily available in
 current distributions.  RedHat 7.3 contains Emacs-21.2 and
