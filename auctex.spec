@@ -12,7 +12,7 @@
 
 Summary: 	Enhanced LaTeX mode for Emacs
 Name: 		auctex
-Version: 	11.51
+Version: 	11.52
 Release: 	1%{distri}
 License: 	GPL
 Group: 		Applications/Editors
