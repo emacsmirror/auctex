@@ -1,5 +1,7 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* latex.el (LaTeX-style-list): Improve doc-string.
+
 	* font-latex.el (font-latex-script-display): New variable.  Make
 	raise of sub-/superscripts customizable.
 	(font-latex-unfontify-region, font-latex-script): Use it.

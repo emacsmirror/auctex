@@ -1444,7 +1444,7 @@ ELSE as an argument list."
 			      ("scrlttr2")
 			      ("scrreprt")
 			      ("slides"))
-  "List of document classes."
+  "List of document classes offered when inserting a document environment."
   :group 'LaTeX-environment
   :type '(repeat (group (string :format "%v"))))
 
