@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.126 2002-04-17 15:19:53 dakas Exp $
+;; $Id: preview.el,v 1.127 2002-04-18 13:56:42 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -582,39 +582,39 @@ the pages.  Page 0 corresponds to the initialization section."
     (set-buffer-multibyte nil)
     (insert-file-contents-literally file)
     (let ((last-pt (point-min))
-	  (eol (and (search-forward-regexp "[\n\r]+") (match-string 0)))
 	  trailer
 	  pagelist
+	  lastbegin
 	  pt
-	  str
-	  len
+	  case-fold-search
 	  (level 0))
-      (goto-char (match-beginning 0))
-      (while (search-forward (concat eol "%%") nil t)
-	(setq pt (- (point) 2)
-	      str (buffer-substring-no-properties
-		   (+ pt 2)
-		   (progn (search-forward eol) (match-beginning 0)))
-	      len (length str))
-	(goto-char (match-beginning 0))
-	(cond ((and (>= len 14)
-		    (string= "BeginDocument:" (substring str 0 14)))
-	       (setq level (1+ level)))
-	      ((and (>= len 11)
-		    (string= "EndDocument" (substring str 0 11)))
+      (while (search-forward-regexp "\
+%%\\(?:\\(BeginDocument:\\)\\|\
+\\(EndDocument[\n\r]\\)\\|\
+\\(Page:\\)\\|\
+\\(Trailer[\n\r]\\)\\)" nil t)
+	(setq pt (match-beginning 0))
+	(cond ((null (memq (char-before pt) '(?\C-j ?\C-m nil))))
+	      (trailer (error "Premature %%%%Trailer in `%s' at offsets %d/%d"
+			      file trailer pt))
+	      ((match-beginning 1)
 	       (if (zerop level)
-		   (error "Bad DSC nesting in `%s'" file))
-	       (setq level (1- level)))
-	      ((zerop level)
-	       (cond ((and (>= len 5)
-			   (string= "Page:" (substring str 0 5)))
-		      (push (list last-pt (- pt last-pt)) pagelist)
-		      (setq last-pt pt))
-		     ((and (>= len 7)
-			   (string= "Trailer" (substring str 0 7)))
-		      (setq trailer pt))))))
+		   (setq lastbegin pt))
+	       (setq level (1+ level)))
+	      ((match-beginning 2)
+	       (if (zerop level)
+		   (error "Unmatched %%%%EndDocument in `%s' at offset %d"
+			  file pt)
+		 (setq level (1- level))))
+	      ((> level 0))
+	      ((match-beginning 3)
+	       (push (list last-pt (- pt last-pt)) pagelist)
+	       (setq last-pt pt))
+	      ((match-beginning 4)
+	       (setq trailer pt))))
       (unless (zerop level)
-	(error "Bad DSC nesting in `%s'" file))
+	(error "Unmatched %%%%BeginDocument in `%s' at offset %d"
+	       file lastbegin))
       (push (list last-pt
 		  (- (or trailer (point-max)) last-pt)) pagelist)
       (vconcat (nreverse pagelist)))))
@@ -1875,7 +1875,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.126 $"))
+	(rev "$Revision: 1.127 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1886,7 +1886,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-17 15:19:53 $"))
+    (let ((date "$Date: 2002-04-18 13:56:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
