@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8c
+;; Version: 9.8d
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -891,12 +891,12 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 
 (defvar LaTeX-auto-regexp-list 
   (append
-   '(("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\
+   '(("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\
 \\[\\([^\]\\\\\n\r]+\\)\\]"
-      (1 2 3) LaTeX-auto-optional)
-     ("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 2) LaTeX-auto-arguments)
-     ("\\\\newcommand{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
+      (2 3 4) LaTeX-auto-optional)
+     ("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+      (2 3) LaTeX-auto-arguments)
+     ("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?" 2 TeX-auto-symbol)
      ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\["
       1 LaTeX-auto-environment)
      ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"

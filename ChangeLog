@@ -1,3 +1,11 @@
+Fri Jul 11 19:06:53 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8d released.
+
+Fri Jul 11 19:02:00 1997  Jan Vroonhof <vroonhof@frege.math.ethz.ch>
+
+	* latex.el (LaTeX-auto-regexp-list): 
+
 Sat Jul  5 11:08:07 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
 
 	* latex.el (BibTeX-auto-store): make TeX-master a local variable
