@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.496 $"))
+	    (rev "$Revision: 5.497 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-04 06:41:33 $"))
+    (let ((date "$Date: 2005-04-05 18:15:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1085,7 +1085,8 @@ If this is nil, an empty string will be returned."
 
 If enabled, PDFTeX will be used as an executable by default.
 You can customize an initial value, and you can use the
-function `TeX-global-PDF-mode' for toggling this value.")
+function `TeX-global-PDF-mode' for toggling this value."
+  :group 'TeX-command)
 
 (defun TeX-global-PDF-mode (&optional arg)
   "Toggle default for `TeX-PDF-mode'."
@@ -1152,6 +1153,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
 (define-minor-mode TeX-interactive-mode
   "Minor mode for interactive runs of TeX."
   nil nil nil
+  :group 'TeX-command
   (TeX-set-mode-name 'TeX-interactive-mode t t))
 (defalias 'tex-interactive-mode 'TeX-interactive-mode)
 
@@ -1163,6 +1165,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
 (define-minor-mode TeX-Omega-mode
   "Minor mode for using the Omega engine."
   nil nil nil
+  :group 'TeX-command
   (when TeX-Omega-mode
     (TeX-PDF-mode 0))
   (TeX-set-mode-name 'TeX-Omega-mode t t))
