@@ -1,5 +1,8 @@
 2002-03-08  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi (Emacs problems), doc/readme.texi: some
+	brighter outlook with regard to XEmacs port.
+
 	* preview.el (preview-gs-transact): Throw in the towel.  We don't
 	use .runandhide (and .setsafe) unless we are dealing with gs with
 	a version of at least 7.00.  gs-6.53 seems to provide
