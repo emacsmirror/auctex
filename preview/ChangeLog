@@ -1,3 +1,31 @@
+2002-10-30  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/pk.c: Declaration moved here from dvipng.h
+
+	* dvipng/Makefile: No io.c, no pagequeue.c but ppagelist.c 
+
+	* dvipng/dvipng.h: Rearranged, some new declarations 
+
+	* dvipng/dvipng.c (main): minor changes 
+
+	* dvipng/draw.c (DoPages): use new page-finding mechanisms 
+
+	* dvipng/dvi.c: outfilename handling fixed, page-finding
+	mechanisms added.
+
+	* dvipng/misc.c: Ppagelist handling improved, outfilename now
+	works, added functionality from io.c 
+
+	* ppagelist.c: Added. Functionality slightly different from
+	pagequeue.c
+
+	* dvipng/pagequeue.c: Revamped. Functionality changed and moved to
+	ppagelist.c
+
+	* dvipng/io.c: Removed. Functionality in misc.c 
+
+	* dvipng/.cvsignore: Additions
+
 2002-10-24  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/dvipng.c (main):
@@ -15,8 +43,8 @@
 	* dvipng/draw.c (DrawCommand): Bugfix VF handling, fix message
 	output
 
-	* dvipng/pk.c (SetPK, InitPK), dvipng/dvi.c (DVIOpen): Fix message
-	output
+	* dvipng/pk.c (SetPK, InitPK), 
+	* dvipng/dvi.c (DVIOpen): Fix message output
 
 	* dvipng/papersiz.c: use int32_t, fix overflow
 
