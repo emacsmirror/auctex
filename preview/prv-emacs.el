@@ -376,14 +376,15 @@ nil displays the underlying text, and 'toggle toggles."
 		      (TeX-command-menu-entry
 		       (assoc "Generate Preview" TeX-command-list)))
   (easy-menu-add preview-menu LaTeX-mode-map)
-  (let* ((filename (expand-file-name buffer-file-name))
-	 format-cons)
-    (when (string-match (concat "\\." TeX-default-extension "\\'")
-			filename)
-      (setq filename (substring filename 0 (match-beginning 0))))
-    (setq format-cons (assoc filename preview-dumped-alist))
-    (when format-cons
-      (preview-watch-preamble (current-buffer) format-cons))))
+  (when buffer-file-name
+    (let* ((filename (expand-file-name buffer-file-name))
+	   format-cons)
+      (when (string-match (concat "\\." TeX-default-extension "\\'")
+			  filename)
+	(setq filename (substring filename 0 (match-beginning 0))))
+      (setq format-cons (assoc filename preview-dumped-alist))
+      (when format-cons
+	(preview-watch-preamble (current-buffer) format-cons)))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
