@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.929 (22 Sep 2004)
+;; Version:    0.931 (28 Sep 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,11 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.931 28Sep2004 Ralf Angeli
+;;  - Add change log entries and bump version
+;;  - `font-latex-find-matching-close': Fix typo in last commit.
+;; V0.930 27Sep2004 David Kastrup
+;;  - `font-latex-find-matching-close': Simplify.
 ;; V0.929 22Sep2004 Ralf Angeli
 ;;  - `font-latex-keywords-2': Use function `font-latex-match-script'
 ;;    instead of regexp directly.
@@ -1413,7 +1418,7 @@ have changed."
 OPENCHAR is the opening character and CLOSECHAR is the closing character."
   (let ((parse-sexp-ignore-comments t) ; scan-sexps ignores comments
         (init-point (point))
-	(my-count 1)
+	(mycount 1)
 	(esc-char (or (and (boundp 'TeX-esc) TeX-esc) "\\")))
     (or
      (condition-case nil
@@ -1422,8 +1427,7 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
 	   ;; No error code.  See if closechar is unquoted
 	   (save-excursion
 	     (backward-char 1)
-	     (zerop (mod (skip-chars-backward (regexp-quote esc-char))
-			 2))))
+	     (zerop (mod (skip-chars-backward (regexp-quote esc-char)) 2))))
        (error nil))
      (save-match-data
        (goto-char (1+ init-point))
