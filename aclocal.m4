@@ -320,7 +320,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
      fi
      if test "${exec_prefix}" = "NONE"; then
        # Set exec_prefix temporarily
-	exec_prefix="${ac_default_exec_prefix}"
+	exec_prefix="${prefix}"
      fi
      if test ${EMACS_FLAVOR} = 'emacs' -o ${packagedir} = 'no'; then
        # Test paths relative to prefixes
@@ -330,6 +330,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
          EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
 	 exec_prefix=${prefix}
          EMACS_TEST_LISPDIR
+	 AC_FULL_EXPAND(lispdir)
        fi
        if test "$lispdir" = "NONE"; then
          # No? notify user.
