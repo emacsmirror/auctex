@@ -185,17 +185,17 @@ other hooks, such as major mode hooks, can do the job."
 ;; Argh, dired breaks :file :(
 ;; This is a temporary kludge to get around that until a fixed dired
 ;; or a fixed XEmacs is released.
-(defmacro preview-create-icon (file type ascent)
+(defsubst preview-create-icon (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
-  `(let ((glyph
-          (make-glyph
-           (vector ,type
-                   :file ,file
-                   :data (with-temp-buffer
-                           (insert-file-contents-literally ,file)
-                           (buffer-string))))))
-     (set-glyph-baseline glyph ,ascent)
-     glyph))
+  (let ((glyph
+	 (make-glyph
+	  (vector type
+		  :file file
+		  :data (with-temp-buffer
+			  (insert-file-contents-literally file)
+			  (buffer-string))))))
+    (set-glyph-baseline glyph ascent)
+    glyph))
 
 (defvar preview-nonready-icon
   (let ((glyph-xpm-filename (locate-data-file "prevwork.xpm"))
@@ -729,7 +729,8 @@ Disable it if that is the case.  Ignores text properties."
 		(preview-delete ov)
 	      (unless
 		  (or (eq (extent-property ov 'preview-state) 'disabled)
-		      (string= text (extent-property ov 'preview-prechange)))
+		      (preview-relaxed-string=
+		       text (extent-property ov 'preview-prechange)))
 		(preview-disable ov)))))
       (error nil))
     (set-extent-property ov 'preview-prechange nil))
