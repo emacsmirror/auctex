@@ -21,7 +21,6 @@ License:        GPL
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-License: 	GPL
 Group: 		%{commongroup}
 BuildRoot: 	%{_tmppath}/%{name}-root
 Prereq:		info
