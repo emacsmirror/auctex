@@ -39,13 +39,14 @@ Summary:	Emacs/LaTeX inline preview (GNU Emacs lisp files)
 Group: 		Applications/Editors
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	emacs >= 21.1
+Obsoletes:	preview-latex
 
 %description emacs
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
-This package contains the lisp modules for GNU Emacs 21.  
+This package contains the lisp modules for GNU Emacs 21.1 or higher.
 %endif
 
 %if %{HAVE_XEMACS}
@@ -60,7 +61,7 @@ Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/LaTeX package will render your displayed
 LaTeX equations right into the editing window where they belong. 
 
-This package contains the lisp modules for XEmacs 21.  
+This package contains the lisp modules for XEmacs 21.4 or higher.  
 %endif
 
 %prep
@@ -98,14 +99,14 @@ make prefix=%{buildroot}%{_prefix} infodir=%{buildroot}%{_infodir} \
   install-docs install-texmf
 %if %{HAVE_EMACS}
   pushd emacs-build
-  make prefix=%{buildroot}%{_prefix} install-el
+  make prefix=%{buildroot}%{_prefix} install-el install-icons
   mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   install -c -m 644 preview-latex.el \
     %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   popd
 %endif
 %if %{HAVE_XEMACS}
-  make prefix=%{buildroot}%{_prefix} install-el
+  make prefix=%{buildroot}%{_prefix} install-el install-icons
   install -d \
     %{buildroot}%{_libdir}/xemacs/site-packages/lisp/site-start.d
   install -c -m 644 preview-latex.el \
