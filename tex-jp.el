@@ -15,13 +15,17 @@
 	      TeX-format-list))
 
 (setq TeX-command-list
-      (append '((list "jTeX" "jtex '\\nonstopmode\\input %t'"
-		      'TeX-run-TeX nil t)
-		(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-		      'TeX-run-LaTeX nil t)
-		(list "jSliTeX" "jslitex '\\nonstopmode\\input{%t}'"
-		      'TeX-run-LaTeX nil t)
-		(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
+      (append (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
+			  'TeX-run-TeX nil t)
+		    (list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
+			  'TeX-run-LaTeX nil t)
+		    (list "jSliTeX" "jslitex '\\nonstopmode\\input{%t}'"
+			  'TeX-run-LaTeX nil t)
+		    (list "AmSjTeX" "amsjtex '\\nonstopmode\\input %t'"
+			  'TeX-run-TeX nil t)
+		    (list "AmSjLaTeX" "amsjlatex '\\nonstopmode\\input{%t}'"
+			  'TeX-run-LaTeX nil t)
+		    (list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
 	      TeX-command-list))
        
 (defvar japanese-TeX-error-messages t
@@ -971,12 +975,7 @@ save size
 ;; 
 ;; the err-regexp item should match anything
 
-    (".*" . "ごめんなさい．該当するヘルプメッセージがありません．"))
-"A list of the form (\"err-regexp\" . \"context\") used by function
-\\{TeX-help-error} to display help-text on an error message or warning.
-err-regexp should be a regular expression matching the error message
-given from TeX/LaTeX, and context should be some lines describing that
-error"))
+    (".*" . "ごめんなさい．該当するヘルプメッセージがありません．"))))
 
 (provide 'tex-jp)
 

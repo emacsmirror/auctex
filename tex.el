@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.14 1994-04-24 21:55:01 amanda Exp $
+;; Version: $Id: tex.el,v 5.15 1994-04-25 13:17:57 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -224,7 +224,7 @@ the name of the file being processed, with an optional extension.")
 
 ;;; Import
 
-(or (member TeX-lisp-directory load-path)
+(or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
     (setq load-path (cons TeX-lisp-directory load-path)))
 
 (require 'auc-ver)

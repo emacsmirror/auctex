@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.91 1994-04-20 16:58:47 amanda Exp $
+# $Id: Makefile,v 5.92 1994-04-25 13:17:44 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -164,9 +164,10 @@ install: LispInstall LaInstall DocInstall
 	@echo "** "
 	@echo "** Still missing is the automatic extraction of symbols"
 	@echo "** and environments from your sites TeX style files."
-	@echo "** To do this, type \`make install-auto'."
+	@echo "** To do this, start \`make install-auto'."
 	@echo "** Beware, this takes some time and uses around 300k"
 	@echo "** storage, depending on your the TeX style files. "
+	@echo "** INPORTANT:  You must install tex-site.el first!"
 	@echo "** "
 	@echo "** It is possible to use AUC TeX without this information."
 	@echo "** "
