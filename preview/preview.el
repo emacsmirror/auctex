@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.45 2001-11-09 02:31:19 dakas Exp $
+;; $Id: preview.el,v 1.46 2001-11-09 21:20:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -874,14 +874,18 @@ Defaults to point in current buffer."
     (if buffer (set-buffer buffer))
     (if posn (goto-char posn))
     (condition-case nil
-	(progn
-	  (if (eq (char-before) ?\$) (backward-char)
-	    (while
-		(let ((oldpoint (point)))
-		  (backward-sexp)
-		  (and (not (eq oldpoint (point)))
-		       (eq ?\( (char-syntax (char-after)))))))
-	  (point))
+	(or (search-backward-regexp "\\(\\$\\$?\
+\\|\\\\[^a-zA-Z@]\
+\\|\\\\[a-zA-Z@]+\
+\\|\\\\begin[ \t]*{[^}]+}\
+\\)\\=" (line-beginning-position) t)
+	    (progn
+	      (while
+		  (let ((oldpoint (point)))
+		    (backward-sexp)
+		    (and (not (eq oldpoint (point)))
+			 (eq ?\( (char-syntax (char-after))))))
+	      (point)))
       (error nil))))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
@@ -1178,7 +1182,10 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 		 buffer
 		 (if (eq next-point preview-snippet-start)
 		     preview-snippet-start
-		   (preview-back-command preview-snippet-start buffer))
+		   (or
+		    (preview-back-command preview-snippet-start
+					  buffer)
+		    preview-snippet-start))
 		 next-point)
 		(setq preview-snippet-start nil))
 	    (message "Unexpected end of Preview snippet %d" snippet)))))))
@@ -1270,7 +1277,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.45 $"))
+	(rev "$Revision: 1.46 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
