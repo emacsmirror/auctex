@@ -313,9 +313,14 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
     [
      # Save prefix
      oldprefix=${prefix}
+     oldexec_prefix=${exec_prefix}
      if test "${prefix}" = "NONE"; then
        # Set prefix temporarily
        prefix="${ac_default_prefix}"
+     fi
+     if test "${exec_prefix}" = "NONE"; then
+       # Set exec_prefix temporarily
+	exec_prefix="${ac_default_exec_prefix}"
      fi
      if test ${EMACS_FLAVOR} = 'emacs' -o ${packagedir} = 'no'; then
        # Test paths relative to prefixes
@@ -323,6 +328,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        if test "$lispdir" = "NONE"; then
          # No? Test paths relative to binary
          EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
+	 exec_prefix=${prefix}
          EMACS_TEST_LISPDIR
        fi
        if test "$lispdir" = "NONE"; then
@@ -332,13 +338,14 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
        fi
      else
        # XEmacs
-       lispdir=${packagedir}/lisp
+       lispdir='${packagedir}/lisp'
      fi
      # Store expanded path, may be added to (X)Emacs load-path
      lispdir_expanded="$lispdir"
      AC_FULL_EXPAND(lispdir_expanded)
      # Restore prefix
      prefix=${oldprefix}
+     exec_prefix=${oldexec_prefix}
     ])
   AC_MSG_RESULT([${lispdir}, expanded to ${lispdir_expanded}])
   AC_SUBST(lispdir)
