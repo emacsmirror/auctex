@@ -695,7 +695,7 @@ The same rules are used for `LaTeX-find-matching-begin' and
 	  (let ((beg (point)))
 	    (search-forward TeX-grcl)
 	    (backward-char 1)
-	    (buffer-substring beg (point))))))))
+	    (buffer-substring-no-properties beg (point))))))))
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
@@ -1863,8 +1863,7 @@ Lines starting with an item is given an extra indentation of
 			     (concat (match-string 0)
 				     (TeX-comment-padding-string)))))
 	 (overlays (when (featurep 'xemacs)
-		     (overlays-in (line-beginning-position)
-				  (line-end-position))))
+		     (overlays-at (line-beginning-position))))
 	 ol-specs)
     ;; XEmacs' `indent-to' function (at least in version 21.4.15) has
     ;; a bug which leads to the insertion of whitespace in front of an
@@ -2048,7 +2047,7 @@ outer indentation in case of a commented line.  The symbols
 	  (skip-chars-backward "%\n\t ")
 	(skip-chars-backward "\n\t "))
       (beginning-of-line)
-      ;; If we are in called in a non-comment line, skip over comment
+      ;; If we are called in a non-comment line, skip over comment
       ;; lines.  The computation of indentation should in this case
       ;; rather take the last non-comment line into account.
       ;; Otherwise there might arise problems with e.g. multi-line
