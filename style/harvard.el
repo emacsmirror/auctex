@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 
-;; Version: $Id: harvard.el,v 1.1 1994-02-27 10:37:11 amanda Exp $
+;; Version: $Id: harvard.el,v 1.2 1994-03-02 14:20:32 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@
    optional))
 
 (defun TeX-arg-harvard-bibliographystyle (optional &optional prompt)
-  "Prompt for a Harvard citationstyle with completion. (LaTeX)"
+  "Prompt for a Harvard bibliographystyle with completion. (LaTeX)"
   (TeX-argument-insert
    (completing-read
     (TeX-argument-prompt optional prompt "Bibliographystyle")
