@@ -1,5 +1,9 @@
 2002-11-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* latex/preview.dtx (subsection{Supporting conversions}): Make
+	the tightpage option generate proper /PageOffset values also for
+	devices with bottom-up coordinate systems.
+
 	* doc/problems.texi: Remove preview-gs-broken-security docs.  See
 	below.
 
