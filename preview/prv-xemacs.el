@@ -56,23 +56,19 @@
 (unless (fboundp 'match-string-no-properties)
   (define-compatible-function-alias 'match-string-no-properties 'match-string))
 
-(preview-defmacro easy-menu-create-menu (menu-name menu-items)
-  "Return a menu called MENU-NAME with items described in MENU-ITEMS.
-MENU-NAME is a string, the name of the menu.  MENU-ITEMS is a list of items
-as described in `easy-menu-define'. The syntax of the list returned
-is suitable for passing to `easy-menu-define' or `easy-menu-add-item'."
-  `(list ,menu-name ,@(eval menu-items)))
-
 (preview-defmacro face-attribute (face attr)
-  `(cond
-    ((eq ,attr :height)
-     (round (/ (* 720.0 (face-height ,face) (device-mm-height)) (device-pixel-height) 25.4)))
-    ((eq ,attr :foreground)
-     (face-foreground-instance ,face))
-    ((eq ,attr :background)
-     (face-background-instance ,face))
+  (cond
+    ((eq attr :height)
+     `(round (/ (* ,(/ 720.0 25.4)
+		   (face-height ,face)
+		   (device-mm-height))
+		(device-pixel-height))))
+    ((eq attr :foreground)
+     `(face-foreground-instance ,face))
+    ((eq attr :background)
+     `(face-background-instance ,face))
     (t
-     (error 'unimplemented (concat "Don't know how to fake " (symbol-name ,attr))))))
+     (error 'unimplemented (format "Don't know how to fake %s" attr)))))
 
 (preview-defmacro make-temp-file (prefix dir-flag)
   (if (not dir-flag)
@@ -428,16 +424,6 @@ This searches FACE and all its ancestors for an ATTRIBUTE.
 FALLBACKS is unused."
   `(face-attribute ,face ,attribute))
 
-(defmacro preview-with-LaTeX-menus (&rest bodyforms)
-  "Activates the LaTeX menus for the BODYFORMS.
-This makes it possible to add to them.
-
-Because of a bug in easymenu.el, we can only add items to the
-current menubar.  So we temporarily add the TeX and LaTeX menus
-to the current menubar.  This is a quite appalling kludge."
-  `(let* ((current-menubar (list LaTeX-mode-menu TeX-mode-menu)))
-     ,@bodyforms))
-
 (defun preview-gs-get-colors ()
   "Return color setup tokens for GhostScript.
 Fetches the current screen colors and makes a list of tokens
@@ -468,16 +454,21 @@ Pure borderless black-on-white will return NIL."
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
-  (mapc #'(lambda (hook) (make-local-hook hook))
+  (mapc #'make-local-hook
         '(pre-command-hook post-command-hook
-          before-change-functions after-change-functions))
+	  before-change-functions after-change-functions))
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
   (unless (and (boundp 'balloon-help-mode)
 	       balloon-help-mode)
     (balloon-help-minor-mode 1))
   (add-hook 'before-change-functions #'preview-handle-before-change nil t)
-  (add-hook 'after-change-functions #'preview-handle-after-change nil t))
+  (add-hook 'after-change-functions #'preview-handle-after-change nil t)
+  (easy-menu-add-item nil
+		      '("Command")
+		      (TeX-command-menu-entry
+		       (assoc "Generate Preview" TeX-command-list)))
+  (easy-menu-add preview-menu))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
