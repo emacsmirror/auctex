@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.459 $"))
+	    (rev "$Revision: 5.460 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-29 09:00:20 $"))
+    (let ((date "$Date: 2004-11-03 08:59:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -697,7 +697,7 @@ DOC string gets replaced with a string like \"AUCTeX 5.1\"."
   (defun TeX-activate-region ()
     nil))
 
-(defun TeX-delete-dups (alist &optional keep-list)
+(defun TeX-delete-dups-by-car (alist &optional keep-list)
   "Return a list of all elements in ALIST, but each car only once.
 Elements of KEEP-LIST are not removed even if duplicate."
   ;; Copy of `reftex-uniquify-by-car' (written by David Kastrup).
@@ -715,6 +715,22 @@ Elements of KEEP-LIST are not removed even if duplicate."
 	  (setcdr new (cddr new))))
       (setq new (cdr new))))
   alist)
+
+(defun TeX-delete-duplicate-strings (list)
+  "Return a list of all strings in LIST, but each only once."
+  (setq list (TeX-sort-strings list))
+  (let ((new list) elt)
+    (while new
+      (setq elt (car new))
+      (while (string= elt (cadr new))
+	(setcdr new (cddr new)))
+      (setq new (cdr new))))
+  list)
+
+(defun TeX-sort-strings (list)
+  "Return sorted list of all strings in LIST."
+  (sort (copy-sequence list) #'string<))
+
 
 ;;; Buffer
 
