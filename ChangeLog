@@ -1,5 +1,14 @@
 2003-04-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* autogen.sh: Generate INSTALL and INSTALL.windows 
+
+	* doc/Makefile.in: Use the configure compatibility test results
+
+	* doc/macros.texi: Compatibility macros, initial version 
+
+	* configure.in: Do the makeinfo tests, for compatibility with
+	texinfo 3.12
+
 	* doc/install.texi: Changed to document the autoconf stuff 
 
 	* doc/wininstall.texi: Added
