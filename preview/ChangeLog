@@ -1,3 +1,17 @@
+2003-11-30  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/draw.c: 
+	* dvipng/dvipng.c: 
+	* dvipng/dvipng.h: 
+	* dvipng/font.c: 
+	* dvipng/ft.c:
+	* dvipng/misc.c: 
+	* dvipng/pk.c: 
+	* dvipng/set.c: 
+	* dvipng/tfm.c: 
+	* dvipng/vf.c: Include alloca.h when necessary, start preparing
+	transition to subpixel rendering, do proper cleanup on exit
+
 2003-11-18  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/enc.c: Fix bug 
