@@ -1,3 +1,9 @@
+2005-02-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-current-environment): New variable.
+	(LaTeX-indent-calculate, LaTeX-fill-region-as-para-do): Use it.
+	Improves filling performace by caching current environment.
+
 2005-02-19  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-nospace-between-char-regexp): New variable.
