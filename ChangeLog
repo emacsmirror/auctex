@@ -1,3 +1,10 @@
+2005-03-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-region-as-para-do): Use
+	`remove-text-properties' instead of
+	`remove-list-of-text-properties' because the latter is not
+	available in Emacs 21.
+
 2005-03-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/beamer.el ("beamer"): Find the correct start of
