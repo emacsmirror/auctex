@@ -1,9 +1,22 @@
 2001-10-08  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{Preview attaching commands}): Change
+	output routine to flush out floats.
+
 	* preview.el: Use `error' identifier only where really needed.
 	(preview-gs-behead-outstanding): see above.
 	(preview-gs-sentinel): see above.
 	(preview-gs-flag-error): see above.
+	Still require (defvar error) because of Auc-TeX
+	(TeX-active-tempdir): Move definition.
+	(preview-gs-place, preview-eps-place)
+	(preview-active-string, preview-make-filename)
+	(preview-place-preview, preview-parse-messages)
+	(preview-analyze-error): remove `tempdir' argument
+	(preview-get-geometry): some change in semantics
+	(preview-TeX-inline-sentinel): call `preview-parse-messages' with
+	process buffer active instead of source.
+	(TeX-inline-preview): adapt to changed `preview-get-geometry'
 
 2001-10-07  David Kastrup  <David.Kastrup@t-online.de>
 
