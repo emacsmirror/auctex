@@ -1,5 +1,8 @@
 2001-10-25  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-emacs.el (preview-ps-image): Don't expect white background
+	in heuristic-mask.
+
 	* preview.el (preview-next-border): Can't get everything right
 	first try now, can I?
 
