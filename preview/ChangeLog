@@ -1,3 +1,11 @@
+2001-10-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el: add macros line-beginning-position and
+	line-end-position.
+
+	* preview.el: Change manner of loading prv-xemacs
+	(preview-analyze-error): Use line-end-position again.
+
 2001-10-05  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx: Include \ProvidesPackage and \CheckSum
