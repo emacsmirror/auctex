@@ -1,5 +1,9 @@
 2004-08-19  David Kastrup  <dak@gnu.org>
 
+	* Version 11.52 released.
+
+2004-08-19  David Kastrup  <dak@gnu.org>
+
 	* auctex.spec: Change `tex-site.el' to overwriting config file
 	mode.
 
