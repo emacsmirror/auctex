@@ -29,8 +29,10 @@
 
 	* style/doc.el: New file. Contributed by Frank Küster
 	<frank@kuesterei.ch>.
+	(TeX-add-style-hook): Remove bogus `LaTeX-add-index-entries' call.
 
-	* style/ltx-base.el: Ditto.
+	* style/ltx-base.el: New file. Contributed by Frank Küster
+	<frank@kuesterei.ch>.
 
 	* style/ltxdoc.el: Ditto.
 
