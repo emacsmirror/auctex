@@ -14,10 +14,9 @@ if test -z "$previewtexmfdir" ; then
 \fi
 \endbatchfile
 EOF
-    $LATEX -interaction nonstopmode testdocstrip.tex > /dev/null 2>&1
-    texmfdir=`(grep -e '--texmf-prefix=' testdocstrip.log | awk -F= '{print [$]2}')  2>/dev/null`
-    previewtexmfdir=`(grep -e '--preview-tex-dir=' testdocstrip.log | grep -v UNDEFINED | awk -F= '{print [$]2}') 2> /dev/null `
-
+    $LATEX '\nonstopmode \input testdocstrip' > /dev/null 2>&1
+    texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>/dev/null`
+    previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2> /dev/null `
     if test -z "$previewtexmfdir"  ; then
 	if test ! -z "$texmfdir"  ; then
 	    previewtexmfdir=$texmfdir
@@ -55,7 +54,7 @@ fi
 
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
-AC_MSG_CHECKING([for TeX directory heirarchy])
+AC_MSG_CHECKING([for TeX directory hierarchy])
 for x in `kpsepath -n latex tex | tr ':' '\n' | sed -e 's/^!!//' | \
  		grep '^/.*//$'`
 do
