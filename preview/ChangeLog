@@ -1,3 +1,31 @@
+2003-06-30  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.texi: small fixes 
+
+	* dvipng/vf.c: Speedup macro start/end 
+
+	* dvipng/set.c: Handle offset in draw.c only, allow choice of
+	compression if gd can do this
+
+	* dvipng/pk.c: Handle overstrike, either with gd alpha level, if
+	support exists for that, or "manually". The latter is active if
+	PROPER_OVERSTRIKE is #defined, currently yes, at roughly 5%
+	performance loss.
+
+	* dvipng/misc.c: -z option: choose compression if gd can do this
+
+	* dvipng/dvipng.h: Proper rounding, gd bells and whistles
+
+	* dvipng/draw.c: Allow drift a la dvitype, maxdrift=1, handle
+	offset here only, speedup vf macro start/end
+
+	* dvipng/config.h.in: 
+	* dvipng/configure.ac: New tests for gd bells and whistles  
+
+	* dvipng/Makefile.in: Clean README 
+
+	* dvipng/.cvsignore: More files 
+
 2003-06-23  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/configure.ac:
