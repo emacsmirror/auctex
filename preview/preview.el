@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.197 2004-03-02 04:52:15 dakas Exp $
+;; $Id: preview.el,v 1.198 2004-03-02 08:55:40 jalar Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -609,8 +609,8 @@ aload pop restore<</OutputFile%s>>setpagedevice}bind def "
 	(file-error nil)))
   (setq TeX-sentinel-function nil))
 
-(defalias 'preview-dvipng-abort 'preview-dvips-abort
-  "Abort a DviPNG run.")
+(defalias 'preview-dvipng-abort 'preview-dvips-abort)
+;  "Abort a DviPNG run.")
 
 (defun preview-gs-dvips-sentinel (process command &optional gsstart)
   "Sentinel function for indirect rendering DviPS process.
@@ -2766,7 +2766,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.197 $"))
+	(rev "$Revision: 1.198 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2777,7 +2777,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-02 04:52:15 $"))
+    (let ((date "$Date: 2004-03-02 08:55:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
