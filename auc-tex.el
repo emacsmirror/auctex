@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.3 $  
+;; RCS status      : $Revision: 3.4 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri May 31 09:08:05 1991
-;; Update Count    : 117
+;; Last Modified On: Fri May 31 09:20:20 1991
+;; Update Count    : 124
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,6 +38,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
+;; 31-May-1991  (Last Mod: Fri May 31 09:10:01 1991 #118)  Kresten Krab Thorup
+;;    The distribution has been split into 8 individual modules. This will
+;;    speed up the entire system.  Also, there has been added completion for
+;;    LaTeX commands (placed on M-TAB), and a new minor mode "math" has been
+;;    introduced. Math mode may be loaded by M-x TeX-math-mode.
+;;    A lot of minor bugs has been fixed due suggestions from a lot of people.
 ;; 30-May-1991  (Last Mod: Thu May 30 21:00:46 1991 #54)  Kresten Krab Thorup
 ;;    Fixed bug in TeX-preview, au suggested by Martin Simons 
 ;;    <simons@ibiza.karlsruhe.gmd.de>
@@ -113,8 +119,6 @@
 ;; tex-math            : Smart bindings for math symbols
 ;;
 
-(setq RELEASE_NO "$Release$")
-
 (defvar TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
 the file is plain TeX or LaTeX or what.")
@@ -145,16 +149,6 @@ witch a backslash. Default is the meaning of M-t when latex-mode was called.")
 
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
-
-(defvar TeX-mode-line-format
-  (list ""
-	"-%[%*%*%]- "
-	"%m: %b        %M"
-        "  |" 
-        'minor-mode-alist 
-        " | ----"
-        '(-3 . "%p")
-        "-%-"))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Autoload modules
@@ -368,7 +362,6 @@ of LaTeX-mode-hook."
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq ispell-filter-hook "idetex")
   (setq ispell-filter-hook-args '())
-  (setq mode-line-format TeX-mode-line-format)
   (if (null TeX-mode-syntax-table)
       (progn
 	(setq TeX-mode-syntax-table (make-syntax-table))
