@@ -1,3 +1,14 @@
+2005-02-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-find-macro-boundaries): Return an alist instead of a
+	list.
+	(TeX-find-macro-end): With `TeX-find-macro-boundaries' returning
+	an alist `cdr' is now sufficient.
+	(TeX-find-macro-end-helper): Save match data.
+	(TeX-font-replace-macro): Use `TeX-find-macro-end' instead of
+	`forward-sexp'.  Fixes errors e.g. when trying to remove the font
+	spec of a string like "\textbf{(}".
+
 2005-02-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-env-figure): Make function aware of active
