@@ -1,3 +1,9 @@
+2004-05-14  Davide G. M. Salvetti  <salve@debian.org>
+
+	* style/italian.el (LaTeX-italian-open-quote)
+	(LaTeX-italian-close-quote): Use standard babel syntax rather than
+	latin1 characters.  Suggested by David Kastrup.
+
 2004-05-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-indent-calculate-last): Ignore commented lines
