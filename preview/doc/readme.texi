@@ -148,41 +148,30 @@ will display it.
 @cindex Download
 @cindex @acronym{CVS} access
 
-The @previewlatex{} project is available at Sourceforge.  In addition to
+The @previewlatex{} project is available at SourceForge.  In addition to
 the main source tarball, we provide prebuilt documentation files there
 for those lacking a recent enough version of makeinfo, and source and
-binary @file{.rpm} files suitable for a recent RedHat system.  See
-@uref{http://sourceforge.net/projects/preview-latex}.
-
-Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
-pages for more information.
-
-For developer access, or if you are having access difficulties, ask on
-@email{preview-latex-devel@@lists.sourceforge.net} 
-@ifset rawfile
-(see below).
-@end ifset
-@ifclear rawfile
-(@pxref{Contacts}).
-@end ifclear
+binary @file{.rpm} files suitable for a recent RedHat system. Anonymous
+@acronym{CVS} is available as well. The SourceForge homepage of
+@previewlatex{} is @uref{http://sourceforge.net/projects/preview-latex}.
 
 @node  Contacts,  , Availability, Introduction
 @section Contacts
 @cindex Contacts
 @cindex Mailing list
 
-Bug reports should be sent by using
-@kbd{M-x preview-report-bug @key{RET}}, as this will fill in a lot of
-information interesting to us.  There is a mailing list for developers,
-look at
+Bug reports should be sent by using @kbd{M-x preview-report-bug
+@key{RET}}, as this will fill in a lot of information interesting to
+us. Questions, suggestions for new features, and/or pleas for help
+should go to @email{preview-latex-devel@@lists.sourceforge.net} (the
+@previewlatex{} devel team).  For more information on this mailing list,
+send a message with just the word @samp{help} as subject or body to
+@email{preview-latex-devel-request@@lists.sourceforge.net} or look at
 @uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
-For more information, send a message with just the word @samp{help} as
-subject or body to
-@email{preview-latex-devel-request@@lists.sourceforge.net}.  Suggestions
-for new features, and pleas for help should go to
-@email{preview-latex-devel@@lists.sourceforge.net} (the @previewlatex{}
-devel team).  Please use the command
-@kbd{M-x preview-report-bug @key{RET}} to report bugs if possible.
+Please use the command @kbd{M-x preview-report-bug @key{RET}} to report
+bugs if possible.
 
-@noindent
-Offers to support further development will be appreciated.
+Offers to support further development will be appreciated.  For
+developer access, ask on
+@email{preview-latex-devel@@lists.sourceforge.net}.
+
