@@ -3,7 +3,7 @@
 
 # Makefile - for the AUCTeX distribution.
 #
-# Maintainer: David Kastrup <dak@gnu.org>
+# Maintainer: David Kastrup <auc-tex@sunsite.dk>
 # Version: initial try <jalar@mai.liu.se>
 #
 
@@ -154,8 +154,8 @@ dist:
 	cvs commit -m 'Release_$(OLD)++' tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
-	sed -e '/defconst AUC-TeX-date/s/"[^"]*"/"'"`date`"'"/' \
-	    -e '/defconst AUC-TeX-version/s/"[^"]*"/"'$(TAG)'"/' \
+	sed -e '/defconst AUCTeX-date/s/"[^"]*"/"'"`date`"'"/' \
+	    -e '/defconst AUCTeX-version/s/"[^"]*"/"'$(TAG)'"/' \
 	    < tex.el.orig > tex.el
 	cvs commit -m 'Release_$(TAG)'
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
