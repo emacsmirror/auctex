@@ -1,3 +1,13 @@
+2004-10-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-auto-symbol-check): Use `add-to-list' instead of
+	`cons' in order to avoid duplicates.
+
+	* latex.el (LaTeX-auto-minimal-regexp-list): Use non-greedy
+	operators for getting the end of a TeX group.
+	(LaTeX-auto-cleanup): Use `add-to-list' instead of `cons' in order
+	to avoid duplicates.
+
 2004-10-29  Miguel Frasson  <frasson@math.leidenuniv.nl>
 
 	* tex-buf.el:  Add simple error report system.
@@ -61,7 +71,6 @@
 	(LaTeX-auto-regexp-list): Use it.
 	(LaTeX-auto-cleanup): Do not consider key=value options.  Check
 	for "Package" in addition to "package".
-	(LaTeX-auto-class-regexp-list):
 
 2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
