@@ -1,3 +1,19 @@
+2002-04-01  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): Remove our own
+	TeX-translation-hook that did not really work (supposed to remove
+	Preview error messages from preview runs, but for document
+	problems you'd rather use the real run, anyhow).
+	(preview-parse-messages): remember directory when switching
+	buffers.  Implement fast translation hooks.  A pity nobody uses
+	them yet.
+	(TeX-inline-preview): Use TeX-run-command instead of
+	TeX-run-format: we miss out on the progress info in the mode
+	line, but it slowed down the filter routine.
+
+	* preview.dtx (subsection{The \texttt{auctex} option}): Make the
+	error messages shorter to cut down on I/O time.
+
 2002-03-31  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview): add cross links.
