@@ -1,29 +1,30 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.19 1992-11-22 09:23:24 krab Exp $
+# $Id: Makefile,v 5.20 1993-02-16 04:08:34 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
 ##  EDIT THE FOLLOWING LINES 
 ##----------------------------------------------------------------------
 
-#
-# For AUC TeX installation
-#
+prefix=/usr/local
+exec_prefix = $(prefix)
 
+# Where installed binaries go.
+bindir = $(exec_prefix)/bin
+
+# Where info files go.
+infodir = $(prefix)/info
+
+# Where emacs lisp files go.
+elispdir=$(prefix)/elisp/auctex
+
+# Where manual pages go.
+mandir=$(prefix)/man/man1
+
+# We run both Emacs and TeX in batch mode
 EMACS=emacs
 TEX=tex
-
-ELISPDIR=/home/local/lib/emacs/local/auctex
-INFODIR=/home/local/sys/gnu/info
-
-#
-# for LaCheck installation:
-#
-
-PD_DIR=/home/local/pd
-BINDIR=$(PD_DIR)/bin
-MANDIR=$(PD_DIR)/man
 
 # Need K&R compiler.  Either `cc' or `gcc -traditional'
 CC = gcc -traditional
@@ -42,12 +43,21 @@ LEX = flex -8  lacheck.lex
 ##  BELOW THIS LINE ON YOUR OWN RISK!
 ##----------------------------------------------------------------------
 
-ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
-	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
-	ltx-sec.el tex-buf.el tex-math.el tex-site.el auc-ver.el
-LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex lacheck/lacheck.man lacheck/lacheck.noflex.c
+FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp
+
+MINMAPSRC = min-map.el min-out.el min-key.el ltx-dead.el tex-math.el
+
+ELISPSRC= $(MINMAPSRC) auc-tex.el tex-cpl.el tex-misc.el tex-symb.el \
+	ltx-env.el tex-dbg.el tex-names.el vir-symb.el \
+	ltx-sec.el tex-buf.el tex-site.el auc-ver.el \
+	tex-init.el min-key.el ltx-dead.el
+
+LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
+	lacheck/lacheck.man lacheck/lacheck.noflex.c
+
 DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
-OTHERFILES = COPYING INTRO README Makefile $(DOCFILES) $(LACHECKFILES)
+
+OTHERFILES = COPYING README README_MINOR Makefile  $(DOCFILES) $(LACHECKFILES)
 
 first:
 	@echo ""
@@ -70,12 +80,12 @@ all: main
 	@echo "** that information via Emacs' info system"
 	@echo "** Then run: \`make install'"
 	@echo "** The Emacs Lisp files will only be recompiled, if"
-	@echo "** you have set ELISPDIR to a different directory."
+	@echo "** you have set elispdir to a different directory."
 	@echo "**********************************************************"
 
 main: Doc LaCheck
 
-install: main $(ELISPDIR) LaInstall DocInstall
+install: main $(elispdir) LaInstall DocInstall
 	@echo 
 	@echo "**********************************************************"
 	@echo "**   Congratulations! AUC TeX installation completed    **"
@@ -91,31 +101,31 @@ LaInstall: LaCheck
 	@echo "**********************************************************"
 	@echo "** Installing LaCheck "
 	@echo "**********************************************************"
-	-(cd lacheck; make install BINDIR=$(BINDIR) MANDIR=$(MANDIR))
+	-(cd lacheck; make install bindir=$(bindir) mandir=$(mandir))
 
 DocInstall: Doc
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
 	@echo "**********************************************************"
-	-(cd doc; make install INFODIR=$(INFODIR))
+	-(cd doc; make install infodir=$(infodir))
 
-$(ELISPDIR): $(ELISPSRC)  Makefile
+$(elispdir): $(ELISPSRC)  Makefile
 	@echo "**********************************************************"
 	@echo "** Byte compiling AUC TeX.  This may take a while..."
 	@echo "**********************************************************"
-	if [ ! -d $(ELISPDIR) ]; then mkdir $(ELISPDIR); fi
-	cp $(ELISPSRC) $(ELISPDIR)
+	if [ ! -d $(elispdir) ]; then mkdir $(elispdir); fi
+	cp $(ELISPSRC) $(elispdir)
 	(touch /tmp/auc.$$$$; \
-	echo "(setq load-path (cons \"$(ELISPDIR)\" load-path))" >>  /tmp/auc.$$$$; \
+	echo "(setq load-path (cons \"$(elispdir)\" load-path))" >>  /tmp/auc.$$$$; \
 	for EL in $(ELISPSRC); do \
-	echo "(byte-compile-file \"$(ELISPDIR)/$$EL\")" \
+	echo "(byte-compile-file \"$(elispdir)/$$EL\")" \
               >> /tmp/auc.$$$$; \
 	done; \
 	$(EMACS) -batch -l /tmp/auc.$$$$; \
 	rm -f /tmp/auc.$$$$ )
 	(for EL in $(ELISPSRC); do \
-	chmod 644 $(ELISPDIR)/$${EL}c; \
-	rm $(ELISPDIR)/$$EL; \
+	chmod 644 $(elispdir)/$${EL}c; \
+	rm $(elispdir)/$$EL; \
 	done)
 
 
@@ -123,7 +133,7 @@ LaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck
 	@echo "**********************************************************"
-	-(cd lacheck; make BINDIR=$(BINDIR) \
+	-(cd lacheck; make bindir=$(bindir) \
 	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
 
 Doc: 
@@ -155,7 +165,7 @@ dist:
 	find auctex -name CVS -print | xargs rm -rf
 	cp auc-ver.el auctex
 	(cd auctex/doc; make auc-tex.info)
-	(cd auctex/lacheck; make lacheck.c)
+	(cd auctex/lacheck; make lacheck.c; cp lacheck.c lacheck.noflex.c)
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
@@ -165,6 +175,7 @@ dist:
 	if [ ! -d split ]; then mkdir split; else rm split/*; fi; \
 	cp auctex/FILELIST split; \
 	uuencode $$OUT.tar.Z $$OUT.tar.Z | split -200 - split/auc-tex-
+	(cd auctex; tar -cf - $(MINMAPSRC) MISC) | compress -c >minor-map.tar.Z
 	rm -r auctex
 
 mail:
@@ -176,3 +187,28 @@ mail:
 	sleep 10; \
 	done; done
 	
+ftp:	dist
+	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
+	@echo "]; then echo "*** No tag ***"; exit 1; fi
+	@echo "**********************************************************"
+	@echo "** Making ftp copy of lacheck for whatever release it is"
+	@echo "**********************************************************"
+	-(cd lacheck; make ftp)
+	@echo "**********************************************************"
+	@echo "** Making ftp copy of minor maps for release $$TAG"
+	@echo "** Making ftp copy of outline minor mode for release $$TAG"
+	@echo "**********************************************************"
+	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
+	cp min-map_$VER.tar.Z $FTPDIR ; \
+	cd $FTPDIR ; \
+	rm min-map.tar.Z min-out.tar.Z ; \
+	ln -s min-map_$VER.tar.Z min-map.tar.Z ; \
+	ln -s min-map_$VER.tar.Z min-out.tar.Z
+	@echo "**********************************************************"
+	@echo "** Making ftp copy of auc-tex for release $$TAG"
+	@echo "**********************************************************"
+	OUT=`echo $$TAG | sed s/release_//` ; \
+	cp $$OUT.tar.Z $FTPDIR ; \
+	cd $FTPDIR ; \
+	rm auctex.tar.Z ; \
+	ln -s $$OUT.tar.Z auctex.tar.Z

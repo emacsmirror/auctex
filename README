@@ -1,63 +1,397 @@
+* README - Introduction to AUC TeX.
 
-$Id: README,v 5.20 1992-11-16 17:50:13 amanda Exp $
+$Id: README,v 5.21 1993-02-16 04:08:37 amanda Exp $
 
-AUC TeX 
-=======
+** Copyright
 
-AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
+Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+Copyright (C) 1986 Lars Peter Fischer
+Copyright (C) 1987,1993 Per Abrahamsen 
+Copyright (C) 1991,1992 Kresten Krab Thorup
 
-********** NEWS NEWS NEWS NEWS **********
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 1, or (at your option)
+any later version.
 
-Version 6.2:
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-Rewrote ltx-sec.el and updated auc-tex.texi to reflect the changes:
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+** Installation
+
+Just type `make' and follow the instructions.  
+
+You will need texinfo2, available by ftp from prep.ai.mit.edu. 
+
+** Introduction
+
+This section gives a brief overview of what AUC-TeX is. It is *not*
+an attempt to document it.  Real documentation for AUC-TeX is available in the texinfo file in the doc directory.
+
+
+*** AUC-TeX for GNU Emacs
+
+AUC-TeX is a comprehensive customizable integrated environment for
+writing input files for LaTeX using GNU Emacs.
+
+AUC-TeX lets you run TeX/LaTeX and other LaTeX-related tools, such as
+a output filters or post processor from inside Emacs.  Especially
+`running LaTeX' is interesting, as AUC-TeX let's you browse through
+the errors TeX reported, while it moves the cursor directly to the
+reported error, and displays some documentation for that particular
+error.  This will even work when the document is spread over several
+files.
+
+AUC-TeX automatically indents your `LaTeX-source', not only as you
+write it---you can also let it indent and format an entire document.
+It has a special outline feature, which can greatly help you `getting
+the overview' of a document.
+
+Apart from these special features, AUC-TeX provides an large range of
+handy Emacs macros, which in several different ways can help you
+write your LaTeX documents fast and painless.
+
+All features of AUC-TeX are documented using the GNU Emacs online
+documentation system.  That is, documentation for any command is just
+a key click away!
+
+AUC-TeX is written entirely in Emacs-Lisp, and hence you can easily
+add new features for your own needs.  It was not made as part of any
+particular employment or project (apart from the AUC-TeX project
+itself).  AUC-TeX is distributed under the `GNU Emacs General Public
+License' and may therefore almost freely be copied and redistributed.
+
+
+*** Major features of AUC-TeX
+
+This section is a short introduction to some `actual' features.  For
+further information, refer to the build-in online documentation of
+AUC-TeX. 
+
+**** Indentation and formatting
+
+AUC-TeX may automatically indent your document as you write it. By
+pressing line feed instead of return at the end of a line, the current
+line is indented by two spaces according to the current environment
+level, and the cursor is moved down one line.  By pressing TAB, the
+current line is indented, and the cursor stays where it is.  The
+well-known Emacs feature format-paragraph (M-q) is re implemented
+especially for AUC-TeX to follow the indentation.  A special command
+LaTeX-format-buffer, lets you indent an entire document like the
+well-known c utility indent (this time, only according to the LaTeX
+structure :-)
+
+**** Completion
+
+By studying your `\documentstyle' command (in the top of your
+document), and consulting a precompiled list of (La)TeX symbols from a
+large number of TeX and LaTeX files, AUC-TeX is aware of the LaTeX
+commands you should able to use in this particular document.  This
+`knowledge' of AUC-TeX is used for two purposes: 1) To make you able
+to `complete' partly written LaTeX commands. You may e.g. write
+"\renew" and press ESC TAB (TeX-complete-symbol), and then AUC-TeX
+will complete the word "\renewcommand" for you. In case of ambigiouty
+it will display a list of possible completions. 2) To aid you
+inserting environments, that is \begin - \end pairs. This is done by
+pressing C-c C-c (LaTeX-environment), and you will be prompted for
+which `environment' to insert.
+
+**** Editing your document
+
+A number of more or less intelligent keyboard macros have been defined
+to aid you editing your document.  The most important are listed here
+below.
+
+LaTeX-environment (C-c C-c) 
+	Insert a \begin{} - \end{} pair as described above.
+
+LaTeX-section (C-c C-x)
+	Insert one of \chapter, \section, etc. 
+
+TeX-Roman (C-c C-r), TeX-italic (C-c C-i), TeX-bold (C-c C-b) etc...
+	Insert one of {\rm }, {\it \/} {\bf } etc.
+
+A number of additional functions are available.  But - it would be far
+too much to write about here.  Refer to the AUC-TeX online
+documentation for further information.
+
+**** Running LaTeX
+
+When invoking on of the commands TeX-buffer (C-c C-a) or TeX-region
+(C-c C-d) LaTeX is run on either the entire current document or a
+given region of it.  The Emacs view is split in two, and the output of
+TeX is printed in the second half of the screen, as you may
+simultainiously continue editing you document.  In case TeX found any
+errors when processing your input you can call the function
+TeX-next-error (C-c C-n) which will move the cursor to the first given
+error, and display a short explanatory text along with the message TeX
+gave.  This procedure may be repeated until all errors have been
+displayed.  By pressing C-c C-w (TeX-debug-bad-boxes) you can toggle
+whether the browser also should notify over-full/under-full boxes or not.
+
+Once you've successfully formatted your document, you may preview or
+print it by invoking TeX-preview (C-c C-p) or TeX-print (C-c !).
+
+**** Outlining
+
+Along with AUC-TeX comes a special `minor' outline mode for Emacs,
+which lets you browse the sectioning structure of your document, while
+you will still be able to use the full power of the rest of the
+AUC-TeX functionality.  
+
+
+** Hints
+
+*** For german.sty users
+
+Users of geman.sty (and others who like their " to behave
+normally), will want to enable the following hook:
+
+.emacs> (setq TeX-mode-hook
+.emacs>      (function (lambda () (local-set-key "\"" 'self-insert-command))))
+
+*** For users intensive users of outline-minor-mode
+
+People who use the outline features a lot may want to bind them to a
+single prefix key:
+
+.emacs> (setq-default outline-prefix-char "\C-l")
+
+** History
+
+*** Version 7.0:
+
+**** Updated documentation
+
+And added key, variable, function, and concept indexes.
+
+**** Outline mode integreated
+
+The outline commands are now always accessible from LaTeX mode.
+
+**** New file: min-key.el
+
+Generalized the keyboard remapping and double modes.
+
+**** Smart Comments
+
+Not really, but there are now two comment functions which use their
+arguments to determine what to do, instead of four functions ignoring
+their arguments.
+
+**** New keymap
+
+The keymap has been changed in order to make it more intuitive to new
+users, and because the olc bindings did not work well with the new
+buffer manipulation commands in tex-buf.el.  To use the new bindings,
+load `tex-init.el' instead of `auc-tex.el'.
+
+For now, the old keybindings will be maintained in `auc-tex.el'.  If
+you want to use the old keybindings, load that file instead of
+`tex-init.el'.  You are, however, encouraged try the new bindings.
+
+***** Moved or New
+
+The old binding are removed, unless mentioned below.
+
+C-c C-o : Prefix for all outline minor mode commands
+C-c C-f : Prefix for all font changing commands.
+C-c C-c : TeX-command-master (for command and for similarity with mail-mode)
+C-c C-r : TeX-command-region
+C-c C-e : LaTeX-environment
+C-c C-s : LaTeX-section
+C-c `   : TeX-next-error (like C-x ` is next-error)
+C-c @   : TeX-toggle-debug-boxes (like toggle pickup in nethack :-)
+C-c #   : normal-mode (rehash)
+C-c }	: up-list
+C-c {   : TeX-insert-braces
+C-c TAB : TeX-complete-symbol (check also ultra-tex lightening completion)
+C-c LFD : LaTeX-insert-item
+C-c ~   : LaTeX-math-mode (on the same key as backquote (dubious))
+C-c.    : LaTeX-mark-environment (dubious)
+C-c*    : LaTeX-mark-section (dubious)
+C-c ;	: TeX-comment-region
+C-c %   : TeX-comment
+
+C-c C-q C-r : LaTeX-format-region 
+C-c C-q C-s : LaTeX-format-section
+C-c C-q C-e : LaTeX-format-environment
+C-c C-q C-p : LaTeX-format-paragraph
+
+***** Aliases
+
+C-c C-n : normal-mode (forget about master file, document style, etc)
+C-c !   : TeX-command-master (like shell-command)
+C-c C-w : TeX-toggle-debug-boxes (unchanged - warnings)
+
+***** Unchanged
+
+C-c C-h : TeX-home-buffer
+C-c C-k : TeX-kill-job
+C-c C-l : TeX-recenter-output-buffer
+C-c C-m : TeX-insert-macro
+C-c ?   : describe-mode
+
+***** Special (outside C-c) -- some removed, no new added.
+
+Try to keep functions out of the global namespace, except to give them
+a (La)TeX version of the same functionality.
+
+DEL     : backward-delete-char-untabify
+LFD	: reindent-then-newline-and-indent
+TAB	: LaTeX-indent-line
+
+M-g     : LaTeX-format-region (alias for C-c C-q C-r)
+M-q     : LaTeX-format-paragraph (alias for C-c C-q C-p)
+
+***** Removed
+
+C-c C-o : outline-minor-mode (turn on automatically instead)
+C-c C-d : TeX-region (defunct)
+C-c C-a : TeX-buffer (defunct)
+C-c C-p : TeX-preview (defunct)
+C-c $   : TeX-run-lacheck (defunct)
+C-c !   : TeX-print (defunct)
+C-c @   : LaTeX-command-bibtex (defunct)
+C-c #   : LaTeX-command-makeindex (defunct)
+LFD	: TeX-terminate-paragraph (did anybody use this?)
+C-c LFD : TeX-terminate-paragraph
+C-c C-f : LaTeX-close-environment (did anybody use this?)
+
+**** Completely redesigned tex-buf.el. 
+
+No part of the interface or the customization variables remain the
+same.  Major cleanup in tex-dbg, however the basic functionality
+remains the same in this file.  The code for both tex-buf.el and
+tex-dbg.el should be much simpler now and easier to extent.
+auc-tex.el and tex-site.el was updated to support the new interface.
+I actually believe the moral equivalent to TeX-region to work now :-),
+at least I understand the code now.
+
+The two major functions are now TeX-command-master and
+TeX-command-region.  Each function will prompt you for the command to
+execute.  AUC TeX will make an educated guess on what command you want
+to run, and make that the default.  The available commands are defined
+in the variable TeX-command-list.  TeX-command-master will run the
+specified command on the buffers master file.  You can have one
+command running for each master file.  TeX-command-region will run the
+specified command on the current region, getting the header on trailer
+from the master file.  You can have exactly one region command
+running, independent on how many master file commands that are
+running.  Commands that operate on the active process (like
+TeX-next-error) will chose the process associated with buffers master
+file, unless the last region process is more recent than all master
+file processes.
+
+AUC TeX now insist on knowing the master file for a buffer.  If you do
+not specify it in the file variable section, and it is not obviously a
+master file itself, it will ask you.  It will also add the master file
+name to the file variables, unless you disable this feature by setting
+TeX-add-local to nil.  Furthermore, it will convert '%% Master:' lines
+to file variables, unless you disable it by setting TeX-convert-master
+to nil.
+
+Functionality removed (for now, it might appear again latter) include:
+All other functions to start a command (e.g. LaTeX-BibTeX) have been
+removed.  The only place to get the header and trailer is from the
+master file (I can easily change that, if anyone have such needs).
+
+**** Rewrote ltx-sec.el.
+
+Updated auc-tex.texi to reflect the changes:
 - sectioning level, toc, and title queries can be individually turned off.
 - label query can be turned on or off for selected sectioning levels.
 - label prefix can be different for different sectioning levels.
 - if the title (or toc) is empty, point will be positioned there.
 - users can add new hooks
 
-Version 6.1:
+**** Fixed center in figure environment. 
 
-TeX-region might work now (heard that before?).  Many people reported
-this one.  Especially thanks to Fran Burstall
+-- Thomas Koenig <ig25@rz.uni-karlsruhe.de>.
+
+**** Disable printer query.
+
+Set TeX-default-printer-name to nil to disable the automatic appending
+of "-Pprinter".  -- Thomas Koenig <ig25@rz.uni-karlsruhe.de>.
+
+**** Changed \M- to \e
+
+In order to better support 8-bit input. -- Peter Dalgaard
+<pd@kubism.ku.dk>
+
+**** Made outline aware of the document style
+
+I.e. if the document style is "article", "\section" will one level
+below the "\documentstyle", while if the style is "book", "\section"
+will be three levels below "\documentstyle".  This will make
+show-children work better at the top level.
+
+**** Makefile closer to GNU coding standard
+
+Made them slightly more GNU'ish.  The now understand `prefix' and some
+other macros.
+
+*** Version 6.1:
+
+**** TeX-region might work now (heard that before?).  
+
+Many people reported this one.  Especially thanks to Fran Burstall
 (F.E.Burstall@maths.bath.ac.uk) and Bill Schworm
 (bill@schworm.econ.ubc.ca).
 
-The specification format for the TeX command is more general.  See the
-documentation for LaTeX-command and plain-TeX-command.
+**** The specification format for the TeX command is more general.  
 
-The specification format for the preview commands is more general, see
-their respective documentation.
+See the documentation for LaTeX-command and plain-TeX-command.
 
-The specification format for the print command is more general.  See
-the documentation for TeX-print-command.
+**** The specification format for the preview commands is more general.
 
-TeX-args is marked as obsolete.
+See their respective documentation.
 
-The "Emergency stop ..." error some users of old TeX installations got
-might be fixed now.  Thanks to Philip Sterne (sterne@dublin.llnl.gov).
+**** The specification format for the print command is more general.  
 
-It is now possible to change the preview command without loading
-TeX-site first.  Thanks to Tim Bradshaw (tim.bradshaw@edinburgh.ac.uk). 
+See the documentation for TeX-print-command.
 
-New variable TeX-smart-quotes allow german.sty users (and others) to
-disable the mapping of double quote (" to `` or '').  Thanks to Daniel
-Hernandez (danher@informatik.tu-muenchen.de).
+**** TeX-args is marked as obsolete.
 
-Many minor corrections to the documentation.  Thanks to Mainhard E.
-Mayer (hardy@golem.ps.uci.edu).
+**** The "Emergency stop ..." error.
 
-Don't query for printer if TeX-printer-name-alist is nil.  Thanks to
-Bill Schworm (bill@schworm.econ.ubc.ca).
+some users of old TeX installations got might might be fixed now.
+Thanks to Philip Sterne (sterne@dublin.llnl.gov).
 
-Make test for HOSTTYPE case insensitive.  Thanks to Gisli Ottarsson
-(gisli@liapunov.eecs.umisc.edu)
+**** It is now possible to change the preview command
 
-Set TeX-force-default-mode to avoid AUC TeX's attempts to infer the
-mode of the file by itself.
+without loading TeX-site first.  Thanks to Tim Bradshaw
+(tim.bradshaw@edinburgh.ac.uk).
 
-Version 6:
+**** New variable TeX-smart-quotes
+
+allow german.sty users (and others) to disable the mapping of double
+quote (" to `` or '').  Thanks to Daniel Hernandez
+(danher@informatik.tu-muenchen.de).
+
+**** Many minor corrections to the documentation.  
+
+Thanks to Mainhard E.  Mayer (hardy@golem.ps.uci.edu).
+
+**** Don't query for printer if TeX-printer-name-alist is nil.  
+
+Thanks to Bill Schworm (bill@schworm.econ.ubc.ca).
+
+**** Make test for HOSTTYPE case insensitive.  
+
+Thanks to Gisli Ottarsson (gisli@liapunov.eecs.umisc.edu)
+
+**** Set TeX-force-default-mode 
+
+to avoid AUC TeX's attempts to infer the mode of the file by itself.
+
+*** Version 6.0:
 
 DOCS!	Preliminary documentation is avilable in the directory
 	`doc'.  It isn't very well written, but I beleve it covers
@@ -80,54 +414,22 @@ DOCS!	Preliminary documentation is avilable in the directory
 			      outline-minor-mode instead.
 
 	And some additional minor fixes...
-	
-**************************************************
 
-You're welcome to direct questions to the current maintainer, whose
-address is at the bottom of this file.
-
-
-
-Installation
-------------
-
-Just type `make' and follow the instructions.  
-
-
-
-Warranty
---------
-
-AUC TeX is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY.  No author or distributor accepts responsibility to
-anyone for the consequences of using it or for whether it serves any
-particular purpose or works at all.
-
-Everyone is granted permission to copy, modify and redistribute this
-file, but only under the conditions described in the document "GNU
-Emacs copying permission notice".  An exact copy of the document is
-supposed to have been given to you along with this file so that you
-can know how you may redistribute it all.  It should be in a file
-named COPYING.  Among other things, the copyright notice and this
-notice must be preserved on all copies.
-
-Availability
-------------
+** Availability
 
 AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
-"/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X.x' specifies the release
+"/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X_x' specifies the release
 version) The most resent version is ALLWAYS available in
 `/pub/emacs-lisp/auctex.tar.Z'. Also, it should be available at major
 TeX and Elisp archives around the world.  In case you don't have
 access anonymous ftp, you can get it by Email requests to
 `auc-tex_mgr@iesd.auc.dk'.
 
-Contacts
---------
+** Contacts
 
 There has been established a mailing list for discussion of the
 evaluation of auc-tex.  You're very welcome to join.  However, If you
-are only interested in information on updates, you should refer to the
+are only interested in information on updates, you could refer to the
 newsgroups comp.text.tex and gnu.emacs.sources.
 
 If you want to contact the auc-tex mailing list, mail:
@@ -137,21 +439,169 @@ If you want to contact the auc-tex mailing list, mail:
 	Requests:	auc-tex-request@iesd.auc.dk
 
 
-To contact the current maintainer of auc-tex, Email:
+To contact the current maintainers of auc-tex, Email:
 
 			auc-tex_mgr@iesd.auc.dk
 
+The address of the maintainers is:
+			
+			AUC TeX development
+			c/o Kresten Krab Thorup 
 
-The address of the main author is:
-
-			krab@iesd.auc.dk
-
-			Kresten Krab Thorup 
-			Dept. of Math and Computer Science
+			Mathematics and Computer Science
 			University of Aalborg
-			Aalborg, Denmark
+			DK 9000 Aalborg
+			Denmark
+
+** Contributers
+
+Thanks should also go to all the people who have been a great help
+developing the AUC-TeX system.  Especially all the people on the
+auc-tex mailing list, who have been very helpful commenting and
+pointing out weak points and errors.
+
+Some of the contributers are:
+
+Denys Duchier                     <dduchier@csi.UOttawa.CA>
+George Ferguson		          <ferguson@cs.rochester.edu>
+Kresten Krab Thorup 		  <krab@iesd.auc.dk>
+Lars Fischer                      <fischer@iesd.auc.dk> 
+Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
+Michael Smith                     <smith@pell.anu.edu.au>
+Per Abrahamsen                    <abraham@iesd.auc.dk> 
+Per Hagen                         <per@iesd.auc.dk>
+Ralf Handl                	  <handl@cs.uni-sb.de>
+Sven Mattisson            	  <sven@tde.lth.se>
+Masayuki Kuwada
+
+Special thanks to Leslie Lamport for supplying the source for the
+LaTeX error messages in the tex-dbg.el module.
+
+** Credits
+
+A big smile and thanks should go to all the folks who cheered me
+up, during the long hours of programming... sorry folks, but I cant
+help including the list below, of comments I've got...
+
+/Kresten Krab Thorup
+
+I'd like to say that I'm very much enjoying using auc-tex.
+Thanks for the great package!
+-- monheit@psych.stanford.edu
+
+I really enjoy working with auc-tex.
+-- georgiou@rex.cs.tulane.edu
+
+Thanks for you great package.  It's indispensable now!
+Thanks!
+-- toy@soho.crd.ge.com
+
+Thanks for your time and for what appears to be a great and useful
+package.
+Thanks again
+-- ascott@gara.une.oz.au
+
+Thanks for providing auc-tex. 
+-- hal@alfred.econ.lsa.umich.edu
+
+I really enjoy using the new emacs TeX-mode you wrote. I think you did
+a great job.
+-- simons@ibiza.karlsruhe.gmd.de
+
+I am having fun with auc-tex already.
+-- clipper@csd.uwo.ca
+
+Thanks for your work on auc-tex, especially the math-minor mode.
+-- ibekhaus@athena.mit.edu
+
+I like your auc-tex elisp package for writing LaTeX files -- I am
+especially impressed by the help with error correction.
+-- burt@dfki.uni-kl.de
+
+Thanks so much!
+-- goncal@cnmvax.uab.es
+
+I >really< like the macro, particularly the hooks for previewing and
+the error parsing!
+-- bond@sce.carleton.ca
+
+All in all I am pleased with your package. Thanks a lot.
+-- ascott@gara.une.oz.au
+
+** Todo
+
+Start maintaining this list, and include the suggestions and bug
+reports from the mailing list.
+
+*** min-map.el
+
+**** documentation
+
+Should be able to (safely) add and remove information from the mode
+documentation string.  This is hard, since we do not get a chance to
+remove the documentation when the usr change major mode.  
+
+IDEA: Instead of the mode documentation string, have a special minor
+mode help (and bind it to key) with help for all the active minor
+modes.
+
+**** prefix chars
+
+Should be able to add and remove prefix chars conveniently.
+
+*** tex-dbg.el
+
+**** use markers
+
+Make TeX-next-error parse ahead and store the results in a list, using
+markers to remember buffer positions in order to be more robust with
+regard to line numbers and changed files.  This is what next-error
+does.
+
+*** auc-tex.el
+
+**** indentation
+
+Different variable to control { and [ indentation compared to
+\begin{env} indentation.
+
+**** LaTeX-style-*
+
+Use master file, and general cleanup.
+
+*** ltx-env.el
+
+**** change environment
 
 
+When LaTeX-environment is given an argument, change the current
+environment.  Be smart about item[] <-> item and labels like fig: <->
+tab:.
 
+*** Miscellaneous
 
+**** cross references 
 
+When inserting a (macro, citation, references), complete with existing
+definitions.  This can be bound to TeX-insert-macro (first completing
+the macro name, and if one of cite, ref, or pageref, complete the
+argument). 
+
+With cursor on a \cite{...}, \ref{...}, or \pageref{...}, find the
+definition.  Can be bound to C-c C-d (TeX-find-definition).
+
+With cursor on a \label{...} or \newcommand{\...}{...} (and perhaps
+\def...  or \renewcommand{\...}{...}), find all uses of the symbol in
+the current document (the master file and all files \include'ed or
+\input'et from the master file).  Can be bound to C-c C-u
+(TeX-find-usage).
+
+Cooperate with the BibTeX-mode maintainer about support for
+\site{...}. 
+
+** Emacs
+
+Local Variables:
+mode: text
+mode: outline-minor
+End:

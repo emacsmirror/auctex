@@ -1,6 +1,6 @@
 % -*- plain-tex -*- 
-% $Id: ref-card.tex,v 1.5 1992-09-16 12:14:58 amanda Exp $
-% Reference Card for Auc TeX version 6.0 for Emacs Lisp
+% $Id: ref-card.tex,v 1.6 1993-02-16 04:09:42 amanda Exp $
+% Reference Card for Auc TeX version 7.0
 %**start of header
 \newcount\columnsperpage
 
@@ -32,9 +32,9 @@
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{6}
-\def\year{1992}
-\def\version{January \year\ v\versionnumber}
+\def\versionnumber{7}
+\def\year{1993}
+\def\version{February \year\ v\versionnumber}
 
 \def\shortcopyrightnotice{\vskip 1ex plus 2 fill
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
@@ -42,8 +42,10 @@
 
 \def\copyrightnotice{
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ \year\ Kresten Krab Thorup}
-\centerline{for AUC \TeX\ version \versionnumber}
+\centerline{Copyright \copyright\ 1987 Free Software Foundation, Inc.}
+\centerline{Copyright \copyright\ 1992 Kresten Krab Thorup}
+\centerline{Copyright \copyright\ \year\ Per Abrahamsen}
+\\centerline{for AUC \TeX\ version \versionnumber}
 
 Permission is granted to make and distribute copies of
 this card provided the copyright notice and this permission notice
@@ -204,7 +206,7 @@ are preserved on all copies.
 
 \title{AUC \TeX\ Reference Card}
 
-\centerline{(for version 6)}
+\centerline{(for version \versionnumber)}
 
 \section{Conventions Used}
 
@@ -212,92 +214,82 @@ are preserved on all copies.
 \key{Tabular}{TAB}
 \key{Linefeed}{LFD}
 
-Mode variables: Refer to `\kbd{tex-site.el}' in the AUC-\TeX\
-Distributions for customization
+Mode variables: You want to change the variables found in the file
+`{\tt tex-site.el}' in the AUC-\TeX\ distribution for your site.  The
+other variables should be set by the individual user.  
 
-Entering LaTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook.
-
+Entering LaTeX mode calls the value of text-mode-hook, then the value
+of TeX-mode-hook, and then the value of LaTeX-mode-hook.
 
 \section{Shell Interaction}
 
-\key{Print the DVI file}{C-c !}
-\key{Run \TeX/LaTeX on buffer}{C-c C-a}
-\key{Run \TeX/LaTeX on region}{C-c C-d}
-\key{Preview dvi file}{C-c C-p}
-\key{Next error in \TeX/LaTeX session}{C-c C-n}
-\key{Run Bib\TeX\ on buffer}{C-c @}
-\key{Run makeindex on buffer}{C-c \#}
-\key{Run LaCheck on buffer}{C-c \$}
+\key{Run a command on the master file}{C-c C-c}
+\key{Run a command on the region}{C-c C-r}
+\key{Next error in \TeX/LaTeX session}{C-c `}
 \key{Kill job}{C-c C-k}
 \key{Recenter output buffer}{C-c C-l}
-\key{Toggle Debug overfull/underfull Boxes}{C-c C-w}
-\key{Home Buffer}{C-c C-h}
+\key{Toggle debug of wonderful boxes}{C-c C-w}
+\key{Switch to master file or active buffer}{C-c C-h}
 
-\section{Automatic Command Insertion}
+\section{Command Insertion}
 
-\key{Insert double brace}{M-\{}
-\key{Insert {\bf bold} syntax}{C-c C-b}
-\key{Insert {\it italics\/} syntax}{C-c C-i}
-\key{Insert {\rm roman} syntax}{C-c C-r}
-\key{Insert {\it emphasized} syntax}{C-c C-e}
-\key{Insert {\tt typewriter} syntax}{C-c C-t}
-\key{Insert {\sl slanted\/} syntax}{C-c C-s}
-\key{Insert small caps syntax}{C-c C-y}
-\key{Insert Section/Chapter/etc.}{C-c C-x}
-\key{Insert La\TeX\ environment}{C-c C-c}
-\key{Close off the current Environment}{C-c C-f}
-\key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c RET}
+\key{Insert Section}{C-c C-s}
+\key{Insert La\TeX\ environment}{C-c C-e}
+\key{Insert item}{C-c LFD}
+\key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c C-m}
+\key{Insert double brace}{C-c \{}
+\key{Complete TeX macro}{C-c TAB}
+\key{Smart ``quote''}{"}
   
-\section{Automatic Commenting}
+\section{Font Selection}
 
-\key{Comment out a region}{C-c ;}
-\key{Comment out a paragraph}{C-c '}
-\key{Uncomment a region}{C-c :}
-\key{Uncomment}{C-c "}
-\key{Insert item}{M-RET}
+\key{Insert {\bf bold} text}{C-c C-f C-b}
+\key{Insert {\it italics\/} text}{C-c C-f C-i}
+\key{Insert {\rm roman} text}{C-c C-f C-r}
+\key{Insert {\it emphasized} text}{C-c C-f C-e}
+\key{Insert {\tt typewriter} text}{C-c C-f C-t}
+\key{Insert {\sl slanted\/} text}{C-c C-f C-s}
+\key{Insert small caps text}{C-c C-f C-c}
 
-\section{Marking and Formatting}
+\section{Source Formatting}
 
-\key{Format a paragraph}{M-q}
-\key{Format a region}{M-g}
-\key{Mark a section}{M-C-x}
-\key{Format a section}{M-s}
-\key{Mark an Environment}{M-C-e}
-\key{Format an Environment}{M-C-q}
+\key{Indent current line}{TAB}
+\key{Indent next line}{LFD}
 
-\section{Outline minor mode}
+\key{Format a paragraph}{C-c C-q C-p}
+\key{Format a region}{C-c C-q C-r}
+\key{Format a section}{C-c C-q C-s}
+\key{Format an environment}{C-c C-q C-e}
 
-\key{Enter/leave outline-minor-mode}{C-c C-o}
+\key{Mark an environment}{C-c .}
+\key{Mark a section}{C-c *}
 
-\key{Make all text invisible (excluding headings)}{C-l C-t}
-\key{Show all text}{C-l C-a}
-\key{Hide subtree}{C-l C-h}
-\key{Show subtree}{C-l C-s}
-\key{Show children (inventory)}{C-l C-i}
-\key{Hide entry}{C-l C-e}
-\key{Show entry}{C-l C-l}
+\key{(Un)comment region}{C-c ;}
+\key{(Un)comment paragraph}{C-c \%}
 
-\key{Goto next visible heading}{C-l C-n}
-\key{Goto previous visible heading}{C-l C-p}
-\key{Goto next entry at same level}{C-l C-f}
-\key{Previous heading at same level}{C-l C-b}
-\key{Move up one level}{C-l C-u}
+\section{Outlining}
+
+\key{Make all text invisible (excluding headings)}{C-c C-o C-t}
+\key{Show all text}{C-c C-o C-a}
+\key{Hide subtree}{C-c C-o C-h}
+\key{Show subtree}{C-c C-o C-s}
+\key{Show children (inventory)}{C-c C-o C-i}
+\key{Hide entry}{C-c C-o C-e}
+\key{Show entry}{C-c C-o C-l}
+
+\section{Movement}
+
+\key{Goto next visible heading}{C-c C-o C-n}
+\key{Goto previous visible heading}{C-c C-o C-p}
+\key{Goto next entry at same level}{C-c C-o C-f}
+\key{Previous heading at same level}{C-c C-o C-b}
+\key{Move up one level}{C-c C-o C-u}
+\key{Up-list}{C-c \}}
 
 \section{Miscellany}
 
-\key{Complete Symbol}{M-TAB}
-\key{Up-list}{M-\}}
-\key{Terminate Paragraph}{RET}
-\key{Smart ``Quote'' Insert}{"}
-\key{Indent current line}{TAB}
-\key{Reindent, then newline and indent}{LFD}
-\key{Terminate paragraph}{C-c LFD}
-
-Type \kbd{M-x TeX-validate-buffer} to insure that the \$ and braces
-match up within paragraphs.  Also \kbd{C-c \$} (LaCheck) is usefull for
-checking such.
+\key{Normal mode}{C-c C-n}
+\key{Describe mode}{C-c ?}
 
 \copyrightnotice
 

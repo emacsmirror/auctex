@@ -1,0 +1,118 @@
+* README_MINOR - Introduction to minor modes.
+
+$Id: README_MINOR,v 5.1 1993-02-16 04:08:39 amanda Exp $
+
+** min-map.el:  Minor Keymaps 
+
+For authors of minor modes, who need to rebind one or more keys while
+in the minor mode.  You can do this by hiding the old binding in a
+variable, and then restore the binding when you leave the mode.
+Unfortunately, this will usually not work if more than one minor mode
+try to rebind the key.  You can solve this problem, by using the
+following functions to bind keys in minor modes.  See the
+documentation string for the individual functions for details.
+
+Put in (require 'min-map) in the start of the file containing your
+minor mode. 
+
+Use minor-set-key to set a key in the minor keymap for a given minor
+mode.
+
+Use minor-call-shadow to call the key binding shadowed by a given
+minor mode.
+
+Use unbind-minor-mode to remove all key definitions for a given minor
+mode.
+
+** min-out.el:  Outline Minor Mode
+
+Allows you to use the outline-mode commands while in another major
+mode.  This is already integrated in LaTeX-mode.  You toggle the mode
+with M-x outline-minor-mode.  If you want to support other major
+modes, let them change the outline-regexp and outline-level-function.
+outline-regexp matches header lines (by default lines starting with
+one or more *'s), and outline-level-function calculate the level of
+the header (by default the length of the string matched by
+outline-regexp).
+
+To use, add to your init file:
+
+(autoload 'outline-minor-mode "min-out" "Toggle outline minor mode." t)
+(make-variable-buffer-local 'outline-prefix-char)
+(setq-default outline-prefix-char "\C-c\C-o") ; Change to get a better prefix
+(make-variable-buffer-local 'outline-regexp)
+(setq-default outline-regexp "[*\^l]+")
+(make-variable-buffer-local 'outline-level-function)
+(setq-default outline-level-function 'outline-level-default)
+
+** min-key.el:  Mapping the keyboard layout
+
+Allows you to specify a language specific keyboard mapping between
+various encodings of an alphabet.  You toggle the mode with M-x
+keyboard-mode, and select a different mapping with M-x
+keyboard-query-mapping.  It also allows you to convert the text in the
+buffer between the supported encodings.  You can get the original
+binding by typing the remaped key twice. 
+
+Currently only encodings of the Danish alphabet is supported, but you
+can add other alphabets by setting the variable `language-encodings'. 
+
+To use, add to your init file:
+
+(autoload 'keyboard-mode "min-key" "Toggle keyboard-mode." t)
+(autoload 'keyboard-query-mapping "min-key" "Query keyboard-mode." t)
+(autoload 'convert-character-query "min-key" "Convert between encodings." t)
+
+You most likely want to define a short-cut for often used mappings.
+The following two functions redefine the keys on an international
+keyboard to generate danish characters, either Latin 1 or as TeX
+macroes.
+
+(defun dansk-double-mode (arg)
+  "DK Latin1 keys on international keyboard."
+  (interactive "P")
+  (require 'min-key)
+  (if (or (and (null arg) keyboard-mode)
+	  (<= (prefix-numeric-value arg) 0))
+      (keyboard-mode -1)
+    (keyboard-set-mapping "Danish" "Keyboard Layout" "ISO 8859 Latin 1" t)
+    (keyboard-mode 1)))
+
+(defun tex-dk-double-mode (arg)
+  "DK TeX keys on international keyboard."
+  (interactive "P")
+  (require 'min-key)
+  (if (or (and (null arg) keyboard-mode)
+	  (<= (prefix-numeric-value arg) 0))
+      (keyboard-mode -1)
+    (keyboard-set-mapping "Danish" "Keyboard Layout" "TeX" t)
+    (keyboard-mode 1)))
+
+** ltx-dead.el: Accent's in LaTeX
+
+Get TeX accent on letters by typing accent key followed by letter.
+Enter and leave with M-x LaTeX-dead-mode.
+
+To use, add to your init file:
+
+(setq LaTeX-dead-keys '(?' ?` ?\" ?^ ?~)) ; Remove those you don't need
+(autoload 'LaTeX-dead-mode "ltx-dead" "Toggle LaTeX-dead-mode." t)
+
+** tex-math.el: Mathematical macros in TeX
+
+Bind mathematical to backquote.  You enter mathematical macros with
+` letter, e.g. ` a will insert \alpha in the buffer.
+
+To use, add to your init file:
+
+(setq LaTeX-math-abbrev-prefix "`") ; Change if you like ` as is.
+(autoload 'LaTeX-math-mode "tex-math" "Toggle math mode." t)
+
+** Emacs
+
+Local Variables:
+mode: text
+mode: outline-minor
+End:
+
+
