@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.147 2004-04-07 07:44:16 angeli Exp $
+@c $Id: auc-tex.texi,v 1.148 2004-04-07 07:47:47 angeli Exp $
 
 @finalout
 @titlepage
@@ -996,7 +996,7 @@ be inserted if they do not fit into one line.  The separators can be
 curly braces, brackets, switches for inline math (@samp{$}, @samp{\(},
 @samp{\)}) and switches for display math (@samp{\[}, @samp{\]}).  Such
 formatting can be useful to make macros and math more visible or to
-prevent overfull lines in the @LaTeX{} source in case a package for
+prevent overfull lines in the La@TeX{} source in case a package for
 displaying formatted TeX output inside the Emacs buffer, like
 preview-latex, is used.
 @end defopt
