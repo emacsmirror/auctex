@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.49 1995-01-25 15:36:58 amanda Exp $
+;; Version: $Id: tex.el,v 5.50 1995-01-26 12:57:04 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -242,9 +242,10 @@ Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
 ;; This hook will store bibitems when you save a BibTeX buffer.
-
 (defvar bibtex-mode-hook nil)
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
+(or (memq 'BibTeX-auto-store bibtex-mode-hook) ;No `add-hook' yet.
+    (setq bibtex-mode-hook (cons 'BibTeX-auto-store bibtex-mode-hook)))
+
 (autoload 'BibTeX-auto-store "latex" no-doc t)
 
 ;; Bind latex-help globally. 
@@ -265,6 +266,9 @@ Full documentation will be available after autoloading the function."
 ;; An GNU Emacs 19 function.
 (or (fboundp 'set-text-properties)
     (fset 'set-text-properties (symbol-function 'ignore)))
+
+;; An GNU Emacs 19 variable.
+(defvar minor-mode-map-alist nil)
 
 ;;; Special support for Emacs 18
 
@@ -387,6 +391,16 @@ The value is actually the tail of LIST whose car is ELT."
   (while (and list (not (equal elt (car list))))
     (setq list (cdr list)))
   list)
+
++;; An Emacs 19 macro.
+(defmacro save-match-data (&rest body)
+  "Execute the BODY forms, restoring the global value of the match data."
+  (let ((original (make-symbol "match-data")))
+    (list
+     'let (list (list original '(match-data)))
+     (list 'unwind-protect
+           (cons 'progn body)
+           (list 'store-match-data original)))))
 
 )
 
