@@ -1,3 +1,26 @@
+2004-07-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el: New file.
+	
+	* Makefile.in (AUCSRC): Add tex-fold.el.
+	(AUCELC): Add tex-fold.elc.
+
+	* latex.el (LaTeX-find-macro-start): Move to tex.el and rename to
+	`TeX-find-macro-start'.
+	(LaTeX-find-macro-end): Analogous.
+	(LaTeX-forward-paragraph): Change call to `LaTeX-find-macro-*' to
+	`TeX-find-macro-*'.
+	(LaTeX-backward-paragraph): Ditto.
+	(LaTeX-mode-menu): Add submenu "Show/Hide".  Add entries for
+	relevant functions in tex-fold.el and add the show/hide
+	environment entries which were in "Formatting and Marking" before.
+
+	* tex.el: Require tex-fold.el.
+	(TeX-find-macro-start): New function.  Formerly known as
+	`LaTeX-find-macro-start' in latex.el.
+	(TeX-find-macro-end): New function.  Formerly known as
+	`LaTeX-find-macro-end' in latex.el.
+
 2004-07-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp-match-environment): Let environments be
