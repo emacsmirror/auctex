@@ -107,10 +107,10 @@ performed as specified in TeX-expand-list."
   (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t)
 	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-LaTeX nil t)
+	      'TeX-run-TeX nil t)
 	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil t)
 	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-LaTeX nil t)
+	      'TeX-run-TeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
 	    (list "View" "%v " 'TeX-run-silent t nil)
 	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
@@ -127,13 +127,14 @@ performed as specified in TeX-expand-list."
 	(list "Other" "" 'TeX-run-command t t)
 	;; Not part of standard TeX.
 	(list "LaTeX PDF" "pdflatex \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-LaTeX nil t)
+	      'TeX-run-TeX nil t)
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil t)
 	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil t)
 	;; support for ConTeXt  --pg
-	(list "ConTeXt" "texexec --once --nonstopmode --texutil %t" 'TeX-run-ConTeXt nil t)
+	;; first version of ConTeXt to support nonstopmode: 2003.2.10
+	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX nil t)
 	(list "ConTeXt Interactive" "texexec --once --texutil %t" 'TeX-run-interactive t t)
 	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil t)
 	;; --purge %s does not work on unix systems with current texutil
@@ -160,8 +161,6 @@ TeX-run-format: As TeX-run-command, but assume the output is created
 by a TeX macro package.  Return the process object. 
 
 TeX-run-TeX: For TeX output.
-
-TeX-run-LaTeX: For LaTeX output.
 
 TeX-run-interactive: Run TeX or LaTeX interactively.
 
@@ -199,6 +198,9 @@ The fifth element is obsolete and ignored."
 				(function-item TeX-run-command)
 				(function-item TeX-run-format)
 				(function-item TeX-run-TeX)
+				;; leave the following line in
+				;; customization? Replaced (but still
+				;; available) with TeX-run-TeX --pg
 				(function-item TeX-run-LaTeX)
 				(function-item TeX-run-interactive)
 				(function-item TeX-run-BibTeX)
@@ -1455,6 +1457,7 @@ of plain-TeX-mode-hook."
   (setq mode-name "TeX")
   (setq major-mode 'plain-tex-mode)
   (setq TeX-command-default "TeX")
+  (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook))
 
 

@@ -30,8 +30,8 @@
 ;; The MikTeX commands.
 (setq TeX-command-list
   (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-run-TeX nil t)
-	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
-	(list "LaTeX PDF" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-LaTeX nil t)
+	(list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil t)
+	(list "LaTeX PDF" "pdflatex \\nonstopmode\\input{%t}" 'TeX-run-TeX nil t)
 	(list "View" "%v" 'TeX-run-discard nil nil)
 	(list "Print" "gsview32 %f" 'TeX-run-command t nil)
 	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
