@@ -1,9 +1,30 @@
+2004-10-04  Miguel Frasson <frasson@math.leidenuniv.nl>
+
+	* toolbarx.el:
+	(toolbarx-emacs-add-button)
+	(toolbarx-test-image-type): Add Emacs `image descriptor' as valid
+	image specification (Emacs only).
+	(toolbarx-emacs-add-button): "transp-strip" is new `tranparent
+	strip' image file.
+
+	* images/bibtex.xpm, images/dvipdf.xpm, images/dvips.xpm,
+	* images/error.xpm, images/exec.xpm, images/execbibtex.xpm,
+	* images/execdvips.xpm, images/execerror.xpm,
+	* images/execpdftex.xpm, images/exectex.xpm,
+	* images/execviewdvi.xpm, images/execviewpdf.xpm,
+	* images/execviewps.xpm, images/gv.xpm, images/jumpdvi.xpm,
+	* images/pdftex.xpm, images/pspdf.xpm, images/sep.xpm,
+	* images/tex.xpm, images/view.xpm, images/viewdvi.xpm,
+	* images/viewpdf.xpm, images/viewps.xpm: Add symbolic color
+	'backgroundToolBarColor' to make pics work in (GNU/Linux) XEmacs
+
+	
 2004-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Some clean-ups, rearrangements and performance
 	improvements.
 	(font-latex-verbatim-face): XEmacs does not like :inherit.
-	(font-latex-setup): Activate `font-latex-syntactic-face-function.
+	(font-latex-setup): Activate `font-latex-syntactic-face-function'.
 	(font-latex-faces-present-p): New function.
 	(font-latex-match-command-outside-arguments): Use it.
 	(font-latex-bold-command-keywords)
