@@ -610,28 +610,43 @@ It may be customized with the following variables:
 
 (defun LaTeX-current-environment (&optional arg)
   "Return the name (a string) of the enclosing LaTeX environment.
-With optional ARG>=1, find that outer level."
+With optional ARG>=1, find that outer level.
+The way the environment is determined depends on several factors.
+
+In LaTeX mode:
+* If function is called inside a comment and
+  `LaTeX-syntactic-comments' is enabled, try to find the
+  environment in the consecutive commented region.
+* If function is called inside a comment and
+  `LaTeX-syntactic-comments' is disabled, try to find the
+  environment outside the commented region.
+
+In docTeX mode:
+* If function is called inside a line comment and not in a
+  macrocode environment, i.e in a documentation part, search in
+  documentation parts (commented regions not in macrocode
+  environments) and skip non-comment regions.
+* If function is called inside a macrocode environment, do as in
+  LaTeX mode.
+
+The same rules are used for `LaTeX-find-matching-begin' and
+`LaTeX-find-matching-begin'."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let ((in-comment (TeX-in-commented-line)))
     ;; We should probably be more restrictive and not only test for
-    ;; `comment-start' but for a fixed prefix so that changes in
-    ;; the prefix which indicate a new part are recognized.
+    ;; skips between comments and non-comments but for changes in the
+    ;; prefix as well which can indicate a new part.
     (save-restriction
-      (narrow-to-region
-       (if (not in-comment)
-	   (point-min)
-	 (save-excursion
-	   (while (and (zerop (forward-line -1))
-		       (looking-at (concat "[ \t]*" comment-start))))
-	   (line-beginning-position
-	    (if (looking-at (concat "[ \t]*" comment-start))
-		1 2))))
-       (if (not in-comment)
-	   (point-max)
-	 (save-excursion
-	   (while (progn (forward-line 1)
-			 (looking-at (concat "[ \t]*" comment-start))))
-	   (point))))
+      (when (or (and in-comment
+                     (eq major-mode 'latex-mode)
+                     LaTeX-syntactic-comments)
+                (and in-comment
+                     (eq major-mode 'doctex-mode)
+                     (docTeX-in-macrocode-p)))
+        (narrow-to-region (save-excursion
+                            (progn (TeX-forward-comment-skip) (point)))
+                          (save-excursion
+                            (progn (TeX-backward-comment-skip) (point)))))
       (save-excursion
 	(while (and
 		(/= arg 0)
@@ -640,12 +655,16 @@ With optional ARG>=1, find that outer level."
 			 "\\|"
 			 (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop))
 		 nil t 1)
-		;; I'd like to have added `(and (not in-comment)
-		;; (concat "^[^" comment-start "]*"))' to the
-		;; beginning of the regexp above but performance of
-		;; this sucks.
-		(or (and (not in-comment) (not (TeX-in-commented-line)))
-		    (and in-comment (TeX-in-commented-line))))
+                ;; We currently don't check if point is in a macrocode
+                ;; environment in case the function is called in a
+                ;; commented line and point is in a commented line.
+                ;; As this seems to be a very rare case we currently
+                ;; don't do those tests yet which would add complexity
+                ;; and negatively influence performance.
+                (or (and LaTeX-syntactic-comments
+                         (eq in-comment (TeX-in-commented-line)))
+                    (and (not LaTeX-syntactic-comments)
+                         (not (TeX-in-commented-line)))))
 	  (cond ((looking-at (concat "[ \t]*" (regexp-quote TeX-esc)
 				     "end" (regexp-quote TeX-grop)))
 		 (setq arg (1+ arg)))
@@ -658,6 +677,19 @@ With optional ARG>=1, find that outer level."
 	    (search-forward TeX-grcl)
 	    (backward-char 1)
 	    (buffer-substring beg (point))))))))
+
+(defun docTeX-in-macrocode-p ()
+  "Determine if point is inside a macrocode environment."
+  (let ((orig-point (point)))
+    (save-excursion
+      (re-search-forward
+       (concat "^%    " (regexp-quote TeX-esc)
+               "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 0)
+      (if (or (eobp)
+              (= (match-beginning 0) orig-point)
+              (= (char-after (match-beginning 1)) ?b))
+          nil
+        t))))
 
 
 ;;; Environment Hooks
@@ -2823,47 +2855,79 @@ formatting."
     (message "Finished")))
 
 (defun LaTeX-find-matching-end ()
-  "Move point to the \\end of the current environment."
+  "Move point to the \\end of the current environment.
+For the rules which govern the behavior of `LaTeX-find-matching-end'
+see the documentation of `LaTeX-current-environment'."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	(level 1)
 	(in-comment (TeX-in-commented-line)))
-    (save-excursion
-      (skip-chars-backward "a-zA-Z \t{")
-      (unless (bolp)
-	(backward-char 1)
-	(and (looking-at regexp)
-	     (char-equal (char-after (1+ (match-beginning 0))) ?e)
-	     (setq level 0))))
-    (while (and (> level 0) (re-search-forward regexp nil t))
-      (when (eq in-comment (TeX-in-commented-line))
-	(if (= (char-after (1+ (match-beginning 0))) ?b);;begin
-	    (setq level (1+ level))
-	  (setq level (1- level)))))
-    (if (= level 0)
-	(search-forward "}")
-      (error "Can't locate end of current environment"))))
+    (save-restriction
+      (when (or (and in-comment
+                     (eq major-mode 'latex-mode)
+                     LaTeX-syntactic-comments)
+                (and in-comment
+                     (eq major-mode 'doctex-mode)
+                     (docTeX-in-macrocode-p)))
+        (narrow-to-region (save-excursion
+                            (progn (TeX-forward-comment-skip) (point)))
+                          (save-excursion
+                            (progn (TeX-backward-comment-skip) (point)))))
+      (save-excursion
+        (skip-chars-backward "a-zA-Z \t{")
+        (unless (bolp)
+          (backward-char 1)
+          (and (looking-at regexp)
+               (char-equal (char-after (1+ (match-beginning 0))) ?e)
+               (setq level 0))))
+      (while (and (> level 0) (re-search-forward regexp nil t))
+        (when (or (and LaTeX-syntactic-comments
+                       (eq in-comment (TeX-in-commented-line)))
+                  (and (not LaTeX-syntactic-comments)
+                       (not (TeX-in-commented-line))))
+          (if (= (char-after (1+ (match-beginning 0))) ?b) ;;begin
+              (setq level (1+ level))
+            (setq level (1- level)))))
+      (if (= level 0)
+          (search-forward "}")
+        (error "Can't locate end of current environment")))))
 
 (defun LaTeX-find-matching-begin ()
-  "Move point to the \\begin of the current environment."
+  "Move point to the \\begin of the current environment.
+For the rules which govern the behavior of `LaTeX-find-matching-begin'
+see the documentation of `LaTeX-current-environment'."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	(level 1)
 	(in-comment (TeX-in-commented-line)))
-    (skip-chars-backward "a-zA-Z \t{")
-    (if (bolp)
-	nil
-      (backward-char 1)
-      (and (looking-at regexp)
-	   (char-equal (char-after (1+ (match-beginning 0))) ?b)
-	   (setq level 0)))
-    (while (and (> level 0) (re-search-backward regexp nil t))
-      (when (eq in-comment (TeX-in-commented-line))
-	(if (= (char-after (1+ (match-beginning 0))) ?e);;end
-	    (setq level (1+ level))
-	  (setq level (1- level)))))
-    (or (= level 0)
-	(error "Can't locate beginning of current environment"))))
+    (save-restriction
+      (when (or (and in-comment
+                     (eq major-mode 'latex-mode)
+                     LaTeX-syntactic-comments)
+                (and in-comment
+                     (eq major-mode 'doctex-mode)
+                     (docTeX-in-macrocode-p)))
+        (narrow-to-region (save-excursion
+                            (progn (TeX-forward-comment-skip) (point)))
+                          (save-excursion
+                            (progn (TeX-backward-comment-skip) (point)))))
+      (skip-chars-backward "a-zA-Z \t{")
+      (if (bolp)
+          nil
+        (backward-char 1)
+        (and (looking-at regexp)
+             (char-equal (char-after (1+ (match-beginning 0))) ?b)
+             (setq level 0)))
+      (while (and (> level 0) (re-search-backward regexp nil t))
+        (when (or (and LaTeX-syntactic-comments
+                       (eq in-comment (TeX-in-commented-line)))
+                  (and (not LaTeX-syntactic-comments)
+                       (not (TeX-in-commented-line))))
+          (if (= (char-after (1+ (match-beginning 0))) ?e) ;;end
+              (setq level (1+ level))
+            (setq level (1- level)))))
+      (or (= level 0)
+          (error "Can't locate beginning of current environment")))))
 
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
