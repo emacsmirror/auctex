@@ -5,6 +5,9 @@
 	(preview-replace-active-icon): For now do the full inefficient
 	stuff.  Working this out later should be easy.  XEmacs now
 	displays previews, but that's about all.
+	(preview-button-1, preview-button-2): define as XEmacs buttons
+	(preview-make-clickable): make balloon-help something that
+	balloon-help-mode understands.
 
 2002-04-09  Nix  <nix@esperi.demon.co.uk>
 
