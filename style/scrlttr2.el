@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-10-26
-;; Version: $Id: scrlttr2.el,v 1.2 2003-11-17 13:14:30 angeli Exp $
+;; Version: $Id: scrlttr2.el,v 1.3 2003-12-26 18:49:25 uid69014 Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -75,7 +75,6 @@
      '("datefrench" nil)
      '("dategerman" nil)
      '("dateitalian" nil)
-     '("datename" nil)
      '("datename" t)
      '("datengerman" nil)
      '("datespanish" nil)
@@ -115,8 +114,7 @@
      '("useplength" "Name")
      '("wwwname" t)
      '("yourmailname" t)
-     '("yourrefname" t)
-)
+     '("yourrefname" t))
     (LaTeX-add-environments
      '("letter" (lambda (env &rest ignore)
 		  (LaTeX-insert-environment
