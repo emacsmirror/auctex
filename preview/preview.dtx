@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{541}
+%\CheckSum{542}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.32 $
+%  \rcskey \version CVS-$Revision: 1.33 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-02-18 23:12:25 $
+%\rcskey\next $Date: 2002-02-19 00:42:54 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -230,7 +230,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.32 $
+   \reserved@a\reserved@b CVS-$Revision: 1.33 $
 \else
    \begingroup
       \lccode`-=`.
@@ -239,7 +239,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-02-18 23:12:25 $
+\reserved@a\next $Date: 2002-02-19 00:42:54 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -433,7 +433,7 @@
 %  \begin{macro}{\shipout}
 %    \begin{macrocode}
 \let\pr@shipout=\shipout
-\def\shipout{\setbox\z@\voidb@x\setbox\z@}
+\def\shipout{\setbox\z@\box\voidb@x\setbox\z@}
 %    \end{macrocode}
 %  \end{macro}
 %\subsection{Parsing commands}
