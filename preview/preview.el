@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.6 2001-09-22 21:51:22 dakas Exp $
+;; $Id: preview.el,v 1.7 2001-09-24 01:52:29 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -53,7 +53,7 @@
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
 
-(defcustom preview-image-type 'postscript
+(defcustom preview-image-type 'png
   "*Image type to be used in images."
   :group 'preview
   :type '(choice (const postscript)
@@ -176,8 +176,8 @@ YRES, the screen resulution in dpi."
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
-and tries to restart GhoscScript if necessary."
-(let ((status (process-status process)))
+and tries to restart GhostScript if necessary."
+  (let ((status (process-status process)))
     (when (or (eq status 'exit) (eq status 'signal))
       ;; process died.  Throw away culprit, go on.
       (with-current-buffer (process-buffer process)
@@ -188,25 +188,31 @@ and tries to restart GhoscScript if necessary."
 	    (error nil))
 	  (preview-deleter preview-gs-ov)
 	  (setq preview-gs-ov nil)
-	  ;; restart only if we made progress since last call
-	  (when preview-gs-tq
-	    (preview-gs-restart)))))))
+	  (if (eq status 'signal)
+	      (progn
+		(mapc 'preview-deleter preview-gs-queue)
+		(setq preview-gs-urgent nil)
+		(setq preview-gs-queue nil))
+	    
+	    ;; restart only if we made progress since last call
+	    (when preview-gs-tq
+	      (preview-gs-restart))))))))
 
 (defvar preview-gs-command-line nil)
 (make-variable-buffer-local 'preview-gs-command-line)
 
 (defun preview-gs-restart ()
   (when (or preview-gs-urgent preview-gs-queue)
-    (let* ((process-connection-type nil)
+    (let* ((buff (current-buffer))
+	   (process-connection-type nil)
 	   (process
-	   (apply 'start-process "GS" (current-buffer)
-		  preview-gs-command
-		  preview-gs-command-line)))
-      (set-process-sentinel process 'preview-gs-sentinel)
+	    (apply (function start-process) "GS" buff
+		   preview-gs-command
+		   preview-gs-command-line)))
+      (set-process-sentinel process (function preview-gs-sentinel))
       (setq preview-gs-tq (tq-create process))
       (tq-enqueue preview-gs-tq
-		  "" "GS>" (current-buffer) (function
-					     preview-gs-transact)))))
+		  "" "GS>" buff (function preview-gs-transact)))))
 
 (defalias 'preview-gs-close (function preview-gs-restart))
 
@@ -222,10 +228,11 @@ and tries to restart GhoscScript if necessary."
   (setq preview-gs-queue nil)
   (setq preview-gs-urgent nil))
 
-(defun preview-gs-urgentize (ov)
-  (push ov preview-gs-urgent)
-  (overlay-put ov 'display nil)
-  nil)
+(defun preview-gs-urgentize (ov buff)
+  (with-current-buffer buff
+    (push ov preview-gs-urgent)
+    (overlay-put ov 'display nil)
+  nil))
 
 (defimage preview-nonready-icon ((:type xpm :file "help.xpm" :ascent 80)
 				 (:type pbm :file "help.pbm" :ascent 80)))
@@ -239,7 +246,7 @@ and tries to restart GhoscScript if necessary."
 		  (preview-extract-bb (overlay-get ov 'filename))
 		  thisimage))
     (push ov preview-gs-queue)
-    (overlay-put ov 'display `(when (preview-gs-urgentize ,ov) . nil))
+    (overlay-put ov 'display `(when (preview-gs-urgentize ,ov ,(current-buffer)) . nil))
     thisimage))
 		
   
@@ -247,50 +254,61 @@ and tries to restart GhoscScript if necessary."
 (defun preview-gs-transact (buff answer)
   "Work off GhostScript transaction queue in buffer BUFF."
   (with-current-buffer buff
-    (when preview-gs-ov
-      (condition-case nil
-	  (delete-file (overlay-get preview-gs-ov 'filename))
-	(file-error nil))
-      (let* ((queued (overlay-get preview-gs-ov 'queued))
-	     (newfile (elt queued 0))
-	     (bbox (elt queued 1))
-	     (img (elt queued 2)))
-	(overlay-put preview-gs-ov 'queued nil)
-	(overlay-put preview-gs-ov 'filename newfile)
-	(setcdr img (list :file newfile
-			  :type preview-gs-image-type
-			  :heuristic-mask t
-			  :ascent (preview-ascent-from-bb bbox)))))
-    (while
-	(if (setq preview-gs-ov
-		  (or (pop preview-gs-urgent)
-		      (pop preview-gs-queue)))
-	    (let ((queued (overlay-get preview-gs-ov 'queued)))
-	      (if (and (overlay-buffer preview-gs-ov) queued)
-		  (let ((newfile (elt queued 0))
-			(bbox (elt queued 1))
-			(oldfile
-			 (overlay-get preview-gs-ov 'filename)))
-		    (tq-enqueue
-		     preview-gs-tq
-		     (format "clear gsave << /PageSize [%g %g] \
+    (save-excursion
+      (goto-char (point-max))
+      (unless (string= answer "GS>")
+	(insert answer))
+      (condition-case whatgives
+	  (progn
+	    (when preview-gs-ov
+	      (condition-case nil
+		  (delete-file (overlay-get preview-gs-ov 'filename))
+		(file-error nil))
+	      (let* ((queued (overlay-get preview-gs-ov 'queued))
+		     (newfile (elt queued 0))
+		     (bbox (elt queued 1))
+		     (img (elt queued 2)))
+		(overlay-put preview-gs-ov 'queued nil)
+		(overlay-put preview-gs-ov 'filename newfile)
+		(setcdr img (list :file newfile
+				  :type preview-gs-image-type
+				  :heuristic-mask t
+				  :ascent (preview-ascent-from-bb bbox)))))
+	    (while
+		(catch 'loop
+		  (setq preview-gs-ov
+			(or (pop preview-gs-urgent)
+			    (pop preview-gs-queue)))
+		  (when (null preview-gs-ov)
+		    (let ((queue preview-gs-tq))
+		      (setq preview-gs-tq nil)
+		      (tq-close queue)
+		      (throw 'loop nil)))
+		  
+		  (let ((queued (overlay-get preview-gs-ov 'queued)))
+		    (when (or (null queued)
+			      (null (overlay-buffer preview-gs-ov)))
+		      (throw 'loop t))
+		    (let ((newfile (elt queued 0))
+			  (bbox (elt queued 1))
+			  (oldfile (overlay-get preview-gs-ov 'filename)))
+		      (tq-enqueue
+		       preview-gs-tq
+		       (format "clear gsave << /PageSize [%g %g] \
 /PageOffset [%g %g] \
 /OutputFile (%s) >> setpagedevice (%s) run grestore\n"
 ;;;/HWResolution [%g %g]
-			     (- (elt 2 bbox) (elt 0 bbox))
-			     (- (elt 3 bbox) (elt 1 bbox))
-			     (- (elt 0 bbox)) (elt 1 bbox)
-			     newfile
-			     oldfile)
-		     "GS\\(<[0-9]+\\)?>"
-		     buff
-		     (function preview-gs-transact))
-		    nil)		;end while
-		t))			;(null queued), repeat while
-	  (let ((queue preview-gs-tq))
-	    (setq preview-gs-tq nil)
-	    (tq-close queue)		;both queues empty
-	    nil))) ))
+			       (- (elt bbox 2) (elt bbox 0))
+			       (- (elt bbox 3) (elt bbox 1))
+			       (- (elt bbox 0)) (elt bbox 1)
+			       newfile
+			       oldfile)
+		       "GS\\(<[0-9]+\\)?>"
+		       buff
+		       (function preview-gs-transact))
+		      nil)		;end while
+		    ))))
+	(error (insert (error-message-string whatgives)))))))
 
 
 (defcustom preview-scale-function (function preview-scale-from-face)
