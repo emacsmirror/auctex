@@ -1,3 +1,24 @@
+2002-04-14  Nix  <nix@esperi.demon.co.uk>
+
+	* preview.el (preview-parse-messages):
+	Typo and grammar fixes in comments.
+	No longer wonder if XEmacs will like line-number regexps.
+
+	* doc/problems.texi (XEmacs):
+	Say that it works modulo core bugs and new desktop.el package.
+	Point to the latest version of the core patch.
+	Suggest trying under MS Windows.
+	(GNU Emacs under Windows): Point out that preview-latex's not been tested
+	under Windows with XEmacs, either.
+
+	* doc/install.texi (Prerequisites):
+	No longer describe XEmacs support as preliminary.
+	Mention the Known Problems link.
+	(Configure): Elaborate --with-packagedir.
+	(Loading the package): Mention that most of these instructions
+	are unnecessary for XEmacs, except if you used --with-packagedir.
+	(Maybe should split into Emacs/XEmacs subsections?)
+
 2002-04-14  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* install.texi: Added --with-xemacs
@@ -16,10 +37,6 @@
 	(preview-TeX-inline-sentinel): Same here.
 	(TeX-inline-preview): Catch initialization errors and abort.
 	Good for people without graphic display.
-
-2002-04-13  nixsf  <nixsf@punkthus221.au.dk>
-
-	* todo.texi: Update XEmacs status: most things are now done.
 
 2002-04-13  Jan-Ake Larsson  <jalar@imf.au.dk>
 
