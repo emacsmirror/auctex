@@ -1,5 +1,21 @@
 2002-09-02  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (preview-mode-setup): Make behaved startup in
+	buffers without associated file (M-x calendar RET tfw produces
+	things like that).  Generating previews will not work before you
+	save the buffer, but at least the stuff doesn't bomb out right
+	away.
+
+	* prv-emacs.el (preview-mode-setup): Make behaved startup in
+	buffers without associated file (M-x calendar RET tfw produces
+	things like that).  Generating previews will not work before you
+	save the buffer, but at least the stuff doesn't bomb out right
+	away.
+
+	* circ.tex: Load and save once to make it X-Symbol-compatible
+	(changes are negligible, and it makes demoing mixtures of the two
+	tools nicer).
+
 	* preview.el (LaTeX-preview-setup): Fix menu position of generated
 	customize menu.
 	(preview-format-kill, preview-dump-file-name) 
