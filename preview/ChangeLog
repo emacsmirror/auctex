@@ -1,5 +1,8 @@
 2005-01-25  David Kastrup  <dak@gnu.org>
 
+	* prv-emacs.el: Don't use transparent borders when Emacs is new
+	enough to have tolerable blinking.
+
 	* preview.el (preview-dvipng-color-string): Pass the border into
 	dvipng.
 	(preview-dvipng-place-all): Record the border in the image data

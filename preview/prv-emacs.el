@@ -58,7 +58,11 @@ to the default background in most other cases."
 			(const :tag "Foreground" :value :foreground))))
   :group 'preview-appearance)
 
-(defcustom preview-transparent-border 1.5
+;;; Note that the following default introduces a border only when
+;;; Emacs blinks politely when point is on an image (the tested
+;;; unrelated function was introduced at about the time image blinking
+;;; became tolerable).
+(defcustom preview-transparent-border (unless (fboundp 'posn-object-x-y) 1.5)
   "Width of transparent border for previews in pt.
 Setting this to a numeric value will add a border of
 `preview-transparent-color' around images, and will turn
