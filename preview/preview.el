@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.67 2002-03-03 23:44:33 dakas Exp $
+;; $Id: preview.el,v 1.68 2002-03-04 02:08:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -683,7 +683,11 @@ Fallback to :inherit and 'default implemented."
 
 
 (defun preview-environment (count)
-  "Run preview on LaTeX environment." (interactive "p")
+  "Run preview on LaTeX environment.
+This avoids running environments through preview that are
+indicated in `preview-inner-environments'.  If you use a prefix
+argument COUNT, the corresponding level of outward nested
+environments is selected." (interactive "p")
   (save-excursion
     (let (currenv pos startp endp)
       (dotimes (i (1- count))
@@ -816,6 +820,7 @@ directory are kept."
 (add-hook 'before-revert-hook #'preview-clearout-buffer)
 
 (defun desktop-buffer-preview-misc-data ()
+  "Hook function that extracts previews for persistent sessions."
   (save-restriction
     (widen)
     (let (process save-info)
@@ -844,6 +849,7 @@ on first use."
 )
 
 (defun preview-dissect (ov)
+  "Extract all persistent data from OV and delete it."
   (let ((filenames (butlast (nth 0 (overlay-get ov 'filenames)))))
     (setq preview-temp-dirs (delete (nth 2 filenames) preview-temp-dirs))
     (prog1
@@ -854,6 +860,7 @@ on first use."
       (delete-overlay ov))))
 
 (defun desktop-buffer-preview ()
+  "Hook function for restoring persistent previews into a buffer."
   (let (buf tempdirlist)
     (and (eq (car desktop-buffer-misc) 'preview)
 	 desktop-buffer-file-name
@@ -871,6 +878,8 @@ on first use."
 (add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
 
 (defun preview-cleanout-tempfiles ()
+  "Clean out all directories with non-persistent previews.
+This is called as a hook when exiting Emacs."
   (mapc #'preview-clean-topdir preview-temp-dirs))
 
 (defun preview-inactive-string (ov)
@@ -899,9 +908,7 @@ the argument SNIPPET passed via a hook mechanism is ignored."
 
 (defun preview-active-string (ov image)
   "Generate before-string for active image overlay OV.
-This calls the `place' hook indicated by `preview-image-type'
-in `preview-image-creators' with OV and SNIPPET
-and expects an image property as result."
+The IMAGE for clicking is passed in as an argument."
   (preview-make-clickable
    (overlay-get ov 'preview-map)
    (preview-string-from-image image)
@@ -957,6 +964,13 @@ region between START and END."
     (preview-toggle ov t)))
 
 (defun preview-reinstate-preview (tempdirlist start end image filename)
+  "Reinstate a single preview.
+This gets passed TEMPDIRLIST, a list consisting of the kind
+of entries used in `TeX-active-tempdir' and returns an augmented
+list.  START and END give the buffer location where the preview
+is to be situated, IMAGE the image to place there, and FILENAME
+the file to use: a triple consisting of filename, its temp directory
+and the corresponding topdir."
   (when (file-readable-p (car filename))
     (setq TeX-active-tempdir
 	  (or (assoc (nth 1 filename) tempdirlist)
@@ -1033,10 +1047,10 @@ upgraded to a fancier version of just the LaTeX style."
   (mapconcat #'identity preview-default-option-list ","))
 
 (defcustom preview-default-preamble '("\\RequirePackage[%P]{preview}")
-  "*Specifies default preamble to add to a LaTeX document. 
+  "*Specifies default preamble to add to a LaTeX document.
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
-list of LaTeX commands is inserted just before \\begin{document}. "
+list of LaTeX commands is inserted just before \\begin{document}."
   :group 'preview-latex
   :type '(list (repeat :inline t :tag "Preamble commands" (string))))
 
@@ -1433,7 +1447,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.67 $"))
+	(rev "$Revision: 1.68 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
