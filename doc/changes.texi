@@ -1,6 +1,9 @@
 @section News in 9.10
 
 @itemize @bullet
+@item
+Fixed various bugs with the babel package.
+
 @item @code{amsart} and @code{amsbook} now loads @code{amsthm} by default.
 Patch by Rune Kleveland <runekl@@math.uio.no>.
 

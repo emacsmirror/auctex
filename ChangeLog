@@ -1,8 +1,21 @@
+1999-08-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10g released.
+
 1999-08-20  Hidenobu Nabetani  <nabe@debian.or.jp>
 
 	* tex.el (TeX-format-list): Add "JLATEX" and "JTEX" which is needed
 	to load tex-jp.el automatically.
 	* tex-jp.el (TeX-format-list): Remove "JLATEX" and "JTEX".
+
+1999-08-19  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-hide-environment, LaTeX-show-environment): make
+	them work with new outline mode.
+	Reported by Thomas Schick <schick@math.psu.edu>.
+	
+	* tex.el (match-string): New compatibility function.
+	Reported by Andrew Edward Santosa <andrews@comp.nus.edu.sg>.
 
 1999-08-18  Hidenobu Nabetani  <nabe@debian.or.jp>
 

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10f
+;; Version: 9.10g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -498,14 +498,14 @@ It may be customized with the following variables:
   (interactive)
   (outline-flag-region (save-excursion (LaTeX-find-matching-begin) (point))
 		       (save-excursion (LaTeX-find-matching-end) (point))
-		       ?\r))
+		       (if (featurep 'noutline) t ?\r)))
 
 (defun LaTeX-show-environment ()
   "Show current LaTeX environment."
   (interactive)
   (outline-flag-region (save-excursion (LaTeX-find-matching-begin) (point))
 		       (save-excursion (LaTeX-find-matching-end) (point))
-		       ?\n))
+		       (if (featurep 'noutline) nil ?\n)))
 
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert environment of type ENV, with optional argument EXTRA."
