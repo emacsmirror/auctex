@@ -1,6 +1,17 @@
+2004-09-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-do-multi-line): Add new option and use
+	it as default value.
+	(font-latex-use-cache): New variable.
+	(font-latex-match-command-outside-arguments)
+	(font-latex-match-font-outside-braces)
+	(font-latex-match-font-inside-braces): Use it.
+	(font-latex-check-cache): Do not check if cache is to be used.
+	(font-latex-setup): Set up multi-line font locking.
+
 2004-09-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
-	* font-latex.el: Add change log entries and bump version
+	* font-latex.el: Add change log entries and bump version.
 	(font-latex-find-matching-close): Fix typo in last commit.
 	(font-latex-match-font-inside-braces): Set actual numbers in the
 	match, not nil.  Fixes errors with `font-lock-multiline' enabled.
