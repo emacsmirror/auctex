@@ -67,7 +67,10 @@
 	     "UrlSpecials"
 	     "urldef"
 	     "urlstyle"))
-   (font-latex-match-variable-make)))
+   (font-latex-match-variable-make)
+   (add-to-list 'font-latex-verb-like-commands-local "url")
+   (add-to-list 'font-latex-verbatim-macros-local "url")
+   (font-latex-set-syntactic-keywords)))
 
 (defun TeX-arg-urlstyle (optional &optional prompt)
   "Prompt for style used in \\urlstyle with completion."
