@@ -1,5 +1,5 @@
 % -*- plain-tex -*- 
-% $Id: math-ref.tex,v 1.2 1993-09-14 21:43:50 amanda Exp $
+% $Id: math-ref.tex,v 1.3 1993-11-18 20:12:15 amanda Exp $
 % Reference Card for LaTeX Math Minor Mode
 %**start of header
 \newcount\columnsperpage
@@ -209,75 +209,76 @@ LaTeX-math-list before loading LaTeX-math-mode.
 
 \section{Greek Letters}
 
-\key{alpha}{a}
-\key{beta}{b}
-\key{delta}{d}
-\key{epsilon}{e}
-\key{phi}{f}
-\key{gamma}{g}
-\key{eta}{h}
-\key{kappa}{k}
-\key{lambda}{l}
-\key{mu}{m}
-\key{nabla}{N}
-\key{nu}{n}
-\key{omega}{o}
-\key{pi}{p}
-\key{theta}{q}
-\key{rho}{r}
-\key{sigma}{s}
-\key{tau}{t}
-\key{upsilon}{u}
-\key{chi}{x}
-\key{psi}{y}
-\key{zeta}{z}
-\key{Delta}{D}
-\key{Gamma}{G}
-\key{Theta}{Q}
-\key{Lambda}{L}
-\key{Psi}{Y}
-\key{Pi}{P}
-\key{Sigma}{S}
-\key{Upsilon}{U}
-\key{Phi}{V}
-\key{Omega}{O}
+\def\disp#1{\hbox to 6ex{$#1$\hfill}}
+\key{\disp{\alpha} (alpha)}{a}
+\key{\disp{\beta} (beta)}{b}
+\key{\disp{\delta} (delta)}{d}
+\key{\disp{\epsilon} (epsilon)}{e}
+\key{\disp{\phi} (phi)}{f}
+\key{\disp{\gamma} (gamma)}{g}
+\key{\disp{\eta} (eta)}{h}
+\key{\disp{\kappa} (kappa)}{k}
+\key{\disp{\lambda} (lambda)}{l}
+\key{\disp{\mu} (mu)}{m}
+\key{\disp{\nabla} (nabla)}{N}
+\key{\disp{\nu} (nu)}{n}
+\key{\disp{\omega} (omega)}{o}
+\key{\disp{\pi} (pi)}{p}
+\key{\disp{\theta} (theta)}{q}
+\key{\disp{\rho} (rho)}{r}
+\key{\disp{\sigma} (sigma)}{s}
+\key{\disp{\tau} (tau)}{t}
+\key{\disp{\upsilon} (upsilon)}{u}
+\key{\disp{\chi} (chi)}{x}
+\key{\disp{\psi} (psi)}{y}
+\key{\disp{\zeta} (zeta)}{z}
+\key{\disp{\Delta} (Delta)}{D}
+\key{\disp{\Gamma} (Gamma)}{G}
+\key{\disp{\Theta} (Theta)}{Q}
+\key{\disp{\Lambda} (Lambda)}{L}
+\key{\disp{\Psi} (Psi)}{Y}
+\key{\disp{\Pi} (Pi)}{P}
+\key{\disp{\Sigma} (Sigma)}{S}
+\key{\disp{\Upsilon} (Upsilon)}{U}
+\key{\disp{\Phi} (Phi)}{V}
+\key{\disp{\Omega} (Omega)}{O}
 
 \section{Symbols}
 
-\key{rightarrow}{C-f}
-\key{leftarrow}{C-b}
-\key{uparrow}{C-p}
-\key{downarrow}{C-n}
-\key{leq}{<}
-\key{geq}{>}
-\key{tilde}{~}
-\key{infty}{I}
-\key{forall}{A}
-\key{exists}{E}
-\key{not}{!}
-\key{in}{i}
-\key{times}{*}
-\key{cdot}{.}
-\key{subset}{\{}
-\key{supset}{\}}
-\key{subseteq}{[}
-\key{supseteq}{]}
-\key{backslash}{\\}
-\key{setminus}{/}
-\key{cup}{+}
-\key{cap}{-}
-\key{langle}{(}
-\key{rangle}{)}
-\key{exp}{C-e}
-\key{sin}{C-s}
-\key{cos}{C-c}
-\key{sup}{C-^}
-\key{inf}{C-_}
-\key{det}{C-d}
-\key{lim}{C-l}
-\key{tan}{C-t}
-\key{hat}{^}
-\key{vee}{v}
+\key{\disp{\rightarrow} (rightarrow)}{C-f}
+\key{\disp{\leftarrow} (leftarrow)}{C-b}
+\key{\disp{\uparrow} (uparrow)}{C-p}
+\key{\disp{\downarrow} (downarrow)}{C-n}
+\key{\disp{\leq} (leq)}{<}
+\key{\disp{\geq} (geq)}{>}
+\key{\disp{\tilde{ }} (tilde)}{~}
+\key{\disp{\infty} (infty)}{I}
+\key{\disp{\forall} (forall)}{A}
+\key{\disp{\exists} (exists)}{E}
+\key{\disp{\not } (not)}{!}
+\key{\disp{\in} (in)}{i}
+\key{\disp{\times} (times)}{*}
+\key{\disp{\cdot} (cdot)}{.}
+\key{\disp{\subset} (subset)}{\{}
+\key{\disp{\supset} (supset)}{\}}
+\key{\disp{\subseteq} (subseteq)}{[}
+\key{\disp{\supseteq} (supseteq)}{]}
+\key{\disp{\backslash} (backslash)}{\\}
+\key{\disp{\setminus} (setminus)}{/}
+\key{\disp{\cup} (cup)}{+}
+\key{\disp{\cap} (cap)}{-}
+\key{\disp{\langle} (langle)}{(}
+\key{\disp{\rangle} (rangle)}{)}
+\key{\disp{\exp} (exp)}{C-e}
+\key{\disp{\sin} (sin)}{C-s}
+\key{\disp{\cos} (cos)}{C-c}
+\key{\disp{\sup} (sup)}{C-^}
+\key{\disp{\inf} (inf)}{C-_}
+\key{\disp{\det} (det)}{C-d}
+\key{\disp{\lim} (lim)}{C-l}
+\key{\disp{\tan} (tan)}{C-t}
+\key{\disp{\hat{ }} (hat)}{^}
+\key{\disp{\vee} (vee)}{v}
 
 \section{Miscellanious}
 
@@ -288,3 +289,4 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \bye
 
 % End:
+

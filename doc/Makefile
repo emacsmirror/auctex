@@ -4,7 +4,10 @@ TEX=tex
 
 all: auc-tex.dvi ref-card.dvi math-ref.dvi auc-info
 
-dist: auc-info
+dist: auc-info auc-tex_toc.html
+
+auc-tex_toc.html: auc-tex.texi
+	texi2html -split auc-tex.texi
 
 math-ref.dvi: math-ref.tex
 	$(TEX) math-ref
@@ -47,7 +50,7 @@ install: auc-info
 	@echo "**********************************************************"
 
 clean: allways
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.info-*
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.info-* *.html
 
 
 allways:

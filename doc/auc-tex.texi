@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.63 1993-09-30 23:05:13 amanda Exp $
+@c $Id: auc-tex.texi,v 1.64 1993-11-18 20:12:00 amanda Exp $
 
 @finalout
 @titlepage
@@ -1146,16 +1146,17 @@ controlled by the variable @code{TeX-command-list}.@refill
 
 @deffn Command TeX-command-region
 @kindex C-c C-r
-(@kbd{C-c C-r})  Query the user for a command, and run it on the
-``region file''.  Some commands (typically those invoking @TeX{} or
-La@TeX{}) will write the current region into the region file, after
-extracting the header and tailer from the master file.  The name of the
-region file is controlled by the variable @code{TeX-region}.  The name of
-the master file is controlled by the variable @code{TeX-master}.  The
-header is all text up to the line matching the regular expression
-@code{TeX-header-end}.  The trailer is all text from the line matching
-the regular expression @code{TeX-trailer-start}.  The available commands
-are controlled by the variable @code{TeX-command-list}.@refill
+(@kbd{C-c C-r}) Query the user for a command, and run it on the ``region
+file''.  Some commands (typically those invoking @TeX{} or La@TeX{})
+will write the current region into the region file, after extracting the
+header and tailer from the master file.  If mark is not active, use the
+old region.  The name of the region file is controlled by the variable
+@code{TeX-region}.  The name of the master file is controlled by the
+variable @code{TeX-master}.  The header is all text up to the line
+matching the regular expression @code{TeX-header-end}.  The trailer is
+all text from the line matching the regular expression
+@code{TeX-trailer-start}.  The available commands are controlled by the
+variable @code{TeX-command-list}.@refill
 @vindex TeX-region
 @vindex TeX-header-end
 @vindex TeX-trailer-start
@@ -2431,9 +2432,58 @@ Alpha testers (in order of appearance): Marc Gemis
 @samp{<stanton@@haas.berkeley.edu>}, Norbert Kiesel
 @samp{<norbert@@i3.informatik.rwth-aachen.de>}, Roberto Cecchini
 @samp{<CECCHINI@@fi.infn.it>}, Hanno Wirth @samp{<wirth@@igd.fhg.de>},
-and probably more.@refill
+Tim Carlson @samp{<tim@@math.montana.edu>}, John Daschbach
+@samp{<dasch@@darkwing.uoregon.edu>}, Bob Fields
+@samp{<bob@@minster.york.ac.uk>}, Peter Whaite
+@samp{<peta@@cim.mcgill.ca>}, and probably more.@refill
 
 @itemize @bullet
+@item 
+La@TeX{}2e mode now supported.  Insert 
+@lisp
+  (setq TeX-default-mode 'latex2e-mode)
+@end lisp
+in your @file{.emacs} file to get documentclass instead of documentstyle
+per default.  The parser recognizes documentclass and usepackage, but
+not yet (re)newcommand with a default argument.  There are templates for
+all of them, though.
+
+@item
+Added Jakob Schiotz's @samp{<schiotz@@fysik.dth.dk>} help file for
+installing AUC @TeX{} on OEMACS.  It will probably also be of interest
+for DEMACS users.
+
+@item
+Minor changes to be more friendly for OEMACS, thanks to Jakob Schiotz
+@samp{<schiotz@@fysik.dth.dk>}. 
+
+@item
+The control key bindings in @code{LaTeX-math-mode} now works, thanks to
+Frederic Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>}. 
+
+@item
+La@TeX{} outlines no longer matches @samp{\partial} or other commands
+with a sectioning command as prefix.  Thanks to Jakob Schiotz
+@samp{<schiotz@@fysik.dth.dk>}.
+
+@item
+@code{LaTeX-fill-paragraph} now handles the case where the previous line
+both contain an @samp{\item} and an unmatched open brace.  Thanks to
+Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
+
+@item
+Use abbreviated file name for @TeX{} output buffers in Emacs 19.  Thanks
+to Jens Gustedt @samp{<gustedt@@math.tu-berlin.de>}.
+
+@item
+Added lowercase alias for @code{LaTeX-math-mode} for use with Emacs file
+mode commands.  Thanks to Olaf Burkart
+@samp{<burkart@@zeus.informatik.rwth-aachen.de>}. 
+
+@item
+Added code to reuse old region in @code{TeX-command-region} if mark is
+not active.  Thanks to Cengiz Alaettinoglu @samp{<ca@@cs.UMD.EDU>}.
+
 @item
 Now get keyboard accelerators on all menus rather than only AUC @TeX{}
 menus, thanks to the @file{powerkey.el} file by Lars Lindberg
@@ -3355,6 +3405,19 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+All the text formatting code really need a major rewrite.  Not that
+there are many bugs, but I can't figure out how to fix those that
+exists. 
+
+@item
+Make AUC @TeX{} work with @samp{crypt++}.  Suggested by Chris Moore
+@samp{<Chris.Moore@@src.bae.co.uk>}.
+
+@item
+Make it possible to use absolute paths when including bibliographies or
+style files.
+
+@item
 Fix bug with @code{TeX-show-environment} from hidden document
 environment.
 
@@ -3441,7 +3504,8 @@ Here is the start of such a list.
 The rules for what can be done in a format package hook are different. 
 
 @item 
-Correct indentation for table, math, and array environments.
+Correct indentation for tabular, tabbing, table, math, and array
+environments.
 
 @item
 Customizable indentation for verbatim-like user defined environments.
