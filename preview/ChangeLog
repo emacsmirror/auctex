@@ -1,7 +1,9 @@
 2002-04-16  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
 
 	* preview-latex.spec: Fix info direntry removal.
-	Problem persists in old rpms, though.
+	And put the %post and %preun scripts in the -common- RPM.
+	Problem persists in 0.6 and 0.6.1 RPMs, though.
+	0.7 RPMs have _no_ scripts due to an oversight.
 
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
