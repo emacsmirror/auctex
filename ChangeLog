@@ -1,3 +1,8 @@
+2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex-buf.el (TeX-command-sentinel): insert post-mortem info
+	before any markers in order to keep markers/point at end of file.
+
 2001-11-02  Masayuki Ataka  <m1378502@zack.math.sci.hiroshima-u.ac.jp>
 
 	* style/graphicx.el (TeX-arg-includegraphics): Accept prefix
