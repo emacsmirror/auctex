@@ -1,5 +1,8 @@
 2002-11-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-gs-open): Place color setup after
+	setpagedevice.
+
 	* latex/preview.dtx (subsection{Supporting conversions}): Make
 	the tightpage option generate proper /PageOffset values also for
 	devices with bottom-up coordinate systems.
