@@ -7,7 +7,7 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.18 1992-09-09 20:55:42 amanda Exp $
+;; $Id: tex-buf.el,v 1.19 1992-11-16 17:50:23 amanda Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Per Abrahamsen
@@ -567,10 +567,9 @@ This command will not work under bash"
     (setq TeX-default-printer-name printer)
     
     (setq TeX-process
-	  (apply 'start-process 
-		 "printing"
-		 "*TeX-output*"
-		 (split-string "  *" command)))
+	  (start-process "printing"
+			 "*TeX-output*"
+			 "sh" "-c" command))
     (with-output-to-temp-buffer "*TeX-output*"
       (princ (format "Started %s; process is \"printing\"\n" command)))
     

@@ -1,143 +1,62 @@
-;;;* Last edited: Jul 22 21:17 1992 (krab)
-;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
-;;
-;; auc-tex.el - A much enhanced LaTeX mode
-;; 
-;; Copyright (C) 1991 Kresten Krab Thorup (krab@iesd.auc.dk).
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;; LCD Archive Entry:
-;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
-;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-09-16 12:14:18 $|$Revision: 5.38 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; $Id: auc-tex.el,v 5.38 1992-09-16 12:14:18 amanda Exp $
-;; Author          : Kresten Krab Thorup
-;; Created On      : Fri May 24 09:36:21 1991
-;; Last Modified By: Per Abrahamsen
-;; Last Modified On: Wed Sep  9 22:04:54 1992
-;; Update Count    : 626
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; AUC TeX is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY.  No author or distributor
-;; accepts responsibility to anyone for the consequences of using it
-;; or for whether it serves any particular purpose or works at all,
-;; unless he says so in writing. 
-;;
-;; Everyone is granted permission to copy, modify and redistribute
-;; this file, but only under the conditions described in the
-;; document "GNU Emacs copying permission notice".   An exact copy
-;; of the document is supposed to have been given to you along with
-;; this file so that you can know how you may redistribute it all.
-;; It should be in a file named COPYING.  Among other things, the
-;; copyright notice and this notice must be preserved on all copies.
-;;
-;; This software was written as part of the author's official duty as
-;; an employee of the University of Aalborg (denmark) and is in the
-;; public domain.  You are free to use this software as you wish, but
-;; WITHOUT ANY WARRANTY WHATSOEVER.  It would be nice, though if when
-;; you use this code, you give due credit to the author.
+; @ auc-tex.el - A much enhanced LaTeX mode
+; 
+; $Id: auc-tex.el,v 5.39 1992-11-16 17:50:18 amanda Exp $
+;
+; LCD Archive Entry:
+; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
+; | A much enhanced LaTeX mode 
+; |$Date: 1992-11-16 17:50:18 $|$Revision: 5.39 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 
-;; HISTORY (Not being updated)
-;; 30-Apr-1992		Kresten Krab Thorup	
-;;    Last Modified: Thu Apr 30 05:36:59 1992 #519 (Kresten Krab Thorup)
-;;   Fixed LaTeX-mark-environment, as supposed by Denys Duchier. 
-;; 9-Dec-1991  (Last Mod: Mon Dec  9 10:04:18 1991 #461)  Kresten Krab Thorup
-;;    Fixed a bug in LaTeX-style-options, which caused completion to
-;;    crash when no optional arguments were available in
-;;    \documentstyle, as supposed by smith@pell.anu.edu.au (Michael Smith)
-;; 13-Jun-1991  (Last Mod: Thu Jun 13 20:27:50 1991 #334)  Kresten Krab Thorup
-;;    Fixed some bugs in Mattison's patch. Thanks to Robert Estes
-;;    estes@ebony.eecs.ucdavis.edu  for supplying some..
-;; 10-Jun-1991  (Last Mod: Mon Jun 10 02:15:45 1991 #332)  Kresten Krab Thorup
-;;    Added batches from Sven Mattison.  This includes also some
-;;    handling of 7-bit modes... All "\\" are translated to TeX-esc etc.
-;; 1-Jun-1991  (Last Mod: Sat Jun  1 20:32:48 1991 #129)  Kresten Krab Thorup
-;;    fill-paragraph is made to indent too due to help from Per Hagen
-;;    <per@iesd.auc.dk>
-;; 31-May-1991  (Last Mod: Fri May 31 09:10:01 1991 #118)  Kresten Krab Thorup
-;;    The distribution has been split into 8 individual modules. This will
-;;    speed up the entire system.  Also, there has been added completion for
-;;    LaTeX commands (placed on M-TAB), and a new minor mode "math" has been
-;;    introduced. Math mode may be loaded by M-x TeX-math-mode.
-;;    A lot of minor bugs has been fixed due suggestions from a lot of people.
-;; 30-May-1991  (Last Mod: Thu May 30 21:00:46 1991 #54)  Kresten Krab Thorup
-;;    Fixed bug in TeX-preview, au suggested by Martin Simons 
-;;    <simons@ibiza.karlsruhe.gmd.de>
-;; 30-May-1991  (Last Mod: Thu May 30 13:40:08 1991 #41)  Kresten Krab Thorup
-;;    Added TeX-complete-symbol 
-;; 30-May-1991  (Last Mod: Thu May 30 00:42:55 1991 #37)  Kresten Krab Thorup
-;;    Added TeX-default-jobname-prefix
-;; 29-May-1991  (Last Mod: Wed May 29 21:12:16 1991 #35)  Kresten Krab Thorup
-;;    Stopped calling the shell, as this didn't work with bash. Instead
-;;    the external programs latex/tex/previewer/makeindex/bibtex/etc.
-;;    are called directly.
-;; 29-May-1991  (Last Mod: Wed May 29 13:10:32 1991 #30)  Kresten Krab Thorup
-;;    Changed paragraph-start/seperate as suggested by Per Abrahamsen.
-;;    Also  fixed  bug in comment-out-region.
-;; 27-May-1991  (Last Mod: Mon May 27 06:43:10 1991 #13)  Kresten Krab Thorup
-;;    Added comment macros, and took out the danish support
-;; 27-May-1991  (Last Mod: Mon May 27 01:17:14 1991 #9)  Kresten Krab Thorup
-;;    validate-TeX-buffer changed to TeX-validate-buffer
-;; 
-;; AUC TeX was derived from tex-mode.el of the original 
-;; Emacs distribution. 
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; THE GOOD GUYS
-;; 
-;; Lars Fischer                      <fischer@iesd.auc.dk> 
-;; Per Abrahamsen                    <abraham@iesd.auc.dk> 
-;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
-;; Per Hagen                         <per@iesd.auc.dk>
-;; Sven Mattisson                    <sven@tde.lth.se>
-;; Michael Smith                     <smith@pell.anu.edu.au>
-;; Denys Duchier                     <dduchier@csi.UOttawa.CA>
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  BUGREPORTS 
-;;
-;;  please send to:
-;;  Internet : auc-tex_mgr@iesd.auc.dk
-;;
-;;  Comments and ideas to auc-tex@iesd.auc.dk
-;;
-;;  A mailing list `auc-tex' discusses topics concerning
-;;  auctex.  You may subscribe by mailing auc-tex-request@iesd.auc.dk. 
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Thanks a lot to Leslie Lamport for supplying the source 
-;;  for the LaTeX error messages in the tex-dbg.el module
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ Copyright
+;
+; Copyright (C) 1991 Kresten Krab Thorup (krab@iesd.auc.dk).
+;
+; AUC TeX is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY.  No author or distributor
+; accepts responsibility to anyone for the consequences of using it
+; or for whether it serves any particular purpose or works at all,
+; unless he says so in writing. 
+;
+; Everyone is granted permission to copy, modify and redistribute
+; this file, but only under the conditions described in the
+; document "GNU Emacs copying permission notice".   An exact copy
+; of the document is supposed to have been given to you along with
+; this file so that you can know how you may redistribute it all.
+; It should be in a file named COPYING.  Among other things, the
+; copyright notice and this notice must be preserved on all copies.
+;
+; This software was written as part of the author's official duty as
+; an employee of the University of Aalborg (denmark) and is in the
+; public domain.  You are free to use this software as you wish, but
+; WITHOUT ANY WARRANTY WHATSOEVER.  It would be nice, though if when
+; you use this code, you give due credit to the author.
+;
+; AUC TeX was derived from tex-mode.el of the original Emacs distribution.
 
+; @@ Maintenance
+;
+;  BUGREPORTS 
+;
+;  please send to:
+;  Internet : auc-tex_mgr@iesd.auc.dk
+;
+;  Comments and ideas to auc-tex@iesd.auc.dk
+;
+;  A mailing list `auc-tex' discusses topics concerning
+;  auctex.  You may subscribe by mailing auc-tex-request@iesd.auc.dk. 
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Customization
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Futher variables for customization are found in the individual
-;; modules:
-;; 
-;; ltx-sec       : Smart sectioning
-;; ltx-env   : Smart handling of environments 
-;; tex-buf          : Invoking TeX/LaTeX from an inferior shell
-;;                       includes also print/preview/makeindex etc.
-;; tex-dbg           : Debugging documents, when they have been run
-;; tex-misc            : Miscellaneous functions
-;; tex-math            : Smart bindings for math symbols
-;;
-;; 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ Customization
+;
+; Futher variables for customization are found in the individual
+; modules:
+; 
+; ltx-sec       	: Smart sectioning
+; ltx-env   		: Smart handling of environments 
+; tex-buf          	: Invoking TeX/LaTeX from an inferior shell
+;                        includes also print/preview/makeindex etc.
+; tex-dbg           	: Debugging documents, when they have been run
+; tex-misc              : Miscellaneous functions
+; tex-math              : Smart bindings for math symbols
 
 (require 'auc-ver)
 
@@ -175,11 +94,26 @@
 (defvar TeX-display-copyright-message nil
   "Display AUC TeX copyright message at TeX/LaTeX mode invocation")
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Autoload modules
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ Global Constants
 
-;; first load the site-default settings for auc-tex
+; @@@ LaTeX-style-alist 
+
+(defvar LaTeX-style-alist '(("book" . 0)
+			    ("article" . 2)
+			    ("letter")
+			    ("slides")
+			    ("report"))
+  "List of documnent styles, and their highest level of sections.
+
+Alist of (documentstyle . level), where level is the largest
+partitioning of the text, most often used with this documentstyle. If
+a documentstyle isn't mentioned, or level is nil,
+LaTeX-largest-level is assumed.") 
+
+
+; @@ Autoload modules
+;
+; first load the site-default settings for auc-tex
 
 (require 'tex-site)
 
@@ -226,9 +160,7 @@ as the definition of this this function is placed in an external module."))
   (autoload 'TeX-complete-symbol "tex-cpl" no-doc t)
   )
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Keymaps
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ Keymaps
 
 (if TeX-mode-map 
     ()
@@ -288,15 +220,12 @@ as the definition of this this function is placed in an external module."))
   (define-key LaTeX-mode-map "\M-\C-x"  'LaTeX-mark-section) 
   (define-key LaTeX-mode-map "\M-\C-q"  'LaTeX-format-environment))
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TeX / LaTeX modes
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ TeX / LaTeX modes
 
-;;
-;; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support automatic mode
-;; change after using insert-mode-line hook. Also modified regexp to choose
-;; tex mode to be more aware of latex (documentstyle is uniq, isn'it)
-;;
+; Added by marsj@ida.liu.se Thu Mar  5 17:52:38 1992 to support automatic mode
+; change after using insert-mode-line hook. Also modified regexp to choose
+; tex mode to be more aware of latex (documentstyle is uniq, isn'it)
+
 (defun auc-latex-mode ()
   "Called when we have a mode line specification in first line."
   (interactive)
@@ -624,11 +553,7 @@ You should insert this in your TeX-mode-hook!"
 
 
 
-(defvar dummy "OUTLINE-MODE")
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; outline-mode
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@  outline-mode
 
 (defvar LaTeX-outline-regexp
   (concat "[ \t]*" (regexp-quote TeX-esc)
@@ -651,11 +576,7 @@ You should insert this in your TeX-mode-hook!"
 	  ((looking-at "appendix") 2)
 	  ((looking-at "documentstyle") 2))))
 
-(defvar dummy "INDENTATION")
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Indentation
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; @@ Indentation
 
 (defun LaTeX-indent-line ()
   "Indent the line containing point, as LaTeX source.
@@ -945,12 +866,7 @@ The point is supposed to be at the beginning of the current line."
     (max (if (bolp) 0 (1+ (current-column)))
 	 comment-column)))
 
-(defvar dummy "GROUPS")
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Groups
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+; @@ Groups
 
 (defun TeX-cmd-on-region (begin end command)
   "Reads a (La)TeX-command. Makes current region a TeX-group.
@@ -1007,10 +923,7 @@ Inserts command at the start of the group."
   (insert TeX-grop TeX-esc "sc " TeX-grcl)
   (backward-char 1))
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; miscellaneous often used functions
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+; @@ Miscellaneous often used functions
 
 (defun TeX-insert-quote (arg)
   "Insert ``, '' or \" according to preceding character.
@@ -1116,3 +1029,10 @@ If CHAR is nil, or \"\", an error will occur."
   (describe-mode))
   
 
+; @@ Emacs
+;
+; Local Variables:
+; mode: emacs-lisp
+; mode: outline-minor
+; outline-regexp: "; @+"
+; End:

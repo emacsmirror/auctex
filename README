@@ -1,5 +1,5 @@
 
-$Id: README,v 5.19 1992-09-16 12:14:15 amanda Exp $
+$Id: README,v 5.20 1992-11-16 17:50:13 amanda Exp $
 
 AUC TeX 
 =======
@@ -7,6 +7,15 @@ AUC TeX
 AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents. 
 
 ********** NEWS NEWS NEWS NEWS **********
+
+Version 6.2:
+
+Rewrote ltx-sec.el and updated auc-tex.texi to reflect the changes:
+- sectioning level, toc, and title queries can be individually turned off.
+- label query can be turned on or off for selected sectioning levels.
+- label prefix can be different for different sectioning levels.
+- if the title (or toc) is empty, point will be positioned there.
+- users can add new hooks
 
 Version 6.1:
 
