@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.32 2001-10-15 21:37:42 dakas Exp $
+;; $Id: preview.el,v 1.33 2001-10-23 16:38:37 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -46,6 +46,7 @@
 
 (eval-when-compile
   (require 'tex-buf)
+  (require 'latex)
   (defvar error))
 
 (require (if (string-match "XEmacs" (emacs-version))
@@ -577,18 +578,43 @@ numbers (can be float if available)."
 	(end (overlay-end ovr)))
     (with-current-buffer (overlay-buffer ovr)
       (preview-delete ovr)
-      (TeX-region-create (TeX-region-file TeX-default-extension)
-			 (buffer-substring begin end)
-			 (file-name-nondirectory (buffer-file-name))
-			 (save-restriction
-			   (widen)
-			   (let ((inhibit-point-motion-hooks t)
-				 (inhibit-field-text-motion t))
-			     (+ (count-lines (point-min) begin)
-				(save-excursion
-				  (goto-char begin)
-				  (if (bolp) 0 -1)))))))
-    (TeX-command "Generate Preview" 'TeX-region-file)))
+      (preview-region begin end))))
+
+(defun preview-region (begin end)
+  "Run preview on region." (interactive "r")
+;;  (preview-clearout begin end)
+  (TeX-region-create (TeX-region-file TeX-default-extension)
+		     (buffer-substring begin end)
+		     (file-name-nondirectory (buffer-file-name))
+		     (save-restriction
+		       (widen)
+		       (let ((inhibit-point-motion-hooks t)
+			     (inhibit-field-text-motion t))
+			 (+ (count-lines (point-min) begin)
+			    (save-excursion
+			      (goto-char begin)
+			      (if (bolp) 0 -1))))))
+  (TeX-command "Generate Preview" 'TeX-region-file))
+
+(defun preview-environment ()
+  "Run preview on LaTeX environment." (interactive)
+  (save-excursion
+    (LaTeX-mark-environment)
+    (preview-region (region-beginning) (region-end))))
+
+(defun preview-section ()
+  "Run preview on LaTeX environment." (interactive)
+  (save-excursion
+    (LaTeX-mark-section)
+    (preview-region (region-beginning) (region-end))))
+
+(defun preview-again ()
+  "Run preview on current preview." (interactive)
+  (catch 'break
+    (dolist (ovr (overlays-at (point)))
+      (when (eq (overlay-get ovr 'category) 'preview-overlay)
+	(preview-regenerate ovr)
+	(throw 'break t)))))
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
@@ -717,6 +743,9 @@ snippet SNIPPET in buffer SOURCE, and uses it for the
 region between START and END."
   (let ((ov (with-current-buffer source
 	      (preview-clearout start end)
+	      ;; the following is a desparate measure since otherwise too many
+	      ;; internals of other packages break.
+;;	      (set (make-local-variable 'inhibit-point-motion-hooks) t)
 	      (make-overlay start end nil nil nil))))
     (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map
@@ -781,25 +810,43 @@ This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
   (require 'tex-buf)
-  (setq TeX-command-list
-       (append TeX-command-list
-	       '(("Generate Preview"
+  (add-to-list 'TeX-command-list
+	       '("Generate Preview"
 		  "%l '\\nonstopmode\\PassOptionsToPackage{auctex,active}{preview}\\AtBeginDocument{\\ifx\\ifPreview\\undefined\\RequirePackage[%P]{preview}\\fi}\\input{%t}';dvips -Pwww -i -E %d -o %m/preview.000"
-		  TeX-inline-preview nil))))
-  (setq TeX-error-description-list
-       (cons '("Package Preview Error.*" .
+		  TeX-inline-preview nil) t)
+  (add-to-list 'TeX-error-description-list
+	       '("Package Preview Error.*" .
 "The auctex option to preview should not be applied manually.  If you
 see this error message, either you did something too clever, or the
-preview Emacs Lisp package something too stupid.") TeX-error-description-list))
+preview Emacs Lisp package something too stupid."))
   (add-hook 'TeX-translate-location-hook 'preview-translate-location)
-  (setq TeX-expand-list
-	(append TeX-expand-list
-		'(("%m" preview-create-subdirectory)
-		  ("%P" preview-make-options)) ))
-  (easy-menu-add-item TeX-mode-menu
+  (add-to-list 'TeX-expand-list
+	       '("%m" preview-create-subdirectory) t)
+  (add-to-list 'TeX-expand-list
+	       '("%P" preview-make-options) t)
+;;;  (easy-menu-add-item TeX-mode-menu nil
+;;;		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
+;;; The following ugliness is necessary because LaTeX-mode-map starts
+;;; out as a deep copy of TeX-mode-map, so changes in TeX-mode-menu
+;;; don't reach LaTeX-mode-map.  Is this portable to XEmacs?  Probably
+;;; not.
+
+  (easy-menu-add-item (easy-menu-get-map (assoc-default 'menu-bar LaTeX-mode-map) '("Command") "Generate Preview")
 		      nil
-		      (let ((file 'TeX-command-on-current))
-			(TeX-command-menu-entry (car (last TeX-command-list))))))
+		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
+  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-again)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
+;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
+  (easy-menu-add-item LaTeX-mode-menu nil
+		      (easy-menu-create-menu "Preview"
+			'(["Regenerate" preview-again t]
+			["Region" preview-region t]
+			["Environment" preview-environment t]
+			["Section" preview-section t]
+			)) "Miscellaneous")
+)
 
 (defun preview-clean-subdir (dir)
   "Cleans out a temporary DIR with preview image files."
@@ -1044,14 +1091,14 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 	process
       (TeX-synchronous-sentinel name file process))))
 
-(defconst preview-version
+(defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.32 $"))
+	(rev "$Revision: 1.33 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
 	    (format "CVS-%s" (match-string 1 rev)))
-	"unknown"))
+	"unknown")))
   "Preview version.
 If not a regular release, CVS revision of `preview.el'.")
 
