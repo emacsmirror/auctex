@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.198 2004-03-02 08:55:40 jalar Exp $
+;; $Id: preview.el,v 1.199 2004-03-10 16:24:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -304,9 +304,13 @@ Magnify by this factor to make images blend with other
 screen content.  Buffer-local to rendering buffer.")
 (make-variable-buffer-local 'preview-scale)
 
-(defvar preview-gs-colors nil
-  "GhostScript color setup tokens.")
-(make-variable-buffer-local 'preview-gs-colors)
+(defvar preview-colors nil
+  "Color setup list.
+An array with elements 0, 1 and 2 for background,
+foreground and border colors, respectively.  Each element
+is a list of 3 real numbers between 0 and 1, or NIL
+of nothing special should be done for the color")
+(make-variable-buffer-local 'preview-colors)
 
 (defvar preview-gs-init-string nil
   "GhostScript setup string.")
@@ -414,7 +418,7 @@ be consulted recursively.")
   :group 'preview-latex
   :type 'string)
 
-(defcustom preview-pdftodsc-command
+(defcustom preview-pdf2dsc-command
   "pdf2dsc %s.pdf %m/preview.dsc"
   "*Command used for generating dsc from a PDF file."
   :group 'preview-latex
@@ -544,12 +548,13 @@ Gets the usual PROCESS and STRING parameters, see
       (set-buffer-modified-p (buffer-modified-p))
       process)))
 
-(defun preview-gs-open (imagetype gs-optionlist)
+(defun preview-gs-open (imagetype gs-optionlist &optional setup)
   "Start a GhostScript conversion pass.
 IMAGETYPE specifies the Emacs image type for the generated
 files, GS-OPTIONLIST is a list of options to pass into
 GhostScript for getting that sort of image type, for
-example \"-sDEVICE=png256\" will go well with 'png."
+example \"-sDEVICE=png256\" will go well with 'png.
+SETUP may contain a parser setup function."
   (unless (preview-supports-image-type imagetype)
     (error "This Emacs lacks '%s image support" imagetype))
   (setq preview-gs-image-type imagetype)
@@ -563,36 +568,96 @@ example \"-sDEVICE=png256\" will go well with 'png."
 \(AFPL Ghostscript)product ne{<<>>setpagedevice}if{.runandhide}}if \
 %s stopped{handleerror quit}if count 1 ne{quit}if \
 aload pop restore<</OutputFile%s>>setpagedevice}bind def "
-		(mapconcat #'identity preview-gs-colors " ")
+		(preview-gs-color-string preview-colors)
 		(preview-ps-quote-filename null-device t)))
   (preview-gs-queue-empty)
-  (preview-parse-messages #'preview-gs-dvips-process-setup))
+  (preview-parse-messages (or setup #'preview-gs-dvips-process-setup)))
+
+(defun preview-gs-color-value (value)
+  "Return string to be used as color value for an RGB component.
+Conversion from Emacs color numbers (0 to 65535) in VALUE
+to GhostScript floats."
+  (format "%g" (/ value 65535.0)))
+
+(defun preview-gs-color-string (colors)
+  "Return a string setting up colors"
+  (let ((bg (aref colors 0))
+	(fg (aref colors 1))
+	(mask (aref colors 2))
+	(border (aref colors 3)))
+    (concat
+     (and (or mask (and bg (not fg)))
+	  "gsave ")
+     (and bg
+	 (concat
+	  (mapconcat #'preview-gs-color-value bg " ")
+	  "setrgbcolor clippath fill "))
+     (and mask
+	 (format "%s setrgbcolor false setstrokeadjust %g \
+setlinewidth clippath strokepath \
+matrix setmatrix true \
+{2 index{newpath}if round exch round exch moveto pop false}\
+{round exch round exch lineto}{curveto}{closepath}\
+pathforall pop fill "
+		 (mapconcat #'preview-gs-color-value mask " ")
+		 (* 2 border)))
+	  ;; I hate antialiasing.  Warp border to integral coordinates.
+     (and (or mask (and bg (not fg)))
+	  "grestore ")
+     (and fg
+	  (mapconcat #'preview-gs-color-value fg " ")
+	  " setrgbcolor"))))
+
+(defun preview-dvipng-color-string (colors)
+  "Return color setup tokens for dvipng.
+Makes a string of options suitable for passing to dvipng.
+Pure borderless black-on-white will return an empty string."
+  (let
+      ((bg (aref colors 0))
+       (fg (aref colors 1)))
+    (concat
+     (and bg
+	  (format "--bg 'rgb %s' "
+		  (mapconcat #'preview-gs-color-value bg " ")))
+     (and fg
+	  (format "--fg 'rgb %s'"
+		  (mapconcat #'preview-gs-color-value fg " "))))))
 
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
-  (setq preview-gs-command-line (append
-				 preview-gs-command-line
-				 (list (preview-gs-resolution
-					(preview-hook-enquiry preview-scale)
-					(car preview-resolution)
-					(cdr preview-resolution)))))
-  (let ((process (preview-start-dvips preview-fast-conversion)))
-    (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
-    (list process (current-buffer) TeX-active-tempdir preview-ps-file
-	  preview-image-type)))
+  (if preview-parsed-pdfoutput
+      (preview-pdf2dsc-process-setup)
+    (setq preview-gs-command-line (append
+				   preview-gs-command-line
+				   (list (preview-gs-resolution
+					  (preview-hook-enquiry preview-scale)
+					  (car preview-resolution)
+					  (cdr preview-resolution)))))
+    (let ((process (preview-start-dvips preview-fast-conversion)))
+      (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
+      (list process (current-buffer) TeX-active-tempdir preview-ps-file
+	    preview-image-type))))
 
 (defun preview-dvipng-open ()
   "Place everything nicely for direct PNG rendering."
-  (unless (preview-supports-image-type 'png)
-    (error "This Emacs lacks 'png image support"))
-  (preview-parse-messages #'preview-dvipng-process-setup))
+  (preview-gs-open 'png '("-sDEVICE=png256") #'preview-dvipng-process-setup))
 
 (defun preview-dvipng-process-setup ()
   "Set up dvipng process for conversion."
-  (let ((process (preview-start-dvipng)))
-    (setq TeX-sentinel-function #'preview-dvipng-sentinel)
-    (list process (current-buffer) TeX-active-tempdir t
-	  'png)))
+  (if preview-parsed-pdfoutput
+      (preview-pdf2dsc-process-setup)
+    (let ((process (preview-start-dvipng)))
+      (setq TeX-sentinel-function #'preview-dvipng-sentinel)
+      (list process (current-buffer) TeX-active-tempdir t
+	  'png))))
+
+
+(defun preview-pdf2dsc-process-setup ()
+  (let ((process (preview-start-pdf2dsc)))
+    (setq TeX-sentinel-function #'preview-pdf2dsc-sentinel)
+    (list process (current-buffer) TeX-active-tempdir preview-ps-file
+	  (if (eq preview-image-type 'dvipng) 'png
+	    preview-image-type))))
 
 (defun preview-dvips-abort ()
   "Abort a Dvips run."
@@ -642,6 +707,30 @@ The usual PROCESS and COMMAND arguments for
     (error (preview-log-error err "DviPS sentinel" process)))
   (preview-reraise-error process))
 
+(defun preview-pdf2dsc-sentinel (process command &optional gsstart)
+  "Sentinel function for indirect rendering PDF process.
+The usual PROCESS and COMMAND arguments for
+`TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
+  (condition-case err
+      (let ((status (process-status process))
+	    (gsfile preview-gs-file))
+	(cond ((eq status 'exit)
+	       (delete-process process)
+	       (setq TeX-sentinel-function nil)
+	       (preview-prepare-fast-conversion)
+	       (when gsstart
+		 (if preview-gs-queue
+		     (preview-gs-restart)
+		   (when preview-ps-file
+		     (condition-case nil
+			 (preview-delete-file preview-ps-file)
+		       (file-error nil))))))
+	      ((eq status 'signal)
+	       (delete-process process)
+	       (preview-dvips-abort))))
+    (error (preview-log-error err "PDF2DSC sentinel" process)))
+  (preview-reraise-error process))
+
 (defun preview-gs-close (process closedata)
   "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
   (setq preview-gs-queue (nconc preview-gs-queue closedata))
@@ -657,11 +746,14 @@ The usual PROCESS and COMMAND arguments for
 			  (preview-delete-file preview-ps-file)
 			(file-error nil)))
 		    (preview-gs-restart))
-		(setq TeX-sentinel-function (lambda (process command)
-					      (preview-gs-dvips-sentinel
-					       process
-					       command
-					       t))))
+		(setq TeX-sentinel-function
+		      `(lambda (process command)
+			 (,(if preview-parsed-pdfoutput
+			       'preview-pdf2dsc-sentinel
+			     'preview-gs-dvips-sentinel)
+			  process
+			  command
+			  t))))
 	    (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
 				      process))
     ;; pathological case: no previews although we sure thought so.
@@ -695,25 +787,27 @@ The usual PROCESS and COMMAND arguments for
 
 (defun preview-dvipng-close (process closedata)
   "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
-  (setq preview-gs-queue (nconc preview-gs-queue closedata))
-  (if process
-      (if preview-gs-queue
-	  (if TeX-process-asynchronous
-	      (if (and (eq (process-status process) 'exit)
-		       (null TeX-sentinel-function))
-		  ;; Process has already finished and run sentinel
+  (if preview-parsed-pdfoutput
+      (preview-gs-close process closedata)
+    (setq preview-gs-queue (nconc preview-gs-queue closedata))
+    (if process
+	(if preview-gs-queue
+	    (if TeX-process-asynchronous
+		(if (and (eq (process-status process) 'exit)
+			 (null TeX-sentinel-function))
+		    ;; Process has already finished and run sentinel
 		    (preview-dvipng-place-all)
-		(setq TeX-sentinel-function (lambda (process command)
-					      (preview-dvipng-sentinel
-					       process
-					       command
-					       t))))
-	    (TeX-synchronous-sentinel "Preview-DviPNG" (cdr preview-gs-file)
-				      process))
-    ;; pathological case: no previews although we sure thought so.
-	(delete-process process)
-	(unless (eq (process-status process) 'signal)
-	  (preview-dvipng-abort)))))
+		  (setq TeX-sentinel-function (lambda (process command)
+						(preview-dvipng-sentinel
+						 process
+						 command
+						 t))))
+	      (TeX-synchronous-sentinel "Preview-DviPNG" (cdr preview-gs-file)
+					process))
+	  ;; pathological case: no previews although we sure thought so.
+	  (delete-process process)
+	  (unless (eq (process-status process) 'signal)
+	    (preview-dvipng-abort))))))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
@@ -795,7 +889,10 @@ NONREL is not NIL."
 (defun preview-prepare-fast-conversion ()
   "This fixes up all parameters for fast conversion."
   (let ((file (if (consp (car preview-ps-file))
-		  (caar preview-ps-file) (car preview-ps-file))))
+		  (if (consp (caar preview-ps-file))
+		      (car (last (caar preview-ps-file)))
+		    (caar preview-ps-file))
+		(car preview-ps-file))))
     (setq preview-gs-dsc (preview-dsc-parse file))
     (setq preview-gs-init-string
 	  (concat preview-gs-init-string
@@ -959,14 +1056,14 @@ given as ANSWER."
 		   (not (memq ov preview-gs-outstanding))
 		   (overlay-buffer ov))
 	  (let* ((filenames (overlay-get ov 'filenames))
-		 (oldfile (nth 0 filenames))
-		 (newfile (nth 1 filenames))
+		 (oldfile (car (nth 0 filenames)))
+		 (newfile (car (nth 1 filenames)))
 		 (bbox (aset queued 0
 			     (or (and preview-prefer-TeX-bb
 				      (aref queued 0))
-				 (and (stringp (car oldfile))
+				 (and (stringp oldfile)
 				      (preview-extract-bb
-				       (car oldfile)))
+				       oldfile))
 				 (aref queued 0)
 				 (error "No bounding box"))))
 		 (snippet (aref queued 2))
@@ -981,11 +1078,14 @@ given as ANSWER."
 				snippet
 				preview-gs-dsc))
 		     (format "%s(r)file cvx"
-			     (preview-ps-quote-filename (car oldfile))))
+			     (preview-ps-quote-filename
+			      (if (listp (car oldfile))
+				  (car (last (car oldfile)))
+				(car oldfile)))))
 		   (- (aref bbox 2) (aref bbox 0))
 		   (- (aref bbox 3) (aref bbox 1))
 		   (aref bbox 0) (aref bbox 1)
-		   (preview-ps-quote-filename (car newfile)))))
+		   (preview-ps-quote-filename newfile))))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
 			 (list ov)))
@@ -1654,8 +1754,9 @@ gets converted into a CONS-cell with a name and a reference count."
 (defun preview-attach-filename (attached file)
   "Attaches the absolute file name ATTACHED to FILE."
   (if (listp (caar file))
-      (setcdr (last (caar file)) attached)
-    (setcar (car file) (list (caar file) attached))))
+      (setcar (car file) (cons attached (caar file)))
+    (setcar (car file) (list attached (caar file))))
+  file)
 
 (defun preview-delete-file (file)
   "Delete a preview FILE.
@@ -2158,7 +2259,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  (while
 	      (re-search-forward "\
 \\(^! \\)\\|\
-\(\\([^()\r\n ]+\\))*\\(?: \\|\r?$\\)\\|\
+\(\\([^()\r\n{ ]+\\))*\\(?:{[^}\n]*}\\)?\\(?: \\|\r?$\\)\\|\
 )+\\( \\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
@@ -2172,7 +2273,8 @@ name(\\([^)]+\\))\\)\\|\
 ;;; preceded by a space, followed by a file name (which we take to be
 ;;; consisting of anything but space, newline, or parens), followed
 ;;; immediately by 0 or more closing parens followed by
-;;; either a space or the end of the line: a just opened file.
+;;; either a space or the end of the line: a just opened file.  PDFTeX
+;;; has ugly stuff in braces that we need to check, too.
 ;;; Position for searching immediately after the file name so as to
 ;;; not miss closing parens or something.
 ;;; (match-string 2) is the file name.
@@ -2413,9 +2515,9 @@ name(\\([^)]+\\))\\)\\|\
 
 (defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
-Those are put in local variables `preview-scale' and
-`preview-resolution'.  Calculation is done in source buffer
-specified by BUFF."
+Those are put in local variables `preview-scale',
+`preview-resolution' and `preview-colors'.  Calculation
+is done in source buffer specified by BUFF."
   (let (scale res colors)
     (condition-case err
 	(with-current-buffer buff
@@ -2424,21 +2526,20 @@ specified by BUFF."
 			     (display-mm-width))
 			  (/ (* 25.4 (display-pixel-height))
 			     (display-mm-height)))
-		colors (preview-gs-get-colors)))
+		colors (preview-get-colors)))
       (error (error "Display geometry unavailable: %s"
 		    (error-message-string err))))
     (setq preview-scale scale)
     (setq preview-resolution res)
-    (setq preview-gs-colors colors)))
+    (setq preview-colors colors)))
 
 (defun preview-start-dvipng ()
   "Start a DviPNG process.."
   (let* ((file preview-gs-file)
 	 tempdir
-	 (colors (mapconcat #'identity (preview-dvipng-get-colors) " "))
-	 (resolution (progn (preview-get-geometry (current-buffer))
-			    (format " -D%d " (* 3 (car preview-resolution)
-						(preview-hook-enquiry preview-scale)))))
+	 (colors (preview-dvipng-color-string preview-colors))
+	 (resolution (format " -D%d " (* 3 (car preview-resolution)
+					 (preview-hook-enquiry preview-scale))))
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
 			(concat (TeX-command-expand preview-dvipng-command
@@ -2490,6 +2591,49 @@ If FAST is set, do a fast conversion."
 			       (preview-make-filename
 				(preview-make-filename
 				 "preview.ps" tempdir) tempdir)))
+    (goto-char (point-max))
+    (insert-before-markers "Running `" name "' with ``" command "''\n")
+    (setq mode-name name)
+    (setq TeX-sentinel-function
+	  (lambda (process name) (message "%s: done." name)))
+    (if TeX-process-asynchronous
+	(let ((process (start-process name (current-buffer) TeX-shell
+				      TeX-shell-command-option
+				      command)))
+	  (if TeX-after-start-process-function
+	      (funcall TeX-after-start-process-function process))
+	  (TeX-command-mode-line process)
+	  (set-process-filter process 'TeX-command-filter)
+	  (set-process-sentinel process 'TeX-command-sentinel)
+	  (set-marker (process-mark process) (point-max))
+	  (push process compilation-in-progress)
+	  (sit-for 0)
+	  process)
+      (setq mode-line-process ": run")
+      (set-buffer-modified-p (buffer-modified-p))
+      (sit-for 0)				; redisplay
+      (call-process TeX-shell nil (current-buffer) nil
+		    TeX-shell-command-option
+		    command))))
+
+(defun preview-start-pdf2dsc ()
+  "Start a PDF2DSC process."
+  (let* ((file preview-gs-file)
+	 tempdir
+	 pdfsource
+	 (command (with-current-buffer TeX-command-buffer
+		    (prog1
+			(TeX-command-expand preview-pdf2dsc-command
+					    (car file))
+		      (setq tempdir TeX-active-tempdir
+			    pdfsource (TeX-master-file "pdf")))))
+	 (name "Preview-PDF2DSC"))
+    (setq TeX-active-tempdir tempdir)
+    (setq preview-ps-file (preview-attach-filename
+			   pdfsource
+			   (preview-make-filename
+			    (preview-make-filename
+			     "preview.dsc" tempdir) tempdir)))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
@@ -2574,7 +2718,10 @@ and strings get evaluated as replacement strings."
   string)
 
 (defcustom preview-LaTeX-command-replacements
-  '(("\\`\\(pdf\\)?\\(.*\\)\\'" "\\2"))
+  '(("\\`\\(pdf[^ ]*\\)\
+\\(\\( [-&]\\([^ \"]\\|\"[^\"]*\"\\)*\\|\
+ \"[-&][^\"]*\"\\)*\\)\\(.*\\)\\'"
+   . ("\\1\\2 \"\\\\pdfoutput=0 \" \\5")))
   "Replacement for `preview-LaTeX-command'.
 This is passed through `preview-do-replacements'."
   :group 'preview-latex
@@ -2588,7 +2735,7 @@ This is passed through `preview-do-replacements'."
   '(preview-LaTeX-command-replacements
     ("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\
 \\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\2initex\\4 \"&\\2\\3tex\" " preview-format-name ".ini \\7")))
+     . ("\\1\\2\\3tex -ini \"&\\1\\2\\3tex\" " preview-format-name ".ini \\7")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -2596,9 +2743,9 @@ This is passed through `preview-do-replacements'."
 		  (cons string (repeat (choice symbol string))))))
 
 (defcustom preview-undump-replacements
-  '(("\\`\\(e?\\)\\(la\\)?tex\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
+  '(("\\`\\(pdf\\)?\\(e?\\)\\(la\\)?tex\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
 \\input{\\([^}]*\\)}.*\\'"
-     . ("\\1virtex\\3 \"&" preview-format-name "\" \\6")))
+     . ("\\1\\2\\3tex\\4 \"&" preview-format-name "\" \\7")))
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -2629,7 +2776,10 @@ on the same master file."
       (push format-cons preview-dumped-alist))
     ;; mylatex.ltx expects a file name to follow.  Bad. `.tex'
     ;; in the tools bundle is an empty file.
-    (write-region "\\input mylatex.ltx \\relax\n" nil dump-file)
+    (write-region "\\ifx\\pdfoutput\\undefined\\else\
+\\let\\PREVIEWdump\\dump\\def\\dump{%
+\\edef\\next{{\\pdfoutput=\\the\\pdfoutput\\relax\
+\\the\\everyjob}}\\everyjob\\next\\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax\n" nil dump-file)
     (TeX-save-document master)
     (setq TeX-current-process-region-p nil)
     (prog1
@@ -2766,7 +2916,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.198 $"))
+	(rev "$Revision: 1.199 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2777,7 +2927,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-02 08:55:40 $"))
+    (let ((date "$Date: 2004-03-10 16:24:54 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

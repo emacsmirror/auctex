@@ -513,12 +513,6 @@ overlays not in the active window."
 	 (ad-activate 'replace-highlight))
   :initialize #'custom-initialize-reset)
 
-(defun preview-gs-color-value (value)
-  "Return string to be used as color value for an RGB component.
-Conversion from Emacs color numbers (0 to 65535) in VALUE
-to GhostScript floats."
-  (format "%g" (/ value 65535.0)))
-
 (defun preview-inherited-face-attribute (face attribute &optional
 					      fallbacks)
   "Fetch face attribute while adhering to inheritance.
@@ -551,11 +545,12 @@ are not resolvable.  Relative specs are float values."
 	    (car fallbacks) attribute (or (cdr fallbacks) t)))
 	  (t value))))
 
-(defun preview-gs-get-colors ()
-  "Return color setup tokens for GhostScript.
-Fetches the current screen colors and makes a list of tokens
-suitable for passing into GhostScript as arguments.
-Pure borderless black-on-white will return NIL."
+(defun preview-get-colors ()
+  "Return colors from the current display.
+Fetches the current screen colors and makes a vector
+of colors as numbers in the range 0..65535.
+Pure borderless black-on-white will return triple NIL.
+The fourth value is the transparent border thickness."
   (let
       ((bg (color-values (preview-inherited-face-attribute
 			  'preview-reference-face :background 'default)))
@@ -569,51 +564,7 @@ Pure borderless black-on-white will return NIL."
     (unless (and (numberp preview-transparent-border)
 		 (consp mask) (integerp (car mask)))
       (setq mask nil))
-    (append
-     (if (or mask (and bg (not fg)))
-	 '("gsave"))
-     (if bg
-	 (append
-	  (mapcar #'preview-gs-color-value bg)
-	  '("setrgbcolor" "clippath" "fill")))
-     (if mask
-	 (append
-	  (mapcar #'preview-gs-color-value mask)
-	  '("setrgbcolor" "false" "setstrokeadjust")
-	  (list (number-to-string (* 2 preview-transparent-border)))
-	  ;; I hate antialiasing.  Warp border to integral coordinates.
-	  '("setlinewidth" "clippath" "strokepath"
-	    "matrix" "setmatrix" "true"
-	    "{" "2" "index" "{" "newpath" "}" "if"
-	    "round" "exch" "round" "exch" "moveto" "pop" "false" "}"
-	    "{" "round" "exch" "round" "exch" "lineto" "}"
-	    "{" "curveto" "}"
-	    "{" "closepath" "}"
-	    "pathforall" "pop" "fill")))
-     (if (or mask (and bg (not fg)))
-	 '("grestore"))
-     (if fg
-	 (append
-	  (mapcar #'preview-gs-color-value fg)
-	  '("setrgbcolor"))))))
-
-(defun preview-dvipng-get-colors ()
-  "Return color setup tokens for dvipng.
-Fetches the current screen colors and makes a list of options
-suitable for passing to dvipng.
-Pure borderless black-on-white will return an empty string."
-  (let
-      ((bg (color-values (preview-inherited-face-attribute
-			  'preview-reference-face :background 'default)))
-       (fg (color-values (preview-inherited-face-attribute
-			  'preview-reference-face :foreground 'default))))
-    (append
-     (unless (equal '(65535 65535 65535) bg)
-       (append
-	'("--bg 'rgb") (mapcar #'preview-gs-color-value bg) '("'")))
-     (unless (equal '(0 0 0) fg)
-       (append
-	'("--fg 'rgb") (mapcar #'preview-gs-color-value fg) '("'"))))))
+    (vector bg fg mask (and mask preview-transparent-border))))
 
 (defmacro preview-mark-active ()
   "Return t if the mark is active."

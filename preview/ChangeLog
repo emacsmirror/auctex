@@ -1,3 +1,30 @@
+2004-03-10  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-gs-colors): replaced with preview-colors.
+	(preview-pdf2dsc-command): replaces preview-pdftodsc-command
+	(preview-gs-open, preview-gs-color-value)
+	(preview-gs-color-string, preview-dvipng-color-string)
+	(preview-dvipng-open, preview-dvipng-process-setup)
+	(preview-pdf2dsc-process-setup, preview-pdf2dsc-sentinel)
+	(preview-gs-close, preview-dvipng-close)
+	(preview-prepare-fast-conversion, preview-attach-filename): lots
+	of small changed to accommodate pdf2dsc.
+	(preview-parse-messages): Change pattern to accommodate pdfTeX.
+	(preview-LaTeX-command-replacements): Changed to not rely on latex
+	being different from elatex.  And for allowing pdflatex in DVI mode.
+	(preview-dump-replacements, preview-undump-replacements): Same.
+	(preview-cache-preamble): transfer setting of \pdfoutput to
+	dumped format.
+
+	* prv-emacs.el (preview-gs-color-value): Moved to preview.el.
+	(preview-get-colors): Substitute for previous
+	preview-gs-get-colors.
+	(preview-dvipng-get-colors): Removed.
+	* prv-xemacs.el (preview-gs-color-value): Moved to preview.el.
+	(preview-get-colors): Substitute for previous
+	preview-gs-get-colors.
+	(preview-dvipng-get-colors): Removed.
+
 2004-03-08  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/font.c: Don't retry on PK generation failure
