@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.58 1994-02-26 03:44:44 amanda Exp $
+;; $Id: tex-buf.el,v 1.59 1994-03-02 14:20:17 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -786,8 +786,8 @@ original file."
 		    (save-excursion
 		      (save-restriction
 			(set-buffer master-buffer)
-			(goto-char (point-max))
 			(widen)
+			(goto-char (point-max))
 			;; NOTE: We use the local value of
 			;; TeX-trailer-start from the master file.
 			(if (not (re-search-backward TeX-trailer-start nil t))
