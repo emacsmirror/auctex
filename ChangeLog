@@ -1,3 +1,18 @@
+2004-09-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-verbatim-macros): New variable.
+	(LaTeX-fill-move-to-break-point): Do not break inside of macros
+	defined in `LaTeX-verbatim-macros'.
+	(LaTeX-fill-newline): Do not trigger auto-fill.
+
+	* style/listings.el (TeX-add-style-hook): Add "lstinline" to
+	`LaTeX-verbatim-macros'.
+
+	* font-latex.el (font-latex-set-syntactic-keywords): "*" is not
+	allowed as a \verb delimiter.
+
+	* doc/todo.texi (Bugs): Another bug gone the way of the poodle.
+
 2004-09-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-indent-line): Use XEmacs' functions to deal with
