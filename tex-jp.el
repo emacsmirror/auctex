@@ -2,7 +2,7 @@
 ;;
 
 ;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
-;; Copyright (C) 2002 Masayuki Ataka <ataka@milk.freemail.ne.jp>
+;; Copyright (C) 2002, 2003, 2004 Masayuki Ataka <ataka@milk.freemail.ne.jp>
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
@@ -32,13 +32,14 @@
 ;	      TeX-format-list))
 
 (defvar japanese-TeX-command-list
-  (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
+  ;; Changed to double quotes for Windows afflicted people.
+  (list (list "jTeX" "jtex \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil (list 'plain-tex-mode))
-	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
+	(list "jLaTeX" "jlatex \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil (list 'latex-mode))
-	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
+	(list "pTeX" "ptex \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil (list 'plain-tex-mode))
-	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
+	(list "pLaTeX" "platex \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil (list 'latex-mode))
 	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
 	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil t)
