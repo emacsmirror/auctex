@@ -36,17 +36,23 @@ preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
 	-$(MAKEINFO) preview-latex.texi
 
 INSTALL: install.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate install.texi --output INSTALL
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		install.texi --output INSTALL
 
 README: readme.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate readme.texi --output README
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		readme.texi --output README
 
 PROBLEMS: problems.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate problems.texi --output PROBLEMS
+	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
+		problems.texi --output PROBLEMS
 
 install: preview-latex.info
 	-$(INSTALL_DATA) preview-latex.info $(infodir)
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
 clean: 
-	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.html INSTALL README PROBLEMS
+	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# \
+		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
+		*.fns *.vrs *.pgs *.dvi *.info *.html *.tmp \
+		INSTALL README PROBLEMS
