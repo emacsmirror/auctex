@@ -1,5 +1,10 @@
 2002-12-10  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/auc-tex.texi: Start talking about version 12 (which will be
+	the next stable release).
+	(European): Talk a bit about LaTeX2e stuff, and don't talk about
+	too ancient XEmacsen.  Also mention X-Symbol.
+
 	* doc/Makefile (install): Create infodir if not existent.
 
 2002-12-10  Reiner Steib  <Reiner.Steib@gmx.de>
