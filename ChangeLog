@@ -1,5 +1,8 @@
 2004-04-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Describe changes in quote insertion if
+	`german.sty' or `ngerman.sty' is used.
+
 	* latex.el: New header.
 	(LaTeX-indent-environment-list): Disable indentation for `alltt'
 	environments.
