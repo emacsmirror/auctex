@@ -1,3 +1,7 @@
+2003-01-16  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (ELCC): `-no-init-file' is the same as `-q'
+
 2003-01-15  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* configure.in, aclocal.m4: Compatibility fix

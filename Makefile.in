@@ -20,7 +20,7 @@ INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ./mkinstalldirs
 
 EMACS=@EMACS@
-ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
+ELCC=$(EMACS) -batch -q -no-site-file -l lpath.el
 
 .SUFFIXES: .el .elc .texi 
 
