@@ -1,3 +1,33 @@
+2005-03-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-section-list-add-locally)
+	(LaTeX-largest-level-set): New functions.
+	(LaTeX-add-environments): Invalidate menu variables instead of
+	setting `LaTeX-menu-changed'.
+	(LaTeX-section-menu-entry): Do not enable symbol.
+	(LaTeX-section-menu-create, LaTeX-menu-changed)
+	(LaTeX-menu-update): Remove.
+	(LaTeX-section-menu, LaTeX-environment-menu)
+	(LaTeX-environment-modify-menu): New variables.
+	(LaTeX-section-menu-filter, LaTeX-environment-menu-filter): New
+	functions.
+	(LaTeX-mode-menu): Use them.
+	(LaTeX-common-initialization): Move setting of
+	`LaTeX-largest-level' upwards because it is needed when the menu
+	is being generated.  Do not use `activate-menubar-hook' and
+	`activate-popup-menu-hook' anymore.
+
+	* tex.el (VirTeX-common-initialization): Force update of style
+	information.
+
+	* style/scrreprt.el, style/scrbook.el, style/scrbase.el,
+	style/scrartcl.el, style/report.el, style/jsbook.el,
+	style/jsarticle.el, style/jreport.el, style/jbook.el,
+	style/jarticle.el, style/j-report.el, style/j-book.el,
+	style/j-article.el, style/book.el, style/article.el,
+	style/alphanum.el: Use new functions for setting
+	`LaTeX-largest-level' or `LaTeX-section-list' respectively.
+
 2005-03-16  Ikumi Keita <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Limit the max number
