@@ -1,5 +1,12 @@
 2004-08-13  David Kastrup  <dak@gnu.org>
 
+	* tex-info.el (TeXinfo-mode-menu): Other quoting.
+	(texinfo-mode): Set `TeX-mode-p', `TeX-base-mode-name', call
+	`TeX-set-mode-name'.
+
+	* context.el (ConTeXt-mode-menu): Add the environments back to
+	folding.
+
 	* doc/auctex.texi, doc/faq.texi, doc/install.texi, doc/intro.texi,
 	doc/todo.texi: various changes and smaller typos corrected.
 

@@ -1292,11 +1292,15 @@ There might be text before point."
       ["Hide All" TeX-fold-buffer
        :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
        :keys "C-c C-o C-b"
-       :help "Hide all configured TeX constructs in the current buffer"]
+       :help "Hide all configured ConTeXt constructs in the current buffer"]
       ["Hide Current Macro" TeX-fold-macro
        :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
        :keys "C-c C-o C-m"
-       :help "Hide the LaTeX macro containing point"]
+       :help "Hide the ConTeXt macro containing point"]
+      ["Hide Current Environment" TeX-fold-env
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-e"
+       :help "Hide the environment containing point"]
       "-"
       ["Show All" TeX-fold-clearout-buffer
        :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)

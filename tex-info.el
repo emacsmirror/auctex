@@ -111,103 +111,103 @@ When called interactively, prompt for an environment."
   TeXinfo-mode-map
   "Menu used in Texinfo mode."
   (TeX-menu-with-help
-   (list "Texinfo"
-	 ["Node ..." texinfo-insert-@node
-	  :help "Insert a node"]
-	 ["Macro ..." TeX-insert-macro
-	  :help "Insert a macro and possibly arguments"]
-	 ["Complete Macro" TeX-complete-symbol
-	  :help "Complete the current macro"]
-	 ["Environment ..." TeXinfo-insert-environment
-	  :help "Insert an environment"]
-	 ["Item" texinfo-insert-@item
-	  :help "Insert an @item"]
-	 "-"
-	 (list "Insert Font"
-	       ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	       ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	       ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	       ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	       ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	       ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	       ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
-	 (list "Replace Font"
-	       ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	       ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	       ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	       ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	       ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	       ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	       ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
-	 ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	 "-"
-	 ["Create Master Menu" texinfo-master-menu
-	  :help "Make a master menu for the whole Texinfo file"]
-	 ["Create Menu" texinfo-make-menu
-	  :help "Make or update the menu for the current section"]
-	 ["Update Node" texinfo-update-node
-	  :help "Update the current node"]
-	 ["Update Every Node" texinfo-every-node-update
-	  :help "Update every node in the current file"]
-	 ["Update All Menus" texinfo-all-menus-update
-	  :help "Update every menu in the current file"]
-	 "-"
-	 (list "Commenting"
-	       ["Comment or Uncomment Region"
-		TeX-comment-or-uncomment-region
-		:help "Comment or uncomment the currently selected region"]
-	       ["Comment or Uncomment Paragraph"
-		TeX-comment-or-uncomment-paragraph
-		:help "Comment or uncomment the current paragraph"])
-	 (list "Show/Hide"
-	       ["Fold Mode" TeX-fold-mode
-		:style toggle
-		:selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-		:help "Toggle folding mode"]
-	       "-"
-	       ["Hide All" TeX-fold-buffer
-		:active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-		:keys "C-c C-o C-b"
-		:help "Hide all configured TeX constructs in the current buffer"]
-	       ["Hide Current Macro" TeX-fold-macro
-		:active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-		:keys "C-c C-o C-m"
-		:help "Hide the LaTeX macro containing point"]
-	       "-"
-	       ["Show All" TeX-fold-clearout-buffer
-		:active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-		:keys "C-c C-o C-x"
-		:help "Permanently show all folded content again"]
-	       ["Show Current Item" TeX-fold-clearout-item
-		:active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
-		:keys "C-c C-o C-c"
-		:help "Permanently show the item containing point"])
-	 "-"
-	 (list "Multifile/Parsing"
-	       ["Switch to Master File" TeX-home-buffer
-		:help "Switch to buffer of Master File, or buffer of last TeX command"]
-	       ["Save Document" TeX-save-document
-		:help "Save all buffers associated with the current Master File"]
-	       ["Set Master File" TeX-master-file-ask
-		:active (not (TeX-local-master-p))
-		:help "Set the main file to run TeX commands on"]
-	       ["Reset Buffer" TeX-normal-mode
-		:help "Save and reparse the current buffer for style information"]
-	       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
-		:help "Reset buffer and reload AUCTeX style files"])
-	 (list "Customize"
-	       ["Browse Options"
-		(customize-group 'AUCTeX)
-		:help "Open the customization buffer for AUCTeX"]
-	       ["Extend this Menu"
-		(easy-menu-add-item
-		 nil '("AUCTeX")
-		 (customize-menu-create 'AUCTeX))
-		:help "Make this menu a full-blown customization menu"])
-	 ["Read the AUCTeX Manual" TeX-goto-info-page
-	  :help "Everything worth reading"]
-	 ["Report AUCTeX Bug" TeX-submit-bug-report
-	  :help "Create a problem report for mailing"])))
+   '("Texinfo"
+     ["Node ..." texinfo-insert-@node
+      :help "Insert a node"]
+     ["Macro ..." TeX-insert-macro
+      :help "Insert a macro and possibly arguments"]
+     ["Complete Macro" TeX-complete-symbol
+      :help "Complete the current macro"]
+     ["Environment ..." TeXinfo-insert-environment
+      :help "Insert an environment"]
+     ["Item" texinfo-insert-@item
+      :help "Insert an @item"]
+     "-"
+     ("Insert Font"
+      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+      ["Sample"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
+     ("Replace Font"
+      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+      ["Sample"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+     ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+     "-"
+     ["Create Master Menu" texinfo-master-menu
+      :help "Make a master menu for the whole Texinfo file"]
+     ["Create Menu" texinfo-make-menu
+      :help "Make or update the menu for the current section"]
+     ["Update Node" texinfo-update-node
+      :help "Update the current node"]
+     ["Update Every Node" texinfo-every-node-update
+      :help "Update every node in the current file"]
+     ["Update All Menus" texinfo-all-menus-update
+      :help "Update every menu in the current file"]
+     "-"
+     ("Commenting"
+      ["Comment or Uncomment Region"
+       TeX-comment-or-uncomment-region
+       :help "Comment or uncomment the currently selected region"]
+      ["Comment or Uncomment Paragraph"
+       TeX-comment-or-uncomment-paragraph
+       :help "Comment or uncomment the current paragraph"])
+     ("Show/Hide"
+      ["Fold Mode" TeX-fold-mode
+       :style toggle
+       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :help "Toggle folding mode"]
+      "-"
+      ["Hide All" TeX-fold-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-b"
+       :help "Hide all configured TeX constructs in the current buffer"]
+      ["Hide Current Macro" TeX-fold-macro
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-m"
+       :help "Hide the LaTeX macro containing point"]
+      "-"
+      ["Show All" TeX-fold-clearout-buffer
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-x"
+       :help "Permanently show all folded content again"]
+      ["Show Current Item" TeX-fold-clearout-item
+       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+       :keys "C-c C-o C-c"
+       :help "Permanently show the item containing point"])
+     "-"
+     ("Multifile/Parsing"
+      ["Switch to Master File" TeX-home-buffer
+       :help "Switch to buffer of Master File, or buffer of last TeX command"]
+      ["Save Document" TeX-save-document
+       :help "Save all buffers associated with the current Master File"]
+      ["Set Master File" TeX-master-file-ask
+       :active (not (TeX-local-master-p))
+       :help "Set the main file to run TeX commands on"]
+      ["Reset Buffer" TeX-normal-mode
+       :help "Save and reparse the current buffer for style information"]
+      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
+       :help "Reset buffer and reload AUCTeX style files"])
+     ("Customize"
+      ["Browse Options"
+       (customize-group 'AUCTeX)
+       :help "Open the customization buffer for AUCTeX"]
+      ["Extend this Menu"
+       (easy-menu-add-item
+	nil '("AUCTeX")
+	(customize-menu-create 'AUCTeX))
+       :help "Make this menu a full-blown customization menu"])
+     ["Read the AUCTeX Manual" TeX-goto-info-page
+      :help "Everything worth reading"]
+     ["Report AUCTeX Bug" TeX-submit-bug-report
+      :help "Create a problem report for mailing"])))
 
 (defvar TeXinfo-font-list
   '((?\C-b "@b{" "}")
@@ -241,8 +241,9 @@ Entering TeXinfo mode calls the value of `text-mode-hook'  and then the
 value of `TeXinfo-mode-hook'."
   (interactive)
   (kill-all-local-variables)
+  (setq TeX-mode-p t)
   ;; Mostly stolen from texinfo.el
-  (setq mode-name "Texinfo")
+  (setq TeX-base-mode-name "Texinfo")
   (setq major-mode 'texinfo-mode)
   (use-local-map TeXinfo-mode-map)
   (set-syntax-table texinfo-mode-syntax-table)
@@ -442,7 +443,8 @@ value of `TeXinfo-mode-hook'."
    '("vskip" "Amount")
    '("w" "Text"))
   
-  (run-hooks 'text-mode-hook 'TeXinfo-mode-hook))
+  (run-hooks 'text-mode-hook 'TeXinfo-mode-hook)
+  (TeX-set-mode-name))
   
 (provide 'tex-info)
   
