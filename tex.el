@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.04
+;; Version: 11.05
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -722,7 +722,8 @@ These correspond to TeX macros shared by all users of a site."
   "*Directory containing automatically generated TeX information.
 Must end with a slash.
 
-This correspond to TeX macros found in the current directory."
+This correspond to TeX macros found in the current directory, and must
+be relative to that."
   :group 'TeX-file
   :type 'string)
 
@@ -730,7 +731,8 @@ This correspond to TeX macros found in the current directory."
   "*Directory containing hand generated TeX information.
 Must end with a slash.
 
-These correspond to TeX macros found in the current directory."
+These correspond to TeX macros found in the current directory, and must
+be relative to that."
   :group 'TeX-file
   :type 'string)
 
