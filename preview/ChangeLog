@@ -1,3 +1,7 @@
+2005-04-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* aclocal.m4 (EMACS_EXAMINE_INSTALLATION_DIR): Repair quoting.
+
 2005-04-01  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4(EMACS_EXAMINE_INSTALLATION_DIR): avoid trailing
