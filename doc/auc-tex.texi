@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.142 2004-03-10 22:04:11 angeli Exp $
+@c $Id: auc-tex.texi,v 1.143 2004-03-18 10:14:08 angeli Exp $
 
 @finalout
 @titlepage
@@ -104,7 +104,7 @@ TeX-submit-bug-report} to report bugs if possible.
 * Introduction::                Introduction to AUC@TeX{}
 * Frequently Used Commands::    Inserting Frequently Used Commands  
 * Advanced Features::           Advanced Editing Features 
-* Formatting::                  Formatting and Printing 
+* Running TeX and friends::     Starting processors, viewers and other programs
 * Multifile::                   Multifile Documents
 * Parsing Files::               Automatic Parsing of @TeX{} files
 * I18n::                        Internationalization
@@ -668,7 +668,7 @@ etc., you will be prompted for a template for that environment.
 @xref{Adding Environments}, for how to customize the list of known
 environments. 
 
-@node Advanced Features, Formatting, Frequently Used Commands, top
+@node Advanced Features, Running TeX and friends, Frequently Used Commands, top
 @chapter Advanced Editing Features 
 @cindex Advanced features
         
@@ -996,7 +996,7 @@ before and after them if they do not fit into one line.  This can be
 content enclosed in curly braces or inline math.
 
 Such formatting can be useful to make macros and math more visible or
-to prevent overfull lines in the LaTeX source on case a package for
+to prevent overfull lines in the LaTeX source in case a package for
 displaying formatted TeX output inside the Emacs buffer, like
 preview-latex, is used.
 @end defopt
@@ -1050,8 +1050,8 @@ You may want to check out the unbundled @file{out-xtra} package for even
 better outline support.  It is available from your favorite emacs lisp
 archive.
 
-@node Formatting, Multifile, Advanced Features, top
-@chapter Formatting and Printing 
+@node Running TeX and friends, Multifile, Advanced Features, top
+@chapter Starting processors, viewers and other programs 
 
 The most powerful features of AUC@TeX{} may be those allowing you to
 run (La)@TeX{} and other external commands like Bib@TeX{} and
@@ -1066,7 +1066,7 @@ and moreover allowing you to @emph{debug} your documents.
 * Control::                     Controlling the processes.
 @end menu
 
-@node Commands, Viewing, Formatting, Formatting
+@node Commands, Viewing, Running TeX and friends, Running TeX and friends
 @section Executing Commands
 @cindex Formatting
 @cindex Running La@TeX{}
@@ -1208,7 +1208,7 @@ If nil, just check the current file.
 Used when checking if any files have changed.
 @end defopt
 
-@node Viewing, Debugging, Commands, Formatting
+@node Viewing, Debugging, Commands, Running TeX and friends
 @section Viewing the formatted output
 @cindex Viewing
 @cindex Previewing
@@ -1250,7 +1250,7 @@ none of the entries in @code{TeX-view-style} match either, no suggestion
 for a viewer will be made.
 @end defopt
 
-@node Debugging, Checking, Viewing, Formatting
+@node Debugging, Checking, Viewing, Running TeX and friends
 @section Catching the errors
 @cindex Debugging
 @cindex Errors
@@ -1292,7 +1292,7 @@ When non-nil AUC@TeX{} will automatically display a help text whenever
 an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
 @end defopt
 
-@node Checking, Control, Debugging, Formatting
+@node Checking, Control, Debugging, Running TeX and friends
 @section Checking for problems
 @cindex Checking
 @cindex @code{lacheck}
@@ -1325,7 +1325,7 @@ or alternatively @code{chktex} from
 @file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
 `chktex' in @file{tex.el} to see how to switch between them.
 
-@node Control,  , Checking, Formatting
+@node Control,  , Checking, Running TeX and friends
 @section Controlling the output
 @cindex Controlling the output
 @cindex Output
@@ -1360,7 +1360,7 @@ the current buffer, or if already there, to the file where the current
 process was started. 
 @end deffn
 
-@node Multifile, Parsing Files, Formatting, top
+@node Multifile, Parsing Files, Running TeX and friends, top
 @chapter Multifile Documents
 @cindex Multifile Documents
 @cindex Documents
