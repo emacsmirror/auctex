@@ -9,8 +9,13 @@ config.cache
 config.status
 configure
 prauctex.def
+prauctex.cfg
+prdefault.cfg
 preview-mk.ins
 preview.drv
 preview.ins
 preview.sty
 testdocstrip.tex
+INSTALL
+PROBLEMS
+README
