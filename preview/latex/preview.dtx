@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.62 $
+%  \rcskey \version CVS-$Revision: 1.63 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-28 19:26:46 $
+%\rcskey\next $Date: 2002-07-30 18:33:33 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -214,6 +214,11 @@
 %amount.  The macro must contain 4~\TeX\ dimensions after another, and
 %you may not omit the units if you specify them explicitly instead of
 %by register.  PostScript points have the unit~|bp|.
+%\item[|lyx|] This option is for the sake of LyX developers.  It will
+%output a few diagnostics relevant for the sake of LyX' preview
+%functionality (at the time of writing, just implemented for math
+%insets, in the CVS version of LyX that will eventually be released as
+%1.3.0).
 %
 %The following options are just for debugging purposes of the package
 %and similar to the corresponding \TeX\ commands they allude to:
@@ -242,9 +247,9 @@
 %|preview| is not active, the contents will be typeset just like the
 %main text.
 %
-%Note that both of these environments typeset things when preview is
-%not active.  If you need something typeset conditionally, use the
-%\cmd{\ifPreview} conditional for it.
+%Note that both of these environments typeset things as usual when
+%preview is not active.  If you need something typeset conditionally,
+%use the \cmd{\ifPreview} conditional for it.
 %
 %\DescribeMacro{\PreviewMacro} If you want to make a macro like
 %\cmd{\includegraphics} (actually, this is what is done by the
@@ -323,7 +328,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.62 $
+   \reserved@a\reserved@b CVS-$Revision: 1.63 $
 \else
    \begingroup
       \lccode`-=`.
@@ -332,7 +337,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-07-28 19:26:46 $
+\reserved@a\next $Date: 2002-07-30 18:33:33 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
