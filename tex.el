@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.43 1995-01-17 14:29:23 amanda Exp $
+;; Version: $Id: tex.el,v 5.44 1995-01-24 22:51:41 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -417,6 +417,17 @@ DOC is the documentation string, and MENU is a Lucid style menu."
   (and zmacs-regions (mark)))
 
 (add-menu-item '("Help") "Document LaTeX word..." 'latex-help t "-----")
+
+;; Lucid 19.11 have no idea what `kill-all-local-variables' is
+;; supposed to do.  I have to explicitly clear `TeX-symbol-list'
+;; despite it being buffer local.  You can verify this by removing the
+;; hook below, setting a breakpoint just after the call to
+;; `kill-all-local-variables' in `VirTeX-common-initialization' and
+;; examine the local and global value of `TeX-symbol-list'.  Make sure
+;; you have a `%%% mode: latex' line in your file variable section,
+;; and have latex-mode as your default mode for ".tex" files.
+;; Unfortunately I have been unable to isolate the error further.
+(add-hook 'change-major-mode-hook '(lambda (setq TeX-symbol-list nil)))
 
 ;; Lucid 19.6 grok this regexp, but you loose the ability to use
 ;; whitespace in your documentstyle command.
