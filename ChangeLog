@@ -1,3 +1,17 @@
+2004-07-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (TeXinfo-mode-map): Inherit from `TeX-mode-map'.
+	(texinfo-mode): Enable TeX-master functionality.
+
+	* tex.el (TeX-one-master): Include .texi files.
+	(TeX-add-local-master): Use "@c " as comment prefix in Texinfo
+	mode.
+
+	* tex-fold.el (TeX-fold): Move customization group from `LaTeX' to
+	`AUCTeX'.
+
+	* doc/changes.texi: Advertise folding functionality.
+
 2004-07-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-display-string-face): Cater for display
