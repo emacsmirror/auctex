@@ -3,6 +3,7 @@
 	* tex-fold.el (TeX-fold-keymap): Add key binding for
 	`TeX-fold-dwim'.
 	(TeX-fold-dwim): New function.
+	Add support for folding regions.
 	(TeX-fold-macro, TeX-fold-env): Call `message' here instead of in
 	`TeX-fold-item' to get the right return value for the latter.
 	(TeX-fold-item): Move `message' out to get the right return value.
@@ -12,6 +13,7 @@
 	* tex.el (TeX-fold-menu): Add menu entry for `Tex-fold-dwim'.
 
 	* doc/auctex.texi (Folding): Document `TeX-fold-dwim'.
+	Mention support for folding regions with `TeX-fold-dwim'.
 
 	* doc/changes.texi: Advertise folding and unfolding of regions as
 	well as DWIM functionality.
