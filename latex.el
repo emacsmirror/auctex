@@ -713,13 +713,16 @@ the label inserted, or nil if no label was inserted."
   "Specifies the default format string for array and tabular environments."
   :group 'LaTeX-environment
   :type 'string)
- (make-variable-buffer-local 'LaTeX-default-format)
+(make-variable-buffer-local 'LaTeX-default-format)
 
 (defcustom LaTeX-default-position ""
-  "Specifies the default position string for array and tabular environments."
+  "Specifies the default position string for array and tabular environments.
+If nil, act like the empty string is given, but don't prompt."
   :group 'LaTeX-environment
-  :type 'string)
- (make-variable-buffer-local 'LaTeX-default-position)
+  :type '(choice (const :tag "Don't prompt" nil)
+		 (const :tag "Empty" "")
+		 string))
+(make-variable-buffer-local 'LaTeX-default-position)
 
 (defcustom LaTeX-equation-label "eq:"
   "*Default prefix to equation labels."
@@ -855,15 +858,16 @@ job to this function."
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.
 Just like array and tabular."
-  (let ((pos (read-string "Position: "))
+  (let ((pos (and LaTeX-default-position
+		  (read-string "(Optional) Position: ")))
 	(fmt (read-string "Format: " LaTeX-default-format)))
-    (setq LaTeX-default-position pos)
-      (setq LaTeX-default-format fmt)
+    (setq LaTeX-default-position (or pos ""))
+    (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
 			      (concat
-				(if (not (zerop (length pos)))
-				    (format "[%s]" pos))
-				(format "{%s}" fmt)))
+			       (if (not (zerop (length pos)))
+				   (format "[%s]" pos))
+			       (format "{%s}" fmt)))
     (end-of-line 0)
     (next-line 1)
     (delete-horizontal-space)))
@@ -903,18 +907,19 @@ Just like array and tabular."
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
-  (let ((width (read-string "Width: "))
-	(pos (read-string "Position: " LaTeX-default-position))
+  (let ((width (and LaTeX-default-position(read-string "Width: ")))
+	(pos (and LaTeX-default-position
+		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
-    (setq LaTeX-default-position pos)
+    (setq LaTeX-default-position (or pos ""))
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
 			      (concat
-				(if (not (zerop (length width)))
-				    (format "{%s}" width))
-				(if (not (zerop (length pos)))
-					  (format "[%s]" pos))
-				(format "{%s}" fmt)))
+			       (if (not (zerop (length width)))
+				   (format "{%s}" width))
+			       (if (not (zerop (length pos)))
+				   (format "[%s]" pos))
+			       (format "{%s}" fmt)))
     (end-of-line 0)
     (next-line 1)
     (delete-horizontal-space)))

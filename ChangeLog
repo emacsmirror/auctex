@@ -1,3 +1,11 @@
+2004-04-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (LaTeX-default-position, LaTeX-env-array) 
+	(LaTeX-env-tabular*): Implement "don't prompt" option.
+
+	* doc/auc-tex.texi (Tabular-like): Added `LaTeX-default-format'
+	and `LaTeX-default-position'.
+
 2004-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-break-at-separators): New name.  Formerly

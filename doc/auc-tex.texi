@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.148 2004-04-07 07:47:47 angeli Exp $
+@c $Id: auc-tex.texi,v 1.149 2004-04-07 09:49:15 rsteib Exp $
 
 @finalout
 @titlepage
@@ -661,6 +661,16 @@ insert an appropriate @samp{\item} for the current environment. That is,
 
 When inserting Tabular-like environments, that is, `tabular' `array'
 etc., you will be prompted for a template for that environment.
+Related variables:
+
+@defopt LaTeX-default-format
+Default format string for array and tabular environments.
+@end defopt
+
+@defopt LaTeX-default-position
+Default position string for array and tabular environments.  If nil,
+act like the empty string is given, but don't prompt for a position.
+@end defopt
 
 @node Customizing environments,  , Tabular-like, Environments
 @subsection Customizing environments
