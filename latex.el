@@ -1723,7 +1723,6 @@ consideration just as is in the non-commented source code."
 (defcustom LaTeX-indent-environment-list
   '(("verbatim" current-indentation)
     ("verbatim*" current-indentation)
-    ("alltt" current-indentation)
     ;; The following should have there own, smart indentation function.
     ;; Some other day.
     ("array")
