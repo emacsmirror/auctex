@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.388 $"))
+	(rev "$Revision: 5.389 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-17 12:24:58 $"))
+    (let ((date "$Date: 2004-07-02 09:18:51 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3062,38 +3062,56 @@ no whitespace before the comment sign."
 	nil))))
 
 (defun TeX-forward-comment-skip (&optional count limit)
-  "Move forward to the next comment/non-comment skip.
-This is a switch between commented and not commented adjacent
-lines.  With argument COUNT do it COUNT times.  If argument LIMIT
-is given, do not move point further than this value."
+  "Move forward to the next comment skip.
+This may be a switch between commented and not commented adjacent
+lines or between lines with different comment prefixes.  With
+argument COUNT do it COUNT times.  If argument LIMIT is given, do
+not move point further than this value."
   (unless count (setq count 1))
   ;; A value of 0 is nonsense.
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-max)))
-  (if (< count 0)
-      (forward-line -1)
-    (beginning-of-line))
   (dotimes (i (abs count))
-    (while (and (if (> count 0)
-		    (<= (point) limit)
-		  (>= (point) limit))
-		(or (save-excursion
-		      (and (looking-at (concat "[ \t]*" comment-start))
-			   (zerop (if (> count 0)
-				      (forward-line 1)
-				    (forward-line -1)))
-			   (looking-at (concat "[ \t]*" comment-start))))
-		    (save-excursion
-		      (and (not (looking-at (concat "[ \t]*" comment-start)))
-			   (zerop (if (> count 0)
-				      (forward-line 1)
-				    (forward-line -1)))
-			   (not (looking-at (concat "[ \t]*" comment-start)))))))
+    (if (< count 0)
+	(forward-line -1)
+      (beginning-of-line))
+    (let ((prefix (progn
+		    (when (looking-at (concat "[ \t]*" comment-start
+					      "[" comment-start " \t]*"))
+		      (buffer-substring
+		       (match-beginning 0)
+		       (save-excursion
+			 (goto-char (match-end 0))
+			 (skip-chars-backward " \t")
+			 (point)))))))
+      (while (save-excursion
+	       (and (if (> count 0)
+			(<= (point) limit)
+		      (>= (point) limit))
+		    (zerop (if (> count 0)
+			       (forward-line 1)
+			     (forward-line -1)))
+		    (if prefix
+			(if (looking-at
+			     (concat "[ \t]*" comment-start
+				     "[" comment-start " \t]*"))
+			    ;; If the preceding line is a commented line
+			    ;; as well, check if the prefixes are
+			    ;; identical.
+			    (string= prefix
+				     (buffer-substring
+				      (match-beginning 0)
+				      (save-excursion
+					(goto-char (match-end 0))
+					(skip-chars-backward " \t")
+					(point))))
+			  nil)
+		      (not (looking-at (concat "[ \t]*" comment-start))))))
+	(if (> count 0)
+	    (forward-line 1)
+	  (forward-line -1)))
       (if (> count 0)
-	  (forward-line 1)
-	(forward-line -1)))
-    (if (> count 0)
-	(forward-line 1))))
+	  (forward-line 1)))))
 
 (defun TeX-backward-comment-skip (&optional count limit)
   "Move backward to the previous comment/non-comment skip.
