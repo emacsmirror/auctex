@@ -19,7 +19,7 @@
 AC_INIT(preview-latex,0.7.8,preview-latex-bugs@lists.sourceforge.net)
 
 if test -z "$MY_LANGUAGEHOOKS"
-then AC_ERROR([configure needs to be generated with `./autogen.sh'!])
+then AC_ERROR([configure needs to be generated with ./autogen.sh!])
 fi
 
 AC_SET_MAKE
@@ -105,8 +105,7 @@ AC_PATH_PROG(INSTALL_INFO, install-info)
 AC_PATH_PROG(INSTALL_INFO, install-info,, /usr/sbin)
 AC_PATH_PROG(INSTALL_INFO, install-info,:, /sbin)
 
-AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE,
-  [GhostScript not found!  Aborting!  
+AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE, [GhostScript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
