@@ -1,5 +1,7 @@
 2004-02-26  David Kastrup  <dak@gnu.org>
 
+	* latex.el (doctex-mode): Make a minor mode.
+
 	* tex-site.el (doctex-mode): Add autoloads and file extensions.
 
 	* tex.el (TeX-master-file): Don't overwrite TeX-master when not
