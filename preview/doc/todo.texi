@@ -13,11 +13,41 @@ might provide an abstraction layer that would make it possible to embed
 @item Support other formats than just @LaTeX{}
 
 plain @TeX{} users and Con@TeX{}t users should not have to feel left
-out.  While Con@TeX{}t is not supported yet by @AUCTeX{}, at least
-supporting plain would help people, and be a start for Con@TeX{}t as
-well.  There are plain-based formats like MusiX@TeX{} that could benefit
-a lot from @previewlatex{}.  The main part of the difficulties here is
-to adapt @file{preview.dtx} to produce stuff not requiring @LaTeX{}.
+out.  While Con@TeX{}t is not supported yet by released versions of
+@AUCTeX{}, at least supporting plain would help people, and be a start
+for Con@TeX{}t as well.  There are plain-based formats like MusiX@TeX{}
+that could benefit a lot from @previewlatex{}.  The main part of the
+difficulties here is to adapt @file{preview.dtx} to produce stuff not
+requiring @LaTeX{}.
+
+@item Support nested snippets
+
+Currently you can't have both a footnote (which gets displayed as just
+its footnote number) and math inside of a footnote rendered as an image:
+such nesting might be achieved by rerunning @previewlatex{} on the
+footnote contents when one opens the footnote for editing.
+
+@item Support other text properties than just images
+
+Macros like @samp{\textit} can be rendered as images, but the resulting
+humungous blob is not suitable for editing, in particular since the
+line filling from LaTeX does not coincide with that of Emacs.  It would
+be much more useful if text properties just switched the relevant font
+to italics rather than replacing the whole text with an image.  It
+would also make editing quite easier.  Then there are things like
+footnotes that are currently just replaced by their footnote number.
+While editing is not a concern here (the number is not in the original
+text, anyway), it would save a lot of conversion time if no images were
+generated, but Emacs just displayed a properly fontified version of the
+footnote number.  Also, this might make @previewlatex{} useful even on
+text terminals.
+
+@item Find a way to facilitate Source Specials
+
+Probably in connection with adding appropriate support to
+@code{dvipng}, it would be nice if clicking on an image from a larger
+piece of source code would place the cursor at the respective source
+code location.
 
 @item Web page work
 
@@ -56,6 +86,13 @@ Going via latexpdf/gs and a single file might be faster than the current
 latex/dvips/gs path and could come handy for previewing documents
 intended for use with pdflatex.
 
+@item Apropos @code{dvipng}
+
+With @code{dvipng}, a high performance and quality converter to bitmap
+exists that would significantly speed up @previewlatex{} operation once
+it was integrated properly.  It is a shame that this has not yet been
+done.
+
 @item Integrate into Ref@TeX{}
 
 When referencing to equations and the like, the preview-images of the
@@ -78,9 +115,6 @@ A lot of errors are of the "badly configured" variety.  Perhaps the
 relevant info pages should be delivered in addition to the error
 message.
 
-@item Store cursor locations for closed previews, restore them when
-reopening them.
-
 @item Implement a table editing mode where every table cell gets output
 as a separate preview.  Alternatively, output the complete table
 metrics in a way that lets people click on individual cells for editing
@@ -89,11 +123,14 @@ purposes.
 @item Benchmark and kill Emacs inefficiencies
 
 Both the @LaTeX{} run under Emacs control as well as actual image
-insertion in Emacs appear awfully slow.  Why?
+insertion in Emacs appear woefully slow.  Why?
 
 @item Make a sane gamma (non)correction image @acronym{API} for Emacs
 
 It is currently impossible to make Emacs screen colors and generated
-colors match exactly because of gamma correction issues.
+colors match exactly because of gamma correction issues.  At least the
+current @acronym{CVS} version of Emacs gets things less wrong than it
+did previously.  Also general image and color handling in Emacs is
+inefficient and partly defective.
 
 @end itemize
