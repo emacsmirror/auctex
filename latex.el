@@ -2213,8 +2213,8 @@ space does not end a sentence, so don't break a line there."
             (forward-line 1)
             (when (< (point) to)
               (while (re-search-forward
-                      (concat "\\(^[ \t]+\\|" comment-start-skip "\\)")
-                      (point-max) t)
+                      (concat "^[ \t]+\\|^[ \t]*" comment-start "+[ \t]*")
+                      to t)
                 (delete-region (match-beginning 0) (match-end 0))))))
 
 	(setq from (point))
@@ -2234,7 +2234,7 @@ space does not end a sentence, so don't break a line there."
 		  (insert ? ))))
 	  ;; Then change all newlines to spaces.
           (let ((point-max (progn
-                             (goto-char (point-max))
+                             (goto-char to)
                              (skip-chars-backward "\n")
                              (point))))
             (subst-char-in-region from point-max ?\n ?\ )))
