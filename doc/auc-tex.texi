@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.71 1994-01-25 09:08:24 amanda Exp $
+@c $Id: auc-tex.texi,v 1.72 1994-01-29 18:59:34 amanda Exp $
 
 @finalout
 @titlepage
@@ -2325,6 +2325,41 @@ this version, and for the authors, who get nostalgic at times.
 
 @itemize @bullet
 @item
+Added file @file{ISO-TEX} with suggestions for how to handle European
+character sets.
+
+@item
+@file{powerkey.el} unbundled.
+
+@item
+@kbd{C-u "} now inserts four literal @samp{"}, not just one.  To insert
+a single @samp{"} either press @key{"} twice or use @kbd{C-q "}.
+
+@item
+Allow non-string value for @code{outline-minor-map-prefix}.  Reported by
+David Smith @samp{<maa507@@comp.lancs.ac.uk>}.
+
+@item
+Make the use of @code{write-file-hooks} more safe, and use
+@code{local-write-file-hooks} when possible.  Suggested by David Smith
+@samp{<maa507@@comp.lancs.ac.uk>}.
+
+@item
+Don't indent @samp{\begin@{verbatim@}} and @samp{\end@{verbatim@}},
+since any space before @samp{\end@{verbatim@} is significant.  Thanks to
+Peter Thiemann @samp{<thiemann@@informatik.uni-tuebingen.de>} for the
+patch.
+
+@item
+Show available fonts when you try to insert an non-existing font.
+Suggested by David Smith @samp{<maa507@@comp.lancs.ac.uk>}.
+
+@item
+The @code{member} function in @file{tex-18.el} does not depend on
+@code{TeX-member} now.  Thanks to Piet van Oostrum
+@samp{<piet@@cs.ruu.nl>}. 
+
+@item
 Do not overwrite any global binding of @kbd{M-RET}.  Suggested by Jens
 Petersen @samp{<J.Petersen@@qmw.ac.uk>}.
 
@@ -2451,8 +2486,8 @@ Made the reference cards print correctly on US letter format paper.
 Thanks to Magnus Nordborg @samp{<magnus@@fisher.Stanford.EDU>}.
 
 @item
-@code{LaTeX-dead-mode} removed.  Use the unbundled `remap' package
-instead. 
+@code{LaTeX-dead-mode} removed.  Read the file `ISO-TEX' for alternative
+solutions.
 
 @item
 All minor modes unbundled.  You can find them from ftp at
@@ -2461,7 +2496,7 @@ information about minor modes from this document.
 
 @item
 New hooks for changing ispell directory, see @file{tex-site.el} for
-details.  The new hooks allow you to use the `remap' package instead.
+details.  
 
 @item 
 La@TeX{}2e mode now supported.  Insert 

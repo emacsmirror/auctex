@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.77 1994-01-23 08:13:51 amanda Exp $
+# $Id: Makefile,v 5.78 1994-01-29 18:58:59 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -95,18 +95,17 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = none
+REMOVE = min-mode.el min-ind.el  
 
-MINMAPFILES = min-mode.el min-ind.el  min-ispl.el column.el
-
-MINMAPSRC = $(MINMAPFILES) easymenu.el min-map.el  ltx-math.el \
-	    outln-18.el    powerkey.el out-xtra.el
+MINMAPSRC = min-ispl.el column.el   auc-html.el \
+	    powerkey.el easymenu.el min-map.el  ltx-math.el \
+	    outln-18.el out-xtra.el
 
 AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
 	 ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el easymenu.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
-	 outln-18.el powerkey.el out-xtra.el
+	 outln-18.el out-xtra.el
 
 STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -124,8 +123,8 @@ LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex doc/math-ref.tex
 
-EXTRAFILES = COPYING README PROBLEMS OEMACS VMS INSTALL Makefile \
-	dbg-jp.el lpath.el
+EXTRAFILES = COPYING README PROBLEMS OEMACS VMS INSTALL ISO-TEX \
+	Makefile dbg-jp.el lpath.el
 
 first:
 	@echo ""
@@ -272,6 +271,7 @@ dist:	tex-load.el
 	echo "(defconst AUC-TeX-date \"`date`\""   >> auc-ver.el
 	echo '  "AUC TeX release date")'           >> auc-ver.el
 	echo "(provide 'auc-ver)"	           >> auc-ver.el
+	rm -f $(REMOVE) 
 	-cvs remove $(REMOVE) 
 	-cvs add $(AUCSRC) tex-load.el $(EXTRAFILES)
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )

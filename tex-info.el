@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.7 1994-01-23 08:14:14 amanda Exp $
+;; $Id: tex-info.el,v 5.8 1994-01-29 18:59:21 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -241,9 +241,6 @@ When called interactively, prompt for an environment."
 	["Switch to Master file" TeX-home-buffer t]
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
-
-(if (fboundp 'TeXinfo-mode-menu)
-    (define-key TeXinfo-mode-map 'button3 'TeXinfo-mode-menu))
 
 ;;; Mode:
 
