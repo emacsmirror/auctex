@@ -1,4 +1,4 @@
-%\CheckSum{371}
+%\CheckSum{384}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
 %\maketitle
@@ -114,20 +114,31 @@
 %\begin{quote}
 %|\PreviewMacro[*[[!]{\includegraphics}|
 %\end{quote}
+%or, more readable,
+%\begin{quote}
+%|\PreviewMacro[{*[][]{}}]{\includegraphics}|
+%\end{quote}
 %into your preamble.  The optional argument to \cmd{\PreviewMacro}
 %specifies the arguments \cmd{\includegraphics} accepts, since this is
-%necessary information for properly ending the preview box.  The
+%necessary information for properly ending the preview box.  Note that
+%if you are using the more readable form, you have to enclose the
+%argument in a |[{| and |}]| pair.  The inner braces are necessary to
+%stop any included |[]| pairs from prematurely ending the optional
+%argument, and to make a single |{}| denoting an optional argument not
+%get stripped away by \TeX's argument parsing.
+%The
 %letters simply mean
 %\begin{description}
 %\item[|*|] indicates an optional |*| modifier, as in
 %|\includegraphics*|.
 %\item[|[|] indicates an optional argument in brackets.  This syntax
-%is somewhat disingenious, but using |[]| instead would have the
-%disadvantage of ending the optional argument to \cmd{\PreviewMacro}
-%prematurely.
-%\item[|!|] indicates a mandatory argument.  The logical choice for
-%this would have been |#|, but \LaTeX's current way of processing
-%optional arguments prohibits passing |#| properly.
+%is somewhat disingenious, but brief.
+%\item[{|[]|}] also indicates an optional argument in brackets.  Be
+%sure to have encluded the entire optional argument specification in
+%an additional pair of braces as described above.
+%\item[|!|] indicates a mandatory argument.
+%\item[|\char`{\char`}|] indicates the same.  Again, be sure to have that
+%additional level of braces around the whole argument specification.
 %\end{description}
 %
 %\DescribeMacro{\PreviewEnv} The macro \cmd{\PreviewEnv} works just as
@@ -316,10 +327,11 @@
 %\begin{macro}{\pr@callafter}
 %\begin{macro}{\pr@parseit}
 %\begin{macro}{\pr@seq}
+%\begin{macro}{\pr@endparse}
 %  The following stuff is for parsing the arguments of commands we want
 %  to somehow surround with stuff.  Usage is
 %    \begin{quote}
-%    \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\endcsname}\\
+%    \cmd{\pr@callafter}\meta{aftertoken}\meta{parsestring}\cmd{\pr@endparse}\\
 %    \qquad\meta{macro}\meta{parameters}
 %    \end{quote}
 %  \meta{aftertoken} is stored in \cmd{\pr@seq} and gets placed after
@@ -327,21 +339,30 @@
 %  example for the \cmd{\includegraphics} macro, |*[[!|, an optional
 %  |*| argument followed by two optional arguments enclosed in |[]|,
 %  followed by one mandatory argument.
+%
+%  For the sake of a somewhat more intuitive syntax, we now support
+%  also the syntax |{*[]{}}| in the optional argument.  Since \TeX\
+%  strips redundant braces, we have to write |[{{}}]| in this syntax
+%  for a single mandatory argument.  Hard to avoid.  We use an unusual
+%  character for ending the parsing.
 %  The implementation is rather trivial.
 %    \begin{macrocode}
 \def\pr@callafter{%
   \afterassignment\pr@parseit
   \let\pr@seq= }
 \def\pr@parseit#1{\csname pr@parse#1\endcsname}
+\let\pr@endparse=\@percentchar
 %    \end{macrocode}
+%\end{macro}
 %\end{macro}
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@parse*}
 %  Straightforward, same mechanism \LaTeX\ itself employs.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse*\endcsname#1\endcsname#2{%
-  \@ifstar{\pr@parseit#1\endcsname{#2*}}{\pr@parseit#1\endcsname{#2}}}
+\expandafter\def\csname pr@parse*\endcsname#1\pr@endparse#2{%
+  \@ifstar{\pr@parseit#1\pr@endparse{#2*}}%
+          {\pr@parseit#1\pr@endparse{#2}}}
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@parse[}
@@ -352,25 +373,37 @@
 %  lost.  There will be no harm if such braces were not there at the
 %  start.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse[\endcsname#1\endcsname#2{%
-  \@ifnextchar[{\pr@bracket#1\endcsname{#2}}{\pr@parseit#1\endcsname{#2}}}
-\def\pr@bracket#1\endcsname#2[#3]{\pr@parseit#1\endcsname{#2[{#3}]}}
+\expandafter\def\csname pr@parse[\endcsname#1\pr@endparse#2{%
+  \@ifnextchar[{\pr@bracket#1\pr@endparse{#2}}%
+               {\pr@parseit#1\pr@endparse{#2}}}
+\def\pr@bracket#1\pr@endparse#2[#3]{\pr@parseit#1\pr@endparse{#2[{#3}]}}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
-%\begin{macro}{\pr@parse!}
-%  Mandatory arguments are perhaps easiest to parse.
+%\begin{macro}{\pr@parse]}
+%  This is basically a do-nothing, so that we may use the syntax
+%  |{*[][]!}| in the optional argument instead of the more concise but
+%  ugly |*[[!| which confuses the brace matchers of editors.
 %    \begin{macrocode}
-\expandafter\def\csname pr@parse!\endcsname#1\endcsname#2#3{%
-  \pr@parseit#1\endcsname{#2{#3}}}
+\expandafter\let\csname pr@parse]\endcsname=\pr@parseit
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@parse}
+%\begin{macro}{\pr@parse!}
+%  Mandatory arguments are perhaps easiest to parse.
+%    \begin{macrocode}
+\def\pr@parse#1\pr@endparse#2#3{%
+  \pr@parseit#1\pr@endparse{#2{#3}}}
+\expandafter\let\csname pr@parse!\endcsname=\pr@parse
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\begin{macro}{\pr@parse\pr@endparse}
 %  And finally the macro that gets called at the end and wraps all
-%  this up by placing the completed macro call and the putting
+%  this up by placing the completed macro call and then putting
 %  \cmd{\pr@seq} behind it.
 %    \begin{macrocode}
-\def\pr@parse\endcsname#1{#1\pr@seq}
+\expandafter\def\csname pr@parse\pr@endparse\endcsname#1{#1\pr@seq}
 %</active>
 %    \end{macrocode}
 %\end{macro}
@@ -459,7 +492,7 @@
 %  As explained above.
 %    \begin{macrocode}
 \newcommand\PreviewMacro[2][]{%
-   \pr@advise@ship{#2}{\pr@callafter\pr@endbox#1\endcsname}{}}
+   \pr@advise@ship{#2}{\pr@callafter\pr@endbox#1\pr@endparse}{}}
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\PreviewEnvironment}
@@ -475,7 +508,7 @@
 %  environment and its end.
 %    \begin{macrocode}
 \newcommand{\PreviewSnarfEnvironment}[2][]{\toks@{%
-    \pr@snarfafter#1\endcsname}%
+    \pr@snarfafter#1\pr@endparse}%
   \expandafter\pr@advise
    \csname #2\endcsname{\the\toks@\noexpand##1}%
  \expandafter\pr@advise
