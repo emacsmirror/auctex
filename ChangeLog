@@ -1,3 +1,22 @@
+2004-10-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/booktabs.el, style/captcont.el, style/fancyref.el,
+	style/mdwlist.el, style/natbib.el, style/nicefrac.el,
+	style/paralist.el, style/scrbase.el, style/scrbook.el,
+	style/scrlttr2.el, style/scrpage2.el, style/scrreprt.el,
+	style/subfigure.el, style/units.el (TeX-add-style-hook): Do not
+	set up font-latex variables if font-latex is not loaded and
+	enabled.
+
+	* style/alltt.el, style/listings.el, style/url.el
+	(TeX-add-style-hook): Do not set up font-latex variables if
+	font-latex is not loaded and enabled.  Reinitialize font-lock
+	defaults.
+
+	* font-latex.el (font-latex-syntactic-keywords): Default to nil.
+	Make buffer-local.
+	(font-latex-setup): Set syntactic keywords.
+
 2004-10-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-update-style, TeX-parse-arguments)
