@@ -1,3 +1,10 @@
+2003-08-26  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/RELEASE, dvipng/dvipng.texi, dvipng/configure.ac:
+	prepare for 0.6
+
+	* dvipng/Makefile.in: another install-docs fix
+
 2003-08-13  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/configure.ac: new test (ps inclusion speedup)
