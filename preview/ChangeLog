@@ -1,5 +1,10 @@
 2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* configure.in: update to autoconf 2.52.
+
+	* autogen.sh: Wheedle MY_LANG and MY_LC_CTYPE in if autoconf
+	failed to do so.
+
 	* preview.el: copyright extended.  Basically overhaul of
 	persistent data, leads to:
 	(preview-disable): clear timestamp.
