@@ -2,6 +2,11 @@
 
 	* preview.el (LaTeX-preview-setup): call preview-mode-setup
 	and/or put it in LaTeX-mode-hook.
+	(preview-buffer, preview-document, LaTeX-preview-setup): New
+	commands, keybindings, menu entries.  Things are now more
+	orthogonal and you do no longer need C-c C-c and their ilk (though
+	still supported): we have the commands all accessible via C-c C-p
+	now.
 
 	* prv-xemacs.el (preview-mode-setup): New function.  Enable
 	balloon help.
