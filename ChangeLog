@@ -1,3 +1,9 @@
+2004-06-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* context.el (ConTeXt-environment-menu-name): Make name distinct
+	from `LaTeX-environment-menu-name'.
+	(ConTeXt-environment-modify-menu-name): Analogous.
+
 2004-06-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (tar-ball): Change permissions of auctex-$(TAG).
