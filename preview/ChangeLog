@@ -1,5 +1,7 @@
 2002-03-31  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview): add cross links.
+
 	* Makefile.in: Rerun LaTeX to get references right.
 
 	* preview.dtx (subsection{The \texttt{auctex} option}): Disable
