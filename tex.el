@@ -103,14 +103,13 @@ performed as specified in TeX-expand-list."
 ;; TeX-expand-list for a description of the % escapes
 
 (defcustom TeX-command-list
-  ;; You may have to remove the single quotes around the command
-  ;; arguments if you use DOS.
-  (list (list "TeX" "tex '\\nonstopmode\\input %t'" 'TeX-run-TeX nil t)
+  ;; Changed to double quotes for Windows afflicted people.
+  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t)
 	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
-	(list "LaTeX" "%l '\\nonstopmode\\input{%t}'"
+	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil t)
 	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil t)
-	(list "LaTeX2e" "latex2e '\\nonstopmode\\input{%t}'"
+	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
 	    (list "View" "%v " 'TeX-run-silent t nil)
@@ -127,11 +126,11 @@ performed as specified in TeX-expand-list."
 	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
 	(list "Other" "" 'TeX-run-command t t)
 	;; Not part of standard TeX.
-	(list "LaTeX PDF" "pdflatex '\\nonstopmode\\input{%t}'"
+	(list "LaTeX PDF" "pdflatex \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil t)
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil t)
-	(list "AmSTeX" "amstex '\\nonstopmode\\input %t'"
+	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil t))
   "List of commands to execute on the current document.
 
