@@ -45,4 +45,4 @@ install: preview-latex.info
 	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex.info
 
 clean: 
-	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README PROBLEMS
+	rm -f *.ps *.aux *.cp *.fn *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs *.html INSTALL README PROBLEMS
