@@ -2916,6 +2916,11 @@ the last entry in the menu."
 	(message "Updating...done")
 	(and menu (easy-menu-return-item LaTeX-mode-menu menu)))))
 
+(easy-menu-define LaTeX-mode-command-menu
+    LaTeX-mode-map
+    "Command menu used in LaTeX mode."
+    (TeX-mode-specific-command-menu 'latex))
+
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
     "Menu used in LaTeX mode."
@@ -3094,7 +3099,7 @@ of `LaTeX-mode-hook'."
   (make-local-variable 'fill-paragraph-function)
   (setq fill-paragraph-function 'LaTeX-fill-paragraph)
   (use-local-map LaTeX-mode-map)
-  (easy-menu-add TeX-mode-menu LaTeX-mode-map)
+  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
   (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
 
   (or LaTeX-largest-level
