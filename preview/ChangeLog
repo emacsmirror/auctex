@@ -1,5 +1,7 @@
 2004-01-12  Jan-Åke Larsson  <jalar@mai.liu.se>
 
+	* dvipng/misc.c: Enable --expand-bbox
+
 	* dvipng/color.c:
 	* dvipng/draw.c: 
 	* dvipng/dvipng.h: 
