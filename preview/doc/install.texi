@@ -1,10 +1,7 @@
 @c This is to enable generation of text-file from this file
-@ifnottex
-@unmacro LaTeX
-@unmacro previewlatex
-@unmacro AUCTeX
+@ifset rawfile
 @macro AUCTeX {}
-AUC@w{ }@TeX{}
+@w{AUC @TeX{}}
 @end macro
 @macro LaTeX {}
 La@TeX{}
@@ -12,7 +9,7 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
-@end ifnottex
+@end ifset
 @c -----------------------
 Installing @previewlatex{} should be simple: merely @code{./configure},
 @code{make}, and @code{make install}.  Note that unlike most emacs
