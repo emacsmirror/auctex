@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.8 1994-04-16 13:34:49 amanda Exp $
+;; Version: $Id: tex.el,v 5.9 1994-04-16 14:15:59 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -554,7 +554,7 @@ active.")
 (defun TeX-load-style (style)
   "Search for and load each definition for style in TeX-style-path."
   (cond ((assoc style TeX-style-hook-list)) ; We already found it
-	((string-match "\\`\\(/.+/\\)\\([^/]*\\)\\'" style) ;Absolute path
+	((string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style) ;Complex path
 	 (let* ((dir (substring style (match-beginning 1) (match-end 1)))
 		(style (substring style (match-beginning 2) (match-end 2)))
 		(TeX-style-path (append (list (concat dir TeX-auto-local)
@@ -626,8 +626,8 @@ active.")
 	       (setq TeX-active-styles
 		     (cons style TeX-active-styles))
 	       (TeX-load-style style)
-	       (if (string-match "\\`\\(/.+/\\)\\([^/]*\\)\\'" style)
-		   (setq style		; Absolute path
+	       (if (string-match "\\`\\(.+/\\)\\([^/]*\\)\\'" style)
+		   (setq style		; Complex path
 			 (substring style (match-beginning 2) (match-end 2))))
 	       (mapcar 'funcall
 		       (cdr-safe (assoc style TeX-style-hook-list))))))
