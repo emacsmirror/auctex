@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 4.2 $  
+;; RCS status      : $Revision: 4.3 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jun 10 02:15:45 1991
-;; Update Count    : 332
+;; Last Modified On: Mon Jun 10 02:46:40 1991
+;; Update Count    : 333
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,6 +38,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
+;; 10-Jun-1991  (Last Mod: Mon Jun 10 02:15:45 1991 #332)  Kresten Krab Thorup
+;;    Added batches from Sven Mattison.  This includes also some
+;;    handling of 7-bit modes... All "\\" are translated to TeX-esc etc.
 ;; 1-Jun-1991  (Last Mod: Sat Jun  1 20:32:48 1991 #129)  Kresten Krab Thorup
 ;;    fill-paragraph is made to indent too due to help from Per Hagen
 ;;    <per@iesd.auc.dk>
@@ -77,6 +80,7 @@
 ;; Per Abrahamsen                    <abraham@iesd.auc.dk> 
 ;; Martin Simons                     <simons@ibiza.karlsruhe.gmd.de>
 ;; Per Hagen                         <per@iesd.auc.dk>
+;; Sven Mattisson                    <sven@tde.lth.se>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -93,14 +97,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Thanks a lot to Leslie Lamport for supplying the source 
-;;  for the LaTeX error messages
+;;  for the LaTeX error messages in the tex-debug.el module
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
 ;;
 ;;   Make some good regexp's for paragraph-start and    
-;;     paragraph-seperate
+;;     paragraph-seperate... This is pretty critical!!
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -120,6 +124,7 @@
 ;; tex-misc            : Miscellaneous functions
 ;; tex-math            : Smart bindings for math symbols
 ;;
+;; 
 
 (defvar TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
