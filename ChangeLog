@@ -1,3 +1,35 @@
+2004-08-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (STYLESRC): Add new style files.
+
+	* aclocal.m4: Synchronize with preview-latex.
+
+	* tex-fold.el (TeX-fold-macro-spec-list): Add references to
+	default.
+	(TeX-fold-buffer-type): Additionally pass display string
+	specification and type to `TeX-fold-make-overlay'
+	(TeX-fold-item): Ditto.
+	(TeX-fold-make-overlay): Accept display string specification and
+	type as arguments and set them accordingly in the overlay.
+	Do not signal overfullness if the dispay string contains a
+	linebreak.
+	(TeX-fold-macro-nth-arg): Make `macro-start' mandatory so that
+	macro boundaries may be determined even if point is not inside of
+	a macro.
+	(TeX-fold-hide-item): Recompute display string on closure if
+	display string specification is an integer.
+
+	* style/alphanum.el: Add header and reformat.
+
+	* style/jura.el: Add header.
+
+	* style/doc.el: New file. Contributed by Frank Küster
+	<frank@kuesterei.ch>.
+
+	* style/ltx-base.el: Ditto.
+
+	* style/ltxdoc.el: Ditto.
+
 2004-07-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Autoload `texmathp'.
