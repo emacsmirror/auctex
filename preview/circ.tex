@@ -88,9 +88,18 @@ zu~$f < 0.5$ equivalente Bedingung.
 Für ungerade Werte von~$\Delta x$ ist $f < 0.5$ equivalent zu $d + 0.5 < 0$.
 Da $d$ stets eine ganze Zahl ist, ist dies wieder zu $d < 0$ equivalent.
 
+% A few intentional errors to check error processing:
+%
+% The following line should flag a PostScript error when previewing,
+% but processing of other previews should continue.
+%
 Wird nun $\ifPreview\special{ps: junk}\fi f \geq 0.5$, wie sich durch
 den Vergleich $d \stackrel{?}{<} 0$ feststellen läßt, so muß man
 korrigieren, indem man $f$ um~1 erniedrigt und $e$ um~$1$ erhöht.
+%
+% The following line will make GhostScript abort unexpectedly when
+% previewing, but processing of other previews should continue.
+%
 $\ifPreview\special{ps: quit}\fi d$ muß dann auch entsprechend
 angepaßt werden.
 
