@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.99 1994-10-22 13:07:37 amanda Exp $
+@c $Id: auc-tex.texi,v 1.100 1994-10-26 15:04:11 amanda Exp $
 
 @finalout
 @titlepage
@@ -2408,9 +2408,6 @@ Make AUC @TeX{} work with @samp{crypt++}.  Suggested by Chris Moore
 @item
 Fix bug with @code{TeX-show-environment} from hidden document
 environment.
-
-@item
-Explain how to get Bib@TeX{} completion for @samp{\cite} somewhere.
 
 @item
 Function to check if you are in math mode (between two dollar signs).

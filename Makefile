@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.106 1994-10-25 13:52:59 amanda Exp $
+# $Id: Makefile,v 5.107 1994-10-26 15:03:55 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -91,16 +91,15 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  NONE
+REMOVE =  tex-18.el tex-19.el tex-lcd.el auc-ver.el  
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
 	    auc-menu.el min-map.el  ltx-math.el maniac.el \
 	    outln-18.el xt-mouse.el min-map.el all.el  cpp.el \
 	    easymenu.el
 
-AUCSRC = auc-old.el  auc-ver.el  tex.el \
-	 tex-buf.el  latex.el    tex-info.el \
-	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
+AUCSRC = auc-old.el  tex.el \
+	 tex-buf.el  latex.el    tex-info.el ltx-math.el \
 	 ltx-help.el easymenu.el
 
 STYLESRC = style/slides.el    style/foils.el \
@@ -239,13 +238,13 @@ dist:
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
-	rm  -f auc-ver.el
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
-	echo "(defconst AUC-TeX-version \"$(TAG)\"" > auc-ver.el
-	echo '  "AUC TeX version number")'         >> auc-ver.el
-	echo "(defconst AUC-TeX-date \"`date`\""   >> auc-ver.el
-	echo '  "AUC TeX release date")'           >> auc-ver.el
-	echo "(provide 'auc-ver)"	           >> auc-ver.el
+	cvs commit -m "Release $(OLD)++" tex.el
+	rm -f tex.el.orig
+	mv tex.el tex.el.orig
+	sed -e '/defconst AUC-TeX-date/s/"[^"]*"/"'"`date`"'"/' \
+	    -e '/defconst AUC-TeX-version/s/"[^"]*"/"'$(TAG)'"/' \
+	    < tex.el.orig > tex.el
 	rm -f $(REMOVE) 
 	-cvs remove $(REMOVE) 
 	-cvs add $(AUCSRC) $(EXTRAFILES)

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.29 1994-10-26 15:03:14 amanda Exp $
+;; Version: $Id: tex.el,v 5.30 1994-10-26 15:04:01 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -505,10 +505,10 @@ DOC is the documentation string, and MENU is a Lucid style menu."
 
 ;;; Version 
 
-(defconst AUC-TeX-version "9.2j"
+(defconst AUC-TeX-version "9.2k"
   "AUC TeX version number")
 
-(defconst AUC-TeX-date "Wed Oct 26 16:02:21 MET 1994"
+(defconst AUC-TeX-date "Wed Oct 26 16:03:19 MET 1994"
   "AUC TeX release date")
 
 ;;; Buffer
