@@ -1,3 +1,8 @@
+2005-03-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-TeX-command-list)
+	(japanese-TeX-error-messages): Change from defvar to defcustom.
+
 2005-03-06  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/auctex.texi (I18n): Comment fix.
