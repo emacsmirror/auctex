@@ -1,8 +1,16 @@
 2004-08-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-fold-menu): New variable.
+	(plain-TeX-mode-menu): Use it.
+
+	* context.el (ConTeXt-mode-menu): Use `TeX-fold-menu'.
+
+	* latex.el (LaTeX-mode-menu): Use `TeX-fold-menu'.
+
 	* tex-info.el: Change every occurence of "TeXinfo" to "Texinfo".
 	(Texinfo-environment-list): Add some missing environments.
 	(Texinfo-find-env-end, Texinfo-find-env-start): New functions.
+	(Texinfo-mode-menu): Use `TeX-fold-menu'.
 
 	* tex-fold.el (TeX-fold-buffer-type): Support folding of
 	environments in texinfo-mode.
