@@ -1,3 +1,14 @@
+2004-01-31  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-comment-or-uncomment-region): New function or alias
+	respectively introduced to obtain compatibility with GNU Emacsen
+	before 21.4.
+	(TeX-uncomment-region): New function or alias respectively
+	introduced to obtain compatibility with GNU Emacsen before
+	21(.1?).
+	(TeX-comment-region): Bound to `TeX-comment-or-uncomment-region'.
+	(TeX-un-comment-region): Bound to `TeX-comment-or-uncomment-region'.
+
 2004-01-27  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (TeX-command-list): Fixed previous change.
