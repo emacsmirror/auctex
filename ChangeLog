@@ -1,5 +1,12 @@
 2004-08-10  David Kastrup  <dak@gnu.org>
 
+	* latex.el (LaTeX-math-default): Reorder and complete Greek
+	letters, use Babel transcription conventions for them.
+
+	* doc/tex-ref.tex: Add \sl definition.
+	(section{Miscellaneous}): Use \string~ for tilde.
+	(section{Greek Letters}): Reorder and complete Greek letters.
+
 	* tex.el (TeX-PDF-mode): Set `TeX-output-extension' too.
 	(ams-tex-mode): Move `TeX-set-mode-name' after running hooks.
 
