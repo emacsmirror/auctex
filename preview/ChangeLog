@@ -1,3 +1,7 @@
+2004-08-04  David Kastrup  <dakas@users.sourceforge.net>
+
+	* aclocal.m4: Merge a few AUCTeX changes.
+
 2004-08-03  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-walk-document): Current buffer and its

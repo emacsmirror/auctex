@@ -187,10 +187,11 @@ AC_SUBST(previewtexmfdir)
 AC_SUBST(previewdocdir)])
 
 AC_DEFUN(AC_FULL_EXPAND,
-[ while :;do case "[$]$1" in *\[$]*) eval "$1=\"`sed 's/[[\\\`"]]/\\\\&/' <<EOF
+[ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"]]/\\&/g'
+eval "$1=`sed ${__ac_tmp__} <<EOF
 [$]$1
 EOF
-`\"" ;; *) break ;; esac; done ])
+`";; *) break ;; esac; done ])
 dnl "
 
 
@@ -218,10 +219,10 @@ AC_DEFUN(EMACS_LISP, [
 
 
 AC_DEFUN(EMACS_PROG_EMACS, [
-# Check for (x)emacs, report its' path and flavour
+# Check for (X)Emacs, report its path, flavor and version
 
 # Apparently, if you run a shell window in Emacs, it sets the EMACS
-# environment variable to 't'.  Lets undo the damage.
+# environment variable to 't'.  Let's undo the damage.
 if test "${EMACS}" = "t"; then
    EMACS=""
 fi
@@ -231,8 +232,8 @@ AC_ARG_WITH(emacs,
    else if test "${withval}" = "no"; then EMACS=xemacs
    else EMACS="${withval}"; fi ; fi])
 AC_ARG_WITH(xemacs,
-  [  --with-xemacs@<:@=PATH@:>@    Use XEmacs to build (on PATH if given)], 
-  [if test "${withval}" = "yes"; then EMACS=xemacs; 
+  [  --with-xemacs@<:@=PATH@:>@    Use XEmacs to build (on PATH if given)],
+  [if test "${withval}" = "yes"; then EMACS=xemacs;
    else if test "${withval}" = "no"; then EMACS=emacs
    else EMACS="${withval}"; fi ; fi])
 
@@ -247,7 +248,7 @@ EMACS_LISP(XEMACS,
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
 else
-  if test "$XEMACS" = "no"; then	
+  if test "$XEMACS" = "no"; then
     EMACS_FLAVOR=emacs
   else
     AC_MSG_ERROR([Unable to run $EMACS!  Aborting!])
@@ -269,10 +270,12 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
     AC_FULL_EXPAND(i)
     EMACS_LISPDIR=""
     EMACS_LISP(EMACS_LISPDIR,
-      [(let ((load-path load-path))
-         (while (and load-path (not (string-match \"^${i}/?\$\" (car load-path))))
-                (setq load-path (cdr load-path))) 
-         (if load-path \"yes\" \"no\"))])
+      [[(let ((load-path load-path)
+             (pattern (concat \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\")))
+	 (while (and load-path (not (string-match pattern
+						  (car load-path))))
+		(setq load-path (cdr load-path)))
+	 (if load-path \"yes\" \"no\"))]],,,[cmdpath],["$i"])
     if test "$EMACS_LISPDIR" = "yes"; then
       break
     fi
