@@ -149,7 +149,7 @@ fi
 
 if test -z "$previewtexmfdir"  ; then
 AC_MSG_RESULT([no])
-	AC_MSG_ERROR([Cannot find the texmf directory!  Please use --with-texmf=dir to specify where the preview tex files go])
+	AC_MSG_ERROR([Cannot find the texmf directory!  Please use --with-texmf-dir=dir to specify where the preview tex files go])
 fi
      AC_MSG_RESULT($texmfdir)
 fi
