@@ -1,3 +1,11 @@
+2005-03-22  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (preview-latex/index.html): Don't ignore exit
+	status of makeinfo (this target is on-demand only, anyway).
+
+	* doc/preview-dtxdoc.pl: Accept two arguments so that output file
+	will not get clobbered if Perl is not operative.
+
 2005-03-19  David Kastrup  <dak@gnu.org>
 
 	* prv-xemacs.el (preview-buffer-recoding-alist): Madness variable.
