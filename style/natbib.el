@@ -45,10 +45,13 @@
       ;; Add the other symbols
       (TeX-add-symbols
        '("citetext" "Text")
-       '("bibpunct" ["Post note separator"] "Opening bracket" "Closing bracket"
-	 "style [n]umeric [s]uperscript [a]uthor-year"
-	 "Punctuation between author and year"
-	 "Punctuation between years for common authors")
+       '("bibpunct" ["Post note separator"] 
+		 "Opening bracket"
+		 "Closing bracket"
+		 "Punctuation between multiple citations"
+		 "style [n]umeric [s]uperscript [a]uthor-year"
+		 "Punctuation between author and year"
+		 "Punctuation between years for common authors")
        '("citestyle" "Style")
        '("citeindextrue")
        '("citeindexfalse")
