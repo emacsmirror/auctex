@@ -2,6 +2,8 @@
 
 	* preview.dtx: Oops, prauctex.cfg inadvertantly overrode a
 	possible "sections" option.
+	(subsection{The internals}): The fake \shipout had a syntax
+	error.  Why don't people report bugs?
 
 2002-02-18  Alan Shutko  <ats@acm.org>
 
