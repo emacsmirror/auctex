@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.151 2002-07-18 21:57:48 dakas Exp $
+;; $Id: preview.el,v 1.152 2002-07-19 08:42:11 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1488,6 +1488,23 @@ See description of `TeX-command-list' for details."
 (eval-after-load 'info '(add-to-list 'Info-file-list-for-emacs
 				     '("preview" . "preview-latex")))
 
+(defvar preview-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-p" #'preview-at-point)
+    (define-key map "\C-r" #'preview-region)
+    (define-key map "\C-b" #'preview-buffer)
+    (define-key map "\C-d" #'preview-document)
+    (define-key map "\C-f" #'preview-dump-format)
+    (define-key map "\C-c\C-f" #'preview-clear-format)
+    (define-key map "\C-i" #'preview-goto-info-page)
+    ;;  (define-key map "\C-q" #'preview-paragraph)
+    (define-key map "\C-e" #'preview-environment)
+    (define-key map "\C-s" #'preview-section)
+    (define-key map "\C-c\C-p" #'preview-clearout-at-point)
+    (define-key map "\C-c\C-r" #'preview-clearout)
+    (define-key map "\C-c\C-b" #'preview-clearout-buffer)
+    map))
+
 ;;;###autoload
 (defun LaTeX-preview-setup ()
   "Hook function for embedding the preview package into Auc-TeX.
@@ -1495,10 +1512,32 @@ This is called by `LaTeX-mode-hook' and changes Auc-TeX variables
 to add the preview functionality."
   (remove-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'preview-mode-setup)
-  (if (eq major-mode 'latex-mode)
-      (preview-mode-setup))
   (require 'tex-buf)
   (require 'latex)
+  (define-key LaTeX-mode-map "\C-c\C-p" preview-map)
+  (easy-menu-define preview-menu LaTeX-mode-map
+    "This is the menu for preview-latex."
+    '("Preview"
+      ["On/off at point" preview-at-point]
+      ["Environment" preview-environment]
+      ["Section" preview-section]
+      ["Region" preview-region (preview-mark-active)]
+      ["Buffer" preview-buffer]
+      ["Document" preview-document]
+      ["Clearout at point" preview-clearout-at-point]
+      ["Clearout region" preview-clearout (preview-mark-active)]
+      ["Clearout buffer" preview-clearout-buffer]
+      ["Cache preamble" preview-dump-format]
+      ["Cache preamble off" preview-clear-format]
+      ("Customize"
+       ["Browse options"
+	(customize-group 'preview)]
+       ["Generate custom menu"
+	(easy-menu-add-item
+	 nil '("LaTeX" "Preview")
+	 (customize-menu-create 'preview))])
+      ["Read documentation" preview-goto-info-page]
+      ["Report Bug" preview-report-bug]))
   (let ((preview-entry (list "Generate Preview" preview-LaTeX-command
 			     #'TeX-inline-preview nil)))
     (setq TeX-command-list
@@ -1519,47 +1558,8 @@ preview Emacs Lisp package something too stupid."))
 	       '("%D" preview-make-preamble) t)
   (add-to-list 'TeX-expand-list
 	       '("%P" preview-make-options) t)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-at-point)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-b" #'preview-buffer)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-d" #'preview-document)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-f" #'preview-dump-format)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-f" #'preview-clear-format)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-i" #'preview-goto-info-page)
-;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-p" #'preview-clearout-at-point)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-r" #'preview-clearout)
-  (define-key LaTeX-mode-map "\C-c\C-p\C-c\C-b" #'preview-clearout-buffer)
-  (preview-with-LaTeX-menus
-   (easy-menu-add-item nil
-		       '("Command")
-		       (TeX-command-menu-entry
-			(assoc "Generate Preview" TeX-command-list)))
-   (easy-menu-add-item nil '("LaTeX")
-		       '("Preview"
-			 ["On/off at point" preview-at-point]
-			 ["Environment" preview-environment]
-			 ["Section" preview-section]
-			 ["Region" preview-region (preview-mark-active)]
-			 ["Buffer" preview-buffer]
-			 ["Document" preview-document]
-			 ["Clearout at point" preview-clearout-at-point]
-			 ["Clearout region" preview-clearout (preview-mark-active)]
-			 ["Clearout buffer" preview-clearout-buffer]
-			 ["Cache preamble" preview-dump-format]
-			 ["Cache preamble off" preview-clear-format]
-			 ("Customize"
-			  ["Browse options"
-			   (customize-group 'preview)]
-			  ["Generate custom menu"
-			   (easy-menu-add-item
-			    nil '("LaTeX" "Preview")
-			    (customize-menu-create 'preview))])
-			 ["Read documentation" preview-goto-info-page]
-			 ["Report Bug" preview-report-bug])
-		       "Miscellaneous"))
+  (if (eq major-mode 'latex-mode)
+      (preview-mode-setup))
   (if (boundp 'desktop-buffer-misc)
       (preview-buffer-restore desktop-buffer-misc)))
 
@@ -2065,7 +2065,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.151 $"))
+	(rev "$Revision: 1.152 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2076,7 +2076,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-07-18 21:57:48 $"))
+    (let ((date "$Date: 2002-07-19 08:42:11 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
