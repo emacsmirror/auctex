@@ -1121,13 +1121,21 @@ There might be text before point."
 ;; functions to create menu entries
 
 ;; ConTeXt \start... \stop... pairs
-(defvar ConTeXt-environment-menu-name "Insert Environment  (C-c C-e)")
+;; (Choose a different name than the one in LaTeX mode.  Otherwise the
+;; contents of the "Insert Environment" and "Change Environment" menus
+;; will not be updated correctly upon loading and switching between
+;; LaTeX and ConTeXt files.  AFAICS this is due to a bug in
+;; easymenu.el not returning the correct keymap when
+;; `easy-menu-change' (and therefore `easy-menu-get-map') is called.
+;; It just sees an entry with a matching name and returns this first
+;; match.)
+(defvar ConTeXt-environment-menu-name "Insert Environment   (C-c C-e)")
 
 (defun ConTeXt-environment-menu-entry (entry)
   "Create an entry for the environment menu."
   (vector (car entry) (list 'ConTeXt-environment-menu (car entry)) t))
 
-(defvar ConTeXt-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
+(defvar ConTeXt-environment-modify-menu-name "Change Environment   (C-u C-c C-e)")
 
 (defun ConTeXt-environment-modify-menu-entry (entry)
   "Create an entry for the change environment menu."
