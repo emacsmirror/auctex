@@ -11,7 +11,7 @@
 ;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.15 2002-12-12 00:23:06 psg Exp $
+;; RCS $Id: font-latex.el,v 5.16 2003-02-15 17:41:13 dak Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -36,7 +36,7 @@
 
 ;; New versions of this package (if they exist) may be found at:
 ;;  http://people.debian.org/~psg/elisp/font-latex.el
-;; or in auc-tex's CVS archive.
+;; or in AUCTeX's CVS archive.
 
 ;; ** Infinite loops !? **
 ;;  If you get an infinite loop, send me a bug report!
@@ -54,9 +54,9 @@
 
 ;; Installation instructions:
 ;;
-;;  AUC-TeX users:  <URL:http://www.nongnu.org/auctex/>
+;;  AUCTeX users:  <URL:http://www.nongnu.org/auctex/>
 ;;   You don't have to do anything special as it gets installed
-;;   along with the rest of AUC-TeX and gets enabled by default via the
+;;   along with the rest of AUCTeX and gets enabled by default via the
 ;;   customizable variable TeX-install-font-lock.
 ;;
 ;;  Other users:
@@ -106,7 +106,7 @@
 ;;  - Added font-lock-syntactic-keywords to font-lock-defaults to handle
 ;;    verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
 ;; V0.702 15Oct01 PSG
-;;  - remove LaTeX-mode-hook self-installation, since auc-tex can now install
+;;  - remove LaTeX-mode-hook self-installation, since AUCTeX can now install
 ;;    font-latex by itself. 
 ;;  - cleanup the docs a bit, deleting stuff relevant only for emacs19
 ;;    since it's now more likely to confuse users.
@@ -146,7 +146,7 @@
 ;;    Fixed the real bug in font-latex-match-command-outside-arguments
 ;; V0.503 16Oct97 PSG (RCS V1.45)
 ;;    Patched font-latex-match-command-outside-arguments for allow for
-;;    strange interaction with AUC-TeX's LaTeX-environment command.
+;;    strange interaction with AUCTeX's LaTeX-environment command.
 ;; V0.502 07Oct97 (RCS V1.44)
 ;;    Kevin Ruland <kevin@rodin.wustl.edu> edits font-latex-find-matching-close
 ;;    PSG: Changed OliveGreen for OliveDrab, found in rgb.txt
@@ -558,8 +558,8 @@ prone to infinite loop bugs.")))
 	  (font-lock-comment-start-regexp . "%")
 	  (font-lock-mark-block-function . mark-paragraph)
           (font-lock-syntactic-keywords 
-           . (("^\\\\begin *{verbatim\\*?}\\(.?\\).*\\(\n\\)" (1 "<") (2 "|"))
-	      ("\\(\n\\)\\\\end *{verbatim\\*?}\\(.?\\)" (1 "|") (2 "<"))
+           . (("^\\\\begin *{verbatim\\*?}\\(.?\\).*\\(\n\\)" (1 "<") (2 "|" t))
+	      ("\\(\n\\)\\\\end *{verbatim\\*?}\\(.?\\)" (1 "|" t) (2 "<"))
 	      ("\\\\verb\\*?\\([^a-z@]\\).*?\\(\\1\\)" (1 "\"") (2 "\""))
 	      ))
           )))
@@ -1105,7 +1105,7 @@ The \\begin{equation} and \\end{equation are not fontified here."
       (store-match-data (list beg (point)))
       t)))
 
-;; Install ourselves for non AUC-TeX
+;; Install ourselves for non AUCTeX
 (add-hook 'latex-mode-hook 'font-latex-setup)
 ;; If font-latex is loaded using a latex-mode-hook, then the add-hook above
 ;; won't be called this time around.  Check for this now:
