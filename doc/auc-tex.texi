@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.113 1996-08-23 08:44:13 abraham Exp $
+@c $Id: auc-tex.texi,v 1.114 1996-08-27 22:27:29 abraham Exp $
 
 @finalout
 @titlepage
@@ -129,8 +129,7 @@ TeX-submit-bug-report} to report bugs if possible.@refill
 (This text stolen from the @TeX{}info 2.16 distribution).
 
 The programs currently being distributed that relate to AUC @TeX{}
-include lisp files for GNU Emacs, plus other separate programs
-(specifically @code{lacheck}).  These programs are @dfn{free}; this
+include lisp files for GNU Emacs.  These programs are @dfn{free}; this
 means that everyone is free to use them and free to redistribute them on
 a free basis.  The AUC @TeX{} related programs are not in the public
 domain; they are copyrighted and there are restrictions on their
@@ -1033,8 +1032,8 @@ and moreover allowing you to @emph{debug} your documents.
 
 Formatting the document with @TeX{} or La@TeX{}, viewing with a
 previewer, printing the document, running Bib@TeX{}, making an index, or
-checking the document with @code{lacheck} all require running an
-external command.
+checking the document with @code{lacheck} or @code{chktex} all require
+running an external command.
 
 There are two ways to run an external command, you can either run it on
 all of the current documents with @code{TeX-command-master}, or on the
@@ -1189,8 +1188,10 @@ an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
 @section Checking for problems
 @cindex Checking
 @cindex @code{lacheck}
+@cindex @code{chktex}
 @cindex Finding errors
 @cindex Running @code{lacheck}
+@cindex Running @code{chktex}
 @cindex Style
 @cindex Problems
 
@@ -1205,6 +1206,17 @@ k @key{RET}}.  The result will be a list of errors in the
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next
 error.@refill
+
+Another newer program which can be used to find errors is @code{chktex}.
+It is much more configurable than @code{lacheck}, but doesn't find all
+the problems @code{lacheck} does, at least in its default configuration.
+You must install the programs before using them, and for @code{chktex}
+you must also modify @code{TeX-command-list}.  You can get
+@code{lacheck} from @file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>}
+or alternatively @code{chktex} from
+@file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
+`chktex' in @file{tex.el} to see how to switch between them.@refill They
+are
 
 @node Control,  , Checking, Formatting
 @section Controlling the output

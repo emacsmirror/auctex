@@ -59,10 +59,6 @@ Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
 paths for installation of the files.  Be sure that
 
 @table @code
-@item bindir
-Is set to the directory where you want the LaCheck binary to be
-installed.
-
 @item infodir
 Is set to the directory where you want the AUC @TeX{} ``info''
 documentation to be installed.  
@@ -78,16 +74,6 @@ lisp files.
 If you already have an old version of AUC @TeX{} in that directory, you
 must delete it before installing the new version.  Otherwise the wrong
 version of the files may be loaded during the byte compilation.
-
-@item mandir
-Is set to the directory where you want to install the (unformatted) man
-page for LaCheck.
-
-@item CC
-Is the compiler you want to use for compiling the LaCheck program. Is
-set to `gcc' by default. Change this is `cc' or whatever your system
-compiler is called if you do not have GCC installed.
-
 @end table
 
 Then type @kbd{make all}, and the whole thing will be `made'.  If this

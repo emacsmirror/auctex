@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6d
+;; Version: 9.6e
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup

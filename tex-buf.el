@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6d
+;; Version: 9.6e
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -472,9 +472,11 @@ for the dviout previewer, especially when used with PC-9801 series."
 
 (defun TeX-run-background (name command file)
   "Start process with second argument, show output when and if it arrives."
-  (save-excursion
-    (set-buffer (get-buffer-create "*TeX background*"))
-    (erase-buffer))
+  (let ((dir (TeX-master-directory)))
+    (save-excursion
+      (set-buffer (get-buffer-create "*TeX background*"))
+      (if dir (cd dir))
+      (erase-buffer)))
   (let ((process (start-process (concat name " background")
 				nil TeX-shell
 				TeX-shell-command-option command)))
@@ -491,11 +493,13 @@ Error parsing on C-x ` should work with a bit of luck."
   (require 'comint)
   (let ((default TeX-command-default)
 	(buffer (TeX-process-buffer-name file))
-	(process nil))
+	(process nil)
+	(dir (TeX-master-directory)))
     (TeX-process-check file)		; Check that no process is running
     (setq TeX-command-buffer (current-buffer))
     (with-output-to-temp-buffer buffer)
     (set-buffer buffer)
+    (if dir (cd dir))
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
     (comint-exec buffer name TeX-shell nil
 		 (list TeX-shell-command-option command))
@@ -886,14 +890,17 @@ original file."
 	  (set-buffer-modified-p nil)
 	(save-buffer 0)))))
 
-(defun TeX-region-file (&optional extension dummy)
-  "Return TeX-region file name with EXTENSION."
-  (cond ((eq extension t)
-	 (concat TeX-region "." TeX-default-extension))
-	(extension
-	 (concat TeX-region "." extension))
-	(t
-	 TeX-region)))
+(defun TeX-region-file (&optional extension nondirectory)
+  "Return TeX-region file name with EXTENSION.
+If optional second argument NONDIRECTORY is nil, do not include 
+the directory."
+  (concat (if nondirectory "" (TeX-master-directory))
+	  (cond ((eq extension t)
+		 (concat TeX-region "." TeX-default-extension))
+		(extension
+		 (concat TeX-region "." extension))
+		(t
+		 TeX-region))))
 
 (defvar TeX-region "_region_"
   "*Base name for temporary file for use with TeX-region.")

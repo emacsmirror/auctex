@@ -1,8 +1,15 @@
 @section News in 9.6
 
 @itemize @bullet
-@item Insert @code{(require 'font-latex)} to get better font lock
-support. 
+@item
+LaCheck is unbundled.  You can get @code{lacheck} from
+@file{<URL:ftp://sunsite.auc.dk/pub/text/lacheck/>} or alternatively
+@code{chktex} from
+@file{<URL:ftp://ftp.dante.de/pub/tex/support/chktex/>}.  Search for
+`chktex' in @file{tex.el} to see how to switch between them.@refill
+
+@item 
+Insert @code{(require 'font-latex)} to get better font lock support. 
 
 @item
 Bug fixes.

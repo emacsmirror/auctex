@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6d
+# Version: 9.6e
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -12,17 +12,8 @@
 # Where local software is found
 prefix=/usr/local
 
-# Where architecture dependent local software go
-exec_prefix = $(prefix)
-
-# Where installed binaries go.
-bindir = $(exec_prefix)/bin
-
 # Where info files go.
 infodir = $(prefix)/info
-
-# Where manual pages go.
-mandir=$(prefix)/man/man1
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -33,7 +24,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/share/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.34
+EMACS=emacs
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -61,27 +52,8 @@ AUTOC= $(ELC)
 # Using TeX in batch mode.
 TEX=tex
 
-# Compiler to use.
-CC = gcc
-
-# Cflags.. Include `-DNEED_STRSTR' if you don't have strstr() in libc
-CFLAGS = -O # -DNEED_STRSTR 
-
-# How to run flex. (flex is needed, lex won't do)
-# if you don't have `flex' you may use the other instead:
-
-LEX = flex -8  lacheck.lex
-#LEX = cp lacheck.noflex.c lex.yy.c 
-
 # How to move the byte compiled files to their destination.  
 MV = mv
-
-# For OS/2 use
-#LACHECK=lacheck.exe
-LACHECK=lacheck
-
-# For linking lacheck
-LIBS=
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
@@ -97,14 +69,11 @@ WWWDIR = $(HOME)/.public_html/auctex
 
 REMOVE =  ltx-help.el
 
-MINMAPSRC = auc-menu.el maniac.el \
-	    outln-18.el auc-html.el all.el
+MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el
 
 CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el font-latex.el
 
-AUCSRC = auc-old.el  tex.el \
-	 tex-buf.el  latex.el    tex-info.el \
-	 ltx-help.el 
+AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el ltx-help.el 
 
 STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -115,11 +84,6 @@ STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 	   style/jarticle.el  style/jbook.el    style/jreport.el \
 	   style/dinbrief.el  style/virtex.el   style/plfonts.el \
 	   style/plhb.el      style/harvard.el	style/swedish.el
-
-LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
-	       lacheck/test.tex
-
-LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
@@ -152,9 +116,9 @@ all: main
 	@echo "** Expect some warnings from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 
-main: TDoc TLaCheck
+main: TDoc
 
-install: LispInstall LaInstall DocInstall
+install: LispInstall DocInstall
 	@echo 
 	@echo "**********************************************************"
 	@echo "** AUC TeX installation almost completed "
@@ -184,13 +148,6 @@ install: LispInstall LaInstall DocInstall
 install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
-LaInstall: TLaCheck
-	@echo "**********************************************************"
-	@echo "** Installing LaCheck "
-	@echo "**********************************************************"
-	-(cd lacheck; $(MAKE) install bindir=$(bindir) mandir=$(mandir) \
-	LACHECK=$(LACHECK) SHELL=$(SHELL))
-
 DocInstall: 
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
@@ -218,14 +175,6 @@ LispInstall:
 .el.elc:
 	$(ELC) $<
 
-TLaCheck:
-	@echo "**********************************************************"
-	@echo "** Building LaCheck"
-	@echo "**********************************************************"
-	-( cd lacheck; $(MAKE) bindir=$(bindir) \
-	   CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" \
-	   LACHECK=$(LACHECK) LIBS=$(LIBS))
-
 TDoc: 
 	@echo "**********************************************************"
 	@echo "** Making AUC TeX documentation"
@@ -235,7 +184,6 @@ TDoc:
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
 	(cd doc; $(MAKE) clean)
-	(cd lacheck; $(MAKE) clean)
 
 wc:
 	wc $(AUCSRC) $(STYLESRC) 
@@ -261,18 +209,14 @@ dist:
 	-cvs remove $(REMOVE) 
 	-cvs add $(AUCSRC) $(EXTRAFILES)
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
-	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
 	cvs commit -m "Release $(TAG)"
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style
-	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
+	mkdir auctex-$(TAG)/doc 
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
 	cp $(STYLESRC) auctex-$(TAG)/style
-	cp $(LACHECKFILES) auctex-$(TAG)/lacheck
-	(cd lacheck; $(MAKE) $(LACHECKGEN); \
-	 cp $(LACHECKGEN) ../auctex-$(TAG)/lacheck )
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )

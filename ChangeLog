@@ -1,8 +1,14 @@
+Wed Aug 28 00:22:11 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile: Removed lacheck.
+
 Fri Aug 23 10:23:45 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex-buf.el (TeX-run-command): Change to master directory before
 	executing command.
 	(TeX-region-file): Allow dummy second argument.
+	(TeX-run-background): Run in master directory.
+	(TeX-run-interactive): Run in master directory.
 
 	* tex.el (TeX-master-file): Allow second argument `NONDIRECTOPRY'.
 	(TeX-expand-list): Set second argument `NONDIRECTORY' to file
