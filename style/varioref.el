@@ -17,7 +17,7 @@
       "reftextafter"  "reftextfaceafter"
       "reftextfaraway" "vreftextvario" "vrefwarning")
 
-     ;; Insatall completion for labels
+     ;; Install completion for labels
      (setq TeX-complete-list
 	   (append
 	    '(("\\\\vref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
