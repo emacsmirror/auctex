@@ -1,3 +1,8 @@
+2004-11-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (docTeX-in-macrocode-p): Search backward for an
+	environment beginning rather than forward for its end.
+
 2004-11-08  David Kastrup  <dak@gnu.org>
 
 	* latex.el (doctex-mode): Set the mode name.
