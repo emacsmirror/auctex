@@ -1,3 +1,13 @@
+2003-02-15  David Kastrup  <dak@gnu.org>
+
+	* doc/auc-tex.texi: Name change of AUC TeX to AUCTeX.  A few
+	other cleanups.
+
+	* configure.in, Makefile.in, doc/Makefile.in: everything moves to
+	autoconf, fix a few things.
+
+	* Makefile, doc/Makefile: deleted.
+
 2003-02-14  Patrick Gundlach  <patrick@gundla.ch>
 
 	* context.el: Added basic environment support (insert-envrionment
