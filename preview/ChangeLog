@@ -1,3 +1,21 @@
+2004-07-27  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-dvipng): New customization group.
+	(preview-image-creators): Remove ghostscript options here.
+	(preview-gs-image-type-alist): New variable for lookup of
+	Ghostscript options.
+	(preview-gs-open): Remove imagetype and gs-optionlist arguments.
+	Instead, look them up in preview-gs-image-type-alist.
+	(preview-gs-dvips-process-setup): Setup GhostScript command line
+	at different place.
+	(preview-gs-dvips-process-setup): Use preview-gs-image-type, not
+	preview-image-type for extension.
+	(preview-dvipng-open): Removed.
+	(preview-dvipng-process-setup): Setup GhostScript fallback.
+	(preview-pdf2dsc-process-setup): Don't setup GhostScript here.
+	(preview-error-quote): Fix bugs, only convert last ^^ sequence
+	when a long string of ^^ exists.
+
 2004-07-16  David Kastrup  <dakas@users.sourceforge.net>
 
 	* Makefile.in (INSTALL_DATA): Use `$(null)' at end of variables at
