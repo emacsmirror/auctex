@@ -253,6 +253,14 @@ if test "${$1}"x = NONEx ; then
 fi
 ])
 
+AC_DEFUN(AC_PATH_PROGS_REQUIRED, [
+AC_PATH_PROGS($1, $2, NONE)
+if test "${$1}"x = NONEx ; then
+   AC_MSG_ERROR([$3])
+fi
+])
+
+
 dnl
 dnl Check whether a function exists in a library
 dnl All '_' characters in the first argument are converted to '-'

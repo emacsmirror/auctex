@@ -55,7 +55,7 @@ AC_ARG_WITH(doc-dir,[  --with-doc-dir=DIR        Location to install preview.dvi
 
 
 dnl FIXME we should check that it's the right version
-AC_CHECK_PROGS_REQUIRED(EMACS, emacs xemacs, [(X)Emacs not found!  Aborting!  
+AC_PATH_PROGS_REQUIRED(EMACS, $EMACS emacs xemacs, [(X)Emacs not found!  Aborting!  
 You must install Emacs 21 or XEmacs for preview to work.])
 
 AC_XEMACS_P
