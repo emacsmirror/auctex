@@ -19,5 +19,6 @@ FAQ
 
 and you can then continue from there.
 
-You will need to have a working copy of `makeinfo' and of `autoconf'
-for that.
+You will need to have a working copy of `makeinfo', `autoconf' and
+`perl' for that, and the version of `makeinfo' that is required might
+be rather recent.

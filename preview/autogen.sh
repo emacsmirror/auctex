@@ -4,5 +4,5 @@ then autoconf
 else $AUTOCONF
 fi
 cd doc
-make -f Makefile.in MAKEINFO=makeinfo disttexts preview-latex.info
+make -f Makefile.in MAKEINFO=makeinfo PERL=perl disttexts preview-latex.info
 cd ..

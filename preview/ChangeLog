@@ -1,5 +1,11 @@
 2005-04-02  David Kastrup  <dak@gnu.org>
 
+	* autogen.sh: make preview-latex.info generation work by passing
+	in PERL default.
+
+	* README.CVS: Mention that `perl' is needed for autogen.sh, and
+	that `makeinfo' might need to be up to date.
+
 	* latex/README: Renamed from latex/README-preview.  Overhaul
 	availability.
 
