@@ -1,3 +1,10 @@
+2003-03-12  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvi.c (DVIFollowToggle): 
+	* dvipng/misc.c (DecodeArgs): 
+	* dvipng/dvipng.h: Added '-follow' switch, and code that
+	implements a follow mode. 
+
 2003-02-27  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/draw.c (DrawPages): 
