@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-# Version: 11.10
+# Version: 11.11
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -80,7 +80,8 @@ AUCELC = auc-old.elc tex.elc tex-buf.elc latex.elc tex-info.elc \
 	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc
 
 
-STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
+STYLESRC = style/prosper.el \
+	   style/slides.el    style/foils.el    style/amstex.el \
 	   style/article.el   style/book.el     style/letter.el \
 	   style/report.el    style/amsart.el   style/amsbook.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \

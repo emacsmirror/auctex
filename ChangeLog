@@ -1,3 +1,7 @@
+2002-01-24  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 11.11 released.
+
 2002-01-24  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-format-list): Support t(article|report|book) class file.
@@ -26,6 +30,28 @@
 	of [pj]latex command.
 	Patch by Atsuhito Kohda	<kohda@pm.tokushima-u.ac.jp>.
 	(LaTeX-command-style): Support js(article|book).
+
+2002-01-18  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (LaTeX-command-style): Fix comment.
+	Reported by Atsuhito Kohda <kohda@pm.tokushima-u.ac.jp>
+	via. Debian. 
+
+	* latex.el (LaTeX-outline-name): Allow longer names.
+	Reported by "Michael Soulier" <msoulier@nortelnetworks.com>
+	via. Debian.
+
+2001-12-22  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-imenu-create-index-function): Strip text
+	properties. 
+	Reported by Venkatesh Prasad Ranganath <rvprasad@@cis.ksu.edu>.
+
+2001-12-13  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/prosper.el: New file.
+	Contributed by Phillip Lord <p.lord@russet.org.uk>.
+	* Makefile (STYLESRC): Added it.
 
 2001-11-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 

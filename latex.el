@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.10
+;; Version: 11.11
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -252,7 +252,7 @@ If so, return the second element, otherwise return nil."
 (defun LaTeX-outline-name ()
   "Guess a name for the current header line."
   (save-excursion
-    (if (re-search-forward "{\\([^\}]*\\)}" (+ (point) 50) t)
+    (if (re-search-forward "{\\([^\}]*\\)}" (+ (point) fill-column 10) t)
 	(match-string 1)
       (buffer-substring (point) (+ 20 (point))))))
 
@@ -3382,12 +3382,13 @@ of `LaTeX-mode-hook'."
 	(regexp (LaTeX-outline-regexp)))
     (goto-char (point-max))
     (while (re-search-backward regexp nil t)
-      (let ((name (LaTeX-outline-name))
-	    (level (make-string (1- (LaTeX-outline-level)) ?\ ))
-	    (mark (make-marker)))
+      (let* ((name (LaTeX-outline-name))
+	     (level (make-string (1- (LaTeX-outline-level)) ?\ ))
+	     (label (concat level level name))
+	     (mark (make-marker)))
 	(set-marker mark (point))
-	(setq entries (cons (cons (concat level level name) mark)
-			    entries))))
+	(set-text-properties 0 (length label) nil label)
+	(setq entries (cons (cons label mark) entries))))
     entries))
 
 (defvar LaTeX-builtin-opts 
