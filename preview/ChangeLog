@@ -1,5 +1,10 @@
 2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Release 0.7
+	
+	* doc/readme.texi (Getting started): Mention desktop instability
+	under XEmacs.
+
 	* prv-xemacs.el (preview-create-icon): I hate XEmacs.  I hate it.
 	I don't have to take this stupid image instantiator crap, do I?
 	That's what Nick was supposed to work out.  Make make-glyph not
