@@ -1,3 +1,39 @@
+2003-01-20  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (subsection{The internals}): comment out color
+	setup.  That means that one might not be able to use color.sty for
+	setting up fore/background color, but it will also mean that
+	loading color.sty does not interfere with the initial colors set
+	up inside of GhostScript.  In the long run, we will have to solve
+	this differently.
+
+2003-01-19  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (section{Package options}) 
+	(subsection{The \texttt{showlabels} option}), doc/todo.texi:
+	spell RefTeX correctly.
+
+	* preview.el (preview-gs-open): Get really paranoid about closing
+	our output file in a way which should get rid of races.
+	(preview-ps-quote-filename): Get an optional argument for
+	avoiding making file names relative (like null-device).
+	(preview-equality-transforms, preview-relaxed-string=,
+	preview-canonical-spaces): Add functionality for relaxed check of
+	region changes (should allow outline-minor-mode in XEmacs, too,
+	and paragraph reformatting).
+
+	* prv-emacs.el (preview-check-changes): use
+	`preview-relaxed-string=' for detecting relevant changes.
+
+	* prv-xemacs.el (preview-create-icon): Use defsubst instead of
+	defmacro in order to avoid double evaluation of `file'.
+	(preview-check-changes): use `preview-relaxed-string=' for
+	detecting relevant changes.
+	
+	* latex/preview.dtx (section{Introduction}) 
+	(section{Package options}, subsection{Supporting conversions}):
+	Mention that `tightpage' requires `dvips', too.
+
 2003-01-18  David Kastrup  <dakas@users.sourceforge.net>
 
 	* Makefile.in (install-el, install-icons): Fix overquoting.
@@ -2004,7 +2040,7 @@
 
 2002-03-26  David Kastrup  <David.Kastrup@t-online.de>
 
-	* TODO (Integrate into refTeX): bemoan another shortcoming, or
+	* TODO (Integrate into RefTeX): bemoan another shortcoming, or
 	rather feature wish.
 
 2002-03-25  David Kastrup  <David.Kastrup@t-online.de>
