@@ -11,7 +11,7 @@
 ;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.14 2002-12-11 17:04:21 rsteib Exp $
+;; RCS $Id: font-latex.el,v 5.15 2002-12-12 00:23:06 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -100,6 +100,8 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.801 07Dec02 David Kastrup
+;; - (font-latex-setup): Better stab at verbatim handling.
 ;; V0.800 01Nov01 PSG
 ;;  - Added font-lock-syntactic-keywords to font-lock-defaults to handle
 ;;    verbatim environment, as suggested by Stefan Monnier 5 years ago (!)
