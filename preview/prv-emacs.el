@@ -33,7 +33,7 @@
 				 (:type pbm :file "help.pbm" :ascent
 					80))
   "The symbol used for previews to be generated.
-Usually a question mark")
+Usually a question mark.")
 
 (defimage preview-icon ((:type xpm :file "search.xpm" :ascent 100)
 			(:type pbm :file "search.pbm" :ascent 100))
@@ -109,10 +109,10 @@ if there was any urgentization."
 
 (defmacro preview-image-from-icon (icon)
   "Generate a copy of the ICON that is \"editable\".
-Which means that `preview-replace-icon-image' can be called
-on the value returned here, and wherever the value was used,
-the new image will appear, while ICON itself is not changed.
-Typical would be a CONS-cell."
+Which means that `preview-replace-icon' can be called on the
+value returned here, and wherever the value was used, the new
+image will appear, while ICON itself is not changed.  Typical
+would be a CONS-cell."
   `(cons 'image (cdr ,icon)))
 
 (defmacro preview-string-from-image (image)
@@ -427,6 +427,10 @@ Pure borderless black-on-white will return NIL."
 	 (append
 	  (mapcar #'preview-gs-color-value fg)
 	  '("setrgbcolor"))))))
+
+(defun preview-mark-active ()
+  "Return t if the mark is active."
+  mark-active)
 
 (defmacro preview-with-LaTeX-menus (&rest bodyforms)
   "This activates the LaTeX menus for the BODYFORMS
