@@ -486,37 +486,54 @@ overlays not in the active window."
 	 (ad-activate 'replace-highlight))
   :initialize #'custom-initialize-reset)
 
-(defun preview-inherited-face-attribute (face attribute &optional
-					      fallbacks)
-  "Fetch face attribute while adhering to inheritance.
+;; Check whether the four-argument form of `face-attribute' exists.
+;; If not, we will get a `wrong-number-of-arguments' error thrown.
+;; Use `defun' instead of `defsubst' here so that the decision may be
+;; reverted at load time if you are compiling with one Emacs and using
+;; another.
+(if (condition-case nil
+	(progn
+	  (face-attribute 'default :height nil nil)
+	  t)
+      (wrong-number-of-arguments nil))
+
+    (defun preview-inherited-face-attribute (face attribute &optional inherit)
+      "Fetch face attribute while adhering to inheritance.
+This searches FACE for an ATTRIBUTE, using INHERIT
+for resolving unspecified or relative specs.  See the fourth
+argument of function `face-attribute' for details."
+      (face-attribute face attribute nil inherit))
+
+  (defun preview-inherited-face-attribute (face attribute &optional inherit)
+    "Fetch face attribute while adhering to inheritance.
 This searches FACE for an ATTRIBUTE.  If it is 'unspecified,
-first inheritance is consulted (if FALLBACKS is non-NIL), then
-FALLBACKS is searched if it is a face or a list of faces.
+first inheritance is consulted (if INHERIT is non-NIL), then
+INHERIT is searched if it is a face or a list of faces.
 Relative specs are evaluated recursively until they get absolute or
 are not resolvable.  Relative specs are float values."
-  (let ((value (face-attribute face attribute)))
-    (when fallbacks
-      (setq fallbacks
-	    (append
-	     (let ((ancestors (face-attribute face :inherit)))
-	       (cond ((facep ancestors) (list ancestors))
-		     ((consp ancestors) ancestors)))
-	     (cond ((facep fallbacks) (list fallbacks))
-		   ((consp fallbacks) fallbacks)))))
-    (cond ((null fallbacks) value)
-	  ((floatp value)
-	   (let ((avalue
-		  (preview-inherited-face-attribute
-		   (car fallbacks) attribute (or (cdr fallbacks) t))))
-	     (cond ((integerp avalue)
-		    (round (* avalue value)))
-		   ((floatp avalue)
-		    (* value avalue))
-		   (t value))))
-	  ((eq value 'unspecified)
-	   (preview-inherited-face-attribute
-	    (car fallbacks) attribute (or (cdr fallbacks) t)))
-	  (t value))))
+    (let ((value (face-attribute face attribute)))
+      (when inherit
+	(setq inherit
+	      (append
+	       (let ((ancestors (face-attribute face :inherit)))
+		 (cond ((facep ancestors) (list ancestors))
+		       ((consp ancestors) ancestors)))
+	       (cond ((facep inherit) (list inherit))
+		     ((consp inherit) inherit)))))
+      (cond ((null inherit) value)
+	    ((floatp value)
+	     (let ((avalue
+		    (preview-inherited-face-attribute
+		     (car inherit) attribute (or (cdr inherit) t))))
+	       (cond ((integerp avalue)
+		      (round (* avalue value)))
+		     ((floatp avalue)
+		      (* value avalue))
+		     (t value))))
+	    ((eq value 'unspecified)
+	     (preview-inherited-face-attribute
+	      (car inherit) attribute (or (cdr inherit) t)))
+	    (t value)))))
 
 (defun preview-get-colors ()
   "Return colors from the current display.

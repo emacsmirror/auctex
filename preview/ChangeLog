@@ -1,3 +1,8 @@
+2005-03-16  David Kastrup  <dak@gnu.org>
+
+	* prv-emacs.el: Use the four-argument version of `face-attribute'
+	if it exists.
+
 2005-03-15  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Configure): Be somewhat more verbose.  Be
