@@ -23,11 +23,12 @@
 	(preview-gs-dvips-sentinel): better behavior when processes get
 	started and finished in unexpected orders.
 
-2002-03-31  Jan-Ake Larsson  <jalar@punkthus221.au.dk>
+2002-03-31  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec:
-	Changed to include everything in /texmf/tex/latex/preview
-
+	Changed to include everything in /texmf/tex/latex/preview,
+	fix for %config files
+	
 2002-03-30  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/preview-dtxdoc.pl, preview.dtx (section{Various driver
