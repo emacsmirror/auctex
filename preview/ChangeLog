@@ -1,6 +1,64 @@
+2002-04-06  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-install.el (preview-make-package-xemacs):
+	Prepend "0." to XEmacs package version numbers
+	for CVS versions of preview.el.
+
+	* prv-xemacs.el (preview-icon,preview-nonready-icon):
+	Use new icon images.
+
+	* Makefile.in (ICONFORM,ICON_XPM_SOURCES): New
+	variables, for icon installation.
+	(ICON_XBM_SOURCES,ICON_SOURCES,icondir): Likewise.
+	(ELCC): Include the ICONFORM.
+
+	(install-icons): New, install the icons.
+
+	(MKINSTALLDIRS): New (for later, when objdir!=srcdir support is added).
+	(install): Use it.
+	(install-el): Likewise.
+	(install-texmf): Likewise.
+	(install-texmf-doc): Likewise.
+
+	* configure.in (icondir):
+	Set for GNU Emacs too (but blank), and substitute it.
+	(ICONFORM): New variable, comamnd-line switch to pass to (X)Emacs
+	to find the images at build time (if needed).  Substitute it.
+
+	* mkinstalldirs: New file, from automake-1.6.
+
 2002-04-07  David Kastrup  <David.Kastrup@t-online.de>
 
 	* images: Icons, several revisions.
+
+2002-04-06  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-install.el (preview-make-package-xemacs):
+	Prepend "0." to XEmacs package version numbers
+	for CVS versions of preview.el.
+
+	* prv-xemacs.el (preview-icon,preview-nonready-icon):
+	Use new icon images.
+
+	* Makefile.in (ICONFORM,ICON_XPM_SOURCES): New
+	variables, for icon installation.
+	(ICON_XBM_SOURCES,ICON_SOURCES,icondir): Likewise.
+	(ELCC): Include the ICONFORM.
+
+	(install-icons): New, install the icons.
+
+	(MKINSTALLDIRS): New (for later, when objdir!=srcdir support is added).
+	(install): Use it.
+	(install-el): Likewise.
+	(install-texmf): Likewise.
+	(install-texmf-doc): Likewise.
+
+	* configure.in (icondir):
+	Set for GNU Emacs too (but blank), and substitute it.
+	(ICONFORM): New variable, comamnd-line switch to pass to (X)Emacs
+	to find the images at build time (if needed).  Substitute it.
+
+	* mkinstalldirs: New file, from automake-1.6.
 
 2002-04-06  Nix  <nix@esperi.demon.co.uk>
 
@@ -13,7 +71,8 @@
 
 	* prv-install.el: New file, containing...
 	(preview-make-package): New function.
-	(preview-make-package-xemacs): New function.
+	(preview-make-package-xemacs): New function, derived from
+	emacs-w3m.
 
 	* aclocal.m4 (AC_EXAMINE_PACKAGEDIR): Lowercasify PACKAGEDIR.
 	(AC_PATH_PACKAGEDIR): Likewise.
