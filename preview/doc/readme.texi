@@ -1,18 +1,15 @@
 @c This is to enable generation of text-file from this file
-@ifnottex
-@unmacro AUCTeX
+@ifset rawfile
 @macro AUCTeX {}
 @w{AUC @TeX{}}
 @end macro
-@unmacro LaTeX
-@unmacro previewlatex
 @macro LaTeX {}
 La@TeX{}
 @end macro
 @macro previewlatex {}
 preview-latex
 @end macro
-@end ifnottex
+@end ifset
 @c -----------------------
 @cindex Readme
 @section @previewlatex{} in a nutshell
@@ -90,13 +87,15 @@ needs to be added, as well.
 
 @section Prerequisites
 
-Most importantly, you need to get access to a version of Emacs 21.  The
-public release 21.1 is known to work.  Pretest versions before that have
-problems.  You also need @LaTeX{}, of course, but most installs that
-include Dvips should work.  A fairly recent @AUCTeX{} is also needed.
-You also need a recent Ghostscript, and this is the most common source
-of problems.  Version 6.51 is known to work well, whereas earlier
-versions have problems.
+Currently, @previewlatex{} works with Emacs-21.1.  Due to Emacs' current
+lack of image support on those platforms, it will not work on Windows or
+on Macintoshes.  We have been using te@TeX{}, but other @TeX{}
+distributions containing Dvips are not likely to cause major
+difficulties.  You need @AUCTeX{} in version 11.0 or later, which at the
+time of this writing means an alpha-test version.  You can get it from
+@uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  A suitable version
+also is available from the download site of @previewlatex{}'s home page
+(see below).  You need GhostScript, at least version 6.51.
 
 @strong{Please note:} At the current point of time, the port to XEmacs
 is progressing, but neither finished nor documented yet.  With the Emacs
