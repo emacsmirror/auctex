@@ -1,3 +1,7 @@
+2003-06-06  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* Makefile.in: Added datadir
+
 2003-06-05  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-env-label): Toggle off input method when
