@@ -9,12 +9,12 @@ lot of information interesting to us.
 
 Some bugs are being fixed as you read this, there is a mailing list for
 developers, look at
-@url{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
+@uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
 For more information, send a message with just the word ``help'' as
 subject or body to
 @email{preview-latex-devel-request@@lists.sourceforge.net}. Suggestions
 for new features, and pleas for help should go to
-@email{preview-latex-devel@@lists.sourceforge.net} (the Preview La@TeX{}
+@email{preview-latex-devel@@lists.sourceforge.net} (the @previewlatex{}
 devel team).
 
 @node Problems with GhostScript, Font problems with Dvips, Known problems, Known problems
@@ -55,7 +55,7 @@ upgrading GhostScript might not be the worst idea after all.
 @node Font problems with Dvips, Emacs problems, Problems with GhostScript, Known problems
 @section Font problems with Dvips
 Some fonts have been reported to produce wrong characters with
-preview-latex.  preview-latex calls Dvips by default with the option
+@previewlatex{}.  @previewlatex{} calls Dvips by default with the option
 @option{-Pwww} in order to get scalable fonts for nice results.  If you
 are using antialiasing, however, the results might be sufficiently nice
 with bitmapped fonts, anyway.  You might try @option{-Ppdf} for another
@@ -71,7 +71,7 @@ One particular problem is that several printer setup files (typically in
 a file called @file{/usr/share/texmf/dvips/config/config.pdf} if you are
 using the @option{-Ppdf} switch) contain the @option{G} option for
 `character shifting'.  This option will result in @samp{fi} being
-rendered as @samp{@pounds{}} in several fonts.
+rendered as @samp{£} in several fonts.
 
 @node Emacs problems, AUC TeX prior to 11.0, Font problems with Dvips, Known problems
 @section Emacs problems
@@ -84,10 +84,10 @@ Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
 @item GNU Emacs under Windows operating systems
 
 As of GNU Emacs 21.1, no image support is available in Emacs under
-Windows.  Without images, preview-latex is useless.  If it is important
+Windows.  Without images, @previewlatex{} is useless.  If it is important
 to you, support the Emacs developer crew with regard to image support
 (PostScript image support is @emph{not} necessary).  I do not use
-Windows myself, but will accept patches necessary to make preview-latex
+Windows myself, but will accept patches necessary to make @previewlatex{}
 work under it.
 
 @item XEmacs
@@ -98,7 +98,7 @@ work has already been sorted out.
 @item GNU Emacs @acronym{EPS} handling
 
 Direct @acronym{EPS} rendering still is in need of improvement and very
-experimental, so the default setting of @code{preview-latex} replaces
+experimental, so the default setting of @previewlatex{} replaces
 Emacs' internal @acronym{EPS} handling by an indirect rendering
 mechanism. If you feel capable of helping out with Emacs' @acronym{EPS}
 interface (meaning that the APIs connecting GhostScript and viewers such
@@ -120,29 +120,30 @@ might be more prudent to install a more recent version of AUC @TeX{},
 however.
 
 @node LaTeX international characters, x-symbol interoperation, AUC TeX prior to 11.0, Known problems
-@section La@TeX{} international characters
+@section @LaTeX{} international characters
 
-To determine the position of a preview, preview-latex correlates error
-messages from @TeX{} with the input text. The delivered example file
-@file{circ.tex} contains @samp{ISO-8859-1} input characters (also called
-@samp{Latin-1}). If your language environment is not properly set up, or
-your @TeX{} version is rather old, @TeX{} will, for example, display
-@samp{@"u} (German u-Umlaut) as @samp{^^fc}. In that case the
-correlation will fail, with the result that the preview images get
-misplaced. Personally, I have set the environment variable @env{LANG} to
-the string @code{en_US.ISO8859-1}. Your system may have different ways
-of achieving something similar. If you have a graphical login screen,
-chances are that it offers a @samp{Language} setting. It may help to
-choose @samp{US English} or similar instead of the plain @samp{English}
-setting. This problem has also been reported as being caused by te@TeX{}
-compiled against @samp{libc5} libraries.
+To determine the position of a preview, @previewlatex{} correlates
+error messages from @TeX{} with the input text.  The delivered example
+file @file{circ.tex} contains @samp{ISO-8859-1} input characters (also
+called @samp{Latin-1}).  If your language environment is not properly
+set up, or your @TeX{} version is rather old, @TeX{} will, for
+example, display @samp{ü} (German u-Umlaut) as @samp{^^fc}.  In that
+case the correlation will fail, with the result that the preview
+images get misplaced.  Personally, I have set the environment variable
+@env{LANG} to the string @code{en_US.ISO8859-1}.  Your system may have
+different ways of achieving something similar.  If you have a
+graphical login screen, chances are that it offers a @samp{Language}
+setting.  It may help to choose @samp{US English} or similar instead
+of the plain @samp{English} setting.  This problem has also been
+reported as being caused by te@TeX{} compiled against @samp{libc5}
+libraries.
 
 @node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
 @section x-symbol interoperation
 
 Thanks to the work of Christoph Wedler, starting with version
 @samp{4.0h/beta} of x-symbol, the line parsing of AUC @TeX{} and
-preview-latex is fully supported.  Earlier versions exhibit problems.
+@previewlatex{} is fully supported.  Earlier versions exhibit problems.
 If you wonder about what x-symbol is, take a look at
 @uref{http://www.fmi.uni-passau.de/~wedler/x-symbol/emacs.html}.  In a
 nutshell, x-symbol transforms various tokens and subscripts to a more
