@@ -1,0 +1,247 @@
+2001-10-01  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* aclocal.m4: Instead of /dev/null, throw stuff to FD 5, where it
+	might do some good.
+
+2001-09-30  David Kastrup  <dakas@users.sourceforge.net>
+
+	* README: Mentioned M-x preview-report-bug.
+
+	* README: Removed redundancies with INSTALL, cleared some stuff up.
+
+	* preview.el:
+	Obliterated transaction queues.  They did not help that much, and are
+	not implemented in earlier versions of XEmacs.  More trouble than they
+	were worth, anyway.
+
+	* preview.el: Define a few more image types.
+
+2001-09-29  David Kastrup  <dakas@users.sourceforge.net>
+
+	* INSTALL: Some general information and stuff.
+
+	* Makefile.in:
+	Use latex '\nonstopmode \input ...' instead of -interaction
+	nonstopmode
+
+	Fixed string comparison in Emacs.
+
+	* aclocal.m4:
+	Remove trailing slashes after path discovery, do some more things with
+	sed instead of various other utilities.  One change in calling LaTeX
+	to make it work with older or non-web2c binaries.
+
+	* preview.dtx:
+	Support those misguided people using $$ in their LaTeX documents.  I
+	am not sure this is a good idea, but it will probably save us bug
+	reports.
+
+	* TODO: Removed a few done points.
+
+	* preview.el:
+	Made parsing good.  Now the entire TeX error context gets used.  In
+	most cases, regenerating previews should work now, as well as region
+	previewing.
+
+2001-09-28  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* INSTALL: New file
+
+2001-09-27  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* Makefile.in (preview.elc): Patch from Simon Josefsson to fix
+	build with non-standard AUCTeX location.
+
+2001-09-27  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Made error and abort messages appear in the faulty images.  Reworked
+	file handling somewhat so that in the case of errors all involved
+	files can stay until the image overlay gets deleted.
+
+	* preview.el:
+	Added bug reporting instructions and helper function for reports
+	to preview-latex-bugs@lists.sourceforge.net.
+
+2001-09-26  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* Makefile.in: (install-texmf) Install the dvi file
+
+	* Makefile.in, aclocal.m4, configure.in:
+	* aclocal.m4: Removed some dross stolen from Gnus, since it is unused.
+	Fixed up AC_PATH_TEXMFDIR to try to find a dir to install the docs
+	and to export texmfdir.
+
+	* configure.in: --with-auctex=DIR, new option
+
+	* Makefile.in: Changed rules for byte-compilation to allow setting
+	AUCTEXDIR.
+	(install-texmf) Only texhash the directory we installed into
+
+2001-09-26  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Oodles of documentation and a much faster bounding box extractor
+	not relying on grep.  Some small internal changes.
+
+	* preview.el:
+	Background rendering now working without errors, even with crummy
+	default tq.el as currently shipped with Emacs (and XEmacs?).
+
+2001-09-25  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Some initial stab at trying to make do without tq.el.  Figured out a
+	way to make do with tq's ugly semantics, however.  Just keep this
+	somewhere.  Only half done.
+
+2001-09-24  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* Makefile.in:
+	Makefile.in: clean and distclean targets from Simon Josefsson <jas@extundo.com>
+
+2001-09-24  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Sanitized temporary file handling by introducing a reference count
+	scheme.  Temporary directories should now get deleted as they become
+	empty.  We still do a general cleanup (in case a previous EMacs
+	session crashed) on first accessing any preview subdirectory, which
+	means bad luck when you are starting multiple instances of Emacs for
+	previewing purposes.
+
+2001-09-24  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* Makefile.in, configure.in:
+	Run texhash after tex installation.  Also set full
+	pathnames for programs, since the path of the installing user may
+	not match the compiling user.
+
+	* Makefile.in, aclocal.m4: First cut at previewdocdir
+
+2001-09-24  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	PNG rendering now basically works and is the default.  Errors during
+	transaction queue processing insert their messages into the TeX
+	background buffer; so do unexpected GhostScript messages.  Good for
+	debugging.
+
+2001-09-22  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Forgot entering into queue and a condition.  Still does not work with png.
+
+	* preview.dtx: Fixed \begin{table} bug.
+
+	* preview.el: Several changes from several people.
+
+	The big one: support of other image formats. PNG.  Unfortunately, not
+	yet functional.  Checked in nevertheless since the old postscript
+	rendering is on by default and seems to work still.
+
+	* preview.dtx: Forgotten macrocode, empty line.
+
+2001-09-21  alanshutko  <alanshutko@users.sourceforge.net>
+
+	* Makefile.in, aclocal.m4, configure.in:
+	2001-09-21  Alan Shutko  <ats@acm.org>
+
+		* aclocal.m4: Correct handling of docstrip configuration for
+		non-TDS setup.  Also, quote the $ in awk.
+
+		* Makefile.in (TEX): New variable.
+		(all): preview-mk.ins instead of preview.ins
+		(preview-mk.ins, preview.sty prauctex.def preview.drv): Use $TEX.
+
+		* configure.in: Added --with-preview-dir option.  Check for tex
+		executable.
+
+	* configure.in: Clarified --with-texmf help.
+
+	* README: Updated build directions for autoconf build.
+
+	* .cvsignore, Makefile, Makefile.in, aclocal.m4, configure.in, install-sh:
+	Makefile.in, aclocal.m4, configure.in: Create autoconf versions of
+	Makefile.  Much of aclocal.m4 was stolen from Gnus, though the
+	AC_PATH_TEXMF is new.
+
+	Added install-sh for use by the makefile if a compatible install
+	binary is not found.
+
+2001-09-20  David Kastrup  <dakas@users.sourceforge.net>
+
+	* Makefile: First sketch at installation via make instead of docstrip.
+
+	* bootstrap.ins: No error if no docstrip.cfg.
+
+	* bootstrap.ins:
+	First sketch at bootstrap install file for extracting main installer
+	and giving directory info.
+
+	* preview.dtx: Added missing macrocode environment (David Love).
+	Leave directory off installer when installing via make.
+
+2001-09-19  David Kastrup  <dakas@users.sourceforge.net>
+
+	* README: Checked in antialiasing suggestions from Alan Shutko.
+
+2001-09-16  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el: Still learning about customize-variable...
+
+2001-09-15  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el:
+	Parse HiRes Bounding Boxes, remove accidental paste of definition of
+	shell-command-to-string, add support for graphical preview of files
+	not prepared for it.
+
+	* preview.dtx: Another spurious space.
+
+	* preview.dtx:
+	AucTeX option delays \nonstopmode.  Spurious space in \pr@endbox removed.
+
+	* README: Add instructions for anti-aliasing.
+
+	* preview.dtx, README: Corrected Email address.
+
+2001-09-14  David Kastrup  <dakas@users.sourceforge.net>
+
+	* README: Added some more descriptive stuff and my Email address.
+
+	* preview.el: Added intelligent determination of EPS scale.
+	Changed Bounding Box determination to use a HiResBoundingBox if
+	present, and work without a shell.
+	Added some customization.
+
+2001-09-13  David Kastrup  <dakas@users.sourceforge.net>
+
+	* .cvsignore: Ignore generated files.
+
+	* preview.dtx:
+	Deleted no longer applicable comment.  Fixed bug in connection with \item.
+
+	* COPYING: Copy of GPL version 2 included.
+
+	* README: Typo.
+
+	* README: Clarified comment about how to improve EPS support in Emacs.
+
+	* README: Removed link to pretest Emacs on request from Gerd Möllmann.
+
+2001-09-12  David Kastrup  <dakas@users.sourceforge.net>
+
+	* circ.tex: New file.
+
+	* circ.tex: This is the initial checkin of preview-latex.  Enjoy.
+
+	* Makefile, README, TODO, preview.dtx: New file.
+
+	* Makefile, README, TODO, preview.dtx:
+	This is the initial checkin of preview-latex.  Enjoy.
+
+	* preview.el: New file.
+
+	* preview.el: This is the initial checkin of preview-latex.  Enjoy.
+
