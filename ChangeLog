@@ -1,8 +1,16 @@
 Wed Oct 26 15:37:53 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
+	* Makefile (dist): Automatically update AUC-TeX-version and
+	AUC-TeX-date in tex.el
+
+	* tex.el (AUC-TeX-version): Added AUC-TeX-version and
+	AUC-TeX-date from auc-ver.el. 
+
+        * auc-ver.el: File removed.
+
 	* tex.el: Added version specific code from seperate files.
 
-	* tex-19.el, tex-18.el, tex-lcd.el: File removed.
+	* tex-19.el, tex-18.el, tex-lcd.el: Files removed.
 
 Tue Oct 25 13:05:36 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
