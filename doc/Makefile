@@ -4,7 +4,7 @@ TEX=tex
 
 all: auc-tex.dvi tex-ref.dvi math-ref.dvi auctex
 
-dist: auctex INSTALLATION README CHANGES auc-tex_toc.html
+dist: auctex INSTALLATION README CHANGES auc-tex_toc.html auc-tex.ps
 
 auc-tex_toc.html: auc-tex.texi
 	texi2html -split_node auc-tex.texi
@@ -33,6 +33,9 @@ auc-tex.dvi: auc-tex.texi
 	@echo "** a newer version of texinfo?"
 	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
+
+auc-tex.ps: auc-tex.dvi
+	dvips auc-tex.dvi > auc-tex.ps
 
 auctex: auc-tex.texi install.texi intro.texi changes.texi
 	-makeinfo auc-tex.texi

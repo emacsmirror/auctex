@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6f
+# Version: 9.6g
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -19,11 +19,6 @@ infodir = $(prefix)/info
 lispdir = $(prefix)/share/emacs/site-lisp
 
 # Where the AUC TeX emacs lisp files go.
-# Set this to "." to specify current directory.
-#
-# Make sure that this is the same directory as specified by
-# TeX-lisp-directory in tex-site.el
-#
 aucdir=$(lispdir)/auctex
 
 # Name of your emacs binary
@@ -51,9 +46,6 @@ AUTO= $(EMACS) -batch -l $(aucdir)/tex.elc \
 
 # Specify the byte-compiler for compiling generated style files
 AUTOC= $(ELC)
-
-# Using TeX in batch mode.
-TEX=tex
 
 # How to move the byte compiled files to their destination.  
 MV = mv
@@ -91,80 +83,17 @@ STYLESRC = style/slides.el    style/foils.el    style/amstex.el \
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
 
-EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 Makefile ChangeLog \
+EXTRAFILES = COPYING PROBLEMS MSDOS VMS OS2 WIN-NT Makefile ChangeLog \
 	lpath.el tex-site.el $(CONTRIB)
 
-first:
-	@echo ""
-	@echo "	 ** Welcome to the AUC TeX installation suite **"
-	@echo ""
-	@echo "	 Edit the Makefile to suit your needs. Then run:"
-	@echo 
-	@echo "	  make all"
-	@echo 
-	@echo "	 and follow the instructions."
-	@echo 
-	@echo "	 Before you start, you should check that you have"
-	@echo "	 TeXinfo package 2.16 or later installed (the texinfo.tex"
-	@echo "	 file from 2.16 has version 2.86).  The version of"
-	@echo "	 TeXinfo distributed with GNU Emacs 18.xx is TeXinfo 1."
-	@echo
+all:	lisp
 
-all: main
-	@echo "**********************************************************"
-	@echo "** Before running \`make install' you should edit the "
-	@echo "** file \`tex-site.el' in this directory to suit your"
-	@echo "** local needs.  Then run: \`make install'"
-	@echo "** "
-	@echo "** Expect some warnings from the Emacs 19 byte compiler."
-	@echo "**********************************************************"
-
-main: TDoc
-
-install: LispInstall DocInstall
-	@echo 
-	@echo "**********************************************************"
-	@echo "** AUC TeX installation almost completed "
-	@echo "** "
-	@echo "** Now copy \`tex-site.el' to the directory where you put "
-	@echo "** local lisp extensions (usually emacs/site-lisp) and "
-	@echo "** insert"
-	@echo "**   (require 'tex-site)"
-	@echo "** in your \`.emacs' or \`site-start.el' file."
-	@echo "** "
-	@echo "** Still missing is the automatic extraction of symbols"
-	@echo "** and environments from your sites TeX style files."
-	@echo "** Beware, this takes some time and uses around 300k"
-	@echo "** storage, depending on your the TeX style files. "
-	@echo "** It is possible to use AUC TeX without this information."
-	@echo "** "
-	@echo "** To do this start emacs and type"
-	@echo "** \"M-x TeX-auto-generate-global RET\"."
-	@echo "** INPORTANT:  You must install tex-site.el first!"
-	@echo "** "
-	@echo "** You may want to print the following files:  "
-	@echo "**    doc/auc-tex.dvi"
-	@echo "**    doc/tex-ref.dvi"
-	@echo "**********************************************************"
-	@echo
-
-install-auto:
-	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
-
-DocInstall: 
-	@echo "**********************************************************"
-	@echo "** Preparing AUC TeX \`info' pages"
-	@echo "**********************************************************"
-	-(cd doc; $(MAKE) install infodir=$(infodir) TEX=$(TEX))
-
-LispInstall:
-	@echo "**********************************************************"
-	@echo "** Byte compiling AUC TeX.  This may take a while..."
-	@echo "** "
-	@echo "** Expect some harmless warnings about free variables and "
-	@echo "** undefined functions from the Emacs 19 byte compiler."
-	@echo "**********************************************************"
+lisp:
 	$(ELC) $(AUCSRC) $(STYLESRC)
+
+install:	install-lisp
+
+install-lisp:
 	if [ ! -d $(lispdir) ]; then mkdir $(lispdir); else true; fi ;
 	if [ -f $(lispdir)/tex-site.el ]; \
 	then \
@@ -184,14 +113,16 @@ LispInstall:
 	    echo "Leaving compiled files in place."; \
 	fi
 
+install-info:
+	-(cd doc; $(MAKE) install infodir=$(infodir))
+
+
+install-auto:
+	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
+
+
 .el.elc:
 	$(ELC) $<
-
-TDoc: 
-	@echo "**********************************************************"
-	@echo "** Making AUC TeX documentation"
-	@echo "**********************************************************"
-	-(cd doc; $(MAKE) TEX=$(TEX))
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
@@ -233,6 +164,7 @@ dist:
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
+	cp doc/auc-tex.ps $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
