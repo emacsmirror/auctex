@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.60 2002-02-09 18:40:00 dakas Exp $
+;; $Id: preview.el,v 1.61 2002-02-18 16:52:54 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -931,8 +931,7 @@ upgraded to a fancier version of just the LaTeX style."
   "Create default option list to pass into LaTeX preview package."
   (mapconcat #'identity preview-default-option-list ","))
 
-(defcustom preview-default-preamble '("\\RequirePackage[%P]{preview}"
-"\\PreviewMacro*\\emph" "\\PreviewMacro*\\footnote")
+(defcustom preview-default-preamble '("\\RequirePackage[%P]{preview}")
   "*Specifies default preamble to add to a LaTeX document. 
 If the document does not itself load the preview package, that is,
 when you use preview on a document not configured for preview, this
@@ -1326,7 +1325,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.60 $"))
+	(rev "$Revision: 1.61 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
