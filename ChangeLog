@@ -1,3 +1,8 @@
+2004-09-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el: Add change log entries and bump version
+	(font-latex-find-matching-close): Fix typo in last commit.
+
 2004-09-27  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-top-caption-list, LaTeX-label)
