@@ -216,6 +216,55 @@ specifies.  If BOX is present, it is the bounding box info."
 (defvar preview-change-list nil
   "List of tentatively changed overlays.")
 
+(defcustom preview-dump-threshold
+  "^ *\\\\begin *{document}"
+  "*Regexp denoting end of preamble.
+This is the location up to which preamble changes are considered
+to require redumping of a format."
+  :group 'preview-latex
+  :type 'string)
+
+(defun preview-preamble-changed-function
+  (ov after-change beg end &optional length)
+  "Hook function for change hooks on preamble.
+See info node `(elisp) Overlay Properties' for
+definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
+  (let ((format-cons (overlay-get ov 'format-cons)))
+    (preview-format-kill format-cons)
+    (preview-unwatch-preamble format-cons)
+    (setcdr format-cons t)))
+
+(defun preview-watch-preamble (file format-cons)
+  "Set up a watch on master file FILE.
+FILE can be an associated buffer instead of a filename.
+FORMAT-CONS contains the format info for the main
+format dump handler."
+  (let ((buffer (if (bufferp file)
+		    file
+		  (find-buffer-visiting file))) ov)
+    (when buffer
+      (with-current-buffer buffer
+	(save-excursion
+	  (save-restriction
+	    (widen)
+	    (goto-char (point-min))
+	    (unless (re-search-forward preview-dump-threshold nil t)
+	      (error "Can't find preamble of `%s'" file))
+	    (setq ov (make-overlay (point-min) (point)))
+	    (setcdr format-cons ov)
+	    (overlay-put ov 'format-cons format-cons)
+	    (overlay-put ov 'insert-in-front-hooks
+			 '(preview-preamble-changed-function))
+	    (overlay-put ov 'modification-hooks
+			 '(preview-preamble-changed-function))))))))
+
+(defun preview-unwatch-preamble (format-cons)
+  "Stop watching a format on FORMAT-CONS.
+The watch has been set up by `preview-watch-preamble'."
+  (when (overlayp (cdr format-cons))
+    (delete-overlay (cdr format-cons))
+    (setcdr format-cons nil)))
+
 (defun preview-register-change (ov)
   "Register not yet changed OV for verification.
 This stores the old contents of the overlay in the
@@ -326,8 +375,15 @@ nil displays the underlying text, and 'toggle toggles."
 		      '("Command")
 		      (TeX-command-menu-entry
 		       (assoc "Generate Preview" TeX-command-list)))
-  (easy-menu-add preview-menu LaTeX-mode-map))
-
+  (easy-menu-add preview-menu LaTeX-mode-map)
+  (let* ((filename (expand-file-name buffer-file-name))
+	 format-cons)
+    (when (string-match (concat "\\." TeX-default-extension "\\'")
+			filename)
+      (setq filename (substring filename 0 (match-beginning 0))))
+    (setq format-cons (assoc filename preview-dumped-alist))
+    (when format-cons
+      (preview-watch-preamble (current-buffer) format-cons))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
