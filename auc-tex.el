@@ -1,3 +1,4 @@
+(setq debug-on-error t)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -9,16 +10,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-23 16:35:36 $|$Revision: 5.15 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-27 15:47:08 $|$Revision: 5.16 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.15 $  
+;; RCS status      : $Revision: 5.16 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Jan 23 17:27:39 1992
-;; Update Count    : 480
+;; Last Modified On: Mon Jan 27 15:18:45 1992
+;; Update Count    : 484
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -612,9 +613,9 @@ You should insert this in your TeX-mode-hook!"
 
 (defvar LaTeX-outline-regexp
   (concat "[ \t]*" (regexp-quote TeX-esc)
-          "\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\
-|subsubsection\\|paragraph\\|subparagraph\\)")
-  "Regular expresion to use for outlines.")
+	  "\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|"
+	  "subsection\\|subsubsection\\|paragraph\\|subparagraph\\)")
+  "Regular expression used for outlining.")
 
 (defun LaTeX-outline-level ()
   "Find the level of current outline heading in an LaTeX document."
