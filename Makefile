@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.7c
+# Version: 9.7d
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -51,7 +51,7 @@ AUTOC= $(ELC)
 MV = mv
 
 # How to copy the lisp files to their distination.
-CP = cp
+CP = cp -p
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!

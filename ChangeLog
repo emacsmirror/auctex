@@ -1,4 +1,16 @@
+Fri Jan 17 17:42:20 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7d released.
+
+Fri Jan 17 17:40:39 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-jp.el: XEmacs 20 support by Soren Dayton
+	<csdayton@cs.uchicago.edu>. 
+
 Mon Jan 13 00:52:26 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (CP): Use `cp -p'.  Suggested by Graham Gough
+	<graham@cs.man.ac.uk>. 
 
 	* Version 9.7c released.
 

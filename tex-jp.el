@@ -37,12 +37,21 @@
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
 
-(if (boundp 'MULE)
-    (progn
-      (defvar TeX-japanese-process-input-coding-system *euc-japan*
-	"TeX-process' coding system with standard input.")
-      (defvar TeX-japanese-process-output-coding-system *junet*
-	"TeX-process' coding system with standard output.")))
+(if (or (boundp 'MULE)
+	(featurep 'mule))
+    (if (string-match "XEmacs" emacs-version)
+	(progn
+	  (defvar TeX-japanese-process-input-coding-system 
+	    (find-coding-system 'euc-japan)
+	    "TeX-process' coding system with standard input.")
+	  (defvar TeX-japanese-process-output-coding-system 
+	    (find-coding-system 'junet)
+	    "TeX-process' coding system with standard output."))
+      (progn
+	(defvar TeX-japanese-process-input-coding-system *euc-japan*
+	  "TeX-process' coding system with standard input.")
+	(defvar TeX-japanese-process-output-coding-system *junet*
+	  "TeX-process' coding system with standard output."))))
 
 (if (boundp 'NEMACS)
     (defvar TeX-process-kanji-code 2
@@ -84,9 +93,21 @@
 	   (lambda (process)
 	     (set-process-kanji-code process TeX-process-kanji-code)))))
 
+(if (and (string-match "XEmacs" emacs-version)
+	 (featurep 'mule))
+    (setq TeX-after-start-process-function
+	  (function (lambda (process)
+		      (set-process-input-coding-system
+		       process
+		       TeX-japanese-process-input-coding-system)
+		      (set-process-output-coding-system
+		       process
+		       TeX-japanese-process-output-coding-system)))))
+
 ;;; Japanese Parsing
 
-(if (boundp 'MULE)
+(if (or (boundp 'MULE)
+	(featurep 'mule))
 (progn
 
 (defconst LaTeX-auto-regexp-list 
