@@ -1,3 +1,18 @@
+2002-10-26  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile (STYLESRC): Add style/scrlttr2.el
+
+2002-10-26  Mark Trettin  <Mark.Trettin@gmx.de>
+
+	* style/scrbase.el: Added optional Argument "Pagenumber" to
+	\maketitle.  Changed \textsubscript from `t' to "Text".
+
+	* style/scrlttr2.el: Initial version.
+
+	* style/scrbase.el: Added additional clearpage commands:
+	\cleardoublestandardpage \cleardoubleplainpage and
+	\cleardoubleemptypage
+
 2002-10-24  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-env-contents): New function.
