@@ -214,7 +214,7 @@ tar-ball:
 	mkdir auctex-$(TAG)/images
 	mkdir auctex-$(TAG)/doc
 	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
-	cp -r images auctex-$(TAG)
+	cp images/*.??m auctex-$(TAG)/images
 	cp $(STYLESRC) $(NOSEARCH) auctex-$(TAG)/style
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex ../auctex-$(TAG)/doc )

@@ -1,5 +1,7 @@
 2004-10-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (tar-ball): Don't include CVS stuff.
+
 	* doc/changes.texi: Mention experimental tool bar support.
 
 	* Makefile.in (tar-ball): Include tex-bar images.
