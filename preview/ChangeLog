@@ -1,3 +1,7 @@
+2002-12-14  David Kastrup  <David.Kastrup@t-online.de>
+
+	* aclocal.m4: Don't lie about name of option --with-texmf-dir
+
 2002-12-13  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (subsection{The \texttt{footnotes} option}):
