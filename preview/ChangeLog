@@ -1,3 +1,23 @@
+2002-07-31  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/problems.texi (Problems with GhostScript): document
+	preview-gs-broken-security.
+
+	* doc/preview-latex.texi: Bump version to 0.7.3.
+	(The Emacs interface): Document changes in options.
+
+	* doc/install.texi (Prerequisites): GhostScript problem info.
+
+	* doc/Makefile.in (TEXIFILES): New macro.
+	(preview-latex/index.html, preview-latex.dvi, preview-latex.info):
+	Make dependency on TEXIFILES.
+	(clean): remove INSTALL.windows
+
+	* preview.el (preview-parsed-font-size) 
+	(preview-parsed-magnification): documented.
+	(preview-hook-enquiry): Use value of symbol only if bound.
+	(preview-document-pt-list): Correct customization type.
+
 2002-07-30  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex/preview.dtx (section{Package options}): document `lyx'
