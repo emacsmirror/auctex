@@ -27,11 +27,9 @@ ELCC=$(EMACS) -batch -q -no-site-file -l lpath.el
 
 SHELL = /bin/sh
 
-FTPDIR = /home/tmp/auctex-ftp
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
-
-WWWDIR = /home/tmp/auctex-www
-#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
+DIST_PREFIX = /home/tmp/auctex-
+FTPDIR = $(DIST_PREFIX)ftp
+WWWDIR = $(DIST_PREFIX)www
 
 CONTRIB = bib-cite.el tex-fptex.el
 CONTRIBELC = bib-cite.elc tex-fptex.elc
