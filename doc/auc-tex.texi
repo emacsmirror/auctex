@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.78 1994-02-09 00:01:28 amanda Exp $
+@c $Id: auc-tex.texi,v 1.79 1994-02-25 05:53:55 amanda Exp $
 
 @finalout
 @titlepage
@@ -1312,16 +1312,16 @@ process was started.
 @cindex \input
 @cindex Master file
 
-If you spread a document over many files (as you are likely to do if
+You may wish spread a document over many files (as you are likely to do if
 there are multiple authors, or if you have not yet discovered the power
-of the outline commands (@pxref{Outline})), that can be done by having a
-``master'' file from where you include the various files with the @TeX{}
+of the outline commands (@pxref{Outline})).  This can be done by having a
+``master'' file in which you include the various files with the @TeX{}
 macro @samp{\input} or the La@TeX{} macro @samp{\include}.  These
 files may also include other files themselves.  However, to format the
-document you must run the commands on the top level file.@refill
+document you must run the commands on the top level master file.@refill
 
-When you for example ask AUC @TeX{} to run a command on the master file,
-it has no way to know what the name of the master file is.  By default
+When you, for example, ask AUC @TeX{} to run a command on the master file,
+it has no way of knowing the name of the master file.  By default,
 it will assume that the current file is the master file.  If you insert
 the following in your @file{.emacs} file AUC @TeX{} will use a more
 advanced algorithm.
@@ -1342,12 +1342,12 @@ the end of your files.@refill
 
 @example
 % Local Variables: 
-% TeX-master: "mymaster"
+% TeX-master: "master"
 % End: 
 @end example
 
-You should always set this variable to the top level document.  If you
-always use the same name for your top level documents, you can set
+You should always set this variable to the name of the top level document.  If
+you always use the same name for your top level documents, you can set
 @code{TeX-master} in your @file{.emacs} file.
 
 @lisp
@@ -1356,18 +1356,18 @@ always use the same name for your top level documents, you can set
 
 @defopt TeX-master
 The master file associated with the current buffer.  If the file being
-edited is actually included from another file, you can tell AUC @TeX{}
+edited is actually included from another file, then you can tell AUC @TeX{}
 the name of the master file by setting this variable.  If there are
 multiple levels of nesting, specify the top level file.@refill
 
 If this variable is @code{nil}, AUC @TeX{} will query you for the
 name.@refill
 
-If the variable is @code{t}, AUC @TeX{} will assume the file is a master
+If the variable is @code{t}, then AUC @TeX{} will assume the file is a master
 file itself.@refill
 
-If the variable is @code{shared}, AUC @TeX{} will query for the name,
-but not change the file.@refill
+If the variable is @code{shared}, then AUC @TeX{} will query for the name,
+but will not change the file.@refill
 
 It is suggested that you use the File Variables (@pxref{File
 Variables,,,emacs,The Emacs Editor}) to set this variable permanently
@@ -1377,13 +1377,13 @@ for each file.@refill
 @defopt TeX-one-master
 Regular expression matching ordinary TeX files.
 
-You should set this variable to match the name of all files, where
-automatically adding a file variable with the name of the master file is
-a good idea.  When AUC @TeX{} adds the name of the master file as a file
-variable, it does not need to ask next time you edit the file.
+You should set this variable to match the name of all files, for which
+it is a good idea to append a @code{TeX-master} file variable entry
+automatically.  When AUC @TeX{} adds the name of the master file as a
+file variable, it does not need to ask next time you edit the file.
 
 If you dislike AUC @TeX{} automatically modifying your files, you can
-set this variable to @samp{"<none>"}. By default, AUC @TeX{} will modify
+set this variable to @samp{"<none>"}.  By default, AUC @TeX{} will modify
 any file with an extension of @samp{.tex}.@refill
 @end defopt
 
@@ -1394,12 +1394,12 @@ information about the files in the document.  This is done by having an
 @file{auto} subdirectory placed in the directory where your document is
 located.  Each time you save a file, AUC @TeX{} will write information
 about the file into the @file{auto} directory.  When you load a file,
-AUC @TeX{} will then read the information in the @file{auto} directory
-about the file you loaded, @emph{and the master file specified by
+AUC @TeX{} will read the information in the @file{auto} directory
+about the file you loaded @emph{and the master file specified by
 @code{TeX-master}}.  Since the master file (perhaps indirectly) includes
 all other files in the document, AUC @TeX{} will get information from
-all files in the document.  This means that you will get from each file 
-e.g. completion for all labels defined anywhere in the document.
+all files in the document.  This means that you will get from each file,
+for example, completion for all labels defined anywhere in the document.
 
 You must create the @file{auto} directory manually for this to work.  If
 you don't do this, the other files in the document will not know
@@ -1408,11 +1408,11 @@ anything about each other, except for the name of the master file.
 
 @deffn Command TeX-save-document
 @kindex C-c C-d
-(@kbd{C-c C-d}) Save all buffers known to belong to the current documnt.
+(@kbd{C-c C-d}) Save all buffers known to belong to the current document.
 @end deffn
 
 @defopt TeX-save-query
-If non-nil, query the user before saving each file with
+If non-nil, then query the user before saving each file with
 @code{TeX-save-document}. 
 @end defopt
 
@@ -2475,7 +2475,23 @@ this version, and for the authors, who get nostalgic at times.
 
 Coordinater: Per Abrahamsen, 1994.
 
+Alpha testers (in order of appearance):  Volker Dobler
+@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>},  Piet van Oostrum
+@samp{<piet@@cs.ruu.nl>}, and probably more.@refill
+
 @itemize @bullet
+@item
+Fixed error in calculating indentation for lines starting with a brace.
+Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
+
+@item
+Fixed bug in the @samp{addcontentsline}, @samp{newtheorem}, and
+@samp{pagenumbering} macros reported by Berwin Turlach
+@samp{<berwin@@core.ucl.ac.be>}.
+
+@item
+Doc fixes by Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>}.
+
 @item
 Indentation no longer fooled by @samp{\\@{},  Thanks to Peter Thiemann
 @samp{<thiemann@@provence.informatik.uni-tuebingen.de>}.
@@ -3636,6 +3652,10 @@ some time for emacs lisp hacking, you are encouraged to try to provide a
 solution to one of the following problems.
 
 @itemize @bullet
+@item
+@code{LaTeX-fill-paragraph} gets confused when two blocks of text are
+separated by an empty comment only.
+
 @item
 Make @code{TeX-insert-dollar} more robust.  Currently it can be fooled
 by @samp{\mbox}'es and escaped double dollar for example.

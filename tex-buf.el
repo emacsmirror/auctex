@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.56 1994-02-09 00:01:15 amanda Exp $
+;; $Id: tex-buf.el,v 1.57 1994-02-25 05:53:37 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -127,7 +127,7 @@ all text after TeX-trailer-start."
 	  (error "Mark not set."))
       (let ((begin (marker-position TeX-command-region-begin))
 	    (end (marker-position TeX-command-region-end)))
-	(TeX-region-create (TeX-region-file "tex")
+	(TeX-region-create (TeX-region-file TeX-default-extension)
 			   (buffer-substring begin end)
 			   (file-name-nondirectory (buffer-file-name))
 			   (count-lines (point-min) begin))))

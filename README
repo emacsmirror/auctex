@@ -1,6 +1,6 @@
 * README - Introduction to AUC TeX.
 
-$Id: README,v 5.26 1994-01-23 08:13:53 amanda Exp $
+$Id: README,v 5.27 1994-02-25 05:53:30 amanda Exp $
 
 ** Copyright
 
@@ -36,8 +36,9 @@ than you want the compiled .elc files to be found.
 
 ** Introduction
 
-This section gives a brief overview of what AUC TeX is. It is *not*
-an attempt to document it.  Real documentation for AUC TeX is available in the texinfo file in the doc directory.
+This section gives a brief overview of what AUC TeX is. It is *not* an
+attempt to document it.  Real documentation for AUC TeX is available
+in the texinfo file in the doc directory.
 
 
 *** AUC TeX for GNU Emacs
@@ -167,12 +168,16 @@ See the texinfo file for a list of changes in the last versions.
 
 ** Availability
 
-AUC TeX is available by anonymous ftp to `iesd.auc.dk' as
+AUC TeX is available by anonymous ftp to `ftp.iesd.auc.dk' as
 "/pub/emacs-lisp/auctex_X_x.tar.Z". (where `X_x' specifies the release
 version) The most resent version is ALWAYS available in
 `/pub/emacs-lisp/auctex.tar.Z'.  In case you don't have access
 anonymous ftp, you can get it by email requests to
 `ftpmail@decwrl.dec.com'.
+
+WWW users may want to check out the AUC TeX page at
+
+	http://www.iesd.auc.dk/~amanda/auctex/
 
 ** Contacts
 
