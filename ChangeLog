@@ -1,3 +1,8 @@
+2002-12-29  David Kastrup  <David.Kastrup@t-online.de>
+
+	* tex.el: Add support for Info-goto-emacs-command-node and
+	similar.
+
 2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex-buf.el (TeX-home-buffer): Don't home to deleted buffers.
