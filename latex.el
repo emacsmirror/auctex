@@ -3066,7 +3066,7 @@ comments and verbatim environments"
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
   (dotimes (i count)
-    (let* ((macro-start (LaTeX-find-macro-start))
+    (let* ((macro-start (TeX-find-macro-start))
 	   (paragraph-command-start
 	    (cond
 	     ;; Point is inside of a paragraph command.
@@ -3100,7 +3100,7 @@ If COUNT is non-nil, do it COUNT times."
       (if (and paragraph-command-start
 	       (save-excursion
 		 (goto-char paragraph-command-start)
-		 (setq macro-end (goto-char (LaTeX-find-macro-end)))
+		 (setq macro-end (goto-char (TeX-find-macro-end)))
 		 (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
 				     "[ \t]*\\($\\|" comment-start "\\)"))))
 	  (progn
@@ -3109,7 +3109,7 @@ If COUNT is non-nil, do it COUNT times."
 	    ;; another macro, regard the latter as part of the
 	    ;; paragraph command's paragraph.
 	    (when (looking-at (concat (regexp-quote TeX-esc) "[@A-Za-z]+"))
-	      (goto-char (LaTeX-find-macro-end)))
+	      (goto-char (TeX-find-macro-end)))
 	    (forward-line))
 	(let (limit)
 	  (goto-char (min (save-excursion
@@ -3124,7 +3124,7 @@ If COUNT is non-nil, do it COUNT times."
 If COUNT is non-nil, do it COUNT times."
   (or count (setq count 1))
   (dotimes (i count)
-    (let* ((macro-start (LaTeX-find-macro-start))
+    (let* ((macro-start (TeX-find-macro-start))
 	   (paragraph-command-start
 	    (cond
 	     ;; Point is inside of a paragraph command.
@@ -3168,7 +3168,7 @@ If COUNT is non-nil, do it COUNT times."
 			(save-excursion
 			  (goto-char (match-end 1))
 			  (save-match-data
-			    (goto-char (LaTeX-find-macro-end)))
+			    (goto-char (TeX-find-macro-end)))
 			  ;; For an explanation of this distinction
 			  ;; see `LaTeX-forward-paragraph'.
 			  (if (save-match-data
@@ -3180,7 +3180,7 @@ If COUNT is non-nil, do it COUNT times."
 				(when (looking-at
 				       (concat (regexp-quote TeX-esc)
 					       "[@A-Za-z]+"))
-				  (goto-char (LaTeX-find-macro-end)))
+				  (goto-char (TeX-find-macro-end)))
 				(forward-line 1)
 				(setq end-point (if (< (point) start)
 						    (point)
@@ -3191,72 +3191,6 @@ If COUNT is non-nil, do it COUNT times."
 			end-point
 		      0))))))
 	(beginning-of-line)))))
-
-(defun LaTeX-find-macro-start (&optional arg)
-  "Find the start of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro.  If ARG is non-nil, find the end of a macro."
-  (save-excursion
-    (let ((orig-point (point))
-	  start-point
-	  found-end-flag)
-      (cond
-       ;; Point is located directly at the start of a macro.
-       ((and (looking-at (concat "\\(" (regexp-quote TeX-esc) "\\)[@A-Za-z]+"))
-	     (save-match-data
-	       (not (TeX-looking-at-backward
-		     (concat "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-			     "\\(" (regexp-quote TeX-esc) "\\)")))))
-	(setq start-point (point))
-	(goto-char (match-end 1)))
-       ;; Search backward for a macro start.
-       ((and (re-search-backward
-	      (concat "\\(^\\|[^" TeX-esc "\n]\\)"
-		      "\\(" (regexp-quote (concat TeX-esc TeX-esc)) "\\)*"
-		      "\\(" (regexp-quote TeX-esc) "\\)")
-	      nil t)
-	     (save-excursion
-	       (goto-char (match-end 3))
-	       (not (looking-at (regexp-quote TeX-esc)))))
-	(setq start-point (match-beginning 3))
-	(goto-char (match-end 3))))
-      (if (not start-point)
-	  nil
-	;; Search forward for the end of the macro.
-	(skip-chars-forward (concat "^ \t{[\n" (regexp-quote TeX-esc)))
-	(while (not found-end-flag)
-	  (cond
-	   ((or (looking-at "[ \t]*\\(\\[\\)")
-		(and (looking-at (concat "[ \t]*" comment-start))
-		     (save-excursion
-		       (forward-line 1)
-		       (looking-at "[ \t]*\\(\\[\\)"))))
-	    (goto-char (match-beginning 1))
-	    (forward-sexp))
-	   ((or (looking-at "[ \t]*{")
-		(and (looking-at (concat "[ \t]*" comment-start))
-		     (save-excursion
-		       (forward-line 1)
-		       (looking-at "[ \t]*{"))))
-	    (goto-char (match-end 0))
-	    (goto-char (or (TeX-find-closing-brace)
-			   ;; If we cannot find a regular end, use the
-			   ;; next whitespace.
-			   (save-excursion (skip-chars-forward "^ \t\n")
-					   (point)))))
-	   (t
-	    (setq found-end-flag t))))
-	(if (< orig-point (point))
-	    (if arg
-		(point)
-	      start-point)
-	  nil)))))
-
-(defun LaTeX-find-macro-end ()
-  "Find the end of a macro.
-Arguments enclosed in brackets or braces are considered part of
-the macro."
-  (LaTeX-find-macro-start t))
 
 
 ;;; Math Minor Mode
@@ -4172,10 +4106,20 @@ the last entry in the menu."
 	      ["Format Paragraph" LaTeX-fill-paragraph t]
 	      ["Format Region" LaTeX-fill-region t]
 	      ["Format Section" LaTeX-fill-section t]
+	      "-"
 	      ["Mark Environment" LaTeX-mark-environment t]
 	      ["Mark Section" LaTeX-mark-section t]
+	      "-"
 	      ["Beginning of Environment" LaTeX-find-matching-begin t]
-	      ["End of Environment" LaTeX-find-matching-end t]
+	      ["End of Environment" LaTeX-find-matching-end t])
+	(list "Show/Hide"
+	      ["Macro Fold Mode" TeX-fold-mode
+	       :style toggle :selected TeX-fold-mode]
+	      ["Hide Macros" TeX-fold-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-o"]
+	      ["Show Macros" TeX-fold-remove-all-overlays
+	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      "-"
 	      ["Hide Environment" LaTeX-hide-environment t]
 	      ["Show Environment" LaTeX-show-environment t])
 	(list "Miscellaneous"
