@@ -1,3 +1,29 @@
+2004-10-14  Miguel Frasson  <frasson@math.leidenuniv.nl>
+
+	* auctb.el: Removed (renamed to tex-bar.el)
+
+	* tex-bar.el: Added; (new name of auctb.el). Added support for
+	buttons and customization.
+	(install-auctex-toolbar): removed.
+	(tex-tool-bar): New custom group, inside AUCTeX group.
+	(tex-tool-bar-button-definitions): New custom group, inside
+	tex-tool-bar group.
+	(tex-bar-latex-buttons): New custom variable: buttons in LaTeX
+	mode.
+	(tex-bar-meaning-alist): New custom variable.
+	(tex-bar-available-meaning-alists): New custom variable:
+	collection of variables for meaning-alists.
+	(latex-install-toolbar): New function: install the toolbar for
+	LaTeX mode.
+	(latex-symbols-toolbar-contents): added separator between symbol
+	switches and symbols.
+
+	* toolbarx.el: Removed (renamed to toolbar-x.el)
+
+	* toolbar-x.el: Added; (new name of toolbarx.el).
+	(toolbarx-default-toolbar-meaning-alist) Added `:sep' button.
+	(toolbarx-emacs-add-button): clean up.
+	
 2004-10-13  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-default-width): New variable.
