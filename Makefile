@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.69 1993-09-17 21:06:01 amanda Exp $
+# $Id: Makefile,v 5.70 1993-09-28 23:33:03 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -90,21 +90,21 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = map-euro.el  map-8859.el
+REMOVE = map-euro.el map-8859.el loaddefs.el
 
 MINMAPFILES = remap.el    min-mode.el min-ind.el  min-ispl.el column.el \
 	      latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
 	      dvorak.el   map-tex.el  map-mnem.el map-case.el 
 	      
 
-MINMAPSRC = $(MINMAPFILES)  easymenu.el min-map.el ltx-math.el \
-	    outln-18.el
+MINMAPSRC = $(MINMAPFILES) easymenu.el min-map.el  ltx-math.el \
+	    outln-18.el    powerkey.el out-xtra.el
 
 AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
 	 ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el easymenu.el \
-	 loaddefs.el tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
-	 outln-18.el
+	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
+	 outln-18.el powerkey.el out-xtra.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
@@ -221,7 +221,7 @@ LispInstall:
 	@echo "** Expect some harmless warnings about free variables and "
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
-	$(ELC) $(AUCSRC) $(STYLESRC) $(FORMATSRC)
+	$(ELC) $(AUCSRC) tex-load.el $(STYLESRC) $(FORMATSRC)
 	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; 
 	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
@@ -250,7 +250,13 @@ clean:
 	(cd doc; $(MAKE) clean)
 	(cd lacheck; $(MAKE) clean)
 
-dist:	
+tex-load.el: $(AUCSRC) 
+	mv tex-load.el loaddefs.el
+	emacs -batch -f batch-update-autoloads $(AUCSRC) 
+	mv loaddefs.el tex-load.el
+	touch tex-load.el
+
+dist:	tex-load.el
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"
@@ -262,9 +268,8 @@ dist:
 	echo "(defconst AUC-TeX-date \"`date`\""   >> auc-ver.el
 	echo '  "AUC TeX release date")'           >> auc-ver.el
 	echo "(provide 'auc-ver)"	           >> auc-ver.el
-	emacs -batch -f batch-update-autoloads .
 	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) $(EXTRAFILES) $(MINMAPFILES) 
+	-cvs add $(AUCSRC) tex-load.el $(EXTRAFILES) $(MINMAPFILES) 
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
@@ -274,7 +279,7 @@ dist:
 	mkdir auctex-$(TAG) 
 	mkdir auctex-$(TAG)/style auctex-$(TAG)/format 
 	mkdir auctex-$(TAG)/doc auctex-$(TAG)/lacheck
-	cp $(AUCSRC) $(EXTRAFILES) auctex-$(TAG)
+	cp $(AUCSRC) tex-load.el $(EXTRAFILES) auctex-$(TAG)
 	cp $(FORMATSRC) auctex-$(TAG)/format
 	cp $(STYLESRC) auctex-$(TAG)/style
 	cp $(LACHECKFILES) auctex-$(TAG)/lacheck

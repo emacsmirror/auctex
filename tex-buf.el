@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.49 1993-09-17 21:06:46 amanda Exp $
+;; $Id: tex-buf.el,v 1.50 1993-09-28 23:33:36 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -35,9 +35,12 @@
   "Name of shell used to parse TeX commands.")
 
 (defvar TeX-shell-command-option
-  (if (memq system-type '(ms-dos emx))
-      shell-command-option
-    "-c")
+  (cond ((eq system-type 'ms-dos) 
+	 shell-command-option)
+	((eq system-type 'emx)
+	 "/c")
+	(t				;Unix
+	 "-c"))
   "Shell argument indicating that next argument is the command.")
 
 (defvar TeX-debug-language '(("JTEX" "dbg-jp")
@@ -273,12 +276,7 @@ in TeX-check-path."
 	 (answer (completing-read (concat "Command: (default " default  ") ")
 				  TeX-command-list nil t)))
     ;; If the answer "latex" it will not be expanded to "LaTeX"
-    (setq answer
-	  (car (let ((case-fold-search t))
-		 (TeX-member answer TeX-command-list
-			     (function (lambda (a b)
-			       (string-match (concat "^" (regexp-quote a) "$")
-					     (car b))))))))
+    (setq answer (car-safe (TeX-assoc answer TeX-command-list)))
     (if (and answer
 	     (not (string-equal answer "")))
 	answer
@@ -302,7 +300,9 @@ entry."
 						TeX-printer-default ") ")
 					TeX-printer-list))
 		   "")))
-    (if (string-equal "" printer)
+    
+    (setq printer (car-safe (TeX-assoc printer TeX-printer-list)))
+    (if (or (null printer) (string-equal "" printer))
 	(setq printer TeX-printer-default)
       (setq TeX-printer-default printer))
 

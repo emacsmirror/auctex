@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.3 1993-09-13 21:26:02 amanda Exp $
+;; $Id: tex-info.el,v 5.4 1993-09-28 23:33:41 amanda Exp $
 
 ;; Copyright (C) 1993 Per Abrahamsen 
 ;; 
@@ -108,8 +108,6 @@ When called interactively, prompt for an environment."
     ()
   (setq TeXinfo-mode-map (make-sparse-keymap))
 
-  (easy-iflemacs (define-key TeXinfo-mode-map 'button3 'LaTeX-mode-menu))
-
   ;; From texinfo.el
 
   ;; bindings for updating nodes and menus
@@ -174,53 +172,53 @@ When called interactively, prompt for an environment."
 	["Complete" TeX-complete-symbol t]
 	["Item" texinfo-insert-@item t]
 	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) "  C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) "  C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) "  C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) "  C-c C-f C-c"]
-	      ["Italic"     (TeX-font nil ?\C-i) "  C-c C-f C-i"]
-	      ["Sample"    (TeX-font nil ?\C-s) "  C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) "  C-c C-f C-r"])
+	      ["Emphasize"  (TeX-font nil ?\C-e) "C-c C-f C-e"]
+	      ["Bold"       (TeX-font nil ?\C-b) "C-c C-f C-b"]
+	      ["Typewriter" (TeX-font nil ?\C-t) "C-c C-f C-t"]
+	      ["Small Caps" (TeX-font nil ?\C-c) "C-c C-f C-c"]
+	      ["Italic"     (TeX-font nil ?\C-i) "C-c C-f C-i"]
+	      ["Sample"    (TeX-font nil ?\C-s) "C-c C-f C-s"]
+	      ["Roman"      (TeX-font nil ?\C-r) "C-c C-f C-r"])
 	(list "Insert Font around Region"
 	      ["Emphasize"
 	       (progn (kill-region (point) (mark)) (TeX-font nil ?\C-e) (yank))
-	       "  C-w C-c C-f C-e C-y"]
+	       "C-w C-c C-f C-e C-y"]
 	      ["Bold"
 	       (progn (kill-region (point) (mark)) (TeX-font nil ?\C-b) (yank))
-	       "  C-w C-c C-f C-b C-y"]
+	       "C-w C-c C-f C-b C-y"]
 	      ["Typewriter"
 	       (progn (kill-region (point) (mark))
 		      (TeX-font nil ?\C-t)
 		      (yank))
-	       "  C-w C-c C-f C-t C-y"]
+	       "C-w C-c C-f C-t C-y"]
 	      ["Small Caps"
 	       (progn (kill-region (point) (mark)) 
 		      (TeX-font nil ?\C-c)
 		      (yank))
-	       "  C-w C-c C-f C-c C-y"]
+	       "C-w C-c C-f C-c C-y"]
 	      ["Italic"
 	       (progn (kill-region (point) (mark))
 		      (TeX-font nil ?\C-i)
 		      (yank))
-	       "  C-w C-c C-f C-i C-y"]
+	       "C-w C-c C-f C-i C-y"]
 	      ["Sample"
 	       (progn (kill-region (point) (mark))
 		      (TeX-font nil ?\C-s)
 		      (yank))
-	       "  C-w C-c C-f C-s C-y"]
+	       "C-w C-c C-f C-s C-y"]
 	      ["Roman"
 	       (progn (kill-region (point) (mark))
 		      (TeX-font nil ?\C-r)
 		      (yank))
-	       "  C-w C-c C-f C-r C-y"])
+	       "C-w C-c C-f C-r C-y"])
 	(list "Change Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) "  C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) "  C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) "  C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) "  C-u C-c C-f C-c"]
-	      ["Italic"     (TeX-font t ?\C-i) "  C-u C-c C-f C-i"]
-	      ["Sample"    (TeX-font t ?\C-s) "  C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) "  C-u C-c C-f C-r"])
+	      ["Emphasize"  (TeX-font t ?\C-e) "C-u C-c C-f C-e"]
+	      ["Bold"       (TeX-font t ?\C-b) "C-u C-c C-f C-b"]
+	      ["Typewriter" (TeX-font t ?\C-t) "C-u C-c C-f C-t"]
+	      ["Small Caps" (TeX-font t ?\C-c) "C-u C-c C-f C-c"]
+	      ["Italic"     (TeX-font t ?\C-i) "C-u C-c C-f C-i"]
+	      ["Sample"    (TeX-font t ?\C-s) "C-u C-c C-f C-s"]
+	      ["Roman"      (TeX-font t ?\C-r) "C-u C-c C-f C-r"])
 	"-"
 	["Save Document" TeX-save-document t]
 	(TeX-command-create-menu "Command on Master File" 'TeX-master-file)
@@ -241,7 +239,10 @@ When called interactively, prompt for an environment."
 	["Comment Region" TeX-comment-region t]
 	["Switch to Master file" TeX-home-buffer t]
 	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) "  C-u C-c C-n"]))
+	["Reset AUC TeX" (TeX-normal-mode t) "C-u C-c C-n"]))
+
+(if (fboundp 'TeXinfo-mode-menu)
+    (define-key TeXinfo-mode-map 'button3 'TeXinfo-mode-menu))
 
 ;;; Mode:
 
@@ -254,7 +255,7 @@ Special commands:
 
 Entering TeXinfo mode calls the value of text-mode-hook,
 then the value of TeX-mode-hook, and then the value of
-TeXinfo-mode-hook."  
+TeXinfo-mode-hook."
   (interactive)
   (VirTeX-mode "TEXINFO"))
 

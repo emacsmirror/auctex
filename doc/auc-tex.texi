@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.60 1993-09-17 21:07:17 amanda Exp $
+@c $Id: auc-tex.texi,v 1.61 1993-09-28 23:34:11 amanda Exp $
 
 @finalout
 @titlepage
@@ -124,7 +124,7 @@ Advanced Editing Features
 * Completion::                  Completion 
 * Commenting::                  Commenting 
 * Marking and formatting::      Marking, Formatting and Indenting
-* Outline::                     
+* Outline::                     Hiding text.
 
 Formatting and Printing 
 
@@ -737,7 +737,7 @@ indenting and navigating through the document.
 * Completion::                  Completion 
 * Commenting::                  Commenting 
 * Marking and formatting::      Marking, Formatting and Indenting
-* Outline::                     
+* Outline::                     Hiding text
 @end menu
 
 @node Mathematics, Completion, Advanced Features, Advanced Features
@@ -837,8 +837,27 @@ or, as the first choice the value of the variable
 @code{TeX-default-macro}.
 
 @defopt TeX-default-macro
-Default macro to insert when invoking @samp{TeX-insert-macro} first time.
+Default macro to insert when invoking @code{TeX-insert-macro} first time.
 @end defopt
+
+A faster alternative is to bind the function @code{TeX-electric-macro}
+to @samp{\}.  This can by setting the variable @code{TeX-electric-escape}
+
+@defopt TeX-electric-escape
+If this is non-nil when AUC @TeX{} is loaded, the @TeX{} escape
+character @samp{\} will be bound to @code{TeX-electric-macro}
+@end defopt
+
+The difference between @code{TeX-insert-macro} and
+@code{TeX-electric-macro} is that space will complete and exit from the
+minibuffer in @code{TeX-electric-macro}.  Use @key{TAB} if you merely
+want to complete.
+
+@deffn Command TeX-electric-macro
+Prompt (with completion) for the name of a @TeX{} macro,
+and if AUC @TeX{} knows the macro, prompt for each argument.
+Space will complete and exit.
+@end deffn
 
 Completions work because AUC @TeX{} can analyze @TeX{} files, and store
 symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
@@ -2393,10 +2412,28 @@ Alpha testers (in order of appearance): Marc Gemis
 @samp{<koba@@flab.fujitsu.co.jp>}, Philippe Defert
 @samp{<defert@@gnuisance.cern.ch>}, Richard Stanton
 @samp{<stanton@@haas.berkeley.edu>}, Norbert Kiesel
-@samp{<norbert@@i3.informatik.rwth-aachen.de>}, and probably
-more.@refill
+@samp{<norbert@@i3.informatik.rwth-aachen.de>}, Roberto Cecchini
+@samp{<CECCHINI@@fi.infn.it>}, Hanno Wirth @samp{<wirth@@igd.fhg.de>},
+and probably more.@refill
 
 @itemize @bullet
+@item
+Now get keyboard accelerators on all menus rather than only AUC @TeX{}
+menus, thanks to the @file{powerkey.el} file by Lars Lindberg
+@samp{<lli@@sypro.cap.se>}.
+
+@item
+Added @code{TeX-electric-macro} for faster completion of @TeX{} macros.
+@xref{Completion}.
+
+@item
+Comparing printer names are now case incentive.  Thanks to Richard
+Stanton @samp{<stanton@@haas.berkeley.edu>}.
+
+@item
+Default shell fixed for OS/2.  Thanks to Richard Stanton
+@samp{<stanton@@haas.berkeley.edu>}.
+
 @item
 Added functions to hide (@code{LaTeX-hide-environment}) and show
 (@code{LaTeX-show-environment}) the current environment.
@@ -2527,18 +2564,14 @@ file @file{outln-18.el} emulates the FSF Emacs 19.19 mode under Emacs 18.
 The FSF Emacs 19.19 @code{outline-minor-mode} use the @kbd{C-c} prefix
 instead of @kbd{C-c C-o} by default, and does not bind as many keys as
 the @code{outline-minor-mode} distributed with earlier versions of AUC
-@TeX{} did.
-
-@lisp
-  (setq outline-minor-mode-prefix "\C-c\C-o")
-  (require 'outline) ; Replace with `outln-18' for Emacs 18.
-  (define-key outline-minor-mode-map "\C-c\C-o\C-t" 'hide-body)
-  (define-key outline-minor-mode-map "\C-c\C-o\C-a" 'show-all)
-  (define-key outline-minor-mode-map "\C-c\C-o\C-c" 'hide-entry)
-  (define-key outline-minor-mode-map "\C-c\C-o\C-e" 'show-entry)
-  (define-key outline-minor-mode-map "\C-c\C-o\C-l" 'hide-leaves)
-  (define-key outline-minor-mode-map "\C-c\C-o\C-x" 'show-branches)
-@end lisp
+@TeX{} did.  You can get the keybindings back together with other
+goodies by inserting
+@example
+(require 'out-xtra)
+@end example
+in your @file{.emacs} file.  This will use the default prefix key be
+@key{C-l}.  Look in the comments in @file{out-xtra.el} to see how to
+change that, and to get a list of features.
 
 @item
 Some fixes to AmS-@TeX{} mode by Ulf Juergens
@@ -2659,7 +2692,7 @@ to Dave Smith @samp{<maa507@@computing.lancaster.ac.uk>}.
 
 @item
 Added menu to for plain @TeX{}.  Suggested by Tim Carlson
-@samp{<imsgtcar@@sinc.oscs.montana.edu>}. 
+@samp{<imsgtcar@@math.montana.edu>}. 
 
 @item
 Made the menus depend on @code{TeX-command-list}.
@@ -3305,6 +3338,17 @@ some time for emacs lisp hacking, you are encouraged to try to provide a
 solution to one of the following problems.
 
 @itemize @bullet
+@item
+Fix bug with @code{TeX-show-environment} from hidden document
+environment.
+
+@item
+Explain how to get Bib@TeX{} completion for @samp{\cite} somewhere.
+
+@item
+Function to check if you are in math mode (between two dollar signs).
+Suggested by Jan Erik Odegard @samp{<odegard@@dsp.rice.edu>}
+
 @item
 Allow @code{TeX-auto-private} and @code{TeX-style-private} to be lists
 to mimic @code{TeX-macro-private}.
