@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{623}
+%\CheckSum{626}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.43 $
+%  \rcskey \version CVS-$Revision: 1.44 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-23 00:55:19 $
+%\rcskey\next $Date: 2002-03-23 02:30:09 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.43 $
+   \reserved@a\reserved@b CVS-$Revision: 1.44 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-23 00:55:19 $
+\reserved@a\next $Date: 2002-03-23 02:30:09 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -568,13 +568,15 @@
 %\subsection{Selection options}
 %  The |displaymath| option.  The |equation| environments in
 %  AMS\LaTeX\ already do too much before our hook gets to interfere,
-%  so we hook earlier.
+%  so we hook earlier.  Some juggling is involved to ensure we get the
+%  original |\everydisplay| tokens only once and where appropriate.
 %    \begin{macrocode}
 %<*!active>
 \DeclareOption{displaymath}{%
   \preview@delay{\toks@{%
-      \pr@startbox{$$\aftergroup\pr@endbox}{$$}}%
-    \everydisplay\expandafter{\the\expandafter\toks@\the\everydisplay}}%
+      \pr@startbox{$$\aftergroup\pr@endbox\@gobbletwo}{$$}\@firstofone}%
+    \everydisplay\expandafter{\the\expandafter\toks@
+      \expandafter{\the\everydisplay}}}%
   \PreviewEnvironment{equation}%
   \PreviewEnvironment{equation*}%
 }
