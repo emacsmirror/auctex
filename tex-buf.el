@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.47 1993-09-13 21:25:59 amanda Exp $
+;; $Id: tex-buf.el,v 1.48 1993-09-14 21:43:25 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -71,6 +71,7 @@ by the second element.  The first match will be used.")
 ;; THEN ``the'' process is the region process
 ;; ELSE ``the'' process is the master file (of the current buffer) process
 
+;;;###autoload
 (defun TeX-save-document (name)
   "Save all files belonging to the current document.
 Return non-nil if document need to be re-TeX'ed."
@@ -82,12 +83,14 @@ Return non-nil if document need to be re-TeX'ed."
 		   (cons name (TeX-style-list))
 		   TeX-file-extensions))
 
+;;;###autoload
 (defun TeX-command-master ()
   "Run command on the current document."
   (interactive)
   (setq TeX-current-process-region-p nil)
   (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file))
 
+;;;###autoload
 (defun TeX-command-region (old)
   "Run TeX on the current region.
 
@@ -118,6 +121,7 @@ all text after TeX-trailer-start."
 			       (count-lines (point-min) begin)))))
     (TeX-command command 'TeX-region-file)))
 
+;;;###autoload
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
 The last line of the buffer is displayed on line LINE of the window, or
@@ -135,6 +139,7 @@ at bottom if LINE is nil."
 	  (pop-to-buffer old-buffer))
       (message "No process for this document."))))
 
+;;;###autoload
 (defun TeX-kill-job ()
   "Kill the currently running TeX job."
   (interactive)
@@ -144,6 +149,7 @@ at bottom if LINE is nil."
       ;; Should test for TeX background process here.
       (error "No TeX process to kill."))))
 
+;;;###autoload
 (defun TeX-home-buffer (arg)
   "Go to the buffer where you last issued a TeX command.  
 If there is no such buffer, or you already are in that buffer, find
@@ -155,6 +161,7 @@ the master file."
       (find-file (TeX-master-file TeX-default-extension))
     (switch-to-buffer TeX-command-buffer)))
 
+;;;###autoload
 (defun TeX-next-error (reparse)
   "Find the next error in the TeX output buffer.
 Prefix by C-u to start from the beginning of the errors."
@@ -164,6 +171,7 @@ Prefix by C-u to start from the beginning of the errors."
     (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
 	     reparse)))
 
+;;;###autoload
 (defun TeX-toggle-debug-boxes ()
   "Toggle if the debugger should display \"bad boxes\" too."
   (interactive)
@@ -257,7 +265,7 @@ in TeX-check-path."
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (cond ((TeX-save-document)
+  (let* ((default (cond ((TeX-save-document (TeX-master-file))
 			 TeX-command-default)
 			((TeX-check-files (concat name ".bbl")
 					  (mapcar 'car
@@ -359,6 +367,7 @@ Return the new process."
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
+	  (set-marker (process-mark process) (point-max))
 	  (setq compilation-in-progress (cons process compilation-in-progress))
 	  process)
       (setq mode-line-process ": run")
@@ -431,6 +440,36 @@ Return the new process."
 	(funcall TeX-after-start-process-function process))
     (set-process-filter process 'TeX-background-filter)
     (process-kill-without-query process)))
+
+(defun TeX-run-interactive (name command file)
+  "Run TeX interactively.
+Run command in a buffer (in comint-shell-mode) so that it accepts user
+interaction. If you return to the file buffer after the TeX run,
+Error parsing on C-x ` should work with a bit of luck."
+  (require 'comint)
+  (let ((default TeX-command-default)
+	(buffer (TeX-process-buffer-name file))
+	(process nil))
+    (TeX-process-check file)		; Check that no process is running
+    (setq TeX-command-buffer (current-buffer))
+    (with-output-to-temp-buffer buffer)
+    (set-buffer buffer)
+    (insert "Running `" name "' on `" file "' with ``" command "''\n")
+    (comint-exec buffer name TeX-shell nil
+		 (list TeX-shell-command-option command))
+    (comint-mode)
+    (setq mode-name name)
+    (setq TeX-command-default default)
+    (setq process (get-buffer-process buffer))
+    (if TeX-after-start-process-function
+	(funcall TeX-after-start-process-function process))
+    (TeX-command-mode-line process)
+    (set-process-sentinel process 'TeX-command-sentinel)
+    (set-marker (process-mark process) (point-max))
+    (setq compilation-in-progress (cons process compilation-in-progress))
+    (TeX-parse-reset)
+    (setq TeX-parse-function 'TeX-parse-TeX)
+    (setq TeX-sentinel-function 'TeX-LaTeX-sentinel)))
 
 ;;; Command Sentinels
 
@@ -610,9 +649,9 @@ command."
   (save-excursion
     (set-buffer (process-buffer process))
     (save-excursion
-      (goto-char (process-mark proc))
+      (goto-char (process-mark process))
       (insert-before-markers string)
-      (set-marker (process-mark proc) (point)))))
+      (set-marker (process-mark process) (point)))))
 
 (defvar TeX-current-page nil
   "The page number currently being formatted, enclosed in brackets.")
@@ -630,9 +669,9 @@ command."
   (save-excursion
     (set-buffer (process-buffer process))
     (save-excursion
-      (goto-char (process-mark proc))
+      (goto-char (process-mark process))
       (insert-before-markers string)
-      (set-marker (process-mark proc) (point))) 
+      (set-marker (process-mark process) (point))) 
     (save-excursion 
       (if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
 	  (let ((new (TeX-match-buffer 0)))
@@ -649,10 +688,7 @@ command."
   (let ((old-window (selected-window))
 	(pop-up-windows t))
     (pop-to-buffer "*TeX background*")
-    (save-excursion
-      (goto-char (process-mark proc))
-      (insert-before-markers string)
-      (set-marker (process-mark proc) (point)))
+    (insert string)
     (select-window old-window)))
 
 

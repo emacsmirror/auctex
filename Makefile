@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.67 1993-09-13 21:25:35 amanda Exp $
+# $Id: Makefile,v 5.68 1993-09-14 21:42:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -93,7 +93,7 @@ FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 REMOVE = none
 
 MINMAPFILES = remap.el    map-euro.el dvorak.el   map-tex.el \
-	      map-mnem.el map-8859.el \
+	      map-mnem.el map-8859.el map-case.el \
 	      min-mode.el min-ind.el  min-ispl.el column.el   
 
 MINMAPSRC = $(MINMAPFILES)  easymenu.el min-map.el ltx-math.el \

@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.58 1993-09-13 21:26:22 amanda Exp $
+@c $Id: auc-tex.texi,v 1.59 1993-09-14 21:43:45 amanda Exp $
 
 @finalout
 @titlepage
@@ -2384,10 +2384,19 @@ this version, and for the authors, who get nostalgic at times.
 Coordinater: Per Abrahamsen, 1993.
 
 Alpha testers (in order of appearance): Marc Gemis
-@samp{<makke@@wins.uia.ac.be>}.  Shinji Kobayashi
-@samp{<koba@@flab.fujitsu.co.jp>}.@refill
+@samp{<makke@@wins.uia.ac.be>}, Shinji Kobayashi
+@samp{<koba@@flab.fujitsu.co.jp>}, Philippe Defert
+@samp{defert@@gnuisance.cern.ch}, and probably more.@refill
 
 @itemize @bullet
+@item
+Added Nabla to LaTeX Math Mode.  Suggested by Bill Reynolds
+@samp{<bill@@goshawk.lanl.gov>}. 
+
+@item
+Added commands for running @TeX{} and La@TeX{} interactively.  Thanks to
+David Carlisle @samp{<carlisle@@computer-science.manchester.ac.uk>}.
+
 @item
 The external commands will now insert there output @emph{before} point
 in the output buffers.  This allows you to follow the progress by
