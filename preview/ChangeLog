@@ -1,5 +1,7 @@
 2001-11-09  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: initial stab at release notes.
+
 	* preview.el (preview-back-command): Make token backer somewhat
 	more robust.
 	(preview-analyze-error): Don't bomb out if no token matches.
