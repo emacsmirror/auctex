@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.79 2002-03-21 15:09:06 dakas Exp $
+;; $Id: preview.el,v 1.80 2002-03-22 03:49:30 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -203,8 +203,8 @@ that is."
   :type 'number)
 
 (defun preview-TeX-bb (list)
-  "Calculate bounding box from (ht dp wd) LIST
-of TeX dimensions in sp (1/65536 TeX point)."
+  "Calculate bounding box from (ht dp wd).
+LIST consists of TeX dimensions in sp (1/65536 TeX point)."
   (and
    (consp list)
    (let ((dims (vconcat (mapcar (lambda (x) (/ x 65781.76)) list))))
@@ -271,6 +271,18 @@ screen content.  Buffer-local to rendering buffer.")
   "GhostScript color setup tokens.")
 (make-variable-buffer-local 'preview-gs-colors)
 
+(defvar preview-gs-init-string nil
+  "GhostScript setup string.")
+(make-variable-buffer-local 'preview-gs-init-string)
+
+(defvar preview-ps-file nil
+  "PostScript file name for fast conversion.")
+(make-variable-buffer-local 'preview-ps-file)
+
+(defvar preview-gs-dsc nil
+  "Parsed DSC information.")
+(make-variable-buffer-local 'preview-gs-dsc)
+
 (defvar preview-resolution nil
   "Screen resolution where rendering started.
 Cons-cell of x and y resolution, given in
@@ -299,6 +311,25 @@ show as response of GhostScript."
 (make-variable-buffer-local 'preview-gs-command-line)
 (defvar preview-gs-file nil)
 (make-variable-buffer-local 'preview-gs-file)
+
+(defcustom preview-fast-conversion nil
+  "*Set this for single-file PostScript conversion.
+This will not work in connection with `preview-image-type'
+set to `postscript'."
+  :group 'preview-latex
+  :type 'boolean)
+
+(defcustom preview-dvips-command
+  "dvips -Pwww -i -E %d -o %m/preview.000"
+  "*Command used for converting to separate EPS images."
+  :group 'preview-latex
+  :type 'string)
+
+(defcustom preview-fast-dvips-command
+  "dvips -Pwww %d -tletter -o %m/preview.ps"
+  "*Command used for converting to a single PS file."
+  :group 'preview-latex
+  :type 'string)
 
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
@@ -368,6 +399,7 @@ Gets the usual PROCESS and STRING parameters, see
       (process-kill-without-query process)
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
+      (process-send-string process preview-gs-init-string)
       (setq mode-name "Preview-GhostScript")
       (push process compilation-in-progress)
       (TeX-command-mode-line process)
@@ -391,8 +423,15 @@ example \"-sDEVICE=png256\" will go well with 'png."
 					preview-scale
 					(car preview-resolution)
 					(cdr preview-resolution)))))
+  (setq preview-gs-init-string
+	(format "\
+/preview-latex-do{setpagedevice save %s exch[count 2 roll]exch cvx \
+systemdict/.runandhide known revision 700 ge and{.setsafe{.runandhide}}if \
+stopped{handleerror quit}if count 1 ne{quit}if \
+aload pop restore}def "
+		(mapconcat #'identity preview-gs-colors " ")))
   (setq preview-gs-queue nil)
-  (let ((process (preview-start-dvips)))
+  (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
     (preview-parse-messages)
     (if TeX-process-asynchronous
@@ -408,6 +447,60 @@ example \"-sDEVICE=png256\" will go well with 'png."
 			      process))
   (preview-parse-messages))
   
+(defun preview-dsc-parse (file)
+  "Parse DSC comments of FILE.
+Returns a vector with offset/length pairs corresponding to
+the pages.  Page 0 corresponds to the initialization section."
+  (with-temp-buffer
+    (set-buffer-multibyte nil)
+    (insert-file-contents-literally file)
+    (let ((last-pt (point-min))
+	  (eol (and (search-forward-regexp "[\n\r]+") (match-string 0)))
+	  trailer
+	  pagelist
+	  pt
+	  str
+	  (level 0))
+      (goto-char (match-beginning 0))
+      (while (search-forward (concat eol "%%") nil t)
+	(setq pt (- (point) 2))
+	(setq str (buffer-substring-no-properties
+		   pt
+		   (progn (search-forward eol) (match-beginning 0))))
+	(goto-char (match-beginning 0))
+	(cond ((string-match "\\`%%BeginDocument:" str)
+	       (setq level (1+ level)))
+	      ((string= "%%EndDocument" str)
+	       (if (zerop level)
+		   (error "Bad DSC nesting in `%s'" file))
+	       (setq level (1- level)))
+	      ((zerop level)
+	       (cond ((string-match "\\`%%Page:" str)
+		      (push (list last-pt (- pt last-pt)) pagelist)
+		      (setq last-pt pt))
+		     ((string= str "%%Trailer") (setq trailer pt))))))
+      (unless (zerop level)
+	(error "Bad DSC nesting in `%s'" file))
+      (push (list last-pt (- (or trailer (point-max)) last-pt)) pagelist)
+      (vconcat (nreverse pagelist)))))
+
+(defun preview-gs-dsc-cvx (page dsc)
+  "Generate PostScript code accessing PAGE in the DSC object.
+The returned PostScript code will need the file on
+top of the stack, and will replace it with an executable
+object corresponding to the wanted page."
+  (let ((curpage (aref dsc page)))
+    (format "dup %d setfileposition %d()/SubFileDecode filter cvx"
+	    (1- (car curpage)) (nth 1 curpage))))
+  
+(defun preview-prepare-fast-conversion ()
+  "This fixes up all parameters for fast conversion."
+  (setq preview-gs-dsc (preview-dsc-parse (car (car preview-ps-file))))
+  (setq preview-gs-init-string
+	(concat preview-gs-init-string
+		(format "(%s)(r)file dup %s exec "
+			(car (car preview-ps-file))
+			(preview-gs-dsc-cvx 0 preview-gs-dsc)))))
 
 (defun preview-gs-dvips-sentinel (process command)
   "Sentinel function for indirect rendering DviPS process.
@@ -415,6 +508,8 @@ The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply."
   (let ((status (process-status process)))
     (cond ((eq status 'exit)
+	   (if preview-ps-file
+	       (preview-prepare-fast-conversion))
 	   (delete-process process)
 	   (preview-gs-restart))
 	  ((eq status 'signal)
@@ -460,9 +555,7 @@ BOX is a bounding box if we already know one via TeX."
 	    (list (preview-make-filename
 		   (format "prevnew.%03d" snippet))))
     (overlay-put ov 'queued
-		 (vector
-		  box
-		  nil))
+		 (vector box nil snippet))
     (push ov preview-gs-queue)
     (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
     thisimage))
@@ -480,8 +573,9 @@ BOX is a bounding box if we already know one via TeX."
     (view-buffer-other-window
      buff nil 'kill-buffer)))
 
-(defun preview-mouse-open-eps (file)
-  "Display eps FILE in a view buffer on click."
+(defun preview-mouse-open-eps (file &optional position)
+  "Display eps FILE in a view buffer on click.
+Place point at POSITION, else beginning of file."
   (let ((default-major-mode
 	  (or
 	   (assoc-default "x.ps" auto-mode-alist #'string-match)
@@ -491,6 +585,7 @@ BOX is a bounding box if we already know one via TeX."
       (if buff
 	  (pop-to-buffer buff)
 	(view-file-other-window file))
+      (goto-char (or position (point-min)))
       (if (eq major-mode 'ps-mode)          ; Bundled with GNU Emacs
 	  (message "%s" (substitute-command-keys "\
 Try \\[ps-run-start] \\[ps-run-buffer] and \
@@ -517,16 +612,27 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 				    preview-gs-command-line)
 			      " ")
 		   "\nGS>"
+		   preview-gs-init-string
 		   (aref (overlay-get ov 'queued) 1)
 		   err))))
      " in "
-     (preview-make-clickable
-      nil
-      "[EPS-file]"
-      "%s views EPS file"
-      `(lambda() (interactive "@")
-	 (preview-mouse-open-eps
-	  ,(car (nth 0 (overlay-get ov 'filenames)))))))
+     (let ((file (car (nth 0 (overlay-get ov 'filenames)))))
+       (if preview-ps-file
+	   (preview-make-clickable
+	    nil
+	    "[PS-file]"
+	    "%s views PS file"
+	    `(lambda() (interactive "@")
+	       (preview-mouse-open-eps
+		,(car file)
+		,(nth 0 (aref preview-gs-dsc
+			      (aref (overlay-get ov 'queued) 2))))))
+	 (preview-make-clickable
+	  nil
+	  "[EPS-file]"
+	  "%s views EPS file"
+	  `(lambda() (interactive "@")
+	     (preview-mouse-open-eps ,file))))))
      'face 'preview-error-face)))
 
 (defun preview-gs-transact (process answer)
@@ -539,7 +645,8 @@ given as ANSWER."
     (goto-char (point-max))
     (condition-case whatgives
 	(let ((ov (pop preview-gs-outstanding))
-	      (have-error (not (string= answer "GS>"))))
+	      (have-error (not
+			   (string-match "\\`GS\\(<[0-9]+\\)?>\\'" answer ))))
 	  (when (and ov (overlay-buffer ov))
 	    (let ((queued (overlay-get ov 'queued)))
 	      (when queued
@@ -579,21 +686,21 @@ given as ANSWER."
 					     (car oldfile)))
 				       (aref queued 0)
 				       (error "No bounding box"))))
-		       (gs-line (format
-				 "clear \
-<< \
-/PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
->> setpagedevice [save] %s (%s) (r) file cvx \
-systemdict /.runandhide known revision 700 ge and {.setsafe {.runandhide}} if \
-stopped {handleerror quit} if count 1 ne {quit} if \
-cleardictstack 0 get restore\n"
-				 (- (aref bbox 2) (aref bbox 0))
-				 (- (aref bbox 3) (aref bbox 1))
-				 (- (aref bbox 0)) (aref bbox 1)
-				 (car newfile)
-				 (mapconcat #'identity
-					    preview-gs-colors " ")
-				 (car oldfile))))
+		       (snippet (aref queued 2))
+		       (gs-line
+			(format
+			 "%s \
+<</PageSize[%g %g]/PageOffset[%g %g]/OutputFile(%s)>>preview-latex-do\n"
+			 (if preview-ps-file
+			     (concat "dup "
+				     (preview-gs-dsc-cvx
+				      snippet
+				      preview-gs-dsc))
+			   (format "(%s)(r)file cvx" (car oldfile)))
+			 (- (aref bbox 2) (aref bbox 0))
+			 (- (aref bbox 3) (aref bbox 1))
+			 (- (aref bbox 0)) (aref bbox 1)
+			 (car newfile))))
 		  (setq preview-gs-outstanding
 			(nconc preview-gs-outstanding
 			       (list ov)))
@@ -1007,7 +1114,8 @@ it gets deleted as well."
 This generates the EPS filename used in `TeX-active-tempdir'
 \(see `preview-make-filename' for its definition) for preview
 snippet SNIPPET in buffer SOURCE, and uses it for the
-region between START and END."
+region between START and END.  BOX is an optional preparsed
+TeX bounding BOX passed on to the `place' hook."
   (let* ((save-temp TeX-active-tempdir)
 	 (ov (with-current-buffer source
 	       (save-restriction
@@ -1020,7 +1128,8 @@ region between START and END."
 		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
 		  `(lambda() (interactive) (preview-delete ,ov))))
     (overlay-put ov 'filenames (list (preview-make-filename
-				      (format "preview.%03d" snippet))))
+				      (or preview-ps-file
+					  (format "preview.%03d" snippet)))))
     (overlay-put ov 'preview-image
 		 (setq image (preview-call-hook 'place ov snippet box)))
     (overlay-put ov 'strings
@@ -1138,12 +1247,6 @@ See description of `TeX-command-list' for details."
 	 (if (featurep 'latex)
 	     (LaTeX-preview-setup)))
   :initialize #'custom-initialize-default)
-
-(defcustom preview-dvips-command
-  "dvips -Pwww -i -E %d -o %m/preview.000"
-  "*Command used for converting to single EPS images."
-  :group 'preview-latex
-  :type 'string)
 
 (defun preview-goto-info-page ()
   "Read documentation for preview-latex in the info system."
@@ -1352,7 +1455,10 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 The diagnostic is for the end of the snippet if BOX
 is set (TeX dimensions in sp if present in the diagnostic, T else),
 and an overlay will be generated for the corresponding
-file dvips put into the directory indicated by `TeX-active-tempdir'."
+file dvips put into the directory indicated by `TeX-active-tempdir'.
+LSNIPPET, LSTART, LFILE, LLINE, LBUFFER, LPOINT are all
+infos from the last call.  The last four are used for
+caching line number info from one call to the next."
   
   (let* (;; We need the error message to show the user.
 	 op                            ;; temporary variable
@@ -1479,17 +1585,21 @@ specified by BUFF."
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
 
-(defun preview-start-dvips ()
-  "Start a DviPS process."
+(defun preview-start-dvips (&optional fast)
+  "Start a DviPS process.
+If FAST is set, do a fast conversion."
   (let* ((file preview-gs-file)
 	 tempdir
 	 (command (with-current-buffer TeX-command-buffer
 		    (prog1
-			(TeX-command-expand preview-dvips-command
+			(TeX-command-expand (if fast
+						preview-fast-dvips-command
+					      preview-dvips-command)
 					    (car file))
 		      (setq tempdir TeX-active-tempdir))))
 	 (name "Preview-DviPS"))
     (setq TeX-active-tempdir tempdir)
+    (setq preview-ps-file (and fast (preview-make-filename "preview.ps")))
     (goto-char (point-max))
     (insert-before-markers "Running `" name "' with ``" command "''\n")
     (setq mode-name name)
@@ -1549,7 +1659,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.79 $"))
+	(rev "$Revision: 1.80 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
