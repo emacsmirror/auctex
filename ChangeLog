@@ -1,3 +1,14 @@
+2001-03-01  Hidenobu Nabetani  <nabe@debian.or.jp>
+
+	* tex-jp.el: Don't work correctly in current AucTeX.
+	Patch by Masayuki Ataka <j1297007@ed.kagu.sut.ac.jp>
+	and Yuzo Furukawa <hurukawa@kuee.kyoto-u.ac.jp>.
+	Removed support for NEmacs and Mule1,2 which are based 
+	on Emacs 18 and 19.
+	Created new variable japanese-TeX-command-list and 
+	added support for mendex.
+	Updated LaTeX-auto-regexp-list variable.
+
 2001-01-02  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 10.0d released.

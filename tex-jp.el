@@ -1,6 +1,11 @@
 ;;; tex-jp.el - Support for Japanese TeX.
 ;;
-;; Support for Japanese TeX by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
+
+;; Maintainer: Hidenobu Nabetani <nabe@debian.or.jp>
+;; Version: 10.0d
+
+;;; Commentary: 
+;; This file was written by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; based on many patches developed by Japanese NetNews community.
 ;; Japanese message translation by MATUI Takao <mat@nuis.ac.jp>.
 
@@ -18,17 +23,21 @@
 ;		 "-- string likely in Japanese TeX --"))
 ;	      TeX-format-list))
 
+(defvar japanese-TeX-command-list
+  (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
+	      'TeX-run-TeX nil t)
+	(list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
+	      'TeX-run-LaTeX nil t)
+	(list "pTeX" "ptex '\\nonstopmode\\input %t'"
+	      'TeX-run-TeX nil t)
+	(list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
+	      'TeX-run-LaTeX nil t)
+	(list "Mendex" "memdex %s" 'TeX-run-command nil t)		    
+	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
+  "Additional list of commands to execute in japanese-LaTeX-mode")
+
 (setq TeX-command-list
-      (append (list (list "jTeX" "jtex '\\nonstopmode\\input %t'"
-			  'TeX-run-TeX nil t)
-		    (list "jLaTeX" "jlatex '\\nonstopmode\\input{%t}'"
-			  'TeX-run-LaTeX nil t)
-		    (list "pTeX" "ptex '\\nonstopmode\\input %t'"
-                          'TeX-run-TeX nil t)
-		    (list "pLaTeX" "platex '\\nonstopmode\\input{%t}'"
-			  'TeX-run-LaTeX nil t)
-		    (list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil nil))
-	      TeX-command-list))
+      (append japanese-TeX-command-list TeX-command-list))
        
 ;; the following code is needed to change mode-menu in japanese-LaTeX-mode.
 (easy-menu-define TeX-mode-menu
@@ -67,9 +76,8 @@
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
 
-(if (or (boundp 'MULE)
-	(featurep 'mule))
-    (if (string-match "XEmacs" emacs-version)
+(if (featurep 'mule)
+    (if (featurep 'xemacs)
 	(progn
 	  (defvar TeX-japanese-process-input-coding-system 
 	    (find-coding-system 'euc-japan)
@@ -88,11 +96,6 @@
 	    "TeX-process' coding system with standard input.")
 	  (defvar TeX-japanese-process-output-coding-system *junet*
 	    "TeX-process' coding system with standard output.")))))
-
-(if (boundp 'NEMACS)
-    (defvar TeX-process-kanji-code 2
-      "TeX-process' kanji code with standard I/O.
-0:No-conversion  1:Shift-JIS  2:JIS  3:EUC/AT&T/DEC"))
 
 (defvar japanese-TeX-command-default "jTeX"
   "The default command for TeX-command in the japanese-TeX mode.")
@@ -124,20 +127,7 @@
 
 ;;; Coding system
 
-(if (boundp 'MULE)
-    (setq TeX-after-start-process-function
-	  (function (lambda (process)
-		      (set-process-coding-system
-		       process
-		       TeX-japanese-process-input-coding-system
-		       TeX-japanese-process-output-coding-system)))))
-(if (boundp 'NEMACS)
-    (setq TeX-after-start-process-function
-	  (function
-	   (lambda (process)
-	     (set-process-kanji-code process TeX-process-kanji-code)))))
-
-(if (and (string-match "XEmacs" emacs-version)
+(if (and (featurep 'xemacs)
 	 (featurep 'mule))
     (setq TeX-after-start-process-function
 	  (function (lambda (process)
@@ -150,34 +140,34 @@
 
 ;;; Japanese Parsing
 
-(if (or (boundp 'MULE)
-	(featurep 'mule))
+(if (featurep 'mule)
 (progn
 
 (defconst LaTeX-auto-regexp-list 
   (append
-   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]\
-\\[\\([^\]\\\\\n\r]+\\)\\]"
-      (1 3 4) LaTeX-auto-optional)
-     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 3) LaTeX-auto-arguments)
-     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 TeX-auto-symbol)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
+   '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
+      (2 4 5) LaTeX-auto-optional)
+     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
+      (2 4) LaTeX-auto-arguments)
+     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 2 TeX-auto-symbol)
+     ("\\\\newenvironment\\*?{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]\\["
+      1 LaTeX-auto-environment)
+     ("\\\\newenvironment\\*?{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?\\[\\([0-9]+\\)\\]"
       (1 3) LaTeX-auto-env-args)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 LaTeX-auto-environment)
+     ("\\\\newenvironment\\*?{?\\(\\([a-zA-Z]\\|\\cj\\)+\\)}?" 1 LaTeX-auto-environment)
      ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\cj\\)+\\)}" 1 LaTeX-auto-environment)
      ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
      ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
-     ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
-{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
-      (2) LaTeX-auto-style)
+     ("\\\\use\\(package\\)\\(\\[\\([^\]\\\\]*\\)\\]\\)?\{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
+      (3 4 1) LaTeX-auto-style)
      ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
      ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
+   LaTeX-auto-index-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
 
@@ -201,61 +191,6 @@
 (defconst BibTeX-auto-regexp-list
   '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
     ("@[a-zA-Z]+[{(][ \t]*\\(\\([a-zA-Z]\\|\\cj\\)[^, \n\r\t%\"#'()={}]*\\)"
-     1 LaTeX-auto-bibitem))
-  "List of regexp-list expressions matching BibTeX items.")
-
-))
-
-(if (boundp 'NEMACS)
-(progn
-
-(defconst LaTeX-auto-regexp-list 
-  (append
-   '(("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]\
-\\[\\([^\]\\\\\n\r]+\\)\\]"
-      (1 3 4) LaTeX-auto-optional)
-     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 3) LaTeX-auto-arguments)
-     ("\\\\newcommand{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 TeX-auto-symbol)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 3) LaTeX-auto-env-args)
-     ("\\\\newenvironment{?\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 LaTeX-auto-environment)
-     ("\\\\newtheorem{\\(\\([a-zA-Z]\\|\\z\\)+\\)}" 1 LaTeX-auto-environment)
-     ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
-      1 TeX-auto-file)
-     ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
-      1 TeX-auto-file)
-     ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
-{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
-      (2) LaTeX-auto-style)
-     ("\\\\bibitem{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
-     ("\\\\bibitem\\[[^][\n\r]+\\]{\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)}"
-      1 LaTeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
-   LaTeX-auto-label-regexp-list
-   LaTeX-auto-minimal-regexp-list)
-  "List of regular expression matching common LaTeX macro definitions.")
-
-(defconst plain-TeX-auto-regexp-list
-  '(("\\\\def\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
-     TeX-auto-symbol-check)
-    ("\\\\let\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
-     TeX-auto-symbol-check)
-    ("\\\\font\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
-    ("\\\\chardef\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
-    ("\\\\new\\(count|dimen|muskip|skip\\)\\\\\\(\\([a-z]\\|\\z\\)+\\)[^a-zA-Z@]"
-     2 TeX-auto-symbol)
-    ("\\\\newfont{?\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)}?" 1 TeX-auto-symbol)
-    ("\\\\typein\\[\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)\\]" 1 TeX-auto-symbol)
-    ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
-     1 TeX-auto-file)
-    ("\\\\mathchardef\\\\\\(\\([a-zA-Z]\\|\\z\\)+\\)[^a-zA-Z@]" 1
-     TeX-auto-symbol))
-  "List of regular expression matching common LaTeX macro definitions.")
-
-(defconst BibTeX-auto-regexp-list
-  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+[{(][ \t]*\\(\\([a-zA-Z]\\|\\z\\)[^, \n\r\t%\"#'()={}]*\\)"
      1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
@@ -305,555 +240,8 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 	(setq TeX-command-BibTeX "jBibTeX")
 	(setq japanese-TeX-mode nil))))
 
-;;; MULE and NEMACS paragraph filling.
 
-(if (boundp 'MULE)
-(if (string-lessp emacs-version "19")
-(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-  "Fill region as one paragraph: break lines to fit fill-column.
-Prefix arg means justify too.
-From program, pass args FROM, TO and JUSTIFY-FLAG."
-  (interactive "*r\nP")
-  (save-restriction
-    (goto-char from)
-    (skip-chars-forward "\n")
-    (LaTeX-indent-line)
-    (beginning-of-line)
-    (narrow-to-region (point) to)
-    (setq from (point))
-
-    ;; Delete whitespace at beginning of line from every line,
-    ;; except the first line.
-    (goto-char (point-min))
-    (forward-line 1)
-    (while (not (eobp))
-      (delete-horizontal-space)
-      (forward-line 1))
-
-    ;; Ignore the handling routine related with `fill-prefix'.
-
-    ;; from is now before the text to fill,
-    ;; but after any fill prefix on the first line.
-
-    ;; Make sure sentences ending at end of line get an extra space.
-    (goto-char from)
-    ;;; patch by S.Tomura 88-Jun-30
-    ;;＜統合＞
-    ;; . + CR             ==> . + SPC + SPC 
-    ;; . + SPC + CR +     ==> . + SPC + 
-    ;;(while (re-search-forward "[.?!][])""']*$" nil t)
-    ;;  (insert ? ))
-    (while (re-search-forward "[.?!][])\"']*$" nil t)
-      (if (eobp)
-	  nil
-	;; replace CR by two spaces.
-	(delete-char 1)			; delete newline
-	(insert "  ")))
-    ;; end of patch
-    ;; The change all newlines to spaces.
-    ;; patched by S.Tomura 87-Dec-7
-    ;; bug fixed by S.Tomura 88-May-25
-    ;; modified by  S.Tomura 88-Jun-21
-    ;;(subst-char-in-region from (point-max) ?\n ?\ )
-    ;; modified by K.Handa 92-Mar-2
-    ;; Spacing is not necessary for charcters of no word-separater.
-    ;; The regexp word-across-newline is used for this check.
-    (if (not (stringp word-across-newline))
-	(subst-char-in-region from (point-max) ?\n ?\ )
-      (goto-char from)
-      (end-of-line)
-      (while (not (eobp))
-	(delete-char 1)
-	(if (eobp) nil			; 92.6.30 by K.Handa
-	  (if (not (looking-at word-across-newline))
-	      (progn
-		(forward-char -1)
-		(if (and (not (eq (following-char) ? ))
-			 (not (looking-at word-across-newline)))
-		    (progn
-		      (forward-char 1)
-		      (insert ? ))
-		  (forward-char 1))))
-	  (end-of-line))))
-    ;; After the following processing, there's two spaces at end of sentence
-    ;; and single space at end of line within sentence.
-    ;; end of patch
-    ;; Flush excess spaces, except in the paragraph indentation.
-    (goto-char from)
-    (skip-chars-forward " \t")
-    (while (re-search-forward "   *" nil t)
-      (delete-region
-       (+ (match-beginning 0)
-	  (if (save-excursion
-	       (skip-chars-backward " ])\"'")
-	       (memq (preceding-char) '(?. ?? ?!)))
-	      2 1))
-       (match-end 0)))
-    (goto-char (point-max))
-    (delete-horizontal-space)
-    (insert "  ")
-    (goto-char (point-min))
-    (let ((prefixcol 0)
-	  ;; patch by K.Handa 92-Mar-2
-	  (re-break-point (concat "[ \t\n]\\|" word-across-newline))
-	  ;; end of patch
-	  )
-      (while (not (eobp))
-	(move-to-column (1+ fill-column))
-	(if (eobp)
-	    nil
-	  ;; patched by S.Tomura 87-Jun-2
-	  ;; Big change by K.Handa 92-Mar-2
-	  ;; Move back to start of word.
-	  ;; (skip-chars-backward "^ \n")
-	  ;; (if (if (zerop prefixcol) (bolp) (>= prefixcol (current-column)))
-	  ;;    ;; Move back over whitespace before the word.
-	  ;;    (skip-chars-forward "^ \n")
-	  ;;  ;; Normally, move back over the single space between the words.
-	  ;;  (forward-char -1))
-
-	  ;; At first, find breaking point at the left of fill-column,
-	  ;; but after kinsoku-shori, the point may be right of fill-column.
-	  ;; 92.4.15 by K.Handa -- re-search-backward will back to prev line.
-	  ;; 92.4.27 by T.Enami -- We might have gone back too much...
-	  (let ((p (point)) ch)
-	    (re-search-backward re-break-point nil 'mv)
-	    (setq ch (following-char))
-	    (if (or (= ch ? ) (= ch ?\t))
-		(skip-chars-backward " \t")
-	      (forward-char 1)
-	      (if (<= p (point))
-		  (forward-char -1))))
-	  (kinsoku-shori)
-	  ;; Check if current column is at the right of prefixcol.
-	  ;; If not, find break-point at the right of fill-column.
-	  ;; This time, force kinsoku-shori-nobashi.
-	  (if (>= prefixcol (current-column))
-	      (progn
-		(move-to-column (1+ fill-column))
-		;; 92.4.15 by K.Handa -- suppress error in re-search-forward
-		(re-search-forward re-break-point nil t)
-		(forward-char -1)
-		(kinsoku-shori-nobashi))))
-	;; end of patch S.Tomura
-
-	;; Replace all whitespace here with one newline.
-	;; Insert before deleting, so we don't forget which side of
-	;; the whitespace point or markers used to be on.
-	;; patch by S. Tomura 88-Jun-20
-	;; 92.4.27 by K.Handa
-	(skip-chars-backward " \t")
-	(if mc-flag
-	    ;; ＜分割＞  WAN means chars which match word-across-newline.
-	    ;; (0)     | SPC + SPC* <EOB>	--> NL
-	    ;; (1) WAN | SPC + SPC*		--> WAN + SPC + NL
-	    ;; (2)     | SPC + SPC* + WAN	--> SPC + NL  + WAN
-	    ;; (3) '.' | SPC + nonSPC		--> '.' + SPC + NL + nonSPC
-	    ;; (4) '.' | SPC + SPC		--> '.' + NL
-	    ;; (5)     | SPC*			--> NL
-	    (let ((start (point))	; 92.6.30 by K.Handa
-		  (ch (following-char)))
-	      (if (and (= ch ? )
-		       (progn		; not case (0) -- 92.6.30 by K.Handa
-			 (skip-chars-forward " \t")
-			 (not (eobp)))
-		       (or
-			(progn		; case (1)
-			  (goto-char start)
-			  (forward-char -1)
-			  (looking-at word-across-newline))
-			(progn		; case (2)
-			  (goto-char start)
-			  (skip-chars-forward " \t")
-			  (and (not (eobp))
-			       (looking-at word-across-newline)))
-			(progn		; case (3)
-			  (goto-char (1+ start))
-			  (and (not (eobp))
-			       (/= (following-char) ? )
-			       (progn
-				 (skip-chars-backward " ])\"'")
-				 (memq (preceding-char) '(?. ?? ?!)))))))
-		  ;; We should keep one SPACE before NEWLINE. (1),(2),(3)
-		  (goto-char (1+ start))
-		;; We should delete all SPACES around break point. (4),(5)
-		(goto-char start))))
-	;; end of patch
-	(if (equal (preceding-char) ?\\)
-	    (insert ? ))
-	(insert ?\n)
-	(delete-horizontal-space)
-
-	;; Ignore the handling routine related with `fill-prefix'.
-
-	(LaTeX-indent-line)
-	(setq prefixcol (current-column))
-	;; Justify the line just ended, if desired.
-	(and justify-flag (not (eobp))
-	     (progn
-	       (forward-line -1)
-	       (justify-current-line)
-	       (forward-line 1)))
-	)
-      (goto-char (point-max))
-      (delete-horizontal-space))))
-(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-  "Fill region as one paragraph: break lines to fit fill-column.\n\
-Prefix arg means justify too.\n\
-From program, pass args FROM, TO and JUSTIFY-FLAG."
-  (interactive "*r\nP")
-  (save-restriction
-    (goto-char from)
-    (skip-chars-forward " \n")
-    (LaTeX-indent-line)
-    (beginning-of-line)
-    (narrow-to-region (point) to)
-    (setq from (point))
-    
-    ;; Delete whitespace at beginning of line from every line,
-    ;; except the first line.
-    (goto-char (point-min))
-    (forward-line 1)
-    (while (not (eobp))
-      (delete-horizontal-space)
-      (forward-line 1))
-
-    ;; from is now before the text to fill,
-    ;; but after any fill prefix on the first line.
-    
-    ;; Make sure sentences ending at end of line get an extra space.
-    (goto-char from)
-    ;; patch by S.Tomura 88-Jun-30
-    ;;＜統合＞
-    ;; . + CR             ==> . + SPC + SPC 
-    ;; . + SPC + CR +     ==> . + SPC + 
-    ;; (while (re-search-forward "[.?!][])\"']*$" nil t)
-    ;;   (insert ? ))
-    (while (re-search-forward "[.?!][])}\"']*$" nil t)
-      (if (eobp)
-	  nil
-	;; replace CR by two spaces.
-	;; insert before delete to preserve marker.
-	(insert "  ")
-	;; delete newline
-	(delete-char 1)))
-    ;; end of patch
-    ;; The change all newlines to spaces.
-    ;; (subst-char-in-region from (point-max) ?\n ?\ )
-    ;; patched by S.Tomura 87-Dec-7
-    ;; bug fixed by S.Tomura 88-May-25
-    ;; modified by  S.Tomura 88-Jun-21
-    ;; modified by K.Handa 92-Mar-2
-    ;; Spacing is not necessary for charcters of no word-separater.
-    ;; The regexp word-across-newline is used for this check.
-    (if (not (stringp word-across-newline))
-	(subst-char-in-region from (point-max) ?\n ?\ )
-      ;;
-      ;; WAN     +NL+WAN       --> WAN            + WAN
-      ;; not(WAN)+NL+WAN       --> not(WAN)       + WAN
-      ;; WAN     +NL+not(WAN)  --> WAN            + not(WAN)
-      ;; SPC     +NL+not(WAN)  --> SPC            + not(WAN)
-      ;; not(WAN)+NL+not(WAN)  --> not(WAN) + SPC + not(WAN)
-      ;;
-      (goto-char from)
-      (end-of-line)
-      (while (not (eobp))
-	;; 92.8.26 , 92.8.30 by S. Tomura
-	
-	;; Insert SPC only when point is between nonWAN.  Insert
-	;; before deleting to preserve marker if possible.
-	(if (or (prog2		; check following char.
-		    (forward-char)	; skip newline
-		    (or (eobp)
-			(looking-at word-across-newline))
-		  (forward-char -1))
-		(prog2		; check previous char.
-		    (forward-char -1)
-		    (or (eq (following-char) ?\ )
-			(looking-at word-across-newline))
-		  (forward-char)))
-	    nil
-	  (insert ?\ ))
-	(delete-char 1)		; delete newline
-	(end-of-line)))
-    ;; Flush excess spaces, except in the paragraph indentation.
-    (goto-char from)
-    (skip-chars-forward " \t")
-    (while (re-search-forward "   *" nil t)
-      (delete-region
-       (+ (match-beginning 0)
-	  (if (save-excursion
-		(skip-chars-backward " ])\"'")
-		(memq (preceding-char) '(?. ?? ?!)))
-	      2 1))
-       (match-end 0)))
-    (goto-char (point-max))
-    (delete-horizontal-space)
-    (insert "  ")
-    (goto-char (point-min))
-    (let ((prefixcol 0) linebeg
-	  ;; patch by K.Handa 92-Mar-2
-	  (re-break-point (concat "[ \n]\\|" word-across-newline))
-	  ;; end of patch
-	  )
-      (while (not (eobp))
-	(setq linebeg (point))
-	(move-to-column (1+ fill-column))
-	(if (eobp)
-	    nil
-	  ;;(skip-chars-backward "^ \n")
-	  (fill-move-backward-to-break-point re-break-point)
-	  (if sentence-end-double-space
-	      (while (and (> (point) (+ linebeg 2))
-			  (eq (preceding-char) ?\ )
-			  (not (eq (following-char) ?\ ))
-			  (eq (char-after (- (point) 2)) ?\.))
-		(forward-char -2)
-		(fill-move-backward-to-break-point re-break-point linebeg)))
-	  (kinsoku-shori)
-	  (if (if (zerop prefixcol)
-		  (save-excursion
-		    (skip-chars-backward " " linebeg)
-		    (bolp))
-		(>= prefixcol (current-column)))
-	      ;; Keep at least one word even if fill prefix exceeds margin.
-	      ;; This handles all but the first line of the paragraph.
-	      ;; Meanwhile, don't stop at a period followed by one space.
-	      (let ((first t))
-		(move-to-column prefixcol)
-		(while (and (not (eobp))
-			    (or first
-				(and (not (bobp))
-				     sentence-end-double-space
-				     (save-excursion (forward-char -1)
-						     (and (looking-at "\\. ")
-							  (not (looking-at "\\.  ")))))))
-		  (skip-chars-forward " ")
-		  ;; (skip-chars-forward "^ \n")
-		  (fill-move-forward-to-break-point re-break-point)
-		  (setq first nil)))
-	    ;; Normally, move back over the single space between the words.
-	    (if (eq (preceding-char) ? )
-		(forward-char -1))))
-	(if mc-flag
-	    ;; ＜分割＞  WAN means chars which match word-across-newline.
-	    ;; (0)     | SPC + SPC* <EOB>	--> NL
-	    ;; (1) WAN | SPC + SPC*		--> WAN + SPC + NL
-	    ;; (2)     | SPC + SPC* + WAN	--> SPC + NL  + WAN
-	    ;; (3) '.' | SPC + nonSPC		--> '.' + SPC + NL + nonSPC
-	    ;; (4) '.' | SPC + SPC		--> '.' + NL
-	    ;; (5)     | SPC*			--> NL
-	    (let ((start (point))	; 92.6.30 by K.Handa
-		  (ch (following-char)))
-	      (if (and (= ch ? )
-		       (progn		; not case (0) -- 92.6.30 by K.Handa
-			 (skip-chars-forward " \t")
-			 (not (eobp)))
-		       (or
-			(progn	; case (1)
-			  (goto-char start)
-			  (forward-char -1)
-			  (looking-at word-across-newline))
-			(progn	; case (2)
-			  (goto-char start)
-			  (skip-chars-forward " \t")
-			  (and (not (eobp))
-			       (looking-at word-across-newline)
-			       ;; never leave space after the end of sentence
-			       (not (fill-end-of-sentence-p))))
-			(progn	; case (3)
-			  (goto-char (1+ start))
-			  (and (not (eobp))
-			       (/= (following-char) ? )
-			       (fill-end-of-sentence-p)))))
-		  ;; We should keep one SPACE before NEWLINE. (1),(2),(3)
-		  (goto-char (1+ start))
-		;; We should delete all SPACES around break point. (4),(5)
-		(goto-char start))))
-	;; end of patch
-	(delete-horizontal-space)
-	(if (equal (preceding-char) ?\\)
-	    (insert ? ))
-	(insert ?\n)
-	(LaTeX-indent-line)
-	(setq prefixcol (current-column))
-	(and justify-flag (not (eobp))
-	     (progn
-	       (forward-line -1)
-	       (justify-current-line)
-	       (forward-line 1)))
-	)
-      (goto-char (point-max))
-      (delete-horizontal-space))))))
-
-(if (boundp 'NEMACS)
-(defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
-  "Fill region as one paragraph: break lines to fit fill-column.
-Prefix arg means justify too.
-From program, pass args FROM, TO and JUSTIFY-FLAG."
-  (interactive "r\nP")
-  (save-restriction
-    (goto-char from)
-    (skip-chars-forward " \n")
-    (LaTeX-indent-line)
-    (beginning-of-line)
-    (narrow-to-region (point) to)
-    (setq from (point))
-
-    ;; Delete whitespace at beginning of line from every line,
-    ;; except the first line.
-    (goto-char (point-min))
-    (forward-line 1)
-    (while (not (eobp))
-      (delete-horizontal-space)
-      (forward-line 1))
-
-    ;; from is now before the text to fill,
-    ;; but after any fill prefix on the first line.
-
-    ;; Make sure sentences ending at end of line get an extra space.
-    (goto-char from)
-    ;;; patch by S.Tomura 88-Jun-30
-    ;;＜統合＞
-    ;; . + CR             ==> . + SPC + SPC 
-    ;; . + SPC + CR +     ==> . + SPC + 
-    ;;(while (re-search-forward "[.?!][])""']*$" nil t)
-    ;;  (insert ? ))
-    (while (re-search-forward "[.?!][])""']*$" nil t)
-      (if (eobp)
-	  nil
-      (delete-char 1)
-      (insert "  "))) ;; replace CR by two spaces.
-    ;; end of patch
-    ;; The change all newlines to spaces.
-    ;; patched by S.Tomura 87-Dec-7
-    ;; bug fixed by S.Tomura 88-May-25
-    ;; modified by  S.Tomura 88-Jun-21
-    ;;(subst-char-in-region from (point-max) ?\n ?\ )
-    ;;日本語の語の後には空白はない。
-    (goto-char from)
-    (end-of-line)
-    (while (not (eobp))
-      (delete-char 1)
-      (if (and (< ?  (preceding-char)) ;; + SPC + CR + X ==> + SPC + X
-	       (< (preceding-char) 128)
-	       (<= ?  (following-char))
-	       (< (following-char) 128))
-	   (insert ?\  ))
-      (end-of-line))
-    ;; 次の処理で文末にはtwo spacesがあり、それ以外はsingle spaceになっている。
-    ;; end of patch
-    ;; Flush excess spaces, except in the paragraph indentation.
-    (goto-char from)
-    (skip-chars-forward " \t")
-    (while (re-search-forward "   *" nil t)
-      (delete-region
-       (+ (match-beginning 0)
-	  (if (save-excursion
-	       (skip-chars-backward " ])\"'")
-	       (memq (preceding-char) '(?. ?? ?!)))
-	      2 1))
-       (match-end 0)))
-    (goto-char from)
-    (skip-chars-forward " \t")
-    (while (re-search-forward " " nil t)
-      (if (<= 128 (following-char))
-	  (let ((dummy 0))
-	    (backward-char 1) 
-	    (if (<= 128 (preceding-char))
-		(delete-char 1))
-	    (forward-char 1))))
-    (goto-char (point-max))
-    (delete-horizontal-space)
-    (insert "  ")
-    (goto-char (point-min))
-    (let ((prefixcol 0))
-      (while (not (eobp))
-	;; patched by S.Tomura 88-Jun-2
-	;;(move-to-column (1+ fill-column))
-	(move-to-column fill-column)
-	;; end of patch
-	;; patched by S.Tomura 88-Jun-16, 89-Oct-2, 89-Oct-19
-	;; 漢字コードの場合にはfill-columnより大きくなることがある。
-	(or (>= fill-column (current-column)) (backward-char 1))
-	;; end of patch
-	(if (eobp)
-	    nil
-	  ;; patched by S.Tomura 87-Jun-2
-	  ;;(skip-chars-backward "^ \n")
-	  ;;(if (if (zerop prefixcol) (bolp) (>= prefixcol (current-column)))
-	  ;;    (skip-chars-forward "^ \n")
-	  ;;  (forward-char -1)))
-	  ;; 原則としてfill-columnより左側に分割点を探す。
-	  ;; Find a point to break lines
-	     (skip-chars-backward " \t") ;; skip SPC and TAB
-	     (if (or (<= 128 (preceding-char))
-		     (<= 128 (following-char)) ;; 88-Aug-25
-		     (= (following-char) ? )
-		     (= (following-char) ?\t))
-		 (kinsoku-shori)
-	       (if(re-search-backward "[ \t\n]\\|\\z" ;; 89-Nov-17
-				      (point-min) (point-min))
-		   (forward-char 1))
-	       (skip-chars-backward " \t")
-	       (kinsoku-shori))
-	     ;; prifixcolより右側に分割点を探す。
-	     ;; この場合は分割点はfill-columnより右側になる。
-	     (if (>= prefixcol (current-column))
-		 (progn
-		   (move-to-column prefixcol)
-		   (if (re-search-forward "[ \t]\\|\\z" ;; 89-Nov-17
-					  (point-max) (point-max))
-		       (backward-char 1))
-		   (skip-chars-backward " \t")
-		   (kinsoku-shori)
-		   ;; それも駄目なら分割を諦める。
-		   (if (>= prefixcol (current-column)) (goto-char (point-max))))))
-	;; end of patch S.Tomura
-	;; patch by S. Tomura 88-Jun-20
-	;;(delete-horizontal-space)
-        ;;＜分割＞
-        ;; 全角 | SPC + SPC＊   --> 全角 + SPC + CR
-	;; | SPC + SPC* + 全角  --> SPC  + CR + 全角
-        ;; . | SPC + SPC +      --> . + CR
-        ;; . | SPC + nonSPC     --> . + SPC + CR + nonSPC
-        ;;
-        ;; . | 半角             --> 分割しない
-        ;; . | 全角             --> 分割しない
-	(if (not kanji-flag) (delete-horizontal-space)
-	  (let ((start) (end))
-	    (skip-chars-backward " \t")
-	    (setq start (point))
-	    (skip-chars-forward  " \t")
-	    (setq end (point))
-	    (delete-region start end)
-	    (if (and (not
-		      (and (save-excursion
-			     (skip-chars-backward " ])\"'")
-			     (memq (preceding-char) '(?. ?? ?!)))
-			   (= end (+ start 2))))
-		     (or (and (or (<= 128 (preceding-char))
-				  (<= 128 (following-char)))
-			      (< start end)
-			      (not (eobp)))
-			 (and (memq (preceding-char) '(?. ?? ?!))
-			      (= (1+ start) end)
-			      (not (eobp)))))
-		(insert ?  ))))
-	;; end of patch
-	(if (equal (preceding-char) ?\\)
-	    (insert ? ))
-	(insert ?\n)
-	(LaTeX-indent-line)
-	(setq prefixcol (current-column))
-	(and justify-flag (not (eobp))
-	     (progn
-	       (forward-line -1)
-	       (justify-current-line)
-	       (forward-line 1)))
-	)
-      (goto-char (point-max))
-      (delete-horizontal-space)))))
+;;; MULE paragraph filling.
 
 (if (string-lessp "20" emacs-version)
 ;; This function is copied from 
