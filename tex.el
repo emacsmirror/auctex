@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.293 $"))
+	(rev "$Revision: 5.294 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-02-25 12:16:09 $"))
+    (let ((date "$Date: 2003-04-07 13:54:26 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2199,7 +2199,7 @@ NIL means kpathsea is disabled."
 		 (const :tag "Autodetect" t)
 		 (const :tag "Off" nil)))
 
-(defcustom TeX-kpathsea-directory-alist '(("tex" . "$TEXINPUTS.latex")
+(defcustom TeX-kpathsea-directory-alist '(("tex" . "${TEXINPUTS.latex}")
 					  ("bib" . "$BIBINPUTS")
 					  ("bst" . "$BSTINPUTS"))
   "Directories to search for expansion using kpathsea."
