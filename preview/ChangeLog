@@ -1,3 +1,7 @@
+2001-11-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* INSTALL: add autoload instructions for fastest Emacs startup.
+
 2001-11-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-restart): Use push.
