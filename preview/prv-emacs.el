@@ -158,7 +158,10 @@ are functions to call on preview's clicks."
 	     (add-text-properties
               0 (length res)
               (list 'mouse-face 'highlight
-              'help-echo (format ,helpstring preview-button-1 preview-button-2)
+              'help-echo
+	      ,(if (stringp helpstring)
+		   (format helpstring preview-button-1 preview-button-2)
+		 `(format ,helpstring preview-button-1 preview-button-2))
               'keymap resmap)
               res)
              res)
@@ -318,6 +321,8 @@ nil displays the underlying text, and 'toggle toggles."
 	(dolist (prop '(display keymap mouse-face help-echo))
 	  (overlay-put ov prop nil))
 	(overlay-put ov 'face 'preview-face)
+	(unless (cdr strings)
+	  (setcdr strings (preview-inactive-string ov)))
 	(overlay-put ov 'before-string (cdr strings)))
       (if old-urgent
 	  (apply 'preview-add-urgentization old-urgent)))))
