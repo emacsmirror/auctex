@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.36 1993-03-28 16:03:50 amanda Exp $
+# $Id: Makefile,v 5.37 1993-03-30 00:38:49 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -9,8 +9,8 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-prefix=/usr/local
-#prefix=/home/local/sys/gnu
+#prefix=/usr/local
+prefix=/home/local/sys/gnu
 
 # Where architecture dependent local software go
 exec_prefix = $(prefix)
@@ -19,7 +19,8 @@ exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 
 # Where info files go.
-infodir = $(prefix)/lib/emacs/info
+#infodir = $(prefix)/lib/emacs/info
+infodir = $(prefix)/info
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -28,14 +29,14 @@ infodir = $(prefix)/lib/emacs/info
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located
-elispdir=$(prefix)/lib/emacs/lisp
-#elispdir=/home/dist/lib/emacs/lisp
+#elispdir=$(prefix)/lib/emacs/lisp
+elispdir=/home/dist/lib/emacs/lisp
 
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 
-aucdir=$(elispdir)/auctex
-#aucdir=/home/pd/share/emacs/auctex7
+#aucdir=$(elispdir)/auctex
+aucdir=/home/pd/share/emacs/auctex7
 #aucdir=/user/amanda/lib/emacs/auctex
 
 ##----------------------------------------------------------------------
@@ -49,17 +50,17 @@ aucdir=$(elispdir)/auctex
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-EMACS=emacs -batch
+EMACS=emacs -batch -q
 
 # Specify the byte-compiler for compiling AUC TeX files
 ELC=env EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
 
 # Specify the byte-compiler for generating style files
-AUTO= env EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) \
+AUTO= EMACSLOADPATH=$(aucdir):$(elispdir) $(EMACS) \
 	-l tex-auto -f TeX-auto-generate-global
 
 # Specify the byte-compiler for compiling generated style files
-AUTOC= env EMACSLOADPATH=$(aucdir):$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
+AUTOC= EMACSLOADPATH=$(aucdir):$(elispdir):$(elispdir)/bytecomp $(EMACS) -f batch-byte-compile
 
 # Using TeX in batch mode.
 TEX=tex
@@ -93,7 +94,7 @@ MINMAPFILES = README_MINOR $(MINMAPSRC)
 
 AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-jp.el \
-	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-jp.el   dbg-eng.el
+	 ltx-misc.el  ltx-env.el  ltx-sec.el  dbg-eng.el
 
 FORMATSRC = format/VIRTEX.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
@@ -107,7 +108,10 @@ LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 
 DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
 
-OTHERFILES = COPYING README README_MINOR Makefile  $(DOCFILES) $(LACHECKFILES)
+# dbg-jp.el can not be byte compiled with standard emacs
+OTHERFILES = COPYING README README_MINOR Makefile dbg-jp.el \
+	 $(DOCFILES) $(LACHECKFILES)
+
 
 first:
 	@echo ""
