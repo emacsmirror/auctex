@@ -60,6 +60,8 @@
     ("..." ("dots"))
     (1 ("part" "chapter" "section" "subsection" "subsubsection"
 	"paragraph" "subparagraph"
+	"part*" "chapter*" "section*" "subsection*" "subsubsection*"
+	"paragraph*" "subparagraph*"
 	"emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
 	"textbf" "textsc" "textup")))
   "List of display strings and macros to fold."
