@@ -554,15 +554,15 @@ fi
 AC_SUBST(texinputdirs)
 ])
 
-dnl
-dnl Determine the directory containing automatically generated information.
-dnl
-AC_DEFUN(AUTO_DIR,
- [AC_ARG_WITH(auto-dir,
-	      [  --with-auto-dir=DIR     directory containing automatically generated information],
-	      [ autodir="${withval}"; AC_FULL_EXPAND(withval) ])
-
-  if test -z "${autodir}" ; then
-    autodir="${auctexdir}/auto/"
-  fi
-  AC_SUBST(autodir)])
+# AUCTEX_AUTO_DIR
+# ---------------
+# Set the directory containing AUCTeX automatically generated global style
+# hooks.
+AC_DEFUN(AUCTEX_AUTO_DIR,
+[AC_ARG_WITH([auto-dir],
+	     AS_HELP_STRING([--with-auto-dir=DIR],
+			    [directory containing AUCTeX automatically
+			     generated global style hooks]),
+	     [autodir="${withval}"], [autodir="${auctexdir}/auto/"])
+ AC_SUBST(autodir)
+])
