@@ -1,3 +1,11 @@
+2002-12-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex/preview.dtx (subsection{The \texttt{footnotes} option}):
+	new option.
+
+	* preview.el (preview-default-option-list): Switch on previews
+	for footnotes by default.
+
 2002-12-12  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* autogen.sh: Nitpicking
