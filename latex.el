@@ -3827,9 +3827,6 @@ the sequence by initializing this variable.")
 
  (make-variable-buffer-local 'LaTeX-math-mode)
 
-(or (assoc 'LaTeX-math-mode minor-mode-alist)
-    (setq minor-mode-alist (cons '(LaTeX-math-mode " Math") minor-mode-alist)))
-
 (or (assoc 'LaTeX-math-mode minor-mode-map-alist)
     (setq minor-mode-map-alist
 	  (cons (cons 'LaTeX-math-mode LaTeX-math-keymap)
@@ -3850,7 +3847,8 @@ commands are defined:
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
     (easy-menu-remove LaTeX-math-mode-menu))
-  (set-buffer-modified-p (buffer-modified-p)))
+  (set-buffer-modified-p (buffer-modified-p))
+  (TeX-set-mode-name))
 
 (fset 'latex-math-mode 'LaTeX-math-mode)
 
@@ -4238,7 +4236,8 @@ then the value of `TeX-mode-hook', and then the value
 of `LaTeX-mode-hook'."
   (interactive)
   (LaTeX-common-initialization)
-  (setq mode-name "LaTeX")
+  (setq TeX-base-mode-name "LaTeX")
+  (TeX-set-mode-name)
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
   (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
