@@ -1,3 +1,21 @@
+2002-04-13  Nix  <nix@esperi.demon.co.uk>
+
+	* prv-xemacs.el (preview-nonready-icon):
+	Give a reasonable error if the icon doesn't exist.
+	(preview-error-icon): Likewise.
+	(preview-icon): Likewise.
+
+	(preview-make-clickable): Set `isearch-open-invisible' on new clickable regions.
+	(preview-toggle): Likewise.
+	(preview-auto-reveal): Only track reveal-mode if reveal-mode is defined.
+	If reveal-mode' is not defined, the default should be nil.
+
+	(isearch-highlight): Make a protected, disabled advisement by default.
+	(replace-highlight): Never exists; don't bother to advise.
+	(preview-query-replace-reveal): Turn on the isearch-highlight advisement.
+
+	* doc/todo.texi: Update XEmacs status: most things are now done.
+
 2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-xemacs.el (preview-toggle): Make isearch open the invisible
