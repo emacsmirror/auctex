@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10h
+;; Version: 9.10i
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -26,17 +26,7 @@
 
 ;;; Code:
 
-(eval-and-compile
-  (condition-case ()
-      (require 'custom)
-    (error nil))
-  (if (and (featurep 'custom) (fboundp 'custom-declare-variable))
-      nil ;; We've got what we needed
-    ;; We have the old custom-library, hack around it!
-    (defmacro defgroup (&rest args)
-      nil)
-    (defmacro defcustom (var value doc &rest args) 
-      (` (defvar (, var) (, value) (, doc))))))
+(require 'custom)
 
 (defgroup AUC-TeX nil
   "A (La)TeX environment."
@@ -350,9 +340,7 @@ Full documentation will be available after autoloading the function."
   "Documentation for autoload functions.")
 
 ;; This hook will store bibitems when you save a BibTeX buffer.
-(defvar bibtex-mode-hook nil)
-(or (memq 'BibTeX-auto-store bibtex-mode-hook) ;No `add-hook' yet.
-    (setq bibtex-mode-hook (cons 'BibTeX-auto-store bibtex-mode-hook)))
+(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
 
 (autoload 'BibTeX-auto-store "latex" no-doc t)
 
@@ -370,172 +358,14 @@ Full documentation will be available after autoloading the function."
 
 (require 'easymenu)
 
-;; An GNU Emacs 19 function.
-(or (fboundp 'set-text-properties)
-    (fset 'set-text-properties (symbol-function 'ignore)))
-
-;; An GNU Emacs 19 variable.
-(defvar minor-mode-map-alist nil)
-
-(or (fboundp 'match-string)
-    ;; Introduced in 19.29.
-    (defun match-string (num &optional string)
-      "Return string of text matched by last search.
-NUM specifies which parenthesized expression in the last regexp.
- Value is nil if NUMth pair didn't match, or there were less than NUM pairs.
-Zero means the entire text matched by the whole regexp or whole string.
-STRING should be given if the last search was by `string-match' on STRING."
-      (if (match-beginning num)
-	  (if string
-	      (substring string (match-beginning num) (match-end num))
-	    (buffer-substring (match-beginning num) (match-end num))))))
-
-;;; Special support for Emacs 18
-
-(cond ((< (string-to-int emacs-version) 19)
-
-(condition-case error
-    (require 'outline)			;No provide in Emacs 18 outline.el 
-  (error (provide 'outline)))
-
-;; Emacs 18 groks this regexp, but you lose the ability to use
-;; whitespace anywhere in your documentstyle command.
-(defvar LaTeX-auto-minimal-regexp-list
-  '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-     (1 2) LaTeX-auto-style)
-    ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style)
-    ("\\\\documentclass\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-     (1 2) LaTeX-auto-style)
-    ("\\\\documentclass{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style))
-  "Minimal list of regular expressions matching LaTeX macro definitions.")
-	    
-;; The Emacs 19 definition of `comment-region'.
-(defun comment-region (beg end &optional arg)
-  "Comment the region; third arg numeric means use ARG comment characters.
-If ARG is negative, delete that many comment characters instead.
-Comments are terminated on each line, even for syntax in which newline does
-not end the comment.  Blank lines do not get comments."
-  ;; if someone wants it to only put a comment-start at the beginning and
-  ;; comment-end at the end then typing it, C-x C-x, closing it, C-x C-x
-  ;; is easy enough.  No option is made here for other than commenting
-  ;; every line.
-  (interactive "r\np")
-  (or comment-start (error "No comment syntax is defined"))
-  (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
-  (save-excursion
-    (save-restriction
-      (let ((cs comment-start) (ce comment-end))
-        (cond ((not arg) (setq arg 1))
-              ((> arg 1)
-               (while (> (setq arg (1- arg)) 0)
-                 (setq cs (concat cs comment-start)
-                       ce (concat ce comment-end)))))
-        (narrow-to-region beg end)
-        (goto-char beg)
-        (while (not (eobp))
-          (if (< arg 0)
-              (let ((count arg))
-                (while (and (> 1 (setq count (1+ count)))
-                            (looking-at (regexp-quote cs)))
-                  (delete-char (length cs)))
-                (if (string= "" ce) ()
-                  (setq count arg)
-                  (while (> 1 (setq count (1+ count)))
-                    (end-of-line)
-                    ;; this is questionable if comment-end ends in whitespace
-                    ;; that is pretty brain-damaged though
-                    (skip-chars-backward " \t")
-                    (backward-char (length ce))
-                    (if (looking-at (regexp-quote ce))
-                        (delete-char (length ce)))))
-		(forward-line 1))
-            (if (looking-at "[ \t]*$") ()
-              (insert cs)
-              (if (string= "" ce) ()
-                (end-of-line)
-                (insert ce)))
-            (search-forward "\n" nil 'move)))))))
-
-;; The Emacs 19 definition of `add-hook'.
-(defun add-hook (hook function &optional append)
-  "Add to the value of HOOK the function FUNCTION.
-FUNCTION is not added if already present.
-FUNCTION is added (if necessary) at the beginning of the hook list
-unless the optional argument APPEND is non-nil, in which case
-FUNCTION is added at the end.
- 
-HOOK should be a symbol, and FUNCTION may be any valid function.  If
-HOOK is void, it is first set to nil.  If HOOK's value is a single
-function, it is changed to a list of functions."
-  (or (boundp hook) (set hook nil))
-  ;; If the hook value is a single function, turn it into a list.
-  (let ((old (symbol-value hook)))
-    (if (or (not (listp old)) (eq (car old) 'lambda))
-        (set hook (list old))))
-  (or (if (consp function)
-          ;; Clever way to tell whether a given lambda-expression
-          ;; is equal to anything in the hook.
-          (let ((tail (assoc (cdr function) (symbol-value hook))))
-            (equal function tail))
-        (memq function (symbol-value hook)))
-      (set hook 
-           (if append
-               (nconc (symbol-value hook) (list function))
-             (cons function (symbol-value hook))))))
-
-;; An Emacs 19 function.
-(defun make-directory (dir)
-  "Create the directory DIR."
-  (shell-command (concat "mkdir " (if (string-match "/$" dir)
-				      (substring dir 0 -1)
-				    dir))))
- 
-;; An Emacs 19 function.
-(defun abbreviate-file-name (name)
-  name)
-
-;; Different interface for each variant.
-(defun TeX-active-mark ()
-  ;; Emacs 18 does not have active marks.
-  nil)
-
-;; Different interface for each variant.
-(defun TeX-mark-active ()
-  ;; In Emacs 18 (mark) returns nil when not active.
-  (mark))
-
-;; An Emacs 19 function.
-(defun member (elt list)
-  "Return non-nil if ELT is an element of LIST.  Comparison done with EQUAL.
-The value is actually the tail of LIST whose car is ELT."
-  (while (and list (not (equal elt (car list))))
-    (setq list (cdr list)))
-  list)
-
-;; An Emacs 19 macro.
-(defmacro save-match-data (&rest body)
-  "Execute the BODY forms, restoring the global value of the match data."
-  (let ((original (make-symbol "match-data")))
-    (list
-     'let (list (list original '(match-data)))
-     (list 'unwind-protect
-           (cons 'progn body)
-           (list 'store-match-data original)))))
-
-)
-
 ;;; Special support for XEmacs 
 
-((or (string-match "Lucid" emacs-version)
-     (string-match "XEmacs" emacs-version))
+(cond ((or (string-match "Lucid" emacs-version)
+	   (string-match "XEmacs" emacs-version))
 
-(and (eq emacs-major-version 19)
-     (eq emacs-minor-version 13)
-     ;; XEmacs 19.13 had a partial defintion of set-text-properties.
-     (defadvice set-text-properties (around ignore-strings activate)
-       "Ignore strings."
-       (or (stringp (ad-get-arg 3))
-	   ad-do-it)))
+(and (<= emacs-major-version 19)
+     (<= emacs-minor-version 13)
+     (error "AUC TeX requires XEmacs 19.14 or later"))
 
 (defadvice popup-mode-menu (before LaTeX-update activate)
   "Run `LaTeX-menu-update' before showing menu."
@@ -551,42 +381,17 @@ The value is actually the tail of LIST whose car is ELT."
 (defun TeX-active-mark ()
   (and zmacs-regions (mark)))
 
-;; Lucid 19.11 have no idea what `kill-all-local-variables' is
-;; supposed to do.  I have to explicitly clear `TeX-symbol-list'
-;; despite it being buffer local.  You can verify this by removing the
-;; hook below, setting a breakpoint just after the call to
-;; `kill-all-local-variables' in `VirTeX-common-initialization' and
-;; examine the local and global value of `TeX-symbol-list'.  Make sure
-;; you have a `%%% mode: latex' line in your file variable section,
-;; and have latex-mode as your default mode for ".tex" files.
-;; Unfortunately I have been unable to isolate the error further.
-(add-hook 'change-major-mode-hook
-	  '(lambda () (setq TeX-symbol-list nil
-			    LaTeX-environment-list nil)))
-
-;; Lucid 19.6 groks this regexp, but you lose the ability to use
-;; whitespace in your documentstyle command.
-(string-match "\\`[0-9]+\\.\\([0-9]+\\)" emacs-version)
-(or (> (string-to-int (substring emacs-version
-				 (match-beginning 1) (match-end 1)))
-       8)
-    (> (string-to-int emacs-version) 19)
-    (boundp 'LaTeX-auto-minimal-regexp-list)
-    (setq LaTeX-auto-minimal-regexp-list
-     '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-        (1 2) LaTeX-auto-style)
-       ("\\\\documentstyle{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style)
-       ("\\\\documentclass\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
-        (1 2) LaTeX-auto-style)
-       ("\\\\documentclass{\\([^#\\\\\\.\n\r]+\\)}" (1) LaTeX-auto-style))))
-
-;; Lucid only
 (fset 'TeX-activate-region (symbol-function 'zmacs-activate-region))
 
 )
 ;;; Special support for GNU Emacs 19
 
 (t
+
+(if (or (< emacs-major-version 19)
+	(and (= emacs-major-version 19)
+	     (<= emacs-minor-version 29)))
+    (error "AUC TeX requires Emacs 19.30 or later"))
 
 (defun TeX-mark-active ()
   ;; In FSF 19 mark-active indicates if mark is active.
@@ -799,8 +604,9 @@ the beginning of the file, but that feature will be phased out."
   "Directory of master file."
   (abbreviate-file-name
    (expand-file-name
-    (concat (file-name-directory buffer-file-name)
-	    (file-name-directory (TeX-master-file))))))
+    (substitute-in-file-name
+     (concat (file-name-directory buffer-file-name)
+	     (file-name-directory (TeX-master-file)))))))
 
 (defcustom TeX-master t
   "*The master file associated with the current buffer.
@@ -1059,9 +865,16 @@ active.")
 (defun TeX-add-style-hook (style hook)
   "Give STYLE yet another HOOK to run."
   (let ((entry (assoc style TeX-style-hook-list)))
-    (if (null entry)
-        (setq TeX-style-hook-list (cons (list style hook) TeX-style-hook-list))
-      (setcdr entry (cons hook (cdr entry))))))
+    (cond ((null entry)
+	   ;; New style, add entry.
+	   (setq TeX-style-hook-list (cons (list style hook)
+					   TeX-style-hook-list)))
+	  ((member hook entry)
+	   ;; Old style, hook already there, do nothing.
+	   nil)
+	  (t
+	   ;; Old style, new hook.
+	   (setcdr entry (cons hook (cdr entry)))))))
 
 (defun TeX-unload-style (style)
   "Forget that we once loaded STYLE."
