@@ -339,16 +339,6 @@ nil displays the underlying text, and 'toggle toggles."
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
-(defcustom preview-auto-reveal 'reveal-mode
-  "*Cause previews to open automatically when entered.
-Set to t or nil, or to a symbol which will be consulted
-if defined.  The default is to follow the setting of
-`reveal-mode'."
-  :group 'preview-appearance
-  :type '(choice (const :tag "Off" nil)
-		 (const :tag "On" t)
-		 symbol))
-
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
@@ -369,8 +359,7 @@ if defined.  The default is to follow the setting of
 		(push ov newlist))))
     (if (or disable-point-adjustment
 	    global-disable-point-adjustment
-	    (and (boundp preview-auto-reveal)
-		 (symbol-value preview-auto-reveal)))
+	    (preview-auto-reveal-p preview-auto-reveal))
 	(preview-open-overlays (overlays-at pt))
       (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
 			   (< pt (marker-position preview-marker)))))
