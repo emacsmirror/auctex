@@ -98,7 +98,7 @@
 ;; V0.924 27Aug2004 Ralf Angeli
 ;;  - `font-latex': Add to AUCTeX's customization group.
 ;;  - `font-latex-find-matching-close': Correctly recognize multiple
-;;    escape characters.
+;;    escape characters.  Add missing paren.
 ;; V0.923 18Aug2004 Ralf Angeli
 ;;  - `font-latex-script': Disable raising of characters for older
 ;;    Emacsen.  Original patch by Reiner Steib.
@@ -1345,7 +1345,7 @@ OPENCHAR is the opening character and CLOSECHAR is the closing character."
   (let ((parse-sexp-ignore-comments t) ; scan-sexps ignores comments
         (init-point (point))
         (status)
-	(esc-char (if (and (boundp 'TeX-esc) TeX-esc) TeX-esc "\\"))
+	(esc-char (if (and (boundp 'TeX-esc) TeX-esc) TeX-esc "\\")))
     (if (condition-case nil
             (goto-char (scan-sexps (point) 1))
           (error))
