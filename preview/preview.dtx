@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.39 $
+%  \rcskey \version CVS-$Revision: 1.40 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-21 14:04:59 $
+%\rcskey\next $Date: 2002-03-21 15:11:19 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -238,7 +238,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.39 $
+   \reserved@a\reserved@b CVS-$Revision: 1.40 $
 \else
    \begingroup
       \lccode`-=`.
@@ -247,7 +247,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-21 14:04:59 $
+\reserved@a\next $Date: 2002-03-21 15:11:19 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -749,7 +749,7 @@
 %<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
 %<auctex>    Just hit Return and be gone.}}
 %<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
-%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended%
+%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended.%
 %<auctex>  (\number\ht\pr@box+\number\dp\pr@box x\number\wd\pr@box)}}
 %    \end{macrocode}
 %Since over/underfull boxes are about the messiest things to parse, we
