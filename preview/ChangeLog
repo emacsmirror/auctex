@@ -1,5 +1,7 @@
 2005-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* configure.in: Cosmetics for ./configure --help.
+
 	* preview.el (desktop-buffer-preview): Return buffer even if no
 	information about previews is found.
 
