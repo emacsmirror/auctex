@@ -558,7 +558,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.409 $"))
+	(rev "$Revision: 5.410 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -573,7 +573,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-05 03:59:24 $"))
+    (let ((date "$Date: 2004-08-05 13:43:24 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3895,7 +3895,14 @@ between."
 
 ;;;###autoload
 (defun TeX-submit-bug-report ()
-  "Submit a bug report on AUCTeX via mail."
+  "Submit a bug report on AUCTeX via mail.
+
+Don't hesitate to report any problems or inaccurate documentation.
+
+If you don't have setup sending mail from (X)Emacs, please copy
+the output buffer into your mail program, as is gives use
+important information about your AUCTeX version and AUCTeX
+configuration."
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
@@ -3909,7 +3916,13 @@ between."
 	 'TeX-master)
    nil nil
    "Remember to cover the basics, that is, what you expected to happen and
-what in fact did happen."))
+what in fact did happen.
+
+If the bug (or problem) is triggered by a specific \(La\)TeX
+file, you should try to produce a minimal sample file showing the
+problem and include it in your report.
+
+Your bug report will be posted to the AUCTeX mailing list."))
 
 ;;; Ispell Support
 

@@ -1,5 +1,7 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex.el (TeX-submit-bug-report): Added more explanations.
+
 	* latex.el (LaTeX-style-list): Improve doc-string.
 
 	* font-latex.el (font-latex-script-display): New variable.  Make
