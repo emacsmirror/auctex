@@ -56,16 +56,17 @@ Startup file relative directories:]])
 
 AC_MSG_CHECKING([where the package lisp files go])
 AC_ARG_WITH(packagelispdir,
-[[  --with-packagelispdir=DIR    Where to find the package lisp files
-      relative to the Lisp startup file.]],
+[[  --with-packagelispdir=DIR
+                          Where to find the package lisp files
+                          relative to the Lisp startup file.]],
   [packagelispdir=["${withval}"]])
 AC_LISPIFY_DIR(packagelispdir)
 AC_MSG_RESULT([[${packagelispdir}]])
 
 AC_MSG_CHECKING([where the icon files go])
 AC_ARG_WITH(icondir,
-[[  --with-icon=DIR    Where the icon files go
-      relative to the Lisp startup file.]],
+[[  --with-icon=DIR         Where the icon files go
+                          relative to the Lisp startup file.]],
   [icon=["${withval}"]])
 AC_LISPIFY_DIR(icondir)
 AC_MSG_RESULT([[${icondir}
@@ -83,9 +84,9 @@ AC_SUBST(packagedir)
 EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
 
-AC_ARG_VAR(GS,[[GhostScript executable for batch operation]])
+AC_ARG_VAR(GS,[Ghostscript executable for batch operation])
 AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE, 
-[GhostScript not found!  Aborting!  
+[Ghostscript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
 
 EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["${GS}"]])
@@ -112,7 +113,7 @@ AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 # Be very careful about assuming things about the available hash programs
 # MikTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
-AC_ARG_VAR(TEXHASH,[[command to update the TeX filename database]])
+AC_ARG_VAR(TEXHASH,[command to update the TeX filename database])
 AC_PATH_PROG(TEXHASH, texhash)
 if test -z "${TEXHASH}"; then
   AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
