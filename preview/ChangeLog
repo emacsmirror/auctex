@@ -7,6 +7,10 @@
 	(preview-gs-get-colors): use new definition of
 	preview-transparent-border, use PostScript code not subject to
 	anti-aliasing effects.
+	(preview-transparent-border): Change default to take into
+	account that we previously got only half of requested width.
+	(preview-gs-get-colors): generate only necessary tokens.  Disable
+	stroke adjustment in order to get more even borders.
 
 2001-11-10  David Kastrup  <David.Kastrup@t-online.de>
 
