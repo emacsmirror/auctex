@@ -587,7 +587,7 @@ the beginning of the file, but that feature will be phased out."
 		(TeX-add-local-master))))
 
 	 ;; Is this a master file?
-	 ((re-search-forward TeX-header-end 10000 t)
+	 ((and TeX-header-end (re-search-forward TeX-header-end 10000 t))
 	  (setq TeX-master my-name))
 
 	 ;; Ask the user (but add it as a local variable).
