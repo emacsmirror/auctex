@@ -15,7 +15,7 @@ AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
 	   (and putative-existing-lisp-dir\
 		(setq putative-existing-lisp-dir\
 		      (file-name-directory putative-existing-lisp-dir))\
-		(string-match \"[[\\\\/]]\\\\(lisp[[\\\\/]]\\\\)?\\\\($2[[\\\\/]]\\\\)?\$\"\
+		(string-match \"[[\\\\/]]lisp[[\\\\/]]\\\\($2[[\\\\/]]\\\\)?\$\"\
 			       putative-existing-lisp-dir)\
 		(replace-match \"\" t t putative-existing-lisp-dir))))\
       (if (and (boundp (quote early-packages))\
@@ -240,7 +240,7 @@ AC_ARG_WITH(xemacs,
    else EMACS="${withval}"; fi ; fi])
 
 # "${prefix}/bin" is for Windows users
-AC_PATH_PROGS(EMACS, $EMACS emacs xemacs, "", $PATH "${prefix}/bin" )         
+AC_PATH_PROGS(EMACS, $EMACS emacs xemacs, "", $PATH "${prefix}/bin" )
 if test -z "$EMACS"; then
   AC_MSG_ERROR([(X)Emacs not found!  Aborting!])
 fi
@@ -272,6 +272,7 @@ fi
   AC_SUBST(EMACS_MAJOR_VERSION)
 ])
 
+
 AC_DEFUN(EMACS_TEST_LISPDIR, [
   for i in "\${packagedir}/lisp" \
 	   "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
@@ -284,7 +285,7 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
     EMACS_LISPDIR=""
     EMACS_LISP(EMACS_LISPDIR,
       [[(let ((load-path load-path)
-             (pattern (concat \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\")))
+	     (pattern (concat \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\")))
 	 (while (and load-path (not (string-match pattern
 						  (car load-path))))
 		(setq load-path (cdr load-path)))
@@ -513,8 +514,8 @@ AC_DEFUN(VALID_BUILD_DIR, [
   AC_MSG_CHECKING([if build directory is valid])
   EMACS_LISP(valid_build_dir,
     [[(if (or (member (directory-file-name default-directory) load-path)\
-              (member (file-name-as-directory default-directory) load-path))\
-         \"no\" \"yes\")]])
+	      (member (file-name-as-directory default-directory) load-path))\
+	 \"no\" \"yes\")]])
   if test "$valid_build_dir" = "no"; then
     AC_MSG_ERROR([Build directory inside load-path!  Aborting!])
   else
@@ -528,7 +529,7 @@ dnl
 AC_DEFUN(TEX_INPUT_DIRS,
  [
 AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
-                          semicolon-separated DIRS for TeX file searches],
+			  semicolon-separated DIRS for TeX file searches],
  [ texinputdirs="${withval}" ;
    AC_FULL_EXPAND(withval)
    texinputdirsout=""

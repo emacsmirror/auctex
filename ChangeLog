@@ -1,5 +1,9 @@
 2004-08-19  David Kastrup  <dak@gnu.org>
 
+	* aclocal.m4: `putative-existing-lisp-dir' is not a package
+	directory if `lisp' is not a path component.  Normalize
+	whitespace.
+
 	* tex-site.el.in (TeX-macro-global): Don't quote texinputdirs
 	additionally.
 
