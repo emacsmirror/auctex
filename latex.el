@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10j
+;; Version: 9.10k
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -487,13 +487,13 @@ It may be customized with the following variables:
 	   (point)))
       (insert "\n"))
   (insert "\\end{" (LaTeX-current-environment 1) "}")
-  (LaTeX-indent-line)
+  (indent-according-to-mode)
   (if (not (looking-at "[ \t]*$"))
       (insert "\n")
     (let ((next-line-add-newlines t))
       (next-line 1)
       (beginning-of-line)))
-  (LaTeX-indent-line))
+  (indent-according-to-mode))
 
 (autoload 'outline-flag-region "outline")
 
@@ -521,7 +521,7 @@ It may be customized with the following variables:
 	(or (TeX-looking-at-backward "^[ \t]*")
 	    (newline))
 	(insert TeX-esc "begin" TeX-grop environment TeX-grcl)
-	(LaTeX-indent-line)
+	(indent-according-to-mode)
 	(if extra (insert extra))
 	(newline)
 	(goto-char (mark))
@@ -530,21 +530,21 @@ It may be customized with the following variables:
 	(insert TeX-esc "end" TeX-grop environment TeX-grcl)
 	(or (looking-at "[ \t]*$")
 	    (save-excursion (newline-and-indent)))
-	(LaTeX-indent-line)
+	(indent-according-to-mode)
 	(end-of-line 0)
 	(or (assoc environment LaTeX-indent-environment-list)
 	    (LaTeX-fill-environment nil)))
     (or (TeX-looking-at-backward "^[ \t]*")
 	(newline))
     (insert TeX-esc "begin" TeX-grop environment TeX-grcl)
-    (LaTeX-indent-line)
+    (indent-according-to-mode)
     (if extra (insert extra))
     (newline-and-indent)
     (newline)
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
     (or (looking-at "[ \t]*$")
 	(save-excursion (newline-and-indent)))
-    (LaTeX-indent-line)
+    (indent-according-to-mode)
     (end-of-line 0)))
 
 (defun LaTeX-modify-environment (environment)
@@ -752,7 +752,7 @@ job to this function."
     (newline-and-indent)
     (LaTeX-label environment)
     (end-of-line 0)
-    (LaTeX-indent-line)
+    (indent-according-to-mode)
 
     (if (zerop (length caption))
 	()
@@ -760,7 +760,7 @@ job to this function."
       (newline-and-indent)
       (insert TeX-esc "caption" TeX-grop caption TeX-grcl)
       (end-of-line 0)
-      (LaTeX-indent-line))
+      (indent-according-to-mode))
 
     (if (member environment '("table" "table*"))
 	(LaTeX-env-array "tabular"))))
@@ -876,7 +876,7 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
     (if (assoc environment LaTeX-item-list)
 	(funcall (cdr (assoc environment LaTeX-item-list)))
       (TeX-insert-macro "item"))
-    (LaTeX-indent-line)))
+    (indent-according-to-mode)))
 
 (defun LaTeX-item-argument ()
   "Insert a new item with an optional argument."
@@ -1496,7 +1496,7 @@ the cdr is the brace used with \\right.")
           (insert (completing-read
                    (TeX-argument-prompt optional prompt "Which brace")
                    TeX-left-right-braces)))
-	(LaTeX-indent-line)))))
+	(indent-according-to-mode)))))
 
 ;;; Indentation
 
@@ -1550,7 +1550,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(narrow-to-region from to)
 	(goto-char from)
 	(while (not (eobp))
-	  (LaTeX-indent-line)
+	  (indent-according-to-mode)
 	  (forward-line))
 	(goto-char from)
 	(while (not (eobp))
@@ -1583,7 +1583,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(goto-char (point-min))
 	(while (search-forward "$$ " nil t)
 	  (replace-match "$$\n" t t)
-	  (LaTeX-indent-line)))))
+	  (indent-according-to-mode)))))
 
 (defun LaTeX-fill-region-as-para-do (from to justify-flag)
   "Fill region as one paragraph: break lines to fit `fill-column'."
@@ -1594,7 +1594,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(save-restriction
 	  (goto-char from)
 	  (skip-chars-forward " \n")
-	  (LaTeX-indent-line)
+	  (indent-according-to-mode)
 	  (beginning-of-line)
 	  (narrow-to-region (point) to)
 	  (setq from (point))
@@ -1641,7 +1641,7 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	(if (equal (preceding-char) ?\\)
 	    (insert ? ))
 	(insert ?\n)
-	(LaTeX-indent-line)
+	(indent-according-to-mode)
 	(setq prefixcol (current-column))
 	(and justify-flag (not (eobp))
 	     (progn
@@ -2689,7 +2689,6 @@ commands are defined:
     (define-key map "\n"      'reindent-then-newline-and-indent)
     
     ;; From latex.el
-    (define-key map "\t"      'LaTeX-indent-line)
     (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
     ;; This key is now used by Emacs for face settings.
     ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
