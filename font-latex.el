@@ -1,6 +1,7 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2003, 2004 Free Software Foundation.
+;; Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+;;               2004, 2005 Free Software Foundation.
 
 ;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
@@ -687,8 +688,13 @@ have changed."
 			      ;; is valid, but allowing it might screw
 			      ;; up fontification of stuff like
 			      ;; "\url{...} foo \textbf{<--!...}".
-			      "\\([^a-z@*\n\f{]\\).*?\\(\\1\\)")
-		     (1 "\"") (2 "\""))))
+			      "\\([^a-z@*\n\f{]\\).*?"
+			      ;; Give an escape char at the end of the
+			      ;; verbatim construct punctuation syntax.
+			      ;; Prevents wrong fontification of stuff
+			      ;; like "\verb|foo\|".
+			      "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")
+		     (1 "\"") (2 ".") (3 "\""))))
     (unless (= (length verb-macros) 0)
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-macros "\\)"
