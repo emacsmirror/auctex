@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.4 $  
+;; RCS status      : $Revision: 3.5 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri May 31 09:20:20 1991
-;; Update Count    : 124
+;; Last Modified On: Sat Jun  1 20:59:15 1991
+;; Update Count    : 130
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,6 +38,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;
 ;; HISTORY
+;; 1-Jun-1991  (Last Mod: Sat Jun  1 20:32:48 1991 #129)  Kresten Krab Thorup
+;;    fill-paragraph is made to indent too
 ;; 31-May-1991  (Last Mod: Fri May 31 09:10:01 1991 #118)  Kresten Krab Thorup
 ;;    The distribution has been split into 8 individual modules. This will
 ;;    speed up the entire system.  Also, there has been added completion for
@@ -236,8 +238,9 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\C-c\n"   'TeX-terminate-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-x" 'LaTeX-section)
   (define-key LaTeX-mode-map "\C-c\C-c" 'LaTeX-environment)
-  (define-key LaTeX-mode-map "\C-c@" 'LaTeX-bibtex)
-  (define-key LaTeX-mode-map "\C-c#" 'LaTeX-makeindex))
+  (define-key LaTeX-mode-map "\C-c@"    'LaTeX-bibtex)
+  (define-key LaTeX-mode-map "\C-c#"    'LaTeX-makeindex)
+  (define-key LaTeX-mode-map "\M-q"     'LaTeX-fill-paragraph))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TeX / LaTeX modes
@@ -403,7 +406,7 @@ of LaTeX-mode-hook."
                                    "^[ \t]*"
                                    "\\\\"
                                    "\\("
-                                   "begin\\|end\\|item\\|part\\|chapter\\|"
+                                   "begin\\|end\\|part\\|chapter\\|"
                                    "section\\|subsection\\|subsubsection\\|"
                                    "paragraph\\|include\\|includeonly\\|"
                                    "tableofcontents\\|appendix"
@@ -466,16 +469,51 @@ Add LaTeX-indent-level indentation in each \\begin{ - \\end{ block.
 Lines starting with \\item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
-  (let ((indent (calculate-LaTeX-indentation)))
-    (if (/= (current-indentation) indent)
-	(let ((beg (progn
-		     (beginning-of-line)
-		     (point))))
-	  (back-to-indentation)
-	  (delete-region beg (point))
-	  (indent-to indent))
-      ; Should we leave it at the same position, as in c-mode?
-      (back-to-indentation))))
+  (save-excursion
+    (let ((indent (calculate-LaTeX-indentation)))
+      (if (/= (current-indentation) indent)
+	  (let ((beg (progn
+		       (beginning-of-line)
+		       (point))))
+	    (back-to-indentation)
+	    (delete-region beg (point))
+	    (indent-to indent))
+	;; Should we leave it at the same position, as in c-mode?
+	(back-to-indentation)))))
+
+(defun LaTeX-fill-paragraph (prefix)
+"Fill paragraph at or after point.
+Prefix arg means justify as well."
+  (interactive "P")
+  (save-excursion
+    (make-local-variable 'indent-val)
+    (setq indent-val (calculate-LaTeX-indentation))
+    (mark-paragraph)
+    (setq fill-column (- fill-column indent-val))
+    (fill-paragraph prefix)
+    (indent-region (region-beginning) (region-end) nil)
+    (setq fill-column (+ fill-column indent-val))))
+
+;;
+;; The fill-environment functions are still being tested...
+;;
+
+;;(defun LaTeX-fill-environment (prefix)
+;;  (interactive "P")
+;;  (save-excursion
+;;    (LaTeX-mark-environment)
+;;    (fill-individual-paragraphs prefix) 
+;;    (indent-region (region-beginning) (region-end) nil)))
+
+;;(defun LaTeX-mark-environment ()
+;;  ""
+;;  (let (env LaTeX-current-environment)
+;;    (if (re-search-backward (concat "\\begin{" env "}" ) nil t)
+;;	(progn
+;;	  (set-mark)
+;;	(if (not (re-search-forward "\\end{" env "}" nil t))
+;;	    (error "you're not inside any environment")))
+;;    (error "no matching begin")))
 
 (defun calculate-LaTeX-indentation ()
   "Return the correct indentation of line of LaTeX source. (I hope...)"
@@ -496,7 +534,7 @@ LaTeX-item-indent."
   (skip-chars-backward "\n\t ")
   (move-to-column (current-indentation))
   (cond ((looking-at "\\\\begin{document}")
-					; I dislike having all of the document indented...
+	 ;; I dislike having all of the document indented...
 	 (current-indentation))
 	((looking-at "\\\\begin{verbatim")
 	 0)
