@@ -1,5 +1,16 @@
 2005-02-09  David Kastrup  <dak@gnu.org>
 
+	* prv-xemacs.el (add-to-list): only provide definition for
+	three-argument version if XEmacs doesn't.  May be removed at some
+	time completely.
+	(null-device): Only defvar if unbound in order not to munge the
+	doc string.
+	(preview-transparent-border): Silence the byte-compiler.
+	(preview-supports-image-type): Move earlier.
+	(preview-filter-specs): Correct a few typos.
+
+	* preview.el (preview-error-quote): Remove unused variable `char'.
+
 	* doc/faq.texi (Requirements): Stop talking about ancient XEmacs
 	versions.
 	(Requirements): Mention Emacs 22 instead of 21.4

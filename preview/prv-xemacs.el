@@ -146,8 +146,12 @@ The message is displayed with label `progress'; see `display-message'."
 ;; In time, this will hopefully all migrate into XEmacs.
 
 ; XEmacs's `add-to-list' takes only two arguments.
-(defun add-to-list (list-var element &optional append)
-  "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
+(condition-case nil
+    (let (check)
+      (add-to-list 'check t t))
+  (error
+   (defun add-to-list (list-var element &optional append)
+     "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
 The test for presence of ELEMENT is done with `equal'.
 If ELEMENT is added, it is added at the beginning of the list,
 unless the optional argument APPEND is non-nil, in which case
@@ -158,19 +162,22 @@ until a certain package is loaded, you should put the call to `add-to-list'
 into a hook function that will be run only after loading the package.
 `eval-after-load' provides one way to do this.  In some cases
 other hooks, such as major mode hooks, can do the job."
-  (if (member element (symbol-value list-var))
-      (symbol-value list-var)
-    (set list-var
-         (if append
-             (append (symbol-value list-var) (list element))
-           (cons element (symbol-value list-var))))))
+     (if (member element (symbol-value list-var))
+	 (symbol-value list-var)
+       (set list-var
+	    (if append
+		(append (symbol-value list-var) (list element))
+	      (cons element (symbol-value list-var))))))))
+     
+(unless (boundp 'null-device)
+  (defvar null-device (or (and (boundp 'grep-null-device)
+			       grep-null-device)
+			  (if (memq system-type '(ms-dos windows-nt))
+			      "NUL"
+			    "/dev/null"))
+    "The system null device."))
 
-(defvar null-device (or (and (boundp 'grep-null-device)
-			     grep-null-device)
-			(if (memq system-type '(ms-dos windows-nt))
-			    "NUL"
-			  "/dev/null"))
-  "The system null device.")
+(defvar preview-transparent-border)
 
 ;; Images.
 
@@ -179,6 +186,11 @@ other hooks, such as major mode hooks, can do the job."
 ;; Argh, dired breaks :file :(
 ;; This is a temporary kludge to get around that until a fixed dired
 ;; or a fixed XEmacs is released.
+
+(defsubst preview-supports-image-type (imagetype)
+  "Return whether IMAGETYPE is supported by XEmacs."
+  (memq imagetype (image-instantiator-format-list)))
+
 (defun preview-create-icon-1 (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."
   (let ((glyph
@@ -205,10 +217,10 @@ other hooks, such as major mode hooks, can do the job."
     (while (and spec-list
 		(not (setq glyph
 			   (catch 'preview-filter-specs
-			     (preview-filter-specs-1 (car (spec-list)))))))
+			     (preview-filter-specs-1 (car spec-list))))))
       (setq spec-list (cdr spec-list)))
     (and glyph preview-ascent-spec
-	 (set-glyph-baseline preview-ascent-spec))
+	 (set-glyph-baseline glyph preview-ascent-spec))
     glyph))
 
 (put 'preview-filter-specs :type
@@ -712,10 +724,6 @@ of an insertion."
     (preview-create-icon-1 (nth 0 image)
 			 (nth 1 image)
 			 (nth 2 image))))
-
-(defsubst preview-supports-image-type (imagetype)
-  "Return whether IMAGETYPE is supported by XEmacs."
-  (memq imagetype (image-instantiator-format-list)))
 
 (provide 'prv-xemacs)
 
