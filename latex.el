@@ -73,10 +73,7 @@ This depends on `LaTeX-insert-into-comments'."
 	     (insert (match-string 0))
 	     (newline))
 	    ((and (not (bolp))
-		  (not (TeX-looking-at-backward
-			(concat "\\("
-				(regexp-quote TeX-esc) (regexp-quote TeX-esc)
-				"\\)*" (regexp-quote TeX-esc))))
+		  (not (TeX-escaped-p))
 		  (looking-at (concat "[ \t]*" comment-start "+[ \t]*")))
 	     (delete-region (match-beginning 0) (match-end 0))
 	     (indent-new-comment-line))
@@ -2165,13 +2162,9 @@ outer indentation in case of a commented line.  The symbols
       ;; INNER indentation
       (progn
 	(move-to-left-margin)
-	(re-search-forward
-	 (concat "\\(\\(^\\|[^\\\n]\\)\\("
-		 (regexp-quote TeX-esc)
-		 (regexp-quote TeX-esc)
-		 "\\)*\\)\\(" comment-start "+\\([ \t]*\\)\\)")
-	 (line-end-position) t)
-	(- (length (match-string 5)) (if (integerp comment-padding)
+	(TeX-re-search-forward-unescaped
+	 (concat comment-start "+\\([ \t]*\\)") (line-end-position) t)
+	(- (length (match-string 1)) (if (integerp comment-padding)
 					 comment-padding
 				       (length comment-padding))))
     ;; OUTER indentation
@@ -2448,19 +2441,10 @@ space does not end a sentence, so don't break a line there."
 	(let (linebeg
 	      code-comment-flag)
 	  (setq code-comment-flag
-		(if (save-excursion
-		      (LaTeX-back-to-indentation)
-		      (re-search-forward
-		       (concat
-			"\\([ \t]+" comment-start "\\)"
-			"\\|"
-			"\\(\\(^\\|[^\\\n]\\)\\("
-			(regexp-quote TeX-esc)
-			(regexp-quote TeX-esc)
-			"\\)*\\(" comment-start "\\)\\)")
-		       (line-end-position) t))
-		    t
-		  nil))
+		(save-excursion
+		  (LaTeX-back-to-indentation)
+		  (TeX-search-forward-unescaped comment-start
+						(line-end-position) t)))
 	  (save-restriction
 	    ;; The start of a code comment is a moving target during
 	    ;; filling, so we work with `narrow-to-region' and
@@ -2469,11 +2453,11 @@ space does not end a sentence, so don't break a line there."
 	    (narrow-to-region
 	     (point-min)
 	     (if code-comment-flag
-		 ;; Get the position right after the last
-		 ;; non-comment-word.
-		 (if (match-string 1)
-		     (match-beginning 1)
-		   (match-beginning 5))
+		 ;; Get the position right after the last non-comment-word.
+		 (save-excursion
+		   (goto-char (match-beginning 0))
+		   (skip-chars-backward " \t")
+		   (point))
 	       to))
 	    ;; Fill until point is greater than the end point.  If there
 	    ;; is a code comment, use the code comment's start as a
@@ -2562,7 +2546,9 @@ space does not end a sentence, so don't break a line there."
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
   ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
-  ;; chosen with \MakeShortVerb{<char>}.)
+  ;; chosen with \MakeShortVerb{<char>}.)  This could probably be
+  ;; handled with `fill-nobreak-predicate', but this is not available
+  ;; in XEmacs.
   (let ((orig-breakpoint (point))
 	(final-breakpoint (point))
 	(verb-macros (regexp-opt LaTeX-verbatim-macros)))
@@ -2597,12 +2583,8 @@ space does not end a sentence, so don't break a line there."
 	(setq start-point (point))
 	;; Find occurences of `[', `$', `{', `}', `\(', `\)', `\[' or `\]'.
 	(while (and (= final-breakpoint orig-breakpoint)
-		    (re-search-forward
-		     (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-			     (regexp-quote (concat TeX-esc TeX-esc))
-			     "\\)*"
-			     "\\([[{}$]\\|"
-			     (regexp-quote TeX-esc) "[][()]\\)")
+		    (TeX-re-search-forward-unescaped
+		     (concat "[[{}$]\\|" (regexp-quote TeX-esc) "[][()]")
 		     orig-breakpoint t))
 	  (let ((match-string (match-string 0)))
 	    (cond
@@ -2611,13 +2593,10 @@ space does not end a sentence, so don't break a line there."
 	     ;; opening brace.)
 	     ((save-excursion
 		(and (memq '\[ LaTeX-fill-break-at-separators)
-		     (string= (substring match-string -1) "[")
-		     (not (string= match-string "\["))
-		     (re-search-forward
-		      (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-			      (regexp-quote (concat TeX-esc TeX-esc))
-			      "\\)*\\][ \t]*{")
-		      (line-end-position) t)
+		     (eq (length match-string) 1)
+		     (string= match-string "[")
+		     (TeX-re-search-forward-unescaped (concat "\\][ \t]*{")
+						      (line-end-position) t)
 		     (> (- (or (TeX-find-closing-brace)
 			       (line-end-position))
 			   (line-beginning-position))
@@ -2648,19 +2627,10 @@ space does not end a sentence, so don't break a line there."
 		;; to determine if point is inside an optional
 		;; argument and to jump to the start and end brackets.
 		(when (save-excursion
-			(re-search-forward
-			 (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-				 (regexp-quote (concat TeX-esc TeX-esc))
-				 "\\)*\\][ \t]*{")
-			 orig-breakpoint t))
-		  (when (save-excursion
-			  (and (re-search-backward "\\["
-				(line-beginning-position) t)
-			       (TeX-looking-at-backward
-				(concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-					(regexp-quote (concat TeX-esc TeX-esc))
-					"\\)*"))))
-		    (goto-char (match-end 0)))
+			(TeX-re-search-forward-unescaped
+			 (concat "\\][ \t]*{") orig-breakpoint t))
+		  (TeX-search-backward-unescaped "["
+						 (line-beginning-position) t)
 		  (skip-chars-backward "^ \n"))
 		(when (> (point) start-point)
 		  (setq final-breakpoint (point)))))
@@ -2729,14 +2699,8 @@ space does not end a sentence, so don't break a line there."
 		     (if (string= math-sep "$")
 			 (save-excursion
 			   (backward-char 2)
-			   (not (and (re-search-backward
-				      (regexp-quote "$")
-				      (line-beginning-position) t)
-				     (TeX-looking-at-backward
-				      (concat "\\(\\=\\|[^" TeX-esc "]\\)\\("
-					      (regexp-quote
-					       (concat TeX-esc TeX-esc))
-					      "\\)*")))))
+			   (not (TeX-search-backward-unescaped
+				 "$" (line-beginning-position) t)))
 		       (texmathp-match-switch (line-beginning-position)))))
 	      (save-excursion
 		(skip-chars-forward "^ \n")
