@@ -1,3 +1,8 @@
+2004-05-09  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-toggle-source-specials): Added missing call to
+	`TeX-maybe-set-source-specials' in last commit.
+
 2004-05-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-verbatim-face)
