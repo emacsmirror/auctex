@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.120 2002-04-15 23:52:16 dakas Exp $
+;; $Id: preview.el,v 1.121 2002-04-15 23:59:00 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1865,7 +1865,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.120 $"))
+	(rev "$Revision: 1.121 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1876,12 +1876,12 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-15 23:52:16 $"))
+    (let ((date "$Date: 2002-04-15 23:59:00 $"))
       (string-match
-       "\\'[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
+       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
-    (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
-	    (match-string 3 date)))))
+      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
+	      (match-string 3 date)))))
 
 (defun preview-report-bug () "Report a bug in the preview-latex package."
   (interactive)
