@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.110 2002-04-13 12:49:05 dakas Exp $
+;; $Id: preview.el,v 1.111 2002-04-14 00:10:35 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -344,42 +344,66 @@ set to `postscript'."
 	(preview-delete ov)))
   (setq preview-gs-outstanding nil)
   (setq preview-gs-queue nil))
-  
+
+(defvar preview-error-condition nil
+  "Last error raised and to be reported.")
+
+(defun preview-log-error (err context &optional process)
+  "Catch phrase to format error message."
+  (when (or (null process) (buffer-name (process-buffer process)))
+    (with-current-buffer (if process (process-buffer process) (current-buffer))
+      (save-excursion
+	(goto-char (if process (process-mark process) (point-max)))
+	(insert-before-markers
+	 (format "%s: %s\n"
+		 context (error-message-string err))))))
+  (setq preview-error-condition err))
+
+(defun preview-reraise-error (process)
+  (when preview-error-condition
+    (unwind-protect
+	(signal (car preview-error-condition) (cdr preview-error-condition))
+      (setq preview-error-condition nil
+	    compilation-in-progress (delq process compilation-in-progress)))))
+
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
 and tries to restart GhostScript if necessary."
-  (let ((status (process-status process)))
-    (when (memq status '(exit signal))
-      (setq compilation-in-progress (delq process compilation-in-progress)))
-    (when (buffer-name (process-buffer process))
-      (with-current-buffer (process-buffer process)
-	(TeX-command-mode-line process)
- 	(when (memq status '(exit signal))
-	  ;; process died.
-	  ;;  Throw away culprit, go on.
-	  (let* ((err (concat preview-gs-answer "\n"
-			      (process-name process) " " string))
-	       (ov (preview-gs-behead-outstanding err)))
-	    (when (and (null ov) preview-gs-queue)
-	      (save-excursion
-		(goto-char (process-mark process))
-		(insert-before-markers preview-gs-command " "
-				       (mapconcat #'shell-quote-argument
-						  preview-gs-command-line
-						  " ") "\n" err)))
-	    (delete-process process)
-	    (if (or (null ov)
-		    (eq status 'signal))
-		;; if process was killed explicitly by signal, or if nothing
-		;; was processed, we give up on the matter altogether.
-		(preview-gs-queue-empty)
-	      
-	      ;; restart only if we made progress since last call
-	      (setq preview-gs-queue (nconc preview-gs-outstanding
-					    preview-gs-queue))
-	      (setq preview-gs-outstanding nil)
-	      (preview-gs-restart))))))))
+  (condition-case err
+      (let ((status (process-status process)))
+	(when (memq status '(exit signal))
+	  (setq compilation-in-progress (delq process compilation-in-progress)))
+	(when (buffer-name (process-buffer process))
+	  (with-current-buffer (process-buffer process)
+	    (TeX-command-mode-line process)
+	    (when (memq status '(exit signal))
+	      ;; process died.
+	      ;;  Throw away culprit, go on.
+	      (let* ((err (concat preview-gs-answer "\n"
+				  (process-name process) " " string))
+		     (ov (preview-gs-behead-outstanding err)))
+		(when (and (null ov) preview-gs-queue)
+		  (save-excursion
+		    (goto-char (process-mark process))
+		    (insert-before-markers preview-gs-command " "
+					   (mapconcat #'shell-quote-argument
+						      preview-gs-command-line
+						      " ") "\n" err)))
+		(delete-process process)
+		(if (or (null ov)
+			(eq status 'signal))
+		    ;; if process was killed explicitly by signal, or if nothing
+		    ;; was processed, we give up on the matter altogether.
+		    (preview-gs-queue-empty)
+		  
+		  ;; restart only if we made progress since last call
+		  (setq preview-gs-queue (nconc preview-gs-outstanding
+						preview-gs-queue))
+		  (setq preview-gs-outstanding nil)
+		  (preview-gs-restart)))))))
+    (error (preview-log-error err "GhostScript" process)))
+  (preview-reraise-error process))
 
 (defun preview-gs-filter (process string)
   "Filter function for processing GhostScript output.
@@ -391,7 +415,10 @@ Gets the usual PROCESS and STRING parameters, see
       (let* ((pos (match-end 0))
 	     (answer (substring preview-gs-answer 0 pos)))
 	(setq preview-gs-answer (substring preview-gs-answer pos))
-	(preview-gs-transact process answer)))))
+	(condition-case err
+	    (preview-gs-transact process answer)
+	  (error (preview-log-error err "GhostScript filter" process))))))
+  (preview-reraise-error process))
 
 (defun preview-gs-restart ()
   "Start a new GhostScript conversion process."
@@ -466,28 +493,31 @@ aload pop restore}def "
   "Sentinel function for indirect rendering DviPS process.
 The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply.  Starts gs if GSSTART is set."
-  (let ((status (process-status process))
-	(gsfile preview-gs-file))
-    (cond ((eq status 'exit)
-	   (delete-process process)
-	   (setq TeX-sentinel-function nil)
-	   (condition-case nil
-	       (delete-file
-		(with-current-buffer TeX-command-buffer
-		  (funcall (car gsfile) "dvi")))
-	     (file-error nil))
-	   (if preview-ps-file
-	       (preview-prepare-fast-conversion))
-	   (when gsstart
-	     (when preview-ps-file
+  (condition-case err
+      (let ((status (process-status process))
+	    (gsfile preview-gs-file))
+	(cond ((eq status 'exit)
+	       (delete-process process)
+	       (setq TeX-sentinel-function nil)
 	       (condition-case nil
-		   (preview-delete-file preview-ps-file)
-		 (file-error nil)))
-	     (if preview-gs-queue
-		 (preview-gs-restart))))
-	  ((eq status 'signal)
-	   (delete-process process)
-	   (preview-dvips-abort)))))
+		   (delete-file
+		    (with-current-buffer TeX-command-buffer
+		      (funcall (car gsfile) "dvi")))
+		 (file-error nil))
+	       (if preview-ps-file
+		   (preview-prepare-fast-conversion))
+	       (when gsstart
+		 (when preview-ps-file
+		   (condition-case nil
+		       (preview-delete-file preview-ps-file)
+		     (file-error nil)))
+		 (if preview-gs-queue
+		     (preview-gs-restart))))
+	      ((eq status 'signal)
+	       (delete-process process)
+	       (preview-dvips-abort))))
+    (error (preview-log-error err "DviPS sentinel" process)))
+  (preview-reraise-error process))
 
 (defun preview-gs-close (process closedata)
   "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
@@ -714,76 +744,73 @@ This routine is the action routine called via the process filter.
 The GhostScript process buffer of PROCESS will already be selected, and
 and the standard output of GhostScript up to the next prompt will be
 given as ANSWER."
-  (save-excursion
-    (goto-char (point-max))
-    (condition-case whatgives
-	(let ((ov (pop preview-gs-outstanding))
-	      (have-error (not
-			   (string-match "\\`GS\\(<[0-9]+\\)?>\\'" answer ))))
-	  (when (and ov (overlay-buffer ov))
-	    (let ((queued (overlay-get ov 'queued)))
-	      (when queued
-		(let* ((bbox (aref queued 0))
-		       (filenames (overlay-get ov 'filenames))
-		       (oldfile (nth 0 filenames))
-		       (newfile (nth 1 filenames)))
-		  (if have-error
-		      (preview-gs-flag-error ov answer)
-		    (condition-case nil
-			(preview-delete-file oldfile)
-		      (file-error nil))
-		    (overlay-put ov 'filenames (cdr filenames))
-		    (preview-replace-active-icon
-		     ov
-		     (preview-create-icon (car newfile)
-					  preview-gs-image-type
-					  (preview-ascent-from-bb
-					   bbox))))
-		  (overlay-put ov 'queued nil)))))
-	  (while (and (< (length preview-gs-outstanding)
-			 preview-gs-outstanding-limit)
-		      (setq ov (pop preview-gs-queue)))
-	    (let ((queued (overlay-get ov 'queued)))
-	      (when (and queued
-			 (not (memq ov preview-gs-outstanding))
-			 (overlay-buffer ov))
-		(let* ((filenames (overlay-get ov 'filenames))
-		       (oldfile (nth 0 filenames))
-		       (newfile (nth 1 filenames))
-		       (bbox (aset queued 0
-				   (or (and preview-prefer-TeX-bb
-					    (aref queued 0))
-				       (and (stringp (car oldfile))
-					    (preview-extract-bb
-					     (car oldfile)))
-				       (aref queued 0)
-				       (error "No bounding box"))))
-		       (snippet (aref queued 2))
-		       (gs-line
-			(format
-			 "%s \
+  (let ((ov (pop preview-gs-outstanding))
+	(have-error (not
+		     (string-match "\\`GS\\(<[0-9]+\\)?>\\'" answer ))))
+    (when (and ov (overlay-buffer ov))
+      (let ((queued (overlay-get ov 'queued)))
+	(when queued
+	  (let* ((bbox (aref queued 0))
+		 (filenames (overlay-get ov 'filenames))
+		 (oldfile (nth 0 filenames))
+		 (newfile (nth 1 filenames)))
+	    (if have-error
+		(preview-gs-flag-error ov answer)
+	      (condition-case nil
+		  (preview-delete-file oldfile)
+		(file-error nil))
+	      (overlay-put ov 'filenames (cdr filenames))
+	      (preview-replace-active-icon
+	       ov
+	       (preview-create-icon (car newfile)
+				    preview-gs-image-type
+				    (preview-ascent-from-bb
+				     bbox))))
+	    (overlay-put ov 'queued nil)))))
+    (while (and (< (length preview-gs-outstanding)
+		   preview-gs-outstanding-limit)
+		(setq ov (pop preview-gs-queue)))
+      (let ((queued (overlay-get ov 'queued)))
+	(when (and queued
+		   (not (memq ov preview-gs-outstanding))
+		   (overlay-buffer ov))
+	  (let* ((filenames (overlay-get ov 'filenames))
+		 (oldfile (nth 0 filenames))
+		 (newfile (nth 1 filenames))
+		 (bbox (aset queued 0
+			     (or (and preview-prefer-TeX-bb
+				      (aref queued 0))
+				 (and (stringp (car oldfile))
+				      (preview-extract-bb
+				       (car oldfile)))
+				 (aref queued 0)
+				 (error "No bounding box"))))
+		 (snippet (aref queued 2))
+		 (gs-line
+		  (format
+		   "%s \
 <</PageSize[%g %g]/PageOffset[%g %g]/OutputFile(%s)>>preview-latex-do\n"
-			 (if preview-ps-file
-			     (concat "dup "
-				     (preview-gs-dsc-cvx
-				      snippet
-				      preview-gs-dsc))
-			   (format "(%s)(r)file cvx" (car oldfile)))
-			 (- (aref bbox 2) (aref bbox 0))
-			 (- (aref bbox 3) (aref bbox 1))
-			 (- (aref bbox 0)) (aref bbox 1)
-			 (car newfile))))
-		  (setq preview-gs-outstanding
-			(nconc preview-gs-outstanding
-			       (list ov)))
-		  (aset queued 1 gs-line)
-		  (process-send-string
-		   process
-		   gs-line
-		   )))))
-	  (unless preview-gs-outstanding
-	    (process-send-eof process)))
-      (error (insert-before-markers (error-message-string whatgives))))))
+		   (if preview-ps-file
+		       (concat "dup "
+			       (preview-gs-dsc-cvx
+				snippet
+				preview-gs-dsc))
+		     (format "(%s)(r)file cvx" (car oldfile)))
+		   (- (aref bbox 2) (aref bbox 0))
+		   (- (aref bbox 3) (aref bbox 1))
+		   (- (aref bbox 0)) (aref bbox 1)
+		   (car newfile))))
+	    (setq preview-gs-outstanding
+		  (nconc preview-gs-outstanding
+			 (list ov)))
+	    (aset queued 1 gs-line)
+	    (when (eq (process-status process) 'run)
+	      (process-send-string
+	       process
+	       gs-line
+	       ))))))
+    (unless preview-gs-outstanding
+      (process-send-eof process))))
 
 (defcustom preview-scale-function #'preview-scale-from-face
   "*Scale factor for included previews.
@@ -1599,8 +1626,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				    (nconc slow-hook (list lst)))))))
 		      (condition-case err
 			  (run-hooks 'slow-hook)
-			(error (message "Error in translation hook: %s"
-					(error-message-string err))))
+			(error (preview-log-error err "Translation hook")))
 		      (push (vector file (+ line offset)
 				  string after-string
 				  snippet box) parsestate)))
@@ -1634,8 +1660,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 		  (dolist (fun fast-hook)
 		    (setq parsestate
 			  (save-excursion (funcall fun parsestate))))
-		(error (message "Error in fast translation hook: %s"
-				(error-message-string err))))
+		(error (preview-log-error err "Fast translation hook")))
 	      (setq snippet 0)
 	      (dolist (state parsestate)
 		(setq lsnippet snippet
@@ -1704,15 +1729,22 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 				      tempdir
 				      (cdr open-data))
 				     close-data))
-			    (message
-			     "End of Preview snippet %d unexpected"
-			     snippet))
+			    (with-current-buffer run-buffer
+			      (preview-log-error
+			       (list 'error
+				     (format
+				      "End of Preview snippet %d unexpected"
+				      snippet)) "Parser")))
 			  (setq lstart nil))
 		      ;; else-part of if box
-		      (setq lstart (point))
+			  (setq lstart (point))
 		      (unless (= snippet (1+ lsnippet))
-			(message "Preview snippet %d out of sequence"
-				 snippet)))))))
+			(with-current-buffer run-buffer
+			  (preview-log-error
+			   (list 'error
+				 (format
+				  "Preview snippet %d out of sequence"
+				  snippet)) "Parser"))))))))
 	  (set-buffer run-buffer)
 	  (preview-call-hook 'close (car open-data) close-data))))))
 
@@ -1784,11 +1816,11 @@ for definition of PROCESS and NAME."
   (let ((status (process-status process)))
     (if (memq status '(signal exit))
 	(delete-process process))
-    (if (eq status 'exit)
-	(unwind-protect
+    (when (eq status 'exit)
+	(condition-case err
 	    (preview-call-hook 'open)
-	  (setq compilation-in-progress
-		(delq process compilation-in-progress))))))
+	  (error (preview-log-error err "LaTeX" process)))
+	(preview-reraise-error process))))
 
 (defun TeX-inline-preview (name command file)
   "Main function called by AucTeX.
@@ -1811,7 +1843,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.110 $"))
+	(rev "$Revision: 1.111 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
