@@ -28,9 +28,11 @@ problem at hand which might also help you locate the error yourself.
 First, you can try to generate a so-called backtrace which shows
 functions involved in a program error.  In order to do this, start Emacs
 with the command line @samp{emacs --debug-init} and/or put the line
+
 @lisp
 (setq debug-on-error t)
 @end lisp
+
 as the first line into your init file.  XEmacs users might want to add
 @code{(setq stack-trace-on-error t)} as well.  After Emacs has started,
 you can load a file which triggers the error and a new window should pop
@@ -42,9 +44,11 @@ configuration triggers the error by starting Emacs with no such
 customizations only activating @AUCTeX{}.  You can do this by starting
 Emacs with the command line @samp{emacs -q -no-site-file}.  Once Emacs
 is running copy the line
+
 @lisp
 (require 'tex-site)
 @end lisp
+
 into the @samp{*scratch*} buffer and type @kbd{M-x eval-buffer RET}.
 After you have done so, you can load the file triggering the error.  If
 everything is working now, you know that you have to search either in
@@ -59,13 +63,13 @@ versions may work but are unsupported.  Older versions of XEmacs might
 possibly made to work by updating the @file{xemacs-base} package through
 the XEmacs package system.  If you are looking for a recommendation, it
 would appear that the smoothest working platform on all operating
-systems at the current point of time would be @w{Emacs 21.4}.  At the
+systems at the current point of time would be @w{Emacs 22.1}.  At the
 time of this writing, however, it has not been released and is still
 under development.  The quality of the development version is quite
 solid, so we recommend giving it a try.  With a developer version, of
 course, you have to be prepared to update in case you managed to get
 your snapshot at a bad time.  The second best choice would be the latest
-released @w{Emacs 21.3}.  However, Unicode support is less good, there
+released @w{Emacs 21.4}.  However, Unicode support is less good, there
 is no version for the popular GTK toolkit, and the native versions for
 Windows and MacOS don't offer toolbar and @previewlatex{} support.
 
@@ -74,7 +78,7 @@ Windows operating system, nominally the only option for a released,
 stable Emacs variant supporting toolbars and @previewlatex{} would be
 @w{XEmacs 21.4}.  However, code for core functionality like formatting
 and syntax highlighting tends to be different and often older than even
-@w{Emacs 21.3}, and Unicode support as delivered is problematic at best,
+@w{Emacs 21.4}, and Unicode support as delivered is problematic at best,
 missing on Windows.  Both @AUCTeX{} and XEmacs developers don't hear
 much from active users of the combination.  Partly for that reason,
 problems tend to go unnoticed for long amounts of time and are often
