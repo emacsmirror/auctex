@@ -21,7 +21,7 @@ AC_DEFUN(EMACS_LISP, [
 ])
 
 AC_DEFUN(EMACS_PROG_EMACS, [
-# Check for (X)Emacs, report its path, flavor and version
+# Check for (X)Emacs, report its path, flavor and prefix
 
 # Apparently, if you run a shell window in Emacs, it sets the EMACS
 # environment variable to 't'.  Let's undo the damage.
@@ -62,6 +62,10 @@ fi
   AC_MSG_RESULT(${XEMACS})
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
+  AC_MSG_CHECKING([for ${EMACS_NAME} prefix])
+  EMACS_LISP(emacsprefix,[(expand-file-name \"..\" invocation-directory)],[-no-site-file])
+  AC_MSG_RESULT($emacsprefix)
+  AC_SUBST(emacsprefix)
 ])
 
 AC_DEFUN(EMACS_CHECK_VERSION, [
@@ -73,17 +77,17 @@ EMACS_LISP(result,[(cond ((< emacs-major-version $1) \"no\")
 AC_MSG_RESULT([${result}])
 if test "${result}" != "yes"
 then
-  AC_MSG_ERROR([This package requires at least ${EMACS_NAME} version $1.  Aborting!])
+  AC_MSG_ERROR([This package requires at least ${EMACS_NAME} version $1.$2  Aborting!])
 fi
 ])
 
-dnl Look for an installation directory under datadir and prefix.
+dnl Look for an installation directory under emacsprefix, datadir and prefix.
 dnl $1 is the variable name we are looking for.
 dnl $2 is a Lisp expression giving a list of directories names
 dnl $3 is Lisp expression giving a list of locations where to find them
 dnl $4,$5,$6 are additional arguments for the elisp call
 AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
- [  for currentprefix in '${datadir}' '${prefix}'
+ [  for currentprefix in '${emacsprefix}' '${datadir}' '${prefix}'
   do
   expprefix="${currentprefix}"
   AC_FULL_EXPAND(expprefix)
@@ -98,45 +102,29 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
 	           (not (string-match \"\\\\\`\\\\.\\\\.\"
                           (file-relative-name dir expanded)))
 	           (or (null name)
-                     (string=
-		       name
-		         (file-name-nondirectory dir)))
+                     (string= name (file-name-nondirectory dir)))
 		   (throw 22 (concat (file-name-as-directory prefix)
 		     (file-relative-name dir expanded))))))))],[$4],
   [prefix expanded $5],["${currentprefix}" "${expprefix}" $6])
   if test "[$]$1" != NONE; then break; fi; done])
 
-AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,[
-  EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
-    [[(list \"site-packages\" \"xemacs-packages\")]],
-    [[(append late-packages last-packages early-packages)]])])
-
-dnl Check for packagedir.
-dnl $2 here is only for correcting old (CVS) mistakes
 AC_DEFUN(EMACS_PATH_PACKAGEDIR,
- [  if test ${EMACS_FLAVOR} = xemacs; then
-    AC_MSG_CHECKING([for XEmacs package directory])
-    AC_ARG_WITH(packagedir,
-      [  --with-packagedir=DIR   package DIR for XEmacs],
-      [if test "${withval}" = yes -o -z "${withval}"; then
-	EMACS_EXAMINE_PACKAGEDIR($1,$2)
-      else
-	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
-      fi],
-      [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
-    if test "${packagedir}" = NONE -o -z "${packagedir}"; then
-      AC_MSG_ERROR([not found, exiting!])
-    fi
-    AC_MSG_RESULT(${packagedir})
-  else
-    packagedir=no
-  fi
+ [AC_ARG_WITH(packagedir,
+    [  --with-packagedir=DIR   package DIR for XEmacs],
+    [packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"],
+    [if test ${EMACS_FLAVOR} = xemacs; then
+      AC_MSG_CHECKING([for XEmacs package directory])
+      EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
+        [[(list \"site-packages\" \"xemacs-packages\")]],
+        [[(append late-packages last-packages early-packages)]])
+      if test "${packagedir}" = NONE -o -z "${packagedir}"; then
+        AC_MSG_ERROR([not found, exiting!])
+      fi
+      AC_MSG_RESULT(${packagedir})
+    else
+      packagedir=no
+    fi])
   AC_SUBST(packagedir)])
-
-AC_DEFUN(EMACS_TEST_LISPDIR, [
-  EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
-    [[(list \"site-lisp\" \"site-packages\")]],
-    load-path)])
 
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
@@ -144,17 +132,10 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
     [  --with-lispdir=DIR      Where to install the $1 file, note
                           that most of the package will be relative to it.],
     [[lispdir="${withval}"]],
-    [
-     if test "${EMACS_FLAVOR}" = 'emacs' -o "${packagedir}" = 'no'; then
+    [if test "${EMACS_FLAVOR}" = 'emacs'; then
        # Test paths relative to prefixes
-       EMACS_TEST_LISPDIR
-       if test "${lispdir}" = "NONE"; then
-	 # No? Test paths relative to binary
-	 tmpprefix="${prefix}"
-	 EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
-	 EMACS_TEST_LISPDIR
-	 prefix="${tmpprefix}"
-       fi
+       EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
+	 [[(list \"site-lisp\" \"site-packages\")]], load-path)
        if test "${lispdir}" = "NONE"; then
 	 # No? notify user.
 	 AC_MSG_ERROR([Cannot locate lisp directory,
