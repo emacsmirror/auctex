@@ -1,3 +1,8 @@
+2004-04-13  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (DOCFILES, EXTRAFILES): Added files needed for the
+	configure based installation.
+
 2004-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (dist): Split into `check-dist', `release-commit'

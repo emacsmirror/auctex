@@ -66,11 +66,13 @@ STYLESRC = style/prosper.el \
 	   style/scrpage2.el  style/captcont.el  style/subfigure.el \
 	   style/paralist.el  style/booktabs.el  style/emp.el
 
-DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
-	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
+DOCFILES = doc/Makefile.in doc/auc-tex.texi doc/intro.texi doc/install.texi \
+	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi \
+	doc/wininstall.texi
 
-EXTRAFILES = COPYING PROBLEMS Makefile ChangeLog \
-	lpath.el tex-site.el $(CONTRIB) $(CONTRIB_MULE)
+EXTRAFILES = COPYING PROBLEMS ChangeLog \
+	configure install-sh $(MKINSTALLDIRS) Makefile.in \
+	tex-site.el.in lpath.el $(CONTRIB) $(CONTRIB_MULE)
 
 NOSEARCH = style/.nosearch
 
