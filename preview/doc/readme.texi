@@ -65,14 +65,16 @@ needs to be added as well.
 @section Getting started
 
 Once activated, @previewlatex{} and its documentation will be accessible
-from @AUCTeX{}'s menus.  When you have loaded a @LaTeX{} document, you
-should be able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus,
-or press @kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or
-@kbd{C-c C-p C-p} (for ``On/off at point'').  Previews will now be
-generated for various objects in your document. You'll see them change
-into a roadworks sign when the process is half finished. Note that
-you can freely navigate the buffer while this is going on. When the
-process is finished you will see the objects typeset in your buffer.
+from @AUCTeX{}'s menus.  When you have loaded a @LaTeX{} document (a
+sample document @file{circ.tex} is included in the distribution, but
+most documents including math and/or figures should do), you should be
+able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus, or press
+@kbd{C-c C-c g @key{RET}} (for ``Generate Preview'') or @kbd{C-c C-p
+C-p} (for ``On/off at point'').  Previews will now be generated for
+various objects in your document. You'll see them change into a
+roadworks sign when the process is half finished. Note that you can
+freely navigate the buffer while this is going on. When the process is
+finished you will see the objects typeset in your buffer.
 
 It is a bad idea, however, to edit the buffer before the roadworks signs
 appear, since that is the moment when the correlation between the
