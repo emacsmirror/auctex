@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.424 $"))
+	(rev "$Revision: 5.425 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-11 17:49:23 $"))
+    (let ((date "$Date: 2004-08-12 18:15:17 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2594,14 +2594,6 @@ a string as element.  Its value is obtained from `TeX-command-output-list'.
 Access to the value should be through the function `TeX-output-extension'.")
 
   (make-variable-buffer-local 'TeX-output-extension)
-
-(defvar TeX-view-extension "dvi"
-  "Extension of TeX output file for viewing.
-If nil, the variable `TeX-output-extension' is used.  This variable could be
-changed by running File commands, like dvips.  Access to the value should be
-through the function `TeX-view-extension'.")
-
-  (make-variable-buffer-local 'TeX-view-extension)
 
 (defcustom BibTeX-file-extensions '("bib")
   "Valid file extensions for BibTeX files."
