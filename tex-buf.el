@@ -889,8 +889,7 @@ command."
 
 (defun TeX-command-filter (process string)
   "Filter to process normal output."
-  (save-excursion
-    (set-buffer (process-buffer process))
+  (with-current-buffer (process-buffer process)
     (save-excursion
       (goto-char (process-mark process))
       (insert-before-markers string)
@@ -909,17 +908,24 @@ command."
 
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."
-  (save-excursion
-    (set-buffer (process-buffer process))
-    (save-excursion
-      (goto-char (process-mark process))
-      (insert-before-markers string)
-      (set-marker (process-mark process) (point)))
-    (save-excursion
-      (save-match-data
-	(if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
-	    (setq TeX-current-page (TeX-match-buffer 0)))))
-    (TeX-format-mode-line process)))
+  (with-current-buffer (process-buffer process)
+    (let ((pt (marker-position (process-mark process))))
+      (save-excursion
+	(goto-char pt)
+	(setq pt (save-excursion
+		   (skip-chars-backward "-0-9.\n["
+					(max (point-min) (- pt 128)))))
+	(insert-before-markers string)
+	(set-marker (process-mark process) (point))
+	(save-match-data
+	  (when (re-search-backward
+		 "\\[\n?-?[0-9\n]+\\(\\.\n?-?[0-9\n]+\\)*\\]"
+		 pt
+		 t)
+	    (setq TeX-current-page
+		  (apply #'concat
+			 (split-string (TeX-match-buffer 0) "\n")))
+	    (TeX-format-mode-line process)))))))
 
 (defvar TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
