@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.51 1993-07-28 21:32:29 amanda Exp $
+@c $Id: auc-tex.texi,v 1.52 1993-08-05 10:01:06 amanda Exp $
 
 @finalout
 @titlepage
@@ -1314,8 +1314,8 @@ visible.
 @end deffn
 
 @deffn Command TeX-home-buffer
-@kindex C-c C-h
-(@kbd{C-c C-h}) Go to the `master' file in the document associated with
+@kindex C-c ^
+(@kbd{C-c ^}) Go to the `master' file in the document associated with
 the current buffer, or if already there, to the file where the current
 process was started. 
 @end deffn
@@ -2828,6 +2828,11 @@ Geisler @samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}.
 @item
 Many corrections to the grammar in the manual.  Thanks to Manfred
 Weichel @samp{<Manfred.Weichel@@sto.mchp.sni.de>}.
+
+@item
+Bind @code{TeX-home-buffer} to @kbd{C-c ^} instead of @kbd{C-c C-h}
+which are reserved in Emacs 19.  Suggested by Chris Moore
+@samp{<Chris.Moore@@src.bae.co.uk>}.
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History
@@ -3679,6 +3684,9 @@ some time for emacs lisp hacking, you are encouraged to try to provide a
 solution to one of the following problems.
 
 @itemize @bullet
+@item
+Add completion of macro arguments to @code{TeX-complete-symbol}.
+
 @item
 Make @key{.} check for abbreviations and sentences ending with capital
 letters.  Make @key{,} and @key{.} remove italic correction.  
