@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.168 2002-11-10 19:50:56 dakas Exp $
+;; $Id: preview.el,v 1.169 2002-11-10 20:11:27 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1738,11 +1738,11 @@ call, and in its CDR the final stuff for the placement hook."
 	  (while
 	      (re-search-forward "\
 \\(^! \\)\\|\
-\(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
-)+\\( \\|$\\)\\|\
+\(\\([^()\r\n ]+\\))*\\(?: \\|\r?$\\)\\|\
+)+\\( \\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
-^Preview: \\([a-zA-Z]+\\) \\(.*\\)$" nil t)
+^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
 ;;; Ok, here is a line by line breakdown: match-alternative 1:
 ;;; \(^! \)
 ;;; exclamation point at start of line followed by blank: TeX error
@@ -1806,8 +1806,8 @@ name(\\([^)]+\\))\\)\\|\
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
 ;;; to be favorable.
 			  line (and (re-search-forward "\
-^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\(.*?\\)
-\\(.*?\\)\\(\\.\\.\\.\\)?$" nil t)
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\)?\\([^\n\r]*?\\)\r?
+\\([^\n\r]*?\\)\\(\\.\\.\\.\\)?\r?$" nil t)
 				    (string-to-int (match-string 1)))
 			  ;; And a string of the context to search for.
 			  string (and line (match-string 3))
@@ -2230,7 +2230,7 @@ may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.168 $"))
+	(rev "$Revision: 1.169 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2241,7 +2241,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-11-10 19:50:56 $"))
+    (let ((date "$Date: 2002-11-10 20:11:27 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
