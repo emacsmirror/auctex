@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.114 2002-04-14 12:10:28 nixsf Exp $
+;; $Id: preview.el,v 1.115 2002-04-14 14:08:40 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -362,7 +362,7 @@ is to be used."
 		 context (error-message-string err))))))
   (setq preview-error-condition err))
 
-(defun preview-reraise-error (process)
+(defun preview-reraise-error (&optional process)
   "Raise an error that has been logged.
 Makes sure that PROCESS is removed from the \"Compilation\"
 tag in the mode line."
@@ -424,7 +424,7 @@ Gets the usual PROCESS and STRING parameters, see
 	(condition-case err
 	    (preview-gs-transact process answer)
 	  (error (preview-log-error err "GhostScript filter" process))))))
-  (preview-reraise-error process))
+  (preview-reraise-error))
 
 (defun preview-gs-restart ()
   "Start a new GhostScript conversion process."
@@ -1857,7 +1857,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.114 $"))
+	(rev "$Revision: 1.115 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
