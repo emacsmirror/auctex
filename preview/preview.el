@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.33 2001-10-23 16:38:37 dakas Exp $
+;; $Id: preview.el,v 1.34 2001-10-25 00:58:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -608,13 +608,49 @@ numbers (can be float if available)."
     (LaTeX-mark-section)
     (preview-region (region-beginning) (region-end))))
 
-(defun preview-again ()
-  "Run preview on current preview." (interactive)
-  (catch 'break
+(defun preview-next-border (backwards)
+  "Search for the next interesting border for `preview-dwim'.
+Searches backwards if BACKWARDS is non-nil."
+  (let (history preview-state (pt (point)))
+    (catch 'exit
+      (while
+	  (progn
+	    (setq preview-state
+		  (if backwards
+		      (if (setq pt
+				(previous-single-char-property-change
+				 pt 'preview-state))
+			  (get-char-property (1- pt) 'preview-state)
+			(throw 'exit (or history (point-min))))
+		    (if (setq pt
+			      (next-single-char-property-change
+			       pt 'preview-state))
+			(get-char-property pt 'preview-state)
+		      (throw 'exit (or history (point-max))))))
+	    (if (memq preview-state '(active inactive))
+		(throw 'exit (or history pt)))
+	    t)
+	(setq history (and (not preview-state) pt))))))
+	     
+(defun preview-dwim ()
+  "Do the appropriate thing for a preview.
+If the cursor is positioned on or inside of a preview area, this
+toggles its visibility, regenerating the preview if necessary.  If
+not, it will run the surroundings through preview.  The surroundings
+include all areas up to the next valid preview, unless invalid
+previews occur before, in which case the area will include the last
+such preview."
+  (interactive)
+  (catch 'exit
     (dolist (ovr (overlays-at (point)))
-      (when (eq (overlay-get ovr 'category) 'preview-overlay)
-	(preview-regenerate ovr)
-	(throw 'break t)))))
+      (let ((preview-state (overlay-get ovr 'preview-state)))
+	(when preview-state
+	  (if (eq preview-state 'disabled)
+	      (preview-regenerate ovr)
+	    (preview-toggle ovr 'toggle))
+	  (throw 'exit t))))
+    (preview-region (preview-next-border t)
+		    (preview-next-border nil))))
 
 (defun preview-disabled-string (ov)
   "Generate a before-string for disabled preview overlay OV."
@@ -637,6 +673,7 @@ numbers (can be float if available)."
   (overlay-put ovr 'queued nil)
   (preview-remove-urgentization ovr)
   (preview-toggle ovr)
+  (overlay-put ovr 'preview-state 'disabled)
   (overlay-put ovr 'before-string (preview-disabled-string ovr))
   (dolist (filename (overlay-get ovr 'filenames))
     (condition-case nil
@@ -665,7 +702,7 @@ the entire buffer."
   (interactive "r")
   (dolist (ov (overlays-in (or start 1)
 			   (or end (1+ (buffer-size)))))
-    (if (eq (overlay-get ov 'category) 'preview-overlay)
+    (if (overlay-get ov 'preview-state)
 	(preview-delete ov))))
 
 (add-hook 'kill-buffer-hook #'preview-clearout nil nil)
@@ -747,7 +784,6 @@ region between START and END."
 	      ;; internals of other packages break.
 ;;	      (set (make-local-variable 'inhibit-point-motion-hooks) t)
 	      (make-overlay start end nil nil nil))))
-    (overlay-put ov 'category 'preview-overlay)
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
@@ -834,14 +870,14 @@ preview Emacs Lisp package something too stupid."))
   (easy-menu-add-item (easy-menu-get-map (assoc-default 'menu-bar LaTeX-mode-map) '("Command") "Generate Preview")
 		      nil
 		      (TeX-command-menu-entry (assoc "Generate Preview" TeX-command-list)))
-  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-again)
+  (define-key LaTeX-mode-map "\C-c\C-p\C-p" #'preview-dwim)
   (define-key LaTeX-mode-map "\C-c\C-p\C-r" #'preview-region)
 ;;  (define-key LaTeX-mode-map "\C-c\C-p\C-q" #'preview-paragraph)
   (define-key LaTeX-mode-map "\C-c\C-p\C-e" #'preview-environment)
   (define-key LaTeX-mode-map "\C-c\C-p\C-s" #'preview-section)
   (easy-menu-add-item LaTeX-mode-menu nil
 		      (easy-menu-create-menu "Preview"
-			'(["Regenerate" preview-again t]
+			'(["What I want" preview-dwim t]
 			["Region" preview-region t]
 			["Environment" preview-environment t]
 			["Section" preview-section t]
@@ -1093,7 +1129,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.33 $"))
+	(rev "$Revision: 1.34 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
