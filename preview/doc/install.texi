@@ -68,7 +68,12 @@ download section of @previewlatex{}'s home page
 (@pxref{Availability}).
 @end ifclear 
 If this option is not available to you, try the patch described in the
-@file{PROBLEMS} file or @ref{Known problems}).
+@ifset rawfile
+@file{PROBLEMS} file.
+@end ifset
+@ifclear rawfile
+@ref{Known problems}.
+@end ifclear
 
 @item A working @LaTeX{} installation
 
@@ -82,6 +87,18 @@ This is not really needed to @emph{install} the package, but will be
 required for stable operation of it.  Most problems we have encountered
 come from interaction with not so recent versions of GhostScript, so it
 is a good idea to have, say GhostScript 6.51 or later installed.
+@previewlatex{} will in its current version work with both AFPL and GNU
+GhostScript.  Unfortunately, up and including version 7.05, GNU
+GhostScript has no way of working in a secure setting with
+@previewlatex{}: you should not use it if malicious code integrated into
+@LaTeX{} documents could be an issue for you.  In that case, rather use
+a recent version of AFPL GhostScript.  For more information, see
+@ifset rawfile
+the @file{PROBLEMS} file.
+@end ifset
+@ifclear rawfile
+@ref{Problems with GhostScript}.
+@end ifclear
 
 @item The @code{texinfo} package
 
