@@ -3650,16 +3650,10 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
-(defvar doctex-syntax-table
-  (let ((table (make-syntax-table LaTeX-mode-syntax-table)))
-    (modify-syntax-entry ?% "-" table)
-    table))
-
 (define-derived-mode doctex-mode latex-mode "DocTeX"
   "Major mode for editing .dtx files derived from `LaTeX-mode'.
 Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
-  (set-syntax-table doctex-syntax-table)
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-fill-comment-syntax-aware) t))
 
