@@ -5,6 +5,10 @@
 
 2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview-latex.spec (Requires): Allow for split info files.
+	  Docs go into preview-latex-n.n like everybody else does it.
+	  Bump version to 0.7.1 for next release.
+
 	* doc/Makefile.in (preview-latex.info): Remove --no-split.
 
 	* prv-install.el (preview-make-package-xemacs): Use
