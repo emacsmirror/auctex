@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.141 2004-03-06 11:38:53 angeli Exp $
+@c $Id: auc-tex.texi,v 1.142 2004-03-10 22:04:11 angeli Exp $
 
 @finalout
 @titlepage
@@ -860,15 +860,19 @@ lines starting with a @samp{%}, until the first non-comment line.
 @cindex Reformatting
 @cindex Reindenting
 
-AUC@TeX{} contains very advanced handling of indentation and
-reformatting of the La@TeX{} source.  If you have already tried
-AUC@TeX{} with @code{auto-fill-mode} enabled, you may have noted that
-the source is automatically indented and formatted as you write it.
-More over, AUC@TeX{} is able to format sections of text on demand.
+The word `formatting' is used with two meanings in this document.
+Either letting @TeX{} format the document, or letting AUC@TeX{} make
+the La@TeX{} source look better.  This section deals with the latter.
 
-It is important to realize, that AUC@TeX{} comes with `formatting' in
-two fashions.  Either letting @TeX{} format the file, or letting
-AUC@TeX{} make the ASCII document look better.
+AUC@TeX{} contains very advanced functionality for formatting the
+La@TeX{} source which comprises indentation and filling and can be
+done automatically or on demand.
+
+Filling deals with the insertion of line breaks to prevent lines from
+becoming wider than what is specified in @code{fill-column}.  The
+linebreaks will be inserted automatically if @code{auto-fill-mode} is
+enabled.  In this case the source is not only filled but also indented
+automatically as you write it.
 
 Indentation is done by La@TeX{} environments and by @TeX{} groups, that
 is the body of an environment is indented by the value of
@@ -954,9 +958,17 @@ Alias for @kbd{C-c C-q C-r}
 @code{LaTeX-fill-region} will format or `fill' the current region. 
 @end table
 
-@strong{Warning:} The formatting cannot handle tabular-like
-environments. Those will be completely messed-up if you try to format
-them.
+@defopt LaTeX-indent-environment-list
+List of environments with special indentation.  The second element in
+each entry is the function to calculate the indentation level in
+columns.
+
+The filling code currently cannot handle tabular-like environments
+which will be completely messed-up if you try to format them.  This is
+why most of these environments are included in this customization
+option without a special indentation function.  This will prevent that
+they get filled.
+@end defopt
 
 @defopt LaTeX-indent-level
 Number of spaces to add to the indentation for each @samp{\begin} not
@@ -971,6 +983,22 @@ environments.
 @defopt TeX-brace-indent-level
 Number of spaces to add to the indentation for each @samp{@{} not
 matched by a @samp{@}}. 
+@end defopt
+
+@defopt LaTeX-fill-comment-syntax-aware
+If non-nil comments will be filled according to LaTeX syntax.
+Otherwise they will be filled like normal text.
+@end defopt
+
+@defopt LaTeX-fill-distinct-contents
+Types of content which will be set apart by inserting linebreaks
+before and after them if they do not fit into one line.  This can be
+content enclosed in curly braces or inline math.
+
+Such formatting can be useful to make macros and math more visible or
+to prevent overfull lines in the LaTeX source on case a package for
+displaying formatted TeX output inside the Emacs buffer, like
+preview-latex, is used.
 @end defopt
 
 @node Outline,  , Marking and formatting, Advanced Features
