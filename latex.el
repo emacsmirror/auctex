@@ -870,8 +870,7 @@ job to this function."
 	(caption (read-string "Caption: "))
 	(center (y-or-n-p "Center? ")))
 
-    (unless (zerop (length float))
-      (setq LaTeX-float float))
+    (setq LaTeX-float float)
 
     (LaTeX-insert-environment environment
 			      (unless (zerop (length float))
@@ -925,16 +924,17 @@ job to this function."
 (defun LaTeX-env-array (environment)
   "Insert ENVIRONMENT with position and column specifications.
 Just like array and tabular."
-  (let ((pos (and LaTeX-default-position
-		  (read-string "(Optional) Position: ")))
+  (let ((pos (and LaTeX-default-position ;; LaTeX-default-position can
+					 ;; be nil, i.e. do not prompt
+		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
-    (setq LaTeX-default-position (or pos ""))
+    (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
 			      (concat
-			       (if (not (zerop (length pos)))
-				   (format "[%s]" pos))
-			       (format "{%s}" fmt)))))
+			       (unless (zerop (length pos))
+                                 (concat LaTeX-optop pos LaTeX-optcl))
+			       (concat TeX-grop fmt TeX-grcl)))))
 
 (defun LaTeX-env-label (environment)
   "Insert ENVIRONMENT and prompt for label."
@@ -956,34 +956,34 @@ Just like array and tabular."
 
 (defun LaTeX-env-minipage (environment)
   "Create new LaTeX minipage or minipage-like ENVIRONMENT."
-  (let ((pos (read-string "(Optional) Position: " LaTeX-default-position))
+  (let ((pos (and LaTeX-default-position ;; LaTeX-default-position can
+					 ;; be nil, i.e. do not prompt
+                  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(width (read-string "Width: " LaTeX-default-width)))
     (setq LaTeX-default-position pos)
-    (setq LaTeX-default-width (if (zerop (length width))
-     				  LaTeX-default-width
-				width))
-    (LaTeX-insert-environment environment
-			      (concat (when (not (zerop (length pos)))
-					(format "[%s]" pos))
-				      (format "{%s}" width)))))
+    (setq LaTeX-default-width width)
+    (LaTeX-insert-environment environment 
+                              (concat
+                               (unless (zerop (length pos))
+                                 (concat LaTeX-optop pos LaTeX-optcl))
+                               (concat TeX-grop width TeX-grcl)))))
 
 (defun LaTeX-env-tabular* (environment)
   "Insert ENVIRONMENT with width, position and column specifications."
   (let ((width (read-string "Width: " LaTeX-default-width))
-	(pos (and LaTeX-default-position
+	(pos (and LaTeX-default-position ;; LaTeX-default-position can
+					 ;; be nil, i.e. do not prompt
 		  (read-string "(Optional) Position: " LaTeX-default-position)))
 	(fmt (read-string "Format: " LaTeX-default-format)))
-    (setq LaTeX-default-width (if (zerop (length width))
-				  LaTeX-default-width
-				width))
-    (setq LaTeX-default-position (or pos ""))
+    (setq LaTeX-default-width width)
+    (setq LaTeX-default-position pos)
     (setq LaTeX-default-format fmt)
     (LaTeX-insert-environment environment
 			      (concat
-			       (format "{%s}" width) ;; not optional!
-			       (when (not (zerop (length pos)))
-				 (format "[%s]" pos))
-			       (format "{%s}" fmt)))))
+			       (concat TeX-grop width TeX-grcl) ;; not optional!
+			       (unless (zerop (length pos))
+				 (concat LaTeX-optop pos LaTeX-optcl))
+			       (concat TeX-grop fmt TeX-grcl)))))
 
 (defun LaTeX-env-picture (environment)
   "Insert ENVIRONMENT with width, height specifications."
@@ -996,14 +996,11 @@ Just like array and tabular."
     (if (zerop (length y-offset))
 	(setq y-offset "0"))
     (LaTeX-insert-environment environment
-			      (concat (format "(%s,%s)" width height)
-				      (if (not (and (string= x-offset "0")
-						    (string= y-offset "0")))
-					  (format "(%s,%s)" x-offset y-offset))))
-
-    (end-of-line 0)
-    (next-line 1)
-    (delete-horizontal-space)))
+			      (concat
+                               (format "(%s,%s)" width height)
+                               (if (not (and (string= x-offset "0")
+                                             (string= y-offset "0")))
+                                   (format "(%s,%s)" x-offset y-offset))))))
 
 (defun LaTeX-env-bib (environment)
   "Insert ENVIRONMENT with label for bibitem."
