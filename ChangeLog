@@ -1,3 +1,11 @@
+2002-12-06  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex.el: Lots of doc fixes/white space.  Did the mistake of
+	running checkdoc.  Not clean yet, but different.
+	(LaTeX-label-alist): New buffer-local variable for label prefixes
+	lookup.
+	(LaTeX-label): Use it.
+
 2002-11-25  David Kastrup  <David.Kastrup@t-online.de>
 
 	* latex.el (TeX-arg-define-index): correct typo.
