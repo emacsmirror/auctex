@@ -1,3 +1,9 @@
+2002-10-24  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-env-contents): New function.
+	(LaTeX-common-initialization): Added 26 LaTeX commands, 2 LaTeX2e
+	environments, and 41 LaTeX2e commands.
+
 2002-10-08  David Kastrup  <David.Kastrup@t-online.de>
 
 	* style/scrreprt.el, style/scrbase.el, style/scrartcl.el,
