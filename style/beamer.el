@@ -78,22 +78,17 @@
     "columnsonlytextwidth"
     '("exampleblock" 1)
     '("frame"  (lambda (env &rest ignore)
-		 (let ((start (if (and (TeX-active-mark) (< (mark) (point)))
-				  (mark)
-				(point)))
-		       (title (read-input "(Optional) Title: ")))
+		 (let ((title (read-input "(Optional) Title: ")))
 		   (LaTeX-insert-environment env)
 		   (unless (zerop (length title))
 		     (save-excursion
-		       (goto-char start)
+		       (LaTeX-find-matching-begin)
 		       (end-of-line)
 		       (LaTeX-newline)
 		       (insert (format "\\frametitle{%s}" title))
-		       (save-restriction
-			 (narrow-to-region (point-min)
-					   (line-beginning-position 2))
-			 (LaTeX-fill-region (line-beginning-position)
-					    (line-beginning-position 2))))))))
+		       (LaTeX-newline)
+		       (LaTeX-fill-region (line-beginning-position 0)
+					  (line-beginning-position)))))))
     '("onlyenv" (lambda (env &rest ignore)
 		  (LaTeX-insert-environment
 		   env
