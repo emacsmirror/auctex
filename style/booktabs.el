@@ -38,15 +38,17 @@ PROMPT is the value of the prompt to be shown."
     '("specialrule" "Thickness" "Space above" "Space below"))
 
    ;; Fontification
-   (setq font-latex-match-function-keywords-local
-         (append font-latex-match-function-keywords-local
-                 '("toprule"
-                   "midrule"
-                   "bottomrule"
-                   "cmidrule"
-                   "addlinespace"
-                   "morecmidrule"
-                   "specialrule")))
-   (font-latex-match-function-make)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (setq font-latex-match-function-keywords-local
+	   (append font-latex-match-function-keywords-local
+		   '("toprule"
+		     "midrule"
+		     "bottomrule"
+		     "cmidrule"
+		     "addlinespace"
+		     "morecmidrule"
+		     "specialrule")))
+     (font-latex-match-function-make))))
 
 ;;; booktabs.el ends here

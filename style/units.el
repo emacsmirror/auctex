@@ -31,17 +31,18 @@
 
 (TeX-add-style-hook
  "units"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("unit" [ "Value" ] "Unit")
-     '("unitfrac" [ "Value" ] "Unit in numerator" "Unit in denominator"))
-    ;; units.sty requires the package nicefrac.sty, thus we enable the
-    ;; macros of nicefrac.sty, too
-    (TeX-run-style-hooks "nicefrac")
-    ;; enable fontifying
-    (add-to-list 'font-latex-match-textual-keywords-local "unit")
-    (add-to-list 'font-latex-match-textual-keywords-local "unitfrac")
-    (font-latex-match-textual-make))))
+ (lambda ()
+   (TeX-add-symbols
+    '("unit" [ "Value" ] "Unit")
+    '("unitfrac" [ "Value" ] "Unit in numerator" "Unit in denominator"))
+   ;; units.sty requires the package nicefrac.sty, thus we enable the
+   ;; macros of nicefrac.sty, too
+   (TeX-run-style-hooks "nicefrac")
+   ;; enable fontifying
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-textual-keywords-local "unit")
+     (add-to-list 'font-latex-match-textual-keywords-local "unitfrac")
+     (font-latex-match-textual-make))))
 
 ;;; units.el ends here

@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-10-26
-;; Version: $Id: scrlttr2.el,v 1.4 2004-08-15 20:11:21 dak Exp $
+;; Version: $Id: scrlttr2.el,v 1.5 2004-10-10 11:02:24 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -124,73 +124,75 @@
 			  (format "[%s]" options))
 		      (format "{%s}" recip)))))))
     ;; Definitions for font-latex
-    ;; Textual keywords
-    (setq font-latex-match-textual-keywords-local
-          (append font-latex-match-textual-keywords-local
-                  '("addrentry"
-                    "adrentry"
-                    "bankname"
-                    "cc"
-                    "ccname"
-                    "closing"
-                    "customername"
-                    "datename"
-                    "emailname"
-                    "encl"
-                    "enclname"
-                    "faxname"
-                    "firstfoot"
-                    "firsthead"
-                    "headfromname"
-                    "headtoname"
-                    "invoicename"
-                    "myrefname"
-                    "nextfoot"
-                    "nexthead"
-                    "opening"
-                    "pagename"
-                    "phonename"
-                    "ps"
-                    "subjectname"
-                    "wwwname"
-                    "yourmailname"
-                    "yourrefname")))
-    (font-latex-match-textual-make)
-    ;; Function keywords
-    (setq font-latex-match-function-keywords-local
-          (append font-latex-match-function-keywords-local
-                  '("AtBeginLetter"
-                    "LetterOptionNeedsPapersize"
-                    "LoadLetterOption"
-                    "addrchar"
-                    "adrchar"
-                    "ifkomavarempty")))
-    (font-latex-match-function-make)
-    ;; Variable keywords
-    (setq font-latex-match-variable-keywords-local
-          (append font-latex-match-variable-keywords-local
-                  '("KOMAoptions"
-                    "addtokomafont"
-                    "addtolengthplength"
-                    "addtoreffields"
-                    "newcaptionname"
-                    "newkomavar"
-                    "providecaptionname"
-                    "renewcaptionname"
-                    "setkomafont"
-                    "setkomavar"
-                    "setlengthtoplength"
-                    "usekomafont"
-                    "usekomavar"
-                    "useplength")))
-    (font-latex-match-variable-make)
-    ;; Warning keywords
-    (setq font-latex-match-warning-keywords-local
-          (append font-latex-match-warning-keywords-local
-                  '("cleardoublestandardpage"
-                    "cleardoubleplainpage"
-                    "cleardoubleemptypage")))
-    (font-latex-match-warning-make)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     ;; Textual keywords
+     (setq font-latex-match-textual-keywords-local
+	   (append font-latex-match-textual-keywords-local
+		   '("addrentry"
+		     "adrentry"
+		     "bankname"
+		     "cc"
+		     "ccname"
+		     "closing"
+		     "customername"
+		     "datename"
+		     "emailname"
+		     "encl"
+		     "enclname"
+		     "faxname"
+		     "firstfoot"
+		     "firsthead"
+		     "headfromname"
+		     "headtoname"
+		     "invoicename"
+		     "myrefname"
+		     "nextfoot"
+		     "nexthead"
+		     "opening"
+		     "pagename"
+		     "phonename"
+		     "ps"
+		     "subjectname"
+		     "wwwname"
+		     "yourmailname"
+		     "yourrefname")))
+     (font-latex-match-textual-make)
+     ;; Function keywords
+     (setq font-latex-match-function-keywords-local
+	   (append font-latex-match-function-keywords-local
+		   '("AtBeginLetter"
+		     "LetterOptionNeedsPapersize"
+		     "LoadLetterOption"
+		     "addrchar"
+		     "adrchar"
+		     "ifkomavarempty")))
+     (font-latex-match-function-make)
+     ;; Variable keywords
+     (setq font-latex-match-variable-keywords-local
+	   (append font-latex-match-variable-keywords-local
+		   '("KOMAoptions"
+		     "addtokomafont"
+		     "addtolengthplength"
+		     "addtoreffields"
+		     "newcaptionname"
+		     "newkomavar"
+		     "providecaptionname"
+		     "renewcaptionname"
+		     "setkomafont"
+		     "setkomavar"
+		     "setlengthtoplength"
+		     "usekomafont"
+		     "usekomavar"
+		     "useplength")))
+     (font-latex-match-variable-make)
+     ;; Warning keywords
+     (setq font-latex-match-warning-keywords-local
+	   (append font-latex-match-warning-keywords-local
+		   '("cleardoublestandardpage"
+		     "cleardoubleplainpage"
+		     "cleardoubleemptypage")))
+     (font-latex-match-warning-make))))
 
 (defun TeX-arg-KOMA-scrlttr-vars (optional &optional prompt)
   "Prompt for KOMA-Script's scrlttr2 predefined variables with completion."

@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbook.el,v 1.4 2004-08-15 20:11:21 dak Exp $
+;; Version: $Id: scrbook.el,v 1.5 2004-10-10 11:02:24 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary: 
@@ -38,17 +38,18 @@
 			       LaTeX-section-label
 			       '(("addchap" . nil))))
     ;; Definitions for font-latex
-    ;; Textual keywords
-    (setq font-latex-match-textual-keywords-local
-          (append font-latex-match-textual-keywords-local
-                  '("addchap"
-                    "setpartpreamble"
-                    "setchapterpreamble"
-                    "dictum")))
-    (font-latex-match-textual-make)
-
-    ;; Title keywords
-    (add-to-list 'font-latex-match-title-1-keywords-local "addchap")
-    (font-latex-match-title-1-make)))
+    (when (and (featurep 'font-latex)
+	       (eq TeX-install-font-lock 'font-latex-setup))
+      ;; Textual keywords
+      (setq font-latex-match-textual-keywords-local
+	    (append font-latex-match-textual-keywords-local
+		    '("addchap"
+		      "setpartpreamble"
+		      "setchapterpreamble"
+		      "dictum")))
+      (font-latex-match-textual-make)
+      ;; Title keywords
+      (add-to-list 'font-latex-match-title-1-keywords-local "addchap")
+      (font-latex-match-title-1-make))))
 
 ;;; scrbook.el ends here

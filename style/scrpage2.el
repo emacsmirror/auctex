@@ -61,41 +61,43 @@
     '("providepagestyle" "Name" "Head definition" "Foot definition"))
 
     ;; Fontification
-    (setq font-latex-match-variable-keywords-local
-          (append font-latex-match-variable-keywords-local
-                  '("lehead"
-                    "cehead"
-                    "rehead"
-                    "lefoot"
-                    "cefoot"
-                    "refoot"
-                    "lohead"
-                    "cohead"
-                    "rohead"
-                    "lofoot"
-                    "cofoot"
-                    "rofoot"
-                    "ihead"
-                    "chead"
-                    "ohead"
-                    "ifoot"
-                    "cfoot"
-                    "ofoot"
-                    "automark"
-                    "setfootwidth"
-                    "setheadwidth"
-                    "setfootbotline"
-                    "setfootsepline"
-                    "setheadtopline"
-                    "setheadsepline")))
-    (font-latex-match-variable-make)
-    (setq font-latex-match-function-keywords-local
-          (append font-latex-match-function-keywords-local
-                  '("deftripstyle"
-                    "defpagestyle"
-                    "newpagestyle"
-                    "renewpagestyle"
-                    "providepagestyle")))
-    (font-latex-match-function-make)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (setq font-latex-match-variable-keywords-local
+	   (append font-latex-match-variable-keywords-local
+		   '("lehead"
+		     "cehead"
+		     "rehead"
+		     "lefoot"
+		     "cefoot"
+		     "refoot"
+		     "lohead"
+		     "cohead"
+		     "rohead"
+		     "lofoot"
+		     "cofoot"
+		     "rofoot"
+		     "ihead"
+		     "chead"
+		     "ohead"
+		     "ifoot"
+		     "cfoot"
+		     "ofoot"
+		     "automark"
+		     "setfootwidth"
+		     "setheadwidth"
+		     "setfootbotline"
+		     "setfootsepline"
+		     "setheadtopline"
+		     "setheadsepline")))
+     (font-latex-match-variable-make)
+     (setq font-latex-match-function-keywords-local
+	   (append font-latex-match-function-keywords-local
+		   '("deftripstyle"
+		     "defpagestyle"
+		     "newpagestyle"
+		     "renewpagestyle"
+		     "providepagestyle")))
+     (font-latex-match-function-make))))
 
 ;;; scrpage2.el ends here

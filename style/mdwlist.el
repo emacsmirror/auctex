@@ -50,7 +50,9 @@
 				 (regexp-quote TeX-esc)
 				 "\\(resume\\b\\|suspend\\b\\)"))
    ;; Fontification
-   (setq font-latex-match-function-keywords-local
-         (append font-latex-match-function-keywords-local
-                 '("makecompactlist" "suspend" "resume")))
-   (font-latex-match-function-make)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (setq font-latex-match-function-keywords-local
+	   (append font-latex-match-function-keywords-local
+		   '("makecompactlist" "suspend" "resume")))
+     (font-latex-match-function-make))))

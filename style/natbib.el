@@ -68,13 +68,15 @@
 	4 'LaTeX-bibitem-list "}")))
 
     ;; Add fontification for references
-    (setq font-latex-match-reference-keywords-local
-          (append font-latex-match-reference-keywords-local
-            '("cite" "citet" "citet*" "citealt" "citealt*"
-              "citep" "citep*" "citealp" "citealp*" 
-              "citeauthor" "citeauthor*" "citefullauthor"
-              "citeyear" "citeyearpar""shortcites")))
-    (font-latex-match-reference-make)
+    (when (and (featurep 'font-latex)
+	       (eq TeX-install-font-lock 'font-latex-setup))
+      (setq font-latex-match-reference-keywords-local
+	    (append font-latex-match-reference-keywords-local
+		    '("cite" "citet" "citet*" "citealt" "citealt*"
+		      "citep" "citep*" "citealp" "citealp*" 
+		      "citeauthor" "citeauthor*" "citefullauthor"
+		      "citeyear" "citeyearpar""shortcites")))
+      (font-latex-match-reference-make))
 
     ;; Tell RefTeX
     (if (fboundp 'reftex-set-cite-format)

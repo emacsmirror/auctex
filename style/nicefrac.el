@@ -31,12 +31,13 @@
 
 (TeX-add-style-hook
  "nicefrac"
- (function
-  (lambda ()
-    (TeX-add-symbols
-     '("nicefrac" [ "Font changing command" ] "Numerator" "Denominator"))
-    ;; enable fontifying
-    (add-to-list 'font-latex-match-textual-keywords-local "nicefrac")
-    (font-latex-match-textual-make))))
+ (lambda ()
+   (TeX-add-symbols
+    '("nicefrac" [ "Font changing command" ] "Numerator" "Denominator"))
+   ;; enable fontifying
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-textual-keywords-local "nicefrac")
+     (font-latex-match-textual-make))))
 
 ;;; nicefrac.el ends here

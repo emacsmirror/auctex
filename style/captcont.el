@@ -16,7 +16,9 @@
    (TeX-add-symbols
     '("captcont"  [ "list entry" ] "Caption")
     '("captcont*" [ "list entry" ] "Caption"))
-   (add-to-list 'font-latex-match-textual-keywords-local "captcont")
-   (font-latex-match-textual-make)))
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-textual-keywords-local "captcont")
+     (font-latex-match-textual-make))))
 
 ;;; captcont.el ends here

@@ -5,7 +5,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.6 2004-05-14 14:26:22 angeli Exp $
+;; Version: $Id: scrbase.el,v 1.7 2004-10-10 11:02:24 angeli Exp $
 ;; Keywords: tex
 ;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
@@ -124,61 +124,63 @@
 				 ("addsec" . nil)
 				 ("minisec" . nil))))
     ;; Definitions for font-latex
-    ;; Textual keywords
-    (setq font-latex-match-textual-keywords-local
-          (append font-latex-match-textual-keywords-local
-                  '("captionabove"
-                    "captionbelow"
-                    "dedication"
-                    "extratitle"
-                    "lowertitleback"
-                    "maketitle"
-                    "marginline"
-                    "publishers"
-                    "subject"
-                    "sectionmark"
-                    "setbibpreamble"
-                    "setindexpreamble"
-                    "subsectionmark"
-                    "textsubscript"
-                    "titlehead"
-                    "uppertitleback")))
-    (font-latex-match-textual-make)
-    ;; Function keywords
-    (setq font-latex-match-function-keywords-local
-          (append font-latex-match-function-keywords-local
-                  '("deffootnote"
-                    "deffootnotemark"
-                    "ifpdfoutput"
-                    "ifthispageodd")))
-    (font-latex-match-function-make)
-    ;; Variable keywords
-    (setq font-latex-match-variable-keywords-local
-          (append font-latex-match-variable-keywords-local
-                  '("addtokomafont"
-                    "areaset"
-                    "setcaphanging"
-                    "setcapindent"
-                    "setcapmargin"
-                    "setcapwidth"
-                    "setkomafont"
-                    "typearea"
-                    "usekomafont")))
-    (font-latex-match-variable-make)
-    ;; Warning keywords
-    (setq font-latex-match-warning-keywords-local
-          (append font-latex-match-warning-keywords-local
-                  '("cleardoublestandardpage"
-                    "cleardoubleplainpage"
-                    "cleardoubleemptypage")))
-    (font-latex-match-warning-make)
-    ;; Title keywords
-    (add-to-list 'font-latex-match-title-1-keywords-local "addpart")
-    (font-latex-match-title-1-make)
-    (add-to-list 'font-latex-match-title-2-keywords-local "addsec")
-    (font-latex-match-title-2-make)
-    (add-to-list 'font-latex-match-title-4-keywords-local "minisec")
-    (font-latex-match-title-4-make)))
+    (when (and (featurep 'font-latex)
+	       (eq TeX-install-font-lock 'font-latex-setup))
+      ;; Textual keywords
+      (setq font-latex-match-textual-keywords-local
+	    (append font-latex-match-textual-keywords-local
+		    '("captionabove"
+		      "captionbelow"
+		      "dedication"
+		      "extratitle"
+		      "lowertitleback"
+		      "maketitle"
+		      "marginline"
+		      "publishers"
+		      "subject"
+		      "sectionmark"
+		      "setbibpreamble"
+		      "setindexpreamble"
+		      "subsectionmark"
+		      "textsubscript"
+		      "titlehead"
+		      "uppertitleback")))
+      (font-latex-match-textual-make)
+      ;; Function keywords
+      (setq font-latex-match-function-keywords-local
+	    (append font-latex-match-function-keywords-local
+		    '("deffootnote"
+		      "deffootnotemark"
+		      "ifpdfoutput"
+		      "ifthispageodd")))
+      (font-latex-match-function-make)
+      ;; Variable keywords
+      (setq font-latex-match-variable-keywords-local
+	    (append font-latex-match-variable-keywords-local
+		    '("addtokomafont"
+		      "areaset"
+		      "setcaphanging"
+		      "setcapindent"
+		      "setcapmargin"
+		      "setcapwidth"
+		      "setkomafont"
+		      "typearea"
+		      "usekomafont")))
+      (font-latex-match-variable-make)
+      ;; Warning keywords
+      (setq font-latex-match-warning-keywords-local
+	    (append font-latex-match-warning-keywords-local
+		    '("cleardoublestandardpage"
+		      "cleardoubleplainpage"
+		      "cleardoubleemptypage")))
+      (font-latex-match-warning-make)
+      ;; Title keywords
+      (add-to-list 'font-latex-match-title-1-keywords-local "addpart")
+      (font-latex-match-title-1-make)
+      (add-to-list 'font-latex-match-title-2-keywords-local "addsec")
+      (font-latex-match-title-2-make)
+      (add-to-list 'font-latex-match-title-4-keywords-local "minisec")
+      (font-latex-match-title-4-make))))
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."

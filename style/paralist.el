@@ -66,12 +66,13 @@
     '("inparablank" LaTeX-env-item))
 
    ;; Fontification
-   (setq font-latex-match-variable-keywords-local
-         (append font-latex-match-variable-keywords-local
-                 '("setdefaultitem"
-                   "setdefaultenum"
-                   "setdefaultleftmargin")))
-   (font-latex-match-variable-make)))
-
+   (when (and (featurep 'font-latex)
+	      (eq TeX-install-font-lock 'font-latex-setup))
+     (setq font-latex-match-variable-keywords-local
+	   (append font-latex-match-variable-keywords-local
+		   '("setdefaultitem"
+		     "setdefaultenum"
+		     "setdefaultleftmargin")))
+     (font-latex-match-variable-make))))
 
 ;;; paralist.el ends here
