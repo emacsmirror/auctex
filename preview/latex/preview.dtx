@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1263}
+%\CheckSum{1264}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.83 $
+%  \rcskey \version CVS-$Revision: 1.84 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2003-06-19 10:43:08 $
+%\rcskey\next $Date: 2003-10-15 13:30:43 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -132,7 +132,8 @@
 %previewed.
 %\item[|textmath|] will make all text math subject to previews.  Since
 %math mode is used throughly inside of \LaTeX\ even for other purposes,
-%this works by redefining \cmd\(, \cmd\) and |$|.  Only occurences of
+%this works by redefining \cmd\(, \cmd\) and |$| and the |math|
+%environment (apparently some people use that).  Only occurences of
 %these text math delimiters in later loaded packages and in the main
 %document will thus be affected.
 %\item[|graphics|] will subject all \cmd{\includegraphics} commands to
@@ -405,10 +406,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.83 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.84 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2003-06-19 10:43:08 $
+\reserved@a\next $Date: 2003-10-15 13:30:43 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -860,6 +861,7 @@
 \def\next#1#2{%
   \endgroup
   \DeclareOption{textmath}{%
+    \PreviewEnvironment{math}%
     \preview@delay{\ifx#1\@undefined \let#1=$%$
       \fi\catcode`\$=\active}%
     \pr@advise@ship\(\pr@endaftergroup{}% \)
