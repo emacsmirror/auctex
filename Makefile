@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.71 1993-09-29 19:12:44 amanda Exp $
+# $Id: Makefile,v 5.72 1993-09-30 02:25:08 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -34,6 +34,7 @@ mandir=$(prefix)/man/man1
 aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
+#EMACS=/home/dist/bin/emacs
 EMACS=emacs-19.19
 
 ##----------------------------------------------------------------------
@@ -86,7 +87,7 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = map-euro.el map-8859.el loaddefs.el
+REMOVE = <none>
 
 MINMAPFILES = remap.el    min-mode.el min-ind.el  min-ispl.el column.el \
 	      latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
