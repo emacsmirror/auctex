@@ -67,15 +67,14 @@ needs to be added as well.
 @section Getting started
 
 Once activated, @previewlatex{} and its documentation will be accessible
-from @AUCTeX{}'s menus.  When you have loaded a @LaTeX{} document (a
+via its menus (note that @previewlatex{} requires @AUCTeX{} to be
+loaded).  When you have loaded a @LaTeX{} document (a
 sample document @file{circ.tex} is included in the distribution, but
-most documents including math and/or figures should do), you should be
-able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus, or press
-@kbd{C-c C-c g @key{RET}} (for the menu entry @samp{Command/Generate
-Preview}) or @kbd{C-c C-p C-d} (for @samp{LaTeX/Preview/Document}).
+most documents including math and/or figures should do), you can use
+its menu or @kbd{C-c C-p C-d} (for @samp{Preview/Document}).
 Previews will now be generated for various objects in your document.
 You can use the time to take a short look at the other menu entries and
-key bindings in the @samp{LaTeX/Preview} menu.  You'll see the previewed
+key bindings in the @samp{Preview} menu.  You'll see the previewed
 objects change into a roadworks sign when @previewlatex{} has determined
 just what it is going to preview.  Note that you can freely navigate the
 buffer while this is going on.  When the process is finished you will
@@ -90,12 +89,11 @@ spotted, we recommend you stop the background process by pressing
 @kbd{C-c C-k}.
 
 To see/edit the @LaTeX{} code for a specific object, put the point (the
-cursor) on it and press @kbd{C-c C-p C-p} (for
-@samp{LaTeX/Preview/on/off at point}).  It will also do to click with
-the middle mouse button on the preview.  Now you can edit the code, and
-generate a new preview by again pressing @kbd{C-c C-p C-p} (or by
-clicking with the middle mouse button on the icon before the edited
-text).
+cursor) on it and press @kbd{C-c C-p C-p} (for @samp{Preview/at point}).
+It will also do to click with the middle mouse button on the preview.
+Now you can edit the code, and generate a new preview by again pressing
+@kbd{C-c C-p C-p} (or by clicking with the middle mouse button on the
+icon before the edited text).
 
 If you are using the @code{desktop} package, previews will remain from
 one session to the next as long as you don't kill your buffer.  If you
@@ -105,7 +103,7 @@ the newest one; things are being fixed just as I am writing this.
 @node More documentation, Availability, Getting started, Introduction
 @section More documentation
 After the installation, documentation in the form of 
-@ifinfo 
+@ifinfo
 @ifclear rawfile
 this
 @end ifclear
@@ -124,9 +122,9 @@ info preview-latex
 @end example
 
 @noindent
-or by pressing @kbd{C-h i d m preview-latex @key{RET}} in Emacs. Once
+or by pressing @kbd{C-h i d m preview-latex @key{RET}} in Emacs.  Once
 @previewlatex{} is activated, you can instead use @kbd{C-c C-p
-@key{TAB}} (or the menu entry @samp{LaTeX/Preview/Read documentation}).
+@key{TAB}} (or the menu entry @samp{Preview/Read documentation}).
 
 Depending on your installation, 
 @ifnottex
@@ -180,7 +178,11 @@ send a message with just the word @samp{help} as subject or body to
 Please use the command @kbd{M-x preview-report-bug @key{RET}} to report
 bugs if possible.
 
-Offers to support further development will be appreciated.  For
-developer access, ask on
-@email{preview-latex-devel@@lists.sourceforge.net}.
+Offers to support further development will be appreciated.  If you want
+to show your appreciation with a donation to the main developer, you can
+do so via PayPal to @email{dakas@@users.sourceforge.net}, and of course
+you can arrange for service contracts or for added functionality.  Take
+a look at the @file{TODO} list for suggestions in that area.
 
+For developer access, ask on
+@email{preview-latex-devel@@lists.sourceforge.net}.
