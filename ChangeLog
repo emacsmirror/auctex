@@ -1,5 +1,12 @@
 2005-02-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* latex.el (LaTeX-fill-region-as-para-do): Get rid of a space at
+	eol if the last character of the line is Japanese (e.g. short
+	Japanese lines).
+	(LaTeX-fill-move-to-break-point): Do not skip characters if the
+	text is written in Japanese (e.g. long Japanese line).
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 	* tex-jp.el (LaTeX-auto-regexp-list): Use
 	`LaTeX-auto-class-regexp-list'.
 	Patch by Ikumi Keita <ikumi@revery.net>.
