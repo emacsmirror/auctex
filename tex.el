@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.465 $"))
+	    (rev "$Revision: 5.466 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-05 14:02:44 $"))
+    (let ((date "$Date: 2004-12-09 16:17:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3460,12 +3460,18 @@ of `AmS-TeX-mode-hook'."
 
 ;;; Comments
 
+(defvar TeX-comment-start-regexp "%"
+  "Regular expression matching a comment starter.
+Unlike the variable `comment-start-skip' it should not match any
+whitespace after the comment starter or any character before it.")
+(make-variable-buffer-local 'TeX-comment-start-regexp)
+
 (defun TeX-comment-region (beg end &optional arg)
   "Comment each line in the region from BEG to END.
 Numeric prefix arg ARG means use ARG comment characters.
 If ARG is negative, delete that many comment characters instead."
   (interactive "*r\nP")
-  ;; `comment-padding' will not be recognized in the XEmacs' (21.4)
+  ;; `comment-padding' will not be recognized in XEmacs' (21.4)
   ;; `comment-region', so we temporarily modify `comment-start' to get
   ;; proper spacing.  Unfortunately we have to check for the XEmacs
   ;; version and cannot test if `comment-padding' is bound as this
@@ -3515,7 +3521,7 @@ comment characters instead."
 		(save-excursion
 		  (goto-char beg)
 		  (re-search-forward
-		   (concat "^" comment-start "+") end t)
+		   (concat "^" TeX-comment-start-regexp "+") end t)
 		  (length (match-string 0)))))
       (comment-region beg end (- arg)))))
 
@@ -3525,12 +3531,14 @@ comment characters instead."
   (save-excursion
     ;; Find first comment line
     (beginning-of-line)
-    (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (bobp)))
+    (while (and (looking-at (concat "^[ \t]*" TeX-comment-start-regexp))
+		(not (bobp)))
       (forward-line -1))
     (let ((beg (point)))
       (forward-line 1)
       ;; Find last comment line
-      (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (eobp)))
+      (while (and (looking-at (concat "^[ \t]*" TeX-comment-start-regexp))
+		  (not (eobp)))
 	(forward-line 1))
       ;; Uncomment region
       (TeX-uncomment-region beg (point)))))
@@ -3601,7 +3609,8 @@ not move point further than this value."
     (if (< count 0)
 	(forward-line -1)
       (beginning-of-line))
-    (let ((prefix (when (looking-at (concat "[ \t]*\\(" comment-start "+\\)"))
+    (let ((prefix (when (looking-at (concat "[ \t]*\\("
+					    TeX-comment-start-regexp "+\\)"))
 		    (buffer-substring (match-beginning 1) (match-end 1)))))
       (while (save-excursion
 	       (and (if (> count 0)
@@ -3611,8 +3620,9 @@ not move point further than this value."
 			       (forward-line 1)
 			     (forward-line -1)))
 		    (if prefix
-			(if (looking-at
-			     (concat "[ \t]*\\(" comment-start "+\\)"))
+			(if (looking-at (concat "[ \t]*\\("
+						TeX-comment-start-regexp
+						"+\\)"))
 			    ;; If the preceding line is a commented line
 			    ;; as well, check if the prefixes are
 			    ;; identical.
@@ -3620,7 +3630,8 @@ not move point further than this value."
 				     (buffer-substring (match-beginning 1)
 						       (match-end 1)))
 			  nil)
-		      (not (looking-at (concat "[ \t]*" comment-start))))))
+		      (not (looking-at (concat "[ \t]*"
+					       TeX-comment-start-regexp))))))
 	(if (> count 0)
 	    (forward-line 1)
 	  (forward-line -1)))
@@ -3833,7 +3844,7 @@ those will be considered part of it."
 	 ;; Skip over pairs of square brackets
 	 ((or (looking-at "[ \t]*\n?\\(\\[\\)") ; Be conservative: Consider
 					        ; only consecutive lines.
-	      (and (looking-at (concat "[ \t]*" comment-start))
+	      (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
 		   (save-excursion
 		     (forward-line 1)
 		     (looking-at "[ \t]*\\(\\[\\)"))))
@@ -3844,7 +3855,7 @@ those will be considered part of it."
 	 ;; Skip over pairs of curly braces
 	 ((or (looking-at "[ \t]*\n?{") ; Be conservative: Consider
 					; only consecutive lines.
-	      (and (looking-at (concat "[ \t]*" comment-start))
+	      (and (looking-at (concat "[ \t]*" TeX-comment-start-regexp))
 		   (save-excursion
 		     (forward-line 1)
 		     (looking-at "[ \t]*{"))))
