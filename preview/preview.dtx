@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{696}
+%\CheckSum{703}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.47 $
+%  \rcskey \version CVS-$Revision: 1.48 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-26 15:03:33 $
+%\rcskey\next $Date: 2002-03-27 21:08:58 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.47 $
+   \reserved@a\reserved@b CVS-$Revision: 1.48 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-26 15:03:33 $
+\reserved@a\next $Date: 2002-03-27 21:08:58 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -452,9 +452,10 @@
             \noindent\par
             \setbox\z@\lastbox\unskip\unpenalty
             \prevdepth\dimen@
-            \ifdim\ht\z@=\z@\else
-                \noindent\unhbox\z@\fi\fi\fi
-   \ifhmode \par\unpenalty\unskip\setbox\z@\lastbox
+            \setbox\z@\hbox\bgroup\penalty-\maxdimen\unhbox\z@
+              \ifnum\lastpenalty=-\maxdimen\egroup
+              \else\egroup\box\z@ \fi\fi\fi
+   \ifhmode \par\unskip\setbox\z@\lastbox
      \nointerlineskip\hbox{\unhbox\z@\/}%
    \else \unskip\unpenalty\unskip \fi
    \egroup
