@@ -30,8 +30,14 @@ Start documentation
  A texinfo manual would be nice to have.
 
 Integrate better
- We should get into AucTeX's menus, and the "compiling" prompt is not
- active as long as appropriate.  Temporary directories should only be
- allocated once	dvips gets run.  The bottom line of the process buffer
- should change from "Preview-LaTeX" to "Preview-DviPS" to
- "Preview-GhostScript".
+ The "compiling" prompt is not active as long as
+ appropriate.  Temporary directories should only be allocated once
+ dvips gets run.  The bottom line of the process buffer should change
+ from "Preview-LaTeX" to "Preview-DviPS" to "Preview-GhostScript".
+
+Explore possibilities for generating a single PS file
+ Can we get at the page boundaries then with some PostScript trickery?
+
+Explore possibilities for working via PDF
+ Going via latexpdf->GhostScript and a single file would certainly be
+ faster than the current latex->dvips->GhostScript path.
