@@ -6,6 +6,7 @@
 	* RELEASE: Add warning about `TeX-command-list'.
 
 	* doc/auctex.texi (Commands): Add "be".
+	(Folding): Document `TeX-fold-unspec-use-name'.
 
 2004-08-13  David Kastrup  <dak@gnu.org>
 
