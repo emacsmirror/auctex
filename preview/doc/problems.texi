@@ -18,7 +18,7 @@ newer versions of the problematic software or by simple patches.
 * Problems with GhostScript::   
 * Font problems with Dvips::    
 * Emacs problems::              
-* AUC TeX prior to 11.0::       
+* AUCTeX prior to 11.0::       
 * Too small bounding boxes::    
 * LaTeX international characters::  
 * x-symbol interoperation::     
@@ -118,7 +118,7 @@ rendered as @samp{@pounds{}} (British Pounds sign) in several fonts,
 unless your version of Dvips has a long-standing bug in its
 implementation fixed (only very recent versions of Dvips have).
 
-@node Emacs problems, AUC TeX prior to 11.0, Font problems with Dvips, Known problems
+@node Emacs problems, AUCTeX prior to 11.0, Font problems with Dvips, Known problems
 @section Emacs problems
 
 @itemize @bullet
@@ -163,7 +163,7 @@ version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 @end itemize
 
-@node AUC TeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
+@node AUCTeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
 @section @AUCTeX{} prior to 11.0
 
 @AUCTeX{} versions up to and including 10.0g have a bug in the
@@ -174,7 +174,7 @@ correct this, apply the patch in @file{patches/auctex-10.patch}.  It
 might be more prudent to install a more recent version of @AUCTeX{},
 however.
 
-@node Too small bounding boxes, LaTeX international characters, AUC TeX prior to 11.0, Known problems
+@node Too small bounding boxes, LaTeX international characters, AUCTeX prior to 11.0, Known problems
 @section Too small bounding boxes
 The bounding box of a preview is determined by the @LaTeX{} package
 using the pure @TeX{} bounding boxes.  If there is material extending

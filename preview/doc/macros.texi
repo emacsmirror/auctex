@@ -1,7 +1,7 @@
 @ifclear macros
 @set macros
 @macro AUCTeX {}
-AUC@w{ }@TeX{}
+AUC@TeX{}
 @end macro
 @ifnottex
 @macro LaTeX {}

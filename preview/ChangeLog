@@ -1,5 +1,11 @@
 2003-02-13  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/preview-latex.texi: Somewhat changed info dir entries.
+	(Simple customization): add hint for RefTeX.
+
+	* doc/problems.texi, doc/macros.texi: anticipate name change of
+	AUC TeX to AUCTeX.
+
 	* aclocal.m4, configure.in: resynch with AUCTeX aclocal.m4.
 	Lots of name changes.
 

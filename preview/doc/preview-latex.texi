@@ -3,11 +3,11 @@
 @settitle preview-latex
 @dircategory TeX
 @direntry
-* preview-latex: (preview-latex).       A preview mode for GNU Emacs
+* preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
 @end direntry
 @dircategory Emacs
 @direntry
-* preview-latex: (preview-latex).       To preview LaTeX constructs
+* preview-latex: (preview-latex).       Preview LaTeX fragments
 @end direntry
 @c footnotestyle separate
 @c paragraphindent 2
@@ -25,7 +25,7 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.8
+@subtitle Version 0.7.9
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
@@ -77,7 +77,7 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.8
+This file documents @previewlatex{} version 0.7.9
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
@@ -317,6 +317,11 @@ the region @previewlatex{} considers as the preview image. To enable a
 similar mechanism internal to @previewlatex{}, enable the
 @code{showlabels} option in @code{Preview Default Option List} in the
 @code{Preview Latex} group.
+
+It must be noted, however, that a much better idea may be to use the
+Ref@TeX{} package for managing references.  @xref{RefTeX in a
+Nutshell,,RefTeX in a Nutshell,reftex,The Ref@TeX{} Manual}.
+
 
 @item Open previews automatically
 
