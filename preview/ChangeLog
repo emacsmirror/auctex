@@ -1,3 +1,33 @@
+2002-10-11  Angus Leeming  <leeming@lyx.org>
+
+	* dvipng/draw.c:
+	* dvipng/dvi.c:
+	* dvipng/dvipng.[ch]:
+	* dvipng/font.c:
+	* dvipng/io.c:
+	* dvipng/misc.c:
+	* dvipng/pagequeue.c:
+	* dvipng/papersiz.c:
+	* dvipng/pk.c:
+	* dvipng/set.c:
+	* dvipng/special.c:
+	* dvipng/vf.c: remove function prototype macros.
+
+	* dvipng/dvi.c (DVIGetCommand, CommandLength):
+	* dvipng/set.c (SetChar): add a 'break' to the end
+	of the switch statements (prevents a warning with gcc 3.2).
+
+2002-10-11  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: Fix DEBUG, prototypes, and code pruning
+
+	* dvipng/vf.c, dvipng/set.c, dvipng/pk.c, dvipng/io.c,
+	dvipng/font.c, dvipng/draw.c: Fix DEBUG
+
+	* dvipng/misc.c, dvipng/dvi.c, dvipng/pagequeue.c,
+	dvipng/dvipng.h, dvipng/dvipng.c: Fix pagelist and DEBUG
+
+
 2002-09-20  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/dvipng.h: change font structures, add dvi struct, remove
