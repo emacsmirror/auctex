@@ -1,5 +1,9 @@
 2003-01-27  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/problems.texi (Emacs problems): CVS Emacs supports PNG now.
+
+	* doc/wininstall.texi: CVS Emacs supports PNG images now.
+
 	* prv-xemacs.el (null-device): Add defvar for older XEmacsen.
 
 2003-01-24  David Kastrup  <dakas@users.sourceforge.net>
