@@ -86,7 +86,7 @@ ought to make @kbd{,} special for these kind of completions.
 Suggest @samp{makindex} when appropriate.
 
 @item
-@AUCTeX{} should be able to parse La@TeX{}2e @file{.cls} files.  Here
+@AUCTeX{} should be able to parse @LaTeX{}2e @file{.cls} files.  Here
 are the regexps by @samp{<thiemann@@informatik.uni-tuebingen.de>} Peter
 Thiemann.
 
@@ -204,7 +204,7 @@ At least, support headers, trailers, as well as TeX-outline-extra.
 We might want these, just for fun (and outlines)
 
 @item
-Plain @TeX{} and La@TeX{} specific header and trailer expressions.
+Plain @TeX{} and @LaTeX{} specific header and trailer expressions.
 
 We should have a way to globally specify the default value of the header
 and trailer regexps.
@@ -270,7 +270,7 @@ Maybe the regexp for matching a TeX symbol during parsing should be
 @AUCTeX{} should not parse verbatim environments.
 
 @item
-La@TeX{} formatting should skip @code{verbatim} environments.
+@LaTeX{} formatting should skip @code{verbatim} environments.
 
 @item
 The argument to @samp{\verb} may be broken when filling if it contains a

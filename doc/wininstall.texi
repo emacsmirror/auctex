@@ -11,7 +11,7 @@ The installation of @AUCTeX{} will require the MSYS tool set from
 @uref{http://cygwin.com} installed, that should do just fine as well,
 but it is quite larger and slower.
 
-If you are installing AUC@TeX{} with one of those sets for an Emacs
+If you are installing @AUCTeX{} with one of those sets for an Emacs
 compiled in a different one, you should try to avoid tool-specific path
 names like @file{/cygwin/c}.  Instead, use the @file{c:} syntax.  It
 might also help to use forward slashes instead of the backward slashes

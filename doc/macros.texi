@@ -10,6 +10,9 @@ La@TeX{}
 @macro previewlatex {}
 preview-latex
 @end macro
+@macro ConTeXt {}
+Con@TeX{}t
+@end macro
 @ifset no-acronym
 @clear no-acronym
 @macro acronym {text}

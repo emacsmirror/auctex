@@ -1,3 +1,4 @@
+@include macros.texi
 @section News in 10.0
 
 @itemize @bullet
@@ -120,7 +121,7 @@ Patch by Christoph Wedler  <wedler@@fmi.uni-passau.de>.
 @item @code{TeX-file-recurse} now accepts an integer value, max depth of
 recursion.  Patch by Alastair Burt  <burt@@dfki.bde>.
 
-@item Simple imenu support for La@TeX{}.
+@item Simple imenu support for @LaTeX{}.
 
 @item Workaround for 20.3 bugs. 
 
@@ -166,7 +167,7 @@ Suggested by Alastair Burt <alastair.burt@@dfki.de>.
 Submitted by Berwin A. Turlach @samp{<berwin.turlach@@anu.edu.au>}.
 
 @item
-More La@TeX{}2e support by Jan Vroonhof
+More @LaTeX{}2e support by Jan Vroonhof
 @samp{<vroonhof@@math.ethz.ch>}.@refill
 
 @item Make @code{TeX-master} a local variable in Bib@TeX{} mode and set
@@ -192,7 +193,7 @@ Finer control of indentation: new variables @code{LaTeX-document-regexp},
 By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
 
 @item 
-When running La@TeX{} on a region, do not complain about undefined
+When running @LaTeX{} on a region, do not complain about undefined
 citations.  See variable @code{TeX-region-extra}.
 By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
 
@@ -329,7 +330,7 @@ not needed.
 
 @item
 Press @kbd{M-x LaTeX-209-to-2e @key{ret}} to make a stab at converting a
-La@TeX{} 2.09 header to La@TeX{}2e.
+@LaTeX{} 2.09 header to @LaTeX{}2e.
 
 @item
 @kbd{C-c C-m input @key{ret}} should be faster now on second try.
@@ -343,7 +344,7 @@ indentation added by @samp{\left}.
 need to be at the beginning of the line to take effect. 
 
 @item
-You can now delete and replace La@TeX{}2e style fonts.
+You can now delete and replace @LaTeX{}2e style fonts.
 
 @item
 Moved external commands to new menu.
@@ -355,7 +356,7 @@ Moved external commands to new menu.
 Better handling of @samp{"} with @file{german.sty}.
 
 @item
-New variable @code{LaTeX-paragraph-commands} lists La@TeX{} commands
+New variable @code{LaTeX-paragraph-commands} lists @LaTeX{} commands
 that shouldn't be formatted as part of a paragraph.
 
 @item
@@ -394,7 +395,7 @@ and probably more.@refill
 
 @itemize @bullet
 @item
-La@TeX{}2e is now default.  Set @code{LaTeX-version} to @samp{"2"} to
+@LaTeX{}2e is now default.  Set @code{LaTeX-version} to @samp{"2"} to
 disable this.
 
 @item
@@ -402,7 +403,7 @@ Better handling of @samp{*TeX background*} buffer.  Suggested by John
 Interrante @samp{<interran@@uluru.Stanford.EDU>}. 
 
 @item
-Parser did not recognise the use of @samp{\def} to create La@TeX{}
+Parser did not recognise the use of @samp{\def} to create @LaTeX{}
 environments.  Reported by Frederic Devernay
 @samp{<Frederic.Devernay@@sophia.inria.fr>}. 
 
@@ -468,12 +469,12 @@ already worked in GNU Emacs.  Thanks to Andreas Ernst
 @samp{ernst_a@@maths.uwa.edu.au}.
 
 @item
-Font support for La@TeX{}2e.  Many people suggested this.
+Font support for @LaTeX{}2e.  Many people suggested this.
 Automatically activated for all documents defined with
 @samp{\documentclass}. 
 
 @item
-Outline support for La@TeX{}2e fixed by Robert Estes
+Outline support for @LaTeX{}2e fixed by Robert Estes
 @samp{<estes@@ece.ucdavis.edu>}. 
 
 @item
@@ -509,7 +510,7 @@ Shinji @samp{<koba@@flab.fujitsu.co.jp>} and Masayuki Kuwada
 <kuwada@@axion-gw.ee.uec.ac.jp>. 
 
 @item
-Display number of pages after end of La@TeX{} compilation.  Thanks to
+Display number of pages after end of @LaTeX{} compilation.  Thanks to
 Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>}.
 
 @item
@@ -575,7 +576,7 @@ and probably more.@refill
 
 @itemize @bullet
 @item
-Fixed problem with @file{filladapt} defeating La@TeX{} mode's own
+Fixed problem with @file{filladapt} defeating @LaTeX{} mode's own
 indentation algorithm.  Thanks to Piet van Oostrum
 @samp{<piet@@cs.ruu.nl>}.
 
@@ -636,7 +637,7 @@ Made it possible to use absolute paths when including bibliographies or
 style files.
 
 @item
-Fixed problem with parsing errors after running La@TeX{} on the region
+Fixed problem with parsing errors after running @LaTeX{} on the region
 from the menu.  Thanks to Peter Barth @samp{<barth@@mpi-sb.mpg.de>} for
 finding this one.
 
@@ -658,7 +659,7 @@ labels, respectively.
 @item
 Merged a number of files.  The major files are now @file{tex.el} for
 plain @TeX{} and common support, @file{tex-buf.el} for running external
-commands, and @file{latex.el} for La@TeX{} support.
+commands, and @file{latex.el} for @LaTeX{} support.
 
 @item
 Unbundled @file{outln-18.el}.  Users of Emacs 18 or Lucid Emacs 19.9 or
@@ -681,7 +682,7 @@ arguments in @code{LaTeX-math-mode}.  Added a variable
 @code{TeX-insert-braces} to disable it everywhere. 
 
 @item
-Now complete with existing labels when asking for a label in a La@TeX{}
+Now complete with existing labels when asking for a label in a @LaTeX{}
 environment.  Suggested by Berwin Turlach
 @samp{<berwin@@core.ucl.ac.be>}.
  
@@ -965,7 +966,7 @@ New hooks for changing ispell directory, see @file{tex-site.el} for
 details.  
 
 @item 
-La@TeX{}2e mode now supported.  Insert 
+@LaTeX{}2e mode now supported.  Insert 
 
 @lisp
   (setq TeX-default-mode 'latex2e-mode)
@@ -990,7 +991,7 @@ The control key bindings in @code{LaTeX-math-mode} now works, thanks to
 Frederic Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>}. 
 
 @item
-La@TeX{} outlines no longer matches @samp{\partial} or other commands
+@LaTeX{} outlines no longer matches @samp{\partial} or other commands
 with a sectioning command as prefix.  Thanks to Jakob Schiotz
 @samp{<schiotz@@fysik.dth.dk>}.
 
@@ -1043,7 +1044,7 @@ Added nabla to LaTeX Math Mode.  Suggested by Bill Reynolds
 @samp{<bill@@goshawk.lanl.gov>}. 
 
 @item
-Added commands for running @TeX{} and La@TeX{} interactively.  Thanks to
+Added commands for running @TeX{} and @LaTeX{} interactively.  Thanks to
 David Carlisle @samp{<carlisle@@computer-science.manchester.ac.uk>}.
 
 @item
@@ -1110,7 +1111,7 @@ Support for @code{epsf} and @code{psfig} style files.  Thanks to Marc
 Gemis @samp{<makke@@wins.uia.ac.be>}.
 
 @item
-Support for La@TeX{}info.  Thanks to Marc Gemis
+Support for @LaTeX{}info.  Thanks to Marc Gemis
 @samp{<makke@@wins.uia.ac.be>}.
 
 @item
@@ -1264,7 +1265,7 @@ Added autoload for @code{TeX-command}.  Thanks to Hanno Wirth
 
 @item
 Added support for AmS@TeX{} and AmSLa@TeX{}.  Currently they are
-identical to @TeX{} and La@TeX{} except for another default command. 
+identical to @TeX{} and @LaTeX{} except for another default command. 
 
 @item
 Added Vor@TeX{} style matching of dollar sign.  The style is guaranteed
@@ -1643,7 +1644,7 @@ and will do this when you save a buffer.
 @item
 Sli@TeX{} mode.
 
-Just like La@TeX{} mode, except that the default command to format run
+Just like @LaTeX{} mode, except that the default command to format run
 on the buffer is @samp{slitex}.
 
 @item
@@ -1713,7 +1714,7 @@ has been loaded. Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
 Added @samp{*} to lot of @code{(interactive)} declarations.
 
 @item
-The outline commands are now always accessible from La@TeX{} mode.
+The outline commands are now always accessible from @LaTeX{} mode.
 
 @item
 Generalized the keyboard remapping and double modes.

@@ -1,8 +1,10 @@
+@include macros.texi
 @ifset rawfile
-@chapheading Changes and New Features in AUC@TeX{}
+@chapheading Changes and New Features in @AUCTeX{}
 
 @end ifset
 @c -----------------------
+
 @heading News in 11.50
 
 @itemize @bullet
@@ -19,7 +21,7 @@ default.
 
 @item
 The content of the command menu now depends on the mode (plain @TeX{},
-La@TeX{}, Con@TeX{}t etc.).  Any former customization of the variable
+@LaTeX{}, @ConTeXt{} etc.).  Any former customization of the variable
 @code{TeX-command-list} has to be erased.  Otherwise the command menu
 and the customization will not work correctly.
 
@@ -41,14 +43,14 @@ is not finished yet.  For example syntax highlighting does not work yet
 in XEmacs.)
 
 @item
-For macro completion in doc@TeX{} mode the AUC@TeX{} style files
+For macro completion in doc@TeX{} mode the @AUCTeX{} style files
 @file{doc.el}, @file{ltxdoc.el} and @file{ltx-base.el} were included.
-The latter provides general support for low-level La@TeX{} macros and
-may be used with La@TeX{} class and style files as well.  It is
+The latter provides general support for low-level @LaTeX{} macros and
+may be used with @LaTeX{} class and style files as well.  It is
 currently not loaded automatically for those files.
 
 @item
-Support for Con@TeX{}t with a separate Con@TeX{}t mode is now included.
+Support for @ConTeXt{} with a separate @ConTeXt{} mode is now included.
 Macro definitions for completion are available in Dutch and English.
 
 @item
@@ -60,10 +62,10 @@ manual.
 @item
 Filling and indentation in XEmacs with preview-latex and activated
 previews lead to the insertion of whitespace before multi-line previews.
-AUC@TeX{} now contains facilities to prevent this problem.
+@AUCTeX{} now contains facilities to prevent this problem.
 
 @item
-If @code{TeX-master} is set to @code{t}, AUC@TeX{} will now query for a
+If @code{TeX-master} is set to @code{t}, @AUCTeX{} will now query for a
 master file only when a new file is opened.  Existing files will be left
 alone.  The new function @code{TeX-master-file-ask} (bound to @kbd{C-c
 _} is provided for adding the variable manually.
@@ -79,7 +81,7 @@ size.
 Support for @code{alphanum.sty}, @code{beamer.cls}, @code{booktabs.sty},
 @code{captcont.sty}, @code{emp.sty}, @code{paralist.sty} and
 @code{subfigure.el} was added.  Credits go to the authors mentioned in
-the respective AUC@TeX{} style files.
+the respective @AUCTeX{} style files.
 
 @item
 Inserting graphics with @kbd{C-c RET \includegraphics RET} was improved.
@@ -105,7 +107,7 @@ either >>German<< or <<French>> quotation marks by changing the variable
 @code{font-latex-quotes}.
 
 @item
-Certain @TeX{}/La@TeX{} keywords for functions, references, variables
+Certain @TeX{}/@LaTeX{} keywords for functions, references, variables
 and warnings will now be fontified specially.  You may add your own
 keywords by customizing the variables
 @code{font-latex-match-function-keywords},

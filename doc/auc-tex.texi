@@ -13,12 +13,14 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.166 2004-08-05 13:59:17 rsteib Exp $
+@include macros.texi
+
+@c $Id: auc-tex.texi,v 1.167 2004-08-05 18:53:46 rsteib Exp $
 
 @finalout
 @titlepage
-@title AUC@TeX{}
-@subtitle A much enhanced La@TeX{} mode for Emacs.
+@title @AUCTeX{}
+@subtitle A much enhanced @LaTeX{} mode for Emacs.
 @subtitle Version 11.50
 
 @author by Kresten Krab Thorup
@@ -56,22 +58,22 @@ approved by the Free Software Foundation.
 
 @ifinfo
 @node top, Copying, (dir), (dir)
-@top AUC@TeX{}
+@top @AUCTeX{}
 
-AUC@TeX{} is an integrated environment for editing La@TeX{} and
+@AUCTeX{} is an integrated environment for editing @LaTeX{} and
 @TeX{} files.
 
-This file documents AUC@TeX{} version 11.50.
+This file documents @AUCTeX{} version 11.50.
 
-Although AUC@TeX{} contains a large number of features, there are no
-reasons to despair.  You can continue to write @TeX{} and La@TeX{}
+Although @AUCTeX{} contains a large number of features, there are no
+reasons to despair.  You can continue to write @TeX{} and @LaTeX{}
 documents the way you are used to, and only start using the multiple
-features in small steps.  AUC@TeX{} is not monolithic, each feature
+features in small steps.  @AUCTeX{} is not monolithic, each feature
 described in this manual is useful by itself, but together they provide
 an environment where you will make very few LaTeX errors, and makes it
 easy to find the errors that may slip through anyway.
 
-If you want to make AUC@TeX{} aware of style files and multi-file
+If you want to make @AUCTeX{} aware of style files and multi-file
 documents right away, insert the following in your @file{.emacs} file.
 @lisp
 (setq TeX-auto-save t)
@@ -87,12 +89,12 @@ Kresten Krab Thorup (6.0) @*
 Per Abrahamsen (updates to 11.13) @*
 David Kastrup (updates from 11.14)
 
-There is a mailing list for discussion about AUC@TeX{} and announcement
+There is a mailing list for discussion about @AUCTeX{} and announcement
 of alpha releases, write to @samp{auc-tex-request@@sunsite.dk} to join
 it.  Send contributions to @samp{auc-tex@@sunsite.dk}.
 
 Bug reports, suggestions for new features, and pleas for help should go
-to either @samp{auc-tex_mgr@@sunsite.dk} (the AUC@TeX{} managers), or
+to either @samp{auc-tex_mgr@@sunsite.dk} (the @AUCTeX{} managers), or
 to @samp{auc-tex@@sunsite.dk} (the mailing list) if they might have
 general interest.  Please use the command @kbd{M-x
 TeX-submit-bug-report} to report bugs if possible.
@@ -101,7 +103,7 @@ TeX-submit-bug-report} to report bugs if possible.
 
 @menu
 * Copying::                     Copying
-* Introduction::                Introduction to AUC@TeX{}
+* Introduction::                Introduction to @AUCTeX{}
 * Frequently Used Commands::    Inserting Frequently Used Commands
 * Advanced Features::           Advanced Editing Features
 * Running TeX and friends::     Starting processors, viewers and other programs
@@ -110,7 +112,7 @@ TeX-submit-bug-report} to report bugs if possible.
 * I18n::                        Internationalization
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
-* Installation::                How to install AUC@TeX{}
+* Installation::                How to install @AUCTeX{}
 * Changes::                     Changes and New Features
 * ToDo::                        Future Development
 * FAQ::                         Frequently Asked Questions
@@ -136,10 +138,10 @@ TeX-submit-bug-report} to report bugs if possible.
 
 (This text stolen from the @TeX{}info 2.16 distribution).
 
-The programs currently being distributed that relate to AUC@TeX{}
+The programs currently being distributed that relate to @AUCTeX{}
 include lisp files for Emacs (and XEmacs).  These programs are
 @dfn{free}; this means that everyone is free to use them and free to
-redistribute them on a free basis.  The AUC@TeX{} related programs are
+redistribute them on a free basis.  The @AUCTeX{} related programs are
 not in the public domain; they are copyrighted and there are
 restrictions on their distribution, but these restrictions are designed
 to permit everything that a good cooperating citizen would want to do.
@@ -147,27 +149,27 @@ What is not allowed is to try to prevent others from further sharing any
 version of these programs that they might get from you.
 
 Specifically, we want to make sure that you have the right to give
-away copies of the programs that relate to AUC@TeX{}, that you receive
+away copies of the programs that relate to @AUCTeX{}, that you receive
 source code or else can get it if you want it, that you can change these
 programs or use pieces of them in new free programs, and that you know
 you can do these things.
 
 To make sure that everyone has such rights, we have to forbid you to
 deprive anyone else of these rights.  For example, if you distribute
-copies of the AUC@TeX{} related programs, you must give the recipients
+copies of the @AUCTeX{} related programs, you must give the recipients
 all the rights that you have.  You must make sure that they, too,
 receive or can get the source code.  And you must tell them their
 rights.
 
 Also, for our own protection, we must make certain that everyone finds
-out that there is no warranty for the programs that relate to AUC@TeX{}.
+out that there is no warranty for the programs that relate to @AUCTeX{}.
 If these programs are modified by someone else and passed on, we want
 their recipients to know that what they have is not what we distributed,
 so that any problems introduced by others will not reflect on our
 reputation.
 
 The precise conditions of the licenses for the programs currently
-being distributed that relate to AUC@TeX{} are found in the General
+being distributed that relate to @AUCTeX{} are found in the General
 Public Licenses that accompany them.
 
 @node Introduction, Frequently Used Commands, Copying, top
@@ -176,8 +178,8 @@ Public Licenses that accompany them.
 @node Frequently Used Commands, Advanced Features, Introduction, top
 @chapter Inserting Frequently Used Commands
 
-The most commonly used commands/macros of AUC@TeX{} are those which
-simply insert templates for often used @TeX{} and/or La@TeX{}/Con@TeX{}t
+The most commonly used commands/macros of @AUCTeX{} are those which
+simply insert templates for often used @TeX{} and/or @LaTeX{}/@ConTeXt{}
 constructs, like font changes, handling of environments, etc.  These
 features are very simple, and easy to learn, and help you avoid stupid
 mistakes like mismatched braces, or @samp{\begin@{@}}-@samp{\end@{@}}
@@ -204,7 +206,7 @@ pairs.
 
 In @TeX{}, literal double quotes @samp{"like this"} are seldom used,
 instead two single quotes are used @samp{``like this''}.  To help you
-insert these efficiently, AUC@TeX{} allows you to continue to press
+insert these efficiently, @AUCTeX{} allows you to continue to press
 @kbd{"} to insert two single quotes.  To get a literal double quote,
 press @kbd{"} twice.
 
@@ -241,13 +243,13 @@ values of @code{LaTeX-german-open-quote} and
 facilitate the style files mentioned before, you should customize
 those special variables instead of the standard variables.
 
-In AUC@TeX{}, dollar signs should match like they do in @TeX{}.  This
+In @AUCTeX{}, dollar signs should match like they do in @TeX{}.  This
 has been partially implemented, we assume dollar signs always match
 within a paragraph.  The first @samp{$} you insert in a paragraph will
 do nothing special.  The second @samp{$} will match the first.  This
 will be indicated by moving the cursor temporarily over the first dollar
 sign.  If you enter a dollar sign that matches a double dollar sign
-@samp{$$} AUC@TeX{} will automatically insert two dollar signs.  If you
+@samp{$$} @AUCTeX{} will automatically insert two dollar signs.  If you
 enter a second dollar sign that matches a single dollar sign, the single
 dollar sign will automatically be converted to a double dollar sign.
 
@@ -279,7 +281,7 @@ to type inside of them.
 @cindex Changing font
 @cindex Specifying a font
 
-Perhaps the most used keyboard commands of AUC@TeX{} are the short-cuts
+Perhaps the most used keyboard commands of @AUCTeX{} are the short-cuts
 available for easy insertion of font changing macros.
 
 If you give an argument (that is, type @kbd{C-u}) to the font command,
@@ -364,7 +366,7 @@ Insertion of sectioning macros, that is @samp{\chapter},
 highly customizable, the following describes the default behavior.
 
 When invoking you will be asked for a section macro to insert.  An
-appropriate default is automatically selected by AUC@TeX{}, that is
+appropriate default is automatically selected by @AUCTeX{}, that is
 either: at the top of the document; the top level sectioning for that
 document style, and any other place: The same as the last occurring
 sectioning command.
@@ -453,7 +455,7 @@ Query the user about the title of the section. Modifies @var{title}.
 @item LaTeX-section-toc
 Query the user for the toc entry.  Modifies @var{toc}.
 @item LaTeX-section-section
-Insert La@TeX{} section command according to @var{name}, @var{title},
+Insert @LaTeX{} section command according to @var{name}, @var{title},
 and @var{toc}.  If @var{toc} is nil, no toc entry is inserted.  If
 @var{toc} or @var{title} are empty strings, @var{done-mark} will be
 placed at the point they should be inserted.
@@ -506,22 +508,22 @@ inserted for other types of sections.
 A large apparatus is available that supports insertions of environments,
 that is @samp{\begin@{@}} --- @samp{\end@{@}} pairs.
 
-AUC@TeX{} is aware of most of the actual environments available in a
+@AUCTeX{} is aware of most of the actual environments available in a
 specific document.  This is achieved by examining your
 @samp{\documentclass} command, and consulting a precompiled list of
 environments available in a large number of styles.
 
 You insert an environment with @kbd{C-c C-e}, and select an environment
-type.  Depending on the environment, AUC@TeX{} may ask more questions
+type.  Depending on the environment, @AUCTeX{} may ask more questions
 about the optional parts of the selected environment type.  With
 @kbd{C-u C-c C-e} you will change the current environment.
 
 @deffn Command LaTeX-environment @var{arg}
 @kindex C-c C-e
-(@kbd{C-c C-e})  AUC@TeX{} will prompt you for an environment
+(@kbd{C-c C-e})  @AUCTeX{} will prompt you for an environment
 to insert.  At this prompt, you may press @key{TAB} or @key{SPC} to
 complete a partially written name, and/or to get a list of available
-environments.  After selection of a specific environment AUC@TeX{} may
+environments.  After selection of a specific environment @AUCTeX{} may
 prompt you for further specifications.
 
 If the optional argument @var{arg} is not-nil (i.e. you have given a
@@ -529,7 +531,7 @@ prefix argument), the current environment is modified and no new
 environment is inserted.
 @end deffn
 
-As a default selection, AUC@TeX{} will suggest the environment last
+As a default selection, @AUCTeX{} will suggest the environment last
 inserted or, as the first choice the value of the variable
 @code{LaTeX-default-environment}.
 
@@ -539,7 +541,7 @@ first time.
 @end defopt
 
 If the document is empty, or the cursor is placed at the top of the
-document, AUC@TeX{} will default to insert a `document' environment.
+document, @AUCTeX{} will default to insert a `document' environment.
 
 Most of these are described further in the following sections, and you
 may easily specify more, as described in `Customizing environments'.
@@ -592,15 +594,15 @@ Prefix to use for amsmath equation labels.  Amsmath equations include
 @cindex Tables
 @cindex Table environment
 
-Figures and tables (i.e., floats) may also be inserted using AUC@TeX{}.
+Figures and tables (i.e., floats) may also be inserted using @AUCTeX{}.
 After choosing either `figure' or `table' in the environment list
 described above, you will be prompted for a number of additional things.
 
 @table @var
 @item float-to
 This field is the option of float environments that controls how they are
-placed in the final document.  In La@TeX{} this is a sequence of the
-letters @samp{htbp} as described in the La@TeX{} manual.  The value will
+placed in the final document.  In @LaTeX{} this is a sequence of the
+letters @samp{htbp} as described in the @LaTeX{} manual.  The value will
 default to the value of @code{LaTeX-float}.
 @vindex LaTeX-float
 
@@ -700,7 +702,7 @@ through the document.
 @cindex Abbreviations
 
 @TeX{} is written by a mathematician, and has always contained good
-support for formatting mathematical text.  AUC@TeX{} supports this
+support for formatting mathematical text.  @AUCTeX{} supports this
 tradition, by offering a special minor mode for entering text with many
 mathematical symbols.  You can enter this mode by typing @kbd{C-c
 ~}.
@@ -729,7 +731,7 @@ A list containing key command mappings to use in @code{LaTeX-math-mode}.
 The car of each element is the key and the cdr is the macro name.
 @end defopt
 
-AUC@TeX{} distributions include a reference card for
+@AUCTeX{} distributions include a reference card for
 @code{LaTeX-math-mode} with a list of all math mode commands.
 
 @node Completion, Commenting, Mathematics, Advanced Features
@@ -744,10 +746,10 @@ AUC@TeX{} distributions include a reference card for
 Emacs lisp programmers probably know the @code{lisp-complete-symbol}
 command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
 ispell mode know and love the @code{ispell-complete-word} command from
-that package.  Similarly, AUC@TeX{} has a @code{TeX-complete-symbol}
+that package.  Similarly, @AUCTeX{} has a @code{TeX-complete-symbol}
 command, usually bound to @kbd{M-@key{TAB}}.  Using
 @code{LaTeX-complete-symbol} makes it easier to type and remember the
-names of long La@TeX{} macros.
+names of long @LaTeX{} macros.
 
 In order to use @code{TeX-complete-symbol}, you should write a backslash
 and the start of the macro.  Typing @kbd{M-@key{TAB}} will now
@@ -762,7 +764,7 @@ to `@samp{\renewcommand}'.
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
 bound to @kbd{C-c C-m}.  It has the advantage over completion that it
-knows about the argument of most standard La@TeX{} macros, and will
+knows about the argument of most standard @LaTeX{} macros, and will
 prompt for them.  It also knows about the type of the arguments, so it
 will for example give completion for the argument to @samp{\include}.
 Some examples are listed below.
@@ -770,10 +772,10 @@ Some examples are listed below.
 @deffn Command TeX-insert-macro
 @kindex C-c C-m
 (@kbd{C-c C-m}) Prompt (with completion) for the name of a @TeX{} macro,
-and if AUC@TeX{} knows the macro, prompt for each argument.
+and if @AUCTeX{} knows the macro, prompt for each argument.
 @end deffn
 
-As a default selection, AUC@TeX{} will suggest the macro last inserted
+As a default selection, @AUCTeX{} will suggest the macro last inserted
 or, as the first choice the value of the variable
 @code{TeX-default-macro}.
 
@@ -785,7 +787,7 @@ A faster alternative is to bind the function @code{TeX-electric-macro}
 to @samp{\}.  This can be done by setting the variable @code{TeX-electric-escape}
 
 @defopt TeX-electric-escape
-If this is non-nil when AUC@TeX{} is loaded, the @TeX{} escape
+If this is non-nil when @AUCTeX{} is loaded, the @TeX{} escape
 character @samp{\} will be bound to @code{TeX-electric-macro}
 @end defopt
 
@@ -796,11 +798,11 @@ want to complete.
 
 @deffn Command TeX-electric-macro
 Prompt (with completion) for the name of a @TeX{} macro,
-and if AUC@TeX{} knows the macro, prompt for each argument.
+and if @AUCTeX{} knows the macro, prompt for each argument.
 Space will complete and exit.
 @end deffn
 
-By default AUC@TeX{} will put an empty set braces @samp{@{@}} after a
+By default @AUCTeX{} will put an empty set braces @samp{@{@}} after a
 macro with no arguments to stop it from eating the next whitespace.
 This can be stopped by entering @code{LaTeX-math-mode},
 @pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil
@@ -809,7 +811,7 @@ This can be stopped by entering @code{LaTeX-math-mode},
 If non-nil, append a empty pair of braces after inserting a macro.
 @end defopt
 
-Completions work because AUC@TeX{} can analyze @TeX{} files, and store
+Completions work because @AUCTeX{} can analyze @TeX{} files, and store
 symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
 more information.
 
@@ -821,7 +823,7 @@ more information.
 @cindex \label, completion
 @cindex \ref, completion
 @cindex labels, completion of
-AUC@TeX{} will also make completion for many macro arguments, for
+@AUCTeX{} will also make completion for many macro arguments, for
 example existing labels when you enter a @samp{\ref} macro with
 @code{TeX-insert-macro} or @code{TeX-electric-macro}, and Bib@TeX{}
 entries when you enter a @samp{\cite} macro.  For this kind of
@@ -835,7 +837,7 @@ does not conflict with the basename of one of @TeX{} files.
 @section Commenting
 
 It is often necessary to comment out temporarily a region of @TeX{} or
-La@TeX{} code.  This can be done with the commands @kbd{C-c ;} and
+@LaTeX{} code.  This can be done with the commands @kbd{C-c ;} and
 @kbd{C-c %}.  @kbd{C-c ;} will comment out all lines in the current
 region, while @kbd{C-c %} will comment out the current paragraph.
 Type @kbd{C-c ;} again to uncomment all lines of a commented region,
@@ -846,7 +848,7 @@ These commands will insert or remove a single @samp{%} respectively.
 @kindex C-c ;
 (@kbd{C-c ;}) Add or remove @samp{%} from the beginning of each line
 in the current region.  Uncommenting works only if the region encloses
-solely commented lines.  If AUC@TeX{} should not try to guess if the
+solely commented lines.  If @AUCTeX{} should not try to guess if the
 region should be commented or uncommented the commands
 @code{TeX-comment-region} and @code{TeX-uncomment-region} can be used
 to explicitly comment or uncomment the region in concern.
@@ -874,7 +876,7 @@ the structure of the document, and to catch errors such as a missing
 closing brace.  Thus, the indentation is done for precisely the same
 reasons that you would indent ordinary computer programs.
 
-Indentation is done by La@TeX{} environments and by @TeX{} groups, that
+Indentation is done by @LaTeX{} environments and by @TeX{} groups, that
 is the body of an environment is indented by the value of
 @code{LaTeX-indent-level} (default 2).  Also, items of an `itemize-like'
 environment are indented by the value of @code{LaTeX-item-indent},
@@ -896,13 +898,13 @@ default of @code{newline} which does no indentation to
 and the new line.
 @vindex TeX-newline-function
 
-There are certain La@TeX{} environments which should be indented in a
+There are certain @LaTeX{} environments which should be indented in a
 special way, like @samp{tabular} or @samp{verbatim}.  Those environments
 may be specified in the variable @code{LaTeX-indent-environment-list}
 together with their special indentation functions.  Taking the
 @samp{verbatim} environment as an example you can see that
 @code{current-indentation} is used as the indentation function.  This
-will stop AUC@TeX{} from doing any indentation in the environment if you
+will stop @AUCTeX{} from doing any indentation in the environment if you
 hit @key{TAB} for example.
 @vindex LaTeX-indent-environment-list
 
@@ -928,8 +930,8 @@ formatting @samp{tabular} and @samp{tabbing} environments with the
 function @code{align-current} which will nicely align columns in the
 source code.
 
-AUC@TeX{} is able to format commented parts of your code just as any
-other part.  This means La@TeX{} environments and @TeX{} groups in
+@AUCTeX{} is able to format commented parts of your code just as any
+other part.  This means @LaTeX{} environments and @TeX{} groups in
 comments will be indented syntactically correct if the variable
 @code{LaTeX-syntactic-comments} is set to t.  If you disable it,
 comments will be filled like normal text and no syntactic indentation
@@ -951,7 +953,7 @@ to indenting with a small summary in each case:
 moves the cursor to an appropriate position by the left margin.
 
 Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
-tedious to type.  Therefore you can customize AUC@TeX{} to perform
+tedious to type.  Therefore you can customize @AUCTeX{} to perform
 indentation (or to make coffee) upon typing @key{RET} as well.  The
 respective option is called @code{TeX-newline-function}.
 
@@ -995,7 +997,7 @@ syntax.  Otherwise they will be filled like normal text.
 @defopt TeX-newline-function
 Used to specify the function which is called when @key{RET} is pressed.
 This will normally be @code{newline} which simply inserts a new line.
-In case you want to have AUC@TeX{} do indentation as well when you press
+In case you want to have @AUCTeX{} do indentation as well when you press
 @key{RET}, use the built-in functions @code{newline-and-indent} or
 @code{reindent-then-newline-and-indent}.  The former inserts a new line
 and indents the following line, i.e. it moves the cursor to the right
@@ -1021,9 +1023,9 @@ automatically as you write it.
 
 @c Describe hooks at another suitable place!
 
-@code{auto-fill-mode} can be enabled for AUC@TeX{} by calling
-@code{turn-on-auto-fill} in one of the hooks AUC@TeX{} is running.  For
-all text modes with @code{text-mode-hook}, for all AUC@TeX{} modes with
+@code{auto-fill-mode} can be enabled for @AUCTeX{} by calling
+@code{turn-on-auto-fill} in one of the hooks @AUCTeX{} is running.  For
+all text modes with @code{text-mode-hook}, for all @AUCTeX{} modes with
 @code{TeX-mode-hook} or for specific modes with
 @code{plain-TeX-mode-hook}, @code{LaTeX-mode-hook},
 @code{ConTeXt-mode-hook} or @code{docTeX-mode-hook}.  As an example, if
@@ -1036,7 +1038,7 @@ following into your init file:
 
 You can manually fill explicitely marked regions, paragraphs,
 environments, complete sections, or the whole buffer.  (Note that manual
-filling in AUC@TeX{} will indent the start of the region to be filled in
+filling in @AUCTeX{} will indent the start of the region to be filled in
 contrast to many other Emacs modes.)
 
 There are some syntactical constructs which are handled specially with
@@ -1066,10 +1068,10 @@ stop.
 Paragraph commands like @samp{\section} or @samp{\noindent} (the list of
 commands is defined by @code{LaTeX-paragraph-commands}) are often to be
 placed in their own line(s).  This means they should not be consecuted
-with any preceding or following adjacent lines of text.  AUC@TeX{} will
+with any preceding or following adjacent lines of text.  @AUCTeX{} will
 prevent this from happening if you do not put any text except another
 macro after the end of the last brace of the respective macro.  If
-there is other text after the macro, AUC@TeX{} regards this as a sign
+there is other text after the macro, @AUCTeX{} regards this as a sign
 that the macro is part of the following paragraph.
 @vindex LaTeX-paragraph-commands
 
@@ -1100,12 +1102,12 @@ and press @kbd{M-q}, you will get
 @end example
 
 Besides code comments and paragraph commands, another speciality of
-filling in AUC@TeX{} involves commented lines.  You should be aware that
-these comments are treated as islands in the rest of the La@TeX{} code
+filling in @AUCTeX{} involves commented lines.  You should be aware that
+these comments are treated as islands in the rest of the @LaTeX{} code
 if syntactic filling is enabled.  This means, for example, if you try to
 fill an environment with @code{LaTeX-fill-environment} and have the
 cursor placed on a commented line which does not have a surrounding
-environment inside the comment, AUC@TeX{} will report an error.
+environment inside the comment, @AUCTeX{} will report an error.
 @findex LaTeX-fill-environment
 
 The relevant commands and variables with regard to filling are:
@@ -1149,7 +1151,7 @@ be inserted if they do not fit into one line.  The separators can be
 curly braces, brackets, switches for inline math (@samp{$}, @samp{\(},
 @samp{\)}) and switches for display math (@samp{\[}, @samp{\]}).  Such
 formatting can be useful to make macros and math more visible or to
-prevent overfull lines in the La@TeX{} source in case a package for
+prevent overfull lines in the @LaTeX{} source in case a package for
 displaying formatted TeX output inside the Emacs buffer, like
 preview-latex, is used.
 @end defopt
@@ -1169,7 +1171,7 @@ the line becomes overfull.
 @section Showing and Hiding Text in the Buffer
 
 While you are editing your text you might find certain parts of it
-distracting or not worthwile to be displayed.  AUC@TeX{} lets you hide
+distracting or not worthwile to be displayed.  @AUCTeX{} lets you hide
 those parts and show them again at request.  There is a built-in support
 for hiding macros and environments which we call "folding" here, as well
 as support for Emacs' outline mode.
@@ -1201,7 +1203,7 @@ besides its content but rather want to see the content only, like font
 specifiers where the content might already be fontified in a special way
 by font locking.
 
-With AUC@TeX{}'s folding functionality you can collapse those items and
+With @AUCTeX{}'s folding functionality you can collapse those items and
 replace them by either a fixed string or the content of one of their
 arguments instead.  If you want to make the original text visible again
 temporarily in order to view or edit it, move point sideways onto the
@@ -1210,14 +1212,14 @@ pointer on it.  (The latter is currently only supported on GNU Emacs.)
 The macro or environment will unfold automatically, stay open as long as
 point is inside of it and collapse again once you move point out of it.
 (Note that folding of environments currently does not work in every
-AUC@TeX{} mode.)
+@AUCTeX{} mode.)
 
 In order to use this feature, you have to activate @code{TeX-fold-mode}
 which will activate the auto-reveal feature and the necessary commands
 to hide and show macros and environments.  You can activate the mode in
 a certain buffer by typing the command @kbd{M-x TeX-fold-mode RET} or
 using the keyboard shortcut @kbd{C-c C-o C-f}.  If you want to use it
-every time you edit a La@TeX{} document, add it to a hook:
+every time you edit a @LaTeX{} document, add it to a hook:
 @findex TeX-fold-mode
 @kindex C-c C-o C-f
 
@@ -1226,7 +1228,7 @@ every time you edit a La@TeX{} document, add it to a hook:
                               (TeX-fold-mode 1)))
 @end lisp
 
-If it should be activated in all AUC@TeX{} modes, use
+If it should be activated in all @AUCTeX{} modes, use
 @code{TeX-mode-hook} instead of @code{LaTeX-mode-hook}.
 
 Once the mode is active there are several commands available to hide
@@ -1283,7 +1285,7 @@ respectively.
 @defopt TeX-fold-macro-spec-list
 List of display strings or argument numbers and macros to fold.  If you
 specify a number, the content of the first mandatory argument of a
-La@TeX{} macro will be used as the placeholder.
+@LaTeX{} macro will be used as the placeholder.
 
 The placeholder is made by copying the text from the buffer together with
 its properties, i.e. its face as well.  If fontification has not
@@ -1320,8 +1322,8 @@ Display string for environments which are not specified in
 @cindex Overview
 @cindex Folding
 
-AUC@TeX{} supports the standard outline minor mode using
-La@TeX{}/Con@TeX{}t sectioning commands as header lines.  @xref{Outline
+@AUCTeX{} supports the standard outline minor mode using
+@LaTeX{}/@ConTeXt{} sectioning commands as header lines.  @xref{Outline
 Mode, , Outline Mode, emacs, GNU Emacs Manual}.
 
 You can add your own headings by setting the variable
@@ -1356,15 +1358,15 @@ archive.
 @node Running TeX and friends, Multifile, Advanced Features, top
 @chapter Starting processors, viewers and other programs
 
-The most powerful features of AUC@TeX{} may be those allowing you to
-run (La)@TeX{}/Con@TeX{}t and other external commands like Bib@TeX{} and
+The most powerful features of @AUCTeX{} may be those allowing you to
+run (La)@TeX{}/@ConTeXt{} and other external commands like Bib@TeX{} and
 @code{makeindex} from within Emacs, viewing and printing the results,
 and moreover allowing you to @emph{debug} your documents.
 
 @menu
 * Commands::                    Invoking external commands.
 * Viewing::                     Invoking external viewers.
-* Debugging::                   Debugging @TeX{} and La@TeX{} output.
+* Debugging::                   Debugging @TeX{} and @LaTeX{} output.
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
 @end menu
@@ -1372,9 +1374,9 @@ and moreover allowing you to @emph{debug} your documents.
 @node Commands, Viewing, Running TeX and friends, Running TeX and friends
 @section Executing Commands
 @cindex Formatting
-@cindex Running La@TeX{}
+@cindex Running @LaTeX{}
 @cindex Running @TeX{}
-@cindex La@TeX{}
+@cindex @LaTeX{}
 @cindex @TeX{}
 @cindex Running commands
 @cindex Default command
@@ -1399,7 +1401,7 @@ and moreover allowing you to @emph{debug} your documents.
 @cindex Printing
 @cindex Writing to a printer
 
-Formatting the document with @TeX{}, La@TeX{} or Con@TeX{}t, viewing
+Formatting the document with @TeX{}, @LaTeX{} or @ConTeXt{}, viewing
 with a previewer, printing the document, running Bib@TeX{}, making an
 index, or checking the document with @code{lacheck} or @code{chktex} all
 require running an external command.
@@ -1424,7 +1426,7 @@ controlled by the variable @code{TeX-command-list}.
 @deffn Command TeX-command-region
 @kindex C-c C-r
 (@kbd{C-c C-r}) Query the user for a command, and run it on the ``region
-file''.  Some commands (typically those invoking @TeX{} or La@TeX{})
+file''.  Some commands (typically those invoking @TeX{} or @LaTeX{})
 will write the current region into the region file, after extracting the
 header and tailer from the master file.  If mark is not active, use the
 old region.  The name of the region file is controlled by the variable
@@ -1441,7 +1443,7 @@ variable @code{TeX-command-list}.
 @vindex TeX-command-list
 @end deffn
 
-AUC@TeX{} will allow one process for each document, plus one process
+@AUCTeX{} will allow one process for each document, plus one process
 for the region file to be active at the same time.  Thus, if you are
 editing @var{n} different documents, you can have @var{n} plus one
 processes running at the same time.  If the last process you started was
@@ -1456,19 +1458,19 @@ the current region.
 
 @defopt TeX-header-end
 A regular expression matching the end of the header.  By default, this
-is @samp{\begin@{document@}} in La@TeX{} mode and @samp{%**end of
+is @samp{\begin@{document@}} in @LaTeX{} mode and @samp{%**end of
 header} in @TeX{} mode.
 @end defopt
 
 @defopt TeX-trailer-start
 A regular expression matching the start of the trailer.  By default,
-this is @samp{\end@{document@}} in La@TeX{} mode and @samp{\bye} in
+this is @samp{\end@{document@}} in @LaTeX{} mode and @samp{\bye} in
 @TeX{} mode.
 @end defopt
 
-AUC@TeX{} will try to guess what command you want to invoke, but by
+@AUCTeX{} will try to guess what command you want to invoke, but by
 default it will assume that you want to run @TeX{} in @TeX{} mode and
-La@TeX{} in La@TeX{} mode.  You can overwrite this by setting the
+@LaTeX{} in @LaTeX{} mode.  You can overwrite this by setting the
 variable @code{TeX-command-default}.
 
 @defopt TeX-command-default
@@ -1495,10 +1497,10 @@ formatted text near the end of the file.
 %%% End:
 @end example
 
-AUC@TeX{} will try to save any buffers related to the document, and
+@AUCTeX{} will try to save any buffers related to the document, and
 check if the document needs to be reformatted.  If the variable
-@code{TeX-save-query} is non-nil, AUC@TeX{} will query before saving
-each file.  By default AUC@TeX{} will check emacs buffers associated
+@code{TeX-save-query} is non-nil, @AUCTeX{} will query before saving
+each file.  By default @AUCTeX{} will check emacs buffers associated
 with files in the current directory, in one of the
 @code{TeX-macro-private} directories, and in the @code{TeX-macro-global}
 directories.  You can change this by setting the variable
@@ -1517,12 +1519,12 @@ Used when checking if any files have changed.
 @cindex Previewing
 @cindex Starting a previewer
 
-AUC@TeX{} allows you to start external programs for previewing your
+@AUCTeX{} allows you to start external programs for previewing your
 document.  These are normally invoked by pressing @kbd{C-c C-c} once
 the document is formatted or via the respective entry in the Command
 menu.
 
-AUC@TeX{} will try to guess which type of viewer (DVI, PostScript or
+@AUCTeX{} will try to guess which type of viewer (DVI, PostScript or
 PDF) has to be used and what options are to be passed over to it.  This
 decision is based on the output files present in the working directory
 as well as the class and style options used in the document.  For
@@ -1576,22 +1578,22 @@ error in the top view.  In the bottom view, the error message will be
 displayed along with some explanatory text.
 @end deffn
 
-Normally AUC@TeX{} will only report real errors, but you may as well
+Normally @AUCTeX{} will only report real errors, but you may as well
 ask it to report `bad boxes' as well.
 
 @deffn Command TeX-toggle-debug-bad-boxes
 @kindex C-c C-w
-(@kbd{C-c C-w})  Toggle whether AUC@TeX{} should stop at bad boxes
+(@kbd{C-c C-w})  Toggle whether @AUCTeX{} should stop at bad boxes
 (i.e. over/under full boxes) as well as at normal errors.
 @end deffn
 
-As default, AUC@TeX{} will display that special @samp{*help*} buffer
+As default, @AUCTeX{} will display that special @samp{*help*} buffer
 containing the error reported by @TeX{} along with the documentation.
 There is however an `expert' option, which allows you to display the
 real @TeX{} output.
 
 @defopt TeX-display-help
-When non-nil AUC@TeX{} will automatically display a help text whenever
+When non-nil @AUCTeX{} will automatically display a help text whenever
 an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
 @end defopt
 
@@ -1606,7 +1608,7 @@ an error is encountered using @code{TeX-next-error} (@kbd{C-c `}).
 @cindex Style
 @cindex Problems
 
-Running @TeX{} or La@TeX{} will only find regular errors in the
+Running @TeX{} or @LaTeX{} will only find regular errors in the
 document, not examples of bad style.  Furthermore, description of the
 errors may often be confusing.  The utility @code{lacheck} can be used
 to find style errors, such as forgetting to escape the space after an
@@ -1643,12 +1645,12 @@ alternatively @code{chktex} from
 @cindex Finding the current file
 
 A number of commands are available for controlling the output of an
-application running under AUC@TeX{}
+application running under @AUCTeX{}
 
 @deffn Command TeX-kill-job
 @kindex C-c C-k
 (@kbd{C-c C-k})  Kill currently running external application.
-This may be either of @TeX{}, La@TeX{}, previewer, Bib@TeX{}, etc.
+This may be either of @TeX{}, @LaTeX{}, previewer, Bib@TeX{}, etc.
 @end deffn
 
 @deffn Command TeX-recenter-output-buffer
@@ -1681,24 +1683,24 @@ You may wish to spread a document over many files (as you are likely to do if
 there are multiple authors, or if you have not yet discovered the power
 of the outline commands (@pxref{Outline})).  This can be done by having a
 ``master'' file in which you include the various files with the @TeX{}
-macro @samp{\input} or the La@TeX{} macro @samp{\include}.  These
+macro @samp{\input} or the @LaTeX{} macro @samp{\include}.  These
 files may also include other files themselves.  However, to format the
 document you must run the commands on the top level master file.
 
-When you, for example, ask AUC@TeX{} to run a command on the master file,
+When you, for example, ask @AUCTeX{} to run a command on the master file,
 it has no way of knowing the name of the master file.  By default,
 it will assume that the current file is the master file.  If you insert
-the following in your @file{.emacs} file AUC@TeX{} will use a more
+the following in your @file{.emacs} file @AUCTeX{} will use a more
 advanced algorithm.
 
 @lisp
 (setq-default TeX-master nil) ; Query for master file.
 @end lisp
 
-If AUC@TeX{} finds the line indicating the end of the header in a master
+If @AUCTeX{} finds the line indicating the end of the header in a master
 file (@code{TeX-header-end}), it can figure out for itself that this is
 a master file.  Otherwise, it will ask for the name of the master file
-associated with the buffer.  To avoid asking you again, AUC@TeX{} will
+associated with the buffer.  To avoid asking you again, @AUCTeX{} will
 automatically insert the name of the master file as a file variable
 (@pxref{File Variables,,,emacs,The Emacs Editor}).  You can also insert
 the file variable yourself, by putting the following text at the end of
@@ -1721,17 +1723,17 @@ you always use the same name for your top level documents, you can set
 
 @defopt TeX-master
 The master file associated with the current buffer.  If the file being
-edited is actually included from another file, then you can tell AUC@TeX{}
+edited is actually included from another file, then you can tell @AUCTeX{}
 the name of the master file by setting this variable.  If there are
 multiple levels of nesting, specify the top level file.
 
-If this variable is @code{nil}, AUC@TeX{} will query you for the
+If this variable is @code{nil}, @AUCTeX{} will query you for the
 name.
 
-If the variable is @code{t}, then AUC@TeX{} will assume the file is a master
+If the variable is @code{t}, then @AUCTeX{} will assume the file is a master
 file itself.
 
-If the variable is @code{shared}, then AUC@TeX{} will query for the name,
+If the variable is @code{shared}, then @AUCTeX{} will query for the name,
 but will not change the file.
 @end defopt
 
@@ -1740,11 +1742,11 @@ Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, for which
 it is a good idea to append a @code{TeX-master} file variable entry
-automatically.  When AUC@TeX{} adds the name of the master file as a
+automatically.  When @AUCTeX{} adds the name of the master file as a
 file variable, it does not need to ask next time you edit the file.
 
-If you dislike AUC@TeX{} automatically modifying your files, you can
-set this variable to @samp{"<none>"}.  By default, AUC@TeX{} will modify
+If you dislike @AUCTeX{} automatically modifying your files, you can
+set this variable to @samp{"<none>"}.  By default, @AUCTeX{} will modify
 any file with an extension of @samp{.tex}.
 @end defopt
 
@@ -1754,22 +1756,22 @@ any file with an extension of @samp{.tex}.
 File Variables (@pxref{File Variables,,,emacs,The Emacs Editor}) to the
 file for setting this variable permanently.
 
-AUC@TeX{} will not ask for a master file when it encounters existing
+@AUCTeX{} will not ask for a master file when it encounters existing
 files.  This function shall give you the possibility to insert the
 variable manually.
 @end deffn
 
-AUC@TeX{} keeps track of macros, environments, labels, and style
+@AUCTeX{} keeps track of macros, environments, labels, and style
 files that are used in a given document.  For this to work with
-multifile documents, AUC@TeX{} has to have a place to put the
+multifile documents, @AUCTeX{} has to have a place to put the
 information about the files in the document.  This is done by having an
 @file{auto} subdirectory placed in the directory where your document is
-located.  Each time you save a file, AUC@TeX{} will write information
+located.  Each time you save a file, @AUCTeX{} will write information
 about the file into the @file{auto} directory.  When you load a file,
-AUC@TeX{} will read the information in the @file{auto} directory
+@AUCTeX{} will read the information in the @file{auto} directory
 about the file you loaded @emph{and the master file specified by
 @code{TeX-master}}.  Since the master file (perhaps indirectly) includes
-all other files in the document, AUC@TeX{} will get information from
+all other files in the document, @AUCTeX{} will get information from
 all files in the document.  This means that you will get from each file,
 for example, completion for all labels defined anywhere in the document.
 
@@ -1797,7 +1799,7 @@ If non-nil, then query the user before saving each file with
 @cindex Tabify
 @cindex Untabify
 
-AUC@TeX{} depends heavily on being able to extract information from the
+@AUCTeX{} depends heavily on being able to extract information from the
 buffers by parsing them.  Since parsing the buffer can be somewhat slow,
 the parsing is initially disabled.  You are encouraged to enable them by
 adding the following lines to your @file{.emacs} file.
@@ -1807,9 +1809,9 @@ adding the following lines to your @file{.emacs} file.
 (setq TeX-auto-save t) ; Enable parse on save.
 @end lisp
 
-The later command will make AUC@TeX{} store the parsed information in
+The later command will make @AUCTeX{} store the parsed information in
 an @file{auto} subdirectory in the directory each time the @TeX{} files
-are stored, @pxref{Automatic Local}.  If AUC@TeX{} finds the pre-parsed
+are stored, @pxref{Automatic Local}.  If @AUCTeX{} finds the pre-parsed
 information when loading a file, it will not need to reparse the buffer.
 The information in the @file{auto} directory is also useful for
 multifile documents @pxref{Multifile}, since it allows each file to
@@ -1848,11 +1850,11 @@ style hooks again.  Save buffer first including style information.  With
 optional argument, also reload the style hooks.
 @end deffn
 
-When AUC@TeX{} saves your buffer, it can optionally convert all tabs in
+When @AUCTeX{} saves your buffer, it can optionally convert all tabs in
 your buffer into spaces.
-Tabs confuse AUC@TeX{}'s error message parsing and so should generally be
+Tabs confuse @AUCTeX{}'s error message parsing and so should generally be
 avoided.  However, tabs are significant in some environments, and so by
-default AUC@TeX{} does not remove them.
+default @AUCTeX{} does not remove them.
 To convert tabs to spaces when saving a buffer, insert the
 following in your @file{.emacs} file:
 
@@ -1877,7 +1879,7 @@ values for the buffer local variables @code{TeX-auto-regexp-list} and
 (setq-default TeX-auto-parse-length 2000)
 @end lisp
 
-This example will speed the parsing up significantly, but AUC@TeX{}
+This example will speed the parsing up significantly, but @AUCTeX{}
 will no longer be able to provide completion for labels, macros,
 environments, or bibitems specified in the document, nor will it know
 what files belong to the document.
@@ -1901,7 +1903,7 @@ Maximal length of TeX file that will be parsed.
 @end defopt
 
 The pre-specified lists of regexps are defined below.  You can use these
-before loading AUC@TeX{} by quoting them, as in the example above.
+before loading @AUCTeX{} by quoting them, as in the example above.
 
 @defvr Constant TeX-auto-empty-regexp-list
 Parse nothing
@@ -1912,11 +1914,11 @@ Only parse documentstyle.
 @end defvr
 
 @defvr Constant LaTeX-auto-label-regexp-list
-Only parse La@TeX{} labels.
+Only parse @LaTeX{} labels.
 @end defvr
 
 @defvr Constant LaTeX-auto-regexp-list
-Parse common La@TeX{} commands.
+Parse common @LaTeX{} commands.
 @end defvr
 
 @defvr Constant plain-TeX-auto-regexp-list
@@ -1924,7 +1926,7 @@ Parse common plain @TeX{} commands.
 @end defvr
 
 @defvr Constant TeX-auto-full-regexp-list
-Parse all @TeX{} and La@TeX{} commands that AUC@TeX{} can use.
+Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @end defvr
 
 @node I18n, Automatic, Parsing Files, top
@@ -1941,12 +1943,12 @@ of TeX and Emacs are needed for Korean, Japanese, and Chinese.
 @c FIXME: Is Emacs 21.4 able to deal with CJK?
 
 @menu
-* European::                    Using AUC@TeX{} for European languages.
+* European::                    Using @AUCTeX{} for European languages.
 * Japanese::                    Japanese @TeX{}
 @end menu
 
 @node European, Japanese, I18n, I18n
-@section Using AUC@TeX{} for European languages.
+@section Using @AUCTeX{} for European languages.
 @cindex Europe
 @cindex European Characters
 @cindex ISO 8859 Latin 1
@@ -1994,8 +1996,8 @@ handle a lot of mathematical characters and input methods.
 
 @end table
 
-AUC@TeX{} supports style files for several languages.  Each style file
-may modify some AUC@TeX{} to better support the language, and will run
+@AUCTeX{} supports style files for several languages.  Each style file
+may modify some @AUCTeX{} to better support the language, and will run
 a language specific hook that will allow you to for example change
 ispell dictionary, or run code to change the keyboard remapping.  The
 following will for example choose a Danish dictionary for documents
@@ -2047,13 +2049,13 @@ depending on context.
 @vindex japanese-LaTeX-command-default
 @vindex japanese-LaTeX-default-style
 
-To write Japanese text with AUC@TeX{} you need to have versions of
+To write Japanese text with @AUCTeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
 variants of @TeX{} for Japanese text (j@TeX{} and p@TeX{}), and
-AUC@TeX{} can be used with MULE supported Emacsen.
+@AUCTeX{} can be used with MULE supported Emacsen.
 
-To install Japanese support for AUC@TeX{}, copy @file{tex-jp.el} to
-AUC@TeX{} installed directory.  Next two commands will automatically
+To install Japanese support for @AUCTeX{}, copy @file{tex-jp.el} to
+@AUCTeX{} installed directory.  Next two commands will automatically
 install contributed files.
 
 @example
@@ -2067,15 +2069,15 @@ To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
 @code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
 everything should work.  If not, send mail to Shinji Kobayashi
 @samp{<koba@@flab.fujitsu.co.jp>}, who kindly donated the code for
-supporting Japanese in AUC@TeX{}.  None of the primary AUC@TeX{}
+supporting Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
 maintainers understand Japanese, so they can not help you.
 
-If you usually use AUC@TeX{} in Japanese, setting following variables
+If you usually use @AUCTeX{} in Japanese, setting following variables
 is useful.
 
 @defopt TeX-default-mode
 Mode to enter for a new file when it can't be determined whether
-the file is plain @TeX{} or La@TeX{} or what.
+the file is plain @TeX{} or @LaTeX{} or what.
 
 To use Japanese @TeX{} always, set japanese command for example:
 @lisp
@@ -2090,13 +2092,13 @@ The default value is @samp{jTeX}.
 @end defopt
 
 @defopt japanese-LaTeX-command-default
-The default command for TeX-command in japanese La@TeX{} mode.
+The default command for TeX-command in japanese @LaTeX{} mode.
 
 The default value is @samp{jLaTeX}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
-The default style/class when creating new japanese La@TeX{} document.
+The default style/class when creating new japanese @LaTeX{} document.
 
 The default value is @samp{j-article}.
 @end defopt
@@ -2113,7 +2115,7 @@ See @file{tex-jp.el} for more information.
 @cindex @TeX{} parsing
 @cindex Generating symbols
 
-Since AUC@TeX{} is so highly customizable, it makes sense that it is able
+Since @AUCTeX{} is so highly customizable, it makes sense that it is able
 to customize itself.  The automatic customization consists of scanning
 @TeX{} files and extracting symbols, environments, and things like that.
 
@@ -2138,7 +2140,7 @@ private level corresponds to the directories you add yourself, except for
 * Automatic Local::             Automatic Customization for a Directory
 @end menu
 
-By default AUC@TeX{} will search for customization files in all the
+By default @AUCTeX{} will search for customization files in all the
 global, private, and local style directories, but you can also set the
 path directly.  This is useful if you for example want to add another
 person's style hooks to your path.  Please note that all matching files
@@ -2146,11 +2148,11 @@ found in @code{TeX-style-path} are loaded, and all hooks defined in the
 files will be executed.
 
 @defopt TeX-style-path
-List of directories to search for AUC@TeX{} style files.
+List of directories to search for @AUCTeX{} style files.
 Each must end with a slash.
 @end defopt
 
-By default, when AUC@TeX{} searches a directory for files, it will
+By default, when @AUCTeX{} searches a directory for files, it will
 recursively search through subdirectories.
 
 @defopt TeX-file-recurse
@@ -2159,7 +2161,7 @@ recurse, a positive integer means go that far deep in the directory
 hierarchy, t means recurse indefinitely.
 @end defopt
 
-By default, AUC@TeX{} will ignore files name @file{.}, @file{..},
+By default, @AUCTeX{} will ignore files name @file{.}, @file{..},
 @file{SCCS}, @file{RCS}, and @file{CVS}.
 
 @defopt TeX-ignore-file
@@ -2180,7 +2182,7 @@ These files or directories will not be considered when searching for
 @cindex Site information
 
 Assuming that the automatic customization at the global level was done
-when AUC@TeX{} was installed, your choice is now: will you use it?  If
+when @AUCTeX{} was installed, your choice is now: will you use it?  If
 you use it, you will benefit by having access to all the symbols and
 environments available for completion purposes.  The drawback is slower
 load time when you edit a new file and perhaps too many confusing
@@ -2218,7 +2220,7 @@ shared by all users of a site.
 @cindex Personal information
 
 You should specify where you store your private @TeX{} macros, so
-AUC@TeX{} can extract their information.  The extracted information will
+@AUCTeX{} can extract their information.  The extracted information will
 go to the directories listed in @code{TeX-auto-private}
 
 Use @kbd{M-x TeX-auto-generate} to extract the information.
@@ -2259,7 +2261,7 @@ These correspond to the personal @TeX{} macros.
 @cindex Local style hooks
 @cindex Local style directory
 
-AUC@TeX{} can update the style information about a file each time you
+@AUCTeX{} can update the style information about a file each time you
 save it, and it will do this if the directory @code{TeX-auto-local}
 exist. @code{TeX-auto-local} is by default set to @samp{"auto/"}, so
 simply creating an @file{auto} directory will enable automatic saving of
@@ -2381,7 +2383,7 @@ point inside braces.  Otherwise, each argument of this function should
 match an argument of the @TeX{} macro.  What is done depends on the argument
 type.
 
-If a macro is defined multiple times, AUC@TeX{} will chose the one with
+If a macro is defined multiple times, @AUCTeX{} will chose the one with
 the longest definition (i.e. the one with the most arguments).
 
 Thus, to overwrite
@@ -2457,16 +2459,16 @@ Prompt for a label completing with known labels.
 Prompt for a @TeX{} macro with completion.
 
 @item TeX-arg-environment
-Prompt for a La@TeX{} environment with completion.
+Prompt for a @LaTeX{} environment with completion.
 
 @item TeX-arg-cite
 Prompt for a Bib@TeX{} citation.
 
 @item TeX-arg-counter
-Prompt for a La@TeX{} counter.
+Prompt for a @LaTeX{} counter.
 
 @item TeX-arg-savebox
-Prompt for a La@TeX{} savebox.
+Prompt for a @LaTeX{} savebox.
 
 @item TeX-arg-file
 Prompt for a filename in the current directory, and use it without the
@@ -2485,29 +2487,29 @@ Prompt for a @TeX{} macro with completion.  Add macro to list of defined
 macros.
 
 @item TeX-arg-define-environment
-Prompt for a La@TeX{} environment with completion.  Add environment to
+Prompt for a @LaTeX{} environment with completion.  Add environment to
 list of defined environments.
 
 @item TeX-arg-define-cite
 Prompt for a Bib@TeX{} citation.
 
 @item TeX-arg-define-counter
-Prompt for a La@TeX{} counter.
+Prompt for a @LaTeX{} counter.
 
 @item TeX-arg-define-savebox
-Prompt for a La@TeX{} savebox.
+Prompt for a @LaTeX{} savebox.
 
 @item TeX-arg-corner
-Prompt for a La@TeX{} side or corner position with completion.
+Prompt for a @LaTeX{} side or corner position with completion.
 
 @item TeX-arg-lr
-Prompt for a La@TeX{} side with completion.
+Prompt for a @LaTeX{} side with completion.
 
 @item TeX-arg-tb
-Prompt for a La@TeX{} side with completion.
+Prompt for a @LaTeX{} side with completion.
 
 @item TeX-arg-pagestyle
-Prompt for a La@TeX{} pagestyle with completion.
+Prompt for a @LaTeX{} pagestyle with completion.
 
 @item TeX-arg-verb
 Prompt for delimiter and text.
@@ -2561,7 +2563,7 @@ called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to a list after the hook.
 
 For simple environments with arguments, for example defined with
-@samp{\newenvironment}, you can make AUC@TeX{} prompt for the arguments
+@samp{\newenvironment}, you can make @AUCTeX{} prompt for the arguments
 by giving the prompt strings in the call to
 @code{LaTeX-add-environments}.  For example, if you have defined a
 @code{loop} environment with the three arguments @var{from}, @var{to},
@@ -2583,9 +2585,9 @@ and @var{step}, you can add support for them in a style file.
      '("loop" "From" "To" "Step")))))
 @end lisp
 
-If an environment is defined multiple times, AUC@TeX{} will chose the
+If an environment is defined multiple times, @AUCTeX{} will chose the
 one with the longest definition.  Thus, if you have an enumerate style
-file, and want it to replace the standard La@TeX{} enumerate hook above,
+file, and want it to replace the standard @LaTeX{} enumerate hook above,
 you could define an @file{enumerate.el} file as follows, and place it in
 the appropriate style directory.
 
@@ -2656,7 +2658,7 @@ For example, in the file @file{macro.tex} I define the following macro.
 @}
 @end example
 
-AUC@TeX{} will automatically figure out that @samp{newmacro} is a macro
+@AUCTeX{} will automatically figure out that @samp{newmacro} is a macro
 that takes five arguments.  However, it is not smart enough to
 automatically see that each time we use the macro, two new macros are
 defined.  We can specify this information in a style hook file.
@@ -2746,7 +2748,7 @@ List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
 @node Installation, Changes, Style Files, top
-@chapter How to install AUC@TeX{}
+@chapter How to install @AUCTeX{}
 @include install.texi
 
 @node Changes, ToDo, Installation, top

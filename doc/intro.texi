@@ -1,85 +1,86 @@
+@include macros.texi
 @chapter Introduction to AUCTeX
 
-This section of the AUC@TeX{} manual gives a brief overview of what
-AUC@TeX{} is, and the section is also available as a @file{README} file.
-It is @strong{not} an attempt to document AUC@TeX{}.  Real documentation
-for AUC@TeX{} is available in the rest of the manual, which you can find
+This section of the @AUCTeX{} manual gives a brief overview of what
+@AUCTeX{} is, and the section is also available as a @file{README} file.
+It is @strong{not} an attempt to document @AUCTeX{}.  Real documentation
+for @AUCTeX{} is available in the rest of the manual, which you can find
 in the @file{doc} directory.
 
 Read the @file{INSTALL} or @file{INSTALL.windows} file respectively for
-information about how to install AUC@TeX{}.  The files comprise the same
-information as the Installation chapter in the AUC@TeX{} manual.
+information about how to install @AUCTeX{}.  The files comprise the same
+information as the Installation chapter in the @AUCTeX{} manual.
 
-If you are upgrading from the previous version of AUC@TeX{}, the latest
+If you are upgrading from the previous version of @AUCTeX{}, the latest
 changes can be found in the @file{CHANGES} file.  If you are upgrading
-from an older version, read the History chapter in the AUC@TeX{} manual.
+from an older version, read the History chapter in the @AUCTeX{} manual.
 
-AUC@TeX{} is a comprehensive customizable integrated environment for
-writing input files for @TeX{}/La@TeX{}/Con@TeX{}t using GNU Emacs.
+@AUCTeX{} is a comprehensive customizable integrated environment for
+writing input files for @TeX{}/@LaTeX{}/@ConTeXt{} using GNU Emacs.
 
-AUC@TeX{} lets you run @TeX{}/La@TeX{}/Con@TeX{}t and
-La@TeX{}/Con@TeX{}t-related tools, such as a output filters or post
-processor from inside Emacs.  Especially `running La@TeX{}' is
-interesting, as AUC@TeX{} lets you browse through the errors @TeX{}
+@AUCTeX{} lets you run @TeX{}/@LaTeX{}/@ConTeXt{} and
+@LaTeX{}/@ConTeXt{}-related tools, such as a output filters or post
+processor from inside Emacs.  Especially `running @LaTeX{}' is
+interesting, as @AUCTeX{} lets you browse through the errors @TeX{}
 reported, while it moves the cursor directly to the reported error, and
 displays some documentation for that particular error.  This will even
 work when the document is spread over several files.
 
-AUC@TeX{} automatically indents your `La@TeX{}-source', not only as you
+@AUCTeX{} automatically indents your `@LaTeX{}-source', not only as you
 write it --- you can also let it indent and format an entire document.
 It has a special outline feature, which can greatly help you `getting an
 overview' of a document.
 
-Apart from these special features, AUC@TeX{} provides a large range of
+Apart from these special features, @AUCTeX{} provides a large range of
 handy Emacs macros, which in several different ways can help you write
-your La@TeX{}/Con@TeX{}t documents fast and painlessly.
+your @LaTeX{}/@ConTeXt{} documents fast and painlessly.
 
-All features of AUC@TeX{} are documented using the GNU Emacs online
+All features of @AUCTeX{} are documented using the GNU Emacs online
 documentation system.  That is, documentation for any command is just
 a key click away!
 
-AUC@TeX{} is written entirely in Emacs-Lisp, and hence you can easily
+@AUCTeX{} is written entirely in Emacs-Lisp, and hence you can easily
 add new features for your own needs.  It was not made as part of any
-particular employment or project (apart from the AUC@TeX{} project
-itself).  AUC@TeX{} is distributed under the `GNU Emacs General Public
+particular employment or project (apart from the @AUCTeX{} project
+itself).  @AUCTeX{} is distributed under the `GNU Emacs General Public
 License' and may therefore almost freely be copied and redistributed.
 
 The next sections are a short introduction to some `actual' features.
 For further information, refer to the built-in online documentation of
-AUC@TeX{}.
+@AUCTeX{}.
 
 @section Indentation and filling
 
-AUC@TeX{} may automatically indent your document as you write it. By
+@AUCTeX{} may automatically indent your document as you write it. By
 pressing @key{LFD} instead of @key{RET} at the end of a line, the
 current line is indented by two spaces according to the current
 environment level, and the cursor is moved down one line.  By pressing
 @key{TAB}, the current line is indented, and the cursor stays where it
 is.  The well-known Emacs feature @code{fill-paragraph} (@kbd{M-q}) is
-reimplemented especially for AUC@TeX{} to follow the indentation (even
+reimplemented especially for @AUCTeX{} to follow the indentation (even
 in commented parts of the document).  A special command
 @code{LaTeX-fill-buffer} lets you indent an entire document like the
-well-known C utility indent (this time, only according to the La@TeX{}
+well-known C utility indent (this time, only according to the @LaTeX{}
 structure @t{:-)}.
 
 @section Completion
 
 By studying your @samp{\documentclass} command (in the top of your
 document), and consulting a precompiled list of (La)@TeX{} symbols from
-a large number of @TeX{} and La@TeX{} files, AUC@TeX{} is aware of the
-La@TeX{} commands you should be able to use in this particular document.
-This `knowledge' of AUC@TeX{} is used for two purposes.
+a large number of @TeX{} and @LaTeX{} files, @AUCTeX{} is aware of the
+@LaTeX{} commands you should be able to use in this particular document.
+This `knowledge' of @AUCTeX{} is used for two purposes.
 
 @enumerate
 @item
-To make you able to `complete' partly written La@TeX{} commands. You may
+To make you able to `complete' partly written @LaTeX{} commands. You may
 e.g. write @kbd{\renew} and press @kbd{M-@key{TAB}}
-(@code{TeX-complete-symbol}), and then AUC@TeX{} will complete the word
+(@code{TeX-complete-symbol}), and then @AUCTeX{} will complete the word
 @samp{\renewcommand} for you. In case of ambiguity it will display a
 list of possible completions.
 @item
 To aid you inserting environments, that is \begin - \end pairs. This is
-done by pressing C-c C-e (La@TeX{}-environment), and you will be
+done by pressing C-c C-e (@LaTeX{}-environment), and you will be
 prompted for which `environment' to insert.
 @end enumerate
 
@@ -100,13 +101,13 @@ described above.
 @end table
 
 A number of additional functions are available.  But it would be far too
-much to write about here.  Refer to the rest of the AUC@TeX{}
+much to write about here.  Refer to the rest of the @AUCTeX{}
 documentation for further information.
 
-@section Running La@TeX{}
+@section Running @LaTeX{}
 
 When invoking one of the commands @code{TeX-command-master} (@kbd{C-c
-C-c}) or @code{TeX-command-region} (@kbd{C-c C-r}) La@TeX{} is run on
+C-c}) or @code{TeX-command-region} (@kbd{C-c C-r}) @LaTeX{} is run on
 either the entire current document or a given region of it.  The Emacs
 view is split in two, and the output of @TeX{} is printed in the second
 half of the screen, as you may simultaneously continue editing your
@@ -123,9 +124,9 @@ print it by invoking @code{TeX-command-master} again.
 
 @section Outlines
 
-Along with AUC@TeX{} comes support for outline mode for Emacs, which
+Along with @AUCTeX{} comes support for outline mode for Emacs, which
 lets you browse the sectioning structure of your document, while you
-will still be able to use the full power of the rest of the AUC@TeX{}
+will still be able to use the full power of the rest of the @AUCTeX{}
 functionality.
 
 @section Availability
@@ -136,7 +137,7 @@ The most recent version is always available at
 @url{http://ftp.gnu.org/pub/gnu/auctex/}
 @end flushright
 
-WWW users may want to check out the AUC@TeX{} page at
+WWW users may want to check out the @AUCTeX{} page at
 
 @flushright
 @url{http://www.gnu.org/software/auctex/}
@@ -145,14 +146,14 @@ WWW users may want to check out the AUC@TeX{} page at
 @section Contacts
 
 There has been established a mailing list for help, bug reports, feature
-requests and general discussion about AUC@TeX{}.  You're very welcome
+requests and general discussion about @AUCTeX{}.  You're very welcome
 to join.  Traffic average at an article by day, but they come in bursts.
 If you are only interested in information on updates, you could refer to
 the newsgroups @samp{comp.text.tex} and @samp{gnu.emacs.sources}.
 
-If you want to contact the AUC@TeX{} mailing list, send mail to
+If you want to contact the @AUCTeX{} mailing list, send mail to
 @url{mailto:auc-tex-subscribe@@sunsite.dk} in order to join.  Articles
 should be sent to @url{mailto:auc-tex@@sunsite.dk}.
 
-To contact the current maintainers of AUC@TeX{} directly, email
+To contact the current maintainers of @AUCTeX{} directly, email
 @url{mailto:auc-tex_mgr@@sunsite.dk}.

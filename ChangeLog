@@ -1,5 +1,11 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/macros.texi: New @ConTeXt macro.
+	
+	* doc/auc-tex.texi, doc/changes.texi, doc/history.texi,
+	doc/todo.texi, doc/wininstall.texi: Use macros @AUCTeX, @ConTeXt,
+	@LaTeX everywhere.
+	
 	* doc/auc-tex.texi (European): Mention Emacs 21.  Fixed typo.
 
 	* doc/todo.texi: Help for documentation wanted.
