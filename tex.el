@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.329 $"))
+	(rev "$Revision: 5.330 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-02-26 10:43:11 $"))
+    (let ((date "$Date: 2004-02-27 11:24:11 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2636,6 +2636,14 @@ character ``\\'' will be bound to `TeX-electric-macro'."
               ["Save Document" TeX-save-document t]
               ["Set Master File" TeX-master-file-ask
                :active (not (TeX-local-master-p))])
+        "-"
+        (list "Customize"
+              ["Browse options"
+               (customize-group 'AUCTeX)]
+              ["Extend this menu"
+               (easy-menu-add-item
+                nil '("TeX")
+                (customize-menu-create 'AUCTeX))])
 	["Documentation" TeX-goto-info-page t]
 	["Submit bug report" TeX-submit-bug-report t]
 	["Reset Buffer" TeX-normal-mode t]
