@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.78 2004-10-18 13:27:53 angeli Exp $
+;; Version:    $Id: font-latex.el,v 5.79 2004-10-26 18:23:21 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -1162,7 +1162,7 @@ Returns nil if no command is found."
               (font-latex-set-cache
                'font-latex-match-in-braces-cache
                kbeg kend limit 'in-braces
-               (list kbeg kend itbeg itend bfbeg bfend ttbeg ttend)))
+               (list kbeg kend cbeg cend)))
 
             t))))))))
 
