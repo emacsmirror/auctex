@@ -90,7 +90,9 @@ cursor) on it and press @kbd{C-c C-p C-p}. Now you can edit the code,
 and generate a new preview by again pressing @kbd{C-c C-p C-p}.
 
 If you are using the @code{desktop} package, previews will remain from
-one session to the next as long as you don't kill your buffer.
+one session to the next as long as you don't kill your buffer.  If you
+are using XEmacs, you will probably need to upgrade the package to
+the newest one; things are being fixed just as I am writing this.
 
 @node More documentation, Availability, Getting started, Introduction
 @section More documentation
