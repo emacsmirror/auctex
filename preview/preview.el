@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.143 2002-04-30 19:17:55 jalar Exp $
+;; $Id: preview.el,v 1.144 2002-05-06 11:25:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1380,12 +1380,14 @@ and the corresponding topdir."
 \\|\\\\[a-zA-Z@]+\
 \\|\\\\begin[ \t]*{[^}]+}\
 \\)\\=" (line-beginning-position) t)
-	    (while
-		(progn
-		  (setq oldpoint (point))
-		  (backward-sexp)
-		  (and (not (eq oldpoint (point)))
-		       (eq ?\( (char-syntax (char-after)))))))
+	    (if (eq ?\) (char-syntax (char-before)))
+		(while
+		    (progn
+		      (setq oldpoint (point))
+		      (backward-sexp)
+		      (and (not (eq oldpoint (point)))
+			   (eq ?\( (char-syntax (char-after))))))
+	      (backward-char)))
       (error (goto-char oldpos)))))
 
 (defcustom preview-default-option-list '("displaymath" "floats"
@@ -1851,8 +1853,8 @@ specified by BUFF."
 			  (/ (* 25.4 (display-pixel-height))
 			     (display-mm-height)))
 		colors (preview-gs-get-colors)))
-      (error (error "Display geometry unavailable: %s")
-	     (error-message-string err)))
+      (error (error "Display geometry unavailable: %s"
+		    (error-message-string err))))
     (setq preview-scale scale)
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
@@ -2034,7 +2036,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.143 $"))
+	(rev "$Revision: 1.144 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2045,7 +2047,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-30 19:17:55 $"))
+    (let ((date "$Date: 2002-05-06 11:25:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
