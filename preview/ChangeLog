@@ -1,3 +1,11 @@
+2002-04-16  David Kastrup  <David.Kastrup@t-online.de>
+
+	* configure.in: for 0.7.1.
+
+	* doc/preview-latex.texi: Adapt for 0.7.1
+
+	* RELEASE: Adapt for 0.7.1
+
 2002-04-15  Alan Shutko  <ats@acm.org>
 
 	* configure.in: Some minor message updates.  Remove -q from grep,
