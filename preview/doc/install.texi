@@ -163,10 +163,10 @@ installation is clean and the test is simply failing.  By specifying
 this switch, you signal your acceptance of having @previewlatex{} fail
 on @LaTeX{} files containing 8-bit characters.  Check
 @ifset rawfile
-the @file{PROBLEMS} file
+the `LaTeX international characters' section in the @file{PROBLEMS} file
 @end ifset
 @ifclear rawfile
-@ref{Known problems}
+@ref{LaTeX international characters}
 @end ifclear
 for more details.
 
