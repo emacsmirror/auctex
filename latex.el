@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6j
+;; Version: 9.6k
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -1791,628 +1791,6 @@ The point is supposed to be at the beginning of the current line."
 		       (- LaTeX-item-indent))
 		      (t 0)))))))
 
-;;; Keymap
-
-(defvar LaTeX-mode-map
-  (let ((map (copy-keymap TeX-mode-map)))
-    
-    ;; Standard
-    (define-key map "\n"      'reindent-then-newline-and-indent)
-    
-    ;; From latex.el
-    (define-key map "\t"      'LaTeX-indent-line)
-    (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
-    ;; This key is now used by Emacs for face settings.
-    ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
-    (define-key map "\e\C-e"  'LaTeX-find-matching-end)
-    (define-key map "\e\C-a"  'LaTeX-find-matching-begin)
-    
-    (define-key map "\C-c\C-q\C-p" 'LaTeX-fill-paragraph)
-    (define-key map "\C-c\C-q\C-r" 'LaTeX-fill-region)
-    (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
-    (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
-    
-    (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
-    (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
-
-    (define-key map "\C-c\C-e" 'LaTeX-environment)
-    (define-key map "\C-c\n"   'LaTeX-insert-item)
-    (or (key-binding "\e\r")
-	(define-key map "\e\r"    'LaTeX-insert-item)) ;*** Alias
-    (define-key map "\C-c]" 'LaTeX-close-environment)
-    (define-key map "\C-c\C-s" 'LaTeX-section)
-
-    ;; Outline commands...
-    ;; We want to use the right prefix, if possible.
-    (let ((outline (cond ((not (boundp 'outline-minor-mode-prefix))
-			  (lookup-key map "\C-c"))
-			 ((keymapp (lookup-key map outline-minor-mode-prefix))
-			  (lookup-key map outline-minor-mode-prefix))
-			 (t
-			  (define-key map
-			    outline-minor-mode-prefix (make-sparse-keymap))
-			  (lookup-key map outline-minor-mode-prefix)))))
-      (define-key outline "\C-z" 'LaTeX-hide-environment)
-      (define-key outline "\C-x" 'LaTeX-show-environment))
-
-    (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
-    
-    map)
-  "Keymap used in LaTeX-mode.")
-
-(defvar LaTeX-environment-menu-name "Insert Environment  (C-c C-e)")
-
-(defun LaTeX-environment-menu-entry (entry)
-  ;; Create an entry for the environment menu.
-  (vector (car entry) (list 'LaTeX-environment-menu (car entry)) t))
-
-(defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
-
-(defun LaTeX-environment-modify-menu-entry (entry)
-  ;; Create an entry for the change environment menu.
-  (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
-
-(defun LaTeX-section-enable-symbol (LEVEL)
-  ;; Symbol used to enable section LEVEL in the menu bar.
-  (intern (concat "LaTeX-section-" (int-to-string (nth 1 entry)) "-enable")))
-
-(defun LaTeX-section-enable (entry)
-  ;; Enable or disable section ENTRY from LaTeX-section-list.
-  (let ((level (nth 1 entry)))
-    (set (LaTeX-section-enable-symbol level)
-	 (>= level LaTeX-largest-level))))
-
-(defun LaTeX-section-menu (level)
-  ;; Insert section from menu.
-  (let ((LaTeX-section-hook (delq 'LaTeX-section-heading
-				  (copy-sequence LaTeX-section-hook))))
-    (LaTeX-section level)))
-
-(defun LaTeX-section-menu-entry (entry)
-  ;; Create an entry for the section menu.
-  (let ((enable (LaTeX-section-enable-symbol (nth 1 entry))))
-    (set enable t)
-    (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
-
-(defun LaTeX-section-menu-create ()
-  ;; Create a menu over LaTeX sections.
-  (append '("Section  (C-c C-s)")
-	  (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))
-
-(defvar LaTeX-menu-changed nil)
-;; Need to update LaTeX menu.
-(make-variable-buffer-local 'LaTeX-menu-changed)
-
-(defun LaTeX-menu-update ()
-  ;; Update entries on AUC TeX menu.
-  (or (not (eq major-mode 'latex-mode))
-      (null LaTeX-menu-changed)
-      (not (fboundp 'easy-menu-change))
-      (progn
-	(TeX-update-style)
-	(setq LaTeX-menu-changed nil)
-	(message "Updating section menu...")
-	(mapcar 'LaTeX-section-enable LaTeX-section-list)
-	(message "Updating environment menu...")
-	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
-			  (mapcar 'LaTeX-environment-menu-entry
-				  (LaTeX-environment-list)))
-	(message "Updating modify environment menu...")
-	(easy-menu-change '("LaTeX") LaTeX-environment-modify-menu-name
-			  (mapcar 'LaTeX-environment-modify-menu-entry
-				  (LaTeX-environment-list)))
-	(message "Updating...done"))))
-
-(add-hook 'activate-menubar-hook 'LaTeX-menu-update)
-
-(easy-menu-define LaTeX-mode-menu
-    LaTeX-mode-map
-    "Menu used in LaTeX mode."
-  (list "LaTeX"
-	(list LaTeX-environment-menu-name "Bug.")
-	(list LaTeX-environment-modify-menu-name "Bug.")
-	(LaTeX-section-menu-create)
-	["Macro..." TeX-insert-macro t]
-	["Complete" TeX-complete-symbol t]
-	["Item" LaTeX-insert-item t]
-	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
-	(list "Change Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
-	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	"-"
-	["Next Error" TeX-next-error t]
-	(list "TeX Output"
-	      ["Kill Job" TeX-kill-job t]
-	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	       :style toggle :selected TeX-debug-bad-boxes ]
-	      ["Switch to Original File" TeX-home-buffer t]
-	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
-	(list "Formatting and Marking"
-	      ["Format Environment" LaTeX-fill-environment t]
-	      ["Format Paragraph" LaTeX-fill-paragraph t]
-	      ["Format Region" LaTeX-fill-region t]
-	      ["Format Section" LaTeX-fill-section t]
-	      ["Mark Environment" LaTeX-mark-environment t]
-	      ["Mark Section" LaTeX-mark-section t]
-	      ["Beginning of Environment" LaTeX-find-matching-begin t]
-	      ["End of Environment" LaTeX-find-matching-end t]
-	      ["Hide Environment" LaTeX-hide-environment t]
-	      ["Show Environment" LaTeX-show-environment t])
-	(list "Miscellaneous"
-	      ["Uncomment Region" TeX-un-comment-region t]
-	      ["Comment Region" TeX-comment-region t]
-	      ["Switch to Master file" TeX-home-buffer t]
-	      ["Save Document" TeX-save-document t]
-	      ["Math Mode" LaTeX-math-mode t]
-	      ["Documentation" TeX-goto-info-page t]
-	      ["Submit bug report" TeX-submit-bug-report t]
-	      [ "Convert 209 to 2e" LaTeX-209-to-2e
-		:active (member "latex2" (TeX-style-list)) ]
-	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
-
-(defvar LaTeX-font-list
-  '((?\C-b "\\textbf{" "}")
-    (?\C-c "\\textsc{" "}")
-    (?\C-e "\\emph{" "}")
-    (?\C-f "\\textsf{" "}")
-    (?\C-i "\\textit{" "}")
-    (?\C-m "\\textmd{" "}")
-    (?\C-n "\\textnormal{" "}")
-    (?\C-r "\\textrm{" "}")
-    (?\C-s "\\textsl{" "}")
-    (?\C-t "\\texttt{" "}")
-    (?\C-u "\\textup{" "}")
-    (?\C-d "" "" t))
-  "Font commands used with LaTeX2e.  See `TeX-font-list'.")
-
-;;; Mode
-
-(defvar TeX-arg-cite-note-p nil
-  "*If non-nil, ask for optional note in citations.")
-
-(defvar TeX-arg-footnote-number-p nil
-  "*If non-nil, ask for optional number in footnotes.")
-
-(defvar TeX-arg-item-label-p nil
-  "*If non-nil, always ask for optional label in items.
-Otherwise, only ask in description environments.")
-
-(defvar TeX-arg-right-insert-p t
-  "*If non-nil, always insert automatically the corresponding
-\\right if \\left is inserted.")
-
-(defvar LaTeX-paragraph-commands
-  (concat "\\[\\|\\]\\|"  ; display math delimitors
-	  "begin\\b\\|end\\b\\|part\\b\\|chapter\\b\\|label\\b\\|"
-	  "caption\\b\\|section\\b\\|subsection\\b\\|subsubsection\\b\\|"
-	  "par\\b\\|noindent\\b\\|paragraph\\b\\|include\\b\\|"
-	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
-  "Regexp matching names of LaTeX macros that should have their own line.")
-
-;;;###autoload
-(defun latex-mode ()
-  "Major mode for editing files of input for LaTeX.
-See info under AUC TeX for full documentation.
-
-Special commands:
-\\{LaTeX-mode-map}
-
-Entering LaTeX mode calls the value of text-mode-hook,
-then the value of TeX-mode-hook, and then the value
-of LaTeX-mode-hook."
-  (interactive)
-  (LaTeX-common-initialization)
-  (setq mode-name "LaTeX")
-  (setq major-mode 'latex-mode)  
-  (setq TeX-command-default "LaTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
-
-  ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
-  (and (boundp 'filladapt-function-table)
-       (boundp 'auto-fill-function)
-       (eq auto-fill-function 'do-auto-fill)
-       (setq auto-fill-function
-	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))
-
-(defvar LaTeX-header-end
-  (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
-  "Default end of header marker for LaTeX documents.")
-
-(defvar LaTeX-trailer-start
-  (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
-  "Default start of trailer marker for LaTeX documents.")
-
-(defun LaTeX2e-font-replace (start end)
-  "Replace LaTeX2e font specification around point with START and END."
-  (save-excursion
-    (catch 'done
-      (while t
-	(if (/= ?\\ (following-char))
-	    (skip-chars-backward "a-zA-Z "))
-	(skip-chars-backward "\\\\")
-	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\){")
-	    (throw 'done t)
-	  (up-list -1))))
-    (forward-sexp 2)
-    (save-excursion
-      (replace-match start t t))
-    (delete-backward-char 1)
-    (insert end)))
-
-(defun LaTeX-common-initialization ()
-  ;; Common initialization for LaTeX derived modes.
-  (VirTeX-common-initialization)
-  (set-syntax-table LaTeX-mode-syntax-table)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'LaTeX-indent-line)
-  (use-local-map LaTeX-mode-map)
-  (easy-menu-add TeX-mode-menu LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
-
-  (or LaTeX-largest-level 
-      (setq LaTeX-largest-level (LaTeX-section-level "section")))
-  
-  (setq TeX-header-end LaTeX-header-end
-	TeX-trailer-start LaTeX-trailer-start)
-
-  (require 'outline)
-  (make-local-variable 'outline-level)
-  (setq outline-level 'LaTeX-outline-level)
-  (make-local-variable 'outline-regexp)
-  (setq outline-regexp (LaTeX-outline-regexp t))
-  
-  (make-local-variable 'TeX-auto-full-regexp-list)
-  (setq TeX-auto-full-regexp-list 
-	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
-
-  (setq paragraph-start
-	(concat
-	 "\\("
-	 "^.*[^" TeX-esc "\n]%.*$\\|"
-	 "^%.*$\\|"
-	 "^[ \t]*$\\|"
-	 "^[ \t]*"
-	 (regexp-quote TeX-esc)
-	 "\\("
-	 LaTeX-paragraph-commands
-	 "\\|item\\b"
-	 "\\)"
-	 "\\|"
-	 "^[ \t]*\\$\\$" ; display math delimitor
-	 "\\)" ))
-  (setq paragraph-separate
-	(concat
-	 "\\("
-	 "^.*[^" TeX-esc "\n]%.*$\\|"
-	 "^%.*$\\|"
-	 "^[ \t]*$\\|"
-	 "^[ \t]*"
-	 (regexp-quote TeX-esc)
-	 "\\("
-	 LaTeX-paragraph-commands
-	 "\\)"
-	 "\\)"))
-  (setq selective-display t)
-
-  (make-local-variable 'LaTeX-item-list)
-  (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
-			  ("thebibliography" . LaTeX-item-bib)))
-
-  (setq TeX-complete-list
-	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
-		   1 LaTeX-bibitem-list "}")
-		  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-		   2 LaTeX-bibitem-list)
-		  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
-		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
-		   2 LaTeX-bibitem-list)
-		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-		  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
-		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
-		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
-		  ("\\\\renewcommand{\\\\\\([A-Za-z]*\\)"
-		   1 LaTeX-symbol-list "}")
-		  ("\\\\renewenvironment{\\([A-Za-z]*\\)"
-		   1 LaTeX-environment-list "}"))
-		TeX-complete-list))
-
-  (LaTeX-add-environments
-   '("document" LaTeX-env-document)
-   '("enumerate" LaTeX-env-item)
-   '("itemize" LaTeX-env-item)
-   '("list" LaTeX-env-list)
-   '("trivlist" LaTeX-env-item)
-   '("picture" LaTeX-env-picture)
-   '("tabular" LaTeX-env-array)
-   '("tabular*" LaTeX-env-array)
-   '("array" LaTeX-env-array)
-   '("eqnarray" LaTeX-env-label)
-   '("equation" LaTeX-env-label)
-   '("minipage" LaTeX-env-minipage)
-
-   ;; The following have no special support, but are included in
-   ;; case the auto files are missing. 
-
-   "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
-   "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
-   "abstract" "center" "titlepage" "verse" "eqnarray*"
-
-   ;; The following are not defined in latex.el, but in a number of
-   ;; other style files.  I'm to lazy to copy them to all the
-   ;; corresponding .el files right now.
-
-   ;; This means that AUC TeX will complete e.g.
-   ;; ``thebibliography'' in a letter, but I guess we can live with
-   ;; that.  
-
-   '("description" LaTeX-env-item)
-   '("figure" LaTeX-env-figure)
-   '("figure*" LaTeX-env-figure)
-   '("table" LaTeX-env-figure)
-   '("table*" LaTeX-env-figure)
-   '("thebibliography" LaTeX-env-bib)
-   '("theindex" LaTeX-env-item))
-
-  (TeX-add-symbols
-   '("addtocounter" TeX-arg-counter "Value")
-   '("alph" TeX-arg-counter)
-   '("arabic" TeX-arg-counter)
-   '("fnsymbol" TeX-arg-define-counter)
-   '("newcounter" TeX-arg-define-counter
-     [ TeX-arg-counter "Within counter" ])
-   '("roman" TeX-arg-counter)
-   '("setcounter" TeX-arg-counter "Value")
-   '("usecounter" TeX-arg-counter)
-   '("value" TeX-arg-counter)
-   '("stepcounter" TeX-arg-counter)
-   '("refstepcounter" TeX-arg-counter)
-   '("label" TeX-arg-define-label)
-   '("pageref" TeX-arg-label)
-   '("ref" TeX-arg-label)
-   '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-   '("renewcommand" TeX-arg-macro [ "Number of arguments" ] t)
-   '("newenvironment" TeX-arg-define-environment
-     [ "Number of arguments"] t t)
-   '("renewenvironment" TeX-arg-environment
-     [ "Number of arguments"] t t)
-   '("newtheorem" TeX-arg-define-environment
-     [ TeX-arg-environment "Numbered like" ]
-     t [ (TeX-arg-eval progn (if (eq (save-excursion
-				       (backward-char 2)
-				       (preceding-char)) ?\])
-				 ()
-			       (TeX-arg-counter t "Within counter"))
-		       "") ])
-   '("newfont" TeX-arg-define-macro t)
-   '("circle" "Diameter")
-   '("circle*" "Diameter")
-   '("dashbox" "Dash Length" TeX-arg-size
-     [ TeX-arg-corner ] t)
-   '("frame" t)
-   '("framebox" (TeX-arg-conditional 
-		 (string-equal (LaTeX-current-environment) "picture")
-		 (TeX-arg-size [ TeX-arg-corner ] t)
-		 ([ "Length" ] [ TeX-arg-lr ] t)))
-   '("line" (TeX-arg-pair "X slope" "Y slope") "Length")
-   '("linethickness" "Dimension")
-   '("makebox" (TeX-arg-conditional 
-		(string-equal (LaTeX-current-environment) "picture")
-		(TeX-arg-size [ TeX-arg-corner ] t)
-		([ "Length" ] [ TeX-arg-lr ] t)))
-   '("multiput"
-     TeX-arg-coordinate
-     (TeX-arg-pair "X delta" "Y delta")
-     "Number of copies"
-     t)
-   '("oval" TeX-arg-size [ TeX-arg-corner "Portion" ])
-   '("put" TeX-arg-coordinate t)
-   '("savebox" TeX-arg-define-savebox
-     (TeX-arg-conditional
-      (string-equal (LaTeX-current-environment) "picture")
-      (TeX-arg-size [ TeX-arg-corner ] t)
-      ([ "Length" ] [ TeX-arg-lr ] t)))
-   '("shortstack" [ TeX-arg-lr ] t)
-   '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
-   '("cline" "Span `i-j'")
-   '("multicolumn" "Columns" "Position" t)
-   '("item"
-     (TeX-arg-conditional (or TeX-arg-item-label-p
-			      (string-equal (LaTeX-current-environment)
-					    "description"))
-			  ([ "Item label" ])
-			  ())
-     (TeX-arg-literal " "))
-   '("bibitem" [ "Bibitem label" ] TeX-arg-define-cite)
-   '("cite"
-     (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) ())
-     TeX-arg-cite)
-   '("nocite" TeX-arg-cite)
-   '("bibliographystyle" TeX-arg-bibstyle)
-   '("bibliography" TeX-arg-bibliography)
-   '("footnote"
-     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
-     t)
-   '("footnotetext" 
-     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
-     t)
-   '("footnotemark" 
-     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
-   '("newlength" TeX-arg-define-macro)
-   '("setlength" TeX-arg-macro "Length")
-   '("addtolength" TeX-arg-macro "Length")
-   '("settowidth" TeX-arg-macro t)
-   '("\\" [ "Space" ])
-   '("\\*" [ "Space" ])
-   '("hyphenation" t)
-   '("linebreak" [ "How much [0 - 4]" ])
-   '("nolinebreak" [ "How much [0 - 4]" ])
-   '("nopagebreak" [ "How much [0 - 4]" ])
-   '("pagebreak" [ "How much [0 - 4]" ])
-   '("stackrel" t nil)
-   '("frac" t nil)
-   '("lefteqn" t)
-   '("overbrace" t)
-   '("overline" t)
-   '("sqrt" [ "Root" ] t)
-   '("underbrace" t)
-   '("underline" t)
-   '("author" t)
-   '("date" t)
-   '("thanks" t)
-   '("title" t)
-   '("pagenumbering" (TeX-arg-eval
-		      completing-read "Numbering style: "
-		      '(("arabic") ("roman") ("Roman") ("alph") ("Alph"))))
-   '("pagestyle" TeX-arg-pagestyle)
-   '("markboth" t nil)
-   '("markright" t)
-   '("thispagestyle" TeX-arg-pagestyle)
-   '("addvspace" "Length")
-   '("fbox" t)
-   '("hspace*" "Length")
-   '("hspace" "Length")
-   '("mbox" t)
-   '("newsavebox" TeX-arg-define-savebox)
-   '("parbox" [ TeX-arg-tb] "Width" t)
-   '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
-   '("rule" [ "Raise" ] "Width" "Thickness")
-   '("sbox" TeX-arg-define-savebox t)
-   '("usebox" TeX-arg-savebox)
-   '("vspace*" "Length")
-   '("vspace" "Length")
-   '("documentstyle" TeX-arg-document)
-   '("include" (TeX-arg-input-file "File" t))
-   '("includeonly" t)
-   '("input" TeX-arg-input-file)
-   '("addcontentsline" TeX-arg-file
-     (TeX-arg-eval
-      completing-read "Numbering style: " LaTeX-section-list)
-     t)
-   '("addtocontents" TeX-arg-file t)
-   '("typeout" t)
-   '("typein" [ TeX-arg-define-macro ] t)
-   '("verb" TeX-arg-verb)
-   '("verb*" TeX-arg-verb)
-   '("extracolsep" t)
-   '("index" t)
-   '("glossary" t)
-   '("numberline" "Section number" "Heading")
-   '("caption" t)
-   '("marginpar" [ "Left margin text" ] "Text")
-   '("left" TeX-arg-insert-braces)
-
-   ;; These have no special support, but are included in case the
-   ;; auto files are missing. 
-
-   "LaTeX" "SLiTeX" "samepage" "newline" "smallskip" "medskip"
-   "bigskip" "stretch" "nonumber" "centering" "raggedright"
-   "raggedleft" "kill" "pushtabs" "poptabs" "protect" "arraystretch"
-   "hline" "vline" "cline" "thinlines" "thicklines" "and" "makeindex"
-   "makeglossary" "reversemarginpar" "normalmarginpar"
-   "raggedbottom" "flushbottom" "sloppy" "fussy" "newpage"
-   "clearpage" "cleardoublepage" "twocolumn" "onecolumn")
-
-  (TeX-run-style-hooks "LATEX")
-
-  (make-local-variable 'TeX-font-list)
-  (make-local-variable 'TeX-font-replace-function)
-  (if (string-equal LaTeX-version "2")
-      ()
-    (setq TeX-font-list LaTeX-font-list)
-    (setq TeX-font-replace-function 'LaTeX2e-font-replace)
-    (TeX-add-symbols
-     '("newcommand" TeX-arg-define-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
-     '("renewcommand" TeX-arg-macro
-       [ "Number of arguments" ] [ "Default value for first argument" ] t)
-     '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
-     '("documentclass" TeX-arg-document)))
-
-  (TeX-add-style-hook "latex2e"
-   ;; Use new fonts for `\documentclass' documents.
-   (function (lambda ()
-     (setq TeX-font-list LaTeX-font-list)
-     (setq TeX-font-replace-function 'LaTeX2e-font-replace)
-     (if (equal LaTeX-version "2")
-	 (setq TeX-command-default "LaTeX2e"))
-     (run-hooks 'LaTeX2e-hook))))
-  
-  (TeX-add-style-hook "latex2"
-   ;; Use old fonts for `\documentstyle' documents.
-   (function (lambda ()
-     (setq TeX-font-list (default-value 'TeX-font-list))
-     (setq TeX-font-replace-function
-	   (default-value 'TeX-font-replace-function))
-     (run-hooks 'LaTeX2-hook)))))
-
-(defvar LaTeX-builtin-opts 
-  '("12pt" "11pt" "10pt" "twocolumn" "twoside" "draft")
-  "Built in options for LaTeX standard styles")
-
-(defun LaTeX-209-to-2e ()
-  "Make a stab at changing 2.09 doc header to 2e style."
-  (interactive)
-  (TeX-home-buffer)
-  (let (optstr optlist 2eoptlist 2epackages docline docstyle)
-    (goto-char (point-min))
-    (if 
-	(search-forward-regexp
-	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
-	 (point-max) t)
-	(setq optstr (buffer-substring (match-beginning 1) (match-end 1))
-	      docstyle (buffer-substring (match-beginning 2)
-	      (match-end 2))
-	      optlist (TeX-split-string "," optstr))
-      (if (search-forward-regexp
-	   "\\documentstyle{\\([^}]*\\)}"
-	   (point-max) t)
-	  (setq docstyle (buffer-substring (match-beginning 1)
-	  (match-end 1)))
-	(error "No documentstyle defined")))
-    (beginning-of-line 1)
-    (setq docline (point))
-    (insert "%%%")
-    (while optlist
-      (if (member (car optlist) LaTeX-builtin-opts)
-	  (setq 2eoptlist (cons (car optlist) 2eoptlist))
-	(setq 2epackages (cons (car optlist) 2epackages)))
-      (setq optlist (cdr optlist)))
-    ;;(message (format "%S %S" 2eoptlist 2epackages))
-    (goto-char docline)
-    (next-line 1)
-    (insert "\\documentclass")
-    (if 2eoptlist
-	(insert "[" 
-		(mapconcat (function (lambda (x) x)) 
-			   (nreverse 2eoptlist) ",") "]"))
-    (insert "{" docstyle "}\n")
-    (if 2epackages
-	(insert "\\usepackage{" 
-		(mapconcat (function (lambda (x) x)) 
-			   (nreverse 2epackages) "}\n\\usepackage{") "}\n"))
-    (if (equal docstyle "slides")
-      (progn
-	(goto-char (point-min))
-	(while (re-search-forward "\\\\blackandwhite{" nil t)
-      (replace-match "\\\\input{" nil nil)))))
-  (TeX-normal-mode nil))
-
 ;;; Math Minor Mode
 
 (defvar LaTeX-math-list nil
@@ -3059,5 +2437,628 @@ commands are defined:
   (if dollar (insert "$")))
 
 (provide 'latex)
+
+;;; Keymap
+
+(defvar LaTeX-mode-map
+  (let ((map (copy-keymap TeX-mode-map)))
+    
+    ;; Standard
+    (define-key map "\n"      'reindent-then-newline-and-indent)
+    
+    ;; From latex.el
+    (define-key map "\t"      'LaTeX-indent-line)
+    (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
+    ;; This key is now used by Emacs for face settings.
+    ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
+    (define-key map "\e\C-e"  'LaTeX-find-matching-end)
+    (define-key map "\e\C-a"  'LaTeX-find-matching-begin)
+    
+    (define-key map "\C-c\C-q\C-p" 'LaTeX-fill-paragraph)
+    (define-key map "\C-c\C-q\C-r" 'LaTeX-fill-region)
+    (define-key map "\C-c\C-q\C-s" 'LaTeX-fill-section)
+    (define-key map "\C-c\C-q\C-e" 'LaTeX-fill-environment)
+    
+    (define-key map "\C-c."    'LaTeX-mark-environment) ;*** Dubious
+    (define-key map "\C-c*"    'LaTeX-mark-section) ;*** Dubious
+
+    (define-key map "\C-c\C-e" 'LaTeX-environment)
+    (define-key map "\C-c\n"   'LaTeX-insert-item)
+    (or (key-binding "\e\r")
+	(define-key map "\e\r"    'LaTeX-insert-item)) ;*** Alias
+    (define-key map "\C-c]" 'LaTeX-close-environment)
+    (define-key map "\C-c\C-s" 'LaTeX-section)
+
+    ;; Outline commands...
+    ;; We want to use the right prefix, if possible.
+    (let ((outline (cond ((not (boundp 'outline-minor-mode-prefix))
+			  (lookup-key map "\C-c"))
+			 ((keymapp (lookup-key map outline-minor-mode-prefix))
+			  (lookup-key map outline-minor-mode-prefix))
+			 (t
+			  (define-key map
+			    outline-minor-mode-prefix (make-sparse-keymap))
+			  (lookup-key map outline-minor-mode-prefix)))))
+      (define-key outline "\C-z" 'LaTeX-hide-environment)
+      (define-key outline "\C-x" 'LaTeX-show-environment))
+
+    (define-key map "\C-c~"    'LaTeX-math-mode) ;*** Dubious
+    
+    map)
+  "Keymap used in LaTeX-mode.")
+
+(defvar LaTeX-environment-menu-name "Insert Environment  (C-c C-e)")
+
+(defun LaTeX-environment-menu-entry (entry)
+  ;; Create an entry for the environment menu.
+  (vector (car entry) (list 'LaTeX-environment-menu (car entry)) t))
+
+(defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
+
+(defun LaTeX-environment-modify-menu-entry (entry)
+  ;; Create an entry for the change environment menu.
+  (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
+
+(defun LaTeX-section-enable-symbol (LEVEL)
+  ;; Symbol used to enable section LEVEL in the menu bar.
+  (intern (concat "LaTeX-section-" (int-to-string (nth 1 entry)) "-enable")))
+
+(defun LaTeX-section-enable (entry)
+  ;; Enable or disable section ENTRY from LaTeX-section-list.
+  (let ((level (nth 1 entry)))
+    (set (LaTeX-section-enable-symbol level)
+	 (>= level LaTeX-largest-level))))
+
+(defun LaTeX-section-menu (level)
+  ;; Insert section from menu.
+  (let ((LaTeX-section-hook (delq 'LaTeX-section-heading
+				  (copy-sequence LaTeX-section-hook))))
+    (LaTeX-section level)))
+
+(defun LaTeX-section-menu-entry (entry)
+  ;; Create an entry for the section menu.
+  (let ((enable (LaTeX-section-enable-symbol (nth 1 entry))))
+    (set enable t)
+    (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
+
+(defun LaTeX-section-menu-create ()
+  ;; Create a menu over LaTeX sections.
+  (append '("Section  (C-c C-s)")
+	  (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))
+
+(defvar LaTeX-menu-changed nil)
+;; Need to update LaTeX menu.
+(make-variable-buffer-local 'LaTeX-menu-changed)
+
+(defun LaTeX-menu-update ()
+  ;; Update entries on AUC TeX menu.
+  (or (not (eq major-mode 'latex-mode))
+      (null LaTeX-menu-changed)
+      (not (fboundp 'easy-menu-change))
+      (progn
+	(TeX-update-style)
+	(setq LaTeX-menu-changed nil)
+	(message "Updating section menu...")
+	(mapcar 'LaTeX-section-enable LaTeX-section-list)
+	(message "Updating environment menu...")
+	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
+			  (mapcar 'LaTeX-environment-menu-entry
+				  (LaTeX-environment-list)))
+	(message "Updating modify environment menu...")
+	(easy-menu-change '("LaTeX") LaTeX-environment-modify-menu-name
+			  (mapcar 'LaTeX-environment-modify-menu-entry
+				  (LaTeX-environment-list)))
+	(message "Updating...done"))))
+
+(add-hook 'activate-menubar-hook 'LaTeX-menu-update)
+
+(easy-menu-define LaTeX-mode-menu
+    LaTeX-mode-map
+    "Menu used in LaTeX mode."
+  (list "LaTeX"
+	(list LaTeX-environment-menu-name "Bug.")
+	(list LaTeX-environment-modify-menu-name "Bug.")
+	(LaTeX-section-menu-create)
+	["Macro..." TeX-insert-macro t]
+	["Complete" TeX-complete-symbol t]
+	["Item" LaTeX-insert-item t]
+	(list "Insert Font"
+	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
+	(list "Change Font"
+	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
+	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+	"-"
+	["Next Error" TeX-next-error t]
+	(list "TeX Output"
+	      ["Kill Job" TeX-kill-job t]
+	      ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	       :style toggle :selected TeX-debug-bad-boxes ]
+	      ["Switch to Original File" TeX-home-buffer t]
+	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
+	(list "Formatting and Marking"
+	      ["Format Environment" LaTeX-fill-environment t]
+	      ["Format Paragraph" LaTeX-fill-paragraph t]
+	      ["Format Region" LaTeX-fill-region t]
+	      ["Format Section" LaTeX-fill-section t]
+	      ["Mark Environment" LaTeX-mark-environment t]
+	      ["Mark Section" LaTeX-mark-section t]
+	      ["Beginning of Environment" LaTeX-find-matching-begin t]
+	      ["End of Environment" LaTeX-find-matching-end t]
+	      ["Hide Environment" LaTeX-hide-environment t]
+	      ["Show Environment" LaTeX-show-environment t])
+	(list "Miscellaneous"
+	      ["Uncomment Region" TeX-un-comment-region t]
+	      ["Comment Region" TeX-comment-region t]
+	      ["Switch to Master file" TeX-home-buffer t]
+	      ["Save Document" TeX-save-document t]
+	      ["Math Mode" LaTeX-math-mode 
+	       :style toggle :selected LaTeX-math-mode ]
+	      ["Documentation" TeX-goto-info-page t]
+	      ["Submit bug report" TeX-submit-bug-report t]
+	      [ "Convert 209 to 2e" LaTeX-209-to-2e
+		:active (member "latex2" (TeX-style-list)) ]
+	      ["Reset Buffer" TeX-normal-mode t]
+	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
+
+(defvar LaTeX-font-list
+  '((?\C-b "\\textbf{" "}")
+    (?\C-c "\\textsc{" "}")
+    (?\C-e "\\emph{" "}")
+    (?\C-f "\\textsf{" "}")
+    (?\C-i "\\textit{" "}")
+    (?\C-m "\\textmd{" "}")
+    (?\C-n "\\textnormal{" "}")
+    (?\C-r "\\textrm{" "}")
+    (?\C-s "\\textsl{" "}")
+    (?\C-t "\\texttt{" "}")
+    (?\C-u "\\textup{" "}")
+    (?\C-d "" "" t))
+  "Font commands used with LaTeX2e.  See `TeX-font-list'.")
+
+;;; Mode
+
+(defvar TeX-arg-cite-note-p nil
+  "*If non-nil, ask for optional note in citations.")
+
+(defvar TeX-arg-footnote-number-p nil
+  "*If non-nil, ask for optional number in footnotes.")
+
+(defvar TeX-arg-item-label-p nil
+  "*If non-nil, always ask for optional label in items.
+Otherwise, only ask in description environments.")
+
+(defvar TeX-arg-right-insert-p t
+  "*If non-nil, always insert automatically the corresponding
+\\right if \\left is inserted.")
+
+(defvar LaTeX-paragraph-commands
+  (concat "\\[\\|\\]\\|"  ; display math delimitors
+	  "begin\\b\\|end\\b\\|part\\b\\|chapter\\b\\|label\\b\\|"
+	  "caption\\b\\|section\\b\\|subsection\\b\\|subsubsection\\b\\|"
+	  "par\\b\\|noindent\\b\\|paragraph\\b\\|include\\b\\|"
+	  "includeonly\\b\\|tableofcontents\\b\\|appendix\\b")
+  "Regexp matching names of LaTeX macros that should have their own line.")
+
+;;;###autoload
+(defun latex-mode ()
+  "Major mode for editing files of input for LaTeX.
+See info under AUC TeX for full documentation.
+
+Special commands:
+\\{LaTeX-mode-map}
+
+Entering LaTeX mode calls the value of text-mode-hook,
+then the value of TeX-mode-hook, and then the value
+of LaTeX-mode-hook."
+  (interactive)
+  (LaTeX-common-initialization)
+  (setq mode-name "LaTeX")
+  (setq major-mode 'latex-mode)  
+  (setq TeX-command-default "LaTeX")
+  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+
+  ;; Defeat filladapt if auto-fill-mode is set in text-mode-hook.
+  (and (boundp 'filladapt-function-table)
+       (boundp 'auto-fill-function)
+       (eq auto-fill-function 'do-auto-fill)
+       (setq auto-fill-function
+	     (cdr (assoc 'do-auto-fill filladapt-function-table)))))
+
+(defvar LaTeX-header-end
+  (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
+  "Default end of header marker for LaTeX documents.")
+
+(defvar LaTeX-trailer-start
+  (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
+  "Default start of trailer marker for LaTeX documents.")
+
+(defun LaTeX2e-font-replace (start end)
+  "Replace LaTeX2e font specification around point with START and END."
+  (save-excursion
+    (catch 'done
+      (while t
+	(if (/= ?\\ (following-char))
+	    (skip-chars-backward "a-zA-Z "))
+	(skip-chars-backward "\\\\")
+	(if (looking-at "\\\\\\(emph\\|text[a-z]+\\){")
+	    (throw 'done t)
+	  (up-list -1))))
+    (forward-sexp 2)
+    (save-excursion
+      (replace-match start t t))
+    (delete-backward-char 1)
+    (insert end)))
+
+(defun LaTeX-common-initialization ()
+  ;; Common initialization for LaTeX derived modes.
+  (VirTeX-common-initialization)
+  (set-syntax-table LaTeX-mode-syntax-table)
+  (make-local-variable 'indent-line-function)
+  (setq indent-line-function 'LaTeX-indent-line)
+  (use-local-map LaTeX-mode-map)
+  (easy-menu-add TeX-mode-menu LaTeX-mode-map)
+  (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
+
+  (or LaTeX-largest-level 
+      (setq LaTeX-largest-level (LaTeX-section-level "section")))
+  
+  (setq TeX-header-end LaTeX-header-end
+	TeX-trailer-start LaTeX-trailer-start)
+
+  (require 'outline)
+  (make-local-variable 'outline-level)
+  (setq outline-level 'LaTeX-outline-level)
+  (make-local-variable 'outline-regexp)
+  (setq outline-regexp (LaTeX-outline-regexp t))
+  
+  (make-local-variable 'TeX-auto-full-regexp-list)
+  (setq TeX-auto-full-regexp-list 
+	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
+
+  (setq paragraph-start
+	(concat
+	 "\\("
+	 "^.*[^" TeX-esc "\n]%.*$\\|"
+	 "^%.*$\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 LaTeX-paragraph-commands
+	 "\\|item\\b"
+	 "\\)"
+	 "\\|"
+	 "^[ \t]*\\$\\$" ; display math delimitor
+	 "\\)" ))
+  (setq paragraph-separate
+	(concat
+	 "\\("
+	 "^.*[^" TeX-esc "\n]%.*$\\|"
+	 "^%.*$\\|"
+	 "^[ \t]*$\\|"
+	 "^[ \t]*"
+	 (regexp-quote TeX-esc)
+	 "\\("
+	 LaTeX-paragraph-commands
+	 "\\)"
+	 "\\)"))
+  (setq selective-display t)
+
+  (make-local-variable 'LaTeX-item-list)
+  (setq LaTeX-item-list '(("description" . LaTeX-item-argument)
+			  ("thebibliography" . LaTeX-item-bib)))
+
+  (setq TeX-complete-list
+	(append '(("\\\\cite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+		   1 LaTeX-bibitem-list "}")
+		  ("\\\\cite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+		  ("\\\\cite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+		   2 LaTeX-bibitem-list)
+		  ("\\\\nocite{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-bibitem-list "}")
+		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+		   2 LaTeX-bibitem-list)
+		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
+		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
+		  ("\\\\renewcommand{\\\\\\([A-Za-z]*\\)"
+		   1 LaTeX-symbol-list "}")
+		  ("\\\\renewenvironment{\\([A-Za-z]*\\)"
+		   1 LaTeX-environment-list "}"))
+		TeX-complete-list))
+
+  (LaTeX-add-environments
+   '("document" LaTeX-env-document)
+   '("enumerate" LaTeX-env-item)
+   '("itemize" LaTeX-env-item)
+   '("list" LaTeX-env-list)
+   '("trivlist" LaTeX-env-item)
+   '("picture" LaTeX-env-picture)
+   '("tabular" LaTeX-env-array)
+   '("tabular*" LaTeX-env-array)
+   '("array" LaTeX-env-array)
+   '("eqnarray" LaTeX-env-label)
+   '("equation" LaTeX-env-label)
+   '("minipage" LaTeX-env-minipage)
+
+   ;; The following have no special support, but are included in
+   ;; case the auto files are missing. 
+
+   "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
+   "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
+   "abstract" "center" "titlepage" "verse" "eqnarray*"
+
+   ;; The following are not defined in latex.el, but in a number of
+   ;; other style files.  I'm to lazy to copy them to all the
+   ;; corresponding .el files right now.
+
+   ;; This means that AUC TeX will complete e.g.
+   ;; ``thebibliography'' in a letter, but I guess we can live with
+   ;; that.  
+
+   '("description" LaTeX-env-item)
+   '("figure" LaTeX-env-figure)
+   '("figure*" LaTeX-env-figure)
+   '("table" LaTeX-env-figure)
+   '("table*" LaTeX-env-figure)
+   '("thebibliography" LaTeX-env-bib)
+   '("theindex" LaTeX-env-item))
+
+  (TeX-add-symbols
+   '("addtocounter" TeX-arg-counter "Value")
+   '("alph" TeX-arg-counter)
+   '("arabic" TeX-arg-counter)
+   '("fnsymbol" TeX-arg-define-counter)
+   '("newcounter" TeX-arg-define-counter
+     [ TeX-arg-counter "Within counter" ])
+   '("roman" TeX-arg-counter)
+   '("setcounter" TeX-arg-counter "Value")
+   '("usecounter" TeX-arg-counter)
+   '("value" TeX-arg-counter)
+   '("stepcounter" TeX-arg-counter)
+   '("refstepcounter" TeX-arg-counter)
+   '("label" TeX-arg-define-label)
+   '("pageref" TeX-arg-label)
+   '("ref" TeX-arg-label)
+   '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+   '("renewcommand" TeX-arg-macro [ "Number of arguments" ] t)
+   '("newenvironment" TeX-arg-define-environment
+     [ "Number of arguments"] t t)
+   '("renewenvironment" TeX-arg-environment
+     [ "Number of arguments"] t t)
+   '("newtheorem" TeX-arg-define-environment
+     [ TeX-arg-environment "Numbered like" ]
+     t [ (TeX-arg-eval progn (if (eq (save-excursion
+				       (backward-char 2)
+				       (preceding-char)) ?\])
+				 ()
+			       (TeX-arg-counter t "Within counter"))
+		       "") ])
+   '("newfont" TeX-arg-define-macro t)
+   '("circle" "Diameter")
+   '("circle*" "Diameter")
+   '("dashbox" "Dash Length" TeX-arg-size
+     [ TeX-arg-corner ] t)
+   '("frame" t)
+   '("framebox" (TeX-arg-conditional 
+		 (string-equal (LaTeX-current-environment) "picture")
+		 (TeX-arg-size [ TeX-arg-corner ] t)
+		 ([ "Length" ] [ TeX-arg-lr ] t)))
+   '("line" (TeX-arg-pair "X slope" "Y slope") "Length")
+   '("linethickness" "Dimension")
+   '("makebox" (TeX-arg-conditional 
+		(string-equal (LaTeX-current-environment) "picture")
+		(TeX-arg-size [ TeX-arg-corner ] t)
+		([ "Length" ] [ TeX-arg-lr ] t)))
+   '("multiput"
+     TeX-arg-coordinate
+     (TeX-arg-pair "X delta" "Y delta")
+     "Number of copies"
+     t)
+   '("oval" TeX-arg-size [ TeX-arg-corner "Portion" ])
+   '("put" TeX-arg-coordinate t)
+   '("savebox" TeX-arg-define-savebox
+     (TeX-arg-conditional
+      (string-equal (LaTeX-current-environment) "picture")
+      (TeX-arg-size [ TeX-arg-corner ] t)
+      ([ "Length" ] [ TeX-arg-lr ] t)))
+   '("shortstack" [ TeX-arg-lr ] t)
+   '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
+   '("cline" "Span `i-j'")
+   '("multicolumn" "Columns" "Position" t)
+   '("item"
+     (TeX-arg-conditional (or TeX-arg-item-label-p
+			      (string-equal (LaTeX-current-environment)
+					    "description"))
+			  ([ "Item label" ])
+			  ())
+     (TeX-arg-literal " "))
+   '("bibitem" [ "Bibitem label" ] TeX-arg-define-cite)
+   '("cite"
+     (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) ())
+     TeX-arg-cite)
+   '("nocite" TeX-arg-cite)
+   '("bibliographystyle" TeX-arg-bibstyle)
+   '("bibliography" TeX-arg-bibliography)
+   '("footnote"
+     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
+     t)
+   '("footnotetext" 
+     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
+     t)
+   '("footnotemark" 
+     (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
+   '("newlength" TeX-arg-define-macro)
+   '("setlength" TeX-arg-macro "Length")
+   '("addtolength" TeX-arg-macro "Length")
+   '("settowidth" TeX-arg-macro t)
+   '("\\" [ "Space" ])
+   '("\\*" [ "Space" ])
+   '("hyphenation" t)
+   '("linebreak" [ "How much [0 - 4]" ])
+   '("nolinebreak" [ "How much [0 - 4]" ])
+   '("nopagebreak" [ "How much [0 - 4]" ])
+   '("pagebreak" [ "How much [0 - 4]" ])
+   '("stackrel" t nil)
+   '("frac" t nil)
+   '("lefteqn" t)
+   '("overbrace" t)
+   '("overline" t)
+   '("sqrt" [ "Root" ] t)
+   '("underbrace" t)
+   '("underline" t)
+   '("author" t)
+   '("date" t)
+   '("thanks" t)
+   '("title" t)
+   '("pagenumbering" (TeX-arg-eval
+		      completing-read "Numbering style: "
+		      '(("arabic") ("roman") ("Roman") ("alph") ("Alph"))))
+   '("pagestyle" TeX-arg-pagestyle)
+   '("markboth" t nil)
+   '("markright" t)
+   '("thispagestyle" TeX-arg-pagestyle)
+   '("addvspace" "Length")
+   '("fbox" t)
+   '("hspace*" "Length")
+   '("hspace" "Length")
+   '("mbox" t)
+   '("newsavebox" TeX-arg-define-savebox)
+   '("parbox" [ TeX-arg-tb] "Width" t)
+   '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
+   '("rule" [ "Raise" ] "Width" "Thickness")
+   '("sbox" TeX-arg-define-savebox t)
+   '("usebox" TeX-arg-savebox)
+   '("vspace*" "Length")
+   '("vspace" "Length")
+   '("documentstyle" TeX-arg-document)
+   '("include" (TeX-arg-input-file "File" t))
+   '("includeonly" t)
+   '("input" TeX-arg-input-file)
+   '("addcontentsline" TeX-arg-file
+     (TeX-arg-eval
+      completing-read "Numbering style: " LaTeX-section-list)
+     t)
+   '("addtocontents" TeX-arg-file t)
+   '("typeout" t)
+   '("typein" [ TeX-arg-define-macro ] t)
+   '("verb" TeX-arg-verb)
+   '("verb*" TeX-arg-verb)
+   '("extracolsep" t)
+   '("index" t)
+   '("glossary" t)
+   '("numberline" "Section number" "Heading")
+   '("caption" t)
+   '("marginpar" [ "Left margin text" ] "Text")
+   '("left" TeX-arg-insert-braces)
+
+   ;; These have no special support, but are included in case the
+   ;; auto files are missing. 
+
+   "LaTeX" "SLiTeX" "samepage" "newline" "smallskip" "medskip"
+   "bigskip" "stretch" "nonumber" "centering" "raggedright"
+   "raggedleft" "kill" "pushtabs" "poptabs" "protect" "arraystretch"
+   "hline" "vline" "cline" "thinlines" "thicklines" "and" "makeindex"
+   "makeglossary" "reversemarginpar" "normalmarginpar"
+   "raggedbottom" "flushbottom" "sloppy" "fussy" "newpage"
+   "clearpage" "cleardoublepage" "twocolumn" "onecolumn")
+
+  (TeX-run-style-hooks "LATEX")
+
+  (make-local-variable 'TeX-font-list)
+  (make-local-variable 'TeX-font-replace-function)
+  (if (string-equal LaTeX-version "2")
+      ()
+    (setq TeX-font-list LaTeX-font-list)
+    (setq TeX-font-replace-function 'LaTeX2e-font-replace)
+    (TeX-add-symbols
+     '("newcommand" TeX-arg-define-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("renewcommand" TeX-arg-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
+     '("documentclass" TeX-arg-document)))
+
+  (TeX-add-style-hook "latex2e"
+   ;; Use new fonts for `\documentclass' documents.
+   (function (lambda ()
+     (setq TeX-font-list LaTeX-font-list)
+     (setq TeX-font-replace-function 'LaTeX2e-font-replace)
+     (if (equal LaTeX-version "2")
+	 (setq TeX-command-default "LaTeX2e"))
+     (run-hooks 'LaTeX2e-hook))))
+  
+  (TeX-add-style-hook "latex2"
+   ;; Use old fonts for `\documentstyle' documents.
+   (function (lambda ()
+     (setq TeX-font-list (default-value 'TeX-font-list))
+     (setq TeX-font-replace-function
+	   (default-value 'TeX-font-replace-function))
+     (run-hooks 'LaTeX2-hook)))))
+
+(defvar LaTeX-builtin-opts 
+  '("12pt" "11pt" "10pt" "twocolumn" "twoside" "draft")
+  "Built in options for LaTeX standard styles")
+
+(defun LaTeX-209-to-2e ()
+  "Make a stab at changing 2.09 doc header to 2e style."
+  (interactive)
+  (TeX-home-buffer)
+  (let (optstr optlist 2eoptlist 2epackages docline docstyle)
+    (goto-char (point-min))
+    (if 
+	(search-forward-regexp
+	 "\\documentstyle\\[\\([^]]*\\)\\]{\\([^}]*\\)}"
+	 (point-max) t)
+	(setq optstr (buffer-substring (match-beginning 1) (match-end 1))
+	      docstyle (buffer-substring (match-beginning 2)
+	      (match-end 2))
+	      optlist (TeX-split-string "," optstr))
+      (if (search-forward-regexp
+	   "\\documentstyle{\\([^}]*\\)}"
+	   (point-max) t)
+	  (setq docstyle (buffer-substring (match-beginning 1)
+	  (match-end 1)))
+	(error "No documentstyle defined")))
+    (beginning-of-line 1)
+    (setq docline (point))
+    (insert "%%%")
+    (while optlist
+      (if (member (car optlist) LaTeX-builtin-opts)
+	  (setq 2eoptlist (cons (car optlist) 2eoptlist))
+	(setq 2epackages (cons (car optlist) 2epackages)))
+      (setq optlist (cdr optlist)))
+    ;;(message (format "%S %S" 2eoptlist 2epackages))
+    (goto-char docline)
+    (next-line 1)
+    (insert "\\documentclass")
+    (if 2eoptlist
+	(insert "[" 
+		(mapconcat (function (lambda (x) x)) 
+			   (nreverse 2eoptlist) ",") "]"))
+    (insert "{" docstyle "}\n")
+    (if 2epackages
+	(insert "\\usepackage{" 
+		(mapconcat (function (lambda (x) x)) 
+			   (nreverse 2epackages) "}\n\\usepackage{") "}\n"))
+    (if (equal docstyle "slides")
+      (progn
+	(goto-char (point-min))
+	(while (re-search-forward "\\\\blackandwhite{" nil t)
+      (replace-match "\\\\input{" nil nil)))))
+  (TeX-normal-mode nil))
 
 ;;; latex.el ends here

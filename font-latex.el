@@ -6,10 +6,10 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <galbraith@mixing.qc.dfo.ca>
 ;; Created:    06 July 1996
-;; Version:    0.401 *Beta* (12 Nov 96)
+;; Version:    0.403 *Beta* (19 Nov 96)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.2 1996-11-16 18:24:58 abraham Exp $
+;; RCS $Id: font-latex.el,v 5.3 1996-11-29 17:50:46 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; LCD Archive Entry: (Not yet submitted!)
@@ -97,6 +97,13 @@
 ;;    instead of `highlighting 1: \(^\|[^\\]\)\(\\[a-zA-Z\\]+\)'
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.403 19Nov96 (RCS V1.37)
+;;  - Christoph Wedler <wedler@fmi.uni-passau.de>
+;;    XEmacs patch for local math-font 
+;;  - Changed scheme for fontification of \section*{...}  
+;; V0.402 13Nov96 PSG (RCS V1.35)
+;;  - Embeded comments handled.
+;;  - Better XEmacs initilisation.
 ;; V0.401 12Nov96 PSG (RCS V1.34) - Nothing fontified when commented-out. 
 ;; V0.400 11Nov96 PSG (RCS V1.33) 
 ;;  - Stab at on-the-fly multiline.
@@ -238,8 +245,9 @@
             font-lock-face-attributes
             '((font-latex-bold-face "OliveGreen" nil t nil nil)
               (font-latex-italic-face "OliveGreen" nil nil t nil)
-              (font-latex-math-face "green2")
-              (font-latex-sedate-face "grey80")
+              (font-latex-math-face "LightSeaGreen")
+	      ;; good are > LightSeaGreen, LightCoral, coral, orchid, orange
+              (font-latex-sedate-face "grey60")
               (font-latex-warning-face "red" nil t nil nil))))))))
  (t
   ;;; XEmacs:
@@ -268,20 +276,47 @@
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
   ;; Trickery to make $$ fontification be in `font-latex-math-face' while
   ;; strings get whatever `font-lock-string-face' has been set to.
-  (if (not font-latex-is-XEmacs)
-      (font-lock-make-faces))
-  (make-local-variable 'font-lock-string-face)
-  (setq font-lock-string-face font-latex-math-face
-	font-latex-string-face (default-value 'font-lock-string-face))
-  ;; Tell Font Lock about the support.
-  (make-local-variable 'font-lock-defaults)
-  ;; Parentheses () are disabled because they should not delimit fontification
-  ;; in LaTeX text.
-  (setq font-lock-defaults
-        '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
-          nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
-          (font-lock-comment-start-regexp . "%")
-          (font-lock-mark-block-function . mark-paragraph))))
+  (if font-latex-is-XEmacs
+      ;; Cool patch from Christoph Wedler...
+      (let (instance)
+	(mapcar (function
+		 (lambda (property)
+		   (setq instance
+			 (face-property-instance 'font-latex-math-face property
+						 nil 0 t))
+		   (if (numberp instance)
+		       (setq instance
+			     (face-property-instance 'default property nil 0)))
+		   (or (numberp instance)
+		       (set-face-property 'font-lock-string-face property
+                                          instance (current-buffer)))))
+		(built-in-face-specifiers)))
+    (font-lock-make-faces)
+    (make-local-variable 'font-lock-string-face)
+    (setq font-lock-string-face font-latex-math-face
+	  font-latex-string-face (default-value 'font-lock-string-face))
+    ;; Tell Font Lock about the support.
+    (make-local-variable 'font-lock-defaults)
+    ;; Parentheses () are disabled because they should not delimit fontification
+    ;; in LaTeX text.
+    (setq font-lock-defaults
+	  '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+	    nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+	    (font-lock-comment-start-regexp . "%")
+	    (font-lock-mark-block-function . mark-paragraph)))))
+
+(when font-latex-is-XEmacs
+    (put 'latex-mode 'font-lock-defaults
+         '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+           nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+           (font-lock-comment-start-regexp . "%")
+           (font-lock-mark-block-function . mark-paragraph)))
+    (put 'latex-tex-mode	'font-lock-defaults 'latex-mode)
+    (put 'LaTex-tex-mode	'font-lock-defaults 'latex-mode)
+    (put 'LaTeX-mode        'font-lock-defaults 'latex-mode)
+    (put 'japanese-LaTeX-mode 'font-lock-defaults 'latex-mode)
+    (put 'LATeX-MoDe	'font-lock-defaults 'latex-mode)
+    (put 'lATEx-mODe	'font-lock-defaults 'latex-mode))
 
 (defconst font-latex-keywords-1
   (list
@@ -294,40 +329,41 @@
    '("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)        ;;; $$...$$
    '(font-latex-match-quotation . font-latex-string-face)     ;;; ``...''
    '(font-latex-match-font-outside-braces		      ;;;\textit{text}
-     (0 font-lock-keyword-face prepend t)
-     (1 font-latex-italic-face prepend t)
-     (2 font-latex-bold-face prepend t)
-     (3 font-lock-type-face prepend t))
+     (0 font-lock-keyword-face
+        append                         ;Override? [t 'keep 'prepend 'append]
+        ;; Can't use prepend because that overwrites syntax fontification
+        ;; e.g. comments.
+        t)                              ;Laxmatch? if t, do not signal error
+     (1 font-latex-italic-face append t)
+     (2 font-latex-bold-face append t)
+     (3 font-lock-type-face append t))
    '(font-latex-match-font-inside-braces		      ;;;{\it text}
-     (0 font-lock-keyword-face prepend t)
-     (1 font-latex-italic-face prepend t)
-     (2 font-latex-bold-face prepend t)
-     (3 font-lock-type-face prepend t)))  
+     (0 font-lock-keyword-face append t)
+     (1 font-latex-italic-face append t)
+     (2 font-latex-bold-face append t)
+     (3 font-lock-type-face append t)))
   "Subdued level highlighting for LaTeX modes.")
 
 (defconst font-latex-keywords-2
   (append font-latex-keywords-1
    '((font-latex-match-reference                              ;;;\cite
-      (0 font-lock-keyword-face nil t)
-      (1 font-lock-variable-name-face                         ;;;    [opt]
-         prepend                        ;Override? [t 'keep 'prepend 'append]
-         t)                             ;Laxmatch? if t, do not signal error
-      (2 font-lock-reference-face prepend t))                 ;;;         {key}
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;    [opt]
+      (2 font-lock-reference-face append t))                 ;;;         {key}
      (font-latex-match-function                               ;;;\section
-      (0 font-lock-keyword-face nil t)
-      (1 font-lock-variable-name-face nil t)                  ;;;   [opt]
-      (2 font-lock-function-name-face prepend t))             ;;;        {text}
+      (0 font-lock-keyword-face append t)
+      (1 font-lock-variable-name-face append t)              ;;;   [opt]
+      (2 font-lock-function-name-face append t))             ;;;        {text}
      (font-latex-match-variable
       (0 font-lock-keyword-face nil t)
       (1 font-lock-variable-name-face nil t)
       (2 font-lock-variable-name-face nil t))
-     (font-latex-match-math-env . font-latex-math-face)	      ;;;\(...\)
+     (font-latex-match-math-env 
+      (0 font-latex-math-face append t))         	      ;;;\(...\)
      (font-latex-match-math-envII                             ;;;Math environ.
-      (0 font-latex-math-face keep t))      
-     ;;FIXME: In XEmacs, this is overriding stranded \bf commands
-     ;;       Should OVERRIDE flag be different on either?
-     ;;       Or is XEmacs broken yet again?
-     ("\\\\\\sw+" 0 font-latex-sedate-face)))                 ;;;Other commands
+      (0 font-latex-math-face append t))
+     ("\\\\[@A-Za-z]+"                                        ;;;Other commands
+      (0 font-latex-sedate-face append))))
   "High level highlighting for LaTeX modes.")
 
 (defvar font-latex-keywords font-latex-keywords-1
@@ -343,7 +379,7 @@
 		"index" "glossary" "\\(footnote\\(mark\\|text\\)?\\)")
 	      "\\|")
       "\\)\\>"))
-   limit nil))
+   limit nil nil))
 
 (defun font-latex-match-function (limit)
   "Fontify things like \\section{text}"
@@ -351,8 +387,10 @@
    (eval-when-compile
      (concat "\\\\" "\\("
       (mapconcat 'identity 
+       ;; \\*? doesn't work with \\> at the end of the regexp.
+       ;; Instead, allow `*' for all commands (!)
        '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
-         "include" "input" "bibliography" 
+         "include" "input" "bibliography"
 	 "part" "chapter" "\\(sub\\)*section" "\\(sub\\)*paragraph"
 	 "begin" "end"
 	 "title" "author" "date" "thanks" "address"
@@ -360,11 +398,11 @@
 	 "\\(this\\)?pagestyle"
 	 "nofiles" "includeonly"
 	 "bibliographystyle" "\\(document\\(style\\|class\\)\\)"
-         "\\(re\\)?new\\(environment\\|command\\|length\\|theorem\\|counter\\)"
-	 "usepackage" "caption" "\\(f\\|m\\|s\\)box" "\\(v\\|h\\)space\\*?")
+     "\\(re\\)?new\\(environment\\|command\\|length\\|theorem\\|counter\\)"
+	 "usepackage" "caption" "\\(f\\|m\\|s\\)box" "\\(v\\|h\\)space")
        "\\|")
       "\\)\\>"))
-   limit nil))
+   limit nil t))
 
 (defun font-latex-match-variable (limit)
   "Fontify things like \\newcommand{stuff}"
@@ -374,7 +412,7 @@
 	     "set\\(length\\|towidth\\|counter\\)\\|"
 	     "addto\\(length\\|counter\\)"
              "\\)\\>"))
-   limit t))
+   limit t nil))
 
 
 ;; FIXME: --About font-latex-commented-outp--
@@ -428,9 +466,11 @@
 ;;  THEREFORE, I cannot rely on font-lock-apply-highlight to continue 
 ;;  multi-line incomplete patterns, because the first character of the 
 ;;  pattern on the first line has a face.  I must use `prepend'.
-(defun font-latex-match-command-outside-arguments (keywords limit twoargs)
+(defun font-latex-match-command-outside-arguments (keywords limit twoargs 
+                                                   asterix)
   "Search for regexp command KEYWORDS[opt]{arg} before LIMIT.
 If TWOARG is t, allow two arguments {arg1}{arg2}
+If ASTERIX is t, fontify trailing asterix in command.
 Sets `match-data' so that:
  subexpression 0 is the keyword, 
  subexpression 1 is the contents of any following [...] forms 
@@ -455,8 +495,10 @@ Returns nil if none of KEYWORDS is found."
           t)
          (t
           (let ((kbeg (match-beginning 0))
-                (kend (match-end 0)) 
+                (kend (+ (match-end 0) 
+                         (if (and asterix (eq (following-char) ?\*)) 1 0))) 
                 sbeg send cbeg cend)
+            (goto-char kend)            ;May be moved by asterix
             (while (eq (following-char) ?\[)
               (save-restriction
                 ;; Restrict to LIMIT.
@@ -676,19 +718,20 @@ Returns nil if no font-changing command is found."
   "Used for patterns like:
 \\( F = ma \\)
 \\ [ F = ma \\] but not \\\\ [len]"
-  (if (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
-      (if (eq (preceding-char) ?\\)       ; \\[ is not a math environment
-          (progn
-            (store-match-data (list nil nil))
-            t)
-        (let ((b1start (match-beginning 0)))
-          (search-forward (cond ((match-beginning 1) "\\)")
-                                (t                   "\\]"))
-                          limit 'move)
-          (let ((b2end (or (match-end 0) (point))))
-            (store-match-data (list b1start b2end))
-            t)))
-    nil))
+  (when (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
+    (goto-char (match-beginning 0))
+    (if (eq (preceding-char) ?\\)       ; \\[ is not a math environment
+        (progn 
+          (goto-char (match-end 0))
+          (store-match-data (list nil nil)) 
+          t)
+      (let ((b1start (point)))
+        (search-forward (cond ((match-beginning 1) "\\)")
+                              (t                   "\\]"))
+                        limit 'move)
+        (let ((b2end (or (match-end 0) (point))))
+          (store-match-data (list b1start b2end))
+          t)))))
 
 (defun font-latex-match-math-envII (limit)
   "Used for patterns like:

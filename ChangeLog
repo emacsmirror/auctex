@@ -1,3 +1,11 @@
+Fri Nov 29 18:50:26 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.6k released.
+
+Fri Nov 22 14:40:05 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-mode-menu): Made `LaTeX-math-mode' a toggle.
+
 Sat Nov 16 19:24:39 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6j released.

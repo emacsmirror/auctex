@@ -79,6 +79,7 @@ The directory names *must* end with a slash.")
 	parenthesis.
 
 
+[ This should be unnecessary in 9.6 --Per ]
 STEP 3.	Edit the file tex-buf.el and insert the string windows-nt as
 	indicated below. This will make Auc-Tex chose Tex-Shell to 
 	become cmd and TeX-shell-command-option /c. 

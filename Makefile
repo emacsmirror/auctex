@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.6j
+# Version: 9.6k
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -62,12 +62,12 @@ FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
 WWWDIR = $(HOME)/.public_html/auctex
 #WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
-REMOVE =  ltx-help.el
+REMOVE =  ltx-help.el func-doc.el 
 
 MINMAPSRC = auc-menu.el maniac.el outln-18.el auc-html.el all.el \
 	multi-prompt.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el font-latex.el
+CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el font-latex.el
 
 AUCSRC = auc-old.el tex.el tex-buf.el latex.el tex-info.el ltx-help.el \
 	multi-prompt.el
