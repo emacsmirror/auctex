@@ -10,13 +10,13 @@
 %else
 %define distri      %{?thisshouldbeempty:}
 %define commongroup Applications/Editors
-%define xemacspkgdir %{_libdir}/xemacs/site-packages
+%define xemacspkgdir %{_datadir}/xemacs/site-packages
 %endif
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.8
-Release: 	1%{distri}
+Release: 	2%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
