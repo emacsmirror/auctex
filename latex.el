@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9a
+;; Version: 9.9b
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -891,7 +891,7 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 
 (defvar LaTeX-auto-regexp-list 
   (append
-   '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\\[\\([^\]\\\\\n\r]+\\)\\]"
+   '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
       (2 3 4) LaTeX-auto-optional)
      ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (2 3) LaTeX-auto-arguments)
@@ -901,8 +901,6 @@ You may use LaTeX-item-list to change the routines used to insert the item."
      ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (1 2) LaTeX-auto-env-args)
      ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
-     ("\\\\\\(new\\|provide\\)command\\*{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\\[\\([^\]\\\\\n\r]+\\)\\]"
-      (2 3 4) LaTeX-auto-optional)
      ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 LaTeX-auto-environment)
      ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)

@@ -1,3 +1,20 @@
+1998-02-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9b released.
+
+1998-01-02  John Griffith  <griffith@sfs.nphil.uni-tuebingen.de>
+
+	* latex.el (LaTeX-auto-regexp-list): Recognize empty optional
+	  arguments and macros in optional arguments.
+
+        * tex.el (TeX-parse-argument): minor spelling correction.
+	(TeX-argument-insert): ditto
+
+1998-02-25  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-match-extension): Fold case when matching
+	extensions. 
+
 1998-02-20  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9a released.

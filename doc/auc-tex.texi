@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.119 1998-02-20 14:04:14 abraham Exp $
+@c $Id: auc-tex.texi,v 1.120 1998-02-25 09:34:56 abraham Exp $
 
 @finalout
 @titlepage
@@ -2341,9 +2341,14 @@ mail me first, though.
 
 @itemize @bullet
 @item
+Command to insert a macrodefinition in the preamble, without moving
+point from the current location.  Suggested by 
+"Jeffrey C. Ely" <ely@@nwu.edu>.
 
+@item
 Filling messes up comments, but only at the end of the file.  Reported
-by uergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
+by Juergen Reiss <psy3022@@rzbox.uni-wuerzburg.de>.
+
 @item
 @kbd{C-c C-q C-e} doesn't work properly on nested itemize environments.
 Reported by  "Robert B. Love"  <rlove@@raptor.rmNUG.ORG>.
