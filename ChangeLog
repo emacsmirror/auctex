@@ -19,6 +19,10 @@
 
 	* tex.el (plain-TeX-mode-menu): Insert customize option.
 
+	* doc/auc-tex.texi: Document options for inserting quotes in files
+	where `(n)german.sty' is used and the invocation of external
+	viewers.
+
 2004-02-26  David Kastrup  <dak@gnu.org>
 
 	* latex.el (doctex-mode): Make a minor mode.
