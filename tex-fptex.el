@@ -42,23 +42,41 @@
 
 (unless (get 'TeX-command-list 'saved-value)
   (setq TeX-command-list
-	(list (list "TeX" "%(PDF)tex %S \\nonstopmode\\input %t" 'TeX-run-TeX nil
-		    (list 'plain-tex-mode))
-	      (list "LaTeX" "%l \\nonstopmode\\input{%t}" 'TeX-run-TeX nil
-		    (list 'latex-mode))
-	      (list "AmSTeX" "amstex %S \\nonstopmode\\input{%t}"
-		    'TeX-run-TeX nil (list 'ams-tex-mode))
-	      (list "View" "%v" 'TeX-run-command t t)
-	      (list "View PS" "gsview32 %f" 'TeX-run-command t t)
-	      (list "View PDF" "start %s.pdf" 'TeX-run-command t t)
-	      (list "Print" "dvips %d" 'TeX-run-command t t)
-	      (list "File" "dvips %d -o %f " 'TeX-run-command t t)
-	      (list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
-	      (list "Index" "makeindex %s" 'TeX-run-command nil t)
-	      (list "Check" "lacheck %s" 'TeX-run-compile nil t)
-	      (list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t)
-	      (list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
-	      (list "Other" "" 'TeX-run-command t t))))
+	(list (list "TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
+		    'TeX-run-TeX nil (list 'plain-tex-mode)
+		    :help "Run plain TeX")
+	      (list "LaTeX" "%l \"%(mode)\\input{%t}\"" 'TeX-run-TeX nil
+		    (list 'latex-mode 'doctex-mode) :help "Run LaTeX")
+	      (list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil
+		    (list 'texinfo-mode) :help "Run Makeinfo with Info output")
+	      (list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
+		    (list 'texinfo-mode) :help "Run Makeinfo with HTML output")
+	      (list "AmSTeX" "amstex %S \"%(mode)\\input %t\""
+		    'TeX-run-TeX nil (list 'ams-tex-mode) :help "Run AMSTeX")
+	      (list "ConTeXt" "texexec --once --texutil %(execmode)%t"
+		    'TeX-run-TeX nil (list 'context-mode)
+		    :help "Run ConTeXt once")
+	      (list "ConTeXt Full" "texexec %(execmode)%t" 'TeX-run-TeX nil
+		    (list 'context-mode) :help "Run ConTeXt until completion")
+	      (list "ConTeXt Clean" "texutil --purgeall"
+		    'TeX-run-interactive nil (list 'context-mode)
+		    :help "Clean temporary ConTeXt files")
+	      (list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t
+		    :help "Run BibTeX")
+	      (list "View" "%V" 'TeX-run-discard t t :help "Run viewer")
+	      (list "Print" "dvips %d" 'TeX-run-command t t
+		    :help "Print the file")
+	      (list "File" "dvips %d -o %f " 'TeX-run-command t t
+		    :help "Generate PostScript file")
+	      (list "Index" "makeindex %s" 'TeX-run-command nil t
+		    :help "Create index file")
+	      (list "Check" "lacheck %s" 'TeX-run-compile nil
+		    (list 'latex-mode)
+		    :help "Check LaTeX file for correctness")
+	      (list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil t
+		    :help "Spell-check the document")
+	      (list "Other" "" 'TeX-run-command t t
+		    :help "Run an arbitrary command"))))
 
 (unless (get 'TeX-view-style 'saved-value)
   (setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")
@@ -80,7 +98,7 @@
 	  ("^dvi$" "^executivepaper$" "windvi %d %dS -qpaper 7.25x10.5in")
 	  ("^dvi$" "^landscape$" "windvi %d %dS -qpaper a4r")
 	  ("^dvi$" "." "windvi %d %dS")
-	  ("^pdf$" "." "AcroRd32 %o")
+	  ("^pdf$" "." "AcroRd32 %o") ; Use "start %o" instead?
 	  ("^html?$" "." "mozilla %o"))))
 
 ;; WinDVI does not support source specials?
