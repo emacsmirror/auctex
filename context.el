@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-12 15:20:33 $
+;; Last Change: $Date: 2004-04-15 11:12:13 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1340,12 +1340,9 @@ There might be text before point."
 ;; menu itself
 
 (easy-menu-define ConTeXt-mode-command-menu
-		ConTeXt-mode-map
-		"Command menu used in ConTeXt mode."
-		(list TeX-command-menu-name
-					:filter (lambda (&rest ignored)
-										(TeX-mode-specific-command-menu 'context-mode))
-					"Bug."))
+  ConTeXt-mode-map
+  "Command menu used in ConTeXt mode."
+  (TeX-mode-specific-command-menu 'context-mode))
 
 (easy-menu-define ConTeXt-mode-menu
 		ConTeXt-mode-map
