@@ -1,5 +1,7 @@
 2005-01-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* RELEASE: Addition to contributors section.
+
 	* tex-bar.el (TeX-bar-LaTeX-button-alist): Use generic "view"
 	image instead of mode specific.
 
