@@ -14,6 +14,7 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
 fi
 
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
+MAKEINFO_CHECK_MACROS(acronym env option)
 AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
 
 
