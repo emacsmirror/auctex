@@ -1,3 +1,9 @@
+2005-01-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (hack-one-local-variable): Make sure the byte compiler
+	does not barf on `minor-mode-list' by eliminating the reference to
+	this variable.
+
 2005-01-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (top): Restrict to one content listing in HTML
