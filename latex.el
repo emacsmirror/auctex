@@ -2646,7 +2646,8 @@ depends on the value of `LaTeX-format-comments-syntax-aware'."
 	      (save-restriction
 		(narrow-to-region (point-min) (line-end-position))
 		(while (not (looking-at (concat comment-start "\\|$")))
-		  (skip-chars-forward (concat "^" comment-start "\n\\"))
+		  (skip-chars-forward (concat "^" comment-start
+                                          (regexp-quote TeX-esc) "\n"))
 		  (when (eq (char-after (point)) ?\\)
 		    (forward-char 2)))
 		(and (looking-at (concat comment-start "+[\t ]*"))
@@ -2755,7 +2756,8 @@ depends on the value of `LaTeX-format-comments-syntax-aware'."
 	    (beginning-of-line)
 	    (narrow-to-region beg end)
 	    (while (not (looking-at (concat comment-start "\\|$")))
-	      (skip-chars-forward (concat "^" comment-start "\n\\"))
+	      (skip-chars-forward (concat "^" comment-start
+                                          (regexp-quote TeX-esc) "\n"))
 	      (when (eq (char-after (point)) ?\\)
 		(forward-char 2)))
 	    (and (looking-at (concat comment-start "+[\t ]*"))
