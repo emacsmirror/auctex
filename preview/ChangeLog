@@ -1,5 +1,7 @@
 2005-03-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* Makefile.in (use-hint): Fix spelling.
+
 	* preview.el (preview-report-bug): Use "preview-" prefix in
 	version information.
 
