@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.187 2004-10-22 14:22:30 rsteib Exp $
+@c $Id: auctex.texi,v 1.188 2004-11-04 14:13:18 angeli Exp $
 
 @finalout
 @titlepage
@@ -1443,8 +1443,8 @@ and moreover allowing you to @emph{debug} your documents.
 
 Formatting the document with @TeX{}, @LaTeX{} or @ConTeXt{}, viewing
 with a previewer, printing the document, running Bib@TeX{}, making an
-index, or checking the document with @code{lacheck} or @code{chktex} all
-require running an external command.
+index, or checking the document with @command{lacheck} or
+@command{chktex} all require running an external command.
 
 There are two ways to run an external command, you can either run it on
 all of the current documents with @code{TeX-command-master}, or on the
@@ -1630,15 +1630,16 @@ breaks should be done with Source Specials switched off.
 @end deffn
 
 @deffn Command TeX-Omega-mode
+@cindex Omega
 @kindex C-c C-t C-o
 @vindex TeX-Omega-mode
-(@kbd{C-c C-t C-p})
+(@kbd{C-c C-t C-o})
 This command toggles the use of the Omega @tex
 (@math{\Omega})
 @end tex
- mode of @AUCTeX{}, a buffer-local
-minor mode.  If it is switched on, @kbd{omega} will be used instead of
-@kbd{tex}, and @kbd{lambda} instead of @kbd{latex}.
+ mode of @AUCTeX{}, a buffer-local minor mode.  If it is switched on,
+@command{omega} will be used instead of @command{tex}, and
+@command{lambda} instead of @command{latex}.
 @end deffn
 
 @node Viewing
