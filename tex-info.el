@@ -159,17 +159,22 @@ When called interactively, prompt for an environment."
 	       :active (not (TeX-local-master-p))])
 	(list "Show/Hide"
 	      ["Fold Mode" TeX-fold-mode
-	       :style toggle :selected TeX-fold-mode]
+	       :style toggle
+	       :selected (and (boundp 'TeX-fold-mode) TeX-fold-mode)]
 	      "-"
 	      ["Hide All" TeX-fold-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-b"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-b"]
 	      ["Hide Current Macro" TeX-fold-macro
-	       :active TeX-fold-mode :keys "C-c C-o C-m"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-m"]
 	      "-"
 	      ["Show All" TeX-fold-clearout-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-x"]
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-x"]
 	      ["Show Current Item" TeX-fold-clearout-item
-	       :active TeX-fold-mode :keys "C-c C-o C-c"])
+	       :active (and (boundp 'TeX-fold-mode) TeX-fold-mode)
+	       :keys "C-c C-o C-c"])
 	"-"
 	(list "AUCTeX"
 	      (list "Customize"
