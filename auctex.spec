@@ -83,7 +83,6 @@ rm -f '%{buildroot}%{_infodir}/dir'
 # rather than /usr/share/doc/auctex-emacs-n.n-1.whatever
 %define docs	    %{_defaultdocdir}/%{name}-%{version}
 mkdir -p '%{buildroot}%{docs}'
-pushd %{name}-%{version}
 for i in RELEASE COPYING INSTALL README TODO FAQ CHANGES \
     doc/tex-ref.pdf; do
   cp -R "$i" '%{buildroot}%{docs}'
