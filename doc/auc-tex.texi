@@ -8,16 +8,16 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.84 1994-04-07 21:08:33 amanda Exp $
+@c $Id: auc-tex.texi,v 1.85 1994-04-08 20:08:56 amanda Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle September 1993, for AUC @TeX{} Version 8.1
+@subtitle September 1993, for AUC @TeX{} Version 9.0
   
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 8.1 by Per Abrahamsen
+@author updated for 6.1 to 9.0 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -54,7 +54,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 8.1.
+This file documents AUC @TeX{} version 9.0.
 
 The keybindings have changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -2307,7 +2307,7 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
-* Version 8.1::                 News in 8.1
+* Version 9.0::                 News in 9.0
 * Version 8.0::                 News in 8.0
 * Version 7.3::                 News in 7.3
 * Version 7.2::                 News in 7.2
@@ -2318,10 +2318,10 @@ this version, and for the authors, who get nostalgic at times.
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 8.1, Version 8.0, History, History
+@node Version 9.0, Version 8.0, History, History
 @include changes.texi
 
-@node Version 8.0, Version 7.3, Version 8.1, History
+@node Version 8.0, Version 7.3, Version 9.0, History
 @comment  node-name,  next,  previous,  up
 @section News in 8.0
 

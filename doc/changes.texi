@@ -1,9 +1,9 @@
-@section News in 8.1
+@section News in 9.0
 
 Coordinater: Per Abrahamsen, 1994.
 
-Alpha testers (in order of appearance): Volker Dobler
-@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>},
+Alpha testers (in order of appearance): 
+Volker Dobler @samp{<dobler@@etu.wiwi.uni-karlsruhe.de>},
 Piet van Oostrum @samp{<piet@@cs.ruu.nl>}, 
 Frederic Devernay @samp{<Frederic.Devernay@@sophia.inria.fr>}, 
 Robert Estes @samp{<estes@@ece.ucdavis.edu>},
@@ -13,6 +13,7 @@ Peter Thiemann @samp{<thiemann@@provence.informatik.uni-tuebingen.de>},
 Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
 Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
 Johan Van Biesen @samp{<vbiesen@@wins.uia.ac.be>},
+Marc.Gemis @samp{<makke@@wins.uia.ac.be>},
 and probably more.@refill
 
 @itemize @bullet
@@ -197,11 +198,11 @@ The @code{member} function in @file{tex-18.el} does not depend on
 @samp{<piet@@cs.ruu.nl>}. 
 
 @item
-Do not overwrite any global binding of @kbd{M-RET}.  Suggested by Jens
-Petersen @samp{<J.Petersen@@qmw.ac.uk>}.
+Do not overwrite any global binding of @kbd{M-@kbd{ret}}.  Suggested by
+Jens Petersen @samp{<J.Petersen@@qmw.ac.uk>}.
 
 @item
-Major modes for writing text are supposed to rebind @kbd{M-TAB} to
+Major modes for writing text are supposed to rebind @kbd{M-@kbd{tab}} to
 @code{ispell-complete-word}.  Reported by Jens Petersen
 @samp{<J.Petersen@@qmw.ac.uk>}.
 

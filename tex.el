@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.1 1994-04-07 21:08:25 amanda Exp $
+;; Version: $Id: tex.el,v 5.2 1994-04-08 20:08:51 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -259,6 +259,31 @@ This correspond to TeX macros found in the current directory.")
 Must end with a slash.
 
 These correspond to TeX macros found in the current directory.")
+
+(defun TeX-split-string (char string)
+  "Returns a list of strings. given REGEXP the STRING is split into 
+sections which in string was seperated by REGEXP.
+
+Examples:
+
+      (TeX-split-string \"\:\" \"abc:def:ghi\")
+          -> (\"abc\" \"def\" \"ghi\")
+
+      (TeX-split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
+
+          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
+
+If CHAR is nil, or \"\", an error will occur."
+
+  (let ((regexp char)
+        (start 0)
+        (result '()))
+    (while (string-match regexp string start)
+      (let ((match (string-match regexp string start)))
+        (setq result (cons (substring string start match) result))
+        (setq start (match-end 0))))
+    (setq result (cons (substring string start nil) result))
+    (nreverse result)))
 
 (defun TeX-parse-path (env)
   ;; Return a list if private TeX directories found in environment
@@ -900,7 +925,7 @@ of LaTeX-mode-hook."
 
 ;;; Parsing
 
-(defvar TeX-auto-parser '((styles TeX-auto-files TeX-run-style-hooks)))
+(defvar TeX-auto-parser '((styles TeX-auto-file TeX-run-style-hooks)))
 ;; Alist of parsed information.  
 ;; Each entry is a list with the following elements:
 ;; 
@@ -1392,31 +1417,6 @@ If optional argument EXTENSIONS is not set, use TeX-file-extensions"
                                      match))))))))
     
     match))
-
-(defun TeX-split-string (char string)
-  "Returns a list of strings. given REGEXP the STRING is split into 
-sections which in string was seperated by REGEXP.
-
-Examples:
-
-      (TeX-split-string \"\:\" \"abc:def:ghi\")
-          -> (\"abc\" \"def\" \"ghi\")
-
-      (TeX-split-string \" *\" \"dvips -Plw -p3 -c4 testfile.dvi\")
-
-          -> (\"dvips\" \"-Plw\" \"-p3\" \"-c4\" \"testfile.dvi\")
-
-If CHAR is nil, or \"\", an error will occur."
-
-  (let ((regexp char)
-        (start 0)
-        (result '()))
-    (while (string-match regexp string start)
-      (let ((match (string-match regexp string start)))
-        (setq result (cons (substring string start match) result))
-        (setq start (match-end 0))))
-    (setq result (cons (substring string start nil) result))
-    (nreverse result)))
 
 (defun TeX-car-string-lessp (a b)
   (string-lessp (car a) (car b)))

@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.61 1994-04-07 21:08:09 amanda Exp $
+;; $Id: tex-buf.el,v 1.62 1994-04-08 20:08:45 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -283,10 +283,11 @@ in TeX-check-path."
   "Query the user for a what TeX command to use."
   (let* ((default (cond ((TeX-save-document (TeX-master-file))
 			 TeX-command-default)
-			((TeX-check-files (concat name ".bbl")
-					  (mapcar 'car
-						  (LaTeX-bibliography-list))
-					  BibTeX-file-extensions)
+			((and (eq major-mode 'latex-mode)
+			      (TeX-check-files (concat name ".bbl")
+					       (mapcar 'car
+						       (LaTeX-bibliography-list))
+					       BibTeX-file-extensions))
 			 ;; We should check for bst files here as well.
 			 TeX-command-BibTeX)
 			((TeX-process-get-variable name
