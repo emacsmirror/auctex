@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.24 1993-03-16 01:49:24 amanda Exp $
+;;; $Id: tex-buf.el,v 1.25 1993-03-17 22:11:28 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -156,27 +156,29 @@ command."
       (apply hook name command (apply file nil) nil)
       (pop-to-buffer buffer))))
 
-(defun TeX-command-expand (command file)
-  "Expand COMMAND for FILE as described in TeX-expand-list."
-  (let ((list TeX-expand-list))
-    (while list
-      (let ((string (car (car list)))	;First element
-	    (expansion (car (cdr (car list)))) ;Second element
-	    (arguments (cdr (cdr (car list))))) ;Remaining elements
-	(while (string-match string command)
-	  (let ((prefix (substring command 0 (match-beginning 0)))
-		(postfix (substring command (match-end 0))))
-	    (setq command (concat prefix
-				  (cond ((or (listp expansion)
-					     (fboundp expansion))
-					 (apply expansion arguments))
-					((boundp expansion)
-					 (apply (eval expansion) arguments))
-					(t
-					 (error "Nonexpansion %s." expansion)))
-				  postfix)))))
-      (setq list (cdr list)))
-    command))
+(defun TeX-command-expand (command file &optional list)
+  "Expand COMMAND for FILE as described in LIST.
+LIST default to TeX-expand-list."
+  (if (null list)
+      (setq list TeX-expand-list))
+  (while list
+    (let ((string (car (car list)))	;First element
+	  (expansion (car (cdr (car list)))) ;Second element
+	  (arguments (cdr (cdr (car list))))) ;Remaining elements
+      (while (string-match string command)
+	(let ((prefix (substring command 0 (match-beginning 0)))
+	      (postfix (substring command (match-end 0))))
+	  (setq command (concat prefix
+				(cond ((or (listp expansion)
+					   (fboundp expansion))
+				       (apply expansion arguments))
+				      ((boundp expansion)
+				       (apply (eval expansion) arguments))
+				      (t
+				       (error "Nonexpansion %s." expansion)))
+				postfix)))))
+    (setq list (cdr list)))
+  command)
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
@@ -201,13 +203,26 @@ command."
 (defun TeX-printer-query ()
   "Query the user for a printer name."
 
-  (if TeX-printer-list
-      (let ((printer (completing-read (concat "Printer: (default "
-					      TeX-printer-default ") ")
-				      TeX-printer-list)))
-	(if (not (string-equal "" printer))
-	    (setq TeX-printer-default printer))))
-  TeX-printer-default)
+  (let ((printer (if TeX-printer-list
+		     (let ((completion-ignore-case t))
+		       (completing-read (concat "Printer: (default "
+						TeX-printer-default ") ")
+					TeX-printer-list
+					nil t))
+		   "")))
+    (if (string-equal "" printer)
+	(setq printer TeX-printer-default)
+      (setq TeX-printer-default printer))
+
+    (let ((expansion (let ((entry (assoc printer TeX-printer-list)))
+		       (if (and entry (nth 1 entry))
+			   (nth 1 entry)
+			 TeX-print-command))))
+      (if (string-match "%p" expansion)
+	  (concat (substring expansion 0 (match-beginning 0))
+		  printer
+		  (substring expansion (match-end 0)))
+	expansion))))
 
 (defun TeX-style-check (styles)
   "Check STYLES compared to the current style options."

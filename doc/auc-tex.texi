@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.15 1993-03-16 02:28:12 amanda Exp $
+@c $Id: auc-tex.texi,v 1.16 1993-03-17 22:11:44 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -1407,7 +1407,7 @@ multiple levels of nesting, specify the top level file.@refill
 If this variable is @code{nil}, AUC @TeX{} will query you for the
 name.@refill
 
-If the variable is @code{t}, AUC @TeX{} will assume the file is a mater
+If the variable is @code{t}, AUC @TeX{} will assume the file is a master
 file itself.@refill
 
 If the variable is @code{'shared}, AUC @TeX{} will query for the name,
@@ -1604,6 +1604,8 @@ the second element.
 @cindex Cyrillic
 @cindex Russian
 @cindex KOI8
+@cindex JCUKEN
+@cindex YAWERTY
 
 @xref{Scandinavian} for a general explanation of keyboard remapping. 
 
@@ -1611,11 +1613,67 @@ For Russian it not only makes sense to remap the keyboard.  You have to
 do it, in order to get the Cyrillic character set from an ordinary
 QWERTY keyboard.  AUC @TeX{} will map QWERTY into the Russian keyboard
 layout YAWERTY, either with AMS Cyrillic encoding or the KOI8 character
-set encoding.
+set encoding.  The standard Russian keyboard layout JCUKEN is not
+implemented, contributions welcome.
 
 The Russian character set encodings were kindly contributed by Justin R.
 Smith @samp{<jsmith@@king.mcs.drexel.edu>}, please direct questions to
 him.
+
+You can get a Cyrillic font for X11 from Serge Vakulenko
+@samp{<vak@kiae.su>}.  You will need an Emacs capable of displaying 8
+bit characters to use it.
+
+@example
+        ---------------------------------------------
+        | English        Russian         Mixed      |
+        | keyboard       keyboard       keyboard    |
+        |                                           |
+        |  qwerty         jcuken        yawerty     |
+        |-------------------------------------------|
+        |   q Q      i-short I-short     ya Ya      |
+        |   w W          tse Tse         ve ve      |
+        |   e E            u U           ie Ie      |
+        |   r R           ka Ka          ar Er      |
+        |   t T           ie Ie          te Te      |
+        |   y Y           en En        iery Iery    |
+        |   u U          ghe Ghe          u U       |
+        |   i I          sha Sha          i I       |
+        |   o O        shcha Shcha        o O       |
+        |   p P            z Z           pe Pe      |
+        |   a A           ef Ef           a A       |
+        |   s S         iery Iery        es Es      |
+        |   d D           ve ve          de De      |
+        |   f F            a A           ef Ef      |
+        |   g G           pe Pe          ge Ge      |
+        |   h H           er Er         kha Kha     |
+        |   j J            o O      i-short I-short |
+        |   k K           el El          ka Ka      |
+        |   l L           de De          el El      |
+        |   z Z           ya Ya           z Z       |
+        |   x X          che Che        ier Ier     |
+        |   c C           es Es         tse Tse     |
+        |   v V           em Em         zhe Zhe     |
+        |   b B            i I           be Be      |
+        |   n N           te Te          en En      |
+        |   m M        ierik Ierik       em Em      |
+        |                                           |
+        |   [ {          kha Kha        sha Sha     |
+        |   ] }          ier Ier      shcha Shcha   |
+        |   ; :          zhe Zhe                    |
+        |   ' "        e-rev E-rev                  |
+        |   , <           be Be                     |
+        |   . >           yu Yu                     |
+        |   ` ~                          yu Yu      |
+        |   3 #                           3 ier     |
+        |   4 $            4 "                      |
+        |   5 %            5 :                      |
+        |   6 ^            6 ,                      |
+        |   7 &            7 .                      |
+        |   = +                         che Che     |
+        |   \ |                       e-rev E-rev   |
+        ---------------------------------------------
+@end example
 
 @node Dvorak, Accents, Russian, Internationalization
 @section Dvorak and QWERTY
@@ -1980,8 +2038,8 @@ Here is a few examples from @file{latex.el}.
        t [ TeX-argument-counter-hook "Within counter" ])))))
 @end lisp
 
-@defun TeX-add-symbols &rest @var{symbols}
-Add @var{symbols} to the list of known symbols.
+@defun TeX-add-symbols @var{symbol} @dots
+Add each @var{symbol} to the list of known symbols.
 @end defun
 
 Each argument to @code{TeX-add-symbols} is a list describing one symbol.
@@ -2150,11 +2208,11 @@ environment hook to insert the environment, but the function
 called with the name of the environment as its first argument, and extra
 arguments can be provided by adding them to list after the hook.
 
-@defun LaTeX-add-environments &rest @var{envs}
-Add @var{envs} to list of loaded environments.
+@defun LaTeX-add-environments @var{env} @dots
+Add each @var{env} to list of loaded environments.
 @end defun
 
-@defun LaTeX-insert-environment @var{env} &optional @var{extra}
+@defun LaTeX-insert-environment @var{env} [ @var{extra} ]
 Insert environment of type @var{env}, with optional argument @var{extra}.
 @end defun
 
@@ -2174,12 +2232,12 @@ You can also specify bibliographical databases and labels in the style
 file.  This is probably of little use, since this information will
 usually be automatically generated from the @TeX{} file anyway.
 
-@defun LaTeX-add-bibliographies &rest @var{bibliographies}
-Add @var{bibliographies} to list of loaded bibliographies.
+@defun LaTeX-add-bibliographies @var{bibliography} @dots
+Add each @var{bibliography} to list of loaded bibliographies.
 @end defun
 
-@defun LaTeX-add-labels &rest @var{labels}
-Add arguments to the list of known labels.
+@defun LaTeX-add-labels @var{label} @dots
+Add each @var{label} to the list of known labels.
 @end defun
 
 @node Formats Packages, Hacking the Parser, Adding Other, Style Files
@@ -2306,11 +2364,11 @@ defined.  We can specify this information in a style hook file.
 		       nil)))))
 @end lisp
 
-When this file is first loaded, it add a new entry to
-@code{TeX-newmacro-regexp}, and define a function to be called before
+When this file is first loaded, it adds a new entry to
+@code{TeX-newmacro-regexp}, and defines a function to be called before
 the parsing starts, and one to be called after the parsing is done.  It
-also declare a variable to contain the data collected during parsing.
-Finally, is add a style hook which describe the @samp{newmacro} macro,
+also declares a variable to contain the data collected during parsing.
+Finally, it adds a style hook which describes the @samp{newmacro} macro,
 as we have seen it before.
 
 So the general strategy is: Add new entry to @code{TeX-newmacro-regexp}.
@@ -2527,7 +2585,7 @@ The main code is now organized around this principle.
 @item
 Automatically generate style files.
 
-AUC @TeX{} can now automatically extract information from a @TeX{} files,
+AUC @TeX{} can now automatically extract information from a @TeX{} file,
 and will do this when you save a buffer.
 
 @item
@@ -3098,6 +3156,36 @@ This is a list of projects for AUC @TeX{}.  Bug reports and requests we
 can not fix or honor right away will be added to this list
 
 @itemize @bullet
+
+@item
+The documentation of the minor modes should be separated.
+
+They are distributed independently of AUC @TeX{}, and should therefore
+also be documented independently of AUC @TeX{}.
+
+@item
+Documentation of variables that can be set in a style hook.
+
+We need a list of what can safely be done in an ordinary style hook.
+You can not set a variable that AUC TeX depends on, unless AUC TeX knows
+that it has to run the style hooks first.
+
+Here is the start of such a list.
+@table @code
+
+@item LaTeX-add-environments
+
+@item TeX-add-symbols
+
+@item LaTeX-add-labels
+
+@item LaTeX-add-bibliographies
+
+@item LaTeX-largest-level
+
+@end table
+
+The rules for what can be done in a format package hook are different. 
 
 @item 
 Correct indentation for table, math, and array environments.
