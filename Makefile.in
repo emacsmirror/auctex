@@ -70,7 +70,7 @@ STYLESRC = style/prosper.el \
 	   style/jura.el      style/alphanum.el	 style/beamer.el \
 	   style/alltt.el     style/italian.el   style/doc.el \
 	   style/ltxdoc.el    style/ltx-base.el	 style/units.el \
-	   style/nicefrac.el
+	   style/nicefrac.el  style/url.el
 
 DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/history.texi \
