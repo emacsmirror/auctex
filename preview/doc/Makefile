@@ -6,10 +6,12 @@ all: preview-latex.dvi preview-latex
 
 dist: preview-latex INSTALL README preview-latex_toc.html preview-latex.ps
 
-preview-latex.html: preview-latex.texi install.texi readme.texi \
+preview-latex/index.html: preview-latex.texi install.texi readme.texi \
 	copying.texi problems.texi
-	texi2html -split_chapter preview-latex.texi
+	makeinfo --html preview-latex.texi
 	# Small manual: use 'makeinfo --html' ????
+	# texi2html goofs terribly on macros.
+html-docs: preview-latex/index.html
 
 preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
 	problems.texi
@@ -20,7 +22,7 @@ preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
 preview-latex.ps: preview-latex.dvi
 	dvips preview-latex.dvi -o preview-latex.ps
 
-preview-latex: preview-latex.texi install.texi readme.texi copying.texi \
+preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
 	problems.texi
 	-makeinfo preview-latex.texi
 
