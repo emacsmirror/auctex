@@ -1,3 +1,10 @@
+2002-07-11  David Kastrup  <dak@localhost.localdomain>
+
+	* preview.el (preview-gs-broken-security): New option specifying
+	when to disable security.
+	(preview-gs-open): Use it.  Also abort more predictably if
+	setpagedevice fails, usually due to broken security.
+
 2002-06-24  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/Makefile: Cleaned. Vacuumed, in fact.
