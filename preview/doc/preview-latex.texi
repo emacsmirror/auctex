@@ -11,20 +11,18 @@
 @tolerance 10000
 @end iftex
 
-@c Date: Jan 18 2001
-
 @finalout
 @titlepage
 @title Preview La@TeX{}
 @subtitle A La@TeX{} preview mode primarily for AUC @TeX{} in GNU Emacs.
-@subtitle Version 0.5.8.2
+@subtitle Version 0.6
   
 @author by David Kastrup and Alan Shutko 
 @author manual by Jan-@AA{}ke Larsson
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and Jan-@AA{}ke
-Larsson
+Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and
+Jan-@AA{}ke Larsson
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -63,29 +61,31 @@ contexts. While the first application has been the embedding of those
 preview fragments into Emacs source buffers under the AUC @TeX{} editing
 environment, other applications are easily imaginable.
 
-This file documents Preview La@TeX{} version 0.5.8.2.
+This file documents Preview La@TeX{} version 0.6
 
 If you want to use Preview La@TeX{} in AUC @TeX{} right away, be sure
 to have a working AUC @TeX{} installation, install Preview La@TeX{}
 and insert the following in your @file{.emacs} file.  This will make
 Emacs load preview.el into AUC @TeX{} when you first load a La@TeX{}
-file.
+file. 
 
 @lisp
 (autoload 'LaTeX-preview-setup "preview")
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
-NOTE: This documentation is preliminary.  It should however cover most
-important points.  Corrections or perhaps rewrites of sections
-are VERY WELCOME.
+@strong{Please note:} Currently xemacs support is missing.
+
+This documentation is preliminary. It should however cover most
+important points. Corrections or perhaps rewrites of sections are
+@emph{very welcome}.
 
 David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 
 @end ifinfo
 
 @menu
-* Copying::                     Your rights.
+* Copying::                     License.
 * Introduction::                What is it good for?
 * Installation::                Installation.
 * Getting started::             Simple and fast.
@@ -115,7 +115,8 @@ David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 @chapter Getting started
 
 The simplest way to use Preview La@TeX{} is to insert the following in
-your @file{.emacs} file:
+your @file{.emacs} file: 
+@cindex @file{.emacs}
 
 @lisp
 (autoload 'LaTeX-preview-setup "preview")
@@ -124,7 +125,7 @@ your @file{.emacs} file:
 
 Now, load a La@TeX{} document, and press @kbd{C-c C-c g RET} (for
 ``Generate Preview'') or press @kbd{C-c C-p C-p} (for ``De/Preview
-This''). Previews will now be generated for various objects in your
+at point''). Previews will now be generated for various objects in your
 document. You'll see them change into a large question-mark when the
 process is half finished. Note that you can freely edit the buffer while
 this is going on. When the process is finished you will see the objects
@@ -142,9 +143,9 @@ To the functions and key bindings in AUC @TeX{} (hyperlink into AUC
 
 @table @w
 @item @kbd{C-c C-c g RET} 
-@itemx Generate preview
-This command generates previews for all appropriate objects in the
-current buffer. Already preset previews are re-generated.
+``Generate preview''. This command generates previews for all
+appropriate objects in the current buffer. Already preset previews are
+re-generated.
 @cindex @kbd{C-c C-c g RET}
 @cindex Generate Preview
 
@@ -161,11 +162,10 @@ last such preview.
 @cindex De/Preview at point
 
 @item @kbd{C-c C-k}
-@itemx Kill preview-generating process
-This is really an AUC @TeX{} keybinding, but it is included here as a
-hint. If you start generating a preview and then make a change that
-affects the number of lines in the buffer, preview-latex may be
-confused and place the previews wrong.
+Kill preview-generating process. This is really an AUC @TeX{}
+keybinding, but it is included here as a hint. If you start generating a
+preview and then make a change that affects the number of lines in the
+buffer, preview-latex may be confused and place the previews wrong.
 @cindex @kbd{C-c C-k}
 @cindex Kill preview-generating process
 
@@ -248,12 +248,12 @@ in @code{Preview Default Option List}.  Beware if you use
 
 @item The @code{showkeys} package
 
-When using preview-latex, the \labels are hidden by the previews. To
-show them in the previews (yes, this is possible) use the La@TeX{}
+When using preview-latex, the @code{\label}s are hidden by the previews.
+To show them in the previews (yes, this is possible) use the La@TeX{}
 package @code{showkeys}, by changing @code{Preview Default Preamble} in
 the @code{Preview Latex} group to include @code{\usepackage@{showkeys@}}
-before the @code{\RequirePackage[%P]@{preview@}} line (press the [Show] and
-the first [INS] buttons).
+before the @code{\RequirePackage[%P]@{preview@}} line (press the [Show]
+and the first [INS] buttons).
 
 @end itemize
  
@@ -341,8 +341,8 @@ prerendered images.
 
 @section On EPS previews
 
-@vindex @code{preview-image-type}
-@vindex @code{preview-image-creators}
+@cindex @code{preview-image-type}
+@cindex @code{preview-image-creators}
 As mentioned above, preview-latex's default mechanism calls GhostScript
 itself for first rendering all preview images into png format, then the
 rendered images get used instead of making use of Emacs' builtin EPS
@@ -363,8 +363,8 @@ anti-aliasing.
 
 If you are using GS 6.63 or later, you may get better output using the
 following.
-@vindex @code{gs-device}
-@vindex @code{gs-options}
+@cindex @code{gs-device}
+@cindex @code{gs-options}
 
 @lisp
 (require 'gs)
@@ -400,7 +400,7 @@ possible that the order changes between runs). And since the placement
 of those previews is goofed up, you will not be able to regenerate them
 by clicking on them. The default behaviour is thus somewhat undesirable.
 
-The solution (like with other preview problems) is to tell the LaTeX
+The solution (like with other preview problems) is to tell the La@TeX{}
 preview package how to tackle this problem. You know the
 @code{\PreviewMacro} command explained above (cough, cough). There is a
 variant @code{\PreviewMacro*} and its cousin @code{\PreviewEnvironment*}
@@ -415,20 +415,21 @@ part of a larger preview (in which case it gets typeset as usual). Its
 argument thus becomes ordinary text and gets treated like ordinary text.
 
 Note that it would be a bad idea to declare
-@code{\PreviewMacro*[@{@{@}@}]\emph} since then both @code{\emph} as well as
-its argument would be ignored instead of previewed. For user-level
-macros, this is almost never wanted, but there may be internal macros
-where you might want to ignore internal arguments.
+@code{\PreviewMacro*[@{@{@}@}]\emph} since then both @code{\emph} as
+well as its argument would be ignored instead of previewed. For
+user-level macros, this is almost never wanted, but there may be
+internal macros where you might want to ignore internal arguments.
 
 The same mechanism can be used for a number of other text-formatting
 commands like @code{\textrm}, @code{\textit} and the like. While they
 all use the same internal macro @code{\text@@command}, it will not do to
 redefine just that, since they call it only after having read their
 argument in, and then it already is too late. So you need to disable
-every of those commands by hand in your document preamble.
-
-(To add here: the new preview-default-preamble (will) contain common
-cases)
+every of those commands by hand in your document preamble, or
+alternatively in @code{preview-default-preamble}, which is customizable
+in the Preview Latex group. This currently contains @code{\emph} and
+@code{\footnote} but the plan is that it eventually will contain most
+common cases.
 
 
 @node Credits, Index, Internals, top
