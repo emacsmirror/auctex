@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{542}
+%\CheckSum{586}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.33 $
+%  \rcskey \version CVS-$Revision: 1.34 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-02-19 00:42:54 $
+%\rcskey\next $Date: 2002-03-01 16:22:02 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -93,6 +93,14 @@
 %certain |preview| options like |auctex| which have more immediate
 %needs.  The |noconfig| option suppresses loading of those option
 %files, too.
+%\item[|psfixbb|] Dvips determines the bounding boxes from the
+%material in the DVI file it understands.  Lots of PostScript specials
+%are not part of that.  Since the \TeX\ boxes do not make it into the
+%DVI file, but merely characters, rules and specials do, Dvips might
+%include far too small areas.  The option |psfixbb| will include
+%|/dev/null| as a graphic file in the ultimate upper left and lower
+%right corner of the previewed box.  This will make Dvips generate an
+%appropriate bounding box.
 %\item[|displaymath|] will make all displayed math environments subject to
 %preview processing.  This will typically be the most desired option.
 %\item[|floats|] will make all float objects subject to preview
@@ -230,7 +238,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.33 $
+   \reserved@a\reserved@b CVS-$Revision: 1.34 $
 \else
    \begingroup
       \lccode`-=`.
@@ -239,7 +247,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-02-19 00:42:54 $
+\reserved@a\next $Date: 2002-03-01 16:22:02 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -311,6 +319,7 @@
 %\end{macro}
 %\end{macro}
 %\end{macro}
+%
 %\begin{macro}{\pr@adviseii}
 %  Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
 %  recursive definitions, we advise only macros that are not yet
@@ -328,8 +337,22 @@
 \DeclareOption{delayed}{%
   \ifPreview \let\preview@delay\AtBeginDocument \fi
 }
+%    \end{macrocode}
+%
+%\begin{macro}{\ifpr@fixbb}
+%  Another conditional.  \cmd{\ifpr@fixbb} tells us whether we want to
+%  surround the typeset materials with invisible rules so that Dvips
+%  gets the bounding boxes right for, say, pure PostScript inclusions.
+%    \begin{macrocode}
+\newif\ifpr@fixbb
+\pr@fixbbfalse
+\DeclareOption{psfixbb}{\pr@fixbbtrue
+  \newbox\pr@markerbox
+  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}
+}
 %</!active>
 %    \end{macrocode}
+%\end{macro}
 %
 %\subsection{The internals}
 %
@@ -389,7 +412,7 @@
        \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
        \@begindvi
     \endgroup
-    \pr@outerfalse\color@setgroup
+    \pr@outerfalse\color@setgroup\@noskipsecfalse\@nobreaktrue
     \everypar{{\setbox\@tempboxa\lastbox}\everypar{}}%
     \expandafter\@firstofone
   \else
@@ -401,12 +424,24 @@
 %\end{macro}
 %\end{macro}
 %\begin{macro}{\pr@endbox}
-%  Cleaning up also is straightforward.
+%  Cleaning up also is straightforward.  If we have to watch the
+%  bounding \TeX\ box, we want to remove spurious skips.  We also want
+%  to unwrap a possible single line paragraph, so that the box is not
+%  full line length.
 %    \begin{macrocode}
 \def\pr@endbox{%
-   \leavevmode
+   \ifpr@fixbb
+     \ifhmode \par \setbox\z@\lastbox\nointerlineskip\hbox{\unhbox\z@}%
+   \fi\fi
+   \unskip
    \color@endgroup
    \egroup
+   \ifpr@fixbb\setbox\pr@box\hbox{%
+     \raise\ht\pr@box\copy\pr@markerbox
+     \dimen@\dp\pr@box
+     \box\pr@box
+     \lower\dimen@\copy\pr@markerbox}%
+   \fi
 %    \end{macrocode}
 %  Except that we shift the output box up by its height.  This has two
 %  purposes: first we make sure that no package-inflicted non-zero
