@@ -1,5 +1,8 @@
 2004-07-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-buf.el (TeX-view): Inform the user if the output file is
+	not present.
+
 	* tex.el (TeX-forward-comment-skip): Fix `count' functionality.
 	Stop as well at places where the prefix of commented lines
 	changes.  Simplify and improve efficiency by saving current
