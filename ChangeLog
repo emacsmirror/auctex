@@ -1,3 +1,9 @@
+2003-06-14  David Kastrup  <dak@gnu.org> (tiny patch from Stephen Gildea)
+
+	* tex.el (TeX-auto-untabify): Change default to nil.
+
+	* doc/auc-tex.texi (Parsing Files): document this.
+
 2003-06-07  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-lisp-directory, TeX-auto-global, TeX-style-global)
