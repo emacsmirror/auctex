@@ -119,7 +119,7 @@ if test "$ENABLE8BIT"x = truex ; then
     fi
 fi
 
-TEXMFGEN=[`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.[a-z][a-z][a-z]\)}.*$/\1/p' latex/preview.dtx |egrep '(sty|def|cfg)$' | tr '\012' ' '`]
+TEXMFGEN=["`sed -n '/^%<installer>/s/^.*\\file{\([^}.]*\.[a-z][a-z][a-z]\)}.*$/\1/p' latex/preview.dtx |egrep '(sty|def|cfg)$' | tr '\012' ' '`"]
 AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
