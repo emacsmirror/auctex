@@ -141,10 +141,10 @@ Availability
 ------------
 
 AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
-"/pub/emacs-lisp/auc-tex-NN.NN.tar.Z" (where `NN.NN' is the number of
-the release).  Also, it should be available at major TeX and Elisp
-archives around the world.  In case you don't have access anonymous
-ftp, you can get it by Email requests to `auc-tex_mgr@iesd.auc.dk'.
+"/pub/emacs-lisp/auc-tex.tar.Z".  Also, it should be available at
+major TeX and Elisp archives around the world.  In case you don't have
+access anonymous ftp, you can get it by Email requests to
+`auc-tex_mgr@iesd.auc.dk'.
 
 Contacts
 --------
