@@ -612,7 +612,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.453 $"))
+	    (rev "$Revision: 5.454 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -627,7 +627,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-05 13:38:48 $"))
+    (let ((date "$Date: 2004-10-08 11:06:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2977,7 +2977,6 @@ to look backward for."
    (buffer-file-name)
    (TeX-master-directory)))
 
-;; was in latex.el, needed in context.el --pg
 (defun TeX-near-bobp ()
   "Return t iff there's nothing but whitespace between (bob) and (point)."
   (save-excursion
@@ -2989,6 +2988,7 @@ to look backward for."
 Used for specifying extra syntax for a macro."
   ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
   (apply 'insert args))
+
 
 ;;; Syntax Table
 
@@ -3740,8 +3740,7 @@ considered part of the macro."
 	  opening-brace
 	  start-point)
       (if (and (eq (char-after) (aref TeX-esc 0))
-	       (save-excursion
-		 (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))))
+	       (not (TeX-escaped-p)))
 	  ;; Point is located directly at the start of a macro.
 	  (setq start-point (point))
 	;; Search backward for a macro start.
@@ -3829,6 +3828,67 @@ considered part of the macro."
 Arguments enclosed in brackets or braces are considered part of
 the macro."
   (cadr (TeX-find-macro-boundaries)))
+
+(defun TeX-search-forward-unescaped (string &optional bound noerror)
+  "Search forward from point for unescaped STRING.
+The optional argument BOUND limits the search to the respective
+buffer position.
+If NOERROR is non-nil, return nil if the search failed instead of
+throwing an error.
+A pattern is escaped, if it is preceded by an odd number of escape
+characters."
+  (TeX-search-unescaped string 'forward nil bound noerror))
+
+(defun TeX-search-backward-unescaped (string &optional bound noerror)
+  "Search backward from point for unescaped STRING.
+The optional argument BOUND limits the search to the respective
+buffer position.
+If NOERROR is non-nil, return nil if the search failed instead of
+throwing an error.
+A pattern is escaped, if it is preceded by an odd number of escape
+characters."
+  (TeX-search-unescaped string 'backward nil bound noerror))
+
+(defun TeX-re-search-forward-unescaped (regexp &optional bound noerror)
+  "Search forward from point for unescaped regular expression REGEXP.
+The optional argument BOUND limits the search to the respective
+buffer position.
+If NOERROR is non-nil, return nil if the search failed instead of
+throwing an error.
+A pattern is escaped, if it is preceded by an odd number of escape
+characters."
+  (TeX-search-unescaped regexp 'forward t bound noerror))
+
+(defun TeX-search-unescaped (pattern
+			     &optional direction regexp-flag bound noerror)
+  "Search for unescaped PATTERN in a certain DIRECTION.
+DIRECTION can be indicated by the symbols 'forward and 'backward.
+If DIRECTION is omitted, a forward search is carried out.
+If REGEXP-FLAG is non-nil, PATTERN may be a regular expression,
+otherwise a string.
+The optional argument BOUND limits the search to the respective
+buffer position.
+If NOERROR is non-nil, return nil if the search failed instead of
+throwing an error.
+A pattern is escaped, if it is preceded by an odd number of escape
+characters."
+  (let ((search-fun (if (eq direction 'backward)
+			(if regexp-flag 're-search-backward 'search-backward)
+		      (if regexp-flag 're-search-forward 'search-forward))))
+    (catch 'found
+      (while (funcall search-fun pattern bound noerror)
+	(when (not (TeX-escaped-p (match-beginning 0)))
+	  (throw 'found (point)))))))
+
+(defun TeX-escaped-p (&optional pos)
+  "Return t if the character at position POS is escaped.
+If POS is omitted, examine the character at point.
+A character is escaped if it is preceded by an odd number of
+escape characters, such as \"\\\" in LaTeX."
+  (save-excursion
+    (when pos (goto-char pos))
+    (not (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2)))))
+
 
 
 ;;; Fonts
