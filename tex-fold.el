@@ -187,20 +187,21 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 				    "begin[ \t]*{"
 				    (regexp-opt item-list t) "}"))
 			   (t
+			    ;; An alternative for the "[...]"
+			    ;; construct could be "\\_>".  (This could
+			    ;; be used in font-latex as well for
+			    ;; `font-latex-match-variable-make' and
+			    ;; friends instead of "\\>" and would fix
+			    ;; issues with starred macros.)  But this
+			    ;; is only available with Emacs 21.4 or
+			    ;; later (checked into CVS Emacs on
+			    ;; 2004-05-19).  And `trivial_regexp_p' is
+			    ;; not available in Lisp for feature
+			    ;; checking.  Great.  Anyway, let's see
+			    ;; how this behaves ...
 			    (concat (regexp-quote TeX-esc)
-				    ;; An alternative for "[[{%$0-9\s-]" could
-				    ;; be "\\_>".  (This could be used in
-				    ;; font-latex as well for
-				    ;; `font-latex-match-variable-make' and
-				    ;; friends instead of "\\>" and would fix
-				    ;; issues with starred macros.)  But this
-				    ;; is only available with Emacs 21.4 or
-				    ;; later (checked into CVS Emacs on
-				    ;; 2004-05-19).  And `trivial_regexp_p'
-				    ;; is not available in Lisp for feature
-				    ;; checking.  Great.  Anyway, let's see
-				    ;; how this behaves ...
-				    (regexp-opt item-list t) "[[{%$0-9\s-]"))))
+				    (regexp-opt item-list t)
+				    "[[{(%$|\\0-9 \t\n\f]"))))
 	;; Start from the bottom so that it is easier to prioritize
 	;; nested macros.
 	(end-of-buffer)
