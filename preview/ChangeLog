@@ -1,3 +1,9 @@
+2001-10-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-mouse-open-error): Don't have multiple
+	"*Preview-GhostScript-Error*" buffers gather, reuse single one.
+	(LaTeX-preview-setup): Enter us into "Command" menu.
+
 2001-10-08  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{Preview attaching commands}): Change
