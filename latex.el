@@ -4182,7 +4182,8 @@ of `LaTeX-mode-hook'."
 Runs `latex-mode', sets a few variables and
 runs the hooks in `doctex-mode-hook'."
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
-  (set (make-local-variable 'LaTeX-syntactic-comments) t))
+  (set (make-local-variable 'LaTeX-syntactic-comments) t)
+  (funcall TeX-install-font-lock))
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
