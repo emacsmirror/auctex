@@ -2,7 +2,7 @@
 
 # Makefile - for the AUCTeX distribution.
 #
-# Maintainer: David Kastrup <auc-tex@sunsite.dk>
+# Maintainer: auc-tex@sunsite.dk
 # Version: initial try <jalar@mai.liu.se>
 #
 
@@ -44,11 +44,7 @@ AUCSRC = tex.el tex-buf.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el \
 	toolbar-x.el tex-bar.el tex-style.el
-AUCELC = tex.elc tex-buf.elc latex.elc tex-info.elc \
-	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc \
-	context.elc context-en.elc context-nl.elc tex-fold.elc \
-	toolbar-x.elc tex-bar.elc
-# Why not $(AUCSRC:.el=.elc) ?
+AUCELC = $(AUCSRC:.el=.elc)
 
 STYLESRC = style/prosper.el \
 	   style/slides.el    style/foils.el     style/amstex.el \
@@ -76,6 +72,7 @@ STYLESRC = style/prosper.el \
 	   style/nicefrac.el  style/url.el       style/listings.el \
 	   style/jurabib.el   style/csquotes.el  style/jsarticle.el \
 	   style/jsbook.el
+STYLEELC = $(STYLESRC:.el=.elc)
 
 DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/history.texi \
@@ -85,6 +82,10 @@ DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 EXTRAFILES = RELEASE COPYING ChangeLog auctex.spec \
 	configure install-sh $(MKINSTALLDIRS) Makefile.in \
 	tex-site.el.in lpath.el $(CONTRIB) $(CONTRIB_MULE)
+
+CLEANFILES = $(AUCELC) $(STYLEELC)
+DISTCLEANFILES = Makefile tex-site.el config.*
+DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
 
@@ -98,7 +99,7 @@ all:	lisp
 lisp:
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
 
-some:	$(AUCELC) $(STYLESRC:.el=.elc)
+some:	$(AUCELC) $(STYLEELC)
 
 install:	install-lisp install-info install-images
 
@@ -172,11 +173,19 @@ install-auto:
 	$(ELCC) -f batch-byte-compile $<
 
 clean:
-	rm -rf *~ \#*\# *.elc style/*.elc
+	rm -f $(CLEANFILES)
 	(cd doc; $(MAKE) clean)
 
-distclean: clean
-	rm -rf Makefile tex-site.el config.* autom4te.cache
+distclean:
+	rm -f $(CLEANFILES) $(DISTCLEANFILES)
+	(cd doc; $(MAKE) distclean)
+
+maintainer-clean: distclean
+	rm -f $(DISTTEXTS)
+	rm -rf autom4te.cache
+
+extraclean: maintainer-clean
+	rm -f *~ \#*\#
 
 tar-ball-clean:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
