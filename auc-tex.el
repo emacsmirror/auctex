@@ -10,11 +10,11 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-09-09 20:55:36 $|$Revision: 5.37 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-09-16 12:14:18 $|$Revision: 5.38 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.37 1992-09-09 20:55:36 amanda Exp $
+;; $Id: auc-tex.el,v 5.38 1992-09-16 12:14:18 amanda Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Per Abrahamsen
@@ -386,7 +386,7 @@ of plain-TeX-mode-hook."
 	 "section\\|subsection\\|subsubsection\\|"
 	 "paragraph\\|include\\|includeonly\\|"
 	 "tableofcontents\\|appendix\\|label\\|caption\\|"
-	 "\[\\|\]" ; display math delimitors
+	 "\\[\\|\\]" ; display math delimitors
 	 "\\)"
 	 "\\|"
 	 "^[ \t]*\\$\\$" ; display math delimitor
@@ -504,7 +504,7 @@ of LaTeX-mode-hook."
 	 "section\\|subsection\\|subsubsection\\|par\\|noindent\\|"
 	 "paragraph\\|include\\|includeonly\\|"
 	 "tableofcontents\\|appendix\\|"
-	 "\[\\|]"  ; display math delimitors
+	 "\\[\\|\\]"  ; display math delimitors
 	 "\\)" ))
   (setq paragraph-start
 	(concat

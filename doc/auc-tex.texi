@@ -6,7 +6,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.6 1992-09-09 20:56:04 amanda Exp $
+@c $Id: auc-tex.texi,v 1.7 1992-09-16 12:14:55 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -261,20 +261,20 @@ instead two single quotes is used @samp{``like this''}.  To help you
 insert these efficiently, AUC @TeX{} allows you to continue to press
 @key{"} to insert two single quotes.
 
-@deffn TeX-insert-quote
+@deffn Command TeX-insert-quote count
 Bound to @key{"}.  Insert @samp{``}, @samp{''} or @samp{"} according to
-preceding character.  With prefix argument, always insert @samp{"}
+preceding character.  With prefix argument, insert @var{count} @samp{"}
 characters.
 @end deffn
 
 A variable can prevent this keybinding to take place.
 
-@defvar TeX-smart-quotes
+@defopt TeX-smart-quotes
 If set to t, remap @samp{"} to insert either @samp{``} before a word, or
 @samp{''} after a word.  Users of @file{german.sty}, or other people who
 uses the literal @samp{"} often, will want to disable it by setting this
 variable to nil.
-@end defvar
+@end defopt
 
 @node Font Specifiers, Sectioning, Quotes, Frequently Used Commands
 @section Inserting Font Specifiers 
@@ -312,8 +312,50 @@ Insertion of sectioning commands, that is @samp{\chapter},
 @samp{\section}, @samp{\subsection}, etc. and accompanying
 @samp{\label}'s may be eased by using:
 
-@deffn Command LaTeX-section
+@deffn Command LaTeX-section arg
 bound to @kbd{C-c C-x}.  Insert a sectioning command.
+
+Determinate the type of section to be inserted, by the argument
+@var{arg}.
+
+@itemize @bullet
+@item
+If ARG is nil or missing, use the current level.
+@item
+If ARG is a list (selected by C-u), go downward one level.
+@item
+If ARG is negative, go up that many levels.
+@item
+If ARG is positive or zero, use absolute level:
+@itemize +
+@item
+0 : part
+@item
+1 : chapter
+@item
+2 : section
+@item
+3 : subsection
+@item
+4 : subsubsection
+@item
+5 : paragraph
+@item
+6 : subparagraph
+@end itemize
+@end itemize
+
+The following variables can be set to customize the function.
+
+@table @code
+@item LaTeX-section-label	
+Prefix to all section references.
+@item LaTeX-default-section		
+The default for new sections.
+@item LaTeX-expected-style
+The documentstyle assumed, when no @samp{\documentstyle} appear.
+@end table
+
 @end deffn
 
 When invoking @samp{LaTeX-section} you will be
@@ -765,8 +807,8 @@ invoked.
 
 By default @TeX{} or La@TeX{} is invoked as @code{tex} or @code{latex}
 with the file name as the only argument.  If you want to invoke one or
-both under a different name, you can set the @var{plain-TeX-command} or
-@var{LaTeX-command} variable.
+both under a different name, you can set the @code{plain-TeX-command} or
+@code{LaTeX-command} variable.
 
 @defvar plain-TeX-command
 The command used for formatting plain TeX documents.  If the string
@@ -861,7 +903,7 @@ choice.
 @defvar TeX-printer-name-alist
 Alist of available printers in your system.  You will be prompted for
 which to use when invoking @code{TeX-print}, unless the list is empty
-(@code{nil}).  In that case, @var{TeX-default-printer-name} is used.
+(@code{nil}).  In that case, @code{TeX-default-printer-name} is used.
 @end defvar
 
 @defvar TeX-default-printer-name
@@ -875,7 +917,7 @@ If the string contains the two letters `@code{%p}', it will be replaced with
 the name of the selected printer.  Otherwise, the name of the printer
 will be appended to the string, separated by ``@samp{ -P}''.
 
-See @var{TeX-default-printer-name} and @var{TeX-printer-name-alist} for
+See @code{TeX-default-printer-name} and @code{TeX-printer-name-alist} for
 the available printers.
 
 If the string contains the two letters `@code{%s}', it will be replaced

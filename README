@@ -1,5 +1,5 @@
 
-$Id: README,v 5.18 1992-09-09 20:55:34 amanda Exp $
+$Id: README,v 5.19 1992-09-16 12:14:15 amanda Exp $
 
 AUC TeX 
 =======
@@ -11,7 +11,7 @@ AUC TeX is an Emacs lisp mode for editing TeX and LaTeX documents.
 Version 6.1:
 
 TeX-region might work now (heard that before?).  Many people reported
-this one.  Especially thanks to Frank Burstall
+this one.  Especially thanks to Fran Burstall
 (F.E.Burstall@maths.bath.ac.uk) and Bill Schworm
 (bill@schworm.econ.ubc.ca).
 

@@ -3,6 +3,8 @@ INFODIR=$GNUHOME/info
 
 all: auc-tex.dvi ref-card.dvi auc-tex.info
 
+dist: auc-tex.info
+
 ref-card.dvi: ref-card.tex
 	tex ref-card
 	@echo "**********************************************************"

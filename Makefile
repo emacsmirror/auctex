@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.15 1992-07-22 19:30:15 krab Exp $
+# $Id: Makefile,v 5.16 1992-09-16 12:14:13 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -67,6 +67,8 @@ all: main
 	@echo "** Alternatively you may run \`make DocInstall' and read"
 	@echo "** that information via Emacs' info system"
 	@echo "** Then run: \`make install'"
+	@echo "** The Emacs Lisp files will only be recompiled, if"
+	@echo "** you have set ELISPDIR to a different directory."
 	@echo "**********************************************************"
 
 main: Doc LaCheck
@@ -87,13 +89,13 @@ LaInstall: LaCheck
 	@echo "**********************************************************"
 	@echo "** Installing LaCheck "
 	@echo "**********************************************************"
-	(cd lacheck; make install BINDIR=$(BINDIR) MANDIR=$(MANDIR))
+	-(cd lacheck; make install BINDIR=$(BINDIR) MANDIR=$(MANDIR))
 
 DocInstall: Doc
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
 	@echo "**********************************************************"
-	(cd doc; make install INFODIR=$(INFODIR))
+	-(cd doc; make install INFODIR=$(INFODIR))
 
 $(ELISPDIR): $(ELISPSRC)  Makefile
 	@echo "**********************************************************"
@@ -119,20 +121,19 @@ LaCheck:
 	@echo "**********************************************************"
 	@echo "** Building LaCheck
 	@echo "**********************************************************"
-	(cd lacheck; make BINDIR=$(BINDIR) \
+	-(cd lacheck; make BINDIR=$(BINDIR) \
 	  CC="$(CC)" CFLAGS="$(CFLAGS)" LEX="$(LEX)" )
 
 Doc: 
 	@echo "**********************************************************"
 	@echo "** Making AUC TeX documentation
 	@echo "**********************************************************"
-	(cd doc; make)
+	-(cd doc; make)
 
 clean:
 	rm -rf *~ #*# lex.yy.c idetex auctex
 	(cd doc; make clean)
 	(cd lacheck; make clean)
-
 
 dist: 	
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
@@ -148,9 +149,10 @@ dist:
 	   "(defconst AUC-TeX-date \"`date`\" \
 	   \"AUC TeX release date\")" \
 	   "(provide 'auc-ver)"  > auc-ver.el
-	cvs checkout -r $(TAG) auctex
-	find auctex -name CVS -exec rm -r {} \;
+	cvs export -r $(TAG) auctex
 	cp auc-ver.el auctex
+	(cd auctex/doc; make aux-tex.info)
+	(cd auctex/lacheck; make lacheck.c)
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
