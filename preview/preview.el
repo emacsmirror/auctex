@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.76 2002-03-15 03:34:04 dakas Exp $
+;; $Id: preview.el,v 1.77 2002-03-19 23:16:36 nixsf Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -52,6 +52,7 @@
   (require 'tex-buf)
   (require 'latex)
   (require 'desktop)
+  (require 'reporter)
   (require 'info)
   (defvar error))
 
@@ -62,7 +63,7 @@
   :group 'AUC-TeX
   :prefix "preview-")
 
-(defgroup preview-gs nil "Preview's GhostScript Renderer."
+(defgroup preview-gs nil "Preview's GhostScript renderer."
   :group 'preview
   :prefix "preview-")
 
@@ -100,7 +101,10 @@ functions used here for the default settings, and at
 the function `preview-call-hook' through which those are
 called.  Additional argument lists specified in here
 are passed to the functions before any additional
-arguments given to `preview-call-hook'."
+arguments given to `preview-call-hook'.
+
+Not all of these image types may be supported by your copy
+of Ghostscript, or by your copy of Emacs."
   :group 'preview-gs
   :type '(alist :key-type (symbol :tag "Preview's image type")
 		:value-type
@@ -439,7 +443,7 @@ SNIPPET are used for making the name of the file to be generated."
     (push ov preview-gs-queue)
     (preview-add-urgentization #'preview-gs-urgentize ov (current-buffer))
     thisimage))
-		
+
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
   (let ((buff (get-buffer-create
@@ -464,10 +468,13 @@ SNIPPET are used for making the name of the file to be generated."
       (if buff
 	  (pop-to-buffer buff)
 	(view-file-other-window file))
-      (if (eq major-mode 'ps-mode)
+      (if (eq major-mode 'ps-mode)          ; Bundled with GNU Emacs
 	  (message "%s" (substitute-command-keys "\
 Try \\[ps-run-start] \\[ps-run-buffer] and \
-\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset." ))))))
+\\<ps-run-mode-map>\\[ps-run-mouse-goto-error] on error offset." )))
+      (if (eq major-mode 'postscript-mode) ; Bundled with XEmacs, limited
+	  (message "%s" (substitute-command-keys "\
+Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
@@ -635,7 +642,7 @@ numbers (can be float if available)."
 			 (:background "dark slate gray"))
 			(t
 			 (:background "beige")))
-  "Face to use for the source of preview."
+  "Face to use for the preview source."
   :group 'preview-appearance)
 
 (defface preview-error-face '((((class color)) (:background "red"))
@@ -688,7 +695,8 @@ Fallback to :inherit and 'default implemented."
 This avoids running environments through preview that are
 indicated in `preview-inner-environments'.  If you use a prefix
 argument COUNT, the corresponding level of outward nested
-environments is selected." (interactive "p")
+environments is selected."
+  (interactive "p")
   (save-excursion
     (let (currenv pos startp endp)
       (dotimes (i (1- count))
@@ -783,7 +791,7 @@ such preview."
 	(preview-delete-file filename)
       (file-error nil))
     (overlay-put ovr 'filenames nil)))
-    
+
 (defun preview-delete (ovr &rest ignored)
   "Delete preview overlay OVR, taking any associated file along.
 IGNORED arguments are ignored, making this function usable as
@@ -853,8 +861,7 @@ kept."
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
 Any directory not in this list will be cleared out by preview
-on first use."
-)
+on first use.")
 
 (defun preview-dissect (ov timestamp)
   "Extract all persistent data from OV and TIMESTAMP it."
@@ -911,7 +918,7 @@ visible."
 
 
 (defun preview-eps-place (ov snippet)
-  "Generate an image via direct Emacs EPS rendering.
+  "Generate an image via direct EPS rendering.
 Since OV already carries all necessary information,
 the argument SNIPPET passed via a hook mechanism is ignored."
   (preview-ps-image (car (nth 0 (overlay-get ov 'filenames))) preview-scale))
@@ -1148,8 +1155,8 @@ preview Emacs Lisp package something too stupid."))
 			 ["on/off at point" preview-at-point t]
 			 ["Environment" preview-environment t]
 			 ["Section" preview-section t]
-			 ["Region" preview-region mark-active]
-			 ["Clearout region" preview-clearout mark-active]
+			 ["Region" preview-region (preview-mark-active)]
+			 ["Clearout region" preview-clearout (preview-mark-active)]
 			 ["Clearout buffer" preview-clearout-buffer t]
 			 ("Customize"
 			  ["Browse options"
@@ -1345,7 +1352,7 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
     
     ;; Find the error.
     (if (null file)
-	(error "Error occured after last TeX file closed"))
+	(error "Error occurred after last TeX file closed"))
     (run-hooks 'TeX-translate-location-hook)
     (if start
 	(unless (eq snippet (1+ lsnippet))
@@ -1485,7 +1492,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.76 $"))
+	(rev "$Revision: 1.77 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
