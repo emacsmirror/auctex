@@ -1,3 +1,8 @@
+2003-06-19  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx: Make \long what needs to be \long in order
+	to deal with argument lists and macros that might contain \par.
+
 2003-06-12  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/Makefile.in: Fix SunOS make suffix rule wierdness
