@@ -134,7 +134,7 @@ done
 
 # Remove dir file that has been created by the makeinfo calls because this
 # file will not been included in the rpm distribution (make RPM 4.1+ happy)
-# Apparently RPM 4.2 wants the file nevertheless.
+# Apparently RPM 4.2 removes the file itself?
 # rm '%{buildroot}%{_infodir}/dir'
 
 %clean
