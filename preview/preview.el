@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.107 2002-04-12 13:57:18 dakas Exp $
+;; $Id: preview.el,v 1.108 2002-04-12 16:01:59 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -541,28 +541,36 @@ the pages.  Page 0 corresponds to the initialization section."
 	  pagelist
 	  pt
 	  str
+	  len
 	  (level 0))
       (goto-char (match-beginning 0))
       (while (search-forward (concat eol "%%") nil t)
-	(setq pt (- (point) 2))
-	(setq str (buffer-substring-no-properties
-		   pt
-		   (progn (search-forward eol) (match-beginning 0))))
+	(setq pt (- (point) 2)
+	      str (buffer-substring-no-properties
+		   (+ pt 2)
+		   (progn (search-forward eol) (match-beginning 0)))
+	      len (length str))
 	(goto-char (match-beginning 0))
-	(cond ((string-match "\\`%%BeginDocument:" str)
+	(cond ((and (>= len 14)
+		    (string= "BeginDocument:" (substring str 0 14)))
 	       (setq level (1+ level)))
-	      ((string= "%%EndDocument" str)
+	      ((and (>= len 11)
+		    (string= "EndDocument" (substring str 0 11)))
 	       (if (zerop level)
 		   (error "Bad DSC nesting in `%s'" file))
 	       (setq level (1- level)))
 	      ((zerop level)
-	       (cond ((string-match "\\`%%Page:" str)
+	       (cond ((and (>= len 5)
+			   (string= "Page:" (substring str 0 5)))
 		      (push (list last-pt (- pt last-pt)) pagelist)
 		      (setq last-pt pt))
-		     ((string= str "%%Trailer") (setq trailer pt))))))
+		     ((and (>= len 7)
+			   (string= "Trailer" (substring str 0 7)))
+		      (setq trailer pt))))))
       (unless (zerop level)
 	(error "Bad DSC nesting in `%s'" file))
-      (push (list last-pt (- (or trailer (point-max)) last-pt)) pagelist)
+      (push (list last-pt
+		  (- (or trailer (point-max)) last-pt)) pagelist)
       (vconcat (nreverse pagelist)))))
 
 (defun preview-gs-dsc-cvx (page dsc)
@@ -1801,7 +1809,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.107 $"))
+	(rev "$Revision: 1.108 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
