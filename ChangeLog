@@ -1,3 +1,16 @@
+2004-11-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi: Use "auctex.info" instead of "auctex" as info
+	file name.
+
+	* doc/Makefile.in: Adapt to suit change in info file name from
+	"auctex" to "auctex.info".
+
+	* doc/.cvsignore: Adapt to suit change in info file name from
+	"auctex" to "auctex.info".
+
+	* doc/changes.texi: Advertise use of "auctex.info" info file name.
+
 2004-11-29  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* configure.ac: Add @command macro test 
