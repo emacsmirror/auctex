@@ -360,6 +360,8 @@ purposes."
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
+  (set (make-local-variable 'desktop-save-buffer)
+       #'desktop-buffer-preview-misc-data)
   (add-hook 'pre-command-hook #'preview-mark-point nil t)
   (add-hook 'post-command-hook #'preview-move-point nil t)
   (easy-menu-add preview-menu LaTeX-mode-map)

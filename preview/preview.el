@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.218 2004-10-18 13:45:00 dakas Exp $
+;; $Id: preview.el,v 1.219 2004-10-21 16:06:10 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1596,7 +1596,7 @@ kept."
 	    (setq ctr (delete elt ctr)))))
   (apply #'concat ctr))
 
-(defun desktop-buffer-preview-misc-data ()
+(defun desktop-buffer-preview-misc-data (&rest ignored)
   "Hook function that extracts previews for persistent sessions."
   (unless (buffer-modified-p)
     (setq preview-last-counter nil)
@@ -1613,7 +1613,10 @@ kept."
 	(and save-info
 	     (cons 'preview (cons timestamp (nreverse save-info))))))))
 
-(add-hook 'desktop-buffer-misc-functions #'desktop-buffer-preview-misc-data)
+(eval-after-load "desktop"
+  '(add-hook
+    'desktop-buffer-misc-functions
+    #'desktop-buffer-preview-misc-data))
 
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
@@ -1667,7 +1670,9 @@ BUFFER-MISC is the appropriate data to be used."
 				     (preview-buffer-restore-internal
 				      ',buffer-misc)))))
   
-(defun desktop-buffer-preview ()
+(defun desktop-buffer-preview (desktop-buffer-file-name
+			       desktop-buffer-name
+			       desktop-buffer-misc)
   "Hook function for restoring persistent previews into a buffer."
   (and (eq (car desktop-buffer-misc) 'preview)
        desktop-buffer-file-name
@@ -1677,7 +1682,15 @@ BUFFER-MISC is the appropriate data to be used."
 	   (preview-buffer-restore desktop-buffer-misc)
 	   buf))))
 
-(add-hook 'desktop-buffer-handlers 'desktop-buffer-preview)
+(eval-after-load "desktop"
+  '(if (boundp 'desktop-buffer-mode-handlers)
+       (add-to-list 'desktop-buffer-mode-handlers
+		    '(latex-mode . desktop-buffer-preview))
+     (add-hook 'desktop-buffer-handlers '(lambda ()
+					   (desktop-buffer-preview
+					    desktop-buffer-file-name
+					    desktop-buffer-name
+					    desktop-buffer-misc)))))
 
 (defcustom preview-auto-cache-preamble 'ask
   "*Whether to generate a preamble cache format automatically.
@@ -3035,7 +3048,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.218 $"))
+	(rev "$Revision: 1.219 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3046,7 +3059,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-10-18 13:45:00 $"))
+    (let ((date "$Date: 2004-10-21 16:06:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

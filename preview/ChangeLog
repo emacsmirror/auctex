@@ -1,3 +1,17 @@
+2004-10-21  David Kastrup  <dakas@users.sourceforge.net>
+
+	* prv-xemacs.el (preview-mode-setup): Add `desktop-save-buffer'
+	setup.
+
+	* prv-emacs.el (preview-mode-setup): Add `desktop-save-buffer'
+	setup.
+
+	* preview.el (desktop-buffer-preview-misc-data): Let arguments be
+	ignored for desktop 2.06.
+	Add to `desktop-buffer-misc-functions' only after desktop has been
+	loaded.
+	(desktop-buffer-preview): take arguments for desktop 206.
+
 2004-10-18  David Kastrup  <dakas@users.sourceforge.net>
 
 	* prv-xemacs.el (glyph-image-type): Removed.

@@ -461,6 +461,8 @@ Pure borderless black-on-white will return quadruple NIL."
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
+  (set (make-local-variable 'desktop-save-buffer)
+       #'desktop-buffer-preview-misc-data)
   (mapc #'make-local-hook
         '(pre-command-hook post-command-hook
 	  before-change-functions after-change-functions))
