@@ -4,12 +4,12 @@
 
 ;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
 ;; Keywords: wp
-;; Version: $Id: auc-html.el,v 5.1 1994-01-29 18:59:02 amanda Exp $
+;; Version: $Id: auc-html.el,v 5.2 1994-01-29 22:31:20 amanda Exp $
 
 ;; LCD Archive Entry:
 ;; auc-html|Per Abrahamsen|abraham@iesd.auc.dk|
 ;; |Major mode for editing HTML documents|
-;; $Date: 1994-01-29 18:59:02 $|$Revision: 5.1 $|~/modes/auc-html.el.Z|
+;; $Date: 1994-01-29 22:31:20 $|$Revision: 5.2 $|~/modes/auc-html.el.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -175,7 +175,7 @@ html-read-url.")
 
 (defun html-read-url (att default)
   (if (fboundp 'w3-build-url)
-      (call-interactively w3-build-url)
+      (call-interactively 'w3-build-url)
     (html-read-text att default)))
 
 ;;; Tags
@@ -346,7 +346,7 @@ html-read-url.")
 
 (defun html-tag-attributes (entry)
   ;; Return list of attributes for ENTRY in html-tag-alist.
-  (setq entry (html-tag-entry tag))
+  (setq entry (html-tag-entry entry))
   (mapcar 'html-attribute-entry
 	  (append (nth 3 entry) (nth 4 entry) (nth 5 entry))))
 
@@ -501,7 +501,7 @@ html-read-url.")
 	()
       (re-search-forward ">")
       (goto-char (match-beginning 0)))
-    (let ((new (if (fboundp arg) arg 'html-read-text) att old))
+    (let ((new (funcall (if (fboundp arg) arg 'html-read-text) att old)))
       (just-one-space)
       (insert (html-attribute-name att))
       (if arg
