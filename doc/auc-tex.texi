@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.46 1993-07-24 20:57:38 amanda Exp $
+@c $Id: auc-tex.texi,v 1.47 1993-07-26 02:42:35 amanda Exp $
 
 @finalout
 @titlepage
@@ -2723,6 +2723,23 @@ Added menu to for plain @TeX{}.  Suggested by Tim Carlson
 
 @item
 Made the menus depend on @code{TeX-command-list}.
+
+@item
+Made it possible to use symbolic names when setting
+@code{TeX-auto-regexp-list}.  See the @file{PROBLEMS} file.
+
+@item
+Made it possible to specify @code{TeX-auto-regexp-list} in the local
+variable section of each file.
+
+@item
+Added variable @code{TeX-auto-parse-length} to specify maximal length of
+text that will be parsed.
+
+@item
+Added automatic parsing of Bib@TeX{} files and @samp{bibitem} entries in
+order to get completion in @samp{cite}.  This was inspired by an add on
+made by Sridhar Anandakrishnan @samp{<sak@@essc.psu.edu>}.
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History
@@ -3695,59 +3712,6 @@ Add support for original @code{TeX-mode} keybindings.
 A third initialization file (@file{tex-mode.el}) containing an emulator
 of the standard @code{TeX-mode} would help convince some people to
 change to AUC @TeX{}.@refill
-
-@item
-Minor modes should be able to document themselves conveniently. 
-
-Have a special minor mode help (bound to @kbd{C-h x}) with help for all
-the active minor modes.
-
-Here is one suggestion.
-
-@lisp
-;; minor-map mode documentation by Guido Bosch (bosch@@loria.crin.fr)
-
-;; At a given time, one major mode and some minor modes may be active.
-;; The following function is useful to allow the user to choose among
-;; the documentations of all of them. It overrides the standard
-;; describe-mode (usually bound to C-h)
-
-;; I found it useful to have a buffer local variable `minor-modes',
-;; being the list of minor modes currently active. It is ment to be
-;; the counterpart to the variable `major-mode'.
-
-(defvar minor-modes nil
-  "list of symbols for current buffers minor modes")
-
-(make-variable-buffer-local 'minor-modes)
-
-(defun describe-mode ()
-  "Display documentation of current major or minor modes.
-If there are minor modes loaded, ask the user which mode to describe."
-
-  (interactive)
-          
-  (let ((mode
-         (if minor-modes
-             (let ((mode-name
-                    (completing-read
-                     (format "Modes: %s: " (cons major-mode minor-modes))
-                     (or (cons (list (symbol-name major-mode))
-                               (mapcar '(lambda (s) (list (symbol-name s)))
-                                       minor-modes))
-                         (error "There is no current minor mode."))
-                     nil t)))
-               (if (string= mode-name "")
-                   major-mode
-                 (intern mode-name)))
-           major-mode)))
-          
-    (with-output-to-temp-buffer "*Help*"
-      (princ mode)
-      (princ " Mode:\n")
-      (princ (documentation mode))
-      (print-help-return-message))))    
-@end lisp
 
 @item
 Make @code{TeX-next-error} parse ahead and store the results in a list,
