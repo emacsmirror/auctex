@@ -1,3 +1,7 @@
+2005-01-12  David Kastrup  <dak@gnu.org>
+
+	* Version 11.54 released.
+
 2005-01-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/beamer.el: Update copyright information.  General
@@ -5,10 +9,6 @@
 	("beamer"): Support frame environment.
 	The overprint has an optional "area width" argument, not a
 	mandatory "overlay" argument.
-
-2005-01-11  David Kastrup  <dak@gnu.org>
-
-	* Version 11.54 released.
 
 2005-01-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
