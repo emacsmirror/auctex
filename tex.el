@@ -535,7 +535,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.336 $"))
+	(rev "$Revision: 5.337 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -550,7 +550,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-18 10:13:40 $"))
+    (let ((date "$Date: 2004-03-19 12:06:21 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1504,7 +1504,7 @@ The algorithm is as follows:
                (goto-char (point-min))
                (let ((comment-start-skip ;Used by TeX-in-comment
 		      (concat
-		       "\\(\\(^\\|[^\\]\\)\\("
+		       "\\(\\(^\\|[^\\\n]\\)\\("
 		       (regexp-quote TeX-esc)
 		       (regexp-quote TeX-esc)
 		       "\\)*\\)\\(%+ *\\)"))
@@ -1579,10 +1579,10 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
   (make-local-variable 'comment-start-skip)
   (setq comment-start-skip
 	(concat
-	 "\\(\\(^\\|[^\\]\\)\\("
+	 "\\(\\(^\\|[^\\\n]\\)\\("
 	 (regexp-quote TeX-esc)
 	 (regexp-quote TeX-esc)
-	 "\\)*\\)\\(%+ *\\)"))
+	 "\\)*\\)\\(" comment-start "+[ \t]*\\)"))
   ;; `comment-padding' is defined here as an integer for compatibility
   ;; reasons because older Emacsen could not cope with a string.
   (make-local-variable 'comment-padding)
@@ -2816,6 +2816,15 @@ in the current paragraph."
         t
       nil)))
 
+(defun TeX-in-line-comment ()
+  ;; Return non-nil if point is in a line consisting only of a comment
+  ;; with no whitespace at its beginning.
+  (save-excursion
+    (move-to-left-margin)
+    (if (looking-at comment-start)
+        t
+      nil)))
+
 (defun TeX-forward-comment-skip (&optional count limit)
   "Move forward to the next switch between commented and
 uncommented adjacent lines.  With argument COUNT do it COUNT
@@ -2825,26 +2834,39 @@ than this value."
   ;; A value of 0 is nonsense.
   (when (= count 0) (setq count 1))
   (unless limit (setq limit (point-max)))
-  (when (< count 0) (forward-line -1))
+  (if (< count 0)
+      (forward-line -1)
+    (beginning-of-line))
   (dotimes (i (abs count))
-    (while (and (<= (point) limit)
+    (while (and (if (> count 0)
+                    (<= (point) limit)
+                  (>= (point) limit))
                 (or (save-excursion
-                      (and (looking-at comment-start-skip)
+                      (and (looking-at (concat "[ \t]*" comment-start))
                            (zerop (if (> count 0)
                                       (forward-line 1)
                                     (forward-line -1)))
-                           (looking-at comment-start-skip)))
+                           (looking-at (concat "[ \t]*" comment-start))))
                     (save-excursion
-                      (and (not (looking-at comment-start-skip))
+                      (and (not (looking-at (concat "[ \t]*" comment-start)))
                            (zerop (if (> count 0)
                                       (forward-line 1)
                                     (forward-line -1)))
-                           (not (looking-at comment-start-skip))))))
+                           (not (looking-at (concat "[ \t]*" comment-start)))))))
       (if (> count 0)
           (forward-line 1)
         (forward-line -1)))
     (if (> count 0)
         (forward-line 1))))
+
+(defun TeX-backward-comment-skip (&optional count limit)
+  "Move backward to the previous switch between commented and
+uncommented adjacent lines.  With argument COUNT do it COUNT
+times.  If argument LIMIT is given, do not move point to a
+position less than this value."
+  (unless count (setq count 1))
+  (when (= count 0) (setq count 1))
+  (TeX-forward-comment-skip (- count) limit))
 
 
 ;;; Indentation
