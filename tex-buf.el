@@ -1043,7 +1043,8 @@ Prefix by C-u to start from the beginning of the errors.
 If the file occurs in an included file, the file is loaded (if not
 already in an Emacs buffer) and the cursor is placed at the error."
 
-  (let ((old-buffer (current-buffer)))
+  (let ((old-buffer (current-buffer))
+	(default-major-mode major-mode))
     (pop-to-buffer (TeX-active-buffer))
     (if reparse
 	(TeX-parse-reset))
