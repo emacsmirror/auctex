@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.195 2004-01-06 12:31:15 dakas Exp $
+;; $Id: preview.el,v 1.196 2004-01-14 05:19:41 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -224,6 +224,9 @@ If `preview-fast-conversion' is set, this option is not
 (defvar preview-parsed-magnification nil
   "Magnification as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-magnification)
+(defvar preview-parsed-pdfoutput nil
+  "PDFoutput as parsed from the log of LaTeX run.")
+(make-variable-buffer-local 'preview-parsed-pdfoutput)
 (defvar preview-parsed-counters nil
   "Counters as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-counters)
@@ -1843,6 +1846,7 @@ See description of `TeX-command-list' for details."
     ;;  (define-key map "\C-q" #'preview-paragraph)
     (define-key map "\C-e" #'preview-environment)
     (define-key map "\C-s" #'preview-section)
+    (define-key map "\C-w" #'preview-copy-region-as-mml)
     (define-key map "\C-c\C-p" #'preview-clearout-at-point)
     (define-key map "\C-c\C-r" #'preview-clearout)
     (define-key map "\C-c\C-s" #'preview-clearout-section)
@@ -1856,32 +1860,58 @@ See description of `TeX-command-list' for details."
     (set-buffer (overlay-buffer ov))
     (copy-region-as-kill (overlay-start ov) (overlay-end ov))))
 
-(autoload 'mail-header-encode-parameter "mail-parse")
-
 (defun preview-copy-mml (ov)
   "Copy an MML representation of OV into the kill buffer.
 This can be used to send inline images in mail and news when
 using MML mode."
-  (if (and (memq (overlay-get ov 'preview-state) '(active inactive))
-	   (not (overlay-get ov 'queued)))
-      (let* ((text (with-current-buffer (overlay-buffer ov)
-		     (buffer-substring (overlay-start ov)
-				       (overlay-end ov))))
-	     (file (car (car (last (overlay-get ov 'filenames)))))
-	     (string
-	      (format "<#part type=\"image/%s\" %s disposition=inline %s>
-<#/part>"
-		      preview-image-type
-		      (mail-header-encode-parameter "filename" file)
-		      (mail-header-encode-parameter
-		       "description"
-		       (if (string-match "\n" text)
-			  "preview-latex image"
-			 text)))))
+  (let ((str (preview-format-mml ov)))
+    (if str
 	(if (eq last-command 'kill-region)
-	    (kill-append string nil)
-	  (kill-new string)))
-    (error "No image file available")))
+	    (kill-append str nil)
+	  (kill-new str))
+      (error "No image file available"))))
+
+(defun preview-copy-region-as-mml (start end)
+  (interactive "r")
+  (let (str lst)
+    (dolist (ov (overlays-in start end))
+      (and (setq str (preview-format-mml ov))
+	   (>= (overlay-start ov) start)
+	   (<= (overlay-end ov) end)
+	   (push (list (- (overlay-start ov) start)
+		       (- (overlay-end ov) start)
+		       str) lst)))
+    (setq str (buffer-substring start end))
+    (dolist (elt (nreverse (sort lst #'car-less-than-car)))
+      (setq str (concat (substring str 0 (nth 0 elt))
+			(nth 2 elt)
+			(substring str (nth 1 elt)))))
+    (if (eq last-command 'kill-region)
+	(kill-append str nil)
+      (kill-new str))))
+
+(defun preview-format-mml (ov)
+  "Return an MML representation of OV as string.
+This can be used to send inline images in mail and news when
+using MML mode.  If there is nothing current available,
+NIL is returned."
+  (and (memq (overlay-get ov 'preview-state) '(active inactive))
+       (not (overlay-get ov 'queued)))
+  (let ((text (with-current-buffer (overlay-buffer ov)
+		(buffer-substring (overlay-start ov)
+				  (overlay-end ov))))
+	(file (car (car (last (overlay-get ov 'filenames))))))
+    (format "<#part type=\"image/%s\" disposition=inline
+description=\"%s\"
+filename=%s><#/part>"
+	    preview-image-type
+	    (if (string-match "[\n\"]" text)
+		"preview-latex image"
+	      text)
+	    (if (string-match "[ \n]" file)
+		(concat "\"" file "\"")
+	      file))))
+
 
 (defun preview-active-contents (ov)
   "Check whether we have a valid image associated with OV."
@@ -2024,6 +2054,8 @@ later while in use."
      "\\` *\\([0-9.]+\\)pt\\'" 1 string-to-number)
     ("Magnification" preview-parsed-magnification
      "\\` *\\([0-9]+\\)\\'" 1 string-to-number)
+    ("PDFoutput" preview-parsed-pdfoutput
+     "" 0 stringp)
     ("Counters" preview-parsed-counters
      ".*" 0 preview-parse-counters)))
 
@@ -2031,7 +2063,7 @@ later while in use."
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
 document style for LaTeX.  OPEN-CLOSURE is called once
-it is certain that we have a valid DVI file, and it has
+it is certain that we have a valid output file, and it has
 to return in its CAR the PROCESS parameter for the CLOSE
 call, and in its CDR the final stuff for the placement hook."
   (with-temp-message "locating previews..."
@@ -2665,7 +2697,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.195 $"))
+	(rev "$Revision: 1.196 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2676,7 +2708,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-06 12:31:15 $"))
+    (let ((date "$Date: 2004-01-14 05:19:41 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
