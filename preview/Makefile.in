@@ -91,7 +91,7 @@ preview-latex.el: preview.el
 	echo "" >>"$@" ; \
 	$(EMACS) -batch -no-site-file -no-init-file --eval \
 '(let ((generated-autoload-file "'"`pwd`"'/$@")) (update-file-autoloads \
-"preview.el")(save-buffers-kill-emacs t))' \
+"preview.el")(save-buffers-kill-emacs t))' ; \
 	fi
 
 clean:
