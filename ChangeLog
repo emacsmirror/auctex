@@ -1,3 +1,8 @@
+2005-02-28  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (TeX-japanese-process-input-coding-system)
+	(TeX-japanese-process-output-coding-system): Fix comment.
+
 2005-02-27  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Cater for kinsoku,
