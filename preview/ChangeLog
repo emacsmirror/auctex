@@ -1,5 +1,7 @@
 2002-02-18  Jan-Ake Larsson  <jalar@imf.au.dk>
 
+	* problems.texi: Simple layout fix
+
 	* preview-latex.spec: For 0.6 proper
 
 	* RELEASE: Mention AUC TeX RPM on project site
