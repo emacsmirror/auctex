@@ -1,3 +1,16 @@
+2005-02-13  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-latex.texi (The Emacs interface): Adapt to new
+	`preview-use-balloon-help' default.
+
+	* doc/faq.texi (Customization): Adapt to new
+	`preview-use-balloon-help' default.
+
+	* prv-xemacs.el (preview-use-balloon-help): Default to nil.
+
+	* preview.el (preview-gs-flag-error): For consistency, make error
+	icons have a context menu on right mouse button.
+
 2005-02-11  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-latex.texi (Keys and lisp): Change descriptions to

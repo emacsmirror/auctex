@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.229 2005-02-11 03:47:03 dakas Exp $
+;; $Id: preview.el,v 1.230 2005-02-13 04:12:42 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1089,34 +1089,39 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 (defun preview-gs-flag-error (ov err)
   "Make an eps error flag in overlay OV for ERR string."
   (let* ((file (car (nth 0 (overlay-get ov 'filenames))))
-	 (str
-	  (preview-make-clickable
-	   nil
-	   preview-error-icon
-	   (if preview-ps-file
-	       "%s views error message
-%s views PS file"
-	     "%s views error message
-%s views EPS file")
-	   `(lambda() (interactive "@")
-	      (preview-mouse-open-error
-	       ,(concat
-		 (mapconcat #'shell-quote-argument
+	 (ps-open
+	  `(lambda() (interactive "@")
+	     (preview-mouse-open-error
+	      ,(concat
+		(mapconcat #'shell-quote-argument
 			    (cons preview-gs-command
 				  preview-gs-command-line)
 			    " ")
 		 "\nGS>"
 		 preview-gs-init-string
 		 (aref (overlay-get ov 'queued) 1)
-		 err)))
-	   (if preview-ps-file
-	       `(lambda() (interactive "@")
-		  (preview-mouse-open-eps
-		   ,(if (consp (car file)) (nth 1 (car file)) (car file))
-		   ,(nth 0 (aref preview-gs-dsc
-				 (aref (overlay-get ov 'queued) 2)))))
-	     `(lambda() (interactive "@")
-		(preview-mouse-open-eps ,file))))))
+		 err))))
+	 (str
+	  (preview-make-clickable
+	   nil
+	   preview-error-icon
+	   "%s views error message
+%s more options"
+	   ps-open
+	   `(lambda() (interactive)
+	      (popup-menu
+	       '("PostScript error"
+		 ["View error" ,ps-open]
+		 ["View source"
+		  (lambda () (interactive "@")
+		    ,(if preview-ps-file
+			 `(preview-mouse-open-eps
+			   ,(if (consp (car file))
+				(nth 1 (car file))
+			      (car file))
+			   ,(nth 0 (aref preview-gs-dsc
+					 (aref (overlay-get ov 'queued) 2))))
+		       `(preview-mouse-open-eps ,file)))]))))))
     (overlay-put ov 'strings (cons str str))
     (preview-toggle ov)))
 
@@ -3215,7 +3220,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.229 $"))
+	(rev "$Revision: 1.230 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3226,7 +3231,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-11 03:47:03 $"))
+    (let ((date "$Date: 2005-02-13 04:12:42 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

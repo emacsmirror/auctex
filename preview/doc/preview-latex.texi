@@ -623,11 +623,12 @@ accordingly @code{split} is one entry in
 @code{preview-inner-environments}.
 
 @item preview-use-balloon-help
-This XEmacs-only option defaults to `on', and will activate balloon
-help.  Customizing it to `off' might make sense if you find
-@code{balloon-help-mode} disruptive.  The equivalent in @w{GNU Emacs}
-(tooltips) is not a mode of its own, not optional and much less
-bothersome, anyway.
+If you turn this XEmacs-only option `on', then moving the mouse over
+previews and icons will show appropriate help texts.  This works by
+switching on @code{balloon-help-mode} in the buffer if it is not already
+enabled.  The default now is `off' since some users reported problems
+with their version of XEmacs.  @w{GNU Emacs} has its corresponding
+@code{tooltip-mode} enabled by default and in usable condition.
 
 @end vtable
 

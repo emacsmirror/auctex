@@ -189,12 +189,13 @@ to the letter unless you know perfectly what you are doing.
 @node Customization,  , Installation Trouble, Frequently Asked Questions
 @section Customization
 
-@subsection How can I deactivate the annoying balloon mode?
+@subsection Why don't I get balloon help like in the screen shots?
 
-Use the Preview/Customize menu or @kbd{@key{M-x} customize-variable} in
-order to customize @code{preview-use-balloon-help} to `Off'.  This only
-concerns XEmacs: tooltips under @w{GNU Emacs} can't be disabled, and
-are less bothersome, anyhow.
+Some users have reported problems with their XEmacs version, so balloon
+help is now off by default.  Use the Preview/Customize menu or
+@kbd{@key{M-x} customize-variable} in order to customize
+@code{preview-use-balloon-help} to `On'.  This only concerns XEmacs:
+tooltips under @w{GNU Emacs} are enabled by default and unproblematic.
 
 @subsection How to include additionally environments like @code{enumerate}
 

@@ -442,7 +442,7 @@ Pure borderless black-on-white will return quadruple NIL."
         (setq fg nil))
     (vector bg fg nil nil)))
 
-(defcustom preview-use-balloon-help t
+(defcustom preview-use-balloon-help nil
   "*Is balloon help enabled in preview-latex?"
   :group 'preview-appearance
   :type 'boolean)
