@@ -1,4 +1,4 @@
-%\CheckSum{384}
+%\CheckSum{386}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version 0.01}
 %\maketitle
@@ -64,6 +64,7 @@
 %document will thus be affected.
 %\item[|graphics|] will subject all \cmd{\includegraphics} commands to
 %a preview.
+%\item[|sections|] will subject all section headers to a preview.
 %\item[|delayed|] will delay all activations and redefinitions the
 %|preview| package makes until |\begin{document}|.  The purpose of
 %this is to cater for documents which should be subjected to the
@@ -480,7 +481,12 @@
 \DeclareOption{floats}{%
   \PreviewSnarfEnvironment[![]{@float}%
   \PreviewSnarfEnvironment[![]{@dblfloat}}
-%
+%    \end{macrocode}
+%  The |sections| option.
+%    \begin{macrocode}
+\DeclareOption{sections}{%
+  \PreviewMacro[!!!!!!*[!]{\@startsection}}
+%    \end{macrocode}
 %We now interpret any further options as driver files we load.
 %    \begin{macrocode}
 \DeclareOption*
