@@ -36,7 +36,13 @@ Under progress.
 @item Explore possibilities for working via PDF
  
 Going via latexpdf->GhostScript and a single file would certainly be
-faster than the current latex->dvips->GhostScript path.
+faster than the current latex->dvips->GhostScript path.  The current
+implementation via Dvips, however, uses just a single PostScript file
+and  spends rather little time in Dvips, and the Dvips-generated
+PostScript code is rather simple, so that there is not much hope in
+GhostScript being able to deal much faster with PDF than with
+PostScript in this case.  But could come handy for previewing
+documents intended for use with pdflatex.
 
 @item Program a direct dvi->png rendering daemon
 
@@ -47,7 +53,14 @@ however, does not seem to offer any advantage.
 
 @item Integrate into ref@TeX{}
 
-When referecing to equations and the like, the preview-images of the
-source rather than plain text should be displayed.
+When referencing to equations and the like, the preview-images of the
+source rather than plain text should be displayed.  If the preview in
+question covers labels, those should appear in the bubble help and/or a
+context menu.  Apropos:
+
+@item Implement context menus
+
+right mouse key currently just kills previews.  Offer more options than
+that.
 
 @end itemize
