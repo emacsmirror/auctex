@@ -1,4 +1,11 @@
-2003-01-08  Jan-Ake Larsson  <jalar@gnu.org>
+2003-01-15  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4 (AC_PROG_EMACS): New. File is now identical to that
+	of preview-latex.
+
+	* configure.in: Use it
+
+2003-01-08  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* Makefile.in: From Makefile
 
