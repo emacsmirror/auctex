@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.94 2002-04-03 20:34:27 dakas Exp $
+;; $Id: preview.el,v 1.95 2002-04-04 01:03:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -442,6 +442,9 @@ aload pop restore}def "
   "Set up Dvips process for conversions via gs."
   (let ((process (preview-start-dvips preview-fast-conversion)))
     (setq TeX-sentinel-function #'preview-gs-dvips-sentinel)
+    (if preview-ps-file
+	(setq preview-ps-file
+	      (preview-make-filename preview-ps-file TeX-active-tempdir)))
     (list process (current-buffer) TeX-active-tempdir preview-ps-file)))
 
 (defun preview-dvips-abort ()
@@ -451,13 +454,12 @@ aload pop restore}def "
       (delete-file
        (let ((gsfile preview-gs-file))
 	 (with-current-buffer TeX-command-buffer
-	   (funcall (car gsfile) (cdr gsfile) "dvi"))))
+	   (funcall (car gsfile) "dvi"))))
     (file-error nil))
-  (if preview-ps-file
+  (when preview-ps-file
       (condition-case nil
 	  (preview-delete-file preview-ps-file)
 	(file-error nil)))
-  (preview-clean-subdir (nth 0 TeX-active-tempdir))
   (setq TeX-sentinel-function nil))
 
 (defun preview-gs-dvips-sentinel (process command &optional gsstart)
@@ -472,12 +474,17 @@ The usual PROCESS and COMMAND arguments for
 	   (condition-case nil
 	       (delete-file
 		(with-current-buffer TeX-command-buffer
-		  (funcall (car gsfile) (cdr gsfile) "dvi")))
+		  (funcall (car gsfile) "dvi")))
 	     (file-error nil))
 	   (if preview-ps-file
 	       (preview-prepare-fast-conversion))
-	   (if (and gsstart preview-gs-queue)
-	       (preview-gs-restart)))
+	   (when gsstart
+	     (when preview-ps-file
+	       (condition-case nil
+		   (preview-delete-file preview-ps-file)
+		 (file-error nil)))
+	     (if preview-gs-queue
+		 (preview-gs-restart))))
 	  ((eq status 'signal)
 	   (delete-process process)
 	   (preview-dvips-abort)))))
@@ -485,24 +492,29 @@ The usual PROCESS and COMMAND arguments for
 (defun preview-gs-close (process closedata)
   "Clean up after PROCESS and set up queue accumulated in CLOSEDATA."
   (setq preview-gs-queue (nconc preview-gs-queue closedata))
-  (if (and process preview-gs-queue)
-      (if TeX-process-asynchronous
-	  (if (and (eq (process-status process) 'exit)
-		   (null TeX-sentinel-function))
-	      ;; Process has already finished and run sentinel
-	      (preview-gs-restart)
-	    (setq TeX-sentinel-function (lambda (process command)
-					  (preview-gs-dvips-sentinel
-					   process
-					   command
-					   t))))
-	(TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
-				  process))
-  ;; pathological case: no previews although we sure thought so.
-    (when process
-      (delete-process process)
-      (unless TeX-sentinel-function
-	(preview-dvips-abort)))))
+  (if process
+      (if preview-gs-queue
+	  (if TeX-process-asynchronous
+	      (if (and (eq (process-status process) 'exit)
+		       (null TeX-sentinel-function))
+		  ;; Process has already finished and run sentinel
+		  (progn
+		    (when preview-ps-file
+		      (condition-case nil
+			  (preview-delete-file preview-ps-file)
+			(file-error nil)))
+		    (preview-gs-restart))
+		(setq TeX-sentinel-function (lambda (process command)
+					      (preview-gs-dvips-sentinel
+					       process
+					       command
+					       t))))
+	    (TeX-synchronous-sentinel "Preview-DviPS" (cdr preview-gs-file)
+				      process))
+    ;; pathological case: no previews although we sure thought so.
+	(delete-process process)
+	(unless (eq (process-status process) 'signal)
+	  (preview-dvips-abort)))))
 
 (defun preview-eps-open ()
   "Place everything nicely for direct PostScript rendering."
@@ -992,6 +1004,7 @@ such preview."
 IGNORED arguments are ignored, making this function usable as
 a hook in some cases"
   (let ((filenames (overlay-get ovr 'filenames)))
+    (overlay-put ovr 'filenames nil)
     (delete-overlay ovr)
     (dolist (filename filenames)
       (condition-case nil
@@ -1768,7 +1781,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.94 $"))
+	(rev "$Revision: 1.95 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
