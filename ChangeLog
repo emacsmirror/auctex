@@ -1,3 +1,9 @@
+2003-04-14  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* doc/install.texi: Changed to document the autoconf stuff 
+
+	* doc/wininstall.texi: Added
+
 2003-04-10  David Kastrup  <dak@gnu.org>
 
 	* tex.el (AUCTeX): Fix URLs.
