@@ -1,3 +1,9 @@
+2002-02-18  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* RELEASE: Mention AUC TeX RPM on project site
+
+	* Makefile.in: Fixed 'make clean' in doc subdir
+
 2002-02-17  Alan Shutko  <ats@acm.org>
 
 	* doc/Makefile.in: New file, replacing the former ad-hoc build.
