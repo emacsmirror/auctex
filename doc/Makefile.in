@@ -100,3 +100,6 @@ clean:
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.tmp auctex auctex-? *.html INSTALL \
 		INSTALL.windows README CHANGES HISTORY TODO
+
+distclean: clean
+	rm -f Makefile
