@@ -70,7 +70,7 @@ STYLESRC = style/prosper.el \
 	   style/verbatim.el  style/scrbase.el   style/scrartcl.el \
 	   style/scrbook.el   style/scrreprt.el	 style/scrlttr2.el \
 	   style/scrpage2.el  style/captcont.el  style/subfigure.el \
-	   style/paralist.el  style/booktabs.el
+	   style/paralist.el  style/booktabs.el  style/emp.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
