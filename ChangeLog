@@ -1,3 +1,7 @@
+2003-04-15  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* doc/wininstall.texi: Corrected download info for GNU Emacs
+
 2003-04-14  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el (font-latex-match-*-keywords): New user
