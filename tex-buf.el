@@ -1,4 +1,4 @@
-;;;* Last edited: Jul 22 14:28 1992 (krab)
+;;;* Last edited: Aug  8 11:23 1992 (krab)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; tex-buf.el - Invoking TeX from an inferior shell
@@ -7,7 +7,7 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.19 1992-11-16 17:50:23 amanda Exp $
+;; $Id: tex-buf.el,v 1.20 1992-11-22 09:23:28 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Per Abrahamsen
@@ -30,6 +30,7 @@
 ;;  Ralf Handl                <handl@cs.uni-sb.de>
 ;;  Sven Mattisson            <sven@tde.lth.se>
 ;;  Denys Duchier             <dduchier@csi.UOttawa.CA>
+;;  Leonard Roseman           <roseman@hustat.harward.edu>
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

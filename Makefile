@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.18 1992-09-16 12:46:05 amanda Exp $
+# $Id: Makefile,v 5.19 1992-11-22 09:23:24 krab Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -45,7 +45,9 @@ LEX = flex -8  lacheck.lex
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
 	ltx-sec.el tex-buf.el tex-math.el tex-site.el auc-ver.el
-OTHERFILES = COPYING INTRO README Makefile lacheck/* doc/*
+LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex lacheck/lacheck.man lacheck/lacheck.noflex.c
+DOCFILES=doc/Makefile doc/auc-tex.texi doc/ref-card.tex
+OTHERFILES = COPYING INTRO README Makefile $(DOCFILES) $(LACHECKFILES)
 
 first:
 	@echo ""
