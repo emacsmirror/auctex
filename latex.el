@@ -3191,6 +3191,7 @@ If COUNT is non-nil, do it COUNT times."
 			     (concat "^[ \t]*" comment-start "*[ \t]*" "\\("
 				     LaTeX-paragraph-commands-regexp "\\)"))
 			(save-excursion
+			  (goto-char (match-beginning 1))
 			  (save-match-data
 			    (goto-char (TeX-find-macro-end)))
 			  ;; For an explanation of this distinction
