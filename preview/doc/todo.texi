@@ -12,14 +12,14 @@ so that we do not need to steal code from @AUCTeX{}, but can use
 and provide alternatives.  This could make @previewlatex{} work with
 Emacs' default @TeX{}/@LaTeX{} modes which some people prefer.  Also one
 might provide an abstraction layer that would make it possible to embed
-preview-latex's core mechanisms into Emacs calc.
+@previewlatex{}'s core mechanisms into Emacs calc.
 
 @item Fix GhostScript rendering of Emacs
 
-The current gs.el interface does not work well when multiple EPS images
-appear.  A new process is started for every single image, but the
-processes have to wait for one another.  See also code in xdisp.c from
-the Emacs distribution.
+The current @file{gs.el} interface does not work well when multiple
+@acronym{EPS} images appear.  A new process is started for every single
+image, but the processes have to wait for one another.  See also code in
+@file{xdisp.c} from the Emacs distribution.
 
 @item Think about temporary file handling
  
@@ -27,7 +27,7 @@ The current solution may be suboptimal.  Perhaps a different dvi file
 from the main file would be preferable, perhaps compilation in a
 separate directory, perhaps support for more than one Emacs session or
 user properly accessing the same file.  In all fairness, the current
-@emph{region} mechanism of @AUCTeX{} does not support this, either.
+@file{_region_} mechanism of @AUCTeX{} does not support this, either.
 
 @item Port to XEmacs
 
@@ -38,11 +38,11 @@ Under progress.
 Going via latexpdf->GhostScript and a single file would certainly be
 faster than the current latex->dvips->GhostScript path.  The current
 implementation via Dvips, however, uses just a single PostScript file
-and  spends rather little time in Dvips, and the Dvips-generated
+and spends rather little time in Dvips, and the Dvips-generated
 PostScript code is rather simple, so that there is not much hope in
-GhostScript being able to deal much faster with PDF than with
-PostScript in this case.  But could come handy for previewing
-documents intended for use with pdflatex.
+GhostScript being able to deal much faster with @acronym{PDF} than with
+PostScript in this case.  But could come handy for previewing documents
+intended for use with pdflatex.
 
 @item Program a direct dvi->png rendering daemon
 
