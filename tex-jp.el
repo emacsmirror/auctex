@@ -94,20 +94,19 @@
 (defvar japanese-TeX-error-messages t
   "If non-nil, explain TeX error messages in Japanese.")
 
-(if (featurep 'mule)
-    (if (featurep 'xemacs)
-	(progn
-	  (defvar TeX-japanese-process-input-coding-system
-	    (find-coding-system 'euc-japan)
-	    "TeX-process' coding system with standard input.")
-	  (defvar TeX-japanese-process-output-coding-system
-	    (find-coding-system 'junet)
-	    "TeX-process' coding system with standard output."))
-      ;; FSF Emacs 20 or later.
-      (defvar TeX-japanese-process-input-coding-system 'euc-japan
-	"TeX-process' coding system with standard input.")
-      (defvar TeX-japanese-process-output-coding-system 'junet
-	"TeX-process' coding system with standard output.")))
+(when (featurep 'mule)
+
+(defvar TeX-japanese-process-input-coding-system
+  (if (featurep 'xemacs)
+      (find-coding-system 'euc-japan)
+    'euc-jp)
+  "TeX-process' coding system with standard input.")
+
+(defvar TeX-japanese-process-output-coding-system
+  (if (featurep 'xemacs)
+      (find-coding-system 'junet)
+    'euc-jp)
+  "TeX-process' coding system with standard output."))
 
 (defcustom japanese-TeX-command-default "pTeX"
   "*The default command for TeX-command in the japanese-TeX mode."
@@ -148,16 +147,21 @@
 
 ;;; Coding system
 
-(if (and (featurep 'xemacs)
-	 (featurep 'mule))
+(when (featurep 'mule)
+  (if (featurep 'xemacs)
+      (setq TeX-after-start-process-function
+	    (lambda (process)
+	      (set-process-input-coding-system process
+	       TeX-japanese-process-input-coding-system)
+	      (set-process-output-coding-system process
+	       TeX-japanese-process-output-coding-system)))
+    ;; FSF Emacs
     (setq TeX-after-start-process-function
 	  (lambda (process)
-	    (set-process-input-coding-system
-	     process
-	     TeX-japanese-process-input-coding-system)
-	    (set-process-output-coding-system
-	     process
-	     TeX-japanese-process-output-coding-system))))
+	    (set-process-coding-system process
+	     TeX-japanese-process-output-coding-system
+	     TeX-japanese-process-input-coding-system))))
+)
 
 ;;; Japanese Parsing
 
