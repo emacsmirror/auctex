@@ -1,8 +1,8 @@
 @SET_MAKE@
-prefix=@prefix@#
-datadir=@datadir@#
-packagedir=@packagedir@#
-infodir=@infodir@#
+prefix=@prefix@$(null)
+datadir=@datadir@$(null)
+packagedir=@packagedir@$(null)
+infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@

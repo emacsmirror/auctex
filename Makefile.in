@@ -6,13 +6,13 @@
 # Version: initial try <jalar@mai.liu.se>
 #
 
-prefix = @prefix@
-datadir = @datadir@
-localstatedir = @localstatedir@
-infodir = @infodir@
-lispdir = @lispdir@
-packagedir = @packagedir@
-auctexdir= ${lispdir}/auctex
+prefix = @prefix@$(null)
+datadir = @datadir@$(null)
+localstatedir = @localstatedir@$(null)
+infodir = @infodir@$(null)
+lispdir = @lispdir@$(null)
+packagedir = @packagedir@$(null)
+auctexdir= @auctexdir@$(null)
 aucteximagedir= ${auctexdir}/images
 autodir = @autodir@
 styledir = ${auctexdir}/style
