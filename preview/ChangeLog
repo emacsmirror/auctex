@@ -1,3 +1,21 @@
+2001-10-13  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-xemacs.el: This is completely and utterly broken and
+	incomplete.  The recent changes from Simon have not yet been
+	incorporated, some of the stuff still has old semantics and so
+	forth and so on.  One needs to go through prv-emacs.el and make
+	sure that everything in there has an equivalent here.
+
+	* prv-emacs.el: See preview.el.
+
+	* preview.el: This is the big one.  Changes too numerous to
+	mention.  Lots of modularization for making XEmacs support
+	possible.  Changed semantics, the works.  See PROBLEMS file for
+	new AucTeX compatibility annoyances.
+
+	* PROBLEMS (AucTeX versions from 11.01 up to version 11.05): Patch
+	added.  Patch for earlier versions revised.
+
 2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{Preview attaching commands}): set
