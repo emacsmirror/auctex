@@ -1,5 +1,12 @@
 2001-10-04  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el: first stab at XEmacs compatibility.
+
+	* prv-xemacs.el: first stab at XEmacs compatibility.
+
+	* circ.tex (section{Die gerade Linie}): built in two deliberate
+	bugs for testing.
+
 	* preview.el (preview-gs-behead-outstanding): use
 	`preview-gs-flag-error'.
 	(preview-mouse-open-error, preview-mouse-open-eps): factored out
