@@ -1,9 +1,7 @@
 @include macros.texi
-@ifset rawfile
+@node Installation
 @chapter Installing @AUCTeX{}
 
-@end ifset
-@c -----------------------
 Installing @AUCTeX{} should be simple: merely @command{./configure},
 @command{make}, and @code{make install}. This does not yet activate the
 package, but merely makes it available. See @ref{Loading the package}
