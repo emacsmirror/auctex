@@ -1,6 +1,26 @@
+2004-01-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-command-menu-name): New constant.
+	(TeX-mode-specific-command-menu): Reimplemented the loop which
+	builds the menu.
+	(TeX-mode-command-menu): Use new constant and call
+	`TeX-mode-specific-command-menu' via `:filter'.
+	(AmSTeX-mode-command-menu): Ditto.
+
+	* context.el (ConTeXt-mode-command-menu): Use new constant
+	`TeX-command-menu-name' and call `TeX-mode-specific-command-menu'
+	via `:filter'.
+
+	* latex.el (LaTeX-mode-command-menu): Ditto.
+
+	* tex-info.el (TeXinfo-mode-command-menu): Ditto.
+
+	* tex-jp.el (plain-TeX-mode-command-menu)
+	(LaTeX-mode-command-menu): Ditto.
+
 2004-01-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
-	* doc/changes.tex: Added further news.
+	* doc/changes.texi: Added further news.
 
 2004-01-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
