@@ -1,3 +1,8 @@
+2004-09-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (Texinfo-insert-environment): Add a space between
+	inserted "@end" and environment name in case of active region.
+
 2004-09-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-search-syntax-table): New function and variable.
