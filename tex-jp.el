@@ -42,12 +42,13 @@
 	(list "pLaTeX" "platex \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil (list 'latex-mode))
 	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
-	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil t)
-        (list "-" "" nil nil t))
+	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil t))
   "Additional list of commands to execute in japanese-LaTeX-mode")
 
 (setq TeX-command-list
-      (append japanese-TeX-command-list TeX-command-list))
+      (append japanese-TeX-command-list
+	      '("-" "" nil nil t) ;; separetor for command menu
+	      TeX-command-list))
 
 ;; Menus
 
