@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.920 (04 Aug 2004)
+;; Version:    0.923 (18 Aug 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.923 18Aug2004 Ralf Angeli
+;;  - `font-latex-script': Disable raising of characters for older
+;;    Emacsen.  Original patch by Reiner Steib.
 ;; V0.922 06Aug2004 Reiner Steib
 ;;  - Changed URL of AUCTeX. Use "AUCTeX", not "auc-tex" (skipped Change log).
 ;; V0.921 05Aug2004 Reiner Steib
