@@ -2919,7 +2919,10 @@ the last entry in the menu."
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
-    (TeX-mode-specific-command-menu 'latex-mode))
+    (list TeX-command-menu-name
+          :filter (lambda (&rest ignored)
+                    (TeX-mode-specific-command-menu 'latex-mode))
+          "Bug."))
 
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
