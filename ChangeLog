@@ -1,3 +1,22 @@
+2004-07-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-find-macro-start): Fix handling of nested macros.
+	(TeX-find-macro-start-helper): New function.
+	(TeX-find-macro-end-helper): New function.
+
+	* tex-info.el (TeXinfo-mode-menu): Fix extension of customize
+	menu.
+
+	* latex.el (LaTeX-env-figure): Prevent superfluous blank lines and
+	give RefTeX a chance to generate a label in environments with a
+	bottom caption.  Patch by Christian Schlauer <cs-usenet@arcor.de>.
+	(LaTeX-style-list): Add entry for beamer class.
+
+	* context.el (ConTeXt-mode-menu): Add "Show/Hide" submenu.
+
+	* doc/auc-tex.texi (Folding): Document key binding for
+	`TeX-fold-mode'.
+
 2004-07-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (TeXinfo-mode-map): Inherit from `TeX-mode-map'.
