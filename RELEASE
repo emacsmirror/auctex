@@ -21,9 +21,9 @@ New features and fixed bugs in this release
 -------------------------------------------
 
 Another bug in connection with XEmacs and PDF modes has been
-uncovered.  On GTK or MacOS for very recent CVS Emacs versions, you
-can enable Unicode characters in the LaTeX math menu.  No other
-platforms are affected.
+uncovered.  GTK versions of GNU Emacs will now use Unicode characters
+in the LaTeX math menu.  No other platforms are affected.  The
+installation process tries to detect a few more things automatically.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
@@ -51,11 +51,11 @@ Availability
 ------------
 
 AUCTeX can be downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex>.
-There are tarballs, and RPMs for Fedora (for Emacs).  A separate
-directory contains some stuff from the tarball, such as ChangeLog,
-printable manuals, a reference sheet.  The download area is mirrored
-to the directory support/auctex on CTAN.  AUCTeX is licensed under the
-GNU General Public License version 2.
+There are tarballs, and RPMs for Fedora and SuSE (for Emacs).  A
+separate directory contains some stuff from the tarball, such as
+ChangeLog, printable manuals, a reference sheet.  The download area is
+mirrored to the directory support/auctex on CTAN.  AUCTeX is licensed
+under the GNU General Public License version 2.
 
 You'll find more information at the web site of AUCTeX
 <URL:http://www.gnu.org/software/auctex>, including its mailing list
