@@ -1,14 +1,12 @@
 ;;; font-latex.el --- LaTeX fontification for Font Lock mode.
 
-;; Copyright (C) 1996-2001 Peter S. Galbraith
+;; Copyright (C) 1996-2003 Peter S. Galbraith
  
-;; Authors:    Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
-;;                                <psg@debian.org>
+;; Authors:    Peter S. Galbraith <psg@debian.org>
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
-;; Maintainer: Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
-;;                                <psg@debian.org>
+;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.803 (01 November 2001)
+;; Version:    0.900 (14 April 2003)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -97,6 +95,14 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.900 14Apr2003 PSG
+;;    font-latex-match-*-keywords are new user customizable variable
+;;    to add fontification keywords.
+;;    See `M-x customize-group [RET] font-latex'.
+;;    Elisp Style file writers should use the buffer-local
+;;    font-latex-match-*-keywords-local variables, e.g.:
+;;     (add-to-list 'font-latex-match-textual-keywords-local "captcont")
+;;     (font-latex-match-textual-make)
 ;; V0.803 17Feb03 David Kastrup
 ;;   (font-latex-find-matching-close): Remove a very complicated way of
 ;;    doing nothing since the byte compiler warns about it.
@@ -233,25 +239,20 @@
 ;;; Code:
 (require 'font-lock)
 
-(cond
- ((fboundp 'defcustom)
-  (defgroup font-latex nil
-    "Font-latex text highlighting package."
-    :prefix "font-latex-"
-    :group 'faces
-    :group 'tex)
-  (defgroup font-latex-highlighting-faces nil
-    "Faces for highlighting text in font-latex."
-    :prefix "font-latex-"
-    :group 'font-latex)
-  (defcustom font-latex-do-multi-line t
-    "Nil means disable the multi-line fontification prone to infinite loops."
-    :group 'font-latex
-    :type 'boolean))
- (t
-  (defvar font-latex-do-multi-line t
-    "*Set this to nil to disable the multi-line fontification 
-prone to infinite loop bugs.")))
+(defgroup font-latex nil
+  "Font-latex text highlighting package."
+  :prefix "font-latex-"
+  :group 'faces
+  :group 'tex)
+(defgroup font-latex-highlighting-faces nil
+  "Faces for highlighting text in font-latex."
+  :prefix "font-latex-"
+  :group 'font-latex)
+
+(defcustom font-latex-do-multi-line t
+  "Nil means disable the multi-line fontification prone to infinite loops."
+  :group 'font-latex
+  :type 'boolean)
 
 (defvar font-latex-warning-face			'font-latex-warning-face
   "Face to use for LaTeX major keywords.")
@@ -264,89 +265,226 @@ prone to infinite loop bugs.")))
 (defvar font-latex-math-face			'font-latex-math-face
   "Face to use for LaTeX math environments.")
 
-(defvar font-latex-match-variable
-  (concat 
-   "\\\\" "\\("
-;;;(regexp-opt
-;;; '("setlength" "settowidth" "setcounter" "addtolength" "addtocounter"))
-   "addto\\(counter\\|length\\)\\|set\\(counter\\|length\\|towidth\\)"
-   "\\)\\>")
-  "font-latex regexp to match LaTeX variable keywords.")
+(defvar font-latex-match-variable)
+(defvar font-latex-match-variable-keywords)
+(defvar font-latex-match-variable-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-variable-keywords'.")
+(make-variable-buffer-local 'font-latex-match-variable-keywords-local)
 
-(defvar font-latex-match-reference
-  (concat 
-   "\\\\" "\\("
-;;;(regexp-opt
-;;; '("nocite" "cite" "label" "pageref" "vref" "eqref" "ref"
-;;;   "include" "input" "bibliography"
-;;;   "index" "glossary" "footnote" "footnotemark" "footnotetext"))
-   "bibliography\\|cite[a-zA-Z]*\\|eqref\\|footnote\\(mark\\|text\\)?\\|"
-   "glossary\\|in\\(clude\\|dex\\|put\\)\\|label\\|nocite\\|pageref\\|ref\\|"
-   "vref"
-   "\\)\\>")
-  "font-latex regexp to match reference keywords.")
-  
-(defvar font-latex-match-function
-  (concat 
-   "\\\\" "\\("
-;;;(regexp-opt
-;;; '("begin" "end"
-;;;   "pagenumbering"
-;;;   "thispagestyle" "pagestyle"
-;;;   "nofiles" "includeonly"
-;;;   "bibliographystyle" "documentstyle" "documentclass"
-;;;   "newenvironment" "newcommand" "newlength" "newtheorem" "newcounter"
-;;;   "renewenvironment" "renewcommand" "renewlength" "renewtheorem" 
-;;;   "renewcounter"
-;;;   "usepackage" "fbox" "mbox" "sbox" "vspace" "hspace"))
-   "b\\(egin\\|ibliographystyle\\)\\|document\\(class\\|style\\)\\|"
-   "end\\|fbox\\|hspace\\|includeonly\\|mbox\\|"
-   "n\\(ew\\(co\\(mmand\\|unter\\)\\|environment\\|length\\|theorem\\)"
-       "\\|ofiles\\)\\|"
-    "page\\(numbering\\|style\\)\\|"
-    "renew\\(co\\(mmand\\|unter\\)\\|environment\\|length\\|theorem\\)\\|"
-    "sbox\\|thispagestyle\\|usepackage\\|vspace"
-   "\\)\\>")
-  "font-latex regexp to match LaTeX function keywords.")
+(defun font-latex-match-variable-make ()
+  "Make or remake the variable `font-latex-match-variable'.
+Done using `font-latex-match-variable-keywords' as input."
+  (setq font-latex-match-variable
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-variable-keywords-local
+                        font-latex-match-variable-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
 
-(defvar font-latex-match-textual
-  (concat 
-   "\\\\" "\\("
-;;;(regexp-opt
-;;; '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
-;;;   "part" "chapter" "section" "subsection" "subsubsection" 
-;;;   "paragraph" "subparagraph" "subsubparagraph" 
-;;;   "title" "author" "date" "thanks" "address"
-;;;   "caption"))
-   "a\\(ddress\\|uthor\\)\\|c\\(aption\\|hapter\\)\\|date\\|item\\|"
-   "par\\(agraph\\|t\\)\\|"
-   "s\\(ection\\|"
-       "ub\\(paragraph\\|s\\(ection\\|ub\\(paragraph\\|section\\)\\)\\)\\)\\|"
-   "t\\(hanks\\|itle\\)"
-   "\\)\\>")
-  "font-latex regexp to match LaTeX function with text argument.")
+(defun font-latex-match-variable-keywords-set (symbol value)
+  "Update `font-latex-match-variable'.
+The function is called with SYMBOL bound to
+`font-latex-match-variable-keywords' and VALUE is the the list of
+keywords. As a side effect, the variable `font-latex-match-variable' is set."
+  (set-default symbol value)
+  (font-latex-match-variable-make))
 
+(defcustom font-latex-match-variable-keywords
+  '("setlength" "settowidth" "setcounter" "addtolength" "addtocounter")
+  "font-latex keywords for variable face.
+e.g. \\setlength[option]{key}
+  -> \\setlength appears in font-lock-keyword-face
+  -> [opt] appears in font-lock-variable-name-face
+  -> {key} appears in font-lock-variable-face"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-variable-keywords-set
+  :group 'font-latex)
+
+(defvar font-latex-match-reference)
+(defvar font-latex-match-reference-keywords)
+(defvar font-latex-match-reference-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-reference-keywords'.")
+(make-variable-buffer-local 'font-latex-match-reference-keywords-local)
+
+(defun font-latex-match-reference-make ()
+  "Make or remake the variable `font-latex-match-reference'.
+Done using `font-latex-match-reference-keywords' as input."
+  (setq font-latex-match-reference
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-reference-keywords-local
+                        font-latex-match-reference-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-reference-keywords-set (symbol value)
+  "Update `font-latex-match-reference'.
+The function is called with SYMBOL bound to
+`font-latex-match-reference-keywords' and VALUE is the the list of
+keywords. As a side effect, the variable `font-latex-match-reference' is set."
+  (set-default symbol value)
+  (font-latex-match-reference-make))
+
+(defcustom font-latex-match-reference-keywords
+  '("nocite" "cite" "label" "pageref" "vref" "eqref" "ref"
+    "include" "input" "bibliography"
+    "index" "glossary" "footnote" "footnotemark" "footnotetext")
+  "font-latex keyword for reference face.
+e.g. \\cite[option]{key}
+  -> \\cite appears in font-lock-keyword-face
+  -> [opt] appears in font-lock-variable-name-face
+  -> {key} appears in font-lock-reference-face"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-reference-keywords-set
+  :group 'font-latex)
+
+(defvar font-latex-match-function)
+(defvar font-latex-match-function-keywords)
+(defvar font-latex-match-function-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-function-keywords'.")
+(make-variable-buffer-local 'font-latex-match-function-keywords-local)
+
+(defun font-latex-match-function-make ()
+  "Make or remake the variable `font-latex-match-function'.
+Done using `font-latex-match-function-keywords' as input."
+  (setq font-latex-match-function
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-function-keywords-local
+                        font-latex-match-function-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-function-keywords-set (symbol value)
+  "Update `font-latex-match-function'.
+The function is called with SYMBOL bound to
+`font-latex-match-function-keywords' and VALUE is the the list of
+keywords. As a side effect, the variable `font-latex-match-function' is set."
+  (set-default symbol value)
+  (font-latex-match-function-make))
+
+(defcustom font-latex-match-function-keywords
+ '("begin" "end"
+   "pagenumbering"
+   "thispagestyle" "pagestyle"
+   "nofiles" "includeonly"
+   "bibliographystyle" "documentstyle" "documentclass"
+   "newenvironment" "newcommand" "newlength" "newtheorem" "newcounter"
+   "renewenvironment" "renewcommand" "renewlength" "renewtheorem" 
+   "renewcounter"
+   "usepackage" "fbox" "mbox" "sbox" "vspace" "hspace")
+  "font-latex keyword for function face.
+e.g. \\newcommand[option]{key}
+  -> \\newcommand appears in font-lock-keyword-face
+  -> [opt] appears in font-lock-variable-name-face
+  -> {key} appears in font-lock-function-face"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-function-keywords-set
+  :group 'font-latex)
+
+(defvar font-latex-match-textual)
+(defvar font-latex-match-textual-keywords)
+(defvar font-latex-match-textual-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-textual-keywords'.")
+(make-variable-buffer-local 'font-latex-match-textual-keywords-local)
+
+(defun font-latex-match-textual-make ()
+  "Make or remake the variable `font-latex-match-textual'.
+Done using `font-latex-match-textual-keywords' as input."
+  (setq font-latex-match-textual
+        (concat
+         "\\\\" "\\("
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-textual-keywords-local
+                        font-latex-match-textual-keywords)))
+           (regexp-opt fields t))
+         "\\)\\>")
+        ))
+
+(defun font-latex-match-textual-keywords-set (symbol value)
+  "Update `font-latex-match-textual'.
+The function is called with SYMBOL bound to
+`font-latex-match-textual-keywords' and VALUE is the the list of
+keywords. As a side effect, the variable `font-latex-match-textual' is set."
+  (set-default symbol value)
+  (font-latex-match-textual-make))
+
+(defcustom font-latex-match-textual-keywords
+  '("item" ;;;FIXME: does not have an {arg} so should treated elsewhere.
+    "part" "chapter" "section" "subsection" "subsubsection" 
+    "paragraph" "subparagraph" "subsubparagraph" 
+    "title" "author" "date" "thanks" "address"
+    "caption")
+  "font-latex keywords for textual face.
+e.g. \\section[option]{key}
+  -> \\section appears in font-lock-keyword-face
+  -> [opt] appears in font-lock-variable-name-face
+  -> {key} appears in font-lock-type-face"
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-textual-keywords-set
+  :group 'font-latex)
+
+(defvar font-latex-match-warning)
+(defvar font-latex-match-warning-keywords)
+(defvar font-latex-match-warning-keywords-local nil
+  "Buffer-local keywords to add to `font-latex-match-warning-keywords'.")
+(make-variable-buffer-local 'font-latex-match-warning-keywords-local)
+
+(defun font-latex-match-warning-make ()
+  "Make or remake the variable `font-latex-match-warning'.
+Done using `font-latex-match-warning-keywords' as input."
+  (setq font-latex-match-warning
+        (concat
+         "\\\\"
+         (let ((max-specpdl-size 1000) ;workaround for insufficient default
+               (fields (append
+                        font-latex-match-warning-keywords-local
+                        font-latex-match-warning-keywords)))
+           (regexp-opt fields t))
+);;         "\\)")
+        ))
+
+(defun font-latex-match-warning-keywords-set (symbol value)
+  "Update `font-latex-match-warning'.
+The function is called with SYMBOL bound to
+`font-latex-match-warning-keywords' and VALUE is the the list of
+keywords. As a side effect, the variable `font-latex-match-warning' is set."
+  (set-default symbol value)
+  (font-latex-match-warning-make))
+
+(defcustom font-latex-match-warning-keywords
+  '("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
+    "enlargethispage" "nolinebreak" "linebreak" "newline"
+    "-" "\\" "\\*" 
+    "displaybreak" "allowdisplaybreaks")
+  "font-latex keywords for warning face."
+  :type '(repeat (string :tag "keyword"))
+  :set 'font-latex-match-warning-keywords-set
+  :group 'font-latex)
+
+(defun font-latex-match-warning-function (limit)
+  "Find `font-latex-match-warning' keywords for font-lock"
+  (when (re-search-forward  font-latex-match-warning limit t)
+    (goto-char (match-end 0))
+    (store-match-data (list (match-beginning 0) (point)))
+    t))
 
 (defvar font-latex-keywords-1
-  (list
-   ;; FIXME: Maybe I should put this in a function, use override but let
-   ;;        the function determine if commented-out.
-   (list (concat 
-          "\\\\" "\\("
-;;; (regexp-opt
-;;;  '("nopagebreak" "pagebreak" "newpage" "clearpage" "cleardoublepage"
-;;;    "enlargethispage" "nolinebreak" "linebreak" "newline"
-;;;    "-" "\\" "\\*" "displaybreak" "allowdisplaybreaks"))
-          "\\\\\\*\\|allowdisplaybreaks\\|clear\\(doublepage\\|page\\)\\|"
-          "displaybreak\\|enlargethispage\\|linebreak\\|"
-          "n\\(ew\\(line\\|page\\)\\|o\\(linebreak\\|pagebreak\\)\\)\\|"
-          "pagebreak\\|[\\-]"
-          
-          "\\)")
-	 '(0 font-latex-warning-face))
-   '("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)        ;;; $$...$$
-   '(font-latex-match-quotation . font-latex-string-face)     ;;; ``...''
-   '(font-latex-match-font-outside-braces		      ;;;\textit{text}
+  '((font-latex-match-warning-function . font-latex-warning-face)
+    ("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)        ;;; $$...$$
+    (font-latex-match-quotation . font-latex-string-face)     ;;; ``...''
+    (font-latex-match-font-outside-braces		      ;;;\textit{text}
      (0 font-lock-keyword-face
         append                         ;Override? [t 'keep 'prepend 'append]
         ;; Can't use prepend because that overwrites syntax fontification
@@ -355,7 +493,7 @@ prone to infinite loop bugs.")))
      (1 font-latex-italic-face append t)
      (2 font-latex-bold-face append t)
      (3 font-lock-type-face append t))
-   '(font-latex-match-font-inside-braces		      ;;;{\it text}
+    (font-latex-match-font-inside-braces		      ;;;{\it text}
      (0 font-lock-keyword-face append t)
      (1 font-latex-italic-face append t)
      (2 font-latex-bold-face append t)
@@ -402,127 +540,61 @@ prone to infinite loop bugs.")))
 (eval-when-compile
   (require 'cl))
 
-(cond
- ((fboundp 'defface)
-  (defface font-latex-bold-face
-    '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
-      (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))
-      (((class color) (background light)) 
-       (:foreground "DarkOliveGreen" :bold t ))
-      (((class color) (background dark)) (:foreground "OliveDrab" :bold t ))
-      (t (:bold t)))
-    "Font Lock mode face used to bold LaTeX."
-    :group 'font-latex-highlighting-faces)
-  
-  (defface font-latex-italic-face
-    '((((class grayscale) (background light)) 
-       (:foreground "DimGray" :italic t))
-      (((class grayscale) (background dark)) 
-       (:foreground "LightGray" :italic t))
-      (((class color) (background light)) 
-       (:foreground "DarkOliveGreen" :italic t ))
-      (((class color) (background dark)) 
-       (:foreground "OliveDrab" :italic t ))
-      (t (:italic t)))
-    "Font Lock mode face used to highlight italic LaTeX."
-    :group 'font-latex-highlighting-faces)
+(defface font-latex-bold-face
+  '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
+    (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))
+    (((class color) (background light)) 
+     (:foreground "DarkOliveGreen" :bold t ))
+    (((class color) (background dark)) (:foreground "OliveDrab" :bold t ))
+    (t (:bold t)))
+  "Font Lock mode face used to bold LaTeX."
+  :group 'font-latex-highlighting-faces)
 
-  (defface font-latex-math-face
-    '((((class grayscale) (background light)) 
-       (:foreground "DimGray" :underline t))
-      (((class grayscale) (background dark)) 
-       (:foreground "LightGray" :underline t))
-      (((class color) (background light)) (:foreground "SaddleBrown"))
-      (((class color) (background dark))  (:foreground "burlywood"))
-      (t (:underline t)))
-    "Font Lock mode face used to highlight math in LaTeX."
-    :group 'font-latex-highlighting-faces)
+(defface font-latex-italic-face
+  '((((class grayscale) (background light)) 
+     (:foreground "DimGray" :italic t))
+    (((class grayscale) (background dark)) 
+     (:foreground "LightGray" :italic t))
+    (((class color) (background light)) 
+     (:foreground "DarkOliveGreen" :italic t ))
+    (((class color) (background dark)) 
+     (:foreground "OliveDrab" :italic t ))
+    (t (:italic t)))
+  "Font Lock mode face used to highlight italic LaTeX."
+  :group 'font-latex-highlighting-faces)
 
-  (defface font-latex-sedate-face
-    '((((class grayscale) (background light)) (:foreground "DimGray"))
-      (((class grayscale) (background dark))  (:foreground "LightGray"))
-      (((class color) (background light)) (:foreground "DimGray"))
-      (((class color) (background dark))  (:foreground "LightGray"))
+(defface font-latex-math-face
+  '((((class grayscale) (background light)) 
+     (:foreground "DimGray" :underline t))
+    (((class grayscale) (background dark)) 
+     (:foreground "LightGray" :underline t))
+    (((class color) (background light)) (:foreground "SaddleBrown"))
+    (((class color) (background dark))  (:foreground "burlywood"))
+    (t (:underline t)))
+  "Font Lock mode face used to highlight math in LaTeX."
+  :group 'font-latex-highlighting-faces)
+
+(defface font-latex-sedate-face
+  '((((class grayscale) (background light)) (:foreground "DimGray"))
+    (((class grayscale) (background dark))  (:foreground "LightGray"))
+    (((class color) (background light)) (:foreground "DimGray"))
+    (((class color) (background dark))  (:foreground "LightGray"))
    ;;;(t (:underline t))
-      )
-    "Font Lock mode face used to highlight sedate stuff in LaTeX."
-    :group 'font-latex-highlighting-faces)
+    )
+  "Font Lock mode face used to highlight sedate stuff in LaTeX."
+  :group 'font-latex-highlighting-faces)
 
-  (copy-face 'font-lock-string-face 'font-latex-string-face)
-  (if (facep 'font-lock-warning-face)
-      (copy-face 'font-lock-warning-face 'font-latex-warning-face)
-    (defface font-latex-warning-face
-      '((((class grayscale)(background light))(:foreground "DimGray" :bold t))
-        (((class grayscale)(background dark))(:foreground "LightGray" :bold t))
-        (((class color)(background light))(:foreground "red" :bold t ))
-        (((class color)(background dark))(:foreground "red" :bold t ))
-        (t (:bold t)))
-      "Font Lock for LaTeX major keywords."
-      :group 'font-latex-highlighting-faces)))
- ((and (fboundp 'font-lock-make-faces) (boundp 'font-lock-face-attributes))
-  (if (not font-lock-face-attributes)
-      ;; Otherwise I overwrite fock-lock-face-attributes.
-      (font-lock-make-faces))
-  (unless (assq 'font-latex-sedate-face font-lock-face-attributes)
-    (cond 
-     ;; FIXME: Add better conditions for grayscale.
-     ((memq font-lock-display-type '(mono monochrome grayscale greyscale
-                                     grayshade greyshade))
-      (setq font-lock-face-attributes
-            (append 
-             font-lock-face-attributes
-             (list '(font-latex-bold-face nil nil t nil nil)
-                   '(font-latex-italic-face nil nil nil t nil)
-                   '(font-latex-math-face nil nil nil nil t)
-                   '(font-latex-sedate-face nil nil nil t nil)
-                   (list
-                    'font-latex-warning-face
-                    (cdr (assq 'background-color (frame-parameters)))
-                    (cdr (assq 'foreground-color (frame-parameters)))
-                    nil nil nil)))))
-     ((eq font-lock-background-mode 'light) ; light colour background
-      (setq font-lock-face-attributes
-           (append 
-            font-lock-face-attributes
-                 ;;;FIXME: These won't follow font-lock-type-face's changes.
-                 ;;;       Should I change to a (copy-face) scheme?
-            '((font-latex-bold-face "DarkOliveGreen" nil t nil nil)
-              (font-latex-italic-face "DarkOliveGreen" nil nil t nil)
-              (font-latex-math-face "SaddleBrown")
-              (font-latex-sedate-face "grey50")
-              (font-latex-warning-face "red" nil t nil nil)))))
-    (t			; dark colour background
-     (setq font-lock-face-attributes
-           (append 
-            font-lock-face-attributes
-            '((font-latex-bold-face "OliveDrab" nil t nil nil)
-              (font-latex-italic-face "OliveDrab" nil nil t nil)
-              (font-latex-math-face "burlywood")
-	      ;; good are > LightSeaGreen, LightCoral, coral, orchid, orange
-              (font-latex-sedate-face "grey60")
-              (font-latex-warning-face "red" nil t nil nil))))))))
- (t
-  ;;; XEmacs19:
-  (make-face 'font-latex-string-face "Face to use for LaTeX string.")
-  (copy-face 'font-lock-string-face 'font-latex-string-face)
-
-  (make-face 'font-latex-bold-face "Face to use for LaTeX bolds.")
-  (copy-face 'font-lock-type-face 'font-latex-bold-face)
-  (make-face-bold 'font-latex-bold-face)
-
-  (make-face 'font-latex-italic-face "Face to use for LaTeX italics.")
-  (copy-face 'font-lock-type-face 'font-latex-italic-face)
-  (make-face-italic 'font-latex-italic-face)
-
-  (make-face 'font-latex-math-face "Face to use for LaTeX math.")
-  (make-face 'font-latex-sedate-face "Face to use for LaTeX minor keywords.")
-  (make-face 'font-latex-warning-face "Face to use for LaTeX major keywords.")
-  (make-face-bold 'font-latex-warning-face)
-  ;; XEmacs uses a tag-list thingy to determine if we are using color
-  ;;  or mono (and I assume a dark background).
-  (set-face-foreground 'font-latex-math-face "green4" 'global nil 'append)
-  (set-face-foreground 'font-latex-sedate-face "grey50" 'global nil 'append)
-  (set-face-foreground 'font-latex-warning-face "red" 'global nil 'append)))
+(copy-face 'font-lock-string-face 'font-latex-string-face)
+(if (facep 'font-lock-warning-face)
+    (copy-face 'font-lock-warning-face 'font-latex-warning-face)
+  (defface font-latex-warning-face
+    '((((class grayscale)(background light))(:foreground "DimGray" :bold t))
+      (((class grayscale)(background dark))(:foreground "LightGray" :bold t))
+      (((class color)(background light))(:foreground "red" :bold t ))
+      (((class color)(background dark))(:foreground "red" :bold t ))
+      (t (:bold t)))
+    "Font Lock for LaTeX major keywords."
+    :group 'font-latex-highlighting-faces))
 
 ;;;###autoload
 (defun font-latex-setup ()
@@ -545,7 +617,7 @@ prone to infinite loop bugs.")))
 				       instance (current-buffer))))
 	      (built-in-face-specifiers))))
    (t
-    (if (fboundp 'font-lock-make-faces) (font-lock-make-faces))
+  ;;(if (fboundp 'font-lock-make-faces) (font-lock-make-faces))
     (make-local-variable 'font-lock-string-face)
     (setq font-lock-string-face font-latex-math-face
 	  font-latex-string-face (default-value 'font-lock-string-face))))
@@ -822,8 +894,8 @@ Sets `match-data' so that:
  subexpression 1 is the contents of any following [...] forms 
  subexpression 2 is the contents of any following {...} forms.  
 Returns nil if none of KEYWORDS is found."
-  (let ((we-moved (font-latex-check-cache 
-                   'font-latex-match-command-cache keywords limit)))
+;;(let ((we-moved (font-latex-check-cache 
+;;                 'font-latex-match-command-cache keywords limit)))
     (when (re-search-forward keywords limit t)
       (cond
        ((font-latex-commented-outp)
@@ -888,7 +960,7 @@ Returns nil if none of KEYWORDS is found."
             (font-latex-set-cache 
              'font-latex-match-command-cache 
              kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
-          t))))))
+          t)))))
 
 (defvar font-latex-match-font-cache nil
   "Cache start of unterminated LaTeX font-changing commands to fontify")

@@ -1,3 +1,14 @@
+2003-04-14  Peter S Galbraith  <psg@debian.org>
+
+	* font-latex.el (font-latex-match-*-keywords): New user
+	customizable variables to add fontification keywords.
+	See `M-x customize-group [RET] font-latex'.
+	(font-latex-match-*-keywords-local): New buffer-local variables to
+	be used by elisp style file writers.
+	(font-latex-match-*-keywords-set): Support for defcustoms.
+	(font-latex-match-*-make): Build the actual font-lock variables
+	from the `font-latex-match-*-keywords' defcustoms.
+
 2003-04-14  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Customizing): hilit-LaTeX.el deleted.
