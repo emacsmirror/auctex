@@ -1,3 +1,10 @@
+2002-12-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* latex.el (LaTeX-optop, LaTeX-optcl, LaTeX-default-options,
+	LaTeX-figure-label, LaTeX-table-label, LaTeX-equation-label,
+	LaTeX-eqnarray-label, LaTeX-style-list): remove buffer-local
+	declarations where they don't make sense.	
+
 2002-12-09  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-style-list): Added some supported classes.
