@@ -1,3 +1,7 @@
+2003-02-22  David Kastrup  <dak@gnu.org>
+
+	* tex-wizard.el: A first sketch of the idea.
+
 2003-02-17  Piet van Oostrum  <piet@cs.uu.nl>
 
 	* tex.el (TeX-arg-literal): Remove illegal and superfluous &optional.
