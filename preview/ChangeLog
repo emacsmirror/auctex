@@ -1,3 +1,34 @@
+2002-03-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-TeX-bb): comment sanitized.
+	(preview-gs-init-string, preview-ps-file, preview-gs-dsc): new
+	variables.
+	(preview-fast-conversion): Set this customizable variable for an
+	impressive speedup, particularly of the DviPS pass.
+	(preview-dvips-command): moved.
+	(preview-fast-dvips-command): New command for fast conversion.
+	(preview-gs-restart): send initialization string to gs
+	(preview-gs-open): initialize preview-gs-init-string
+	(preview-gs-open): pass preview-fast-conversion into
+	preview-start-dvips
+	(preview-dsc-parse, preview-gs-dsc-cvx) 
+	(preview-prepare-fast-conversion): New functions for using DSC
+	comments.
+	(preview-gs-dvips-sentinel): read DSC in.
+	(preview-gs-place): remember snippet in 'queued property.
+	(preview-mouse-open-eps): allow opening at position.
+	(preview-gs-flag-error): take preview-gs-init-string into
+	account, generate other message for fast PS conversion.
+	(preview-gs-transact): allow non-empty stack in prompt, use
+	preview-latex-do command in GhostScript.
+	(preview-place-preview): comment correction, no eps file if ps
+	generated.
+	(preview-analyze-error): doc change.
+	(preview-start-dvips): allow for fast version.
+
+	* prv-emacs.el (preview-ps-image): Allow optional bounding box
+	from TeX.
+
 2002-03-21  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{Preview attaching commands}): Backward
