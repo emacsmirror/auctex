@@ -17,7 +17,7 @@ MKINSTALLDIRS = ../mkinstalldirs
 
 all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi
 
-install: install-texmf install-texmf-docs
+install: install-texmf install-texmf-doc
 
 install-texmf: $(TEXMFGEN) 
 	-$(MKINSTALLDIRS) $(previewtexmfdir)
