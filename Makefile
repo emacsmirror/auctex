@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.7k
+# Version: 9.7l
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -57,6 +57,8 @@ CP = cp -p
 ##  BELOW THIS LINE ON YOUR OWN RISK!
 ##----------------------------------------------------------------------
 
+.SUFFIXES: .el .elc .texi 
+
 SHELL = /bin/sh
 
 FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
@@ -98,7 +100,7 @@ all:	lisp
 lisp:
 	$(ELC) $(AUCSRC) $(STYLESRC)
 
-some:	$(AUCELC) style/*.elc
+some:	$(AUCELC) $(STYLESRC:.el=.elc)
 
 install:	install-lisp
 

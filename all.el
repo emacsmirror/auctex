@@ -3,14 +3,14 @@
 ;; Copyright (C) 1985, 1986, 1987, 1992, 1994 Free Software Foundation, Inc.
 ;; Copyright (C) 1994 Per Abrahamsen
 
-;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
-;; Version: $Id: all.el,v 5.1 1994-08-10 17:35:07 amanda Exp $
+;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
+;; Version: $Id: all.el,v 5.2 1997-03-04 10:29:42 abraham Exp $
 ;; Keywords: matching
 
 ;; LCD Archive Entry:
-;; all|Per Abrahamsen|abraham@iesd.auc.dk|
+;; all|Per Abrahamsen|abraham@dina.kvl.dk|
 ;; Edit all lines matching a given regexp|
-;; $Date: 1994-08-10 17:35:07 $|$Revision: 5.1 $|~/misc/all.Z|
+;; $Date: 1997-03-04 10:29:42 $|$Revision: 5.2 $|~/misc/all.Z|
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

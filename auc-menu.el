@@ -1,11 +1,11 @@
 ;;; auc-menu.el - Easy menu support for Emacs 19 and XEmacs.
 ;; 
-;; $Id: auc-menu.el,v 5.9 1995-02-14 19:44:00 amanda Exp $
+;; $Id: auc-menu.el,v 5.10 1997-03-04 10:29:43 abraham Exp $
 ;;
 ;; LCD Archive Entry:
-;; auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|
+;; auc-menu|Per Abrahamsen|abraham@dina.kvl.dk|
 ;; Easy menu support for Emacs 19 and XEmacs|
-;; $Date: 1995-02-14 19:44:00 $|$Revision: 5.9 $|~/misc/auc-menu.el.gz|
+;; $Date: 1997-03-04 10:29:43 $|$Revision: 5.10 $|~/misc/auc-menu.el.gz|
 
 ;; Copyright (C) 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
 ;;

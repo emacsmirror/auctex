@@ -1,3 +1,15 @@
+Tue Mar 04 11:29:23 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7l released.
+
+Tue Mar  4 11:27:43 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (some): Don't use `style/*.elc'.
+
+Thu Feb 27 11:02:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-electric-macro): Default to space after dot.
+
 Wed Feb 26 23:15:27 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7k released.
