@@ -1,3 +1,17 @@
+2004-04-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-back-to-indentation): Use `beginning-of-line'
+	instead of `move-to-left-margin' as it is faster and we don't use
+	the margin anyway.
+	(LaTeX-fill-region-as-para-do): Use `point-max' for correctly
+	determining the end of the filling loop in case of a code comment.
+	Narrow to region in any case to simplify this determination in
+	case there is no code comment.
+	(LaTeX-fill-move-to-break-point): Fix compatibility code for
+	getting the initial break point.  In case there is no valid break
+	point on the way towards the beginning of the line, look down the
+	line.
+
 2004-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-output-view-style): Remove option for landscape in
