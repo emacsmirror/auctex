@@ -1,7 +1,7 @@
-Installing preview-latex should be simple: merely @code{./configure},
-@code{make}, and @code{make install}. Note that unlike most emacs
-add-ins, preview-latex consists of a @TeX{} part and an Emacs part (that
-uses AUC @TeX{}). This makes configuration a bit trickier than normal.
+Installing @previewlatex{} should be simple: merely @code{./configure},
+@code{make}, and @code{make install}.  Note that unlike most emacs
+add-ins, @previewlatex{} consists of a @TeX{} part and an Emacs part (that
+uses AUC @TeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
 
 @section Prerequisites
@@ -9,15 +9,15 @@ Please read through this document fully before installing anything.
 @itemize @bullet
 @item A recent version of Emacs 21
 
-The first version without known quirks and bugs affecting preview-latex
-is Emacs-21.1. Only very recent pretest versions before that have slight
-chances of working at all. Since preview-latex heavily exercises new
+The first version without known quirks and bugs affecting @previewlatex{}
+is Emacs-21.1.  Only very recent pretest versions before that have slight
+chances of working at all.  Since @previewlatex{} heavily exercises new
 features of Emacs 21, getting the newest release is a good idea.
 
 @item A working AUC @TeX{} installation
 
-You need a working AUC @TeX{} installation. AUC @TeX{} can be found at
-@uref{http://mirrors.sunsite.dk/auctex/www/auctex/}. All fairly recent
+You need a working AUC @TeX{} installation.  AUC @TeX{} can be found at
+@uref{http://mirrors.sunsite.dk/auctex/www/auctex/}.  All fairly recent
 versions should work.
 
 @item A working La@TeX{} installation
@@ -29,7 +29,7 @@ distributions.
 @item A recent GhostScript
 
 This is not really needed to @emph{install} the package, but will be
-required for stable operation of it. Most problems we have encountered
+required for stable operation of it.  Most problems we have encountered
 come from interaction with not so recent versions of GhostScript, so it
 is a good idea to have, say GhostScript 6.51 or later installed.
 @end itemize
@@ -43,7 +43,7 @@ various files will be.  To do so, run
 ./configure @var{options}
 @end example
 
-(Note: if you have fetched preview-latex from @acronym{CVS} rather than
+(Note: if you have fetched @previewlatex{} from @acronym{CVS} rather than
 a regular release, you will have to first generate @file{./configure} by
 running @code{autogen.sh} in the preview directory.)
 
@@ -63,16 +63,16 @@ If AUC @TeX{} is installed in a non-standard location (not in
 
 @item --with-texmf=/dir@*--with-preview-dir=/dir
 Both of these options can be used to specify the location to install the
-preview TeX files. They are not necessary for most TeX installs, but may
+preview TeX files.  They are not necessary for most TeX installs, but may
 be used if you don't like the directory that configure is suggesting.
 Using @code{--with-texmf=/dir} you can specify where the @TeX{} TDS
 directory hierarchy resides, and the @TeX{} files will be installed in
-@code{/dir/tex/latex/preview}. If you want to specify an exact directory
+@code{/dir/tex/latex/preview}.  If you want to specify an exact directory
 for the preview @TeX{} files, use @code{--with-preview-dir=/dir}. In
 this case, the files will be placed in /dir.
 
 @item --with-lispdir=/dir
-This tells where to install Emacs Lisp files. Normally, this option is
+This tells where to install Emacs Lisp files.  Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
 @end table
@@ -87,7 +87,7 @@ make
 
 @noindent 
 at the prompt to byte-compile the lisp files, extract the @TeX{} files
-and build the documentation files. To install the files into the
+and build the documentation files.  To install the files into the
 locations chosen earlier, type
 
 @example
@@ -104,7 +104,7 @@ You need to place a few lines in your personal @file{.emacs} file (or a
 site-wide configuration file).
 
 If you used the option @code{--with-lispdir}, you have to make sure
-that the directory where you installed the lisp files of preview-latex
+that the directory where you installed the lisp files of @previewlatex{}
 is in Emacs' load-path variable.  This could mean, for example, adding
 the line @code{(add-to-list 'load-path "~/elisp/preview")} to your
 @file{.emacs} file.
@@ -119,13 +119,13 @@ Next put the following lines into your @file{.emacs} file:
 
 This will make Emacs load @file{preview.el} and let it install itself
 into AUC @TeX{} when you first load a La@TeX{} file (be sure to have AUC
-@TeX{} up and working). @kbd{C-c C-c g @key{RET}} should then give you a
-graphics preview. You can customize the default option set and other
+@TeX{} up and working).  @kbd{C-c C-c g @key{RET}} should then give you a
+graphics preview.  You can customize the default option set and other
 settings of the Emacs package by entering @kbd{M-x customize-group
 @key{RET} preview @key{RET}}.
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
-reports. See the @file{PROBLEMS} file or @ref{Known problems} for a list
+reports.  See the @file{PROBLEMS} file or @ref{Known problems} for a list
 of known problems.
 
