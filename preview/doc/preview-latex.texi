@@ -11,7 +11,7 @@
 @tolerance 10000
 @end iftex
 
-@c Date: Nov 28 2001
+@c Date: Jan 18 2001
 
 @finalout
 @titlepage
@@ -20,10 +20,10 @@
 @subtitle Version 0.5.8.2
   
 @author by David Kastrup and Alan Shutko 
-@author manual by Jan-Åke Larsson
+@author manual by Jan-@AA{}ke Larsson
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001, David Kastrup, Alan Shutko, and Jan-Åke
+Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and Jan-@AA{}ke
 Larsson
  
 Permission is granted to make and distribute verbatim copies of
@@ -80,7 +80,7 @@ NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.
 
-David Kastrup, Alan Shutko, and Jan-Åke Larsson
+David Kastrup, Alan Shutko, and Jan-@AA{}ke Larsson
 
 @end ifinfo
 
@@ -162,15 +162,15 @@ objects in the current buffer. Already preset previews are re-generated.
 @cindex Generate Preview
 
 @item C-c C-p C-p
-De/Preview ``this''. If the cursor is positioned on or inside of a
+De/Preview at point. If the cursor is positioned on or inside of a
 preview area, this toggles its visibility, regenerating the preview if
 necessary. If not, it will run the surroundings through preview. The
 surroundings include all areas up to the next valid preview, unless
 invalid previews occur before, in which case the area will include the
 last such preview.
 @kindex C-c C-p C-p
-@findex @code{preview-dwim}
-@cindex De/Preview ``this''
+@findex @code{preview-at-point}
+@cindex De/Preview at point
 
 @item C-c C-p C-s
 Run preview on this LaTeX section.
@@ -190,14 +190,9 @@ Run preview on current region.
 @findex @code{preview-region}
 @cindex Preview region
 
-@item C-c C-p C-c
-Key in this to type a preview-latex command. (Currently available
-commands are ...)
-@kindex C-c C-p C-c
-@cindex Prefix Command
-
 @item C-c C-p C-c C-b			
-Clear out all previews in current buffer.
+Clear out all previews in current buffer.  This makes the current buffer
+lose all previews.
 @kindex C-c C-p C-c C-b
 @findex @code{preview-clearout-buffer}
 @cindex Clearout previews
@@ -215,16 +210,16 @@ Remember to look at the functions in AUC @TeX{} too. To these, the
 following are added:
 
 @table @code
-@item preview-dwim
-De/Preview ``this''. If the cursor is positioned on or inside of a
+@item preview-at-point
+De/Preview at point. If the cursor is positioned on or inside of a
 preview area, this toggles its visibility, regenerating the preview if
 necessary. If not, it will run the surroundings through preview. The
 surroundings include all areas up to the next valid preview, unless
 invalid previews occur before, in which case the area will include the
 last such preview.
 @kindex C-c C-p C-p
-@findex @code{preview-dwim}
-@cindex De/Preview ``this''
+@findex @code{preview-at-point}
+@cindex De/Preview at-point
 
 @item preview-section
 Run preview on this LaTeX section.
