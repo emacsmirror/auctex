@@ -1,6 +1,6 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.6.1
+Version: 	0.7
 Release: 	1
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
@@ -32,7 +32,7 @@ version is for GNU Emacs 21.
 # and you won't get those pesky CVS directories.
 #./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
-%configure --with-texmf=%{_datadir}/texmf
+%configure --with-texmf-dir=%{_datadir}/texmf
 make
 
 %install
