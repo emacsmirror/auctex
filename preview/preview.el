@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.202 2004-04-10 22:56:15 dakas Exp $
+;; $Id: preview.el,v 1.203 2004-04-10 23:00:10 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2239,7 +2239,7 @@ later while in use."
 
 (defun preview-parse-tightpage (string)
   "Build tightpage vector from STRING,"
-  (read (concat "[" str "]")))
+  (read (concat "[" string "]")))
 
 (defvar preview-parse-variables
   '(("Fontsize" preview-parsed-font-size
@@ -2940,7 +2940,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.202 $"))
+	(rev "$Revision: 1.203 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2951,7 +2951,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-10 22:56:15 $"))
+    (let ((date "$Date: 2004-04-10 23:00:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
