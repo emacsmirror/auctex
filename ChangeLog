@@ -1,5 +1,8 @@
 2005-01-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex-bar.el (Commentary): Don't mention stuff done by
+	configure/make in the instructions.
+
 	* doc/auctex.texi: Update copyright.
 	(Mathematics): Explain how to enable LaTeX-math-mode by default.
 	Suggested by Chris Wallace <c.wallace@qmul.ac.uk>.

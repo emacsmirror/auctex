@@ -28,26 +28,21 @@
 
 ;;; Use of this preliminary version:
 
-;; 1) Load this file.
-
-;; 2) Have the button images (from auctex/images folder on CVS) in
-;;    your `load-path'.
-
-;; 3) Add `LaTeX-install-toolbar' to `LaTeX-mode-hook'.
+;; -  Add `LaTeX-install-toolbar' to `LaTeX-mode-hook'.
 
 ;; Special requirements for the use of experimental symbol-toolbar:
 
-;; 4) Customize `TeX-bar-LaTeX-buttons', adding the label
+;; -  Customize `TeX-bar-LaTeX-buttons', adding the label
 ;;    `LaTeX-symbols-experimental' at the end.
 
-;; 5) You should have a folder called "symb-pics" with the pics of the
+;; -  You should have a folder called "symb-pics" with the pics of the
 ;;    symbols (xpm format is a good one), and the *parent* of this
 ;;    folder should be in `load-path'.
 
-;; Did you read carefully item 5)?  I will say again: the folder
-;; "symb-pics" should not be in `load-path', but its parent.
+;; Did you read carefully this item?  I will say again: the folder
+;; "symb-pics" should *not* be in `load-path', but its *parent*.
 
-;; 6) each image file is named after the command that it represents in
+;; -  each image file is named after the command that it represents in
 ;;    the following rules: the base name is the name of the command
 ;;    without the escape character "\", like \delta -> "delta.xpm";
 ;;    however, since in some OS filenames are case insensitive, all
