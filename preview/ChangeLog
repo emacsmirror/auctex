@@ -1,5 +1,10 @@
 2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/preview-latex.texi (On EPS previews): png16m is default
+	instead of png256.
+
+	* doc/install.texi: Document 8bit problems.
+
 	* README.CVS: updated.
 
 	* configure.in: update to autoconf 2.52.
