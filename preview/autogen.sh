@@ -1,7 +1,8 @@
 #!/bin/sh
 autoconf
 grep -q '^MY_LANG=' configure || {
-  echo "Trying to deal with outdated autoconf"
+  echo "Using an old autoconf, are we?"
+  echo "Fixing the two known issues now."
 # Two fixes: Save LANG and LC_CTYPE before configure munges it
 # Account for difference between AC_INIT in 2.13 and 2.52
   ed -s configure <<\EOF
