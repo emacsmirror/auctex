@@ -1,5 +1,8 @@
 2005-03-28  David Kastrup  <dak@gnu.org>
 
+	* tex.el: Change maintainer address.
+	(TeX-submit-bug-report): Change bug reporting address.
+
 	* doc/wininstall.texi: Change contact info.
 
 	* doc/intro.texi (Introduction): Change contact info.

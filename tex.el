@@ -5,7 +5,7 @@
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.492 $"))
+	    (rev "$Revision: 5.493 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-23 14:16:34 $"))
+    (let ((date "$Date: 2005-03-28 02:45:27 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -4445,7 +4445,7 @@ configuration."
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
-   "auc-tex@sunsite.dk"
+   "bug-auctex@gnu.org"
    (concat "AUCTeX " AUCTeX-version
 	   (if (string-match "^CVS-" AUCTeX-version)
 	       (format " (%s)" AUCTeX-date)
