@@ -26,12 +26,12 @@ at least Emacs-21.1, XEmacs porters welcome.
 %build
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED!
-test -a README || ./autogen.sh
+test -a README || ./autogen.sh 
+rm -r patches/CVS # Simplifies the files section
 
 %configure
 make
 # The below will make the package build without Alan's autoconf fix
-rm doc/preview-latex.info
 test -a doc/preview-latex.info || (cd doc; make preview-latex.info)
 
 %install
@@ -70,6 +70,7 @@ texhash /usr/share/texmf
 %{_infodir}/preview-latex.info.gz
 %doc ChangeLog circ.tex COPYING INSTALL PROBLEMS README
 %doc README-preview RELEASE TODO doc/preview-latex.dvi
+%doc patches
 
 %changelog
 * Thu Feb 14 2002 Jan-Ake Larsson <jalar@imf.au.dk>
