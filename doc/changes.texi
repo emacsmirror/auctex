@@ -26,6 +26,11 @@ and probably more.@refill
 
 @itemize @bullet
 @item
+Fixed problem with @file{filladapt} defeating La@TeX{} mode's own
+indentation algorithm.  Thanks to Piet van Oostrum
+@samp{<piet@@cs.ruu.nl>}.
+
+@item
 Made environments and sections selectable from the menu bar.
 
 @item

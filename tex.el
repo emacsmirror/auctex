@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.15 1994-04-25 13:17:57 amanda Exp $
+;; Version: $Id: tex.el,v 5.16 1994-04-26 14:53:29 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -1063,6 +1063,13 @@ of AmS-TeX-mode-hook."
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
+
+  ;; Defeat filladapt
+  (if (not (boundp 'filladapt-function-table))
+      ()
+    (make-local-variable 'auto-fill-function)
+    (setq auto-fill-function
+	  (cdr (assoc 'do-auto-fill filladapt-function-table))))
 
   ;; Redefine some standard varaibles
   (make-local-variable 'paragraph-start)
