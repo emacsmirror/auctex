@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{451}
+%\CheckSum{496}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.25 $
+%  \rcskey \version CVS-$Revision: 1.26 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-11-20 13:28:14 $
+%\rcskey\next $Date: 2001-11-30 19:25:54 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -177,10 +177,21 @@
 %\item[|\char`{\char`}|] indicates the same.  Again, be sure to have that
 %additional level of braces around the whole argument specification.
 %\end{description}
+%\DescribeMacro{\PreviewMacro*}
+%A similar invocation \cmd{\PreviewMacro*} simply throws the macro and
+%all of its arguments declared in the manner above away.  This is
+%mostly useful for having things like \cmd{\footnote} not do their
+%magic on their arguments.  More often than not, you don't want to
+%declare any arguments to scan to \cmd{\PreviewMacro*} since you would
+%want the remaining arguments to be treated as usual text and typeset in
+%that manner instead of being thrown away.  An exception might be,
+%say, sort keys for \cmd{\cite}.
 %
 %\DescribeMacro{\PreviewEnvironment} The macro
 %\cmd{\PreviewEnvironment} works just as
 %\cmd{\PreviewMacro} does, only for environments.
+%\DescribeMacro{\PreviewEnvironment*} And the same goes for
+%\cmd{\PreviewEnvironment*} as compared to \cmd{\PreviewMacro*}.
 %
 %\DescribeMacro{\PreviewSnarfEnvironment} This macro does not typeset the
 %original environment inside of a preview box, but instead typesets
@@ -210,7 +221,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.25 $
+   \reserved@a\reserved@b CVS-$Revision: 1.26 $
 \else
    \begingroup
       \lccode`-=`.
@@ -219,7 +230,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-11-20 13:28:14 $
+\reserved@a\next $Date: 2001-11-30 19:25:54 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
@@ -323,8 +334,17 @@
 \global\pr@snippet=1
 %    \end{macrocode}
 %\end{macro}
+%\begin{macro}{\pr@protect}
+%  This macro gets one argument which is unpacked and executed in
+%  typesetting situations where we are not yet inside of a preview.
+%    \begin{macrocode}
+\def\pr@protect{\ifx\protect\@typeset@protect
+  \ifpr@outer \expandafter\expandafter\expandafter
+     \@secondoftwo\fi\fi\@gobble}
+%    \end{macrocode}
+%\end{macro}
 %\begin{macro}{\pr@protect@ship}
-%  Let's begin with the above mentioned \cmd{\pr@protect@ship}.  This
+%  Now for the above mentioned \cmd{\pr@protect@ship}.  This
 %  gets three arguments.  The first is what to do at the beginning of
 %  the preview, the second what to do at the end, the third is the
 %  macro where we stored the original definition.
@@ -334,8 +354,8 @@
 %  own.  No better or worse protection than the original.  And we only
 %  do anything different when \cmd{\ifpr@outer} turns out to be true.
 %    \begin{macrocode}
-\def\pr@protect@ship{\ifx\protect\@typeset@protect
-   \expandafter\pr@startbox\else \expandafter\@gobbletwo \fi}
+\def\pr@protect@ship{\pr@protect{\@firstoftwo\pr@startbox}%
+   \@gobbletwo}
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@box}
@@ -565,17 +585,45 @@
 %
 %\subsection{Preview attaching commands}
 %  \begin{macro}{\PreviewMacro}
-%  As explained above.
+%  As explained above. Detect possible |*| and call appropriate macro.
 %    \begin{macrocode}
-\newcommand\PreviewMacro[2][]{%
+\def\PreviewMacro{\@ifstar\pr@starmacro\pr@macro}
+%    \end{macrocode}
+%  The version without |*| is now rather straightforward.
+%  \begin{macro}{\pr@macro}
+%    \begin{macrocode}
+\newcommand*\pr@macro[2][]{%
    \pr@advise@ship{#2}{\pr@callafter\pr@endbox#1\pr@endparse}{}}
 %    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \begin{macro}{PreviewMacro*}
+%  \begin{macro}{\pr@protect@star}
+%  \begin{macro}{\pr@stargobble}
+%  \begin{macro}{\pr@starmacro}
+%  The version with |*| has to parse the arguments, then throw them
+%  away.  Some internal macros first, then the interface call.
+%    \begin{macrocode}
+\def\pr@protect@star#1{\pr@protect{%
+    \pr@callafter\pr@seq!#1\pr@endparse\pr@stargobble}}
+\def\pr@stargobble#1\pr@seq{}
+\newcommand*\pr@starmacro[2][]{\toks@{%
+    \pr@protect@star{#1}}%
+  \pr@advise#2{\the\toks@\noexpand##1}}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
 %\end{macro}
 %\begin{macro}{\PreviewEnvironment}
 %  Actually, this ignores any syntax argument.  But don't tell
-%  anybody.
+%  anybody.  But for the |*|~form, it respects (actually ignores) any
+%  argument!
 %    \begin{macrocode}
-\newcommand{\PreviewEnvironment}[2][]{\expandafter\pr@advise@ship
+\def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
+\newcommand*\pr@starenv[2][]{\toks@{\pr@starmacro[{#1}]}%
+  \the\expandafter\toks@\csname#1\endcsname}
+\newcommand*{\pr@env}[2][]{\expandafter\pr@advise@ship
    \csname #2\endcsname{\aftergroup\pr@endbox}{}}
 %    \end{macrocode}
 %\end{macro}
@@ -583,7 +631,7 @@
 %  This is a nuisance since we have to advise \emph{both} the
 %  environment and its end.
 %    \begin{macrocode}
-\newcommand{\PreviewSnarfEnvironment}[2][]{\toks@{%
+\newcommand*{\PreviewSnarfEnvironment}[2][]{\toks@{%
     \pr@snarfafter#1\pr@endparse}%
   \expandafter\pr@advise
    \csname #2\endcsname{\the\toks@\noexpand##1}%
