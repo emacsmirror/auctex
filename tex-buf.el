@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.26 1993-03-27 22:15:07 amanda Exp $
+;;; $Id: tex-buf.el,v 1.27 1993-03-28 11:53:42 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -416,7 +416,7 @@ Return nil ifs no errors were found."
 	((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
 	 (message "You should run LaTeX again to get references right.")
 	 (setq TeX-command-next TeX-command-default))
-	((re-search-forward "^LaTeX Version" nil t)
+	((re-search-forward "^\\(\\*\\* \\)?J?\\(La\\|Sli\\)TeX Version" nil t)
 	 (message (concat name ": successfully ended."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t

@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.45 1993-03-23 11:40:03 amanda Exp $
+;;; $Id: auc-tex.el,v 5.46 1993-03-28 11:53:37 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -173,7 +173,9 @@ You should insert this in your TeX-mode-hook!"
     (save-excursion
       (goto-char (point-min))
       (if (not (re-search-forward "-\\*-.*-\\*-" 100 t))
-	  (insert-string (concat "% -*- " mode-name " -*-\n")))))
+	  (insert-string (concat "% -*- "
+				 (substring (symbol-name major-mode) 0 -5)
+				 " -*-\n")))))
 
 (defun auc-tex-mode ()
   "Called when we have a mode line specification in first line."

@@ -1,7 +1,7 @@
 ;;; @ tex-jp.el - Support for Japanese TeX.
 
 (provide 'tex-jp)
-(require 'tex-site)
+(require 'tex-init)
 
 ;;; @@ Variables
 
