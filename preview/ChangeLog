@@ -1,3 +1,8 @@
+2003-11-06  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/special.c: Fix postscript inclusion: placement and
+	background color
+
 2003-11-05  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* preview.el: Primitive dvipng support. Lacking ascent and colors.
