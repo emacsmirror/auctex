@@ -2,7 +2,7 @@
 \usepackage[german]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
-\usepackage[floats,textmath,displaymath]{preview}
+\usepackage[sections,floats,textmath,displaymath]{preview}
 \newbox\chaos
 \newdimen\tdim
 \def\fframe{%
@@ -37,6 +37,7 @@
 \title{Einfache Kurven auf Rastergrafiken}
 \author{David Kastrup}
 \maketitle
+
 \begin{abstract}
 Es sollen hier einfache Methoden vorgestellt werden, um auf einer
 Rastereinheit verschiedene Kurven darzustellen. Vorgestellt werden
@@ -200,6 +201,7 @@ linedraw(int dx, int dy)
 \end{picture}
 \caption{Einige Linien}\label{linpict}
 \end{figure}
+
 \section{Der Kreis}
 Wir betrachten hier nur den Achtelkreis im zweiten Oktanten
 ($y \geq x \geq 0$). Hier gelten die oben angegebenen Beziehungen.
