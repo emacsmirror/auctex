@@ -1,3 +1,12 @@
+2002-03-08  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-transact): Throw in the towel.  We don't
+	use .runandhide (and .setsafe) unless we are dealing with gs with
+	a version of at least 7.00.  gs-6.53 seems to provide
+	.runandhide, while making it useless because
+	   save .setsafe restore
+	does not return to unsafer mode.
+
 2002-03-05  David Kastrup  <David.Kastrup@t-online.de>
 
 	* RELEASE: Few changes and explanations for 0.6.1.
