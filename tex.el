@@ -501,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.300 $"))
+	(rev "$Revision: 5.301 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -516,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-06-03 11:12:16 $"))
+    (let ((date "$Date: 2003-06-04 17:02:24 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2873,9 +2873,7 @@ With optional ARG, insert that many dollar signs."
    (t
     ;; Just somewhere in the text.
     (insert "$")))
-  (and TeX-math-toggle-off-input-method
-       (texmathp)
-       (TeX-toggle-off-input-method)))
+  (TeX-math-input-method-off))
 
 (defun TeX-point-is-escaped ()
   ;; Count backslashes before point and return t if number is odd.
@@ -2887,13 +2885,18 @@ With optional ARG, insert that many dollar signs."
           (setq odd (not odd)))))
     odd))
 
+(defun TeX-math-input-method-off ()
+  "Toggle off input method when entering math mode."
+  (and TeX-math-toggle-off-input-method
+       (texmathp)
+       (TeX-toggle-off-input-method)))
+
 (defun TeX-toggle-off-input-method ()
   "Toggle off input method.
 Support LEIM function (toggle-input-method) and some Japanese
 Input Methods; Canna, Wnn, SKK.
 
 Code is copied from YaTeX package."
-  (interactive)
   (cond
    ;; Japanese Canna Support
    ((and (boundp 'canna:*japanese-mode*) canna:*japanese-mode*)
