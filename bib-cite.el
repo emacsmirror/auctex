@@ -5,7 +5,7 @@
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.18 (27 Mar 2003)
+;; Version:   3.20  (Aug 14 2003)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -364,7 +364,7 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
-;; V3.19 Aug 14 2003 - PSG
+;; V3.20 Aug 14 2003 - PSG
 ;;  - psg-checkfor-file-list: Allow for relative directoties as entries in
 ;;    BIBINPUTS.
 ;;  - bib-cite-inputs:  new defcustom equivalent to BIBINPUTS.
