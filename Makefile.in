@@ -129,8 +129,11 @@ install-auto:
 	$(ELCC) -f batch-byte-compile $<
 
 clean:
-	rm -rf *~ #*# lex.yy.c idetex auctex
+	rm -rf *~ #*# *.elc
 	(cd doc; $(MAKE) clean)
+
+distclean: clean
+	rm -f Makefile config.*
 
 wc:
 	wc $(AUCSRC) $(STYLESRC) 
