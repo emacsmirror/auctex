@@ -386,6 +386,16 @@ purposes."
 		      (TeX-command-menu-entry
 		       (assoc "Generate Preview" TeX-command-list)))
   (easy-menu-add preview-menu LaTeX-mode-map)
+  ;;The following is a crock, but it does not load tool-bar-mode in case
+  ;;nobody else does, and it should work with any Emacs-21.  Fixing
+  ;;up the ascent of preview-icon is butt-ugly, but faster than using
+  ;;another defimage.
+  (define-key LaTeX-mode-map [tool-bar preview]
+    `(menu-item "Preview at point" preview-at-point
+		:image ,(let ((image (copy-sequence preview-icon)))
+			  (plist-put (cdr image) :ascent 50)
+			  image)
+		:help "Preview on/off at point"))
   (when buffer-file-name
     (let* ((filename (expand-file-name buffer-file-name))
 	   format-cons)
