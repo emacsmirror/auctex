@@ -1,3 +1,13 @@
+2004-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-region-as-para-do): Fix removal of trailing
+	whitespace.
+	(LaTeX-fill-move-to-break-point): Prevent infinite loop in
+	commented regions.
+	(LaTeX-fill-newline): Fix compatibility with XEmacs, i.e. use
+	code related to text properties only for Emacs and reintroduce
+	insertion of a potential fill prefix for XEmacs.
+
 2004-06-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Add some news regarding upcoming release.
