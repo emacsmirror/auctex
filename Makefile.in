@@ -218,7 +218,7 @@ tar-ball:
 
 full-release:
 	tar -xzfO $(FTPDIR)/auctex-$(TAG).tar.gz auctex-$(TAG)/tex.el \
-	| fgrep -s '$$Name:  $(TAG) | sed -e 's/[.]/_/g'`' ' \
+	| fgrep -s '$$'"Name: release_`echo $(TAG)| sed -e 's/[.]/_/g'` " \
 	|| { echo "Not a properly tagged release!" >&2 ; exit 1 ; }
 	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz"
 	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-$(TAG)-* $(FTPDIR)
