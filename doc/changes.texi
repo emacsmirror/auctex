@@ -57,6 +57,12 @@ Insertion of nodes in Texinfo mode now supports completion of existing
 node names.
 
 @item
+Setting the variable @code{LaTeX-float} to @code{nil} now means that you
+will not be prompted for the float position of figures and tables.  You
+can get the old behaviour of @code{nil} by setting the variable to
+@code{""}, i.e. an empty string.  See also @ref{Floats}.
+
+@item
 Bug fixes in the build process.
 @end itemize
 
