@@ -1,3 +1,11 @@
+2002-10-31  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/dvipng.h: 
+	* dvipng/dvi.c: Remove globals and Reopen DVI on change (check
+	mtime)
+	
+	* dvipng/dvipng.c: Reopen DVI on change (check mtime) 
+
 2002-10-30  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/pk.c: Declaration moved here from dvipng.h
