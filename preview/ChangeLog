@@ -1,3 +1,9 @@
+2002-04-26  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* doc/preview-latex.texi: Documented preview-dump-format
+
+	* preview.el: Cosmetic change in menu
+
 2002-04-26  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (LaTeX-preview-setup): Menu entries and keybindings
