@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
 
-@c $Id: auc-tex.texi,v 1.61 1993-09-28 23:34:11 amanda Exp $
+@c $Id: auc-tex.texi,v 1.62 1993-09-29 20:18:51 amanda Exp $
 
 @finalout
 @titlepage
@@ -862,6 +862,23 @@ Space will complete and exit.
 Completions work because AUC @TeX{} can analyze @TeX{} files, and store
 symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
 more information.
+
+@cindex \cite, completion of
+@cindex Bib@TeX{}, completion
+@cindex cite, completion of
+@cindex bibliography, completion
+@cindex citations, completion of
+@cindex \label, completion
+@cindex \ref, completion
+@cindex labels, completion of
+AUC @TeX{} will also make completion for many macro arguments, for
+example existing labels when you enter a @samp{\ref} macro with
+@code{TeX-insert-macro} or @code{TeX-electric-macro}, and Bib@TeX{}
+entries when you enter a @samp{\cite} macro.  For this kind of
+completion to work, parsing must be enabled as described in
+@pxref{Parsing Files}.  For @samp{\cite} you must also make sure that
+the Bib@TeX{} files can be found in @code{TeX-style-path} and have been
+saved at least once after you enabled automatic parsing on save.
 
 @node Commenting, Marking and formatting, Completion, Advanced Features
 @section Commenting 
