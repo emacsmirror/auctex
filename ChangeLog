@@ -1,5 +1,8 @@
 2005-03-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-make-title-faces): Deal with the case
+	that `font-size' returns a number.
+
 	* tex.el (TeX-view-style): Remove support for "a4" and "a5".
 
 2005-03-14  David Kastrup  <dak@gnu.org>
