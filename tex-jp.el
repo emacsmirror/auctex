@@ -1,7 +1,11 @@
 ;;; tex-jp.el - Support for Japanese TeX.
 ;;
 
-;; Maintainer: Hidenobu Nabetani <nabe@debian.or.jp>
+;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
+;; Copyright (C) 2002 Masayuki Ataka <ataka@milk.freemail.ne.jp>
+
+;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
+;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
 ;; Version: 11.13
 
 ;;; Commentary: 
