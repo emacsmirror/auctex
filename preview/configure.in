@@ -1,7 +1,13 @@
-AC_INIT(preview.el)
+AC_DIVERT_PUSH(AC_DIVERSION_INIT)dnl
+[MY_LANG=$LANG
+ MY_LC_CTYPE=$LC_CTYPE]
+AC_DIVERT_POP()
 
+AC_INIT(preview.el)
 AC_SET_MAKE
 AC_PROG_INSTALL
+
+
 
 dnl
 dnl Apparently, if you run a shell window in Emacs, it sets the EMACS
@@ -59,6 +65,22 @@ dnl Check to see if specific drivers are built in.  Need table of mappings, with
 
 AC_PATH_PROG_REQUIRED(LATEX, latex, [LaTeX not found, aborting!
 You must install LaTeX for preview to work.])
+
+AC_MSG_CHECKING([if LaTeX is installed 8-bit clean])
+LANG=$MY_LANG
+LC_CTYPE=$MY_LC_CTYPE
+export LANG
+export LC_CTYPE
+
+if latex '\nonstopmode\message{ü!}' 2>&1 | tee latex.out | grep -q 'fc!$'
+then
+   AC_MSG_ERROR([
+Can't find AUC-TeX!  Please install it!  Check the PROBLEMS file for details.])
+else
+   AC_MSG_RESULT(yes)
+fi
+
+
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 AC_PATH_PROG_REQUIRED(TEXHASH, texhash, NONE)
 
