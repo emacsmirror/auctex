@@ -5,7 +5,7 @@
 
 ;; Author: Ryuichi Arafune <arafune@ushioda.riec.tohoku.ac.jp>
 ;; Created: 1999/3/20
-;; Version: $Id: graphicx.el,v 1.1 2000-11-30 13:13:58 abraham Exp $
+;; Version: $Id: graphicx.el,v 1.2 2001-10-01 10:41:06 dakas Exp $
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;;; Commentary: 
+;;; Commentary:
 ;;  This package suppors the includegraphcics macro in graphicx style (LaTeX2e)
 ;;  If you want to use bb, angle or totalheight as arguments of includegraphics,
 ;;  set TeX-include-graphics-simple nil (default t).
@@ -33,9 +33,9 @@
 ;;
 ;;; Code:
 
-(TeX-add-style-hook 
+(TeX-add-style-hook
  "graphicx"
- (function (lambda () 
+ (function (lambda ()
 	     (TeX-add-symbols
 	      "protect" "clip" "keepaspectratio" "width" "height" "bb" "angle" "totalheight"
 	      '("includegraphics" TeX-arg-includegraphics)))))
@@ -46,11 +46,11 @@
 
 (defun TeX-arg-includegraphics (optional)
   "Ask for file name (eps file only), width, height, keepaspectratio, and clip. Insert includegraphics macro"
-  (let ((width-flag nil) (height-flag nil) (left-brace-flag nil) 
-	(psfile 
-	 (completing-read "PS (eps only) file: " 
+  (let ((width-flag nil) (height-flag nil) (left-brace-flag nil)
+	(psfile
+	 (completing-read "PS (eps only) file: "
 			  (mapcar 'list (directory-files "./" nil "\\.eps$" nil))
-			  nil t 
+			  nil t
 			  (car (car (mapcar 'list (directory-files "./" nil "\\.eps$" nil))))))
 	(figwidth (read-input "Figure width (cm): "))
 	(figheight (read-input "Figure height (cm): "))
@@ -74,13 +74,13 @@
 	      (insert "keepaspectratio"))))
     (if (and clip (or width-flag height-flag keepaspectratio))
 	(insert ",clip")
-      (if clip 
+      (if clip
 	  (insert "clip")))
 ;;; Insert more arguments when TeX-include-graphics-simple is nil
     (if (not TeX-include-graphics-simple)
 	(progn
 	  (let ((bbset-flag (y-or-n-p "Set Bounding Box :"))
-		(bbllx nil) (bblly nil) (bburx nil) (bbury nil)	(angle-flag nil) 
+		(bbllx nil) (bblly nil) (bburx nil) (bbury nil)	(angle-flag nil)
 		(angle "") (totalheight ""))
 	    (if bbset-flag
 		(progn (setq  bbllx (read-input "Bounding Box Lower Left x :"))
@@ -102,8 +102,8 @@
 	    (if (not (zerop (length totalheight)))
 		(if (or clip keepaspectratio width-flag height-flag bbset-flag angle-flag)
 		    (insert ",totalheight="totalheight)
-		  (if (not (zerop (length totalheight))
-			   (insert "totalheight="totalheight))))))))
+		  (if (not (zerop (length totalheight)))
+		      (insert "totalheight="totalheight)))))))
 ;;;
     (if left-brace-flag
 	(insert "]"))
