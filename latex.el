@@ -657,7 +657,7 @@ In docTeX mode:
   LaTeX mode.
 
 The same rules are used for `LaTeX-find-matching-begin' and
-`LaTeX-find-matching-begin'."
+`LaTeX-find-matching-end'."
   (setq arg (if arg (if (< arg 1) 1 arg) 1))
   (let ((in-comment (TeX-in-commented-line)))
     ;; We should probably be more restrictive and not only test for
