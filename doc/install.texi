@@ -17,9 +17,13 @@ Before you do anything else, make sure that you have the latest version
 of @TeX{}info installed.  It is available by ftp from
 @samp{prep.ai.mit.edu}.  You need at least version 2.16.
 
-First, you should consult the file @file{tex-site.el} and edit it to fit
-your local site.  Be sure to get the following two variables right, or
-you will not be able to complete the installation procedure:
+First, you should edit the file @file{tex-site.el} to fit your local
+site.  You do this by looking at the customization section in the
+beginning of @file{tex.el} and copy the definitions that are wrong for
+your site to @file{tex-site.el}.  Do @emph{not} edit @file{tex.el}
+directly, or you will have to do all the work over again when you
+upgrade AUC @TeX{}.  Be sure to get the following two variables right,
+or you will not be able to complete the installation procedure:
 
 @defopt TeX-lisp-directory
 The directory where you want to install the AUC @TeX{} lisp files. 

@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.19 1994-04-28 20:27:11 amanda Exp $
+;; Version: $Id: tex.el,v 5.20 1994-05-04 22:54:25 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -2235,7 +2235,7 @@ between."
   (interactive)
   (require 'reporter)
   (reporter-submit-bug-report
-   "auc-tex_mgr@iesd.auc.dk"
+   "auc-tex@iesd.auc.dk"
    (concat "AUC TeX " AUC-TeX-version)
    (list 'window-system
 	 'TeX-style-path

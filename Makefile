@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.93 1994-04-26 22:58:11 amanda Exp $
+# $Id: Makefile,v 5.94 1994-05-04 22:54:14 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -267,7 +267,7 @@ dist:
 	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
 	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-	rm -f $(FTPDIR)/auctex-$(TAG).tar.Z
+	rm -f $(FTPDIR)/auctex.tar.Z $(FTPDIR)/auctex.zip
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	/home/pd/bin/zip -r $(FTPDIR)/auctex auctex-$(TAG)

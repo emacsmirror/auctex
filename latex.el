@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.15 1994-04-27 16:28:10 amanda Exp $
+;; Version: $Id: latex.el,v 5.16 1994-05-04 22:54:19 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -523,19 +523,25 @@ With optional ARG, find that outer level."
   (setq arg (if arg arg 1))
   (save-excursion
     (if (re-search-backward
-	 (concat (regexp-quote TeX-esc) "begin" (regexp-quote TeX-grop)
+	 (concat (regexp-quote TeX-esc) "\\(sub\\)*section"
+		 "\\|"
+		 (regexp-quote TeX-esc) "begin" (regexp-quote TeX-grop)
 		 "\\|"
 		 (regexp-quote TeX-esc) "end" (regexp-quote TeX-grop)) nil t 1)
-	(if (looking-at (concat (regexp-quote TeX-esc)
-				"end" (regexp-quote TeX-grop)))
-	    (LaTeX-current-environment (1+ arg))
-	  (if (/= arg 1)
-	      (LaTeX-current-environment (1- arg))
-	    (search-forward TeX-grop)
-	    (let ((beg (point)))
-	      (search-forward TeX-grcl)
-	      (backward-char 1)
-	      (buffer-substring beg (point)))))
+	(cond ((looking-at (concat (regexp-quote TeX-esc)
+				   "end" (regexp-quote TeX-grop)))
+	       (LaTeX-current-environment (1+ arg)))
+	      ((looking-at (concat (regexp-quote TeX-esc)
+				   "\\(sub\\)*section"))
+	       "document")
+	      ((/= arg 1)
+	       (LaTeX-current-environment (1- arg)))
+	      (t
+	       (search-forward TeX-grop)
+	       (let ((beg (point)))
+		 (search-forward TeX-grcl)
+		 (backward-char 1)
+		 (buffer-substring beg (point)))))
       "document")))
 
 (defun TeX-near-bobp ()
@@ -587,7 +593,11 @@ To insert a hook here, you must insert it in the appropiate style file.")
 (defun LaTeX-env-item (environment)
   "Insert ENVIRONMENT and the first item."
   (LaTeX-insert-environment environment)
-  (end-of-line 0)
+  (if (TeX-active-mark)
+      (progn
+	(LaTeX-find-matching-begin)
+	(end-of-line 1))
+    (end-of-line 0))
   (delete-char 1)
   (delete-horizontal-space)
   (LaTeX-insert-item))
@@ -1702,9 +1712,9 @@ The point is supposed to be at the beginning of the current line."
 
 (defun LaTeX-section-menu-entry (entry)
   ;; Create an entry for the section menu.
-  (vector (car entry)
-	  (list 'LaTeX-section-menu (nth 1 entry))
-	  (LaTeX-section-enable-symbol (nth 1 entry))))
+  (let ((enable (LaTeX-section-enable-symbol (nth 1 entry))))
+    (set enable t)
+    (vector (car entry) (list 'LaTeX-section-menu (nth 1 entry)) enable)))
 
 (defun LaTeX-section-menu-create ()
   ;; Create a menu over LaTeX sections.
