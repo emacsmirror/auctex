@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.38 1993-05-28 01:53:31 amanda Exp $
+;;; $Id: tex-buf.el,v 1.39 1993-07-07 00:41:12 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -338,6 +338,7 @@ Return the new process."
 	  (TeX-command-mode-line process)
 	  (set-process-filter process 'TeX-command-filter)
 	  (set-process-sentinel process 'TeX-command-sentinel)
+	  (setq compilation-in-progress (cons process compilation-in-progress))
 	  process)
       (setq mode-line-process ": run")
       (set-buffer-modified-p (buffer-modified-p))
@@ -465,7 +466,9 @@ Return the new process."
 	     (delete-process process)
 	     
 	     ;; Force mode line redisplay soon
-	     (set-buffer-modified-p (buffer-modified-p)))))))
+	     (set-buffer-modified-p (buffer-modified-p))))))
+  (setq compilation-in-progress (delq process compilation-in-progress)))
+
 
 (defvar TeX-sentinel-hook (function (lambda (process name)))
   "Hook to cleanup TeX command buffer after temination of PROCESS.
@@ -509,6 +512,15 @@ Return nil ifs no errors were found."
   (setq TeX-command-next TeX-command-default))
 
 ;;; @@ Process Control
+
+
+;;; This variable is chared with `compile.el'.
+(defvar compilation-in-progress nil
+  "List of compilation processes now running.")
+
+(or (assq 'compilation-in-progress minor-mode-alist)
+    (setq minor-mode-alist (cons '(compilation-in-progress " Compiling")
+				 minor-mode-alist)))
 
 (defun TeX-process-get-variable (name symbol &optional default)
   "Return the value in the process buffer for NAME of SYMBOL.

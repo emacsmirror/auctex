@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.46 1993-05-29 03:00:43 amanda Exp $
+# $Id: Makefile,v 5.47 1993-07-07 00:40:51 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -9,7 +9,7 @@
 ##----------------------------------------------------------------------
 
 # Where local software is found
-prefix=/usr/local
+prefix=/home/local/sys/gnu
 
 # Where architecture dependent local software go
 exec_prefix = $(prefix)
@@ -24,7 +24,7 @@ infodir = $(prefix)/info
 mandir=$(prefix)/man/man1
 
 # Where the standard emacs lisp files are located.
-elispdir=$(prefix)/lib/emacs/19.9/lisp
+elispdir=$(prefix)/lib/emacs/19.16/lisp
 
 # Where the AUC TeX emacs lisp files go.
 # Set this to "." to specify current directory.
@@ -45,7 +45,7 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 autodir=$(aucdir)/auto
 
 # Using emacs in batch mode.
-EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp emacs -batch -q
+EMACS=EMACSLOADPATH=.:$(elispdir):$(elispdir)/bytecomp emacs-19.16 -batch -q
 
 # Specify the byte-compiler for compiling AUC TeX files
 ELC= $(EMACS) -f batch-byte-compile
@@ -80,10 +80,12 @@ MV = mv
 ##  BELOW THIS LINE ON YOUR OWN RISK!
 ##----------------------------------------------------------------------
 
+SHELL = /bin/sh
+
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
 MINMAPSRC = min-bind.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
-	    min-ind.el	min-ispl.el kill-fix.el
+	    min-ind.el	min-ispl.el kill-fix.el easymenu.el
 
 MINMAPFILES = README_MINOR $(MINMAPSRC)
 
@@ -96,9 +98,12 @@ FORMATSRC = format/VIRTEX.el \
 	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
 	    format/FOILTEX.el
 
-STYLESRC = style/latex.el   style/slitex.el \
+STYLESRC = style/latex.el   style/slitex.el style/report.el \
 	   style/article.el style/book.el    style/letter.el \
-	   style/foiltex.el style/german.el
+	   style/foiltex.el style/german.el \
+	   style/j-article.el style/j-book.el style/j-report.el \
+	   style/jarticle.el style/jbook.el style/jreport.el
+
 
 LACHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
@@ -244,16 +249,16 @@ dist:
 	echo "----------------------------------------" >> FILELIST; \
 	ident $(AUCSRC) $(OTHERFILES) >> FILELIST )
 	OUT=auctex`echo $$TAG | sed s/release//`; \
-	tar -cf - auctex | gzip > $$OUT.tar.z
+	tar -cf - auctex | gzip > $$OUT.tar.gz
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
 	(cd auctex; tar -cf - $(MINMAPFILES)) | \
-	gzip -c >min-map_$$VER.tar.z
+	gzip -c >min-map_$$VER.tar.gz
 	rm -r auctex
 
 # Removed.  Don't mail them, send them the address of a ftpmail client. 
 #	if [ ! -d split ]; then mkdir split; else rm split/*; fi; \
 #	cp auctex/FILELIST split; \
-#	uuencode $$OUT.tar.z $$OUT.tar.z | split -200 - split/auc-tex-
+#	uuencode $$OUT.tar.gz $$OUT.tar.gz | split -200 - split/auc-tex-
 
 #mail:
 #	if [ "X$$WHO" = "X" ]; then echo "*** No reciepient(s) ***"; exit 1; fi
@@ -276,16 +281,16 @@ ftp:
 	@echo "** Making ftp copy of outline minor mode for $$TAG"
 	@echo "**********************************************************"
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	cp min-map_$$VER.tar.z $(FTPDIR) ; \
+	cp min-map_$$VER.tar.gz $(FTPDIR) ; \
 	cd $(FTPDIR) ; \
-	rm -f min-map.tar.z min-out.tar.z ; \
-	ln -s min-map_$$VER.tar.z min-map.tar.z ; \
-	ln -s min-map_$$VER.tar.z min-out.tar.z
+	rm -f min-map.tar.gz min-out.tar.gz ; \
+	ln -s min-map_$$VER.tar.gz min-map.tar.gz ; \
+	ln -s min-map_$$VER.tar.gz min-out.tar.gz
 	@echo "**********************************************************"
 	@echo "** Making ftp copy of auc-tex for  $$TAG"
 	@echo "**********************************************************"
 	OUT=`echo $$TAG | sed s/release_//` ; \
-	cp auctex_$$OUT.tar.z $(FTPDIR) ; \
+	cp auctex_$$OUT.tar.gz $(FTPDIR) ; \
 	cd $(FTPDIR) ; \
-	rm -f auctex.tar.z ; \
-	ln -s auctex_$$OUT.tar.z auctex.tar.z
+	rm -f auctex.tar.gz ; \
+	ln -s auctex_$$OUT.tar.gz auctex.tar.gz

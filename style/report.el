@@ -1,10 +1,10 @@
-;;; @ book.el - Special code for book style.
+;;; @ report.el - Special code for report style.
 ;;;
-;;; $Id: book.el,v 1.3 1993-07-07 00:41:42 amanda Exp $
+;;; $Id: report.el,v 1.1 1993-07-07 00:41:49 amanda Exp $
 
 ;;; @@ Hook
 
-(TeX-add-style-hook "book"
+(TeX-add-style-hook "report"
  (function (lambda () 
   (setq LaTeX-largest-level (LaTeX-section-level "chapter")))))
 

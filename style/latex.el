@@ -1,6 +1,6 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.4 1993-04-09 20:52:57 amanda Exp $
+;;; $Id: latex.el,v 1.5 1993-07-07 00:41:47 amanda Exp $
 
 ;;; @@ Hook
 
@@ -27,7 +27,8 @@
 
      "sloppypar" "picture" "tabbing" "verbatim" "verbatim*"
      "flushright" "flushleft" "displaymath" "math" "quote" "quotation"
-
+     "abstract" "center" "titlepage" "verse"
+     
      ;; The following are not defined in latex.el, but in a number of
      ;; other style files.  I'm to lazy to copy them to all the
      ;; corresponding .el files right now.
@@ -41,7 +42,8 @@
      '("figure*" LaTeX-figure-hook)
      '("table" LaTeX-figure-hook)
      '("table*" LaTeX-figure-hook)
-     '("thebibliography" LaTeX-bib-hook))
+     '("thebibliography" LaTeX-bib-hook)
+     '("theindex" LaTeX-item-hook))
 
     (TeX-add-symbols
      '("addtocounter" TeX-argument-counter-hook "Value")

@@ -1,3 +1,9 @@
+* I get errors during byte compilation.
+
+This is almost always because some old version of AUC TeX gets loaded
+during the compilation.  Make sure to remove all old versions, and try
+again.
+
 * You are using NeXT Emacs.
 
 NeXT Emacs is broken, a workaround is available by ftp:
@@ -38,7 +44,7 @@ you only use LaTeX commands a good setting would be
     ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 TeX-auto-environment)
     ("\\\\input{\\([^#\\\\\\.\n]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
     ("\\\\include{\\([^#\\\\\\.\n]+\\)\\(\\.sty\\)?}" 1 TeX-auto-file)
-    ("\\\\label{\\([]a-zA-Z0-9.:;,?!`'()[---/*@]+\\)}" 1 TeX-auto-label)
+    ("\\\\label{\\([]a-zA-Z0-9.:;,?!`'()[---/*@_]+\\)}" 1 TeX-auto-label)
     ("\\\\documentstyle\\[\\([^#\\\\\\.\n]+\\)\\]{\\([^#\\\\\\.\n]+\\)}"
      (2 1) TeX-auto-style)
     ("\\\\documentstyle{\\([^#\\\\\\.\n]+\\)}" (1) TeX-auto-style)))
@@ -80,6 +86,6 @@ style hooks.
 * After I write the file under a new name, AUC TeX still use the old!
 
 AUC @TeX{} cache a lot of information for efficiency, press C-c C-n to
-flush the cache after changing the name of a file.  Save the file, and
-press C-u C-c C-n to flush everything.
+flush the cache after changing the name of a file.  Press C-u C-c C-n
+to flush everything.
 

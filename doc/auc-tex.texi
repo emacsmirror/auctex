@@ -5,15 +5,15 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.35 1993-05-28 01:54:30 amanda Exp $
+@c $Id: auc-tex.texi,v 1.36 1993-07-07 00:41:37 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle February 1993, for AUC @TeX{} Version 7.1
+@subtitle June 1993, for AUC @TeX{} Version 7.2
   
 @author by Kresten Krab Thorup
-@author updated for 7.1 by Per Abrahamsen
+@author updated for 7.2 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -51,7 +51,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 7.1.
+This file documents AUC @TeX{} version 7.2.
 
 The keybindings has changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -68,7 +68,7 @@ important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.@refill
 
 Kresten Krab Thorup (6.0 original)
-Per Abrahamsen (7.1 update)
+Per Abrahamsen (later updates)
 
 @end ifinfo
 
@@ -132,7 +132,7 @@ The Anti-American Conspiracy
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
-* Japanese ::                   Japanese @TeX{} 
+* Japanese ::                   
 
 Automatic Customization
 
@@ -151,6 +151,7 @@ Writing Your own Style Support
 
 The History of AUC @TeX{}
 
+* Version 7.2::                 Version 7.2
 * Version 7.1::                 Version 7.1
 * Version 7.0::                 News in 7.0
 * Version 6.1::                 Old news in 6.1
@@ -287,7 +288,7 @@ avoiding stupid mistakes like mismatched braces, or
 * Environments::                Inserting Environment Templates
 @end menu
 
-@node Quotes, Font Specifiers,  , Frequently Used Commands
+@node Quotes, Font Specifiers, Frequently Used Commands, Frequently Used Commands
 @section Insertion of Quotes and Braces
 
 @cindex Quotes
@@ -348,12 +349,13 @@ available for easy insertion of font changing macro.  They all put the
 font change inside a @TeX{} group, a practice that help preventing
 subtle errors.  The most significant advantage of using these command
 instead of typing it in yourself, is that the braces will always match
-correctly.  If you give an argument (that is, type @kbd{C-u}) to the
-font command, the current region will be put inside the group, and point
-will be left unchanged.  This is quite useful when you later discover
-that some phrase should be emphasised.  The following table shows the
-available commands, with @code{@point{}} indicating the position where
-the position where the text will be inserted.@refill
+correctly.  
+
+If you give an argument (that is, type @kbd{C-u}) to the font command,
+the innermost font will be replaced, i.e. the font in the @TeX{} group
+around point will be changed.  The following table shows the available
+commands, with @code{@point{}} indicating the position where the
+position where the text will be inserted.@refill
 
 @table @kbd
 @item C-c C-f C-r 
@@ -391,20 +393,28 @@ Insert @t{typewriter} @samp{@{\tt @point{}@}} text.
 @cindex @code{\sc}
 Insert @sc{small caps} @samp{@{\sc @point{}@}} text.
 
+@item C-c C-f C-d
+@kindex C-c C-f C-c
+@cindex Deleting fonts
+Delete the innermost font specification containing point.
+
 @end table
 
 @deffn Command TeX-font @var{arg}
 @kindex C-c C-f
-(@kbd{C-c C-f}) Read one character from the minibuffer, and insert a
-@TeX{} font macro as specified in the variable @code{TeX-font-list}.
-With prefix argument, make the font change valid for the current region.
+(@kbd{C-c C-f}) Insert template for font change command.
+
+If @var{replace} is not nil, replace current font.  @var{what}
+determines the font to use, as specified by @code{TeX-font-list}.
 @end deffn
 
 @defopt TeX-font-list
-A list of available font commands, each entry in the list is itself a
-list.  The first element of each entry is the key to active the font.
-The second element is the string to insert before point, and the third
-element is the string to insert after point.
+List of fonts used by TeX-font.
+
+Each entry is a list with three elements.  The first element is the
+key to active the font.  The secont element is the string to insert
+before point, and the third element is the string to insert after
+point.  An optional fourth element means always replace if not nil.
 @end defopt
 
 @node Sectioning, Environments, Font Specifiers, Frequently Used Commands
@@ -612,7 +622,7 @@ that you use @kbd{C-c C-e} to insert complete environments instead.
 (@kbd{C-c ]}) Insert an @samp{\end} that matches the current environment. 
 @end deffn
 
-@node Floats, Itemize-like,  , Environments
+@node Floats, Itemize-like, Environments, Environments
 @subsection Floats
 @cindex Floats
 @cindex Figures
@@ -709,7 +719,7 @@ indenting and navigating through the document.
 * Outline::                     Outlining the Document
 @end menu
 
-@node Mathematics, Completion,  , Advanced Features
+@node Mathematics, Completion, Advanced Features, Advanced Features
 @section Entering Mathematics 
 @cindex Mathematics
 @cindex Symbols
@@ -1124,7 +1134,7 @@ and moreover allowing you to @emph{debug} your documents.
 * Control::                     Controlling the processes.
 @end menu
 
-@node Commands, Debugging,  , Formatting
+@node Commands, Debugging, Formatting, Formatting
 @section Executing Commands
 @cindex Formatting
 @cindex Running La@TeX{}
@@ -1468,10 +1478,10 @@ Japanese versions of @TeX{} and Emacs.
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
-* Japanese::                    Japanese @TeX{} 
+* Japanese ::                   
 @end menu
 
-@node Scandinavian, Russian,  , Internationalization
+@node Scandinavian, Russian, Internationalization, Internationalization
 @section Support for the Scandinavian Languages
 @cindex Keyboard remapping
 @cindex Remapping the keyboard
@@ -1479,6 +1489,8 @@ Japanese versions of @TeX{} and Emacs.
 @cindex Danish
 @cindex Sweden
 @cindex Swedish
+@cindex Germany
+@cindex German
 @cindex Norway
 @cindex Norwegian
 @cindex Nordic
@@ -1516,8 +1528,8 @@ occur twice in row in an Scandinavian word.
 The keyboard mapping is implemented as a minor mode.  To enter the minor
 mode the first time, type @kbd{M-x keyboard-query-mapping}.  It will
 first prompt you for a what language to use.  Currently only Danish,
-Swedish, and Russian are defined, so you have to chose one of those.
-Norway use the same character set as Denmark.@refill
+Swedish, German, and Russian are defined, so you have to chose one of
+those.  Norway use the same character set as Denmark.@refill
 
 Next, it will prompt you for what encoding of the languages character
 set to use for the keyboard and screen.  The same encodings are
@@ -1880,7 +1892,7 @@ These files or directories will not be considered when searching for
 @TeX{} files in a directory.
 @end defopt
 
-@node Automatic Global, Automatic Private,  , Automatic
+@node Automatic Global, Automatic Private, Automatic, Automatic
 @section Automatic Customization for the Site
 @cindex Global style hook directory
 @cindex Global macro directory
@@ -2015,7 +2027,7 @@ directories instead of @file{auto} directories.
 If you write some useful support for a public @TeX{} style file, please
 send it to us.
 
-@node Simple Style, Adding Macros,  , Style Files
+@node Simple Style, Adding Macros, Style Files, Style Files
 @section A Simple Style File
 @cindex @file{book.el}
 @cindex Sample style file
@@ -2601,14 +2613,120 @@ This chapter is for old users, who want to see what has been added in
 this version, and for the authors, who get nostalgic at times.
 
 @menu
-* Version 7.1::                 Version 7.1
+* Version 7.2::                 Newer news in 7.2
+* Version 7.1::                 New news in 7.1
 * Version 7.0::                 News in 7.0
 * Version 6.1::                 Old news in 6.1
 * Version 6.0::                 Older news in 6.0
 * Ancient History::             Ancient History
 @end menu
 
-@node Version 7.1, Version 7.0,  , History
+@node Version 7.2, Version 7.1, History, History
+@comment  node-name,  next,  previous,  up
+@section News in 7.2
+
+Coordinater: Per Abrahamsen, 1993
+
+@itemize @bullet
+@item
+Add @samp{Compiling} to the mode line of all buffers, while there is a
+AUC @TeX{} compilation process running.  This is similar to the behavior
+of @code{compile} in Emacs 19.
+
+@item
+@code{TeX-normal-mode} will now save the buffer first to make sure it
+gets reparsed.
+
+@item
+Labels with underscores are now recognized.   Thanks to Wolfgang Franzki
+@samp{<W.Franzki@@kfa-juelich.de>} 
+
+@item
+Fix to `ghostview' printer specification.  Thanks to Masayuki Kuwada
+@samp{<kuwada@@soliton.ee.uec.ac.jp>}. 
+
+@item
+Recognize @samp{abstract}, @samp{center}, @samp{titlepage},
+@samp{verse}, and @samp{theindex} environments.  Thanks to Masayuki Kuwada
+@samp{<kuwada@@soliton.ee.uec.ac.jp>}. 
+
+@item
+Fix to @samp{newsavebox} macro.  Thanks to Shinji Kobayashi
+@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>} for reporting this.
+
+@item
+Menu support for GNU Emacs 19 and Lucid Emacs.  Thanks to Alastair Burt
+@samp{<burt@@dfki.uni-kl.de>} for the initial Lucid Emacs version.
+
+@item
+@kbd{C-c C-f C-d} now deletes the current font.  The current font is
+defined to be the innermost @TeX{} group starting with a @TeX{} macro
+that is terminated by a space.
+
+@item
+Giving @kbd{C-c C-f} a prefix argument will replace the current font,
+i.e. @kbd{C-u C-c C-f C-b} will change the current font to bold. 
+
+The old functionality (putting the font around the region) has been
+removed.  To make the region bold, type @kbd{C-w C-c C-f C-b C-y}
+instead.
+
+@item
+Chapter recognized as largest heading in the report style.  Thanks to
+Shinji Kobayashi @samp{<koba@@keisu-s.t.u-tokyo.ac.jp>} for reporting
+this. 
+
+@item
+More support for Japanese style files.  Thanks to Shinji Kobayashi
+@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
+@item
+No longer put @samp{Outline} in the mode line whenever
+@code{selective-display} is set.  Thanks to Lawrence R. Dodd
+@samp{<dodd@@roebling.poly.edu>} for reporting this.
+
+@item
+Support for inserting calligraphic letters in @code{TeX-math-mode} with
+@kbd{` c @key{LETTER}}.  Thanks to Olaf Burkart
+@samp{<burkart@@zeus.informatik.rwth-aachen.de>}.
+
+@item
+@code{set-docstring} in @file{tex-math.el} should work better now.
+Thanks to Alastair Burt @samp{<burt@@dfki.uni-kl.de>} and Olaf Burkart
+@samp{<burkart@@zeus.informatik.rwth-aachen.de>}.
+
+@item
+Support for dviout preview on PC-9801.  Thanks to Shinji Kobayashi
+@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
+@item
+Inserting environment in empty buffer should work now.  Thanks to
+Alastair Burt @samp{<burt@@dfki.uni-kl.de>}.
+
+@item 
+Default float for figures changed from @samp{tbp} to @samp{htbp}.  
+
+@item
+@code{LaTeX-format-environment} may work now.  Thanks to Shinji
+Kobayashi @samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
+@item
+Better @code{LaTeX-close-environment}.  Thanks to Thorbjoern Hansen
+@samp{<thansen@@diku.dk>}.
+
+@item
+Some support for Ispell 4.0.
+
+@item
+Bib@TeX{} in Emacs 19 need @code{tex-insert-quote}, make it autoload
+from AUC @TeX{} instead of the standard @code{tex-mode}.
+
+@item
+@code{TeX-auto-generate} failed when repeated.  Thanks to Peter Whaite
+@samp{<peta@@Thunder.McRCIM.McGill.EDU>} for reporting this.
+@end itemize
+
+@node Version 7.1, Version 7.0, Version 7.2, History
 @comment  node-name,  next,  previous,  up
 @section News in 7.1
 
@@ -2649,13 +2767,6 @@ When you format the document with @kbd{C-c C-c}, AUC @TeX{} will no
 longer offer to save your @file{RMAIL}, @file{.newsrc}, or other files
 that does not belong to the document.  Suggested by Jim Hetrick
 @samp{<hetrick@@phys.uva.nl>}. 
-
-@item
-New variable @code{TeX-fast}.
-
-Set this to @code{'t} on slow machines @emph{before} loading AUC @TeX{},
-when you prefer getting the wrong answers fast rather than the right
-answers slow.
 
 @item
 Foil@TeX{} support.
@@ -3022,8 +3133,7 @@ Some minor changes in:
 Should work better with @samp{Master:} option.
 
 @item LaTeX-environment
-Numerous new hooks added by Masayuki Kuwada (hope I spelled it
-correctly) 
+Numerous new hooks added by Masayuki Kuwada.
 
 @item TeX-command-on-region
 Removed. @kbd{C-c C-o} used for @code{outline-minor-mode} instead.
@@ -3043,7 +3153,7 @@ insert font macros and Danish characters back in 1986.  Per Abrahamsen
 and sections, to indent the text, and the outline minor mode in 1987.
 Kresten Krab Thorup @samp{<krab@@iesd.auc.dk>} wrote the buffer handling
 and debugging functions, the macro completion, and much more, including
-a much improved indentation and text formatting functions.  He also made
+much improved indentation and text formatting functions.  He also made
 the first public release in 1991, and was the main author and
 coordinator of every release up to and including 6.0.
 
@@ -3070,7 +3180,7 @@ Per Hagen
 Ralf Handl
 @item <sven@@tde.lth.se>
 Sven Mattisson
-@item ?
+@item <kuwada@@soliton.ee.uec.ac.jp>
 Masayuki Kuwada
 @item <tb06@@pl118f.cc.lehigh.edu>
 Terrence Brannon
@@ -3097,7 +3207,7 @@ remaining will be described here.
 * Auto Ispell::                 Auto Ispell Mode
 @end menu
 
-@node Minor Mode Keymaps, Auto Indent,  , Minor Modes
+@node Minor Mode Keymaps, Auto Indent, Minor Modes, Minor Modes
 @section Minor Mode Keymaps
 @cindex Minor mode keymap
 @cindex Minor keymaps
@@ -3383,6 +3493,13 @@ some time for emacs lisp hacking, you are encouraged to try to provide a
 solution to one of the following problems.
 
 @itemize @bullet
+@item
+It is often too slow to parse the file each time it is saved, especially
+with Emacs 19.  Check if @code{TeX-auto-generate} is useful for doing
+more occasionally, like updating the @file{TAGS} file.
+
+@item
+Make quote start and end characters user definable.
 
 @item 
 Add support for different extensions.
@@ -3408,11 +3525,6 @@ Make features.
 A new command @code{TeX-update} (@kbd{C-c C-u}) could be used to create
 an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
 (La)@TeX{}, until an error occur or we are done.
-
-@item
-@kbd{C-u C-c @{} should add braces around region.  @kbd{C-u - C-c @{}
-should remove braces.  @kbd{C-u - C-c C-f} should remove font.  See code
-by Martin Sjolin @samp{<marsj@@ida.liu.se>}.
 
 @item
 Hook naming should be accoriding to the Emacs (19) guidelines.
@@ -3580,13 +3692,6 @@ labels like @samp{fig:} versus @samp{tab:}.
 Check out if lightening completion from Ultra @TeX{} is anything for us.
 
 @item
-The files in the @file{style} should define all symbols and environments
-described in the La@TeX{} book.  This would allow people to not install
-or ignore the @file{auto} directory, and only get completion on the
-public symbols.  It would also be faster, since less files would be
-loaded.
-
-@item
 TeXinfo mode.
 
 @item
@@ -3602,60 +3707,7 @@ Make a database system for addresses in the letter environment
 Make the letter environment hook produce `documentstyle' too
 
 @item
-Directory for contributed style files.
-
-Hopefully people will start writing AUC @TeX{} lisp style files
-supporting styles that are not part of the official @TeX{} distribution
-(hint hint).  These should be placed in a special contrib directory.
-
-@item
-Add code for submitting a report, like this:
-
-@lisp
-;;;; BUG REPORTS
-
-;;; this section is provided for reports.
-;;; adopted from Barry A. Warsaw's c++-mode.el
-
-(defvar crypt-mailer 'mail
-  "*Mail package to use to generate report mail buffer.")
-
-(defconst crypt-help-address
-  "dodd@@roebling.poly.edu, rwhitby@@research.canon.oz.au"
-  "Address(es) accepting submission of reports on crypt++.el.")
-
-(defconst crypt-maintainer "Larry and Rod"
-  "First name(s) of people accepting submission of reports on crypt++.el.")
-
-(defconst crypt-file "crypt++.el"
-  "Name of file containing emacs lisp code.")
-
-(defun crypt-submit-report ()
-  "Submit via mail a report using the mailer in crypt-mailer, filename in
-crypt-file, to address in crypt-help-address."
-  (interactive)
-  (funcall crypt-mailer)
-  (insert crypt-help-address)
-  (if (re-search-forward "^subject:[ \t]+" (point-max) 'move)
-      (insert "Report on " crypt-file " version " crypt-version))
-  (if (not (re-search-forward mail-header-separator (point-max) 'move))
-      (progn (goto-char (point-max))
-             (insert "\n" mail-header-separator "\n")
-             (goto-char (point-max)))
-    (forward-line 1))
-  (set-mark (point)) ;user should see mark change
-  (insert "\n\n---------\n")
-  (insert (emacs-version) "\n")
-  (insert "code: " crypt-file ",v " crypt-version)
-  (insert "\n\n")
-  (insert "current value of crypt-encoding-alist:\n\n")
-  (insert (prin1-to-string crypt-encoding-alist))
-  (exchange-point-and-mark)
-  (insert "\n" crypt-maintainer ",\n\n  ")
-  (message "%s, please write the message, use C-c C-c to send" (user-login-name)))
-
-@end lisp
-
+Add code for submitting a report, using BAW's @file{reporter.el}.
 @end itemize
 
 @node Credit, Key Index, Projects, top

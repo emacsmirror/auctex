@@ -10,7 +10,12 @@
 (make-variable-buffer-local 'japanese-LaTeX-default-style)
 
 (defvar japanese-LaTeX-style-list
-  '(("jbook")
+  '(("book")
+    ("article")
+    ("letter")
+    ("slides")
+    ("report")
+    ("jbook")
     ("j-book")
     ("jarticle")
     ("j-article")
@@ -42,7 +47,7 @@
   (japanese-TeX-initialization)
   (setq LaTeX-default-style japanese-LaTeX-default-style)
   (setq LaTeX-style-list japanese-LaTeX-style-list)
-  (setq TeX-command-BibTeX "jBibTeX"))
+  (setq-default TeX-command-BibTeX "jBibTeX"))
 
 ;;; @@ Japanese TeX modes
 
@@ -476,6 +481,18 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
 	)
       (goto-char (point-max))
       (delete-horizontal-space)))))
+
+;;; @@ Hook for the dviout previewer
+
+(defun TeX-dviout-hook (name command file)
+  "Call process with second argument, discarding its output. With support
+for the dviout previewer, especially when used with PC-9801 series."
+    (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
+      (send-string-to-terminal "\e[2J")) ; clear screen
+    (call-process TeX-shell (if (eq system-type 'ms-dos) "con") nil nil
+                TeX-shell-command-option command)
+    (if (eq system-type 'ms-dos)
+      (redraw-display)))
 
 ;;; @@ Emacs
 
