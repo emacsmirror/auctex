@@ -1,3 +1,10 @@
+2004-08-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/install.texi (Customizing): tex-site.el should be edited no
+	more.  Customize should be used instead.  Relevant variables are
+	determined during configuration now.
+	Mention build/installation commands for contributed files.
+
 2004-08-19  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec: Fixes for SuSE.
