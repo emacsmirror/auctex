@@ -2,7 +2,10 @@
 
 	* Release 0.9
 
-	* preview-latex.spec: Make DVI.
+	* prv-emacs.el (preview-create-icon-1): Use adaptive heuristic
+	mask for transparency.
+
+	* preview-latex.spec: Make preview.dvi.  But preview-latex.pdf
 
 	* latex/Makefile.in (all): Generate both dvi and pdf.
 	(install-texmf-doc): Install DVI (faster, compact).

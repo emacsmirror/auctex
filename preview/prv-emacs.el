@@ -82,7 +82,7 @@ Consults `preview-transparent-color'."
     :type ,type
     :ascent ,ascent
     ,@(and border
-	   `(:mask (heuristic ,border)))))
+	   '(:mask (heuristic t)))))
 
 (defun preview-create-icon (file type ascent border)
   "Create an icon from FILE, image TYPE, ASCENT and BORDER."

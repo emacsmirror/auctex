@@ -105,6 +105,8 @@ for i in *emacs; do
     %configure --with-xemacs
   fi
   make 'infodir=%{_infodir}'
+  cd doc
+  make preview-latex.pdf
   popd
 done
 
@@ -134,7 +136,7 @@ done
 mkdir -p '%{buildroot}%{docs}'
 pushd %{name}-%{version}
 for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
-    latex/README-preview RELEASE TODO doc/preview-latex.dvi; do
+    latex/README-preview RELEASE TODO doc/preview-latex.pdf; do
   cp -R "$i" '%{buildroot}%{docs}'
 done
 
