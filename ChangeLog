@@ -1,3 +1,10 @@
+2004-04-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (TeXinfo-insert-environment): Support enclosure of
+	a selected region by the environment to be inserted.
+	(TeXinfo-mode-map): Bind `C-c C-e' to `TeXinfo-insert-environemt'
+	analogous to LaTeX mode.
+
 2004-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/slides.el: Remove obsolete SliTeX-related code and
@@ -9,7 +16,7 @@
 	consistent with filling of other environments where indentation
 	occurs, at least indent those environments.
 
-	* tex.el: Ditto.
+	* tex.el: Change spaces to tabs in indentation.
 
 2004-04-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
