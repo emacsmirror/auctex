@@ -1,3 +1,7 @@
+2004-05-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-source-specials-map): Fix key binding for XEmacs.
+
 2004-05-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (TEX_INPUT_DIRS): Quote regexps with square brackets.
