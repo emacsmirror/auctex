@@ -1,7 +1,6 @@
 ;;; tex-mik.el --- MikTeX support for AUCTeX.
 
-;; Copyright (C) 1999, 2000, 2001 Per Abrahamsen
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1999, 2000, 2001, 2004 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Maintainer: auc-tex@sunsite.dk

@@ -1,7 +1,7 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
-;; Copyright (C) 1993, 1994, 1997, 2000, 2001 Per Abrahamsen 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1993, 1994, 1997, 2000, 2001,
+;;               2004 Free Software Foundation, Inc.
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex

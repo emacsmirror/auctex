@@ -1,5 +1,11 @@
 2004-08-15  David Kastrup  <dak@gnu.org>
 
+	* tex-info.el: Change Copyright notice to FSF
+
+	* tex-mik.el: Change Copyright notice to FSF
+
+	* tex.el: Change Copyright notice to FSF
+
 	* font-latex.el: Change Copyright notice to FSF
 
 	* multi-prompt.el: Change Copyright notice to FSF

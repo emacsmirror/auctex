@@ -1,10 +1,9 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 2000,
-;;   2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 1986, 1993, 1994, 1996, 1997, 1999,
+;;   2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1996, 1997, 1999 Per Abrahamsen
 
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Keywords: tex
@@ -653,7 +652,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.429 $"))
+	(rev "$Revision: 5.430 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -668,7 +667,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-15 15:42:47 $"))
+    (let ((date "$Date: 2004-08-15 20:12:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
