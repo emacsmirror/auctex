@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.33 1994-11-28 02:58:08 amanda Exp $
+;; Version: $Id: latex.el,v 5.34 1994-12-02 09:06:30 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1874,7 +1874,6 @@ The point is supposed to be at the beginning of the current line."
 	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])
 	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
 	"-"
-	["Save Document" TeX-save-document t]
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
@@ -1882,7 +1881,6 @@ The point is supposed to be at the beginning of the current line."
 	       :style toggle :selected TeX-debug-bad-boxes ]
 	      ["Switch to Original File" TeX-home-buffer t]
 	      ["Recenter Output Buffer" TeX-recenter-output-buffer t])
-	"--"
 	(list "Formatting and Marking"
 	      ["Format Environment" LaTeX-fill-environment t]
 	      ["Format Paragraph" LaTeX-fill-paragraph t]
@@ -1894,18 +1892,18 @@ The point is supposed to be at the beginning of the current line."
 	      ["End of Environment" LaTeX-find-matching-end t]
 	      ["Hide Environment" LaTeX-hide-environment t]
 	      ["Show Environment" LaTeX-show-environment t])
-	;; ["Uncomment" TeX-un-comment t]
-	["Uncomment Region" TeX-un-comment-region t]
-	;; ["Comment Paragraph" TeX-comment-paragraph t]
-	["Comment Region" TeX-comment-region t]
-	["Switch to Master file" TeX-home-buffer t]
-	["Math Mode" LaTeX-math-mode t]
-	["Documentation" TeX-goto-info-page t]
-	["Submit bug report" TeX-submit-bug-report t]
-	[ "Convert 209 to 2e" LaTeX-209-to-2e
-	  :active (member "latex2" (TeX-style-list)) ]
-	["Reset Buffer" TeX-normal-mode t]
-	["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
+	(list "Miscellaneous"
+	      ["Uncomment Region" TeX-un-comment-region t]
+	      ["Comment Region" TeX-comment-region t]
+	      ["Switch to Master file" TeX-home-buffer t]
+	      ["Save Document" TeX-save-document t]
+	      ["Math Mode" LaTeX-math-mode t]
+	      ["Documentation" TeX-goto-info-page t]
+	      ["Submit bug report" TeX-submit-bug-report t]
+	      [ "Convert 209 to 2e" LaTeX-209-to-2e
+		:active (member "latex2" (TeX-style-list)) ]
+	      ["Reset Buffer" TeX-normal-mode t]
+	      ["Reset AUC TeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])))
 
 (defvar LaTeX-font-list
   '((?\C-b "\\textbf{" "}")

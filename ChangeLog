@@ -1,7 +1,15 @@
+Fri Dec  2 08:20:10 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex-buf.el (TeX-LaTeX-sentinel): 
+	(TeX-command-query): Remove previous change.
+
 Mon Nov 28 01:16:05 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* latex.el (LaTeX-209-to-2e): New function by
-	carlisle@cs.man.ac.uk (David Carlisle). 
+	Graham Gough <graham@cs.man.ac.uk>. 
+
+	* latex.el (LaTeX-mode-menu): Move many commands to new
+	"Miscellaneous" submenu.
 
 	* tex-buf.el (TeX-home-buffer): Don't take arg.
 
