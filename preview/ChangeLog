@@ -2,7 +2,8 @@
 
 	* RELEASE: Mention AUC TeX RPM on project site
 
-	* Makefile.in: Fixed 'make clean' in doc subdir
+	* Makefile.in: Fixed 'make clean' in doc subdir, install info
+	files too
 
 2002-02-17  Alan Shutko  <ats@acm.org>
 
