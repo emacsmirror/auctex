@@ -3,10 +3,10 @@
 @cindex GPL
 @cindex General Public License
 @cindex License
-@cindex Free
-@cindex Free software
-@cindex Distribution
-@cindex Right
+@c @cindex Free
+@c @cindex Free software
+@c @cindex Distribution
+@c @cindex Right
 @cindex Warranty
 
 (This text is stolen from the Texinfo manual, Edition 4.0).
