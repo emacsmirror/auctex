@@ -2,6 +2,9 @@
 *.dvi
 *.log
 *.prv
+Makefile
+_region_.tex
+auto
 config.cache
 config.status
 configure
