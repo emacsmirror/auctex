@@ -1,3 +1,7 @@
+2005-03-05  Ikumi Keita <ikumi@revery.net>  (tiny change?)
+
+	* tex-jp.el (japanese-TeX-command-list): Doc fix.
+
 2005-03-03  Ikumi Keita <ikumi@revery.net>  (tiny change?)
 
 	* tex.el (TeX-macro-global-internal): New function.
