@@ -11,8 +11,8 @@
 @item
 What versions of Emacs and XEmacs are supported?
 
-@AUCTeX{} was tested with Emacs 20.7 and XEmacs 21.4.  Older versions
-may work but are unsupported.
+@AUCTeX{} was tested with Emacs 21 and XEmacs 21.4.  Older versions may
+work but are unsupported.
 
 @item
 Why doesn't the completion or multifile stuff work?
