@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.8 $  
+;; RCS status      : $Revision: 3.9 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jun  3 08:11:11 1991
-;; Update Count    : 327
+;; Last Modified On: Mon Jun  3 08:17:26 1991
+;; Update Count    : 328
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -565,7 +565,9 @@ means justify as well."
   (message ""))
 
 (defun LaTeX-mark-environment ()
-  "Set mark to end of current environment and point to the matching begin"
+  "Set mark to end of current environment and point to the matching begin
+will not work properly if there are unbalanced begin-end pairs in
+comments and verbatim environments"
   (interactive)
   (LaTeX-find-matching-end)
   (set-mark (point))
