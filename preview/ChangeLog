@@ -11,7 +11,13 @@
 	to deal as perfectly as possible with spaces in file names,
 	quotes, backslashes and desperate things in general.
 
-2003-01-15  Jan-Ake Larsson  <jalar@localhost.localdomain>
+2003-01-15  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* configure.in: Use AC_PROG_EMACS and more portable
+	AC_PATH_LISPDIR/PACKAGEDIR
+	
+	* aclocal.m4 (AC_PROG_EMACS): New. Sanitize AC_PATH_LISPDIR. Make
+	AC_PATH_PACKAGEDIR portable.
 
 	* dvipng/misc.c: Use autoconf's stuff, use atoi, fix warning
 	message
