@@ -554,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.392 $"))
+	(rev "$Revision: 5.393 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -569,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-10 13:21:38 $"))
+    (let ((date "$Date: 2004-07-14 08:53:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -758,7 +758,7 @@ Must be the car of an entry in `TeX-command-list'."
 
 ;;; Master File
 
-(defcustom TeX-one-master "\\.\\(tex\\|dtx\\)$"
+(defcustom TeX-one-master "\\.\\(texi?\\|dtx\\)$"
   "*Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, where
@@ -932,30 +932,30 @@ This will be done when AUCTeX first try to use the master file.")
 
 (defun TeX-add-local-master ()
   "Add local variable for `TeX-master'."
-
-  (if (and (buffer-file-name)
-	   (string-match TeX-one-master
-			 (file-name-nondirectory (buffer-file-name)))
-	   (not buffer-read-only))
-      (progn
-	(goto-char (point-max))
-	(if (re-search-backward (concat "^\\([^\n]+\\)Local " "Variables:")
-				(- (point-max) 3000) t)
-	    (let ((prefix (TeX-match-buffer 1)))
-	      (re-search-forward (regexp-quote (concat prefix
-							"End:")))
-	      (beginning-of-line 1)
-	      (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
-	  (newline)
-	  (when (eq major-mode 'doctex-mode)
-	    (insert "% " TeX-esc "iffalse\n"))
-	  (insert "%%% Local " "Variables: \n"
-		  "%%% mode: " (substring (symbol-name major-mode) 0 -5)
-		  "\n"
-		  "%%% TeX-master: " (prin1-to-string TeX-master) "\n"
-		  "%%% End: \n")
-	  (when (eq major-mode 'doctex-mode)
-	    (insert "% " TeX-esc "fi\n"))))))
+  (when (and (buffer-file-name)
+	     (string-match TeX-one-master
+			   (file-name-nondirectory (buffer-file-name)))
+	     (not buffer-read-only))
+    (goto-char (point-max))
+    (if (re-search-backward (concat "^\\([^\n]+\\)Local " "Variables:")
+			    (- (point-max) 3000) t)
+	(let ((prefix (TeX-match-buffer 1)))
+	  (re-search-forward (regexp-quote (concat prefix
+						   "End:")))
+	  (beginning-of-line 1)
+	  (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
+      (let ((comment-prefix (cond ((eq major-mode 'texinfo-mode) "@c ")
+				  (t "%%% "))))
+	(newline)
+	(when (eq major-mode 'doctex-mode)
+	  (insert "% " TeX-esc "iffalse\n"))
+	(insert
+	 comment-prefix "Local " "Variables: \n"
+	 comment-prefix "mode: " (substring (symbol-name major-mode) 0 -5) "\n"
+	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
+	 comment-prefix "End: \n")
+      (when (eq major-mode 'doctex-mode)
+	(insert "% " TeX-esc "fi\n"))))))
 
 (defun TeX-local-master-p ()
   "Return t if there is a `TeX-master' entry in the local variables section.
