@@ -41,9 +41,11 @@
 	(LaTeX-fill-code-comment): New function.
 	(LaTeX-forward-paragraph): New function.
 	(LaTeX-backward-paragraph): New function.
-	(LaTeX-paragraph-commend-p): New function.
+	(LaTeX-paragraph-command-p): New function.
 	(LaTeX-common-initialization): Let `paragraph-start' handle
 	comments preceded by whitespace as well.
+	(LaTeX-fill-move-to-break-point): Support `\[' and `\]' as well
+	if `LaTeX-fill-distinct-contents' is activated.
 
 	* tex.el (tex-mode): `comment-start-skip' shouldn't match line
 	beginnings.
