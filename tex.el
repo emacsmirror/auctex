@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.374 $"))
+	(rev "$Revision: 5.375 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-26 15:32:06 $"))
+    (let ((date "$Date: 2004-05-27 07:57:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2709,7 +2709,7 @@ be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
-(defcustom TeX-newline 'newline
+(defcustom TeX-newline-function 'newline
   "Function to be called upon pressing `RET'."
   :group 'TeX-indentation
   :type '(choice (const newline)
@@ -2726,7 +2726,8 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
     (define-key map "\C-c?"    'describe-mode)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
-    (define-key map "\r" (lambda nil (interactive) (funcall TeX-newline)))
+    (define-key map "\r" (lambda nil
+			   (interactive) (funcall TeX-newline-function)))
     
     ;; From tex.el
     (define-key map "\""       'TeX-insert-quote)
