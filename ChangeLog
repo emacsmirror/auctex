@@ -4,6 +4,7 @@
 	comments are filled.  Fixes wrong indentation if a line with a
 	code comment following an indented line is filled.
 	Mark end of current line, not beginning of next.
+	Jump to start of code comment line after regular filling.
 
 2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
