@@ -1,14 +1,5 @@
-@c This is to enable generation of text-file from this file
+@include macros.texi
 @ifset rawfile
-@macro AUCTeX {}
-@w{AUC @TeX{}}
-@end macro
-@macro LaTeX {}
-La@TeX{}
-@end macro
-@macro previewlatex {}
-preview-latex
-@end macro
 @chapter Installing @previewlatex{}
 
 @end ifset

@@ -1,14 +1,4 @@
-@c This is to enable generation of text-file from this file
-@ifnottex
-@unmacro LaTeX
-@unmacro previewlatex
-@macro LaTeX {}
-La@TeX{}
-@end macro
-@macro previewlatex {}
-preview-latex
-@end macro
-@end ifnottex
+@include macros.texi
 @c -----------------------
 @cindex Copying
 @cindex Copyright
@@ -24,7 +14,7 @@ preview-latex
 (This text is stolen from the Texinfo manual, Edition 4.0).
 
 The programs currently being distributed that relate to @previewlatex{}
-include lisp files for Emacs and style files for La@TeX{}.  These
+include lisp files for Emacs and style files for @LaTeX{}.  These
 programs are @dfn{free}; this means that everyone is free to use them
 and free to redistribute them on a free basis.  The @previewlatex{}
 related programs are not in the public domain; they are copyrighted and
