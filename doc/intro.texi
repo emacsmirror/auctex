@@ -132,13 +132,13 @@ functionality.
 The most recent version is always available at
 
 @flushright
-@url{http://savannah.nongnu.org/download/auctex/stable.pkg/}
+@url{http://ftp.gnu.org/pub/gnu/auctex/}
 @end flushright
 
 WWW users may want to check out the AUC@TeX{} page at
 
 @flushright
-@url{http://www.nongnu.org/auctex/}
+@url{http://www.gnu.org/software/auctex/}
 @end flushright
 
 @section Contacts
