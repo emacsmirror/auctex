@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.16 1994-10-25 13:53:12 amanda Exp $
+;; $Id: tex-info.el,v 5.17 1996-03-12 00:16:32 abraham Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -58,47 +58,6 @@ When called interactively, prompt for an environment."
       (forward-line -2)
     ;; apply arguments
     ))
-
-;;; TeXinfo
-
-(defvar TeXinfo-section-list
-  '(("top" 0)
-    ("majorheading" 0)
-    ("chapter" 1)
-    ("unnumbered" 1)
-    ("appendix" 1)
-    ("chapheading" 1)
-    ("section" 2)
-    ("unnumberedsec" 2)
-    ("appendixsec" 2)
-    ("heading" 2)
-    ("subsection" 3)
-    ("unnumberedsubsec" 3)
-    ("appendixsubsec" 3)
-    ("subheading" 3)
-    ("subsubsection" 4)
-    ("unnumberedsubsubsec" 4)
-    ("appendixsubsubsec" 4)
-    ("subsubheading" 4))
-  "Alist of sectioning commands and their relative level.")
-
-(defvar TeXinfo-outline-regexp
-  (concat "@\\("
-	  (mapconcat 'car TeXinfo-section-list "\\|")
-	  "\\)")
-  "Regular expression matching TeXinfo outline headers.")
-
-(defun TeXinfo-outline-level ()
-  ;; Calculate level of current TeXinfo outline heading.
-  (save-excursion
-    (if (bobp)
-	0
-      (forward-char 1)
-    (let* ((word (buffer-substring (point) (progn (forward-word 1) (point))))
-	   (entry (assoc word TeXinfo-section-list)))
-      (if entry
-	  (nth 1 entry)
-	5)))))
 
 ;;; Keymap:
 
@@ -257,10 +216,10 @@ TeXinfo-mode-hook."
   (setq indent-tabs-mode nil)
   (make-local-variable 'paragraph-separate)
   (setq paragraph-separate
-	(concat "^\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-separate))
+	(concat "\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-separate))
   (make-local-variable 'paragraph-start)
   (setq paragraph-start
-	(concat "^\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-start))
+	(concat "\b\\|^@[a-zA-Z]*[ \n]\\|" paragraph-start))
   (make-local-variable 'fill-column)
   (setq fill-column 72)
   (make-local-variable 'comment-start)
@@ -269,6 +228,20 @@ TeXinfo-mode-hook."
   (setq comment-start-skip "@c +\\|@comment +")
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes t)
+  (make-local-variable 'imenu-generic-expression)
+  (setq imenu-generic-expression texinfo-imenu-generic-expression)
+  (make-local-variable 'font-lock-defaults)
+  (setq font-lock-defaults '(texinfo-font-lock-keywords t))
+  (if (not (boundp 'texinfo-section-list))
+      ;; This was included in 19.31.
+      ()
+    (make-local-variable 'outline-regexp)
+    (setq outline-regexp 
+	  (concat "@\\("
+		  (mapconcat 'car texinfo-section-list "\\>\\|")
+		  "\\>\\)"))
+    (make-local-variable 'outline-level)
+    (setq outline-level 'texinfo-outline-level))
   
   ;; Mostly AUC TeX stuff
   (easy-menu-add TeXinfo-command-menu TeXinfo-mode-map)
@@ -409,12 +382,6 @@ TeXinfo-mode-hook."
    '("vindex" "Entry")
    '("vskip" "Amount")
    '("w" "Text"))
-  
-  (require 'outline)		;Must be loaded first.
-  (make-local-variable 'outline-regexp)
-  (setq outline-regexp TeXinfo-outline-regexp)
-  (make-local-variable 'outline-level)
-  (setq outline-level 'TeXinfo-outline-level)
   
   (run-hooks 'text-mode-hook 'TeXinfo-mode-hook))
   

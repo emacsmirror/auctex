@@ -1,3 +1,13 @@
+Mon Mar 11 22:56:30 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-cal): Use `\mathcal{}' under LaTeX2e.
+	Reported by Mate Wierdl <wierdlm@zebra.msci.memphis.edu>. 
+
+Tue Mar  5 17:27:39 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-info.el (texinfo-mode): Rely on texinfo.el to provide the
+	outline regexp.
+
 Tue Feb 20 09:43:29 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el (TeX-command-menu-queue, TeX-command-menu-queue-entry):

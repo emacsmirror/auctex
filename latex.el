@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.45 1995-12-21 16:37:38 abraham Exp $
+;; Version: $Id: latex.el,v 5.46 1996-03-12 00:16:30 abraham Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -3050,7 +3050,9 @@ commands are defined:
   "Inserts a {\\cal CHAR}.  If DOLLAR is non-nil, put $'s around it."
   (interactive "*c\nP")
   (if dollar (insert "$"))
-  (insert "{\\cal " (char-to-string char) "}")
+  (if (member "latex2e" (TeX-style-list))
+      (insert "\\mathcal{" (char-to-string char) "}")
+    (insert "{\\cal " (char-to-string char) "}"))
   (if dollar (insert "$")))
 
 (provide 'latex)

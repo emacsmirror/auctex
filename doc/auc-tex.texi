@@ -8,16 +8,16 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.108 1996-02-29 13:56:25 abraham Exp $
+@c $Id: auc-tex.texi,v 1.109 1996-03-12 00:16:37 abraham Exp $
 
 @finalout
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle Version 9.3
+@subtitle Version 9.4
   
 @author by Kresten Krab Thorup
-@author updated for 6.1 to 9.3 by Per Abrahamsen
+@author updated for 6.1 to 9.4 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -54,7 +54,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is an integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 9.3.
+This file documents AUC @TeX{} version 9.4.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -502,7 +502,7 @@ about the optional parts of the selected environment type.  With
 @deffn Command LaTeX-environment @var{arg}
 @kindex C-c C-e
 (@kbd{C-c C-e})  AUC @TeX{} will prompt you for an environment
-to insert.  At this prompt, you may press @key{tab} or @key{spc} to
+to insert.  At this prompt, you may press @key{TAB} or @key{SPC} to
 complete a partially written name, and/or to get a list of available
 environments.  After selection of a specific environment AUC @TeX{} may
 prompt you for further specifications.  
@@ -600,11 +600,11 @@ Prefix to use for table labels.
 @cindex \item
 
 In an itemize-like environment, nodes (i.e., @samp{\item}s) may be
-inserted using @kbd{C-c @key{lfd}}.  
+inserted using @kbd{C-c @key{LFD}}.  
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{lfd}
-(@kbd{C-c @key{lfd}}) Close the current item, move to the next line and
+@kindex C-c @key{LFD}
+(@kbd{C-c @key{LFD}}) Close the current item, move to the next line and
 insert an appropriate @samp{\item} for the current environment. That is,
 `itemize' and `enumerate' will have @samp{\item } inserted, while
 `description' will have @samp{\item[]} inserted.
@@ -688,22 +688,22 @@ The AUC @TeX{} distributions includes a reference card for
 @cindex Arguments to @TeX{} macros
 
 Emacs lisp programmers probably know the @code{lisp-complete-symbol}
-command, usually bound to @kbd{M-@key{tab}}.  Users of the wonderful
+command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
 ispell mode know and love the @code{ispell-complete-word} command from
 that package.  Similarly, AUC @TeX{} has a @code{TeX-complete-symbol}
-command, usually bound to @kbd{M-@key{tab}}.  Using
+command, usually bound to @kbd{M-@key{TAB}}.  Using
 @code{LaTeX-complete-symbol} makes it easier to type and remember the
 names of long La@TeX{} macros.
  
 In order to use @code{TeX-complete-symbol}, you should write a backslash
-and the start of the macro.  Typing @kbd{M-@key{tab}} will now
+and the start of the macro.  Typing @kbd{M-@key{TAB}} will now
 complete as much of the macro, as it unambiguously can.  For example, if
-you type `@samp{\renewc}' and then `@kbd{M-@key{tab}}, it will expand
+you type `@samp{\renewc}' and then `@kbd{M-@key{TAB}}, it will expand
 to `@samp{\renewcommand}'.
  
 @deffn Command TeX-complete-symbol
-@kindex M-@key{tab}
-(@kbd{M-@key{tab}})  Complete @TeX{} symbol before point.
+@kindex M-@key{TAB}
+(@kbd{M-@key{TAB}})  Complete @TeX{} symbol before point.
 @end deffn
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
@@ -737,7 +737,7 @@ character @samp{\} will be bound to @code{TeX-electric-macro}
 
 The difference between @code{TeX-insert-macro} and
 @code{TeX-electric-macro} is that space will complete and exit from the
-minibuffer in @code{TeX-electric-macro}.  Use @key{tab} if you merely
+minibuffer in @code{TeX-electric-macro}.  Use @key{TAB} if you merely
 want to complete.
 
 @deffn Command TeX-electric-macro
@@ -865,15 +865,15 @@ You can format and indent single lines, paragraphs, environments, or
 sections.
 
 @table @kbd
-@item @key{tab}
-@kindex @key{tab}
+@item @key{TAB}
+@kindex @key{TAB}
 @findex LaTeX-indent-line
 @code{LaTeX-indent-line} will indent the current line.
 
-@item @key{lfd}
-@kindex @key{lfd}
+@item @key{LFD}
+@kindex @key{LFD}
 @code{reindent-then-newline-and-indent} indents the current line, and
-then inserts a new line (much like @key{ret}) and move the cursor to an
+then inserts a new line (much like @key{RET}) and move the cursor to an
 appropriate position by the left margin.
 
 @item M-q
@@ -1200,7 +1200,7 @@ errors may often be confusing.  The utility @code{lacheck} can be used
 to find style errors, such as forgetting to escape the space after an
 abbreviation or using @samp{...} instead of @samp{\ldots} and many other
 problems like that.  You start @code{lacheck} with @kbd{C-c C-c C h e c
-k @key{ret}}.  The result will be a list of errors in the
+k @key{RET}}.  The result will be a list of errors in the
 @samp{*compilation*} buffer.  You can go through the errors with
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next
@@ -2408,11 +2408,11 @@ Thiemann.
 
 @item
 Use index files (when available) to speed up @kbd{C-c C-m include
-@key{ret}}. 
+@key{RET}}. 
 
 @item
 Option not to calculate very slow completions like for 
-@kbd{C-c C-m include @key{ret}}.@refill
+@kbd{C-c C-m include @key{RET}}.@refill
 
 @item
 AUC @TeX{} should not parse verbatim environments.
