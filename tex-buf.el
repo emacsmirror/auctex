@@ -176,7 +176,7 @@ all text after TeX-trailer-start."
 		       (buffer-substring begin end)
 		       (file-name-nondirectory (buffer-file-name))
 		       (TeX-current-offset begin)))
-  (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file
+  (TeX-command (TeX-command-query (TeX-region-file nil t)) 'TeX-region-file
 	       override-confirm))
 
 (defun TeX-command-buffer (&optional override-confirm)
@@ -379,7 +379,7 @@ in TeX-check-path."
 (defvar TeX-command-history nil)
 
 (defun TeX-command-query (name)
-  "Query the user for a what TeX command to use."
+  "Query the user for what TeX command to use."
   (let* ((default (cond ((if (string-equal name TeX-region)
 			     (TeX-check-files (concat name "." (TeX-output-extension))
 					      (list name)
