@@ -251,11 +251,16 @@ Usually a magnifying glass.")
 FUN must be a form with OV as first argument,
 REST as the remainder, returning T."
   (set-extent-property ov 'initial-redisplay-function
-                       `(lambda (ov) (,fun ov ,@rest))))
+                       `(lambda (ov) (,fun ,ov ,@rest))))
 
 (defun preview-remove-urgentization (ov)
-  "Undo urgentization of OV by `preview-add-urgentization'."
-  (set-extent-property ov 'initial-redisplay-function nil))
+  "Undo urgentization of OV by `preview-add-urgentization'.
+Returns the old arguments to `preview-add-urgentization'
+if there was any urgentization."
+  (let ((old-urgent (extent-property ov 'initial-redisplay-function)))
+    (set-extent-property ov 'initial-redisplay-function nil)
+    (and (consp old-urgent)
+	 (nth 2 old-urgent))))
 
 (defmacro preview-image-from-icon (icon)
   "Generate a copy of the ICON that is \"editable\".
