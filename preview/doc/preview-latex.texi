@@ -316,7 +316,7 @@ covered in detail in @ref{For advanced users}), but some are:
 
 If you use a non-white background in Emacs, you might have color
 artifacts at the edges of your previews.  Playing around with the option
-@code{Preview Transparent Color} in the @code{Preview Appearance} group
+@code{preview-transparent-color} in the @code{Preview Appearance} group
 might improve things.  With some settings, the cursor may cover the
 whole background of a preview, however.
 
@@ -329,11 +329,11 @@ in use, you may see somewhat different options under XEmacs.
 When using @previewlatex{}, the @code{\label}s are hidden by the
 previews.  It is possible to make them visible in the output @file{.dvi}
 by using the @LaTeX{} package @code{showkeys} alternatively
-@code{showlabels}. However, the boxes of these labels will be outside
-the region @previewlatex{} considers as the preview image. To enable a
+@code{showlabels}.  However, the boxes of these labels will be outside
+the region @previewlatex{} considers as the preview image.  To enable a
 similar mechanism internal to @previewlatex{}, enable the
-@code{showlabels} option in @code{Preview Default Option List} in the
-@code{Preview Latex} group.
+@code{showlabels} option in the variable
+@code{preview-default-option-list} in the @code{Preview Latex} group.
 
 It must be noted, however, that a much better idea may be to use the
 Ref@TeX{} package for managing references.  @xref{RefTeX in a
@@ -347,8 +347,8 @@ them with cursor left/right motions.  Auto-opened previews will close
 again once the cursor leaves them again (this is also done when doing
 incremental search, or query-replace operations), unless you changed
 anything in it.  In that case, you will have to regenerate the preview
-(via e.g., @kbd{C-c C-p C-p}).  Other options for @code{Preview Auto
-Reveal} are available via @code{customize}.
+(via e.g., @kbd{C-c C-p C-p}).  Other options for
+@code{preview-auto-reveal} are available via @code{customize}.
 
 @item Automatically cache preambles
 
@@ -360,7 +360,7 @@ preamble is, the more this will be apparent.  Once a preamble is cached,
 @previewlatex{} will try to keep track of when it is changed, and dump
 a fresh format in that case.  If you experience problems with this, or
 if you want it to happen without asking you the first time, you can
-customize the @code{Preview Auto Cache Preamble} setting.
+customize the variable @code{preview-auto-cache-preamble}.
 @vindex preview-auto-cache-preamble
 @cindex Caching a preamble
 
@@ -368,27 +368,28 @@ customize the @code{Preview Auto Cache Preamble} setting.
 
 Since @previewlatex{} frequently runs only small regions through
 @LaTeX{}, values like equation counters are not consistent from run to
-run.  If this bothers you, customize @code{Preview Required Option
-List} and check the `counters' option.  @LaTeX{} will then output a
-load of counter information during compilation, and this information
-will be used on subsequent updates to keep counters set to useful
-values.  The additional information takes additional time to analyze,
-but this is relevant mostly only when you are regenerating all previews
-at once, and maybe you will be less tempted to do so when counters
-appear more or less correct.
+run.  If this bothers you, customize the variable
+@code{preview-required-option-list} and check the `counters' option.
+@LaTeX{} will then output a load of counter information during
+compilation, and this information will be used on subsequent updates to
+keep counters set to useful values.  The additional information takes
+additional time to analyze, but this is relevant mostly only when you
+are regenerating all previews at once, and maybe you will be less
+tempted to do so when counters appear more or less correct.
 
 @item Preview your favourite @LaTeX{} constructs
 
 If you have a certain macro or environment that you want to preview,
-first check if it can be chosen in the @code{Preview Default Options
-List} in the @code{Preview Latex} group. 
+first check if it can be chosen by cutomizing
+@code{preview-default-options-list} in the @code{Preview Latex} group.
 
-If it is not available there, you can add it to @code{Preview Default
-Preamble} also in the @code{Preview Latex} group, by adding a
-@code{\PreviewMacro} or @code{\PreviewEnvironment} entry
+If it is not available there, you can add it to
+@code{preview-default-preamble} also in the @code{Preview Latex} group,
+by adding a @code{\PreviewMacro} or @code{\PreviewEnvironment} entry
 (@pxref{Provided commands}) @emph{after} the @code{\RequirePackage}
-line. For example, if you want to preview the @code{center} environment,
-press the @key{Show} button and the last @key{INS} button, then add
+line.  For example, if you want to preview the @code{center}
+environment, press the @key{Show} button and the last @key{INS} button,
+then add
 
 @example
 \PreviewEnvironment@{center@}
@@ -421,11 +422,11 @@ subdirectory @file{preview}, the default behavior).
 @item Don't preview inline math
 @cindex Inline math
 
-If you have performance problems because your document is full of
-inline math (@code{$@dots{}$}), or if your usage of @code{$} conflicts
-with @previewlatex{}'s, you can turn off inline math previews. In the
-@code{Preview Latex} group, remove the checkmark in the box next to
-@code{textmath} in @code{Preview Default Option List}.
+If you have performance problems because your document is full of inline
+math (@code{$@dots{}$}), or if your usage of @code{$} conflicts with
+@previewlatex{}'s, you can turn off inline math previews. In the
+@code{Preview Latex} group, remove @code{textmath} from
+@code{preview-default-option-list} by customizing this variable.
 @end itemize
 
 @node Known problems, For advanced users, Simple customization, top
