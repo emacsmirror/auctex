@@ -33,17 +33,18 @@ for you, consult the @file{INSTALL} file for installation instructions
 @node  Activating preview-latex, Getting started, Introduction, Introduction
 @section Activating @previewlatex{}
 @cindex Activation
-After installation, the package needs to be activated (and remember to
-activate @AUCTeX{} too).  Some prepackaged versions are activated upon
-installation, but otherwise, the activation line that needs to be added
-to your own @file{.emacs} file or to a site-wide initialization file is
+After installation, the package may need to be activated (and remember
+to activate @AUCTeX{} too).  In XEmacs, and in some prepackaged versions
+for GNU Emacs, activation is automatic upon installation, but otherwise,
+the activation line that needs to be added to your own @file{.emacs}
+file or to a site-wide initialization file is
 
 @example
 (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end example
 
 @noindent
-For a well-configured prepackaged version, not more than that should be
+For a well-configured prepackaged version, no more than that should be
 required.  If you installed @previewlatex{} yourself, at least the line
 
 @example
