@@ -135,9 +135,10 @@ setting is @samp{dvipng} in case you have the @samp{dvipng}
 program installed.  In this case, @samp{dvipng} will be used for
 converting @acronym{DVI} files and GhostScript (with a @samp{PNG}
 device) for converting @acronym{PDF} files.  @samp{dvipng} is much
-faster than the combination of Dvips and GhostScript and can be
-downloaded from the same sites as @previewlatex{} (in fact, it is part
-of the @acronym{CVS} archive of @previewlatex{}).
+faster than the combination of Dvips and GhostScript.  You can get
+downloads, access to its @acronym{CVS} archive and further information
+from its @uref{http://savannah.nongnu.org/projects/dvipng, project
+site}.
 
 @node More documentation, Availability, Basic modes of operation, Introduction
 @section More documentation
@@ -193,7 +194,7 @@ will display it.
 
 The @previewlatex{} project is now part of @AUCTeX{} and accessible as
 part of the @uref{http://savannah.gnu.org/projects/auctex,@AUCTeX{}
-project page}.  You can get its files from
+project page}.  You can get its files from the
 @uref{ftp://ftp.gnu.org/pub/gnu/auctex,@AUCTeX{} download area}.  As of
 @w{@AUCTeX{} 11.80}, @previewlatex{} should already be integrated into
 @AUCTeX{}, so no separate download will be necessary.
