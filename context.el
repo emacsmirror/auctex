@@ -6,7 +6,7 @@
 ;; X-URL: http://www.gnu.org/software/auctex/
 ;; Copyright 2003 Free Software Foundation
 
-;; Last Change: $Date: 2004-04-05 03:19:04 $
+;; Last Change: $Date: 2004-04-06 05:01:31 $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@
 ;; TODO
 ;; 1. indentation still bad.
 ;; 2. paragraph refilling doesn't work 100%, and is very slow.
-;; 3. menu item for context setup commands
 ;; 4. Remove dependency on LaTeX by moving LaTeX commands to TeX.
 ;; 5. Most ConTeXt macro's don't currently have lisp code to query for
 ;;    arguments. As ConTeXt arguments are quite complex, the LaTeX way
@@ -46,7 +45,7 @@
 ;; 6. Check auto-parsing: does it detect % interface=nl for example?
 ;; 7. Complete adding ConTeXt macro's. Perhaps parse cont-en.xml and
 ;;    generate the interfaces?
-;; 8. Integrate etexshow?
+;; 8. Add to menu: make TeX hash (mktexlsr), context format and metapost format.
 
 ;; TODO Documentation
 ;; 1. multifile done differently with ConTeXt
@@ -1052,7 +1051,38 @@ header is at the start of a line."
 	)
 
 
+;; Imenu support
+
+(defun ConTeXt-outline-name ()
+  "Guess a name for the current header line."
+  (save-excursion
+    (if (re-search-forward "{\\([^\}]*\\)}" (point-at-eol) t)
+        (match-string 1)
+      (buffer-substring-no-properties (point) (point-at-eol))
+      )
+    ))
+
+;; This imenu also includes commented out chapters. Perhaps a feature
+;; for LaTeX, not sure we want or need that for ConTeXt.
+
+(defun ConTeXt-imenu-create-index-function ()
+  "Imenu support function for ConTeXt."
+  (TeX-update-style)
+  (let (entries level (regexp (ConTeXt-outline-regexp)))
+    (goto-char (point-max))
+    (while (re-search-backward regexp nil t)
+      (let* ((name (ConTeXt-outline-name))
+             (level (make-string (1- (ConTeXt-outline-level)) ?\ ))
+             (label (concat level level name))
+             (mark (make-marker)))
+        (set-marker mark (point))
+        (set-text-properties 0 (length label) nil label)
+        (setq entries (cons (cons label mark) entries))))
+    entries))
+
+
 ;; Indentation, copied from Berend's context mode.
+;; TODO: doesn't work great.
 
 (defvar ConTeXt-indent-allhanging t)
 (defvar ConTeXt-indent-arg 2)
@@ -1300,8 +1330,10 @@ There might be text before point."
 (defun ConTeXt-etexshow ()
   "Call etexshow, if available, to show the definition of a ConText macro."
   (interactive)
-	(if (fboundp 'etexshow-cmd)
-			 (funcall (symbol-function 'etexshow-cmd))
+	(if (fboundp 'etexshow)
+      (let ()
+        (require 'etexshow)
+        (funcall (symbol-function 'etexshow-cmd)))
     (error "etexshow is not installed. Get it from http://levana.de/emacs/"))
 )
 
@@ -1326,6 +1358,7 @@ There might be text before point."
 	(ConTeXt-project-structure-menu-create)
 	(ConTeXt-section-block-menu-create)
 	(ConTeXt-section-menu-create)
+  ["Add table of contents to menu" (imenu-add-to-menubar "TOC") t]
 	"-"
 	["Macro..." TeX-insert-macro t]
 	["Complete" TeX-complete-symbol t]
@@ -1422,22 +1455,17 @@ of context-mode-hook."
 	(use-local-map ConTeXt-mode-map)
 
 	;; Indenting
-	(make-local-variable 'indent-line-function)
 	(set (make-local-variable 'indent-line-function) 'ConTeXt-indent-line)
 	(set (make-local-variable 'fill-indent-according-to-mode) t)
 
 	;; Paragraph formatting
-	(make-local-variable 'LaTeX-format-comment-syntax-aware)
-	(setq LaTeX-format-comment-syntax-aware nil)
-	(make-local-variable 'LaTeX-paragraph-commands)
-	(setq LaTeX-paragraph-commands (ConTeXt-paragraph-commands))
+	(set (make-local-variable 'LaTeX-format-comment-syntax-aware) nil)
+	(set (make-local-variable 'LaTeX-paragraph-commands)
+       (ConTeXt-paragraph-commands))
 	;;(setq LaTeX-paragraph-commands "par\\b\\|crlf\\b")
-	(make-local-variable 'paragraph-ignore-fill-prefix)
-	(setq paragraph-ignore-fill-prefix t)
-	(make-local-variable 'fill-paragraph-function)
-	(setq fill-paragraph-function 'LaTeX-fill-paragraph)
-	(make-local-variable 'adaptive-fill-mode)
-	(setq adaptive-fill-mode nil)
+	(set (make-local-variable 'paragraph-ignore-fill-prefix) t)
+	(set (make-local-variable 'fill-paragraph-function) 'LaTeX-fill-paragraph)
+	(set (make-local-variable 'adaptive-fill-mode) nil)
 	(setq paragraph-start
 				(concat
 				 "[ \t]*\\("
@@ -1473,10 +1501,10 @@ of context-mode-hook."
 
 	;; Outline support
 	(require 'outline)
-	(make-local-variable 'outline-level)
-	(setq outline-level 'ConTeXt-outline-level)
-	(make-local-variable 'outline-regexp)
-	(setq outline-regexp (ConTeXt-outline-regexp t))
+	(set (make-local-variable 'outline-level)
+       'ConTeXt-outline-level)
+	(set (make-local-variable 'outline-regexp)
+       (ConTeXt-outline-regexp t))
 	;;(make-local-variable 'outline-heading-end-regexp)
 	(setq TeX-header-end (ConTeXt-header-end)
 				TeX-trailer-start (ConTeXt-trailer-start))
@@ -1485,6 +1513,10 @@ of context-mode-hook."
 	;; set only if user has not set it.
 	(or ConTeXt-largest-level
 			(setq ConTeXt-largest-level (ConTeXt-section-level "section")))
+
+  ;; imenu support
+  (set (make-local-variable 'imenu-create-index-function)
+       'ConTeXt-imenu-create-index-function)
 
 	;; other initializations
 	(funcall (intern (concat "ConTeXt-" ConTeXt-current-interface "-mode")))
