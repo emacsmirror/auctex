@@ -1,14 +1,14 @@
 ;; bib-cite.el - Display \cite, \ref or \label / Extract refs from BiBTeX file.
 
-;; Copyright (C) 1994, 1995, 1996, 1997 Peter S. Galbraith
+;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2001 Peter S. Galbraith
  
 ;; Author:    Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
 ;;                               <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.16 (20 Dec 99)
+;; Version:   3.17 (01 May 2001)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.16 2000-05-03 15:22:01 psg Exp $
+;; RCS $Id: bib-cite.el,v 5.17 2002-01-21 14:25:54 psg Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -39,13 +39,10 @@
 ;; associated with \cite commands, or matching \ref and \label commands.
 
 ;; New versions of this package (if they exist) may be found at:
-;;   ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/bib-cite.el
+;;   http://people.debian.org/~psg/elisp/bib-cite.el
 
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
-;;  VMS: I have no clue if this works under VMS. I don't know how emacs handle 
-;;  logical names (i.e. for BIBINPUTS) but I am willing to fix this package for
-;;  VMS if someone if willing to test it and answer questions.
 
 ;; AUC-TEX USERS: 
 ;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
@@ -56,10 +53,8 @@
 ;;    http://sunsite.auc.dk/auctex/
 ;;
 ;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
-;;  you use auc-tex, you probably have an old version of bib-cite.el in
-;;  your load-path which may get loaded instead of this file (unless this
-;;  is the auc-tex file!).  Make sure you replace that file, or rename it,
-;;  or delete it!!!
+;;  you use auc-tex and didn't obtained bib-cite.el separately, make sure
+;;  that you are actually using the more recent version.
 
 ;; reftex users:
 ;;  reftex is a package with similar functions to bib-cite.
@@ -78,7 +73,7 @@
 ;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
 ;;  which contains a bug for MSDOS (at least for emacs 19.27 it does).
 ;;  Get the file 
-;;    ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/bib-cite.etags-bug-report
+;;    http://people.debian.org/~psg/elisp/bib-cite.etags-bug-report
 ;;  to see what patches to make to etags.c to fix it.
 
 ;; Description:
@@ -373,6 +368,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.17 May 01 2001 - (RCS V1.38)
+;;  - XEmacs has imenu after all.
 ;; V3.16 Dec 20 99 - (RCS V1.37)
 ;;  - Added customize support.
 ;; V3.15 Dec 20 99 - (RCS V1.36)
@@ -620,7 +617,7 @@ call a function in RefTeX do find or display the cross reference of a
   (defvar bib-novice t
     "*Give advice to novice users about what commands to use next.")
   
-  (defvar bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
+  (defvar bib-use-imenu (fboundp 'imenu-add-to-menubar)
     "*Use imenu package for LaTeX modes (coded in bib-cite).")
   
   (defvar bib-hilit-if-available t
@@ -718,7 +715,7 @@ call a function in RefTeX do find or display the cross reference of a
     :group 'bib-cite
     :type 'boolean)
 
-  (defcustom bib-use-imenu (not (string-match "XEmacs\\|Lucid" emacs-version))
+  (defcustom bib-use-imenu (fboundp 'imenu-add-to-menubar)
     "*Use imenu package for LaTeX modes (coded in bib-cite)."
     :group 'bib-cite
     :type 'boolean)
