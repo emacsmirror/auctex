@@ -18,406 +18,430 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{1321}
-%\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
-%\def\rcsstrip #1 #2${#1}
-%\rcskey \version $Name:  $
-%\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.87 $
-%\else
-%  \begingroup
-%    \lccode`-=`.
-%    \def\next rel-{}
-%    \edef\next{\lowercase{\endgroup
-%       \def\noexpand\version{\expandafter\next\version}}}
-%  \next
-%\fi
-%\rcskey\next $Date: 2004-03-10 16:25:24 $
-%\expandafter\date\expandafter{\next}
-%\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
-%\title{The \texttt{preview} Package for \LaTeX\\Version \version}
-%\maketitle
+% \CheckSum{1520}
+% \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
+% \def\rcsstrip #1 #2${#1}
+% \rcskey \version $Name:  $
+% \ifx\version\empty
+%   \rcskey \version CVS-$Revision: 1.88 $
+% \else
+%   \begingroup
+%     \lccode`-=`.
+%     \def\next rel-{}
+%     \edef\next{\lowercase{\endgroup
+%        \def\noexpand\version{\expandafter\next\version}}}
+%   \next
+% \fi
+% \rcskey\next $Date: 2004-04-10 22:50:22 $
+% \expandafter\date\expandafter{\next}
+% \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
+% \title{The \texttt{preview} Package for \LaTeX\\Version \version}
+% \maketitle
 %\section{Introduction}
-%The main purpose of this package is the extraction of certain
-%environments (most notably displayed formulas) for use in different
-%contexts.  While the erstwhile application has been the embedding of
-%those preview fragments into Emacs source buffers under the AUC~\TeX\
-%editing environment, other applications are easily imaginable.
-%
-%In particular it should be noted that producing EPS files with
-%Dvips and its derivatives using the \texttt{-E} option is
-%not currently well-supported by \LaTeX.  People make do by fiddling
-%around with |\thispagestyle{empty}| and hoping for the best (namely,
-%that the specified contents will indeed fit on single pages), and
-%then trying to guess the baseline of the resulting code and stuff,
-%but this is at best dissatisfactory.  The preview package provides an
-%easy way to ensure that exactly one page per request gets shipped,
-%with a well-defined baseline and no page decorations.  Thus you can
-%safely use
-%\begin{quote}
-%|dvips -E -i|
-%\end{quote}
-%and get a single EPS file with shrink-wrapped bounding box for every
-%generated image of a \LaTeX\ run.
-%
-%If your ultimate goal is to produce a set of files in a different
-%format that can be produced by GhostScript, take a look at the
-%|tightpage| option of the preview package.  This will embed the page
-%dimensions into the PostScript code, obliterating the need to use the
-%|-E -i| options to Dvips.  You can then produce all image files with
-%a single run of GhostScript from a single PostScript file for all
-%images at once.  The |tightpage| option requires setting the |dvips|
-%option as well.
-%
-%Various options exist that will pass \TeX\ dimensions and other
-%information about the respective shipped out material (including
-%descender size) into the log file, where external applications might
-%make use of it.
-%
-%The possibility for generating a whole set of graphics with a single
-%run of \LaTeX, Dvips, and GhostScript increases both speed and
-%robustness of applications.  It is to be hoped that applications like
-%\LaTeX 2HTML will be able to make use of this package in future.
-%
+% The main purpose of this package is the extraction of certain
+% environments (most notably displayed formulas) for use in different
+% contexts.  While the erstwhile application has been the embedding of
+% those preview fragments into Emacs source buffers under the
+% AUC~\TeX\ editing environment, other applications are easily
+% imaginable.
+% 
+% In particular it should be noted that producing EPS files with Dvips
+% and its derivatives using the \texttt{-E} option is not currently
+% well-supported by \LaTeX.  People make do by fiddling around with
+% |\thispagestyle{empty}| and hoping for the best (namely, that the
+% specified contents will indeed fit on single pages), and then trying
+% to guess the baseline of the resulting code and stuff, but this is
+% at best dissatisfactory.  The preview package provides an easy way
+% to ensure that exactly one page per request gets shipped, with a
+% well-defined baseline and no page decorations.  Thus you can safely
+% use
+% \begin{quote}
+% |dvips -E -i|
+% \end{quote}
+% and get a single EPS file with shrink-wrapped bounding box for every
+% generated image of a \LaTeX\ run.
+% 
+% If your ultimate goal is to produce a set of files in a different
+% format that can be produced by GhostScript, take a look at the
+% |tightpage| option of the preview package.  This will embed the page
+% dimensions into the PostScript code, obliterating the need to use
+% the |-E -i| options to Dvips.  You can then produce all image files
+% with a single run of GhostScript from a single PostScript file for
+% all images at once.  The |tightpage| option requires setting the
+% |dvips| option as well.
+% 
+% Various options exist that will pass \TeX\ dimensions and other
+% information about the respective shipped out material (including
+% descender size) into the log file, where external applications might
+% make use of it.
+% 
+% The possibility for generating a whole set of graphics with a single
+% run of \LaTeX, Dvips, and GhostScript increases both speed and
+% robustness of applications.  It is to be hoped that applications
+% like \LaTeX 2HTML will be able to make use of this package in
+% future.
+% 
 %\section{Package options}
-%The package is included with the customary
-%\begin{quote}
-%|\usepackage|\oarg{options}|{preview}|
-%\end{quote}
-%You should usually load this package as the last one, since it
-%redefines several things that other packages may also provide.
-%
-%The following options are available:
-%\begin{description}
-%\item[|active|] is the most essential option.  If this option is not
-%specified, the |preview| package will be inactive and the document
-%will be typeset as if the |preview| package were not loaded, except
-%that all declarations and environments defined by the package are
-%still legal but have no effect.  This allows defining previewing
-%characteristics in your document, and only activating them by calling
-%\LaTeX\ as
-%\begin{quote}
-%\raggedright
-%|latex '\PassOptionsToPackage{active}{preview}| |\input|\marg{filename}|'|
-%\end{quote}
-%\item[|noconfig|] Usually the file |prdefault.cfg| gets loaded whenever
-%the |preview| package gets activated.  |prdefault.cfg| is supposed to
-%contain definitions that can cater for otherwise bad results, for
-%example, if a certain document class would otherwise lead to
-%trouble.  It also can be used to override any settings made in this
-%package, since it is loaded at the very end of it.  In addition,
-%there may be configuration files specific for certain |preview|
-%options like |auctex| which have more immediate needs.  The
-%|noconfig| option suppresses loading of those option files, too.
-%\item[|psfixbb|] Dvips determines the bounding boxes from the
-%material in the DVI file it understands.  Lots of PostScript specials
-%are not part of that.  Since the \TeX\ boxes do not make it into the
-%DVI file, but merely characters, rules and specials do, Dvips might
-%include far too small areas.  The option |psfixbb| will include
-%|/dev/null| as a graphic file in the ultimate upper left and lower
-%right corner of the previewed box.  This will make Dvips generate an
-%appropriate bounding box.
-%\item[|dvips|] If this option is specified as a class option or to
-%other packages, several packages pass things like page size
-%information to Dvips, or cause crop marks or
-%draft messages written on pages.  This seriously hampers the
-%usability of previews.  If this option is specified, the changes will
-%be undone if possible.
-%\item[|displaymath|] will make all displayed math environments subject to
-%preview processing.  This will typically be the most desired option.
-%\item[|floats|] will make all float objects subject to preview
-%processing.  If you want to be more selective about what floats to
-%pass through to a preview, you should instead use the
-%\cmd{\PreviewSnarfEnvironment} command on the floats you want to have
-%previewed.
-%\item[|textmath|] will make all text math subject to previews.  Since
-%math mode is used throughly inside of \LaTeX\ even for other purposes,
-%this works by redefining \cmd\(, \cmd\) and |$| and the |math|
-%environment (apparently some people use that).  Only occurences of
-%these text math delimiters in later loaded packages and in the main
-%document will thus be affected.
-%\item[|graphics|] will subject all \cmd{\includegraphics} commands to
-%a preview.
-%\item[|sections|] will subject all section headers to a preview.
-%\item[|delayed|] will delay all activations and redefinitions the
-%|preview| package makes until |\begin{document}|.  The purpose of
-%this is to cater for documents which should be subjected to the
-%|preview| package without having been prepared for it.  You can
-%process such documents with
-%\begin{quote}
-%|latex '\RequirePackage[active,delayed,|\meta{options}|]{preview}|
-%|\input|\marg{filename}|'|
-%\end{quote}
-%This relaxes the requirement to be loading the |preview| package as
-%last package.
-%\item[\meta{driver}] loads a special driver file
-%|pr|\meta{driver}|.def|.  The remaining options are implemented
-%through the use of driver files.
-%\item[|auctex|]  This driver will produce fake error messages at the
-%start and end of every preview environment that enable the Emacs
-%package \previewlatex\ in connection with AUC~\TeX\ to pinpoint the
-%exact source location where the previews have originated.
-%Unfortunately, there is no other reliable means of passing the
-%current \TeX\ input position \emph{in} a line to external programs.
-%In order to make the parsing more robust, this option also switches
-%off quite a few diagnostics that could be misinterpreted.
-%
-%You should not specify this option manually, since it will only be
-%needed by automated runs that want to parse the pseudo error
-%messages.  Those runs will then use \cmd{\PassOptionsToPackage} in
-%order to effect the desired behaviour.  In addition, |prauctex.cfg|
-%will get loaded unless inhibited by the |noconfig| option.  This
-%caters for the most frequently encountered problematic commands.
-%\item[|showlabels|] During the editing process, some people like to
-%see the label names in their equations, figures and the like.  Now if
-%you are using Emacs for editing, and in particular \previewlatex,
-%I'd strongly recommend that you check out the Ref\TeX\ package which
-%pretty much obliterates the need for this kind of functionality.  If
-%you still want it, standard \LaTeX\ provides it with the |showkeys|
-%package, and there is also the less encompassing |showlabels|
-%package.  Unfortunately, since those go to some pain not to change
-%the page layout and spacing, they also don't change |preview|'s idea
-%of the \TeX\ dimensions of the involved boxes.  So if you are using
-%|preview| for determing bounding boxes, those packages are mostly
-%useless.  The option |showlabels| offers a substitute for them.
-%\item[|tightpage|] It is not uncommon to want to use the results of
-%|preview| as graphic images for some other application.  One
-%possibility is to generate a flurry of EPS files with
-%\begin{quote}
-%  |dvips -E -i -Pwww -o| \meta{outputfile}|.000| \meta{inputfile}
-%\end{quote}
-%However, in case those are to be processed further into graphic image
-%files by GhostScript, this process is inefficient since all of those
-%files need to be processed one by one.  In addition, it is necessary
-%to extract the bounding box comments from the EPS files and convert
-%them into page dimension parameters for GhostScript in order to avoid
-%full-page graphics.  This is not even possible if you wanted to use
-%GhostScript in a~\emph{single} run for generating the files from a
-%single PostScript file, since Dvips will in that case leave no
-%bounding box information anywhere.
-%
-%The solution is to use the |tightpage| option together with the
-%|dvips| option so that additional PostScript code gets written into
-%the produced file that will set the device dimensions at the start of
-%each output page.  That way a single command line like
-%\begin{quote}
-%\raggedright
-%  \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
-%    -dGraphicsAlphaBits=4 -dSAFER -q -dNOPAUSE
-%    -sOutputFile=\meta{outputfile}\%d.png \meta{inputfile}.ps}
-%\end{quote}
-%will be able to produce tight graphics from a single PostScript file
-%generated with Dvips \emph{without} use of the options |-E -i|, in a
-%single run.  If you need this in a batch environment where you don't
-%want to use |preview|'s automatic extraction facilities, no problem:
-%just don't use any of the special options, and wrap everything to be
-%previewed into |preview| environments.
-%
-%If the pages under the |tightpage|
-%option are just too tight, you can adjust by setting the length
-%|\PreviewBorder| to a different value by using \cmd{\setlength}.  The
-%default value is |0.50001bp|, which is half of a usual PostScript
-%point, rounded up.  If you go below this value, the resulting page
-%size may drop below |1bp|, and GhostScript does not seem to like that.
-%If you need finer control, you can adjust the bounding box dimensions
-%individually by changing the macro |\PreviewBbAdjust| with the help
-%of |\renewcommand|.  Its default value is
-%\begin{quote}
-%\raggedright
-%  |\newcommand| |\PreviewBbAdjust|
-%     |{-\PreviewBorder| |-\PreviewBorder|
+% The package is included with the customary
+% \begin{quote}
+% |\usepackage|\oarg{options}|{preview}|
+% \end{quote}
+% You should usually load this package as the last one, since it
+% redefines several things that other packages may also provide.
+% 
+% The following options are available:
+% \begin{description}
+% \item[|active|] is the most essential option.  If this option is not
+%   specified, the |preview| package will be inactive and the document
+%   will be typeset as if the |preview| package were not loaded,
+%   except that all declarations and environments defined by the
+%   package are still legal but have no effect.  This allows defining
+%   previewing characteristics in your document, and only activating
+%   them by calling \LaTeX\ as
+% \begin{quote}
+% \raggedright
+% |latex '\PassOptionsToPackage{active}{preview}| |\input|\marg{filename}|'|
+% \end{quote}
+% \item[|noconfig|] Usually the file |prdefault.cfg| gets loaded
+%   whenever the |preview| package gets activated.  |prdefault.cfg| is
+%   supposed to contain definitions that can cater for otherwise bad
+%   results, for example, if a certain document class would otherwise
+%   lead to trouble.  It also can be used to override any settings
+%   made in this package, since it is loaded at the very end of it.
+%   In addition, there may be configuration files specific for certain
+%   |preview| options like |auctex| which have more immediate needs.
+%   The |noconfig| option suppresses loading of those option files,
+%   too.
+% \item[|psfixbb|] Dvips determines the bounding boxes from the
+%   material in the DVI file it understands.  Lots of PostScript
+%   specials are not part of that.  Since the \TeX\ boxes do not make
+%   it into the DVI file, but merely characters, rules and specials
+%   do, Dvips might include far too small areas.  The option |psfixbb|
+%   will include |/dev/null| as a graphic file in the ultimate upper
+%   left and lower right corner of the previewed box.  This will make
+%   Dvips generate an appropriate bounding box.
+% \item[|dvips|] If this option is specified as a class option or to
+%   other packages, several packages pass things like page size
+%   information to Dvips, or cause crop marks or draft messages
+%   written on pages.  This seriously hampers the usability of
+%   previews.  If this option is specified, the changes will be undone
+%   if possible.
+% \item[|pdftex|] If this option is set, PDF\TeX\ is assumed as the
+%   output driver.  This mainly affects the |tightpage| option.
+% \item[|displaymath|] will make all displayed math environments
+%   subject to preview processing.  This will typically be the most
+%   desired option.
+% \item[|floats|] will make all float objects subject to preview
+%   processing.  If you want to be more selective about what floats to
+%   pass through to a preview, you should instead use the
+%   \cmd{\PreviewSnarfEnvironment} command on the floats you want to
+%   have previewed.
+% \item[|textmath|] will make all text math subject to previews.
+%   Since math mode is used throughly inside of \LaTeX\ even for other
+%   purposes, this works by redefining \cmd\(, \cmd\)
+%   and |$| and the |math| environment (apparently some people use
+%   that).  Only occurences of these text math delimiters in later
+%   loaded packages and in the main document will thus be affected.
+% \item[|graphics|] will subject all \cmd{\includegraphics} commands
+%   to a preview.
+% \item[|sections|] will subject all section headers to a preview.
+% \item[|delayed|] will delay all activations and redefinitions the
+%   |preview| package makes until |\||begin{document}|.  The purpose
+%   of this is to cater for documents which should be subjected to the
+%   |preview| package without having been prepared for it.  You can
+%   process such documents with
+%   \begin{quote}
+%     |latex '\RequirePackage[active,delayed,|\meta{options}|]{preview}|
+%     |\input|\marg{filename}|'|
+%   \end{quote}
+%   This relaxes the requirement to be loading the |preview| package
+%   as last package.
+% \item[\meta{driver}] loads a special driver file
+%   |pr|\meta{driver}|.def|.  The remaining options are implemented
+%   through the use of driver files.
+% \item[|auctex|] This driver will produce fake error messages at the
+%   start and end of every preview environment that enable the Emacs
+%   package \previewlatex\ in connection with AUC~\TeX\ to pinpoint
+%   the exact source location where the previews have originated.
+%   Unfortunately, there is no other reliable means of passing the
+%   current \TeX\ input position \emph{in} a line to external
+%   programs.  In order to make the parsing more robust, this option
+%   also switches off quite a few diagnostics that could be
+%   misinterpreted.
+% 
+%   You should not specify this option manually, since it will only be
+%   needed by automated runs that want to parse the pseudo error
+%   messages.  Those runs will then use \cmd{\PassOptionsToPackage} in
+%   order to effect the desired behaviour.  In addition,
+%   |prauctex.cfg| will get loaded unless inhibited by the |noconfig|
+%   option.  This caters for the most frequently encountered
+%   problematic commands.
+% \item[|showlabels|] During the editing process, some people like to
+%   see the label names in their equations, figures and the like.  Now
+%   if you are using Emacs for editing, and in particular
+%   \previewlatex, I'd strongly recommend that you check out the
+%   Ref\TeX\ package which pretty much obliterates the need for this
+%   kind of functionality.  If you still want it, standard \LaTeX\
+%   provides it with the |showkeys| package, and there is also the
+%   less encompassing |showlabels| package.  Unfortunately, since
+%   those go to some pain not to change the page layout and spacing,
+%   they also don't change |preview|'s idea of the \TeX\ dimensions of
+%   the involved boxes.  So if you are using |preview| for determing
+%   bounding boxes, those packages are mostly useless.  The option
+%   |showlabels| offers a substitute for them.
+% \item[|tightpage|] It is not uncommon to want to use the results of
+%   |preview| as graphic images for some other application.  One
+%   possibility is to generate a flurry of EPS files with
+%   \begin{quote}
+%     |dvips -E -i -Pwww -o| \meta{outputfile}|.000| \meta{inputfile}
+%   \end{quote}
+%   However, in case those are to be processed further into graphic
+%   image files by GhostScript, this process is inefficient since all
+%   of those files need to be processed one by one.  In addition, it
+%   is necessary to extract the bounding box comments from the EPS
+%   files and convert them into page dimension parameters for
+%   GhostScript in order to avoid full-page graphics.  This is not
+%   even possible if you wanted to use GhostScript in a~\emph{single}
+%   run for generating the files from a single PostScript file, since
+%   Dvips will in that case leave no bounding box information
+%   anywhere.
+% 
+%   The solution is to use the |tightpage| option together with the
+%   |dvips| option so that additional PostScript code gets written
+%   into the produced file that will set the device dimensions at the
+%   start of each output page.  That way a single command line like
+%   \begin{quote}
+%     \raggedright
+%     \texttt{gs -sDEVICE=png16m -dTextAlphaBits=4 -r300
+%       -dGraphicsAlphaBits=4 -dSAFER -q -dNOPAUSE
+%       -sOutputFile=\meta{outputfile}\%d.png \meta{inputfile}.ps}
+%   \end{quote}
+%   will be able to produce tight graphics from a single PostScript
+%   file generated with Dvips \emph{without} use of the options
+%   |-E -i|, in a single run.  If you need this in a batch environment
+%   where you don't want to use |preview|'s automatic extraction
+%   facilities, no problem: just don't use any of the special options,
+%   and wrap everything to be previewed into |preview| environments.
+% 
+%   If the pages under the |tightpage| option are just too tight, you
+%   can adjust by setting the length |\PreviewBorder| to a different
+%   value by using \cmd{\setlength}.  The default value is
+%   |0.50001bp|, which is half of a usual PostScript point, rounded
+%   up.  If you go below this value, the resulting page size may drop
+%   below |1bp|, and GhostScript does not seem to like that.  If you
+%   need finer control, you can adjust the bounding box dimensions
+%   individually by changing the macro |\PreviewBbAdjust| with the
+%   help of |\renewcommand|.  Its default value is
+%   \begin{quote}
+%     \raggedright
+%     |\newcommand| |\PreviewBbAdjust|
+%       |{-\PreviewBorder| |-\PreviewBorder|
 %       |\PreviewBorder|  |\PreviewBorder}|
-%\end{quote}
-%This adjusts the left, lower, right and upper borders by the given
-%amount.  The macro must contain 4~\TeX\ dimensions after another, and
-%you may not omit the units if you specify them explicitly instead of
-%by register.  PostScript points have the unit~|bp|.
-%\item[|lyx|] This option is for the sake of LyX developers.  It will
-%output a few diagnostics relevant for the sake of LyX' preview
-%functionality (at the time of writing, just implemented for math
-%insets, in the CVS version of LyX that will eventually be released as
-%1.3.0).
-%\item[|counters|] This writes out diagnostics at the start and the end
-%of previews.  Only the counters changed since the last output get
-%written, and if no counters changed, nothing get written at all.  The
-%list consists of counter name and value, both enclosed in |{}|
-%braces, followed by a space.  The last such pair is followed by a
-%colon (|:|) if it is at the start of the preview snippet, and by a
-%period (|.|) if it is at the end.  The order of different diagnostics
-%like this being issued depends on the order of the specification of
-%the options when calling the package.
+%   \end{quote}
+%   This adjusts the left, lower, right and upper borders by the given
+%   amount.  The macro must contain 4~\TeX\ dimensions after another,
+%   and you may not omit the units if you specify them explicitly
+%   instead of by register.  PostScript points have the unit~|bp|.
+% \item[|tightpdf|] This option conditionally calls the |tightpages|
+%   option if PDF output has been selected.  This is for tools that
+%   don't fix the PDF/DVI decision but need the tightpage options for
+%   page dimensions in the PDF case.  If neither |dvips| or |pdftex|
+%   options have been called previously, it also executes the
+%   appropriate option of the two.
+% \item[|lyx|] This option is for the sake of LyX developers.  It will
+%   output a few diagnostics relevant for the sake of LyX' preview
+%   functionality (at the time of writing, just implemented for math
+%   insets, in the CVS version of LyX that will eventually be released
+%   as 1.3.0).
+% \item[|counters|] This writes out diagnostics at the start and the
+%   end of previews.  Only the counters changed since the last output
+%   get written, and if no counters changed, nothing get written at
+%   all.  The list consists of counter name and value, both enclosed
+%   in |{}|
+%   braces, followed by a space.  The last such pair is followed by a
+%   colon (|:|) if it is at the start of the preview snippet, and by a
+%   period (|.|) if it is at the end.  The order of different
+%   diagnostics like this being issued depends on the order of the
+%   specification of the options when calling the package.
+% 
+%   Systems like \previewlatex\ use this for keeping counters accurate
+%   when single previews are regenerated.
+% \item[|footnotes|] This makes footnotes render as previews, and only
+%   as their footnote symbol.  A convenient editing feature inside of
+%   Emacs.
+% \end{description}
+% The following options are just for debugging purposes of the package
+% and similar to the corresponding \TeX\ commands they allude to:
+% \begin{description}
+% \item[|tracingall|] causes lots of diagnostic output to appear in
+%   the log file during the preview collecting phases of \TeX's
+%   operation.  In contrast to the similarly named \TeX\ command, it
+%   will not switch to |\errorstopmode|, nor will it change the
+%   setting of |\tracingonline|.
+% \item[|showbox|] This option will show the contents of the boxes
+%   shipped out to the DVI files.  It also sets |\showboxbreadth| and
+%   |\showboxdepth| to their maximum values at the end of loading this
+%   package, but you may reset them if you don't like that.
+% \end{description}
+% \section{Provided Commands}
+% \DescribeEnv{preview} The |preview| environment causes its contents
+% to be set as a single preview image.  Insertions like figures and
+% footnotes (except those included in minipages) will typically lead
+% to error messages or be lost.  In case the |preview| package has not
+% been activated, the contents of this environment will be typeset
+% normally.
+% 
+% \DescribeEnv{nopreview} The |nopreview| environment will cause its
+% contents not to undergo any special treatment by the |preview|
+% package.  When |preview| is active, the contents will be discarded
+% like all main text that does not trigger the |preview| hooks.  When
+% |preview| is not active, the contents will be typeset just like the
+% main text.
+% 
+% Note that both of these environments typeset things as usual when
+% preview is not active.  If you need something typeset conditionally,
+% use the \cmd{\ifPreview} conditional for it.
+% 
+% \DescribeMacro{\PreviewMacro} If you want to make a macro like
+% \cmd{\includegraphics} (actually, this is what is done by the
+% |graphics| option to |preview|) produce a preview image, you put a
+% declaration like
+% \begin{quote}
+% |\PreviewMacro[*[[!]{\includegraphics}|
+% \end{quote}
+% or, more readable,
+% \begin{quote}
+% |\PreviewMacro[{*[][]{}}]{\includegraphics}|
+% \end{quote}
+% into your preamble.  The optional argument to \cmd{\PreviewMacro}
+% specifies the arguments \cmd{\includegraphics} accepts, since this
+% is necessary information for properly ending the preview box.  Note
+% that if you are using the more readable form, you have to enclose
+% the argument in a |[{| and |}]| pair.  The inner braces are
+% necessary to stop any included |[]| pairs from prematurely ending
+% the optional argument, and to make a single |{}|
+% denoting an optional argument not get stripped away by \TeX's
+% argument parsing.
+% 
+% The letters simply mean
+% \begin{description}
+% \item[|*|] indicates an optional |*| modifier, as in
+%   |\includegraphics*|.
+% \item[|[|] indicates an optional argument in brackets.  This syntax
+%   is somewhat baroque, but brief.
+% \item[{|[]|}] also indicates an optional argument in brackets.  Be
+%   sure to have encluded the entire optional argument specification
+%   in an additional pair of braces as described above.
+% \item[|!|] indicates a mandatory argument.
+% \item[|\char`{\char`}|] indicates the same.  Again, be sure to have
+%   that additional level of braces around the whole argument
+%   specification.
+% \item[|?|\meta{delimiter}\marg{true case}\marg{false case}] is a
+%   conditional.  The next character is checked against being equal to
+%   \meta{delimiter}.  If it is, the specification \meta{true case} is
+%   used for the further parsing, otherwise \meta{false case} will be
+%   employed.  In neither case is something consumed from the input,
+%   so \marg{true case} will still have to deal with the upcoming
+%   delimiter.
+% \item[|@|\marg{literal sequence}] will insert the given sequence
+%   literally into the executed call of the command.
+% \item[|-|] will just drop the next token.  It will probably be most
+%   often used in the true branch of a |?| specification.
+% \end{description}
+% 
+% There is a second optional argument in brackets that can be used to
+% declare any default action to be taken instead.  This is mostly for
+% the sake of macros that influence numbering: you would want to keep
+% their effects in that respect.  The default action should use |#1|
+% for referring to the original (not the patched) command with the
+% parsed options appended.  Not specifying a second optional argument
+% here is equivalent to specifying~|[#1]|.
+% 
+% \DescribeMacro{\PreviewMacro*} A similar invocation
+% \cmd{\PreviewMacro*} simply throws the macro and all of its
+% arguments declared in the manner above away.  This is mostly useful
+% for having things like \cmd{\footnote} not do their magic on their
+% arguments.  More often than not, you don't want to declare any
+% arguments to scan to \cmd{\PreviewMacro*} since you would want the
+% remaining arguments to be treated as usual text and typeset in that
+% manner instead of being thrown away.  An exception might be, say,
+% sort keys for \cmd{\cite}.
+% 
+% A second optional argument in brackets can be used to declare any
+% default action to be taken instead.  This is for the sake of macros
+% that influence numbering: you would want to keep their effects in
+% that respect.  The default action might use |#1| for referring to
+% the original (not the patched) command with the parsed options
+% appended.  Not specifying a second optional argument here is
+% equivalent to specifying~|[]| since the command usually gets thrown
+% away.
+% 
+% As an example for using this argument, you might want to specify
+% \begin{quote}
+%   |\PreviewMacro*\footnote[{[]}][#1{}]|
+% \end{quote}
+% This will replace a footnote by an empty footnote, but taking any
+% optional parameter into account, since an optional paramter changes
+% the numbering scheme.  That way the real argument for the footnote
+% remains for processing by \previewlatex\ (the actual definition is
+% more complicated in order not to change the numbering in case of
+% optional arguments being present).
+% 
+% \DescribeMacro{\PreviewEnvironment} The macro
+% \cmd{\PreviewEnvironment} works just as \cmd{\PreviewMacro} does,
+% only for environments.  \DescribeMacro{\PreviewEnvironment*} And the
+% same goes for \cmd{\PreviewEnvironment*} as compared to
+% \cmd{\PreviewMacro*}.
+% 
+% \DescribeMacro{\PreviewSnarfEnvironment} This macro does not typeset
+% the original environment inside of a preview box, but instead
+% typesets just the contents of the original environment inside of the
+% preview box, leaving nothing for the original environment.  This has
+% to be used for figures, for example, since they would
+% \begin{enumerate}
+% \item produce insertion material that cannot be extracted to the
+%   preview properly,
+% \item complain with an error message about not being in outer par
+%   mode.
+% \end{enumerate}
+% 
+% \DescribeMacro{\PreviewOpen}
+% \DescribeMacro{\PreviewClose}
+% Those Macros form a matched preview pair.  This is for macros that
+% behave similar as \cmd{\begin} and \cmd{\end} of an environment.  It
+% is essential for the operation of \cmd{\PreviewOpen} that the macro
+% treated with it will open an additional group even when the preview
+% falls inside of another preview or inside of a |nopreview|
+% environment.  Similarly, the macro treated with \cmd{PreviewClose}
+% will close an environment even when inactive.
+% 
+% \DescribeMacro{\ifPreview} In case you need to know whether
+% |preview| is active, you can use the conditional \cmd{\ifPreview}
+% together with |\else| and |\fi|.
 %
-%Systems like \previewlatex\ use this for keeping counters accurate
-%when single previews are regenerated.
-%\item[|footnotes|] This makes footnotes render as previews, and only
-%as their footnote symbol.  A convenient editing feature inside of
-%Emacs.
-%\end{description}
-%The following options are just for debugging purposes of the package
-%and similar to the corresponding \TeX\ commands they allude to:
-%\begin{description}
-%\item[|tracingall|]
-%causes lots of diagnostic output to appear in the log file during the
-%preview collecting phases of \TeX's operation.  In contrast to the
-%similarly named \TeX\ command, it will not switch to
-%|\errorstopmode|, nor will it change the setting of |\tracingonline|.
-%\item[|showbox|] This option will show the contents of the boxes
-%shipped out to the DVI files.  It also sets |\showboxbreadth| and
-%|\showboxdepth| to their maximum values at the end of loading this
-%package, but you may reset them if you don't like that.
-%\end{description}
-%\section{Provided Commands}
-%\DescribeEnv{preview} The |preview| environment causes its contents to
-%be set as a single preview image.  Insertions like figures and
-%footnotes (except those
-%included in minipages) will typically lead to error messages or
-%be lost.  In case the |preview| package has not been activated, the
-%contents of this environment will be typeset normally.
-%
-%\DescribeEnv{nopreview} The |nopreview| environment will cause its
-%contents not to undergo any special treatment by the |preview|
-%package.  When |preview| is active, the contents will be discarded
-%like all main text that does not trigger the |preview| hooks.  When
-%|preview| is not active, the contents will be typeset just like the
-%main text.
-%
-%Note that both of these environments typeset things as usual when
-%preview is not active.  If you need something typeset conditionally,
-%use the \cmd{\ifPreview} conditional for it.
-%
-%\DescribeMacro{\PreviewMacro} If you want to make a macro like
-%\cmd{\includegraphics} (actually, this is what is done by the
-%|graphics| option to |preview|) produce a preview image, you put a
-%declaration like
-%\begin{quote}
-%|\PreviewMacro[*[[!]{\includegraphics}|
-%\end{quote}
-%or, more readable,
-%\begin{quote}
-%|\PreviewMacro[{*[][]{}}]{\includegraphics}|
-%\end{quote}
-%into your preamble.  The optional argument to \cmd{\PreviewMacro}
-%specifies the arguments \cmd{\includegraphics} accepts, since this is
-%necessary information for properly ending the preview box.  Note that
-%if you are using the more readable form, you have to enclose the
-%argument in a |[{| and |}]| pair.  The inner braces are necessary to
-%stop any included |[]| pairs from prematurely ending the optional
-%argument, and to make a single |{}| denoting an optional argument not
-%get stripped away by \TeX's argument parsing.
-%
-%The letters simply mean
-%\begin{description}
-%\item[|*|] indicates an optional |*| modifier, as in
-%|\includegraphics*|.
-%\item[|[|] indicates an optional argument in brackets.  This syntax
-%is somewhat baroque, but brief.
-%\item[{|[]|}] also indicates an optional argument in brackets.  Be
-%sure to have encluded the entire optional argument specification in
-%an additional pair of braces as described above.
-%\item[|!|] indicates a mandatory argument.
-%\item[|\char`{\char`}|] indicates the same.  Again, be sure to have that
-%additional level of braces around the whole argument specification.
-%\item[|?|\meta{delimiter}\marg{true case}\marg{false case}] is a
-%conditional.  The next character is checked against being equal to
-%\meta{delimiter}.  If it is, the specification \meta{true case} is
-%used for the further parsing, otherwise \meta{false case} will be
-%employed.  In neither case is something consumed from the input, so
-%\marg{true case} will still have to deal with the upcoming delimiter.
-%\item[|@|\marg{literal sequence}] will insert the given sequence
-%literally into the executed call of the command.
-%\end{description}
-%
-%There is a second optional argument in brackets that can be used to
-%declare any default action to be taken instead.  This is mostly for
-%the sake of macros that influence numbering: you would want to keep
-%their effects in that respect.  The default action should use |#1|
-%for referring to the original (not the patched) command with the
-%parsed options appended.  Not specifying a second optional argument
-%here is equivalent to specifying~|[#1]|.
-%
-%\DescribeMacro{\PreviewMacro*}
-%A similar invocation \cmd{\PreviewMacro*} simply throws the macro and
-%all of its arguments declared in the manner above away.  This is
-%mostly useful for having things like \cmd{\footnote} not do their
-%magic on their arguments.  More often than not, you don't want to
-%declare any arguments to scan to \cmd{\PreviewMacro*} since you would
-%want the remaining arguments to be treated as usual text and typeset in
-%that manner instead of being thrown away.  An exception might be,
-%say, sort keys for \cmd{\cite}.
-%
-%A second optional argument in brackets can be used to declare any
-%default action to be taken instead.  This is for the sake of macros
-%that influence numbering: you would want to keep their effects in
-%that respect.  The default action might use |#1| for referring to the
-%original (not the patched) command with the parsed options appended.
-%Not specifying a second optional argument here is equivalent to
-%specifying~|[]| since the command usually gets thrown away.
-%
-%As an example for using this argument, you might want to specify
-%\begin{quote}
-%|\PreviewMacro*\footnote[{[]}][#1{}]|
-%\end{quote}
-%This will replace a footnote by an empty footnote, but taking any
-%optional parameter into account, since an optional paramter changes
-%the numbering scheme.  That way the real argument for the footnote
-%remains for processing by \previewlatex\ (the actual definition is
-%more complicated in order not to change the numbering in case of
-%optional arguments being present).
-%
-%\DescribeMacro{\PreviewEnvironment} The macro
-%\cmd{\PreviewEnvironment} works just as
-%\cmd{\PreviewMacro} does, only for environments.
-%\DescribeMacro{\PreviewEnvironment*} And the same goes for
-%\cmd{\PreviewEnvironment*} as compared to \cmd{\PreviewMacro*}.
-%
-%\DescribeMacro{\PreviewSnarfEnvironment} This macro does not typeset the
-%original environment inside of a preview box, but instead typesets
-%just the contents of the original environment inside of the preview
-%box, leaving nothing for the original environment.  This has to be
-%used for figures, for example, since they would
-%\begin{enumerate}
-%\item produce insertion material that cannot be extracted to the
-%preview properly,
-%\item complain with an error message about not being in outer par
-%mode.
-%\end{enumerate}
-%
-%\DescribeMacro{\PreviewOpen}
-%\DescribeMacro{\PreviewClose}
-%Those Macros form a matched preview pair.  This is for macros that
-%behave similar as \cmd{\begin} and \cmd{\end} of an environment.  It
-%is essential for the operation of \cmd{\PreviewOpen} that the macro
-%treated with it will open an additional group even when the preview
-%falls inside of another preview or inside of a |nopreview|
-%environment.  Similarly, the macro treated with \cmd{PreviewClose}
-%will close an environment even when inactive.
-%
-%\DescribeMacro{\ifPreview} In case you need to know whether |preview|
-%is active, you can use the conditional \cmd{\ifPreview} together with
-%|\else| and |\fi|.  
 %\StopEventually{}
-%\section{The Implementation}
-%Here we go:  the start is somewhat obtuse since we figure out
-%version number and date from RCS strings.  This should really be done
-%at docstrip time instead.  Takers?
+% \section{The Implementation}
+% Here we go: the start is somewhat obtuse since we figure out version
+% number and date from RCS strings.  This should really be done at
+% docstrip time instead.  Takers?
 %    \begin{macrocode}
 %<*style>
 %<*!active>
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.87 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.88 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-03-10 16:25:24 $
+\reserved@a\next $Date: 2004-04-10 22:50:22 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
 %    \end{macrocode}
-%Since many parts here will not be needed as long as the package is
-%inactive, we will include them enclosed with |<*active>| and
-%|</active>| guards.  That way, we can append all of this stuff at a
-%place where it does not get loaded if not necessary.
+%  Since many parts here will not be needed as long as the package
+%  is inactive, we will include them enclosed with |<*active>| and
+%  |</active>| guards.  That way, we can append all of this stuff at
+%  a place where it does not get loaded if not necessary.
 %
 %\begin{macro}{\ifPreview}
 %  Setting the \cmd{\ifPreview} command should not be done by the user,
@@ -532,15 +556,23 @@
 }
 %    \end{macrocode}
 %\end{macro}
-%  The |dvips| option redefines the |bop-hook| to reset the page size.
+%\begin{macro}{\pr@graphicstype}
+% The |dvips| option redefines the |bop-hook| to reset the page size.
 %    \begin{macrocode}
+\let\pr@graphicstype=\z@
 \DeclareOption{dvips}{%
+  \let\pr@graphicstype\@ne
   \preview@delay{\AtBeginDvi{%
-    \special{!userdict begin/bop-hook{/isls false def%
-    /vsize 792 def/hsize 612 def}def end}}}}
+      \special{!userdict begin/bop-hook{/isls false def%
+          /vsize 792 def/hsize 612 def}def end}}}}
+%    \end{macrocode}
+% The |pdftex| option just sets \cmd{\pr@graphicstype}.
+%    \begin{macrocode}
+\DeclareOption{pdftex}{%
+  \let\pr@graphicstype\tw@}
 %</!active>
 %    \end{macrocode}
-%
+% \end{macro}
 %\subsection{The internals}
 %
 %Those are only needed if |preview| is active.
@@ -581,13 +613,22 @@
 %    \end{macrocode}
 %\end{macro}
 %\begin{macro}{\pr@insert}
+%\begin{macro}{\pr@mark}
+%\begin{macro}{\pr@marks}
 %  We don't want insertions to end up on our lists.  So we disable
 %  them right now by replacing them with the following:
 %    \begin{macrocode}
-\def\pr@insert{\afterassignment\pr@insertii\count@}
-\def\pr@insertii{\setbox\pr@box\vbox}
+\def\pr@insert{\begingroup\afterassignment\pr@insertii\count@}
+\def\pr@insertii{\endgroup\setbox\pr@box\vbox}
 %    \end{macrocode}
-%  \end{macro}
+% Similar things hold for marks.
+%    \begin{macrocode}
+\def\pr@mark{{\afterassignment}\toks@}
+\def\pr@marks{{\aftergroup\pr@mark\afterassignment}\count@}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
 %\begin{macro}{\pr@box}
 %\begin{macro}{\pr@startbox}
 %  Previews will be stored in \cmd{\box}\cmd{\pr@box}.
@@ -607,6 +648,8 @@
     \break
     \pr@outerfalse\@arrayparboxrestore
     \let\insert\pr@insert
+    \let\mark\pr@mark
+    \let\marks\pr@marks
     \expandafter\expandafter\expandafter
     \pr@ship@start
     \expandafter\@firstofone
@@ -805,11 +848,34 @@
 %  This makes it possible to insert literal material into the argument
 %  list.
 %    \begin{macrocode}
-\long\def\pr@parse@#1#2\pr@endparse#3{%
-  \pr@parseit #2\pr@endparse{#3#1}}
+ \long\def\pr@parse@#1#2\pr@endparse#3{%
+   \pr@parseit #2\pr@endparse{#3#1}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\pr@parse-}
+%   This will just drop the next token.
+%    \begin{macrocode}
+\long\expandafter\def\csname pr@parse-\endcsname
+  #1\pr@endparse#2{\begingroup
+  \toks@{\endgroup\pr@parseit #1\pr@endparse{#2}}%
+  \edef\next{\the\toks@}\afterassignment\next
+  \let\next= }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\pr@parse:}
+% The following is a transform rule.  A macro is being defined with
+% the given argument list and replacement, and the transformed
+% version replaces the original.  The result of the transform is
+% still subject to being parsed.
+%    \begin{macrocode}
+\long\expandafter\def\csname pr@parse:\endcsname
+  #1#2#3\pr@endparse#4{\begingroup
+    \toks@{\endgroup\pr@parseit #3\pr@endparse{#4}}%
+    \long\def\next#1{#2}%
+    \the\expandafter\toks@\next}
 %</active>
 %    \end{macrocode}
-%\end{macro}
+% \end{macro}
 %
 %\subsection{Selection options}
 %  The |displaymath| option.  The |equation| environments in
@@ -1343,8 +1409,8 @@ Please complain to your document class author}%
 %appropriately.  That way, a single pass of Dvips followed by a single
 %pass of GhostScript will be sufficient for generating all images.
 %
-%You need to use to use the |dvips| option along with this option, or
-%you'll get PostScript errors.
+%You will have to specify the output driver to be used, either |dvips|
+%or |pdftex|.
 %
 %  \begin{macro}{\PreviewBorder}
 %  \begin{macro}{\PreviewBbAdjust}
@@ -1352,10 +1418,14 @@ Please complain to your document class author}%
 %  defined even in the case of an inactive package, so that
 %  redefinitions and assignments to them will always work:
 %    \begin{macrocode}
-%<tightpage>\newdimen\PreviewBorder
-%<tightpage>\PreviewBorder=0.50001bp
-%<tightpage>\def\PreviewBbAdjust{-\PreviewBorder -\PreviewBorder
-%<tightpage>  \PreviewBorder \PreviewBorder}
+%<tightpage>\ifx\PreviewBorder\@undefined
+%<tightpage>  \newdimen\PreviewBorder
+%<tightpage>  \PreviewBorder=0.50001bp
+%<tightpage>\fi
+%<tightpage>\ifx\PreviewBbAdjust\@undefined
+%<tightpage>  \def\PreviewBbAdjust{-\PreviewBorder -\PreviewBorder
+%<tightpage>    \PreviewBorder \PreviewBorder}
+%<tightpage>\fi
 %    \end{macrocode}
 %  \end{macro}
 %  \end{macro}
@@ -1363,8 +1433,10 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<tightpage>\ifPreview\else\expandafter\endinput\fi
 %<tightpage>\def\pr@nextbb{\edef\next{\next\space\number\dimen@}%
-%<tightpage>  \advance\count@\m@ne\ifnum\count@>\z@
-%<tightpage>  \afterassignment\pr@nextbb\dimen@\fi}
+%<tightpage>  \expandafter\xdef\csname pr@bb@%
+%<tightpage>    \romannumeral\count@\endcsname{\the\dimen@}%
+%<tightpage>  \advance\count@\@ne\ifnum\count@<5
+%<tightpage>  \afterassignment\pr@nextbb\dimen@=\fi}
 %    \end{macrocode}
 %And here is the stuff that we fudge into our hook.  Of course, we
 %have to do it in a box, and we start this box off with our special.
@@ -1377,23 +1449,49 @@ Please complain to your document class author}%
 %In case the box adjustments have changed since the last time, we
 %write them out to the console.
 %    \begin{macrocode}
+%<tightpage>\ifnum\pr@graphicstype=\z@
+%<tightpage>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
+%<tightpage>    \ifnum\pdfoutput>\z@ \tw@\fi \@ne \or
+%<tightpage>    \ExecuteOptions{dvips}\relax \or
+%<tightpage>    \ExecuteOptions{pdftex}\relax\fi\fi
 %<tightpage>\global\let\pr@bbadjust\@empty
 %<tightpage>\pr@addto@front\pr@ship@end{\begingroup
 %<tightpage>  \let\next\@gobble
-%<tightpage>  \count@4\afterassignment\pr@nextbb
+%<tightpage>  \count@\@ne\afterassignment\pr@nextbb
 %<tightpage>  \dimen@\PreviewBbAdjust
 %<tightpage>  \ifx\pr@bbadjust\next
 %<tightpage>  \else \global\let\pr@bbadjust\next
 %<tightpage>  \typeout{Preview: Tightpage \pr@bbadjust}%
 %<tightpage>  \fi\endgroup}
-%<tightpage>\g@addto@macro\pr@ship@end{\setbox\pr@box\hbox{%
-%<tightpage>  \special{ps::\pr@bbadjust\space\number\ht\pr@box\space
-%<tightpage>  \number\dp\pr@box\space\number\wd\pr@box}\box\pr@box}}
+%<tightpage>\ifcase\pr@graphicstype
+%<tightpage>\or
+%<tightpage>  \g@addto@macro\pr@ship@end{\setbox\pr@box\hbox{%
+%<tightpage>    \special{ps::\pr@bbadjust\space\number\ht\pr@box\space
+%<tightpage>    \number\dp\pr@box\space\number\wd\pr@box}\box\pr@box}}
+%<tightpage>\or
+%<tightpage>  \g@addto@macro\pr@ship@end{{\dimen@\ht\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@\z@\fi
+%<tightpage>    \advance\dimen@\pr@bb@iv
+%<tightpage>    \dimen@ii=\dimen@
+%<tightpage>    \global\pdfvorigin\dimen@
+%<tightpage>    \dimen@\dp\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@\z@\fi
+%<tightpage>    \advance\dimen@-\pr@bb@ii
+%<tightpage>    \advance\dimen@\dimen@ii
+%<tightpage>    \global\pdfpageheight\dimen@
+%<tightpage>    \dimen@\wd\pr@box
+%<tightpage>    \ifdim\dimen@<\z@ \dimen@=\z@\fi
+%<tightpage>    \advance\dimen@-\pr@bb@i
+%<tightpage>    \advance\dimen@\pr@bb@iii
+%<tightpage>    \global\pdfpagewidth\dimen@
+%<tightpage>    \global\pdfhorigin-\pr@bb@i}}
+%<tightpage>\fi
 %    \end{macrocode}
 %Ok, here comes the beef.  First we fish the 7~numbers from the
 %file with |token| and convert them from \TeX~|sp| to PostScript
 %points.
 %    \begin{macrocode}
+%<tightpage>\ifnum\pr@graphicstype=\@ne
 %<tightpage>\preview@delay{\AtBeginDvi{%
 %<tightpage>  \special{!userdict begin/bop-hook{%
 %<tightpage>     7{currentfile token not{stop}if
@@ -1433,9 +1531,28 @@ Please complain to your document class author}%
 %So we now bind the old definition of |bop-hook| into our new
 %definition and finish it.
 %    \begin{macrocode}
-%<tightpage>     //bop-hook exec}bind def end}}}%
+%<tightpage>     //bop-hook exec}bind def end}}}
+%<tightpage>\fi
 %    \end{macrocode}
 %
+%
+%\subsection{The \texttt{tightpdf} option}
+%
+%This option calls the |tightpage| option only if PDF output has been
+%selected.
+%
+%    \begin{macrocode}
+%<tightpdf>\ifnum\pr@graphicstype=\z@
+%<tightpdf>  \ifcase \ifx\pdfoutput\@undefined \@ne\fi
+%<tightpdf>    \ifnum\pdfoutput>\z@ \tw@ \fi \@ne
+%<tightpdf>  \or \ExecuteOptions{dvips}%
+%<tightpdf>  \or \ExecuteOptions{pdftex}%
+%<tightpdf>\fi
+%<tightpdf>\ifnum\pr@graphicstype=\tw@
+%<tightpdf>  \input{prtightpage.def}\relax
+%<tightpdf>\fi
+%    \end{macrocode}
+% 
 %\subsection{The \texttt{showlabels} option}
 %During the editing process, some people like to see the label names
 %in their equations, figures and the like.  Now if you are using Emacs
@@ -1589,6 +1706,7 @@ Please complain to your document class author}%
 %<installer>    \file{prshowlabels.def}{\from{preview.dtx}{showlabels}}
 %<installer>    \file{prtracingall.def}{\from{preview.dtx}{tracingall}}
 %<installer>    \file{prtightpage.def}{\from{preview.dtx}{tightpage}}
+%<installer>    \file{prtightpdf.def}{\from{preview.dtx}{tightpdf}}
 %<installer>    \file{prlyx.def}{\from{preview.dtx}{lyx}}
 %<installer>    \file{prcounters.def}{\from{preview.dtx}{counters}}
 %<installer>    \file{prfootnotes.def}{\from{preview.dtx}{footnotes}}
