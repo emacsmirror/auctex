@@ -17,8 +17,7 @@ You can customize the completion for graphic files with
 fontification.
 
 @item
-Fontification of sub-/superscript content in math and filling was sped
-up.
+Performance of fontification and filling was improved.
 
 @item
 Insertion of nodes in Texinfo mode now supports completion of existing
