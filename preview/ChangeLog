@@ -1,3 +1,11 @@
+2004-05-08  David Kastrup  <dakas@users.sourceforge.net>
+
+	* preview.el (preview-gs-sentinel): Add info about GhostScript
+	finishing to run buffer.
+	(preview-gs-restart): Same for start.
+	(preview-gs-color-string): Cater for border without mask color
+	(didn't we do that already?)
+
 2004-05-05  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/fontmap.c: Use both kpse_fontmap_format and
