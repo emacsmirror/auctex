@@ -1,4 +1,4 @@
-Release notes for version 0.9 of the preview-latex package:
+Release notes for version 0.9.1 of the preview-latex package:
 
 preview-latex makes LaTeX a tightly integrated component of your
 editing workflow by visualizing selected source chunks (such as single
@@ -6,37 +6,37 @@ formulas or graphics) directly as images in the source buffer.
 You get to have your eye candy and edit it, too.
 
 The employed style file `preview.sty' is independently useful for
-extraction of selected text elements as images.  EPS Graphics that
-were created using dvips can now be used with the `tightpage' option,
-and some new commands and options are available for selecting
-previews.
+extraction of selected text elements as images.
 
-The package is released under the GNU Public License (GPL).  At the
-current point of time, at least GNU Emacs-21.3 under the X window
-system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.51 or
-later required for PDF support), a working LaTeX installation and
-GhostScript are required.  dvipng (version 1.4 or later: teTeX-3.0
-works, TeXlive2004 not), a very fast dvi converter, can be used to
-speed up the conversion.  For Windows, MacOS Carbon or native GTK+
-toolkit support, a developer version of GNU Emacs (to be released as
-22.1) is definitely required; for other platforms, use of it is
-advantageous.
+The package is released under the GNU Public License (GPL) and can be
+downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex/> as a tarball
+or as RPM files.  At the current point of time, at least GNU
+Emacs-21.3 under the X window system or XEmacs-21 in version 21.4.10
+or later, AUCTeX (11.51 or later required for PDF support), a working
+LaTeX installation and GhostScript are required.  dvipng[1] (version
+1.4 or later: teTeX-3.0 works, TeXlive2004 not), a very fast dvi
+converter, can be used to speed up the conversion.  For Windows[2],
+MacOS Carbon[3] or native GTK+ toolkit support[4], a developer
+version[5] of GNU Emacs (to be released as 22.1) is definitely
+required; for other platforms, use of it is advantageous.
 
-This version finally gets rid of all 8bit issues that plagued
-cooperation with several TeX distributions, and supports utf-8 and
-other multibyte input.  X-Symbol (as of 4.5.1-beta) will still require
-an 8bit-transparent TeX executable.  As a result of a drastic overhaul
-in image file allocation, all known GhostScript versions should now
-work for PostScript and PDF in SAFER mode.
+The quality of multibyte and image support in the current
+implementations and the responsiveness of the developers to problem
+reports does not recommend the use of XEmacs at the current point of
+time.
 
-Icons now come in several sizes, blending better with the text
-display, and have been redesigned.
+The encoding support of preview-latex has been refined: the run buffer
+will now yield readable output again in most situations where it can
+be reasonably expected to do so.
 
-The installation procedure has been made more flexible and robust,
-more conservative in the installation choices, and the Lisp startup
-file will now be installed automatically.  It is strongly recommended
-that you remove a previous installation before installing this version
-to avoid keeping conflicting or unnecessary files.
+The installation procedure has been further improved: more
+configurations should now be detected automatically.  It is strongly
+recommended that you remove a previous installation if it happens to
+be older than 0.9 before installing this version to avoid keeping
+conflicting or unnecessary files.  The installation does no longer
+require Makeinfo or Perl as long as you don't touch source files:
+precompiled documentation is included in the distribution by default
+and no longer available as a separate archive.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -44,11 +44,11 @@ preinstalled distributions, and pointers how to provide feedback.  The
 providers.  There is also a file `INSTALL.windows' detailing
 instructions for users of that operating system.
 
-The home page is <URL:http://preview-latex.sourceforge.net>, the
-SourceForge project page that among others offers anonymous CVS access
-is located at <URL:http://sourceforge.net/projects/preview-latex>.
-However, development and CVS access are scheduled to be folded into
-the AUCTeX project (located at Savannah) shortly after this release.
+preview-latex has now been moved into the AUCTeX project.  As a
+consequence, its web site has become
+<URL:http://www.gnu.org/software/auctex#preview-latex>, the project
+page (with browsable CVS repository) is that of AUCTeX at
+<URL:http://savannah.gnu.org/projects/auctex>.
 
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
@@ -56,18 +56,20 @@ project at <URL:http://freshmeat.net/projects/preview-latex>.
 Paypal donations to the maintainer are possible directly or via
 SourceForge.
 
-Additional files can be found at
-<URL:http://prdownloads.sourceforge.net/preview-latex>:
+Footnotes: 
+[1]  dvipng is currently available via its current project page
+<URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
 
-* If you don't have texinfo 4.0 or later installed, prebuilt
-  documentation files can be found there.
+[2]  You can get a precompiled version of CVS Emacs for Windows at
+<URL:http://nqmacs.sourceforge.net>.
 
-* Tarballs of preview-latex for all users, alternatively RPMs for
-  RedHat Linux.  For the binary RPMs, you will need the
-  preview-latex-common RPM as well as the Emacs-flavor specific RPM.
+[3]  <URL:http://members.shaw.ca/akochoi-emacs/stories/faq.html>
+contains build instructions.
 
-* AUCTeX is now located at <URL:http://www.gnu.org/software/auctex>.
-  The download area should also provide you with RPM files.
+[4]  For Debian, precompiled GTK+ Emacs packages can be found at
+<URL:http://sadleder.de/debian/>, for Fedora at
+<URL:http://people.redhat.com/petersen/emacs/>.
 
-* dvipng is currently available via its current project page
-  <URL:http://sourceforge.net/projects/dvipng> and from CTAN.
+[5]  If making use of the precompiled variants is not an option for
+you, instructions for checking out can be found at
+<URL:http://savannah.gnu.org/cvs/?group=emacs>
