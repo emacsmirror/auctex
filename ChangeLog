@@ -1,5 +1,9 @@
 2004-10-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-macro-nth-arg): Use
+	`TeX-find-closing-brace' instead of `forward-sexp'.  Fixes
+	problems with comment characters in \url macros.
+
 	* latex.el (LaTeX-paragraph-commands): Use `regexp-opt' to
 	generate the regexp.
 	(LaTeX-common-initialization): Add support for "$$" to
