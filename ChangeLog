@@ -1,3 +1,20 @@
+2005-02-11  David Kastrup  <dak@gnu.org>
+
+	* tex-site.el.in (TeX-lisp-directory): Use `@lispauctexdir'
+	instead of `"@auctexdir@"' and `@lispautodir' instead of
+	`"@auctexdir_expanded"'.
+
+	* configure.ac (lispauctexdir): create version of `$(auctexdir)'
+	that is Lisp-quoted, not shell-quoted.
+	(lispautodir): Similarly.
+
+	* doc/Makefile.in (prefix): Append $(null) to some assignments to
+	save quoted backslashes at line ends.
+
+	* Makefile.in (prefix): Append $(null) to some variable
+	assignments to let quoted backslashes at their end remain quoted.
+	(auctexdir): Get from configure.
+
 2005-02-09  Peter S Galbraith  <psg@debian.org>
 
 	* bib-cite.el (bib-master-file): Apply patch from Peter Heslin.
