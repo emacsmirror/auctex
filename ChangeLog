@@ -1,3 +1,8 @@
+2005-01-19  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4, configure.ac: A few small changes to allow sync with
+	preview-latex' aclocal.m4
+
 2005-01-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (hack-one-local-variable): Make sure the byte compiler
