@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.31 1993-04-12 20:33:10 amanda Exp $
+@c $Id: auc-tex.texi,v 1.32 1993-04-13 02:45:26 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -2593,7 +2593,7 @@ Allow files to have other extensions than ``tex''.
 But no longer allow files to have multiple dots.  Sigh.
 
 @item
-Will no longer parse the buffer it can use the saved state.
+Will no longer parse the buffer if it can use the saved state.
 
 @item
 New variable @code{TeX-parse-self}.
@@ -2606,7 +2606,7 @@ Only offer to save files that belongs to the document.
 When you format the document with @kbd{C-c C-c}, AUC @TeX{} will no
 longer offer to save your @file{RMAIL}, @file{.newsrc}, or other files
 that does not belong to the document.  Suggested by Jim Hetrick
-@samp{<hetrick@@phys.uva.nl}. 
+@samp{<hetrick@@phys.uva.nl>}. 
 
 @item
 New variable @code{TeX-fast}.
@@ -2618,7 +2618,7 @@ answers slow.
 @item
 Foil@TeX{} support.
 
-Thanks to Sven Mattisson @samp{sven@@tde.lth.se}
+Thanks to Sven Mattisson @samp{<sven@@tde.lth.se>}
 
 @item
 Smarter about when you need to reformat.
