@@ -135,7 +135,7 @@ performed as specified in `TeX-expand-list'."
 	      (list 'context-mode))
 	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil t)
 	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%V " 'TeX-run-silent t t)
+	    (list "View" "%V " 'TeX-run-discard t t)
 	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t t))
 	(list "Print" "%p %r " 'TeX-run-command t t)
 	(list "Queue" "%q" 'TeX-run-background nil t)
@@ -433,21 +433,32 @@ string."
   (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
 	(list "%q" (lambda ()
 		     (TeX-printer-query TeX-queue-command 2)))
-	(list "%V" (lambda ()
-		     (TeX-output-style-check TeX-output-view-style)))
+	(list "%V" (lambda () 
+		     (concat 
+		      (TeX-output-style-check TeX-output-view-style)
+		      (if TeX-generate-source-specials 
+			  TeX-generate-source-specials-dvi-viewer-extra-flags
+			""))))
 	(list "%v" (lambda ()
 		     (TeX-style-check TeX-view-style)))
 	(list "%r" (lambda ()
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
-		     (TeX-style-check LaTeX-command-style)))
+		     (concat 
+		      (TeX-style-check LaTeX-command-style)
+		      (if TeX-generate-source-specials 
+			  TeX-generate-source-specials-tex-extra-flags
+			""))))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
 	(list "%d" 'file "dvi" t)
 	(list "%f" 'file "ps" t)
 	(list "%o" 'TeX-view-output-file)
-	(list "%b" 'TeX-current-file-name-nondirectory))
+	;; for source specials the file name generated for the xdvi
+	;; command needs to be relative to the master file, just in
+	;; case the file is in a different subdirectory
+	(list "%b" 'TeX-current-file-name-master-relative))
   "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
@@ -540,7 +551,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.352 $"))
+	(rev "$Revision: 5.353 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -555,7 +566,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-21 08:01:42 $"))
+    (let ((date "$Date: 2004-04-23 16:46:18 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -586,6 +597,70 @@ In the form of yyyy.mmdd")
   "*Non-nil means also find overfull/underfull boxes warnings with \\[TeX-next-error]."
   :group 'TeX-output
   :type 'boolean)
+
+(defcustom TeX-generate-source-specials nil
+  "*Non-nil means generate latex source specials.
+
+If non-nil the -src option is added to the latex commmand line. 
+Xdvi is called with the -sourceposition option, so that it
+shows the dvi file at the point where the emacs cursor is.
+
+To enable the direct search, add 
+   (server-start)
+at the end of your .emacs file and
+XDvi*editor: emacsclient --no-wait +%l %f
+to your .Xdefaults file.
+After that, pressing C-mouse1 in the xdvi window will move the
+emacs cursor to the corresponding source location.
+
+Not all versions of latex and xdvi have the features needed to
+support this option. Tetex-2.x is known to support all the
+needed features.
+
+xdvi and latex are tested to support the above flags, and iff
+they both do, the support for source specials is turned on."
+  :set 'TeX-maybe-set-source-specials
+  :initialize 'custom-initialize-default
+  :group 'TeX-output
+  :type 'boolean)
+
+(defvar TeX-generate-source-specials-tex-extra-flags " -src "
+  "Extra flags to pass to the *tex commands to generate source specials.")
+
+(defvar TeX-generate-source-specials-dvi-viewer-extra-flags 
+  " -sourceposition %n:%b "
+  "Extra flags to pass to the dvi viewer commands to use source specials.")
+
+(defvar TeX-test-source-specials-support-function
+  'TeX-xdvi-supports-source-specials-p
+  "A function used to test if the the system supports source specials.
+The functions should return t if source specials are supported, and 
+`nil' otherwise.
+Set it to `nil' is source special support is not desired.")
+
+;; Variable used to cache the result of 
+;; `TeX-xdvi-supports-source-specials-p'. Do not change it.
+(defvar TeX-xdvi-supports-source-specials-cache nil)
+
+(defun TeX-xdvi-supports-source-specials-p ()
+  "Return t if xdvi supports source specials.
+See `TeX-generate-source-specials'."
+  (if (null TeX-xdvi-supports-source-specials-cache)
+      (with-temp-buffer
+	(let ( (buf (current-buffer))
+	       (supports-sourceposition nil))
+	  (condition-case nil
+	      (call-process "xdvi" nil (current-buffer) nil "-help")
+	    (error nil))
+	  (goto-char 1)
+	  (setq supports-sourceposition (search-forward "sourceposition" nil t))
+	  (if supports-sourceposition
+	      (setq TeX-xdvi-supports-source-specials-cache 1)
+	    (setq TeX-xdvi-supports-source-specials-cache -1)
+	    (message "source specials disabled: xdvi does not support sourceposition"))
+	  supports-sourceposition))
+    ;; not cached, check if positive
+    (> TeX-xdvi-supports-source-specials-cache 0)))
 
 (defgroup TeX-command-name nil
   "Names for external commands in AUCTeX."
@@ -2426,9 +2501,11 @@ to look backward for."
   "The current line number."
   (format "%d" (1+ (TeX-current-offset))))
 
-(defun TeX-current-file-name-nondirectory ()
-  "Return current filename, without path."
-  (file-name-nondirectory buffer-file-name))
+(defun TeX-current-file-name-master-relative ()
+  "Return current filename, relative to master directory."
+  (file-relative-name 
+   (buffer-file-name) 
+   (TeX-master-directory)))
 
 ;; was in latex.el, needed in context.el --pg
 (defun TeX-near-bobp ()
@@ -2648,6 +2725,10 @@ be bound to `TeX-electric-macro'."
 	     [ "Region" TeX-command-select-region
 	       :keys "C-c C-r" :style radio
 	       :selected (eq TeX-command-current 'TeX-command-region) ]))
+	  (if TeX-test-source-specials-support-function
+	      '(["Generate source specials" TeX-toggle-source-specials
+		 :style toggle :selected TeX-generate-source-specials ])
+		nil)
 	  (let ((file 'TeX-command-on-current));; is this actually needed?
 	    (mapcar 'TeX-command-menu-entry
 		    (TeX-mode-specific-command-list mode)))))
@@ -2705,6 +2786,23 @@ be bound to `TeX-electric-macro'."
 	["Reset Buffer" TeX-normal-mode t]
 	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"]))
 
+(defun TeX-maybe-set-source-specials (symbol value)
+  (setq TeX-generate-source-specials
+	(if value
+	    (funcall TeX-test-source-specials-support-function)
+	  nil)))
+
+(defun TeX-toggle-source-specials ()
+  "Toggle `TeX-generate-source-specials'."
+  (interactive)
+  (if TeX-generate-source-specials
+      (progn
+	(setq TeX-generate-source-specials nil)
+	(message "TeX-generate-source-specials: off"))
+    (setq TeX-generate-source-specials 
+	  (TeX-maybe-set-source-specials nil t))
+    (if TeX-generate-source-specials
+	(message "TeX-generate-source-specials: on"))))
 
 ;;; AmSTeX
 
