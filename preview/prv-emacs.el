@@ -277,33 +277,6 @@ definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (unless after-change
     (preview-register-change ov)))
 
-(defcustom preview-auto-reveal 'reveal-mode
-  "*Cause previews to open automatically when entered.
-Set to t or nil, or to a symbol which will be consulted
-if defined.  The default is to follow the setting of
-`reveal-mode'."
-  :group 'preview-appearance
-  :type '(choice (const :tag "Off" nil)
-		 (const :tag "On" t)
-		 symbol))
-
-(defadvice replace-highlight (before preview)
-  "Make `query-replace' open preview text about to be replaced."
-  (preview-open-overlays
-   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
-
-(defcustom preview-query-replace-reveal t
-  "*Make `query-replace' autoreveal previews."
-  :group 'preview-appearance
-  :type 'boolean
-  :set (lambda (symbol value)
-	 (set-default symbol value)
-	 (if value
-	     (ad-enable-advice 'replace-highlight 'before 'preview)
-	   (ad-disable-advice 'replace-highlight 'before 'preview))
-	 (ad-activate 'replace-highlight))
-  :initialize #'custom-initialize-reset)
-
 (defun preview-toggle (ov &optional arg)
   "Toggle visibility of preview overlay OV.
 ARG can be one of the following: t displays the overlay,
@@ -350,6 +323,16 @@ nil displays the underlying text, and 'toggle toggles."
 ;;    (set-marker preview-marker (point))
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
+
+(defcustom preview-auto-reveal 'reveal-mode
+  "*Cause previews to open automatically when entered.
+Set to t or nil, or to a symbol which will be consulted
+if defined.  The default is to follow the setting of
+`reveal-mode'."
+  :group 'preview-appearance
+  :type '(choice (const :tag "Off" nil)
+		 (const :tag "On" t)
+		 symbol))
 
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
@@ -398,6 +381,24 @@ nil displays the underlying text, and 'toggle toggles."
 		    (< pos (overlay-end ovr)))))
       (preview-toggle ovr)
       (push ovr preview-temporary-opened))))
+
+(defadvice replace-highlight (before preview)
+  "Make `query-replace' open preview text about to be replaced."
+  (preview-open-overlays
+   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+
+(defcustom preview-query-replace-reveal t
+  "*Make `query-replace' autoreveal previews."
+  :group 'preview-appearance
+  :type 'boolean
+  :require 'preview
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (if value
+	     (ad-enable-advice 'replace-highlight 'before 'preview)
+	   (ad-disable-advice 'replace-highlight 'before 'preview))
+	 (ad-activate 'replace-highlight))
+  :initialize #'custom-initialize-reset)
 
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
