@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.22 1993-02-17 07:13:12 amanda Exp $
+;;; $Id: tex-buf.el,v 1.23 1993-03-15 18:11:35 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -94,7 +94,11 @@ at bottom if LINE is nil."
 (defun TeX-kill-job ()
   "Kill the currently running TeX job."
   (interactive)
-  (quit-process (process-name (TeX-active-process)) t))
+  (let ((process (TeX-active-process)))
+    (if process
+	(kill-process process)
+      ;; Should test for TeX background process here.
+      (error "No TeX process to kill."))))
 
 (defun TeX-home-buffer (arg)
   "Go to the buffer where you last issued a TeX command.  
@@ -106,6 +110,25 @@ the master file."
 	  (eq TeX-command-buffer (current-buffer)))
       (find-file (TeX-master-file "tex"))
     (switch-to-buffer TeX-command-buffer)))
+
+(defun TeX-next-error (reparse)
+  "Find the next error in the TeX output buffer.
+Prefix by C-u to start from the beginning of the errors."
+  (interactive "P")
+  (if (null (TeX-active-buffer))
+      (error "No TeX output buffer.")
+    (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-hook)
+	     reparse)))
+
+(defun TeX-toggle-debug-boxes ()
+  "Toggle if the debugger should display \"bad boxes\" too."
+  (interactive)
+  (cond (TeX-debug-bad-boxes
+	 (setq TeX-debug-bad-boxes nil))
+	(t
+	 (setq TeX-debug-bad-boxes t)))
+  (message (concat "TeX-debug-bad-boxes: " (cond (TeX-debug-bad-boxes "on")
+						 (t "off")))))
 
 ;;; @@ Command Query
 
@@ -129,6 +152,7 @@ command."
     
     ;; Now start the process
     (let ((buffer (current-buffer)))
+      (TeX-process-set-variable name 'TeX-command-next TeX-command-default)
       (apply hook name command (apply file nil) nil)
       (pop-to-buffer buffer))))
 
@@ -173,9 +197,6 @@ command."
 
  (make-variable-buffer-local 'TeX-command-next)
 
-(defvar TeX-command-default nil
-  "The default command for TeX-command in the current major mode.")
-
 (defun TeX-printer-query ()
   "Query the user for a printer name."
 
@@ -186,6 +207,17 @@ command."
 	(if (not (string-equal "" printer))
 	    (setq TeX-printer-default printer))))
   TeX-printer-default)
+
+(defun TeX-style-check (styles)
+  "Check STYLES compared to the current style options."
+
+  (let ((files (TeX-style-list)))
+    (while (and styles
+		(not (TeX-member (car (car styles)) files 'string-match)))
+      (setq styles (cdr styles))))
+  (if styles
+      (nth 1 (car styles))
+    ""))
 
 ;;; @@ Command Hooks
 
@@ -210,7 +242,6 @@ Return the new process."
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-command-hook name command file)))
     ;; Hook to TeX debuger.
-    (require 'tex-dbg)
     (setq TeX-parse-hook 'TeX-parse-TeX)
     (TeX-parse-reset)
     ;; Updating the mode line.
@@ -225,6 +256,22 @@ Return the new process."
     (setq TeX-sentinel-hook 'TeX-TeX-sentinel)
     process))
 
+;(defun TeX-LaTeX-hook (name command file)
+;  "Create a process for NAME using COMMAND to format FILE with TeX."
+;  (let ((buffer (TeX-process-buffer-name file))
+;	(args (TeX-split-string " " command)))
+;    (save-some-buffers)
+;    (setq TeX-command-buffer (current-buffer))
+;    (pop-to-buffer (get-buffer-create buffer) t)
+;    (erase-buffer)
+;    (setq mode-name name)
+;    (require 'tex-dbg)
+;    (setq TeX-parse-hook 'TeX-parse-TeX)
+;    (TeX-parse-reset)
+;    (apply 'call-process (car args) nil buffer t (cdr args))
+;    (goto-char (point-min))
+;    (TeX-LaTeX-sentinel "<none>" "LaTeX")))
+
 (defun TeX-LaTeX-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-format-hook name command file)))
@@ -238,13 +285,23 @@ Return the new process."
 
 (defun TeX-compile-hook (name command file)
   "Ignore first and third argument, start compile with second argument."
-  (TeX-process-set-variable name 'TeX-command-next TeX-command-default)
   (compile command))
 
 (defun TeX-shell-hook (name command file)
   "Ignore first and third argument, start shell-command with second argument."
-  (TeX-process-set-variable name 'TeX-command-next TeX-command-default)
   (shell-command command))
+
+(defun TeX-discard-hook (name command file)
+  "Start process with second argument, discarding its output."
+  (process-kill-without-query (start-process (concat name " discard")
+					     nil "sh" "-c" command)))
+
+(defun TeX-background-hook (name command file)
+  "Start process with second argument, show output when and if it arrives."
+  (let ((process (start-process (concat name " background")
+				nil "sh" "-c" command)))
+    (set-process-filter process 'TeX-background-filter)
+    (process-kill-without-query process)))
 
 ;;; @@ Command Sentinels
 
@@ -269,7 +326,7 @@ Return the new process."
 	     
 	     ;; Do command specific actions.
 	     (TeX-command-mode-line process)
-	     (setq TeX-command-next TeX-command-default)
+	     (setq TeX-command-next TeX-command-TeX)
 	     (goto-char (point-min))
 	     (apply TeX-sentinel-hook process name nil)
 	     
@@ -415,8 +472,7 @@ command."
     (insert string)
     (save-excursion 
       (if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
-	  (let ((new (buffer-substring (match-beginning 0)
-				       (match-end 0))))
+	  (let ((new (TeX-match-buffer 0)))
 	    (if (not (string-equal new TeX-current-page))
 		(setq TeX-current-page new)))))
     (TeX-format-mode-line process)))
@@ -425,6 +481,16 @@ command."
   "Function to call to parse content of TeX output buffer.")
 
  (make-variable-buffer-local 'TeX-parse-hook)
+
+(defun TeX-background-filter (process string)
+  "Filter to process background output."
+  (let ((old-window (selected-window))
+	(pop-up-windows t))
+    (pop-to-buffer "*TeX background*")
+    (goto-char (point-max))
+    (insert string)
+    (select-window old-window)))
+
 
 ;;; @@ Active Process
 
@@ -533,15 +599,225 @@ original file."
 (defvar TeX-region "_region_"
   "*Base name for temporary file for use with TeX-region.")
 
-(defvar TeX-trailer-start nil
-  "Regular expression delimiting start of trailer in a TeX file.")
+;;; @@ Parsing
 
- (make-variable-buffer-local 'TeX-trailer-start)
+;;; @@ Customization
 
-(defvar TeX-header-end nil
-  "Regular expression delimiting end of header in a TeX file.")
+(defvar TeX-display-help t
+  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]")
 
- (make-variable-buffer-local 'TeX-header-end)
+(defvar TeX-debug-bad-boxes nil
+  "*Non-nil means also find overfull/underfull boxes warnings with TeX-next-error")
+
+;;; @@@ Global Parser Variables
+
+(defvar TeX-error-point nil
+  "How far we have parsed until now.")
+
+ (make-variable-buffer-local 'TeX-error-point)
+
+(defvar TeX-error-file nil
+  "Stack of files in which errors have occured")
+
+ (make-variable-buffer-local 'TeX-error-file)
+
+(defvar TeX-error-offset nil
+  "Add this to any line numbers from TeX.  Stack like TeX-error-file.")
+
+ (make-variable-buffer-local 'TeX-error-offset)
+
+(defun TeX-parse-reset ()
+  "Reset all variables used for parsing TeX output."
+  (setq TeX-error-point (point-min))
+  (setq TeX-error-offset nil)
+  (setq TeX-error-file nil))
+
+;;; @@@ Parsers Hooks
+
+(defun TeX-parse-command (reparse)
+  "We can't parse anything but TeX."
+  (error "I cannot parse %s output, sorry."
+	 (process-name (TeX-active-process))))
+
+(defun TeX-parse-TeX (reparse)
+  "Find the next error produced by running TeX.
+Prefix by C-u to start from the beginning of the errors.
+
+If the file occurs in an included file, the file is loaded (if not
+already in an Emacs buffer) and the cursor is placed at the error."
+
+  (let ((old-buffer (current-buffer)))
+    (pop-to-buffer (TeX-active-buffer))
+    (if reparse
+	(TeX-parse-reset))
+    (goto-char TeX-error-point)
+    (TeX-parse-error old-buffer)))
+
+;;; @@@ Parsing (La)TeX
+
+(defun TeX-parse-error (old)
+  "Goto next error.  Pop to OLD buffer if no more errors are found."
+    (while
+	(progn
+	  (re-search-forward (concat "\\("
+				     "^! \\|"
+				     "(\\|"
+				     ")\\|"
+				     "\\'\\|"
+				     "@offset<[---0-9]*>\\|"
+				     "@name<[^>]*>\\|"
+				     "^.*erfull \\\\.*[0-9]*--[0-9]*"
+				     "\\)"))
+	  (let ((string (TeX-match-buffer 1)))
+
+	    (cond (;; TeX error
+		   (string= string "! ")
+		   (TeX-error)
+		   nil)
+
+		  ;; LaTeX warning
+		  ((string-match "^.*erfull \\\\.*[0-9]*--[0-9]*"
+				 string)
+		   (TeX-warning string))
+
+		  ;; New file -- Push on stack
+		  ((string= string "(")
+		   (re-search-forward "\\([^()\n \t]*\\)")
+		   (setq TeX-error-file
+			 (cons (TeX-match-buffer 1) TeX-error-file))
+		   (setq TeX-error-offset (cons 0 TeX-error-offset))
+		   t)
+
+		  ;; End of file -- Pop from stack
+		  ((string= string ")")
+		   (setq TeX-error-file (cdr TeX-error-file))
+		   (setq TeX-error-offset (cdr TeX-error-offset))
+		   t)
+
+		  ;; Hook to change line numbers
+		  ((string-match "@offset<\\([---0-9]*\\)>" string)
+		   (rplaca TeX-error-offset
+			   (string-to-int (substring string
+						     (match-beginning 1)
+						     (match-end 1))))
+		   t)
+
+		  ;; Hook to change file name
+		  ((string-match "@name<\\([^>]*\\)>" string)
+		   (rplaca TeX-error-file (substring string
+						     (match-beginning 1)
+						     (match-end 1)))
+		   t)
+
+		  ;; No more errors.
+		  (t
+		   (message "No more errors.")
+		   (beep)
+		   (pop-to-buffer old)
+		   nil))))))
+
+(defun TeX-error ()
+  "Display an error."
+
+  (let* (;; We need the error message to show the user.
+	 (error (progn
+		  (re-search-forward "\\(.*\\)")
+		  (TeX-match-buffer 1)))
+
+	 ;; And the context for the help window.
+	 (context-start (point))
+
+	 ;; And the line number to position the cursor.
+	 (line (if (re-search-forward "l\\.\\([0-9]+\\)" nil t)
+		   (string-to-int (TeX-match-buffer 1))
+		 1))
+	 ;; And a string of the context to search for.
+	 (string (progn
+		   (beginning-of-line)
+		   (re-search-forward " \\(\\([^ \t]*$\\)\\|\\($\\)\\)")
+		   (TeX-match-buffer 1)))
+
+	 ;; And we have now found to the end of the context. 
+	 (context (buffer-substring context-start (progn 
+						    (forward-line 1)
+						    (end-of-line)
+						    (point))))
+	 ;; We may use these in another buffer.
+	 (offset (car TeX-error-offset) )
+	 (file (car TeX-error-file)))
+	 
+    ;; Remember where we was.
+    (setq TeX-error-point (point))
+
+    ;; Find the error.
+    (find-file-other-window file)
+    (goto-line (+ offset line))
+    (if (not (string= string " "))
+	(search-forward string nil t))
+
+    ;; Explain the error.
+    (if TeX-display-help
+	(TeX-help-error error context)
+      (message (concat "! " error)))))
+
+(defun TeX-warning (string)
+  "Display a warning for STRING.
+Return nil if we gave a report."
+
+  (let* ((error (concat "** " string))
+
+	 ;; Get error-line (warning)
+	 (line-start (progn
+		       (re-search-backward " \\([0-9]*\\)--\\([0-9]*\\)")
+		       (string-to-int (TeX-match-buffer 1))))
+	 (line-end (string-to-int (TeX-match-buffer 2)))
+	 
+	 ;; Find the context
+	 (context-start (progn (end-of-line) (point)))
+
+	 (context (progn
+		    (forward-line 1)
+		    (end-of-line)
+		    (while (equal (current-column) 79)
+		      (forward-line 1)
+		      (end-of-line))
+		    (buffer-substring context-start (point))))
+
+	 ;; This is where we want to be.
+	 (error-point (point))
+
+	 ;; Now find the error word.
+	 (word (progn
+		 (re-search-backward "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
+				     context-start t)
+		 (TeX-match-buffer 1)))
+
+	 ;; We might use these in another file.
+	 (offset (car TeX-error-offset))
+	 (file (car TeX-error-file)))
+
+    ;; This is where we start next time.
+    (goto-char error-point)
+    (setq TeX-error-point (point))
+
+    ;; Go back to TeX-buffer
+    (if TeX-debug-bad-boxes
+	(progn
+	  (find-file-other-window file)
+	  ;; Find line and word
+	  (goto-line (+ offset line-start))
+	  (beginning-of-line 0)
+	  (let ((start (point)))
+	    (goto-line line-end)
+	    (end-of-line)
+	    (search-backward word start t)
+	    (search-forward word nil t))
+	  ;; Display help
+	  (if TeX-display-help
+	      (TeX-help-error error context)
+	    (message (concat "! " error)))
+	  nil)
+      t)))
 
 ;;; @@ Emacs
 

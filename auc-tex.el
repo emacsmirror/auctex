@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.40 1993-02-16 04:08:41 amanda Exp $
+;;; $Id: auc-tex.el,v 5.41 1993-03-15 18:11:13 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -9,6 +9,8 @@
 
 (provide 'auc-tex)
 (require 'tex-init)
+(require 'tex-misc)
+(require 'ltx-misc)
 
 ;;; @@ Copyright
 ;;;
@@ -125,37 +127,37 @@
 ;;; @@ Fonts
 
 (defun TeX-bold ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "bf " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-italic ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "it " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-slanted ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "sl " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-roman ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "rm " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-emphasize ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "em " TeX-esc "/" TeX-grcl)
   (backward-char 3))
 
 (defun TeX-typewriter ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "tt " TeX-grcl)
   (backward-char 1))
 
 (defun TeX-small-caps ()
-  (interactive)
+  (interactive "*")
   (insert TeX-grop TeX-esc "sc " TeX-grcl)
   (backward-char 1))
 
@@ -169,7 +171,7 @@
 (defun insert-mode-line ()
     "This little macro inserts `% -*- mode-name -*-' if not present.
 You should insert this in your TeX-mode-hook!"
-    (interactive)
+    (interactive "*")
     (save-excursion
       (goto-char (point-min))
       (if (not (re-search-forward "-\\*-.*-\\*-" 100 t))
@@ -221,7 +223,7 @@ and the location is displayed for a few seconds."
   "Insert two newlines, breaking a paragraph for TeX.
 Check for mismatched braces/$'s in paragraph being terminated.
 A prefix arg inhibits the checking."
-  (interactive "P")
+  (interactive "*P")
   (or inhibit-validation
       (TeX-validate-paragraph
        (save-excursion

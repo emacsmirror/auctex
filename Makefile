@@ -1,10 +1,10 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.23 1993-02-17 07:17:25 amanda Exp $
+# $Id: Makefile,v 5.24 1993-03-15 18:11:06 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
-##  EDIT THE FOLLOWING LINES 
+##  YUO MUST EDIT THE FOLLOWING LINES 
 ##----------------------------------------------------------------------
 
 #prefix=/usr/local
@@ -19,16 +19,35 @@ bindir = $(exec_prefix)/bin
 infodir = /home/local/sys/gnu/info
 
 # Where emacs lisp files go.
-#elispdir=$(prefix)/elisp/auctex
-elispdir=/user/abraham/lib/emacs/auctex
+# Set this to "." to specify current directory.
+#aucdir=$(prefix)/elisp/auctex
+aucdir=/user/amanda/lib/emacs/auctex
 
 # Where manual pages go.
 mandir=$(prefix)/man/man1
 
+# Where the standard emacs lisp files are located
+elispdir=$(prefix)/lib/emacs/lisp
+
+##----------------------------------------------------------------------
+## YOU MAY NEED TO EDIT THESE
+##----------------------------------------------------------------------
+
+# Where the automatically generated lisp files for your site go.
+autodir=$(autodir)/auto
+
 # Using emacs in batch mode.
-# The -q should avoid finding old version of emacs when generating
-# byte compiled files.
-EMACS=emacs -q -batch
+EMACS="emacs -batch"
+
+# Specify the byte-compiler for compiling AUC TeX files
+ELC="env EMACSLOADPATH=.:$(elispdir) $(EMACS) -f batch-byte-compile"
+
+# Specify the byte-compiler for generating style files
+AUTO= env EMACSLOADPATH=$(aucdir) $(EMACS) \
+	-l tex-auto -f TeX-auto-generate-global
+
+# Specify the byte-compiler for compiling generated style files
+AUTOC= env EMACSLOADPATH=$(aucdir) $(EMACS) -f batch-byte-compile
 
 # Using TeX in batch mode.
 TEX=tex
@@ -45,6 +64,9 @@ CFLAGS = -O # -DNEED_STRSTR
 LEX = flex -8  lacheck.lex
 #LEX = cp lacheck.noflex.c lex.yy.c 
 
+# How to move the byte compiled files to their destination.  
+MV = mv
+
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
@@ -53,14 +75,20 @@ LEX = flex -8  lacheck.lex
 #FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp
 FTPDIR = /home/priv/iesd/ftp/pub/emacs-lisp/alpha
 
-MINMAPSRC = min-map.el min-out.el min-key.el ltx-dead.el tex-math.el
+MINMAPSRC = min-map.el	min-out.el  min-key.el ltx-dead.el tex-math.el \
+	    min-ind.el	min-ispl.el
 
 MINMAPFILES = README_MINOR $(MINMAPSRC)
 
-ELISPSRC= $(MINMAPSRC) auc-tex.el tex-cpl.el tex-misc.el tex-symb.el \
-	ltx-env.el tex-dbg.el tex-names.el vir-symb.el \
-	ltx-sec.el tex-buf.el tex-site.el auc-ver.el \
-	tex-init.el min-key.el ltx-dead.el min-ind.el min-ispl.el
+AUCSRC = $(MINMAPSRC) auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
+	 tex-auto.el  tex-misc.el tex-cpl.el  tex-buf.el  tex-dbg.el \
+	 ltx-misc.el  ltx-env.el  ltx-sec.el
+
+STYLESRC = style/LATEX.el  style/VIRTEX.el  style/latex.el  \
+	   style/SLITEX.el style/article.el style/letter.el \
+	   style/TEX.el	   style/book.el    style/slitex.el
+
+
 
 LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
@@ -71,32 +99,59 @@ OTHERFILES = COPYING README README_MINOR Makefile  $(DOCFILES) $(LACHECKFILES)
 
 first:
 	@echo ""
-	@echo "  ** Welcome to the AUC TeX installation suite **"
+	@echo "	 ** Welcome to the AUC TeX installation suite **"
 	@echo ""
-	@echo "  Edit the Makefile to suit your needs. Then run:"
+	@echo "	 Edit the Makefile to suit your needs. Then run:"
 	@echo 
-	@echo "   make all"
+	@echo "	  make all"
 	@echo 
-	@echo "  and follow the instructions."
-	@echo ""
+	@echo "	 and follow the instructions."
+	@echo 
+	@echo "	 Before you start, you should check that you have"
+	@echo "	 TeXinfo2 installed.  The version of TeXinfo distributed"
+	@echo "	 with GNU Emacs 18.xx is TeXinfo 1."
+	@echo
+	@echo "	 TeXinfo2 is available for fto at all major GNU sites."
+	@echo "	 TeXinfo2 will also be part of GNU Emacs 19.xx."
+	@echo
 
 all: main
 	@echo "**********************************************************"
 	@echo "** Before running \`make install' you should edit the "
 	@echo "** file \`tex-site.el' in this directory to suit your"
-	@echo "** local needs.  Print out the file \`doc/auc-tex.dvi'"
+	@echo "** local needs.	Print out the file \`doc/auc-tex.dvi'"
 	@echo "** and read the section \`Installation' if in doubt." 
 	@echo "** Alternatively you may run \`make DocInstall' and read"
 	@echo "** that information via Emacs' info system"
 	@echo "** Then run: \`make install'"
 	@echo "** The Emacs Lisp files will only be recompiled, if"
-	@echo "** you have set elispdir to a different directory."
+	@echo "** you have set aucdir to a different directory."
 	@echo "**********************************************************"
 
 main: Doc LaCheck
 
-install: main $(elispdir) LaInstall DocInstall
+install: main LispInstall LaInstall DocInstall
 	@echo 
+	@echo "**********************************************************"
+	@echo "** AUC TeX installation almost completed "
+	@echo "** Still missing is the automatic extraction of symbols"
+	@echo "** and environments from your sites TeX style files."
+	@echo "** To do this, type \`make install-auto'."
+	@echo "** Beware, this takes some time and uses around 300k"
+	@echo "** storage, depending on your the TeX style files. "
+	@echo "** It is possible to use AUC TeX without this information."
+	@echo "**********************************************************"
+	@echo
+
+install-auto:
+	@echo "**********************************************************"
+	@echo "** Extracting site information.	This may take a while..."
+	@echo "**********************************************************"
+	$(AUTO) 
+	@echo "**********************************************************"
+	@echo "** Byte compiling.  This will take a while..."
+	@echo "**********************************************************"
+	$(AUTOC) $(autodir)/*.el
 	@echo "**********************************************************"
 	@echo "**   Congratulations! AUC TeX installation completed    **"
 	@echo "**********************************************************"
@@ -119,25 +174,18 @@ DocInstall: Doc
 	@echo "**********************************************************"
 	-(cd doc; make install infodir=$(infodir))
 
-$(elispdir): $(ELISPSRC)  Makefile
+LispInstall:
 	@echo "**********************************************************"
 	@echo "** Byte compiling AUC TeX.  This may take a while..."
 	@echo "**********************************************************"
-	if [ ! -d $(elispdir) ]; then mkdir $(elispdir); fi
-	cp $(ELISPSRC) $(elispdir)
-	(touch /tmp/auc.$$$$; \
-	echo "(setq load-path (cons \"$(elispdir)\" load-path))" >>  /tmp/auc.$$$$; \
-	for EL in $(ELISPSRC); do \
-	echo "(byte-compile-file \"$(elispdir)/$$EL\")" \
-              >> /tmp/auc.$$$$; \
-	done; \
-	$(EMACS) -l /tmp/auc.$$$$; \
-	rm -f /tmp/auc.$$$$ )
-	(for EL in $(ELISPSRC); do \
-	chmod 644 $(elispdir)/$${EL}c; \
-	rm -f $(elispdir)/$$EL; \
-	done)
-
+	$(ELC) $(AUCSRC) $(STYLESRC)
+	if [ "." != $(aucdir) ] \
+	then \
+	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi \
+	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi \
+	    $(MV) *.elc $(aucdir) \
+	    $(MV) style/*.elc $(aucdir)/style \
+	fi
 
 LaCheck:
 	@echo "**********************************************************"
@@ -157,7 +205,7 @@ clean:
 	(cd doc; make clean)
 	(cd lacheck; make clean)
 
-dist: 	
+dist:	
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "]; then echo "*** No tag ***"; exit 1; fi
 	@echo "**********************************************************"
@@ -170,7 +218,7 @@ dist:
 	   \"AUC TeX version number\")" \
 	   "(defconst AUC-TeX-date \"`date`\" \
 	   \"AUC TeX release date\")" \
-	   "(provide 'auc-ver)"  > auc-ver.el
+	   "(provide 'auc-ver)"	 > auc-ver.el
 	cvs checkout -r $(TAG) auctex
 	find auctex -name CVS -print | xargs rm -rf
 	cp auc-ver.el auctex
@@ -179,11 +227,11 @@ dist:
 	(cd auctex;  \
 	echo AUC TeX $$TAG on `date` > FILELIST; \
 	echo "----------------------------------------" >> FILELIST; \
-	ident $(ELISPSRC) $(OTHERFILES) >> FILELIST )
+	ident $(AUCSRC) $(OTHERFILES) >> FILELIST )
 	OUT=auctex`echo $$TAG | sed s/release//`; \
-	tar -cf - auctex | compress -c > $$OUT.tar.Z; \
+	tar -cf - auctex | compress -c > $$OUT.tar.Z
 	VER=`echo $$TAG | sed s/release_// | sed s/auctex_//` ; \
-	(cd auctex; tar -cf - $(MINMAPFILES) | \
+	(cd auctex; tar -cf - $(MINMAPFILES)) | \
 	compress -c >min-map_$$VER.tar.Z
 	rm -r auctex
 
@@ -192,15 +240,15 @@ dist:
 #	cp auctex/FILELIST split; \
 #	uuencode $$OUT.tar.Z $$OUT.tar.Z | split -200 - split/auc-tex-
 
-mail:
-	if [ "X$$WHO" = "X" ]; then echo "*** No reciepient(s) ***"; exit 1; fi
-	for U in $$WHO; do\
-	for F in `ls -1 split`; do\
-	echo Sending $$F to $$U ; \
-	Mail -s $$F $$U < split/$$F;\
-	sleep 10; \
-	done; done
-	
+#mail:
+#	if [ "X$$WHO" = "X" ]; then echo "*** No reciepient(s) ***"; exit 1; fi
+#	for U in $$WHO; do\
+#	for F in `ls -1 split`; do\
+#	echo Sending $$F to $$U ; \
+#	Mail -s $$F $$U < split/$$F;\
+#	sleep 10; \
+#	done; done
+
 ftp:	
 	@if [ "X$$TAG" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	@echo "]; then echo "*** No tag ***"; exit 1; fi

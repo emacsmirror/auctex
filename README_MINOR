@@ -1,6 +1,6 @@
 * README_MINOR - Introduction to minor modes.
 
-$Id: README_MINOR,v 5.2 1993-02-17 07:13:04 amanda Exp $
+$Id: README_MINOR,v 5.3 1993-03-15 18:11:11 amanda Exp $
 
 ** min-map.el:  Minor Keymaps 
 
@@ -47,36 +47,48 @@ To use, add to your init file:
 
 ** min-key.el:  Mapping the keyboard layout
 
-Allows you to specify a language specific keyboard mapping between
-various encodings of an alphabet.  You toggle the mode with M-x
-keyboard-mode, and select a different mapping with M-x
-keyboard-query-mapping.  It also allows you to convert the text in the
-buffer between the supported encodings.  You can get the original
-binding by typing the remaped key twice. 
+This package allows you to specify a language specific keyboard
+mapping between various encodings of an alphabet, and it also allows
+you to convert the text in the buffer directly between the supported
+encodings.
 
-Currently only encodings of the Danish alphabet is supported, but you
-can add other alphabets by setting the variable `language-encodings'. 
+Currently the following languages / character set encodings are
+supported: 
+
+"Danish":
+	"ISO 646 DK" "Keyboard Layout" "Digraphs" "TeX" "ISO 8859 Latin 1"
+
+"Swedish":
+	"ISO 646 SE" "Keyboard Layout" "Digraphs" "TeX" "ISO 8859 Latin 1"
+
+"Keyboard Layout":
+	"QWERTY" "Dvorak"
+
+"ISO 8859 Latin 1":
+	"ISO 8859 Latin 1" "Monograph" "Digraph" 
+	"ISO 646" "RFC 1345" "Backspace" "TeX"
+
+The keyboard remapping is implemented as a minor mode.  You initially
+select the mapping with ``M-x keyboard-query-mapping'', and can then
+toggle mode with ``M-x keyboard-mode''.  Once in the minor mode, you
+can (optionally) get the original binding of a key by typing the the
+key twice.
+
+You convert between character sets by typing 
+``M-x convert-character-query'', and answering the questions.  Use
+`convert-character-encoding' to convert non-interactively. 
 
 To use, add to your init file:
 
 (autoload 'keyboard-mode "min-key" "Toggle keyboard-mode." t)
 (autoload 'keyboard-query-mapping "min-key" "Query keyboard-mode." t)
 (autoload 'convert-character-query "min-key" "Convert between encodings." t)
+(autoload 'convert-character-encoding "min-key"
+          "Convert between encodings." nil)
 
 You most likely want to define a short-cut for often used mappings.
-The following two functions redefine the keys on an international
-keyboard to generate danish characters, either Latin 1 or as TeX
-macroes.
-
-(defun dansk-double-mode (arg)
-  "DK Latin1 keys on international keyboard."
-  (interactive "P")
-  (require 'min-key)
-  (if (or (and (null arg) keyboard-mode)
-	  (<= (prefix-numeric-value arg) 0))
-      (keyboard-mode -1)
-    (keyboard-set-mapping "Danish" "Keyboard Layout" "ISO 8859 Latin 1" t)
-    (keyboard-mode 1)))
+The following function redefine the keys on an international
+keyboard to generate Danish characters as TeX macros.
 
 (defun tex-dk-double-mode (arg)
   "DK TeX keys on international keyboard."
