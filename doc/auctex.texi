@@ -2506,11 +2506,40 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @cindex Internationalization
 @cindex Character set
 @cindex National letters
+@cindex CJK language
+@cindex MULE
+@cindex C@TeX
+@cindex China@TeX
+@cindex p@TeX
+@cindex ASCII p@TeX
+@cindex j@TeX
+@cindex NTT j@TeX
+@cindex k@TeX
+@cindex H@LaTeX
+@cindex CJK-@LaTeX
+@cindex UNICODE
+@cindex MULE-UCS
 
-There are several problems associated with editing non-English @TeX{}
-with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are usable for
-European (Latin, Cyrillic, Greek) based languages, but special versions
-of @TeX{} and Emacs are needed for Korean, Japanese, and Chinese.
+@TeX{} and Emacs are usable for European (Latin, Cyrillic, Greek) based
+languages.  Some @LaTeX{} packages and EmacsLisp are available for easy
+typesetting and editing European languages.
+
+For @acronym{CJK} (Chinese, Japanese, and Korean) language,
+@acronym{MULE, MULtilingual Enhancement to GNU Emacs} supported Emacsen
+are needed.  @acronym{MULE} is part of GNU Emacs from Emacs 20; XEmacs
+should be configured with @samp{--with-mule} option.  Special versions
+of @TeX{} are needed for @acronym{CJK} languages; C@TeX{} and
+China@TeX{} for Chinese; ASCII p@TeX{} and NTT j@TeX{} for Japanese;
+H@LaTeX{} and k@TeX{} for Korean; and @acronym{CJK}-@LaTeX{} package for
+supporting multiple @acronym{CJK} scripts within a single
+document.
+
+Note that UNICODE is not fully supported in Emacs 21 and XEmacs;
+@acronym{CJK} characters are not usable.  Use
+@acronym{MULE}-@acronym{UCS} EmacsLisp package or Emacs 22 (not
+available).
+
+@c FIXME  We need more information for CTeX, ChinaTeX, KTeX, and HLaTeX.
 
 @menu
 * European::                    Using @AUCTeX{} with European Languages
@@ -2640,7 +2669,7 @@ insert @samp{''}.
 @end table
 
 @node Japanese
-@section Japanese @TeX{}
+@section Using @AUCTeX{} with Japanese @TeX{}
 @cindex Japan
 @cindex Japanese
 @cindex Nippon
