@@ -27,7 +27,6 @@
 ;;; Commentary:
 ;;
 ;; This file contains variables customized for fpTeX.
-;; Borrowed from tex-mik.el .
 
 ;;; Code:
 
@@ -63,10 +62,29 @@
 	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil t)
 	(list "Other" "" 'TeX-run-command t t)))
 
-(setq TeX-view-style '(("^a5$" "windvi %d -paper a5")
-		       ("^landscape$" "windvi %d -paper a4r -s 4")
+(setq TeX-view-style '(("^a5\\(?:comb\\|paper\\)?$" "windvi %d -qpaper a5")
+		       ("^landscape$" "windvi %d -qpaper a4r -s 4")
 		       ("^epsf$" "gsview32 %f")
-		       ("." "windvi -single %d")))
+		       ("." "windvi %d")))
+
+(setq TeX-output-view-style
+      '(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview32 %f")
+	("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
+	 "windvi %d %dS -qpaper a5r -s 0")
+	("^dvi$" "^a5\\(?:comb\\|paper\\)$" "windvi %d %dS -qpaper a5")
+	("^dvi$" "^b5paper$" "windvi %d %dS -qpaper b5")
+	("^dvi$" ("^landscape$" "^pstricks$\\|^psfrag$")
+	 "dvips -t landscape %d -o && gsview32 %f")
+	("^dvi$" "^letterpaper$" "windvi %d %dS -qpaper us")
+	("^dvi$" "^legalpaper$" "windvi %d %dS -qpaper legal")
+	("^dvi$" "^executivepaper$" "windvi %d %dS -qpaper 7.25x10.5in")
+	("^dvi$" "^landscape$" "windvi %d %dS -qpaper a4r")
+	("^dvi$" "." "windvi %d %dS")
+	("^pdf$" "." "AcroRd32 %o")
+	("^html?$" "." "mozilla %o")))
+
+;; WinDVI does not support source specials?
+(setq TeX-source-specials-viewer-flags "")
 
 (provide 'tex-fptex)
 
