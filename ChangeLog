@@ -1,6 +1,16 @@
 2004-08-09  David Kastrup  <dak@gnu.org>
 
+	* tex.el (TeX-maybe-remove-help): new function (noop on Emacs).
+	(TeX-menu-with-help): new macro (noop on Emacs).
+	(TeX-mode-specific-command-menu-entries): Add a lot of help strings.
+	(plain-TeX-mode-menu): Same here.
+
+	* latex.el (LaTeX-mode-menu): `:visible' is not known in XEmacs,
+	and I don't want to clutter the menu with "Convert 209 to 2e" when
+	not necessary.
+
 	* RELEASE (Requirements): some additions.
+	Incorporate some suggestions from Ralf.
 
 	* tex.el (TeX-set-mode-name): Actually use `reset' (patch by Ralf
 	Angeli).

@@ -514,6 +514,26 @@ Full documentation will be available after autoloading the function."
 
 (require 'easymenu)
 
+(eval-and-compile
+  (if (featurep 'xemacs)
+      (defun TeX-maybe-remove-help (menu)
+      "Removes :help entries from menus, since XEmacs does not like them."
+      (cond ((consp menu)
+	     (if (eq (car menu) :help)
+		 (TeX-maybe-remove-help (cddr menu))
+	       (cons (TeX-maybe-remove-help (car menu))
+		     (TeX-maybe-remove-help (cdr menu)))))
+	    ((vectorp menu)
+	     (vconcat (TeX-maybe-remove-help (append menu nil))))
+	    (t menu)))
+    (defun TeX-maybe-remove-help (menu)
+      "Compatibility function that would remove :help entries if on XEmacs,
+but does nothing in Emacs."
+      menu))
+  (defmacro TeX-menu-with-help (menu)
+    "Compatibility macro that removes :help entries if on XEmacs."
+    (TeX-maybe-remove-help menu)))
+
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
 (eval-after-load 'info '(progn
@@ -561,7 +581,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.412 $"))
+	(rev "$Revision: 5.413 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -576,7 +596,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-09 09:43:36 $"))
+    (let ((date "$Date: 2004-08-09 20:15:54 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -600,7 +620,7 @@ In the form of yyyy.mmdd")
   :group 'AUCTeX)
 
 (defcustom TeX-display-help t
-  "*Non-nil means popup help when stepping thrugh errors with \\[TeX-next-error]."
+  "*Non-nil means popup help when stepping through errors with \\[TeX-next-error]."
   :group 'TeX-output
   :type 'boolean)
 
@@ -3063,43 +3083,56 @@ be bound to `TeX-electric-macro'."
 
 (defun TeX-mode-specific-command-menu-entries (mode)
   "Return the entries for a Command menu specific to the major MODE."
-  (append '("Command on"
-	    [ "Master File" TeX-command-select-master
-	      :keys "C-c C-c" :style radio
-	      :selected (eq TeX-command-current 'TeX-command-master) ]
-	    [ "Buffer" TeX-command-select-buffer
-	      :keys "C-c C-b" :style radio
-	      :selected (eq TeX-command-current 'TeX-command-buffer) ]
-	    [ "Region" TeX-command-select-region
-	      :keys "C-c C-r" :style radio
-	      :selected (eq TeX-command-current 'TeX-command-region) ]
-	    [ "Fix the region" TeX-pin-region
-	      :active (or (if prefix-arg
-			      (<= (prefix-numeric-value prefix-arg) 0)
-			    (and (boundp 'TeX-command-region-begin)
-				 (markerp TeX-command-region-begin)))
-			  (TeX-mark-active))
-	      ;;:visible (eq TeX-command-current 'TeX-command-region)
-	      :style toggle
-	      :selected (and (boundp 'TeX-command-region-begin)
-			     (markerp TeX-command-region-begin))]
-	    "-"
-	    ["Recenter Output Buffer" TeX-recenter-output-buffer t]
-	    ["Kill Job" TeX-kill-job t]
-	    ["Next Error" TeX-next-error t]
-	    "-"
-	    ("TeXing options"
-	     [ "PDF mode" TeX-PDF-mode
-	       :style toggle :selected TeX-PDF-mode ]
-	     [ "Run Interactively" TeX-interactive-mode
-	       :style toggle :selected TeX-interactive-mode ]
-	     [ "Source specials" TeX-source-specials
-	       :style toggle :selected TeX-source-specials ]
-	     ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	      :style toggle :selected TeX-debug-bad-boxes ]))
-	  (let ((file 'TeX-command-on-current));; is this actually needed?
-	    (mapcar 'TeX-command-menu-entry
-		    (TeX-mode-specific-command-list mode)))))
+  (append
+   (TeX-menu-with-help
+    '("Command on"
+      [ "Master File" TeX-command-select-master
+	:keys "C-c C-c" :style radio
+	:selected (eq TeX-command-current 'TeX-command-master)
+	:help "Commands in this menu work on the Master File"]
+      [ "Buffer" TeX-command-select-buffer
+	:keys "C-c C-b" :style radio
+	:selected (eq TeX-command-current 'TeX-command-buffer)
+	:help "Commands in this menu work on the current buffer"]
+      [ "Region" TeX-command-select-region
+	:keys "C-c C-r" :style radio
+	:selected (eq TeX-command-current 'TeX-command-region)
+	:help "Commands in this menu work on the region"]
+      [ "Fix the region" TeX-pin-region
+	:active (or (if prefix-arg
+			(<= (prefix-numeric-value prefix-arg) 0)
+		      (and (boundp 'TeX-command-region-begin)
+			   (markerp TeX-command-region-begin)))
+		    (TeX-mark-active))
+	;;:visible (eq TeX-command-current 'TeX-command-region)
+	:style toggle
+	:selected (and (boundp 'TeX-command-region-begin)
+		       (markerp TeX-command-region-begin))
+	:help "Fix the region for \"Command on Region\""]
+      "-"
+      ["Recenter Output Buffer" TeX-recenter-output-buffer
+       :help "Show the output of current TeX process"]
+      ["Kill Job" TeX-kill-job
+       :help "Kill the current TeX process"]
+      ["Next Error" TeX-next-error
+       :help "Jump to the next error of the last TeX run"]
+      "-"
+      ("TeXing options"
+       [ "PDF mode" TeX-PDF-mode
+	 :style toggle :selected TeX-PDF-mode
+	 :help "Use PDFTeX to generate PDF instead of DVI"]
+       [ "Run Interactively" TeX-interactive-mode
+	 :style toggle :selected TeX-interactive-mode
+	 :help "Stop on errors in a TeX run"]
+       [ "Source specials" TeX-source-specials
+	 :style toggle :selected TeX-source-specials
+	 :help "Enable forward and inverse search in the previewer"]
+       ["Debug Bad Boxes" TeX-toggle-debug-boxes
+	:style toggle :selected TeX-debug-bad-boxes
+	:help "Make \"Next Error\" show bad boxes"])))
+   (let ((file 'TeX-command-on-current));; is this actually needed?
+     (mapcar 'TeX-command-menu-entry
+	     (TeX-mode-specific-command-list mode)))))
 
 (defun TeX-mode-specific-command-list (mode)
   "Return the list of commands available in the given MODE."
@@ -3124,52 +3157,64 @@ be bound to `TeX-electric-macro'."
 (easy-menu-define plain-TeX-mode-menu
     plain-TeX-mode-map
     "Menu used in plain TeX mode."
-  (list "TeX"
-	["Macro..." TeX-insert-macro t]
-	["Complete" TeX-complete-symbol t]
-	"-"
-	(list "Insert Font"
-	      ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
-	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
-	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
-	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
-	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
-	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
-	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
-	(list "Replace Font"
-	      ["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
-	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
-	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
-	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
-	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
-	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
-	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
-	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
-	      ["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
-	["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
-	"-"
+    (TeX-menu-with-help
+     '("TeX"
+       ["Macro..." TeX-insert-macro
+	:help "Insert a macro and possibly arguments"]
+       ["Complete" TeX-complete-symbol
+	:help "Complete the current macro"]
+       "-"
+       ("Insert Font"
+	["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
+	["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
+	["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
+	["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
+	["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
+	["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
+	["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"]
+	["Calligraphic" (TeX-font nil ?\C-a) :keys "C-c C-f C-a"])
+       ("Replace Font"
+	["Emphasize"  (TeX-font t ?\C-e) :keys "C-u C-c C-f C-e"]
+	["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
+	["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
+	["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
+	["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
+	["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
+	["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"]
+	["Calligraphic" (TeX-font t ?\C-a) :keys "C-u C-c C-f C-a"])
+       ["Delete Font" (TeX-font t ?\C-d) :keys "C-c C-f C-d"]
+       "-"
 
-	["Comment or Uncomment Region" TeX-comment-or-uncomment-region t]
-	["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph t]
-	"-"
-	(list "Multifile/Parsing"
-	      ["Switch to Master File" TeX-home-buffer t]
-	      ["Save Document" TeX-save-document t]
-	      ["Set Master File" TeX-master-file-ask
-	       :active (not (TeX-local-master-p))]
-	      ["Reset Buffer" TeX-normal-mode t]
-	      ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"])
-	(list "Customize"
-	      ["Browse options"
-	       (customize-group 'AUCTeX)]
-	      ["Extend this menu"
-	       (easy-menu-add-item
-		nil '("TeX")
-		(customize-menu-create 'AUCTeX))])
-	["Documentation" TeX-goto-info-page t]
-	["Submit bug report" TeX-submit-bug-report t]))
+       ["Comment or Uncomment Region" TeX-comment-or-uncomment-region]
+       ["Comment or Uncomment Paragraph" TeX-comment-or-uncomment-paragraph]
+       "-"
+       ("Multifile/Parsing"
+	["Switch to Master File" TeX-home-buffer
+	 :help "Switch to buffer of current Master File,
+or buffer of last TeX command."]
+	["Save Document" TeX-save-document
+	 :help "Save all buffers associated with the current Master File"]
+	["Set Master File" TeX-master-file-ask
+	 :active (not (TeX-local-master-p))
+	 :help "Set the main file to run TeX commands on"]
+	["Reset Buffer" TeX-normal-mode
+	 :help "Save and reparse the current buffer for style information"]
+	["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
+	 :help "Reset Buffer and reload AUCTeX style files"])
+       ("Customize"
+	["Browse options"
+	 (customize-group 'AUCTeX)]
+	["Extend this menu"
+	 (easy-menu-add-item
+	  nil '("TeX")
+	  (customize-menu-create 'AUCTeX))
+	 :help "Make this menu a full-blown customization menu"])
+       ["Read the AUCTeX manual" TeX-goto-info-page
+	:help "Everything worth reading"]
+       ["Submit bug report" TeX-submit-bug-report
+	:help "Create a problem report for mailing."])))
 
 ;;; AmSTeX
 

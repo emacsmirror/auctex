@@ -65,8 +65,8 @@ INSTALL or INSTALL.windows for instructions.
 
 Commenting and uncommenting now works correctly.
 
-AUCTeX now contains facilities to prevent issues with text formatting
-in XEmacs in connection with preview-latex.
+AUCTeX now works around XEmacs issues with text formatting in
+connection with preview-latex.
 
 
 Requirements
@@ -74,19 +74,16 @@ Requirements
 
 It is recommended that you use at least GNU Emacs 21 or XEmacs 21.4
 with AUCTeX.  Support for Emacs 20 has been dropped in favor of
-getting more important work done.  Unfortunately, immediately before
-release it has come to our attention that you need at least
-xemacs-base-1_84 (released on 27/01/2004, and as part of
-sumo-2004-02-02) for compiling AUCTeX because of non-trivial changes
-in easy-mmode.el.  Providing backward compatibility to earlier
-versions would require resources we currently don't have: none of the
-active developers actually uses XEmacs at the moment.  We apologize
-for the inconvenience and hope that you can make use of the XEmacs
-package system to upgrade if necessary.
+getting more important work done.  Unfortunately, just before release
+it has come to our attention that you need at least version 1.84 of
+the xemacs-base package (released on 01/27/2004) or a sumo tarball
+dated 02/02/2004 or newer for compiling AUCTeX because of non-trivial
+changes in easy-mmode.el.  Providing backward compatibility to earlier
+versions would require resources we don't have right now: none of the
+currently active developers actually uses XEmacs.  We apologize for
+the inconvenience and hope that you can make use of the XEmacs package
+system to upgrade if necessary.
 
-AUCTeX should work with all multi-tasking operating systems on which
-Emacs or XEmacs are available, even though the developers mostly have
-access to teTeX-based systems.
 
 Future development and additional information
 ---------------------------------------------

@@ -4123,8 +4123,9 @@ the last entry in the menu."
 	      ["Reset Buffer" TeX-normal-mode t]
 	      ["Reset AUCTeX" (TeX-normal-mode t)
 	       :keys "\\[universal-argument] \\[TeX-normal-mode]"])
-	[ "Convert 209 to 2e" LaTeX-209-to-2e
-	  :visible (member "latex2" (TeX-style-list)) ]
+;;	[ "Convert 209 to 2e" LaTeX-209-to-2e
+;;	  :visible (member "latex2" (TeX-style-list)) ]
+;; Rats.  XEmacs does not like :visible.
 	(list "Customize"
 	      ["Browse options"
 	       (customize-group 'AUCTeX)]
