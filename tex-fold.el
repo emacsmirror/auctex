@@ -155,8 +155,7 @@ and environments in `TeX-fold-env-spec-list'."
   "Fold all items of type TYPE in buffer.
 TYPE can be one of the symbols 'env for environments or 'macro for macros."
   (when (or (and (eq type 'env)
-		 (or (eq major-mode 'latex-mode)
-		     (eq major-mode 'doctex-mode)))
+		 (memq major-mode '(latex-mode doctex-mode context-mode)))
 	    (eq type 'macro))
     (save-excursion
       (let (fold-list item-list regexp)
@@ -166,24 +165,38 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 	  (dolist (i (cadr item))
 	    (add-to-list 'fold-list (list i (car item)))
 	    (add-to-list 'item-list i)))
-	(setq regexp (if (eq type 'env)
-			 (concat (regexp-quote TeX-esc)
-				 "begin[ \t]*{" (regexp-opt item-list t) "}")
-		       (concat (regexp-quote TeX-esc)
-			       (regexp-opt item-list t) "\\b")))
+	(setq regexp (cond ((and (eq type 'env)
+				 (eq major-mode 'context-mode))
+			    (concat (regexp-quote TeX-esc)
+				    "start" (regexp-opt item-list t)))
+			   ((eq type 'env)
+			    (concat (regexp-quote TeX-esc)
+				    "begin[ \t]*{"
+				    (regexp-opt item-list t) "}"))
+			   (t
+			    (concat (regexp-quote TeX-esc)
+				    (regexp-opt item-list t) "\\b"))))
 	;; Start from the bottom so that it is easier to prioritize
 	;; nested macros.
 	(end-of-buffer)
 	(while (re-search-backward regexp nil t)
 	  (let* ((item-start (match-beginning 0))
 		 (display-string-spec (cadr (assoc (match-string 1) fold-list)))
-		 (item-end (if (eq type 'env)
-			       (save-excursion
-				 (goto-char (match-end 0))
-				 (LaTeX-find-matching-end))
-			     (save-excursion
-			       (goto-char item-start)
-			       (TeX-find-macro-end))))
+		 (item-end (cond ((and (eq type 'env)
+				       (eq major-mode 'context-mode))
+				  (save-excursion
+				    (goto-char (match-end 0))
+				    (ConTeXt-find-matching-stop)
+				    (point)))
+				 ((eq type 'env)
+				  (save-excursion
+				    (goto-char (match-end 0))
+				    (LaTeX-find-matching-end)
+				    (point)))
+				 (t
+				  (save-excursion
+				    (goto-char item-start)
+				    (TeX-find-macro-end)))))
 		 (display-string (if (integerp display-string-spec)
 				     (or (TeX-fold-macro-nth-arg
 					  display-string-spec
@@ -211,28 +224,38 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 TYPE specifies the type of item and can be one of the symbols
 'env for environments or 'macro for macros."
   (if (and (eq type 'env)
-	   (not (or (eq major-mode 'latex-mode)
-		    (eq major-mode 'doctex-mode))))
+	   (not (memq major-mode '(latex-mode doctex-mode context-mode))))
       (message
-       "Folding of environments is supported in LaTeX or docTeX mode only.")
-    (let ((item-start (if (eq type 'env)
-			  (condition-case nil
-			      (save-excursion
-				(LaTeX-find-matching-begin) (point))
-			    (error nil))
-			(TeX-find-macro-start))))
+       "Folding of environments is not supported in current mode")
+    (let ((item-start (cond ((and (eq type 'env)
+				  (eq major-mode 'context-mode))
+			     (save-excursion
+			       (ConTeXt-find-matching-start) (point)))
+			    ((eq type 'env)
+			     (condition-case nil
+				 (save-excursion
+				   (LaTeX-find-matching-begin) (point))
+			       (error nil)))
+			    (t
+			     (TeX-find-macro-start)))))
       (if (not item-start)
 	  (message (if (eq type 'env)
 		       "No environment found."
 		     "No macro found."))
 	(let* ((item-name (save-excursion
 			    (goto-char item-start)
-			    (looking-at (if (eq type 'env)
-					    (concat (regexp-quote TeX-esc)
-						    "begin[ \t]*{"
-						    "\\([A-Za-z]+\\)}")
-					  (concat (regexp-quote TeX-esc)
-						  "\\([A-Za-z@]+\\)")))
+			    (looking-at
+			     (cond ((and (eq type 'env)
+					 (eq major-mode 'context-mode))
+				    (concat (regexp-quote TeX-esc)
+					    "start\\([A-Za-z]+\\)"))
+				   ((eq type 'env)
+				    (concat (regexp-quote TeX-esc)
+					    "begin[ \t]*{"
+					    "\\([A-Za-z]+\\)}"))
+				   (t
+				    (concat (regexp-quote TeX-esc)
+					    "\\([A-Za-z@]+\\)"))))
 			    (match-string-no-properties 1)))
 	       (fold-list (if (eq type 'env)
 			      TeX-fold-env-spec-list
@@ -249,13 +272,21 @@ TYPE specifies the type of item and can be one of the symbols
 		    (if (eq type 'env)
 			TeX-fold-unspec-env-display-string
 		      TeX-fold-unspec-macro-display-string)))
-	       (item-end (if (eq type 'env)
-			     (save-excursion
-			       (goto-char (match-end 0))
-			       (LaTeX-find-matching-end))
-			   (save-excursion
-			     (goto-char item-start)
-			     (TeX-find-macro-end))))
+	       (item-end (cond ((and (eq type 'env)
+				     (eq major-mode 'context-mode))
+				(save-excursion
+				  (goto-char (match-end 0))
+				  (ConTeXt-find-matching-stop)
+				  (point)))
+			       ((eq type 'env)
+				(save-excursion
+				  (goto-char (match-end 0))
+				  (LaTeX-find-matching-end)
+				  (point)))
+			       (t
+				(save-excursion
+				  (goto-char item-start)
+				  (TeX-find-macro-end)))))
 	       (display-string (if (integerp display-string-spec)
 				   (or (TeX-fold-macro-nth-arg
 					display-string-spec
