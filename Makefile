@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.84 1994-03-17 18:37:47 amanda Exp $
+# $Id: Makefile,v 5.85 1994-04-07 21:07:38 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -92,17 +92,17 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE =  ISO-TEX
+REMOVE =  tex-cpl.el powerkey.el ltx-env.el tex-auto.el ltx-sec.el \
+	ltx-misc.el tex-init.el dbg-eng.el dbg-jp.el INSTALL
 
 MINMAPSRC = min-ispl.el column.el   auc-html.el double.el \
-	    powerkey.el easymenu.el min-map.el  ltx-math.el \
+	    easymenu.el min-map.el  ltx-math.el \
 	    outln-18.el out-xtra.el
 
-AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
-	 tex-auto.el tex-cpl.el  tex-buf.el  tex-jp.el   dbg-eng.el  \
-	 ltx-misc.el ltx-env.el  ltx-sec.el  tex-info.el easymenu.el \
+AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex.el \
+	 tex-buf.el  latex.el    tex-info.el easymenu.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
-	 outln-18.el out-xtra.el reporter.el
+	 reporter.el
 
 STYLESRC = style/slides.el    style/foils.el \
 	   style/article.el   style/book.el     style/letter.el \
@@ -119,10 +119,11 @@ LACHECKFILES = lacheck/Makefile lacheck/lacheck.lex lacheck/lacheck.man \
 
 LACHECKGEN = lacheck.c test.old
 
-DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex doc/math-ref.tex
+DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
+	doc/changes.texi doc/ref-card.tex doc/math-ref.tex
 
-EXTRAFILES = COPYING README PROBLEMS OEMACS VMS INSTALL \
-	Makefile dbg-jp.el lpath.el
+EXTRAFILES = COPYING README PROBLEMS OEMACS VMS \
+	Makefile tex-jp.el lpath.el
 
 first:
 	@echo ""
@@ -287,6 +288,7 @@ dist:	tex-load.el
 	 cp $(LACHECKGEN) ../auctex-$(TAG)/lacheck )
 	cp $(DOCFILES)  auctex-$(TAG)/doc
 	(cd doc; $(MAKE) dist; cp auctex auctex-* ../auctex-$(TAG)/doc )
+	(cd doc; cp INSTALLATION README CHANGES ../auctex-$(TAG)/ )
 	cp doc/*.html /user/amanda/lib/www/auctex/alpha-doc
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.Z

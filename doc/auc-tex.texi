@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.83 1994-03-17 18:40:18 amanda Exp $
+@c $Id: auc-tex.texi,v 1.84 1994-04-07 21:08:33 amanda Exp $
 
 @finalout
 @titlepage
@@ -26,7 +26,7 @@ Copyright @copyright{} 1993 Per Abrahamsen
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
 are preserved on all copies.
- 
+
 @ignore
 Permission is granted to process this file through TeX and print the
 results, provided the printed document carries copying permission
@@ -95,7 +95,7 @@ TeX-submit-bug-report} to report bugs if possible.@refill
 
 @menu
 * Copying::                     Copying
-* Introduction::                Introduction 
+* Introduction::                Why AUC @TeX{} is good for you.
 * Frequently Used Commands::    Inserting Frequently Used Commands  
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
@@ -104,7 +104,7 @@ TeX-submit-bug-report} to report bugs if possible.@refill
 * I18n::                        Internationalization
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
-* Installation::                Installation of AUC @TeX{}
+* Installation::                How to install AUC @TeX{}
 * History::                     The History of AUC @TeX{}
 * Projects::                    Wishlist
 * Credit::                      Credit 
@@ -165,61 +165,7 @@ being distributed that relate to AUC @TeX{} are found in the General
 Public Licenses that accompany them.@refill
 
 @node Introduction, Frequently Used Commands, Copying, top
-@unnumbered Introduction 
-
-AUC @TeX{} is a comprehensive customizable integrated environment for
-writing input files for LaTeX using GNU Emacs.
- 
-AUC @TeX{} lets you run @TeX{}/LaTeX and other LaTeX-related tools, such as
-output filters or post processors from inside Emacs.  Especially
-`running LaTeX' is interesting, as AUC @TeX{} lets you browse through
-the errors @TeX{} reported, while it moves the cursor directly to the
-reported error, and displays some documentation for that particular
-error.  This will even work when the document is spread over several
-files.
- 
-AUC @TeX{} automatically indents your `LaTeX-source', not only as you
-write it---you can also let it indent and format an entire document.  It
-supports the standard outline minor mode, which can greatly help you
-`getting the overview' of a document.
- 
-Apart from these special features, AUC @TeX{} provides a large range of
-handy Emacs macros, which in several different ways can help you write
-your LaTeX documents fast and without pain.  Here's a short list of the
-major features:
-
-@itemize @bullet
-@item
-Insertion of templates for logical-structural compositions such as
-environments and sections.
-
-@item 
-Hot-keys for easy access to certain often used constructs, e.g.,
-font changes, accented letters, and mathematical symbols.
-
-@item 
-Running application programs (such as @TeX{}), and then parsing
-the output so that errors in the document may be located 
-easily.
-
-@item 
-Support for multi-file documents.
-
-@item 
-Online help for (La)@TeX{} error messages.
-
-@item 
-Outlining---i.e., manipulating the document as a composition
-of nested/sequential logical constructs.
-
-@item 
-Instant formatting and indentation of the ASCII-document in
-order to make it easier to read.
-
-@item 
-`Completion' (and thereby spell-checking) of partially written
-control sequences.
-@end itemize
+@include intro.texi
 
 @node Frequently Used Commands, Advanced Features, Introduction, top
 @chapter Inserting Frequently Used Commands  
@@ -558,7 +504,7 @@ about the optional parts of the selected environment type.  With
 @deffn Command LaTeX-environment @var{arg}
 @kindex C-c C-e
 (@kbd{C-c C-e})  AUC @TeX{} will prompt you for an environment
-to insert.  At this prompt, you may press @key{TAB} or @key{SPC} to
+to insert.  At this prompt, you may press @key{tab} or @key{spc} to
 complete a partially written name, and/or to get a list of available
 environments.  After selection of a specific environment AUC @TeX{} may
 prompt you for further specifications.  
@@ -656,11 +602,11 @@ Prefix to use for table labels.
 @cindex \item
 
 In an itemize-like environment, nodes (i.e., @samp{\item}s) may be
-inserted using @kbd{C-c @key{LFD}}.  
+inserted using @kbd{C-c @key{lfd}}.  
 
 @deffn Command LaTeX-insert-item
-@kindex C-c @key{LFD}
-(@kbd{C-c @key{LFD}}) Close the current item, move to the next line and
+@kindex C-c @key{lfd}
+(@kbd{C-c @key{lfd}}) Close the current item, move to the next line and
 insert an appropriate @samp{\item} for the current environment. That is,
 `itemize' and `enumerate' will have @samp{\item } inserted, while
 `description' will have @samp{\item[]} inserted.
@@ -724,18 +670,6 @@ A string containing the prefix of @code{LaTeX-math-mode} commands;
 This value defaults to @kbd{`}. @refill
 @end defopt
 
-By default the symbol will be inserted using @code{TeX-insert-macro},
-which normally means the symbol will be terminated by an empty set
-braces. 
-
-@defopt LaTeX-math-braces
-Insert braces after LaTeX math symbols.
-
-If this variable is nil, never insert braces.  If it is true, always
-insert braces.  Otherwise, only insert braces if we can use the AUC
-@TeX{} function @code{TeX-insert-macro} to do the job.
-@end defopt
-
 The variable @code{LaTeX-math-list} holds the actual mapping.
 
 @defopt LaTeX-math-list
@@ -756,22 +690,22 @@ The AUC @TeX{} distributions includes a reference card for
 @cindex Arguments to @TeX{} macros
 
 Emacs lisp programmers probably know the @code{lisp-complete-symbol}
-command, usually bound to @kbd{M-@key{TAB}}.  Users of the wonderful
+command, usually bound to @kbd{M-@key{tab}}.  Users of the wonderful
 ispell mode know and love the @code{ispell-complete-word} command from
 that package.  Similarly, AUC @TeX{} has a @code{TeX-complete-symbol}
-command, usually bound to @kbd{C-c @key{TAB}}.  Using
+command, usually bound to @kbd{M-@key{tab}}.  Using
 @code{LaTeX-complete-symbol} makes it easier to type and remember the
 names of long La@TeX{} macros.
  
 In order to use @code{TeX-complete-symbol}, you should write a backslash
-and the start of the macro.  Typing @kbd{C-c @key{TAB}} will now
+and the start of the macro.  Typing @kbd{M-@key{tab}} will now
 complete as much of the macro, as it unambiguously can.  For example, if
-you type `@samp{\renewc}' and then `@kbd{C-c @key{TAB}}, it will expand
+you type `@samp{\renewc}' and then `@kbd{M-@key{tab}}, it will expand
 to `@samp{\renewcommand}'.
  
 @deffn Command TeX-complete-symbol
-@kindex C-c @key{TAB}
-(@kbd{C-c @key{TAB}})  Complete @TeX{} symbol before point.
+@kindex M-@key{tab}
+(@kbd{M-@key{tab}})  Complete @TeX{} symbol before point.
 @end deffn
 
 A more direct way to insert a macro is with @code{TeX-insert-macro},
@@ -805,7 +739,7 @@ character @samp{\} will be bound to @code{TeX-electric-macro}
 
 The difference between @code{TeX-insert-macro} and
 @code{TeX-electric-macro} is that space will complete and exit from the
-minibuffer in @code{TeX-electric-macro}.  Use @key{TAB} if you merely
+minibuffer in @code{TeX-electric-macro}.  Use @key{tab} if you merely
 want to complete.
 
 @deffn Command TeX-electric-macro
@@ -813,6 +747,15 @@ Prompt (with completion) for the name of a @TeX{} macro,
 and if AUC @TeX{} knows the macro, prompt for each argument.
 Space will complete and exit.
 @end deffn
+
+By default AUC @TeX{} will put an empty set braces @samp{@{@}} after a
+macro with no arguments to stop it from eating the next whitespace.
+This can be stopped by entering @code{LaTeX-math-mode},
+@pxref{Mathematics}, or by setting @code{TeX-insert-braces} to nil
+
+@defopt TeX-insert-braces
+If non-nil, append a empty pair of braces after inserting a macro.
+@end defopt
 
 Completions work because AUC @TeX{} can analyze @TeX{} files, and store
 symbols in emacs lisp files for later retrieval.  @xref{Automatic}, for
@@ -923,15 +866,15 @@ You can format and indent single lines, paragraphs, environments, or
 sections.
 
 @table @kbd
-@item @key{TAB}
-@kindex @key{TAB}
+@item @key{tab}
+@kindex @key{tab}
 @findex LaTeX-indent-line
 @code{LaTeX-indent-line} will indent the current line.
 
-@item @key{LFD}
-@kindex @key{LFD}
+@item @key{lfd}
+@kindex @key{lfd}
 @code{reindent-then-newline-and-indent} indents the current line, and
-then inserts a new line (much like @key{RET}) and move the cursor to an
+then inserts a new line (much like @key{ret}) and move the cursor to an
 appropriate position by the left margin.
 
 @item M-q
@@ -1258,7 +1201,7 @@ errors may often be confusing.  The utility @code{lacheck} can be used
 to find style errors, such as forgetting to escape the space after an
 abbreviation or using @samp{...} instead of @samp{\ldots} and many other
 problems like that.  You start @code{lacheck} with @kbd{C-c C-c C h e c
-k @key{RET}}.  The result will be a list of errors in the
+k @key{ret}}.  The result will be a list of errors in the
 @samp{*compilation*} buffer.  You can go through the errors with
 @kbd{C-x `} (@code{next-error}, @pxref{Compilation,,,emacs,The Emacs
 Editor}), which will move point to the location of the next
@@ -1825,17 +1768,20 @@ shared by all users of a site.
 
 You should specify where you store your private @TeX{} macros, so AUC
 @TeX{} can extract their information.  The extracted information will go
-to the directory @code{TeX-auto-private}
+to the directories listed in @code{TeX-auto-private}
 
 Use @kbd{M-x TeX-auto-generate} to extract the information.
 
 @defopt TeX-macro-private
 Directories where you store your personal @TeX{} macros.
 Each must end with a slash.
+
+This defaults to the directories listed in the @samp{TEXINPUTS} and
+@samp{BIBINPUTS} environment variables.
 @end defopt
 
 @defopt TeX-auto-private
-Directory containing automatically generated information.
+List of directories containing automatically generated information.
 Must end with a slash.
 
 These correspond to the personal @TeX{} macros.
@@ -1848,7 +1794,7 @@ hooks for all files in the directory.@refill
 @end deffn
 
 @defopt TeX-style-private
-Directory containing hand generated information.
+List of directories containing hand generated information.
 Must end with a slash.
 
 These correspond to the personal @TeX{} macros.
@@ -2351,104 +2297,7 @@ List of functions to be called after parsing a @TeX{} file.
 @end defvar
 
 @node Installation, History, Style Files, top
-@chapter Installation of AUC @TeX{}
-@cindex Installation
-@cindex Make
-@cindex @file{Makefile}
-@cindex @file{.emacs}
-@cindex Site initialization
-@cindex Initialization
-@cindex @file{tex-site.el}
-@cindex @file{tex-init.el}
-@cindex Personal customization
-@cindex Site customization
-@cindex Customization
-@cindex Customization, personal
-@cindex Customization, site
-
-Before you do anything else, make sure that you have the latest version
-of @TeX{}info installed.  It is available by ftp from
-@samp{prep.ai.mit.edu}.  You need at least version 2.16.
-
-First, you should consult the file @file{tex-site.el} and edit it to fit
-your local site.  Be sure to get the following two variables right, or
-you will not be able to complete the installation procedure:
-
-@defopt TeX-lisp-directory
-The directory where you want to install the AUC @TeX{} lisp files. 
-@end defopt
-
-@defopt TeX-macro-global
-Directories containing the site's @TeX{} style files.
-@end defopt
-
-You probably also need to change @code{TeX-command-list} to make sure
-that the commands used for starting @TeX{}, printing, etc. work on your
-system. 
-@vindex TeX-command-list
-
-Finally, edit @code{TeX-printer-list} to contain the printers available
-at your site.
-@vindex TeX-printer-list
-
-Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
-paths for installation of the files.  Be sure that
-
-@table @code
-@item bindir
-Is set to the directory where you want the LaCheck binary to be
-installed.
-
-@item infodir
-Is set to the directory where you want the AUC @TeX{} ``info''
-documentation to be installed.  
-
-@item aucdir
-Is set to the directory where you want the lisp files for AUC @TeX{} to
-be installed.  This @strong{must} be the same directory as you specified
-for @code{TeX-lisp-directory} in @file{tex-site.el}.  If you unpacked
-AUC @TeX{} in that directory (@code{TeX-lisp-directory}), you should set
-@code{aucdir} to @samp{.} in order to avoid copying the byte compiled
-lisp files.
-
-If you already have an old version of AUC @TeX{} in that directory, you
-must delete it before installing the new version.  Otherwise the wrong
-version of the files may be loaded during the byte compilation.
-
-@item mandir
-Is set to the directory where you want to install the (unformatted) man
-page for LaCheck.
-
-@item elispdir
-Is set to the directory where the lisp files from the standard Emacs
-distribution are found.  
-
-@item CC
-Is the compiler you want to use for compiling the LaCheck program. Is
-set to `gcc' by default. Change this is `cc' or whatever your system
-compiler is called if you do not have GCC installed.
-
-@end table
-
-Then type @kbd{make all}, and the whole thing will be `made'.  If this
-succeeds, type @kbd{make install}, and it will be installed.
-
-To extract information from your site's @TeX{} macros, type @kbd{make
-install-auto}. This will only work if you have set
-@code{TeX-macro-global} correctly in @file{tex-site.el}.
-
-Tell the users on your site to insert
-@lisp 
-        (load-file "/path/for/auctex/tex-site.elc")
-@end lisp
-in their @file{.emacs} file in order to use AUC @TeX{}.
-
-Users who know the older keybindings from version 6.1 may also want to
-insert 
-@lisp
-        (load "auc-tex")
-@end lisp
-in their @file{.emacs}
+@include install.texi
 
 @node History, Projects, Installation, top
 @comment  node-name,  next,  previous,  up
@@ -2470,203 +2319,7 @@ this version, and for the authors, who get nostalgic at times.
 @end menu
 
 @node Version 8.1, Version 8.0, History, History
-@comment  node-name,  next,  previous,  up
-@section News in 8.1
-
-Coordinater: Per Abrahamsen, 1994.
-
-Alpha testers (in order of appearance): Volker Dobler
-@samp{<dobler@@etu.wiwi.uni-karlsruhe.de>}, Piet van Oostrum
-@samp{<piet@@cs.ruu.nl>}, Frederic Devernay
-@samp{<Frederic.Devernay@@sophia.inria.fr>},
-Robert Estes @samp{<estes@@ece.ucdavis.edu>},
-Berwin Turlach @samp{<berwin@@core.ucl.ac.be>},
-Tim Carlson @samp{<imsgtcar@@mathfs.math.montana.edu>},
-Peter Thiemann @samp{<thiemann@@provence.informatik.uni-tuebingen.de>},
-Kevin Scott @samp{<scottkj@@prl.philips.co.uk>},
-Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>},
-and probably more.@refill
-
-@itemize @bullet
-@item
-New function @code{TeX-command-buffer} (@kbd{C-c C-b}) to run a command
-on the (visible part of) the current buffer.
-
-@item
-Bundled the latest @file{reporter.el}, added
-@code{TeX-submit-bug-report} to menus.
-
-@item
-@code{TeX-insert-braces} now takes an argument like
-@code{insert-parentheses}.  Thanks to Lawrence R. Dodd
-@samp{<dodd@@roebling.poly.edu>}. 
-
-@item
-Fixed bug in @samp{\put} and @samp{\multiput} macros.  Thanks to Kevin
-Scott @samp{<scottkj@@prl.philips.co.uk>}.
-
-@item
-Deleted @code{ams-latex-mode}, @code{slitex-mode}, and
-@code{foiltex-mode}.  Instead, use @code{LaTeX-command-style} to
-determine the name of the external command to use.
-
-@item
-Deleted @code{ams-tex-mode}.   Instead, set @code{TeX-command-default}
-as a file local variable.
-
-@item
-Deleted @code{latex2e-mode}.  Instead set the @code{LaTeX-version}
-variable.  This will be done automatically if you use
-@samp{\documentclass} int he furture.
-
-@item
-Fixed Lucid Emacs menu for @TeX{}info mode.  Thanks to Frederic Devernay
-@samp{<Frederic.Devernay@@sophia.inria.fr>},
-
-@item
-Added support for @file{harvard.sty} by Berwin Turlach
-@samp{<berwin@@core.ucl.ac.be>}.
-
-@item
-Filling will not let display math equations @samp{\[ ... \]} be on a
-line by themselves.  Reported by Matthew Morley
-@samp{<Matthew.Morley@@gmd.de>}. 
-
-@item
-Made @code{words-include-escapes} default to nil.  
-
-@item
-Made @code{TeX-expand-list} expansions case sensitive.  Thanks to Havard
-Rue @samp{<Havard.Rue@@sima.sintef.no>}.
-
-@item
-Fixed error in calculating indentation for lines starting with a brace.
-Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
-
-@item
-Fixed bug in the @samp{addcontentsline}, @samp{newtheorem}, and
-@samp{pagenumbering} macros reported by Berwin Turlach
-@samp{<berwin@@core.ucl.ac.be>}.
-
-@item
-Doc fixes by Lawrence R. Dodd @samp{<dodd@@roebling.poly.edu>}.
-
-@item
-Indentation no longer fooled by @samp{\\@{},  Thanks to Peter Thiemann
-@samp{<thiemann@@provence.informatik.uni-tuebingen.de>}.
-
-@item
-Bind @kbd{M-C-e} and @kbd{M-c-a} to @code{LaTeX-find-matching-end} and
-@code{LaTeX-find-matching-begin}.  Suggested by Lawrence R. Dodd
-@samp{<dodd@@roebling.poly.edu>}.
-
-@item
-Added variable @code{TeX-quote-after-quote} which causes
-@code{TeX-insert-quote} to insert literal @samp{"} except when after
-another @samp{"}, in which case it will expand to @code{TeX-open-quote}
-or @code{TeX-close-quote}.  This code was contributed by Piotr Filip
-Sawicki @samp{<pfs@@mimuw.edu.pl>}.
-
-@item
-Added support for Polish style files @file{plfonts.sty} and
-@file{plhb.sty}, contributed by Piotr Filip
-Sawicki @samp{<pfs@@mimuw.edu.pl>}.
-
-@item
-Added section with suggestions for how to handle European
-character sets.
-
-@item
-Created workaround for bug in the regexp handler in some Emacs 18
-versions and older versions of Lucid Emacs.  The workaround
-means you cannot use space in the documentstyle command in Emacs and
-Lucid Emacs earlier than version 19.9.
-
-@item
-@file{powerkey.el} unbundled.
-
-@item
-@kbd{C-u "} now inserts four literal @samp{"}, not just one.  To insert
-a single @samp{"} either press @key{"} twice or use @kbd{C-q "}.
-
-@item
-Allow non-string value for @code{outline-minor-map-prefix}.  Reported by
-David Smith @samp{<maa507@@comp.lancs.ac.uk>}.
-
-@item
-Make the use of @code{write-file-hooks} more safe, and use
-@code{local-write-file-hooks} when possible.  Suggested by David Smith
-@samp{<maa507@@comp.lancs.ac.uk>}.
-
-@item
-Don't indent @samp{\begin@{verbatim@}} and @samp{\end@{verbatim@}},
-since any space before @samp{\end@{verbatim@}} is significant.  Thanks to
-Peter Thiemann @samp{<thiemann@@informatik.uni-tuebingen.de>} for the
-patch.
-
-@item
-Show available fonts when you try to insert an non-existing font.
-Suggested by David Smith @samp{<maa507@@comp.lancs.ac.uk>}.
-
-@item
-The @code{member} function in @file{tex-18.el} does not depend on
-@code{TeX-member} now.  Thanks to Piet van Oostrum
-@samp{<piet@@cs.ruu.nl>}. 
-
-@item
-Do not overwrite any global binding of @kbd{M-RET}.  Suggested by Jens
-Petersen @samp{<J.Petersen@@qmw.ac.uk>}.
-
-@item
-Major modes for writing text are supposed to rebind @kbd{M-TAB} to
-@code{ispell-complete-word}.  Reported by Jens Petersen
-@samp{<J.Petersen@@qmw.ac.uk>}.
-
-@item
-Fixed problems with @TeX{}info menus.  Thanks to David Smith
-@samp{<maa507@@comp.lancs.ac.uk>} for reporting this.
-
-@item
-Code cleanup.   Removed the @file{format} directory, as it did not make
-it easier to add new @TeX{} modes, quite the contrary.
-
-@item
-Fixed name conflict in @file{auc-tex.el}, reported by Rik Faith
-@samp{<faith@@cs.unc.edu>}. 
-
-@item
-Fixed some spelling errors.  Thanks to Lawrence R. Dodd
-@samp{<dodd@@roebling.poly.edu>}. 
-
-@item
-Fixed bug prohibiting non-standard file extensions.  Now recognize
-@file{.ltx} by default.  Suggested by Lawrence R. Dodd
-@samp{<dodd@@roebling.poly.edu>}. 
-
-@item
-Name of the AUC @TeX{} info files changes once again to be useable under
-DOS.  This time simply to @file{auctex}.
-
-@item
-Documented @code{TeX-outline-extra}.
-
-@item
-Could not select command on region from the menu before loading
-@file{tex-buf}.  Reported by Uwe Bonnes
-@samp{<bon@@lte.e-technik.uni-erlangen.de>}.
-
-@item
-Make the hilit19 interface more robust.  Thanks to William Dean Norris
-II @samp{<wdn@@dragonfly.cis.ufl.edu>}.
-
-@item
-More OS/2 Makefile fixes by Bodo Huckestein
-@samp{<bodo@@eu10.mpi-hd.mpg.de>}.
-
-@item
-Reimplemented comment support on top of @code{comment-region}, giving
-slightly different semantics.
-@end itemize
+@include changes.texi
 
 @node Version 8.0, Version 7.3, Version 8.1, History
 @comment  node-name,  next,  previous,  up
@@ -3197,7 +2850,7 @@ No longer put @samp{Outline} in the mode line whenever
 
 @item
 Support for inserting calligraphic letters in @code{TeX-math-mode} with
-@kbd{` c @key{LETTER}}.  Thanks to Olaf Burkart
+@kbd{` c @key{letter}}.  Thanks to Olaf Burkart
 @samp{<burkart@@zeus.informatik.rwth-aachen.de>}.
 
 @item
@@ -3378,7 +3031,7 @@ remains the same in this file.  The code for both @file{tex-buf.el} and
 
 @file{auc-tex.el} and @file{tex-site.el} was updated to support the new
 interface.  I actually believe the moral equivalent to @code{TeX-region}
-to work now @samp{:-)}, at least I understand the code now.
+to work now @t{:-)}, at least I understand the code now.
 
 The two major functions are now @code{TeX-command-master} and
 @code{TeX-command-region}.  Each function will prompt you for the
@@ -3469,12 +3122,12 @@ support 8-bit input on some GNU Emacs. Thanks to Peter Dalgaard
 
 Please, implementors of 8-bit input extensions to GNU Emacs.
 @code{\M-x} does @emph{not} means @dfn{@kbd{x} with the 8-bit set}.  It
-means @dfn{pressing @kbd{x} while holding down the @key{META} key}.
+means @dfn{pressing @kbd{x} while holding down the @key{meta} key}.
 Some systems (such as X11) are able to tell the different.  Thus, even
 if you implement 256 byte keymaps, @code{\M-x} should still expand
 @code{meta-prefix-char} followed by an @kbd{x} in the keymap.  This
 allows you to distinguish pressing @kbd{x} while holding down the
-@key{META} key from entering a literal 8-bit character.
+@key{meta} key from entering a literal 8-bit character.
 
 @item
 Made the outline commands aware of the document style.
@@ -3712,6 +3365,15 @@ solution to one of the following problems.
 
 @itemize @bullet
 @item
+Key binding to toggle variables.  Suggested by Berwin Turlach
+@samp{<berwin@@core.ucl.ac.be>}.
+
+@item
+@kbd{C-c C-m \left @key{ret}} should prompt for delimiter and insert
+matching @samp{\right} with cursor in between.  Suggested by Jesse
+@samp{<jes@@math.msu.edu>}. 
+
+@item
 Make @samp{`} check for math context in @code{LaTeX-math-mode}. and
 simply self insert if not in a math context.
 
@@ -3764,14 +3426,6 @@ Function to check if you are in math mode (between two dollar signs).
 Suggested by Jan Erik Odegard @samp{<odegard@@dsp.rice.edu>}
 
 @item
-Allow @code{TeX-auto-private} and @code{TeX-style-private} to be lists
-to mimic @code{TeX-macro-private}.
-
-@item
-Try to initialize @code{TeX-macro-private} from @code{BIBPATH} and
-@code{TEXPATH}. 
-
-@item
 Allow whitespace more places during parsing, e.g. between macro and the
 first argument, or between individual style options in
 @samp{\documentstyle}. 
@@ -3780,9 +3434,6 @@ first argument, or between individual style options in
 The @samp{Spell} command should apply to all files in a document.  Maybe
 it could try to restrict to files that have been modified since last
 spell check?  Suggested by Ravinder Bhumbla @samp{<rbhumbla@@ucsd.edu>}. 
-
-@item
-Add completion of macro arguments to @code{TeX-complete-symbol}.
 
 @item
 Make @key{.} check for abbreviations and sentences ending with capital

@@ -1,0 +1,95 @@
+@chapter Installation of AUC @TeX{}
+@cindex Installation
+@cindex Make
+@cindex @file{Makefile}
+@cindex @file{.emacs}
+@cindex Site initialization
+@cindex Initialization
+@cindex @file{tex-site.el}
+@cindex @file{tex-init.el}
+@cindex Personal customization
+@cindex Site customization
+@cindex Customization
+@cindex Customization, personal
+@cindex Customization, site
+
+Before you do anything else, make sure that you have the latest version
+of @TeX{}info installed.  It is available by ftp from
+@samp{prep.ai.mit.edu}.  You need at least version 2.16.
+
+First, you should consult the file @file{tex-site.el} and edit it to fit
+your local site.  Be sure to get the following two variables right, or
+you will not be able to complete the installation procedure:
+
+@defopt TeX-lisp-directory
+The directory where you want to install the AUC @TeX{} lisp files. 
+@end defopt
+
+@defopt TeX-macro-global
+Directories containing the site's @TeX{} style files.
+@end defopt
+
+You probably also need to change @code{TeX-command-list} to make sure
+that the commands used for starting @TeX{}, printing, etc. work on your
+system. 
+@vindex TeX-command-list
+
+Finally, edit @code{TeX-printer-list} to contain the printers available
+at your site.
+@vindex TeX-printer-list
+
+Next, edit the file @file{Makefile} in the AUC @TeX{} directory to set up
+paths for installation of the files.  Be sure that
+
+@table @code
+@item bindir
+Is set to the directory where you want the LaCheck binary to be
+installed.
+
+@item infodir
+Is set to the directory where you want the AUC @TeX{} ``info''
+documentation to be installed.  
+
+@item aucdir
+Is set to the directory where you want the lisp files for AUC @TeX{} to
+be installed.  This @strong{must} be the same directory as you specified
+for @code{TeX-lisp-directory} in @file{tex-site.el}.  If you unpacked
+AUC @TeX{} in that directory (@code{TeX-lisp-directory}), you should set
+@code{aucdir} to @samp{.} in order to avoid copying the byte compiled
+lisp files.
+
+If you already have an old version of AUC @TeX{} in that directory, you
+must delete it before installing the new version.  Otherwise the wrong
+version of the files may be loaded during the byte compilation.
+
+@item mandir
+Is set to the directory where you want to install the (unformatted) man
+page for LaCheck.
+
+@item CC
+Is the compiler you want to use for compiling the LaCheck program. Is
+set to `gcc' by default. Change this is `cc' or whatever your system
+compiler is called if you do not have GCC installed.
+
+@end table
+
+Then type @kbd{make all}, and the whole thing will be `made'.  If this
+succeeds, type @kbd{make install}, and it will be installed.
+
+To extract information from your sites @TeX{} macros, type @kbd{make
+install-auto}. This will only work if you have set
+@code{TeX-macro-global} correctly in @file{tex-site.el}.
+
+Tell the users on your site to insert
+@lisp 
+        (load-file "/path/for/auctex/tex-site.elc")
+@end lisp
+in their @file{.emacs} file in order to use AUC @TeX{}.
+
+Users who know the older keybindings from version 6.1 may also want to
+insert 
+@lisp
+        (load "auc-tex")
+@end lisp
+in their @file{.emacs}
+

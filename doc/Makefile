@@ -4,7 +4,7 @@ TEX=tex
 
 all: auc-tex.dvi ref-card.dvi math-ref.dvi auctex
 
-dist: auctex auc-tex_toc.html
+dist: auctex INSTALLATION README CHANGES auc-tex_toc.html
 
 auc-tex_toc.html: auc-tex.texi
 	perl -S texi2html -split_node auc-tex.texi
@@ -34,12 +34,21 @@ auc-tex.dvi: auc-tex.texi
 	@echo "** doc/auc-tex.dvi may now be printed (70+ pages)"
 	@echo "**********************************************************"
 
-auctex: auc-tex.texi
+auctex: auc-tex.texi install.texi intro.texi changes.texi
 	-makeinfo auc-tex.texi
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install"
 	@echo "** a newer version of texinfo?"
 	@echo "**********************************************************"
+
+INSTALLATION: install.texi
+	-makeinfo --no-headers install.texi --output INSTALLATION
+
+README: intro.texi
+	-makeinfo --no-headers intro.texi --output README
+
+CHANGES: changes.texi
+	-makeinfo --no-headers changes.texi --output CHANGES
 
 install: auctex
 	cp auctex auctex-* $(infodir)

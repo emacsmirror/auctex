@@ -1,6 +1,6 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
-;; $Id: tex-info.el,v 5.9 1994-03-17 18:38:55 amanda Exp $
+;; $Id: tex-info.el,v 5.10 1994-04-07 21:08:12 amanda Exp $
 
 ;; Copyright (C) 1993, 1994 Per Abrahamsen 
 ;; 
@@ -20,7 +20,7 @@
 
 ;;; Code:
 
-(require 'tex-init)
+(require 'tex)
 (condition-case nil			;Lucid is not providing.
     (require 'texinfo)
   (error))
@@ -128,9 +128,11 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c\C-n" 'TeX-normal-mode)
   (define-key TeXinfo-mode-map "\C-c?"    'describe-mode)
   
-  ;; From tex-init.el
+  ;; From tex.el
   (define-key TeXinfo-mode-map "\C-c{"    'TeX-insert-braces)
   (define-key TeXinfo-mode-map "\C-c\C-f" 'TeX-font)
+  (define-key TeXinfo-mode-map "\C-c\C-m" 'TeX-insert-macro)
+  (define-key TeXinfo-mode-map "\e\t"     'TeX-complete-symbol) 
 
   (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-region)
   (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-paragraph)
@@ -138,23 +140,16 @@ When called interactively, prompt for an environment."
   (define-key TeXinfo-mode-map "\C-c:"    'TeX-un-comment-region) ;*** Old way
   (define-key TeXinfo-mode-map "\C-c\""   'TeX-un-comment) ;*** Old way
 
-  ;; From tex-cpl.el
-  (define-key TeXinfo-mode-map "\C-c\C-m" 'TeX-insert-macro)
-
   ;; From tex-buf.el
   (define-key TeXinfo-mode-map "\C-c\C-r" 'TeX-command-region)
   (define-key TeXinfo-mode-map "\C-c\C-c" 'TeX-command-master)
   (define-key TeXinfo-mode-map "\C-c\C-k" 'TeX-kill-job)
   (define-key TeXinfo-mode-map "\C-c\C-l" 'TeX-recenter-output-buffer)
   (define-key TeXinfo-mode-map "\C-c^" 'TeX-home-buffer)
-
-  ;; From tex-dbg.el
   (define-key TeXinfo-mode-map "\C-c`"    'TeX-next-error)
   (define-key TeXinfo-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
 
   ;; From tex.cpl.el
-  (define-key TeXinfo-mode-map "\e\t"   'TeX-complete-symbol) ;*** Emacs 19 way
-  (define-key TeXinfo-mode-map "\C-c\t"   'TeX-complete-symbol)
 
   ;; Simulating LaTeX-mode
 
@@ -180,38 +175,6 @@ When called interactively, prompt for an environment."
 	      ["Italic"     (TeX-font nil ?\C-i) "C-c C-f C-i"]
 	      ["Sample"    (TeX-font nil ?\C-s) "C-c C-f C-s"]
 	      ["Roman"      (TeX-font nil ?\C-r) "C-c C-f C-r"])
-	(list "Insert Font around Region"
-	      ["Emphasize"
-	       (progn (kill-region (point) (mark)) (TeX-font nil ?\C-e) (yank))
-	       "C-w C-c C-f C-e C-y"]
-	      ["Bold"
-	       (progn (kill-region (point) (mark)) (TeX-font nil ?\C-b) (yank))
-	       "C-w C-c C-f C-b C-y"]
-	      ["Typewriter"
-	       (progn (kill-region (point) (mark))
-		      (TeX-font nil ?\C-t)
-		      (yank))
-	       "C-w C-c C-f C-t C-y"]
-	      ["Small Caps"
-	       (progn (kill-region (point) (mark)) 
-		      (TeX-font nil ?\C-c)
-		      (yank))
-	       "C-w C-c C-f C-c C-y"]
-	      ["Italic"
-	       (progn (kill-region (point) (mark))
-		      (TeX-font nil ?\C-i)
-		      (yank))
-	       "C-w C-c C-f C-i C-y"]
-	      ["Sample"
-	       (progn (kill-region (point) (mark))
-		      (TeX-font nil ?\C-s)
-		      (yank))
-	       "C-w C-c C-f C-s C-y"]
-	      ["Roman"
-	       (progn (kill-region (point) (mark))
-		      (TeX-font nil ?\C-r)
-		      (yank))
-	       "C-w C-c C-f C-r C-y"])
 	(list "Change Font"
 	      ["Emphasize"  (TeX-font t ?\C-e) "C-u C-c C-f C-e"]
 	      ["Bold"       (TeX-font t ?\C-b) "C-u C-c C-f C-b"]
@@ -434,10 +397,7 @@ TeXinfo-mode-hook."
    '("vskip" "Amount")
    '("w" "Text"))
   
-  (if (featurep 'tex-19)
-      (require 'outline)		;Must be loaded first.
-    (require 'outln-18))
-  
+  (require 'outline)		;Must be loaded first.
   (make-local-variable 'outline-regexp)
   (setq outline-regexp TeXinfo-outline-regexp)
   (make-local-variable 'outline-level)

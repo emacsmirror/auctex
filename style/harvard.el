@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 
-;; Version: $Id: harvard.el,v 1.3 1994-03-17 18:40:56 amanda Exp $
+;; Version: $Id: harvard.el,v 1.4 1994-04-07 21:08:47 amanda Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,19 +25,15 @@
 
 ;;; Code:
 
-(require 'ltx-env)
-(require 'tex-cpl)
+(require 'latex)
 
-(defvar TeX-arg-cite-note-p nil
-  "*If non-nil, ask for optional note in citations.")
-
-;; add support for the useful macros of harvard.sty
-;;
 (TeX-add-style-hook "harvard"
  (function
   (lambda ()
+
     (LaTeX-add-environments
      '("thebibliography" LaTeX-env-harvardbib ignore))
+
     (TeX-add-symbols
      '("citeasnoun"
        (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
@@ -48,53 +44,28 @@
      '("citename"
        (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) nil)
        TeX-arg-cite)
-     '("citationstyle"      TeX-arg-harvard-citationstyle)
-     '("bibliographystyle"  TeX-arg-harvard-bibliographystyle ignore)
-     '("harvarditem" TeX-arg-harvard-bibitem))
-    ;; change LaTeX-item-list, so that LaTeX-item-harvardbib instead of
-    ;; LaTeX-item-bib is called if we insert a "thebibliography"
-    ;; environment.
-    (make-local-variable 'LaTeX-item-list)
-    (setq LaTeX-item-list (copy-alist LaTeX-item-list))
-    (setcdr (assoc '"thebibliography" LaTeX-item-list)
-	    'LaTeX-item-harvardbib))))
+     '("citationstyle"
+       (TeX-arg-eval completing-read "Citation style: " '(("agsm") ("dcu"))))
+     '("bibliographystyle"
+       (TeX-arg-eval
+	completing-read "Bibliography style: " '(("agsm") ("kluwer") ("dcu")))
+       ignore)
+     '("harvarditem" [ "Short citation" ]
+       "Complete citation" "Year" TeX-arg-define-cite))
 
-(defun TeX-arg-harvard-citationstyle (optional &optional prompt)
-  "Prompt for a Harvard citationstyle with completion. (LaTeX)"
-  (TeX-argument-insert
-   (completing-read (TeX-argument-prompt optional prompt "Citationstyle")
-		    '(("agsm") ("dcu")))
-   optional))
+  (setq TeX-complete-list
+	(append '(("\\\\citeasnoun{\\([^{}\n\m\\%]*\\)"
+		   1 'LaTeX-bibitem-list "}")
+		  ("\\\\citeyear{\\([^{}\n\m\\%]*\\)"
+		   1 'LaTeX-bibitem-list "}")
+		  ("\\\\citename{\\([^{}\n\m\\%]*\\)"
+		   1 'LaTeX-bibitem-list "}"))
+		TeX-complete-list))
 
-(defun TeX-arg-harvard-bibliographystyle (optional &optional prompt)
-  "Prompt for a Harvard bibliographystyle with completion. (LaTeX)"
-  (TeX-argument-insert
-   (completing-read
-    (TeX-argument-prompt optional prompt "Bibliographystyle")
-    '(("agsm") ("kluwer") ("dcu")))
-   optional))
+    (setq LaTeX-item-list
+	  (cons '("thebibliography" LaTeX-item-harvardbib)
+		LaTeX-item-list)))))
 
-(defun TeX-arg-harvard-bibitem(optional)
-  "Prompt for a Harvarditem. (LaTeX)"
-  (let ((< LaTeX-optop)
-        (> LaTeX-optcl))
-    (TeX-argument-insert
-     (read-string "Short citation: ")
-     optional))
-  (TeX-argument-insert
-   (read-string "Complete citation: ")
-   optional)
-  (TeX-argument-insert
-   (read-string "year: ")
-   optional)
-  (TeX-arg-define-cite
-   optional))
-
-;; analog to LaTeX-env-bib from ltx-env.el
-;; the optional ignore is needed to make sure that
-;; LaTeX-env-harvardbib is called instead of LaTeX-env-bib if we
-;; insert a "thebibliography" environment.
-;;
 (defun LaTeX-env-harvardbib (environment &optional ignore)
   "Insert ENVIRONMENT with label for harvarditem."
   (LaTeX-insert-environment environment
@@ -106,8 +77,7 @@
   (delete-horizontal-space)
   (LaTeX-insert-item))
 
-;; analog to LaTeX-item-bib from ltx-env.el
-;;
+;; Analog to LaTeX-item-bib from latex.el
 (defun LaTeX-item-harvardbib ()
   "Insert a new harvarditem."
   (TeX-insert-macro "harvarditem"))
