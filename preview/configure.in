@@ -88,6 +88,7 @@ AC_SUBST(packagedir)
 EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
 
+AC_ARG_VAR(GS,[[GhostScript executable for batch operation]])
 AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE, 
 [GhostScript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
@@ -116,6 +117,7 @@ AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 # Be very careful about assuming things about the available hash programs
 # MikTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
+AC_ARG_VAR(TEXHASH,[[command to update the TeX filename database]])
 AC_PATH_PROG(TEXHASH, texhash)
 if test -z "${TEXHASH}"; then
   AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
@@ -142,6 +144,7 @@ AC_SHELL_QUOTIFY(icondir)
 AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(auctexdir)
 AC_SHELL_QUOTIFY(datadir)
+AC_SHELL_QUOTIFY(GS)
 AC_SHELL_QUOTIFY(TEXHASH)
 AC_SHELL_QUOTIFY(EMACS)
 AC_SHELL_QUOTIFY(INSTALL_INFO)

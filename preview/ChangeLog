@@ -1,3 +1,10 @@
+2005-03-29  David Kastrup  <dak@gnu.org>
+
+	* configure.in (auctexdir): Use `AC_ARG_VAR' on `GS' and `TEXHASH'
+	(should probably also be used on a few other environment
+	variables).
+	Use `AC_SHELL_QUOTIFY' on `GS'.
+
 2005-03-28  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview): Change home page address to AUCTeX.
