@@ -2,6 +2,10 @@
 
 @itemize @bullet
 @item
+Now use @t{-t landscape} by default when landscape option appears.
+Suggested by Erik Frisk <frisk@@isy.liu.se>.
+
+@item
 Use @file{tex-fptex.el} for fpTeX support.
 Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
 
