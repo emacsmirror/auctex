@@ -1,3 +1,9 @@
+2005-02-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Give an
+	escape char at the end of a verbatim construct punctuation syntax.
+	Prevents wrong fontification of stuff like "\verb|foo\|".
+
 2005-02-16  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el (TeX-after-start-process-function): Removed code for
