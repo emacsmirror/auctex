@@ -1,5 +1,14 @@
 2004-12-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (library): Change `IFS' temporarily for tokenizing
+	the string instead of inserting newlines.  The latter did not work
+	anyway because there was one backslash too much in "\\n".
+
+	* doc/install.texi (Configure): Quote value for
+	--with-tex-input-dirs.
+
+	* doc/wininstall.texi: Quote value for --with-tex-input-dirs.
+
 	* tex.el (TeX-arg-opening-brace, TeX-arg-closing-brace): New
 	variables.
 	(TeX-parse-arguments, TeX-parse-argument, TeX-argument-insert):
