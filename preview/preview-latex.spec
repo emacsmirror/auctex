@@ -4,7 +4,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.7.2b
-Release: 	1
+Release: 	9
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -115,7 +115,7 @@ done
 %define docs	    %{_defaultdocdir}/%{name}-%{version}
 mkdir -p %{buildroot}%{docs}
 pushd %{name}-%{version}
-for i in ChangeLog circ.tex COPYING INSTALL PROBLEMS README \
+for i in ChangeLog circ.tex COPYING FAQ INSTALL PROBLEMS README \
     latex/README-preview RELEASE TODO doc/preview-latex.dvi patches; do
   cp -R $i %{buildroot}%{docs}
 done
@@ -161,6 +161,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug  7 2002 David Kastrup <David.Kastrup@t-online.de>
+- add FAQ
+
 * Tue Apr 16 2002 David Kastrup <David.Kastrup@t-online.de>
 - allow split info file, docs now go in preview-latex-n.n
 
