@@ -1,5 +1,8 @@
 2005-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-make-user-keywords): Make XEmacs
+	happy.
+
 	* doc/changes.texi: Fix @xref.
 
 	* doc/auctex.texi (Quotes): Fix @xref.
