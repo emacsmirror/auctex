@@ -1,3 +1,11 @@
+2002-04-09  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/problems.texi (x-symbol interoperation): Bump recommended
+	version to 4.2.2.
+	(Middle-clicks paste instead of toggling): Mention fixes present
+	in Emacs-21.2.
+	(Middle-clicks paste instead of toggling): Mention isearch.
+
 2002-04-09  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Install icons
