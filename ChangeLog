@@ -1,3 +1,32 @@
+2003-12-29  David Kastrup  <dak@gnu.org>
+
+	* latex.el: Fix AUCTeX URL.
+	(LaTeX-fill-paragraph): Skip from inline comments to either line
+	comments or something that is not merely an inline comment.  I am
+	not even sure that this skipping makes good sense, in particular
+	since it is followed by `forward-paragraph'.
+	(LaTeX-common-initialization): Change the definitions of
+	`paragraph-start' and `paragraph-separate' to something that
+	makes things like `forward-paragraph' and its ilk behave more
+	sensibly when in comments.  The previous behavior is just awful,
+	and caused a lot of inadvertant damage when using things like
+	`fill-paragraph' within comments.
+
+<<<<<<< variant A
+2003-12-29  David Kastrup  <dak@gnu.org>
+
+	* latex.el: Fix AUCTeX URL.
+	(LaTeX-fill-paragraph): Skip from inline comments to either line
+	comments or something that is not merely an inline comment.  I am
+	not even sure that this skipping makes good sense, in particular
+	since it is followed by `forward-paragraph'.
+	(LaTeX-common-initialization): Change the definitions of
+	`paragraph-start' and `paragraph-separate' to something that
+	makes things like `forward-paragraph' and its ilk behave more
+	sensibly when in comments.  The previous behavior is just awful,
+	and caused a lot of inadvertant damage when using things like
+	`fill-paragraph' within comments.
+
 2003-12-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/scrbase.el (TeX-add-symbols): Remove redundant entries.
