@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.6 1994-04-14 20:17:16 amanda Exp $
+;; Version: $Id: tex.el,v 5.7 1994-04-15 16:35:09 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -709,12 +709,12 @@ Or alternatively:
 	  (setq list nil)))
     (if (numberp (nth 1 entry))
 	(let* ((sub (nth 1 entry))
-	       (list (funcall (nth 2 entry)))
 	       (close (nth 3 entry))
 	       (begin (match-beginning sub))
 	       (end (match-end sub))
 	       (pattern (TeX-match-buffer 0))
 	       (symbol (buffer-substring begin end))
+	       (list (funcall (nth 2 entry)))
 	       (completion (try-completion symbol list)))
 	  (cond ((eq completion t)
 		 (and close
