@@ -1336,8 +1336,8 @@ ELSE as an argument list."
 
 (defun TeX-arg-free (optional &rest args)
   "Parse its arguments but use no braces when they are inserted."
-  (let ((< "")
-	(> ""))
+  (let ((TeX-arg-opening-brace "")
+	(TeX-arg-closing-brace ""))
     (if (equal (length args) 1)
 	(TeX-parse-argument optional (car args))
       (TeX-parse-argument optional args))))
