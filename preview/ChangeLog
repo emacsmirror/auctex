@@ -1,5 +1,10 @@
 2002-03-23  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/problems.texi (Emacs problems): Windows availability for CVS
+	Emacs.
+
+	* doc/readme.texi: Windows availability for CVS Emacs.
+
 	* preview.el (preview-parse-messages): Comment used regexps.
 
 	* preview.dtx (subsection{The internals}): Removed an \everypar
