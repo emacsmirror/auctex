@@ -1,3 +1,13 @@
+2004-08-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-find-macro-boundaries): Detect the start of any
+	macro, not just those consisting of [A-Za-z@].
+	Remove some superfluous `goto-char' calls.
+	(TeX-find-macro-start-helper): Reimplement once again.  Original
+	patch by David Kastrup; slightly modified.  Doc fix.
+	(TeX-find-macro-end-helper): Doc fix.  Handle macros not
+	consisting of [A-Za-z@] correctly.
+
 2004-08-25  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el: Autoload `TeX-process-set-variable' and `TeX-region-file'.
