@@ -1,3 +1,7 @@
+2004-08-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex): Add to AUCTeX's customization group.
+
 2004-08-26  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-site.el.in (japanese-slitex-mode): Removed obsolete autoload
