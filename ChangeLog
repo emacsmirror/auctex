@@ -1,5 +1,9 @@
 2004-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* context.el (ConTeXt-indent-syntax-table): Create with
+	`make-syntax-table' instead of `easy-mode-defsyntax' to allow
+	compilation with Emacs 20.
+
 	* aclocal.m4 (TEX_INPUT_DIRS): New function.
 
 	* configure.in: Use `TEX_INPUT_DIRS' for the expansion of
