@@ -1,3 +1,8 @@
+2003-10-15  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx (subsection{Selection options}): Let the
+	textmath option also preview the `math' environment.
+
 2003-10-15  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/fontmap.c: Remove erroneous match
