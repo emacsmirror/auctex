@@ -239,7 +239,8 @@ AC_ARG_WITH(xemacs,
    else if test "${withval}" = "no"; then EMACS=emacs
    else EMACS="${withval}"; fi ; fi])
 
-AC_PATH_PROGS(EMACS, $EMACS emacs xemacs)
+# "${prefix}/bin" is for Windows users
+AC_PATH_PROGS(EMACS, $EMACS emacs xemacs, "", $PATH "${prefix}/bin" )         
 if test -z "$EMACS"; then
   AC_MSG_ERROR([(X)Emacs not found!  Aborting!])
 fi
