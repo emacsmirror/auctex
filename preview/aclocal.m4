@@ -394,8 +394,8 @@ dnl
 dnl Perform sanity checking and try to locate the auctex package
 dnl
 AC_DEFUN(EMACS_CHECK_AUCTEX, [
-AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
-AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
+AC_MSG_CHECKING(for the location of AUCTeX's tex-site.el)
+AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUCTeX's tex-site.el, if not standard], 
  [ auctexdir="${withval}" ; 
    AC_FULL_EXPAND(withval)
    if test ! -d "$withval"  ; then
@@ -412,7 +412,7 @@ if test -z "$auctexdir" ; then
                (replace-match \"\" t t aucdir)\
   	       aucdir))], "noecho")
   else
-	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  
+	AC_MSG_ERROR([Can't find AUCTeX!  Please install it!  
 Check the PROBLEMS file for details.])
   fi
   ])
