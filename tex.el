@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.321 $"))
+	(rev "$Revision: 5.322 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-12 22:41:56 $"))
+    (let ((date "$Date: 2004-01-13 08:29:48 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2599,15 +2599,11 @@ character ``\\'' will be bound to `TeX-electric-macro'."
                  ((lambda (full-list)
                     (let (out-list)
                       (while (car full-list)
-                        ;; The following `(car ...)' is the macro
-                        ;; definition of `pop', used here to keep
-                        ;; compatibility with Emacs 20.
-                        (let ((entry (car (prog1 full-list
-                                            (setq full-list (cdr full-list))))))
-                                 ;; `(nth 4 entry)' may be either an
-                                 ;; atom in case of which the entry
-                                 ;; should be present in any mode or a
-                                 ;; list of major modes.
+                        (let ((entry (pop full-list)))
+                          ;; `(nth 4 entry)' may be either an
+                          ;; atom in case of which the entry
+                          ;; should be present in any mode or a
+                          ;; list of major modes.
                           (if (or (atom (nth 4 entry))
                                   (memq mode (nth 4 entry)))
                               (setq out-list (append out-list (list entry))))))
