@@ -1,3 +1,8 @@
+2005-02-12  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/auctex.texi (Japanese): Doc fix to follow the latest
+	tex-jp.el.
+
 2005-02-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-find-macro-boundaries): Return an alist instead of a
