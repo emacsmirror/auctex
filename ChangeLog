@@ -1,3 +1,8 @@
+2004-10-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (Texinfo-insert-node): Emacs 21.3 and earlier
+	expect a list of lists.
+
 2004-10-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el: Small clean-ups and rearrangements.
