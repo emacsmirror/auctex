@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6i
+;; Version: 9.6j
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -824,7 +824,14 @@ original file."
 	 ;; We seach for header and trailer in the master file.
 	 (master-name (TeX-master-file TeX-default-extension))
 	 (master-buffer (find-file-noselect master-name))
-	 
+
+	 ;; Attempt to disable font lock.
+	 (font-lock-defaults-alist nil)
+	 (font-lock-defaults nil)
+	 (font-lock-maximum-size 0)
+	 (font-lock-mode-hook nil)	
+	 (font-lock-auto-fontify nil)
+	 (font-lock-mode-enable-list nil)
 	 ;; And insert them into the FILE buffer.
 	 (file-buffer (find-file-noselect file))
 	 ;; But remember original content.

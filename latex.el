@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6i
+;; Version: 9.6j
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -590,7 +590,8 @@ To insert a hook here, you must insert it in the appropiate style file.")
   (setq LaTeX-document-style-hook nil))
 
 (defvar LaTeX-float "htbp"
-  "*Default float when creating figure and table environments.")
+  "*Default float when creating figure and table environments.
+Set to nil if you don't want any float.")
  (make-variable-buffer-local 'LaTeX-float)
 
 (defvar LaTeX-figure-label "fig:"
@@ -640,7 +641,10 @@ To insert a hook here, you must insert it in the appropiate style file.")
 			float))
 	  
     (LaTeX-insert-environment environment
-			      (concat LaTeX-optop LaTeX-float LaTeX-optcl))
+			      (and LaTeX-float
+				   (concat LaTeX-optop
+					   LaTeX-float
+					   LaTeX-optcl)))
     
     (if center
 	(progn
@@ -1798,7 +1802,8 @@ The point is supposed to be at the beginning of the current line."
     ;; From latex.el
     (define-key map "\t"      'LaTeX-indent-line)
     (define-key map "\eq"     'LaTeX-fill-paragraph) ;*** Alias
-    (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
+    ;; This key is now used by Emacs for face settings.
+    ;; (define-key map "\eg"     'LaTeX-fill-region) ;*** Alias
     (define-key map "\e\C-e"  'LaTeX-find-matching-end)
     (define-key map "\e\C-a"  'LaTeX-find-matching-begin)
     
@@ -2117,6 +2122,7 @@ of LaTeX-mode-hook."
 		  ("\\\\nocite{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
 		   2 LaTeX-bibitem-list)
 		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+		  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")

@@ -1,3 +1,35 @@
+Sat Nov 16 19:24:39 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.6j released.
+
+Thu Nov 14 15:42:38 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-common-initialization): Added eqref to
+	LaTeX-label-list.  Suggested by Martin Hagstrom
+	<martinh@sto.foa.se>. 
+
+Wed Nov 13 16:15:36 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-region-create): Disable font lock.  Suggested by
+	several, patch by Christoph Wedler <wedler@fmi.uni-passau.de>.
+
+Tue Nov  5 20:21:07 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-file-extensions): Added "texinfo".
+
+Mon Sep 30 18:45:42 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-mode-map): Do not overwrite standard binding of
+	`M-g'. 
+
+	* tex.el (popup-mode-menu): Run `LaTeX-menu-update' if present.
+	Workaround for bug reported by Hendrik Visage
+	<hendrikv@di.denel.co.za> and othors.
+
+	* latex.el (LaTeX-float): Allow nil.
+	(LaTeX-env-figure): Don't insert float if nil.  Feature suggested
+	by Andre Eickler <eickler@db.fmi.uni-passau.de>.
+
 Mon Sep 16 17:17:59 1996  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.6i released.
