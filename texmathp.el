@@ -319,7 +319,7 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 	  (setq env (buffer-substring-no-properties
 		     (match-beginning 2) (match-end 2)))
 	  (cond ((string= (match-string 1) "end")
-		 (add-to-list 'end-list env))
+		 (setq end-list (cons env end-list)))
 		((equal env (car end-list))
 		 (setq end-list (cdr end-list)))
 		((member env texmathp-environments)
