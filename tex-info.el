@@ -158,16 +158,18 @@ When called interactively, prompt for an environment."
 	      ["Set Master File" TeX-master-file-ask
 	       :active (not (TeX-local-master-p))])
 	(list "Show/Hide"
-	      ["Macro Fold Mode" TeX-fold-mode
+	      ["Fold Mode" TeX-fold-mode
 	       :style toggle :selected TeX-fold-mode]
-	      ["Hide All Macros" TeX-fold-buffer
-	       :active TeX-fold-mode :keys "C-c C-o C-o"]
-	      ["Show All Macros" TeX-fold-remove-all-overlays
-	       :active TeX-fold-mode :keys "C-c C-o C-a"]
+	      "-"
+	      ["Hide All" TeX-fold-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-b"]
 	      ["Hide Current Macro" TeX-fold-macro
-	       :active TeX-fold-mode :keys "C-c C-o C-c"]
-	      ["Show Current Macro" TeX-fold-remove-all-overlays
-	       :active TeX-fold-mode :keys "C-c C-o C-e"])
+	       :active TeX-fold-mode :keys "C-c C-o C-m"]
+	      "-"
+	      ["Show All" TeX-fold-clearout-buffer
+	       :active TeX-fold-mode :keys "C-c C-o C-x"]
+	      ["Show Current Item" TeX-fold-clearout-item
+	       :active TeX-fold-mode :keys "C-c C-o C-c"])
 	"-"
 	(list "AUCTeX"
 	      (list "Customize"
