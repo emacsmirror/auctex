@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.378 $"))
+	(rev "$Revision: 5.379 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-01 18:42:03 $"))
+    (let ((date "$Date: 2004-06-01 18:45:51 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1356,7 +1356,7 @@ Note that for some macros, there are special mechanism, see e.g.
 AUCTeX knows of some macros and may query for extra arguments, depending on
 the value of `TeX-insert-macro-default-style' and whether `TeX-insert-macro'
 is called with \\[universal-argument]."
-  ;; When called with a prefix (C-u), only ask for mandantory arguments,
+  ;; When called with a prefix (C-u), only ask for mandatory arguments,
   ;; i.e. all optional arguments are skipped.  See `TeX-parse-arguments' for
   ;; details.  Note that this behavior may be changed in favor of a more
   ;; flexible solution in the future, therefore we don't document it at the

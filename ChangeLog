@@ -5,7 +5,7 @@
 	(TeX-insert-macro-default-style): New variable.
 	(TeX-parse-arguments): Use it.
 	(TeX-insert-macro): Document dependence on
-	`TeX-insert-macro-default-style' and prefix.
+	`TeX-insert-macro-default-style' and prefix.  Fix typo in comment.
 
 2004-05-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
