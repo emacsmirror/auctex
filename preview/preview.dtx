@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.46 $
+%  \rcskey \version CVS-$Revision: 1.47 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-25 20:37:47 $
+%\rcskey\next $Date: 2002-03-26 15:03:33 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -67,7 +67,7 @@
 %\section{Package options}
 %The package is included with the customary
 %\begin{quote}
-%\cmd\usepackage\oarg{options}|{preview}|
+%|\usepackage|\oarg{options}|{preview}|
 %\end{quote}
 %You should usually load this package as the last one, since it
 %redefines several things that other packages may also provide.
@@ -244,7 +244,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.46 $
+   \reserved@a\reserved@b CVS-$Revision: 1.47 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +253,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-25 20:37:47 $
+\reserved@a\next $Date: 2002-03-26 15:03:33 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
