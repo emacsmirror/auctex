@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.6i
+;; Version: 9.6j
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -418,6 +418,11 @@ The value is actually the tail of LIST whose car is ELT."
       "Ignore strings."
       (or (stringp (ad-get-arg 3))
 	  ad-do-it)))
+
+(defadvice popup-mode-menu (before LaTeX-update activate)
+  "Run `LaTeX-menu-update' before showing menu."
+  (and (fboundp 'LaTeX-menu-update)
+       (LaTeX-menu-update)))
 
 (defun TeX-mark-active ()
   ;; In Lucid (mark) returns nil when not active.
@@ -1796,7 +1801,7 @@ Check for potential LaTeX environments."
   "*List of regular expresions used for parsing the current file.")
   (make-variable-buffer-local 'TeX-auto-regexp-list)
 
-(defvar TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi")
+(defvar TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo")
   "*File extensions used by manually generated TeX files.")
 
 (defvar TeX-all-extensions '("[^.\n]+")
