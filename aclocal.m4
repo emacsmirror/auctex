@@ -276,7 +276,8 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
 	   "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
 	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
 	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp"; do
+	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
+	   "\${prefix}/site-lisp" ; do
     lispdir="$i"
     AC_FULL_EXPAND(i)
     EMACS_LISPDIR=""
