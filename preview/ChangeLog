@@ -1,4 +1,12 @@
+2003-11-07  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* preview.el: Fix dvipng resolution
+
 2003-11-06  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* prv-xemacs.el:
+	* prv-emacs.el:
+	* preview.el: Add color handling for dvipng
 
 	* dvipng/special.c: Fix postscript inclusion: placement and
 	background color
