@@ -39,17 +39,23 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 	(call-interactively 'self-insert-command)
       (let ((hyphen-length (length LaTeX-german-hyphen)))
 	(cond
-	 ((and (> hyphen-length 1)
-	       (not LaTeX-german-hyphen-after-hyphen)
-	       (string= (buffer-substring (- (point) hyphen-length) (point))
-			LaTeX-german-hyphen))
-	  (delete-backward-char hyphen-length)
+	 ;; "= --> -- / -
+	 ((string= (buffer-substring (- (point) hyphen-length) (point))
+		   LaTeX-german-hyphen)
+	  (if LaTeX-german-hyphen-after-hyphen
+	      (progn (delete-backward-char hyphen-length)
+		     (insert "--"))
+	    (delete-backward-char hyphen-length)
+	    (call-interactively 'self-insert-command)))
+	 ;; -- --> [+]-
+	 ((string= (buffer-substring (- (point) 2) (point)) "--")
 	  (call-interactively 'self-insert-command))
-	 ((and (> hyphen-length 1)
-	       LaTeX-german-hyphen-after-hyphen
-	       (eq (char-before) ?-))
-	  (delete-backward-char 1)
-	  (insert LaTeX-german-hyphen))
+	 ;; - --> "= / [+]-
+	 ((eq (char-before) ?-)
+	  (if LaTeX-german-hyphen-after-hyphen
+	      (progn (delete-backward-char 1)
+		     (insert LaTeX-german-hyphen))
+	    (call-interactively 'self-insert-command)))
 	 (LaTeX-german-hyphen-after-hyphen
 	  (call-interactively 'self-insert-command))
 	 (t (insert LaTeX-german-hyphen)))))))
