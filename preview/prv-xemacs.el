@@ -248,9 +248,31 @@ other hooks, such as major mode hooks, can do the job."
 	 (setq preview-ascent-spec value)
 	 (preview-filter-specs-1 args)))
 
-(defvar preview-tb-icon-specs
+(defconst preview-specs-type
+  '(repeat
+    (list :tag "Image spec"
+	  (const :format "" :type)
+	  (choice :tag "Image type"
+		  (const xpm)
+		  (const xbm)
+		  (symbol :tag "Other"))
+	  (set :inline t :tag "Minimum font size"
+	       (list :inline t :tag ""
+		     (const :format "" :min)
+		     (integer :tag "pixels")))
+	  (const :format "" :file) (string :tag "Filename")
+	  (set :inline t :tag "Ascent ratio"
+	       (list :inline t :tag ""
+		     (const :format "" :ascent)
+		     (integer :tag "percent of image"
+			      :value 50))))))
+
+(defcustom preview-tb-icon-specs
   '((:type xpm :file "prvtex-cap-up.xpm" :ascent 75)
-    (:type xbm :file "prvtex24.xbm" :ascent 75)))
+    (:type xbm :file "prvtex24.xbm" :ascent 75))
+  "Specs for the toolbar icon."
+  :group 'preview-appearance
+  :type preview-specs-type)
 
 (defvar preview-tb-icon nil)
 

@@ -101,9 +101,31 @@ Consults `preview-transparent-color'."
 		 (preview-filter-specs-1 x)))
 	   spec-list))))
 
-(defvar preview-tb-icon-specs
+(defconst preview-specs-type
+  '(repeat
+    (list :tag "Image spec"
+	  (const :format "" :type)
+	  (choice :tag "Image type"
+		  (const xpm)
+		  (const xbm)
+		  (symbol :tag "Other"))
+	  (set :inline t :tag "Minimum font size"
+	       (list :inline t :tag ""
+		     (const :format "" :min)
+		     (integer :tag "pixels")))
+	  (const :format "" :file) (string :tag "Filename")
+	  (set :inline t :tag "Ascent ratio"
+	       (list :inline t :tag ""
+		     (const :format "" :ascent)
+		     (integer :tag "percent of image"
+			      :value 50))))))
+
+(defcustom preview-tb-icon-specs
   '((:type xpm :file "prvtex24.xpm")
-    (:type xbm :file "prvtex24.xbm")))
+    (:type xbm :file "prvtex24.xbm"))
+  "Specs for the toolbar icon."
+  :group 'preview-appearance
+  :type preview-specs-type)
 
 (defvar preview-tb-icon nil)
 

@@ -1,3 +1,15 @@
+2005-02-11  David Kastrup  <dak@gnu.org>
+
+	* prv-xemacs.el (preview-specs-type): Type for specs defcustom.
+	(preview-tb-icon-specs): Make defcustom.
+
+	* prv-emacs.el (preview-specs-type): Type for specs defcustom.
+	(preview-tb-icon-specs): Make defcustom.
+
+	* preview.el (preview-nonready-icon-specs)
+	(preview-error-icon-specs, preview-icon-specs): move lower and
+	make defcustom from it.
+
 2005-02-10  David Kastrup  <dak@gnu.org>
 
 	* prv-emacs.el (preview-mode-setup): Only define a preview toolbar
