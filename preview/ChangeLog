@@ -1,3 +1,12 @@
+2002-10-15  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* dvipng/pk.c, dvipng/font.c: Minor change
+
+	* dvipng/misc.c: Simplify, remove (some) globals, fix helptext
+
+	* dvipng/pagequeue.c, dvipng/dvipng.h, dvipng/dvipng.c,
+	dvipng/dvi.c, dvipng/draw.c: Simplify, remove (some) globals
+
 2002-10-14  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* dvipng/misc.c, dvipng/dvipng.h, dvipng/draw.c:
