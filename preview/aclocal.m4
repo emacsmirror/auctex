@@ -1,5 +1,60 @@
 # serial 1
 
+
+dnl wholly stolen from emacs-w3m, credit dnl to Katsumi Yamaoka
+dnl <yamaoka@jpl.org>
+
+AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
+ [dnl Examine PACKAGEDIR.
+  AC_EMACS_LISP(PACKAGEDIR,
+    (let ((prefix \"${prefix}\")\
+	  package-dir)\
+      (if (boundp (quote early-packages))\
+	  (let ((dirs (append (if early-package-load-path early-packages)\
+			      (if late-package-load-path late-packages)\
+			      (if last-package-load-path last-packages))))\
+	    (while (and dirs (not package-dir))\
+	      (if (file-directory-p (car dirs))\
+		  (setq package-dir (car dirs)\
+			dirs (cdr dirs))))))\
+      (if package-dir\
+	  (progn\
+	    (if (string-match \"/\$\" package-dir)\
+		(setq package-dir (substring package-dir 0\
+					     (match-beginning 0))))\
+	    (if (and prefix\
+		     (progn\
+		       (setq prefix (file-name-as-directory prefix))\
+		       (eq 0 (string-match (regexp-quote prefix)\
+					   package-dir))))\
+		(replace-match \"\$(prefix)/\" nil nil package-dir)\
+	      package-dir))\
+	\"NONE\")),
+    noecho)])
+
+AC_DEFUN(AC_PATH_PACKAGEDIR,
+ [dnl Check for PACKAGEDIR.
+  if test ${EMACS_FLAVOR} = xemacs; then
+    AC_MSG_CHECKING([where the XEmacs package is])
+    AC_ARG_WITH(packagedir,
+      [  --with-packagedir=DIR   package DIR for XEmacs],
+      [if test "${withval}" = yes -o -z "${withval}"; then
+	AC_EXAMINE_PACKAGEDIR
+      else
+	PACKAGEDIR="${withval}"
+      fi],
+      AC_EXAMINE_PACKAGEDIR)
+    if test -z "${PACKAGEDIR}"; then
+      AC_MSG_RESULT(not found)
+    else
+      AC_MSG_RESULT(${PACKAGEDIR})
+    fi
+  else
+    PACKAGEDIR=NONE
+  fi
+  AC_SUBST(PACKAGEDIR)])
+
+
 AC_DEFUN(AC_PATH_TEXMFDIR,
  [
 # First check for docstrip.cfg information

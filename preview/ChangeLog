@@ -1,3 +1,13 @@
+2002-04-06  Alan Shutko  <ats@acm.org>
+
+	* configure.in: Start adding XEmacs-specific hooks.  Right now,
+	lispdir should be correctly set up, I think.  icondir is sitting
+	there for when we add icons.
+
+	* aclocal.m4 (AC_PATH_PACKAGEDIR,AC_EXAMINE_PACKAGEDIR): New
+	functions for XEmacs installation, borrowed from from emacs-w3m,
+	credit to Katsumi Yamaoka <yamaoka@jpl.org>.
+
 2002-04-06  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* autogen.sh, doc/Makefile.in, doc/preview-latex.texi:

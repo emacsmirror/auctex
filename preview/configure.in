@@ -62,12 +62,16 @@ AC_XEMACS_P
 
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
+   AC_PATH_PACKAGEDIR
+   lispdir=${packagedir}/lisp/preview
+   icondir=${packagedir}/etc/preview
 else		
    PLAT_LISP=prv-emacs.el
    AC_EMACS_LISP(emacs21, [(unless (and (boundp 'image-types) image-types) (error \"This Emacs does not support images\"))])
    if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
       AC_MSG_ERROR("You need an Emacs that supports images")
    fi
+   AC_PATH_LISPDIR
 fi
 
 AC_SUBST(PLAT_LISP)
@@ -114,7 +118,6 @@ AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, no)
 AC_SUBST(auctexdir)
 
 AC_PATH_TEXMFDIR
-AC_PATH_LISPDIR
 AC_OUTPUT(Makefile doc/Makefile)
 cat >&2 <<EOF
 
