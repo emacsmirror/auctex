@@ -1,5 +1,7 @@
 2002-02-11  David Kastrup  <David.Kastrup@t-online.de>
 
+	* doc/install.texi: Use @previewlatex.
+
 	* doc/problems.texi: Use @previewlatex and @uref.
 
 	* doc/readme.texi: Use @previewlatex.
