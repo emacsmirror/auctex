@@ -11,7 +11,7 @@
 ;; Version:    0.800 (01 November 2001)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.13 2002-12-10 19:36:42 rsteib Exp $
+;; RCS $Id: font-latex.el,v 5.14 2002-12-11 17:04:21 rsteib Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -54,7 +54,7 @@
 
 ;; Installation instructions:
 ;;
-;;  AUC-TeX users:   http://mirrors.sunsite.dk/auctex/www/auctex
+;;  AUC-TeX users:  <URL:http://www.nongnu.org/auctex/>
 ;;   You don't have to do anything special as it gets installed
 ;;   along with the rest of AUC-TeX and gets enabled by default via the
 ;;   customizable variable TeX-install-font-lock.

@@ -8,7 +8,7 @@
 ;; Version:   3.17 (01 May 2001)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.17 2002-01-21 14:25:54 psg Exp $
+;; RCS $Id: bib-cite.el,v 5.18 2002-12-11 17:04:21 rsteib Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -44,13 +44,13 @@
 ;; Operating Systems:
 ;;  Works in unix, DOS and OS/2.  Developped under Linux.
 
-;; AUC-TEX USERS: 
+;; AUC-TEX USERS:
 ;;  auc-tex is a super-charged LaTeX mode for emacs. Get it at:
-;;    ftp://sunsite.auc.dk/packages/auctex/auctex.tar.gz       <-stable release
-;;    ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/auctex/   <-alpha release
+;;    http://savannah.nongnu.org/download/auctex/stable.pkg/  <-stable release
+;;    http://savannah.nongnu.org/download/auctex/beta.pkg <-alpha/beta release
 ;;
 ;;  WWW users may want to check out the AUC TeX page at
-;;    http://sunsite.auc.dk/auctex/
+;;    http://www.nongnu.org/auctex/
 ;;
 ;;  bib-cite.el is included in the auc-tex distribution.  Therefore, if
 ;;  you use auc-tex and didn't obtained bib-cite.el separately, make sure
@@ -58,7 +58,7 @@
 
 ;; reftex users:
 ;;  reftex is a package with similar functions to bib-cite.
-;;    http://strw.leidenuniv.nl/~dominik/Tools/
+;;    http://zon.astro.uva.nl/~dominik/Tools/reftex/
 ;;  RefTeX is bundled and preinstalled with Emacs since version 20.2. 
 ;;  It was also bundled with XEmacs 19.16--20.x. 
 ;;
@@ -255,7 +255,7 @@
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
 ;;  bib-cite is a minor-mode, so you could invoke it in a LaTeX-mode hook.
-;;  e.g. If you are using AUC-TeX (http://sunsite.auc.dk/auctex/), you could
+;;  e.g. If you are using AUC-TeX (http://www.nongnu.org/auctex/), you could
 ;;  use:
 ;; 
 ;;   (autoload 'turn-on-bib-cite "bib-cite")

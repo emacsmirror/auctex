@@ -3,7 +3,7 @@
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
 ;; Version: 11.13
 ;; Keywords: wp
-;; X-URL: http://sunsite.dk/auctex
+;; X-URL: http://www.nongnu.org/auctex/
 
 ;; Copyright 1991 Kresten Krab Thorup
 ;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen

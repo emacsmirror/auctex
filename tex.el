@@ -3,7 +3,7 @@
 ;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.13
 ;; Keywords: wp
-;; X-URL: http://sunsite.dk/auctex
+;; X-URL: http://www.nongnu.org/auctex/
 
 ;; Copyright (C) 1985, 1986, 2000, 2001, 2002 Free Software Foundation, Inc.
 ;; Copyright (C) 1987 Lars Peter Fischer
@@ -36,7 +36,7 @@
   "A (La)TeX environment."
   :tag "AUC TeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "http://sunsite.dk/auctex/")
+  :link '(url-link :tag "Home Page" "<URL:http://www.nongnu.org/auctex/>")
   :prefix "TeX-"
   :group 'tex)
 

@@ -130,16 +130,16 @@ functionality.
 
 @section Availability
 
-The most recent version is always available by ftp at
+The most recent version is always available at
 
 @flushright
-@url{ftp://sunsite.dk/packages/auctex/auctex.tar.gz}
+@url{http://savannah.nongnu.org/download/auctex/stable.pkg/}
 @end flushright
 
 WWW users may want to check out the AUC @TeX{} page at
 
 @flushright
-@url{http://sunsite.dk/auctex/}
+@url{http://www.nongnu.org/auctex/}
 @end flushright
 
 @section Contacts

@@ -1,5 +1,15 @@
 2002-12-11  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* bib-cite.el: Updated URLs.
+
+	* doc/intro.texi:  Ditto.
+
+	* font-latex.el: Ditto.
+
+	* latex.el:  Ditto.
+
+	* tex.el:  Ditto.
+
 	* style/amsmath.el (LaTeX-amsmath-label): Improved doc-string.
 
 	* doc/auc-tex.texi (Equations): New @subsection documenting
