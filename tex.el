@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.07
+;; Version: 11.08
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -429,10 +429,10 @@ Full documentation will be available after autoloading the function."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "11.06"
+(defconst AUC-TeX-version "11.07"
   "AUC TeX version number.")
 
-(defconst AUC-TeX-date "Mon Oct 15 17:10:13 CEST 2001"
+(defconst AUC-TeX-date "Tue Oct 16 17:42:53 CEST 2001"
   "AUC TeX release date.")
 
 ;;; Buffer
