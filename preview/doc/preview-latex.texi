@@ -211,10 +211,12 @@ but some are:
 
 @itemize @bullet
 @item Adjust the smoothening of the previews
+
 In the @code{Preview Gs} group, change @code{Preview Gs Options}: try
 setting @option{-dGraphicsAlphaBits=2}, for instance.
 
 @item Change the color of the preview background
+
 If you use a non-white background in Emacs, you might have color
 artifacts at the edges of your previews.  Playing around with the option
 @code{Preview Transparent Color} in the @code{Preview Appearance} group
@@ -226,11 +228,13 @@ in use, it may operate entirely differently under XEmacs.
 
 @item Preview inline math
 @cindex Inline math
+
 In the @code{Preview Latex} group, check the box next to @code{textmath}
 in @code{Preview Default Option List}.
 
 @item The @code{showkeys} package
 @cindex @code{showkeys}
+
 When using @previewlatex{}, the @code{\label}s are hidden by the previews.
 To show them in the previews (yes, this is possible) use the @LaTeX{}
 package @code{showkeys}, by changing @code{Preview Default Preamble} in
@@ -239,6 +243,7 @@ before the @code{\RequirePackage[%P]@{preview@}} line (press the @key{Show}
 and the first @key{INS} buttons).
 
 @item Open previews automatically
+
 If you want the previews to open automatically when the cursor enters
 them, set @code{Preview Auto Reveal} to @code{On}, or alternatively
 enable @code{reveal-mode}. The preview will close again when the cursor
