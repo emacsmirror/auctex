@@ -1,5 +1,11 @@
 2003-01-07  David Kastrup  <dakas@users.sourceforge.net>
 
+	* doc/preview-latex.texi (Keys and lisp): Rearrange section,
+	cater for renamed menus, some better explanations.
+
+	* doc/faq.texi (Installation Trouble): Some rearrangements and
+	additional explanations.
+
 	* latex/preview.dtx (section{Provided Commands}): Add description
 	of \PreviewOpen and \PreviewClose.
 	(subsection{Selection options}): Typo in displaymath hook on \[
