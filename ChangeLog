@@ -4,9 +4,11 @@
 	warning keywords up in order to save them from being covered by
 	less important faces.  Include "include" in warning keywords.
 
-	* aclocal.m4 (library): Change `IFS' temporarily for tokenizing
-	the string instead of inserting newlines.  The latter did not work
-	anyway because there was one backslash too much in "\\n".
+	* aclocal.m4 (TEX_INPUT_DIRS): Change `IFS' temporarily for
+	tokenizing the string instead of inserting newlines.  The latter
+	did not work anyway because there was one backslash too much in
+	"\\n".  Strip trailing slashes of determined directories before
+	concatenation.
 
 	* doc/install.texi (Configure): Quote value for
 	--with-tex-input-dirs.
