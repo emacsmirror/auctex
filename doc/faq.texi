@@ -11,10 +11,32 @@
 @item
 What versions of Emacs and XEmacs are supported?
 
-@AUCTeX{} was tested with Emacs 21 and XEmacs 21.4.15.  Older versions may
-work but are unsupported.  Older versions of XEmacs might possibly made
-to work by updating the @file{xemacs-base} package through the XEmacs
-package system.
+@AUCTeX{} was tested with @w{Emacs 21} and @w{XEmacs 21.4.15}.  Older
+versions may work but are unsupported.  Older versions of XEmacs might
+possibly made to work by updating the @file{xemacs-base} package through
+the XEmacs package system.  If you are looking for a recommendation, it
+would appear that the smoothest working platform on all operating
+systems at the current point of time would be @w{Emacs 21.4}.  At the
+time of this writing, however, it has not been released and is still
+under development.  The quality of the development version is quite
+solid, so we recommend giving it a try.  With a developer version, of
+course, you have to be prepared to update in case you managed to get
+your snapshot at a bad time.  The second best choice would be the latest
+released @w{Emacs 21.3}.  However, Unicode support is less good, there
+is no version for the popular GTK toolkit, and the native versions for
+Windows and MacOS don't offer toolbar and @previewlatex{} support.
+
+Our success with XEmacs has been less than convincing.  Under the
+Windows operating system, nominally the only option for a released,
+stable Emacs variant supporting toolbars and @previewlatex{} would be
+@{XEmacs 21.4}.  However, code for core functionality like formatting
+and syntax highlighting tends to be different and often older than even
+@w{Emacs 21.3}, and Unicode support as delivered is problematic at best,
+missing on Windows.  Both @AUCTeX{} and XEmacs developers don't hear
+much from active users of the combination.  Partly for that reason,
+problems tend to go unnoticed for long amounts of time and are often
+found, if at all, after releases.  No experiences or recommendations can
+be given for beta or developer versions of XEmacs.
 
 @item
 Why doesn't the completion or multifile stuff work?
