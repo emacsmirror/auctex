@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.222 2005-01-24 09:32:31 dakas Exp $
+;; $Id: preview.el,v 1.223 2005-01-25 16:26:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -644,7 +644,7 @@ Pure borderless black-on-white will return an empty string."
   (let
       ((bg (aref colors 0))
        (fg (aref colors 1))
-       ;; (mask (aref colors 2))
+       (mask (aref colors 2))
        (border (aref colors 3)))
     (concat
      (and bg
@@ -653,6 +653,9 @@ Pure borderless black-on-white will return an empty string."
      (and fg
 	  (format "--fg 'rgb %s' "
 		  (mapconcat #'preview-gs-color-value fg " ")))
+     (and mask border
+	  (format "--bd 'rgb %s' "
+		  (mapconcat #'preview-gs-color-value mask " ")))
      (and border
 	  (format "--bd %d" (max 1 (round (/ (* res border) 72.0))))))))
 
@@ -1750,7 +1753,7 @@ Deletes the dvi file when finished."
 				    preview-dvipng-image-type
 				    (preview-ascent-from-bb
 				     (aref queued 0))
-				    nil))
+				    (aref preview-colors 2)))
 	      (overlay-put ov 'queued nil))
 	  (setq oldfiles (nconc (overlay-get ov 'filenames)
 				oldfiles))
@@ -3065,7 +3068,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.222 $"))
+	(rev "$Revision: 1.223 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3076,7 +3079,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-01-24 09:32:31 $"))
+    (let ((date "$Date: 2005-01-25 16:26:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

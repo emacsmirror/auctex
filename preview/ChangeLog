@@ -1,3 +1,10 @@
+2005-01-25  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-dvipng-color-string): Pass the border into
+	dvipng.
+	(preview-dvipng-place-all): Record the border in the image data
+	structure.
+
 2005-01-24  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Ask for dvipng 1.4, mention utf-8 capability.
