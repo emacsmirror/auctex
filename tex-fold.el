@@ -1,6 +1,6 @@
 ;;; tex-fold.el --- Fold TeX macros.
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auc-tex@sunsite.dk
@@ -463,11 +463,14 @@ be altered to prevent overfull lines."
     ov))
 
 (defun TeX-fold-macro-nth-arg (n macro-start &optional macro-end)
-  "Return a property list of the nth argument of a macro.
-The first item in the list is the string specified in the
-argument, the second item may be a face if the argument string
-was fontified.  In Emacs the string holds text properties as
-well, so the second item is always nil.  In XEmacs the string
+  "Return a property list of the argument number N of a macro.
+The start of the macro to examine is given by MACRO-START, its
+end optionally by MACRO-END.
+
+The first item in the returned list is the string specified in
+the argument, the second item may be a face if the argument
+string was fontified.  In Emacs the string holds text properties
+as well, so the second item is always nil.  In XEmacs the string
 does not enclose any faces, so these are given in the second item
 of the resulting list."
   (save-excursion
@@ -486,12 +489,13 @@ of the resulting list."
 					(point)))
 		  (goto-char (TeX-find-closing-brace))
 		  (setq content-end (save-excursion
-				      (skip-chars-backward "} \t")
+				      (backward-char)
+				      (skip-chars-backward " \t")
 				      (point)))
 		  (setq n (1- n)))
 		t)
 	    (error nil))
-	  (list (buffer-substring content-start content-end)
+	  (list (TeX-fold-buffer-substring content-start content-end)
 		(when (and (featurep 'xemacs)
 			   (extent-at content-start))
 		  ;; A glyph in XEmacs does not seem to be able to hold more
@@ -505,7 +509,7 @@ The step should be big enough to allow setting a priority for new
 overlays between two existing ones.")
 
 (defun TeX-fold-prioritize (start end)
-  "Calculate a priority for an overlay.
+  "Calculate a priority for an overlay extending from START to END.
 The calculated priority is lower than the minimum of priorities
 of surrounding overlays and higher than the maximum of enclosed
 overlays."
@@ -525,6 +529,42 @@ overlays."
 	  ((and inner-priority outer-priority)
 	   (/ (- outer-priority inner-priority) 2))
 	  (t TeX-fold-priority-step))))
+
+(defun TeX-fold-buffer-substring (start end)
+  "Return the contents of buffer from START to END as a string.
+Like `buffer-substring' but copy overlay display strings as well."
+  ;; Swap values of `start' and `end' if necessary.
+  (when (> start end) (let ((tmp start)) (setq start end end tmp)))
+  (let ((overlays (overlays-in start end))
+	result)
+    ;; Get rid of overlays not under our control or not completely
+    ;; inside the specified region.
+    (dolist (ov overlays)
+      (when (or (not (eq (overlay-get ov 'category) 'TeX-fold))
+		(< (overlay-start ov) start)
+		(> (overlay-end ov) end))
+	(setq overlays (remove ov overlays))))
+    (if (null overlays)
+	(buffer-substring start end)
+      ;; Sort list according to ascending starts.
+      (sort overlays '(lambda (a b) (< (overlay-start a) (overlay-start b))))
+      ;; Get the string from the start of the region up to the first overlay.
+      (setq result (buffer-substring start (overlay-start (car overlays))))
+      (dolist (ov overlays)
+	;; Add the display string of the overlay.
+	(setq result (concat result (overlay-get ov 'TeX-fold-display-string)))
+	;; Remove overlays contained in the current one.
+	(dolist (elt (cdr overlays))
+	  (when (< (overlay-start elt) (overlay-end ov))
+	    (setq overlays (remove elt overlays))))
+	;; Add the string from the end of the current overlay up to
+	;; the next overlay or the end of the specified region.
+	(setq result (concat result (buffer-substring (overlay-end ov)
+						      (if (cdr overlays)
+							  (overlay-start
+							   (cadr overlays))
+							end)))))
+      result)))
 
 
 ;;; Removal
