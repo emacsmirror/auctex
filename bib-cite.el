@@ -2,12 +2,12 @@
 
 ;; Copyright (C) 1994, 1995, 1996, 1997 Peter S. Galbraith
  
-;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
+;; Author:    Peter S. Galbraith <galbraith@mixing.qc.dfo.ca>
 ;; Created:   06 July 1994
-;; Version:   3.00 (16 May 97)
+;; Version:   3.04 (25 Aug 97)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.9 1997-06-27 17:16:54 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.10 1997-10-20 14:30:14 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; Everyone is granted permission to copy, modify and redistribute this
@@ -24,7 +24,7 @@
 ;; LCD Archive Entry:
 ;; bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
 ;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
-;; 30-Apr-1997|2.32|~/misc/bib-cite.el.gz|
+;; 21-May-1997|3.01|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -53,6 +53,13 @@
 ;;  your load-path which may get loaded instead of this file (unless this
 ;;  is the auc-tex file!).  Make sure you replace that file, or rename it,
 ;;  or delete it!!!
+
+;; reftex users:
+;;  reftex is a package with similar functions to bib-cite.
+;;    ftp://strw.leidenuniv.nl/pub/dominik/reftex.el
+;;  I suggest that you use reftex to help you type-in text as it's functions
+;;  are better suited to this task than bib-cite, and use bib-cite's features
+;;  when you proof-read the text.
 
 ;; MS-DOS USERS:
 ;;  Multifile documents are supported by bib-cite by using etags (TAGS files)
@@ -237,12 +244,12 @@
 ;;  e.g. If you are using AUC-TeX (http://sunsite.auc.dk/auctex/), you could
 ;;  use:
 ;; 
-;;   (require 'bib-cite)
+;;   (autoload 'turn-on-bib-cite "bib-cite")
 ;;   (add-hook 'LaTeX-mode-hook 'turn-on-bib-cite)
 ;; 
 ;;  If you are using Emacs' regular LaTeX-mode, use instead:
 ;;
-;;   (require 'bib-cite)
+;;   (autoload 'turn-on-bib-cite "bib-cite")
 ;;   (add-hook 'latex-mode-hook 'turn-on-bib-cite)
 ;; 
 ;;  bib-cite can be used with auctex, or stand-alone.  If used with auctex on a
@@ -339,6 +346,20 @@
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.04 Aug 25 97 - Christoph Wedler  <wedler@fmi.uni-passau.de> (RCS V1.20)
+;;    (bib-highlight-mouse): Would bug out on detached extents, 
+;;    e.g. when killing a whole citation.
+;; V3.03 Jul 16 97 - Christoph Wedler  <wedler@fmi.uni-passau.de> (RCS V1.18)
+;;    turn-on-bib-cite back to non-interactive.
+;; V3.02 Jul 11 97 - Christoph Wedler  <wedler@fmi.uni-passau.de> (RCS V1.17)
+;;    * auctex/bib-cite.el (turn-on-bib-cite): Make interactive.
+;;    Argument to `bib-cite-minor-mode' is 1.
+;;    (bib-label-help-echo-format): New variable.
+;;    (bib-label-help-echo): New function.
+;;    (bib-label-help): Addition argument format.
+;;    (bib-highlight-mouse): Set extent property `help-echo' for XEmacs.
+;; V3.01 May 22 97 - Diego Calvanese <calvanes@dis.uniroma1.it> (RCS V1.16)
+;;    bib-make-bibliography handles commas separated citations in aux files.
 ;; V3.00 May 16 97 - Peter Galbraith (RCS V1.15)
 ;;    bib-cite is now a minor mode.
 ;; V2.32 Apr 30 97 - Anders Stenman <stenman@isy.liu.se> (RCS V1.14)
@@ -544,6 +565,10 @@ You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 (defvar bib-highlight-mouse-t t
   "*Call bib-highlight-mouse from LaTeX-mode-hook to add green highlight.")
 
+(defvar bib-label-help-echo-format "button2 finds %s, button3 displays %s"
+  "*Format string for info if the mouse is over LaTeX commands.
+If nil, do not display info.")
+
 (defvar bib-bibtex-env-variable "BIBINPUTS"
   "*Environment variable setting the path where BiBTeX input files are found.
 BiBTeX 0.99b manual says this should be TEXBIB.
@@ -720,7 +745,7 @@ runs bib-find, and [mouse-3] runs bib-display."
 ;;;###autoload
 (defun turn-on-bib-cite ()
   "Unconditionally turn on Bib Cite mode."
-  (bib-cite-minor-mode t))
+  (bib-cite-minor-mode 1))
 
 (defun bib-cite-setup-mouse-function (beg end old-len)
   (save-excursion
@@ -1241,8 +1266,9 @@ See variables bib-etags-command and bib-etags-filename"
       (if (string-match "XEmacs\\|Lucid" emacs-version)
           (while local-extent-list
 	    (setq extent (car local-extent-list))
-	    (if (and (<= (point-min)(extent-start-position extent))
-		     (>= (point-max)(extent-end-position extent)))
+ 	    (if (or (extent-detached-p extent)
+ 		    (and (<= (point-min)(extent-start-position extent))
+ 			 (>= (point-max)(extent-end-position extent))))
 		(delete-extent extent)
 	      (setq bib-ext-list (cons extent bib-ext-list)))
             (setq local-extent-list (cdr local-extent-list)))
@@ -1266,6 +1292,7 @@ See variables bib-etags-command and bib-etags-filename"
           (set-extent-property extent 'highlight t)
           (set-extent-property extent 'start-open t)
 	  (set-extent-property extent 'balloon-help 'bib-label-help)
+	  (set-extent-property extent 'help-echo 'bib-label-help-echo)
           (set-extent-property extent 'keymap bib-highlight-mouse-keymap))
          (t
           (let ((before-change-functions) (after-change-functions)
@@ -1301,19 +1328,22 @@ See variables bib-etags-command and bib-etags-filename"
                                   '(mouse-face local-map)))))
       (set-buffer-modified-p modified))))
 
+(defun bib-label-help-echo (object)
+  (if bib-label-help-echo-format
+      (bib-label-help object bib-label-help-echo-format)))
+
 ;;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
-(defun bib-label-help (object)
+(defun bib-label-help (object &optional format)
+  (or format (setq format "Use mouse button 2 to find the %s.
+Use mouse button 3 to display the %s."))
   (save-match-data
     (let* ((string (extent-string object))
 	   (type (cond ((string-match "^\\\\cite" string) "citation")
 		       ((string-match "^\\\\ref" string) "\\label{}")
 		       ((string-match "^\\\\label" string) "\\ref{}")
 		       (t "bullshit"))))
-      (format
-       "Use mouse button 2 to find the %s.
-Use mouse button 3 to display the %s."
-       type type))))
-  
+      (format format type type))))
+
 ;;----------------------------------------------------------------------------
 ;; Routines to display or edit a citation's bibliography
 
@@ -2090,10 +2120,21 @@ Return the-warnings as text."
                 (insert-file-contents (buffer-substring (match-beginning 1)
                                                         (match-end 1))))))
           (goto-char 1)
-          ;; look for \citation{gertsenshtein59}
+
+;;; Patched by calvanes@dis.uniroma1.it (Diego Calvanese)
+;;;      ;; look for \citation{gertsenshtein59}
+;;;       (while (re-search-forward "^\\\\citation{\\(.*\\)}$" nil t)
+;;;         (intern (buffer-substring (match-beginning 1)(match-end 1))
+;;;                 keys-obarray))
+          ;; look for \citation{gertsenshtein59,vardi88,...,ullmann90}
+          ;; comma-separation generated by certain LaTeX styles.
           (while (re-search-forward "^\\\\citation{\\(.*\\)}$" nil t)
-            (intern (buffer-substring (match-beginning 1)(match-end 1))
-                    keys-obarray)))
+	    (let ((string (buffer-substring (match-beginning 1)(match-end 1)))
+		  (start 0))
+	      (while (string-match "\\([^,\n]+\\)" string start)
+		(intern (substring string (match-beginning 1) (match-end 1))
+			keys-obarray)
+		(setq start (match-end 0))))))
         (kill-buffer work-buffer)
         keys-obarray))))
 

@@ -1,3 +1,44 @@
+Mon Oct 20 16:30:05 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8g released.
+
+Mon Oct 20 10:15:42 1997  Peter S Galbraith  <rhogee@mixing.qc.dfo.ca>
+
+	* font-latex.el: Updated to V0.504 (Oct 20 97)
+
+	* bib-cite.el: Updated to 3.04 (Aug 25 97)
+
+	* hilit-LaTeX.el: Updated to V1.17 (Sep 06 95)
+
+Wed Oct  1 21:44:21 1997  kifer@CS.SunySB.EDU (Michael Kifer)
+
+	* tex.el (TeX-insert-punctuation): Expand abbrevs in the
+	beginning. 
+
+Thu Sep 11 11:46:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-buf.el (TeX-run-silent): New function.
+
+	* tex.el (TeX-command-list): Changed default for view from
+	`TeX-run-background' to `TeX-run-silent'.
+
+Wed Sep 10 12:44:36 1997  "Dr. Werner Fink" <werner@suse.de>
+
+	* style/dinbrief.el: Updated.
+
+Mon Sep  8 15:59:43 1997  karlheg@inetarena.com (Karl M. Hegbloom)
+
+	* tex-info.el (texinfo-mode): Regexp fix.
+
+Fri Aug 29 07:43:25 1997  David J. Rowe  <rowe@asys47.wdl.lmco.com>
+
+	* latex.el (LaTeX-auto-regexp-list): Added support so newcommand*,
+	renewcommand*, providecommand*, newenvironment* and
+	renewenvironment* are recognized by TeX-auto-generate and
+	TeX-auto-generate-global.
+	(LaTeX-common-initialization): Added all of above "starred"
+	commands to symbol list and added providecommand to symbol list.
+
 Fri Aug 29 09:38:21 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8f released.

@@ -6,10 +6,10 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <galbraith@mixing.qc.dfo.ca>
 ;; Created:    06 July 1996
-;; Version:    0.403 *Beta* (19 Nov 96)
+;; Version:    0.504 (20 Oct 97)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 5.3 1996-11-29 17:50:46 abraham Exp $
+;; RCS $Id: font-latex.el,v 5.4 1997-10-20 14:30:15 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; LCD Archive Entry: (Not yet submitted!)
@@ -37,6 +37,7 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
+;;  This package enhances font-lock fontification patterns for LaTeX.
 
 ;; New versions of this package (if they exist) may be found at:
 ;;  ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/font-latex.el
@@ -61,21 +62,61 @@
 ;;    (if window-system
 ;;        (require 'font-latex))
 ;;
+;; Turning on font-latex:
+;;
+;;   After font-latex is loaded (or `required'), it will be automatically
+;;   used whenever you enter `font-lock-mode' on a LaTeX buffer. Therefore,
+;;   I direct you to the file font-lock.el that comes with Emacs for more
+;;   info.
+;;
+;; Turning on Font-lock automatically:
+;;
+;;  If you choose to turn-on font-lock by default using a mode-hook,
+;;  there is an order to respect with-respect-to loading font-latex.  
+;;  Do either:
+;;
+;;    (if window-system
+;;        (progn
+;;          (require 'font-latex)
+;;          (add-hook 'latex-mode-hook 'turn-on-font-lock 'append)
+;;          (add-hook 'LaTeX-mode-hook 'turn-on-font-lock 'append)))
+;;  or
+;;    (if window-system
+;;        (progn
+;;          (add-hook 'latex-mode-hook 'turn-on-font-lock)
+;;          (add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
+;;          (require 'font-latex)))
+;;
+;;  It's probably not a bad idea to always append 'turn-on-font-lock
+;;  such that it is always sure to be last.
+;;
+;; Fontification Levels:
+;;
 ;;  There are two levels of fontification, selected by the value of the
-;;  font-lock variable font-lock-maximum-decoration.  font-latex uses two
-;;  levels.  There are ways documented in font-latex.el to set this
-;;  differently for each mode that uses font-lock, but if you are unsure and
-;;  are running on a fast enough machine, try putting this in your ~/.emacs
-;;  file:
-;;    (setq font-lock-maximum-decoration t)
+;;  font-lock variable font-lock-maximum-decoration.  There are ways
+;;  documented in font-latex.el to set this differently for each mode that
+;;  uses font-lock, but if you are unsure and are running on a fast enough
+;;  machine, try putting this in your ~/.emacs file: 
+;;    (setq font-lock-maximum-decoration t) 
 ;;  It probably best to put it before the (require 'font-latex) statement.
+;;
+;; Changing colours
+;;
+;;  Okay, so you hate the colours I picked.  How do you change them you ask?
+;;  First, find the font name to change using the command:
+;;    M-x list-text-properties-at
+;;  Then, suppose you got `font-latex-math-face', edit ~/.Xdefaults and add:
+;;    Emacs.font-latex-math-face.attributeForeground: blue
+;;  without the semi-colon I'm using here ascomment delimiters, of course.
 ;;
 ;; Lazy-lock users:
 ;;
-;;  lazy-lock and font-lock don't work too well together (up to Emacs 19.33
+;;  lazy-lock and font-latex don't work too well together (up to Emacs 19.33
 ;;  and XEmacs 19.14 anyway).  font-latex uses functions to find text to
 ;;  fontify that may span more than one line, and this doesn't suit
-;;  lazy-lock's search limits too well.
+;;  lazy-lock's search limits too well.  Recent versions of font-latex are
+;;  a bit better, and perhaps you can live with the occasional 
+;;  mis-fontification.
 ;;
 ;; Old hilit19 (and hilit-LaTeX) users:
 ;;
@@ -90,13 +131,26 @@
 ;;
 ;;    (setq hilit-mode-enable-list  '(not latex-mode))
 ;;
-;;  You can tell you using font-latex instead of hilit-LaTeX because:
+;;  You can tell you are using font-latex instead of hilit-LaTeX because:
 ;;
 ;;  - colours will be different 
 ;;  - You'll see a message like `Fontifying font-latex.tex...done' 
 ;;    instead of `highlighting 1: \(^\|[^\\]\)\(\\[a-zA-Z\\]+\)'
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.504 20Oct97 Kevin Ruland <kruland@seistl.com> (RCS V1.46)
+;;    Fixed the real bug in font-latex-match-command-outside-arguments
+;; V0.503 16Oct97 PSG (RCS V1.45)
+;;    Patched font-latex-match-command-outside-arguments for allow for
+;;    strange interaction with AUC-TeX's LaTeX-environment command.
+;; V0.502 07Oct97 (RCS V1.44)
+;;    Kevin Ruland <kevin@rodin.wustl.edu> edits font-latex-find-matching-close
+;;    PSG: Changed OliveGreen for OliveDrab, found in rgb.txt
+;; V0.501 24Sep97 (RCS V1.42)
+;;    Kevin Ruland <kevin@rodin.wustl.edu> added font-latex-find-matching-close
+;;    used instead of scan-sexp to find arguments containing extra brackets.
+;; V0.500 23Sep97 PSG (RCS V1.41)
+;;  - Support for Emacs-20 (No customize support yet)
 ;; V0.403 19Nov96 (RCS V1.37)
 ;;  - Christoph Wedler <wedler@fmi.uni-passau.de>
 ;;    XEmacs patch for local math-font 
@@ -195,6 +249,9 @@
 (defvar font-latex-is-XEmacs
   (not (null (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))))
 
+(defvar font-latex-is-Emacs20
+  (and (not font-latex-is-XEmacs) (= 20 emacs-major-version)))
+
 (defvar font-latex-string-face nil
   "Face to use for strings.  This is set by Font LaTeX.")
 
@@ -205,6 +262,53 @@
   (require 'cl))
 
 (cond
+ (font-latex-is-Emacs20
+  (defface font-latex-bold-face
+    '((((class grayscale) (background light)) (:foreground "DimGray" :bold t))
+      (((class grayscale) (background dark)) (:foreground "LightGray" :bold t))
+      (((class color) (background light)) 
+       (:foreground "DarkOliveGreen" :bold t ))
+      (((class color) (background dark)) (:foreground "OliveDrab" :bold t ))
+      (t (:bold t)))
+    "Font Lock mode face used to bold LaTeX."
+    :group 'font-latex-highlighting-faces)
+  
+  (defface font-latex-italic-face
+    '((((class grayscale) (background light)) 
+       (:foreground "DimGray" :italic t))
+      (((class grayscale) (background dark)) 
+       (:foreground "LightGray" :italic t))
+      (((class color) (background light)) 
+       (:foreground "DarkOliveGreen" :italic t ))
+      (((class color) (background dark)) 
+       (:foreground "OliveDrab" :italic t ))
+      (t (:italic t)))
+    "Font Lock mode face used to highlight italic LaTeX."
+    :group 'font-latex-highlighting-faces)
+
+  (defface font-latex-math-face
+    '((((class grayscale) (background light)) 
+       (:foreground "DimGray" :underline t))
+      (((class grayscale) (background dark)) 
+       (:foreground "LightGray" :underline t))
+      (((class color) (background light)) (:foreground "green4"))
+      (((class color) (background dark))  (:foreground "LightSeaGreen"))
+      (t (:underline t)))
+    "Font Lock mode face used to highlight math in LaTeX."
+    :group 'font-latex-highlighting-faces)
+
+  (defface font-latex-sedate-face
+    '((((class grayscale) (background light)) (:foreground "DimGray"))
+      (((class grayscale) (background dark))  (:foreground "LightGray"))
+      (((class color) (background light)) (:foreground "DimGray"))
+      (((class color) (background dark))  (:foreground "LightGray"))
+   ;;;(t (:underline t))
+      )
+    "Font Lock mode face used to highlight sedate stuff in LaTeX."
+    :group 'font-latex-highlighting-faces)
+
+  (copy-face 'font-lock-warning-face 'font-latex-warning-face)
+  (copy-face 'font-lock-string-face 'font-latex-string-face))
  ((not font-latex-is-XEmacs)
   ;;; emacs:
   ;; Otherwise I overwrite fock-lock-face-attributes.
@@ -243,8 +347,8 @@
      (setq font-lock-face-attributes
            (append 
             font-lock-face-attributes
-            '((font-latex-bold-face "OliveGreen" nil t nil nil)
-              (font-latex-italic-face "OliveGreen" nil nil t nil)
+            '((font-latex-bold-face "OliveDrab" nil t nil nil)
+              (font-latex-italic-face "OliveDrab" nil nil t nil)
               (font-latex-math-face "LightSeaGreen")
 	      ;; good are > LightSeaGreen, LightCoral, coral, orchid, orange
               (font-latex-sedate-face "grey60")
@@ -276,34 +380,49 @@
   "Setup this buffer for LaTeX font-lock.  Usually called from a hook."
   ;; Trickery to make $$ fontification be in `font-latex-math-face' while
   ;; strings get whatever `font-lock-string-face' has been set to.
-  (if font-latex-is-XEmacs
-      ;; Cool patch from Christoph Wedler...
-      (let (instance)
-	(mapcar (function
-		 (lambda (property)
-		   (setq instance
-			 (face-property-instance 'font-latex-math-face property
-						 nil 0 t))
-		   (if (numberp instance)
-		       (setq instance
-			     (face-property-instance 'default property nil 0)))
-		   (or (numberp instance)
-		       (set-face-property 'font-lock-string-face property
-                                          instance (current-buffer)))))
-		(built-in-face-specifiers)))
+  (cond
+   (font-latex-is-Emacs20
+    (make-local-variable 'font-lock-string-face)
+    (setq font-lock-string-face font-latex-math-face
+	  font-latex-string-face (default-value 'font-lock-string-face))
+    ;; Tell Font Lock about the support.
+    (make-local-variable 'font-lock-defaults)
+    ;; Parentheses () disabled because they should not delimit fontification
+    ;; in LaTeX text.
+    (setq font-lock-defaults
+	  '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
+	    nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+	    (font-lock-comment-start-regexp . "%")
+	    (font-lock-mark-block-function . mark-paragraph))))
+   (font-latex-is-XEmacs
+    ;; Cool patch from Christoph Wedler...
+    (let (instance)
+      (mapcar (function
+	       (lambda (property)
+		 (setq instance
+		       (face-property-instance 'font-latex-math-face property
+					       nil 0 t))
+		 (if (numberp instance)
+		     (setq instance
+			   (face-property-instance 'default property nil 0)))
+		 (or (numberp instance)
+		     (set-face-property 'font-lock-string-face property
+					instance (current-buffer)))))
+	      (built-in-face-specifiers))))
+   (t
     (font-lock-make-faces)
     (make-local-variable 'font-lock-string-face)
     (setq font-lock-string-face font-latex-math-face
 	  font-latex-string-face (default-value 'font-lock-string-face))
     ;; Tell Font Lock about the support.
     (make-local-variable 'font-lock-defaults)
-    ;; Parentheses () are disabled because they should not delimit fontification
+    ;; Parentheses () disabled because they should not delimit fontification
     ;; in LaTeX text.
     (setq font-lock-defaults
 	  '((font-latex-keywords font-latex-keywords-1 font-latex-keywords-2)
 	    nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
 	    (font-lock-comment-start-regexp . "%")
-	    (font-lock-mark-block-function . mark-paragraph)))))
+	    (font-lock-mark-block-function . mark-paragraph))))))
 
 (when font-latex-is-XEmacs
     (put 'latex-mode 'font-lock-defaults
@@ -398,7 +517,7 @@
 	 "\\(this\\)?pagestyle"
 	 "nofiles" "includeonly"
 	 "bibliographystyle" "\\(document\\(style\\|class\\)\\)"
-     "\\(re\\)?new\\(environment\\|command\\|length\\|theorem\\|counter\\)"
+	 "\\(re\\)?new\\(environment\\|command\\|length\\|theorem\\|counter\\)"
 	 "usepackage" "caption" "\\(f\\|m\\|s\\)box" "\\(v\\|h\\)space")
        "\\|")
       "\\)\\>"))
@@ -414,6 +533,35 @@
              "\\)\\>"))
    limit t nil))
 
+;;
+;; font-latex-find-matching-close is a little helper function which
+;; is used like scan-sexp.  It skips over matching
+;; pairs of '{' and '}'.  As an added benefit, it ignores any characters
+;; which occur after the tex comment character %.
+(defun font-latex-find-matching-close (closechar)
+"*Skip over matching pairs of '{' and '}', ignoring
+any characters in comments, until closechar is found.  If the end of file
+is reached, return nil."
+  (save-excursion
+    (save-match-data
+      (let ((mycount 1))
+	(while (and (> mycount 0)
+		    (progn
+		      (backward-char 1)
+		      (re-search-forward
+		       (concat "[^\\\\]["
+			       ;; closechar might be ]
+			       ;; and therefor must be first in regexp
+			       (char-to-string closechar)
+			       "{}%]")
+		       nil t)))
+	  (if (= (preceding-char) ?%) ;; Found a comment
+	      (forward-line 1)
+	    (setq mycount (if (= (preceding-char) ?{)
+			      (+ mycount 1)
+			    (- mycount 1)))))
+	(if (= mycount 0)
+	    (point))))))
 
 ;; FIXME: --About font-latex-commented-outp--
 ;; Fontification is *slower* for affected functions (in particular
@@ -495,45 +643,57 @@ Returns nil if none of KEYWORDS is found."
           t)
          (t
           (let ((kbeg (match-beginning 0))
-                (kend (+ (match-end 0) 
-                         (if (and asterix (eq (following-char) ?\*)) 1 0))) 
+                (kend (match-end 0)) 
                 sbeg send cbeg cend)
             (goto-char kend)            ;May be moved by asterix
+            (if (and asterix (eq (following-char) ?\*))
+                (forward-char 1)) 
+            (skip-chars-forward " \n\t" limit)
+            (setq kend (point))
             (while (eq (following-char) ?\[)
+              (setq sbeg (1+ kend))   ;Be shure to set sbeg relative to kend
+              (forward-char 1)
               (save-restriction
                 ;; Restrict to LIMIT.
                 (narrow-to-region (point-min) limit)
-                (setq sbeg (1+ kend))
                 (if (condition-case nil
-                        (goto-char (or (scan-sexps (point) 1) (point-max)))
+                        (goto-char (or (font-latex-find-matching-close ?\])
+				       (point-max)))
                       (error))
                     (setq send (1- (point)))
                   (setq send (point-max))
                   (goto-char send)
                   (setq font-latex-match-command-cache-state 'stop))))
+            (skip-chars-forward " \n\t" limit)
             (when (eq (following-char) ?\{)
+              (forward-char 1)
+              (setq cbeg (point))
               (save-restriction
                 ;; Restrict to LIMIT.
                 (narrow-to-region (point-min) limit)
-                (setq cbeg (1+ (point)))
                 (if (condition-case nil
-                        (goto-char (or (scan-sexps (point) 1) (point-max)))
+                        (goto-char (or (font-latex-find-matching-close ?\})
+                                       (point-max)))
                       (error))
                     (setq cend (1- (point)))
                   (setq cend (point-max))
                   (goto-char cend)
                   (setq font-latex-match-command-cache-state 'stop))))
-            (when (and twoargs (eq (following-char) ?\{))
-              (save-restriction
-                ;; Restrict to LIMIT.
-                (narrow-to-region (point-min) limit)
-                (if (condition-case nil
-                        (goto-char (or (scan-sexps (point) 1) (point-max)))
-                      (error))
-                    (setq cend (1- (point)))
-                  (setq cend (point-max))
-                  (goto-char cend)
-                  (setq font-latex-match-command-cache-state 'stop))))
+            (when twoargs
+              (skip-chars-forward " \n\t" limit)
+              (when (eq (following-char) ?\{)
+                (forward-char 1)
+                (save-restriction
+                  ;; Restrict to LIMIT.
+                  (narrow-to-region (point-min) limit)
+                  (if (condition-case nil
+                          (goto-char (or (font-latex-find-matching-close ?\})
+                                         (point-max)))
+                        (error))
+                      (setq cend (1- (point)))
+                    (setq cend (point-max))
+                    (goto-char cend)
+                    (setq font-latex-match-command-cache-state 'stop)))))
             (store-match-data (list kbeg kend sbeg send cbeg cend))
             (when font-latex-match-command-cache-state
               (setq font-latex-match-command-cache-start this-start)
@@ -597,8 +757,10 @@ Returns nil if no font-changing command is found."
           (save-restriction
             ;; Restrict to LIMIT.
             (narrow-to-region (point-min) limit)
+	    (re-search-forward "{" nil t)
             (if (condition-case nil
-                    (goto-char (or (scan-sexps (point) 1) (point-max)))
+                    (goto-char (or (font-latex-find-matching-close ?\})
+				   (point-max)))
                   (error))
                 (setq end (1- (point)))
               (setq end (point-max))
@@ -688,14 +850,12 @@ Returns nil if no font-changing command is found."
              (list nil nil itbeg itend bfbeg bfend ttbeg ttend))
             t)
            (t
-            (condition-case nil
-                (forward-char -1)
-              (error))
             (save-restriction
               ;; Restrict to LIMIT.
               (narrow-to-region (point-min) limit)
               (if (condition-case nil
-                      (goto-char (or (scan-sexps (point) 1) (point-max)))
+                      (goto-char (or (font-latex-find-matching-close ?\})
+				     (point-max)))
                     (error))
                   (setq end (1- (point)))
                 (setq end (point-max))

@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8f
+;; Version: 9.8g
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -487,6 +487,19 @@ for the dviout previewer, especially when used with PC-9801 series."
       (if TeX-after-start-process-function
 	  (funcall TeX-after-start-process-function process))
       (set-process-filter process 'TeX-background-filter)
+      (process-kill-without-query process))))
+
+(defun TeX-run-silent (name command file)
+  "Start process with second argument."
+  (let ((dir (TeX-master-directory)))
+    (set-buffer (get-buffer-create "*TeX silent*"))
+    (if dir (cd dir))
+    (erase-buffer)
+    (let ((process (start-process (concat name " silent")
+				  nil TeX-shell
+				  TeX-shell-command-option command)))
+      (if TeX-after-start-process-function
+	  (funcall TeX-after-start-process-function process))
       (process-kill-without-query process))))
 
 (defun TeX-run-interactive (name command file)

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8f
+;; Version: 9.8g
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -891,17 +891,18 @@ You may use LaTeX-item-list to change the routines used to insert the item."
 
 (defvar LaTeX-auto-regexp-list 
   (append
-   '(("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\
-\\[\\([^\]\\\\\n\r]+\\)\\]"
+   '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\\[\\([^\]\\\\\n\r]+\\)\\]"
       (2 3 4) LaTeX-auto-optional)
-     ("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (2 3) LaTeX-auto-arguments)
-     ("\\\\\\(new\\|provide\\)command{?\\\\\\([a-zA-Z]+\\)}?" 2 TeX-auto-symbol)
-     ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\["
+     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?" 2 TeX-auto-symbol)
+     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\["
       1 LaTeX-auto-environment)
-     ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
+     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
       (1 2) LaTeX-auto-env-args)
-     ("\\\\newenvironment{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
+     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
+     ("\\\\\\(new\\|provide\\)command\\*{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\\[\\([^\]\\\\\n\r]+\\)\\]"
+      (2 3 4) LaTeX-auto-optional)
      ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 LaTeX-auto-environment)
      ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
@@ -3048,9 +3049,9 @@ of `LaTeX-mode-hook'."
 		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
-		  ("\\\\renewcommand{\\\\\\([A-Za-z]*\\)"
+		  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
 		   1 LaTeX-symbol-list "}")
-		  ("\\\\renewenvironment{\\([A-Za-z]*\\)"
+		  ("\\\\renewenvironment\\*?{\\([A-Za-z]*\\)"
 		   1 LaTeX-environment-list "}"))
 		TeX-complete-list))
 
@@ -3112,6 +3113,14 @@ of `LaTeX-mode-hook'."
    '("newenvironment" TeX-arg-define-environment
      [ "Number of arguments"] t t)
    '("renewenvironment" TeX-arg-environment
+     [ "Number of arguments"] t t)
+   '("providecommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+   '("providecommand*" TeX-arg-define-macro [ "Number of arguments" ] t)
+   '("newcommand*" TeX-arg-define-macro [ "Number of arguments" ] t)
+   '("renewcommand*" TeX-arg-macro [ "Number of arguments" ] t)
+   '("newenvironment*" TeX-arg-define-environment
+     [ "Number of arguments"] t t)
+   '("renewenvironment*" TeX-arg-environment
      [ "Number of arguments"] t t)
    '("newtheorem" TeX-arg-define-environment
      [ TeX-arg-environment "Numbered like" ]
@@ -3262,6 +3271,14 @@ of `LaTeX-mode-hook'."
      '("newcommand" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("renewcommand" TeX-arg-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("providecommand" TeX-arg-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("providecommand*" TeX-arg-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("newcommand*" TeX-arg-define-macro
+       [ "Number of arguments" ] [ "Default value for first argument" ] t)
+     '("renewcommand*" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
      '("documentclass" TeX-arg-document)))

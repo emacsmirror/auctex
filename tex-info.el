@@ -1,7 +1,7 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.8f
+;; Version: 9.8g
 
 ;; Copyright (C) 1993, 1994, 1997 Per Abrahamsen 
 ;; 
@@ -263,7 +263,7 @@ TeXinfo-mode-hook."
   (setq TeX-auto-update t)
 
   (setq TeX-command-default "TeX")
-  (setq TeX-header-end "%**end")
+  (setq TeX-header-end "%*end")
   (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
   
   (make-local-variable 'TeX-complete-list)
