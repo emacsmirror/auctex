@@ -10,7 +10,7 @@
 	(TeX-source-specials-view-emacsclient-flags): New variable.
 	(TeX-source-specials-view-expand-client): New function.
 	(TeX-source-specials-view-expand-options): Expand options for
-	inverse search as well.
+	inverse search as well.  Correct return value.
 
 	* doc/changes.texi: Avoid email addresses.
 
