@@ -90,7 +90,7 @@ Check the PROBLEMS file for details.])
   else
     AC_MSG_RESULT(yes)
   fi
-    )
+    ) || exit $?
 fi
 
 # Determine which latex-style components to install
