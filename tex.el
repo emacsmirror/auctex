@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.489 $"))
+	    (rev "$Revision: 5.490 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-15 08:18:30 $"))
+    (let ((date "$Date: 2005-03-17 10:01:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2256,7 +2256,7 @@ The algorithm is as follows:
 			       ;; Test if we are looking at a new file.
 			       (unless (file-exists-p (buffer-file-name))
 				 (TeX-master-file nil nil t))
-			       (TeX-update-style)) nil t))
+			       (TeX-update-style t)) nil t))
 
 ;;; Plain TeX mode
 
