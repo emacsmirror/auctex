@@ -32,7 +32,7 @@ version is for GNU Emacs 21.
 # and you won't get those pesky CVS directories.
 #./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
-%configure --texmfdir=%{_datadir}/texmf
+%configure --with-texmf=%{_datadir}/texmf
 make
 
 %install
