@@ -1,3 +1,10 @@
+2004-12-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-keyword-matcher): Highlight only first
+	matched group.
+	(font-latex-make-built-in-keywords): Set up grouping for warning
+	keywords and mark its end with "[^A-Za-z@*]".
+
 2004-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-paragraph): Do not narrow region when code
