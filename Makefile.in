@@ -201,7 +201,8 @@ tar-ball:
 	    echo "Warning: File $$x doesn't exist."; \
 	  fi; \
 	done )
-	(cd doc; cp INSTALL INSTALL.windows README CHANGES ../auctex-$(TAG)/ )
+	(cd doc; cp INSTALL INSTALL.windows README CHANGES TODO \
+		../auctex-$(TAG)/ )
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
 	cp doc/CHANGES $(FTPDIR)/CHANGES-$(TAG)
 	cp doc/auc-tex.ps $(FTPDIR)
