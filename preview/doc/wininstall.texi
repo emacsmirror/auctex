@@ -1,0 +1,95 @@
+@include macros.texi
+
+This is the report of one user of us how he got a native installation of
+XEmacs under MS-Windows to work with @previewlatex{}.  Please report
+back your experiences.
+
+@enumerate
+@item
+Install @AUCTeX{}. If you install a v10 @AUCTeX{}, patch it as per the
+instructions with @previewlatex{}.
+
+@item
+@table @strong
+@item Either
+Install a system that can run configure such as MSYS (see
+@uref{http://mingw.sf.net}) and run configure with the
+@code{--with-xemacs} and @code{--with-texmf-dir=@var{DIR}} options
+(where @var{DIR} is the path to your @file{texmf} directory). Tweak the
+generated Makefiles to ensure all the paths are valid win32 paths (not MSYS
+paths, or cygwin paths, for example)
+
+@item or
+Copy each @file{makefile.in} file to a makefile in the same directory,
+and replace all the automake variables @code{@@VARNAME@@} with an
+appropriate value. Here are the values for my system:
+
+@table @code
+@item	@@SET_MAKE@@
+@item	@@EMACS@@
+@code{xemacs}
+@item	@@ICONFORM@@
+@code{--eval '(setq data-directory-list (cons
+"images" data-directory-list))'}
+@item	@@PLAT_LISP@@
+@code{prv-xemacs.el}
+@item	@@lispdir@@
+@code{c:/progra~1/xemacs/xemacs-packages/lisp/preview}
+@item	@@icondir@@
+@code{c:/progra~1/xemacs/xemacs-packages/etc/preview}
+@item	@@prefix@@
+@item	@@datadir@@
+@item	@@packagedir@@
+@code{c:/progra~1/xemacs/xemacs-packages}
+@item	@@AUCTEXDIR@@
+@code{c:/progra~1/xemacs/xemacs-packages/lisp/}
+@item	@@TEX@@
+@code{tex}
+@item	@@infodir@@
+@code{c:/progra~1/xemacs/xemacs-packages/info/}
+@item	@@MAKEINFO@@
+@code{makeinfo}
+@item	@@INSTALL_INFO@@
+@code{install-info}
+@item	@@LATEX@@
+@code{latex}
+@item	@@TEXHASH@@
+@code{texhash}
+@item	@@texmfdir@@
+@code{d:/local/texmf}
+@item	@@previewtexmfdir@@
+@code{d:/local/texmf/tex/latex/preview}
+@item	@@previewdocdir@@
+@code{d:/local/texmf/doc/latex/preview}
+@item	@@TEXMFGEN@@
+@code{preview.sty prauctex.def prauctex.cfg
+prshowbox.def prshowlabels.def prtracingall.def prtightpage.def}
+@end table
+@end table
+
+@item
+Update the @code{INSTALL} and @code{INSTALL_DATA} entries in every
+makefile to @code{cp} (if you installed the Unix-like tools) or
+@code{xcopy} (if you didn't).  In this case, the paths specified above
+must have backslashes in, rather than forward slashes.
+	
+
+@item
+Install gnu make if not already installed.
+@item
+Run @code{make} in the @previewlatex directory.
+	
+@item
+Run @code{make install} in the @previewlatex directory.
+
+@item
+Load @file{circ.tex} into XEmacs and see if you can generate previews.
+@end enumerate
+
+Note, sometimes the preview image file will be generated, but it will
+display as a blank line. I haven't found any reason why or why not, and
+it doesn't seem to matter what image format is chosen. If this happens,
+you might be able to get it to display by going @kbd{C-c C-p C-c C-p}
+(Clearout at point) @kbd{C-c C-p C-p} (Preview at Point) when the cursor
+is on that blank line.
+
