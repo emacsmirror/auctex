@@ -1,3 +1,9 @@
+2002-12-11  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (japanese-LaTeX-default-style)
+	(japanese-LaTeX-style-list): remove buffer-local declarations
+	where they don't make sense.
+
 2002-12-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/changes.texi: Some more news.
