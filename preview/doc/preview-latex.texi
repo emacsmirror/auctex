@@ -19,11 +19,12 @@
 @subtitle A La@TeX{} preview mode primarily for AUC @TeX{} in GNU Emacs.
 @subtitle Version 0.5.8.2
   
-@author by David Kastrup,........
+@author by David Kastrup and Alan Shutko 
 @author manual by Jan-흆e Larsson
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001, David Kastrup,...., and Jan-흆e Larsson 
+Copyright @copyright{} 2001, David Kastrup, Alan Shutko, and Jan-흆e
+Larsson
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -61,20 +62,22 @@ environment, other applications are easily imaginable.
 
 This file documents Preview La@TeX{} version 0.5.8.2.
 
-If you want to use Preview La@TeX{} in AUC @TeX{} right away, install
-AUC @TeX{} and Preview La@TeX{} and insert the following in your
-@file{.emacs} file.
+If you want to use Preview La@TeX{} in AUC @TeX{} right away, be sure
+to have a working AUC @TeX{} installation, install Preview La@TeX{}
+and insert the following in your @file{.emacs} file.  This will make
+Emacs load preview.el into AUC @TeX{} when you first load a La@TeX{}
+file.
 
 @lisp
-(require 'tex-site) ; Load AUC TeX, which is needed by Preview LaTeX
-(require 'preview) 
+(autoload 'LaTeX-preview-setup "preview")
+(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
 NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.
 
-David Kastrup,...., Jan-흆e Larsson
+David Kastrup, Alan Shutko, and Jan-흆e Larsson
 
 @end ifinfo
 
@@ -111,8 +114,8 @@ The simplest way to use Preview La@TeX{} is to insert the following in
 your @file{.emacs} file:
 
 @lisp
-(require 'tex-site) ; Load AUC TeX, which is needed by Preview LaTeX
-(require 'preview) 
+(autoload 'LaTeX-preview-setup "preview")
+(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
 @end lisp
 
 Now, load a La@TeX{} document, and press @kbd{@key{C-c} @key{C-c} g
