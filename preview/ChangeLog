@@ -1,5 +1,11 @@
 2002-04-05  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (preview-remove-urgentization): proper return
+	value.
+	(preview-add-urgentization): Make entry in
+	initial-redisplay-function easier to reextract for
+	preview-remove-urgentization.
+
 	* TODO: small changes.
 
 2002-04-04  Nix  <nix@esperi.demon.co.uk>
