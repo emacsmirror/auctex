@@ -8,6 +8,11 @@
 	files have been deleted.
 	(preview-TeX-inline-sentinel): Make sure "Compilation" flag gets
 	cleared even on errors.
+	(preview-environment): Doc change.
+	(desktop-buffer-preview-misc-data, preview-dissect) 
+	(desktop-buffer-preview, preview-cleanout-tempfiles) 
+	(preview-active-string, preview-reinstate-preview) 
+	(preview-default-preamble): Doc corrections/additions.
 
 2002-03-02  David Kastrup  <David.Kastrup@t-online.de>
 
