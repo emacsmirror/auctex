@@ -10,4 +10,7 @@ Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
 @item New style files for @file{varioref.sty} and @file{fancyref.sty}.
 Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
 
+@item @code{texmathp} recognizes additional macros like @code{\fbox}.
+Patch by Ulrik Vieth <vieth@thphy.uni-duesseldorf.de>.
+
 @end itemize

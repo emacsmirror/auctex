@@ -2774,7 +2774,8 @@ With optional ARG, insert that many dollar signs."
 		       (buffer-substring (point)
 					 (progn (end-of-line) (point)))))))
       ;; Math mode was not entered with dollar - we cannot finish it with one.
-      (error "No dollars inside a math environment!")))
+      (error "Math mode because of `%s'.  Use `C-q $' to force a dollar."
+	     (car texmathp-why))))
    (t
     ;; Just somewhere in the text.
     (insert "$"))))

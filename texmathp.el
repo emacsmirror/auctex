@@ -144,14 +144,25 @@ The structure of each entry is (NAME TYPE)
       (const :tag "Switch: toggles math mode of following text" sw-toggle)))))
 
 (defvar texmathp-tex-commands-default
-  '(;; Standard LaTeX
+  '(
+    ;; Plain TeX
+    ("$$"            sw-toggle)   ("$"             sw-toggle)
+    ("\\hbox"        arg-off)
+    ("\\vbox"        arg-off)
+    ("\\vtop"        arg-off)
+    ("\\vcenter"     arg-off)
+
+    ;; Standard LaTeX
     ("equation"      env-on)      ("equation*"     env-on)
     ("eqnarray"      env-on)      ("eqnarray*"     env-on)
+    ("math"          env-on)
     ("displaymath"   env-on)
+    ("\\fbox"        arg-off)
     ("\\mbox"        arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
-    ("$$"            sw-toggle)   ("$"             sw-toggle)
+    ("\\ensuremath"  arg-on)
+
     ;; AMS-LaTeX
     ("align"         env-on)      ("align*"        env-on)
     ("gather"        env-on)      ("gather*"       env-on)
@@ -160,7 +171,6 @@ The structure of each entry is (NAME TYPE)
     ("alignat"       env-on)      ("alignat*"      env-on)
     ("xalignat"      env-on)      ("xalignat*"     env-on)
     ("xxalignat"     env-on)      ("xxalignat*"    env-on)
-    ("\\ensuremath"  arg-on)
     ("\\text"        arg-off)     ("\\intertext"   arg-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
