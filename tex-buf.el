@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.40 1993-07-16 04:34:06 amanda Exp $
+;;; $Id: tex-buf.el,v 1.41 1993-07-19 14:01:42 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -277,6 +277,8 @@ in TeX-check-path."
 COMMAND is the default command to use if the entry for the printer in
 TeX-printer-list does not itself have it specified in the ELEMENT'th
 entry." 
+  (or command (setq command TeX-print-command))
+  (or element (setq element 1))
   (let ((printer (if TeX-printer-list
 		     (let ((completion-ignore-case t))
 		       (completing-read (concat "Printer: (default "
