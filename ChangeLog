@@ -1,5 +1,7 @@
 2004-08-05  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auc-tex.texi (European): Mention Emacs 21.  Fixed typo.
+
 	* doc/todo.texi: Help for documentation wanted.
 
 	* doc/changes.texi: Some additions: captcont and subfigure,

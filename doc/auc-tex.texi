@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.165 2004-07-30 11:24:33 angeli Exp $
+@c $Id: auc-tex.texi,v 1.166 2004-08-05 13:59:17 rsteib Exp $
 
 @finalout
 @titlepage
@@ -1938,6 +1938,8 @@ with GNU Emacs.  Modern versions of GNU Emacs and @TeX{} are usable for
 European (Latin, Cyrillic, Greek) based languages, but special versions
 of TeX and Emacs are needed for Korean, Japanese, and Chinese.
 
+@c FIXME: Is Emacs 21.4 able to deal with CJK?
+
 @menu
 * European::                    Using AUC@TeX{} for European languages.
 * Japanese::                    Japanese @TeX{}
@@ -1969,12 +1971,12 @@ languages than Western European ones will probably have other encoding
 needs.
 
 To be able to display non-ASCII characters you will need an appropriate
-font and a version of GNU Emacs capable of displaying 8-bit characters.
-The manner in which this is supported differs between Emacsen, so you
-need to take a look at your respective documentation.
+font and a version of GNU Emacs capable of displaying 8-bit characters
+(e.g. Emacs 21).  The manner in which this is supported differs between
+Emacsen, so you need to take a look at your respective documentation.
 
-A compromise is to use use an European character set when editing the
-file, and convert to @TeX{} macros when reading and writing the files.
+A compromise is to use an European character set when editing the file,
+and convert to @TeX{} macros when reading and writing the files.
 
 @table @file
 @item iso-cvt.el
