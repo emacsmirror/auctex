@@ -299,6 +299,27 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
              res)
          '(resmap))))
 
+(defun preview-click-reroute (ov map event)
+  "Pass only clicks on glyphs."
+  (let ((oldmap (extent-keymap ov)))
+    (unwind-protect
+	(progn
+	  (set-extent-keymap
+	   ov (and (event-over-glyph-p event) map))
+	  (dispatch-event event))
+      (set-extent-keymap ov oldmap))))
+
+(defun preview-make-reroute (ov map)
+  "Generate a reroute map from an original one."
+  (and map
+       (let ((newmap (make-sparse-keymap)))
+	 (map-keymap `(lambda (key binding)
+			(define-key ,newmap key
+			  (lambda (event) (interactive "e")
+			    (preview-click-reroute ,ov ,map event))))
+		     map)
+	 newmap)))
+
 (defun preview-ps-image (filename scale &optional box)
   "Place a PostScript image directly by Emacs.
 This uses XEmacs built-in PostScript image support for
@@ -352,9 +373,13 @@ nil displays the underlying text, and 'toggle toggles."
         (dolist (prop '(keymap mouse-face balloon-help invisible))
           (set-extent-property ov prop nil))
         (set-extent-properties ov `(face preview-face
-                                    begin-glyph ,(get-text-property 0 'end-glyph (cdr strings))
+                                    begin-glyph ,(get-text-property
+						  0 'end-glyph (cdr strings))
                                     begin-glyph-layout text
-                                    end-glyph nil)))
+                                    end-glyph nil
+				    keymap ,(preview-make-reroute
+					     ov (get-text-property
+						 0 'keymap (cdr strings))))))
       (if old-urgent
           (apply 'preview-add-urgentization old-urgent)))))
 
