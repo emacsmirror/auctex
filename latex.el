@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.11 1994-04-23 15:53:38 amanda Exp $
+;; Version: $Id: latex.el,v 5.12 1994-04-24 21:54:56 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -381,62 +381,67 @@ The beaviour of this hook is controled by LaTeX-section-label."
 (defun LaTeX-environment (arg)
   "Make LaTeX environment (\\begin{...}-\\end{...} pair).
 With optional ARG, modify current environment.
-
+ 
 It may be customized with the following variables:
-
-LaTeX-default-environment	Your favorite environment.
-LaTeX-default-style		Your favorite document style.
-LaTeX-default-options		Your favorite document style options.
+ 
+LaTeX-default-environment       Your favorite environment.
+LaTeX-default-style             Your favorite document style.
+LaTeX-default-options           Your favorite document style options.
 LaTeX-float                     Where you want figures and tables to float.
 LaTeX-table-label               Your prefix to labels in tables.
 LaTeX-figure-label              Your prefix to labels in figures.
-LaTeX-default-format		Format for array and tabular.
-LaTeX-default-position		Position for array and tabular."
-  
+LaTeX-default-format            Format for array and tabular.
+LaTeX-default-position          Position for array and tabular."
+ 
   (interactive "*P")
   (let ((environment (completing-read (concat "Environment type: (default "
-					       (if (TeX-near-bobp)
-						   "document"
-						 LaTeX-default-environment)
-					       ") ")
-				       (LaTeX-environment-list))))
+                                               (if (TeX-near-bobp)
+                                                   "document"
+                                                 LaTeX-default-environment)
+                                               ") ")
+                                       (LaTeX-environment-list))))
     ;; Get default
     (cond ((and (zerop (length environment))
-		(TeX-near-bobp))
-	   (setq environment "document"))
-	  ((zerop (length environment))
-	   (setq environment LaTeX-default-environment))
-	  (t 
-	   (setq LaTeX-default-environment environment)))
-
+                (TeX-near-bobp))
+           (setq environment "document"))
+          ((zerop (length environment))
+           (setq environment LaTeX-default-environment))
+          (t
+           (setq LaTeX-default-environment environment)))
+ 
     (let ((entry (assoc environment (LaTeX-environment-list))))
       (if (null entry)
-	  (LaTeX-add-environments (list environment)))
-      
-      (cond (arg
-	     (LaTeX-modify-environment environment))
-	    ((not (and entry (nth 1 entry)))
-	     (LaTeX-insert-environment environment))
-	    ((numberp (nth 1 entry))
-	     (let ((count (nth 1 entry))
-		   (args ""))
-	       (while (> count 0)
-		 (setq args (concat args TeX-grop TeX-grcl))
-		 (setq count (- count 1)))
-	       (LaTeX-insert-environment environment args)))
-	    ((stringp (nth 1 entry))
-	     (let ((prompts (cdr entry))
-		   (args ""))
-	       (while prompts
-		 (setq args (concat args
-				    TeX-grop
-				    (read-from-minibuffer (concat (car prompts)
-								  ": "))
-				    TeX-grcl))
-		 (setq prompts (cdr prompts)))
-	       (LaTeX-insert-environment environment args)))
-	    (t
-	     (apply (nth 1 entry) environment (nthcdr 2 entry)))))))
+          (LaTeX-add-environments (list environment)))
+ 
+      (if arg
+	  (LaTeX-modify-environment environment)
+	(LaTeX-environment-menu environment)))))
+
+(defun LaTeX-environment-menu (environment)
+  ;; Insert ENVIRONMENT around point or region. 
+  (let ((entry (assoc environment (LaTeX-environment-list))))
+    (cond ((not (and entry (nth 1 entry)))
+	   (LaTeX-insert-environment environment))
+	  ((numberp (nth 1 entry))
+	   (let ((count (nth 1 entry))
+		 (args ""))
+	     (while (> count 0)
+	       (setq args (concat args TeX-grop TeX-grcl))
+	       (setq count (- count 1)))
+	     (LaTeX-insert-environment environment args)))
+	  ((stringp (nth 1 entry))
+	   (let ((prompts (cdr entry))
+		 (args ""))
+	     (while prompts
+	       (setq args (concat args
+				  TeX-grop
+				  (read-from-minibuffer (concat (car prompts)
+								": "))
+				  TeX-grcl))
+	       (setq prompts (cdr prompts)))
+	     (LaTeX-insert-environment environment args)))
+	  (t
+	   (apply (nth 1 entry) environment (nthcdr 2 entry))))))
 
 (defun LaTeX-close-environment ()
   "Creates an \\end{...} to match the current environment."
@@ -1665,16 +1670,70 @@ The point is supposed to be at the beginning of the current line."
     map)
   "Keymap used in LaTeX-mode.")
 
+(defvar LaTeX-environment-menu-name "Insert Environment  (C-c C-e)")
+
+(defun LaTeX-environment-menu-entry (entry)
+  ;; Create an entry for the environment menu.
+  (vector (car entry) (list 'LaTeX-environment-menu (car entry)) t))
+
+(defvar LaTeX-environment-modify-menu-name "Change Environment  (C-u C-c C-e)")
+
+(defun LaTeX-environment-modify-menu-entry (entry)
+  ;; Create an entry for the change environment menu.
+  (vector (car entry) (list 'LaTeX-modify-environment (car entry)) t))
+
+(defun LaTeX-section-enable-symbol (LEVEL)
+  ;; Symbol used to enable section LEVEL in the menu bar.
+  (intern (concat "LaTeX-section-" (int-to-string (nth 1 entry)) "-enable")))
+
+(defun LaTeX-section-enable (entry)
+  ;; Enable or disable section ENTRY from LaTeX-section-list.
+  (let ((level (nth 1 entry)))
+    (set (LaTeX-section-enable-symbol level)
+	 (>= level LaTeX-largest-level))))
+
+(defun LaTeX-section-menu (level)
+  ;; Insert section from menu.
+  (let ((LaTeX-section-hook (delq 'LaTeX-section-heading
+				  (copy-sequence LaTeX-section-hook))))
+    (LaTeX-section level)))
+
+(defun LaTeX-section-menu-entry (entry)
+  ;; Create an entry for the section menu.
+  (vector (car entry)
+	  (list 'LaTeX-section-menu (nth 1 entry))
+	  (LaTeX-section-enable-symbol (nth 1 entry))))
+
+(defun LaTeX-section-menu-create ()
+  ;; Create a menu over LaTeX sections.
+  (append '("Section  (C-c C-s)")
+	  (mapcar 'LaTeX-section-menu-entry LaTeX-section-list)))
+
+(defun LaTeX-menu-update ()
+  ;; Update entries on AUC TeX menu.
+  (if (not (eq major-mode 'latex-mode))
+      ()
+    (TeX-update-style)
+    (mapcar 'LaTeX-section-enable LaTeX-section-list)
+    (easy-menu-change '("AUC TeX") LaTeX-environment-modify-menu-name
+		      (mapcar 'LaTeX-environment-modify-menu-entry
+			      (LaTeX-environment-list)))
+    (easy-menu-change '("AUC TeX") LaTeX-environment-menu-name
+		      (mapcar 'LaTeX-environment-menu-entry
+			      (LaTeX-environment-list)))))
+
+(add-hook 'activate-menubar-hook 'LaTeX-menu-update)
+
 (easy-menu-define LaTeX-mode-menu
     LaTeX-mode-map
     "Menu used in LaTeX mode."
   (list "AUC TeX"
-	(list "Templates"
-	      ["Environment..." LaTeX-environment t]
-	      ["Section..." LaTeX-section t]
-	      ["Macro..." TeX-insert-macro t]
-	      ["Complete" TeX-complete-symbol t]
-	      ["Item" LaTeX-insert-item "C-c LFD"])
+	(list LaTeX-environment-menu-name)
+	(list LaTeX-environment-modify-menu-name)
+	(LaTeX-section-menu-create)
+	["Macro..." TeX-insert-macro t]
+	["Complete" TeX-complete-symbol t]
+	["Item" LaTeX-insert-item t]
 	(list "Insert Font"
 	      ["Emphasize"  (TeX-font nil ?\C-e) "C-c C-f C-e"]
 	      ["Bold"       (TeX-font nil ?\C-b) "C-c C-f C-b"]
@@ -1694,9 +1753,12 @@ The point is supposed to be at the beginning of the current line."
 	["Delete Font" (TeX-font t ?\C-d) "C-c C-f C-d"]
 	"-"
 	["Save Document" TeX-save-document t]
-	(TeX-command-create-menu "Command on Master File" 'TeX-command-master)
-	(TeX-command-create-menu "Command on Buffer" 'TeX-command-buffer)
-	(TeX-command-create-menu "Command on Region" 'TeX-command-region)
+	(TeX-command-create-menu "Command on Master File  (C-c C-c)"
+				 'TeX-command-master)
+	(TeX-command-create-menu "Command on Buffer  (C-c C-b)"
+				 'TeX-command-buffer)
+	(TeX-command-create-menu "Command on Region (C-c C-r)"
+				 'TeX-command-region)
 	["Next Error" TeX-next-error t]
 	(list "TeX Output"
 	      ["Kill Job" TeX-kill-job t]
