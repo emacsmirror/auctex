@@ -1,3 +1,10 @@
+2002-12-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* all.el: Removed.  unrelated to TeX mode.
+	OBSOLETE files (all.el, auc-menu.el, maniac.el, and outln-18.el)
+	are available at:
+	<ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/auctex/>
+
 2002-12-15  David Kastrup  <David.Kastrup@t-online.de>
 
 	* Makefile (dist): Correct zip file name.
