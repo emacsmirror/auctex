@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.174 2004-08-11 15:26:46 angeli Exp $
+@c $Id: auctex.texi,v 1.175 2004-08-11 17:07:51 rsteib Exp $
 
 @finalout
 @titlepage
@@ -1586,6 +1586,7 @@ will move the @acronym{DVI} viewer to the location corresponding to
 point (forward search), and it will use @samp{emacsclient} or
 @samp{gnuclient} to have the previewer move Emacs to a location
 corresponding to a control-click in the previewer window.
+@xref{Viewing} for more information.
 
 You can permanently activate @code{TeX-source-specials-mode} with
 @lisp
@@ -1632,8 +1633,7 @@ The command @code{TeX-view}, bound to @kbd{C-c C-v}, starts a viewer
 without confirmation.  The viewer is started either on a region or the
 master file, depending on the last command issued.  This is especially
 useful for jumping to the location corresponding to point in the
-@acronym{DVI} viewer when using @code{TeX-source-specials-mode},
-@ref{Commands}.
+@acronym{DVI} viewer when using @code{TeX-source-specials-mode}.
 @end deffn
 
 @defopt TeX-output-view-style
@@ -1649,11 +1649,15 @@ none of the entries in @code{TeX-view-style} match either, no suggestion
 for a viewer will be made.
 @end defopt
 
+@subsection Forward and inverse search
+
+@cindex Source specials
 @cindex Inverse search
 @cindex Forward search
 You can make use of forward and inverse searching if this is supported
 by your @acronym{DVI} viewer and you enabled
-@code{TeX-source-specials-mode}.  @AUCTeX{} will automatically pass the
+@code{TeX-source-specials-mode} as described in @ref{Commands}.
+@AUCTeX{} will automatically pass the
 necessary command line options to the viewer in order to display the
 page containing the content you are currently editing (forward search).
 Upon opening the viewer you will be asked if you want to start a server

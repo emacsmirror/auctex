@@ -595,7 +595,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.422 $"))
+	(rev "$Revision: 5.423 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +610,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-10 20:57:47 $"))
+    (let ((date "$Date: 2004-08-11 17:07:51 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -707,17 +707,8 @@ file is added to the LaTeX commmand line and the DVI viewer is
 called with an appropriate option, so that it shows the the point
 in the DVI file corresponding to the point in the Emacs buffer.
 
-See the documention of your viewer, e.g. the section \"SOURCE SPECIALS\" in
-xdvi(1) and <URL:http://xdvi.sourceforge.net/inverse-search.html>, for
-details."
-  ;; FIXME: We'll need doc strings for all other viewers [beside xdvi] as
-  ;; well.  Or the respective pointers.  Or just a pointer to the manual
-  ;; that explains the details.  [Suggestion by dak]
-  ;;
-  ;; We should describe emacsclient / gnuclient in the AUCTeX manual and
-  ;; only add a reference here.
+See the the AUCTeX manual for details."
   :group 'TeX-source-specials
-  :link '(custom-manual "(auctex)Commands")
   :global t
   (set-keymap-parent TeX-mode-map
 		     (and TeX-source-specials-mode

@@ -1,5 +1,11 @@
 2004-08-11  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auctex.texi (Commands): Adjust references.
+	(Viewing): Make source specials a subsection.  Adjust references.
+
+	* tex.el (TeX-source-specials-mode): Remove bogus :link.  Refer to
+	viewing node of the manual.
+
 	* doc/changes.texi: Added references.
 
 	* doc/todo.texi (Wishlist): Markup fix.
