@@ -1,5 +1,9 @@
 2003-02-15  David Kastrup  <dak@gnu.org>
 
+	* tex-site.el: AUC TeX to AUCTeX, new header.
+
+	* Makefile.in: AUC TeX to AUCTeX.
+
 	* latex.el: AUC TeX to AUCTeX, new header.
 
 	* tex-buf.el (TeX-quote-filename): New function.
