@@ -1,3 +1,9 @@
+2003-11-13 Ralf Angeli <angeli@iwi.uni-sb.de>
+
+	* style/paralist.el: New file.
+
+	* Makefile.in (STYLESRC): Added paralist.el.
+
 2003-10-18  Peter S Galbraith  <psg@debian.org>
 
 	* font-latex.el: checkdoc cleaning (alomost clean now).
