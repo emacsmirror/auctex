@@ -126,7 +126,9 @@ idea, but you can get around by specifying environment variables to
 @example
 GS="@var{/path/to/GhostScript}" ./configure @dots{}
 @end example
-should work for this purpose.
+should work for this purpose.  However, in the case of GhostScript, it
+is important that you specify the name of the @emph{command line}
+executable, usually called @file{gswin32c.exe}.
 
 @item
 If you need to use the prebuilt documentation (see above), now is the
