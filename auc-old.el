@@ -78,7 +78,7 @@
       (TeX-region-create (TeX-region-file "tex")
 			 (buffer-substring begin end)
 			 (file-name-nondirectory (buffer-file-name))
-			 (count-lines (point-min) begin)))
+			 (TeX-current-offset begin)))
   (TeX-command TeX-command-default 'TeX-region-file))
 
 (defun TeX-buffer ()
