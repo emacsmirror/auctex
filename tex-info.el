@@ -175,7 +175,7 @@ When called interactively, prompt for an environment."
 		     (customize-group 'AUCTeX)]
 		    ["Extend this menu"
 		     (easy-menu-add-item
-		      nil '("LaTeX" "AUCTeX")
+		      nil '("Texinfo" "AUCTeX")
 		      (customize-menu-create 'AUCTeX))])
 	      ["Documentation" TeX-goto-info-page t]
 	      ["Submit bug report" TeX-submit-bug-report t]
