@@ -1,5 +1,7 @@
 2001-11-13  David Kastrup  <David.Kastrup@t-online.de>
 
+	* PROBLEMS: Add patch for mouse-drag.el
+
 	* INSTALL: add autoload instructions for fastest Emacs startup.
 
 2001-11-12  David Kastrup  <David.Kastrup@t-online.de>
