@@ -25,5 +25,5 @@ cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.
 
-Type "make" at the prompt to build preview.
+Type "make" at the prompt to build AUC TeX
 EOF
