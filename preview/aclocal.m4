@@ -20,6 +20,27 @@ AC_DEFUN(EMACS_LISP, [
   rm -f ${OUTPUT}
 ])
 
+# This generates two prefix variables $1 and $2 from the executable in
+# $3.  The executable is searched in PATH, and a potential bin/ or
+$ bin/architecture/ component is stripped from it.
+AC_DEFUN(EMACS_PATH_PREFIX,[
+  EMACS_LISP(tmppathprefix,[[(let*
+    ((prefix (directory-file-name (file-name-directory (executable-find cmd))))
+     (parent (directory-file-name (file-name-directory prefix))))
+    (if (string= (file-name-nondirectory prefix) \"bin\")
+        (setq prefix parent)
+      (if (string= (file-name-nondirectory parent) \"bin\")
+         (setq prefix (directory-file-name (file-name-directory parent)))))
+    prefix)]],[[-no-site-file]],[[cmd]],[$3])
+  if test "x${prefix}" = xNONE -o "x${prefix}" = x
+  then
+    $1="${tmppathprefix}"
+    $2='${prefix}'
+  else
+    $1='${prefix}'
+    $2="${tmppathprefix}"
+  fi ])
+
 AC_DEFUN(EMACS_PROG_EMACS, [
 # Check for (X)Emacs, report its path, flavor and prefix
 
@@ -62,10 +83,9 @@ fi
   AC_MSG_RESULT(${XEMACS})
   AC_SUBST(XEMACS)
   AC_SUBST(EMACS_FLAVOR)
-  AC_MSG_CHECKING([for ${EMACS_NAME} prefix])
-  EMACS_LISP(emacsprefix,[(expand-file-name \"..\" invocation-directory)],[-no-site-file])
-  AC_MSG_RESULT($emacsprefix)
-  AC_SUBST(emacsprefix)
+  AC_MSG_CHECKING([for ${EMACS_NAME} prefixes])
+  EMACS_PATH_PREFIX(emacsprefix1,emacsprefix2,"${EMACS}")
+  AC_MSG_RESULT([["${emacsprefix1}" "${emacsprefix2}"]])
 ])
 
 AC_DEFUN(EMACS_CHECK_VERSION, [
@@ -285,12 +305,17 @@ AC_SUBST(previewtexmfdir)
 AC_SUBST(previewdocdir)])
 
 AC_DEFUN(AC_FULL_EXPAND,
-[ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"]]/\\&/g'
+[ __ac_tmp_oldprefix__="${prefix}"
+ if test "x${prefix}" = x -o "x${prefix}" = "xNONE"
+ then
+   prefix="${ac_default_prefix}"
+ fi
+ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"-"]]/\\&/g'
 eval "$1=`sed ${__ac_tmp__} <<EOF
 [$]$1
 EOF
-`";; *) break ;; esac; done ])
-dnl "
+`";; *) break ;; esac; done
+  prefix="${__ac_tmp_oldprefix__}" ])
 
 
 
