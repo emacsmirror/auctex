@@ -1,24 +1,45 @@
-Release notes for version 0.5.8.3 of the preview-latex package:
+Release notes for version 0.6 of the preview-latex package:
 
 preview-latex is a system for displaying inline images of selected
 parts of a file in Emacs source buffers.  It is released under the GNU
 Public License (GPL).  At the current point of time, GNU Emacs-21.1,
-Auc-TeX, a working LaTeX installation and GhostScript are required.
+AUC TeX, a working LaTeX installation and GhostScript are required.
 XEmacs support is not yet operative, and contributions would be
 welcome.  Due to missing image support of Emacs-21.1 under Microsoft
 Windows, this platform is not usable at the current point of time,
 either.
 
-Release focus are mostly user interface improvements.  Main point has
-been an attempt to refrain from disabling previews unless the text
-under it has indeed changed and not just been replaced by something
-identical or decorated with font-lock.  This makes preview-latex
-behave better when filling paragraphs, for example.  Menu entries for
-clearing out previews again have been added, and temporary directories
-are removed when leaving Emacs.  A TeXinfo manual has been started.
+Release focus is user interface improvements and documentation. Main
+point has been an attempt to refrain from disabling previews unless
+the text under it has indeed changed and not just been replaced by
+something identical or decorated with font-lock. This makes
+preview-latex behave better when filling paragraphs, for example. Menu
+entries for clearing out previews again have been added, and temporary
+directories are removed when leaving Emacs. A TeXinfo manual has been
+started.
 
 User feedback about errors and suggested feature improvements is
 welcome and heeded.  The home page is
 <URL:http://preview-latex.sourceforge.net>, the SourceForge project
 page that among others offers anonymous CVS access is located at
 <URL:http://sourceforge.net/projects/preview-latex>.
+
+
+For users of RedHat linux, a RPM is provided at the above site. The RPM
+requires a few packages:
+
+* GhostScript 6.51 is included in RH 7.2, but if you use an earlier
+  release it can be downloaded from the RH7.2 updates,
+  <URL:ftp://ftp.redhat.com/pub/redhat/linux/updates/7.2/en/os/i386/>
+
+* AUC TeX 10.0g can be found at rhcontrib, see
+  <URL:http://rhcontrib.bero.org/RPMS/i386/>, note that you need both
+  auctex-10.0g-4.i386.rpm and auctex-emacs-10.0g-4.i386.rpm, the
+  package is split. I had to use '--nodeps' when installing, but it
+  does work after that.
+
+* Finally, Emacs-21.1 can be downloaded from rawhide,
+  <URL:ftp://ftp.redhat.com/pub/redhat/linux/rawhide/i386/RedHat/RPMS/>.
+  I installed this using 'rpm -i --nodeps --force', which worked for
+  me, but since it does not follow the usual emacs + emacs-X11 +
+  emacs-nox, YMMV.
