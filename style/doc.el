@@ -35,8 +35,8 @@
   (unless (TeX-active-mark)
     (when (save-excursion
 	    (beginning-of-line)
-	    (or (looking-at (concat "[ \t]*" comment-start "*[ \t]+$"))
-		(looking-at (concat "[ \t]+" comment-start "*[ \t]*$"))))
+	    (looking-at (concat "[ \t]+$\\|[ \t]*"
+				TeX-comment-start-regexp "+[ \t]*$")))
       (delete-region (line-beginning-position) (line-end-position))
       (indent-according-to-mode))))
 
