@@ -7,7 +7,7 @@ AC_DIVERT_PUSH(DEFAULTS)dnl
 MY_LC_CTYPE=$LC_CTYPE]
 AC_DIVERT_POP()
 
-AC_INIT(preview-latex,0.7.1,preview-latex-bugs@lists.sourceforge.net)
+AC_INIT(preview-latex,0.7.2,preview-latex-bugs@lists.sourceforge.net)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
@@ -26,30 +26,30 @@ AC_ARG_ENABLE(8bit-test,[  --disable-8bit-test            Disable LaTeX 8-bit te
 	  else ENABLE8BIT=true ; fi  ], [ ENABLE8BIT=true ])
 
 AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
-	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
+	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS="${withval}"; fi ])
 AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
-	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
+	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS="${withval}"; fi ])
 
 AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR        TEXMF tree to install into],
- [ texmfdir=${withval} ; 
-#   if test ! -d $texmfdir  ; then
-#      AC_MSG_ERROR([--with-texmf-dir=$texmfdir: Directory does not exist])
-#   fi
+ [ texmfdir="${withval}" ; 
+   if test ! -d "`eval echo "$texmfdir"`"  ; then
+      AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
+   fi
    previewtexmfdir=$texmfdir/tex/latex/preview
    previewdocdir=$texmfdir/doc/latex/styles
    ])
 
 AC_ARG_WITH(tex-dir,[  --with-tex-dir=DIR        Location to install preview TeX sources],
- [ previewtexmfdir=${withval} ; 
-   if test ! -d $previewtexmfdir  ; then
-      AC_MSG_ERROR([--with-tex-dir=$previewtexmfdir: Directory does not exist])
+ [ previewtexmfdir="${withval}" ; 
+   if test ! -d "`eval echo "$previewtexmfdir"`"  ; then
+      AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
    fi
    ])
 
 AC_ARG_WITH(doc-dir,[  --with-doc-dir=DIR        Location to install preview.dvi],
- [ previewdocdir=${withval} ; 
-   if test ! -d $previewdocdir  ; then
-      AC_MSG_ERROR([--with-doc-dir=$previewdocdir: Directory does not exist])
+ [ previewdocdir="${withval}" ; 
+   if test ! -d "`eval echo "$previewdocdir"`"  ; then
+      AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
    fi
    ])
 
@@ -65,8 +65,8 @@ if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    AC_PATH_PACKAGEDIR
    ICONFORM="--eval '(setq data-directory-list (cons \"images\" data-directory-list))'"
-   lispdir=${packagedir}/lisp/preview
-   icondir=${packagedir}/etc/preview
+   lispdir="${packagedir}/lisp/preview"
+   icondir="${packagedir}/etc/preview"
 else
    PLAT_LISP=prv-emacs.el
    AC_MSG_CHECKING([if $EMACS supports images])
@@ -79,7 +79,7 @@ else
    
    AC_PATH_LISPDIR
    ICONFORM= # TODO: fill this in
-   icondir=${lispdir}
+   icondir="${lispdir}"
 fi
 
 AC_SUBST(PLAT_LISP)
