@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.111 2002-04-14 00:10:35 dakas Exp $
+;; $Id: preview.el,v 1.112 2002-04-14 01:36:04 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -349,7 +349,10 @@ set to `postscript'."
   "Last error raised and to be reported.")
 
 (defun preview-log-error (err context &optional process)
-  "Catch phrase to format error message."
+  "Log an error message to run buffer.
+ERR is the caught error syndrome, CONTEXT is where it
+occured, PROCESS is the process for which the run-buffer
+is to be used."
   (when (or (null process) (buffer-name (process-buffer process)))
     (with-current-buffer (if process (process-buffer process) (current-buffer))
       (save-excursion
@@ -360,6 +363,9 @@ set to `postscript'."
   (setq preview-error-condition err))
 
 (defun preview-reraise-error (process)
+  "Raise an error that has been logged.
+Makes sure that PROCESS is removed from the \"Compilation\"
+tag in the mode line."
   (when preview-error-condition
     (unwind-protect
 	(signal (car preview-error-condition) (cdr preview-error-condition))
@@ -1127,7 +1133,8 @@ on first use.")
 (defun preview-buffer-restore (buffer-misc)
   "At end of desktop load, reinstate previews.
 This delay is so that minor modes changing buffer geometry
-\(like `x-symbol-mode' does) will not wreak havoc."
+\(like `x-symbol-mode' does) will not wreak havoc.
+BUFFER-MISC is the appropriate data to be used."
   (add-hook 'desktop-delay-hook `(lambda ()
 				   (with-current-buffer ,(current-buffer)
 				     (preview-buffer-restore-internal
@@ -1754,15 +1761,17 @@ Those are put in local variables `preview-scale' and
 `preview-resolution'.  Calculation is done in source buffer
 specified by BUFF."
   (let (scale res colors)
-    (with-current-buffer buff
-      (setq scale (if (functionp preview-scale-function)
-		      (funcall preview-scale-function)
-		    preview-scale-function)
-	    res (cons (/ (* 25.4 (display-pixel-width))
-			 (display-mm-width))
-		      (/ (* 25.4 (display-pixel-height))
-			 (display-mm-height)))
-	    colors (preview-gs-get-colors)))
+    (condition-case nil
+	(with-current-buffer buff
+	  (setq scale (if (functionp preview-scale-function)
+			  (funcall preview-scale-function)
+			preview-scale-function)
+		res (cons (/ (* 25.4 (display-pixel-width))
+			     (display-mm-width))
+			  (/ (* 25.4 (display-pixel-height))
+			     (display-mm-height)))
+		colors (preview-gs-get-colors)))
+      (error (error "Display geometry unavailable")))
     (setq preview-scale scale)
     (setq preview-resolution res)
     (setq preview-gs-colors colors)))
@@ -1832,18 +1841,22 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 		    'TeX-master-file)
 		  file))
 	(process (TeX-run-command "Preview-LaTeX" command file)))
-    (preview-get-geometry commandbuff)
-    (setq preview-gs-file pr-file)
-    (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
-    (TeX-parse-reset)
-    (setq TeX-parse-function 'TeX-parse-TeX)
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel name file process))))
+    (condition-case err
+	(progn
+	  (preview-get-geometry commandbuff)
+	  (setq preview-gs-file pr-file)
+	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
+	  (TeX-parse-reset)
+	  (setq TeX-parse-function 'TeX-parse-TeX)
+	  (if TeX-process-asynchronous
+	      process
+	    (TeX-synchronous-sentinel name file process)))
+      (error (preview-log-error err "Preview" process)))
+    (preview-reraise-error process)))
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.111 $"))
+	(rev "$Revision: 1.112 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
