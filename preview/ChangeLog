@@ -1,5 +1,7 @@
 2005-03-23  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* Makefile.in: add tarball-ready target
+
 	* configure.in: Add check for perl
 
 	* doc/Makefile.in: Use the configure-provided $PERL
