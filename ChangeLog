@@ -1,3 +1,9 @@
+2003-02-17  David Kastrup  <dak@gnu.org>
+
+	* font-latex.el (font-latex-find-matching-close): Remove a very
+	complicated way of doing nothing since the byte compiler warns
+	about it.
+
 2003-02-15  David Kastrup  <dak@gnu.org>
 
 	* tex.el (LaTeX): Change :prefix field to LaTeX.
