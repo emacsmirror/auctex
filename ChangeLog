@@ -1,3 +1,20 @@
+2004-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-display-string-face): Remove `min-colors'
+	spec as XEmacs does not like them.
+	(TeX-fold-hide-item): Set face on the glyph and not on the
+	overlay/extent in XEmacs.
+	(TeX-fold-post-command): Do not check detached extents in XEmacs.
+
+	* context.el (ConTeXt-mode-menu): Check if variable is defined.
+	Necessary for XEmacs compatibility.
+	(ConTeXt-menu-update): Fix creation of environment menus.
+
+	* latex.el (LaTeX-mode-menu): Check if variable is defined.
+	Necessary for XEmacs compatibility.
+
+	* tex-info.el (TeXinfo-mode-menu): Ditto.
+
 2004-07-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-set-title-face): New function.
