@@ -1,5 +1,7 @@
 2002-03-24  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: Info about RedHat 7.3 beta.
+
 	* preview.dtx (subsection{The internals}): Spacing improvements.
 
 	* prv-emacs.el (replace-highlight): advise so that query-replace
