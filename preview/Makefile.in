@@ -17,6 +17,8 @@ ICON_SOURCES = \
  images/prvwrk12.xpm  images/prvwrk14.xpm       images/prvwrk16.xpm \
  images/prvwrk20.xpm  images/prvwrk24.xbm       images/prvwrk24.xpm
 
+DISTTEXTS = README INSTALL PROBLEMS TODO INSTALL.windows FAQ
+
 prefix = @prefix@$(null)
 lispdir = @lispdir@$(null)
 icondir = @icondir@$(null)
@@ -116,23 +118,29 @@ preview-latex.el: preview.el auto.el
 .PHONY: clean
 
 clean:
-	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
-	   preview-latex.el
-	rm -rf *.prv 
+	rm -f latex.out testdocstrip.tex preview-latex.el
+	rm -rf *.prv *.elc *~ *.aux *.dvi *.log 
 	(cd doc ; $(MAKE) clean)
 	(cd latex ; $(MAKE) clean)
 
 .PHONY: distclean
 
 distclean: clean
-	rm -f config.log config.cache config.status config.h
-	rm -f configure auto.el *.png TAGS
-	rm -f Makefile */Makefile
+	rm -rf autom4te.cache
+	rm -f config.log config.cache config.status
+	rm -f Makefile */Makefile auto.el
+
+.PHONY: maintainer-clean
+
+maintainer-clean: 
+	(cd doc ; $(MAKE) maintainer-clean)
+	$(MAKE) distclean
+	rm -f $(DISTTEXTS)
 
 .PHONY: tarball-ready
 
 tarball-ready: 
 	autoconf
-	(cd doc; make all README INSTALL PROBLEMS TODO INSTALL.windows FAQ)
-	(cd doc; mv README INSTALL PROBLEMS TODO INSTALL.windows FAQ ..)
+	(cd doc; make preview-latex.info $(DISTTEXTS))
+	(cd doc; mv $(DISTTEXTS) ..)
 	$(MAKE) distclean
