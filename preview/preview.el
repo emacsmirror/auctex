@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.89 2002-03-30 19:45:23 dakas Exp $
+;; $Id: preview.el,v 1.90 2002-03-31 00:25:12 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1218,17 +1218,26 @@ on a document not configured for preview.  \"auctex\", \"active\",
   :group 'preview-latex
   :type '(list (set :inline t :tag "Options known to work"
 		    :format "%t:\n%v%h" :doc
-"The above options are all the available ones
+"The above options are all the useful ones
 at the time of the release of this package.
 You should not need \"Other options\" unless you
-upgraded to a fancier version of just the LaTeX style."
+upgraded to a fancier version of just the LaTeX style.
+Please also note that `psfixbb' fails to have an effect if
+`preview-fast-conversion' or `preview-prefer-TeX-bb'
+are selected."
 		    (const "displaymath")
 		    (const "floats")
 		    (const "graphics")
 		    (const "textmath")
 		    (const "sections")
-		    (const "noconfig")
+		    (const "showlabels")
 		    (const "psfixbb"))
+	       (set :tag "Expert options" :inline t
+		    :format "%t:\n%v%h" :doc
+		    "Expert options should not be enabled permanently."
+		    (const "noconfig")
+		    (const "showbox")
+		    (const "tracingall"))
 	       (repeat :inline t :tag "Other options" (string))))
 
 (defun preview-make-options ()
@@ -1503,13 +1512,12 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			  ;; We may use these in another buffer.
 			  offset (car TeX-error-offset)
 			  file (car TeX-error-file))
-		    (if (or (null file) (null line))
-			(error "Parse error in Preview-LaTeX run"))
-		    (run-hooks 'TeX-translate-location-hook)
-		    (push (list snippet box file
-				(+ line offset)
-				string after-string)
-			  parsestate))
+		    (when (and (stringp file) (TeX-match-extension file))
+		      (run-hooks 'TeX-translate-location-hook)
+		      (push (list snippet box file
+				  (+ line offset)
+				  string after-string)
+			    parsestate)))
 		;; else normal error message
 		(forward-line)
 		(re-search-forward "^l\\.[0-9]" nil t)
@@ -1698,7 +1706,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.89 $"))
+	(rev "$Revision: 1.90 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
