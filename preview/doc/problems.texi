@@ -1,24 +1,12 @@
-@c This is to enable generation of text-file from this file
-@ifnottex
-@unmacro AUCTeX
-@macro AUCTeX {}
-AUC@w{ }@TeX{}
-@end macro
-@unmacro LaTeX
-@unmacro previewlatex
-@macro LaTeX {}
-La@TeX{}
-@end macro
-@macro previewlatex {}
-preview-latex
-@end macro
+@include macros.texi
+@ifset rawfile
 @chapter Known problems
-@end ifnottex
+
+@end ifset
 @c -----------------------
 @cindex @kbd{M-x preview-report-bug @key{RET}}
 @cindex @code{preview-report-bug}
 @cindex Report a bug
-
 A number of issues are known concerning the interoperation with various
 other software.
 
