@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.6 1992-03-19 13:29:56 krab Exp $
+# $Id: Makefile,v 5.7 1992-03-19 13:35:05 krab Exp $
 #
 
 ELISPDIR=/user/krab/Lib/auc-tex/auc-tex
@@ -13,7 +13,7 @@ EMACS=emacs
 TEX=tex
 ELISPSRC= auc-tex.el min-map.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el min-out.el tex-dbg.el tex-names.el vir-symb.el \
-	ltx-sec.el tex-buf.el tex-math.el tex-site.el help-ext.el
+	ltx-sec.el tex-buf.el tex-math.el tex-site.el 
 OTHERFILES = COPYING INTRO README Makefile
 
 all: $(ELISPDIR) idetex refcard

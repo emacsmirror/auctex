@@ -9,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-19 13:29:58 $|$Revision: 5.28 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-03-19 13:35:07 $|$Revision: 5.29 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.28 1992-03-19 13:29:58 krab Exp $
+;; $Id: auc-tex.el,v 5.29 1992-03-19 13:35:07 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Thu Mar 19 14:16:09 1992
-;; Update Count    : 502
+;; Last Modified On: Thu Mar 19 14:34:24 1992
+;; Update Count    : 503
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1003,5 +1003,5 @@ If CHAR is nil, or \"\", an error will occur."
 (defun TeX-mode-help ()
   "Put up window describing TeX-mode."
   (interactive)
-  (describe-mode major-mode) )
+  (describe-mode))
   
