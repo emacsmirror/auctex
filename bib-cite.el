@@ -6,7 +6,7 @@
 
 ;; Author:    Peter S. Galbraith <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.21  (Sept 08 2003)
+;; Version:   3.24  (Oct 28 2003)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
 ;;; This file is not part of GNU Emacs.
@@ -323,6 +323,8 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.24 Oct 28 2003 - PSG
+;;  - bib-cite-file-directory-p: new function to replace ff-paths code.
 ;; V3.23 Oct 09 2003 - PSG
 ;;  - some checkdoc cleanup; not yet complete.
 ;; V3.22 Sep 17 2003 - PSG
@@ -2583,6 +2585,13 @@ If CHAR is nil, or \"\", an error will occur."
          (setq result (cons (substring string start nil) result))
          (nreverse result))))
 
+(defun bib-cite-file-directory-p (file)
+  "Like default `file-directory-p' but allow FILE to end in // for ms-windows."
+  (save-match-data
+    (if (string-match "\\(.*\\)//$" file)
+	(file-directory-p (match-string 1 file))
+      (file-directory-p file))))
+
 (defun psg-list-env (env)
   "Return a list of directory elements in ENV variable (w/o leading $)
 argument may consist of environment variable plus a trailing directory, e.g.
@@ -2601,7 +2610,7 @@ bib-dos-or-os2-variable affects:
                          (or (and (fboundp 'TeX-split-string)
                                   (TeX-split-string sep-char value))
                              (dired-split sep-char value)))))
-      (loop for x in entries if (ff-paths-file-directory-p x) collect x))))
+      (loop for x in entries if (bib-cite-file-directory-p x) collect x))))
 
 (provide 'bib-cite)
 ;;; bib-cite.el ends here

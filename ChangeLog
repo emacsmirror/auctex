@@ -1,3 +1,8 @@
+2003-11-17  Peter S Galbraith  <psg@debian.org>
+
+	* bib-cite.el (bib-cite-file-directory-p): New functions.  I had
+	introduced a call to code from ff-paths.el by mistake.
+
 2003-11-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/scrbase.el (TeX-add-style-hook): Added further symbols to
