@@ -25,13 +25,22 @@ display engine quirks.  Report bugs you can reproduce along with the
 files needed to reproduce them.  The new display engine for 21.1 is
 quite powerful, and some bugs still might be lurking inside.
 
-Here is what currently works: edit Makefile to match your docstrip.cfg
-file.  Call make.  make preview.el accessible to Emacs.  Load it by
-putting (require 'preview) into your .emacs.  Be sure to have AucTeX
-up and working.  C-c C-c g <RET> should then give you a graphics
-preview, if you have a statement like
-\usepackage[graphics,floats,textmath,displaymath,delayed]{preview}
-in your document preample.
+Here is what currently works: 
+
+* Run ./configure to create the makefile.  If it can't find your emacs
+  or texmf tree, use the --with-emacs=/opt/bin/emacs or
+  --with-texmf=/usr/lib/texmf flags.
+
+* Call make to generate sty and elc files.
+
+* make install to install TeX and Emacs Lisp files.
+
+* Load it by putting (require 'preview) into your .emacs.  
+
+Be sure to have AucTeX up and working.  C-c C-c g <RET> should then
+give you a graphics preview, if you have a statement like
+\usepackage[graphics,floats,textmath,displaymath,delayed]{preview} in
+your document preample.
 
 You almost certainly want to put (setq gs-device "x11alpha") into your
 .emacs file.  This will turn on anti-aliasing.
