@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: auc-tex@sunsite.dk
 ;; Created:    06 July 1996
-;; Version:    $Id: font-latex.el,v 5.81 2004-11-01 18:27:43 angeli Exp $
+;; Version:    $Id: font-latex.el,v 5.82 2004-11-02 18:32:58 angeli Exp $
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -495,25 +495,7 @@ fontification regexp like so:
 		       keywords-entry t)
 	  (when (= level 1)
 	    (add-to-list (intern (concat "font-latex-keywords-2"))
-			 keywords-entry t)))))
-
-    ;; Add the "fixed" matchers and highlighters.
-    (dolist (item
-	     '(("\\(^\\|[^\\\\]\\)\\(&+\\)" 2 font-latex-warning-face)
-	       ("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)
-	       (font-latex-match-quotation . font-latex-string-face)))
-      (add-to-list 'font-latex-keywords-1 item)
-      (add-to-list 'font-latex-keywords-2 item))
-    (dolist (item 
-	     '((font-latex-match-math-env
-		(0 font-latex-math-face append t))
-	       (font-latex-match-math-envII
-		(0 font-latex-math-face append t))
-	       ("\\\\[@A-Za-z]+"
-		(0 font-latex-sedate-face append))
-	       (font-latex-match-script
-		(1 (font-latex-script (match-beginning 0)) append))))
-      (add-to-list 'font-latex-keywords-2 item t))))
+			 keywords-entry t)))))))
 (font-latex-make-built-in-keywords)
 
 (defcustom font-latex-user-keyword-classes nil
@@ -618,7 +600,25 @@ are missing, the face will be applied to the command itself.
 	;; Add the matcher to `font-latex-keywords-2'.
 	(add-to-list 'font-latex-keywords-2
 		     (font-latex-keyword-matcher prefix name face
-		      (if (listp type) (car type) type)) t)))))
+		      (if (listp type) (car type) type)) t))))
+
+  ;; Add the "fixed" matchers and highlighters.
+  (dolist (item
+	   '(("\\(^\\|[^\\\\]\\)\\(&+\\)" 2 font-latex-warning-face)
+	     ("\\$\\$\\([^$]+\\)\\$\\$" 1 font-latex-math-face)
+	     (font-latex-match-quotation . font-latex-string-face)))
+    (add-to-list 'font-latex-keywords-1 item)
+    (add-to-list 'font-latex-keywords-2 item))
+  (dolist (item 
+	   '((font-latex-match-math-env
+	      (0 font-latex-math-face append t))
+	     (font-latex-match-math-envII
+	      (0 font-latex-math-face append t))
+	     ("\\\\[@A-Za-z]+"
+	      (0 font-latex-sedate-face append))
+	     (font-latex-match-script
+	      (1 (font-latex-script (match-beginning 0)) append))))
+    (add-to-list 'font-latex-keywords-2 item t)))
 (font-latex-make-user-keywords)
 
 (defvar font-latex-keywords font-latex-keywords-1
