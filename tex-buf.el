@@ -3,10 +3,10 @@
 ;; Maintainer: David Kastrup <auc-tex@sunsite.dk>
 ;; Version: 11.14
 
-;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen 
+;; Copyright (C) 1993, 1996, 2001 Per Abrahamsen
 ;; Copyright (C) 1991 Kresten Krab Thorup
-;; Copyright (C) 2003 Free Software Foundation
-;; 
+;; Copyright (C) 2003, 2004 Free Software Foundation
+;;
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -47,7 +47,7 @@
 		shell-command-option)
 	       ((boundp 'shell-command-switch)
 		shell-command-switch)
-	       (t 
+	       (t
 		"/c")))
 	(t				;Unix & EMX (Emacs 19 port to OS/2)
 	 "-c"))
@@ -60,12 +60,12 @@
 ;; The general idea is, that there is one process and process buffer
 ;; associated with each master file, and one process and process buffer
 ;; for running TeX on a region.   Thus, if you have N master files, you
-;; can run N + 1 processes simultaneously.  
+;; can run N + 1 processes simultaneously.
 ;;
 ;; Some user commands operates on ``the'' process.  The following
 ;; algorithm determine what ``the'' process is.
 ;;
-;; IF   last process started was on a region 
+;; IF   last process started was on a region
 ;; THEN ``the'' process is the region process
 ;; ELSE ``the'' process is the master file (of the current buffer) process
 
@@ -75,7 +75,7 @@ Return non-nil if document need to be re-TeX'ed."
   (interactive (list (TeX-master-file)))
   (if (string-equal name "")
       (setq name (TeX-master-file)))
-  
+
   (TeX-check-files (concat name "." (TeX-output-extension))
 		   (cons name (TeX-style-list))
 		   TeX-file-extensions))
@@ -153,7 +153,7 @@ visible part of the buffer."
 (defun TeX-recenter-output-buffer (line)
   "Redisplay buffer of TeX job output so that most recent output can be seen.
 The last line of the buffer is displayed on line LINE of the window, or
-at bottom if LINE is nil." 
+at bottom if LINE is nil."
   (interactive "P")
   (let ((buffer (TeX-active-buffer)))
     (if buffer
@@ -177,7 +177,7 @@ at bottom if LINE is nil."
       (error "No TeX process to kill"))))
 
 (defun TeX-home-buffer ()
-  "Go to the buffer where you last issued a TeX command.  
+  "Go to the buffer where you last issued a TeX command.
 If there is no such buffer, or you already are in that buffer, find
 the master file."
   (interactive)
@@ -227,7 +227,7 @@ command."
 	(setq command
 	      (read-from-minibuffer (concat name " command: ") command
 				    nil nil)))
-    
+
     ;; Now start the process
     (TeX-process-set-variable name 'TeX-command-next TeX-command-Show)
     (apply hook name command (apply file nil) nil)))
@@ -262,8 +262,8 @@ Try each original with each member of EXTENSIONS, in all directories
 in TeX-check-path."
   (let ((found nil)
 	(regexp (concat "\\`\\("
-			(mapconcat (function (lambda (dir)
-				      (regexp-quote (expand-file-name dir))))
+			(mapconcat (lambda (dir)
+				     (regexp-quote (expand-file-name dir)))
 				   TeX-check-path "\\|")
 			"\\).*\\("
 			(mapconcat 'regexp-quote originals "\\|")
@@ -297,11 +297,11 @@ in TeX-check-path."
   (interactive (list (TeX-master-file)))
   (if (string-equal name "")
       (setq name (TeX-master-file)))
-  
+
   (let ((found nil)
 	(regexp (concat "\\`\\("
-			(mapconcat (function (lambda (dir)
-				      (regexp-quote (expand-file-name dir))))
+			(mapconcat (lambda (dir)
+				     (regexp-quote (expand-file-name dir)))
 				   TeX-check-path "\\|")
 			"\\).*\\("
 			(mapconcat 'regexp-quote (cons name (TeX-style-list)) "\\|")
@@ -366,7 +366,7 @@ in TeX-check-path."
   "Query the user for a printer name.
 COMMAND is the default command to use if the entry for the printer in
 TeX-printer-list does not itself have it specified in the ELEMENT'th
-entry." 
+entry."
   (or command (setq command TeX-print-command))
   (or element (setq element 1))
   (let ((printer (if TeX-printer-list
@@ -375,7 +375,7 @@ entry."
 						TeX-printer-default ") ")
 					TeX-printer-list))
 		   "")))
-    
+
     (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
 		      printer))
     (if (or (null printer) (string-equal "" printer))
@@ -409,7 +409,7 @@ entry."
   "Get the extension of the current TeX output file"
   (if (listp TeX-output-extension)
       (car TeX-output-extension)
-    (or (TeX-process-get-variable (TeX-active-master) 
+    (or (TeX-process-get-variable (TeX-active-master)
 				'TeX-output-extension
 				TeX-output-extension)
 	TeX-output-extension)))
@@ -424,19 +424,19 @@ entry."
   (TeX-active-master (TeX-view-extension)))
 
 (defun TeX-output-style-check (styles)
-  "Check STYLES compared to the current view output file extension and 
+  "Check STYLES compared to the current view output file extension and
 the current style options."
   (let ((ext  (TeX-output-extension))
 	(files (TeX-style-list)))
-    (while (and 
-	    styles 
+    (while (and
+	    styles
 	    (or
 	     (not (string-match (car (car styles)) ext))
 	     (let ((style (nth 1 (car styles))))
 	       (cond
 		((listp style)
-		 (while 
-		     (and style 
+		 (while
+		     (and style
 			  (TeX-member (car style) files 'string-match))
 		   (setq style (cdr style)))
 		 style)
@@ -480,8 +480,8 @@ Return the new process."
     (setq TeX-parse-function 'TeX-parse-command)
     (setq TeX-command-default default)
     (setq TeX-sentinel-function
-	  (function (lambda (process name)
-		      (message (concat name ": done.")))))
+	  (lambda (process name)
+	    (message (concat name ": done."))))
     (if TeX-process-asynchronous
 	(let ((process (start-process name buffer TeX-shell
 				      TeX-shell-command-option command)))
@@ -543,8 +543,8 @@ Return the new process."
 	  process
 	(TeX-synchronous-sentinel name file process)))))
 
-;; backward compatibilty 
- 
+;; backward compatibilty
+
 (defalias 'TeX-run-LaTeX 'TeX-run-TeX)
 
 
@@ -581,7 +581,7 @@ for the dviout previewer, especially when used with PC-9801 series."
     (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
       (send-string-to-terminal "\e[2J")) ; clear screen
     (call-process TeX-shell (if (eq system-type 'ms-dos) "con") nil nil
-                TeX-shell-command-option command)
+		TeX-shell-command-option command)
     (if (eq system-type 'ms-dos)
       (redraw-display)))
 
@@ -648,7 +648,7 @@ Error parsing on C-x ` should work with a bit of luck."
     (TeX-parse-reset)
     (setq TeX-parse-function 'TeX-parse-TeX)
     ;; use the sentinel-function that the major mode sets, not the LaTeX one
-    (setq TeX-sentinel-function sentinel-function)))  
+    (setq TeX-sentinel-function sentinel-function)))
 
 ;;; Command Sentinels
 
@@ -657,19 +657,19 @@ Error parsing on C-x ` should work with a bit of luck."
   (let* ((buffer (TeX-process-buffer file)))
     (save-excursion
       (set-buffer buffer)
-      
+
       ;; Append post-mortem information to the buffer
       (goto-char (point-max))
       (insert "\n" mode-name (if (and result (zerop result))
 				 " finished" " exited") " at "
 	      (substring (current-time-string) 0 -5))
       (setq mode-line-process ": exit")
-      
+
       ;; Do command specific actions.
       (setq TeX-command-next TeX-command-Show)
       (goto-char (point-min))
       (apply TeX-sentinel-function nil name nil)
-      
+
       ;; Force mode line redisplay soon
       (set-buffer-modified-p (buffer-modified-p)))))
 
@@ -683,7 +683,7 @@ Error parsing on C-x ` should work with a bit of luck."
 	  ((memq (process-status process) '(signal exit))
 	   (save-excursion
 	     (set-buffer buffer)
-	     
+
 	     ;; Append post-mortem information to the buffer
 	     (goto-char (point-max))
 	     (insert-before-markers "\n" mode-name " " msg)
@@ -691,34 +691,34 @@ Error parsing on C-x ` should work with a bit of luck."
 	     (insert " at "
 		     (substring (current-time-string) 0 -5))
 	     (forward-char 1)
-	     
+
 	     ;; Do command specific actions.
 	     (TeX-command-mode-line process)
 	     (setq TeX-command-next TeX-command-Show)
 	     (goto-char (point-min))
 	     (apply TeX-sentinel-function process name nil)
-	     
-	     
+
+
 	     ;; If buffer and mode line will show that the process
 	     ;; is dead, we can delete it now.  Otherwise it
 	     ;; will stay around until M-x list-processes.
 	     (delete-process process)
-	     
+
 	     ;; Force mode line redisplay soon
 	     (set-buffer-modified-p (buffer-modified-p))))))
   (setq compilation-in-progress (delq process compilation-in-progress)))
 
 
-(defvar TeX-sentinel-function (function (lambda (process name)))
+(defvar TeX-sentinel-function (lambda (process name))
   "Hook to cleanup TeX command buffer after temination of PROCESS.
 NAME is the name of the process.")
 
   (make-variable-buffer-local 'TeX-sentinel-function)
 
 
-(defvar TeX-sentinel-default-function (function (lambda (process name)))
-  "Default for TeX-sentinel-function. To be set in major mode. 
-Hook to cleanup TeX command buffer after temination of PROCESS. 
+(defvar TeX-sentinel-default-function (lambda (process name))
+  "Default for TeX-sentinel-function. To be set in major mode.
+Hook to cleanup TeX command buffer after temination of PROCESS.
 NAME is the name of the process.")
 
   (make-variable-buffer-local 'TeX-sentinel-default-function)
@@ -768,8 +768,8 @@ Return nil ifs no errors were found."
   (cond ((TeX-TeX-sentinel-check process name))
 	((and (save-excursion
 		(or
-                 (re-search-forward "^LaTeX Warning: Citation" nil t)
-                 (re-search-forward "^Package natbib Warning: Citation" nil t)))
+		 (re-search-forward "^LaTeX Warning: Citation" nil t)
+		 (re-search-forward "^Package natbib Warning: Citation" nil t)))
 	      (with-current-buffer TeX-command-buffer
 		(and (LaTeX-bibliography-list)
 		     (TeX-check-files (TeX-master-file "bbl")
@@ -777,25 +777,25 @@ Return nil ifs no errors were found."
 				      (append TeX-file-extensions
 					      BibTeX-file-extensions)))))
 	 (message (concat "You should run BibTeX to get citations right, "
-                          (TeX-current-pages)))
+			  (TeX-current-pages)))
 	 (setq TeX-command-next (with-current-buffer TeX-command-buffer
 				  TeX-command-BibTeX)))
 	((or
-          (re-search-forward "^LaTeX Warning: Label(s)" nil t)
-          (re-search-forward "^Package natbib Warning: Citation(s)" nil t))
+	  (re-search-forward "^LaTeX Warning: Label(s)" nil t)
+	  (re-search-forward "^Package natbib Warning: Citation(s)" nil t))
 	 (message (concat "You should run LaTeX again "
 			  "to get references right, "
-                          (TeX-current-pages)))
+			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^LaTeX Warning: Reference" nil t)
 	 (message (concat name ": there were unresolved references, "
-                          (TeX-current-pages)))
+			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	((or
-          (re-search-forward "^LaTeX Warning: Citation" nil t)
-          (re-search-forward "^Package natbib Warning:.*undefined citations" nil t))
+	  (re-search-forward "^LaTeX Warning: Citation" nil t)
+	  (re-search-forward "^Package natbib Warning:.*undefined citations" nil t))
 	 (message (concat name ": there were unresolved citations, "
-                          (TeX-current-pages)))
+			  (TeX-current-pages)))
 	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
@@ -914,7 +914,7 @@ command."
     (save-excursion
       (goto-char (process-mark process))
       (insert-before-markers string)
-      (set-marker (process-mark process) (point))) 
+      (set-marker (process-mark process) (point)))
     (save-excursion
       (save-match-data
 	(if (re-search-backward "\\[[0-9]+\\(\\.[0-9\\.]+\\)?\\]" nil t)
@@ -1003,10 +1003,10 @@ that the TeX header and trailer information is also included.
 The OFFSET is used to provide the debugger with information about the
 original file."
   (let* (;; We shift buffer a lot, so we must keep track of the buffer
-	 ;; local variables.  
+	 ;; local variables.
 	 (header-end TeX-header-end)
 	 (trailer-start TeX-trailer-start)
-	 
+
 	 ;; We seach for header and trailer in the master file.
 	 (orig-buffer (current-buffer))
 	 (master-name (TeX-master-file TeX-default-extension))
@@ -1016,7 +1016,7 @@ original file."
 	 (font-lock-defaults-alist nil)
 	 (font-lock-defaults nil)
 	 (font-lock-maximum-size 0)
-	 (font-lock-mode-hook nil)	
+	 (font-lock-mode-hook nil)
 	 (font-lock-auto-fontify nil)
 	 (font-lock-mode-enable-list nil)
 	 ;; And insert them into the FILE buffer.
@@ -1041,7 +1041,7 @@ original file."
 			       ""
 			     (re-search-forward "[\r\n]" nil t)
 			     (buffer-substring (point-min) (point)))))))))
-	 
+
 	 ;; We search for the trailer from the master file, if it is
 	 ;; not present in the region.
 	 (trailer-offset 0)
@@ -1091,7 +1091,7 @@ original file."
 
 (defun TeX-region-file (&optional extension nondirectory)
   "Return TeX-region file name with EXTENSION.
-If optional second argument NONDIRECTORY is nil, do not include 
+If optional second argument NONDIRECTORY is nil, do not include
 the directory."
   (concat (if nondirectory "" (TeX-master-directory))
 	  (cond ((eq extension t)
@@ -1250,15 +1250,15 @@ You might want to examine and modify the free variables `file',
 		   (re-search-forward " \\(\\([^ \t]*$\\)\\|\\($\\)\\)")
 		   (TeX-match-buffer 1)))
 
-	 ;; And we have now found to the end of the context. 
-	 (context (buffer-substring context-start (progn 
+	 ;; And we have now found to the end of the context.
+	 (context (buffer-substring context-start (progn
 						    (forward-line 1)
 						    (end-of-line)
 						    (point))))
 	 ;; We may use these in another buffer.
 	 (offset (car TeX-error-offset) )
 	 (file (car TeX-error-file)))
-	 
+
     ;; Remember where we was.
     (setq TeX-error-point (point))
 
@@ -1297,7 +1297,7 @@ Return nil if we gave a report."
 		 (string-to-int (TeX-match-buffer 1))))
 	 (line-end (if bad-box (string-to-int (TeX-match-buffer 2))
 		     line))
-	 
+
 	 ;; Find the context
 	 (context-start (progn (if bad-box (end-of-line)
 				 (beginning-of-line))
@@ -1358,7 +1358,7 @@ Return nil if we gave a report."
 	(TeX-error-pointer 0))
 
     ;; Find help text entry.
-    (while (not (string-match (car (nth TeX-error-pointer 
+    (while (not (string-match (car (nth TeX-error-pointer
 					TeX-error-description-list))
 			      error))
       (setq TeX-error-pointer (+ TeX-error-pointer 1)))
@@ -1643,13 +1643,13 @@ example, if you use a \\sc command in a formula inside a footnote,
 calling for a footnote-sized small caps font.  This problem is solved
 by using a \\load command.")
 
-    ("Font .* not found." .                                    
+    ("Font .* not found." .
 "You requested a family/series/shape/size combination that is totally
 unknown.  There are two cases in which this error can occur:
   1) You used the \\size macro to select a size that is not available.
   2) If you did not do that, go to your local `wizard' and
      complain fiercely that the font selection tables are corrupted!")
- 
+
     ("TeX capacity exceeded, sorry .*" .
 "TeX has just run out of space and aborted its execution. Before you
 panic, remember that the least likely cause of this error is TeX not
@@ -1667,7 +1667,7 @@ The end of the error indicator tells what kind of space TeX ran out
 of. The more common ones are listed below, with an explanation of
 their probable causes.
 
-buffer size 
+buffer size
 ===========
 Can be caused by too long a piece of text as the argument
 of a sectioning, \\caption, \\addcontentsline, or \\addtocontents
@@ -1678,31 +1678,31 @@ problem, use a shorter optional argument. Even if you're producing a
 table of contents or a list of figures or tables, such a long entry
 won't help the reader.
 
-exception dictionary 
+exception dictionary
 ====================
 You have used \\hyphenation commands to give TeX
 more hyphenation information than it has room for. Remove some of the
 less frequently used words from the \\hyphenation commands and insert
 \\- commands instead.
 
-hash size 
+hash size
 =========
 Your input file defines too many command names and/or uses
 too many cross-ref- erencing labels.
 
-input stack size 
+input stack size
 ================
 This is probably caused by an error in a command
 definition. For example, the following command makes a circular
 definition, defining \\gnu in terms of itself:
 
-          \\newcommand{\\gnu}{a \\gnu} % This is wrong!
+	  \\newcommand{\\gnu}{a \\gnu} % This is wrong!
 
 When TeX encounters this \\gnu command, it will keep chasing its tail
 trying to figure out what \\gnu should produce, and eventually run out
 of ``input stack''.
 
-main memory size 
+main memory size
 ================
 This is one kind of space that TeX can run out of when processing a
 short file. There are three ways you can run TeX out of main memory
@@ -1733,7 +1733,7 @@ still writing the document, simply add a \\clearpage command and forget
 about the problem until you're ready to produce the final version.
 Changes to the input file are likely to make the problem go away.
 
-pool size 
+pool size
 =========
 You probably used too many cross-ref-erencing \\labels and/or defined
 too many new command names. More precisely, the labels and command
@@ -1743,7 +1743,7 @@ by omitting the right brace that ends the argument of either a counter
 command such as \\setcounter, or a \\newenvironment or \\newtheorem
 command.
 
-save size 
+save size
 =========
 This occurs when commands, environments, and the scopes of
 declarations are nested too deeply---for example, by having the
@@ -1758,7 +1758,7 @@ character. Exactly what could have happened depends upon what text
 editor you used. If examining the input file doesn't reveal the
 offending character, consult the Local Guide for suggestions.")
 
-    ("Undefined control sequence."   .  
+    ("Undefined control sequence."   .
 "TeX encountered an unknown command name. You probably misspelled the
 name. If this message occurs when a LaTeX command is being processed,
 the command is probably in the wrong place---for example, the error
@@ -1796,13 +1796,13 @@ by inserting a \\linebreak command.")
 "TeX could not find a good place to break the page, so it produced a
 page without enough text on it. ")
 
-;; New list items should be placed here 
-;; 
-;; ("err-regexp" . "context") 
-;; 
+;; New list items should be placed here
+;;
+;; ("err-regexp" . "context")
+;;
 ;; the err-regexp item should match anything
 
-    (".*" . "No help available"))	; end definition 
+    (".*" . "No help available"))	; end definition
 "A list of the form (\"err-regexp\" . \"context\") used by function
 \\{TeX-help-error} to display help-text on an error message or warning.
 err-regexp should be a regular expression matching the error message

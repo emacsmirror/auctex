@@ -20,7 +20,7 @@
 ;;; Customization
 
 (defgroup AUCTeX-jp nil
-  "Japanese support in AUCTeX." 
+  "Japanese support in AUCTeX."
   :group 'AUCTeX)
 
 ;; TeX-format-list need to be set in tex.el, not tex-jp.el.
@@ -56,17 +56,17 @@
     plain-TeX-mode-map
     "Command menu used in TeX mode."
     (list TeX-command-menu-name
-          :filter (lambda (&rest ignored)
-                    (TeX-mode-specific-command-menu 'plain-tex-mode))
-          "Bug."))
+	  :filter (lambda (&rest ignored)
+		    (TeX-mode-specific-command-menu 'plain-tex-mode))
+	  "Bug."))
 
 (easy-menu-define LaTeX-mode-command-menu
     LaTeX-mode-map
     "Command menu used in LaTeX mode."
     (list TeX-command-menu-name
-          :filter (lambda (&rest ignored)
-                    (TeX-mode-specific-command-menu 'latex-mode))
-          "Bug."))
+	  :filter (lambda (&rest ignored)
+		    (TeX-mode-specific-command-menu 'latex-mode))
+	  "Bug."))
 
 
 (setq LaTeX-command-style
@@ -74,8 +74,8 @@
 		  '(("^ams" "amsjlatex")
 		    ("^jslides$" "jslitex")
 		    ("^j-?\\(article\\|report\\|book\\)$" "jlatex"))
-                '(("^j-\\(article\\|report\\|book\\)$" "jlatex")
-                  ("^[jt]s?\\(article\\|report\\|book\\)$" "platex")))
+		'(("^j-\\(article\\|report\\|book\\)$" "jlatex")
+		  ("^[jt]s?\\(article\\|report\\|book\\)$" "platex")))
 	      LaTeX-command-style))
 
 (setcdr (assoc "%l" TeX-expand-list)
@@ -139,13 +139,13 @@
 (if (and (featurep 'xemacs)
 	 (featurep 'mule))
     (setq TeX-after-start-process-function
-	  (function (lambda (process)
-		      (set-process-input-coding-system
-		       process
-		       TeX-japanese-process-input-coding-system)
-		      (set-process-output-coding-system
-		       process
-		       TeX-japanese-process-output-coding-system)))))
+	  (lambda (process)
+	    (set-process-input-coding-system
+	     process
+	     TeX-japanese-process-input-coding-system)
+	    (set-process-output-coding-system
+	     process
+	     TeX-japanese-process-output-coding-system))))
 
 ;;; Japanese Parsing
 
@@ -289,7 +289,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 ;;;     ;; If there was no newline, and there is text in the paragraph, then
 ;;;     ;; create a newline.
 ;;;     (if (and (not oneleft) (> to from-plus-indent))
-;;; 	(newline))
+;;;	(newline))
     (goto-char from-plus-indent))
 
   (if (not (> to (point)))
@@ -525,13 +525,13 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 		  (LaTeX-indent-line)
 		  ;; Set prefixcol so whitespace in the prefix won't get lost.
 		  (and fill-prefix (not (equal fill-prefix ""))
-                       (setq prefixcol (current-column)))))
+		       (setq prefixcol (current-column)))))
 	      ;; Justify the line just ended, if desired.
 	      (if justify
-                (if (save-excursion (skip-chars-forward " \t") (eobp))
-                    (progn
-                      (delete-horizontal-space)
-                      (justify-current-line justify t t))
+		(if (save-excursion (skip-chars-forward " \t") (eobp))
+		    (progn
+		      (delete-horizontal-space)
+		      (justify-current-line justify t t))
 		    (forward-line -1)
 		    (justify-current-line justify nil t)
 		    (forward-line 1))))))
@@ -828,7 +828,7 @@ input stack size
 このエラーはおそらく命令定義中の誤りによるものです．例えば，次の命令は
 再帰的定義となっており，自分自身を使って\\gnuを定義しています．
 
-          \\newcommand{\\gnu}{a \\gnu} % これはだめ
+	  \\newcommand{\\gnu}{a \\gnu} % これはだめ
 
 この\\gnu命令を見つけるとTeXは\\gnuが何をうみだすのかを決定しようとし
 てその末尾をいつまでも追いつづけ，やがて``input stack''を使いきってし
