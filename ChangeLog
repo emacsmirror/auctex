@@ -1,3 +1,9 @@
+2004-08-11  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Added references.
+
+	* doc/todo.texi (Wishlist): Markup fix.
+
 2004-08-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-mik.el: Synchronize `TeX-command-list' with tex.el.

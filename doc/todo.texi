@@ -271,7 +271,7 @@ Finish the Texinfo mode.  For one thing, many Texinfo mode commands do
 not accept braces around their arguments.
 
 @item
-Hook up the letter environment with `bbdb.el'.
+Hook up the letter environment with @file{bbdb.el}.
 
 @end itemize
 

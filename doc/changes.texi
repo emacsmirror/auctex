@@ -27,11 +27,11 @@ and the customization will not work correctly.
 
 @item
 Support for hiding and auto-revealing macros, e.g. footnotes or
-citations, and environments in a buffer was added.
+citations, and environments in a buffer was added, @ref{Folding}.
 
 @item
 You can now control if indentation is done upon typing @key{RET} by
-customizing the variable @code{TeX-newline-function}.
+customizing the variable @code{TeX-newline-function}, @ref{Indenting}.
 
 @item
 Limited support for @code{doc.sty} and @code{ltxdoc.cls} (@samp{dtx}
@@ -134,7 +134,7 @@ variable @code{TeX-output-view-style}.
 @item
 You can control whether @code{TeX-insert-macro} (@kbd{C-c RET}) ask for
 all optional arguments by customizing the variable
-@code{TeX-insert-macro-default-style}.
+@code{TeX-insert-macro-default-style}, @ref{Completion}.
 
 @item
 @code{TeX-run-discard} is now able to completely detach a process that
