@@ -37,6 +37,14 @@ the file @file{INSTALL.windows}.
 @itemize @bullet
 @item A recent version of @w{Emacs 21}, alternatively @w{XEmacs 21}.
 
+Support for @w{Emacs 20} has been dropped in favor of getting more
+important work done.  For XEmacs, you need at least version 1.84 of the
+@code{xemacs-base} package (released on 01/27/2004) or a sumo tarball
+dated 02/02/2004 or newer for compiling @AUCTeX{} because of non-trivial
+changes in @file{easy-mmode.el}: please use the XEmacs package system
+for upgrading if necessary.  The current developers don't have the
+resources for providing backward compatibility to earlier versions.
+
 @item A working @LaTeX{} installation
 
 This is not really needed to @emph{install} the package, but will be
