@@ -1,3 +1,19 @@
+2004-04-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-mode-specific-command-menu): Now holds the logic for
+	returning a Command menu definition suitable for different Emacs
+	versions.  Its original content is now in the function
+	`TeX-mode-specific-command-menu-entries'.
+	(TeX-mode-specific-command-menu-entries): New function.
+	(plain-TeX-mode-command-menu): Simply use
+	`TeX-mode-specific-command-menu' instead of the logic which now
+	is part of it.
+	(AmSTeX-mode-command-menu): Ditto.
+
+	* latex.el (LaTeX-mode-command-menu): Ditto.
+
+	* context.el (ConTeXt-mode-command-menu): Ditto.
+
 2004-04-14  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/Makefile.in (clean): Remove *.tmp (created with auc-tex.ps).
