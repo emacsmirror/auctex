@@ -20,15 +20,15 @@ Files in this distribution
 
 	auc-tex.el		The main file of AUC TeX
 	tex-site.el		Site specific setup
-	latex-environment.el	Environment functions
-	latex-section.el	Sectioning functions
-	tex-buffer.el		Invoking LaTeX from inside Emacs
-	tex-debug.el		Debugging LaTeX and TeX documents
+	ltx-env.el		Environment functions
+	ltx-sec.el		Sectioning functions
+	tex-buf.el		Invoking LaTeX from inside Emacs
+	tex-dbg.el		Debugging LaTeX and TeX documents
 	tex-misc.el		Miscellaneous utility functions
-	outline-m.el		Outline mode as minor mode
+	min-out.el		Outline mode as minor mode
 	tex-math.el		Smart math minor mode for writing
 				lots of LaTeX math symbols
-	minor-map.el		Management of keymaps for minor modes
+	min-map.el		Management of keymaps for minor modes
 
 
 Installation
@@ -91,7 +91,7 @@ or site-setup file. This is what I use:
 ;; 
 
 (define-key Ctl-C-keymap "o" 'outline-minor-mode) 
-(autoload 'outline-minor-mode "outline-m" t)
+(autoload 'outline-minor-mode "min-out" t)
 
 (make-variable-buffer-local 'outline-prefix-char)
 (setq-default outline-prefix-char "\C-l")
@@ -141,10 +141,10 @@ Availability
 ------------
 
 AUC-TeX is available by anonymous ftp to `iesd.auc.dk' as
-"/pub/emacs-lisp/auc-tex.tar.Z".  Also, it should be available at
-major TeX and Elisp archives around the world.  In case you don't have
-access anonymous ftp, you can get it by Email requests to
-`auc-tex_mgr@iesd.auc.dk'.
+"/pub/emacs-lisp/auc-tex-X.x.tar.Z". (where `X.x' specifies the
+release version) Also, it should be available at major TeX and Elisp
+archives around the world.  In case you don't have access anonymous
+ftp, you can get it by Email requests to `auc-tex_mgr@iesd.auc.dk'.
 
 Contacts
 --------
