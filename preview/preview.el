@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.20 2001-10-04 08:06:07 dakas Exp $
+;; $Id: preview.el,v 1.21 2001-10-04 14:23:06 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -48,6 +48,13 @@
   (defvar error)
   (require 'tex-buf)
   (defvar TeX-auto-file))
+
+(eval-and-compile
+  (defvar preview-compatibility-macros nil
+"List of macros only present when compiling/loading.")
+
+  (if (string-match "XEmacs" (emacs-version))
+      (require 'prv-xemacs )))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
@@ -1104,7 +1111,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.20 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.21 $ $Name:  $"
      '(AUC-TeX-version
        image-types
        preview-image-type
@@ -1123,6 +1130,10 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
      "Remember to cover the basics.  Including a minimal LaTeX example
 file exhibiting the problem might help."
      )))
-			
+
+(eval-and-compile
+  (mapc #'fmakunbound preview-compatibility-macros)
+  (makunbound 'preview-compatibility-macros))
+
 (provide 'preview)
 ;;; preview.el ends here
