@@ -19,6 +19,8 @@
 
 2004-04-20  David Kastrup  <dak@gnu.org>
 
+	* style/natbib.el: Patch from Thomas Baumann for \bibpunct.
+
 	* Makefile.in (STYLESRC): Add style/beamer.el.
 
 	* style/beamer.el: Support file contributed by Thomas Baumann.
