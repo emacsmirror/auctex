@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.35 2001-10-25 01:31:06 dakas Exp $
+;; $Id: preview.el,v 1.36 2001-10-25 21:37:38 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -224,6 +224,10 @@ follow changes in the displayed buffer area faster."
 Magnify by this factor to make images blend with other
 screen content.  Buffer-local to rendering buffer.")
 (make-variable-buffer-local 'preview-scale)
+
+(defvar preview-gs-colors nil
+  "GhostScript color setup string.")
+(make-variable-buffer-local 'preview-gs-colors)
 
 (defvar preview-resolution nil
   "Screen resolution where rendering started.
@@ -483,11 +487,12 @@ given as ANSWER."
 				 "clear \
 /preview-LaTeX-state save def << \
 /PageSize [%g %g] /PageOffset [%g %g] /OutputFile (%s) \
->> setpagedevice (%s) run preview-LaTeX-state restore\n"
+>> setpagedevice %s(%s) run preview-LaTeX-state restore\n"
 				 (- (aref bbox 2) (aref bbox 0))
 				 (- (aref bbox 3) (aref bbox 1))
 				 (- (aref bbox 0)) (aref bbox 1)
 				 (car newfile)
+				 preview-gs-colors
 				 (car oldfile))))
 		  (setq preview-gs-outstanding
 			(nconc preview-gs-outstanding
@@ -1094,15 +1099,17 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
 Those are put in local variables `preview-scale' and
 `preview-resolution'.  Calculation is done in source buffer
 specified by BUFF."
-  (let (scale res)
+  (let (scale res colors)
     (with-current-buffer buff
       (setq scale (funcall preview-scale-function)
 	    res (cons (/ (* 25.4 (display-pixel-width))
 			 (display-mm-width))
 		      (/ (* 25.4 (display-pixel-height))
-			 (display-mm-height)))))
+			 (display-mm-height)))
+	    colors (preview-get-colors)))
     (setq preview-scale scale)
-    (setq preview-resolution res)))
+    (setq preview-resolution res)
+    (setq preview-gs-colors colors)))
 
 (defun preview-TeX-inline-sentinel (process name)
   "Sentinel function for preview.
@@ -1128,7 +1135,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.35 $"))
+	(rev "$Revision: 1.36 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
