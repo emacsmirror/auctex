@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.52 2002-01-18 11:35:15 dakas Exp $
+;; $Id: preview.el,v 1.53 2002-01-18 13:06:32 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -788,6 +788,7 @@ directory are kept."
     (preview-clearout)))
 
 (add-hook 'kill-buffer-hook #'preview-clearout-buffer)
+(add-hook 'before-revert-hook #'preview-clearout-buffer)
 
 (defvar preview-temp-dirs nil
 "List of top level temporary directories in use from preview.
@@ -1326,7 +1327,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.52 $"))
+	(rev "$Revision: 1.53 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
