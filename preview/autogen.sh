@@ -9,6 +9,8 @@ grep -q '^MY_LANG=' configure || {
 /^[^#]/i
 MY_LANG=$LANG
 MY_LC_CTYPE=$LC_CTYPE
+MY_LANGUAGE=$LANGUAGE
+MY_LC_ALL=$LC_ALL
 .
 ,s/ac_unique_file=preview-latex/ac_unique_file=preview.el/
 w
