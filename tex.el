@@ -497,18 +497,35 @@ Full documentation will be available after autoloading the function."
 
   )
 
-;;; Version 
+(defconst AUCTeX-version (eval-when-compile
+  (let ((name "$Name:  $")
+	(rev "$Revision: 5.292 $"))
+    (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
+			    name)
+	  (setq name (match-string 2 name))
+	  (while (string-match "_" name)
+	    (setq name (replace-match "." t t name)))
+	  name)
+	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
+	    (format "CVS-%s" (match-string 1 rev)))
+	"unknown")))
+  "AUCTeX version.
+If not a regular release, CVS revision of `tex.el'.")
 
-;; These two variables are automatically updated with "make dist", so
-;; be careful before changing anything.
+(defconst AUCTeX-date
+  (eval-when-compile
+    (let ((date "$Date: 2003-02-24 19:31:50 $"))
+      (string-match
+       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
+       date)
+      (format "%s.%s%s" (match-string 1 date) (match-string 2 date)
+	      (match-string 3 date))))
+  "AUCTeX release date.
+In the form of yyyy.mmdd")
 
-(defconst AUCTeX-version "11.14"
-  "AUCTeX version number.")
 (defconst AUC-TeX-version AUCTeX-version
   "Obsolete.  Replaced by `AUCTeX-version'.")
 
-(defconst AUCTeX-date "Sun Dec 15 03:14:51 CET 2002"
-  "AUCTeX release date.")
 (defconst AUC-TeX-date AUCTeX-date
   "Obsolete.  Replaced by `AUCTeX-date'.")
 
@@ -713,10 +730,11 @@ the beginning of the file, but that feature will be phased out."
 (defun TeX-master-directory ()
   "Directory of master file."
   (abbreviate-file-name
-   (expand-file-name
-    (substitute-in-file-name
-     (concat (file-name-directory buffer-file-name)
-	     (file-name-directory (TeX-master-file)))))))
+   (substitute-in-file-name
+    (expand-file-name
+     (or (file-name-directory (TeX-master-file)) ".")
+     (and buffer-file-name
+	  (file-name-directory buffer-file-name))))))
 
 (defcustom TeX-master t
   "*The master file associated with the current buffer.
