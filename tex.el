@@ -572,7 +572,9 @@ Full documentation will be available after autoloading the function."
 (autoload 'latex-mode "latex" no-doc t)
 
 (autoload 'multi-prompt "multi-prompt" no-doc nil)
+
 (autoload 'texmathp "texmathp" no-doc nil)
+(autoload 'texmathp-match-switch "texmathp" no-doc nil)
 
 ;; Don't require `tex-buf' because `tex-buf' requires `tex'.
 (autoload 'TeX-region-create "tex-buf" no-doc nil)
@@ -630,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.461 $"))
+	    (rev "$Revision: 5.462 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -645,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-11-24 09:07:58 $"))
+    (let ((date "$Date: 2004-11-25 09:09:01 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
