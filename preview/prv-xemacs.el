@@ -585,7 +585,7 @@ to require redumping of a format."
   :type 'string)
 
 (defvar preview-preamble-format-cons nil
-  "Where our preamble is supposed to end")
+  "Where our preamble is supposed to end.")
 (make-variable-buffer-local 'preview-preamble-format-cons)
 
 (defun preview-preamble-check-change (beg end)
