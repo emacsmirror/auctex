@@ -2647,8 +2647,10 @@ insert @samp{''}.
 @cindex Japanese
 @cindex Nippon
 @cindex MULE
+@cindex NTT j@TeX{}
 @cindex j@TeX{}
 @cindex j@LaTeX{}
+@cindex ASCII p@TeX{}
 @cindex p@TeX{}
 @cindex p@LaTeX{}
 @vindex TeX-default-mode
@@ -2659,16 +2661,18 @@ insert @samp{''}.
 To write Japanese text with @AUCTeX{} you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
 variants of @TeX{} for Japanese text (NTT j@TeX{} and ASCII p@TeX{}).
-@AUCTeX{} can be used with MULE supported Emacsen.
+@AUCTeX{} can be used with @abbr{MULE, MULtilingual Enhancement to GNU
+Emacs} supported Emacsen.
 
-To install Japanese support for @AUCTeX{}, copy @file{tex-jp.el} to
-@AUCTeX{} installed directory.  Next two commands will automatically
-install contributed files.
+Next two commands will automatically install Japanese contributed files.
 
 @example
 make contrib
 make install-contrib
 @end example
+
+If it fails, copy @file{tex-jp.el} to @AUCTeX{} installed directory,
+manually.
 
 To use the Japanese @TeX{} variants, simply enter
 @code{japanese-plain-tex-mode} or @code{japanese-latex-mode} and
@@ -2693,19 +2697,19 @@ To use Japanese @TeX{} always, set japanese command for example:
 @defopt japanese-TeX-command-default
 The default command for TeX-command in japanese @TeX{} mode.
 
-The default value is @samp{pTeX}.
+The default value is @samp{"pTeX"}.
 @end defopt
 
 @defopt japanese-LaTeX-command-default
 The default command for TeX-command in japanese @LaTeX{} mode.
 
-The default value is @samp{LaTeX}.
+The default value is @samp{"LaTeX"}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
 The default style/class when creating new japanese @LaTeX{} document.
 
-The default value is @samp{jarticle}.
+The default value is @samp{"jarticle"}.
 @end defopt
 
 See @file{tex-jp.el} for more information.
