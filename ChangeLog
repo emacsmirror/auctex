@@ -1,3 +1,8 @@
+2002-12-10  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/amsmath.el (LaTeX-amsmath-label): New variable.
+	("amsmath"): Add environments to LaTeX-label-alist.
+
 2002-12-10  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-jp.el: Remove if statement for Emacs 19.

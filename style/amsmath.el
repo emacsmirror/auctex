@@ -83,6 +83,15 @@
 		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
+    (setq LaTeX-label-alist
+	  (append '(("align"      . LaTeX-amsmath-label)
+		    ("alignat"    . LaTeX-amsmath-label)
+		    ("xalignat"   . LaTeX-amsmath-label)
+		    ("aligned"    . LaTeX-amsmath-label)
+		    ("flalign"    . LaTeX-amsmath-label)
+		    ("gather"     . LaTeX-amsmath-label))
+		  LaTeX-label-alist))
+
     ;; amsmath includes amstext, amsbsy, & amsopn.
     ;; So we run their hooks, too.
     (TeX-run-style-hooks "amstext" "amsbsy" "amsopn")
@@ -120,5 +129,9 @@
     (and (LaTeX-label environment)
 	 (newline-and-indent))))
 
-  
+(defcustom LaTeX-amsmath-label LaTeX-equation-label
+  "*Default prefix to amsmath equation labels."
+  :group 'LaTeX-label
+  :type 'string)
+
 ;;; amsmath.el ends here.
