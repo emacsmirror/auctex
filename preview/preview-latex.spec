@@ -83,9 +83,10 @@ for i in *emacs; do
   # The below will make the package build from a tar straight from CVS
   # NOT RECOMMENDED, but useful for testing!
   test -f ./configure || ./autogen.sh
-  # --with-packagedir repairs RedHat XEmacs braindamage
   # --with-texmf-dir overrides local docstrip configurations.
-  %configure --with-$i --with-texmf-dir=\$\{datadir\}/texmf --with-packagedir=\$\{libdir\}/xemacs/site-packages 
+  # --with-packagedir repairs RedHat XEmacs braindamage
+  %configure --with-$i --with-texmf-dir=\$\{datadir\}/texmf \
+	--with-packagedir=\$\{libdir\}/xemacs/site-packages 
   make
   popd
 done
@@ -103,7 +104,7 @@ for i in *emacs; do
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p %{buildroot}%{_libdir}/xemacs/site-packages/pkginfo
   fi
-  %makeinstall texmfdir=%{buildroot}%{_datadir}/texmf 
+  %makeinstall
   popd
 done
 
