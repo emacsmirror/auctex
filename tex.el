@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.320 $"))
+	(rev "$Revision: 5.321 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-12 21:26:33 $"))
+    (let ((date "$Date: 2004-01-12 22:41:56 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2608,6 +2608,7 @@ character ``\\'' will be bound to `TeX-electric-macro'."
                                  ;; atom in case of which the entry
                                  ;; should be present in any mode or a
                                  ;; list of major modes.
+                          (if (or (atom (nth 4 entry))
                                   (memq mode (nth 4 entry)))
                               (setq out-list (append out-list (list entry))))))
                       out-list)) TeX-command-list)))
