@@ -335,7 +335,7 @@ use  --with-lispdir, --with-packagedir (xemacs), --datadir (emacs),
      # Restore prefix
      prefix=${oldprefix}
     ])
-  AC_MSG_RESULT($lispdir)
+  AC_MSG_RESULT([${lispdir}, expanded to ${lispdir_expanded}])
   AC_SUBST(lispdir)
 ])
 
@@ -621,7 +621,7 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 	      autodir_expanded="${autodir}"
 	      AC_FULL_EXPAND(autodir_expanded)
 	      prefix="${oldprefix}" # restore prefix])
- AC_MSG_RESULT(["${autodir}, expanded to ${autodir_expanded}"])
+ AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
  AC_SUBST(autodir)
  AC_SUBST(autodir_expanded)
 ])
