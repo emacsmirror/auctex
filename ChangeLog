@@ -1,3 +1,10 @@
+2004-07-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-forward-comment-skip): Fix `count' functionality.
+	Stop as well at places where the prefix of commented lines
+	changes.  Simplify and improve efficiency by saving current
+	prefix before while-loop starts.
+
 2004-06-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* context.el (ConTeXt-environment-menu-name): Make name distinct
