@@ -1,0 +1,487 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{amsmath}
+%\usepackage{shortvrb}
+\def\rev{\mathop{\tt rev}}
+\catcode`\|\active
+\def|{\lstinline[frame={}]|}
+\lstloadlanguages{C}
+\author{David Kastrup}
+\title{A mergesort implementation}
+\begin{document}
+\maketitle
+\lstset{language=C,flexiblecolumns,outputpos=l,indent=20pt,frame=l,identifierstyle=\textit}
+\section{How it works}
+A list with $n$ elements first is split into sublists with $\lfloor
+n/2\rfloor$ and
+$\lceil n/2\rceil$ elements, respectively.  These are
+then sorted individually, and later merged.
+
+For best memory access efficiency, we want to merge lists as soon as
+feasible.  For that reason, we want to clad the divide and conquer
+approach into non-recursive expressions.  If we are at level $l$ of a
+divide and conquer for $n$, the size to be handled there is
+\begin{equation}
+  s_l(i,n) = \Bigl\lfloor \bigl(n+\rev_l(i)\bigr)/2^l\Bigr\rfloor
+\end{equation}
+where $\rev_l(i)$ is the $l$-bit bit reversal of $i$, namely if
+\begin{equation}
+  i = \sum_{k=0}^{l-1} i_{(k)} 2^k\qquad i_{(k)} \in \{0,1\}
+\end{equation}
+then
+\begin{equation}
+  \rev_l(i) = \sum_{k=0}^{l-1} i_{(k)} 2^{l-1-k}
+\end{equation}
+
+\section{Number of comparisons}
+\subsection{Divide and Conquer}
+The formula for a divide and conquer process with the definition
+\begin{align}
+  \label{eq:2}
+  a(0)&=a(1)=c(0)=c(1)=0\\
+  a(n)&=a(\lfloor n/2\rfloor)+a(\lceil n/2\rceil)+c(n)
+\end{align}
+can be reduced to the following form that can easily be calculated in
+few steps:
+\begin{align}
+  \label{eq:3}
+  a(n)&=\sum_{k\geq0} \bigl(2^k - (n\bmod 2^k)\bigr)\,c(\lfloor
+     n/2^k\rfloor)
+  + (n\bmod 2^k)\,c(\lceil n/2^k\rceil)
+\end{align}
+The sum is actually finite, since trailing terms become zero.  If some
+of the initial conditions do not hold, it is usually easy to
+consider trivially different sequences where they apply.
+\subsection{Worst case}
+The worst number of comparisons for merging two lists of total length
+$n$ is $n-1$.  This happens if when one list is completely consumed,
+the other has just one element left.  So the defining recursion is
+\begin{align}
+  M^+(1)&=0\\
+  M^+(n)&=n-1 + M^+(\lfloor n/2\rfloor) + M^+(\lceil n/2\rceil)
+\end{align}
+Setting $c(n)=n-1$ for $n\geq1$,
+we can easily deduce from equation~\eqref{eq:3} as a closed form for
+the maximum number of comparisons for Mergesort
+\begin{equation}
+\label{eq:4}
+\begin{split}
+  M^+(n)&=\sum_{k=0}^{\lceil\lg n\rceil-1} \bigl(2^k - (n\bmod
+  2^k)\bigr)\,(\lfloor n/2^k\rfloor-1)
+  + (n\bmod 2^k)\,(\lfloor n/2^k\rfloor)\\
+  &=\sum_{k=0}^{\lceil\lg n\rceil-1} -2^k + (n\bmod 2^k) +
+  2^k\,(\lfloor n/2^k\rfloor)\\
+  &=\sum_{k=0}^{\lceil\lg n\rceil-1} n-2^k\\
+ &= n\lceil\lg n\rceil - 2^{\lceil\lg n\rceil} + 1
+\end{split}
+\end{equation}
+which never exceeds $n\lfloor\lg n\rfloor$, where $\lg$ is the
+logarithm with base~2.
+
+The theoretical upper bound for comparisons in sorting is $\lceil \lg
+n!\rceil$.  Since
+\begin{equation}
+  \lg n! \asymp n\lg n-n\lg e+0.5\lg(2\pi n)
+\end{equation}
+the worst case behavior of mergesort is asymptotically identical to
+the best theoretically achievable value.  Presorted data reduce the
+number of comparisons to about half of that.
+\subsection{Average case}
+When merging two lists of length $m$ and $n$, the average number of
+comparisons depends on when the last element of one of the lists gets
+consumed.
+
+The resulting list consists of $m+n$ elements from which $m$ are
+from the first list, and $n$ from the second.  The total of available
+combinations thus is $\binom{m+n}{m}$.  If we look at the probability
+$p_{m,n}(k)$ that the merge will take $k$ comparisons, we have
+$\binom{k-1}{m-1}$ possibilities if the last element is from the first
+chain, and similarly if it is from the other chain.  So we get
+\begin{equation}
+  p_{m,n}(k) = \begin{cases}
+    \displaystyle
+    \frac{\binom{k-1}{m-1}+\binom{k-1}{n-1}}{\binom{m+n}{m}}
+    &\text{if $0<k<m+n$}\\
+    1&\text{if $k=mn=0$}\\
+    0&\text{otherwise}
+  \end{cases}
+\end{equation}
+The average number of comparisons thus is
+\begin{align}
+M(m,n)&=\sum_{k=0}^{m+n-1} k\, p_{m,n}(k)\notag\\
+&=\binom{m+n}{m}^{-1}\;\sum_{k=0}^{m+n-1} k\left({k-1\choose m-1}
++ {k-1 \choose n-1}\right)\notag\\
+&=\binom{m+n}{m}^{-1}\;\sum_{k=0}^{m+n-1} m{k\choose m} + n{k\choose n}\notag\\
+&=\binom{m+n}{m}^{-1}\;\left(m\binom{m+n}{m+1} + n\binom{m+n}{n+1}\right)\notag\\
+&=\frac{mn}{m+1} + \frac{mn}{n+1}
+\end{align}
+The special case of almost equal chain length will, after some
+manipulation, yield
+\begin{equation}
+\label{eq:5}
+M(\lfloor n/2 \rfloor, \lceil n/2\rceil) = n-1 - \frac{\lceil
+n/2\rceil-1}{ \lceil
+n/2\rceil + 1}
+\end{equation}
+The $n-1$ term corresponds to the worst case estimate from
+equation~\eqref{eq:4}.  The last term in equation~\eqref{eq:5} shows
+the savings of the average case as compared to the worst case.  If we
+want to calculate these savings for the entire sorting process, there
+are no really convincing further simplifications available apart from
+inserting this as $c(n)$ into equation~\eqref{eq:3}, yielding
+\begin{equation}
+  \label{eq:6}
+  \sum_{k=0}^{\lfloor\lg n\rfloor-2} \bigl(2^k - (n\bmod 2^k)\bigr)
+\frac{\lceil
+\lfloor n/2^k\rfloor/2\rceil-1}{ \lceil
+\lfloor n/2^k\rfloor/2\rceil + 1}
+  + (n\bmod 2^k)\,\frac{\lceil
+\lceil n/2^k\rceil/2\rceil-1}{ \lceil
+\lceil n/2^k\rceil/2\rceil + 1}
+\end{equation}
+%% \begin{multline}
+%%   \label{eq:6}
+%%   \sum_{k=0}^{\lfloor\lg n\rfloor-2} \bigl(2^k - (n\bmod 2^k)\bigr)
+%% \frac{
+%% \lfloor n/2^{k+1}\rfloor+n_{(k)}-1}{
+%% \lfloor n/2^{k+1}\rfloor+n_{(k)}+ 1}
+%%   + (n\bmod 2^k)\,\frac{
+%% \lfloor n/2^{k+1}\rfloor}{
+%% \lfloor n/2^{k+1}\rfloor + 2}\\
+%% = 
+%%   \sum_{k=0}^{\lfloor\lg n\rfloor-2} 2^k
+%% \frac{
+%% \lfloor n/2^{k+1}\rfloor+n_{(k)}-1}{
+%% \lfloor n/2^{k+1}\rfloor+n_{(k)}+ 1}
+%%   + \frac{2(1-n_{(k)})\,(n\bmod 2^k)}{
+%% \bigl(\lfloor n/2^{k+1}\rfloor+1\bigr)\bigl(
+%% \lfloor n/2^{k+1}\rfloor + 2\bigr)}
+%% \end{multline}
+which for $n$ being a power of~2 reduces to
+\begin{equation}
+  \label{eq:7}
+  n\sum_{k=1}^{\lg n-1} 
+\frac{2^k-1}{
+(2^k+ 1 )2^{k+1}}
+\end{equation}
+For large $n$, this reaches $0.2645n$, which does not make much of a
+difference in practice.
+
+Expressed differently: worst case and average case are quite close, so
+sorting times never deteriorate significantly over the average case.
+
+We can corroborate this by looking at the variance of comparisons for
+merging lists: this can be shown to be
+\begin{equation}
+  \label{eq:9}
+  \sigma^2_M(N) = \begin{cases}\displaystyle
+    2-\frac{20N^2+40N+32}{N^3+8N^2+20N+16}&\text{for $N$
+      even}\\[3\jot]
+    \displaystyle
+    2-  \frac{20 N^2 + 80 N + 92 }{
+      N^3 + 11 N^2 + 39 N + 45}&\text{for $N$ odd}
+  \end{cases}
+\end{equation}
+So the variance for merging any two lists will never exceed~2.
+Consequently, the total variance will be in the order of $2n$ if $n$
+is the total number of elements to be sorted.  Note that this is the
+\emph{variance,} a quadratic measure, so the standard deviation will
+be in the order of $\sqrt{2n}$, quite small.
+
+\section{The implementation}
+We start with a few headers:
+
+\begin{lstlisting}{listsort.c}
+#include <stdlib.h>
+#include <limits.h>
+\end{lstlisting}
+%
+\subsection{Interfaces}
+The macro |getlink| is intended to access a link.  It will usually
+be defined as something like |adr->next|.  If the user did not
+provide for a definition, we will do one ourselves that takes the
+argument |linkoffs| passed into our sort routine.  This could be
+specified by saying something like |offsetof(type,next)|,
+where |type| is the appropriate structure type, and |offsetof| is
+a macro defined in |stddef.h|.
+
+\begin{lstlisting}{listsort.c}
+#ifndef getlink
+typedef void *listptr;
+#define getlink(adr) (*(void**)((char*)(adr)+linkoffs))
+#endif
+\end{lstlisting}
+%
+In a similar vein, |listleq| is a comparison operator checking for
+the first argument of type |listptr| comparing as less or equal to
+the second argument.  If you do not define such a boolean macro, this
+file defines it as a call via the pointer to the comparison routine
+passed as argument.
+
+\begin{lstlisting}{listsort.c}
+#ifndef listleq
+#define listleq(p1,p2) ((*compar)(p1,p2)<=0)
+#endif
+\end{lstlisting}
+
+\subsection{Function body}
+The arguments are the pointer to
+the start of the list, |head|, the length of the list, |n|,
+and offset of the link field |linkoffs| and the pointer to the
+comparison routine |compar|.  In case you want to declare a
+specialized sorting routine, you would probably do something like
+
+\begin{lstlisting}[frame={}]{}
+typedef struct data * dataptr;
+#define listptr dataptr
+#define getlink(p) (p)->next
+#define listsort(headdecl,ndecl,linkoffs,compar) \
+        datasort(headdecl,ndecl)
+#include "listsort.c"
+#undef listptr
+#undef getlink
+#undef listsort
+\end{lstlisting}
+%
+That way, several specialized sort routines may be defined with
+different names in the same module.  C++ templates the ugly way.
+
+\begin{lstlisting}{listsort.c}
+listptr *listsort(listptr *head,   /* pointer to head of list */
+                  size_t n,    /* number of elements to sort */
+                  size_t linkoffs, /* offset of link in structure */
+                  int (*compar)(const void *, const void *)
+                                   /* comparison routine */
+               )
+{
+\end{lstlisting}
+%
+The body will have to start with a few declarations.
+
+\begin{lstlisting}{listsort.c}
+  size_t underpow,n1,n2,bitrev;
+  int lev, kmax;
+  listptr *headstack[CHAR_BIT*sizeof(size_t)];
+  listptr *tail;
+  listptr *tail1;
+  listptr p1;
+  listptr p2;
+  int sp = 0;
+\end{lstlisting}
+%
+If we are going to use this as a standalone object, the include file
+looks rather simple:
+
+\begin{lstlisting}{listsort.h}
+#include <stddef.h>
+void **listsort(void **head,
+                size_t n,
+                size_t linkoffs,
+                int (*compar)(const void *, const void *));
+\end{lstlisting}
+              
+We first special-case the situation where we are sorting lists of
+size~0 or 1:
+
+\begin{lstlisting}{listsort.c}
+  switch (n)
+    {
+    case 0:
+      return head;
+    case 1:
+      return &getlink(*head);
+    }
+\end{lstlisting}
+%
+Next we set $|kmax| = \max\bigl(0,\lceil \lg n \rceil-2\bigr)$
+and $2^{\text{|kmax|}} = |underpow|$.  That way, we have
+\begin{equation}
+  \label{eq:1}
+  \Bigl\{\bigl\lfloor n / |underpow|\bigr\rfloor,
+     \bigl\lceil n / |underpow|\bigr\rceil\Bigr\} \in
+     \bigl\{ \{2,3\},\{3\},\{3,4\},\{4\} \bigr\}
+\end{equation}
+%
+An exception is the case $n = 2$, in which case |underpow|
+attains the value~1.  Except for this case, the level at which we
+start sorting list elements contains sublists of at least size~3.
+
+\begin{lstlisting}{listsort.c}
+  for (underpow = 1, kmax=0; underpow <= (n-1)/4;) {
+    underpow *= 2;
+    ++kmax;
+  }
+\end{lstlisting}
+%
+Now we let |i| iterate through the |underpow| sublists with the
+sizes given above.  We count through the various
+cases by making use of the variable |bitrev| as a bit reversed count
+of the stuff.  Since we will want to take a look at
+$|bitrev|+n$, we have the problem that this sum may well exceed
+the maximum permissable value of |size_t|.  For that reason, we
+subtract |underpow| from |n|.  The resulting sum can then
+never exceed even |n| itself.  For purposes of loop control, we
+also want to have the |underpow| bit in |bitrev| set, so we start out
+that way.  In order to keep $|bitrev|+n$ correct, we have to
+subtract another |underpow| from |n|.
+
+\begin{lstlisting}{listsort.c}
+  for (lev = kmax, bitrev=underpow, n -= 2*underpow;;) {
+\end{lstlisting}
+%
+We start with  sorting a sublist of two elements, which is rather
+easy:
+
+\begin{lstlisting}{listsort.c}
+    p1 = *head;
+    tail = &getlink(p1);
+    p2 = *tail;
+    if (listleq(p1,p2)) {
+      tail = &getlink(p2);
+    } else {
+      *tail = getlink(p2);
+      getlink(p2) = p1;
+      *head = p1 = p2;
+    }
+\end{lstlisting}
+%
+We now have |*head| as well as |p1| pointing to the smaller of
+the first two elements, |*tail| pointing to the next element to be
+considered.
+
+The following switch argument will be one less than actually needed
+since |n| is too small by |underpow|.
+
+We use the switch to extend our sorted list to either 2, 3
+or~4 elements.
+
+\begin{lstlisting}{listsort.c}
+    switch ((bitrev+n)>>lev) {
+\end{lstlisting}
+%
+The case of 2~elements is indicated by a result of~1:
+in this case the lists are already sorted.  So we start here with the
+case of having to complete sorting 3 elements:
+
+\begin{lstlisting}{listsort.c}
+    case 2:
+      p2 = *tail;
+      if (listleq(p1,p2)) {
+        tail1 = &getlink(p1);
+        p1 = *tail1;
+        if (listleq(p1,p2)) {
+          tail = &getlink(p2);
+          break;
+        }
+        *tail1 = p2;
+      } else
+          *head = p2;
+      *tail = getlink(p2);
+      getlink(p2) = p1;
+      break;
+\end{lstlisting}
+%
+Finishing 4 elements is a bit more tricky: we just sort the next two
+elements and start merging.
+
+\begin{lstlisting}{listsort.c}
+    case 3:
+      headstack[sp++] = head;
+      head = tail;
+      ++lev;
+      continue;
+    }
+\end{lstlisting}
+%
+Ok, the current sublist of length 2,3, or 4 is sorted, and we have
+|head| and |tail| pointing to its respective parts.
+
+We now merge any lists that have reached appropriate size.
+
+\begin{lstlisting}{listsort.c}
+    for (;;) {
+\end{lstlisting}
+If |lev| is zero, we have merged all lists up to the starting level
+and are finished.
+%
+\begin{lstlisting}{listsort.c}
+      if (lev == 0)
+        return tail;
+\end{lstlisting}
+Going up one level, we can check whether we have two lists for merging
+by checking the respective bit in |bitrev|.
+\begin{lstlisting}{listsort.c}
+      if (!((bitrev>>--lev)&1))
+        break;
+\end{lstlisting}
+%
+Ok, we now have two lists to merge.  We calculate their total size:
+\begin{lstlisting}{listsort.c}
+      n2 = ((bitrev+n) >> lev) + 1;
+\end{lstlisting}
+and divide it into the first (possibly smaller) sublist size, and the
+second.
+\begin{lstlisting}{listsort.c}
+      n1 = n2/2;
+      n2 -= n1;
+\end{lstlisting}
+%
+We now let |head| point to the first sublist, |tail1| to the second
+one, and have a go at merging them.  We need to switch links only when
+changing between the lists.
+\begin{lstlisting}{listsort.c}
+      tail1 = head;
+      head = headstack[--sp];
+      p2 = *tail1;
+      do {
+        p1 = *head;
+        if (!listleq(p1,p2)) {
+          *head = p2;
+          do {
+            head = &getlink(p2);
+            p2 = *head;
+            if (!--n2) {
+              *tail1 = p2;
+              *head = p1;
+              tail = tail1;
+              goto continuemerge;
+            }
+          } while (!listleq(p1,p2));
+          *head = p1;
+        }
+        head = &getlink(p1);
+      } while (--n1);
+      *head = p2;
+\end{lstlisting}
+%
+A |goto| label, how ugly!  But hard to avoid.  Here
+|head| is refreshed from the stack, and merging commences.
+\begin{lstlisting}{listsort.c}
+    continuemerge:
+      head=headstack[sp];
+    }
+\end{lstlisting}
+If we have nothing to merge at this level, we push the |head| of the
+list, adjust out counters, and resume sorting with low-level sublists
+again.
+%
+\begin{lstlisting}{listsort.c}
+    headstack[sp++] = head;
+    head = tail;
+    bitrev -= underpow - (3<<lev);
+    lev = kmax;
+  }  
+\end{lstlisting}
+%
+Well, that was all.  We can end the function.
+\begin{lstlisting}{listsort.c}
+}
+\end{lstlisting}
+%
+That's it.
+
+\end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
