@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.70 1994-08-10 17:35:10 amanda Exp $
+;; $Id: tex-buf.el,v 1.71 1994-08-11 15:48:32 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -723,9 +723,7 @@ command."
   "Filter to process background output."
   (let ((old-window (selected-window))
 	(pop-up-windows t))
-    (if TeX-show-compilation
-	(pop-to-buffer "*TeX background*")
-      (set-buffer "*TeX background*"))
+    (pop-to-buffer "*TeX background*")
     (goto-char (point-max))
     (insert string)
     (select-window old-window)))

@@ -1,4 +1,13 @@
+Thu Aug 11 16:00:18 1994  Per Abrahamsen  (amanda@verdande)
+
+	* tex-buf.el (TeX-background-filter): Always show background
+	output.
+
 Wed Aug 10 19:14:42 1994  Per Abrahamsen  (amanda@verdande)
+
+	* Makefile (MINMAPSRC): Added `all.el'.
+
+	* all.el: New file.
 
 	* tex-buf.el (TeX-LaTeX-sentinel): Write "some" if
 	TeX-current-page is nil.  Reported by Michail Rozman
