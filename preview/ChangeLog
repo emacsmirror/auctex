@@ -1,3 +1,12 @@
+2001-11-30  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (preview-register-change): widen before getting
+	substring in order to avoid error when narrowed.
+	(preview-check-changes): Same here.
+	(preview-handle-insert-in-front): Changed DOC string.
+	(preview-handle-insert-behind): same.
+	(preview-handle-modification): same.
+
 2001-11-29  Jan-Åke Larsson <jalar@imf.au.dk>
 
 	* doc/preview-latex.texi Created first draft
