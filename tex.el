@@ -552,9 +552,6 @@ the name of the file being processed, with an optional extension."
 
 ;;; Import
 
-;;(or (assoc TeX-lisp-directory (mapcar 'list load-path))	;No `member' yet.
-;;    (setq load-path (cons TeX-lisp-directory load-path)))
-
 (defvar no-doc
   "This function is part of AUCTeX, but has not yet been loaded.
 Full documentation will be available after autoloading the function."
@@ -607,12 +604,9 @@ Also does other stuff."
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
-(eval-after-load 'info '(progn
+(eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"))
 			  (add-to-list 'Info-file-list-for-emacs
-				       '("TeX" . "AUCTeX"))
-			  (add-to-list 'Info-file-list-for-emacs
-				       '("LaTeX" . "AUCTeX"))))
-
+				       (cons elt "AUCTeX"))))
 
 ;;; Special support for XEmacs
 
@@ -652,7 +646,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.430 $"))
+	(rev "$Revision: 5.431 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -667,7 +661,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-15 20:12:20 $"))
+    (let ((date "$Date: 2004-08-16 21:36:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,26 @@
+2004-08-16  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex (section{Font Selection}): Add italic
+	corrections and small-caps entry.
+
+	* tex.el (info): Add more prefixes to `Info-file-list-for-emacs'.
+
+	* tex-jp.el (japanese-TeX-command-list): Comment addition.
+
+	* RELEASE: Add availability and update release notes.
+
+	* Makefile.in (RPMROOT): New variable.
+	(tar-ball): Clean up `$(FTPDIR)' and `$(WWWDIR/doc)' before
+	installation.
+	(full-release): New target that does RPM building, signing and
+	other stuff for upload.
+	(patch): gzip the patch.
+
+	* auctex.spec: Add definition stuff for SuSE.
+	(BuildRoot): Don't specify infodir when it is not used.
+
+	* bib-cite.el: Fix refTeX link.
+
 2004-08-16  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* aclocal.m4 (EMACS_PROG_EMACS): Add "${prefix}/bin" for Windows users

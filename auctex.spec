@@ -1,7 +1,19 @@
-Summary: 	Enhanced LaTeX mode for GNU Emacs
+%define FOR_SUSE    %{?suse_version:1}%{!?suse_version:0}
+
+%if %{FOR_SUSE}
+%define distri      .suse
+%define commongroup Productivity/Editors/Emacs
+%define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+%else
+%define distri      %{?thisshouldbeempty:}
+%define commongroup Applications/Editors
+%define xemacspkgdir %{_datadir}/xemacs/site-packages
+%endif
+
+Summary: 	Enhanced LaTeX mode for Emacs
 Name: 		auctex
 Version: 	11.51
-Release: 	1
+Release: 	1%{distri}
 License: 	GPL
 Group: 		Applications/Editors
 URL: 		http://www.gnu.org/software/auctex/
@@ -30,9 +42,8 @@ If you do not want this, install/upgrade with 'rpm --nopre ...'
 test -f ./configure || ./autogen.sh
 # --with-texmf-dir overrides local docstrip configurations.
 %configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
-make 'infodir=%{_infodir}'
+make
 pushd doc
-make 'infodir=%{_infodir}'
 make auctex tex-ref.pdf
 popd
 
@@ -75,6 +86,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
+* Mon Aug 16 2004 David Kastrup <dak@gnu.org>
+- Attempt a bit of SuSEism.  Might work if we are lucky.
+
 * Sat Dec  7 2002 David Kastrup <David.Kastrup@t-online.de>
 - Change addresses to fit move to Savannah.
 

@@ -49,7 +49,9 @@
 ;	      TeX-format-list))
 
 (defvar japanese-TeX-command-list
-  ;; Changed to double quotes for Windows afflicted people.
+  ;; Changed to double quotes for Windows afflicted people.  I don't
+  ;; use the %(latex) and %(tex) shorthands here because I have not
+  ;; clue whether Omega-related versions exist.  --dak
   '(("jTeX" "%(PDF)jtex %S%(PDFout) \"%(mode)\\input %t\""
      TeX-run-TeX nil (plain-tex-mode))
     ("jLaTeX" "%(PDF)jlatex %S%(PDFout) \"%(mode)\\input{%t}\""

@@ -29,6 +29,7 @@ SHELL = /bin/sh
 DIST_PREFIX = /home/tmp/auctex-
 FTPDIR = $(DIST_PREFIX)ftp
 WWWDIR = $(DIST_PREFIX)www
+RPMROOT = /usr/src/redhat
 
 CONTRIB = bib-cite.el tex-fptex.el
 CONTRIBELC = bib-cite.elc tex-fptex.elc
@@ -204,18 +205,32 @@ tar-ball:
 	done )
 	(cd doc; cp INSTALL INSTALL.windows README CHANGES TODO FAQ \
 		../auctex-$(TAG)/ )
+	rm -rf $(FTPDIR) $(WWWDIR)/doc
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
 	cp doc/CHANGES $(FTPDIR)/CHANGES
 	cp RELEASE $(FTPDIR)/RELEASE-$(TAG)
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/*.html $(WWWDIR)/doc
-	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-	rm -f $(FTPDIR)/auctex.zip
 	chmod -R go-w+rX auctex-$(TAG)
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 
+full-release:
+	tar -xzfO $(FTPDIR)/auctex-$(TAG).tar.gz auctex-$(TAG)/tex.el \
+	| fgrep -s '$$Name:  $(TAG) | sed -e 's/[.]/_/g'`' ' \
+	|| { echo "Not a properly tagged release!" >&2 ; exit 1 ; }
+	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz"
+	cp $(RPMROOT)/{RPMS/noarch,SRPMS}/auctex-$(TAG)-* $(FTPDIR)
+	gpg --multifile --detach-sign $(FTPDIR)/*
+	for i in $(FTPDIR)/*; do \
+	   case $$i in *.sig) ;; \
+	      *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \
+	      *) echo "directory: auctex/$(TAG)-extra" >$$i.directive ;; \
+	   esac
+	gpg --multifile --clearsign $(FTPDIR)/*.directive
+	rm $(FTPDIR)/*.directive
+
 patch:
-	diff -u auctex-$(OLD) auctex-$(TAG) > \
-		$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch; exit 0
+	diff -u auctex-$(OLD) auctex-$(TAG) | gzip --best \
+		>$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch.gz

@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.50
+Release notes for AUCTeX 11.51
 ==============================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -17,79 +17,52 @@ target, partly due to a lack of volunteers for non-programming tasks:
 documentation writing, tutorials, translations, reference material,
 sleuth work, testing.  The usual ``volunteers welcome'' applies here.
 
-Nevertheless, we strongly recommend using this release over the last
-one: the number of bugs has quite decreased, and usability is
-strikingly superior.
-
 
 New features and fixed bugs in this release
 -------------------------------------------
 
-PDFTeX is being supported with a new mode that can be toggled with C-c
-C-t C-p, and the appropriate viewer gets selected depending on the
-generated output file type.  Current versions of preview-latex will
-respect AUCTeX's PDF mode.
-
-Inverse and forward search work out of the box with viewers supporting
-Source Specials.  Their use can be toggled with C-c C-t C-s and is
-made more convenient by the new C-c C-v viewer shortcut.  For inverse
-search, emacsclient or gnuclient are used if available.
-
-Authors of LaTeX class and style files previously were not able to
-make much use of AUCTeX.  Mostly due to the work of Ralf Angeli,
-creating style files is supported with syntax highlighting, a highly
-sophisticated completely rewritten engine for keeping indentation and
-environments in .dtx files consistent in both documentation and code
-sections, additional macro completions for programmer commands and a
-few other goodies.
-
-ConTeXt is a supported format now.
-
-Syntax highlighting has become smarter and supports sub- and
-superscripts.  Headings are now fontified in a larger font.
-
-Display of LaTeX sources can now be further improved by hiding and
-auto-revealing TeX constructes like footnotes or citations.  That
-means much of the distracting markup can be replaced by pre-defined
-strings or the content of the respective macros.  The functionality is
-available via the "Show/Hide" menu entry or the respective key
-bindings (use C-c C-o C-h to get a list).
-
-The menus have been reorganized and cleaned up (and you'll see a few
-changes and additions in keybindings there), and the Command menu will
-now only offer commands relevant to the current major mode.
-
-A new autoconf-based installation makes configuring and installing
-AUCTeX a mostly automatic process, even under Windows.  Read the files
-INSTALL or INSTALL.windows for instructions.
-
-Commenting and uncommenting now works correctly.
-
-AUCTeX now works around XEmacs issues with text formatting in
-connection with preview-latex.
+This is primarily a bug fix release to the last major release 11.50.
+PDFTeX and Source Special support did not work with ConTeXt, this has
+been fixed.  Similar for Source Special support under Windows.  Some
+more potential installation mistakes are now diagnosed.  Omega support
+has been added.  Some user interface changes have been done and other
+bugs fixed.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this
 variable for a former release of AUCTeX.  If this is the case for you,
 please re-initialize the variable by erasing the customization,
 thereby setting the variable to the new default, and re-adding your
-changes afterwards.
+changes afterwards.  Many such changes can be avoided by using other
+customization variables.
 
 
 Requirements
 ------------
 
-It is recommended that you use at least GNU Emacs 21 or XEmacs 21.4
-with AUCTeX.  Support for Emacs 20 has been dropped in favor of
-getting more important work done.  Unfortunately, just before release
-it has come to our attention that you need at least version 1.84 of
-the xemacs-base package (released on 01/27/2004) or a sumo tarball
-dated 02/02/2004 or newer for compiling AUCTeX because of non-trivial
+It is required that you use at least GNU Emacs 21 or XEmacs 21.4 with
+AUCTeX.  Support for Emacs 20 has been dropped in favor of getting
+more important work done.  Unfortunately, just before release it has
+come to our attention that you need at least version 1.84 of the
+xemacs-base package (released on 01/27/2004) or a sumo tarball dated
+02/02/2004 or newer for compiling AUCTeX because of non-trivial
 changes in easy-mmode.el.  Providing backward compatibility to earlier
 versions would require resources we don't have right now: none of the
 currently active developers actually uses XEmacs.  We apologize for
 the inconvenience and hope that you can make use of the XEmacs package
 system to upgrade if necessary.
+
+
+Availability
+------------
+
+AUCTeX can be downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex>.
+This location is mirrored to the directory support/auctex on CTAN.  It
+is licensed under the GNU General Public License version 2.
+
+You'll find more information at the web site of AUCTeX
+<URL:http://www.gnu.org/software/auctex>, including its mailing list
+address.
 
 
 Future development and additional information
@@ -103,10 +76,6 @@ contributions to the FSF (the usual procedure for Emacs contributors).
 The same holds for past contributors.  The principal authors and
 maintainers have already done so, but it would require a diligent and
 diplomatic volunteer to find and ask the rest.
-
-You'll find more information at the web site of AUCTeX
-<URL:http://www.gnu.org/software/auctex>, including its mailing list
-address.
 
 Current project manager is David Kastrup <URL:mailto:dak@gnu.org>.
 While Paypal contributions are appreciated, volunteering for tasks
