@@ -189,10 +189,11 @@ AC_SUBST(previewtexmfdir)
 AC_SUBST(previewdocdir)])
 
 AC_DEFUN(AC_FULL_EXPAND,
-[ while :;do case "[$]$1" in *\[$]*) eval "$1=\"`sed 's/[[\\\`"]]/\\\\&/' <<EOF
+[ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"]]/\\&/g'
+eval "$1=`sed ${__ac_tmp__} <<EOF
 [$]$1
 EOF
-`\"" ;; *) break ;; esac; done ])
+`";; *) break ;; esac; done ])
 dnl "
 
 
@@ -203,8 +204,8 @@ dnl adapted from w3.
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x (quote ignore)) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x (quote ignore)) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}
@@ -401,8 +402,8 @@ dnl
 dnl Perform sanity checking and try to locate the auctex package
 dnl
 AC_DEFUN(EMACS_CHECK_AUCTEX, [
-AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
-AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
+AC_MSG_CHECKING(for the location of AUCTeX's tex-site.el)
+AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUCTeX's tex-site.el, if not standard], 
  [ auctexdir="${withval}" ; 
    AC_FULL_EXPAND(withval)
    if test ! -d "$withval"  ; then
@@ -419,7 +420,7 @@ if test -z "$auctexdir" ; then
                (replace-match \"\" t t aucdir)\
   	       aucdir))], "noecho")
   else
-	AC_MSG_ERROR([Can't find AUC-TeX!  Please install it!  
+	AC_MSG_ERROR([Can't find AUCTeX!  Please install it!  
 Check the PROBLEMS file for details.])
   fi
   ])
