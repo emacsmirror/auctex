@@ -37,6 +37,7 @@
   (error "AUCTeX requires Emacs 21 or later"))
 
 (require 'custom)
+(require 'tex-site)
 (eval-when-compile
   (require 'cl))
 
@@ -632,7 +633,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.472 $"))
+	    (rev "$Revision: 5.473 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +648,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-16 08:46:55 $"))
+    (let ((date "$Date: 2004-12-16 09:44:28 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1912,13 +1913,13 @@ See `TeX-parse-macro' for details."
     (while args
       (if (vectorp (car args))
 	  (unless last-optional-rejected
-	    (let ((TeX-arg-opening-brace TeX-grop)
-		  (TeX-arg-closing-brace TeX-grcl))
+	    (let ((TeX-arg-opening-brace LaTeX-optop)
+		  (TeX-arg-closing-brace LaTeX-optcl))
 	      (TeX-parse-argument t (if (equal (length (car args)) 1)
 					(aref (car args) 0)
 				      (append (car args) nil)))))
-	(let ((TeX-arg-opening-brace LaTeX-optop)
-	      (TeX-arg-closing-brace LaTeX-optcl))
+	(let ((TeX-arg-opening-brace TeX-grop)
+	      (TeX-arg-closing-brace TeX-grcl))
 	  (setq last-optional-rejected nil)
 	  (TeX-parse-argument nil (car args))))
       (setq args (cdr args)))))
