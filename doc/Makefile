@@ -12,12 +12,12 @@ ref-card.dvi: ref-card.tex
 	@echo "**********************************************************"
 
 auc-tex.dvi: auc-tex.texi
-	-tex auc-tex.texi
+	-tex '\nonstopmode\input auc-tex.texi'
 	-texindex auc-tex.ky
 	-texindex auc-tex.fn
 	-texindex auc-tex.vr
 	-texindex auc-tex.cp
-	-tex auc-tex.texi
+	-tex '\nonstopmode\input auc-tex.texi'
 	@echo "**********************************************************"
 	@echo "** If this gave trouble, maybe you need to install
 	@echo "** a newer version of texinfo?

@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.36 1993-07-07 00:41:37 amanda Exp $
+@c $Id: auc-tex.texi,v 1.37 1993-07-08 02:18:40 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -773,10 +773,10 @@ command, usually bound to @kbd{C-c @key{TAB}}.  Using
 names of long La@TeX{} macros.
  
 In order to use @code{TeX-complete-symbol}, you should write a backslash
-and the start of the macro.  Typing @kbd{C-c @key{TAB}} will now complete as
-much of the macro, as it unambiguously can.  For example, if you type
-`@samp{\renam}' and then `@kbd{C-c @key{TAB}}, it will expand to
-`@samp{\renewcommand}'.
+and the start of the macro.  Typing @kbd{C-c @key{TAB}} will now
+complete as much of the macro, as it unambiguously can.  For example, if
+you type `@samp{\renewc}' and then `@kbd{C-c @key{TAB}}, it will expand
+to `@samp{\renewcommand}'.
  
 @deffn Command TeX-complete-symbol
 @kindex C-c @key{TAB}
@@ -1190,8 +1190,8 @@ controlled by the variable @code{TeX-command-list}.@refill
 @ref{Multifile} for a discussion about @code{TeX-master}.
 
 @deffn Command TeX-command-region
-@kindex C-c C-c
-(@kbd{C-c C-c})  Query the user for a command, and run it on the
+@kindex C-c C-r
+(@kbd{C-c C-r})  Query the user for a command, and run it on the
 ``region file''.  Some commands (typically those invoking @TeX{} or
 La@TeX{}) will write the current region into the region file, after
 extracting the header and tailer from the master file.  The name of the
@@ -2628,6 +2628,10 @@ this version, and for the authors, who get nostalgic at times.
 Coordinater: Per Abrahamsen, 1993
 
 @itemize @bullet
+@item
+Minor fixes to the documentation.  Thanks to Shinji Kobayashi
+@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
 @item
 Add @samp{Compiling} to the mode line of all buffers, while there is a
 AUC @TeX{} compilation process running.  This is similar to the behavior
