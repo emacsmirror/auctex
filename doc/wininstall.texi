@@ -2,7 +2,7 @@
 
 Installation of @AUCTeX{} is a bit more complicated, but we are working
 to resolve the issues involved. Please report success/failure to us at
-@samp{auc-tex@@sunsite.dk}. Here are the steps to perform:
+@email{auctex-devel@@gnu.org}. Here are the steps to perform:
 
 @enumerate
 @item

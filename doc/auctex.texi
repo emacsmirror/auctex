@@ -96,15 +96,19 @@ Kresten Krab Thorup (6.0) @*
 Per Abrahamsen (updates to 11.13) @*
 David Kastrup (updates from 11.14)
 
-There is a mailing list for discussion about @AUCTeX{} and announcement
-of alpha releases, write to @samp{auc-tex-request@@sunsite.dk} to join
-it.  Send contributions to @samp{auc-tex@@sunsite.dk}.
+There is a mailing list for general discussion about @AUCTeX{}: write a
+mail with ``subscribe'' in the subject to
+@email{auctex-request@@gnu.org} to join it.  Send contributions to
+@email{auctex@@gnu.org}.
 
-Bug reports, suggestions for new features, and pleas for help should go
-to either @samp{auc-tex_mgr@@sunsite.dk} (the @AUCTeX{} managers), or
-to @samp{auc-tex@@sunsite.dk} (the mailing list) if they might have
-general interest.  Please use the command @kbd{M-x
-TeX-submit-bug-report RET} to report bugs if possible.
+Bug reports should go to @email{bug-auctex@@gnu.org}, suggestions for
+new features, and pleas for help should go to either
+@email{auctex-devel@@gnu.org} (the @AUCTeX{} developers), or to
+@email{auctex@@gnu.org} if they might have general interest.  Please use
+the command @kbd{M-x TeX-submit-bug-report RET} to report bugs if
+possible.  You can subscribe to a low-volume announcement list by
+sending ``subscribe'' in the subject of a mail to
+@email{info-auctex-request@@gnu.org}.
 
 @end ifnottex
 
