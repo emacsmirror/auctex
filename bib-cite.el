@@ -4,10 +4,10 @@
  
 ;; Author:    Peter S. Galbraith <rhogee@bathybius.meteo.mcgill.ca>
 ;; Created:   06 July 1994
-;; Version:   2.28 (22 January 97)
+;; Version:   3.00 (16 May 97)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.8 1997-01-26 23:53:14 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.9 1997-06-27 17:16:54 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; Everyone is granted permission to copy, modify and redistribute this
@@ -24,10 +24,12 @@
 ;; LCD Archive Entry:
 ;; bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|
 ;; Display \cite, \ref or \label / Extract refs from BiBTeX file.|
-;; 22-Jan-1997|2.28|~/misc/bib-cite.el.gz|
+;; 30-Apr-1997|2.32|~/misc/bib-cite.el.gz|
 
 ;; ----------------------------------------------------------------------------
 ;;; Commentary:
+;; This minor-mode is used in various TeX modes to display or edit references
+;; associated with \cite commands, or matching \ref and \label commands.
 
 ;; New versions of this package (if they exist) may be found at:
 ;;   ftp://ftp.phys.ocean.dal.ca/users/rhogee/elisp/bib-cite.el
@@ -231,28 +233,18 @@
  
 ;; Installation instructions:
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~
-;;  If you use a menued environment (e.g. X Window System), bib-cite must be 
-;;  loaded *after* your LaTeX-mode menus are created in order to bypass an
-;;  annoying bug in bib-cite.  This is done by loading bib-cite via a 
-;;  mode-hook:
-;;  - If you are using AUC-TeX (http://sunsite.auc.dk/auctex/), add the 
-;;    following lines to your ~/.emacs file:
+;;  bib-cite is a minor-mode, so you could invoke it in a LaTeX-mode hook.
+;;  e.g. If you are using AUC-TeX (http://sunsite.auc.dk/auctex/), you could
+;;  use:
 ;; 
-;;   (defun my-LaTeX-mode-hook ()
-;;     (require 'bib-cite))
-;;   (add-hook 'LaTeX-mode-hook 'my-LaTeX-mode-hook)
+;;   (require 'bib-cite)
+;;   (add-hook 'LaTeX-mode-hook 'turn-on-bib-cite)
 ;; 
-;;  - If you are using Emacs' regulare LaTeX-mode, use instead:
-;; 
-;;   (defun my-LaTeX-mode-hook ()
-;;     (require 'bib-cite))
-;;   (add-hook 'latex-mode-hook 'my-TeX-mode-hook)
-;; 
-;;  If you do not use a windowed environment, all you need to do is add this 
-;;  line to your .emacs file:
+;;  If you are using Emacs' regular LaTeX-mode, use instead:
 ;;
-;;    (require 'bib-cite)
-;;
+;;   (require 'bib-cite)
+;;   (add-hook 'latex-mode-hook 'turn-on-bib-cite)
+;; 
 ;;  bib-cite can be used with auctex, or stand-alone.  If used with auctex on a
 ;;  multi-file document (and auctex's parsing is used), then all \bibliography
 ;;  commands in the document will be found and used.
@@ -263,13 +255,15 @@
 ;;
 ;;    (setq bib-novice nil)
 ;;  ---
-;;  By default, bib-cite adds a menu-bar pull-down menu under a separate name.
-;;  Under emacs' tex-mode and auctex's latex-mode, it can be placed within
-;;  the existing menu if you set the following:
+;;  The following variable determines whether we will attempt to highlight
+;;  citation, ref and label commands in green when they are under the
+;;  mouse.  When highlighted, the mouse keys work to call bib-display 
+;;  (bound to [mouse-3]) and bib-find (bound to [mouse-2]).  If you use a 
+;;  mode other than LaTeX-mode, you'll want to call bib-highlight-mouse with 
+;;  a hook (See how we do this at the end of this file with the add-hook 
+;;  command).
 ;;
-;;    (setq bib-cite-put-menu-separately nil)
-;;
-;;  This variable has no effect under XEmacs.  Should I change this?
+;;    (setq bib-highlight-mouse-t nil)
 ;;  ---
 ;;  The imenu features will be disabled if you set this variable to nil
 ;;
@@ -290,16 +284,6 @@
 ;;  bib-make-bibliography, bib-display, bib-find
 ;;  You may use `switch-to-buffer' `switch-to-buffer-other-window' or
 ;;  `switch-to-buffer-other-frame'.
-;;  ---
-;;  The following variable determines whether we will attempt to highlight
-;;  citation, ref and label commands in green when they are under the
-;;  mouse.  When highlighted, the mouse keys work to call bib-display 
-;;  (bound to [mouse-3]) and bib-find (bound to [mouse-2]).  If you use a 
-;;  mode other than LaTeX-mode, you'll want to call bib-highlight-mouse with 
-;;  a hook (See how we do this at the end of this file with the add-hook 
-;;  command).
-;;
-;;    (setq bib-highlight-mouse-t nil)
 ;;  ---
 ;;  If you use DOS or OS/2, you may have to set the following variable:
 ;;
@@ -355,6 +339,16 @@
 
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V3.00 May 16 97 - Peter Galbraith (RCS V1.15)
+;;    bib-cite is now a minor mode.
+;; V2.32 Apr 30 97 - Anders Stenman <stenman@isy.liu.se> (RCS V1.14)
+;;  - Support for balloon-help.
+;; V2.31 Mar 20 97 - Christoph Wedler <wedler@fmi.uni-passau.de> (RCS V1.12)
+;;  - Better fontification of help buffer as bibtex or latex for XEmacs.
+;; V2.30 Feb 10 97 - Peter Galbraith (RCS V1.11)
+;;  - Better fontification of help buffer as bibtex or latex.
+;; V2.29 Jan 29 97 - Peter Galbraith (RCS V1.10)
+;;  - imenu looks for `\label{stuff}' instead of `\label'
 ;; V2.28 Jan 22 97 - Peter Galbraith (RCS V1.9)
 ;;  - Bug in bib-create-auto-file.
 ;; V2.27 Dec 31 96 - Peter Galbraith (RCS V1.8)
@@ -601,6 +595,250 @@ These are usually month abbreviations (or journals) defined in a style file.")
 
 ;;<<<<<<User-Modifiable variables end here.
 
+
+(defvar bib-cite-is-XEmacs
+  (not (null (save-match-data (string-match "XEmacs\\|Lucid" emacs-version)))))
+
+(defvar bib-cite-minor-mode nil)
+
+;;;###autoload
+(defun bib-cite-minor-mode (arg)
+  "Toggle bib-cite mode.
+When bib-cite mode is enabled, citations, labels and refs are highlighted 
+when the mouse is over them.  Clicking on these highlights with [mouse-2] 
+runs bib-find, and [mouse-3] runs bib-display."
+  (interactive "P")
+  (set (make-local-variable 'bib-cite-minor-mode)
+       (if arg
+	   (> (prefix-numeric-value arg) 0)
+	 (not bib-cite-minor-mode)))
+  (cond 
+   (bib-cite-minor-mode                 ;Setup the minor-mode
+    ;; Christoph Wedler's <wedler@fmi.uni-passau.de> suggestion for xemacs
+    ;; Added for version 2.19
+    (if (boundp 'tags-always-exact)
+        (progn
+          (make-local-variable 'tags-always-exact)
+          (setq tags-always-exact nil)))
+    ;; imenu support
+    (if bib-use-imenu
+        (progn
+          ;; User who *never* uses multi-file documents could change this to:
+          ;;                              'imenu--create-LaTeX-index-for-buffer
+          (setq imenu-create-index-function 'imenu--create-LaTeX-index)
+          ;; Make sure that imenu-sort-function is nil
+          (and (boundp 'imenu-sort-function)
+               imenu-sort-function
+               (make-local-variable 'imenu-sort-function)
+               (setq imenu-sort-function nil))))
+    ;; mouse overlay        
+    (if bib-highlight-mouse-t
+        (progn
+          (bib-cite-setup-highlight-mouse-keymap)
+          (bib-highlight-mouse)
+          (make-local-hook 'after-change-functions)
+          (add-hook 'after-change-functions 
+                    'bib-cite-setup-mouse-function nil t)))
+    (if bib-cite-is-XEmacs
+	(progn
+	  (or (local-variable-p 'current-menubar (current-buffer))
+	      (set-buffer-menubar current-menubar))
+	  (add-submenu nil bib-cite-minor-mode-menu))))
+   (t
+   ;;;Undo the minor-mode
+    ;; mouse overlay        
+    (cond 
+     (bib-cite-is-XEmacs
+      (while bib-ext-list
+        (delete-extent (car bib-ext-list))
+        (setq bib-ext-list (cdr bib-ext-list))))
+     (t
+      (remove-hook 'after-change-functions 'bib-cite-setup-mouse-function t)
+      (let ((before-change-functions) (after-change-functions))
+        ;; FIXME This detroys all mouse-faces and local-maps!
+        ;; FIXME Hope no other package is using them in this buffer!
+        (remove-text-properties (point-min) (point-max)
+                                '(mouse-face t local-map t)))))
+    (if bib-cite-is-XEmacs
+        (delete-menu-item '("BCite"))))))
+
+;;This must be eval'ed when the LaTeX mode is in use.
+;; bib-highlight-mouse-keymap is a local variable so each buffer can have it's
+;; own.
+(defun bib-cite-setup-highlight-mouse-keymap ()
+  (make-local-variable 'bib-highlight-mouse-keymap)
+  (setq bib-highlight-mouse-keymap
+   ;;; First, copy the local keymap so we don't have `disappearing' menus
+   ;;; when the mouse is moved over a \ref, \label or \cite command.
+        
+   ;;; FIXME: Check out (mouse-major-mode-menu) to see how it grabs the local
+   ;;;        menus to display.  Maybe on `highlighted' commands we could only
+   ;;;        display the bib-cite stuff (or a subset of it).
+        (let ((m (copy-keymap (current-local-map))))
+          (cond
+           (bib-cite-is-XEmacs
+            (set-keymap-name m 'bib-highlight-mouse-keymap)
+            (cond
+             ;;action-key stuff from Vladimir Alexiev <vladimir@cs.ualberta.ca>
+             ((commandp 'action-key)
+              ;; for hyperbole. The Right Way is to define implicit buttons
+              ;; (defib) bib-cite and label-ref instead of overriding
+              ;; action-key and assist key, so that eg smart key help can
+              ;; be obtained, but I'm lazy.
+              (substitute-key-definition 'action-key 'bib-find m global-map)
+              (substitute-key-definition 'assist-key 'bib-display m global-map)
+              (substitute-key-definition 'action-key-depress 
+                                         'bib-find-mouse m global-map)
+              (substitute-key-definition 'assist-key-depress 
+                                         'bib-display-mouse m global-map)
+              (substitute-key-definition 'action-mouse-key nil m global-map)
+              (substitute-key-definition 'assist-mouse-key nil m global-map))
+             (t                               ; xemacs, not hyperbole
+              (define-key m "\e\r" 'bib-find-mouse) ;   bug Fixed in V2.17
+              (define-key m "\e\n" 'bib-display-mouse) ;bug Fixed in V2.17
+              ;;(define-key m [(shift button1)] 'bib-display-mouse)
+              (define-key m [button3] 'bib-display-mouse)
+              (define-key m [button2] 'bib-find-mouse))))
+            (t                                 ; emacs 19
+             (cond
+              ((commandp 'action-key)
+               (substitute-key-definition 'action-key 'bib-find m global-map)
+               (substitute-key-definition 'assist-key 'bib-display m global-map)
+               (substitute-key-definition 'action-mouse-key-emacs19 
+                                          'bib-find-mouse m global-map)
+               (substitute-key-definition 'assist-mouse-key-emacs19 
+                                          'bib-display-mouse m global-map)
+               (substitute-key-definition 'action-key-depress-emacs19 
+                                          nil m global-map)
+               (substitute-key-definition 'assist-key-depress-emacs19 
+                                          nil m global-map))
+              (t                               ; emacs 19, not hyperbole
+               (define-key m [down-mouse-3] 'bib-display-mouse)
+               (define-key m [mouse-2] 'bib-find-mouse)))))
+          m)))
+
+;;;###autoload
+(defun turn-on-bib-cite ()
+  "Unconditionally turn on Bib Cite mode."
+  (bib-cite-minor-mode t))
+
+(defun bib-cite-setup-mouse-function (beg end old-len)
+  (save-excursion
+    (save-match-data
+      (save-restriction
+        (narrow-to-region
+         (progn (goto-char beg) (beginning-of-line) (point))
+         (progn (goto-char end) (forward-line 1) (point)))
+        (bib-highlight-mouse)))))
+
+(defvar bib-cite-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-cba" 'bib-apropos)
+    (define-key map "\C-cbb" 'bib-make-bibliography)
+    (define-key map "\C-cbd" 'bib-display)
+    (define-key map "\C-cbe" 'bib-etags)
+    (define-key map "\C-cbf" 'bib-find)
+    (define-key map "\C-cbh" 'bib-highlight-mouse)
+    map)
+  "bib-cite minor-mode keymap")
+
+(easy-menu-define 
+ bib-cite-minor-mode-menu bib-cite-minor-mode-map "Menu keymap for bib-cite."
+ '("BCite"
+   ["Make BibTeX bibliography buffer" bib-make-bibliography t]
+   ["Display citation or matching \\ref or \\label" bib-display t]
+   ["Find BibTeX citation or matching \\ref or \\label" bib-find t]
+   ["Search apropos BibTeX files" bib-apropos t]
+   ["Build TAGS file for multi-file document" bib-etags (bib-master-file)]
+   ["Refresh \\cite, \\ref and \\label mouse highlight"
+    bib-highlight-mouse t]))
+
+;; Install ourselves:
+(or (assq 'bib-cite-minor-mode minor-mode-alist)
+    (setq minor-mode-alist 
+          (cons '(bib-cite-minor-mode " BCite") minor-mode-alist)))
+(or (assq 'bib-cite-minor-mode minor-mode-map-alist)
+    (setq minor-mode-map-alist 
+          (cons (cons 'bib-cite-minor-mode bib-cite-minor-mode-map) 
+                minor-mode-map-alist)))
+  
+
+;;; Add a menu entry to bibtex.el (Perhaps I should not do this).
+(cond
+ ((and (string-match "XEmacs\\|Lucid" emacs-version)
+       (or window-system
+           (fboundp 'smart-menu)))      ;text menus by Bob Weiner
+  ;;
+  ;; xemacs under X with auc-tex
+  ;;
+
+  ;; Add to bibtex.el's popup menu
+  (defvar bib-cite-xemacs-bibtex-mode-menu
+    '("---"
+      "Bib-Cite"
+      "---"
+      ["Search apropos BibTeX files" bib-apropos t]
+      ["Create auc-tex auto parsing file" bib-create-auto-file t])
+    "Submenu of bibtex-mode menu, used by bib-cite.")
+  
+  (if (boundp 'bibtex-menu)
+      ;; Add menu now
+      (setq bibtex-menu
+	    (append
+	     bibtex-menu
+	     bib-cite-xemacs-bibtex-mode-menu))
+    ;; Setup to add menu later
+    (defun bib-cite-bibtex-mode-hook ()
+      (if (boundp 'bibtex-menu)
+          (progn
+            (setq bibtex-menu
+                  (append
+                   bibtex-menu
+                   bib-cite-xemacs-bibtex-mode-menu))
+            (remove-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))))
+    (add-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))
+  )
+
+ ((and (not (string-match "XEmacs\\|Lucid" emacs-version))
+       (string-equal "19" (substring emacs-version 0 2))
+       (or window-system
+           (fboundp 'tmm-menubar)))     ; 19.30 - Will autoload if necessary 
+  ;;
+  ;; emacs-19 under X-windows (or non-X with tmm)
+  ;;
+  
+  ;; This *almost* makes me want to switch over to XEmacs...
+
+  ;; to auc-tex auto file for a bibtex buffer
+  (eval-after-load 
+   "bibtex"
+   '(progn
+      (cond
+       ((lookup-key bibtex-mode-map [menu-bar move/edit])
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [bib-nil] '("---" . nil) '"--")
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
+          [auc-tex-parse] 
+          '("Create auc-tex auto parsing file" . bib-create-auto-file)
+          'bib-apropos))
+       ((lookup-key bibtex-mode-map [menu-bar bibtex-edit])
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [bib-nil] '("---" . nil) '"--")
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
+        (define-key-after 
+          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
+          [auc-tex-parse] 
+          '("Create auc-tex auto parsing file" . bib-create-auto-file)
+          'bib-apropos)))))))
+
 ;; Following from bibtex.el
 (defvar 
   bib-cite-bibtex-font-lock-keywords
@@ -753,23 +991,12 @@ by using bib-apropos sequentially."
           (message "Sorry, no matches found.")
         (with-output-to-temp-buffer "*Help*" 
           (mapcar 'princ (nreverse the-text)))
+        (bib-cite-fontify-help-as-bibtex)
         (if bib-novice
             (message
              (substitute-command-keys
               (concat "Use \\[bib-apropos] again in the *help* buffer"
-                      " to trim the search"))))
-        (cond
-         ((and bib-hilit-if-available
-               (fboundp 'hilit-highlight-region))
-          (set-buffer "*Help*")
-          (hilit-highlight-region (point-min) (point-max) 'bibtex-mode t))
-         ;; font-lock?
-         ((featurep 'font-lock)
-          (set-buffer "*Help*")
-          (set (make-local-variable 'font-lock-defaults)
-               '(bib-cite-bibtex-font-lock-keywords 
-                 nil t ((?$ . "\"")(?\" . "."))))
-          (font-lock-fontify-buffer))))
+                      " to trim the search")))))
       (if new-buffer-f
           (kill-buffer bib-buffer)))))
 
@@ -846,25 +1073,81 @@ to create a bibtex file containing only the references used in the document."
       (put-text-property (point-min)(or limit (point-max)) 
                          'face 'red-bold))))
 
+(defun bib-cite-fontify-help-xemacs (defaults)
+  (if (fboundp 'font-lock-set-defaults-1) ; >= XEmcas 19.14
+      (progn
+	(set-buffer "*Help*")
+	(setq font-lock-defaults-computed nil
+	      font-lock-keywords nil)
+	(font-lock-set-defaults-1
+	 (and defaults (font-lock-find-font-lock-defaults defaults)))
+	(font-lock-fontify-buffer)
+	(setq font-lock-defaults-computed nil
+	      font-lock-keywords nil)
+	(font-lock-set-defaults-1))))
+	
+(defun bib-cite-fontify-help-as-bibtex ()
+  (save-excursion
+    (cond 
+     ((and bib-hilit-if-available
+           (fboundp 'hilit-highlight-region))
+      (set-buffer "*Help*")
+      (hilit-highlight-region (point-min) (point-max) 'bibtex-mode t))
+     ((not (featurep 'font-lock))
+      nil)                              ;No font-lock! Stop here.
+     ;; font-lock under Emacs and XEmacs
+     ((string-match "XEmacs\\|Lucid" emacs-version)
+      ;; XEmacs
+      (bib-cite-fontify-help-xemacs 'bibtex-mode))
+     (t
+      ;; Emacs
+      (set-buffer "*Help*")
+      (let ((font-lock-defaults 
+             '(bib-cite-bibtex-font-lock-keywords
+               nil t ((?$ . "\"")(?\" . ".")))))
+        (if font-lock-mode
+            (font-lock-mode)
+          (font-lock-unset-defaults)
+          (font-lock-unfontify-buffer))
+        (font-lock-fontify-buffer))))))
+
 (defun bib-cite-fontify-help-as-latex ()
   (save-excursion
     (cond 
      ((and bib-hilit-if-available
            (fboundp 'hilit-highlight-region))
       (set-buffer "*Help*")
-      (hilit-highlight-region (point-min) (point-max) 'LaTeX-mode t))
-     ;; font-lock?
-     ((and (featurep 'font-lock)
-           (featurep 'font-latex))
+      (hilit-highlight-region (point-min) (point-max) 'latex-mode t))
+     ((not (featurep 'font-lock))
+      nil)                              ;No font-lock! Stop here.
+     ;; font-lock under Emacs and XEmacs
+     ((string-match "XEmacs\\|Lucid" emacs-version)
+      ;; XEmacs, not necessary to do s.th. special for font-latex, we do *not*
+      ;; want the buffer-local faces!
+      (bib-cite-fontify-help-xemacs 'latex-mode))
+     (t
+      ;; Emacs
       (set-buffer "*Help*")
-      (setq font-lock-defaults '(font-latex-keywords-2 nil nil ((?$ . "\""))))
-      ;; Add all syntax table for `proper' fontification?
-      (font-lock-fontify-buffer))
-     ((featurep 'font-lock)
-      (make-local-variable 'font-lock-defaults)
-      (setq font-lock-defaults '(tex-font-lock-keywords nil nil ((?$ . "\""))))
-      (set-buffer "*Help*")
-      (font-lock-fontify-buffer)))))
+      ;; Actually, don't want to `permanently' affect *Help* buffer...
+      ;;(if (featurep 'font-latex)
+      ;; (font-latex-setup)
+      ;; Rather I should deal with this in the `let' form:
+      ;; (make-local-variable 'font-lock-string-face)
+      ;; (setq font-lock-string-face font-latex-math-face
+      ;;       font-latex-string-face (default-value 'font-lock-string-face))
+      (let ((font-lock-defaults 
+             (if (featurep 'font-latex)
+                 '((font-latex-keywords font-latex-keywords-1 
+                                        font-latex-keywords-2)
+                   nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
+                   (font-lock-comment-start-regexp . "%")
+                   (font-lock-mark-block-function . mark-paragraph))
+               '(tex-font-lock-keywords nil nil ((?$ . "\""))))))
+        (if font-lock-mode
+            (font-lock-mode)
+          (font-lock-unset-defaults)
+          (font-lock-unfontify-buffer))
+        (font-lock-fontify-buffer))))))
 
 (defvar bib-document-TeX-files-warnings nil 
   "bib-cite internal variable")
@@ -910,26 +1193,19 @@ See variables bib-etags-command and bib-etags-filename"
     ;;  tags-file-name set.
     ;;  To get around this.  I'm setting this variable in the TAGS buffer.
     ;; Skip this in XEmacs (Changed by Anders Stenman)
-    (if (not (string-match "XEmacs\\|Lucid" emacs-version))
+    (if (and (not (string-match "XEmacs\\|Lucid" emacs-version))
+             (get-file-buffer the-tags-file))
 	(save-excursion
 	  (set-buffer (get-file-buffer the-tags-file))
 	  (set (make-local-variable 'tags-file-name) the-tags-file))))
 
-
+  
   (if bib-document-TeX-files-warnings   ;free variable loose in emacs!
       (progn
         (with-output-to-temp-buffer "*Help*" 
           (princ bib-document-TeX-files-warnings))
         (setq bib-document-TeX-files-warnings nil) ;Reset
-        (bib-cite-fontify-red)
-     ;;;(if (and bib-hilit-if-available
-     ;;;         (fboundp 'hilit-region-set-face))
-     ;;;    (save-excursion
-     ;;;      (set-buffer "*Help*")
-     ;;;      (hilit-region-set-face 
-     ;;;       1 (point-max)
-     ;;;       (cdr (assq 'error hilit-face-translation-table)))))
-        )))
+        (bib-cite-fontify-red))))
 
 (defun bib-Is-hidden ()
   "Return true is current point is hidden"
@@ -956,22 +1232,27 @@ See variables bib-etags-command and bib-etags-filename"
 ;;; *all of code was here*
 ;;;      )
   (save-excursion
-    (let ((s)(e)(extent)
+    (let ((s)(e)(extent)(local-extent-list bib-ext-list)
           (inhibit-read-only t)
           (modified (buffer-modified-p))) ;put-text-property changing this?
-      (goto-char (point-min))
       ;; * peta Wed Nov  8 16:27:29 1995 -- better remove the mouse face
       ;;   properties first.
+      (setq bib-ext-list nil)		;Reconstructed below...
       (if (string-match "XEmacs\\|Lucid" emacs-version)
-          (while bib-ext-list
-            (delete-extent (car bib-ext-list))
-            (setq bib-ext-list (cdr bib-ext-list)))
+          (while local-extent-list
+	    (setq extent (car local-extent-list))
+	    (if (and (<= (point-min)(extent-start-position extent))
+		     (>= (point-max)(extent-end-position extent)))
+		(delete-extent extent)
+	      (setq bib-ext-list (cons extent bib-ext-list)))
+            (setq local-extent-list (cdr local-extent-list)))
         ;; Remove properties for regular emacs
         ;; FIXME This detroys all mouse-faces and local-maps!
         ;; FIXME Hope no other package is using them in this buffer!
         (let ((before-change-functions) (after-change-functions))
           (remove-text-properties (point-min) (point-max)
                                   '(mouse-face t local-map t))))
+      (goto-char (point-min))
       (while 
           (re-search-forward 
            "\\\\\\(ref\\|label\\|[A-Za-z]*cite[A-Za-z]*\\(\\[.*\\]\\)?\\){[^}]*}"
@@ -984,6 +1265,7 @@ See variables bib-etags-command and bib-etags-filename"
           (setq bib-ext-list (cons extent bib-ext-list))
           (set-extent-property extent 'highlight t)
           (set-extent-property extent 'start-open t)
+	  (set-extent-property extent 'balloon-help 'bib-label-help)
           (set-extent-property extent 'keymap bib-highlight-mouse-keymap))
          (t
           (let ((before-change-functions) (after-change-functions)
@@ -1002,6 +1284,7 @@ See variables bib-etags-command and bib-etags-filename"
       (set-buffer-modified-p modified))))
 
 (defun bib-toggle-highlight () 
+;; FIXME: do something about after-change stuff?
   (interactive)
   (if (setq bib-highlight-mouse-t (not bib-highlight-mouse-t))
       (bib-highlight-mouse)
@@ -1018,6 +1301,19 @@ See variables bib-etags-command and bib-etags-filename"
                                   '(mouse-face local-map)))))
       (set-buffer-modified-p modified))))
 
+;;; Balloon-help callback. Anders Stenman <stenman@isy.liu.se>
+(defun bib-label-help (object)
+  (save-match-data
+    (let* ((string (extent-string object))
+	   (type (cond ((string-match "^\\\\cite" string) "citation")
+		       ((string-match "^\\\\ref" string) "\\label{}")
+		       ((string-match "^\\\\label" string) "\\ref{}")
+		       (t "bullshit"))))
+      (format
+       "Use mouse button 2 to find the %s.
+Use mouse button 3 to display the %s."
+       type type))))
+  
 ;;----------------------------------------------------------------------------
 ;; Routines to display or edit a citation's bibliography
 
@@ -1046,23 +1342,9 @@ Example with cursor located over cite command or arguments:
           "*Help*" 
         (set-buffer work-buffer)
         (princ (buffer-substring 1 (point-max))))
-      (cond
-       ((and bib-hilit-if-available
-             (fboundp 'hilit-highlight-region))
-        (set-buffer "*Help*")
-        (hilit-highlight-region (point-min) (point-max) 'bibtex-mode t)
-        (if the-warn-point
-            (hilit-region-set-face 
-             1 the-warn-point 
-             (cdr (assq 'error hilit-face-translation-table)))))
-       ((featurep 'font-lock)
-        (set-buffer "*Help*")
-        (set (make-local-variable 'font-lock-defaults)
-             '(bib-cite-bibtex-font-lock-keywords 
-               nil t ((?$ . "\"")(?\" . "."))))
-        (font-lock-fontify-buffer)
-        (if the-warn-point
-            (bib-cite-fontify-red the-warn-point))))
+      (bib-cite-fontify-help-as-bibtex)
+      (if the-warn-point
+          (bib-cite-fontify-red the-warn-point))
       (kill-buffer bib-buffer)
       (kill-buffer work-buffer))))
 
@@ -1857,13 +2139,6 @@ Return the-warnings as text."
   (defvar bib-imenu-document-counter nil
     "bib-cite internal variable")
 
-;; FIXME: If bib-cite becomes a minor mode, then this hook will go away
-;;        and this will be done in the minor-mode function.
-  (defun LaTeX-hook-setq-imenu ()
-    ;; User who *never* uses multi-file documents could change this to:
-    ;;                                  'imenu--create-LaTeX-index-for-buffer
-    (setq imenu-create-index-function 'imenu--create-LaTeX-index))
-
   (defun imenu--create-LaTeX-index ()
     ;; dispatch to proper function, depending on whether a multi-file document.
     (let ((masterfile (bib-master-file)))
@@ -1875,6 +2150,7 @@ Return the-warnings as text."
     ;; For a multi-file document in auctex only.
     ;; Create imenu--index-alist for master file buffer and use the same
     ;; for all input files?  This would be faster...  Maybe in next version?
+    ;;FIXME: How about parsing TAGS file instead of search through all files?
     (bib-etags)                         ;Create a new TAGS file, user needs it.
     (let ((tex-buffer (get-buffer-create "*imenu-tex*"))
           (index-alist '())
@@ -1902,7 +2178,7 @@ Return the-warnings as text."
         (while 
             (re-search-backward  
 ;;;          "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
-             "\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\){[^}]+}"
+             "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
              nil t)
           (imenu-progress-message prev-pos nil t)
           (save-match-data
@@ -1945,7 +2221,7 @@ Return the-warnings as text."
 ;;;        "^[^;]*\\(\\\\\\)\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
 ;;; Original regexp that would catch commented-out stuff
 ;;;        "\\\\\\(\\(sub\\)*section\\|chapter\\|label\\){[^}]+}" 
-           "\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\){[^}]+}"
+           "\\(\\(\\\\label\\)\\|\\(^[ ]*\\\\\\(\\(sub\\)*section\\|chapter\\)\\)\\){[^}]+}"
            nil t)
         (imenu-progress-message prev-pos nil t)
         (save-match-data
@@ -1984,11 +2260,11 @@ Return the-warnings as text."
   (defun imenu--remove-LaTeX-keyword-el (element keyword)
     "Remove the LaTeX KEYWORD from car of ELEMENT."
     (save-match-data
-      ;; Shouls I have extra option here: "[
-      (string-match (concat "\\\\" keyword "{\\(.*\\)}") (car element))
-      (cons 
-       (substring (car element) (match-beginning 1) (match-end 1)) 
-       (cdr element))))
+      ;; Should I have extra option here: "[
+      (if (string-match (concat "\\\\" keyword "{\\(.*\\)}") (car element))
+          (cons 
+           (substring (car element) (match-beginning 1) (match-end 1)) 
+           (cdr element)))))
   
   (defun imenu--label-cmp (el1 el2)
     "Predicate to compare labels in lists produced by 
@@ -2185,320 +2461,6 @@ although BiBTeX doesn't allow it!"
 
     (TeX-auto-write)))
 
-;; ---------------------------------------------------------------------------
-;; Key definitions start here...
-
-;; Christoph Wedler <wedler@fmi.uni-passau.de>
-;;  Replace eval-after-load (which doesn't work with efs anyway)
-;;  with add-submenu in bib-cite-initialize
-
-;;(if ((and (string-match "XEmacs\\|Lucid" emacs-version)
-;;          (or window-system
-;;              (fboundp 'smart-menu))      ;text menus by Bob Weiner
-;;          (not (fboundp 'eval-after-load))))
-;;    ;; define eval-after-load for XEmacs
-;;    (defun eval-after-load (file form)
-;;      "Arrange that, if FILE is ever loaded, FORM will be run at that
-;;time.
-;;This makes or adds to an entry on `after-load-alist'.
-;;It does nothing if FORM is already on the list for FILE.
-;;FILE should be the name of a library, with no directory name."
-;;      (or (assoc file after-load-alist)
-;;          (setq after-load-alist (cons (list file) after-load-alist)))
-;;      (let ((elt (assoc file after-load-alist)))
-;;        (or (member form (cdr elt))
-;;            (nconc elt (list form))))
-;;      form))
-
-(defvar bib-cite-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map "a" 'bib-apropos)
-    (define-key map "m" 'bib-make-bibliography)
-    (define-key map "d" 'bib-display)
-    (define-key map "e" 'bib-etags)
-    (define-key map "f" 'bib-find)
-    (define-key map "h" 'bib-highlight-mouse)
-  map)
-  "Keymap to bind to \\C-cb in latex keymap")
-
-(cond
- ((and (string-match "XEmacs\\|Lucid" emacs-version)
-       (or window-system
-           (fboundp 'smart-menu)))      ;text menus by Bob Weiner
-  ;;
-  ;; xemacs under X with auc-tex
-  ;;
-
-  ;; Christoph Wedler <wedler@fmi.uni-passau.de>
-  (defvar bib-cite-xemacs-menu
-    '("Bib-Cite"
-    ;;"---"
-      ["Make BibTeX bibliography buffer" bib-make-bibliography t]
-      ["Display citation or matching \\ref or \\label" bib-display t]
-      ["Find BibTeX citation or matching \\ref or \\label" bib-find t]
-      ["Search apropos BibTeX files" bib-apropos t]
-      ["Build TAGS file for multi-file document" bib-etags (bib-master-file)]
-      ["Refresh \\cite, \\ref and \\label mouse highlight"
-       bib-highlight-mouse t])
-    "Submenu of LaTeX menu, used by bib-cite.")
-
-;;; Add to bibtex.el's popup menu
-  (defvar bib-cite-xemacs-bibtex-mode-menu
-    '("---"
-      "Bib-Cite"
-      "---"
-      ["Search apropos BibTeX files" bib-apropos t]
-      ["Create auc-tex auto parsing file" bib-create-auto-file t])
-    "Submenu of bibtex-mode menu, used by bib-cite.")
-  
-  (if (boundp 'bibtex-menu)
-      ;; Add menu now
-      (setq bibtex-menu
-	    (append
-	     bibtex-menu
-	     bib-cite-xemacs-bibtex-mode-menu))
-    ;; Setup to add menu later
-    (defun bib-cite-bibtex-mode-hook ()
-      (if (boundp 'bibtex-menu)
-          (progn
-            (setq bibtex-menu
-                  (append
-                   bibtex-menu
-                   bib-cite-xemacs-bibtex-mode-menu))
-            (remove-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))))
-    (add-hook 'bibtex-mode-hook 'bib-cite-bibtex-mode-hook))
-;;; Done - Add to bibtex.el's popup menu
-
-;;  (eval-after-load 
-;;   "latex"
-;;   '(progn
-;;      (add-menu-button '("LaTeX") ["----" nil t])
-;;      (add-menu-button 
-;;      '("LaTeX") ["Make BibTeX bibliography buffer" bib-make-bibliography t])
-;;      (add-menu-button 
-;;       '("LaTeX") ["Display citation or matching \\ref or \\label" 
-;;                   bib-display t])
-;;      (add-menu-button 
-;;       '("LaTeX") ["Find BibTeX citation or matching \\ref or \\label" 
-;;                   bib-find t])
-;;      (add-menu-button 
-;;       '("LaTeX") ["Search apropos BibTeX files" bib-apropos t])
-;;      (add-menu-button 
-;;       '("LaTeX") ["Build TAGS file for multi-file document" bib-etags t])
-;;      (add-menu-button 
-;;       '("LaTeX") 
-;;       ["Refresh \\cite, \\ref and \\label mouse highlight" 
-;;        bib-highlight-mouse t])
-
-      )
-
- ((and (not (string-match "XEmacs\\|Lucid" emacs-version))
-       (string-equal "19" (substring emacs-version 0 2))
-       (or window-system
-           (fboundp 'tmm-menubar)))     ; 19.30 - Will autoload if necessary 
-  ;;
-  ;; emacs-19 under X-windows (or non-X with tmm)
-  ;;
-  
-  ;; This *almost* makes me want to switch over to XEmacs...
-
-  ;; to auc-tex auto file for a bibtex buffer
-  (eval-after-load 
-   "bibtex"
-   '(progn
-      (cond
-       ((lookup-key bibtex-mode-map [menu-bar move/edit])
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-          [bib-nil] '("---" . nil) '"--")
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar move/edit]) 
-          [auc-tex-parse] 
-          '("Create auc-tex auto parsing file" . bib-create-auto-file)
-          'bib-apropos))
-       ((lookup-key bibtex-mode-map [menu-bar bibtex-edit])
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
-          [bib-nil] '("---" . nil) '"--")
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
-          [bib-apropos] '("Search Apropos" . bib-apropos) 'bib-nil)
-        (define-key-after 
-          (lookup-key bibtex-mode-map [menu-bar bibtex-edit]) 
-          [auc-tex-parse] 
-          '("Create auc-tex auto parsing file" . bib-create-auto-file)
-          'bib-apropos)))))
-
-  (defvar bib-cite-put-menu-separately t
-    "*Put bib-cite menubar menu separately, not within LaTeX pull-down menu")
-  (cond
-   ((not bib-cite-put-menu-separately)  ;Old method - Destroy code?
-     (defun bib-add-menu-keys (the-key)
-       (cond
-        (the-key                             ;make sure keymap exists
-         (define-key-after the-key [bib-nil] '("---" . nil) '"--")
-         (define-key-after the-key [bib-make-bibliography]
-           '("Make BiBTeX bibliography buffer" . bib-make-bibliography) 
-           'bib-nil)
-         (define-key-after the-key [bib-display]
-           '("Display citation or matching \\ref or \\label" . bib-display)
-           'bib-make-bibliography)
-         (define-key-after the-key [bib-find]
-           '("Find BiBTeX citation or matching \\ref or \\label" . bib-find)
-           'bib-display)
-         (define-key-after the-key [bib-apropos]
-           '("Search apropos BiBTeX files" . bib-apropos) 'bib-find)
-      ;;;(put 'ps-print-region-with-faces 'menu-enable 'mark-active)
-      ;;;(define-key menu-bar-tools-menu [ps-print-buffer]
-      ;;;  '("Postscript Print Buffer" . ps-print-buffer-with-faces))
-         (put 'bib-etags 'menu-enable '(bib-master-file))
-         (define-key-after the-key [bib-etags]
-           '("Build TAGS file for multi-file document" . bib-etags)
-           'bib-apropos)
-         (define-key-after the-key [bib-highlight-mouse]
-           '("Refresh \\cite, \\ref and \\label mouse highlight" . 
-             bib-highlight-mouse)
-           'bib-etags))))
-
-     ;;for auc-tex's LaTeX-mode
-     (eval-after-load 
-      "latex"
-      '(let ((the-key (or (lookup-key LaTeX-mode-map [menu-bar LaTeX])
-                          (lookup-key LaTeX-mode-map [menu-bar AUC\ TeX]))))
-      ;;;(define-key LaTeX-mode-map [S-mouse-1] 'bib-display-mouse)
-      ;;;(define-key LaTeX-mode-map [S-mouse-2] 'bib-find-mouse)
-         (define-key LaTeX-mode-map "\C-cb" bib-cite-map)
-         (bib-add-menu-keys the-key)))
-
-     ;;for auc-tex's TeX-mode
-     (eval-after-load 
-      "tex"
-      '(let ((the-key (lookup-key TeX-mode-map [menu-bar TeX])))
-      ;;;(define-key TeX-mode-map [S-mouse-1] 'bib-display-mouse)
-      ;;;(define-key TeX-mode-map [S-mouse-2] 'bib-find-mouse)
-         (define-key TeX-mode-map "\C-cb" bib-cite-map)
-         (bib-add-menu-keys the-key)))
-
-     ;;for plain tex-mode
-     (eval-after-load 
-      "tex-mode"
-      '(progn
-         (let ((the-key (lookup-key tex-mode-map [menu-bar tex])))
-        ;;;(define-key tex-mode-map [S-mouse-1] 'bib-display-mouse)
-        ;;;(define-key tex-mode-map [S-mouse-2] 'bib-find-mouse)
-           (define-key tex-mode-map "\C-cb" bib-cite-map)
-           (bib-add-menu-keys the-key)
-           (define-key tex-mode-map [menu-bar tex bib-etags] 
-             'undefined)))))
-   
-   (t                                   ;New method - separate menu
-    (setq bib-cite-menu-map (make-sparse-keymap "bib-cite"))
-    (define-key bib-cite-menu-map [bib-display]
-      '("Display citation or matching \\ref or \\label" . bib-display))
-    (define-key bib-cite-menu-map [bib-find]
-      '("Find BiBTeX citation or matching \\ref or \\label" . bib-find))
-    (define-key bib-cite-menu-map [bib-make-bibliography]
-      '("Make BiBTeX bibliography buffer" . bib-make-bibliography))
-    (put 'bib-etags 'menu-enable '(bib-master-file))
-    (define-key bib-cite-menu-map [bib-etags]
-      '("Build TAGS file for multi-file document" . bib-etags))
-    (define-key bib-cite-menu-map [bib-apropos]
-      '("Search apropos BiBTeX files" . bib-apropos))
-    (define-key bib-cite-menu-map [bib-highlight-mouse]
-      '("Refresh \\cite, \\ref and \\label mouse highlight"
-        . bib-highlight-mouse))
-
-    (eval-after-load 
-     "tex-mode"
-     '(progn
-     ;;;(define-key tex-mode-map [S-mouse-1] 'bib-display-mouse)
-     ;;;(define-key tex-mode-map [S-mouse-2] 'bib-find-mouse)
-        (define-key tex-mode-map "\C-cb" bib-cite-map)
-        (define-key tex-mode-map [menu-bar bib-cite-menu-map]
-          (cons "Bib-Cite" bib-cite-menu-map))
-        (define-key tex-mode-map [menu-bar bib-cite-menu-map bib-etags] 
-          'undefined)))
-
-    ;;for auc-tex's LaTeX-mode
-    (eval-after-load 
-     "latex"
-     '(progn
-     ;;;(define-key LaTeX-mode-map [S-mouse-1] 'bib-display-mouse)
-     ;;;(define-key LaTeX-mode-map [S-mouse-2] 'bib-find-mouse)
-        (define-key LaTeX-mode-map "\C-cb" bib-cite-map)
-        (define-key LaTeX-mode-map [menu-bar bib-cite-menu-map]
-          (cons "Bib-Cite" bib-cite-menu-map))))
-
-    ;;for auc-tex's TeX-mode
-    (eval-after-load 
-     "tex"
-     '(progn
-     ;;;(define-key TeX-mode-map [S-mouse-1] 'bib-display-mouse)
-     ;;;(define-key TeX-mode-map [S-mouse-2] 'bib-find-mouse)
-        (define-key TeX-mode-map "\C-cb" bib-cite-map)))
-    ))))
-    
-;; This must be after adding to LaTeX-mode-map because we copy it here.
-(defvar bib-highlight-mouse-keymap
-  ;; First, copy the local keymap so we don't have `disappearing' menus
-  ;; when the mouse is moved over a \ref, \label or \cite command.
-  ;; FIXME:  **This only works if bib-cite is loaded after TeX keymaps
-  ;;           are constructed.  Thus, if bib-cite is loaded in a hook.
-
-  ;; FIXME: Check out (mouse-major-mode-menu) to see how it grabs the local
-  ;;        menus to display.  Maybe on `highlighted' commands we could only
-  ;;        display the bib-cite stuff (or a subset of it).
-  (let ((m (cond
-            ((boundp 'LaTeX-mode-map)
-             (copy-keymap LaTeX-mode-map))
-            ((boundp 'tex-mode-map)
-             (copy-keymap tex-mode-map))
-            (t
-             (make-sparse-keymap)))))
-    (cond 
-     ((string-match "XEmacs\\|Lucid" emacs-version)
-      (set-keymap-name m 'bib-highlight-mouse-keymap)
-      (cond
-       ;; action-key stuff from Vladimir Alexiev <vladimir@cs.ualberta.ca>
-       ((commandp 'action-key)
-        ;; for hyperbole. The Right Way is to define implicit buttons
-        ;; (defib) bib-cite and label-ref instead of overriding action-key and
-        ;; assist key, so that eg smart key help can be obtained, but I'm
-        ;; lazy.
-        (substitute-key-definition 'action-key 'bib-find m global-map)
-        (substitute-key-definition 'assist-key 'bib-display m global-map)
-        (substitute-key-definition 'action-key-depress 
-                                   'bib-find-mouse m global-map)
-        (substitute-key-definition 'assist-key-depress 
-                                   'bib-display-mouse m global-map)
-        (substitute-key-definition 'action-mouse-key nil m global-map)
-        (substitute-key-definition 'assist-mouse-key nil m global-map))
-       (t                               ; xemacs, not hyperbole
-        (define-key m "\e\r" 'bib-find-mouse) ;   bug Fixed in V2.17
-        (define-key m "\e\n" 'bib-display-mouse) ;bug Fixed in V2.17
-      ;;(define-key m [(shift button1)] 'bib-display-mouse)
-        (define-key m [button3] 'bib-display-mouse)
-        (define-key m [button2] 'bib-find-mouse))))
-     (t                                 ; emacs 19
-      (cond
-       ((commandp 'action-key)
-        (substitute-key-definition 'action-key 'bib-find m global-map)
-        (substitute-key-definition 'assist-key 'bib-display m global-map)
-        (substitute-key-definition 'action-mouse-key-emacs19 
-                                   'bib-find-mouse m global-map)
-        (substitute-key-definition 'assist-mouse-key-emacs19 
-                                   'bib-display-mouse m global-map)
-        (substitute-key-definition 'action-key-depress-emacs19 
-                                   nil m global-map)
-        (substitute-key-definition 'assist-key-depress-emacs19 
-                                   nil m global-map))
-       (t                               ; emacs 19, not hyperbole
-        (define-key m [down-mouse-3] 'bib-display-mouse)
-        (define-key m [mouse-2] 'bib-find-mouse)))))
-    m))
 ;; --------------------------------------------------------------------------
 ;; The following routines are also defined in other packages...
 
@@ -2661,62 +2623,6 @@ bib-dos-or-os2-variable affects:
             (setq answers (cons entry answers))))
       (nreverse answers))))
 
-;;
-;; Create the unified hook to call from LaTeX-mode-hook
-;;
-(defun bib-cite-initialize ()
-  ;; Christoph Wedler's <wedler@fmi.uni-passau.de> suggestion for xemacs
-  ;; Added for version 2.19
-  (if (boundp 'tags-always-exact)
-      (progn
-        (make-local-variable 'tags-always-exact)
-        (setq tags-always-exact nil)))
-
-  ;; Christoph Wedler <wedler@fmi.uni-passau.de>
-  (and (boundp 'bib-cite-xemacs-menu)
-       bib-cite-xemacs-menu
-       (fboundp 'add-submenu)     ;Insurance for emacs
-     ;;;FIXME: I can do this to add a main menu.
-     ;;(add-submenu nil bib-cite-xemacs-menu)
-       ;; This makes it buffer-specific so I don't need to remove it.
-       (set-buffer-menubar (copy-sequence current-menubar))
-       (add-submenu '("LaTeX") bib-cite-xemacs-menu))
-
-  (cond 
-   ((string-match "XEmacs\\|Lucid" emacs-version)
-    ;; Define keys for XEmacs 
-    ;;  Could do all modes like this for emacs also...
-    (local-set-key "\C-cba" 'bib-apropos)
-    (local-set-key "\C-cbm" 'bib-make-bibliography)
-    (local-set-key "\C-cbd" 'bib-display)
-    (local-set-key "\C-cbe" 'bib-etags)
-    (local-set-key "\C-cbf" 'bib-find)
-    (local-set-key "\C-cbh" 'bib-highlight-mouse)))
-
-  (if bib-highlight-mouse-t
-      (bib-highlight-mouse))
-  (if bib-use-imenu
-      (LaTeX-hook-setq-imenu))
-
-  ;; Make sure that imenu-sort-function is nil
-  (and (boundp 'imenu-sort-function)
-       imenu-sort-function
-       (make-local-variable 'imenu-sort-function)
-       (setq imenu-sort-function nil))
-  )
-
-(add-hook 'LaTeX-mode-hook 'bib-cite-initialize t) ;auctex's latex-mode
-(add-hook 'latex-mode-hook 'bib-cite-initialize t) ;emacs' plain latex-mode
-
-;; If bib-cite.el is loaded in a mode hook, bib-highlight-mouse and
-;; LaTeX-hook-setq-imenu are not called on the buffer... 
-;; so invoke it now for .tex buffers.  Same for imenu.
-;(if (string-match ".tex$" (buffer-name))
-;  (bib-cite-initialize))
-
-(if (or (eq major-mode 'latex-mode) 
-        (eq major-mode 'plain-tex-mode))
-      (bib-cite-initialize))
 
 (provide 'bib-cite)
 ;;; bib-cite.el ends here

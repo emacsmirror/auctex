@@ -1,3 +1,86 @@
+Fri Jun 27 19:16:34 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8a released.
+
+Tue Jun 24 17:03:06 1997  Christoph Wedler  <wedler@fmi.uni-passau.de>
+
+	* tex.el (TeX-update-style): `TeX-auto-update' could be unbound.
+	(TeX-auto-x-parse-length): New variable.  Allows to use maximimum
+ 	= slow parsing for the beginning of a file and minimum = fast
+ 	parsing, e.g., just for labels, for the rest of the file.
+	(TeX-auto-x-regexp-list): Ditto.
+	(TeX-auto-parse-region): New function.
+	(TeX-auto-parse): Use them.
+
+	* tex-buf.el (TeX-region-extra): New variable with a value which
+ 	redefines \cite for the region file in order get less
+	warnings. With value "", this variable has no effect.
+	(TeX-region-hook): New variable.
+	(TeX-region-create): Use them.
+
+	* latex.el (LaTeX-indent-line): TeX commands are case sensitive.
+	(LaTeX-find-matching-end): Would not work correctly with more than
+ 	one \end in a line.
+	(LaTeX-find-matching-begin): Would not work correctly with more
+ 	than one \begin in a line.
+
+	(LaTeX-menu-max-items): New variable with value 25.  Split menu
+ 	if number of entries in a menu is larger than this value.  If nil,
+ 	never split menu into submenus, which is the behaviour before the
+ 	introduction of this variable.
+	(LaTeX-submenu-name-format): New variable.
+	(LaTeX-split-long-menu): New function using the two new variables.
+	(LaTeX-menu-update): Use it.
+
+	(LaTeX-document-regexp): New variable.  Texts in environments
+ 	other than "document", e.g., "letter", could be without initial
+ 	indentation.
+	(LaTeX-verbatim-regexp): New variable.  \begin and \end of
+ 	environments other than "verbatim\\*?", e.g., "program", could
+ 	start at column 0.
+	(LaTeX-begin-regexp): New variable similar to `LaTeX-item-regexp'.
+  	Commands other than "begin", e.g, "if", could increase the
+ 	indentation.
+	(LaTeX-end-regexp): New variable similar to `LaTeX-item-regexp'.
+  	Commands other than "end", e.g, "fi", could decrease the
+ 	indentation.
+	(LaTeX-indent-comment-start-regexp): New variable.  Would allow
+ 	you to correct the automatic indentation with commands in special
+ 	comments.
+	(LaTeX-indent-calculate): Use them.
+	(LaTeX-indent-level-count): Use them.
+	(LaTeX-indent-calculate-last): Use them.
+
+	(LaTeX-math-insert-function): New variable.
+	(LaTeX-math-insert): Use it.
+
+Wed Jun 11 09:10:13 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (TeX-arg-ref): New alias.
+	(LaTeX-common-initialization): Use it.
+	Patch by Soren Dayton <csdayton@cs.uchicago.edu>.
+
+Thu Jun  5 13:56:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-auto-minimal-regexp-list): Added `usepackage'. 
+	(LaTeX-auto-minimal-regexp-list): Ditto.
+	Patch by Carsten Dominik <dominik@strw.LeidenUniv.nl>.
+
+	* style/amsmath.el: New file.
+	* style/amstext.el: New file.
+	* style/amsbsy.el: New file.
+	* style/amsopn.el : New file.
+	* style/amsthm.el: New file.
+	* Makefile (STYLESRC): Added them.
+	Files provided by Carsten Dominik <dominik@strw.LeidenUniv.nl>.
+
+Tue Jun  3 17:18:06 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/slovak.el: New file.
+	* style/czech.el: New file.
+	* Makefile (STYLESRC): Add them.
+	Files provided by Milan Zamazal <pdm@fi.muni.cz>.
+
 Thu Apr 17 14:25:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7p released.
@@ -6,7 +89,8 @@ Sat Apr 12 22:38:15 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* tex.el: Added customize information.
 	* tex-buf.el: Ditto.
-
+	* latex.el: Ditto.
+	
 Sun Apr 06 19:28:11 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.7o released.

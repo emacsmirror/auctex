@@ -1,8 +1,6 @@
-@section News in 9.7
+@section News in 9.8
 
 @itemize @bullet
-@item 
-Added minimal support for @code{sentence-end-double-space}.
 
 @end itemize
 

@@ -1,3 +1,14 @@
+@section News in 9.7
+
+@itemize @bullet
+@item
+Added support for customize.
+
+@item 
+Added minimal support for @code{sentence-end-double-space}.
+
+@end itemize
+
 @section News in 9.6
 
 @itemize @bullet

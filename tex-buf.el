@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7p
+;; Version: 9.8a
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -812,6 +812,16 @@ command."
 
 ;;; Region File
 
+(defcustom TeX-region-extra "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\\gdef\\cite{\\@ifnextchar[{\\AucTeX@cite{, }}{\\AucTeX@cite{}[]}}}\n"
+  "*String to insert in the region file between the header and the text."
+  :group 'TeX-commands
+  :type 'string)
+
+(defvar TeX-region-hook nil
+  "List of hooks to run before the region file is saved.
+The hooks are run in the region buffer, you may use the variable
+master-buffer to access the buffer of the master file.")
+
 (defun TeX-region-create (file region original offset)
   "Create a new file named FILE with the string REGION
 The region is taken from ORIGINAL starting at line OFFSET.
@@ -883,10 +893,12 @@ original file."
 			      (buffer-substring (point) (point-max))))))))))
     (save-excursion
       (set-buffer file-buffer)
+      (setq buffer-undo-list t)
       (setq original-content (buffer-string))
       (erase-buffer)
       (insert "\\message{ !name(" master-name ")}"
 	      header
+	      TeX-region-extra
 	      "\n\\message{ !name(" original ") !offset(")
       (insert (int-to-string (- offset
 				(count-lines (point-min) (point))))
@@ -897,6 +909,7 @@ original file."
 				(count-lines (point-min) (point))))
 	      ") }\n"
 	      trailer)
+      (run-hooks 'TeX-region-hook)
       (if (string-equal (buffer-string) original-content)
 	  (set-buffer-modified-p nil)
 	(save-buffer 0)))))

@@ -1,10 +1,10 @@
-;;; amsbook.el --- AMS book style hook.
+;;; amsbook.el --- Style hook for the AMS-LaTeX book document class.
 
 ;;; Code:
 
 (TeX-add-style-hook "amsbook"
  (function
   (lambda ()
-    (TeX-run-style-hooks "amstex"))))
+    (TeX-run-style-hooks "amsmath"))))
 
 ;;; amsbook.el ends here.

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7p
+;; Version: 9.8a
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -879,7 +879,10 @@ You may use LaTeX-item-list to change the routines used to insert the item."
   '(("\\\\document\\(style\\|class\\)\
 \\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)\\]\\)?\
 {\\([^#\\\\\\.\n\r]+\\)}"
-     (3 5 1) LaTeX-auto-style))
+     (3 5 1) LaTeX-auto-style)
+    ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
+{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
+     (2) LaTeX-auto-style))
   "Minimal list of regular expressions matching LaTeX macro definitions.")
 
 (defvar LaTeX-auto-label-regexp-list
@@ -904,9 +907,6 @@ You may use LaTeX-item-list to change the routines used to insert the item."
       1 TeX-auto-file)
      ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
       1 TeX-auto-file)
-     ("\\\\usepackage\\(\\[[^\]\\\\]*\\]\\)?\
-{\\(\\([^#}\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)}"
-      (2) LaTeX-auto-style)
      ("\\\\bibitem{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
@@ -1134,6 +1134,8 @@ Used for specifying extra syntax for a macro."
     (if (and definition (not (string-equal "" label)))
 	(LaTeX-add-labels label))
     (TeX-argument-insert label optional optional)))
+
+(defalias 'TeX-arg-ref 'TeX-arg-label)
 
 (defun TeX-arg-macro (optional &optional prompt definition)
   "Prompt for a TeX macro with completion."
@@ -1478,7 +1480,8 @@ Add LaTeX-indent-level indentation in each \\begin{ - \\end{ block.
 Lines starting with an item is given an extra indentation of
 LaTeX-item-indent."
   (interactive)
-  (let ((indent (LaTeX-indent-calculate)))
+  (let* ((case-fold-search nil)
+	 (indent (LaTeX-indent-calculate)))
     (save-excursion
       (if (/= (current-indentation) indent)
 	  (let ((beg (progn
@@ -1650,9 +1653,14 @@ formatting."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	(level 1))
-    (beginning-of-line 1)
-    (if (looking-at (concat " *" (regexp-quote TeX-esc) "begin\\b"))
-	(end-of-line 1))
+    (save-excursion
+      (skip-chars-backward "a-zA-Z \t{")
+      (if (bolp)
+	  nil
+	(backward-char 1)
+	(and (looking-at regexp)
+	     (char-equal (char-after (1+ (match-beginning 0))) ?e)
+	     (setq level 0))))
     (while (and (> level 0) (re-search-forward regexp nil t))
       (if (= (char-after (1+ (match-beginning 0))) ?b);;begin
 	  (setq level (1+ level))
@@ -1666,9 +1674,13 @@ formatting."
   (interactive)
   (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)\\b"))
 	(level 1))
-    (beginning-of-line 1)
-    (if (looking-at (concat " *" (regexp-quote TeX-esc) "begin\\b"))
-	(end-of-line 1))
+    (skip-chars-backward "a-zA-Z \t{")
+    (if (bolp)
+	nil
+      (backward-char 1)
+      (and (looking-at regexp)
+	   (char-equal (char-after (1+ (match-beginning 0))) ?b)
+	   (setq level 0)))
     (while (and (> level 0) (re-search-backward regexp nil t))
       (if (= (char-after (1+ (match-beginning 0))) ?e);;end
 	  (setq level (1+ level))
@@ -1777,12 +1789,34 @@ indentation level in columns.")
   :type '(choice (const :tag "none" nil)
 		 (regexp :format "%v")))
 
+(defcustom LaTeX-document-regexp "document"
+  "Regexp matching environments in which the indentation starts at col 0."
+  :group 'LaTeX-indentation
+  :type 'regexp)
+
+(defcustom LaTeX-verbatim-regexp "verbatim\\*?"
+  "*Regexp matching environments with indentation at col 0 for begin/end."
+  :group 'LaTeX-indentation
+  :type 'regexp)
+
+(defcustom LaTeX-begin-regexp "begin\\b"
+  "*Regexp matching macros considered begins."
+  :group 'LaTeX-indentation
+  :type 'regexp)
+
+(defcustom LaTeX-end-regexp "end\\b"
+  "*Regexp matching macros considered ends."
+  :group 'LaTeX-indentation
+  :type 'regexp)
+
 (defun LaTeX-indent-calculate ()
   ;; Return the correct indentation of line of LaTeX source. (I hope...)
   (save-excursion
     (back-to-indentation)
     (cond ((looking-at (concat (regexp-quote TeX-esc)
-			       "\\(begin\\|end\\){verbatim\\*?}"))
+			       "\\(begin\\|end\\){\\("
+			       LaTeX-verbatim-regexp
+			       "\\)}"))
 	   ;; \end{verbatim} must be flush left, otherwise an unwanted
 	   ;; empty line appears in LaTeX's output.
 	   0)
@@ -1805,13 +1839,19 @@ indentation level in columns.")
 		  (and entry
 		       (nth 1 entry)
 		       (funcall (nth 1 entry))))))
-	  ((looking-at (concat (regexp-quote TeX-esc) "end\\b"))
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "\\("
+			       LaTeX-end-regexp
+			       "\\)"))
 	   ;; Backindent at \end.
 	   (- (LaTeX-indent-calculate-last) LaTeX-indent-level))
 	  ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
 	   ;; Backindent at \right.
 	   (- (LaTeX-indent-calculate-last) LaTeX-left-right-indent-level))
-	  ((looking-at (concat (regexp-quote TeX-esc) LaTeX-item-regexp))
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "\\("
+			       LaTeX-item-regexp
+			       "\\)"))
 	   ;; Items.
 	   (+ (LaTeX-indent-calculate-last) LaTeX-item-indent))
 	  (t (LaTeX-indent-calculate-last)))))
@@ -1821,6 +1861,18 @@ indentation level in columns.")
   :group 'LaTeX-indentation
   :type 'integer)
 
+(defcustom LaTeX-indent-comment-start-regexp "%"
+  "*Regexp matching comments ending the indent level count.
+This means, we just count the LaTeX tokens \\left, \\right, \\begin,
+and \\end up to the first occurence of text matching this regexp.
+Thus, the default \"%\" stops counting the tokens at a comment.  A
+value of \"%[^>]\" would allow you to alter the indentation with
+comments, e.g. with comment `%> \\begin'.
+Lines which start with `%' are not considered at all, regardless if this
+value."
+  :group 'LaTeX-indentation
+  :type 'regexp)
+
 (defun LaTeX-indent-level-count ()
   ;; Count indentation change caused by all \left, \right, \begin, and
   ;; \end commands in the current line.
@@ -1829,9 +1881,12 @@ indentation level in columns.")
       (let ((count 0))
 	(narrow-to-region (point)
 			  (save-excursion
-			    (re-search-forward (concat "[^"
-						       (regexp-quote TeX-esc)
-						       "]%\\|\n\\|\\'"))
+			    (re-search-forward
+			     (concat "[^"
+				     (regexp-quote TeX-esc)
+				     "]\\("
+				     LaTeX-indent-comment-start-regexp
+				     "\\)\\|\n\\|\\'"))
 			    (backward-char)
 			    (point)))
 	(while (search-forward TeX-esc nil t)
@@ -1840,9 +1895,9 @@ indentation level in columns.")
 	    (setq count (+ count LaTeX-left-right-indent-level)))
 	   ((looking-at "right\\b")
 	    (setq count (- count LaTeX-left-right-indent-level)))
-	   ((looking-at "begin\\b")
+	   ((looking-at LaTeX-begin-regexp)
 	    (setq count (+ count LaTeX-indent-level)))
-	   ((looking-at "end\\b")
+	   ((looking-at LaTeX-end-regexp)
 	    (setq count (- count LaTeX-indent-level)))
 	   ((looking-at (regexp-quote TeX-esc))
 	    (forward-char 1))))
@@ -1863,37 +1918,44 @@ The point is supposed to be at the beginning of the current line."
 	  (move-to-column (current-indentation))))
 
     (cond ((bobp) 0)
-	  ((looking-at (concat (regexp-quote TeX-esc) "begin{document}"))
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "begin *{\\("
+			       LaTeX-document-regexp
+			       "\\)}"))
 	   ;; I dislike having all of the document indented...
 	   (current-indentation))
-	  ((looking-at (concat (regexp-quote TeX-esc) "begin *"
-			       (regexp-quote TeX-grop)
-			       "verbatim\\*?"
-			       (regexp-quote TeX-grcl)))
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "begin *{\\("
+			       LaTeX-verbatim-regexp
+			       "\\)}"))
 	   0)
-	  ((looking-at (concat (regexp-quote TeX-esc) "end"
-			       (regexp-quote TeX-grop)
-			       "verbatim\\*?"
-			       (regexp-quote TeX-grcl)))
+	  ((looking-at (concat (regexp-quote TeX-esc)
+			       "end *{\\("
+			       LaTeX-verbatim-regexp
+			       "\\)}"))
 	   ;; If I see an \end{verbatim} in the previous line I skip
 	   ;; back to the preceding \begin{verbatim}.
 	   (save-excursion
 	     (if (re-search-backward (concat (regexp-quote TeX-esc)
-					     "begin *"
-					     (regexp-quote TeX-grop)
-					     "verbatim\\*?"
-					     (regexp-quote TeX-grcl)) 0 t)
+					     "begin *{\\("
+					     LaTeX-verbatim-regexp
+					     "\\)}") 0 t)
 		 (LaTeX-indent-calculate-last)
 	       0)))
 	  (t (+ (current-indentation)
 		(TeX-brace-count-line)
 		(LaTeX-indent-level-count)
-		(cond ((looking-at (concat (regexp-quote TeX-esc) "end\\b"))
+		(cond ((looking-at (concat (regexp-quote TeX-esc)
+					   "\\("
+					   LaTeX-end-regexp
+					   "\\)"))
 		       LaTeX-indent-level)
 		      ((looking-at (concat (regexp-quote TeX-esc) "right\\b"))
 		       LaTeX-left-right-indent-level)
 		      ((looking-at (concat (regexp-quote TeX-esc)
-					   LaTeX-item-regexp))
+					   "\\("
+					   LaTeX-item-regexp
+					   "\\)"))
 		       (- LaTeX-item-indent))
 		      (t 0)))))))
 
@@ -2546,10 +2608,15 @@ commands are defined:
   (let (LaTeX-math-mode)
     (call-interactively (key-binding LaTeX-math-abbrev-prefix))))
 
+(defcustom LaTeX-math-insert-function 'TeX-insert-macro
+  "Function called with argument STRING to insert \\STRING." 
+  :group 'LaTeX-math
+  :type 'function)
+
 (defun LaTeX-math-insert (string dollar)
   ;; Inserts \STRING{}. If DOLLAR is non-nil, put $'s around it.
   (if dollar (insert "$"))
-  (TeX-insert-macro string)
+  (funcall LaTeX-math-insert-function string)
   (if dollar (insert "$")))
 
 (defun LaTeX-math-cal (char dollar)
@@ -2655,6 +2722,62 @@ commands are defined:
 ;; Need to update LaTeX menu.
 (make-variable-buffer-local 'LaTeX-menu-changed)
 
+(defcustom LaTeX-menu-max-items 25
+  "*Maximum number of items in the menu for LaTeX environments.
+If number of entries in a menu is larger than this value, split menu
+into submenus of nearly equal length.  If nil, never split menu into
+submenus."
+  :group 'LaTeX-environment
+  :type '(choice (const :tag "no submenus" nil)
+		 (integer)))
+
+(defcustom LaTeX-submenu-name-format "%-12.12s ... %.12s"
+  "*Format specification of the submenu name.
+Used by `LaTeX-split-long-menu' if the number of entries in a menu is
+larger than `LaTeX-menu-max-items'.
+This string should contain one %s for the name of the first entry and
+one %s for the name of the last entry in the submenu.
+If the value is a function, it should return the submenu name.  The
+function is be called with two arguments, the names of the first and
+the last entry in the menu."
+  :group 'LaTeX-environment
+  :type '(choice (string :tag "Format string")
+		 (function)))
+
+(defun LaTeX-split-long-menu (menu)
+  "Split MENU according to `LaTeX-menu-max-items'."
+  (let ((len (length menu)))
+    (if (or (null LaTeX-menu-max-items)
+	    (null (featurep 'lisp-float-type))
+	    (<= len LaTeX-menu-max-items))
+	menu
+      ;; Submenu is max 2 entries longer than menu, never shorter, number of
+      ;; entries in submenus differ by at most one (with longer submenus first)
+      (let* ((outer (floor (sqrt len)))
+	     (inner (/ len outer))
+	     (rest (% len outer))
+	     (result nil))
+	(setq menu (reverse menu))
+	(while menu
+	  (let ((in inner)
+		(sub nil)
+		(to (car menu)))
+	    (while (> in 0)
+	      (setq in   (1- in)
+		    sub  (cons (car menu) sub)
+		    menu (cdr menu)))
+	    (setq result
+		  (cons (cons (if (stringp LaTeX-submenu-name-format)
+				  (format LaTeX-submenu-name-format
+					  (aref (car sub) 0) (aref to 0))
+				(funcall LaTeX-submenu-name-format
+					 (aref (car sub) 0) (aref to 0)))
+			      sub)
+			result)
+		  rest  (1+ rest))
+	    (if (= rest outer) (setq inner (1+ inner)))))
+	result))))
+
 (defun LaTeX-menu-update ()
   ;; Update entries on AUC TeX menu.
   (or (not (eq major-mode 'latex-mode))
@@ -2667,12 +2790,14 @@ commands are defined:
 	(mapcar 'LaTeX-section-enable LaTeX-section-list)
 	(message "Updating environment menu...")
 	(easy-menu-change '("LaTeX") LaTeX-environment-menu-name
-			  (mapcar 'LaTeX-environment-menu-entry
-				  (LaTeX-environment-list)))
+			  (LaTeX-split-long-menu
+			   (mapcar 'LaTeX-environment-menu-entry
+				   (LaTeX-environment-list))))
 	(message "Updating modify environment menu...")
 	(easy-menu-change '("LaTeX") LaTeX-environment-modify-menu-name
-			  (mapcar 'LaTeX-environment-modify-menu-entry
-				  (LaTeX-environment-list)))
+			  (LaTeX-split-long-menu
+			   (mapcar 'LaTeX-environment-modify-menu-entry
+				   (LaTeX-environment-list))))
 	(message "Updating...done"))))
 
 (add-hook 'activate-menubar-hook 'LaTeX-menu-update)
@@ -2978,8 +3103,8 @@ of `LaTeX-mode-hook'."
    '("stepcounter" TeX-arg-counter)
    '("refstepcounter" TeX-arg-counter)
    '("label" TeX-arg-define-label)
-   '("pageref" TeX-arg-label)
-   '("ref" TeX-arg-label)
+   '("pageref" TeX-arg-ref)
+   '("ref" TeX-arg-ref)
    '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
    '("renewcommand" TeX-arg-macro [ "Number of arguments" ] t)
    '("newenvironment" TeX-arg-define-environment
