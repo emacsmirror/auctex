@@ -304,7 +304,8 @@ AC_DEFUN(EMACS_TEST_LISPDIR, [
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      Where to install lisp files],
+    [  --with-lispdir=DIR      Where to install the lisp files, note that most
+                           of AUCTeX will be installed in a subdirectory],
     [lispdir="${withval}"
      # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
      lispdir_expanded="`echo $lispdir | sed 's/[[\/\\]]$//'`"

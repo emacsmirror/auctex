@@ -97,7 +97,8 @@ the name of the right XEmacs executable can be specified, complete with
 path if necessary.
 
 @item --with-lispdir=@var{/dir}
-This tells where to install Emacs Lisp files.  Normally, this option is
+This tells where to install the lisp files, note that most of @AUCTeX{}
+will be installed in a subdirectory. Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
 
