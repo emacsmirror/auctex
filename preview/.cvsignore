@@ -1,0 +1,6 @@
+*.dvi
+*.log
+*.aux
+*.prv
+preview.ins
+preview.drv
