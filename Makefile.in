@@ -84,6 +84,11 @@ NOSEARCH = style/.nosearch
 
 all:	lisp
 
+.PHONY: all lisp some install contrib install-el install-lisp \
+	install-contrib install-contrib-el install-info install-auto \
+	clean distclean snapshot check-dist release-commit \
+	dist patch tar-ball full-release tar-ball-clean wc
+
 lisp:
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
 

@@ -1,3 +1,9 @@
+2004-08-23  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (.PHONY): Declare a bunch of phony targets to
+	protect against users making files/directories with that name (in
+	particular "lisp").
+
 2004-08-22  David Kastrup  <dak@gnu.org>
 
 	* style/italian.el ("italian"): Don't overwrite existing local
