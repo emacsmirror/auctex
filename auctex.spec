@@ -30,6 +30,9 @@ test -f ./configure || ./autogen.sh
 # --with-packagedir repairs RedHat XEmacs braindamage
 %configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
 make 'infodir=%{_infodir}'
+pushd doc
+make 'infodir=%{_infodir}'
+popd
 
 %install
 rm -rf %{buildroot}
