@@ -4,26 +4,19 @@ ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
 
 AC_SET_MAKE
 AC_PROG_INSTALL
-AC_PROG_EMACS
+EMACS_PROG_EMACS
 
-packagedir=
+EMACS_PATH_PACKAGEDIR([tex-site])
+EMACS_PATH_LISPDIR([auctex])
+
 if test $EMACS_FLAVOR = "xemacs"  ; then
-   AC_PATH_PACKAGEDIR([tex-site])
-   AC_MSG_CHECKING([where lisp files go])
-   AC_EMACS_LISP(lispdir,[(condition-case nil \ 
-                             (progn (require 'tex-site ) TeX-lisp-directory)
-                             (error \"${packagedir}/lisp/auctex\"))], quiet)
-   AC_MSG_RESULT([${lispdir}])
    infodir="${packagedir}/info"
-else
-   AC_PATH_LISPDIR([tex-site],[auctex])
 fi
-AC_SUBST(packagedir)
 
 AC_OUTPUT(Makefile)
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.
 
-Type "make" at the prompt to build AUC TeX
+Type "make" at the prompt to build AUCTeX
 EOF
