@@ -1,3 +1,10 @@
+2002-05-28  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-gs-open): bind preview-latex-do PostScript
+	operator.
+	(preview-auto-reveal): Change default to auto-open on move
+	left/right.
+
 2002-05-27  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* pk.c: Changed comments
