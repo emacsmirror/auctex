@@ -85,7 +85,7 @@ XEmacs, rather use
 which gives the location of the package directory for XEmacs where stuff
 should be installed. Again, hopefully this is not necessary to specify.
 
-@item --with-tex-input-dirs=@var{/dir-1/;/dir-2/;...;/dir-N/}
+@item --with-tex-input-dirs=@var{"/dir-1/;/dir-2/;...;/dir-N/"}
 This option allows to specify the directories to be used for file
 searches, e.g. for completion of LaTeX or BibTeX style file names.  They
 will be used in the variable @code{TeX-macro-global}.
