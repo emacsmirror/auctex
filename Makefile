@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.5a
+# Version: 9.6a
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -30,10 +30,10 @@ mandir=$(prefix)/man/man1
 # Make sure that this is the same directory as specified by
 # TeX-lisp-directory in tex-site.el
 #
-aucdir=$(prefix)/lib/emacs/site-lisp/auctex
+aucdir=$(prefix)/share/emacs/site-lisp/auctex
 
 # Name of your emacs binary
-EMACS=emacs-19.30
+EMACS=emacs-19.32
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -89,18 +89,18 @@ LIBS=
 
 SHELL = /bin/sh
 
-#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
-FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
+FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/auctex
+#FTPDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/ftp/auctex
 
-#WWWDIR = $(HOME)/.public_html/auctex
-WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
+WWWDIR = $(HOME)/.public_html/auctex
+#WWWDIR = /home/ftp/pub/Staff/Per.Abrahamsen/mirror/www/auctex
 
 REMOVE =  ltx-help.el
 
 MINMAPSRC = auc-menu.el maniac.el \
 	    outln-18.el auc-html.el all.el
 
-CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el
+CONTRIB = hilit-LaTeX.el bib-cite.el tex-jp.el func-doc.el font-latex.el
 
 AUCSRC = auc-old.el  tex.el \
 	 tex-buf.el  latex.el    tex-info.el \
@@ -242,13 +242,15 @@ wc:
 
 dist:	
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
+	if [ "X$(OLD)" = "X" ]; then echo "No patch"; exit 1; fi
 	@echo "**********************************************************"
 	@echo "** Making distribution of auctex for release $(TAG)"
 	@echo "**********************************************************"
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
 	rm -f $(WWWDIR)/version
 	echo $(TAG) > $(WWWDIR)/version
-	perl -pi.bak -e "s/Version: 9.5a
+	perl -pi.bak -e "s/Version: $(OLD)/Version: $(TAG)/" \
+	    $(AUCSRC) $(EXTRAFILES)
 	cvs commit -m "Release $(OLD)++" tex.el
 	rm -f tex.el.orig
 	mv tex.el tex.el.orig
@@ -283,10 +285,9 @@ dist:
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
-	if [ "X$(OLD)" = "X" ]; then echo "No patch"; else \
 	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
 	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
-		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ; fi ; exit 0
+		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
 
 patch:
 	cvs rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \

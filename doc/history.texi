@@ -1,3 +1,18 @@
+@section News in 9.5
+
+@itemize @bullet
+@item Use the @file{func-doc.el} package to get context senstive help.
+This is not autoloaded, you must load it explicitly with:
+
+@lisp
+(require 'func-doc)
+@end lisp
+
+@item
+Bug fixes.
+
+@end itemize
+
 @section News in 9.4
 
 @itemize @bullet

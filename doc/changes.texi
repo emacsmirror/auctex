@@ -1,12 +1,8 @@
-@section News in 9.5
+@section News in 9.6
 
 @itemize @bullet
-@item Use the @file{func-doc.el} package to get context senstive help.
-This is not autoloaded, you must load it explicitly with:
-
-@lisp
-(require 'func-doc)
-@end lisp
+@item Insert @code{(require 'font-latex)} to get better font lock
+support. 
 
 @item
 Bug fixes.
