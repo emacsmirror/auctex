@@ -1,5 +1,5 @@
-%define HAVE_EMACS			%(which emacs  >/dev/null 2>/dev/null && echo 1 || echo 0)
-%define HAVE_XEMACS			%(which xemacs >/dev/null 2>/dev/null && echo 1 || echo 0)
+%define HAVE_EMACS  %(which emacs  >/dev/null 2>/dev/null && echo 1 || echo 0)
+%define HAVE_XEMACS %(which xemacs >/dev/null 2>/dev/null && echo 1 || echo 0)
 
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
@@ -75,18 +75,18 @@ This package contains the lisp modules for XEmacs 21.
 #./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
 mkdir -p %{buildroot}%{_datadir}/texmf
-%configure --with-texmf-dir=%{buildroot}%{_datadir}/texmf
+%configure 
 make texmf docs
 %if %{HAVE_EMACS}
   mkdir emacs-build
   pushd emacs-build
   ln -s ../* .
-  %configure --with-emacs --with-texmf-dir=%{buildroot}%{_datadir}/texmf
+  %configure --with-emacs 
   make elisp
   popd
 %endif
 %if %{HAVE_XEMACS}
-  %configure --with-xemacs --with-texmf-dir=%{buildroot}%{_datadir}/texmf
+  %configure --with-xemacs
   make elisp
 %endif
 
@@ -94,11 +94,12 @@ make texmf docs
 rm -rf %{buildroot}
 install -d %{buildroot}%{_infodir}
 make prefix=%{buildroot}%{_prefix} infodir=%{buildroot}%{_infodir} \
+  texmfdir=%{buildroot}%{_datadir}/texmf \
   install-docs install-texmf
 %if %{HAVE_EMACS}
   pushd emacs-build
   make prefix=%{buildroot}%{_prefix} install-el
-  install -d %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+  mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   install -c -m 644 preview-latex.el \
     %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
   popd
@@ -106,9 +107,9 @@ make prefix=%{buildroot}%{_prefix} infodir=%{buildroot}%{_infodir} \
 %if %{HAVE_XEMACS}
   make prefix=%{buildroot}%{_prefix} install-el
   install -d \
-    %{buildroot}%{_datadir}/emacs/site-packages/lisp/site-start.d
+    %{buildroot}%{_libdir}/xemacs/site-packages/lisp/site-start.d
   install -c -m 644 preview-latex.el \
-    %{buildroot}%{_datadir}/emacs/site-packages/lisp/site-start.d
+    %{buildroot}%{_libdir}/xemacs/site-packages/lisp/site-start.d
 %endif
 
 %clean
