@@ -62,12 +62,14 @@
 ;; file, but instead copy those definitions you need to change to
 ;; `tex-site.el'. 
 
-(defcustom TeX-lisp-directory (or (and (fboundp 'locate-data-directory)
-				       (locate-data-directory "auctex"))
-				  (and (fboundp 'locate-library)
-				       (let ((f (locate-library "tex")))
-					 (and f (file-name-directory f))))
-				  (concat data-directory "auctex/"))
+(defcustom TeX-lisp-directory
+  (or (and (fboundp 'locate-data-directory)
+	   (locate-data-directory "auctex"))
+      (and (fboundp 'locate-library)
+	   (let ((f (locate-library "tex")))
+	     (and f (file-name-directory f))))
+      (file-name-as-directory
+       (expand-file-name "auctex" data-directory)))
   "The directory where the AUCTeX Lisp files are located."
   :group 'TeX-file
   :type 'directory)
@@ -499,7 +501,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.292 $"))
+	(rev "$Revision: 5.293 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -514,7 +516,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2003-02-24 19:31:50 $"))
+    (let ((date "$Date: 2003-02-25 12:16:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -729,12 +731,14 @@ the beginning of the file, but that feature will be phased out."
 
 (defun TeX-master-directory ()
   "Directory of master file."
-  (abbreviate-file-name
-   (substitute-in-file-name
-    (expand-file-name
-     (or (file-name-directory (TeX-master-file)) ".")
-     (and buffer-file-name
-	  (file-name-directory buffer-file-name))))))
+  (file-name-as-directory
+   (abbreviate-file-name
+    (substitute-in-file-name
+     (expand-file-name
+      (let ((dir (file-name-directory (TeX-master-file))))
+	(if dir (directory-file-name dir) "."))
+      (and buffer-file-name
+	   (file-name-directory buffer-file-name)))))))
 
 (defcustom TeX-master t
   "*The master file associated with the current buffer.
