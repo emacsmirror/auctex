@@ -72,8 +72,13 @@ HISTORY: history.texi
 
 install: auctex
 	-$(MKINSTALLDIRS) $(infodir)
-	for x in auctex auctex-*; do \
-		$(INSTALL_DATA) $$x $(infodir) ; \
+	$(INSTALL_DATA) auctex $(infodir)
+	for x in auctex-*; do \
+	  if [ -r $$x ]; then \
+	    $(INSTALL_DATA) $$x $(infodir) ; \
+	  else \
+	    echo "Warning: File $$x doesn't exist."; \
+	  fi; \
 	done
 	-$(INSTALL_INFO)  --info-dir=$(infodir) auctex
 
