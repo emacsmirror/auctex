@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.82 2002-03-22 18:54:38 dakas Exp $
+;; $Id: preview.el,v 1.83 2002-03-23 12:16:50 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1407,10 +1407,36 @@ document style for LaTeX."
 )+\\( \\|$\\)\\|\
 !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
-;;disabled in prauctex.def:
-;;\\(?:Ov\\|Und\\)erfull \\\\.*[0-9]*--[0-9]*
-;;\\(?:.\{79\}
-;;\\)*.*$\\)\\|
+;;; Ok, here is a line by line downbreak: match-alternative 1:
+;;; \\(^! \\)
+;;; explamation point at start of line followed by blank: TeX error
+;;; match-alternative 2:
+;;; \\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)
+;;; Deep breath: an opening paren either at the start od the line or
+;;; preceded by a space, followed by a file name (which we take to be
+;;; consiting of anything but parens, space or newline), followed by
+;;; either a space or the end of the line: a just opened file.
+;;; (match-string 2) is the file name.
+;;; match-alternative 3:
+;;; )+\\( \\|$\\)
+;;; a closing paren followed by the end of line or a space: a just
+;;; closed file.
+;;; match-alternative 4 (wrapped into one shy group with
+;;; match-alternative 5, so that the match on first char is slightly
+;;; faster):
+;;; !offset(\\([---0-9]+\\))
+;;; an AUC TeX offset message. (match-string 4) is the offset itself
+;;; !name(\\([^)]+\\))
+;;; an AUC TeX file name message.  (match-string 5) is the file name
+;;; TODO: Actually, the latter two should probably again match only
+;;; after a space or newline, since that it what \message produces.
+;;;disabled in prauctex.def:
+;;;\\(?:Ov\\|Und\\)erfull \\\\.*[0-9]*--[0-9]*
+;;;\\(?:.\{79\}
+;;;\\)*.*$\\)\\|
+;;; This would have catched overfull box messages that consist of
+;;; several lines of context all with 79 characters in length except
+;;; of the last one.  prauctex.def kills all such messages.
 	    (cond
 	     ((match-beginning 1)
 	      (if (looking-at "\
@@ -1662,7 +1688,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.82 $"))
+	(rev "$Revision: 1.83 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
