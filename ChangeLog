@@ -1,3 +1,33 @@
+1999-02-11  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.9p released.
+
+1999-02-08  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-jp.el (TeX-format-list): Fix JLATEX format.
+	Patch by Tsutomu OKUMURA <oku@nml.t.u-tokyo.ac.jp>.
+
+	* style/foils.el (LaTeX-style-foils): Removed spurious `\n'.
+	Reported by Bernt Guldbrandtsen <bernt@jupiter.ansci.iastate.edu>.
+
+1999-02-05  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Makefile (install-contrib): Added `$(CONTRIBELC)' dependency.
+	Suggested by Nils Ackermann <Nils.Ackermann@math.uni-giessen.de>.
+
+1999-01-29  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-search-files): `mapcar' instead of `mapcan'.
+
+1999-01-12  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-font-replace-macro): Renamed from
+	`LaTeX2e-font-replace'.  Use `TeX-esc'.
+	* latex.el (LaTeX-common-initialization): Use it.
+	* tex-info.el (texinfo-mode): Ditto.
+	(TeXinfo-font-list): Add `delete'.
+	Suggested by Christoph Wedler  <wedler@fmi.uni-passau.de>.
+
 1999-01-11  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.9o released.

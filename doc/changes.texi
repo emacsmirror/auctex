@@ -1,6 +1,21 @@
 @section News in 9.9
 
 @itemize @bullet
+@item Bug fix in JLATEX recognition.  Patch by
+Tsutomu OKUMURA <oku@@nml.t.u-tokyo.ac.jp>.
+
+@item Bug fix in foils package sypport.
+Suggested by Bernt Guldbrandtsen <bernt@@jupiter.ansci.iastate.edu>.
+
+@item Made @code{make install-contrib} compile the contributed lisp
+files. 
+Suggested by Nils Ackermann <Nils.Ackermann@@math.uni-giessen.de>. 
+
+@item In @code{texinfo-mode}, @kbd{C-c C-f C-d} now deletes the current
+font, while @kbd{C-u C-c C-f @var{key}} changes it.  @samp{@@dfn} moved
+to @kbd{C-c C-f d}.  Suggested by Christoph Wedler
+<wedler@@fmi.uni-passau.de>.
+
 @item Fixed some custom types.  
 Patch by Markus Rost <markus.rost@@mathematik.uni-regensburg.de>.
 

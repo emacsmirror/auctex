@@ -1,7 +1,7 @@
 ;;; tex-info.el - Support for editing TeXinfo source.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9o
+;; Version: 9.9p
 
 ;; Copyright (C) 1993, 1994, 1997 Per Abrahamsen 
 ;; 
@@ -179,12 +179,13 @@ When called interactively, prompt for an environment."
     (?\C-t "@t{" "}")
     (?s    "@strong{" "}")
     (?\C-f "@file{" "}")
-    (?\C-d "@dfn{" "}")
+    (?d "@dfn{" "}")
     (?\C-v "@var{" "}")
     (?k    "@key{" "}")
     (?\C-k "@kbd{" "}")
     (?c    "@code{" "}")
-    (?C    "@cite{" "}"))
+    (?C    "@cite{" "}")
+    (?\C-d "" "" t))
   "Font commands used in TeXinfo mode.  See `TeX-font-list'.")
   
 ;;; Mode:
@@ -273,6 +274,8 @@ TeXinfo-mode-hook."
 
   (make-local-variable 'TeX-font-list)
   (setq TeX-font-list TeXinfo-font-list)
+  (make-local-variable 'TeX-font-replace-function)
+  (setq TeX-font-replace-function 'TeX-font-replace-macro)
   
   (TeX-add-symbols
    '("appendix" "Title")

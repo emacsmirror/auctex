@@ -12,7 +12,7 @@
 
 (setq TeX-format-list
       (append '(("JLATEX" japanese-latex-mode
-		 "\\\\\\(\\\\documentstyle[^%\n]*{j\\|\\\\documentclass[^%\n]*{j\\)")
+		 "\\\\\\(documentstyle[^%\n]*{j\\|documentclass[^%\n]*{j\\)")
 		("JTEX" japanese-plain-tex-mode
 		 "-- string likely in Japanese TeX --"))
 	      TeX-format-list))

@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9o
+;; Version: 9.9p
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2995,34 +2995,6 @@ of `LaTeX-mode-hook'."
   (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
   "Default start of trailer marker for LaTeX documents.")
 
-(defun LaTeX2e-font-replace (start end)
-  "Replace LaTeX2e font specification around point with START and END."
-  (let ((font-list TeX-font-list)
-	cmds strings regexp)
-    (while font-list
-      (setq strings (cdr (car font-list))
-	    font-list (cdr font-list))
-      (and (stringp (car strings)) (null (string= (car strings) ""))
-	   (setq cmds (cons (car strings) cmds)))
-      (setq strings (cdr (cdr strings)))
-      (and (stringp (car strings)) (null (string= (car strings) ""))
-	   (setq cmds (cons (car strings) cmds))))
-    (setq regexp (mapconcat 'regexp-quote cmds "\\|"))
-    (save-excursion
-      (catch 'done
-	(while t
-	  (if (/= ?\\ (following-char))
-	      (skip-chars-backward "a-zA-Z "))
-	  (skip-chars-backward "\\\\")
-	  (if (looking-at regexp)
-	      (throw 'done t)
-	    (up-list -1))))
-      (forward-sexp 2)
-      (save-excursion
-	(replace-match start t t))
-      (delete-backward-char 1)
-      (insert end))))
-
 (defun LaTeX-common-initialization ()
   ;; Common initialization for LaTeX derived modes.
   (VirTeX-common-initialization)
@@ -3313,7 +3285,7 @@ of `LaTeX-mode-hook'."
   (if (string-equal LaTeX-version "2")
       ()
     (setq TeX-font-list LaTeX-font-list)
-    (setq TeX-font-replace-function 'LaTeX2e-font-replace)
+    (setq TeX-font-replace-function 'TeX-font-replace-macro)
     (TeX-add-symbols
      '("newcommand" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
@@ -3334,7 +3306,7 @@ of `LaTeX-mode-hook'."
    ;; Use new fonts for `\documentclass' documents.
    (function (lambda ()
      (setq TeX-font-list LaTeX-font-list)
-     (setq TeX-font-replace-function 'LaTeX2e-font-replace)
+     (setq TeX-font-replace-function 'TeX-font-replace-macro)
      (if (equal LaTeX-version "2")
 	 (setq TeX-command-default "LaTeX2e"))
      (run-hooks 'LaTeX2e-hook))))

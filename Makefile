@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 9.9o
+# Version: 9.9p
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -136,7 +136,7 @@ install-lisp:	some
 	    echo "Leaving compiled files in place."; \
 	fi
 
-install-contrib:
+install-contrib:	$(CONTRIBELC)
 	$(MV) $(CONTRIBELC) $(aucdir)
 	$(CP) $(CONTRIB) $(aucdir)
 

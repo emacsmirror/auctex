@@ -1,6 +1,6 @@
 ;;; foils.el - Special code for FoilTeX.
 
-;; $Id: foils.el,v 1.1 1994-04-07 21:08:45 amanda Exp $
+;; $Id: foils.el,v 1.2 1999-02-11 10:19:26 abraham Exp $
 
 ;;; Code:
 
@@ -33,7 +33,7 @@
       (insert TeX-esc "date" TeX-grop
 	      (format "%d-%02d-%02d" year month day)
 	      TeX-grcl "\n")
-      (insert "" TeX-esc "\nMyLogo" TeX-grop TeX-grcl "\n")
+      (insert "" TeX-esc "MyLogo" TeX-grop TeX-grcl "\n")
       (insert "%" TeX-esc "Restriction" TeX-grop TeX-grcl "\n")
       (insert "%" TeX-esc "rightfooter" TeX-grop TeX-grcl "\n")
       (insert "%" TeX-esc "leftheader" TeX-grop TeX-grcl "\n")
