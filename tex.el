@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.462 $"))
+	    (rev "$Revision: 5.463 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-11-25 09:09:01 $"))
+    (let ((date "$Date: 2004-11-29 20:26:11 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2486,7 +2486,9 @@ If TEX is a directory, generate style files for all files in the directory."
 	  (erase-buffer)
 	  (insert "(TeX-add-style-hook \"" style "\"\n"
 		  " (lambda ()")
-	  (mapcar 'TeX-auto-insert TeX-auto-parser)
+	  (mapcar (lambda (el)
+		    (TeX-auto-insert el style))
+		  TeX-auto-parser)
 	  (insert "))\n\n")
 	  (write-region (point-min) (point-max) file nil 'silent)
 	  (kill-buffer (current-buffer))))
@@ -2500,19 +2502,21 @@ If TEX is a directory, generate style files for all files in the directory."
   ;; FIXME: This doc-string isn't clear to me.  -- rs
   (null (symbol-value (nth TeX-auto-parser-temporary entry))))
 
-(defun TeX-auto-insert (entry)
-  "Insert code to initialize ENTRY from `TeX-auto-parser'."
+(defun TeX-auto-insert (entry &optional skip)
+  "Insert code to initialize ENTRY from `TeX-auto-parser'.
+
+If SKIP is not-nil, don't insert code for SKIP."
   (let ((name (symbol-name (nth TeX-auto-parser-add entry)))
 	(list (symbol-value (nth TeX-auto-parser-temporary entry))))
-    (if (null list)
-	()
+    (unless (null list)
       (insert "\n    (" name)
-      (while list
-	(insert "\n     ")
-	(if (stringp (car list))
-	    (insert (prin1-to-string (car list)))
-	  (insert "'" (prin1-to-string (car list))))
-	(setq list (cdr list)))
+      (dolist (el list)
+	(cond ((and (stringp el) (not (string= el skip)))
+	       (insert "\n     ")
+	       (insert (prin1-to-string el)))
+	      ((not (stringp el))
+	       (insert "\n     ")
+	       (insert "'" (prin1-to-string el)))))
       (insert ")"))))
 
 (defvar TeX-auto-ignore

@@ -1,5 +1,8 @@
 2004-11-29  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex.el (TeX-auto-insert): Added SKIP argument.
+	(TeX-auto-store): Use it to avoid circular dependencies.
+
 	* style/graphicx.el (LaTeX-arg-includegraphics): Add "page".
 
 	* latex.el (LaTeX-includegraphics-options-alist): Ditto.
