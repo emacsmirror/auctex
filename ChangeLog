@@ -5,6 +5,8 @@
 	Use `TeX-fold-buffer-substring'.
 	(TeX-fold-prioritize): Doc fix.
 	(TeX-fold-buffer-substring): New function.
+	Do not use `dolist' which uses an unwanted local binding of the
+	list variable.
 
 2005-02-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
