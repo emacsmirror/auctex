@@ -333,7 +333,7 @@ in TeX-check-path."
 					      TeX-file-extensions)
 			   (TeX-save-document (TeX-master-file)))
 			 TeX-command-default)
-			((and (eq major-mode 'latex-mode)
+			((and (memq major-mode '(doctex-mode latex-mode))
 			      (TeX-check-files (concat name ".bbl")
 					       (mapcar 'car
 						       (LaTeX-bibliography-list))
@@ -576,7 +576,7 @@ Return the new process."
 		  command)))
 
 (defun TeX-run-dviout (name command file)
-  "Call process wbith second argument, discarding its output. With support
+  "Call process with second argument, discarding its output. With support
 for the dviout previewer, especially when used with PC-9801 series."
     (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
       (send-string-to-terminal "\e[2J")) ; clear screen
