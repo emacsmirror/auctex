@@ -6,12 +6,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; RCS status      : $Revision: 3.2 $    << OFFICIAL RELEASE NO.
+;; RCS status      : $Revision: 3.3 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Fri May 31 07:22:47 1991
-;; Update Count    : 83
+;; Last Modified On: Fri May 31 09:08:05 1991
+;; Update Count    : 117
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -96,7 +96,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar dummy "MODES")
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Customization
@@ -111,7 +110,10 @@
 ;;                       includes also print/preview/makeindex etc.
 ;; tex-debug           : Debugging documents, when they have been run
 ;; tex-misc            : Miscellaneous functions
+;; tex-math            : Smart bindings for math symbols
 ;;
+
+(setq RELEASE_NO "$Release$")
 
 (defvar TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined whether
@@ -144,11 +146,21 @@ witch a backslash. Default is the meaning of M-t when latex-mode was called.")
 (defvar TeX-mode-syntax-table nil
   "Syntax table used while in TeX mode.")
 
+(defvar TeX-mode-line-format
+  (list ""
+	"-%[%*%*%]- "
+	"%m: %b        %M"
+        "  |" 
+        'minor-mode-alist 
+        " | ----"
+        '(-3 . "%p")
+        "-%-"))
+
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Autoload modules
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(autoload 'TeX-math-mode "tex-math" nil t)
+(autoload 'LaTeX-math-mode "tex-math" nil t)
 
 (autoload 'outline-minor-mode "outline-m" nil t)
 
@@ -234,7 +246,7 @@ and in the TeX-compilation."
   (define-key LaTeX-mode-map "\C-c#" 'LaTeX-makeindex))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TeX/LaTeX modes
+;; TeX / LaTeX modes
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun tex-mode ()
@@ -356,6 +368,7 @@ of LaTeX-mode-hook."
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq ispell-filter-hook "idetex")
   (setq ispell-filter-hook-args '())
+  (setq mode-line-format TeX-mode-line-format)
   (if (null TeX-mode-syntax-table)
       (progn
 	(setq TeX-mode-syntax-table (make-syntax-table))
