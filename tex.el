@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.9d
+;; Version: 9.9e
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2548,58 +2548,78 @@ character ``\\'' will be bound to `TeX-electric-macro'."
 			   (?\C-d "" "" t))
   "List of fonts used by TeX-font.
 
-Each entry is a list with three elements.  The first element is the
-key to active the font.  The second element is the string to insert
-before point, and the third element is the string to insert after
-point.  An optional fourth element means always replace if not nil."
+Each entry is a list.
+The first element is the key to activate the font.
+The second element is the string to insert before point, and the third
+element is the string to insert after point.
+If the fourth and fifth element are strings, they specify the prefix and
+suffix to be used in math mode.
+An optional fourth (or sixth) element means always replace if t."
   :group 'TeX-macro
-  :type '(repeat (group (character :tag "Key")
-			(string :tag "Prefix")
-			(string :tag "Suffix")
-			(option (sexp :format "Replace\n" 
-				      :value t)))))
+  :type '(repeat 
+	   (group 
+	    :value (?\C-a "" "")
+	    (character :tag "Key")
+	    (string :tag "Prefix")
+	    (string :tag "Suffix")
+	    (option (group
+		     :inline t
+		     (string :tag "Math Prefix")
+		     (string :tag "Math Suffix")))
+	    (option (sexp :format "Replace\n" :value t)))))
 
 (defvar TeX-font-replace-function 'TeX-font-replace
   "Determines the function which is called when a font should be replaced.")
 
 (defun TeX-describe-font-entry (entry)
   ;; A textual description of an ENTRY in TeX-font-list.
-  (concat (format "%8s\t" (key-description (char-to-string (nth 0 entry))))
-	  (if (nth 3 entry)
+  (concat (format "%16s  " (key-description (char-to-string (nth 0 entry))))
+	  (if (or (eq t (nth 3 entry)) (eq t (nth 5 entry)))
 	      "-- delete font"
-	    (format "%10s %s" (nth 1 entry) (nth 2 entry)))))
-  
+	    (format "%14s %-3s %14s %-3s"
+		    (nth 1 entry) (nth 2 entry)
+		    (if (stringp (nth 3 entry)) (nth 3 entry) "")
+		    (if (stringp (nth 4 entry)) (nth 4 entry) "")))))
+
 (defun TeX-font (replace what)
   "Insert template for font change command.
 If REPLACE is not nil, replace current font.  WHAT determines the font
 to use, as specified by TeX-font-list."
   (interactive "*P\nc")
   (TeX-update-style)
-  (let* ((entry (assoc what TeX-font-list)))
-    (setq replace (or replace (nth 3 entry)))
+  (let* ((entry (assoc what TeX-font-list))
+	 (in-math (texmathp))
+	 (before (nth 1 entry))
+	 (after (nth 2 entry)))
+    (setq replace (or replace (eq t (nth 3 entry)) (eq t (nth 5 entry))))
+    (if (and in-math (stringp (nth 3 entry)))
+	(setq before (nth 3 entry)
+	      after (nth 4 entry)))
     (cond ((null entry)
-	   (let ((help (concat "Font list:\n\n"
-			       (mapconcat 'TeX-describe-font-entry
-					  TeX-font-list "\n"))))
+	   (let ((help (concat 
+			"Font list:   "
+			"KEY        TEXTFONT           MATHFONT\n\n"
+			(mapconcat 'TeX-describe-font-entry
+				   TeX-font-list "\n"))))
 	     (with-output-to-temp-buffer "*Help*"
 	       (set-buffer "*Help*")
 	       (insert help))))
 	  (replace
-	   (funcall TeX-font-replace-function (nth 1 entry) (nth 2 entry)))
+	   (funcall TeX-font-replace-function before after))
 	  ((TeX-active-mark)
 	   (save-excursion
 	     (cond ((> (mark) (point))
-		    (insert (nth 1 entry))
+		    (insert before)
 		    (goto-char (mark))
-		    (insert (nth 2 entry)))
+		    (insert after))
 		   (t
-		    (insert (nth 2 entry))
+		    (insert after)
 		    (goto-char (mark))
-		    (insert (nth 1 entry))))))
+		    (insert before)))))
 	  (t
-	   (insert (nth 1 entry))
+	   (insert before)
 	   (save-excursion
-	     (insert (nth 2 entry)))))))
+	     (insert after))))))
 
 (defun TeX-font-replace (start end)
   "Replace font specification around point with START and END."
@@ -2621,155 +2641,72 @@ to use, as specified by TeX-font-list."
 
 ;;; Dollars
 ;;
-;; Originally stolen from VorTeX.
-;; Copyright (C) 1986, 1987, 1988 Pehong Chen (phc@renoir.berkeley.edu)
-
-(defvar TeX-dollar-sign ?$
-  "*Character user to enter and leaver math mode in TeX.")
-
-(defconst TeX-dollar-string (char-to-string TeX-dollar-sign))
-
-(defconst TeX-dollar-regexp 
-  (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"
-	  (regexp-quote TeX-dollar-string)))
-  
-(defvar TeX-dollar-list nil)
-  (make-variable-buffer-local 'TeX-match-dollar-on)
-
-(defvar TeX-par-start nil)
-  (make-variable-buffer-local 'TeX-par-start)
-
-(defvar TeX-par-end nil)
-  (make-variable-buffer-local 'TeX-par-end)
+;; Rewritten from scratch with use of `texmathp' by 
+;; Carsten Dominik <dominik@strw.leidenuniv.nl>
 
 (defvar TeX-symbol-marker nil)
 
 (defvar TeX-symbol-marker-pos 0)
 
-(defun TeX-bouncing-point (m)
-  (save-excursion
-    (if (pos-visible-in-window-p)
-	(sit-for 1)
-      (let* ((pos1 (point))
-             (pos2 (+ pos1 m))
-             (sym (buffer-substring pos1 pos2))
-             (msg1 (progn (beginning-of-line) (buffer-substring (point) pos1)))
-             (msg2 (progn (end-of-line) (buffer-substring pos2 (point)))))
-        (message "%s`%s'%s" msg1 sym msg2)))))
-
-(defun TeX-locate-delimiter (pos sym symlst)
-  (let ((marker nil)
-        (marker-pos 0)
-        (pair t)
-        (head nil))
-    (catch 'loop
-      (while symlst
-        (setq marker (car symlst))
-        (setq marker-pos (1- (marker-position marker)))
-        (if (and (/= pos marker-pos) (= (char-after marker-pos) sym))
-	    (if (> pos marker-pos)
-		(progn
-		  (setq TeX-symbol-marker-pos marker-pos)
-		  (setq TeX-symbol-marker marker) 
-		  (setq head (cons marker head))
-		  (setq pair (not pair)))
-	      (if pair (setq TeX-symbol-marker nil))
-	      (throw 'loop (append (reverse head)
-				   (cons (set-marker (make-marker) (1+ pos)) 
-					 symlst)))))
-        (setq symlst (cdr symlst)))
-      (if pair (setq TeX-symbol-marker nil))
-      (reverse (cons (set-marker (make-marker) (1+ pos)) head)))))
-
-(defun TeX-dollar-verify ()
-  ;; Verify if the current paragraph is the same as last.
-  ;; If so, do nothing, otherwise reset TeX-par-start and TeX-par-end and
-  ;; reconstruct the symbol-list.
-  (let ((start (save-excursion
-                 (if (re-search-backward paragraph-separate nil t)
-		     (point)
-                   1)))
-        (end (save-excursion
-               (if (re-search-forward paragraph-separate nil t)
-		   (1+ (point))
-                 (1+ (point-max)))))
-        (init nil))
-    (if (null TeX-par-start)
-	(setq TeX-par-start (set-marker (make-marker) 1)))
-    (if (/= (marker-position TeX-par-start) start)
-	(progn
-	  (set-marker TeX-par-start start)
-	  (setq init t)))
-    (if (null TeX-par-end)
-	(setq TeX-par-end (set-marker (make-marker) 1)))
-    (if (/= (marker-position TeX-par-end) end)
-	(progn
-	  (set-marker TeX-par-end end)
-	  (setq init t)))
-    (if init
-	(save-excursion
-	  (setq TeX-dollar-list nil)
-	  (goto-char start)
-	  (while (re-search-forward TeX-dollar-regexp end t)
-	    (setq TeX-dollar-list
-		  (append TeX-dollar-list
-			  (list (set-marker (make-marker)
-					    (if (= (following-char)
-						   TeX-dollar-sign)
-						(progn
-						  (forward-char 1)
-						  (point))
-					      (point)))))))))))
+;; The following constants are no longer used, but kept in case some
+;; foreign code uses any of them.
+(defvar TeX-dollar-sign ?$
+  "*Character used to enter and leave math mode in TeX.")
+(defconst TeX-dollar-string (char-to-string TeX-dollar-sign))
+(defconst TeX-dollar-regexp 
+  (concat "^" (regexp-quote TeX-dollar-string) "\\|[^" TeX-esc "]"
+	  (regexp-quote TeX-dollar-string)))
 
 (defun TeX-insert-dollar (&optional arg)
-  "Insert dollar sign.  
+  "Insert dollar sign.
 
-Show matching dollar sign if this dollar sign end the TeX math mode.  
+If current math mode was not entered with a dollar, refuse to insert one.
+Show matching dollar sign if this dollar sign ends the TeX math mode.  
 Ensure double dollar signs match up correctly by inserting extra
 dollar signs when needed.
 
+With raw C-u prefix, insert exactly one dollar sign.
 With optional ARG, insert that many dollar signs."
   (interactive "P")
-  (if arg
-      (let ((count (prefix-numeric-value arg)))
-	(if (listp arg)
-	    (self-insert-command 1)	;C-u always inserts just one
-	  (self-insert-command count)))
-    (let ((pc (preceding-char))
-	  (pos (point))
-	  (pt (point))
-	  (single t))
-      (TeX-dollar-verify)
-      (if (= pc (string-to-char TeX-esc))
-	  (insert TeX-dollar-sign)
-	(if (and (= pc TeX-dollar-sign)
-		  (/= (char-after (- (point) 2)) (string-to-char TeX-esc)))
-	    (progn
-	      (setq single nil)
-	      (if (and (> pos 2) (= (char-after (- pos 2)) TeX-dollar-sign))
-		  (setq pt (1- pos))	; Doesn't echo 3rd $, if $$ already
-		(backward-char 1) 
-		(insert TeX-dollar-sign)
-		(goto-char (1+ pos))))
-	  (insert TeX-dollar-sign))
-	(setq TeX-dollar-list
-	      (TeX-locate-delimiter pt TeX-dollar-sign TeX-dollar-list))
-	(if TeX-symbol-marker
-	    (save-excursion
-	      (goto-char TeX-symbol-marker-pos)
-	      (if (and (= (preceding-char) TeX-dollar-sign)
-		       (/= (char-after (- (point) 2)) TeX-dollar-sign))
-		  (progn
-		    (backward-char 1)
-		    (if single
-			(save-excursion
-			  (goto-char pos)
-			  (insert TeX-dollar-sign))))	; $$foo$`$'
-		(if (not single)
-		    (progn
-		      (insert TeX-dollar-sign) ; `$'$foo$$
-		      (backward-char 1))))
-	      (TeX-bouncing-point (if single 1 2))))))))
+  (cond
+   ((and arg (listp arg))
+    ;; C-u always inserts one
+    (insert "$"))
+   (arg
+    ;; Numerical arg inserts that many
+    (insert (make-string (prefix-numeric-value arg) ?\$)))
+   ((TeX-point-is-escaped)
+    ;; This is escaped with `\', so just insert one.
+    (insert "$"))
+   ((texmathp)
+    ;; We are inside math mode
+    (if (and (stringp (car texmathp-why))
+	     (equal (substring (car texmathp-why) 0 1) "\$"))
+	;; Math mode was turned on with $ or $$ - so finish it accordingly.
+	(progn
+	  (insert (car texmathp-why))
+	  (save-excursion
+	    (goto-char (cdr texmathp-why))
+	    (if (pos-visible-in-window-p)
+		(sit-for 1)
+	      (message "Matches %s" 
+		       (buffer-substring (point)
+					 (progn (end-of-line) (point)))))))
+      ;; Math mode was not entered with dollar - we cannot finish it with one.
+      (error "No dollars inside a math environment!")))
+   (t
+    ;; Just somewhere in the text.
+    (insert "$"))))
+
+(defun TeX-point-is-escaped ()
+  ;; Count backslashes before point and return t if number is odd.
+  (let (odd)
+    (save-excursion
+      (while (equal (preceding-char) ?\\)
+        (progn
+          (forward-char -1)
+          (setq odd (not odd)))))
+    odd))
 
 ;;; Simple Commands
 
