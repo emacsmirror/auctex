@@ -215,8 +215,9 @@ dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for acceptable AUC-TeX version)
 AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
-AC_EMACS_CHECK_LIB(tex_buf, TeX-command-master,"noecho")
-if test "${HAVE_tex_buf}" = "yes"; then
+dnl AC_EMACS_CHECK_LIB(tex_buf, TeX-command-master,"noecho")
+AC_EMACS_CHECK_LIB(tex_site, TeX-auto-generate,"noecho")
+if test "${HAVE_tex_site}" = "yes"; then
 	EMACS_cv_ACCEPTABLE_AUCTEX=yes
 else
 	EMACS_cv_ACCEPTABLE_AUCTEX=no

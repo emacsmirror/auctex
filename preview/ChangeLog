@@ -1,3 +1,10 @@
+2001-11-06  Alan Shutko  <ats@acm.org>
+
+	* aclocal.m4 (AC_CHECK_AUCTEX): Try looking for tex-site instead
+	of tex-buf... this may help since we're sure it's in load-path,
+	but I'm afraid that the contents of tex-site may not be standard
+	enough across installations.
+
 2001-11-06  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-image-creators): Add preview-eps-open
