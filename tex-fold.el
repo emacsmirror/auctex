@@ -134,26 +134,19 @@ TYPE can be one of the symbols 'env for environments or 'macro for macros."
 					(concat (regexp-quote TeX-esc)
 						items "\\b"))
 				      nil t)
-	      (let ((ov (make-overlay (match-beginning 0)
-				      ;; Jump to end of macro/env to
-				      ;; avoid nested overlays as this
-				      ;; will wreak havoc with display
-				      ;; strings as long as the
-				      ;; overlays are not prioritized.
-				      (if (eq type 'env)
-					  (progn
-					    (goto-char (match-end 0))
-					    (LaTeX-find-matching-end)
-					    (point))
-					(progn
-					  (goto-char (match-beginning 0))
-					  (goto-char (TeX-find-macro-end))))
-				      (current-buffer) t nil)))
-		;; Give environments a higher priority so that their
-		;; display string overrides those of possibly enclosed
-		;; macros.
-		(overlay-put ov 'priority (if (eq type 'env) 2 1))
-		(TeX-fold-hide-item ov display-string)))))))))
+	      (let* ((item-start (match-beginning 0))
+		     (item-end (if (eq type 'env)
+				   (save-excursion
+				     (goto-char (match-end 0))
+				     (LaTeX-find-matching-end))
+				 (save-excursion
+				   (goto-char item-start)
+				   (TeX-find-macro-end)))))
+		(TeX-fold-make-overlay item-start item-end display-string)
+		;; Jump to end of macro/env to avoid nested overlays
+		;; as this will wreak havoc with display strings as
+		;; long as the overlays are not prioritized.
+		(goto-char item-end)))))))))
 
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
@@ -185,14 +178,14 @@ TYPE specifies the type of item and can be one of the symbols
 		       "No environment found."
 		     "No macro found."))
 	(let* ((item-name (save-excursion
-			     (goto-char item-start)
-			     (looking-at (if (eq type 'env)
-					     (concat (regexp-quote TeX-esc)
-						     "begin[ \t]*{"
-						     "\\([A-Za-z]+\\)}")
-					   (concat (regexp-quote TeX-esc)
-						   "\\([A-Za-z@]+\\)")))
-			     (match-string-no-properties 1)))
+			    (goto-char item-start)
+			    (looking-at (if (eq type 'env)
+					    (concat (regexp-quote TeX-esc)
+						    "begin[ \t]*{"
+						    "\\([A-Za-z]+\\)}")
+					  (concat (regexp-quote TeX-esc)
+						  "\\([A-Za-z@]+\\)")))
+			    (match-string-no-properties 1)))
 	       (fold-list (if (eq type 'env)
 			      TeX-fold-env-spec-list
 			    TeX-fold-macro-spec-list))
@@ -206,18 +199,15 @@ TYPE specifies the type of item and can be one of the symbols
 				   ;; Item is not specified.
 				   (if (eq type 'env)
 				       TeX-fold-unspec-env-display-string
-				     TeX-fold-unspec-macro-display-string))))
-	    (let ((ov (make-overlay item-start
-				    (if (eq type 'env)
-					(save-excursion
-					  (goto-char (match-end 0))
-					  (LaTeX-find-matching-end))
-				      (save-excursion
-					(goto-char item-start)
-					(TeX-find-macro-end)))
-				    (current-buffer) t nil)))
-	      (overlay-put ov 'priority (if (eq type 'env) 2 1))
-	      (TeX-fold-hide-item ov display-string)))))))
+				     TeX-fold-unspec-macro-display-string)))
+	       (item-end (if (eq type 'env)
+			     (save-excursion
+			       (goto-char (match-end 0))
+			       (LaTeX-find-matching-end))
+			   (save-excursion
+			     (goto-char item-start)
+			     (TeX-find-macro-end)))))
+	  (TeX-fold-make-overlay item-start item-end display-string))))))
 
 (defun TeX-fold-clearout-buffer ()
   "Permanently show all macros in the buffer"
@@ -237,6 +227,38 @@ TYPE specifies the type of item and can be one of the symbols
     (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
       (delete-overlay (car overlays)))
     (setq overlays (cdr overlays))))
+
+(defun TeX-fold-make-overlay (ov-start ov-end display-string)
+  "Make an overlay to cover the item and hide it.
+The overlay will reach from OV-START to OV-END and will display
+by DISPLAY-STRING.  The end of the overlay and its display string
+may be altered to prevent overfull lines."
+  (let* ((overfull (and (not (featurep 'xemacs)) ; Doesn't work on XEmacs
+					         ; anyway.
+			(save-excursion
+			  (goto-char ov-end)
+			  (search-backward "\n" ov-start t))
+			(> (+ (- ov-start
+				 (save-excursion
+				   (goto-char ov-start)
+				   (line-beginning-position)))
+			      (- (save-excursion
+				   (goto-char ov-end)
+				   (line-end-position))
+				 ov-end))
+			   (current-fill-column))))
+	 (ov-end (if overfull
+		     (save-excursion
+		       (goto-char ov-end)
+		       (skip-chars-forward " \t")
+		       (point))
+		   ov-end))
+	 (display-string (concat display-string (when overfull "\n"))))
+    (let ((ov (make-overlay ov-start ov-end (current-buffer) t nil)))
+      ;; Give environments a higher priority so that their display
+      ;; string overrides those of possibly enclosed macros.
+      (overlay-put ov 'priority (if (eq type 'env) 2 1))
+      (TeX-fold-hide-item ov display-string))))
 
 (defun TeX-fold-hide-item (ov &optional display-string)
   "Hide a single macro or environment.
@@ -343,8 +365,8 @@ With zero or negative ARG turn mode off."
 	(set (make-local-variable 'search-invisible) t)
 	(add-hook 'post-command-hook 'TeX-fold-post-command nil t))
     (kill-local-variable 'search-invisible)
-    (TeX-fold-clearout-buffer)
-    (remove-hook 'post-command-hook 'TeX-fold-post-command t))
+    (remove-hook 'post-command-hook 'TeX-fold-post-command t)
+    (TeX-fold-clearout-buffer))
   (TeX-set-mode-name))
 
 (provide 'tex-fold)
