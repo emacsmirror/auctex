@@ -2,6 +2,7 @@
 *.dvi
 *.log
 *.prv
+FAQ
 INSTALL
 INSTALL.windows
 Makefile
