@@ -1,3 +1,14 @@
+2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-place-preview): (widen) paranoia.
+	(preview-back-command): same here.
+	(LaTeX-preview-setup): better safe than sorry (users might call
+	this wrong), so rerequire 'latex
+	(preview-parse-messages): New regexp parser.  Nick, if the shy
+	groups \(?: ...\) worry XEmacs, make them non-shy and adjust the
+	match-... thingies appropriately.
+	(preview-analyze-error): and another save-restriction...
+
 2002-03-14  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-parse-messages): Obliterate preview-snippet
