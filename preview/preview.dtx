@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{703}
+%\CheckSum{944}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.49 $
+%  \rcskey \version CVS-$Revision: 1.50 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-03-28 21:10:41 $
+%\rcskey\next $Date: 2002-03-30 19:49:24 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -89,10 +89,11 @@
 %the |preview| package gets activated.  |prdefault.cfg| is supposed to
 %contain definitions that can cater for otherwise bad results, for
 %example, if a certain document class would otherwise lead to
-%trouble.  In addition, there may be configuration files specific for
-%certain |preview| options like |auctex| which have more immediate
-%needs.  The |noconfig| option suppresses loading of those option
-%files, too.
+%trouble.  It also can be used to override any settings made in this
+%package, since it is loaded at the very end of it.  In addition,
+%there may be configuration files specific for certain |preview|
+%options like |auctex| which have more immediate needs.  The
+%|noconfig| option suppresses loading of those option files, too.
 %\item[|psfixbb|] Dvips determines the bounding boxes from the
 %material in the DVI file it understands.  Lots of PostScript specials
 %are not part of that.  Since the \TeX\ boxes do not make it into the
@@ -244,7 +245,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.49 $
+   \reserved@a\reserved@b CVS-$Revision: 1.50 $
 \else
    \begingroup
       \lccode`-=`.
@@ -253,7 +254,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-03-28 21:10:41 $
+\reserved@a\next $Date: 2002-03-30 19:49:24 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -311,6 +312,14 @@
 \def\pr@loadcfg#1{\InputIfFileExists{#1.cfg}{}{}}
 \DeclareOption{noconfig}{\let\pr@loadcfg=\@gobble}
 %    \end{macrocode}
+%\begin{macro}{\pr@addto@front}
+%  This adds code globally to the front of a macro.
+%    \begin{macrocode}
+\def\pr@addto@front#1#2{%
+  \toks@{#2}\toks@\expandafter{\the\expandafter\toks@#1}%
+  \xdef#1{\the\toks@}}
+%    \end{macrocode}
+%\end{macro}
 %  These commands get more interesting when |preview| is active:
 %    \begin{macrocode}
 \DeclareOption{active}{%
@@ -318,8 +327,7 @@
   \def\pr@advise#1{%
     \expandafter\pr@adviseii\csname pr@\string#1\endcsname#1}%
   \def\pr@advise@ship#1#2#3{\pr@advise#1{\pr@protect@ship{#2}{#3}}}%
-  \let\preview@delay\@firstofone
-  \pr@loadcfg{prdefault}}
+  \let\preview@delay\@firstofone}
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
@@ -338,10 +346,13 @@
 %    \end{macrocode}
 %\end{macro}
 %
-%  The |delayed| option is easy to implement:
+%  The |delayed| option is easy to implement: this is \emph{not} done
+%  with \cmd{\let} since at the course of document processing, \LaTeX\
+%  redefines \cmd{\AtBeginDocument} and we want to follow that
+%  redefinition.
 %    \begin{macrocode}
 \DeclareOption{delayed}{%
-  \ifPreview \def\preview@delay{\AtBeginDocument} \fi
+  \ifPreview \def\preview@delay{\AtBeginDocument}\fi
 }
 %    \end{macrocode}
 %
@@ -349,12 +360,20 @@
 %  Another conditional.  \cmd{\ifpr@fixbb} tells us whether we want to
 %  surround the typeset materials with invisible rules so that Dvips
 %  gets the bounding boxes right for, say, pure PostScript inclusions.
+%
+%  If you are installing this on an operating system different from
+%  the one |preview| has been developed on, you might want to redefine
+%  |\pr@markerbox| in your |prdefault.cfg| file to use a file known to
+%  be empty, like |/dev/null| is under Unix.  Make this redefinition
+%  depend on \cmd{\ifpr@fixbb} since only then |\pr@markerbox| will be
+%  defined.
 %    \begin{macrocode}
 \newif\ifpr@fixbb
 \pr@fixbbfalse
-\DeclareOption{psfixbb}{\pr@fixbbtrue
+\DeclareOption{psfixbb}{\ifPreview%
+  \pr@fixbbtrue
   \newbox\pr@markerbox
-  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}}%
+  \setbox\pr@markerbox\hbox{\special{psfile=/dev/null}\fi}%
 }
 %    \end{macrocode}
 %\end{macro}
@@ -460,21 +479,30 @@
      \nointerlineskip\hbox{\unhbox\z@\/}%
    \else \unskip\unpenalty\unskip \fi
    \egroup
-   {\splittopskip\z@skip\setbox\z@\vsplit\pr@box to\z@}%
    \setbox\pr@box\vbox{%
        \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
        \@begindvi
        \nointerlineskip
+       \splittopskip\z@skip\setbox\z@\vsplit\pr@box to\z@
+       \unvbox\z@
+       \nointerlineskip
        \color@setgroup
        \box\pr@box
        \color@endgroup}%
-   \ifpr@fixbb\setbox\pr@box\hbox{%
-     \raise\ht\pr@box\copy\pr@markerbox
-     \dimen@\dp\pr@box
-     \box\pr@box
-     \lower\dimen@\copy\pr@markerbox}%
-   \fi
 %    \end{macrocode}
+%  \begin{macro}{\pr@ship@end}
+%  \label{sec:prshipend}At this point, \cmd{\pr@ship@end} gets
+%  called.  You must not under any circumstances change |\box\pr@box|
+%  in any way that would add typeset material at the front of it,
+%  except for PostScript header specials, since the front of
+%  |\box\pr@box| may contains stuff from \cmd{\AtBeginDvi}.
+%  \cmd{\pr@ship@end} contains two types of code additions: stuff that
+%  adds to |\box\pr@box|, like the |labels| option does, and stuff
+%  that measures out things or otherwise takes a look at the finished
+%  |\box\pr@box|, like the |auctex| or |showbox| option do.  The
+%  former should use \cmd{pr@addto@front} for adding to this hook, the
+%  latter use \cmd{g@addto@macro} for adding at the end of this hook.
+%
 %  Note that we shift the output box up by its height via
 %  \cmd{\voffset}.  This has three reasons: first we make sure that no
 %  package-inflicted non-zero value of \cmd{\voffset} or
@@ -483,18 +511,27 @@
 %  be at the (1in,1in)~mark defined by \TeX.  That way we can properly
 %  take ascenders into account.  And the third reason is that \TeX\
 %  treats a \cmd{\hbox} and a \cmd{\vbox} differently with regard to
-%  the treating of its depth.
+%  the treating of its depth.  
 %    \begin{macrocode}
    \pr@ship@end
    {\let\protect\noexpand
    \voffset=-\ht\pr@box
    \hoffset=\z@
    \c@page=\pr@snippet
-   \pr@shipout\box\pr@box}%
+   \pr@shipout
+   \ifpr@fixbb\hbox{%
+     \dimen@\wd\pr@box
+     \@tempdima\ht\pr@box
+     \@tempdimb\dp\pr@box
+     \box\pr@box
+     \llap{\raise\@tempdima\copy\pr@markerbox\kern\dimen@}%
+     \lower\@tempdimb\copy\pr@markerbox}%
+   \else \box\pr@box \fi}%
    \global\advance\pr@snippet\@ne
    \pr@cleanup
 }
 %    \end{macrocode}
+%\end{macro}
 %\end{macro}
 %Oh, and we kill off the usual meaning of \cmd{\shipout} in case
 %somebody makes a special output routine.  The following is rather
@@ -686,7 +723,12 @@
 \DeclareOption{sections}{%
   \PreviewMacro[!!!!!!*[!]{\@startsection}}
 %    \end{macrocode}
-%We now interpret any further options as driver files we load.
+%We now interpret any further options as driver files we load.  Note
+%that these driver files are loaded even when |preview| is not
+%active.  The reason is that they might define commands (like
+%\cmd{\PreviewCommand}) that should be available even in case of
+%an inactive package.  Large parts of the |preview| package will not
+%have been loaded in this case: you have to cater for that.
 %    \begin{macrocode}
 \DeclareOption*
    {\InputIfFileExists{pr\CurrentOption.def}{}{\OptionNotUsed}}
@@ -772,88 +814,32 @@
 %\begin{macro}{\pr@ship@end}
 %  The hooks \cmd{\pr@ship@start} and \cmd{\pr@ship@end} can be added
 %  to by option files by the help of the \cmd{\g@addto@macro} command
-%  from \LaTeX.  They are called just before starting to process some
-%  preview, and just after it.
+%  from \LaTeX, and by the \cmd{\pr@addto@front} command from
+%  |preview.sty| itself.  They are called just before starting to
+%  process some preview, and just after it.  Here is the policy for
+%  adding to them: \cmd{\pr@ship@start} is called inside of the vbox
+%  |\pr@box| before typeset material gets produced.  It is, however,
+%  preceded by a break command that is intended for usage in
+%  \cmd{\vsplit}, so that any following glue might disappear.  In case
+%  you want to add any material on the list, you have to precede it
+%  with \cmd{\unpenalty} and have to follow it with \cmd{\break}.  You
+%  have make sure that under no circumstances any other legal
+%  breakpoints appear before that, and your material should contribute
+%  no nonzero dimensions to the page.  For the policies of the
+%  \cmd{\pr@ship@end} hook, see the description on
+%  page~\pageref{sec:prshipend}.
 %    \begin{macrocode}
 %<*!active>
 \let\pr@ship@start\@empty
 \let\pr@ship@end\@empty
-%</!active>
-%</style>
 %    \end{macrocode}
 %\end{macro}
 %\end{macro}
-%The AUC~\TeX\ option will cause error messages to spew.  We want them
-%on the terminal, but we don't want \LaTeX\ to stop its automated run.
-%We delay \cmd{\nonstopmode} in case the user has any
-%pseudo-interactive folderol like reading in of file names in his
-%preamble.  Because we are so good-hearted, we will not break this as
-%long as the document has not started, but after that we need the
-%error message mechanism operative.
-%
-%So here is the contents of the |prauctex.def| file:
-%    \begin{macrocode}
-%<auctex>\ifPreview
-%<auctex>\preview@delay{\nonstopmode}
-%<auctex>\def\pr@msg#1{\PackageError{Preview}%
-%<auctex>   {Snippet \number\pr@snippet\space#1}%
-%<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
-%<auctex>    Just hit Return and be gone.}}
-%<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
-%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended.%
-%<auctex>  (\number\ht\pr@box+\number\dp\pr@box x\number\wd\pr@box)}}
-%    \end{macrocode}
-%Since over/underfull boxes are about the messiest things to parse, we
-%disable them by setting the appropriate badness limits and making the
-%variables point to junk.  We also disable other stuff.  While we set
-%\cmd{\showboxbreadth} and \cmd{\showboxdepth} to indicate as little
-%diagnostic output as possible, we keep them operative, so that the
-%user retains the option of debugging using this stuff.  The other
-%variables concerning the generation of warnings and daignostics,
-%however, are more often set by commonly employed packages and macros
-%such as \cmd{\sloppy}.  So we kill them off for good.
-%    \begin{macrocode}
-%<auctex>\hbadness=\maxdimen
-%<auctex>\newcount\hbadness
-%<auctex>\vbadness=\maxdimen
-%<auctex>\let\vbadness=\hbadness
-%<auctex>\hfuzz=\maxdimen
-%<auctex>\newdimen\hfuzz
-%<auctex>\vfuzz=\maxdimen
-%<auctex>\let\vfuzz=\hfuzz
-%<auctex>\showboxdepth=-1
-%<auctex>\showboxbreadth=-1
-%<auctex>\pr@loadcfg{prauctex}
-%<auctex>\fi
-%    \end{macrocode}
-%And here we cater for several frequently used commands in
-%|prauctex.cfg|:
-%    \begin{macrocode}
-%<auccfg>\PreviewMacro*\footnote
-%<auccfg>\PreviewMacro*\emph
-%<auccfg>\PreviewMacro*\textrm
-%<auccfg>\PreviewMacro*\textit
-%<auccfg>\PreviewMacro*\textsc
-%<auccfg>\PreviewMacro*\textsf
-%<auccfg>\PreviewMacro*\textsl
-%<auccfg>\PreviewMacro*\texttt
-%<auccfg>\PreviewMacro*\textcolor
-%<auccfg>\PreviewMacro*\mbox
-%<auccfg>\PreviewMacro*\maketitle
-%<auccfg>\PreviewMacro*\author
-%<auccfg>\PreviewMacro*\title
-%<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
-%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
-%<auccfg>\PreviewMacro*\index
-%    \end{macrocode}
-%
 %\begin{environment}{preview}
 %\begin{environment}{nopreview}
 %  First we write the definitions of these environments when |preview|
 %  is inactive.  We will redefine them if |preview| gets activated.
 %    \begin{macrocode}
-%<*style>
-%<*!active>
 \newenvironment{preview}{\ignorespaces}{\unskip}
 \newenvironment{nopreview}{\ignorespaces}{\unskip}
 %    \end{macrocode}
@@ -892,11 +878,307 @@
   \xdef\@freelist{\@currlist\@freelist}%
   \global\let\@currlist\@empty
   \deadcycles\z@}
+%    \end{macrocode}
+%And at the end we load the default configuration file, so that it may
+%override settings from this package:
+%    \begin{macrocode}
+\pr@loadcfg{prdefault}
 %</active>
 %</style>
 %    \end{macrocode}
 %
-% \section{Various drivers}
+%\section{The option files}
+%\subsection{The \texttt{auctex} option}
+%The AUC~\TeX\ option will cause error messages to spew.  We want them
+%on the terminal, but we don't want \LaTeX\ to stop its automated run.
+%We delay \cmd{\nonstopmode} in case the user has any
+%pseudo-interactive folderol like reading in of file names in his
+%preamble.  Because we are so good-hearted, we will not break this as
+%long as the document has not started, but after that we need the
+%error message mechanism operative.
+%
+%So here is the contents of the |prauctex.def| file:
+%    \begin{macrocode}
+%<auctex>\ifPreview\else\expandafter\endinput\fi
+%<auctex>\preview@delay{\nonstopmode}
+%<auctex>\def\pr@msg#1{\PackageError{Preview}%
+%<auctex>   {Snippet \number\pr@snippet\space#1}%
+%<auctex>   {There is nothing to be seen here.  What are you doing here?^^J%
+%<auctex>    Just hit Return and be gone.}}
+%<auctex>\g@addto@macro\pr@ship@start{\pr@msg{started}}
+%<auctex>\g@addto@macro\pr@ship@end{\pr@msg{ended.%
+%<auctex>  (\number\ht\pr@box+\number\dp\pr@box x\number\wd\pr@box)}}
+%    \end{macrocode}
+%Since over/underfull boxes are about the messiest things to parse, we
+%disable them by setting the appropriate badness limits and making the
+%variables point to junk.  We also disable other stuff.  While we set
+%\cmd{\showboxbreadth} and \cmd{\showboxdepth} to indicate as little
+%diagnostic output as possible, we keep them operative, so that the
+%user retains the option of debugging using this stuff.  The other
+%variables concerning the generation of warnings and daignostics,
+%however, are more often set by commonly employed packages and macros
+%such as \cmd{\sloppy}.  So we kill them off for good.
+%    \begin{macrocode}
+%<auctex>\hbadness=\maxdimen
+%<auctex>\newcount\hbadness
+%<auctex>\vbadness=\maxdimen
+%<auctex>\let\vbadness=\hbadness
+%<auctex>\hfuzz=\maxdimen
+%<auctex>\newdimen\hfuzz
+%<auctex>\vfuzz=\maxdimen
+%<auctex>\let\vfuzz=\hfuzz
+%<auctex>\showboxdepth=-1
+%<auctex>\showboxbreadth=-1
+%<auctex>\pr@loadcfg{prauctex}
+%    \end{macrocode}
+%And here we cater for several frequently used commands in
+%|prauctex.cfg|:
+%    \begin{macrocode}
+%<auccfg>\PreviewMacro*\footnote
+%<auccfg>\PreviewMacro*\emph
+%<auccfg>\PreviewMacro*\textrm
+%<auccfg>\PreviewMacro*\textit
+%<auccfg>\PreviewMacro*\textsc
+%<auccfg>\PreviewMacro*\textsf
+%<auccfg>\PreviewMacro*\textsl
+%<auccfg>\PreviewMacro*\texttt
+%<auccfg>\PreviewMacro*\textcolor
+%<auccfg>\PreviewMacro*\mbox
+%<auccfg>\PreviewMacro*\maketitle
+%<auccfg>\PreviewMacro*\author
+%<auccfg>\PreviewMacro*\title
+%<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
+%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
+%<auccfg>\PreviewMacro*\index
+%    \end{macrocode}
+%
+%\subsection{Debugging options}
+%Those are for debugging the operation of |preview|, and thus are
+%mostly of interest for people that want to use |preview| for their
+%own purposes.  Since debugging output is potentially confusing to the
+%error message parsing from AUC~TeX, you should not turn on
+%|\tracingonline| or switch from |\nonstopmode| unless you are certain
+%your package will never be used with Preview-\LaTeX.
+%
+%\paragraph{The \texttt{showbox} option} will generate diagnostic
+%output for every produced box.  It does not
+%delay the resetting of the |\showboxbreadth| and |\showboxdepth|
+%parameters so that you can still change them after the loading of the
+%package.  It does, however, move them to the end of the package
+%loading, so that they will not be affected by the |auctex| option.
+%    \begin{macrocode}
+%<showbox>\ifPreview\else\expandafter\endinput\fi
+%<showbox>\AtEndOfPackage{%
+%<showbox>  \showboxbreadth\maxdimen
+%<showbox>  \showboxdepth\maxdimen}
+%<showbox>\g@addto@macro\pr@ship@end{\showbox\pr@box}
+%    \end{macrocode}
+%
+%\paragraph{The \texttt{tracingall} option} is for the really heavy
+%diagnostic stuff.  For the reasons mentioned above, we do not want to
+%change the setting of the interaction mode, nor of the
+%|tracingonline| flag.  If the user wants them different, he should
+%set them outside of the preview boxes.
+%    \begin{macrocode}
+%<tracingall>\ifPreview\else\expandafter\endinput\fi
+%<tracingall>\pr@addto@front\pr@ship@start{\let\tracingonline\count@
+%<tracingall>  \let\errorstopmode\@empty\tracingall}
+%    \end{macrocode}
+%
+%\subsection{Supporting conversions}
+%It is not uncommon to want to use the results of |preview| as
+%images.  One possibility is to generate a flurry of EPS files with
+%\begin{quote}
+%  |dvips -E -i -Ppdf -o| \meta{outputfile}|.000| \meta{inputfile}
+%\end{quote}
+%However, in case those are to be processed further into graphic image
+%files by GhostScript, this process is inefficient.  One cannot use
+%GhostScript in a single run for generating the files, however, since
+%one needs to set the page size (or full size pages will be
+%produced).  The |tightpage| option will set the page dimensions at
+%the start of each PostScript page so that the output will be sized
+%appropriately.  That way, a single pass of Dvips followed by a single
+%pass of GhostScript will be sufficient for generating all images.
+%
+%You will usually want to use the |dvips| option along with this
+%option, so that the page size is not being tampered with.
+%
+%  \begin{macro}{\PreviewBorder}
+%  \begin{macro}{\PreviewBbAdjust}
+%  We start this off with the user tunable parameters which get
+%  defined even in the case of an inactive package, so that
+%  redefinitions and assignments to them will always work:
+%    \begin{macrocode}
+%<tightpage>\newdimen\PreviewBorder
+%<tightpage>\PreviewBorder=0.5bp
+%<tightpage>\def\PreviewBbAdjust{-\PreviewBorder -\PreviewBorder
+%<tightpage>  \PreviewBorder \PreviewBorder}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%Here is stuff used for parsing this:
+%    \begin{macrocode}
+%<tightpage>\ifPreview\else\expandafter\endinput\fi
+%<tightpage>\def\pr@nextbb{\edef\next{\next\number\dimen@\space}%
+%<tightpage>  \advance\count@\m@ne\ifnum\count@>\z@
+%<tightpage>  \afterassignment\pr@nextbb\dimen@\fi}
+%    \end{macrocode}
+%And here is the stuff that we fudge into our hook.  Of course, we
+%have to do it in a box, and we start this box off with our special.
+%There is one small consideration here:  it might come before any
+%|\AtBeginDvi| stuff containing header specials.  It turns out Dvips
+%rearranges this amicably: header code specials get transferred to the
+%appropriate header section, anyhow, so this ensures that we come
+%right after the bop section.  We insert the 7~numbers here: the
+%4~bounding box adjustments, and the 3~\TeX\ box dimensions.
+%    \begin{macrocode}
+%<tightpage>\g@addto@macro\pr@ship@end{\setbox\pr@box\hbox{%
+%<tightpage>  \let\next\@empty
+%<tightpage>  \count@4\afterassignment\pr@nextbb
+%<tightpage>  \dimen@\PreviewBbAdjust
+%<tightpage>  \special{ps::\next\number\ht\pr@box\space
+%<tightpage>  \number\dp\pr@box\space\number\wd\pr@box}\box\pr@box}}
+%    \end{macrocode}
+%Ok, here comes the beef.  First we fish the 7~numbers from the
+%file with |token| and convert them from \TeX~|sp| to PostScript
+%points.
+%    \begin{macrocode}
+%<tightpage>\preview@delay{\AtBeginDvi{%
+%<tightpage>  \special{!userdict begin/bop-hook{%
+%<tightpage>     7{currentfile token not{stop}if 65781.76 div}repeat
+%    \end{macrocode}
+%Next we produce the horizontal part of the bounding box as
+%\[ (1\mathrm{in},1\mathrm{in}) +
+%\bigl(\min(|\wd\pr@box|,0),\max(|\wd\pr@box|,0)\bigr) \]
+%and roll it to the bottom of the stack:
+%    \begin{macrocode}
+%<tightpage>     72 add 72 2 copy gt{exch}if 4 2 roll
+%    \end{macrocode}
+%Next is the vertical part of the bounding box.  Depth counts in
+%negatively, and we again take $\min$ and $\max$ of possible extents
+%in the vertical direction, limited by 0.  720 corresponds to
+%$10\,\mathrm{in}$ and is the famous $1\,\mathrm{in}$ distance away
+%from the edge of letterpaper.
+%    \begin{macrocode}
+%<tightpage>     neg 2 copy lt{exch}if dup 0 gt{pop 0 exch}%
+%<tightpage>     {exch dup 0 lt{pop 0}if}ifelse 720 add exch 720 add
+%<tightpage>     3 1 roll
+%    \end{macrocode}
+%Ok, we now have the bounding box on the stack in the proper order
+%llx,lly, urx, ury.  We add the adjustments:
+%    \begin{macrocode}
+%<tightpage>    4{5 -1 roll add 4 1 roll}repeat
+%    \end{macrocode}
+%The page size is calculated as the appropriate differences, the page
+%offset consists of the coordinates of the lower left corner, with
+%that of the $x$ coordinate negated.
+%    \begin{macrocode}
+%<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
+%<tightpage>       /PageOffset[7 -2 roll exch neg exch]>>setpagedevice%
+%    \end{macrocode}
+%So we now bind the old definition of |bop-hook| into our new
+%definition and finish it.
+%    \begin{macrocode}
+%<tightpage>     //bop-hook exec}bind def end}}}%
+%    \end{macrocode}
+%
+%\subsection{The \texttt{showlabels} option}
+%During the editing process, some people like to see the label names
+%in their equations, figures and the like.  Now if you are using Emacs
+%for editing, and in particular Preview-\LaTeX, I'd strongly recommend
+%that you check out the ref\TeX\ package which pretty much obliterates
+%the need for this kind of functionality.  If you still want it,
+%standard \LaTeX\ provides it with the |showkeys| package, and there is
+%also the less encompassing |showlabels| package.  Unfortunately,
+%since those go to some pain not to change the page layout and
+%spacing, they also don't change |preview|'s idea of the \TeX\
+%dimensions of the involved boxes.
+%
+%So those packages are mostly useless.  So we present here an
+%alternative hack that will get the labels through.
+%  \begin{macro}{\pr@labelbox}
+%    This works by collecting them into a separate box which we then
+%    tack to the right of the previews.
+%    \begin{macrocode}
+%<showlabels>\ifPreview\else\expandafter\endinput\fi
+%<showlabels>\newbox\pr@labelbox
+%    \end{macrocode}
+%  \end{macro}
+%  \begin{macro}{\pr@label}
+%    We follow up with out own definition of the \cmd{\label} macro
+%    which will be active only in previews.  The original definition
+%    is stored in |\pr@@label|.  |\pr@lastlabel| contains the last
+%    typeset label in order to avoid duplication in certain
+%    environments, and we keep the stuff in |\pr@labelbox|.
+%    \begin{macrocode}
+%<showlabels>\def\pr@label#1{\pr@@label{#1}%
+%    \end{macrocode}
+%    This is active only in previews:
+%    \begin{macrocode}
+%<showlabels>  \ifx\protect\@typeset@protect\ifpr@outer\else
+%    \end{macrocode}
+%    Ignore empty labels\dots
+%    \begin{macrocode}
+%<showlabels>   \edef\next{#1}\ifx\next\@empty\else
+%    \end{macrocode}
+%    and labels equal to the last one.
+%    \begin{macrocode}
+%<showlabels>   \ifx\next\pr@lastlabel \else
+%<showlabels>   \global\let\pr@lastlabel\next
+%    \end{macrocode}
+%    Ok, now we generate the box, by placing the label below any
+%    existing stuff.
+%    \begin{macrocode}
+%<showlabels>   \global\setbox\pr@labelbox\vbox{\unvbox\pr@labelbox
+%<showlabels>      \hbox{\framebox{#1}}}\fi\fi\fi\fi}
+%    \end{macrocode}
+%  \end{macro}
+%  \begin{macro}{\pr@maketag}
+%    And here is a version for |amsmath| equations.  They look better
+%    when the label is right beside the tag, so we place it there, but
+%    augment |\box\pr@labelbox| with an appropriate placeholder.
+%    \begin{macrocode}
+%<showlabels>\def\pr@maketag#1{\pr@@maketag{#1}%
+%<showlabels>  \ifx\protect\@typeset@protect{%
+%<showlabels>  \ifx\df@label\@empty\else
+%<showlabels>      \xdef\pr@lastlabel{\df@label}%
+%<showlabels>      {\setbox\z@\hbox{\framebox{\df@label}}%
+%<showlabels>        \global\setbox\pr@labelbox\vbox{%
+%<showlabels>           \hrule\@width\wd\z@\@height\z@
+%<showlabels>           \unvbox\pr@labelbox}%
+%    \end{macrocode}
+%    Set the width of the box to empty so that the label placement
+%    gets not disturbed, then append it.
+%    \begin{macrocode}
+%<showlabels>        \wd\z@\z@\box\z@}\fi\fi}}
+%    \end{macrocode}
+%  \end{macro}
+%  \begin{macro}{\pr@lastlabel}
+%    Ok, here is how we activate this: we clear out box and label info
+%    \begin{macrocode}
+%<showlabels>\g@addto@macro\pr@ship@start{%
+%<showlabels>  \global\setbox\pr@labelbox\box\voidb@x
+%<showlabels>  \xdef\pr@lastlabel{}%
+%    \end{macrocode}
+%    The definitions above are global because we might be in any
+%    amount of nesting.  We then reassign the appropriate labelling
+%    macros:
+%    \begin{macrocode}
+%<showlabels>  \let\pr@@label\label \let\label\pr@label
+%<showlabels>  \let\pr@@maketag\maketag@@@ \let\maketag@@@\pr@maketag
+%<showlabels>}
+%    \end{macrocode}
+%  \end{macro}
+%Now all we have to do is to add the stuff to the box in question.
+%    \begin{macrocode}
+%<showlabels>\pr@addto@front\pr@ship@end{%
+%<showlabels>   \ifvoid\pr@labelbox
+%<showlabels>   \else \setbox\pr@box\hbox{%
+%<showlabels>         \box\pr@box\,\box\pr@labelbox}%
+%<showlabels>   \fi}
+%    \end{macrocode}
+%
+% \section{Various driver files}
 % The installer, in case it is missing.  If it is to be used via
 % |make|, we don't specify an installation path, since
 %\begin{quote}
@@ -913,6 +1195,10 @@
 %<installer>                       \from{preview.dtx}{style,active}}
 %<installer>    \file{prauctex.def}{\from{preview.dtx}{auctex}}
 %<installer>    \file{prauctex.cfg}{\from{preview.dtx}{auccfg}}
+%<installer>    \file{prshowbox.def}{\from{preview.dtx}{showbox}}
+%<installer>    \file{prshowlabels.def}{\from{preview.dtx}{showlabels}}
+%<installer>    \file{prtracingall.def}{\from{preview.dtx}{tracingall}}
+%<installer>    \file{prtightpage.def}{\from{preview.dtx}{tightpage}}
 %<installer> }
 %<installer> \endbatchfile
 %    \end{macrocode}
