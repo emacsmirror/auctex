@@ -5,6 +5,7 @@
 	file-local minor mode variables.
 
 	* latex.el (LaTeX-math-mode): Define using `define-minor-mode'.
+	Make it compatible with older Emacsen.
 
 2004-12-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
