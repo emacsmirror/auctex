@@ -1,3 +1,9 @@
+2004-11-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-built-in-keywords)
+	(font-latex-make-user-keywords): Append rather than prepend
+	matchers.
+
 2004-11-01  Miguel Frasson  <frasson@math.leidenuniv.nl>
 	
 	* toolbar-x.el
