@@ -1,3 +1,8 @@
+2003-05-27  Piet van Oostrum  <piet@cs.uu.nl>
+
+	* latex.el (LaTeX-auto-minimal-regexp-list): Changed regexp to
+		  allow \documentclass[]{someclass}. 
+
 2003-05-02  Patrick Gundlach  <patrick@gundla.ch>
 
 	* context.el: ConTeXt-environment can now modify the current

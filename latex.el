@@ -929,7 +929,7 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
 
 (defvar LaTeX-auto-minimal-regexp-list
   '(("\\\\document\\(style\\|class\\)\
-\\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)+\\)\\]\\)?\
+\\(\\[\\(\\([^#\\\\\\.%]\\|%[^\n\r]*[\n\r]\\)*\\)\\]\\)?\
 {\\([^#\\\\\\.\n\r]+\\)}"
      (3 5 1) LaTeX-auto-style)
     ("\\\\use\\(package\\)\\(\\[\\([^\]\\\\]*\\)\\]\\)?\
