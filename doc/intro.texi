@@ -97,7 +97,7 @@ described above.
 (@kbd{C-c C-s}) Insert one of @samp{\chapter}, @samp{\section}, etc.
 @item TeX-font
 (@kbd{C-c C-f C-r}, @kbd{C-c C-f C-i}, @kbd{C-c C-f C-b}) Insert one of
-@samp{@{\rm @}}), @samp{@{\it \/@}} @samp{@{\bf @}} etc.
+@samp{@{\textrm @}}), @samp{@{\textit \/@}} @samp{@{\textbf @}} etc.
 @end table
 
 A number of additional functions are available.  But it would be far too
@@ -110,7 +110,7 @@ When invoking on of the commands @code{TeX-command-master} (@kbd{C-c
 C-c}) or @code{TeX-command-region} (@kbd{C-c C-r}) La@TeX{} is run on
 either the entire current document or a given region of it.  The Emacs
 view is split in two, and the output of @TeX{} is printed in the second
-half of the screen, as you may simultaneously continue editing you
+half of the screen, as you may simultaneously continue editing your
 document.  In case @TeX{} found any errors when processing your input
 you can call the function @code{TeX-next-error} (@kbd{C-c `}) which will
 move the cursor to the first given error, and display a short
@@ -131,7 +131,7 @@ functionality.
 
 @section Availability
 
-The most resent version is always available by ftp at
+The most recent version is always available by ftp at
 
 @flushright
 @samp{ftp://ftp.iesd.auc.dk/pub/emacs-lisp/auctex.tar.gz}

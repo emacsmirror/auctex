@@ -1,3 +1,18 @@
+Mon Jan 13 00:52:26 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.7c released.
+
+Wed Jan  8 15:00:06 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* doc/intro.texi: Spelling fixes by Franklin Chen <chen@adi.com>. 
+
+	* tex-buf.el (TeX-shell-command-option): Insitialize from
+	shell-command-switch.  Suggested by Fabio@Colorado.EDU (Fabio
+	Somenzi). 
+
+	* latex.el (LaTeX-mode-menu): Added sans serif.  Patch by Ralf
+	Fassel <ralf@atg.venture.de>. 
+
 Fri Jan  3 13:49:44 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Makefile (install-lisp): Also install `.el' files.  Requested by

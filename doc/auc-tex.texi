@@ -8,7 +8,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.115 1996-12-10 06:51:03 abraham Exp $
+@c $Id: auc-tex.texi,v 1.116 1997-01-12 23:52:56 abraham Exp $
 
 @finalout
 @titlepage
@@ -273,38 +273,38 @@ will be inserted.@refill
 @table @kbd
 @item C-c C-f C-r 
 @kindex C-c C-f C-r
-@cindex @code{\rm}
-Insert roman @r{@{\rm @point{}@}} text.
+@cindex @code{\textrm}
+Insert roman @r{@{\textrm @point{}@}} text.
 
 @item C-c C-f C-b
 @kindex C-c C-f C-b
-@cindex @code{\bf}
-Insert @b{bold face} @samp{@{\bf @point{}@}} text.
+@cindex @code{\textbf}
+Insert @b{bold face} @samp{@{\textbf @point{}@}} text.
 
 @item C-c C-f C-i
 @kindex C-c C-f C-i
-@cindex @code{\it}
-Insert @i{italics} @samp{@{\it @point{}\/@}} text.
+@cindex @code{\textit}
+Insert @i{italics} @samp{@{\textit @point{}\/@}} text.
 
 @item C-c C-f C-e
 @kindex C-c C-f C-e
-@cindex @code{\em}
-Insert @i{emphasized} @samp{@{\em @point{}\/@}} text.
+@cindex @code{\emph}
+Insert @i{emphasized} @samp{@{\emph @point{}\/@}} text.
 
 @item C-c C-f C-s
 @kindex C-c C-f C-s
-@cindex @code{\sl}
-Insert @i{slanted} @samp{@{\sl @point{}\/@}} text.
+@cindex @code{\textsl}
+Insert @i{slanted} @samp{@{\textsl @point{}\/@}} text.
 
 @item C-c C-f C-t
 @kindex C-c C-f C-t
-@cindex @code{\tt}
-Insert @t{typewriter} @samp{@{\tt @point{}@}} text.
+@cindex @code{\texttt}
+Insert @t{typewriter} @samp{@{\texttt @point{}@}} text.
 
 @item C-c C-f C-c
 @kindex C-c C-f C-c
-@cindex @code{\sc}
-Insert @sc{small caps} @samp{@{\sc @point{}@}} text.
+@cindex @code{\textsc}
+Insert @sc{small caps} @samp{@{\textsc @point{}@}} text.
 
 @item C-c C-f C-d
 @kindex C-c C-f C-c

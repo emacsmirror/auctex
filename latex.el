@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7b
+;; Version: 9.7c
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -2570,6 +2570,7 @@ commands are defined:
 	      ["Bold"       (TeX-font nil ?\C-b) :keys "C-c C-f C-b"]
 	      ["Typewriter" (TeX-font nil ?\C-t) :keys "C-c C-f C-t"]
 	      ["Small Caps" (TeX-font nil ?\C-c) :keys "C-c C-f C-c"]
+	      ["Sans Serif" (TeX-font nil ?\C-f) :keys "C-c C-f C-f"]
 	      ["Italic"     (TeX-font nil ?\C-i) :keys "C-c C-f C-i"]
 	      ["Slanted"    (TeX-font nil ?\C-s) :keys "C-c C-f C-s"]
 	      ["Roman"      (TeX-font nil ?\C-r) :keys "C-c C-f C-r"])
@@ -2578,6 +2579,7 @@ commands are defined:
 	      ["Bold"       (TeX-font t ?\C-b) :keys "C-u C-c C-f C-b"]
 	      ["Typewriter" (TeX-font t ?\C-t) :keys "C-u C-c C-f C-t"]
 	      ["Small Caps" (TeX-font t ?\C-c) :keys "C-u C-c C-f C-c"]
+	      ["Sans Serif" (TeX-font t ?\C-f) :keys "C-u C-c C-f C-f"]
 	      ["Italic"     (TeX-font t ?\C-i) :keys "C-u C-c C-f C-i"]
 	      ["Slanted"    (TeX-font t ?\C-s) :keys "C-u C-c C-f C-s"]
 	      ["Roman"      (TeX-font t ?\C-r) :keys "C-u C-c C-f C-r"])

@@ -68,7 +68,10 @@ are the arguments to `completing-read'.  See that."
 		     minibuffer-local-must-match-map
 		   minibuffer-local-completion-map))
 	(new-map (make-sparse-keymap)))
-    (set-keymap-parent new-map old-map)
+    (if (fboundp 'set-keymap-parent)
+	;; `set-keymap-parent' was introduced in Emacs 19.32.
+	(set-keymap-parent new-map old-map)
+      (setq new-map (copy-keymap old-map)))
     (define-key new-map separator (if require-match
 				      'multi-prompt-next-must-match
 				    'multi-prompt-next))

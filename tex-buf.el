@@ -1,7 +1,7 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.7b
+;; Version: 9.7c
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1996 Per Abrahamsen 
@@ -45,9 +45,12 @@ Full documentation will be available after autoloading the function."
 
 (defvar TeX-shell-command-option
   (cond ((memq system-type '(ms-dos emx windows-nt) )
-	 (if (boundp 'shell-command-option)
-	     shell-command-option
-	   "/c"))
+	 (cond ((boundp 'shell-command-option)
+		shell-command-option)
+	       ((boundp 'shell-command-switch)
+		shell-command-switch)
+	       (t 
+		"/c")))
 	(t				;Unix & EMX (Emacs 19 port to OS/2)
 	 "-c"))
   "Shell argument indicating that next argument is the command.")
