@@ -9,8 +9,8 @@ and the customization will not work correctly.
 
 @item
 Support for hiding and auto-revealing macros, e.g. footnotes or
-citations, in a buffer was added.  (The feature does not work
-flawlessly in XEmacs.)
+citations, and environments in a buffer was added.  (The feature does
+not work flawlessly in XEmacs yet.)
 
 @item
 You can now control if indentation is done upon typing @key{RET} by
