@@ -1,4 +1,9 @@
-@section News in 11.50
+@ifset rawfile
+@chapheading Changes and New Features in AUC@TeX{}
+
+@end ifset
+@c -----------------------
+@heading News in 11.50
 
 @itemize @bullet
 @item
@@ -94,8 +99,7 @@ it started.
 The build process was enhanced and is now based on @code{autoconf}.
 @end itemize
 
-
-@section News in 11.14
+@heading News in 11.14
 
 @itemize @bullet
 @item
@@ -103,7 +107,7 @@ Many more LaTeX and LaTeX2e commands are supported.
 Done by Masayuki Ataka  <ataka@@milk.freemail.ne.jp>
 @end itemize
 
-@section News in 11.12
+@heading News in 11.12
 
 @itemize @bullet
 @item
@@ -111,7 +115,7 @@ Support for the KOMA-Script classes.
 Contributed by Mark Trettin <Mark.Trettin@@gmx.de>.
 @end itemize
 
-@section News in 11.11
+@heading News in 11.11
 
 @itemize @bullet
 @item
@@ -119,7 +123,7 @@ Support for @file{prosper.sty}, see @url{http://prosper.sourceforge.net/}.
 Contributed by Phillip Lord <p.lord@@russet.org.uk>.
 @end itemize
 
-@section News in 11.10
+@heading News in 11.10
 
 @itemize @bullet
 @item
@@ -127,7 +131,7 @@ Contributed by Phillip Lord <p.lord@@russet.org.uk>.
 Suggested by "Davide G. M. Salvetti" <salve@@debian.org>.
 @end itemize
 
-@section News in 11.06
+@heading News in 11.06
 
 @itemize @bullet
 @item
@@ -136,7 +140,7 @@ the @file{tex-font} (Emacs 21 only) or no special package for font
 locking.  Customize @code{TeX-install-font-lock} for this.
 @end itemize
 
-@section News in 11.04
+@heading News in 11.04
 
 @itemize @bullet
 @item
@@ -144,7 +148,7 @@ Now use @t{-t landscape} by default when landscape option appears.
 Suggested by Erik Frisk <frisk@@isy.liu.se>.
 @end itemize
 
-@section News in 11.03
+@heading News in 11.03
 
 @itemize @bullet
 @item
@@ -152,7 +156,7 @@ Use @file{tex-fptex.el} for fpTeX support.
 Contributed by Fabrice Popineau <Fabrice.Popineau@@supelec.fr>.
 @end itemize
 
-@section News in 11.02
+@heading News in 11.02
 
 @itemize @bullet
 @item
@@ -177,7 +181,7 @@ More accurate error parsing.
 Added by David Kastrup <David.Kastrup@@t-online.de>.
 @end itemize
 
-@section News in 11.01
+@heading News in 11.01
 
 @itemize @bullet
 @item
