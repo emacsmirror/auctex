@@ -3268,16 +3268,16 @@ See also `LaTeX-math-menu'."
     (nil "varrho" "greek" 1009) ;; #X03F1
     (nil "varsigma" "greek" 962) ;; #X03C2
     (nil "varphi" "greek" 966) ;; #X03C6
-    (?\S-g "Gamma" "Greek" 915) ;; #X0393
-    (?\S-d "Delta" "Greek" 916) ;; #X0394
-    (?\S-j "Theta" "Greek" 920) ;; #X0398
-    (?\S-l "Lambda" "Greek" 923) ;; #X039B
-    (?\S-p "Pi" "Greek" 928) ;; #X03A0
-    (?\S-s "Sigma" "Greek" 931) ;; #X03A3
-    (?\S-u "Upsilon" "Greek" 978) ;; #X03D2
-    (?\S-f "Phi" "Greek" 934) ;; #X03A6
-    (?\S-y "Psi" "Greek" 936) ;; #X03A8
-    (?\S-o "Omega" "Greek" 937) ;; #X03A9
+    (?G "Gamma" "Greek" 915) ;; #X0393
+    (?D "Delta" "Greek" 916) ;; #X0394
+    (?J "Theta" "Greek" 920) ;; #X0398
+    (?L "Lambda" "Greek" 923) ;; #X039B
+    (?P "Pi" "Greek" 928) ;; #X03A0
+    (?S "Sigma" "Greek" 931) ;; #X03A3
+    (?U "Upsilon" "Greek" 978) ;; #X03D2
+    (?F "Phi" "Greek" 934) ;; #X03A6
+    (?Y "Psi" "Greek" 936) ;; #X03A8
+    (?O "Omega" "Greek" 937) ;; #X03A9
     (?c LaTeX-math-cal "Cal-whatever")
     (nil "pm" "Binary Op" 177) ;; #X00B1
     (nil "mp" "Binary Op" 8723) ;; #X2213
@@ -3386,14 +3386,14 @@ See also `LaTeX-math-menu'."
     (nil "cdots" "Misc Symbol" 8943) ;; #X22EF
     (nil "vdots" "Misc Symbol" 8942) ;; #X22EE
     (nil "ddots" "Misc Symbol" 8945) ;; #X22F1
-    (?\S-n "nabla" "Misc Symbol" 8711) ;; #X2207
+    (?N "nabla" "Misc Symbol" 8711) ;; #X2207
     (nil "aleph" "Misc Symbol" 8501) ;; #X2135
     (nil "prime" "Misc Symbol" 8242) ;; #X2032
-    (?\S-a "forall" "Misc Symbol" 8704) ;; #X2200
-    (?\S-i "infty" "Misc Symbol" 8734) ;; #X221E
+    (?A "forall" "Misc Symbol" 8704) ;; #X2200
+    (?I "infty" "Misc Symbol" 8734) ;; #X221E
     (nil "hbar" "Misc Symbol" 8463) ;; #X210F
     (?0 "emptyset" "Misc Symbol" 8709) ;; #X2205
-    (?\S-e "exists" "Misc Symbol" 8707) ;; #X2203
+    (?E "exists" "Misc Symbol" 8707) ;; #X2203
     (nil "nabla" "Misc Symbol" 8711) ;; #X2207
     (nil "surd" "Misc Symbol" 8730) ;; #X221A
     (nil "Box" "Misc Symbol")
