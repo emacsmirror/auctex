@@ -309,8 +309,7 @@ If MAP is non-nil, it specifies a keymap to add to, otherwise
 +are functions to call on preview's clicks."
   `(let (,@(if glyph `((res (if (stringp ,glyph)
                                 (copy-sequence ,glyph)
-                              (propertize "x" 'end-glyph ,glyph 'invisible t
-                                          'isearch-open-invisible t)))))
+                              (propertize "x" 'end-glyph ,glyph 'invisible t)))))
            (resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
            `((define-key resmap preview-button-1 ,click1)))
@@ -390,8 +389,9 @@ nil displays the underlying text, and 'toggle toggles."
 	    (unless (extent-keymap ov)
 	      (set-extent-keymap ov (preview-reroute-map ov))
 	      (set-extent-property ov 'balloon-help #'preview-balloon-reroute))
-            (set-extent-properties ov `(invisible t
-                                        isearch-open-invisible t
+            (set-extent-properties ov '(invisible t
+					isearch-open-invisible ignore
+					isearch-invisible t
                                         face nil
                                         begin-glyph nil
                                         begin-glyph-layout text))
@@ -491,11 +491,12 @@ Pure borderless black-on-white will return NIL."
 ;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
-(defcustom preview-auto-reveal (if (boundp 'reveal-mode) 'reveal-mode nil)
+(defcustom preview-auto-reveal 'reveal-mode
   "*Cause previews to open automatically when entered.
 Set to t or nil, or to a symbol which will be consulted
 if defined.  The default is to follow the setting of
-`reveal-mode', if it exists or true if it doesn't.."
+`reveal-mode'.  As long as that is undefined, this
+defaults to off."
   :group 'preview-appearance
   :type '(choice (const :tag "Off" nil)
 		 (const :tag "On" t)
@@ -553,21 +554,8 @@ if defined.  The default is to follow the setting of
   (preview-open-overlays
    (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
 
-(defcustom preview-isearch-reveal t
-  "*Make `query-replace' autoreveal previews."
-  :group 'preview-appearance
-  :type 'boolean
-  :require 'preview
-  :set (lambda (symbol value)
-	 (set-default symbol value)
-	 (if value
-	     (ad-enable-advice 'isearch-highlight 'before 'preview)
-	   (ad-disable-advice 'isearch-highlight 'before 'preview))
-	 (ad-activate 'isearch-highlight))
-  :initialize #'custom-initialize-reset)
-
 (defcustom preview-query-replace-reveal t
-  "*Make `query-replace' and isearch autoreveal previews."
+  "*Make `isearch' and `query-replace' autoreveal previews."
   :group 'preview-appearance
   :type 'boolean
   :require 'preview
