@@ -90,6 +90,15 @@ Return non-nil if document need to be re-TeX'ed."
 (make-variable-buffer-local 'TeX-command-region-begin)
 (make-variable-buffer-local 'TeX-command-region-end)
 
+(defun TeX-current-offset (&optional pos)
+  "Calculate line offset of POS, or of point if POS is nil."
+  (save-restriction
+    (widen)
+    (save-excursion
+      (if pos (goto-char pos))
+      (+ (count-lines (point-min) (point))
+	 (if (bolp) 0 -1)))))
+
 (defun TeX-command-region (&optional old)
   "Run TeX on the current region.
 
@@ -123,8 +132,7 @@ all text after TeX-trailer-start."
     (TeX-region-create (TeX-region-file TeX-default-extension)
 		       (buffer-substring begin end)
 		       (file-name-nondirectory (buffer-file-name))
-		       (count-lines (save-restriction (widen) (point-min))
-				    begin)))
+		       (TeX-current-offset begin)))
   (TeX-command (TeX-command-query (TeX-region-file)) 'TeX-region-file))
 
 (defun TeX-command-buffer ()
@@ -946,8 +954,7 @@ original file."
 				""
 			      ;;(beginning-of-line 1)
 			      (re-search-backward "[\r\n]" nil t)
-			      (setq trailer-offset
-				    (count-lines (point-min) (point)))
+			      (setq trailer-offset (TeX-current-offset))
 			      (buffer-substring (point) (point-max))))))))))
     (save-excursion
       (set-buffer file-buffer)
@@ -959,12 +966,12 @@ original file."
 	      TeX-region-extra
 	      "\n\\message{ !name(" original ") !offset(")
       (insert (int-to-string (- offset
-				(count-lines (point-min) (point))))
+				(TeX-current-offset)))
 	      ") }\n"
 	      region
 	      "\n\\message{ !name("  master-name ") !offset(")
       (insert (int-to-string (- trailer-offset
-				(count-lines (point-min) (point))))
+				(TeX-current-offset)))
 	      ") }\n"
 	      trailer)
       (run-hooks 'TeX-region-hook)
