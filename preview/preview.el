@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.95 2002-04-04 01:03:38 dakas Exp $
+;; $Id: preview.el,v 1.96 2002-04-04 12:35:47 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1461,7 +1461,7 @@ call, and in its CDR the final stuff for the placement hook."
   (with-temp-message "locating previews..."
     (let (TeX-error-file TeX-error-offset snippet box
 	  file line buffer
-	  (lsnippet 0) lstart lfile lline lbuffer lpoint
+	  (lsnippet 0) lstart (lfile "") lline lbuffer lpoint
 	  string after-string error context-start
 	  context offset
 	  parsestate (case-fold-search nil)
@@ -1560,7 +1560,7 @@ Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 			  file (car TeX-error-file))
 		    (when (and (stringp file) (TeX-match-extension file))
 		      ;; if we are the first time round, check for fast hooks:
-		      (if (null parsestate)
+		      (when (null parsestate)
 			(setq open-data
 			      (save-excursion (funcall open-closure))
 			      tempdir TeX-active-tempdir)
@@ -1781,7 +1781,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.95 $"))
+	(rev "$Revision: 1.96 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
