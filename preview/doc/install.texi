@@ -104,11 +104,17 @@ configure is suggesting.
 
 @item --disable-8bit-test
 There can be problems if your @LaTeX{} implementation is not 8-bit
-clean.  Check @file{PROBLEMS} file or @ref{Known problems}).
-This switch disables the 8-bit test, in case you know that your
+clean.  This switch disables the 8-bit test, in case you know that your
 installation is clean and the test is simply failing.  By specifying
 this switch, you signal your acceptance of having @previewlatex{} fail
-on @LaTeX{} files containing 8-bit characters.
+on @LaTeX{} files containing 8-bit characters.  Check
+@ifset rawfile
+the @file{PROBLEMS} file
+@end ifset
+@ifclear rawfile
+@ref{Known problems}
+@end ifclear
+for more details.
 
 Failure of this test can also happen if you have fetched @previewlatex{}
 via @acronym{CVS} and have run @code{autoconf} by hand instead of using
@@ -119,7 +125,6 @@ script tries to work around this deficiency.
 
 @end table
 
-
 @section Build/install
 
 Once @file{configure} has been run, simply enter
@@ -127,7 +132,6 @@ Once @file{configure} has been run, simply enter
 @example
 make
 @end example
-
 @noindent 
 at the prompt to byte-compile the lisp files, extract the @TeX{} files
 and build the documentation files.  To install the files into the
@@ -136,7 +140,6 @@ locations chosen earlier, type
 @example
 make install
 @end example
-
 @noindent 
 You may need special privileges to install, e.g., if you are installing
 into system directories.
@@ -169,6 +172,12 @@ other settings of the Emacs package by entering @kbd{M-x customize-group
 
 There is a sample file @file{circ.tex} which you can use for testing
 around a bit, and which serves as sort of a reference for initial bug
-reports.  See the @file{PROBLEMS} file or @ref{Known problems} for a list
-of known problems.
+reports.  See
+@ifset rawfile
+the @file{PROBLEMS} file
+@end ifset
+@ifclear rawfile
+@ref{Known problems}
+@end ifclear
+for a list of known problems.
 
