@@ -1,3 +1,12 @@
+2005-02-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-search-syntax-table): Give ?\" character punctuation
+	syntax.  Prevents parenthetical characters from being hidden from
+	`TeX-find-opening-brace' if they happen to be enclosed between two
+	quotation marks.
+	(TeX-search-syntax-table): Remove superfluous possibility to
+	specify comment and escape characters as arguments.
+
 2005-02-01  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/changes.texi: Mention support for the jsarticle and jsbook
