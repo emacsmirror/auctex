@@ -1,3 +1,47 @@
+2002-10-02  David Kastrup  <David.Kastrup@t-online.de>
+
+	* Makefile (STYLESRC): Add compilation targets for Komascript
+	support.
+
+	* Check in Komascript support by Mark Trettin.  See below.
+
+2002-09-28  Mark Trettin  <Mark.Trettin@gmx.de>
+
+	* scrbase.el:
+	First attempt on implementing the `captionbeside'-Environment. I'm not
+	really satisfied by now.
+
+2002-09-27  Mark Trettin  <Mark.Trettin@gmx.de>
+
+	* scrreprt.el, scrbook.el: Reformatted code.
+
+	* scrbase.el:
+	Fixed Typos in comments and escape characters in function docstrings.
+	Thanks to Reiner Steib.
+	Reformatted code.
+
+	* scrbase.el:
+	Changed `uppertitleback', `lowertitleback' from asking to just `t'
+
+	* scrbase.el:
+	Changed `addpart', `addsec' and `minisec' from Macro to sectioning
+	command.
+
+	* scrreprt.el, scrbook.el:
+	Changed `addchap' from Macro to sectioning command.
+
+2002-09-26  Mark Trettin  <Mark.Trettin@gmx.de>
+
+	* scrartcl.el: LaTeX-section-list removed.
+
+	* scrartcl.el: Initial version. Testing LaTeX-section-list.
+
+	* scrbase.el: Initial version of the base file. 
+
+	* scrreprt.el, scrbook.el: Initial version.
+
+	* scrbook.el, scrbase.el, scrreprt.el, scrartcl.el:
+
 2002-09-22  David Kastrup  <David.Kastrup@t-online.de>
 
 	* tex.el: Apply spelling fixes from G.M.Salvetti to tex.el

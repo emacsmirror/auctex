@@ -96,7 +96,8 @@ STYLESRC = style/prosper.el \
 	   style/index.el     style/makeidx.el  style/multind.el \
 	   style/varioref.el  style/fancyref.el	style/mdwlist.el \
 	   style/ngerman.el   style/graphicx.el	style/graphics.el \
-	   style/verbatim.el
+	   style/verbatim.el  style/scrbase.el  style/scrartcl.el \
+	   style/scrbook.el   style/scrreprt.el   
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
