@@ -1,3 +1,7 @@
+2003-04-15  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (STYLESRC): Added captcont.el and subfigure.el
+
 2003-04-15  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* doc/wininstall.texi: Corrected download info for GNU Emacs

@@ -63,7 +63,8 @@ STYLESRC = style/prosper.el \
 	   style/varioref.el  style/fancyref.el	style/mdwlist.el \
 	   style/ngerman.el   style/graphicx.el	style/graphics.el \
 	   style/verbatim.el  style/scrbase.el  style/scrartcl.el \
-	   style/scrbook.el   style/scrreprt.el	style/scrlttr2.el
+	   style/scrbook.el   style/scrreprt.el	style/scrlttr2.el \
+	   style/captcont.el  style/subfigure.el
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/math-ref.tex doc/history.texi
