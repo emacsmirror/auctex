@@ -1,3 +1,8 @@
+2005-01-21  David Kastrup  <dak@gnu.org>
+
+	* auctex.spec (Conflicts): Mention the outdated emacspeak from
+	FC3.
+
 2005-01-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Do not call

@@ -15,7 +15,7 @@
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
 Version: 	11.54
-Release: 	2%{distri}
+Release: 	3%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
@@ -38,6 +38,7 @@ Summary: 	Enhanced TeX modes for GNU Emacs
 Group:          %{commongroup}
 Requires: 	emacs >= 21
 Obsoletes:      ge_auc emacs-auctex auctex
+Conflicts:      emacspeak < 18
 Provides:       auctex
 
 %description emacs
@@ -109,6 +110,9 @@ rm -rf %{buildroot}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
+* Fri Jan 21 2005 David Kastrup <dak@gnu.org>
+- Conflict with outdated Emacspeak versions
+
 * Fri Jan 14 2005 David Kastrup <dak@gnu.org>
 - Install and remove auctex.info, not auctex
 
