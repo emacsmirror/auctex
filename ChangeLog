@@ -1,5 +1,8 @@
 2004-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* style/slides.el: Remove obsolete SliTeX-related code and
+	replace it by minimal support for slides.cls.
+
 	* latex.el: Change spaces to tabs in indentation.
 	(LaTeX-fill-region-as-paragraph): Filling is disabled for
 	environments listed in `LaTeX-indent-environment-list'.  To be
