@@ -1,5 +1,5 @@
 Apply this patch only if middle-mouse clicks on preview-icons paste
-instead of toggling when in fly-spell mode.  After version 21.1 of
+instead of toggling when in fly-spell mode.  After version 21.2 of
 Emacs, this should be fixed already.
 
 --- /usr/local/emacs-21/share/emacs/21.1/lisp/textmodes/flyspell.el.old	Mon Jul 16 14:22:59 2001

@@ -1,5 +1,5 @@
 Apply this patch only if middle-mouse clicks on preview-icons paste
-instead of toggling when using mouse-drag mode.  After version 21.1 of
+instead of toggling when using mouse-drag mode.  After version 21.2 of
 Emacs, this should be fixed already.
 
 --- mouse-drag.el.old	Mon Jan  8 20:12:12 2001
