@@ -900,9 +900,9 @@ You may use `LaTeX-item-list' to change the routines used to insert the item."
   "List of regular expression matching LaTeX labels only.")
 
 (defvar LaTeX-auto-index-regexp-list
-  '(("\\\\index{\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
-	1 LaTeX-auto-index-entry))
-  "List of regular expression matching LaTeX index entries only.
+   '(("\\\\\\(index\\|glossary\\){\\([^}{]*\\({[^}{]*\\({[^}{]*\\({[^}{]*}[^}{]*\\)*}[^}{]*\\)*}[^}{]*\\)*\\)}"
+ 	2 LaTeX-auto-index-entry))
+   "List of regular expression matching LaTeX index/glossary entries only.
 Regexp allows for up to 3 levels of parenthesis inside the index argument.
 This is necessary since index entries may contain commands and stuff.")
 
@@ -1157,15 +1157,25 @@ Used for specifying extra syntax for a macro."
 
 (defalias 'TeX-arg-ref 'TeX-arg-label)
 
-(defun TeX-arg-define-index (optional &optional prompt definition)
-  (TeX-arg-index optional prompt t))
-(defun TeX-arg-index (optional &optional prompt definition)
+(defun TeX-arg-index-tag (optional &optional prompt &rest args)
+  "Prompt for an index tag.  This is the name of an index, not the entry."
+  (let (tag)
+    (setq prompt (concat (if optional "(Optional) " "")
+			 (if prompt prompt "Index tag")
+			 ": (default none) "))
+    (setq tag (read-string prompt))
+    (TeX-argument-insert tag optional)))
+
+(defun TeX-arg-index (optional &optional prompt &rest args)
   "Prompt for an index entry completing with known entries."
   (let ((entry (completing-read (TeX-argument-prompt optional prompt "Key")
 				(LaTeX-index-entry-list))))
-    (if (and definition (not (string-equal "" entry)))
+    (if (and (not (string-equal "" entry))
+	     (not (member (list entry) (LaTeX-index-entry-list))))
 	(LaTeX-add-index-entries entry))
     (TeX-argument-insert entry optional optional)))
+
+(defalias 'TeX-arg-define-index 'Tex-arg-index)
 
 (defun TeX-arg-macro (optional &optional prompt definition)
   "Prompt for a TeX macro with completion."
@@ -3066,6 +3076,8 @@ of `LaTeX-mode-hook'."
 		  ("\\\\ref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\eqref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
 		  ("\\\\pageref{\\([^{}\n\r\\%,]*\\)" 1 LaTeX-label-list "}")
+ 		  ("\\\\\\(index\\|glossary\\){\\([^{}\n\r\\%]*\\)" 
+ 		   2 LaTeX-index-entry-list "}")
 		  ("\\\\begin{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\end{\\([A-Za-z]*\\)" 1 LaTeX-environment-list "}")
 		  ("\\\\renewcommand\\*?{\\\\\\([A-Za-z]*\\)"
@@ -3260,8 +3272,8 @@ of `LaTeX-mode-hook'."
    '("verb" TeX-arg-verb)
    '("verb*" TeX-arg-verb)
    '("extracolsep" t)
-   '("index" TeX-arg-define-index)
-   '("glossary" t)
+   '("index" TeX-arg-index)
+   '("glossary" TeX-arg-index)
    '("numberline" "Section number" "Heading")
    '("caption" t)
    '("marginpar" [ "Left margin text" ] "Text")

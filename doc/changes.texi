@@ -4,4 +4,10 @@
 @item Fixed bug with file searching.
 Reported by Berwin Turlach <bturlach@@maths.adelaide.edu.au>.
 
+@item Finalized index support, added index-related style files.
+Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
+
+@item New style files for @file{varioref.sty} and @file{fancyref.sty}.
+Patch by Carsten Dominik <dominik@@strw.leidenuniv.nl>.
+
 @end itemize
