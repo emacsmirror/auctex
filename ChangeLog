@@ -1,3 +1,9 @@
+2004-04-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el: New header.
+	(LaTeX-indent-environment-list): Disable indentation for `alltt'
+	environments.
+
 2004-04-29  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-buf.el (TeX-style-check): New optional argument.  This fixes
