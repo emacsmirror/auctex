@@ -1,3 +1,20 @@
+2004-11-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-paragraph-commands): Doc fix.
+
+	* tex.el: Move (nearly all) autoloads to a single place.  Remove
+	redundant autoload for `TeX-region-file'.  Add autoload for
+	`TeX-view'.
+	(TeX-parse-macro): Doc fix.
+	Do not add braces for macros defined as `("foo" 0)'.
+	(TeX-parse-arguments): Do not bind `<' and `>'.
+	(TeX-parse-argument, TeX-argument-insert): Do not use `<' and `>'
+	formerly bound by `TeX-parse-arguments'.  Fixes some compiler
+	warnings.
+	(TeX-auto-list-information): Use `message' correctly.
+
+	* tex-info.el (texinfo-mode): Add `@email' macro.
+
 2004-11-22  Berend de Boer  <berend@pobox.com>
 
 	* context.el (ConTeXt-mode-common-initialization): ConTeXt does
