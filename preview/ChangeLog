@@ -1,5 +1,11 @@
 2001-10-07  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.el (preview-get-geometry): comment clarification to
+	satisfy checkdoc.
+	(preview-version): added.
+	(preview-report-bug): use `preview-version' instead of current
+	ugliness.
+
 	* .cvsignore (Module): Add a few more entries.
 
 	* preview.el: Don't defvar AucTeX internal TeX-auto-file, make
