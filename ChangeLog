@@ -19,22 +19,27 @@
 
 2004-08-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
-	* tex-fold.el (TeX-fold-buffer-type): Support folding of
-	environments in ConTeXt mode as well.
-	(TeX-fold-item): Ditto.
+	* context.el (ConTeXt-project-structure-menu-name)
+	(ConTeXt-section-block-menu-name, ConTeXt-mode-menu): Capitalize
+	menu entries.
 
 	* tex-info.el (TeXinfo-mode-menu): Add help strings.
 
 	* tex.el (TeX-command-list): Set a default value which will not
 	lead to an inactive menu entry.
 	(plain-TeX-mode-menu): Add some help strings.
+	Capitalize menu entries.
 	(tex-source-specials-mode): New alias for
 	`TeX-source-specials-mode'.
 
 	* latex.el (LaTeX-mode-menu): Rearrange and insert help strings.
+	Capitalize menu entries.
 
 	* tex-fold.el (tex-fold-mode): New alias for `TeX-fold-mode' used
 	in tex.el.
+	(TeX-fold-buffer-type): Support folding of environments in ConTeXt
+	mode as well.
+	(TeX-fold-item): Ditto.
 
 	* doc/auc-tex.texi (Commands): Change `TeX-source-specials' to
 	`TeX-source-specials-mode' where appropriate.
