@@ -1,3 +1,12 @@
+2000-12-04  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 10.0c released.
+
+2000-12-04  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el: Avoid :inherit font property with Emacs 20.
+	Reported by Damien WYART <wyart@iie.cnam.fr>.
+
 2000-12-01  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 10.0b released.

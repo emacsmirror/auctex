@@ -1,7 +1,7 @@
 # Makefile - for the AUC TeX distribution.
 #
 # Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-# Version: 10.0b
+# Version: 10.0c
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -214,13 +214,16 @@ dist:
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex auctex-$(TAG)
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
-	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
-	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
+	auc diff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	         -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
 		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
+#	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+#	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex \
+#		> $(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch ;  exit 0
 
 patch:
-	auc rdiff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
-	          -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex
+	auc diff -r release_`echo $(OLD) | sed -e 's/[.]/_/g'` \
+	         -r release_`echo $(TAG) | sed -e 's/[.]/_/g'` auctex
 
 min-map:
 	-auc add $(MINMAPSRC) 
