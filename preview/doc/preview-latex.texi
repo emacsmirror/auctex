@@ -37,11 +37,11 @@ preview-latex
 @subtitle Version 0.6
   
 @author by David Kastrup and Alan Shutko 
-@author manual by Jan-Åke Larsson
+@author manual by Jan-@AA{}ke Larsson
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 2001, 2002, David Kastrup, Alan Shutko, and
-Jan-Åke Larsson
+Jan-@AA{}ke Larsson
  
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -215,7 +215,7 @@ Run preview on this @LaTeX{} environment.
 @cindex @code{preview-environment}
 @cindex Preview environment
 
-@item @kbd{C-c C-p C-r}	
+@item @kbd{C-c C-p C-r}
 @itemx @code{preview-region (begin end)}
 Run preview on current region. If called non-interactively, runs preview
 on region between BEGIN and END.
