@@ -1,10 +1,10 @@
 ;;; multi-prompt.el --- completing read of multiple strings.
 
-;; Copyright (C) 1996, 1997 Per Abrahamsen.
+;; Copyright (C) 1996, 1997, 2000 Per Abrahamsen.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: extensions
-;; Version: 0.2
+;; Version: 0.3
 ;; Bogus-Bureaucratic-Cruft: How 'bout ESR and the LCD people agreed
 ;; 	on a common format?
 
@@ -41,6 +41,10 @@
 
 ;;; Change Log:
 ;;
+;; Mon Jan  3 16:58:49 MET 2000
+;;      * Version 0.2 released.
+;;        Don't allow partial completions when require-match is true.
+;;        Reported by 'anonymous'.
 ;; Sat Feb 15 17:58:31 MET 1997
 ;;      * Version 0.2 released.
 ;;        Renamed predicate to `mp-predicate'.
@@ -131,8 +135,10 @@ are the arguments to `completing-read'.  See that."
 
 (defun multi-prompt-next-must-match ()
   (interactive)
-  (if (call-interactively 'minibuffer-complete)
-      (throw 'multi-prompt-next
-	     (buffer-substring-no-properties (point-min) (point-max)))))
+  (when  (call-interactively 'minibuffer-complete)
+    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+      (when (or (not require-match)
+		(assoc content table))
+	(throw 'multi-prompt-next content)))))
 
 ;;; multi-prompt.el ends here

@@ -1,3 +1,51 @@
+2000-04-14  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.10q released.
+
+2000-03-30  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* style/graphicsx.el: New file.
+	* Makefile (STYLESRC): Added it.
+	Donated by Ryuichi Arafune <arafune@ushioda.riec.tohoku.ac.jp>.
+	
+2000-03-23  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* latex.el (LaTeX-math-keymap): Accept vector for
+	`LaTeX-math-abbrev-prefix'. 
+	(LaTeX-math-insert-prefix): Better error message if
+	`LaTeX-math-abbrev-prefix' is not bound.
+	Reported by Jan Vroonhof <vroonhof@math.ethz.ch>.
+	
+2000-02-23  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-info.el (TeXinfo-environment-list): Added more missing
+	environments.  Patch by Akim Demaille <akim@epita.fr>.
+
+2000-02-22  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-info.el (TeXinfo-environment-list): Add `group'.
+	Patch by Akim Demaille <akim@epita.fr>.
+	
+2000-01-28  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (TeX-command-list): Add `makeinfo --html' support.
+	Suggested by Akim Demaille <akim@epita.fr>.
+	
+2000-01-20  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex-info.el (TeXinfo-mode-map): Added "\e\r" binding for 
+	`texinfo-insert-@item'.
+	Reported by Akim Demaille <akim@epita.fr>.
+	(TeXinfo-mode-menu, texinfo-mode): Changed menu name and mode name
+	to `Texinfo'.
+	Suggested by Akim Demaille <akim@epita.fr>.
+	
+1999-12-21  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* bib-cite.el: Updated to 3.16 (20 Dec 99).
+
+	* font-latex.el: Updated to 0.700 (20 December 1999).
+
 2000-03-30  Peter Galbraith <psg@debian.org>
 
 	* font-latex.el: Updated to 0.701 (30 Mar 2000).

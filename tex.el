@@ -415,7 +415,7 @@ Full documentation will be available after autoloading the function."
 (defconst AUC-TeX-version "9.10q"
   "AUC TeX version number.")
 
-(defconst AUC-TeX-date "Fri Apr 14 12:12:02 MET DST 2000"
+(defconst AUC-TeX-date "Fri Apr 14 12:25:34 MET DST 2000"
   "AUC TeX release date.")
 
 ;;; Buffer

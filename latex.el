@@ -1,16 +1,16 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10p
+;; Version: 9.10q
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
 ;; Copyright 1991 Kresten Krab Thorup
-;; Copyright 1993, 1994, 1995, 1996, 1997, 1999 Per Abrahamsen
+;; Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000 Per Abrahamsen
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 1, or (at your option)
+;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 ;; 
 ;; This program is distributed in the hope that it will be useful,
@@ -2555,7 +2555,7 @@ See also `LaTeX-math-menu'."
 (defcustom LaTeX-math-abbrev-prefix "`"
   "Prefix key for use in `LaTeX-math-mode'."
   :group 'LaTeX-math
-  :type 'string)
+  :type 'sexp)
 
 (defvar LaTeX-math-keymap (make-sparse-keymap)
   "Keymap used for `LaTeX-math-mode' commands.")
@@ -2570,7 +2570,8 @@ The menu entries will be generated dynamically, but you can specify
 the sequence by initializing this variable.")
 
 (define-key LaTeX-math-keymap
-  (concat LaTeX-math-abbrev-prefix LaTeX-math-abbrev-prefix)
+  (apply 'vector (append LaTeX-math-abbrev-prefix 
+			 LaTeX-math-abbrev-prefix nil))
   'LaTeX-math-insert-prefix)
 
 (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
@@ -2658,7 +2659,9 @@ commands are defined:
   "Insert the value of `LaTeX-math-abbrev-prefix'."
   (interactive "*")
   (let (LaTeX-math-mode)
-    (call-interactively (key-binding LaTeX-math-abbrev-prefix))))
+    (if (key-binding LaTeX-math-abbrev-prefix)
+	(call-interactively (key-binding LaTeX-math-abbrev-prefix))
+      (error "%S has no default binding" LaTeX-math-abbrev-prefix))))
 
 (defcustom LaTeX-math-insert-function 'TeX-insert-macro
   "Function called with argument STRING to insert \\STRING." 

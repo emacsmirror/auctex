@@ -2,6 +2,18 @@
 
 @itemize @bullet
 @item
+@code{graphicsx} support.
+Donated by Ryuichi Arafune <arafune@@ushioda.riec.tohoku.ac.jp>.
+
+@item
+@code{LaTeX-math-abbrev-prefix} now accepts vector value.
+Reported by Jan Vroonhof <vroonhof@@math.ethz.ch>.
+
+@item
+Improved Texinfo support(more environments and html).
+Patch by Akim Demaille <akim@@epita.fr>.
+
+@item
 @code{danish} quotes support.
 Suggested by arne@@daimi.au.dk (Arne Joergensen).
 
