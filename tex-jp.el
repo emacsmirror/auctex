@@ -104,7 +104,6 @@
 
 (defvar japanese-LaTeX-default-style "j-article"
   "*Default when creating new Japanese documents.")
-(make-variable-buffer-local 'japanese-LaTeX-default-style)
 
 (defvar japanese-LaTeX-style-list
   '(("book")
@@ -123,7 +122,6 @@
     ("treport")
     ("tbook"))
   "*List of Japanese document styles.")
-(make-variable-buffer-local 'japanese-LaTeX-style-list)
 
 ;;; Coding system
 
