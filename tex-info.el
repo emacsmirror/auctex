@@ -80,61 +80,27 @@ When called interactively, prompt for an environment."
 
 ;;; Keymap:
 
-(defvar TeXinfo-mode-map nil
-  "Keymap for TeXinfo mode.")
+(defvar TeXinfo-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map TeX-mode-map)
 
-(if TeXinfo-mode-map
-    ()
-  (setq TeXinfo-mode-map (make-sparse-keymap))
+    ;; From texinfo.el
+    ;; bindings for updating nodes and menus
+    (define-key map "\C-c\C-um"      'texinfo-master-menu)
+    (define-key map "\C-c\C-u\C-m"   'texinfo-make-menu)
+    (define-key map "\C-c\C-u\C-n"   'texinfo-update-node)
+    (define-key map "\C-c\C-u\C-e"   'texinfo-every-node-update)
+    (define-key map "\C-c\C-u\C-a"   'texinfo-all-menus-update)
 
-  ;; From texinfo.el
-
-  ;; bindings for updating nodes and menus
-  (define-key TeXinfo-mode-map "\C-c\C-um"      'texinfo-master-menu)
-  (define-key TeXinfo-mode-map "\C-c\C-u\C-m"   'texinfo-make-menu)
-  (define-key TeXinfo-mode-map "\C-c\C-u\C-n"   'texinfo-update-node)
-  (define-key TeXinfo-mode-map "\C-c\C-u\C-e"   'texinfo-every-node-update)
-  (define-key TeXinfo-mode-map "\C-c\C-u\C-a"   'texinfo-all-menus-update)
-
-  ;; From TeX-mode
-
-  ;; Standard
-  (define-key TeXinfo-mode-map "\177"     'backward-delete-char-untabify)
-  (define-key TeXinfo-mode-map "\C-c}"    'up-list)
-  (define-key TeXinfo-mode-map "\C-c#"    'TeX-normal-mode)
-  (define-key TeXinfo-mode-map "\C-c\C-n" 'TeX-normal-mode)
-  (define-key TeXinfo-mode-map "\C-c?"    'describe-mode)
-  
-  ;; From tex.el
-  (define-key TeXinfo-mode-map "\C-c{"    'TeX-insert-braces)
-  (define-key TeXinfo-mode-map "\C-c\C-f" 'TeX-font)
-  (define-key TeXinfo-mode-map "\C-c\C-m" 'TeX-insert-macro)
-  (define-key TeXinfo-mode-map "\e\t"     'TeX-complete-symbol) 
-
-  (define-key TeXinfo-mode-map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
-  (define-key TeXinfo-mode-map "\C-c;"    'TeX-comment-or-uncomment-region)
-  (define-key TeXinfo-mode-map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
-  (define-key TeXinfo-mode-map "\C-c%"    'TeX-comment-or-uncomment-paragraph)
-  (define-key TeXinfo-mode-map "\C-c\""   'TeX-uncomment) ;*** Old way
-
-  ;; From tex-buf.el
-  (define-key TeXinfo-mode-map "\C-c\C-c" 'TeX-command-master)
-  (define-key TeXinfo-mode-map "\C-c\C-k" 'TeX-kill-job)
-  (define-key TeXinfo-mode-map "\C-c\C-l" 'TeX-recenter-output-buffer)
-  (define-key TeXinfo-mode-map "\C-c^" 'TeX-home-buffer)
-  (define-key TeXinfo-mode-map "\C-c`"    'TeX-next-error)
-  (define-key TeXinfo-mode-map "\C-c\C-w" 'TeX-toggle-debug-boxes)
-
-  ;; From tex.cpl.el
-
-  ;; Simulating LaTeX-mode
-
-  (define-key TeXinfo-mode-map "\C-c\C-e" 'TeXinfo-insert-environment)
-  (define-key TeXinfo-mode-map "\C-c\n"   'texinfo-insert-@item)
-  (or (key-binding "\e\r")
-      (define-key TeXinfo-mode-map "\e\r" 'texinfo-insert-@item)) ;*** Alias
-  (define-key TeXinfo-mode-map "\C-c\C-s" 'texinfo-insert-@node)
-  (define-key TeXinfo-mode-map "\C-c]" 'texinfo-insert-@end))
+    ;; Simulating LaTeX-mode
+    (define-key map "\C-c\C-e" 'TeXinfo-insert-environment)
+    (define-key map "\C-c\n"   'texinfo-insert-@item)
+    (or (key-binding "\e\r")
+	(define-key map "\e\r" 'texinfo-insert-@item)) ;*** Alias
+    (define-key map "\C-c\C-s" 'texinfo-insert-@node)
+    (define-key map "\C-c]" 'texinfo-insert-@end)
+    map)
+  "Keymap for Texinfo mode.")
 
 (easy-menu-define TeXinfo-command-menu
   TeXinfo-mode-map
@@ -188,7 +154,7 @@ When called interactively, prompt for an environment."
 	       TeX-comment-or-uncomment-paragraph t])
 	(list "Multifile"
 	      ["Save Document" TeX-save-document t]
-	      ["Switch to Master file" TeX-home-buffer t]
+	      ["Switch to Master File" TeX-home-buffer t]
 	      ["Set Master File" TeX-master-file-ask
 	       :active (not (TeX-local-master-p))])
 	(list "Show/Hide"
@@ -331,6 +297,10 @@ value of `TeXinfo-mode-hook'."
   (make-local-variable 'TeX-font-replace-function)
   (setq TeX-font-replace-function 'TeX-font-replace-macro)
   
+  (add-hook 'find-file-hooks (lambda ()
+			       (unless (file-exists-p (buffer-file-name))
+				 (TeX-master-file nil nil t))) nil t)
+
   (TeX-add-symbols
    '("appendix" "Title")
    '("appendixsec" "Title")
