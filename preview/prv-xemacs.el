@@ -275,7 +275,7 @@ if there was any urgentization."
      (add-text-properties 0 1 (list 'end-glyph replacement)
 			  (car (extent-property ,ov 'strings)))
      (if (eq (extent-property ,ov 'preview-state) 'active)
-	 (set-extent-property ,ov 'end-glyph replacement))))
+	 (set-extent-end-glyph ,ov replacement))))
 
 (defvar preview-button-1 'button2)
 (defvar preview-button-2 'button3)
@@ -377,23 +377,25 @@ nil displays the underlying text, and 'toggle toggles."
 	    (unless (extent-keymap ov)
 	      (set-extent-keymap ov (preview-reroute-map ov))
 	      (set-extent-property ov 'balloon-help #'preview-balloon-reroute))
+	    (set-extent-begin-glyph ov nil)
+	    (set-extent-end-glyph-layout ov 'text)
+	    (set-extent-end-glyph ov (get-text-property
+				      0 'end-glyph (car strings)))
             (set-extent-properties ov '(invisible t
 					isearch-open-invisible ignore
 					isearch-invisible t
-                                        face nil
-                                        begin-glyph nil
-                                        begin-glyph-layout text))
-            (dolist (prop '(end-glyph preview-keymap
-				      mouse-face preview-balloon-help))
+                                        face nil))
+	    (dolist (prop '(preview-keymap
+			    mouse-face preview-balloon-help))
               (set-extent-property ov prop
                                    (get-text-property 0 prop (car strings)))))
 	(unless (cdr strings)
 	  (setcdr strings (preview-inactive-string ov)))
+	(set-extent-end-glyph ov nil)
+	(set-extent-begin-glyph-layout ov 'text)
+	(set-extent-begin-glyph ov (get-text-property
+				    0 'end-glyph (cdr strings)))
         (set-extent-properties ov `(face preview-face
-                                    begin-glyph ,(get-text-property
-						  0 'end-glyph (cdr strings))
-                                    begin-glyph-layout text
-                                    end-glyph nil
 				    mouse-face nil
 				    invisible nil
 				    isearch-invisible nil
