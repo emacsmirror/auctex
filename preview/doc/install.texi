@@ -125,7 +125,7 @@ If @AUCTeX{} is installed in a non-standard location (not in
 @file{site-lisp}), use this option to specify the location of its
 @file{tex-site.el} file.
 
-@item --with-texmf=/dir@*--with-preview-dir=/dir
+@item --with-texmf=/dir@*--with-tex-dir=/dir
 Both of these options can be used to specify the location to install the
 preview @TeX{} files.  They are not necessary for most @TeX{} installs,
 but may be used if you don't like the directory that configure is
@@ -133,8 +133,13 @@ suggesting.  Using @code{--with-texmf=/dir} you can specify where the
 @TeX{} @acronym{TDS} directory hierarchy resides, and the @TeX{} files
 will be installed in @code{/dir/tex/latex/preview}.  If you want to
 specify an exact directory for the preview @TeX{} files, use
-@code{--with-preview-dir=/dir}. In this case, the files will be placed
+@code{--with-tex-dir=/dir}. In this case, the files will be placed
 in @file{/dir}.
+
+@item --with-doc-dir=/dir
+This option may be used to specify where the @TeX{} documentation goes.
+It is normally not necessary, but can be useful if you are using
+@code{--with-tex-dir=/dir}.
 
 @item --with-lispdir=/dir
 This tells where to install Emacs Lisp files.  Normally, this option is

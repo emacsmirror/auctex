@@ -30,19 +30,26 @@ AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build],
 AC_ARG_WITH(xemacs,[  --with-xemacs          Use XEmacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
 
-AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
+AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR        TEXMF tree to install into],
  [ texmfdir=${withval} ; 
    if test ! -d $texmfdir  ; then
-      AC_MSG_ERROR([--with-texmf=$texmfdir: Directory does not exist])
+      AC_MSG_ERROR([--with-texmf-dir=$texmfdir: Directory does not exist])
    fi
    previewtexmfdir=$texmfdir/tex/latex/preview
    previewdocdir=$texmfdir/doc/latex/styles
    ])
 
-AC_ARG_WITH(preview-dir,[  --with-preview-dir=DIR        Location to install preview],
+AC_ARG_WITH(tex-dir,[  --with-tex-dir=DIR        Location to install preview TeX sources],
  [ previewtexmfdir=${withval} ; 
    if test ! -d $previewtexmfdir  ; then
-      AC_MSG_ERROR([--with-preview-dir=$previewtexmfdir: Directory does not exist])
+      AC_MSG_ERROR([--with-tex-dir=$previewtexmfdir: Directory does not exist])
+   fi
+   ])
+
+AC_ARG_WITH(doc-dir,[  --with-doc-dir=DIR        Location to install preview.dvi],
+ [ previewdocdir=${withval} ; 
+   if test ! -d $previewdocdir  ; then
+      AC_MSG_ERROR([--with-doc-dir=$previewdocdir: Directory does not exist])
    fi
    ])
 

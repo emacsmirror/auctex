@@ -1,3 +1,13 @@
+2002-03-27  Alan Shutko  <ats@acm.org>
+
+	* doc/install.texi (Configure): Reflect changes in configure
+	options.
+
+	* configure.in (--with-texmf): Changed to --with-texmf-dir per bug
+	480837.
+	(--with-preview-dir): Changed to --with-tex-dir per bug 480837.
+	(--with-doc-dir): New.
+
 2002-03-28  David Kastrup  <David.Kastrup@t-online.de>
 
 	* circ.tex: Correct labels.
