@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.162 2004-07-17 09:31:29 angeli Exp $
+@c $Id: auc-tex.texi,v 1.163 2004-07-20 08:36:33 angeli Exp $
 
 @finalout
 @titlepage
@@ -729,7 +729,7 @@ A list containing key command mappings to use in @code{LaTeX-math-mode}.
 The car of each element is the key and the cdr is the macro name.
 @end defopt
 
-The AUC@TeX{} distributions includes a reference card for
+AUC@TeX{} distributions include a reference card for
 @code{LaTeX-math-mode} with a list of all math mode commands.
 
 @node Completion, Commenting, Mathematics, Advanced Features
@@ -888,7 +888,7 @@ You can explicitely indent single lines, usually by pressing @key{TAB},
 or marked regions by calling @code{indent-region} on it.  If you have
 @code{auto-fill-mode} enabled and a line is broken while you type it,
 Emacs automatically cares about the indentation in the following line.
-If you want to have a similar behavior upon hitting @key{RET}, you can
+If you want to have a similar behavior upon typing @key{RET}, you can
 customize the variable @code{TeX-newline-function} and change the
 default of @code{newline} which does no indentation to
 @code{newline-and-indent} which indents the new line or
@@ -952,7 +952,7 @@ moves the cursor to an appropriate position by the left margin.
 
 Most keyboards nowadays don't have a linefeed key and @kbd{C-j} is
 tedious to type.  Therefore you can customize AUC@TeX{} to perform
-indentation (or to make coffee) upon pressing @key{RET} as well.  The
+indentation (or to make coffee) upon typing @key{RET} as well.  The
 respective option is called @code{TeX-newline-function}.
 
 @item C-j
@@ -1166,13 +1166,13 @@ the line becomes overfull.
 @end defopt
 
 @node Show/Hide, , Filling, Advanced Features
-@section Showing and Hiding Text the Buffer
+@section Showing and Hiding Text in the Buffer
 
 While you are editing your text you might find certain parts of it
 distracting or not worthwile to be displayed.  AUC@TeX{} lets you hide
-those parts and show them again at request.  There is a built-in
-support for hiding macros which we call "folding" here, as well as
-support for Emacs' outline mode.
+those parts and show them again at request.  There is a built-in support
+for hiding macros and environments which we call "folding" here, as well
+as support for Emacs' outline mode.
 
 @menu
 * Folding::                     Folding Macros
@@ -1180,77 +1180,114 @@ support for Emacs' outline mode.
 @end menu
 
 @node Folding, Outline, , Show/Hide
-@subsection Folding Macros
+@subsection Folding
 @cindex Outlining
 @cindex Folding
 @cindex Reveal
 @cindex Auto-Reveal
 @cindex Hide Macros
 
-There can be La@TeX{} macros which have content that is not part of the
-text body you are writing.  Prominent examples are footnotes and
-citations.  Those are macros which you often only want to see while
-actually editing them and which otherwise distract your view of the main
-text.  AUC@TeX{} lets you collapse those macros and display a
-placeholder (also called display string) instead.  If you want to make
-the text visible again in order to view or edit it, move point sideways
-onto the placeholder.  The macro will unfold automatically, stay open as
-long as point is inside of it and collapse again once you move point out
-of the macro.
+There can be La@TeX{} macros and environments which have content that is
+not part of the text body you are writing.  Prominent examples are
+macros for footnotes and citations or figures or comments.  Those
+enclose text which you often only want to see while actually editing it
+and which otherwise distracts your view of the document body.  AUC@TeX{}
+lets you collapse those items and display a placeholder (also called
+display string) instead.  If you want to make the text visible again in
+order to view or edit it, move point sideways onto the placeholder.  The
+macro or environment will unfold automatically, stay open as long as
+point is inside of it and collapse again once you move point out of it.
+(Note that folding of environments currently does not work in every
+AUC@TeX{} mode.)
 
 In order to use this feature, you have to activate @code{TeX-fold-mode}
 which will activate the auto-reveal feature and the necessary commands
-to hide and show macros.  You can activate the mode in a certain buffer
-by typing the command @kbd{M-x TeX-fold-mode RET} or using the keyboard
-shortcut @kbd{C-c C-o C-f}.  If you want to use it every time you edit a
-La@TeX{} document, add it to a hook:
+to hide and show macros and environments.  You can activate the mode in
+a certain buffer by typing the command @kbd{M-x TeX-fold-mode RET} or
+using the keyboard shortcut @kbd{C-c C-o C-f}.  If you want to use it
+every time you edit a La@TeX{} document, add it to a hook:
 @findex TeX-fold-mode
 @kindex C-c C-o C-f
 
 @lisp
-(add-hook 'LaTeX-mode-hook '(lambda nil
-                              (TeX-fold-mode t)))
+(add-hook 'LaTeX-mode-hook '(lambda ()
+                              (TeX-fold-mode 1)))
 @end lisp
 
 If it should be activated in all AUC@TeX{} modes, use
 @code{TeX-mode-hook} instead of @code{LaTeX-mode-hook}.
 
 Once the mode is active there are several commands available to hide
-and show macros:
+and show macros and environments:
 
 @deffn Command TeX-fold-buffer
-@kindex C-c C-o C-o
-(@kbd{C-c C-o C-o}) Hide all macros specified in the variable
-@code{TeX-fold-spec-list}.  This command can also be used to refresh
-the whole buffer and hide any new macros which were inserted after the
-last invocation of the command.
+@kindex C-c C-o C-b
+(@kbd{C-c C-o C-b}) Hide all macros specified in the variables
+@code{TeX-fold-macro-spec-list} and @code{TeX-fold-env-spec-list}.  This
+command can also be used to refresh the whole buffer and hide any new
+macros and environments which were inserted after the last invocation of
+the command.
 @end deffn
 
 @deffn Command TeX-fold-macro
-@kindex C-c C-o C-c
-(@kbd{C-c C-o C-c}) Hide the macro on which point currently is located.
+@kindex C-c C-o C-m
+(@kbd{C-c C-o C-m}) Hide the macro on which point currently is located.
+If the name of the macro is found in @code{TeX-fold-macro-spec-list},
+the respective display string will be shown instead.  If it is not
+found, the default string for unspecified macros will be shown which can
+be configured with the variable
+@code{TeX-fold-unspec-macro-display-string}.
+@end deffn
+
+@deffn Command TeX-fold-env
+@kindex C-c C-o C-e
+(@kbd{C-c C-o C-e}) Hide the environment on which point currently is
+located.  The behavior regarding the display string is analogous to
+@code{TeX-fold-macro} and determined by the variables
+@code{TeX-fold-env-spec-list} and
+@code{TeX-fold-unspec-env-display-string} respectively.
 @end deffn
 
 @deffn Command TeX-fold-clearout-buffer
-@kindex C-c C-o C-a
-(@kbd{C-c C-o C-a}) Permanently show all macros in the buffer.  This
-will remove all placeholders and unfold all macros permanently.
+@kindex C-c C-o C-x
+(@kbd{C-c C-o C-x}) Permanently unfold all macros and environments in
+the current buffer.
 @end deffn
 
-@deffn Command TeX-fold-clearout-macro
-@kindex C-c C-o C-e
-(@kbd{C-c C-o C-e}) Permanently show the macro on which point currently
-is located.  In contrast to temporarily opening the macro when point is
-moved sideways onto it, the macro will be permanently unfolded and will
-not collapse again once point is leaving it.
+@deffn Command TeX-fold-clearout-item
+@kindex C-c C-o C-c
+(@kbd{C-c C-o C-c}) Permanently show the macro or environment on which
+point currently is located.  In contrast to temporarily opening the
+macro when point is moved sideways onto it, the macro will be
+permanently unfolded and will not collapse again once point is leaving
+it.
 @end deffn
 
-The commands above will only take macros into consideration which are
-specified in the variable @code{TeX-fold-spec-list}.
+The commands above will only take macros or environments into
+consideration which are specified in the variable
+@code{TeX-fold-macro-spec-list} or @code{TeX-fold-env-spec-list}
+respectively.
 
-@defopt TeX-fold-spec-list
-List of display strings and macros to fold.  You can specify several
-macros per display string.
+@defopt TeX-fold-macro-spec-list
+List of display strings and macros to fold.  The default tries to be
+unobtrusive and specifies placeholders only for footnotes and citations
+but you can as well use it to beautify your La@TeX{} source by using
+@samp{"*"} as a display string for @samp{\item} or @samp{"..."} for
+@samp{\dots} etc.
+@end defopt
+
+@defopt TeX-fold-env-spec-list
+List of display strings and environments to fold.
+@end defopt
+
+@defopt TeX-fold-unspec-macro-display-string
+Display string for macros which are not specified in
+@code{TeX-fold-macro-spec-list}.
+@end defopt
+
+@defopt TeX-fold-unspec-env-display-string
+Display string for environments which are not specified in
+@code{TeX-fold-env-spec-list}.
 @end defopt
 
 @node Outline,  , Folding, Show/Hide
