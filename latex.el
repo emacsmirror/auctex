@@ -1850,9 +1850,19 @@ Lines starting with an item is given an extra indentation of
 			   (save-excursion
 			     (beginning-of-line)
 			     (looking-at (concat "[ \t]*" comment-start "+"))
-			     (concat
-			      (match-string 0)
-			      (TeX-comment-padding-string))))))
+			     (concat (match-string 0)
+				     (TeX-comment-padding-string)))))
+	 (overlays (when (featurep 'xemacs)
+		     (overlays-at (line-beginning-position))))
+	 ol-specs)
+    ;; XEmacs' `indent-to' function (at least in version 21.4.15) has
+    ;; a bug which leads to the insertion of whitespace in front of an
+    ;; invisible overlay.  So during indentation we temporarily remove
+    ;; the invisible property.
+    (dolist (ol overlays)
+      (when (overlay-get ol 'invisible)
+	(add-to-list 'ol-specs (list ol (overlay-get ol 'invisible)))
+	(overlay-put ol 'invisible nil)))
     (save-excursion
       (cond ((and fill-prefix
 		  (TeX-in-line-comment)
@@ -1880,6 +1890,9 @@ Lines starting with an item is given an extra indentation of
 	     (let ((outer-indent (LaTeX-indent-calculate 'outer)))
 	       (when (/= (LaTeX-current-indentation 'outer) outer-indent)
 		   (LaTeX-indent-outer-do outer-indent))))))
+    ;; Make the overlays invisible again.
+    (dolist (ol-spec ol-specs)
+      (overlay-put (car ol-spec) 'invisible (cadr ol-spec)))
     (if (< (current-column) (save-excursion
 			      (beginning-of-line)
 			      (re-search-forward
