@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.174 2002-12-06 18:20:24 dakas Exp $
+;; $Id: preview.el,v 1.175 2002-12-07 12:45:34 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1647,10 +1647,7 @@ to add the preview functionality."
 see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
   (add-to-list 'TeX-expand-list
-	       '("%m" (lambda ()
-			(shell-quote-argument
-			 (file-relative-name
-			  (preview-create-subdirectory))))) t)
+	       '("%m" preview-create-subdirectory) t)
   (add-to-list 'TeX-expand-list
 	       '("%D" preview-make-preamble) t)
   (add-to-list 'TeX-expand-list
@@ -1684,7 +1681,8 @@ might be needed for colloborative work on common files."
 If necessary, generates a fitting top
 directory or cleans out an existing one (if not yet
 visited in this session), then returns the name of
-the created subdirectory.  `TeX-active-tempdir' is
+the created subdirectory relative to the master directory,
+in shell-quoted form. `TeX-active-tempdir' is
 set to the corresponding TEMPDIR descriptor as described
 in `preview-make-filename'.  The directory is registered
 in `preview-temp-dirs' in order not to be cleaned out
@@ -1704,7 +1702,10 @@ later while in use."
 			   "tmp" (file-name-as-directory topdir)) t)
 		topdir
 		0))
-    (nth 0 TeX-active-tempdir)))
+    (shell-quote-argument
+     (expand-file-name (file-name-nondirectory (nth 0 TeX-active-tempdir))
+		       (file-name-as-directory
+			(file-name-nondirectory topdir))))))
 
 ;; Hook into TeX immediately if it's loaded, use LaTeX-mode-hook if not.
 (if (featurep 'latex)
@@ -2146,11 +2147,13 @@ This is passed through `preview-do-replacements'."
 For the rest of the session, this file is used when running
 on the same master file."
   (interactive)
-  (let* ((master (TeX-master-file))
-	 (preview-format-name (preview-dump-file-name master))
-	 (dump-file (concat preview-format-name ".ini"))
+  (let* ((dump-file
+	  (expand-file-name (preview-dump-file-name (TeX-master-file "ini"))))
+	 (master (TeX-master-file))
 	 (format-name (expand-file-name master))
-	 (master-file (TeX-master-file t))
+	 (preview-format-name (preview-dump-file-name (file-name-nondirectory
+						       master)))
+	 (master-file (expand-file-name (TeX-master-file t)))
 	 (format-cons (assoc format-name preview-dumped-alist))
 	 (preview-auto-cache-preamble nil))
     (if format-cons
@@ -2195,9 +2198,9 @@ stored in `preview-dumped-alist'."
   (interactive)
   (unless old-format
     (setq old-format
-	  (let ((format-file (expand-file-name (TeX-master-file))))
-	    (or (assoc format-file preview-dumped-alist)
-		(car (push (list format-file) preview-dumped-alist))))))
+	  (let ((master-file (expand-file-name (TeX-master-file))))
+	    (or (assoc master-file preview-dumped-alist)
+		(car (push (list master-file) preview-dumped-alist))))))
   (preview-unwatch-preamble old-format)
   (preview-format-kill old-format)
   (setcdr old-format nil))
@@ -2249,7 +2252,8 @@ Should explain meaning of NAME, COMMAND, FILE, and
 PR-FILE, COMMANDBUFF, DUMPED-CONS and MASTER are
 internal parameters, STR may be a log to insert into the current log."
   (let*
-      ((preview-format-name (preview-dump-file-name master))
+      ((preview-format-name (preview-dump-file-name
+			     (file-name-nondirectory master)))
        (process
 	(TeX-run-command
 	 "Preview-LaTeX"
@@ -2284,7 +2288,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.174 $"))
+	(rev "$Revision: 1.175 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2295,7 +2299,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-12-06 18:20:24 $"))
+    (let ((date "$Date: 2002-12-07 12:45:34 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2304,6 +2308,7 @@ If not a regular release, CVS revision of `preview.el'.")
   "Preview release date.
 In the form of yyyy.mmdd")
 
+;;;###autoload
 (defun preview-report-bug () "Report a bug in the preview-latex package."
   (interactive)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
