@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.29 1993-03-28 15:40:58 amanda Exp $
+;;; $Id: tex-buf.el,v 1.30 1993-03-30 00:25:02 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -483,7 +483,8 @@ command."
 
 (defun TeX-process (name)
   "Return AUC TeX process associated with the document NAME."
-  (get-buffer-process (TeX-process-buffer name)))
+  (and TeX-process-asynchronous
+       (get-buffer-process (TeX-process-buffer name))))
 
 ;;; @@ Process Filters
 

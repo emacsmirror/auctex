@@ -5,15 +5,15 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.25 1993-03-27 22:19:46 amanda Exp $
+@c $Id: auc-tex.texi,v 1.26 1993-03-30 00:25:17 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
 @subtitle A much enhanced La@TeX{} mode for GNU Emacs.
-@subtitle February 1993, for AUC @TeX{} Version 7.0
+@subtitle February 1993, for AUC @TeX{} Version 7.1
   
 @author by Kresten Krab Thorup
-@author updated for 7.0 by Per Abrahamsen
+@author updated for 7.1 by Per Abrahamsen
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
@@ -51,7 +51,7 @@ approved by the Free Software Foundation.
 AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
-This file documents AUC @TeX{} version 7.0.
+This file documents AUC @TeX{} version 7.1.
 
 The keybindings has changed since 6.1, @pxref{Version 7.0} for details.
 
@@ -68,7 +68,7 @@ important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.@refill
 
 Kresten Krab Thorup (6.0 original)
-Per Abrahamsen (7.0 update)
+Per Abrahamsen (7.1 update)
 
 @end ifinfo
 
@@ -2551,6 +2551,54 @@ this version, and for the authors, who get nostalgic at times.
 * Ancient History::             Ancient History
 @end menu
 
+@node Version 7.1, , , 
+@comment  node-name,  next,  previous,  up
+@section Version 7.1
+
+Coordinater: Per Abrahamsen, 1993
+
+@itemize @bullet
+@item
+Japanese @TeX{}
+
+Now supports Japanese @TeX{}.  Thanks to Shinji Kobayashi
+@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
+@item
+Works again under OS/2 and other case insentive file systems.
+
+@item
+DEMACS support.
+
+Thanks to Shinji Kobayashi @samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}.
+
+@item
+Better @code{LaTeX-close-environment}.
+
+Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
+
+@item
+Ispell support.
+
+Thanks to Piet van Oostrum @samp{<piet@@cs.ruu.nl>}.
+
+@item 
+Support for Russian letters.
+
+Thanks to Justin R. Smith @samp{<jsmith@@king.mcs.drexel.edu>}.
+
+@item
+Sli@TeX{} fixes.
+
+Many people.
+
+@item
+Fixes for spelling errors.
+
+Many people.
+
+@end itemize
+
 @node Version 7.0, Version 6.1,  , History
 @comment  node-name,  next,  previous,  up
 @section Version 7.0
@@ -2918,12 +2966,6 @@ Masayuki Kuwada
 Terrence Brannon
 @item <roseman@@hustat.harvard.edu>   
 Leonard Roseman
-@item <koba@@keisu-s.t.u-tokyo.ac.jp>
-Shinji Kobayashi
-@item <jsmith@@king.mcs.drexel.edu>
-Justin R. Smith
-@item <inge@@nada.kth.se>
-Inge Frick
 @end table
 
 Special thanks to Leslie Lamport for supplying the source for the LaTeX

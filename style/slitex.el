@@ -1,15 +1,17 @@
 ;;; @ slitex.el - Special code for slitex.
 ;;;
-;;; $Id: slitex.el,v 1.4 1993-03-23 11:40:33 amanda Exp $
+;;; $Id: slitex.el,v 1.5 1993-03-30 00:25:21 amanda Exp $
+
+(require 'ltx-env)
 
 ;;; @@ Hook
 
 (TeX-add-style-hook "slitex"
  (function
   (lambda ()
-    (or (memq 'LaTeX-slides-hook LaTeX-ducument-style-hook)
-	(setq LaTeX-ducument-style-hook
-	      (cons 'LaTeX-slides-hook LaTeX-ducument-style-hook)))
+    (or (memq 'LaTeX-slides-hook LaTeX-document-style-hook)
+	(setq LaTeX-document-style-hook
+	      (cons 'LaTeX-slides-hook LaTeX-document-style-hook)))
     (LaTeX-add-environments '("slide" LaTeX-slide-hook)
 			    '("overlay" LaTeX-slide-hook)))))
 
