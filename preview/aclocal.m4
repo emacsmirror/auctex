@@ -191,7 +191,7 @@ AC_DEFUN(AC_FULL_EXPAND,
 [$]$1
 EOF
 `\"" ;; *) break ;; esac; done ])
-
+dnl "
 
 
 
@@ -249,7 +249,11 @@ EMACS_LISP(XEMACS,
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
 else
-  EMACS_FLAVOR=emacs
+  if test "$XEMACS" = "no"; then	
+    EMACS_FLAVOR=emacs
+  else
+    AC_MSG_ERROR([Unable to run $EMACS!  Aborting!])
+  fi
 fi
   AC_MSG_RESULT($XEMACS)
   AC_SUBST(XEMACS)
