@@ -513,7 +513,7 @@ if test -z "$texinputdirs" ; then
   # TeX input files
   temp=`kpsewhich --progname latex --show-path tex`
   # Simple test and conversion to unify paths separated by `;' and ':'.
-  if ! `echo $temp | grep ';'` ; then
+  if ! echo $temp | grep ';' > /dev/null ; then
     temp=`echo $temp | tr ':' ';'`
   fi
   for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
@@ -530,7 +530,7 @@ if test -z "$texinputdirs" ; then
   bstinputs=""
   temp=`kpsewhich --progname latex --show-path bst`
   # Simple test and conversion to unify paths separated by `;' and ':'.
-  if ! `echo $temp | grep ';'` ; then
+  if ! echo $temp | grep ';' > /dev/null ; then
     temp=`echo $temp | tr ':' ';'`
   fi
   for x in `echo $temp | tr ';' '\\n' | sed -e 's/^!!//' | \
