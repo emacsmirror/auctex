@@ -1,3 +1,7 @@
+2004-08-16  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* aclocal.m4: Remove trailing slash from lispdir_expanded elisp string
+
 2004-08-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (VALID_BUILD_DIR): New function.
