@@ -10,6 +10,16 @@ AC_SET_MAKE
 AC_PROG_INSTALL
 EMACS_PROG_EMACS
 
+# The Debian package uses `--disable-build-dir-test'; normal users should
+# never need to modify the default behavior.
+AC_ARG_ENABLE([build-dir-test],
+  [  --enable-build-dir-test test for build directory inside `load-path'
+			  (on by default)],
+  [if ! [[ "X-${enableval}" = "X-no" ]]
+     then VALID_BUILD_DIR
+   fi],
+  [VALID_BUILD_DIR])
+
 packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
