@@ -210,7 +210,7 @@ confused and place the previews wrong.
 @cindex Kill preview-generating process
 
 @item @kbd{C-c C-p C-f}
-@itemx @code{preview-dump-format}
+@itemx @code{preview-cache-preamble}
 @itemx LaTeX/Preview/Cache preamble
 Dump a pregenerated format file.  For the rest of the session, this file
 is used when running on the same master file.  Use this if you know your
@@ -218,15 +218,15 @@ is used when running on the same master file.  Use this if you know your
 noticable when generating single or few previews. If you change your
 preamble, do this again.
 @kindex @kbd{C-c C-p C-f}
-@findex preview-dump-format
+@findex preview-cache-preamble
 
 @item @kbd{C-c C-p C-c C-f}
-@itemx @code{preview-clear-format}
+@itemx @code{preview-cache-preamble-off}
 @itemx LaTeX/Preview/Cache preamble off
 Clear the pregenerated format file. If the above gives you problems, use
 this.
 @kindex @kbd{C-u C-c C-p C-f}
-@findex preview-clear-format
+@findex preview-cache-preamble-off
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
@@ -284,7 +284,7 @@ Since this customization group is very specific to the display engine
 in use, you may see somewhat different options under XEmacs.
 
 @item Showing @code{\label}s
-@cindex @code{Showing @code{\label}s}
+@cindex Showing @code{\label}s
 
 When using @previewlatex{}, the @code{\label}s are hidden by the
 previews.  It is possible to make them visible in the output @file{.dvi}
@@ -304,6 +304,20 @@ incremental search, or query-replace operations), unless you changed
 anything in it.  In that case, you will have to regenerate the preview
 (via e.g., @kbd{C-c C-p C-p}).  Other options for @code{Preview Auto
 Reveal} are available via @code{customize}.
+
+@item Automatically cache preambles
+
+Currently @previewlatex{} asks you whether you want to cache the
+document preamble (everything before @code{\begin@{document@}}) before
+it generates previews for a buffer the first time.  Caching the preamble
+will significantly speed up regeneration of previews.  The larger your
+preamble is, the more this will be apparent.  Once a preamble is cached,
+@previewlatex{} will try to keep track of when it is changed, and dump
+a fresh format in that case.  If you experience problems with this, or
+if you want it happen without asking you the first time, you can
+customize the @code{Preview Auto Cache Preamble} setting.
+@vindex preview-auto-cache-preamble
+@cindex Caching a preamble
 
 @item Preview your favourite @LaTeX{} constructs
 
