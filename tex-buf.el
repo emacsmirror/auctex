@@ -1,3 +1,4 @@
+;;;* Last edited: Apr 30 05:36 1992 (krab)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; tex-buf.el - Invoking TeX from an inferior shell
@@ -6,14 +7,18 @@
 ;; 
 ;; This file is part of the AUC TeX package.
 ;; 
-;; $Id: tex-buf.el,v 1.12 1992-03-23 23:20:26 krab Exp $
+;; $Id: tex-buf.el,v 1.13 1992-04-30 03:39:42 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Thu May 30 23:57:16 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Tue Mar 24 00:19:27 1992
-;; Update Count    : 173
+;; Last Modified On: Thu Apr 30 05:36:38 1992
+;; Update Count    : 176
 ;; 
 ;; HISTORY
+;; 30-Apr-1992		Kresten Krab Thorup	
+;;    Last Modified: Thu Apr 30 05:35:40 1992 #175 (Kresten Krab Thorup)
+;;    Changed TeX-region not to insert a newline after the preamble,
+;;    as described by Denys Duchier.
 ;; 27-Jan-1992  (Last Mod: Mon Jan 27 15:48:46 1992 #159)  Kresten Krab Thorup
 ;;    Changed TeX-default-jobname-prefix to "_". the `+' conflicted
 ;;    with xdvi.
@@ -74,6 +79,7 @@
 ;;  George Ferguson           <ferguson@cs.rochester.edu>
 ;;  Ralf Handl                <handl@cs.uni-sb.de>
 ;;  Sven Mattisson            <sven@tde.lth.se>
+;;  Denys Duchier             <dduchier@csi.UOttawa.CA>
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -259,14 +265,15 @@ Then the header/trailer will be searched in <file>."
 		  (beginning-of-line)
 		  (setq hbeg (point))	;mark beginning of header
 		  (if (search-forward TeX-end-of-header nil t)
-		      (progn
+		      (let (buffer-read-only (flag (buffer-modified-p)))
 			(insert "\n")
 			(setq hend (point)) ;mark end of header
 			(write-region (min hbeg beg) hend TeX-out-file t nil)
 			(setq TeX-header-lines
 			      (+ TeX-header-lines
 				 (count-lines (min hbeg beg) hend) 1))
-			(backward-delete-char 1))))
+			(backward-delete-char 1)
+			(set-buffer-modified-p flag))))
 	      
 	      
 	      ;; otherwise, insert `\input{TeX-auto-header}{}', in the tmp

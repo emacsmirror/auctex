@@ -1,3 +1,4 @@
+;;;* Last edited: Apr 30 05:38 1992 (krab)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -9,17 +10,17 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-03-31 03:19:16 $|$Revision: 5.31 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-04-30 03:39:39 $|$Revision: 5.32 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; $Id: auc-tex.el,v 5.31 1992-03-31 03:19:16 krab Exp $
+;; $Id: auc-tex.el,v 5.32 1992-04-30 03:39:39 krab Exp $
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Wed Mar 25 02:13:33 1992
-;; Buffer Position : 13440
-;; Update Count    : 515
+;; Last Modified On: Thu Apr 30 05:38:05 1992
+;; Buffer Position : 2202
+;; Update Count    : 520
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -42,10 +43,11 @@
 ;; public domain.  You are free to use this software as you wish, but
 ;; WITHOUT ANY WARRANTY WHATSOEVER.  It would be nice, though if when
 ;; you use this code, you give due credit to the author.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
-;;
-;; HISTORY
+
+;; HISTORY 
+;; 30-Apr-1992		Kresten Krab Thorup	
+;;    Last Modified: Thu Apr 30 05:36:59 1992 #519 (Kresten Krab Thorup)
+;;   Fixed LaTeX-mark-environmetn, as supposed by Denys Duchier. 
 ;; 9-Dec-1991  (Last Mod: Mon Dec  9 10:04:18 1991 #461)  Kresten Krab Thorup
 ;;    Fixed a bug in LaTeX-style-options, which caused completion to
 ;;    crash when no optional arguments were available in
@@ -97,6 +99,7 @@
 ;; Per Hagen                         <per@iesd.auc.dk>
 ;; Sven Mattisson                    <sven@tde.lth.se>
 ;; Michael Smith                     <smith@pell.anu.edu.au>
+;; Denys Duchier                     <dduchier@csi.UOttawa.CA>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -711,46 +714,42 @@ formatting."
 	  (re-search-forward (concat "\\(" LaTeX-paragraph-start-command "\\|^ +$\\|\\'\\)" ) (point-max) t)))))
   (message "Finished"))
 
+(defun LaTeX-find-matching-end ()
+  "Move point to the \\end of the current environment"
+  (interactive)
+  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)"))
+	(level 1))
+    (while (and (> level 0) (re-search-forward regexp nil t))
+      (if (= (char-after (1+ (match-beginning 0))) ?b);;begin
+	  (setq level (1+ level))
+	(setq level (1- level))))
+    (if (= level 0)
+	(search-forward "}")
+      (error "Can't locate current environment - end"))))
+
+(defun LaTeX-find-matching-begin ()
+  "Move point to the \\begin of the current environment"
+  (interactive)
+  (let ((regexp (concat (regexp-quote TeX-esc) "\\(begin\\|end\\)"))
+	(level 1))
+    (while (and (> level 0) (re-search-backward regexp nil t))
+      (if (= (char-after (1+ (match-beginning 0))) ?e);;e
+	  (setq level (1+ level))
+	(setq level (1- level))))
+    (or (= level 0)
+	(error "Can't locate current environment - begin"))))
+
 (defun LaTeX-mark-environment ()
   "Set mark to end of current environment and point to the matching begin
 will not work properly if there are unbalanced begin-end pairs in
 comments and verbatim environments"
   (interactive)
-  (LaTeX-find-matching-end)
-  (set-mark (point))
-  (search-backward TeX-esc)
-  (LaTeX-find-matching-begin))
+  (let ((cur (point)))
+    (LaTeX-find-matching-end)
+    (set-mark (point))
+    (goto-char cur)
+    (LaTeX-find-matching-begin)))
 
-(defun LaTeX-find-matching-end ()
-  "Move mark to the \\end of the current environment"
-  (interactive)
-  (while
-      (progn
-        (if (re-search-forward (concat (regexp-quote TeX-esc)
-				       "\\(begin\\|end\\)") nil  t)
-            (if (string-match "\\begin" (buffer-substring
-					 (match-beginning 1)
-					 (match-end 1)))
-                (progn (LaTeX-find-matching-end) t)
-              nil)
-          (error "Can't locate current environment - end"))))
-  (re-search-forward "}[ \t]*\n?"))
-
-
-(defun LaTeX-find-matching-begin ()
-  ""
-  (interactive)
-  (while 
-      (progn
-	(if (re-search-backward (concat " *"
-					(regexp-quote TeX-esc)
-					"\\(begin\\|end\\)") nil t)
-	    (if (equal "\\end" (buffer-substring
-				(match-beginning 1)
-				(match-end 1)))
-		(progn (LaTeX-find-matching-begin) t)
-	      nil)
-	(error "Can't locate current environment - begin")))))
 
 
 (defun LaTeX-format-environment (justify)
