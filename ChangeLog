@@ -1,3 +1,8 @@
+2005-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* context.el (ConTeXt-indent-item-re): Do not treat
+	\setup... commands like \item.
+
 2005-03-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-fold.el (TeX-fold-prioritize): Cater for preview-latex.
