@@ -7,6 +7,8 @@
 	(font-latex-sedate-face): Doc fix.
 
 	* latex.el (LaTeX-paragraph-commands): Doc fix.
+	(LaTeX-backward-paragraph): Do not unnecessarily jump to a (wrong)
+	position after the macro start.
 
 	* tex.el: Move (nearly all) autoloads to a single place.  Remove
 	redundant autoload for `TeX-region-file'.  Add autoload for
