@@ -1,5 +1,8 @@
 2002-03-15  David Kastrup  <David.Kastrup@t-online.de>
 
+	* preview.dtx (subsection{Preview attaching commands}): disable
+	\showmaxdepth and \showmaxbreadth.
+
 	* preview.el (preview-place-preview): (widen) paranoia.
 	(preview-back-command): same here.
 	(LaTeX-preview-setup): better safe than sorry (users might call
