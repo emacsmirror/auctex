@@ -235,25 +235,30 @@ command."
 (defun TeX-command-expand (command file &optional list)
   "Expand COMMAND for FILE as described in LIST.
 LIST default to TeX-expand-list."
-  (if (null list)
-      (setq list TeX-expand-list))
-  (while list
-    (let ((case-fold-search nil) ; Do not ignore case.
-	  (string (car (car list)))	;First element
-	  (expansion (car (cdr (car list)))) ;Second element
-	  (arguments (cdr (cdr (car list))))) ;Remaining elements
-      (while (string-match string command)
-	(let ((prefix (substring command 0 (match-beginning 0)))
-	      (postfix (substring command (match-end 0))))
-	  (setq command (concat prefix
-				(cond ((TeX-function-p expansion)
-				       (apply expansion arguments))
-				      ((boundp expansion)
-				       (apply (eval expansion) arguments))
-				      (t
-				       (error "Nonexpansion %s" expansion)))
-				postfix)))))
-    (setq list (cdr list)))
+  (let (pat
+	pos
+	entry
+	case-fold-search string expansion arguments)
+    (setq list (cons
+		(list "%%" (lambda nil
+			     (setq pos (1+ pos))
+			     "%"))
+		(or list TeX-expand-list))
+	  pat (regexp-opt (mapcar #'car list)))
+    (while (setq pos (string-match pat command pos))
+      (setq string (match-string 0 command)
+	    entry (assoc string list)
+	    expansion (car (cdr entry)) ;Second element
+	    arguments (cdr (cdr entry)) ;Remaining elements
+	    command (replace-match
+		     (save-match-data
+		       (cond ((TeX-function-p expansion)
+			      (apply expansion arguments))
+			     ((boundp expansion)
+			      (apply (eval expansion) arguments))
+			     (t
+			      (error "Nonexpansion %s" expansion))))
+		     t t command))))
   command)
 
 (defun TeX-check-files (derived originals extensions)
