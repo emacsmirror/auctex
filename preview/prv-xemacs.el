@@ -218,9 +218,11 @@ other hooks, such as major mode hooks, can do the job."
 		(not (setq glyph
 			   (catch 'preview-filter-specs
 			     (preview-filter-specs-1 (car spec-list))))))
-      (setq spec-list (cdr spec-list)))
-    (and glyph preview-ascent-spec
-	 (set-glyph-baseline glyph preview-ascent-spec))
+      (setq spec-list (cdr spec-list) preview-ascent-spec nil))
+    (when glyph
+      (setq glyph (make-glyph glyph))
+      (when preview-ascent-spec
+	(set-glyph-baseline glyph preview-ascent-spec)))
     glyph))
 
 (put 'preview-filter-specs :type
@@ -461,11 +463,11 @@ Pure borderless black-on-white will return quadruple NIL."
   (easy-menu-add preview-menu)
   (unless preview-icon-toolbar-button
     (setq preview-icon-toolbar-button
-	  (vector (list (preview-filter-specs preview-tb-icon-specs)
-			#'preview-at-point
-			t
-			"Preview on/off at point"))))
-
+	  (vector
+	   (list (preview-filter-specs preview-tb-icon-specs))
+	   #'preview-at-point
+	   t
+	   "Preview on/off at point")))
 ;;; [Courtesy Stephen J. Turnbull, with some modifications
 ;;;  Message-ID: <87el9fglsj.fsf@tleepslib.sk.tsukuba.ac.jp>
 ;;;  I could not have figured this out for the world]

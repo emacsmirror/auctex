@@ -8,6 +8,8 @@
 	(preview-transparent-border): Silence the byte-compiler.
 	(preview-supports-image-type): Move earlier.
 	(preview-filter-specs): Correct a few typos.
+	(preview-filter-specs): Don't forget to call `make-glyph'.
+	(preview-mode-setup): Correct toolbar icon setup.
 
 	* preview.el (preview-error-quote): Remove unused variable `char'.
 
