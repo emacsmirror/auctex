@@ -194,11 +194,13 @@ name of the command, the command string, and the name of the file to
 process.  It might be useful to use TeX-run-command in order to
 create an asynchronous process.
 
-The fourth element indicates in which mode the command should be
+If the fourth element is non-nil, the user will get a chance to
+modify the expanded string.
+
+The fifth element indicates in which mode the command should be
 present in the Command menu.
 
-If the fifth element is non-nil, the user will get a chance to
-modify the expanded string."
+If the sixth element is obsolete and ignored."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(string :tag "Command")
@@ -508,7 +510,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.311 $"))
+	(rev "$Revision: 5.312 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -523,7 +525,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-05 09:18:14 $"))
+    (let ((date "$Date: 2004-01-05 19:28:33 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
