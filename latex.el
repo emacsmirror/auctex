@@ -690,16 +690,12 @@ The same rules are used for `LaTeX-find-matching-begin' and
 
 (defun docTeX-in-macrocode-p ()
   "Determine if point is inside a macrocode environment."
-  (let ((orig-point (point)))
-    (save-excursion
-      (re-search-forward
-       (concat "^%    " (regexp-quote TeX-esc)
-	       "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 0)
-      (if (or (eobp)
-	      (= (match-beginning 0) orig-point)
-	      (= (char-after (match-beginning 1)) ?b))
-	  nil
-	t))))
+  (save-excursion
+    (re-search-backward
+     (concat "^%    " (regexp-quote TeX-esc)
+	     "\\(begin\\|end\\)[ \t]*{macrocode\\*?}") nil 'move)
+    (not (or (bobp)
+	     (= (char-after (match-beginning 1)) ?e)))))
 
 
 ;;; Environment Hooks
