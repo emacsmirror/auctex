@@ -398,9 +398,9 @@ get consulted."
 
 (defcustom TeX-view-style
   `((,(concat
-      "^" (regexp-opt '("a4paper" "a4" "a4dutch" "a4wide" "sem-a4")) "$")
+      "^" (regexp-opt '("a4paper" "a4dutch" "a4wide" "sem-a4")) "$")
      "%(o?)xdvi %dS -paper a4 %d")
-    (,(concat "^" (regexp-opt '("a5paper" "a5" "a5comb")) "$")
+    (,(concat "^" (regexp-opt '("a5paper" "a5comb")) "$")
      "%(o?)xdvi %dS -paper a5 %d")
     ("^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
     ("^letterpaper$" "%(o?)xdvi %dS -paper us %d")
@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.488 $"))
+	    (rev "$Revision: 5.489 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-09 20:49:21 $"))
+    (let ((date "$Date: 2005-03-15 08:18:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
