@@ -1,3 +1,7 @@
+2002-04-23  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* autogen.sh: Test for unique file 'preview.el' in autoconf 2.13
+
 2002-04-23  Alan Shutko  <ats@acm.org>
 
 	* aclocal.m4 (AC_PATH_PROGS_REQUIRED): New.
