@@ -1,5 +1,9 @@
 @c This is to enable generation of text-file from this file
 @ifnottex
+@unmacro AUCTeX
+@macro AUCTeX {}
+AUC@w{ }@TeX{}
+@end macro
 @unmacro LaTeX
 @unmacro previewlatex
 @macro LaTeX {}
@@ -29,7 +33,7 @@ For installation instructions, see the @file{INSTALL} file or
 Most importantly, you need to get access to a version of Emacs 21.  The
 public release 21.1 is known to work.  Pretest versions before that have
 problems.  You also need @LaTeX{}, of course, but most installs that
-includes dvips should work.  A fairly recent AUC @TeX{} is also needed.
+includes dvips should work.  A fairly recent @AUCTeX{} is also needed.
 You also need a recent Ghostscript, and this is the most common source
 of problems.  Version 6.51 is known to work well, whereas earlier
 versions have problems.
