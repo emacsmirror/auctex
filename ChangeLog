@@ -2,6 +2,8 @@
 
 	* tex-jp.el (LaTeX-auto-regexp-list): Removed `usepackage' because
 	it is defined in `LaTeX-auto-minimal-regexp-list'.
+	(plain-TeX-auto-regexp-list): Fix regexp; Use `\\|' instead of `|'.
+	Fill lines in the same way in tex.el.
 
 2005-02-08  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
