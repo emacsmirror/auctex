@@ -24,34 +24,42 @@ packagedir=
 if test $EMACS_FLAVOR = "xemacs"  ; then
    PLAT_LISP=prv-xemacs.el
    EMACS_PATH_PACKAGEDIR([preview],[preview])
-   lispdir='${packagedir}/lisp/preview'
-   icondir='${packagedir}/etc/preview'
-   infodir='${packagedir}/info'
+   lispdir="$packagedir/lisp/preview"
+   packagelispdir=.
+   icondir=../../etc/preview
+   infodir=../../info
 else
    PLAT_LISP=prv-emacs.el
-   AC_MSG_CHECKING([if $EMACS supports images])
-   EMACS_LISP(EMACS_cv_SYS_emacs21, [(unless (and (boundp 'image-types) image-types)
-		 (error \"This Emacs does not support images\"))], "noecho")
-   if test "${EMACS_cv_SYS_emacs21}" != "nil"; then
-      AC_MSG_ERROR("You need an Emacs that supports images")
-   else
-      AC_MSG_RESULT([yes])
-   fi
    
-   EMACS_PATH_LISPDIR(preview)
-   icondir='${lispdir}'
+   EMACS_PATH_LISPDIR([preview-latex])
+   icondir=preview
+   packagelispdir=preview
 fi
+
+AC_MSG_CHECKING([where the bulk of the package lisp files go])
+EMACS_LISP_RELATIVE(lispdir,packagelispdir,
+	[the package lisp files])
+AC_MSG_RESULT([[${packagelispdir}]])
+AC_SUBST(packagelispdir)
+
+AC_MSG_CHECKING([where the icon files go])
+EMACS_LISP_RELATIVE(lispdir,icondir,
+	[the icon files])
+AC_MSG_RESULT([[${icondir}]])
+AC_SUBST(icondir)
 
 AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)
-AC_SUBST(icondir)
 
 EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
 
-AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE GSWIN32.EXE, 
+AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE, 
 [GhostScript not found!  Aborting!  
 You need GhostScript in your PATH for preview to work.])
+
+EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["$GS"]])
+AC_SUBST(lispGS)
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
 dnl Check to see if specific drivers are built in.
@@ -106,7 +114,7 @@ AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)
 AC_SHELL_QUOTIFY(PDFLATEX)
 
-AC_OUTPUT(Makefile doc/Makefile latex/Makefile)
+AC_OUTPUT(Makefile auto.el doc/Makefile latex/Makefile)
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.

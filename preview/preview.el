@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.236 2005-02-26 03:54:41 dakas Exp $
+;; $Id: preview.el,v 1.237 2005-03-02 07:56:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -55,8 +55,6 @@ preview-latex buffers will not survive across sessions.")))
 preview-latex's bug reporting commands will probably not work.")))
   (require 'info)
   (defvar error))
-
-(defvar preview-min-spec)
 
 ;; we need the compatibility macros which do _not_ get byte-compiled.
 (eval-when-compile
@@ -1330,6 +1328,8 @@ so that they match the reference face in height."
 					      'default) 10.0)
 	(preview-document-pt))))
 
+(defvar preview-min-spec)
+
 (defun preview-make-image (symbol)
   "Make an image from a preview spec list.
 The first spec that is workable (given the current setting of
@@ -1344,20 +1344,40 @@ icon is cached in the property list of the symbol."
 			   (preview-filter-specs
 			    (symbol-value symbol)))
 		     alist)))))))
-  
+
+(defun preview-filter-specs (spec-list)
+  "Find the first of the fitting specs and make an image."
+  (let (image)
+    (while (and spec-list
+		(not (setq image
+			   (catch 'preview-filter-specs
+			     (preview-filter-specs-1 (car spec-list))))))
+      (setq spec-list (cdr spec-list)))
+    image))
+
 (defun preview-filter-specs-1 (specs)
-  (cond ((null specs) nil)
-	((get 'preview-filter-specs (car specs))
-	 (apply (get 'preview-filter-specs (car specs)) specs))
-	(t (cons (car specs)
-		 (cons (cadr specs)
-		       (preview-filter-specs-1 (cddr specs)))))))
+  (and specs
+       (if (get 'preview-filter-specs (car specs))
+	   (apply (get 'preview-filter-specs (car specs)) specs)
+	 `(,(nth 0 specs) ,(nth 1 specs)
+	   ,@(preview-filter-specs-1 (nthcdr 2 specs))))))
 
 (put 'preview-filter-specs :min
      #'(lambda (keyword value &rest args)
 	 (if (> value preview-min-spec)
 	     (throw 'preview-filter-specs nil)
 	   (preview-filter-specs-1 args))))
+
+(defvar preview-icondir (expand-file-name "images"
+					  (file-name-directory load-file-name))
+  "The directory relative to which images may be found.
+This should be hardwired into the startup file
+containing the autoloads for preview-latex.")
+
+(put 'preview-filter-specs :file
+     #'(lambda (keyword value &rest args)
+	 `(:file ,(expand-file-name value preview-icondir)
+		 ,@(preview-filter-specs-1 args))))
 
 (defun preview-ascent-from-bb (bb)
   "This calculates the image ascent from its bounding box.
@@ -3262,7 +3282,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.236 $"))
+	(rev "$Revision: 1.237 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3273,7 +3293,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-02-26 03:54:41 $"))
+    (let ((date "$Date: 2005-03-02 07:56:52 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

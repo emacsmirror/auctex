@@ -1,6 +1,6 @@
 ;;; prv-emacs.el --- GNU Emacs specific code for preview.el
 
-;; Copyright (C) 2001  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04, 05  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -90,16 +90,12 @@ Consults `preview-transparent-color'."
    (preview-create-icon-1 file type ascent border)
    file type ascent border))
 
-
-(defun preview-filter-specs (spec-list)
-  "Find the first of the fitting specs and make an image."
-  (find-image
-    (delq nil
-	  (mapcar
-	   #'(lambda (x)
-	       (catch 'preview-filter-specs
-		 (preview-filter-specs-1 x)))
-	   spec-list))))
+(put 'preview-filter-specs :type
+     #'(lambda (keyword value &rest args)
+	 (if (image-type-available-p value)
+	     `(image :type ,value
+		     ,@(preview-filter-specs-1 args))
+	   (throw 'preview-filter-specs nil))))
 
 ;; No defcustom here: does not seem to make sense.
 

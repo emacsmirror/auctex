@@ -1,0 +1,3 @@
+@lispGS@
+(add-to-list 'load-path @lisppackagelispdir@)
+(defvar preview-icondir @lispicondir@)

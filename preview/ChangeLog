@@ -1,3 +1,42 @@
+2005-03-02  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Use executable name directly to save
+	confusion.
+
+	* prv-xemacs.el (preview-filter-specs): Rework specs.
+
+	* prv-emacs.el (preview-filter-specs): Translate :type fields.
+
+	* preview.el (preview-min-spec): Move.
+	(preview-filter-specs): Move from prv-emacs.el and prv-xemacs.el.
+	(preview-filter-specs-1): simplify.
+	(preview-icondir): Create icondir preset variable.
+	(preview-filter-specs): expand file specs against it here instead
+	of prv-emacs.el and prv-xemacs.el.
+
+	* configure.in: Adapt to new variables.
+	Remove check for image-supporting Emacs: it is probably not
+	reliable on consoles.
+	Add packagelispdir and icondir options.
+	(GS): Don't try GSWIN32.EXE.
+	Create lispGS in auto.el
+
+	* autogen.sh: Use --output option for makeinfo to get
+	tableofcontents in FAQ.
+	
+	* doc/Makefile.in (.PHONY): Add install here.
+
+	* Makefile.in (install-el): Adapt targets to packagelispdir.
+	(.PHONY): Add install target for case insensitive filesystems.
+
+	* aclocal.m4: Rewrite EMACS_EXAMINE_PACKAGEDIR.
+	EMACS_LISP now gets one argument less.
+	EMACS_TEST_LISP_DIR makes just one pass.
+	EMACS_PATH_LISPDIR expands less.
+	AC_LISPIFY_DIR is a new function.
+	AC_MAKE_FILENAME_ABSOLUTE
+	AC_LISP_RELATIVE new functions.
+
 2005-02-26  David Kastrup  <dak@gnu.org>
 
 	* doc/readme.texi (Basic modes of operation): Adapt PDFLaTeX

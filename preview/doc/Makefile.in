@@ -64,6 +64,8 @@ TODO: todo.texi macros.texi
 	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
 		todo.texi --output TODO
 
+.PHONY: install
+
 install: preview-latex.info
 	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
 	for x in preview-latex.info* ; do \

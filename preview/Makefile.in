@@ -5,7 +5,6 @@ AUCTEX=-eval '(let ((dir (pop command-line-args-left))) \
   (if (not (string-equal dir "")) (push dir load-path)))' $(auctexdir)
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
 		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
-GS=@GS@
 
 LISP_SOURCES = @PLAT_LISP@ preview.el
 LISP_OBJS = $(LISP_SOURCES:.el=.elc)
@@ -20,10 +19,10 @@ ICON_SOURCES = \
 
 prefix = @prefix@$(null)
 lispdir = @lispdir@$(null)
-loadlispdir = @lispdir@$(null)
 icondir = @icondir@$(null)
 datadir = @datadir@$(null)
 packagedir = @packagedir@$(null)
+packagelispdir = @packagelispdir@$(null)
 auctexdir = @auctexdir@$(null)
 DESTDIR=
 
@@ -47,7 +46,11 @@ install-hint:
 	@echo 'Now, run "make install" as root, or whatever user has permissions'
 	@echo 'to write to the install directory.'
 
-install: install-texmf install-el install-icons install-docs use-hint
+
+.PHONY: install
+
+install: install-texmf install-el install-icons \
+         install-docs install-startup use-hint
 
 install-docs:
 	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install)
@@ -64,15 +67,16 @@ use-hint:
 	@echo "problems not mentioned in there."
 
 install-el: $(LISP_OBJS)
-	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
 	for x in $(LISP_SOURCES) ; do \
-	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(lispdir) ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(lispdir) ; \
-	  echo $(INSTALL_DATA) $${x}c $(DESTDIR)$(lispdir) ; \
-	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(lispdir) ; \
+	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
+	  echo $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
+	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done
-	$(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES)
-
+	if test -n $(packagedir); then \
+	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES) \
+	fi
 install-icons: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(icondir)
 	for x in $(ICON_SOURCES); do \
@@ -83,13 +87,16 @@ install-icons: $(ICON_SOURCES)
 install-texmf:
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
+install-startup: preview-latex.el
+	$(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir)
+
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \
 	  echo $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
 	  $(ELCC) $(AUCTEX) -f batch-byte-compile $$x ; \
 	done
 
-preview-latex.el: preview.el
+preview-latex.el: preview.el auto.el
 	rm -f preview-latex.el
 	-$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
 	if test ! -r $@; then \
@@ -97,10 +104,7 @@ preview-latex.el: preview.el
 	echo "" >> $@ ; \
 	$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
 	fi
-	if test $(GS) != "gs"; then \
-	  $(ELCC) --eval '(prin1 `(setq preview-gs-command ,(pop command-line-args-left)))' $(GS) >> $@ ; \
-	fi
-	$(ELCC) --eval '(prin1 `(add-to-list '\''load-path ,(pop command-line-args-left)))' $(loadlispdir) >> $@
+	cat auto.el >> $@
 
 clean:
 	rm -f *.elc *~ *.aux *.dvi *.log latex.out testdocstrip.tex \
@@ -112,6 +116,6 @@ clean:
 distclean:
 	make clean
 	rm -f config.log config.cache config.status config.h aclocal.m4 
-	rm -f configure *.png TAGS
+	rm -f configure auto.el *.png TAGS
 	rm -f Makefile */Makefile
 	autoconf

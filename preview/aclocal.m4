@@ -1,46 +1,27 @@
 # serial 1
 
-dnl mostly stolen from emacs-w3m, credit to Katsumi Yamaoka
-dnl <yamaoka@jpl.org>
+dnl this was once done by Katsumi Yamaoka <yamaoka@jpl.org>, but
+dnl pretty much no original code remains.
 
 AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
  [dnl Examine packagedir.
-  dnl $2 here is only for correcting old (CVS) mistakes
-  tmpprefix="${prefix}"
-  AC_FULL_EXPAND(tmpprefix)
+  dnl $1 is an existing Elisp file from a previous installation.
+  dnl $2 is its potential parent directory.  Since we don't check any
+  dnl previous installation (which might be caused by an outdated
+  dnl sumo ball or a user's own package), those arguments get
+  dnl ignored.  Maybe looking at them for warning about load-path
+  dnl shadowing would be nice.
   EMACS_LISP(packagedir,
-    [(let* (\
-	   (putative-existing-lisp-dir (locate-library \"$1\"))\
-	   (package-dir\
-	   (and putative-existing-lisp-dir\
-		(setq putative-existing-lisp-dir\
-		      (file-name-directory putative-existing-lisp-dir))\
-		(string-match \"[[\\\\/]]lisp[[\\\\/]]\\\\($2[[\\\\/]]\\\\)?\$\"\
-			       putative-existing-lisp-dir)\
-		(replace-match \"\" t t putative-existing-lisp-dir))))\
-      (if (and (boundp (quote early-packages))\
-	       (not package-dir))\
-	  (let ((dirs (append (if early-package-load-path early-packages)\
-			      (if late-package-load-path late-packages)\
-			      (if last-package-load-path last-packages))))\
-	    (while (and dirs (not package-dir))\
-	      (if (file-directory-p (car dirs))\
-		  (setq package-dir (car dirs))\
-		  (setq	dirs (cdr dirs))))))\
-      (if package-dir\
-	  (progn\
-	    (if (string-match \"[[\\\\/]]\$\" package-dir)\
-		(setq package-dir (substring package-dir 0\
-					     (match-beginning 0))))\
-	    (if (and prefix\
-		     (progn\
-		       (setq prefix (file-name-as-directory prefix))\
-		       (eq 0 (string-match (regexp-quote prefix)\
-					   package-dir))))\
-		(replace-match (file-name-as-directory \"\${prefix}\") t t package-dir)\
-	      package-dir))\
-	\"NONE\"))],
-    [noecho],,[prefix],["${tmpprefix}"])])
+    [(catch 22
+       (let ((dirs (append late-packages last-packages early-packages)))
+	  (dolist (name (list \"site-packages\" \"xemacs-packages\")
+                   \"NONE\")
+	    (dolist (dir dirs)
+	      (and (file-directory-p dir)
+	           (string=
+		     (file-name-nondirectory (directory-file-name dir))
+		     name)
+		   (throw 22 (directory-file-name dir)))))))])])
 
 AC_DEFUN(EMACS_PATH_PACKAGEDIR,
  [dnl Check for packagedir.
@@ -200,24 +181,22 @@ dnl "
 dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
 dnl adapted from w3.
 
-dnl EMACS_LISP takes 6 arguments.  $1 is the name of the shell
+dnl EMACS_LISP takes 5 arguments.  $1 is the name of the shell
 dnl variable to assign a value, $2 is a Lisp expression placed into
 dnl shell double quotes (which has consequences for quoting and
-dnl variable expansion).  $3 is ignored; it is there for historical
-dnl reasons.  $4 is a list of Emacs options evaluated before the
-dnl expression itself, $5 is a list of Elisp variables that is
-dnl assigned from the command line arguments from $6.
+dnl variable expansion).  $3 is a list of Emacs options evaluated before
+dnl the expression itself, $4 is a list of Elisp variables that is
+dnl assigned from the command line arguments from $5.
 
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo "${EMACS}" -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-  "${EMACS}" -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo "${EMACS}" -batch $3 -eval "(let* (patsubst([$4], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $5 >& AC_FD_CC 2>&1
+  "${EMACS}" -batch $3 -eval "(let* (patsubst([$4], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $5 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}
 ])
-
 
 AC_DEFUN(EMACS_PROG_EMACS, [
 # Check for (X)Emacs, report its path, flavor and version
@@ -276,40 +255,36 @@ fi
 dnl "\${packagedir}/lisp"
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
-  for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
-	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
-	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
-	   "\${prefix}/site-lisp" ; do
-    lispdir="$i"
-    AC_FULL_EXPAND(i)
-    EMACS_LISPDIR=""
-    EMACS_LISP(EMACS_LISPDIR,
-      [[(let ((load-path load-path)
-	     (pattern (concat \"^\" (regexp-quote cmdpath) \"[/\\\\]?\$\")))
-	 (while (and load-path (not (string-match pattern
-						  (car load-path))))
-		(setq load-path (cdr load-path)))
-	 (if load-path \"yes\" \"no\"))]],,,[cmdpath],["$i"])
-    if test "$EMACS_LISPDIR" = "yes"; then
-      break
-    fi
-  done
-  if test "$EMACS_LISPDIR" = "no"; then
-    lispdir="NONE"
-  fi
+    tmpdatadir=${datadir}
+    tmplibdir=${libdir}
+    tmpprefix=${prefix}
+    AC_FULL_EXPAND(prefix)
+    AC_FULL_EXPAND(datadir)
+    AC_FULL_EXPAND(libdir)
+    EMACS_LISP(lispdir,
+      [[(catch 22
+          (dolist (pattern command-line-args-left \"NONE\")
+	    (setq pattern (file-name-as-directory (expand-file-name pattern)))
+            (dolist (path load-path)
+	      (setq path (file-name-as-directory (expand-file-name path)))
+	      (if (string= pattern path)
+	        (throw 22 path)))))]],,,[[\
+	   "${datadir}/${EMACS_FLAVOR}/site-lisp" \
+	   "${libdir}/${EMACS_FLAVOR}/site-lisp" \
+	   "${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
+	   "${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
+	   "${prefix}/site-lisp"]])
+    datadir=${tmpdatadir}
+    libdir=${tmplibdir}
+    prefix=${tmpprefix}
 ])
-
 
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      Where to install lisp files],
-    [lispdir="${withval}"
-     # Store expanded path minus trailing slash, may be added to (X)Emacs load-path
-     lispdir_expanded="`echo $lispdir | sed 's/[[\/\\]]$//'`"
-     AC_FULL_EXPAND(lispdir_expanded)
-    ],
+    [  --with-lispdir=DIR      Where to install the $1 file, note
+                          that most of the package will be relative to it.],
+    [[lispdir="${withval}"]],
     [
      # Save prefix
      oldprefix=${prefix}
@@ -328,9 +303,8 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        if test "$lispdir" = "NONE"; then
 	 # No? Test paths relative to binary
 	 EMACS_LISP(prefix,[(expand-file-name \"..\" invocation-directory)])
-	 exec_prefix=${prefix}
+	 exec_prefix="${prefix}"
 	 EMACS_TEST_LISPDIR
-	 AC_FULL_EXPAND(lispdir)
        fi
        if test "$lispdir" = "NONE"; then
 	 # No? notify user.
@@ -339,16 +313,12 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
        fi
      else
        # XEmacs
-       lispdir='${packagedir}/lisp'
+       lispdir="${packagedir}/lisp"
      fi
-     # Store expanded path, may be added to (X)Emacs load-path
-     lispdir_expanded="$lispdir"
-     AC_FULL_EXPAND(lispdir_expanded)
-     # Restore prefix
      prefix=${oldprefix}
      exec_prefix=${oldexec_prefix}
     ])
-  AC_MSG_RESULT([${lispdir}, expanded to ${lispdir_expanded}])
+  AC_MSG_RESULT([[${lispdir}]])
   AC_SUBST(lispdir)
 ])
 
@@ -392,7 +362,7 @@ if test -z "$3"; then
 	AC_MSG_CHECKING(for $2 in $1)
 fi
 library=`echo $1 | tr _ -`
-EMACS_LISP(EMACS_cv_SYS_$1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))),"noecho")
+EMACS_LISP(EMACS_cv_SYS_$1,(progn (fmakunbound '$2) (condition-case nil (progn (require '$library) (fboundp '$2)) (error (prog1 nil (message \"$library not found\"))))))
 if test "${EMACS_cv_SYS_$1}" = "nil"; then
 	EMACS_cv_SYS_$1=no
 fi
@@ -417,7 +387,7 @@ fi
 library=`echo $1 | tr _ -`
 EMACS_LISP($1,
 	[(condition-case nil (require '$library ) \
-	(error (prog1 nil (message \"$library not found\"))))],"noecho")
+	(error (prog1 nil (message \"$library not found\"))))])
 if test "$$1" = "nil"; then
 	$1=no
 fi
@@ -451,7 +421,7 @@ if test -z "$auctexdir" ; then
 	[[(let ((aucdir (file-name-directory (locate-library \"tex-site\"))))\
 	   (if (string-match \"[\\\\/]\$\" aucdir)\
 	       (replace-match \"\" t t aucdir)\
-	       aucdir))]], "noecho")
+	       aucdir))]])
   else
 	AC_MSG_ERROR([Can't find AUCTeX!  Please install it!
 Check the PROBLEMS file for details.])
@@ -560,3 +530,38 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
  AC_SUBST(autodir)
  AC_SUBST(autodir_expanded)
 ])
+# AC_LISPIFY_DIR
+# First argument is a variable name where a lisp expression is to be
+# substituted with AC_SUBST.
+# Second argument is the original path in shell-quoted syntax, usually
+# something like [["${whatever}"]].
+# If the expression is not an absolute path, it is evaluated relative
+# to the current file name.
+
+AC_DEFUN(AC_LISPIFY_DIR,[
+EMACS_LISP([$1],[[(prin1-to-string
+ (if (file-name-absolute-p path)
+   (expand-file-name (file-name-as-directory path))
+  (backquote (expand-file-name (, (file-name-as-directory path))
+     (file-name-directory load-file-name)))))]],-no-site-file,path,[$2])
+ AC_SUBST([$1])])
+
+# AC_MAKE_FILENAME_ABSOLUTE
+# This makes variable $1 absolute if it is not already so, by prepending
+# $2 as a string.  This won't work in Windows with drive-relative path names.
+# Just don't use them.
+AC_DEFUN(AC_MAKE_FILENAME_ABSOLUTE,[
+     case "[$]$1" in
+       [[\\/]]* | ?:[[\\/]]* ) # Absolute
+          ;;
+       *)
+          $1=$2"[$]$1";;
+     esac])
+
+AC_DEFUN(EMACS_LISP_RELATIVE,[
+  AC_ARG_WITH($1,[[  --with-$2=DIR    Where to find $3,
+        relative to the Lisp startup file.]],
+    [$2=["${withval}"]])
+  AC_LISPIFY_DIR([lisp$2],["[$]{$2}"])
+  AC_MAKE_FILENAME_ABSOLUTE([$2],["[$]$1"])])
+

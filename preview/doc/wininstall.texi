@@ -130,11 +130,11 @@ Some executables might not be found in your path.  That is not a good
 idea, but you can get around by specifying environment variables to
 @file{configure}:
 @example
-GS="@var{/path/to/GhostScript}" ./configure @dots{}
+GS="@var{/path/to/gswin32c.exe}" ./configure @dots{}
 @end example
-should work for this purpose.  However, in the case of GhostScript, it
-is important that you specify the name of the @emph{command line}
-executable, usually called @file{gswin32c.exe}.
+should work for this purpose.  @file{gswin32c.exe} is the usual name for
+the required @emph{command line} executable under Windows; in contrast,
+@file{gswin32.exe} is likely to fail.
 
 @item
 If you need to use the prebuilt documentation (see above), now is the

@@ -1,6 +1,7 @@
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
-;; Copyright (C) 2001  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04, 05 Free Software Foundation, Inc.
+;; Parts (C)  2002 Nick Alcock.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -203,36 +204,15 @@ other hooks, such as major mode hooks, can do the job."
 
 (defvar preview-ascent-spec)
 
-(defun preview-filter-specs (spec-list)
-  "Find the first fitting spec and create an image."
-  (let (preview-ascent-spec glyph)
-    (while (and spec-list
-		(not (setq glyph
-			   (catch 'preview-filter-specs
-			     (preview-filter-specs-1 (car spec-list))))))
-      (setq spec-list (cdr spec-list) preview-ascent-spec nil))
-    (when glyph
-      (setq glyph (make-glyph glyph))
-      (when preview-ascent-spec
-	(set-glyph-baseline glyph preview-ascent-spec)))
-    glyph))
-
 (put 'preview-filter-specs :type
      #'(lambda (keyword value &rest args)
 	 (if (preview-supports-image-type value)
-	     `[,value
-	       ,@(preview-filter-specs-1 args)]
-	   (throw 'preview-filter-specs nil))))
-
-(put 'preview-filter-specs :file
-     #'(lambda (keyword value &rest args)
-	 (setq value (locate-data-file value))
-	 (if value
-	     `(:file ,value
-;; 		     :data ,(with-temp-buffer
-;; 			      (insert-file-contents-literally value)
-;; 			      (buffer-string))
-		     ,@(preview-filter-specs-1 args))
+	     (let* (preview-ascent-spec
+		    (glyph (make-glyph `[,value
+					 ,@(preview-filter-specs-1 args)])))
+	       (when preview-ascent-spec
+		 (set-glyph-baseline glyph preview-ascent-spec))
+	       glyph)
 	   (throw 'preview-filter-specs nil))))
 
 (put 'preview-filter-specs :ascent
