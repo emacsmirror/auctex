@@ -1,3 +1,8 @@
+2004-10-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-view-style): Move more special items upwards.
+	Remove "a4" and "a5" styles.
+
 2004-10-04  Miguel Frasson <frasson@math.leidenuniv.nl>
 
 	* toolbarx.el:
