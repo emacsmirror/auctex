@@ -1,0 +1,1038 @@
+\input texinfo   @c -*-texinfo-*-
+@comment %**start of header 
+@setfilename auc-tex.info
+@settitle AUC TeX
+@c footnotestyle separate
+@c paragraphindent 2
+@comment %**end of header 
+ 
+@titlepage
+@title AUC @TeX{}
+@subtitle A much enhanced La@TeX{} mode for GNU Emacs.
+@subtitle July 1992, for AUC @TeX{} Version 5.7
+ 
+@author by Kresten Krab Thorup
+ 
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1992 Kresten Krab Thorup
+ 
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+ 
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+ 
+@end ignore
+@end titlepage
+@page
+
+
+@ifinfo
+@node top, Copying, (dir), (dir)
+@top AUC @TeX{}
+ 
+AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
+@TeX{} files.@refill
+
+This is the first edition of the AUC @TeX{} documentation.
+
+Although AUC @TeX{} contains a large number of features, there are no
+reason to despair.  You can continue to write @TeX{} and La@TeX{}
+documents the way you are used to, and only start using the multiple
+features in small steps.  AUC @TeX{} is not monolithic, each feature
+described in this manual is useful by itself, but together they provide
+an environment where you will make very few LaTeX errors, and makes it
+easy to find the errors that may slip through anyway.
+@end ifinfo
+
+@menu
+* Copying::                     GNU General Public License
+* Introduction::                Introduction 
+* Frequently Used Commands::    Inserting Frequently Used Commands  
+* Advanced Features::           Advanced Editing Features 
+* Formatting::                  Formatting and Printing 
+* Supported symbols::           Currently supported symbols in LaTeX-math-mode
+
+ --- The Detailed Node Listing ---
+
+Inserting Frequently Used Commands  
+
+* Font Specifiers::             Inserting Font Specifiers 
+* Sectioning::                  Inserting chapters, sections, etc. 
+* Environments::                Inserting Environment Templates
+
+Inserting Environment Templates
+
+* Floats::                      Floats
+* Itemize like::                Itemize like
+* Tabular like::                Tabular like
+* Customizing environments::    Customizing environments
+
+Advanced Editing Features 
+
+* Mathematics::                 Entering Mathematics 
+* Completion::                  Completion 
+* Commenting::                  Commenting 
+* Marking and formatting::      Marking, Formatting and Indenting
+* Outline::                     Outlining the Document
+* Miscellaneous::               Miscellaneous editing commands
+
+Entering Mathematics 
+
+* Customizing LaTeX-math-mode::  Customizing LaTeX-math-mode
+
+Completion 
+
+* The tex-symb.el file::        How to generate a file of TeX symbols
+
+Formatting and Printing 
+
+* Invoking LaTeX::              Invoking LaTeX 
+* Debugging::                   Catching the errors
+* Previewing::                  Previewing 
+* Printing::                    Printing
+* MakeIndex::                   MakeIndex
+* BibTeX::                      BibTeX
+* Control::                     Controlling the output
+@end menu
+
+@node Copying, Introduction, top, top
+@unnumbered Copying
+The following is a slightly modified version of the GNU Emacs General
+Public License
+
+  1. You may copy and distribute verbatim copies of AUC @TeX{} source
+code as you receive it, in any medium, provided that you conspicuously
+and appropriately publish on each copy a valid copyright notice
+"Copyright (C) 1992 Kresten Krab Thorup" (or with whatever year is
+appropriate); keep intact the notices on all files that refer to this
+License Agreement and to the absence of any warranty; and give any other
+recipients of the AUC @TeX{} program a copy of this License Agreement
+along with the program.  You may charge a distribution fee for the
+physical act of transferring a copy.
+ 
+  2. You may modify your copy or copies of AUC @TeX{} source code or
+any portion of it, and copy and distribute such modifications under
+the terms of Paragraph 1 above, provided that you also do the following:
+ 
+    a) cause the modified files to carry prominent notices stating
+    that you changed the files and the date of any change; and
+ 
+    b) cause the whole of any work that you distribute or publish,
+    that in whole or in part contains or is a derivative of AUC @TeX{}
+    or any part thereof, to be licensed at no charge to all third
+    parties on terms identical to those contained in this License
+    Agreement (except that you may choose to grant more extensive
+    warranty protection to some or all third parties, at your option).
+ 
+    c) if the modified program serves as a text editor, cause it when
+    started running in the simplest and usual way, to print an
+    announcement including a valid copyright notice "Copyright (C)
+    1992 Kresten Krab Thorup." (or with the year that is
+    appropriate), saying that there is no warranty (or else, saying
+    that you provide a warranty) and that users may redistribute the
+    program under these conditions, and telling the user how to view a
+    copy of this License Agreement.
+ 
+    d) You may charge a distribution fee for the physical act of
+    transferring a copy, and you may at your option offer warranty
+    protection in exchange for a fee.
+ 
+Mere aggregation of another unrelated program with this program (or its
+derivative) on a volume of a storage or distribution medium does not bring
+the other program under the scope of these terms.
+ 
+  3. You may copy and distribute AUC @TeX{} (or a portion or derivative
+of it, under Paragraph 2) in byte compiled form under the terms of
+Paragraphs 1 and 2 above provided that you also do one of the following:
+ 
+    a) accompany it with the complete corresponding machine-readable
+    source code, which must be distributed under the terms of
+    Paragraphs 1 and 2 above; or,
+ 
+    b) accompany it with a written offer, valid for at least three
+    years, to give any third party free (except for a nominal
+    shipping charge) a complete machine-readable copy of the
+    corresponding source code, to be distributed under the terms of
+    Paragraphs 1 and 2 above; or,
+ 
+    c) accompany it with the information you received as to where the
+    corresponding source code may be obtained.  (This alternative is
+    allowed only for non commercial distribution and only if you
+    received the program in object code or executable form alone.)
+ 
+For an executable file, complete source code means all the source code for
+all modules it contains.
+ 
+  4. You may not copy, sub license, distribute or transfer AUC @TeX{}
+except as expressly provided under this License Agreement.  Any attempt
+otherwise to copy, sub license, distribute or transfer AUC @TeX{} is void
+and your rights to use AUC @TeX{} under this License agreement shall be
+automatically terminated.  However, parties who have received computer
+software programs from you with this License Agreement will not have
+their licenses terminated so long as such parties remain in full
+compliance.
+ 
+@node Introduction, Frequently Used Commands, Copying, top
+@unnumbered Introduction 
+
+AUC @TeX{} is a comprehensive customizable integrated environment for
+writing input files for LaTeX using GNU Emacs.
+ 
+AUC @TeX{} lets you run @TeX{}/LaTeX and other LaTeX-related tools, such as
+a output filters or post processor from inside Emacs.  Especially
+`running LaTeX' is interesting, as AUC @TeX{} let's you browse through
+the errors @TeX{} reported, while it moves the cursor directly to the
+reported error, and displays some documentation for that particular
+error.  This will even work when the document is spread over several
+files.
+ 
+AUC @TeX{} automatically indents your `LaTeX-source', not only as you
+write it---you can also let it indent and format an entire document.  It
+has a special outline feature, which can greatly help you `getting the
+overview' of a document.
+ 
+Apart from these special features, AUC @TeX{} provides an large range of
+handy Emacs macros, which in several different ways can help you write
+your LaTeX documents fast and painless.  Here's a short list of the
+major features:
+
+@itemize
+@item
+Insertion of templates for logical-structural compositions such as
+environments and sections.
+
+@item 
+Hot-keys for easy access to certain often used constructs, e.g.,
+font changes, accented letters, and mathematical symbols.
+
+@item 
+Running application programs (such as @TeX{}), and then parsing
+the output so that errors in the document may be located 
+easily.
+
+@item 
+Support for multi-file documents.
+
+@item 
+Online help for (La)@TeX{} error messages.
+
+@item 
+Outlining---i.e., manipulating the document as a composition
+of nested/sequential logical constructs.
+
+@item 
+Instant formatting and indentation of the ASCII-document in
+order to make it easier to read.
+
+@item 
+`Completion' (and thereby spell-checking) of partially written
+control sequences.
+@end itemize
+
+
+@node Frequently Used Commands, Advanced Features, Introduction, top
+@chapter Inserting Frequently Used Commands  
+
+The most common used commands/macros of AUC @TeX{} are those which
+simply insert templates for often used @TeX{} and/or La@TeX{}
+constructs, like font changes, handling of environments etc.
+Those features are very simple, and easy-to-learn, and helps you
+avoiding stupid mistakes like mismatched braces, or \begin-\end pairs. 
+
+@menu
+* Font Specifiers::             Inserting Font Specifiers 
+* Sectioning::                  Inserting chapters, sections, etc. 
+* Environments::                Inserting Environment Templates
+@end menu
+
+@node Font Specifiers, Sectioning,  , Frequently Used Commands
+@section Inserting Font Specifiers 
+
+Perhaps the most used keyboard macros of AUC @TeX{} are the shorthands
+are available for easy insertion of font changing commands.  They are
+all alike, inserting a sequence of @kbd{@{\font @}} with the cursor
+placed just left of the @kbd{@}}.@refill
+
+@table @kbd
+@item C-c C-r 
+Insert roman @kbd{@{\rm @}} syntax.
+
+@item C-c C-b
+Insert @strong{bold face} @kbd{@{\bf @}} syntax.
+
+@item C-c C-i
+Insert @emph{italics} @kbd{@{\it \/@}} syntax.
+
+@item C-c C-e
+Insert @emph{emphasize} @kbd{@{\em \/@}} syntax.
+
+@item C-c C-t
+Insert @kbd{typewriter} @kbd{@{\tt @}} syntax.
+
+@item C-c C-y
+Insert @sc{small caps} @kbd{@{\sc @}} syntax.
+@end table
+
+@node Sectioning, Environments, Font Specifiers, Frequently Used Commands
+@section Inserting chapters, sections, etc. 
+
+Insertion of sectioning commands, that is @samp{\chapter},
+@samp{\section}, @samp{\subsection}, etc. and accompanying
+@samp{\label}'s may be eased by using @samp{LaTeX-section} bound to
+@kbd{C-c C-x}. 
+
+When invoking @kbd{C-c C-x} you will be asked for a section command to
+insert.  An appropriate default is automatically selected by AUC @TeX{},
+that is either: In the top of the document; the top level sectioning for
+that document style, and any other place: The same as the last occuring
+sectioning command.
+
+Next, you will be asked for the the actual name of that section, and
+last you will be asked for a label to be associated with that section.
+The label will be prefixed by the value of @samp{LaTeX-section-label}.
+
+@node Environments,  , Sectioning, Frequently Used Commands
+@section Inserting Environment Templates
+
+A quite large apparatus is available supporting insertions of
+environments, that is @kbd{\begin@{@}} --- @kbd{\end@{@}} pairs.  
+
+AUC @TeX{} is aware of most of the actual environments available in a
+specific document.  This is achieved by examining your
+@kbd{\documentstyle} command, and consulting a precompiled list of
+environments available in a large number of styles.  
+
+To insert an environment, invoke @samp{LaTeX-environment} by pressing
+@kbd{C-c C-c}.  AUC @TeX{} will prompt you for an environment to insert.
+At this prompt, you may press @kbd{TAB} or @kbd{SPC} to complete a
+partially written name, and/or to get a list of available environments.
+After selection of a specific environment AUC @TeX{} may prompt you for
+further specifications.  
+
+As a default selection, AUC @TeX{} will suggest the environment last
+inserted or, as the first choise the value of
+@samp{LaTeX-default-environment}.
+
+Most of these are described further in the following sections, and you
+may easily specify more, as described in `Costumizing environments'.
+
+@menu
+* Floats::                      Floats
+* Itemize like::                Itemize like
+* Tabular like::                Tabular like
+* Customizing environments::    Customizing environments
+@end menu
+
+@node Floats, Itemize like,  , Environments
+@subsection Floats
+
+Figures and tables (i.e. floats) may also be inserted using AUC @TeX{}.
+After choosing either `figure' or `table' in the environment list
+described above, you will be prompted for a number of additional things.
+In both cases the fields:
+
+@table @samp
+@item float-to
+This field is the option of float environments that control how they are
+placed in the final document.  In La@TeX{} this is a sequence of the
+letters @samp{htbp} as described in the La@TeX{} manual.
+
+@item caption
+This is the caption of the float.  The value will default to the value
+of @samp{LaTeX-float}.
+
+@item label
+The label of this float.  The label will have a default prefix, which is
+controlled by the variables @samp{LaTeX-figure-label} and
+@samp{LaTeX-table-label}.
+@end table
+
+will be prompted for.  More over, in the case of a `figure' environment,
+you will be asked if you want to insert a `center' environment inside
+the figure.
+
+@node Itemize like, Tabular like, Floats, Environments
+@subsection Itemize like
+
+In an itemize-like environment, nodes may be inserted using @kbd{M-RET}.
+This function will close the current item, move to the next line and
+insert an appropriate @kbd{\item} for the current environment. That is,
+`itemize' and `enumerate' will have @kbd{\item@{@}} inserted, while
+`description' will have @kbd{\item[]} inserted.
+
+@node Tabular like, Customizing environments, Itemize like, Environments
+@subsection Tabular like
+
+When inserting tabular like environments, that is, `tabular' `array'
+etc., you will be promted for a template for that environment.
+
+@node Customizing environments,  , Tabular like, Environments
+@subsection Customizing environments
+
+The environment mechanism may be customized by the variable:
+
+@defvar LaTeX-environment-alist
+An alist of all the possible environments in LaTeX mode. The cdr
+(if not nil), is taken to be a function to be called when starting
+LaTeX-environment. The function is called with the car as argument.
+@end defvar
+
+You may add your own favorite environments, by a line like:
+
+@lisp 
+(setq LaTeX-environment-alist
+      (cons '(("myenv")
+              ("myenv2" . LaTeX-myenv2-hook)) LaTeX-environment-alist))
+@end lisp
+
+in your @samp{LaTeX-mode-hook}.
+
+The function, (in this case LaTeX-myenv2-hook) will then simply be
+called with the actual environment name as the only argument, and it is
+free to do whatever you like. refer to the file @samp{ltx-env.el} from
+the distribution for examples of use.
+
+@node Advanced Features, Formatting, Frequently Used Commands, top
+@chapter Advanced Editing Features 
+        
+The previous chapter described how to write the main body of the text
+easily and with a minimum of errors.  In this chapter we will describe
+some features for entering more specialized sorts of text, and for
+indenting and navigating through the document.
+ 
+@menu
+* Mathematics::                 Entering Mathematics 
+* Completion::                  Completion 
+* Commenting::                  Commenting 
+* Marking and formatting::      Marking, Formatting and Indenting
+* Outline::                     Outlining the Document
+* Miscellaneous::               Miscellaneous editing commands
+@end menu
+
+@node Mathematics, Completion,  , Advanced Features
+@section Entering Mathematics 
+
+@TeX{} is written by a mathematician, and has always contains good
+support for formatting mathematic text.  AUC @TeX{} supports this
+tradition, by offering a special minor mode for entering text with many
+mathematic symbols.  You can enter this mode by typing @kbd{M-x
+LaTeX-math-mode}.@refill
+
+Then, to enter a mathematical symbol, press @kbd{`} followed by a single
+letter, (a mnemonic for the symbol).  You may e.g. press @kbd{` a}, to
+have an @samp{\alpha} inserted.   To insert a @kbd{`} itself, press
+@kbd{`} twice.
+
+@menu
+* Customizing LaTeX-math-mode::  Customizing LaTeX-math-mode
+@end menu
+
+@node Customizing LaTeX-math-mode,  ,  , Mathematics
+@subsection Customizing LaTeX-math-mode
+
+The following variable sets up the prefix key for @samp{LaTeX-math-mode}:
+
+@defvar LaTeX-math-abbrev-prefix
+A string containing the prefix of @samp{LaTeX-math-mode} commands;
+usually @kbd{`}. @refill
+@end defvar
+
+Another variable holdt the actual mapping of keys into commands:
+
+@defvar LaTeX-mathlist
+Alist containing key-command mappings to use in LaTeX-math-mode. 
+@end defvar
+
+@node Completion, Commenting, Mathematics, Advanced Features
+@section Completion 
+
+Emacs lisp programmers probably knows the @samp{lisp-complete-symbol}
+command, usually bound to @samp{M-TAB}.  Users of the wonderful ispell
+mode knows and love the @samp{ispell-complete-word} command from that
+package.  Similarly, AUC @TeX{} has a @samp{TeX-complete-symbol}
+command, usually bound to @kbd{M-TAB}.  Using
+@samp{LaTeX-complete-symbol} makes it easier to type and remember the
+names of long La@TeX{} macros.
+ 
+In order to use @samp{LaTeX-complete-symbol}, you should write a
+backslash and the start of the macro.  Typing @kbd{M-TAB} will now
+complete as much of the macro, as it unambiguously can.  For example,
+if you type `@samp{\renam}' and then `@kbd{M-TAB}, it will expand to
+`@samp{\renewcommand}'.
+ 
+AUC @TeX{} contains a list of all the standard La@TeX{} macros. In
+order to expand the list with your own macros, see @xref{The tex-symb.el
+file} 
+
+@menu
+* The tex-symb.el file::        How to generate a file of TeX symbols
+@end menu
+
+@node The tex-symb.el file,  ,  , Completion
+@subsection How to generate a file of TeX symbols
+
+Along with AUC @TeX{} comes a small perl script that may be used to
+generate the file @file{tex-symb.el} which is the actual list of symbols
+used for completion.  The script is called @file{extract_tex_symbols.pl}.
+The scripts must however be edited for your local installation...
+
+@node Commenting, Marking and formatting, Completion, Advanced Features
+@section Commenting 
+
+It is often necessary to temporarily comment out a region of @TeX{} or
+La@TeX{} code.  This can be done with the command @kbd{C-c ;}
+(@samp{TeX-comment-out-region}, First, set the region by moving point to
+the start of the text you want to comment out, set the mark by pressing
+(@kbd{C-@@}), move point to the end of the text, and type @kbd{C-c ;}.
+In order to un-comment the region, simply press @kbd{C-c :}
+(@samp{TeX-un-comment-region}) after setting the region as described
+above.
+ 
+The are two shortcuts to commenting and un-commenting text.  If you want
+to un-comment a single paragraph, simply type @kbd{C-c '}
+(@samp{TeX-comment-out-paragraph}) while point is within the paragraph.
+ 
+To un-comment any connected piece of text, place point within the text,
+and type @kbd{C-c "} (@samp{TeX-un-comment}).  This will remove the
+comment characters from the lines before and after point, until the first
+non-comment line is found.
+ 
+@node Marking and formatting, Outline, Commenting, Advanced Features
+@section Marking, Formatting and Indenting
+
+AUC @TeX{} contains very advanced handling of indentation and
+reformatting of the La@TeX{} source.   If you have already tried AUC
+@TeX{} with auto-fill-mode enabled, you may have noted, that the source
+is automatically indented and formatted as you write it.  More over, AUC
+@TeX{} is able to format sections of text on demand.  
+
+Indentation is done `by environment', that is the body of an environment
+is indented by the value of @samp{LaTeX-indent-level} which defaults to
+2.  Also, items of an `itemize-like' environment are indented.  The
+following is a short sample of an itemize environment indented by AUC
+@TeX{}.  If more environment are nested, they are indented `accumulated'
+just like most programmings usually are seen indented in nested
+constructs. 
+
+@example
+\begin@{itemize@}
+\item Insertion of templates for logical-structural compositions such as
+  environments and sections.
+\item Hot-keys for easy access to certain often used constructs, e.g.,
+  font changes, accented letters, and mathematical symbols.
+\item Running application programs (such as \TeX), and then parsing
+  the output so that errors in the document may be located 
+  easily.
+\item Support for multi-file documents.
+\item Online help for \AllTeX\ error messages.
+\item Outlining\Dash i.e., manipulating the document as a composition
+  of nested/sequential logical constructs.
+\item Instant formatting and indentation of the \ascii-document in
+  order to make it easier to read.
+\item `Completion' (and thereby spell-checking) of partially written
+  control sequences.
+\end@{itemize@}
+@end example
+
+The following functions are avilable for formatting:
+
+@table @kbd
+@item TAB
+@samp{LaTeX-indent-line} will indent the current line.
+
+@item LFD
+@samp{reindent-then-newline-and-indent} indents the current line, and
+then inserts a new line (much like @kbd{RET}) and move the cursor to an
+appropriate position by the left margin.
+
+@item M-q
+@samp{LaTeX-format-paragraph} will reformat or `fill' the current
+paragraph. 
+
+@item M C-q
+@samp{LaTeX-format-environment} will reformat or `fill' the current
+environment.  This may e.g. be the `document' environment, in which case
+the entire document will be formatted.
+
+@item M-s
+@samp{LaTeX-format-section} will reformat or `fill' the current
+logical sectional unit. 
+@end table
+
+NOTE: The formatting cannot handle tabular-like environments. Those will
+be completely messed-up if those are tried formatted.  
+
+@node Outline, Miscellaneous, Marking and formatting, Advanced Features
+@section Outlining the Document
+
+Minor mode for editing outlines with selective display.  Headings are
+lines which start with asterisks: one for major headings, two for
+sub headings, etc.  Lines not starting with asterisks are body lines.
+
+Body text or sub headings under a heading can be made temporarily
+invisible, or visible again.  Invisible lines are attached to the end of
+the heading, so they move with it, if the line is killed and yanked
+back.  A heading with text hidden under it is marked with an ellipsis
+(@dots{}).
+
+@deffn function outline-minor-mode  prefix
+Enters outline minor mode. With prefix: no-nil: turn outline mode on.
+nil: turn outline mode off.
+@end deffn
+
+Commands:
+
+@table @kbd
+@item C-l C-n   
+@samp{outline-next-visible-heading} move by visible headings
+
+@item C-l C-p
+@samp{outline-previous-visible-heading}
+
+@item C-l C-f
+@samp{outline-forward-same-level} similar but skip sub headings
+
+@item C-l C-b
+@samp{outline-backward-same-level}
+
+@item C-l C-u
+@samp{outline-up-heading move from} sub heading to heading
+
+@item C-l C-t
+@samp{hide-body} make all text invisible (not headings).
+
+@item C-l C-a
+@samp{show-all} make everything in buffer visible.
+
+@item C-l C-o
+@samp{outline-minor-mode} leave outline mode.
+@end table
+
+The remaining commands are used when point is on a heading line.
+They apply to some of the body or sub headings of that heading.
+
+@table @kbd
+@item C-l C-h
+@samp{hide-subtree} make body and sub headings invisible.
+
+@item C-l C-s
+@samp{show-subtree} make body and sub headings visible.
+
+@item C-l C-i
+@samp{show-children} make direct sub headings visible.  No effect on
+body, or sub headings 2 or more levels down. With arg N, affects
+sub headings N levels down.
+
+@item C-l C-c
+@samp{hide-entry} make immediately following body invisible.
+
+@item C-l C-e
+@samp{show-entry} make it visible.
+
+@item C-l C-l
+@samp{hide-leaves} make body under heading and under its sub headings
+invisible. The sub headings remain visible.
+
+@item C-l C-x
+@samp{show-branches} make all sub headings at all levels visible.
+@end table
+
+The prefix char (@kbd{C-l}) is determinated by the value of
+outline-prefix-char.  If outline-minor-keymap is set, it will be used
+instead of the default keymap.
+
+The variable outline-regexp can be changed to control what is a heading.
+A line is a heading if outline-regexp matches something at the
+beginning of the line.  The longer the match, the deeper the level.
+
+
+@node Miscellaneous,  , Outline, Advanced Features
+@section Miscellaneous editing commands
+
+A number of more or less `free-lance' functions are avilable. They are
+listed here, as they don't seem to fit in anywhere else.
+
+@table @kbd
+@item C-c LFD
+@samp{TeX-terminate-paragraph} Insert two newlines, breaking a paragraph
+for @TeX{}.  Check for mismatched braces/$'s in paragraph being terminated.
+A prefix arg inhibits the checking.
+
+@item M-@{
+@samp{TeX-insert-braces} Make a pair of braces and be poised to type
+inside of them.
+
+@item M-RET
+@samp{TeX-insert-macro} Inserts the syntax @kbd{\@{@}} with the cursor
+placed right after the @kbd{\}. 
+
+@item C-c C-o
+@samp{TeX-command-on-region} Prompts for a command to insert around the
+current region.  The actual command is then inserted as @kbd{@{\XX ...@}}.
+@end table
+
+
+@node Formatting, Supported symbols, Advanced Features, top
+@chapter Formatting and Printing 
+
+The most powerful features of AUC @TeX{} are those allowing you to run
+(La)@TeX{} from within Emacs, and moreover aloowing tou to @emph{debug}
+your documents.  The following sections describe those features in
+detail. 
+
+@menu
+* Invoking LaTeX::              Invoking LaTeX 
+* Debugging::                   Catching the errors
+* Previewing::                  Previewing 
+* Printing::                    Printing
+* MakeIndex::                   MakeIndex
+* BibTeX::                      BibTeX
+* Control::                     Controlling the output
+@end menu
+
+
+@node Invoking LaTeX, Debugging,  , Formatting
+@section Invoking LaTeX 
+
+@deffn Command TeX-buffer
+Bound to @kbd{C-c C-a}. Invokes @TeX{} or La@TeX{} on the contents of
+the current buffer.  Depending on the current `mode' either of those are
+invoked.  If the header (first 500 bytes) of the buffer contains the
+sequence:
+@example
+%% Master: someFile.tex
+@end example
+(La)@TeX{} will be run on @samp{someFile.tex} instead of the current. 
+@end deffn
+
+@deffn Command TeX-region
+Bound to @kbd{C-c C-d}. Invokes @TeX{} or La@TeX{} on the contents of
+the current region.  Depending on the current `mode' either of those are
+invoked.
+@end deffn
+
+In some cases it may be convenient to have @TeX{} run with certain
+arguments, in which case you may define the variable @samp{TeX-args}
+
+@defvar TeX-args
+Alist of arguments applied to @TeX{} when it is run.  On a NeXT computer
+this may e.g. be @samp{'("-V")} which causes the dvi file to be
+displayed as it is being generated.
+@end defvar
+
+@node Debugging, Previewing, Invoking LaTeX, Formatting
+@section Catching the errors
+
+Once you've formatted your document you may `debug' it, i.e. browse
+through the errors (La)@TeX{} reported.  This is done using the 
+
+@deffn Command TeX-next-error
+Bound to @kbd{C-c C-n}.  Go to the next error reported by @TeX{}.  The
+view will be split in two, with the cursor placed as close as possible
+to the error in the top view.  In the bottom view, the error message
+will be displayed along with some explanatory text.
+@end deffn
+
+Normally AUC @TeX{} will only report real errors, but you may as well
+ask it to report `bad boxes' as well.  This is done using:
+
+@deffn Command TeX-toggle-debug-bad-boxes
+Bound to @kbd{C-c C-w}.  Toggle weither AUC @TeX{} should stop at bad
+boxes (i.e. over/under full boxes) as well as at normal errors.
+@end deffn
+
+Per default AUC @TeX{} will display that special @samp{*help*} buffer
+containing the error reported by @TeX{} along with the documentation.
+There is however an `expert' option, which allows you to display the
+real @TeX{} output.
+
+@defvar TeX-display-help
+When non-nil AUC @TeX{} will automatically display a help text whenever
+an error is encountered using @samp{TeX-next-error} (@kbd{C-c C-n}).  
+@end defvar
+
+@deffn Command TeX-help-error
+Display the help message associated with the present error.  To be used
+right after invocation of @samp{TeX-next-error} (@kbd{C-c C-n}).
+@end deffn
+
+@node Previewing, Printing, Debugging, Formatting
+@section Previewing 
+
+@deffn Command TeX-preview 
+Bound to @kbd{C-c C-p}.  Will preview the current formatted file.  The
+previewer is started, and you may continue editing the document.
+@end deffn
+
+The function of the command @samp{TeX-preview} may be customized by
+the following variables:
+
+@defvar TeX-preview-alist
+Alist of REGEXP - SYMBOL pairs.  If the list of REGEXPs are matched on
+the first line of the document, and if either matches the function
+bound to SYMBOL will be evaluated.  The last regexp should be
+something like @samp{.}, so that it will always match.
+@end defvar
+
+See the file @samp{tex-site.el} for further customization parameters
+and for examples of how the actual preview functions should be defined.
+
+@node Printing, MakeIndex, Previewing, Formatting
+@section Printing
+
+Onve you've formatted your document using the functions described in
+the section `Invoking LaTeX', you may print it using:
+
+@deffn Command TeX-print 
+Bound to @kbd{C-c !}.  You will be prompted for a printer and for
+eventual further options.
+@end deffn
+
+@samp{TeX-print} may be customized using the following two variables:
+
+@defvar TeX-printer-name-alist
+Alist of available printers in your system.  One of these will be
+added to your printing command line option @samp{-P}.
+@end defvar
+
+@defvar TeX-print-command
+Command used to invoke the your favourite printer filter.
+@end defvar
+
+@node MakeIndex, BibTeX, Printing, Formatting
+@section MakeIndex
+
+@deffn Command LaTeX-makeindex
+Bound to @kbd{C-c @@}.  Invokes @samp{MakeIndex} on the current
+document.
+@end deffn
+
+@node BibTeX, Control, MakeIndex, Formatting
+@section BibTeX
+
+@deffn Command LaTeX-bibtex
+Bound to @kbd{C-c #}.  Invokes Bib@TeX{} on the current
+document.
+@end deffn
+
+@node Control,  , BibTeX, Formatting
+@section Controlling the output
+
+A number of commands are avilable for controlling the output of an
+application running under AUC @TeX{}
+
+@deffn Command TeX-kill-job
+Bound to @kbd{C-c C-k}. Kill currently running external application.
+This may be either of @TeX{}, La@TeX{}, perviewer Bib@TeX{} etc.
+@end deffn
+
+@node Supported symbols,  , Formatting, top
+@appendix Currently supported symbols in LaTeX-math-mode
+ 
+
+@table @kbd
+@item ` a
+@samp{\alpha}
+
+@item ` b
+@samp{\beta}
+
+@item ` d
+@samp{\delta}
+
+@item ` e
+@samp{\epsilon}
+
+@item ` f
+@samp{\phi}
+
+@item ` g
+@samp{\gamma}
+
+@item ` h
+@samp{\eta}
+
+@item ` k
+@samp{\kappa}
+
+@item ` l
+@samp{\lambda}
+
+@item ` m
+@samp{\mu}
+
+@item ` n
+@samp{\nu}
+
+@item ` o
+@samp{\omega}
+
+@item ` p
+@samp{\pi}
+
+@item ` q
+@samp{\theta}
+
+@item ` r
+@samp{\rho}
+
+@item ` s
+@samp{\sigma}
+
+@item ` t
+@samp{\tau}
+
+@item ` u
+@samp{\upsilon}
+
+@item ` x
+@samp{\chi}
+
+@item ` y
+@samp{\psi}
+
+@item ` z
+@samp{\zeta}
+
+@item ` D
+@samp{\Delta}
+
+@item ` G
+@samp{\Gamma}
+
+@item ` Q
+@samp{\Theta}
+
+@item ` L
+@samp{\Lambda}
+
+@item ` Y
+@samp{\Psi}
+
+@item ` P
+@samp{\Pi}
+
+@item ` S
+@samp{\Sigma}
+
+@item ` U
+@samp{\Upsilon}
+
+@item ` V
+@samp{\Phi}
+
+@item ` O
+@samp{\Omega}
+
+@item ` C-f
+@samp{\rightarrow}
+
+@item ` C-b
+@samp{\leftarrow}
+
+@item ` C-p
+@samp{\uparrow}
+
+@item ` C-n
+@samp{\downarrow}
+
+@item ` <
+@samp{\leq}
+
+@item ` >
+@samp{\geq}
+
+@item ` ~
+@samp{\tilde}
+
+@item ` I
+@samp{\infty}
+
+@item ` A
+@samp{\forall}
+
+@item ` E
+@samp{\exists}
+
+@item ` !
+@samp{\not}
+
+@item ` i
+@samp{\in}
+
+@item ` *
+@samp{\times}
+
+@item ` .
+@samp{\cdot}
+
+@item ` @{
+@samp{\subset}
+
+@item ` @}
+@samp{\supset}
+
+@item ` [
+@samp{\subseteq}
+
+@item ` ]
+@samp{\supseteq}
+
+@item ` \
+@samp{\backslash}
+
+@item ` /
+@samp{\setminus}
+
+@item ` +
+@samp{\cup}
+
+@item ` -
+@samp{\cap}
+
+@item ` (
+@samp{\langle}
+
+@item ` )
+@samp{\rangle}
+
+@item ` C-e
+@samp{\exp}
+
+@item ` C-s
+@samp{\sin}
+
+@item ` C-c
+@samp{\cos}
+
+@item ` C-^
+@samp{\sup}
+
+@item ` C-_
+@samp{\inf}
+
+@item ` C-d
+@samp{\det}
+
+@item ` C-l
+@samp{\lim}
+
+@item ` C-t
+@samp{\tan}
+
+@item ` ^
+@samp{\hat}
+
+@item ` v
+@samp{\vee}
+@end table
+
+
+@contents
+@bye

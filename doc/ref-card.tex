@@ -1,0 +1,301 @@
+% -*- plain-tex -*- 
+% $Id: ref-card.tex,v 1.1 1992-07-22 13:06:40 krab Exp $
+% Reference Card for Auc TeX version 5.4 for Emacs Lisp
+%**start of header
+\newcount\columnsperpage
+
+% This file can be printed with 1, 2, or 3 columns per page (see below).
+% Specify how many you want here.  Nothing else needs to be changed.
+
+\columnsperpage=2
+
+% This file is intended to be processed by plain TeX (TeX82).
+% compile-command: "tex auc-tex-ref.tex"
+
+% The final reference card has six columns, three on each side.
+% This file can be used to produce it in any of three ways:
+% 1 column per page
+%    produces six separate pages, each of which needs to be reduced to 80%.
+%    This gives the best resolution.
+% 2 columns per page
+%    produces three already-reduced pages.
+%    You will still need to cut and paste.
+% 3 columns per page
+%    produces two pages which must be printed sideways to make a
+%    ready-to-use 8.5 x 11 inch reference card.
+%    For this you need a dvi device driver that can print sideways.
+% Which mode to use is controlled by setting \columnsperpage above.
+
+%                   Author of Auc-TeX Reference Card
+%
+%		  		\ ! /
+%			       -- O --
+%			  __    / ! \   __
+%			  \   /\     /\  /
+%			   \ /  \===/  \/
+%				/   \
+%			       /  x  \
+%			      /   x   \
+%				   
+%       Terrence Brannon, PO Box 5027, Bethlehem, PA 18015 , USA
+%  internet: tb06@pl118f.cc.lehigh.edu  (215) 758-1720 (215) 758-2104
+
+%
+% Thanks to Stephen Gildea
+% Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
+% for creating the GNU Emacs Reference Card from which this was mutated
+
+\def\versionnumber{5.4}
+\def\year{1992}
+\def\version{January \year\ v\versionnumber}
+
+\def\shortcopyrightnotice{\vskip 1ex plus 2 fill
+  \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
+  Permissions on back.  v\versionnumber}}
+
+\def\copyrightnotice{
+\vskip 1ex plus 2 fill\begingroup\small
+\centerline{Copyright \copyright\ \year\ Free Software Foundation, Inc.}
+\centerline{designed by Terrence Brannon, \version}
+\centerline{for GNU Emacs version 18 on Unix systems}
+
+Permission is granted to make and distribute copies of
+this card provided the copyright notice and this permission notice
+are preserved on all copies.
+
+
+\endgroup}
+
+% make \bye not \outer so that the \def\bye in the \else clause below
+% can be scanned without complaint.
+\def\bye{\par\vfill\supereject\end}
+
+\newdimen\intercolumnskip
+\newbox\columna
+\newbox\columnb
+
+\def\ncolumns{\the\columnsperpage}
+
+\message{[\ncolumns\space 
+  column\if 1\ncolumns\else s\fi\space per page]}
+
+\def\scaledmag#1{ scaled \magstep #1}
+
+% This multi-way format was designed by Stephen Gildea
+% October 1986.
+\if 1\ncolumns
+  \hsize 4in
+  \vsize 10in
+  \voffset -.7in
+  \font\titlefont=\fontname\tenbf \scaledmag3
+  \font\headingfont=\fontname\tenbf \scaledmag2
+  \font\smallfont=\fontname\sevenrm
+  \font\smallsy=\fontname\sevensy
+
+  \footline{\hss\folio}
+  \def\makefootline{\baselineskip10pt\hsize6.5in\line{\the\footline}}
+\else
+  \hsize 3.2in
+  \vsize 7.95in
+  \hoffset -.75in
+  \voffset -.745in
+  \font\titlefont=cmbx10 \scaledmag2
+  \font\headingfont=cmbx10 \scaledmag1
+  \font\smallfont=cmr6
+  \font\smallsy=cmsy6
+  \font\eightrm=cmr8
+  \font\eightbf=cmbx8
+  \font\eightit=cmti8
+  \font\eighttt=cmtt8
+  \font\eightsy=cmsy8
+  \textfont0=\eightrm
+  \textfont2=\eightsy
+  \def\rm{\eightrm}
+  \def\bf{\eightbf}
+  \def\it{\eightit}
+  \def\tt{\eighttt}
+  \normalbaselineskip=.8\normalbaselineskip
+  \normallineskip=.8\normallineskip
+  \normallineskiplimit=.8\normallineskiplimit
+  \normalbaselines\rm		%make definitions take effect
+
+  \if 2\ncolumns
+    \let\maxcolumn=b
+    \footline{\hss\rm\folio\hss}
+    \def\makefootline{\vskip 2in \hsize=6.86in\line{\the\footline}}
+  \else \if 3\ncolumns
+    \let\maxcolumn=c
+    \nopagenumbers
+  \else
+    \errhelp{You must set \columnsperpage equal to 1, 2, or 3.}
+    \errmessage{Illegal number of columns per page}
+  \fi\fi
+
+  \intercolumnskip=.46in
+  \def\abc{a}
+  \output={%
+      % This next line is useful when designing the layout.
+      %\immediate\write16{Column \folio\abc\space starts with \firstmark}
+      \if \maxcolumn\abc \multicolumnformat \global\def\abc{a}
+      \else\if a\abc
+	\global\setbox\columna\columnbox \global\def\abc{b}
+        %% in case we never use \columnb (two-column mode)
+        \global\setbox\columnb\hbox to -\intercolumnskip{}
+      \else
+	\global\setbox\columnb\columnbox \global\def\abc{c}\fi\fi}
+  \def\multicolumnformat{\shipout\vbox{\makeheadline
+      \hbox{\box\columna\hskip\intercolumnskip
+        \box\columnb\hskip\intercolumnskip\columnbox}
+      \makefootline}\advancepageno}
+  \def\columnbox{\leftline{\pagebody}}
+
+  \def\bye{\par\vfill\supereject
+    \if a\abc \else\null\vfill\eject\fi
+    \if a\abc \else\null\vfill\eject\fi
+    \end}  
+\fi
+
+% we won't be using math mode much, so redefine some of the characters
+% we might want to talk about
+\catcode`\^=12
+\catcode`\_=12
+
+\chardef\\=`\\
+\chardef\{=`\{
+\chardef\}=`\}
+
+\hyphenation{mini-buf-fer}
+
+\parindent 0pt
+\parskip 1ex plus .5ex minus .5ex
+
+\def\small{\smallfont\textfont2=\smallsy\baselineskip=.8\baselineskip}
+
+\outer\def\newcolumn{\vfill\eject}
+
+\outer\def\title#1{{\titlefont\centerline{#1}}\vskip 1ex plus .5ex}
+
+\outer\def\section#1{\par\filbreak
+  \vskip 3ex plus 2ex minus 2ex {\headingfont #1}\mark{#1}%
+  \vskip 2ex plus 1ex minus 1.5ex}
+
+\newdimen\keyindent
+
+\def\beginindentedkeys{\keyindent=1em}
+\def\endindentedkeys{\keyindent=0em}
+\endindentedkeys
+
+\def\paralign{\vskip\parskip\halign}
+
+\def\<#1>{$\langle${\rm #1}$\rangle$}
+
+\def\kbd#1{{\tt#1}\null}	%\null so not an abbrev even if period follows
+
+\def\beginexample{\par\leavevmode\begingroup
+  \obeylines\obeyspaces\parskip0pt\tt}
+{\obeyspaces\global\let =\ }
+\def\endexample{\endgroup}
+
+\def\key#1#2{\leavevmode\hbox to \hsize{\vtop
+  {\hsize=.75\hsize\rightskip=1em
+  \hskip\keyindent\relax#1}\kbd{#2}\hfil}}
+
+\newbox\metaxbox
+\setbox\metaxbox\hbox{\kbd{M-x }}
+\newdimen\metaxwidth
+\metaxwidth=\wd\metaxbox
+
+\def\metax#1#2{\leavevmode\hbox to \hsize{\hbox to .75\hsize
+  {\hskip\keyindent\relax#1\hfil}%
+  \hskip -\metaxwidth minus 1fil
+  \kbd{#2}\hfil}}
+
+\def\threecol#1#2#3{\hskip\keyindent\relax#1\hfil&\kbd{#2}\quad
+  &\kbd{#3}\quad\cr}
+
+%**end of header
+
+
+\title{AUC La\TeX\ Reference Card}
+
+\centerline{(for version 5.4)}
+
+\section{Conventions Used}
+
+\key{Carriage Return}{RET}
+\key{Tabular}{TAB}
+\key{Linefeed}{LFD}
+
+Mode variables: Refer to `\kbd{tex-site.el}' in the AUC-\TeX\
+Distributions for customization
+
+Entering LaTeX mode calls the value of text-mode-hook,
+then the value of TeX-mode-hook, and then the value
+of LaTeX-mode-hook.
+
+
+\section{Shell Interaction}
+
+\key{Print the DVI file}{C-c !}
+\key{Run \TeX/LaTeX on buffer}{C-c C-a}
+\key{Run \TeX/LaTeX on region}{C-c C-d}
+\key{Preview dvi file}{C-c C-p}
+\key{Next error in \TeX/LaTeX session}{C-c C-n}
+\key{Run Bib\TeX\ on buffer}{C-c @}
+\key{Run makeindex on buffer}{C-c \#}
+\key{Kill job}{C-c C-k}
+\key{Recenter output buffer}{C-c C-l}
+\key{Toggle Debug Boxes}{C-c C-w}
+\key{Home Buffer}{C-c C-h}
+
+\section{Automatic Command Insertion}
+
+\key{Insert Brace}{M-\{}
+\key{Insert {\bf bold} syntax}{C-c C-b}
+\key{Insert {\it italics\/}syntax}{C-c C-i}
+\key{Insert {\rm roman} syntax}{C-c C-r}
+\key{Insert emphasized syntax}{C-c C-e}
+\key{Insert {\tt typewriter} syntax}{C-c C-t}
+\key{Insert {\sl slanted\/} syntax}{C-c C-s}
+\key{Insert small caps syntax}{C-c C-y}
+\key{Insert Section/Chapter/etc syntax}{C-c C-x}
+\key{Insert \kbd{\\begin\{\} ... \\end\{\}} environment}{C-c C-c}
+\key{Insert \TeX\ macro \kbd{\\\{\}} }{C-c RET}
+\key{\TeX command on region \kbd{\{\\ \}}}{C-c C-o}
+
+\section{Automatic Commenting}
+
+\key{Comment out a region}{C-c ;}
+\key{Comment out a paragraph}{C-c '}
+\key{Uncomment a region}{C-c :}
+\key{Uncomment}{C-c "}
+\key{Insert item}{M-RET}
+
+\section{Marking and Formatting}
+
+\key{Format a paragraph}{M-q}
+\key{Format a region}{M-g}
+\key{Mark a section}{M-C-x}
+\key{Format a section}{M-s}
+\key{Mark an Environment}{M-C-e}
+\key{Close off an Environment}{C-c C-f}
+\key{Format an Environment}{M-C-q}
+
+\section{Miscellany}
+
+\key{Complete Symbol}{M-TAB}
+\key{Up-list}{M-\}}
+\key{Terminate Paragraph}{RET}
+\key{Smart ``Quote'' Insert}{"}
+\key{LaTeX-indent-line}{TAB}
+\key{Reindent, then newline and indent}{LFD}
+\key{Terminate paragraph}{C-c LFD}
+
+Type \kbd{TeX-validate-buffer} to insure that the \$ and braces
+match up within paragraphs.
+
+\copyrightnotice
+
+\bye
+
+% End:
