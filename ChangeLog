@@ -1,3 +1,29 @@
+2004-11-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi: Remove RCS keyword.
+	Correct subtitle.
+	Various corrections of filling and capitalization.
+	Move up installation instructions.
+	(Display): New node and chapter holding display-related content.
+	(Font Locking): New node and section.
+	(Folding): Now a section.  Remove the silly first paragraph.
+	(Outline): Now a section.
+
+	* doc/macros.texi: Add `@fontlatex' macro.
+
+	* doc/install.texi: Specify node unconditionally in the file.
+
+	* doc/intro.texi (Introduction): Use `@email' instead of `@url'
+	for email addresses.
+
+	* doc/quickstart.texi (Processing): Better heading.
+
+	* font-latex.el: Clean up comments.
+	(font-latex-built-in-keyword-classes): Add explanation of the
+	variable structure.
+	(font-latex-match-command-with-arguments): Change "asterix" to
+	"asterisk".
+
 2004-11-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-backward-paragraph): Jump to macro start.  D'oh.
