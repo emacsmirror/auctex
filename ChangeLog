@@ -2,6 +2,7 @@
 
 	* latex.el (LaTeX-fill-paragraph): Back out changes from
 	2003-12-29.
+	Create separate new-fill branch for Ralf's code.
 
 2004-02-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
