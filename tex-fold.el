@@ -148,6 +148,7 @@ string for any unspecified macro or environment."
 
 (defvar TeX-fold-keymap
   (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-o\C-o" 'TeX-fold-dwim)
     (define-key map "\C-c\C-o\C-b" 'TeX-fold-buffer)
     (define-key map "\C-c\C-o\C-r" 'TeX-fold-region)
     (define-key map "\C-c\C-o\C-p" 'TeX-fold-paragraph)
@@ -161,6 +162,15 @@ string for any unspecified macro or environment."
 
 
 ;;; Folding
+
+(defun TeX-fold-dwim ()
+  "Hide or show items according to the current context.
+If there is folded content, unfold it.  If there is no folded
+content but a macro or environment, fold it."
+  (interactive)
+  (cond ((TeX-fold-clearout-item))
+	((TeX-fold-item 'macro))
+	((TeX-fold-item 'env))))
 
 (defun TeX-fold-buffer ()
   "Hide all configured macros and environments in the current buffer.
@@ -276,12 +286,14 @@ environments or 'macro for macros."
 (defun TeX-fold-macro ()
   "Hide the macro on which point currently is located."
   (interactive)
-  (TeX-fold-item 'macro))
+  (unless (TeX-fold-item 'macro)
+    (message "No macro found.")))
 
 (defun TeX-fold-env ()
   "Hide the environment on which point currently is located."
   (interactive)
-  (TeX-fold-item 'env))
+  (unless (TeX-fold-item 'env)
+    (message "No environment found.")))
 
 (defun TeX-fold-item (type)
   "Hide the item on which point currently is located.
@@ -306,10 +318,7 @@ TYPE specifies the type of item and can be one of the symbols
 			       (error nil)))
 			    (t
 			     (TeX-find-macro-start)))))
-      (if (not item-start)
-	  (message (if (eq type 'env)
-		       "No environment found."
-		     "No macro found."))
+      (when item-start
 	(let* ((item-name (save-excursion
 			    (goto-char item-start)
 			    (looking-at
@@ -532,10 +541,13 @@ overlays."
 
 (defun TeX-fold-remove-overlays (overlays)
   "Remove all overlays set by TeX-fold in OVERLAYS."
-  (while overlays
-    (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
-      (delete-overlay (car overlays)))
-    (setq overlays (cdr overlays))))
+  (let (found)
+    (while overlays
+      (when (eq (overlay-get (car overlays) 'category) 'TeX-fold)
+	(delete-overlay (car overlays))
+	(setq found t))
+      (setq overlays (cdr overlays)))
+    found))
 
 
 ;;; Toggling
