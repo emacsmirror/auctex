@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.145 2002-05-08 10:42:52 dakas Exp $
+;; $Id: preview.el,v 1.146 2002-05-28 07:57:16 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -470,7 +470,7 @@ example \"-sDEVICE=png256\" will go well with 'png."
 /preview-latex-do{setpagedevice save %s exch[count 2 roll]exch cvx \
 systemdict/.runandhide known revision 700 ge and{.setsafe{.runandhide}}if \
 stopped{handleerror quit}if count 1 ne{quit}if \
-aload pop restore}def "
+aload pop restore}bind def "
 		(mapconcat #'identity preview-gs-colors " ")))
   (preview-gs-queue-empty)
   (preview-parse-messages #'preview-gs-dvips-process-setup))
@@ -896,7 +896,9 @@ numbers (can be float if available)."
 Fallback to :inherit and 'default implemented."
   :group 'preview-appearance)
 
-(defcustom preview-auto-reveal 'reveal-mode
+(defcustom preview-auto-reveal `(preview-arrived-via
+				 ,(key-binding [left])
+				 ,(key-binding [right]))
   "*Cause previews to open automatically when entered.
 Possibilities are:
 T autoopens,
@@ -2036,7 +2038,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.145 $"))
+	(rev "$Revision: 1.146 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2047,7 +2049,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-05-08 10:42:52 $"))
+    (let ((date "$Date: 2002-05-28 07:57:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
