@@ -1,3 +1,23 @@
+2004-05-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auc-tex.texi (ToDo): New name for node/section formerly
+	known as `Projects' or `Wishlist' respectively.
+	Removed items not relevant anymore and moved the rest to the new
+	file `doc/todo.texi'.
+
+	* doc/Makefile.in (TEXIFILES): New constant.
+	(auctex): Use it.
+	(dist): Added `TODO'.
+	(TODO): New target.
+	(clean): Added `TODO'.
+	Some formattig changes.
+
+	* doc/todo.texi: New file.
+
+	* Makefile.in (tar-ball): Added `TODO'.
+
+	* doc/changes.texi: Advertise support for `beamer.cls'.
+
 2004-04-30  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-command-expand): Add "%%" expansion, make order
