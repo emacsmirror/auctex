@@ -26,9 +26,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'latex))
-
 (defvar preview-compatibility-macros nil
   "List of macros only present when compiling/loading.")
 
@@ -122,8 +119,6 @@ as a help-echo.  CLICK1 and CLICK2 are functions to call
 on preview's clicks."
   `(let (,@(if string `((res (copy-sequence ,string))))
 	   (resmap ,(or map '(make-sparse-keymap))))
-     ,@(unless map
-	 '((set-keymap-parent resmap LaTeX-mode-map)))
      ,@(if click1
 	   `((define-key resmap ,preview-button-1 ,click1)))
      ,@(if click2
@@ -133,7 +128,7 @@ on preview's clicks."
 	      0 (length res)
 	      (list 'mouse-face 'highlight
 	      'help-echo (format ,helpstring preview-button-1 preview-button-2)
-	      'local-map resmap)
+	      'keymap resmap)
 	      res)
 	     res)
 	 '(resmap))))
@@ -225,15 +220,17 @@ toggles it."
 	  (progn
 	    (overlay-put ov 'category 'preview-overlay)
 	    (overlay-put ov 'invisible t)
-	    (dolist (prop '(display local-map mouse-face help-echo))
-	      (overlay-put ov prop
-			   (get-text-property 0 prop (car strings))))
-	    (overlay-put ov 'before-string nil)
+	    (if (eq (overlay-start ov) (overlay-end ov))
+		(overlay-put ov 'before-string (car strings))
+	      (dolist (prop '(display keymap mouse-face help-echo))
+		(overlay-put ov prop
+			     (get-text-property 0 prop (car strings))))
+	      (overlay-put ov 'before-string nil))
 	    (overlay-put ov 'face nil)
 	    (with-current-buffer (overlay-buffer ov)
 	      (add-hook 'pre-command-hook #'preview-mark-point nil t)
 	      (add-hook 'post-command-hook #'preview-move-point nil t)))
-	(dolist (prop '(display local-map mouse-face help-echo invisible))
+	(dolist (prop '(display keymap mouse-face help-echo invisible))
 	  (overlay-put ov prop nil))
 	(overlay-put ov 'face 'preview-face)
 	(overlay-put ov 'before-string (cdr strings)))
@@ -245,9 +242,10 @@ toggles it."
 
 (defun preview-mark-point ()
   "Mark position for fake intangibility."
-  (when (eq (get-char-property (point) 'preview-state) 'active)
-    (set-marker preview-marker (point))
-    (preview-move-point))
+;;  seems to hurt more than it helps.
+;;  (when (eq (get-char-property (point) 'preview-state) 'active)
+;;    (set-marker preview-marker (point))
+;;    (preview-move-point))
   (set-marker preview-marker (point)))
 
 (defun preview-move-point ()
