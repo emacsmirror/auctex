@@ -162,8 +162,8 @@ binary @file{.rpm} files suitable for a recent RedHat system. Anonymous
 
 Bug reports should be sent by using @kbd{M-x preview-report-bug
 @key{RET}}, as this will fill in a lot of information interesting to
-us. If the installation fails (but this should be a rare event), contact
-the developers at @email{preview-latex-bugs@@lists.sourceforge.net}.
+us. If the installation fails (but this should be a rare event), report
+bugs to @email{preview-latex-bugs@@lists.sourceforge.net}.
 
 Questions, suggestions for new features, pleas for help, and/or praise
 should go to @email{preview-latex-devel@@lists.sourceforge.net} (the
