@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-%\CheckSum{496}
+%\CheckSum{500}
 %\def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.26 $
+%  \rcskey \version CVS-$Revision: 1.27 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2001-11-30 19:25:54 $
+%\rcskey\next $Date: 2001-11-30 20:05:00 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -221,7 +221,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.26 $
+   \reserved@a\reserved@b CVS-$Revision: 1.27 $
 \else
    \begingroup
       \lccode`-=`.
@@ -230,7 +230,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2001-11-30 19:25:54 $
+\reserved@a\next $Date: 2001-11-30 20:05:00 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-LaTeX \reserved@b]}
 \next
@@ -618,11 +618,13 @@
 %\begin{macro}{\PreviewEnvironment}
 %  Actually, this ignores any syntax argument.  But don't tell
 %  anybody.  But for the |*|~form, it respects (actually ignores) any
-%  argument!
+%  argument!  Of course, we'll need to deactivate
+%  |\end{|\meta{environment}|}| as well.
 %    \begin{macrocode}
 \def\PreviewEnvironment{\@ifstar\pr@starenv\pr@env}
 \newcommand*\pr@starenv[2][]{\toks@{\pr@starmacro[{#1}]}%
-  \the\expandafter\toks@\csname#1\endcsname}
+  \the\expandafter\toks@\csname#1\endcsname
+  \expandafter\pr@starmacro\csname end#1\endcsname}
 \newcommand*{\pr@env}[2][]{\expandafter\pr@advise@ship
    \csname #2\endcsname{\aftergroup\pr@endbox}{}}
 %    \end{macrocode}
