@@ -2,6 +2,7 @@
 
 	* preview.dtx (subsection{Preview attaching commands}): Change
 	output routine to flush out floats.
+	Correct \CheckSum.
 
 	* preview.el: Use `error' identifier only where really needed.
 	(preview-gs-behead-outstanding): see above.
