@@ -1,3 +1,28 @@
+2002-04-15  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-disabled-string): slightly more correct
+	excursion.
+	(preview-disable): Clear image for garbage collecting if no
+	longer needed.
+	(preview-inactive-string): excursion from
+	preview-disabled-string.
+	(preview-place-preview): Don't generate inactive string, that
+	gets done on-demand by toggle.
+	(preview-reinstate-preview): Same here.
+
+	* prv-emacs.el (preview-make-clickable): Preformat constant help
+	strings.  Help messages will not adapt to changes of
+	preview-button-[12] after compilation, but that's probably worth
+	it.
+	(preview-toggle): Generate inactive-string on the fly.
+
+	* prv-xemacs.el (preview-replace-active-icon): Avoid multiple
+	evaluation of replacement.
+	(preview-make-clickable): Preformat constant help strings.  Help
+	messages will not adapt to changes of preview-button-[12] after
+	compilation, but that's probably worth it.
+	(preview-toggle): Generate inactive-string on the fly.
+
 2002-04-15  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* preview-latex.spec: Tidying up
