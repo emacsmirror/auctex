@@ -2,6 +2,7 @@
 
 	* tex-fold.el (TeX-fold-help-echo-max-length): New variable.
 	(TeX-fold-make-help-echo): New function.
+	No space before ellipsis.
 	(TeX-fold-make-overlay): Use it.
 	(TeX-fold-hide-item): Set help-echo property.
 	(TeX-fold-show-item): Invalidate help-echo property.
