@@ -406,6 +406,7 @@ value of `Texinfo-mode-hook'."
    '("cite" "Reference")
    '("clear" "Flag")
    '("code" "Sample-code")
+   '("command" "Command")
    '("comment" "Comment")
    '("contents")
    '("copyright")
