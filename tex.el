@@ -553,7 +553,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.368 $"))
+	(rev "$Revision: 5.369 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +568,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-13 08:35:52 $"))
+    (let ((date "$Date: 2004-05-14 12:41:55 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1979,7 +1979,8 @@ If TEX is a directory, generate style files for all files in the directory."
 	((TeX-match-extension tex (append TeX-file-extensions
 					  BibTeX-file-extensions))
 	 (save-excursion
-	   (set-buffer (find-file-noselect tex))
+	   (set-buffer (let (enable-local-eval)
+			 (find-file-noselect tex)))
 	   (message "Parsing %s..." tex)
 	   (TeX-auto-store (concat (file-name-as-directory auto)
 				   (TeX-strip-extension tex
