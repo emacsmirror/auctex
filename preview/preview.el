@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.13 2001-09-29 02:08:10 dakas Exp $
+;; $Id: preview.el,v 1.14 2001-09-30 00:47:40 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  The current usage is to put
@@ -55,7 +55,7 @@
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
      "preview-latex-bugs@lists.sourceforge.net"
-     "$RCSfile: preview.el,v $ $Revision: 1.13 $ $Name:  $"
+     "$RCSfile: preview.el,v $ $Revision: 1.14 $ $Name:  $"
      '(AUC-TeX-version
        preview-image-type
        preview-image-creators
@@ -78,30 +78,45 @@ file exhibiting the problem might help."
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
   :group 'AUC-TeX)
 
-(defcustom preview-image-type 'png
-  "*Image type to be used in images."
-  :group 'preview
-  :type '(choice (const postscript)
-		 (const png)
-		 (symbol :tag "Other")))
-  
 (defcustom preview-image-creators
-  '(postscript (place (preview-eps-place))
-    png (open (preview-gs-open png ("-sDEVICE=png256"))
-	 place (preview-gs-place)
-	 close (preview-gs-close)))
-  "*Define functions for generating images.
-These functions get called with the type of the image as
-first argument, the scale (required real life size per
-postscript size) to use as second argument, a list with
-members of the form (IMAGE-DESCRIPTOR EPSFILENAME BBOX) and
-any remaining arguments configured here."
+  '((postscript (place preview-eps-place))
+    (png (open preview-gs-open png ("-sDEVICE=png256"))
+	 (place preview-gs-place)
+	 (close preview-gs-close))
+    (jpeg (open preview-gs-open jpeg ("-sDEVICE=jpeg"))
+	  (place preview-gs-place)
+	  (close preview-gs-close))
+    (pnm (open preview-gs-open pbm ("-sDEVICE=pnmraw"))
+	  (place preview-gs-place)
+	  (close preview-gs-close))
+    (tiff (open preview-gs-open tiff ("-sDEVICE=tiffpack"))
+	  (place preview-gs-place)
+	  (close preview-gs-close)))
+  "Define functions for generating images.
+These functions get called in the process of generating inline
+images of the specified type.  The open function is called
+at the start of a rendering pass, the place function for
+placing every image, the close function at the end of
+the pass.  Look at the documentation of the various
+functions used here for the default settings, and at
+the function `preview-call-hook' through which those are
+called.  Additional argument lists specified in here
+are passed to the functions before any additional
+arguments given to `preview-call-hook'."
   :group 'preview
-  :type '(plist :value-type
-		(plist :key-type symbol
+  :type '(alist :key-type symbol :value-type
+		(alist :key-type symbol
 		       :value-type (list function
 					 (repeat :inline t sexp))
 		       :options (open place close))))
+
+(defcustom preview-image-type 'png
+  "*Image type to be used in images."
+  :group 'preview
+  :type (append '(choice)
+	      (mapcar (lambda (symbol) (list 'const (car symbol)))
+		      preview-image-creators)
+	      '((symbol :tag "Other"))))
 
 (defun preview-call-hook (symbol &rest rest)
   "Call a function from `preview-image-creators'.
@@ -110,8 +125,9 @@ for the image type `preview-image-type' and calls the
 hook function given there with the arguments specified there
 followed by REST.  If such a function is specified in there,
 that is."
-  (let ((hook (plist-get (plist-get preview-image-creators
-			       preview-image-type) symbol)))
+  (let ((hook (cdr (assq symbol
+		    (cdr (assq preview-image-type
+			       preview-image-creators))))))
     (when hook
       (apply (car hook) (append (cdr hook) rest)))))
 	 	   
