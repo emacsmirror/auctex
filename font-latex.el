@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.908 (17 Nov 2003)
+;; Version:    0.909 (25 Nov 2003)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,10 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.909 25Nov2003 Reiner Steib
+;;  - font-latex-match-function-keywords: Added spacing commands, "nonumber",
+;;  "centering", "TeX", and "LaTeX".
+;;  - font-latex-match-textual-keywords: Added textsuperscript.
 ;; V0.908 17Nov2003 PSG
 ;;  - font-latex-keywords-2: Had forgotten to set LAXMATCH on all title
 ;;    matches.  Thanks to Ralf Angeli for reporting the bug.
