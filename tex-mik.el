@@ -55,8 +55,8 @@
 (unless (get 'TeX-source-specials-view-position-flags 'saved-value)
   (setq TeX-source-specials-view-position-flags "-s %n%b"))
 
-;; Yap does not support a command line option for for inverse
-;; searching.  The editor command has to be configured inside Yap in
+;; Yap does not support a command line option for inverse searching.
+;; The editor command has to be configured inside Yap in
 ;; "View/Options/Inverse Search" instead.
 (unless (get 'TeX-source-specials-view-editor-flags 'saved-value)
   (setq TeX-source-specials-view-editor-flags ""))
