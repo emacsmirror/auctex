@@ -378,13 +378,13 @@ dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for the location of AUC TeX's tex-site.el)
 AC_ARG_WITH(tex-site,[  --with-tex-site=DIR     Location of AUC TeX's tex-site.el, if not standard], 
- [ AUCTEXDIR="${withval}" ; 
+ [ auctexdir="${withval}" ; 
    AC_FULL_EXPAND(withval)
    if test ! -d "$withval"  ; then
-      AC_MSG_ERROR([--with-tex-site=$AUCTEXDIR: Directory does not exist])
+      AC_MSG_ERROR([--with-tex-site=$auctexdir: Directory does not exist])
    fi
 ])
-if test -z "$AUCTEXDIR" ; then
+if test -z "$auctexdir" ; then
   AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_AUCTEX,[
   AC_EMACS_CHECK_REQUIRE(tex_site,silent)
   if test "${HAVE_tex_site}" = "yes"; then
@@ -403,14 +403,14 @@ if test -z "$AUCTEXDIR" ; then
 Check the PROBLEMS file for details.])
   fi
   ])
-   AUCTEXDIR=${EMACS_cv_ACCEPTABLE_AUCTEX}
+   auctexdir=${EMACS_cv_ACCEPTABLE_AUCTEX}
 fi
 
-   AC_MSG_RESULT(${AUCTEXDIR})
-   #echo ${AUCTEXDIR}
-   #  [echo ${AUCTEXDIR} | sed 's/\\/&&/g']
-	#   AUCTEXDIR=`echo ${AUCTEXDIR} | sed 's/\\\\/&&/g'`
-   AC_SUBST(AUCTEXDIR)
+   AC_MSG_RESULT(${auctexdir})
+   #echo ${auctexdir}
+   #  [echo ${auctexdir} | sed 's/\\/&&/g']
+	#   auctexdir=`echo ${auctexdir} | sed 's/\\\\/&&/g'`
+   AC_SUBST(auctexdir)
 ])
 
 dnl
