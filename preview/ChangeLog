@@ -1,3 +1,12 @@
+2003-11-18  Jan-Åke Larsson  <jalar@mai.liu.se>
+
+	* dvipng/enc.c: Fix bug 
+
+	* dvipng/ft.c:
+	* dvipng/tfm.c:
+	* dvipng/font.c:
+	* dvipng/dvipng.h: Add fallback from FT to PK
+	
 2003-11-14  Jan-Åke Larsson  <jalar@mai.liu.se>
 
 	* dvipng/Makefile.in: Use $DESTDIR
