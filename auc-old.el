@@ -1,7 +1,7 @@
 ;;; auc-old.el - Compatibility with AUC TeX 6.*
 ;;
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 10.0e
+;; Version: 10.0f
 ;;
 ;; Copyright (C) 1991 Kresten Krab Thorup 
 ;; Copyright (C) 1993 Per Abrahamsen 

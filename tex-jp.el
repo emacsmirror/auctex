@@ -2,7 +2,7 @@
 ;;
 
 ;; Maintainer: Hidenobu Nabetani <nabe@debian.or.jp>
-;; Version: 10.0e
+;; Version: 10.0f
 
 ;;; Commentary: 
 ;; This file was written by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>

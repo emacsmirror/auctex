@@ -414,10 +414,10 @@ Full documentation will be available after autoloading the function."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "10.0e"
+(defconst AUC-TeX-version "10.0f"
   "AUC TeX version number.")
 
-(defconst AUC-TeX-date "Mon Mar 26 16:08:34 CEST 2001"
+(defconst AUC-TeX-date "Tue Mar 27 14:13:11 CEST 2001"
   "AUC TeX release date.")
 
 ;;; Buffer

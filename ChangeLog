@@ -1,3 +1,12 @@
+2001-03-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 10.0f released.
+
+2001-03-27  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* tex.el (unless): Don't enable Emacs 21 font-lock for Emacs 20. 
+	(VirTeX-common-initialization): Ditto.
+
 2001-03-26  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 10.0e released.
