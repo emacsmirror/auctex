@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.23 1993-03-23 12:10:30 amanda Exp $
+@c $Id: auc-tex.texi,v 1.24 1993-03-27 22:15:24 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -79,7 +79,7 @@ Per Abrahamsen (7.0 update)
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
 * Multifile::                   Documents split over many files
-* Internationalization::        Support for European Languages
+* Internationalization::        The Anti-American Conspiracy
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Installation::                Installation
@@ -125,13 +125,14 @@ Formatting and Printing
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
 
-Support for European Languages
+The Anti-American Conspiracy
 
 * Scandinavian::                Support for the Scandinavian Languages
 * Russian::                     Support for Russian
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
+* Japanese ::                   Japanese @TeX{} 
 
 Automatic Customization
 
@@ -1416,10 +1417,11 @@ any file with an extension of @samp{.tex}.@refill
 @end defopt
 
 @node Internationalization, Automatic, Multifile, top
-@chapter Support for European Languages
+@chapter The Anti-American Conspiracy
 @cindex Internationalization
 @cindex Europe
 @cindex Character set
+@cindex Japan
 
 AUC @TeX{} contains some support for ease the use of various European
 character sets.  This support is contained in two packages ``Keymap
@@ -1430,12 +1432,16 @@ entering accents.  Both packages depend on the ``Minor Mode Keymap''
 support in @file{min-map.el}, but at least ``Keymap Mode'' is otherwise
 useful even outside AUC @TeX{}.
 
+If you have the necessary software, AUC @TeX{} will also work with some
+Japanese versions of @TeX{} and Emacs.
+
 @menu
 * Scandinavian::                Support for the Scandinavian Languages
 * Russian::                     Support for Russian
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
+* Japanese ::                   Japanese @TeX{} 
 @end menu
 
 @node Scandinavian, Russian,  , Internationalization
@@ -1736,7 +1742,7 @@ that variable to change the list of dead keys. (You most likely want to
 do that).
 @end deffn
 
-@node Converting,  , Accents, Internationalization
+@node Converting, Japanese , Accents, Internationalization
 @section Converting Between Encodings of a Character Set
 @cindex Converting 
 @cindex Character set conversions
@@ -1760,6 +1766,28 @@ write @TeX{} documents normally.  You can use this function to edit the
 @TeX{} document using a character set that your terminal will display
 correctly, and then convert the file to @TeX{} format before you format
 it. 
+
+@node Japanese ,  , Converting, Internationalization
+@section Japanese @TeX{} 
+@cindex Japan
+@cindex Japanese
+@cindex Nippon
+@cindex NEMACS
+@cindex MULE
+@cindex j@TeX{}
+@cindex jLa@TeX{}
+
+To write Japanese text with AUC @TeX{} you need to have versions of
+@TeX{} and Emacs that supports Japanese.  There exist at least two
+variants of @TeX{} for Japanese text, and AUC @TeX{} can be used with
+both, as well as with the two Japanese-aware Emacses, DEMACS and MULE.
+
+To use the Japanese TeX variants, simply enter @code{japanese-tex-mode},
+@code{japanese-latex-mode}, or @code{japanese-slitex-mode}, and
+everything should work.  If not, send mail to Shinji Kobayashi
+(@samp{<koba@@keisu-s.t.u-tokyo.ac.jp>}, who kindly donated the code for
+supporting Japanese in AUC @TeX{}.  None of the primary AUC @TeX{}
+maintainers understand Japanese, so they can not help you.
 
 @node Automatic, Style Files, Internationalization, top
 @chapter Automatic Customization
@@ -2263,8 +2291,15 @@ Here is the file defining @code{slitex-mode}.
     (TeX-run-style-hooks "latex" "slitex"))))
 @end lisp
 
-You must should also add an entry to @code{TeX-format-list} in order to
-make in known to the rest of the system.
+The file should be placed in the directory @code{{TeX-fomat-director}).
+
+@defopt TeX-format-directory
+Directory containing information about @TeX{} format packages.
+Must end with a slash.
+@end defopt
+
+You must also add an entry to @code{TeX-format-list} in order to make in
+known to the rest of the system.
 
 @defopt TeX-format-list
 List of format packages to consider when choosing a @TeX{} mode.
@@ -2463,6 +2498,10 @@ AUC @TeX{} in that directory (@code{TeX-lisp-directory}), you should set
 @code{aucdir} to @samp{.} in order to avoid copying the byte compiled
 lisp files.
 
+If you already have an old version of AUC @TeX{} in that directory, you
+must delete it before installing the new version.  Otherwise the wrong
+version of the files may be loaded during the byte compilation.
+
 @item mandir
 Is set to the directory where you want to install the (unformatted) man
 page for LaCheck.
@@ -2470,6 +2509,11 @@ page for LaCheck.
 @item elispdir
 Is set to the directory where the lisp files from the standard Emacs
 distribution is found.  
+
+@item CC
+Is the compiler you want to use for compiling the LaCheck program. Is
+set to `gcc' by default. Change this is `cc' or whatever your system
+compiler is called if you do not have GCC installed.
 
 @end table
 
@@ -2874,6 +2918,12 @@ Masayuki Kuwada
 Terrence Brannon
 @item <roseman@@hustat.harvard.edu>   
 Leonard Roseman
+@item <koba@@keisu-s.t.u-tokyo.ac.jp>
+Shinji Kobayashi
+@item <jsmith@@king.mcs.drexel.edu>
+Justin R. Smith
+@item <inge@@nada.kth.se>
+Inge Frick
 @end table
 
 Special thanks to Leslie Lamport for supplying the source for the LaTeX
@@ -3180,6 +3230,18 @@ can not fix or honor right away will be added to this list
 
 @itemize @bullet
 
+@item 
+Make features.
+
+@kbd{C-c C-c} should check if any of the included tex or sty files are
+changed, and then sugest @code{TeX-command-default}.  It should also
+check the bib files it uses, and suggest Bib@TeX{}.  
+
+A new command @code{TeX-update} (@kbd{C-c C-u}) could be used to create
+an up to date dvi file by repeatedly running Bib@TeX{}, MakeIndex and
+(La)@TeX{}, until an error occur or we are done.
+
+@item
 @kbd{C-u C-c @{} should add braces around region.  @kbd{C-u - C-c @{}
 should remove braces.  @kbd{C-u - C-c C-f} should remove font.  See code
 by Martin Sjolin @samp{<marsj@@ida.liu.se>}.

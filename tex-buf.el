@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.25 1993-03-17 22:11:28 amanda Exp $
+;;; $Id: tex-buf.el,v 1.26 1993-03-27 22:15:07 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -23,6 +23,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program; if not, write to the Free Software
 ;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; @@ Customization
+
+(defvar TeX-process-asynchronous (not (eq system-type 'ms-dos))
+  "*Use asynchronous processes.")
+
+(defvar shell-command-option "-c"
+  "DEMACS stuff.")
 
 ;;; @@ Interactive Commands
 ;;;
@@ -182,11 +190,12 @@ LIST default to TeX-expand-list."
 
 (defun TeX-command-query (name)
   "Query the user for a what TeX command to use."
-  (let* ((default (if (buffer-modified-p)
-		      TeX-command-default
-		    (TeX-process-get-variable name
-					      'TeX-command-next
-					      TeX-command-default)))
+  (let* ((default (cond ((buffer-modified-p)
+			 TeX-command-default)
+			((TeX-process-get-variable name
+						   'TeX-command-next
+						   TeX-command-default))
+			(TeX-command-default)))
 	 (completion-ignore-case t)
 	 (answer (completing-read (concat "Command: (default " default  ") ")
 				  TeX-command-list nil t)))
@@ -240,19 +249,27 @@ LIST default to TeX-expand-list."
 (defun TeX-command-hook (name command file)
   "Create a process for NAME using COMMAND to process FILE.
 Return the new process."
-  (let ((buffer (TeX-process-buffer-name file)))
+  (let ((default TeX-command-default)
+	(buffer (TeX-process-buffer-name file)))
     (TeX-process-check file)		; Check that no process is running
     (setq TeX-command-buffer (current-buffer))
     (pop-to-buffer (get-buffer-create buffer) t)
     (erase-buffer)
     (insert "Running `" name "' on `" file "' with ``" command "''\n")
-    (let ((process (start-process name buffer "sh" "-c" command)))
-      (setq mode-name name)
-      (setq TeX-parse-hook 'TeX-parse-command)
-      (TeX-command-mode-line process)
-      (set-process-filter process 'TeX-command-filter)
-      (set-process-sentinel process 'TeX-command-sentinel)
-      process)))
+    (setq mode-name name)
+    (setq TeX-parse-hook 'TeX-parse-command)
+    (setq TeX-command-default default)
+    (if TeX-process-asynchronous
+	(let ((process (start-process name buffer "sh" "-c" command)))
+	  (TeX-command-mode-line process)
+	  (set-process-filter process 'TeX-command-filter)
+	  (set-process-sentinel process 'TeX-command-sentinel)
+	  process)
+      (setq mode-line-process ": run")
+      (set-buffer-modified-p (buffer-modified-p))
+      (sit-for 0)				; redisplay
+      (call-process
+       shell-file-name nil buffer nil shell-command-option command))))
 
 (defun TeX-format-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
@@ -260,44 +277,37 @@ Return the new process."
     ;; Hook to TeX debuger.
     (setq TeX-parse-hook 'TeX-parse-TeX)
     (TeX-parse-reset)
-    ;; Updating the mode line.
-    (setq TeX-current-page "[0]")
-    (TeX-format-mode-line process)
-    (set-process-filter process 'TeX-format-filter)
+    (if TeX-process-asynchronous
+	(progn
+	  ;; Updating the mode line.
+	  (setq TeX-current-page "[0]")
+	  (TeX-format-mode-line process)
+	  (set-process-filter process 'TeX-format-filter)))
     process))
 
 (defun TeX-TeX-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-format-hook name command file)))
     (setq TeX-sentinel-hook 'TeX-TeX-sentinel)
-    process))
-
-;(defun TeX-LaTeX-hook (name command file)
-;  "Create a process for NAME using COMMAND to format FILE with TeX."
-;  (let ((buffer (TeX-process-buffer-name file))
-;	(args (TeX-split-string " " command)))
-;    (save-some-buffers)
-;    (setq TeX-command-buffer (current-buffer))
-;    (pop-to-buffer (get-buffer-create buffer) t)
-;    (erase-buffer)
-;    (setq mode-name name)
-;    (require 'tex-dbg)
-;    (setq TeX-parse-hook 'TeX-parse-TeX)
-;    (TeX-parse-reset)
-;    (apply 'call-process (car args) nil buffer t (cdr args))
-;    (goto-char (point-min))
-;    (TeX-LaTeX-sentinel "<none>" "LaTeX")))
+    (if TeX-process-asynchronous
+	process
+      (TeX-synchronous-sentinel name file process))))
 
 (defun TeX-LaTeX-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with TeX."
   (let ((process (TeX-format-hook name command file)))
     (setq TeX-sentinel-hook 'TeX-LaTeX-sentinel)
-    process))
+    (if TeX-process-asynchronous
+	process
+      (TeX-synchronous-sentinel name file process))))
 
 (defun TeX-BibTeX-hook (name command file)
   "Create a process for NAME using COMMAND to format FILE with BibTeX."
   (let ((process (TeX-command-hook name command file)))
-    (setq TeX-sentinel-hook 'TeX-BibTeX-sentinel)))
+    (setq TeX-sentinel-hook 'TeX-BibTeX-sentinel)
+    (if TeX-process-asynchronous
+	process
+      (TeX-synchronous-sentinel name file process))))
 
 (defun TeX-compile-hook (name command file)
   "Ignore first and third argument, start compile with second argument."
@@ -305,7 +315,9 @@ Return the new process."
 
 (defun TeX-shell-hook (name command file)
   "Ignore first and third argument, start shell-command with second argument."
-  (shell-command command))
+  (shell-command command)
+  (if (eq system-type 'ms-dos)
+      (redraw-display)))
 
 (defun TeX-discard-hook (name command file)
   "Start process with second argument, discarding its output."
@@ -320,6 +332,27 @@ Return the new process."
     (process-kill-without-query process)))
 
 ;;; @@ Command Sentinels
+
+(defun TeX-synchronous-sentinel (name file result)
+  "Process TeX command output buffer after the process dies."
+  (let* ((buffer (TeX-process-buffer file)))
+    (save-excursion
+      (set-buffer buffer)
+      
+      ;; Append post-mortem information to the buffer
+      (goto-char (point-max))
+      (insert "\n" mode-name (if (and result (zerop result))
+				 " finished" " exited") " at "
+	      (substring (current-time-string) 0 -5))
+      (setq mode-line-process ": exit")
+      
+      ;; Do command specific actions.
+      (setq TeX-command-next TeX-command-default)
+      (goto-char (point-min))
+      (apply TeX-sentinel-hook nil name nil)
+      
+      ;; Force mode line redisplay soon
+      (set-buffer-modified-p (buffer-modified-p)))))
 
 (defun TeX-command-sentinel (process msg)
   "Process TeX command output buffer after the process dies."
@@ -342,7 +375,7 @@ Return the new process."
 	     
 	     ;; Do command specific actions.
 	     (TeX-command-mode-line process)
-	     (setq TeX-command-next TeX-command-TeX)
+	     (setq TeX-command-next TeX-command-default)
 	     (goto-char (point-min))
 	     (apply TeX-sentinel-hook process name nil)
 	     
@@ -364,37 +397,36 @@ NAME is the name of the process.  Point is set to   ")
 (defun TeX-TeX-sentinel (process name)
   "Cleanup TeX output buffer after running TeX.
 Return nil ifs no errors were found."
-  (TeX-format-mode-line process)
+  (if process (TeX-format-mode-line process))
   (if (re-search-forward "^! " nil t)
       (progn
 	(message (concat name " errors in `" (buffer-name)
 			 "'. Use C-c ` to display."))
-	(setq TeX-command-next TeX-command-TeX)
+	(setq TeX-command-next TeX-command-default)
 	t)
     (setq TeX-command-next TeX-command-Show)
     nil))
 
 (defun TeX-LaTeX-sentinel (process name)
   "Cleanup TeX output buffer after running LaTeX."
-  (cond ((TeX-TeX-sentinel process name)
-	 (setq TeX-command-next TeX-command-LaTeX))
+  (cond ((TeX-TeX-sentinel process name))
 	((re-search-forward "^LaTeX Warning: Citation" nil t)
 	 (message "You should run BibTeX to get citations right.")
 	 (setq TeX-command-next TeX-command-BibTeX))
 	((re-search-forward "^LaTeX Warning: \\(Reference\\|Label(s)\\)" nil t)
 	 (message "You should run LaTeX again to get references right.")
-	 (setq TeX-command-next TeX-command-LaTeX))
+	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward "^LaTeX Version" nil t)
 	 (message (concat name ": successfully ended."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
 	 (message (concat name ": problems."))
-	 (setq TeX-command-next TeX-command-LaTeX))))
+	 (setq TeX-command-next TeX-command-default))))
 
 (defun TeX-BibTeX-sentinel (process name)
   "Cleanup TeX output buffer after running BibTeX."
   (message "You should perhaps run LaTeX again to get citations right.")
-  (setq TeX-command-next TeX-command-LaTeX))
+  (setq TeX-command-next TeX-command-default))
 
 ;;; @@ Process Control
 
@@ -653,7 +685,9 @@ original file."
 (defun TeX-parse-command (reparse)
   "We can't parse anything but TeX."
   (error "I cannot parse %s output, sorry."
-	 (process-name (TeX-active-process))))
+	 (if (TeX-active-process)
+	     (process-name (TeX-active-process))
+	   "this")))
 
 (defun TeX-parse-TeX (reparse)
   "Find the next error produced by running TeX.
