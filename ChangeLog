@@ -3,8 +3,12 @@
 	* tex-fold.el (TeX-fold-help-echo-max-length): New variable.
 	(TeX-fold-make-help-echo): New function.
 	No space before ellipsis.
+	Okay, color does not look too bad.
 	(TeX-fold-make-overlay): Use it.
+	Remove call to `TeX-fold-make-help-echo' again as we have to
+	recompute the string anyway.
 	(TeX-fold-hide-item): Set help-echo property.
+	Recompute help echo string.
 	(TeX-fold-show-item): Invalidate help-echo property.
 
 2005-04-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
