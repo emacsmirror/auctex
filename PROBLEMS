@@ -1,73 +1,12 @@
-* Your Emacs is missing easymenu.el.
+* -*- outline -*- 
 
-Please upgrade.
+* You are using Emacs 18 or 19, or XEmacs 19.
 
-If that is absolutely impossible, you can try installing 
+Upgrade.  AUC TeX requires at least Emacs 20 or XEmacs 20.
 
-	<URL:ftp://sunsite.auc.dk/packages/auctex/auc-menu.el>
+* You are using Win32.
 
-under the name easymenu.el at some place where emacs can find it.  
-The best place is in the standard Emacs lisp directory, because that
-will automatically be removed when you upgrade.
-
-* Missing menus or menus containing just the word "Bug".
-
-You probably have an old version of easymenu.el or auc-menu.el.  Find
-it, delete it, and recompile AUC TeX.  If you are using an old Emacs,
-the easymenu.el may have been distributed with it.  In that case, see
-the previous point.
-
-* You are not using UNIX or can't figure out how to install.
-
-0. Delete any old version you have.
-
-1. Edit tex-site.el.  Read the comments in the file.
-
-2. Add (load-file "<Path to AUC TeX>/tex-site.el") to your .emacs file.
-
-If you start a fresh emacs, AUC TeX should be loaded now.  
-The two next steps are optional:
-
-3. Byte compile the files with "M-x byte-compile-file" for speed.
-
-4. Do a `M-x TeX-auto-generate-global' to get full macro completion.
-
-Look also for files with names like MSDOS, OS2, or VMS that might be
-applicable for your system.
-
-* You get errors during byte compilation.
-
-This often indicates a type in your customizations.  If you have
-modified `tex-site.el', try to enter that file from Emacs and type
-`M-x eval-current-buffer RET' to find the error.
-
-This is can also be because some old version of AUC TeX gets loaded
-during the compilation.  Make sure to remove all old versions, and try
-again.  The Emacs 19 byte-compiler will give warning about free
-variables and unknown functions.  Ignore them.
-
-tex-jp.el will fail unless you have an emacs that understands japanese. 
-
-NEmacs-3.3.2 cannot `make install-auto', use `M-x TeX-auto-generate-global'
-instead.
-
-Mule-1.0-KIRITSUBO fails to parse some of the style files.
-
-* You are using NeXT Emacs.
-
-NeXT Emacs is broken, a workaround is available by ftp:
-
-host: sunsite.auc.dk
-file: /packages/auctex/get-proc-env.el.z (gzip'ed)
-
-* You are mixing Emacs 18, FSF Emacs 19, and Lucid Emacs 19.
-
-Make sure to use the correct byte-compiled files for each version.
-You may want to disable the automatic byte compilation by setting 
-
-        (setq TeX-byte-compile nil)
-
-in your .emacs file.
+See <URL: http://www.math.auc.dk/~dethlef/Tips/>.
 
 * None if this completion or multifile stuff works...
 
@@ -86,10 +25,6 @@ For various reasons, AUC TeX ignores the extension when it store
 information about a file, so you should use unique base names for your
 files.  E.g. rename `foo.bib' to `foob.bib'.
 
-* (La)TeX Interactive does not work.
-
-You need comint.el on Emacs 18.  Look at your favorite elisp archive.
-
 * TeX-save-document does not work.
 
 Make sure TeX-check-path contains "./" somewhere.
@@ -98,8 +33,3 @@ Make sure TeX-check-path contains "./" somewhere.
 
 GNU ispell 4.0 does not understand TeX.  Upgrade to International
 Ispell 3.1 which works much better on TeX documents.
-
-
-% Local Variables: 
-% mode: outline-minor
-% End: 

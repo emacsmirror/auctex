@@ -1,11 +1,11 @@
-@section News in 9.10
+@section News in 10.0
 
 @itemize @bullet
 @item
 @kbd{,} and @kbd{.} no longer removes italic correction.
 
 @item
-@code{graphicsx} support.
+@code{graphicx} and @code{graphics} style support.
 Donated by Ryuichi Arafune <arafune@@ushioda.riec.tohoku.ac.jp>.
 
 @item
