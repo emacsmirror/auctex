@@ -6,30 +6,24 @@ La@TeX{} equations right into the editing window where they belong.
 The purpose of preview-latex is to embed La@TeX{} environments such as
 display math or figures into the source buffers. By mouse-clicking, you
 can open the original text. After editing, another click will just run
-the region in question through LaTeX and redisplay the new results.
+the region in question through La@TeX{} and redisplay the new results.
 
-For installation instructions, see the @file{INSTALL} file or the
-identical Installation chapter in the preview-latex manual. The La@TeX{}
-style used is documented in a @code{dvi} style produced by the
-installation process.
+For installation instructions, see the @file{INSTALL} file or
+@ref{Installation}. The La@TeX{} style used is documented in a dvi style
+produced by the installation process.
 
 @section Prerequisites
 
-Current state of affairs: you need to get access to a version of Emacs
-21. The public release 21.1 should be ok for starters. Pretest versions
-before that have problems. Direct @acronym{EPS} rendering still is in
-need of improvement and very experimental, so the default setting
-replaces Emacs' internal @acronym{EPS} handling by an indirect rendering
-mechanism. If you feel capable of helping out with Emacs' @acronym{EPS}
-interface (meaning that the APIs connecting GhostScript and viewers such
-as GhostView and xdvi are not a book with seven seals for you), feel
-free to do so. Report bugs you can reproduce along with the files needed
-to reproduce them. The new display engine for 21.1 is quite powerful,
-and some bugs still might be lurking inside.
+Most importantly, you need to get access to a version of Emacs 21. The
+public release 21.1 is known to work. Pretest versions before that have
+problems. You also need La@TeX{}, of course, but most installs that
+includes dvips should work. A fairly recent AUC @TeX{} is also needed.
+You also need a recent Ghostscript, and this is the most common source
+of problems. Version 6.51 is known to work well, whereas earlier
+versions have problems.
 
-You also need AUC @TeX{} installed and working, and probably a fairly
-recent version of GhostScript.  At the current point of time, XEmacs
-is not supported.  Work is underway to change that in future versions,
+@strong{Please note:} At the current point of time, XEmacs is not
+supported. Work is underway to change that in future versions,
 contributions would be welcome.
 
 For some known problems with various software, see the file
@@ -39,15 +33,13 @@ For some known problems with various software, see the file
 @cindex Download
 @cindex @acronym{CVS} access
 
-The preview-latex project is available at Sourceforge,
-@uref{http://sourceforge.net/projects/preview-latex}. There, the source
+The preview-latex project is available at Sourceforge, where the source
 tarball can be downloaded and also a binary .rpm suitable for a recent
-RedHat system.
+RedHat system. See @url{http://sourceforge.net/projects/preview-latex}.
 
 Anonymous @acronym{CVS} is available as well. See the Sourceforge web
 pages for more information, but here are the basic instructions (when
-prompted for a password for anonymous, simply press the @key{enter}
-key.)
+prompted for a password for anonymous, simply press the @key{RET} key.)
 
 @example
 @iftex
