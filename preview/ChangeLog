@@ -1,5 +1,7 @@
 2002-11-20  David Kastrup  <David.Kastrup@t-online.de>
 
+	* RELEASE: some changes for 0.7.4
+
 	* preview.el (preview-dump-command, preview-undump-command):
 	deleted.
 	(preview-do-replacements): New function for performing
