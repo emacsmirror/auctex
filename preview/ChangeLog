@@ -1,5 +1,29 @@
 2002-03-19  Nix  <nix@esperi.demon.co.uk>
 
+	* preview.dtx: Doc fix.
+
+	* preview.el: Require `reporter'.
+	* preview.el (preview-image-creators): Doc extension.
+	* preview.el (preview-eps-place): Doc fix.
+	* preview.el (preview-analyze-error): Likewise.
+	* preview.el (preview-gs): Grammar fix.
+	* preview.el (preview-face): Likewise.
+	* preview.el (preview-temp-dirs): Layout fix.
+	* preview.el (preview-environment): Grammar and layout fix.
+
+	* preview.el (preview-mouse-open-eps): Cater for XEmacs's
+	more limited PostScript mode.
+	* preview.el (LaTeX-preview-setup): Use `preview-mark-active' to
+	cater for Emacs/XEmacs active-region detection differences.
+
+	* prv-emacs.el (preview-nonready-icon): Doc fix.
+	* prv-emacs.el (preview-image-from-icon): Likewise.
+	* prv-emacs.el (preview-mark-active): New.
+
+	* prv-xemacs.el (preview-gs-color-value): New, from prv-emacs.el.
+
+2002-03-19  Nix  <nix@esperi.demon.co.uk>
+
 	* prv-xemacs.el: Require overlay always, not just at compile time.
 
 	(preview-compatibility-macros): Define only when compiling.
