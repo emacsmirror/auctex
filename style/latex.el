@@ -1,8 +1,18 @@
 ;;; latex.el - Special code for LaTeX.
 
-;; $Id: latex.el,v 1.8 1993-09-06 22:28:45 amanda Exp $
+;; $Id: latex.el,v 1.9 1993-11-18 20:13:33 amanda Exp $
 
 ;;; Code:
+
+(defvar TeX-arg-cite-note-p nil
+  "*If non-nil, ask for optional note in citations.")
+
+(defvar TeX-arg-footnote-number-p nil
+  "*If non-nil, ask for optional number in footnotes.")
+
+(defvar TeX-arg-item-label-p nil
+  "*If non-nil, always ask for optional label in items.
+Otherwise, only ask in description environments.")
 
 (TeX-add-style-hook "latex"
  (function
@@ -102,15 +112,28 @@
      '("vector" (TeX-arg-pair "X slope" "Y slope") "Length")
      '("cline" "Span `i-j'")
      '("multicolumn" "Columns" "Position" t)
-     '("item" [ "Item label" ])
+     '("item"
+       (TeX-arg-conditional (or TeX-arg-item-label-p
+				(string-equal (LaTeX-current-environment)
+					      "description"))
+			    ([ "Item label" ])
+			    ())
+       (TeX-arg-literal " "))
      '("bibitem" [ "Bibitem label" ] TeX-arg-define-cite)
-     '("cite" [ "Note" ] TeX-arg-cite)
+     '("cite"
+       (TeX-arg-conditional TeX-arg-cite-note-p ([ "Note" ]) ())
+       TeX-arg-cite)
      '("nocite" TeX-arg-cite)
      '("bibliographystyle" TeX-arg-bibstyle)
      '("bibliography" TeX-arg-bibligraphy)
-     '("footnote" [ "Number" ] t)
-     '("footnotetext" [ "Number" ] t)
-     '("footnotemark" [ "Number" ])
+     '("footnote"
+       (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
+       t)
+     '("footnotetext" 
+       (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil)
+       t)
+     '("footnotemark" 
+       (TeX-arg-conditional TeX-arg-footnote-number-p ([ "Number" ]) nil))
      '("newlength" TeX-arg-define-macro)
      '("setlength" TeX-arg-macro "Length")
      '("addtolength" TeX-arg-macro "Length")
@@ -154,6 +177,9 @@
      '("usebox" TeX-arg-savebox)
      '("vspace*" "Length")
      '("vspace" "Length")
+     '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
+     '("documentstyle" TeX-arg-document)
+     '("documentclass" TeX-arg-document)
      '("include" (TeX-arg-input-file "File" t))
      '("includeonly" t)
      '("input" TeX-arg-input-file)

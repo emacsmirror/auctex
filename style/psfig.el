@@ -1,8 +1,9 @@
 ;;; psfig.el - Support for the psfig style option.
 
 ;; Contributed by Marc Gemis <makke@wins.uia.ac.be>
+;; Please direct comments to him.
 
-;;; Code: 
+;;; Code:
 
 (TeX-add-style-hook "psfig"
  (function
@@ -13,16 +14,33 @@
 		     "psdraft" "psfull" "psscalefirst" "psrotatefirst"
 		     "psnodraftbox" "psdraftbox" "pssilent" "psnoisy"
 		     "minmaxtest"
+     '("psfig" TeX-arg-psfig)
      '("psfigurepath" t)
 		     )
     (LaTeX-add-environments
-     '("psfig" LaTeX-env-psfigure)
+     '("psfigure" LaTeX-env-psfigure)
      )
     )))
 
+(defun TeX-arg-psfig (optional)
+   "Ask for file, width and length. Insert psfig macro"
+   (let ((psfile (read-file-name "PS-file: " "" "" nil))
+	 (figwidth (read-input "Figure width: "))
+	 (figheight (read-input "Figure height: "))
+	 )
+
+     (insert TeX-grop "figure=" psfile)
+     (if (not (zerop (length figwidth)))
+	 (insert ",width=" figwidth))
+     (if (not (zerop (length figheight)))
+	 (insert ",width=" figheight))
+     (insert TeX-grcl)
+     )
+   )
+
+
 (defun LaTeX-env-psfigure (environment)
-  "Create  with \\label and \\caption and \\psfig
-commands."
+  "Create  with \\label and \\caption and \\psfig commands."
   (let ((float (read-input "Float to: " LaTeX-float))
 	(caption (read-input "Caption: "))
 	(label (read-input "Label: " LaTeX-figure-label))
@@ -40,20 +58,13 @@ commands."
 			      (concat LaTeX-optop LaTeX-float LaTeX-optcl))
 
     (if (or (zerop (length label))
-	    (and (string= "figure" environment)
-		 (equal LaTeX-figure-label label))
-	    (and (string= "table" environment)
-		 (equal LaTeX-table-label label)))
+	    (equal LaTeX-figure-label label))
 	()
       (newline-and-indent)
       (insert TeX-esc "label" TeX-grop label TeX-grcl)
       (end-of-line 0)
       (LaTeX-indent-line))
 
-    (if (zerop (length caption))
-	()
-      (newline-and-indent)
-      (insert TeX-esc "caption" TeX-grop caption TeX-grcl))
 
     (newline-and-indent)
     (insert TeX-esc "centerline" TeX-grop TeX-esc "psfig" TeX-grop
@@ -63,6 +74,10 @@ commands."
     (if (not (zerop (length figheight)))
 	(insert ",width=" figheight))
     (insert TeX-grcl TeX-grcl)
+    (if (zerop (length caption))
+	()
+      (newline-and-indent)
+      (insert TeX-esc "caption" TeX-grop caption TeX-grcl))
     (forward-line 5)))
 
 ;;; psfig.el ends here
