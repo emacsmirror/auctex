@@ -2,3 +2,7 @@
 *.log *.pg *.toc *.tp *.vr *.vrs
 auctex auctex-?
 Makefile
+CHANGES
+HISTORY
+README
+auc-tex*.html
