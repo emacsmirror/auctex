@@ -2,6 +2,7 @@
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Indent lines ending
 	with `\\' upon filling a region.
+	(LaTeX-fill-region): Prevent infinite loop at end of buffer.
 
 2004-04-24  David Kastrup  <dak@gnu.org>
 
