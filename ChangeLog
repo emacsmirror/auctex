@@ -1,5 +1,11 @@
 2004-11-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-bold-face, font-latex-italic-face)
+	(font-latex-math-face, font-latex-string-face)
+	(font-latex-warning-face, font-latex-verbatim-face): Inherit from
+	suitable base faces if possible.  Doc fix.
+	(font-latex-sedate-face): Doc fix.
+
 	* latex.el (LaTeX-paragraph-commands): Doc fix.
 
 	* tex.el: Move (nearly all) autoloads to a single place.  Remove
