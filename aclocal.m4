@@ -423,6 +423,20 @@ AC_SUBST(auctexdir)
 ])
 
 dnl
+dnl Check (X)Emacs supports Mule.
+dnl
+AC_DEFUN(EMACS_CHECK_MULE, [
+AC_MSG_CHECKING(for mule support)
+EMACS_CHECK_REQUIRE(mule,silent)
+if test "${HAVE_mule}" = "yes"; then
+  COMPILE_MULE="tex-jp.el"
+  CONTRIB_MULEELC="tex-jp.elc"
+fi
+AC_SUBST(COMPILE_MULE)
+AC_SUBST(CONTRIB_MULEELC)
+])
+
+dnl
 dnl MAKEINFO_CHECK_MACRO( MACRO, [ACTION-IF-FOUND 
 dnl					[, ACTION-IF-NOT-FOUND]])
 dnl
