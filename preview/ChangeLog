@@ -1,3 +1,20 @@
+2002-02-17  Alan Shutko  <ats@acm.org>
+
+	* doc/Makefile.in: New file, replacing the former ad-hoc build.
+
+	* doc/install.texi: Mention --disable-8bit-test.
+
+	* doc/problems.texi (LaTeX international characters): Mention
+	--disable-8bit-test.
+
+	* aclocal.m4 (AC_CHECK_AUCTEX): Correct --with-auctex to
+	--with-tex-site.
+
+	* configure.in: 8bit test enhancements.  Allow disabling test with
+	--disable-8bit-test.  
+	Check for makeinfo.
+	Generate doc/Makefile.
+
 2002-02-17  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/install.texi: Mention problems with 8-bit-uncleanliness.

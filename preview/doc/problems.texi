@@ -152,7 +152,8 @@ libraries.
 
 @code{configure} currently tries checking for an 8-bit-clean
 configuration of @LaTeX{} and refuses to continue until you have fixed
-it.
+it.  If you know your configuration is 8-bit-clean and the test still
+fails, pass the --disable-8bit-test to configure.
 
 @node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
 @section x-symbol interoperation

@@ -93,10 +93,16 @@ in @file{/dir}.
 This tells where to install Emacs Lisp files.  Normally, this option is
 unnecessary, but may be used if you don't like the directory that
 configure is suggesting.
-@end table
 
+@item --disable-8bit-test
 There can be problems if your @LaTeX{} implementation is not 8-bit
 clean.  Check @file{PROBLEMS} file or @ref{Known problems}).
+This switch disables the 8-bit test, in case you know that your
+installation is clean and the test is simply failing.
+
+@end table
+
+
 
 @section Build/install
 

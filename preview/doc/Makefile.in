@@ -1,0 +1,45 @@
+prefix=@prefix@
+infodir=@infodir@
+TEX=@TEX@
+TEXINDEX=texindex
+TEXIHTML=texi2html
+DVIPS=dvips
+MAKEINFO=@MAKEINFO@
+INSTALLINFO=install-info
+
+all: preview-latex.dvi preview-latex.info
+
+preview-latex/index.html: preview-latex.texi install.texi readme.texi \
+	copying.texi problems.texi
+	makeinfo --html preview-latex.texi
+
+html-docs: preview-latex/index.html
+
+preview-latex.dvi: preview-latex.texi install.texi readme.texi copying.texi \
+	problems.texi
+	-$(TEX) "\nonstopmode\input preview-latex.texi"
+	-$(TEXINDEX) preview-latex.cp
+	-$(TEX) "\nonstopmode\input preview-latex.texi"
+
+preview-latex.ps: preview-latex.dvi
+	$(DVIPS) preview-latex.dvi -o preview-latex.ps
+
+preview-latex.info: preview-latex.texi install.texi readme.texi copying.texi \
+	problems.texi
+	-$(MAKEINFO) preview-latex.texi
+
+INSTALL: install.texi
+	-$(MAKEINFO) --no-headers --no-validate install.texi --output INSTALL
+
+README: readme.texi
+	-$(MAKEINFO) --no-headers --no-validate readme.texi --output README
+
+PROBLEMS: problems.texi
+	-$(MAKEINFO) --no-headers --no-validate problems.texi --output PROBLEMS
+
+install: preview-latex
+	-$(INSTALL_DATA) preview-latex.info $(infodir)
+	-$(INSTALLINFO)  --info-dir=$(infodir) preview-latex
+
+clean: 
+	rm -f *.dvi *.ps *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# *.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps *.fns *.vrs *.pgs preview-latex preview-latex-? *.html INSTALL README PROBLEMS
