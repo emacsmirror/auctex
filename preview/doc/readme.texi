@@ -24,8 +24,8 @@ display math or figures into the source buffers.  By mouse-clicking, you
 can open the original text.  After editing, another click will just run
 the region in question through @LaTeX{} and redisplay the new results.
 
-For installation instructions, see the @file{INSTALL} file or
-@ref{Installation}.  The @LaTeX{} style used is documented in
+For installation instructions, see the @file{INSTALL} file
+(@ref{Installation}).  The @LaTeX{} style used is documented in
 @file{preview.dvi} as produced by the installation process.
 
 @section Prerequisites
@@ -38,12 +38,15 @@ You also need a recent Ghostscript, and this is the most common source
 of problems.  Version 6.51 is known to work well, whereas earlier
 versions have problems.
 
-@strong{Please note:} At the current point of time, XEmacs is not
-supported.  Work is underway to change that in future versions,
-contributions would be welcome.
+@strong{Please note:} At the current point of time, the port to XEmacs
+is progressing, but neither finished nor documented yet.  With the Emacs
+port, a lot of work had to be invested for the final polish, making
+things work smooth and naturally.  The same is to be expected for
+XEmacs.  If you are interested in contributing to this or any other
+area, please contact the developers' list mentioned below.
 
-For some known problems with various software, see the file
-@file{PROBLEMS}.
+For some known issues with various software, see the file
+@file{PROBLEMS} (@ref{Known problems}).
 
 @section Availability
 @cindex Download
@@ -56,7 +59,7 @@ suitable for a recent RedHat system.  See
 
 Anonymous @acronym{CVS} is available as well.  See the Sourceforge web
 pages for more information, but here are the basic instructions (when
-prompted for a password for anonymous, simply press the @key{RET} key.)
+prompted for a password for anonymous, simply press the @key{RET} key).
 
 @example
 @iftex

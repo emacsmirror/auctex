@@ -108,8 +108,8 @@ work under it.
 
 @item XEmacs
 
-Does not work yet.  Volunteers welcome.  Quite a bit of the necessary
-work has already been sorted out.
+Work in progress.  Volunteers welcome.  Ask on the developers' list how
+you may contribute.
 
 @item GNU Emacs @acronym{EPS} handling
 
