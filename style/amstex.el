@@ -6,6 +6,6 @@
  (function
   (lambda ()
     (TeX-add-symbols
-   '("eqref" TeX-arg-label)))))
+     '("eqref" TeX-arg-label)))))
 
 ;;; amstex.el ends here.

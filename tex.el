@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: tex.el,v 5.50 1995-01-26 12:57:04 amanda Exp $
+;; Version: $Id: tex.el,v 5.51 1995-01-26 12:57:45 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
@@ -476,10 +476,10 @@ The value is actually the tail of LIST whose car is ELT."
 ;; These two variables are automatically updated with "make dist", so
 ;; be careful before changing anything.
 
-(defconst AUC-TeX-version "9.2u"
+(defconst AUC-TeX-version "9.2v"
   "AUC TeX version number")
 
-(defconst AUC-TeX-date "Wed Jan 25 16:36:22 MET 1995"
+(defconst AUC-TeX-date "Thu Jan 26 13:57:09 MET 1995"
   "AUC TeX release date")
 
 ;;; Buffer

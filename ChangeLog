@@ -1,3 +1,10 @@
+Thu Jan 26 13:39:56 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (save-match-data): Added by koba@flab.fujitsu.co.jp
+	(Kobayashi Shinji). 
+	(bibtex-mode-hook): Don't use add-hook yet.  Reported by
+	koba@flab.fujitsu.co.jp (Kobayashi Shinji).
+
 Wed Jan 25 14:59:57 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* tex.el (change-major-mode-hook): Also clear
