@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.201 2004-03-15 16:55:27 dakas Exp $
+;; $Id: preview.el,v 1.202 2004-04-10 22:56:15 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -231,6 +231,9 @@ If `preview-fast-conversion' is set, this option is not
 (defvar preview-parsed-counters nil
   "Counters as parsed from the log of LaTeX run.")
 (make-variable-buffer-local 'preview-parsed-counters)
+(defvar preview-parsed-tightpage nil
+  "Tightpage as parsed from the log of LaTeX run.")
+(make-variable-buffer-local 'preview-parsed-tightpage)
 
 (defun preview-get-magnification ()
   "Get magnification from `preview-parsed-magnification'."
@@ -242,14 +245,25 @@ If `preview-fast-conversion' is set, this option is not
 LIST consists of TeX dimensions in sp (1/65536 TeX point)."
   (and
    (consp list)
-   (let ((dims (vconcat (mapcar
-			 #'(lambda (x)
-			     (/ x 65781.76)) list))))
-     (vector
-      (+ 72 (- preview-TeX-bb-border) (min 0 (aref dims 2)))
-      (+ 720 (- preview-TeX-bb-border) (min (aref dims 0) (- (aref dims 1)) 0))
-      (+ 72 preview-TeX-bb-border (max 0 (aref dims 2)))
-      (+ 720 preview-TeX-bb-border (max (aref dims 0) (- (aref dims 1)) 0))))))
+   (let* ((dims (vconcat (mapcar
+			  #'(lambda (x)
+			      (/ x 65781.76)) list)))
+	  (box
+	   (vector
+	    (+ 72 (min 0 (aref dims 2)))
+	    (+ 720 (min (aref dims 0) (- (aref dims 1)) 0))
+	    (+ 72 (max 0 (aref dims 2)))
+	    (+ 720 (max (aref dims 0) (- (aref dims 1)) 0))))
+	  (border (if preview-parsed-tightpage
+		      (vconcat (mapcar
+				#'(lambda(x)
+				    (/ x 65781.76)) preview-parsed-tightpage))
+		    (vector (- preview-TeX-bb-border)
+			    (- preview-TeX-bb-border)
+			    preview-TeX-bb-border
+			    preview-TeX-bb-border))))
+     (dotimes (i 4 box)
+       (aset box i (+ (aref box i) (aref border i)))))))
 
 (defcustom preview-gs-command "gs"
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
@@ -1012,7 +1026,7 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
 	   (if preview-ps-file
 	       `(lambda() (interactive "@")
 		  (preview-mouse-open-eps
-		   ,(car file)
+		   ,(if (consp (car file)) (nth 1 (car file)) (car file))
 		   ,(nth 0 (aref preview-gs-dsc
 				 (aref (overlay-get ov 'queued) 2)))))
 	     `(lambda() (interactive "@")
@@ -1071,8 +1085,7 @@ given as ANSWER."
 		 (gs-line
 		  (format
 		   "%s \
-<</PageSize[%g %g]/PageOffset[%g %g[1 1 dtransform exch]\
-{0 ge{neg}if exch}forall]/OutputFile%s>>preview-latex-do\n"
+<<%s/OutputFile%s>>preview-latex-do\n"
 		   (if preview-ps-file
 		       (concat "dup "
 			       (preview-gs-dsc-cvx
@@ -1083,9 +1096,13 @@ given as ANSWER."
 			      (if (listp (car oldfile))
 				  (car (last (car oldfile)))
 				(car oldfile)))))
-		   (- (aref bbox 2) (aref bbox 0))
-		   (- (aref bbox 3) (aref bbox 1))
-		   (aref bbox 0) (aref bbox 1)
+		   (if preview-parsed-tightpage
+		       ""
+		     (format "/PageSize[%g %g]/PageOffset[%g \
+%g[1 1 dtransform exch]{0 ge{neg}if exch}forall]"
+			     (- (aref bbox 2) (aref bbox 0))
+			     (- (aref bbox 3) (aref bbox 1))
+			     (aref bbox 0) (aref bbox 1)))
 		   (preview-ps-quote-filename newfile))))
 	    (setq preview-gs-outstanding
 		  (nconc preview-gs-outstanding
@@ -1930,14 +1947,14 @@ will be skipped over backwards."
 	      (backward-char)))
       (error (goto-char oldpos)))))
 
-(defcustom preview-required-option-list '("active" "dvips" "auctex")
+(defcustom preview-required-option-list '("active" "tightpdf" "auctex")
   "Specifies required options passed to the preview package.
 These are passed regardless of whether there is an explicit
 \\usepackage of that package present."
   :group 'preview-latex
   :type '(list (set :inline t :tag "Required options"
 		    (const "active")
-		    (const "dvips")
+		    (const "tightpdf")
 		    (const "counters")
 		    (const "auctex"))
 	       (repeat :inline t :tag "Others" string)))
@@ -2220,15 +2237,21 @@ later while in use."
       (setq pos (match-end 1)))
     list))
 
+(defun preview-parse-tightpage (string)
+  "Build tightpage vector from STRING,"
+  (read (concat "[" str "]")))
+
 (defvar preview-parse-variables
   '(("Fontsize" preview-parsed-font-size
-     "\\` *\\([0-9.]+\\)pt\\'" 1 string-to-number)
+     "\\` *\\([0-9.]+\\)pt\\'" 1 #'string-to-number)
     ("Magnification" preview-parsed-magnification
-     "\\` *\\([0-9]+\\)\\'" 1 string-to-number)
+     "\\` *\\([0-9]+\\)\\'" 1 #'string-to-number)
     ("PDFoutput" preview-parsed-pdfoutput
-     "" 0 stringp)
+     "" 0 #'stringp)
     ("Counters" preview-parsed-counters
-     ".*" 0 preview-parse-counters)))
+     ".*" 0 #'preview-parse-counters)
+    ("Tightpage" preview-parsed-tightpage
+     "\\` *\\(-?[0-9]+ *\\)\\{4\\}\\'" 0 #'preview-parse-tightpage)))
 
 (defun preview-parse-messages (open-closure)
   "Turn all preview snippets into overlays.
@@ -2917,7 +2940,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.201 $"))
+	(rev "$Revision: 1.202 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2928,7 +2951,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-15 16:55:27 $"))
+    (let ((date "$Date: 2004-04-10 22:56:15 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
