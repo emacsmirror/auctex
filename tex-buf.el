@@ -402,7 +402,24 @@ entry."
 		(not (TeX-member (car (car styles)) files 'string-match)))
       (setq styles (cdr styles))))
   (if styles
-      (nth 1 (car styles))
+      (let ((ret (nth 1 (car styles))))
+	(cond ((eq LaTeX-command-style styles)
+	       ;; Maybe add source specials:
+	       (concat
+		ret
+		(if TeX-source-specials-active-flag
+		    (concat
+		     " "
+		     TeX-source-specials-tex-flags
+		     (if TeX-source-specials-places
+			 (concat
+			  "="
+			  (mapconcat 'identity
+				     TeX-source-specials-places
+				     ","))
+		       " "))
+		  "")))
+	      (t ret)))
     ""))
 
 (defun TeX-output-extension ()
@@ -443,7 +460,10 @@ the current style options."
 		((not (TeX-member style files 'string-match)))))))
       (setq styles (cdr styles)))
     (if styles
-	(nth 2 (car styles))
+	(concat (nth 2 (car styles))
+		(if TeX-source-specials-active-flag
+		    (concat " " TeX-source-specials-viewer-flags)
+		  ""))
       "%v")))
 
 ;;; Command Hooks

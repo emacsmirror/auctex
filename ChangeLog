@@ -1,3 +1,18 @@
+2004-04-27  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-buf.el (TeX-style-check, TeX-output-style-check): Check for
+	source special stuff here instead of `TeX-expand-list'.  Honor
+	`TeX-source-specials-places'.
+
+	* tex.el (AUCTeX): Fix URL.
+	(TeX-default-mode, TeX-force-default-mode, TeX-install-font-lock)
+	(TeX-source-specials-active-flag): Changed custom group.
+	(TeX-expand-list): Move source special stuff to `TeX-style-check'
+	and `TeX-output-style-check'.
+	(TeX-source-specials-tex-flags): Make it customizable.
+	(TeX-source-specials-places): New variable.
+	(TeX-source-specials-viewer-flags): No IFS needed anymore.
+
 2004-04-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* context.el (context-guess-current-interface): Simplify code.

@@ -45,7 +45,7 @@
   "A (La)TeX environment."
   :tag "AUCTeX"
   :link '(custom-manual "(auctex)Top")
-  :link '(url-link :tag "Home Page" "<URL:http://www.gnu.org/software/auctex/>")
+  :link '(url-link :tag "Home Page" "http://www.gnu.org/software/auctex/")
   :prefix "TeX-"
   :group 'tex)
 
@@ -62,6 +62,10 @@
   :tag "LaTeX"
   :group 'AUCTeX
   :prefix "LaTeX-")
+
+(defgroup TeX-misc nil
+  "Various AUCTeX settings."
+  :group 'AUCTeX)
 
 ;;; Site Customization
 ;;
@@ -434,21 +438,13 @@ string."
 	(list "%q" (lambda ()
 		     (TeX-printer-query TeX-queue-command 2)))
 	(list "%V" (lambda ()
-		     (concat
-		      (TeX-output-style-check TeX-output-view-style)
-		      (if TeX-source-specials-active-flag
-			  TeX-source-specials-viewer-flags
-			""))))
+		     (TeX-output-style-check TeX-output-view-style)))
 	(list "%v" (lambda ()
 		     (TeX-style-check TeX-view-style)))
 	(list "%r" (lambda ()
 		     (TeX-style-check TeX-print-style)))
 	(list "%l" (lambda ()
-		     (concat
-		      (TeX-style-check LaTeX-command-style)
-		      (if TeX-source-specials-active-flag
-			  TeX-source-specials-tex-flags
-			""))))
+		     (TeX-style-check LaTeX-command-style)))
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -551,7 +547,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.354 $"))
+	(rev "$Revision: 5.355 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -566,7 +562,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-04-24 17:30:31 $"))
+    (let ((date "$Date: 2004-04-27 13:54:54 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -618,15 +614,35 @@ details."
   ;;
   ;; We should describe emacsclient / gnuclient in the AUCTeX manual and
   ;; only add a reference here.
-  :group 'TeX-output
+  :group 'TeX-command
   :set 'TeX-maybe-set-source-specials
   :initialize 'custom-initialize-default
   ;; FIXME: There's nothing about source-specials there yet:
   ;; :link '(custom-manual "(auctex)Viewing")
   :type 'boolean)
 
-(defvar TeX-source-specials-tex-flags " -src "
-  "*Extra flags to pass to TeX commands to generate source specials.")
+(defcustom TeX-source-specials-tex-flags "-src-specials"
+  "Extra flags to pass to TeX commands to generate source specials."
+  :type '(choice string (repeat string))
+  :group 'TeX-command)
+
+(defcustom TeX-source-specials-places nil
+  "List of places where to insert source specials into the DVI file.
+If nil, use (La)TeX's defaults."
+  :group 'TeX-command
+  :type '(list (set :inline t
+		    ;; :tag "Options known to work"
+		    ;; cr display hbox math par parend vbox
+		    (const "cr")
+		    (const "display")
+		    (const "hbox")
+		    (const "math")
+		    (const "par")
+		    (const "parend")
+		    (const "vbox"))
+	       (repeat :inline t
+		       :tag "Other options"
+		       (string))))
 ;; FIXME: We could also offer the WHERE value list.
 ;; From latex(1):
 ;; -src-specials            insert source specials into the DVI file
@@ -636,14 +652,17 @@ details."
 ;; Anyhow, this variable should be customizable.
 
 (defvar TeX-source-specials-viewer-flags
-  " -sourceposition %n:%b "
+  "-sourceposition %n:%b"
   "*Extra flags to pass to the dvi viewer commands to use source specials.")
 
-(defvar TeX-source-specials-check-function
+(defcustom TeX-source-specials-check-function
   'TeX-source-specials-check-xdvi
-  "*Function used to check if the the system supports source specials.
+  "Function used to check if the the system supports source specials.
 The function must return t if source specials are supported, and nil
-otherwise.  Set it to nil is source special support is not desired.")
+otherwise.  Set it to nil is source special support is not desired."
+  :group 'TeX-command
+  :type '(choice (const nil)
+		 function))
 
 (defvar TeX-source-specials-xdvi-p nil
   "Internal variable.  Do not change it.
@@ -1566,14 +1585,14 @@ when major mode to enter.")
 
 (defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined otherwise."
-  :group 'AUCTeX
+  :group 'TeX-misc
   :type '(radio (function-item latex-mode)
 		(function-item plain-tex-mode)
 		(function :tag "Other")))
 
 (defcustom TeX-force-default-mode nil
   "*If set to nil, try to infer the mode of the file from its content."
-  :group 'AUCTeX
+  :group 'TeX-misc
   :type 'boolean)
 
 ;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
@@ -1642,7 +1661,7 @@ This only works with Emacs 21." t)
 (defcustom TeX-install-font-lock 'font-latex-setup
   "Function to call to install font lock support.
 Choose `ignore' if you don't want AUCTeX to install support for font locking."
-  :group 'AUCTeX
+  :group 'TeX-misc
   :type '(radio (function-item font-latex-setup)
 		(function-item tex-font-setup)
 		(function-item ignore)
