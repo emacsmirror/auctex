@@ -523,7 +523,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.339 $"))
+	(rev "$Revision: 5.340 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -538,7 +538,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-03-21 22:32:26 $"))
+    (let ((date "$Date: 2004-03-23 02:05:06 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1588,9 +1588,6 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
     (setq compile-command "make"))
   (make-local-variable 'words-include-escapes)
   (setq words-include-escapes nil)
-  (set (make-local-variable 'sentence-end-double-space) nil)
-  (set (make-local-variable 'sentence-end)
-       "[.?!][]\"')]*\\($\\|\t\\| \\)[ \t\n]*")
 
   ;; Make TAB stand out
   ;;  (make-local-variable 'buffer-display-table)
