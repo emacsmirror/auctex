@@ -962,6 +962,8 @@ original file."
 			      (re-search-backward "[\r\n]" nil t)
 			      (setq trailer-offset (TeX-current-offset))
 			      (buffer-substring (point) (point-max))))))))))
+    ;; file name should be relative to master
+    (setq original (file-relative-name original (TeX-master-directory)))
     (save-excursion
       (set-buffer file-buffer)
       (setq buffer-undo-list t)
