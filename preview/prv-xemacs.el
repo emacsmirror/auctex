@@ -453,6 +453,14 @@ Pure borderless black-on-white will return NIL."
           (mapcar #'preview-gs-color-value fg)
           '("setrgbcolor"))))))
 
+(defun preview-mode-setup ()
+  "Setup proper buffer hooks and behavior for previews."
+;;  (add-hook 'pre-command-hook #'preview-mark-point nil t)
+;;  (add-hook 'post-command-hook #'preview-move-point nil t)
+  (unless (and (boundp 'balloon-help-mode)
+	       balloon-help-mode)
+    (balloon-help-minor-mode 1)))
+
 (provide 'prv-xemacs)
 
 ;;; Local variables:
