@@ -49,6 +49,12 @@ paths for installation of the files.  Be sure that
      Is set to the directory where the lisp files from the standard
      Emacs distribution is found.
 
+`CC' 
+     Is the compiler you want to use for compiling the LaCheck
+     program. Is set to `gcc' by default. Change this is `cc' or
+     whatever your system compiler is called if you do not have GCC
+     installed.
+
    Then type `make all', and the whole thing will be `made'.  If this
 succeeds, type `make install', and it will be installed.
 
