@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.131 2002-04-20 17:00:51 nixsf Exp $
+;; $Id: preview.el,v 1.132 2002-04-20 17:56:22 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -935,9 +935,7 @@ See `preview-auto-reveal' for definitions of MODE, which gets
 set to `preview-auto-reveal'."
   (cond ((symbolp mode)
 	 (and (boundp mode)
-              (if (eq (symbol-value mode) mode)
-                  mode
-                (preview-auto-reveal-p (symbol-value mode)))))
+              (symbol-value mode)))
 	((consp mode)
 	 (apply (car mode) (cdr mode)))
 	(t mode)))
@@ -1919,7 +1917,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.131 $"))
+	(rev "$Revision: 1.132 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1930,7 +1928,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-20 17:00:51 $"))
+    (let ((date "$Date: 2002-04-20 17:56:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
