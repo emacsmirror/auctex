@@ -560,7 +560,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.359 $"))
+	(rev "$Revision: 5.360 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -575,7 +575,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-05-05 16:24:32 $"))
+    (let ((date "$Date: 2004-05-06 15:48:16 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2847,17 +2847,13 @@ be bound to `TeX-electric-macro'."
 	    (funcall TeX-source-specials-check-function)
 	  nil)))
 
-(defun TeX-toggle-source-specials ()
-  "Toggle `TeX-source-specials-active-flag'."
+(defun TeX-toggle-source-specials
+  "Toggle generation and use of LaTeX source specials."
   (interactive)
-  (if TeX-source-specials-active-flag
-      (progn
-	(setq TeX-source-specials-active-flag nil)
-	(message "TeX-source-specials-active-flag: off"))
-    (setq TeX-source-specials-active-flag
-	  (TeX-maybe-set-source-specials nil t))
-    (if TeX-source-specials-active-flag
-	(message "TeX-source-specials-active-flag: on"))))
+  (setq TeX-source-specials-active-flag
+	(null TeX-source-specials-active-flag))
+  (message "TeX-source-specials-active-flag: %s"
+	   (if TeX-source-specials-active-flag "on" "off")))
 
 ;;; AmSTeX
 
