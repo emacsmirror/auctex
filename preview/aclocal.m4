@@ -238,10 +238,10 @@ dnl Perform sanity checking and try to locate the W3 package
 dnl
 AC_DEFUN(AC_CHECK_AUCTEX, [
 AC_MSG_CHECKING(for acceptable AUC-TeX version)
-AC_ARG_WITH(auctex,[  --with-auctex=DIR       Location of AUC-TeX, if not standard], 
+AC_ARG_WITH(auctex,[  --with-tex-site=DIR       Location of AUC-TeX's tex-site.el, if not standard], 
  [ AUCTEXDIR=${withval} ; 
    if test ! -d $AUCTEXDIR  ; then
-      AC_MSG_ERROR([--with-auctex=$AUCTEXDIR: Directory does not exist])
+      AC_MSG_ERROR([--with-tex-site=$AUCTEXDIR: Directory does not exist])
    fi
 ])
 if test -z "$AUCTEXDIR" ; then

@@ -1,9 +1,12 @@
 2001-11-28  Alan Shutko  <ats@acm.org>
 
+	* INSTALL (--with-tex-site): Rename --with-auctex.
+
 	* aclocal.m4 (AC_CHECK_AUCTEX): Try to fix things so that it looks
 	for tex-site, only tex-site, and adds the location of tex-site
 	into the load-path.
 	(AC_CHECK_REQUIRE): New.
+	(AC_CHECK_AUCTEX): Change name of --with-auctex to --with-tex-site.
 
 2001-11-12  Alan Shutko  <ats@acm.org>
 

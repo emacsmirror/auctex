@@ -51,10 +51,11 @@ it out with one of these options
   is not finding the right emacs binary, you can specify it with this
   option.
 
---with-auctex=/dir
+--with-tex-site=/dir
 
   If AUC-TeX is installed in a non-standard location (not in
-  site-lisp), use this option to specify the location.
+  site-lisp), use this option to specify the location of the
+  tex-site.el file.
 
 --with-texmf=/dir
 --with-preview-dir=/dir
