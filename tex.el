@@ -515,7 +515,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.322 $"))
+	(rev "$Revision: 5.323 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -530,7 +530,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-13 08:29:48 $"))
+    (let ((date "$Date: 2004-01-22 23:54:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3000,32 +3000,13 @@ With optional ARG, insert that many dollar signs."
        (TeX-toggle-off-input-method)))
 
 (defun TeX-toggle-off-input-method ()
-  "Toggle off input method.
-Support LEIM function (toggle-input-method) and some Japanese
-Input Methods; Canna, Wnn, SKK.
-
-Code is copied from YaTeX package."
+  "Toggle off CJK input methods.
+Only support LEIM package (toggle-input-method)."
   (cond
-   ;; Japanese Canna Support
-   ((and (boundp 'canna:*japanese-mode*) canna:*japanese-mode*)
-    (canna-toggle-japanese-mode))
-   ;; Japanese Wnn Support
-   ((and (boundp 'egg:*mode-on*) egg:*mode-on* egg:*input-mode*)
-    (egg:toggle-egg-mode-on-off))
-   ;; Japanese SKK Support
-   ((and (fboundp 'skk-mode) (boundp 'skk-mode) skk-mode)
-    (cond
-     ((fboundp 'skk-latin-mode)	(skk-latin-mode t))
-     ((fboundp 'skk-mode-off)	(skk-mode-off))
-     (t (j-mode-off))))
    ;; LEIM Package Support
-   ((and (fboundp 'toggle-input-method)
-	 (member current-input-method 
-		 '("japanese-T-Code" "japanese-TUT-Code" "japanese"
-		   "japanese-ascii" "japanese-hankaku-kana" "japanese-hiragana"
-		   "japanese-katakana" "japanese-zenkaku")))
+   ((and (boundp 'current-input-method) current-input-method
+	 (string-match "^chinese\\|japanese\\|korean" current-input-method))
     (toggle-input-method))
-   ((and (fboundp 'fep-force-off) (fep-force-off)))
    (t );; do nothing
    ))
 
