@@ -222,9 +222,9 @@
 ;;; Japanese TeX modes
 
 (defvar japanese-TeX-mode nil
-  "Flag to determine if Japanese initialization is needed.")
-
-(add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
+  "Flag to determine if the current buffer is Japanese TeX/LaTeX.")
+(make-variable-buffer-local 'japanese-TeX-mode)
+(put 'japanese-TeX-mode 'permanent-local t)
 
 ;;;###autoload
 (TeX-defun japanese-plain-tex-mode ()
@@ -236,10 +236,10 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 
 (defun japanese-plain-tex-mode-initialization ()
   "Japanese plain-TeX specific initializations."
-  (if japanese-TeX-mode
-      (setq TeX-command-default japanese-TeX-command-default)))
+  (when japanese-TeX-mode
+    (setq TeX-command-default japanese-TeX-command-default)))
 
-(add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
+(add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
 (TeX-defun japanese-latex-mode ()
@@ -251,12 +251,12 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 
 (defun japanese-latex-mode-initialization ()
   "Japanese LaTeX specific initializations."
-  (if japanese-TeX-mode
-      (progn
-	(setq TeX-command-default japanese-LaTeX-command-default)
-	(setq LaTeX-default-style japanese-LaTeX-default-style)
-	(setq TeX-command-BibTeX "jBibTeX")
-	(setq japanese-TeX-mode nil))))
+  (when japanese-TeX-mode
+    (setq TeX-command-default japanese-LaTeX-command-default)
+    (setq LaTeX-default-style japanese-LaTeX-default-style)
+    (setq TeX-command-BibTeX "jBibTeX")))
+
+(add-hook 'LaTeX-mode-hook 'japanese-latex-mode-initialization)
 
 
 ;;; Support for various self-insert-command
