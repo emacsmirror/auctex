@@ -25,7 +25,7 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 0.7.5
+@subtitle Version 0.7.6
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
@@ -77,7 +77,7 @@ formal way, prettily typeset including the regular @LaTeX{} logo, it
 can be written `Preview-@LaTeX{}', but this use is not recommended for
 Email and other electronic communication, it is a `manual' form.
 
-This file documents @previewlatex{} version 0.7.5
+This file documents @previewlatex{} version 0.7.6
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.
@@ -150,7 +150,8 @@ If the cursor is positioned on or inside of a preview area, this
 toggles its visibility, regenerating the preview if necessary. If not,
 it will run the surroundings through preview. The surroundings include
 all areas up to the next valid preview, unless invalid previews occur
-before, in which case the area will include the last such preview.
+before, in which case the area will include the last such preview in
+either direction.
 @kindex @kbd{C-c C-p C-p}
 @findex preview-at-point
 @cindex On/off at point
@@ -231,6 +232,16 @@ tampered with.
 @findex preview-cache-preamble-off
 Clear the pregenerated format file. If the above gives you problems, use
 this.
+
+@item @kbd{C-c C-p C-c C-d}
+@itemx @code{preview-clearout-document}
+@itemx Preview/Clearout Document
+@kindex @kbd{C-c C-p C-c C-d}
+@findex preview-clearout-document
+@c @cindex Clearout previews
+Clear out all previews in current document.  The document consists of
+all buffers that have the same master file as the current buffer.  This
+makes the current document lose all previews.
 
 @item @kbd{C-c C-p C-c C-b}
 @itemx @code{preview-clearout-buffer (&optional buffer)}
@@ -323,6 +334,19 @@ customize the @code{Preview Auto Cache Preamble} setting.
 @vindex preview-auto-cache-preamble
 @cindex Caching a preamble
 
+@item Attempt to keep counters accurate when editing
+
+Since @previewlatex{} frequently runs only small regions through
+@LaTeX{}, values like equation counters are not consistent from run to
+run.  If this bothers you, customize @code{Preview Required Option
+List} and check the `counters' option.  @LaTeX{} will then output a
+load of counter information during compilation, and this information
+will be used on subsequent updates to keep counters set to useful
+values.  The additional information takes additional time to analyze,
+but this is relevant mostly only when you are regenerating all previews
+at once, and maybe you will be less tempted to do so when counters
+appear more or less correct.
+
 @item Preview your favourite @LaTeX{} constructs
 
 If you have a certain macro or environment that you want to preview,
@@ -411,8 +435,8 @@ work together in making @previewlatex{} work as intended.
 @item preview-LaTeX-command
 When you generate previews on a buffer or a region, the command in
 @code{preview-LaTeX-command} gets run (that variable should only be
-changed with Customize so that changes get propagated to @AUCTeX{}'s
-command list).  As usual with @AUCTeX{}, you can continue working while
+changed with Customize since its structure is somewhat peculiar, though
+expressive).  As usual with @AUCTeX{}, you can continue working while
 this is going on.  It is not a good idea to change the file until after
 @previewlatex{} has established where to place the previews which it can
 only do after the @LaTeX{} run completes.  This run produces a host of
@@ -421,13 +445,24 @@ the @LaTeX{} run and give it the necessary information about where in
 the source file the @LaTeX{} code for the various previews is located
 exactly. The parsing takes a moment and will render Emacs busy.
 
+@item preview-required-option-list
+@code{preview-LaTeX-command} uses @code{preview-required-option-list} in
+order to pass options such as @option{auctex}, @option{active} and
+@option{dvips} to the @file{preview} package.  This means that the user
+need (and should) not supply these in the document itself in case he
+wants to be able to still compile his document without it turning into
+an incoherent mass of little pictures.  These options even get passed
+in when the user loads @file{preview} explicitly in his document.
+
+One option that you might want to switch on here is @code{counters}.
+This option will cause the @file{preview} package to emit information
+that will assist in keeping things like equation counters and section
+numbers reasonably correct even when you are regenerating only single
+previews.
+
 @item preview-default-option-list
 @itemx preview-default-preamble
-This command passes options @option{auctex}, @option{active} and
-@option{dvips} to the preview package so that the user need not supply
-these by himself in case he wants to be able to still compile his
-document without it turning into an incoherent mass of little
-pictures. If the document does not call in the package itself (via
+If the document does not call in the package @code{preview} itself (via
 @code{\usepackage}) in the preamble, the preview package is loaded using
 default options from @code{preview-default-option-list} and additional
 commands specified in @code{preview-default-preamble}.
@@ -439,13 +474,16 @@ extracted with the help of parsing the PostScript for use of so-called
 @acronym{DSC} comments.  The bounding boxes are extracted with the help
 of @TeX{} instead of getting them from Dvips.  There are a few things
 that could go wrong with this approach.  If you suspect you are
-experiencing them, try setting this option to `Off'.
+experiencing them, try setting this option to `Off'.  If you find this
+changes things for you, please report the circumstances under which
+this happened: this option is not supposed to cause problems when `On'.
 
 @item preview-prefer-TeX-bb
 If this option is `On', it tells @previewlatex{} never to try to extract
 bounding boxes from the bounding box comments of @acronym{EPS} files,
 but rather rely on the boxes it gets from @TeX{}.  If you activated
-@code{preview-fast-conversion}, this is done, anyhow.  The option
+@code{preview-fast-conversion}, this is done, anyhow, since there are no
+@acronym{EPS} files from which to read this information.  The option
 defaults to `Off', simply because about the only conceivable reason to
 switch off @code{preview-fast-conversion} would be that you have some
 bounding box problem and want to get Dvips' angle on that matter.
