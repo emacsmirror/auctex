@@ -1,3 +1,38 @@
+2001-10-23  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (preview-regenerate): use preview-region
+	(preview-region): New user function.
+	(preview-environment): New user function.
+	(preview-section): New user function.
+	(preview-again): New user function.
+	(LaTeX-preview-setup): Add menus and keyboard shortcuts for new
+	user functions.
+	(preview-version): Don't recalculate version in compiled form.
+
+	* prv-emacs.el: inherit from LaTeX-mode-map in order to have
+	normal commands work when cursor is on preview.
+	(preview-make-clickable): same.
+	(preview-overlay): don't make intangible, but preview-intangible.
+	In short, we now fake intangibility until Emacs will keep the
+	cursor out of overlay images like it does out of text property
+	images.
+	(preview-handle-insert-in-front): Same here.
+	(preview-toggle): Same here.  Load pre-command-hook and
+	post-command-hook for fake intangibility.
+	(preview-marker): Added for fake intangibility.
+	(preview-mark-point): pre-command-hook function for fake
+	intangibility.
+	(preview-move-point): post-command-hook function for fakr
+	intangibility.
+
+2001-10-22  David Kastrup  <David.Kastrup@t-online.de>
+
+	* README: Change info for Emacs release 21.1
+
+	* PROBLEMS: Change info for Emacs release 21.1
+
+	* INSTALL: Change info for Emacs release 21.1
+
 2001-10-19  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.dtx (subsection{The internals}): Heed \AtBeginDvi

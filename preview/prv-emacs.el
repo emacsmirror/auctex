@@ -26,6 +26,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'latex))
+
 (defvar preview-compatibility-macros nil
   "List of macros only present when compiling/loading.")
 
@@ -93,6 +96,8 @@ as a help-echo.  CLICK1 and CLICK2 are functions to call
 on preview's clicks."
   `(let (,@(if string `((res (copy-sequence ,string))))
 	   (resmap ,(or map '(make-sparse-keymap))))
+     ,@(unless map
+	 '((set-keymap-parent resmap LaTeX-mode-map)))
      ,@(if click1
 	   `((define-key resmap ,preview-button-1 ,click1)))
      ,@(if click2
@@ -138,7 +143,7 @@ specifies."
      '(preview-handle-insert-in-front))
 
 (put 'preview-overlay
-     'intangible t)
+     'preview-intangible t)
 
 ;; We have to fake our way around atomicity, but at least this is more
 ;; efficient than the XEmacs version which has to cope with not being
@@ -155,7 +160,7 @@ specifies."
   (ov after-change beg end &optional length)
   "Hook function for insert-in-front-hooks property."
   (when (and (not undo-in-progress) after-change)
-    (if (overlay-get ov 'intangible)
+    (if (overlay-get ov 'preview-intangible)
 	(move-overlay ov end (overlay-end ov))
       (overlay-put ov 'insert-in-front-hooks nil)
       (preview-disable ov))))
@@ -173,7 +178,8 @@ specifies."
 
 (put 'preview-overlay 'isearch-open-invisible 'preview-toggle)
 
-(put 'preview-overlay 'isearch-open-invisible-temporary 'preview-toggle)
+(put 'preview-overlay 'isearch-open-invisible-temporary
+     'preview-toggle)
 
 (defun preview-toggle (ov &rest args)
   "Toggle visibility of preview overlay OV.
@@ -185,19 +191,22 @@ but could change in future, for example displaying both preview
 and source text.  t makes the contents invisible, and 'toggle
 toggles it."
   (let ((old-urgent (preview-remove-urgentization ov))
-	(intangible
+	(preview-intangible
 	 (if (eq 'toggle (car args))
-	     (not (overlay-get ov 'intangible))
+	     (not (overlay-get ov 'preview-intangible))
 	   (car args)))
 	(strings (overlay-get ov 'strings)))
-    (overlay-put ov 'intangible intangible)
-    (if intangible
+    (overlay-put ov 'preview-intangible preview-intangible)
+    (if preview-intangible
 	(progn
 	  (dolist (prop '(display local-map mouse-face help-echo))
 	    (overlay-put ov prop
 			 (get-text-property 0 prop (car strings))))
 	  (overlay-put ov 'before-string nil)
-	  (overlay-put ov 'face nil))
+	  (overlay-put ov 'face nil)
+	  (with-current-buffer (overlay-buffer ov)
+	    (add-hook 'pre-command-hook #'preview-mark-point nil t)
+	    (add-hook 'post-command-hook #'preview-move-point nil t)))
       (dolist (prop '(display local-map mouse-face help-echo))
 	(overlay-put ov prop nil))
       (overlay-put ov 'face 'preview-face)
@@ -205,6 +214,29 @@ toggles it."
     (if old-urgent
 	(apply 'preview-add-urgentization old-urgent))))
 
+(defvar preview-marker (make-marker)
+  "Marker for fake intangibility.")
+
+(defun preview-mark-point ()
+  "Mark position for fake intangibility."
+  (set-marker preview-marker (point)))
+
+(defun preview-move-point ()
+  "Move point out of fake-intangible areas."
+  (when (eq (marker-buffer preview-marker) (current-buffer))
+    (let* ((pt (point))
+	   (backward (< pt (marker-position preview-marker))))
+      (while (catch 'loop
+	       (dolist (ovr (overlays-at pt))
+		 (when (and
+			(overlay-get ovr 'preview-intangible)
+			(> pt (overlay-start ovr)))
+		   (setq pt (if backward
+				(overlay-start ovr)
+			      (overlay-end ovr)))
+		   (throw 'loop t))))
+      nil)
+      (goto-char pt))))
 
 (provide 'prv-emacs)
 ;;; prv-emacs.el ends here
