@@ -13,7 +13,7 @@
 @tolerance 10000
 @end iftex
 
-@c $Id: auc-tex.texi,v 1.160 2004-06-13 13:23:52 angeli Exp $
+@c $Id: auc-tex.texi,v 1.161 2004-07-12 00:27:58 angeli Exp $
 
 @finalout
 @titlepage
@@ -690,7 +690,7 @@ through the document.
 * Commenting::                  Commenting text
 * Indenting::                   Reflecting syntactic constructs with whitespace
 * Filling::                     Automatic and manual line breaking
-* Outline::                     Hiding text
+* Show/Hide::                   Showing and Hiding Text in the Buffer
 @end menu
 
 @node Mathematics, Completion, Advanced Features, Advanced Features
@@ -1006,7 +1006,7 @@ function additionally indents the current line.  If you choose
 @end defopt
 
 
-@node Filling, Outline, Indenting, Advanced Features
+@node Filling, Show/Hide, Indenting, Advanced Features
 @section Filling
 @cindex Filling
 @cindex Formatting
@@ -1165,9 +1165,94 @@ be inserted before the last non-comment word to minimize the chance that
 the line becomes overfull.
 @end defopt
 
+@node Show/Hide, , Filling, Advanced Features
+@section Showing and Hiding Text the Buffer
 
-@node Outline,  , Filling, Advanced Features
-@section Outlining the Document
+While you are editing your text you might find certain parts of it
+distracting or not worthwile to be displayed.  AUC@TeX{} lets you hide
+those parts and show them again at request.  There is a built-in
+support for hiding macros which we call "folding" here, as well as
+support for Emacs' outline mode.
+
+@menu
+* Folding::                     Folding Macros
+* Outline::                     Outlining the Document
+@end menu
+
+@node Folding, Outline, , Show/Hide
+@subsection Folding Macros
+@cindex Outlining
+@cindex Folding
+@cindex Reveal
+@cindex Auto-Reveal
+@cindex Hide Macros
+
+There can be La@TeX{} macros which have content that is not part of the
+text body you are writing.  Prominent examples are footnotes and
+citations.  Those are macros which you often only want to see while
+actually editing them and which otherwise distract your view of the main
+text.  AUC@TeX{} lets you collapse those macros and display a
+placeholder (also called display string) instead.  If you want to make
+the text visible again in order to view or edit it, move point sideways
+onto the placeholder.  The macro will unfold automatically, stay open as
+long as point is inside of it and collapse again once you move point out
+of the macro.
+
+In order to use this feature, you have to activate @code{TeX-fold-mode}
+which will activate the auto-reveal feature and the necessary commands
+to hide and show macros.  You can activate the mode in a certain buffer
+by issueing the command @kbd{M-x TeX-fold-mode RET}.  If you want to use
+it every time you edit a La@TeX{} document, add it to a hook:
+@findex TeX-fold-mode
+
+@lisp
+(add-hook 'LaTeX-mode-hook '(lambda nil
+                              (TeX-fold-mode t)))
+@end lisp
+
+If it should be activated in all AUC@TeX{} modes, use
+@code{TeX-mode-hook} instead of @code{LaTeX-mode-hook}.
+
+Once the mode is active there are several commands available to hide
+and show macros:
+
+@deffn Command TeX-fold-buffer
+@kindex C-c C-o C-o
+(@kbd{C-c C-o C-o}) Hide all macros specified in the variable
+@code{TeX-fold-spec-list}.  This command can also be used to refresh
+the whole buffer and hide any new macros which were inserted after the
+last invocation of the command.
+@end deffn
+
+@deffn Command TeX-fold-macro
+@kindex C-c C-o C-c
+(@kbd{C-c C-o C-c}) Hide the macro on which point currently is located.
+@end deffn
+
+@deffn Command TeX-fold-clearout-buffer
+@kindex C-c C-o C-a
+(@kbd{C-c C-o C-a}) Permanently show all macros in the buffer.  This
+will remove all placeholders and unfold all macros permanently.
+@end deffn
+
+@deffn Command TeX-fold-clearout-macro
+@kindex C-c C-o C-e
+(@kbd{C-c C-o C-e}) Permanently show the macro on which point currently
+is located.  In contrast to temporarily opening the macro when point is
+moved sideways onto it, the macro will be permanently unfolded and will
+not collapse again once point is leaving it.
+@end deffn
+
+The commands above will only take macros into consideration which are
+specified in the variable @code{TeX-fold-spec-list}.
+
+@defopt TeX-fold-spec-list
+List of display strings and macros to fold.  You can specify several
+macros per display string.
+@end defopt
+
+@node Outline,  , Folding, Show/Hide
+@subsection Outlining the Document
 @cindex Outlining
 @cindex Headers
 @cindex Sections
@@ -1176,16 +1261,7 @@ the line becomes overfull.
 
 AUC@TeX{} supports the standard outline minor mode using
 La@TeX{}/Con@TeX{}t sectioning commands as header lines.  @xref{Outline
-Mode, , Outline Mode, emacs, GNU Emacs Manual}.  By default
-@code{outline-minor-mode} will use the prefix key @kbd{C-c} which is
-also used by AUC@TeX{}, so it is suggested that you choose another
-prefix key by inserting
-
-@lisp
-  (setq outline-minor-mode-prefix "\C-c\C-o") ; Or whatever...
-@end lisp
-
-in your @file{.emacs} file.
+Mode, , Outline Mode, emacs, GNU Emacs Manual}.
 
 You can add your own headings by setting the variable
 @code{TeX-outline-extra}.
