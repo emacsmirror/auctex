@@ -8,7 +8,7 @@
 %define commongroup Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
 %else
-%define distri      
+%define distri      #none
 %define commongroup Applications/Editors
 %define xemacspkgdir %{_libdir}/xemacs/site-packages
 %endif
