@@ -109,46 +109,46 @@ performed as specified in TeX-expand-list."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t t)
-	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t t)
+  (list (list "TeX" "tex \"\\nonstopmode\\input %t\"" 'TeX-run-TeX nil t)
+	(list "TeX Interactive" "tex %t" 'TeX-run-interactive nil t)
 	(list "LaTeX" "%l \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex t)
-	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil 'latex t)
+	      'TeX-run-TeX nil 'latex)
+	(list "LaTeX Interactive" "%l %t" 'TeX-run-interactive nil 'latex)
 	(list "LaTeX2e" "latex2e \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex t)
+	      'TeX-run-TeX nil 'latex)
 	;; Not part of standard TeX.
 	(list "PDFLaTeX" "pdflatex \"\\nonstopmode\\input{%t}\""
-	      'TeX-run-TeX nil 'latex t)
-	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil 'texinfo t)
+	      'TeX-run-TeX nil 'latex)
+	(list "Makeinfo" "makeinfo %t" 'TeX-run-compile nil 'texinfo)
 	(list "Makeinfo HTML" "makeinfo --html %t" 'TeX-run-compile nil
-              'texinfo t)
+              'texinfo)
 	(list "AmSTeX" "amstex \"\\nonstopmode\\input %t\""
-	      'TeX-run-TeX nil 'amstex t)
+	      'TeX-run-TeX nil 'amstex)
 	;; support for ConTeXt  --pg
 	;; first version of ConTeXt to support nonstopmode: 2003.2.10
 	(list "ConTeXt" "texexec --once --nonstop --texutil %t" 'TeX-run-TeX
-              nil 'context t)
+              nil 'context)
 	(list "ConTeXt Interactive" "texexec --once --texutil %t"
-              'TeX-run-interactive t 'context t)
-	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil 'context t)
+              'TeX-run-interactive t 'context)
+	(list "ConTeXt Full" "texexec %t" 'TeX-run-interactive nil 'context)
 	;; --purge %s does not work on unix systems with current texutil
 	;; check again october 2003 --pg
 	(list "ConTeXt Clean" "texutil --purgeall" 'TeX-run-interactive nil
-              'context t)
-	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil nil)
+              'context)
+	(list "BibTeX" "bibtex %s" 'TeX-run-BibTeX nil nil)
 	(if (or window-system (getenv "DISPLAY"))
-	    (list "View" "%V " 'TeX-run-silent t nil nil)
-	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil nil))
-	(list "Print" "%p %r " 'TeX-run-command t nil nil)
-	(list "Queue" "%q" 'TeX-run-background nil nil nil)
-	(list "File" "dvips %d -o %f " 'TeX-run-command t nil nil)
-	(list "Index" "makeindex %s" 'TeX-run-command nil nil t)
-	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil nil t)
+	    (list "View" "%V " 'TeX-run-silent t nil)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-run-command t nil))
+	(list "Print" "%p %r " 'TeX-run-command t nil)
+	(list "Queue" "%q" 'TeX-run-background nil nil)
+	(list "File" "dvips %d -o %f " 'TeX-run-command t nil)
+	(list "Index" "makeindex %s" 'TeX-run-command nil nil)
+	;; (list "Check" "chktex -v3 %s" 'TeX-run-compile nil nil)
 	;; Uncomment the above line and comment out the next line to
 	;; use `chktex' instead of `lacheck'.
-	(list "Check" "lacheck %s" 'TeX-run-compile nil nil t)
-	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil nil)
-	(list "Other" "" 'TeX-run-command t nil t))
+	(list "Check" "lacheck %s" 'TeX-run-compile nil nil)
+	(list "Spell" "<ignored>" 'TeX-run-ispell-on-document nil nil)
+	(list "Other" "" 'TeX-run-command t nil))
   "List of commands to execute on the current document.
 
 Each element is a list, whose first element is the name of the command
@@ -198,9 +198,7 @@ If the fourth element is non-nil, the user will get a chance to
 modify the expanded string.
 
 The fifth element indicates in which mode the command should be
-present in the Command menu.
-
-If the sixth element is obsolete and ignored."
+present in the Command menu."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(string :tag "Command")
@@ -229,8 +227,7 @@ If the sixth element is obsolete and ignored."
                                 (const :tag "LaTeX" latex)
                                 (const :tag "ConTeXt" context)
                                 (const :tag "Texinfo" texinfo)
-                                (const :tag "AmSTeX" amstex))
-			(sexp :format "End\n"))))
+                                (const :tag "AmSTeX" amstex)))))
 
 (defcustom TeX-command-output-list
   '(("\\`pdf[a-z]*tex" "pdf")
@@ -510,7 +507,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.312 $"))
+	(rev "$Revision: 5.313 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -525,7 +522,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-01-05 19:28:33 $"))
+    (let ((date "$Date: 2004-01-06 08:17:11 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
