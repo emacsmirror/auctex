@@ -1,3 +1,11 @@
+2005-01-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el: Update header.
+	(TeX-view-output-file): Let `TeX-active-master' return file name
+	without directory.  Fixes viewer not finding output file when
+	being called in a subdirectory.
+	(TeX-active-master): Add new parameter `nondirectory'.  Doc fix.
+
 2005-01-21  David Kastrup  <dak@gnu.org>
 
 	* auctex.spec (Conflicts): Mention the outdated emacspeak from
