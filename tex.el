@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.dk>
-;; Version: 11.11
+;; Version: 11.12
 ;; Keywords: wp
 ;; X-URL: http://sunsite.dk/auctex
 
@@ -264,7 +264,7 @@ printer.  It defaults to the value of TeX-print-command.
 The third element is the command used to examine the print queue for
 this printer.  It defaults to the value of TeX-queue-command.
 
-Any occurence of `%p' in the second or third element is expanded to
+Any occurrence of `%p' in the second or third element is expanded to
 the printer name given in the first element, then ordinary expansion
 is performed as specified in TeX-expand-list."
   :group 'TeX-command
@@ -1003,7 +1003,11 @@ FORCE is not nil."
   (setq TeX-active-styles (list TeX-virgin-style)))
 
 (defun TeX-style-list ()
+<<<<<<< tex.el
+  "Return a list of all styles (subfiles) use by the current document."
+=======
   "Return a list of all styles (subfiles) used by the current document."
+>>>>>>> 5.268
   (TeX-update-style)
   TeX-active-styles)
 
@@ -1715,7 +1719,7 @@ If TEX is a directory, generate style files for all files in the directory."
   (cond ((not (file-readable-p tex)))
 	((string-match TeX-ignore-file tex))
         ((file-directory-p tex)
-         (let ((files (directory-files tex))
+         (let ((files (directory-files (expand-file-name tex)))
                (default-directory (concat (if (TeX-directory-absolute-p tex)
                                               ""
                                             default-directory)
