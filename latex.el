@@ -812,7 +812,8 @@ Just like array and tabular."
   "Insert ENVIRONMENT and prompt for label."
   (LaTeX-insert-environment environment)
   (and (LaTeX-label environment)
-       (newline-and-indent)))
+       (newline-and-indent))
+  (TeX-math-input-method-off))
 
 (defun LaTeX-env-list (environment)
   "Insert ENVIRONMENT and the first item."
