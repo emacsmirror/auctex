@@ -1,5 +1,8 @@
 2002-12-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
+	* Makefile (MINMAPSRC): Remove auc-menu.el, maniac.el, and
+	outln-18.el.
+
 	* auc-menu.el: Removed.  Taken into Emacs and unused.
 
 	* maniac.el: Ditto.
