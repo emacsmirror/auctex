@@ -97,9 +97,9 @@
 ;;; Change log:
 ;; V0.916 08Jul2004 Ralf Angeli
 ;;  - `font-latex-superscript-face', `font-latex-subscript-face': New faces.
-;;  - `font-latex-suscript-keywords'): New constant.
-;;  - `font-latex-fontify-suscript'): New customize option.
-;;  - `font-latex-suscript'): New function.
+;;  - `font-latex-script-keywords'): New constant.
+;;  - `font-latex-fontify-script'): New customize option.
+;;  - `font-latex-script'): New function.
 ;; V0.915 05Jun2004 Ralf Angeli
 ;;  - `font-latex-make-title-faces': New function.
 ;;  - `font-latex-title-1-face', `font-latex-title-2-face',
@@ -1025,17 +1025,17 @@ keywords.  As a side effect, the variable `font-latex-match-warning' is set."
 
 ;; Copy and adaption of `tex-font-lock-keywords-3' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
-(defconst font-latex-suscript-keywords
+(defconst font-latex-script-keywords
   (eval-when-compile
     (let ((general "\\([a-zA-Z@]+\\|[^ \t\n]\\)")
 	  (slash "\\\\")
 	  (arg "{\\(?:[^{}\\]\\|\\\\.\\|{[^}]*}\\)*"))
       `((,(concat "[_^] *\\([^\n\\{}]\\|" slash general "\\|" arg "}\\)")
-	 (1 (font-latex-suscript (match-beginning 0))
+	 (1 (font-latex-script (match-beginning 0))
 	    append)))))
   "Keyword definition for highlighting sub- and superscript in LaTeX modes.")
 
-(defcustom font-latex-fontify-suscript t
+(defcustom font-latex-fontify-script t
   "Non-nil means do not fontify subscript or superscript strings.
 This feature is not available in XEmacs."
   :type 'boolean
@@ -1045,9 +1045,9 @@ This feature is not available in XEmacs."
 	   (if value
 	       (setq font-latex-keywords-2
 		     (append font-latex-keywords-2
-			     font-latex-suscript-keywords))
+			     font-latex-script-keywords))
 	     (setq font-latex-keywords-2
-		   (remove (car font-latex-suscript-keywords)
+		   (remove (car font-latex-script-keywords)
 			   font-latex-keywords-2)))))
   :group 'font-latex)
 
@@ -1806,7 +1806,8 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
 ;; GNU Emacs on 2004-07-07.
-(defun font-latex-suscript (pos)
+(defun font-latex-script (pos)
+  "Return face and display spec for subscript and superscript content."
   (unless (or (memq (get-text-property pos 'face)
 		    '(font-lock-constant-face font-lock-builtin-face
 		      font-lock-comment-face font-latex-verbatim-face))

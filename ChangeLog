@@ -5,9 +5,9 @@
 
 	* font-latex.el (font-latex-superscript-face)
 	(font-latex-subscript-face): New faces.
-	(font-latex-suscript-keywords): New constant.
-	(font-latex-fontify-suscript): New customize option.
-	(font-latex-suscript): New function.
+	(font-latex-script-keywords): New constant.
+	(font-latex-fontify-script): New customize option.
+	(font-latex-script): New function.
 
 2004-07-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
