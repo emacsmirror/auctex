@@ -274,12 +274,12 @@ fi
 
 
 dnl "\${packagedir}/lisp"
-dnl "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" 
-dnl "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" 
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
   for i in "\${datadir}/${EMACS_FLAVOR}/site-lisp" \
 	   "\${libdir}/${EMACS_FLAVOR}/site-lisp" \
+	   "\${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \ 
+	   "\${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
 	   "\${prefix}/site-lisp" ; do
     lispdir="$i"
     AC_FULL_EXPAND(i)
@@ -317,7 +317,7 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
        # Set prefix temporarily
        prefix="${ac_default_prefix}"
      fi
-     if test ${EMACS_FLAVOR} = xemacs; then
+     if test ${EMACS_FLAVOR} = 'emacs' -o ${packagedir = 'no'; then
        # Test paths relative to prefixes
        EMACS_TEST_LISPDIR
        if test "$lispdir" = "NONE"; then
