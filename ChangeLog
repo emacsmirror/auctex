@@ -1,3 +1,8 @@
+2004-05-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Prevent infinite
+	loop in lines starting with whitespace.
+
 2004-05-18  Davide G. M. Salvetti  <salve@debian.org>
 
 	* aclocal.m4 (AUCTEX_AUTO_DIR): Change `autodir' default to
