@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.22 1993-02-17 07:12:59 amanda Exp $
+# $Id: Makefile,v 5.23 1993-02-17 07:17:25 amanda Exp $
 #
 
 ##----------------------------------------------------------------------
@@ -60,7 +60,7 @@ MINMAPFILES = README_MINOR $(MINMAPSRC)
 ELISPSRC= $(MINMAPSRC) auc-tex.el tex-cpl.el tex-misc.el tex-symb.el \
 	ltx-env.el tex-dbg.el tex-names.el vir-symb.el \
 	ltx-sec.el tex-buf.el tex-site.el auc-ver.el \
-	tex-init.el min-key.el ltx-dead.el
+	tex-init.el min-key.el ltx-dead.el min-ind.el min-ispl.el
 
 LAHECKFILES= lacheck/Makefile lacheck/lacheck.1 lacheck/lacheck.lex \
 	lacheck/lacheck.man lacheck/lacheck.noflex.c
