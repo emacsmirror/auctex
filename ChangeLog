@@ -1,5 +1,7 @@
 2004-04-16  Berend de Boer  <berend@pobox.com>
 
+	* tex.el (TeX-format-list): recognize ConTeXt dutch interface.
+
 	* Makefile.in: AUCSRC includes the new context-en.el and context-nl.el.
 	Ditto fo AUCELC.
 
