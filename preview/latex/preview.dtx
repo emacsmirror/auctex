@@ -23,7 +23,7 @@
 %\def\rcsstrip #1 #2${#1}
 %\rcskey \version $Name:  $
 %\ifx\version\empty
-%  \rcskey \version CVS-$Revision: 1.63 $
+%  \rcskey \version CVS-$Revision: 1.64 $
 %\else
 %  \begingroup
 %    \lccode`-=`.
@@ -32,7 +32,7 @@
 %       \def\noexpand\version{\expandafter\next\version}}}
 %  \next
 %\fi
-%\rcskey\next $Date: 2002-07-30 18:33:33 $
+%\rcskey\next $Date: 2002-07-30 18:37:30 $
 %\expandafter\date\expandafter{\next}
 %\author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 %\title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -219,9 +219,10 @@
 %functionality (at the time of writing, just implemented for math
 %insets, in the CVS version of LyX that will eventually be released as
 %1.3.0).
-%
+%\end{description}
 %The following options are just for debugging purposes of the package
 %and similar to the corresponding \TeX\ commands they allude to:
+%\begin{description}
 %\item[|tracingall|]
 %causes lots of diagnostic output to appear in the log file during the
 %preview collecting phases of \TeX's operation.  In contrast to the
@@ -328,7 +329,7 @@
 \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $
 \ifx\reserved@b\@empty
-   \reserved@a\reserved@b CVS-$Revision: 1.63 $
+   \reserved@a\reserved@b CVS-$Revision: 1.64 $
 \else
    \begingroup
       \lccode`-=`.
@@ -337,7 +338,7 @@
           \def\noexpand\reserved@b{\expandafter\next\reserved@b}}}
    \next
 \fi
-\reserved@a\next $Date: 2002-07-30 18:33:33 $
+\reserved@a\next $Date: 2002-07-30 18:37:30 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
