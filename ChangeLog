@@ -1,3 +1,17 @@
+2005-03-03  Ikumi Keita <ikumi@revery.net>  (tiny change?)
+
+	* tex.el (TeX-macro-global-internal): New function.
+	(TeX-macro-global): Use it.
+	(TeX-kpathsea-format-alist): Removed duplicate line.
+
+	* tex-jp.el: Use `TeX-macro-global-internal' and append path for
+	Japanese TeX into TeX-macro-global.  Do not override
+	`TeX-expand-list', no more.
+	(japanese-TeX-command-list): Add :help string.  Change
+	`TeX-run-LaTeX' to `TeX-run-TeX'.
+	(japanese-TeX-command-default, japanese-LaTeX-command-default):
+	Quote symbol TeX-command in doc string.
+
 2005-03-03  Thomas Baumann  <thomas.baumann@ch.tum.de>
 
 	* style/beamer.el (LaTeX-beamer-item-overlay-flag): New variable.
