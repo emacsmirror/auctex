@@ -1,6 +1,6 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
-Version: 	0.6
+Version: 	0.6.1
 Release: 	1
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
@@ -10,16 +10,16 @@ Group: 		Applications/Editors
 BuildRoot: 	%{_tmppath}/%{name}-root
 Prereq:		info
 Requires:	emacs >= 21.1
-Requires:	auctex
+Requires:	auctex >= 11.0
 Requires:	ghostscript >= 6.51
 Requires:	tetex tetex-dvips
-BuildRequires:	texinfo
+BuildRequires:	texinfo >= 4.0
 
 %description 
 Does your neck hurt from turning between previewer windows and the
 source too often? This Elisp/LaTeX package will render your displayed
-LaTeX equations right into the editing window where they belong. Needs
-at least Emacs-21.1, XEmacs porters welcome.
+LaTeX equations right into the editing window where they belong. This
+version is for GNU Emacs 21.
 
 %prep
 %setup -q
@@ -27,6 +27,9 @@ at least Emacs-21.1, XEmacs porters welcome.
 %build
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
+# Actually, when building, you should get your stuff via
+# cvs export
+# and you won't get those pesky CVS directories.
 #./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
 %configure
@@ -75,6 +78,9 @@ install-info --info-dir=%{_infodir} --delete \
 %doc patches
 
 %changelog
+* Sun Mar 10 2002 David Kastrup <David.Kastrup@t-online.de>
+- Prepare for 0.6.1
+
 * Tue Feb 19 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Added site-start.d support and prauctex.cfg config file
 
@@ -83,5 +89,3 @@ install-info --info-dir=%{_infodir} --delete \
 
 * Wed Jan 23 2002 Jan-Ake Larsson <jalar@imf.au.dk>
 - Initial build.
-
-
