@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Maintainer: Per Abrahamsen <auc-tex@sunsite.auc.dk>
-;; Version: 9.10e
+;; Version: 9.10f
 ;; Keywords: wp
 ;; X-URL: http://sunsite.auc.dk/auctex
 
@@ -385,7 +385,7 @@ Full documentation will be available after autoloading the function."
     (require 'outline)			;No provide in Emacs 18 outline.el 
   (error (provide 'outline)))
 
-;; Emacs 18 grok this regexp, but you loose the ability to use
+;; Emacs 18 groks this regexp, but you lose the ability to use
 ;; whitespace anywhere in your documentstyle command.
 (defvar LaTeX-auto-minimal-regexp-list
   '(("\\\\documentstyle\\[\\([^#\\\\\\.\n\r]+\\)\\]{\\([^#\\\\\\.\n\r]+\\)}"
@@ -516,12 +516,13 @@ The value is actually the tail of LIST whose car is ELT."
 ((or (string-match "Lucid" emacs-version)
      (string-match "XEmacs" emacs-version))
 
-(if (eq emacs-minor-version 13)
-    ;; XEmacs 19.13 had a partial defintion of set-text-properties.
-    (defadvice set-text-properties (around ignore-strings activate)
-      "Ignore strings."
-      (or (stringp (ad-get-arg 3))
-	  ad-do-it)))
+(and (eq emacs-major-version 19)
+     (eq emacs-minor-version 13)
+     ;; XEmacs 19.13 had a partial defintion of set-text-properties.
+     (defadvice set-text-properties (around ignore-strings activate)
+       "Ignore strings."
+       (or (stringp (ad-get-arg 3))
+	   ad-do-it)))
 
 (defadvice popup-mode-menu (before LaTeX-update activate)
   "Run `LaTeX-menu-update' before showing menu."
@@ -550,7 +551,7 @@ The value is actually the tail of LIST whose car is ELT."
 	  '(lambda () (setq TeX-symbol-list nil
 			    LaTeX-environment-list nil)))
 
-;; Lucid 19.6 grok this regexp, but you loose the ability to use
+;; Lucid 19.6 groks this regexp, but you lose the ability to use
 ;; whitespace in your documentstyle command.
 (string-match "\\`[0-9]+\\.\\([0-9]+\\)" emacs-version)
 (or (> (string-to-int (substring emacs-version
@@ -2119,8 +2120,8 @@ Check for potential LaTeX environments."
   :group 'TeX-file-extension
   :type '(repeat (string :format "%v")))
 
-(defcustom TeX-ignore-file "\\(^\\|/\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\)$"
-  "*Regular expression matching file names to ignore.
+(defcustom TeX-ignore-file "\\(^\\|/\\)\\(\\.\\|\\.\\.\\|RCS\\|SCCS\\|CVS\\|babel\\..*\\)$"
+  "Regular expression matching file names to ignore.
 
 These files or directories will not be considered when searching for
 TeX files in a directory."
