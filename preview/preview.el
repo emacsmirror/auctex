@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.245 2005-03-22 16:02:08 dak Exp $
+;; $Id: preview.el,v 1.246 2005-03-28 02:44:22 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -60,12 +60,12 @@ preview-latex's bug reporting commands will probably not work.")))
 
 ;; we need the compatibility macros which do _not_ get byte-compiled.
 (eval-when-compile
-  (if (string-match "XEmacs" (emacs-version))
+  (if (featurep 'xemacs)
       (load-library "prv-xemacs.el")))
 
 ;; if the above load-library kicked in, this will not cause anything
 ;; to get loaded.
-(require (if (string-match "XEmacs" (emacs-version))
+(require (if (featurep 'xemacs)
 	     'prv-xemacs 'prv-emacs))
 
 (defgroup preview nil "Embed Preview images into LaTeX buffers."
@@ -73,7 +73,7 @@ preview-latex's bug reporting commands will probably not work.")))
   :prefix "preview-"
   :link '(custom-manual "(preview-latex)Top")
   :link '(info-link "(preview-latex)The Emacs interface")
-  :link '(url-link :tag "Homepage" "http://preview-latex.sourceforge.net"))
+  :link '(url-link :tag "Homepage" "http://www.gnu.org/software/auctex/"))
 
 (defgroup preview-gs nil "Preview's GhostScript renderer."
   :group 'preview
@@ -1548,8 +1548,7 @@ include the last such preview.  And overriding any other
 action, if a region is active (`transient-mark-mode' or
 `zmacs-regions'), it is run through `preview-region'."
   (interactive)
-  (if (if (featurep 'xemacs) (mark)
-	(and transient-mark-mode mark-active))
+  (if (TeX-active-mark)
       (preview-region (region-beginning) (region-end))
     (catch 'exit
       (dolist (ovr (overlays-in (max (point-min) (1- (point)))
@@ -3308,7 +3307,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.245 $"))
+	(rev "$Revision: 1.246 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3319,7 +3318,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-03-22 16:02:08 $"))
+    (let ((date "$Date: 2005-03-28 02:44:22 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3333,7 +3332,7 @@ In the form of yyyy.mmdd")
   (interactive)
   (let ((reporter-prompt-for-summary-p "Bug report subject: "))
     (reporter-submit-bug-report
-     "auc-tex@sunsite.dk"
+     "bug-auctex@gnu.org"
      preview-version
      '(AUC-TeX-version
        LaTeX-command-style

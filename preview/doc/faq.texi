@@ -25,7 +25,7 @@ Send an email with the subject:
 @example
 Preview FAQ
 @end example
-to @email{preview-latex-devel@@lists.sourceforge.net}.
+to @email{auctex-devel@@gnu.org}.
 
 @node Requirements, Installation Trouble, Introduction to FAQ, Frequently Asked Questions
 @section Requirements

@@ -27,15 +27,9 @@ newer versions of the problematic software or by simple patches.
 
 If you find something not mentioned here, please send a bug report using
 @kbd{M-x preview-report-bug @key{RET}}, which will fill in a lot of
-information interesting to us.  Some bugs are being fixed as you read
-this, there is a mailing list for developers, look at
-@uref{http://lists.sourceforge.net/lists/listinfo/preview-latex-devel}.
-For more information on the mailing list, send a message with just the
-word ``help'' as subject or body to
-@email{preview-latex-devel-request@@lists.sourceforge.net}. Questions,
-suggestions for new features, and pleas for help should go to
-@email{preview-latex-devel@@lists.sourceforge.net} (the @previewlatex{}
-devel team).
+information interesting to us and send it to the
+@email{bug-auctex@@gnu.org} list.  Please use the bug reporting commands
+if at all possible.
 
 @node Problems with GhostScript, Font problems with Dvips, , Known problems
 @section Problems with GhostScript

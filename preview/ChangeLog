@@ -1,3 +1,19 @@
+2005-03-28  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview): Change home page address to AUCTeX.
+	(preview-report-bug): Change bug reporting address.
+
+	* doc/readme.texi (Contacts): Change mailing list info.
+
+	* doc/problems.texi: Change mailing list info.
+
+	* doc/faq.texi (Introduction to FAQ): Change mailing list address.
+
+	* preview.el (if): Use (featurep 'xemacs) instead of
+	`(string-match "XEmacs" (emacs-version))'.
+	(preview-at-point): Don't check for XEmacs, just use
+	`TeX-active-mark' instead.
+
 2005-03-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (distclean, maintainer-clean, tarball-ready): Delete
