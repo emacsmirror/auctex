@@ -57,6 +57,8 @@ install-auto'. This will only work if you have set `TeX-macro-global'
 correctly in `tex-site.el'.
 
    Tell the users on your site to insert
-             (load-file "/path/for/auctex/tex-site")
+             (load-file "/path/for/auctex/tex-site.elc")
    in their `.emacs' file in order to use AUC TeX.
 
+   Users who prefer the old 6.1 keybings should also insert
+	     (load "auc-tex")

@@ -1,6 +1,6 @@
 ;;; @ slitex.el - Special code for slitex.
 ;;;
-;;; $Id: slitex.el,v 1.3 1993-03-19 00:24:34 amanda Exp $
+;;; $Id: slitex.el,v 1.4 1993-03-23 11:40:33 amanda Exp $
 
 ;;; @@ Hook
 
@@ -20,8 +20,8 @@
 
  (make-variable-buffer-local 'LaTeX-slide-color)
 
-(defun LaTeX-slides-hook (style)
-  "Prompt for and insert STYLE options."
+(defun LaTeX-slides-hook ()
+  "Prompt for and insert SliTeX options."
   (let ((slide-file (read-input "Slide file: "))
 	(slide-colors (read-input "Slide colors (comma separetade list): "
 				  "black")))

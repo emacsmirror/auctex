@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.21 1993-03-19 00:24:29 amanda Exp $
+@c $Id: auc-tex.texi,v 1.22 1993-03-23 11:40:23 amanda Exp $
 
 @titlepage
 @title AUC @TeX{}
@@ -52,6 +52,8 @@ AUC @TeX{} is a fully integrated environment for editing La@TeX{} and
 @TeX{} files.@refill
 
 This file documents AUC @TeX{} version 7.0.
+
+The keybindings has changed since 6.1, @pxref{Version 7.0} for details.
 
 Although AUC @TeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and La@TeX{}
@@ -217,7 +219,7 @@ writing input files for LaTeX using GNU Emacs.
  
 AUC @TeX{} lets you run @TeX{}/LaTeX and other LaTeX-related tools, such as
 a output filters or post processor from inside Emacs.  Especially
-`running LaTeX' is interesting, as AUC @TeX{} let's you browse through
+`running LaTeX' is interesting, as AUC @TeX{} lets you browse through
 the errors @TeX{} reported, while it moves the cursor directly to the
 reported error, and displays some documentation for that particular
 error.  This will even work when the document is spread over several
@@ -426,7 +428,7 @@ The label will be prefixed by the value specified in
 @kindex C-c C-s
 (@kbd{C-c C-s}) Insert a sectioning command.
 
-Determinate the type of section to be inserted, by the argument
+Determine the type of section to be inserted, by the argument
 @var{arg}.@refill
 
 @itemize @bullet
@@ -551,8 +553,8 @@ inserted for other types of sections.
 @cindex @samp{\begin}
 @cindex @samp{\end}
 
-A quite large apparatus is available supporting insertions of
-environments, that is @samp{\begin@{@}} --- @samp{\end@{@}} pairs.  
+A large apparatus is available that supports insertions of environments,
+that is @samp{\begin@{@}} --- @samp{\end@{@}} pairs.
 
 AUC @TeX{} is aware of most of the actual environments available in a
 specific document.  This is achieved by examining your
@@ -615,7 +617,7 @@ described above, you will be prompted for a number of additional things.
 
 @table @var
 @item float-to
-This field is the option of float environments that control how they are
+This field is the option of float environments that controls how they are
 placed in the final document.  In La@TeX{} this is a sequence of the
 letters @samp{htbp} as described in the La@TeX{} manual.  The value will
 default to the value of @code{LaTeX-float}.
@@ -782,7 +784,7 @@ more information.
 @node Commenting, Marking and formatting, Completion, Advanced Features
 @section Commenting 
 
-It is often necessary to temporarily comment out a region of @TeX{} or
+It is often necessary to comment out temporarily a region of @TeX{} or
 La@TeX{} code.  This can be done with the commands @kbd{C-c ;} and
 @kbd{C-c %}.  @kbd{C-c ;} will comment out all lines in the current
 region, while @kbd{C-c %} will comment out the current paragraph.  To
@@ -964,7 +966,7 @@ matched by a @samp{@}}.@refill
 
 Minor mode for editing outlines with selective display.  Headings are
 lines which start with asterisks: one for major headings, two for
-sub headings, etc.  Lines not starting with asterisks are body lines.
+sub-headings, etc.  Lines not starting with asterisks are body lines.
 
 Body text or sub-headings under a heading can be made temporarily
 invisible, or visible again.  Invisible lines are attached to the end of
@@ -986,7 +988,7 @@ back.  A heading with text hidden under it is marked with an ellipsis
 @item C-c C-o C-f
 @findex outline-forward-same-level
 @kindex C-c C-o C-f
-@code{outline-forward-same-level} similar but skip sub headings
+@code{outline-forward-same-level} similar but skip sub-headings
 
 @item C-c C-o C-b
 @findex outline-backward-same-level
@@ -1015,25 +1017,25 @@ back.  A heading with text hidden under it is marked with an ellipsis
 @end table
 
 The remaining commands are used when point is on a heading line.
-They apply to some of the body or sub headings of that heading.
+They apply to some of the body or sub-headings of that heading.
 
 @table @kbd
 @item C-c C-o C-h
 @findex hide-subtree
 @kindex C-c C-o C-h
-@code{hide-subtree} make body and sub headings invisible.
+@code{hide-subtree} make body and sub-headings invisible.
 
 @item C-c C-o C-s
 @findex show-subtree
 @kindex C-c C-o C-s
-@code{show-subtree} make body and sub headings visible.
+@code{show-subtree} make body and sub-headings visible.
 
 @item C-c C-o C-i
 @findex show-children
 @kindex C-c C-o C-i
-@code{show-children} make direct sub headings visible.  No effect on
-body, or sub headings 2 or more levels down. With arg N, affects
-sub headings N levels down.
+@code{show-children} make direct sub-headings visible.  No effect on
+body, or sub-headings 2 or more levels down. With arg N, affects
+sub-headings N levels down.
 
 @item C-c C-o C-c
 @findex hide-entry
@@ -1048,13 +1050,13 @@ sub headings N levels down.
 @item C-c C-o C-l
 @findex hide-leaves
 @kindex C-c C-o C-l
-@code{hide-leaves} make body under heading and under its sub headings
-invisible. The sub headings remain visible.
+@code{hide-leaves} make body under heading and under its sub-headings
+invisible. The sub-headings remain visible.
 
 @item C-c C-o C-x
 @findex show-branches
 @kindex C-c C-o C-x
-@code{show-branches} make all sub headings at all levels visible.
+@code{show-branches} make all sub-headings at all levels visible.
 @end table
 
 @defopt outline-prefix-char
@@ -2087,8 +2089,8 @@ Parse its arguments but use no braces when they are inserted.
 Evaluate arguments and insert the result in the buffer.
 
 @item TeX-argument-file-hook
-Prompt for a filename in the current directory, and use it without the
-extension.
+Prompt for a tex or sty filename, and use it without the extension. Run
+the file hooks defined for it.
 
 @item TeX-argument-label-hook
 Prompt for a label completing with known labels.
@@ -2109,6 +2111,10 @@ Prompt for a La@TeX{} counter.
 Prompt for a La@TeX{} savebox.
 
 @item TeX-argument-file-hook
+Prompt for a filename in the current directory, and use it without the
+extension.
+
+@item TeX-argument-input-file-hook
 Prompt for a filename in the current directory, and use it without the
 extension.  Run the style hooks for the file.
 
@@ -2476,9 +2482,16 @@ install-auto}. This will only work if you have set
 
 Tell the users on your site to insert
 @lisp 
-        (load-file "/path/for/auctex/tex-site")
+        (load-file "/path/for/auctex/tex-site.elc")
 @end lisp
 in their @file{.emacs} file in order to use AUC @TeX{}.
+
+Users who know the older keybindings from version 6.1 may also want to
+insert 
+@lisp
+        (load "auc-tex")
+@end lisp
+in their @file{.emacs}
 
 @node History, Minor Modes, Installation, top
 @comment  node-name,  next,  previous,  up
@@ -2500,9 +2513,17 @@ this version, and for the authors, who get nostalgic at times.
 
 Coordinator: Per Abrahamsen, 1993.
 
-Alpha testers: Piet van Oostrum @samp{<piet@@cs.ruu.nl>}, Sven Mattisson
-@samp{<sven@@tde.lth.se>}, and Tim Geisler
-@samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}.
+Alpha testers (in order of appearance): Piet van Oostrum
+@samp{<piet@@cs.ruu.nl>}, Sven Mattisson @samp{<sven@@tde.lth.se>}, Tim
+Geisler @samp{<tmgeisle@@immd8.informatik.uni-erlangen.de>}, Fran E.
+Burstall @samp{<F.E.Burstall@@maths.bath.ac.uk>}, Alastair Burt
+@samp{<burt@@dfki.uni-kl.de>}, Sridhar Anandakrishnan
+@samp{<sak@@essc.psu.edu>}, Kjell Gustafsson
+@samp{<kjell@@sccm.Stanford.EDU>}, Uffe Kjaerulff
+@samp{<uk@@iesd.auc.dk>}, Kurt Swanson @samp{Kurt.Swanson@@dna.lth.se},
+Mark Utting @samp{<marku@@cs.uq.oz.au>}, Per Norman Oma
+@samp{perno@@itk.unit.no}, Naji Mouawad
+@samp{<nmouawad@@math.uwaterloo.ca>}, and probably more.
 
 @itemize @bullet
 @item
@@ -2512,6 +2533,9 @@ The keymap has been changed in order to make it more intuitive to new
 users, and because the old bindings did not work well with the new
 buffer manipulation commands in tex-buf.el.  To use the new bindings,
 load @file{tex-init.el} instead of @file{auc-tex.el}.
+
+The file @file{auc-tex.el} is still available and implements the old
+keybinding on top of the new code.
 
 Print out the reference card (@file{doc/ref-card.tex}) to see the new
 bindings.  
@@ -3155,6 +3179,18 @@ This is a list of projects for AUC @TeX{}.  Bug reports and requests we
 can not fix or honor right away will be added to this list
 
 @itemize @bullet
+
+@kbd{C-u C-c @{} should add braces around region.  @kbd{C-u - C-c @{}
+should remove braces.  @kbd{C-u - C-c C-f} should remove font.  See code
+by Martin Sjolin @samp{<marsj@@ida.liu.se>}.
+
+@item
+Hook naming should be accoriding to the Emacs (19) guidelines.
+Specifically, only the hook @em{variable} should be names @samp{-hook}.
+The hook functions should have other names.
+
+@item
+Define @code{TeX-add-hook} while we wait for Stallman.
 
 @item
 The documentation of the minor modes should be separated.

@@ -1,6 +1,6 @@
 ;;; @ latex.el - Special code for LaTeX.
 ;;;
-;;; $Id: latex.el,v 1.2 1993-03-18 06:02:16 amanda Exp $
+;;; $Id: latex.el,v 1.3 1993-03-23 11:40:32 amanda Exp $
 
 ;;; @@ Hook
 
@@ -152,7 +152,7 @@
      '("usebox" TeX-argument-savebox-hook)
      '("vspace*" "Length")
      '("vspace" "Length")
-     '("include" TeX-argument-input-file-hook)
+     '("include" (TeX-argument-input-file-hook "File" t))
      '("includeonly" t)
      '("input" TeX-argument-input-file-hook)
      '("addcontentsline" TeX-argument-file-hook

@@ -1,6 +1,6 @@
 ;;; @ auc-old.el - Compatibility with AUC TeX 6.*
 ;;;
-;;; $Id: auc-tex.el,v 5.44 1993-03-19 00:24:12 amanda Exp $
+;;; $Id: auc-tex.el,v 5.45 1993-03-23 11:40:03 amanda Exp $
 ;;;
 ;;; This file contains an alternative keymapping, compatible with
 ;;; older versions of AUC TeX.  You are strongly suggested to try the
@@ -112,12 +112,12 @@
   (interactive)
   (TeX-run-command "Check"))
 
-(defun TeX-bibtex ()
+(defun LaTeX-bibtex ()
   "OBSOLETE: Run BibTeX command on either the current document or region."
   (interactive)
   (TeX-run-command TeX-command-BibTeX))
 
-(defun TeX-makeindex ()
+(defun LaTeX-makeindex ()
   "OBSOLETE: Run Index command on either the current document or region."
   (interactive)
   (TeX-run-command "Index"))
