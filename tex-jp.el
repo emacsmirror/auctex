@@ -1,14 +1,31 @@
-;;; tex-jp.el - Support for Japanese TeX.
-;;
+;;; tex-jp.el --- Support for Japanese TeX.
 
 ;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
 ;; Copyright (C) 2002, 2003, 2004 Masayuki Ataka <ataka@milk.freemail.ne.jp>
 
 ;; Author:     KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; Maintainer: Masayuki Ataka <ataka@milk.freemail.ne.jp>
-;; Version: 11.14
+;; Keywords: tex
+
+;; This file is part of AUCTeX.
+
+;; AUCTeX is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; AUCTeX is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with AUCTeX; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+;; 02111-1307, USA.
 
 ;;; Commentary:
+
 ;; This file was written by KOBAYASHI Shinji <koba@flab.fujitsu.co.jp>
 ;; based on many patches developed by Japanese NetNews community.
 ;; Japanese message translation by MATUI Takao <mat@nuis.ac.jp>.
@@ -33,13 +50,13 @@
 
 (defvar japanese-TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  (list (list "jTeX" "jtex \"\\nonstopmode\\input %t\""
+  (list (list "jTeX" "jtex %S \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil (list 'plain-tex-mode))
-	(list "jLaTeX" "jlatex \"\\nonstopmode\\input{%t}\""
+	(list "jLaTeX" "jlatex %S \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil (list 'latex-mode))
-	(list "pTeX" "ptex \"\\nonstopmode\\input %t\""
+	(list "pTeX" "ptex %S \"\\nonstopmode\\input %t\""
 	      'TeX-run-TeX nil (list 'plain-tex-mode))
-	(list "pLaTeX" "platex \"\\nonstopmode\\input{%t}\""
+	(list "pLaTeX" "platex %S \"\\nonstopmode\\input{%t}\""
 	      'TeX-run-LaTeX nil (list 'latex-mode))
 	(list "Mendex" "mendex %s" 'TeX-run-command nil t)
 	(list "jBibTeX" "jbibtex %s" 'TeX-run-BibTeX nil t))
