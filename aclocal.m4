@@ -502,13 +502,14 @@ dnl Determine directories which hold TeX input files.
 dnl
 AC_DEFUN(TEX_INPUT_DIRS,
  [
-AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS    Directories holding TeX input files (separated by semicolons)],
+AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS
+                          semicolon-separated DIRS for TeX file searches],
  [ texinputdirs="${withval}" ;
    AC_FULL_EXPAND(withval)
    texinputdirsout=""
    for x in `echo ${texinputdirs} | sed -e 's/\;/\\n/g'` ; do
      if test ! -d "$x" ; then
-       AC_MSG_ERROR([--with-texmf-dir="$x": Directory does not exist])
+       AC_MSG_ERROR([--with-tex-input-dirs="$x": Directory does not exist])
      fi
      if test "${texinputdirsout}" != "" ; then
        texinputdirsout="${texinputdirsout}""\" \""
@@ -521,17 +522,21 @@ AC_ARG_WITH(tex-input-dirs,[  --with-tex-input-dirs=DIRS    Directories holding 
 if test -z "$texinputdirs" ; then
   AC_MSG_CHECKING([for directories holding TeX input files])
   texinputdirs=""
-  temp=`kpsewhich --progname latex --expand-braces \\$SYSTEXMF`
-  if test -z "$temp" ; then
-    temp1=`kpsewhich --progname latex --expand-braces \\$TEXMFLOCAL`
-    if test -z "$temp1" ; then
+  temp=`kpsewhich --progname latex --expand-braces \\$SYSTEXMF 2> /dev/null`
+  if test $? -ne 0 ; then
+    temp=""
+    temp1=`kpsewhich --progname latex --expand-braces \\$TEXMFLOCAL 2> /dev/null`
+    if test $? -ne 0 ; then
       temp1=`kpsewhich --progname latex --expand-path \\$TEXMFLOCAL`
     fi
-    temp2=`kpsewhich --progname latex --expand-braces \\$TEXMFMAIN`
-    if test -z "$temp2" ; then
+    temp2=`kpsewhich --progname latex --expand-braces \\$TEXMFMAIN 2> /dev/null`
+    if test $? -ne 0 ; then
       temp2=`kpsewhich --progname latex --expand-path \\$TEXMFMAIN`
     fi
-    temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST`
+    temp3=`kpsewhich --progname latex --expand-braces \\$TEXMFDIST 2> /dev/null`
+    if test $? -ne 0 ; then
+      temp3=""
+    fi
     for i in $temp1 $temp2 $temp3 ; do
       if ! echo $i | grep -e '^[A-Za-z]:' > /dev/null && \
 	 ! echo $i | grep ';' > /dev/null ; then
