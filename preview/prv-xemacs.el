@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2001  Free Software Foundation, Inc.
 
-;; Author: David Kastrup <David.Kastrup@t-online.de>
+;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
 
 ;; This file is free software; you can redistribute it and/or modify
