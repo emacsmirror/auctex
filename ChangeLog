@@ -1,5 +1,9 @@
 2004-08-17  David Kastrup  <dak@gnu.org>
 
+	* Version 11.51 released.
+
+2004-08-17  David Kastrup  <dak@gnu.org>
+
 	* aclocal.m4: Quote when expanding and remove trailing backslash,
 	too.
 	(library): Don't check for $PWD but for default-directory.
