@@ -380,11 +380,7 @@ nil displays the underlying text, and 'toggle toggles."
             (dolist (prop '(end-glyph preview-keymap
 				      mouse-face preview-balloon-help))
               (set-extent-property ov prop
-                                   (get-text-property 0 prop (car strings))))
-;            (with-current-buffer (overlay-object ov)  ; not yet implemented
-;              (add-hook 'pre-command-hook #'preview-mark-point nil t)
-;              (add-hook 'post-command-hook #'preview-move-point nil t))
-            )
+                                   (get-text-property 0 prop (car strings)))))
         (dolist (prop '(mouse-face invisible))
           (set-extent-property ov prop nil))
         (set-extent-properties ov `(face preview-face
@@ -455,11 +451,169 @@ Pure borderless black-on-white will return NIL."
 
 (defun preview-mode-setup ()
   "Setup proper buffer hooks and behavior for previews."
-;;  (add-hook 'pre-command-hook #'preview-mark-point nil t)
-;;  (add-hook 'post-command-hook #'preview-move-point nil t)
+  (add-hook 'pre-command-hook #'preview-mark-point nil t)
+  (add-hook 'post-command-hook #'preview-move-point nil t)
   (unless (and (boundp 'balloon-help-mode)
 	       balloon-help-mode)
-    (balloon-help-minor-mode 1)))
+    (balloon-help-minor-mode 1))
+  (add-hook 'before-change-functions #'preview-handle-before-change nil t)
+  (add-hook 'after-change-functions #'preview-handle-after-change nil t)
+  )
+
+(defvar preview-marker (make-marker)
+  "Marker for fake intangibility.")
+
+(defvar preview-temporary-opened nil)
+
+(defun preview-mark-point ()
+  "Mark position for fake intangibility."
+;;  seems to hurt more than it helps.
+;;  (when (eq (get-char-property (point) 'preview-state) 'active)
+;;    (set-marker preview-marker (point))
+;;    (preview-move-point))
+  (set-marker preview-marker (point)))
+
+(defcustom preview-auto-reveal 'reveal-mode
+  "*Cause previews to open automatically when entered.
+Set to t or nil, or to a symbol which will be consulted
+if defined.  The default is to follow the setting of
+`reveal-mode'."
+  :group 'preview-appearance
+  :type '(choice (const :tag "Off" nil)
+		 (const :tag "On" t)
+		 symbol))
+
+(defun preview-move-point ()
+  "Move point out of fake-intangible areas."
+  (preview-check-changes)
+  (let (newlist (pt (point)))
+    (setq preview-temporary-opened
+	  (dolist (ov preview-temporary-opened newlist)
+	    (if (catch 'keep
+		  (unless (and (overlay-buffer ov)
+			       (eq (overlay-get ov 'preview-state) 'inactive))
+		    (throw 'keep nil))
+		  (unless (eq (overlay-buffer ov) (current-buffer))
+		    (throw 'keep t))
+		  (when (and (>= pt (overlay-start ov))
+			     (< pt (overlay-end ov)))
+		    (throw 'keep t))
+		  (preview-toggle ov t)
+		  nil)
+		(push ov newlist))))
+    (if (or isearch-mode
+	    (and (boundp preview-auto-reveal)
+		 (symbol-value preview-auto-reveal)))
+	(preview-open-overlays (extents-at pt nil 'preview-state))
+      (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
+			   (< pt (marker-position preview-marker)))))
+	(while (catch 'loop
+		 (dolist (ovr (extents-at pt nil 'preview-state))
+		   (when (and
+			  (eq (overlay-get ovr 'preview-state) 'active))
+		     (setq pt (if (and backward
+				       (> (overlay-start ovr) (point-min)))
+				  (1- (overlay-start ovr))
+				(overlay-end ovr)))
+		     (throw 'loop t))))
+	  nil)
+	(goto-char pt)))))
+
+(defun preview-open-overlays (list &optional pos)
+  "Open all previews in LIST, optionally restricted to enclosing POS."
+  (dolist (ovr list)
+    (when (and (eq (overlay-get ovr 'preview-state) 'active)
+	       (or (null pos)
+		   (and
+		    (>= pos (overlay-start ovr))
+		    (< pos (overlay-end ovr)))))
+      (preview-toggle ovr)
+      (push ovr preview-temporary-opened))))
+
+(defadvice replace-highlight (before preview)
+  "Make `query-replace' open preview text about to be replaced."
+  (preview-open-overlays
+   (overlays-in (ad-get-arg 0) (ad-get-arg 1))))
+
+(defcustom preview-query-replace-reveal t
+  "*Make `query-replace' autoreveal previews."
+  :group 'preview-appearance
+  :type 'boolean
+  :require 'preview
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (if value
+	     (ad-enable-advice 'replace-highlight 'before 'preview)
+	   (ad-disable-advice 'replace-highlight 'before 'preview))
+	 (ad-activate 'replace-highlight))
+  :initialize #'custom-initialize-reset)
+
+;; Here is the beef: for best intuitiveness, we want to have
+;; insertions be carried out as expected before iconized text
+;; passages, but we want to insert *into* the overlay when not
+;; iconized.  A preview that has become empty can not get content
+;; again: we remove it.  A disabled preview needs no insert-in-front
+;; handler.
+
+(defvar preview-change-list nil
+  "List of tentatively changed overlays.")
+
+(defun preview-register-change (ov map-arg)
+  "Register not yet changed OV for verification.
+This stores the old contents of the overlay in the
+`preview-prechange' property and puts the overlay into
+`preview-change-list' where `preview-check-changes' will
+find it at some later point of time."
+  (unless (extent-property ov 'preview-prechange)
+    (if (eq (extent-property ov 'preview-state) 'disabled)
+	(set-extent-property ov 'preview-prechange t)
+      (set-extent-property ov
+			   'preview-prechange
+			   (save-restriction
+			     (widen)
+			     (buffer-substring-no-properties
+			      (extent-start-position ov)
+			      (extent-end-position ov)))))
+    (push ov preview-change-list))
+  nil)
+
+(defun preview-check-changes ()
+  "Check whether the contents under the overlay have changed.
+Disable it if that is the case.  Ignores text properties."
+  (dolist (ov preview-change-list)
+    (condition-case nil
+	(with-current-buffer (extent-object ov)
+	  (let ((text (save-restriction
+			(widen)
+			(buffer-substring-no-properties
+			 (extent-start-position ov)
+			 (extent-end-position ov)))))
+	    (if (zerop (length text))
+		(preview-delete ov)
+	      (unless
+		  (or (eq (extent-property ov 'preview-state) 'disabled)
+		      (string= text (extent-property ov 'preview-prechange)))
+		(preview-disable ov)))))
+      (error nil))
+    (set-extent-property ov 'preview-prechange nil))
+  (setq preview-change-list nil))
+
+(defun preview-handle-before-change (beg end)
+  (map-extents #'preview-register-change nil beg end
+	       nil nil 'preview-state))
+
+(defun preview-handle-after-change (beg end length)
+  (when (and preview-change-list
+	     (zerop length)
+	     (not (eq this-command 'undo)))
+    (map-extents (lambda (ov maparg)
+		   (set-extent-endpoints
+		    ov maparg (extent-end-position ov))) nil
+		    beg beg end 'start-in-region 'preview-state 'active)
+    (map-extents (lambda (ov maparg)
+		   (set-extent-endpoints
+		    ov (extent-start-position ov) maparg)) nil
+		    end end beg 'end-in-region 'preview-state 'active)))
 
 (provide 'prv-xemacs)
 
