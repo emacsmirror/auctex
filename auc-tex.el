@@ -1,4 +1,3 @@
-(setq debug-on-error t)
 ;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; auc-tex.el - A much enhanced LaTeX mode
@@ -10,16 +9,16 @@
 ;; LCD Archive Entry:
 ;; AUC TeX|Kresten Krab Thorup|krab@iesd.auc.dk
 ;; | A much enhanced LaTeX mode 
-;; |$Date: 1992-01-27 15:48:21 $|$Revision: 5.17 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
+;; |$Date: 1992-01-27 16:10:45 $|$Revision: 5.18 $|iesd.auc.dk:/pub/emacs-lisp/auc-tex.tar.Z
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; RCS status      : $Revision: 5.17 $  
+;; RCS status      : $Revision: 5.18 $  
 ;; Author          : Kresten Krab Thorup
 ;; Created On      : Fri May 24 09:36:21 1991
 ;; Last Modified By: Kresten Krab Thorup
-;; Last Modified On: Mon Jan 27 15:18:45 1992
-;; Update Count    : 484
+;; Last Modified On: Mon Jan 27 16:53:33 1992
+;; Update Count    : 486
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,7 +119,7 @@
 ;;  TO DO LIST  (to add items, mail auc-tex_mgr@iesd.auc.dk)
 ;;
 ;;   Incorporate `TeX-info-mode'... This is just a mad idea, but 
-;;   why not ?  --- I've started working on it!
+;;   why not ?  --- I've started working on it! ideas are welcome
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
