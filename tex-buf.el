@@ -1,6 +1,6 @@
 ;;; @ tex-buf.el - External commands for AUC TeX.
 ;;;
-;;; $Id: tex-buf.el,v 1.42 1993-07-26 02:42:21 amanda Exp $
+;;; $Id: tex-buf.el,v 1.43 1993-07-27 01:12:32 amanda Exp $
 
 (provide 'tex-buf)
 (require 'tex-site)
@@ -172,8 +172,7 @@ LIST default to TeX-expand-list."
 	(let ((prefix (substring command 0 (match-beginning 0)))
 	      (postfix (substring command (match-end 0))))
 	  (setq command (concat prefix
-				(cond ((or (listp expansion)
-					   (fboundp expansion))
+				(cond ((TeX-function-p expansion)
 				       (apply expansion arguments))
 				      ((boundp expansion)
 				       (apply (eval expansion) arguments))
@@ -801,6 +800,12 @@ already in an Emacs buffer) and the cursor is placed at the error."
 
 ;;; @@@ Parsing (La)TeX
 
+(defvar TeX-translate-location-hook nil
+  "List of functions to be called before showing an error or warning.
+
+You might want to examine and modify the free variables `file',
+`offset', `line', `string', `error', and `context' from this hook.")
+
 (defun TeX-parse-error (old)
   "Goto next error.  Pop to OLD buffer if no more errors are found."
     (while
@@ -898,6 +903,7 @@ already in an Emacs buffer) and the cursor is placed at the error."
     ;; Find the error.
     (if (null file)
 	(error "Error occured after last TeX file closed."))
+    (run-hooks 'TeX-translate-location-hook)
     (find-file-other-window file)
     (goto-line (+ offset line))
     (if (not (string= string " "))
@@ -915,9 +921,9 @@ Return nil if we gave a report."
   (let* ((error (concat "** " string))
 
 	 ;; Get error-line (warning)
-	 (line-start (progn
-		       (re-search-backward " \\([0-9]*\\)--\\([0-9]*\\)")
-		       (string-to-int (TeX-match-buffer 1))))
+	 (line (progn
+		 (re-search-backward " \\([0-9]*\\)--\\([0-9]*\\)")
+		 (string-to-int (TeX-match-buffer 1))))
 	 (line-end (string-to-int (TeX-match-buffer 2)))
 	 
 	 ;; Find the context
@@ -935,10 +941,10 @@ Return nil if we gave a report."
 	 (error-point (point))
 
 	 ;; Now find the error word.
-	 (word (progn
-		 (re-search-backward "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
-				     context-start t)
-		 (TeX-match-buffer 1)))
+	 (string (progn
+		   (re-search-backward "[][\\W() ---]\\(\\w+\\)[][\\W() ---]*$"
+				       context-start t)
+		   (TeX-match-buffer 1)))
 
 	 ;; We might use these in another file.
 	 (offset (car TeX-error-offset))
@@ -951,15 +957,16 @@ Return nil if we gave a report."
     ;; Go back to TeX-buffer
     (if TeX-debug-bad-boxes
 	(progn
+	  (run-hooks 'TeX-translate-location-hook)
 	  (find-file-other-window file)
-	  ;; Find line and word
-	  (goto-line (+ offset line-start))
+	  ;; Find line and string
+	  (goto-line (+ offset line))
 	  (beginning-of-line 0)
 	  (let ((start (point)))
 	    (goto-line line-end)
 	    (end-of-line)
-	    (search-backward word start t)
-	    (search-forward word nil t))
+	    (search-backward string start t)
+	    (search-forward string nil t))
 	  ;; Display help
 	  (if TeX-display-help
 	      (TeX-help-error error context)

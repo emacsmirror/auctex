@@ -17,7 +17,7 @@ file: /pack/ftp/pub/emacs-lisp/get-proc-env.el.z (gzip'ed)
 Make sure to use the correct byte-compiled files for each version.
 You may want to disable the automatic byte compilation by setting 
 
-	(setq TeX-byte-compile nil)
+        (setq TeX-byte-compile nil)
 
 in your .emacs file.
 
@@ -25,7 +25,7 @@ in your .emacs file.
 
 Insert 
 
-	(setq-default TeX-master t)
+        (setq-default TeX-master t)
 
 in your .emacs file.
 
@@ -48,41 +48,8 @@ standard LaTeX macros.
 * Now saving the buffer is too slow.
 
 AUC TeX parses your buffer and save the information each time you save
-the buffer.  You may be able to speed it up by limiting the amount of
-information AUC TeX tries to extract.  You can do this by setting the
-default value of `TeX-auto-regexp-list' after loading `tex-site.el'.
-Look at the definition of the variable in the file `tex-auto.el'.  If
-you only use LaTeX commands a good setting would be
-
-(setq-default TeX-auto-regexp-list 'LaTeX-auto-regexp-list)
-
-This will approximately cut the parse time to half.  If you don't use
-macro, environment, or label completion, set it to
-
-(setq-default TeX-auto-regexp-list 'LaTeX-auto-minimal-regexp-list)
-
-This will cut the parse time to a quarter of the original.  This will
-only parse the documentstyle line, so you can speed it up even more by
-setting the amount of text it will try to parse with
-
-(setq-default 'TeX-auto-parse-length 2000)
-
-It will then only parse the first 2000 characters of each file.  To
-completly avoid parsing, set TeX-parse-self to nil.  AUC TeX will then
-never parse your files.  This will disable most of AUC TeX.
-
-You can specify this on a per file basis.  If you have a special file
-with all the defintions used in a document, you may want to make a
-full parse of this file, even if you have set the default to a more
-limited parse.  You can do this by specifying set the variables in the
-file local variables section in the end of the document.
-
-% Local Variables: 
-% mode: latex
-% TeX-master: t
-% TeX-auto-regexp-list: TeX-auto-full-regexp-list
-% TeX-auto-parse-length: 999999
-% End: 
+the buffer.  See the section about parsing TeX in the manual for a
+description of how to speed the parsing process up.
 
 * C-c C-c has too great a delay.
 
@@ -90,14 +57,14 @@ By default AUC TeX will look in the current directory for files that
 may have changed in order to determine if it is necessary to run TeX
 or LaTeX again.  You can disable it with
 
-	(setq TeX-check-path nil)
+        (setq TeX-check-path nil)
 
 You can also make AUC TeX search your private or the global macro
 directories, so AUC TeX will suggest "LaTeX" if any of the style files
 have changed.
 
-	(setq TeX-check-path
-	      (append '("./") TeX-macro-private TeX-macro-global))
+        (setq TeX-check-path
+              (append '("./") TeX-macro-private TeX-macro-global))
 
 * Only the master file knows about styles, macros, etc.
 
@@ -112,3 +79,7 @@ AUC @TeX{} cache a lot of information for efficiency, press C-c C-n to
 flush the cache after changing the name of a file.  Press C-u C-c C-n
 to flush everything.
 
+
+% Local Variables: 
+% mode: outline-minor
+% End: 

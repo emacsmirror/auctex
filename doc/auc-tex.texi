@@ -5,7 +5,7 @@
 @c paragraphindent 2
 @comment %**end of header 
  
-@c $Id: auc-tex.texi,v 1.47 1993-07-26 02:42:35 amanda Exp $
+@c $Id: auc-tex.texi,v 1.48 1993-07-27 01:12:48 amanda Exp $
 
 @finalout
 @titlepage
@@ -83,96 +83,26 @@ general interest.
 @end ifinfo
 
 @menu
-* Copying::                     GNU General Public License
+* Copying::                     Copying
 * Introduction::                Introduction 
 * Frequently Used Commands::    Inserting Frequently Used Commands  
 * Advanced Features::           Advanced Editing Features 
 * Formatting::                  Formatting and Printing 
-* Multifile::                   Documents split over many files
+* Multifile::                   Multifile Documents
+* Parsing Files::               Automatic Parsing of @TeX{} files.
 * Internationalization::        The Anti-American Conspiracy
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
-* Installation::                Installation
-* History::                     New stuff
+* Installation::                Installation of AUC @TeX{}
+* History::                     The History of AUC @TeX{}
 * Minor Modes::                 Various Minor Modes
 * Supported symbols::           Currently supported symbols in LaTeX-math-mode
-
-* Projects::                    What still need to be done for AUC @TeX{}
-* Credit::                      People who love us
-* Key Index::                   Index of keybindings
-* Function Index::              Index of commands
-* Variable Index::              Index of user options
-* Concept Index::               Index of concepts
-
- --- The Detailed Node Listing ---
-
-Inserting Frequently Used Commands  
-
-* Quotes::                      Inserting double quotes
-* Font Specifiers::             Inserting Font Specifiers 
-* Sectioning::                  Inserting chapters, sections, etc. 
-* Environments::                Inserting Environment Templates
-
-Inserting Environment Templates
-
-* Floats::                      Floats
-* Itemize-like::                Itemize-like
-* Tabular-like::                Tabular-like
-* Customizing environments::    Customizing environments
-
-Advanced Editing Features 
-
-* Mathematics::                 Entering Mathematics 
-* Completion::                  Completion 
-* Commenting::                  Commenting 
-* Marking and formatting::      Marking, Formatting and Indenting
-* Outline::                     Outlining the Document
-
-Formatting and Printing 
-
-* Commands::                    Invoking external commands.
-* Debugging::                   Debugging @TeX{} and La@TeX{} output.
-* Checking::                    Checking the document.
-* Control::                     Controlling the processes.
-
-The Anti-American Conspiracy
-
-* Scandinavian::                Support for the Scandinavian Languages
-* Russian::                     Support for Russian
-* Dvorak::                      Dvorak and QWERTY
-* Accents::                     Accents on Dead Keys
-* Converting::                  Converting Between Encodings of a Character Set
-* Japanese ::                   
-
-Automatic Customization
-
-* Automatic Global::            Automatic Customization for the Site
-* Automatic Private::           Automatic Customization for a User
-* Automatic Local::             Automatic Customization for a Directory
-
-Writing Your own Style Support
-
-* Simple Style::                A Simple Style File
-* Adding Macros::               Adding Support for Macros
-* Adding Environments::         Adding Support for Environments
-* Adding Other::                Adding Other Information
-* Format Packages::             Supporting Other Format Packages
-* Hacking the Parser::          Automatic Extraction of New Things
-
-The History of AUC @TeX{}
-
-* Version 7.3::                 Version 7.3
-* Version 7.2::                 Version 7.2
-* Version 7.1::                 Version 7.1
-* Version 7.0::                 News in 7.0
-* Version 6.1::                 Old news in 6.1
-* Version 6.0::                 Older news in 6.0
-* Ancient History::             Ancient History
-
-Various Minor Modes
-
-* Auto Indent::                 Auto Indent Mode
-* Auto Ispell::                 Auto Ispell Mode
+* Projects::                    Wishlist
+* Credit::                      Credit 
+* Key Index::                   Key Index
+* Function Index::              Function Index
+* Variable Index::              Variable Index
+* Concept Index::               Concept Index
 @end menu
 
 @node Copying, Introduction, top, top
@@ -325,13 +255,13 @@ Inserts the value of @code{tex-open-quote} (normally @samp{``}) or
 With prefix argument, always inserts @samp{"} characters.@refill
 @end deffn
 
-@defvar TeX-open-quote
+@defopt TeX-open-quote
 String inserted by typing @kbd{"} to open a quotation.
-@end defvar
+@end defopt
 
-@defvar TeX-close-quote
+@defopt TeX-close-quote
 String inserted by typing @kbd{"} to open a quotation.
-@end defvar
+@end defopt
 
 If you include the style file @file{german} @code{TeX-open-quote} and
 @code{TeX-close-quote} will both be set to @samp{"}.
@@ -1390,7 +1320,7 @@ the current buffer, or if already there, to the file where the current
 process was started. 
 @end deffn
 
-@node Multifile, Internationalization, Formatting, top
+@node Multifile, Parsing Files, Formatting, top
 @chapter Multifile Documents
 @cindex Multifile Documents
 @cindex Documents
@@ -1429,7 +1359,18 @@ your files.
 % End: 
 @end example
 
-You should always set this variable to the top level document.
+You should always set this variable to the top level document.  If you
+always use single file documents, or always use the same name for your
+top level documents, you can set this variable in your @file{.emacs}
+file.
+
+@lisp
+(setq-default TeX-master t) ; Only use single file douments.
+@end lisp
+
+@lisp
+(setq-default TeX-master "master") ; All master files called "master".
+@end lisp
 
 @defopt TeX-master
 The master file associated with the current buffer.  If the file being
@@ -1483,7 +1424,122 @@ you don't do this, the other files in the document will not know
 anything about each other, except for the name of the master file.
 @xref{Automatic Local}.
 
-@node Internationalization, Automatic, Multifile, top
+@node Parsing Files, Internationalization, Multifile, top
+@chapter Automatic Parsing of @TeX{} files.
+@cindex Parsing @TeX{}
+@cindex Automatic Parsing
+
+AUC @TeX{} depends heavely on being able to extract information from the
+buffers by parsing them.  Since parsing the buffer can be somewhat slow,
+AUC @TeX{} will store the parsed information in an @file{auto}
+subdirectory in the directory where the @TeX{} files are stored,
+@pxref{Automatic Local}.  The information in the @file{auto} directory
+is also useful for multifile documents @pxref{Multifile}, since it
+allows each file to access the parsed information from all the other
+files in the document.  This is done by first reading the information
+from the master file, and then recursively the information from each
+file stored in the master file.@refill
+
+When you issue the first AUC @TeX{} command on a new buffer, AUC @TeX{}
+will try to read the information about the file from the @file{auto}
+directory.  If this fails, for example if you have not edited the file
+before, it will parse the current buffer.  
+
+When you save the buffer it will be parsed again, and the information
+will be placed in the @file{auto} directory for use next time the file
+-- or another file in the document -- is edited.
+
+It is possible to disable the parsing by setting the buffer local
+variables @code{TeX-parse-self} and @code{TeX-auto-save}.
+
+@lisp
+(setq-default TeX-parse-self nil) ; Disable parse on load.
+(setq-default TeX-auto-save nil) ; Disable parse on save.
+@end lisp
+
+This can also be done on a per file basis, by changing the file local
+variables. 
+
+@example
+% Local Variables: 
+% TeX-parse-self: nil
+% TeX-auto-save: nil
+% End: 
+@end example
+
+Even when you have disabled the automatic parsing, you can force the
+generation of style information by pressing @kbd{C-c C-n}.
+
+@defopt TeX-parse-self
+Parse file after loading it if no style hook is found for it.
+@end defopt
+
+@defopt TeX-auto-save
+Automatically save style information when saving the buffer.
+@end defopt
+
+@deffn Command TeX-normal-mode @var{arg}
+@kindex C-c C-n
+(@kbd{C-c C-n}) Remove all information about this buffer, and apply the
+style hooks again.  Save buffer first including style information.  With
+optional argument, also reload the style hooks.
+@end deffn
+
+Instead of disabling the parsing entirely, you can also speed it
+significantly up by limiting the information it will search for (and
+store) when parsing the buffer.  You can do this by setting the default
+values for the buffer local variables @code{TeX-auto-regexp-list} and
+@code{TeX-auto-parse-length} in your @file{.emacs} file.
+
+@lisp
+;; Only parse \documentstyle information.
+(setq-default TeX-auto-regexp-list LaTeX-auto-minimal-regexp-list) 
+;; The documentstyle command is usually near the beginning.
+(setq-default TeX-auto-parse-length 2000)
+@end lisp
+
+This example will speed the parsing up significantly, but AUC @TeX{}
+will not longer be able to provide completion for labels, macros,
+environments, or bibitems specified in the document, not will it know
+what files belong to the document.
+
+These variables can also be specified on a per file basis, by changing
+the file local variables.
+
+@example
+% Local Variables: 
+% TeX-auto-regexp-list: TeX-auto-full-regexp-list
+% TeX-auto-parse-length: 999999
+% End: 
+@end example
+
+@defopt TeX-auto-regexp-list
+List of regular expresions used for parsing the current file.
+@end defopt
+
+@defopt TeX-auto-parse-length
+Maximal length of TeX file that will be parsed.
+@end defopt
+
+The pre-specified lists of regexps are defined below.
+
+@defvr Constant LaTeX-auto-minimal-regexp-list
+Only parse documentstyle.
+@end defvr
+
+@defvr Constant LaTeX-auto-regexp-list
+Parse common La@TeX{} commands.
+@end defvr
+
+@defvr Constant plain-TeX-auto-regexp-list
+Parse common plain @TeX{} commands.
+@end defvr
+
+@defvr Constant TeX-auto-full-regexp-list
+Parse all @TeX{} and La@TeX{} commands that AUC @TeX{} can use.
+@end defvr
+
+@node Internationalization, Automatic, Parsing Files, top
 @chapter The Anti-American Conspiracy
 @cindex Internationalization
 @cindex Europe
@@ -1508,7 +1564,7 @@ Japanese versions of @TeX{} and Emacs.
 * Dvorak::                      Dvorak and QWERTY
 * Accents::                     Accents on Dead Keys
 * Converting::                  Converting Between Encodings of a Character Set
-* Japanese ::                   
+* Japanese::                    
 @end menu
 
 @node Scandinavian, Russian, Internationalization, Internationalization
@@ -1811,7 +1867,7 @@ that variable to change the list of dead keys. (You most likely want to
 do that).
 @end deffn
 
-@node Converting, Japanese , Accents, Internationalization
+@node Converting, Japanese, Accents, Internationalization
 @section Converting Between Encodings of a Character Set
 @cindex Converting 
 @cindex Character set conversions
@@ -1836,7 +1892,7 @@ write @TeX{} documents normally.  You can use this function to edit the
 correctly, and then convert the file to @TeX{} format before you format
 it. 
 
-@node Japanese ,  , Converting, Internationalization
+@node Japanese,  , Converting, Internationalization
 @section Japanese @TeX{} 
 @cindex Japan
 @cindex Japanese
@@ -2453,13 +2509,9 @@ defined.  We can specify this information in a style hook file.
 (require 'tex-auto)
 
 (defvar TeX-newmacro-regexp
-  "\\\\newmacro@{\\\\\\([a-zA-Z]+\\)@}@{\\\\\\([a-zA-Z]+\\)@}"
+  '("\\\\newmacro@{\\\\\\([a-zA-Z]+\\)@}@{\\\\\\([a-zA-Z]+\\)@}"
+    (1 2) TeX-auto-multi)
   "Matches \newmacro definitions.")
-
-(or (assoc TeX-newmacro-regexp TeX-auto-regexp-list)
-    (setq TeX-auto-regexp-list 
-          (cons  (list TeX-newmacro-regexp '(1 2) 'TeX-auto-multi)
-                 TeX-auto-regexp-list)))
 
 (defvar TeX-auto-multi nil
   "Temporary for parsing \newmacro definitions.")
@@ -2486,6 +2538,7 @@ defined.  We can specify this information in a style hook file.
 (TeX-add-style-hook "macro"
  (function
   (lambda ()
+    (TeX-auto-add-regexp TeX-newmacro-regexp)
     (TeX-add-symbols '("newmacro"
                        TeX-argument-macro-hook
                        (TeX-argument-macro-hook "Capitalized macro: \\")
@@ -2725,10 +2778,6 @@ Added menu to for plain @TeX{}.  Suggested by Tim Carlson
 Made the menus depend on @code{TeX-command-list}.
 
 @item
-Made it possible to use symbolic names when setting
-@code{TeX-auto-regexp-list}.  See the @file{PROBLEMS} file.
-
-@item
 Made it possible to specify @code{TeX-auto-regexp-list} in the local
 variable section of each file.
 
@@ -2740,6 +2789,28 @@ text that will be parsed.
 Added automatic parsing of Bib@TeX{} files and @samp{bibitem} entries in
 order to get completion in @samp{cite}.  This was inspired by an add on
 made by Sridhar Anandakrishnan @samp{<sak@@essc.psu.edu>}.
+
+@item
+Added variable @code{TeX-byte-compile} to disable automatic byte
+compilation of style files when loaded.  This is needed when using
+different Emacs versions.
+
+@item
+Added variable @code{TeX-translate-location-hook} to translate file and
+line information before showing an error, as requested by Thorbjoern
+Ravn Andersen @samp{<ravn@@imada.ou.dk>}.
+
+@item
+Added variable @code{TeX-auto-save} to allow disabling the automatic
+saving of style information, either per file in the file local
+variables, or globally by using @code{setq-default}.  Use
+@code{TeX-normal-mode} to force style information to be saved.
+
+@item
+Try to create @file{auto} directory if it does not exists.
+
+@item
+Added chapter describing how to tune the @TeX{} parsing.
 @end itemize
 
 @node Version 7.2, Version 7.1, Version 7.3, History

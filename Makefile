@@ -1,6 +1,6 @@
 #
 # Makefile for the AUC TeX distribution
-# $Id: Makefile,v 5.57 1993-07-26 04:53:06 amanda Exp $
+# $Id: Makefile,v 5.58 1993-07-27 01:12:27 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -146,7 +146,7 @@ all: main
 
 main: Doc LaCheck
 
-install: main LispInstall LaInstall DocInstall
+install: LispInstall LaInstall DocInstall
 	@echo 
 	@echo "**********************************************************"
 	@echo "** AUC TeX installation almost completed "
@@ -159,8 +159,10 @@ install: main LispInstall LaInstall DocInstall
 	@echo "** It is possible to use AUC TeX without this information."
 	@echo "** "
 	@echo "** Do NOT try to install the auto files with Lucid Emacs!"
-	@echo "** Lucid Emacs is broken and will crash, at least in"
-	@echo "** version 19.6 and earlier."
+	@echo "** Lucid Emacs batch mode is broken and will crash, at least"
+	@echo "** in version 19.6 and earlier.  You can install them from"
+	@echo "** an interactive emacs session by typing
+	@echo "** `M-x TeX-auto-generate-global RET'."
 	@echo "**********************************************************"
 	@echo
 
@@ -197,7 +199,7 @@ LaInstall: LaCheck
 	@echo "**********************************************************"
 	-(cd lacheck; make install bindir=$(bindir) mandir=$(mandir))
 
-DocInstall: Doc
+DocInstall: 
 	@echo "**********************************************************"
 	@echo "** Preparing AUC TeX \`info' pages"
 	@echo "**********************************************************"
@@ -211,7 +213,7 @@ LispInstall:
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) $(STYLESRC) $(FORMATSRC)
-	if [ "." != $(aucdir) ] ; \
+	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
 	    if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; \
 	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi ; \
