@@ -1,31 +1,31 @@
-Release notes for version 0.7.9 of the preview-latex package:
+Release notes for version 0.8 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by pasting judiciously
 selected chunks (such as single formulas) chopped from unwieldy
 preview pages right over their source in the Emacs/XEmacs buffer.  You
-get to have your eye candy and edit it, too.  Since only the display
-of the text is affected, you can safely test-drive on important
-documents right away.  Quitting its use can be done anytime you'd want
-to, which you won't.
+get to have your eye candy and edit it, too.
 
 The employed style file `preview.sty' is independently useful for
-extraction of selected text elements as images.  The package is
-released under the GNU Public License (GPL).  At the current point of
-time, at least GNU Emacs-21.1 under the X window system, AUCTeX
-(11.14 or later recommended, see below), a working LaTeX installation
-and GhostScript are required.  This version also supports XEmacs-21,
-best in version 21.4.9 or later, and the various Windows ports of
-XEmacs.  You may also use recent CVS versions of Windows GNU Emacs.
+extraction of selected text elements as images.  It now fully supports
+pdftex including the `tightpage' option.
 
-Release 0.7.8 has gained a few more commands, its menu has been
-reorganized, the `fleqn' document class option from LaTeX is fully
-supported, `preview.sty' has gained a much more powerful interface for
-configuring previews and a few more items are previewed by default or
-more correctly.  Various bugs have been fixed and the installation
-process does a better job of getting things to work particularly for
-Windows users, with better documentation, too.  Whitespace changes
-will not invalidate previews as they did before.  This means that
-outline-minor-mode is usable in XEmacs now.
+The package is released under the GNU Public License (GPL).  At the
+current point of time, at least GNU Emacs-21.1 under the X window
+system or XEmacs-21 in version 21.4.10 or later, AUCTeX (11.14 or
+later recommended, see below), a working LaTeX installation and
+GhostScript are required.  dvipng (version 1.0 or later), a very fast
+dvi converter available from the same CVS archive, can also be used
+for conversion.  Recent CVS versions of GNU Emacs for Windows or MacOS
+Carbon should also work.
+
+Release 0.8 supports for the first time conversion with PDFLaTeX
+(however, the foreground color of Emacs buffers appears always black
+here, differing reports and PDFLaTeX/GhostScript expertise welcome),
+and conversion with dvipng.  Several changes were done to the format
+dumping process to get reasonable behavior when the "latex" executable
+actually is eTeX-based.  The right mouse button now has a context
+menu.  It is now possible to copy source text passages with images
+into mail buffers.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The
@@ -40,6 +40,8 @@ is located at <URL:http://sourceforge.net/projects/preview-latex>.
 If you can spare the time, you can also comment on or rate this
 project at <URL:http://freshmeat.net/projects/preview-latex>.
 
+Paypal donations to the maintainer are also possible via SourceForge.
+
 Additional files can be found at
 <URL:http://prdownloads.sourceforge.net/preview-latex>:
 
@@ -53,10 +55,3 @@ Additional files can be found at
 * AUCTeX is now located at <URL:http://www.gnu.org/software/auctex>.  The
   download area should also provide you with RPMs if you are using
   RedHat Linux.
-
-The RPMs require a few packages that should be readily available in
-current distributions.  RedHat 7.3 contains Emacs-21.2 and
-GhostScript-6.52 which are about the minimum versions to be
-recommended.  Later releases should work fine.  XEmacs in current
-distributions will still be affected with a serious display bug, see
-the PROBLEMS file or the respective manual section.
