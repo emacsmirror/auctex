@@ -2531,10 +2531,10 @@ Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 languages.  Some @LaTeX{} and EmacsLisp packages are available for easy
 typesetting and editing documents in European languages.
 
-@c Some Texinfo macros are not used because the require quite recent
+@c Some Texinfo macros are not used because they require quite recent
 @c texinfo versions (2005-03-05):
-@c Second arg of @acronym is available with 4.7, @abbr and @comma are
-@c available in 4.8.
+@c Second arg of @acronym is available with 4.7, @comma is available in
+@c 4.7, @abbr is available in 4.8.
 @c -> @abbr{MULE, MULtilingual Enhancement to GNU Emacs}
 @c -> @acronym{CJK, Chinese@comma{} Japanese@comma{} and Korean}
 
