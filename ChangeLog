@@ -1,5 +1,8 @@
 2004-09-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-indent-line): Use XEmacs' functions to deal with
+	extents/overlays.  Avoids dependence on overlay.el.
+
 	* style/url.el: Add some (low-level) symbols for completion and
 	fontification.
 	(TeX-arg-urlstyle): New function.
