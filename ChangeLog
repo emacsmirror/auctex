@@ -1,5 +1,7 @@
 2001-10-01  David Kastrup  <David.Kastrup@t-online.de>
 
+	* Really fixed line number calculation.
+
 	* Fixed line number calculations, introduced
 	TeX-current-offset.  Typo fix in styles/graphicx.el that the byte
 	compiler complained about.
