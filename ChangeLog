@@ -1,3 +1,17 @@
+2004-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-break-at-separators): New name.  Formerly
+	know as `LaTeX-fill-distinct-contents'.
+	Changed 'braced and 'math options to various symbols for opening
+	and closing separators (braces, brackets, math switches) which
+	can be activated independently.
+	(LaTeX-fill-move-to-break-point): Use it.
+
+	* doc/auc-tex.texi (Marking and formatting): Reflect change of
+	`LaTeX-fill-distinct-contents' to
+	`LaTeX-fill-break-at-separators'.
+	Describe `LaTeX-fill-break-before-code-comments'.
+
 2004-04-07  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-run-command): Turn off line number mode in the
