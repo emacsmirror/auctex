@@ -12,8 +12,9 @@ datadir = @datadir@
 infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
-autodir = $(lispdir)/auto
-styledir = $(lispdir)/style
+auctexdir= $(lispdir)/auctex
+autodir = $(auctexdir)/auto
+styledir = $(auctexdir)/style
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -91,18 +92,19 @@ contrib:
 
 install-lisp:	some
 	-$(MKINSTALLDIRS) $(lispdir)
+	rm -f $(auctexdir)/tex-site.el # Remove old (CVS-version) mistakes
 	if [ -f $(lispdir)/tex-site.el ]; then \
 	    echo "Leaving old tex-site.el alone."; \
 	else \
 	    sed -e 's#@AUCDIR#$(lispdir)/#' tex-site.el \
 	    > $(lispdir)/tex-site.el ; \
         fi
-	-$(MKINSTALLDIRS) $(lispdir)
+	-$(MKINSTALLDIRS) $(auctexdir)
 	for x in $(AUCSRC) ; do \
-	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
-	  $(INSTALL_DATA) $$x $(lispdir) ; \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(lispdir)' ; \
-	  $(INSTALL_DATA) $${x}c $(lispdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
+	  $(INSTALL_DATA) $$x $(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $${x}c '$(auctexdir)' ; \
+	  $(INSTALL_DATA) $${x}c $(auctexdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(styledir)
 	for x in $(STYLESRC) ; do \
@@ -115,8 +117,8 @@ install-lisp:	some
 
 install-contrib:	$(CONTRIBELC) $(CONTRIB_MULEELC)
 	for x in $(CONTRIB) $(CONTRIB_MULE) $(CONTRIBELC) $(CONTRIB_MULEELC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(lispdir)' ; \
-	  $(INSTALL_DATA) $$x $(lispdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(auctexdir)' ; \
+	  $(INSTALL_DATA) $$x $(auctexdir) ; \
 	done;
 
 install-info:
