@@ -118,7 +118,7 @@ for i in *emacs; do
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
   fi
-  %makeinstall
+  %makeinstall 'lispdir=%{buildroot}%{_datadir}/emacs/site-lisp/preview' 'packagedir=%{buildroot}%{xemacspkgdir}
   popd
 done
 
