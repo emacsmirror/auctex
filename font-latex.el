@@ -6,7 +6,7 @@
 ;;             Simon Marshall <Simon.Marshall@esrin.esa.it>
 ;; Maintainer: Peter S. Galbraith <psg@debian.org>
 ;; Created:    06 July 1996
-;; Version:    0.919 (31 Jul 2004)
+;; Version:    0.920 (04 Aug 2004)
 ;; Keywords:   LaTeX faces
 
 ;;; This file is not part of GNU Emacs.
@@ -95,6 +95,9 @@
 ;;
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
+;; V0.920 04Aug2004 Ralf Angeli
+;;  - `font-latex-unfontify-region': New function.
+;;  - `font-latex-setup': Use it.
 ;; V0.919 31Jul2004 Ralf Angeli
 ;;  - Autoload `texmathp'.
 ;;  - `font-latex-keywords-2': Add `font-latex-match-script'.
@@ -1220,6 +1223,8 @@ have changed."
             nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
             (font-lock-comment-start-regexp . "%")
             (font-lock-mark-block-function . mark-paragraph)
+	    (font-lock-unfontify-region-function
+	     . font-latex-unfontify-region)
             (font-lock-syntactic-face-function
              . font-latex-doctex-syntactic-face-function)
             (font-lock-syntactic-keywords
@@ -1230,8 +1235,24 @@ have changed."
             nil nil ((?\( . ".") (?\) . ".") (?$ . "\"")) nil
             (font-lock-comment-start-regexp . "%")
             (font-lock-mark-block-function . mark-paragraph)
+	    (font-lock-unfontify-region-function
+	     . font-latex-unfontify-region)
             (font-lock-syntactic-keywords
              . font-latex-syntactic-keywords))))))
+
+;; Copy and adaption of `tex-font-lock-unfontify-region' from
+;; tex-mode.el in GNU Emacs on 2004-08-04.
+(defun font-latex-unfontify-region (beg end)
+  "Unfontify region from BEG to END."
+  (font-lock-default-unfontify-region beg end)
+  (while (< beg end)
+    (let ((next (next-single-property-change beg 'display nil end))
+	  (prop (get-text-property beg 'display)))
+      (if (and (eq (car-safe prop) 'raise)
+	       (member (car-safe (cdr prop)) '(-0.3 +0.3))
+	       (null (cddr prop)))
+	  (put-text-property beg next 'display nil))
+      (setq beg next))))
 
 ;; Should not be necessary since XEmacs' font-lock also supports
 ;; Emacs' use of the `font-lock-defaults' local variable.   -Stefan
