@@ -66,9 +66,8 @@
 
 (require 'custom)
 
-(eval-when-compile
-  (require 'toolbar-x)
-  (require 'latex))
+(require 'toolbar-x)
+(require 'latex)
 
 ;; standard buttons
 

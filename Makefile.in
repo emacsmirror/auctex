@@ -13,6 +13,7 @@ infodir = @infodir@
 lispdir = @lispdir@
 packagedir = @packagedir@
 auctexdir= ${lispdir}/auctex
+aucteximagedir= ${auctexdir}/images
 autodir = @autodir@
 styledir = ${auctexdir}/style
 
@@ -41,11 +42,13 @@ CONTRIB_MULEELC = @CONTRIB_MULEELC@
 
 AUCSRC = tex.el tex-buf.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
-	context.el context-en.el context-nl.el tex-fold.el
+	context.el context-en.el context-nl.el tex-fold.el \
+	toolbar-x.el tex-bar.el
 AUCELC = tex.elc tex-buf.elc latex.elc tex-info.elc \
 	texmathp.elc multi-prompt.elc tex-mik.elc font-latex.elc tex-font.elc \
-	context.elc context-en.elc context-nl.elc tex-fold.elc
-
+	context.elc context-en.elc context-nl.elc tex-fold.elc \
+	toolbar-x.elc tex-bar.elc
+# Why not $(AUCSRC:.el=.elc) ?
 
 STYLESRC = style/prosper.el \
 	   style/slides.el    style/foils.el     style/amstex.el \
@@ -96,7 +99,7 @@ lisp:
 
 some:	$(AUCELC) $(STYLESRC:.el=.elc)
 
-install:	install-lisp install-info
+install:	install-lisp install-info install-images
 
 contrib:
 	$(ELCC) -f batch-byte-compile $(CONTRIB) $(COMPILE_MULE)
@@ -136,6 +139,13 @@ install-lisp:	some install-el
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(styledir) ; \
 	done;
+
+install-images:
+	-$(MKINSTALLDIRS) $(DESTDIR)$(aucteximagedir)
+	set -x; for x in images/*.xpm ; do \
+	  $(INSTALL_DATA) $${x} $(DESTDIR)$(aucteximagedir) ; \
+	done;
+# $(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(aucteximagedir)
 
 install-contrib-el:
 	for x in $(CONTRIB) $(CONTRIB_MULE); do \
