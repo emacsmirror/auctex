@@ -1,3 +1,7 @@
+2002-12-12  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* style/amsopn.el ("amsopn"): Added \operatorname.
+
 2002-12-12  David Kastrup  <David.Kastrup@t-online.de>
 
 	* doc/auc-tex.texi (top): Change "version 12" to "almost 12".

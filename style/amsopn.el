@@ -10,7 +10,8 @@
     (TeX-add-symbols
      '("DeclareMathOperator"  "Operator (with \\)" "Text")
      '("DeclareMathOperator*" "Operator (with \\)" "Text")
-     "mod" "bmod" "pmod" "pod"
-     ))))
+     '("operatorname" t)
+     '("operatorname*" t)
+     "mod" "bmod" "pmod" "pod"))))
 
 ;;; amsopn.el ends here.
