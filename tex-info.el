@@ -196,17 +196,17 @@ When called interactively, prompt for an environment."
 	       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
 		:help "Reset buffer and reload AUCTeX style files"])
 	 (list "Customize"
-	       ["Browse options"
+	       ["Browse Options"
 		(customize-group 'AUCTeX)
 		:help "Open the customization buffer for AUCTeX"]
-	       ["Extend this menu"
+	       ["Extend this Menu"
 		(easy-menu-add-item
 		 nil '("AUCTeX")
 		 (customize-menu-create 'AUCTeX))
 		:help "Make this menu a full-blown customization menu"])
-	 ["Read the AUCTeX manual" TeX-goto-info-page
+	 ["Read the AUCTeX Manual" TeX-goto-info-page
 	  :help "Everything worth reading"]
-	 ["Report AUCTeX bug" TeX-submit-bug-report
+	 ["Report AUCTeX Bug" TeX-submit-bug-report
 	  :help "Create a problem report for mailing"])))
 
 (defvar TeXinfo-font-list
