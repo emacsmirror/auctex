@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.124 2002-04-17 00:58:42 dakas Exp $
+;; $Id: preview.el,v 1.125 2002-04-17 01:40:03 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -460,7 +460,7 @@ files, GS-OPTIONLIST is a list of options to pass into
 GhostScript for getting that sort of image type, for
 example \"-sDEVICE=png256\" will go well with 'png."
   (unless (preview-supports-image-type imagetype)
-    (error "This Emacs balks at `preview-image-type' set to '%s" imagetype))
+    (error "This Emacs lacks '%s image support" imagetype))
   (setq preview-gs-image-type imagetype)
   (setq preview-gs-command-line (append
 				 preview-gs-options
@@ -1872,7 +1872,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.124 $"))
+	(rev "$Revision: 1.125 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -1883,7 +1883,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-04-17 00:58:42 $"))
+    (let ((date "$Date: 2002-04-17 01:40:03 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
