@@ -14,7 +14,7 @@ fi
 AC_ARG_WITH(emacs,[  --with-emacs            Use Emacs to build], 
 	[ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
 
-AC_ARG_WITH(texmf,[  --with-texmf            TEXMF tree to install into],
+AC_ARG_WITH(texmf,[  --with-texmf=DIR        TEXMF tree to install into],
  [ texmfdir=${withval} ; 
    if test ! -d $texmfdir  ; then
       AC_MSG_ERROR([--with-texmf=$texmfdir: Directory does not exist])
