@@ -46,10 +46,16 @@
 	(list "Check" "lacheck %s" 'TeX-run-compile nil t)
 	(list "Other" "" 'TeX-run-command t t)))
 
-(setq TeX-view-style '(("^a5$" "yap %d -paper a5")
-		       ("^landscape$" "yap %d -paper a4r -s 4")
-		       ("^epsf$" "gsview32 %f")
-		       ("." "yap -1 -s%n%b %d")))
+(setq TeX-view-style '(("^epsf$" "gsview32 %f")
+		       ("." "yap -1 %dS %d")))
+
+(setq TeX-output-view-style
+      '(("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "dvips %d -o && gsview %f")
+	("^dvi$" "." "yap -1 %dS %d")
+	("^pdf$" "." "AcroRd32 %o")
+	("^html?$" "." "mozilla %o")))
+
+(setq TeX-source-specials-viewer-flags "-s %n%b")
 
 (provide 'tex-mik)
 
