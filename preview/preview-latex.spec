@@ -2,6 +2,7 @@ Summary: 	Emacs/LaTeX inline preview
 Name: 		preview-latex
 Version: 	0.6
 Release: 	0
+BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 License: 	GPL
@@ -9,7 +10,7 @@ Group: 		Applications/Editors
 BuildRoot: 	%{_tmppath}/%{name}-root
 Prereq:		/sbin/install-info
 Requires:	emacs >= 21.1
-Requires:	auctex >= 10.0g
+Requires:	auctex
 Requires:	ghostscript >= 6.51
 Requires:	tetex tetex-dvips
 BuildRequires:	texinfo
@@ -25,17 +26,15 @@ at least Emacs-21.1, XEmacs porters welcome.
 
 %build
 # The below will make the package build from a tar straight from CVS
-# NOT RECOMMENDED!
-test -a README || ./autogen.sh 
-rm -r patches/CVS # Simplifies the files section
+# NOT RECOMMENDED, but useful for testing!
+./autogen.sh; rm -r patches/CVS # Simplifies the files section
 
 %configure
 make
-# The below will make the package build without Alan's autoconf fix
-test -a doc/preview-latex.info || (cd doc; make preview-latex.info)
 
 %install
 rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_infodir}
 # To buildroot special paths not contained in makeinstall  
 set_here () { export $1=$RPM_BUILD_ROOT/$3; }
 set_here `grep ^texmfdir Makefile`
@@ -46,21 +45,18 @@ set_here `grep ^AUCTEXDIR Makefile`
 	previewtexmfdir=$previewtexmfdir \
 	previewdocdir=$previewdocdir \
 	AUCTEXDIR=$AUCTEXDIR 
-# The below will make the package build without Alan's autoconf fix
-test -a $RPM_BUILD_ROOT/%{_infodir}/preview-latex.info || \
-	( mkdir -p $RPM_BUILD_ROOT/%{_infodir}             
-	/usr/bin/install -c -m 644 doc/preview-latex.info \
-		$RPM_BUILD_ROOT/%{_infodir}/preview-latex.info )
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/install-info %{_infodir}/preview-latex.info %{_infodir}/dir
+/sbin/install-info --info-dir=%{_infodir} \
+	%{_infodir}/preview-latex.info
 texhash /usr/share/texmf
 
 %preun
-/sbin/install-info --delete %{_infodir}/preview-latex.info %{_infodir}/dir
+/sbin/install-info --info-dir=%{_infodir} --delete \
+	%{_infodir}/preview-latex.info 
 
 %files
 %defattr(-,root,root)
