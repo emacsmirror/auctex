@@ -21,8 +21,9 @@ New features and fixed bugs in this release
 -------------------------------------------
 
 Another bug in connection with XEmacs and PDF modes has been
-uncovered.  GTK versions of GNU Emacs will now use Unicode characters
-in the LaTeX math menu.  No other platforms are affected.
+uncovered.  On GTK or MacOS for very recent CVS Emacs versions, you
+can enable Unicode characters in the LaTeX math menu.  No other
+platforms are affected.
 
 IMPORTANT: Many of the new features rely on special properties in the
 variable `TeX-command-list' and will not work if you customized this

@@ -1,3 +1,13 @@
+2004-08-28  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex: Bump version.
+
+	* configure.in: Bump version number.
+
+	* auctex.spec (Version): bump to 11.53.
+
+	* doc/auctex.texi: Bump version to 11.53.
+
 2004-08-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (install-el): Fix typos.
