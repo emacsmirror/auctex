@@ -1,3 +1,8 @@
+2004-08-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-unfontify-region): New function.
+	(font-latex-setup): Use it.
+
 2004-08-04  David Kastrup  <dak@gnu.org>
 
 	* tex-fptex.el (TeX-command-list): Remove PDFTeX calls.
