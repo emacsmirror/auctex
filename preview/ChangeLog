@@ -1,3 +1,14 @@
+2002-12-07  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): simplify "%m" entry in
+	TeX-expand-list.
+	(preview-create-subdirectory): return a quoted relative file name.
+	(preview-cache-preamble): various directory name related changes
+	so that everything will work master-relative.
+	(preview-cache-preamble-off): Same here.
+	(TeX-inline-preview-internal): Same here.
+	(preview-report-bug): Add autoload cookie.
+
 2002-12-06  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-gs-open): Another GhostScript security work
