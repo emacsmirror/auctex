@@ -1,3 +1,9 @@
+2002-03-24  David Kastrup  <David.Kastrup@t-online.de>
+
+	* prv-emacs.el (replace-highlight): advise so that query-replace
+	works as reasonable.
+	(preview-query-replace-reveal): Option to make this customizable.
+
 2002-03-23  David Kastrup  <David.Kastrup@t-online.de>
 
 	* prv-emacs.el (preview-toggle): get rid of
