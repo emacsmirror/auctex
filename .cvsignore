@@ -4,6 +4,9 @@ config.*
 Makefile
 configure
 tex-site.el
+INSTALL
+INSTALL.windows
+README
 autom4te.*
 #*
 *.elc

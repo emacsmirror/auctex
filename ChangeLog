@@ -1,3 +1,11 @@
+2004-04-14  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/.cvsignore: Added *.tmp.
+
+	* .cvsignore: Revert 2004-04-12 change.  Added README.
+
+	* Makefile.in (tar-ball): .nosearch is not useful here.
+
 2004-04-13  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4: Try something in AC_FULL_EXPAND that does not
