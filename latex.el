@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.38 1995-01-24 22:52:46 amanda Exp $
+;; Version: $Id: latex.el,v 5.39 1995-01-26 23:09:02 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -1403,10 +1403,10 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
     (beginning-of-line)
     (narrow-to-region (point) to)
     (setq from (point))
-    
+
     ;; from is now before the text to fill,
     ;; but after any fill prefix on the first line.
-    
+
     ;; Make sure sentences ending at end of line get an extra space.
     (goto-char from)
     (while (re-search-forward "[.?!][])\"']*$" nil t)
@@ -1454,7 +1454,6 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
       (goto-char (point-max))
       (delete-horizontal-space))))
 
-
 (defun LaTeX-fill-paragraph (prefix)
   "Fill and indent paragraph at or after point.
 Prefix arg means justify as well."
@@ -1480,7 +1479,8 @@ formatting."
   (interactive "*r\nP")
   (save-restriction
     (save-excursion
-      (let ((length (- to from))) 
+      (let ((length (- to from))
+	    (to (set-marker (make-marker) to)))
 	(goto-char from)
 	(beginning-of-line)
 	(while (< (point) to)
@@ -1492,7 +1492,8 @@ formatting."
 	  (save-excursion (LaTeX-fill-paragraph justify))
 	  (forward-paragraph 2)
 	  (if (not (eobp))
-	      (backward-paragraph)))))
+	      (backward-paragraph)))
+	(set-marker to nil)))
     (message "Finished")))
 
 (defun LaTeX-find-matching-end ()
@@ -2029,8 +2030,7 @@ of LaTeX-mode-hook."
 	 "\\("
 	 "^.*[^" TeX-esc "\n]%.*$\\|"
 	 "^%.*$\\|"
-	 "^[ \t]*$"
-	 "\\|"
+	 "^[ \t]*$\\|"
 	 "^[ \t]*"
 	 (regexp-quote TeX-esc)
 	 "\\("
@@ -2045,7 +2045,6 @@ of LaTeX-mode-hook."
 	 "\\("
 	 "^.*[^" TeX-esc "\n]%.*$\\|"
 	 "^%.*$\\|"
-	 (regexp-quote TeX-esc)
 	 "^[ \t]*$\\|"
 	 "^[ \t]*"
 	 (regexp-quote TeX-esc)

@@ -1,5 +1,11 @@
 Thu Jan 26 13:39:56 1995  Per Abrahamsen  <abraham@iesd.auc.dk>
 
+	* latex.el (LaTeX-fill-region): Use marker to mark end of region
+	instead of integer, as the formatting may change the size of the
+	region.
+	(LaTeX-common-initialization): Fixed bug in paragraph definitions.
+	Reported by Steve Anderson <anderson@sapir.ling.yale.edu>.
+
 	* tex.el (save-match-data): Added by koba@flab.fujitsu.co.jp
 	(Kobayashi Shinji). 
 	(bibtex-mode-hook): Don't use add-hook yet.  Reported by
