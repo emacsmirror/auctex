@@ -9,6 +9,9 @@
 
 @itemize @bullet
 @item
+Folding can now be done for single paragraphs as well.
+
+@item
 Info files of the manual now have a .info extension.
 
 @item
