@@ -32,11 +32,16 @@ AC_XEMACS_P
 packagedir=
 
 if test $EMACS_FLAVOR = "xemacs"  ; then
-   AC_PATH_PACKAGEDIR
-   lispdir="${packagedir}/lisp/auctex"
+   AC_PATH_PACKAGEDIR([tex-site])
+   AC_MSG_CHECKING([where lisp files go])
+   AC_EMACS_LISP(lispdir,[(if (and (locate-library \"tex-site\") 
+			           (require 'tex-site))
+                              TeX-lisp-directory
+			      \"${packagedir}/lisp/auctex\")], quiet)
+   AC_MSG_RESULT([${lispdir}])
    infodir="${packagedir}/info"
 else
-   AC_PATH_LISPDIR
+   AC_PATH_LISPDIR([tex-site])
 fi
 
 AC_SUBST(PLAT_LISP)
