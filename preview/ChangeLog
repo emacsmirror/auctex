@@ -1,3 +1,23 @@
+2002-06-11  Jan-Ake Larsson  <jalar@imf.au.dk>
+
+	* dvipng/set.c: Cleanup. Still buggy wrt -O, though.
+
+	* dvipng/Makefile: DEBUG on for now, postamble.? removed
+
+	* dvipng/postamble.c: Postamble is no longer read
+
+	* dvipng/pages.c: Improve page handling: now a queue, not an
+	unordered set
+
+	* dvipng/font.c: Improve font handling: search for fonts only when
+	used
+
+	* dvipng/dvipng.h: Cleanup
+
+	* dvipng/dvipng.c: Major rewrite: page handling improved
+
+	* dvipng/misc.c: Fix DVI init + cleanup
+
 2002-05-30  Jan-Ake Larsson  <jalar@imf.au.dk>
 
 	* dvipng/misc.c: Transparent border: '-bd'
