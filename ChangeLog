@@ -1,3 +1,43 @@
+2004-03-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-indent-line): Use `looking-at' instead of
+	`re-search-forward'.  Pass indent amount to
+	`LaTeX-indent-{inner,outer}-do' functions.
+	(LaTeX-indent-inner-do, LaTeX-indent-outer-do): Let them be called
+	with an explicit parameter for the indent amount.
+	(LaTeX-indent-calculate-last): Distinguish a commented and an
+	uncommented line when skipping backwards to the preceding line.
+	Move tests for comment skips into the `cond' statement for better
+	readability.
+	(LaTeX-fill-break-before-code-comments): New customize option.
+	(LaTeX-fill-region-as-paragraph): Change the regular expression
+	which is used for searching for special line ends so that it is
+	not such a performance hog.  Code for determining the region to
+	fill was adapted accordingly.
+	(LaTeX-fill-region-as-para-do): Remove trailing whitespace after
+	newlines were changed to spaces.  Reported by Reiner Steib
+	<Reiner.Steib@gmx.de>.
+	Use `narrow-to-region' for keeping track of potential code comment
+	starts.
+	Break a line at the last non-comment word before a code comment.
+	This can be configured with
+	`LaTeX-fill-break-before-code-comments'.
+	(LaTeX-fill-move-to-break-point): Use `LaTeX-back-to-indentation'
+	for going to the right start of a line.
+	(LaTeX-fill-paragraph): `LaTeX-backward-paragraph' does not skip
+	forward over empty lines itself anymore, so do it here.
+	(LaTeX-fill-region): Use `LaTeX-forward-paragraph' and
+	`LaTeX-backward-paragraph' instead of the old code which
+	determined paragraph boundaries manually.
+	(LaTeX-forward-paragraph, LaTeX-backward-paragraph): Improve
+	handling of paragraph commands.
+	(LaTeX-paragraph-command-p): Get rid of the test for the opening
+	brace because there doesn't have to be one.
+	(LaTeX-find-macro-start): New function.
+	(LaTeX-find-macro-end): New function.
+
+	* .cvsignore: Added `tex-site.el'.
+	
 2004-03-23  David Kastrup  <dak@gnu.org>
 
 	* tex.el (VirTeX-common-initialization): Back out last change
