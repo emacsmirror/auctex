@@ -632,7 +632,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.471 $"))
+	    (rev "$Revision: 5.472 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -647,7 +647,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-12-15 09:50:08 $"))
+    (let ((date "$Date: 2004-12-16 08:46:55 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -1766,6 +1766,14 @@ Note that for some macros, there are special mechanisms, see e.g.
   :type '(choice (const mandatory-args-only)
 		 (const show-optional-args)))
 
+(defvar TeX-arg-opening-brace nil
+  "String used as an opening brace for argument insertion.
+The variable will be temporarily let-bound with the necessary value.")
+
+(defvar TeX-arg-closing-brace nil
+  "String used as a closing brace for argument insertion.
+The variable will be temporarily let-bound with the necessary value.")
+
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro SYMBOL with completion.
 
@@ -1904,77 +1912,77 @@ See `TeX-parse-macro' for details."
     (while args
       (if (vectorp (car args))
 	  (unless last-optional-rejected
-	    (TeX-parse-argument t (if (equal (length (car args)) 1)
-				      (aref (car args) 0)
-				    (append (car args) nil))))
-	(setq last-optional-rejected nil)
-	(TeX-parse-argument nil (car args)))
+	    (let ((TeX-arg-opening-brace TeX-grop)
+		  (TeX-arg-closing-brace TeX-grcl))
+	      (TeX-parse-argument t (if (equal (length (car args)) 1)
+					(aref (car args) 0)
+				      (append (car args) nil)))))
+	(let ((TeX-arg-opening-brace LaTeX-optop)
+	      (TeX-arg-closing-brace LaTeX-optcl))
+	  (setq last-optional-rejected nil)
+	  (TeX-parse-argument nil (car args))))
       (setq args (cdr args)))))
 
 (defun TeX-parse-argument (optional arg)
-  "Depending on OPTIONAL, insert TeX macro argument ARG in curly braces.
+  "Depending on OPTIONAL, insert TeX macro argument ARG.
 If OPTIONAL is set, only insert if there is anything to insert, and
-then use square brackets.
+then use square brackets instead of curly braces.
 
 See `TeX-parse-macro' for details."
-  (let ((opening-brace (if optional LaTeX-optop TeX-grop))
-	(closing-brace (if optional LaTeX-optcl TeX-grcl)))
-    (cond ((stringp arg)
-	   (TeX-arg-string optional arg))
-	  ((numberp arg)
-	   (unless (< arg 1)
-	     (TeX-parse-argument optional t)
-	     (while (> arg 1)
-	       (TeX-parse-argument optional nil)
-	       (setq arg (- arg 1)))))
-	  ((null arg)
-	   (insert opening-brace)
-	   (when (and (not optional) (TeX-active-mark))
-	     (exchange-point-and-mark)
-	     (if (featurep 'xemacs)
-		 (zmacs-deactivate-region)
-	       (deactivate-mark)))
-	   (insert closing-brace))
-	  ((eq arg t)
-	   (insert opening-brace)
-	   (if (and (not optional) (TeX-active-mark))
-	       (progn
-		 (exchange-point-and-mark)
-		 (if (featurep 'xemacs)
-		     (zmacs-deactivate-region)
-		   (deactivate-mark)))
-	     (set-marker exit-mark (point)))
-	   (insert closing-brace))
-	  ((symbolp arg)
-	   (funcall arg optional))
-	  ((listp arg)
-	   (let ((head (car arg))
-		 (tail (cdr arg)))
-	     (cond ((stringp head)
-		    (apply 'TeX-arg-string optional arg))
-		   ((symbolp head)
-		    (apply head optional tail))
-		   (t (error "Unknown list argument type %s"
-			     (prin1-to-string head))))))
-	  (t (error "Unknown argument type %s" (prin1-to-string arg))))))
+  (cond ((stringp arg)
+	 (TeX-arg-string optional arg))
+	((numberp arg)
+	 (unless (< arg 1)
+	   (TeX-parse-argument optional t)
+	   (while (> arg 1)
+	     (TeX-parse-argument optional nil)
+	     (setq arg (- arg 1)))))
+	((null arg)
+	 (insert TeX-arg-opening-brace)
+	 (when (and (not optional) (TeX-active-mark))
+	   (exchange-point-and-mark)
+	   (if (featurep 'xemacs)
+	       (zmacs-deactivate-region)
+	     (deactivate-mark)))
+	 (insert TeX-arg-closing-brace))
+	((eq arg t)
+	 (insert TeX-arg-opening-brace)
+	 (if (and (not optional) (TeX-active-mark))
+	     (progn
+	       (exchange-point-and-mark)
+	       (if (featurep 'xemacs)
+		   (zmacs-deactivate-region)
+		 (deactivate-mark)))
+	   (set-marker exit-mark (point)))
+	 (insert TeX-arg-closing-brace))
+	((symbolp arg)
+	 (funcall arg optional))
+	((listp arg)
+	 (let ((head (car arg))
+	       (tail (cdr arg)))
+	   (cond ((stringp head)
+		  (apply 'TeX-arg-string optional arg))
+		 ((symbolp head)
+		  (apply head optional tail))
+		 (t (error "Unknown list argument type %s"
+			   (prin1-to-string head))))))
+	(t (error "Unknown argument type %s" (prin1-to-string arg)))))
 
 (defun TeX-argument-insert (name optional &optional prefix)
   "Insert NAME surrounded by curly braces.
 
 If OPTIONAL, only insert it if not empty, and then use square brackets.
 If PREFIX is given, insert it before NAME."
-  (let ((opening-brace (if optional LaTeX-optop TeX-grop))
-	(closing-brace (if optional LaTeX-optcl TeX-grcl)))
-    (if (and optional (string-equal name ""))
-	(setq last-optional-rejected t)
-      (insert opening-brace)
-      (if prefix
-	  (insert prefix))
-      (if (and (string-equal name "")
-	       (null (marker-position exit-mark)))
-	  (set-marker exit-mark (point))
-	(insert name))
-      (insert closing-brace))))
+  (if (and optional (string-equal name ""))
+      (setq last-optional-rejected t)
+    (insert TeX-arg-opening-brace)
+    (if prefix
+	(insert prefix))
+    (if (and (string-equal name "")
+	     (null (marker-position exit-mark)))
+	(set-marker exit-mark (point))
+      (insert name))
+    (insert TeX-arg-closing-brace)))
 
 (defun TeX-argument-prompt (optional prompt default &optional complete)
   "Return a argument prompt.
