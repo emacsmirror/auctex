@@ -15,7 +15,7 @@
 
 @include macros.texi
 
-@c $Id: auctex.texi,v 1.176 2004-08-12 23:01:30 dak Exp $
+@c $Id: auctex.texi,v 1.177 2004-08-13 02:56:32 dak Exp $
 
 @finalout
 @titlepage
@@ -1586,7 +1586,7 @@ will move the @acronym{DVI} viewer to the location corresponding to
 point (forward search), and it will use @samp{emacsclient} or
 @samp{gnuclient} to have the previewer move Emacs to a location
 corresponding to a control-click in the previewer window.
-@xref{Viewing} for more information.
+@xref{Viewing}.
 
 You can permanently activate @code{TeX-source-specials-mode} with
 @lisp

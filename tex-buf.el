@@ -415,36 +415,38 @@ in TeX-check-path."
 
  (make-variable-buffer-local 'TeX-command-next)
 
-(defun TeX-printer-query (&optional command element)
+(defun TeX-printer-query (&optional queue)
   "Query the user for a printer name.
-COMMAND is the default command to use if the entry for the printer in
-TeX-printer-list does not itself have it specified in the ELEMENT'th
-entry."
-  (or command (setq command TeX-print-command))
-  (or element (setq element 1))
-  (let ((printer (if TeX-printer-list
-		     (let ((completion-ignore-case t))
-		       (completing-read (concat "Printer: (default "
-						TeX-printer-default ") ")
-					TeX-printer-list))
-		   "")))
-
-    (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
-		      printer))
-    (if (or (null printer) (string-equal "" printer))
-	(setq printer TeX-printer-default)
-      (setq TeX-printer-default printer))
+QUEUE is non-nil when we are checking for the printer queue."
+  (let (command element printer)
+    (if queue
+	(unless (setq element 2 command TeX-queue-command)
+	  (error "Need to customize `TeX-queue-command'"))
+      (unless (setq element 1 command TeX-print-command)
+	  (error "Need to customize `TeX-print-command'")))
+    (while (progn
+	     (setq printer (if TeX-printer-list
+			       (let ((completion-ignore-case t))
+				 (completing-read
+				  (concat "Printer: "
+					  (and TeX-printer-default
+					       (concat "(default "
+						       TeX-printer-default ") ")))
+				  TeX-printer-list))
+			     ""))
+	     (setq printer (or (car-safe (TeX-assoc printer TeX-printer-list))
+			       printer))
+	     (not (if (or (null printer) (string-equal "" printer))
+		      (setq printer TeX-printer-default)
+		    (setq TeX-printer-default printer)))))
 
     (let ((expansion (let ((entry (assoc printer TeX-printer-list)))
-		       (if (and entry (nth element entry))
-			   (nth element entry)
-			 command))))
+		       (or (nth element entry)
+			   command))))
       (if (string-match "%p" printer)
 	  (error "Don't use %s in printer names" "%p"))
       (while (string-match "%p" expansion)
-	(setq expansion (concat (substring expansion 0 (match-beginning 0))
-				printer
-				(substring expansion (match-end 0)))))
+	(setq expansion (replace-match printer t t expansion 0)))
       expansion)))
 
 (defun TeX-style-check (styles)

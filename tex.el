@@ -70,27 +70,42 @@
 ;;; Site Customization
 ;;
 ;; The following variables are likely to need to be changed for your
-;; site.  It is suggested that you do this by *not* changing this
-;; file, but instead copy those definitions you need to change to
-;; `tex-site.el'.
+;; site.  You should do this with customize.  Here is the beef: If you
+;; want to print, TeX-print-command must be non-nil (if it is nil,
+;; you'll get a complaint when using the print menu).  If you want to
+;; view the queue, TeX-queue-command needs to be non-nil (if it is
+;; nil, it won't get mentioned in the menu).  If TeX-printer-list is
+;; nil, nothing else gets asked: the menu entries lead directly to the
+;; respective commands.  If those commands contain %p, the value of
+;; TeX-printer-default gets inserted there, no questions asked.  Now
+;; if TeX-printer-list is non-nil, you'll always get asked which
+;; printer you want to use.  You can enter a configured printer from
+;; TeX-printer-list, or an unknown one.  The respective menus will
+;; show all configured printers.  Since you can enter unknown
+;; printers, the printer name _must_ be set with %p in
+;; TeX-print-command.
 
 ;; How to print.
 
-(defcustom TeX-print-command "dvips %s -P%p"
+(defcustom TeX-print-command "dvips -P%p %r %s"
   "*Command used to print a file.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'."
+performed as specified in `TeX-expand-list'.  If it is `nil',
+then customization is requested."
   :group 'TeX-command
-  :type 'string)
+  :type '(choice (string :tag "Print command")
+		 (const :tag "No print command customized" nil)))
 
 (defcustom TeX-queue-command "lpq -P%p"
   "*Command used to show the status of a printer queue.
 
 First `%p' is expanded to the printer name, then ordinary expansion is
-performed as specified in `TeX-expand-list'."
+performed as specified in `TeX-expand-list'.  If this is `nil',
+the printer has no corresponding command."
   :group 'TeX-command
-  :type 'string)
+  :type '(choice (string :tag "Queue check command")
+		 (const :tag "No such command" nil)))
 
 (defcustom TeX-mode-hook nil
   "A hook run in TeX mode buffers."
@@ -112,7 +127,7 @@ performed as specified in `TeX-expand-list'."
   ;; Changed to double quotes for Windows afflicted people.
   `(("TeX" "%(PDF)tex %S%(PDFout) \"%(mode)\\input %t\""
      TeX-run-TeX nil
-     (plain-tex-mode) :help "Run plain TeX")
+     (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
     ("LaTeX" "%l \"%(mode)\\input{%t}\""
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
@@ -139,8 +154,9 @@ performed as specified in `TeX-expand-list'."
 	'("View" "%V " TeX-run-discard t t :help "Run Viewer")
        '("View" "dvi2tty -q -w 132 %s " TeX-run-command t t
 	 :help "Run Text viewer"))
-    ("Print" "%p %r " TeX-run-command t t :help "Print the file")
-    ("Queue" "%q" TeX-run-background nil t :help "View the printer queue")
+    ("Print" "%p" TeX-run-command t t :help "Print the file")
+    ("Queue" "%q" TeX-run-background nil t :help "View the printer queue"
+     :visible TeX-queue-command)
     ("File" "dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ;; (list "Check" "chktex -v3 %s" TeX-run-compile nil t :help "Check )
@@ -303,21 +319,23 @@ string."
 ;; you only have one printer.
 
 (defcustom TeX-printer-list
-  '(("Local" "dvips -f %s | lpr" "lpq")
-    ("lw") ("ps"))
+  '(("Default" "dvips -f %s | lpr" "lpq"))
   "List of available printers.
 
 The first element of each entry is the printer name.
 
 The second element is the command used to print to this
-printer.  It defaults to the value of `TeX-print-command'.
+printer.  It defaults to the value of `TeX-print-command' when `nil'.
 
 The third element is the command used to examine the print queue for
-this printer.  It defaults to the value of `TeX-queue-command'.
+this printer.  It defaults to the value of `TeX-queue-command' similarly.
 
 Any occurrence of `%p' in the second or third element is expanded to
 the printer name given in the first element, then ordinary expansion
-is performed as specified in `TeX-expand-list'."
+is performed as specified in `TeX-expand-list'.
+
+If this list is empty, only `TeX-print-command' and `TeX-queue-command'
+get consulted."
   :group 'TeX-command
   :type '(repeat (group (string :tag "Name")
 			(option (group :inline t
@@ -335,7 +353,7 @@ is performed as specified in `TeX-expand-list'."
 (defcustom TeX-printer-default (or (getenv "PRINTER")
 				   (and TeX-printer-list
 					(car (car TeX-printer-list)))
-				   "lw")
+				   "lp")
   "*Default printer to use with `TeX-command'."
   :group 'TeX-command
   :type 'string)
@@ -434,49 +452,49 @@ string."
 ;; to handle .ps files.
 
 (defcustom TeX-expand-list
-  (list (list "%p" 'TeX-printer-query)	;%p must be the first entry
-	(list "%q" (lambda ()
-		     (TeX-printer-query TeX-queue-command 2)))
-	(list "%V" (lambda ()
-		     (TeX-output-style-check TeX-output-view-style)))
-	(list "%v" (lambda ()
-		     (TeX-style-check TeX-view-style)))
-	(list "%r" (lambda ()
-		     (TeX-style-check TeX-print-style)))
-	(list "%l" (lambda ()
-		     (TeX-style-check LaTeX-command-style)))
-	(list "%(PDF)" (lambda ()
-			 (if (or TeX-PDF-mode
-				 TeX-DVI-via-PDFTeX)
-			     "pdf"
-			   "")))
-	(list "%(PDFout)" (lambda ()
-			    (if (and (not TeX-PDF-mode)
-				     TeX-DVI-via-PDFTeX)
-				" \"\\pdfoutput=0 \""
-			      "")))
-	(list "%(mode)" (lambda ()
-			  (if TeX-interactive-mode
-			      ""
-			    "\\nonstopmode")))
-	(list "%(execmode)" (lambda ()
-			      (if TeX-interactive-mode
-				  ""
-				"--nonstop ")))
-	(list "%S" 'TeX-source-specials-expand-options)
-	(list "%dS" 'TeX-source-specials-view-expand-options)
-	(list "%cS" 'TeX-source-specials-view-expand-client)
-	;; `file' means to call `TeX-master-file' or `TeX-region-file'
-	(list "%s" 'file nil t)
-	(list "%t" 'file 't t)
-	(list "%n" 'TeX-current-line)
-	(list "%d" 'file "dvi" t)
-	(list "%f" 'file "ps" t)
-	(list "%o" 'TeX-view-output-file)
-	;; for source specials the file name generated for the xdvi
-	;; command needs to be relative to the master file, just in
-	;; case the file is in a different subdirectory
-	(list "%b" 'TeX-current-file-name-master-relative))
+  '(("%p" TeX-printer-query)	;%p must be the first entry
+    ("%q" (lambda ()
+	    (TeX-printer-query t)))
+    ("%V" (lambda ()
+	    (TeX-output-style-check TeX-output-view-style)))
+    ("%v" (lambda ()
+	    (TeX-style-check TeX-view-style)))
+    ("%r" (lambda ()
+	    (TeX-style-check TeX-print-style)))
+    ("%l" (lambda ()
+	    (TeX-style-check LaTeX-command-style)))
+    ("%(PDF)" (lambda ()
+		(if (or TeX-PDF-mode
+			TeX-DVI-via-PDFTeX)
+		    "pdf"
+		  "")))
+    ("%(PDFout)" (lambda ()
+		   (if (and (not TeX-PDF-mode)
+			    TeX-DVI-via-PDFTeX)
+		       " \"\\pdfoutput=0 \""
+		     "")))
+    ("%(mode)" (lambda ()
+		 (if TeX-interactive-mode
+		     ""
+		   "\\nonstopmode")))
+    ("%(execmode)" (lambda ()
+		     (if TeX-interactive-mode
+			 ""
+		       "--nonstop ")))
+    ("%S" TeX-source-specials-expand-options)
+    ("%dS" TeX-source-specials-view-expand-options)
+    ("%cS" TeX-source-specials-view-expand-client)
+    ;; `file' means to call `TeX-master-file' or `TeX-region-file'
+    ("%s" file nil t)
+    ("%t" file t t)
+    ("%n" TeX-current-line)
+    ("%d" file "dvi" t)
+    ("%f" file "ps" t)
+    ("%o" TeX-view-output-file)
+    ;; for source specials the file name generated for the xdvi
+    ;; command needs to be relative to the master file, just in
+    ;; case the file is in a different subdirectory
+    ("%b" TeX-current-file-name-master-relative))
   "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
@@ -595,7 +613,7 @@ Also does other stuff."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.425 $"))
+	(rev "$Revision: 5.426 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -610,7 +628,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-08-12 18:15:17 $"))
+    (let ((date "$Date: 2004-08-13 02:56:32 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2938,58 +2956,37 @@ Used for specifying extra syntax for a macro."
 
 (defun TeX-command-menu-print (printer command name)
   "Print on PRINTER using method COMMAND to run NAME."
-  (let ((TeX-printer-default printer)
-	(TeX-printer-list nil)
-	(TeX-print-command command))
+  (let ((TeX-printer-default (unless (string= printer "Other") printer))
+	(TeX-printer-list (and (string= printer "Other") TeX-printer-list))
+	(TeX-print-command command)
+	(TeX-queue-command command))
     (TeX-command-menu name)))
 
-(defun TeX-command-menu-printer-entry (entry)
+(defun TeX-command-menu-printer-entry (entry lookup command name)
   "Return `TeX-printer-list' ENTRY as a menu item."
   (vector (nth 0 entry)
 	  (list 'TeX-command-menu-print
 		(nth 0 entry)
 		(or (nth lookup entry) command)
-		name)
-	  t))
-
-;; Begin fix part 1 by Ulrik Dickow <dickow@nbi.dk> 16-Feb-1996,
-;; to make queue command usable.  Easy but ugly code duplication again.
-
-(defun TeX-command-menu-queue (printer command name)
-  "Show queue for PRINTER using method COMMAND to run NAME."
-  (let ((TeX-printer-default printer)
-	(TeX-printer-list nil)
-	(TeX-queue-command command))
-    (TeX-command-menu name)))
-
-(defun TeX-command-menu-queue-entry (entry)
-  "Return `TeX-printer-list' ENTRY as a menu item."
-  (vector (nth 0 entry)
-	  (list 'TeX-command-menu-queue
-		(nth 0 entry)
-		(or (nth lookup entry) command)
-		name)
-	  t))
-
-;; End fix part 1.
+		name)))
 
 (defun TeX-command-menu-entry (entry)
   "Return `TeX-command-list' ENTRY as a menu item."
   (let ((name (car entry)))
     (cond ((and (string-equal name TeX-command-Print)
 		TeX-printer-list)
-	   (let ((command TeX-print-command)
-		 (lookup 1))
-	     (append (list TeX-command-Print)
-		     (mapcar 'TeX-command-menu-printer-entry
-			     TeX-printer-list))))
+	   (cons TeX-command-Print
+		 (mapcar (lambda (entry)
+			   (TeX-command-menu-printer-entry
+			    entry 1 TeX-print-command name))
+			 (append TeX-printer-list '(("Other"))))))
 	  ((and (string-equal name TeX-command-Queue)
 		TeX-printer-list)
-	   (let ((command TeX-queue-command)
-		 (lookup 2))
-	     (append (list TeX-command-Queue)
-		     (mapcar 'TeX-command-menu-queue-entry ; dickow fix part 2.
-			     TeX-printer-list))))
+	   (cons TeX-command-Queue
+		 (mapcar (lambda (entry)
+			   (TeX-command-menu-printer-entry
+			    entry 2 TeX-queue-command name))
+			 (append TeX-printer-list '(("Other"))))))
 	  (t
 	   (vconcat `(,name (TeX-command-menu ,name))
 		    (nthcdr 5 entry))))))

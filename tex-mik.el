@@ -30,20 +30,14 @@
 
 ;;; Code:
 
-(require 'tex-site)
-
-(unless (get 'TeX-command-list 'saved-value)
   ;; Remove the Queue entry from the default, and make a non-Unix
-  ;; specific print entry, assuming that dvips will print by default.
-  ;; Actually, stuff like that should rather be done by fiddling with
-  ;; the respective TeX-printer* variables, but the code is pretty
-  ;; opaque.
-  (setq TeX-command-list
-	(delq (assoc "Queue" TeX-command-list)
-	      TeX-command-list))
-  (when (assoc "Print" TeX-command-list)
-       (setcar (cdr (assoc "Print" TeX-command-list))
-	       "gsview32 %f")))
+  ;; specific print entry, assuming that we'll print via gsview32.
+(unless (get 'TeX-queue-command 'saved-value)
+  (setq TeX-queue-command nil))
+
+(unless (get 'TeX-print-command 'saved-value)
+  (setq TeX-print-command
+	"gsview32 %f"))
 
 (unless (get 'TeX-view-style 'saved-value)
   (setq TeX-view-style '(("^epsf$" "gsview32 %f")
@@ -60,5 +54,6 @@
   (setq TeX-source-specials-viewer-flags "-s %n%b"))
 
 (provide 'tex-mik)
+(require 'tex-site)
 
 ;;; tex-mik.el ends here

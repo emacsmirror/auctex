@@ -1,5 +1,19 @@
 2004-08-13  David Kastrup  <dak@gnu.org>
 
+	* tex-fptex.el: customize Queue and Print commands appropriately.
+
+	* tex-mik.el: customize Queue and Print commands appropriately.
+
+	* tex.el (TeX-expand-list): Call TeX-printer-query differently.
+	(TeX-command-menu-print, TeX-command-menu-printer-entry)
+	(TeX-command-menu-entry): Implement stuff differently, add "Other"
+	menu entry.
+
+	* tex-buf.el (TeX-printer-query): Change arguments here.
+	Reorganize, too.
+
+	* doc/auctex.texi (Commands): Fix a warning.
+
 	* tex-info.el (TeXinfo-mode-menu): Other quoting.
 	(texinfo-mode): Set `TeX-mode-p', `TeX-base-mode-name', call
 	`TeX-set-mode-name'.
