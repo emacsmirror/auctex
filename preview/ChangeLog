@@ -2,6 +2,8 @@
 
 	* preview.el (preview-gs-transact): Sigh.  Some refinements to the
 	SAFER stuff: restart gs on errors that seem to stop in SAFER mode.
+	(preview-gs-transact): And another few changes, there are gs
+	versions that have .setsafer but not .runandhide.  Rats.
 
 2002-02-07  David Kastrup  <David.Kastrup@t-online.de>
 
