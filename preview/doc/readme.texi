@@ -71,12 +71,14 @@ sample document @file{circ.tex} is included in the distribution, but
 most documents including math and/or figures should do), you should be
 able to spot ``Preview'' in @AUCTeX{}'s menus. Use the menus, or press
 @kbd{C-c C-c g @key{RET}} (for the menu entry @samp{Command/Generate
-Preview}) or @kbd{C-c C-p C-b} (for @samp{LaTeX/Preview/Buffer}).
-Previews will now be generated for various objects in your
-document. You'll see them change into a roadworks sign when the process
-is half finished. Note that you can freely navigate the buffer while
-this is going on. When the process is finished you will see the objects
-typeset in your buffer.
+Preview}) or @kbd{C-c C-p C-d} (for @samp{LaTeX/Preview/Document}).
+Previews will now be generated for various objects in your document.
+You can use the time to take a short look at the other menu entries and
+key bindings in the @samp{LaTeX/Preview} menu.  You'll see the previewed
+objects change into a roadworks sign when @previewlatex{} has determined
+just what it is going to preview.  Note that you can freely navigate the
+buffer while this is going on.  When the process is finished you will
+see the objects typeset in your buffer.
 
 It is a bad idea, however, to edit the buffer before the roadworks signs
 appear, since that is the moment when the correlation between the
@@ -88,8 +90,11 @@ spotted, we recommend you stop the background process by pressing
 
 To see/edit the @LaTeX{} code for a specific object, put the point (the
 cursor) on it and press @kbd{C-c C-p C-p} (for
-@samp{LaTeX/Preview/On/off at point}). Now you can edit the code, and
-generate a new preview by again pressing @kbd{C-c C-p C-p}.
+@samp{LaTeX/Preview/on/off at point}).  It will also do to click with
+the middle mouse button on the preview.  Now you can edit the code, and
+generate a new preview by again pressing @kbd{C-c C-p C-p} (or by
+clicking with the middle mouse button on the icon before the edited
+text).
 
 If you are using the @code{desktop} package, previews will remain from
 one session to the next as long as you don't kill your buffer.  If you
