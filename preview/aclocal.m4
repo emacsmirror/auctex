@@ -198,11 +198,19 @@ dnl "
 dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
 dnl adapted from w3.
 
+dnl EMACS_LISP takes 6 arguments.  $1 is the name of the shell
+dnl variable to assign a value, $2 is a Lisp expression placed into
+dnl shell double quotes (which has consequences for quoting and
+dnl variable expansion).  $3 is ignored; it is there for historical
+dnl reasons.  $4 is a list of Emacs options evaluated before the
+dnl expression itself, $5 is a list of Elisp variables that is
+dnl assigned from the command line arguments from $6.
+
 AC_DEFUN(EMACS_LISP, [
   elisp="$2"
   OUTPUT=./conftest-$$
-  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
-  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) (princ x 'ignore) (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  echo ${EMACS} -batch -no-site-file $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
+  ${EMACS} -batch $4 -eval "(let* (patsubst([$5], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $6 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
   echo "=> ${1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}

@@ -14,11 +14,10 @@ not limited to that.  The package extracts indicated pieces from a
 source file (typically displayed equations, figures and graphics) and
 typesets with their base point at the (1in,1in) magic location,
 shipping out the individual pieces on separate pages without any page
-markup, thus eligible for letting dvips -i -E create separate EPS
-files.  If your ultimate goal is to produce bitmapped graphic files
-with GhostScript, a special option is provided that will set the
-PostScript pagesize on each page.  In that way, a single pass through
-GhostScript is sufficient for generating all image files.
+markup.  You can produce either dvi or PDF files, and options exist
+that will set the page size separately for each page.  In that manner,
+further processing (as with GhostScript or dvipng) will be able to
+work in a single pass.
 
 It is easy to define what commands and constructs should be treated
 that way.

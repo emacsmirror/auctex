@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.212 2004-07-27 19:34:22 dakas Exp $
+;; $Id: preview.el,v 1.213 2004-07-28 00:04:49 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2571,10 +2571,9 @@ name(\\([^)]+\\))\\)\\|\
 				 (preview-error-quote after-string))
 			 (line-end-position) t)
 			(goto-char (match-end 1)))
-		       ((search-forward-regexp
+		       (t (search-forward-regexp
 			 (preview-error-quote string)
-			 (line-end-position) t)
-			(goto-char (match-end 0)))))
+			 (line-end-position) t))))
 		    (setq lline line
 			  lbuffer (current-buffer))
 		    (if box
@@ -3029,7 +3028,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.212 $"))
+	(rev "$Revision: 1.213 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3040,7 +3039,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2004-07-27 19:34:22 $"))
+    (let ((date "$Date: 2004-07-28 00:04:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

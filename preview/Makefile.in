@@ -25,8 +25,8 @@ packagedir = @packagedir@$(null)
 auctexdir = @auctexdir@$(null)
 DESTDIR=
 
-INSTALL = @INSTALL@$(null)
-INSTALL_DATA = @INSTALL_DATA@$(null)
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ./mkinstalldirs
 
 all: texmf elisp docs install-hint

@@ -1,4 +1,4 @@
-Release notes for version 0.8.1 of the preview-latex package:
+Release notes for version 0.8.2 of the preview-latex package:
 
 preview-latex dresses up your LaTeX source by pasting judiciously
 selected chunks (such as single formulas) chopped from unwieldy
@@ -18,15 +18,11 @@ dvi converter available from the same CVS archive, can also be used
 for conversion.  Recent CVS versions of GNU Emacs for Windows or MacOS
 Carbon should also work.
 
-0.8.1 fixes major bugs in code and RPMs for 0.8 which has been pulled.
-Current releases support for the first time conversion with PDFLaTeX
-(however, the foreground color of Emacs buffers appears always black
-here, differing reports and PDFLaTeX/GhostScript expertise welcome),
-and conversion with dvipng.  Several changes were done to the format
-dumping process to get reasonable behavior when the "latex" executable
-actually is eTeX-based.  The right mouse button now has a context
-menu.  It is now possible to copy source text passages with images
-into mail buffers.
+0.8.2 gets rid of the 8bit-cleanness installation issues that proved a
+recurring problem for several TeX distributions.  You'll still require
+a clean installation for cooperating with current versions of X-Symbol
+(4.5.1-beta) until the fixes get incorporated there.  But
+preview-latex does no longer check for this.
 
 The `README' file provides adequate information for firing up
 preinstalled distributions, and pointers how to provide feedback.  The

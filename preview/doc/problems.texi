@@ -20,7 +20,6 @@ newer versions of the problematic software or by simple patches.
 * Emacs problems::              
 * AUCTeX prior to 11.0::       
 * Too small bounding boxes::    
-* LaTeX international characters::  
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
 @end menu
@@ -174,7 +173,7 @@ correct this, apply the patch in @file{patches/auctex-10.patch}.  It
 might be more prudent to install a more recent version of @AUCTeX{},
 however.
 
-@node Too small bounding boxes, LaTeX international characters, AUCTeX prior to 11.0, Known problems
+@node Too small bounding boxes, x-symbol interoperation, AUCTeX prior to 11.0, Known problems
 @section Too small bounding boxes
 The bounding box of a preview is determined by the @LaTeX{} package
 using the pure @TeX{} bounding boxes.  If there is material extending
@@ -206,39 +205,6 @@ which will tag the corners of the included @TeX{} box.  This will mostly
 be convenient for @emph{pure} PostScript stuff like that created by
 PStricks, which Dvips would otherwise reserve no space for.
 
-@node LaTeX international characters, x-symbol interoperation, Too small bounding boxes, Known problems
-@section @LaTeX{} international characters
-
-To determine the position of a preview, @previewlatex{} correlates
-error messages from @TeX{} with the input text.  The delivered example
-file @file{circ.tex} contains @samp{ISO-8859-1} input characters (also
-called @samp{Latin-1}).  If your language environment is not properly
-set up, or your @TeX{} version is rather old, @TeX{} will, for
-example, display @samp{@"u} (German u-Umlaut) as @samp{^^fc}.  In that
-case the correlation will fail, with the result that the preview
-images get misplaced.  Personally, I have set the environment variable
-@env{LANG} to the string @code{en_US.ISO8859-1}.  Your system may have
-different ways of achieving something similar.  If you have a
-graphical login screen, chances are that it offers a @samp{Language}
-setting.  It may help to choose @samp{US English} or similar instead
-of the plain @samp{English} setting.  This problem has also been
-reported as being caused by te@TeX{} compiled against @samp{libc5}
-libraries.
-
-@code{configure} currently tries checking for an 8-bit-clean
-configuration of @LaTeX{} and refuses to continue until you have fixed
-it.  If nothing else works and you would not need to have an 8-bit
-clean installation, pass the option @code{--disable-8bit-test} to
-configure.  This will usually result in @file{circ.tex} and other files
-with 8-bit characters not being properly previewed.
-
-As a very last resort, when all of the regular attempts of getting your
-system recognized as being able to deal with 8-bit characters by the
-@code{latex} executable fail, you might try to use @kbd{M-x
-customize-variable} on the variable @code{LaTeX-command-style} and
-replace the command @code{latex} with @code{latex
--translate-file=cp8bit}.
-
 @node x-symbol interoperation, Middle-clicks paste instead of toggling, LaTeX international characters, Known problems
 @section x-symbol interoperation
 
@@ -253,6 +219,17 @@ If you wonder what x-symbol is, it is a package that transforms various
 tokens and subscripts to a more readable form while editing and offers a
 few input methods handy especially for dealing with math. Take a look at
 @uref{http://x-symbol.sourceforge.net}.
+
+x-symbol versions up to 4.5.1-beta at least require an 8bit-clean LaTeX
+implementation (with regard to error messages) for cooperation with
+@previewlatex{}.  Later versions may get along without it, like
+@previewlatex{} does now.
+
+If you experience problems with @file{circ.tex} in connection with both
+x-symbol and Latin-1 characters, you may need to change your language
+environment or, as a last resort, customize the variable
+@code{LaTeX-command-style} by replacing the command @code{latex} with
+@code{latex -translate-file=cp8bit}.
 
 @node Middle-clicks paste instead of toggling,  , x-symbol interoperation, Known problems
 @section Middle-clicks paste instead of toggling

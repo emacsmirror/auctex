@@ -16,7 +16,7 @@
 Summary: 	Emacs/LaTeX inline preview 
 Name: 		preview-latex
 Version: 	0.8.1
-Release: 	1%{distri}
+Release: 	3%{distri}
 BuildArchitectures: noarch
 URL: 		http://preview-latex.sourceforge.org
 Source0: 	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -99,7 +99,7 @@ for i in *emacs; do
   # --with-texmf-dir overrides local docstrip configurations.
   # --with-packagedir repairs RedHat XEmacs braindamage
   %configure "--with-$i" '--with-texmf-dir=%{_datadir}/texmf' \
-	'--with-packagedir=%{xemacspkgdir}' '--disable-8bit-test'
+	'--with-packagedir=%{xemacspkgdir}'
   make 'infodir=%{_infodir}'
   popd
 done
@@ -114,11 +114,11 @@ for i in *emacs; do
     mkdir -p '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
     install -c -m 644 preview-latex.el \
       '%{buildroot}%{_datadir}/emacs/site-lisp/site-start.d'
-    %makeinstall 'lispdir=%{buildroot}%{_datadir}/emacs/site-lisp/preview' 'texmfdir=%{buildroot}%{_datadir}/texmf'
+    %makeinstall 'lispdir=%{_datadir}/emacs/site-lisp/preview' 'texmfdir=%{_datadir}/texmf' 'infodir=%{_infodir}'
   else
     # XEmacs MANIFEST doesn't get created unless the target dir exists
     mkdir -p '%{buildroot}%{xemacspkgdir}/pkginfo'
-    %makeinstall 'packagedir=%{buildroot}%{xemacspkgdir}' 'texmfdir=%{buildroot}%{_datadir}/texmf'
+    %makeinstall 'packagedir=%{xemacspkgdir}' 'texmfdir=%{_datadir}/texmf' 'infodir=%{_infodir}'
   fi
   popd
 done
@@ -179,6 +179,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 28 2004 David Kastrup <dak@gnu.org>
+- Remove 8bit-test stuff, some changes to directories.
+
 * Mon Apr 12 2004 David Kastrup <dak@gnu.org>
 - bump XEmacs requirements to 21.4.9
 

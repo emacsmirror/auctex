@@ -1,3 +1,36 @@
+2004-07-28  David Kastrup  <dakas@users.sourceforge.net>
+
+	* latex/preview.dtx: Tiny change to placate font-latex.
+
+	* latex/README-preview: Explain that PDF may be produced.
+
+	* doc/wininstall.texi: Remove advice about failing byte-compiles:
+	we should have this covered by now.
+
+	* doc/problems.texi (LaTeX international characters): remove node.
+
+	* doc/preview-latex.texi (Misplaced previews): Refer to x-symbol
+	node instead of 8bit testing.
+
+	* doc/install.texi (Configure): Remove --disable-8bit-test
+	description.
+
+	* preview.el (preview-parse-messages): Simplify line match.
+
+	* preview-latex.spec: Several changes of %{buildroot} uses and of
+	infodir.  Doubtful whether this will work with Fedora.
+
+	* configure.in: Remove all 8bit-cleanness testing.
+
+	* aclocal.m4 (EMACS_LISP): just write out a string expression
+	without change or echo.  Document the macro.
+
+	* doc/Makefile.in (prefix) (packagedir) (datadir) (infodir):
+	preserve trailing backslashes.
+
+	* Makefile.in (INSTALL) (INSTALL_DATA): Don't munge them for
+	trailing backslashes.
+
 2004-07-27  David Kastrup  <dakas@users.sourceforge.net>
 
 	* preview.el (preview-dvipng): New customization group.

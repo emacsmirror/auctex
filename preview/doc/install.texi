@@ -166,20 +166,6 @@ This option may be used to specify where the @TeX{} documentation goes.
 It is to be used when you are using @code{--with-tex-dir=@var{/dir}},
 but is normally not necessary otherwise.
 
-@item --disable-8bit-test
-There can be problems if your @LaTeX{} implementation is not 8-bit
-clean.  This switch disables the 8-bit test, in case you know that your
-installation is clean and the test is simply failing.  By specifying
-this switch, you signal your acceptance of having @previewlatex{} fail
-on @LaTeX{} files containing 8-bit characters.  Check
-@ifset rawfile
-the `LaTeX international characters' section in the @file{PROBLEMS} file
-@end ifset
-@ifclear rawfile
-@ref{LaTeX international characters}
-@end ifclear
-for more details.
-
 @item --help
 This is not an option specific to @previewlatex{}. A number of standard
 options to @file{configure} exist, and we do not have the room to

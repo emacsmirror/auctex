@@ -1,7 +1,7 @@
 %%\iffalse
 %%     preview.dtx for extracting previews from LaTeX documents.  Part of
 %%     the preview-latex package.
-%%     Copyright (C) 2001, 2002, 2003 David Kastrup
+%%     Copyright (C) 2001, 2002, 2003, 2004 David Kastrup
 %%
 %%     This program is free software; you can redistribute it and/or modify
 %%     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.89 $
+%   \rcskey \version CVS-$Revision: 1.90 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2004-04-11 18:17:47 $
+% \rcskey\next $Date: 2004-07-28 00:04:48 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dakas@users.sourceforge.net}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -431,10 +431,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.89 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.90 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2004-04-11 18:17:47 $
+\reserved@a\next $Date: 2004-07-28 00:04:48 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -938,7 +938,8 @@
     \ifx\reserved@a#1{#2#2}\expandafter\@gobbletwo\fi#2}}
 \lccode`\~=`\$
 \lowercase{\expandafter\next\expandafter~}%
-  \csname pr@\string$\endcsname
+  \csname pr@\string$%$
+  \endcsname
 %</!active>
 %    \end{macrocode}
 %\begin{macro}{\pr@endaftergroup}

@@ -127,26 +127,25 @@ If you need to use the prebuilt documentation (see above), now is the
 time to unpack it over the rest of the installation directory.
 
 @item
-Run @code{make} in the installation directory (we have had one report
-that Emacs did not manage to byte compile the Elisp files, and that had
-to be done by hand.  No idea about what might have gone wrong there).
+Run @code{make} in the installation directory.
 	
 @item
 Run @code{make install} in the installation directory.
 
 @item
 The above will leave you with a file @file{preview-latex.el} in the
-installation directory.  Emacs must load this on startup.  It may be
-that your version of Emacs already has a place where it keeps such
-startup files.  If not, copy it into a place in your Emacs
-@code{load-path}, then put
+installation directory.  Emacs must load a copy of this on startup.  It
+may be that your version of Emacs already has a place where it keeps
+such startup files; if it does, copy @file{preview-latex.el} to that
+directory.  If not, you need to have it explicitly loaded: copy it into
+a place in your Emacs @code{load-path}, then put
 
 @example
 (load "preview-latex.el" nil t t)
 @end example
 
 into your @file{.emacs} file or, if you have more than one user using
-your system, into the global @file{default.el} file.
+your system, into the global @file{site-start.el} file.
 
 @item
 Load @file{circ.tex} into Emacs or XEmacs and see if you can generate

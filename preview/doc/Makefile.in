@@ -1,7 +1,7 @@
-prefix=@prefix@#
-packagedir=@packagedir@#
-datadir=@datadir@#
-infodir=@infodir@#
+prefix=@prefix@$(null)
+packagedir=@packagedir@$(null)
+datadir=@datadir@$(null)
+infodir=@infodir@$(null)
 TEX=@TEX@
 TEXINDEX=texindex
 TEXIHTML=texi2html
