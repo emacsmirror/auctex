@@ -1,7 +1,7 @@
 ;;; latex.el --- Support for LaTeX documents.
 ;; 
 ;; Maintainer: Per Abrahamsen <auc-tex@iesd.auc.dk>
-;; Version: $Id: latex.el,v 5.7 1994-04-16 16:31:12 amanda Exp $
+;; Version: $Id: latex.el,v 5.8 1994-04-16 16:47:09 amanda Exp $
 ;; Keywords: wp
 
 ;; Copyright 1991 Kresten Krab Thorup
@@ -800,7 +800,7 @@ You may use LaTeX-item-list to change the routines used to insert the item."
      ("\\\\bibitem{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
      ("\\\\bibitem\\[[^][\n\r]+\\]{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}"
       1 LaTeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#}\\\\\\.\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+     ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
    LaTeX-auto-label-regexp-list
    LaTeX-auto-minimal-regexp-list)
   "List of regular expression matching common LaTeX macro definitions.")
