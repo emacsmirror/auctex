@@ -1,3 +1,7 @@
+2000-03-30  Peter Galbraith <psg@debian.org>
+
+	* font-latex.el: Updated to 0.701 (30 Mar 2000).
+
 2000-01-14  Peter Galbraith <psg@debian.org>
 
 	* bib-cite.el: Updated to 3.16 (20 Dec 99).
