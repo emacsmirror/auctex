@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.74 2002-03-13 15:29:59 dakas Exp $
+;; $Id: preview.el,v 1.75 2002-03-14 17:32:52 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1227,12 +1227,6 @@ See `TeX-parse-TeX' for documentation of REPARSE."
 
 ;;;###autoload (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
       
-(defvar preview-snippet nil
-  "Number of current preview snippet.")
-
-(defvar preview-snippet-start nil
-  "Point of start of current preview snippet.")
-
 (defun preview-parse-messages ()
   "Turn all preview snippets into overlays.
 This parses the pseudo error messages from the preview
@@ -1240,9 +1234,7 @@ document style for LaTeX."
   (with-temp-message "locating previews..."
     (TeX-parse-reset)
     (unwind-protect
-	(progn
-	  (setq preview-snippet 0)
-	  (setq preview-snippet-start nil)
+	(let ((parsestate (list 0 nil nil nil nil nil)))
 	  (goto-char TeX-error-point)
 	  (while
 	      (re-search-forward
@@ -1257,9 +1249,11 @@ document style for LaTeX."
 	      (cond
 	       (;; Preview error
 		(string-match "^! Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\)\\." string)
-		(preview-analyze-error
-		 (string-to-int (match-string 1 string))
-		 (string= (match-string 2 string) "started")))
+		(setq parsestate
+		      (apply #'preview-analyze-error
+			     (string-to-int (match-string 1 string))
+			     (string= (match-string 2 string) "started")
+			     parsestate)))
 	       ;; New file -- Push on stack
 	       ((string= string "(")
 		(re-search-forward "\\([^()\n \t]*\\)")
@@ -1280,11 +1274,11 @@ document style for LaTeX."
 	       ;; Hook to change file name
 	       ((string-match "!name(\\([^)]*\\))" string)
 		(rplaca TeX-error-file (match-string 1 string))))))
-	  (if (zerop preview-snippet)
+	  (if (zerop (car parsestate))
 	      (preview-clean-subdir (nth 0 TeX-active-tempdir))) )
       (preview-call-hook 'close))))
 
-(defun preview-analyze-error (snippet startflag)
+(defun preview-analyze-error (snippet start lsnippet lstart lfile lline lbuffer lpoint)
   "Analyze a preview diagnostic for snippet SNIPPET.
 The diagnostic is for the start of the snippet if STARTFLAG
 is set, and an overlay will be generated for the corresponding
@@ -1346,41 +1340,54 @@ file dvips put into the directory indicated by `TeX-active-tempdir'."
     (if (null file)
 	(error "Error occured after last TeX file closed"))
     (run-hooks 'TeX-translate-location-hook)
-    (if startflag
-	(unless (eq snippet (1+ preview-snippet))
+    (if start
+	(unless (eq snippet (1+ lsnippet))
 	  (message "Preview snippet %d out of sequence" snippet))
-      (unless (eq snippet preview-snippet)
+      (unless (eq snippet lsnippet)
 	(message "End of Preview snippet %d unexpected" snippet)
-	(setq preview-snippet-start nil)))
-    (setq preview-snippet snippet)
+	(setq lstart nil)))
+    (setq lsnippet snippet)
     (when line
-      (let* ((buffer (find-file-noselect file))
+      (setq line (+ line offset))
+      (let* ((buffer (if (string= lfile file)
+			 lbuffer
+		       (find-file-noselect (setq lfile file))))
 	     (case-fold-search nil)
 	     (next-point
 	      (with-current-buffer buffer
 		(save-excursion
-		  (goto-line (+ offset line))
+		  (if (eq buffer lbuffer)
+		      (progn
+			(goto-char lpoint)
+			(if (eq selective-display t)
+			    (re-search-forward "[\n\C-m]" nil 'end (- line lline))
+			  (forward-line (- line lline))))
+		    (goto-line line))
+		  (setq lline line
+			lpoint (point)
+			lbuffer buffer)
 		  (if (search-forward (concat string after-string)
 				      (line-end-position) t)
 		      (backward-char (length after-string))
 		    (search-forward string (line-end-position) t))
 		  (point)))))
-	(if startflag
-	    (setq preview-snippet-start next-point)
-	  (if preview-snippet-start
+	(if start
+	    (setq lstart next-point)
+	  (if lstart
 	      (progn
 		(preview-place-preview
 		 snippet
 		 buffer
-		 (if (eq next-point preview-snippet-start)
-		     preview-snippet-start
+		 (if (eq next-point lstart)
+		     lstart
 		   (or
-		    (preview-back-command preview-snippet-start
+		    (preview-back-command lstart
 					  buffer)
-		    preview-snippet-start))
+		    lstart))
 		 next-point)
-		(setq preview-snippet-start nil))
-	    (message "Unexpected end of Preview snippet %d" snippet)))))))
+		(setq lstart nil))
+	    (message "Unexpected end of Preview snippet %d" snippet))))))
+  (list lsnippet lstart lfile lline lbuffer lpoint))
 
 (defun preview-get-geometry (buff)
   "Transfer display geometry parameters from current display.
@@ -1471,7 +1478,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.74 $"))
+	(rev "$Revision: 1.75 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
