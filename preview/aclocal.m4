@@ -3,184 +3,6 @@
 dnl this was once done by Katsumi Yamaoka <yamaoka@jpl.org>, but
 dnl pretty much no original code remains.
 
-AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,
- [dnl Examine packagedir.
-  dnl $1 is an existing Elisp file from a previous installation.
-  dnl $2 is its potential parent directory.  Since we don't check any
-  dnl previous installation (which might be caused by an outdated
-  dnl sumo ball or a user's own package), those arguments get
-  dnl ignored.  Maybe looking at them for warning about load-path
-  dnl shadowing would be nice.
-  EMACS_LISP(packagedir,
-    [(catch 22
-       (let ((dirs (append late-packages last-packages early-packages)))
-	  (dolist (name (list \"site-packages\" \"xemacs-packages\")
-                   \"NONE\")
-	    (dolist (dir dirs)
-	      (and (file-directory-p dir)
-	           (string=
-		     (file-name-nondirectory (directory-file-name dir))
-		     name)
-		   (throw 22 (directory-file-name dir)))))))])])
-
-AC_DEFUN(EMACS_PATH_PACKAGEDIR,
- [dnl Check for packagedir.
-  dnl $2 here is only for correcting old (CVS) mistakes
-  if test ${EMACS_FLAVOR} = xemacs; then
-    AC_MSG_CHECKING([for XEmacs package directory])
-    AC_ARG_WITH(packagedir,
-      [  --with-packagedir=DIR   package DIR for XEmacs],
-      [if test "${withval}" = yes -o -z "${withval}"; then
-	EMACS_EXAMINE_PACKAGEDIR($1,$2)
-      else
-	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
-      fi],
-      [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
-    if test "${packagedir}" = NONE -o -z "${packagedir}"; then
-      AC_MSG_ERROR([not found, exiting!])
-    fi
-    AC_MSG_RESULT(${packagedir})
-  else
-    packagedir=no
-  fi
-  AC_SUBST(packagedir)])
-
-
-AC_DEFUN(TEX_PATH_TEXMFDIR,
- [
-AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
- [ texmfdir="${withval}" ;
-   AC_FULL_EXPAND(withval)
-   if test ! -d "$withval"  ; then
-      AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
-   fi
-   previewtexmfdir='${texmfdir}/tex/latex/preview'
-   previewdocdir='${texmfdir}/doc/latex/styles'
-   ])
-
-AC_ARG_WITH(tex-dir,
- [  --with-tex-dir=DIR      Location to install preview TeX sources],
- [ previewtexmfdir="${withval}" ;
-   AC_FULL_EXPAND(withval)
-   if test ! -d "$withval"  ; then
-      AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
-   fi
-   ])
-
-AC_ARG_WITH(doc-dir,
-  [  --with-doc-dir=DIR      Location to install preview.dvi],
-  [ previewdocdir="${withval}" ;
-   AC_FULL_EXPAND(withval)
-   if test ! -d "$withval"  ; then
-      AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
-   fi
-   ])
-
-# First check for docstrip.cfg information
-
-if test -z "$previewtexmfdir" ; then
-    AC_MSG_CHECKING([for docstrip directory configuration])
-    cat > testdocstrip.tex <<\EOF
-\input docstrip
-\ifx\basedir\undefined\else
-   \message{^^J--preview-tex-dir=\showdirectory{tex/latex/preview}^^J%
-	       --texmf-prefix=\basedir^^J}
-\fi
-\endbatchfile
-EOF
-    "$LATEX" '\nonstopmode \input testdocstrip' >&5 2>&1
-    texmfdir=`sed -n -e 's+/* *$++' -e '/^--texmf-prefix=/s///p' testdocstrip.log 2>&5`
-    previewtexmfdir=`sed -n -e '/UNDEFINED/d' -e 's+/* *$++' -e '/^--preview-tex-dir=/s///p' testdocstrip.log 2>&5 `
-    if test -z "$previewtexmfdir"  ; then
-	if test ! -z "$texmfdir"  ; then
-	    previewtexmfdir='${texmfdir}'
-	    previewdocdir='${texmfdir}'
-	fi
-    else
-	previewdocdir='${texmfdir}/doc/latex/styles'
-    fi
-# Next
-# kpsepath -n latex tex
-# and then go for the following in its output:
-# a) first absolute path component ending in tex/latex// (strip trailing
-# // and leading !!):  "Searching for TDS-compliant directory."  Install
-# in preview subdirectory.
-# b) first absolute path component ending in // "Searching for directory
-# hierarchy"  Install in preview subdirectory.
-# c) anything absolute.  Install both files directly there.
-
-if test -z "$previewtexmfdir"  ; then
-AC_MSG_RESULT([no])
-AC_MSG_CHECKING([for TDS-compliant directory])
-for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
-		grep '^/.*/tex/latex//$' `
-do
-  x="`echo $x | sed -e 's+//+/+g' -e 's+/\$++' `"
-  if test -d "$x"  ; then
-     texmfdir="`echo $x | sed -e 's+/tex/latex++'`"
-     previewdocdir='${texmfdir}/doc/latex/styles'
-     previewtexmfdir='${texmfdir}/tex/latex/preview'
-     break
-  fi
-done
-fi
-
-if test -z "$previewtexmfdir"  ; then
-AC_MSG_RESULT([no])
-AC_MSG_CHECKING([for TeX directory hierarchy])
-for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
-		grep '^/.*//$'`
-do
-  if test -d "$x"  ; then
-     texmfdir="$x"
-     previewtexmfdir='${texmfdir}/preview'
-     previewdocdir='${texmfdir}/preview'
-     break
-  fi
-done
-fi
-
-if test -z "$previewtexmfdir"  ; then
-AC_MSG_RESULT([no])
-AC_MSG_CHECKING([for TeX input directory])
-for x in `kpsepath -n latex tex | tr ':' '\\n' | sed -e 's/^!!//' | \
-		grep '^/'`
-do
-  if test -d "$x"  ; then
-     texmfdir="$x"
-     previewdocdir='${texmfdir}'
-     break
-  fi
-done
-fi
-
-if test -z "$previewtexmfdir"  ; then
-AC_MSG_RESULT([no])
-	AC_MSG_ERROR([Cannot find the texmf directory!
-Please use --with-texmf-dir=dir to specify where the preview tex files go])
-fi
-     AC_MSG_RESULT($texmfdir)
-fi
-
-echo Preview will be placed in $previewtexmfdir
-echo Preview docs will be placed in $previewdocdir
-AC_SUBST(texmfdir)
-AC_SUBST(previewtexmfdir)
-AC_SUBST(previewdocdir)])
-
-AC_DEFUN(AC_FULL_EXPAND,
-[ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"]]/\\&/g'
-eval "$1=`sed ${__ac_tmp__} <<EOF
-[$]$1
-EOF
-`";; *) break ;; esac; done ])
-dnl "
-
-
-
-dnl EMACS_LISP EMACS_PROG_EMACS EMACS_PATH_LISPDIR and EMACS_CHECK_LIB
-dnl adapted from w3.
-
 dnl EMACS_LISP takes 5 arguments.  $1 is the name of the shell
 dnl variable to assign a value, $2 is a Lisp expression placed into
 dnl shell double quotes (which has consequences for quoting and
@@ -225,12 +47,14 @@ fi
 
 AC_MSG_CHECKING([if $EMACS is XEmacs])
 EMACS_LISP(XEMACS,
-	[(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\")])
+	[(if (featurep (quote xemacs)) \"yes\" \"no\")])
 if test "$XEMACS" = "yes"; then
   EMACS_FLAVOR=xemacs
+  EMACS_NAME="XEmacs"
 else
   if test "$XEMACS" = "no"; then
     EMACS_FLAVOR=emacs
+    EMACS_NAME="Emacs"
   else
     AC_MSG_ERROR([Unable to run $EMACS!  Aborting!])
   fi
@@ -240,44 +64,79 @@ fi
   AC_SUBST(EMACS_FLAVOR)
 ])
 
-AC_DEFUN(EMACS_CHECK_MAJOR_VERSION, [
-AC_MSG_CHECKING([if (X)Emacs is recent enough])
-EMACS_LISP(EMACS_MAJOR_VERSION,[emacs-major-version])
-if (( $EMACS_MAJOR_VERSION < $1 )); then
-  AC_MSG_RESULT([no])
-  AC_MSG_ERROR([This package requires at least (X)Emacs version $1.  Aborting!])
-else
-  AC_MSG_RESULT([yes])
+AC_DEFUN(EMACS_CHECK_VERSION, [
+AC_MSG_CHECKING([if ${EMACS_NAME} is recent enough])
+EMACS_LISP(result,[(cond ((< emacs-major-version $1) \"no\")
+			 ((> emacs-major-version $1) \"yes\")
+			 ((< emacs-minor-version 0$2) \"no\")
+			 (t \"yes\"))],-no-site-file)
+AC_MSG_RESULT([$result])
+if test "$result" != "yes"
+then
+  AC_MSG_ERROR([This package requires at least ${EMACS_NAME} version $1.  Aborting!])
 fi
-  AC_SUBST(EMACS_MAJOR_VERSION)
 ])
 
-dnl "\${packagedir}/lisp"
+dnl Look for an installation directory under datadir and prefix.
+dnl $1 is the variable name we are looking for.
+dnl $2 is a Lisp expression giving a list of directories names
+dnl $3 is Lisp expression giving a list of locations where to find them
+dnl $4,$5,$6 are additional arguments for the elisp call
+AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
+ [  for currentprefix in '${datadir}' '${prefix}'
+  do
+  expprefix="$currentprefix"
+  AC_FULL_EXPAND(expprefix)
+  EMACS_LISP([$1],
+    [(catch 22
+       (let ((dirs $3))
+	  (dolist (name $2 \"NONE\")
+	    (dolist (dir dirs)
+	      (setq dir (directory-file-name dir))
+	      (and (file-name-absolute-p dir)
+	           (file-directory-p dir)
+	           (not (string-match \"\\\\\`\\\\.\\\\.\"
+                          (file-relative-name dir expanded)))
+	           (or (null name)
+                     (string=
+		       name
+		         (file-name-nondirectory dir)))
+		   (throw 22 (concat (file-name-as-directory prefix)
+		     (file-relative-name dir expanded))))))))],[$4],
+  [prefix expanded $5],["$currentprefix" "$expprefix" $6])
+  if test "[$]$1" != NONE; then break; fi; done])
+
+AC_DEFUN(EMACS_EXAMINE_PACKAGEDIR,[
+  EMACS_EXAMINE_INSTALLATION_DIR(packagedir,
+    [[(list \"site-packages\" \"xemacs-packages\")]],
+    [[(append late-packages last-packages early-packages)]])])
+
+dnl Check for packagedir.
+dnl $2 here is only for correcting old (CVS) mistakes
+AC_DEFUN(EMACS_PATH_PACKAGEDIR,
+ [  if test ${EMACS_FLAVOR} = xemacs; then
+    AC_MSG_CHECKING([for XEmacs package directory])
+    AC_ARG_WITH(packagedir,
+      [  --with-packagedir=DIR   package DIR for XEmacs],
+      [if test "${withval}" = yes -o -z "${withval}"; then
+	EMACS_EXAMINE_PACKAGEDIR($1,$2)
+      else
+	packagedir="`echo ${withval} | sed 's/^~\//${HOME}\//;s/[[\/\\]]$//'`"
+      fi],
+      [EMACS_EXAMINE_PACKAGEDIR($1,$2)])
+    if test "${packagedir}" = NONE -o -z "${packagedir}"; then
+      AC_MSG_ERROR([not found, exiting!])
+    fi
+    AC_MSG_RESULT(${packagedir})
+  else
+    packagedir=no
+  fi
+  AC_SUBST(packagedir)])
 
 AC_DEFUN(EMACS_TEST_LISPDIR, [
-    tmpdatadir=${datadir}
-    tmplibdir=${libdir}
-    tmpprefix=${prefix}
-    AC_FULL_EXPAND(prefix)
-    AC_FULL_EXPAND(datadir)
-    AC_FULL_EXPAND(libdir)
-    EMACS_LISP(lispdir,
-      [[(catch 22
-          (dolist (pattern command-line-args-left \"NONE\")
-	    (setq pattern (file-name-as-directory (expand-file-name pattern)))
-            (dolist (path load-path)
-	      (setq path (file-name-as-directory (expand-file-name path)))
-	      (if (string= pattern path)
-	        (throw 22 path)))))]],,,[[\
-	   "${datadir}/${EMACS_FLAVOR}/site-lisp" \
-	   "${libdir}/${EMACS_FLAVOR}/site-lisp" \
-	   "${libdir}/${EMACS_FLAVOR}/site-packages/lisp" \
-	   "${datadir}/${EMACS_FLAVOR}/site-packages/lisp" \
-	   "${prefix}/site-lisp"]])
-    datadir=${tmpdatadir}
-    libdir=${tmplibdir}
-    prefix=${tmpprefix}
-])
+  EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
+    [[(list \"site-lisp\" \"site-packages\")]],
+    load-path)])
 
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
@@ -309,6 +168,149 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
   AC_MSG_RESULT([[${lispdir}]])
   AC_SUBST(lispdir)
 ])
+
+
+AC_DEFUN(TEX_PATH_TEXMFDIR,
+ [
+AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
+ [ texmfdir="${withval}" ;
+   AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
+      AC_MSG_ERROR([--with-texmf-dir="$texmfdir": Directory does not exist])
+   fi
+   previewtexmfdir='${texmfdir}/tex/latex/preview'
+   previewdocdir='${texmfdir}/doc/latex/styles'
+   ])
+
+AC_ARG_WITH(tex-dir,
+ [  --with-tex-dir=DIR      Location to install preview TeX sources],
+ [ previewtexmfdir="${withval}" ;
+   AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
+      AC_MSG_ERROR([--with-tex-dir="$previewtexmfdir": Directory does not exist])
+   fi
+   ])
+
+AC_ARG_WITH(doc-dir,
+  [  --with-doc-dir=DIR      Location to install preview.dvi],
+  [ previewdocdir="${withval}" ;
+   AC_FULL_EXPAND(withval)
+   if test ! -d "$withval"  ; then
+      AC_MSG_ERROR([--with-doc-dir="$previewdocdir": Directory does not exist])
+   fi
+   ])
+
+# First check for docstrip.cfg information -- removed.  Too high
+# likelihood to pick up a user preference instead of a system setting.
+
+# Next
+# kpsepath -n latex tex
+# and then go for the following in its output:
+# a) first path component in datadir/prefix ending in tex/latex// (strip trailing
+# // and leading !!):  "Searching for TDS-compliant directory."  Install
+# in preview subdirectory.
+# b) first absolute path component ending in // "Searching for directory
+# hierarchy"  Install in preview subdirectory.
+# c) anything absolute.  Install both files directly there.
+
+if test -z "$previewtexmfdir" -o "$previewtexmfdir" = no  ; then
+
+AC_MSG_CHECKING([for TDS-compliant directory])
+
+pathoutput="`kpsepath -n latex tex`"
+
+EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [[(list nil)]],
+  [[(let (lst)
+      (dolist (d (append (split-string pathoutput \";\")
+        (split-string pathoutput \":\")) (nreverse lst))
+          (and (string-match \"\\\\\`!*\\\\(.*/texmf\\\\)/tex/latex//+\\\\'\" d)
+	       (push (match-string 1 d) lst))))]],
+    -no-site-file,
+    [[pathoutput]],[["$pathoutput"]])
+
+if test -z "$texmfdir" -o "$texmfdir" = "NONE" ; then
+EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [[(list nil)]],
+  [[(let (lst)
+      (dolist (d (append (split-string pathoutput \";\")
+        (split-string pathoutput \":\")) (nreverse lst))
+          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/tex/latex//+\\\\'\" d)
+	       (push (match-string 1 d) lst))))]],
+    -no-site-file,
+    [[pathoutput]],[["$pathoutput"]])
+fi
+
+if test -n "$texmfdir" -a "$texmfdir" != "NONE" ; then
+   previewdocdir='${texmfdir}/doc/latex/styles'
+   previewtexmfdir='${texmfdir}/tex/latex/preview'
+fi
+fi
+
+if test -z "$previewtexmfdir" -o "$previewtexmfdir" = no  ; then
+
+AC_MSG_RESULT([no])
+AC_MSG_CHECKING([for TeX directory hierarchy])
+
+EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [[(list nil)]],
+  [[(let (lst)
+      (dolist (d (append (split-string pathoutput \";\")
+        (split-string pathoutput \":\")) (nreverse lst))
+          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)//+\\\\'\" d)
+	       (push (match-string 1 d) lst))))]],
+    -no-site-file,
+    [[pathoutput]],[["$pathoutput"]])
+
+if test -n "$texmfdir" -a "$texmfdir" != "NONE" ; then
+   previewtexmfdir='${texmfdir}/preview'
+   previewdocdir='${texmfdir}/preview'
+fi
+fi
+
+if test -z "$previewtexmfdir" -o "$previewtexmfdir" = no  ; then
+
+AC_MSG_RESULT([no])
+AC_MSG_CHECKING([for TeX input directory])
+EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
+  [[(list nil)]],
+  [[(let (lst)
+      (dolist (d (append (split-string pathoutput \";\")
+        (split-string pathoutput \":\")) (nreverse lst))
+          (and (string-match \"\\\\\`!*\\\\(.*[^/]\\\\)/?\\\\'\" d)
+	       (push (match-string 1 d) lst))))]],
+    -no-site-file,
+    [[pathoutput]],[["$pathoutput"]])
+
+if test -n "$texmfdir" -a "$texmfdir" != "NONE" ; then
+   previewtexmfdir='${texmfdir}'
+   previewdocdir='${texmfdir}'
+fi
+fi
+
+if test -z "$previewtexmfdir" -o "$previewtexmfdir" = no  ; then
+
+AC_MSG_RESULT([no])
+	AC_MSG_ERROR([Cannot find the texmf directory!
+Please use --with-texmf-dir=dir to specify where the preview tex files go])
+fi
+
+AC_MSG_RESULT($texmfdir)
+
+echo Preview will be placed in $previewtexmfdir
+echo Preview docs will be placed in $previewdocdir
+AC_SUBST(texmfdir)
+AC_SUBST(previewtexmfdir)
+AC_SUBST(previewdocdir)])
+
+AC_DEFUN(AC_FULL_EXPAND,
+[ while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"]]/\\&/g'
+eval "$1=`sed ${__ac_tmp__} <<EOF
+[$]$1
+EOF
+`";; *) break ;; esac; done ])
+dnl "
+
 
 
 AC_DEFUN(AC_CHECK_PROG_REQUIRED, [
@@ -507,13 +509,9 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 	      autodir_expanded="${autodir}"
 	      AC_FULL_EXPAND(autodir_expanded)],
 	     [autodir='${localstatedir}/auctex'
-	      oldprefix="${prefix}" # save prefix
-	      if test "${prefix}" = "NONE"
-		then prefix="${ac_default_prefix}" # temporarily set it
-	      fi
 	      autodir_expanded="${autodir}"
 	      AC_FULL_EXPAND(autodir_expanded)
-	      prefix="${oldprefix}" # restore prefix])
+])
  AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
  AC_SUBST(autodir)
  AC_SUBST(autodir_expanded)
@@ -550,7 +548,7 @@ AC_DEFUN(AC_MAKE_FILENAME_ABSOLUTE,[
        [[\\/]]* | ?:[[\\/]]* ) # Absolute
           ;;
        *)
-          $1=$2"[$]$1";;
+          $1=$2"[$]{$1}";;
      esac])
 
 AC_DEFUN(EMACS_LISP_RELATIVE,[
@@ -558,5 +556,5 @@ AC_DEFUN(EMACS_LISP_RELATIVE,[
         relative to the Lisp startup file.]],
     [$2=["${withval}"]])
   AC_LISPIFY_DIR([lisp$2],["[$]{$2}"])
-  AC_MAKE_FILENAME_ABSOLUTE([$2],["[$]$1"])])
+  AC_MAKE_FILENAME_ABSOLUTE([$2],["[$]{$1}/"])])
 

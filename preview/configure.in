@@ -9,17 +9,19 @@ ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
 AC_SET_MAKE
 AC_PROG_INSTALL
 
-if test "$prefix" = NONE
+if test "${prefix}" = NONE -o -z "${prefix}"
 then
-   prefix="$ac_prefix_default"
-fi
-if test "$exec_prefix" = NONE
-then
-   exec_prefix='$prefix'
+   prefix="$ac_default_prefix"
 fi
 
 EMACS_PROG_EMACS
 
+if test $EMACS_FLAVOR = xemacs
+then
+  EMACS_CHECK_VERSION(21,4)
+else
+  EMACS_CHECK_VERSION(21,1)
+fi
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
 # never need to modify the default behavior.
@@ -71,6 +73,7 @@ AC_SUBST(infodir)
 
 AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)
+
 
 EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
