@@ -1,3 +1,45 @@
+Tue Oct 25 13:05:36 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* tex.el (TeX-command-current): New variable.
+	(TeX-command-select-master): New function.
+	(TeX-command-select-buffer): New function.
+	(TeX-command-select-region): New function.
+	(TeX-command-menu): Use TeX-command-current instead of explicit
+	file argument.
+	(TeX-command-menu-print): Remove file argument.
+	(TeX-command-menu-printer-entry): Don't pass file argument.
+	(TeX-command-create-menu): Removed.
+	(TeX-mode-menu): New menu.
+	(plain-TeX-mode-menu): Removed entries now in TeX-mode-menu. 
+	(plain-TeX-mode-menu): Use `toggle' for bad boxes.
+	(plain-TeX-common-initialization): Enable TeX-mode-menu.
+
+	* latex.el (LaTeX-mode-menu): Removed entries now in
+	TeX-mode-menu. 
+	(LaTeX-mode-menu): Use `toggle' for bad boxes.
+	(LaTeX-common-initialization): Enable TeX-mode-menu.
+
+	* tex-info.el (TeXinfo-command-menu): New menu.
+	(TeXinfo-mode-menu): Move commands to new menu.
+	(TeXinfo-mode-menu): Use `toggle' for bad boxes.
+	(texinfo-mode): Enable TeXinfo-command-menu.
+
+Mon Oct 24 22:49:51 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
+
+	* Makefile (AUCSRC): Removed auc-menu.el from AUC TeX distribution.
+	(MINMAPSRC): Added easymenu.el temporarily to min-map distribution.
+
+	* auc-menu.el: Just load easymenu.el when using GNU Emacs.
+
+	* easymenu.el Try to use RMS's easymenu instead of auc-menu.
+        (easy-menu-define): Call `easy-menu-do-define' to do
+	the real work.  Document XEmacs keyword arguments.
+	(easy-menu-do-define): New function.
+	(easy-menu-create-keymaps): Support XEmacs keyword arguments in
+	menu definition.
+	(easy-menu-remove): Make is a function instead of a macro.
+	(easy-menu-add): Ditto.
+
 Fri Oct 21 14:46:16 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 
 	* doc/auc-tex.texi (Completion): Less confusing BibTeX advice, I hope.
@@ -13,8 +55,8 @@ Fri Oct 21 14:46:16 1994  Per Abrahamsen  <abraham@iesd.auc.dk>
 	directory.  Suggested by Frederic Devernay
 	<Frederic.Devernay@sophia.inria.fr>. 
 
-	* latex.el (LaTeX-indent-calculate): Allow nil second element in `
-	LaTeX-indent-environment-list'. 
+	* latex.el (LaTeX-indent-calculate): Allow nil second element in
+	`LaTeX-indent-environment-list'.  
 	(LaTeX-indent-environment-list): Added special environments
 	suggested by thiemann@informatik.uni-tuebingen.de (Peter
 	Thiemann). 
