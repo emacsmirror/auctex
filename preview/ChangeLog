@@ -1,3 +1,10 @@
+2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{Preview attaching commands}): set
+	\hbadness and \vbadness to infinity in order to avoid
+	parse-unfriendly error messages.  Would one want to see overfull
+	hbox rules in preview output?
+
 2001-10-12  Alan Shutko  <ats@acm.org>
 
 	* Makefile.in (LISP_OBJS): New var.
@@ -5,6 +12,7 @@
 	don't recompile every make.
 
 2001-10-12  David Kastrup  <David.Kastrup@t-online.de>
+
 	* configure.in: Try fixing the emacs flavor detection.
 	And revert back to Alan's version.
 
