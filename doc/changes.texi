@@ -1,6 +1,9 @@
 @section News in 9.8
 
 @itemize @bullet
+@item Support for Harvard style updated by Berwin A. Turlach
+@samp{<berwin.turlach@@anu.edu.au>}.
+
 @item
 Support for `natbib' package.
 By Berwin Turlach @samp{<berwin.turlach@@anu.edu.au>}. 
@@ -28,8 +31,9 @@ environments is larger than the value of the new variable
 By Christoph Wedler @samp{<wedler@@fmi.uni-passau.de>}.
 
 @item
-More reftex support.
-By Soren Dayton @samp{<csdayton@@cs.uchicago.edu>},
+More reftex support with new @code{TeX-arg-ref} function.
+By Soren Dayton @samp{<csdayton@@cs.uchicago.edu>}, with @file{amsmath}
+support by Carsten Dominik @samp{<dominik@@strw.LeidenUniv.nl>}.
 
 @item
 Minimal parser now recognize @code{usepackage}.

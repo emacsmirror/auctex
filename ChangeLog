@@ -1,3 +1,15 @@
+Thu Jul 03 18:06:22 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
+
+	* Version 9.8c released.
+
+Thu Jul  3 14:44:55 1997  Carsten Dominik <dominik@strw.LeidenUniv.nl>
+
+	* style/amsmath.el ("amsmath"): Use `TeX-arg-ref' for eqref.
+
+Sun Jun 29 15:29:59 1997  Berwin Turlach  <berwin.turlach@anu.edu.au>
+
+	* harvard.el: Updated the support for harvard.el
+
 Mon Jun 30 17:04:24 1997  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 9.8b released.

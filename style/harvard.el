@@ -1,27 +1,25 @@
-;; harvard.el --- Support for Harvard Citation style package for AUC-TeX
+;; Support for Harvard Citation style package for AUC-TeX
+;;      Harvard citation style is from Peter Williams
+;;      available on the CTAN servers
+
+;; Version: $Id: harvard.el,v 1.6 1997-07-03 16:06:57 abraham Exp $
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
-
-;; Version: $Id: harvard.el,v 1.5 1994-04-14 14:23:03 amanda Exp $
+;; Copyright (C) 1997 Berwin Turlach <berwin.turlach@anu.edu.au>
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 1, or (at your option)
 ;; any later version.
-;;
+;; 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+;; 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-;;; Commentary:
-
-;; Harvard citation style is from Peter Williams available on the CTAN
-;; servers
 
 ;;; Code:
 
@@ -62,20 +60,44 @@
      '("bibliographystyle"
        (TeX-arg-eval
 	completing-read "Bibliography style: "
-        '(("agsm") ("dcu") ("jmr") ("jphysicsB") ("kluwer") ("nederlands")))
+        '(("agsm") ("apsr") ("dcu") ("jmr") ("jphysicsB") ("kluwer") ("nederlands") ("econometrica")))
        ignore)
      '("harvarditem" [ "Short citation" ]
        "Complete citation" "Year" TeX-arg-define-cite))
 
     (setq TeX-complete-list
-	  (append '(("\\\\citeasnoun{\\([^{}\n\m\\%]*\\)"
-		     1 LaTeX-bibitem-list "}")
-		    ("\\\\citeyear{\\([^{}\n\m\\%]*\\)"
-		     1 LaTeX-bibitem-list "}")
-		    ("\\\\citename{\\([^{}\n\m\\%]*\\)"
-		     1 LaTeX-bibitem-list "}"))
+	  (append '(("\\\\citeasnoun\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                     1 LaTeX-bibitem-list "}")
+                    ("\\\\citeasnoun{\\([^{}\n\r\\%,]*\\)" 1
+                     LaTeX-bibitem-list "}")
+                    ("\\\\possessivecite\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)" 
+                     1 LaTeX-bibitem-list "}")
+                    ("\\\\possessivecite{\\([^{}\n\r\\%,]*\\)" 1
+                     LaTeX-bibitem-list "}")
+                    ("\\\\citename\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                     1 LaTeX-bibitem-list "}")
+                    ("\\\\citename{\\([^{}\n\r\\%,]*\\)" 1
+                     LaTeX-bibitem-list "}")
+                    ("\\\\citeaffixed\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                     1 LaTeX-bibitem-list "}")
+                    ("\\\\citeaffixed{\\([^{}\n\r\\%,]*\\)" 1
+                     LaTeX-bibitem-list "}") 
+                    ("\\\\citeaffixed{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                     2 LaTeX-bibitem-list)
+                    ("\\\\citeyear\\[[^]\n\r\\%]*\\]{\\([^{}\n\r\\%,]*\\)"
+                     1 LaTeX-bibitem-list "}")
+                    ("\\\\citeyear{\\([^{}\n\r\\%,]*\\)" 1
+                     LaTeX-bibitem-list "}") 
+                    ("\\\\citeyear{\\([^{}\n\r\\%]*,\\)\\([^{}\n\r\\%,]*\\)"
+                     2 LaTeX-bibitem-list))
 		  TeX-complete-list))
 
+    (setq LaTeX-auto-regexp-list
+          (append '(("\\\\harvarditem{\\([a-zA-Z][^%#'()={}]*\\)}{\\([0-9][^, %\"#'()={}]*\\)}{\\([a-zA-Z][^, %\"#'()={}]*\\)}" 3 LaTeX-auto-bibitem)
+                    ("\\\\harvarditem\\[[^][\n\r]+\\]{\\([a-zA-Z][^%#'()={}]*\\)}{\\([0-9][^, %\"#'()={}]*\\)}{\\([a-zA-Z][^, %\"#'()={}]*\\)}" 3 LaTeX-auto-bibitem)
+                    )
+                  LaTeX-auto-regexp-list))
+    
     (setq LaTeX-item-list
 	  (cons '("thebibliography" . LaTeX-item-harvardbib)
 		LaTeX-item-list)))))

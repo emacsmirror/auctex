@@ -25,7 +25,7 @@
      )
 
     (TeX-add-symbols
-     '("eqref" TeX-arg-label)
+     '("eqref" TeX-arg-ref)
      '("numberwithin" TeX-arg-counter "Section level")
      '("raisetag" "Dimension")
      '("intertext" t)
