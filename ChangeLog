@@ -1,3 +1,13 @@
+2004-04-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (docTeX-indent-inner-fixed): New var.
+	(LaTeX-indent-calculate): Use it.
+	(LaTeX-indent-calculate-last): Reset indentation to zero after
+	macrocode environments.
+
+	* style/booktabs.el (TeX-add-style-hook): Add fontification
+	support.
+
 2004-04-04  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-find-matching-end, LaTeX-find-matching-end): Try
