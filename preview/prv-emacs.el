@@ -161,23 +161,24 @@ on preview's clicks."
      (ceiling (aref bb 2))
      (ceiling (aref bb 3)))))
 
-(defun preview-ps-image (filename scale)
+(defun preview-ps-image (filename scale &optional box)
   "Place a PostScript image directly by Emacs.
 This uses Emacs built-in PostScript image support for
 rendering the preview image in EPS file FILENAME, with
 a scale factor of SCALE indicating the relation of desired
 image size on-screen to the size the PostScript code
-specifies."
-  (let ((bb (preview-extract-bb filename)))
+specifies. If BOX is present, it is the bounding box info."
+  (unless box
+    (setq box (preview-extract-bb filename)))
 ;; should the following 2 be rather intbb?
-    (create-image filename 'postscript nil
-		  :pt-width (round
-			     (* scale (- (aref bb 2) (aref bb 0))))
-		  :pt-height (round
-			      (* scale (- (aref bb 3) (aref bb 1))))
-		  :bounding-box (preview-int-bb bb)
-		  :ascent (preview-ascent-from-bb bb)
-		  :heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask)))))
+  (create-image filename 'postscript nil
+		:pt-width (round
+			   (* scale (- (aref box 2) (aref box 0))))
+		:pt-height (round
+			    (* scale (- (aref box 3) (aref box 1))))
+		:bounding-box (preview-int-bb box)
+		:ascent (preview-ascent-from-bb box)
+		:heuristic-mask (if preview-transparent-border t (preview-get-heuristic-mask))))
 
 (defvar preview-overlay nil)
 
