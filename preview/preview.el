@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.146 2002-05-28 07:57:16 dakas Exp $
+;; $Id: preview.el,v 1.147 2002-05-28 10:47:13 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1482,7 +1482,7 @@ to add the preview functionality."
 		  TeX-command-list)
 		 (list preview-entry))))
   (add-to-list 'TeX-error-description-list
-	       '("Package Preview Error.*" .
+	       '("\\(?:Package Preview Error\\|Preview\\):.*" .
 "The auctex option to preview should not be applied manually.  If you
 see this error message, either you did something too clever, or the
 preview Emacs Lisp package something too stupid."))
@@ -1655,7 +1655,7 @@ name(\\([^)]+\\))\\)" nil t)
 	    (cond
 	     ((match-beginning 1)
 	      (if (looking-at "\
-Package Preview Error: Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
+\\(?:Preview\\|Package Preview Error\\): Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 \\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
 		  (progn
 		    (setq snippet (string-to-int (match-string 1))
@@ -2038,7 +2038,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.146 $"))
+	(rev "$Revision: 1.147 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -2049,7 +2049,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2002-05-28 07:57:16 $"))
+    (let ((date "$Date: 2002-05-28 10:47:13 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
