@@ -1,3 +1,32 @@
+2002-12-17  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/faq.texi (Requirements): Change version requirements for
+	AUC TeX.
+
+	* doc/readme.texi (Activating preview-latex): Explain about what
+	to do if preview-latex.el did not get installed properly.
+
+	* doc/preview-latex.texi (Keys and lisp): Explain about new
+	commands and options.
+	(Simple customization): Explain how to keep counters accurate.
+	(The Emacs interface): document new options.
+
+	* doc/install.texi (Prerequisites): Explain about AUCTeX and
+	XEmacs versions.
+	(Loading the package): Recommend using preview-latex.el as
+	standard measure.
+
+	* Makefile.in (GS): Inherit GhostScript executable name.
+	(preview-latex.el): If GhostScript is not named "gs", change
+	preview-gs-command setting appropriately.  Add the Lisp
+	installation directory to the load-path.
+
+	* configure.in: use : instead of /bin/true
+	Check typical GhostScript executable names on Windows.  Check for
+	initexmf -u (MikTeX specific).
+
+	* RELEASE: Some more changes for 0.7.6
+
 2002-12-16  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (preview-string-expand): Get optional separator
