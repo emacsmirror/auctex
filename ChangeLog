@@ -1,3 +1,8 @@
+2004-09-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (Texinfo-insert-node): New function.
+	(Texinfo-mode-map): Use it.
+
 2004-09-07  Davide G. M. Salvetti  <salve@debian.org>
 
 	* aclocal.m4 (EMACS_LISP): Sync echo output with real emacs
