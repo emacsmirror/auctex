@@ -5,10 +5,10 @@
 ;; Author:    Peter S. Galbraith <GalbraithP@dfo-mpo.gc.ca>
 ;;                               <psg@debian.org>
 ;; Created:   06 July 1994
-;; Version:   3.13 (20 Dec 99)
+;; Version:   3.15 (20 Dec 99)
 ;; Keywords:  bibtex, cite, auctex, emacs, xemacs
 
-;; RCS $Id: bib-cite.el,v 5.12 1999-12-20 18:09:06 abraham Exp $
+;; RCS $Id: bib-cite.el,v 5.13 1999-12-20 20:28:06 abraham Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;;; This file is not part of GNU Emacs.
@@ -373,7 +373,9 @@
 ;;   - Create new command to substitute @string text in any bibtex buffer.
 ;; ----------------------------------------------------------------------------
 ;;; Change log:
-;; V3.14 Dec 20 99 - (RCS V1.35)
+;; V3.15 Dec 20 99 - (RCS V1.36)
+;;  - Removed stupid debugging code that I had left in.
+;; V3.14 Dec 20 99 - 
 ;;  - New variable bib-ref-regexp for \ref regexp to match \label constructs
 ;;    and added \pageref. (RCS V1.34)
 ;;  - Edited bib-etags-command snd bib-etags-append-command to match.
@@ -655,15 +657,15 @@ e.g. Use a path like \"c:\\emtex\\bibinput;c:\\latex\\bibinput\"
 (You can change the environment variable which is searched by setting the 
 elisp variable bib-bibtex-env-variable)")
 
-(defvar (setq bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o ")
+(defvar bib-etags-command "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -o "
   "*Variable for the etags command and its output option.
 In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -o \" 
 (we use the -r option to tell etags to list AMS-LaTeX's \\eqref command.)
 In DOS and OS/2, this *may* be different, e.g. using slashes like \"etags /o=\"
 If so, set it this variable.")
 
-(defvar (setq bib-etags-append-command 
-  "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o ")
+(defvar bib-etags-append-command 
+  "etags -r '/.*\\\\\\(eq\\|page\\)ref.*/' -a -o "
   "*Variable for the etags command and its append and output option.
 In unix, this is usually \"etags -r '/.*\\\(eq\|page\)ref.*/' -a -o \"
 In DOS and OS/2, this *may* be \"etags /a /o=\"  If so, set it this variable.")
