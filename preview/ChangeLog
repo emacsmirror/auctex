@@ -1,3 +1,10 @@
+2001-10-11  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.dtx (subsection{The internals}): Introduce count
+	\pr@snippet so as not to get confused by \include.
+	(subsection{Preview attaching commands}): Make auctex option use
+	this counter.
+
 2001-10-10  David Kastrup  <David.Kastrup@t-online.de>
 
 	* circ.tex: Demonstrate new `sections' option.
