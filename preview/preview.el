@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.100 2002-04-07 00:30:58 dakas Exp $
+;; $Id: preview.el,v 1.101 2002-04-09 15:13:45 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -610,26 +610,27 @@ is located."
 (defun preview-gs-place (ov snippet box run-buffer tempdir ps-file)
   "Generate an image placeholder rendered over by GhostScript.
 This enters OV into all proper queues in order to make it render
-this image for real later, and returns a substitute image
-to be placed as a first measure.  SNIPPET gives the number of the
+this image for real later, and returns the overlay after setting
+a placeholder image.  SNIPPET gives the number of the
 snippet in question for the file to be generated.
 BOX is a bounding box if we already know one via TeX.
 RUN-BUFFER is the buffer of the TeX process,
 TEMPDIR is the correct copy of `TeX-active-tempdir',
 PS-FILE is a copy of `preview-ps-file'."
-  (let ((thisimage (preview-image-from-icon preview-nonready-icon)))
-    (overlay-put ov 'filenames
-		 (list
-		  (preview-make-filename
-		   (or ps-file
-		       (format "preview.%03d" snippet))
-		   tempdir)
-		  (preview-make-filename
-		   (format "prevnew.%03d" snippet) tempdir)))
-    (overlay-put ov 'queued
-		 (vector box nil snippet))
-    (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
-    (list thisimage ov)))
+  (overlay-put ov 'filenames
+	       (list
+		(preview-make-filename
+		 (or ps-file
+		     (format "preview.%03d" snippet))
+		 tempdir)
+		(preview-make-filename
+		 (format "prevnew.%03d" snippet) tempdir)))
+  (overlay-put ov 'queued
+	       (vector box nil snippet))
+  (overlay-put ov 'preview-image
+	       (preview-nonready-copy))
+  (preview-add-urgentization #'preview-gs-urgentize ov run-buffer)
+  (list ov))
 
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
@@ -722,7 +723,6 @@ given as ANSWER."
 	    (let ((queued (overlay-get ov 'queued)))
 	      (when queued
 		(let* ((bbox (aref queued 0))
-		       (img (overlay-get ov 'preview-image))
 		       (filenames (overlay-get ov 'filenames))
 		       (oldfile (nth 0 filenames))
 		       (newfile (nth 1 filenames)))
@@ -732,8 +732,8 @@ given as ANSWER."
 			(preview-delete-file oldfile)
 		      (file-error nil))
 		    (overlay-put ov 'filenames (cdr filenames))
-		    (preview-replace-icon
-		     img
+		    (preview-replace-active-icon
+		     ov
 		     (preview-create-icon (car newfile)
 					  preview-gs-image-type
 					  (preview-ascent-from-bb
@@ -973,7 +973,7 @@ such preview."
   "Generate a before-string for disabled preview overlay OV."
   (concat (preview-make-clickable
 	   (overlay-get ov 'preview-map)
-	   (preview-string-from-image preview-icon)
+	   preview-icon
 	   "\
 %s regenerates preview
 %s kills preview"
@@ -1114,7 +1114,7 @@ visible.  For efficiency reasons it is expected that the buffer
 is already selected and unnarrowed."
   (concat
    (preview-make-clickable (overlay-get ov 'preview-map)
-			   (preview-string-from-image preview-icon)
+			   preview-icon
 			   "\
 %s redisplays preview
 %s kills preview")
@@ -1135,16 +1135,17 @@ of `preview-scale' necessary for `preview-ps-image."
 		   (format "preview.%03d" snippet)
 		   tempdir)))
     (overlay-put ov 'filenames (list filename))
-    (list (preview-ps-image (car filename)
-			    scale
-			    (and preview-prefer-TeX-bb box)))))
+    (overlay-put ov 'preview-image
+		 (preview-ps-image (car filename)
+				   scale
+				   (and preview-prefer-TeX-bb box))))
+  nil)
 
-(defun preview-active-string (ov image)
-  "Generate before-string for active image overlay OV.
-The IMAGE for clicking is passed in as an argument."
+(defun preview-active-string (ov)
+  "Generate before-string for active image overlay OV."
   (preview-make-clickable
    (overlay-get ov 'preview-map)
-   (preview-string-from-image image)
+   (overlay-get ov 'preview-image)
    "%s opens text
 %s kills preview"))
 
@@ -1199,20 +1200,18 @@ a list with additional info from the placement hook.
 Those lists get concatenated together and get passed
 to the close hook."
   (preview-clearout start end tempdir)
-  (let ((ov (make-overlay start end nil nil nil)) placement)
+  (let ((ov (make-overlay start end nil nil nil)))
     (overlay-put ov 'preview-map
 		 (preview-make-clickable
 		  nil nil nil
 		  `(lambda() (interactive) (preview-toggle ,ov 'toggle))
 		  `(lambda() (interactive) (preview-delete ,ov))))
-    (setq placement (apply #'preview-call-hook 'place ov snippet box
-			   place-opts))
-    (overlay-put ov 'preview-image (car placement))
-    (overlay-put ov 'strings
-		 (cons (preview-active-string ov (car placement))
-		       (preview-inactive-string ov)))
-    (preview-toggle ov t)
-    (cdr placement)))
+    (prog1 (apply #'preview-call-hook 'place ov snippet box
+		  place-opts)
+      (overlay-put ov 'strings
+		   (cons (preview-active-string ov)
+			 (preview-inactive-string ov)))
+      (preview-toggle ov t))))
 
 (defun preview-reinstate-preview (tempdirlist start end image filename)
   "Reinstate a single preview.
@@ -1242,8 +1241,7 @@ and the corresponding topdir."
       (overlay-put ov 'filenames (list filename))
       (overlay-put ov 'preview-image image)
       (overlay-put ov 'strings
-		   (cons (preview-active-string
-			  ov image)
+		   (cons (preview-active-string ov)
 			 (preview-inactive-string ov)))
       (preview-toggle ov t)))
   tempdirlist)
@@ -1790,7 +1788,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.100 $"))
+	(rev "$Revision: 1.101 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
