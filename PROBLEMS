@@ -6,9 +6,12 @@
 
 2. Add (load-file "<Path to AUC TeX>/tex-site.el") to your .emacs file.
 
-3. Byte compile the files with "emacs -batch -f batch-byte-compile *.el".
+If you start a fresh emacs, AUC TeX should be loaded now.  
+The two next steps are optional:
 
-4. Optionally do a `M-x TeX-auto-generate-global' to get macro completion.
+3. Byte compile the files with "M-x byte-compile-file" for speed.
+
+4. Do a `M-x TeX-auto-generate-global' to get full macro completion.
 
 * You get errors during byte compilation.
 

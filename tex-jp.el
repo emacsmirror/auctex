@@ -589,18 +589,6 @@ From program, pass args FROM, TO and JUSTIFY-FLAG."
       (goto-char (point-max))
       (delete-horizontal-space)))))
 
-;;; Hook for the dviout previewer
-
-(defun TeX-dviout-hook (name command file)
-  "Call process with second argument, discarding its output. With support
-for the dviout previewer, especially when used with PC-9801 series."
-    (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
-      (send-string-to-terminal "\e[2J")) ; clear screen
-    (call-process TeX-shell (if (eq system-type 'ms-dos) "con") nil nil
-                TeX-shell-command-option command)
-    (if (eq system-type 'ms-dos)
-      (redraw-display)))
-
 (provide 'tex-jp)
 
 ;;; tex-jp.el ends here

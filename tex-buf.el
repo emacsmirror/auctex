@@ -1,6 +1,6 @@
 ;;; tex-buf.el - External commands for AUC TeX.
 ;;
-;; $Id: tex-buf.el,v 1.50 1993-09-28 23:33:36 amanda Exp $
+;; $Id: tex-buf.el,v 1.51 1993-11-18 20:10:20 amanda Exp $
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993 Per Abrahamsen 
@@ -36,7 +36,9 @@
 
 (defvar TeX-shell-command-option
   (cond ((eq system-type 'ms-dos) 
-	 shell-command-option)
+	 (if (boundp 'shell-command-option)
+	     shell-command-option
+	   "/c"))
 	((eq system-type 'emx)
 	 "/c")
 	(t				;Unix
@@ -85,6 +87,13 @@ Return non-nil if document need to be re-TeX'ed."
   (setq TeX-current-process-region-p nil)
   (TeX-command (TeX-command-query (TeX-master-file)) 'TeX-master-file))
 
+(defvar TeX-command-region-begin nil)
+(defvar TeX-command-region-end nil)
+;; Used for marking the last region.
+
+(make-variable-buffer-local 'TeX-command-region-begin)
+(make-variable-buffer-local 'TeX-command-region-end)
+
 ;;;###autoload
 (defun TeX-command-region (old)
   "Run TeX on the current region.
@@ -92,7 +101,8 @@ Return non-nil if document need to be re-TeX'ed."
 Query the user for a command to run on the temporary file specified by
 the variable TeX-region.  If the chosen command is so marked in
 TeX-command-list, and no argument (or nil) is given to the command,
-the region file file be recreated with the current region.
+the region file file be recreated with the current region.  If mark is
+not active, the new text in the previous used region will be used.
 
 If the master file for the document has a header, it is written to the
 temporary file before the region itself.  The documents header is all
@@ -104,16 +114,25 @@ all text after TeX-trailer-start."
   (interactive "P")
   (setq TeX-current-process-region-p t)
   (let ((command (TeX-command-query (TeX-region-file))))
-    (if (and (nth 4 (assoc command TeX-command-list))
-	     (null old))
-	(if (null (mark))
-	    (error "Mark not set.")
+    (if (null (nth 4 (assoc command TeX-command-list)))
+	()
+      (if (and (TeX-mark-active) (not old))
 	  (let ((begin (min (point) (mark)))
-		(end (max (point) (mark))))
-	    (TeX-region-create (TeX-region-file "tex")
-			       (buffer-substring begin end)
-			       (file-name-nondirectory (buffer-file-name))
-			       (count-lines (point-min) begin)))))
+		 (end (max (point) (mark))))
+	    (if TeX-command-region-begin
+		()
+	      (setq TeX-command-region-begin (make-marker)
+		    TeX-command-region-end (make-marker)))
+	    (set-marker TeX-command-region-begin begin)
+	    (set-marker TeX-command-region-end end)))
+      (if (null TeX-command-region-begin)
+	  (error "Mark not set."))
+      (let ((begin (marker-position TeX-command-region-begin))
+	    (end (marker-position TeX-command-region-end)))
+	(TeX-region-create (TeX-region-file "tex")
+			   (buffer-substring begin end)
+			   (file-name-nondirectory (buffer-file-name))
+			   (count-lines (point-min) begin))))
     (TeX-command command 'TeX-region-file)))
 
 ;;;###autoload
@@ -423,6 +442,16 @@ Return the new process."
 					     TeX-shell-command-option
 					     command)))
 
+(defun TeX-run-dviout (name command file)
+  "Call process with second argument, discarding its output. With support
+for the dviout previewer, especially when used with PC-9801 series."
+    (if (and (boundp 'dos-machine-type) (eq dos-machine-type 'pc98)) ;if PC-9801
+      (send-string-to-terminal "\e[2J")) ; clear screen
+    (call-process TeX-shell (if (eq system-type 'ms-dos) "con") nil nil
+                TeX-shell-command-option command)
+    (if (eq system-type 'ms-dos)
+      (redraw-display)))
+
 (defun TeX-run-background (name command file)
   "Start process with second argument, show output when and if it arrives."
   (let ((process (start-process (concat name " background")
@@ -551,7 +580,7 @@ Return nil ifs no errors were found."
 	 (message "You should run LaTeX again to get references right.")
 	 (setq TeX-command-next TeX-command-default))
 	((re-search-forward
-	  "^\\(\\*\\* \\)?J?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
+	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
 	 (message (concat name ": successfully ended."))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
@@ -617,7 +646,7 @@ command."
 
 (defun TeX-process-buffer-name (name)
   "Return name of AUC TeX buffer associated with the document NAME."
-  (concat "*" (expand-file-name name) " output*"))
+  (concat "*" (abbreviate-file-name (expand-file-name name)) " output*"))
 
 (defun TeX-process-buffer (name)
   "Return the AUC TeX buffer associated with the document NAME."
@@ -745,7 +774,7 @@ original file."
 		       ;; TeX-header-end from the master file.
 		       (if (not (re-search-forward TeX-header-end nil t))
 			   ""
-			 (beginning-of-line 2)
+			 (re-search-forward "[\r\n]" nil t)
 			 (buffer-substring (point-min) (point)))))))
 	 
 	 ;; We search for the trailer from the master file, if it is

@@ -1,6 +1,6 @@
 # Makefile - for the AUC TeX distribution.
 #
-# $Id: Makefile,v 5.72 1993-09-30 02:25:08 amanda Exp $
+# $Id: Makefile,v 5.73 1993-11-18 20:09:04 amanda Exp $
 #
 # Edit the makefile, type `make', and follow the instructions.
 
@@ -35,7 +35,7 @@ aucdir=$(prefix)/lib/emacs/site-lisp/auctex
 
 # Name of your emacs binary
 #EMACS=/home/dist/bin/emacs
-EMACS=emacs-19.19
+EMACS=emacs-19.21
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
@@ -87,12 +87,11 @@ SHELL = /bin/sh
 
 FTPDIR = /pack/ftp/pub/emacs-lisp/alpha
 
-REMOVE = <none>
+REMOVE = remap.el    dvorak.el   map-tex.el  map-mnem.el map-case.el \
+	 latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
+	 map-samp.el
 
-MINMAPFILES = remap.el    min-mode.el min-ind.el  min-ispl.el column.el \
-	      latin.el    cyrillic.el arabic.el   hebrew.el   greek.el \
-	      dvorak.el   map-tex.el  map-mnem.el map-case.el 
-	      
+MINMAPFILES = min-mode.el min-ind.el  min-ispl.el column.el
 
 MINMAPSRC = $(MINMAPFILES) easymenu.el min-map.el  ltx-math.el \
 	    outln-18.el    powerkey.el out-xtra.el
@@ -103,14 +102,15 @@ AUCSRC = min-map.el  auc-tex.el  auc-ver.el  tex-site.el tex-init.el \
 	 tex-18.el   tex-19.el   tex-lcd.el  ltx-math.el \
 	 outln-18.el powerkey.el out-xtra.el
 
-FORMATSRC = format/VIRTEX.el \
+FORMATSRC = format/VIRTEX.el format/TEXINFO.el \
 	    format/TEX.el  format/LATEX.el  format/SLITEX.el  \
 	    format/JTEX.el format/JLATEX.el format/JSLITEX.el \
-	    format/FOILTEX.el format/AMSTEX.el format/AMSLATEX.el
+	    format/FOILTEX.el format/AMSTEX.el format/AMSLATEX.el \
+	    format/LATEX2E.el
 
 STYLESRC = style/latex.el     style/slitex.el   style/foiltex.el \
 	   style/article.el   style/book.el     style/letter.el \
-	   style/report.el \
+	   style/report.el    style/latex2e.el \
 	   style/epsf.el      style/psfig.el    style/latexinfo.el \
 	   style/dutch.el     style/german.el   style/dk.el \
 	   style/j-article.el style/j-book.el   style/j-report.el \
@@ -123,7 +123,8 @@ LACHECKGEN = lacheck.c test.old
 
 DOCFILES = doc/Makefile doc/auc-tex.texi doc/ref-card.tex doc/math-ref.tex
 
-EXTRAFILES = COPYING README PROBLEMS Makefile dbg-jp.el lpath.el
+EXTRAFILES = COPYING README PROBLEMS OEMACS VMS INSTALL Makefile \
+	dbg-jp.el lpath.el
 
 first:
 	@echo ""
@@ -176,7 +177,7 @@ install-auto:
 	@echo "**********************************************************"
 	@echo "** Extracting site information.	This may take a while..."
 	@echo "**********************************************************"
-	if [ ! -d $(autodir) ]; then mkdir $(autodir); fi
+	if [ ! -d $(autodir) ]; then mkdir $(autodir); else true; fi
 	$(AUTO) 
 	@echo "**********************************************************"
 	@echo "** If this failed then check that you have set"
@@ -219,14 +220,17 @@ LispInstall:
 	@echo "** undefined functions from the Emacs 19 byte compiler."
 	@echo "**********************************************************"
 	$(ELC) $(AUCSRC) tex-load.el $(STYLESRC) $(FORMATSRC)
-	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); fi ; 
+	if [ ! -d $(aucdir) ]; then mkdir $(aucdir); else true; fi ; 
 	if [ `pwd` != `(cd $(aucdir) && pwd)` ] ; \
 	then \
-	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; fi ; \
-	    if [ ! -d $(aucdir)/format ]; then mkdir $(aucdir)/format; fi ; \
+	    if [ ! -d $(aucdir)/style ]; then mkdir $(aucdir)/style; \
+	                                 else true; fi ; \
+	    if [ ! -d $(aucdir)/format ]; then mkdir $(aucdir)/format; \
+			                  else true;  fi ; \
 	    $(MV) *.elc $(aucdir) ; \
 	    $(MV) style/*.elc $(aucdir)/style ; \
 	    $(MV) format/*.elc $(aucdir)/format ; \
+	else true; \
 	fi
 
 LaCheck:
@@ -266,7 +270,7 @@ dist:	tex-load.el
 	echo '  "AUC TeX release date")'           >> auc-ver.el
 	echo "(provide 'auc-ver)"	           >> auc-ver.el
 	-cvs remove $(REMOVE) 
-	-cvs add $(AUCSRC) tex-load.el $(EXTRAFILES) $(MINMAPFILES) 
+	-cvs add $(AUCSRC) tex-load.el $(EXTRAFILES)
 	-(cd doc; cvs add `echo $(DOCFILES) | sed -e s@doc/@@g` )
 	-(cd lacheck; cvs add `echo $(LACHECKFILES) | sed -e s@lacheck/@@g` )
 	-(cd style; cvs add `echo $(STYLESRC) | sed -e s@style/@@g` )
@@ -283,10 +287,15 @@ dist:	tex-load.el
 	(cd lacheck; $(MAKE) $(LACHECKGEN); \
 	 cp $(LACHECKGEN) ../auctex-$(TAG)/lacheck )
 	cp $(DOCFILES)  auctex-$(TAG)/doc
-	(cd doc; $(MAKE) auc-info; cp auc-info* ../auctex-$(TAG)/doc )
+	(cd doc; $(MAKE) dist; cp auc-info* ../auctex-$(TAG)/doc )
+	cp doc/*.html /user/amanda/lib/www
 	rm -f $(FTPDIR)/auctex-$(TAG).tar.gz $(FTPDIR)/auctex.tar.gz
-	rm -f $(FTPDIR)/auctex.tar.Z
+	rm -f $(FTPDIR)/auctex-$(TAG).tar.Z
 	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	tar -cf - auctex-$(TAG) | compress > $(FTPDIR)/auctex.tar.Z
 	(cd $(FTPDIR); ln -s auctex-$(TAG).tar.gz auctex.tar.gz)
+
+min-map:
+	-cvs add $(MINMAPSRC) 
+	cvs commit
 	cp $(MINMAPSRC) $(FTPDIR) 

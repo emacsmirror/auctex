@@ -1,0 +1,145 @@
+[[ My comments in double square brackets --Per ]]
+
+Newsgroups: comp.emacs
+From: schiotz@fysik.dth.dk (Jakob Schiotz)
+Subject: TeX/LaTeX mode for OEMACS: Summary
+Reply-To: schiotz@fysik.dth.dk
+Organization: Physics Department, Techn. Univ. of Denmark
+Date: Mon, 1 Nov 1993 15:04:41 GMT
+Nntp-Posting-Host: oersted.ltf.dth.dk
+
+
+I few weeks ago, I asked here if anybody had a working TeX/LaTeX mode
+for OEMACS (GNU Emacs 19.19 for MS-DOS). I wanted a TeX-mode, where it
+was possible to call LaTeX, TeX and the dvi viewer without leaving
+Emacs. The standard tex-mode.el does not work under DOS. I promised to
+summarize my results: 
+It was suggested, that I should use AUC TeX, since it should be
+relatively easy to make it work under DOS. That turned out to be a
+good idea.
+
+AUC TeX is a much improved tex-mode, I recommend it for both DOS and
+Unix users! It includes features such as error parsing, command
+completion, outlining and a lot of other nice stuff, all very well
+documented in the 70+ pages manual.
+
+Here is a short description of how to make AUC TeX work for OEMACS:
+(A similar method should work for DEMACS)
+
+STEP 1. Install the files at your PC. You can obtain AUC TeX by
+	anonymous ftp from ftp.iesd.auc.dk:/pub/emacs-lisp/auctex.tar.Z.
+
+	Unpack the file, and transfer it to your PC preserving the
+	directory structure. The files should
+	be placed in a subdirectory called auctex under your site-lisp
+	directory (or under another directory on your load-path).
+	WARNING: When transferring the files, LF should be converted
+	to CR/LF pairs. Most unix programs that can write MS-DOS
+	diskettes have a "text mode" that does this. Some of them also
+	add an End-Of-File marker (^Z) at the end of the files (just
+	in case you are going to use it under MS-DOS ver. 1.X :-) ).
+	This will prevent byte-compiling. You may have to delete the
+	^Z characters manually.
+
+STEP 2.	Edit the file tex-site.el:
+	Set the variable TeX-lisp-directory to the directory where you
+	placed AUC TeX, and TeX-macro-global to where you keep your
+	.sty files:
+
+(defvar TeX-lisp-directory "c:/emacs-19.19/site-lisp/auctex/"
+  "*The directory where the AUC TeX lisp files are located.
+The directory name *must* end with a slash.")
+(defvar TeX-macro-global
+  '("c:/emtex/texinput/")
+  "*Directories containing the sites TeX macro files and style files.
+The directory names *must* end with a slash.")
+	
+	Near the end of tex-site.el (around line 329) the variables
+	TeX-shell and TeX-shell-command-option should be changed to
+	reflect the MS-DOS environment: (Do NOT follow the
+	instructions in the comments for DEMACS if you have OEMACS)
+
+[[ This should not be necessary in version 8 --Per ]]
+
+;;;;(defvar TeX-shell "/bin/sh"
+(defvar TeX-shell shell-file-name
+  "Name of shell used to parse TeX commands.")
+;;;;(defvar TeX-shell-command-option "-c"
+(defvar TeX-shell-command-option "/c"
+  "Shell argument indicating that next argument is the command.")
+
+	The list TeX-command-list should be updated. You will need to
+	remove single quotes (') from the command arguments, since
+	COMMAND.COM does not do that, and does not (mis-)interpret the
+	argument. You will probably also need to update the View
+	command (the variable windows-system is set to pc, ie. true)
+
+(defvar TeX-command-list
+  (list (list "TeX" "tex \\nonstopmode\\input %t" 'TeX-TeX-hook nil t)
+	(list "LaTeX" "latex \\nonstopmode\\input{%t}" 'TeX-LaTeX-hook nil t)
+	(list "SliTeX" "slitex \\nonstopmode\\input{%t}"
+	      'TeX-LaTeX-hook nil t)  
+	(if window-system
+	    (list "View" "dviscr @scr.cnf %s " 'TeX-command-hook t nil)
+	  (list "View" "dvi2tty -q -w 132 %s " 'TeX-command-hook t nil))
+
+	If you are using emTeX, or another "international" LaTeX, that
+	identifies itself as ILaTeX in stead of LaTeX, you should
+	change a regexp in the file tex-buf.el (near line 506).
+	Otherwise AUC TeX will report "LaTeX: problems" if LaTeX runs
+	without errors, and believe you want to run LaTeX again before
+	viewing the .dvi file.
+
+[[ Fixed in version 8 --Per ]]
+
+	((re-search-forward
+;;;;	  "^\\(\\*\\* \\)?J?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
+	  "^\\(\\*\\* \\)?J?I?\\(La\\|Sli\\)TeX \\(Version\\|ver\\.\\)" nil t)
+
+STEP 3. [OPTIONAL, BUT STRONGLY RECOMMENDED]
+	Byte-compile AUC TeX. Start Emacs from the auctex directory.
+	Load the file lpath.el (Use M-x load-file). Byte-compile
+	everything using the command 
+	C-u 0 M-x byte-recompile-directory RET RET
+	Errors like "end of file while parsing top level" probably
+	means that you have a ^Z character in the end of your file.
+
+STEP 4.	Add the following line to your _emacs file
+        (load-library "auctex/tex-site")
+	
+	You should also add the lines
+	(setq tex-default-mode 'latex-mode)
+	(setq text-mode-hook 'turn-on-auto-fill) 
+
+STEP 5. [OPTIONAL]
+	Compile the LaCheck utility using your favourite C compiler.
+	Look in the .../auctex/lacheck/makefile file to see what should be
+	done. I have not tried this, but I cannot see any reasons why
+	it should not work.
+
+[[ You can ftp a DOS binary from ftp.iesd.auc.dk:/pub/TeX/LaTeX --Per ]]
+
+STEP 6. [OPTIONAL]
+	Print the manual (approx. 75 pages). The dvi file is in the
+	doc directory. The manual is worth reading, AUC TeX can do
+	things you wouldn't suspect you need :-)
+
+The whole package will use 1.2 MB of your precious harddisk space ---
+but it's worth it! You could of course compress / delete everything
+except the .elc files (250 kB). I haven't tried this (yet), so I don't
+know if it has disastrous side effects.
+
+PROBLEMS: I have experienced the following problems:
+1) If LaTeX, the dvi viewer etc. cannot find a file name, it will try
+to read a name from the keyboard via stdin, and hang. C-break can
+often save the day. My dvi viewer has no problems reading the keyboard
+once it has started since it then uses direct keyboard reads.
+
+2) When the dvi viewer terminates, it changes from graphics mode to 25
+lines text mode. If Emacs was in 43 or 50 lines mode, the screen is
+now in 25 lines mode, but Emacs believes there are 43 (50) lines!
+
+Jakob Schiotz
+Physics Department
+Technical University of Denmark
+schiotz@fysik.dth.dk
