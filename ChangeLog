@@ -1,3 +1,14 @@
+2002-01-21  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-format-list): Fix problem that AUC TeX switch to
+	JLATEX mode if the class file starts with the letter `j'.
+	Reported by Joe Reinhardt <jmr@everest.radiology.uiowa.edu>.
+	
+	* tex-jp.el (japanese-TeX-command-list): Use `%l' instead
+	of [pj]latex command.
+	Patch by Atsuhito Kohda	<kohda@pm.tokushima-u.ac.jp>.
+	(LaTeX-command-style): Support js(article|book).
+
 2001-11-27  Per Abrahamsen  <abraham@dina.kvl.dk>
 
 	* Version 11.10 released.
