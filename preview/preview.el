@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.85 2002-03-23 13:08:22 dakas Exp $
+;; $Id: preview.el,v 1.86 2002-03-25 22:37:20 dakas Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated EPS images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -510,9 +510,13 @@ The usual PROCESS and COMMAND arguments for
 `TeX-sentinel-function' apply."
   (let ((status (process-status process)))
     (cond ((eq status 'exit)
+	   (delete-process process)
+	   (unless preview-gs-queue
+	     (setq compilation-in-progress
+		   (delq process compilation-in-progress))
+	     (error "No preview images found."))
 	   (if preview-ps-file
 	       (preview-prepare-fast-conversion))
-	   (delete-process process)
 	   (preview-gs-restart))
 	  ((eq status 'signal)
 	   (delete-process process)
@@ -1405,7 +1409,7 @@ document style for LaTeX."
 \\(^! \\)\\|\
 \\(?:^\\| \\)(\\([^()\n ]+\\))*\\(?: \\|$\\)\\|\
 )+\\( \\|$\\)\\|\
-!\\(?:offset(\\([---0-9]+\\))\\|\
+ !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)" nil t)
 ;;; Ok, here is a line by line downbreak: match-alternative 1:
 ;;; \\(^! \\)
@@ -1691,7 +1695,7 @@ NAME, COMMAND and FILE are described in `TeX-command-list'."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.85 $"))
+	(rev "$Revision: 1.86 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
