@@ -451,6 +451,7 @@ string."
 		     (TeX-style-check LaTeX-command-style)))
 	(list "%S" (lambda ()
 		     (TeX-source-specials-expand-options)))
+	;; `file' means to call `TeX-master-file'
 	(list "%s" 'file nil t)
 	(list "%t" 'file 't t)
 	(list "%n" 'TeX-current-line)
@@ -553,7 +554,7 @@ Full documentation will be available after autoloading the function."
 
 (defconst AUCTeX-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 5.385 $"))
+	(rev "$Revision: 5.386 $"))
     (or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 			    name)
 	  (setq name (match-string 2 name))
@@ -568,7 +569,7 @@ If not a regular release, CVS revision of `tex.el'.")
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2004-06-14 15:01:22 $"))
+    (let ((date "$Date: 2004-06-17 09:16:07 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -748,7 +749,7 @@ Must be the car of an entry in `TeX-command-list'."
 
 ;;; Master File
 
-(defcustom TeX-one-master "\\.tex$"
+(defcustom TeX-one-master "\\.\\(tex\\|dtx\\)$"
   "*Regular expression matching ordinary TeX files.
 
 You should set this variable to match the name of all files, where
@@ -936,11 +937,16 @@ This will be done when AUCTeX first try to use the master file.")
 							"End:")))
 	      (beginning-of-line 1)
 	      (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
-	  (insert "\n%%% Local " "Variables: \n"
+	  (newline)
+	  (when (eq major-mode 'doctex-mode)
+	    (insert "% " TeX-esc "iffalse\n"))
+	  (insert "%%% Local " "Variables: \n"
 		  "%%% mode: " (substring (symbol-name major-mode) 0 -5)
 		  "\n"
 		  "%%% TeX-master: " (prin1-to-string TeX-master) "\n"
-		  "%%% End: \n")))))
+		  "%%% End: \n")
+	  (when (eq major-mode 'doctex-mode)
+	    (insert "% " TeX-esc "fi\n"))))))
 
 (defun TeX-local-master-p ()
   "Return t if there is a `TeX-master' entry in the local variables section.
@@ -2288,7 +2294,7 @@ Check for potential LaTeX environments."
   "File extensions recognized by AUCTeX."
   :group 'TeX-file)
 
-(defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo")
+(defcustom TeX-file-extensions '("tex" "sty" "cls" "ltx" "texi" "texinfo" "dtx")
   "*File extensions used by manually generated TeX files."
   :group 'TeX-file-extension
   :type '(repeat (string :format "%v")))
@@ -2304,6 +2310,11 @@ Check for potential LaTeX environments."
   :type 'string)
 
   (make-variable-buffer-local 'TeX-default-extension)
+
+(defcustom docTeX-default-extension "dtx"
+  "*Default extension for docTeX files."
+  :group 'TeX-file-extension
+  :type 'string)
 
 (defvar TeX-output-extension "dvi"
   "Extension of TeX output file.
@@ -2349,7 +2360,7 @@ directory hierarchy, t means recurse indefinitely."
 		 (integer :tag "Depth" :value 1)))
 
 (defun TeX-match-extension (file &optional extensions)
-  "Return non-nil if FILE has an one of EXTENSIONS.
+  "Return non-nil if FILE has one of EXTENSIONS.
 
 If EXTENSIONS is not specified or nil, the value of
 `TeX-file-extensions' is used instead."
@@ -2977,16 +2988,16 @@ comment characters instead."
   "Delete comment characters from the beginning of each line in a comment."
   (interactive)
   (save-excursion
-    ; Find first comment line
+    ;; Find first comment line
     (beginning-of-line)
     (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (bobp)))
       (forward-line -1))
     (let ((beg (point)))
       (forward-line 1)
-      ; Find last comment line
+      ;; Find last comment line
       (while (and (looking-at (concat "^[ \t]*" comment-start)) (not (eobp)))
 	(forward-line 1))
-      ; Uncomment region
+      ;; Uncomment region
       (TeX-uncomment-region beg (point)))))
 
 (defun TeX-comment-or-uncomment-paragraph ()
