@@ -377,7 +377,7 @@ file @file{preview-latex.el}.  In addition, you'll want a line such as
 @subheading Making the Info files available
 
 While for yourself, you'll probably want to manipulate the
-@samp{INFOPATH} variable, for access inside of Elisp something like
+@samp{INFOPATH} variable; for access inside of Elisp something like
 the following might be convenient:
 
 @lisp
