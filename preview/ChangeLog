@@ -1,3 +1,8 @@
+2002-07-25  David Kastrup  <David.Kastrup@t-online.de>
+
+	* preview.el (LaTeX-preview-setup): Fix form of preview-entry in
+	order not to confuse customize.
+
 2002-07-24  David Kastrup  <David.Kastrup@t-online.de>
 
 	* preview.el (TeX-inline-preview): Export buffer coding system to
