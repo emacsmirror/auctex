@@ -1,3 +1,8 @@
+2002-12-19  David Kastrup  <David.Kastrup@t-online.de>
+
+	* doc/install.texi (Loading the package): Make this more
+	fool-proof by leaving out alternatives and reordering.
+
 2002-12-18  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* preview.dtx: Add \caption to auccfg
