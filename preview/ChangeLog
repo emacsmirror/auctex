@@ -1,5 +1,12 @@
 2002-04-13  David Kastrup  <David.Kastrup@t-online.de>
 
+	* prv-xemacs.el (preview-toggle): Make isearch open the invisible
+	stuff, and make isearch-invisible track invisible so that isearch
+	will not "restore" things improperly.
+	(preview-move-point): isearch is manipulated by advising
+	isearch-highlight.  No need to check here for isearch-mode.
+	(defadvice): only advise replace-highlight if defined.
+
 	* latex/preview.dtx (subsection{The \texttt{showlabels} option}):
 	hotfix for strange label names.
 
