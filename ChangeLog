@@ -1,3 +1,8 @@
+2005-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-extension): Set correct default depending on
+	the value of `TeX-PDF-mode'.
+
 2005-04-05  Christian Schlauer  <cschl@arcor.de>
 
 	* tex.el (TeX-submit-bug-report): Fix typo in doc string, fill doc
