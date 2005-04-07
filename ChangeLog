@@ -2,6 +2,8 @@
 
 	* tex.el (TeX-output-extension): Set correct default depending on
 	the value of `TeX-PDF-mode'.
+	(TeX-output-extension): Revert.
+	(VirTeX-common-initialization): Set `TeX-output-extension' here.
 
 2005-04-05  Christian Schlauer  <cschl@arcor.de>
 
