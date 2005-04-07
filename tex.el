@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.499 $"))
+	    (rev "$Revision: 5.500 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-07 13:54:08 $"))
+    (let ((date "$Date: 2005-04-07 16:15:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -2239,6 +2239,7 @@ The algorithm is as follows:
   "Perform basic initialization."
   (kill-all-local-variables)
   (setq TeX-mode-p t)
+  (setq TeX-output-extension (if TeX-PDF-mode "pdf" "dvi"))
   (setq local-abbrev-table text-mode-abbrev-table)
   (setq indent-tabs-mode nil)
 
@@ -2869,7 +2870,7 @@ Check for potential LaTeX environments."
   :group 'TeX-file-extension
   :type 'string)
 
-(defvar TeX-output-extension (if TeX-PDF-mode "pdf" "dvi")
+(defvar TeX-output-extension "dvi"
   "Extension of TeX output file.
 This is either a string or a list with
 a string as element.  Its value is obtained from `TeX-command-output-list'.
