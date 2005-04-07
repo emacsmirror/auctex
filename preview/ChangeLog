@@ -1,3 +1,12 @@
+2005-04-07  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4 (EMACS_LISP): properly echo result to log file.
+	(EMACS_EXAMINE_INSTALLATION_DIR): check that the result of
+	file-relative-name is not absolute, which can happen for unrelated
+	drives on Windows.
+	(AC_FULL_EXPAND): also check, set and restore exec_prefix if not
+	set.
+
 2005-04-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.in: Cosmetics for ./configure --help.

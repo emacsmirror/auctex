@@ -16,7 +16,7 @@ AC_DEFUN(EMACS_LISP, [
   echo "${EMACS}" -batch $3 -eval "(let* (patsubst([$4], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $5 >& AC_FD_CC 2>&1
   "${EMACS}" -batch $3 -eval "(let* (patsubst([$4], [\w+], [(\&(pop command-line-args-left))])(x ${elisp})) (write-region (if (stringp x) x (prin1-to-string x)) nil \"${OUTPUT}\"))" $5 >& AC_FD_CC 2>&1
   $1="`cat ${OUTPUT}`"
-  echo "=> ${1}" >& AC_FD_CC 2>&1
+  echo "=> [$]{$1}" >& AC_FD_CC 2>&1
   rm -f ${OUTPUT}
 ])
 
@@ -122,6 +122,7 @@ AC_DEFUN(EMACS_EXAMINE_INSTALLATION_DIR,
 	      	         (file-directory-p dir)
 	                 (not (string-match \"\\\\\`\\\\.\\\\.\"
                            (setq reldir (file-relative-name dir expanded))))
+			 (not (file-name-absolute-p reldir))
                          (let ((name name) (dir dir))
 		           (while (and dir name
 		                       (string= (file-name-nondirectory dir)
@@ -326,18 +327,16 @@ AC_SUBST(previewdocdir)])
 
 AC_DEFUN(AC_FULL_EXPAND,
 [ __ac_tmp_oldprefix__="${prefix}"
- if test "x${prefix}" = x -o "x${prefix}" = "xNONE"
- then
-   prefix="${ac_default_prefix}"
- fi
+  __ac_tmp_oldexec_prefix__="$exec_prefix"
+ test "x${prefix}" = xNONE && prefix="${ac_default_prefix}"
+ test "x${exec_prefix}" = xNONE && exec_prefix='${prefix}'
  while :;do case "[$]$1" in *\[$]*) __ac_tmp__='s/[[\`"-"]]/\\&/g'
 eval "$1=`sed ${__ac_tmp__} <<EOF
 [$]$1
 EOF
 `";; *) break ;; esac; done
-  prefix="${__ac_tmp_oldprefix__}" ])
-
-
+  prefix="${__ac_tmp_oldprefix__}"
+  exec_prefix="${__ac_tmp_oldexec_prefix__}" ])
 
 AC_DEFUN(AC_CHECK_PROG_REQUIRED, [
 AC_CHECK_PROG($1, $2, NONE)
