@@ -1,3 +1,7 @@
+2005-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-output-extension): Default to nil.
+
 2005-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-output-extension): Set correct default depending on
