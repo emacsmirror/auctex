@@ -1,5 +1,8 @@
 2005-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-match-command-with-arguments): Skip
+	over comments as well as whitespace.
+
 	* tex.el (TeX-output-extension): Default to nil.
 
 2005-04-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
