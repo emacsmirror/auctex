@@ -1182,7 +1182,7 @@ Returns nil if none of KEYWORDS is found."
 	(goto-char (match-end 0))
 	(if (and asterisk (eq (following-char) ?\*))
 	    (forward-char 1))
-	(skip-chars-forward " \n\t" limit)
+	(while (and (forward-comment 1) (< (point) limit)))
 	(setq kend (point))
 	;; Optional arguments [...]
 	(while (and (< (point) limit)
@@ -1198,7 +1198,7 @@ Returns nil if none of KEYWORDS is found."
 	      (goto-char send))))
 	;; Mandatory arguments {...}
 	(dotimes (i arg-count)
-	  (skip-chars-forward " \n\t" limit)
+	  (while (and (forward-comment 1) (< (point) limit)))
 	  (when (and (< (point) limit)
 		     (eq (following-char) ?\{))
 	    (when (= i 0) (setq cbeg (point)))
