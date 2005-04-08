@@ -152,27 +152,26 @@ path if necessary.
 This XEmacs-only option configures the directory for XEmacs packages.  A
 typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
 If this directory exists and is below @var{prefix}, it should be
-detected automatically.  This will install and activete the package.
+detected automatically.  This will install and activate the package.
 Emacs uses a different installation scheme:
 
 @item --with-lispdir=@var{/dir}
-This Emacs-only option specifies the location of the startup file
-@file{preview-latex.el} which should be somewhere in the
-@var{load-path}.  @file{configure} should figure this out by itself.
-However, some Emacs installations have a directory commonly called
-@file{site-start.d/} where files get automatically loaded.  If you want
-@previewlatex{} to be activated automatically, you can specify such a
-startup directory here.  If you do this, you'll also need
+This Emacs-only option specifies the location of the @file{site-lisp}
+directory within @samp{load-path} under which the files will get
+installed.  @file{configure} should should figure this out by itself.
 
-@item --with-packagelispdir=@var{../preview}
-This is the directory where the bulk of the package gets located.  Since
-@file{preview-latex.el} already adds this into @var{load-path}, you
-don't need to place it in the search path.  You might want to place an
-empty file called @var{.nosearch} in this directory to speed up
-searches.  If this directory is given with a relative path, it is
-considered @emph{relative} to the @var{lispdir} variable.  The proposed
-setting would be typical if you set @var{lispdir} to some
-@file{site-lisp/site-start.d/} directory.
+@item --with-preview-startfile=@file{preview-latex.el}
+This is the name of the startup file.  Some Emacs installations have a
+directory @file{site-start.d/} situated under @var{lispdir} where files
+get automatically loaded by code in @file{site-start.el}.  If your
+installation has such a directory, the startup file is placed into
+@file{site-start.d/preview-latex.el} by default instead.  If the
+specification is not an absolute filename, it is considered relative to
+@var{lispdir}.
+
+@item --with-packagelispdir=@file{preview}
+This is the directory where the bulk of the package gets located.  The
+start file adds this into @var{load-path}.
 
 @item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location, use this option to
@@ -245,8 +244,7 @@ cater for that.
 With Emacs (or if you explicitly disabled use of the package system),
 the file @file{preview-latex.el} (which is generated during the
 installation) may already be in a directory of the @file{site-start.d/}
-variety if your Emacs installation provides it and you followed the
-suggestion in the configuration section above.  In that case it should
+variety if your Emacs installation provides it.  In that case it should
 be automatically loaded on startup and nothing else needs to be done.
 If not, it should at least have been placed somewhere in your
 @var{load-path}.  You can then load it with

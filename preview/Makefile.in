@@ -21,6 +21,7 @@ prefix = @prefix@$(null)
 lispdir = @lispdir@$(null)
 icondir = @icondir@$(null)
 datadir = @datadir@$(null)
+previewstartfile = @previewstartfile@
 packagedir = @packagedir@$(null)
 packagelispdir = @packagelispdir@$(null)
 auctexdir = @auctexdir@$(null)
@@ -93,10 +94,9 @@ install-texmf:
 	(cd latex ; $(MAKE) DESTDIR=$(DESTDIR) install)
 
 install-startup:
-	if test $(packagedir) = no; then \
-	  $(MAKE) preview-latex.el && \
-	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(lispdir) ; \
-	fi
+	test $(packagedir) != no || $(MAKE) preview-latex.el
+	test $(packagedir) != no || \
+	  $(INSTALL_DATA) preview-latex.el $(DESTDIR)$(previewstartfile)
 
 $(LISP_OBJS):	$(LISP_SOURCES)
 	for x in $(LISP_SOURCES) ; do \

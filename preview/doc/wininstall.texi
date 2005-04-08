@@ -88,7 +88,8 @@ which tells @file{configure} where to perform the installation. It may
 also make @file{configure} find (X)Emacs automatically, if this doesn't
 happen try one of @samp{--with-emacs} or @samp{--with-xemacs} as
 described below.  All automatic detection of files and directories
-restricts itself to directories below the @var{prefix}.
+restricts itself to directories below the @var{prefix} or in the same
+hierarchy as the program accessing the files.
 
 @item --with-emacs
 if you are installing Emacs.  You can use
@@ -120,19 +121,20 @@ This will install and activate the package.  Emacs uses a different
 installation scheme:
 
 @item --with-lispdir=@var{/path/to/site-lisp}
-This Emacs-only option tells where to install the setup file
-@file{preview-latex.el} (if not autodetected).  The other files from
-@previewlatex{} will be installed in a subdirectory called
-@file{preview}.  If you have a @file{site-start.d} directory for
-automatic package startup, please refer to the full installation
-instructions in
+This Emacs-only option tells a place in the load path below which the
+files are situated.  The setup file @file{preview-latex.el} will get
+installed here unless a subdirectory @file{site-start.d} exists which
+will then be used instead.  The other files from @previewlatex{} will be
+installed in a subdirectory called @file{preview}.
+
+If you think that you need a different setup, please refer to the full
+installation instructions in
 @ifset rawfile
 the @file{INSTALL} file.
 @end ifset
 @ifclear rawfile
-@ref{Configure}
+@ref{Configure}.
 @end ifclear
-in order to make use of it.
 @end table
 
 Calling @file{./configure --help} will tell about other options, but
@@ -163,10 +165,10 @@ In the case of XEmacs, the package directory setup creates startup files
 as necessary and you can skip to the next point.  If you are using
 Emacs, the installation procedure should have left you with a file
 @file{preview-latex.el} in a suitable place in @var{load-path}.  If this
-is a special place where files get automatically loaded at startup,
-@previewlatex{} will be automatically enabled in LaTeX modes.  If this
-is not such a place, you can explicitly enable @previewlatex{} with the
-incantation
+is in a preexisting @file{site-start.d/} directory, it should get loaded
+by code in @file{site-start.el} automatically, and @previewlatex{} will
+be enabled in @LaTeX{} modes.  If no such directory was found, you can
+explicitly enable @previewlatex{} with the incantation
 
 @example
 (load "preview-latex.el" nil t t)

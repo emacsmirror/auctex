@@ -1,3 +1,22 @@
+2005-04-08  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (previewstartfile): import.
+	(install-startup): split lines with `$(MAKE)' and
+	`$(INSTALL_DATA)' so that `make -n' will properly recurse.
+
+	* aclocal.m4 (AC_LISPIFY_DIR): resolve relative paths below
+	${lispdir} hierarchy.  AC_SUBST both lisp variant of directory as
+	well as original.
+
+	* configure.in: Add `--with-preview-startfile', use new semantics
+	of `AC_LISPIFY_DIR', drop `AC_MAKE_FILENAME_ABSOLUTE' stuff.
+
+	* doc/install.texi (Configure): explain new semantics of
+	`--with-lispdir' and new `--with-preview-startfile'.
+
+	* doc/wininstall.texi: Document changes semantics for
+	`--with-lispdir' and new `with-preview-startfile'.
+
 2005-04-07  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4 (EMACS_LISP): properly echo result to log file.

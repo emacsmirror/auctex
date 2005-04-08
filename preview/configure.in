@@ -39,41 +39,46 @@ fi
 if test "${packagedir}" = no
 then
    EMACS_PATH_LISPDIR([preview-latex])
-   packagelispdir=preview
-   icondir='${packagelispdir}'/images
+   AC_MSG_CHECKING(What file to use for preview startup)
+   AC_ARG_WITH(previewstartfile,
+   [[  --with-preview-startfile=FILE    What file to use for preview startup.]],
+   [[ previewstartfile="${withval}" ]],
+   [ _tmpdir_="${lispdir}"
+     AC_FULL_EXPAND(_tmpdir_)
+     if test -d "${_tmpdir_}/site-start.d"
+     then
+       previewstartfile='${lispdir}/site-start.d/preview-latex.el'
+     else
+       previewstartfile='${lispdir}/preview-latex.el'
+     fi])
+   AC_MSG_RESULT([[${previewstartfile}]])
+   packagelispdir='${lispdir}/preview'
+   icondir="${packagelispdir}/images"
 else
-   lispdir="${packagedir}/lisp/preview"
-   packagelispdir=.
-   icondir='${packagelispdir}'/../../etc/preview
+   #lispdir is only used for determining relative files.
+   lispdir="${packagedir}"
+   packagelispdir="${packagedir}/lisp/preview"
+   previewstartfile="${packagelispdir}"/auto-autoloads.el
+   icondir="${packagedir}/etc/preview"
    infodir="${packagedir}/info"
 fi
 
-AC_MSG_CHECKING([[
-The place for the startup file]])
-AC_MSG_RESULT([[${lispdir}
-
-Startup file relative directories:]])
+AC_SUBST(previewstartfile)
 
 AC_MSG_CHECKING([where the package lisp files go])
 AC_ARG_WITH(packagelispdir,
 [[  --with-packagelispdir=DIR
-                          Where to find the package lisp files
-                          relative to the Lisp startup file.]],
+                        Directory for the package lisp files.]],
   [packagelispdir=["${withval}"]])
-AC_LISPIFY_DIR(packagelispdir)
+AC_LISPIFY_DIR(packagelispdir,"${previewstartfile}")
 AC_MSG_RESULT([[${packagelispdir}]])
 
 AC_MSG_CHECKING([where the icon files go])
 AC_ARG_WITH(icondir,
-[[  --with-icon=DIR         Where the icon files go
-                          relative to the Lisp startup file.]],
-  [icon=["${withval}"]])
-AC_LISPIFY_DIR(icondir)
-AC_MSG_RESULT([[${icondir}
-]])
-
-AC_MAKE_FILENAME_ABSOLUTE(packagelispdir,[["${lispdir}/"]])
-AC_MAKE_FILENAME_ABSOLUTE(icondir,[["${lispdir}/"]])
+[[  --with-icondir=DIR         Where the icon files go.]],
+  [icondir=["${withval}"]])
+AC_LISPIFY_DIR(icondir,"${previewstartfile}")
+AC_MSG_RESULT([[${icondir}]])
 
 AC_MSG_CHECKING(Where the info files go)
 AC_MSG_RESULT([[${infodir}]])
@@ -132,8 +137,8 @@ AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 AC_MSG_CHECKING([[for glaring installation conflicts]])
 exppackagelispdir="$packagelispdir"
 AC_FULL_EXPAND(exppackagelispdir)
-explispdir="$lispdir"
-AC_FULL_EXPAND(explispdir)
+exppreviewstartfile="$previewstartfile"
+AC_FULL_EXPAND(exppreviewstartfile)
 
 EMACS_LISP(shadows,[[
   (concat
@@ -145,10 +150,9 @@ EMACS_LISP(shadows,[[
                  (file-name-directory tmp)))
     (and (setq tmp (locate-library \"preview-latex.el\"))
          (not (string= (file-truename tmp)
-                       (file-truename (expand-file-name \"preview-latex.el\"
-                                      lispdir))))
+                       (file-truename previewstartfile)))
          (format \"Conflicting previous startup file \`%s' found!\n\" tmp)))]],,
-  [[packagelispdir lispdir]],[["${exppackagelispdir}" "${explispdir}"]])
+  [[packagelispdir previewstartfile]],[["${exppackagelispdir}" "${exppreviewstartfile}"]])
 if test "NONE${shadows}" != NONE
 then
   conflictsmsg="Conflicts with previous installations have been detected.
@@ -170,6 +174,7 @@ AC_SHELL_QUOTIFY(previewtexmfdir)
 AC_SHELL_QUOTIFY(previewdocdir)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(packagelispdir)
+AC_SHELL_QUOTIFY(previewstartfile)
 AC_SHELL_QUOTIFY(lispdir)
 AC_SHELL_QUOTIFY(icondir)
 AC_SHELL_QUOTIFY(infodir)

@@ -543,38 +543,33 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 # AC_LISPIFY_DIR
 # First argument is a variable name where a lisp expression is to be
 # substituted with AC_SUBST and "lisp" prepended.
-# If the expression is not an absolute path, it is evaluated relative
-# to the current file name.
+# lispdir is used for two purposes: any relative names are resolved
+# relative to lispdir, and the lispification uses relative file names
+# in relation to the second argument if the target dir is in the
+# lispdir hierarchy.
 AC_DEFUN(AC_LISPIFY_DIR,[
  tmpdir="[$]{$1}"
  AC_FULL_EXPAND(tmpdir)
+ explispdir="[$]{lispdir}"
+ AC_FULL_EXPAND(explispdir)
+ expstartup=$2
+ AC_FULL_EXPAND(expstartup)
 EMACS_LISP([lisp$1],[[(progn (setq path (directory-file-name path))
   (unless (string= (car load-path) (directory-file-name (car load-path)))
     (setq path (file-name-as-directory path)))
+  (setq path (expand-file-name path lispdir))
+  (setq startup (expand-file-name startup lispdir))
   (prin1-to-string
-   (if (file-name-absolute-p path)
-     (expand-file-name path)
-    (backquote (expand-file-name (, path)
-       (file-name-directory load-file-name))))))]],-no-site-file,path,["${tmpdir}"])
-   AC_SUBST([lisp$1])])
-
-# AC_MAKE_FILENAME_ABSOLUTE
-# This makes variable $1 absolute if it is not already so, by prepending
-# $2 as a string.  This won't work in Windows with drive-relative path names.
-# Just don't use them.
-AC_DEFUN(AC_MAKE_FILENAME_ABSOLUTE,[
-     tmpdir="[$]{$1}"
-     AC_FULL_EXPAND(tmpdir)
-     case "${tmpdir}" in
-       [[\\/]]* | ?:[[\\/]]* ) # Absolute
-          ;;
-       *)
-          $1=$2"[$]{$1}";;
-     esac
-     AC_SUBST([$1])])
-
-AC_DEFUN(EMACS_LISP_RELATIVE,[
-  AC_ARG_WITH($1,[[  --with-$1=DIR    Where to find $2,
-        relative to the Lisp startup file.]],
-    [$1=["${withval}"]])
-  AC_LISPIFY_DIR([$1])])
+    (if (or (string-match \"\\\\\`\\\\.\\\\.\"
+              (setq relname (file-relative-name startup lispdir)))
+            (file-name-absolute-p relname)
+	    (string-match \"\\\\\`\\\\.\\\\.\"
+              (setq relname (file-relative-name path lispdir)))
+ 	    (file-name-absolute-p relname))
+	 path
+    \`(expand-file-name
+       ,(file-relative-name path (file-name-directory startup))
+       load-file-name))))]],-no-site-file,[[path lispdir startup]],
+  [["${tmpdir}" "${explispdir}" "${expstartup}"]])
+   AC_SUBST([lisp$1])
+   AC_SUBST([$1])])
