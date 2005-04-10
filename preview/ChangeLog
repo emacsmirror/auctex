@@ -1,3 +1,10 @@
+2005-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE, circ.tex, configure.in, preview.el, doc/faq.texi,
+	doc/install.texi, doc/preview-latex.texi, doc/problems.texi,
+	doc/readme.texi, doc/wininstall.texi, latex/README,
+	latex/preview.dtx: GhostScript --> Ghostscript.
+
 2005-04-08  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (previewstartfile): import.
