@@ -2,6 +2,8 @@
 
 	* latex.el (LaTeX-section-heading): Shorten prompt.
 	(LaTeX-section-title): Simplify.  Shorten prompt.
+	(LaTeX-auto-minimal-regexp-list): "\" and "." are not special in a
+	complemented character alternative.
 
 2005-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
