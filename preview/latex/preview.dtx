@@ -23,7 +23,7 @@
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.99 $
+%   \rcskey \version CVS-$Revision: 1.100 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2005-04-10 16:28:58 $
+% \rcskey\next $Date: 2005-04-10 16:35:41 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -41,7 +41,7 @@
 % The main purpose of this package is the extraction of certain
 % environments (most notably displayed formulas) from \LaTeX\ sources
 % as graphics.  This works with DVI files postprocessed by either
-% Dvips and Ghostscript or Dvipng, but it also works when you are
+% Dvips and Ghostscript or dvipng, but it also works when you are
 % using PDF\TeX for generating PDF files (usually also postprocessed
 % by Ghostscript).
 %
@@ -80,7 +80,7 @@
 % The possibility for generating a whole set of graphics with a single
 % run of Ghostscript (whether from \LaTeX\ or PDF\LaTeX) increases
 % both speed and robustness of applications.  It is also feasible to
-% use Dvipng on a DVI file with the options
+% use dvipng on a DVI file with the options
 % \begin{quote}
 %   |-picky -noghostscript|
 % \end{quote}
@@ -448,10 +448,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.99 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.100 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-04-10 16:28:58 $
+\reserved@a\next $Date: 2005-04-10 16:35:41 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
