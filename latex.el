@@ -3907,7 +3907,10 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
   :group 'LaTeX-math
   :type 'sexp)
 
-(defvar LaTeX-math-keymap (make-sparse-keymap)
+(defvar LaTeX-math-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map LaTeX-math-abbrev-prefix 'self-insert-command)
+    map)
   "Keymap used for `LaTeX-math-mode' commands.")
 
 (defvar LaTeX-math-menu
@@ -3919,11 +3922,6 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 The menu entries will be generated dynamically, but you can specify
 the sequence by initializing this variable.")
 
-(define-key LaTeX-math-keymap
-  (apply 'vector (append LaTeX-math-abbrev-prefix
-			 LaTeX-math-abbrev-prefix nil))
-  'LaTeX-math-insert-prefix)
-
 (defcustom LaTeX-math-menu-unicode
   (and (string-match "\\<GTK\\>" (emacs-version)) t)
   "Whether the LaTeX menu should try using Unicode for effect."
@@ -3931,7 +3929,7 @@ the sequence by initializing this variable.")
   :group 'LaTeX-math)
 
 (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
-      (map (lookup-key LaTeX-math-keymap LaTeX-math-abbrev-prefix))
+      (map LaTeX-math-keymap)
       (unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
   (while math
     (let* ((entry (car math))
@@ -3985,11 +3983,6 @@ the sequence by initializing this variable.")
 				(vector menu name t))
 			      (cdr parent))))))))))
 
-(easy-menu-define LaTeX-math-mode-menu
-    LaTeX-math-keymap
-    "Menu used in math minor mode."
-  LaTeX-math-menu)
-
 (define-minor-mode LaTeX-math-mode
   "A minor mode with easy acces to TeX math macros.
 
@@ -3997,21 +3990,18 @@ Easy insertion of LaTeX math symbols.  If you give a prefix argument,
 the symbols will be surrounded by dollar signs.  The following
 commands are defined:
 
-\\{LaTeX-math-keymap}"
-  nil nil LaTeX-math-keymap
+\\{LaTeX-math-mode-map}"
+  nil nil (list (cons LaTeX-math-abbrev-prefix LaTeX-math-keymap))
   (if LaTeX-math-mode
-      (easy-menu-add LaTeX-math-mode-menu LaTeX-math-keymap)
+      (easy-menu-add LaTeX-math-mode-menu LaTeX-math-mode-map)
     (easy-menu-remove LaTeX-math-mode-menu))
   (TeX-set-mode-name))
 (defalias 'latex-math-mode 'LaTeX-math-mode)
 
-(defun LaTeX-math-insert-prefix ()
-  "Insert the value of `LaTeX-math-abbrev-prefix'."
-  (interactive "*")
-  (let (LaTeX-math-mode)
-    (if (key-binding LaTeX-math-abbrev-prefix)
-	(call-interactively (key-binding LaTeX-math-abbrev-prefix))
-      (error "%S has no default binding" LaTeX-math-abbrev-prefix))))
+(easy-menu-define LaTeX-math-mode-menu
+    LaTeX-math-mode-map
+    "Menu used in math minor mode."
+  LaTeX-math-menu)
 
 (defcustom LaTeX-math-insert-function 'TeX-insert-macro
   "Function called with argument STRING to insert \\STRING."
