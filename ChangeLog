@@ -4,6 +4,15 @@
 	(LaTeX-section-title): Simplify.  Shorten prompt.
 	(LaTeX-auto-minimal-regexp-list): "\" and "." are not special in a
 	complemented character alternative.
+	(LaTeX-math-keymap): Define key for prefix insertion inside
+	defvar.
+	(math): Use `LaTeX-math-keymap' only.
+	(LaTeX-math-mode-menu): Use `LaTeX-math-mode-map' (defined by
+	`define-minor-mode').
+	(LaTeX-math-mode): Assign `LaTeX-math-keymap' to
+	`LaTeX-math-abbrev-prefix'.  Use `LaTeX-math-mode-menu' with
+	`LaTeX-math-mode-map'.
+	(LaTeX-math-insert-prefix): Remove.
 
 2005-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
