@@ -1,5 +1,10 @@
 2005-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-parse-argument): Another stab at fixing this
+	function.  The last change from 2005-03-23 broke the insertion of
+	macros like \footnote with a marked region.  This is pure
+	guesswork.  *sigh*
+
 	* latex.el (LaTeX-section-heading): Shorten prompt.
 	(LaTeX-section-title): Simplify.  Shorten prompt.
 	(LaTeX-auto-minimal-regexp-list): "\" and "." are not special in a
