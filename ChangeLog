@@ -1,3 +1,8 @@
+2005-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-section-heading): Shorten prompt.
+	(LaTeX-section-title): Simplify.  Shorten prompt.
+
 2005-04-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-match-command-with-arguments): Skip
