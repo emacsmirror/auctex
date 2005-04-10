@@ -417,7 +417,7 @@ no label is inserted."
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
-		 (concat "Select level: (default " name ") ")
+		 (concat "Level: (default " name ") ")
 		 LaTeX-section-list
 		 nil nil nil)))
     ; Update name
@@ -430,13 +430,10 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
   "Hook to prompt for LaTeX section title.
 Insert this hook into `LaTeX-section-hook' to allow the user to change
 the title of the section inserted with `\\[LaTeX-section]."
-  (if (zerop (length title))
-      (setq title (read-string "What title: "))
-    (let ((region (and (TeX-active-mark)
-		       (cons (region-beginning) (region-end)))))
-      (setq title (read-string "What title: " title))
-      (if region
-	  (delete-region (car region) (cdr region))))))
+  (setq title (read-string "Title: " title))
+  (let ((region (and (TeX-active-mark)
+		     (cons (region-beginning) (region-end)))))
+    (when region (delete-region (car region) (cdr region)))))
 
 (defun LaTeX-section-toc ()
   "Hook to prompt for the LaTeX section entry in the table of content .
