@@ -23,7 +23,7 @@
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.98 $
+%   \rcskey \version CVS-$Revision: 1.99 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2005-04-03 02:27:38 $
+% \rcskey\next $Date: 2005-04-10 16:28:58 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -41,9 +41,9 @@
 % The main purpose of this package is the extraction of certain
 % environments (most notably displayed formulas) from \LaTeX\ sources
 % as graphics.  This works with DVI files postprocessed by either
-% Dvips and GhostScript or Dvipng, but it also works when you are
+% Dvips and Ghostscript or Dvipng, but it also works when you are
 % using PDF\TeX for generating PDF files (usually also postprocessed
-% by GhostScript).
+% by Ghostscript).
 %
 % Current uses of the package include the \previewlatex\ package for
 % WYSIWYG functionality in the AUC\TeX\ editing environment,
@@ -69,7 +69,7 @@
 % option.  This will embed the page dimensions into the PostScript or
 % PDF code, obliterating the need to use the |-E -i| options to Dvips.
 % You can then produce all image files with a single run of
-% GhostScript from a single PDF or PostScript (as opposed to EPS)
+% Ghostscript from a single PDF or PostScript (as opposed to EPS)
 % file.
 % 
 % Various options exist that will pass \TeX\ dimensions and other
@@ -78,14 +78,14 @@
 % make use of it.
 % 
 % The possibility for generating a whole set of graphics with a single
-% run of GhostScript (whether from \LaTeX\ or PDF\LaTeX) increases
+% run of Ghostscript (whether from \LaTeX\ or PDF\LaTeX) increases
 % both speed and robustness of applications.  It is also feasible to
 % use Dvipng on a DVI file with the options
 % \begin{quote}
 %   |-picky -noghostscript|
 % \end{quote}
-% to omit generating any image file that requires GhostScript, then
-% let a script generate all missing files using Dvips/GhostScript.
+% to omit generating any image file that requires Ghostscript, then
+% let a script generate all missing files using Dvips/Ghostscript.
 % This will usually speed up the process significantly.
 % 
 % \section{Package options}
@@ -203,12 +203,12 @@
 %     |dvips -E -i -Pwww -o| \meta{outputfile}|.000| \meta{inputfile}
 %   \end{quote}
 %   However, in case those are to be processed further into graphic
-%   image files by GhostScript, this process is inefficient since all
+%   image files by Ghostscript, this process is inefficient since all
 %   of those files need to be processed one by one.  In addition, it
 %   is necessary to extract the bounding box comments from the EPS
 %   files and convert them into page dimension parameters for
-%   GhostScript in order to avoid full-page graphics.  This is not
-%   even possible if you wanted to use GhostScript in a~\emph{single}
+%   Ghostscript in order to avoid full-page graphics.  This is not
+%   even possible if you wanted to use Ghostscript in a~\emph{single}
 %   run for generating the files from a single PostScript file, since
 %   Dvips will in that case leave no bounding box information
 %   anywhere.
@@ -228,7 +228,7 @@
 %   The |tightpage| option actually also works when using the |pdftex|
 %   option and generating PDF files with PDF\TeX.  The resulting PDF
 %   file has separate page dimensions for every page and can directly
-%   be converted with one run of GhostScript into image files.
+%   be converted with one run of Ghostscript into image files.
 %
 %   If neither |dvips| or |pdftex| have been specified, the
 %   corresponding option will get autodetected and invoked.
@@ -244,7 +244,7 @@
 %   value by using \cmd{\setlength}.  The default value is
 %   |0.50001bp|, which is half of a usual PostScript point, rounded
 %   up.  If you go below this value, the resulting page size may drop
-%   below |1bp|, and GhostScript does not seem to like that.  If you
+%   below |1bp|, and Ghostscript does not seem to like that.  If you
 %   need finer control, you can adjust the bounding box dimensions
 %   individually by changing the macro |\PreviewBbAdjust| with the
 %   help of |\renewcommand|.  Its default value is
@@ -448,10 +448,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.98 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.99 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-04-03 02:27:38 $
+\reserved@a\next $Date: 2005-04-10 16:28:58 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1467,13 +1467,13 @@ Please complain to your document class author}%
 %   |dvips -E -i -Ppdf -o| \meta{outputfile}|.000| \meta{inputfile}
 % \end{quote}
 % However, in case those are to be processed further into graphic
-% image files by GhostScript, this process is inefficient.  One cannot
-% use GhostScript in a single run for generating the files, however,
+% image files by Ghostscript, this process is inefficient.  One cannot
+% use Ghostscript in a single run for generating the files, however,
 % since one needs to set the page size (or full size pages will be
 % produced).  The |tightpage| option will set the page dimensions at
 % the start of each PostScript page so that the output will be sized
 % appropriately.  That way, a single pass of Dvips followed by a
-% single pass of GhostScript will be sufficient for generating all
+% single pass of Ghostscript will be sufficient for generating all
 % images.
 %
 % You will have to specify the output driver to be used, either

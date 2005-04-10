@@ -644,17 +644,17 @@ with their version of XEmacs.  @w{GNU Emacs} has its corresponding
 What happens when @LaTeX{} is finished depends on the configuration of
 @code{preview-image-type}.  What to do for each of the various settings
 is specified in the variable @code{preview-image-creators}.  The options
-to pass into GhostScript and what Emacs image type to use is specified
+to pass into Ghostscript and what Emacs image type to use is specified
 in @code{preview-gs-image-type-alist}.
 
 @code{preview-image-type} defaults to @code{png}.  For this to work,
-your version of GhostScript needs to support the @option{png16m} device.
+your version of Ghostscript needs to support the @option{png16m} device.
 If you are experiencing problems here, you might want to reconfigure
 @code{gs-image-type-alist} or @code{preview-image-type}.  Reconfiguring
 @code{preview-image-creators} is only necessary for adding additional
 image types.
 
-Most devices make @previewlatex{} start up a single GhostScript process
+Most devices make @previewlatex{} start up a single Ghostscript process
 for the entire preview run (as opposed to one per image) and feed it
 either sections of a @acronym{PDF} file (if PDF@LaTeX{} was used), or
 (after running Dvips) sections of a single PostScript file or separate
@@ -670,7 +670,7 @@ group @code{Preview Gs} for this.
 Another noteworthy setting of @code{preview-image-type} is
 @samp{dvipng}: in this case, the @samp{dvipng}@pindex{dvipng} program
 will get run on @acronym{DVI} output (see below for @acronym{PDF}).
-This is in general much faster than Dvips and GhostScript.  In that
+This is in general much faster than Dvips and Ghostscript.  In that
 case, the option
 
 @item preview-dvipng-command
@@ -680,21 +680,21 @@ will get run for doing the conversion, and it is expected that
 images get produced (@samp{dvipng} might be configured for other image
 types as well).  You will notice that @code{preview-gs-image-type-alist}
 contains an entry for @code{dvipng}: this actually has nothing to with
-@samp{dvipng} itself but specifies the image type and GhostScript device
+@samp{dvipng} itself but specifies the image type and Ghostscript device
 option to use when @samp{dvipng} can't be used.  This will obviously be
 the case for @acronym{PDF} output by PDF@LaTeX{}, but it will also happen
 if the @acronym{DVI} file contains PostScript specials in which case the
-affected images will get run through Dvips and GhostScript once
+affected images will get run through Dvips and Ghostscript once
 @samp{dvipng} finishes.
 
 @item preview-gs-options
 Most interesting to the user perhaps is the setting of this variable.
 It contains the default antialiasing settings @option{-dTextAlphaBits=4}
 and @option{-dGraphicsAlphaBits=4}.  Decreasing those values to 2 @w{or
-1} might increase GhostScript's performance if you find it lacking.
+1} might increase Ghostscript's performance if you find it lacking.
 @end vtable
 
-Running and feeding GhostScript from @previewlatex{} happens
+Running and feeding Ghostscript from @previewlatex{} happens
 asynchronously again: you can resume editing while the images arrive.
 While those pretty pictures filling in the blanks on screen tend to
 make one marvel instead of work, rendering the non-displayed images

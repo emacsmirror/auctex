@@ -60,7 +60,7 @@ are fixed in 11.55.  This package is available from the XEmacs package
 repository but might still be in prerelease state.
 
 @item
-You need a copy of @uref{http://www.cs.wisc.edu/~ghost,GhostScript}.
+You need a copy of @uref{http://www.cs.wisc.edu/~ghost,Ghostscript}.
 
 @item
 @uref{http://www.perl.org,Perl} is needed for rebuilding the

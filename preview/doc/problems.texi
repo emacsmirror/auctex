@@ -2,7 +2,7 @@
 @ifset rawfile
 @c documentencoding is used by makeinfo in our --no-headers output.
 @documentencoding ISO-8859-1
-@node Known problems, Problems with GhostScript, (dir), (dir)
+@node Known problems, Problems with Ghostscript, (dir), (dir)
 @top Known problems
 
 @end ifset
@@ -15,7 +15,7 @@ other software. Some of the known problems can be solved by moving to
 newer versions of the problematic software or by simple patches.
 
 @menu
-* Problems with GhostScript::   
+* Problems with Ghostscript::   
 * Font problems with Dvips::    
 * Emacs problems::              
 * AUCTeX prior to 11.0::       
@@ -31,25 +31,25 @@ information interesting to us and send it to the
 if at all possible.
 
 @ifset rawfile
-@node Problems with GhostScript, Font problems with Dvips, Known problems , Known problems
-@chapter Problems with GhostScript
+@node Problems with Ghostscript, Font problems with Dvips, Known problems , Known problems
+@chapter Problems with Ghostscript
 @raisesections
 @end ifset
 @ifclear rawfile
-@node Problems with GhostScript, Font problems with Dvips, Known problems , Known problems
-@section Problems with GhostScript
+@node Problems with Ghostscript, Font problems with Dvips, Known problems , Known problems
+@section Problems with Ghostscript
 @end ifclear
 
-Most of the problems encountered come from interaction with GhostScript.
-It is a good idea to have a fairly recent version of GhostScript
+Most of the problems encountered come from interaction with Ghostscript.
+It is a good idea to have a fairly recent version of Ghostscript
 installed.  One problem occurs if you have specified the wrong
-executable under Windows: the command line version of GhostScript is
+executable under Windows: the command line version of Ghostscript is
 called @file{GSWIN32C.EXE}, not @file{GSWIN32.EXE}.
 
-When GhostScript fails, the necessary information and messages from
-Ghostscript go somewhere.  If GhostScript fails before starting to
+When Ghostscript fails, the necessary information and messages from
+Ghostscript go somewhere.  If Ghostscript fails before starting to
 process images, you'll find the information at the end of the process
-buffer you can see with @kbd{C-c C-l}.  If GhostScript fails while
+buffer you can see with @kbd{C-c C-l}.  If Ghostscript fails while
 processing a particular image, this image will be tagged with clickable
 buttons for the error description and for the corresponding source file.
 
@@ -62,16 +62,16 @@ The default options configurable with
 @noindent
 include the options @option{-dTextAlphaBits=4} and
 @option{-dGraphicsAlphaBits=4}.  These options have been reported to
-make GhostScript 5.50 fail, but should work under GhostScript 6.51 and
+make Ghostscript 5.50 fail, but should work under Ghostscript 6.51 and
 later.  If you are experiencing problems, it might help to customize
 them away.  Of course, this also takes away the joy of antialiasing, so
-upgrading GhostScript might not be the worst idea after all.
+upgrading Ghostscript might not be the worst idea after all.
 
 The device names have changed over time, so when using an old
-GhostScript, you may have problems with the devices demanded by the
+Ghostscript, you may have problems with the devices demanded by the
 customizable variable @code{preview-image-creators}.
 @vindex preview-image-creators
-In that case, make sure they fit your version of GhostScript, at least
+In that case, make sure they fit your version of Ghostscript, at least
 the entry corresponding to the current value of
 @code{preview-image-type}.
 @vindex preview-image-type
@@ -81,10 +81,10 @@ the best bets for the purpose of checking basic operation, since that
 device name has not changed in quite some time.  But @acronym{JPEG} is
 not intended for text, but for photographic images.  On a more
 permanent time scale, the best choice is to use @acronym{PNG} and
-complain to your suppliers if either Emacs or GhostScript fail to
+complain to your suppliers if either Emacs or Ghostscript fail to
 properly accommodate this format.
 
-@node Font problems with Dvips, Emacs problems, Problems with GhostScript, Known problems
+@node Font problems with Dvips, Emacs problems, Problems with Ghostscript, Known problems
 @section Font problems with Dvips
 Some fonts have been reported to produce wrong characters with
 @previewlatex{}.  @previewlatex{} calls Dvips by default with the option

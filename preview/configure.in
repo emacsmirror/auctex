@@ -92,7 +92,7 @@ AC_SUBST(auctexdir)
 AC_ARG_VAR(GS,[Ghostscript executable for batch operation])
 AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE, 
 [Ghostscript not found!  Aborting!  
-You need GhostScript in your PATH for preview to work.])
+You need Ghostscript in your PATH for preview to work.])
 
 EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["${GS}"]])
 AC_SUBST(lispGS)

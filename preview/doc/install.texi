@@ -79,17 +79,17 @@ Preview should work with nearly any @LaTeX{} installation which contains
 Dvips, though most testing has taken place using te@TeX{}-based
 distributions.
 
-@item A recent GhostScript
+@item A recent Ghostscript
 
 This is not really needed to @emph{install} the package, but will be
-required for stable operation of it.  Most versions of GhostScript
+required for stable operation of it.  Most versions of Ghostscript
 nowadays in use should work fine (version 7.0 and newer).  If you
 encounter problems, check
 @ifset rawfile
 the @file{PROBLEMS} file.
 @end ifset
 @ifclear rawfile
-@ref{Problems with GhostScript}.
+@ref{Problems with Ghostscript}.
 @end ifclear
 
 @item The @code{texinfo} package

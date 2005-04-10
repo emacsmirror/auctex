@@ -13,7 +13,7 @@ downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex/> as a tarball
 or as RPM files.  At the current point of time, at least GNU
 Emacs-21.3 under the X window system or XEmacs-21 in version 21.4.10
 or later, AUCTeX (11.51 or later required for PDF support), a working
-LaTeX installation and GhostScript are required.  dvipng[1] (version
+LaTeX installation and Ghostscript are required.  dvipng[1] (version
 1.4 or later: teTeX-3.0 works, TeXlive2004 not), a very fast dvi
 converter, can be used to speed up the conversion.  For Windows[2],
 MacOS Carbon[3] or native GTK+ toolkit support[4], a developer

@@ -52,9 +52,9 @@ developers.  This makes getting XEmacs bugs and shortcomings fixed such
 an inefficient and unpleasant task that we can't in good conscience
 recommend XEmacs to users that rely on continued support of @AUCTeX{}.
 
-@subsection Which versions of GhostScript and @AUCTeX{} are needed?
+@subsection Which versions of Ghostscript and @AUCTeX{} are needed?
 
-We recommend to use GNU or AFPL GhostScript with a version of at least
+We recommend to use GNU or AFPL Ghostscript with a version of at least
 7.07.
 
 Proper PDF@LaTeX{} support will require @AUCTeX{} version 11.50 or

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.248 2005-04-05 10:09:37 angeli Exp $
+;; $Id: preview.el,v 1.249 2005-04-10 16:28:59 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -75,7 +75,7 @@ preview-latex's bug reporting commands will probably not work.")))
   :link '(info-link "(preview-latex)The Emacs interface")
   :link '(url-link :tag "Homepage" "http://www.gnu.org/software/auctex/"))
 
-(defgroup preview-gs nil "Preview's GhostScript renderer."
+(defgroup preview-gs nil "Preview's Ghostscript renderer."
   :group 'preview
   :prefix "preview-")
 
@@ -220,14 +220,14 @@ function args" :inline t sexp))
     (jpeg jpeg "-sDEVICE=jpeg")
     (pnm pbm "-sDEVICE=pnmraw")
     (tiff tiff "-sDEVICE=tiff12nc"))
-  "*Alist of image types and corresponding GhostScript options.
+  "*Alist of image types and corresponding Ghostscript options.
 The `dvipng' and `postscript' (don't use) entries really specify
 a fallback device when images can't be processed by the requested
 method, like when PDFTeX was used."
   :group 'preview-gs
   :type '(repeat (list :tag nil (symbol :tag "preview image-type")
 		       (symbol :tag "Emacs image-type")
-		       (repeat :inline t :tag "GhostScript options" string))))
+		       (repeat :inline t :tag "Ghostscript options" string))))
 
 (defcustom preview-image-type 'png
   "*Image type to be used in images."
@@ -370,8 +370,8 @@ Buffer-local to the appropriate TeX process buffer.")
 (defcustom preview-gs-outstanding-limit 2
   "*Number of requests allowed to be outstanding.
 This is the number of not-yet-completed requests we
-might at any time have piped into GhostScript.  If
-this number is larger, the probability of GhostScript
+might at any time have piped into Ghostscript.  If
+this number is larger, the probability of Ghostscript
 working continuously is higher when Emacs is rather
 busy.  If this number is smaller, redisplay will
 follow changes in the displayed buffer area faster."
@@ -385,7 +385,7 @@ follow changes in the displayed buffer area faster."
 	  :tag "small number"))
 
 (defvar preview-gs-answer nil
-  "Accumulated answer of GhostScript process.")
+  "Accumulated answer of Ghostscript process.")
 (make-variable-buffer-local 'preview-gs-answer)
 
 (defvar preview-gs-image-type nil
@@ -411,7 +411,7 @@ of nothing special should be done for the color")
 (make-variable-buffer-local 'preview-colors)
 
 (defvar preview-gs-init-string nil
-  "GhostScript setup string.")
+  "Ghostscript setup string.")
 (make-variable-buffer-local 'preview-gs-init-string)
 
 (defvar preview-ps-file nil
@@ -439,7 +439,7 @@ YRES, the screen resolution in dpi."
 (defun preview-gs-behead-outstanding (err)
   "Remove leading element of outstanding queue after error.
 Return element if non-nil.  ERR is the error string to
-show as response of GhostScript."
+show as response of Ghostscript."
   (let ((ov (pop preview-gs-outstanding)))
     (when ov
       (preview-gs-flag-error ov err)
@@ -582,7 +582,7 @@ tag in the mode line."
 (defun preview-gs-sentinel (process string)
   "Sentinel function for rendering process.
 Gets the default PROCESS and STRING arguments
-and tries to restart GhostScript if necessary."
+and tries to restart Ghostscript if necessary."
   (condition-case err
       (let ((status (process-status process)))
 	(when (memq status '(exit signal))
@@ -632,11 +632,11 @@ and tries to restart GhostScript if necessary."
 						preview-gs-queue))
 		  (setq preview-gs-outstanding nil)
 		  (preview-gs-restart)))))))
-    (error (preview-log-error err "GhostScript" process)))
+    (error (preview-log-error err "Ghostscript" process)))
   (preview-reraise-error process))
 
 (defun preview-gs-filter (process string)
-  "Filter function for processing GhostScript output.
+  "Filter function for processing Ghostscript output.
 Gets the usual PROCESS and STRING parameters, see
 `set-process-filter' for a description."
   (with-current-buffer (process-buffer process)
@@ -647,11 +647,11 @@ Gets the usual PROCESS and STRING parameters, see
 	(setq preview-gs-answer (substring preview-gs-answer pos))
 	(condition-case err
 	    (preview-gs-transact process answer)
-	  (error (preview-log-error err "GhostScript filter" process))))))
+	  (error (preview-log-error err "Ghostscript filter" process))))))
   (preview-reraise-error))
 
 (defun preview-gs-restart ()
-  "Start a new GhostScript conversion process."
+  "Start a new Ghostscript conversion process."
   (when preview-gs-queue
     (if preview-gs-sequence
 	(setcar preview-gs-sequence (1+ (car preview-gs-sequence)))
@@ -666,13 +666,13 @@ Gets the usual PROCESS and STRING parameters, see
 				     preview-gs-image-type))))
 	   (process
 	    (apply #'start-process
-		   "Preview-GhostScript"
+		   "Preview-Ghostscript"
 		   (current-buffer)
 		   preview-gs-command
 		   outfile
 		   preview-gs-command-line)))
       (goto-char (point-max))
-      (insert-before-markers "Running `Preview-GhostScript' with ``"
+      (insert-before-markers "Running `Preview-Ghostscript' with ``"
 			     (mapconcat #'shell-quote-argument
 					(append
 					 (list preview-gs-command
@@ -684,14 +684,14 @@ Gets the usual PROCESS and STRING parameters, see
       (set-process-sentinel process #'preview-gs-sentinel)
       (set-process-filter process #'preview-gs-filter)
       (process-send-string process preview-gs-init-string)
-      (setq mode-name "Preview-GhostScript")
+      (setq mode-name "Preview-Ghostscript")
       (push process compilation-in-progress)
       (TeX-command-mode-line process)
       (set-buffer-modified-p (buffer-modified-p))
       process)))
 
 (defun preview-gs-open (&optional setup)
-  "Start a GhostScript conversion pass.
+  "Start a Ghostscript conversion pass.
 SETUP may contain a parser setup function."
   (let ((image-info (assq preview-image-type preview-gs-image-type-alist)))
     (setq preview-gs-image-type (nth 1 image-info))
@@ -718,7 +718,7 @@ aload pop restore}bind def "
 (defun preview-gs-color-value (value)
   "Return string to be used as color value for an RGB component.
 Conversion from Emacs color numbers (0 to 65535) in VALUE
-to GhostScript floats."
+to Ghostscript floats."
   (format "%g" (/ value 65535.0)))
 
 (defun preview-gs-color-string (colors)
@@ -1043,7 +1043,7 @@ NONREL is not NIL."
 This function is used in fake conditional display properties
 for reordering the conversion order to prioritize on-screen
 images.  OV is the overlay in question, and BUFF is the
-GhostScript process buffer where the buffer-local queue
+Ghostscript process buffer where the buffer-local queue
 is located."
   ;; It does not matter that ov gets queued twice in that process: the
   ;; first version to get rendered will clear the 'queued property.
@@ -1061,7 +1061,7 @@ is located."
 
 
 (defun preview-gs-place (ov snippet box run-buffer tempdir ps-file imagetype)
-  "Generate an image placeholder rendered over by GhostScript.
+  "Generate an image placeholder rendered over by Ghostscript.
 This enters OV into all proper queues in order to make it render
 this image for real later, and returns the overlay after setting
 a placeholder image.  SNIPPET gives the number of the
@@ -1088,7 +1088,7 @@ for the file extension."
 (defun preview-mouse-open-error (string)
   "Display STRING in a new view buffer on click."
   (let ((buff (get-buffer-create
-	       "*Preview-GhostScript-Error*")))
+	       "*Preview-Ghostscript-Error*")))
     (with-current-buffer buff
       (kill-all-local-variables)
       (set (make-local-variable 'view-exit-action) #'kill-buffer)
@@ -1165,10 +1165,10 @@ Try \\[ps-shell] and \\[ps-execute-buffer]."))))))
     (preview-toggle ov)))
 
 (defun preview-gs-transact (process answer)
-  "Work off GhostScript transaction.
+  "Work off Ghostscript transaction.
 This routine is the action routine called via the process filter.
-The GhostScript process buffer of PROCESS will already be selected, and
-and the standard output of GhostScript up to the next prompt will be
+The Ghostscript process buffer of PROCESS will already be selected, and
+and the standard output of Ghostscript up to the next prompt will be
 given as ANSWER."
   (let ((ov (pop preview-gs-outstanding))
 	(have-error (not
@@ -3308,7 +3308,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.248 $"))
+	(rev "$Revision: 1.249 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3319,7 +3319,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-05 10:09:37 $"))
+    (let ((date "$Date: 2005-04-10 16:28:59 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
