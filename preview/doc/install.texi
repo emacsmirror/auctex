@@ -159,19 +159,20 @@ Emacs uses a different installation scheme:
 This Emacs-only option specifies the location of the @file{site-lisp}
 directory within @samp{load-path} under which the files will get
 installed.  @file{configure} should should figure this out by itself.
+The next two options, if they don't specify an absolute file name, are
+considered to be relative to @var{lispdir}.
 
 @item --with-preview-startfile=@file{preview-latex.el}
-This is the name of the startup file.  Some Emacs installations have a
-directory @file{site-start.d/} situated under @var{lispdir} where files
-get automatically loaded by code in @file{site-start.el}.  If your
-installation has such a directory, the startup file is placed into
-@file{site-start.d/preview-latex.el} by default instead.  If the
-specification is not an absolute filename, it is considered relative to
-@var{lispdir}.
+This is the name of the startup file.  If @var{lispdir} contains a
+subdirectory @file{site-start.d}, @var{startfile} defaults to
+@file{site-start.d/preview-latex.el}, and @file{site-start.el} should
+load it automatically.  Please be aware that you must not move the
+@var{startfile} after installation since other files are found
+@emph{relative} to it.
 
 @item --with-packagelispdir=@file{preview}
 This is the directory where the bulk of the package gets located.  The
-start file adds this into @var{load-path}.
+startfile adds this into @var{load-path}.
 
 @item --with-tex-site=@var{/dir}
 If @AUCTeX{} is installed in a non-standard location, use this option to

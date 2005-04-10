@@ -94,7 +94,7 @@ AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE,
 [Ghostscript not found!  Aborting!  
 You need Ghostscript in your PATH for preview to work.])
 
-EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" (backquote (defvar preview-gs-command (, dir))))]],-no-site-file,[[dir]],[["${GS}"]])
+EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" \`(defvar preview-gs-command ,dir))]],-no-site-file,[[dir]],[["${GS}"]])
 AC_SUBST(lispGS)
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
