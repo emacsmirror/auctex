@@ -1,3 +1,7 @@
+2005-04-11  jalar  <jalar@mai.liu.se>
+
+	* configure.in: Minimal changes to printouts 
+
 2005-04-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* preview.el (preview-set-texinputs): Fix grouping.
