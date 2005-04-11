@@ -39,7 +39,7 @@ fi
 if test "${packagedir}" = no
 then
    EMACS_PATH_LISPDIR([preview-latex])
-   AC_MSG_CHECKING(What file to use for preview startup)
+   AC_MSG_CHECKING(what file to use for preview startup)
    AC_ARG_WITH(previewstartfile,
    [[  --with-preview-startfile=FILE    What file to use for preview startup.]],
    [[ previewstartfile="${withval}" ]],
@@ -80,7 +80,7 @@ AC_ARG_WITH(packagedatadir,
 AC_LISPIFY_DIR(packagedatadir,"${previewstartfile}")
 AC_MSG_RESULT([[${packagedatadir}]])
 
-AC_MSG_CHECKING(Where the info files go)
+AC_MSG_CHECKING(where the info files go)
 AC_MSG_RESULT([[${infodir}]])
 
 AC_SUBST(PLAT_LISP)
@@ -161,7 +161,7 @@ then
    AC_PATH_PROG(PERL, perl, :)
 fi
 
-AC_ARG_VAR(PERL,[Makeinfo executable.  If set to :, some documentation
+AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will
 succeed.])
 
