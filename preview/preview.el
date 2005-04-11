@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.250 2005-04-11 09:01:31 dak Exp $
+;; $Id: preview.el,v 1.251 2005-04-11 18:38:10 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2314,7 +2314,7 @@ With prefix argument REMOVE, remove it again."
     (let ((case-fold-search nil)
 	  (pattern (regexp-quote preview-TeX-style-dir)))
       (dolist (env (cons "TEXINPUTS=" (copy-sequence process-environment)))
-	(if (string-match "\\`(TEXINPUTS[^=]*\\)=" env)
+	(if (string-match "\\`\\(TEXINPUTS[^=]*\\)=" env)
 	    (unless (string-match pattern env)
 	      (setenv (match-string 1 env)
 		      (concat preview-TeX-style-dir
@@ -3388,7 +3388,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.250 $"))
+	(rev "$Revision: 1.251 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3399,7 +3399,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-11 09:01:31 $"))
+    (let ((date "$Date: 2005-04-11 18:38:10 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
