@@ -1,3 +1,7 @@
+2005-04-12  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: renamed from configure.in
+
 2005-04-11  jalar  <jalar@mai.liu.se>
 
 	* configure.in: Minimal changes to printouts 
