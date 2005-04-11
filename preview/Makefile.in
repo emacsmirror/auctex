@@ -20,7 +20,7 @@ ICON_SOURCES = \
  images/prvwrk20.xpm  images/prvwrk24.xbm       images/prvwrk24.xpm
 
 prefix = @prefix@$(null)
-exec_prefix = @exec_prefix$(null)
+exec_prefix = @exec_prefix@$(null)
 libdir = @libdir@$(null)
 packagedatadir = @packagedatadir@$(null)
 datadir = @datadir@$(null)
