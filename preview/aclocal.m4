@@ -192,14 +192,22 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
 
 AC_DEFUN(TEX_PATH_TEXMFDIR,
  [
-AC_ARG_WITH(texmf-dir,[  --with-texmf-dir=DIR    TEXMF tree to install into],
+AC_ARG_WITH(texmf-dir,
+[  --with-texmf-dir=DIR    TEXMF tree to install into,
+                         or --without-texmf-dir for runtime config],
  [ texmfdir="${withval}" ;
-   AC_FULL_EXPAND(withval)
-   if test ! -d "${withval}"  ; then
-      AC_MSG_ERROR([--with-texmf-dir="${texmfdir}": Directory does not exist])
+   if test "x${texmfdir}" = xno
+   then
+     previewtexmfdir="${packagedatadir}/latex"
+     previewdocdir="${packagedatadir}/doc"
+   else
+     AC_FULL_EXPAND(withval)
+     if test ! -d "${withval}"  ; then
+        AC_MSG_ERROR([--with-texmf-dir="${texmfdir}": Directory does not exist])
+     fi
+     previewtexmfdir="${texmfdir}/tex/latex/preview"
+     previewdocdir="${texmfdir}/doc/latex/styles"
    fi
-   previewtexmfdir='${texmfdir}/tex/latex/preview'
-   previewdocdir='${texmfdir}/doc/latex/styles'
    ])
 
 AC_ARG_WITH(tex-dir,
@@ -233,7 +241,8 @@ AC_ARG_WITH(doc-dir,
 # hierarchy"  Install in preview subdirectory.
 # c) anything absolute.  Install both files directly there.
 
-if test -z "${previewtexmfdir}" -o "${previewtexmfdir}" = no  ; then
+if test "x${texmfdir}" != xno ; then
+if test "x${previewtexmfdir}" = x ; then
 
 AC_MSG_CHECKING([for prefix from kpsepath])
 
@@ -260,8 +269,8 @@ EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
     [[pathoutput]],[["${pathoutput}"]])
 
 if test -n "${texmfdir}" -a "${texmfdir}" != "NONE" ; then
-   previewdocdir='${texmfdir}/doc/latex/styles'
-   previewtexmfdir='${texmfdir}/tex/latex/preview'
+   previewdocdir="${texmfdir}/doc/latex/styles"
+   previewtexmfdir="${texmfdir}/tex/latex/preview"
 fi
 
 if test -z "${previewtexmfdir}" -o "${previewtexmfdir}" = no  ; then
@@ -281,8 +290,8 @@ EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
     [[pathoutput]],[["${pathoutput}"]])
 
 if test -n "${texmfdir}" -a "${texmfdir}" != "NONE" ; then
-   previewtexmfdir='${texmfdir}/preview'
-   previewdocdir='${texmfdir}/preview'
+   previewtexmfdir="${texmfdir}/preview"
+   previewdocdir="${texmfdir}/preview"
 fi
 fi
 
@@ -303,9 +312,8 @@ EMACS_EXAMINE_INSTALLATION_DIR(texmfdir,
     [[pathoutput]],[["${pathoutput}"]])
 
 if test -n "${texmfdir}" -a "${texmfdir}" != "NONE" ; then
-   previewtexmfdir='${texmfdir}'
-   previewdocdir='${texmfdir}'
-fi
+   previewtexmfdir="${texmfdir}"
+   previewdocdir="${texmfdir}"
 fi
 fi
 fi
@@ -318,6 +326,8 @@ Please use --with-texmf-dir=dir to specify where the preview tex files go])
 fi
 
 AC_MSG_RESULT(${texmfdir})
+fi
+fi
 
 echo Preview will be placed in ${previewtexmfdir}
 echo Preview docs will be placed in ${previewdocdir}
@@ -569,7 +579,7 @@ EMACS_LISP([lisp$1],[[(progn (setq path (directory-file-name path))
 	 path
     \`(expand-file-name
        ,(file-relative-name path (file-name-directory startup))
-       load-file-name))))]],-no-site-file,[[path lispdir startup]],
+       (file-name-directory load-file-name)))))]],-no-site-file,[[path lispdir startup]],
   [["${tmpdir}" "${explispdir}" "${expstartup}"]])
    AC_SUBST([lisp$1])
    AC_SUBST([$1])])

@@ -1,3 +1,4 @@
 @lispGS@
 (add-to-list 'load-path @lisppackagelispdir@)
-(defvar preview-icondir @lispicondir@)
+(defvar preview-datadir @lisppackagedatadir@)
+@lisppackagetexstyles@

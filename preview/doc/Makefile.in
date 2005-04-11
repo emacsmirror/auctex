@@ -1,4 +1,6 @@
 prefix=@prefix@$(null)
+exec_prefix=@exec_prefix@$(null)
+libdir=@libdir@$(null)
 packagedir=@packagedir@$(null)
 datadir=@datadir@$(null)
 infodir=@infodir@$(null)

@@ -7,7 +7,8 @@ TEXHASH=@TEXHASH@
 
 prefix=@prefix@$(null)
 datadir=@datadir@$(null)
-texmfdir=@texmfdir@$(null)
+exec_prefix=@exec_prefix@$(null)
+libdir=@libdir@$(null)
 previewtexmfdir = @previewtexmfdir@$(null)
 previewdocdir = @previewdocdir@$(null)
 TEXMFGEN = @TEXMFGEN@
@@ -21,7 +22,7 @@ all: $(TEXMFGEN) preview.drv preview-mk.ins preview.dvi preview.pdf
 
 install: install-texmf install-texmf-doc
 
-install-texmf: $(TEXMFGEN) 
+install-texmf: $(TEXMFGEN)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(previewtexmfdir)
 	for x in $(TEXMFGEN) ; do \
 	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(previewtexmfdir) ; \

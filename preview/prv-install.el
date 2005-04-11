@@ -38,7 +38,7 @@ Takes arguments on the comamnd line: the package directory and any
 number of Lisp files to generate autoloads from.
 
 Does nothing in Emacsen that do not support a package system."
-  (if (string-match "XEmacs" (emacs-version))
+  (if (featurep 'xemacs)
       (preview-make-package-xemacs))
   (setq command-line-args-left nil))
 
@@ -46,22 +46,20 @@ Does nothing in Emacsen that do not support a package system."
   "Do anything required to make a package in XEmacs,
 other than actually copying the Lisp files.
 
-Generates auto-autoloads, custom-loads, a manifest, and a package
-metadata file in the right locations.
-
-Takes arguments on the comamnd line: the package directory and any
-number of Lisp files to generate autoloads from."
+Generates auto-autoloads, custom-loads, and package metadata file
+in the right locations.  Takes from the command line the package directory,
+and the package name."
   (let* ((package-dir (pop command-line-args-left))
-         (lisp-dir (expand-file-name "lisp/preview/" package-dir))
+	 (package-name (pop command-line-args-left))
+         (lisp-dir (expand-file-name (format "lisp/%s/" package-name)
+				     package-dir))
          (metadata (expand-file-name "_pkg.el" lisp-dir))
          (custom-load (expand-file-name "custom-load.el" lisp-dir))
          (generated-autoload-file (expand-file-name "auto-autoloads.el"
                                                     lisp-dir))
-         (els command-line-args-left)
-         (icons (directory-files (expand-file-name "images/") nil nil nil t))
          (si:message (symbol-function 'message))
-            manifest make-backup-files noninteractive)
-    ; Delete and regenerate the custom-load file.
+	 make-backup-files noninteractive)
+    ;; Delete and regenerate the custom-load file.
     (when (file-exists-p custom-load)
       (delete-file custom-load))
     (when (file-exists-p (concat custom-load "c"))
@@ -69,15 +67,14 @@ number of Lisp files to generate autoloads from."
     (Custom-make-dependencies lisp-dir)
     (when (file-exists-p custom-load)
       (require 'cus-load)
-      (byte-compile-file custom-load)
-      (push "custom-load.el" els))
+      (byte-compile-file custom-load))
     ; Delete and regenerate the package metadata file.
     ; There is no compiled form of this file.
     (message "Updating metadata for the directory %s..." lisp-dir)
     (with-temp-file metadata
       (insert
        (concat ";;;###autoload\n"
-               "(package-provide 'preview\n"
+               "(package-provide '" package-name "\n"
                "                 :version "
 	       preview-release-date "\n"
                "                 :type 'regular)\n")))
@@ -103,21 +100,7 @@ number of Lisp files to generate autoloads from."
       (with-temp-buffer (insert-file "auto.el")
 			(append-to-file (point-min) (point-max)
 					generated-autoload-file))
-      (byte-compile-file generated-autoload-file)
-      (push "auto-autoloads.el" els))
-    ; Some people delete the pkginfo directory; this should not break
-    ; anything other than package autoupgrading, so cater for that.
-    (when (file-directory-p (expand-file-name "pkginfo/" package-dir))
-      (setq manifest (expand-file-name "pkginfo/MANIFEST.preview" package-dir))
-      (message "Generating %s..." manifest)
-      (with-temp-file manifest
-        (insert "pkginfo/MANIFEST.preview\n")
-        (insert "lisp/preview/ChangeLog\n")
-        (dolist (el els)
-          (insert "lisp/preview/" el "\n")
-          (insert "lisp/preview/" el "c\n"))
-        (dolist (icon icons)
-          (insert "etc/preview/" icon "\n"))))
-    (message "Generating %s...done" manifest)))
+      (byte-compile-file generated-autoload-file))))
+
 
 ;;; prv-install.el ends here

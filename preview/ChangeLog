@@ -1,3 +1,52 @@
+2005-04-11  David Kastrup  <dak@gnu.org>
+
+	* prv-install.el (preview-make-package-xemacs): Don't generate
+	manifest and take package name from command line.
+
+	* configure.in: Don't expose `lispdir'.  Explain `TEXHASH',
+	`PERL', `MAKEINFO', `INSTALL_INFO'.
+
+	* latex/Makefile.in (texmfdir): Don't import.
+
+	* Makefile.in (lispdir): Don't import.
+
+	* preview.el (preview-counter-find): Fix bug with `(marker)'.
+
+	* latex/Makefile.in (exec_prefix, libdir): Export.
+
+	* doc/install.texi (Configure): Explain `--without-texmf-dir'.
+	(Advice for package providers): Don't trash talk AUCTeX
+	preactivation.
+	(Advice for package providers): Mention `--without-texmf-dir'.
+
+	* doc/Makefile.in (exec_prefix, libdir): export.
+
+	* preview.el (preview-datadir): Use instead of `preview-icondir'.
+	(preview-filter-specs): Use it.
+	(preview-TeX-style-dir): New variable for uninstalled styles
+	(preview-set-texinputs): Add or remove it from TEXINPUTS
+	environment.
+	(preview-TeX-style-dir): proper customization.
+	(preview-install-styles): New function to install styles
+	permanently.
+
+	* configure.in: use `packagedatadir' instead of `icondir'.  Add
+	check for `kpathseaseparator'.  Shell-quote and export
+	`exec_prefix' and `libdir'.
+
+	* auto.el.in (preview-datadir): replace preview-icondir, and add
+	`lisppackagetexstyles' invocation.
+
+	* aclocal.m4 (TEX_PATH_TEXMFDIR): Allow --without-texmf-dir, stop
+	quoting a bunch of stuff, fix reference to load-file-name.
+
+	* Makefile.in (exec_prefix, libdir, packagedatadir): export since
+	the XEmacs tree might call them.
+	(.PHONY, install): add install-nosearch target.
+	(install-nosearch): Install .nosearch file.
+	(install-icons): Use `$(packagedatadir)/images' instead of
+	`$(icondir)'
+
 2005-04-10  David Kastrup  <dak@gnu.org>
 
 	* configure.in: Use new backquote syntax.

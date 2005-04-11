@@ -1,4 +1,6 @@
 @SET_MAKE@
+PACKAGE=preview
+PACKAGE_INFO=preview-latex
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))'
 AUCTEX=-eval '(let ((dir (pop command-line-args-left))) \
@@ -18,8 +20,9 @@ ICON_SOURCES = \
  images/prvwrk20.xpm  images/prvwrk24.xbm       images/prvwrk24.xpm
 
 prefix = @prefix@$(null)
-lispdir = @lispdir@$(null)
-icondir = @icondir@$(null)
+exec_prefix = @exec_prefix$(null)
+libdir = @libdir@$(null)
+packagedatadir = @packagedatadir@$(null)
 datadir = @datadir@$(null)
 previewstartfile = @previewstartfile@
 packagedir = @packagedir@$(null)
@@ -52,10 +55,10 @@ install-hint:
 
 
 .PHONY: install install-texmf install-el install-icons install-startup \
-	install-docs use-hint all elisp texmf docs
+	install-nosearch install-docs install-metadata use-hint all elisp texmf docs
 
-install: install-texmf install-el install-icons \
-         install-startup install-docs use-hint
+install: install-texmf install-el install-nosearch install-icons \
+         install-startup install-docs install-metadata use-hint
 
 install-docs:
 	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install)
@@ -79,15 +82,28 @@ install-el: $(LISP_OBJS) auto.el
 	  echo $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done
-	if test $(packagedir) != no; then \
-	  $(ELCC) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) $(LISP_SOURCES) ; \
+
+install-nosearch:
+	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)
+	: >$(DESTDIR)$(packagedatadir)/.nosearch
+
+install-metadata:
+	if test "x$(packagedir)" != xno ; then \
+	  $(ELCC) $(AUCTEX) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)"  && \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
+	  cd $(DESTDIR)$(packagedir) && \
+	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -type f -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
+	  for i in $(PACKAGE_INFO); do \
+	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
+	  done ; \
+	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
 	fi
 
 install-icons: $(ICON_SOURCES)
-	-$(MKINSTALLDIRS) $(DESTDIR)$(icondir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
 	for x in $(ICON_SOURCES); do \
-	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(icondir) ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(icondir) ; \
+	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(packagedatadir)/images ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagedatadir)/images ; \
 	done
 
 install-texmf:

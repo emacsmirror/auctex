@@ -47,19 +47,19 @@ then
      AC_FULL_EXPAND(_tmpdir_)
      if test -d "${_tmpdir_}/site-start.d"
      then
-       previewstartfile='${lispdir}/site-start.d/preview-latex.el'
+       previewstartfile="${lispdir}/site-start.d/preview-latex.el"
      else
-       previewstartfile='${lispdir}/preview-latex.el'
+       previewstartfile="${lispdir}/preview-latex.el"
      fi])
    AC_MSG_RESULT([[${previewstartfile}]])
-   packagelispdir='${lispdir}/preview'
-   icondir="${packagelispdir}/images"
+   packagelispdir="${lispdir}/preview"
+   packagedatadir="${packagelispdir}"
 else
    #lispdir is only used for determining relative files.
    lispdir="${packagedir}"
    packagelispdir="${packagedir}/lisp/preview"
    previewstartfile="${packagelispdir}"/auto-autoloads.el
-   icondir="${packagedir}/etc/preview"
+   packagedatadir="${packagedir}/etc/preview"
    infodir="${packagedir}/info"
 fi
 
@@ -73,12 +73,12 @@ AC_ARG_WITH(packagelispdir,
 AC_LISPIFY_DIR(packagelispdir,"${previewstartfile}")
 AC_MSG_RESULT([[${packagelispdir}]])
 
-AC_MSG_CHECKING([where the icon files go])
-AC_ARG_WITH(icondir,
-[[  --with-icondir=DIR         Where the icon files go.]],
-  [icondir=["${withval}"]])
-AC_LISPIFY_DIR(icondir,"${previewstartfile}")
-AC_MSG_RESULT([[${icondir}]])
+AC_MSG_CHECKING([where the data files go])
+AC_ARG_WITH(packagedatadir,
+[[  --with-packagedatadir=DIR         Where the data files go.]],
+  [packagedatadir=["${withval}"]])
+AC_LISPIFY_DIR(packagedatadir,"${previewstartfile}")
+AC_MSG_RESULT([[${packagedatadir}]])
 
 AC_MSG_CHECKING(Where the info files go)
 AC_MSG_RESULT([[${infodir}]])
@@ -118,7 +118,8 @@ AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 # Be very careful about assuming things about the available hash programs
 # MikTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
-AC_ARG_VAR(TEXHASH,[command to update the TeX filename database])
+AC_ARG_VAR(TEXHASH,[command to update the TeX filename database.
+Set to : to skip updating the database on installation.])
 AC_PATH_PROG(TEXHASH, texhash)
 if test -z "${TEXHASH}"; then
   AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
@@ -129,10 +130,54 @@ fi
 
 TEX_PATH_TEXMFDIR
 
-AC_PATH_PROG(PERL, perl, :)
-AC_PATH_PROG(MAKEINFO, makeinfo, :)
-MAKEINFO_CHECK_MACROS(acronym env option)
-AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
+if test "x${texmfdir}" = "xno"
+then
+  AC_MSG_CHECKING([kpathsea directory separator])
+  AC_ARG_WITH(kpathseaseparator,
+  [  --with-kpathsea-sep=@<:@:|;@:>@
+                      directory separator for kpathsea],
+  [[kpathseaseparator="${withval}"]],
+  [test "x${pathoutput}" != x || pathoutput="`kpsepath -n latex tex`"
+    case "${pathoutput}" in *\;*) kpathseaseparator=";" ;;
+      *:*) kpathseaseparator=":" ;;
+      *) AC_MSG_ERROR([Can't determine kpathsea directory separator!
+Please use --with-kpathsea-sep=@<:@:|;@>:@ to specify it!])
+    esac])
+  AC_MSG_RESULT([["${kpathseaseparator}"]])
+  packagetexstyles="${packagedatadir}/latex"
+  AC_LISPIFY_DIR(packagetexstyles,"${previewstartfile}")
+  lisppackagetexstyles="(defvar preview-TeX-style-dir (concat ${lisppackagetexstyles} \"${kpathseaseparator}\"))"
+else
+  lisppackagetexstyles=
+fi
+AC_SUBST(lisppackagetexstyles)
+
+AC_ARG_VAR(PERL,[Perl executable.  If set to :, some documentation
+cannot be regenerated, but installation of an unmodified tarball will
+succeed.])
+
+if test "x$PERL" = x
+then
+   AC_PATH_PROG(PERL, perl, :)
+fi
+
+AC_ARG_VAR(PERL,[Makeinfo executable.  If set to :, some documentation
+cannot be regenerated, but installation of an unmodified tarball will
+succeed.])
+
+if test "x$MAKEINFO" = x
+then
+   AC_PATH_PROG(MAKEINFO, makeinfo, :)
+
+   MAKEINFO_CHECK_MACROS(acronym env option)
+fi
+
+AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
+
+if test "x$INSTALL_INFO" = x
+then
+  AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
+fi
 
 AC_MSG_CHECKING([[for glaring installation conflicts]])
 exppackagelispdir="$packagelispdir"
@@ -170,13 +215,15 @@ fi
 
 AC_SHELL_QUOTIFY(texmfdir)
 AC_SHELL_QUOTIFY(prefix)
+AC_SHELL_QUOTIFY(exec_prefix)
+AC_SHELL_QUOTIFY(libdir)
 AC_SHELL_QUOTIFY(previewtexmfdir)
 AC_SHELL_QUOTIFY(previewdocdir)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(packagelispdir)
 AC_SHELL_QUOTIFY(previewstartfile)
 AC_SHELL_QUOTIFY(lispdir)
-AC_SHELL_QUOTIFY(icondir)
+AC_SHELL_QUOTIFY(packagedatadir)
 AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(auctexdir)
 AC_SHELL_QUOTIFY(datadir)
@@ -185,6 +232,7 @@ AC_SHELL_QUOTIFY(TEXHASH)
 AC_SHELL_QUOTIFY(EMACS)
 AC_SHELL_QUOTIFY(INSTALL_INFO)
 AC_SHELL_QUOTIFY(MAKEINFO)
+AC_SHELL_QUOTIFY(PERL)
 AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)
 AC_SHELL_QUOTIFY(PDFLATEX)

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.249 2005-04-10 16:28:59 angeli Exp $
+;; $Id: preview.el,v 1.250 2005-04-11 09:01:31 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1376,15 +1376,15 @@ icon is cached in the property list of the symbol."
 	     (throw 'preview-filter-specs nil)
 	   (preview-filter-specs-1 args))))
 
-(defvar preview-icondir (expand-file-name "images"
-					  (file-name-directory load-file-name))
-  "The directory relative to which images may be found.
-This should be hardwired into the startup file
-containing the autoloads for preview-latex.")
+(defvar preview-datadir (file-name-directory load-file-name)
+  "The directory relative to which package data may be found.
+This should be hardwired into the startup file containing the
+autoloads for preview-latex.")
 
 (put 'preview-filter-specs :file
      #'(lambda (keyword value &rest args)
-	 `(:file ,(expand-file-name value preview-icondir)
+	 `(:file ,(expand-file-name value (expand-file-name "images"
+							    preview-datadir))
 		 ,@(preview-filter-specs-1 args))))
 
 (defun preview-ascent-from-bb (bb)
@@ -1989,7 +1989,7 @@ Factored out because of compatibility macros XEmacs would
 not use in advice."
   ;; The following two lines are bug workaround for Emacs < 22.1.
   (if (markerp begin)
-      (setq begin (marker-position (marker))))
+      (setq begin (marker-position begin)))
   (or (car (get-char-property begin 'preview-counters))
       (cdr (get-char-property (max (point-min)
 				   (1- begin))
@@ -2293,6 +2293,86 @@ filename=%s>
      ["Copy MIME" (preview-copy-mml ,ov)
       (preview-active-contents ,ov)])
    ev))
+
+(defvar preview-TeX-style-dir)
+
+(defun preview-set-texinputs (&optional remove)
+  "Add `preview-TeX-style-dir' into `TEXINPUT' variables.
+With prefix argument REMOVE, remove it again."
+  (interactive "P")
+  (if remove
+      (let ((case-fold-search nil)
+	    (pattern (concat "\\`\\(TEXINPUTS[^=]*\\)=\\(.*\\)"
+			     (regexp-quote preview-TeX-style-dir))))
+	(dolist (env (copy-sequence process-environment))
+	  (if (string-match pattern env)
+	      (setenv (match-string 1 env)
+		      (and (or (< (match-beginning 2) (match-end 2))
+			       (< (match-end 0) (length env)))
+			   (concat (match-string 2 env)
+				   (substring env (match-end 0))))))))
+    (let ((case-fold-search nil)
+	  (pattern (regexp-quote preview-TeX-style-dir)))
+      (dolist (env (cons "TEXINPUTS=" (copy-sequence process-environment)))
+	(if (string-match "\\`(TEXINPUTS[^=]*\\)=" env)
+	    (unless (string-match pattern env)
+	      (setenv (match-string 1 env)
+		      (concat preview-TeX-style-dir
+			      (substring env (match-end 0))))))))))
+
+(defcustom preview-TeX-style-dir nil
+  "This variable contains the location of uninstalled TeX styles.
+This has to be followed by the character with which kpathsea
+separates path components, either `:' on Unix-like systems,
+or `;' on Windows-like systems.
+
+If this is non-nil, the `TEXINPUT' environment type variables will
+get this prepended at load time calling \\[preview-set-texinputs]
+to reflect this.  You can permanently install the style files
+using \\[preview-install-styles].
+
+Don't set this variable other than with customize so that its
+changes get properly reflected in the environment."
+  :group 'preview-latex
+  :set (lambda (var value)
+	 (and (boundp var)
+	      (symbol-value var)
+	      (preview-set-texinputs t))
+	 (set var value)
+	 (and (symbol-value var)
+	      (preview-set-texinputs)))
+  :type '(choice (const :tag "Installed" nil)
+		 (string :tag "Directory followed by kpathsea delimiter")))
+
+(defun preview-install-styles (dir &optional force-overwrite
+				   force-save)
+  "Installs the TeX style files into a permanent location.
+This must be in the TeX search path.  If FORCE-OVERWRITE is greater
+than 1, files will get overwritten without query, if it is less
+than 1 or nil, the operation will fail.  The default of 1 for interactive
+use will query.
+
+Similarly FORCE-SAVE can be used for saving
+`preview-TeX-style-dir' to record the fact that the uninstalled
+files are no longer needed in the search path."
+  (interactive "DPermanent location for preview TeX styles
+pp")
+  (unless preview-TeX-style-dir
+    (error "Styles are already installed"))
+  (dolist (file (directory-files
+		 (substring preview-TeX-style-dir 0 -1)
+		 t "\\.\\(sty\\|def\\|cfg\\)\\'"))
+    (copy-file file dir (cond ((eq force-overwrite 1) 1)
+			      ((numberp force-overwrite)
+			       (> force-overwrite 1))
+			      (t force-overwrite))))
+  (if (cond ((eq force-save 1)
+	     (y-or-n-p "Stop using non-installed styles permanently "))
+	    ((numberp force-save)
+	     (> force-save 1))
+	    (t force-save))
+      (customize-save-variable 'preview-TeX-style-dir nil)
+    (customize-set-variable 'preview-TeX-style-dir nil)))
 
 ;;;###autoload
 (defun LaTeX-preview-setup ()
@@ -3308,7 +3388,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.249 $"))
+	(rev "$Revision: 1.250 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3319,7 +3399,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-10 16:28:59 $"))
+    (let ((date "$Date: 2005-04-11 09:01:31 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
