@@ -1,6 +1,7 @@
 2005-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
-	* tex-site.el.in (TeX-lisp-directory): Quote parentheses in doc string.
+	* tex-site.el.in (TeX-lisp-directory): Avoid open-parenthesis at
+	beginning of a line.
 
 	* tex-style.el (LaTeX-beamer-inner-themes)
 	(LaTeX-beamer-outer-themes, LaTeX-beamer-color-themes)
