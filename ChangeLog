@@ -1,3 +1,13 @@
+2005-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-math-abbrev-prefix): Can now be a string to be
+	used with `kbd'.
+	(LaTeX-math-abbrev-prefix): New function.
+	(LaTeX-math-keymap, LaTeX-math-mode): Use it.
+
+	* doc/auctex.texi (Mathematics): Explain
+	`LaTeX-math-abbrev-prefix' more verbosely.
+
 2005-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-site.el.in (TeX-lisp-directory): Avoid open-parenthesis at
