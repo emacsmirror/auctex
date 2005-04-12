@@ -326,10 +326,9 @@ resulting @file{.log} file.
 
 @subsection Does @previewlatex{} work with  PDF@LaTeX{}?
 
-Yes, but the foreground color appears fixed to black.  Competent
-volunteers to fix this welcome.  PDF@LaTeX{} works fine with @AUCTeX{}
-version 11.50 or later.  For earlier versions, you need to have
-@var{LaTeX-command-style} configured manually to call PDF@LaTeX{}.
+Yes.  PDF@LaTeX{} works fine with @AUCTeX{} version 11.50 or later.  For
+earlier versions, you need to have @var{LaTeX-command-style} configured
+manually to call PDF@LaTeX{}.
 
 @subsection Does @previewlatex{} work with @samp{elatex}?
 

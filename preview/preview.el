@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.251 2005-04-11 18:38:10 angeli Exp $
+;; $Id: preview.el,v 1.252 2005-04-12 15:12:39 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -702,7 +702,7 @@ SETUP may contain a parser setup function."
 	  preview-gs-init-string
 	  (format "{DELAYSAFER{.setsafe}if}stopped pop\
 /.preview-BP currentpagedevice/BeginPage get dup \
-null eq {pop{pop}bind}if def \
+null eq {pop{pop}bind}if def\
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
 /preview-do{[count 3 roll save]3 1 roll dup length 0 eq\
@@ -720,6 +720,19 @@ aload pop restore}bind def "
 Conversion from Emacs color numbers (0 to 65535) in VALUE
 to Ghostscript floats."
   (format "%g" (/ value 65535.0)))
+
+(defun preview-pdf-color-string (colors)
+  "Return a string that patches PDF foreground color to work properly."
+  ;; Actually, this is rather brutal.  It will only be invoked in
+  ;; cases, however, where previously it was not expected that
+  ;; anything readable turned up, anyway.
+  (let ((fg (aref colors 1)))
+    (if fg
+	(concat
+	 "/GS_PDF_ProcSet GS_PDF_ProcSet dup maxlength dict copy dup begin\
+/graphicsbeginpage{//graphicsbeginpage exec "
+	 (mapconcat #'preview-gs-color-value fg " ")
+	 " 3 copy rg RG}bind store end readonly store "))))
 
 (defun preview-gs-color-string (colors)
   "Return a string setting up colors"
@@ -874,6 +887,9 @@ The usual PROCESS and COMMAND arguments for
 	(cond ((eq status 'exit)
 	       (delete-process process)
 	       (setq TeX-sentinel-function nil)
+	       (setq preview-gs-init-string
+		     (concat preview-gs-init-string
+			     (preview-pdf-color-string preview-colors)))
 	       (preview-prepare-fast-conversion)
 	       (when gsstart
 		 (if preview-gs-queue
@@ -3388,7 +3404,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.251 $"))
+	(rev "$Revision: 1.252 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3399,7 +3415,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-11 18:38:10 $"))
+    (let ((date "$Date: 2005-04-12 15:12:39 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

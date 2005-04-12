@@ -1,5 +1,13 @@
 2005-04-12  David Kastrup  <dak@gnu.org>
 
+	* configure.ac: Don't bother about pre-2.5 autoconf versions.
+
+	* doc/faq.texi (Customization): Remove lamentation that PDF
+	foreground is fixed to black.
+
+	* preview.el (preview-pdf-color-string): New function.
+	(preview-pdf2dsc-sentinel): Use it.
+
 	* configure.ac: renamed from configure.in
 
 2005-04-11  jalar  <jalar@mai.liu.se>
