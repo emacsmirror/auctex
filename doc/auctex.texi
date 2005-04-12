@@ -770,8 +770,13 @@ To enable LaTeX-math-mode by default, add the following in your
 @end lisp
 
 @defopt LaTeX-math-abbrev-prefix
-A string containing the prefix of @code{LaTeX-math-mode} commands;
-This value defaults to @kbd{`}.
+A string or Elisp expression containing the prefix of
+@code{LaTeX-math-mode} commands; This value defaults to @kbd{`}.
+
+The string has to adhere to a format understood by the @code{kbd} macro
+which corresponds to the syntax usually used in the Emacs and Elisp
+manuals.  The Elisp expression has to be suitable to be fed to
+@code{define-key}.
 @end defopt
 
 The variable @code{LaTeX-math-list} holds the actual mapping.
