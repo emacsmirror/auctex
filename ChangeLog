@@ -1,5 +1,7 @@
 2005-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex-site.el.in (TeX-lisp-directory): Quote parentheses in doc string.
+
 	* tex-style.el (LaTeX-beamer-inner-themes)
 	(LaTeX-beamer-outer-themes, LaTeX-beamer-color-themes)
 	(LaTeX-beamer-font-themes): New variables for style/beamer.el.
