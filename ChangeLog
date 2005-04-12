@@ -1,3 +1,13 @@
+2005-04-12  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-style.el (LaTeX-beamer-inner-themes)
+	(LaTeX-beamer-outer-themes, LaTeX-beamer-color-themes)
+	(LaTeX-beamer-font-themes): New variables for style/beamer.el.
+
+	* style/beamer.el (LaTeX-arg-beamer-inner-theme)
+	(LaTeX-arg-beamer-outer-theme, LaTeX-arg-beamer-color-theme)
+	(LaTeX-arg-beamer-font-theme): New functions.
+
 2005-04-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-parse-argument): Another stab at fixing this

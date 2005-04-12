@@ -68,6 +68,11 @@
     '("titlegraphic" 1)
     '("uncover" TeX-arg-beamer-overlay-spec 1)
     '("usetheme" LaTeX-arg-beamer-theme)
+    '("useinnertheme" LaTeX-arg-beamer-inner-theme)
+    '("useoutertheme" LaTeX-arg-beamer-outer-theme)
+    '("usecolortheme" LaTeX-arg-beamer-color-theme)
+    '("usefonttheme" LaTeX-arg-beamer-font-theme)
+    '("usetheme" LaTeX-arg-beamer-theme)
     '("visible" TeX-arg-beamer-overlay-spec 1))
 
    (LaTeX-add-environments
@@ -192,3 +197,78 @@ also be a string.  Then the length of the string is used."
     nil nil nil)
    t))
 
+(defun LaTeX-arg-beamer-inner-theme (&rest ignore)
+  "Prompt for beamer inner theme with completion."
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt nil nil "Theme")
+    (mapcar 'list
+	    (cond ((eq LaTeX-beamer-inner-themes 'local)
+		   (set (make-local-variable 'LaTeX-beamer-inner-themes)
+			(LaTeX-beamer-search-themes "^beamerinnertheme")))
+		  ((functionp LaTeX-beamer-inner-themes)
+		   (funcall LaTeX-beamer-inner-themes))
+		  ((listp LaTeX-beamer-inner-themes)
+		   LaTeX-beamer-inner-themes)
+		  (t (error
+		      "`LaTeX-beamer-inner-themes' should be a list: `%s'"
+		      LaTeX-beamer-inner-themes))))
+    nil nil nil)
+   t))
+
+(defun LaTeX-arg-beamer-outer-theme (&rest ignore)
+  "Prompt for beamer outer theme with completion."
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt nil nil "Theme")
+    (mapcar 'list
+	    (cond ((eq LaTeX-beamer-outer-themes 'local)
+		   (set (make-local-variable 'LaTeX-beamer-outer-themes)
+			(LaTeX-beamer-search-themes "^beameroutertheme")))
+		  ((functionp LaTeX-beamer-outer-themes)
+		   (funcall LaTeX-beamer-outer-themes))
+		  ((listp LaTeX-beamer-outer-themes)
+		   LaTeX-beamer-outer-themes)
+		  (t (error
+		      "`LaTeX-beamer-outer-themes' should be a list: `%s'"
+		      LaTeX-beamer-outer-themes))))
+    nil nil nil)
+   t))
+
+(defun LaTeX-arg-beamer-color-theme (&rest ignore)
+  "Prompt for beamer color theme with completion."
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt nil nil "Theme")
+    (mapcar 'list
+	    (cond ((eq LaTeX-beamer-color-themes 'local)
+		   (set (make-local-variable 'LaTeX-beamer-color-themes)
+			(LaTeX-beamer-search-themes "^beamercolortheme")))
+		  ((functionp LaTeX-beamer-color-themes)
+		   (funcall LaTeX-beamer-color-themes))
+		  ((listp LaTeX-beamer-color-themes)
+		   LaTeX-beamer-color-themes)
+		  (t (error
+		      "`LaTeX-beamer-color-themes' should be a list: `%s'"
+		      LaTeX-beamer-color-themes))))
+    nil nil nil)
+   t))
+
+(defun LaTeX-arg-beamer-font-theme (&rest ignore)
+  "Prompt for beamer font theme with completion."
+  (TeX-argument-insert
+   (completing-read
+    (TeX-argument-prompt nil nil "Theme")
+    (mapcar 'list
+	    (cond ((eq LaTeX-beamer-font-themes 'local)
+		   (set (make-local-variable 'LaTeX-beamer-font-themes)
+			(LaTeX-beamer-search-themes "^beamerfonttheme")))
+		  ((functionp LaTeX-beamer-font-themes)
+		   (funcall LaTeX-beamer-font-themes))
+		  ((listp LaTeX-beamer-font-themes)
+		   LaTeX-beamer-font-themes)
+		  (t (error
+		      "`LaTeX-beamer-font-themes' should be a list: `%s'"
+		      LaTeX-beamer-font-themes))))
+    nil nil nil)
+   t))

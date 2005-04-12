@@ -105,6 +105,114 @@ It can be a list of themes or a function.  If it is the symbol
 	     :tag "Other"
 	     (string)))))
 
+(defcustom LaTeX-beamer-inner-themes 'local
+  "Presentation inner themes for the LaTeX beamer package.
+It can be a list of themes or a function.  If it is the symbol
+`local', search only once per buffer."
+  :group 'LaTeX-style
+  :type '(choice
+    (const :tag "TeX search" LaTeX-beamer-search-inner-themes)
+    (const :tag "Search once per buffer" local)
+    (function :tag "Other function")
+    (list
+     :value ("circles" "default" "inmargin" "rectangles" "rounded")
+     (set :inline t
+	  (const "circles")
+	  (const "default")
+	  (const "inmargin")
+	  (const "rectangles")
+	  (const "rounded"))
+     (repeat :inline t
+	     :tag "Other"
+	     (string)))))
+
+(defcustom LaTeX-beamer-outer-themes 'local
+  "Presentation outer themes for the LaTeX beamer package.
+It can be a list of themes or a function.  If it is the symbol
+`local', search only once per buffer."
+  :group 'LaTeX-style
+  :type
+  '(choice
+    (const :tag "TeX search" LaTeX-beamer-search-outer-themes)
+    (const :tag "Search once per buffer" local)
+    (function :tag "Other function")
+    (list
+     :value
+     ("default" "infolines" "miniframes" "shadow" "sidebar" "smoothbars"
+      "smoothtree" "split" "tree")
+     (set :inline t
+	  (const "default")
+	  (const "infolines")
+	  (const "miniframes")
+	  (const "shadow")
+	  (const "sidebar")
+	  (const "smoothbars")
+	  (const "smoothtree")
+	  (const "split")
+	  (const "tree"))
+     (repeat :inline t
+	     :tag "Other"
+	     (string)))))
+
+(defcustom LaTeX-beamer-color-themes 'local
+  "Presentation color themes for the LaTeX beamer package.
+It can be a list of themes or a function.  If it is the symbol
+`local', search only once per buffer."
+  :group 'LaTeX-style
+  :type
+  '(choice
+    (const :tag "TeX search" LaTeX-beamer-search-color-themes)
+    (const :tag "Search once per buffer" local)
+    (function :tag "Other function")
+    (list
+     :value
+     ("albatross" "beetle" "crane" "default" "dolphin" "dove" "fly" "lily"
+      "orchid" "rose" "seagull" "seahorse" "sidebartab" "structure" "whale")
+     (set :inline t
+	  (const "albatross")
+	  (const "beetle")
+	  (const "crane")
+	  (const "default")
+	  (const "dolphin")
+	  (const "dove")
+	  (const "fly")
+	  (const "lily")
+	  (const "orchid")
+	  (const "rose")
+	  (const "seagull")
+	  (const "seahorse")
+	  (const "sidebartab")
+	  (const "structure")
+	  (const "whale"))
+     (repeat :inline t
+	     :tag "Other"
+	     (string)))))
+
+(defcustom LaTeX-beamer-font-themes 'local
+  "Presentation font themes for the LaTeX beamer package.
+It can be a list of themes or a function.  If it is the symbol
+`local', search only once per buffer."
+  :group 'LaTeX-style
+  :type
+  '(choice
+    (const :tag "TeX search" LaTeX-beamer-search-font-themes)
+    (const :tag "Search once per buffer" local)
+    (function :tag "Other function")
+    (list
+     :value
+     ("default" "professionalfonts" "serif" "structurebold"
+      "structureitalicserif" "structuresmallcapsserif")
+     (set :inline t
+	  (const "default")
+	  (const "professionalfonts")
+	  (const "serif")
+	  (const "structurebold")
+	  (const "structureitalicserif")
+	  (const "structuresmallcapsserif"))
+     (repeat :inline t
+	     :tag "Other"
+	     (string)))))
+
 ;; style/csquotes.el
 
 (defcustom LaTeX-csquotes-quote-after-quote nil
