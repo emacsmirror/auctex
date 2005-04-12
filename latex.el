@@ -3903,13 +3903,27 @@ Each entry should be a list with upto four elements, KEY, VALUE,
 MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defcustom LaTeX-math-abbrev-prefix "`"
-  "Prefix key for use in `LaTeX-math-mode'."
+  "Prefix key for use in `LaTeX-math-mode'.
+This can either be a string representing a key sequence or an
+arbitrary Elisp expression.  The string has to adhere to a format
+understood by the `kbd' macro which corresponds to the syntax
+usually used in the Emacs and Elisp manuals.  The Elisp
+expression has to be suitable to be fed to `define-key'.
+
+Setting this variable directly does not take effect;
+you have to restart Emacs."
   :group 'LaTeX-math
-  :type 'sexp)
+  :type '(choice (string :tag "Key sequence") (sexp)))
+
+(defun LaTeX-math-abbrev-prefix ()
+  "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
+  (if (stringp LaTeX-math-abbrev-prefix)
+      (read-kbd-macro LaTeX-math-abbrev-prefix)
+    LaTeX-math-abbrev-prefix))
 
 (defvar LaTeX-math-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map LaTeX-math-abbrev-prefix 'self-insert-command)
+    (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command)
     map)
   "Keymap used for `LaTeX-math-mode' commands.")
 
@@ -3991,7 +4005,7 @@ the symbols will be surrounded by dollar signs.  The following
 commands are defined:
 
 \\{LaTeX-math-mode-map}"
-  nil nil (list (cons LaTeX-math-abbrev-prefix LaTeX-math-keymap))
+  nil nil (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
   (if LaTeX-math-mode
       (easy-menu-add LaTeX-math-mode-menu LaTeX-math-mode-map)
     (easy-menu-remove LaTeX-math-mode-menu))
