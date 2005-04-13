@@ -26,7 +26,6 @@
      '("aligned"    LaTeX-amsmath-env-aligned)
      '("gathered"   LaTeX-amsmath-env-aligned)
      "align*" "gather*" "flalign*" "multline*" "equation*"
-     "alignat*" "xalignat*"
      "split"
      "cases"
      "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"
@@ -82,12 +81,15 @@
 		     ("aligned"  . LaTeX-item-equation)
 		     ("alignat"  . LaTeX-item-equations)
 		     ("alignat*" . LaTeX-item-equation)
+		     ("xalignat"  . LaTeX-item-equations)
+		     ("xalignat*" . LaTeX-item-equation)
+		     ("xxalignat" . LaTeX-item-equation)
 		     ("flalign"  . LaTeX-item-equations)
 		     ("flalign*" . LaTeX-item-equation)
 		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
-    ;; When `LaTeX-amsmath-label' i nil, use value of LaTeX-equation-label:
+    ;; When `LaTeX-amsmath-label' is nil, use value of LaTeX-equation-label:
     (unless LaTeX-amsmath-label
       (setq LaTeX-amsmath-label LaTeX-equation-label))
 
@@ -113,6 +115,7 @@
   (let ((ncols (read-string "Number of columns: ")))
     (LaTeX-insert-environment env (concat TeX-grop ncols TeX-grcl))
     (and (not (string= "xxalignat" env))
+	 (not (string= "*" (substring env -1)))
 	 (LaTeX-label environment)
 	 (newline-and-indent))))
 
