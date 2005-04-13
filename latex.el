@@ -3904,16 +3904,20 @@ MENU and CHARACTER, see `LaTeX-math-list' for details.")
 
 (defcustom LaTeX-math-abbrev-prefix "`"
   "Prefix key for use in `LaTeX-math-mode'.
-This can either be a string representing a key sequence or an
-arbitrary Elisp expression.  The string has to adhere to a format
-understood by the `kbd' macro which corresponds to the syntax
-usually used in the Emacs and Elisp manuals.  The Elisp
-expression has to be suitable to be fed to `define-key'.
+This has to be a string representing a key sequence in a format
+understood by the `kbd' macro.  This corresponds to the syntax
+usually used in the Emacs and Elisp manuals.
 
 Setting this variable directly does not take effect;
-you have to restart Emacs."
+use \\[customize]."
   :group 'LaTeX-math
-  :type '(choice (string :tag "Key sequence") (sexp)))
+  :initialize 'custom-initialize-default
+  :set '(lambda (symbol value)
+	  (define-key LaTeX-math-mode-map (LaTeX-math-abbrev-prefix) t)
+	  (set-default symbol value)
+	  (define-key LaTeX-math-mode-map
+	    (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  :type '(string :tag "Key sequence"))
 
 (defun LaTeX-math-abbrev-prefix ()
   "Make a key definition from the variable `LaTeX-math-abbrev-prefix'."
