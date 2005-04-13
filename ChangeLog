@@ -1,3 +1,12 @@
+2005-04-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-math-abbrev-prefix): Offer only string type for
+	customization.  Add proper :initialize and :set functions to allow
+	the value to be changed without having to restart Emacs.
+
+	* doc/auctex.texi (Mathematics): Document only the string-nature
+	of `LaTeX-math-abbrev-prefix'.
+
 2005-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-math-abbrev-prefix): Can now be a string to be
