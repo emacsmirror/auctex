@@ -1,3 +1,12 @@
+2005-04-14  Ikumi Keita <ikumi@revery.net>
+
+	* style/amsmath.el: Fix comment.
+	("amsmath"): Removed duplicate settings of "alignat*" and
+	"xalignat*" from LaTeX-add-environments.  Add "xalignat",
+	"xalignat*", and "xxalignat" to LaTeX-item-list.
+	(LaTeX-amsmath-env-alignat): Do not ask label if the tail of ENV
+	is "*".
+
 2005-04-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Refactoring.  Set
