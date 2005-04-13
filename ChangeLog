@@ -1,3 +1,9 @@
+2005-04-14  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Refactoring.  Set
+	third argument of re-search-backward to 'move instead of using
+	skip-chars-backward.
+
 2005-04-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-math-abbrev-prefix): Offer only string type for
