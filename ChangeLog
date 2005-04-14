@@ -1,3 +1,13 @@
+2005-04-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-force-fontify): New variable.
+	(TeX-fold-buffer): Use it.  Make sure the buffer is fontified
+	before folding is done.
+
+	* doc/auctex.texi (Folding): Mention `TeX-fold-force-fontify'.
+
+	* doc/changes.texi: Mention `TeX-fold-force-fontify'.
+
 2005-04-14  Ikumi Keita <ikumi@revery.net>
 
 	* style/amsmath.el: Fix comment.
