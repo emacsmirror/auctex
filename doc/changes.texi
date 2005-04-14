@@ -8,6 +8,13 @@
 
 @itemize @bullet
 @item
+Folding a buffer now ensures that the whole buffer is fontified before
+the actual folding is carried out.  If this results in unbearably long
+execution times you can fall back to the old behavior of relying on
+stealth font locking to do this job in the background, you can customize
+the variable @code{TeX-fold-force-fontify}.
+
+@item
 Folded content now reveals part of its original text in a tooltip or the
 echo area when hovering with the mouse pointer over it.
 
