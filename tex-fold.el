@@ -35,11 +35,11 @@
 ;; The display string of content which should display part of itself
 ;; is made by copying the text from the buffer together with its text
 ;; properties.  If fontification has not happened when this is done
-;; (e.g. because of lazy font locking) the intended fontification will
-;; not show up.  Maybe this could be improved by using some sort of
-;; "lazy folding" or refreshing the window upon scrolling.  As a
-;; workaround you can leave Emacs idle a few seconds and wait for
-;; stealth font locking to finish before you fold the buffer.
+;; (e.g. because of lazy or just-in-time font locking) the intended
+;; fontification will not show up.  Maybe this could be improved by
+;; using some sort of "lazy folding" or refreshing the window upon
+;; scrolling.  As a workaround fontification of the whole buffer
+;; currently is forced before folding it.
 
 ;;; Code:
 
@@ -126,6 +126,11 @@ Set it to zero in order to disable help echos."
   :type 'integer
   :group 'TeX-fold)
 
+(defcustom TeX-fold-force-fontify t
+  "Force the buffer to be fully fontified by folding it."
+  :group 'TeX-fold
+  :type 'boolean)
+
 (defface TeX-fold-folded-face
   '((((class color) (background light))
      (:foreground "SlateBlue"))
@@ -198,6 +203,13 @@ The relevant macros are specified in the variable `TeX-fold-macro-spec-list'
 and environments in `TeX-fold-env-spec-list'."
   (interactive)
   (TeX-fold-clearout-region (point-min) (point-max))
+  (when (and TeX-fold-force-fontify
+	     (boundp 'jit-lock-mode)
+	     jit-lock-mode
+	     (fboundp 'jit-lock-fontify-now))
+    ;; We force fontification here only because it should rarely be
+    ;; needed for the other folding commands.
+    (jit-lock-fontify-now))
   (TeX-fold-region (point-min) (point-max)))
 
 (defun TeX-fold-paragraph ()
@@ -298,6 +310,10 @@ environments or 'macro for macros."
 						    item-end))
 						 "[Error: No content found]")
 					   display-string-spec))
+;; 					   (apply #'propertize
+;; 						  display-string-spec
+;; 						  (text-properties-at
+;; 						   (point)))))
 			 (ov (TeX-fold-make-overlay item-start item-end type
 						    display-string-spec
 						    display-string)))
@@ -406,6 +422,8 @@ Return non-nil if an item was found and folded, nil otherwise."
 						     item-end))
 				       "[Error: No content found]")
 				 display-string-spec))
+;; 				 (apply #'propertize display-string-spec
+;; 					(text-properties-at (point)))))
 	       (ov (TeX-fold-make-overlay item-start item-end type
 					  display-string-spec
 					  display-string)))
