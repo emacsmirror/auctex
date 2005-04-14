@@ -1656,6 +1656,13 @@ and show macros and environments:
 command can also be used to refresh the whole buffer and hide any new
 macros and environments which were inserted after the last invocation of
 the command.
+
+@vindex TeX-fold-force-fontify
+In order for all folded content to get the right faces, the whole buffer
+has to be fontified before folding is carried out.  The command
+therefore will force fontification of unfontified regions.  As this will
+prolong the time folding takes, you can prevent forced fontification by
+customizing the variable @code{TeX-fold-force-fontify}.
 @end deffn
 
 @deffn Command TeX-fold-region
