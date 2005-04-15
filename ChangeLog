@@ -1,3 +1,8 @@
+2005-04-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/harvard.el ("harvard"): Activate harvard citation format
+	in RefTeX.
+
 2005-04-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-force-fontify): New variable.
