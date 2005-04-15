@@ -1,11 +1,13 @@
-;; Support for Harvard Citation style package for AUC-TeX
-;;      Harvard citation style is from Peter Williams
-;;      available on the CTAN servers
+;;; harvard.el --- Support for Harvard Citation style package for AUCTeX.
 
-;; Version: $Id: harvard.el,v 1.7 1999-07-16 13:48:17 abraham Exp $
+;; Harvard citation style is from Peter Williams
+;; available on the CTAN servers
+
+;; Version: $Id: harvard.el,v 1.8 2005-04-15 14:25:49 angeli Exp $
 
 ;; Copyright (C) 1994 Berwin Turlach <berwin@core.ucl.ac.be>
 ;; Copyright (C) 1997 Berwin Turlach <berwin.turlach@anu.edu.au>
+;; Copyright (C) 2005 Free Software Foundation, Inc.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -98,7 +100,11 @@
     
     (setq LaTeX-item-list
 	  (cons '("thebibliography" . LaTeX-item-harvardbib)
-		LaTeX-item-list)))))
+		LaTeX-item-list))
+
+    ;; Tell RefTeX
+    (when (fboundp 'reftex-set-cite-format)
+      (reftex-set-cite-format 'harvard)))))
 
 (defun LaTeX-env-harvardbib (environment &optional ignore)
   "Insert ENVIRONMENT with label for harvarditem."
