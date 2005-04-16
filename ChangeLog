@@ -1,3 +1,8 @@
+2005-04-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* style/amsmath.el (LaTeX-item-equation): just-one-space before
+	`\\' at the end of line.
+
 2005-04-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/harvard.el ("harvard"): Activate harvard citation format
