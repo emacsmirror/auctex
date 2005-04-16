@@ -1,3 +1,8 @@
+2005-04-16  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Work around another ntheorem bug affecting
+	showlabels.
+
 2005-04-12  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: Don't bother about pre-2.5 autoconf versions.

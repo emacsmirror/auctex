@@ -1,7 +1,7 @@
 %%\iffalse
 %%     preview.dtx for extracting previews from LaTeX documents.  Part of
 %%     the preview-latex package.
-%%     Copyright (C) 2001, 2002, 2003, 2004, 2005 David Kastrup
+%%     Copyright (C) 2001, 2002, 2003, 2004, 2005 Free Software Foundation
 %%
 %%     This program is free software; you can redistribute it and/or modify
 %%     it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1615}
+% \CheckSum{1624}
 % \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
 % \def\rcsstrip #1 #2${#1}
 % \rcskey \version $Name:  $
 % \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.100 $
+%   \rcskey \version CVS-$Revision: 1.101 $
 % \else
 %   \begingroup
 %     \lccode`-=`.
@@ -32,7 +32,7 @@
 %        \def\noexpand\version{\expandafter\next\version}}}
 %   \next
 % \fi
-% \rcskey\next $Date: 2005-04-10 16:35:41 $
+% \rcskey\next $Date: 2005-04-16 21:35:36 $
 % \expandafter\date\expandafter{\next}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
 % \title{The \texttt{preview} Package for \LaTeX\\Version \version}
@@ -448,10 +448,10 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.100 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.101 $ \else \begingroup
 \lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-04-10 16:35:41 $
+\reserved@a\next $Date: 2005-04-16 21:35:36 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space preview-latex \reserved@b]}
 \next
@@ -1722,7 +1722,8 @@ Please complain to your document class author}%
 %   of nesting.  We then reassign the appropriate labelling macros:
 %    \begin{macrocode}
 %<showlabels>  \global\let\pr@@label\label \let\label\pr@label
-%<showlabels>  \let\pr@@maketag\maketag@@@ \let\maketag@@@\pr@maketag
+%<showlabels>  \global\let\pr@@maketag\maketag@@@
+%<showlabels>  \let\maketag@@@\pr@maketag
 %<showlabels>}
 %    \end{macrocode}
 % \end{macro}
@@ -1731,6 +1732,8 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<showlabels>\pr@addto@front\pr@ship@end{%
 %<showlabels>   \ifx \label\pr@label \global\let\label\pr@@label \fi
+%<showlabels>   \ifx \maketag@@@\pr@maketag
+%<showlabels>        \global\let\maketag@@@\pr@@maketag \fi
 %<showlabels>   \ifvoid\pr@labelbox
 %<showlabels>   \else \setbox\pr@box\hbox{%
 %<showlabels>         \box\pr@box\,\box\pr@labelbox}%
