@@ -128,9 +128,8 @@
 
 (defun LaTeX-item-equation ()
   (end-of-line 0)
-  (if (not (eq (preceding-char) ? ))
-      (insert " \\\\")
-    (insert "\\\\"))
+  (just-one-space)
+  (insert "\\\\")
   (forward-line 1)
   (indent-according-to-mode))
 
