@@ -257,18 +257,9 @@ environments or 'macro for macros."
 				      "begin[ \t]*{"
 				      (regexp-opt item-list t) "}"))
 			     (t
-			      ;; "\\_>" is only available with Emacs
-			      ;; 21.4 or later (checked into CVS Emacs
-			      ;; on 2004-05-19). (This could be used in
-			      ;; font-latex as well for
-			      ;; `font-latex-match-variable-make' and
-			      ;; friends instead of "\\>" and would fix
-			      ;; issues with starred macros.)
 			      (concat (regexp-quote TeX-esc)
 				      (regexp-opt item-list t)
-				      (if (string-match "\\_>" "X")
-					  "\\_>"
-					"[^A-Za-z@*]")))))
+				      "[^A-Za-z@*]"))))
 	  (save-restriction
 	    (narrow-to-region start end)
 	    ;; Start from the bottom so that it is easier to prioritize
