@@ -1,3 +1,9 @@
+2005-04-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-region): Get rid of \_> for matching
+	macros.  It prevents macros immediately followed by numbers from
+	being found.
+
 2005-04-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* style/amsmath.el (LaTeX-item-equation): just-one-space before
