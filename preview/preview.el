@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.252 2005-04-12 15:12:39 dak Exp $
+;; $Id: preview.el,v 1.253 2005-04-18 11:36:44 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3404,7 +3404,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.252 $"))
+	(rev "$Revision: 1.253 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3415,7 +3415,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-12 15:12:39 $"))
+    (let ((date "$Date: 2005-04-18 11:36:44 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3423,6 +3423,23 @@ If not a regular release, CVS revision of `preview.el'.")
 	      (match-string 3 date))))
   "Preview release date.
 In the form of yyyy.mmdd")
+
+(defun preview-dump-state (buffer)
+  (condition-case nil
+      (progn
+	(unless (local-variable-p 'TeX-command-buffer)
+	  (setq buffer (with-current-buffer buffer (TeX-active-buffer))))
+	(when (bufferp buffer)
+	  (insert "\nRun buffer contents:\n\n")
+	  (if (< (buffer-size buffer) 5000)
+	      (insert-buffer-substring buffer)
+	    (insert-buffer-substring buffer 1 2500)
+	    (insert "...\n\n[...]\n\n\t...")
+	    (insert-buffer-substring buffer
+				     (- (buffer-size buffer) 2500)
+				     (buffer-size buffer)))
+	  (insert "\n")))
+    (error nil)))
 
 ;;;###autoload
 (defun preview-report-bug () "Report a bug in the preview-latex package."
@@ -3457,7 +3474,7 @@ In the form of yyyy.mmdd")
        preview-dump-replacements
        preview-undump-replacements
        preview-auto-cache-preamble)
-     nil
+     `(lambda () (preview-dump-state ,(current-buffer)))
      (lambda ()
        (insert (format "\nOutput from running `%s -h':\n"
 		       preview-gs-command))

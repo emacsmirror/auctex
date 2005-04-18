@@ -92,7 +92,7 @@ install-metadata:
 	  $(ELCC) $(AUCTEX) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)"  && \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
 	  cd $(DESTDIR)$(packagedir) && \
-	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -type f -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
+	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \
 	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
 	  done ; \

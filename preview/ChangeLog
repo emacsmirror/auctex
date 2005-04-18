@@ -1,3 +1,11 @@
+2005-04-18  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-dump-state): New function to get run buffer
+	info.
+	(preview-report-bug): Use it.
+
+	* Makefile.in (install-metadata): include directories in `MANIFEST'.
+
 2005-04-16  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Work around another ntheorem bug affecting
