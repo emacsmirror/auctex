@@ -1,3 +1,15 @@
+2005-04-22  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-make-title-faces): Define the face,
+	don't set size.  Set parent/inherit conditionally.
+	(font-latex-update-title-faces): New function.
+	(font-latex-title-fontify): Add :initialize and :set.  Using
+	`font-latex-update-title-faces' allows changing the height within
+	an Emacs session.
+	(font-latex-title-5-face): Renamed from title-4-face.
+	(font-latex-built-in-keyword-classes): Use title-0 and title-5
+	faces.
+
 2005-04-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-run-interactive): Make output buffer scroll.

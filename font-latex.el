@@ -122,47 +122,10 @@ use \\[customize]."
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
 ;; 2000, 2001 Free Software Foundation, Inc.) and adapted to the needs
 ;; of font-latex.el.
-(defun font-latex-make-title-faces ()
-  "Build the faces used to fontify sectioning commands."
-  (dotimes (i 3)
-    (let* ((num (1+ i))
-	   (face-name (intern (concat "font-latex-title-" (number-to-string num)
-				      "-face"))))
-      (if (featurep 'xemacs)
-	  (let ((size (concat
-		       (number-to-string
-			;; Multiply with .9 because `face-height' returns a
-			;; value slightly larger than the actual font size.
-			(round (* .9 (face-height 'default)
-				  (expt 1.2 (- 3 i)))))
-		       "pt")))
-	    (eval `(defface ,face-name
-		     '((((type tty pc) (class color) (background light))
-			(:foreground "blue4" :bold t))
-		       (((type tty pc) (class color) (background dark))
-			(:foreground "yellow" :bold t))
-		       (((class color) (background light))
-			(:bold t :foreground "blue4" :family "helvetica"
-			       :size ,size))
-		       (((class color) (background dark))
-			(:bold t :foreground "yellow" :family "helvetica"
-			       :size ,size))
-		       (t (:size ,size :family "helvetica")))
-		     ,(concat "Face for LaTeX titles at level "
-			      (number-to-string num) ".")
-		     :group 'font-latex-highlighting-faces)))
-	(eval `(defface ,face-name
-		 '((t (:height 1.2 :inherit ,(intern
-					      (concat
-					       "font-latex-title-"
-					       (number-to-string (1+ num))
-					       "-face")))))
-		 ,(concat "Face for LaTeX titles at level "
-			  (number-to-string num) ".")
-		 :group 'font-latex-highlighting-faces))))))
-(font-latex-make-title-faces)
 
-(defface font-latex-title-4-face
+(defconst font-latex-title-max 5
+  "Highest number for font-latex-title-N-face")
+(defface font-latex-title-5-face
   (if (featurep 'xemacs)
       '((((type tty pc) (class color) (background light))
 	 (:foreground "blue4" :bold t))
@@ -182,15 +145,92 @@ use \\[customize]."
       (((class color) (background dark))
        (:weight bold :inherit variable-pitch :foreground "yellow"))
       (t (:weight bold :inherit variable-pitch))))
-  "Face for LaTeX titles at level 4."
+  "Face for LaTeX titles at level 5."
   :group 'font-latex-highlighting-faces)
 
-(defcustom font-latex-title-fontify 'height
-  "Whether to fontify LaTeX titles with varying height faces or a color face."
-  :type '(choice (const height)
+(defun font-latex-update-title-faces (&optional max height-scale)
+  "Update sectioning commands faces."
+  (unless height-scale
+    (setq height-scale (if (numberp font-latex-title-fontify)
+			   font-latex-title-fontify
+			 1.1)))
+  (unless max
+    (setq max font-latex-title-max))
+  (dotimes (num max)
+    (let* (;; reverse for XEmacs:
+	   (num (- max (1+ num)))
+	   (face-name (intern (format "font-latex-title-%s-face" num)))
+	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num)))))
+      (if (featurep 'xemacs)
+	  (let ((size
+		 ;; Multiply with .9 because `face-height' returns a value
+		 ;; slightly larger than the actual font size.
+		 ;; `make-face-size' takes numeric points according to Aidan
+		 ;; Kehoe in <16989.15536.613916.678965@parhasard.net> (not
+		 ;; documented).
+		 (round (* 0.9
+			   (face-height 'default)
+			   (expt height-scale (- max 1 num))))))
+	    ;; (message "%s - %s" face-name size)
+	    (make-face-size face-name size))
+	(set-face-attribute face-name nil :height  height-scale)))))
+
+(defcustom font-latex-title-fontify 1.1 ;; (if (featurep 'xemacs) 'color 1.1)
+  "Whether to fontify LaTeX titles with varying height faces or a color face.
+
+If it is a number, use varying height faces.  The number is used
+for scaling starting from `font-latex-title-5-face'.  Typically
+value from 1.05 to 1.3 give best result, depending on your font
+setup.
+
+If it is `color', use `font-lock-type-face'.
+
+Switching from `color' to a number or vice versa does not take
+effect unless you call \\[font-lock-fontify-buffer] or restart
+Emacs."
+  ;; Possibly add some word about XEmacs here. :-(
+  :type '(choice (number :tag "Scale factor")
                  (const color))
+  :initialize (lambda (symbol value)
+		(set-default symbol (eval value)))
+  :set (lambda (symbol value)
+	 (set-default symbol value)
+	 (unless (eq value 'color)
+	   (font-latex-update-title-faces font-latex-title-max value)))
   :group 'font-latex)
 
+(defun font-latex-make-title-faces (max)
+  "Build the faces used to fontify sectioning commands."
+  (unless max (setq max font-latex-title-max))
+  (dotimes (num max)
+    (let* (;; reverse for XEmacs:
+	   (num (- max (1+ num)))
+	   (face-name (intern (format "font-latex-title-%s-face" num)))
+	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num))))
+	   face-exists)
+      ;; If the use has customized this face (i.e. it already exists), we must
+      ;; not set the parent/inherit property.
+      (setq face-exists (if (featurep 'xemacs)
+			    (find-face face-name)
+			  (facep face-name)))
+      (eval
+       `(defface ,face-name
+	  nil ;; Set by `font-latex-update-title-faces' when needed.
+	  (format "Face for LaTeX titles at level %s.
+
+Probably you don't want to customize this face directly.  Better
+change the base face `font-latex-title-5-face' or customize the
+variable `font-latex-title-fontify'." num)
+	  :group 'font-latex-highlighting-faces))
+      (if face-exists
+	  (message "face:%s already exists, skipping parent" face-name)
+	;; (message "face:%s, inherit/parent:%s" face-name f-inherit)
+	(if (fboundp 'set-face-parent)
+	    (set-face-parent face-name f-inherit)
+	  (set-face-attribute face-name nil :inherit f-inherit))))))
+
+(font-latex-make-title-faces font-latex-title-max)
+(font-latex-update-title-faces font-latex-title-max)
 
 ;;; Keywords
 
@@ -226,8 +266,11 @@ use \\[customize]."
       "negthinspace" "enspace" "enskip" "quad" "qquad" "nonumber"
       "centering" "TeX" "LaTeX")
      font-lock-function-name-face 2 (command 1 t))
+    ("title-0"
+     ("part")
+     font-latex-title-0-face 2 (title 1 t))
     ("title-1"
-     ("part" "chapter")
+     ("chapter")
      font-latex-title-1-face 2 (title 1 t))
     ("title-2"
      ("section")
@@ -236,8 +279,11 @@ use \\[customize]."
      ("subsection")
      font-latex-title-3-face 2 (title 1 t))
     ("title-4"
-     ("subsubsection" "paragraph" "subparagraph" "subsubparagraph")
+     ("subsubsection")
      font-latex-title-4-face 2 (title 1 t))
+    ("title-5"
+     ("paragraph" "subparagraph" "subsubparagraph")
+     font-latex-title-5-face 2 (title 1 t))
     ("textual"
      ("item" "title" "author" "date" "thanks" "address" "caption"
       "textsuperscript")
@@ -349,9 +395,9 @@ use."
 	 `(,(intern (concat prefix name))
 	   (0 'font-lock-keyword-face append t)
 	   (1 'font-lock-variable-name-face append t)
-	   (2 (if (eq font-latex-title-fontify 'height)
-		  ',face
-		'font-lock-type-face)
+	   (2 (if (eq font-latex-title-fontify 'color)
+		  'font-lock-type-face
+		',face)
 	      append t)))
 	((eq type 'noarg)
 	 `(,(intern (concat prefix name))
@@ -360,7 +406,7 @@ use."
 	 `(,(intern (concat prefix name))
 	   (0 'font-lock-keyword-face append t)
 	   (1 ',face append t)))))
-  
+
 (defun font-latex-make-built-in-keywords ()
   "Build defuns, defvars and defcustoms for built-in keyword fontification."
   (let ((keyword-specs font-latex-built-in-keyword-classes))
