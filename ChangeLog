@@ -1,3 +1,7 @@
+2005-04-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-run-interactive): Make output buffer scroll.
+
 2005-04-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-region): Get rid of \_> for matching
