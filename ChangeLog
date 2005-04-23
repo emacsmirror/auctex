@@ -1,5 +1,11 @@
 2005-04-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-update-title-faces): Do not touch
+	customized faces.
+	(font-latex-title-fontify): Use `custom-initialize-default'.
+	(font-latex-make-title-faces): Check for value of `saved-face'
+	property for determining face customization.
+
 	* tex.el (TeX-find-macro-boundaries): Reimplement.  Now handles
 	\foo{\bar}{ba-!-z} case correctly.
 	(TeX-find-macro-start-helper): Remove.
