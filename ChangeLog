@@ -1,3 +1,9 @@
+2005-04-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-find-macro-boundaries): Reimplement.  Now handles
+	\foo{\bar}{ba-!-z} case correctly.
+	(TeX-find-macro-start-helper): Remove.
+
 2005-04-22  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-make-title-faces): Define the face,
