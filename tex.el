@@ -631,7 +631,7 @@ Also does other stuff."
   (defconst AUCTeX-version
     (eval-when-compile
       (let ((name "$Name:  $")
-	    (rev "$Revision: 5.502 $"))
+	    (rev "$Revision: 5.503 $"))
 	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
 				name)
 	      (setq name (match-string 2 name))
@@ -646,7 +646,7 @@ If not a regular release, CVS revision of `tex.el'."))
 
 (defconst AUCTeX-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-10 18:00:49 $"))
+    (let ((date "$Date: 2005-04-23 09:14:45 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3946,45 +3946,41 @@ in the buffer."
 If LOWER-BOUND is given, do not search backward further than this
 point in buffer.  Arguments enclosed in brackets or braces are
 considered part of the macro."
-  (save-excursion
-    (let ((orig-point (point))
-	  opening-brace
-	  start-point)
-      (if (and (eq (char-after) (aref TeX-esc 0))
+  (let ((orig-point (point))
+	start-point)
+    ;; Point is located directly at the start of a macro. (-!-\foo{bar})
+    (when (and (eq (char-after) (aref TeX-esc 0))
 	       (not (TeX-escaped-p)))
-	  ;; Point is located directly at the start of a macro.
-	  (setq start-point (point))
-	;; Search backward for a macro start.
-	(setq start-point (TeX-find-macro-start-helper lower-bound))
-	(setq opening-brace (TeX-find-opening-brace nil lower-bound))
-	;; Cases {\foo ba-!-r} or \foo{bar\baz{bla}bl-!-u}
-	;; FIXME: Fails on \foo{\bar}{ba-!-z} constructs.
-	(when (and opening-brace start-point
-		   (> start-point opening-brace)
-		   (>= (point) (TeX-find-macro-end-helper start-point)))
-	  (goto-char opening-brace)
-	  (setq start-point (TeX-find-macro-start-helper lower-bound))))
-
-      (when start-point
-	;; Search forward for the end of the macro.
+      (setq start-point (point)))
+    ;; Point is located on a macro. (\fo-!-o{bar})
+    (unless start-point
+      (save-excursion
+	(skip-chars-backward "A-Za-z@*")
+	(when (and (eq (char-before) (aref TeX-esc 0))
+		   (not (TeX-escaped-p (1- (point)))))
+	  (setq start-point (1- (point))))))
+    ;; Point is located in the argument of a macro. (\foo{ba-!-r})
+    (unless start-point
+      (save-excursion
+	(catch 'abort
+	  (when (condition-case nil (progn (up-list) t) (error nil))
+	    (while (progn
+		     (condition-case nil (backward-sexp)
+		       (error (throw 'abort nil)))
+		     (forward-comment -1)
+		     (and (memq (char-before) '(?\] ?\}))
+			  (not (TeX-escaped-p (1- (point)))))))
+	    (skip-chars-backward "A-Za-z@*")
+	    (when (and (eq (char-before) (aref TeX-esc 0))
+		       (not (TeX-escaped-p (1- (point)))))
+	      (setq start-point (1- (point))))))))
+    ;; Search forward for the end of the macro.
+    (when start-point
+      (save-excursion
 	(goto-char (TeX-find-macro-end-helper start-point))
 	(if (< orig-point (point))
 	    (cons start-point (point))
 	  nil)))))
-
-(defun TeX-find-macro-start-helper (&optional limit)
-   "Find the starting token of a macro.
-If LIMIT is given, do not search backward further than this point
-in buffer.
-
-In TeX, LaTeX or ConTeXt the token is a `\\' character, in
-Texinfo it is the character `@'.  In case an escaped character is
-found, return the position before the escaping character."
-   (save-excursion
-     (save-match-data
-       (and (search-backward TeX-esc limit t)
-	    (- (point)
-	       (mod (skip-chars-backward (regexp-quote TeX-esc)) 2))))))
 
 (defun TeX-find-macro-end-helper (start)
   "Find the end of a macro given its START.
