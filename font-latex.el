@@ -161,19 +161,20 @@ use \\[customize]."
 	   (num (- max (1+ num)))
 	   (face-name (intern (format "font-latex-title-%s-face" num)))
 	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num)))))
-      (if (featurep 'xemacs)
-	  (let ((size
-		 ;; Multiply with .9 because `face-height' returns a value
-		 ;; slightly larger than the actual font size.
-		 ;; `make-face-size' takes numeric points according to Aidan
-		 ;; Kehoe in <16989.15536.613916.678965@parhasard.net> (not
-		 ;; documented).
-		 (round (* 0.9
-			   (face-height 'default)
-			   (expt height-scale (- max 1 num))))))
-	    ;; (message "%s - %s" face-name size)
-	    (make-face-size face-name size))
-	(set-face-attribute face-name nil :height  height-scale)))))
+      (unless (get face-name 'saved-face) ; Do not touch customized faces.
+	(if (featurep 'xemacs)
+	    (let ((size
+		   ;; Multiply with .9 because `face-height' returns a value
+		   ;; slightly larger than the actual font size.
+		   ;; `make-face-size' takes numeric points according to Aidan
+		   ;; Kehoe in <16989.15536.613916.678965@parhasard.net> (not
+		   ;; documented).
+		   (round (* 0.9
+			     (face-height 'default)
+			     (expt height-scale (- max 1 num))))))
+	      ;; (message "%s - %s" face-name size)
+	      (make-face-size face-name size))
+	  (set-face-attribute face-name nil :height  height-scale))))))
 
 (defcustom font-latex-title-fontify 1.1 ;; (if (featurep 'xemacs) 'color 1.1)
   "Whether to fontify LaTeX titles with varying height faces or a color face.
@@ -191,8 +192,7 @@ Emacs."
   ;; Possibly add some word about XEmacs here. :-(
   :type '(choice (number :tag "Scale factor")
                  (const color))
-  :initialize (lambda (symbol value)
-		(set-default symbol (eval value)))
+  :initialize 'custom-initialize-default
   :set (lambda (symbol value)
 	 (set-default symbol value)
 	 (unless (eq value 'color)
@@ -206,25 +206,17 @@ Emacs."
     (let* (;; reverse for XEmacs:
 	   (num (- max (1+ num)))
 	   (face-name (intern (format "font-latex-title-%s-face" num)))
-	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num))))
-	   face-exists)
-      ;; If the use has customized this face (i.e. it already exists), we must
-      ;; not set the parent/inherit property.
-      (setq face-exists (if (featurep 'xemacs)
-			    (find-face face-name)
-			  (facep face-name)))
+	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num)))))
       (eval
        `(defface ,face-name
-	  nil ;; Set by `font-latex-update-title-faces' when needed.
-	  (format "Face for LaTeX titles at level %s.
+	  nil ; Set by `font-latex-update-title-faces' when needed.
+	  (format "Face for sectioning commands at level %s.
 
 Probably you don't want to customize this face directly.  Better
 change the base face `font-latex-title-5-face' or customize the
 variable `font-latex-title-fontify'." num)
 	  :group 'font-latex-highlighting-faces))
-      (if face-exists
-	  (message "face:%s already exists, skipping parent" face-name)
-	;; (message "face:%s, inherit/parent:%s" face-name f-inherit)
+      (unless (get face-name 'saved-face) ; Do not touch customized faces.
 	(if (fboundp 'set-face-parent)
 	    (set-face-parent face-name f-inherit)
 	  (set-face-attribute face-name nil :inherit f-inherit))))))
