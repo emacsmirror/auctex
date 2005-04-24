@@ -735,7 +735,7 @@ Error parsing on C-x ` should work with a bit of luck."
     (comint-exec buffer name TeX-shell nil
 		 (list TeX-shell-command-option command))
     (comint-mode)
-    (add-to-list 'comint-output-filter-functions 'TeX-interactive-goto-prompt)
+    (add-hook 'comint-output-filter-functions 'TeX-interactive-goto-prompt)
     (setq mode-name name)
     (setq TeX-command-default default)
     (setq process (get-buffer-process buffer))
