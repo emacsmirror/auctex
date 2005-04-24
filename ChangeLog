@@ -2,7 +2,7 @@
 
 	* tex-buf.el (TeX-interactive-goto-prompt): New function.
 	(TeX-run-interactive): Use it instead of setting
-	`comint-scroll-to-bottom-on-output'.
+	`comint-scroll-to-bottom-on-output'.  Use `add-hook'.
 
 2005-04-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
