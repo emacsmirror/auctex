@@ -735,7 +735,7 @@ Error parsing on C-x ` should work with a bit of luck."
     (comint-exec buffer name TeX-shell nil
 		 (list TeX-shell-command-option command))
     (comint-mode)
-    (setq comint-scroll-to-bottom-on-output t)
+    (add-to-list 'comint-output-filter-functions 'TeX-interactive-goto-prompt)
     (setq mode-name name)
     (setq TeX-command-default default)
     (setq process (get-buffer-process buffer))
@@ -1055,6 +1055,26 @@ command."
     (goto-char (point-max))
     (insert string)
     (select-window old-window)))
+
+;; Copy and adaption of `comint-postoutput-scroll-to-bottom' from CVS
+;; Emacs of 2005-04-24.
+(defun TeX-interactive-goto-prompt (string)
+  "Move point to prompt of an interactive TeX run."
+  (let* ((selected (selected-window))
+	 (current (current-buffer))
+	 (process (get-buffer-process current)))
+    (unwind-protect
+	(when process
+	  (walk-windows
+	   (lambda (window)
+	     (when (eq (window-buffer window) current)
+	       (select-window window)
+	       (when (and (< (point) (process-mark process))
+			  (string-match "^\\? $" string))
+		 (goto-char (process-mark process)))
+	       (select-window selected)))
+	   nil t))
+      (set-buffer current))))
 
 
 ;;; Active Process
