@@ -1,3 +1,12 @@
+2005-04-26  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-update-title-faces): Remove unused
+	variable.  Don't call when loading the file.
+	(font-latex-title-fontify): Document that faces set outside of
+	customize might be modified.
+	(font-latex-make-title-faces): Set height or size so that
+	customize won't complain.
+
 2005-04-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-interactive-goto-prompt): New function.

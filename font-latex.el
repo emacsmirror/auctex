@@ -159,8 +159,7 @@ use \\[customize]."
   (dotimes (num max)
     (let* (;; reverse for XEmacs:
 	   (num (- max (1+ num)))
-	   (face-name (intern (format "font-latex-title-%s-face" num)))
-	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num)))))
+	   (face-name (intern (format "font-latex-title-%s-face" num))))
       (unless (get face-name 'saved-face) ; Do not touch customized faces.
 	(if (featurep 'xemacs)
 	    (let ((size
@@ -176,20 +175,23 @@ use \\[customize]."
 	      (make-face-size face-name size))
 	  (set-face-attribute face-name nil :height  height-scale))))))
 
-(defcustom font-latex-title-fontify 1.1 ;; (if (featurep 'xemacs) 'color 1.1)
+(defcustom font-latex-title-fontify 1.1
   "Whether to fontify LaTeX titles with varying height faces or a color face.
 
 If it is a number, use varying height faces.  The number is used
 for scaling starting from `font-latex-title-5-face'.  Typically
 value from 1.05 to 1.3 give best result, depending on your font
-setup.
+setup.  If it is `color', use `font-lock-type-face'.
 
-If it is `color', use `font-lock-type-face'.
+Caveats: Customizing the scaling factor applies to all sectioning
+faces unless those face have been saved by customize.  Setting
+this variable directly does not take effect; unless you call
+`font-latex-update-title-faces' or restart Emacs.
 
 Switching from `color' to a number or vice versa does not take
 effect unless you call \\[font-lock-fontify-buffer] or restart
 Emacs."
-  ;; Possibly add some word about XEmacs here. :-(
+  ;; Possibly add some words about XEmacs here. :-(
   :type '(choice (number :tag "Scale factor")
                  (const color))
   :initialize 'custom-initialize-default
@@ -199,30 +201,38 @@ Emacs."
 	   (font-latex-update-title-faces font-latex-title-max value)))
   :group 'font-latex)
 
-(defun font-latex-make-title-faces (max)
+(defun font-latex-make-title-faces (max &optional height-scale)
   "Build the faces used to fontify sectioning commands."
   (unless max (setq max font-latex-title-max))
+  (unless height-scale
+    (setq height-scale (if (numberp font-latex-title-fontify)
+			   font-latex-title-fontify
+			 1.1)))
   (dotimes (num max)
     (let* (;; reverse for XEmacs:
 	   (num (- max (1+ num)))
 	   (face-name (intern (format "font-latex-title-%s-face" num)))
-	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num)))))
+	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num))))
+	   (size (when (featurep 'xemacs)
+		   (round (* 0.9 (face-height 'default)
+			     (expt height-scale (- max 1 num)))))))
       (eval
        `(defface ,face-name
-	  nil ; Set by `font-latex-update-title-faces' when needed.
+	  (if (featurep 'xemacs)
+	      '((t (:size ,(format "%spt" size))))
+	    '((t (:height ,height-scale :inherit ,f-inherit))))
 	  (format "Face for sectioning commands at level %s.
 
 Probably you don't want to customize this face directly.  Better
 change the base face `font-latex-title-5-face' or customize the
 variable `font-latex-title-fontify'." num)
 	  :group 'font-latex-highlighting-faces))
-      (unless (get face-name 'saved-face) ; Do not touch customized faces.
-	(if (fboundp 'set-face-parent)
-	    (set-face-parent face-name f-inherit)
-	  (set-face-attribute face-name nil :inherit f-inherit))))))
+      (when (and (featurep 'xemacs)
+		 ;; Do not touch customized  faces.
+		 (not (get face-name 'saved-face)))
+	(set-face-parent face-name f-inherit)))))
 
 (font-latex-make-title-faces font-latex-title-max)
-(font-latex-update-title-faces font-latex-title-max)
 
 ;;; Keywords
 
