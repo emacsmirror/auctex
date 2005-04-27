@@ -1,5 +1,8 @@
 2005-04-27  David Kastrup  <dak@gnu.org>
 
+	* aclocal.m4 (AC_DATE_VERSION_FROM_CHANGELOG): actually look into
+	the ChangeLog file.  Uh.
+
 	* latex/README (Note): Add bug reporting address.
 
 2005-04-19  David Kastrup  <dak@gnu.org>
