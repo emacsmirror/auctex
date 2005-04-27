@@ -4,6 +4,8 @@
 
 2005-04-27  David Kastrup  <dak@gnu.org>
 
+	* configure.ac: Correct bug reporting address and move stuff over
+	from preview.
 	* aclocal.m4: remove, we want the one in preview instead.
 
 	* tex-site.el.in (AUCTeX-version, AUCTeX-date): get via configure.

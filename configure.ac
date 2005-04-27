@@ -1,4 +1,4 @@
-AC_INIT(auctex,11.55,bug-auctex@sunsite.dk)
+AC_INIT(auctex,11.55,bug-auctex@gnu.org)
 
 AC_SET_MAKE
 AC_PROG_INSTALL
@@ -28,13 +28,60 @@ AC_ARG_ENABLE([build-dir-test],
    fi],
   [VALID_BUILD_DIR])
 
-EMACS_PATH_PACKAGEDIR([tex-site],[auctex])
-EMACS_PATH_LISPDIR([tex-site])
+if test ${EMACS_FLAVOR} = "xemacs"  ; then
+   EMACS_PATH_PACKAGEDIR
+else
+   packagedir=no
+fi
 
-auctexdir=${lispdir_expanded}/auctex
-EMACS_LISP(lispauctexdir,(prin1-to-string str),,,str,[["${auctexdir}"]])
-AC_SUBST(auctexdir)
-AC_SUBST(lispauctexdir)
+if test "${packagedir}" = no
+then
+   EMACS_PATH_LISPDIR
+   AC_MSG_CHECKING(what file to use for auctex startup)
+   AC_ARG_WITH(auctexstartfile,
+   [[  --with-auctex-startfile=FILE    What file to use for auctex startup.]],
+   [[ auctexstartfile="${withval}" ]],
+   [ _tmpdir_="${lispdir}"
+     AC_FULL_EXPAND(_tmpdir_)
+     if test -d "${_tmpdir_}/site-start.d"
+     then
+       auctexstartfile="${lispdir}/site-start.d/auctex.el"
+     else
+       auctexstartfile="${lispdir}/auctex.el"
+     fi])
+   AC_MSG_RESULT([[${auctexstartfile}]])
+   packagelispdir="${lispdir}/auctex"
+   packagedatadir="${packagelispdir}"
+else
+   #lispdir is only used for determining relative files.
+   lispdir="${packagedir}"
+   packagelispdir="${packagedir}/lisp/auctex"
+   auctexstartfile="${packagelispdir}"/auto-autoloads.el
+   packagedatadir="${packagedir}/etc/auctex"
+   infodir="${packagedir}/info"
+fi
+
+AC_SUBST(auctexstartfile)
+
+AC_MSG_CHECKING([where the package lisp files go])
+AC_ARG_WITH(packagelispdir,
+[[  --with-packagelispdir=DIR
+                        Directory for the package lisp files.]],
+  [packagelispdir=["${withval}"]])
+AC_LISPIFY_DIR(packagelispdir,"${previewstartfile}")
+AC_MSG_RESULT([[${packagelispdir}]])
+
+AC_MSG_CHECKING([where the data files go])
+AC_ARG_WITH(packagedatadir,
+[[  --with-packagedatadir=DIR         Where the data files go.]],
+  [packagedatadir=["${withval}"]])
+AC_LISPIFY_DIR(packagedatadir,"${previewstartfile}")
+AC_MSG_RESULT([[${packagedatadir}]])
+
+AC_MSG_CHECKING(where the info files go)
+AC_MSG_RESULT([[${infodir}]])
+
+AC_SUBST(packagedir)
 
 if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info'; then
   if test $packagedir != 'no'; then
@@ -51,8 +98,25 @@ AC_PATH_PROG(MAKEINFO, makeinfo, :)
 AC_PATH_PROG(TEXI2HTML, texi2html, :)
 AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
 AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
-MAKEINFO_CHECK_MACROS(acronym env option command)
-AC_PATH_PROG(INSTALL_INFO, install-info, :, $PATH /usr/sbin /sbin)
+
+AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
+cannot be regenerated, but installation of an unmodified tarball will
+succeed.])
+
+if test "x$MAKEINFO" = x
+then
+   AC_PATH_PROG(MAKEINFO, makeinfo, :)
+
+   MAKEINFO_CHECK_MACROS(acronym env option command)
+fi
+
+AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
+
+if test "x$INSTALL_INFO" = x
+then
+  AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
+fi
+
 
 
 AC_SHELL_QUOTIFY(prefix)
@@ -78,7 +142,7 @@ AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
 		       [preview_enabled="$withval"],
 		       [preview_enabled="yes"])
 
-if test "X$withval" == Xyes
+if test "X${preview_enabled}" == Xyes
 then
   AC_CONFIG_SUBDIRS(preview)
 fi
