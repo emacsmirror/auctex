@@ -4002,7 +4002,7 @@ the sequence by initializing this variable.")
 			      (cdr parent))))))))))
 
 (define-minor-mode LaTeX-math-mode
-  "A minor mode with easy acces to TeX math macros.
+  "A minor mode with easy access to TeX math macros.
 
 Easy insertion of LaTeX math symbols.  If you give a prefix argument,
 the symbols will be surrounded by dollar signs.  The following
@@ -4448,8 +4448,13 @@ This happens when \\left is inserted."
   :type 'hook
   :group 'LaTeX)
 
-;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(TeX-defun latex-mode ()
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
+
+;;;###autoload
+(TeX-doc)
+;;;###autoload
+(defun TeX-latex-mode ()
   "Major mode in %s for editing LaTeX files.
 See info under AUCTeX for full documentation.
 
@@ -4472,16 +4477,36 @@ of `LaTeX-mode-hook'."
 	   filladapt-mode)
       (turn-off-filladapt-mode)))
 
-(define-derived-mode doctex-mode latex-mode "docTeX"
-  "Major mode for editing .dtx files derived from `LaTeX-mode'.
-Runs `latex-mode', sets a few variables and
-runs the hooks in `doctex-mode-hook'."
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
+
+;;;###autoload
+(TeX-doc)
+;;;###autoload
+(define-derived-mode docTeX-mode TeX-latex-mode "docTeX"
+  "Major mode in %s for editing .dtx files derived from `LaTeX-mode'.
+Runs `LaTeX-mode', sets a few variables and
+runs the hooks in `docTeX-mode-hook'."
+  
+  (setq major-mode 'doctex-mode)
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
+
+;;This is actually a mess: to fit the scheme properly, our derived
+;;mode definition would have had to be made for TeX-doctex-mode in the
+;;first place, but then we could not have used define-derived-mode, or
+;;all mode-specific variables would have gotten non-AUCTeX names.
+;;This solution has the advantage that documentation strings are
+;;provided in the autoloads, and has the disadvantage that docTeX-mode
+;;is not aliased to doctex-mode (not even when the AUCTeX version is
+;;disabled) as would be normal for our scheme.
+
+;;;#autoload
+(defalias 'TeX-doctex-mode 'docTeX-mode)
 
 (defvar LaTeX-header-end
   (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)

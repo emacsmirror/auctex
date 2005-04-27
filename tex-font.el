@@ -155,6 +155,7 @@
 (defun tex-font-lock-syntactic-face-function (state)
   (if (nth 3 state) tex-math-face font-lock-comment-face))
 
+;;;###autoload
 (defun tex-font-setup ()
   "Setup font lock support for TeX."
   (set (make-local-variable 'font-lock-defaults)

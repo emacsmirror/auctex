@@ -80,6 +80,24 @@ fi
   AC_MSG_RESULT([["${emacsprefix}"]])
 ])
 
+AC_DEFUN(AC_DATE_VERSION_FROM_CHANGELOG, [
+AC_MSG_CHECKING([for date in ChangeLog])
+$1=[`sed -n '1s/^\([-0-9]+\).*/\1/p'`]
+if test "X${$1}" = X
+then
+  AC_MSG_ERROR([[not found]])
+fi
+AC_MSG_RESULT($1)
+AC_MSG_CHECKING([for release in ChangeLog])
+$2=[`sed -n '2,/^[0-9]/s/.*Version .* released\..*/\1/p'`]
+if test "X${$2}" = X
+then
+  $2=${$1}
+  AC_MSG_RESULT([not found, using ${$2} instead])
+else
+  AC_MSG_RESULT([${$2}])
+fi
+
 AC_DEFUN(EMACS_CHECK_VERSION, [
 AC_MSG_CHECKING([if ${EMACS_NAME} is recent enough])
 EMACS_LISP(result,[(cond ((< emacs-major-version $1) \"no\")

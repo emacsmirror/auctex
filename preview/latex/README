@@ -54,4 +54,8 @@ preview-latex distribution will also unpack and install the respective
 LaTeX files with an autoconf-supported mechanism, so you might
 consider using that.
 
-David Kastrup <URL:mailto:dak@gnu.org>
+Please report problems to <URL:mailto:bug-auctex@gnu.org>, including a
+small example file which uses the \listfiles statement, and the
+resulting log file.
+
+David Kastrup

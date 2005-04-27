@@ -260,7 +260,10 @@ the extension to use on the file.
 Use the information in `TeX-command-list' to determine how to run the
 command.  If OVERRIDE-CONFIRM is a prefix argument, confirmation will be
 asked if it is positive, and suppressed if it is not."
-  (setq TeX-current-process-region-p (eq file 'TeX-region-file))
+  (cond ((eq file 'TeX-region-file)
+	 (setq TeX-current-process-region-p t))
+	((eq file 'TeX-master-file)
+	 (setq TeX-current-process-region-p nil)))
   (let ((command (TeX-command-expand (nth 1 (assoc name TeX-command-list))
 				     file))
 	(hook (nth 2 (assoc name TeX-command-list)))
@@ -486,17 +489,10 @@ QUEUE is non-nil when we are checking for the printer queue."
 The viewer is started either on region or master file,
 depending on the last command issued."
   (interactive)
-  (let ((output-file (concat (if TeX-current-process-region-p
-				 (TeX-region-file)
-			       (TeX-master-file)) "." (TeX-output-extension))))
-    (cond ((and TeX-current-process-region-p
-		(file-exists-p output-file))
-	   (TeX-command "View" 'TeX-region-file 0))
-	  ((and (not TeX-current-process-region-p)
-		(file-exists-p output-file))
-	   (TeX-command "View" 'TeX-master-file 0))
-	  (t
-	   (message "Output file %S does not exist." output-file)))))
+  (let ((output-file (TeX-active-master (TeX-output-extension))))
+    (if (file-exists-p output-file)
+	(TeX-command "View" 'TeX-active-master 0)
+      (message "Output file %S does not exist." output-file))))
 
 (defun TeX-output-style-check (styles)
   "Check STYLES compared to the current view output file extension and
@@ -1084,15 +1080,11 @@ command."
 
 (defun TeX-active-process ()
   "Return the active process for the current buffer."
-  (if TeX-current-process-region-p
-      (TeX-process (TeX-region-file))
-    (TeX-process (TeX-master-file))))
+  (TeX-process (TeX-active-master)))
 
 (defun TeX-active-buffer ()
   "Return the buffer of the active process for this buffer."
-  (if TeX-current-process-region-p
-      (TeX-process-buffer (TeX-region-file))
-    (TeX-process-buffer (TeX-master-file))))
+  (TeX-process-buffer (TeX-active-master)))
 
 (defun TeX-active-master (&optional extension nondirectory)
   "The master file currently being compiled.
@@ -1416,16 +1408,21 @@ You might want to examine and modify the free variables `file',
     ;; Find the error.
     (if (null file)
 	(error "Error occured after last TeX file closed"))
-    (run-hooks 'TeX-translate-location-hook)
-    (find-file-other-window file)
-    (goto-line (+ offset line))
-    (if (not (string= string " "))
-	(search-forward string nil t))
-
-    ;; Explain the error.
-    (if TeX-display-help
-	(TeX-help-error error context)
-      (message (concat "! " error)))))
+    (let ((runbuf (current-buffer))
+	  (master (with-current-buffer
+		      TeX-command-buffer
+		    (expand-file-name (TeX-master-file)))))
+      (run-hooks 'TeX-translate-location-hook)
+      (find-file-other-window file)
+      (setq TeX-master master)
+      (goto-line (+ offset line))
+      (if (not (string= string " "))
+	  (search-forward string nil t))
+      
+      ;; Explain the error.
+      (if TeX-display-help
+	  (TeX-help-error error context runbuf)
+	(message (concat "! " error))))))
 
 (defun TeX-warning (string)
   "Display a warning for STRING.
@@ -1481,9 +1478,13 @@ Return nil if we gave a report."
 
     ;; Go back to TeX-buffer
     (if TeX-debug-bad-boxes
-	(progn
+	(let ((runbuf (current-buffer))
+	      (master (with-current-buffer
+			  TeX-command-buffer
+			(expand-file-name (TeX-master-file)))))
 	  (run-hooks 'TeX-translate-location-hook)
 	  (find-file-other-window file)
+	  (setq TeX-master master)
 	  ;; Find line and string
 	  (goto-line (+ offset line))
 	  (beginning-of-line 0)
@@ -1494,18 +1495,21 @@ Return nil if we gave a report."
 	    (search-forward string nil t))
 	  ;; Display help
 	  (if TeX-display-help
-	      (TeX-help-error error (if bad-box context (concat "\n" context)))
+	      (TeX-help-error error (if bad-box context (concat "\n" context))
+			      runbuf)
 	    (message (concat "! " error)))
 	  nil)
       t)))
 
 ;;; - Help
 
-(defun TeX-help-error (error output)
-  "Print ERROR in context OUTPUT in another window."
+(defun TeX-help-error (error output runbuffer)
+  "Print ERROR in context OUTPUT from RUNBUFFER in another window."
 
   (let ((old-buffer (current-buffer))
-	(log-file (TeX-active-master "log"))
+	(log-file (with-current-buffer runbuffer
+		    (with-current-buffer TeX-command-buffer
+		      (expand-file-name (TeX-active-master "log")))))
 	(TeX-error-pointer 0))
 
     ;; Find help text entry.

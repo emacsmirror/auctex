@@ -26,9 +26,8 @@
 ;;; Code:
 
 (require 'tex)
-(condition-case nil			;Lucid is not providing.
-    (require 'texinfo)
-  (error))
+
+(require 'texinfo)
 
 ;;; Environments:
 
@@ -309,8 +308,12 @@ for @node."
   
 ;;; Mode:
 
-;;; Do not ;;;###autoload because of conflict with standard texinfo.el.
-(TeX-defun texinfo-mode ()
+;;;###autoload
+(defalias 'Texinfo-mode texinfo-mode)
+;;;###autoload
+(TeX-doc)
+;;;###autoload
+(defun TeX-texinfo-mode ()
   "Major mode in %s for editing Texinfo files.
 
 Special commands:

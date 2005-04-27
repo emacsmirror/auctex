@@ -269,12 +269,14 @@ For detail, see `TeX-command-list', which this list is appended to."
 (put 'japanese-TeX-mode 'permanent-local t)
 
 ;;;###autoload
-(TeX-defun japanese-plain-tex-mode ()
+(TeX-doc)
+;;;###autoload
+(defun japanese-plain-tex-mode ()
   "Major mode in %s for editing Japanese plain TeX files.
 Set japanese-TeX-mode to t, and enters plain-tex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
-  (plain-tex-mode))
+  (TeX-plain-tex-mode))
 
 (defun japanese-plain-tex-mode-initialization ()
   "Japanese plain-TeX specific initializations."
@@ -284,12 +286,14 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
-(TeX-defun japanese-latex-mode ()
+(TeX-doc)
+;;;###autoload
+(defun japanese-latex-mode ()
   "Major mode in %s for editing Japanese LaTeX files.
 Set japanese-TeX-mode to t, and enters latex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
-  (latex-mode))
+  (TeX-latex-mode))
 
 (defun japanese-latex-mode-initialization ()
   "Japanese LaTeX specific initializations."

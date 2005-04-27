@@ -1,11 +1,11 @@
 ;;; tex-site.el - Site specific variables.  Don't edit.
 
-;; Copyright (C) 1991, 2000, 2001 Kresten Krab Thorup
-;; Copyright (C) 1993, 1994, 1997, 1999,
-;;               2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2005 Free Software Foundation, Inc.
+;;
+;; completely rewritten.
 
-;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
-;; Maintainer: auc-tex@sunsite.dk
+;; Author: David Kastrup <dak@gnu.org>
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -27,43 +27,32 @@
 
 ;;; Commentary:
 
-;; This file used to contain variables customized for the local site.
-;; This way of customizing AUCTeX should no longer be used.  All
-;; relevant variables can be customized by using
+;; This file contains startup code, autoloads and variables adapted to
+;; the local site configuration.  It is generated and placed by the
+;; installation procedure and should not be edited by hand, nor moved
+;; to a different place, as some settings may be established relative
+;; to the file.
+
+;; All user customization should be done with
 ;; M-x customize-variable RET
-;; on them.  Copying stuff into this file, as was recommended
-;; previously, would interfere with the operation of customize.
-;;
-;; Basically, this file contains a bunch of autoloads and
-;; automatically generated information.  AUCTeX is enabled by placing
-;; (require 'tex-site)
-;; into a user's .emacs file, or the administrator can insert it in
-;; the site-start.el file for a site-wide default.
-;;
-;; The right place for this file is in the `site-lisp' directory.
 
 ;;; Code:
 
 (if (< emacs-major-version 21)
   (error "AUCTeX requires Emacs 21 or later"))
 
-(defvar no-doc
-  "This function is part of AUCTeX, but has not yet been loaded.
-Full documentation will be available after autoloading the function."
-  "Documentation for autoload functions.")
-
 (defvar TeX-lisp-directory
-    @lispauctexdir@
-   "*The directory where most of the AUCTeX lisp files are located.
-tex-site.el (wherein this variable is defined) resides in its
-parent directory. For the location of lisp files associated with
+  @lisppackagelispdir@
+  "The directory where most of the AUCTeX lisp files are located.
+For the location of lisp files associated with
 styles, see the variables TeX-style-* (hand-generated lisp) and
 TeX-auto-* (automatically generated lisp).")
 
-(defvar TeX-image-directory (expand-file-name
-			     "images"
-			     TeX-lisp-directory)
-  "*The directory where the AUCTeX images are located.")
+(add-to-list 'load-path TeX-lisp-directory)
+
+(defvar TeX-data-directory
+  @lisppackagedatadir@
+  "The directory where the AUCTeX non-Lisp data is located.")
 
 (defcustom TeX-auto-global
     @lispautodir@
@@ -75,33 +64,64 @@ shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
-;;; Autoloads:
+(defconst TeX-mode-alist
+  "Alist of built-in TeX modes and their load files."
+  '((tex-mode . tex-mode)
+    (plain-tex-mode . tex-mode)
+    (texinfo-mode . texinfo-mode)
+    (latex-mode . tex-mode)
+    (doctex-mode . tex-mode)))
 
-(add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
-(add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
+(defun TeX-modes-set (var value &optional update)
+  "Set VAR (which should be `TeX-modes') to VALUE.
 
-(add-to-list 'load-path TeX-lisp-directory)
+This places either the standard or the AUCTeX versions of
+functions into the respective function cell of the mode.
+If UPDATE is set, a previously saved value for
+the non-AUCTeX function gets overwritten with the current
+definition."
+  (custom-set-default var value)
+  (let ((list TeX-mode-alist) elt)
+    (while list
+      (setq elt (car (pop list)))
+      (when (or update (null (get elt 'tex-saved)))
+	(put elt 'tex-saved (symbol-function elt)))
+      (fset elt
+	    (if (memq elt value)
+		(intern (concat "TeX-" (symbol-name elt)))
+	      (get elt 'tex-saved))))))
 
-;; This hook will store bibitems when you save a BibTeX buffer.
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
-(autoload 'BibTeX-auto-store "latex" no-doc t)
+(defcustom TeX-modes
+  (mapcar 'car TeX-mode-alist)
+  "List of modes provided by AUCTeX.
 
-(autoload 'tex-mode "tex" no-doc t)
-(autoload 'plain-tex-mode "tex" no-doc t)
-(autoload 'ams-tex-mode "tex" no-doc t)
-(autoload 'context-mode "context" no-doc t)
-(autoload 'doctex-mode "latex" no-doc t)
-(autoload 'TeX-auto-generate "tex" no-doc t)
-(autoload 'TeX-auto-generate-global "tex" no-doc t)
-(autoload 'TeX-insert-quote "tex" no-doc t)
-(autoload 'TeX-submit-bug-report "tex" no-doc t)
-(autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
-(autoload 'japanese-latex-mode "tex-jp" no-doc t)
-(autoload 'texinfo-mode "tex-info" no-doc t)
-(autoload 'latex-mode "latex" no-doc t)
+This variable can't be set normally, use customize for it."
+  :type (cons 'set
+	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
+  :set 'TeX-modes-set
+  :initialize (lambda (var value)
+		(custom-initialize-reset var value)
+		(dolist (elt TeX-mode-alist)
+		  (eval-after-load (cdr elt)
+		    `(TeX-modes-set ',var ,var t)))))
 
-(add-to-list 'load-path TeX-image-directory)
-(autoload 'LaTeX-install-toolbar "tex-bar")
+(defconst AUCTeX-version "@AUCTEXVERSION@"
+    "AUCTeX version.
+If not a regular release, the date of the last change.")
+
+(defconst AUCTeX-date "@AUCTEXDATE@"
+  "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
+
+(defmacro TeX-doc ()
+  "This macro is used _before_ following autoloaded definitions.
+It will format the doc string of the next form to include AUCTeX
+version info in %s."
+  (let ((form (read (current-buffer))))
+    (if (stringp (nth 3 form))
+	(setcar (nthcdr 3 form)
+		(format (nth 3 form)
+			(format "AUCTeX %s" @AUCTEXVERSION@))))
+    form))
 
 (provide 'tex-site)
 

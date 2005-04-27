@@ -1,11 +1,21 @@
-ifelse(regexp(AC_ACVERSION,[^2\.[01][0-9]?[^0-9]*$]),-1,
-  [AC_INIT(auctex,11.55,auc-tex@sunsite.dk)],
-  [AC_INIT(auctex.spec)])
+AC_INIT(auctex,11.55,bug-auctex@sunsite.dk)
 
 AC_SET_MAKE
 AC_PROG_INSTALL
+
+AC_DATE_VERSION_FROM_CHANGELOG(AUCTEXDATE,AUCTEXVERSION)
+AC_SUBST(AUCTEXDATE)
+AC_SUBST(AUCTEXVERSION)
+
 EMACS_PROG_EMACS
-EMACS_CHECK_MAJOR_VERSION([21])
+
+if test ${EMACS_FLAVOR} = xemacs
+then
+  EMACS_CHECK_VERSION(21,4)
+else
+  EMACS_CHECK_VERSION(21,1)
+fi
+
 EMACS_CHECK_MULE
 
 # The Debian package uses `--disable-build-dir-test'; normal users should
@@ -63,7 +73,19 @@ AC_SHELL_QUOTIFY(TEXI2HTML)
 AC_SHELL_QUOTIFY(TEXI2DVI)
 AC_SHELL_QUOTIFY(TEXI2PDF)
 
+AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
+		       [disable inclusion of preview-latex]),
+		       [preview_enabled="$withval"],
+		       [preview_enabled="yes"])
+
+if test "X$withval" == Xyes
+then
+  AC_CONFIG_SUBDIRS(preview)
+fi
+
 AC_OUTPUT(Makefile tex-site.el doc/Makefile)
+
+
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.

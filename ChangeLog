@@ -1,3 +1,110 @@
+2005-04-27  David Kastrup  <dak@gnu.org>
+
+	* tex-site.el.in (AUCTeX-version, AUCTeX-date): get via configure.
+
+	* tex.el (info): Add "docTeX" to info prefixes.
+	(AUCTeX-version, AUCTeX-date): removed to tex-site.el.
+	(AUC-TeX-version, AUC-TeX-date): Use `make-obsolete-variable'.  Is
+	version 11.50 correct?
+
+	* tex-bar.el (LaTeX-install-toolbar): Adjust toolbarx-image-path.
+
+	* autogen.sh: Use aclocal.m4 from preview subdirectory.
+
+	* tex.el (TeX-submit-bug-report): Add `TeX-command-list' to bug
+	reports.
+
+2005-04-23  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-command): Let it accept `TeX-active-master' as
+	well, by not touching `TeX-current-process-region-p' unless
+	`TeX-region-file' or `TeX-master-file' have been identified
+	explicitly.
+	(TeX-view): Simplify.
+	(TeX-active-process, TeX-active-buffer): Simplify.
+
+2005-04-22  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-help-error): Create the correct log file
+	name corresponding to the current run.
+	(TeX-error, TeX-warning): Pass runbuffer info into the routines to
+	get the correct log file name in all circumstances.
+
+2005-04-20  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: don't bother about pre-2.50 autoconf.  Check
+	version more fine-grainedly.
+
+2005-04-19  David Kastrup  <dak@gnu.org>
+
+	* texmathp.el (texmathp-match-switch): Add autoload cookie.
+
+	* tex.el (no-doc): Remove: not needed because autoloads are
+	documented by the cookie extraction process.
+	(bibtex-mode-hook): Remove.  This will be done by an autoload
+	cookie from latex.el instead.
+	(BibTeX-auto-store, LaTeX-math-mode, japanese-plain-tex-mode)
+	(japanese-latex-mode, texinfo-mode, latex-mode, multi-prompt)
+	(texmathp, texmathp-match-switch): Remove autoloads since this is
+	done by cookies extracted into auctex.el.
+	(TeX-region-create, TeX-save-document, TeX-home-buffer)
+	(TeX-pin-region, TeX-command-region, TeX-command-buffer)
+	(TeX-command-master, TeX-command, TeX-kill-job)
+	(TeX-recenter-output-buffer, TeX-next-error)
+	(TeX-toggle-debug-boxes, TeX-region-file, TeX-current-offset)
+	(TeX-process-set-variable, TeX-view): Make comment nil instead of
+	no-doc.
+	(font-latex-setup, tex-font-setup): Remove autoloads.  Should be
+	done by cookies instead.
+	(TeX-tex-mode): rename from tex-mode.
+	(TeX-plain-tex-mode): rename from plain-tex-mode.
+	(ams-tex-mode): Change autoload cookie.
+
+	* tex-jp.el (japanese-plain-tex-mode, japanese-latex-mode): Change
+	autoload cookies.
+
+	* tex-font.el (tex-font-setup): Add autoload cookie.
+
+	* tex-fold.el (TeX-fold-mode, tex-fold-mode): Add autoload
+	cookies.
+
+	* multi-prompt.el (multi-prompt): Add autoload cookie.
+
+	* latex.el (auto-mode-alist): Add .drv to latex-mode.
+	(TeX-latex-mode): Changed name from latex-mode.
+	(TeX-doctex-mode): Same here for doctex-mode.  Explicitly set
+	major-mode to doctex-mode: we don't want different modes.
+
+	* tex-info.el (texinfo): Alias texinfo-mode to Texinfo-mode for
+	symmetry.
+	(Texinfo-mode): Autoload.
+
+	* context.el (ConTeXt-mode, context-mode): Add definitions and
+	aliases and autoload cookies.
+
+	* bib-cite.el: Remove autoload from instructions.
+
+	* toolbar-x.el (toolbarx-image-path): New variable.
+	(toolbarx-make-string-from-symbol)
+	(toolbarx-make-symbol-from-string, toolbarx-good-option-list-p)
+	(toolbarx-separate-options, toolbarx-merge-props)
+	(toolbarx-make-command, toolbarx-emacs-mount-popup-menu)
+	(toolbarx-xemacs-mount-popup-menu, toolbarx-mount-popup-menu)
+	(toolbarx-option-value, toolbarx-eval-function-or-symbol)
+	(toolbarx-test-image-type, toolbarx-test-button-type)
+	(toolbarx-test-any-type, toolbarx-test-string-or-nil)
+	(toolbarx-test-toolbar-type, toolbarx-test-dropdown-type)
+	(toolbarx-test-symbol, toolbarx-test-dropdown-default)
+	(toolbarx-test-dropdown-save)
+	(toolbarx-process-group-without-insert, toolbarx-process-group)
+	(toolbarx-process-symbol, toolbarx-process-dropdown-group)
+	(toolbarx-find-image, toolbarx-emacs-add-button)
+	(toolbarx-emacs-refresh-process-button-or-insert-list)
+	(toolbarx-emacs-refresh, toolbarx-xemacs-image-properties)
+	(toolbarx-xemacs-button-properties, toolbarx-xemacs-refresh):
+	Remove autoload cookies.
+	(toolbarx-find-image): Use `toolbarx-image-path'.
+
 2005-04-26  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* font-latex.el (font-latex-update-title-faces): Remove unused

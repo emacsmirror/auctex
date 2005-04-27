@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.253 2005-04-18 11:36:44 dak Exp $
+;; $Id: preview.el,v 1.254 2005-04-27 16:16:38 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2360,6 +2360,7 @@ changes get properly reflected in the environment."
   :type '(choice (const :tag "Installed" nil)
 		 (string :tag "Directory followed by kpathsea delimiter")))
 
+;;;###autoload
 (defun preview-install-styles (dir &optional force-overwrite
 				   force-save)
   "Installs the TeX style files into a permanent location.
@@ -3404,7 +3405,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.253 $"))
+	(rev "$Revision: 1.254 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3415,7 +3416,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-18 11:36:44 $"))
+    (let ((date "$Date: 2005-04-27 16:16:38 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

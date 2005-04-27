@@ -741,6 +741,7 @@ the other elements.  The ordering among elements is maintained."
 
 ;;; The mode
 
+;;;###autoload
 (define-minor-mode TeX-fold-mode
   "Toggle TeX-fold-mode on or off.
 TeX-fold-mode lets you hide and unhide LaTeX macros.
@@ -757,6 +758,8 @@ With zero or negative ARG turn mode off."
     (remove-hook 'post-command-hook 'TeX-fold-post-command t)
     (TeX-fold-clearout-buffer))
   (TeX-set-mode-name))
+
+;;;###autoload
 (defalias 'tex-fold-mode 'TeX-fold-mode)
 
 (provide 'tex-fold)

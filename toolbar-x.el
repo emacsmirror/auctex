@@ -106,6 +106,27 @@
 
 ;;; Code:
 
+;; Note that this just gives a useful default.  Icons are expected to
+;; be in subdirectory "images" or "toolbar" relative to the load-path.
+;; Packages loading toolbarx are advised to explicitly add their own
+;; searchpath with add-to-list here even when they fulfill that
+;; criterion: another package might have loaded toolbar-x previously
+;; when load-path was not yet correctly set.  The default setting
+;; really caters only for toolbar-x' stock icons.
+
+(defvar toolbarx-image-path
+  (nconc
+   (delq nil (mapcar #'(lambda(x)
+			 (and (member
+			       (file-name-nondirectory
+				(directory-file-name x))
+			       '("toolbar" "images"))
+			      ;;(file-directory-p x)
+			      x))
+		     load-path))
+   (list data-directory))
+  "This is where toolbarx finds its images.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; First engine: Parsing buttons
 
@@ -122,7 +143,6 @@
 ;; following elements are in the same format of the 2nd element of
 ;; `toolbarx-internal-button-switches'.
 
-;;;###autoload
 (defun toolbarx-make-string-from-symbol (symbol)
   "Return a string from the name of a SYMBOL.
 Upcase initials and replace dashes by spaces."
@@ -134,7 +154,6 @@ Upcase initials and replace dashes by spaces."
 	(push i str2)))			; else push identical
     (concat (nreverse str2))))
 
-;;;###autoload
 (defun toolbarx-make-symbol-from-string (string)
   "Return a (intern) symbol from STRING.
 Downcase string and replace spaces by dashes."
@@ -146,7 +165,6 @@ Downcase string and replace spaces by dashes."
 	(push i str2)))
     (intern (concat (nreverse str2)))))
 
-;;;###autoload
 (defun toolbarx-good-option-list-p (option-list valid-options)
   "Non-nil means the OPTION-LIST is of form (OPT FORM ... OPT FORM).
 Each OPT is member of VALID-OPTIONS and OPT are pairwise
@@ -169,7 +187,6 @@ different.  OPTION-LIST equal to nil is a good option list."
 	 ;; OPTION-LIST has even number of elements
 	 (eq (% (length option-list) 2) 0))))
 
-;;;###autoload
 (defun toolbarx-separate-options (group-list valid-options &optional check)
   "Return a cons cell with non-options and options of GROUP-LIST.
 The options-part is the largest tail of the list GROUP-LIST that
@@ -192,7 +209,6 @@ when applied to `toolbarx-good-option-list-p'."
     (cons (butlast group-list (length maximal)) maximal)))
 
 
-;;;###autoload
 (defun toolbarx-merge-props (inner-props outer-props override add)
   "Merge property lists INNER-PROPS and OUTER-PROPS.
 INNER-PROPS and OUTER-PROPS are two lists in the format
@@ -234,7 +250,6 @@ are the properties, inner properties first."
 					      (append inner-prop
 						      outer-prop)))))))))
 
-;;;###autoload
 (defun toolbarx-make-command (comm prep app)
   "Return a command made from COMM, PREP and APP.
 COMM is a command or a form.  PREP and APP are forms.  If PREP or
@@ -258,7 +273,6 @@ command, COMM is returned."
 ;; handle `menu titles' differently) meanwhile in XEmacs, menus are lists of
 ;; vectors
 
-;;;###autoload
 (defun toolbarx-emacs-mount-popup-menu
   (strings var type &optional title save)
   "Return an interactive `lambda'-expression that shows a popup menu.
@@ -329,7 +343,6 @@ inside Emacs. See documentation of that function for more."
     ;; returns a `lambda'-expression
     `(lambda nil (interactive) (popup-menu (quote ,keymap)))))
 
-;;;###autoload
 (defun toolbarx-xemacs-mount-popup-menu
   (strings var type &optional title save)
   "Return an interactive `lambda'-expression that shows a popup menu.
@@ -388,7 +401,6 @@ inside XEmacs. See documentation of that function for more."
        (let ((popup-menu-titles ,(if title t nil)))
 	 (popup-menu (quote ,menu))))))
 
-;;;###autoload
 (defun toolbarx-mount-popup-menu (strings var type &optional title save)
   "Return a command that show a popup menu.
 The return is a `lambda'-expression with a interactive declaration.
@@ -414,7 +426,6 @@ is `always', state is saved every time that a item is clicked."
       (toolbarx-xemacs-mount-popup-menu strings var type title save)
     (toolbarx-emacs-mount-popup-menu strings var type title save)))
 
-;;;###autoload
 (defun toolbarx-option-value (opt)
   "Return option value according to Emacs flavour.
 If OPT is a vector, return first element if in Emacs or
@@ -429,7 +440,6 @@ if in XEmacs and vector has length 1), then nil is returned."
 	  (aref opt 0)))
     opt))
 
-;;;###autoload
 (defun toolbarx-eval-function-or-symbol (object type-test-func)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ non-nil means that VAL is a valid value, according to
@@ -455,7 +465,6 @@ TYPE-TEST-FUNC."
 	  (setq ret (funcall type-test-func (symbol-value object))))))
     ret))
 
-;;;###autoload
 (defun toolbarx-test-image-type (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid image object VAL (see
@@ -506,7 +515,6 @@ documentation of function `toolbarx-process-symbol')."
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-image-type-simple)))
 
-;;;###autoload
 (defun toolbarx-test-button-type (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid button object VAL (see
@@ -523,14 +531,12 @@ documentation of function `toolbarx-process-symbol')."
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-button-type-simple)))
 
-;;;###autoload
 (defun toolbarx-test-any-type (obj)
   "Return a cons cell (t . VAL).
 If OBJ is vector, return VAL according to editor.  Else, return
 OBJ, because it is a form anyway."
   (cons t (toolbarx-option-value obj)))
 
-;;;###autoload
 (defun toolbarx-test-string-or-nil (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid help object VAL (see
@@ -543,7 +549,6 @@ documentation of function `toolbarx-process-symbol')."
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-string-or-nil-simple)))
 
-;;;###autoload
 (defun toolbarx-test-toolbar-type (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid toolbar property object
@@ -566,7 +571,6 @@ VAL (see documentation of function `toolbarx-process-symbol')."
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-toolbar-type-simple)))
 
-;;;###autoload
 (defun toolbarx-test-dropdown-type (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid `:type' property object
@@ -579,7 +583,6 @@ VAL of a dropdown group (see documentation of function
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-dropdown-type-simple)))
 
-;;;###autoload
 (defun toolbarx-test-symbol (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid `:variable' property
@@ -592,7 +595,6 @@ object VAL of a dropdown group (see documentation of function
 	     (cons good-obj val)))))
     (toolbarx-eval-function-or-symbol obj toolbarx-test-symbol-simple)))
 
-;;;###autoload
 (defun toolbarx-test-dropdown-default (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid `:default' property
@@ -610,7 +612,6 @@ object VAL of a dropdown group (see documentation of function
     (toolbarx-eval-function-or-symbol obj
 				      toolbarx-test-dropdown-default-simple)))
 
-;;;###autoload
 (defun toolbarx-test-dropdown-save (obj)
   "Return a cons cell (GOOD-OBJ . VAL).
 GOOD-OBJ is non-nil if OBJ yields a valid `:save' property
@@ -693,7 +694,6 @@ Convention: properties for the dropdown button should be formed
 with the strings \":dropdown-\" with the button property name
 without `:'. This is used on the implementation.")
 
-;;;###autoload
 (defun toolbarx-process-group-without-insert (group-without-props
 					      merged-props-without-insert
 					      meaning-alist switches)
@@ -714,7 +714,6 @@ preprocessed variables in `toolbarx-process-group'."
 					merged-props-without-insert
 					current-switches)))))))
 
-;;;###autoload
 (defun toolbarx-process-group (group meaning-alist props switches)
   "Return an updated version of SWITCHES.
 Append to already processed buttons (stored in SWITCHES) a
@@ -794,7 +793,6 @@ value, and after that a list in the same format as SWITCHES."
 					       merged-props meaning-alist
 					       switches))))))
 
-;;;###autoload
 (defun toolbarx-process-symbol (symbol meaning-alist props switches)
   "Process a button given by SYMBOL in MEANING-ALIST.
 The processed button is appended in SWITCHES, which is returned.
@@ -849,7 +847,6 @@ the button.  Scope is given by GLOBAL-FLAG."
 	;; return:
 	(nreverse (cons (cons symbol merged-props) (nreverse switches))))))))
 
-;;;###autoload
 (defun toolbarx-process-dropdown-group (dropdown meaning-alist props switches)
   "Process buttons that appear according to dropdown menu.
 Process a dropdown group DROPDOWN with meaning alist
@@ -1101,7 +1098,7 @@ in the end of SWITCHES, which is returned."
 ;;; How a image is made, giving a string as (part of) file name.
 
 ;; look at function `image-type-available-p' for Emacs !!!!
-;;;###autoload;
+
 (defun toolbarx-find-image (filename)
   "Return a image object from image on FILENAME, a string.
 In Emacs, return a image descriptor from FILENAME and in Xemacs,
@@ -1112,9 +1109,7 @@ ommited, tries `xpm', `xbm' and `pbm'."
   (let ((file))
     (dolist (i '("" ".xpm" ".xbm" ".pbm"))
       (unless file
-	(setq file (locate-library (concat filename i) t load-path)))
-      (unless file
-	(setq file (locate-library (concat filename i) t `(,data-directory)))))
+	(setq file (locate-library (concat filename i) t toolbarx-image-path))))
     (when file
       (funcall (if (featurep 'xemacs) 'make-glyph 'create-image)
 	       file))))
@@ -1129,7 +1124,6 @@ This variable can store different values for the different buffers.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Second engine: display parsed buttons in Emacs
 
-;;;###autoload
 (defun toolbarx-emacs-add-button (button &optional used-keys)
   "Insert a button where BUTTON is its description.
 In Emacs, insert a button to keymap `tool-bar-map' at the end.
@@ -1284,7 +1278,6 @@ side effect."
     (when used-keys (setcdr used-keys used-keys-list))))
 
 
-;;;###autoload
 (defun toolbarx-emacs-refresh-process-button-or-insert-list (switches
 							     &optional
 							     used-keys)
@@ -1303,8 +1296,6 @@ been used as keys in the keymap `tool-bar-map'."
 
 
 
-
-;;;###autoload
 (defun toolbarx-emacs-refresh (&optional global-flag)
   "Refresh and redraw the toolbar in Emacs.
 If GLOBAL-FLAG is non-nil, the default value of toolbar switches
@@ -1327,7 +1318,6 @@ is used and the default value of `toolbarx-map' is changed."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Third engine: display parsed buttons in XEmacs
 
-;;;###autoload
 (defun toolbarx-xemacs-image-properties (image)
   "Return a list of properties of IMAGE.
 IMAGE should be a string or a list of one to six strings or
@@ -1413,7 +1403,6 @@ has nil as first element, GLYPH-LIST becomes nil."
 
 
 
-;;;###autoload
 (defun toolbarx-xemacs-button-properties (button)
   "Return a list of properties of BUTTON.
 The result is either nil (if not to be inserted) or a list in the format
@@ -1576,7 +1565,6 @@ with the same properties updated."
 	  default-width top-height right-width bottom-height left-width)))
 
 
-;;;###autoload
 (defun toolbarx-xemacs-refresh (&optional global-flag)
   "Refresh the toolbar in XEmacs."
   (let* ((switches (if global-flag

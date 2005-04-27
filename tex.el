@@ -1,8 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 1993, 1994, 1996, 1997, 1999, 2000,
+;; Copyright (C) 1985, 1986, 1987, 1993, 1994, 1996, 1997, 1999, 2000,
 ;;   2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
-;; Copyright (C) 1987 Lars Peter Fischer
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -551,51 +550,28 @@ the name of the file being processed, with an optional extension."
 				:tag "Arguments"
 				(sexp :format "%v")))))
 
-;; End of Site Customization.
 
-;;; Import
+;; The following dependencies are not done with autoload cookies since
+;; they are only useful when tex.el is loaded, anyway.  tex-buf.el
+;; should remain unloaded as long as one is only editing files, so
+;; requiring it here would be wrong.
 
-(defvar no-doc
-  "This function is part of AUCTeX, but has not yet been loaded.
-Full documentation will be available after autoloading the function."
-  "Documentation for autoload functions.")
-
-;; This hook will store bibitems when you save a BibTeX buffer.
-(add-hook 'bibtex-mode-hook 'BibTeX-auto-store)
-
-(autoload 'BibTeX-auto-store "latex" no-doc t)
-
-(autoload 'LaTeX-math-mode "latex" no-doc t)
-(autoload 'japanese-plain-tex-mode "tex-jp" no-doc t)
-(autoload 'japanese-latex-mode "tex-jp" no-doc t)
-(autoload 'texinfo-mode "tex-info" no-doc t)
-(autoload 'latex-mode "latex" no-doc t)
-
-(autoload 'multi-prompt "multi-prompt" no-doc nil)
-
-(autoload 'texmathp "texmathp" no-doc nil)
-(autoload 'texmathp-match-switch "texmathp" no-doc nil)
-
-;; Don't require `tex-buf' because `tex-buf' requires `tex'.
-(autoload 'TeX-region-create "tex-buf" no-doc nil)
-(autoload 'TeX-save-document "tex-buf" no-doc t)
-(autoload 'TeX-home-buffer "tex-buf" no-doc t)
-(autoload 'TeX-pin-region "tex-buf" no-doc t)
-(autoload 'TeX-command-region "tex-buf" no-doc t)
-(autoload 'TeX-command-buffer "tex-buf" no-doc t)
-(autoload 'TeX-command-master "tex-buf" no-doc t)
-(autoload 'TeX-command "tex-buf" no-doc nil)
-(autoload 'TeX-kill-job "tex-buf" no-doc t)
-(autoload 'TeX-recenter-output-buffer "tex-buf" no-doc t)
-(autoload 'TeX-next-error "tex-buf" no-doc t)
-(autoload 'TeX-toggle-debug-boxes "tex-buf" no-doc t)
-(autoload 'TeX-region-file "tex-buf" no-doc nil)
-(autoload 'TeX-current-offset "tex-buf" no-doc nil)
-(autoload 'TeX-process-set-variable "tex-buf" no-doc nil)
-(autoload 'TeX-view "tex-buf" no-doc t)
-
-(autoload 'TeX-fold-mode "tex-fold" no-doc t)
-(autoload 'tex-fold-mode "tex-fold" no-doc t)
+(autoload 'TeX-region-create "tex-buf" nil nil)
+(autoload 'TeX-save-document "tex-buf" nil t)
+(autoload 'TeX-home-buffer "tex-buf" nil t)
+(autoload 'TeX-pin-region "tex-buf" nil t)
+(autoload 'TeX-command-region "tex-buf" nil t)
+(autoload 'TeX-command-buffer "tex-buf" nil t)
+(autoload 'TeX-command-master "tex-buf" nil t)
+(autoload 'TeX-command "tex-buf" nil nil)
+(autoload 'TeX-kill-job "tex-buf" nil t)
+(autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
+(autoload 'TeX-next-error "tex-buf" nil t)
+(autoload 'TeX-toggle-debug-boxes "tex-buf" nil t)
+(autoload 'TeX-region-file "tex-buf" nil nil)
+(autoload 'TeX-current-offset "tex-buf" nil nil)
+(autoload 'TeX-process-set-variable "tex-buf" nil nil)
+(autoload 'TeX-view "tex-buf" nil t)
 
 ;;; Portability.
 
@@ -627,55 +603,16 @@ but does nothing in Emacs."
 Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
-(eval-and-compile
-  (defconst AUCTeX-version
-    (eval-when-compile
-      (let ((name "$Name:  $")
-	    (rev "$Revision: 5.503 $"))
-	(or (when (string-match "\\`[$]Name: *\\(release_\\)?\\([^ ]+\\) *[$]\\'"
-				name)
-	      (setq name (match-string 2 name))
-	      (while (string-match "_" name)
-		(setq name (replace-match "." t t name)))
-	      name)
-	    (if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
-		(format "CVS-%s" (match-string 1 rev)))
-	    "unknown")))
-    "AUCTeX version.
-If not a regular release, CVS revision of `tex.el'."))
+(defconst AUC-TeX-version AUCTeX-version)
+(make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version "11.50")
 
-(defconst AUCTeX-date
-  (eval-when-compile
-    (let ((date "$Date: 2005-04-23 09:14:45 $"))
-      (string-match
-       "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
-       date)
-      (format "%s-%s-%s" (match-string 1 date) (match-string 2 date)
-	      (match-string 3 date))))
-  "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
-
-(defconst AUC-TeX-version AUCTeX-version
-  "Obsolete.  Replaced by `AUCTeX-version'.")
-
-(defconst AUC-TeX-date AUCTeX-date
-  "Obsolete.  Replaced by `AUCTeX-date'.")
-
-(defmacro TeX-defun (name args doc &rest body)
-  "Define an AUCTeX function.
-The function NAME with argument ARGS and version-specific
-DOC string gets defined as BODY.  An occurence of %s in the
-DOC string gets replaced with a string like \"AUCTeX 5.1\"."
-;;   (declare (indent defun) (debug &declare name name
-;; 				 lambda-list args
-;; 				 arg doc
-;; 				 def-body body))
-  `(defun ,name ,args ,(format doc
-			       (concat "AUCTeX " AUCTeX-version))
-     ,@body))
+(defconst AUC-TeX-date AUCTeX-date)
+(make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date "11.50")
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
-(eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"))
+(eval-after-load 'info '(dolist (elt '("TeX" "LaTeX" "ConTeXt" "Texinfo"
+				       "docTeX"))
 			  (add-to-list 'Info-file-list-for-emacs
 				       (cons elt "AUCTeX"))))
 
@@ -2146,13 +2083,6 @@ Return the number as car and unit as cdr."
 
 ;;; Font Locking
 
-(autoload 'font-latex-setup "font-latex"
-  "Font locking optimized for LaTeX.
-Should work with all Emacsen." t)
-(autoload 'tex-font-setup "tex-font"
-  "Copy of Emacs 21 standard tex-mode font lock support.
-This only works with Emacs 21." t)
-
 (defcustom TeX-install-font-lock 'font-latex-setup
   "Function to call to install font lock support.
 Choose `ignore' if you don't want AUCTeX to install support for font locking."
@@ -2161,7 +2091,6 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
 		(function-item tex-font-setup)
 		(function-item ignore)
 		(function :tag "Other")))
-
 
 ;;; The Mode
 
@@ -2202,9 +2131,11 @@ when major mode to enter.")
   :group 'TeX-misc
   :type 'boolean)
 
-;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(defun tex-mode ()
-  "Major mode for editing TeX or LaTeX files.
+;;;###autoload
+(TeX-doc)
+;;;###autoload
+(defun TeX-tex-mode ()
+  "Major mode in %s for editing TeX or LaTeX files.
 Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
@@ -2330,8 +2261,10 @@ The algorithm is as follows:
 
 ;;; Plain TeX mode
 
-;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(TeX-defun plain-tex-mode ()
+;;;###autoload
+(TeX-doc)
+;;;###autoload
+(defun TeX-plain-tex-mode ()
   "Major mode in %s for editing plain TeX files.
 See info under AUCTeX for documentation.
 
@@ -3585,7 +3518,9 @@ be bound to `TeX-electric-macro'."
   (cons "AmS-TeX" plain-TeX-menu-entries))
 
 ;;;###autoload
-(TeX-defun ams-tex-mode ()
+(TeX-doc)
+;;;###autoload
+(defun ams-tex-mode ()
   "Major mode in %s for editing AmS-TeX files.
 See info under AUCTeX for documentation.
 
@@ -4382,7 +4317,6 @@ therefore check if this symbol is present and not alter
 `TeX-quote-language' if it is.")
 (make-variable-buffer-local 'TeX-quote-language)
 
-;;;###autoload
 (defun TeX-insert-quote (force)
   "Insert the appropriate quotation marks for TeX.
 Inserts the value of `TeX-open-quote' (normally ``) or `TeX-close-quote'
@@ -4449,10 +4383,6 @@ With prefix argument FORCE, always inserts \" characters."
 		      (t
 		       close-quote)))))))
 
-;; For the sake of BibTeX...
-;;; Do not ;;;###autoload because of conflict with standard tex-mode.el.
-(fset 'tex-insert-quote 'TeX-insert-quote)
-
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
@@ -4474,8 +4404,7 @@ between."
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."
   (interactive)
-  (require 'info)
-  (Info-goto-node "(auctex)"))
+  (info "auctex"))
 
 ;;;###autoload
 (defun TeX-submit-bug-report ()
@@ -4500,7 +4429,8 @@ information about your AUCTeX version and AUCTeX configuration."
 	   'TeX-style-path
 	   'TeX-auto-save
 	   'TeX-parse-self
-	   'TeX-master)
+	   'TeX-master
+	   'TeX-command-list)
      nil nil
      "Remember to cover the basics, that is, what you expected to happen and
 what in fact did happen.

@@ -188,6 +188,9 @@ format of the argument MEANING-ALIST in the mentioned function."
 (defun LaTeX-install-toolbar ()
   "Install toolbar buttons for LaTeX mode."
   (interactive)
+  (require 'toolbar-x)
+  (add-to-list 'toolbarx-image-path
+	       (expand-file-name "images" TeX-data-directory))
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
 			    (let ((append-list))
 			      (dolist (elt TeX-bar-LaTeX-all-button-alists)

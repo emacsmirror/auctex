@@ -1,3 +1,11 @@
+2005-04-27  David Kastrup  <dak@gnu.org>
+
+	* latex/README (Note): Add bug reporting address.
+
+2005-04-19  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-install-styles): Add autoload cookie.
+
 2005-04-18  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-dump-state): New function to get run buffer

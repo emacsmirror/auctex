@@ -66,6 +66,7 @@
 (defvar multi-prompt-found nil
   "List of entries currently added during a `multi-prompt'.")
 
+;;;###autoload
 (defun multi-prompt (separator
 		     unique prompt table
 		     &optional mp-predicate require-match initial history)

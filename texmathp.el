@@ -381,6 +381,7 @@ Limit searches to BOUND.  The return value is like (\"\\macro\" . (point))."
 	      (throw 'exit nil)))
 	(set-syntax-table syntax-table)))))
 
+;;;###autoload
 (defun texmathp-match-switch (bound)
   "Search backward for any of the math switches.
 Limit searched to BOUND."

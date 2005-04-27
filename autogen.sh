@@ -1,7 +1,7 @@
 #!/bin/sh
 if test -z "$AUTOCONF"
-then autoconf
-else $AUTOCONF
+then autoconf -I preview
+else $AUTOCONF -I preview
 fi
 
 cd doc
