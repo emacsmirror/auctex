@@ -82,7 +82,7 @@ fi
 
 AC_DEFUN(AC_DATE_VERSION_FROM_CHANGELOG, [
 AC_MSG_CHECKING([for date in ChangeLog])
-$1=[`sed -n '1s/^\([-0-9]\+\).*/\1/p' ChangeLog`]
+$1=[`sed -n '1s/^\([-0-9][-0-9]*\).*/\1/p' ChangeLog`]
 if test "X${$1}" = X
 then
   AC_MSG_ERROR([[not found]])

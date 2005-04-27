@@ -1,3 +1,7 @@
+2005-04-27  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: sed paranoia.
+
 2005-04-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* aclocal.m4 (AC_DATE_VERSION_FROM_CHANGELOG): Escape `+'.  Add
