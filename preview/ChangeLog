@@ -1,5 +1,8 @@
 2005-04-27  David Kastrup  <dak@gnu.org>
 
+	* preview.el (TeX-inline-preview-internal): Don't try interpreting
+	coding-system if it is nil.
+
 	* aclocal.m4 (AC_DATE_VERSION_FROM_CHANGELOG): actually look into
 	the ChangeLog file.  Uh.
 

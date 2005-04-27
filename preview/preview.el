@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.254 2005-04-27 16:16:38 dak Exp $
+;; $Id: preview.el,v 1.255 2005-04-27 18:24:09 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3388,10 +3388,12 @@ internal parameters, STR may be a log to insert into the current log."
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
 	  (when (featurep 'mule)
 	    (setq preview-coding-system
-		  (preview-buffer-recode-system
-		   (coding-system-base
-		    (with-current-buffer TeX-command-buffer
-		      buffer-file-coding-system))))
+		  (with-current-buffer TeX-command-buffer
+		    buffer-file-coding-system))
+	    (when preview-coding-system
+	      (setq preview-coding-system
+		    (preview-buffer-recode-system
+		     (coding-system-base preview-coding-system))))
 	    (set-process-coding-system
 	     process preview-coding-system))
 	  (TeX-parse-reset)
@@ -3405,7 +3407,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.254 $"))
+	(rev "$Revision: 1.255 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3416,7 +3418,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-27 16:16:38 $"))
+    (let ((date "$Date: 2005-04-27 18:24:09 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
