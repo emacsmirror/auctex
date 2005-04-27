@@ -1,5 +1,7 @@
 2005-04-27  David Kastrup  <dak@gnu.org>
 
+	* aclocal.m4: remove, we want the one in preview instead.
+
 	* tex-site.el.in (AUCTeX-version, AUCTeX-date): get via configure.
 
 	* tex.el (info): Add "docTeX" to info prefixes.
