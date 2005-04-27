@@ -604,10 +604,16 @@ Also does other stuff."
     (TeX-maybe-remove-help menu)))
 
 (defconst AUC-TeX-version AUCTeX-version)
-(make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version "11.50")
+(condition-case nil
+    (make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version "11.50")
+  (wrong-number-of-arguments
+   (make-obsolete-variable 'AUC-TeX-version 'AUCTeX-version)))
 
 (defconst AUC-TeX-date AUCTeX-date)
-(make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date "11.50")
+(condition-case nil
+    (make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date "11.50")
+  (wrong-number-of-arguments
+   (make-obsolete-variable 'AUC-TeX-date 'AUCTeX-date)))
 
 ;;; Documentation for Info-goto-emacs-command-node and similar
 
@@ -1367,31 +1373,23 @@ Return nil otherwise."
 
 ;;; Style Paths
 
-(setq TeX-lisp-directory (file-name-as-directory TeX-lisp-directory))
-
-(setq TeX-auto-global (file-name-as-directory TeX-auto-global))
-
-(defcustom TeX-style-global (file-name-as-directory
-			     (concat TeX-lisp-directory "style"))
+(defcustom TeX-style-global (expand-file-name "style" TeX-data-directory)
   "*Directory containing hand generated TeX information.
-Must end with a directory separator.
 
 These correspond to TeX macros shared by all users of a site."
   :group 'TeX-file
   :type 'directory)
 
-(defcustom TeX-auto-local (file-name-as-directory "auto")
+(defcustom TeX-auto-local "auto"
   "*Directory containing automatically generated TeX information.
-Must end with a directory separator.
 
 This correspond to TeX macros found in the current directory, and must
 be relative to that."
   :group 'TeX-file
   :type 'string)
 
-(defcustom TeX-style-local (file-name-as-directory "style")
+(defcustom TeX-style-local "style"
   "*Directory containing hand generated TeX information.
-Must end with a slash.
 
 These correspond to TeX macros found in the current directory, and must
 be relative to that."
@@ -1494,20 +1492,18 @@ DEFAULT: fallback path list"
     (or input-dir-list default)))
 
 (defcustom TeX-macro-global (TeX-macro-global)
-  "Directories containing the site's TeX macro and style files.
-The directory names *must* end with a directory separator."
+  "Directories containing the site's TeX macro and style files."
   :group 'TeX-file
   :type '(repeat (directory :format "%v")))
 
 (defcustom TeX-macro-private (append (TeX-parse-path "TEXINPUTS")
 				     (TeX-parse-path "BIBINPUTS"))
-  "Directories where you store your personal TeX macros.
-Each must end with a directory separator."
+  "Directories where you store your personal TeX macros."
   :group 'TeX-file
   :type '(repeat (file :format "%v")))
 
 (defcustom TeX-auto-private (mapcar (lambda (entry)
-				      (concat entry TeX-auto-local))
+				      (expand-file-name TeX-auto-local entry))
 				    TeX-macro-private)
   "List of directories containing automatically generated information.
 Must end with a slash.
@@ -1520,11 +1516,10 @@ These correspond to the personal TeX macros."
     (setq TeX-auto-private (list TeX-auto-private)))
 
 (defcustom TeX-style-private (mapcar (lambda (entry)
-				       (concat entry
-					       TeX-style-local))
+				       (expand-file-name
+					TeX-style-local entry))
 				     TeX-macro-private)
   "List of directories containing hand generated information.
-Must end with a slash.
 
 These correspond to the personal TeX macros."
   :group 'TeX-file
@@ -1545,7 +1540,7 @@ These correspond to the personal TeX macros."
   :type '(repeat (file :format "%v")))
 
 (defcustom TeX-check-path
-  (append (list "./") TeX-macro-private TeX-macro-global)
+  (append (list ".") TeX-macro-private TeX-macro-global)
   "Directory path to search for dependencies.
 
 If nil, just check the current file.
@@ -1589,11 +1584,8 @@ active.")
 	 ;; Insert empty list to mark the fact that we have searched.
 	 (setq TeX-style-hook-list (cons (list style) TeX-style-hook-list))
 	 ;; Now check each element of the path
-	 (mapcar (lambda (name)
-		   (TeX-load-style-file (concat
-					 (file-name-as-directory name)
-					 style)))
-		 TeX-style-path))))
+	 (dolist (name TeX-style-path)
+	   (TeX-load-style-file (expand-file-name name style))))))
 
 (defun TeX-load-style-file (file)
   "Load FILE checking for a Lisp extensions."

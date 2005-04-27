@@ -1,3 +1,21 @@
+2005-04-27  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-lisp-directory, TeX-auto-global): Don't
+	`file-name-as-directory'fy.
+	(TeX-style-global, TeX-auto-local, TeX-style-local)
+	(TeX-macro-global, TeX-macro-private): Same here.
+	(TeX-auto-private): Use expand-file-name.
+	(TeX-style-private): Same here.
+	(TeX-check-path): Same.
+	(TeX-load-style): Adapt.
+
+	* tex-buf.el (TeX-check-files): Be robust against non-slashed
+	directory names.
+	(TeX-ispell-document): Same here.
+
+	* tex.el (AUC-TeX-version, AUC-TeX-date): Protect
+	`make-obsolete-variable' against obsolete Emacsen.
+
 2005-04-28  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/changes.texi: Mention the fix of Japanese fill problems.

@@ -320,7 +320,9 @@ in TeX-check-path."
   (let ((found nil)
 	(regexp (concat "\\`\\("
 			(mapconcat (lambda (dir)
-				     (regexp-quote (expand-file-name dir)))
+				     (regexp-quote
+				      (expand-file-name
+				       (file-name-as-directory dir))))
 				   TeX-check-path "\\|")
 			"\\).*\\("
 			(mapconcat 'regexp-quote originals "\\|")
@@ -358,7 +360,9 @@ in TeX-check-path."
   (let ((found nil)
 	(regexp (concat "\\`\\("
 			(mapconcat (lambda (dir)
-				     (regexp-quote (expand-file-name dir)))
+				     (regexp-quote
+				      (expand-file-name 
+				       (file-name-as-directory dir))))
 				   TeX-check-path "\\|")
 			"\\).*\\("
 			(mapconcat 'regexp-quote (cons name (TeX-style-list)) "\\|")
