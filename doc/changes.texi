@@ -33,6 +33,12 @@ with hyphens in different languages as well.  @xref{European}, for
 details.
 
 @item
+Fill problems in Japanese text which are introduced by changes of
+@AUCTeX{} 11.55 were fixed.  @AUCTeX{} trys not to break lines between
+1-byte char and 2-bytes char.  These features will work in Chinese text,
+too.
+
+@item
 Of course a lot of bugs have been fixed.
 @end itemize
 
