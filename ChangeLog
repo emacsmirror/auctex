@@ -1,3 +1,7 @@
+2005-04-28  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/changes.texi: Mention the fix of Japanese fill problems.
+
 2005-04-27  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4: remove, we want the one in preview instead.
