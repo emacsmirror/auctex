@@ -1,7 +1,6 @@
 @ifset rawfile
 @include macros.texi
-@node Frequently Asked Questions About AUCTeX,,(dir),(dir)
-@top Frequently Asked Questions about @AUCTeX{}
+@chapheading Frequently Asked Questions about @AUCTeX{}
 @end ifset
 
 @c We should switch to sectioning commands instead of items when this
