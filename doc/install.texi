@@ -1,6 +1,13 @@
+@ifset rawfile
 @include macros.texi
+@node Installation,,(dir),(dir)
+@top Installing @AUCTeX{}
+@end ifset
+
+@ifclear rawfile
 @node Installation
 @chapter Installing @AUCTeX{}
+@end ifclear
 
 Installing @AUCTeX{} should be simple: merely @command{./configure},
 @command{make}, and @code{make install}. This does not yet activate the
@@ -29,8 +36,28 @@ the file @file{INSTALL.windows}.
 @end menu
 @end ifclear
 
+@ifset rawfile
+@menu
+* Prerequisites::
+* Configure::
+* Build/install::
+* Loading the package::
+* Advice for package providers::
+* Advice for non-privileged users::
+* Customizing::
+@end menu
+@end ifset
+
+@ifset rawfile
+@node Prerequisites
+@chapter Prerequisites
+@raisesections
+@end ifset
+
+@ifclear rawfile
 @node Prerequisites
 @section Prerequisites
+@end ifclear
 
 @itemize @bullet
 @item A recent version of @w{Emacs 21}, alternatively @w{XEmacs 21}.

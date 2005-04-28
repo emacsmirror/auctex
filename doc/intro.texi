@@ -1,6 +1,13 @@
 @include macros.texi
-@node Introduction
+@ifset rawfile
 @chapter Introduction to @AUCTeX{}
+@raisesections
+@end ifset
+
+@ifclear rawfile
+@node Introduction, Installation, Copying, top
+@section Introduction to @AUCTeX{}
+@end ifclear
 
 This section of the @AUCTeX{} manual gives a brief overview of what
 @AUCTeX{} is, and the section is also available as a @file{README} file.
@@ -66,20 +73,16 @@ WWW users may want to check out the @AUCTeX{} page at
 
 @section Contacts
 
-There has been established a mailing list for help, bug reports, feature
-requests and general discussion about @AUCTeX{}.  You're very welcome
-to join.  Traffic average at an article by day, but they come in bursts.
-If you are only interested in information on updates, you could refer to
-the newsgroups @samp{comp.text.tex} and @samp{gnu.emacs.sources}.
+Various mailing lists exist.
 
-If you want to contact the @AUCTeX{} mailing list, send a mail with the
-subject ``subscribe'' to @email{auctex-request@@gnu.org} in order to
-join the general discussion list.  Articles should be sent to
-@email{auctex@@gnu.org}.  In a similar way, you can subscribe to the
-@email{info-auctex@@gnu.org} list for just getting important
-announcements about @AUCTeX{}.  The list @email{bug-auctex@@gnu.org} is
-for bug reports which you should usually file with the @kbd{@key{M-x}
-TeX-submit-bug-report @key{RET}} command.
+Send a mail with the subject ``subscribe'' to
+@email{auctex-request@@gnu.org} in order to join the general discussion
+list for @AUCTeX{}.  Articles should be sent to @email{auctex@@gnu.org}.
+In a similar way, you can subscribe to the @email{info-auctex@@gnu.org}
+list for just getting important announcements about @AUCTeX{}.  The list
+@email{bug-auctex@@gnu.org} is for bug reports which you should usually
+file with the @kbd{@key{M-x} TeX-submit-bug-report @key{RET}} command.
 
-For the developers of @AUCTeX{} themselves, there is a discussion list
+If you want to address the developers of @AUCTeX{} themselves with
+technical issues, they can be found on the discussion list
 @email{auctex-devel@@gnu.org}.

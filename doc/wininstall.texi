@@ -1,8 +1,11 @@
+@ifset rawfile
 @include macros.texi
+@end ifset
 
-Installation of @AUCTeX{} is a bit more complicated, but we are working
-to resolve the issues involved. Please report success/failure to us at
-@email{auctex-devel@@gnu.org}. Here are the steps to perform:
+Installation of @AUCTeX{} under Windows is a bit more complicated, but
+we are working to resolve the issues involved. Please report
+success/failure to us at @email{auctex-devel@@gnu.org}. Here are the
+steps to perform:
 
 @enumerate
 @item

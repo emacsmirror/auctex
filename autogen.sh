@@ -3,14 +3,11 @@ if test -z "$AUTOCONF"
 then autoconf -I preview
 else $AUTOCONF -I preview
 fi
-
+rm -rf autom4te.cache
 cd doc
-# We don't want to rename intro.texi to readme.texi
-# in order to keep CVS history.
-makeinfo -D rawfile --no-headers --no-validate intro.texi >../README
-makeinfo -D rawfile --no-headers --no-validate install.texi >../INSTALL
-#makeinfo -D rawfile --no-headers --no-validate problems.texi >../PROBLEMS
-makeinfo -D rawfile --no-headers --no-validate todo.texi >../TODO
-makeinfo -D rawfile --no-headers --no-validate wininstall.texi >../INSTALL.windows
-makeinfo -D rawfile --no-headers --no-validate faq.texi >../FAQ
+make -f Makefile.in MAKEINFO=makeinfo disttexts auctex.info
 cd ..
+cd preview
+./autogen.sh
+cd ..
+

@@ -1,6 +1,6 @@
 @ifset rawfile
 @include macros.texi
-@node Frequently Asked Questions About AUCTeX
+@node Frequently Asked Questions About AUCTeX,,(dir),(dir)
 @top Frequently Asked Questions about @AUCTeX{}
 @end ifset
 

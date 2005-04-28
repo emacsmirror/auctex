@@ -1,4 +1,3 @@
-@SET_MAKE@
 prefix=@prefix@$(null)
 datadir=@datadir@$(null)
 packagedir=@packagedir@$(null)
@@ -17,11 +16,14 @@ MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 	changes.texi todo.texi faq.texi macros.texi quickstart.texi
+DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: auctex.dvi tex-ref.dvi auctex.info
 
 dist: auctex.info INSTALL INSTALL.windows README CHANGES TODO FAQ \
 	html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
+
+.PHONY: all dist install disttexts clean distclean maintainer-clean
 
 html/auctex_toc.html: auctex.texi
 	rm -rf html
@@ -49,35 +51,33 @@ auctex.ps: auctex.dvi
 	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex.info: $(TEXIFILES)
-	-$(MAKEINFO) auctex.texi
+	$(MAKEINFO) auctex.texi
 
-INSTALL: install.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		install.texi --output INSTALL
+../INSTALL: install.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		install.texi --output $@
 
-INSTALL.windows: wininstall.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		wininstall.texi --output INSTALL.windows
+../INSTALL.windows: wininstall.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		wininstall.texi --output $@
 
-README: intro.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		intro.texi --output README
+../README: intro.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		intro.texi --output $@
 
-CHANGES: changes.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		changes.texi --output CHANGES
+../CHANGES: changes.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		changes.texi --output $@
 
-HISTORY: history.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		history.texi --output HISTORY
+../TODO: todo.texi macros.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		todo.texi --output $@
 
-TODO: todo.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		todo.texi --output TODO
+../FAQ: faq.texi macros.texi
+	$(MAKEINFO) -D rawfile --no-headers  \
+		faq.texi --output $@
 
-FAQ: faq.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers --no-validate \
-		faq.texi --output FAQ
+disttexts: $(DISTTEXTS)
 
 install: auctex.info
 	-$(MKINSTALLDIRS) $(DESTDIR)$(infodir)
@@ -94,8 +94,11 @@ clean:
 	rm -f *.dvi *.ps *.pdf *.aux *.cp *.fn *.info *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
 		*.fns *.vrs *.pgs *.tmp auctex.info auctex.info-* *.html \
-		INSTALL INSTALL.windows README CHANGES HISTORY TODO FAQ
 	rm -rf html
 
 distclean: clean
 	rm -f Makefile
+
+maintainer-clean: distclean
+	rm -rf ../INSTALL INSTALL.windows README CHANGES HISTORY TODO FAQ
+

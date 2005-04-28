@@ -29,8 +29,10 @@ satisfied with the default settings, you should customize
 
 @item
 Similar to language-specific quote insertion, @AUCTeX{} now helps you
-with hyphens in different languages as well.  @xref{European}, for
-details.
+with hyphens in different languages as well.
+@ifclear rawfile
+@xref{European}, for details.
+@end ifclear
 
 @item
 Fill problems in Japanese text which are introduced by changes of
@@ -154,7 +156,10 @@ node names.
 Setting the variable @code{LaTeX-float} to @code{nil} now means that you
 will not be prompted for the float position of figures and tables.  You
 can get the old behaviour of @code{nil} by setting the variable to
-@code{""}, i.e. an empty string.  See also @ref{Floats}.
+@code{""}, i.e. an empty string.
+@ifclear rawfile
+See also @ref{Floats}.
+@end ifclear
 
 @item
 The XEmacs-specific bug concerning @code{overlays-at} was fixed.
@@ -168,8 +173,13 @@ Lots of bug fixes.
 @itemize @bullet
 @item
 The @LaTeX{} math menu can include Unicode characters if your Emacs
-built supports it.  See the variable @code{LaTeX-math-menu-unicode},
-@ref{Mathematics}.
+built supports it.  See the variable
+@ifset rawfile
+@code{LaTeX-math-menu-unicode}.
+@end ifset
+@ifclear rawfile
+@code{LaTeX-math-menu-unicode}, @ref{Mathematics}.
+@end ifclear
 
 @item
 Bug fixes for XEmacs.
@@ -242,11 +252,23 @@ and the customization will not work correctly.
 
 @item
 Support for hiding and auto-revealing macros, e.g. footnotes or
-citations, and environments in a buffer was added, @ref{Folding}.
+citations, and environments in a buffer was
+@ifset rawfile
+added.
+@end ifset
+@ifclear rawfile
+added, @ref{Folding}.
+@end ifclear
 
 @item
 You can now control if indentation is done upon typing @key{RET} by
-customizing the variable @code{TeX-newline-function}, @ref{Indenting}.
+customizing the variable
+@ifset rawfile
+@code{TeX-newline-function}.
+@end ifset
+@ifclear rawfile
+@code{TeX-newline-function}, @ref{Indenting}.
+@end ifclear
 
 @item
 Limited support for @code{doc.sty} and @code{ltxdoc.cls} (@samp{dtx}
@@ -306,7 +328,13 @@ See the variable @code{LaTeX-includegraphics-options-alist}.
 
 @item
 If @code{LaTeX-default-position} is @code{nil}, don't prompt for
-position arguments in Tabular-like environments, see @ref{Tabular-like}.
+position arguments in Tabular-like
+@ifset rawfile
+environments.
+@end ifset
+@ifclear rawfile
+environments, see @ref{Tabular-like}.
+@end ifclear
 
 @item
 Completion for available packages when using @kbd{C-c RET \usepackage
@@ -350,7 +378,12 @@ variable @code{TeX-output-view-style}.
 @item
 You can control whether @code{TeX-insert-macro} (@kbd{C-c RET}) ask for
 all optional arguments by customizing the variable
+@ifset rawfile
+@code{TeX-insert-macro-default-style}.
+@end ifset
+@ifclear rawfile
 @code{TeX-insert-macro-default-style}, @ref{Completion}.
+@end ifclear
 
 @item
 @code{TeX-run-discard} is now able to completely detach a process that
@@ -359,7 +392,13 @@ it started.
 @item
 The build process was enhanced and is now based on @code{autoconf}
 making installing AUC@TeX{} a mostly automatic process.  See
-@ref{Installation} and @ref{Installation under MS Windows} for details.
+@ifset rawfile
+the files @file{INSTALL} and @file{INSTALL.windows}
+@end ifset
+@ifclear rawfile
+@ref{Installation} and @ref{Installation under MS Windows}
+@end ifclear
+for details.
 @end itemize
 
 @heading News in 11.14
