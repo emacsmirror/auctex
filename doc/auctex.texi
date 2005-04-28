@@ -132,7 +132,7 @@ sending ``subscribe'' in the subject of a mail to
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Changes::                     Changes and New Features
-* ToDo::                        Future Development
+* Development::                 Future Development
 * FAQ::                         Frequently Asked Questions
 * Key Index::                   Key Index
 * Function Index::              Function Index
@@ -3482,7 +3482,7 @@ List of functions to be called after parsing a @TeX{} file.
 @heading Older versions
 See the file @file{history.texi} for older changes.
 
-@node ToDo
+@node Development
 @appendix Future Development
 @include todo.texi
 
