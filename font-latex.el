@@ -123,9 +123,9 @@ use \\[customize]."
 ;; 2000, 2001 Free Software Foundation, Inc.) and adapted to the needs
 ;; of font-latex.el.
 
-(defconst font-latex-title-max 5
-  "Highest number for font-latex-title-N-face")
-(defface font-latex-title-5-face
+(defconst font-latex-sectioning-max 5
+  "Highest number for font-latex-sectioning-N-face")
+(defface font-latex-sectioning-5-face
   (if (featurep 'xemacs)
       '((((type tty pc) (class color) (background light))
 	 (:foreground "blue4" :bold t))
@@ -145,21 +145,21 @@ use \\[customize]."
       (((class color) (background dark))
        (:weight bold :inherit variable-pitch :foreground "yellow"))
       (t (:weight bold :inherit variable-pitch))))
-  "Face for LaTeX titles at level 5."
+  "Face for sectioning commands at level 5."
   :group 'font-latex-highlighting-faces)
 
-(defun font-latex-update-title-faces (&optional max height-scale)
+(defun font-latex-update-sectioning-faces (&optional max height-scale)
   "Update sectioning commands faces."
   (unless height-scale
-    (setq height-scale (if (numberp font-latex-title-fontify)
-			   font-latex-title-fontify
+    (setq height-scale (if (numberp font-latex-fontify-sectioning)
+			   font-latex-fontify-sectioning
 			 1.1)))
   (unless max
-    (setq max font-latex-title-max))
+    (setq max font-latex-sectioning-max))
   (dotimes (num max)
     (let* (;; reverse for XEmacs:
 	   (num (- max (1+ num)))
-	   (face-name (intern (format "font-latex-title-%s-face" num))))
+	   (face-name (intern (format "font-latex-sectioning-%s-face" num))))
       (unless (get face-name 'saved-face) ; Do not touch customized faces.
 	(if (featurep 'xemacs)
 	    (let ((size
@@ -175,18 +175,18 @@ use \\[customize]."
 	      (make-face-size face-name size))
 	  (set-face-attribute face-name nil :height  height-scale))))))
 
-(defcustom font-latex-title-fontify 1.1
+(defcustom font-latex-fontify-sectioning 1.1
   "Whether to fontify LaTeX titles with varying height faces or a color face.
 
 If it is a number, use varying height faces.  The number is used
-for scaling starting from `font-latex-title-5-face'.  Typically
+for scaling starting from `font-latex-sectioning-5-face'.  Typically
 value from 1.05 to 1.3 give best result, depending on your font
 setup.  If it is `color', use `font-lock-type-face'.
 
 Caveats: Customizing the scaling factor applies to all sectioning
 faces unless those face have been saved by customize.  Setting
 this variable directly does not take effect; unless you call
-`font-latex-update-title-faces' or restart Emacs.
+`font-latex-update-sectioning-faces' or restart Emacs.
 
 Switching from `color' to a number or vice versa does not take
 effect unless you call \\[font-lock-fontify-buffer] or restart
@@ -198,21 +198,21 @@ Emacs."
   :set (lambda (symbol value)
 	 (set-default symbol value)
 	 (unless (eq value 'color)
-	   (font-latex-update-title-faces font-latex-title-max value)))
+	   (font-latex-update-sectioning-faces font-latex-sectioning-max value)))
   :group 'font-latex)
 
-(defun font-latex-make-title-faces (max &optional height-scale)
+(defun font-latex-make-sectioning-faces (max &optional height-scale)
   "Build the faces used to fontify sectioning commands."
-  (unless max (setq max font-latex-title-max))
+  (unless max (setq max font-latex-sectioning-max))
   (unless height-scale
-    (setq height-scale (if (numberp font-latex-title-fontify)
-			   font-latex-title-fontify
+    (setq height-scale (if (numberp font-latex-fontify-sectioning)
+			   font-latex-fontify-sectioning
 			 1.1)))
   (dotimes (num max)
     (let* (;; reverse for XEmacs:
 	   (num (- max (1+ num)))
-	   (face-name (intern (format "font-latex-title-%s-face" num)))
-	   (f-inherit (intern (format "font-latex-title-%s-face" (1+ num))))
+	   (face-name (intern (format "font-latex-sectioning-%s-face" num)))
+	   (f-inherit (intern (format "font-latex-sectioning-%s-face" (1+ num))))
 	   (size (when (featurep 'xemacs)
 		   (round (* 0.9 (face-height 'default)
 			     (expt height-scale (- max 1 num)))))))
@@ -224,15 +224,34 @@ Emacs."
 	  (format "Face for sectioning commands at level %s.
 
 Probably you don't want to customize this face directly.  Better
-change the base face `font-latex-title-5-face' or customize the
-variable `font-latex-title-fontify'." num)
+change the base face `font-latex-sectioning-5-face' or customize the
+variable `font-latex-fontify-sectioning'." num)
 	  :group 'font-latex-highlighting-faces))
       (when (and (featurep 'xemacs)
 		 ;; Do not touch customized  faces.
 		 (not (get face-name 'saved-face)))
 	(set-face-parent face-name f-inherit)))))
 
-(font-latex-make-title-faces font-latex-title-max)
+(font-latex-make-sectioning-faces font-latex-sectioning-max)
+
+;; These aliases should be removed after the next release:
+;; Provide face aliases for version 11.50-11.55:
+(dolist (num '(1 2 3 4))
+  (let ((old (intern (format "font-latex-title-%s-face" num)))
+	(new (intern (format "font-latex-sectioning-%s-face" num))))
+    ;; Does this work at all?
+    (when t; (get old 'saved-face)
+      (put old 'face-alias new))))
+;; Provide alias for version 11.55:
+(condition-case nil
+    (make-obsolete-variable 'font-latex-title-fontify
+			    'font-latex-fontify-sectioning
+			    "AUCTeX 11.80")
+  (wrong-number-of-arguments 'font-latex-title-fontify
+			     'font-latex-fontify-sectioning))
+;; Should we provide an alias for version 11.50-11.54?
+;; (make-obsolete-variable 'font-latex-title-fontity
+;; 			'font-latex-title-fontify "AUCTEX 11.55")
 
 ;;; Keywords
 
@@ -270,22 +289,22 @@ variable `font-latex-title-fontify'." num)
      font-lock-function-name-face 2 (command 1 t))
     ("title-0"
      ("part")
-     font-latex-title-0-face 2 (title 1 t))
+     font-latex-sectioning-0-face 2 (title 1 t))
     ("title-1"
      ("chapter")
-     font-latex-title-1-face 2 (title 1 t))
+     font-latex-sectioning-1-face 2 (title 1 t))
     ("title-2"
      ("section")
-     font-latex-title-2-face 2 (title 1 t))
+     font-latex-sectioning-2-face 2 (title 1 t))
     ("title-3"
      ("subsection")
-     font-latex-title-3-face 2 (title 1 t))
+     font-latex-sectioning-3-face 2 (title 1 t))
     ("title-4"
      ("subsubsection")
-     font-latex-title-4-face 2 (title 1 t))
+     font-latex-sectioning-4-face 2 (title 1 t))
     ("title-5"
      ("paragraph" "subparagraph" "subsubparagraph")
-     font-latex-title-5-face 2 (title 1 t))
+     font-latex-sectioning-5-face 2 (title 1 t))
     ("textual"
      ("item" "title" "author" "date" "thanks" "address" "caption"
       "textsuperscript")
@@ -338,7 +357,7 @@ if trailing asterisk should be fontified>)' which will match
 macros of the form \"\\foo[bar]{baz}\", or a list of the form
 `(title <num>)' which is basically the same as the `(comman <num>)'
 list but puts conditional into the keyword highlighter which
-tests for `font-latex-title-fontify'.")
+tests for `font-latex-fontify-sectioning'.")
 
 (defun font-latex-make-match-defun (prefix name type)
   "Return a function definition for keyword matching.
@@ -397,7 +416,7 @@ use."
 	 `(,(intern (concat prefix name))
 	   (0 'font-lock-keyword-face append t)
 	   (1 'font-lock-variable-name-face append t)
-	   (2 (if (eq font-latex-title-fontify 'color)
+	   (2 (if (eq font-latex-fontify-sectioning 'color)
 		  'font-lock-type-face
 		',face)
 	      append t)))

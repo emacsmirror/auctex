@@ -1,3 +1,13 @@
+2005-04-28  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el: Rename most *-title* stuff to *-sectioning*.  Old
+	names: font-latex-title-%s-face, font-latex-title-fontify,
+	font-latex-update-title-faces, font-latex-make-title-faces
+	font-latex-title-max.  New names: font-latex-sectioning-%s-face,
+	font-latex-fontify-sectioning, font-latex-update-sectioning-faces,
+	font-latex-make-sectioning-faces, font-latex-sectioning-max.
+	Provide face-alias iff old faces have been saved via customize.
+
 2005-04-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (Development): New name replacing "ToDo".
