@@ -52,10 +52,12 @@ then
    AC_MSG_RESULT([[${auctexstartfile}]])
    packagelispdir="${lispdir}/auctex"
    packagedatadir="${packagelispdir}"
+   texsitedir="${lispdir}"
 else
    #lispdir is only used for determining relative files.
    lispdir="${packagedir}"
    packagelispdir="${packagedir}/lisp/auctex"
+   texsitedir="$packagelispdir"
    auctexstartfile="${packagelispdir}"/auto-autoloads.el
    packagedatadir="${packagedir}/etc/auctex"
    infodir="${packagedir}/info"
@@ -68,15 +70,17 @@ AC_ARG_WITH(packagelispdir,
 [[  --with-packagelispdir=DIR
                         Directory for the package lisp files.]],
   [packagelispdir=["${withval}"]])
-AC_LISPIFY_DIR(packagelispdir,"${previewstartfile}")
+AC_LISPIFY_DIR(packagelispdir,[["${texsitedir}/tex-site.el"]])
 AC_MSG_RESULT([[${packagelispdir}]])
 
 AC_MSG_CHECKING([where the data files go])
 AC_ARG_WITH(packagedatadir,
 [[  --with-packagedatadir=DIR         Where the data files go.]],
   [packagedatadir=["${withval}"]])
-AC_LISPIFY_DIR(packagedatadir,"${previewstartfile}")
+AC_LISPIFY_DIR(packagedatadir,[["${texsitedir}/tex-site.el"]])
 AC_MSG_RESULT([[${packagedatadir}]])
+
+AC_LISPIFY_DIR(texsite,[["${auctexstartfile}"]],tex-site.el)
 
 AC_MSG_CHECKING(where the info files go)
 AC_MSG_RESULT([[${infodir}]])
@@ -90,6 +94,7 @@ if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info'; then
 fi
 
 AUCTEX_AUTO_DIR
+AC_LISPIFY_DIR(autodir,"${texsitedir}/tex-site.el")
 
 AC_PATH_PROG(TEX, tex, :)
 AC_PATH_PROG(PDFTEX, pdftex, :)
@@ -147,7 +152,7 @@ then
   AC_CONFIG_SUBDIRS(preview)
 fi
 
-AC_OUTPUT(Makefile tex-site.el doc/Makefile)
+AC_OUTPUT(Makefile tex-site.el doc/Makefile auctex.el)
 
 
 cat >&2 <<EOF

@@ -120,7 +120,7 @@ version info in %s."
     (if (stringp (nth 3 form))
 	(setcar (nthcdr 3 form)
 		(format (nth 3 form)
-			(format "AUCTeX %s" @AUCTEXVERSION@))))
+			(format "AUCTeX %s" AUCTeX-version))))
     form))
 
 (provide 'tex-site)

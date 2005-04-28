@@ -1,5 +1,13 @@
 2005-04-28  David Kastrup  <dak@gnu.org>
 
+	* tex-site.el.in (TeX-doc): Use AUCTeX-version.
+
+	* configure.ac: fiddle with relative paths.
+
+	* Makefile.in: several changes to buld structure.
+
+	* auctex.el.in (TeX-doc): Startup file source.
+
 	* doc/wininstall.texi: 
 
 	* doc/intro.texi: 

@@ -1,3 +1,9 @@
+2005-04-28  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4 (AUCTEX_AUTO_DIR): simplify.
+	(AC_LISPIFY_DIR): add third argument.  Simplify a few common
+	expressions.
+
 2005-04-27  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4: sed paranoia.

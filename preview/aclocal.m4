@@ -557,16 +557,10 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
  AC_ARG_WITH(auto-dir,
 	     [  --with-auto-dir=DIR     directory containing AUCTeX automatically generated
 			  global style hooks],
-	     [autodir="${withval}"
-	      autodir_expanded="${autodir}"
-	      AC_FULL_EXPAND(autodir_expanded)],
-	     [autodir='${localstatedir}/auctex'
-	      autodir_expanded="${autodir}"
-	      AC_FULL_EXPAND(autodir_expanded)
-])
- AC_MSG_RESULT([${autodir}, expanded to ${autodir_expanded}])
+	     [autodir="${withval}"],
+	     [autodir='${localstatedir}/auctex'])
+ AC_MSG_RESULT([${autodir}])
  AC_SUBST(autodir)
- AC_SUBST(autodir_expanded)
 ])
 
 # AC_LISPIFY_DIR
@@ -576,6 +570,10 @@ AC_DEFUN(AUCTEX_AUTO_DIR,
 # relative to lispdir, and the lispification uses relative file names
 # in relation to the second argument if the target dir is in the
 # lispdir hierarchy.
+# Second argument is a path to be resolved relatively to the filename
+# in the third argument.
+# If a third argument is given, it specifies a path specification
+# to be expanded relative to the resulting directory.
 AC_DEFUN(AC_LISPIFY_DIR,[
  tmpdir="[$]{$1}"
  AC_FULL_EXPAND(tmpdir)
@@ -584,21 +582,32 @@ AC_DEFUN(AC_LISPIFY_DIR,[
  expstartup=$2
  AC_FULL_EXPAND(expstartup)
 EMACS_LISP([lisp$1],[[(progn (setq path (directory-file-name path))
-  (unless (string= (car load-path) (directory-file-name (car load-path)))
+  (if (or target
+          (not (string= (car load-path) (directory-file-name (car load-path)))))
     (setq path (file-name-as-directory path)))
   (setq path (expand-file-name path lispdir))
-  (setq startup (expand-file-name startup lispdir))
+  (setq startupdir (file-name-directory (expand-file-name startup lispdir)))
   (prin1-to-string
     (if (or (string-match \"\\\\\`\\\\.\\\\.\"
-              (setq relname (file-relative-name startup lispdir)))
+              (setq relname (file-relative-name startupdir lispdir)))
             (file-name-absolute-p relname)
 	    (string-match \"\\\\\`\\\\.\\\\.\"
               (setq relname (file-relative-name path lispdir)))
  	    (file-name-absolute-p relname))
-	 path
-    \`(expand-file-name
-       ,(file-relative-name path (file-name-directory startup))
-       (file-name-directory load-file-name)))))]],-no-site-file,[[path lispdir startup]],
-  [["${tmpdir}" "${explispdir}" "${expstartup}"]])
+	  (concat path target)
+	(cond (target
+	       \`(expand-file-name
+                   ,(file-relative-name (concat path target) startupdir)
+	           (file-name-directory load-file-name)))
+              ((string= path startupdir)
+	         '(file-name-directory load-file-name))
+	      ((string= path (directory-file-name startupdir))
+                 '(directory-file-name (file-name-directory load-file-name)))
+              (t
+	       \`(expand-file-name
+                   ,(file-relative-name path startupdir)
+	           (file-name-directory load-file-name)))))))]],
+       -no-site-file,[[path lispdir startup target]],
+  [["${tmpdir}" "${explispdir}" "${expstartup}" $3]])
    AC_SUBST([lisp$1])
    AC_SUBST([$1])])

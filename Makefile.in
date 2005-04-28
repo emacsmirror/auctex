@@ -2,20 +2,23 @@
 
 # Makefile - for the AUCTeX distribution.
 #
-# Maintainer: auc-tex@sunsite.dk
+# Maintainer: auctex-devel@gnu.org
 # Version: initial try <jalar@mai.liu.se>
 #
 
 prefix = @prefix@$(null)
+exec_prefix = @exec_prefix@$(null)
+libdir = @libdir@$(null)
+packagedatadir = @packagedatadir@$(null)
 datadir = @datadir@$(null)
 localstatedir = @localstatedir@$(null)
 infodir = @infodir@$(null)
 lispdir = @lispdir@$(null)
+packagelispdir = @packagelispdir@$(null)
+packagedatadir = @packagedatadir@$(null)
 packagedir = @packagedir@$(null)
-auctexdir= @auctexdir@$(null)
-aucteximagedir= ${auctexdir}/images
 autodir = @autodir@
-styledir = ${auctexdir}/style
+styledir = $(packagedatadir)/style
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -23,7 +26,7 @@ MKINSTALLDIRS = ./mkinstalldirs
 DESTDIR=
 
 EMACS=@EMACS@
-ELCC=$(EMACS) -batch -q -no-site-file -l lpath.el
+ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
 
 .SUFFIXES: .el .elc .texi
 
@@ -108,7 +111,7 @@ contrib:
 
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
-	rm -f $(DESTDIR)$(auctexdir)/tex-site.el # Remove old (CVS-version) mistakes
+	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (CVS-version) mistakes
 	if [ -f $(DESTDIR)$(lispdir)/tex-site.el ]; then \
 	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
@@ -118,10 +121,10 @@ install-el:
 	   fi; \
 	fi; \
 	$(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir)
-	-$(MKINSTALLDIRS) $(DESTDIR)$(auctexdir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
 	for x in $(AUCSRC) ; do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(styledir)
 	$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(styledir)
@@ -134,8 +137,8 @@ install-el:
 
 install-lisp:	some install-el
 	for x in $(AUCSRC) ; do \
-	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(auctexdir)' ; \
-	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done;
 	for x in $(STYLESRC) ; do \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
@@ -143,22 +146,22 @@ install-lisp:	some install-el
 	done;
 
 install-images:
-	-$(MKINSTALLDIRS) $(DESTDIR)$(aucteximagedir)
+	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
 	set -x; for x in images/*.xpm ; do \
-	  $(INSTALL_DATA) $${x} $(DESTDIR)$(aucteximagedir) ; \
+	  $(INSTALL_DATA) $${x} $(DESTDIR)$(packagedatadir)/images ; \
 	done;
-# $(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(aucteximagedir)
+# $(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(packagedatadir)/images
 
 install-contrib-el:
 	for x in $(CONTRIB) $(CONTRIB_MULE); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 
 install-contrib:	install-contrib-el $(CONTRIBELC) $(CONTRIB_MULEELC)
 	for x in $(CONTRIBELC) $(CONTRIB_MULEELC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(auctexdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(auctexdir) ; \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 
 install-info:
