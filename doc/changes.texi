@@ -41,6 +41,19 @@ Fill problems in Japanese text which are introduced by changes of
 too.
 
 @item
+The scaling factor of the fontification of sectioning commands can now
+be customized using the variable @code{font-latex-fontify-sectioning}.
+This variable was previously called @code{font-latex-title-fontify}; In
+this release we provide an alias but this will disappear in one of the
+the next releases.  The faces for the sectioning commands are now called
+@code{font-latex-sectioning-@var{N}-face} (@var{N}=0@dots{}5) instead of
+@code{font-latex-title-@var{N}-face} (@var{N}=1@dots{}4).
+@ifclear rawfile
+@ref{Font Locking} for details.
+@end ifclear
+Make sure to adjust your customizations.
+
+@item
 Of course a lot of bugs have been fixed.
 @end itemize
 

@@ -1,5 +1,10 @@
 2005-04-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/changes.texi: Mention changes in sectioning fontification.
+
+	* doc/auctex.texi (Font Locking): Adjust to new sectioning
+	fontification.
+
 	* font-latex.el: Rename most *-title* stuff to *-sectioning*.  Old
 	names: font-latex-title-%s-face, font-latex-title-fontify,
 	font-latex-update-title-faces, font-latex-make-title-faces

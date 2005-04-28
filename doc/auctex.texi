@@ -1386,41 +1386,39 @@ Face: @code{font-latex-warning-face}
 
 Sectioning commands are macros like @samp{\chapter} or @samp{\section}.
 For these commands there are two fontification schemes which may be
-selected by customizing the variable @code{font-latex-title-fontify}.
+selected by customizing the variable @code{font-latex-fontify-sectioning}.
 
-@defopt font-latex-title-fontify
+@defopt font-latex-fontify-sectioning
+@c Is @vindex correct?
+@vindex font-latex-sectioning-0-face
+@vindex font-latex-sectioning-1-face
+@vindex font-latex-sectioning-2-face
+@vindex font-latex-sectioning-3-face
+@vindex font-latex-sectioning-4-face
+@vindex font-latex-sectioning-5-face
 Per default sectioning commands will be shown in a larger, proportional
-font, which corresponds to the value @samp{height} for this variable.
-The font size varies with the sectioning level, e.g. @samp{\part} will
-have a larger font than @samp{\subsection}.  @fontlatex{} provides four
-different levels.  The respective keyword lists are described in the
-following table.  If you rather like to use the base font and a
-different color, set the variable to @samp{color}.  In this case the
-face @code{font-lock-type-face} will be used to fontify the argument of
-the command.
+font, which corresponds to a number for this variable.  The font size
+varies with the sectioning level, e.g. @samp{\part}
+(@code{font-latex-sectioning-0-face}) has a larger font than
+@samp{\paragraph} (@code{font-latex-sectioning-5-face}).  Typically,
+values from 1.05 to 1.3 for @code{font-latex-fontify-sectioning} give
+best results, depending on your font setup.  If you rather like to use
+the base font and a different color, set the variable to @samp{color}.
+In this case the face @code{font-lock-type-face} will be used to fontify
+the argument of the sectioning commands.
 @end defopt
 
+@vindex font-latex-match-title-0-keywords
 @vindex font-latex-match-title-1-keywords
 @vindex font-latex-match-title-2-keywords
 @vindex font-latex-match-title-3-keywords
 @vindex font-latex-match-title-4-keywords
-@table @code
-@item font-latex-match-title-1-keywords
-Keywords for level 1 sectioning commands.@*
-Face: @code{font-latex-title-1-face}
-
-@item font-latex-match-title-2-keywords
-Keywords for level 2 sectioning commands.@*
-Face: @code{font-latex-title-2-face}
-
-@item font-latex-match-title-3-keywords
-Keywords for level 3 sectioning commands.@*
-Face: @code{font-latex-title-3-face}
-
-@item font-latex-match-title-4-keywords
-Keywords for level 4 sectioning commands.@*
-Face: @code{font-latex-title-4-face}
-@end table
+@vindex font-latex-match-title-5-keywords
+You can add your own sectioning commands be adding them to the keyword
+lists: @code{font-latex-match-title-0-keywords}
+(@code{font-latex-sectioning-0-face}) @dots{}
+@code{font-latex-match-title-5-keywords}
+(@code{font-latex-sectioning-5-face}).
 
 @subheading Commands for changing fonts
 
