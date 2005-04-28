@@ -6,7 +6,7 @@
 	font-latex-title-max.  New names: font-latex-sectioning-%s-face,
 	font-latex-fontify-sectioning, font-latex-update-sectioning-faces,
 	font-latex-make-sectioning-faces, font-latex-sectioning-max.
-	Provide face-aliases.
+	(font-latex-fontify-sectioning): Fix typos in doc string.
 
 2005-04-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 

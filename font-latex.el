@@ -180,7 +180,7 @@ use \\[customize]."
 
 If it is a number, use varying height faces.  The number is used
 for scaling starting from `font-latex-sectioning-5-face'.  Typically
-value from 1.05 to 1.3 give best result, depending on your font
+values from 1.05 to 1.3 give best results, depending on your font
 setup.  If it is `color', use `font-lock-type-face'.
 
 Caveats: Customizing the scaling factor applies to all sectioning
@@ -235,13 +235,6 @@ variable `font-latex-fontify-sectioning'." num)
 (font-latex-make-sectioning-faces font-latex-sectioning-max)
 
 ;; These aliases should be removed after the next release:
-;; Provide face aliases for version 11.50-11.55:
-(dolist (num '(1 2 3 4))
-  (let ((old (intern (format "font-latex-title-%s-face" num)))
-	(new (intern (format "font-latex-sectioning-%s-face" num))))
-    ;; Does this work at all?
-    (when t; (get old 'saved-face)
-      (put old 'face-alias new))))
 ;; Provide alias for version 11.55:
 (condition-case nil
     (make-obsolete-variable 'font-latex-title-fontify
