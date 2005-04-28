@@ -1,3 +1,9 @@
+2005-04-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi (Development): New name replacing "ToDo".
+
+	* doc/faq.texi, doc/todo.texi: Fix for raw output.
+
 2005-04-28  David Kastrup  <dak@gnu.org>
 
 	* tex-site.el.in (TeX-doc): Use AUCTeX-version.
