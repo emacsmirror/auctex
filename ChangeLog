@@ -1,5 +1,8 @@
 2005-04-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex-site.el.in (TeX-mode-alist): Exchange value and doc string.
+	(TeX-modes-set): Check if mode is fbound.
+
 	* doc/changes.texi: Mention changes in sectioning fontification.
 
 	* doc/auctex.texi (Font Locking): Adjust to new sectioning

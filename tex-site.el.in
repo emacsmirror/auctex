@@ -65,12 +65,12 @@ shared by all users of a site."
   :type 'directory)
 
 (defconst TeX-mode-alist
-  "Alist of built-in TeX modes and their load files."
   '((tex-mode . tex-mode)
     (plain-tex-mode . tex-mode)
     (texinfo-mode . texinfo-mode)
     (latex-mode . tex-mode)
-    (doctex-mode . tex-mode)))
+    (doctex-mode . tex-mode))
+  "Alist of built-in TeX modes and their load files.")
 
 (defun TeX-modes-set (var value &optional update)
   "Set VAR (which should be `TeX-modes') to VALUE.
@@ -85,7 +85,8 @@ definition."
     (while list
       (setq elt (car (pop list)))
       (when (or update (null (get elt 'tex-saved)))
-	(put elt 'tex-saved (symbol-function elt)))
+	(when (fboundp elt)
+	  (put elt 'tex-saved (symbol-function elt))))
       (fset elt
 	    (if (memq elt value)
 		(intern (concat "TeX-" (symbol-name elt)))
