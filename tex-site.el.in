@@ -124,6 +124,3 @@ version info in %s."
 			(format "AUCTeX %s" AUCTeX-version))))
     form))
 
-(provide 'tex-site)
-
-;;; tex-site.el ends here
