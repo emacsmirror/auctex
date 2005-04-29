@@ -3506,8 +3506,6 @@ be bound to `TeX-electric-macro'."
   (cons "AmS-TeX" plain-TeX-menu-entries))
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun ams-tex-mode ()
   "Major mode in AUCTeX for editing AmS-TeX files.
 See info under AUCTeX for documentation.
