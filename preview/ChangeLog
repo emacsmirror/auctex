@@ -1,3 +1,7 @@
+2005-04-29  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: echo date correctly.
+
 2005-04-28  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4 (AUCTEX_AUTO_DIR): simplify.

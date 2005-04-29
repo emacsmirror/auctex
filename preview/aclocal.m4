@@ -87,7 +87,7 @@ if test "X${$1}" = X
 then
   AC_MSG_ERROR([[not found]])
 fi
-AC_MSG_RESULT($1)
+AC_MSG_RESULT(${$1})
 AC_MSG_CHECKING([for release in ChangeLog])
 $2=[`sed -n '2,/^[0-9]/s/.*Version \(.*\) released\..*/\1/p' ChangeLog`]
 if test "X${$2}" = X

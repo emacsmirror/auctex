@@ -17,7 +17,7 @@ lispdir = @lispdir@$(null)
 packagelispdir = @packagelispdir@$(null)
 packagedatadir = @packagedatadir@$(null)
 packagedir = @packagedir@$(null)
-autodir = @autodir@
+autodir = @autodir@$(null)
 styledir = $(packagedatadir)/style
 
 INSTALL = @INSTALL@
@@ -27,6 +27,10 @@ DESTDIR=
 
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
+AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
+  (mapcar (function update-file-autoloads) command-line-args-left) \
+  (save-buffers-kill-emacs t))'
+
 
 .SUFFIXES: .el .elc .texi
 
@@ -99,8 +103,22 @@ all:	lisp
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball full-release tar-ball-clean wc
 
-lisp:
+lisp:	tex-site.el $(AUCSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
+
+tex-site.el: tex-site.el.out auto-loads.el Makefile
+	cat tex-site.el.out auto-loads.el >$@
+	echo "(provide 'tex-site)" >>$@
+	echo ";;; tex-site.el ends here" >>$@
+
+auto-loads.el: $(AUCSRC) Makefile
+	rm -f $@
+	-$(ELCC) $(AUTOLOAD) $(AUCSRC); \
+	if test ! -r $@; then \
+	echo ";; Auto-generated part of tex-site.el" > $@ ; \
+	echo "" >> $@ ; \
+	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
+	fi
 
 some:	$(AUCELC) $(STYLEELC)
 

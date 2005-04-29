@@ -152,7 +152,7 @@ then
   AC_CONFIG_SUBDIRS(preview)
 fi
 
-AC_OUTPUT(Makefile tex-site.el doc/Makefile auctex.el)
+AC_OUTPUT(Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el)
 
 
 cat >&2 <<EOF

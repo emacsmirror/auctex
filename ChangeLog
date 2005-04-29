@@ -1,3 +1,15 @@
+2005-04-29  David Kastrup  <dak@gnu.org>
+
+	* tex-site.el.in (tex-site): Provides are added by Makefile.
+	Remove them here.
+
+	* configure.ac: Generate tex-site.el.out instead of tex-site.el.
+
+	* Makefile.in (AUTOLOAD): New form for autoloads from rest of line.
+	(all): Make depend on tex-site.el
+	(lisp): Depend on tex-site.el
+	(tex-site.el, auto-loads.el): New targets.
+
 2005-04-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-site.el.in (TeX-mode-alist): Exchange value and doc string.
