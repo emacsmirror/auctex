@@ -309,7 +309,7 @@ for @node."
 ;;; Mode:
 
 ;;;###autoload
-(defalias 'Texinfo-mode texinfo-mode)
+(defalias 'Texinfo-mode 'texinfo-mode)
 ;;;###autoload
 (TeX-doc)
 ;;;###autoload

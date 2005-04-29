@@ -1,5 +1,7 @@
 2005-04-29  David Kastrup  <dak@gnu.org>
 
+	* tex-info.el (Texinfo-mode): Fix type in alias.
+
 	* tex-site.el.in (tex-site): Provides are added by Makefile.
 	Remove them here.
 
