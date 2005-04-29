@@ -2124,10 +2124,8 @@ when major mode to enter.")
   :type 'boolean)
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun TeX-tex-mode ()
-  "Major mode in %s for editing TeX or LaTeX files.
+  "Major mode in AUCTeX for editing TeX or LaTeX files.
 Tries to guess whether this file is for plain TeX or LaTeX.
 
 The algorithm is as follows:
@@ -2254,10 +2252,8 @@ The algorithm is as follows:
 ;;; Plain TeX mode
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun TeX-plain-tex-mode ()
-  "Major mode in %s for editing plain TeX files.
+  "Major mode in AUCTeX for editing plain TeX files.
 See info under AUCTeX for documentation.
 
 Special commands:
@@ -3513,7 +3509,7 @@ be bound to `TeX-electric-macro'."
 (TeX-doc)
 ;;;###autoload
 (defun ams-tex-mode ()
-  "Major mode in %s for editing AmS-TeX files.
+  "Major mode in AUCTeX for editing AmS-TeX files.
 See info under AUCTeX for documentation.
 
 Special commands:

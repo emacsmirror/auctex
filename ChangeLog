@@ -1,5 +1,19 @@
 2005-04-29  David Kastrup  <dak@gnu.org>
 
+	* auctex.el.in:
+
+	* context.el:
+
+	* latex.el:
+
+	* tex-jp.el:
+
+	* tex-site.el.in:
+
+	* tex.el:
+
+	*  tex-info.el: Remove TeX-doc.
+
 	* tex-info.el (Texinfo-mode): Fix type in alias.
 
 	* tex-site.el.in (tex-site): Provides are added by Makefile.

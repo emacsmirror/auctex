@@ -269,10 +269,8 @@ For detail, see `TeX-command-list', which this list is appended to."
 (put 'japanese-TeX-mode 'permanent-local t)
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun japanese-plain-tex-mode ()
-  "Major mode in %s for editing Japanese plain TeX files.
+  "Major mode in AUCTeX for editing Japanese plain TeX files.
 Set japanese-TeX-mode to t, and enters plain-tex-mode."
   (interactive)
   (setq japanese-TeX-mode t)
@@ -286,10 +284,8 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 (add-hook 'plain-TeX-mode-hook 'japanese-plain-tex-mode-initialization)
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun japanese-latex-mode ()
-  "Major mode in %s for editing Japanese LaTeX files.
+  "Major mode in AUCTeX for editing Japanese LaTeX files.
 Set japanese-TeX-mode to t, and enters latex-mode."
   (interactive)
   (setq japanese-TeX-mode t)

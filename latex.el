@@ -4452,10 +4452,8 @@ This happens when \\left is inserted."
 (add-to-list 'auto-mode-alist '("\\.drv\\'" . latex-mode))
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun TeX-latex-mode ()
-  "Major mode in %s for editing LaTeX files.
+  "Major mode in AUCTeX for editing LaTeX files.
 See info under AUCTeX for full documentation.
 
 Special commands:
@@ -4481,10 +4479,8 @@ of `LaTeX-mode-hook'."
 (add-to-list 'auto-mode-alist '("\\.dtx\\'" . doctex-mode))
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (define-derived-mode docTeX-mode TeX-latex-mode "docTeX"
-  "Major mode in %s for editing .dtx files derived from `LaTeX-mode'.
+  "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
   

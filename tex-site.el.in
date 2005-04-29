@@ -72,6 +72,8 @@ shared by all users of a site."
     (doctex-mode . tex-mode))
   "Alist of built-in TeX modes and their load files.")
 
+(defalias 'TeX-load-hack 'ignore)
+
 (defun TeX-modes-set (var value &optional update)
   "Set VAR (which should be `TeX-modes') to VALUE.
 
@@ -112,15 +114,4 @@ If not a regular release, the date of the last change.")
 
 (defconst AUCTeX-date "@AUCTEXDATE@"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
-
-(defmacro TeX-doc ()
-  "This macro is used _before_ following autoloaded definitions.
-It will format the doc string of the next form to include AUCTeX
-version info in %s."
-  (let ((form (read (current-buffer))))
-    (if (stringp (nth 3 form))
-	(setcar (nthcdr 3 form)
-		(format (nth 3 form)
-			(format "AUCTeX %s" AUCTeX-version))))
-    form))
 

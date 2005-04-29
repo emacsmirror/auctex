@@ -1504,10 +1504,8 @@ else.  There might be text before point."
 (defalias 'ConTeXt-mode 'context-mode)
 
 ;;;###autoload
-(TeX-doc)
-;;;###autoload
 (defun context-mode ()
-  "Major mode in %s for editing ConTeXt files.
+  "Major mode in AUCTeX for editing ConTeXt files.
 
 Special commands:
 \\{ConTeXt-mode-map}

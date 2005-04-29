@@ -310,11 +310,10 @@ for @node."
 
 ;;;###autoload
 (defalias 'Texinfo-mode 'texinfo-mode)
-;;;###autoload
-(TeX-doc)
+
 ;;;###autoload
 (defun TeX-texinfo-mode ()
-  "Major mode in %s for editing Texinfo files.
+  "Major mode in AUCTeX for editing Texinfo files.
 
 Special commands:
 \\{Texinfo-mode-map}
