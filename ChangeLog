@@ -1,3 +1,7 @@
+2005-04-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el: Remove `TeX-doc' for `ams-tex-mode'.
+
 2005-04-29  David Kastrup  <dak@gnu.org>
 
 	* auctex.el.in:
