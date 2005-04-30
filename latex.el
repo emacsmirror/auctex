@@ -4501,7 +4501,7 @@ runs the hooks in `docTeX-mode-hook'."
 ;;is not aliased to doctex-mode (not even when the AUCTeX version is
 ;;disabled) as would be normal for our scheme.
 
-;;;#autoload
+;;;###autoload
 (defalias 'TeX-doctex-mode 'docTeX-mode)
 
 (defvar LaTeX-header-end

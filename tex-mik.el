@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999, 2000, 2001, 2004 Free Software Foundation, Inc.
 
 ;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.

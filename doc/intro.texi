@@ -9,30 +9,57 @@
 @section Introduction to @AUCTeX{}
 @end ifclear
 
-This section of the @AUCTeX{} manual gives a brief overview of what
-@AUCTeX{} is, and the section is also available as a @file{README} file.
-It is @strong{not} an attempt to document @AUCTeX{}.  Real documentation
-for @AUCTeX{} is available in the rest of the manual, which you can find
-in the @file{doc} directory.
+@ifset rawfile
+This file
+@end ifset
+@ifclear rawfile
+This section of the @AUCTeX{} manual
+@end ifclear
+gives a brief overview of what @AUCTeX{} is.  It is @strong{not} an
+attempt to document @AUCTeX{}.  Real documentation for @AUCTeX{} is
+available in the rest of the manual, which should be available as an
+info file after installation.
 
-Read the @file{INSTALL} or @file{INSTALL.windows} file respectively for
-information about how to install @AUCTeX{}.  The files comprise the same
-information as the Installation chapter in the @AUCTeX{} manual.
+Read the
+@ifset rawfile
+@file{INSTALL} or @file{INSTALL.windows} file
+@end ifset
+@ifclear rawfile
+section @ref{Installation}, or @ref{Installation under MS Windows},
+@end ifclear
+respectively for information about how to install @AUCTeX{}.
 
-If you are upgrading from the previous version of @AUCTeX{}, the latest
-changes can be found in the @file{CHANGES} file.  If you are upgrading
-from an older version, read the History chapter in the @AUCTeX{} manual.
+If you are upgrading from non-ancient versions of @AUCTeX{}, the
+latest changes can be found in
+@ifset rawfile
+the @file{CHANGES} file.
+@end ifset
+@ifclear rawfile
+@ref{Changes}.
+@end ifclear
 
 @AUCTeX{} is a comprehensive customizable integrated environment for
 writing input files for @TeX{}/@LaTeX{}/@ConTeXt{} using GNU Emacs.
 
 @AUCTeX{} lets you run @TeX{}/@LaTeX{}/@ConTeXt{} and
 @LaTeX{}/@ConTeXt{}-related tools, such as a output filters or post
-processor from inside Emacs.  Especially `running @LaTeX{}' is
-interesting, as @AUCTeX{} lets you browse through the errors @TeX{}
-reported, while it moves the cursor directly to the reported error, and
-displays some documentation for that particular error.  This will even
-work when the document is spread over several files.
+processor from inside Emacs.  Especially running the various @TeX{}
+processors is interesting, as @AUCTeX{} lets you browse through the
+errors @TeX{} reported, while it moves the cursor directly to the
+reported error, and displays some documentation for that particular
+error.  This will even work when the document is spread over several
+files.
+
+One component of @AUCTeX{} that @LaTeX{} users will find attractive is
+@previewlatex{}, a combination of folding and in-source previewing
+that provides true ``What You See Is What You Get'' experience in your
+sourcebuffer without any lack of control.  @previewlatex{} comes with
+its own manual, see @ref{Top, , preview-latex, preview-latex, The
+@previewlatex{} Manual}.
+@ifset have-preview
+@previewlatex{} should have been installed with this version of
+@AUCTeX{}.
+@end ifset
 
 @AUCTeX{} automatically indents your `@LaTeX{}-source', not only as you
 write it --- you can also let it indent and format an entire document.

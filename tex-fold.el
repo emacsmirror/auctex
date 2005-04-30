@@ -3,7 +3,7 @@
 ;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2004-07-04
 ;; Keywords: tex, wp
 

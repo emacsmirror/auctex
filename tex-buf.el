@@ -4,7 +4,7 @@
 ;;   2005 Free Software Foundation, Inc.
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
 
 ;; This file is part of AUCTeX.

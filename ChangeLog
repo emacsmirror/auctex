@@ -1,3 +1,31 @@
+2005-05-01  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Add have-preview to macros if we have preview
+	enabled.
+
+	* doc/Makefile.in (MAKEINFOINC): Use macros.texi in preview/doc
+	directory.
+	(auctex.dvi, auctex.pdf, auctex.info, ../INSTALL)
+	(../INSTALL.windows, ../README, ../CHANGES, ../TODO, ../FAQ): Use
+	MAKEINFOINC
+
+	* doc/macros.texi: Remove in lieu of version in preview/doc.
+
+	* doc/intro.texi (Introduction): Reorganize, use more of rawfile.
+	Mention preview-latex.
+
+	* tex-buf.el: 
+
+	* tex-fold.el: 
+
+	* tex-font.el: 
+
+	* tex-fptex.el: 
+
+	* tex-info.el: 
+
+	* tex-mik.el: Change maintainer to auctex-devel@gnu.org
+
 2005-04-30  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (install-metadata): Correct version number.

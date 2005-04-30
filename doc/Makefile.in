@@ -5,6 +5,7 @@ infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
+MAKEINFOINC=$(MAKEINFO) -I ../preview/doc
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -15,7 +16,7 @@ TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi faq.texi macros.texi quickstart.texi
+	changes.texi todo.texi faq.texi ../preview/doc/macros.texi quickstart.texi
 DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: auctex.dvi tex-ref.dvi auctex.info
@@ -41,40 +42,40 @@ tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
 
 auctex.dvi: $(TEXIFILES)
-	MAKEINFO="$(MAKEINFO)" $(TEXI2DVI) auctex.texi
+	MAKEINFO="$(MAKEINFOINC)" $(TEXI2DVI) auctex.texi
 
 auctex.pdf: $(TEXIFILES)
-	MAKEINFO="$(MAKEINFO)" $(TEXI2PDF) auctex.texi
+	MAKEINFO="$(MAKEINFOINC)" $(TEXI2PDF) auctex.texi
 
 # dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
 	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex.info: $(TEXIFILES)
-	$(MAKEINFO) auctex.texi
+	$(MAKEINFOINC) auctex.texi
 
-../INSTALL: install.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../INSTALL: install.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		install.texi --output $@
 
-../INSTALL.windows: wininstall.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../INSTALL.windows: wininstall.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		wininstall.texi --output $@
 
-../README: intro.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../README: intro.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		intro.texi --output $@
 
-../CHANGES: changes.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../CHANGES: changes.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		changes.texi --output $@
 
-../TODO: todo.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../TODO: todo.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		todo.texi --output $@
 
-../FAQ: faq.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
+../FAQ: faq.texi ../preview/doc/macros.texi
+	$(MAKEINFOINC) -D rawfile --no-headers  \
 		faq.texi --output $@
 
 disttexts: $(DISTTEXTS)

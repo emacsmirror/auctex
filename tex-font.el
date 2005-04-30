@@ -3,7 +3,7 @@
 ;; Copyright (C) 1985, 86, 89, 92, 94, 95, 96, 97, 98, 1999
 ;;       Free Software Foundation, Inc.
 
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, faces
 
 ;; This file is part of AUC TeX.
