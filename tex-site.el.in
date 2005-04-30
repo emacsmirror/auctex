@@ -67,7 +67,7 @@ shared by all users of a site."
 (defconst TeX-mode-alist
   '((tex-mode . tex-mode)
     (plain-tex-mode . tex-mode)
-    (texinfo-mode . texinfo-mode)
+    (texinfo-mode . texinfo)
     (latex-mode . tex-mode)
     (doctex-mode . tex-mode))
   "Alist of built-in TeX modes and their load files.")

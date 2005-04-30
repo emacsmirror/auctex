@@ -53,10 +53,10 @@ CONTRIB_MULE = tex-jp.el
 COMPILE_MULE = @COMPILE_MULE@
 CONTRIB_MULEELC = @CONTRIB_MULEELC@
 
-AUCSRC = tex.el tex-buf.el latex.el tex-info.el \
+AUCSRC = tex.el tex-buf.el tex-style.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el \
-	toolbar-x.el tex-bar.el tex-style.el
+	toolbar-x.el tex-bar.el
 AUCELC = $(AUCSRC:.el=.elc)
 
 STYLESRC = style/prosper.el \

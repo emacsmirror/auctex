@@ -144,7 +144,7 @@ AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
 if test "X${preview_enabled}" == Xyes
 then
   auctexdir=..; export auctexdir
-  MAKEINFO_MACROS = "$MAKEINFO_MACROS -D have-preview"
+  MAKEINFO_MACROS="$MAKEINFO_MACROS -D have-preview"
   export packagedir packagelispdir packagedatadir
   AC_CONFIG_SUBDIRS(preview)
 fi

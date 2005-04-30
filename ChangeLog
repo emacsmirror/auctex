@@ -1,5 +1,12 @@
 2005-05-01  David Kastrup  <dak@gnu.org>
 
+	* configure.ac: fix syntax error with MAKEINFO_MACROS
+
+	* tex-site.el.in (TeX-mode-alist): Use correct file name for
+	texinfo-mode.
+
+	* Makefile.in (AUCSRC): Move tex-style.el before latex.el
+
 	* configure.ac: Add have-preview to macros if we have preview
 	enabled.
 
