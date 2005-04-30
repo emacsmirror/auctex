@@ -108,21 +108,15 @@ AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will
 succeed.])
 
-if test "x$MAKEINFO" = x
-then
-   AC_PATH_PROG(MAKEINFO, makeinfo, :)
+AC_PATH_PROG(MAKEINFO, makeinfo, :)
 
-   MAKEINFO_CHECK_MACROS(acronym env option command)
-fi
+case "x$MAKEINFO" in x|x:) ;;
+*) MAKEINFO_CHECK_MACROS(acronym env option command)
+esac
 
-AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
+AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.  This is the default when installing into an XEmacs package.])
 
-if test "x$INSTALL_INFO" = x
-then
-  AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
-fi
-
-
+AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(localstatedir)

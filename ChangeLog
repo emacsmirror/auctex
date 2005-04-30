@@ -1,7 +1,11 @@
 2005-04-30  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (install-metadata): Correct version number.
+
 	* configure.ac: substitute auctexstartfile.  Export auctexdir as
 	`..'.
+	If installing info into XEmacs package, disable install-info.  If
+	makeinfo is disabled, don't check for macros.
 
 	* Makefile.in (auctexstartfile): autoconf variable.
 	(subdirs): autoconf variable.

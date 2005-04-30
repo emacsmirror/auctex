@@ -55,6 +55,7 @@ else
    previewstartfile="${packagelispdir}"/auto-autoloads.el
    test "X$packagedatadir" = X && packagedatadir="${packagedir}/etc/preview"
    infodir="${packagedir}/info"
+   INSTALL_INFO=:
 fi
 
 AC_SUBST(previewstartfile)
@@ -109,19 +110,6 @@ AC_SUBST(TEXMFGEN)
 
 AC_PATH_PROG_REQUIRED(TEX, tex, NONE)
 
-# Be very careful about assuming things about the available hash programs
-# MikTeX comes with a braindead link to mktexlsr, apparently, so first
-# try the regular utility from them.
-AC_ARG_VAR(TEXHASH,[command to update the TeX filename database.
-Set to : to skip updating the database on installation.])
-AC_PATH_PROG(TEXHASH, texhash)
-if test -z "${TEXHASH}"; then
-  AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
-  if test -z "${TEXHASH}"; then
-    AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
-  fi
-fi
-
 TEX_PATH_TEXMFDIR
 
 if test "x${texmfdir}" = "xno"
@@ -141,10 +129,25 @@ Please use --with-kpathsea-sep=@<:@:|;@>:@ to specify it!])
   packagetexstyles="${packagedatadir}/latex"
   AC_LISPIFY_DIR(packagetexstyles,"${previewstartfile}")
   lisppackagetexstyles="(defvar preview-TeX-style-dir (concat ${lisppackagetexstyles} \"${kpathseaseparator}\"))"
+  test "X${TEXHASH}" = X && TEXHASH=:
 else
   lisppackagetexstyles=
 fi
 AC_SUBST(lisppackagetexstyles)
+
+# Be very careful about assuming things about the available hash programs
+# MikTeX comes with a braindead link to mktexlsr, apparently, so first
+# try the regular utility from them.
+AC_ARG_VAR(TEXHASH,[command to update the TeX filename database.
+Set to : to skip updating the database on installation.
+This is the default for --without-texmf-dir])
+
+AC_PATH_PROG(TEXHASH, texhash)
+AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
+if test "X${TEXHASH}" = X
+then
+   AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
+fi
 
 AC_ARG_VAR(PERL,[Perl executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will

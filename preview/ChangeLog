@@ -2,6 +2,10 @@
 
 	* configure.ac: Use existing variables packagedatadir,
 	packagelispdir.
+	If configuring a package and infodir is defaulted, disable
+	install-info.
+	Disable TEXHASH when installing --without-texmfdir.  Move TEXHASH
+	test.
 
 	* aclocal.m4: Use existing lispdir variable.
 

@@ -21,6 +21,7 @@ packagedir = @packagedir@$(null)
 autodir = @autodir@$(null)
 subdirs=@subdirs@
 styledir = $(packagedatadir)/style
+AUCTEXDATE = @AUCTEXDATE@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -207,7 +208,7 @@ install-auto:
 
 install-metadata:
 	if test "x$(packagedir)" != xno ; then \
-	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXRELEASEDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2/'`\" tex-site.el && \
+	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
