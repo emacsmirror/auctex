@@ -1,6 +1,9 @@
 2005-04-30  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (install-metadata): Correct version number.
+	(DESCEND): different quoting.
+	(install): Same here.
+	(install-metadata): Don't depend on some exit values.
 
 	* configure.ac: substitute auctexstartfile.  Export auctexdir as
 	`..'.

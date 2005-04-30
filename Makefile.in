@@ -35,7 +35,7 @@ ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (mapcar (function update-file-autoloads) command-line-args-left) \
   (save-buffers-kill-emacs t))'
-DESCEND=OLDPWD="`pwd`";for i in $(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) DESTDIR=$(DESTDIR) PACKAGE=$(PACKAGE) $@ || exit $$?;cd $$OLDPWD;echo "Ascending into $$OLDPWD";done
+DESCEND=OLDPWD="`pwd`";for i in $(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd $$OLDPWD;echo "Ascending into $$OLDPWD";done
 
 
 .SUFFIXES: .el .elc .texi
@@ -133,7 +133,7 @@ some:	$(AUCELC) $(STYLEELC)
 
 install:	install-lisp install-info install-images install-startup
 	$(DESCEND)
-	$(MAKE) DESTDIR=$(DESTDIR) install-metadata
+	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
 
 install-startup:
 	test $(packagedir) != no || \
@@ -208,9 +208,9 @@ install-auto:
 
 install-metadata:
 	if test "x$(packagedir)" != xno ; then \
-	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
-	  cd $(DESTDIR)$(packagedir) && \
+	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el ; \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo ; \
+	  cd $(DESTDIR)$(packagedir) ; \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \
 	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
