@@ -28,8 +28,6 @@
 
 ;;; Code:
 
-(require 'preview)
-
 (defun preview-make-package ()
   "Do anything required to make a package in this version of Emacs,
 other than actually copying the Lisp files.
@@ -48,9 +46,11 @@ other than actually copying the Lisp files.
 
 Generates auto-autoloads, custom-loads, and package metadata file
 in the right locations.  Takes from the command line the package directory,
-and the package name."
+package name, and version (to be evaluated), followed by a file to append."
   (let* ((package-dir (pop command-line-args-left))
 	 (package-name (pop command-line-args-left))
+	 (release-version (eval (read (pop command-line-args-left))))
+	 (append-file (pop command-line-args-left))
          (lisp-dir (expand-file-name (format "lisp/%s/" package-name)
 				     package-dir))
          (metadata (expand-file-name "_pkg.el" lisp-dir))
@@ -76,7 +76,7 @@ and the package name."
        (concat ";;;###autoload\n"
                "(package-provide '" package-name "\n"
                "                 :version "
-	       preview-release-date "\n"
+	       release-version "\n"
                "                 :type 'regular)\n")))
     ; Delete and regenerate the auto-autoloads file.
     (message "Updating autoloads for the directory %s..." lisp-dir)
@@ -97,7 +97,7 @@ and the package name."
         (update-autoloads-from-directory lisp-dir)
       (fset 'message si:message))
     (when (file-exists-p generated-autoload-file)
-      (with-temp-buffer (insert-file "auto.el")
+      (with-temp-buffer (insert-file append-file)
 			(append-to-file (point-min) (point-max)
 					generated-autoload-file))
       (byte-compile-file generated-autoload-file))))

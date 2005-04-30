@@ -14,10 +14,12 @@ datadir = @datadir@$(null)
 localstatedir = @localstatedir@$(null)
 infodir = @infodir@$(null)
 lispdir = @lispdir@$(null)
+auctexstartfile=@auctexstartfile@
 packagelispdir = @packagelispdir@$(null)
 packagedatadir = @packagedatadir@$(null)
 packagedir = @packagedir@$(null)
 autodir = @autodir@$(null)
+subdirs=@subdirs@
 styledir = $(packagedatadir)/style
 
 INSTALL = @INSTALL@
@@ -25,11 +27,14 @@ INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ./mkinstalldirs
 DESTDIR=
 
+PACKAGE=auctex
+PACKAGE_INFO=auctex preview-latex
 EMACS=@EMACS@
 ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (mapcar (function update-file-autoloads) command-line-args-left) \
   (save-buffers-kill-emacs t))'
+DESCEND=OLDPWD="`pwd`";for i in $(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) DESTDIR=$(DESTDIR) PACKAGE=$(PACKAGE) $@ || exit $$?;cd $$OLDPWD;echo "Ascending into $$OLDPWD";done
 
 
 .SUFFIXES: .el .elc .texi
@@ -97,9 +102,11 @@ DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 NOSEARCH = style/.nosearch
 
 all:	lisp
+	$(DESCEND)
 
 .PHONY: all lisp some install contrib install-el install-lisp \
 	install-contrib install-contrib-el install-info install-auto \
+	install-metadata install-startup \
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball full-release tar-ball-clean wc
 
@@ -107,22 +114,29 @@ lisp:	tex-site.el $(AUCSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
-	cat tex-site.el.out auto-loads.el >$@
-	echo "(provide 'tex-site)" >>$@
-	echo ";;; tex-site.el ends here" >>$@
+	cat tex-site.el.out >$@
+	test X$(packagedir) != Xno || cat auto-loads.el >>$@
+	echo "(provide 'tex-site)" >>$@ ; \
+	test X$(packagedir) != Xno || echo ";;; tex-site.el ends here" >>$@
 
 auto-loads.el: $(AUCSRC) Makefile
-	rm -f $@
-	-$(ELCC) $(AUTOLOAD) $(AUCSRC); \
-	if test ! -r $@; then \
+	test X$(packagedir) != Xno || \
+	rm -f $@ ; \
+	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
+	test -r $@ || \
 	echo ";; Auto-generated part of tex-site.el" > $@ ; \
 	echo "" >> $@ ; \
-	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
-	fi
+	$(ELCC) $(AUTOLOAD) $(AUCSRC)
 
 some:	$(AUCELC) $(STYLEELC)
 
-install:	install-lisp install-info install-images
+install:	install-lisp install-info install-images install-startup
+	$(DESCEND)
+	$(MAKE) DESTDIR=$(DESTDIR) install-metadata
+
+install-startup:
+	test $(packagedir) != no || \
+	  $(INSTALL_DATA) auctex.el $(DESTDIR)$(auctexstartfile)
 
 contrib:
 	$(ELCC) -f batch-byte-compile $(CONTRIB) $(COMPILE_MULE)
@@ -138,7 +152,10 @@ install-el:
 	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/tex-site.el.save ; \
 	   fi; \
 	fi; \
-	$(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir)
+	if test X$(packagedir) = Xno; \
+	then $(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir) ; \
+	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
+	fi
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
 	for x in $(AUCSRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
@@ -151,7 +168,7 @@ install-el:
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(styledir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(autodir)
-	$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
+	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp:	some install-el
 	for x in $(AUCSRC) ; do \
@@ -168,7 +185,6 @@ install-images:
 	set -x; for x in images/*.xpm ; do \
 	  $(INSTALL_DATA) $${x} $(DESTDIR)$(packagedatadir)/images ; \
 	done;
-# $(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(packagedatadir)/images
 
 install-contrib-el:
 	for x in $(CONTRIB) $(CONTRIB_MULE); do \
@@ -189,6 +205,17 @@ install-info:
 install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
+install-metadata:
+	if test "x$(packagedir)" != xno ; then \
+	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXRELEASEDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2/'`\" tex-site.el && \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
+	  cd $(DESTDIR)$(packagedir) && \
+	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
+	  for i in $(PACKAGE_INFO); do \
+	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
+	  done ; \
+	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
+	fi
 
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<

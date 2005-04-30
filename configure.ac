@@ -128,10 +128,10 @@ AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(localstatedir)
 AC_SHELL_QUOTIFY(packagedir)
 AC_SHELL_QUOTIFY(lispdir)
-AC_SHELL_QUOTIFY(auctexdir)
 AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(datadir)
 AC_SHELL_QUOTIFY(autodir)
+AC_SHELL_QUOTIFY(auctexstartfile)
 AC_SHELL_QUOTIFY(EMACS)
 AC_SHELL_QUOTIFY(INSTALL_INFO)
 AC_SHELL_QUOTIFY(MAKEINFO)
@@ -149,8 +149,11 @@ AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
 
 if test "X${preview_enabled}" == Xyes
 then
+  auctexdir=..; export auctexdir
+  export packagedir packagelispdir packagedatadir
   AC_CONFIG_SUBDIRS(preview)
 fi
+AC_SUBST(subdirs)
 
 AC_OUTPUT(Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el)
 

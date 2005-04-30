@@ -1,3 +1,20 @@
+2005-04-30  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: substitute auctexstartfile.  Export auctexdir as
+	`..'.
+
+	* Makefile.in (auctexstartfile): autoconf variable.
+	(subdirs): autoconf variable.
+	(PACKAGE, PACKAGE_INFO): macros.
+	(DESCEND): For rebuilding stuff and installing.
+	(all): descend.
+	(tex-site.el): don't include autoloads when XEmacs.
+	(install): descend.
+	(install-startup): new target
+	(install-el): don't install tex-site on XEmacs.
+	(install-el): don't fail on .nosearch not installed.
+	(install-metadata): new target for XEmacs.
+
 2005-04-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el: Remove `TeX-doc' for `ams-tex-mode'.

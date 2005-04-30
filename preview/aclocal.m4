@@ -186,8 +186,9 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_ARG_WITH(lispdir,
     [  --with-lispdir=DIR      Where to install the $1 file, note
                           that most of the package will be relative to it.],
-    [[lispdir="${withval}"]],
-    [if test "${EMACS_FLAVOR}" = 'emacs'; then
+    [[lispdir="${withval}"]])
+  if test "X${lispdir}" = X; then
+     if test "${EMACS_FLAVOR}" = 'emacs'; then
        # Test paths relative to prefixes
        EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
          [['${datadir}/emacs' '${libdir}/emacs' "${emacsprefix}/share/emacs" \
@@ -203,7 +204,7 @@ use  --with-lispdir, --datadir, or possibly --prefix to rectify this])
        # XEmacs
        lispdir="${packagedir}/lisp"
      fi
-    ])
+    fi
   AC_MSG_RESULT([[${lispdir}]])
   AC_SUBST(lispdir)
 ])

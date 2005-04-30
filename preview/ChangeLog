@@ -1,3 +1,18 @@
+2005-04-30  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Use existing variables packagedatadir,
+	packagelispdir.
+
+	* aclocal.m4: Use existing lispdir variable.
+
+	* prv-install.el (preview): don't require
+	(preview-make-package-xemacs): several changes to command line
+	options.
+
+	* Makefile.in (lisp): rename from elisp for harmony with AUCTeX.
+	(install-images): rename from install-icons.
+	(install-metadata): new options for prv-install.el
+
 2005-04-29  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4: echo date correctly.

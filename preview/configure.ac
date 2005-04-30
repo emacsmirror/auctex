@@ -46,14 +46,14 @@ then
        previewstartfile="${lispdir}/preview-latex.el"
      fi])
    AC_MSG_RESULT([[${previewstartfile}]])
-   packagelispdir="${lispdir}/preview"
-   packagedatadir="${packagelispdir}"
+   test "X$packagelispdir" = X && packagelispdir="${lispdir}/preview"
+   test "X$packagedatadir" = X && packagedatadir="${packagelispdir}"
 else
    #lispdir is only used for determining relative files.
    lispdir="${packagedir}"
-   packagelispdir="${packagedir}/lisp/preview"
+   test "X$packagelispdir" = x && packagelispdir="${packagedir}/lisp/preview"
    previewstartfile="${packagelispdir}"/auto-autoloads.el
-   packagedatadir="${packagedir}/etc/preview"
+   test "X$packagedatadir" = X && packagedatadir="${packagedir}/etc/preview"
    infodir="${packagedir}/info"
 fi
 

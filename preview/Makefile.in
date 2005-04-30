@@ -34,9 +34,9 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ./mkinstalldirs
 
-all: texmf elisp docs install-hint
+all: texmf lisp docs install-hint
 
-elisp: $(LISP_OBJS)
+lisp: $(LISP_OBJS)
 	if test $(packagedir) = no ; then \
 	  $(MAKE) preview-latex.el ; \
 	fi
@@ -54,10 +54,10 @@ install-hint:
 	@echo 'to write to the install directory.'
 
 
-.PHONY: install install-texmf install-el install-icons install-startup \
-	install-nosearch install-docs install-metadata use-hint all elisp texmf docs
+.PHONY: install install-texmf install-el install-images install-startup \
+	install-nosearch install-docs install-metadata use-hint all lisp texmf docs
 
-install: install-texmf install-el install-nosearch install-icons \
+install: install-texmf install-el install-nosearch install-images \
          install-startup install-docs install-metadata use-hint
 
 install-docs:
@@ -89,7 +89,7 @@ install-nosearch:
 
 install-metadata:
 	if test "x$(packagedir)" != xno ; then \
-	  $(ELCC) $(AUCTEX) -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)"  && \
+	  $(ELCC) $(AUCTEX) -l preview -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" preview-release-date auto.el && \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
@@ -99,7 +99,7 @@ install-metadata:
 	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
 	fi
 
-install-icons: $(ICON_SOURCES)
+install-images: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
 	for x in $(ICON_SOURCES); do \
 	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(packagedatadir)/images ; \
