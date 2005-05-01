@@ -1,5 +1,9 @@
 2005-05-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-make-match-defun)
+	(font-latex-make-built-in-keywords): Byte-compile generated
+	functions.
+
 	* Makefile.in (clean, distclean): Descend.
 
 2005-05-01  David Kastrup  <dak@gnu.org>
