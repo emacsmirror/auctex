@@ -1,3 +1,7 @@
+2005-05-01  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Configure): Synch with auctex.
+
 2005-04-30  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: Use existing variables packagedatadir,

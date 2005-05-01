@@ -1,3 +1,14 @@
+2005-05-01  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Prerequisites): Shorten.
+	(Prerequisites): Mention that one can survive without texinfo.
+	(Configure): Add prefix information.
+	(Configure): Sync with preview-latex docs.  Mention the
+	disable-preview option and preview-specific options.
+
+	* configure.ac: Don't use have-preview macro.  Conflicts with the
+	idea of pregenerated docs.
+
 2005-05-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-match-defun)

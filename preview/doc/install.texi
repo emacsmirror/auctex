@@ -128,15 +128,16 @@ help it out with one of these options:
 @table @code
 @item --prefix=@file{/usr/local}
 All automatic placements for package components will be chosen from
-sensible existing hierarchies below this.  @file{/usr/local} is the
-default setting for site-wide installation.  If you are packaging this
-as an operating system component for distribution, the setting
-@file{/usr} will probably be the right choice.  If you are planning to
-install the package as a single non-priviledged user, you will typically
-set @var{prefix} to your home directory.  And if you have installed an
-alternative version of Emacs for testing purposes, the prefix (something
-like @file{/usr/local/emacs-22}) will be the same you used when
-installing Emacs.
+sensible existing hierarchies below this.  Only if no workable
+placement can be found there, in some cases an alternative search will
+be made in a prefix deduced from a suitable binary.
+
+@file{/usr/local} is the default @var{prefix}, intended to be suitable
+for a site-wide installation.  If you are packaging this as an
+operating system component for distribution, the setting @file{/usr}
+will probably be the right choice.  If you are planning to install the
+package as a single non-priviledged user, you will typically set
+@var{prefix} to your home directory.
 
 @item --with-emacs[=@var{/path/to/emacs}]
 If you are using a pretest which isn't in your @code{$PATH}, or
@@ -158,9 +159,8 @@ Emacs uses a different installation scheme:
 @item --with-lispdir=@var{/dir}
 This Emacs-only option specifies the location of the @file{site-lisp}
 directory within @samp{load-path} under which the files will get
-installed.  @file{configure} should should figure this out by itself.
-The next two options, if they don't specify an absolute file name, are
-considered to be relative to @var{lispdir}.
+installed (the bulk will get installed in a subdirectory).
+@file{./configure} should figure this out by itself.
 
 @item --with-preview-startfile=@file{preview-latex.el}
 This is the name of the startup file.  If @var{lispdir} contains a
