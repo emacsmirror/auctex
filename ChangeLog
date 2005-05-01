@@ -1,3 +1,7 @@
+2005-05-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (clean, distclean): Descend.
+
 2005-05-01  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-load-style): Properly expand file names, and fix a
