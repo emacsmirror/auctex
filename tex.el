@@ -1572,12 +1572,14 @@ active.")
 				(file-name-directory
 				 (file-relative-name TeX-master))
 			      "./"))
-		(TeX-style-path (append (list (concat dir TeX-auto-local)
-					      (concat master-dir
-						      TeX-auto-local)
-					      (concat dir TeX-style-local)
-					      (concat master-dir
-						      TeX-style-local))
+		(TeX-style-path (append (list (expand-filename
+					       TeX-auto-local dir)
+					      (expand-filename
+					       TeX-auto-local master-dir)
+					      (expand-filename
+					       TeX-style-local dir)
+					      (expand-filename
+					       TeX-style-local master-dir))
 					TeX-style-path)))
 	   (TeX-load-style style)))
 	(t				;Relative path
@@ -1585,7 +1587,7 @@ active.")
 	 (setq TeX-style-hook-list (cons (list style) TeX-style-hook-list))
 	 ;; Now check each element of the path
 	 (dolist (name TeX-style-path)
-	   (TeX-load-style-file (expand-file-name name style))))))
+	   (TeX-load-style-file (expand-file-name style name))))))
 
 (defun TeX-load-style-file (file)
   "Load FILE checking for a Lisp extensions."
