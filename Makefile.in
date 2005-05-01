@@ -224,10 +224,12 @@ install-metadata:
 clean:
 	rm -f $(CLEANFILES)
 	(cd doc; $(MAKE) clean)
+	$(DESCEND)
 
 distclean:
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	(cd doc; $(MAKE) distclean)
+	$(DESCEND)
 
 maintainer-clean: distclean
 	rm -f $(DISTTEXTS)
