@@ -3,7 +3,7 @@
 ;; Copyright (C) 2004, 2005  Free Software Foundation, Inc.
 
 ;; Author: Yvon Henel aka TeXnicien de surface <Yvon.Henel@wanadoo.fr>
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is free software; you can redistribute it and/or modify

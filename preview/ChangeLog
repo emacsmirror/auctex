@@ -1,3 +1,7 @@
+2005-05-02  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4 (EMACS_PATH_LISPDIR): better help.
+
 2005-05-01  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Configure): Synch with auctex.

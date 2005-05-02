@@ -32,7 +32,7 @@ fi
 
 if test "${packagedir}" = no
 then
-   EMACS_PATH_LISPDIR([preview-latex])
+   EMACS_PATH_LISPDIR
    AC_MSG_CHECKING(what file to use for preview startup)
    AC_ARG_WITH(previewstartfile,
    [[  --with-preview-startfile=FILE    What file to use for preview startup.]],

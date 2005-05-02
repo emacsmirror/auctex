@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 
-;; Maintainer: auc-tex@sunsite.dk
+;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.

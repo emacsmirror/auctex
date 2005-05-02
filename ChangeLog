@@ -1,3 +1,39 @@
+2005-05-02  David Kastrup  <dak@gnu.org>
+
+	* style/url.el: 
+
+	* style/ltx-base.el: 
+
+	* style/units.el: 
+
+	* style/alltt.el: 
+
+	* style/alphanum.el: 
+
+	* style/jura.el: 
+
+	* style/emp.el: 
+
+	* style/doc.el: 
+
+	* style/slides.el: 
+
+	* style/csquotes.el: 
+
+	* style/listings.el: 
+
+	* style/nicefrac.el: 
+
+	* style/ltxdoc.el: 
+
+	* style/jurabib.el: 
+
+	* style/mdwlist.el: 
+
+	* style/amstex.el: Change maintainer address.
+
+	* doc/intro.texi (Introduction): Changes, cleanup, corrections.
+
 2005-05-01  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Prerequisites): Shorten.

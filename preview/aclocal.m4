@@ -184,8 +184,8 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
 AC_DEFUN(EMACS_PATH_LISPDIR, [
   AC_MSG_CHECKING([where lisp files go])
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      Where to install the $1 file, note
-                          that most of the package will be relative to it.],
+    [  --with-lispdir=DIR      A place in load-path for Lisp files; most
+                          files will be place in a subdirectory.],
     [[lispdir="${withval}"]])
   if test "X${lispdir}" = X; then
      if test "${EMACS_FLAVOR}" = 'emacs'; then
