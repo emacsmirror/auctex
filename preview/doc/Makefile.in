@@ -49,11 +49,11 @@ preview-latex.info: $(TEXIFILES)
 
 disttexts: $(DISTTEXTS)
 
-../INSTALL: install.texi macros.texi
+../INSTALL: install.texi macros.texi auto.texi
 	-$(MAKEINFO) -D rawfile --no-headers \
 		install.texi --output ../INSTALL
 
-../INSTALL.windows: wininstall.texi macros.texi
+../INSTALL.windows: wininstall.texi macros.texi auto.texi
 	-$(MAKEINFO) -D rawfile --no-headers \
 		wininstall.texi --output ../INSTALL.windows
 
@@ -89,4 +89,4 @@ clean:
 		preview-latex/*
 
 maintainer-clean: clean
-	rm -f *.info* preview-dtxdoc.texi $(DISTTEXTS)
+	rm -f *.info* preview-dtxdoc.texi auto.texi $(DISTTEXTS)

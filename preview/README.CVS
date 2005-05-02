@@ -1,3 +1,8 @@
+If you intend to use preview-latex as an integral part of an AUCTeX
+package, don't read further.  Follow the instructions in README.CVS in
+the top AUCTeX directory to get a combined package.  If you want to
+install or generate preview-latex as a separate package, read on.
+
 If you retrieved preview-latex via CVS instead of as a regular
 release, there are some files that need to be generated from their
 respective source files before you can continue reasonably with the
@@ -9,7 +14,11 @@ Run the shell script
     ./autogen.sh
 
 in order to do that (running the top autogen.sh file of a complete
-AUCTeX distribution will already accomplish that).
+AUCTeX distribution will accomplish that in a way that make the
+documentation suitable for a combined package).
 
 You will need to have a working and rather current copy of `makeinfo',
 `autoconf' and `perl'.
+
+Running ./autogen.sh on a fresh export of the CVS directory will give
+you the state of the distribution tarball.

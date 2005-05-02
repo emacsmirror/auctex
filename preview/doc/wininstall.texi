@@ -1,11 +1,19 @@
 @include macros.texi
+@include auto.texi
 
 Installation of @previewlatex{} under Windows has been verified to work
 with current @acronym{CVS} versions of @w{GNU Emacs} (no released
 version 21.x will work), and with both Cygwin and native versions of
-XEmacs.  Here are the steps to perform:
+XEmacs.  Here are the steps to
+@ifset embedded
+perform in addition to @AUCTeX{} installation instructions:
+@end ifset
+@ifclear embedded
+perform:
+@end ifclear
 
 @enumerate
+@ifclear embedded
 @item
 If you unpacked the distribution using Winzip or similar, you better
 restart using infozip on the @samp{.zip} file, or standard Unix tools
@@ -58,10 +66,12 @@ its instructions.  It is recommended that you install at least 11.55:
 PDF support starts with 11.51, and various bugs in particular for XEmacs
 are fixed in 11.55.  This package is available from the XEmacs package
 repository but might still be in prerelease state.
+@end ifclear
 
 @item
 You need a copy of @uref{http://www.cs.wisc.edu/~ghost,Ghostscript}.
 
+@ifclear embedded
 @item
 @uref{http://www.perl.org,Perl} is needed for rebuilding the
 documentation if you are working with a copy from @acronym{CVS} or have
@@ -80,9 +90,17 @@ but it should still be easy to move it elsewhere now.
 Ready for takeoff.  Start some shell (typically @file{bash}) capable of
 running @file{configure}, change into the installation directory and
 call @command{./configure} with appropriate options.
-
+@end ifclear
+@ifset embedded
+@item
+When doing the @command{./configure} for @AUCTeX{}, here are specific
+options to use:
+@end ifset
+@ifclear embedded
 Typical options you'll want to specify will be
+@end ifclear
 @table @code
+@ifclear embedded
 @item --prefix=@var{drive:/path/to/emacs-directory}
 which tells @file{configure} where to perform the installation. It may
 also make @file{configure} find (X)Emacs automatically, if this doesn't
@@ -101,6 +119,7 @@ environment setting).
 @item --with-xemacs
 If you are using XEmacs, of course use @samp{--with-xemacs} in the same
 manner.
+@end ifclear
 
 @item --with-texmf-dir=@var{dir}
 This will specify the directory where your @TeX{} installation sits.  If
@@ -115,6 +134,7 @@ the `Configure' section in the @file{INSTALL} file
 @end ifclear
 for more information about the available options.
 
+@ifclear embedded
 @item --with-packagedir=@var{/dir}
 is an XEmacs-only option giving the location of the package directory.
 This will install and activate the package.  Emacs uses a different
@@ -135,10 +155,17 @@ the @file{INSTALL} file.
 @ifclear rawfile
 @ref{Configure}.
 @end ifclear
+@end ifclear
 @end table
 
-Calling @file{./configure --help} will tell about other options, but
-those are almost never required.
+Calling
+@ifset embedded
+@file{./configure --help}
+@end ifset
+@ifclear embedded
+@file{./configure --help=recursive}
+@end ifclear
+will tell about other options, but those are almost never required.
 
 Some executables might not be found in your path.  That is not a good
 idea, but you can get around by specifying environment variables to
@@ -149,16 +176,6 @@ GS="@var{/path/to/gswin32c.exe}" ./configure @dots{}
 should work for this purpose.  @file{gswin32c.exe} is the usual name for
 the required @emph{command line} executable under Windows; in contrast,
 @file{gswin32.exe} is likely to fail.
-
-@item
-If you need to use the prebuilt documentation (see above), now is the
-time to unpack it over the rest of the installation directory.
-
-@item
-Run @command{make} in the installation directory.
-	
-@item
-Run @code{make install} in the installation directory.
 
 @item
 In the case of XEmacs, the package directory setup creates startup files

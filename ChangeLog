@@ -1,5 +1,13 @@
 2005-05-02  David Kastrup  <dak@gnu.org>
 
+	* doc/install.texi: 
+
+	* doc/intro.texi: 
+
+	* doc/wininstall.texi: overhaul.
+
+	* autogen.sh: adapt to auto.texi scheme.
+
 	* toolbar-x.el (toolbarx-install-toolbar): Remove overlong doc
 	string from autoload.
 

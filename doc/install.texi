@@ -10,10 +10,11 @@
 @end ifclear
 
 Installing @AUCTeX{} should be simple: merely @command{./configure},
-@command{make}, and @code{make install}. This does not yet activate the
-package, but merely makes it available. See @ref{Loading the package}
-for the activation. Please read through this document fully before
-installing anything.  The installation procedure has changed as
+@command{make}, and @code{make install}.  On many systems, this will
+already activate the package, making its modes the default instead of
+the built-in modes of Emacs.  If this is not the case, consult
+@ref{Loading the package}. Please read through this document fully
+before installing anything.  The installation procedure has changed as
 compared to earlier versions.  In particular, note that there is some
 additional information for @w{MS Windows} installations in
 @ifset rawfile
@@ -107,7 +108,7 @@ various files will be.  To do so, run
 
 (Note: if you have fetched @AUCTeX{} from @acronym{CVS} rather than
 a regular release, you will have to first generate @command{./configure} by
-running @command{autogen.sh} in the @file{auctex} directory.)
+running @command{./autogen.sh} in the @file{auctex} directory.)
 
 On many machines, you will not need to specify any options, but if
 @command{configure} cannot determine something on its own, you'll need to
@@ -278,33 +279,36 @@ people got confused into trying everything at once.
 
 As a package provider, you should make sure that your users will be
 served best according to their intentions, and keep in mind that a
-system might be used by more than one user, with different preferences.
-The use of packages should in general not impact performance negatively
-if a user chooses not to employ it, but should be as convenient as
-possible. The policy with regard to @AUCTeX{} has been to @emph{refrain}
-from activating it automatically when it is installed as a package. This
-is reasonable because
+system might be used by more than one user, with different
+preferences.
 
-@itemize @bullet
-@item Emacs comes with a simpler default @TeX{} mode with different
-keybindings.  Some users might prefer that.
-@item @AUCTeX{} is activated via @code{(require 'tex-site)}.  Once this
-has happened, it is not possible to get back the original @TeX{} mode.
-A site-wide default would for this reason be hard to override.
-@end itemize
+There are people that prefer the built-in Emacs modes for editing
+@TeX{} files, in particular plain @TeX{} users.  There are various
+ways to tell @AUCTeX{} even after auto-activation that it should
+not get used, and they are described in
+@ifset rawfile
+the @file{README} file.
+@end ifset
+@ifclear rawfile
+@ref{Introduction,,Introduction to @AUCTeX{}}.
+@end ifclear
 
-If, however, you are certain that the users all prefer @AUCTeX{}, you
-may place the following line in @file{default.el}:
+For that reason, the default installation will place the startup
+@file{auctex.el} in a possibly existing @file{site-start.d} directory,
+with the assumption that this will cause activation of the package.
+
+If no such directory exists, @file{auctex.el} will be installed in a
+place in the @samp{load-path}, so it should be sufficient to use the
+invocation of
 
 @example
-(require 'tex-site)
+(load "auctex.el" nil nil t)
 @end example
 
-XEmacs uses a package system.  The default @AUCTeX{} installation
-should cater for everything necessary in that case.
+@noindent in the system-wide @file{site-start.el}.
 
 @ignore
-For @acronym{RPM} files we include a @file{preview-latex.spec} file in
+For @acronym{RPM} files we include a @file{auctex.spec} file in
 the tarball distribution, suitable for recent RedHat systems, that
 should do just that.
 @end ignore

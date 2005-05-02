@@ -9,6 +9,13 @@ steps to perform:
 
 @enumerate
 @item
+If you unpacked the distribution using Winzip or similar, you better
+restart using infozip on the @samp{.zip} file, or standard Unix tools
+(see the next point) on the @samp{.tar.gz} file: tools that make the
+mistake of turning Unix line endings into MSDOS line endings will cause
+trouble later in installation and operation.
+
+@item
 The installation of @AUCTeX{} will require the MSYS tool set from
 @uref{http://www.mingw.org}. If you have the Cygwin tool set from
 @uref{http://cygwin.com} installed, that should do just fine as well,
@@ -21,21 +28,41 @@ might also help to use forward slashes instead of the backward slashes
 more typical for @w{MS Windows}: while backward slashes are supposed to
 work if properly escaped in the shell, this is one area easily
 overlooked by the developers.  The same holds for file or directory
-names with spaces in them.  Of course, we want to hear about any
-problems in that area.
+names with spaces in them.    Another noteworthy problem is that you
+should be consistent with regard to using upper and lower case
+characters for directory names: while Windows ignores any differences in
+that area, the configuration scripts don't.
+
+It is appreciated if you report any problems you experienced when
+installing @AUCTeX{}, as we are trying our best to make it work
+even for platforms that we don't use ourselves.
 
 Compiling Emacs is outside of the scope of this manual.  @AUCTeX{}
 itself does not require a @w{C compiler} for installation.
 
 @item
-Install GNU Emacs from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}
-or XEmacs from @uref{http://www.xemacs.org}.
+Install a current version of XEmacs (such as 21.4.10) from
+@uref{http://www.xemacs.org} or try getting and compiling an
+@acronym{CVS} version of @w{GNU Emacs} from
+@uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Precompiled
+versions happen to be available at @uref{http://www.crasseux.com/emacs/}
+and @uref{http://nqmacs.sf.net/}.
+
+If you disable the installation of @previewlatex{}, you might also use
+an @w{Emacs 21} binary from from
+@uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
 Windows is @uref{http://www.miktex.org,Mik@TeX{}}.  Another much more
 extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
 which is rather close to its Unix cousins.
+
+@item
+@uref{http://www.perl.org,Perl} is needed for rebuilding the
+documentation if you are working with a copy from @acronym{CVS} or have
+touched documentation source files.  This is needed for @previewlatex{}
+documentation, strictly speaking.
 
 @item
 Now the fun stuff starts. Unpack the @AUCTeX{} distribution into some
@@ -102,24 +129,8 @@ the `Configure' section in the @file{INSTALL} file.
 @ref{Configure}.
 @end ifclear
 
-@ignore
-Some executables might not be found in your path. That is not a good
-idea, but you can get around by specifying environment variables to
-@command{configure}:
-@example
-GS="@var{/path/to/GhostScript}" ./configure @dots{}
-@end example
-should work for this purpose.
-@end ignore
-
 @item
-If you need to use the prebuilt documentation (see above), now is the
-time to unpack it over the rest of the installation directory.
-
-@item
-Run @command{make} in the installation directory (we have had one report
-that Emacs did not manage to byte compile the Elisp files, and that had
-to be done by hand.  No idea about what might have gone wrong there).
+Run @command{make} in the installation directory.
 	
 @item
 Run @code{make install} in the installation directory.

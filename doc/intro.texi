@@ -34,8 +34,27 @@ section @ref{Installation}, or @ref{Installation under MS Windows},
 @end ifclear
 respectively for information about how to install @AUCTeX{}.
 
-If you are upgrading from non-ancient versions of @AUCTeX{}, the
-latest changes can be found in
+Once @AUCTeX{} is installed, its modes should be the default for all
+@TeX{}-related modes.  If this is not the case, try
+@lisp
+(require 'tex-site)
+@end lisp
+
+If you want to change the modes for which it is operative instead of the
+default, use
+@example
+@key{M-x} customize-variable @key{RET} TeX-modes @key{RET}
+@end example
+
+If you want to remove a preinstalled @AUCTeX{} completely before any of
+its modes have been used,
+@example
+(unload-feature 'tex-site)
+@end example
+should accomplish that.
+
+If you are considering upgrading @AUCTeX{}, the recent changes are
+described in
 @ifset rawfile
 the @file{CHANGES} file.
 @end ifset

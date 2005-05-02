@@ -104,7 +104,8 @@ definition."
   (mapcar 'car TeX-mode-alist)
   "List of modes provided by AUCTeX.
 
-This variable can't be set normally, use customize for it."
+This variable can't be set normally; use customize for that, or
+set it with `TeX-modes-set'."
   :type (cons 'set
 	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set 'TeX-modes-set

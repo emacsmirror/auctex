@@ -222,6 +222,7 @@
 ;;  e.g. If you are using AUCTeX (http://www.gnu.org/software/auctex/), you
 ;;  could use:
 ;;
+;;   (autoload 'turn-on-bib-cite "bib-cite")
 ;;   (add-hook 'LaTeX-mode-hook 'turn-on-bib-cite)
 ;;
 ;;  If you are using Emacs' regular LaTeX-mode, use instead:

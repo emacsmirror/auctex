@@ -1,5 +1,15 @@
 2005-05-02  David Kastrup  <dak@gnu.org>
 
+	* doc/wininstall.texi: 
+
+	* doc/install.texi: Overhaul, use auto.texi.
+
+	* doc/Makefile.in (../INSTALL, ../INSTALL.windows): add auto.texi
+	dependence.
+	(maintainer-clean): remove auto.texi.
+
+	* autogen.sh: Generate auto.texi
+
 	* README.CVS: Some modifications.
 
 	* aclocal.m4 (EMACS_PATH_LISPDIR): better help.

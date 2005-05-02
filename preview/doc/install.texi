@@ -1,16 +1,25 @@
 @include macros.texi
+@include auto.texi
 @ifset rawfile
 @node Top
 @top Installing @previewlatex{}
 
 @end ifset
 @c -----------------------
+@ifset embedded
+This version of @previewlatex{} gets installed as part of @AUCTeX{}, so
+we'll just mention the installation options that happen to be specific
+to @previewlatex{}.
+@end ifset
+@ifclear embedded
 Installing @previewlatex{} should be simple: merely
 @command{./configure}, @command{make}, and @code{make install} for a
 standard site-wide installation (most other installations can be done by
 specifying a @option{--prefix=@dots{}} option).  This does not yet
 activate the package, but merely makes it available.  See @ref{Loading
-the package} for the activation.  Note that unlike most emacs add-ins,
+the package} for the activation.
+@end ifclear
+Note that unlike most emacs add-ins,
 @previewlatex{} consists of a @TeX{} part and an Emacs part (that uses
 @AUCTeX{}).  This makes configuration a bit trickier than normal.
 Please read through this document fully before installing anything.
@@ -54,7 +63,8 @@ The first version known to work with @previewlatex{} is @w{Emacs 21.1}.
 Since @previewlatex{} heavily exercises newer features, getting the
 latest release is a good idea.  Developer versions of @w{Emacs 22} are
 mostly preferable to the released versions of @w{Emacs 21} due to
-performance and handling reasons.  XEmacs (21.4.15 or later, but not the
+performance and handling reasons, and are mandatory for any platform
+except basic X11 toolkits.  XEmacs (21.4.15 or later, but not the
 withdrawn 21.4.16) is supported nominally, but is not particularly
 recommended because of handling, image quality and stability reasons.
  
@@ -65,13 +75,16 @@ the file @file{INSTALL.windows}.
 @ifclear rawfile
 @xref{Installation under MS Windows}.
 @end ifclear
-
+@ifclear embedded
 @item A working @AUCTeX{} installation
 
 @AUCTeX{} can be found at @uref{http://www.gnu.org/software/auctex}.
 This site now provides up-to-date tarballs as well as RPMs.  At the time
 of this writing, the latest version is 11.55.  You need at least 11.51
-to support PDF@LaTeX{} operation.
+to support PDF@LaTeX{} operation.  Versions of 11.80 or later should
+already come with @previewlatex{} included, unless you have a
+precompiled package that explicitly disabled it.
+@end ifclear
 
 @item A working @LaTeX{} installation
 
@@ -109,7 +122,11 @@ the @file{PROBLEMS} file.
 
 @node Configure
 @section Configure
-
+@ifset embedded
+  The configuration is already described for @AUCTeX{}, so we'll just
+  mention additionally available options to @command{configure}:
+@end ifset
+@ifclear embedded
 The first step is to configure the source code, telling it where
 various files will be.  To do so, run
 
@@ -117,15 +134,18 @@ various files will be.  To do so, run
 ./configure @var{options}
 @end example
 
-(Note: if you have fetched @previewlatex{} from @acronym{CVS} rather than
-a regular release, you will have to first generate @command{./configure} by
-running @code{autogen.sh} in the @file{preview} directory.)
+(Note: if you have fetched @previewlatex{} from @acronym{CVS} rather
+than a regular release, you will have to first generate
+@command{./configure} by running @code{autogen.sh} in the @file{preview}
+directory.)
 
 On many machines, you will not need to specify any options, but if
 @code{configure} cannot determine something on its own, you'll need to
 help it out with one of these options:
+@end ifclear
 
 @table @code
+@ifclear embedded
 @item --prefix=@file{/usr/local}
 All automatic placements for package components will be chosen from
 sensible existing hierarchies below this.  Only if no workable
@@ -162,14 +182,6 @@ directory within @samp{load-path} under which the files will get
 installed (the bulk will get installed in a subdirectory).
 @file{./configure} should figure this out by itself.
 
-@item --with-preview-startfile=@file{preview-latex.el}
-This is the name of the startup file.  If @var{lispdir} contains a
-subdirectory @file{site-start.d}, @var{startfile} defaults to
-@file{site-start.d/preview-latex.el}, and @file{site-start.el} should
-load it automatically.  Please be aware that you must not move the
-@var{startfile} after installation since other files are found
-@emph{relative} to it.
-
 @item --with-packagelispdir=@file{preview}
 This is the directory where the bulk of the package gets located.  The
 startfile adds this into @var{load-path}.
@@ -178,6 +190,15 @@ startfile adds this into @var{load-path}.
 If @AUCTeX{} is installed in a non-standard location, use this option to
 specify the location of its @file{tex-site.el} file so that it can be
 found during compilation.
+@end ifclear
+
+@item --with-preview-startfile=@file{preview-latex.el}
+This is the name of the startup file.  If @var{lispdir} contains a
+subdirectory @file{site-start.d}, @var{startfile} defaults to
+@file{site-start.d/preview-latex.el}, and @file{site-start.el} should
+load it automatically.  Please be aware that you must not move the
+@var{startfile} after installation since other files are found
+@emph{relative} to it.
 
 @item --with-texmf-dir=@var{/dir}@*--without-texmf-dir
 @cindex preview-install-styles
@@ -203,17 +224,27 @@ This option may be used to specify where the @TeX{} documentation goes.
 It is to be used when you are using @code{--with-tex-dir=@var{/dir}},
 but is normally not necessary otherwise.
 
+@ifset embedded
+@item --help=recursive
+@end ifset
+@ifclear embedded
 @item --help
+@end ifclear
 This is not an option specific to @previewlatex{}. A number of standard
 options to @file{configure} exist, and we do not have the room to
-describe them here; a short description of each is available, using
-@code{--help}.
+describe them here; a short description of each is available by using
+this option.
 
 @end table
 
 @node Build/install
 @section Build/install
 
+@ifset embedded
+There is nothing specific to @previewlatex{} you have to do here when
+installing @AUCTeX{}.
+@end ifset
+@ifclear embedded
 Once @file{configure} has been run, simply enter
 
 @example
@@ -231,6 +262,7 @@ make install
 @noindent 
 You may need special privileges to install, e.g., if you are installing
 into system directories. 
+@end ifclear
 
 @node Loading the package
 @section Loading the package
@@ -246,9 +278,15 @@ and activate it.  Restarting XEmacs should then make the package
 visible, and @kbd{C-c C-p C-d} should produce previews.
 
 If you used @code{--with-packagedir}, you have to make sure that the
-directory @file{lisp/preview} under the directory you specified is in
-XEmacs' @code{load-path} variable.  The package system should normally
-cater for that.
+directory
+@ifset embedded
+@file{lisp/auctex}
+@end ifset
+@ifclear embedded
+@file{lisp/preview}
+@end ifclear
+under the directory you specified is in XEmacs' @code{load-path}
+variable.  The package system should normally cater for that.
 
 With Emacs (or if you explicitly disabled use of the package system),
 the file @file{preview-latex.el} (which is generated during the
@@ -286,9 +324,6 @@ for a list of known problems.
 @node Advice for package providers
 @section Providing @previewlatex{} as a package
 
-As a package provider, you should make sure that your users will be
-served best according to their intentions, and keep in mind that a
-system might be used by more than one user, with different preferences.
 The use of packages should in general not impact performance negatively
 if a user chooses not to employ it, but should be as convenient as
 possible.
@@ -316,19 +351,27 @@ mentioned above, or by explicitly loading it from your
 @file{site-start.el} file.  For the XEmacs package system, the default
 @previewlatex{} installation will do something equivalent.
 
+@ifclear embedded
 For @acronym{RPM} files we include a @file{preview-latex.spec} file in
 the tarball distribution, suitable for recent RedHat systems, that
 should do just that.
+@end ifclear
 
 If your package is intended as an XEmacs package or to accompany a
 precompiled version of Emacs, you might not know which @TeX{} system
 will be available when @previewlatex{} gets used.  In this case you
 should build using the @code{--without-texmf-dir} option described
-previously.
+previously.  This can also be convenient for systems that are intended
+to support more than a single TeX distribution.  Since more often than
+not @TeX{} packages for operating system distributions are either much
+more outdated or much less complete than separately provided systems
+like @TeX{}live, this method may be generally preferred as the more
+flexible one.
 
 @node Advice for non-privileged users
 @section Installation for non-privileged users
 
+@ifclear embedded
 Often people without system administration privileges want to install
 software for their private use.  In that case you need to specify more
 options top the @file{configure} script.  For XEmacs users, this is
@@ -408,19 +451,23 @@ need to do anything at all; the info files should be immediately
 visible.  However, you might want to set @samp{INFOPATH} anyway, for the
 sake of standalone readers outside of XEmacs. (The info files in XEmacs
 are normally in @file{~/.xemacs/xemacs-packages/info}.)
+@end ifclear
 
 @subheading Making the @LaTeX{} style available
 
-Again, for yourself you want to manipulate the @samp{TEXINPUTS}
+If you configured the system @samp{--without-texmf-dir}, then it should
+just work for other users.
+
+If not: for yourself you want to manipulate the @samp{TEXINPUTS}
 environment variable or an appropriate setting of a personal
 @samp{texmf.cnf} file.  It may well be that your site configuration
-already caters for a personal user's @file{texmf} tree, in
-which case having specified the appropriate tree to
-@command{./configure} will have set up everything for yourself.
-If that personal tree is not located at the equivalent of
-@file{~myself/share/texmf}, it is a good idea to make this so with
-the help of a symbolic link, so that the usual @samp{--prefix}
-invocation to @command{./configure} is everything that is needed.
+already caters for a personal user's @file{texmf} tree, in which case
+having specified the appropriate tree to @command{./configure} will have
+set up everything for yourself.  If that personal tree is not located at
+the equivalent of @file{~myself/share/texmf}, it is a good idea to make
+this so with the help of a symbolic link, so that the usual
+@samp{--prefix} invocation to @command{./configure} is everything that
+is needed.
 
 For others, you want to add something like
 

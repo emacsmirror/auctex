@@ -1,9 +1,10 @@
 #!/bin/sh
-if test -z "$AUTOCONF"
-then autoconf
-else $AUTOCONF
-fi
+test "x${AUTOCONF}" = x && AUTOCONF=autoconf
+test "x${MAKEINFO}" = x && MAKEINFO=makeinfo
+test "x${PERL}" = x && PERL=perl
+${AUTOCONF}
 rm -rf autom4te.cache
 cd doc
-make -f Makefile.in MAKEINFO=makeinfo PERL=perl disttexts preview-latex.info
+echo $1 >auto.texi
+make -f Makefile.in MAKEINFO="$MAKEINFO" PERL="$PERL" disttexts preview-latex.info
 cd ..

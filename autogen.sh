@@ -1,13 +1,14 @@
 #!/bin/sh
-if test -z "$AUTOCONF"
-then autoconf -I preview
-else $AUTOCONF -I preview
-fi
+test "x${AUTOCONF}" = x && AUTOCONF=autoconf
+test "x${MAKEINFO}" = x && MAKEINFO=makeinfo
+${AUTOCONF} -I preview
 rm -rf autom4te.cache
 cd doc
-make -f Makefile.in MAKEINFO=makeinfo disttexts auctex.info
+make -f Makefile.in MAKEINFO="${MAKEINFO}" disttexts auctex.info
 cd ..
 cd preview
-./autogen.sh
+export AUTOCONF
+export MAKEINFO
+./autogen.sh "@set embedded"
 cd ..
 

@@ -8,10 +8,13 @@ Run the shell script
 
     ./autogen.sh
 
-in order to do that.
+in order to do that.  This will also generate the respective files for
+the preview subsystem.  Do _not_ call preview/autogen.sh manually,
+since that would generate the documentation suitable for a standalone
+system.
 
-You will need to have a working and rather current copy of `makeinfo'
-and of `autoconf'.
+You will need to have a working and rather current copy of `makeinfo',
+`autoconf' and of `perl'.
 
-After running ./autogen.sh on a fresh export of the CVS directory, you
-will have the state that gets distributed as tarball package.
+Running ./autogen.sh on a fresh export of the CVS directory will give
+you the state of the distribution tarball.
