@@ -1,5 +1,25 @@
 2005-05-02  David Kastrup  <dak@gnu.org>
 
+	* toolbar-x.el (toolbarx-install-toolbar): Remove overlong doc
+	string from autoload.
+
+	* tex-site.el.in (tex-site-unload-hook): Define to remove the
+	after-load hooks and load-path entry.
+	(TeX-modes-set): Use defalias instead of fset to allow unloading.
+
+	* README.CVS: Change instructions.
+
+2005-05-02  David Kastrup  <dak@localhost.localdomain>
+
+	* bib-cite.el: Revert 2005-04-19 change: autoloads are not
+	extracted from CONTRIB packages.
+
+2005-05-02  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (tex-site.el.out, auctex.el, configure)
+	(Makefile, config.status): Add targets to get reconfiguration if
+	necessary.
+
 	* style/url.el: 
 
 	* style/ltx-base.el: 

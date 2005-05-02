@@ -1,5 +1,7 @@
 2005-05-02  David Kastrup  <dak@gnu.org>
 
+	* README.CVS: Some modifications.
+
 	* aclocal.m4 (EMACS_PATH_LISPDIR): better help.
 
 2005-05-01  David Kastrup  <dak@gnu.org>

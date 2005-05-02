@@ -1698,7 +1698,8 @@ Force global refresh if GLOBAL-FLAG is non-nil."
       (toolbarx-xemacs-refresh global-flag)
     (toolbarx-emacs-refresh global-flag)))
 
-;;;###autoload
+;;;###autoload (autoload 'toolbarx-install-toolbar "toolbar-x")
+
 (defun toolbarx-install-toolbar (buttons &optional meaning-alist global-flag)
   "Install toolbar buttons given in BUTTONS.
 Button properties are optionally given in MEANING-ALIST.  If

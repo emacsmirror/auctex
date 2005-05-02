@@ -1,20 +1,17 @@
-If you retrieved AUCTeX via CVS instead of as a regular
-release, there are some files that need to be generated from their
-respective source files before you can continue reasonably with the
-instructions detailed in the README and INSTALL files (which will not
-be present before doing your stuff).
+If you retrieved AUCTeX via CVS instead of as a regular release, there
+are some files that need to be generated from their respective source
+files before you can continue reasonably with the instructions
+detailed in the README and INSTALL files (which will not be present
+otherwise).
 
 Run the shell script
-./autogen.sh
+
+    ./autogen.sh
+
 in order to do that.
 
-This will generate
-configure
-INSTALL
-INSTALL.windows
-README
+You will need to have a working and rather current copy of `makeinfo'
+and of `autoconf'.
 
-and you can then continue from there.
-
-You will need to have a working copy of `makeinfo' and of `autoconf'
-for that.
+After running ./autogen.sh on a fresh export of the CVS directory, you
+will have the state that gets distributed as tarball package.

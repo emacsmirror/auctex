@@ -74,6 +74,12 @@ shared by all users of a site."
 
 (defalias 'TeX-load-hack 'ignore)
 
+(add-hook 'tex-site-unload-hook (lambda ()
+				  (dolist (elt after-load-alist)
+				    (assq-delete-all 'TeX-modes-set elt))
+				  (setq load-path
+					(delq TeX-lisp-directory load-path))))
+
 (defun TeX-modes-set (var value &optional update)
   "Set VAR (which should be `TeX-modes') to VALUE.
 
@@ -89,10 +95,10 @@ definition."
       (when (or update (null (get elt 'tex-saved)))
 	(when (fboundp elt)
 	  (put elt 'tex-saved (symbol-function elt))))
-      (fset elt
-	    (if (memq elt value)
-		(intern (concat "TeX-" (symbol-name elt)))
-	      (get elt 'tex-saved))))))
+      (defalias elt
+	(if (memq elt value)
+	    (intern (concat "TeX-" (symbol-name elt)))
+	  (get elt 'tex-saved))))))
 
 (defcustom TeX-modes
   (mapcar 'car TeX-mode-alist)

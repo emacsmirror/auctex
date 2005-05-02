@@ -2,23 +2,14 @@ If you retrieved preview-latex via CVS instead of as a regular
 release, there are some files that need to be generated from their
 respective source files before you can continue reasonably with the
 instructions detailed in the README and INSTALL files (which will not
-be present before doing your stuff).
+be present otherwise).
 
 Run the shell script
-./autogen.sh
-in order to do that.
 
-This will generate
-configure
-INSTALL
-INSTALL.windows
-README
-PROBLEMS
-TODO
-FAQ
+    ./autogen.sh
 
-and you can then continue from there.
+in order to do that (running the top autogen.sh file of a complete
+AUCTeX distribution will already accomplish that).
 
-You will need to have a working copy of `makeinfo', `autoconf' and
-`perl' for that, and the version of `makeinfo' that is required might
-be rather recent.
+You will need to have a working and rather current copy of `makeinfo',
+`autoconf' and `perl'.

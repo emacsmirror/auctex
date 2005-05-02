@@ -120,6 +120,21 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 	echo "(provide 'tex-site)" >>$@ ; \
 	test X$(packagedir) != Xno || echo ";;; tex-site.el ends here" >>$@
 
+tex-site.el.out: tex-site.el.in Makefile config.status
+	./config.status
+
+auctex.el: auctex.el.in
+	./config.status
+
+configure: configure.ac preview/aclocal.m4
+	autoconf -I preview
+     
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
 auto-loads.el: $(AUCSRC) Makefile
 	test X$(packagedir) != Xno || \
 	rm -f $@ ; \
