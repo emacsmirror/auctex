@@ -4,18 +4,17 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/suse-start-%{name}.el
+%define extraconfig '--with-auctex-startfile=%{_datadir}/emacs/site-lisp/suse-start-auctex.el' '--with-preview-startfile=%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el'
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
 %define xemacspkgdir %{_datadir}/xemacs/site-packages
-%define startupfile  %{_datadir}/emacs/site-lisp/site-start.d/%{name}-init.el
 %endif
 
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
-Version: 	11.55
-Release: 	1%{distri}
+Version: 	11.80
+Release: 	0%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
@@ -23,7 +22,7 @@ Source0:        ftp://ftp.gnu.org/pub/gnu/auctex/%{name}-%{version}.tar.gz
 BuildArchitectures: noarch
 BuildRoot: 	%{_tmppath}/%{name}-root
 
-%description 
+%description
 AUCTeX is an extensible package that supports writing and formatting TeX files
 for most variants of Emacs.  
 
@@ -37,7 +36,7 @@ page, we provide manuals in various formats.
 Summary: 	Enhanced TeX modes for GNU Emacs
 Group:          %{commongroup}
 Requires: 	emacs >= 21
-Obsoletes:      ge_auc emacs-auctex auctex
+Obsoletes:      ge_auc emacs-auctex auctex preview-latex-common preview-latex-emacs
 Conflicts:      emacspeak < 18
 Provides:       auctex
 
@@ -54,9 +53,8 @@ page, we provide manuals in various formats.
 This package is for GNU Emacs.  XEmacs users should use the package system for
 installation.
 
-The package enables AUCTeX system-wide.  If you do not want this,
-install/upgrade with 'rpm --nopre ...'  (the activation is done in the
-preinstall script).
+The package enables AUCTeX modes system-wide.  The README file
+contains information how users may override this choice.
 
 %prep
 %setup
@@ -65,11 +63,10 @@ preinstall script).
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
 test -f ./configure || ./autogen.sh
-# --with-texmf-dir overrides local docstrip configurations.
-%configure "--with-emacs" '--with-texmf-dir=%{_datadir}/texmf'
+%configure "--with-emacs" %{extraconfig} INSTALL_INFO=: TEXHASH=: --without-texmf-dir
 make
 pushd doc
-make auctex.info tex-ref.pdf
+make tex-ref.pdf
 popd
 
 %install
@@ -77,25 +74,16 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 %makeinstall install-contrib install-info
 
-# Remove dir file that has been created by the makeinfo calls because this
-# file will not been included in the rpm distribution (make RPM 4.1+ happy)
-rm -f '%{buildroot}%{_infodir}/dir'
-
-%pre emacs
-echo "; Autoactivation of AUCTeX" > %{startupfile}
-echo "; Created for %{name}-%{version}-%{release}.noarch.rpm" >> \
-  %{startupfile}
-echo "(require 'tex-site)" >> %{startupfile}
-
 %post emacs
 /sbin/install-info --info-dir=%{_infodir} %{_infodir}/auctex.info
+/sbin/install-info --info-dir=%{_infodir} %{_infodir}/preview-latex.info
 
 %preun emacs
 # $1 is the number of versions of this package installed
 # after this uninstallation
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/auctex.info
-  rm -f %{startupfile}
+  /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/preview-latex.info
 fi
 %clean
 rm -rf %{buildroot}
@@ -104,12 +92,16 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
+%doc preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
+* Tue May  3 2005 David Kastrup <dak@gnu.org>
+- include preview-latex, so outdate other stuff.
+
 * Fri Jan 21 2005 David Kastrup <dak@gnu.org>
 - Conflict with outdated Emacspeak versions
 

@@ -1,3 +1,7 @@
+2005-05-03  David Kastrup  <dak@gnu.org>
+
+	* auctex.spec: First attempt
+
 2005-05-02  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi: 
