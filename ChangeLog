@@ -1,3 +1,8 @@
+2005-05-04  David Kastrup  <dak@gnu.org>
+
+	* tex-fold.el (TeX-fold-mode): Change autoload cookie because of
+	XEmacs.
+
 2005-05-03  David Kastrup  <dak@gnu.org>
 
 	* auctex.spec: First attempt

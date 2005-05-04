@@ -741,7 +741,12 @@ the other elements.  The ordering among elements is maintained."
 
 ;;; The mode
 
-;;;###autoload
+;;; This autoload cookie had to be changed because of XEmacs.  This is
+;;; very dissatisfactory, because we now don't have the doc string
+;;; available to tell people what to expect when using this mode
+;;; before loading it.
+
+;;;###autoload (autoload 'TeX-fold-mode "tex-fold")
 (define-minor-mode TeX-fold-mode
   "Toggle TeX-fold-mode on or off.
 TeX-fold-mode lets you hide and unhide LaTeX macros.
