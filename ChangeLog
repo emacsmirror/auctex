@@ -1,5 +1,8 @@
 2005-05-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/intro.texi (Introduction): Be consistent with the display of
+	commands in the rest of the manual.
+
 	* tex-fold.el (TeX-fold-mode): Improve doc string and add its
 	first line to the autoload form.
 
