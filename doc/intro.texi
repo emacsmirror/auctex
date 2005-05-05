@@ -43,7 +43,7 @@ Once @AUCTeX{} is installed, its modes should be the default for all
 If you want to change the modes for which it is operative instead of the
 default, use
 @example
-@key{M-x} customize-variable @key{RET} TeX-modes @key{RET}
+@kbd{M-x customize-variable RET TeX-modes RET}
 @end example
 
 If you want to remove a preinstalled @AUCTeX{} completely before any of
@@ -126,7 +126,7 @@ list for @AUCTeX{}.  Articles should be sent to @email{auctex@@gnu.org}.
 In a similar way, you can subscribe to the @email{info-auctex@@gnu.org}
 list for just getting important announcements about @AUCTeX{}.  The list
 @email{bug-auctex@@gnu.org} is for bug reports which you should usually
-file with the @kbd{@key{M-x} TeX-submit-bug-report @key{RET}} command.
+file with the @kbd{M-x TeX-submit-bug-report RET} command.
 
 If you want to address the developers of @AUCTeX{} themselves with
 technical issues, they can be found on the discussion list
