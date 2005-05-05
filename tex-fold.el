@@ -746,12 +746,11 @@ the other elements.  The ordering among elements is maintained."
 ;;; available to tell people what to expect when using this mode
 ;;; before loading it.
 
-;;;###autoload (autoload 'TeX-fold-mode "tex-fold")
+;;;###autoload (autoload 'TeX-fold-mode "tex-fold" "Minor mode for hiding and revealing macros and environments.")
 (define-minor-mode TeX-fold-mode
-  "Toggle TeX-fold-mode on or off.
-TeX-fold-mode lets you hide and unhide LaTeX macros.
+  "Minor mode for hiding and revealing macros and environments.
 
-Interactively, with no prefix argument, toggle the mode.
+Called interactively, with no prefix argument, toggle the mode.
 With universal prefix ARG (or if ARG is nil) turn mode on.
 With zero or negative ARG turn mode off."
   nil nil TeX-fold-keymap
