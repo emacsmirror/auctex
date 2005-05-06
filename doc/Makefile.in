@@ -4,8 +4,8 @@ packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
+TEXINFOINCLUDES=-I ../preview/doc
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
-MAKEINFOINC=$(MAKEINFO) -I ../preview/doc
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -42,40 +42,40 @@ tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
 
 auctex.dvi: $(TEXIFILES)
-	MAKEINFO="$(MAKEINFOINC)" $(TEXI2DVI) auctex.texi
+	$(TEXI2DVI) $(TEXINFOINCLUDES) auctex.texi
 
 auctex.pdf: $(TEXIFILES)
-	MAKEINFO="$(MAKEINFOINC)" $(TEXI2PDF) auctex.texi
+	$(TEXI2PDF) $(TEXINFOINCLUDES) auctex.texi
 
 # dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
 	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex.info: $(TEXIFILES)
-	$(MAKEINFOINC) auctex.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) auctex.texi
 
 ../INSTALL: install.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		install.texi --output $@
 
 ../INSTALL.windows: wininstall.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		wininstall.texi --output $@
 
 ../README: intro.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		intro.texi --output $@
 
 ../CHANGES: changes.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		changes.texi --output $@
 
 ../TODO: todo.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		todo.texi --output $@
 
 ../FAQ: faq.texi ../preview/doc/macros.texi
-	$(MAKEINFOINC) -D rawfile --no-headers  \
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		faq.texi --output $@
 
 disttexts: $(DISTTEXTS)
