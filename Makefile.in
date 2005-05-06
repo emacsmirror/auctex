@@ -89,7 +89,7 @@ STYLEELC = $(STYLESRC:.el=.elc)
 
 DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/changes.texi doc/tex-ref.tex doc/history.texi \
-	doc/wininstall.texi doc/todo.texi doc/faq.texi doc/macros.texi \
+	doc/wininstall.texi doc/todo.texi doc/faq.texi \
 	doc/quickstart.texi
 
 EXTRAFILES = RELEASE COPYING ChangeLog auctex.spec \

@@ -1,3 +1,8 @@
+2005-05-06  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (DOCFILES): Remove macros.texi to make "tar-ball"
+	work again.
+
 2005-05-06  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-load-style): Fix typo `expand-filename'.
