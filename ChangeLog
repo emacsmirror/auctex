@@ -9,6 +9,8 @@
 
 2005-05-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-local-master-p): Limit search.
+
 	* doc/Makefile.in (TEXINFOINCLUDES): New variable used for file
 	inclusion with makeinfo, texi2dvi and texi2pdf.
 	(MAKEINFOINC): Remove.
