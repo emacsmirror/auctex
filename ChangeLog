@@ -1,3 +1,7 @@
+2005-05-06  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-load-style): Fix typo `expand-filename'.
+
 2005-05-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/Makefile.in (TEXINFOINCLUDES): New variable used for file
@@ -14,6 +18,7 @@
 	* tex-fold.el (TeX-fold-mode): Improve doc string and add its
 	first line to the autoload form.
 
+>>>>>>> 5.1041
 2005-05-04  David Kastrup  <dak@gnu.org>
 
 	* tex-fold.el (TeX-fold-mode): Change autoload cookie because of

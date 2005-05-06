@@ -1572,13 +1572,13 @@ active.")
 				(file-name-directory
 				 (file-relative-name TeX-master))
 			      "./"))
-		(TeX-style-path (append (list (expand-filename
+		(TeX-style-path (append (list (expand-file-name
 					       TeX-auto-local dir)
-					      (expand-filename
+					      (expand-file-name
 					       TeX-auto-local master-dir)
-					      (expand-filename
+					      (expand-file-name
 					       TeX-style-local dir)
-					      (expand-filename
+					      (expand-file-name
 					       TeX-style-local master-dir))
 					TeX-style-path)))
 	   (TeX-load-style style)))

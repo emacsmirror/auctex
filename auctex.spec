@@ -63,7 +63,7 @@ contains information how users may override this choice.
 # The below will make the package build from a tar straight from CVS
 # NOT RECOMMENDED, but useful for testing!
 test -f ./configure || ./autogen.sh
-%configure "--with-emacs" %{extraconfig} INSTALL_INFO=: TEXHASH=: --without-texmf-dir
+%configure --with-emacs %{extraconfig} INSTALL_INFO=: --without-texmf-dir
 make
 pushd doc
 make tex-ref.pdf
@@ -92,7 +92,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
-%doc preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
+%doc --parents preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
 %{_localstatedir}/%{name}
