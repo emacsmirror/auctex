@@ -1363,13 +1363,13 @@ This will be done when AUCTeX first try to use the master file.")
 	(insert "% " TeX-esc "fi\n"))))))
 
 (defun TeX-local-master-p ()
-  "Return t if there is a `TeX-master' entry in the local variables section.
+  "Return non-nil if there is a `TeX-master' entry in local variables spec.
 Return nil otherwise."
   (save-excursion
+    ;; XXX: Checking -*- line necessary as well?
     (goto-char (point-max))
-    (if (re-search-backward "^%+ *TeX-master:" nil t)
-	t
-      nil)))
+    (search-backward "\n\^L" (max (- (point-max) 3000) (point-min)) 'move)
+    (re-search-forward "^%+ *TeX-master:" nil t)))
 
 ;;; Style Paths
 
