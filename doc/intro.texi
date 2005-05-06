@@ -34,11 +34,19 @@ section @ref{Installation}, or @ref{Installation under MS Windows},
 @end ifclear
 respectively for information about how to install @AUCTeX{}.
 
-Once @AUCTeX{} is installed, its modes should be the default for all
-@TeX{}-related modes.  If this is not the case, try
+The installation routine tries to make the modes provided by @AUCTeX{}
+the default for all supported file types.  If this does not happen in
+your case, add
 @lisp
 (require 'tex-site)
 @end lisp
+to your init file and consult the section
+@ifset rawfile
+about loading the package in the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Loading the package}.
+@end ifclear
 
 If you want to change the modes for which it is operative instead of the
 default, use
