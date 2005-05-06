@@ -1,5 +1,9 @@
 2005-05-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/Makefile.in (TEXINFOINCLUDES): New variable used for file
+	inclusion with makeinfo, texi2dvi and texi2pdf.
+	(MAKEINFOINC): Remove.
+
 	* doc/intro.texi (Introduction): Make package activation clearer.
 
 2005-05-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
