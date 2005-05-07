@@ -2243,13 +2243,13 @@ The algorithm is as follows:
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
-  (if (= emacs-major-version 20)
-      (make-local-hook 'find-file-hooks))
-  (add-hook 'find-file-hooks (lambda ()
-			       ;; Test if we are looking at a new file.
-			       (unless (file-exists-p (buffer-file-name))
-				 (TeX-master-file nil nil t))
-			       (TeX-update-style t)) nil t))
+  (add-hook 'find-file-hooks
+	    (lambda ()
+	      ;; Check if we are looking at a new or shared file.
+	      (when (or (not (file-exists-p (buffer-file-name)))
+			(eq TeX-master 'shared))
+		(TeX-master-file nil nil t))
+	      (TeX-update-style t)) nil t))
 
 ;;; Plain TeX mode
 
