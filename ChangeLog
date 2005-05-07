@@ -1,3 +1,9 @@
+2005-05-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (VirTeX-common-initialization): Remove Emacs 20
+	compatibility code.  Call `TeX-master-file' during load of shared
+	files as well.
+
 2005-05-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (DOCFILES): Remove macros.texi to make "tar-ball"
