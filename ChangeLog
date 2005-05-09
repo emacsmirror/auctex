@@ -72,7 +72,7 @@
 
 	* README.CVS: Change instructions.
 
-2005-05-02  David Kastrup  <dak@localhost.localdomain>
+2005-05-02  David Kastrup  <dak@gnu.org>
 
 	* bib-cite.el: Revert 2005-04-19 change: autoloads are not
 	extracted from CONTRIB packages.
