@@ -1,3 +1,11 @@
+2005-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-built-in-keyword-classes): Doc
+	fix (typo).
+	(font-latex-match-command-with-arguments): Set macro end before
+	any comments.  Do not move forward over comments if point is over
+	the limit.
+
 2005-05-09  David Kastrup  <dak@gnu.org>
 
 	* doc/Makefile.in (dist): Use DISTTEXTS instead of explicit list
