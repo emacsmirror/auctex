@@ -1,5 +1,7 @@
 2005-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-normal-mode): Ask for master file in 'shared case.
+
 	* font-latex.el (font-latex-built-in-keyword-classes): Doc
 	fix (typo).
 	(font-latex-match-command-with-arguments): Set macro end before
