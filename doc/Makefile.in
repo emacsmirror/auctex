@@ -21,7 +21,7 @@ DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: auctex.dvi tex-ref.dvi auctex.info
 
-dist: auctex.info INSTALL INSTALL.windows README CHANGES TODO FAQ \
+dist: auctex.info $(DISTTEXTS) \
 	html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 .PHONY: all dist install disttexts clean distclean maintainer-clean
