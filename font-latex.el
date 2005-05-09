@@ -348,7 +348,7 @@ inside a TeX group (like \"{\\bfseries foo}\"), a list of the
 form `(command <number of mandatory arguments> <flag determining
 if trailing asterisk should be fontified>)' which will match
 macros of the form \"\\foo[bar]{baz}\", or a list of the form
-`(title <num>)' which is basically the same as the `(comman <num>)'
+`(title <num>)' which is basically the same as the `(command <num>)'
 list but puts conditional into the keyword highlighter which
 tests for `font-latex-fontify-sectioning'.")
 
@@ -1249,8 +1249,10 @@ Returns nil if none of KEYWORDS is found."
 	(goto-char (match-end 0))
 	(if (and asterisk (eq (following-char) ?\*))
 	    (forward-char 1))
-	(while (and (forward-comment 1) (< (point) limit)))
 	(setq kend (point))
+	;; FIXME: `forward-comment' should disregard comment starters
+	;; at line beginnings. (Performace hog!)
+	(while (and (< (point) limit) (forward-comment 1)))
 	;; Optional arguments [...]
 	(while (and (< (point) limit)
 		    (eq (following-char) ?\[))
@@ -1265,7 +1267,9 @@ Returns nil if none of KEYWORDS is found."
 	      (goto-char send))))
 	;; Mandatory arguments {...}
 	(dotimes (i arg-count)
-	  (while (and (forward-comment 1) (< (point) limit)))
+	  ;; FIXME: `forward-comment' should disregard comment starters
+	  ;; at line beginnings. (Performace hog!)
+	  (while (and (< (point) limit) (forward-comment 1)))
 	  (when (and (< (point) limit)
 		     (eq (following-char) ?\{))
 	    (when (= i 0) (setq cbeg (point)))
