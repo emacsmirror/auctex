@@ -1257,7 +1257,7 @@ Returns nil if none of KEYWORDS is found."
      (t
       (let ((kbeg (match-beginning 0))
 	    kend sbeg send cbeg cend
-	    cache-reset
+	    cache-reset opt-arg
 	    (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
 	(save-restriction
 	  ;; Restrict to LIMIT.
@@ -1269,22 +1269,27 @@ Returns nil if none of KEYWORDS is found."
 	  (while (font-latex-forward-comment))
 	  ;; Optional arguments [...]
 	  (while (eq (following-char) ?\[)
-	    (setq sbeg (point))
+	    (unless opt-arg (setq sbeg (point)) (setq opt-arg t))
 	    (if (font-latex-find-matching-close ?\[ ?\])
-		(setq send (point))
+		(progn
+		  (setq send (point))
+		  (while (font-latex-forward-comment)))
 	      (setq cache-reset t)
 	      (setq send (point-max))
 	      (goto-char send)))
 	  ;; Mandatory arguments {...}
-	  (dotimes (i arg-count)
-	    (while (font-latex-forward-comment))
-	    (when (eq (following-char) ?\{)
-	      (when (= i 0) (setq cbeg (point)))
-	      (if (font-latex-find-matching-close ?\{ ?\})
-		  (setq cend (point))
-		(setq cache-reset t)
-		(setq cend (point-max))
-		(goto-char cend)))))
+	  (catch 'runaway
+	    (dotimes (i arg-count)
+	      (when (eq (following-char) ?\{)
+		(when (= i 0) (setq cbeg (point)))
+		(if (font-latex-find-matching-close ?\{ ?\})
+		    (progn
+		      (setq cend (point))
+		      (while (font-latex-forward-comment)))
+		  (setq cache-reset t)
+		  (setq cend (point-max))
+		  (goto-char cend)
+		  (throw 'runaway nil))))))
 	(store-match-data (list kbeg kend sbeg send cbeg cend))
 
           ;; Handle cache
