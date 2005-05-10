@@ -2,12 +2,12 @@
 
 	* font-latex.el (font-latex-forward-comment): New function.
 	Prevent infinite loops and repair regexp.
+	Simplify.  Code mainly by David Kastrup.
 	(font-latex-match-command-with-arguments): Use it.  Set
 	fontification start of optional argument to opening bracket.
-	(font-latex-forward-comment): Simplify.  Code mainly by David
-	Kastrup.
-	(font-latex-match-command-with-arguments): Apply restriction of
-	region more globally.
+	Apply restriction of region more globally.  Fix handling of
+	multiple optional arguments.  Break if the end of the first
+	mandatory argument could not be found.
 
 2005-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
