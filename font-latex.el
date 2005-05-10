@@ -1077,6 +1077,21 @@ If POS is omitted, the current position of point is used."
     (not (= (progn (beginning-of-line) (point))
             (progn (goto-char cache-start) (beginning-of-line) (point))))))
 
+(defun font-latex-forward-comment ()
+  "Like `forward-comment' but with special provisions for docTeX mode.
+In docTeX mode \"%\" at the start of a line will be treated as whitespace."
+  (if (eq major-mode 'doctex-mode)
+      ;; XXX: We should probably cater for ^^A as well.
+      (progn
+	(when (bolp) (skip-chars-forward "%"))
+	(skip-chars-forward " \t\n")
+	(while (looking-at "^%* [ \t]*$") (beginning-of-line 2))
+	(when (bolp) (skip-chars-forward "%"))
+	(skip-chars-forward " \t")
+	(when (eq (char-after) ?%)
+	  (beginning-of-line 2)))
+    (forward-comment 1)))
+
 
 ;;;;------------------
 ;;;; Cache Method:
@@ -1252,11 +1267,11 @@ Returns nil if none of KEYWORDS is found."
 	(setq kend (point))
 	;; FIXME: `forward-comment' should disregard comment starters
 	;; at line beginnings. (Performace hog!)
-	(while (and (< (point) limit) (forward-comment 1)))
+	(while (and (< (point) limit) (font-latex-forward-comment)))
 	;; Optional arguments [...]
 	(while (and (< (point) limit)
 		    (eq (following-char) ?\[))
-	  (setq sbeg kend)
+	  (setq sbeg (point))
 	  (save-restriction
 	    ;; Restrict to LIMIT.
 	    (narrow-to-region (point-min) limit)
@@ -1269,7 +1284,7 @@ Returns nil if none of KEYWORDS is found."
 	(dotimes (i arg-count)
 	  ;; FIXME: `forward-comment' should disregard comment starters
 	  ;; at line beginnings. (Performace hog!)
-	  (while (and (< (point) limit) (forward-comment 1)))
+	  (while (and (< (point) limit) (font-latex-forward-comment)))
 	  (when (and (< (point) limit)
 		     (eq (following-char) ?\{))
 	    (when (= i 0) (setq cbeg (point)))
