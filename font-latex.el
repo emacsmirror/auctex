@@ -1085,7 +1085,8 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
       (progn
 	(when (bolp) (skip-chars-forward "%"))
 	(skip-chars-forward " \t\n")
-	(while (looking-at "^%* [ \t]*$") (beginning-of-line 2))
+	(while (and (looking-at "^%*[ \t]*$") (not (eobp)))
+	  (beginning-of-line 2))
 	(when (bolp) (skip-chars-forward "%"))
 	(skip-chars-forward " \t")
 	(when (eq (char-after) ?%)
