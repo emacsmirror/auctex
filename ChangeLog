@@ -1,3 +1,9 @@
+2005-05-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-forward-comment): New function.
+	(font-latex-match-command-with-arguments): Use it.  Set
+	fontification start of optional argument to opening bracket.
+
 2005-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-normal-mode): Ask for master file in 'shared case.
