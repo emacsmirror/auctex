@@ -1,6 +1,7 @@
 2005-05-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-forward-comment): New function.
+	Prevent infinite loops and repair regexp.
 	(font-latex-match-command-with-arguments): Use it.  Set
 	fontification start of optional argument to opening bracket.
 
