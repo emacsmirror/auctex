@@ -1265,8 +1265,6 @@ Returns nil if none of KEYWORDS is found."
 	(if (and asterisk (eq (following-char) ?\*))
 	    (forward-char 1))
 	(setq kend (point))
-	;; FIXME: `forward-comment' should disregard comment starters
-	;; at line beginnings. (Performace hog!)
 	(while (and (< (point) limit) (font-latex-forward-comment)))
 	;; Optional arguments [...]
 	(while (and (< (point) limit)
@@ -1282,8 +1280,6 @@ Returns nil if none of KEYWORDS is found."
 	      (goto-char send))))
 	;; Mandatory arguments {...}
 	(dotimes (i arg-count)
-	  ;; FIXME: `forward-comment' should disregard comment starters
-	  ;; at line beginnings. (Performace hog!)
 	  (while (and (< (point) limit) (font-latex-forward-comment)))
 	  (when (and (< (point) limit)
 		     (eq (following-char) ?\{))
