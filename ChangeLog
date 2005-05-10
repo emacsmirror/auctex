@@ -1,3 +1,13 @@
+2005-05-11  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (TEXINFOINCLUDES): Add directory modifier
+	TEXIPWD.  This is ugly.
+	(html/auctex_toc.html): Use it.
+
+	* Makefile.in (tar-ball): Make tar-ball from exporting, and allow
+	for TAG being a date specification.
+	(full-release): Omit release tag check.
+
 2005-05-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-forward-comment): New function.

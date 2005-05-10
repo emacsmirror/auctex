@@ -4,7 +4,7 @@ packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
-TEXINFOINCLUDES=-I ../preview/doc
+TEXINFOINCLUDES=-I $${TEXIPWD}../preview/doc
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
@@ -29,7 +29,7 @@ dist: auctex.info $(DISTTEXTS) \
 html/auctex_toc.html: auctex.texi
 	rm -rf html
 	mkdir html
-	cd html; $(TEXI2HTML) -split_node ../auctex.texi && \
+	cd html;TEXIPWD=../;$(TEXI2HTML) -split_node $(TEXINFOINCLUDES) ../auctex.texi && \
 	if [ -d auctex ];then mv auctex/* .; rm -rf auctex; fi
 
 tex-ref.dvi: tex-ref.tex
