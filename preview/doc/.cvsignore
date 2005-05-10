@@ -16,7 +16,8 @@ INSTALL.windows
 Makefile
 PROBLEMS
 README
-preview-latex
-preview-latex.tmp
+auto.texi
 preview-dtxdoc.texi
+preview-latex
 preview-latex.info-*
+preview-latex.tmp
