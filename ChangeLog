@@ -4,6 +4,10 @@
 	Prevent infinite loops and repair regexp.
 	(font-latex-match-command-with-arguments): Use it.  Set
 	fontification start of optional argument to opening bracket.
+	(font-latex-forward-comment): Simplify.  Code mainly by David
+	Kastrup.
+	(font-latex-match-command-with-arguments): Apply restriction of
+	region more globally.
 
 2005-05-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
