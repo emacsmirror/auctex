@@ -1083,14 +1083,11 @@ In docTeX mode \"%\" at the start of a line will be treated as whitespace."
   (if (eq major-mode 'doctex-mode)
       ;; XXX: We should probably cater for ^^A as well.
       (progn
-	(when (bolp) (skip-chars-forward "%"))
-	(skip-chars-forward " \t\n")
-	(while (and (looking-at "^%*[ \t]*$") (not (eobp)))
-	  (beginning-of-line 2))
-	(when (bolp) (skip-chars-forward "%"))
-	(skip-chars-forward " \t")
+	(while (progn (if (bolp) (skip-chars-forward "%"))
+		      (> (skip-chars-forward " \t\n") 0)))
 	(when (eq (char-after) ?%)
-	  (beginning-of-line 2)))
+	  (beginning-of-line 2)
+	  t))
     (forward-comment 1)))
 
 
@@ -1262,32 +1259,27 @@ Returns nil if none of KEYWORDS is found."
 	    kend sbeg send cbeg cend
 	    cache-reset
 	    (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
-	(goto-char (match-end 0))
-	(if (and asterisk (eq (following-char) ?\*))
-	    (forward-char 1))
-	(setq kend (point))
-	(while (and (< (point) limit) (font-latex-forward-comment)))
-	;; Optional arguments [...]
-	(while (and (< (point) limit)
-		    (eq (following-char) ?\[))
-	  (setq sbeg (point))
-	  (save-restriction
-	    ;; Restrict to LIMIT.
-	    (narrow-to-region (point-min) limit)
+	(save-restriction
+	  ;; Restrict to LIMIT.
+	  (narrow-to-region (point-min) limit)
+	  (goto-char (match-end 0))
+	  (if (and asterisk (eq (following-char) ?\*))
+	      (forward-char 1))
+	  (setq kend (point))
+	  (while (font-latex-forward-comment))
+	  ;; Optional arguments [...]
+	  (while (eq (following-char) ?\[)
+	    (setq sbeg (point))
 	    (if (font-latex-find-matching-close ?\[ ?\])
 		(setq send (point))
 	      (setq cache-reset t)
 	      (setq send (point-max))
-	      (goto-char send))))
-	;; Mandatory arguments {...}
-	(dotimes (i arg-count)
-	  (while (and (< (point) limit) (font-latex-forward-comment)))
-	  (when (and (< (point) limit)
-		     (eq (following-char) ?\{))
-	    (when (= i 0) (setq cbeg (point)))
-	    (save-restriction
-	      ;; Restrict to LIMIT.
-	      (narrow-to-region (point-min) limit)
+	      (goto-char send)))
+	  ;; Mandatory arguments {...}
+	  (dotimes (i arg-count)
+	    (while (font-latex-forward-comment))
+	    (when (eq (following-char) ?\{)
+	      (when (= i 0) (setq cbeg (point)))
 	      (if (font-latex-find-matching-close ?\{ ?\})
 		  (setq cend (point))
 		(setq cache-reset t)
