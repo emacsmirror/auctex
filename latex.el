@@ -1208,19 +1208,16 @@ This is necessary since index entries may contain commands and stuff.")
 	;; FIXME: Parse key=value options like "pdftitle={A Perfect
 	;; Day},colorlinks=false" correctly.  When this works, the
 	;; check for "=" can be removed again.
-	(setq options (unless (string-match "=" options)
-			(TeX-split-string
-			 "\\([ \t\r\n]\\|%[^\n\r]*[\n\r]\\|,\\)+"
-			 options)))
-
-	;; Strip empty options.
-	(if (string-equal (car options) "")
-	    (setq options (cdr options)))
-	(let ((index options))
-	  (while (cdr-safe index)
-	    (if (string-equal (car (cdr index)) "")
-		(setcdr index (cdr (cdr index)))
-	      (setq index (cdr index)))))
+	(setq options
+	      (let (opts)
+		(dolist (elt (TeX-split-string "\\(,\\|%[^\n\r]*[\n\r]\\)+"
+					       options))
+		  (unless (string-match "=" elt)
+		    ;; Strip whitespace.
+		    (dolist (item (TeX-split-string "[ \t\r\n]+" elt))
+		      (unless (string= item "")
+			(add-to-list 'opts item)))))
+		opts))
 
 	;; Add them, to the style list.
 	(dolist (elt options)
