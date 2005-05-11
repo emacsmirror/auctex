@@ -4319,7 +4319,11 @@ With prefix argument FORCE, always inserts \" characters."
 	  (and (fboundp 'font-latex-faces-present-p)
 	       (font-latex-faces-present-p '(font-latex-verbatim-face
 					     font-latex-math-face
-					     font-lock-comment-face)))
+					     font-lock-comment-face))
+	       (font-latex-faces-present-p '(font-latex-verbatim-face
+					     font-latex-math-face
+					     font-lock-comment-face)
+					   (1- (point))))
 	  (texmathp)
 	  (TeX-in-comment))
       (self-insert-command (prefix-numeric-value force))
