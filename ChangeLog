@@ -11,6 +11,8 @@
 
 	* tex.el (TeX-overlay-prioritize): Fix calculation of priority for
 	in-between overlay.
+	(TeX-insert-quote): Insert TeX quote if point is just before math,
+	comment, or verbatim content.
 
 2005-05-11  David Kastrup  <dak@gnu.org>
 
