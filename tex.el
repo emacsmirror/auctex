@@ -696,7 +696,7 @@ overlays."
 	    ((and (not inner-priority) outer-priority)
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
-	     (/ (- outer-priority inner-priority) 2))
+	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
 	    (t TeX-overlay-priority-step)))) )
 
 ;;; Special support for GNU Emacs
@@ -733,7 +733,7 @@ overlays."
 	    ((and (not inner-priority) outer-priority)
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
-	     (/ (- outer-priority inner-priority) 2))
+	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
 	    (t TeX-overlay-priority-step)))) )
 
 (defun TeX-delete-dups-by-car (alist &optional keep-list)
