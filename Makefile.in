@@ -128,7 +128,7 @@ auctex.el: auctex.el.in
 
 configure: configure.ac preview/aclocal.m4
 	autoconf -I preview
-     
+
 Makefile: Makefile.in config.status
 	./config.status
 
