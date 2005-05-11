@@ -1,5 +1,9 @@
 2005-05-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-set-syntactic-keywords): Don't freak
+	out if there is whitespace in front of the \begin/\end pair of
+	verbatim and verbatim-like environments.
+
 	* latex.el (LaTeX-auto-cleanup): Discard only options which
 	actually include a "=".
 
