@@ -286,7 +286,7 @@ release-commit:
 tar-ball:
 	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
 	mkdir auctex-$(TAG)
-	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^[-0-9]*$$/s//-D &/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
+	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
 	cd auctex-$(TAG) && ./autogen.sh
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR) $(WWWDIR)/doc
