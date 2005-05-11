@@ -736,10 +736,11 @@ have changed."
 	  font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "^\\\\begin *{\\(?:" verb-envs "\\)}.*\\(\n\\)")
+		   `(,(concat "^[ \t]*\\\\begin *{\\(?:" verb-envs
+			      "\\)}.*\\(\n\\)")
 		     (1 "|" t)))
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "\\(\n\\)\\\\end *{\\(?:" verb-envs "\\)}")
+		   `(,(concat "\\(\n\\)[ \t]*\\\\end *{\\(?:" verb-envs "\\)}")
 		     (1 "|" t))))
     (unless (= (length verb-like-commands) 0)
       (add-to-list 'font-latex-syntactic-keywords
