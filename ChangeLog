@@ -1,5 +1,8 @@
 2005-05-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-auto-cleanup): Discard only options which
+	actually include a "=".
+
 	* Makefile.in: Whitespace cleanup.
 
 	* tex.el (TeX-overlay-prioritize): Fix calculation of priority for
