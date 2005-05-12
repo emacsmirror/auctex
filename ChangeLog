@@ -1,5 +1,24 @@
 2005-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-fill-newline-hook): New hook.
+	(LaTeX-fill-newline): Use it.
+
+	* tex-fold.el (TeX-fold-keymap): Remove deprecated key bindings.
+	(TeX-fold-region, TeX-fold-item): Use `TeX-fold-item-end'.  Do not
+	compute display string (now done in `TeX-fold-hide-item').
+	(TeX-fold-make-overlay): Do not mess with display string anymore.
+	Thereby remove it from list of function arguments.
+	(TeX-fold-item-end, TeX-fold-overfull-p)
+	(TeX-fold-update-at-point): New functions.
+	(TeX-fold-buffer-substring): Get 'display property instead of
+	'TeX-fold-display-string which is not used anymore.
+	(TeX-fold-hide-item): Computation of display string and faces as
+	well as provisions for overfull lines are done only in this
+	function now.  The 'display property is now set for XEmacs as
+	well.
+	(TeX-fold-mode): Add and remove `TeX-fold-update-at-point' to
+	`LaTeX-fill-newline-hook' respectively.
+
 	* tex.el (TeX-overlay-prioritize): Fix oversight in XEmacs version
 	of the function.
 
