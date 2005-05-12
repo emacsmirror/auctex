@@ -692,7 +692,7 @@ overlays."
        '(start-and-end-in-region negate-in-region) 'priority)
       (setq inner-priority (car prios) outer-priority (cdr prios))
       (cond ((and inner-priority (not outer-priority))
-	     (+ inner-priority TeX-fold-priority-step))
+	     (+ inner-priority TeX-overlay-priority-step))
 	    ((and (not inner-priority) outer-priority)
 	     (/ outer-priority 2))
 	    ((and inner-priority outer-priority)
