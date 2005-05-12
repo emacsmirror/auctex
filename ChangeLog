@@ -1,5 +1,8 @@
 2005-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-make-overlay): Calculate priority before
+	the overlay is instantiated.
+
 	* font-latex.el (font-latex-match-command-with-arguments): Make
 	XEmacs happy.
 
