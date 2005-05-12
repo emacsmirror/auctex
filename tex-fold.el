@@ -364,9 +364,12 @@ and may be 'macro for macros and 'env for environments.
 DISPLAY-STRING-SPEC is the original specification of the display
 string in the variables `TeX-fold-macro-spec-list' or
 `TeX-fold-env-spec-list' and may be a string or an integer."
-  (let ((ov (make-overlay ov-start ov-end (current-buffer) t nil)))
+  ;; Calculate priority before the overlay is instantiated.  We don't
+  ;; want `TeX-overlay-prioritize' to pick up a non-prioritized one.
+  (let ((priority (TeX-overlay-prioritize ov-start ov-end))
+	(ov (make-overlay ov-start ov-end (current-buffer) t nil)))
     (overlay-put ov 'category 'TeX-fold)
-    (overlay-put ov 'priority (TeX-overlay-prioritize ov-start ov-end))
+    (overlay-put ov 'priority priority)
     (overlay-put ov 'evaporate t)
     (overlay-put ov 'TeX-fold-type type)
     (overlay-put ov 'TeX-fold-display-string-spec display-string-spec)
