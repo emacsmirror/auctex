@@ -2286,6 +2286,9 @@ does not fit into the line."
   "Regexp matching a character where no interword space is necessary.
 Words formed by such characters can be broken across newlines.")
 
+(defvar LaTeX-fill-newline-hook nil
+  "Hook run after `LaTeX-fill-newline' inserted and indented a new line.")
+
 (defun LaTeX-fill-region-as-paragraph (from to &optional justify-flag)
   "Fill region as one paragraph.
 Break lines to fit `fill-column', but leave all lines ending with
@@ -2845,7 +2848,8 @@ space does not end a sentence, so don't break a line there."
        ;; Markers that were after the whitespace are now at point: insert
        ;; before them so they don't get stuck before the prefix.
        (insert-before-markers-and-inherit fill-prefix))
-  (indent-according-to-mode))
+  (indent-according-to-mode)
+  (run-hooks 'LaTeX-fill-newline-hook))
 
 (defun LaTeX-fill-paragraph (&optional justify)
   "Like \\[fill-paragraph], but handle LaTeX comments.
