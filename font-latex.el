@@ -1267,14 +1267,14 @@ Returns nil if none of KEYWORDS is found."
 	  (if (and asterisk (eq (following-char) ?\*))
 	      (forward-char 1))
 	  (setq kend (point))
-	  (while (font-latex-forward-comment))
+	  (while (and (not (eobp)) (font-latex-forward-comment)))
 	  ;; Optional arguments [...]
 	  (while (eq (following-char) ?\[)
 	    (unless opt-arg (setq sbeg (point)) (setq opt-arg t))
 	    (if (font-latex-find-matching-close ?\[ ?\])
 		(progn
 		  (setq send (point))
-		  (while (font-latex-forward-comment)))
+		  (while (and (not (eobp)) (font-latex-forward-comment))))
 	      (setq cache-reset t)
 	      (setq send (point-max))
 	      (goto-char send)))
@@ -1286,7 +1286,7 @@ Returns nil if none of KEYWORDS is found."
 		(if (font-latex-find-matching-close ?\{ ?\})
 		    (progn
 		      (setq cend (point))
-		      (while (font-latex-forward-comment)))
+		      (while (and (not (eobp)) (font-latex-forward-comment))))
 		  (setq cache-reset t)
 		  (setq cend (point-max))
 		  (goto-char cend)
