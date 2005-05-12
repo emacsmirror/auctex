@@ -1,5 +1,8 @@
 2005-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-match-command-with-arguments): Make
+	XEmacs happy.
+
 	* latex.el (LaTeX-fill-newline-hook): New hook.
 	(LaTeX-fill-newline): Use it.
 
