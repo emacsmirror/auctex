@@ -10,9 +10,9 @@
 @item
 Folding a buffer now ensures that the whole buffer is fontified before
 the actual folding is carried out.  If this results in unbearably long
-execution times you can fall back to the old behavior of relying on
-stealth font locking to do this job in the background, you can customize
-the variable @code{TeX-fold-force-fontify}.
+execution times, you can fall back to the old behavior of relying on
+stealth font locking to do this job in the background by customizing the
+variable @code{TeX-fold-force-fontify}.
 
 @item
 Folded content now reveals part of its original text in a tooltip or the
@@ -35,10 +35,9 @@ with hyphens in different languages as well.
 @end ifclear
 
 @item
-Fill problems in Japanese text which are introduced by changes of
-@AUCTeX{} 11.55 were fixed.  @AUCTeX{} trys not to break lines between
-1-byte char and 2-bytes char.  These features will work in Chinese text,
-too.
+Fill problems in Japanese text introduced in @AUCTeX{} 11.55 were fixed.
+@AUCTeX{} tries not to break lines between 1-byte and 2-byte chars.
+These features will work in Chinese text, too.
 
 @item
 The scaling factor of the fontification of sectioning commands can now
