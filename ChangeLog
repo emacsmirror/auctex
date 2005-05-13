@@ -1,3 +1,7 @@
+2005-05-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/changes.texi: Small corrections.
+
 2005-05-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-make-overlay): Calculate priority before
