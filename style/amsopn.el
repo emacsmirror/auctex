@@ -11,7 +11,6 @@
      '("DeclareMathOperator"  "Operator (with \\)" "Text")
      '("DeclareMathOperator*" "Operator (with \\)" "Text")
      '("operatorname" t)
-     '("operatorname*" t)
-     "mod" "bmod" "pmod" "pod"))))
+     '("operatorname*" t)))))
 
 ;;; amsopn.el ends here.
