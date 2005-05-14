@@ -4313,9 +4313,9 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 
 (defcustom LaTeX-babel-hyphen "\"="
   "String to be used when typing `-'.
-This usually is a hyphen alternative or hyphenation aid provided
-by provided by babel and the related language style files,
-like \"=, \"~ or \"-.
+This usually is a hyphen alternative or hyphenation aid, like
+\"=, \"~ or \"-, provided by babel and the related language style
+files.
 
 Set it to an empty string or nil in order to disable this
 feature.  Alter `LaTeX-babel-hyphen-language-alist' in case you
