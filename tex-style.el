@@ -39,7 +39,7 @@
   "Default prefix to amsmath equation labels.
 
 Amsmath equations include \"align\", \"alignat\", \"xalignat\",
-\"aligned\", \"flalign\" and \"gather\".  If it is nil,
+\"multline\", \"flalign\" and \"gather\".  If it is nil,
 `LaTeX-equation-label' is used."
   :group 'LaTeX-label
   :type '(choice (const :tag "Use `LaTeX-equation-label'" nil)
