@@ -4520,10 +4520,6 @@ runs the hooks in `docTeX-mode-hook'."
   (or LaTeX-largest-level
       (setq LaTeX-largest-level (LaTeX-section-level "section")))
 
-  (use-local-map LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
-  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map)
-
   (setq TeX-header-end LaTeX-header-end
 	TeX-trailer-start LaTeX-trailer-start)
 
@@ -4881,7 +4877,15 @@ runs the hooks in `docTeX-mode-hook'."
 ;; user overrode it.
 
   (set (make-local-variable 'imenu-create-index-function)
-       'LaTeX-imenu-create-index-function))
+       'LaTeX-imenu-create-index-function)
+
+  (use-local-map LaTeX-mode-map)
+  ;; Calling `easy-menu-add' may result in the menu filters being
+  ;; executed which call `TeX-update-style'.  So this is placed very
+  ;; late in mode initialization to assure that all relevant variables
+  ;; are properly initialized before style files try to alter them.
+  (easy-menu-add LaTeX-mode-menu LaTeX-mode-map)
+  (easy-menu-add LaTeX-mode-command-menu LaTeX-mode-map))
 
 (defun LaTeX-imenu-create-index-function ()
   "Imenu support function for LaTeX."
