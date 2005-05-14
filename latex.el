@@ -3537,7 +3537,6 @@ See also `LaTeX-math-menu'."
     (nil "hbar" "Misc Symbol" 8463) ;; #X210F
     (?0 "emptyset" "Misc Symbol" 8709) ;; #X2205
     (?E "exists" "Misc Symbol" 8707) ;; #X2203
-    (nil "nabla" "Misc Symbol" 8711) ;; #X2207
     (nil "surd" "Misc Symbol" 8730) ;; #X221A
     (nil "Box" "Misc Symbol")
     (nil "triangle" "Misc Symbol" 9651) ;; #X25B3
@@ -3848,16 +3847,6 @@ See also `LaTeX-math-menu'."
     (nil "eth" ("AMS" "Misc") 240) ;; #X00F0
     (nil "diagup" ("AMS" "Misc") 9585) ;; #X2571
     (nil "diagdown" ("AMS" "Misc") 9586) ;; #X2572
-    (nil "Hat" ("AMS" "Accents"))
-    (nil "Check" ("AMS" "Accents"))
-    (nil "Tilde" ("AMS" "Accents"))
-    (nil "Acute" ("AMS" "Accents"))
-    (nil "Grave" ("AMS" "Accents"))
-    (nil "Dot" ("AMS" "Accents"))
-    (nil "Ddot" ("AMS" "Accents"))
-    (nil "Breve" ("AMS" "Accents"))
-    (nil "Bar" ("AMS" "Accents"))
-    (nil "Vec" ("AMS" "Accents"))
     (nil "dddot" ("AMS" "Accents") 8411) ;; #X20DB
     (nil "ddddot" ("AMS" "Accents") 8412) ;; #X20DC
     (nil "bigl" ("AMS" "Delimiters"))
@@ -4325,7 +4314,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
 (defcustom LaTeX-babel-hyphen "\"="
   "String to be used when typing `-'.
 This usually is a hyphen alternative or hyphenation aid provided
-by provided by @samp{babel} and the related language style files,
+by provided by babel and the related language style files,
 like \"=, \"~ or \"-.
 
 Set it to an empty string or nil in order to disable this
@@ -4629,7 +4618,7 @@ runs the hooks in `docTeX-mode-hook'."
    '("addtocounter" TeX-arg-counter "Value")
    '("alph" TeX-arg-counter)
    '("arabic" TeX-arg-counter)
-   '("fnsymbol" TeX-arg-define-counter)
+   '("fnsymbol" TeX-arg-counter)
    '("newcounter" TeX-arg-define-counter
      [ TeX-arg-counter "Within counter" ])
    '("roman" TeX-arg-counter)
@@ -4686,7 +4675,7 @@ runs the hooks in `docTeX-mode-hook'."
      t)
    '("oval" TeX-arg-size [ TeX-arg-corner "Portion" ])
    '("put" TeX-arg-coordinate t)
-   '("savebox" TeX-arg-define-savebox
+   '("savebox" TeX-arg-savebox
      (TeX-arg-conditional
       (string-equal (LaTeX-current-environment) "picture")
       (TeX-arg-size [ TeX-arg-corner ] t)
@@ -4733,6 +4722,8 @@ runs the hooks in `docTeX-mode-hook'."
    '("lefteqn" t)
    '("overbrace" t)
    '("overline" t)
+   '("overleftarrow" t)
+   '("overrightarrow" t)
    '("sqrt" [ "Root" ] t)
    '("underbrace" t)
    '("underline" t)
@@ -4757,7 +4748,7 @@ runs the hooks in `docTeX-mode-hook'."
      "Width" t)
    '("raisebox" "Raise" [ "Height above" ] [ "Depth below" ] t)
    '("rule" [ "Raise" ] "Width" "Thickness")
-   '("sbox" TeX-arg-define-savebox t)
+   '("sbox" TeX-arg-savebox t)
    '("usebox" TeX-arg-savebox)
    '("vspace*" "Length")
    '("vspace" "Length")
@@ -4843,9 +4834,9 @@ runs the hooks in `docTeX-mode-hook'."
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("renewcommand" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
-     '("providecommand" TeX-arg-macro
+     '("providecommand" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
-     '("providecommand*" TeX-arg-macro
+     '("providecommand*" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("newcommand*" TeX-arg-define-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
