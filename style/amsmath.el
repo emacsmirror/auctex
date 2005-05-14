@@ -54,18 +54,24 @@
      '("sideset" "Left" "Right")
      '("tag" "(Tag)")
      '("tag*" "Tag")
-     '("raisetag" "Dimension")
      '("displaybreak" ["Weight (0..4)"])
      '("allowdisplaybreaks" ["Weight (1..4)"])
      '("substack" t)
      '("leftroot" "Push root index left by")
      '("uproot" "Push root index left by")
      '("boxed" t)
-     "overleftarrow"  "overrightarrow"  "overleftrightarrow"
-     "underleftarrow" "underrightarrow" "underleftrightarrow"
-     "dots" "dotsb" "dotsc" "dotsi" "dotsm" "nobreakdash" 
-     "Hat" "Check" "Tilde" "Acute" "Grave" "Dot" "Ddot" "Breve" "Bar" "Vec"
-     "dddot" "ddddot"
+     '("mspace" t)
+     '("mod" t)
+     '("pmod" t)
+     '("pod" t)
+     '("overleftrightarrow" t)
+     '("underleftarrow" t)
+     '("underrightarrow" t)
+     '("underleftrightarrow" t)
+     '("dddot" t)
+     '("ddddot" t)
+     "bmod" "notag"
+     "dots" "dotsb" "dotsc" "dotsi" "dotsm" "dotso" "nobreakdash" 
      "lvert" "rvert" "lVert" "rVert" 
      "iint" "iiint" "iiiint" "idotsint"
      )
@@ -73,6 +79,7 @@
     (setq  LaTeX-item-list 
 	   (append '(("split"    . LaTeX-item-equation)
 		     ("multline" . LaTeX-item-equation)
+		     ("multline*" . LaTeX-item-equation)
 		     ("gather"   . LaTeX-item-equations)
 		     ("gather*"  . LaTeX-item-equation)
 		     ("gathered" . LaTeX-item-equation)
@@ -86,6 +93,12 @@
 		     ("xxalignat" . LaTeX-item-equation)
 		     ("flalign"  . LaTeX-item-equations)
 		     ("flalign*" . LaTeX-item-equation)
+		     ("matrix" .  LaTeX-item-equation)
+		     ("pmatrix" .  LaTeX-item-equation)
+		     ("bmatrix" .  LaTeX-item-equation)
+		     ("Bmatrix" .  LaTeX-item-equation)
+		     ("vmatrix" .  LaTeX-item-equation)
+		     ("Vmatrix" .  LaTeX-item-equation)
 		     ("cases"    . LaTeX-item-equation))
 		   LaTeX-item-list))
 
@@ -97,7 +110,6 @@
 	  (append '(("align"      . LaTeX-amsmath-label)
 		    ("alignat"    . LaTeX-amsmath-label)
 		    ("xalignat"   . LaTeX-amsmath-label)
-		    ("aligned"    . LaTeX-amsmath-label)
 		    ("flalign"    . LaTeX-amsmath-label)
 		    ("gather"     . LaTeX-amsmath-label))
 		  LaTeX-label-alist))
