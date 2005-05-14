@@ -96,8 +96,8 @@ EXTRAFILES = RELEASE COPYING ChangeLog auctex.spec \
 	configure install-sh $(MKINSTALLDIRS) Makefile.in \
 	tex-site.el.in lpath.el $(CONTRIB) $(CONTRIB_MULE)
 
-CLEANFILES = $(AUCELC) $(STYLEELC)
-DISTCLEANFILES = Makefile tex-site.el config.*
+CLEANFILES = $(AUCELC) $(STYLEELC) $(CONTRIBELC) $(CONTRIB_MULEELC)
+DISTCLEANFILES = Makefile tex-site.el auctex.el auto-loads.el config.*
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
@@ -135,14 +135,14 @@ Makefile: Makefile.in config.status
 config.status: configure
 	./config.status --recheck
 
-auto-loads.el: $(AUCSRC) Makefile
+auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
 	test X$(packagedir) != Xno || \
 	rm -f $@ ; \
 	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
 	test -r $@ || \
 	echo ";; Auto-generated part of tex-site.el" > $@ ; \
 	echo "" >> $@ ; \
-	$(ELCC) $(AUTOLOAD) $(AUCSRC)
+	$(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE)
 
 some:	$(AUCELC) $(STYLEELC)
 
