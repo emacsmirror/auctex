@@ -1,3 +1,34 @@
+2005-05-15  Ikumi Keita <ikumi@revery.net>
+
+	* Makefile.in (CLEANFILES): Add $(CONTRIBELC) and
+	$(CONTRIB_MULEELC).
+	(DISTCLEANFILES): Add auctex.el and auto-loads.el.
+	(auto-loads.el): Add $(COMPILE_MULE)
+
+2005-05-14  Ikumi Keita <ikumi@revery.net>
+
+	* style/amsopn.el:
+	* style/amsmath.el: Move "mode"-like entries from amsopn.el to
+	amsmath.el.
+
+	* style/amsmath.el: Edit entries in TeX-add-symbols.
+	Remove duplicate entry "raisetag".
+	Add some new entries.
+	Make arrow macros like "overleftarrows" to take argument.
+	Remove accents macros like "Hat" because they are obsolate in
+	amsmath v2.
+	(LaTeX-item-list): Add "multline*", "matrix", "pmatrix",
+	"bmatrix", "Bmatrix", "vmatrix" and "Vmatrix" environment.
+	(LaTeX-label-alist): Remove "aligned" environment.
+
+	* tex-style.el (LaTeX-amsmath-label): Fix doc.
+
+	* latex.el: (LaTeX-math-default): Remove duplicate entry
+	"nabla". Remove AMS Accents like "Hat" because they are obsolate
+	in amsmath v2.
+	(LaTeX-babel-hyphen): Fix doc.
+	(LaTeX-common-initialization): Edit some entries in TeX-add-symbols.
+
 2005-05-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Small corrections.
