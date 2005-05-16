@@ -1,3 +1,10 @@
+2005-05-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-transient-master): New variable.
+	(TeX-master-file): Use it.
+
+	* tex-buf.el (TeX-command-sentinel): Bind `TeX-transient-master'.
+
 2005-05-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-babel-hyphen): Doc fix.
