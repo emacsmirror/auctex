@@ -136,7 +136,7 @@ config.status: configure
 	./config.status --recheck
 
 auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
-	test X$(packagedir) != Xno || \
+	-test X$(packagedir) != Xno || \
 	rm -f $@ ; \
 	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
 	test -r $@ || \
