@@ -1174,6 +1174,10 @@ this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
 
+;; Can be let-bound temporarily in order to inhibit the master file
+;; question for shared files where its value will be used instead.
+(defvar TeX-transient-master nil)
+
 (defun TeX-dwim-master ()
   "Find a likely `TeX-master'."
   (let ((dir default-directory))
@@ -1241,12 +1245,14 @@ the beginning of the file, but that feature will be phased out."
 	 ;; For files shared between many documents.
 	 ((and (eq 'shared TeX-master) ask)
 	  (setq TeX-master
-		(TeX-strip-extension
-		 (let ((default (or (TeX-dwim-master) "this file")))
-		   (read-file-name (format "Master file: (default %s) " default)
-				   nil default))
-		 (list TeX-default-extension)
-		 'path))
+		(or TeX-transient-master
+		    (TeX-strip-extension
+		     (let ((default (or (TeX-dwim-master) "this file")))
+		       (read-file-name
+			(format "Master file: (default %s) " default)
+			nil default))
+		     (list TeX-default-extension)
+		     'path)))
 	  (if (or (string-equal TeX-master "this file")
 		  (string-equal TeX-master ""))
 	      (setq TeX-master t)))
