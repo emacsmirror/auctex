@@ -775,7 +775,11 @@ Error parsing on C-x ` should work with a bit of luck."
 
 (defun TeX-command-sentinel (process msg)
   "Process TeX command output buffer after the process dies."
-  (let* ((buffer (process-buffer process))
+  ;; Set `TeX-transient-master' here because `preview-parse-messages'
+  ;; may open files and thereby trigger master file questions which we
+  ;; don't want and need because we already know the master.
+  (let* ((TeX-transient-master (TeX-active-master))
+	 (buffer (process-buffer process))
 	 (name (process-name process)))
     (cond ((null (buffer-name buffer))	; buffer killed
 	   (set-process-buffer process nil)
