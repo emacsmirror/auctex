@@ -92,10 +92,6 @@ DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/wininstall.texi doc/todo.texi doc/faq.texi \
 	doc/quickstart.texi
 
-EXTRAFILES = RELEASE COPYING ChangeLog auctex.spec \
-	configure install-sh $(MKINSTALLDIRS) Makefile.in \
-	tex-site.el.in lpath.el $(CONTRIB) $(CONTRIB_MULE)
-
 CLEANFILES = $(AUCELC) $(STYLEELC) $(CONTRIBELC) $(CONTRIB_MULEELC)
 DISTCLEANFILES = Makefile tex-site.el auctex.el auto-loads.el config.*
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
@@ -136,13 +132,15 @@ config.status: configure
 	./config.status --recheck
 
 auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
-	-test X$(packagedir) != Xno || \
-	rm -f $@ ; \
-	$(ELCC) $(AUTOLOAD) $(AUCSRC); \
-	test -r $@ || \
-	echo ";; Auto-generated part of tex-site.el" > $@ ; \
-	echo "" >> $@ ; \
-	$(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE)
+	test X$(packagedir) != Xno || { \
+	  rm -f $@ ; \
+	  $(ELCC) $(AUTOLOAD) $(AUCSRC); \
+	  test -r $@ || { \
+	    echo ";; Auto-generated part of tex-site.el" > $@ ; \
+	    echo "" >> $@ ; \
+	    $(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE) ; \
+	  } ; \
+	}
 
 some:	$(AUCELC) $(STYLEELC)
 
@@ -160,14 +158,14 @@ contrib:
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
 	rm -f $(DESTDIR)$(packagelispdir)/tex-site.el # Remove old (CVS-version) mistakes
-	if [ -f $(DESTDIR)$(lispdir)/tex-site.el ]; then \
+	test ! -f $(DESTDIR)$(lispdir)/tex-site.el || { \
 	   if grep -q "tex-site.*Don't edit." $(DESTDIR)$(lispdir)/tex-site.el; then \
 	    echo "Overwriting old tex-site.el" ; \
 	   else \
 	    echo "Renaming old tex-site.el to tex-site.el.save" ; \
 	    mv $(DESTDIR)$(lispdir)/tex-site.el $(DESTDIR)$(lispdir)/tex-site.el.save ; \
 	   fi; \
-	fi; \
+	}
 	if test X$(packagedir) = Xno; \
 	then $(INSTALL_DATA) tex-site.el $(DESTDIR)$(lispdir) ; \
 	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
@@ -222,16 +220,16 @@ install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
 install-metadata:
-	if test "x$(packagedir)" != xno ; then \
-	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el ; \
+	test "x$(packagedir)" == xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo ; \
-	  cd $(DESTDIR)$(packagedir) ; \
+	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
+	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \
 	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	  done ; \
+	  done && \
 	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	fi
+	}
 
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<
@@ -291,7 +289,7 @@ tar-ball:
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR) $(WWWDIR)/doc
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
-	tar -cf - auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
+	tar -cf - --owner=root --group=root auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	cp auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
 	cp auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)

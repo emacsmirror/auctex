@@ -37,9 +37,7 @@ MKINSTALLDIRS = ./mkinstalldirs
 all: texmf lisp docs install-hint
 
 lisp: $(LISP_OBJS)
-	if test $(packagedir) = no ; then \
-	  $(MAKE) preview-latex.el ; \
-	fi
+	test "x$(packagedir)" != xno || $(MAKE) preview-latex.el
 
 texmf: 
 	(cd latex ; $(MAKE) all)
@@ -88,16 +86,16 @@ install-nosearch:
 	: >$(DESTDIR)$(packagedatadir)/.nosearch
 
 install-metadata:
-	if test "x$(packagedir)" != xno ; then \
+	test "x$(packagedir)" == xno || { \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo ; \
 	  $(ELCC) $(AUCTEX) -l preview -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" preview-release-date auto.el && \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \
 	    test -r "info/$$i.info" && echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	  done ; \
+	  done && \
 	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	fi
+	}
 
 install-images: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
@@ -123,11 +121,11 @@ $(LISP_OBJS):	$(LISP_SOURCES)
 preview-latex.el: preview.el auto.el
 	rm -f preview-latex.el
 	-$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
-	if test ! -r $@; then \
-	echo ";; Auto-generated preview-latex.el" > $@ ; \
-	echo "" >> $@ ; \
-	$(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
-	fi
+	test -r $@ || { \
+	  echo ";; Auto-generated preview-latex.el" > $@ ; \
+	  echo "" >> $@ ; \
+	  $(EMACS) -batch -no-site-file -no-init-file $(AUTOLOAD) ; \
+	}
 	cat auto.el >> $@
 
 .PHONY: clean distclean maintainer-clean tarball-ready
