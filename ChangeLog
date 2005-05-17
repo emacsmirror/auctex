@@ -6,6 +6,13 @@
 	(install-metadata): Rewrite condition for non-Posix.
 	(tar-ball): Change owner and group to root.  This is not portable,
 	but will be needed only by the maintainers, anyway.
+	(auto-loads.el): ignore errors also for braindead make.
+	(install-metadata): Same here.
+	(clean): Burp if cd doc fails.
+	(distclean): Same here.
+	(tar-ball): rewrite for braindead shells.
+	(tar-ball): make sure doc exists.  Why do I bother, actually, the
+	tarball target is not for public consumption, anyway.
 
 2005-05-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 

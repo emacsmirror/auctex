@@ -134,7 +134,7 @@ config.status: configure
 auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
 	test X$(packagedir) != Xno || { \
 	  rm -f $@ ; \
-	  $(ELCC) $(AUTOLOAD) $(AUCSRC); \
+	  $(ELCC) $(AUTOLOAD) $(AUCSRC) || : ; \
 	  test -r $@ || { \
 	    echo ";; Auto-generated part of tex-site.el" > $@ ; \
 	    echo "" >> $@ ; \
@@ -221,7 +221,7 @@ install-auto:
 
 install-metadata:
 	test "x$(packagedir)" == xno || { \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo ; \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
 	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
@@ -236,12 +236,12 @@ install-metadata:
 
 clean:
 	rm -f $(CLEANFILES)
-	(cd doc; $(MAKE) clean)
+	cd doc && $(MAKE) clean
 	$(DESCEND)
 
 distclean:
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
-	(cd doc; $(MAKE) distclean)
+	cd doc && $(MAKE) distclean
 	$(DESCEND)
 
 maintainer-clean: distclean
@@ -282,7 +282,7 @@ release-commit:
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 
 tar-ball:
-	if [ -d auctex-$(TAG) ]; then rm -r auctex-$(TAG) ; fi
+	test ! -d auctex-$(TAG) || rm -r auctex-$(TAG)
 	mkdir auctex-$(TAG)
 	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
 	cd auctex-$(TAG) && ./autogen.sh
@@ -293,7 +293,7 @@ tar-ball:
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	cp auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
 	cp auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)
-	cd doc;$(MAKE) dist
+	cd doc && $(MAKE) dist
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/html/*.html $(WWWDIR)/doc
