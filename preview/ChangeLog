@@ -4,6 +4,7 @@
 	also non-Posix shells.
 	(install-metadata): Rewrite stuff for non-Posix shells.
 	(preview-latex.el): Same here.
+	(install-metadata): ignore return state of mkinstalldirs.
 
 2005-05-02  David Kastrup  <dak@gnu.org>
 

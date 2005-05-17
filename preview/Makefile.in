@@ -87,7 +87,7 @@ install-nosearch:
 
 install-metadata:
 	test "x$(packagedir)" == xno || { \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo ; \
+	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
 	  $(ELCC) $(AUCTEX) -l preview -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" preview-release-date auto.el && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
