@@ -62,9 +62,9 @@ MAIN: while (<STDIN>) {
     s/\\char.//g;
     s/\\raggedright\n//g;
     s/\\DescribeEnv\{(.*?)\} /\@item \\begin\@{$1\@}\@dots{}\\end\@{$1\@}\n/;
-    if (s/\\DescribeMacro\{(.*?)\}[ \n]/\@item $1\n/) {
+    if (s/\\DescribeMacro\{(.*?)\}( |\n)/\@item $1\n/) {
 	# Index entries for two important macros
-	if (/(\\Preview(Macro|Environment))[ \n]/) {
+	if (/(\\Preview(Macro|Environment))( |\n)/) {
 	    $_ .= "\@findex $1\n";
 	}
     }

@@ -1,3 +1,8 @@
+2005-05-18  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-dtxdoc.pl: Don't use \n in character ranges since it
+	is not actually a character in Windows.
+
 2005-05-17  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (lisp): Rewrite condition to make `make -n' work,
