@@ -3414,6 +3414,7 @@ See also `LaTeX-math-menu'."
     (?D "Delta" "Greek Uppercase" 916) ;; #X0394
     (?J "Theta" "Greek Uppercase" 920) ;; #X0398
     (?L "Lambda" "Greek Uppercase" 923) ;; #X039B
+    (?X "Xi" "Greek Uppercase" 926) ;; #X039E
     (?P "Pi" "Greek Uppercase" 928) ;; #X03A0
     (?S "Sigma" "Greek Uppercase" 931) ;; #X03A3
     (?U "Upsilon" "Greek Uppercase" 978) ;; #X03D2
