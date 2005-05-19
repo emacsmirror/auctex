@@ -110,6 +110,7 @@
 	  (append '(("align"      . LaTeX-amsmath-label)
 		    ("alignat"    . LaTeX-amsmath-label)
 		    ("xalignat"   . LaTeX-amsmath-label)
+		    ("multline"    . LaTeX-amsmath-label)
 		    ("flalign"    . LaTeX-amsmath-label)
 		    ("gather"     . LaTeX-amsmath-label))
 		  LaTeX-label-alist))
