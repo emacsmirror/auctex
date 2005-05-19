@@ -2,55 +2,87 @@
 @include macros.texi
 @end ifset
 
-Installation of @AUCTeX{} under Windows is a bit more complicated, but
-we are working to resolve the issues involved. Please report
-success/failure to us at @email{auctex-devel@@gnu.org}. Here are the
-steps to perform:
+Installation of @AUCTeX{} under Windows is in itself not more
+complicated than on other platforms.  However, meeting the prerequisites
+might require more work than on some other platforms, and feel less
+natural.
+
+If you are experiencing any problems, even if you think they are of your
+own making, be sure to report them to @email{auctex-devel@@gnu.org} so
+that we can explain things better in future.
+
+Windows is a problematic platform for installation scripts.  The main
+problem is that the installation procedure requires consistent file
+names in order to find its way in the directory hierarchy, and Windows
+path names are a mess.
+
+The installation procedure tries finding stuff in system search paths
+and in Emacs paths.  For that to succeed, you have to use the same
+syntax and spelling and case of paths everywhere: in your system search
+paths, in Emacs' @code{load-path} variable, as argument to the scripts.
+If your path names contain spaces or other `shell-unfriendly'
+characters, most notably backslashes for directory separators, place the
+whole path in @samp{"double quote marks"} whenever you specify it on a
+command line.
+
+Avoid `helpful' file names like @samp{/cygdrive/c} and
+@samp{C:\PROGRA~1\} like the plague.  It is quite unlikely that the
+scripts will be able to identify the actual file names involved.  Use
+the full paths, making use of normal Windows drive letters like
+@samp{C:} where required, and using the same combination of upper- and
+lowercase letters as in the actual files.
+
+Ok, now here are the steps to perform:
 
 @enumerate
 @item
-If you unpacked the distribution using Winzip or similar, you better
-restart using infozip on the @samp{.zip} file, or standard Unix tools
-(see the next point) on the @samp{.tar.gz} file: tools that make the
-mistake of turning Unix line endings into MSDOS line endings will cause
-trouble later in installation and operation.
+You need to unpack the @AUCTeX{} distribution (which you seemingly have
+done since you are reading this).  It must be unpacked in a separate
+installation directory outside of your Emacs file hierarchy: the
+installation will later copy all necessary files to their final
+destination, and you can ultimately remove the directory where you
+unpacked the files.
+
+The distribution contains only text files, and their line endings have
+to be proper for Windows, or you'll likely run into problems later on.
+Your unpacking tool probably has options for achieving this effect.
+Your chances might be better if you are using the @samp{.zip} archive
+rather than the @samp{.tar.gz} file.  If you are loading files from the
+distribution into Emacs, its mode line should show the @samp{(DOS)}
+indicator.
+
+If you don't have a suitable unpacking tool, skip to the next step: this
+should provide you with a working @samp{unzip} command.
 
 @item
 The installation of @AUCTeX{} will require the MSYS tool set from
-@uref{http://www.mingw.org}. If you have the Cygwin tool set from
-@uref{http://cygwin.com} installed, that should do just fine as well,
-but it is quite larger and slower.
+@uref{http://www.mingw.org} or the Cygwin tool set from
+@uref{http://cygwin.com}.  The latter is slower and larger (the download
+size of the base system is about 15 MB) but comes with a package manager
+that allows for updating the tool set and installing additional packages
+like, for example, the spell checker @w{aspell}.
 
-If you are installing @AUCTeX{} with one of those sets for an Emacs
-compiled in a different one, you should try to avoid tool-specific path
-names like @file{/cygwin/c}.  Instead, use the @file{c:} syntax.  It
-might also help to use forward slashes instead of the backward slashes
-more typical for @w{MS Windows}: while backward slashes are supposed to
-work if properly escaped in the shell, this is one area easily
-overlooked by the developers.  The same holds for file or directory
-names with spaces in them.    Another noteworthy problem is that you
-should be consistent with regard to using upper and lower case
-characters for directory names: while Windows ignores any differences in
-that area, the configuration scripts don't.
-
-It is appreciated if you report any problems you experienced when
-installing @AUCTeX{}, as we are trying our best to make it work
-even for platforms that we don't use ourselves.
-
-Compiling Emacs is outside of the scope of this manual.  @AUCTeX{}
-itself does not require a @w{C compiler} for installation.
+If Cygwin specific paths like @samp{/cygdrive/c} crop up in the course
+of the installation, using a non-Cygwin Emacs could conceivably cause
+trouble.  Using Cygwin either for everything or nothing might save
+headaches, @emph{if} things don't work out.
 
 @item
 Install a current version of XEmacs (such as 21.4.10) from
-@uref{http://www.xemacs.org} or try getting and compiling an
-@acronym{CVS} version of @w{GNU Emacs} from
-@uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Precompiled
-versions happen to be available at @uref{http://www.crasseux.com/emacs/}
-and @uref{http://nqmacs.sf.net/}.
+@uref{http://www.xemacs.org} or try getting and compiling an developer
+version of @w{Emacs 22} from
+@uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Compiling
+Emacs is outside of the scope of this manual.  Precompiled versions
+currently happen to be available at
+@uref{http://www.crasseux.com/emacs/} and @uref{http://nqmacs.sf.net/}.
 
-If you disable the installation of @previewlatex{}, you might also use
-an @w{Emacs 21} binary from from
-@uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}.
+If you don't want to use a developer version and @w{Emacs 22} has not
+yet been released, it is also possible to use an @w{Emacs 21} binary
+from from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}, but then you
+should disable the installation of @previewlatex{} (it will not work).
+Since the developer version has seen quite a few improvements relevant
+also for other features of @AUCTeX{}, we really recommend you give it a
+try.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
@@ -59,19 +91,27 @@ extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
 which is rather close to its Unix cousins.
 
 @item
-@uref{http://www.perl.org,Perl} is needed for rebuilding the
-documentation if you are working with a copy from @acronym{CVS} or have
-touched documentation source files.  This is needed for @previewlatex{}
-documentation, strictly speaking.
+A working copy of @uref{http://www.cs.wisc.edu/~ghost,Ghostscript} is
+required for @previewlatex{} operation.  Examining the output from
+@example
+gswin32c -h
+@end example
+on a Windows command line should tell you whether your Ghostscript
+supports the @code{png16m} device needed for @acronym{PNG} support.
+MikTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
 
 @item
-Now the fun stuff starts. Unpack the @AUCTeX{} distribution into some
-installation directory. @strong{Do not} unpack it right into your Emacs'
-own directories: the installation will copy the material that needs to
-be placed there. Keep the installation directory separate: you can
-remove its contents after installation completes. Since you are reading
-this, you probably have already unpacked @AUCTeX{}, but it should still
-be easy to move it elsewhere now.
+@uref{http://www.perl.org,Perl} is needed for rebuilding the
+documentation if you are working with a copy from @acronym{CVS} or have
+touched documentation source files in the @previewlatex{} part.  If the
+line endings of the file @file{preview/latex/preview.dtx} don't
+correspond with what Perl calls @code{\n} when reading text files,
+you'll run into trouble.
+
+@item
+Now the fun stuff starts.  If you have not yet done so, unpack the
+@AUCTeX{} distribution into a separate directory after rereading the
+instructions for unpacking above.
 
 @item
 Ready for takeoff. Start some shell (typically @command{bash}) capable of
@@ -81,21 +121,27 @@ call @command{./configure} with appropriate options.
 Typical options you'll want to specify will be
 @table @code
 @item --prefix=@var{drive:/path/to/emacs-directory}
-which makes sure that (1) the AUCTeX manual will be installed in the
-@file{info/} directory of your Emacs installation and (2) the
-automatically generated global style hooks will be installed in the
-@file{var/} directory of your Emacs installation.  If you are collecting
-stuff like that in a central directory hierarchy (not untypical with
-Cygwin), you might want to specify that here instead.  You stand a good
-chance that this will be the only option you need to supply, as long as
-your @TeX{}-related executables are in your system path, which they
-better be for @AUCTeX{}'s operation, anyway.
+which tells @file{configure} where to perform the installation. It may
+also make @file{configure} find Emacs or XEmacs automatically; if this
+doesn't happen, try one of @samp{--with-emacs} or @samp{--with-xemacs}
+as described below.  All automatic detection of files and directories
+restricts itself to directories below the @var{prefix} or in the same
+hierarchy as the program accessing the files.
+
+This option also affects the defaults for placing the Texinfo
+documentation files and automatically generated style hooks.
+
+If you have a central directory hierarchy (not untypical with Cygwin)
+for such stuff, you might want to specify its root here.  You stand a
+good chance that this will be the only option you need to supply, as
+long as your @TeX{}-related executables are in your system path, which
+they better be for @AUCTeX{}'s operation, anyway.
 
 @item --with-emacs
 if you are installing for a version of Emacs.  You can use
 @samp{--with-emacs=@var{/path/to/emacs}} to specify the name of the
 installed Emacs executable, complete with its path if necessary (if
-Emacs is not within a directory specified in your @var{PATH} environment
+Emacs is not within a directory specified in your @env{PATH} environment
 setting).
 
 @item --with-xemacs
@@ -103,31 +149,69 @@ if you are installing for a version of XEmacs.  Again, you can use
 @samp{--with-xemacs=@var{/path/to/xemacs}} to specify the name of the
 installed XEmacs executable complete with its path if necessary.  It may
 also be necessary to specify this option if a copy of Emacs is found in
-your @var{PATH} environment setting, but you still would like to install
+your @env{PATH} environment setting, but you still would like to install
 a copy of @AUCTeX{} for XEmacs.
 
-@item --with-lispdir=@var{/dir}
-This may be needed for GNU Emacs installation, but hopefully
-@command{configure} should figure this out by itself. Don't use this for
-XEmacs, rather use
-
 @item --with-packagedir=@var{/dir}
-which gives the location of the package directory for XEmacs where stuff
-should be installed. Again, hopefully this is not necessary to specify.
+is an XEmacs-only option giving the location of the package directory.
+This will install and activate the package.  Emacs uses a different
+installation scheme:
+
+@item --with-lispdir=@var{/path/to/site-lisp}
+This Emacs-only option tells a place in @code{load-path} below which the
+files are situated.  The startup files @file{auctex.el} and
+@file{preview-latex.el} will get installed here unless a subdirectory
+@file{site-start.d} exists which will then be used instead.  The other
+files from @AUCTeX{} will be installed in a subdirectory called
+@file{auctex}.
+
+If you think that you need a different setup, please refer to the full
+installation instructions in
+@ifset rawfile
+the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Configure}.
+@end ifclear
 
 @item --with-auto-dir=@var{/dir}
 Directory containing automatically generated information.  You should
 not normally need to set this, as @samp{--prefix} should take care of
 this.
+
+@item --disable-preview
+Use this option if your Emacs version is unable to support image
+display.  This will be the case if you are using a native variant of
+@w{Emacs 21}.
+
+@item --with-texmf-dir=@var{dir}
+This will specify the directory where your @TeX{} installation sits.  If
+your @TeX{} installation does not conform to the TDS (@TeX{} directory
+standard), you may need to specify more options to get everything in
+place:
 @end table
 
-Some additional information about the above options may be found in
+For more information about any of the above and additional options, see
 @ifset rawfile
 the `Configure' section in the @file{INSTALL} file.
 @end ifset
 @ifclear rawfile
 @ref{Configure}.
 @end ifclear
+
+Calling
+@file{./configure --help=recursive}
+will tell about other options, but those are almost never required.
+
+Some executables might not be found in your path.  That is not a good
+idea, but you can get around by specifying environment variables to
+@file{configure}:
+@example
+GS="@var{/path/to/gswin32c.exe}" ./configure @dots{}
+@end example
+should work for this purpose.  @file{gswin32c.exe} is the usual name for
+the required @emph{command line} executable under Windows; in contrast,
+@file{gswin32.exe} is likely to fail.
 
 @item
 Run @command{make} in the installation directory.
@@ -136,18 +220,33 @@ Run @command{make} in the installation directory.
 Run @code{make install} in the installation directory.
 
 @item
-For GNU Emacs, the recommended way to activate @AUCTeX{} is to add the
-following line to your @file{.emacs} file:
-
+With XEmacs, @AUCTeX{} and @previewlatex{} should now be active by
+default.  With Emacs, acticavation depends on a working
+@file{site-start.d} directory or similar setup, since then the startup
+files @file{auctex.el} and @file{preview-latex.el} will have been placed
+there.  If this has not been done, you should be able to load the
+startup files manually with
 @example
-(require 'tex-site)
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
 @end example
+in either a site-wide @file{site-start.el} or your personal startup file
+(usually accessible as @file{~/.emacs} from within Emacs and
+@file{~/.xemacs/init.el} from within XEmacs).
 
-The configuration for Windows systems is probably not quite fitting.
-Instead of loading @file{tex-site.el} in that manner, you might want to
-load @file{tex-mik.el} (for Mik@TeX{}) or @file{tex-fptex} (for
-fp@TeX{}) instead.  Those will lead to somewhat more appropriate values
-for your system.  You can always use
+The default configuration of @AUCTeX{} is probably not the best fit for
+Windows systems.  You might want to additionally use
+@example
+(require 'tex-mik)
+@end example
+or
+@example
+(require 'tex-fptex)
+@end example
+in order to get more appropriate values for Mik@TeX{} and fp@TeX{},
+respectively.
+
+You can always use
 
 @example
   @kbd{M-x customize-group @key{RET} AUCTeX @key{RET}}
@@ -156,8 +255,26 @@ for your system.  You can always use
 in order to customize more stuff, or use the @samp{Customize} menu.
 
 @item
-Load a @file{.tex} file Emacs or XEmacs and see if you get the
-@samp{Command} menu. Try using that to @LaTeX{} the file.
+Load @file{preview/circ.tex} into Emacs or XEmacs and see if you get the
+@samp{Command} menu. Try using it to @LaTeX{} the file.
+
+@item
+Check whether the @samp{Preview} menu is available in this file.  Use it
+to generate previews for the document.
+
+If this barfs and tells you that image type @samp{png} is not
+supported, try adding the line
+
+@example
+(setq preview-image-type 'pnm)
+@end example
+
+at the end of your installed version of @file{preview-latex.el}.  If
+this helps, complain to wherever you got your Emacs: all current
+Emacs/XEmacs versions capable of running @previewlatex{} by now can be
+compiled to support @acronym{PNG} images.  Which is important, because
+@acronym{PNM} files take away @strong{vast} amount of disk space, and
+thus also of load/save time.
 
 @end enumerate
 Well, that about is all.  Have fun!

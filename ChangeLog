@@ -1,3 +1,10 @@
+2005-05-19  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Rearrange to make suitable for standalone
+	installation including preview-latex.  Adapt to a few
+	changes (like tex-fptex and tex-mik not being in load-path by
+	default).
+
 2005-05-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Check for
