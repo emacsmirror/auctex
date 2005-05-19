@@ -1,3 +1,9 @@
+2005-05-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Check for
+	`charset-after' to make non-MULE XEmacsen happy.  Some
+	reformatting.
+
 2005-05-18  David Kastrup  <dak@gnu.org>
 
 	* latex.el (LaTeX-math-default): Add Xi (reported by Uli
