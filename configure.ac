@@ -141,7 +141,7 @@ AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
 		       [preview_enabled="$withval"],
 		       [preview_enabled="yes"])
 
-if test "X${preview_enabled}" == Xyes
+if test "X${preview_enabled}" = Xyes
 then
   auctexdir=..; export auctexdir
   export packagedir packagelispdir packagedatadir

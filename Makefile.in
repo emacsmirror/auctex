@@ -220,7 +220,7 @@ install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
 
 install-metadata:
-	test "x$(packagedir)" == xno || { \
+	test "x$(packagedir)" = xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
 	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
 	  cd $(DESTDIR)$(packagedir) && \
