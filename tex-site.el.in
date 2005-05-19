@@ -74,11 +74,13 @@ shared by all users of a site."
 
 (defalias 'TeX-load-hack 'ignore)
 
-(add-hook 'tex-site-unload-hook (lambda ()
-				  (dolist (elt after-load-alist)
-				    (assq-delete-all 'TeX-modes-set elt))
-				  (setq load-path
-					(delq TeX-lisp-directory load-path))))
+(add-hook 'tex-site-unload-hook
+	  (lambda ()
+	    (let ((list after-load-alist))
+	      (while list
+		(assq-delete-all 'TeX-modes-set (car list))
+		(setq list (cdr list))))
+	    (setq load-path (delq TeX-lisp-directory load-path))))
 
 (defun TeX-modes-set (var value &optional update)
   "Set VAR (which should be `TeX-modes') to VALUE.
@@ -111,9 +113,11 @@ set it with `TeX-modes-set'."
   :set 'TeX-modes-set
   :initialize (lambda (var value)
 		(custom-initialize-reset var value)
-		(dolist (elt TeX-mode-alist)
-		  (eval-after-load (cdr elt)
-		    `(TeX-modes-set ',var ,var t)))))
+		(let ((list TeX-mode-alist))
+		  (while list
+		    (eval-after-load (cdar list)
+		      `(TeX-modes-set ',var ,var t))
+		    (setq list (cdr list))))))
 
 (defconst AUCTeX-version "@AUCTEXVERSION@"
     "AUCTeX version.
