@@ -7,6 +7,9 @@
 
 2005-05-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-site.el.in (tex-site-unload-hook, TeX-modes): Do not use
+	`dolist'.  Prevents console pop-ups with XEmacsen on Windows.
+
 	* latex.el (LaTeX-fill-move-to-break-point): Check for
 	`charset-after' to make non-MULE XEmacsen happy.  Some
 	reformatting.
