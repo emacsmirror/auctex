@@ -2623,13 +2623,15 @@ space does not end a sentence, so don't break a line there."
   (if (fboundp 'fill-move-to-break-point)
       (fill-move-to-break-point linebeg)
     (if (featurep 'mule)
- 	(if (TeX-looking-at-backward (concat LaTeX-nospace-between-char-regexp ".?") 2)
+ 	(if (TeX-looking-at-backward
+	     (concat LaTeX-nospace-between-char-regexp ".?") 2)
  	    ;; Cancel `forward-char' which is called just before
  	    ;; `LaTeX-fill-move-to-break-point' if the char before point matches
  	    ;; `LaTeX-nospace-between-char-regexp'.
  	    (backward-char 1)
  	  (when (re-search-backward
-		 (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp) linebeg 'move)
+		 (concat " \\|\n\\|" LaTeX-nospace-between-char-regexp)
+		 linebeg 'move)
 	    (forward-char 1)))
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
@@ -2649,6 +2651,7 @@ space does not end a sentence, so don't break a line there."
 	       ;; run a special function for the charset of the
 	       ;; character to find the correct break point.
 	       enable-multibyte-characters
+	       (fboundp 'charset-after) ; Non-MULE XEmacsen don't have this.
 	       (not (and (eq (charset-after (1- (point))) 'ascii)
 		         (eq (charset-after (point)) 'ascii))))
       ;; Make sure we take SOMETHING after the fill prefix if any.
@@ -2660,8 +2663,10 @@ space does not end a sentence, so don't break a line there."
   (when (and (featurep 'mule)
 	     enable-multibyte-characters
 	     (or (and (not (looking-at LaTeX-nospace-between-char-regexp))
-		      (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
-		 (and (not (TeX-looking-at-backward LaTeX-nospace-between-char-regexp 1))
+		      (TeX-looking-at-backward
+		       LaTeX-nospace-between-char-regexp 1))
+		 (and (not (TeX-looking-at-backward
+			    LaTeX-nospace-between-char-regexp 1))
 		      (looking-at LaTeX-nospace-between-char-regexp)))
 	     (re-search-backward
 	      (concat LaTeX-nospace-between-char-regexp
