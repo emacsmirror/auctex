@@ -2,6 +2,15 @@
 
 	* doc/tex-ref.tex (section{Greek Letters}): Add \Xi.
 
+2005-05-18  Ikumi Keita <ikumi@revery.net>
+
+	* style/amsmath.el (LaTeX-label-alist): Add "multline" environment.
+
+	* Makefile.in: 
+	* configure.ac:
+	* preview/Makefile.in: Change "==" to "=" in the argument of
+	"test" for Bourne shell compatibility.
+
 2005-05-19  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Rearrange to make suitable for standalone
