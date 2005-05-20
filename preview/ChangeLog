@@ -1,3 +1,8 @@
+2005-05-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* preview.el (preview-specs-type): Use an extra :value keyword to
+	avoid a bug in `widget-convert' of XEmacs 21.4 and Emacs 21.
+
 2005-05-18  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-dtxdoc.pl: Don't use \n in character ranges since it
