@@ -1,3 +1,7 @@
+2005-05-20  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex (section{Greek Letters}): Add \Xi.
+
 2005-05-19  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Rearrange to make suitable for standalone
