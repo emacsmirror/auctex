@@ -1,3 +1,8 @@
+2005-05-21  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi: Integrate the installation instructions for
+	preview-latex.
+
 2005-05-20  David Kastrup  <dak@gnu.org>
 
 	* doc/tex-ref.tex (section{Greek Letters}): Add \Xi.
