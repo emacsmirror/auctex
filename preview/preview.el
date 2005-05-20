@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.255 2005-04-27 18:24:09 dak Exp $
+;; $Id: preview.el,v 1.256 2005-05-20 17:53:57 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -86,19 +86,22 @@ preview-latex's bug reporting commands will probably not work.")))
 (defconst preview-specs-type
   '(repeat
     (list :tag "Image spec"
-	  (const :format "" :type)
+	  ;; Use an extra :value keyword to avoid a bug in
+	  ;; `widget-convert' of XEmacs 21.4 and Emacs 21.
+	  ;; Analogously for the following `const' statements.
+	  (const :format "" :value :type)
 	  (choice :tag "Image type"
 		  (const xpm)
 		  (const xbm)
 		  (symbol :tag "Other"))
 	  (set :inline t :tag "Minimum font size"
 	       (list :inline t :tag ""
-		     (const :format "" :min)
+		     (const :format "" :value :min)
 		     (integer :tag "pixels")))
-	  (const :format "" :file) (string :tag "Filename")
+	  (const :format "" :value :file) (string :tag "Filename")
 	  (set :inline t :tag "Ascent ratio"
 	       (list :inline t :tag ""
-		     (const :format "" :ascent)
+		     (const :format "" :value :ascent)
 		     (integer :tag "percent of image"
 			      :value 50))))))
 
@@ -3407,7 +3410,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.255 $"))
+	(rev "$Revision: 1.256 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3418,7 +3421,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-04-27 18:24:09 $"))
+    (let ((date "$Date: 2005-05-20 17:53:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
