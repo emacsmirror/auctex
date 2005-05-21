@@ -1,3 +1,12 @@
+2005-05-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-bar.el (TeX-bar-LaTeX-button-alist): Reenable mode-specific
+	images for View button.
+	(LaTeX-install-toolbar): Add `toolbarx-refresh' to
+	`TeX-PDF-mode-hook'.
+
+	* tex.el (TeX-PDF-mode): Run `TeX-PDF-mode-hook'.
+
 2005-05-21  David Kastrup  <dak@gnu.org>
 
 	* autogen.sh: Remove argument to preview/autogen.sh
