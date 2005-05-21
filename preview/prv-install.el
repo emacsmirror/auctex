@@ -1,6 +1,6 @@
 ;;; prv-install.el --- Complicated install-time magic for preview-latex.
 
-;; Copyright (C) 2002  Free Software Foundation, Inc.
+;; Copyright (C) 2002, 2005  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -94,7 +94,11 @@ package name, and version (to be evaluated), followed by a file to append."
             ((string-equal "Generating autoloads for %s...done" fmt))
             (t (apply si:message fmt args))))
     (unwind-protect
-        (update-autoloads-from-directory lisp-dir)
+	(cond ((fboundp 'update-autoloads-from-directory)
+	       (update-autoloads-from-directory lisp-dir))
+	      ((fboundp 'update-autoload-files)
+	       (update-autoload-files (list lisp-dir) "auctex"))
+	      (t (error "Failed to generate autoloads.")))
       (fset 'message si:message))
     (when (file-exists-p generated-autoload-file)
       (with-temp-buffer (insert-file append-file)
