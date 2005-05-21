@@ -250,7 +250,7 @@ If you use the @code{--without-texmf-dir} option, the @TeX{}-related
 files will be kept in the Emacs Lisp tree, and at runtime the
 @env{TEXINPUTS} environment variable will be made to point there.  You
 can install those files into your own @TeX{} tree at some later time
-with @kbd{@key{M-x} preview-install-styles @key{RET}}.
+with @kbd{M-x preview-install-styles RET}.
 
 @item --with-tex-dir=@var{/dir}
 If you want to specify an exact directory for the preview @TeX{} files,
@@ -274,6 +274,7 @@ Once @command{configure} has been run, simply enter
 @example
 make
 @end example
+
 @noindent
 at the prompt to byte-compile the lisp files, extract the @TeX{} files
 and build the documentation files.  To install the files into the
@@ -377,15 +378,15 @@ previously.  This can also be convenient for systems that are intended
 to support more than a single TeX distribution.  Since more often than
 not @TeX{} packages for operating system distributions are either much
 more outdated or much less complete than separately provided systems
-like @w{@TeX{} live}, this method may be generally preferable when
+like @w{@TeX{} Live}, this method may be generally preferable when
 providing packages.
 
 @node Advice for non-privileged users
 @section Installation for non-privileged users
 
 Often people without system administration privileges want to install
-software for their private use.  In that case you need to specify more
-options top the @command{configure} script.  For XEmacs users, this is
+software for their private use.  In that case you need to pass more
+options to the @command{configure} script.  For XEmacs users, this is
 fairly easy, because the XEmacs package system has been designed to make
 this sort of thing practical: but GNU Emacs users (and XEmacs users for
 whom the package system is for some reason misbehaving) may need to do a

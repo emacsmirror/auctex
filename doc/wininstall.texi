@@ -69,7 +69,7 @@ headaches, @emph{if} things don't work out.
 
 @item
 Install a current version of XEmacs (such as 21.4.10) from
-@uref{http://www.xemacs.org} or try getting and compiling an developer
+@uref{http://www.xemacs.org} or try getting and compiling a developer
 version of @w{Emacs 22} from
 @uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Compiling
 Emacs is outside of the scope of this manual.  Precompiled versions
@@ -78,7 +78,7 @@ currently happen to be available at
 
 If you don't want to use a developer version and @w{Emacs 22} has not
 yet been released, it is also possible to use an @w{Emacs 21} binary
-from from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}, but then you
+from @uref{http://ftp.gnu.org/pub/gnu/windows/emacs/}, but then you
 should disable the installation of @previewlatex{} (it will not work).
 Since the developer version has seen quite a few improvements relevant
 also for other features of @AUCTeX{}, we really recommend you give it a
@@ -87,7 +87,7 @@ try.
 @item
 You need a working @TeX{} installation.  One popular installation under
 Windows is @uref{http://www.miktex.org,Mik@TeX{}}.  Another much more
-extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} live}}
+extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} Live}}
 which is rather close to its Unix cousins.
 
 @item
@@ -221,7 +221,7 @@ Run @code{make install} in the installation directory.
 
 @item
 With XEmacs, @AUCTeX{} and @previewlatex{} should now be active by
-default.  With Emacs, acticavation depends on a working
+default.  With Emacs, activation depends on a working
 @file{site-start.d} directory or similar setup, since then the startup
 files @file{auctex.el} and @file{preview-latex.el} will have been placed
 there.  If this has not been done, you should be able to load the
@@ -249,7 +249,7 @@ respectively.
 You can always use
 
 @example
-  @kbd{M-x customize-group @key{RET} AUCTeX @key{RET}}
+@kbd{M-x customize-group RET AUCTeX RET}
 @end example
 
 in order to customize more stuff, or use the @samp{Customize} menu.
@@ -270,10 +270,10 @@ supported, try adding the line
 @end example
 
 at the end of your installed version of @file{preview-latex.el}.  If
-this helps, complain to wherever you got your Emacs: all current
+this helps, complain to wherever you got your Emacs from: all current
 Emacs/XEmacs versions capable of running @previewlatex{} by now can be
 compiled to support @acronym{PNG} images.  Which is important, because
-@acronym{PNM} files take away @strong{vast} amount of disk space, and
+@acronym{PNM} files take away @strong{vast} amounts of disk space, and
 thus also of load/save time.
 
 @end enumerate
