@@ -1074,6 +1074,7 @@ See `TeX-global-PDF-mode' for toggling the default value."
   (TeX-set-mode-name nil nil t)
   (setq TeX-output-extension
 	(if TeX-PDF-mode "pdf" "dvi"))
+  (run-hooks 'TeX-PDF-mode-hook)
   TeX-PDF-mode)
 (defalias 'tex-pdf-mode 'TeX-PDF-mode)
 
