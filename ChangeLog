@@ -1,5 +1,7 @@
 2005-05-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/install.texi, doc/wininstall.texi: Small corrections.
+
 	* tex-bar.el (TeX-bar-LaTeX-button-alist): Reenable mode-specific
 	images for View button.
 	(LaTeX-install-toolbar): Add `toolbarx-refresh' to
