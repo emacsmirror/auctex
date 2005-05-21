@@ -157,11 +157,7 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 				   (intern (TeX-master-file)))
 		:visible (plist-get TeX-error-report-switches
 				    (intern (TeX-master-file))))
-    (view :image "view"
-	  ;; FIXME: Mode specific switching doesn't work yet, so keep general
-	  ;; image for now.
-	  ;;
-	  ;; (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
+    (view :image (lambda nil (if TeX-PDF-mode "viewpdf" "viewdvi"))
 	  :command (TeX-command "View" 'TeX-master-file -1)
 	  :help (lambda nil (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
@@ -191,6 +187,7 @@ format of the argument MEANING-ALIST in the mentioned function."
   (require 'toolbar-x)
   (add-to-list 'toolbarx-image-path
 	       (expand-file-name "images" TeX-data-directory))
+  (add-hook 'TeX-PDF-mode-hook 'toolbarx-refresh)
   (toolbarx-install-toolbar TeX-bar-LaTeX-buttons
 			    (let ((append-list))
 			      (dolist (elt TeX-bar-LaTeX-all-button-alists)
