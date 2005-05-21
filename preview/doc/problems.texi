@@ -2,7 +2,7 @@
 @ifset rawfile
 @c documentencoding is used by makeinfo in our --no-headers output.
 @documentencoding ISO-8859-1
-@node Known problems, Problems with Ghostscript, (dir), (dir)
+@node Known problems,,(dir),(dir)
 @top Known problems
 
 @end ifset
@@ -18,7 +18,6 @@ newer versions of the problematic software or by simple patches.
 * Problems with Ghostscript::   
 * Font problems with Dvips::    
 * Emacs problems::              
-* AUCTeX prior to 11.0::       
 * Too small bounding boxes::    
 * x-symbol interoperation::     
 * Middle-clicks paste instead of toggling::  
@@ -31,12 +30,12 @@ information interesting to us and send it to the
 if at all possible.
 
 @ifset rawfile
-@node Problems with Ghostscript, Font problems with Dvips, Known problems , Known problems
+@node Problems with Ghostscript
 @chapter Problems with Ghostscript
 @raisesections
 @end ifset
 @ifclear rawfile
-@node Problems with Ghostscript, Font problems with Dvips, Known problems , Known problems
+@node Problems with Ghostscript
 @section Problems with Ghostscript
 @end ifclear
 
@@ -84,7 +83,7 @@ permanent time scale, the best choice is to use @acronym{PNG} and
 complain to your suppliers if either Emacs or Ghostscript fail to
 properly accommodate this format.
 
-@node Font problems with Dvips, Emacs problems, Problems with Ghostscript, Known problems
+@node Font problems with Dvips
 @section Font problems with Dvips
 Some fonts have been reported to produce wrong characters with
 @previewlatex{}.  @previewlatex{} calls Dvips by default with the option
@@ -112,34 +111,39 @@ rendered as @samp{@pounds{}} (British Pounds sign) in several fonts,
 unless your version of Dvips has a long-standing bug in its
 implementation fixed (only very recent versions of Dvips have).
 
-@node Emacs problems, AUCTeX prior to 11.0, Font problems with Dvips, Known problems
+@node Emacs problems
 @section Emacs problems
 
 @itemize @bullet
-@item GNU Emacs versions prior to 21.1
+@item GNU Emacs versions
 
-Don't use them.  20.x will not work, 21.0.x were prereleases, anyway.
+Don't use Emacsen older than 21.3 on X11-based systems.  On most other
+systems, you'll need at least @w{Emacs 22.1} or one of the developer
+versions leading up to it.  Details can be found in
+@ifset rawfile
+in the @file{INSTALL} file.
+@end ifset
+@ifclear rawfile
+@ref{Prerequisites,,,auctex,the @AUCTeX{} manual}.
+@end ifclear
 
 @item Emacsen on Windows operating systems
 
-As of GNU Emacs 21.2, no image support is available in Emacs under
-Windows.  Without images, @previewlatex{} is useless.  The current
-@acronym{CVS} version of Emacs available from
+For @w{Emacs 21}, no image support is available in Emacs under Windows.
+Without images, @previewlatex{} is useless.  The current @acronym{CVS}
+version of Emacs available from
 @uref{http://savannah.gnu.org/projects/emacs} now supports images
 including the @acronym{PNG} format, so @w{Emacs 22} should work out of
-the box once it is released.  Another option for Windows users might be
-to try XEmacs.  @previewlatex{} has successfully been installed with
-recent @acronym{CVS} versions of @w{GNU Emacs}, and both Cygwin XEmacs
-and the native Windows XEmacs.
+the box once it is released.  Precompiled versions are available from
+@uref{http://crasseux.com/emacs} and @uref{http://nqmacs.sf.net}.
 
-See
+For detailed installation instructions for Windows, see
 @ifset rawfile
 the file @file{INSTALL.windows}
 @end ifset
 @ifclear rawfile
-@ref{Installation under MS Windows}
+@ref{Installation under MS Windows,,,auctex,the @AUCTeX{} manual}.
 @end ifclear
-for detailed installation instructions for this platform.
 
 @item XEmacs
 
@@ -157,25 +161,20 @@ version 1.81 or above of the @file{edit-utils} package, first released
 in the 2002-03-12 sumo tarball.
 @end itemize
 
-@node AUCTeX prior to 11.0, Too small bounding boxes, Emacs problems, Known problems
-@section @AUCTeX{} prior to 11.0
-
-@AUCTeX{} versions up to and including 10.0g have a bug in the
-calculation of the offsets for the start of a region.  This affects
-@kbd{C-c C-r} commands where the start of the region does not lie on the
-start of a line.  It also affects regeneration of single previews.  To
-correct this, apply the patch in @file{patches/auctex-10.patch}.  It
-might be more prudent to install a more recent version of @AUCTeX{},
-however.
-
-@node Too small bounding boxes, x-symbol interoperation, AUCTeX prior to 11.0, Known problems
+@node Too small bounding boxes
 @section Too small bounding boxes
 The bounding box of a preview is determined by the @LaTeX{} package
 using the pure @TeX{} bounding boxes.  If there is material extending
 outside of the @TeX{} box, that material will be missing from the
-preview image. For example this happens for the label-showing boxes from
-the @code{showkeys} package (which has its own variant in
-@previewlatex{}). Should this happen to you, try setting
+preview image.  This happens for the label-showing boxes from
+the @code{showkeys} package.  This particular problem can be
+circumvented by using the @code{showlabels} option of the preview
+package.
+
+In general, you should try to fix the problem in the @TeX{} code, like
+avoiding drawing outside of the picture with PSTricks.
+
+One possible remedy is to set
 @code{preview-fast-conversion} to `Off' 
 @ifset rawfile
 (see the manual).
@@ -183,8 +182,8 @@ the @code{showkeys} package (which has its own variant in
 @ifclear rawfile
 (@pxref{The Emacs interface}).
 @end ifclear
-The conversion will take slightly more time, but instead
-use the bounding boxes from the @acronym{EPS} files generated by Dvips.
+The conversion will take more time, but will then use the bounding boxes
+from @acronym{EPS} files generated by Dvips.
 
 Dvips generally does not miss things, but it does not understand
 PostScript constructs like @code{\resizebox} or @code{\rotate} commands,
@@ -198,9 +197,9 @@ the @code{psfixbb} package option to preview
 @end ifclear
 which will tag the corners of the included @TeX{} box.  This will mostly
 be convenient for @emph{pure} PostScript stuff like that created by
-PStricks, which Dvips would otherwise reserve no space for.
+PSTricks, which Dvips would otherwise reserve no space for.
 
-@node x-symbol interoperation, Middle-clicks paste instead of toggling, Too small bounding boxes, Known problems
+@node x-symbol interoperation
 @section x-symbol interoperation
 
 Thanks to the work of Christoph Wedler, starting with version
@@ -215,8 +214,9 @@ tokens and subscripts to a more readable form while editing and offers a
 few input methods handy especially for dealing with math. Take a look at
 @uref{http://x-symbol.sourceforge.net}.
 
-x-symbol versions up to 4.5.1-beta at least require an 8bit-clean LaTeX
-implementation (with regard to error messages) for cooperation with
+x-symbol versions up to 4.5.1-beta at least require an 8bit-clean @TeX{}
+implementation (meaning that its terminal output should not use
+@samp{^^}-started escape sequences) for cooperation with
 @previewlatex{}.  Later versions may get along without it, like
 @previewlatex{} does now.
 
@@ -226,12 +226,13 @@ environment or, as a last resort, customize the variable
 @code{LaTeX-command-style} by replacing the command @code{latex} with
 @code{latex -translate-file=cp8bit}.
 
-@node Middle-clicks paste instead of toggling,  , x-symbol interoperation, Known problems
+@node Middle-clicks paste instead of toggling
 @section Middle-clicks paste instead of toggling
 
 This is probably the fault of your favorite package.  @file{flyspell.el}
 and @file{mouse-drag.el} are known to be affected in versions before
-@w{Emacs 21.3}.  Upgrade to the most recent version.
+@w{Emacs 21.3}.  Upgrade to the most recent version.  What version of
+XEmacs might contain the fixes is unknown.
 
 @file{isearch.el} also shows this effect while searches are in progress,
 but the code is such a complicated mess that no patch is in sight.

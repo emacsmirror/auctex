@@ -100,9 +100,9 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 @include readme.texi
 
 @node Installation, Keys and lisp, Introduction, top
-@c Used as @file{INSTALL} as well: in separate file
-@chapter Installation 
-@include install.texi
+@chapter Installation
+Installation is now being covered in
+@ref{Installation,,,auctex,the @AUCTeX{} manual}.
 
 @node Keys and lisp, Simple customization, Installation, top
 @chapter Key bindings and user-level lisp functions 
@@ -161,9 +161,9 @@ MIME}).
 
 If you regenerate or otherwise kill the preview in its source buffer
 before the mail or news gets posted, this will fail.  Also you should
-generate images you want to send with @var{preview-transparent-border}
+generate images you want to send with @code{preview-transparent-border}
 @vindex preview-transparent-border
-set to @samp{nil}, or the images will have an ugly border.
+set to @code{nil}, or the images will have an ugly border.
 @previewlatex{} detects this condition and asks whether to regenerate
 the region with borders switched off.  As this is an asynchronous
 operation running in the background, you'll need to call this command

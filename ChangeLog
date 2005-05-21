@@ -1,5 +1,7 @@
 2005-05-21  David Kastrup  <dak@gnu.org>
 
+	* autogen.sh: Remove argument to preview/autogen.sh
+
 	* doc/install.texi: Integrate the installation instructions for
 	preview-latex.
 

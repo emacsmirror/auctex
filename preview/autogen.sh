@@ -5,6 +5,5 @@ test "x${PERL}" = x && PERL=perl
 ${AUTOCONF}
 rm -rf autom4te.cache
 cd doc
-echo $1 >auto.texi
 make -f Makefile.in MAKEINFO="$MAKEINFO" PERL="$PERL" disttexts preview-latex.info
 cd ..

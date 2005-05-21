@@ -9,6 +9,6 @@ cd ..
 cd preview
 export AUTOCONF
 export MAKEINFO
-./autogen.sh "@set embedded"
+./autogen.sh
 cd ..
 

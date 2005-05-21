@@ -46,6 +46,15 @@ Please read through this document fully before installing anything.
 @end menu
 @end ifclear
 
+First of all: the installation of @previewlatex{} under @w{MS Windows}
+is a bit special, so we are covering this separately in
+@ifset rawfile
+the file @file{INSTALL.windows}.
+@end ifset
+@ifclear rawfile
+@xref{Installation under MS Windows}.
+@end ifclear
+
 @ifset rawfile
 @node Prerequisites
 @chapter Prerequisites
@@ -57,24 +66,46 @@ Please read through this document fully before installing anything.
 @end ifclear
 
 @itemize @bullet
-@item A recent version of @w{Emacs 21}, alternatively XEmacs
+@item A recent version of Emacs, alternatively XEmacs
 
-The first version known to work with @previewlatex{} is @w{Emacs 21.1}.
-Since @previewlatex{} heavily exercises newer features, getting the
-latest release is a good idea.  Developer versions of @w{Emacs 22} are
-mostly preferable to the released versions of @w{Emacs 21} due to
-performance and handling reasons, and are mandatory for any platform
-except basic X11 toolkits.  XEmacs (21.4.15 or later, but not the
-withdrawn 21.4.16) is supported nominally, but is not particularly
-recommended because of handling, image quality and stability reasons.
+@w{Emacs 20} is no longer supported, and neither is XEmacs with a
+version of @code{xemacs-base} older than 1.84 (released in sumo from
+02/02/2004).  Using @previewlatex{} requires a version of Emacs compiled
+with image support.  This means that @w{Emacs 21} will work only in the
+version for X11: for Windows and MacOSX, you need to use @w{Emacs 22}
+(which is not yet released) or a developer version.  Since the developer
+version is quite stable by now and features four more years of
+development and bugfixes, we recommend its use even for X11-based
+platforms.  You can get it here:
+
+@table @b
+@item Windows
+Precompiled versions are available from @uref{http://www.crasseux.com}
+and @uref{http://nqmacs.sf.net}.
+@item MacOSX
+A precompiled version including an installer as well as preinstalled
+versions of @AUCTeX{} and @previewlatex{} is available from
+@uref{http://yaced.sf.net}.  A different port (without @AUCTeX{} and
+@previewlatex{}) is
+@uref{http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html}.
+Some changes and patches attempt to make Emacs behave more in line with
+MacOSX.
+@item Debian Linux
+@uref{http://sadleder.de/debian/}
+@item Fedora Linux
+@uref{http://people.redhat.com/petersen/emacs/}
+@item Self-compiled
+Compiling Emacs yourself requires a C compiler and a number of tools and
+development libraries.  Details are beyond the scope of this manual.
+Instructions for checking out the source code can be found at
+@uref{http://savannah.gnu.org/cvs/?group=emacs}.
+@end table
+
+Supporting XEmacs (version 21.4.15, 21.4.17 or later) in a satisfactory
+manner has proven to be difficult, partly because of technical
+shortcomings, partly because fixing problems exposed by @AUCTeX{} is not
+important to XEmacs developers.
  
-There is additional information for Windows installations in
-@ifset rawfile
-the file @file{INSTALL.windows}.
-@end ifset
-@ifclear rawfile
-@xref{Installation under MS Windows}.
-@end ifclear
 @ifclear embedded
 @item A working @AUCTeX{} installation
 
@@ -210,7 +241,7 @@ where the @TeX{} @acronym{TDS} directory hierarchy resides, and the
 
 If you use the @code{--without-texmf-dir} option, the @TeX{}-related
 files will be kept in the Emacs Lisp tree, and at runtime the
-@var{TEXINPUTS} environment variable will be made to point there.  You
+@env{TEXINPUTS} environment variable will be made to point there.  You
 can install those files into your own @TeX{} tree at some later time
 with @kbd{@key{M-x} preview-install-styles @key{RET}}.
 
@@ -294,7 +325,7 @@ installation) may already be in a directory of the @file{site-start.d/}
 variety if your Emacs installation provides it.  In that case it should
 be automatically loaded on startup and nothing else needs to be done.
 If not, it should at least have been placed somewhere in your
-@var{load-path}.  You can then load it with
+@code{load-path}.  You can then load it with
 
 @example
 (load "preview-latex.el" nil t t)

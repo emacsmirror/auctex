@@ -1,3 +1,30 @@
+2005-05-21  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Editing changes.  Last checkin before
+	removal.
+
+	* doc/install.texi: Editing changes.  Last checkin before removal.
+
+	* doc/faq.texi (Customization): Don't use @var inappropriately.
+
+	* autogen.sh: Remove generation of auto.texi.
+
+	* doc/preview-latex.texi (Installation): Refer to AUCTeX manual.
+	(Keys and lisp): Some formatting changes.
+
+	* doc/Makefile.in (TEXIFILES): Remove wininstall.texi and
+	install.texi.
+	(DISTTEXTS): Remove ../INSTALL and ../INSTALL.windows
+	(../INSTALL, ../INSTALL.windows): Remove.
+
+	* doc/problems.texi (Known problems): Remove old AUCTeX advice.
+	Remove explicit node names.
+	(Emacs problems): Rewrite.  Mention precompiled CVS Emacsen.
+	Refer to AUCTeX manual.
+	(AUCTeX prior to 11.0): Remove.
+	(Too small bounding boxes): Reword.
+	(x-symbol interoperation): Explain 8-bit cleanliness somewhat more.
+
 2005-05-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* preview.el (preview-specs-type): Use an extra :value keyword to
