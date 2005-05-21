@@ -1,3 +1,9 @@
+2005-05-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* prv-install.el (preview-make-package-xemacs): Cater for XEmacs
+	21.5 which uses a different interface for generating autoloads at
+	present.
+
 2005-05-21  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Editing changes.  Last checkin before
