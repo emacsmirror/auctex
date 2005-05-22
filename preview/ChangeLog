@@ -1,3 +1,8 @@
+2005-05-22  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Allow --with-emacs=sth and --without-xemacs and
+	similar combinations as long as they are more or less consistent.
+
 2005-05-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* prv-install.el (preview-make-package-xemacs): Cater for XEmacs

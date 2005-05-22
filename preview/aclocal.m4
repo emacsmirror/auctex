@@ -44,13 +44,27 @@ fi
 AC_ARG_WITH(emacs,
   [  --with-emacs@<:@=PATH@:>@     Use Emacs to build (on PATH if given)],
   [if test "${withval}" = "yes"; then EMACS=emacs
-   else if test "${withval}" = "no"; then EMACS=xemacs
-   else EMACS="${withval}"; fi ; fi])
+   elif test "${withval}" = "no"; then EMACS=xemacs
+   else EMACS="${withval}"; fi])
+
 AC_ARG_WITH(xemacs,
   [  --with-xemacs@<:@=PATH@:>@    Use XEmacs to build (on PATH if given)],
-  [if test "${withval}" = "yes"; then EMACS=xemacs;
-   else if test "${withval}" = "no"; then EMACS=emacs
-   else EMACS="${withval}"; fi ; fi])
+  [if test "x${withval}" != xno
+   then
+     if test "x${with_emacs}" != xno -a "x${with_emacs}" != x
+     then
+       AC_MSG_ERROR([[cannot use both Emacs and XEmacs]])
+     fi
+     if test "x${withval}" = "xyes"
+     then
+       EMACS=xemacs
+     else
+       EMACS="${withval}"
+     fi
+   elif test "x${with_emacs}" = xno
+   then
+     AC_MSG_ERROR([[need to use either Emacs or XEmacs]])
+   fi])
 
 # "${prefix}/bin" is for Windows users
 AC_PATH_PROGS(EMACS, ${EMACS} emacs xemacs, "", ${PATH} "${prefix}/bin" )
