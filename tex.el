@@ -1029,7 +1029,13 @@ If this is nil, an empty string will be returned."
 If enabled, PDFTeX will be used as an executable by default.
 You can customize an initial value, and you can use the
 function `TeX-global-PDF-mode' for toggling this value."
-  :group 'TeX-command)
+  :group 'TeX-command
+  (when TeX-Omega-mode
+    (setq TeX-PDF-mode nil))
+  (setq TeX-PDF-mode-parsed nil)
+  (TeX-set-mode-name nil nil t)
+  (setq TeX-output-extension
+	(if TeX-PDF-mode "pdf" "dvi")))
 
 (defun TeX-global-PDF-mode (&optional arg)
   "Toggle default for `TeX-PDF-mode'."
@@ -1040,54 +1046,39 @@ function `TeX-global-PDF-mode' for toggling this value."
 		      (not (default-value 'TeX-PDF-mode))))
     (TeX-set-mode-name 'TeX-PDF-mode nil t)))
 
-(defun TeX-PDF-mode (&optional arg parsed)
-  "Toggles PDF mode.
-Interactive ARG if positive switches on, non-positive off.
-
-If PARSED is non-nil, buffer-local values of `TeX-PDF-mode' will not
-get overwritten.
-If the current value was parsed and conflicts with the new value,
-the default will be used instead.
-
-See `TeX-global-PDF-mode' for toggling the default value."
-;; Basically we have the following situations:
-;; TeX-PDF-mode-parsed (local-variable-p 'TeX-PDF-mode):
-;; nil nil : virgin state
-;; t   nil : conflicting parsed info -> use default.
-;; nil t   : stably set state
-;; t   t   : non-conflicting parsed info
-  (interactive "P")
-  (if TeX-Omega-mode
-      (setq parsed nil arg nil)
-    (setq arg (if arg (> (prefix-numeric-value arg) 0)
-		(not TeX-PDF-mode))))
-  (if parsed
-      (if TeX-PDF-mode-parsed
-	  (unless (eq TeX-PDF-mode arg)
-	    (kill-local-variable 'TeX-PDF-mode))
-	(unless (local-variable-p 'TeX-PDF-mode (current-buffer))
-	  (setq TeX-PDF-mode-parsed t
-		TeX-PDF-mode arg)))
-    (if TeX-PDF-mode-parsed
-	(setq TeX-PDF-mode-parsed nil))
-    (setq TeX-PDF-mode arg))
-  (TeX-set-mode-name nil nil t)
-  (setq TeX-output-extension
-	(if TeX-PDF-mode "pdf" "dvi"))
-  (run-hooks 'TeX-PDF-mode-hook)
-  TeX-PDF-mode)
 (defalias 'tex-pdf-mode 'TeX-PDF-mode)
-
-(defun TeX-PDF-mode-on ()
-  (TeX-PDF-mode 1 t))
-
-(defun TeX-PDF-mode-off ()
-  (TeX-PDF-mode 0 t))
 
 (defvar TeX-PDF-mode-parsed nil
   "Set if `TeX-PDF-mode' has come about by parsing.")
 
 (make-variable-buffer-local 'TeX-PDF-mode-parsed)
+
+(defun TeX-PDF-mode-parsed (arg)
+  "Change `TeX-PDF-mode' to ARG based on parsing.
+If this conflicts with previous parsed settings,
+just use the default.  If an explicit setting is
+already established, don't do anything."
+
+;; Basically we have the following situations:
+;; TeX-PDF-mode-parsed (local-variable-p 'TeX-PDF-mode):
+;; nil nil : virgin state
+;; nil t   : stably set state (possibly because of conflicting parse info)
+;; t   t   : non-conflicting parsed info
+
+  (if TeX-PDF-mode-parsed
+      (unless (eq TeX-PDF-mode arg)
+	(TeX-PDF-mode (if (default-value 'TeX-PDF-mode) 1 0)))
+    (unless (local-variable-p 'TeX-PDF-mode (current-buffer))
+      (TeX-PDF-mode (if arg 1 0))
+      (setq TeX-PDF-mode-parsed t))))
+  
+(defun TeX-PDF-mode-on ()
+  "Use only from parsing routines."
+  (TeX-PDF-mode-parsed t))
+
+(defun TeX-PDF-mode-off ()
+  "Use only from parsing routines."
+  (TeX-PDF-mode-parsed nil))
 
 (defcustom TeX-DVI-via-PDFTeX nil
   "Whether to use PDFTeX also for producing DVI files."

@@ -1,3 +1,12 @@
+2005-05-22  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-PDF-mode): Use the standard minor mode function
+	instead of redefining it.
+	(TeX-PDF-mode-parsed): New function replacing the previous extra
+	functionality in `TeX-PDF-mode'.
+	(TeX-PDF-mode-on, TeX-PDF-mode-off): Warn in docstring.  Use
+	`TeX-PDF-mode-parsed'.
+
 2005-05-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi, doc/wininstall.texi: Small corrections.
