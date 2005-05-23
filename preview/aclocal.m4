@@ -78,13 +78,11 @@ EMACS_LISP(XEMACS,
 if test "${XEMACS}" = "yes"; then
   EMACS_FLAVOR=xemacs
   EMACS_NAME="XEmacs"
+elif test "${XEMACS}" = "no"; then
+  EMACS_FLAVOR=emacs
+  EMACS_NAME="Emacs"
 else
-  if test "${XEMACS}" = "no"; then
-    EMACS_FLAVOR=emacs
-    EMACS_NAME="Emacs"
-  else
-    AC_MSG_ERROR([Unable to run ${EMACS}!  Aborting!])
-  fi
+  AC_MSG_ERROR([Unable to run ${EMACS}!  Aborting!])
 fi
   AC_MSG_RESULT(${XEMACS})
   AC_SUBST(XEMACS)

@@ -500,8 +500,11 @@ in properly detected buffers."
 			  filename)
 	(setq filename (substring filename 0 (match-beginning 0))))
       (setq format-cons (assoc filename preview-dumped-alist))
-      (when (eq (cdr format-cons) 'watch)
-	(preview-watch-preamble (current-buffer) format-cons)))))
+      (when (consp (cdr format-cons))
+	(preview-unwatch-preamble format-cons)
+	(preview-watch-preamble (current-buffer)
+				(cdr format-cons)
+				format-cons)))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")
@@ -630,39 +633,42 @@ to require redumping of a format."
 (defun preview-preamble-check-change (beg end)
   "Hook function for change hooks on preamble.
 Reacts to changes between BEG and END."
-  (when (and preview-preamble-format-cons
-	     (number-or-marker-p (cdr preview-preamble-format-cons))
-	     (< beg (cdr preview-preamble-format-cons)))
-    (preview-format-kill preview-preamble-format-cons)
+  (when (and (consp (cdr preview-preamble-format-cons))
+	     (cddr preview-preamble-format-cons)
+	     (< beg (cddr preview-preamble-format-cons)))
     (preview-unwatch-preamble preview-preamble-format-cons)
+    (preview-format-kill preview-preamble-format-cons)
     (setcdr preview-preamble-format-cons t)))
 
-(defun preview-watch-preamble (file format-cons)
+(defun preview-watch-preamble (file command format-cons)
   "Set up a watch on master file FILE.
 FILE can be an associated buffer instead of a filename.
+COMMAND is the command that generated the format.
 FORMAT-CONS contains the format info for the main
 format dump handler."
   (let ((buffer (if (bufferp file)
 		    file
-		  (find-buffer-visiting file))))
-    (if buffer
-	(with-current-buffer buffer
-	  (save-excursion
-	    (save-restriction
-	      (widen)
-	      (goto-char (point-min))
-	      (unless (re-search-forward preview-dump-threshold nil t)
-		(error "Can't find preamble of `%s'" file))
-	      (setcdr format-cons (point))
-	      (setq preview-preamble-format-cons format-cons))))
-      (setcdr format-cons 'watch))))
+		  (find-buffer-visiting file))) ov)
+    (setq preview-preamble-format-cons nil)
+    (setcdr
+     format-cons
+     (cons command
+	   (when buffer
+	     (with-current-buffer buffer
+	       (save-excursion
+		 (save-restriction
+		   (widen)
+		   (goto-char (point-min))
+		   (unless (re-search-forward preview-dump-threshold nil t)
+		     (error "Can't find preamble of `%s'" file))
+		   (setq preview-preamble-format-cons format-cons)
+		   (point)))))))))
 
 (defun preview-unwatch-preamble (format-cons)
   "Stop watching a format on FORMAT-CONS.
 The watch has been set up by `preview-watch-preamble'."
-  (when (or (number-or-marker-p (cdr format-cons))
-	    (eq 'watch (cdr format-cons)))
-    (setcdr format-cons nil)))
+  (when (consp (cdr format-cons))
+    (setcdr (cdr format-cons) nil)))
 
 (defun preview-register-change (ov map-arg)
   "Register not yet changed OV for verification.

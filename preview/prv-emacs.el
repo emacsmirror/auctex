@@ -216,43 +216,45 @@ to require redumping of a format."
 See info node `(elisp) Overlay Properties' for
 definition of OV, AFTER-CHANGE, BEG, END and LENGTH."
   (let ((format-cons (overlay-get ov 'format-cons)))
-    (preview-format-kill format-cons)
     (preview-unwatch-preamble format-cons)
+    (preview-format-kill format-cons)
     (setcdr format-cons t)))
 
-(defun preview-watch-preamble (file format-cons)
+(defun preview-watch-preamble (file command format-cons)
   "Set up a watch on master file FILE.
 FILE can be an associated buffer instead of a filename.
+COMMAND is the command that generated the format.
 FORMAT-CONS contains the format info for the main
 format dump handler."
   (let ((buffer (if (bufferp file)
 		    file
 		  (find-buffer-visiting file))) ov)
-    (if buffer
-	(with-current-buffer buffer
-	  (save-excursion
-	    (save-restriction
-	      (widen)
-	      (goto-char (point-min))
-	      (unless (re-search-forward preview-dump-threshold nil t)
-		(error "Can't find preamble of `%s'" file))
-	      (setq ov (make-overlay (point-min) (point)))
-	      (setcdr format-cons ov)
-	      (overlay-put ov 'format-cons format-cons)
-	      (overlay-put ov 'insert-in-front-hooks
-			   '(preview-preamble-changed-function))
-	      (overlay-put ov 'modification-hooks
-			   '(preview-preamble-changed-function)))))
-      (setcdr format-cons 'watch))))
+    (setcdr
+     format-cons
+     (cons command
+	   (when buffer
+	     (with-current-buffer buffer
+	       (save-excursion
+		 (save-restriction
+		   (widen)
+		   (goto-char (point-min))
+		   (unless (re-search-forward preview-dump-threshold nil t)
+		     (error "Can't find preamble of `%s'" file))
+		   (setq ov (make-overlay (point-min) (point)))
+		   (overlay-put ov 'format-cons format-cons)
+		   (overlay-put ov 'insert-in-front-hooks
+				'(preview-preamble-changed-function))
+		   (overlay-put ov 'modification-hooks
+				'(preview-preamble-changed-function))
+		   ov))))))))
 
 (defun preview-unwatch-preamble (format-cons)
   "Stop watching a format on FORMAT-CONS.
 The watch has been set up by `preview-watch-preamble'."
-  (cond ((overlayp (cdr format-cons))
-	 (delete-overlay (cdr format-cons))
-	 (setcdr format-cons nil))
-	((eq 'watch (cdr format-cons))
-	 (setcdr format-cons nil))))
+  (when (consp (cdr format-cons))
+    (when (cddr format-cons)
+      (delete-overlay (cddr format-cons)))
+    (setcdr (cdr format-cons) nil)))
 
 (defun preview-register-change (ov)
   "Register not yet changed OV for verification.
@@ -394,8 +396,11 @@ purposes."
 			  filename)
 	(setq filename (substring filename 0 (match-beginning 0))))
       (setq format-cons (assoc filename preview-dumped-alist))
-      (when (eq (cdr format-cons) 'watch)
-	(preview-watch-preamble (current-buffer) format-cons)))))
+      (when (cdr format-cons)
+	(preview-unwatch-preamble format-cons)
+	(preview-watch-preamble (current-buffer)
+				(cdr format-cons)
+				format-cons)))))
 
 (defvar preview-marker (make-marker)
   "Marker for fake intangibility.")

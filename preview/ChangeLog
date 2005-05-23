@@ -1,3 +1,33 @@
+2005-05-24  David Kastrup  <dak@gnu.org>
+
+	* aclocal.m4: Use elif for prettiness.
+
+	* prv-xemacs.el (preview-mode-setup): Change watch condition.
+	(preview-watch-preamble): Accept command.
+	(preview-unwatch-preamble): Change unwatch method.
+	(preview-preamble-check-change): Change check.
+
+	* prv-emacs.el (preview-preamble-changed-function): First unwatch
+	preamble, then kill format.
+	(preview-watch-preamble): Accept command to watch for.
+	(preview-unwatch-preamble): Adapt to new `format-cons' format.
+	(preview-mode-setup): Change watch condition.
+
+	* preview.el (preview-dumped-alist): Change definition.
+	(preview-parse-messages): Use `string-to-number' instead of
+	obsoleted `string-to-int'.
+	(preview-cache-preamble): Add format-cons arg.  Only cache
+	preamble if there is no cache with the same command yet.
+	Precalculate command and check whether it matches previous one.
+	If so, omit dumping.
+	(preview-region, preview-document): Expand command here.
+	(preview-generate-preview): Accept expanded command.  Always
+	tentatively dump command (unless disabled) and set sentinel only
+	if this succeeded.
+	(TeX-inline-preview-internal): Set command buffer at start.  Use
+	`commandbuff' argument rather than `TeX-command-buffer'.
+	Raise error at different point.
+
 2005-05-22  David Kastrup  <dak@gnu.org>
 
 	* aclocal.m4: Allow --with-emacs=sth and --without-xemacs and
