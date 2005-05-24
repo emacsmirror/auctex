@@ -1,5 +1,10 @@
 2005-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-command-list): Remove chktex comment.
+
+	* doc/auctex.texi (Checking): A user should not (have to) edit
+	tex.el to switch from lacheck to chktex.
+
 	* font-latex.el (font-latex-make-match-defun)
 	(font-latex-make-built-in-keywords): Do not byte-compile generated
 	functions here but at the end of font-latex.el.  Prevents
