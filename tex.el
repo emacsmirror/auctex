@@ -193,9 +193,6 @@ the printer has no corresponding command."
     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t
      :help "Generate PostScript file")
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
-    ;; (list "Check" "chktex -v3 %s" TeX-run-compile nil t :help "Check )
-    ;; Uncomment the above line and comment out the next line to
-    ;; use `chktex' instead of `lacheck'.
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
     ("Spell" "<ignored>" TeX-run-ispell-on-document nil t
