@@ -1,3 +1,8 @@
+2005-05-24  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex (\title{RefTeX (long)})
+	(\title{RefTeX (short)}): New columns.  One will have to go.
+
 2005-05-22  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-PDF-mode): Use the standard minor mode function
