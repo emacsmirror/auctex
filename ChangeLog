@@ -1,3 +1,10 @@
+2005-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-match-defun)
+	(font-latex-make-built-in-keywords): Do not byte-compile generated
+	functions here but at the end of font-latex.el.  Prevents
+	byte-compiler warnings due to possibly undefined functions.
+
 2005-05-24  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: Recurse into preview _before_ starting any
