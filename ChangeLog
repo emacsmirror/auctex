@@ -1,5 +1,8 @@
 2005-05-24  David Kastrup  <dak@gnu.org>
 
+	* configure.ac: Recurse into preview _before_ starting any
+	AC_SHELL_QUOTIFY business to avoid double quoting.
+
 	* doc/tex-ref.tex (\title{RefTeX (long)})
 	(\title{RefTeX (short)}): New columns.  One will have to go.
 

@@ -118,6 +118,19 @@ AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a di
 
 AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
+AC_ARG_ENABLE(preview,
+  [  --disable-preview       disable inclusion of preview-latex],
+  [preview_enabled="$withval"],
+  [preview_enabled="yes"])
+
+if test "X${preview_enabled}" = Xyes
+then
+  auctexdir=..; export auctexdir
+  export packagedir packagelispdir packagedatadir
+  AC_CONFIG_SUBDIRS(preview)
+fi
+AC_SUBST(subdirs)
+
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(localstatedir)
 AC_SHELL_QUOTIFY(packagedir)
@@ -135,19 +148,6 @@ AC_SHELL_QUOTIFY(DVIPS)
 AC_SHELL_QUOTIFY(TEXI2HTML)
 AC_SHELL_QUOTIFY(TEXI2DVI)
 AC_SHELL_QUOTIFY(TEXI2PDF)
-
-AC_ARG_ENABLE(preview, AS_HELP_STRING([--disable-preview],
-		       [disable inclusion of preview-latex]),
-		       [preview_enabled="$withval"],
-		       [preview_enabled="yes"])
-
-if test "X${preview_enabled}" = Xyes
-then
-  auctexdir=..; export auctexdir
-  export packagedir packagelispdir packagedatadir
-  AC_CONFIG_SUBDIRS(preview)
-fi
-AC_SUBST(subdirs)
 
 AC_OUTPUT(Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el)
 
