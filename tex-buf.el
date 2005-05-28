@@ -236,9 +236,16 @@ the master file."
 Prefix by C-u to start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
-      (error "No TeX output buffer")
+      (next-error reparse)
     (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
 	     reparse)))
+
+(defun TeX-previous-error (arg)
+  "Find the previous error in the TeX output buffer."
+  (interactive "P")
+  (if (null (TeX-active-buffer))
+      (previous-error arg)
+    (error "Jumping to previous error not supported")))
 
 (defun TeX-toggle-debug-boxes ()
   "Toggle if the debugger should display \"bad boxes\" too."
