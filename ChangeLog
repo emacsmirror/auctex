@@ -1,3 +1,12 @@
+2005-05-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-next-error): Call `next-error' as fallback.
+	(TeX-previous-error): New function.
+
+	* tex.el (TeX-mode-map): Remap bindings of `next-error' and
+	`previous-error' to `TeX-next-error' and `TeX-previous-error'
+	respectively.
+
 2005-05-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-command-list): Remove chktex comment.
