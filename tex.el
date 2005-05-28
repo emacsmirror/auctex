@@ -3247,6 +3247,15 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c\C-l" 'TeX-recenter-output-buffer)
     (define-key map "\C-c^" 'TeX-home-buffer)
     (define-key map "\C-c`"    'TeX-next-error)
+    ;; Remap bindings of `next-error'
+    (if (featurep 'xemacs)
+	(substitute-key-definition 'next-error 'TeX-next-error map global-map)
+      (define-key map [remap next-error] 'TeX-next-error))
+    ;; Remap bindings of `previous-error'
+    (if (featurep 'xemacs)
+	(substitute-key-definition 'previous-error 'TeX-previous-error
+				   map global-map)
+      (define-key map [remap previous-error] 'TeX-previous-error))
     (define-key map "\C-c\C-w" 'TeX-toggle-debug-boxes)
     ;; From tex-fold.el
     (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
