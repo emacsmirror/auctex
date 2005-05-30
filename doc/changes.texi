@@ -8,6 +8,9 @@
 
 @itemize @bullet
 @item
+Support for the babel @LaTeX{} package was added.
+
+@item
 Folding a buffer now ensures that the whole buffer is fontified before
 the actual folding is carried out.  If this results in unbearably long
 execution times, you can fall back to the old behavior of relying on
