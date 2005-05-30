@@ -1,3 +1,11 @@
+2005-05-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/babel.el: New file.
+
+	* Makefile.in: Add style/babel.el.
+
+	* doc/changes.texi: Mention babel support.
+
 2005-05-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-next-error): Call `next-error' as fallback.
