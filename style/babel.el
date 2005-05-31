@@ -86,16 +86,17 @@
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
-     (add-to-list 'font-latex-match-function-keywords-local "languagename")
-     (add-to-list 'font-latex-match-function-keywords-local "iflanguage")
-     (add-to-list 'font-latex-match-function-keywords-local "useshorthands")
-     (add-to-list 'font-latex-match-function-keywords-local "languageshorthands")
-     (add-to-list 'font-latex-match-function-keywords-local "shorthandon")
-     (add-to-list 'font-latex-match-function-keywords-local "shorthandoff")
+     (mapcar (lambda (keyword)
+	       (add-to-list 'font-latex-match-function-keywords-local keyword))
+	     '("selectlanguage"
+	       ;; "foreignlanguage" ; Enable once we support proper
+	       ;; "iflanguage"      ; highlighting of multiple arguments.
+	       "languagename"
+	       "useshorthands"
+	       "languageshorthands"
+	       "shorthandon"
+	       "shorthandoff"))
      (font-latex-match-function-make)
-     (add-to-list 'font-latex-match-textual-keywords-local "selectlanguage")
-     (add-to-list 'font-latex-match-textual-keywords-local "foreignlanguage")
-     (font-latex-match-textual-make)
      (add-to-list 'font-latex-match-variable-keywords-local "defineshorthand")
      (add-to-list 'font-latex-match-variable-keywords-local "aliasshorthand")
      (add-to-list 'font-latex-match-variable-keywords-local "languageattribute")
