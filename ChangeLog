@@ -2,6 +2,7 @@
 
 	* latex.el (LaTeX-backward-paragraph): Use catch..throw instead of
 	an indicator variable.  Don't refer to a saved match data.
+	Check for `TeX-esc', not specific char.
 
 	* style/babel.el ("babel"): Disable font locking of macros not
 	handled correctly.
