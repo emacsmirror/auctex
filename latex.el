@@ -3303,39 +3303,36 @@ If COUNT is non-nil, do it COUNT times."
 		  (point))
 		;; Search for possible paragraph commands.
 		(save-excursion
-		  (let (break-flag
-			end-point)
-		    (while (and (> (point) limit)
-				(not (bobp))
-				(forward-line -1)
-				(not break-flag))
-		      (when (looking-at
-			     (concat "^[ \t]*" TeX-comment-start-regexp "*"
-				     "[ \t]*\\("
-				     LaTeX-paragraph-commands-regexp "\\)"))
-			(save-excursion
-			  (goto-char (match-beginning 1))
-			  (save-match-data
-			    (goto-char (TeX-find-macro-end)))
-			  ;; For an explanation of this distinction
-			  ;; see `LaTeX-forward-paragraph'.
-			  (if (save-match-data
-				(looking-at
-				 (concat (regexp-quote TeX-esc) "[@A-Za-z]+\\|"
-					 "[ \t]*\\($\\|"
-					 TeX-comment-start-regexp "\\)")))
-			      (progn
-				(when (looking-at
-				       (concat (regexp-quote TeX-esc)
-					       "[@A-Za-z]+"))
-				  (goto-char (TeX-find-macro-end)))
-				(forward-line 1)
-				(setq end-point (if (< (point) start)
-						    (point)
-						  0)))
-			    (setq end-point (match-beginning 0))))
-			(setq break-flag t)))
-		    (if end-point
+		  (let (end-point)
+		    (catch 'found
+		      (while (and (> (point) limit)
+				  (not (bobp))
+				  (forward-line -1))
+			(when (looking-at
+			       (concat "^[ \t]*" TeX-comment-start-regexp "*"
+				       "[ \t]*\\("
+				       LaTeX-paragraph-commands-regexp "\\)"))
+			  (save-excursion
+			    (goto-char (match-beginning 1))
+			    (save-match-data
+			      (goto-char (TeX-find-macro-end)))
+			    ;; For an explanation of this distinction
+			    ;; see `LaTeX-forward-paragraph'.
+			    (if (save-match-data
+				  (looking-at
+				   (concat (regexp-quote TeX-esc) "[@A-Za-z]+"
+					   "\\|[ \t]*\\($\\|"
+					   TeX-comment-start-regexp "\\)")))
+				(progn
+				  (when (eq (char-after) ?\\)
+				    (goto-char (TeX-find-macro-end)))
+				  (forward-line 1)
+				  (setq end-point (if (< (point) start)
+						      (point)
+						    0)))
+			      (setq end-point (match-beginning 0))))
+			  (throw 'found nil))))
+		      (if end-point
 			end-point
 		      0))))))
 	(beginning-of-line)))))
