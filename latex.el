@@ -3324,7 +3324,7 @@ If COUNT is non-nil, do it COUNT times."
 					   "\\|[ \t]*\\($\\|"
 					   TeX-comment-start-regexp "\\)")))
 				(progn
-				  (when (eq (char-after) ?\\)
+				  (when (string= (string (char-after)) TeX-esc)
 				    (goto-char (TeX-find-macro-end)))
 				  (forward-line 1)
 				  (setq end-point (if (< (point) start)
