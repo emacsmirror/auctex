@@ -1,3 +1,11 @@
+2005-06-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-backward-paragraph): Use catch..throw instead of
+	an indicator variable.  Don't refer to a saved match data.
+
+	* style/babel.el ("babel"): Disable font locking of macros not
+	handled correctly.
+
 2005-05-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/babel.el: New file.
