@@ -2238,6 +2238,8 @@ The algorithm is as follows:
   ;; `(TeX-master-file nil nil t)' has to be called *before*
   ;; `TeX-update-style' as the latter will call `TeX-master-file'
   ;; without the `ask' bit set.
+  (when (and (featurep 'xemacs) (not (emacs-version>= 21 5)))
+    (make-local-hook 'find-file-hooks))
   (add-hook 'find-file-hooks
 	    (lambda ()
 	      ;; Check if we are looking at a new or shared file.
