@@ -1,3 +1,9 @@
+2005-06-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (VirTeX-common-initialization): Explicitely make
+	`find-file-hooks' buffer-local in XEmacs 21.4 which fails to do
+	this via `add-hook'.
+
 2005-06-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-backward-paragraph): Use catch..throw instead of
