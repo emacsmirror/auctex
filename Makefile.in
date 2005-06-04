@@ -122,8 +122,8 @@ tex-site.el.out: tex-site.el.in Makefile config.status
 auctex.el: auctex.el.in
 	./config.status
 
-configure: configure.ac preview/aclocal.m4
-	autoconf -I preview
+configure: configure.ac aclocal.m4
+	autoconf
 
 Makefile: Makefile.in config.status
 	./config.status

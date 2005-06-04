@@ -5,8 +5,10 @@ packagedir=@packagedir@$(null)
 datadir=@datadir@$(null)
 infodir=@infodir@$(null)
 TEX=@TEX@
-TEXINDEX=texindex
-TEXIHTML=texi2html
+TEXINFOINCLUDES=-I $${TEXIPWD}../../doc
+TEXI2HTML=@TEXI2HTML@
+TEXI2DVI=@TEXI2DVI@
+TEXI2PDF=@TEXI2PDF@
 DVIPS=dvips
 PERL=@PERL@
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
@@ -26,7 +28,7 @@ all: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: $(TEXIFILES)
 	rm -f preview-latex/*
-	$(MAKEINFO) --html preview-latex.texi
+	$(TEXI2HTML) $(TEXINFOINCLUDES) preview-latex.texi
 
 html-docs: preview-latex/index.html
 
@@ -34,35 +36,33 @@ preview-dtxdoc.texi: ../latex/preview.dtx preview-dtxdoc.pl
 	-$(PERL) preview-dtxdoc.pl ../latex/preview.dtx preview-dtxdoc.texi
 
 preview-latex.dvi: $(TEXIFILES)
-	-$(TEX) "\nonstopmode\input preview-latex.texi"
-	-$(TEXINDEX) preview-latex.cp
-	-$(TEX) "\nonstopmode\input preview-latex.texi"
+	$(TEXI2DVI) $(TEXINFOINCLUDES) preview-latex.texi
 
 preview-latex.ps: preview-latex.dvi
-	$(DVIPS) preview-latex.dvi -o preview-latex.ps
+	$(DVIPS) preview-latex.dvi -Ppdf -o preview-latex.ps
 
 preview-latex.pdf: $(TEXIFILES)
-	texi2dvi --pdf preview-latex.texi
+	$(TEXI2PDF) $(TEXINFOINCLUDES) preview-latex.texi
 
 preview-latex.info: $(TEXIFILES)
-	-$(MAKEINFO) preview-latex.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) preview-latex.texi
 
 disttexts: $(DISTTEXTS)
 
-../README: readme.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers  \
+../README: readme.texi ../../doc/macros.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		readme.texi --output ../README
 
-../FAQ: faq.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers  \
+../FAQ: faq.texi ../../doc/macros.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		--number-sections faq.texi --output ../FAQ
 
-../PROBLEMS: problems.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers  \
+../PROBLEMS: problems.texi ../../doc/macros.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		--number-sections problems.texi --output ../PROBLEMS
 
-../TODO: todo.texi macros.texi
-	-$(MAKEINFO) -D rawfile --no-headers  \
+../TODO: todo.texi ../../doc/macros.texi
+	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		todo.texi --output ../TODO
 
 .PHONY: install disttexts clean maintainer-clean html-docs all

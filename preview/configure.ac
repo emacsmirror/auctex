@@ -162,19 +162,19 @@ AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will
 succeed.])
 
-if test "x$MAKEINFO" = x
-then
-   AC_PATH_PROG(MAKEINFO, makeinfo, :)
+AC_PATH_PROG(MAKEINFO, makeinfo, :)
 
-   MAKEINFO_CHECK_MACROS(acronym env option)
-fi
+case "x$MAKEINFO" in x|x:) ;;
+*) MAKEINFO_CHECK_MACROS(acronym env option command)
+esac
+
+AC_PATH_PROG(TEXI2HTML, texi2html, :)
+AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
+AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
 
 AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
 
-if test "x$INSTALL_INFO" = x
-then
-  AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
-fi
+AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_MSG_CHECKING([[for glaring installation conflicts]])
 exppackagelispdir="$packagelispdir"
@@ -229,6 +229,9 @@ AC_SHELL_QUOTIFY(TEXHASH)
 AC_SHELL_QUOTIFY(EMACS)
 AC_SHELL_QUOTIFY(INSTALL_INFO)
 AC_SHELL_QUOTIFY(MAKEINFO)
+AC_SHELL_QUOTIFY(TEXI2DVI)
+AC_SHELL_QUOTIFY(TEXI2PDF)
+AC_SHELL_QUOTIFY(TEXI2HTML)
 AC_SHELL_QUOTIFY(PERL)
 AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)

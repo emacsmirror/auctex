@@ -1,3 +1,24 @@
+2005-06-04  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (TEXINFOINCLUDES): macros.texi has moved here
+	from ../preview/doc
+	(../INSTALL, ../INSTALL.windows, ../README, ../CHANGES, ../TODO)
+	(../FAQ): Change dependencies accordingly.
+
+	* configure.ac: Rearrange checks for MAKEINFO.
+	Export more stuff into preview's configure.  Maybe this is better
+	done with use of caches?
+
+	* autogen.sh: Don't look in preview subdirectory.
+
+	* Makefile.in (configure): Depend on local aclocal.m4
+
+2005-06-03  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (TEXINFOINCLUDES, TEXIFILES, ../INSTALL)
+	(../INSTALL.windows, ../README, ../CHANGES, ../TODO, ../FAQ): Move
+	../preview/doc/macros.texi to here again.
+
 2005-06-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (VirTeX-common-initialization): Explicitely make

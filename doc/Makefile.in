@@ -4,7 +4,7 @@ packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
-TEXINFOINCLUDES=-I $${TEXIPWD}../preview/doc
+TEXINFOINCLUDES=-I $${TEXIPWD}.
 MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
@@ -16,7 +16,7 @@ TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 TEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi faq.texi ../preview/doc/macros.texi quickstart.texi
+	changes.texi todo.texi faq.texi macros.texi quickstart.texi
 DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: auctex.dvi tex-ref.dvi auctex.info
@@ -47,34 +47,33 @@ auctex.dvi: $(TEXIFILES)
 auctex.pdf: $(TEXIFILES)
 	$(TEXI2PDF) $(TEXINFOINCLUDES) auctex.texi
 
-# dvips spews two error lines.  I don't know why.
 auctex.ps: auctex.dvi
 	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex.info: $(TEXIFILES)
 	$(MAKEINFO) $(TEXINFOINCLUDES) auctex.texi
 
-../INSTALL: install.texi ../preview/doc/macros.texi
+../INSTALL: install.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		install.texi --output $@
 
-../INSTALL.windows: wininstall.texi ../preview/doc/macros.texi
+../INSTALL.windows: wininstall.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		wininstall.texi --output $@
 
-../README: intro.texi ../preview/doc/macros.texi
+../README: intro.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		intro.texi --output $@
 
-../CHANGES: changes.texi ../preview/doc/macros.texi
+../CHANGES: changes.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		changes.texi --output $@
 
-../TODO: todo.texi ../preview/doc/macros.texi
+../TODO: todo.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		todo.texi --output $@
 
-../FAQ: faq.texi ../preview/doc/macros.texi
+../FAQ: faq.texi macros.texi
 	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
 		faq.texi --output $@
 

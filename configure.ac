@@ -99,10 +99,6 @@ AC_LISPIFY_DIR(autodir,"${texsitedir}/tex-site.el")
 AC_PATH_PROG(TEX, tex, :)
 AC_PATH_PROG(PDFTEX, pdftex, :)
 AC_PATH_PROG(DVIPS, dvips, :)
-AC_PATH_PROG(MAKEINFO, makeinfo, :)
-AC_PATH_PROG(TEXI2HTML, texi2html, :)
-AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
-AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
 
 AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will
@@ -113,6 +109,10 @@ AC_PATH_PROG(MAKEINFO, makeinfo, :)
 case "x$MAKEINFO" in x|x:) ;;
 *) MAKEINFO_CHECK_MACROS(acronym env option command)
 esac
+
+AC_PATH_PROG(TEXI2HTML, texi2html, :)
+AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
+AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
 
 AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.  This is the default when installing into an XEmacs package.])
 
@@ -127,6 +127,15 @@ if test "X${preview_enabled}" = Xyes
 then
   auctexdir=..; export auctexdir
   export packagedir packagelispdir packagedatadir
+  export EMACS
+  export INSTALL_INFO
+  export MAKEINFO
+  export TEX
+  export PDFTEX
+  export DVIPS
+  export TEXI2HTML
+  export TEXI2PDF
+  export TEXI2DVI
   AC_CONFIG_SUBDIRS(preview)
 fi
 AC_SUBST(subdirs)

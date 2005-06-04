@@ -1,3 +1,19 @@
+2005-06-04  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (TEXI2HTML): Use TEXI* tools and TEXINFOINCLUDES.
+	(../README): et al.  Depend on ../../doc/macros.texi
+
+	* configure.ac: Check and test for TEXI* as well.  Quotify if
+	necessary.
+
+	* autogen.sh: Look in .. for macros.
+
+	* doc/Makefile.in (preview-latex.dvi): Use texi2dvi.
+	(preview-latex.pdf): Use texi2pdf.
+	(preview-latex.ps): Use -Ppdf option.
+	(preview-latex.info, ../README, ../FAQ, ../PROBLEMS, ../TODO):
+	deal with ../../doc/macros.texi
+
 2005-05-25  David Kastrup  <dak@gnu.org>
 
 	* circ.tex (section{Die gerade Linie}): Make the intentional
