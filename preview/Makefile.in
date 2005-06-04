@@ -32,7 +32,7 @@ DESTDIR=
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKINSTALLDIRS = ./mkinstalldirs
+MKINSTALLDIRS = ../mkinstalldirs
 
 all: texmf lisp docs install-hint
 

@@ -1,5 +1,13 @@
 2005-06-04  David Kastrup  <dak@gnu.org>
 
+	* latex/Makefile.in (MKINSTALLDIRS): 
+
+	* doc/Makefile.in (MKINSTALLDIRS): 
+
+	* Makefile.in (MKINSTALLDIRS): Use mkinstalldirs from AUCTeX.
+
+	* mkinstalldirs: remove in favor of ../mkinstalldirs
+
 	* doc/Makefile.in (TEXI2HTML): Use TEXI* tools and TEXINFOINCLUDES.
 	(../README): et al.  Depend on ../../doc/macros.texi
 

@@ -17,7 +17,7 @@ INSTALL_INFO=@INSTALL_INFO@
 DESTDIR=
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
-MKINSTALLDIRS = ../mkinstalldirs
+MKINSTALLDIRS = ../../mkinstalldirs
 TEXIFILES = copying.texi faq.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi problems.texi \
 	readme.texi todo.texi
