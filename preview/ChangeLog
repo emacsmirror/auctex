@@ -1,5 +1,7 @@
 2005-06-04  David Kastrup  <dak@gnu.org>
 
+	* doc/Makefile.in (TEXIFILES): Oops, depends on ../../doc/macros.texi
+
 	* latex/Makefile.in (MKINSTALLDIRS): 
 
 	* doc/Makefile.in (MKINSTALLDIRS): 
