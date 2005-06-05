@@ -49,7 +49,10 @@ This variable was previously called @code{font-latex-title-fontify}; In
 this release we provide an alias but this will disappear in one of the
 the next releases.  The faces for the sectioning commands are now called
 @code{font-latex-sectioning-@var{N}-face} (@var{N}=0@dots{}5) instead of
-@code{font-latex-title-@var{N}-face} (@var{N}=1@dots{}4).
+@code{font-latex-title-@var{N}-face} (@var{N}=1@dots{}4).  Analogously
+the names of the variables holding the related keyword lists were
+changed from @code{font-latex-title-@var{N}-keywords} to
+@code{font-latex-sectioning-@var{N}-keywords}.
 @ifclear rawfile
 @ref{Font Locking} for details.
 @end ifclear
