@@ -2716,13 +2716,13 @@ hyphen insertion you can change it by customizing the variables
 
 @defopt TeX-quote-language-alist
 Used for overriding the default language-specific quote insertion.  This
-is an alist where each element is a list consisting of three items.  The
+is an alist where each element is a list consisting of four items.  The
 first item is the name of the language in concern as a string.  The
-second item is a cons cell containing the opening and closing quotation
-marks as strings.  The third item is a boolean controlling quote
-insertion.  It should be non-nil if if the special quotes should only be
-used after inserting a literal @samp{"} character first, i.e. on second
-key press.
+second item is the opening quotation mark as string.  The third item is
+the closing quotation mark.  The third item is a boolean controlling
+quote insertion.  It should be non-nil if if the special quotes should
+only be used after inserting a literal @samp{"} character first, i.e. on
+second key press.
 @end defopt
 
 @defopt LaTeX-babel-hyphen-language-alist
