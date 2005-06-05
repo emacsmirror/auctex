@@ -1,3 +1,22 @@
+2005-06-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-quote-language-alist): Do not use `alist' widget
+	because XEmacs 21.4 does not provide it.  Do not use a cons cell
+	for opening and closing quotation marks in order to simplify
+	structure.
+	(TeX-quote-language): Describe structure as in
+	`TeX-quote-language-alist'.
+	(TeX-insert-quote): Adapt to new structure of `TeX-quote-language'
+	and `TeX-quote-language-alist'.
+
+	* doc/auctex.texi (European): Describe new structure of
+	`TeX-quote-language-alist'.
+
+	* style/csquotes.el, style/czech.el, style/danish.el,
+	style/german.el, style/italian.el, style/ngerman.el,
+	style/slovak.el, style/swedish.el: Reflect new structure of
+	`TeX-quote-language'.
+
 2005-06-04  David Kastrup  <dak@gnu.org>
 
 	* doc/Makefile.in (TEXINFOINCLUDES): macros.texi has moved here
