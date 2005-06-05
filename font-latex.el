@@ -371,9 +371,7 @@ You have to restart Emacs for a change of this variable to take effect."
 				  ;; List of keywords
 				  (with-temp-buffer
 				    (insert "  Keywords: "
-					    ;; Better idea than `s-q-a' for
-					    ;; preserving "\\" and "\\*"?
-					    (mapconcat 'shell-quote-argument
+					    (mapconcat 'identity
 						       (nth 1 spec) ", "))
 				    (fill-paragraph nil)
 				    (buffer-substring-no-properties
