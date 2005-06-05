@@ -6,7 +6,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrreprt.el,v 1.6 2005-03-17 10:02:06 angeli Exp $
+;; Version: $Id: scrreprt.el,v 1.7 2005-06-05 18:32:07 angeli Exp $
 ;; Keywords: tex
 
 ;;; Commentary:
@@ -46,8 +46,8 @@
 		     "setchapterpreamble"
 		     "dictum")))
      (font-latex-match-textual-make)
-     ;; Title keywords
-     (add-to-list 'font-latex-match-title-1-keywords-local "addchap")
-     (font-latex-match-title-1-make))))
+     ;; Sectioning keywords
+     (add-to-list 'font-latex-match-sectioning-1-keywords-local "addchap")
+     (font-latex-match-sectioning-1-make))))
 
 ;;; scrreprt.el ends here

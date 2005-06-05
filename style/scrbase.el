@@ -5,7 +5,7 @@
 
 ;; Author: Mark Trettin <Mark.Trettin@gmx.de>
 ;; Created: 2002-09-26
-;; Version: $Id: scrbase.el,v 1.8 2005-03-17 10:02:06 angeli Exp $
+;; Version: $Id: scrbase.el,v 1.9 2005-06-05 18:32:07 angeli Exp $
 ;; Keywords: tex
 ;; License: GPL, see the file COPYING in the base directory of AUCTeX
 
@@ -171,13 +171,13 @@
 		      "cleardoubleplainpage"
 		      "cleardoubleemptypage")))
       (font-latex-match-warning-make)
-      ;; Title keywords
-      (add-to-list 'font-latex-match-title-1-keywords-local "addpart")
-      (font-latex-match-title-1-make)
-      (add-to-list 'font-latex-match-title-2-keywords-local "addsec")
-      (font-latex-match-title-2-make)
-      (add-to-list 'font-latex-match-title-4-keywords-local "minisec")
-      (font-latex-match-title-4-make))))
+      ;; Sectioning keywords
+      (add-to-list 'font-latex-match-sectioning-1-keywords-local "addpart")
+      (font-latex-match-sectioning-1-make)
+      (add-to-list 'font-latex-match-sectioning-2-keywords-local "addsec")
+      (font-latex-match-sectioning-2-make)
+      (add-to-list 'font-latex-match-sectioning-4-keywords-local "minisec")
+      (font-latex-match-sectioning-4-make))))
 
 (defun TeX-arg-KOMA-setpreamble (optional &optional prompt)
   "Prompt for KOMA-Script's \\set*preamble position with completion."
