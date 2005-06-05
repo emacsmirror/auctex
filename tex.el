@@ -4291,26 +4291,24 @@ quotes are inserted only after \"."
 (defcustom TeX-quote-language-alist nil
   "Alist for overriding the default language-specific quote insertion.
 First element in each item is the name of the language as set by
-the language style file.  Second element is a cons cell
-containing the opening and closing quotation marks as strings.
-Third element is a boolean specifying insertion behavior,
+the language style file.  Second element is the opening quotation
+mark as string.  Third element is the closing quotation mark.
+Fourth element is a boolean specifying insertion behavior,
 overriding `TeX-quote-after-quote'."
   :group 'TeX-quote
-  :type '(alist :key-type (string :tag "Language")
-		:value-type (group
-			     (cons (string :tag "Opening quotation mark")
-				   (string :tag "Closing quotation mark"))
-			     (boolean :tag "Insert plain quote first"
-				      :value t))))
+  :type '(repeat (group (string :tag "Language")
+			(string :tag "Opening quotation mark")
+			(string :tag "Closing quotation mark"))
+			(boolean :tag "Insert plain quote first" :value t))))
 
 (defvar TeX-quote-language nil
   "If non-nil determines behavior of quote insertion.
 It is usually set by language-related style files.  Its value has
 the same structure as the elements of `TeX-quote-language-alist'.
-The symbol 'override can be used as its the car in order to
-override the settings of style files.  Style files should
-therefore check if this symbol is present and not alter
-`TeX-quote-language' if it is.")
+The symbol 'override can be used as its car in order to override
+the settings of style files.  Style files should therefore check
+if this symbol is present and not alter `TeX-quote-language' if
+it is.")
 (make-variable-buffer-local 'TeX-quote-language)
 
 (defun TeX-insert-quote (force)
@@ -4339,9 +4337,9 @@ With prefix argument FORCE, always inserts \" characters."
 			    (assoc (car TeX-quote-language)
 				   TeX-quote-language-alist)))
 	   (lang (or lang-override TeX-quote-language))
-	   (open-quote (if lang (car (nth 1 lang)) TeX-open-quote))
-	   (close-quote (if lang (cdr (nth 1 lang)) TeX-close-quote))
-	   (q-after-q (if lang (nth 2 lang) TeX-quote-after-quote)))
+	   (open-quote (if lang (nth 1 lang) TeX-open-quote))
+	   (close-quote (if lang (nth 2 lang) TeX-close-quote))
+	   (q-after-q (if lang (nth 3 lang) TeX-quote-after-quote)))
       (if q-after-q
 	  (insert (cond ((bobp)
 			 ?\")
