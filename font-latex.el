@@ -176,7 +176,7 @@ use \\[customize]."
 	  (set-face-attribute face-name nil :height  height-scale))))))
 
 (defcustom font-latex-fontify-sectioning 1.1
-  "Whether to fontify LaTeX titles with varying height faces or a color face.
+  "Whether to fontify sectioning macros with varying height or a color face.
 
 If it is a number, use varying height faces.  The number is used
 for scaling starting from `font-latex-sectioning-5-face'.  Typically
@@ -280,51 +280,46 @@ variable `font-latex-fontify-sectioning'." num)
       "negthinspace" "enspace" "enskip" "quad" "qquad" "nonumber"
       "centering" "TeX" "LaTeX")
      font-lock-function-name-face 2 (command 1 t))
-    ("title-0"
+    ("sectioning-0"
      ("part")
-     font-latex-sectioning-0-face 2 (title 1 t))
-    ("title-1"
+     font-latex-sectioning-0-face 2 (sectioning 1 t))
+    ("sectioning-1"
      ("chapter")
-     font-latex-sectioning-1-face 2 (title 1 t))
-    ("title-2"
+     font-latex-sectioning-1-face 2 (sectioning 1 t))
+    ("sectioning-2"
      ("section")
-     font-latex-sectioning-2-face 2 (title 1 t))
-    ("title-3"
+     font-latex-sectioning-2-face 2 (sectioning 1 t))
+    ("sectioning-3"
      ("subsection")
-     font-latex-sectioning-3-face 2 (title 1 t))
-    ("title-4"
+     font-latex-sectioning-3-face 2 (sectioning 1 t))
+    ("sectioning-4"
      ("subsubsection")
-     font-latex-sectioning-4-face 2 (title 1 t))
-    ("title-5"
+     font-latex-sectioning-4-face 2 (sectioning 1 t))
+    ("sectioning-5"
      ("paragraph" "subparagraph" "subsubparagraph")
-     font-latex-sectioning-5-face 2 (title 1 t))
+     font-latex-sectioning-5-face 2 (sectioning 1 t))
     ("textual"
      ("item" "title" "author" "date" "thanks" "address" "caption"
       "textsuperscript")
      font-lock-type-face 2 (command 1 t))
     ("bold-command"
      ("textbf" "textsc" "textup" "boldsymbol" "pmb")
-     font-latex-bold-face
-     1 (command 1 nil))
+     font-latex-bold-face 1 (command 1 nil))
     ("italic-command"
      ("emph" "textit" "textsl")
-     font-latex-italic-face
-     1 (command 1 nil))
+     font-latex-italic-face 1 (command 1 nil))
     ("math-command"
      ("ensuremath")
-     font-latex-math-face
-     1 (command 1 nil))
+     font-latex-math-face 1 (command 1 nil))
     ("type-command"
      ("texttt" "textsf" "textrm" "textmd")
      font-lock-type-face 1 (command 1 nil))
     ("bold-declaration"
      ("bf" "bfseries" "sc" "scshape" "upshape")
-     font-latex-bold-face
-     1 declaration)
+     font-latex-bold-face 1 declaration)
     ("italic-declaration"
      ("em" "it" "itshape" "sl" "slshape")
-     font-latex-italic-face
-     1 declaration)
+     font-latex-italic-face 1 declaration)
     ("type-declaration"
      ("tt" "ttfamily" "sf" "sffamily" "rm" "rmfamily" "mdseries"
       "tiny" "scriptsize" "footnotesize" "small" "normalsize"
@@ -348,8 +343,8 @@ inside a TeX group (like \"{\\bfseries foo}\"), a list of the
 form `(command <number of mandatory arguments> <flag determining
 if trailing asterisk should be fontified>)' which will match
 macros of the form \"\\foo[bar]{baz}\", or a list of the form
-`(title <num>)' which is basically the same as the `(command <num>)'
-list but puts conditional into the keyword highlighter which
+`(sectioning <num>)' which is basically the same as the `(command <num>)'
+list but puts a conditional into the keyword highlighter which
 tests for `font-latex-fontify-sectioning'.")
 
 (defun font-latex-make-match-defun (prefix name type)
@@ -396,7 +391,7 @@ respective match function.  FACE is a face name or a list of text
 properties that will be applied to the respective part of the
 match returned by the match function.  TYPE is the type of
 construct to be highlighted.  Currently the symbols 'command,
-'title, 'declaration and 'noarg are valid.
+'sectioning, 'declaration and 'noarg are valid.
 
 This is a helper function for `font-latex-make-built-in-keywords'
 and `font-latex-make-user-keywords' and not intended for general
@@ -406,7 +401,7 @@ use."
 	   (0 'font-lock-keyword-face append t)
 	   (1 'font-lock-variable-name-face append t)
 	   (2 ',face append t)))
-	((eq type 'title)
+	((eq type 'sectioning)
 	 `(,(intern (concat prefix name))
 	   (0 'font-lock-keyword-face append t)
 	   (1 'font-lock-variable-name-face append t)
