@@ -10,6 +10,7 @@
 	(font-latex-built-in-keyword-classes)
 	(font-latex-keyword-matcher): Use `sectioning' instead of `title'.
 	(font-latex-deactivated-keyword-classes): New variable.
+	Don't do extra quoting.
 	(font-latex-make-built-in-keywords): Remove unnecessary `let'.
 	Check `font-latex-deactivated-keyword-classes' in generated
 	`font-latex-match-*-make' functions.
