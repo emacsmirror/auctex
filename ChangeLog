@@ -1,5 +1,8 @@
 2005-06-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* style/scrbase.el, style/scrbook.el, style/scrreprt.el: Use
+	`sectioning' instead of `title' for sectioning fontification.
+
 	* doc/changes.texi: Mention change of `title' to `sectioning' for
 	keyword variables.
 
