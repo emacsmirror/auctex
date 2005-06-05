@@ -1283,7 +1283,7 @@ Font locking is supposed to improve readability of the source code by
 highlighting certain keywords with different colors or fonts.  It
 thereby lets you recognize the function of markup code to a certain
 extent without having to read the markup command.  For general
-information on controlling font locking with Emacs' font lock mode, see
+information on controlling font locking with Emacs' Font Lock mode, see
 @ref{Font Lock, , Font Lock Mode, emacs, GNU Emacs Manual}.
 
 @defopt TeX-install-font-lock
@@ -1408,16 +1408,16 @@ In this case the face @code{font-lock-type-face} will be used to fontify
 the argument of the sectioning commands.
 @end defopt
 
-@vindex font-latex-match-title-0-keywords
-@vindex font-latex-match-title-1-keywords
-@vindex font-latex-match-title-2-keywords
-@vindex font-latex-match-title-3-keywords
-@vindex font-latex-match-title-4-keywords
-@vindex font-latex-match-title-5-keywords
+@vindex font-latex-match-sectioning-0-keywords
+@vindex font-latex-match-sectioning-1-keywords
+@vindex font-latex-match-sectioning-2-keywords
+@vindex font-latex-match-sectioning-3-keywords
+@vindex font-latex-match-sectioning-4-keywords
+@vindex font-latex-match-sectioning-5-keywords
 You can add your own sectioning commands be adding them to the keyword
-lists: @code{font-latex-match-title-0-keywords}
+lists: @code{font-latex-match-sectioning-0-keywords}
 (@code{font-latex-sectioning-0-face}) @dots{}
-@code{font-latex-match-title-5-keywords}
+@code{font-latex-match-sectioning-5-keywords}
 (@code{font-latex-sectioning-5-face}).
 
 @subheading Commands for changing fonts
