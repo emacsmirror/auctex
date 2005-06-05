@@ -5,7 +5,7 @@
 (TeX-add-style-hook
  "danish"
  (lambda ()
-   (setq TeX-quote-language `("danish" ("\"`" . "\"'") ,TeX-quote-after-quote))
+   (setq TeX-quote-language `("danish" "\"`" "\"'" ,TeX-quote-after-quote))
    (setq LaTeX-babel-hyphen-language "danish")
    (run-hooks 'TeX-language-dk-hook)))
 

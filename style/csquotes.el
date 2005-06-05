@@ -91,9 +91,8 @@
    (when (and (> (length LaTeX-csquotes-open-quote) 0)
 	      (> (length LaTeX-csquotes-close-quote) 0))
      (setq TeX-quote-language
-	   `(override
-	     (,LaTeX-csquotes-open-quote . ,LaTeX-csquotes-close-quote)
-	     ,LaTeX-csquotes-quote-after-quote)))
+	   `(override ,LaTeX-csquotes-open-quote ,LaTeX-csquotes-close-quote
+		      ,LaTeX-csquotes-quote-after-quote)))
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))

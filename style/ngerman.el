@@ -35,7 +35,7 @@
 			  LaTeX-german-quote-after-quote
 			t)))
        (setq TeX-quote-language
-	     `("ngerman" (,open-quote . ,close-quote) ,q-after-q))))
+	     `("ngerman" ,open-quote ,close-quote ,q-after-q))))
    (setq LaTeX-babel-hyphen-language "ngerman")
    (run-hooks 'TeX-language-de-hook)))
 

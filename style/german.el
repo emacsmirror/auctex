@@ -35,7 +35,7 @@
 			  LaTeX-german-quote-after-quote
 			t)))
        (setq TeX-quote-language
-	     `("german" (,open-quote . ,close-quote) ,q-after-q))))
+	     `("german" ,open-quote ,close-quote ,q-after-q))))
    (setq LaTeX-babel-hyphen-language "german")
    (run-hooks 'TeX-language-de-hook)))
 
