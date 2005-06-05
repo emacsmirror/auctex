@@ -6,6 +6,10 @@
 	* font-latex.el (font-latex-fontify-sectioning)
 	(font-latex-built-in-keyword-classes)
 	(font-latex-keyword-matcher): Use `sectioning' instead of `title'.
+	(font-latex-deactivated-keyword-classes): New variable.
+	(font-latex-make-built-in-keywords): Remove unnecessary `let'.
+	Check `font-latex-deactivated-keyword-classes' in generated
+	`font-latex-match-*-make' functions.
 
 	* tex.el (TeX-quote-language-alist): Do not use `alist' widget
 	because XEmacs 21.4 does not provide it.  Do not use a cons cell
@@ -19,6 +23,7 @@
 	* doc/auctex.texi (European): Describe new structure of
 	`TeX-quote-language-alist'.
 	(Font Locking): Use `sectioning' instead of `title'.
+	Describe deactivation of built-in keyword classes.
 
 	* style/csquotes.el, style/czech.el, style/danish.el,
 	style/german.el, style/italian.el, style/ngerman.el,
