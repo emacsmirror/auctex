@@ -4298,8 +4298,8 @@ overriding `TeX-quote-after-quote'."
   :group 'TeX-quote
   :type '(repeat (group (string :tag "Language")
 			(string :tag "Opening quotation mark")
-			(string :tag "Closing quotation mark"))
-			(boolean :tag "Insert plain quote first" :value t)))
+			(string :tag "Closing quotation mark")
+			(boolean :tag "Insert plain quote first" :value t))))
 
 (defvar TeX-quote-language nil
   "If non-nil determines behavior of quote insertion.
