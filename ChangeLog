@@ -1,3 +1,8 @@
+2005-06-06  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Remove call of MAKEINFO_CHECK_MACROS: we expect a
+	recent enough makeinfo version if you want to bootstrap, anyway.
+
 2005-06-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-bar.el (TeX-bar-LaTeX-button-alist)
@@ -5,6 +10,9 @@
 	arguments.
 
 2005-06-06  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (TEXINFOINCLUDES): Remove.
+	(MAKEINFO_MACROS): Remove.
 
 	* tex-buf.el (TeX-format-filter): Don't let match-data generate
 	markers.  This is a terrible performance hog!

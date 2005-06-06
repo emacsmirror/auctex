@@ -1,3 +1,11 @@
+2005-06-06  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Remove call to MAKEINFO_CHECK_MACROS: we expect a
+	recent enough makeinfo version for bootstrapping, anyway.
+
+	* doc/Makefile.in (MAKEINFO_MACROS): remove
+	(TEXINFOINCLUDES): Remove unused TEXIPWD hack.  Troublesome.
+
 2005-06-04  David Kastrup  <dak@gnu.org>
 
 	* doc/Makefile.in (TEXIFILES): Oops, depends on ../../doc/macros.texi

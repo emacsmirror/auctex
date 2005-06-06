@@ -163,11 +163,6 @@ cannot be regenerated, but installation of an unmodified tarball will
 succeed.])
 
 AC_PATH_PROG(MAKEINFO, makeinfo, :)
-
-case "x$MAKEINFO" in x|x:) ;;
-*) MAKEINFO_CHECK_MACROS(acronym env option command)
-esac
-
 AC_PATH_PROG(TEXI2HTML, texi2html, :)
 AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
 AC_PATH_PROG(TEXI2PDF, texi2pdf, :)

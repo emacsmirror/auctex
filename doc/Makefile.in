@@ -4,8 +4,7 @@ packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
-TEXINFOINCLUDES=-I $${TEXIPWD}.
-MAKEINFO=@MAKEINFO@ @MAKEINFO_MACROS@
+MAKEINFO=@MAKEINFO@
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -29,7 +28,7 @@ dist: auctex.info $(DISTTEXTS) \
 html/auctex_toc.html: auctex.texi
 	rm -rf html
 	mkdir html
-	cd html;TEXIPWD=../;$(TEXI2HTML) -split_node $(TEXINFOINCLUDES) ../auctex.texi && \
+	cd html;$(TEXI2HTML) -split_node -I .. ../auctex.texi && \
 	if [ -d auctex ];then mv auctex/* .; rm -rf auctex; fi
 
 tex-ref.dvi: tex-ref.tex
@@ -42,39 +41,39 @@ tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
 
 auctex.dvi: $(TEXIFILES)
-	$(TEXI2DVI) $(TEXINFOINCLUDES) auctex.texi
+	$(TEXI2DVI) auctex.texi
 
 auctex.pdf: $(TEXIFILES)
-	$(TEXI2PDF) $(TEXINFOINCLUDES) auctex.texi
+	$(TEXI2PDF) auctex.texi
 
 auctex.ps: auctex.dvi
 	$(DVIPS) auctex.dvi -Ppdf -o auctex.ps
 
 auctex.info: $(TEXIFILES)
-	$(MAKEINFO) $(TEXINFOINCLUDES) auctex.texi
+	$(MAKEINFO) auctex.texi
 
 ../INSTALL: install.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		install.texi --output $@
 
 ../INSTALL.windows: wininstall.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		wininstall.texi --output $@
 
 ../README: intro.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		intro.texi --output $@
 
 ../CHANGES: changes.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		changes.texi --output $@
 
 ../TODO: todo.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		todo.texi --output $@
 
 ../FAQ: faq.texi macros.texi
-	$(MAKEINFO) $(TEXINFOINCLUDES) -D rawfile --no-headers  \
+	$(MAKEINFO) -D rawfile --no-headers  \
 		faq.texi --output $@
 
 disttexts: $(DISTTEXTS)
