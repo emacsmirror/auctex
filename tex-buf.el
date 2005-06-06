@@ -1041,7 +1041,7 @@ command."
 			 (not (eq ?\] (char-after)))
 			 (progn
 			   (unless old-match
-			     (setq old-match (list (match-data))))
+			     (setq old-match (list (match-data t))))
 			   (setq str (buffer-substring (1- (point)) end)
 				 pos nil)
 			   (while (setq pos (string-match "\n" str pos))

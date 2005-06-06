@@ -1,3 +1,8 @@
+2005-06-06  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-format-filter): Don't let match-data generate
+	markers.  This is a terrible performance hog!
+
 2005-06-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/scrbase.el, style/scrbook.el, style/scrreprt.el: Use
