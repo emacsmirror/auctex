@@ -1,3 +1,9 @@
+2005-06-06  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-bar.el (TeX-bar-LaTeX-button-alist)
+	(menu-strings-buttons-alist): help-echo functions are called with
+	arguments.
+
 2005-06-06  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-format-filter): Don't let match-data generate
