@@ -2,6 +2,9 @@
 
 	* tex-buf.el (TeX-format-filter): Don't let match-data generate
 	markers.  This is a terrible performance hog!
+	(TeX-format-filter): Actually, we don't need to save any
+	match-data inside of a filter function with current versions of
+	Emacs and XEmacs.
 
 2005-06-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
 

@@ -1025,34 +1025,30 @@ command."
 (defun TeX-format-filter (process string)
   "Filter to process TeX output."
   (with-current-buffer (process-buffer process)
-    (let (old-match str pos end (pt (marker-position (process-mark process))))
-      (unwind-protect
-	  (save-excursion
-	    (goto-char pt)
-	    (insert-before-markers string)
-	    (set-marker (process-mark process) (point))
-	    (while (and pt
-			(skip-chars-backward "^]" pt)
-			(> (point) pt))
-	      (setq end (point))
-	      (backward-char)
-	      (skip-chars-backward "-0-9\n." (max (point-min) (- pt 128)))
-	      (when (and (eq ?\[ (char-before))
-			 (not (eq ?\] (char-after)))
-			 (progn
-			   (unless old-match
-			     (setq old-match (list (match-data t))))
-			   (setq str (buffer-substring (1- (point)) end)
-				 pos nil)
-			   (while (setq pos (string-match "\n" str pos))
-			     (setq str (replace-match "" t t str)))
-			   (string-match
-			    "\\`\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]\\'"
-			    str)))
-		(setq TeX-current-page str
-		      pt nil)
-		(TeX-format-mode-line process))))
-	(when old-match (set-match-data (car old-match)))))))
+    (let (str pos end (pt (marker-position (process-mark process))))
+      (save-excursion
+	(goto-char pt)
+	(insert-before-markers string)
+	(set-marker (process-mark process) (point))
+	(while (and pt
+		    (skip-chars-backward "^]" pt)
+		    (> (point) pt))
+	  (setq end (point))
+	  (backward-char)
+	  (skip-chars-backward "-0-9\n." (max (point-min) (- pt 128)))
+	  (when (and (eq ?\[ (char-before))
+		     (not (eq ?\] (char-after)))
+		     (progn
+		       (setq str (buffer-substring (1- (point)) end)
+			     pos nil)
+		       (while (setq pos (string-match "\n" str pos))
+			 (setq str (replace-match "" t t str)))
+		       (string-match
+			"\\`\\[-?[0-9]+\\(\\.-?[0-9]+\\)\\{0,9\\}\\]\\'"
+			str)))
+	    (setq TeX-current-page str
+		  pt nil)
+	    (TeX-format-mode-line process)))))))
 
 (defvar TeX-parse-function nil
   "Function to call to parse content of TeX output buffer.")
