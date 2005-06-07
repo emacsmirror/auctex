@@ -1403,9 +1403,9 @@ varies with the sectioning level, e.g. @samp{\part}
 @samp{\paragraph} (@code{font-latex-sectioning-5-face}).  Typically,
 values from 1.05 to 1.3 for @code{font-latex-fontify-sectioning} give
 best results, depending on your font setup.  If you rather like to use
-the base font and a different color, set the variable to @samp{color}.
-In this case the face @code{font-lock-type-face} will be used to fontify
-the argument of the sectioning commands.
+the base font and a different color, set the variable to the symbol
+@samp{color}.  In this case the face @code{font-lock-type-face} will be
+used to fontify the argument of the sectioning commands.
 @end defopt
 
 @vindex font-latex-match-sectioning-0-keywords
