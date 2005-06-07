@@ -1,3 +1,10 @@
+2005-06-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-fontify-sectioning): Doc fix.
+
+	* doc/auctex.texi (Font Locking): Document the nature of the
+	`color' option for `font-latex-fontify-sectioning'.
+
 2005-06-06  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: Remove call of MAKEINFO_CHECK_MACROS: we expect a
