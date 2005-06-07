@@ -181,11 +181,11 @@ use \\[customize]."
 If it is a number, use varying height faces.  The number is used
 for scaling starting from `font-latex-sectioning-5-face'.  Typically
 values from 1.05 to 1.3 give best results, depending on your font
-setup.  If it is `color', use `font-lock-type-face'.
+setup.  If it is the symbol `color', use `font-lock-type-face'.
 
 Caveats: Customizing the scaling factor applies to all sectioning
 faces unless those face have been saved by customize.  Setting
-this variable directly does not take effect; unless you call
+this variable directly does not take effect unless you call
 `font-latex-update-sectioning-faces' or restart Emacs.
 
 Switching from `color' to a number or vice versa does not take
