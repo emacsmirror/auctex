@@ -2669,28 +2669,70 @@ See `TeX-auto-x-parse-length'."
   :group 'TeX-parse)
   (make-variable-buffer-local 'TeX-auto-x-regexp-list)
 
+(defun TeX-regexp-group-count (regexp)
+  "Return number of groups in a regexp.  This is not foolproof:
+you should not use something like `[\\(]' for a character range."
+  (let (start (n 0))
+    (while (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\\\([^?]"
+			 regexp start)
+      (setq start (- (match-end 0) 2)
+	    n (1+ n)))
+    n))
+
 (defun TeX-auto-parse-region (regexp-list beg end)
   "Parse TeX information according to REGEXP-LIST between BEG and END."
   (if (symbolp regexp-list)
       (setq regexp-list (and (boundp regexp-list) (symbol-value regexp-list))))
    (if regexp-list
        ;; Extract the information.
-       (let ((regexp (concat "\\("
-			     (mapconcat 'car regexp-list "\\)\\|\\(")
-			     "\\)")))
+       (let* (groups
+	      (count 1)
+	      (regexp (concat "\\("
+			      (mapconcat
+			       (lambda(x)
+				 (push (cons count x) groups)
+				 (setq count
+				       (+ 1 count
+					  (TeX-regexp-group-count (car x))))
+				 (car x))
+			       regexp-list "\\)\\|\\(")
+			      "\\)"))
+	      syms
+	      lst)
+	 (setq count 0)
 	 (goto-char (if end (min end (point-max)) (point-max)))
 	 (while (re-search-backward regexp beg t)
-	   (unless (TeX-in-comment)
-	     (let* ((entry (TeX-member nil regexp-list
-				       (lambda (a b)
-					 (looking-at (nth 0 b)))))
-		    (symbol (nth 2 entry))
-		    (match (nth 1 entry)))
+	   (let* ((entry (cdr (TeX-member nil groups
+					  (lambda (a b)
+					    (match-beginning (car b))))))
+		  (symbol (nth 2 entry))
+		  (match (nth 1 entry)))
+	     (unless (TeX-in-comment)
+	       (looking-at (nth 0 entry))
 	       (if (fboundp symbol)
 		   (funcall symbol match)
-		 (add-to-list symbol (if (listp match)
-					 (mapcar 'TeX-match-buffer match)
-				       (TeX-match-buffer match))))))))))
+		 (puthash (if (listp match)
+			      (mapcar #'TeX-match-buffer match)
+			    (TeX-match-buffer match))
+			  (setq count (1- count))
+			  (cdr (or (assq symbol syms)
+				   (car (push
+					 (cons symbol
+					       (make-hash-table :test 'equal))
+					 syms)))))))))
+	 (setq count 0)
+	 (dolist (symbol syms)
+	   (setq lst (symbol-value (car symbol)))
+	   (while lst
+	     (puthash (pop lst)
+		      (setq count (1+ count))
+		      (cdr symbol)))
+	   (maphash (lambda (key value)
+		      (push (cons value key) lst))
+		    (cdr symbol))
+	   (clrhash (cdr symbol))
+	   (set (car symbol) (mapcar #'cdr (sort lst #'car-less-than-car)))))))
+
 
 (defun TeX-auto-parse ()
   "Parse TeX information in current buffer.

@@ -1,3 +1,13 @@
+2005-06-07  David Kastrup  <dak@gnu.org>
+
+	* tex.el (TeX-regexp-group-count): New function.
+	(TeX-auto-parse-region): Rewrite to use hashes and to save overuse
+	of `looking-at'.  We really should keep the relevant information
+	complete in hashes instead of moving them forward and back between
+	hashes and lists, but at least this change removes most of the
+	really evil quadratic behavior while keeping the original API.
+	Yet.
+
 2005-06-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-fontify-sectioning): Doc fix.
