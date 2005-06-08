@@ -19,6 +19,7 @@ packagelispdir = @packagelispdir@$(null)
 packagedatadir = @packagedatadir@$(null)
 packagedir = @packagedir@$(null)
 autodir = @autodir@$(null)
+preview_enabled=@preview_enabled@
 subdirs=@subdirs@
 styledir = $(packagedatadir)/style
 AUCTEXDATE = @AUCTEXDATE@
@@ -98,17 +99,22 @@ DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
 
-all:	lisp
+all: lisp docs
 	$(DESCEND)
 
-.PHONY: all lisp some install contrib install-el install-lisp \
-	install-contrib install-contrib-el install-info install-auto \
+.PHONY: all lisp docs some install contrib install-el install-lisp \
+	install-contrib install-contrib-el install-docs install-auto \
 	install-metadata install-startup \
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball full-release tar-ball-clean wc
 
 lisp:	tex-site.el $(AUCSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
+
+docs:
+	(cd doc ; $(MAKE) auctex)
+	if test "x$(preview_enabled)" = xyes; then \
+		(cd doc; $(MAKE) preview); fi
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat tex-site.el.out >$@
@@ -144,7 +150,7 @@ auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
 
 some:	$(AUCELC) $(STYLEELC)
 
-install:	install-lisp install-info install-images install-startup
+install: install-lisp install-docs install-images install-startup
 	$(DESCEND)
 	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
 
@@ -212,9 +218,10 @@ install-contrib:	install-contrib-el $(CONTRIBELC) $(CONTRIB_MULEELC)
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 
-install-info:
-	-cd doc; $(MAKE) 'DESTDIR=$(DESTDIR)' install
-
+install-docs:
+	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-auctex); \
+	if test "x$(preview_enabled)" = xyes; then \
+		(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-preview); fi
 
 install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."
