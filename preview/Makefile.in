@@ -34,16 +34,13 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = ../mkinstalldirs
 
-all: texmf lisp docs install-hint
+all: texmf lisp install-hint
 
 lisp: $(LISP_OBJS)
 	test "x$(packagedir)" != xno || $(MAKE) preview-latex.el
 
 texmf: 
 	(cd latex ; $(MAKE) all)
-
-docs:
-	(cd doc ; $(MAKE) all)
 
 install-hint:
 	@echo 'Congratulations!  Build is complete.'
@@ -53,13 +50,10 @@ install-hint:
 
 
 .PHONY: install install-texmf install-el install-images install-startup \
-	install-nosearch install-docs install-metadata use-hint all lisp texmf docs
+	install-nosearch install-metadata use-hint all lisp texmf
 
 install: install-texmf install-el install-nosearch install-images \
-         install-startup install-docs install-metadata use-hint
-
-install-docs:
-	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install)
+         install-startup install-metadata use-hint
 
 use-hint:
 	@echo "Installation completed."
@@ -133,7 +127,6 @@ preview-latex.el: preview.el auto.el
 clean:
 	rm -f latex.out testdocstrip.tex preview-latex.el
 	rm -rf *.prv *.elc *~ *.aux *.dvi *.log 
-	(cd doc ; $(MAKE) clean)
 	(cd latex ; $(MAKE) clean)
 
 distclean: clean
@@ -141,6 +134,5 @@ distclean: clean
 	rm -f Makefile */Makefile auto.el
 
 maintainer-clean: 
-	(cd doc ; $(MAKE) maintainer-clean)
 	$(MAKE) distclean
 	rm -rf autom4te.cache
