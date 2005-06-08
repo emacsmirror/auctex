@@ -1,3 +1,55 @@
+2005-06-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (preview_enabled): New variable.
+	(all): Depend on `docs' target.
+	(.PHONY): Add `docs' target.
+	(docs): New target.
+	(install): Depend on `install-docs' instead of `install-info'.
+	(install-info): Remove.
+	(install-docs): New target.
+
+	* autogen.sh: Generate preview-latex docs as well.
+
+	* configure.ac: Substitute preview_enabled variable in output
+	files.
+
+	* doc/.cvsignore: Add relevant preview-latex files.
+
+	* doc/Makefile.in (TEXIFILES): Rename to AUCTEXTEXIFILES.
+	(PERL, PREVIEWTEXIFILES): New variables.
+	(all): Now depends on `auctex' and `preview' targets.  Move
+	AUCTeX-specific targets from original to `auctex'.
+	(install): Now depends on `install-auctex' and `install-preview'
+	targets.  Move AUCTeX-specific targets and content from original
+	to `install-auctex'.
+	(.PHONY): Add `auctex', `preview', `install-auctex', and
+	`install-preview'.
+	(auctex, install-auctex, preview, install-preview): New targets.
+	(auctex.dvi, auctex.pdf, auctex.info): Depend on
+	$(AUCTEXTEXIFILES) instead of $(TEXIFILES).
+	(preview-latex/index.html, html-docs, preview-dtxdoc.texi)
+	(preview-latex.dvi, preview-latex.ps, preview-latex.pdf)
+	(preview-latex.info, ../PROBLEMS): New targets (from
+	preview/doc/Makefile.in).
+	(../README, ../TODO, ../FAQ): Create output combined from
+	respective AUCTeX and preview-latex files.
+	(clean, maintainer-clean): Cater for preview-latex files.
+
+	* doc/todo.texi (Development): More specific heading for plain
+	text output.
+
+	* doc/preview-todo.texi: Move here from preview/doc/todo.texi.
+
+	* doc/preview-readme.texi: Move here from preview/doc/readme.texi.
+
+	* doc/preview-problems.texi: Move here from
+	preview/doc/problems.texi.
+
+	* doc/preview-faq.texi: Moved here from preview/doc/faq.texi.
+
+	* doc/copying.texi, doc/preview-dtxdoc.pl, doc/preview-latex.texi:
+	Moved here from preview/doc/.
+
 2005-06-07  David Kastrup  <dak@gnu.org>
 
 	* tex.el (TeX-regexp-group-count): New function.
