@@ -13,6 +13,11 @@ MUNGE: while (<STDIN>) {
     last MUNGE if /^% *.section/;
 }
 
+# Fish out possible CR characters.
+/(\r*)$/;
+$cr = $1;
+
+
 # Noindent is used sometimes after \end{quote} (see below) 
 $noindent="";
 # Quote environments is translated into @example _without_
@@ -34,22 +39,22 @@ MAIN: while (<STDIN>) {
     s/~/\@w{ }/g;
     s/^ *//;
     # Environments
-    if (s/\\begin\{quote\}/\n\@example/) { 
+    if (s/\\begin\{quote\}/$cr\n\@example/) { 
 	$quote="yes" }
     if (/^\w/) { 
 	print $noindent } 
     $noindent = "";
-    if (s/\\end\{quote\}/\@end example\n/) { 
+    if (s/\\end\{quote\}/\@end example$cr\n/) { 
 	$quote=""; 
-	$noindent="\@noindent\n"  }
-    s/\\begin\{description\}/\n\@table \@w/;
+	$noindent="\@noindent$cr\n"  }
+    s/\\begin\{description\}/$cr\n\@table \@w/;
     # Convoluted pattern: handle 
     # \item[|...|], \item[\meta{..}] and \item[{|[]|}]
-    s/\\item\[\{?(.+?[\|\}])\}?\] ?/\@item $1\n/;
-    s/\\end\{description\}/\@end table\n/;
-    s/\\begin\{enumerate\}/\n\@enumerate/;
+    s/\\item\[\{?(.+?[\|\}])\}?\] ?/\@item $1$cr\n/;
+    s/\\end\{description\}/\@end table$cr\n/;
+    s/\\begin\{enumerate\}/$cr\n\@enumerate/;
     s/\\item /\@item /;
-    s/\\end\{enumerate\}/\@end enumerate\n/;
+    s/\\end\{enumerate\}/\@end enumerate$cr\n/;
 
     # Formatting (\cmd is special within {quote})
     s/\\texttt/\@option/g;
@@ -60,12 +65,12 @@ MAIN: while (<STDIN>) {
     s/\\cmd\{(.*?)\}/|$1|/g;
     s/\\oarg\{([^}]+?)\}/\[\@var{$1}\]/g;
     s/\\char.//g;
-    s/\\raggedright\n//g;
-    s/\\DescribeEnv\{(.*?)\} /\@item \\begin\@{$1\@}\@dots{}\\end\@{$1\@}\n/;
-    if (s/\\DescribeMacro\{(.*?)\}( |\n)/\@item $1\n/) {
+    s/\\raggedright$cr\n//g;
+    s/\\DescribeEnv\{(.*?)\} /\@item \\begin\@{$1\@}\@dots{}\\end\@{$1\@}$cr\n/;
+    if (s/\\DescribeMacro\{(.*?)\}( |$cr\n)/\@item $1$cr\n/) {
 	# Index entries for two important macros
-	if (/(\\Preview(Macro|Environment))( |\n)/) {
-	    $_ .= "\@findex $1\n";
+	if (/(\\Preview(Macro|Environment))( |$cr\n)/) {
+	    $_ .= "\@findex $1$cr\n";
 	}
     }
 
@@ -99,23 +104,22 @@ MAIN: while (<STDIN>) {
     # Texinfo @node-ification
     if (s/\\section\{(.*)\}/\@subsection $1/) {
 	if (s/[Oo]ptions/options/) {
-	    $_="\@menu
-* Package options::             
-* Provided commands::           
-\@end menu
-
-\@node Package options, Provided commands, The LaTeX style file, The LaTeX style file\n" . $_;
+	    $_="\@menu$cr\n" .
+"* Package options::$cr\n" .
+"* Provided commands::$cr\n" .
+"\@end menu$cr\n$cr\n" .
+"\@node Package options, Provided commands, The LaTeX style file, The LaTeX style file$cr\n" . $_;
 	} elsif (s/[Cc]ommands/commands/) {
         # \Describe... needs @table
-	    $_= "\@node Provided commands, ,Package options, The LaTeX style file\n" . 
-		$_ . "\n\@table \@code\n";
+	    $_= "\@node Provided commands, ,Package options, The LaTeX style file$cr\n" . 
+		$_ . "$cr\n\@table \@code$cr\n";
 	}
     }
 	
     # Stop here
     # \Describe.... needs @end table
     if (/^.StopEventually/) {
-	print "\@end table\n";
+	print "\@end table$cr\n";
 	last MAIN;
     }
     print $_;

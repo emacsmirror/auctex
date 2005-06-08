@@ -1,3 +1,8 @@
+2005-06-08  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-dtxdoc.pl: Replicate possible CR line endings
+	faithfully, and don't use multiline strings.
+
 2005-06-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/.cvsignore: Ignore all *.info, *.info-*, and *.pgs files.
