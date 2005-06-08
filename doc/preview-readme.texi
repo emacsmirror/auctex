@@ -7,7 +7,7 @@
 @c -----------------------
 @cindex Readme
 Does your neck hurt from turning between previewer windows and the
-source too often? This Elisp/@LaTeX{} package will render your displayed
+source too often? This @AUCTeX{} component will render your displayed
 @LaTeX{} equations right into the editing window where they belong.
 
 The purpose of @previewlatex{} is to embed @LaTeX{} environments such as
@@ -23,12 +23,6 @@ between source and image representation.
 * Availability::
 * Contacts::
 @end menu
-
-@ifset rawfile
-If @previewlatex{} has not come in the form of a preinstalled package
-for you, consult the @file{INSTALL} file for installation instructions
-(especially, read the Prerequisites section).
-@end ifset
 
 @ifset rawfile
 @node What use is it?, Activating preview-latex, Introduction, Introduction

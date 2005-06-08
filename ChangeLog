@@ -1,3 +1,17 @@
+2005-06-09  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Change line endings blurb.  Write drive:
+	everywhere in the example strings.
+
+	* doc/preview-readme.texi (Introduction): Some cosmetic changes to
+	account for the merge.
+
+	* mkinstalldirs: 
+
+	* install-sh: Replace `#/bin/sh' with `:' as this should be more
+	portable when called from a Bourne shell (which is what the
+	Makefiles do).
+
 2005-06-08  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-dtxdoc.pl: Replicate possible CR line endings
