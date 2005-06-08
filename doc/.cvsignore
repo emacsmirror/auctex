@@ -1,6 +1,6 @@
 *.aux *.cp *.cps *.dvi *.fn *.fns *.ky *.kys
-*.log *.pg *.toc *.tp *.vr *.vrs *.tmp *.ps *.pdf
-auctex.info auctex.info-?
+*.log *.pg *.pgs *.toc *.tp *.vr *.vrs *.tmp *.ps *.pdf
+*.info *.info-*
 Makefile
 CHANGES
 HISTORY
@@ -13,5 +13,4 @@ auctex*.html
 auto.texi
 preview-dtxdoc.texi
 preview-latex
-preview-latex.info-*
 preview-latex.tmp
