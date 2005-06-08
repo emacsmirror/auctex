@@ -117,6 +117,7 @@ AC_ARG_ENABLE(preview,
   [  --disable-preview       disable inclusion of preview-latex],
   [preview_enabled="$withval"],
   [preview_enabled="yes"])
+AC_SUBST(preview_enabled)
 
 if test "X${preview_enabled}" = Xyes
 then
