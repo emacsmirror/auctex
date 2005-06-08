@@ -232,7 +232,7 @@ AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)
 AC_SHELL_QUOTIFY(PDFLATEX)
 
-AC_OUTPUT(Makefile auto.el doc/Makefile latex/Makefile)
+AC_OUTPUT(Makefile auto.el latex/Makefile)
 cat >&2 <<EOF
 
 Congratulations!  Configuration is complete.
