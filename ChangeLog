@@ -1,5 +1,7 @@
 2005-06-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/.cvsignore: Ignore all *.info, *.info-*, and *.pgs files.
+
 	* Makefile.in (preview_enabled): New variable.
 	(all): Depend on `docs' target.
 	(.PHONY): Add `docs' target.
