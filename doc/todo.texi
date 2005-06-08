@@ -1,7 +1,7 @@
 @ifset rawfile
 @include macros.texi
 @node Development,,(dir),(dir)
-@top Future Development
+@top Future Development of @AUCTeX{}
 @end ifset
 
 The following sections describe future development of @AUCTeX{}.
