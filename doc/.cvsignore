@@ -10,3 +10,8 @@ README
 TODO
 FAQ
 auctex*.html
+auto.texi
+preview-dtxdoc.texi
+preview-latex
+preview-latex.info-*
+preview-latex.tmp
