@@ -1,5 +1,8 @@
 2005-06-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-fold.el (TeX-fold-ellipsis): New variable.
+	(TeX-fold-hide-item): Use it.
+
 	* Makefile.in (DESCEND): Make MSYS happy if $(subdirs) is null,
 	e.g. when --disable-preview is used.
 
