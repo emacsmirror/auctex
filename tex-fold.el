@@ -163,6 +163,9 @@ Set it to zero in order to disable help echos."
 (defvar TeX-fold-unfolded-face 'TeX-fold-unfolded-face
   "Face for folded content when it is temporarily opened.")
 
+(defvar TeX-fold-ellipsis "..."
+  "String used as display string for overlays instead of a zero-length string.")
+
 (defvar TeX-fold-open-spots nil)
 (make-variable-buffer-local 'TeX-fold-open-spots)
 
@@ -589,6 +592,8 @@ That means, put respective properties onto overlay OV."
 			 "[Error: No content found]")))
 	 (display-string (if (listp computed) (car computed) computed))
 	 (face (when (listp computed) (cadr computed))))
+    ;; Cater for zero-length display strings.
+    (when (string= display-string "") (setq display-string TeX-fold-ellipsis))
     ;; Add a linebreak to the display string and adjust the overlay end
     ;; in case of an overfull line.
     (when (TeX-fold-overfull-p ov-start ov-end display-string)
