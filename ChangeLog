@@ -5,6 +5,7 @@
 
 	* Makefile.in (DESCEND): Make MSYS happy if $(subdirs) is null,
 	e.g. when --disable-preview is used.
+	Make the change more safe with regard to the exit code.
 
 2005-06-09  David Kastrup  <dak@gnu.org>
 
