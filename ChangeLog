@@ -1,5 +1,10 @@
 2005-06-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/auctex.texi (Parsing Files): Fix display of reference.
+	Get rid of references to \documentstyle.
+	(Simple Style, Adding Macros, Adding Environments)
+	(Hacking the Parser): Clean up code examples.
+
 	* tex.el (TeX-master-file-ask): Get rid of "<default>" string as
 	default for `read-file-name'.  Fixes unresponsiveness of Emacs on
 	Windows and fallback to minibuffer if file is opened via menu and
