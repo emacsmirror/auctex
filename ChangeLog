@@ -1,3 +1,13 @@
+2005-06-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-master-file-ask): Get rid of "<default>" string as
+	default for `read-file-name'.  Fixes unresponsiveness of Emacs on
+	Windows and fallback to minibuffer if file is opened via menu and
+	prevents file history from being cluttered.  Use relative file
+	name for master file.
+	(TeX-master-file): Get rid of "this file" string as default for
+	`read-file-name'.
+
 2005-06-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-ellipsis): New variable.
