@@ -2443,7 +2443,7 @@ an @file{auto} subdirectory in the directory each time the @TeX{} files
 are stored, @pxref{Automatic Local}.  If @AUCTeX{} finds the pre-parsed
 information when loading a file, it will not need to reparse the buffer.
 The information in the @file{auto} directory is also useful for
-multifile documents @pxref{Multifile}, since it allows each file to
+multifile documents, @pxref{Multifile}, since it allows each file to
 access the parsed information from all the other files in the document.
 This is done by first reading the information from the master file, and
 then recursively the information from each file stored in the master
@@ -2502,9 +2502,9 @@ values for the buffer local variables @code{TeX-auto-regexp-list} and
 @code{TeX-auto-parse-length} in your @file{.emacs} file.
 
 @lisp
-;; Only parse \documentstyle information.
+;; Only parse LaTeX class and package information.
 (setq-default TeX-auto-regexp-list 'LaTeX-auto-minimal-regexp-list)
-;; The documentstyle command is usually near the beginning.
+;; The class and package information is usually near the beginning.
 (setq-default TeX-auto-parse-length 2000)
 @end lisp
 
@@ -2539,7 +2539,7 @@ Parse nothing
 @end defvr
 
 @defvr Constant LaTeX-auto-minimal-regexp-list
-Only parse documentstyle.
+Only parse @LaTeX{} class and packages.
 @end defvr
 
 @defvr Constant LaTeX-auto-label-regexp-list
@@ -3073,10 +3073,10 @@ Here is a simple example of a style file.
 @lisp
 ;;; book.el - Special code for book style.
 
-(TeX-add-style-hook "book"
- (function (lambda () (setq LaTeX-largest-level
-			    (LaTeX-section-level ("chapter"))))))
-
+(TeX-add-style-hook
+ "book"
+ (lambda () (setq LaTeX-largest-level
+		  (LaTeX-section-level ("chapter")))))
 @end lisp
 
 This file specifies that the largest kind of section in a @LaTeX{} document
@@ -3108,17 +3108,17 @@ function, since the symbol itself can be defined automatically.
 Here are a few examples from @file{latex.el}.
 
 @lisp
-(TeX-add-style-hook "latex"
- (function
-  (lambda ()
-     (TeX-add-symbols
-     '("arabic" TeX-arg-counter)
-     '("label" TeX-arg-define-label)
-     '("ref" TeX-arg-label)
-     '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
-     '("newtheorem" TeX-arg-define-environment
-       [ TeX-arg-environment "Numbered like" ]
-       t [ TeX-arg-counter "Within counter" ])))))
+(TeX-add-style-hook
+ "latex"
+ (lambda ()
+   (TeX-add-symbols
+    '("arabic" TeX-arg-counter)
+    '("label" TeX-arg-define-label)
+    '("ref" TeX-arg-label)
+    '("newcommand" TeX-arg-define-macro [ "Number of arguments" ] t)
+    '("newtheorem" TeX-arg-define-environment
+      [ TeX-arg-environment "Numbered like" ]
+      t [ TeX-arg-counter "Within counter" ]))))
 @end lisp
 
 @defun TeX-add-symbols @var{symbol} @dots{}
@@ -3295,14 +3295,14 @@ argument, an environment hook.  The example is again a short version of
 @file{latex.el}.
 
 @lisp
-(TeX-add-style-hook "latex"
- (function
-  (lambda ()
-    (LaTeX-add-environments
-     '("document" LaTeX-env-document)
-     '("enumerate" LaTeX-env-item)
-     '("itemize" LaTeX-env-item)
-     '("list" LaTeX-env-list)))))
+(TeX-add-style-hook
+ "latex"
+ (lambda ()
+   (LaTeX-add-environments
+    '("document" LaTeX-env-document)
+    '("enumerate" LaTeX-env-item)
+    '("itemize" LaTeX-env-item)
+    '("list" LaTeX-env-list))))
 @end lisp
 
 @findex LaTeX-env-item
@@ -3329,11 +3329,11 @@ and @var{step}, you can add support for them in a style file.
 @lisp
 ;; loop.el
 
-(TeX-add-style-hook "loop"
- (function
-  (lambda ()
-    (LaTeX-add-environments
-     '("loop" "From" "To" "Step")))))
+(TeX-add-style-hook
+ "loop"
+ (lambda ()
+   (LaTeX-add-environments
+    '("loop" "From" "To" "Step"))))
 @end lisp
 
 If an environment is defined multiple times, @AUCTeX{} will chose the
@@ -3343,11 +3343,11 @@ you could define an @file{enumerate.el} file as follows, and place it in
 the appropriate style directory.
 
 @lisp
-(TeX-add-style-hook "latex"
- (function
-  (lambda ()
-    (LaTeX-add-environments
-     '("enumerate" LaTeX-env-enumerate foo)))))
+(TeX-add-style-hook
+ "latex"
+ (lambda ()
+   (LaTeX-add-environments
+    '("enumerate" LaTeX-env-enumerate foo))))
 
 (defun LaTeX-env-enumerate (environment &optional ignore) ...)
 @end lisp
@@ -3415,7 +3415,7 @@ automatically see that each time we use the macro, two new macros are
 defined.  We can specify this information in a style hook file.
 
 @lisp
-;;; macro.el - Special code for my own macro file.
+;;; macro.el --- Special code for my own macro file.
 
 ;;; Code:
 
@@ -3428,31 +3428,31 @@ defined.  We can specify this information in a style hook file.
   "Temporary for parsing \\newmacro definitions.")
 
 (defun TeX-macro-cleanup ()
-  ;; Move symbols from `TeX-auto-multi' to `TeX-auto-symbol'.
-  (mapcar (function (lambda (list)
-	    (mapcar (function (lambda (symbol)
+  "Move symbols from `TeX-auto-multi' to `TeX-auto-symbol'."
+  (mapcar (lambda (list)
+	    (mapcar (lambda (symbol)
 		      (setq TeX-auto-symbol
-			    (cons symbol TeX-auto-symbol))))
-		    list)))
+			    (cons symbol TeX-auto-symbol)))
+		    list))
 	  TeX-auto-multi))
 
 (defun TeX-macro-prepare ()
-  ;; Clear `Tex-auto-multi' before use.
+  "Clear `Tex-auto-multi' before use."
   (setq TeX-auto-multi nil))
 
 (add-hook 'TeX-auto-prepare-hook 'TeX-macro-prepare)
 (add-hook 'TeX-auto-cleanup-hook 'TeX-macro-cleanup)
 
-(TeX-add-style-hook "macro"
- (function
-  (lambda ()
-    (TeX-auto-add-regexp TeX-newmacro-regexp)
-    (TeX-add-symbols '("newmacro"
-		       TeX-arg-macro
-		       (TeX-arg-macro "Capitalized macro: \\")
-		       t
-		       "BibTeX entry: "
-		       nil)))))
+(TeX-add-style-hook
+ "macro"
+ (lambda ()
+   (TeX-auto-add-regexp TeX-newmacro-regexp)
+   (TeX-add-symbols '("newmacro"
+		      TeX-arg-macro
+		      (TeX-arg-macro "Capitalized macro: \\")
+		      t
+		      "BibTeX entry: "
+		      nil))))
 
 ;;; macro.el ends here
 @end lisp
