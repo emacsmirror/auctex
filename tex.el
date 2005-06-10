@@ -1181,26 +1181,32 @@ this variable to \"<none>\"."
   (interactive)
   (if (TeX-local-master-p)
       (error "Master file already set")
-    (setq TeX-master
-	  (let ((default (TeX-dwim-master)))
-	    (or
-	     (and (eq 'dwim TeX-master) default)
-	     (TeX-strip-extension
-	      (condition-case name
-		  (read-file-name (format "Master file: (default %s) "
-					  (or default "this file"))
-				  nil (or default "<default>"))
-		(quit "<quit>"))
-	      (list TeX-default-extension)
-	      'path))))
-    (cond ((string-equal TeX-master "<quit>")
-	   (setq TeX-master t))
-	  ((or (string-equal TeX-master "<default>")
-	       (string-equal TeX-master ""))
-	   (setq TeX-master t)
-	   (TeX-add-local-master))
-	  (t
-	   (TeX-add-local-master)))))
+    (let* ((default (TeX-dwim-master))
+	   (name (or (and (eq 'dwim TeX-master) default)
+		     (condition-case nil
+			 (read-file-name (format "Master file: (default %s) "
+						 (or default "this file"))
+					 nil default)
+		       (quit "<quit>")))))
+      (cond ((string= name "<quit>")
+	     (setq TeX-master t))
+	    ((string= name default)
+	     (setq TeX-master default)
+	     (TeX-add-local-master))
+	    ((or
+	      ;; Default `read-file-name' proposes and buffer visits a file.
+	      (string= (expand-file-name name) (buffer-file-name))
+	      ;; Default of `read-file-name' and buffer does not visit a file.
+	      (string= name default-directory)
+	      ;; User typed <RET> in an empty minibuffer.
+	      (string= name ""))
+	     (setq TeX-master t)
+	     (TeX-add-local-master))
+	    (t
+	     (setq TeX-master (TeX-strip-extension (file-relative-name name)
+						   (list TeX-default-extension)
+						   'path))
+	     (TeX-add-local-master))))))
 
 (defun TeX-master-file (&optional extension nondirectory ask)
   "Set and return the name of the master file for the current document.
@@ -1235,16 +1241,27 @@ the beginning of the file, but that feature will be phased out."
 	 ((and (eq 'shared TeX-master) ask)
 	  (setq TeX-master
 		(or TeX-transient-master
-		    (TeX-strip-extension
-		     (let ((default (or (TeX-dwim-master) "this file")))
-		       (read-file-name
-			(format "Master file: (default %s) " default)
-			nil default))
-		     (list TeX-default-extension)
-		     'path)))
-	  (if (or (string-equal TeX-master "this file")
-		  (string-equal TeX-master ""))
-	      (setq TeX-master t)))
+		    (let* ((default (TeX-dwim-master))
+			   (name (read-file-name
+				  (format "Master file: (default %s) "
+					  (or default "this file"))
+				  nil default)))
+		      (cond ((string= name default)
+			     default)
+			    ((or
+			      ;; Default `read-file-name' proposes and
+			      ;; buffer visits a file.
+			      (string= (expand-file-name name)
+				       (buffer-file-name))
+			      ;; Default of `read-file-name' and
+			      ;; buffer does not visit a file.
+			      (string= name default-directory)
+			      ;; User typed <RET> in an empty minibuffer.
+			      (string= name ""))
+			     t)
+			    (t
+			     (TeX-strip-extension
+			      name (list (TeX-default-extension)) 'path)))))))
 
 	 ;; We might already know the name.
 	 ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
