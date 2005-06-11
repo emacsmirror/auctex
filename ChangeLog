@@ -1,3 +1,10 @@
+2005-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-master-file): Check `TeX-transient-master' not only
+	in the shared case.
+
+	* tex-buf.el (TeX-region-create): Let-bind `TeX-transient-master'.
+
 2005-06-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (Parsing Files): Fix display of reference.
