@@ -1233,6 +1233,8 @@ the beginning of the file, but that feature will be phased out."
 	(widen)
 	(goto-char (point-min))
 	(cond
+	 (TeX-transient-master
+	  (setq TeX-master TeX-transient-master))
 	 ;; Special value 't means it is own master (a free file).
 	 ((equal TeX-master my-name)
 	  (setq TeX-master t))
@@ -1240,28 +1242,27 @@ the beginning of the file, but that feature will be phased out."
 	 ;; For files shared between many documents.
 	 ((and (eq 'shared TeX-master) ask)
 	  (setq TeX-master
-		(or TeX-transient-master
-		    (let* ((default (TeX-dwim-master))
-			   (name (read-file-name
-				  (format "Master file: (default %s) "
-					  (or default "this file"))
-				  nil default)))
-		      (cond ((string= name default)
-			     default)
-			    ((or
-			      ;; Default `read-file-name' proposes and
-			      ;; buffer visits a file.
-			      (string= (expand-file-name name)
-				       (buffer-file-name))
-			      ;; Default of `read-file-name' and
-			      ;; buffer does not visit a file.
-			      (string= name default-directory)
-			      ;; User typed <RET> in an empty minibuffer.
-			      (string= name ""))
-			     t)
-			    (t
-			     (TeX-strip-extension
-			      name (list (TeX-default-extension)) 'path)))))))
+		(let* ((default (TeX-dwim-master))
+		       (name (read-file-name
+			      (format "Master file: (default %s) "
+				      (or default "this file"))
+			      nil default)))
+		  (cond ((string= name default)
+			 default)
+			((or
+			  ;; Default `read-file-name' proposes and
+			  ;; buffer visits a file.
+			  (string= (expand-file-name name)
+				   (buffer-file-name))
+			  ;; Default of `read-file-name' and
+			  ;; buffer does not visit a file.
+			  (string= name default-directory)
+			  ;; User typed <RET> in an empty minibuffer.
+			  (string= name ""))
+			 t)
+			(t
+			 (TeX-strip-extension
+			  name (list (TeX-default-extension)) 'path))))))
 
 	 ;; We might already know the name.
 	 ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
@@ -1286,7 +1287,7 @@ the beginning of the file, but that feature will be phased out."
 		  my-name)))
 
       (if (TeX-match-extension name)
-      ;; If it already have an extension...
+	  ;; If it already has an extension...
 	  (if (equal extension TeX-default-extension)
 	      ;; Use instead of the default extension
 	      (setq extension nil)
