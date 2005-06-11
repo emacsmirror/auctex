@@ -1171,7 +1171,8 @@ original file."
 	 (font-lock-auto-fontify nil)
 	 (font-lock-mode-enable-list nil)
 	 ;; And insert them into the FILE buffer.
-	 (file-buffer (find-file-noselect file))
+	 (file-buffer (let ((TeX-transient-master t))
+			(find-file-noselect file)))
 	 ;; But remember original content.
 	 original-content
 
