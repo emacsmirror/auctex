@@ -1,3 +1,8 @@
+2005-06-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-ispell-document): Cater for the case where the
+	master file is located in a different directory.
+
 2005-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-master-file): Check `TeX-transient-master' not only
