@@ -370,9 +370,14 @@ in TeX-check-path."
 				     (regexp-quote
 				      (expand-file-name 
 				       (file-name-as-directory dir))))
-				   TeX-check-path "\\|")
+				   (append (when (file-name-directory name)
+					     (list (file-name-directory name)))
+					   TeX-check-path)
+				   "\\|")
 			"\\).*\\("
-			(mapconcat 'regexp-quote (cons name (TeX-style-list)) "\\|")
+			(mapconcat 'regexp-quote
+				   (cons (file-name-nondirectory name)
+					 (TeX-style-list)) "\\|")
 			"\\)\\.\\("
 			(mapconcat 'regexp-quote TeX-file-extensions "\\|")
 			"\\)\\'"))
