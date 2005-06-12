@@ -2,6 +2,7 @@
 
 	* tex-buf.el (TeX-ispell-document): Cater for the case where the
 	master file is located in a different directory.
+	(TeX-run-ispell-on-document, TeX-ispell-document): Doc fix.
 
 2005-06-11  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
