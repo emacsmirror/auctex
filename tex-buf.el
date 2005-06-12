@@ -354,12 +354,12 @@ in TeX-check-path."
     found))
 
 (defun TeX-run-ispell-on-document (command ignored name)
-  "Run ispell on  all files belonging to the current document."
+  "Run ispell on all open files belonging to the current document."
   (interactive)
   (TeX-ispell-document ""))
 
 (defun TeX-ispell-document (name)
-  "Run ispell on  all files belonging to the current document."
+  "Run ispell on all open files belonging to the current document."
   (interactive (list (TeX-master-file)))
   (if (string-equal name "")
       (setq name (TeX-master-file)))
