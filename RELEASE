@@ -1,15 +1,17 @@
-Release notes for AUCTeX 11.55
-==============================
+Release notes for AUCTeX 11.80 with preview-latex
+=================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
 environment for editing LaTeX, TeX, ConTeXt and Texinfo documents with
-Emacs or XEmacs.  Combined with packages like RefTeX, preview-latex,
-flyspell and others it is pretty much without peer as a comprehensive
-authoring solution for a large variety of operating system platforms
-and TeX distributions.  It supports document-dependent completion and
-syntax highlighting, easily accessible menus, jumping to error
-locations in the source file, a number of editing shortcuts, and
-intelligent indentation and filling of the text during entry.
+Emacs or XEmacs.  Combined with packages like RefTeX, flyspell and
+others it is pretty much without peer as a comprehensive authoring
+solution for a large variety of operating system platforms and TeX
+distributions.  It supports document-dependent completion and syntax
+highlighting, easily accessible menus, jumping to error locations in
+the source file, a number of editing shortcuts, intelligent
+indentation and filling of the text during entry, and WYSIWYG previews
+of graphical elements like math formulas right in the Emacs source
+buffer, by virtue of its preview-latex component.
 
 Interfaces in this release remain a moving target with the
 documentation lagging somewhat.  We need volunteers in particular for
@@ -20,7 +22,14 @@ reference material, sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-AUCTeX 11.55 includes fixes for the following bugs:
+The most important feature of AUCTeX 11.80 is the inclusion of the
+preview-latex subsystem, previously available separately.
+
+The installation now also installs startup files as part of the
+installation (those had to be copied manually previously).
+Installation procedures have been overhauled.
+
+AUCTeX 11.80 includes fixes for the following bugs:
 
   * Erroneous insertion of trailing whitespace during filling.
 
@@ -36,12 +45,12 @@ AUCTeX 11.55 includes fixes for the following bugs:
 More detailed information can be found in the CHANGES file included in
 the distribution or the "Changes" section in the manual.
 
-IMPORTANT: Many of the new features in the 11.5x series rely on
-special properties in the variable `TeX-command-list' and will not
-work if you customized this variable for a pre-11.5x release of
-AUCTeX.  If this is the case for you, please re-initialize the
-variable by erasing the customization, thereby setting the variable to
-the new default, and re-adding your changes afterwards.
+IMPORTANT: Many of the new features in the 11.x series rely on special
+properties in the variable `TeX-command-list' and will not work if you
+customized this variable for a pre-11.5x release of AUCTeX.  If this
+is the case for you, please re-initialize the variable by erasing the
+customization, thereby setting the variable to the new default, and
+re-adding your changes afterwards.
 
 
 Requirements
@@ -56,9 +65,16 @@ changes in easy-mmode.el: please use the XEmacs package system for
 upgrading if necessary.  The current developers don't have the
 resources for providing backward compatibility to earlier versions.
 Warning: release 21.4.16 of XEmacs is severely broken.  This leads to
-crashes and hangs; since AUCTeX 11.55 is more likely to trigger this
-problem than previous AUCTeX releases, don't upgrade it if you can't
-use a different XEmacs version.
+crashes and hangs; don't use it.
+
+The preview-latex subsystem requires GNU Emacs-21.3 under the X window
+system or XEmacs-21 in version 21.4.10 or later, a working LaTeX
+installation and Ghostscript.  dvipng[1] (version 1.4 or later:
+teTeX-3.0 works, TeXlive2004 not), a very fast dvi converter, can be
+used to speed up the conversion.  For Windows[2], MacOS Carbon[3] or
+native GTK+ toolkit support[4], a developer version[5] of GNU Emacs
+(to be released as 22.1) is definitely required; for other platforms,
+use of it is advantageous.
 
 Availability
 ------------
@@ -98,3 +114,22 @@ Yvon Hevel, David Kastrup, Frank Küster, Jan-Åke Larsson, Dan
 Nicolaescu, Piet van Oostrum, Davide G. M. Salvetti, Mike Sperber,
 Reiner Steib, Christian Schlauer, Shiro Takeda (Please accept our
 apologies if we forgot somebody.)
+
+Footnotes: 
+[1]  dvipng is currently available via its current project page
+<URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
+
+[2]  You can get a precompiled version of CVS Emacs for Windows at
+<URL:http://nqmacs.sourceforge.net>.
+
+[3]  <URL:http://members.shaw.ca/akochoi-emacs/stories/faq.html>
+contains build instructions.
+
+[4]  For Debian, precompiled GTK+ Emacs packages can be found at
+<URL:http://sadleder.de/debian/>, for Fedora at
+<URL:http://people.redhat.com/petersen/emacs/>.
+
+[5]  If making use of the precompiled variants is not an option for
+you, instructions for checking out the CVS version straight from the
+GNU's mouth can be found at
+<URL:http://savannah.gnu.org/cvs/?group=emacs>

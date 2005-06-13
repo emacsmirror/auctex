@@ -1,5 +1,9 @@
 2005-06-14  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: Adapt RELEASE notes to include preview-latex info.
+
+	* README.CVS: Adapt to reality.
+
 	* doc/Makefile.in (all): Same as dist.
 	(dist): Just create DISTTEXTS and info files.
 	(extradist): Additional stuff for ftp site.
