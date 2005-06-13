@@ -1,3 +1,10 @@
+2005-06-14  David Kastrup  <dak@gnu.org>
+
+	* README.CVS: Remove.  Top file should be sufficient.
+
+	* autogen.sh: Remove.  We have its functionality in the top
+	directory.
+
 2005-06-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (docs, install-docs): Remove.

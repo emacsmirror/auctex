@@ -1,3 +1,19 @@
+2005-06-14  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (all): Same as dist.
+	(dist): Just create DISTTEXTS and info files.
+	(extradist): Additional stuff for ftp site.
+	(disttexts): Remove target.
+	(clean): Don't remove info files.
+	(maintainer-clean): Remove info files.
+
+	* autogen.sh: Add error messages, run autoconf in preview
+	subdirectory.  Heed MAKE variable if set.
+
+	* Makefile.in (CVSFILES): Define files not to use in tarball.
+	(tar-ball): Remove them.
+	(tar-ball): Make extradist for additional doc files on ftp.
+
 2005-06-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-ispell-document): Cater for the case where the

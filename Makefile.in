@@ -38,6 +38,8 @@ AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (save-buffers-kill-emacs t))'
 DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd $$OLDPWD;echo "Ascending into $$OLDPWD";done)
 
+CVSFILES=autogen.sh .cvsignore doc/.cvsignore preview/.cvsignore \
+	preview/latex/.cvsignore README.CVS
 
 .SUFFIXES: .el .elc .texi
 
@@ -292,7 +294,7 @@ tar-ball:
 	test ! -d auctex-$(TAG) || rm -r auctex-$(TAG)
 	mkdir auctex-$(TAG)
 	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
-	cd auctex-$(TAG) && ./autogen.sh
+	cd auctex-$(TAG) && ./autogen.sh && rm $(CVSFILES)
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR) $(WWWDIR)/doc
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
@@ -300,7 +302,7 @@ tar-ball:
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	cp auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
 	cp auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)
-	cd doc && $(MAKE) dist
+	cd doc && $(MAKE) extradist
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 	cp doc/html/*.html $(WWWDIR)/doc

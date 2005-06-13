@@ -22,15 +22,16 @@ PREVIEWTEXIFILES = copying.texi preview-faq.texi macros.texi \
 	preview-readme.texi preview-todo.texi
 DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
-all: auctex preview
+all: dist
 
 install: install-auctex install-preview
 
-dist: auctex.info $(DISTTEXTS) \
-	html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
+dist: $(DISTTEXTS) preview.info auctex.info
+
+extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 .PHONY: all auctex preview dist install-auctex disttexts clean distclean \
-	maintainer-clean install-preview html-docs
+	maintainer-clean install-preview html-docs extradist
 
 # AUCTeX
 
@@ -39,8 +40,8 @@ auctex: auctex.dvi tex-ref.dvi auctex.info
 html/auctex_toc.html: auctex.texi
 	rm -rf html
 	mkdir html
-	cd html;$(TEXI2HTML) -split_node -I .. ../auctex.texi && \
-	if [ -d auctex ];then mv auctex/* .; rm -rf auctex; fi
+	cd html && $(TEXI2HTML) -split_node -I .. ../auctex.texi && \
+	test ! -d auctex || { mv auctex/* . && rm -rf auctex ; }
 
 tex-ref.dvi: tex-ref.tex
 	$(TEX) tex-ref
@@ -143,20 +144,17 @@ install-preview: preview-latex.info
 	$(MAKEINFO) -D rawfile --no-headers  \
 		--number-sections preview-problems.texi --output $@
 
-disttexts: $(DISTTEXTS)
-
 # clean
 
 clean:
 	rm -f *.dvi *.ps *.pdf *.aux *.cp *.fn *.ky *.log *~ \#*\# \
 		*.tp *.vr *.pg *.toc *.tp *.bak *.cps *.kys *.tps \
-		*.fns *.vrs *.pgs *.tmp *.info *.info-* *.html \
-		preview-latex/*
-	rm -rf html
+		*.fns *.vrs *.pgs *.tmp *.html
+	rm -rf html preview-latex
 
 distclean: clean
 	rm -f Makefile
 
 maintainer-clean: distclean
 	rm -f INSTALL.windows README CHANGES HISTORY TODO FAQ \
-		preview-dtxdoc.texi auto.texi $(DISTTEXTS)
+		preview-dtxdoc.texi auto.texi $(DISTTEXTS) *.info *.info-*
