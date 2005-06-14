@@ -1,3 +1,7 @@
+2005-06-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Update stuff about fixed bugs and new features.
+
 2005-06-14  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Spell out file names more explicitly.
