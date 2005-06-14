@@ -5,6 +5,7 @@
 	(docs): Remove.
 	(info, dvi): New targets.
 	(tar-ball): Make sure `dist' stuff is up-to-date.
+	Revert, as it is superfluous.
 
 	* doc/Makefile.in (dist): Correct file name for
 	preview-latex.info.
