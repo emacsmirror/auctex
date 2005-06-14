@@ -222,9 +222,9 @@ install-contrib:	install-contrib-el $(CONTRIBELC) $(CONTRIB_MULEELC)
 	done;
 
 install-docs:
-	(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-auctex); \
-	if test "x$(preview_enabled)" = xyes; then \
-		(cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-preview); fi
+	cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-auctex
+	test "x$(preview_enabled)" != xyes || { \
+		cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-preview; }
 
 install-auto:
 	@echo "Use \"M-x TeX-auto-generate-global RET\" instead."

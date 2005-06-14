@@ -1,3 +1,8 @@
+2005-06-14  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (install-docs): Make exit status of test bad-shell
+	safe.
+
 2005-06-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (all): Do not depend on `docs' target.
