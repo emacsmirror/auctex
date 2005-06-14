@@ -29,18 +29,12 @@ The installation now also installs startup files as part of the
 installation (those had to be copied manually previously).
 Installation procedures have been overhauled.
 
-AUCTeX 11.80 includes fixes for the following bugs:
+Other new features include support for commands of the babel package,
+generalization of language-specific quotation mark and hyphen
+insertion, and tooltips for folding mode.
 
-  * Erroneous insertion of trailing whitespace during filling.
-
-  * Unwanted display of *Compile-Log* buffer when the first LaTeX file
-    in an Emacs session is loaded.
-
-  * `File mode specification error: (error "Variable binding depth
-    exceeds max-specpdl-size")' if an outdated Emacspeak package is
-    installed.  But since both Emacs and XEmacs contain a correct
-    version of `regexp-opt.el', simply removing any such file within
-    your copy of Emacspeak appears safer.
+Of course, a lot of bugs have been fixed as well, such as problems
+with filling Japanese text.
 
 More detailed information can be found in the CHANGES file included in
 the distribution or the "Changes" section in the manual.
@@ -120,7 +114,8 @@ Footnotes:
 <URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
 
 [2]  You can get a precompiled version of CVS Emacs for Windows at
-<URL:http://nqmacs.sourceforge.net>.
+<URL:http://nqmacs.sourceforge.net> or
+<URL:http://www.crasseux.com/emacs/>.
 
 [3]  <URL:http://members.shaw.ca/akochoi-emacs/stories/faq.html>
 contains build instructions.
