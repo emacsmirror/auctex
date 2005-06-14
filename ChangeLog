@@ -1,3 +1,8 @@
+2005-06-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/Makefile.in (dist): Correct file name for
+	preview-latex.info.
+
 2005-06-14  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Adapt RELEASE notes to include preview-latex info.

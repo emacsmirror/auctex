@@ -26,7 +26,7 @@ all: dist
 
 install: install-auctex install-preview
 
-dist: $(DISTTEXTS) preview.info auctex.info
+dist: $(DISTTEXTS) preview-latex.info auctex.info
 
 extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
