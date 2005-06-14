@@ -29,8 +29,11 @@ Avoid `helpful' magic file names like @samp{/cygdrive/c} and
 @samp{C:\PROGRA~1\} like the plague.  It is quite unlikely that the
 scripts will be able to identify the actual file names involved.  Use
 the full paths, making use of normal Windows drive letters like
-@samp{C:} where required, and using the same combination of upper- and
-lowercase letters as in the actual files.
+@samp{ 'C:/Program Files/Emacs' } where required, and using the same
+combination of upper- and lowercase letters as in the actual files.
+File names containing shell-special characters like spaces or
+backslashes (if you prefer that syntax) need to get properly quoted to
+the shell: the above example used single quotes for that.
 
 Ok, now here are the steps to perform:
 
@@ -68,7 +71,7 @@ trouble.  Using Cygwin either for everything or nothing might save
 headaches, @emph{if} things don't work out.
 
 @item
-Install a current version of XEmacs (such as 21.4.10) from
+Install a current version of XEmacs from
 @uref{http://www.xemacs.org} or try getting and compiling a developer
 version of @w{Emacs 22} from
 @uref{http://savannah.gnu.org/cvs/?group=emacs,Savannah}.  Compiling

@@ -1,5 +1,10 @@
 2005-06-14  David Kastrup  <dak@gnu.org>
 
+	* doc/wininstall.texi: Spell out file names more explicitly.
+	Remove any hint of a version that might lead Windows users to
+	assume this documentation is for some reason more outdated than
+	year-old stuff they find via Google.
+
 	* Makefile.in (install-docs): Make exit status of test bad-shell
 	safe.
 
