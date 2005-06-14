@@ -24,18 +24,20 @@ DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: dist
 
+info: auctex.info preview-latex.info
+
+dvi: auctex.dvi tex-ref.dvi preview-latex.dvi
+
 install: install-auctex install-preview
 
 dist: $(DISTTEXTS) preview-latex.info auctex.info
 
 extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
-.PHONY: all auctex preview dist install-auctex disttexts clean distclean \
+.PHONY: all info dvi dist install-auctex disttexts clean distclean \
 	maintainer-clean install-preview html-docs extradist
 
 # AUCTeX
-
-auctex: auctex.dvi tex-ref.dvi auctex.info
 
 html/auctex_toc.html: auctex.texi
 	rm -rf html
@@ -76,8 +78,6 @@ install-auctex: auctex.info
 	-$(INSTALL_INFO)  --info-dir=$(DESTDIR)$(infodir) auctex.info
 
 # preview
-
-preview: preview-latex.dvi preview-latex.info
 
 preview-latex/index.html: $(PREVIEWTEXIFILES)
 	rm -f preview-latex/*
