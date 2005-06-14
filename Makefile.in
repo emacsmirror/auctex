@@ -143,7 +143,7 @@ config.status: configure
 auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
 	test X$(packagedir) != Xno || { \
 	  rm -f $@ ; \
-	  $(ELCC) $(AUTOLOAD) $(AUCSRC) || : ; \
+	  $(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE) || : ; \
 	  test -r $@ || { \
 	    echo ";; Auto-generated part of tex-site.el" > $@ ; \
 	    echo "" >> $@ ; \
