@@ -1,3 +1,7 @@
+2005-06-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* Makefile.in (auto-loads.el): Auto-load COMPILE_MULE, too.
+
 2005-06-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* RELEASE: Update stuff about fixed bugs and new features.
