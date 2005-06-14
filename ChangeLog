@@ -1,7 +1,16 @@
 2005-06-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* Makefile.in (all): Do not depend on `docs' target.
+	(.PHONY): Remove `docs'.  Add `info' and `dvi'.
+	(docs): Remove.
+	(info, dvi): New targets.
+	(tar-ball): Make sure `dist' stuff is up-to-date.
+
 	* doc/Makefile.in (dist): Correct file name for
 	preview-latex.info.
+	(info, dvi): New targets.
+	(.PHONY): Add them and remove `auctex' and `preview'.
+	(auctex, preview): Remove.
 
 2005-06-14  David Kastrup  <dak@gnu.org>
 
