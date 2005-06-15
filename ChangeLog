@@ -1,3 +1,7 @@
+2005-06-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Use correct variable for --disable-preview switch.
+
 2005-06-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* Makefile.in (auto-loads.el): Auto-load COMPILE_MULE, too.
