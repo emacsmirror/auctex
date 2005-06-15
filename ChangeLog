@@ -1,5 +1,9 @@
 2005-06-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/install.texi (Prerequisites): Denastify.
+
+	* doc/auctex.texi (Font Locking): Fix typo.
+
 	* configure.ac: Use correct variable for --disable-preview switch.
 
 2005-06-15  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
