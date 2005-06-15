@@ -115,7 +115,7 @@ AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_ARG_ENABLE(preview,
   [  --disable-preview       disable inclusion of preview-latex],
-  [preview_enabled="$withval"],
+  [preview_enabled="$enableval"],
   [preview_enabled="yes"])
 AC_SUBST(preview_enabled)
 
