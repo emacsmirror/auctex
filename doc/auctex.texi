@@ -1554,7 +1554,7 @@ variables @code{font-latex-fontify-script} and
 @defopt font-latex-fontify-script
 If non-nil, fontify subscript and superscript strings.
 
-Note that this feature is not available on XEmacs, for whicht it is
+Note that this feature is not available on XEmacs, for which it is
 disabled per default.  In GNU Emacs raising and lowering is not enabled
 for versions 21.3 and before due to it working not properly.
 @end defopt
