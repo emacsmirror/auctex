@@ -1,3 +1,7 @@
+2005-06-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-style.el (LaTeX-includegraphics-read-file): Doc fix.
+
 2005-06-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Prerequisites): Denastify.
