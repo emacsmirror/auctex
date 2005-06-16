@@ -1163,8 +1163,8 @@ this variable to \"<none>\"."
   :group 'TeX-command
   :type 'regexp)
 
-;; Can be let-bound temporarily in order to inhibit the master file
-;; question for shared files where its value will be used instead.
+;; Can be let-bound temporarily in order to inhibit the master file question
+;; by using its value instead in case `TeX-master' is nil or 'shared.
 (defvar TeX-transient-master nil)
 
 (defun TeX-dwim-master ()
@@ -1233,7 +1233,8 @@ the beginning of the file, but that feature will be phased out."
 	(widen)
 	(goto-char (point-min))
 	(cond
-	 (TeX-transient-master
+	 ((and TeX-transient-master
+	       (or (not TeX-master) (eq TeX-master 'shared)))
 	  (setq TeX-master TeX-transient-master))
 	 ;; Special value 't means it is own master (a free file).
 	 ((equal TeX-master my-name)
