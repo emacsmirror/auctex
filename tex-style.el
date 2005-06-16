@@ -316,7 +316,7 @@ found in the TeX search path.
 
 `LaTeX-includegraphics-read-file-relative' lists all graphic files
 in the master directory and its subdirectories and inserts the
-relative file name.  This option doesn't works with Emacs 21.3 or
+relative file name.  This option does not work with Emacs 21 or
 XEmacs.
 
 The custom option `simple' works as
