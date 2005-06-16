@@ -45,12 +45,15 @@ See also the table at the end of the section.
 @previewlatex{} nominally requires @w{GNU Emacs} with a version of at
 least 21.1.  However, @w{Emacs 22} (currently under development) offers
 superior performance and wider platform support, and is even now the
-recommended platform to use.  While XEmacs is still basically supported
-by the @AUCTeX{} team in spite of having almost no XEmacs users among
-them, @previewlatex{} and @AUCTeX{} support is not a priority for XEmacs
-developers.  This makes getting XEmacs bugs and shortcomings fixed such
-an inefficient and unpleasant task that we can't in good conscience
-recommend XEmacs to users that rely on continued support of @AUCTeX{}.
+recommended platform to use.
+
+While recent versions of @w{XEmacs 21.4} are supported, doing this in a
+satisfactory manner has proven to be difficult due to technical
+shortcomings and differing API's which are hard to come by.  If
+@previewlatex{} is an important part of your editing workflow, you are
+likely to get better results and support by switching to Emacs.  Of
+course, you can improve support for your favorite editor by giving
+feedback in case you encounter bugs.
 
 @subsection Which versions of Ghostscript and @AUCTeX{} are needed?
 
