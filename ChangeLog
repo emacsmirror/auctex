@@ -1,5 +1,7 @@
 2005-06-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/preview-faq.texi (Requirements): Denastify.
+
 	* tex.el (TeX-master-file): Don't override existing master with
 	`TeX-transient-master'.
 
