@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.257 2005-05-23 23:11:02 dak Exp $
+;; $Id: preview.el,v 1.258 2005-06-17 23:03:56 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -792,7 +792,8 @@ Pure borderless black-on-white will return an empty string."
 (defun preview-gs-dvips-process-setup ()
   "Set up Dvips process for conversions via gs."
   (unless (preview-supports-image-type preview-gs-image-type)
-    (error "This Emacs lacks '%s image support" preview-gs-image-type))
+    (error "preview-image-type setting '%s unsupported by this Emacs"
+	   preview-gs-image-type))
   (setq preview-gs-command-line (append
 				 preview-gs-command-line
 				 (list (preview-gs-resolution
@@ -817,9 +818,10 @@ Pure borderless black-on-white will return an empty string."
   (if preview-parsed-pdfoutput
       (if (preview-supports-image-type preview-gs-image-type)
 	  (preview-pdf2dsc-process-setup)
-	(error "This Emacs lacks '%s image support" preview-gs-image-type))
+	(error "preview-image-type setting '%s unsupported by this Emacs"
+	       preview-gs-image-type))
     (unless (preview-supports-image-type preview-dvipng-image-type)
-      (error "This Emacs lacks '%s image support"
+      (error "preview-dvipng-image-type setting '%s unsupported by this Emacs"
 	     preview-dvipng-image-type))
     (let ((process (preview-start-dvipng)))
       (setq TeX-sentinel-function #'preview-dvipng-sentinel)
@@ -2590,8 +2592,9 @@ call, and in its CDR the final stuff for the placement hook."
 	(set (nth 1 var) nil))
       (goto-char (point-min))
       (unwind-protect
-	  (while
-	      (re-search-forward "\
+	  (progn
+	    (while
+		(re-search-forward "\
 \\(^! \\)\\|\
 \(\\([^()\r\n{ ]+\\))*\\(?:{[^}\n]*}\\)?\\(?: \\|\r?$\\)\\|\
 )+\\( \\|\r?$\\)\\|\
@@ -2632,124 +2635,124 @@ name(\\([^)]+\\))\\)\\|\
 ;;; This would have caught overfull box messages that consist of
 ;;; several lines of context all with 79 characters in length except
 ;;; of the last one.  prauctex.def kills all such messages.
-	    (cond
-	     ((match-beginning 1)
-	      (if (looking-at "\
+	      (cond
+	       ((match-beginning 1)
+		(if (looking-at "\
 \\(?:Preview\\|Package Preview Error\\): Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 \\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
-		  (progn
-		    (setq snippet (string-to-number (match-string 1))
-			  box (unless
-				  (string= (match-string 2) "started")
-				(if (match-string 4)
-				    (mapcar #'(lambda (x)
-						(* (preview-get-magnification)
-						   (string-to-number x)))
-					    (list
-					     (match-string 4)
-					     (match-string 5)
-					     (match-string 6)))
-				  t))
-			  counters (mapcar #'cdr preview-parsed-counters)
-			  error (progn
-				  (setq lpoint (point))
-				  (end-of-line)
-				  (buffer-substring lpoint (point)))
-			  
-			  ;; And the context for the help window.
-			  context-start (point)
-			  
-			  ;; And the line number to position the cursor.
+		    (progn
+		      (setq snippet (string-to-number (match-string 1))
+			    box (unless
+				    (string= (match-string 2) "started")
+				  (if (match-string 4)
+				      (mapcar #'(lambda (x)
+						  (* (preview-get-magnification)
+						     (string-to-number x)))
+					      (list
+					       (match-string 4)
+					       (match-string 5)
+					       (match-string 6)))
+				    t))
+			    counters (mapcar #'cdr preview-parsed-counters)
+			    error (progn
+				    (setq lpoint (point))
+				    (end-of-line)
+				    (buffer-substring lpoint (point)))
+			    
+			    ;; And the context for the help window.
+			    context-start (point)
+			    
+			    ;; And the line number to position the cursor.
 ;;; variant 1: profiling seems to indicate the regexp-heavy solution
 ;;; to be favorable.  Removing incomplete characters from the error
 ;;; context is an absolute nuisance.
-			  line (and (re-search-forward "\
+			    line (and (re-search-forward "\
 ^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^?\\(?:[89a-f][0-9a-f]\\|[@-_?]\\)\\|\
 \[0-9a-f]?\\)\\)?\\([^\n\r]*?\\)\r?
 \\([^\n\r]*?\\)\\(\\.\\.\\.\\|\\^\\(?:\\^[89a-f]?\\)?\\.\\.\\.\\)?\r?$" nil t)
-				    (string-to-number (match-string 1)))
-			  ;; And a string of the context to search for.
-			  string (and line (match-string 3))
-			  after-string (and line (buffer-substring
-						  (+ (match-beginning 4)
-						     (- (match-end 3)
-							(match-beginning 0)))
-						  (match-end 4)))
-			  
-			  ;; And we have now found to the end of the context.
-			  context (buffer-substring context-start (point))
-			  ;; We may use these in another buffer.
-			  offset (car TeX-error-offset)
-			  file (car TeX-error-file))
-		    (when (and (stringp file)
-			       (or (string= file "<none>")
-				   (TeX-match-extension file)))
-		      ;; if we are the first time round, check for fast hooks:
-		      (when (null parsestate)
-			(setq open-data
-			      (save-excursion (funcall open-closure))
-			      tempdir TeX-active-tempdir)
-			(dolist
-			    (lst (if (listp TeX-translate-location-hook)
-				     TeX-translate-location-hook
-				   (list TeX-translate-location-hook)))
-			  (let ((fast
-				 (and (symbolp lst)
-				      (get lst 'TeX-translate-via-list))))
-			    (if fast
-				(setq fast-hook
-				      (nconc fast-hook (list fast)))
-			      (setq slow-hook
-				    (nconc slow-hook (list lst)))))))
-		      (condition-case err
-			  (save-excursion (run-hooks 'slow-hook))
-			(error (preview-log-error err "Translation hook")))
-		      (push (vector file (+ line offset)
-				    string after-string
-				    snippet box counters) parsestate)))
-		;; else normal error message
-		(forward-line)
-		(re-search-forward "^l\\.[0-9]" nil t)
-		(forward-line 2)))
-	     ((match-beginning 2)
-	      ;; New file -- Push on stack
-	      (push (match-string-no-properties 2) TeX-error-file)
-	      (push 0 TeX-error-offset)
-	      (goto-char (match-end 2)))
-	     ((match-beginning 3)
-	      ;; End of file -- Pop from stack
-	      (pop TeX-error-file)
-	      (pop TeX-error-offset)
-	      (goto-char (1+ (match-beginning 0))))
-	     ((match-beginning 4)
-	      ;; Hook to change line numbers
-	      (rplaca TeX-error-offset
-		      (string-to-number (match-string 4))))
-	     ((match-beginning 5)
-	      ;; Hook to change file name
-	      (rplaca TeX-error-file (match-string-no-properties 5)))
-	     ((match-beginning 6)
-	      (let ((var
-		     (assoc (match-string-no-properties 6)
-			    preview-parse-variables))
-		    (offset (- (match-beginning 0) (match-beginning 7)))
-		    (str (match-string-no-properties 7)))
-		;; paste together continuation lines:
-		(while (= (- (length str) offset) 79)
-		  (search-forward-regexp "^\\([^\n\r]*\\)\r?$")
-		  (setq offset (- (length str))
-			str (concat str (match-string-no-properties 1))))
-		(when (and var
-			   (string-match (nth 2 var) str))
-		  (set (nth 1 var)
-		       (funcall (nth 4 var)
-				(match-string-no-properties
-				 (nth 3 var)
-				 str))))))))
+				      (string-to-number (match-string 1)))
+			    ;; And a string of the context to search for.
+			    string (and line (match-string 3))
+			    after-string (and line (buffer-substring
+						    (+ (match-beginning 4)
+						       (- (match-end 3)
+							  (match-beginning 0)))
+						    (match-end 4)))
+			    
+			    ;; And we have now found to the end of the context.
+			    context (buffer-substring context-start (point))
+			    ;; We may use these in another buffer.
+			    offset (car TeX-error-offset)
+			    file (car TeX-error-file))
+		      (when (and (stringp file)
+				 (or (string= file "<none>")
+				     (TeX-match-extension file)))
+			;; if we are the first time round, check for fast hooks:
+			(when (null parsestate)
+			  (setq open-data
+				(save-excursion (funcall open-closure))
+				tempdir TeX-active-tempdir)
+			  (dolist
+			      (lst (if (listp TeX-translate-location-hook)
+				       TeX-translate-location-hook
+				     (list TeX-translate-location-hook)))
+			    (let ((fast
+				   (and (symbolp lst)
+					(get lst 'TeX-translate-via-list))))
+			      (if fast
+				  (setq fast-hook
+					(nconc fast-hook (list fast)))
+				(setq slow-hook
+				      (nconc slow-hook (list lst)))))))
+			(condition-case err
+			    (save-excursion (run-hooks 'slow-hook))
+			  (error (preview-log-error err "Translation hook")))
+			(push (vector file (+ line offset)
+				      string after-string
+				      snippet box counters) parsestate)))
+		  ;; else normal error message
+		  (forward-line)
+		  (re-search-forward "^l\\.[0-9]" nil t)
+		  (forward-line 2)))
+	       ((match-beginning 2)
+		;; New file -- Push on stack
+		(push (match-string-no-properties 2) TeX-error-file)
+		(push 0 TeX-error-offset)
+		(goto-char (match-end 2)))
+	       ((match-beginning 3)
+		;; End of file -- Pop from stack
+		(pop TeX-error-file)
+		(pop TeX-error-offset)
+		(goto-char (1+ (match-beginning 0))))
+	       ((match-beginning 4)
+		;; Hook to change line numbers
+		(rplaca TeX-error-offset
+			(string-to-number (match-string 4))))
+	       ((match-beginning 5)
+		;; Hook to change file name
+		(rplaca TeX-error-file (match-string-no-properties 5)))
+	       ((match-beginning 6)
+		(let ((var
+		       (assoc (match-string-no-properties 6)
+			      preview-parse-variables))
+		      (offset (- (match-beginning 0) (match-beginning 7)))
+		      (str (match-string-no-properties 7)))
+		  ;; paste together continuation lines:
+		  (while (= (- (length str) offset) 79)
+		    (search-forward-regexp "^\\([^\n\r]*\\)\r?$")
+		    (setq offset (- (length str))
+			  str (concat str (match-string-no-properties 1))))
+		  (when (and var
+			     (string-match (nth 2 var) str))
+		    (set (nth 1 var)
+			 (funcall (nth 4 var)
+				  (match-string-no-properties
+				   (nth 3 var)
+				   str))))))))
+	    (when (null parsestate)
+	      (error "LaTeX found no preview images")))
 	(unwind-protect
 	    (save-excursion
-	      (if (null parsestate)
-		  (error "LaTeX found no preview images"))
 	      (setq parsestate (nreverse parsestate))
 	      (condition-case err
 		  (dolist (fun fast-hook)
@@ -3418,7 +3421,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.257 $"))
+	(rev "$Revision: 1.258 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3429,7 +3432,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-05-23 23:11:02 $"))
+    (let ((date "$Date: 2005-06-17 23:03:56 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

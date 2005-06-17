@@ -1,3 +1,10 @@
+2005-06-18  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-gs-dvips-process-setup)
+	(preview-dvipng-process-setup): Improve error message.
+	(preview-parse-messages): Don't throw error on nil parsestate if
+	we are in error unwinding mode already.
+
 2005-06-14  David Kastrup  <dak@gnu.org>
 
 	* README.CVS: Remove.  Top file should be sufficient.
