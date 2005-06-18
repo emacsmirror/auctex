@@ -1,3 +1,8 @@
+2005-06-18  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Well, the merge with preview-latex is no longer
+	"planned".
+
 2005-06-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/preview-faq.texi (Requirements): Denastify.

@@ -89,13 +89,12 @@ Future development and additional information
 ---------------------------------------------
 
 AUCTeX is proceeding as a GNU project with the long-term intent of
-merging it into Emacs (and merging with preview-latex
-<URL:http://preview-latex.sourceforge.net/> soon).  For that reason,
-all new contributors need to assign copyright to their contributions
-to the FSF (the usual procedure for Emacs contributors).  The same
-holds for past contributors.  The principal authors and maintainers
-have already done so, but it would require a diligent and diplomatic
-volunteer to find and ask the rest.
+merging it into Emacs.  For that reason, all new contributors need to
+assign copyright to their contributions to the FSF (the usual
+procedure for Emacs contributors).  The same holds for past
+contributors.  The principal authors and maintainers have already done
+so, but it would require a diligent and diplomatic volunteer to find
+and ask the rest.
 
 Current project manager is David Kastrup <mailto:dak@gnu.org>.  While
 Paypal contributions are appreciated, volunteering for tasks remains
@@ -104,8 +103,8 @@ the most effective way of helping AUCTeX development.
 The following people contributed to this release series (in
 alphabetical order): Ralf Angeli, Masayuki Ataka, Thomas Baumann,
 Berend de Boer, Miguel Frasson, Peter S. Galbraith, Patrick Gundlach,
-Yvon Hevel, David Kastrup, Frank Küster, Jan-Åke Larsson, Dan
-Nicolaescu, Piet van Oostrum, Davide G. M. Salvetti, Mike Sperber,
+Yvon Hevel, David Kastrup, Ikumi Keita, Frank Küster, Jan-Åke Larsson,
+Dan Nicolaescu, Piet van Oostrum, Davide G. M. Salvetti, Mike Sperber,
 Reiner Steib, Christian Schlauer, Shiro Takeda (Please accept our
 apologies if we forgot somebody.)
 
