@@ -1,5 +1,9 @@
 2005-06-21  David Kastrup  <dak@gnu.org>
 
+	* Makefile.in (xemacs-package): reorder args.
+
+	* configure.ac: disable INSTALL_INFO for XEmacs package.
+
 	* doc/Makefile.in (install-man): Use $$i instead of $i.
 
 2005-06-20  David Kastrup  <dak@gnu.org>

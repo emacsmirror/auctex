@@ -51,7 +51,7 @@ then
 else
    #lispdir is only used for determining relative files.
    lispdir="${packagedir}"
-   test "X$packagelispdir" = x && packagelispdir="${packagedir}/lisp/preview"
+   test "X$packagelispdir" = X && packagelispdir="${packagedir}/lisp/preview"
    previewstartfile="${packagelispdir}"/auto-autoloads.el
    test "X$packagedatadir" = X && packagedatadir="${packagedir}/etc/preview"
    infodir="${packagedir}/info"

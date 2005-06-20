@@ -61,6 +61,7 @@ else
    auctexstartfile="${packagelispdir}"/auto-autoloads.el
    packagedatadir="${packagedir}/etc/auctex"
    infodir="${packagedir}/info"
+   INSTALL_INFO=:
 fi
 
 AC_SUBST(auctexstartfile)

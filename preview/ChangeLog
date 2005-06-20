@@ -1,3 +1,7 @@
+2005-06-21  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: correct comparison.
+
 2005-06-20  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Remove (folded into ../RELEASE).
