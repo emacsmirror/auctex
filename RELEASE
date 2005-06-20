@@ -13,10 +13,20 @@ indentation and filling of the text during entry, and WYSIWYG previews
 of graphical elements like math formulas right in the Emacs source
 buffer, by virtue of its preview-latex component.
 
-Interfaces in this release remain a moving target with the
-documentation lagging somewhat.  We need volunteers in particular for
-non-programming tasks: documentation writing, tutorials, translations,
-reference material, sleuth work, testing.
+One part of the preview-latex subsystem is the central `preview.sty'
+file that is independently useful for a number of applications and is
+available in unbundled form from CTAN.[1]
+
+Interfaces and installation procedures in this release remain a moving
+target.  If you feel you need to consult third-party installation
+instructions for some reason, be sure that they refer to the same
+version of AUCTeX as you are installing.  For installing AUCTeX
+itself, the installation instructions in the AUCTeX package should be
+preferred.
+
+AUCTeX needs volunteers in particular for non-programming tasks:
+documentation writing, tutorials, translations, reference material,
+sleuth work, testing.
 
 
 New features and fixed bugs in this release
@@ -25,9 +35,12 @@ New features and fixed bugs in this release
 The most important feature of AUCTeX 11.80 is the inclusion of the
 preview-latex subsystem, previously available separately.
 
-The installation now also installs startup files as part of the
-installation (those had to be copied manually previously).
-Installation procedures have been overhauled.
+The installation procedures have been overhauled and now also install
+startup files as part of the process (those had to be copied manually
+previously).  You are advised to remove previous installations of
+AUCTeX and preview-latex before starting the installation procedure.
+A standard installation from an unmodified tarball no longer requires
+Makeinfo or Perl.
 
 Other new features include support for commands of the babel package,
 generalization of language-specific quotation mark and hyphen
@@ -35,6 +48,10 @@ insertion, and tooltips for folding mode.
 
 Of course, a lot of bugs have been fixed as well, such as problems
 with filling Japanese text.
+
+The encoding support of preview-latex has been further improved: it
+should be able to deal with most encoding systems including utf-8
+transparently.
 
 More detailed information can be found in the CHANGES file included in
 the distribution or the "Changes" section in the manual.
@@ -50,25 +67,24 @@ re-adding your changes afterwards.
 Requirements
 ------------
 
-It is required that you use at least GNU Emacs 21 or XEmacs 21.4 with
-AUCTeX.  Support for Emacs 20 has been dropped in favor of getting
-more important work done.  For XEmacs, you need at least version 1.84
-of the xemacs-base package (released on 01/27/2004) or a sumo tarball
-dated 02/02/2004 or newer for compiling AUCTeX because of non-trivial
-changes in easy-mmode.el: please use the XEmacs package system for
-upgrading if necessary.  The current developers don't have the
-resources for providing backward compatibility to earlier versions.
-Warning: release 21.4.16 of XEmacs is severely broken.  This leads to
-crashes and hangs; don't use it.
+It is required that you use at least GNU Emacs 21 or XEmacs 21.4.
+XEmacs requires at least version 1.84 of the xemacs-base package
+(released on 01/27/2004) or a sumo tarball dated 02/02/2004 or newer
+for compiling AUCTeX: please use the XEmacs package system for
+upgrading if necessary.  Warning: release 21.4.16 of XEmacs is
+severely broken.  This leads to crashes and hangs; don't use it.
 
-The preview-latex subsystem requires GNU Emacs-21.3 under the X window
-system or XEmacs-21 in version 21.4.10 or later, a working LaTeX
-installation and Ghostscript.  dvipng[1] (version 1.4 or later:
-teTeX-3.0 works, TeXlive2004 not), a very fast dvi converter, can be
-used to speed up the conversion.  For Windows[2], MacOS Carbon[3] or
-native GTK+ toolkit support[4], a developer version[5] of GNU Emacs
-(to be released as 22.1) is definitely required; for other platforms,
-use of it is advantageous.
+The preview-latex subsystem requires image support.  This is available
+with GNU Emacs 21.3 under the X window system.  For Windows[2], MacOS
+Carbon[3] or native GTK+ toolkit support[4], a developer version[5] of
+GNU Emacs (to be released as 22.1) is definitely required.  A recent
+developer version of GNU Emacs appears like the best choice even on
+X11, however.  If you prefer XEmacs-21, it will work in version
+21.4.10 or later.
+
+You'll also need a working LaTeX installation and Ghostscript.
+dvipng[6] (version 1.4 or later: teTeX-3.0 works, TeXlive2004 not), a
+very fast dvi converter, can be used to speed up the conversion.
 
 Availability
 ------------
@@ -96,9 +112,9 @@ contributors.  The principal authors and maintainers have already done
 so, but it would require a diligent and diplomatic volunteer to find
 and ask the rest.
 
-Current project manager is David Kastrup <mailto:dak@gnu.org>.  While
-Paypal contributions are appreciated, volunteering for tasks remains
-the most effective way of helping AUCTeX development.
+Current project manager is David Kastrup.  While Paypal contributions
+to <URL:mailto:auctex@gnu.org> are appreciated, volunteering for tasks
+remains the most effective way of helping AUCTeX development.
 
 The following people contributed to this release series (in
 alphabetical order): Ralf Angeli, Masayuki Ataka, Thomas Baumann,
@@ -109,8 +125,8 @@ Reiner Steib, Christian Schlauer, Shiro Takeda (Please accept our
 apologies if we forgot somebody.)
 
 Footnotes: 
-[1]  dvipng is currently available via its current project page
-<URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
+
+[1]  <URL:ftp://ftp.dante.de/tex-archive/macros/latex/contrib/preview/>
 
 [2]  You can get a precompiled version of CVS Emacs for Windows at
 <URL:http://nqmacs.sourceforge.net> or
@@ -127,3 +143,6 @@ contains build instructions.
 you, instructions for checking out the CVS version straight from the
 GNU's mouth can be found at
 <URL:http://savannah.gnu.org/cvs/?group=emacs>
+
+[6]  dvipng is currently available via its current project page
+<URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
