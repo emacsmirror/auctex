@@ -1,3 +1,7 @@
+2005-06-20  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Remove (folded into ../RELEASE).
+
 2005-06-18  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-gs-dvips-process-setup)
