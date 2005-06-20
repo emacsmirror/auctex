@@ -1,3 +1,11 @@
+2005-06-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-superscript-face)
+	(font-latex-subscript-face): Add to correct customization group.
+	(font-latex-match-command-with-arguments)
+	(font-latex-match-command-in-braces, font-latex-match-math-env):
+	Don't set a dummy match.
+
 2005-06-18  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Well, the merge with preview-latex is no longer
