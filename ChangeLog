@@ -4,7 +4,7 @@
 	(font-latex-subscript-face): Add to correct customization group.
 	(font-latex-match-command-with-arguments)
 	(font-latex-match-command-in-braces, font-latex-match-math-env):
-	Don't set a dummy match.
+	Don't set a dummy match.  Remove unnecessary throw..catch clauses.
 
 2005-06-18  David Kastrup  <dak@gnu.org>
 
