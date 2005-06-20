@@ -1,5 +1,18 @@
 2005-06-20  David Kastrup  <dak@gnu.org>
 
+	* doc/install.texi (Advice for package providers): Propose package
+	structure.
+
+	* doc/Makefile.in (install-man): Install sources for texinfo
+	files.
+	(.PHONY): Add install-man.
+
+	* Makefile.in (.PHONY): Add install-man and xemacs-package
+	(install-man): Just descend into doc directory.
+	(xemacs-package): Try building some XEmacs package.
+
+	* autogen.sh: Don't run distclean, that seems unexpected.
+
 	* RELEASE: Further fold in stuff from preview/RELEASE which is now
 	deleted.
 

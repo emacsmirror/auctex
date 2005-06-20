@@ -381,6 +381,46 @@ more outdated or much less complete than separately provided systems
 like @w{@TeX{} Live}, this method may be generally preferable when
 providing packages.
 
+The following package structure would be adequate for a typical fully
+supported Unix-like installation:
+
+@table @samp
+@item preview-tetex
+Style files and documentation for @file{preview.sty}, placed into a
+@TeX{} tree where it is accessible from the te@TeX{} executables usually
+delivered with a system.  If there are other commonly used @TeX{} system
+packages, it might be appropriate to provide separate packages for
+those.
+@item auctex-emacs-tetex
+This package will require the installation of @samp{preview-tetex} and
+will record in @samp{TeX-macro-global} know where to find the @TeX{}
+tree.  It is also a good idea to run
+@example
+emacs -batch -f TeX-auto-generate-global
+@end example
+when either @AUCTeX{} or te@TeX{} get installed or upgraded.
+@item auctex-emacs-notex
+This package will be compiled with @samp{--without-texmf-dir} and will
+consequently contain the @samp{preview} style files in its private
+directory.  It will probably not be possible to initialize
+@samp{TeX-macro-global} to a useful value, so running
+@samp{TeX-auto-generate-global} does not appear useful.  This package
+would neither conflict with nor provide @samp{preview-tetex}.
+@item auctex-xemacs-tetex
+@itemx auctex-xemacs-notex
+Those are the obvious XEmacs equivalents.  For XEmacs, there is the
+additional problem that the XEmacs sumo package tree already possibly
+provides its own version of @AUCTeX{}, and the user might even have used
+the XEmacs package manager to updating this package, or even installing
+a private @AUCTeX{} version.  So you should make sure that such a
+package will not conflict with existing XEmacs packages and will be
+at an appropriate place in the load order (after site-wide and
+user-specific locations, but before a distribution-specific sumo package
+tree).  It might be a reasonable choice to refrain from providing an
+XEmacs package and just rely on the user or system administrator to
+instead use the XEmacs package system.
+@end table
+
 @node Advice for non-privileged users
 @section Installation for non-privileged users
 

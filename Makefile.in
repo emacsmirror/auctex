@@ -106,9 +106,9 @@ all: lisp
 
 .PHONY: all lisp info dvi some install contrib install-el install-lisp \
 	install-contrib install-contrib-el install-docs install-auto \
-	install-metadata install-startup \
+	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
-	dist patch tar-ball full-release tar-ball-clean wc
+	dist patch tar-ball full-release tar-ball-clean wc xemacs-package
 
 lisp:	tex-site.el $(AUCSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
@@ -156,6 +156,10 @@ some:	$(AUCELC) $(STYLEELC)
 install: install-lisp install-docs install-images install-startup
 	$(DESCEND)
 	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
+
+install-man:
+	cd doc && $(MAKE) 'DESTDIR=$(DESTDIR)' install-man
+	$(INSTALL_DATA) RELEASE $(DESTDIR)$(packagedir)/man/auctex
 
 install-startup:
 	test $(packagedir) != no || \
@@ -325,3 +329,11 @@ full-release:
 patch:
 	diff -u auctex-$(OLD) auctex-$(TAG) | gzip --best \
 		>$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch.gz
+
+xemacs-package:
+	rm -rf xemacs-build
+	cp -a auctex-$(TAG) xemacs-build
+	cd xemacs-build \
+	&& ./configure --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-xemacs --with-auto-dir=etc/auctex/auto \
+	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
+	rm -rf xemacs-build

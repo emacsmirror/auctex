@@ -30,12 +30,21 @@ dvi: auctex.dvi tex-ref.dvi preview-latex.dvi
 
 install: install-auctex install-preview
 
+install-man:
+	test x$(packagedir) != xno && \
+	{ $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/man/auctex ; \
+	for i in $(AUCTEXTEXIFILES) $(PREVIEWTEXIFILES) ; \
+	do echo $(INSTALL_DATA) $i $(DESTDIR)$(packagedir)/man/auctex; \
+	   $(INSTALL_DATA) $i $(DESTDIR)$(packagedir)/man/auctex; \
+	done ; \
+	}
+
 dist: $(DISTTEXTS) preview-latex.info auctex.info
 
 extradist: html/auctex_toc.html auctex.ps auctex.pdf tex-ref.ps tex-ref.pdf
 
 .PHONY: all info dvi dist install-auctex disttexts clean distclean \
-	maintainer-clean install-preview html-docs extradist
+	maintainer-clean install-preview install-man html-docs extradist
 
 # AUCTeX
 
