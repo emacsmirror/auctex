@@ -927,11 +927,13 @@ have changed."
 
 (defface font-latex-superscript-face
   '((t (:height 0.8)))
-  "Face used for superscripts.")
+  "Face used for superscripts."
+  :group 'font-latex-highlighting-faces)
 
 (defface font-latex-subscript-face
   '((t (:height 0.8)))
-  "Face used for subscripts.")
+  "Face used for subscripts."
+  :group 'font-latex-highlighting-faces)
 
 
 ;;; Setup
@@ -1264,58 +1266,50 @@ Returns nil if none of KEYWORDS is found."
 ;;                 'font-latex-match-command-cache keywords limit)))
   (when font-latex-use-cache
     (font-latex-check-cache 'font-latex-match-command-cache keywords limit))
-  (when (re-search-forward keywords limit t)
-    (cond
-     ((or (font-latex-faces-present-p '(font-lock-comment-face
-					font-latex-verbatim-face)
-				      (match-beginning 0))
-	  (font-latex-commented-outp))
-      ;; Return a dummy match such that we skip over this pattern.
-      ;; (Would be better to skip over internally to this function)
-      ;; We used to return a (nil nil) pattern match along with the
-      ;; status of `t' to keep looking.  font-lock was happy with that.
-      ;; But when font-lock-multiline is `t', the match really needs to
-      ;; exists otherwise there is a elisp error at line 1625 of
-      ;; font-lock.el in function font-lock-fontify-keywords-region.
-      (store-match-data (list (match-end 0)(match-end 0)))
-      t)
-     (t
-      (let ((kbeg (match-beginning 0))
-	    kend sbeg send cbeg cend
-	    cache-reset opt-arg
-	    (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
-	(save-restriction
-	  ;; Restrict to LIMIT.
-	  (narrow-to-region (point-min) limit)
-	  (goto-char (match-end 0))
-	  (if (and asterisk (eq (following-char) ?\*))
-	      (forward-char 1))
-	  (setq kend (point))
-	  (while (and (not (eobp)) (font-latex-forward-comment)))
-	  ;; Optional arguments [...]
-	  (while (eq (following-char) ?\[)
-	    (unless opt-arg (setq sbeg (point)) (setq opt-arg t))
-	    (if (font-latex-find-matching-close ?\[ ?\])
-		(progn
-		  (setq send (point))
-		  (while (and (not (eobp)) (font-latex-forward-comment))))
-	      (setq cache-reset t)
-	      (setq send (point-max))
-	      (goto-char send)))
-	  ;; Mandatory arguments {...}
-	  (catch 'runaway
-	    (dotimes (i arg-count)
-	      (when (eq (following-char) ?\{)
-		(when (= i 0) (setq cbeg (point)))
-		(if (font-latex-find-matching-close ?\{ ?\})
-		    (progn
-		      (setq cend (point))
-		      (while (and (not (eobp)) (font-latex-forward-comment))))
-		  (setq cache-reset t)
-		  (setq cend (point-max))
-		  (goto-char cend)
-		  (throw 'runaway nil))))))
-	(store-match-data (list kbeg kend sbeg send cbeg cend))
+  (catch 'match
+    (while (re-search-forward keywords limit t)
+      (catch 'irrelevant
+	(when (or (font-latex-faces-present-p '(font-lock-comment-face
+						font-latex-verbatim-face)
+					      (match-beginning 0))
+		  (font-latex-commented-outp))
+	  (throw 'irrelevant nil))
+	(let ((kbeg (match-beginning 0))
+	      kend sbeg send cbeg cend
+	      cache-reset opt-arg
+	      (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
+	  (save-restriction
+	    ;; Restrict to LIMIT.
+	    (narrow-to-region (point-min) limit)
+	    (goto-char (match-end 0))
+	    (if (and asterisk (eq (following-char) ?\*))
+		(forward-char 1))
+	    (setq kend (point))
+	    (while (and (not (eobp)) (font-latex-forward-comment)))
+	    ;; Optional arguments [...]
+	    (while (eq (following-char) ?\[)
+	      (unless opt-arg (setq sbeg (point)) (setq opt-arg t))
+	      (if (font-latex-find-matching-close ?\[ ?\])
+		  (progn
+		    (setq send (point))
+		    (while (and (not (eobp)) (font-latex-forward-comment))))
+		(setq cache-reset t)
+		(setq send (point-max))
+		(goto-char send)))
+	    ;; Mandatory arguments {...}
+	    (catch 'runaway
+	      (dotimes (i arg-count)
+		(when (eq (following-char) ?\{)
+		  (when (= i 0) (setq cbeg (point)))
+		  (if (font-latex-find-matching-close ?\{ ?\})
+		      (progn
+			(setq cend (point))
+			(while (and (not (eobp)) (font-latex-forward-comment))))
+		    (setq cache-reset t)
+		    (setq cend (point-max))
+		    (goto-char cend)
+		    (throw 'runaway nil))))))
+	  (store-match-data (list kbeg kend sbeg send cbeg cend))
 
           ;; Handle cache
 ;          (if (and we-moved
@@ -1326,11 +1320,11 @@ Returns nil if none of KEYWORDS is found."
 ;                (message "pattern cancelled... twice in a row")
 ;                nil) ;; Return a nul search (cancel this fontification)
 
-	(when (and font-latex-use-cache cache-reset)
-	  (font-latex-set-cache
-	   'font-latex-match-command-cache
-	   kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
-	t)))))
+	  (when (and font-latex-use-cache cache-reset)
+	    (font-latex-set-cache
+	     'font-latex-match-command-cache
+	     kbeg kend limit keywords (list kbeg kend sbeg send cbeg cend)))
+	  (throw 'match t))))))
 
 (defvar font-latex-match-in-braces-cache nil
   "Cache start of unterminated LaTeX commands to fontify.")
@@ -1344,50 +1338,48 @@ Sets `match-data' so that:
 Returns nil if no command is found."
   (when font-latex-use-cache
     (font-latex-check-cache 'font-latex-match-in-braces-cache 'in-braces limit))
-  (when (re-search-forward keywords limit t)
-    (cond
-     ((or (font-latex-faces-present-p '(font-lock-comment-face
-					font-latex-verbatim-face)
-				      (match-beginning 0))
-	  (font-latex-commented-outp))
-      (store-match-data (list (match-end 0)(match-end 0)))
-      t)
-     (t
-      (let ((kbeg (match-beginning 0)) (kend (match-end 1))
-            (beg  (match-end 0))
-            end cbeg cend
-            cache-reset
-            (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
-        (goto-char kbeg)
-        (cond
-         ((not (eq (preceding-char) ?\{))
-          ;; Fontify only the keyword (no argument found).
-	  (setq cbeg kbeg cend kend)
-	  (goto-char (match-end 0))
-          (store-match-data (list (point) (point) cbeg cend))
-          t)
-         (t
-          ;; There's an opening bracket
-          (save-restriction
-            ;; Restrict to LIMIT.
-            (narrow-to-region (point-min) limit)
-            (forward-char -1)           ;Move on the opening bracket
-            (if (font-latex-find-matching-close ?\{ ?\})
-                (setq end (1- (point)))
-              (setq cache-reset t)
-              (setq end (point-max))
-              (goto-char end))
-	    (setq cbeg beg cend end)
-            (store-match-data (list kbeg kend cbeg cend))
-
-            (when (and font-latex-use-cache cache-reset)
-              (goto-char limit)             ;Avoid infinite loops?
-              (font-latex-set-cache
-               'font-latex-match-in-braces-cache
-               kbeg kend limit 'in-braces
-               (list kbeg kend cbeg cend)))
-
-            t))))))))
+  (catch 'match
+    (while (re-search-forward keywords limit t)
+      (catch 'irrelevant
+	(when (or (font-latex-faces-present-p '(font-lock-comment-face
+						font-latex-verbatim-face)
+					      (match-beginning 0))
+		  (font-latex-commented-outp))
+	  (throw 'irrelevant nil))
+	(let ((kbeg (match-beginning 0)) (kend (match-end 1))
+	      (beg  (match-end 0))
+	      end cbeg cend
+	      cache-reset
+	      (parse-sexp-ignore-comments t)) ; scan-sexps ignores comments
+	  (goto-char kbeg)
+	  (cond
+	   ((not (eq (preceding-char) ?\{))
+	    ;; Fontify only the keyword (no argument found).
+	    (setq cbeg kbeg cend kend)
+	    (goto-char (match-end 0))
+	    (store-match-data (list (point) (point) cbeg cend))
+	    (throw 'match t))
+	   (t
+	    ;; There's an opening bracket
+	    (save-restriction
+	      ;; Restrict to LIMIT.
+	      (narrow-to-region (point-min) limit)
+	      (forward-char -1)		;Move on the opening bracket
+	      (if (font-latex-find-matching-close ?\{ ?\})
+		  (setq end (1- (point)))
+		(setq cache-reset t)
+		(setq end (point-max))
+		(goto-char end))
+	      (setq cbeg beg cend end)
+	      (store-match-data (list kbeg kend cbeg cend))
+	      ;; Cache
+	      (when (and font-latex-use-cache cache-reset)
+		(goto-char limit)	;Avoid infinite loops?
+		(font-latex-set-cache
+		 'font-latex-match-in-braces-cache
+		 kbeg kend limit 'in-braces
+		 (list kbeg kend cbeg cend)))
+	      (throw 'match t)))))))))
 
 (defun font-latex-match-simple-command (limit)
   "Search for command like \\foo before LIMIT."
@@ -1399,20 +1391,19 @@ Returns nil if no command is found."
 Used for patterns like:
 \\( F = ma \\)
 \\ [ F = ma \\] but not \\\\ [len]"
-  (when (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
-    (goto-char (match-beginning 0))
-    (if (eq (preceding-char) ?\\)       ; \\[ is not a math environment
-        (progn
-          (goto-char (match-end 0))
-          (store-match-data (list (match-end 0)(match-end 0)))
-          t)
-      (let ((b1start (point)))
-        (search-forward (cond ((match-beginning 1) "\\)")
-                              (t                   "\\]"))
-                        limit 'move)
-        (let ((b2end (or (match-end 0) (point))))
-          (store-match-data (list b1start b2end))
-          t)))))
+  (catch 'match
+    (while (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
+      (catch 'irrelevant
+	(goto-char (match-beginning 0))
+	(when (eq (preceding-char) ?\\)	; \\[ is not a math environment
+	  (goto-char (match-end 0))
+	  (throw 'irrelevant nil))
+	(let ((beg (point)))
+	  (search-forward (cond ((match-beginning 1) "\\)")
+				(t                   "\\]"))
+			  limit 'move)
+	  (store-match-data (list beg (or (match-end 0) (point))))
+	  (throw 'match t))))))
 
 (defun font-latex-match-math-envII (limit)
   "Match math patterns up to LIMIT.
