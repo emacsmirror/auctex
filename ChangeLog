@@ -1,3 +1,7 @@
+2005-06-21  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (install-man): Use $$i instead of $i.
+
 2005-06-20  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Advice for package providers): Propose package
