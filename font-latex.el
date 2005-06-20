@@ -1268,12 +1268,10 @@ Returns nil if none of KEYWORDS is found."
     (font-latex-check-cache 'font-latex-match-command-cache keywords limit))
   (catch 'match
     (while (re-search-forward keywords limit t)
-      (catch 'irrelevant
-	(when (or (font-latex-faces-present-p '(font-lock-comment-face
+      (unless (or (font-latex-faces-present-p '(font-lock-comment-face
 						font-latex-verbatim-face)
 					      (match-beginning 0))
 		  (font-latex-commented-outp))
-	  (throw 'irrelevant nil))
 	(let ((kbeg (match-beginning 0))
 	      kend sbeg send cbeg cend
 	      cache-reset opt-arg
@@ -1340,12 +1338,10 @@ Returns nil if no command is found."
     (font-latex-check-cache 'font-latex-match-in-braces-cache 'in-braces limit))
   (catch 'match
     (while (re-search-forward keywords limit t)
-      (catch 'irrelevant
-	(when (or (font-latex-faces-present-p '(font-lock-comment-face
+      (unless (or (font-latex-faces-present-p '(font-lock-comment-face
 						font-latex-verbatim-face)
 					      (match-beginning 0))
 		  (font-latex-commented-outp))
-	  (throw 'irrelevant nil))
 	(let ((kbeg (match-beginning 0)) (kend (match-end 1))
 	      (beg  (match-end 0))
 	      end cbeg cend
@@ -1393,11 +1389,9 @@ Used for patterns like:
 \\ [ F = ma \\] but not \\\\ [len]"
   (catch 'match
     (while (re-search-forward "\\(\\\\(\\)\\|\\(\\\\\\[\\)" limit t)
-      (catch 'irrelevant
-	(goto-char (match-beginning 0))
-	(when (eq (preceding-char) ?\\)	; \\[ is not a math environment
+      (goto-char (match-beginning 0))
+      (if (eq (preceding-char) ?\\)	; \\[ is not a math environment
 	  (goto-char (match-end 0))
-	  (throw 'irrelevant nil))
 	(let ((beg (point)))
 	  (search-forward (cond ((match-beginning 1) "\\)")
 				(t                   "\\]"))
