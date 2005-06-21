@@ -1263,7 +1263,7 @@ the beginning of the file, but that feature will be phased out."
 			 t)
 			(t
 			 (TeX-strip-extension
-			  name (list (TeX-default-extension)) 'path))))))
+			  name (list TeX-default-extension) 'path))))))
 
 	 ;; We might already know the name.
 	 ((or (eq TeX-master t) (stringp TeX-master)) TeX-master)
