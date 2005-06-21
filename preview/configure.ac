@@ -235,8 +235,6 @@ AC_SHELL_QUOTIFY(PDFLATEX)
 AC_OUTPUT(Makefile auto.el latex/Makefile)
 cat >&2 <<EOF
 
-Congratulations!  Configuration is complete.
-
+Congratulations!  Configuration of preview is complete.
 ${conflictsmsg}
-Type "make" at the prompt to build preview.
 EOF
