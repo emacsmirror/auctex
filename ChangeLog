@@ -1,10 +1,19 @@
 2005-06-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-info.el (TeX-texinfo-mode): Use `TeX-run-mode-hooks'.
+
+	* latex.el (TeX-latex-mode): Use `TeX-run-mode-hooks'.
+
+	* context.el (ConTeXt-mode-common-initialization): Use
+	`TeX-run-mode-hooks'.
+
 	* configure.ac: Make info about configuration clearer (in
 	connection with the message for preview-latex).
 
 	* tex.el (TeX-master-file): `TeX-default-extension' is a variable,
 	not a function.
+	(TeX-run-mode-hooks): New function.
+	(TeX-plain-tex-mode, ams-tex-mode): Use it.
 
 2005-06-21  David Kastrup  <dak@gnu.org>
 
