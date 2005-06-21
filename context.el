@@ -1482,7 +1482,7 @@ else.  There might be text before point."
   ;; run hooks
   (setq TeX-command-default "ConTeXt")
   (setq TeX-sentinel-default-function 'TeX-ConTeXt-sentinel)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
+  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'ConTeXt-mode-hook))
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
