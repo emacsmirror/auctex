@@ -1,3 +1,11 @@
+2005-06-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Make info about configuration clearer (in
+	connection with the message for preview-latex).
+
+	* tex.el (TeX-master-file): `TeX-default-extension' is a variable,
+	not a function.
+
 2005-06-21  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (xemacs-package): reorder args.
