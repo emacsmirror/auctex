@@ -160,7 +160,7 @@ AC_OUTPUT(Makefile tex-site.el.out:tex-site.el.in doc/Makefile auctex.el)
 
 cat >&2 <<EOF
 
-Congratulations!  Configuration is complete.
+Congratulations!  Configuration of AUCTeX is complete.
 
-Type "make" at the prompt to build AUCTeX
+Type "make" at the prompt to build.
 EOF
