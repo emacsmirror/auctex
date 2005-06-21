@@ -527,7 +527,7 @@ value of `Texinfo-mode-hook'."
    '("w" "Text")
    '("xref" "Node name"))
   
-  (run-hooks 'text-mode-hook 'Texinfo-mode-hook)
+  (TeX-run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
   
 (provide 'tex-info)
