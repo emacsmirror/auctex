@@ -2289,7 +2289,7 @@ of plain-TeX-mode-hook."
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
+  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
 (defun plain-TeX-common-initialization ()
@@ -3140,6 +3140,9 @@ Used for specifying extra syntax for a macro."
   ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
   (apply 'insert args))
 
+(defalias 'TeX-run-mode-hooks
+  (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
+
 
 ;;; Syntax Table
 
@@ -3596,7 +3599,7 @@ of `AmS-TeX-mode-hook'."
 
   (setq TeX-base-mode-name "AmS-TeX")
   (setq TeX-command-default "AmSTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
+  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'AmS-TeX-mode-hook)
   (TeX-set-mode-name))
 
 
