@@ -4463,7 +4463,7 @@ of `LaTeX-mode-hook'."
   (setq TeX-base-mode-name "LaTeX")
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
-  (run-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
+  (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (TeX-set-mode-name)
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
   ;; Defeat filladapt
