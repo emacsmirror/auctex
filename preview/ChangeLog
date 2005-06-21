@@ -1,3 +1,10 @@
+2005-06-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Make message at end of configuration clearer.
+	Remove redundant build hint.
+
+	* .cvsignore: Remove irrelevant entries.
+
 2005-06-21  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: correct comparison.
