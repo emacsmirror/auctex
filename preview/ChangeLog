@@ -1,3 +1,20 @@
+2005-06-24  David Kastrup  <dak@gnu.org>
+
+	* prv-install.el (preview-make-package-xemacs): Add author-version.
+
+	* preview.el (preview-TeX-style-dir): Change docs.
+
+	* latex/Makefile.in (preview.dvi): Depend on preview.sty
+	(preview.pdf): Same here.
+
+	* configure.ac: Remove checks for PERL and info-related stuff.
+	Add . into search path first.
+
+	* Makefile.in (texmf): Depend on latex/Makefile
+	(latex/Makefile, auto.el, configure, Makefile, config.status):
+	targets to make sure that Makefile and stuff are up to date.
+	(install-metadata): pass author version into prv-install.el
+
 2005-06-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Make message at end of configuration clearer.

@@ -33,7 +33,10 @@ New features and fixed bugs in this release
 -------------------------------------------
 
 The most important feature of AUCTeX 11.80 is the inclusion of the
-preview-latex subsystem, previously available separately.
+preview-latex subsystem, previously available separately.  There is no
+documented provision for building or installing preview-latex
+separately.  It is still possible to use and install AUCTeX without
+preview-latex, however.
 
 The installation procedures have been overhauled and now also install
 startup files as part of the process (those had to be copied manually

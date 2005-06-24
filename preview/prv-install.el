@@ -50,6 +50,7 @@ package name, and version (to be evaluated), followed by a file to append."
   (let* ((package-dir (pop command-line-args-left))
 	 (package-name (pop command-line-args-left))
 	 (release-version (eval (read (pop command-line-args-left))))
+	 (author-version (eval (read (pop command-line-args-left))))
 	 (append-file (pop command-line-args-left))
          (lisp-dir (expand-file-name (format "lisp/%s/" package-name)
 				     package-dir))
@@ -77,6 +78,8 @@ package name, and version (to be evaluated), followed by a file to append."
                "(package-provide '" package-name "\n"
                "                 :version "
 	       release-version "\n"
+	       "                 :author-version "
+	       "\"" author-version "\"\n"
                "                 :type 'regular)\n")))
     ; Delete and regenerate the auto-autoloads file.
     (message "Updating autoloads for the directory %s..." lisp-dir)

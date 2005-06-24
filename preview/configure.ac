@@ -128,7 +128,7 @@ Please use --with-kpathsea-sep=@<:@:|;@>:@ to specify it!])
   AC_MSG_RESULT([["${kpathseaseparator}"]])
   packagetexstyles="${packagedatadir}/latex"
   AC_LISPIFY_DIR(packagetexstyles,"${previewstartfile}")
-  lisppackagetexstyles="(defvar preview-TeX-style-dir (concat ${lisppackagetexstyles} \"${kpathseaseparator}\"))"
+  lisppackagetexstyles="(defvar preview-TeX-style-dir (concat \".${kpathseaseparator}\" ${lisppackagetexstyles} \"${kpathseaseparator}\"))"
   test "X${TEXHASH}" = X && TEXHASH=:
 else
   lisppackagetexstyles=
@@ -148,28 +148,6 @@ if test "X${TEXHASH}" = X
 then
    AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
 fi
-
-AC_ARG_VAR(PERL,[Perl executable.  If set to :, some documentation
-cannot be regenerated, but installation of an unmodified tarball will
-succeed.])
-
-if test "x$PERL" = x
-then
-   AC_PATH_PROG(PERL, perl, :)
-fi
-
-AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
-cannot be regenerated, but installation of an unmodified tarball will
-succeed.])
-
-AC_PATH_PROG(MAKEINFO, makeinfo, :)
-AC_PATH_PROG(TEXI2HTML, texi2html, :)
-AC_PATH_PROG(TEXI2DVI, texi2dvi, :)
-AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
-
-AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.])
-
-AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
 
 AC_MSG_CHECKING([[for glaring installation conflicts]])
 exppackagelispdir="$packagelispdir"
@@ -222,12 +200,6 @@ AC_SHELL_QUOTIFY(datadir)
 AC_SHELL_QUOTIFY(GS)
 AC_SHELL_QUOTIFY(TEXHASH)
 AC_SHELL_QUOTIFY(EMACS)
-AC_SHELL_QUOTIFY(INSTALL_INFO)
-AC_SHELL_QUOTIFY(MAKEINFO)
-AC_SHELL_QUOTIFY(TEXI2DVI)
-AC_SHELL_QUOTIFY(TEXI2PDF)
-AC_SHELL_QUOTIFY(TEXI2HTML)
-AC_SHELL_QUOTIFY(PERL)
 AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(LATEX)
 AC_SHELL_QUOTIFY(PDFLATEX)

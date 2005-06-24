@@ -101,6 +101,15 @@ AC_PATH_PROG(TEX, tex, :)
 AC_PATH_PROG(PDFTEX, pdftex, :)
 AC_PATH_PROG(DVIPS, dvips, :)
 
+AC_ARG_VAR(PERL,[Perl executable.  If set to :, some documentation
+cannot be regenerated, but installation of an unmodified tarball will
+succeed.])
+
+if test "x$PERL" = x
+then
+   AC_PATH_PROG(PERL, perl, :)
+fi
+
 AC_ARG_VAR(MAKEINFO,[Makeinfo executable.  If set to :, some documentation
 cannot be regenerated, but installation of an unmodified tarball will
 succeed.])
@@ -125,14 +134,9 @@ then
   auctexdir=..; export auctexdir
   export packagedir packagelispdir packagedatadir
   export EMACS
-  export INSTALL_INFO
-  export MAKEINFO
   export TEX
   export PDFTEX
   export DVIPS
-  export TEXI2HTML
-  export TEXI2PDF
-  export TEXI2DVI
   AC_CONFIG_SUBDIRS(preview)
 fi
 AC_SUBST(subdirs)
@@ -147,6 +151,7 @@ AC_SHELL_QUOTIFY(autodir)
 AC_SHELL_QUOTIFY(auctexstartfile)
 AC_SHELL_QUOTIFY(EMACS)
 AC_SHELL_QUOTIFY(INSTALL_INFO)
+AC_SHELL_QUOTIFY(PERL)
 AC_SHELL_QUOTIFY(MAKEINFO)
 AC_SHELL_QUOTIFY(TEX)
 AC_SHELL_QUOTIFY(PDFTEX)

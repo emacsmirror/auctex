@@ -23,6 +23,7 @@ preview_enabled=@preview_enabled@
 subdirs=@subdirs@
 styledir = $(packagedatadir)/style
 AUCTEXDATE = @AUCTEXDATE@
+AUCTEXVERSION = @AUCTEXVERSION@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -114,10 +115,10 @@ lisp:	tex-site.el $(AUCSRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
 
 info:
-	(cd doc ; $(MAKE) info)
+	cd doc ; $(MAKE) info
 
 dvi:
-	(cd doc ; $(MAKE) dvi)
+	cd doc ; $(MAKE) dvi
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
 	cat tex-site.el.out >$@
@@ -128,7 +129,7 @@ tex-site.el: tex-site.el.out auto-loads.el Makefile
 tex-site.el.out: tex-site.el.in Makefile config.status
 	./config.status
 
-auctex.el: auctex.el.in
+auctex.el: auctex.el.in config.status
 	./config.status
 
 configure: configure.ac aclocal.m4
@@ -236,7 +237,7 @@ install-auto:
 install-metadata:
 	test "x$(packagedir)" = xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
-	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" tex-site.el && \
+	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \

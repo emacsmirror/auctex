@@ -1,3 +1,17 @@
+2005-06-24  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Minor change.
+
+	* configure.ac: Move checks and export for PERL here (needed for
+	doc of preview-latex).
+	(preview_enabled): Don't export Info-related variables, as they
+	are not needed in preview.
+
+	* Makefile.in (AUCTEXVERSION): import.
+	(info, dvi): No subshell needed.
+	(auctex.el): Depend on config.status
+	(install-metadata): pass upstream version into prv-install.el
+
 2005-06-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-info.el (TeX-texinfo-mode): Use `TeX-run-mode-hooks'.

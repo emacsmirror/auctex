@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.258 2005-06-17 23:03:56 dak Exp $
+;; $Id: preview.el,v 1.259 2005-06-24 08:14:05 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2347,7 +2347,8 @@ With prefix argument REMOVE, remove it again."
   "This variable contains the location of uninstalled TeX styles.
 This has to be followed by the character with which kpathsea
 separates path components, either `:' on Unix-like systems,
-or `;' on Windows-like systems.
+or `;' on Windows-like systems.  And it should be preceded with
+.: or .; accordingly in order to have . first in the search path.
 
 If this is non-nil, the `TEXINPUT' environment type variables will
 get this prepended at load time calling \\[preview-set-texinputs]
@@ -3421,7 +3422,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.258 $"))
+	(rev "$Revision: 1.259 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3432,7 +3433,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-06-17 23:03:56 $"))
+    (let ((date "$Date: 2005-06-24 08:14:05 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

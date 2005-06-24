@@ -18,24 +18,11 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1624}
-% \def\rcskey#1#2$#3: #4${\edef#1{\rcsstrip #2#4 $}}
-% \def\rcsstrip #1 #2${#1}
-% \rcskey \version $Name:  $
-% \ifx\version\empty
-%   \rcskey \version CVS-$Revision: 1.101 $
-% \else
-%   \begingroup
-%     \lccode`-=`.
-%     \def\next rel-{}
-%     \edef\next{\lowercase{\endgroup
-%        \def\noexpand\version{\expandafter\next\version}}}
-%   \next
-% \fi
-% \rcskey\next $Date: 2005-04-16 21:35:36 $
-% \expandafter\date\expandafter{\next}
+% \CheckSum{1631}
+% \GetFileInfo{preview.sty}
+% \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
-% \title{The \texttt{preview} Package for \LaTeX\\Version \version}
+% \title{The \texttt{preview} Package for \LaTeX\\Version \fileversion}
 % \maketitle
 % \section{Introduction}
 % The main purpose of this package is the extraction of certain
@@ -448,12 +435,13 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.101 $ \else \begingroup
-\lccode`-=`.  \def\next rel-{} \edef\next{\lowercase{\endgroup
+\reserved@a\reserved@b CVS-$Revision: 1.102 $ \else \begingroup
+  \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
+  \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-04-16 21:35:36 $
+\reserved@a\next $Date: 2005-06-24 08:14:04 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space preview-latex \reserved@b]}
+  [\next\space \reserved@b (AUCTeX/preview-latex)]}
 \next
 %    \end{macrocode}
 % Since many parts here will not be needed as long as the package is
@@ -1777,6 +1765,8 @@ Please complain to your document class author}%
 % And here comes the documentation driver.
 %    \begin{macrocode}
 %<driver> \documentclass{ltxdoc}
+%<driver> \usepackage{preview}
+%<driver> \let\ifPreview\relax
 %<driver> \newcommand\previewlatex{\texttt{preview-latex}}
 %<driver> \begin{document}
 %<driver> \DocInput{preview.dtx}
