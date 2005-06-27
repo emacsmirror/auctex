@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1632}
+% \CheckSum{1634}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -435,11 +435,11 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.103 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.104 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-06-27 08:57:08 $
+\reserved@a\next $Date: 2005-06-27 15:18:20 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \reserved@b (AUCTeX/preview-latex)]}
 \next
@@ -1556,7 +1556,28 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\@ne
 %<tightpage>\preview@delay{\AtBeginDvi{%
-%<tightpage>  \special{!/preview@tightpage true def}
+%    \end{macrocode}
+% Backwards-compatibility. Once we are certain that dvipng-1.6 or
+% later is widely used, this can be exchanged for the simple 
+% |\special{!/preview@tightpage true def}|
+%    \begin{macrocode}
+%<tightpage>  \special{!/preview@tightpage true def (}
+%<tightpage>  \special{!userdict begin/bop-hook{%
+%<tightpage>     7{currentfile token not{stop}if 
+%<tightpage>       65781.76 div DVImag mul}repeat
+%<tightpage>       72 add 72 2 copy gt{exch}if 4 2 roll
+%<tightpage>       neg 2 copy lt{exch}if dup 0 gt{pop 0 exch}%
+%<tightpage>       {exch dup 0 lt{pop 0}if}ifelse 720 add exch 720 add
+%<tightpage>       3 1 roll
+%<tightpage>       4{5 -1 roll add 4 1 roll}repeat 
+%<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
+%<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
+%<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice%
+%<tightpage>       //bop-hook exec}bind def end}}
+%<tightpage>  \special{!userdict 7{currentfile token not{stop}if 65781.76 div ) pop}
+%    \end{macrocode}
+% End of backwards-compatibility code. 
+%    \begin{macrocode}
 %<tightpage>  \special{!userdict begin/bop-hook{%
 %<tightpage>  preview-bop-level 0 le{%
 %<tightpage>     7{currentfile token not{stop}if
