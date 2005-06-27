@@ -429,21 +429,23 @@
 % Here we go: the start is somewhat obtuse since we figure out version
 % number and date from RCS strings.  This should really be done at
 % docstrip time instead.  Takers?
+% \begin{macro}{\pr@version}
 %    \begin{macrocode}
 %<*style>
 %<*!active>
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
-\reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.104 $ \else \begingroup
+\reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
+\reserved@a\pr@version CVS-$Revision: 1.105 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
-    \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-06-27 15:18:20 $
+    \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
+\reserved@a\next $Date: 2005-06-27 16:19:18 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space \reserved@b (AUCTeX/preview-latex)]}
+  [\next\space \pr@version (AUCTeX/preview-latex)]}
 \next
 %    \end{macrocode}
+% \end{macro}
 % Since many parts here will not be needed as long as the package is
 % inactive, we will include them enclosed with |<*active>| and
 % |</active>| guards.  That way, we can append all of this stuff at a

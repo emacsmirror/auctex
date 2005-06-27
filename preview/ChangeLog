@@ -1,3 +1,7 @@
+2005-06-27  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Put version into `\pr@version'.
+
 2005-06-27  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* latex/preview.dtx: Add backwards-compatibility for dvipng <= 1.5
