@@ -1,5 +1,7 @@
 2005-06-27  Jan-Ake Larsson  <jalar@mai.liu.se>
 
+	* latex/preview.dtx: Add backwards-compatibility for dvipng <= 1.5
+
 	* latex/preview.dtx: Add preview@tightpage
 
 2005-06-24  David Kastrup  <dak@gnu.org>
