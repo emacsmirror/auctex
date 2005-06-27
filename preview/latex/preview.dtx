@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1631}
+% \CheckSum{1632}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -435,11 +435,11 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\reserved@b $Name:  $ \ifx\reserved@b\@empty
-\reserved@a\reserved@b CVS-$Revision: 1.102 $ \else \begingroup
+\reserved@a\reserved@b CVS-$Revision: 1.103 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
     \def\noexpand\reserved@b{\expandafter\next\reserved@b}}} \next \fi
-\reserved@a\next $Date: 2005-06-24 08:14:04 $
+\reserved@a\next $Date: 2005-06-27 08:57:08 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \reserved@b (AUCTeX/preview-latex)]}
 \next
@@ -1556,6 +1556,7 @@ Please complain to your document class author}%
 %    \begin{macrocode}
 %<tightpage>\ifnum\pr@graphicstype=\@ne
 %<tightpage>\preview@delay{\AtBeginDvi{%
+%<tightpage>  \special{!/preview@tightpage true def}
 %<tightpage>  \special{!userdict begin/bop-hook{%
 %<tightpage>  preview-bop-level 0 le{%
 %<tightpage>     7{currentfile token not{stop}if
