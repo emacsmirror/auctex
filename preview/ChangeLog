@@ -1,3 +1,8 @@
+2005-06-28  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* latex/preview.dtx: Add version number in a \special, in dvips
+	mode. Fix mismatched parantheses.
+
 2005-06-27  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Put version into `\pr@version'.
