@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1634}
+% \CheckSum{1636}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -436,11 +436,11 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.105 $ \else \begingroup
+\reserved@a\pr@version CVS-$Revision: 1.106 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2005-06-27 16:19:18 $
+\reserved@a\next $Date: 2005-06-28 07:10:05 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version (AUCTeX/preview-latex)]}
 \next
@@ -572,6 +572,7 @@
 \DeclareOption{dvips}{%
   \let\pr@graphicstype\@ne
   \preview@delay{\AtBeginDvi{%
+      \special{!/preview@version(\pr@version)def}
       \special{!userdict begin/preview-bop-level 0 def%
       /bop-hook{/preview-bop-level dup load dup 0 le{/isls false def%
           /vsize 792 def/hsize 612 def}if 1 add store}bind def%
@@ -1575,8 +1576,8 @@ Please complain to your document class author}%
 %<tightpage>     <</PageSize[5 -1 roll 6 index sub 5 -1 roll 5 index sub]%
 %<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
 %<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice%
-%<tightpage>       //bop-hook exec}bind def end}}
-%<tightpage>  \special{!userdict 7{currentfile token not{stop}if 65781.76 div ) pop}
+%<tightpage>       //bop-hook exec}bind def end}
+%<tightpage>  \special{!userdict 7{currentfile token not{stop}if 65781.76 div }) pop}
 %    \end{macrocode}
 % End of backwards-compatibility code. 
 %    \begin{macrocode}
