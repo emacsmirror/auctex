@@ -100,23 +100,12 @@ buffers controlled by font-latex or restarting Emacs."
 
 (defcustom font-latex-quotes 'french
   "Whether to fontify << French quotes >> or >>German quotes<<.
-Also selects \"<quote\"> versus \">quote\"<.
-
-Setting this variable directly does not take effect;
-use \\[customize]."
+Also selects \"<quote\"> versus \">quote\"<."
   :type '(choice (const french) (const german))
-  :set (lambda (symbol value)
-	 (set-default symbol value)
-	 (if (equal value 'french)
-	     (setq font-latex-quote-list
-		   '(("``" . "''")  ("\"`" . "\"'")
-		     ("\"<" . "\">") ("<<" . ">>") ("«" . "»")))
-	   (setq font-latex-quote-list
-		 '(("``" . "''") ("\"`" . "\"'")
-		   ("\">" . "\"<") (">>" . "<<") ("»" . "«"))))
-	 (setq font-latex-quote-regexp-beg
-	       (regexp-opt (mapcar 'car font-latex-quote-list) t)))
   :group 'font-latex)
+
+(defvar font-latex-quotes-control font-latex-quotes
+  "Internal variable for keeping track if `font-latex-quotes' changed.")
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -1428,6 +1417,19 @@ Used for patterns like:
 \"< french \"> and \"`german\"' quotes.
 The quotes << french >> and 8-bit french are used if `font-latex-quotes' is
 set to french, and >> german << (and 8-bit) are used if set to german."
+  ;; Update quotes list and regexp if value of `font-latex-quotes' changed.
+  (unless (eq font-latex-quotes-control font-latex-quotes)
+    (setq font-latex-quotes-control font-latex-quotes)
+    (if (eq font-latex-quotes 'french)
+	(setq font-latex-quote-list
+	      '(("``" . "''")  ("\"`" . "\"'")
+		("\"<" . "\">") ("<<" . ">>") ("«" . "»")))
+      (setq font-latex-quote-list
+	    '(("``" . "''") ("\"`" . "\"'")
+	      ("\">" . "\"<") (">>" . "<<") ("»" . "«"))))
+    (setq font-latex-quote-regexp-beg
+	  (regexp-opt (mapcar 'car font-latex-quote-list) t)))
+  ;; Search for matches.
   (when (re-search-forward font-latex-quote-regexp-beg limit t)
     (let ((beg (match-beginning 0)))
       (search-forward (cdr (assoc (match-string 0) font-latex-quote-list))
