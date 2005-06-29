@@ -1,3 +1,13 @@
+2005-06-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/todo.texi (Mid-term Goals): Update text about integration of
+	preview-latex.
+
+	* doc/auctex.texi (Floats): Clarify use of
+	`LaTeX-top-caption-list'.
+	(Display, Internationalization): Make node and heading clearer.
+	(European): Describe insertion of multiple consecutive hyphens.
+
 2005-06-24  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Minor change.
