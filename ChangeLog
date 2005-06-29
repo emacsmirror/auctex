@@ -2,7 +2,7 @@
 
 	* font-latex.el (font-latex-quotes): Get rid of :set function and
 	move most of its content to `font-latex-match-quotation'.
-	(font-latex-quotes-control): New variable.
+	(font-latex-quotes-control): New variable.  Initialize with nil.
 	(font-latex-match-quotation): Use it.
 	The whole changeset lets quote matching recognize automatically
 	when the value of `font-latex-quotes' changed while making sure
