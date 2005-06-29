@@ -32,11 +32,12 @@ changes on the mailing list of @AUCTeX{} first.
 @itemize @bullet
 @item Integration of @previewlatex{} into @AUCTeX{}
 
-@AUCTeX{} users will thereby get the functionality provided by
-@previewlatex{} without the hassle of an additional installation.
+As of @AUCTeX{} 11.80 @previewlatex{} is a part of @AUCTeX{} in the
+sense that the installation routines were merged and @previewlatex{} is
+being packaged with @AUCTeX{}.
 
-Looking at the backend, the integration involves folding of error
-parsing and task management of both packages which will ease
+Further integration will happen at the backend.  This involves folding
+of error parsing and task management of both packages which will ease
 development efforts and avoid redundant work.
 
 @item More flexible option and command handling
