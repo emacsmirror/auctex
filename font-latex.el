@@ -98,14 +98,14 @@ buffers controlled by font-latex or restarting Emacs."
 (defvar font-latex-quote-list nil
   "List of matching start and end quote pairs for quotation fontification.")
 
+(defvar font-latex-quotes-control nil
+  "Internal variable for keeping track if `font-latex-quotes' changed.")
+
 (defcustom font-latex-quotes 'french
   "Whether to fontify << French quotes >> or >>German quotes<<.
 Also selects \"<quote\"> versus \">quote\"<."
   :type '(choice (const french) (const german))
   :group 'font-latex)
-
-(defvar font-latex-quotes-control font-latex-quotes
-  "Internal variable for keeping track if `font-latex-quotes' changed.")
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
