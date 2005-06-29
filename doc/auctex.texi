@@ -124,11 +124,11 @@ sending ``subscribe'' in the subject of a mail to
 * Quick Start::                 Quick Start
 * Frequently Used Commands::    Inserting Frequently Used Commands
 * Advanced Features::           Advanced Editing Features
-* Display::                     Controlling the Display of Source Code
+* Display::                     Controlling Screen Display
 * Running TeX and friends::     Starting Processors, Viewers and Other Programs
 * Multifile::                   Multifile Documents
-* Parsing Files::               Automatic Parsing of @TeX{} files
-* I18n::                        Internationalization
+* Parsing Files::               Automatic Parsing of @TeX{} Files
+* Internationalization::        Language Support
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
 * Changes::                     Changes and New Features
@@ -643,9 +643,9 @@ value will default to the value of @code{LaTeX-float}.
 @vindex LaTeX-float
 
 @item caption
-This is the caption of the float.  The caption will be inserted at the
-bottom of the float, which is controlled by the variable
-`LaTeX-top-caption-list'.
+This is the caption of the float.  The default is to insert the caption
+at the bottom of the float.  You can specify floats where the caption
+should be placed at the top with @code{LaTeX-top-caption-list}.
 @vindex LaTeX-top-caption-list
 
 @item label
@@ -1246,7 +1246,7 @@ the line becomes overfull.
 @end defopt
 
 @node Display
-@chapter Controlling the Display of Source Code
+@chapter Controlling Screen Display
 
 It is often desirable to get visual help of what markup code in a text
 actually does whithout having to decipher it explicitely.  For this
@@ -2421,7 +2421,7 @@ If non-nil, then query the user before saving each file with
 
 
 @node Parsing Files
-@chapter Automatic Parsing of @TeX{} files
+@chapter Automatic Parsing of @TeX{} Files
 @cindex Parsing @TeX{}
 @cindex Automatic Parsing
 @cindex Tabs
@@ -2558,9 +2558,10 @@ Parse common plain @TeX{} commands.
 Parse all @TeX{} and @LaTeX{} commands that @AUCTeX{} can use.
 @end defvr
 
-@node I18n
-@chapter Internationalization
+@node Internationalization
+@chapter Language Support
 @cindex Internationalization
+@cindex Language Support
 @cindex Character set
 @cindex National letters
 @cindex CJK language
@@ -2735,6 +2736,12 @@ insert @samp{\uv@{} and @samp{@}} depending on context.
 Runs style hook @code{TeX-language-sv-hook}.  Pressing @key{"} will
 insert @samp{''}.  Typing @key{-} twice will insert @samp{"=}.
 @end table
+
+In documents where typing @key{-} may insert language-specific hyphens
+you can insert multiple consecutive @samp{-} characters simply by typing
+the respective key again after a language-specific string was inserted.
+For example if you type @key{-} with point after a @samp{"=} string in a
+Swedish document it will be replaced by @samp{--}.
 
 In case you are not satisfied with the suggested behavior of quote and
 hyphen insertion you can change it by customizing the variables
