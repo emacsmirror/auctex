@@ -1,3 +1,7 @@
+2005-06-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi (Folding): Do not quote `lambda' function.
+
 2005-06-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-quotes): Get rid of :set function and
