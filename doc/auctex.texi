@@ -1664,8 +1664,8 @@ every time you edit a @LaTeX{} document, add it to a hook:
 @kindex C-c C-o C-f
 
 @lisp
-(add-hook 'LaTeX-mode-hook '(lambda ()
-                              (TeX-fold-mode 1)))
+(add-hook 'LaTeX-mode-hook (lambda ()
+                             (TeX-fold-mode 1)))
 @end lisp
 
 If it should be activated in all @AUCTeX{} modes, use
