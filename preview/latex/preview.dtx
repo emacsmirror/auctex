@@ -436,11 +436,11 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.106 $ \else \begingroup
+\reserved@a\pr@version CVS-$Revision: 1.107 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2005-06-28 07:10:05 $
+\reserved@a\next $Date: 2005-06-30 08:12:13 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version (AUCTeX/preview-latex)]}
 \next
@@ -1561,10 +1561,11 @@ Please complain to your document class author}%
 %<tightpage>\preview@delay{\AtBeginDvi{%
 %    \end{macrocode}
 % Backwards-compatibility. Once we are certain that dvipng-1.6 or
-% later is widely used, this can be exchanged for the simple 
-% |\special{!/preview@tightpage true def}|
+% later is widely used, the three following specials can be exchanged
+% for the simple |\special{!/preview@tightpage true def}|
 %    \begin{macrocode}
-%<tightpage>  \special{!/preview@tightpage true def (}
+%<tightpage>  \special{!/preview@tightpage true def (%
+%<tightpage>     compatibility PostScript comment for dvipng<=1.5 }
 %<tightpage>  \special{!userdict begin/bop-hook{%
 %<tightpage>     7{currentfile token not{stop}if 
 %<tightpage>       65781.76 div DVImag mul}repeat
@@ -1577,9 +1578,13 @@ Please complain to your document class author}%
 %<tightpage>       /PageOffset[7 -2 roll [1 1 dtransform exch]%
 %<tightpage>       {0 ge{neg}if exch}forall]>>setpagedevice%
 %<tightpage>       //bop-hook exec}bind def end}
-%<tightpage>  \special{!userdict 7{currentfile token not{stop}if 65781.76 div }) pop}
+%<tightpage>  \special{!userdict (some extra code to avoid 
+%<tightpage>     dvipng>=1.6 unknown special:
+%<tightpage>       7{currentfile token not{stop}if 65781.76 div })) pop}
 %    \end{macrocode}
-% End of backwards-compatibility code. 
+% The ``userdict'' at the start of the last special is also there to
+% avoid an unknown special in dvipng<=1.6. This is the end of the
+% backwards-compatibility code.
 %    \begin{macrocode}
 %<tightpage>  \special{!userdict begin/bop-hook{%
 %<tightpage>  preview-bop-level 0 le{%
