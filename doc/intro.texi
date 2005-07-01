@@ -38,7 +38,7 @@ The installation routine tries to make the modes provided by @AUCTeX{}
 the default for all supported file types.  If this does not happen in
 your case, add
 @lisp
-(require 'tex-site)
+(load "auctex.el" nil t t)
 @end lisp
 to your init file and consult the section
 @ifset rawfile
