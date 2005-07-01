@@ -4,9 +4,31 @@
 
 @end ifset
 
-@heading News in 11.xx
+@heading News in 11.80
 
 @itemize @bullet
+@item
+@previewlatex{} which was previously available separately became a
+subsystem of @AUCTeX{}.  There is no documented provision for building
+or installing @previewlatex{} separately.  It is still possible to use
+and install @AUCTeX{} without @previewlatex{}, however.
+
+@item
+The installation procedures have been overhauled and now also install
+startup files as part of the process (those had to be copied manually
+previously).  You are advised to remove previous installations of
+@AUCTeX{} and @previewlatex{} before starting the installation
+procedure.  A standard installation from an unmodified tarball no longer
+requires Makeinfo or Perl.
+
+Also note that the way @AUCTeX{} is supposed to be activated changed.
+Instead of @code{(require 'tex-site)} you should now use @code{(load
+"auctex.el" nil t t)}.  While the former method may still work, the new
+method has the advantage that you can deactivate a preactivated
+@AUCTeX{} with the statement @code{(unload-feature 'tex-site)} before
+any of its modes have been used.  This may be important especially for
+site-wide installations.
+
 @item
 Support for the babel @LaTeX{} package was added.
 
