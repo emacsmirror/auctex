@@ -4497,11 +4497,13 @@ information about your AUCTeX version and AUCTeX configuration."
      "Remember to cover the basics, that is, what you expected to happen and
 what in fact did happen.
 
-If the bug (or problem) is triggered by a specific \(La\)TeX
-file, you should try to produce a minimal sample file showing the
-problem and include it in your report.
+Be sure to consult the FAQ section in the manual before submitting
+a bug report.  If the bug (or problem) is triggered by a specific
+\(La\)TeX file, you should try to produce a minimal sample file
+showing the problem and include it in your report.
 
-Your bug report will be posted to the AUCTeX bug reporting list.")))
+Your bug report will be posted to the AUCTeX bug reporting list.
+------------------------------------------------------------------------")))
 
 ;;; Ispell Support
 
