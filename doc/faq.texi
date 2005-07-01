@@ -45,7 +45,7 @@ customizations.  You can do this by invoking Emacs with the command line
 @samp{emacs -q -no-site-file}.  Once Emacs is running, copy the line
 
 @lisp
-(require 'tex-site)
+(load "auctex.el" nil t t)
 @end lisp
 
 into the @samp{*scratch*} buffer and type @kbd{M-x eval-buffer RET}.
