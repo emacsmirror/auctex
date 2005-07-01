@@ -1,5 +1,8 @@
 2005-07-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Advertise inclusion of preview-latex and
+	overhaul of installation procedures.
+
 	* doc/install.texi (Advice for package providers): Refer to
 	preview-latex.el file.
 
