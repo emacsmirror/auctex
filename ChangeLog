@@ -1,3 +1,17 @@
+2005-07-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/install.texi (Advice for package providers): Refer to
+	preview-latex.el file.
+
+	* doc/quickstart.texi (Quick Start): Use (load "auctex.el" nil t
+	t) instead of (require 'tex-site).
+
+	* doc/faq.texi: Use (load "auctex.el" nil t t) instead of (require
+	'tex-site).
+
+	* doc/intro.texi (Introduction): Use (load "auctex.el" nil t t)
+	instead of (require 'tex-site).
+
 2005-06-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (Folding): Do not quote `lambda' function.
