@@ -22,7 +22,7 @@ If @AUCTeX{} is installed, you might still need to activate it, by
 inserting
 
 @lisp
-(require 'tex-site)
+(load "auctex.el" nil t t)
 @end lisp
 
 in your user init file.@footnote{This usually is a file in your home
