@@ -1,5 +1,7 @@
 2005-07-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-submit-bug-report): Mention FAQ section.
+
 	* doc/changes.texi: Advertise inclusion of preview-latex and
 	overhaul of installation procedures.
 
