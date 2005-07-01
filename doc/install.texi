@@ -360,7 +360,7 @@ they can easily get rid of it.  Activating @AUCTeX{} by default is
 therefore a good choice.
 
 If the installation procedure did not achieve this already by placing
-@file{auctex.el} and @previewlatex{} into a possibly existing
+@file{auctex.el} and @file{preview-latex.el} into a possibly existing
 @file{site-start.d} directory, you can do this by placing
 
 @example
