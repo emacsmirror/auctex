@@ -1,3 +1,11 @@
+2005-07-05  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-latex.texi (Simple customization): Document new
+	option `preview-preserve-counters'.
+
+	* doc/auctex.texi (top): Mention RefTeX, `LaTeX-install-toolbar'
+	and preview-latex.
+
 2005-07-01  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-submit-bug-report): Mention FAQ section.

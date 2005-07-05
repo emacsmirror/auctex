@@ -376,16 +376,19 @@ customize the variable @code{preview-auto-cache-preamble}.
 
 @item Attempt to keep counters accurate when editing
 
+@vindex preview-preserve-counters
+@vindex preview-required-option-list
 Since @previewlatex{} frequently runs only small regions through
 @LaTeX{}, values like equation counters are not consistent from run to
 run.  If this bothers you, customize the variable
-@code{preview-required-option-list} and check the `counters' option.
-@LaTeX{} will then output a load of counter information during
-compilation, and this information will be used on subsequent updates to
-keep counters set to useful values.  The additional information takes
-additional time to analyze, but this is relevant mostly only when you
-are regenerating all previews at once, and maybe you will be less
-tempted to do so when counters appear more or less correct.
+@code{preview-preserve-counters} to @code{t} (this is consulted by
+@code{preview-required-option-list}).  @LaTeX{} will then output a load
+of counter information during compilation, and this information will be
+used on subsequent updates to keep counters set to useful values.  The
+additional information takes additional time to analyze, but this is
+relevant mostly only when you are regenerating all previews at once, and
+maybe you will be less tempted to do so when counters appear more or
+less correct.
 
 @item Preview your favourite @LaTeX{} constructs
 
@@ -505,7 +508,10 @@ wants to be able to still compile his document without it turning into
 an incoherent mass of little pictures.  These options even get passed
 in when the user loads @file{preview} explicitly in his document.
 
-One option that you might want to switch on here is @code{counters}.
+The default includes an option @code{counters} that is controlled by the
+boolean variable
+
+@item preview-preserve-counters
 This option will cause the @file{preview} package to emit information
 that will assist in keeping things like equation counters and section
 numbers reasonably correct even when you are regenerating only single

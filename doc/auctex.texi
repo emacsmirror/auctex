@@ -88,6 +88,21 @@ documents right away, insert the following in your @file{.emacs} file.
 (setq-default TeX-master nil)
 @end lisp
 
+If you are using the toolbar, there is some toolbar support available
+for @LaTeX{} which you can enable with
+
+@lisp
+(add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
+@end lisp
+
+Another thing you should enable is Ref@TeX{}
+(@pxref{Installation,,,reftex,The Ref@TeX{} manual}), a comprehensive
+solution for managing cross references, bibliographies, indices,
+document navigation and a few other things.
+
+Also check out @ref{Installation,,,preview-latex,The @previewlatex{}
+Manual}, for activating the @previewlatex{} subsystem of @AUCTeX{}.
+
 NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
 are VERY WELCOME.

@@ -1,3 +1,12 @@
+2005-07-05  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-string-expand): Allow substrings to be
+	controlled by booleans.
+	(preview-expandable-string): Adapt type to that.
+	(preview-required-option-list): Make dependent on
+	`preview-preserve-counters'.
+	(preview-preserve-counters): New boolean.
+
 2005-06-30  jalar  <jalar@mai.liu.se>
 
 	* latex/preview.dtx: <tightpage>: added comments

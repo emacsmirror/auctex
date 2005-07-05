@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.259 2005-06-24 08:14:05 dak Exp $
+;; $Id: preview.el,v 1.260 2005-07-05 01:08:30 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -465,21 +465,36 @@ set to `postscript'."
   "Expand ARG as a string.
 It can already be a string.  Or it can be a list, then it is
 recursively evaluated using SEPARATOR as separator.  If a list
-element is in itself a CONS cell, the CAR of the list is used
-as a separator.  ARG can be a symbol, and so can be the CDR
-of a cell used for string concatenation.  SEPARATOR is passed
-through top symbol dereferences, but not otherwise."
+element is in itself a CONS cell, the CAR of the list (after symbol
+dereferencing) can evaluate to either a string, in which case it is
+used as a separator for the rest of the list,
+or a boolean (t or nil) in which case the rest of the list is
+either evaluated and concatenated or ignored, respectively.
+ARG can be a symbol, and so can be the CDR
+of a cell used for string concatenation."
   (cond
-   ((null arg) (error "Bad string expansion"))
    ((stringp arg) arg)
-   ((consp arg) (mapconcat (lambda(x)
-			     (if (consp x)
-				 (preview-string-expand (cdr x) (car x))
-			       (preview-string-expand x)))
-			   arg
-			   separator))
-   ((and (symbolp arg) (boundp arg))
-    (preview-string-expand (symbol-value arg) separator))))
+   ((consp arg)
+    (mapconcat
+     #'identity
+     (delq nil
+	   (mapcar
+	    (lambda(x)
+	      (if (consp x)
+		  (let ((sep (car x)))
+		    (while (and (symbolp sep)
+				(not (memq sep '(t nil))))
+		      (setq sep (symbol-value sep)))
+		    (if (stringp sep)
+			(preview-string-expand (cdr x) sep)
+		      (and sep
+			   (preview-string-expand (cdr x)))))
+		(preview-string-expand x)))
+	    arg))
+     (or separator "")))
+   ((and (symbolp arg) (not (memq arg '(t nil))))
+    (preview-string-expand (symbol-value arg) separator))
+   (t (error "Bad string expansion"))))
 
 (defconst preview-expandable-string
   ((lambda (f) (funcall f (funcall f 'sexp)))
@@ -489,7 +504,10 @@ through top symbol dereferences, but not otherwise."
        (repeat :tag "Concatenate"
 	(choice
 	 string
-	 (cons :tag "Separated list" (string :tag "Separator") ,x)
+	 (cons :tag "Separated list"
+	       (choice (string :tag "Separator")
+		       (symbol :tag "Indirect separator or flag"))
+	       ,x)
 	 (symbol :tag "Indirect variable (no separator)")))
        (symbol :tag "Indirect variable (with separator)"))))
   "Type to be used for `preview-string-expand'.
@@ -2121,17 +2139,19 @@ will be skipped over backwards."
 	      (backward-char)))
       (error (goto-char oldpos)))))
 
-(defcustom preview-required-option-list '("active" "tightpage" "auctex")
+(defcustom preview-required-option-list '("active" "tightpage" "auctex"
+					  (preview-preserve-counters
+					   "counters"))
   "Specifies required options passed to the preview package.
 These are passed regardless of whether there is an explicit
 \\usepackage of that package present."
   :group 'preview-latex
-  :type '(list (set :inline t :tag "Required options"
-		    (const "active")
-		    (const "tightpage")
-		    (const "auctex")
-		    (const "counters"))
-	       (repeat :inline t :tag "Others" string)))
+  :type preview-expandable-string)
+
+(defcustom preview-preserve-counters nil
+  "Try preserving counters for partial runs if set."
+  :group 'preview-latex
+  :type 'boolean)
 
 (defcustom preview-default-option-list '("displaymath" "floats"
 					 "graphics" "textmath" "sections"
@@ -3422,7 +3442,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.259 $"))
+	(rev "$Revision: 1.260 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3433,7 +3453,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-06-24 08:14:05 $"))
+    (let ((date "$Date: 2005-07-05 01:08:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
@@ -3486,6 +3506,7 @@ In the form of yyyy.mmdd")
        preview-scale-function
        preview-LaTeX-command
        preview-required-option-list
+       preview-preserve-counters
        preview-default-option-list
        preview-default-preamble
        preview-LaTeX-command-replacements
