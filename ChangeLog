@@ -1,3 +1,7 @@
+2005-07-06  David Kastrup  <dak@gnu.org>
+
+	* doc/tex-ref.tex: Rearrange and add information for preview-latex.
+
 2005-07-05  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-latex.texi (Simple customization): Document new

@@ -1,5 +1,5 @@
 % -*- plain-tex -*- 
-% Reference Card for AUCTeX version 11.55
+% Reference Card for AUCTeX version 11.80
 %**start of header
 \newcount\columnsperpage
 
@@ -11,12 +11,15 @@
 % Papersize stuff.  Use default paper size for PDF, but switch
 % orientation.  Use papersize special for dvips.
 
-\ifcase\ifx\pdfoutput\undefined 1 \fi
-  \ifnum\pdfoutput=0 1 \fi 2
-\or
+\ifx\pdfoutput\undefined
+  \csname newcount\endcsname\pdfoutput
+  \pdfoutput=0
+\fi
+
+\ifnum\pdfoutput=0
 %    \special{papersize 8.5in,11in}%
      \special{papersize 297mm,210mm}%
-\or
+\else
       \dimen0\pdfpagewidth
       \pdfpagewidth\pdfpageheight
       \pdfpageheight\dimen0
@@ -40,9 +43,9 @@
 % Paul Rubin, Bob Chassell, Len Tower, and Richard Mlynarik
 % for creating the GNU Emacs Reference Card from which this was mutated
 
-\def\versionnumber{11.55}
-\def\year{2004}
-\def\version{August \year\ v\versionnumber}
+\def\versionnumber{11.80}
+\def\year{2005}
+\def\version{July \year\ v\versionnumber}
 
 \def\shortcopyrightnotice{\vskip 1ex plus 2 fill
   \centerline{\small \copyright\ \year\ Free Software Foundation, Inc.
@@ -50,7 +53,8 @@
 
 \def\copyrightnotice{%
 \vskip 1ex plus 2 fill\begingroup\small
-\centerline{Copyright \copyright\ 1987, 1993, 2004 Free Software Foundation, Inc.}
+\centerline{Copyright \copyright\ 1987, 93, 2004, 05 Free Software
+            Foundation, Inc.}
 \centerline{Copyright \copyright\ 1992 Kresten Krab Thorup}
 \centerline{for AUC\TeX\ version \versionnumber}
 
@@ -172,11 +176,11 @@ are preserved on all copies.
 
 \def\small{\smallfont\textfont2=\smallsy\baselineskip=.8\baselineskip}
 
-\outer\def\newcolumn{\vfill\eject}
+\def\newcolumn{\vfill\eject}
 
-\outer\def\title#1{{\titlefont\centerline{#1}}\vskip 1ex plus .5ex}
+\def\title#1{{\titlefont\centerline{#1}}\vskip 1ex plus .5ex}
 
-\outer\def\section#1{\par\vskip 0pt plus 0.2\vsize \penalty-3000
+\def\section#1{\par\vskip 0pt plus 0.2\vsize \penalty-3000
          \vskip 0pt plus -0.2\vsize
   \vskip 3ex plus 2ex minus 2ex {\headingfont #1}\mark{#1}%
   \vskip 2ex plus 1ex minus 1.5ex}
@@ -324,127 +328,7 @@ indicated in the mode line.
 \key{Comment or uncomment region}{C-c ;}
 \key{Comment or uncomment paragraph}{C-c \%}
 
-\section{Source Display}
-
-\key{Toggle folding mode}{C-c C-o C-f}
-\key{Hide all items in buffer}{C-c C-o C-b}
-\key{Hide all items in region}{C-c C-o C-r}
-\key{Hide all items in paragraph}{C-c C-o C-p}
-\key{Hide current macro}{C-c C-o C-m}
-\key{Hide current environment}{C-c C-o C-e}
-\key{Show all items in buffer}{C-c C-o b}
-\key{Show all items in region}{C-c C-o r}
-\key{Show all items in paragraph}{C-c C-o p}
-\key{Show current item}{C-c C-o i}
-\key{Hide or show current item}{C-c C-o C-o}
-
 \copyrightnotice
-\penalty-9000
-
-\newcolumn
-
-\title{RefTeX (long)}
-
-\section{Activation}
-
-RefTeX is part of [X]Emacs.  To activate and make it interact with
-AUCTeX, insert the following lines in .emacs.
-\vskip-3mm
-\beginexample
-(add-hook 'latex-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-auctex t)
-\endexample
-
-\section{Table of Contents}
-The table of contents is a structured view of the entire document.  It
-contains the sections, and optionally labels, index entries, and file
-boundaries.
-
-\key{Show the table of contents$\sp1$}{C-c =}
-\key{Recenter *toc* buffer to here$\sp1$}{C-c -}
-
-\section{Crossreferences, Citations, Index}
-
-\key{Insert unique label$\sp1$}{C-c (}
-\key{Reference a label$\sp1$}{C-c )}
-\key{Insert citation with key selection}{C-c [}
-\key{... prompt for optional arguments}{C-u C-c [}
-\key{Index  word at point with default macro}{C-c /}
-\key{Insert an index entry}{C-c <}
-\key{Add word to index phrases}{C-c \\}
-\key{Visit index phrases buffer}{C-c |}
-\key{Compile and display index}{C-c >}
-\key{View cross reference$\sp1$}{C-c \&}
-\key{View cross reference with mouse}{S-mouse-2}
-\key{View cross reference from BibTeX file}{C-c \&}
-
-\section{Standard keys in special buffers}
-RefTeX's special buffers have many active keys.  The common ones are:
-
-\key{Display summary of active keys}{?}
-\key{Select this item}{RET}
-\key{Rescan the document}{r}
-\key{Display location in other window}{SPC}
-\key{Follow mode}{f}
-
-\section{Multifile actions}
-Since RefTeX scans the entire (multifile) document, it can provide
-commands that act on all files of a document.  Check the {\tt
-Ref->Global Avtions} menu for these commands.
-
-\section{Variables}
-
-To tell reftex about your own macro definitions, customize the
-variables
-\vskip-3mm
-\beginexample
-reftex-label-alist
-reftex-section-lecels
-reftex-index-macros
-reftex-cite-format
-\endexample
-
-\vskip2mm\hrule
-$\sp1$ An argument of \kbd{C-u} triggers a document scan first.  This can
-be necessary if file content and RefTeX's knowledge are no longer
-consistent.
-
-\newcolumn
-
-\title{RefTeX (compact)}
-
-\section{Activation in .emacs}
-
-\vskip-4mm
-\beginexample
-(add-hook 'latex-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-auctex t)
-\endexample
-
-\section{Table of Contents}
-
-\key{Show the table of contents$\sp1$}{C-c =}
-\key{Recenter *toc* buffer to here$\sp1$}{C-c -}
-
-\section{Crossreferences, Citations, Index}
-
-\key{Insert unique label$\sp1$}{C-c (}
-\key{Reference a label$\sp1$}{C-c )}
-\key{Insert citation with key selection}{C-c [}
-\key{... prompt for optional arguments}{C-u C-c [}
-\key{Index  word at point with default macro}{C-c /}
-\key{Insert an index entry}{C-c <}
-\key{Add word to index phrases}{C-c \\}
-\key{Visit index phrases buffer}{C-c |}
-\key{Compile and display index}{C-c >}
-\key{View cross reference$\sp1$}{C-c \&}
-\key{View cross reference with mouse}{S-mouse-2}
-\key{View cross reference from BibTeX file}{C-c \&}
-
-\vskip2mm\hrule
-$\sp1$ An argument of \kbd{C-u} triggers a document scan first.
 
 \newcolumn
 
@@ -552,6 +436,215 @@ LaTeX-math-list before loading LaTeX-math-mode.
 \section{Miscellaneous}
 
 \key{cal letters}{c \<letter>}
+
+\newcolumn
+
+\def\previewlatex{{preview-latex}}
+\title{\previewlatex}
+\section{Activation}
+\previewlatex\ is part of AUC\TeX.  If it is active, you should see an
+entry ``Preview'' in the menu bar when editing \LaTeX{} files.  If you
+have a ``LaTeX'', but no ``Preview'' menu, add the following to your
+{\tt .emacs} file:
+\beginexample
+(load "preview-latex.el" nil t t)
+\endexample
+
+\section{Usage and keybindings}
+\previewlatex\ operation only affects the display of the buffer, not
+its contents.  It runs only on demand, using the target {\sc dvi} or
+{\sc PDF} files in the process.  The first command in the following
+list (also on the toolbar button) will (as applicable) repreview an
+active region or a single modified preview, toggle the visibility of
+an unmodified preview or generate previews for a surrounding buffer
+area up to the next preview.
+
+\key{Preview at point}{C-c C-p C-p}
+\key{Preview environment}{C-c C-p C-e}
+\key{Preview region}{C-c C-p C-r}
+\key{Preview buffer}{C-c C-p C-b}
+\key{Preview document}{C-c C-p C-d}
+\key{Remove previews at point}{C-c C-p C-c C-d}
+\key{Remove previews from region}{C-c C-p C-c C-r}
+\key{Remove previews from buffer}{C-c C-p C-c C-b}
+\key{Remove previews from document}{C-c C-p C-c C-d}
+\key{Cache preamble}{C-c C-p C-f}
+\key{Switch off preamble cache}{C-c C-p C-c C-f}
+\key{Read Texinfo manual}{C-c C-p TAB}
+\key{Copy region as MML}{C-c C-p C-w}
+
+The last keysequence will copy a region with previews into the kill
+buffer in a form fit for sending in Emacs' message-mode.
+
+\section{Customization within Emacs}
+
+You can use \kbd{M-x customize-variable RET} or the ``Preview\slash
+Customize'' menu for customization.  Worthwhile settings:
+
+\halign to \hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\kbd{#}\tabskip0pt\cr
+\noalign{\medskip If you have dvipng available:}
+Set to \kbd{dvipng}&preview-image-type\cr
+\noalign{\medskip \vbox{Keep counter values when regenerating
+  single previews:}}
+Set to \kbd{t}&preview-preserve-counters\cr
+\noalign{\medskip \vbox{Cache/Don't cache preamble without query
+(preamble caching is done using {\tt mylatex.ltx} and might not always
+work.  Use the appropriate key sequences for overriding the following
+setting):}}
+Set to \kbd{t}/\kbd{nil}&preview-auto-cache-preamble\cr}
+
+\section{Customization from \LaTeX{}}
+Customization is done in the document preamble (you need to load {\tt
+preview.sty} explicitly) or in {\tt prauctex.cfg} (which should load
+the system {prauctex.cfg} first).  Commands:
+
+\halign to \hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\kbd{#}\tabskip0pt\cr
+Preview macro&\string\PreviewMacro[\{\<args>\}]\{\<macro>\}\cr
+Preview env&\string\PreviewEnvironment[\{\<args>\}]\{\<env>\}\cr
+Skip macro&\string\PreviewMacro*[\{\<args>\}]\{\<macro>\}\cr
+Skip env&\string\PreviewEnvironment*[\{\<args>\}]\{\<env>\}\cr
+\noalign{\smallskip Diverting material from float environments}
+Snarf stuff&\string\PreviewSnarfEnvironment[\{\<args>\}]\{\<env>\}\cr
+}
+
+Values to be used within \<args>:
+\halign to
+\hsize{\tabskip=1ptplus1fil\relax#\hfil&\hfil\kbd{#}\tabskip0pt\cr
+Optional argument&[]\cr
+Mandatory argument&\{\}\cr
+Optional star&*\cr
+Conditionals&?\<token>\{\<if found>\}\{\<if not found>\}\cr
+Skip next token&-\cr
+Transformation&\#\{\<macro args>\}\{\<replacement>\}\cr
+}
+
+More options and explanations can be found in {\tt preview.dvi} or the
+Texinfo manual.
+
+\vskip 5ex plus 6ex minus 1ex
+
+\title{Folding Source Display}
+
+\key{Toggle folding mode}{C-c C-o C-f}
+\key{Hide all items in buffer}{C-c C-o C-b}
+\key{Hide all items in region}{C-c C-o C-r}
+\key{Hide all items in paragraph}{C-c C-o C-p}
+\key{Hide current macro}{C-c C-o C-m}
+\key{Hide current environment}{C-c C-o C-e}
+\key{Show all items in buffer}{C-c C-o b}
+\key{Show all items in region}{C-c C-o r}
+\key{Show all items in paragraph}{C-c C-o p}
+\key{Show current item}{C-c C-o i}
+\key{Hide or show current item}{C-c C-o C-o}
+
+\newcolumn
+
+\iftrue % RefTeX long version
+
+\title{RefTeX}
+
+\section{Activation}
+
+RefTeX is part of [X]Emacs.  To activate and make it interact with
+AUCTeX, insert the following lines in .emacs.
+\vskip-3mm
+\beginexample
+(add-hook 'latex-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-auctex t)
+\endexample
+
+\section{Table of Contents}
+The table of contents is a structured view of the entire document.  It
+contains the sections, and optionally labels, index entries, and file
+boundaries.
+
+\key{Show the table of contents$\sp1$}{C-c =}
+\key{Recenter *toc* buffer to here$\sp1$}{C-c -}
+
+\section{Crossreferences, Citations, Index}
+
+\key{Insert unique label$\sp1$}{C-c (}
+\key{Reference a label$\sp1$}{C-c )}
+\key{Insert citation with key selection}{C-c [}
+\key{\dots\ prompt for optional arguments}{C-u C-c [}
+\key{Index  word at point with default macro}{C-c /}
+\key{Insert an index entry}{C-c <}
+\key{Add word to index phrases}{C-c \\}
+\key{Visit index phrases buffer}{C-c |}
+\key{Compile and display index}{C-c >}
+\key{View cross reference$\sp1$}{C-c \&}
+\key{View cross reference with mouse}{S-mouse-2}
+\key{View cross reference from BibTeX file}{C-c \&}
+
+\section{Standard keys in special buffers}
+RefTeX's special buffers have many active keys.  The common ones are:
+
+\key{Display summary of active keys}{?}
+\key{Select this item}{RET}
+\key{Rescan the document}{r}
+\key{Display location in other window}{SPC}
+\key{Follow mode}{f}
+
+\section{Multifile actions}
+Since RefTeX scans the entire (multifile) document, it can provide
+commands that act on all files of a document.  Check the {\tt
+Ref->Global Actions} menu for these commands.
+
+\section{Variables}
+
+To tell reftex about your own macro definitions, customize the
+variables
+\vskip-3mm
+\beginexample
+reftex-label-alist
+reftex-section-lecels
+reftex-index-macros
+reftex-cite-format
+\endexample
+
+\vskip2mm\hrule
+$\sp1$ An argument of \kbd{C-u} triggers a document scan first.  This can
+be necessary if file content and RefTeX's knowledge are no longer
+consistent.
+
+\else % RefTeX compact version
+
+\csname title\endcsname{RefTeX}
+
+\section{Activation in .emacs}
+
+\vskip-4mm
+\beginexample
+(add-hook 'latex-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-auctex t)
+\endexample
+
+\section{Table of Contents}
+
+\key{Show the table of contents$\sp1$}{C-c =}
+\key{Recenter *toc* buffer to here$\sp1$}{C-c -}
+
+\section{Crossreferences, Citations, Index}
+
+\key{Insert unique label$\sp1$}{C-c (}
+\key{Reference a label$\sp1$}{C-c )}
+\key{Insert citation with key selection}{C-c [}
+\key{... prompt for optional arguments}{C-u C-c [}
+\key{Index  word at point with default macro}{C-c /}
+\key{Insert an index entry}{C-c <}
+\key{Add word to index phrases}{C-c \\}
+\key{Visit index phrases buffer}{C-c |}
+\key{Compile and display index}{C-c >}
+\key{View cross reference$\sp1$}{C-c \&}
+\key{View cross reference with mouse}{S-mouse-2}
+\key{View cross reference from BibTeX file}{C-c \&}
+
+\vskip2mm\hrule
+$\sp1$ An argument of \kbd{C-u} triggers a document scan first.
+
+\fi
 
 \bye
 
