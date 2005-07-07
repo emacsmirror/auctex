@@ -1,3 +1,20 @@
+2005-07-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-match-quotation): Always use multibyte
+	strings for comparison.
+
+	* doc/auctex.texi (top): Make the summary notes appear as
+	"Executive Summary" in printed output.
+
+	* doc/intro.texi: Main heading in rawtext case should not be
+	numbered.  Main heading in printed output has to be chapter, not
+	section, in order to fit into the rest of the sectioning
+	hierarchy.
+	(Introduction): Add two intermediate headings in order to make the
+	structure clearer.
+
+	* doc/.cvsignore: Add auto directory.
+
 2005-07-06  David Kastrup  <dak@gnu.org>
 
 	* doc/tex-ref.tex: Rearrange and add information for preview-latex.
