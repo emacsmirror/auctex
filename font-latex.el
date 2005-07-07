@@ -1432,8 +1432,10 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   ;; Search for matches.
   (when (re-search-forward font-latex-quote-regexp-beg limit t)
     (let ((beg (match-beginning 0)))
-      (search-forward (cdr (assoc (match-string 0) font-latex-quote-list))
-		      limit 'move)
+      (search-forward (cdr (assoc (if (fboundp 'string-make-multibyte)
+				      (string-make-multibyte (match-string 0))
+				    (match-string 0))
+				  font-latex-quote-list)) limit 'move)
       (store-match-data (list beg (point)))
       t)))
 
