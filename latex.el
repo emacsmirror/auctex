@@ -2650,6 +2650,7 @@ space does not end a sentence, so don't break a line there."
 	       ;; before a non-ascii character, we may have to
 	       ;; run a special function for the charset of the
 	       ;; character to find the correct break point.
+	       (boundp 'enable-multibyte-characters)
 	       enable-multibyte-characters
 	       (fboundp 'charset-after) ; Non-MULE XEmacsen don't have this.
 	       (not (and (eq (charset-after (1- (point))) 'ascii)
