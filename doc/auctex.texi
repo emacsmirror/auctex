@@ -65,7 +65,15 @@ approved by the Free Software Foundation.
 @top @AUCTeX{}
 @end ifhtml
 
-@ifnottex
+@ifnothtml
+@shortcontents
+@contents
+@end ifnothtml
+
+@iftex
+@unnumbered Executive Summary
+@end iftex
+
 @AUCTeX{} is an integrated environment for editing @LaTeX{}, @ConTeXt{},
 doc@TeX{}, Texinfo, and @TeX{} files.
 
@@ -124,13 +132,6 @@ the command @kbd{M-x TeX-submit-bug-report RET} to report bugs if
 possible.  You can subscribe to a low-volume announcement list by
 sending ``subscribe'' in the subject of a mail to
 @email{info-auctex-request@@gnu.org}.
-
-@end ifnottex
-
-@ifnothtml
-@shortcontents
-@contents
-@end ifnothtml
 
 @menu
 * Copying::                     Copying
