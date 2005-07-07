@@ -2,6 +2,8 @@
 
 	* latex.el (LaTeX-fill-move-to-break-point): Make non-MULE
 	XEmacsen happy.
+	(LaTeX-fill-paragraph): Don't treat trailing comment starters as
+	code comments.
 
 	* font-latex.el (font-latex-match-quotation): Always use multibyte
 	strings for comparison.
