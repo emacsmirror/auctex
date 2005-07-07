@@ -2893,10 +2893,12 @@ depends on the value of `LaTeX-syntactic-comments'."
 		comment-fill-prefix (buffer-substring (match-beginning 0)
 						      (match-end 0))))
 	 ;; A line with some code, followed by a comment?
-	 ((when (re-search-forward comment-start-skip (line-end-position) t)
-	    ;; See if there is at least one non-whitespace character
-	    ;; before the comment starts.
-	    (re-search-backward "[^ \t\n]" (line-beginning-position) t))
+	 ((and (re-search-forward comment-start-skip (line-end-position) t)
+	       ;; Don't treat trailing comment starters as code comments.
+	       (not (looking-at "$"))
+	       ;; See if there is at least one non-whitespace character
+	       ;; before the comment starts.
+	       (re-search-backward "[^ \t\n]" (line-beginning-position) t))
 	  (setq has-comment t
 		has-code-and-comment t))))
 
