@@ -1,12 +1,12 @@
 @include macros.texi
 @ifset rawfile
-@chapter Introduction to @AUCTeX{}
+@chapheading Introduction to @AUCTeX{}
 @raisesections
 @end ifset
 
 @ifclear rawfile
 @node Introduction, Installation, Copying, top
-@section Introduction to @AUCTeX{}
+@chapter Introduction to @AUCTeX{}
 @end ifclear
 
 @ifset rawfile
@@ -25,6 +25,8 @@ manual, which should be available as an info file after installation.
 rest of the manual.
 @end ifclear
 
+@section Installation
+
 Read the
 @ifset rawfile
 @file{INSTALL} or @file{INSTALL.windows} file
@@ -32,7 +34,8 @@ Read the
 @ifclear rawfile
 section @ref{Installation}, or @ref{Installation under MS Windows},
 @end ifclear
-respectively for information about how to install @AUCTeX{}.
+respectively for comprehensive information about how to install
+@AUCTeX{}.
 
 The installation routine tries to make the modes provided by @AUCTeX{}
 the default for all supported file types.  If this does not happen in
@@ -69,6 +72,8 @@ the @file{CHANGES} file.
 @ifclear rawfile
 @ref{Changes}.
 @end ifclear
+
+@section Features
 
 @AUCTeX{} is a comprehensive customizable integrated environment for
 writing input files for @TeX{}/@LaTeX{}/@ConTeXt{}/Texinfo using Emacs
