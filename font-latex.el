@@ -1430,7 +1430,7 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   ;; Search for matches.
   (catch 'match
     (while (re-search-forward font-latex-quote-regexp-beg limit t)
-      (unless (font-latex-facex-present-p '(font-lock-comment-face
+      (unless (font-latex-faces-present-p '(font-lock-comment-face
 					    font-latex-verbatim-face)
 					  (match-beginning 0))
 	(let ((beg (match-beginning 0)))
