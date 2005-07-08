@@ -4393,7 +4393,7 @@ With prefix argument FORCE, always inserts \" characters."
 					     font-lock-comment-face)
 					   (1- (point))))
 	  (texmathp)
-	  (TeX-in-comment))
+	  (and (TeX-in-comment) (not (eq major-mode 'doctex-mode))))
       (self-insert-command (prefix-numeric-value force))
     (TeX-update-style)
     (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
