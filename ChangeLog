@@ -1,3 +1,11 @@
+2005-07-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-match-command-with-arguments)
+	(font-latex-match-command-in-braces): Remove call to
+	`font-latex-commented-outp'.
+	(font-latex-match-quotation): Do not consider matches in comments
+	or verbatim-like constructs.
+
 2005-07-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Make non-MULE
