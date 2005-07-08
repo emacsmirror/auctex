@@ -1,5 +1,8 @@
 2005-07-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-insert-quote): Do not inhibit special quote
+	insertion in docTeX documentation parts.
+
 	* font-latex.el (font-latex-match-command-with-arguments)
 	(font-latex-match-command-in-braces): Remove call to
 	`font-latex-commented-outp'.
