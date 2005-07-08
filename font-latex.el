@@ -1257,10 +1257,9 @@ Returns nil if none of KEYWORDS is found."
     (font-latex-check-cache 'font-latex-match-command-cache keywords limit))
   (catch 'match
     (while (re-search-forward keywords limit t)
-      (unless (or (font-latex-faces-present-p '(font-lock-comment-face
-						font-latex-verbatim-face)
-					      (match-beginning 0))
-		  (font-latex-commented-outp))
+      (unless (font-latex-faces-present-p '(font-lock-comment-face
+					    font-latex-verbatim-face)
+					  (match-beginning 0))
 	(let ((kbeg (match-beginning 0))
 	      kend sbeg send cbeg cend
 	      cache-reset opt-arg
@@ -1327,10 +1326,9 @@ Returns nil if no command is found."
     (font-latex-check-cache 'font-latex-match-in-braces-cache 'in-braces limit))
   (catch 'match
     (while (re-search-forward keywords limit t)
-      (unless (or (font-latex-faces-present-p '(font-lock-comment-face
-						font-latex-verbatim-face)
-					      (match-beginning 0))
-		  (font-latex-commented-outp))
+      (unless (font-latex-faces-present-p '(font-lock-comment-face
+					    font-latex-verbatim-face)
+					  (match-beginning 0))
 	(let ((kbeg (match-beginning 0)) (kend (match-end 1))
 	      (beg  (match-end 0))
 	      end cbeg cend
@@ -1430,14 +1428,19 @@ set to french, and >> german << (and 8-bit) are used if set to german."
     (setq font-latex-quote-regexp-beg
 	  (regexp-opt (mapcar 'car font-latex-quote-list) t)))
   ;; Search for matches.
-  (when (re-search-forward font-latex-quote-regexp-beg limit t)
-    (let ((beg (match-beginning 0)))
-      (search-forward (cdr (assoc (if (fboundp 'string-make-multibyte)
-				      (string-make-multibyte (match-string 0))
-				    (match-string 0))
-				  font-latex-quote-list)) limit 'move)
-      (store-match-data (list beg (point)))
-      t)))
+  (catch 'match
+    (while (re-search-forward font-latex-quote-regexp-beg limit t)
+      (unless (font-latex-facex-present-p '(font-lock-comment-face
+					    font-latex-verbatim-face)
+					  (match-beginning 0))
+	(let ((beg (match-beginning 0)))
+	  (search-forward (cdr (assoc
+				(if (fboundp 'string-make-multibyte)
+				    (string-make-multibyte (match-string 0))
+				  (match-string 0))
+				font-latex-quote-list)) limit 'move)
+	  (store-match-data (list beg (point)))
+	  (throw 'match t))))))
 
 (defun font-latex-match-script (limit)
   "Match subscript and superscript patterns up to LIMIT."
