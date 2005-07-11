@@ -503,7 +503,7 @@ in properly detected buffers."
       (when (consp (cdr format-cons))
 	(preview-unwatch-preamble format-cons)
 	(preview-watch-preamble (current-buffer)
-				(cdr format-cons)
+				(cadr format-cons)
 				format-cons)))))
 
 (defvar preview-marker (make-marker)

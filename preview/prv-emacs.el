@@ -396,10 +396,10 @@ purposes."
 			  filename)
 	(setq filename (substring filename 0 (match-beginning 0))))
       (setq format-cons (assoc filename preview-dumped-alist))
-      (when (cdr format-cons)
+      (when (consp (cdr format-cons))
 	(preview-unwatch-preamble format-cons)
 	(preview-watch-preamble (current-buffer)
-				(cdr format-cons)
+				(cadr format-cons)
 				format-cons)))))
 
 (defvar preview-marker (make-marker)

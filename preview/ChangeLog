@@ -1,3 +1,13 @@
+2005-07-11  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-at-point): Join adjacent touched previews
+	for regeneration.
+
+	* prv-emacs.el (preview-mode-setup): 
+
+	* prv-xemacs.el (preview-mode-setup): Use correct string for
+	resetting watch on preamble.
+
 2005-07-05  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-string-expand): Allow substrings to be

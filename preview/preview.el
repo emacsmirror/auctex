@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.260 2005-07-05 01:08:30 dak Exp $
+;; $Id: preview.el,v 1.261 2005-07-11 21:54:12 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1578,14 +1578,16 @@ Searches backwards if BACKWARDS is non-nil."
 	     
 (defun preview-at-point ()
   "Do the appropriate preview thing at point.
-If point is positioned on or inside of a preview area, this
-toggles its visibility, regenerating the preview if necessary.
-If not, it will run the surroundings through preview.  The
-surroundings include all areas up to the next valid preview,
-unless invalid previews occur before, in which case the area will
-include the last such preview.  And overriding any other
-action, if a region is active (`transient-mark-mode' or
-`zmacs-regions'), it is run through `preview-region'."
+If point is positioned on or inside of an unmodified preview area,
+its visibility is toggled.
+
+If not, the surroundings are run through preview.  The
+surroundings don't extend into unmodified previews or past
+contiguous previews invalidated by modifications.
+
+Overriding any other action, if a region is
+active (`transient-mark-mode' or `zmacs-regions'), it is run
+through `preview-region'."
   (interactive)
   (if (TeX-active-mark)
       (preview-region (region-beginning) (region-end))
@@ -1594,10 +1596,9 @@ action, if a region is active (`transient-mark-mode' or
 				(min (point-max) (1+ (point)))))
 	(let ((preview-state (overlay-get ovr 'preview-state)))
 	  (when preview-state
-	    (if (eq preview-state 'disabled)
-		(preview-regenerate ovr)
-	      (preview-toggle ovr 'toggle))
-	    (throw 'exit t))))
+	    (unless (eq preview-state 'disabled)
+	      (preview-toggle ovr 'toggle)
+	      (throw 'exit t)))))
       (preview-region (preview-next-border t)
 		      (preview-next-border nil)))))
 
@@ -3442,7 +3443,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.260 $"))
+	(rev "$Revision: 1.261 $"))
     (or (if (string-match "\\`[$]Name: *\\([^ ]+\\) *[$]\\'" name)
 	    (match-string 1 name))
 	(if (string-match "\\`[$]Revision: *\\([^ ]+\\) *[$]\\'" rev)
@@ -3453,7 +3454,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-07-05 01:08:30 $"))
+    (let ((date "$Date: 2005-07-11 21:54:12 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
