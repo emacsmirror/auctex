@@ -1,3 +1,8 @@
+2005-07-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* texmathp.el (texmathp-match-environment): Match environment
+	begin and end with whitespace between macro and argument as well.
+
 2005-07-12  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: 
