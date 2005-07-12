@@ -123,13 +123,15 @@ call @command{./configure} with appropriate options.
 
 Typical options you'll want to specify will be
 @table @code
-@item --prefix=@var{drive:/path/to/emacs-directory}
+@item --prefix=@var{drive:/path/to/emacs-hierarchy}
 which tells @file{configure} where to perform the installation. It may
 also make @file{configure} find Emacs or XEmacs automatically; if this
 doesn't happen, try one of @samp{--with-emacs} or @samp{--with-xemacs}
 as described below.  All automatic detection of files and directories
 restricts itself to directories below the @var{prefix} or in the same
-hierarchy as the program accessing the files.
+hierarchy as the program accessing the files.  Usually, directories like
+@file{man}, @file{share} and @file{bin} will be situated right under
+@var{prefix}.
 
 This option also affects the defaults for placing the Texinfo
 documentation files and automatically generated style hooks.

@@ -33,7 +33,7 @@ install: install-auctex install-preview
 install-man:
 	test x$(packagedir) != xno && \
 	{ $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/man/auctex ; \
-	for i in $(AUCTEXTEXIFILES) $(PREVIEWTEXIFILES) ; \
+	for i in $(AUCTEXTEXIFILES) $(PREVIEWTEXIFILES) tex-ref.tex ; \
 	do echo $(INSTALL_DATA) $$i $(DESTDIR)$(packagedir)/man/auctex; \
 	   $(INSTALL_DATA) $$i $(DESTDIR)$(packagedir)/man/auctex; \
 	done ; \

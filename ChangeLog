@@ -1,3 +1,11 @@
+2005-07-12  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: 
+
+	* doc/install.texi (Configure): Explain prefix a bit more.
+
+	* doc/Makefile.in (install-man): include tex-ref.tex.
+
 2005-07-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-insert-quote): Do not inhibit special quote
