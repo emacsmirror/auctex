@@ -1,5 +1,7 @@
 2005-07-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/install.texi (Configure): Add `file' macro.
+
 	* texmathp.el (texmathp-match-environment): Match environment
 	begin and end with whitespace between macro and argument as well.
 
