@@ -171,7 +171,8 @@ help it out with one of these options:
 @item --prefix=@file{/usr/local}
 All automatic placements for package components will be chosen from
 sensible existing hierarchies below this: directories like @file{man},
-@file{share} and @{bin} are supposed to be directly below @var{prefix}.
+@file{share} and @file{bin} are supposed to be directly below
+@var{prefix}.
 
 Only if no workable placement can be found there, in some cases an
 alternative search will be made in a prefix deduced from a suitable
