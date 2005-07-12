@@ -314,7 +314,7 @@ Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
     (save-excursion
       (and (null texmathp-environments) (throw 'exit nil))
       (let (end-list env)
-	(while (re-search-backward "\\\\\\(begin\\|end\\){\\([^}]+\\)}"
+	(while (re-search-backward "\\\\\\(begin\\|end\\)[ \t]*{\\([^}]+\\)}"
 				   bound t)
 	  (setq env (buffer-substring-no-properties
 		     (match-beginning 2) (match-end 2)))
