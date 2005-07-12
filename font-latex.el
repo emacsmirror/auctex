@@ -1392,17 +1392,19 @@ Used for patterns like:
 \\begin{equation}
  fontified stuff
 \\end{equation}
-The \\begin{equation} and \\end{equation are not fontified here."
+The \\begin{equation} and \\end{equation} are not fontified here."
   (when (re-search-forward
          (eval-when-compile
-           (concat "\\\\begin{\\(\\(display\\)?math\\|equation\\|eqnarray"
+           (concat "\\\\begin[ \t]*{\\(\\(display\\)?math\\|equation\\|eqnarray"
                    "\\|gather\\|multline\\|align\\|x*alignat"
                    "\\)\\*?}"))
          limit t)
     (let ((beg (match-end 0)) end)
-      (if (search-forward (concat "\\end{" (buffer-substring
-                                            (match-beginning 1)(match-end 0)))
-                          limit 'move)
+      (if (re-search-forward (concat "\\\\end[ \t]*{"
+				     (regexp-quote (buffer-substring
+						    (match-beginning 1)
+						    (match-end 0))))
+			     limit 'move)
           (setq end (match-beginning 0))
         (setq end (point)))
       (store-match-data (list beg end))
