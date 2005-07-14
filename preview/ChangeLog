@@ -1,3 +1,7 @@
+2005-07-14  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: protect against packagedir starting with `-'
+
 2005-07-11  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-at-point): Join adjacent touched previews

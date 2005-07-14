@@ -30,7 +30,7 @@ else
    packagedir=no
 fi
 
-if test "${packagedir}" = no
+if test "X${packagedir}" = Xno
 then
    EMACS_PATH_LISPDIR
    AC_MSG_CHECKING(what file to use for preview startup)

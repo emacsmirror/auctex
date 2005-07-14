@@ -200,12 +200,13 @@ AC_DEFUN(EMACS_PATH_LISPDIR, [
                           files will be place in a subdirectory.],
     [[lispdir="${withval}"]])
   if test "X${lispdir}" = X; then
-     if test "${EMACS_FLAVOR}" = 'emacs'; then
+     if test "X${packagedir}" = Xno; then
        # Test paths relative to prefixes
        EMACS_EXAMINE_INSTALLATION_DIR(lispdir,
-         [['${datadir}/emacs' '${libdir}/emacs' "${emacsprefix}/share/emacs" \
+         [['${datadir}/'${EMACS_FLAVOR} '${libdir}/'${EMACS_FLAVOR} \
+	   "${emacsprefix}/share/${EMACS_FLAVOR}" \
            '${datadir}' '${libdir}' "${emacsprefix}"]],
-	 [[(list \"emacs/site-lisp\" \"emacs/site-packages\"
+	 [[(list \"${EMACS_FLAVOR}/site-lisp\" \"${EMACS_FLAVOR}/site-packages\"
 	         \"site-lisp\" \"site-packages\")]], load-path)
        if test "${lispdir}" = "NONE"; then
 	 # No? notify user.

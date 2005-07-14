@@ -1,3 +1,12 @@
+2005-07-14  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Configure): explain about --without-packagedir.
+	(Advice for package providers): Same here.
+
+	* aclocal.m4 (EMACS_PATH_LISPDIR): Allow packagedir=no with XEmacs.
+
+	* configure.ac: protect against packagedir starting with `-'
+
 2005-07-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-match-math-envII): Match environment

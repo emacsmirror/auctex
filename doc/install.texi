@@ -200,7 +200,15 @@ This XEmacs-only option configures the directory for XEmacs packages.  A
 typical user-local setting would be @file{~/.xemacs/xemacs-packages}.
 If this directory exists and is below @var{prefix}, it should be
 detected automatically.  This will install and activate the package.
-Emacs uses a different installation scheme:
+
+@item --without-packagedir
+This XEmacs-only option switches the detection of a package directory
+and corresponding installation off.  Consequently, the Emacs
+installation scheme will be used.  This might be appropriate if you are
+using a different package system/installer than the XEmacs one and want
+to avoid conflicts.
+
+The Emacs installation scheme has the following options:
 
 @item --with-lispdir=@var{/dir}
 This Emacs-only option specifies the location of the @file{site-lisp}
@@ -420,7 +428,8 @@ a private @AUCTeX{} version.  So you should make sure that such a
 package will not conflict with existing XEmacs packages and will be
 at an appropriate place in the load order (after site-wide and
 user-specific locations, but before a distribution-specific sumo package
-tree).  It might be a reasonable choice to refrain from providing an
+tree).  Using the @code{--without-packagedir} option might be one idea
+to avoid conflicts.  Another might be to refrain from providing an
 XEmacs package and just rely on the user or system administrator to
 instead use the XEmacs package system.
 @end table
