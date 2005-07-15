@@ -388,9 +388,7 @@
 % This will replace a footnote by an empty footnote, but taking any
 % optional parameter into account, since an optional paramter changes
 % the numbering scheme.  That way the real argument for the footnote
-% remains for processing by \previewlatex\ (the actual definition is
-% more complicated in order not to change the numbering in case of
-% optional arguments being present).
+% remains for processing by \previewlatex.
 % 
 % \DescribeMacro{\PreviewEnvironment} The macro
 % \cmd{\PreviewEnvironment} works just as \cmd{\PreviewMacro} does,
@@ -436,11 +434,11 @@
 \NeedsTeXFormat{LaTeX2e} \def\reserved@a #1#2$#3:
 #4${\edef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.107 $ \else \begingroup
+\reserved@a\pr@version CVS-$Revision: 1.108 $ \else \begingroup
   \lccode`\_=`.  \catcode`\_=12 \def\next Release_{}
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2005-06-30 08:12:13 $
+\reserved@a\next $Date: 2005-07-15 19:20:14 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version (AUCTeX/preview-latex)]}
 \next
@@ -1365,7 +1363,7 @@ Please complain to your document class author}%
 % And here we cater for several frequently used commands in
 % |prauctex.cfg|:
 %    \begin{macrocode}
-%<auccfg>\PreviewMacro*[?[{@{[]}}{}][#1{}]\footnote
+%<auccfg>\PreviewMacro*[[][#1{}]\footnote
 %<auccfg>\PreviewMacro*[?[{@{[]}}{}][#1]\item
 %<auccfg>\PreviewMacro*\emph
 %<auccfg>\PreviewMacro*\textrm
@@ -1382,7 +1380,7 @@ Please complain to your document class author}%
 %<auccfg>\PreviewMacro*\thanks
 %<auccfg>\PreviewMacro*[][#1{}]\caption
 %<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
-%<auccfg>  \PreviewMacro*[!!!!!!*]\@startsection}{}}
+%<auccfg>  \PreviewMacro*[!!!!!!*][#1{}]\@startsection}{}}
 %<auccfg>\PreviewMacro*\index
 %    \end{macrocode}
 %

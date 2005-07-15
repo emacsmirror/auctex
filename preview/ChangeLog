@@ -1,3 +1,10 @@
+2005-07-15  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Don't talk nonsense about the footnote macro,
+	and don't define it nonsensical for AUCTeX.
+	Reproduce `\@startsection' command to keep numbering correct in
+	default configuration for AUCTeX.
+
 2005-07-14  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: protect against packagedir starting with `-'
