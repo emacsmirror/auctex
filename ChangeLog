@@ -1,3 +1,8 @@
+2005-07-15  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-todo.texi: Mention that preview.dtx is not a
+	showpiece for AUCTeX.
+
 2005-07-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-run-style-hooks): Adjust `default-directory' to

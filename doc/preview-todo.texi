@@ -44,6 +44,12 @@ Probably in connection with adding appropriate support to
 piece of source code would place the cursor at the respective source
 code location.
 
+@item Make @file{preview.dtx} look reasonable in @AUCTeX{}
+
+It is a bit embarrassing that @file{preview.dtx} is written in a manner
+that will not give either good syntax highlighting or good indentation
+when employing @AUCTeX{}.
+
 @item Web page work
 
 Currently, @previewlatex{}'s web page is not structured at all.  Better
