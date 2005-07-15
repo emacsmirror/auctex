@@ -1,3 +1,8 @@
+2005-07-15  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-run-style-hooks): Adjust `default-directory' to
+	match the directory of the style.
+
 2005-07-14  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Configure): explain about --without-packagedir.
