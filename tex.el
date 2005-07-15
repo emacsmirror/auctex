@@ -1663,16 +1663,21 @@ active.")
 (defun TeX-run-style-hooks (&rest styles)
   "Run the TeX style hooks STYLES."
   (mapcar (lambda (style)
-	    (if (TeX-member style TeX-active-styles 'string-equal)
-		()			;Avoid recursion.
+	    ;; Avoid recursion.
+	    (unless (TeX-member style TeX-active-styles 'string-equal)
 	      (setq TeX-active-styles
 		    (cons style TeX-active-styles))
 	      (TeX-load-style style)
-	      (if (string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style)
-		  (setq style		; Complex path
-			(substring style (match-beginning 2) (match-end 2))))
-	      (mapcar 'funcall
-		      (cdr-safe (assoc style TeX-style-hook-list)))))
+	      (let ((default-directory default-directory))
+		;; Complex path.
+		(when (string-match "\\`\\(.+[/\\]\\)\\([^/\\]*\\)\\'" style)
+		  ;; Adjust `default-directory' to the directory of the style.
+		  (setq default-directory (expand-file-name
+					   (file-name-directory style))
+			style (substring style
+					 (match-beginning 2) (match-end 2))))
+		(mapcar 'funcall
+			(cdr-safe (assoc style TeX-style-hook-list))))))
 	  styles))
 
 (defcustom TeX-parse-self nil
