@@ -1,5 +1,8 @@
 2005-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/auctex.texi (Japanese): Remove references to contrib make
+	targets.  Minor clean-ups.
+
 	* aclocal.m4 (library): Replace COMPILE_MULE and CONTRIB_MULEELC
 	with MULESRC and MULEELC.
 
