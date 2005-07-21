@@ -496,14 +496,14 @@ AC_DEFUN(EMACS_CHECK_MULE, [
 AC_MSG_CHECKING(for mule support)
 EMACS_CHECK_REQUIRE(mule,silent)
 if test "${HAVE_mule}" = "yes"; then
-  COMPILE_MULE="tex-jp.el"
-  CONTRIB_MULEELC="tex-jp.elc"
+  MULESRC="tex-jp.el"
+  MULEELC="tex-jp.elc"
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
 fi
-AC_SUBST(COMPILE_MULE)
-AC_SUBST(CONTRIB_MULEELC)
+AC_SUBST(MULESRC)
+AC_SUBST(MULEELC)
 ])
 
 dnl
