@@ -2823,56 +2823,47 @@ If nil do it the other way round.
 @vindex japanese-LaTeX-command-default
 @vindex japanese-LaTeX-default-style
 
-To write Japanese text with @AUCTeX{} you need to have versions of
+To write Japanese text with @AUCTeX{}, you need to have versions of
 @TeX{} and Emacs that support Japanese.  There exist at least two
 variants of @TeX{} for Japanese text (NTT j@TeX{} and ASCII p@TeX{}).
 @AUCTeX{} can be used with @acronym{MULE, MULtilingual Enhancement to GNU
 Emacs} supported Emacsen.
 
-Next two commands will automatically install Japanese contributed files.
-
-@example
-make contrib
-make install-contrib
-@end example
-
-If it fails, copy @file{tex-jp.el} to @AUCTeX{} installed directory,
-manually.
-
-To use the Japanese @TeX{} variants, simply enter
+To use the Japanese @TeX{} variants, simply activate
 @code{japanese-plain-tex-mode} or @code{japanese-latex-mode} and
 everything should work.  If not, send mail to Masayuki Ataka
 @samp{<ataka@@milk.freemail.ne.jp>}, who kindly donated the code for
 supporting Japanese in @AUCTeX{}.  None of the primary @AUCTeX{}
-maintainers understand Japanese, so they can not help you.
+maintainers understand Japanese, so they cannot help you.
 
-If you usually use @AUCTeX{} in Japanese, setting following variables
-is useful.
+If you usually use @AUCTeX{} in Japanese, setting the following
+variables is useful.
 
 @defopt TeX-default-mode
-Mode to enter for a new file when it can't be determined whether
-the file is plain @TeX{} or @LaTeX{} or what.
+Mode to enter for a new file when it cannott be determined whether the
+file is plain @TeX{} or @LaTeX{} or what.
 
-To use Japanese @TeX{} always, set japanese command for example:
+If you want to enter Japanese @LaTeX{} mode whenever this may happen,
+set the variable like this:
 @lisp
 (setq TeX-default-mode 'japanese-latex-mode)
 @end lisp
 @end defopt
 
 @defopt japanese-TeX-command-default
-The default command for TeX-command in japanese @TeX{} mode.
+The default command for @code{TeX-command} in Japanese @TeX{} mode.
 
 The default value is @samp{"pTeX"}.
 @end defopt
 
 @defopt japanese-LaTeX-command-default
-The default command for TeX-command in japanese @LaTeX{} mode.
+The default command for @code{TeX-command} in Japanese @LaTeX{} mode.
 
 The default value is @samp{"LaTeX"}.
 @end defopt
 
 @defopt japanese-LaTeX-default-style
-The default style/class when creating new japanese @LaTeX{} document.
+The default style/class when creating a new Japanese @LaTeX{} document.
 
 The default value is @samp{"jarticle"}.
 @end defopt
