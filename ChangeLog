@@ -1,3 +1,8 @@
+2005-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/csquotes.el: Bring up to par with csquotes 3.0.
+	(LaTeX-csquotes-insert-environment): New function.
+
 2005-07-15  David Kastrup  <dak@gnu.org>
 
 	* doc/preview-todo.texi: Mention that preview.dtx is not a
