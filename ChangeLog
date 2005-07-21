@@ -1,5 +1,9 @@
 2005-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-set-syntactic-keywords): Set and
+	update `font-latex-doctex-syntactic-keywords' here.
+	(font-latex-doctex-syntactic-keywords): Default to nil.
+
 	* doc/auctex.texi (Japanese): Remove references to contrib make
 	targets.  Minor clean-ups.
 
