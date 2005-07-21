@@ -773,7 +773,12 @@ have changed."
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\\\\\(?:" verb-macros "\\)"
 			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
-		     (1 "|") (2 "|"))))))
+		     (1 "|") (2 "|")))))
+  ;; Cater for docTeX mode.
+  (setq font-latex-doctex-syntactic-keywords
+	(append font-latex-syntactic-keywords
+		;; For docTeX comment-in-doc.
+		`(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A)))))))
 
 (defvar font-latex-syntactic-keywords nil
   "Syntactic keywords used by `font-latex'.")
@@ -1517,11 +1522,8 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   (append font-latex-keywords-2
 	  '(("^%<[^>]*>" (0 font-latex-doctex-preprocessor-face t)))))
 
-(defvar font-latex-doctex-syntactic-keywords
-  (append
-   font-latex-syntactic-keywords
-   ;; For docTeX comment-in-doc.
-   `(("\\(\\^\\)\\^A" (1 (font-latex-doctex-^^A))))))
+;; Set and updated in `font-latex-set-syntactic-keywords'.
+(defvar font-latex-doctex-syntactic-keywords nil)
 
 ;; Copy and adaptation of `doctex-font-lock-^^A' in `tex-mode.el' of
 ;; CVS Emacs (March 2004)
