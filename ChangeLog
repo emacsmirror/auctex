@@ -1,5 +1,22 @@
 2005-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* aclocal.m4 (library): Replace COMPILE_MULE and CONTRIB_MULEELC
+	with MULESRC and MULEELC.
+
+	* Makefile.in (CONTRIB, CONTRIBELC, CONTRIB_MULE, COMPILE_MULE)
+	(CONTRIB_MULEELC): Remove.
+	(MULESRC, MULEELC): New variables.
+	(AUCSRC): Add bib-cite.el and tex-fptex.el.
+	(CLEANFILES): Remove CONTRIBELC and CONTRIB_MULEELC.  Use MULEELC
+	instead.
+	(.PHONY): Remove contrib, install-contrib and install-contrib-el
+	targets.
+	(lisp): Depend on STYLESRC and MULESRC.  Compile MULESRC as well.
+	(auto-loads.el): Use MULESRC.
+	(contrib, install-contrib-el, install-contrib): Remove.
+	(install-el): Install MULESRC.
+	(install-lisp): Install MULEELC.
+
 	* style/csquotes.el: Bring up to par with csquotes 3.0.
 	(LaTeX-csquotes-insert-environment): New function.
 
