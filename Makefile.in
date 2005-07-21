@@ -51,16 +51,13 @@ FTPDIR = $(DIST_PREFIX)ftp
 WWWDIR = $(DIST_PREFIX)www
 RPMROOT = /usr/src/redhat
 
-CONTRIB = bib-cite.el tex-fptex.el
-CONTRIBELC = bib-cite.elc tex-fptex.elc
-CONTRIB_MULE = tex-jp.el
-COMPILE_MULE = @COMPILE_MULE@
-CONTRIB_MULEELC = @CONTRIB_MULEELC@
+MULESRC = @MULESRC@
+MULEELC = @MULEELC@
 
 AUCSRC = tex.el tex-buf.el tex-style.el latex.el tex-info.el \
 	texmathp.el multi-prompt.el tex-mik.el font-latex.el tex-font.el \
 	context.el context-en.el context-nl.el tex-fold.el \
-	toolbar-x.el tex-bar.el
+	toolbar-x.el tex-bar.el bib-cite.el tex-fptex.el
 AUCELC = $(AUCSRC:.el=.elc)
 
 STYLESRC = style/prosper.el \
@@ -96,7 +93,7 @@ DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/wininstall.texi doc/todo.texi doc/faq.texi \
 	doc/quickstart.texi
 
-CLEANFILES = $(AUCELC) $(STYLEELC) $(CONTRIBELC) $(CONTRIB_MULEELC)
+CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
 DISTCLEANFILES = Makefile tex-site.el auctex.el auto-loads.el config.*
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
@@ -105,14 +102,14 @@ NOSEARCH = style/.nosearch
 all: lisp
 	$(DESCEND)
 
-.PHONY: all lisp info dvi some install contrib install-el install-lisp \
-	install-contrib install-contrib-el install-docs install-auto \
+.PHONY: all lisp info dvi some install install-el install-lisp \
+	install-docs install-auto \
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
 	dist patch tar-ball full-release tar-ball-clean wc xemacs-package
 
-lisp:	tex-site.el $(AUCSRC)
-	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC)
+lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
+	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
 
 info:
 	cd doc ; $(MAKE) info
@@ -141,14 +138,14 @@ Makefile: Makefile.in config.status
 config.status: configure
 	./config.status --recheck
 
-auto-loads.el: $(AUCSRC) $(COMPILE_MULE) Makefile
+auto-loads.el: $(AUCSRC) $(MULESRC) Makefile
 	test X$(packagedir) != Xno || { \
 	  rm -f $@ ; \
-	  $(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE) || : ; \
+	  $(ELCC) $(AUTOLOAD) $(AUCSRC) $(MULESRC) || : ; \
 	  test -r $@ || { \
 	    echo ";; Auto-generated part of tex-site.el" > $@ ; \
 	    echo "" >> $@ ; \
-	    $(ELCC) $(AUTOLOAD) $(AUCSRC) $(COMPILE_MULE) ; \
+	    $(ELCC) $(AUTOLOAD) $(AUCSRC) $(MULESRC) ; \
 	  } ; \
 	}
 
@@ -165,9 +162,6 @@ install-man:
 install-startup:
 	test $(packagedir) != no || \
 	  $(INSTALL_DATA) auctex.el $(DESTDIR)$(auctexstartfile)
-
-contrib:
-	$(ELCC) -f batch-byte-compile $(CONTRIB) $(COMPILE_MULE)
 
 install-el:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(lispdir)
@@ -195,10 +189,14 @@ install-el:
 	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(styledir)' ; \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(styledir) ; \
 	done;
+	for x in $(MULESRC); do \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
+	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(autodir)
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
-install-lisp:	some install-el
+install-lisp: some install-el
 	for x in $(AUCSRC) ; do \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
@@ -207,23 +205,15 @@ install-lisp:	some install-el
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(styledir) ; \
 	done;
+	for x in $(MULEELC); do \
+	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
+	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
+	done;
 
 install-images:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
 	set -x; for x in images/*.xpm ; do \
 	  $(INSTALL_DATA) $${x} $(DESTDIR)$(packagedatadir)/images ; \
-	done;
-
-install-contrib-el:
-	for x in $(CONTRIB) $(CONTRIB_MULE); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
-	done;
-
-install-contrib:	install-contrib-el $(CONTRIBELC) $(CONTRIB_MULEELC)
-	for x in $(CONTRIBELC) $(CONTRIB_MULEELC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 
 install-docs:
