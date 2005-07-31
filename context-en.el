@@ -73,7 +73,7 @@
     "floats" "footer" "footertexts" "footnodedefinition" "footnotes"
     "framed" "framedtexts" "head" "header" "headertexts" "headnumber"
     "heads" "headtext" "hyphenmark" "indentations" "indenting" "inmargin"
-    "inerlinespace" "itemize" "items" "labeltext" "language" "layout"
+    "interlinespace" "itemize" "items" "labeltext" "language" "layout"
     "linenumbering" "lines" "list" "makeup" "marginblocks"
     "marginrules" "marking" "narrower" "oppositeplacing" "pagenumber"
     "pagenumbering" "palet" "papersize" "paragraphs" "quote" "referencing"
