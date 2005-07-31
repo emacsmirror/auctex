@@ -1,3 +1,7 @@
+2005-08-01  Berend de Boer  <berend@pobox.com>
+
+	* context-en.el (ConTeXt-setup-list-en): typo fixed.
+
 2005-07-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-set-syntactic-keywords): Set and
@@ -58,7 +62,7 @@
 
 2005-07-12  David Kastrup  <dak@gnu.org>
 
-	* doc/wininstall.texi: 
+	* doc/wininstall.texi:
 
 	* doc/install.texi (Configure): Explain prefix a bit more.
 
@@ -336,7 +340,7 @@
 	* doc/preview-readme.texi (Introduction): Some cosmetic changes to
 	account for the merge.
 
-	* mkinstalldirs: 
+	* mkinstalldirs:
 
 	* install-sh: Replace `#/bin/sh' with `:' as this should be more
 	portable when called from a Bourne shell (which is what the
@@ -584,7 +588,7 @@
 
 	* style/amsmath.el (LaTeX-label-alist): Add "multline" environment.
 
-	* Makefile.in: 
+	* Makefile.in:
 	* configure.ac:
 	* preview/Makefile.in: Change "==" to "=" in the argument of
 	"test" for Bourne shell compatibility.
@@ -808,9 +812,9 @@
 
 2005-05-02  David Kastrup  <dak@gnu.org>
 
-	* doc/install.texi: 
+	* doc/install.texi:
 
-	* doc/intro.texi: 
+	* doc/intro.texi:
 
 	* doc/wininstall.texi: overhaul.
 
@@ -836,35 +840,35 @@
 	(Makefile, config.status): Add targets to get reconfiguration if
 	necessary.
 
-	* style/url.el: 
+	* style/url.el:
 
-	* style/ltx-base.el: 
+	* style/ltx-base.el:
 
-	* style/units.el: 
+	* style/units.el:
 
-	* style/alltt.el: 
+	* style/alltt.el:
 
-	* style/alphanum.el: 
+	* style/alphanum.el:
 
-	* style/jura.el: 
+	* style/jura.el:
 
-	* style/emp.el: 
+	* style/emp.el:
 
-	* style/doc.el: 
+	* style/doc.el:
 
-	* style/slides.el: 
+	* style/slides.el:
 
-	* style/csquotes.el: 
+	* style/csquotes.el:
 
-	* style/listings.el: 
+	* style/listings.el:
 
-	* style/nicefrac.el: 
+	* style/nicefrac.el:
 
-	* style/ltxdoc.el: 
+	* style/ltxdoc.el:
 
-	* style/jurabib.el: 
+	* style/jurabib.el:
 
-	* style/mdwlist.el: 
+	* style/mdwlist.el:
 
 	* style/amstex.el: Change maintainer address.
 
@@ -915,15 +919,15 @@
 	* doc/intro.texi (Introduction): Reorganize, use more of rawfile.
 	Mention preview-latex.
 
-	* tex-buf.el: 
+	* tex-buf.el:
 
-	* tex-fold.el: 
+	* tex-fold.el:
 
-	* tex-font.el: 
+	* tex-font.el:
 
-	* tex-fptex.el: 
+	* tex-fptex.el:
 
-	* tex-info.el: 
+	* tex-info.el:
 
 	* tex-mik.el: Change maintainer to auctex-devel@gnu.org
 
@@ -1017,11 +1021,11 @@
 
 	* auctex.el.in (TeX-doc): Startup file source.
 
-	* doc/wininstall.texi: 
+	* doc/wininstall.texi:
 
-	* doc/intro.texi: 
+	* doc/intro.texi:
 
-	* doc/install.texi: 
+	* doc/install.texi:
 
 	* doc/faq.texi:
 
@@ -1784,7 +1788,7 @@
 	AUCTeX CVS Archive on
 	<URL:http://savannah.gnu.org/projects/auctex> in subdirectory
 	auctex/preview.
-	
+
 2005-03-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (I18n): Try to make text more clear.
@@ -2065,7 +2069,7 @@
 
 	* Version 11.55 released.
 
-	* Makefile.in (tar-ball): 
+	* Makefile.in (tar-ball):
 
 	* doc/Makefile.in (clean, html/auctex_toc.html, dist): Move HTML
 	stuff into html directory.
@@ -2562,19 +2566,19 @@
 
 2004-11-29  Jan-Ake Larsson  <jalar@mai.liu.se>
 
-	* configure.ac: Add @command macro test 
+	* configure.ac: Add @command macro test
 
 	* configure.in: Moved to configure.ac
 
 	* configure.ac: Moved from configure.in
 
-	* doc/macros.texi: Add @command macro 
+	* doc/macros.texi: Add @command macro
 
 	* doc/auctex.texi: Change order of @top and @ifnottex, error
 	message otherwise.
 
 	* doc/Makefile.in: Add MAKEINFO environment variable for texi2...
-	usage. Remove old (confusing) messages. 
+	usage. Remove old (confusing) messages.
 
 2004-11-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
