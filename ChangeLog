@@ -1,3 +1,9 @@
+2005-08-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-fold.el (TeX-fold-region): In case of single-char non-letter
+	macros there does not have to be checked for a partial match.
+	This allows for folding of stuff like \,.
+
 2005-08-01  Berend de Boer  <berend@pobox.com>
 
 	* context-en.el (ConTeXt-setup-list-en): typo fixed.
