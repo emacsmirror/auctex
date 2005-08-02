@@ -258,19 +258,33 @@ environments or 'macro for macros."
 				      (regexp-opt item-list t) "}"))
 			     (t
 			      (concat (regexp-quote TeX-esc)
-				      (regexp-opt item-list t)
-				      "[^A-Za-z@*]"))))
+				      (regexp-opt item-list t)))))
 	  (save-restriction
 	    (narrow-to-region start end)
 	    ;; Start from the bottom so that it is easier to prioritize
 	    ;; nested macros.
 	    (goto-char (point-max))
-	    (let ((case-fold-search nil))
+	    (let ((case-fold-search nil)
+		  item-name)
 	      (while (re-search-backward regexp nil t)
-		(when (not (and TeX-fold-preserve-comments
-				(TeX-in-commented-line)))
+		(setq item-name (match-string 1))
+		(unless (or (and TeX-fold-preserve-comments
+				 (TeX-in-commented-line))
+			    ;; Make sure no partially matched macros are
+			    ;; folded.  For macros consisting of letters
+			    ;; this means there should be none of the
+			    ;; characters [A-Za-z@*] after the matched
+			    ;; string.  Single-char non-letter macros like
+			    ;; \, don't have this requirement.
+			    (and (eq type 'macro)
+				 (save-match-data
+				   (string-match "[A-Za-z]" item-name))
+				 (save-match-data
+				   (string-match "[A-Za-z@*]"
+						 (string (char-after
+							  (match-end 0)))))))
 		  (let* ((item-start (match-beginning 0))
-			 (display-string-spec (cadr (assoc (match-string 1)
+			 (display-string-spec (cadr (assoc item-name
 							   fold-list)))
 			 (item-end (TeX-fold-item-end item-start type))
 			 (ov (TeX-fold-make-overlay item-start item-end type
