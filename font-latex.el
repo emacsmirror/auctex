@@ -1501,8 +1501,8 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   "Face used to highlight preprocessor directives in docTeX mode.")
 
 (defface font-latex-doctex-preprocessor-face
-  '((t (:inherit (list font-latex-doctex-documentation-face
-		       font-lock-preprocessor-face))))
+  '((t (:inherit (font-latex-doctex-documentation-face
+		  font-lock-preprocessor-face))))
   "Face used to highlight preprocessor directives in docTeX mode."
   :group 'font-latex-highlighting-faces)
 

@@ -1,3 +1,8 @@
+2005-08-05  David Kastrup  <dak@gnu.org>
+
+	* font-latex.el (font-latex-doctex-preprocessor-face): Remove
+	`list' from already quoted list.
+
 2005-08-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-region): In case of single-char non-letter
