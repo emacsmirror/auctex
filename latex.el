@@ -1546,7 +1546,7 @@ May be reset with `C-u \\[TeX-normal-mode]'.")
 (defun TeX-arg-input-file (optionel &optional prompt local)
   "Prompt for a tex or sty file.
 
-First optional argument is the promt, the second is a flag.
+First optional argument is the prompt, the second is a flag.
 If the flag is set, only complete with local files."
   (unless (or TeX-global-input-files local)
     (message "Searching for files...")
