@@ -3213,10 +3213,6 @@ Parse its arguments but use no braces when they are inserted.
 @item TeX-arg-eval
 Evaluate arguments and insert the result in the buffer.
 
-@item TeX-arg-file
-Prompt for a tex or sty filename, and use it without the extension. Run
-the file hooks defined for it.
-
 @item TeX-arg-label
 Prompt for a label completing with known labels.
 
@@ -3240,8 +3236,8 @@ Prompt for a filename in the current directory, and use it without the
 extension.
 
 @item TeX-arg-input-file
-Prompt for a filename in the current directory, and use it without the
-extension.  Run the style hooks for the file.
+Prompt for the name of an input file in @TeX{}'s search path, and use it
+without the extension.  Run the style hooks for the file.
 
 @item TeX-arg-define-label
 Prompt for a label completing with known labels.  Add label to list of
