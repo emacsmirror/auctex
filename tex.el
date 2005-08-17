@@ -262,10 +262,6 @@ Any additional elements get just transferred to the respective menu entries.
 				(function-item TeX-run-command)
 				(function-item TeX-run-format)
 				(function-item TeX-run-TeX)
-				;; leave the following line in
-				;; customization? Replaced (but still
-				;; available) with TeX-run-TeX --pg
-				(function-item TeX-run-LaTeX)
 				(function-item TeX-run-interactive)
 				(function-item TeX-run-BibTeX)
 				(function-item TeX-run-compile)
@@ -274,6 +270,7 @@ Any additional elements get just transferred to the respective menu entries.
 				(function-item TeX-run-background)
 				(function-item TeX-run-silent)
 				(function-item TeX-run-dviout)
+				(function-item TeX-run-ispell-on-document)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(choice :tag "Modes"
