@@ -2,6 +2,7 @@
 
 	* configure.ac: Quotify `packagelispdir' and `packagedatadir'.
 	(preview_enabled): Export unquoted variables.
+	Declare/initialize and export variables separately.
 
 	* Makefile.in (DESCEND): Quote $$OLDPWD.
 
