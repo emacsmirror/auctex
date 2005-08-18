@@ -132,11 +132,14 @@ AC_SUBST(preview_enabled)
 if test "X${preview_enabled}" = Xyes
 then
   auctexdir=..; export auctexdir
-  export packagedir packagelispdir packagedatadir
-  export EMACS
   export TEX
   export PDFTEX
   export DVIPS
+  # Export unquoted variables.
+  export packagedir_unquoted="$packagedir"
+  export packagelispdir_unquoted="$packagelispdir"
+  export packagedatadir_unquoted="$packagedatadir"
+  export EMACS_UNQUOTED="$EMACS"
   AC_CONFIG_SUBDIRS(preview)
 fi
 AC_SUBST(subdirs)
@@ -144,6 +147,8 @@ AC_SUBST(subdirs)
 AC_SHELL_QUOTIFY(prefix)
 AC_SHELL_QUOTIFY(localstatedir)
 AC_SHELL_QUOTIFY(packagedir)
+AC_SHELL_QUOTIFY(packagelispdir)
+AC_SHELL_QUOTIFY(packagedatadir)
 AC_SHELL_QUOTIFY(lispdir)
 AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(datadir)
