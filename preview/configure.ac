@@ -3,6 +3,12 @@ AC_INIT(preview-latex,0.9.1,bug-auctex@gnu.org)
 AC_SET_MAKE
 AC_PROG_INSTALL
 
+# Import unquoted variables.
+packagedir="$packagedir_unquoted"
+packagedatadir="$packagelispdir_unquoted"
+packagedatadir="$packagedatadir_unquoted"
+EMACS="$EMACS_UNQUOTED"
+
 EMACS_PROG_EMACS
 
 if test ${EMACS_FLAVOR} = xemacs
