@@ -136,10 +136,14 @@ then
   export PDFTEX
   export DVIPS
   # Export unquoted variables.
-  export packagedir_unquoted="$packagedir"
-  export packagelispdir_unquoted="$packagelispdir"
-  export packagedatadir_unquoted="$packagedatadir"
-  export EMACS_UNQUOTED="$EMACS"
+  packagedir_unquoted="$packagedir"
+  export packagedir_unquoted
+  packagelispdir_unquoted="$packagelispdir"
+  export packagelispdir_unquoted
+  packagedatadir_unquoted="$packagedatadir"
+  export packagedatadir_unquoted
+  EMACS_UNQUOTED="$EMACS"
+  export EMACS_UNQUOTED
   AC_CONFIG_SUBDIRS(preview)
 fi
 AC_SUBST(subdirs)
