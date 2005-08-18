@@ -37,7 +37,7 @@ ELCC=$(EMACS) -batch -q -no-site-file -no-init-file -l lpath.el
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
   (mapcar (function update-file-autoloads) command-line-args-left) \
   (save-buffers-kill-emacs t))'
-DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd $$OLDPWD;echo "Ascending into $$OLDPWD";done)
+DESCEND=test -z "$(subdirs)" || (OLDPWD="`pwd`";for i in ""$(subdirs);do cd $$i;echo "Descending into `pwd`";$(MAKE) 'DESTDIR=$(DESTDIR)' PACKAGE=$(PACKAGE) $@ || exit $$?;cd "$$OLDPWD";echo "Ascending into $$OLDPWD";done)
 
 CVSFILES=autogen.sh .cvsignore doc/.cvsignore preview/.cvsignore \
 	preview/latex/.cvsignore README.CVS
