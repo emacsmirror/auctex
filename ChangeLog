@@ -1,3 +1,10 @@
+2005-08-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Quotify `packagelispdir' and `packagedatadir'.
+	(preview_enabled): Export unquoted variables.
+
+	* Makefile.in (DESCEND): Quote $$OLDPWD.
+
 2005-08-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (Adding Macros): Remove superfluous entry for

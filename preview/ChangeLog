@@ -1,3 +1,8 @@
+2005-08-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Import unquoted variables from top-level configure
+	script.
+
 2005-07-15  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Don't talk nonsense about the footnote macro,
