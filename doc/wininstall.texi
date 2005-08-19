@@ -2,6 +2,70 @@
 @include macros.texi
 @end ifset
 
+@subheading In a Nutshell
+
+The following are brief installation instructions for the impatient.  In
+case you don't understand some of this, run into trouble of some sort,
+or need more elaborate information, refer to the detailed instructions
+further below.
+
+@enumerate
+@item
+Install the prerequisites, i.e. GNU Emacs or XEmacs, MSYS or Cygwin, a
+@TeX{} system, and Ghostscript.
+
+@item
+Open the MSYS shell or a Cygwin shell and change to the directory
+containing the unzipped file contents.
+
+@item
+Configure @AUCTeX{}:
+
+For GNU Emacs: Many people like to install @AUCTeX{} into the pseudo
+file system hierarchy set up by the Emacs installation.  Assuming Emacs
+is installed in @file{C:/Program Files/Emacs} and the directory for
+local additions of your @TeX{} system, e.g. Mik@TeX{}, is
+@file{C:/localtexmf}, you can do this by typing the following statement
+at the shell prompt:
+
+@example
+./configure --prefix='C:/Program Files/Emacs' \
+  --with-texmf-dir='C:/localtexmf'
+@end example
+
+For XEmacs: You can install @AUCTeX{} as an XEmacs package.  Assuming
+XEmacs is installed in @file{C:/Program Files/XEmacs} and the directory
+for local additions of your @TeX{} system, e.g. Mik@TeX{}, is
+@file{C:/localtexmf}, you can do this by typing the following command at
+the shell prompt:
+
+@example
+./configure --with-xemacs='C:/Program Files/XEmacs/bin/xemacs' \
+  --with-texmf-dir='C:/localtexmf'
+@end example
+
+The commands above are examples for common usage.  More on configuration
+options can be found in the detailed installation instructions below.
+
+@item
+If there were no error messages, type
+
+@example
+make
+@end example
+
+In case there were, please refer to the detailed description below.
+
+@item
+Finish the installation by typing
+
+@example
+make install
+@end example
+@end enumerate
+
+@subheading Detailed Installation Instructions
+
 Installation of @AUCTeX{} under Windows is in itself not more
 complicated than on other platforms.  However, meeting the prerequisites
 might require more work than on some other platforms, and feel less
