@@ -1,3 +1,7 @@
+2005-08-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/wininstall.texi: New "In a Nutshell" section.
+
 2005-08-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Quotify `packagelispdir' and `packagedatadir'.
