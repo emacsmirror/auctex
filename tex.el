@@ -4222,7 +4222,9 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	  (if (looking-at regexp)
 	      (throw 'done t)
 	    (up-list -1))))
-      (goto-char (TeX-find-macro-end))
+      ;; Use stripped syntax table in order to get stuff like "\emph{(}" right.
+      (with-syntax-table TeX-search-syntax-table
+	(forward-sexp 2))
       (save-excursion
 	(replace-match start t t))
       (delete-backward-char 1)
