@@ -1,5 +1,8 @@
 2005-08-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* font-latex.el (font-latex-script): Return face symbols, not
+	names of non-existent variables.
+
 	* tex.el (TeX-font-replace-macro): Do not use `TeX-find-macro-end'
 	for it may look too far in cases like "\emph{foo}{}".  Use
 	`forward-sexp' with a stripped syntax table instead.
