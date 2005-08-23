@@ -1487,11 +1487,11 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 	  (if extra-props-flag
 	      `(face font-latex-subscript-face display
 		     ,(car font-latex-script-display))
-	    font-latex-subscript-face)
+	    'font-latex-subscript-face)
 	(if extra-props-flag
 	    `(face font-latex-superscript-face display
 		   ,(cdr font-latex-script-display))
-	  font-latex-superscript-face)))))
+	  'font-latex-superscript-face)))))
 
 
 ;;; docTeX
