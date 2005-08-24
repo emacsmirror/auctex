@@ -8,6 +8,10 @@
 
 @itemize @bullet
 @item
+@code{LaTeX-mark-section} now marks subsections of a given section as
+well.  The former behavior is available via the prefix argument.
+
+@item
 @previewlatex{} which was previously available separately became a
 subsystem of @AUCTeX{}.  There is no documented provision for building
 or installing @previewlatex{} separately.  It is still possible to use
