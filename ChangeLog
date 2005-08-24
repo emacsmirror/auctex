@@ -1,3 +1,10 @@
+2005-08-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-mark-section): Now marks subsections as well.
+	Former behavior is available via prefix argument.
+
+	* doc/changes.texi: Mention change of `LaTeX-mark-section'.
+
 2005-08-23  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-script): Return face symbols, not
