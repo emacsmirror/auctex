@@ -3162,15 +3162,32 @@ comments and verbatim environments"
     (LaTeX-fill-region (region-beginning) (region-end) justify
 		       (concat " section " (TeX-match-buffer 1)))))
 
-(defun LaTeX-mark-section ()
-  "Set mark at end of current logical section, and point at top."
-  (interactive)
-  (re-search-forward (concat  "\\(" (LaTeX-outline-regexp)
-			      "\\|\\'\\)"))
-  (re-search-backward "^")
-  (set-mark (point))
-  (re-search-backward (concat "\\(" (LaTeX-outline-regexp)
-			      "\\|\\`\\)"))
+(defun LaTeX-mark-section (&optional no-subsections)
+  "Set mark at end of current logical section, and point at top.
+If optional argument NO-SUBSECTIONS is non-nil, mark only the
+region from the current section start to the next sectioning
+command.  Thereby subsections are not being marked.
+
+If the function `outline-mark-subtree' is not available,
+`LaTeX-mark-section' always behaves like this regardless of the
+value of NO-SUBSECTIONS."
+  (interactive "*P")
+  (if (or no-subsections
+	  (not (fboundp 'outline-mark-subtree)))
+      (progn
+	(re-search-forward (concat  "\\(" (LaTeX-outline-regexp)
+				    "\\|\\'\\)"))
+	(beginning-of-line)
+	(push-mark (point) nil t)
+	(re-search-backward (concat "\\(" (LaTeX-outline-regexp)
+				    "\\|\\`\\)")))
+    (outline-mark-subtree)
+    (when (and (boundp 'transient-mark-mode)
+	       transient-mark-mode
+	       (boundp 'mark-active)
+	       (not mark-active))
+      (setq mark-active t)
+      (run-hooks 'activate-mark-hook)))
   (TeX-activate-region))
 
 (defun LaTeX-fill-buffer (justify)
