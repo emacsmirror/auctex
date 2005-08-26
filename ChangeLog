@@ -1,3 +1,8 @@
+2005-08-26  Matthieu Moy  <Matthieu.Moy@imag.fr>  (tiny change)
+
+	* latex.el (LaTeX-common-initialization): Set
+	`outline-heading-alist'.
+
 2005-08-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-mark-section): Now marks subsections as well.
