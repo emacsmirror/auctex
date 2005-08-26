@@ -1,3 +1,9 @@
+2005-08-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-common-initialization): Remove redundant call to
+	`make-local-variable' for `outline-heading-alist'.  Set
+	`outline-heading-alist' only if it is already defined.
+
 2005-08-26  Matthieu Moy  <Matthieu.Moy@imag.fr>  (tiny change)
 
 	* latex.el (LaTeX-common-initialization): Set
