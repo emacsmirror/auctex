@@ -4554,6 +4554,11 @@ runs the hooks in `docTeX-mode-hook'."
   (setq outline-level 'LaTeX-outline-level)
   (make-local-variable 'outline-regexp)
   (setq outline-regexp (LaTeX-outline-regexp t))
+  (make-local-variable 'outline-heading-alist)
+  (setq outline-heading-alist
+        (mapcar (lambda (x)
+                  (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                LaTeX-section-list))
 
   (make-local-variable 'TeX-auto-full-regexp-list)
   (setq TeX-auto-full-regexp-list
