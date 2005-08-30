@@ -1,3 +1,7 @@
+2005-08-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-font-replace-macro): Compute syntax table.
+
 2005-08-26  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-common-initialization): Remove redundant call to
