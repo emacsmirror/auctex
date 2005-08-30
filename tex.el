@@ -4223,7 +4223,7 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
 	      (throw 'done t)
 	    (up-list -1))))
       ;; Use stripped syntax table in order to get stuff like "\emph{(}" right.
-      (with-syntax-table TeX-search-syntax-table
+      (with-syntax-table (TeX-search-syntax-table ?\{ ?\})
 	(forward-sexp 2))
       (save-excursion
 	(replace-match start t t))
