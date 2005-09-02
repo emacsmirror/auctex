@@ -139,6 +139,7 @@
     ("\\fbox"        arg-off)
     ("\\mbox"        arg-off)
     ("\\label"       arg-off)
+    ("\\textrm"      arg-off)
     ("\\("           sw-on)       ("\\)"           sw-off)
     ("\\["           sw-on)       ("\\]"           sw-off)
     ("\\ensuremath"  arg-on)
