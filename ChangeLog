@@ -1,3 +1,7 @@
+2005-09-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-command): Doc fix.
+
 2005-09-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp-tex-commands-default): Add "\textrm" as
