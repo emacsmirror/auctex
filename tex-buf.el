@@ -260,12 +260,16 @@ Prefix by C-u to start from the beginning of the errors."
 ;;; Command Query
 
 (defun TeX-command (name file &optional override-confirm)
-  "Run command NAME on the file you get by calling FILE.
+  "Run command NAME on the file returned by calling FILE.
 
-FILE is a function return a file name.  It has one optional argument,
-the extension to use on the file.
-Use the information in `TeX-command-list' to determine how to run the
-command.  If OVERRIDE-CONFIRM is a prefix argument, confirmation will be
+FILE is the symbol of a function returning a file name.  The
+function has one optional argument, the extension to use on the
+file.
+
+Use the information in `TeX-command-list' to determine how to run
+the command.
+
+If OVERRIDE-CONFIRM is a prefix argument, confirmation will be
 asked if it is positive, and suppressed if it is not."
   (cond ((eq file 'TeX-region-file)
 	 (setq TeX-current-process-region-p t))
