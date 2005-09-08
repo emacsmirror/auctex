@@ -287,6 +287,7 @@ variable `font-latex-fontify-sectioning'." num)
     ("sectioning-5"
      ("paragraph" "subparagraph" "subsubparagraph")
      font-latex-sectioning-5-face 2 (sectioning 1 t))
+    ("slide-title" () font-latex-slide-title-face 2 (command 1 t))
     ("textual"
      ("item" "title" "author" "date" "thanks" "address" "caption"
       "textsuperscript")
@@ -928,6 +929,20 @@ have changed."
   '((t (:height 0.8)))
   "Face used for subscripts."
   :group 'font-latex-highlighting-faces)
+
+(defface font-latex-slide-title-face
+  (let* ((scale 1.2)
+	 (size (when (featurep 'xemacs)
+		 (round (* 0.9 (face-height 'default) scale)))))
+    (if (featurep 'xemacs)
+	`((t (:bold t :family "helvetica")))
+      `((t (:inherit (variable-pitch font-lock-type-face)
+		     :weight bold :height ,scale)))))
+  "Face for slide titles."
+  :group 'font-latex-highlighting-faces)
+(when (featurep 'xemacs)
+  (set-face-parent 'font-latex-slide-title-face 'font-lock-type-face
+		   nil nil 'append))
 
 
 ;;; Setup
