@@ -3,6 +3,7 @@
 	* font-latex.el (font-latex-built-in-keyword-classes): New
 	`slide-title' class.
 	(font-latex-slide-title-face): New face.
+	Specify :size for XEmacs.
 
 	* style/beamer.el ("beamer"): Fontify \frametitle with
 	`font-latex-slide-title-face'.
