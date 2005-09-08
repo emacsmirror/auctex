@@ -935,7 +935,7 @@ have changed."
 	 (size (when (featurep 'xemacs)
 		 (round (* 0.9 (face-height 'default) scale)))))
     (if (featurep 'xemacs)
-	`((t (:bold t :family "helvetica")))
+	`((t (:bold t :family "helvetica" :size ,size)))
       `((t (:inherit (variable-pitch font-lock-type-face)
 		     :weight bold :height ,scale)))))
   "Face for slide titles."
