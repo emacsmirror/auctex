@@ -3,6 +3,10 @@
 	* font-latex.el (font-latex-make-match-defun): Fontify only if
 	`font-latex-match-*-keywords' and
 	`font-latex-match-*-keywords-local' are non-empty.
+	(font-latex-make-match-defun): Revert.
+	(font-latex-make-built-in-keywords): Do not set
+	`font-latex-match-*' if there are no keywords.  (Nicer solution
+	than the original change in `font-latex-make-match-defun'.)
 
 2005-09-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
