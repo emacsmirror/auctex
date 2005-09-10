@@ -1,3 +1,9 @@
+2005-09-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-match-defun): Fontify only if
+	`font-latex-match-*-keywords' and
+	`font-latex-match-*-keywords-local' are non-empty.
+
 2005-09-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-built-in-keyword-classes): New
