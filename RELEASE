@@ -92,12 +92,12 @@ very fast dvi converter, can be used to speed up the conversion.
 Availability
 ------------
 
-AUCTeX can be downloaded from <URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.
-There are tarballs, and RPMs for Fedora and SuSE (for Emacs).  A
-separate directory contains some stuff from the tarball, such as
-ChangeLog, printable manuals, a reference sheet.  The download area is
-mirrored to the directory support/auctex on CTAN.  AUCTeX is licensed
-under the GNU General Public License version 2.
+AUCTeX can be downloaded in various formats from
+<URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.  A separate directory
+contains some stuff from the tarball, such as ChangeLog, printable
+manuals, and a reference sheet.  The download area is mirrored to the
+directory support/auctex on CTAN.  AUCTeX is licensed under the GNU
+General Public License version 2.
 
 You'll find more information at the web site of AUCTeX
 <URL:http://www.gnu.org/software/auctex/>, including its mailing list
@@ -138,14 +138,14 @@ Footnotes:
 [3]  <URL:http://members.shaw.ca/akochoi-emacs/stories/faq.html>
 contains build instructions.
 
-[4]  For Debian, precompiled GTK+ Emacs packages can be found at
-<URL:http://sadleder.de/debian/>, for Fedora at
-<URL:http://people.redhat.com/petersen/emacs/>.
+[4]  Debian provides precompiled GTK+ Emacs packages in its `unstable'
+distribution (look for `emacs-snapshot-gtk').  Packages for Fedora can
+be found at <URL:http://people.redhat.com/petersen/emacs/>.
 
 [5]  If making use of the precompiled variants is not an option for
 you, instructions for checking out the CVS version straight from the
 GNU's mouth can be found at
 <URL:http://savannah.gnu.org/cvs/?group=emacs>
 
-[6]  dvipng is currently available via its current project page
+[6]  dvipng is available via its project page
 <URL:http://savannah.nongnu.org/projects/dvipng> and from CTAN.
