@@ -1,3 +1,14 @@
+2005-09-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Update for upcoming release.
+
+	* doc/changes.texi: Mention `font-latex-slide-title-face' and
+	`font-latex-match-slide-title-keywords'.
+
+	* doc/auctex.texi (Font Locking): Document
+	`font-latex-slide-title-face' and
+	`font-latex-match-slide-title-keywords'.
+
 2005-09-10  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-match-defun): Fontify only if
