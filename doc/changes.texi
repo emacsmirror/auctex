@@ -85,6 +85,12 @@ changed from @code{font-latex-title-@var{N}-keywords} to
 Make sure to adjust your customizations.
 
 @item
+Titles in beamer slides marked by the ``\frametitle'' command are know
+displayed with the new face @code{font-latex-slide-title-face}.  You can
+add macros to be highlighted with this face to
+@code{font-latex-match-slide-title-keywords}.
+
+@item
 Of course a lot of bugs have been fixed.
 @end itemize
 
