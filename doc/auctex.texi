@@ -1430,11 +1430,19 @@ used to fontify the argument of the sectioning commands.
 @vindex font-latex-match-sectioning-3-keywords
 @vindex font-latex-match-sectioning-4-keywords
 @vindex font-latex-match-sectioning-5-keywords
-You can add your own sectioning commands be adding them to the keyword
-lists: @code{font-latex-match-sectioning-0-keywords}
+You can make @fontlatex{} aware of your own sectioning commands be
+adding them to the keyword lists:
+@code{font-latex-match-sectioning-0-keywords}
 (@code{font-latex-sectioning-0-face}) @dots{}
 @code{font-latex-match-sectioning-5-keywords}
 (@code{font-latex-sectioning-5-face}).
+
+@vindex font-latex-slide-title-face
+@vindex font-latex-match-slide-title-keywords
+Related to sectioning there is special support for slide titles which
+may be fontified with the face @code{font-latex-slide-title-face}.  You
+can add macros which should appear in this face by customizing the
+variable @code{font-latex-match-slide-title-keywords}.
 
 @subheading Commands for changing fonts
 
