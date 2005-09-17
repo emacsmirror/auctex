@@ -1,3 +1,8 @@
+2005-09-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* texmathp.el (texmathp-tex-commands-default): Add "minipage" as
+	`env-off' and "\framebox" as `arg-off'.
+
 2005-09-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* RELEASE: Update for upcoming release.
