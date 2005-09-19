@@ -1,3 +1,8 @@
+2005-09-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-auto-parse-length, TeX-auto-x-parse-length)
+	(TeX-auto-x-regexp-list): Doc fix.
+
 2005-09-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp-tex-commands-default): Add "minipage" as
