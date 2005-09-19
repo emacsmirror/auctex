@@ -2660,13 +2660,13 @@ If SKIP is not-nil, don't insert code for SKIP."
   "List of hooks to be called after parsing a TeX file.")
 
 (defcustom TeX-auto-parse-length 999999
-  "*Maximal length of TeX file that will be parsed."
+  "Maximal length of TeX file (in characters) that will be parsed."
   :group 'TeX-parse
   :type 'integer)
   (make-variable-buffer-local 'TeX-auto-parse-length)
 
 (defcustom TeX-auto-x-parse-length 0
-  "*Maximum length of TeX file that will be parse additionally.
+  "Maximum length of TeX file that will be parsed additionally.
 Use `TeX-auto-x-regexp-list' for parsing the region between
 `TeX-auto-parse-length' and this value."
   :group 'TeX-parse
@@ -2674,7 +2674,7 @@ Use `TeX-auto-x-regexp-list' for parsing the region between
   (make-variable-buffer-local 'TeX-auto-x-parse-length)
 
 (defcustom TeX-auto-x-regexp-list 'LaTeX-auto-label-regexp-list
-  "*List of regular expresions used for additional parsing.
+  "List of regular expressions used for additional parsing.
 See `TeX-auto-x-parse-length'."
   :type '(radio (variable-item TeX-auto-empty-regexp-list)
 		(variable-item TeX-auto-full-regexp-list)
