@@ -111,6 +111,7 @@ set it with `TeX-modes-set'."
   :type (cons 'set
 	      (mapcar (lambda(x) (list 'const (car x))) TeX-mode-alist))
   :set 'TeX-modes-set
+  :group 'AUCTeX
   :initialize (lambda (var value)
 		(custom-initialize-reset var value)
 		(let ((list TeX-mode-alist))

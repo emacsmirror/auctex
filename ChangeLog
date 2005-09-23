@@ -1,3 +1,7 @@
+2005-09-23  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex-site.el.in (TeX-modes-set): Add custom group.
+
 2005-09-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-auto-parse-length, TeX-auto-x-parse-length)
