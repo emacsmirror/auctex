@@ -1,3 +1,8 @@
+2005-09-24  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Advice for package providers): Suggest
+	"anytex" instead of "notex" for without-texmf compilations.
+
 2005-09-23  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-site.el.in (TeX-modes-set): Add custom group.
