@@ -1,3 +1,9 @@
+2005-09-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/auctex.texi: Bump version number.
+
+	* configure.ac: Bump version number.
+
 2005-09-24  David Kastrup  <dak@gnu.org>
 
 	* doc/install.texi (Advice for package providers): Suggest
