@@ -1,3 +1,7 @@
+2005-09-24  David Kastrup  <dak@gnu.org>
+
+	* Version 11.80 released.
+
 2005-09-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (tar-ball): Remove dysfunctional spec file from
