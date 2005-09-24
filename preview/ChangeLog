@@ -1,3 +1,8 @@
+2005-09-24  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Try parsing version correctly by treating
+	underlines in the release tag properly.
+
 2005-09-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* preview.el (preview-version): Extract version number from
