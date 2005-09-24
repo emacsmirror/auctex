@@ -291,6 +291,8 @@ tar-ball:
 	mkdir auctex-$(TAG)
 	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
 	cd auctex-$(TAG) && ./autogen.sh && rm $(CVSFILES)
+# Remove dysfunctional spec file.
+	cd auctex-$(TAG) && rm auctex.spec
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR) $(WWWDIR)/doc
 	mkdir -p $(FTPDIR) $(WWWDIR)/doc
@@ -305,8 +307,9 @@ tar-ball:
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
-	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz" -
-	cp $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
+# RPM generation currently not working.
+#	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz" -
+#	cp $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
 	read -sp "Enter pass phrase: " phrase ; \
 	for i in $(FTPDIR)/*; do \
 	   echo "$$phrase" | gpg --passphrase-fd 0 --detach-sign $$i ; \
