@@ -435,13 +435,13 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.111 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.112 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2005-09-25 11:36:04 $
+\reserved@a\next $Date: 2005-09-25 12:08:38 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
-  [\next\space \pr@version (AUCTeX/preview-latex)]}
+  [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
 %    \end{macrocode}
 % \end{macro}
