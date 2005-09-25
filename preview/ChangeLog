@@ -1,3 +1,8 @@
+2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex/preview.dtx: Add space for nicer formatting in version
+	output.
+
 2005-09-25  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Try fixing the release parsing/grouping.
