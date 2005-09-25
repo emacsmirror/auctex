@@ -1,7 +1,7 @@
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex/preview.dtx: Add space for nicer formatting in version
-	output.
+	output.  Adapt checksum.
 
 2005-09-25  David Kastrup  <dak@gnu.org>
 
