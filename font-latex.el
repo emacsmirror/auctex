@@ -228,7 +228,7 @@ variable `font-latex-fontify-sectioning'." num)
 (condition-case nil
     (make-obsolete-variable 'font-latex-title-fontify
 			    'font-latex-fontify-sectioning
-			    "AUCTeX 11.80")
+			    "AUCTeX 11.81")
   (wrong-number-of-arguments 'font-latex-title-fontify
 			     'font-latex-fontify-sectioning))
 ;; Should we provide an alias for version 11.50-11.54?

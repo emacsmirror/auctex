@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.80 with preview-latex
+Release notes for AUCTeX 11.81 with preview-latex
 =================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -32,7 +32,7 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-The most important feature of AUCTeX 11.80 is the inclusion of the
+The most important feature of AUCTeX 11.81 is the inclusion of the
 preview-latex subsystem, previously available separately.  There is no
 documented provision for building or installing preview-latex
 separately.  It is still possible to use and install AUCTeX without

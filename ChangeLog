@@ -1,5 +1,9 @@
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* RELEASE, configure.ac, font-latex.el, doc/auctex.texi,
+	doc/changes.texi, doc/preview-latex.texi, doc preview-readme.texi,
+	doc/tex-ref.texi, doc/todo.texi: Bump version number.
+
 	* Makefile.in (DISTCLEANFILES): Add tex-site.el.out.
 
 2005-09-24  Ralf Angeli  <angeli@iwi.uni-sb.de>

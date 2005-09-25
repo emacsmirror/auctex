@@ -1,4 +1,4 @@
-AC_INIT(auctex,11.80,bug-auctex@gnu.org)
+AC_INIT(auctex,11.81,bug-auctex@gnu.org)
 
 AC_SET_MAKE
 AC_PROG_INSTALL

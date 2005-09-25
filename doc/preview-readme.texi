@@ -196,7 +196,7 @@ The @previewlatex{} project is now part of @AUCTeX{} and accessible as
 part of the @uref{http://savannah.gnu.org/projects/auctex,@AUCTeX{}
 project page}.  You can get its files from the
 @uref{ftp://ftp.gnu.org/pub/gnu/auctex,@AUCTeX{} download area}.  As of
-@w{@AUCTeX{} 11.80}, @previewlatex{} should already be integrated into
+@w{@AUCTeX{} 11.81}, @previewlatex{} should already be integrated into
 @AUCTeX{}, so no separate download will be necessary.
 
 You will also find @file{.rpm} files there for Fedora and possibly

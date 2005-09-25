@@ -32,7 +32,7 @@ changes on the mailing list of @AUCTeX{} first.
 @itemize @bullet
 @item Integration of @previewlatex{} into @AUCTeX{}
 
-As of @AUCTeX{} 11.80 @previewlatex{} is a part of @AUCTeX{} in the
+As of @AUCTeX{} 11.81 @previewlatex{} is a part of @AUCTeX{} in the
 sense that the installation routines were merged and @previewlatex{} is
 being packaged with @AUCTeX{}.
 

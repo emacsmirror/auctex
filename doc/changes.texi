@@ -4,7 +4,7 @@
 
 @end ifset
 
-@heading News in 11.80
+@heading News in 11.81
 
 @itemize @bullet
 @item
