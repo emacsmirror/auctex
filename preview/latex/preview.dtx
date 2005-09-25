@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 %%     Boston, MA 02111-1307  USA
 %%\fi
-% \CheckSum{1636}
+% \CheckSum{1637}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -435,12 +435,12 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.109 $ \else \begingroup
-  \def\next Release_{} \lccode`\_=`.
+\reserved@a\pr@version CVS-$Revision: 1.110 $ \else \begingroup
+  \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{%
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
 \endgroup
-\reserved@a\next $Date: 2005-09-24 21:31:08 $
+\reserved@a\next $Date: 2005-09-25 07:43:47 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version (AUCTeX/preview-latex)]}
 \next
