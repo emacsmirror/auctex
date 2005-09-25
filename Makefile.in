@@ -94,7 +94,8 @@ DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
 	doc/quickstart.texi
 
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
-DISTCLEANFILES = Makefile tex-site.el auctex.el auto-loads.el config.*
+DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
+	auto-loads.el config.*
 DISTTEXTS = FAQ INSTALL INSTALL.windows README TODO
 
 NOSEARCH = style/.nosearch
