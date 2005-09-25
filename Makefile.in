@@ -295,8 +295,8 @@ tar-ball:
 # Remove dysfunctional spec file.
 	cd auctex-$(TAG) && rm auctex.spec
 	chmod -R go-w+rX auctex-$(TAG)
-	rm -rf $(FTPDIR) $(WWWDIR)/doc
-	mkdir -p $(FTPDIR) $(WWWDIR)/doc
+	rm -rf $(FTPDIR)
+	mkdir -p $(FTPDIR)
 	tar -cf - --owner=root --group=root auctex-$(TAG) | gzip --best > $(FTPDIR)/auctex-$(TAG).tar.gz
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	cp auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
@@ -304,7 +304,6 @@ tar-ball:
 	cd doc && $(MAKE) extradist
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
-	cp doc/html/*.html $(WWWDIR)/doc
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
@@ -332,3 +331,18 @@ xemacs-package:
 	&& ./configure --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
 	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
 	rm -rf xemacs-build
+
+www-doc:
+	rm -rf $(WWWDIR)
+	mkdir -p $(WWWDIR)/auctex-manual
+	mkdir -p $(WWWDIR)/preview-manual
+	cp doc/*.texi $(WWWDIR)/auctex-manual
+	cp doc/*.texi $(WWWDIR)/preview-manual
+	cd $(WWWDIR)/auctex-manual \
+	&& wget -O gendocs.sh 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs.sh?rev=HEAD' \
+	&& chmod u+x gendocs.sh \
+	&& wget -O gendocs_template 'http://savannah.gnu.org/cgi-bin/viewcvs/%2acheckout%2a/texinfo/texinfo/util/gendocs_template?rev=HEAD' \
+	&& ./gendocs.sh auctex "AUCTeX Manual" \
+	&& cp gendocs.sh gendocs_template $(WWWDIR)/preview-manual
+	cd $(WWWDIR)/preview-manual \
+	&& ./gendocs.sh preview-latex "preview-latex Manual"
