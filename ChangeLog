@@ -1,3 +1,7 @@
+2005-09-25  David Kastrup  <dak@gnu.org>
+
+	* Version 11.81 released.
+
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* RELEASE, configure.ac, font-latex.el, doc/auctex.texi,
