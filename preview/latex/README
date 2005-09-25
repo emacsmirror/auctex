@@ -8,7 +8,7 @@ AUCTeX's preview-latex module: since AUCTeX's download area at
 <URL:ftp://ftp.gnu.org/pub/gnu/auctex> is mirrored at
 CTAN:support/auctex, you can find preview-latex tarballs there, with
 separate README and INSTALL files.  Older versions can be found at
-CTAN:support/preview-latex.  Starting with AUCTeX 11.80, preview-latex
+CTAN:support/preview-latex.  Starting with AUCTeX 11.81, preview-latex
 will also be distributed as an integral part of AUCTeX, requiring no
 separate download.  The unbundled preview.sty can be downloaded from
 CTAN:macros/latex/contrib/preview if required.
