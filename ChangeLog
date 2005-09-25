@@ -1,6 +1,6 @@
-2005-09-24  David Kastrup  <dak@gnu.org>
+2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
-	* Version 11.80 released.
+	* Makefile.in (DISTCLEANFILES): Add tex-site.el.out.
 
 2005-09-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 

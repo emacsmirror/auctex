@@ -1,5 +1,7 @@
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex/README (CTAN): Bump version number.
+
 	* latex/preview.dtx: Fix case in release tag parsing.
 
 2005-09-24  David Kastrup  <dak@gnu.org>
