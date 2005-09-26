@@ -1,3 +1,9 @@
+2005-09-26  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec: Bump version number.  Remove install-contrib, use
+	install-docs.  Don't install preview/* because these are not
+	generated.
+
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (tar-ball): Don't create WWW directory and don't

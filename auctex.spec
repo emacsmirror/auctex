@@ -13,7 +13,7 @@
 
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
-Version: 	11.80
+Version: 	11.81
 Release: 	0%{distri}
 License: 	GPL
 Group: 		%{commongroup}
@@ -72,7 +72,7 @@ popd
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
-%makeinstall install-contrib install-info
+%makeinstall install-docs
 
 %post emacs
 /sbin/install-info --info-dir=%{_infodir} %{_infodir}/auctex.info
@@ -92,13 +92,15 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc RELEASE COPYING INSTALL README TODO FAQ CHANGES
 %doc doc/tex-ref.pdf
-%doc --parents preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
+# %doc --parents preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 
 %changelog
+# Shouldn't changelog include changes in the package instead of changes in the
+# spec file?
 * Tue May  3 2005 David Kastrup <dak@gnu.org>
 - include preview-latex, so outdate other stuff.
 
