@@ -1,3 +1,8 @@
+2005-09-27  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec: Add files in %{_datadir}/emacs/site-lisp.
+	Suggested by Jan-Ake Larsson.  Added startfiles.
+
 2005-09-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Document option for specifying AUCTeX startfile as

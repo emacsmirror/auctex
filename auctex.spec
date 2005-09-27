@@ -4,6 +4,7 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
+# We also need to add the start files to `%files' section below!
 %define extraconfig '--with-auctexstartfile=%{_datadir}/emacs/site-lisp/suse-start-auctex.el' '--with-previewstartfile=%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el'
 %else
 %define distri       .fedora
@@ -95,8 +96,17 @@ rm -rf %{buildroot}
 # %doc --parents preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
 %doc %{_infodir}/*
 %{_datadir}/emacs/site-lisp/%{name}
+%{_datadir}/emacs/site-lisp/preview
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
+%if %{FOR_SUSE}
+%{_datadir}/emacs/site-lisp/suse-start-auctex.el
+%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el
+%else
+%{_datadir}/emacs/site-lisp/auctex.el
+%{_datadir}/emacs/site-lisp/preview-latex.el
+%endif
+
 
 %changelog
 # Shouldn't changelog include changes in the package instead of changes in the
