@@ -216,8 +216,8 @@ directory within @samp{load-path} under which the files will get
 installed (the bulk will get installed in a subdirectory).
 @file{./configure} should figure this out by itself.
 
-@item --with-auctex-startfile=@file{auctex.el}
-@itemx --with-preview-startfile=@file{preview-latex.el}
+@item --with-auctexstartfile=@file{auctex.el}
+@itemx --with-previewstartfile=@file{preview-latex.el}
 This is the name of the respective startup files.  If @var{lispdir}
 contains a subdirectory @file{site-start.d}, the start files are
 placed there, and @file{site-start.el} should
