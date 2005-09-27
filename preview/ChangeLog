@@ -1,3 +1,14 @@
+2005-09-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Document option for specifying AUCTeX startfile as
+	--with-previewstartfile, not --with-preview-startfile which does
+	not work.
+	Use matching package names for determining the kpathsea path
+	separator both internally and in the option name which now is
+	--with-kpathseasep.
+	Fix the quadrigraph for the closing bracket in the
+	kpathsesep-related error message.
+
 2005-09-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex/preview.dtx: Add space for nicer formatting in version
