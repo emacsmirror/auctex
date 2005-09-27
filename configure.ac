@@ -39,7 +39,7 @@ then
    EMACS_PATH_LISPDIR
    AC_MSG_CHECKING(what file to use for auctex startup)
    AC_ARG_WITH(auctexstartfile,
-   [[  --with-auctex-startfile=FILE    What file to use for auctex startup.]],
+   [[  --with-auctexstartfile=FILE    What file to use for auctex startup.]],
    [[ auctexstartfile="${withval}" ]],
    [ _tmpdir_="${lispdir}"
      AC_FULL_EXPAND(_tmpdir_)
