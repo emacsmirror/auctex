@@ -4,7 +4,7 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-%define extraconfig '--with-auctex-startfile=%{_datadir}/emacs/site-lisp/suse-start-auctex.el' '--with-preview-startfile=%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el'
+%define extraconfig '--with-auctexstartfile=%{_datadir}/emacs/site-lisp/suse-start-auctex.el' '--with-previewstartfile=%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el'
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
