@@ -3,7 +3,6 @@
 # Makefile - for the AUCTeX distribution.
 #
 # Maintainer: auctex-devel@gnu.org
-# Version: initial try <jalar@mai.liu.se>
 #
 
 prefix = @prefix@$(null)
@@ -180,7 +179,7 @@ install-el:
 	else rm -f $(DESTDIR)$(lispdir)/tex-site.el ; \
 	fi
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagelispdir)
-	for x in $(AUCSRC) ; do \
+	for x in $(AUCSRC) $(MULESRC); do \
 	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
@@ -189,10 +188,6 @@ install-el:
 	for x in $(STYLESRC) ; do \
 	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(styledir)' ; \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(styledir) ; \
-	done;
-	for x in $(MULESRC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 	-$(MKINSTALLDIRS) $(DESTDIR)$(autodir)
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
