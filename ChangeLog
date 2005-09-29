@@ -1,3 +1,8 @@
+2005-09-29  Ikumi Keita <ikumi@revery.net>
+
+	* texmathp.el (texmathp-tex-commands-default): Remove "xxalignat*"
+	and add "boxed".
+
 2005-09-27  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec: Add files in %{_datadir}/emacs/site-lisp.
