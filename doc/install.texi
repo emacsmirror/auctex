@@ -567,22 +567,3 @@ directories will be searched recursively, so there is no reason to list
 subdirectories explicitly.  Automatic configuration will already have
 set the variable for you if it could use the program @samp{kpsewhich}.
 In this case you normally don't have to alter anything.
-
-@section Contributed files
-
-There are several files that are not part of @AUCTeX{} proper, but
-included in the distribution in case they are useful.
-
-@table @file
-@item bib-cite.el
-Better support for bibliographies and much more.
-
-@item tex-jp.el
-Support for Japanese.
-
-@end table
-
-They can be installed together with @AUCTeX{} by executing @command{make
-contrib} and @command{make install-contrib}.  Read the comments in the
-start of each file for more information about how to use the files, what
-they do, and who wrote and maintains them.
