@@ -193,17 +193,13 @@ install-el:
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp: some install-el
-	for x in $(AUCSRC) ; do \
+	for x in $(AUCSRC) $(MULEELC); do \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done;
 	for x in $(STYLESRC) ; do \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(styledir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(styledir) ; \
-	done;
-	for x in $(MULEELC); do \
-	  echo ' $(INSTALL_DATA)' $$x '$(DESTDIR)$(packagelispdir)' ; \
-	  $(INSTALL_DATA) $$x $(DESTDIR)$(packagelispdir) ; \
 	done;
 
 install-images:
