@@ -153,7 +153,7 @@
     ("flalign"       env-on)      ("flalign*"      env-on)
     ("alignat"       env-on)      ("alignat*"      env-on)
     ("xalignat"      env-on)      ("xalignat*"     env-on)
-    ("xxalignat"     env-on)      ("xxalignat*"    env-on)
+    ("xxalignat"     env-on)      ("\\boxed"       arg-on)
     ("\\text"        arg-off)     ("\\intertext"   arg-off))
   "The default entries for `texmathp-tex-commands', which see.")
 
