@@ -1,3 +1,9 @@
+2005-09-29  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* doc/install.texi (Customizing): Removed "Contributed files"
+	section.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2005-09-29  Ikumi Keita <ikumi@revery.net>
 
 	* texmathp.el (texmathp-tex-commands-default): Remove "xxalignat*"
