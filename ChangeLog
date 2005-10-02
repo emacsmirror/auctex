@@ -1,5 +1,43 @@
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* latex.el (LaTeX-verbatim-macros-with-delims)
+	(LaTeX-verbatim-macros-with-delims-local)
+	(LaTeX-verbatim-macros-with-braces)
+	(LaTeX-verbatim-macros-with-braces-local)
+	(LaTeX-verbatim-environments, LaTeX-verbatim-environments-local):
+	New variables.
+	(LaTeX-verbatim-macro-boundaries, LaTeX-current-verbatim-macro)
+	(LaTeX-verbatim-p, LaTeX-search-forward-comment-start): New
+	functions.
+	(LaTeX-verbatim-macros): Remove.
+	(LaTeX-fill-region-as-para-do): Simplify.
+	(LaTeX-fill-move-to-break-point): Use
+	`LaTeX-verbatim-macros-with-delims'.
+	(LaTeX-fill-paragraph, LaTeX-fill-code-comment): Handle comment
+	starters in verbatim constructs correctly.
+
+	* font-latex.el (font-latex-verbatim-environments)
+	(font-latex-verbatim-environments-local)
+	(font-latex-verb-like-commands)
+	(font-latex-verb-like-commands-local)
+	(font-latex-verbatim-macros, font-latex-verbatim-macros-local):
+	Remove.
+	(font-latex-set-syntactic-keywords): Use new `LaTeX-verbatim-*'
+	instead of `font-latex-verb*' variables.
+
+	* doc/auctex.texi (Font Locking): Document change of
+	verbatim-related variables.
+
+	* doc/changes.texi: Document change of verbatim-related variables.
+
+	* style/alltt.el ("alltt"): Use new variables for verbatim
+	constructs.
+
+	* style/listings.el ("listings"): Use new variables for verbatim
+	constructs.
+
+	* style/url.el ("url"): Use new variables for verbatim constructs.
+
 	* latex.el (LaTeX-insert-environment): Mostly rewritten.  Improve
 	handling of macrocode environments.
 
