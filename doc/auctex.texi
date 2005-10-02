@@ -1598,27 +1598,16 @@ Usually it is not desirable to have content to be typeset verbatim
 highlighted according to @LaTeX{} syntax.  Therefore this content will
 be fontified uniformly with the face @code{font-latex-verbatim-face}.
 
+@vindex LaTeX-verbatim-macros-with-delims
+@vindex LaTeX-verbatim-macros-with-braces
+@vindex LaTeX-verbatim-environments
 @fontlatex{} differentiates three different types of verbatim
-constructs for fontification and consequently provides three keyword
-lists for customization.
-
-@defopt font-latex-verb-like-commands
-List of commands with the form @samp{\foo|...|} to be fontified as
-verbatim without the leading backslash.  (The delimiters for the
-command's argument can be any character except an asterisk.)
-@end defopt
-
-@defopt font-latex-verbatim-macros
-List of macros with the form @samp{\foo@{...@}} to be fontified as
-verbatim without the leading backslash.  In contrast to
-@code{font-latex-verb-like-commands} the macro's argument is enclosed in
-a @TeX{} group and not two arbitrary characters.
-@end defopt
-
-@defopt font-latex-verbatim-environments
-List of environments the content of which should be fontified as
-verbatim.
-@end defopt
+constructs for fontification.  Macros with special characters like | as
+delimiters, macros with braces, and environments.  Which macros and
+environments are recognized is controlled by the variables
+@code{LaTeX-verbatim-macros-with-delims},
+@code{LaTeX-verbatim-macros-with-braces}, and
+@code{LaTeX-verbatim-environments} respectively.
 
 @heading Multi-line fontification
 
