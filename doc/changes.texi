@@ -4,6 +4,17 @@
 
 @end ifset
 
+@heading News in 11.82
+
+@itemize @bullet
+@item
+The output of a Bib@TeX{} run is now checked for warnings and errors,
+which are reported in the echo area.
+
+@item
+Various bug fixes.
+@end itemize
+
 @heading News in 11.81
 
 @itemize @bullet
