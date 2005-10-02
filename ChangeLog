@@ -1,5 +1,8 @@
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-buf.el (TeX-BibTeX-sentinel): Shorten message in case of
+	errors.
+
 	* Makefile.in (install-lisp): Use MULESRC instead of MULEELC
 	because a `c' is already being appended by the installation code.
 
