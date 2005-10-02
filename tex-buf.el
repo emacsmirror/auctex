@@ -945,7 +945,7 @@ Return nil ifs no errors were found."
     ;; Tell the user their number so that she sees whether the
     ;; situation is getting better or worse.
     (message (concat "BibTeX finished with %s %s. "
-		     "Type `C-c C-l' to display BibTeX's output.")
+		     "Type `C-c C-l' to display output.")
 	     (match-string 1) (match-string 2)))
    (t
     (message (concat "BibTeX finished successfully. "
