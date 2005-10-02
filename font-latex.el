@@ -681,56 +681,6 @@ The car is used for subscript, the cdr is used for superscripts."
 
 ;;; Syntactic keywords
 
-(defcustom font-latex-verbatim-environments
-  '("verbatim" "verbatim*")
-  "Environments which should be fontified as verbatim."
-  :type '(repeat (string))
-  :group 'font-latex)
-
-(defvar font-latex-verbatim-environments-local nil
-  "Buffer-local keywords to add to `font-latex-verbatim-environments'.
-This must be a list of strings.  The variable is not for end
-users; they should customize `font-latex-verbatim-environments'
-instead.  It is for authors of Lisp files that get loaded when
-LaTeX style files are used in the current buffer.  They should
-add keywords to this list and rebuild the variable
-`font-latex-syntactic-keywords' by calling the function
-`font-latex-set-syntactic-keywords'.")
-(make-variable-buffer-local 'font-latex-verbatim-environments-local)
-
-(defcustom font-latex-verb-like-commands
-  '("verb" "verb*")
-  "Commands with the form \\foo|...| to be fontified as verbatim."
-  :type '(repeat (string))
-  :group 'font-latex)
-
-(defvar font-latex-verb-like-commands-local nil
-  "Buffer-local keywords to add to `font-latex-verb-like-commands'.
-This must be a list of strings.  The variable is not for end
-users; they should customize `font-latex-verb-like-commands'
-instead.  It is for authors of Lisp files that get loaded when
-LaTeX style files are used in the current buffer.  They should
-add keywords to this list and rebuild the variable
-`font-latex-syntactic-keywords' by calling the function
-`font-latex-set-syntactic-keywords'.")
-(make-variable-buffer-local 'font-latex-verb-like-commands-local)
-
-(defcustom font-latex-verbatim-macros nil
-  "Macros with the form \\foo{...} to be fontified as verbatim."
-  :type '(repeat (string))
-  :group 'font-latex)
-
-(defvar font-latex-verbatim-macros-local nil
-  "Buffer-local keywords to add to `font-latex-verbatim-macros'.
-This must be a list of strings.  The variable is not for end
-users; they should customize `font-latex-verbatim-macros'
-instead.  It is for authors of Lisp files that get loaded when
-LaTeX style files are used in the current buffer.  They should
-add keywords to this list and rebuild the variable
-`font-latex-syntactic-keywords' by calling the function
-`font-latex-set-syntactic-keywords'.")
-(make-variable-buffer-local 'font-latex-verbatim-macros-local)
-
 (defun font-latex-set-syntactic-keywords ()
   "Set the variable `font-latex-syntactic-keywords'.
 This function can be used to refresh the variable in case other
@@ -738,16 +688,19 @@ variables influencing its value, like `font-latex-verbatim-environments',
 have changed."
   ;; Checks for non-emptiness of lists added in order to cater for
   ;; installations where `(regexp-opt-group nil)' would enter a loop.
-  (let ((verb-envs (append font-latex-verbatim-environments
-			   font-latex-verbatim-environments-local))
-	(verb-like-commands (append font-latex-verb-like-commands
-				    font-latex-verb-like-commands-local))
-	(verb-macros (append font-latex-verbatim-macros
-			     font-latex-verbatim-macros-local)))
+  (let ((verb-envs (append LaTeX-verbatim-environments
+			   LaTeX-verbatim-environments-local))
+	(verb-macros-with-delims (append
+				  LaTeX-verbatim-macros-with-delims
+				  LaTeX-verbatim-macros-with-delims-local))
+	(verb-macros-with-braces (append
+				  LaTeX-verbatim-macros-with-braces
+				  LaTeX-verbatim-macros-with-braces-local)))
     (setq verb-envs (and verb-envs (regexp-opt verb-envs))
-	  verb-like-commands (and verb-like-commands
-				  (regexp-opt verb-like-commands))
-	  verb-macros (and verb-macros (regexp-opt verb-macros))
+	  verb-macros-with-delims (and verb-macros-with-delims
+				       (regexp-opt verb-macros-with-delims))
+	  verb-macros-with-braces (and verb-macros-with-braces
+				       (regexp-opt verb-macros-with-braces))
 	  font-latex-syntactic-keywords nil)
     (unless (= (length verb-envs) 0)
       (add-to-list 'font-latex-syntactic-keywords
@@ -757,9 +710,9 @@ have changed."
       (add-to-list 'font-latex-syntactic-keywords
 		   `(,(concat "\\(\n\\)[ \t]*\\\\end *{\\(?:" verb-envs "\\)}")
 		     (1 "|" t))))
-    (unless (= (length verb-like-commands) 0)
+    (unless (= (length verb-macros-with-delims) 0)
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "\\\\\\(?:" verb-like-commands "\\)"
+		   `(,(concat "\\\\\\(?:" verb-macros-with-delims "\\)"
 			      ;; An opening curly brace as delimiter
 			      ;; is valid, but allowing it might screw
 			      ;; up fontification of stuff like
@@ -771,9 +724,9 @@ have changed."
 			      ;; like "\verb|foo\|".
 			      "\\(" (regexp-quote TeX-esc) "*\\)\\(\\1\\)")
 		     (1 "\"") (2 ".") (3 "\""))))
-    (unless (= (length verb-macros) 0)
+    (unless (= (length verb-macros-with-braces) 0)
       (add-to-list 'font-latex-syntactic-keywords
-		   `(,(concat "\\\\\\(?:" verb-macros "\\)"
+		   `(,(concat "\\\\\\(?:" verb-macros-with-braces "\\)"
 			      "\\({\\).*?[^\\]\\(?:\\\\\\\\\\)*\\(}\\)")
 		     (1 "|") (2 "|")))))
   ;; Cater for docTeX mode.
