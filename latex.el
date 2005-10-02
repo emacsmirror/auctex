@@ -1767,6 +1767,87 @@ the cdr is the brace used with \\right.")
 	(indent-according-to-mode)))))
 
 
+;;; Verbatim constructs
+
+(defcustom LaTeX-verbatim-macros-with-delims
+  '("verb" "verb*")
+  "Macros for inline verbatim with arguments in delimiters, like \\foo|...|."
+  :group 'LaTeX
+  :type '(repeat (string)))
+
+(defvar LaTeX-verbatim-macros-with-delims-local nil
+  "Buffer-local variable for inline verbatim with args in delimiters.
+Style files should add constructs to this variable and not to
+`LaTeX-verbatim-macros-with-delims'.")
+(make-variable-buffer-local 'LaTeX-verbatim-macros-with-delims-local)
+
+(defcustom LaTeX-verbatim-macros-with-braces nil
+  "Macros for inline verbatim with arguments in braces, like \\foo{...}."
+  :group 'LaTeX
+  :type '(repeat (string)))
+
+(defvar LaTeX-verbatim-macros-with-braces-local nil
+  "Buffer-local variable for inline verbatim with args in braces.
+Style files should add constructs to this variable and not to
+`LaTeX-verbatim-macros-with-delims'.")
+(make-variable-buffer-local 'LaTeX-verbatim-macros-with-braces-local)
+
+(defcustom LaTeX-verbatim-environments
+  '("verbatim" "verbatim*")
+  "Verbatim environments."
+  :group 'LaTeX
+  :type '(repeat (string)))
+
+(defvar LaTeX-verbatim-environments-local nil
+  "Buffer-local variable for inline verbatim environments.
+Style files should add constructs to this variable and not to
+`LaTeX-verbatim-environments'.")
+(make-variable-buffer-local 'LaTeX-verbatim-environments)
+
+(defun LaTeX-verbatim-macro-boundaries ()
+  "Return boundaries of verbatim macro.
+Boundaries are returned as a cons cell where the car is the macro
+start and the cdr the macro end.
+
+Only macros which enclose their arguments with special
+non-parenthetical delimiters, like \\verb+foo+, are recognized."
+  (save-excursion
+    (let ((verbatim-regexp (regexp-opt LaTeX-verbatim-macros-with-delims)))
+      (catch 'found
+	(while (progn
+		 (skip-chars-backward (concat "^\n" (regexp-quote TeX-esc))
+				      (line-beginning-position))
+		 (when (looking-at verbatim-regexp) (throw 'found nil))
+		 (forward-char -1)
+		 (/= (point) (line-beginning-position)))))
+      (unless (= (point) (line-beginning-position))
+	(let ((beg (1- (point))))
+	  (goto-char (1+ (match-end 0)))
+	  (skip-chars-forward (concat "^" (buffer-substring-no-properties
+					   (1- (point)) (point))))
+	  (cons beg (1+ (point))))))))
+
+(defun LaTeX-current-verbatim-macro ()
+  "Return name of verbatim macro containing point, nil if none is present."
+  (let ((macro-boundaries (LaTeX-verbatim-macro-boundaries)))
+    (when macro-boundaries
+      (save-excursion
+	(goto-char (car macro-boundaries))
+	(forward-char (length TeX-esc))
+	(buffer-substring-no-properties
+	 (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
+
+(defun LaTeX-verbatim-p (&optional pos)
+  "Return non-nil if position POS is not in a verbatim-like construct."
+  (when pos (goto-char pos))
+  (save-match-data
+    (or (when (fboundp 'font-latex-faces-present-p)
+	  (font-latex-faces-present-p 'font-latex-verbatim-face))
+	(assoc (LaTeX-current-verbatim-macro) LaTeX-verbatim-macros-with-delims)
+	(assoc (TeX-current-macro) LaTeX-verbatim-macros-with-braces)
+	(assoc (LaTeX-current-environment) LaTeX-verbatim-environments))))
+
+
 ;;; Formatting
 
 (defcustom LaTeX-syntactic-comments t
@@ -2260,14 +2341,6 @@ recognized."
 
 ;;; Filling
 
-;; FIXME: Consolidate this with `font-latex-verbatim-macros' when
-;; font-latex.el gets fully integrated in AUCTeX.
-(defcustom LaTeX-verbatim-macros
-  '("verb" "verb*")
-  "Macros for inline verbatim which should not be broken across lines."
-  :group 'LaTeX
-  :type '(repeat (string)))
-
 (defcustom LaTeX-fill-break-at-separators nil
   "List of separators before or after which respectively a line
 break will be inserted if they do not fit into one line."
@@ -2489,29 +2562,20 @@ space does not end a sentence, so don't break a line there."
 	;; This is the actual FILLING LOOP.
 	(goto-char from)
 	(let* (linebeg
-	       (code-comment-flag
-		(save-excursion
-		  (LaTeX-back-to-indentation)
-		  (TeX-re-search-forward-unescaped TeX-comment-start-regexp
-						   (line-end-position) t)))
-	       (end-marker
-		(save-excursion
-		  (goto-char (if code-comment-flag
-				 ;; Get the position right after the
-				 ;; last non-comment-word.
-				 (save-excursion
-				   (goto-char (match-beginning 0))
-				   (skip-chars-backward " \t")
-				   (point))
-			       to))
-		  (point-marker)))
+	       (code-comment-start (save-excursion
+				     (LaTeX-back-to-indentation)
+				     (LaTeX-search-forward-comment-start
+				      (line-end-position))))
+	       (end-marker (save-excursion
+			     (goto-char (or code-comment-start to))
+			     (point-marker)))
 	       (LaTeX-current-environment (LaTeX-current-environment)))
 	  ;; Fill until point is greater than the end point.  If there
 	  ;; is a code comment, use the code comment's start as a
 	  ;; limit.
 	  (while (and (< (point) (marker-position end-marker))
-		      (or (not code-comment-flag)
-			  (and code-comment-flag
+		      (or (not code-comment-start)
+			  (and code-comment-start
 			       (> (- (marker-position end-marker)
 				     (line-beginning-position))
 				  fill-column))))
@@ -2542,16 +2606,19 @@ space does not end a sentence, so don't break a line there."
 
 	  ;; Fill a code comment if necessary.  (Enable this code if
 	  ;; you want the comment part in lines with code comments to
-	  ;; be filled.  It is disabled because the current
-	  ;; indentation code will indent the lines following the line
+	  ;; be filled.  Originally it was disabled because the
+	  ;; indentation code indented the lines following the line
 	  ;; with the code comment to the column of the comment
-	  ;; starters.  That means, it will look like this:
+	  ;; starters.  That means, it would have looked like this:
 	  ;; | code code code % comment
 	  ;; |                % comment
 	  ;; |                code code code
-	  ;; Not nice, isn't it?  But in case indentation code changes,
-	  ;; it might be useful, so I leave it here.)
-	  ;; (when (and code-comment-flag
+	  ;; This now (2005-07-29) is not the case anymore.  But as
+	  ;; filling code comments like this would split a single
+	  ;; paragraph into two separate ones, we still leave it
+	  ;; disabled.  I leave the code here in case it is useful for
+	  ;; somebody.
+	  ;; (when (and code-comment-start
 	  ;;            (> (- (line-end-position) (line-beginning-position))
 	  ;;                  fill-column))
 	  ;;   (LaTeX-fill-code-comment justify))
@@ -2561,12 +2628,11 @@ space does not end a sentence, so don't break a line there."
 	  ;; will be broken before the last non-comment word if the
 	  ;; code comment does not fit into the line.
 	  (when (and LaTeX-fill-break-before-code-comments
-		     code-comment-flag
+		     code-comment-start
 		     (> (- (line-end-position) (line-beginning-position))
 			fill-column))
 	    (beginning-of-line)
-	    (re-search-forward comment-start-skip (line-end-position) t)
-	    (goto-char (match-beginning 0))
+	    (goto-char end-marker)
 	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
 	    (skip-chars-backward " \t")
 	    (skip-chars-backward "^ \t\n")
@@ -2700,7 +2766,7 @@ space does not end a sentence, so don't break a line there."
   ;; handled with `fill-nobreak-predicate', but this is not available
   ;; in XEmacs.
   (let ((final-breakpoint (point))
-	(verb-macros (regexp-opt LaTeX-verbatim-macros)))
+	(verb-macros (regexp-opt LaTeX-verbatim-macros-with-delims)))
     (save-excursion
       (when (and (re-search-backward
 		  (concat (regexp-quote TeX-esc) "\\(?:" verb-macros
@@ -2873,7 +2939,7 @@ space does not end a sentence, so don't break a line there."
   (run-hooks 'LaTeX-fill-newline-hook))
 
 (defun LaTeX-fill-paragraph (&optional justify)
-  "Like \\[fill-paragraph], but handle LaTeX comments.
+  "Like `fill-paragraph', but handle LaTeX comments.
 If any of the current line is a comment, fill the comment or the
 paragraph of it that point is in.  Code comments, i.e. comments
 with uncommented code preceding them in the same line, will not
@@ -2893,46 +2959,44 @@ depends on the value of `LaTeX-syntactic-comments'."
 	  has-comment
 	  ;; Non-nil if the current line contains code and a comment.
 	  has-code-and-comment
+	  code-comment-start
 	  ;; If has-comment, the appropriate fill-prefix for the comment.
 	  comment-fill-prefix)
 
       ;; Figure out what kind of comment we are looking at.
-      (save-excursion
-	(beginning-of-line)
-	(cond
-	 ;; A line only with potential whitespace followed by a
-	 ;; comment on it?
-	 ((looking-at (concat "^[ \t]*" TeX-comment-start-regexp
-			      "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*"))
-	  (setq has-comment t
-		comment-fill-prefix (buffer-substring (match-beginning 0)
-						      (match-end 0))))
-	 ;; A line with some code, followed by a comment?
-	 ((and (re-search-forward comment-start-skip (line-end-position) t)
-	       ;; Don't treat trailing comment starters as code comments.
-	       (not (looking-at "$"))
+      (cond
+       ;; A line only with potential whitespace followed by a
+       ;; comment on it?
+       ((save-excursion
+	  (beginning-of-line)
+	  (looking-at (concat "^[ \t]*" TeX-comment-start-regexp
+			      "\\(" TeX-comment-start-regexp "\\|[ \t]\\)*")))
+	(setq has-comment t
+	      comment-fill-prefix (buffer-substring-no-properties
+				   (match-beginning 0) (match-end 0))))
+       ;; A line with some code, followed by a comment?
+       ((and (setq code-comment-start (save-excursion
+					(beginning-of-line)
+					(LaTeX-search-forward-comment-start
+					 (line-end-position))))
+	     (> (point) code-comment-start)
+	     (not (TeX-in-commented-line))
+	     (save-excursion
+	       (goto-char code-comment-start)
 	       ;; See if there is at least one non-whitespace character
 	       ;; before the comment starts.
-	       (re-search-backward "[^ \t\n]" (line-beginning-position) t))
-	  (setq has-comment t
-		has-code-and-comment t))))
+	       (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
+	(setq has-comment t
+	      has-code-and-comment t)))
 
       (cond
        ;; Code comments.
-       ((and has-code-and-comment
-	     (not (TeX-in-commented-line)))
+       (has-code-and-comment
 	(save-excursion
-	  (when (save-excursion
-		  ;; Find the start of the comment.
-		  (beginning-of-line)
-		  (re-search-forward comment-start-skip (line-end-position) t)
-		  (goto-char (match-beginning 0))
-		  (while (not (looking-at TeX-comment-start-regexp))
-		    (forward-char))
-		  ;; Is it beyond the fill column?
-		  (>= (- (point) (line-beginning-position)) fill-column))
-	    ;; Then fill it as a regular paragraph before it is filled
-	    ;; as a code comment.
+	  (when (>= (- code-comment-start (line-beginning-position))
+		    fill-column)
+	    ;; If start of code comment is beyond fill column, fill it as a
+	    ;; regular paragraph before it is filled as a code comment.
 	    (let ((end-marker (save-excursion (end-of-line) (point-marker))))
 	      (LaTeX-fill-region-as-paragraph (line-beginning-position)
 					      (line-beginning-position 2)
@@ -3020,10 +3084,13 @@ depends on the value of `LaTeX-syntactic-comments'."
 (defun LaTeX-fill-code-comment (&optional justify-flag)
   "Fill a line including code followed by a comment."
   (let ((beg (line-beginning-position))
-	fill-prefix)
+	fill-prefix code-comment-start)
     (indent-according-to-mode)
-    (when (when (re-search-forward comment-start-skip (line-end-position) t)
-	    (goto-char (match-beginning 0))
+    (when (when (setq code-comment-start (save-excursion
+					   (goto-char beg)
+					   (LaTeX-search-forward-comment-start
+					    (line-end-position))))
+	    (goto-char code-comment-start)
 	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
 	    ;; See if there is at least one non-whitespace character
 	    ;; before the comment starts.
@@ -3374,6 +3441,23 @@ If COUNT is non-nil, do it COUNT times."
 			end-point
 		      0))))))
 	(beginning-of-line)))))
+
+(defun LaTeX-search-forward-comment-start (&optional limit)
+  "Search forward for a comment start from current position till LIMIT.
+If LIMIT is omitted, search till the end of the buffer.
+
+This function makes sure that any comment starters found inside
+of verbatim constructs are not considered."
+  (setq limit (or limit (point-max)))
+  (save-excursion
+    (catch 'found
+      (while (progn
+	       (when (and (TeX-re-search-forward-unescaped
+			   TeX-comment-start-regexp limit 'move)
+			  (not (LaTeX-verbatim-p)))
+		 (throw 'found t))
+	       (< (point) limit))))
+    (unless (= (point) limit) (match-beginning 0))))
 
 
 ;;; Math Minor Mode
