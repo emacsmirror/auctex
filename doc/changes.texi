@@ -8,6 +8,15 @@
 
 @itemize @bullet
 @item
+Handling of verbatim constructs was consolidated across AUCTeX.  This
+resulted in the @fontlatex{}-specific variables
+@code{font-latex-verb-like-commands}, @code{font-latex-verbatim-macros},
+and @code{font-latex-verbatim-environments} being removed and the more
+general variables @code{LaTeX-verbatim-macros-with-delims},
+@code{LaTeX-verbatim-macros-with-braces}, and
+@code{LaTeX-verbatim-environments} being added.
+
+@item
 The output of a Bib@TeX{} run is now checked for warnings and errors,
 which are reported in the echo area.
 
