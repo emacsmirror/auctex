@@ -1,5 +1,8 @@
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-jp.el (japanese-TeX-command-list): Remove obsolete
+	`TeX-run-LaTeX' option.
+
 	* tex.el (TeX-current-macro): New function.
 
 	* latex.el (LaTeX-verbatim-macros-with-delims)
