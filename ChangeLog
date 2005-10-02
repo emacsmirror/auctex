@@ -1,3 +1,8 @@
+2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-insert-environment): Mostly rewritten.  Improve
+	handling of macrocode environments.
+
 2005-10-02  Christian Schlauer  <cschl@arcor.de>
 
 	* tex-buf.el (TeX-BibTeX-sentinel): Check whether BibTeX reports
