@@ -73,10 +73,6 @@ For detail, see `TeX-command-list', which this list is appended to."
 				(function-item TeX-run-command)
 				(function-item TeX-run-format)
 				(function-item TeX-run-TeX)
-				;; leave the following line in
-				;; customization? Replaced (but still
-				;; available) with TeX-run-TeX --pg
-				(function-item TeX-run-LaTeX)
 				(function-item TeX-run-interactive)
 				(function-item TeX-run-BibTeX)
 				(function-item TeX-run-compile)
