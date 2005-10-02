@@ -316,17 +316,42 @@ Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
   (catch 'exit
     (save-excursion
       (and (null texmathp-environments) (throw 'exit nil))
-      (let (end-list env)
+      ;; Check if the line we are starting with is a commented one.
+      (let ((orig-comment-flag
+	     ;; Could be replaced by `TeX-in-commented-line'.
+	     (progn
+	       (save-excursion
+		 (beginning-of-line)
+		 (skip-chars-forward " \t")
+		 (string= (buffer-substring-no-properties
+			   (point) (min (point-max)
+					(+ (point) (length comment-start))))
+			  comment-start))))
+	    end-list env)
 	(while (re-search-backward "\\\\\\(begin\\|end\\)[ \t]*{\\([^}]+\\)}"
 				   bound t)
-	  (setq env (buffer-substring-no-properties
-		     (match-beginning 2) (match-end 2)))
-	  (cond ((string= (match-string 1) "end")
-		 (setq end-list (cons env end-list)))
-		((equal env (car end-list))
-		 (setq end-list (cdr end-list)))
-		((member env texmathp-environments)
-		 (throw 'exit (cons env (point))))))
+	  ;; Check if the match found is inside of a comment.
+	  (let ((current-comment-flag
+		 ;; Could be replaced by `TeX-in-comment'.
+		 (when (save-match-data
+			 (re-search-backward comment-start-skip
+					     (line-beginning-position) t))
+		   ;; We need a t for comparison with `orig-comment-flag',
+		   ;; not a number.
+		   t)))
+	    ;; Only consider matching alternatives with respect to
+	    ;; "in-commentness", i.e. if we started with a comment
+	    ;; only consider matches which are in comments as well and
+	    ;; vice versa.
+	    (when (eq orig-comment-flag current-comment-flag)
+	      (setq env (buffer-substring-no-properties
+			 (match-beginning 2) (match-end 2)))
+	      (cond ((string= (match-string 1) "end")
+		     (setq end-list (cons env end-list)))
+		    ((equal env (car end-list))
+		     (setq end-list (cdr end-list)))
+		    ((member env texmathp-environments)
+		     (throw 'exit (cons env (point))))))))
 	nil))))
 
 (defun texmathp-match-macro (bound)
