@@ -4091,7 +4091,15 @@ escape characters, such as \"\\\" in LaTeX."
     (when pos (goto-char pos))
     (not (zerop (mod (skip-chars-backward (regexp-quote TeX-esc)) 2)))))
 
-
+(defun TeX-current-macro ()
+  "Return the name of the macro containing point, nil if there is none."
+  (let ((macro-start (TeX-find-macro-start)))
+    (when macro-start
+      (save-excursion
+	(goto-char macro-start)
+	(forward-char (length TeX-esc))
+	(buffer-substring-no-properties
+	 (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
 
 ;;; Fonts
 
