@@ -193,7 +193,7 @@ install-el:
 	-$(INSTALL_DATA) $(NOSEARCH) $(DESTDIR)$(autodir)
 
 install-lisp: some install-el
-	for x in $(AUCSRC) $(MULEELC); do \
+	for x in $(AUCSRC) $(MULESRC); do \
 	  echo ' $(INSTALL_DATA)' $${x}c '$(DESTDIR)$(packagelispdir)' ; \
 	  $(INSTALL_DATA) $${x}c $(DESTDIR)$(packagelispdir) ; \
 	done;
