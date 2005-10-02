@@ -1,3 +1,10 @@
+2005-10-02  Christian Schlauer  <cschl@arcor.de>
+
+	* tex-buf.el (TeX-BibTeX-sentinel): Check whether BibTeX reports
+	any warnings or errors.
+
+	* doc/changes.texi: Mention it.
+
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp-match-environment): Make aware of
