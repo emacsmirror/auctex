@@ -1,6 +1,6 @@
 ;;; url.el --- AUCTeX style for `url.sty'
 
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -49,6 +49,10 @@
     "url"
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
+
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
@@ -70,8 +74,7 @@
 	       "urldef"
 	       "urlstyle"))
      (font-latex-match-variable-make)
-     (add-to-list 'font-latex-verb-like-commands-local "url")
-     (add-to-list 'font-latex-verbatim-macros-local "url")
+     ;; For syntactic fontification, e.g. verbatim constructs.
      (font-latex-set-syntactic-keywords)
      ;; Tell font-lock about the update.
      (setq font-lock-set-defaults nil)
