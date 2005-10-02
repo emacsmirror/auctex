@@ -936,7 +936,20 @@ Return nil ifs no errors were found."
 ;; should go into latex.el? --pg
 (defun TeX-BibTeX-sentinel (process name)
   "Cleanup TeX output buffer after running BibTeX."
-  (message "You should perhaps run LaTeX again to get citations right.")
+  (goto-char (point-max))
+  (cond
+   ;; Check whether BibTeX reports any warnings or errors.
+   ((re-search-backward (concat
+			 "^(There \\(?:was\\|were\\) \\([0-9]+\\) "
+			 "\\(warnings?\\|error messages?\\))") nil t)
+    ;; Tell the user their number so that she sees whether the
+    ;; situation is getting better or worse.
+    (message (concat "BibTeX finished with %s %s. "
+		     "Type `C-c C-l' to display BibTeX's output.")
+	     (match-string 1) (match-string 2)))
+   (t
+    (message (concat "BibTeX finished successfully. "
+		     "Run LaTeX again to get citations right."))))
   (setq TeX-command-next TeX-command-default))
 
 ;;; Process Control
