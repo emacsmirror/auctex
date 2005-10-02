@@ -1,3 +1,8 @@
+2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* texmathp.el (texmathp-match-environment): Make aware of
+	comments.
+
 2005-09-29  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* doc/install.texi (Customizing): Removed "Contributed files"
