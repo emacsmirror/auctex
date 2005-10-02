@@ -1,5 +1,7 @@
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-current-macro): New function.
+
 	* latex.el (LaTeX-verbatim-macros-with-delims)
 	(LaTeX-verbatim-macros-with-delims-local)
 	(LaTeX-verbatim-macros-with-braces)
