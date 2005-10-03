@@ -701,7 +701,8 @@ Disable it if that is the case.  Ignores text properties."
 			(buffer-substring-no-properties
 			 (extent-start-position ov)
 			 (extent-end-position ov)))))
-	    (if (zerop (length text))
+	    (if (or (zerop (length text))
+		    (extent-detached-p ov))
 		(preview-delete ov)
 	      (unless
 		  (or (eq (extent-property ov 'preview-state) 'disabled)
