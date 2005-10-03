@@ -1,3 +1,7 @@
+2005-10-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* prv-xemacs.el (preview-check-changes): Delete detached extents.
+
 2005-09-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Document option for specifying AUCTeX startfile as
