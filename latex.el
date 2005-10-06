@@ -1164,25 +1164,27 @@ This is necessary since index entries may contain commands and stuff.")
 
 (defvar LaTeX-auto-regexp-list
   (append
-   '(("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]"
-      (2 3 4) LaTeX-auto-optional)
-     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
-      (2 3) LaTeX-auto-arguments)
-     ("\\\\\\(new\\|provide\\)command\\*?{?\\\\\\([a-zA-Z]+\\)}?" 2 TeX-auto-symbol)
-     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]\\["
-      1 LaTeX-auto-environment)
-     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?\\[\\([0-9]+\\)\\]"
-      (1 2) LaTeX-auto-env-args)
-     ("\\\\newenvironment\\*?{?\\([a-zA-Z]+\\)}?" 1 LaTeX-auto-environment)
-     ("\\\\newtheorem{\\([a-zA-Z]+\\)}" 1 LaTeX-auto-environment)
-     ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
-      1 TeX-auto-file)
-     ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
-      1 TeX-auto-file)
-     ("\\\\bibitem{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}" 1 LaTeX-auto-bibitem)
-     ("\\\\bibitem\\[[^][\n\r]+\\]{\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)}"
-      1 LaTeX-auto-bibitem)
-     ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography))
+   (let ((token TeX-token-char))
+     `((,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[\\([^\n\r]*\\)\\]")
+	(1 2 3) LaTeX-auto-optional)
+       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
+	(1 2) LaTeX-auto-arguments)
+       (,(concat "\\\\\\(?:new\\|provide\\)command\\*?{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]\\[")
+	1 LaTeX-auto-environment)
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?\\[\\([0-9]+\\)\\]")
+	(1 2) LaTeX-auto-env-args)
+       (,(concat "\\\\newenvironment\\*?{?\\(" token "+\\)}?") 1 LaTeX-auto-environment)
+       (,(concat "\\\\newtheorem{\\(" token "+\\)}") 1 LaTeX-auto-environment)
+       ("\\\\input{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+	1 TeX-auto-file)
+AaWIJaD
+       ("\\\\include{\\(\\.*[^#}%\\\\\\.\n\r]+\\)\\(\\.[^#}%\\\\\\.\n\r]+\\)?}"
+	1 TeX-auto-file)
+       (, (concat "\\\\bibitem{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}") 1 LaTeX-auto-bibitem)
+       (, (concat "\\\\bibitem\\[[^][\n\r]+\\]{\\(" token "[^, \n\r\t%\"#'()={}]*\\)}")
+	  1 LaTeX-auto-bibitem)
+       ("\\\\bibliography{\\([^#}\\\\\n\r]+\\)}" 1 LaTeX-auto-bibliography)))
    LaTeX-auto-class-regexp-list
    LaTeX-auto-label-regexp-list
    LaTeX-auto-index-regexp-list
@@ -1373,8 +1375,8 @@ It will setup BibTeX to store keys in an auto file."
   (setq TeX-master t))
 
 (defvar BibTeX-auto-regexp-list
-  '(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
-    ("@[a-zA-Z]+[{(][ \t]*\\([a-zA-Z][^, \n\r\t%\"#'()={}]*\\)"
+  `(("@[Ss][Tt][Rr][Ii][Nn][Gg]" 1 ignore)
+    (,(concat "@[a-zA-Z]+[{(][ \t]*\\(" TeX-token-char "[^, \n\r\t%\"#'()={}]*\\)")
      1 LaTeX-auto-bibitem))
   "List of regexp-list expressions matching BibTeX items.")
 
