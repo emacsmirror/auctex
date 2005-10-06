@@ -73,6 +73,9 @@ popd
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
+%ifnot %{FOR_SUSE}
+mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
+%endif
 %makeinstall install-docs
 
 %post emacs
@@ -104,8 +107,8 @@ rm -rf %{buildroot}
 %{_datadir}/emacs/site-lisp/suse-start-auctex.el
 %{_datadir}/emacs/site-lisp/suse-start-preview-latex.el
 %else
-%{_datadir}/emacs/site-lisp/auctex.el
-%{_datadir}/emacs/site-lisp/preview-latex.el
+%{_datadir}/emacs/site-lisp/site-start.d/auctex.el
+%{_datadir}/emacs/site-lisp/site-start.d/preview-latex.el
 %endif
 
 

@@ -1,3 +1,8 @@
+2005-10-06  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec: Fixes for Fedora.  Create site-start.d and add
+	files.
+
 2005-10-02  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-BibTeX-sentinel): Shorten message in case of
