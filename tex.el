@@ -2636,18 +2636,29 @@ If SKIP is not-nil, don't insert code for SKIP."
   '(("<IMPOSSIBLE>\\(\\'\\`\\)" 1 ignore))
   "List of regular expressions guaranteed to match nothing.")
 
+(defvar TeX-token-char
+  (if (featurep 'mule)
+      "\\(?:[a-zA-Z]\\|\\cj\\)"
+    "[a-zA-Z]")
+  "Regexp to match TeX token charactor.
+
+Please use shy group if you use a grouping construct, because the
+functions/variables which use `TeX-token-char' expect not to
+alter the numbering of any ordinary, non-shy groups.")
+
 (defvar plain-TeX-auto-regexp-list
-  '(("\\\\def\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol-check)
-    ("\\\\let\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol-check)
-    ("\\\\font\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
-    ("\\\\chardef\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol)
-    ("\\\\new\\(count\\|dimen\\|muskip\\|skip\\)\\\\\\([a-z]+\\)[^a-zA-Z@]"
-     2 TeX-auto-symbol)
-    ("\\\\newfont{?\\\\\\([a-zA-Z]+\\)}?" 1 TeX-auto-symbol)
-    ("\\\\typein\\[\\\\\\([a-zA-Z]+\\)\\]" 1 TeX-auto-symbol)
-    ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
-     1 TeX-auto-file)
-    ("\\\\mathchardef\\\\\\([a-zA-Z]+\\)[^a-zA-Z@]" 1 TeX-auto-symbol))
+  (let ((token TeX-token-char))
+    `((,(concat "\\\\def\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol-check)
+      (,(concat "\\\\let\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol-check)
+      (,(concat "\\\\font\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
+      (,(concat "\\\\chardef\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)
+      (,(concat "\\\\new\\(?:count\\|dimen\\|muskip\\|skip\\)\\\\\\(" token "+\\)[^a-zA-Z@]")
+       1 TeX-auto-symbol)
+      (,(concat "\\\\newfont{?\\\\\\(" token "+\\)}?") 1 TeX-auto-symbol)
+      (,(concat "\\\\typein\\[\\\\\\(" token "+\\)\\]") 1 TeX-auto-symbol)
+      ("\\\\input +\\(\\.*[^#%\\\\\\.\n\r]+\\)\\(\\.[^#%\\\\\\.\n\r]+\\)?"
+       1 TeX-auto-file)
+      (,(concat "\\\\mathchardef\\\\\\(" token "+\\)[^a-zA-Z@]") 1 TeX-auto-symbol)))
   "List of regular expression matching common LaTeX macro definitions.")
 
 (defvar TeX-auto-full-regexp-list plain-TeX-auto-regexp-list
