@@ -1,3 +1,14 @@
+2005-10-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-token-char): New variable.
+	(plain-TeX-auto-regexp-list): Use it.
+
+	* latex.el (LaTeX-auto-regexp-list, BibTeX-auto-regexp-list): Use
+	it.
+
+	* tex-jp.el (LaTeX-auto-regexp-list, plain-TeX-auto-regexp-list)
+	(BibTeX-auto-regexp-list): Removed.
+
 2005-10-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec: Fixes for Fedora.  Create site-start.d and add
