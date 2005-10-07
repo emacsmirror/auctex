@@ -1,3 +1,7 @@
+2005-10-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (tar-ball): Re-add fixed spec file.
+
 2005-10-07  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-token-char): New variable.

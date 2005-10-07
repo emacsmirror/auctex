@@ -283,8 +283,6 @@ tar-ball:
 	mkdir auctex-$(TAG)
 	cvs export -d auctex-$(TAG) `echo $(TAG)|sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
 	cd auctex-$(TAG) && ./autogen.sh && rm $(CVSFILES)
-# Remove dysfunctional spec file.
-	cd auctex-$(TAG) && rm auctex.spec
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR)
 	mkdir -p $(FTPDIR)
