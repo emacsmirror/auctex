@@ -2,6 +2,7 @@
 
 	* tex.el (TeX-token-char): New variable.
 	(plain-TeX-auto-regexp-list): Use it.
+	Suggested by Ikumi Keita <ikumi@revery.net>.
 
 	* latex.el (LaTeX-auto-regexp-list, BibTeX-auto-regexp-list): Use
 	it.
