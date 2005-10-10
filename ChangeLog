@@ -1,3 +1,8 @@
+2005-10-10  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec: Install auctex.el and preview-latex.el for SuSE
+	too.  Don't use extraconfig.
+
 2005-10-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (tar-ball): Re-add fixed spec file.

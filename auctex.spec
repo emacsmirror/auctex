@@ -4,8 +4,6 @@
 %define distri       .suse
 %define commongroup  Productivity/Editors/Emacs
 %define xemacspkgdir %{_datadir}/xemacs/xemacs-packages
-# We also need to add the start files to `%files' section below!
-%define extraconfig '--with-auctexstartfile=%{_datadir}/emacs/site-lisp/suse-start-auctex.el' '--with-previewstartfile=%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el'
 %else
 %define distri       .fedora
 %define commongroup  Applications/Editors
@@ -73,7 +71,19 @@ popd
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
-%ifnot %{FOR_SUSE}
+%if %{FOR_SUSE}
+cat <<EOFA > %{buildroot}%{_datadir}/emacs/site-lisp/suse-start-auctex.el
+;; suse-start-auctex.el
+;; This file enables AUCTeX globally:
+(load "auctex.el" nil t t)
+;; See (info "(auctex)Introduction") on how to disable AUCTeX.
+EOFA
+cat <<EOFP > %{buildroot}%{_datadir}/emacs/site-lisp/suse-start-preview-latex.el
+;; suse-start-preview-latex.el
+;; This file enables preview-latex globally:
+(load "preview-latex.el" nil t t)
+EOFP
+%else
 mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
 %endif
 %makeinstall install-docs
@@ -104,6 +114,8 @@ rm -rf %{buildroot}
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 %if %{FOR_SUSE}
+%{_datadir}/emacs/site-lisp/auctex.el
+%{_datadir}/emacs/site-lisp/preview-latex.el
 %{_datadir}/emacs/site-lisp/suse-start-auctex.el
 %{_datadir}/emacs/site-lisp/suse-start-preview-latex.el
 %else
