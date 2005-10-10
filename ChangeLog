@@ -1,5 +1,10 @@
 2005-10-10  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/auctex.texi (top): Index "tool bar" and "toolbar".  Use
+	"tool bar" in the text.
+
+	* doc/changes.texi: Use "tool bar".
+
 	* auctex.spec: Install auctex.el and preview-latex.el for SuSE
 	too.  Don't use extraconfig.
 

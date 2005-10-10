@@ -96,7 +96,8 @@ documents right away, insert the following in your @file{.emacs} file.
 (setq-default TeX-master nil)
 @end lisp
 
-If you are using the toolbar, there is some toolbar support available
+@cindex tool bar, toolbar
+If you are using the tool bar, there is some tool bar support available
 for @LaTeX{} which you can enable with
 
 @lisp

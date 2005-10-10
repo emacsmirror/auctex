@@ -168,7 +168,7 @@ in future releases.
 Info files of the manual now have a .info extension.
 
 @item
-There is an experimental toolbar support now.  It is not activated by
+There is an experimental tool bar support now.  It is not activated by
 default.  If you want to use it, add
 @lisp
 (add-hook 'LaTeX-mode-hook 'LaTeX-install-toolbar)
