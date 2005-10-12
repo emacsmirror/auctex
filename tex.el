@@ -693,6 +693,15 @@ overlays."
 	     (+ (/ (- outer-priority inner-priority) 2) inner-priority))
 	    (t TeX-overlay-priority-step)))) )
 
+
+(if (fboundp 'completing-read-multiple)
+    (defalias 'TeX-completing-read-multiple 'completing-read-multiple)
+  (defun TeX-completing-read-multiple
+    (prompt table &optional predicate require-match initial-input
+	    hist def inherit-input-method)
+    "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs."
+    (multi-prompt "," nil prompt table predicate require-match initial-input hist)))
+
 ;;; Special support for GNU Emacs
 
 (unless (featurep 'xemacs)

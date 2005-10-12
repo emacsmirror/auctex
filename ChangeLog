@@ -1,3 +1,25 @@
+2005-10-12  Arne Jørgensen  <arne@arnested.dk>
+
+	* tex.el: Provide a `TeX-completing-read-multiple' either by
+	defalias'ing `completing-read-multiple' or defining a wrapper
+	around `multi-prompt'.
+
+	* latex.el (LaTeX-arg-usepackage): New function. Asks about what
+	package to use, loads the AUCTeX style file, and asks about
+	package options (possibly based on definitions in the AUCTeX
+	style file).
+	(LaTeX-common-initialization): Use it.
+
+	* style/babel.el: Define `LaTeX-babel-package-options' to be a
+	list of languages/options for the babel package.
+
+	* style/inputenc.el: New file.
+
+	* style/dk-bib.el: New file.
+
+	* Makefile.in (STYLESRC): Added style/inputenc.el and
+	style/dk-bib.el.
+
 2005-10-10  Arne Jørgensen  <arne@arnested.dk>
 
 	* latex.el (LaTeX-auto-regexp-list): Removed spurious characters

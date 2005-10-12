@@ -1553,6 +1553,31 @@ ELSE as an argument list."
   ;; defined in individual style hooks
   (TeX-update-style))
 
+(defun LaTeX-arg-usepackage (optional)
+  "Insert arguments to usepackage."
+  (let ((TeX-file-extensions '("sty")))
+    (TeX-arg-input-file nil "Package")
+    (save-excursion
+      (search-backward-regexp "{\\(.*\\)}")
+      (let* ((package (match-string 1))
+	     (var (intern (format "LaTeX-%s-package-options" package)))
+	     (crm-separator ",")
+	     (TeX-arg-opening-brace LaTeX-optop)
+	     (TeX-arg-closing-brace LaTeX-optcl)
+	     options)
+	(if (or (and (boundp var)
+		     (listp (symbol-value var)))
+		(fboundp var))
+	    (if (functionp var)
+		(setq options (funcall var))
+	      (setq options
+		    (mapconcat 'identity 
+			       (TeX-completing-read-multiple 
+				"Options: " (mapcar 'list (symbol-value var)))
+			       ",")))
+	  (setq options (read-string "Options: ")))
+	(TeX-argument-insert options t)))))
+
 (defvar TeX-global-input-files nil
   "List of the non-local TeX input files.
 
@@ -4969,7 +4994,7 @@ runs the hooks in `docTeX-mode-hook'."
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("renewcommand*" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
-     '("usepackage" [ "Options" ] (TeX-arg-input-file "Package"))
+     '("usepackage" LaTeX-arg-usepackage)
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"
