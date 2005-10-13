@@ -1,3 +1,7 @@
+2005-10-13  Jan-Ake Larsson  <jalar@mai.liu.se>
+
+	* tex-buf.el: Change defcustom group from TeX-commands to TeX-command
+
 2005-10-12  Arne Jørgensen  <arne@arnested.dk>
 
 	* tex.el: Provide a `TeX-completing-read-multiple' either by
