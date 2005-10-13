@@ -28,35 +28,32 @@
 
 ;;; Code:
 
-(TeX-add-style-hook
- "dk-bib"
- (lambda ()
-   (defun LaTeX-dk-bib-package-options nil
-     "Prompt for package option for dk-bib.sty."
-     (let ((options 
-	    (mapconcat 'identity 
-		       (TeX-completing-read-multiple "Options: "
-						     '(("isbn") ("issn") ("url")
-						       ("annote") ("printing")
-						       ("apalike") ("fixcitedash=false")
-						       ("ordinals2word")
-						       ("ordinaldepth=")))
-		       ","))
-	   (depth -1))
-       (when (string-match "\\(ordinaldepth=\\)\\([^0-9]\\|$\\)" options)
-	 (while (or (< depth 0)
-		    (> depth 20))
-	   (setq depth (if (fboundp 'read-number)
-			   (read-number "Ordinal depth: ")
-			 (string-to-number (read-input "Ordinal depth: "))))
-	   (when (or (< depth 0)
-		     (> depth 20))
-	     (message "Ordinal depth must be between 0 and 20")
-	     (sit-for 1)))	 
-	 (setq options (concat 
-			(substring options 0 (match-end 1))
-			(number-to-string depth)
-			(substring options (match-end 1)))))
-       options))))
+(defun LaTeX-dk-bib-package-options nil
+  "Prompt for package option for dk-bib.sty."
+  (let ((options 
+	 (mapconcat 'identity 
+		    (TeX-completing-read-multiple "Options: "
+						  '(("isbn") ("issn") ("url")
+						    ("annote") ("printing")
+						    ("apalike") ("fixcitedash=false")
+						    ("ordinals2word")
+						    ("ordinaldepth=")))
+		    ","))
+	(depth -1))
+    (when (string-match "\\(ordinaldepth=\\)\\([^0-9]\\|$\\)" options)
+      (while (or (< depth 0)
+		 (> depth 20))
+	(setq depth (if (fboundp 'read-number)
+			(read-number "Ordinal depth: ")
+		      (string-to-number (read-input "Ordinal depth: "))))
+	(when (or (< depth 0)
+		  (> depth 20))
+	  (message "Ordinal depth must be between 0 and 20")
+	  (sit-for 1)))	 
+      (setq options (concat 
+		     (substring options 0 (match-end 1))
+		     (number-to-string depth)
+		     (substring options (match-end 1)))))
+    options))
 
 ;;; dk-bib.el ends here
