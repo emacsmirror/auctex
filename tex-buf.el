@@ -36,7 +36,7 @@
 
 (defcustom TeX-process-asynchronous (not (eq system-type 'ms-dos))
   "*Use asynchronous processes."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'boolean)
 
 (defcustom TeX-shell
@@ -44,7 +44,7 @@
       shell-file-name
     "/bin/sh")
   "Name of shell used to parse TeX commands."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'file)
 
 (defcustom TeX-shell-command-option
@@ -58,7 +58,7 @@
 	(t				;Unix & EMX (Emacs 19 port to OS/2)
 	 "-c"))
   "Shell argument indicating that next argument is the command."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'string)
 
 ;;; Interactive Commands
@@ -397,7 +397,7 @@ in TeX-check-path."
 
 (defcustom TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'boolean)
 
 (defvar TeX-command-history nil)
@@ -545,7 +545,7 @@ Used by Japanese TeX to set the coding system.")
 
 (defcustom TeX-show-compilation nil
   "*If non-nil, show output of TeX compilation in other window."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'boolean)
 
 (defun TeX-run-command (name command file)
@@ -1138,7 +1138,7 @@ the directory."
 
 (defcustom TeX-region-extra ""
   "*String to insert in the region file between the header and the text."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'string)
 
 ;; This was "{\\makeatletter\\gdef\\AucTeX@cite#1[#2]#3{[#3#1#2]}\
@@ -1280,7 +1280,7 @@ the directory."
 
 (defcustom TeX-region "_region_"
   "*Base name for temporary file for use with TeX-region."
-  :group 'TeX-commands
+  :group 'TeX-command
   :type 'string)
 
 ;;; Parsing
