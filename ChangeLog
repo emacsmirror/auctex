@@ -1,3 +1,8 @@
+2005-10-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/dk-bib.el (LaTeX-dk-bib-package-options): Define only
+	once.
+
 2005-10-13  Jan-Ake Larsson  <jalar@mai.liu.se>
 
 	* tex-buf.el: Change defcustom group from TeX-commands to TeX-command
