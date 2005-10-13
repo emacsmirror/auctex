@@ -5,7 +5,7 @@ AC_PROG_INSTALL
 
 # Import unquoted variables.
 packagedir="$packagedir_unquoted"
-packagedatadir="$packagelispdir_unquoted"
+packagelispdir="$packagelispdir_unquoted"
 packagedatadir="$packagedatadir_unquoted"
 EMACS="$EMACS_UNQUOTED"
 
