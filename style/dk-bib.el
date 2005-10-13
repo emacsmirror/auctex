@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2005 Free Software Foundation, Inc.
 
-;; Author: Arne J,Ax(Brgensen <arne@arnested.dk>
+;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -30,14 +30,13 @@
 
 (defun LaTeX-dk-bib-package-options nil
   "Prompt for package option for dk-bib.sty."
-  (let ((options 
-	 (mapconcat 'identity 
-		    (TeX-completing-read-multiple "Options: "
-						  '(("isbn") ("issn") ("url")
-						    ("annote") ("printing")
-						    ("apalike") ("fixcitedash=false")
-						    ("ordinals2word")
-						    ("ordinaldepth=")))
+  (let ((options
+	 (mapconcat 'identity
+		    (TeX-completing-read-multiple
+		     "Options: "
+		     '(("isbn") ("issn") ("url") ("annote")
+		       ("printing") ("apalike") ("fixcitedash=false")
+		       ("ordinals2word") ("ordinaldepth=")))
 		    ","))
 	(depth -1))
     (when (string-match "\\(ordinaldepth=\\)\\([^0-9]\\|$\\)" options)
@@ -49,11 +48,15 @@
 	(when (or (< depth 0)
 		  (> depth 20))
 	  (message "Ordinal depth must be between 0 and 20")
-	  (sit-for 1)))	 
-      (setq options (concat 
+	  (sit-for 1)))
+      (setq options (concat
 		     (substring options 0 (match-end 1))
 		     (number-to-string depth)
 		     (substring options (match-end 1)))))
     options))
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:
 
 ;;; dk-bib.el ends here

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2005 Free Software Foundation, Inc.
 
-;; Author: Arne J,Ax(Brgensen <arne@arnested.dk>
+;; Author: Arne Jørgensen <arne@arnested.dk>
 ;; Keywords: tex
 
 ;; This file is part of AUCTeX.
@@ -34,11 +34,11 @@
   (if (boundp 'latex-inputenc-coding-alist)
       (when (fboundp 'latexenc-coding-system-to-inputenc)
 	(when (fboundp 'latexenc-inputenc-to-coding-system)
-	  (let ((default (latexenc-coding-system-to-inputenc 
+	  (let ((default (latexenc-coding-system-to-inputenc
 			  (or coding-system-for-write
 			      buffer-file-coding-system)))
 		(selected 'undecided))
-	    (setq selected (completing-read 
+	    (setq selected (completing-read
 			    (if default
 				(format "Input encoding (default %s): " default)
 			      "Input encoding: ")
@@ -51,9 +51,9 @@
 
 	    ;; if necessary offer to set the coding system for saving
 	    ;; this buffer based on the selected input encoding
-	    (when (and (null 
+	    (when (and (null
 			(coding-system-equal
-			 (coding-system-base 
+			 (coding-system-base
 			  (or coding-system-for-write
 			      buffer-file-coding-system))
 			 (coding-system-base
@@ -63,7 +63,7 @@
 			(coding-system-base
 			 (latexenc-inputenc-to-coding-system selected)))
 		       (message nil)))
-	    
+
 	    ;; return selected input encoding
 	    selected)))
     (read-string "Input encoding: ")))
@@ -77,5 +77,9 @@
    ;; New symbols
    (TeX-add-symbols
     '("inputencoding" LaTeX-arg-inputenc-inputenc))))
+
+;; Local Variables:
+;; coding: iso-8859-1
+;; End:
 
 ;;; inputenc.el ends here
