@@ -88,4 +88,8 @@
 		    nil t)
    optional))
 
+(defvar LaTeX-url-package-options '("hyphens" "obeyspaces" "spaces" "LY1"
+				    "T1" "allowmove")
+  "Package options for the url package.")
+
 ;;; url.el ends here

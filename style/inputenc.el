@@ -29,7 +29,7 @@
 ;;; Code:
 
 (defun LaTeX-inputenc-package-options nil
-  "Prompt for input encoding."
+  "Prompt for package options for the inputenc package."
   ;; separate the condition in three to silence the byte compiler
   (if (boundp 'latex-inputenc-coding-alist)
       (when (fboundp 'latexenc-coding-system-to-inputenc)
@@ -69,7 +69,8 @@
     (read-string "Input encoding: ")))
 
 (defun LaTeX-arg-inputenc-inputenc (optional)
- (TeX-argument-insert (LaTeX-inputenc-package-options) nil))
+  "Prompt for input encoding."
+  (TeX-argument-insert (LaTeX-inputenc-package-options) nil))
 
 (TeX-add-style-hook
  "inputenc"

@@ -1570,13 +1570,15 @@ ELSE as an argument list."
 		(fboundp var))
 	    (if (functionp var)
 		(setq options (funcall var))
-	      (setq options
-		    (mapconcat 'identity 
-			       (TeX-completing-read-multiple 
-				"Options: " (mapcar 'list (symbol-value var)))
-			       ",")))
+	      (when (symbol-value var)
+		(setq options
+		      (mapconcat 'identity 
+				 (TeX-completing-read-multiple 
+				  "Options: " (mapcar 'list (symbol-value var)))
+				 ","))))
 	  (setq options (read-string "Options: ")))
-	(TeX-argument-insert options t)))))
+	(when options
+	  (TeX-argument-insert options t))))))
 
 (defvar TeX-global-input-files nil
   "List of the non-local TeX input files.

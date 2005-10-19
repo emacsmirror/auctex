@@ -29,7 +29,7 @@
 ;;; Code:
 
 (defun LaTeX-dk-bib-package-options nil
-  "Prompt for package option for dk-bib.sty."
+  "Prompt for package options for the dk-bib package."
   (let ((options
 	 (mapconcat 'identity
 		    (TeX-completing-read-multiple

@@ -49,4 +49,7 @@
      (setq font-lock-set-defaults nil)
      (font-lock-set-defaults))))
 
+(defvar LaTeX-alltt-package-options nil
+  "Package options for the alltt package.")
+
 ;;; alltt.el ends here
