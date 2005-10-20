@@ -2,6 +2,8 @@
 
 	* toolbar-x.el (toolbarx-find-image): Use image-search-load-path
 	and image-load-path when available.
+	(toolbarx-find-image): Revert previous fix.  Instead, rely on
+	find-image whenever possible and don't abuse locate-library.
 
 2005-10-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 

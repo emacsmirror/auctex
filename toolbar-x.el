@@ -1099,27 +1099,40 @@ in the end of SWITCHES, which is returned."
 
 ;; look at function `image-type-available-p' for Emacs !!!!
 
-(defun toolbarx-find-image (filename)
-  "Return a image object from image on FILENAME, a string.
-In Emacs, return a image descriptor from FILENAME and in Xemacs,
-return a glyph.	 It is optional to include path and/or extension
-in FILENAME.  If path is not given, looks for files in
-`load-path', and after `data-directory'.  If file extension is
-ommited, tries `xpm', `xbm' and `pbm'."
-  (let ((file))
-    (dolist (i '("" ".xpm" ".xbm" ".pbm"))
-      (unless file
-	(setq file
-	      (or
-	       (and (fboundp 'image-search-load-path) ;; Emacs 22+
-		    (boundp 'image-load-path)
-		    (image-search-load-path (concat filename i)
-					    image-load-path))
-	       (locate-library (concat filename i) t toolbarx-image-path)))))
-    (when file
-      (funcall (if (featurep 'xemacs) 'make-glyph 'create-image)
-	       file))))
+(defun toolbarx-find-image (name)
+  "Return an image object from image on NAME, a string.
+In Emacs, return a image descriptor from NAME and in XEmacs,
+return a glyph.
 
+Usually it should NAME does not contain a directory or an
+extension.  If the extension is omitted, `xpm', `xbm' and `pbm'
+are tried.  If the directory is omitted, `toolbarx-image-path' is
+searched."
+  ;; `find-image' in Emacs 21 looks in `load-path' and `data-directory'.  In
+  ;; Emacs 22, we have `image-load-path' which includes `load-path' and
+  ;; `data-directory'.
+  ;;
+  ;; If there's some API in XEmacs to find the images, we should use it
+  ;; instead of locate-library.
+  (or (when (fboundp 'find-image)
+	(let ((load-path toolbarx-image-path))
+	  ;; We promised to consider toolbarx-image-path.
+	  (find-image `((:type xpm :file ,(concat name ".xpm"))
+			(:type xbm :file ,(concat name ".xbm"))
+			(:type pbm :file ,(concat name ".pbm"))))))
+      ;; The following is for XEmacs and "name" _with_ extension.  I doubt
+      ;; that the latter is useful, but the doc string says so.
+      (let ((file))
+	(dolist (i '("" ".xpm" ".xbm" ".pbm"))
+	  (unless file
+	    (setq file
+		  (locate-library (concat name i)
+				  t toolbarx-image-path))))
+	(when file (if (featurep 'xemacs)
+		       (make-glyph file)
+		     ;; Only used if "name" _with_ extension was given as this
+		     ;; is not covered by `find-image':
+		     (create-image file))))))
 
 ;; next variable interfaces between parsing and display engines
 (defvar toolbarx-internal-button-switches nil
