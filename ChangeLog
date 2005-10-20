@@ -1,3 +1,9 @@
+2005-10-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-user-keywords): Append string
+	face in order to make string fontification of ``foo $bar$ baz''
+	constructs work.
+
 2005-10-19  Arne Jørgensen  <arne@arnested.dk>
 
 	* latex.el (LaTeX-arg-usepackage): If
