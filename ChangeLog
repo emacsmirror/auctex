@@ -1,3 +1,8 @@
+2005-10-20  David Kastrup  <dak@gnu.org>
+
+	* toolbar-x.el: Revert mostly to 2005-05-02 state, but add a
+	fallback to find-image.
+
 2005-10-20  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* toolbar-x.el (toolbarx-find-image): Use image-search-load-path

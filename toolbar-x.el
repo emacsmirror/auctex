@@ -1114,25 +1114,21 @@ searched."
   ;;
   ;; If there's some API in XEmacs to find the images, we should use it
   ;; instead of locate-library.
-  (or (when (fboundp 'find-image)
-	(let ((load-path toolbarx-image-path))
-	  ;; We promised to consider toolbarx-image-path.
-	  (find-image `((:type xpm :file ,(concat name ".xpm"))
-			(:type xbm :file ,(concat name ".xbm"))
-			(:type pbm :file ,(concat name ".pbm"))))))
-      ;; The following is for XEmacs and "name" _with_ extension.  I doubt
-      ;; that the latter is useful, but the doc string says so.
-      (let ((file))
-	(dolist (i '("" ".xpm" ".xbm" ".pbm"))
-	  (unless file
-	    (setq file
-		  (locate-library (concat name i)
-				  t toolbarx-image-path))))
-	(when file (if (featurep 'xemacs)
-		       (make-glyph file)
-		     ;; Only used if "name" _with_ extension was given as this
-		     ;; is not covered by `find-image':
-		     (create-image file))))))
+  ;;
+  ;; Emacs 22 has locate-file, but the other Emacsen don't.  The
+  ;; following should hopefully get us to all images ultimately.
+
+  (let ((file))
+    (dolist (i '("" ".xpm" ".xbm" ".pbm"))
+      (unless file
+	(setq file (locate-library (concat filename i) t toolbarx-image-path))))
+    (if (featurep 'xemacs)
+	(and file (make-glyph file))
+      (if file       
+	  (create-image file)
+	(find-image `((:type xpm :file ,(concat name ".xpm"))
+		      (:type xbm :file ,(concat name ".xbm"))
+		      (:type pbm :file ,(concat name ".pbm"))))))))
 
 ;; next variable interfaces between parsing and display engines
 (defvar toolbarx-internal-button-switches nil
