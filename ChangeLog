@@ -1,3 +1,8 @@
+2005-10-20  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* toolbar-x.el (toolbarx-find-image): Use image-search-load-path
+	and image-load-path when available.
+
 2005-10-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-user-keywords): Append string
