@@ -1,3 +1,7 @@
+2005-10-21  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* toolbar-x.el (toolbarx-find-image): Fix previous commit.
+
 2005-10-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-mik.el (tex-site): Require 'tex-site no more.

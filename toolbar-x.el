@@ -1121,10 +1121,10 @@ searched."
   (let ((file))
     (dolist (i '("" ".xpm" ".xbm" ".pbm"))
       (unless file
-	(setq file (locate-library (concat filename i) t toolbarx-image-path))))
+	(setq file (locate-library (concat name i) t toolbarx-image-path))))
     (if (featurep 'xemacs)
 	(and file (make-glyph file))
-      (if file       
+      (if file
 	  (create-image file)
 	(find-image `((:type xpm :file ,(concat name ".xpm"))
 		      (:type xbm :file ,(concat name ".xbm"))
