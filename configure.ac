@@ -88,7 +88,7 @@ AC_MSG_RESULT([[${infodir}]])
 
 AC_SUBST(packagedir)
 
-if test $EMACS_FLAVOR = "xemacs" -a $infodir = '${prefix}/info'; then
+if test $EMACS_FLAVOR = "xemacs" -a "$infodir" = '${prefix}/info'; then
   if test $packagedir != 'no'; then
    infodir='${packagedir}/info'
   fi
