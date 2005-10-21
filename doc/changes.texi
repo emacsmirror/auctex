@@ -8,6 +8,15 @@
 
 @itemize @bullet
 @item
+In version 11.81 the way to activate @AUCTeX{} changed substantially.
+Instead of @code{(require 'tex-site)}, @code{(load "auctex.el" nil t t)}
+should be used now.  Related to this change @file{tex-mik.el} does not
+load @file{tex-site.el} anymore now.  That means if you used only
+@code{(require 'tex-mik)} in order to activate @AUCTeX{}, you have to
+add @code{(load "auctex.el" nil t t)} before the latter statement.  More
+detailed information can be found in the installation instructions.
+
+@item
 Handling of verbatim constructs was consolidated across AUCTeX.  This
 resulted in the @fontlatex{}-specific variables
 @code{font-latex-verb-like-commands}, @code{font-latex-verbatim-macros},
