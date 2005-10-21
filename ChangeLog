@@ -1,5 +1,10 @@
 2005-10-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-mik.el (tex-site): Require 'tex-site no more.
+
+	* doc/changes.texi: Document removal of 'tex-site requirement from
+	`tex-mik.el'.
+
 	* configure.ac (packagedir): Quote value of `infodir'.
 
 2005-10-20  David Kastrup  <dak@gnu.org>
