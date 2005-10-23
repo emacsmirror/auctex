@@ -78,4 +78,8 @@
      (setq font-lock-set-defaults nil)
      (font-lock-set-defaults))))
 
+(defvar LaTeX-listings-package-options '("draft" "final" "savemem" 
+					 "noaspects")
+  "Package options for the listings package.")
+
 ;;; listings.el ends here

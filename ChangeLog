@@ -1,3 +1,45 @@
+2005-10-23  Arne Jørgensen  <arne@arnested.dk>
+
+	* style/amstext.el (LaTeX-amstext-package-option): New variable.
+
+	* style/amstex.el (LaTeX-amstex-package-options): New variable.
+
+	* style/amsopn.el (LaTeX-amsopn-package-options): New variable.
+
+	* style/amsmath.el (LaTeX-amsmath-package-options): New variable.
+
+	* style/amsbsy.el (LaTeX-amsbsy-package-options): New variable.
+
+	* style/fancyref.el (LaTeX-fancyref-package-options): New
+	variable.
+
+	* style/harvard.el: Updated GPL to version 2. Fixed FSF address.
+	(LaTeX-harvard-package-options): New variable.
+
+	* style/index.el (LaTeX-index-package-options): New variable.
+
+	* style/listings.el (LaTeX-listings-package-options): New
+	variable.
+
+	* style/makeidx.el (LaTeX-makeidx-package-options): New variable.
+
+	* style/mdwlist.el (LaTeX-mdwlist-package-options): New variable.
+
+	* style/multind.el (LaTeX-multind-package-options): New variable.
+
+	* style/natbib.el (LaTeX-natbib-package-options): New variable.
+
+	* style/nicefrac.el (LaTeX-nicefrac-package-options): New
+	variable.
+
+	* style/paralist.el (LaTeX-paralist-package-options): New
+	variable.
+
+	* style/units.el (LaTeX-units-package-options): New variable.
+
+	* style/scrpage2.el (LaTeX-scrpage2-package-options): New
+	variable.
+
 2005-10-21  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* toolbar-x.el (toolbarx-find-image): Fix previous commit.
