@@ -132,10 +132,11 @@ AC_SUBST(preview_enabled)
 if test "X${preview_enabled}" = Xyes
 then
   auctexdir=..; export auctexdir
-  export TEX
   export PDFTEX
   export DVIPS
   # Export unquoted variables.
+  TEX_UNQUOTED="$TEX"
+  export TEX_UNQUOTED
   packagedir_unquoted="$packagedir"
   export packagedir_unquoted
   packagelispdir_unquoted="$packagelispdir"
