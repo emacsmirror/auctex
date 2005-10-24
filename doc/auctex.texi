@@ -2051,6 +2051,7 @@ Used when checking if any files have changed.
 @deffn Command TeX-PDF-mode
 @kindex C-c C-t C-p
 @vindex TeX-PDF-mode
+@cindex PDF mode
 (@kbd{C-c C-t C-p})
 This command toggles the @acronym{PDF} mode of @AUCTeX{}, a buffer-local
 minor mode.  You can customize @code{TeX-PDF-mode} to give it a
