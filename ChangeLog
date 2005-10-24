@@ -1,5 +1,9 @@
 2005-10-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/install.texi (Configure): Document --with-kpathseasep.
+
+	* doc/auctex.texi (Commands): Add index entry for PDF mode.
+
 	* configure.ac (preview_enabled): Export `TEX' in unquoted form.
 
 2005-10-23  David Kastrup  <dak@gnu.org>
