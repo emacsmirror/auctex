@@ -4,6 +4,7 @@ AC_SET_MAKE
 AC_PROG_INSTALL
 
 # Import unquoted variables.
+TEX="$TEX_UNQUOTED"
 packagedir="$packagedir_unquoted"
 packagelispdir="$packagelispdir_unquoted"
 packagedatadir="$packagedatadir_unquoted"
