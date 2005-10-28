@@ -1,3 +1,19 @@
+2005-10-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-quote-language-alist, TeX-insert-quote): Support
+	functions as opening and closing quotation marks.
+
+	* style/frenchb.el: New file.
+
+	* style/francais.el: New file.
+
+	* doc/auctex.texi (European): Document support of French.
+
+	* doc/changes.texi: Advertise support of French.
+
+	* Makefile.in (STYLESRC): Add style/frenchb.el and
+	style/francais.el.
+
 2005-10-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Configure): Document --with-kpathseasep.
