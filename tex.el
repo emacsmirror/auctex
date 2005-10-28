@@ -4388,13 +4388,15 @@ quotes are inserted only after \"."
   "Alist for overriding the default language-specific quote insertion.
 First element in each item is the name of the language as set by
 the language style file.  Second element is the opening quotation
-mark as string.  Third element is the closing quotation mark.
-Fourth element is a boolean specifying insertion behavior,
-overriding `TeX-quote-after-quote'."
+mark.  Third element is the closing quotation mark.  Opening and
+closing quotation marks can be specified directly as strings or
+as functions returning a string.  Fourth element is a boolean
+specifying insertion behavior, overriding
+`TeX-quote-after-quote'."
   :group 'TeX-quote
   :type '(repeat (group (string :tag "Language")
-			(string :tag "Opening quotation mark")
-			(string :tag "Closing quotation mark")
+			(choice :tag "Opening quotation mark" string function)
+			(choice :tag "Closing quotation mark" string function)
 			(boolean :tag "Insert plain quote first" :value t))))
 
 (defvar TeX-quote-language nil
@@ -4436,6 +4438,10 @@ With prefix argument FORCE, always inserts \" characters."
 	   (open-quote (if lang (nth 1 lang) TeX-open-quote))
 	   (close-quote (if lang (nth 2 lang) TeX-close-quote))
 	   (q-after-q (if lang (nth 3 lang) TeX-quote-after-quote)))
+      (when (functionp open-quote)
+	(setq open-quote (funcall open-quote)))
+      (when (functionp close-quote)
+	(setq close-quote (funcall close-quote)))
       (if q-after-q
 	  (insert (cond ((bobp)
 			 ?\")
