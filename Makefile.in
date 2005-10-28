@@ -85,7 +85,7 @@ STYLESRC = style/prosper.el \
 	   style/nicefrac.el  style/url.el       style/listings.el \
 	   style/jurabib.el   style/csquotes.el  style/jsarticle.el \
 	   style/jsbook.el    style/babel.el     style/dk-bib.el \
-	   style/inputenc.el
+	   style/inputenc.el  style/frenchb.el   style/francais.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
 DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
