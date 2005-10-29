@@ -1,6 +1,6 @@
 ;;; frenchb.el --- AUCTeX style for the `frenchb' babel option.
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2005 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -32,8 +32,8 @@
 ;; babel version 3.7j with the `french' option.  `french', however, is
 ;; ambiguous because another package by that name made by Bernard
 ;; Gaulle could be loaded.  In order to avoid this, either `frenchb'
-;; (or `francais') or `frenchle' (or `frenchPRO').  See the
-;; docmentation of `frenchb' at
+;; (or `francais') or `frenchle' (or `frenchPRO') should be used.  See
+;; the documentation of `frenchb' at
 ;; <URL:http://daniel.flipo.free.fr/frenchb/frenchb-doc.pdf>.
 
 ;;; Code:
