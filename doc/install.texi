@@ -78,16 +78,13 @@ platforms.  You can get it here:
 
 @table @b
 @item Windows
-Precompiled versions are available from @uref{http://www.crasseux.com}
-and @uref{http://nqmacs.sf.net}.
+Precompiled versions are available from
+@uref{http://www.crasseux.com/emacs/} and @uref{http://nqmacs.sf.net/}.
 @item MacOSX
 A precompiled version including an installer as well as preinstalled
 versions of @AUCTeX{} and @previewlatex{} is available from
-@uref{http://yaced.sf.net}.  A different port (without @AUCTeX{} and
-@previewlatex{}) is
-@uref{http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html}.
-Some changes and patches attempt to make Emacs behave more in line with
-MacOSX.
+@uref{http://yaced.sf.net/}.  A different port is
+@uref{http://home.att.ne.jp/alpha/z123/emacs-mac-e.html}.
 @item Debian Linux
 Debian provides @samp{emacs-snapshot} and @samp{emacs-snapshot-gtk}
 packages in its @samp{unstable} distribution.
