@@ -2,6 +2,8 @@
 
 	* doc/install.texi (Prerequisites): Update information about
 	development version of Emacs for Debian.
+	Update information about development version of Emacs for
+	Mac OS X and Windows.
 
 2005-10-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
