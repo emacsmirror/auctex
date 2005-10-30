@@ -89,7 +89,8 @@ versions of @AUCTeX{} and @previewlatex{} is available from
 Some changes and patches attempt to make Emacs behave more in line with
 MacOSX.
 @item Debian Linux
-@uref{http://sadleder.de/debian/}
+Debian provides @samp{emacs-snapshot} and @samp{emacs-snapshot-gtk}
+packages in its @samp{unstable} distribution.
 @item Fedora Linux
 @uref{http://people.redhat.com/petersen/emacs/}
 @item Self-compiled
