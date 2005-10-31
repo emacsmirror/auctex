@@ -1,3 +1,8 @@
+2005-10-31  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Do not break lines in
+	the Japanese Macros.  Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2005-10-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/install.texi (Prerequisites): Update information about
