@@ -2787,6 +2787,15 @@ space does not end a sentence, so don't break a line there."
     (if (looking-at "..\\c>")
 	(forward-char 1)
       (forward-char 2)))
+  ;; Cater for Japanese Macro
+  (when (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
+	     (aref (char-category-set (char-after)) ?j)
+	     (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "+")
+				      (1- (- (point) (line-beginning-position))))
+	     (save-excursion
+	       (goto-char (match-beginning 0))
+	       (zerop (logand 1 (skip-chars-backward "\\\\")))))
+      (goto-char (match-beginning 0)))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
   ;; doc.sty) where |...| is allowed.  Arbitrary delimiters may be
