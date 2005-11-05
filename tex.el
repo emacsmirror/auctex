@@ -3271,9 +3271,7 @@ Used for specifying extra syntax for a macro."
 ;;; Keymap
 
 (defcustom TeX-electric-escape nil
-  "Specify whether ``\\'' will be bound to `TeX-electric-macro'.
-If this is non-nil when AUCTeX is loaded, the TeX escape character ``\\'' will
-be bound to `TeX-electric-macro'."
+  "If non-nil, ``\\'' will be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
