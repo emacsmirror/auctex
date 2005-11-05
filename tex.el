@@ -3290,6 +3290,14 @@ be bound to `TeX-electric-macro'."
 		 (const reindent-then-newline-and-indent)
 		 (sexp :tag "Other")))
 
+(defun TeX-insert-backslash (arg)
+  "Either insert typed key ARG times or call `TeX-electric-macro'.
+`TeX-electric-macro' will be called if `TeX-electric-escape' is non-nil."
+  (interactive "*p")
+  (if TeX-electric-escape
+      (funcall 'TeX-electric-macro)
+    (self-insert-command arg)))
+
 (defun TeX-insert-sub-or-superscript (arg)
   "Insert typed key ARG times and possibly a pair of braces.
 Brace insertion is only done if point is in a math construct and
@@ -3324,11 +3332,10 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c{"    'TeX-insert-braces)
     (define-key map "\C-c\C-f" 'TeX-font)
     (define-key map "\C-c\C-m" 'TeX-insert-macro)
-    (if TeX-electric-escape
-	(define-key map "\\" 'TeX-electric-macro))
-    (define-key map "^"      'TeX-insert-sub-or-superscript)
-    (define-key map "_"      'TeX-insert-sub-or-superscript)
-    (define-key map "\e\t"   'TeX-complete-symbol) ;*** Emacs 19 way
+    (define-key map "\\"       'TeX-insert-backslash)
+    (define-key map "^"        'TeX-insert-sub-or-superscript)
+    (define-key map "_"        'TeX-insert-sub-or-superscript)
+    (define-key map "\e\t"     'TeX-complete-symbol) ;*** Emacs 19 way
     
     (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
     (define-key map "\C-c:"    'TeX-comment-or-uncomment-region) ;*** Old way
