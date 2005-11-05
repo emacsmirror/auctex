@@ -4,6 +4,8 @@
 	(TeX-insert-sub-or-superscript): New function.
 	(TeX-mode-map): Use `TeX-insert-sub-or-superscript' for `_' and
 	`^' keys.
+	(TeX-insert-backslash): New function.
+	(TeX-mode-map): Use `TeX-insert-backslash' for `\'.
 
 	* doc/auctex.texi (Mathematics): Document
 	`TeX-electric-sub-and-superscript'.
