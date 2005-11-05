@@ -6,6 +6,7 @@
 	`^' keys.
 	(TeX-insert-backslash): New function.
 	(TeX-mode-map): Use `TeX-insert-backslash' for `\'.
+	(TeX-electric-escape): Adapt doc string.
 
 	* doc/auctex.texi (Mathematics): Document
 	`TeX-electric-sub-and-superscript'.
