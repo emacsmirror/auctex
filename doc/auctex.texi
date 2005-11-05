@@ -811,6 +811,16 @@ this feature.
 @AUCTeX{}'s reference card @file{tex-ref.tex} includes a list of all
 math mode commands.
 
+@AUCTeX{} can help you write subscripts and superscripts in math
+constructs by automatically inserting a pair of braces after typing
+@key{_} or @key{^} respectively and putting point between the braces.
+In order to enable this feature, set the variable
+@code{TeX-electric-sub-and-superscript} to a non-nil value.
+
+@defopt TeX-electric-sub-and-superscript
+If non-nil, insert braces after typing @key{^} and @key{_} in math mode.
+@end defopt
+
 @node Completion
 @section Completion
 @cindex Completion
