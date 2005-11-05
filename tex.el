@@ -3277,6 +3277,11 @@ be bound to `TeX-electric-macro'."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-electric-sub-and-superscript nil
+  "If non-nil, insert braces after typing `^' and `_' in math mode."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defcustom TeX-newline-function 'newline
   "Function to be called upon pressing `RET'."
   :group 'TeX-indentation
@@ -3284,6 +3289,16 @@ be bound to `TeX-electric-macro'."
 		 (const newline-and-indent)
 		 (const reindent-then-newline-and-indent)
 		 (sexp :tag "Other")))
+
+(defun TeX-insert-sub-or-superscript (arg)
+  "Insert typed key ARG times and possibly a pair of braces.
+Brace insertion is only done if point is in a math construct and
+`TeX-electric-sub-and-superscript' has a non-nil value."
+  (interactive "*p")
+  (self-insert-command arg)
+  (when (and TeX-electric-sub-and-superscript (texmathp))
+    (insert (concat TeX-grop TeX-grcl))
+    (backward-char)))
 
 (defun TeX-newline ()
   "Call the function specified by the variable `TeX-newline-function'."
@@ -3311,6 +3326,8 @@ be bound to `TeX-electric-macro'."
     (define-key map "\C-c\C-m" 'TeX-insert-macro)
     (if TeX-electric-escape
 	(define-key map "\\" 'TeX-electric-macro))
+    (define-key map "^"      'TeX-insert-sub-or-superscript)
+    (define-key map "_"      'TeX-insert-sub-or-superscript)
     (define-key map "\e\t"   'TeX-complete-symbol) ;*** Emacs 19 way
     
     (define-key map "\C-c'"    'TeX-comment-or-uncomment-paragraph) ;*** Old way
