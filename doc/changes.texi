@@ -8,6 +8,11 @@
 
 @itemize @bullet
 @item
+@AUCTeX{} now can automatically insert a pair of braces after typing
+@key{_} or @key{^} in math constructs if the new variable
+@code{TeX-electric-sub-and-superscript} is set to a non-nil value.
+
+@item
 Some language-specific support for French was added.  In particular
 completion support for the commands provided by the @samp{frenchb} (and
 @samp{francais}) options of the babel @LaTeX{} package and easier input
