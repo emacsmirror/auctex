@@ -1,3 +1,15 @@
+2005-11-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-electric-sub-and-superscript): New variable.
+	(TeX-insert-sub-or-superscript): New function.
+	(TeX-mode-map): Use `TeX-insert-sub-or-superscript' for `_' and
+	`^' keys.
+
+	* doc/auctex.texi (Mathematics): Document
+	`TeX-electric-sub-and-superscript'.
+
+	* doc/changes.texi: Advertise `TeX-electric-sub-and-superscript'.
+
 2005-10-31  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Do not break lines in
