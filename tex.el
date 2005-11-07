@@ -3293,7 +3293,7 @@ Used for specifying extra syntax for a macro."
 `TeX-electric-macro' will be called if `TeX-electric-escape' is non-nil."
   (interactive "*p")
   (if TeX-electric-escape
-      (funcall 'TeX-electric-macro)
+      (TeX-electric-macro)
     (self-insert-command arg)))
 
 (defun TeX-insert-sub-or-superscript (arg)
