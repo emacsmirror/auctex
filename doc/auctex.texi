@@ -2221,7 +2221,7 @@ available in the latter case.
 @cindex Parsing @LaTeX{} errors
 @cindex Overfull boxes
 @cindex Bad boxes
-@cindex Wonderful boxes
+@cindex Underfull boxes
 
 Once you've formatted your document you may `debug' it, i.e. browse
 through the errors (La)@TeX{} reported.
@@ -2235,12 +2235,18 @@ displayed along with some explanatory text.
 @end deffn
 
 Normally @AUCTeX{} will only report real errors, but you may as well
-ask it to report `bad boxes' as well.
+ask it to report `bad boxes' and warnings as well.
 
 @deffn Command TeX-toggle-debug-bad-boxes
-@kindex C-c C-w
-(@kbd{C-c C-w})  Toggle whether @AUCTeX{} should stop at bad boxes
-(i.e. over/under full boxes) as well as at normal errors.
+@kindex C-c C-t C-b
+(@kbd{C-c C-t C-b}) Toggle whether @AUCTeX{} should stop at bad boxes
+(i.e. overfull and underfull boxes) as well as normal errors.
+@end deffn
+
+@deffn Command TeX-toggle-debug-warnings
+@kindex C-c C-t C-w
+(@kbd{C-c C-t C-w}) Toggle whether @AUCTeX{} should stop at warnings as
+well as normal errors.
 @end deffn
 
 As default, @AUCTeX{} will display that special @samp{*help*} buffer
