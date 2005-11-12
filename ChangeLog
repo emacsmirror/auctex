@@ -1,3 +1,9 @@
+2005-11-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Doc fix.
+	Check if LaTeX-specific variables are bound which may be unbound
+	if font-latex is being used in ConTeXt mode.
+
 2005-11-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-insert-backslash): Use regular function call instead
