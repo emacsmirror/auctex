@@ -8,6 +8,17 @@
 
 @itemize @bullet
 @item
+Warnings and underfull/overfull boxes are now being indicated in the
+echo area after a @LaTeX{} run, if debugging of them is activated with
+@code{TeX-toggle-debug-warnings} (@kbd{C-c C-t C-w}) or
+@code{TeX-toggle-debug-bad-boxes} (@kbd{C-c C-t C-w}) respectively.  In
+this case @code{TeX-next-error} will find these warnings in addition to
+normal errors as well.
+
+The key binding @kbd{C-c C-w} for @code{TeX-toggle-debug-bad-boxes}
+(which was renamed from @code{TeX-toggle-debug-boxes}) was deprecated.
+
+@item
 @AUCTeX{} now can automatically insert a pair of braces after typing
 @key{_} or @key{^} in math constructs if the new variable
 @code{TeX-electric-sub-and-superscript} is set to a non-nil value.
@@ -22,8 +33,8 @@ inserted by typing @key{"}.
 @item
 In version 11.81 the way to activate @AUCTeX{} changed substantially.
 Instead of @code{(require 'tex-site)}, @code{(load "auctex.el" nil t t)}
-should be used now.  Related to this change @file{tex-mik.el} does not
-load @file{tex-site.el} anymore now.  That means if you used only
+should be used.  Related to this change @file{tex-mik.el} does not load
+@file{tex-site.el} anymore now.  That means if you used only
 @code{(require 'tex-mik)} in order to activate @AUCTeX{}, you have to
 add @code{(load "auctex.el" nil t t)} before the latter statement.  More
 detailed information can be found in the installation instructions.
