@@ -1,5 +1,32 @@
 2005-11-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex-buf.el (TeX-toggle-debug-boxes): Move to tex.el.
+	(TeX-LaTeX-sentinel-has-warnings)
+	(TeX-LaTeX-sentinel-has-bad-boxes): New functions.
+	(TeX-LaTeX-sentinel): Check for warnings and bad boxes and inform
+	the user is the respective options are non-nil.
+	(TeX-parse-error): Conditionalize checking for warnings and bad
+	boxes.  Find warnings without line numbers as well.
+	(TeX-warning): Doc fix (no need to return nil anymore).  Support
+	warnings without line numbers.
+
+	* tex.el (TeX-toggle-debug-boxes): Do not autoload.
+	(TeX-debug-bad-boxes): Doc fix.
+	(TeX-debug-warnings): New variable.
+	(TeX-toggle-debug-bad-boxes): Moved here from tex-buf.el.
+	(TeX-toggle-debug-warnings): New function.
+	(TeX-mode-map): Define new key bindings for
+	`TeX-toggle-debug-bad-boxes' and `TeX-toggle-debug-warnings'.
+	(TeX-mode-specific-command-menu-entries): Add or change menu
+	entries for `TeX-toggle-debug-bad-boxes' and
+	`TeX-toggle-debug-warnings'.
+
+	* doc/auctex.texi (Debugging): Document debugging support for
+	warnings and changes of debugging bad boxes.
+
+	* doc/changes.texi: Advertise debugging support for warnings and
+	changes of debugging bad boxes.
+
 	* font-latex.el (font-latex-set-syntactic-keywords): Doc fix.
 	Check if LaTeX-specific variables are bound which may be unbound
 	if font-latex is being used in ConTeXt mode.
