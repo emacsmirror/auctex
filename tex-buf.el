@@ -247,16 +247,6 @@ Prefix by C-u to start from the beginning of the errors."
       (previous-error arg)
     (error "Jumping to previous error not supported")))
 
-(defun TeX-toggle-debug-boxes ()
-  "Toggle if the debugger should display \"bad boxes\" too."
-  (interactive)
-  (cond (TeX-debug-bad-boxes
-	 (setq TeX-debug-bad-boxes nil))
-	(t
-	 (setq TeX-debug-bad-boxes t)))
-  (message (concat "TeX-debug-bad-boxes: " (cond (TeX-debug-bad-boxes "on")
-						 (t "off")))))
-
 ;;; Command Query
 
 (defun TeX-command (name file &optional override-confirm)
@@ -888,6 +878,20 @@ Return nil ifs no errors were found."
     (setq TeX-command-next TeX-command-Show)
     nil))
 
+(defun TeX-LaTeX-sentinel-has-warnings ()
+  "Return non-nil, if the output buffer contains warnings.
+Warnings can be indicated by LaTeX or packages."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward
+     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:" nil t)))
+
+(defun TeX-LaTeX-sentinel-has-bad-boxes ()
+  "Return non-nil, if LaTeX output indicates overfull or underfull boxes."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^\\(Ov\\|Und\\)erfull \\\\" nil t)))
+
 ;; should go into latex.el? --pg
 (defun TeX-LaTeX-sentinel (process name)
   "Cleanup TeX output buffer after running LaTeX."
@@ -925,8 +929,18 @@ Return nil ifs no errors were found."
 	 (setq TeX-command-next TeX-command-Show))
 	((re-search-forward
 	  "^\\(\\*\\* \\)?J?I?p?\\(La\\|Sli\\)TeX\\(2e\\)? \\(Version\\|ver\\.\\|<[0-9/]*>\\)" nil t)
-	 (message (concat name ": successfully formatted "
-			  (TeX-current-pages)))
+	 (let* ((warnings (and TeX-debug-warnings
+			       (TeX-LaTeX-sentinel-has-warnings)))
+		(bad-boxes (and TeX-debug-bad-boxes
+				(TeX-LaTeX-sentinel-has-bad-boxes)))
+		(add-info (when (or warnings bad-boxes)
+			    (concat " (with "
+				    (when warnings "warnings")
+				    (when (and warnings bad-boxes) " and ")
+				    (when bad-boxes "bad boxes")
+				    ")"))))
+	   (message (concat name ": successfully formatted "
+			    (TeX-current-pages) add-info)))
 	 (setq TeX-command-next TeX-command-Show))
 	(t
 	 (message (concat name ": problems after "
@@ -1344,16 +1358,20 @@ You might want to examine and modify the free variables `file',
   "Goto next error.  Pop to OLD buffer if no more errors are found."
     (while
 	(progn
-	  (re-search-forward (concat "\\("
-				     "^! \\|"
-				     "(\\|"
-				     ")\\|"
-				     "\\'\\|"
-				     "!offset([---0-9]*)\\|"
-				     "!name([^)]*)\\|"
-				     "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
-				     "^LaTeX Warning: .*[0-9]+\\.$"
-				     "\\)"))
+	  (re-search-forward
+	   (concat "\\("
+		   "^! \\|"
+		   "(\\|"
+		   ")\\|"
+		   "\\'\\|"
+		   "!offset([---0-9]*)\\|"
+		   "!name([^)]*)\\|"
+		   (when TeX-debug-bad-boxes
+		     "^.*erfull \\\\.*[0-9]*--[0-9]*")
+		   (when (and TeX-debug-bad-boxes TeX-debug-warnings) "\\|")
+		   (when TeX-debug-warnings
+		     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")
+		   "\\)"))
 	  (let ((string (TeX-match-buffer 1)))
 
 	    (cond (;; TeX error
@@ -1362,13 +1380,18 @@ You might want to examine and modify the free variables `file',
 		   nil)
 
 		  ;; LaTeX warning
-		  ((string-match (concat "\\("
-					 "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
-					 "^LaTeX Warning: .*[0-9]+\\.$"
-					 "\\)")
-
-				 string)
-		   (TeX-warning string))
+		  ((string-match
+		    (concat
+		     "\\("
+		     "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
+		     ;; XXX: Add full support for multi-line warnings like
+		     ;; Package hyperref Warning: Token not allowed in a PDFDocEncoded string,
+		     ;; (hyperref)                removing `math shift' on input line 1453.
+		     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*"
+		     "\\)")
+		    string)
+		   (TeX-warning string)
+		   nil)
 
 		  ;; New file -- Push on stack
 		  ((string= string "(")
@@ -1459,8 +1482,7 @@ You might want to examine and modify the free variables `file',
 	(message (concat "! " error))))))
 
 (defun TeX-warning (string)
-  "Display a warning for STRING.
-Return nil if we gave a report."
+  "Display a warning for STRING."
 
   (let* ((error (concat "** " string))
 
@@ -1474,8 +1496,7 @@ Return nil if we gave a report."
 			"`\\(\\w+\\)'"))
 
 	 ;; Get error-line (warning)
-	 (line (progn
-		 (re-search-backward line-string)
+	 (line (when (re-search-backward line-string nil t)
 		 (string-to-int (TeX-match-buffer 1))))
 	 (line-end (if bad-box (string-to-int (TeX-match-buffer 2))
 		     line))
@@ -1497,9 +1518,7 @@ Return nil if we gave a report."
 	 (error-point (point))
 
 	 ;; Now find the error word.
-	 (string (progn
-		   (re-search-backward word-string
-				       context-start t)
+	 (string (when (re-search-backward word-string context-start t)
 		   (TeX-match-buffer 1)))
 
 	 ;; We might use these in another file.
@@ -1511,29 +1530,27 @@ Return nil if we gave a report."
     (setq TeX-error-point (point))
 
     ;; Go back to TeX-buffer
-    (if TeX-debug-bad-boxes
-	(let ((runbuf (current-buffer))
-	      (master (with-current-buffer
-			  TeX-command-buffer
-			(expand-file-name (TeX-master-file)))))
-	  (run-hooks 'TeX-translate-location-hook)
-	  (find-file-other-window file)
-	  (setq TeX-master master)
-	  ;; Find line and string
-	  (goto-line (+ offset line))
-	  (beginning-of-line 0)
-	  (let ((start (point)))
-	    (goto-line (+ offset line-end))
-	    (end-of-line)
-	    (search-backward string start t)
-	    (search-forward string nil t))
-	  ;; Display help
-	  (if TeX-display-help
-	      (TeX-help-error error (if bad-box context (concat "\n" context))
-			      runbuf)
-	    (message (concat "! " error)))
-	  nil)
-      t)))
+    (let ((runbuf (current-buffer))
+	  (master (with-current-buffer
+		      TeX-command-buffer
+		    (expand-file-name (TeX-master-file)))))
+      (run-hooks 'TeX-translate-location-hook)
+      (find-file-other-window file)
+      (setq TeX-master master)
+      ;; Find line and string
+      (when line
+	(goto-line (+ offset line))
+	(beginning-of-line 0)
+	(let ((start (point)))
+	  (goto-line (+ offset line-end))
+	  (end-of-line)
+	  (search-backward string start t)
+	  (search-forward string nil t)))
+      ;; Display help
+      (if TeX-display-help
+	  (TeX-help-error error (if bad-box context (concat "\n" context))
+			  runbuf)
+	(message (concat "! " error))))))
 
 ;;; - Help
 
