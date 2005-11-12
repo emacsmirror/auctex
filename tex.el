@@ -561,7 +561,6 @@ the name of the file being processed, with an optional extension."
 (autoload 'TeX-kill-job "tex-buf" nil t)
 (autoload 'TeX-recenter-output-buffer "tex-buf" nil t)
 (autoload 'TeX-next-error "tex-buf" nil t)
-(autoload 'TeX-toggle-debug-boxes "tex-buf" nil t)
 (autoload 'TeX-region-file "tex-buf" nil nil)
 (autoload 'TeX-current-offset "tex-buf" nil nil)
 (autoload 'TeX-process-set-variable "tex-buf" nil nil)
@@ -787,9 +786,28 @@ Elements of KEEP-LIST are not removed even if duplicate."
   :type 'boolean)
 
 (defcustom TeX-debug-bad-boxes nil
-  "*Non-nil means also find overfull/underfull boxes warnings with \\[TeX-next-error]."
+  "Non-nil means also find overfull/underfull box warnings with \\[TeX-next-error]."
   :group 'TeX-output
   :type 'boolean)
+
+(defcustom TeX-debug-warnings nil
+  "Non-nil means also find LaTeX or package warnings with \\[TeX-next-error]."
+  :group 'TeX-output
+  :type 'boolean)
+
+(defun TeX-toggle-debug-bad-boxes ()
+  "Toggle if the debugger should display \"bad boxes\" too."
+  (interactive)
+  (setq TeX-debug-bad-boxes (not TeX-debug-bad-boxes))
+  (message (concat "TeX-debug-bad-boxes: "
+		   (if TeX-debug-bad-boxes "on" "off"))))
+
+(defun TeX-toggle-debug-warnings ()
+  "Toggle if the debugger should display warnings too."
+  (interactive)
+  (setq TeX-debug-warnings (not TeX-debug-warnings))
+  (message (concat "TeX-debug-warnings: "
+		   (if TeX-debug-bad-boxes "on" "off"))))
 
 ;;; Mode names.
 
@@ -3347,6 +3365,9 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c\C-t\C-i"   'TeX-interactive-mode)
     (define-key map "\C-c\C-t\C-s"   'TeX-source-specials-mode)
     (define-key map "\C-c\C-t\C-r"   'TeX-pin-region)
+    (define-key map "\C-c\C-w"       'TeX-toggle-debug-bad-boxes); to be removed
+    (define-key map "\C-c\C-t\C-b"   'TeX-toggle-debug-bad-boxes)
+    (define-key map "\C-c\C-t\C-w"   'TeX-toggle-debug-warnings)
     (define-key map "\C-c\C-v" 'TeX-view)
     ;; From tex-buf.el
     (define-key map "\C-c\C-d" 'TeX-save-document)
@@ -3366,7 +3387,6 @@ Brace insertion is only done if point is in a math construct and
 	(substitute-key-definition 'previous-error 'TeX-previous-error
 				   map global-map)
       (define-key map [remap previous-error] 'TeX-previous-error))
-    (define-key map "\C-c\C-w" 'TeX-toggle-debug-boxes)
     ;; From tex-fold.el
     (define-key map "\C-c\C-o\C-f" 'TeX-fold-mode)
 
@@ -3440,14 +3460,17 @@ Brace insertion is only done if point is in a math construct and
 	 :active (not TeX-Omega-mode)
 	 :help "Use PDFTeX to generate PDF instead of DVI"]
        [ "Run Interactively" TeX-interactive-mode
-	 :style toggle :selected TeX-interactive-mode
+	 :style toggle :selected TeX-interactive-mode :keys "C-c C-t C-i"
 	 :help "Stop on errors in a TeX run"]
        [ "Source Specials" TeX-source-specials-mode
 	 :style toggle :selected TeX-source-specials-mode
 	 :help "Enable forward and inverse search in the previewer"]
-       ["Debug Bad Boxes" TeX-toggle-debug-boxes
-	:style toggle :selected TeX-debug-bad-boxes
-	:help "Make \"Next Error\" show bad boxes"])))
+       ["Debug Bad Boxes" TeX-toggle-debug-bad-boxes
+	:style toggle :selected TeX-debug-bad-boxes :keys "C-c C-t C-b"
+	:help "Make \"Next Error\" show overfull and underfull boxes"]
+       ["Debug Warnings" TeX-toggle-debug-warnings
+	:style toggle :selected TeX-debug-warnings
+	:help "Make \"Next Error\" show warnings"])))
    (let ((file 'TeX-command-on-current));; is this actually needed?
      (TeX-maybe-remove-help
       (delq nil
