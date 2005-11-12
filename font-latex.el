@@ -684,18 +684,24 @@ The car is used for subscript, the cdr is used for superscripts."
 (defun font-latex-set-syntactic-keywords ()
   "Set the variable `font-latex-syntactic-keywords'.
 This function can be used to refresh the variable in case other
-variables influencing its value, like `font-latex-verbatim-environments',
+variables influencing its value, like `LaTeX-verbatim-environments',
 have changed."
   ;; Checks for non-emptiness of lists added in order to cater for
   ;; installations where `(regexp-opt-group nil)' would enter a loop.
-  (let ((verb-envs (append LaTeX-verbatim-environments
-			   LaTeX-verbatim-environments-local))
-	(verb-macros-with-delims (append
-				  LaTeX-verbatim-macros-with-delims
-				  LaTeX-verbatim-macros-with-delims-local))
-	(verb-macros-with-braces (append
-				  LaTeX-verbatim-macros-with-braces
-				  LaTeX-verbatim-macros-with-braces-local)))
+  (let ((verb-envs (append (and (boundp 'LaTeX-verbatim-environments)
+				LaTeX-verbatim-environments)
+			   (and (boundp 'LaTeX-verbatim-environments-local)
+				LaTeX-verbatim-environments-local)))
+	(verb-macros-with-delims
+	 (append (and (boundp 'LaTeX-verbatim-macros-with-delims)
+		      LaTeX-verbatim-macros-with-delims)
+		 (and (boundp 'LaTeX-verbatim-macros-with-delims-local)
+		      LaTeX-verbatim-macros-with-delims-local)))
+	(verb-macros-with-braces
+	 (append (and (boundp 'LaTeX-verbatim-macros-with-braces)
+		      LaTeX-verbatim-macros-with-braces)
+		 (and (boundp 'LaTeX-verbatim-macros-with-braces-local)
+		      LaTeX-verbatim-macros-with-braces-local))))
     (setq verb-envs (and verb-envs (regexp-opt verb-envs))
 	  verb-macros-with-delims (and verb-macros-with-delims
 				       (regexp-opt verb-macros-with-delims))
