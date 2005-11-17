@@ -1365,12 +1365,11 @@ You might want to examine and modify the free variables `file',
 		   ")\\|"
 		   "\\'\\|"
 		   "!offset([---0-9]*)\\|"
-		   "!name([^)]*)\\|"
+		   "!name([^)]*)"
 		   (when TeX-debug-bad-boxes
-		     "^.*erfull \\\\.*[0-9]*--[0-9]*")
-		   (when (and TeX-debug-bad-boxes TeX-debug-warnings) "\\|")
+		     "\\|^.*erfull \\\\.*[0-9]*--[0-9]*")
 		   (when TeX-debug-warnings
-		     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")
+		     "\\|^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")
 		   "\\)"))
 	  (let ((string (TeX-match-buffer 1)))
 
