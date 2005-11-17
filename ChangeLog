@@ -1,3 +1,7 @@
+2005-11-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-parse-error): Do not match empty strings.
+
 2005-11-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-toggle-debug-boxes): Move to tex.el.
