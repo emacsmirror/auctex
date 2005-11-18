@@ -1,3 +1,17 @@
+2005-11-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/changes.texi: Fix key binding for
+	`TeX-toggle-debug-bad-boxes'.
+
+	* doc/auctex.texi (Quotes): Document change of
+	`TeX-insert-braces'.
+	(Filling): `M-g' for `LaTeX-fill-region' has been deactivated for
+	a long time.  Reflect that in the documentation.
+
+	* tex.el (TeX-token-char): Doc fix.
+	(TeX-insert-braces): Do something more sensible if region is
+	activated.
+
 2005-11-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-parse-error): Do not match empty strings.
