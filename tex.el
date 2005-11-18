@@ -2667,10 +2667,10 @@ If SKIP is not-nil, don't insert code for SKIP."
   (if (featurep 'mule)
       "\\(?:[a-zA-Z]\\|\\cj\\)"
     "[a-zA-Z]")
-  "Regexp to match TeX token charactor.
+  "Regexp matching a character in a TeX macro.
 
-Please use shy group if you use a grouping construct, because the
-functions/variables which use `TeX-token-char' expect not to
+Please use a shy group if you use a grouping construct, because
+the functions/variables which use `TeX-token-char' expect not to
 alter the numbering of any ordinary, non-shy groups.")
 
 (defvar plain-TeX-auto-regexp-list
@@ -4539,12 +4539,22 @@ With prefix argument FORCE, always inserts \" characters."
 (defun TeX-insert-braces (arg)
   "Make a pair of braces around next ARG sexps and leave point inside.
 No argument is equivalent to zero: just insert braces and leave point
-between."
+between.
+
+If there is an active region, ARG will be ignored, braces will be
+inserted around the region, and point will be left after the
+closing brace."
   (interactive "P")
-  (insert TeX-grop)
-  (save-excursion
-    (if arg (forward-sexp (prefix-numeric-value arg)))
-    (insert TeX-grcl)))
+  (if (TeX-active-mark)
+      (progn
+	(insert TeX-grcl)
+	(save-excursion
+	  (goto-char (mark))
+	  (insert TeX-grop)))
+    (insert TeX-grop)
+    (save-excursion
+      (if arg (forward-sexp (prefix-numeric-value arg)))
+      (insert TeX-grcl))))
 
 (defun TeX-goto-info-page ()
   "Read documentation for AUCTeX in the info system."
