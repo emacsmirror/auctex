@@ -318,7 +318,8 @@ can do this by typing @kbd{C-c @{}.
 @deffn Command TeX-insert-braces
 @kindex C-c @{
 (@kbd{C-c @{}) Make a pair of braces and position the cursor
-to type inside of them.
+to type inside of them.  If there is an active region, put braces around
+it and leave point after the closing brace.
 @end deffn
 
 @node Font Specifiers
@@ -1244,10 +1245,6 @@ sectional unit.
 @kindex C-c C-q C-r
 @findex LaTeX-fill-region
 @code{LaTeX-fill-region} will fill and indent the current region.
-
-@item M-g
-@kindex M-g
-Alias for @kbd{C-c C-q C-r}
 @end table
 
 @defopt LaTeX-fill-break-at-separators
