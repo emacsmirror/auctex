@@ -11,7 +11,7 @@
 Warnings and underfull/overfull boxes are now being indicated in the
 echo area after a @LaTeX{} run, if debugging of them is activated with
 @code{TeX-toggle-debug-warnings} (@kbd{C-c C-t C-w}) or
-@code{TeX-toggle-debug-bad-boxes} (@kbd{C-c C-t C-w}) respectively.  In
+@code{TeX-toggle-debug-bad-boxes} (@kbd{C-c C-t C-b}) respectively.  In
 this case @code{TeX-next-error} will find these warnings in addition to
 normal errors as well.
 
