@@ -78,7 +78,18 @@ shared by all users of a site."
 	  (lambda ()
 	    (let ((list after-load-alist))
 	      (while list
-		(assq-delete-all 'TeX-modes-set (car list))
+		;; Adapted copy of the definition of `assq-delete-all'
+		;; from Emacs 21 as substitute for
+		;; `(assq-delete-all'TeX-modes-set (car list))' which
+		;; fails on non-list elements in Emacs 21.
+		(let* ((alist (car list))
+		       (tail alist)
+		       (key 'TeX-modes-set))
+		  (while tail
+		    (if (and (consp (car tail))
+			     (eq (car (car tail)) key))
+			(setq alist (delq (car tail) alist)))
+		    (setq tail (cdr tail))))
 		(setq list (cdr list))))
 	    (setq load-path (delq TeX-lisp-directory load-path))))
 
