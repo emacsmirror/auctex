@@ -1,3 +1,8 @@
+2005-11-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-site.el.in (tex-site-unload-hook): Don't let it fail on
+	Emacs 21.
+
 2005-11-18  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Fix key binding for
