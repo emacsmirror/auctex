@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.81 with preview-latex
+Release notes for AUCTeX 11.82 with preview-latex
 =================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -32,29 +32,31 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-The most important feature of AUCTeX 11.81 is the inclusion of the
-preview-latex subsystem, previously available separately.  There is no
-documented provision for building or installing preview-latex
-separately.  It is still possible to use and install AUCTeX without
-preview-latex, however.
+Processing of errors and warnings resulting from processor invocations
+was improved.  That means BibTeX runs are now checked for warnings and
+errors, warnings and underfull/overfull boxes after a LaTeX run can be
+indicated in the echo area, and it is now possible to jump to warnings
+and bad boxes separately.
 
-The installation procedures have been overhauled and now also install
-startup files as part of the process (those had to be copied manually
-previously).  You are advised to remove previous installations of
-AUCTeX and preview-latex before starting the installation procedure.
-A standard installation from an unmodified tarball no longer requires
-Makeinfo or Perl.
+In order to make typing sub- and superscript in math constructs more
+convenient, automatic brace insertion upon typing <^> or <_> can be
+activated.
 
-Other new features include support for commands of the babel package,
-generalization of language-specific quotation mark and hyphen
-insertion, and tooltips for folding mode.
+French quotation marks as supported by the `frenchb' or `francais'
+babel options can now be entered by simply typing <">.
 
-Of course, a lot of bugs have been fixed as well, such as problems
-with filling Japanese text.
+Completion support for options of some LaTeX packages was added.
 
-The encoding support of preview-latex has been further improved: it
-should be able to deal with most encoding systems including utf-8
-transparently.
+Various bug fixes happened as well.  preview-latex can now be
+correctly installed with XEmacs.  Unloading AUCTeX as described in the
+manual now works with Emacs 21.  All tool bar images are displayed
+again with CVS Emacs.  Line breaks inside of LaTeX macros with
+Japanese characters are now being prevented.  Identification of math
+constructs is now aware of comments.
+
+People running Windows who used to load AUCTeX with `(require
+'tex-mik)' now have to specify `(load "auctex.el" nil t t)' in
+addition because tex-mik.el no longer activates AUCTeX.
 
 More detailed information can be found in the CHANGES file included in
 the distribution or the "Changes" section in the manual.
@@ -122,10 +124,10 @@ remains the most effective way of helping AUCTeX development.
 The following people contributed to this release series (in
 alphabetical order): Ralf Angeli, Masayuki Ataka, Thomas Baumann,
 Berend de Boer, Miguel Frasson, Peter S. Galbraith, Patrick Gundlach,
-Yvon Hevel, David Kastrup, Ikumi Keita, Frank Küster, Jan-Åke Larsson,
-Dan Nicolaescu, Piet van Oostrum, Davide G. M. Salvetti, Mike Sperber,
-Reiner Steib, Christian Schlauer, Shiro Takeda (Please accept our
-apologies if we forgot somebody.)
+Yvon Hevel, Arne Jørgensen, David Kastrup, Ikumi Keita, Frank Küster,
+Jan-Åke Larsson, Dan Nicolaescu, Piet van Oostrum, Davide
+G. M. Salvetti, Mike Sperber, Reiner Steib, Christian Schlauer, Shiro
+Takeda (Please accept our apologies if we forgot somebody.)
 
 Footnotes: 
 
@@ -133,7 +135,9 @@ Footnotes:
 
 [2]  You can get a precompiled version of CVS Emacs for Windows at
 <URL:http://nqmacs.sourceforge.net> or
-<URL:http://www.crasseux.com/emacs/>.
+<URL:http://www.crasseux.com/emacs/>.  An experimental version with
+AUCTeX preinstalled can be found at
+<URL:ftp://alpha.gnu.org/gnu/auctex/>.
 
 [3]  <URL:http://members.shaw.ca/akochoi-emacs/stories/faq.html>
 contains build instructions.
