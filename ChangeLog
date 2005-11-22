@@ -1,3 +1,7 @@
+2005-11-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* RELEASE: Update for 11.82.
+
 2005-11-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-site.el.in (tex-site-unload-hook): Don't let it fail on
