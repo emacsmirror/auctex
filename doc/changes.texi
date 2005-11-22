@@ -31,6 +31,9 @@ of French quotation marks (@code{\\og ...\\fg}) which can now be
 inserted by typing @key{"}.
 
 @item
+Completion support for options of some LaTeX packages was added.
+
+@item
 In version 11.81 the way to activate @AUCTeX{} changed substantially.
 Instead of @code{(require 'tex-site)}, @code{(load "auctex.el" nil t t)}
 should be used.  Related to this change @file{tex-mik.el} does not load
