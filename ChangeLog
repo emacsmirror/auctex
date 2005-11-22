@@ -1,5 +1,7 @@
 2005-11-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Mention completion support for LaTeX packages.
+
 	* RELEASE: Update for 11.82.
 
 2005-11-19  Ralf Angeli  <angeli@iwi.uni-sb.de>
