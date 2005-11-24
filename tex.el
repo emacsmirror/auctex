@@ -807,7 +807,7 @@ Elements of KEEP-LIST are not removed even if duplicate."
   (interactive)
   (setq TeX-debug-warnings (not TeX-debug-warnings))
   (message (concat "TeX-debug-warnings: "
-		   (if TeX-debug-bad-boxes "on" "off"))))
+		   (if TeX-debug-warnings "on" "off"))))
 
 ;;; Mode names.
 
@@ -2983,6 +2983,7 @@ t means autodetect, nil means kpathsea is disabled."
 
 (defcustom TeX-kpathsea-format-alist
   '(("tex" "${TEXINPUTS.latex}" TeX-file-extensions)
+    ("sty" "${TEXINPUTS.latex}" '("sty"))
     ("eps" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("png" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
