@@ -56,6 +56,10 @@ The output of a Bib@TeX{} run is now checked for warnings and errors,
 which are reported in the echo area.
 
 @item
+The aliases for @code{font-latex-title-fontify} were removed.  Use
+@code{font-latex-fontify-sectioning} instead.
+
+@item
 Various bug fixes.
 @end itemize
 
