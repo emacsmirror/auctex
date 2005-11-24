@@ -1,3 +1,22 @@
+2005-11-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-toggle-debug-warnings): Use correct variable for
+	state indication.
+	(TeX-kpathsea-format-alist): Add entry for "sty".  Prevents
+	kpathsea-based search from failing e.g. in case of \usepackage
+	insertion.
+
+	* doc/changes.texi: Document removal of
+	`font-latex-title-fontify' alias.
+
+	* font-latex.el: Remove alias for `font-latex-title-fontify'.
+	(font-latex-make-user-keywords): Use hack from tex-mode.el to
+	fontify the backslash in "\end{verbatim}" and similar correctly.
+	(font-latex-set-syntactic-keywords): Use the backslash of
+	"\end{verbatim}" and similar for the syntax property, not the
+	newline character which led to fontification going wild when text
+	at the end of the environment was inserted.
+
 2005-11-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Mention completion support for LaTeX packages.
