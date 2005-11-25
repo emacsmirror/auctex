@@ -1,3 +1,7 @@
+2005-11-25  David Kastrup  <dak@gnu.org>
+
+	* doc/todo.texi (Wishlist): Add suggestion about longlines.el.
+
 2005-11-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-toggle-debug-warnings): Use correct variable for
