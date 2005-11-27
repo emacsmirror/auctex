@@ -8,6 +8,9 @@
 
 @itemize @bullet
 @item
+Support for the MinionPro LaTeX package was added.
+
+@item
 Warnings and underfull/overfull boxes are now being indicated in the
 echo area after a @LaTeX{} run, if debugging of them is activated with
 @code{TeX-toggle-debug-warnings} (@kbd{C-c C-t C-w}) or
