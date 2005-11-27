@@ -1,3 +1,13 @@
+2005-11-27  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/MinionPro.el: New file.  Contributed by Mark Trettin.
+
+	* Makefile.in (STYLESRC): Add style/MinionPro.el.
+
+	* doc/changes.texi: Advertise support for MinionPro.sty.
+
+	* RELEASE (IMPORTANT): Add Mark.
+
 2005-11-25  David Kastrup  <dak@gnu.org>
 
 	* doc/todo.texi (Wishlist): Add suggestion about longlines.el.
