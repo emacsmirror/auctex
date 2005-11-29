@@ -1,6 +1,6 @@
 ;; texmathp.el -- Code to check if point is inside LaTeX math environment
 ;; Copyright (c) 1998 Carsten Dominik
-;; Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 
 ;; texmathp.el,v 1.28 1998/11/23 15:19:44 dominik Exp
 
@@ -310,6 +310,23 @@ See the variable `texmathp-tex-commands' about which commands are checked."
 		  (cdr match)))
     (and math-on t)))
 
+;; Could be replaced by `TeX-in-commented-line'.
+(defun texmathp-in-commented-line ()
+  "Return non-nil if point is in a line constisting only of a comment."
+  (save-excursion
+    (beginning-of-line)
+    (skip-chars-forward " \t")
+    (string= (buffer-substring-no-properties
+	      (point) (min (point-max)
+			   (+ (point) (length comment-start))))
+	     comment-start)))
+
+;; Could be replaced by `TeX-in-comment'.
+(defun texmathp-in-comment ()
+  "Return non-nil if point is in a comment."
+  (save-match-data
+    (re-search-backward comment-start-skip (line-beginning-position) t)))
+
 (defun texmathp-match-environment (bound)
   "Find out if point is inside any of the math environments.
 Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
@@ -317,33 +334,18 @@ Limit searched to BOUND.  The return value is like (\"equation\" . (point))."
     (save-excursion
       (and (null texmathp-environments) (throw 'exit nil))
       ;; Check if the line we are starting with is a commented one.
-      (let ((orig-comment-flag
-	     ;; Could be replaced by `TeX-in-commented-line'.
-	     (progn
-	       (save-excursion
-		 (beginning-of-line)
-		 (skip-chars-forward " \t")
-		 (string= (buffer-substring-no-properties
-			   (point) (min (point-max)
-					(+ (point) (length comment-start))))
-			  comment-start))))
+      (let ((orig-comment-flag (texmathp-in-commented-line))
 	    end-list env)
 	(while (re-search-backward "\\\\\\(begin\\|end\\)[ \t]*{\\([^}]+\\)}"
 				   bound t)
 	  ;; Check if the match found is inside of a comment.
-	  (let ((current-comment-flag
-		 ;; Could be replaced by `TeX-in-comment'.
-		 (when (save-match-data
-			 (re-search-backward comment-start-skip
-					     (line-beginning-position) t))
-		   ;; We need a t for comparison with `orig-comment-flag',
-		   ;; not a number.
-		   t)))
+	  (let ((current-comment-flag (texmathp-in-comment)))
 	    ;; Only consider matching alternatives with respect to
 	    ;; "in-commentness", i.e. if we started with a comment
 	    ;; only consider matches which are in comments as well and
 	    ;; vice versa.
-	    (when (eq orig-comment-flag current-comment-flag)
+	    (when (or (and orig-comment-flag current-comment-flag)
+		      (and (not orig-comment-flag) (not current-comment-flag)))
 	      (setq env (buffer-substring-no-properties
 			 (match-beginning 2) (match-end 2)))
 	      (cond ((string= (match-string 1) "end")
@@ -414,11 +416,19 @@ Limit searches to BOUND.  The return value is like (\"\\macro\" . (point))."
   "Search backward for any of the math switches.
 Limit searched to BOUND."
   ;; The return value is like ("\\(" . (point)).
-  (save-excursion
-    (if (re-search-backward texmathp-onoff-regexp bound t)
-	(cons (buffer-substring-no-properties (match-beginning 1) (match-end 1))
-	      (match-beginning 1))
-      nil)))
+  (let ((orig-comment-flag (texmathp-in-commented-line)))
+    (catch 'found
+      (save-excursion
+	(while (re-search-backward texmathp-onoff-regexp bound t)
+	  (let ((current-comment-flag (or (texmathp-in-comment)
+					  ;; Catch cases where point is at
+					  ;; the start of a commented line.
+					  (texmathp-in-commented-line))))
+	    (when (or (and orig-comment-flag current-comment-flag)
+		      (and (not orig-comment-flag) (not current-comment-flag)))
+	      (throw 'found (cons (buffer-substring-no-properties
+				   (match-beginning 1) (match-end 1))
+				  (match-beginning 1))))))))))
 
 (provide 'texmathp)
 
