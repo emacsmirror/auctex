@@ -1,3 +1,13 @@
+2005-11-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-listify-package-options): New function.
+	(LaTeX-auto-cleanup): Use it.
+	(LaTeX-arg-usepackage): Add \usepackage options to style list.
+
+	* tex.el (TeX-insert-quote): Turn opening/closing quotation mark
+	into "" if <"> is typed with point behind it and insert " with any
+	following <"> key type.
+
 2005-11-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el (texmathp-in-commented-line, texmathp-in-comment):
