@@ -4491,6 +4491,15 @@ With prefix argument FORCE, always inserts \" characters."
       (if q-after-q
 	  (insert (cond ((bobp)
 			 ?\")
+			((save-excursion
+			   (TeX-looking-at-backward
+			    (concat (regexp-quote open-quote) "\\|"
+				    (regexp-quote close-quote))
+			    (max (length open-quote) (length close-quote))))
+			 (delete-backward-char (length (match-string 0)))
+			 "\"\"")
+			((< (save-excursion (skip-chars-backward "\"")) -1)
+			 ?\")
 			((not (= (preceding-char) ?\"))
 			 ?\")
 			((save-excursion
