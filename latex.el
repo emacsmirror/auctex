@@ -1200,6 +1200,22 @@ This is necessary since index entries may contain commands and stuff.")
 
 (add-hook 'TeX-auto-prepare-hook 'LaTeX-auto-prepare)
 
+(defun LaTeX-listify-package-options (options)
+  "Return a list from a comma-separated string of package OPTIONS.
+The input string may include LaTeX comments and newlines."
+  ;; FIXME: Parse key=value options like "pdftitle={A Perfect
+  ;; Day},colorlinks=false" correctly.  When this works, the check for
+  ;; "=" can be removed again.
+  (let (opts)
+    (dolist (elt (TeX-split-string "\\(,\\|%[^\n\r]*[\n\r]\\)+"
+				   options))
+      (unless (string-match "=" elt)
+	;; Strip whitespace.
+	(dolist (item (TeX-split-string "[ \t\r\n]+" elt))
+	  (unless (string= item "")
+	    (add-to-list 'opts item)))))
+    opts))
+
 (defun LaTeX-auto-cleanup ()
   "Cleanup after LaTeX parsing."
 
@@ -1221,19 +1237,7 @@ This is necessary since index entries may contain commands and stuff.")
 	(setq LaTeX-auto-style (cdr LaTeX-auto-style))
 
 	;; Get the options.
-	;; FIXME: Parse key=value options like "pdftitle={A Perfect
-	;; Day},colorlinks=false" correctly.  When this works, the
-	;; check for "=" can be removed again.
-	(setq options
-	      (let (opts)
-		(dolist (elt (TeX-split-string "\\(,\\|%[^\n\r]*[\n\r]\\)+"
-					       options))
-		  (unless (string-match "=" elt)
-		    ;; Strip whitespace.
-		    (dolist (item (TeX-split-string "[ \t\r\n]+" elt))
-		      (unless (string= item "")
-			(add-to-list 'opts item)))))
-		opts))
+	(setq options (LaTeX-listify-package-options options))
 
 	;; Add them, to the style list.
 	(dolist (elt options)
@@ -1578,6 +1582,16 @@ ELSE as an argument list."
 				 ","))))
 	  (setq options (read-string "Options: ")))
 	(when options
+	  ;; XXX: The following statement will add the options
+	  ;; supplied to the LaTeX package to the style list.  This is
+	  ;; consistent with the way the parser works (see
+	  ;; `LaTeX-auto-cleanup').  But in a revamped style system
+	  ;; such options should be associated with their LaTeX
+	  ;; package to avoid confusion.  For example a `german' entry
+	  ;; in the style list can come from documentclass options and
+	  ;; does not necessarily mean that the babel-related
+	  ;; extensions should be activated.
+	  (mapcar 'TeX-run-style-hooks (LaTeX-listify-package-options options))
 	  (TeX-argument-insert options t))))))
 
 (defvar TeX-global-input-files nil
