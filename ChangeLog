@@ -1,5 +1,8 @@
 2005-11-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* texmathp.el: Revert last change because it makes math
+	switch/toggle matching tricks harder to use.
+
 	* latex.el (LaTeX-listify-package-options): New function.
 	(LaTeX-auto-cleanup): Use it.
 	(LaTeX-arg-usepackage): Add \usepackage options to style list.
