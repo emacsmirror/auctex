@@ -63,6 +63,9 @@ The aliases for @code{font-latex-title-fontify} were removed.  Use
 @code{font-latex-fontify-sectioning} instead.
 
 @item
+The problem that breaks a line at the Japanese macro is fixed.
+
+@item
 Various bug fixes.
 @end itemize
 
