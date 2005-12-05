@@ -1,3 +1,26 @@
+2005-12-05  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-info.el (TeX-texinfo-mode): Do not add braces around
+	arguments of commands which do not expect them.
+
+	* latex.el (TeX-arg-free): Move to tex.el.
+
+	* tex.el (TeX-arg-free): Move here from latex.el.
+	(TeX-insert-dollar): Do not abort with an error with an error if a
+	dollar is inserted in a math construct not started with a dollar.
+	Issue a message about the mismatch instead and insert the dollar.
+
+	* font-latex.el (font-latex-quote-list): Add default quotes.
+	(font-latex-add-quotes): New function.
+	(font-latex-match-quotation): Remove hard-coded quotation mark
+	lists and adapt `font-latex-quote-list' to the active quote style
+	instead.  Babel-specific quotation mark strings are now added to
+	`font-latex-quote-list' by style files.
+
+	* style/slovak.el, style/ngerman.el, style/italian.el,
+	style/german.el, style/danish.el: Add fontification support for
+	quotation mark strings provided by babel.
+
 2005-11-30  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* texmathp.el: Revert last change because it makes math
