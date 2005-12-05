@@ -2117,6 +2117,20 @@ Return the number as car and unit as cdr."
   (when (memq symbol list)
     (eval form)))
 
+(defun TeX-arg-free (optional &rest args)
+  "Parse its arguments but use no braces when they are inserted."
+  (let ((TeX-arg-opening-brace "")
+	(TeX-arg-closing-brace ""))
+    (if (equal (length args) 1)
+	(TeX-parse-argument optional (car args))
+      (TeX-parse-argument optional args))))
+
+(defun TeX-arg-literal (optional &rest args)
+  "Insert its arguments ARGS into the buffer.
+Used for specifying extra syntax for a macro."
+  ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
+  (apply 'insert args))
+
 
 ;;; Font Locking
 
@@ -3174,12 +3188,6 @@ to look backward for."
   (save-excursion
     (skip-chars-backward " \t\n")
     (bobp)))
-
-(defun TeX-arg-literal (optional &rest args)
-  "Insert its arguments ARGS into the buffer.
-Used for specifying extra syntax for a macro."
-  ;; FIXME: What is the purpose of OPTIONAL here?  -- rs
-  (apply 'insert args))
 
 (defalias 'TeX-run-mode-hooks
   (if (fboundp 'run-mode-hooks) 'run-mode-hooks 'run-hooks))
@@ -4363,8 +4371,9 @@ With optional ARG, insert that many dollar signs."
 		       (buffer-substring (point)
 					 (progn (end-of-line) (point)))))))
       ;; Math mode was not entered with dollar - we cannot finish it with one.
-      (error "Math mode because of `%s'.  Use `C-q $' to force a dollar"
-	     (car texmathp-why))))
+      (message "Math mode started with `%s' cannot be closed with dollar"
+	       (car texmathp-why))
+      (insert "$")))
    (t
     ;; Just somewhere in the text.
     (insert "$")))
