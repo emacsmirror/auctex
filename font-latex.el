@@ -95,8 +95,22 @@ buffers controlled by font-latex or restarting Emacs."
 (defvar font-latex-quote-regexp-beg nil
   "Regexp used to find quotes.")
 
-(defvar font-latex-quote-list nil
-  "List of matching start and end quote pairs for quotation fontification.")
+(defvar font-latex-quote-list '(("``" "''") ("<<" ">>" french) ("«" "»" french))
+  "List of quote specifiers for quotation fontification.
+
+Each element of the list is either a list consisting of two
+strings to be used as opening and closing quotation marks
+independently of the value of `font-latex-quotes' or a list with
+three elements where the first and second element are strings for
+opening and closing quotation marks and the third element being
+either the symbol 'german or 'french describing the order of
+quotes.
+
+If `font-latex-quotes' specifies a different state, order of the
+added quotes will be reversed for fontification.  For example if
+'(\"\\\"<\" \"\\\">\" french) is given but `font-latex-quotes'
+specifies 'german, quotes will be used like \">foo\"< for
+fontification.")
 
 (defvar font-latex-quotes-control nil
   "Internal variable for keeping track if `font-latex-quotes' changed.")
@@ -106,6 +120,14 @@ buffers controlled by font-latex or restarting Emacs."
 Also selects \"<quote\"> versus \">quote\"<."
   :type '(choice (const french) (const german))
   :group 'font-latex)
+
+(defun font-latex-add-quotes (quotes)
+  "Add QUOTES to `font-latex-quote-list'.
+QUOTES has to be a list adhering to the format of an element of
+`font-latex-quote-list'."
+  (set (make-local-variable 'font-latex-quotes-control) nil)
+  (make-local-variable 'font-latex-quote-list)
+  (add-to-list 'font-latex-quote-list quotes))
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -1401,13 +1423,16 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   ;; Update quotes list and regexp if value of `font-latex-quotes' changed.
   (unless (eq font-latex-quotes-control font-latex-quotes)
     (setq font-latex-quotes-control font-latex-quotes)
-    (if (eq font-latex-quotes 'french)
-	(setq font-latex-quote-list
-	      '(("``" . "''")  ("\"`" . "\"'")
-		("\"<" . "\">") ("<<" . ">>") ("«" . "»")))
-      (setq font-latex-quote-list
-	    '(("``" . "''") ("\"`" . "\"'")
-	      ("\">" . "\"<") (">>" . "<<") ("»" . "«"))))
+    ;; Set order of each entry in `font-latex-quote-list' according to
+    ;; setting of `font-latex-quotes'.
+    (let ((tail font-latex-quote-list)
+	  elt)
+      (while tail
+	(setq elt (car tail))
+	(when (and (> (safe-length elt) 2)
+		   (not (eq (nth 2 elt) font-latex-quotes)))
+	  (setcar tail (list (nth 1 elt) (nth 0 elt) font-latex-quotes)))
+	(setq tail (cdr tail))))
     (setq font-latex-quote-regexp-beg
 	  (regexp-opt (mapcar 'car font-latex-quote-list) t)))
   ;; Search for matches.
@@ -1417,11 +1442,11 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 					    font-latex-verbatim-face)
 					  (match-beginning 0))
 	(let ((beg (match-beginning 0)))
-	  (search-forward (cdr (assoc
-				(if (fboundp 'string-make-multibyte)
-				    (string-make-multibyte (match-string 0))
-				  (match-string 0))
-				font-latex-quote-list)) limit 'move)
+	  (search-forward (nth 1 (assoc
+				  (if (fboundp 'string-make-multibyte)
+				      (string-make-multibyte (match-string 0))
+				    (match-string 0))
+				  font-latex-quote-list)) limit 'move)
 	  (store-match-data (list beg (point)))
 	  (throw 'match t))))))
 
