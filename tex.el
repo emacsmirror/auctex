@@ -1870,6 +1870,8 @@ The variable will be temporarily let-bound with the necessary value.")
   "String used as a closing brace for argument insertion.
 The variable will be temporarily let-bound with the necessary value.")
 
+(defvar TeX-macro-history nil)
+
 (defun TeX-insert-macro (symbol)
   "Insert TeX macro SYMBOL with completion.
 
@@ -1885,7 +1887,8 @@ is called with \\[universal-argument]."
 					      TeX-default-macro
 					      "): "
 					      TeX-esc)
-				      (TeX-symbol-list))))
+				      (TeX-symbol-list) nil nil nil
+				      'TeX-macro-history)))
   (cond ((string-equal symbol "")
 	 (setq symbol TeX-default-macro))
 	((interactive-p)
