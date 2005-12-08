@@ -1,3 +1,8 @@
+2005-12-08  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-completing-read-multiple): Mention the availability
+	of crm.el in recent XEmacs packages.
+
 2005-12-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-macro-history): New variable.

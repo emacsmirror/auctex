@@ -698,8 +698,10 @@ overlays."
   (defun TeX-completing-read-multiple
     (prompt table &optional predicate require-match initial-input
 	    hist def inherit-input-method)
-    "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs."
-    (multi-prompt "," nil prompt table predicate require-match initial-input hist)))
+    "Poor mans implementation of Emacs' `completing-read-multiple' for XEmacs.
+The XEmacs package edit-utils-2.32 includes `crm.el'."
+    (multi-prompt "," nil prompt table predicate require-match initial-input
+		  hist)))
 
 ;;; Special support for GNU Emacs
 
