@@ -12,14 +12,15 @@ Support for the MinionPro LaTeX package was added.
 
 @item
 Warnings and underfull/overfull boxes are now being indicated in the
-echo area after a @LaTeX{} run, if debugging of them is activated with
-@code{TeX-toggle-debug-warnings} (@kbd{C-c C-t C-w}) or
-@code{TeX-toggle-debug-bad-boxes} (@kbd{C-c C-t C-b}) respectively.  In
-this case @code{TeX-next-error} will find these warnings in addition to
-normal errors as well.
+echo area after a @LaTeX{} run, if the respective debugging options are
+activated with @code{TeX-toggle-debug-warnings} (@kbd{C-c C-t C-w}) or
+@code{TeX-toggle-debug-bad-boxes} (@kbd{C-c C-t C-b}).  In this case
+@code{TeX-next-error} will find these warnings in addition to normal
+errors.
 
 The key binding @kbd{C-c C-w} for @code{TeX-toggle-debug-bad-boxes}
-(which was renamed from @code{TeX-toggle-debug-boxes}) was deprecated.
+(which was renamed from @code{TeX-toggle-debug-boxes}) now is
+deprecated.
 
 @item
 @AUCTeX{} now can automatically insert a pair of braces after typing
@@ -27,7 +28,7 @@ The key binding @kbd{C-c C-w} for @code{TeX-toggle-debug-bad-boxes}
 @code{TeX-electric-sub-and-superscript} is set to a non-nil value.
 
 @item
-Some language-specific support for French was added.  In particular
+Some language-specific support for French was added.  There now is
 completion support for the commands provided by the @samp{frenchb} (and
 @samp{francais}) options of the babel @LaTeX{} package and easier input
 of French quotation marks (@code{\\og ...\\fg}) which can now be
@@ -37,13 +38,14 @@ inserted by typing @key{"}.
 Completion support for options of some LaTeX packages was added.
 
 @item
-In version 11.81 the way to activate @AUCTeX{} changed substantially.
-Instead of @code{(require 'tex-site)}, @code{(load "auctex.el" nil t t)}
-should be used.  Related to this change @file{tex-mik.el} does not load
-@file{tex-site.el} anymore now.  That means if you used only
-@code{(require 'tex-mik)} in order to activate @AUCTeX{}, you have to
-add @code{(load "auctex.el" nil t t)} before the latter statement.  More
-detailed information can be found in the installation instructions.
+Already in version 11.81 the way to activate @AUCTeX{} changed
+substantially.  This should now be done with @code{(load "auctex.el" nil
+t t)} instead of the former @code{(require 'tex-site)}.  Related to this
+change @file{tex-mik.el} does not load @file{tex-site.el} anymore.  That
+means if you used only @code{(require 'tex-mik)} in order to activate
+@AUCTeX{}, you have to add @code{(load "auctex.el" nil t t)} before the
+latter statement.  More detailed information can be found in the
+installation instructions.
 
 @item
 Handling of verbatim constructs was consolidated across AUCTeX.  This
@@ -63,7 +65,7 @@ The aliases for @code{font-latex-title-fontify} were removed.  Use
 @code{font-latex-fontify-sectioning} instead.
 
 @item
-The problem that breaks a line at the Japanese macro is fixed.
+The problem that Japanese macros where broken across lines was fixed.
 
 @item
 Various bug fixes.
