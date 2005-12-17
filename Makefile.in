@@ -48,6 +48,8 @@ SHELL = /bin/sh
 DIST_PREFIX = /home/tmp/auctex-
 FTPDIR = $(DIST_PREFIX)ftp
 WWWDIR = $(DIST_PREFIX)www
+COMMITTER_NAME="David Kastrup"
+COMMITTER_EMAIL=dak@gnu.org
 RPMROOT = /usr/src/redhat
 
 MULESRC = @MULESRC@
@@ -272,7 +274,7 @@ release-commit:
 	sleep 3
 	mv ChangeLog ChangeLog.old
 	echo `date "+%Y-%m-%d "` \
-	     " David Kastrup  <dak@gnu.org>" > ChangeLog
+	     " "${COMMITTER_NAME}"  <"${COMMITTER_EMAIL}">" > ChangeLog
 	echo >> ChangeLog
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
