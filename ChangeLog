@@ -1,3 +1,7 @@
+2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/changes.texi: Minor rewordings for 11.82.
+
 2005-12-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-completing-read-multiple): Mention the availability
