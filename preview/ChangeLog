@@ -1,3 +1,7 @@
+2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Bump version number.
+
 2005-10-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Import `TEX' in unquoted form.

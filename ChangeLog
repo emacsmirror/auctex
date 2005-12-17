@@ -1,5 +1,8 @@
 2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* auctex.spec, configure.ac, doc/auctex.texi,
+	doc/preview-latex.texi, doc/tex-ref.tex: Bump version number.
+
 	* doc/changes.texi: Minor rewordings for 11.82.
 
 2005-12-08  Reiner Steib  <Reiner.Steib@gmx.de>
