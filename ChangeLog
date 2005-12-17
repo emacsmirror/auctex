@@ -1,5 +1,9 @@
 2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* Version 11.82 released.
+
+2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
 	* Makefile.in (COMMITTER_NAME, COMMITTER_EMAIL): New variables.
 	(release-commit): Use them.
 
