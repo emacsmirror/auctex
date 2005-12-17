@@ -1,5 +1,8 @@
 2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* Makefile.in (COMMITTER_NAME, COMMITTER_EMAIL): New variables.
+	(release-commit): Use them.
+
 	* auctex.spec, configure.ac, doc/auctex.texi,
 	doc/preview-latex.texi, doc/tex-ref.tex: Bump version number.
 
