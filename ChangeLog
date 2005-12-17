@@ -1,3 +1,8 @@
+2005-12-17  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec (Provides): Make emacs/site-lisp/preview.
+	(Release): Bump to 1.
+
 2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Version 11.82 released.

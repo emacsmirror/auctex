@@ -13,7 +13,7 @@
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
 Version: 	11.82
-Release: 	0%{distri}
+Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
@@ -70,7 +70,7 @@ popd
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
+mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp/preview,%{_infodir}}
 %if %{FOR_SUSE}
 cat <<EOFA > %{buildroot}%{_datadir}/emacs/site-lisp/suse-start-auctex.el
 ;; suse-start-auctex.el
