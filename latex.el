@@ -3296,7 +3296,7 @@ command.  Thereby subsections are not being marked.
 If the function `outline-mark-subtree' is not available,
 `LaTeX-mark-section' always behaves like this regardless of the
 value of NO-SUBSECTIONS."
-  (interactive "*P")
+  (interactive "P")
   (if (or no-subsections
 	  (not (fboundp 'outline-mark-subtree)))
       (progn
