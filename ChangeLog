@@ -1,3 +1,8 @@
+2005-12-21  Ikumi Keita <ikumi@revery.net>
+
+	* latex.el (LaTeX-mark-section): Remove read-only mark `*' from
+	interactive.
+
 2005-12-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec (Provides): Make emacs/site-lisp/preview.
