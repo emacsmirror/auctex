@@ -2796,8 +2796,8 @@ space does not end a sentence, so don't break a line there."
   ;; Cater for Japanese Macro
   (when (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
 	     (aref (char-category-set (char-after)) ?j)
-	     (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "+")
-				      (1- (- (point) (line-beginning-position))))
+	     (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "*")
+				      (1- (- (point) linebeg)))
 	     (save-excursion
 	       (goto-char (match-beginning 0))
 	       (zerop (logand 1 (skip-chars-backward "\\\\")))))
