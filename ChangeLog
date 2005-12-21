@@ -2,6 +2,11 @@
 
 	* latex.el (LaTeX-mark-section): Remove read-only mark `*' from
 	interactive.
+	(LaTeX-fill-move-to-break-point): Use `*' instead of `+' for
+	looking back Japanese Macro in order to prevent breaking line just
+	after TeX-esc, in other words, not to break TeX command `\JJJ'
+	into `\' and `JJJ'.  Use variable linebeg instead of function
+	line-beginning-position.
 
 2005-12-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
