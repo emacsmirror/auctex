@@ -443,7 +443,7 @@ is not recommended because it is more powerful than
     ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
     ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
     ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf %o")
+    ("^pdf$" "." "xpdf %o %(outpage)")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
@@ -519,6 +519,9 @@ string."
     ("%S" TeX-source-specials-expand-options)
     ("%dS" TeX-source-specials-view-expand-options)
     ("%cS" TeX-source-specials-view-expand-client)
+    ("%(outpage)" (lambda () (if TeX-sync-output-page-function
+				 (funcall TeX-sync-output-page-function)
+			       "")))
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
@@ -1030,6 +1033,12 @@ If this is nil, an empty string will be returned."
 		(when server-enabled
 		  (concat " " TeX-source-specials-view-editor-flags))))
     ""))
+
+(defvar TeX-sync-output-page-function nil
+  "Symbol of function returning an output page relating to buffer position.
+The function should take no arguments and return the page numer
+as a string.")
+(make-variable-buffer-local 'TeX-sync-output-page-function)
 
 ;;;
 
