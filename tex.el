@@ -443,7 +443,7 @@ is not recommended because it is more powerful than
     ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
     ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
     ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf %o %(outpage)")
+    ("^pdf$" "." "xpdf -remote \"%s\" -raise %o %(outpage)")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
