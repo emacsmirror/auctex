@@ -1,3 +1,14 @@
+2005-12-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/pdfsync.el: New file.
+
+	* Makefile.in (STYLESRC): Add style/pdfsync.el.
+
+	* tex.el (TeX-output-view-style): Add %(outpage) expander to xpdf
+	call.
+	(TeX-expand-list): New %(outpage) expander.
+	(TeX-sync-output-page-function): New variable.
+
 2005-12-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (tar-ball): Use TAG_EXPORT for snapshots.
