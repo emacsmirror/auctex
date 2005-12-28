@@ -1,5 +1,7 @@
 2005-12-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (tar-ball): Use TAG_EXPORT for snapshots.
+
 	* auctex.spec (description): Add preview-latex.
 	(install, files): Don't create preview directory.
 
