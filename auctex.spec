@@ -13,7 +13,7 @@
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
 Version: 	11.82
-Release: 	1%{distri}
+Release: 	2%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/
@@ -30,6 +30,10 @@ Texinfo and basic support for ConTeXt.  Documentation can be found under
 /usr/share/doc, e.g. the reference card (tex-ref.pdf) and the FAQ.  The AUCTeX
 manual is available in Emacs info (C-h i d m AUCTeX RET).  On the AUCTeX home
 page, we provide manuals in various formats.
+
+This version of AUCTeX comes with preview-latex, an addictive productivity
+tool providing a fine-grained interactive folding WYSIWYG display in the
+source buffer.
 
 %package emacs
 Summary: 	Enhanced TeX modes for GNU Emacs
@@ -70,7 +74,7 @@ popd
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp/preview,%{_infodir}}
+mkdir -p %{buildroot}{%{_datadir}/emacs/site-lisp,%{_infodir}}
 %if %{FOR_SUSE}
 cat <<EOFA > %{buildroot}%{_datadir}/emacs/site-lisp/suse-start-auctex.el
 ;; suse-start-auctex.el
@@ -110,7 +114,6 @@ rm -rf %{buildroot}
 %doc %{_infodir}/*
 %exclude %{_infodir}/dir
 %{_datadir}/emacs/site-lisp/%{name}
-%{_datadir}/emacs/site-lisp/preview
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
 %if %{FOR_SUSE}
@@ -127,6 +130,13 @@ rm -rf %{buildroot}
 %changelog
 # Shouldn't changelog include changes in the package instead of changes in the
 # spec file?
+
+* Wed Dec 28 2005 Reiner Steib  <Reiner.Steib@gmx.de>
+- Remove bogus preview directory.  Add preview-latex in description.
+
+* Sat Dec 17 2005 Reiner Steib  <Reiner.Steib@gmx.de>
+- Update for AUCTeX 11.82.
+
 * Tue May  3 2005 David Kastrup <dak@gnu.org>
 - include preview-latex, so outdate other stuff.
 
