@@ -5,7 +5,7 @@
 	* Makefile.in (STYLESRC): Add style/pdfsync.el.
 
 	* tex.el (TeX-output-view-style): Add %(outpage) expander to xpdf
-	call.
+	call.  Start xpdf in server mode.
 	(TeX-expand-list): New %(outpage) expander.
 	(TeX-sync-output-page-function): New variable.
 
