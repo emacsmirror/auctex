@@ -2,9 +2,9 @@
 PACKAGE=preview
 PACKAGE_INFO=preview-latex
 EMACS=@EMACS@
-ELCC=$(EMACS) -batch -q -no-site-file -no-init-file --eval '(setq load-path (cons "." load-path))'
+ELCC=$(EMACS) -batch -q -no-site-file -no-init-file
 AUCTEX=-eval '(let ((dir (pop command-line-args-left))) \
-  (if (not (string-equal dir "")) (push dir load-path)))' $(auctexdir)
+  (if (not (string-equal dir "")) (push dir load-path)))' $(auctexdir) --eval '(push "." load-path)'
 AUTOLOAD=--eval '(let ((generated-autoload-file (expand-file-name "$@"))) \
 		(update-file-autoloads "preview.el")(save-buffers-kill-emacs t))'
 

@@ -1,3 +1,9 @@
+2005-12-31  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (ELCC, AUCTEX): Put "." in front of load-path to
+	avoid picking up outdated `prv-*.el*' files from the installation
+	directory.
+
 2005-12-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Bump version number.
