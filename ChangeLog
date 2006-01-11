@@ -1,3 +1,7 @@
+2006-01-11  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in (tar-ball): Fix use of TAG_EXPORT.
+
 2006-01-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-fold.el (TeX-fold-mode): Autoload as an interactive
