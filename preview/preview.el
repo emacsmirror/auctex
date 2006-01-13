@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.262 2005-09-24 19:15:55 angeli Exp $
+;; $Id: preview.el,v 1.263 2006-01-13 22:04:14 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2619,7 +2619,7 @@ call, and in its CDR the final stuff for the placement hook."
 		(re-search-forward "\
 \\(^! \\)\\|\
 \(\\([^()\r\n{ ]+\\))*\\(?:{[^}\n]*}\\)?\\(?: \\|\r?$\\)\\|\
-)+\\( \\|\r?$\\)\\|\
+)+\\([ >]\\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
 ^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
@@ -3443,7 +3443,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.262 $"))
+	(rev "$Revision: 1.263 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3457,7 +3457,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2005-09-24 19:15:55 $"))
+    (let ((date "$Date: 2006-01-13 22:04:14 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

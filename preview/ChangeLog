@@ -1,3 +1,8 @@
+2006-01-13  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-parse-messages): Some ugly fix for
+	`<xxx (PNG copy)>' style error messages.
+
 2005-12-31  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (ELCC, AUCTEX): Put "." in front of load-path to
