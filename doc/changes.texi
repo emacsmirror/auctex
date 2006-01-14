@@ -4,6 +4,23 @@
 
 @end ifset
 
+@heading News in CVS
+
+@itemize @bullet
+@item
+Support for forward search with PDF files was added.  That means you can
+jump to a place in the output file corresponding to the position in the
+source file.  Currently this only works if you use the pdfsync @LaTeX{}
+package and xpdf as your PDF viewer.  The accuracy is in the range of
++/-1 page.
+
+Adding support for this feature required the default value of the
+variable @code{TeX-output-view-style} to be changed.  Please make sure
+you either remove any customizations overriding the new default or
+incorporate the changes into your customizations if you want to use this
+feature.
+@end itemize
+
 @heading News in 11.82
 
 @itemize @bullet
