@@ -1,5 +1,7 @@
 2006-01-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* doc/changes.texi: Advertize pdfsync support.
+
 	* latex.el (LaTeX-header-end, LaTeX-trailer-start): Do not pick up
 	commented header end or trailer start respectively.
 
