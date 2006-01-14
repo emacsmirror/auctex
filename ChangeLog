@@ -1,3 +1,7 @@
+2006-01-14  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Don't check for INSTALL_INFO if already set.
+
 2006-01-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/changes.texi: Advertize pdfsync support.

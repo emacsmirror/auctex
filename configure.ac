@@ -121,7 +121,10 @@ AC_PATH_PROG(TEXI2PDF, texi2pdf, :)
 
 AC_ARG_VAR(INSTALL_INFO, [install-info executable.  Set to : to skip making a dir file.  This is the default when installing into an XEmacs package.])
 
-AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
+if test "X${INSTALL_INFO}" = X
+then
+  AC_PATH_PROG(INSTALL_INFO, install-info, :, ${PATH} /usr/sbin /sbin)
+fi
 
 AC_ARG_ENABLE(preview,
   [  --disable-preview       disable inclusion of preview-latex],

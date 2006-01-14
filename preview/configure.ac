@@ -61,8 +61,6 @@ else
    test "X$packagelispdir" = X && packagelispdir="${packagedir}/lisp/preview"
    previewstartfile="${packagelispdir}"/auto-autoloads.el
    test "X$packagedatadir" = X && packagedatadir="${packagedir}/etc/preview"
-   infodir="${packagedir}/info"
-   INSTALL_INFO=:
 fi
 
 AC_SUBST(previewstartfile)
@@ -81,9 +79,6 @@ AC_ARG_WITH(packagedatadir,
   [packagedatadir=["${withval}"]])
 AC_LISPIFY_DIR(packagedatadir,"${previewstartfile}")
 AC_MSG_RESULT([[${packagedatadir}]])
-
-AC_MSG_CHECKING(where the info files go)
-AC_MSG_RESULT([[${infodir}]])
 
 AC_SUBST(PLAT_LISP)
 AC_SUBST(packagedir)
@@ -149,11 +144,14 @@ AC_ARG_VAR(TEXHASH,[command to update the TeX filename database.
 Set to : to skip updating the database on installation.
 This is the default for --without-texmf-dir])
 
-AC_PATH_PROG(TEXHASH, texhash)
-AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
-if test "X${TEXHASH}" = X
+if test "X${TEXHASH}" = "X"
 then
-   AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
+  AC_PATH_PROG(TEXHASH, texhash)
+  AC_CHECK_PROG(TEXHASH, initexmf, initexmf -u)
+  if test "X${TEXHASH}" = X
+  then
+     AC_PATH_PROGS(TEXHASH, mktexlsr MakeTeXls-R, :)
+  fi
 fi
 
 AC_MSG_CHECKING([[for glaring installation conflicts]])
@@ -201,7 +199,6 @@ AC_SHELL_QUOTIFY(packagelispdir)
 AC_SHELL_QUOTIFY(previewstartfile)
 AC_SHELL_QUOTIFY(lispdir)
 AC_SHELL_QUOTIFY(packagedatadir)
-AC_SHELL_QUOTIFY(infodir)
 AC_SHELL_QUOTIFY(auctexdir)
 AC_SHELL_QUOTIFY(datadir)
 AC_SHELL_QUOTIFY(GS)

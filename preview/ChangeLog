@@ -1,3 +1,8 @@
+2006-01-14  David Kastrup  <dak@gnu.org>
+
+	* configure.ac: Remove infodir and INSTALL_INFO checks.  Don't
+	check for TEXHASH if it is already set.
+
 2006-01-13  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-parse-messages): Some ugly fix for
