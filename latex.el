@@ -4663,11 +4663,13 @@ runs the hooks in `docTeX-mode-hook'."
 (defalias 'TeX-doctex-mode 'docTeX-mode)
 
 (defvar LaTeX-header-end
-  (concat (regexp-quote TeX-esc) "begin *" TeX-grop "document" TeX-grcl)
+  (concat "^[^%\n]*" (regexp-quote TeX-esc) "begin *"
+	  TeX-grop "document" TeX-grcl)
   "Default end of header marker for LaTeX documents.")
 
 (defvar LaTeX-trailer-start
-  (concat (regexp-quote TeX-esc) "end *" TeX-grop "document" TeX-grcl)
+  (concat "^[^%\n]*" (regexp-quote TeX-esc) "end *"
+	  TeX-grop "document" TeX-grcl)
   "Default start of trailer marker for LaTeX documents.")
 
 (defun LaTeX-common-initialization ()
