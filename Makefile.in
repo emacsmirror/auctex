@@ -327,7 +327,6 @@ xemacs-package:
 	cd xemacs-build \
 	&& ./configure INSTALL_INFO=: TEXHASH=: --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
 	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
-	rm -rf xemacs-build
 
 www-doc:
 	rm -rf $(WWWDIR)
