@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.263 2006-01-13 22:04:14 dak Exp $
+;; $Id: preview.el,v 1.264 2006-01-17 18:06:40 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2340,6 +2340,26 @@ filename=%s>
 
 (defvar preview-TeX-style-dir)
 
+(defun preview-TeX-style-cooked ()
+  "Return `preview-TeX-style-dir' in cooked form.
+This will be fine for prepending to a `TEXINPUT' style
+environment variable, including an initial `.' at the front."
+  (if (or (zerop (length preview-TeX-style-dir))
+	  (member (substring preview-TeX-style-dir -1) '(";" ":")))
+      preview-TeX-style-dir
+    (let ((sep
+	   (cond
+	    ((stringp TeX-kpathsea-path-delimiter)
+	     TeX-kpathsea-path-delimiter)
+	    ((string-match
+	      "\\`.[:]"
+	      (if (file-name-absolute-p TeX-kpathsea-path-delimiter)
+		  TeX-kpathsea-path-delimiter
+		(expand-file-name TeX-kpathsea-path-delimiter)))
+	     ";")
+	    ":")))
+      (concat "." sep TeX-kpathsea-path-delimiter sep))))
+
 (defun preview-set-texinputs (&optional remove)
   "Add `preview-TeX-style-dir' into `TEXINPUT' variables.
 With prefix argument REMOVE, remove it again."
@@ -3443,7 +3463,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.263 $"))
+	(rev "$Revision: 1.264 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3457,7 +3477,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-01-13 22:04:14 $"))
+    (let ((date "$Date: 2006-01-17 18:06:40 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -1,3 +1,9 @@
+2006-01-17  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-TeX-style-cooked): New function, to be used
+	later.  Just checked in so that nobody else feels compelled
+	writing it.
+
 2006-01-14  David Kastrup  <dak@gnu.org>
 
 	* configure.ac: Remove infodir and INSTALL_INFO checks.  Don't
