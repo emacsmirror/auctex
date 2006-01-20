@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.264 2006-01-17 18:06:40 dak Exp $
+;; $Id: preview.el,v 1.265 2006-01-20 14:20:50 rsteib Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2357,7 +2357,7 @@ environment variable, including an initial `.' at the front."
 		  TeX-kpathsea-path-delimiter
 		(expand-file-name TeX-kpathsea-path-delimiter)))
 	     ";")
-	    ":")))
+	    (t ":"))))
       (concat "." sep TeX-kpathsea-path-delimiter sep))))
 
 (defun preview-set-texinputs (&optional remove)
@@ -3463,7 +3463,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.264 $"))
+	(rev "$Revision: 1.265 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3477,7 +3477,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-01-17 18:06:40 $"))
+    (let ((date "$Date: 2006-01-20 14:20:50 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
