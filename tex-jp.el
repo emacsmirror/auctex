@@ -80,7 +80,6 @@ For detail, see `TeX-command-list', which this list is appended to."
 				(function-item TeX-run-discard)
 				(function-item TeX-run-background)
 				(function-item TeX-run-silent)
-				(function-item TeX-run-dviout)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(choice :tag "Modes"
@@ -108,15 +107,15 @@ For detail, see `TeX-command-list', which this list is appended to."
 
 ;; Menus
 
-(easy-menu-define plain-TeX-mode-command-menu
-  plain-TeX-mode-map
-  "Command menu used in TeX mode."
-  (TeX-mode-specific-command-menu 'plain-tex-mode))
+;; (easy-menu-define plain-TeX-mode-command-menu
+;;   plain-TeX-mode-map
+;;   "Command menu used in TeX mode."
+;;   (TeX-mode-specific-command-menu 'plain-tex-mode))
 
-(easy-menu-define LaTeX-mode-command-menu
-  LaTeX-mode-map
-  "Command menu used in LaTeX mode."
-  (TeX-mode-specific-command-menu 'latex-mode))
+;; (easy-menu-define LaTeX-mode-command-menu
+;;   LaTeX-mode-map
+;;   "Command menu used in LaTeX mode."
+;;   (TeX-mode-specific-command-menu 'latex-mode))
 
 (setq LaTeX-command-style
       (append '(("^j-\\(article\\|report\\|book\\)$"
@@ -203,14 +202,14 @@ For detail, see `TeX-command-list', which this list is appended to."
 ;;; Japanese TeX modes
 
 (defvar japanese-TeX-mode nil
-  "Flag to determine if the current buffer is Japanese TeX/LaTeX.")
+  "Non-nil means the current buffer handles Japanese TeX/LaTeX.")
 (make-variable-buffer-local 'japanese-TeX-mode)
 (put 'japanese-TeX-mode 'permanent-local t)
 
 ;;;###autoload
 (defun japanese-plain-tex-mode ()
   "Major mode in AUCTeX for editing Japanese plain TeX files.
-Set japanese-TeX-mode to t, and enters plain-tex-mode."
+Set `japanese-TeX-mode' to t, and enter `TeX-plain-tex-mode'."
   (interactive)
   (setq japanese-TeX-mode t)
   (TeX-plain-tex-mode))
@@ -225,7 +224,7 @@ Set japanese-TeX-mode to t, and enters plain-tex-mode."
 ;;;###autoload
 (defun japanese-latex-mode ()
   "Major mode in AUCTeX for editing Japanese LaTeX files.
-Set japanese-TeX-mode to t, and enters latex-mode."
+Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
   (interactive)
   (setq japanese-TeX-mode t)
   (TeX-latex-mode))
@@ -242,21 +241,23 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 
 ;;; Support for various self-insert-command
 
-(cond ((fboundp 'can-n-egg-self-insert-command)
-       (fset 'tex-jp-self-insert-command 'can-n-egg-self-insert-command))
-      ((fboundp 'egg-self-insert-command)
-       (fset 'tex-jp-self-insert-command 'egg-self-insert-command))
-      ((fboundp 'canna-self-insert-command)
-       (fset 'tex-jp-self-insert-command 'canna-self-insert-command))
-      (t
-       (fset 'tex-jp-self-insert-command 'self-insert-command)))
+(fset 'japanese-TeX-self-insert-command
+      (cond ((fboundp 'can-n-egg-self-insert-command)
+	     'can-n-egg-self-insert-command)
+	    ((fboundp 'egg-self-insert-command)
+	     'egg-self-insert-command)
+	    ((fboundp 'canna-self-insert-command)
+	     'canna-self-insert-command)
+	    (t
+	     'self-insert-command)))
 
 (defun TeX-insert-punctuation ()
   "Insert point or comma, cleaning up preceding space."
   (interactive)
+  (expand-abbrev)
   (if (TeX-looking-at-backward "\\\\/\\(}+\\)" 50)
       (replace-match "\\1" t))
-  (call-interactively 'tex-jp-self-insert-command))
+  (call-interactively 'japanese-TeX-self-insert-command))
 
 ;;; Error Messages
 
@@ -267,7 +268,7 @@ Set japanese-TeX-mode to t, and enters latex-mode."
 
     ("Bad math environment delimiter.*" .
 "数式モード中で数式モード開始コマンド\\[または\\(，または，数式モード外で
-数式モード終了コマンド\\[または\\(をTeXが見つけました．この問題は，数式モー
+数式モード終了コマンド\\]または\\)をTeXが見つけました．この問題は，数式モー
 ドのデリミタがマッチしていなかったり，括弧のバランスがとれていなかったりす
 るために生じます．")
 
@@ -543,7 +544,7 @@ main memory size
 る．(3)生成のための情報をTeXが保持しきれないような，あまりにも複雑なペー
 ジを生成しようとした．最初の2つの問題の解決方法は明らかです．命令定義
 の数あるいは\\index・\\glossary命令の数を減らすことです．3番目の問題は
-ちょっと厄介です．これは，大きなtabbin・tabular・array・picture環境の
+ちょっと厄介です．これは，大きなtabbing・tabular・array・picture環境の
 せいで生じることがあります．出力位置が決定されるのを待っている図や表で
 TeXのメモリがいっぱいになっているのかもしれません．本当にTeXの容量を超
 えてしまったのかどうか調べるためには，エラーの起こった場所の直前に
