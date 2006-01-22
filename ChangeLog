@@ -1,3 +1,19 @@
+2006-01-22  Ikumi Keita <ikumi@revery.net>
+
+	* tex.el (TeX-command-list): Removed TeX-run-dviout because dviout
+	here is only work with Emacs on MS-DOS.
+
+	* tex-buf.el (TeX-run-dviout): Removed.
+
+	* tex-jp.el (japanese-TeX-command-list): Remove TeX-run-dviout.
+	Commented out easy-menu-define (plain-TeX|LaTeX)-mode-command-nemu.
+	(japanese-TeX-mode, japanese-plain-tex-mode)
+	(japanese-latex-mode): Doc fix.
+	(japanese-TeX-self-insert-command): Renamed from
+	tex-jp-self-insert-command.
+	(TeX-insert-punctuation): Follow the change.
+	(TeX-error-description-list): Doc fix.
+
 2006-01-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-fold.el (TeX-fold-macro-spec-list): Fold pageref macro as
