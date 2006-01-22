@@ -2800,7 +2800,7 @@ space does not end a sentence, so don't break a line there."
 				      (1- (- (point) linebeg)))
 	     (save-excursion
 	       (goto-char (match-beginning 0))
-	       (zerop (logand 1 (skip-chars-backward "\\\\")))))
+	       (not (TeX-escaped-p (match-beginning 0)))))
       (goto-char (match-beginning 0)))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
