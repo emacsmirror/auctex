@@ -63,7 +63,7 @@
   '(("[f]" ("footnote"))
     ("[c]" ("cite"))
     ("[l]" ("label"))
-    ("[r]" ("ref"))
+    ("[r]" ("ref" "pageref"))
     ("[i]" ("index"))
     ("*" ("item"))
     ("..." ("dots"))
