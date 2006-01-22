@@ -1,5 +1,8 @@
 2006-01-22  Ikumi Keita <ikumi@revery.net>
 
+	* latex.el (LaTeX-fill-move-to-break-point): Use TeX-espaced-p to
+	check TeX escape char.
+
 	* tex.el (TeX-command-list): Removed TeX-run-dviout because dviout
 	here is only work with Emacs on MS-DOS.
 
