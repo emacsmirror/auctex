@@ -2798,9 +2798,7 @@ space does not end a sentence, so don't break a line there."
 	     (aref (char-category-set (char-after)) ?j)
 	     (TeX-looking-at-backward (concat (regexp-quote TeX-esc) TeX-token-char "*")
 				      (1- (- (point) linebeg)))
-	     (save-excursion
-	       (goto-char (match-beginning 0))
-	       (not (TeX-escaped-p (match-beginning 0)))))
+	     (not (TeX-escaped-p (match-beginning 0))))
       (goto-char (match-beginning 0)))
   ;; Cater for \verb|...| (and similar) contructs which should not be
   ;; broken. (FIXME: Make it work with shortvrb.sty (also loaded by
