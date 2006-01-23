@@ -1,3 +1,7 @@
+2006-01-24  Ikumi Keita <ikumi@revery.net>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Fix previous change.
+
 2006-01-23  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in: Add CP_A.  Add coment on maintainer-only targets.
