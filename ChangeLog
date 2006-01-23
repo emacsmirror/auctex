@@ -1,3 +1,8 @@
+2006-01-23  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* Makefile.in: Add CP_A.  Add coment on maintainer-only targets.
+	(xemacs-package): Use CP_A.
+
 2006-01-22  Ikumi Keita <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Use TeX-espaced-p to

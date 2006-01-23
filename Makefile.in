@@ -44,6 +44,7 @@ CVSFILES=autogen.sh .cvsignore doc/.cvsignore preview/.cvsignore \
 .SUFFIXES: .el .elc .texi
 
 SHELL = /bin/sh
+CP_A = cp -pR
 
 DIST_PREFIX = /home/tmp/auctex-
 FTPDIR = $(DIST_PREFIX)ftp
@@ -259,6 +260,8 @@ tar-ball-clean:
 wc:
 	wc $(AUCSRC) $(STYLESRC)
 
+# The targets below are intened to be used only by the maintainers.
+
 snapshot: check-dist tar-ball
 
 dist:	check-dist release-commit tar-ball
@@ -323,7 +326,7 @@ patch:
 
 xemacs-package:
 	rm -rf xemacs-build
-	cp -a auctex-$(TAG) xemacs-build
+	$(CP_A) auctex-$(TAG) xemacs-build
 	cd xemacs-build \
 	&& ./configure INSTALL_INFO=: TEXHASH=: --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
 	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
