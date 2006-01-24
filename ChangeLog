@@ -1,3 +1,9 @@
+2006-01-25  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-buf.el (TeX-run-dviout): Undo previous change.
+
+	* tex.el (TeX-command-list): Ditto.
+
 2006-01-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-verbatim-macros-with-delims)
