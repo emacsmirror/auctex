@@ -1805,38 +1805,85 @@ the cdr is the brace used with \\right.")
 
 (defcustom LaTeX-verbatim-macros-with-delims
   '("verb" "verb*")
-  "Macros for inline verbatim with arguments in delimiters, like \\foo|...|."
+  "Macros for inline verbatim with arguments in delimiters, like \\foo|...|.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-macros-with-delims' which returns a value
+including buffer-local keyword additions via
+`LaTeX-verbatim-macros-with-delims-local' as well."
   :group 'LaTeX
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-macros-with-delims-local nil
   "Buffer-local variable for inline verbatim with args in delimiters.
+
 Style files should add constructs to this variable and not to
-`LaTeX-verbatim-macros-with-delims'.")
+`LaTeX-verbatim-macros-with-delims'.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-macros-with-delims' which returns a value
+including values of the variable
+`LaTeX-verbatim-macros-with-delims' as well.")
 (make-variable-buffer-local 'LaTeX-verbatim-macros-with-delims-local)
 
 (defcustom LaTeX-verbatim-macros-with-braces nil
-  "Macros for inline verbatim with arguments in braces, like \\foo{...}."
+  "Macros for inline verbatim with arguments in braces, like \\foo{...}.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-macros-with-braces' which returns a value
+including buffer-local keyword additions via
+`LaTeX-verbatim-macros-with-braces-local' as well."
   :group 'LaTeX
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-macros-with-braces-local nil
   "Buffer-local variable for inline verbatim with args in braces.
+
 Style files should add constructs to this variable and not to
-`LaTeX-verbatim-macros-with-delims'.")
+`LaTeX-verbatim-macros-with-braces'.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-macros-with-braces' which returns a value
+including values of the variable
+`LaTeX-verbatim-macros-with-braces' as well.")
 (make-variable-buffer-local 'LaTeX-verbatim-macros-with-braces-local)
 
 (defcustom LaTeX-verbatim-environments
   '("verbatim" "verbatim*")
-  "Verbatim environments."
+  "Verbatim environments.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-environments' which returns a value including
+buffer-local keyword additions via
+`LaTeX-verbatim-environemts-local' as well."
   :group 'LaTeX
   :type '(repeat (string)))
 
 (defvar LaTeX-verbatim-environments-local nil
   "Buffer-local variable for inline verbatim environments.
+
 Style files should add constructs to this variable and not to
-`LaTeX-verbatim-environments'.")
-(make-variable-buffer-local 'LaTeX-verbatim-environments)
+`LaTeX-verbatim-environments'.
+
+Programs should not use this variable directly but the function
+`LaTeX-verbatim-environments' which returns a value including
+values of the variable `LaTeX-verbatim-environments' as well.")
+(make-variable-buffer-local 'LaTeX-verbatim-environments-local)
+
+(defun LaTeX-verbatim-macros-with-delims ()
+  "Return list of verbatim macros with delimiters."
+  (append LaTeX-verbatim-macros-with-delims
+	  LaTeX-verbatim-macros-with-delims-local))
+
+(defun LaTeX-verbatim-macros-with-braces ()
+  "Return list of verbatim macros with braces."
+  (append LaTeX-verbatim-macros-with-braces
+	  LaTeX-verbatim-macros-with-braces-local))
+
+(defun LaTeX-verbatim-environments ()
+  "Return list of verbatim environments."
+  (append LaTeX-verbatim-environments
+	  LaTeX-verbatim-environments-local))
 
 (defun LaTeX-verbatim-macro-boundaries ()
   "Return boundaries of verbatim macro.
@@ -1846,20 +1893,23 @@ start and the cdr the macro end.
 Only macros which enclose their arguments with special
 non-parenthetical delimiters, like \\verb+foo+, are recognized."
   (save-excursion
-    (let ((verbatim-regexp (regexp-opt LaTeX-verbatim-macros-with-delims)))
-      (catch 'found
-	(while (progn
-		 (skip-chars-backward (concat "^\n" (regexp-quote TeX-esc))
-				      (line-beginning-position))
-		 (when (looking-at verbatim-regexp) (throw 'found nil))
-		 (forward-char -1)
-		 (/= (point) (line-beginning-position)))))
+    (let ((orig (point))
+	  (verbatim-regexp (regexp-opt (LaTeX-verbatim-macros-with-delims) t)))
+      (unless (looking-at (concat (regexp-quote TeX-esc) verbatim-regexp))
+	(catch 'found
+	  (while (progn
+		   (skip-chars-backward (concat "^\n" (regexp-quote TeX-esc))
+					(line-beginning-position))
+		   (when (looking-at verbatim-regexp) (throw 'found nil))
+		   (forward-char -1)
+		   (/= (point) (line-beginning-position))))))
       (unless (= (point) (line-beginning-position))
 	(let ((beg (1- (point))))
 	  (goto-char (1+ (match-end 0)))
 	  (skip-chars-forward (concat "^" (buffer-substring-no-properties
 					   (1- (point)) (point))))
-	  (cons beg (1+ (point))))))))
+	  (when (<= orig (point))
+	    (cons beg (1+ (point)))))))))
 
 (defun LaTeX-current-verbatim-macro ()
   "Return name of verbatim macro containing point, nil if none is present."
@@ -1872,14 +1922,15 @@ non-parenthetical delimiters, like \\verb+foo+, are recognized."
 	 (point) (progn (skip-chars-forward "@A-Za-z") (point)))))))
 
 (defun LaTeX-verbatim-p (&optional pos)
-  "Return non-nil if position POS is not in a verbatim-like construct."
+  "Return non-nil if position POS is in a verbatim-like construct."
   (when pos (goto-char pos))
   (save-match-data
     (or (when (fboundp 'font-latex-faces-present-p)
 	  (font-latex-faces-present-p 'font-latex-verbatim-face))
-	(assoc (LaTeX-current-verbatim-macro) LaTeX-verbatim-macros-with-delims)
-	(assoc (TeX-current-macro) LaTeX-verbatim-macros-with-braces)
-	(assoc (LaTeX-current-environment) LaTeX-verbatim-environments))))
+	(member (LaTeX-current-verbatim-macro)
+		(LaTeX-verbatim-macros-with-delims))
+	(member (TeX-current-macro) (LaTeX-verbatim-macros-with-braces))
+	(member (LaTeX-current-environment) (LaTeX-verbatim-environments)))))
 
 
 ;;; Formatting
@@ -2807,22 +2858,24 @@ space does not end a sentence, so don't break a line there."
   ;; handled with `fill-nobreak-predicate', but this is not available
   ;; in XEmacs.
   (let ((final-breakpoint (point))
-	(verb-macros (regexp-opt LaTeX-verbatim-macros-with-delims)))
+	(verb-macros (regexp-opt (append (LaTeX-verbatim-macros-with-delims)
+					 (LaTeX-verbatim-macros-with-braces)))))
     (save-excursion
-      (when (and (re-search-backward
-		  (concat (regexp-quote TeX-esc) "\\(?:" verb-macros
-			  "\\)\\([^a-z@*]\\)")
-		  (line-beginning-position) t)
-		 (progn (goto-char (match-beginning 1))
-			(looking-at "\\([^a-z@*]\\).*?\\(\\1\\)"))
-		 (> (- (match-end 2) (line-beginning-position))
-		    (current-fill-column)))
-	(goto-char (match-beginning 0))
-	(skip-chars-backward "^ \n")
-	(when (bolp)
-	  (goto-char (match-end 2))
-	  (skip-chars-forward "^ \n" (point-max)))
-	(setq final-breakpoint (point))))
+      (when (re-search-backward (concat (regexp-quote TeX-esc)
+					"\\(?:" verb-macros "\\)\\([^a-z@*]\\)")
+				(line-beginning-position) t)
+	(let ((beg (point))
+	      (end (if (not (string-match "[ [{]" (match-string 1)))
+		       (cdr (LaTeX-verbatim-macro-boundaries))
+		     (TeX-find-macro-end))))
+	  (when (and end (> (- end (line-beginning-position))
+			    (current-fill-column)))
+	    (goto-char beg)
+	    (skip-chars-backward "^ \n")
+	    (when (bolp)
+	      (goto-char end)
+	      (skip-chars-forward "^ \n" (point-max)))
+	    (setq final-breakpoint (point))))))
     (goto-char final-breakpoint))
   (when LaTeX-fill-break-at-separators
     (let ((orig-breakpoint (point))
