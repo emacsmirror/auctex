@@ -1,3 +1,27 @@
+2006-01-24  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-verbatim-macros-with-delims)
+	(LaTeX-verbatim-macros-with-delims-local)
+	(LaTeX-verbatim-macros-with-braces)
+	(LaTeX-verbatim-macros-with-braces-local): Doc fix.
+	(LaTeX-verbatim-environments, LaTeX-verbatim-environments-local):
+	Doc fix.  Make the correct variable buffer-local.
+	(LaTeX-verbatim-macros-with-delims)
+	(LaTeX-verbatim-macros-with-braces, LaTeX-verbatim-environments):
+	New functions.
+	(LaTeX-verbatim-macro-boundaries): Find macro in case point is
+	just in front of it.
+	(LaTeX-verbatim-p): Doc fix.  Correct macro lookup.
+	(LaTeX-fill-move-to-break-point): Do not break verbatim macros
+	with braces across lines (in addition to macros with delimiters).
+	For example in case of \lstinline{...} this would result in an
+	error and in case of \url{...} spaces would be messed up (in
+	conjunction with the `obeyspaces' package option).
+
+	* font-latex.el (font-latex-set-syntactic-keywords): Instead of
+	appending lists of verbatim macros and environments manually use
+	new LaTeX-verbatim-* functions.
+
 2006-01-24  Ikumi Keita <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Fix previous change.
