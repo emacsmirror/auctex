@@ -1,6 +1,6 @@
 ;;; csquotes.el --- AUCTeX style for `csquotes.sty'
 
-;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 
 ;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
 ;; Maintainer: auctex-devel@gnu.org
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `csquotes.sty', version 3.0.
+;; This file adds support for `csquotes.sty', version 3.2.
 
 
 ;;; Code:
@@ -55,7 +55,8 @@ the insertion of optional arguments."
       (if (vectorp elt)
 	  (setq prompt (aref elt 0)
 		optional t)
-	(setq optional nil))
+	(setq prompt elt
+	      optional nil))
       (setq user-input (read-string (TeX-argument-prompt optional prompt nil)))
       (unless (and optional (zerop (length user-input)))
 	(setq env-extra (concat env-extra
@@ -81,9 +82,15 @@ the insertion of optional arguments."
       '("foreignquote*" 2)
       '("hyphenquote" 2)
       '("hyphenquote*" 2)
+      '("textquote" ["Citation"] ["Punctuation"] t)
+      '("textquote*" ["Citation"] ["Punctuation"] t)
+      '("foreigntextquote" "Language" ["Citation"] ["Punctuation"] t)
+      '("foreigntextquote*" "Language" ["Citation"] ["Punctuation"] t)
+      '("hyphentextquote" "Language" ["Citation"] ["Punctuation"] t)
+      '("hyphentextquote*" "Language" ["Citation"] ["Punctuation"] t)
       '("blockquote" ["Citation"] ["Punctuation"] t)
-      '("foreignblockquote" t ["Citation"] ["Punctuation"] nil)
-      '("hyphenblockquote" t ["Citation"] ["Punctuation"] nil)
+      '("foreignblockquote" "Language" ["Citation"] ["Punctuation"] t)
+      '("hyphenblockquote" "Language" ["Citation"] ["Punctuation"] t)
       `("setquotestyle"
 	[ (TeX-arg-eval completing-read "Quote style variant: "
 			',quote-style-variant-list) ]
@@ -105,12 +112,16 @@ the insertion of optional arguments."
 	"Delimiter for citation" "Closing quotation mark")
       "DisableQuotes"
       "RestoreQuotes"
-      '("cquote" ["Pre-note"] ["Post-note"] "Key" t)
-      '("cquote*" ["Pre-note"] ["Post-note"] "Key" t)
-      '("foreigncquote" "Language" ["Pre-note"] ["Post-note"] "Key" t)
-      '("foreigncquote*" "Language" ["Pre-note"] ["Post-note"] "Key" t)
-      '("hyphencquote" "Language" ["Pre-note"] ["Post-note"] "Key" t)
-      '("hyphencquote*" "Language" ["Pre-note"] ["Post-note"] "Key" t)
+      '("textcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+      '("textcquote*" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
+      '("foreigntextcquote" "Language" ["Pre-note"] ["Post-note"] "Key"
+	["Punctuation"] t)
+      '("foreigntextcquote*" "Language" ["Pre-note"] ["Post-note"] "Key"
+	["Punctuation"] t)
+      '("hyphentextcquote" "Language" ["Pre-note"] ["Post-note"] "Key"
+	["Punctuation"] t)
+      '("hyphentextcquote*" "Language" ["Pre-note"] ["Post-note"] "Key"
+	["Punctuation"] t)
       '("blockcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("foreignblockcquote" "Language" ["Pre-note"] ["Post-note"] "Key"
 	["Punctuation"] t)
@@ -143,6 +154,10 @@ the insertion of optional arguments."
     "mkccitation"
     "mkmidblockpunct"
     "mkfinblockpunct"
+    "mkmidtextpunct"
+    "mkfintextpunct"
+    "mkmiddisppunct"
+    "mkfindisppunct"
     '("ifblockquote" 2)
     '("ifquotepunct" 2)
     '("ifquoteterm" 2)
@@ -156,15 +171,19 @@ the insertion of optional arguments."
    ;; New environments
    (LaTeX-add-environments
     "quoteblock"
-    '("displayquote" "Citation")
-    '("foreigndisplayquote" "Language" "Citation")
-    '("hyphendisplayquote" "Language" "Citation")
+    "quotetext"
+    '("displayquote" LaTeX-csquotes-insert-environment ["Citation"]
+      ["Punctuation"])
+    '("foreigndisplayquote" LaTeX-csquotes-insert-environment "Language"
+      ["Citation"] ["Punctuation"])
+    '("hyphendisplayquote" LaTeX-csquotes-insert-environment "Language"
+      ["Citation"] ["Punctuation"])
     '("displaycquote" LaTeX-csquotes-insert-environment
-      ["Pre-note"] ["Post-note"] "Key")
+      ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
     '("foreigndisplaycquote" LaTeX-csquotes-insert-environment
-      "Language" ["Pre-note"] ["Post-note"] "Key")
+      "Language" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"])
     '("hyphendisplaycquote" LaTeX-csquotes-insert-environment
-      "Language" ["Pre-note"] ["Post-note"] "Key"))
+      "Language" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"]))
    ;; Quotation marks
    (when (and (> (length LaTeX-csquotes-open-quote) 0)
 	      (> (length LaTeX-csquotes-close-quote) 0))
@@ -177,19 +196,23 @@ the insertion of optional arguments."
      (add-to-list 'font-latex-match-function-keywords-local "DisableQuotes")
      (add-to-list 'font-latex-match-function-keywords-local "RestoreQuotes")
      (font-latex-match-function-make)
-     (add-to-list 'font-latex-match-reference-keywords-local "blockcite")
-     (font-latex-match-reference-make)
      (mapcar (lambda (keyword)
 	       (add-to-list 'font-latex-match-textual-keywords-local keyword))
 	     '("enquote"
 	       "foreignquote"
 	       "hyphenquote"
-	       "cquote"
-	       "cquote*"
-	       "foreigncquote"
-	       "foreigncquote*"
-	       "hyphencquote"
-	       "hyphencquote*"
+	       "textcquote"
+	       "textcquote*"
+	       "foreigntextcquote"
+	       "foreigntextcquote*"
+	       "hyphentextcquote"
+	       "hyphentextcquote*"
+	       "textquote"
+	       "textquote*"
+	       "foreigntextquote"
+	       "foreigntextquote*"
+	       "hyphentextquote"
+	       "hyphentextquote*"
 	       "blockquote"
 	       "foreignblockquote"
 	       "hyphenblockquote"
