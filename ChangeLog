@@ -1,3 +1,7 @@
+2006-01-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* style/url.el ("url"): Support the \path macro.
+
 2006-01-25  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-buf.el (TeX-run-dviout): Undo previous change.
