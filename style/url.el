@@ -46,16 +46,20 @@
     "UrlOrds"
     "UrlRight"
     "UrlSpecials"
+    "path"
     "url"
     "urldef"
     '("urlstyle" TeX-arg-urlstyle))
 
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
 
    ;; Fontification
    (when (and (featurep 'font-latex)
 	      (eq TeX-install-font-lock 'font-latex-setup))
+     (add-to-list 'font-latex-match-reference-keywords-local "path")
      (add-to-list 'font-latex-match-reference-keywords-local "url")
      (font-latex-match-reference-make)
      (mapcar (lambda (keyword)
