@@ -1,5 +1,9 @@
 2006-01-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* style/csquotes.el (LaTeX-csquotes-insert-environment): Set
+	prompt for mandatory arguments.
+	("csquotes"): Bring up to par with csquotes 3.2.
+
 	* style/url.el ("url"): Support the \path macro.
 
 2006-01-25  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
