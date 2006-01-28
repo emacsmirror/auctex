@@ -1,3 +1,10 @@
+2006-01-28  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-jp.el (TeX-command-list): Use function ignore insted of nil
+	for the third element of `separator for command menu' because
+	defcustom of TeX-command-list requires the third element function.
+	Reported by Ikumi Keita <ikumi@revery.net>.
+
 2006-01-28  Ikumi Keita <ikumi@revery.net>
 
 	* tex-buf.el (TeX-run-discard-foreground): Renamed from
