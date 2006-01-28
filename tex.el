@@ -235,8 +235,8 @@ in other window.
 
 TeX-run-silent: Start the process in the background.
 
-TeX-run-dviout: Special hook for the Japanese dviout previewer for
-PC-9801.
+TeX-run-discard-foreground: Start the process in the foreground,
+discarding its output.
 
 To create your own hook, define a function taking three arguments: The
 name of the command, the command string, and the name of the file to
@@ -269,7 +269,7 @@ Any additional elements get just transferred to the respective menu entries.
 				(function-item TeX-run-discard)
 				(function-item TeX-run-background)
 				(function-item TeX-run-silent)
-				(function-item TeX-run-dviout)
+				(function-item TeX-run-discard-foreground)
 				(function-item TeX-run-ispell-on-document)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
