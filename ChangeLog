@@ -1,3 +1,12 @@
+2006-01-28  Ikumi Keita <ikumi@revery.net>
+
+	* tex-buf.el (TeX-run-discard-foreground): Renamed from
+	TeX-run-dviout.
+	(TeX-run-dviout): alias to TeX-run-discard-foreground.
+
+	* tex.el (TeX-command-list): Use TeX-run-discard-foreground
+	instead of TeX-run-dviout.
+
 2006-01-25  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* style/csquotes.el (LaTeX-csquotes-insert-environment): Set
