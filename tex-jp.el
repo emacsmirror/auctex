@@ -94,7 +94,7 @@ For detail, see `TeX-command-list', which this list is appended to."
 
 (setq TeX-command-list
       (append japanese-TeX-command-list
-	      '(("-" "" nil nil t)) ;; separator for command menu
+	      '(("-" "" ignore nil t)) ;; separator for command menu
 	      TeX-command-list))
 
 (mapcar (lambda (dir) (add-to-list 'TeX-macro-global dir t))
