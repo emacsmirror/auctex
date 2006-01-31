@@ -183,7 +183,10 @@ AC_DEFUN(EMACS_PATH_PACKAGEDIR,
           '${datadir}' '${libdir}' "${emacsprefix}"]],
         [[(list \"xemacs/site-packages\" \"xemacs/xemacs-packages\"
                 \"site-packages\" \"xemacs-packages\")]],
-        [[(append late-packages last-packages early-packages)]])
+        [[(if (boundp 'late-packages)
+	      (append late-packages last-packages early-packages)
+	    (append late-package-hierarchies last-package-hierarchies
+		    early-package-hierarchies))]])
       if test "x${packagedir}" = xNONE -o -z "${packagedir}"; then
         AC_MSG_ERROR([not found, exiting!])
       fi
