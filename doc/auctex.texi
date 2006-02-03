@@ -26,8 +26,8 @@
 @author updates from 11.14 by David Kastrup
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1993, 1994, 1995,
-                       2001, 2002, 2004, 2005 Free Software Foundation, Inc.
+Copyright @copyright{} 1993, 1994, 1995, 2001, 2002, 2004,
+  2005, 2006 Free Software Foundation, Inc.
 Copyright @copyright{} 1992 Kresten Krab Thorup @*
 
 Permission is granted to make and distribute verbatim copies of
@@ -155,6 +155,67 @@ sending ``subscribe'' in the subject of a mail to
 * Function Index::              Function Index
 * Variable Index::              Variable Index
 * Concept Index::               Concept Index
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Inserting Frequently Used Commands
+
+* Quotes::                      Inserting double quotes
+* Font Specifiers::             Inserting Font Specifiers
+* Sectioning::                  Inserting chapters, sections, etc.
+* Environments::                Inserting Environment Templates
+
+Inserting Environment Templates
+
+* Equations::                   Equations
+* Floats::                      Floats
+* Itemize-like::                Itemize-like
+* Tabular-like::                Tabular-like
+* Customizing environments::    Customizing environments
+
+Advanced Editing Features
+
+* Mathematics::                 Entering Mathematics
+* Completion::                  Completion of macros
+* Commenting::                  Commenting text
+* Indenting::                   Reflecting syntactic constructs with whitespace
+* Filling::                     Automatic and manual line breaking
+
+Controlling Screen Display
+
+* Font Locking::                Font Locking
+* Folding::                     Folding Macros and Environments
+* Outline::                     Outlining the Document
+
+Starting Processors, Viewers and Other Programs
+
+* Commands::                    Invoking external commands.
+* Viewing::                     Invoking external viewers.
+* Debugging::                   Debugging @TeX{} and @LaTeX{} output.
+* Checking::                    Checking the document.
+* Control::                     Controlling the processes.
+
+Language Support
+
+* European::                    Using @AUCTeX{} with European Languages
+* Japanese::                    Using @AUCTeX{} with Japanese
+
+Automatic Customization
+
+* Automatic Global::            Automatic Customization for the Site
+* Automatic Private::           Automatic Customization for a User
+* Automatic Local::             Automatic Customization for a Directory
+
+Writing Your own Style Support
+
+* Simple Style::                A Simple Style File
+* Adding Macros::               Adding Support for Macros
+* Adding Environments::         Adding Support for Environments
+* Adding Other::                Adding Other Information
+* Hacking the Parser::          Automatic Extraction of New Things
+
+@end detailmenu
 @end menu
 
 @node Copying
@@ -170,7 +231,7 @@ sending ``subscribe'' in the subject of a mail to
 @cindex Right
 @cindex Warranty
 
-(This text stolen from the @TeX{}info 2.16 distribution).
+(This text stolen from the Texinfo 2.16 distribution).
 
 The programs currently being distributed that relate to @AUCTeX{}
 include lisp files for Emacs (and XEmacs).  These programs are
