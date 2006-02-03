@@ -4621,6 +4621,17 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 	(call-interactively 'self-insert-command))
        (t (insert hyphen))))))
 
+(defcustom LaTeX-enable-toolbar t
+  "Enable LaTeX tool bar."
+  :group 'TeX-tool-bar
+  :type 'boolean)
+
+(defun LaTeX-maybe-install-toolbar ()
+  "Conditionally install tool bar buttons for LaTeX mode.
+Install tool bar if `LaTeX-enable-toolbar' is non-nil."
+  (when LaTeX-enable-toolbar
+    ;; Defined in `tex-bar.el':
+    (LaTeX-install-toolbar)))
 
 ;;; Mode
 
@@ -4679,6 +4690,7 @@ of `LaTeX-mode-hook'."
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (TeX-set-mode-name)
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
+  (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar)
   ;; Defeat filladapt
   (if (and (boundp 'filladapt-mode)
 	   filladapt-mode)
