@@ -104,13 +104,14 @@ for @LaTeX{} which you can enable with
 (add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
 @end lisp
 
-Another thing you should enable is Ref@TeX{}
-(@pxref{Installation,,,reftex,The Ref@TeX{} manual}), a comprehensive
-solution for managing cross references, bibliographies, indices,
-document navigation and a few other things.
+Another thing you should enable is Ref@TeX{}, a comprehensive solution
+for managing cross references, bibliographies, indices, document
+navigation and a few other things.  (@pxref{Installation,,,reftex,The
+Ref@TeX{} manual})
 
-Also check out @ref{Installation,,,preview-latex,The @previewlatex{}
-Manual}, for activating the @previewlatex{} subsystem of @AUCTeX{}.
+For detailed information about the @previewlatex{} subsystem of
+@AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
+Manual}.
 
 NOTE: This documentation is preliminary.  It should however cover most
 important points.  Corrections or perhaps rewrites of sections
