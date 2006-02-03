@@ -1,7 +1,8 @@
 2006-02-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (top): Add detailed menu for better
-	accessibility.
+	accessibility.  Fix formatting/usage of references to RefTeX and
+	preview-latex manuals.
 
 2006-02-03  Reiner Steib  <Reiner.Steib@gmx.de>
 
