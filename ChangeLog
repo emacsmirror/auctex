@@ -1,3 +1,10 @@
+2006-02-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-make-sectioning-faces): Set the face
+	size for XEmacs again after `set-face-parent' was called which
+	erroneously overwrites the original size.  Without this fix
+	sectioning faces may be unscaled after starting XEmacs.
+
 2006-02-03  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/auctex.texi (top): Add detailed menu for better
