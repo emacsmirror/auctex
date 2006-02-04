@@ -241,7 +241,10 @@ variable `font-latex-fontify-sectioning'." num)
       (when (and (featurep 'xemacs)
 		 ;; Do not touch customized  faces.
 		 (not (get face-name 'saved-face)))
-	(set-face-parent face-name f-inherit)))))
+	(set-face-parent face-name f-inherit)
+	;; Explicitely set the size again to code around the bug that
+	;; `set-face-parent' overwrites the original face size.
+	(make-face-size face-name size)))))
 
 (font-latex-make-sectioning-faces font-latex-sectioning-max)
 
