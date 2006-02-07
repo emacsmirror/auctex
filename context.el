@@ -1,6 +1,6 @@
 ;;; context.el --- Support for ConTeXt documents.
 
-;; Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 
 ;; Maintainer: Berend de Boer <berend@pobox.com>
 ;; Keywords: tex
@@ -1406,6 +1406,25 @@ else.  There might be text before point."
 		       ConTeXt-section-block-list ConTeXt-section-list
 		       ConTeXt-text ConTeXt-item-list))
 
+(defcustom ConTeXt-clean-intermediate-suffixes
+  ;; See *suffixes in texutil.pl.
+  '("\\.tui" "\\.tup" "\\.ted" "\\.tes" "\\.top" "\\.log" "\\.tmp" "\\.run"
+    "\\.bck" "\\.rlg" "\\.mpt" "\\.mpx" "\\.mpd" "\\.mpo" "\\.tuo" "\\.tub"
+    "\\.top" "-mpgraph\\.mp" "-mpgraph\\.mpd" "-mpgraph\\.mpo" "-mpgraph\\.mpy"
+    "-mprun\\.mp" "-mprun\\.mpd" "-mprun\\.mpo" "-mprun\\.mpy")
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom ConTeXt-clean-output-suffixes
+  '("\\.dvi" "\\.pdf" "\\.ps")
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
