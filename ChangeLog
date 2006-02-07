@@ -1,5 +1,16 @@
 2006-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* tex.el (TeX-command-list): Use `TeX-run-function' instead of
+	`TeX-run-ispell-on-document' for "Spell" option.  Remove
+	`TeX-run-ispell-on-document' as option for the third element of an
+	item.
+	(TeX-ispell-document): Move here from tex-buf.el.
+
+	* tex-buf.el (TeX-run-ispell-on-document): Remove.
+	(TeX-ispell-document): Move to tex.el.
+
+2006-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
 	* tex.el (TeX-command-list): Remove "ConTeXt Clean".  Add general
 	"Clean" and "Clean All" options.  Add `TeX-run-function' as an
 	option for the third element of an item and document it.
