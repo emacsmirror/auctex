@@ -757,6 +757,13 @@ Error parsing on C-x ` should work with a bit of luck."
     ;; use the sentinel-function that the major mode sets, not the LaTeX one
     (setq TeX-sentinel-function sentinel-function)))
 
+(defun TeX-run-function (name command file)
+  "Execute Lisp function or function call given as the string COMMAND.
+Parameters NAME and FILE are ignored."
+  (let ((fun (car (read-from-string command))))
+    (if (functionp fun) (funcall fun) (eval fun))))
+
+
 ;;; Command Sentinels
 
 (defun TeX-synchronous-sentinel (name file result)
