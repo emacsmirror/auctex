@@ -1,7 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
 ;; Copyright (C) 1993, 1996, 2001, 2003, 2004,
-;;   2005 Free Software Foundation, Inc.
+;;   2005, 2006 Free Software Foundation, Inc.
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -346,44 +346,6 @@ in TeX-check-path."
 	      (if (file-newer-than-file-p name derived)
 		  (setq found t))))))
     found))
-
-(defun TeX-run-ispell-on-document (command ignored name)
-  "Run ispell on all open files belonging to the current document."
-  (interactive)
-  (TeX-ispell-document ""))
-
-(defun TeX-ispell-document (name)
-  "Run ispell on all open files belonging to the current document."
-  (interactive (list (TeX-master-file)))
-  (if (string-equal name "")
-      (setq name (TeX-master-file)))
-
-  (let ((found nil)
-	(regexp (concat "\\`\\("
-			(mapconcat (lambda (dir)
-				     (regexp-quote
-				      (expand-file-name 
-				       (file-name-as-directory dir))))
-				   (append (when (file-name-directory name)
-					     (list (file-name-directory name)))
-					   TeX-check-path)
-				   "\\|")
-			"\\).*\\("
-			(mapconcat 'regexp-quote
-				   (cons (file-name-nondirectory name)
-					 (TeX-style-list)) "\\|")
-			"\\)\\.\\("
-			(mapconcat 'regexp-quote TeX-file-extensions "\\|")
-			"\\)\\'"))
-	(buffers (buffer-list)))
-    (while buffers
-      (let* ((buffer (car buffers))
-	     (name (buffer-file-name buffer)))
-	(setq buffers (cdr buffers))
-	(if (and name (string-match regexp name))
-	    (progn
-	      (save-excursion (switch-to-buffer buffer) (ispell-buffer))
-	      (setq found t)))))))
 
 (defcustom TeX-save-query t
   "*If non-nil, ask user for permission to save files before starting TeX."
