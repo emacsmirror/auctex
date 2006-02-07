@@ -1,3 +1,27 @@
+2006-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-command-list): Remove "ConTeXt Clean".  Add general
+	"Clean" and "Clean All" options.  Add `TeX-run-function' as an
+	option for the third element of an item and document it.
+	(TeX-clean-default-intermediate-suffixes)
+	(TeX-clean-default-output-suffixes, TeX-clean-confirm): New
+	variables.
+	(dired-mark-pop-up): Autoload.
+	(TeX-clean): New function.
+
+	* tex-buf.el (TeX-run-function): New function.
+
+	* tex-info.el (Texinfo-clean-intermediate-suffixes)
+	(Texinfo-clean-output-suffixes): New variables.
+
+	* latex.el (docTeX-clean-intermediate-suffixes)
+	(docTeX-clean-output-suffixes)
+	(LaTeX-clean-intermediate-suffixes, LaTeX-clean-output-suffixes):
+	New variables.
+
+	* context.el (ConTeXt-clean-intermediate-suffixes)
+	(ConTeXt-clean-output-suffixes): New variables.
+
 2006-02-04  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-make-sectioning-faces): Set the face
