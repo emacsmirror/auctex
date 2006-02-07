@@ -1,7 +1,7 @@
 ;;; tex-info.el --- Support for editing Texinfo source.
 
 ;; Copyright (C) 1993, 1994, 1997, 2000, 2001,
-;;               2004, 2005 Free Software Foundation, Inc.
+;;               2004, 2005, 2006 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -535,6 +535,23 @@ value of `Texinfo-mode-hook'."
   
   (TeX-run-mode-hooks 'text-mode-hook 'Texinfo-mode-hook)
   (TeX-set-mode-name))
+
+(defcustom Texinfo-clean-intermediate-suffixes nil
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom Texinfo-clean-output-suffixes
+  ;; See `man texi2html' for the HTML stuff.
+  '("\\.info\\(-[0-9]+\\)?" "\\.dvi" "\\.pdf" "\\.ps" "\\.html"
+    "_toc\\.html" "_fot\\.html" "_abt\\.html" "_[0-9]+\\.html" "_l2h_img.+")
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
   
 (provide 'tex-info)
   
