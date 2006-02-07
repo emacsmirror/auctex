@@ -725,6 +725,13 @@ Parameters NAME and FILE are ignored."
   (let ((fun (car (read-from-string command))))
     (if (functionp fun) (funcall fun) (eval fun))))
 
+(defun TeX-run-ispell-on-document (command ignored name)
+  "Run ispell on all open files belonging to the current document.
+This function is *obsolete* and only here for compatibility
+reasons.  Use `TeX-run-function' instead."
+  (interactive)
+  (TeX-ispell-document ""))
+
 
 ;;; Command Sentinels
 
