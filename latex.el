@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1991 Kresten Krab Thorup
 ;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000,
-;;   2003, 2004, 2005 Free Software Foundation, Inc.
+;;   2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
@@ -4725,6 +4725,21 @@ runs the hooks in `docTeX-mode-hook'."
 ;;;###autoload
 (defalias 'TeX-doctex-mode 'docTeX-mode)
 
+(defcustom docTeX-clean-intermediate-suffixes
+  TeX-clean-default-intermediate-suffixes
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom docTeX-clean-output-suffixes TeX-clean-default-output-suffixes
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
 (defvar LaTeX-header-end
   (concat "^[^%\n]*" (regexp-quote TeX-esc) "begin *"
 	  TeX-grop "document" TeX-grcl)
@@ -4734,6 +4749,21 @@ runs the hooks in `docTeX-mode-hook'."
   (concat "^[^%\n]*" (regexp-quote TeX-esc) "end *"
 	  TeX-grop "document" TeX-grcl)
   "Default start of trailer marker for LaTeX documents.")
+
+(defcustom LaTeX-clean-intermediate-suffixes
+  TeX-clean-default-intermediate-suffixes
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
+
+(defcustom LaTeX-clean-output-suffixes TeX-clean-default-output-suffixes
+  "List of regexps matching suffixes of files to be deleted.
+The regexps will be anchored at the end of the file name to be matched,
+i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
+  :type '(repeat regexp)
+  :group 'TeX-command)
 
 (defun LaTeX-common-initialization ()
   "Common initialization for LaTeX derived modes."
