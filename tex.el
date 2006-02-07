@@ -1,7 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
 ;; Copyright (C) 1985, 1986, 1987, 1993, 1994, 1996, 1997, 1999, 2000,
-;;   2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+;;   2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 ;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auctex-devel@gnu.org
@@ -178,10 +178,6 @@ the printer has no corresponding command."
     ("ConTeXt Full" "texexec %(execopts)%t"
      TeX-run-TeX nil
      (context-mode) :help "Run ConTeXt until completion")
-    ;; --purge %s does not work on unix systems with current texutil
-    ;; check again october 2003 --pg
-    ("ConTeXt Clean" "texutil --purgeall" TeX-run-interactive nil
-     (context-mode) :help "Clean temporary ConTeXt files")
     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
     ,(if (or window-system (getenv "DISPLAY"))
 	'("View" "%V" TeX-run-discard t t :help "Run Viewer")
@@ -197,6 +193,10 @@ the printer has no corresponding command."
      :help "Check LaTeX file for correctness")
     ("Spell" "<ignored>" TeX-run-ispell-on-document nil t
      :help "Spell-check the document")
+    ("Clean" "TeX-clean" TeX-run-function nil t
+     :help "Delete generated intermediate files")
+    ("Clean All" "(TeX-clean t)" TeX-run-function nil t
+     :help "Delete generated intermediate and output files")
     ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))
   "List of commands to execute on the current document.
 
@@ -238,6 +238,10 @@ TeX-run-silent: Start the process in the background.
 TeX-run-discard-foreground: Start the process in the foreground,
 discarding its output.
 
+TeX-run-function: Execute the Lisp function or function call
+specified by the string in the second element.  Consequently,
+this hook does not start a process.
+
 To create your own hook, define a function taking three arguments: The
 name of the command, the command string, and the name of the file to
 process.  It might be useful to use `TeX-run-command' in order to
@@ -270,6 +274,7 @@ Any additional elements get just transferred to the respective menu entries.
 				(function-item TeX-run-background)
 				(function-item TeX-run-silent)
 				(function-item TeX-run-discard-foreground)
+				(function-item TeX-run-function)
 				(function-item TeX-run-ispell-on-document)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
@@ -1181,6 +1186,60 @@ Must be the car of an entry in `TeX-command-list'."
   "The default command for `TeX-command' in the current major mode.")
 
  (make-variable-buffer-local 'TeX-command-default)
+
+(defvar TeX-clean-default-intermediate-suffixes
+  '("\\.aux" "\\.bbl" "\\.blg" "\\.fot" "\\.glo" "\\.gls" "\\.lof" "\\.idx"
+    "\\.ilg" "\\.ind" "\\.log" "\\.lot" "\\.toc" "\\.url")
+  "List of regexps matching suffixes of files to be cleaned.
+Used as a default in TeX, LaTeX and docTeX mode.")
+
+(defvar TeX-clean-default-output-suffixes
+  '("\\.dvi" "\\.pdf" "\\.ps")
+  "List of regexps matching suffixes of files to be cleaned.
+Used as a default in TeX, LaTeX and docTeX mode.")
+
+(defcustom TeX-clean-confirm t
+  "If non-nil, ask before deleting files."
+  :type 'boolean
+  :group 'TeX-command)
+
+(autoload 'dired-mark-pop-up "dired")
+
+(defun TeX-clean (&optional arg)
+  "Delete generated files associated with current master file.
+If prefix ARG is non-nil, not only remove intermediate but also
+output files."
+  (interactive "P")
+  (let* ((mode-prefix (cdr (assoc major-mode '((plain-tex-mode . "plain-TeX")
+					       (latex-mode . "LaTeX")
+					       (doctex-mode . "docTeX")
+					       (texinfo-mode . "Texinfo")
+					       (context-mode . "ConTeXt")))))
+	 (suffixes (append (symbol-value
+			    (intern (concat mode-prefix
+					    "-clean-intermediate-suffixes")))
+			   (when arg
+			     (symbol-value
+			      (intern (concat mode-prefix
+					      "-clean-output-suffixes"))))))
+	 (master (TeX-active-master))
+	 (regexp (concat (file-name-nondirectory master)
+			 "\\("
+			 (mapconcat 'identity suffixes "\\|")
+			 "\\)\\'"))
+	 (files (when regexp
+		  (directory-files (or (file-name-directory master) ".")
+				   nil regexp))))
+    (if files
+	(when (or (not TeX-clean-confirm)
+		  (dired-mark-pop-up " *Deletions*" 'delete
+				     (if (> (length files) 1) 
+					 files
+				       (cons t files))
+				     'y-or-n-p "Delete files? "))
+	  (dolist (file files)
+	    (delete-file file)))
+      (message "No files to be deleted"))))
 
 
 ;;; Master File
