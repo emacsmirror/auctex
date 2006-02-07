@@ -191,7 +191,7 @@ the printer has no corresponding command."
     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
     ("Check" "lacheck %s" TeX-run-compile nil (latex-mode)
      :help "Check LaTeX file for correctness")
-    ("Spell" "<ignored>" TeX-run-ispell-on-document nil t
+    ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t
      :help "Spell-check the document")
     ("Clean" "TeX-clean" TeX-run-function nil t
      :help "Delete generated intermediate files")
@@ -275,7 +275,6 @@ Any additional elements get just transferred to the respective menu entries.
 				(function-item TeX-run-silent)
 				(function-item TeX-run-discard-foreground)
 				(function-item TeX-run-function)
-				(function-item TeX-run-ispell-on-document)
 				(function :tag "Other"))
 			(boolean :tag "Prompt")
 			(choice :tag "Modes"
@@ -4714,6 +4713,39 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 	 (ispell))
 	(t
 	 (spell-buffer))))
+
+(defun TeX-ispell-document (name)
+  "Run ispell on all open files belonging to the current document."
+  (interactive (list (TeX-master-file)))
+  (if (string-equal name "")
+      (setq name (TeX-master-file)))
+
+  (let ((found nil)
+	(regexp (concat "\\`\\("
+			(mapconcat (lambda (dir)
+				     (regexp-quote
+				      (expand-file-name 
+				       (file-name-as-directory dir))))
+				   (append (when (file-name-directory name)
+					     (list (file-name-directory name)))
+					   TeX-check-path)
+				   "\\|")
+			"\\).*\\("
+			(mapconcat 'regexp-quote
+				   (cons (file-name-nondirectory name)
+					 (TeX-style-list)) "\\|")
+			"\\)\\.\\("
+			(mapconcat 'regexp-quote TeX-file-extensions "\\|")
+			"\\)\\'"))
+	(buffers (buffer-list)))
+    (while buffers
+      (let* ((buffer (car buffers))
+	     (name (buffer-file-name buffer)))
+	(setq buffers (cdr buffers))
+	(if (and name (string-match regexp name))
+	    (progn
+	      (save-excursion (switch-to-buffer buffer) (ispell-buffer))
+	      (setq found t)))))))
 
 ;; Some versions of ispell 3 use this.
 (defvar ispell-tex-major-modes nil)
