@@ -3070,6 +3070,9 @@ t means autodetect, nil means kpathsea is disabled."
 (defcustom TeX-kpathsea-format-alist
   '(("tex" "${TEXINPUTS.latex}" TeX-file-extensions)
     ("sty" "${TEXINPUTS.latex}" '("sty"))
+    ("dvi" "${TEXDOCS}" '("dvi" "pdf" "ps" "txt" "html"
+			  "dvi.gz" "pdf.gz" "ps.gz" "txt.gz" "html.gz"
+			  "dvi.bz2" "pdf.bz2" "ps.bz2" "txt.bz2" "html.bz2"))
     ("eps" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("pdf" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
     ("png" "${TEXINPUTS}" LaTeX-includegraphics-extensions)
@@ -4647,11 +4650,6 @@ closing brace."
       (if arg (forward-sexp (prefix-numeric-value arg)))
       (insert TeX-grcl))))
 
-(defun TeX-goto-info-page ()
-  "Read documentation for AUCTeX in the info system."
-  (interactive)
-  (info "auctex"))
-
 ;;;###autoload
 (defun TeX-submit-bug-report ()
   "Submit a bug report on AUCTeX via mail.
@@ -4688,6 +4686,108 @@ showing the problem and include it in your report.
 
 Your bug report will be posted to the AUCTeX bug reporting list.
 ------------------------------------------------------------------------")))
+
+
+;;; Documentation
+
+(defun TeX-goto-info-page ()
+  "Read documentation for AUCTeX in the info system."
+  (interactive)
+  (info "auctex"))
+
+(autoload 'Info-find-file "info")
+(autoload 'info-lookup->completions "info-look")
+
+(defvar TeX-doc-backend-alist
+  '((texdoc (plain-tex-mode latex-mode doctex-mode)
+	    (lambda ()
+	      (when (executable-find "texdoc")
+		(TeX-search-files nil '("dvi" "pdf" "ps" "txt" "html") t t)))
+	    (lambda (doc)
+	      (call-process "texdoc" nil 0 nil doc)))
+    (latex-info (latex-mode)
+		(lambda ()
+		  (when (Info-find-file "latex" t)
+		    (mapcar (lambda (x)
+			      (let ((x (car x)))
+				(if (string-match "\\`\\\\" x)
+				    (substring x 1) x)))
+			    (info-lookup->completions 'symbol 'latex-mode))))
+		(lambda (doc)
+		  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
+    (texinfo-info (texinfo-mode)
+		  (lambda ()
+		    (when (Info-find-file "texinfo" t)
+		      (mapcar (lambda (x)
+				(let ((x (car x)))
+				  (if (string-match "\\`@" x)
+				      (substring x 1) x)))
+			      (info-lookup->completions 'symbol
+							'texinfo-mode))))
+		  (lambda (doc)
+		    (info-lookup-symbol (concat "@" doc) 'texinfo-mode))))
+  "Alist of backends used for looking up documentation.
+Each item consists of four elements.
+
+The first is a symbol describing the backend's name.
+
+The second is a list of modes the backend should be activated in.
+
+The third is a function returning a list of documents available
+to the backend.  It should return nil if the backend is not
+available, e.g. if a required executable is not present on the
+system in question.
+
+The fourth is a function for displaying the documentation.  The
+function should accept a single argument, the chosen package,
+command, or document name.")
+
+(defun TeX-doc (&optional name)
+  "Display documentation for string NAME."
+  (interactive)
+  (let (docs)
+    ;; Build the lists of available documentation used for completion.
+    (dolist (elt TeX-doc-backend-alist)
+      (when (memq major-mode (nth 1 elt))
+	(let ((completions (funcall (nth 2 elt))))
+	  (unless (null completions)
+	    (add-to-list 'docs (cons completions (nth 0 elt)))))))
+    (if (null docs)
+	(message "No documentation found")
+      ;; Ask the user about the package, command, or document.
+      (when (and (called-interactively-p)
+		 (or (not name) (string= name "")))
+	(let ((symbol (thing-at-point 'symbol))
+	      contained completions doc)
+	  ;; Is the symbol at point contained in the lists of available
+	  ;; documentation?
+	  (setq contained (catch 'found
+			    (dolist (elt docs)
+			      (when (member symbol (car elt))
+				(throw 'found t)))))
+	  ;; Setup completion list in a format suitable for `completing-read'.
+	  (dolist (elt docs)
+	    (setq completions (nconc (mapcar 'list (car elt)) completions)))
+	  ;; Query user.
+	  (setq doc (completing-read
+		     (if contained
+			 (format "Package, command, or document (default %s): "
+				 symbol)
+		       "Package, command, or document: ")
+		     completions))
+	  (setq name (if (string= doc "") symbol doc))))
+      (if (not name)
+	  (message "No documentation specified")
+	;; XXX: Provide way to choose in case a symbol can be found in
+	;; more than one backend.
+	(let* ((backend (catch 'found
+			  (dolist (elt docs)
+			    (when (member name (car elt))
+			      (throw 'found (cdr elt)))))))
+	  (if backend
+	      (funcall (nth 3 (assoc backend TeX-doc-backend-alist)) name)
+	    (message "Documentation not found")))))))
+
 
 ;;; Ispell Support
 
