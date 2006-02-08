@@ -1,3 +1,14 @@
+2006-02-08  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-kpathsea-format-alist): Add search specs for
+	documentation.
+	(Info-find-file, info-lookup->completions): Autoload.
+	(TeX-doc-backend-alist): New variable.
+	(TeX-doc): New function.
+
+	* doc/todo.texi (Wishlist): Add a few words about documentation
+	lookup for macros.
+
 2006-02-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-run-ispell-on-document): Reintroduce for
