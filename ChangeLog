@@ -1,3 +1,7 @@
+2006-02-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* doc/wininstall.texi: Intersperse some information about PATH.
+
 2006-02-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-clean-default-intermediate-suffixes): Add .brf and
