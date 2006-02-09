@@ -47,8 +47,13 @@ the shell prompt:
 The commands above are examples for common usage.  More on configuration
 options can be found in the detailed installation instructions below.
 
+If the configuration script failed to find all required programs, make
+sure that these programs are in your system path and add directories
+containing the programs to the @env{PATH} environment variable if
+necessary.
+
 @item
-If there were no error messages, type
+If there were no further error messages, type
 
 @example
 make
@@ -253,7 +258,7 @@ Use this option if your Emacs version is unable to support image
 display.  This will be the case if you are using a native variant of
 @w{Emacs 21}.
 
-@item --with-texmf-dir=@var{drive:dir}
+@item --with-texmf-dir=@var{drive:/dir}
 This will specify the directory where your @TeX{} installation sits.  If
 your @TeX{} installation does not conform to the TDS (@TeX{} directory
 standard), you may need to specify more options to get everything in
@@ -281,6 +286,12 @@ GS="@var{drive:/path/to/gswin32c.exe}" ./configure @dots{}
 should work for this purpose.  @file{gswin32c.exe} is the usual name for
 the required @emph{command line} executable under Windows; in contrast,
 @file{gswin32.exe} is likely to fail.
+
+As an alternative to specifying variables for the @file{configure} call
+you can add directories containing the required executables to the
+@env{PATH} variable of your Windows system.  This is especially a good
+idea if Emacs has trouble finding the respective programs later during
+normal operation.
 
 @item
 Run @command{make} in the installation directory.
