@@ -1,3 +1,7 @@
+2006-02-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-master): Mark as safe.
+
 2006-02-09  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* doc/wininstall.texi: Intersperse some information about PATH.

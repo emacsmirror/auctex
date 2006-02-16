@@ -1436,6 +1436,7 @@ the Emacs manual) to set this variable permanently for each file."
 		 (string :format "%v")))
 
  (make-variable-buffer-local 'TeX-master)
+ (put 'TeX-master 'safe-local-variable t)
 
 (defvar TeX-convert-master t
   "*If not nil, automatically convert ``Master:'' lines to file variables.
