@@ -283,7 +283,7 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 れかでしょう．")
 
     ("Can be used only in preamble." .
-"プリアンブルでしか使えない\\documentstyle・\\nofiles・\\includeonly
+"プリアンブルでしか使えない\\documentclass・\\nofiles・\\includeonly
 \\makeindex・\\makeglossaryのうちのいずれかが\\begin{document}よりも
 後で使われているのをLaTeXが検出しました．このエラーは\\begin{document}
 が余分にあった時にも生じます．")
@@ -297,9 +297,13 @@ Set `japanese-TeX-mode' to t, and enter `TeX-latex-mode'."
 \\renew...命令を使わなければなりません．")
 
     ("Counter too large." .
-"文字で順序付けされたもの，たぶん番号付けされたリスト環境のラベルが，
+"1. 文字で順序付けされたもの，たぶん番号付けされたリスト環境のラベルが，
 26よりも大きい番号を受け取りました．非常に長いリストを使っているか，
-カウンタを再設定してしまったかのいずれかでしょう．")
+カウンタを再設定してしまったかのいずれかでしょう．
+
+2. 脚注が文字または脚注記号で順序づけされていますが，文字または記号を
+使い切ってしまいました．おそらく\\thanks命令の使いすぎです．")
+
 
     ("Environment [^ ]* undefined." .
 "定義されていない環境に対する\\begin命令をLaTeXが見つけました．おそらく
@@ -388,10 +392,6 @@ thebibliography環境で引数を忘れた場合にも生じます．")
     ("\\\\< in mid line." .
 "\\<命令がtabbing環境の行の途中に現れました．この命令は行の先頭になければ
 なりません．")
-
-    ("Counter too large." .
-"脚注が文字または脚注記号で順序づけされていますが，文字または記号を使い
-切ってしまいました．おそらく\\thanks命令の使いすぎです．")
 
     ("Double subscript." .
 "数式中の1つの列に2つの下付き文字がついています．例えばx_{2}_{3}のように．
@@ -585,7 +585,7 @@ save size
 "TeXが未定義の命令名を発見しました．おそらく入力の誤りでしょう．もしこ
 のエラーがLaTeX命令の処理中に生じた場合は，その命令は間違った位置に置か
 れています．例えば，リスト環境の中でないのに\\item命令が使われた場合など
-です．また，\\documentstyle命令がない場合にもこのエラーが生じます．")
+です．また，\\documentclass命令がない場合にもこのエラーが生じます．")
 
     ("Use of [^ ]* doesn't match its definition." .
 "おそらく描画のための命令だと思われますが，引数の使いかたが間違ってい
