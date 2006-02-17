@@ -1607,7 +1607,7 @@ declaration.")
     ("Can be used only in preamble." .
 "LaTeX has encountered, after the \\begin{document}, one of the
 following commands that should appear only in the preamble:
-\\documentstyle, \\nofiles, \\includeonly, \\makeindex, or
+\\documentclass, \\nofiles, \\includeonly, \\makeindex, or
 \\makeglossary.  The error is also caused by an extra \\begin{document}
 command.")
 
@@ -1620,9 +1620,13 @@ command \\gnu.) You'll have to choose a new name or, in the case of
 \\newcommand or \\newenvironment, switch to the \\renew ...  command.")
 
     ("Counter too large." .
-"Some object that is numbered with letters, probably an item in a
+"1. Some object that is numbered with letters, probably an item in a
 enumerated list, has received a number greater than 26. Either you're
-making a very long list or you've been resetting counter values.")
+making a very long list or you've been resetting counter values.
+
+2. Footnotes are being ``numbered'' with letters or footnote symbols 
+and LaTeX has run out of letters or symbols. This is probably caused
+by too many \\thanks commands.")
 
     ("Environment [^ ]* undefined." .
 "LaTeX has encountered a \\begin command for a nonexistent environment.
@@ -1724,11 +1728,6 @@ position---one not defined by a \\= command.")
 "A \\< command appears in the middle of a line in a tabbing environment.
 This command should come only at the beginning of a line.")
 
-    ("Counter too large." .
-"Footnotes are being ``numbered'' with letters or footnote symbols and
-LaTeX has run out of letters or symbols. This is probably caused by
-too many \\thanks commands.")
-
     ("Double subscript." .
 "There are two subscripts in a row in a mathematical
 formula---something like x_{2}_{3}, which makes no sense.")
@@ -1806,10 +1805,11 @@ is probably beyond the point where the incorrect input is.")
     ("Missing \\$ inserted." .
 "TeX probably found a command that can be used only in math mode when
 it wasn't in math mode.  Remember that unless stated otherwise, all
-the commands of Section can be used only in math mode. TeX is not in
-math mode when it begins processing the argument of a box-making
-command, even if that command is inside a math environment. This error
-also occurs if TeX encounters a blank line when it is in math mode.")
+all the commands of Section 3.3 in LaTeX Book (Lamport) can be used
+only in math mode. TeX is not in math mode when it begins processing
+the argument of a box-making command, even if that command is inside a
+math environment. This error also occurs if TeX encounters a blank
+line when it is in math mode.")
 
     ("Not a letter." .
 "Something appears in the argument of a \\hyphenation command that
@@ -1945,7 +1945,7 @@ offending character, consult the Local Guide for suggestions.")
 name. If this message occurs when a LaTeX command is being processed,
 the command is probably in the wrong place---for example, the error
 can be produced by an \\item command that's not inside a list-making
-environment. The error can also be caused by a missing \\documentstyle
+environment. The error can also be caused by a missing \\documentclass
 command.")
 
     ("Use of [^ ]* doesn't match its definition." .
