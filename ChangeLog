@@ -6,6 +6,8 @@
 	referenced book and the section number to the entry `Missing \\$
 	inserted'.
 
+	* tex-jp.el (TeX-error-description-list): Likewise.
+
 2006-02-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-master): Mark as safe.
