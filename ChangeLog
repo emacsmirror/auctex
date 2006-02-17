@@ -1,3 +1,11 @@
+2006-02-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex-buf.el (TeX-error-description-list): Fix error messages.
+	Changed from `documentstyle' to `documentclass'.  The duplicated
+	entries `counter too large' are combined.  Add the name of
+	referenced book and the section number to the entry `Missing \\$
+	inserted'.
+
 2006-02-16  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-master): Mark as safe.
