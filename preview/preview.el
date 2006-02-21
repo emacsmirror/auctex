@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.265 2006-01-20 14:20:50 rsteib Exp $
+;; $Id: preview.el,v 1.266 2006-02-21 08:15:30 ataka Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2603,7 +2603,10 @@ will not get matched, usually."
 	    string (substring string (match-end 0))))
     (setq output (concat output (regexp-quote string)))
     (if (featurep 'mule)
-	(decode-coding-string output buffer-file-coding-system)
+	(decode-coding-string output
+			      (or (and (boundp 'TeX-japanese-process-output-coding-system)
+				       TeX-japanese-process-output-coding-system)
+				  buffer-file-coding-system))
       output)))
 
 (defun preview-parse-messages (open-closure)
@@ -3444,8 +3447,10 @@ internal parameters, STR may be a log to insert into the current log."
 	  (setq TeX-sentinel-function 'preview-TeX-inline-sentinel)
 	  (when (featurep 'mule)
 	    (setq preview-coding-system
-		  (with-current-buffer commandbuff
-		    buffer-file-coding-system))
+		  (or (and (boundp 'TeX-japanese-process-output-coding-system)
+			   TeX-japanese-process-output-coding-system)
+		      (with-current-buffer commandbuff
+			buffer-file-coding-system)))
 	    (when preview-coding-system
 	      (setq preview-coding-system
 		    (preview-buffer-recode-system
@@ -3463,7 +3468,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.265 $"))
+	(rev "$Revision: 1.266 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3477,7 +3482,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-01-20 14:20:50 $"))
+    (let ((date "$Date: 2006-02-21 08:15:30 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
