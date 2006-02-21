@@ -1,3 +1,12 @@
+2006-02-21  Ikumi Keita <ikumi@revery.net>
+
+	* preview.el (preview-error-quote, TeX-inline-preview-internal):
+	Fix the problem that preview-latex put the preview-image in wrong
+	place if user compiles iso-2022-jp file on Windows or UNIX, by
+	using TeX-japanese-process-output-coding-system for
+	preview-coding-system instead of buffer-file-coding-system if
+	tex-jp.el is loaded.
+
 2006-01-29  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (install-metadata): Let `for' loop return an exit
