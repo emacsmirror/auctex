@@ -103,7 +103,7 @@
 	defcustom of TeX-command-list requires the third element function.
 	Reported by Ikumi Keita <ikumi@revery.net>.
 
-2006-01-28  Ikumi Keita <ikumi@revery.net>
+2006-01-28  Ikumi Keita  <ikumi@revery.net>
 
 	* tex-buf.el (TeX-run-discard-foreground): Renamed from
 	TeX-run-dviout.
@@ -150,7 +150,7 @@
 	appending lists of verbatim macros and environments manually use
 	new LaTeX-verbatim-* functions.
 
-2006-01-24  Ikumi Keita <ikumi@revery.net>
+2006-01-24  Ikumi Keita  <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Fix previous change.
 
@@ -159,7 +159,7 @@
 	* Makefile.in: Add CP_A.  Add coment on maintainer-only targets.
 	(xemacs-package): Use CP_A.
 
-2006-01-22  Ikumi Keita <ikumi@revery.net>
+2006-01-22  Ikumi Keita  <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Use TeX-espaced-p to
 	check TeX escape char.
@@ -231,7 +231,7 @@
 	* auctex.spec (description): Add preview-latex.
 	(install, files): Don't create preview directory.
 
-2005-12-21  Ikumi Keita <ikumi@revery.net>
+2005-12-21  Ikumi Keita  <ikumi@revery.net>
 
 	* latex.el (LaTeX-mark-section): Remove read-only mark `*' from
 	interactive.
@@ -723,7 +723,7 @@
 	section.
 	Suggested by Ikumi Keita <ikumi@revery.net>.
 
-2005-09-29  Ikumi Keita <ikumi@revery.net>
+2005-09-29  Ikumi Keita  <ikumi@revery.net>
 
 	* texmathp.el (texmathp-tex-commands-default): Remove "xxalignat*"
 	and add "boxed".
@@ -1493,7 +1493,7 @@
 
 	* doc/tex-ref.tex (section{Greek Letters}): Add \Xi.
 
-2005-05-18  Ikumi Keita <ikumi@revery.net>
+2005-05-18  Ikumi Keita  <ikumi@revery.net>
 
 	* style/amsmath.el (LaTeX-label-alist): Add "multline" environment.
 
@@ -1556,14 +1556,14 @@
 	(LaTeX-common-initialization): Call `easy-menu-add' as late as
 	possible.
 
-2005-05-15  Ikumi Keita <ikumi@revery.net>
+2005-05-15  Ikumi Keita  <ikumi@revery.net>
 
 	* Makefile.in (CLEANFILES): Add $(CONTRIBELC) and
 	$(CONTRIB_MULEELC).
 	(DISTCLEANFILES): Add auctex.el and auto-loads.el.
 	(auto-loads.el): Add $(COMPILE_MULE)
 
-2005-05-14  Ikumi Keita <ikumi@revery.net>
+2005-05-14  Ikumi Keita  <ikumi@revery.net>
 
 	* style/amsopn.el:
 	* style/amsmath.el: Move "mode"-like entries from amsopn.el to
@@ -2156,7 +2156,7 @@
 
 	* doc/changes.texi: Mention `TeX-fold-force-fontify'.
 
-2005-04-14  Ikumi Keita <ikumi@revery.net>
+2005-04-14  Ikumi Keita  <ikumi@revery.net>
 
 	* style/amsmath.el: Fix comment.
 	("amsmath"): Removed duplicate settings of "alignat*" and
@@ -2384,7 +2384,7 @@
 	* tex.el (TeX-submit-bug-report): Insert AUCTeX version into mail
 	subject.
 
-2005-03-30  Ikumi Keita <ikumi@revery.net>
+2005-03-30  Ikumi Keita  <ikumi@revery.net>
 
 	* latex.el (LaTeX-env-label): Remove `TeX-toggle-off-input-method'
 	because `TeX-math-input-method-off' is already called in
@@ -2548,7 +2548,7 @@
 	style/alphanum.el: Use new functions for setting
 	`LaTeX-largest-level' or `LaTeX-section-list' respectively.
 
-2005-03-16  Ikumi Keita <ikumi@revery.net>
+2005-03-16  Ikumi Keita  <ikumi@revery.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Limit the max number
 	of characters to look backward for `TeX-looking-at-backward'.
@@ -2708,11 +2708,11 @@
 
 	* latex.el (LaTeX-beamer-themes): New variable.
 
-2005-03-05  Ikumi Keita <ikumi@revery.net>  (tiny change)
+2005-03-05  Ikumi Keita  <ikumi@revery.net>  (tiny change)
 
 	* tex-jp.el (japanese-TeX-command-list): Doc fix.
 
-2005-03-03  Ikumi Keita <ikumi@revery.net>
+2005-03-03  Ikumi Keita  <ikumi@revery.net>
 
 	* tex.el (TeX-macro-global-internal): New function.
 	(TeX-macro-global): Use it.
@@ -2770,11 +2770,11 @@
 
 	* bib-cite.el: Some doc fixes in the commentary section.
 
-2005-02-23  Ikumi Keita <ikumi@revery.net>  (tiny change)
+2005-02-23  Ikumi Keita  <ikumi@revery.net>  (tiny change)
 
 	* doc/auctex.texi (I18n): Removed FIXME comment.
 
-2005-02-22  Ikumi Keita <ikumi@revery.net>  (tiny change)
+2005-02-22  Ikumi Keita  <ikumi@revery.net>  (tiny change)
 
 	* latex.el (LaTeX-fill-delete-newlines): Call search-forward,
 	which is copied from `fill-delete-newlines', with BOUND TO.
@@ -2859,7 +2859,7 @@
 	text is written in Japanese (e.g. long Japanese line).
 	Reported by Ikumi Keita <ikumi@revery.net>.
 
-2005-02-14  Ikumi Keita <ikumi@revery.net>  (tiny change)
+2005-02-14  Ikumi Keita  <ikumi@revery.net>  (tiny change)
 
 	* tex-jp.el (LaTeX-auto-regexp-list): Use
 	`LaTeX-auto-class-regexp-list'.
@@ -3820,7 +3820,7 @@
 	* latex.el (LaTeX-math-list): Improve doc string and custom type.
 	(LaTeX-math-default): Added doc string.
 
-2004-10-26  Frank Küster <frank@kuesterei.ch>
+2004-10-26  Frank Küster  <frank@kuesterei.ch>
 
 	* doc/quickstart.texi: Don't use so many nodes.  Several fixes.
 
@@ -3896,7 +3896,7 @@
 
 	* doc/quickstart.texi: Fix markup.
 
-2004-10-18  Frank Küster <frank@kuesterei.ch>
+2004-10-18  Frank Küster  <frank@kuesterei.ch>
 
 	* doc/quickstart.texi: New chapter.
 
@@ -3920,7 +3920,7 @@
 
 	* doc/Makefile.in (TEXIFILES): Added quickstart.texi.
 
-2004-10-18  Frank Küster <frank@kuesterei.ch>
+2004-10-18  Frank Küster  <frank@kuesterei.ch>
 
 	* doc/Makefile.in (TEXIFILES): Add macros.texi.
 	(auctex.dvi, auctex.pdf): Depend on TEXIFILES.
@@ -7668,7 +7668,7 @@
 
 2003-10-18  Peter S Galbraith  <psg@debian.org>
 
-	* font-latex.el: checkdoc cleaning (alomost clean now).
+	* font-latex.el: checkdoc cleaning (almost clean now).
 
 2003-09-18  Peter S Galbraith  <psg@debian.org>
 
@@ -8845,7 +8845,7 @@
 
 	* tex.el (TeX-mode-map): Don't bind `.' and `,' by default.
 
-2000-05-03  Peter Galbraith <psg@debian.org>
+2000-05-03  Peter Galbraith  <psg@debian.org>
 
 	* font-latex.el: file was broken. Updated to 0.701 (30 Mar 2000).
 	* bib-cite.el: file was broken. Updated to 3.16 (20 Dec 99).
@@ -8902,11 +8902,11 @@
 
 	* font-latex.el: Updated to 0.700 (20 December 1999).
 
-2000-03-30  Peter Galbraith <psg@debian.org>
+2000-03-30  Peter Galbraith  <psg@debian.org>
 
 	* font-latex.el: Updated to 0.701 (30 Mar 2000).
 
-2000-01-14  Peter Galbraith <psg@debian.org>
+2000-01-14  Peter Galbraith  <psg@debian.org>
 
 	* bib-cite.el: Updated to 3.16 (20 Dec 99).
 	* font-latex.el: Updated to 0.700 (20 Dec 99).
