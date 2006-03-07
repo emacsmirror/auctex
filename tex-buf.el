@@ -237,7 +237,9 @@ Prefix by C-u to start from the beginning of the errors."
   (interactive "P")
   (if (null (TeX-active-buffer))
       (next-error reparse)
-    (funcall (TeX-process-get-variable (TeX-active-master) 'TeX-parse-function)
+    (funcall (TeX-process-get-variable (with-current-buffer TeX-command-buffer
+					 (TeX-active-master))
+				       'TeX-parse-function)
 	     reparse)))
 
 (defun TeX-previous-error (arg)
@@ -1108,7 +1110,8 @@ command."
 
 (defun TeX-active-buffer ()
   "Return the buffer of the active process for this buffer."
-  (TeX-process-buffer (TeX-active-master)))
+  (TeX-process-buffer (with-current-buffer TeX-command-buffer
+			(TeX-active-master))))
 
 (defun TeX-active-master (&optional extension nondirectory)
   "The master file currently being compiled.
@@ -1444,10 +1447,15 @@ You might want to examine and modify the free variables `file',
     (let ((runbuf (current-buffer))
 	  (master (with-current-buffer
 		      TeX-command-buffer
-		    (expand-file-name (TeX-master-file)))))
+		    (expand-file-name (TeX-master-file))))
+	  (command-buffer TeX-command-buffer)
+	  error-file-buffer)
       (run-hooks 'TeX-translate-location-hook)
-      (find-file-other-window file)
-      (setq TeX-master master)
+      (setq error-file-buffer (find-file-other-window file))
+      ;; Set the value of `TeX-command-buffer' in the next file with an
+      ;; error to be displayed to the value it has in the current buffer.
+      (with-current-buffer error-file-buffer
+	(set (make-local-variable 'TeX-command-buffer) command-buffer))
       (goto-line (+ offset line))
       (if (not (string= string " "))
 	  (search-forward string nil t))
@@ -1509,10 +1517,15 @@ You might want to examine and modify the free variables `file',
     (let ((runbuf (current-buffer))
 	  (master (with-current-buffer
 		      TeX-command-buffer
-		    (expand-file-name (TeX-master-file)))))
+		    (expand-file-name (TeX-master-file))))
+	  (command-buffer TeX-command-buffer)
+	  error-file-buffer)
       (run-hooks 'TeX-translate-location-hook)
-      (find-file-other-window file)
-      (setq TeX-master master)
+      (setq error-file-buffer (find-file-other-window file))
+      ;; Set the value of `TeX-command-buffer' in the next file with an
+      ;; error to be displayed to the value it has in the current buffer.
+      (with-current-buffer error-file-buffer
+	(set (make-local-variable 'TeX-command-buffer) command-buffer))
       ;; Find line and string
       (when line
 	(goto-line (+ offset line))
