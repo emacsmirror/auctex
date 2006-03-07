@@ -1,3 +1,10 @@
+2006-03-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex-buf.el (TeX-next-error, TeX-active-buffer): Get master from
+	the command buffer.
+	(TeX-error, TeX-warning): Do not set `TeX-master' but set
+	`TeX-command-buffer' to the right value instead.
+
 2006-02-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex-buf.el (TeX-error-description-list): Fix error messages.
