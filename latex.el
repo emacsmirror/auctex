@@ -4428,7 +4428,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
   (TeX-menu-with-help
    `("LaTeX"
      ("Section  (C-c C-s)" :filter LaTeX-section-menu-filter)
-     ["Macro ..." TeX-insert-macro
+     ["Macro..." TeX-insert-macro
       :help "Insert a macro and possibly arguments"]
      ["Complete Macro" TeX-complete-symbol
       :help "Complete the current macro or environment name"]
