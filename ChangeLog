@@ -1,3 +1,18 @@
+2006-03-13  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-mode-map): Change `C-c ?' binding from
+	`describe-mode' to `TeX-doc'.
+	(TeX-common-menu-entries): Add `Find Documentation...' entry for
+	`TeX-doc'.
+	(plain-TeX-menu-entries): Remove space before ellipsis.
+	(TeX-doc-backend-alist): Make texdoc backend available in all
+	modes.
+
+	* latex.el (LaTeX-mode-menu): Remove space before ellipsis.
+
+	* doc/changes.texi: Advertise cleaning and documentation finding
+	functionality.
+
 2006-03-07  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex-buf.el (TeX-next-error, TeX-active-buffer): Get master from
