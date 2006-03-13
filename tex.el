@@ -3421,7 +3421,7 @@ Brace insertion is only done if point is in a math construct and
     (define-key map "\C-c}"    'up-list)
     (define-key map "\C-c#"    'TeX-normal-mode)
     (define-key map "\C-c\C-n" 'TeX-normal-mode)
-    (define-key map "\C-c?"    'describe-mode)
+    (define-key map "\C-c?"    'TeX-doc)
     (define-key map "\C-c\C-i" 'TeX-goto-info-page)
     (define-key map "\r"       'TeX-newline)
     
@@ -3652,6 +3652,10 @@ Brace insertion is only done if point is in a math construct and
        :help "Save and reparse the current buffer for style information"]
       ["Reset AUCTeX" (TeX-normal-mode t) :keys "C-u C-c C-n"
        :help "Reset buffer and reload AUCTeX style files"])
+     ["Find Documentation..." TeX-doc
+      :help "Get help on commands, packages, or TeX-related topics in general"]
+     ["Read the AUCTeX Manual" TeX-goto-info-page
+      :help "Everything worth reading"]
      ("Customize AUCTeX"
       ["Browse Options"
        (customize-group 'AUCTeX)
@@ -3664,15 +3668,13 @@ Brace insertion is only done if point is in a math construct and
 	      (setq TeX-customization-menu
 		    (customize-menu-create 'AUCTeX "Customize AUCTeX")))))
        :help "Make this menu a full-blown customization menu"])
-     ["Read the AUCTeX Manual" TeX-goto-info-page
-      :help "Everything worth reading"]
      ["Report AUCTeX Bug" TeX-submit-bug-report
       :help ,(format "Problems with AUCTeX %s? Mail us!"
 		     AUCTeX-version)])))
 
 (defvar plain-TeX-menu-entries
   (TeX-menu-with-help
-   `(["Macro ..." TeX-insert-macro
+   `(["Macro..." TeX-insert-macro
       :help "Insert a macro and possibly arguments"]
      ["Complete" TeX-complete-symbol
       :help "Complete the current macro"]
@@ -4701,7 +4703,7 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
-  '((texdoc (plain-tex-mode latex-mode doctex-mode)
+  '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
 	    (lambda ()
 	      (when (executable-find "texdoc")
 		(TeX-search-files nil '("dvi" "pdf" "ps" "txt" "html") t t)))
