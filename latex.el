@@ -5057,7 +5057,8 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
    "pounds" "copyright"
    "hfil" "hfill" "vfil" "vfill" "hrulefill" "dotfill"
    "indent" "noindent" "today"
-   "appendix")
+   "appendix"
+   "dots")
 
   (when (string-equal LaTeX-version "2e")
     (LaTeX-add-environments
