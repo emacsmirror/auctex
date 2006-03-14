@@ -1,5 +1,8 @@
 2006-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
+	* configure.ac: Check for `make' and abort if not present.  Use
+	`AC_PROG_MAKE_SET' instead of deprecated `AC_SET_MAKE'.
+
 	* latex.el (LaTeX-common-initialization): Add \dots to supported
 	TeX symbols.
 

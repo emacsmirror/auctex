@@ -1,3 +1,8 @@
+2006-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* configure.ac: Use `AC_PROG_MAKE_SET' instead of deprecated
+	`AC_SET_MAKE'.
+
 2006-02-21  Ikumi Keita <ikumi@revery.net>
 
 	* preview.el (preview-error-quote, TeX-inline-preview-internal):
