@@ -1,6 +1,6 @@
 AC_INIT(preview-latex,11.82,bug-auctex@gnu.org)
 
-AC_SET_MAKE
+AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
 # Import unquoted variables.
