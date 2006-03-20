@@ -613,7 +613,7 @@ It may be customized with the following variables:
     ;; What to do with the line containing point.
     (cond ((save-excursion (beginning-of-line)
 			   (looking-at (concat prefix "[ \t]*$")))
-	   (kill-region (match-beginning 0) (match-end 0)))
+	   (delete-region (match-beginning 0) (match-end 0)))
 	  ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
 				    (line-beginning-position))
 	   (beginning-of-line)
@@ -635,7 +635,7 @@ It may be customized with the following variables:
 	(cond ((save-excursion (beginning-of-line)
 			       (or (looking-at (concat prefix "[ \t]*$"))
 				   (looking-at "[ \t]*$")))
-	       (kill-region (match-beginning 0) (match-end 0)))
+	       (delete-region (match-beginning 0) (match-end 0)))
 	      ((TeX-looking-at-backward (concat "^" prefix "[ \t]*")
 					(line-beginning-position))
 	       (beginning-of-line)
