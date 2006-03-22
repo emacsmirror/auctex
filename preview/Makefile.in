@@ -65,10 +65,10 @@ install-hint:
 
 
 .PHONY: install install-texmf install-el install-images install-startup \
-	install-nosearch install-metadata use-hint all lisp texmf
+	install-nosearch use-hint all lisp texmf
 
 install: install-texmf install-el install-nosearch install-images \
-         install-startup install-metadata use-hint
+         install-startup use-hint
 
 use-hint:
 	@echo "Installation completed."
@@ -93,18 +93,6 @@ install-el: $(LISP_OBJS) auto.el
 install-nosearch:
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)
 	: >$(DESTDIR)$(packagedatadir)/.nosearch
-
-install-metadata:
-	test "x$(packagedir)" = xno || { \
-	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
-	  $(ELCC) $(AUCTEX) -l preview -l prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" preview-release-date preview-version auto.el && \
-	  cd $(DESTDIR)$(packagedir) && \
-	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
-	  for i in $(PACKAGE_INFO); do \
-	    test ! -r "info/$$i.info" || echo "info/$$i.info" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	  done && \
-	  echo "pkginfo/MANIFEST.$(PACKAGE)" >> "pkginfo/MANIFEST.$(PACKAGE)" ; \
-	}
 
 install-images: $(ICON_SOURCES)
 	-$(MKINSTALLDIRS) $(DESTDIR)$(packagedatadir)/images
