@@ -51,7 +51,7 @@ package name, and version (to be evaluated), followed by a file to append."
 	 (package-name (pop command-line-args-left))
 	 (release-version (eval (read (pop command-line-args-left))))
 	 (author-version (eval (read (pop command-line-args-left))))
-	 (append-file (pop command-line-args-left))
+	 append-file
          (lisp-dir (expand-file-name (format "lisp/%s/" package-name)
 				     package-dir))
          (metadata (expand-file-name "_pkg.el" lisp-dir))
@@ -103,11 +103,12 @@ package name, and version (to be evaluated), followed by a file to append."
 	       (update-autoload-files (list lisp-dir) "auctex"))
 	      (t (error "Failed to generate autoloads.")))
       (fset 'message si:message))
-    (when (file-exists-p generated-autoload-file)
-      (with-temp-buffer (insert-file append-file)
-			(append-to-file (point-min) (point-max)
-					generated-autoload-file))
-      (byte-compile-file generated-autoload-file))))
+    (while (setq append-file (pop command-line-args-left))
+      (when (file-exists-p generated-autoload-file)
+	(with-temp-buffer (insert-file append-file)
+			  (append-to-file (point-min) (point-max)
+					  generated-autoload-file))))
+    (byte-compile-file generated-autoload-file)))
 
 
 ;;; prv-install.el ends here
