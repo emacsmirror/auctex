@@ -1,3 +1,8 @@
+2006-03-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (install-metadata): Append preview/auto.el to start
+	file if configured with preview-latex.
+
 2006-03-20  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-insert-environment): Do not polute the kill

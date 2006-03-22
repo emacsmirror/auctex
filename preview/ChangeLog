@@ -1,3 +1,13 @@
+2006-03-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (.PHONY, install): Remove `install-metadata'.
+	(install-metadata): Remove.
+
+2006-03-22  David Kastrup  <dak@gnu.org>
+
+	* prv-install.el (preview-make-package-xemacs): Accept list of
+	files to be appended.
+
 2006-03-14  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* configure.ac: Use `AC_PROG_MAKE_SET' instead of deprecated
