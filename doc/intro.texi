@@ -94,7 +94,7 @@ sourcebuffer, while letting you retain full control.  @previewlatex{}
 comes with its own manual, see @ref{Top, , preview-latex,
 preview-latex, The @previewlatex{} Manual}.
 @ifset rawfile
-For more information, consult the file @file{preview/README}.
+For more information, see further below.
 @end ifset
 
 @AUCTeX{} automatically indents your `@LaTeX{}-source', not only as you

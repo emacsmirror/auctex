@@ -1,3 +1,13 @@
+2006-03-27  David Kastrup  <dak@gnu.org>
+
+	* doc/intro.texi (Introduction): refer to `below' instead of
+	probably non-existing `preview/README'.
+
+	* tex.el: tiny typo.
+
+	* latex.el (LaTeX-close-environment): Allow prefix argument to
+	reopen the environment.
+
 2006-03-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (install-metadata): Append preview/auto.el to start

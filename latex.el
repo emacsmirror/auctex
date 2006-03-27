@@ -572,9 +572,10 @@ It may be customized with the following variables:
 	  (t
 	   (apply (nth 1 entry) environment (nthcdr 2 entry))))))
 
-(defun LaTeX-close-environment ()
-  "Create an \\end{...} to match the current environment."
-  (interactive "*")
+(defun LaTeX-close-environment (&optional reopen)
+  "Create an \\end{...} to match the current environment.
+With prefix-argument, reopen environment afterwards."
+  (interactive "*P")
   (if (> (point)
 	 (save-excursion
 	   (beginning-of-line)
@@ -584,17 +585,29 @@ It may be customized with the following variables:
 	   (skip-chars-forward " \t")
 	   (point)))
       (LaTeX-newline))
-  (insert "\\end{" (LaTeX-current-environment 1) "}")
-  (indent-according-to-mode)
-  (if (or (not (looking-at "[ \t]*$"))
-	  (and (TeX-in-commented-line)
-	       (save-excursion (beginning-of-line 2)
-			       (not (TeX-in-commented-line)))))
-      (LaTeX-newline)
-    (let ((next-line-add-newlines t))
-      (next-line 1)
-      (beginning-of-line)))
-  (indent-according-to-mode))
+  (let ((environment (LaTeX-current-environment 1)) marker)
+    (insert "\\end{" environment "}")
+    (indent-according-to-mode)
+    (if (or (not (looking-at "[ \t]*$"))
+	    (and (TeX-in-commented-line)
+		 (save-excursion (beginning-of-line 2)
+				 (not (TeX-in-commented-line)))))
+	(LaTeX-newline)
+      (let ((next-line-add-newlines t))
+	(next-line 1)
+	(beginning-of-line)))
+    (indent-according-to-mode)
+    (when reopen
+      (save-excursion
+	(setq marker (point-marker))
+	(set-marker-insertion-type marker t)
+	(LaTeX-environment-menu environment)
+	(delete-region (point)
+		       (if (save-excursion (goto-char marker)
+					   (bolp))
+			   (1- marker)
+			 marker))
+	(move-marker marker nil)))))
 
 (defun LaTeX-insert-environment (environment &optional extra)
   "Insert LaTeX ENVIRONMENT with optional argument EXTRA."

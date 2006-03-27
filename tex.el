@@ -3097,7 +3097,7 @@ file extensions to match."
 ;; help of `TeX-kpathsea-format-alist'.  Out of these differences
 ;; arises a need to unify the behavior of `TeX-search-files' and
 ;; `TeX-search-files-kpathsea' and their treatment of parameters.
-;; Additionally `TeX-search-files-kpathses' should be made more
+;; Additionally `TeX-search-files-kpathsea' should be made more
 ;; general to work with other platforms and TeX systems as well.
 (defun TeX-search-files-kpathsea (extensions nodir strip)
   "The kpathsea-enabled version of `TeX-search-files'.
