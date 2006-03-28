@@ -224,7 +224,11 @@ install-auto:
 install-metadata:
 	test "x$(packagedir)" = xno || { \
 	  $(MKINSTALLDIRS) $(DESTDIR)$(packagedir)/pkginfo || : ; \
-	  $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el `{ test "x$(preview_enabled)" != xyes || echo "preview/auto.el"; }` && \
+	  if test "x$(preview_enabled)" = xyes; then \
+	    $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el preview/auto.el; \
+	  else \
+	    $(ELCC) -l preview/prv-install -f preview-make-package $(DESTDIR)$(packagedir) "$(PACKAGE)" \"`echo $(AUCTEXDATE)|sed 's/\(.*\)-\(.*\)-\(.*\)/\1.\2\3/'`\" \"$(AUCTEXVERSION)\" tex-site.el; \
+	  fi && \
 	  cd $(DESTDIR)$(packagedir) && \
 	  find "etc/$(PACKAGE)" "lisp/$(PACKAGE)" -print >"pkginfo/MANIFEST.$(PACKAGE)" && \
 	  for i in $(PACKAGE_INFO); do \
