@@ -1,3 +1,8 @@
+2006-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* Makefile.in (install-metadata): Do not use an inline test for
+	checking if preview is enabled.  Just to be on the safe side.
+
 2006-03-27  David Kastrup  <dak@gnu.org>
 
 	* doc/intro.texi (Introduction): refer to `below' instead of
