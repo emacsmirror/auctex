@@ -1,3 +1,8 @@
+2006-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (LaTeX-babel-insert-hyphen): Do not error out at
+	beginning of buffer.
+
 2006-03-28  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (install-metadata): Do not use an inline test for
