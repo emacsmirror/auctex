@@ -4614,7 +4614,8 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 	   (hyphen-length (length hyphen)))
       (cond
        ;; "= --> -- / -
-       ((string= (buffer-substring (- (point) hyphen-length) (point))
+       ((string= (buffer-substring (max (- (point) hyphen-length) (point-min))
+				   (point))
 		 hyphen)
 	(if h-after-h
 	    (progn (delete-backward-char hyphen-length)
@@ -4622,7 +4623,9 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 	  (delete-backward-char hyphen-length)
 	  (call-interactively 'self-insert-command)))
        ;; -- --> [+]-
-       ((string= (buffer-substring (- (point) 2) (point)) "--")
+       ((string= (buffer-substring (max (- (point) 2) (point-min))
+				   (point))
+		 "--")
 	(call-interactively 'self-insert-command))
        ;; - --> "= / [+]-
        ((eq (char-before) ?-)
