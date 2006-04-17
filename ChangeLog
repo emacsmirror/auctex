@@ -1,3 +1,8 @@
+2006-04-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* font-latex.el (font-latex-match-script): Fix matching of nested
+	braces.
+
 2006-04-12  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (LaTeX-babel-insert-hyphen): Do not error out at
