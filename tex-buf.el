@@ -1533,8 +1533,9 @@ You might want to examine and modify the free variables `file',
 	(let ((start (point)))
 	  (goto-line (+ offset line-end))
 	  (end-of-line)
-	  (search-backward string start t)
-	  (search-forward string nil t)))
+	  (when string
+	    (search-backward string start t)
+	    (search-forward string nil t))))
       ;; Display help
       (if TeX-display-help
 	  (TeX-help-error error (if bad-box context (concat "\n" context))

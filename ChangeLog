@@ -1,3 +1,7 @@
+2006-04-20  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-warning): Don't balk if `string' is nil.
+
 2006-04-17  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* font-latex.el (font-latex-match-script): Fix matching of nested
