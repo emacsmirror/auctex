@@ -1,3 +1,10 @@
+2006-04-20  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-parse-messages): Adapt parser to
+	`-file-line-error-style' messages.  Try to make the detection of
+	the current file more robust.  Utilize file-line-error messages
+	for that purpose if they are present.
+
 2006-03-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* Makefile.in (.PHONY, install): Remove `install-metadata'.

@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.266 2006-02-21 08:15:30 ataka Exp $
+;; $Id: preview.el,v 1.267 2006-04-20 20:53:49 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2645,7 +2645,8 @@ call, and in its CDR the final stuff for the placement hook."
 )+\\([ >]\\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
-^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
+^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$\\|\
+^\\(.*\\):[0-9]+: " nil t)
 ;;; Ok, here is a line by line breakdown: match-alternative 1:
 ;;; \(^! \)
 ;;; exclamation point at start of line followed by blank: TeX error
@@ -2680,12 +2681,20 @@ name(\\([^)]+\\))\\)\\|\
 ;;; This would have caught overfull box messages that consist of
 ;;; several lines of context all with 79 characters in length except
 ;;; of the last one.  prauctex.def kills all such messages.
+	      (setq file (and (match-beginning 8)
+			      (match-string-no-properties 8)))
 	      (cond
-	       ((match-beginning 1)
+	       ((or (match-beginning 1) file)
 		(if (looking-at "\
 \\(?:Preview\\|Package Preview Error\\): Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 \\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
 		    (progn
+		      (when file
+			(unless TeX-error-file
+			  (push nil TeX-error-file)
+			  (push nil TeX-error-offset))
+			(unless (car TeX-error-offset)
+			  (rplaca TeX-error-file file)))
 		      (setq snippet (string-to-number (match-string 1))
 			    box (unless
 				    (string= (match-string 2) "started")
@@ -2727,7 +2736,7 @@ name(\\([^)]+\\))\\)\\|\
 			    ;; And we have now found to the end of the context.
 			    context (buffer-substring context-start (point))
 			    ;; We may use these in another buffer.
-			    offset (car TeX-error-offset)
+			    offset (or (car TeX-error-offset) 0)
 			    file (car TeX-error-file))
 		      (when (and (stringp file)
 				 (or (string= file "<none>")
@@ -2762,20 +2771,21 @@ name(\\([^)]+\\))\\)\\|\
 	       ((match-beginning 2)
 		;; New file -- Push on stack
 		(push (match-string-no-properties 2) TeX-error-file)
-		(push 0 TeX-error-offset)
+		(push nil TeX-error-offset)
 		(goto-char (match-end 2)))
 	       ((match-beginning 3)
 		;; End of file -- Pop from stack
-		(pop TeX-error-file)
-		(pop TeX-error-offset)
+		(when (> (length TeX-error-file) 1)
+		  (pop TeX-error-file)
+		  (pop TeX-error-offset))
 		(goto-char (1+ (match-beginning 0))))
 	       ((match-beginning 4)
 		;; Hook to change line numbers
-		(rplaca TeX-error-offset
-			(string-to-number (match-string 4))))
+		(setq TeX-error-offset
+		      (list (string-to-number (match-string 4)))))
 	       ((match-beginning 5)
 		;; Hook to change file name
-		(rplaca TeX-error-file (match-string-no-properties 5)))
+		(setq TeX-error-file (list (match-string-no-properties 5))))
 	       ((match-beginning 6)
 		(let ((var
 		       (assoc (match-string-no-properties 6)
@@ -3468,7 +3478,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.266 $"))
+	(rev "$Revision: 1.267 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3482,7 +3492,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-02-21 08:15:30 $"))
+    (let ((date "$Date: 2006-04-20 20:53:49 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
