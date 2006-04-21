@@ -1,3 +1,8 @@
+2006-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* latex.el (docTeX-mode): Make filling and indentation aware of
+	DocStrip guards.
+
 2006-04-20  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-warning): Don't balk if `string' is nil.
