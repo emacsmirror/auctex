@@ -4722,11 +4722,14 @@ of `LaTeX-mode-hook'."
   "Major mode in AUCTeX for editing .dtx files derived from `LaTeX-mode'.
 Runs `LaTeX-mode', sets a few variables and
 runs the hooks in `docTeX-mode-hook'."
-  
   (setq major-mode 'doctex-mode)
   (set (make-local-variable 'LaTeX-insert-into-comments) t)
   (set (make-local-variable 'LaTeX-syntactic-comments) t)
   (setq TeX-default-extension docTeX-default-extension)
+  ;; Make filling and indentation aware of DocStrip guards.
+  (setq paragraph-start (concat paragraph-start "\\|%<")
+	paragraph-separate (concat paragraph-separate "\\|%<")
+	TeX-comment-start-regexp "%\\(?:<[^>]+>\\)?")
   (setq TeX-base-mode-name "docTeX")
   (TeX-set-mode-name)
   (funcall TeX-install-font-lock))
