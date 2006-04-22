@@ -1,3 +1,7 @@
+2006-04-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
+
+	* tex.el (TeX-format-list): Extend regexp for ConTeXt mode.
+
 2006-04-21  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* latex.el (docTeX-mode): Make filling and indentation aware of
