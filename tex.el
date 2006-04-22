@@ -2227,13 +2227,17 @@ Choose `ignore' if you don't want AUCTeX to install support for font locking."
     ("AMSTEX" ams-tex-mode
      "\\\\document\\b")
     ("CONTEXT" context-mode
-     "\\(\\\\\\(starttext\\|starttekst\\)\\|%.*?interface=\\)")
+     "\\\\\\(start\\(text\\|tekst\\|proje[ck]t\\|proiect\\|\
+produ[ck]t\\|produs\\|environment\\|omgeving\\|umgebung\\|prostredi\\|mediu\\|\
+component\\|onderdeel\\|komponent[ea]\\|componenta\\)\
+\\|inizia\\(testo\\|progetto\\|prodotto\\|ambiente\\|componente\\)\
+\\)\\|%.*?interface=")
     ("LATEX" latex-mode
      "\\\\\\(begin\\|section\\|chapter\\|documentstyle\\|documentclass\\)\\b")
     ("TEX" plain-tex-mode "."))
   "*List of format packages to consider when choosing a TeX mode.
 
-A list with a entry for each format package available at the site.
+A list with an entry for each format package available at the site.
 
 Each entry is a list with three elements.
 
@@ -2242,7 +2246,7 @@ Each entry is a list with three elements.
 3. A regexp typically matched in the beginning of the file.
 
 When entering `tex-mode', each regexp is tried in turn in order to find
-when major mode to enter.")
+the major mode to be used.")
 
 (defcustom TeX-default-mode 'latex-mode
   "*Mode to enter for a new file when it can't be determined otherwise."
