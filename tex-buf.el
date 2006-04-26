@@ -842,7 +842,7 @@ Return nil ifs no errors were found."
 		    (match-string 1 output-file)
 		  "dvi")))))
   (if process (TeX-format-mode-line process))
-  (if (re-search-forward "^! " nil t)
+  (if (re-search-forward "^\\(!\\|.*:[0-9]+:\\) " nil t)
       (progn
 	(message (concat name " errors in `" (buffer-name)
 			 "'. Use C-c ` to display."))
@@ -1340,7 +1340,9 @@ You might want to examine and modify the free variables `file',
 	(progn
 	  (re-search-forward
 	   (concat "\\("
-		   "^! \\|"
+		   ;; Match regular error indicator "!" as well as
+		   ;; file-line-error error indicator "file:line: error".
+		   "^\\(!\\|.*:[0-9]+:\\) \\|"
 		   "(\\|"
 		   ")\\|"
 		   "\\'\\|"
@@ -1354,7 +1356,7 @@ You might want to examine and modify the free variables `file',
 	  (let ((string (TeX-match-buffer 1)))
 
 	    (cond (;; TeX error
-		   (string= string "! ")
+		   (match-end 2)
 		   (TeX-error)
 		   nil)
 
