@@ -1,3 +1,8 @@
+2006-04-26  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex-buf.el (TeX-TeX-sentinel-check, TeX-parse-error): Support
+	file-line-error error indicators.
+
 2006-04-22  Ralf Angeli  <angeli@iwi.uni-sb.de>
 
 	* tex.el (TeX-format-list): Extend regexp for ConTeXt mode.
