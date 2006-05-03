@@ -157,7 +157,7 @@ then the value of TeX-mode-hook, and then the value
 of context-mode-hook."
   (interactive)
   ;; set the ConTeXt interface
-  (set (make-local-variable 'ConTeXt-current-interface) "en")
+  (setq ConTeXt-current-interface "en")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
