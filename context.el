@@ -85,6 +85,7 @@
 
 (defvar ConTeXt-current-interface "en"
   "Interface to be used for inserting macros and ConTeXt run.")
+(make-variable-buffer-local 'ConTeXt-current-interface)
 
 (defvar ConTeXt-menu-changed nil)
 ;; Need to update ConTeXt menu.
@@ -1505,6 +1506,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
 (defun context-guess-current-interface ()
   "Guess what ConTeXt interface the current buffer is using."
+  (interactive)
   (save-excursion
     (goto-char (point-min))
     (setq ConTeXt-current-interface
@@ -1536,6 +1538,7 @@ of context-mode-hook."
   (context-guess-current-interface)
   (require (intern (concat "context-" ConTeXt-current-interface)))
   (funcall (intern (concat "context-" ConTeXt-current-interface "-mode"))))
+
 
 (provide 'context)
 
