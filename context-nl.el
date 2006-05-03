@@ -159,7 +159,7 @@ of context-mode-hook."
   (interactive)
 
   ;; set the ConTeXt interface
-  (set (make-local-variable 'ConTeXt-current-interface) "nl")
+  (setq ConTeXt-current-interface "nl")
 
   ;; initialization
   (ConTeXt-mode-common-initialization)
