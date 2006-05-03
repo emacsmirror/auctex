@@ -1,3 +1,14 @@
+2006-05-04  Berend de Boer  <berend@pobox.com>
+
+	* context-nl.el (context-nl-mode) and context-en.el
+	(context-en-mode): can now assume that ConTeXt-current-interface
+	is buffer local.
+
+	* context.el (ConTeXt-current-interface): this variable should
+	always be buffer local. With this and above two changes having
+	buffers with two interfaces at the same time works correctly
+	(again?).
+
 2006-04-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex-buf.el (TeX-TeX-sentinel-check, TeX-parse-error): Support
