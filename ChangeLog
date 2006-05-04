@@ -1,3 +1,9 @@
+2006-05-05  Berend de Boer  <berend@pobox.com>
+
+	* context.el (ConTeXt-mode-common-initialization): Previous fix
+	still wrong. Problem is that all local variables were killed, so
+	added a save/restore around the common initialisation.
+
 2006-05-04  Berend de Boer  <berend@pobox.com>
 
 	* context-nl.el (context-nl-mode) and context-en.el
