@@ -1429,7 +1429,13 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
 
 (defun ConTeXt-mode-common-initialization ()
   "Initialization code that is common for all ConTeXt interfaces."
-  (plain-TeX-common-initialization)
+  ;; `plain-TeX-common-initialization' kills all local variables, but
+  ;; we need to keep ConTeXt-current-interface, so save and restore
+  ;; it.
+  (let (save-ConTeXt-current-interface)
+    (setq save-ConTeXt-current-interface ConTeXt-current-interface)
+    (plain-TeX-common-initialization)
+    (setq ConTeXt-current-interface save-ConTeXt-current-interface))
   (setq major-mode 'context-mode)
 
   ;; Make language specific variables buffer local
@@ -1538,7 +1544,6 @@ of context-mode-hook."
   (context-guess-current-interface)
   (require (intern (concat "context-" ConTeXt-current-interface)))
   (funcall (intern (concat "context-" ConTeXt-current-interface "-mode"))))
-
 
 (provide 'context)
 
