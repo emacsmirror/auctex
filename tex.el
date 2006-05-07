@@ -1058,6 +1058,7 @@ as a string.")
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)
+(put 'TeX-PDF-mode 'safe-local-variable 'booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -1434,9 +1435,11 @@ the Emacs manual) to set this variable permanently for each file."
 		 (const :tag "Shared" shared)
 		 (const :tag "Dwim" dwim)
 		 (string :format "%v")))
-
- (make-variable-buffer-local 'TeX-master)
- (put 'TeX-master 'safe-local-variable t)
+(make-variable-buffer-local 'TeX-master)
+(put 'TeX-master 'safe-local-variable
+     (lambda (x)
+       (or (stringp x)
+	   (member x (quote (t nil shared dwim))))))
 
 (defvar TeX-convert-master t
   "*If not nil, automatically convert ``Master:'' lines to file variables.
@@ -4750,8 +4753,10 @@ The fourth is a function for displaying the documentation.  The
 function should accept a single argument, the chosen package,
 command, or document name.")
 
+;; key binding?
 (defun TeX-doc (&optional name)
-  "Display documentation for string NAME."
+  "Display documentation for string NAME.
+NAME may be a package, a command, or a document."
   (interactive)
   (let (docs)
     ;; Build the lists of available documentation used for completion.

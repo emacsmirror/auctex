@@ -1,3 +1,9 @@
+2006-05-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* tex.el (TeX-PDF-mode, TeX-master): Don't use t in
+	safe-local-variable declaration.
+	(TeX-doc): Clarify.
+
 2006-05-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-quotation): Do not match
