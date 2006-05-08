@@ -1,3 +1,8 @@
+2006-05-08  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* font-latex.el (font-latex-fontify-script): Mark as
+	safe-local-variable.
+
 2006-05-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-PDF-mode, TeX-master): Don't use t in
