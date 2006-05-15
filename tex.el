@@ -1058,7 +1058,9 @@ as a string.")
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable 'booleanp)
+(put 'TeX-PDF-mode 'safe-local-variable (if (fboundp 'booleanp)
+					    'booleanp
+					  '(lambda (x) (memq x '(nil t)))))
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
