@@ -3447,7 +3447,8 @@ If COUNT is non-nil, do it COUNT times."
 	      (match-beginning 0))
 	     ;; Point is before a paragraph command in the same line.
 	     ((looking-at
-	       (concat "[ \t]*\\(?:" TeX-comment-start-regexp "+[ \t]*\\)*"
+	       (concat "[ \t]*\\(?:" TeX-comment-start-regexp
+		       "\\(?:" TeX-comment-start-regexp "\\|[ \t]\\)*\\)?"
 		       "\\(" LaTeX-paragraph-commands-regexp "\\)"))
 	      (match-beginning 1))))
 	   macro-end)
