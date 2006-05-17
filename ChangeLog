@@ -1,3 +1,7 @@
+2006-05-17  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-forward-paragraph): Make regexp more efficient.
+
 2006-05-15  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex.el (TeX-PDF-mode): Rewrite safe-local-variable property for
