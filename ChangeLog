@@ -1,3 +1,12 @@
+2006-05-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-source-specials-mode): Mark as safe.
+	(TeX-PDF-mode): Use `TeX-booleanp'.
+	(TeX-booleanp): New function.
+
+	* font-latex.el (font-latex-quotes): Mark as safe.
+	(font-latex-fontify-script): Use `TeX-booleanp'.
+
 2006-05-17  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-forward-paragraph): Make regexp more efficient.
