@@ -897,6 +897,8 @@ See the the AUCTeX manual for details."
   (TeX-set-mode-name 'TeX-source-specials-mode t t))
 (defalias 'tex-source-specials-mode 'TeX-source-specials-mode)
 
+(put 'TeX-source-specials-mode 'safe-local-variable 'TeX-booleanp)
+
 (setq minor-mode-map-alist (delq
 		       (assq 'TeX-source-specials-mode minor-mode-map-alist)
 		       minor-mode-map-alist))
@@ -1058,9 +1060,7 @@ as a string.")
   :group 'TeX-command
   :set 'TeX-mode-set
   :type 'boolean)
-(put 'TeX-PDF-mode 'safe-local-variable (if (fboundp 'booleanp)
-					    'booleanp
-					  '(lambda (x) (memq x '(nil t)))))
+(put 'TeX-PDF-mode 'safe-local-variable 'TeX-booleanp)
 
 (define-minor-mode TeX-PDF-mode
   "Minor mode for using PDFTeX.
@@ -3248,6 +3248,10 @@ See `match-data' for details."
       (and (symbolp arg)
 	   (fboundp arg))))
 
+(defun TeX-booleanp (arg)
+  "Return non-nil if ARG is t or nil."
+  (memq arg '(t nil)))
+
 (defun TeX-looking-at-backward (regexp &optional limit)
   "Return non-nil if the text before point matches REGEXP.
 Optional second argument LIMIT gives a max number of characters
@@ -4755,7 +4759,6 @@ The fourth is a function for displaying the documentation.  The
 function should accept a single argument, the chosen package,
 command, or document name.")
 
-;; key binding?
 (defun TeX-doc (&optional name)
   "Display documentation for string NAME.
 NAME may be a package, a command, or a document."
