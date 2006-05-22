@@ -1621,13 +1621,21 @@ arguments''---which correspond with the macro types explained above.
 
 Text in quotation marks is displayed with the face
 @code{font-latex-string-face}.  Besides the various forms of opening and
-closing double and single quotation marks so-called guillemets (<<, >>)
+closing double and single quotation marks, so-called guillemets (<<, >>)
 can be used for quoting.  Because there are two styles of using
 them---French style: << text >>; German style: >>text<<---you can
 customize the variable @code{font-latex-quotes} to tell @fontlatex{}
-which type you are using.
+which type you are using if the correct value cannot be derived from
+document properties.
 
 @defopt font-latex-quotes
+The default value of @code{font-latex-quotes} is @samp{auto} which means
+that @fontlatex{} will try to derive the correct type of quotation mark
+matching from document properties like the language option supplied to
+the babel @LaTeX{} package.
+
+If the automatic detection fails for you and you mostly use one specific
+style you can set it to a specific language-dependent value as well.
 Set the value to @samp{german} if you are using >>German quotes<< and to
 @samp{french} if you are using << French quotes >>.  @fontlatex{} will
 recognize the different ways these quotes can be given in your source
