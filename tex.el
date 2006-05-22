@@ -3223,6 +3223,13 @@ Return nil if ELT is not a member of LIST."
     (setq list (cdr list)))
   (car-safe list))
 
+(defun TeX-elt-of-list-member (elts list)
+  "Return non-nil if an element of ELTS is a member of LIST."
+  (catch 'found
+    (dolist (elt elts)
+      (when (member elt list)
+	(throw 'found t)))))
+
 (defun TeX-assoc (key list)
   "Return non-nil if KEY is `equal' to the car of an element of LIST.
 Like assoc, except case insensitive."
