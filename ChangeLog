@@ -1,3 +1,14 @@
+2006-05-22  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-quotes-fallback)
+	(font-latex-quote-style-list-french)
+	(font-latex-quote-style-list-german): New variables.
+	(font-latex-quotes): Add `auto' option.
+	(font-latex-setup): Try to derive type of quotation mark matching
+	from document properties.
+
+	* tex.el (TeX-elt-of-list-member): New function.
+
 2006-05-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-specials-mode): Mark as safe.
