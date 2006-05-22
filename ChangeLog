@@ -9,6 +9,9 @@
 
 	* tex.el (TeX-elt-of-list-member): New function.
 
+	* doc/auctex.texi (Font Locking): Document `auto' option of
+	`font-latex-quotes'.
+
 2006-05-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-source-specials-mode): Mark as safe.
