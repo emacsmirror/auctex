@@ -115,13 +115,29 @@ fontification.")
 (defvar font-latex-quotes-control nil
   "Internal variable for keeping track if `font-latex-quotes' changed.")
 
-(defcustom font-latex-quotes 'french
+(defvar font-latex-quotes-fallback 'french
+  "Fallback value for `font-latex-quotes' if automatic detection fails.")
+
+(defvar font-latex-quote-style-list-french
+  '("french" "frenchb" "frenchle" "frenchpro" "francais" "canadien"
+    "acadian" "italian")
+  "List of styles for which French-style quote matching should be activated.")
+
+(defvar font-latex-quote-style-list-german
+  '("austrian" "german" "germanb" "naustrian" "ngerman")
+  "List of styles for which German-style quote matching should be activated.")
+
+(defcustom font-latex-quotes 'auto
   "Whether to fontify << French quotes >> or >>German quotes<<.
-Also selects \"<quote\"> versus \">quote\"<."
-  :type '(choice (const french) (const german))
+Also selects \"<quote\"> versus \">quote\"<.
+
+If value `auto' is chosen, an attempt is being made in deriving
+the type of quotation mark matching from document settings like
+the language option supplied to the babel package."
+  :type '(choice (const auto) (const french) (const german))
   :group 'font-latex)
 (put 'font-latex-quotes 'safe-local-variable
-     '(lambda (x) (memq x '(french german))))
+     '(lambda (x) (memq x '(auto french german))))
 
 (defun font-latex-add-quotes (quotes)
   "Add QUOTES to `font-latex-quote-list'.
@@ -961,6 +977,18 @@ have changed."
 	   (setq font-latex-use-cache t)))
 	((eq font-latex-do-multi-line t)
 	 (setq font-latex-use-cache t)))
+
+  ;; Language-specific quotation mark matching.
+  (when (eq font-latex-quotes 'auto)
+    (let ((styles (TeX-style-list)))
+      (set (make-local-variable 'font-latex-quotes)
+	   (or (when (TeX-elt-of-list-member font-latex-quote-style-list-french
+					     styles)
+		 'french)
+	       (when (TeX-elt-of-list-member font-latex-quote-style-list-german
+					     styles)
+		 'german)
+	       font-latex-quotes-fallback))))
 
   ;; Tell Font Lock about the support.
   (make-local-variable 'font-lock-defaults)
