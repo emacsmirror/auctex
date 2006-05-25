@@ -31,6 +31,14 @@ variable @code{TeX-output-view-style} to be changed.  Please make sure
 you either remove any customizations overriding the new default or
 incorporate the changes into your customizations if you want to use this
 feature.
+
+@item
+@TeX{} error messages of the @code{-file-line-error} kind are now
+understood in @AUCTeX{} and @previewlatex{} (parsers are still
+separate).
+
+@item
+Bug fix in XyM@TeX{} support.
 @end itemize
 
 @heading News in 11.82

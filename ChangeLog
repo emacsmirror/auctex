@@ -3,6 +3,9 @@
 	* RELEASE: Mention file-line-error style messages.
 	Mention XyMTeX fix.
 
+	* doc/changes.texi: The same.
+
+
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-update-style-hook): New variable.
