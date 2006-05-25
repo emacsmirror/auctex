@@ -115,6 +115,12 @@ fontification.")
 (defvar font-latex-quotes-control nil
   "Internal variable for keeping track if `font-latex-quotes' changed.")
 
+(defvar font-latex-quotes-internal nil
+  "Internal variable for tracking outcome of automatic detection.
+If automatic detection is not enabled, it is assigned the value
+of `font-latex-quotes'.")
+(make-variable-buffer-local 'font-latex-quotes-internal)
+
 (defvar font-latex-quotes-fallback 'french
   "Fallback value for `font-latex-quotes' if automatic detection fails.")
 
@@ -146,6 +152,24 @@ QUOTES has to be a list adhering to the format of an element of
   (set (make-local-variable 'font-latex-quotes-control) nil)
   (make-local-variable 'font-latex-quote-list)
   (add-to-list 'font-latex-quote-list quotes))
+
+(defun font-latex-quotes-set-internal ()
+  "Set `font-latex-quotes-internal' according to `font-latex-quotes'.
+If `font-latex-quotes' is set to `auto', try to derive the
+correct value from document properties."
+  (setq font-latex-quotes-internal
+	(if (eq font-latex-quotes 'auto)
+	    (or (when (TeX-elt-of-list-member
+		       font-latex-quote-style-list-french TeX-active-styles)
+		  'french)
+		(when (TeX-elt-of-list-member
+		       font-latex-quote-style-list-german TeX-active-styles)
+		  'german)
+		font-latex-quotes-fallback)
+	  font-latex-quotes)))
+;; Update the value of `font-latex-quotes-internal' when the list of
+;; styles changes.
+(add-hook 'TeX-update-style-hook 'font-latex-quotes-set-internal)
 
 ;; The definitions of the title faces were originally taken from
 ;; info.el (Copyright (C) 1985, 86, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -978,18 +1002,6 @@ have changed."
 	((eq font-latex-do-multi-line t)
 	 (setq font-latex-use-cache t)))
 
-  ;; Language-specific quotation mark matching.
-  (when (eq font-latex-quotes 'auto)
-    (let ((styles (TeX-style-list)))
-      (set (make-local-variable 'font-latex-quotes)
-	   (or (when (TeX-elt-of-list-member font-latex-quote-style-list-french
-					     styles)
-		 'french)
-	       (when (TeX-elt-of-list-member font-latex-quote-style-list-german
-					     styles)
-		 'german)
-	       font-latex-quotes-fallback))))
-
   ;; Tell Font Lock about the support.
   (make-local-variable 'font-lock-defaults)
   ;; The test for `major-mode' currently only works with docTeX mode
@@ -1451,15 +1463,17 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   ;; Update quotes list and regexp if value of `font-latex-quotes' changed.
   (unless (eq font-latex-quotes-control font-latex-quotes)
     (setq font-latex-quotes-control font-latex-quotes)
+    (font-latex-quotes-set-internal)
     ;; Set order of each entry in `font-latex-quote-list' according to
-    ;; setting of `font-latex-quotes'.
+    ;; setting of `font-latex-quotes-internal'.
     (let ((tail font-latex-quote-list)
 	  elt)
       (while tail
 	(setq elt (car tail))
 	(when (and (> (safe-length elt) 2)
-		   (not (eq (nth 2 elt) font-latex-quotes)))
-	  (setcar tail (list (nth 1 elt) (nth 0 elt) font-latex-quotes)))
+		   (not (eq (nth 2 elt) font-latex-quotes-internal)))
+	  (setcar tail (list (nth 1 elt) (nth 0 elt)
+			     font-latex-quotes-internal)))
 	(setq tail (cdr tail))))
     (setq font-latex-quote-regexp-beg
 	  (regexp-opt (mapcar 'car font-latex-quote-list) t)))
