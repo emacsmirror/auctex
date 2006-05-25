@@ -22,7 +22,7 @@
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 11.82
+@subtitle Version 11.83
 
 @author by David Kastrup, Alan Shutko,
 @author Jan-@AA{}ke Larsson and Nick Alcock.
@@ -72,7 +72,7 @@ The name of the package is really @samp{preview-latex}, all in
 lowercase letters, with a hyphen.  If you typeset it, you can use a
 sans-serif font to visually offset it.
 
-This file documents @previewlatex{} version 11.82.
+This file documents @previewlatex{} version 11.83.
 
 This documentation should cover most important points.  However,
 corrections or perhaps rewrites of sections are @emph{very welcome}.

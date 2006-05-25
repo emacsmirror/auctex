@@ -1,4 +1,4 @@
-AC_INIT(preview-latex,11.82,bug-auctex@gnu.org)
+AC_INIT(preview-latex,11.83,bug-auctex@gnu.org)
 
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL

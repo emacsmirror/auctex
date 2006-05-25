@@ -4,7 +4,7 @@
 
 @end ifset
 
-@heading News in CVS
+@heading News in 11.83
 
 @itemize @bullet
 @item
