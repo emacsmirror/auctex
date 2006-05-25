@@ -1,5 +1,7 @@
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
+	* configure.ac: Bump version number.
+
 	Update address of FSF in GPL notices.
 
 2006-04-20  David Kastrup  <dak@gnu.org>

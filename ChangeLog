@@ -1,5 +1,10 @@
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
+	* RELEASE: Update for 11.83.
+
+	* auctex.spec, configure.ac, doc/auctex.texi, doc/changes.texi,
+	doc/preview-latex.texi, doc/tex-ref.tex: Bump version number.
+
 	Update address of FSF in GPL notices.
 
 2006-05-22  Ralf Angeli  <angeli@caeruleus.net>
