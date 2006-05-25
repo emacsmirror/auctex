@@ -1,3 +1,7 @@
+2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	Update address of FSF in GPL notices.
+
 2006-05-22  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-quotes-fallback)

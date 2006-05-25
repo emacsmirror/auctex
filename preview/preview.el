@@ -17,12 +17,12 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.267 2006-04-20 20:53:49 dak Exp $
+;; $Id: preview.el,v 1.268 2006-05-25 07:50:57 angeli Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -3478,7 +3478,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.267 $"))
+	(rev "$Revision: 1.268 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3492,7 +3492,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-04-20 20:53:49 $"))
+    (let ((date "$Date: 2006-05-25 07:50:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
