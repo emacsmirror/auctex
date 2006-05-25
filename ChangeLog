@@ -1,5 +1,17 @@
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-update-style-hook): New variable.
+	(TeX-update-style): Use it.
+	(TeX-remove-style): Fix typo.
+
+	* font-latex.el (font-latex-quotes-internal): New variable.
+	(font-latex-quotes-set-internal): New function.
+	(font-latex-match-quotation): Use it.  Use
+	`font-latex-quotes-internal' instead of `font-latex-quotes'.
+	(font-latex-setup): Remove code for figuring out type of
+	language-specific quotation mark matching which is now in
+	`font-latex-quotes-set-internal'.
+
 	* RELEASE: Update for 11.83.
 
 	* auctex.spec, configure.ac, doc/auctex.texi, doc/changes.texi,
