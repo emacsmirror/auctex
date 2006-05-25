@@ -1,9 +1,5 @@
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
-	* Version 11.83 released.
-
-2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
-
 	* RELEASE: Update for 11.83.
 
 	* auctex.spec, configure.ac, doc/auctex.texi, doc/changes.texi,
