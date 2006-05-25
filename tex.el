@@ -1757,7 +1757,6 @@ active.")
 
 (defvar TeX-active-styles nil
   "List of styles currently active in the document.")
-
  (make-variable-buffer-local 'TeX-active-styles)
 
 (defun TeX-run-style-hooks (&rest styles)
@@ -1789,12 +1788,14 @@ active.")
   "Nil, unless the style specific hooks have been applied.")
  (make-variable-buffer-local 'TeX-style-hook-applied-p)
 
+(defvar TeX-update-style-hook nil
+  "Hook run as soon as style specific hooks were applied.")
+
 (defun TeX-update-style (&optional force)
   "Run style specific hooks for the current document.
 
 Only do this if it has not been done before, or if optional argument
 FORCE is not nil."
-
   (unless (or (and (boundp 'TeX-auto-update)
 		   (eq TeX-auto-update 'BibTeX)) ; Not a real TeX buffer
 	      (and (not force)
@@ -1808,12 +1809,11 @@ FORCE is not nil."
 		 (string-match TeX-one-master
 			       (file-name-nondirectory (buffer-file-name)))))
 	(TeX-run-style-hooks (TeX-master-file)))
-
     (if (and TeX-parse-self
 	     (null (cdr-safe (assoc (TeX-strip-extension nil nil t)
 				    TeX-style-hook-list))))
 	(TeX-auto-apply))
-
+    (run-hooks 'TeX-update-style-hook)
     (message "Applying style hooks... done")))
 
 (defvar TeX-remove-style-hook nil
@@ -1823,7 +1823,7 @@ FORCE is not nil."
 (defun TeX-remove-style ()
   "Remove all style specific information."
   (setq TeX-style-hook-applied-p nil)
-  (run-hooks 'TeX-remove-style-hooks)
+  (run-hooks 'TeX-remove-style-hook)
   (setq TeX-active-styles (list TeX-virgin-style)))
 
 (defun TeX-style-list ()
