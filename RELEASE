@@ -53,6 +53,11 @@ either remove any customizations overriding the new default or
 incorporate the changes into your customizations if you want to use
 this feature.
 
+The error parsing of AUCTeX as well as preview-latex now deals with
+-file-line-error type messages from newer web2c versions (earlier
+versions would omit the traditional error context, which will not
+work).
+
 IMPORTANT: Many of the new features in the 11.x series rely on special
 properties in the variable `TeX-command-list' and will not work if you
 customized this variable for a pre-11.5x release of AUCTeX.  If this

@@ -1,3 +1,7 @@
+2006-05-25  David Kastrup  <dak@gnu.org>
+
+	* RELEASE: Mention file-line-error style messages.
+
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-update-style-hook): New variable.
