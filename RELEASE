@@ -58,6 +58,8 @@ The error parsing of AUCTeX as well as preview-latex now deals with
 versions would omit the traditional error context, which will not
 work).
 
+A problem in preview-latex in connection with XyMTeX has been fixed.
+
 IMPORTANT: Many of the new features in the 11.x series rely on special
 properties in the variable `TeX-command-list' and will not work if you
 customized this variable for a pre-11.5x release of AUCTeX.  If this

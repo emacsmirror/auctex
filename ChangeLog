@@ -1,6 +1,7 @@
 2006-05-25  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Mention file-line-error style messages.
+	Mention XyMTeX fix.
 
 2006-05-25  Ralf Angeli  <angeli@caeruleus.net>
 

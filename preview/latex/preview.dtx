@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %%     Boston, MA 02110-1301  USA
 %%\fi
-% \CheckSum{1638}
+% \CheckSum{1640}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -435,11 +435,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.114 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.115 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-05-25 07:50:56 $
+\reserved@a\next $Date: 2006-05-25 19:28:52 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -963,7 +963,8 @@
     \PreviewEnvironment{math}%
     \preview@delay{\ifx#1\@undefined \let#1=$%$
       \fi\catcode`\$=\active
-      \ifx\xyreuncatcodes\@undefined\else\xyreuncatcodes\fi}%
+      \ifx\xyreuncatcodes\@undefined\else
+        \makeatother\xyreuncatcodes\makeatletter\fi}%
     \pr@advise@ship\(\pr@endaftergroup{}% \)
     \pr@advise@ship#1{\@firstoftwo{\let#1=#2%
         \futurelet\reserved@a\pr@textmathcheck}}{}}%
