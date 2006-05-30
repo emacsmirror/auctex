@@ -112,7 +112,7 @@ rm -rf %{buildroot}
 %doc doc/tex-ref.pdf
 # %doc --parents preview/RELEASE preview/README preview/INSTALL preview/TODO preview/FAQ
 %doc %{_infodir}/*
-%exclude %{_infodir}/dir
+# %exclude %{_infodir}/dir
 %{_datadir}/emacs/site-lisp/%{name}
 %{_localstatedir}/%{name}
 %config %{_datadir}/emacs/site-lisp/tex-site.el
