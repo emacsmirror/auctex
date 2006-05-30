@@ -96,14 +96,6 @@ documents right away, insert the following in your @file{.emacs} file.
 (setq-default TeX-master nil)
 @end lisp
 
-@cindex tool bar, toolbar
-If you are using the tool bar, there is some tool bar support available
-for @LaTeX{} which you can enable with
-
-@lisp
-(add-hook 'LaTeX-mode-hook #'LaTeX-install-toolbar)
-@end lisp
-
 Another thing you should enable is Ref@TeX{}, a comprehensive solution
 for managing cross references, bibliographies, indices, document
 navigation and a few other things.  (@pxref{Installation,,,reftex,The
@@ -1952,6 +1944,13 @@ The most powerful features of @AUCTeX{} may be those allowing you to
 run (La)@TeX{}/@ConTeXt{} and other external commands like Bib@TeX{} and
 @code{makeindex} from within Emacs, viewing and printing the results,
 and moreover allowing you to @emph{debug} your documents.
+
+@cindex tool bar, toolbar
+@vindex LaTeX-enable-toolbar
+If you are using the tool bar, @AUCTeX{} provides a special tool bar for
+@LaTeX{} which offers icons for the most important commands.  You can
+customize some tool bar features with @kbd{M-x customize-group RET
+TeX-tool-bar RET}.
 
 @menu
 * Commands::                    Invoking external commands.

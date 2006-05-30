@@ -39,6 +39,10 @@ separate).
 
 @item
 Bug fix in XyM@TeX{} support.
+@item
+The @LaTeX{} tool bar is now enabled by default.  See @ref{Running TeX
+and friends}.
+
 @end itemize
 
 @heading News in 11.82

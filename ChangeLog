@@ -1,3 +1,10 @@
+2006-05-30  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Add tool bar.
+
+	* doc/auctex.texi (top): Remove tool bar.
+	(Running TeX and friends): Add tool bar here.  Adjust.
+
 2006-05-25  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Mention file-line-error style messages.
