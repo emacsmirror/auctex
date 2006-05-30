@@ -1,5 +1,7 @@
 2006-05-30  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/Makefile.in (MAKEINFO_PLAIN): New.  Add --no-validate.
+
 	* doc/changes.texi: Add tool bar.
 
 	* doc/auctex.texi (top): Remove tool bar.

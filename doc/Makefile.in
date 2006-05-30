@@ -5,6 +5,7 @@ infodir=@infodir@$(null)
 TEX=@TEX@
 PDFTEX=@PDFTEX@
 MAKEINFO=@MAKEINFO@
+MAKEINFO_PLAIN=-D rawfile --no-headers --no-validate
 INSTALL_INFO=@INSTALL_INFO@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -120,38 +121,28 @@ install-preview: preview-latex.info
 # disttexts
 
 ../INSTALL: install.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		install.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) install.texi --output $@
 
 ../INSTALL.windows: wininstall.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		wininstall.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) wininstall.texi --output $@
 
 ../README: intro.texi preview-readme.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		intro.texi --output $@
-	$(MAKEINFO) -D rawfile --no-headers  \
-		preview-readme.texi --output - >> $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) intro.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) preview-readme.texi --output - >> $@
 
 ../CHANGES: changes.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		changes.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) changes.texi --output $@
 
 ../TODO: todo.texi preview-todo.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		todo.texi --output $@
-	$(MAKEINFO) -D rawfile --no-headers  \
-		preview-todo.texi --output - >> $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) todo.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) preview-todo.texi --output - >> $@
 
 ../FAQ: faq.texi preview-faq.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		faq.texi --output $@
-	$(MAKEINFO) -D rawfile --no-headers  \
-		--number-sections preview-faq.texi --output - >> $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) faq.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-faq.texi --output - >> $@
 
 ../PROBLEMS: preview-problems.texi macros.texi
-	$(MAKEINFO) -D rawfile --no-headers  \
-		--number-sections preview-problems.texi --output $@
+	$(MAKEINFO) $(MAKEINFO_PLAIN) --number-sections preview-problems.texi --output $@
 
 # clean
 
