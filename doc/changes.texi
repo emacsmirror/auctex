@@ -39,9 +39,12 @@ separate).
 
 @item
 Bug fix in XyM@TeX{} support.
+
 @item
-The @LaTeX{} tool bar is now enabled by default.  See @ref{Running TeX
-and friends}.
+The @LaTeX{} tool bar is now enabled by default.
+@ifclear rawfile
+@xref{Running TeX and friends}.
+@end ifclear
 
 @end itemize
 

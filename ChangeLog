@@ -1,5 +1,9 @@
 2006-05-31  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* doc/changes.texi: Conditionalize reference.
+
+	* doc/Makefile.in (MAKEINFO_PLAIN): Remove --no-validate.
+
 	* auctex.spec (%files emacs): Remove %exclude.
 
 2006-05-30  Reiner Steib  <Reiner.Steib@gmx.de>
