@@ -10,14 +10,23 @@
 @item
 The new function @code{TeX-doc} provides easy access to documentation
 about commands and packages or information related to @TeX{} and friends
-in general.  It is accessible with the key binding @kbd{C-c ?} or the
+in general.
+@ifset rawfile
+It is accessible with the key binding @kbd{C-c ?} or the
 @samp{Find Documentation...} entry in the mode menus.
+@end ifset
+@ifclear rawfile
+@xref{Miscellaneous Commands}.
+@end ifclear
 
 @item
 You can now get rid of generated intermediate and output files by means
 of the new @samp{Clean} and @samp{Clean All} entries in
 @code{TeX-command-list} accessible with @kbd{C-c C-c} or the Command
 menu.
+@ifclear rawfile
+@xref{Miscellaneous Commands}.
+@end ifclear
 
 @item
 Support for forward search with PDF files was added.  That means you can

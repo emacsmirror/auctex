@@ -1958,6 +1958,7 @@ TeX-tool-bar RET}.
 * Debugging::                   Debugging @TeX{} and @LaTeX{} output.
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
+* Miscellaneous Commands::      Miscellaneous Commands.
 @end menu
 
 @node Commands
@@ -2390,6 +2391,25 @@ visible.
 (@kbd{C-c ^}) Go to the `master' file in the document associated with
 the current buffer, or if already there, to the file where the current
 process was started.
+@end deffn
+
+@node Miscellaneous Commands
+@section Miscellaneous Commands
+
+@deffn Command TeX-doc
+@kindex C-c ?
+
+The function @code{TeX-doc} provides easy access to documentation about
+commands and packages or information related to @TeX{} and friends in
+general.  It is accessible with the key binding @kbd{C-c ?} or the
+@samp{Find Documentation...} entry in the mode menus.
+@end deffn
+
+@deffn Command TeX-clean
+You can get rid of generated intermediate and output files by means of
+the new @samp{Clean} and @samp{Clean All} entries in
+@code{TeX-command-list} accessible with @kbd{C-c C-c} or the Command
+menu.
 @end deffn
 
 @node Multifile
