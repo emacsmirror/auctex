@@ -148,8 +148,8 @@ if there was any urgentization."
     (setcdr (car img) (cdar replacement))
     (setcdr img (cdr replacement))))
 
-(defvar preview-button-1 'mouse-2)
-(defvar preview-button-2 'down-mouse-3)
+(defvar preview-button-1 [mouse-2])
+(defvar preview-button-2 [mouse-3])
 
 (defmacro preview-make-clickable (&optional map glyph helpstring click1 click2)
   "Generate a clickable string or keymap.
@@ -161,9 +161,9 @@ for preview's clicks, displayed as a help-echo.  CLICK1 and CLICK2
 are functions to call on preview's clicks."
   `(let ((resmap ,(or map '(make-sparse-keymap))))
      ,@(if click1
-           `((define-key resmap [,preview-button-1] ,click1)))
+           `((define-key resmap preview-button-1 ,click1)))
      ,@(if click2
-           `((define-key resmap [,preview-button-2] ,click2)))
+           `((define-key resmap preview-button-2 ,click2)))
      ,(if glyph
 	  `(propertize
 	    "x"
@@ -171,10 +171,8 @@ are functions to call on preview's clicks."
 	    'mouse-face 'highlight
 	    'help-echo
 	    ,(if (stringp helpstring)
-		 (format helpstring preview-button-1
-			 (event-basic-type preview-button-2))
-	       `(format ,helpstring preview-button-1
-			(event-basic-type preview-button-2)))
+		 (format helpstring preview-button-1 preview-button-2)
+	       `(format ,helpstring preview-button-1 preview-button-2))
 	    'keymap resmap)
 	'resmap)))
 
