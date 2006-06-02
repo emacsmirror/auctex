@@ -1,3 +1,7 @@
+2006-06-02  David Kastrup  <dak@gnu.org>
+
+	* Version 11.83 released.
+
 2006-06-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/auctex.texi (Miscellaneous Commands): New node.
