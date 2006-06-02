@@ -5130,6 +5130,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
      '("renewcommand*" TeX-arg-macro
        [ "Number of arguments" ] [ "Default value for first argument" ] t)
      '("usepackage" LaTeX-arg-usepackage)
+     '("RequirePackage" LaTeX-arg-usepackage)
      '("documentclass" TeX-arg-document)))
 
   (TeX-add-style-hook "latex2e"
