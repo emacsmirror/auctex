@@ -1,3 +1,7 @@
+2006-06-02  David Kastrup  <dak@gnu.org>
+
+	* doc/changes.texi: Change one ref to xref.
+
 2006-05-31  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/changes.texi: Conditionalize reference.

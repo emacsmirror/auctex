@@ -191,7 +191,7 @@ the names of the variables holding the related keyword lists were
 changed from @code{font-latex-title-@var{N}-keywords} to
 @code{font-latex-sectioning-@var{N}-keywords}.
 @ifclear rawfile
-@ref{Font Locking} for details.
+@xref{Font Locking}, for details.
 @end ifclear
 Make sure to adjust your customizations.
 
