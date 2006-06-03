@@ -188,6 +188,8 @@ Starting Processors, Viewers and Other Programs
 * Debugging::                   Debugging @TeX{} and @LaTeX{} output.
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
+* Cleaning::                    Cleaning intermediate and output files.
+* Documentation::               Documentation about macros and packages.
 
 Language Support
 
@@ -1958,7 +1960,8 @@ TeX-tool-bar RET}.
 * Debugging::                   Debugging @TeX{} and @LaTeX{} output.
 * Checking::                    Checking the document.
 * Control::                     Controlling the processes.
-* Miscellaneous Commands::      Miscellaneous Commands.
+* Cleaning::                    Cleaning intermediate and output files.
+* Documentation::               Documentation about macros and packages.
 @end menu
 
 @node Commands
@@ -2393,23 +2396,61 @@ the current buffer, or if already there, to the file where the current
 process was started.
 @end deffn
 
-@node Miscellaneous Commands
-@section Miscellaneous Commands
+@node Cleaning
+@section Cleaning intermediate and output files
+@cindex Cleaning
+
+@deffn Command TeX-clean
+@vindex plain-TeX-clean-intermediate-suffixes
+@vindex plain-TeX-clean-output-suffixes
+@vindex LaTeX-clean-intermediate-suffixes
+@vindex LaTeX-clean-output-suffixes
+@vindex docTeX-clean-intermediate-suffixes
+@vindex docTeX-clean-output-suffixes
+@vindex Texinfo-clean-intermediate-suffixes
+@vindex Texinfo-clean-output-suffixes
+@vindex ConTeXt-clean-intermediate-suffixes
+@vindex ConTeXt-clean-output-suffixes
+Remove generated intermediate files.  In case a prefix argument is
+given, remove output files as well.
+
+Canonical access to the function is provided by the @samp{Clean} and
+@samp{Clean All} entries in @code{TeX-command-list}, invokable with
+@kbd{C-c C-c} or the Command menu.
+
+The patterns governing which files to remove can be adapted separately
+for each @AUCTeX{} mode by means of the variables
+@code{plain-TeX-clean-intermediate-suffixes},
+@code{plain-TeX-clean-output-suffixes},
+@code{LaTeX-clean-intermediate-suffixes},
+@code{LaTeX-clean-output-suffixes},
+@code{docTeX-clean-intermediate-suffixes},
+@code{docTeX-clean-output-suffixes},
+@code{Texinfo-clean-intermediate-suffixes},
+@code{Texinfo-clean-output-suffixes},
+@code{ConTeXt-clean-intermediate-suffixes} and
+@code{ConTeXt-clean-output-suffixes}.
+@end deffn
+
+@defopt TeX-clean-confirm
+Control if deletion of intermediate and output files has to be confirmed
+before it is actually done.  If non-nil, ask before deleting files.
+@end defopt
+
+@node Documentation
+@section Documentation about macros and packages
+@cindex Documentation
 
 @deffn Command TeX-doc
 @kindex C-c ?
+(@kbd{C-c ?})  Get documentation about macros, packages or @TeX{} &
+Co. in general.  The function will prompt for the name of a command or
+manual, providing a list of available keywords for completion.  If point
+is on a command or word with available documentation, this will be
+suggested as default.
 
-The function @code{TeX-doc} provides easy access to documentation about
-commands and packages or information related to @TeX{} and friends in
-general.  It is accessible with the key binding @kbd{C-c ?} or the
-@samp{Find Documentation...} entry in the mode menus.
-@end deffn
-
-@deffn Command TeX-clean
-You can get rid of generated intermediate and output files by means of
-the new @samp{Clean} and @samp{Clean All} entries in
-@code{TeX-command-list} accessible with @kbd{C-c C-c} or the Command
-menu.
+The command can be invoked by the key binding mentioned above as well as
+the @samp{Find Documentation...} entry in the mode menu.
 @end deffn
 
 @node Multifile
