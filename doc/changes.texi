@@ -16,7 +16,7 @@ It is accessible with the key binding @kbd{C-c ?} or the
 @samp{Find Documentation...} entry in the mode menus.
 @end ifset
 @ifclear rawfile
-@xref{Miscellaneous Commands}.
+@xref{Documentation}.
 @end ifclear
 
 @item
@@ -25,7 +25,7 @@ of the new @samp{Clean} and @samp{Clean All} entries in
 @code{TeX-command-list} accessible with @kbd{C-c C-c} or the Command
 menu.
 @ifclear rawfile
-@xref{Miscellaneous Commands}.
+@xref{Cleaning}.
 @end ifclear
 
 @item
