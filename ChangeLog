@@ -1,3 +1,13 @@
+2006-06-03  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/auctex.texi (top): Update master menu.
+	(Running TeX and friends): Update menu.
+	(Miscellaneous Commands): Remove.
+	(Cleaning, Documentation): New nodes.
+
+	* doc/changes.texi: Update references to documentation about
+	cleaning and documentation access.
+
 2006-06-02  David Kastrup  <dak@gnu.org>
 
 	* Version 11.83 released.
