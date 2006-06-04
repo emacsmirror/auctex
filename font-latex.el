@@ -150,6 +150,7 @@ the language option supplied to the babel package."
 QUOTES has to be a list adhering to the format of an element of
 `font-latex-quote-list'."
   (set (make-local-variable 'font-latex-quotes-control) nil)
+  (make-local-variable 'font-latex-quote-regexp-beg)
   (make-local-variable 'font-latex-quote-list)
   (add-to-list 'font-latex-quote-list quotes))
 
