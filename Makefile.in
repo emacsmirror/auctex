@@ -111,7 +111,7 @@ all: lisp
 	install-docs install-auto \
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
-	dist patch tar-ball full-release tar-ball-clean wc xemacs-package
+	dist patch tar-ball rpm-builds full-release tar-ball-clean wc xemacs-package
 
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
@@ -308,6 +308,10 @@ tar-ball:
 	cd doc && $(MAKE) extradist
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
+
+rpm-builds:
+	rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz
+	cp $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}

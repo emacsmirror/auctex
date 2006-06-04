@@ -1,5 +1,7 @@
 2006-06-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (rpm-builds): New target.
+
 	* doc/install.texi (Advice for non-privileged users): Reword to
 	avoid underfull hbox.
 
