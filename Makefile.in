@@ -315,16 +315,19 @@ rpm-builds:
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
-# RPM generation currently not working.
-#	su -c "rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz" -
-#	cp $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
+	if [ "x$$GPG_AGENT_INFO" = "x" ]; then \
+	  read -sp "Enter pass phrase: " phrase ; \
+	  gpg_opt="--passphrase-fd 0"; \
+	else \
+	  gpg_opt=""; phrase=""; \
+	fi; \
 	read -sp "Enter pass phrase: " phrase ; \
 	for i in $(FTPDIR)/*; do \
-	   echo "$$phrase" | gpg --passphrase-fd 0 --detach-sign $$i ; \
+	   echo "$$phrase" | gpg --detach-sign $$gpg_opt $$i ; \
 	   case $$i in *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \
 	      *) echo "directory: auctex/$(TAG)-extra" >$$i.directive ;; \
 	   esac ; \
-	   echo "$$phrase" | gpg --passphrase-fd 0 --clearsign $$i.directive ; \
+	   echo "$$phrase" | gpg $$gpg_opt --clearsign $$i.directive ; \
 	done
 	rm $(FTPDIR)/*.directive
 
