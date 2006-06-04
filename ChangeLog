@@ -2,6 +2,8 @@
 
 	* Makefile.in (rpm-builds): New target.
 	(full-release): Use gpg-agent if available.
+	(RPM_SIGN): New variable.
+	(rpm-builds): Use it.
 
 	* doc/install.texi (Advice for non-privileged users): Reword to
 	avoid underfull hbox.

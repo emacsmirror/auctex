@@ -52,6 +52,7 @@ WWWDIR = $(DIST_PREFIX)www
 COMMITTER_NAME="David Kastrup"
 COMMITTER_EMAIL=dak@gnu.org
 RPMROOT = /usr/src/redhat
+RPM_SIGN = --sign
 
 MULESRC = @MULESRC@
 MULEELC = @MULEELC@
@@ -305,12 +306,13 @@ tar-ball:
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	cp auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
 	cp auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)
+# The following files aren't fetch from auctex-$(TAG).  Is this intended?
 	cd doc && $(MAKE) extradist
 	cp doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	cp ChangeLog $(FTPDIR)
 
 rpm-builds:
-	rpmbuild -ta --sign $(FTPDIR)/auctex-$(TAG).tar.gz
+	rpmbuild -ta $(RPM_SIGN) $(FTPDIR)/auctex-$(TAG).tar.gz
 	cp $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
 
 full-release:
