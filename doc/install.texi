@@ -486,14 +486,7 @@ Here is how to do the various parts:
 
 @subheading Making the Elisp available
 
-In XEmacs, you should ask the other users to add symbolic links in their
-@file{~/.xemacs/xemacs-packages/lisp},
-@file{~/.xemacs/xemacs-packages/info} and
-@file{~/.xemacs/xemacs-packages/etc} directories. (Alas, there is
-presently no easy programmatic way to do this, except to have a script
-do the symlinking for them.)
-
-In GNU Emacs, It should be sufficient if people just do
+In GNU Emacs, it should be sufficient if people just do
 
 @lisp
 (load "~myself/share/emacs/site-lisp/auctex.el" nil t t)
@@ -502,6 +495,12 @@ In GNU Emacs, It should be sufficient if people just do
 
 where the path points to your personal installation.  The rest of the
 package should be found relative from there without further ado.
+
+In XEmacs, you should ask the other users to add symbolic links in the
+subdirectories @file{lisp}, @file{info} and @file{etc} of their
+@file{~/.xemacs/xemacs-packages/} directory.  (Alas, there is presently
+no easy programmatic way to do this, except to have a script do the
+symlinking for them.)
 
 @subheading Making the Info files available
 
