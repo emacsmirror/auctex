@@ -1,3 +1,7 @@
+2006-06-05  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* RELEASE: Mention LaTeX tool bar.
+
 2006-06-05  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-quote-regexp-beg)

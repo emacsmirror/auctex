@@ -58,6 +58,8 @@ The error parsing of AUCTeX as well as preview-latex now deals with
 versions would omit the traditional error context, which will not
 work).
 
+The LaTeX tool bar is now enabled by default.
+
 A problem in preview-latex in connection with XyMTeX has been fixed.
 
 IMPORTANT: Many of the new features in the 11.x series rely on special
