@@ -1,3 +1,15 @@
+2006-06-05  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-quote-regexp-beg)
+	(font-latex-quotes-control): Make buffer-local.
+	(font-latex-add-quotes): Revert last change and do not make
+	`font-latex-quotes-control' buffer-local which it now already is.
+
+2006-06-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-add-quotes): Make
+	`font-latex-quote-regexp-beg' buffer-local.
+
 2006-06-04  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (rpm-builds): New target.
