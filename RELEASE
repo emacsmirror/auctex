@@ -96,11 +96,24 @@ Availability
 ------------
 
 AUCTeX can be downloaded in various formats from
-<URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.  A separate directory
-contains some stuff from the tarball, such as ChangeLog, printable
-manuals, and a reference sheet.  The download area is mirrored to the
-directory support/auctex on CTAN.  AUCTeX is licensed under the GNU
-General Public License version 2.
+<URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.  At release time, we provide
+the source tarball, source and binary RPMs for Emacs under SuSE, and a
+platform-independent XEmacs package file.  Also check the footnotes
+for versions of Emacs already including AUCTeX.
+
+RPMs with minor version 1 are built from the spec file in the tarball
+which should work on both SuSE as well as Fedora (though we have not
+tested the latter).  The source RPM for SuSE should also work for
+rebuilding RPMs on Fedora.
+
+The XEmacs package file can be discerned by `pkg' in its name.  It is
+usually more recent and functional than what gets distributed from
+XEmacs servers and as part of the Sumo tarball.
+
+A separate directory for each release contains some stuff from the
+tarball, such as ChangeLog, printable manuals, and a reference sheet.
+The download area is mirrored to the directory support/auctex on CTAN.
+AUCTeX is licensed under the GNU General Public License version 2.
 
 You'll find more information at the web site of AUCTeX
 <URL:http://www.gnu.org/software/auctex/>, including its mailing list
@@ -118,8 +131,11 @@ contributors.  The principal authors and maintainers have already done
 so, but it would require a diligent and diplomatic volunteer to find
 and ask the rest.
 
-Current project manager is David Kastrup.  While Paypal contributions
-to <URL:mailto:auctex@gnu.org> are appreciated, volunteering for tasks
+Current project manager is David Kastrup.  Paypal contributions to
+<URL:mailto:auctex@gnu.org> would be appreciated in order to
+compensate for time, money and hardware required for presenting AUCTeX
+at conferences.  Extensions may be commissioned: enquire on the
+developer list (see above).  Other than that, volunteering for tasks
 remains the most effective way of helping AUCTeX development.
 
 The following people contributed to this release series (in
