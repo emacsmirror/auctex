@@ -94,6 +94,7 @@ buffers controlled by font-latex or restarting Emacs."
 
 (defvar font-latex-quote-regexp-beg nil
   "Regexp used to find quotes.")
+(make-variable-buffer-local 'font-latex-quote-regexp-beg)
 
 (defvar font-latex-quote-list '(("``" "''") ("<<" ">>" french) ("«" "»" french))
   "List of quote specifiers for quotation fontification.
@@ -114,6 +115,7 @@ fontification.")
 
 (defvar font-latex-quotes-control nil
   "Internal variable for keeping track if `font-latex-quotes' changed.")
+(make-variable-buffer-local 'font-latex-quotes-control)
 
 (defvar font-latex-quotes-internal nil
   "Internal variable for tracking outcome of automatic detection.
@@ -149,8 +151,7 @@ the language option supplied to the babel package."
   "Add QUOTES to `font-latex-quote-list'.
 QUOTES has to be a list adhering to the format of an element of
 `font-latex-quote-list'."
-  (set (make-local-variable 'font-latex-quotes-control) nil)
-  (make-local-variable 'font-latex-quote-regexp-beg)
+  (setq font-latex-quotes-control nil)
   (make-local-variable 'font-latex-quote-list)
   (add-to-list 'font-latex-quote-list quotes))
 
