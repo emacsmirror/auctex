@@ -1,3 +1,12 @@
+2006-06-06  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/pdfsync.el (LaTeX-pdfsync-output-page): Initialize
+	`sync-record' with a non-nil value.
+
+	* doc/auctex.texi (Viewing): Fix reference to Commands node
+	looking ugly in info output.  Slightly rearrange forward/inverse
+	search section.  Document pdfsync support a bit more in detail.
+
 2006-06-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* RELEASE: Use "SUSE" instead of "SuSE".
