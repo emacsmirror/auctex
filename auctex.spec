@@ -13,7 +13,7 @@
 Summary: 	Enhanced TeX modes for Emacsen
 Name: 		auctex
 Version: 	11.83
-Release: 	0%{distri}
+Release: 	1%{distri}
 License: 	GPL
 Group: 		%{commongroup}
 URL: 		http://www.gnu.org/software/auctex/

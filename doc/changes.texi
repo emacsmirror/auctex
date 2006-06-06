@@ -31,9 +31,14 @@ menu.
 @item
 Support for forward search with PDF files was added.  That means you can
 jump to a place in the output file corresponding to the position in the
-source file.  Currently this only works if you use the pdfsync @LaTeX{}
-package and xpdf as your PDF viewer.  The accuracy is in the range of
-+/-1 page.
+source file.
+@ifset rawfile
+Currently this only works if you use the pdfsync @LaTeX{} package and
+xpdf as your PDF viewer.  The accuracy is in the range of +/-1 page.
+@end ifset
+@ifclear rawfile
+@xref{Viewing}.
+@end ifclear
 
 Adding support for this feature required the default value of the
 variable @code{TeX-output-view-style} to be changed.  Please make sure

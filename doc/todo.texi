@@ -106,6 +106,7 @@ at the definition of that macro (using Source Specials), or the source
 code of the @file{.dtx} file.
 
 @item Better plain TeX support
+
 For starters, @code{LaTeX-math-mode} is not very @LaTeX{}-specific in
 the first place, and similar holds for indentation and formatting.
 
@@ -115,6 +116,14 @@ alternatives would be desirable.  One could implement inverse search by
 something like Heiko Oberdiek's @file{vpe.sty}, and forward search by
 using the @file{.aux} file info to correlate labels in the text
 (possibly in cooperation with Ref@TeX{}) with previewer pages.
+
+In @AUCTeX{} 11.83, support for forward search with PDF files was added.
+Currently this only works if you use the pdfsync @LaTeX{} package and
+xpdf as your PDF viewer.
+@ifclear rawfile
+@xref{Viewing}.
+@end ifclear
+
 
 @item
 Page count when compiling should (optionally) go to modeline of the

@@ -1,3 +1,13 @@
+2006-06-06  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec (Release): Bump to 1.
+
+	* doc/changes.texi: Add @xref for pdfsync.
+
+	* doc/auctex.texi (Viewing): Mention pdfsync.
+
+	* doc/todo.texi (Wishlist): Add newline.  Mention pdfsync.
+
 2006-06-06  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Add details about downloadable packages.  Beg harder.
