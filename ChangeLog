@@ -1,6 +1,9 @@
 2006-06-06  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* RELEASE: Use "SUSE" instead of "SuSE".
+
 	* auctex.spec (Release): Bump to 1.
+	(%changelog): Add 11.83.
 
 	* doc/changes.texi: Add @xref for pdfsync.
 

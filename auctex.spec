@@ -131,6 +131,9 @@ rm -rf %{buildroot}
 # Shouldn't changelog include changes in the package instead of changes in the
 # spec file?
 
+* Tue Jun  6 2006 Reiner Steib  <Reiner.Steib@gmx.de>
+- Update to AUCTeX 11.83
+
 * Wed Dec 28 2005 Reiner Steib  <Reiner.Steib@gmx.de>
 - Remove bogus preview directory.  Add preview-latex in description.
 
