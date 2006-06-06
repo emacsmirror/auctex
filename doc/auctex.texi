@@ -2257,15 +2257,26 @@ for a viewer will be made.
 @cindex Forward search
 You can make use of forward and inverse searching if this is supported
 by your @acronym{DVI} viewer and you enabled
-@code{TeX-source-specials-mode} as described in @ref{Commands}.
-@AUCTeX{} will automatically pass the
-necessary command line options to the viewer in order to display the
-page containing the content you are currently editing (forward search).
+@code{TeX-source-specials-mode}.  @xref{Commands}, on how to do that.
+@AUCTeX{} will automatically pass the necessary command line options to
+the viewer in order to display the page containing the content you are
+currently editing (forward search).
+
 Upon opening the viewer you will be asked if you want to start a server
 process (Gnuserv or Emacs server) which is necessary for inverse search.
 This happens only if there is no server running already.  You can
 customize the variable @code{TeX-source-specials-view-start-server} to
 inhibit the question and always or never start the server respectively.
+
+@defopt TeX-source-specials-view-start-server
+If @code{TeX-source-specials-mode} is active and a @acronym{DVI} viewer
+is invoked, the default behavior is to ask if a server process should be
+started.  Set this variable to @code{t} if the question should be
+inhibited and the server should always be started.  Set it to @code{nil}
+if the server should never be started.  Inverse search will not be
+available in the latter case.
+@end defopt
+
 Once the server and the viewer are running you can use a mouse click in
 the viewer to jump to the corresponding part of your document in Emacs
 (inverse search).  Refer to the documentation of your viewer to find out
@@ -2273,18 +2284,13 @@ what you have to do exactly.  In xdvi you usually have to use
 @kbd{C-down-mouse-1}.
 
 For PDF output, forward search is availabe when using the pdfsync
-@LaTeX{} package and xpdf as PDF viewer.  That means you can jump to a
-place in the output file corresponding to the position in the source
-file.  The accuracy is in the range of +/-1 page.
-
-@defopt TeX-source-specials-view-start-server
-If @code{TeX-source-specials-mode} is active and a @acronym{DVI} viewer
-is invoked, the default behavior is to ask if a server process should be
-started.  Set this variable to @code{t} if the question should be
-inhibited and the server should be started always.  Set it to @code{nil}
-if the server should never be started.  Inverse search will not be
-available in the latter case.
-@end defopt
+@LaTeX{} package and xpdf as PDF viewer.  With the pdfsync package
+forward search does not rely on source specials.  Therefore you don't
+have to bother about the provisions for source specials explained above.
+If document parsing is enabled, the functionality is usable immediately,
+e.g. by typing @kbd{C-c C-v} (@code{TeX-view}) which will open the
+viewer or bring it to front if it is already opened and display the
+output page corresponding to the position of point in the source file.
 
 @node Debugging
 @section Catching the errors
