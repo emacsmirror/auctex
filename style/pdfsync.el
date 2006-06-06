@@ -37,9 +37,10 @@
 	 (line (line-number-at-pos))
 	 (master (TeX-active-master))
 	 (pdfsync-file (concat master ".pdfsync"))
+	 (sync-record "0")
 	 (sync-line "-1")
 	 (sync-page "1")
-	 sync-record last-match)
+	 last-match)
     (when (file-exists-p pdfsync-file)
       (with-current-buffer (find-file-noselect pdfsync-file)
 	(save-restriction
