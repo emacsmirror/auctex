@@ -1,5 +1,9 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Version 11.83 released.
+
+2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
 	* Makefile.in (full-release): Remove duplicate pass phrase prompt.
 	(release-commit): Only commit ChangeLog.
 
