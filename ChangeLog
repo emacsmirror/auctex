@@ -1,7 +1,9 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (full-release): Remove duplicate pass phrase prompt.
-	(rpm-packages): Rename from rpm-builds.
+	(release-commit): Only commit ChangeLog.
+
+	* Makefile.in (rpm-packages): Rename from rpm-builds.
 
 	* RELEASE: Fix typo.
 

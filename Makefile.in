@@ -290,7 +290,7 @@ release-commit:
 	echo "	* Version" $(TAG) released. >> ChangeLog
 	echo >> ChangeLog
 	cat ChangeLog.old >> ChangeLog
-	cvs commit -m 'Release_$(TAG)'
+	cvs commit -m 'Release_$(TAG)' ChangeLog
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 
 tar-ball:
@@ -329,7 +329,6 @@ full-release:
 	else \
 	  gpg_opt=""; phrase=""; \
 	fi; \
-	read -sp "Enter pass phrase: " phrase ; \
 	for i in $(FTPDIR)/*; do \
 	   echo "$$phrase" | gpg --detach-sign $$gpg_opt $$i ; \
 	   case $$i in *-$(TAG)*) echo "directory: auctex" >$$i.directive;; \
