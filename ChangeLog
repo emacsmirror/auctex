@@ -3,6 +3,8 @@
 	* Makefile.in (XEMACS_BUILD_DIR): New variable.
 	(xemacs-package): Use it.
 	(tar-ball-clean): Add XEMACS_BUILD_DIR.
+	(CP): New variable.
+	(tar-ball, www-doc): Use it.
 
 	* RELEASE: Update RPM stuff.
 
