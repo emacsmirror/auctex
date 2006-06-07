@@ -1,3 +1,7 @@
+2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* auctex.spec (Obsoletes): Remove preview-latex-common.
+
 2006-06-06  Ralf Angeli  <angeli@caeruleus.net>
 
 	* style/pdfsync.el (LaTeX-pdfsync-output-page): Initialize

@@ -39,7 +39,7 @@ source buffer.
 Summary: 	Enhanced TeX modes for GNU Emacs
 Group:          %{commongroup}
 Requires: 	emacs >= 21
-Obsoletes:      ge_auc emacs-auctex auctex preview-latex-common preview-latex-emacs
+Obsoletes:      ge_auc emacs-auctex auctex preview-latex-emacs
 Conflicts:      emacspeak < 18
 Provides:       auctex
 
