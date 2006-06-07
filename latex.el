@@ -4526,6 +4526,8 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     (?\C-s "\\textsl{"     "}")
     (?\C-t "\\texttt{"     "}" "\\mathtt{"     "}")
     (?\C-u "\\textup{"     "}")
+    (?^ "\\textsuperscript{" "}" "^{" "}")
+    (?_ "\\textsubscript{" "}" "_{" "}")
     (?\C-d "" "" t))
   "Font commands used with LaTeX2e.  See `TeX-font-list'."
   :group 'LaTeX-macro
@@ -4706,7 +4708,9 @@ of `LaTeX-mode-hook'."
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
   (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar)
-  (when (if (featurep 'xemacs) (featurep 'toolbar) tool-bar-mode)
+  (when (if (featurep 'xemacs)
+	    (featurep 'toolbar)
+	  tool-bar-mode)
     (LaTeX-maybe-install-toolbar))
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
   (TeX-set-mode-name)

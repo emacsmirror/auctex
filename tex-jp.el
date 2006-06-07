@@ -1,4 +1,4 @@
-;;; tex-jp.el --- Support for Japanese TeX.
+;;; tex-jp.el --- Support for Japanese TeX. -*- enable-multibyte-characters: t -*-
 
 ;; Copyright (C) 1999, 2001 Hidenobu Nabetani <nabe@debian.or.jp>
 ;; Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation
@@ -33,6 +33,9 @@
 ;;; Code:
 
 (require 'latex)
+
+(unless enable-multibyte-characters
+  (error "Cannot compile this file in unibyte mode."))
 
 ;;; Customization
 
@@ -624,5 +627,10 @@ save size
     (".*" . "ごめんなさい．該当するヘルプメッセージがありません．"))))
 
 (provide 'tex-jp)
+
+;; Local Variables:
+;; coding: iso-2022-jp-unix
+;; 
+;; End:
 
 ;;; tex-jp.el ends here
