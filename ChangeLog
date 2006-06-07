@@ -1,3 +1,10 @@
+2006-06-07  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Advice for package providers): Adapt package
+	advice to what we actually do for RPM files.
+
+	* auctex.spec: attempt to add preview-tetex package.
+
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* Makefile.in (XEMACS_BUILD_DIR): New variable.

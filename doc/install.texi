@@ -408,21 +408,23 @@ packages, it might be appropriate to provide separate packages for
 those.
 @item auctex-emacs-tetex
 This package will require the installation of @samp{preview-tetex} and
-will record in @samp{TeX-macro-global} know where to find the @TeX{}
-tree.  It is also a good idea to run
+will record in @samp{TeX-macro-global} where to find the @TeX{} tree.
+It is also a good idea to run
 @example
 emacs -batch -f TeX-auto-generate-global
 @end example
-when either @AUCTeX{} or te@TeX{} get installed or upgraded.
-@item auctex-emacs-anytex
+when either @AUCTeX{} or te@TeX{} get installed or upgraded.  If your
+users might want to work with a different @TeX{} distribution (nowadays
+pretty common), instead consider the following:
+@item auctex-emacs
 This package will be compiled with @samp{--without-texmf-dir} and will
 consequently contain the @samp{preview} style files in its private
 directory.  It will probably not be possible to initialize
-@samp{TeX-macro-global} to a useful value, so running
+@samp{TeX-macro-global} to a sensible value, so running
 @samp{TeX-auto-generate-global} does not appear useful.  This package
 would neither conflict with nor provide @samp{preview-tetex}.
 @item auctex-xemacs-tetex
-@itemx auctex-xemacs-anytex
+@itemx auctex-xemacs
 Those are the obvious XEmacs equivalents.  For XEmacs, there is the
 additional problem that the XEmacs sumo package tree already possibly
 provides its own version of @AUCTeX{}, and the user might even have used
