@@ -1,5 +1,7 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* RELEASE: Update RPM stuff.
+
 	* tex.el (TeX-line-number-at-pos): New compatibility function.
 
 	* style/pdfsync.el (LaTeX-pdfsync-output-page): Use it.
