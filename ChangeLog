@@ -1,5 +1,9 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* RELEASE: Fix typo.
+
+	* Makefile.in (rpm-builds): Add preview-tetex.
+
 	* auctex.spec: Add "-n" for preview-tetex.
 	(%install): Create preview.cfg.
 

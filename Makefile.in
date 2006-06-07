@@ -316,7 +316,10 @@ tar-ball:
 
 rpm-builds:
 	rpmbuild -ta $(RPM_SIGN) $(FTPDIR)/auctex-$(TAG).tar.gz
-	$(CP) $(RPMROOT)/{RPMS/noarch/auctex-emacs,SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
+	$(CP) $(RPMROOT)/{RPMS/noarch/{auctex-emacs,preview-tetex},SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
+	@echo "If you need to prepare RPM on some other system, you need to add"
+	@echo "them in $(FTPDIR) before 'make full-release'."
+	sleep 2
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}

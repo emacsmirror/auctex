@@ -97,7 +97,7 @@ Availability
 
 AUCTeX can be downloaded in various formats from
 <URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.  At release time, we provide
-the source tarball, a source and binary RPMs for Emacs under Fedora
+the source tarball, source and binary RPMs for Emacs under Fedora
 and SUSE, and a platform-independent XEmacs package file (which you
 have to install yourself using XEmacs' own package system, after using
 it for removing the previous version of AUCTeX).  There are also RPMs
