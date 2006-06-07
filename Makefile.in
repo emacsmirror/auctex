@@ -114,7 +114,7 @@ all: lisp
 	install-docs install-auto \
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
-	dist patch tar-ball rpm-builds full-release tar-ball-clean wc xemacs-package
+	dist patch tar-ball rpm-packages full-release tar-ball-clean wc xemacs-package
 
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
@@ -314,7 +314,7 @@ tar-ball:
 	$(CP) doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	$(CP) ChangeLog $(FTPDIR)
 
-rpm-builds:
+rpm-packages:
 	rpmbuild -ta $(RPM_SIGN) $(FTPDIR)/auctex-$(TAG).tar.gz
 	$(CP) $(RPMROOT)/{RPMS/noarch/{auctex-emacs,preview-tetex},SRPMS/auctex}-$(TAG)[.-]* $(FTPDIR)
 	@echo "If you need to prepare RPM on some other system, you need to add"

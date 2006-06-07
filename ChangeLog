@@ -1,5 +1,7 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (rpm-packages): Rename from rpm-builds.
+
 	* RELEASE: Fix typo.
 
 	* Makefile.in (rpm-builds): Add preview-tetex.
