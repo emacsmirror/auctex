@@ -3417,6 +3417,17 @@ The list should contain macro names without the leading backslash."
 	 (setq LaTeX-paragraph-commands-regexp
 	       (LaTeX-paragraph-commands-regexp-make))))
 
+(defun LaTeX-set-paragraph-start ()
+  "Set `paragraph-start'."
+  (setq paragraph-start
+	(concat
+	 "[ \t]*%*[ \t]*\\("
+	 LaTeX-paragraph-commands-regexp "\\|"
+	 (regexp-quote TeX-esc) "\\(" LaTeX-item-regexp "\\)\\|"
+	 "\\$\\$\\|" ; Plain TeX display math (Some people actually
+		     ; use this with LaTeX.  Yuck.)
+	 "$\\)")))
+
 (defun LaTeX-paragraph-commands-add-locally (commands)
   "Make COMMANDS be recognized as paragraph commands.
 COMMANDS can be a single string or a list of strings which will
@@ -3429,7 +3440,8 @@ convenience function which can be used in style files."
   (unless (listp commands) (setq commands (list commands)))
   (dolist (elt commands)
     (add-to-list 'LaTeX-paragraph-commands-internal elt))
-  (setq LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make)))
+  (setq LaTeX-paragraph-commands-regexp (LaTeX-paragraph-commands-regexp-make))
+  (LaTeX-set-paragraph-start))
 
 (defun LaTeX-forward-paragraph (&optional count)
   "Move forward to end of paragraph.
@@ -4823,14 +4835,7 @@ i.e. you do _not_ have to cater for this yourself by adding \\\\' or $."
   (setq TeX-auto-full-regexp-list
 	(append LaTeX-auto-regexp-list plain-TeX-auto-regexp-list))
 
-  (setq paragraph-start
-	(concat
-	 "[ \t]*%*[ \t]*\\("
-	 LaTeX-paragraph-commands-regexp "\\|"
-	 (regexp-quote TeX-esc) "\\(" LaTeX-item-regexp "\\)\\|"
-	 "\\$\\$\\|" ; Plain TeX display math (Some people actually
-		     ; use this with LaTeX.  Yuck.)
-	 "$\\)"))
+  (LaTeX-set-paragraph-start)
   (setq paragraph-separate
 	(concat
 	 "[ \t]*%*[ \t]*\\("
