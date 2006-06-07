@@ -34,7 +34,7 @@
   "Return page number in output file corresponding to buffer position."
   (let* ((file (file-name-sans-extension
 		(file-name-nondirectory (buffer-file-name))))
-	 (line (line-number-at-pos))
+	 (line (TeX-line-number-at-pos))
 	 (master (TeX-active-master))
 	 (pdfsync-file (concat master ".pdfsync"))
 	 (sync-record "0")

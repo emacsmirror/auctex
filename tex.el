@@ -710,6 +710,20 @@ The XEmacs package edit-utils-2.32 includes `crm.el'."
     (multi-prompt "," nil prompt table predicate require-match initial-input
 		  hist)))
 
+(if (fboundp 'line-number-at-pos)
+    (defalias 'TeX-line-number-at-pos 'line-number-at-pos)
+  ;; `line-number-at-pos' from `simple.el' in Emacs CVS (2006-06-07)
+  (defun TeX-line-number-at-pos (&optional pos)
+    "Return (narrowed) buffer line number at position POS.
+If POS is nil, use current buffer location."
+    (let ((opoint (or pos (point))) start)
+      (save-excursion
+	(goto-char (point-min))
+	(setq start (point))
+	(goto-char opoint)
+	(forward-line 0)
+	(1+ (count-lines start (point)))))))
+
 ;;; Special support for GNU Emacs
 
 (unless (featurep 'xemacs)
@@ -780,7 +794,6 @@ Elements of KEEP-LIST are not removed even if duplicate."
 (defun TeX-sort-strings (list)
   "Return sorted list of all strings in LIST."
   (sort (copy-sequence list) #'string<))
-
 
 ;;; Buffer
 
