@@ -1,5 +1,7 @@
 2006-06-07  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: Add info about preview RPM.
+
 	* doc/install.texi (Advice for package providers): Adapt package
 	advice to what we actually do for RPM files.
 
