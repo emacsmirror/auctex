@@ -1,5 +1,9 @@
 2006-06-07  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* Makefile.in (XEMACS_BUILD_DIR): New variable.
+	(xemacs-package): Use it.
+	(tar-ball-clean): Add XEMACS_BUILD_DIR.
+
 	* RELEASE: Update RPM stuff.
 
 	* tex.el (TeX-line-number-at-pos): New compatibility function.

@@ -49,6 +49,7 @@ CP_A = cp -pR
 DIST_PREFIX = /home/tmp/auctex-
 FTPDIR = $(DIST_PREFIX)ftp
 WWWDIR = $(DIST_PREFIX)www
+XEMACS_BUILD_DIR = xemacs-build
 COMMITTER_NAME="David Kastrup"
 COMMITTER_EMAIL=dak@gnu.org
 RPMROOT = /usr/src/redhat
@@ -261,6 +262,7 @@ extraclean: maintainer-clean
 tar-ball-clean:
 	@if [ "X$(TAG)" = "X" ]; then echo "*** No tag ***"; exit 1; fi
 	rm -rf auctex-$(TAG)/
+	rm -rf $(XEMACS_BUILD_DIR)/
 
 wc:
 	wc $(AUCSRC) $(STYLESRC)
@@ -338,9 +340,9 @@ patch:
 		>$(FTPDIR)/auctex-$(OLD)-to-$(TAG).patch.gz
 
 xemacs-package:
-	rm -rf xemacs-build
-	$(CP_A) auctex-$(TAG) xemacs-build
-	cd xemacs-build \
+	rm -rf $(XEMACS_BUILD_DIR)
+	$(CP_A) auctex-$(TAG) $(XEMACS_BUILD_DIR)
+	cd $(XEMACS_BUILD_DIR) \
 	&& ./configure INSTALL_INFO=: TEXHASH=: --with-xemacs --with-packagedir=`pwd`/xemacs-package --without-texmf-dir --with-auto-dir=etc/auctex/auto \
 	&& make all install-man install && cd xemacs-package && tar -cf - --owner=root --group=root . | gzip --best > $(FTPDIR)/auctex-$(TAG)-pkg.tar.gz
 
