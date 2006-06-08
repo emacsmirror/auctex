@@ -111,8 +111,6 @@ mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp/site-start.d
 %makeinstall install-docs
 mkdir -p %{buildroot}%{_datadir}/texmf/tex/latex/preview
 cp -p preview/latex/*.{sty,def,cfg} %{buildroot}%{_datadir}/texmf/tex/latex/preview
-# Make sure that preview.cfg exists:
-touch -a %{buildroot}%{_datadir}/texmf/tex/latex/preview/preview.cfg
 mkdir -p %{buildroot}%{_datadir}/texmf/doc/latex/styles
 cp -p preview/latex/preview.dvi %{buildroot}%{_datadir}/texmf/doc/latex/styles
 
@@ -139,7 +137,7 @@ rm -rf %{buildroot}
 %files -n preview-tetex
 %defattr(-,root,root)
 %{_datadir}/texmf/tex/latex/preview
-%config %{_datadir}/texmf/tex/latex/preview/preview.cfg
+%config %{_datadir}/texmf/tex/latex/preview/prauctex.cfg
 %{_datadir}/texmf/doc/latex/styles/preview.dvi
 
 %files emacs

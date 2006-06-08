@@ -3,6 +3,8 @@
 	* auctex.spec (%post, %postun): Use mktexlsr instead of texhash.
 	Only update the relevant ls-R file.
 	(%install): Add comment about preview.cfg.
+	(%install, %files): prauctex.cfg is the config file, not
+	preview.cfg.
 
 2006-06-07  Ralf Angeli  <angeli@caeruleus.net>
 
