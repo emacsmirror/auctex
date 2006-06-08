@@ -1,3 +1,7 @@
+2006-06-08  David Kastrup  <dak@gnu.org>
+
+	* latex/README: Adapt to new realities.
+
 2006-05-25  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Add another fix for XyMTeX (which got the

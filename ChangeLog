@@ -1,3 +1,10 @@
+2006-06-08  David Kastrup  <dak@gnu.org>
+
+	* Makefile.in (PREVIEW_BUILD_DIR): New variable for building the
+	preview standalone bundle.
+	(preview-ball): New target for creating the preview standalone
+	bundle for CTAN.
+
 2006-06-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* auctex.spec (%post, %postun): Use mktexlsr instead of texhash.

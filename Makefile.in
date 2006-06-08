@@ -51,6 +51,7 @@ DIST_PREFIX = /home/tmp/auctex-
 FTPDIR = $(DIST_PREFIX)ftp
 WWWDIR = $(DIST_PREFIX)www
 XEMACS_BUILD_DIR = xemacs-build
+PREVIEW_BUILD_DIR = preview-build
 COMMITTER_NAME="David Kastrup"
 COMMITTER_EMAIL=dak@gnu.org
 RPMROOT = /usr/src/redhat
@@ -114,7 +115,8 @@ all: lisp
 	install-docs install-auto \
 	install-metadata install-startup install-man \
 	clean distclean snapshot check-dist release-commit \
-	dist patch tar-ball rpm-packages full-release tar-ball-clean wc xemacs-package
+	dist patch tar-ball rpm-packages full-release tar-ball-clean \
+	wc xemacs-package preview-ball
 
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
@@ -309,7 +311,8 @@ tar-ball:
 	-zip -r $(FTPDIR)/auctex-$(TAG).zip auctex-$(TAG)
 	$(CP) auctex-$(TAG)/CHANGES $(FTPDIR)/CHANGES
 	$(CP) auctex-$(TAG)/RELEASE $(FTPDIR)/RELEASE-$(TAG)
-# The following files aren't fetch from auctex-$(TAG).  Is this intended?
+# The following files aren't produced in auctex-$(TAG) since they
+# are not in the tarball and should not become part of the patch target.
 	cd doc && $(MAKE) extradist
 	$(CP) doc/auctex.ps doc/auctex.pdf doc/tex-ref.ps doc/tex-ref.pdf $(FTPDIR)
 	$(CP) ChangeLog $(FTPDIR)
@@ -320,6 +323,20 @@ rpm-packages:
 	@echo "If you need to prepare RPM on some other system, you need to add"
 	@echo "them in $(FTPDIR) before 'make full-release'."
 	sleep 2
+
+preview-ball:
+	test ! -d $(PREVIEW_BUILD_DIR) || rm -r $(PREVIEW_BUILD_DIR)
+	mkdir $(PREVIEW_BUILD_DIR)
+# Use TAG_EXPORT if set (for snapshots)
+	cvs export -d $(PREVIEW_BUILD_DIR) \
+          `echo $${TAG_EXPORT:=$(TAG)} | \
+	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
+              -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex/preview/latex
+	cd $(PREVIEW_BUILD_DIR) && make -f ../preview/latex/Makefile preview.ins preview.pdf
+	chmod -R go-w+rX $(PREVIEW_BUILD_DIR)
+	test -d $(FTPDIR) || mkdir -p $(FTPDIR)
+	cd $(PREVIEW_BUILD_DIR) && \
+	tar -cf - --owner=root --group=root README preview.dtx preview.ins preview.pdf | gzip --best > $(FTPDIR)/preview-$(TAG).tar.gz
 
 full-release:
 	rm -f $(FTPDIR)/*.{directive,asc,sig}
