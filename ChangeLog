@@ -1,3 +1,8 @@
+2006-06-11  Ikumi Keita  <ikumi@revery.net>
+
+	* style/amsmath.el ("amsmath"): Docfix for 'uproot'.
+	(LaTeX-amsmath-env-alignat): Fix typo.
+
 2006-06-08  David Kastrup  <dak@gnu.org>
 
 	* Makefile.in (PREVIEW_BUILD_DIR): New variable for building the
