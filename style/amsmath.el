@@ -58,7 +58,7 @@
      '("allowdisplaybreaks" ["Weight (1..4)"])
      '("substack" t)
      '("leftroot" "Push root index left by")
-     '("uproot" "Push root index left by")
+     '("uproot" "Push root index upward by")
      '("boxed" t)
      '("mspace" t)
      '("mod" t)
@@ -129,7 +129,7 @@
     (LaTeX-insert-environment env (concat TeX-grop ncols TeX-grcl))
     (and (not (string= "xxalignat" env))
 	 (not (string= "*" (substring env -1)))
-	 (LaTeX-label environment)
+	 (LaTeX-label env)
 	 (newline-and-indent))))
 
 (defun LaTeX-amsmath-env-aligned (env)
