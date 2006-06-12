@@ -1,34 +1,45 @@
-The preview.sty style file:
+The preview.sty style file
+==========================
 
-This style file is part of the AUCTeX project with home page
-<URL:http://www.gnu.org/software/auctex>.  The project page at
-<URL:http://savannah.gnu.org/projects/auctex> offers downloads and
-anonymous CVS access for cutting edge versions.  It is part of
-AUCTeX's preview-latex module: since AUCTeX's download area at
-<URL:ftp://ftp.gnu.org/pub/gnu/auctex> is mirrored at
-CTAN:support/auctex, you can find AUCTeX tarballs there, with separate
-README and INSTALL files.  Versions under CTAN:support/preview-latex
-are outdated.  Starting with AUCTeX 11.81, preview-latex is
-distributed as an integral part of AUCTeX, requiring no separate
-download.  The unbundled preview.dtx can be downloaded from
-CTAN:macros/latex/contrib/preview if required.
+Purpose
+-------
 
-While the primary focus of the package has been the support of editing
-in Emacs buffers augmented with preview images, its possible uses are
-not limited to that.  The package extracts indicated pieces from a
-source file (typically displayed equations, figures and graphics) and
-typesets with their base point at the (1in,1in) magic location,
-shipping out the individual pieces on separate pages without any page
-markup.  You can produce either DVI or PDF files, and options exist
-that will set the page size separately for each page.  In that manner,
-further processing (as with Ghostscript or dvipng) will be able to
-work in a single pass.
+The main purpose of the preview package is the extraction of selected
+elements from a LaTeX source, like formulas or graphics, into separate
+pages of a DVI file.  A flexible and convenient interface allows it to
+specify what commands and constructs should be extracted.  This works
+with DVI files postprocessed by either Dvips and Ghostscript or
+dvipng, but it also works when you are using PDFTeX for generating PDF
+files.
 
-A flexible and convenient interface allows it to specify what commands
-and constructs should be extracted.
+Current uses of the package include the preview-latex package for
+WYSIWYG functionality in the AUCTeX editing environment, generation of
+previews in LyX, as part of the operation of the ps4pdf and pst-pdf
+packages, the tbook XML system and some other tools.
 
-To install the preview style file on its own without fetching the
-entire preview-latex package, run
+Note: as opposed to previous versions, the \nofiles command is no
+longer called automatically except in AUCTeX mode.  If you are working
+on original files and don't want to clobber the auxiliary files,
+you'll need to call \nofiles yourself.
+
+Availability
+------------
+
+The preview package is being developed along and distributed with
+AUCTeX.  It can therefore be obtained as part of AUCTeX distribution
+files available at <URL:ftp://ftp.gnu.org/pub/gnu/auctex/> or its
+mirror at <CTAN:support/auctex>.  CTAN also provides a standalone
+version at <CTAN:macros/latex/contrib/preview>.  The project page at
+<URL:http://savannah.gnu.org/projects/auctex/> offers downloads and
+anonymous CVS access for cutting edge versions.  For more information
+about the preview package please refer to the home page of AUCTeX at
+<URL:http://www.gnu.org/software/auctex/>.
+
+Installation
+------------
+
+To install the preview style file on its own without the entire AUCTeX
+package, run
 tex preview.ins
 If preview.ins happens to be missing, you can regenerate it by running
 tex docstrip
@@ -44,7 +55,12 @@ location where LaTeX will be able to find them, generate the
 documentation and have fun.
 
 The license of the original file is the GPL which you'll find a copy
-of in the complete AUCTeX distribution.
+of in the complete AUCTeX distribution.  The distribution will also
+unpack and install the respective LaTeX files with an
+autoconf-supported mechanism, so you might consider using that.
+
+Bug reporting
+-------------
 
 Please report problems to <URL:mailto:bug-auctex@gnu.org>, including a
 small example file which uses the \listfiles statement, and the
