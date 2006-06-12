@@ -4732,7 +4732,6 @@ Your bug report will be posted to the AUCTeX bug reporting list.
   (interactive)
   (info "auctex"))
 
-(autoload 'Info-find-file "info")
 (autoload 'info-lookup->completions "info-look")
 
 (defvar TeX-doc-backend-alist
@@ -4744,9 +4743,14 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 	      (call-process "texdoc" nil 0 nil doc)))
     (latex-info (latex-mode)
 		(lambda ()
-		  (when (condition-case nil ; If function is not available.
-			    (Info-find-file "latex" t)
-			  (error nil))
+		  (when (let ((buf-name (generate-new-buffer-name "*info*")))
+			  (prog1
+			      (condition-case nil
+				  (progn
+				    (info "latex" buf-name)
+				    t)
+				(error nil))
+			    (kill-buffer buf-name)))
 		    (mapcar (lambda (x)
 			      (let ((x (car x)))
 				(if (string-match "\\`\\\\" x)
@@ -4756,9 +4760,14 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
     (texinfo-info (texinfo-mode)
 		  (lambda ()
-		    (when (condition-case nil ; If function is not available.
-			      (Info-find-file "texinfo" t)
-			    (error nil))
+		    (when (let ((buf-name (generate-new-buffer-name "*info*")))
+			  (prog1
+			      (condition-case nil
+				  (progn
+				    (info "texinfo" buf-name)
+				    t)
+				(error nil))
+			    (kill-buffer buf-name)))
 		      (mapcar (lambda (x)
 				(let ((x (car x)))
 				  (if (string-match "\\`@" x)
