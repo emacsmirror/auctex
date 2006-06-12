@@ -17,11 +17,6 @@ WYSIWYG functionality in the AUCTeX editing environment, generation of
 previews in LyX, as part of the operation of the ps4pdf and pst-pdf
 packages, the tbook XML system and some other tools.
 
-Note: as opposed to previous versions, the \nofiles command is no
-longer called automatically except in AUCTeX mode.  If you are working
-on original files and don't want to clobber the auxiliary files,
-you'll need to call \nofiles yourself.
-
 Availability
 ------------
 
