@@ -1,3 +1,9 @@
+2006-06-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (Info-find-file): Do not autoload.
+	(TeX-doc-backend-alist): Use a method for checking the presence of
+	an info file which works in Emacs 21 as well.
+
 2006-06-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc-backend-alist): Don't error out if
