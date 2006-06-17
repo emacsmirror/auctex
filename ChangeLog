@@ -1,3 +1,11 @@
+2006-06-17  Ikumi Keita <ikumi@revery.net>
+
+	* tex.el (TeX-parse-arguments): Makes to work with proper value of
+	TeX-insert-macro-default-style.
+	(TeX-insert-braces): Place braces with right direction with active
+	region, (related to the case when the region is being marked
+	backwards).
+
 2006-06-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
 
 	* tex.el (TeX-clean): Delete generated files associated with
