@@ -1,3 +1,8 @@
+2006-06-17  Masayuki Ataka  <ataka@milk.freemail.ne.jp>
+
+	* tex.el (TeX-clean): Delete generated files associated with
+	`TeX-region-file'.  Suggested by Ikumi Keita <ikumi@revery.net>.
+
 2006-06-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (Info-find-file): Do not autoload.
