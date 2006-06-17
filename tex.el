@@ -1222,7 +1222,7 @@ Used as a default in TeX, LaTeX and docTeX mode.")
 (autoload 'dired-mark-pop-up "dired")
 
 (defun TeX-clean (&optional arg)
-  "Delete generated files associated with current master file.
+  "Delete generated files associated with current master and region files.
 If prefix ARG is non-nil, not only remove intermediate but also
 output files."
   (interactive "P")
@@ -1239,10 +1239,14 @@ output files."
 			      (intern (concat mode-prefix
 					      "-clean-output-suffixes"))))))
 	 (master (TeX-active-master))
-	 (regexp (concat (file-name-nondirectory master)
+	 (regexp (concat "\\("
+			 (file-name-nondirectory master) "\\|"
+			 (TeX-region-file nil t)
+			 "\\)"
 			 "\\("
 			 (mapconcat 'identity suffixes "\\|")
-			 "\\)\\'"))
+			 "\\)\\'"
+			 "\\|" (TeX-region-file t t)))
 	 (files (when regexp
 		  (directory-files (or (file-name-directory master) ".")
 				   nil regexp))))
