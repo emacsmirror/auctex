@@ -2094,9 +2094,9 @@ See `TeX-parse-macro' for details."
 	skip-opt)
     ;; Maybe get rid of all optional arguments.  See `TeX-insert-macro' for
     ;; more comments.  See `TeX-insert-macro-default-style'.
-    (when (or (and (eq TeX-insert-macro-default-style 'show-optional)
+    (when (or (and (eq TeX-insert-macro-default-style 'show-optional-args)
 		   (equal current-prefix-arg '(4)))
-	      (and (eq TeX-insert-macro-default-style 'mandatory-only)
+	      (and (eq TeX-insert-macro-default-style 'mandatory-args-only)
 		   (null (equal current-prefix-arg '(4)))))
       (while (vectorp (car args))
 	(setq args (cdr args))))
@@ -4682,6 +4682,8 @@ closing brace."
   (interactive "P")
   (if (TeX-active-mark)
       (progn
+	(if (< (point) (mark))
+	    (exchange-point-and-mark))
 	(insert TeX-grcl)
 	(save-excursion
 	  (goto-char (mark))
