@@ -4749,14 +4749,11 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 	      (call-process "texdoc" nil 0 nil doc)))
     (latex-info (latex-mode)
 		(lambda ()
-		  (when (let ((buf-name (generate-new-buffer-name "*info*")))
-			  (prog1
-			      (condition-case nil
-				  (progn
-				    (info "latex" buf-name)
-				    t)
-				(error nil))
-			    (kill-buffer buf-name)))
+		  (when (condition-case nil
+			    (save-window-excursion
+			      (info "latex" (generate-new-buffer-name "*info*"))
+			      t)
+			  (error nil))
 		    (mapcar (lambda (x)
 			      (let ((x (car x)))
 				(if (string-match "\\`\\\\" x)
@@ -4766,14 +4763,12 @@ Your bug report will be posted to the AUCTeX bug reporting list.
 		  (info-lookup-symbol (concat "\\" doc) 'latex-mode)))
     (texinfo-info (texinfo-mode)
 		  (lambda ()
-		    (when (let ((buf-name (generate-new-buffer-name "*info*")))
-			  (prog1
-			      (condition-case nil
-				  (progn
-				    (info "texinfo" buf-name)
-				    t)
-				(error nil))
-			    (kill-buffer buf-name)))
+		    (when (condition-case nil
+			      (save-window-excursion
+				(info "texinfo"
+				      (generate-new-buffer-name "*info*"))
+				t)
+			    (error nil))
 		      (mapcar (lambda (x)
 				(let ((x (car x)))
 				  (if (string-match "\\`@" x)
