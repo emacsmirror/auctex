@@ -29,8 +29,8 @@
      "split"
      "cases"
      "matrix" "smallmatrix" "pmatrix" "bmatrix" "Bmatrix" "vmatrix" "Vmatrix"
-     "subequations" "subarray"
-     )
+     "subequations"
+     '("subarray" "Alignment"))
 
     (TeX-add-symbols
      '("eqref" TeX-arg-ref)
