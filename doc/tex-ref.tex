@@ -537,6 +537,30 @@ Texinfo manual.
 \key{Show current item}{C-c C-o i}
 \key{Hide or show current item}{C-c C-o C-o}
 
+\vskip 5ex plus 6ex minus 1ex
+
+\title{Outlining \TeX\ Documents}
+
+AUC\TeX\ supports outline mode by defining section, subsection,
+etc. as heading levels. You can use \kbd{M-x outline-minor-mode RET}
+to toggle outline minor mode. All outline minor mode commands are
+under the prefix key specified by outline-minor-mode-prefix, default
+is ``C-c @''.
+
+\key{Hide all of buffer except headings}{C-c @ C-t}
+\key{Show all text in buffer}{C-c @ C-a}
+\key{Hide body following this heading}{C-c @ C-c}
+\key{Show body following this heading}{C-c @ C-e}
+\key{Hide subtree}{C-c @ C-d}
+\key{Show subtree}{C-c @ C-s}
+\key{All subheadings visible}{C-c @ C-k}
+
+\key{next visible heading}{C-c @ C-n}
+\key{previous visible heading}{C-c @ C-p}
+\key{forward to next subheading}{C-c @ C-f}
+\key{backward to next subheading}{C-c @ C-b}
+\key{up one heading level}{C-c @ C-u}
+
 \newcolumn
 
 \iftrue % RefTeX long version
