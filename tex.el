@@ -1239,6 +1239,7 @@ output files."
 			      (intern (concat mode-prefix
 					      "-clean-output-suffixes"))))))
 	 (master (TeX-active-master))
+	 (master-dir (file-name-directory master))
 	 (regexp (concat "\\("
 			 (file-name-nondirectory master) "\\|"
 			 (TeX-region-file nil t)
@@ -1248,8 +1249,7 @@ output files."
 			 "\\)\\'"
 			 "\\|" (TeX-region-file t t)))
 	 (files (when regexp
-		  (directory-files (or (file-name-directory master) ".")
-				   nil regexp))))
+		  (directory-files (or master-dir ".") nil regexp))))
     (if files
 	(when (or (not TeX-clean-confirm)
 		  (dired-mark-pop-up " *Deletions*" 'delete
@@ -1258,7 +1258,7 @@ output files."
 				       (cons t files))
 				     'y-or-n-p "Delete files? "))
 	  (dolist (file files)
-	    (delete-file file)))
+	    (delete-file (concat master-dir file))))
       (message "No files to be deleted"))))
 
 
