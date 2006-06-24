@@ -1,3 +1,7 @@
+2006-06-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-clean): Delete files in directory of master file.
+
 2006-06-23  Joshua Buhl <jbuhl_nospam@gmx.de>
 
 	* doc/tex-ref.tex (title{Outlining TeX Documents}): new section.
