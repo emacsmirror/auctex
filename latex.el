@@ -2500,10 +2500,8 @@ pass args FROM, TO and JUSTIFY-FLAG."
 	  (if (re-search-forward
 	       (concat "\\("
 		       ;; Code comments.
-		       "[^ \t%\n\r][ \t]*" comment-start-skip
-		       "\\|"
-		       ;; (lines with code comments looking like " {%")
-		       "^[ \t]*[^ \t%\n\r" TeX-esc"]" TeX-comment-start-regexp
+		       "[^ \t\r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
+		       TeX-comment-start-regexp
 		       "\\|"
 		       ;; Lines ending with `\par'.
 		       "\\(\\=\\|[^" TeX-esc "\n]\\)\\("
