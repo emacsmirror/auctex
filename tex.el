@@ -4744,7 +4744,16 @@ Your bug report will be posted to the AUCTeX bug reporting list.
   '((texdoc (plain-tex-mode latex-mode doctex-mode ams-tex-mode context-mode)
 	    (lambda ()
 	      (when (executable-find "texdoc")
-		(TeX-search-files nil '("dvi" "pdf" "ps" "txt" "html") t t)))
+		(TeX-search-files
+		 ;; Explicitely supply doc directory for
+		 ;; non-kpathsea-based TeX systems.
+		 (unless (stringp TeX-kpathsea-path-delimiter)
+		   (TeX-macro-global-internal
+		    "latex" '("/doc/")
+		    ;; This likely won't improve the outcome but does
+		    ;; not make the situation worse than in the nil case.
+		    `(,@TeX-macro-global ,@TeX-macro-private)))
+		 '("dvi" "pdf" "ps" "txt" "html") t t)))
 	    (lambda (doc)
 	      (call-process "texdoc" nil 0 nil doc)))
     (latex-info (latex-mode)
