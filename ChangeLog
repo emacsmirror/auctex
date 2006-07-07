@@ -1,3 +1,7 @@
+2006-07-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-normal-mode): Force update of style list.
+
 2006-07-02  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-doc-backend-alist): Explicitely supply doc directory
