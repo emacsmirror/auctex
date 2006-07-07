@@ -4532,7 +4532,7 @@ With optional argument ARG, also reload the style hooks."
   (normal-mode)
   ;; See also addition to `find-file-hooks' in `VirTeX-common-initialization'.
   (when (eq TeX-master 'shared) (TeX-master-file nil nil t))
-  (TeX-update-style))
+  (TeX-update-style t))
 
 (defgroup TeX-quote nil
   "Quoting in AUCTeX."
