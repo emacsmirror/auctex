@@ -493,17 +493,22 @@ AC_SUBST(auctexdir)
 ])
 
 dnl
-dnl Check (X)Emacs supports Mule.
+dnl Check if (X)Emacs supports international characters,
+dnl i.e. provides MULE libraries and runs in multibyte mode.
 dnl
 AC_DEFUN(EMACS_CHECK_MULE, [
-AC_MSG_CHECKING(for mule support)
+AC_MSG_CHECKING(for MULE support)
 EMACS_CHECK_REQUIRE(mule,silent)
-if test "${HAVE_mule}" = "yes"; then
+if test "${HAVE_mule}" = "yes" && test "X${EMACS_UNIBYTE}" = X; then
   MULESRC="tex-jp.el"
   MULEELC="tex-jp.elc"
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
+  if test "X${EMACS_UNIBYTE}" != X; then
+    AC_MSG_WARN([[EMACS_UNIBYTE environment variable set.
+Disabling features requiring international character support.]])
+  fi
 fi
 AC_SUBST(MULESRC)
 AC_SUBST(MULEELC)
