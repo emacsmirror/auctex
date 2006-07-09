@@ -1,3 +1,8 @@
+2006-07-09  Ralf Angeli  <angeli@caeruleus.net>
+
+	* aclocal.m4 (EMACS_CHECK_MULE): Check for EMACS_UNIBYTE
+	environment variable and do not set MULESRC if it is present.
+
 2006-07-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-normal-mode): Force update of style list.
