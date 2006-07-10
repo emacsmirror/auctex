@@ -1,4 +1,5 @@
 prefix=@prefix@$(null)
+datarootdir=@datarootdir@$(null)
 datadir=@datadir@$(null)
 packagedir=@packagedir@$(null)
 infodir=@infodir@$(null)

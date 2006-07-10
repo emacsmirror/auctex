@@ -6,6 +6,7 @@ TEX=@TEX@
 TEXHASH=@TEXHASH@
 
 prefix=@prefix@$(null)
+datarootdir=@datarootdir@$(null)
 datadir=@datadir@$(null)
 exec_prefix=@exec_prefix@$(null)
 libdir=@libdir@$(null)
