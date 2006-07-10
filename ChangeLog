@@ -1,5 +1,8 @@
 2006-07-10  Ralf Angeli  <angeli@caeruleus.net>
 
+	* tex.el (TeX-math-close-double-dollar): New variable.
+	(TeX-insert-dollar): Use it.
+
 	* Makefile.in, doc/Makefile.in (datarootdir): New variable used by
 	autoconf 2.59e.
 
