@@ -1,3 +1,8 @@
+2006-07-10  Ralf Angeli  <angeli@caeruleus.net>
+
+	* Makefile.in, doc/Makefile.in (datarootdir): New variable used by
+	autoconf 2.59e.
+
 2006-07-09  Ralf Angeli  <angeli@caeruleus.net>
 
 	* aclocal.m4 (EMACS_CHECK_MULE): Check for EMACS_UNIBYTE
