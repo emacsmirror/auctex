@@ -4451,6 +4451,11 @@ See also `TeX-font-replace' and `TeX-font-replace-function'."
   :group 'TeX-macro
   :type 'boolean)
 
+(defcustom TeX-math-close-double-dollar nil
+  "If non-nil close double dollar math by typing a single `$'."
+  :group 'TeX-macro
+  :type 'boolean)
+
 (defun TeX-insert-dollar (&optional arg)
   "Insert dollar sign.
 
@@ -4478,14 +4483,18 @@ With optional ARG, insert that many dollar signs."
 	     (string-equal (substring (car texmathp-why) 0 1) "\$"))
 	;; Math mode was turned on with $ or $$ - so finish it accordingly.
 	(progn
-	  (insert (car texmathp-why))
-	  (save-excursion
-	    (goto-char (cdr texmathp-why))
-	    (if (pos-visible-in-window-p)
-		(sit-for 1)
-	      (message "Matches %s"
-		       (buffer-substring (point)
-					 (progn (end-of-line) (point)))))))
+	  (if TeX-math-close-double-dollar
+	      (insert (car texmathp-why))
+	    (insert "$"))
+	  (when (or (string= (car texmathp-why) "$")
+		    (zerop (mod (save-excursion (skip-chars-backward "$")) 2)))
+	    (save-excursion
+	      (goto-char (cdr texmathp-why))
+	      (if (pos-visible-in-window-p)
+		  (sit-for 1)
+		(message "Matches %s"
+			 (buffer-substring
+			  (point) (progn (end-of-line) (point))))))))
       ;; Math mode was not entered with dollar - we cannot finish it with one.
       (message "Math mode started with `%s' cannot be closed with dollar"
 	       (car texmathp-why))
