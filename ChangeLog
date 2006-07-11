@@ -1,3 +1,10 @@
+2006-07-11  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-find-macro-boundaries, TeX-find-macro-start): Remove
+	unused argument.
+	(TeX-find-macro-end-helper): Handle macros at the end of the
+	buffer correctly.
+
 2006-07-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-math-close-double-dollar): New variable.
