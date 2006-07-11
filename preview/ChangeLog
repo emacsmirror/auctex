@@ -1,3 +1,7 @@
+2006-07-11  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Fix XymTeX catcodes again.
+
 2006-07-10  Ralf Angeli  <angeli@caeruleus.net>
 
 	* Makefile.in, latex/Makefile.in (datarootdir): New variable used
