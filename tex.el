@@ -4126,11 +4126,10 @@ If LIMIT is non-nil, do not search further up than this position
 in the buffer."
   (TeX-find-balanced-brace -1 depth limit))
 
-(defun TeX-find-macro-boundaries (&optional lower-bound)
+(defun TeX-find-macro-boundaries ()
   "Return a list containing the start and end of a macro.
-If LOWER-BOUND is given, do not search backward further than this
-point in buffer.  Arguments enclosed in brackets or braces are
-considered part of the macro."
+Arguments enclosed in brackets or braces are considered part of
+the macro."
   (let ((orig-point (point))
 	start-point)
     ;; Point is located directly at the start of a macro. (-!-\foo{bar})
@@ -4204,16 +4203,16 @@ those will be considered part of it."
 			   ;; If we cannot find a regular end, use the
 			   ;; next whitespace.
 			   (save-excursion (skip-chars-forward "^ \t\n")
-					   (point)))))
+					   (point))))
+	    (when (eobp) (throw 'found (point))))
 	   (t
 	    (throw 'found (point)))))))))
 
-(defun TeX-find-macro-start (&optional limit)
+(defun TeX-find-macro-start ()
   "Return the start of a macro.
-If LIMIT is given, do not search backward further than this point
-in buffer.  Arguments enclosed in brackets or braces are
-considered part of the macro."
-  (car (TeX-find-macro-boundaries limit)))
+Arguments enclosed in brackets or braces are considered part of
+the macro."
+  (car (TeX-find-macro-boundaries)))
 
 (defun TeX-find-macro-end ()
   "Return the end of a macro.
