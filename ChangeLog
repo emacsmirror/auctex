@@ -2,6 +2,7 @@
 
 	* latex.el (LaTeX-fill-move-to-break-point): Fix regexp for
 	matching whitespace and comment characters at the start of a line.
+	Simplify forward search.
 
 2006-07-11  Ralf Angeli  <angeli@caeruleus.net>
 
