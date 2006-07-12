@@ -2813,11 +2813,10 @@ space does not end a sentence, so don't break a line there."
       (skip-chars-backward "^ \n"))
     ;; Prevent infinite loops: If we cannot find a place to break
     ;; while searching backward, search forward again.
-    (cond ((bolp)
-	   (skip-chars-forward "^ \n" (point-max)))
-	  ((TeX-looking-at-backward "^[ \t%]+" (1- (line-beginning-position)))
-	   (goto-char (match-end 0))
-	   (skip-chars-forward "^ \n" (point-max))))
+    (when (save-excursion
+	    (skip-chars-backward " \t%")
+	    (bolp))
+      (skip-chars-forward "^ \n" (point-max)))
     ;; This code was copied from the function `fill-move-to-break-point'
     ;; in `fill.el' (CVS Emacs, 2005-02-22) and adapted accordingly.
     (when (and (< linebeg (point))
