@@ -2815,9 +2815,7 @@ space does not end a sentence, so don't break a line there."
     ;; while searching backward, search forward again.
     (cond ((bolp)
 	   (skip-chars-forward "^ \n" (point-max)))
-	  ((TeX-looking-at-backward
-	    (concat "^[ \t]+\\|^[ \t]*" TeX-comment-start-regexp "+[ \t]*")
-	    (1- (line-beginning-position)))
+	  ((TeX-looking-at-backward "^[ \t%]+" (1- (line-beginning-position)))
 	   (goto-char (match-end 0))
 	   (skip-chars-forward "^ \n" (point-max))))
     ;; This code was copied from the function `fill-move-to-break-point'
