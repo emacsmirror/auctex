@@ -18,7 +18,7 @@
 %%     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %%     Boston, MA 02110-1301  USA
 %%\fi
-% \CheckSum{1647}
+% \CheckSum{1664}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -322,7 +322,8 @@
 % \begin{description}
 % \item[|*|] indicates an optional |*| modifier, as in
 %   |\includegraphics*|.
-% \item[|[|] indicates an optional argument in brackets.  This syntax
+% \item[|[|]^^A]
+%   indicates an optional argument in brackets.  This syntax
 %   is somewhat baroque, but brief.
 % \item[{|[]|}] also indicates an optional argument in brackets.  Be
 %   sure to have encluded the entire optional argument specification
@@ -435,11 +436,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.116 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.117 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-07-11 00:45:53 $
+\reserved@a\next $Date: 2006-07-12 12:27:30 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -756,13 +757,16 @@
 % \end{macro}
 % \end{macro}
 % Oh, and we kill off the usual meaning of \cmd{\shipout} in case
-% somebody makes a special output routine.  The following is rather
-% ugly, but should do the trick most of the time since \cmd{\shipout}
-% is most often called in a local group by \cmd{\output}.
+% somebody makes a special output routine.  The following test is
+% pretty much the same as in |everyshi.sty|.  One of its implications
+% is that if someone does a \cmd{\shipout} of a \emph{void} box,
+% things will go horribly wrong.
 % \begin{macro}{\shipout}
 %    \begin{macrocode}
 \let\pr@shipout=\shipout
-\def\shipout{\deadcycles\z@\setbox\z@\box\voidb@x\setbox\z@}
+\def\shipout{\deadcycles\z@\bgroup\setbox\z@\box\voidb@x
+  \afterassignment\pr@shipoutegroup\setbox\z@}
+\def\pr@shipoutegroup{\ifvoid\z@ \expandafter\aftergroup\fi \egroup}
 %    \end{macrocode}
 % \end{macro}
 % \subsection{Parsing commands}
@@ -1245,14 +1249,21 @@ Please complain to your document class author}%
 % Let the output routine throw everything gathered regularly away.
 % Start with all float boxes, continue with output box, pack
 % everything afloat from \cmd{\@currlist} back into \cmd{\@freelist}.
+% We don't do this if the output routine is special since there are
+% circumstances where this will cause complaints about lost floats.
+%
+% This code has now been disabled since it might confuse \LaTeX\ and
+% was rather crude.  We now rely on disabling \cmd{\shipout} alone.
 %    \begin{macrocode}
-\output{\def\@elt#1{\global\setbox#1=\box\voidb@x}%
-  \@currlist
-  \@elt{255}%
-  \let\@elt\relax
-  \xdef\@freelist{\@currlist\@freelist}%
-  \global\let\@currlist\@empty
-  \deadcycles\z@}
+% \output{%
+%   \def\@elt#1{\global\setbox#1=\box\voidb@x}%
+%   \@elt\@cclv
+%   \ifnum\outputpenalty<-\@M \else  \@currlist
+%     \let\@elt\relax
+%     \xdef\@freelist{\@currlist\@freelist}%
+%     \global\let\@currlist\@empty
+%   \fi
+%   \deadcycles\z@}
 %    \end{macrocode}
 % \begin{macro}{\pr@typeinfos}
 %   Then we have some document info that style files might want to

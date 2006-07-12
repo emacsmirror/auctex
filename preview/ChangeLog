@@ -1,3 +1,9 @@
+2006-07-12  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Add a font-lock helping comment, remove
+	preview's hook into the output routine, deactivate `\shipout' in a
+	cleaner manner.
+
 2006-07-11  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Fix XymTeX catcodes again.
