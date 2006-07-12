@@ -1,3 +1,8 @@
+2006-07-12  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-fill-move-to-break-point): Fix regexp for
+	matching whitespace and comment characters at the start of a line.
+
 2006-07-11  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-find-macro-boundaries, TeX-find-macro-start): Remove
