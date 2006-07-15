@@ -4653,7 +4653,8 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 (defun LaTeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for LaTeX mode.
 Install tool bar if `LaTeX-enable-toolbar' is non-nil."
-  (when LaTeX-enable-toolbar
+  (when (and (eq major-mode 'latex-mode)
+	     LaTeX-enable-toolbar)
     ;; Defined in `tex-bar.el':
     (LaTeX-install-toolbar)))
 
