@@ -2,6 +2,9 @@
 
 	* latex.el (LaTeX-maybe-install-toolbar): Enable tool bar in LaTeX
 	mode only.
+	(LaTeX-maybe-install-toolbar): Revert last change.
+	(TeX-latex-mode): Set `tool-bar-mode-on-hook' buffer-locally
+	instead.
 
 2006-07-12  Ralf Angeli  <angeli@caeruleus.net>
 
