@@ -4653,8 +4653,7 @@ If prefix argument FORCE is non-nil, always insert a regular hyphen."
 (defun LaTeX-maybe-install-toolbar ()
   "Conditionally install tool bar buttons for LaTeX mode.
 Install tool bar if `LaTeX-enable-toolbar' is non-nil."
-  (when (and (eq major-mode 'latex-mode)
-	     LaTeX-enable-toolbar)
+  (when LaTeX-enable-toolbar
     ;; Defined in `tex-bar.el':
     (LaTeX-install-toolbar)))
 
@@ -4713,7 +4712,7 @@ of `LaTeX-mode-hook'."
   (setq major-mode 'latex-mode)
   (setq TeX-command-default "LaTeX")
   (setq TeX-sentinel-default-function 'TeX-LaTeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar)
+  (add-hook 'tool-bar-mode-on-hook 'LaTeX-maybe-install-toolbar nil t)
   (when (if (featurep 'xemacs) (featurep 'toolbar) tool-bar-mode)
     (LaTeX-maybe-install-toolbar))
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'LaTeX-mode-hook)
