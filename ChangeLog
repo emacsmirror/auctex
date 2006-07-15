@@ -1,3 +1,8 @@
+2006-07-15  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-maybe-install-toolbar): Enable tool bar in LaTeX
+	mode only.
+
 2006-07-12  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fill-move-to-break-point): Fix regexp for
