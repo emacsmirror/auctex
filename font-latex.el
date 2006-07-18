@@ -1500,12 +1500,21 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   (when (and font-latex-fontify-script
 	     (re-search-forward "[_^] *\\([^\n\\{}]\\|\
 \\\\\\([a-zA-Z@]+\\|[^ \t\n]\\)\\|\\({\\)\\)" limit t))
-    (when (match-end 3)
-      (let ((beg (match-beginning 3))
-	    (end (TeX-find-closing-brace)))
-	(store-match-data (if end
-			      (list (match-beginning 0) end beg end)
-			    (list beg beg beg beg)))))
+    (if (font-latex-faces-present-p
+	 (if (string= (substring (match-string 0) 0 1) "_")
+	     'font-latex-subscript-face
+	   'font-latex-superscript-face))
+	;; Apply subscript and superscript highlighting only once in
+	;; order to prevent the font size becoming too small.  We set
+	;; an empty match to do that.
+	(let ((point (point)))
+	  (store-match-data (list point point point point)))
+      (when (match-end 3)
+	(let ((beg (match-beginning 3))
+	      (end (TeX-find-closing-brace)))
+	  (store-match-data (if end
+				(list (match-beginning 0) end beg end)
+			      (list beg beg beg beg))))))
     t))
 
 ;; Copy and adaption of `tex-font-lock-suscript' from tex-mode.el in
