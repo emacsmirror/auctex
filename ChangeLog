@@ -1,3 +1,9 @@
+2006-07-18  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-match-script): Apply subscript and
+	superscript highlighting only once in order to prevent the font
+	size becoming too small.
+
 2006-07-15  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-maybe-install-toolbar): Enable tool bar in LaTeX
