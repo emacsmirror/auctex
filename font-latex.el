@@ -1500,10 +1500,8 @@ set to french, and >> german << (and 8-bit) are used if set to german."
   (when (and font-latex-fontify-script
 	     (re-search-forward "[_^] *\\([^\n\\{}]\\|\
 \\\\\\([a-zA-Z@]+\\|[^ \t\n]\\)\\|\\({\\)\\)" limit t))
-    (if (font-latex-faces-present-p
-	 (if (string= (substring (match-string 0) 0 1) "_")
-	     'font-latex-subscript-face
-	   'font-latex-superscript-face))
+    (if (font-latex-faces-present-p '(font-latex-subscript-face
+				      font-latex-superscript-face))
 	;; Apply subscript and superscript highlighting only once in
 	;; order to prevent the font size becoming too small.  We set
 	;; an empty match to do that.
