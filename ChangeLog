@@ -1,3 +1,7 @@
+2006-07-21  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-match-script): Fix last check-in.
+
 2006-07-18  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-script): Apply subscript and
