@@ -648,7 +648,7 @@ This is in addition to those listed in the environment variable specified by
 
 (defcustom bib-cite-aux-inputs nil
   "*List of directories to search for .aux files.
-MikTeX has the LaTeX option -aux-directory to store .aux files in an alternate
+MiKTeX has the LaTeX option -aux-directory to store .aux files in an alternate
 directory.  You may set this variable to let bib-cite find these .aux files."
   :group 'bib-cite
   :type '(repeat (file :format "%v")))

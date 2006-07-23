@@ -1,4 +1,4 @@
-;;; tex-mik.el --- MikTeX support for AUCTeX.
+;;; tex-mik.el --- MiKTeX support for AUCTeX.
 
 ;; Copyright (C) 1999, 2000, 2001, 2004 Free Software Foundation, Inc.
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 ;;
-;; This file contains variables customized for MikTeX.
+;; This file contains variables customized for MiKTeX.
 
 ;;; Code:
 

@@ -24,7 +24,7 @@ Configure @AUCTeX{}:
 For GNU Emacs: Many people like to install @AUCTeX{} into the pseudo
 file system hierarchy set up by the Emacs installation.  Assuming Emacs
 is installed in @file{C:/Program Files/Emacs} and the directory for
-local additions of your @TeX{} system, e.g. Mik@TeX{}, is
+local additions of your @TeX{} system, e.g. MiK@TeX{}, is
 @file{C:/localtexmf}, you can do this by typing the following statement
 at the shell prompt:
 
@@ -35,7 +35,7 @@ at the shell prompt:
 
 For XEmacs: You can install @AUCTeX{} as an XEmacs package.  Assuming
 XEmacs is installed in @file{C:/Program Files/XEmacs} and the directory
-for local additions of your @TeX{} system, e.g. Mik@TeX{}, is
+for local additions of your @TeX{} system, e.g. MiK@TeX{}, is
 @file{C:/localtexmf}, you can do this by typing the following command at
 the shell prompt:
 
@@ -158,7 +158,7 @@ try.
 
 @item
 You need a working @TeX{} installation.  One popular installation under
-Windows is @uref{http://www.miktex.org,Mik@TeX{}}.  Another much more
+Windows is @uref{http://www.miktex.org,MiK@TeX{}}.  Another much more
 extensive system is @uref{http://www.tug.org/texlive,@w{@TeX{} Live}}
 which is rather close to its Unix cousins.
 
@@ -170,7 +170,7 @@ gswin32c -h
 @end example
 on a Windows command line should tell you whether your Ghostscript
 supports the @code{png16m} device needed for @acronym{PNG} support.
-MikTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
+MiKTeX apparently comes with its own Ghostscript called @samp{mgs.exe}.
 
 @item
 @uref{http://www.perl.org,Perl} is needed for rebuilding the
@@ -323,7 +323,7 @@ or
 @example
 (require 'tex-fptex)
 @end example
-in order to get more appropriate values for Mik@TeX{} and fp@TeX{},
+in order to get more appropriate values for MiK@TeX{} and fp@TeX{},
 respectively.
 
 You can always use

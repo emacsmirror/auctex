@@ -138,7 +138,7 @@ fi
 AC_SUBST(lisppackagetexstyles)
 
 # Be very careful about assuming things about the available hash programs
-# MikTeX comes with a braindead link to mktexlsr, apparently, so first
+# MiKTeX comes with a braindead link to mktexlsr, apparently, so first
 # try the regular utility from them.
 AC_ARG_VAR(TEXHASH,[command to update the TeX filename database.
 Set to : to skip updating the database on installation.

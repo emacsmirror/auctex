@@ -364,7 +364,7 @@ Bug fixes for XEmacs.
 Completion for graphic files in the TeX search path has been added.
 
 @item
-@command{start} is used for the viewer for Mik@TeX{} and fp@TeX{}.
+@command{start} is used for the viewer for MiK@TeX{} and fp@TeX{}.
 
 @item
 The variable @code{TeX-fold-preserve-comments} can now be customized to

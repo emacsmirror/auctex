@@ -42,7 +42,7 @@ Suggested by arne@@daimi.au.dk (Arne Joergensen).
 Some PDF support.
 
 @item
-New @file{tex-mik.el} file for Mik@TeX{} support.
+New @file{tex-mik.el} file for MiK@TeX{} support.
 
 @item
 Some commands now have their own history.
