@@ -1,3 +1,7 @@
+2006-07-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* configure.ac: Fix spelling of MiKTeX.
+
 2006-07-12  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Add a font-lock helping comment, remove

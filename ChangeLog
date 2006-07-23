@@ -1,3 +1,8 @@
+2006-07-23  Ralf Angeli  <angeli@caeruleus.net>
+
+	* bib-cite.el, tex-mik.el, doc/changes.texi, doc/history.texi,
+	doc/wininstall.texi: Fix spelling of MiKTeX.
+
 2006-07-21  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-script): Fix last check-in.
