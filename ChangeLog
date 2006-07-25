@@ -1,3 +1,9 @@
+2006-07-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* font-latex.el (font-latex-match-script): Don't match groups
+	spanning more than one line in order to avoid visually wrong
+	indentation in subsequent lines.
+
 2006-07-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* bib-cite.el, tex-mik.el, doc/changes.texi, doc/history.texi,
