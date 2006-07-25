@@ -1,7 +1,9 @@
-%%\iffalse
-%%     preview.dtx for extracting previews from LaTeX documents.  Part of
-%%     the preview-latex package.
-%%     Copyright (C) 2001, 2002, 2003, 2004, 2005 Free Software Foundation
+% \iffalse
+%%     preview.dtx for extracting previews from LaTeX documents.
+%%     Developed as part of AUCTeX <URL:http://www.gnu.org/software/auctex>.
+%%
+%%     Copyright (C) 2001, 2002, 2003, 2004, 2005,
+%%                   2006 Free Software Foundation
 %%
 %%     This program is free software; you can redistribute it and/or modify
 %%     it under the terms of the GNU General Public License as published by
@@ -17,8 +19,8 @@
 %%     along with this program; if not, write to the
 %%     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %%     Boston, MA 02110-1301  USA
-%%\fi
-% \CheckSum{1664}
+% \fi
+% \CheckSum{1672}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -436,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.117 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.118 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-07-12 12:27:30 $
+\reserved@a\next $Date: 2006-07-25 17:41:56 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -1030,10 +1032,12 @@ Please complain to your document class author}%
 \expandafter\next\csname endfigure*\expandafter\endcsname
   \csname endtable*\endcsname
 %    \end{macrocode}
-%  The |sections| option.
+%  The |sections| option.  Two optional parameters might occur in
+%  |memoir.cls|.
 %    \begin{macrocode}
 \DeclareOption{sections}{%
-  \PreviewMacro[!!!!!!*[!]{\@startsection}%]
+  \PreviewMacro[!!!!!!*[[!]{\@startsection}%]]
+  \PreviewMacro[*[[!]{\chapter}%]]
 }
 %    \end{macrocode}
 % We now interpret any further options as driver files we load.  Note
@@ -1395,6 +1399,8 @@ Please complain to your document class author}%
 %<auccfg>\PreviewMacro*[][#1{}]\caption
 %<auccfg>\preview@delay{\@ifundefined{pr@\string\@startsection}{%
 %<auccfg>  \PreviewMacro*[!!!!!!*][#1{}]\@startsection}{}}
+%<auccfg>\preview@delay{\@ifundefined{pr@\string\chapter}{%
+%<auccfg>  \PreviewMacro*[*][#1{}]\chapter}{}}
 %<auccfg>\PreviewMacro*\index
 %    \end{macrocode}
 %

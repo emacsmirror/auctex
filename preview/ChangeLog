@@ -1,3 +1,8 @@
+2006-07-25  David Kastrup  <dak@gnu.org>
+
+	* latex/preview.dtx: Allow two optional parameters as in
+	memoir.cls for sections.  Also preview chapter headings.
+
 2006-07-23  Ralf Angeli  <angeli@caeruleus.net>
 
 	* configure.ac: Fix spelling of MiKTeX.
