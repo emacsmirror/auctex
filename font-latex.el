@@ -1481,7 +1481,7 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 	  (regexp-opt (mapcar 'car font-latex-quote-list) t)))
   ;; Search for matches.
   (catch 'match
-    (while (re-search-forward font-latex-quote-regexp-beg limit t)
+    (while (TeX-re-search-forward-unescaped font-latex-quote-regexp-beg limit t)
       (unless (font-latex-faces-present-p '(font-lock-comment-face
 					    font-latex-verbatim-face
 					    font-latex-math-face)
