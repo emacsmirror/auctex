@@ -3,6 +3,8 @@
 	* font-latex.el (font-latex-match-script): Don't match groups
 	spanning more than one line in order to avoid visually wrong
 	indentation in subsequent lines.
+	(font-latex-match-quotation): Do not match escaped quotation
+	marks.
 
 2006-07-23  Ralf Angeli  <angeli@caeruleus.net>
 
