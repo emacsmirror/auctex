@@ -44,9 +44,14 @@
  "doc"
  (function
   (lambda ()
+    (add-to-list (make-local-variable 'LaTeX-indent-environment-list)
+		 '("macrocode" current-indentation))
+    (add-to-list 'LaTeX-indent-environment-list
+		 '("macrocode*" current-indentation))
     (LaTeX-add-environments
      "theglossary"
      '("macrocode" LaTeX-env-no-comment)
+     '("macrocode*" LaTeX-env-no-comment)
      '("macro" "Macro"))
     (TeX-add-symbols
      "EnableCrossrefs"
