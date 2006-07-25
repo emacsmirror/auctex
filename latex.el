@@ -674,8 +674,10 @@ With prefix-argument, reopen environment afterwards."
     (insert TeX-esc "end" TeX-grop environment TeX-grcl)
     (end-of-line 0)
     (if active-mark
-	(or (assoc environment LaTeX-indent-environment-list)
-	    (LaTeX-fill-region content-start (line-beginning-position 2)))
+	(progn
+	  (or (assoc environment LaTeX-indent-environment-list)
+	      (LaTeX-fill-region content-start (line-beginning-position 2)))
+	  (set-mark content-start))
       (indent-according-to-mode))
     (save-excursion (beginning-of-line 2) (indent-according-to-mode)))
   (TeX-math-input-method-off))
@@ -4530,7 +4532,7 @@ corresponds to the variables `LaTeX-environment-menu-name' and
     (?\C-m "\\textmd{"     "}")
     (?\C-n "\\textnormal{" "}" "\\mathnormal{" "}")
     (?\C-r "\\textrm{"     "}" "\\mathrm{"     "}")
-    (?\C-s "\\textsl{"     "}")
+    (?\C-s "\\textsl{"     "}" "\\mathbb{"     "}")
     (?\C-t "\\texttt{"     "}" "\\mathtt{"     "}")
     (?\C-u "\\textup{"     "}")
     (?\C-d "" "" t))

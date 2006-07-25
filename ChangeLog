@@ -1,3 +1,12 @@
+2006-07-25  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-insert-environment): Leave mark at start of
+	content when inserting around active region.
+
+2006-07-11  David Kastrup  <dak@gnu.org>
+
+	* latex.el (LaTeX-font-list): Add `\mathbb' on C-c C-f C-s.
+
 2006-07-25  Ralf Angeli  <angeli@caeruleus.net>
 
 	* font-latex.el (font-latex-match-script): Don't match groups
