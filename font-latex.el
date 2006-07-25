@@ -1509,7 +1509,11 @@ set to french, and >> german << (and 8-bit) are used if set to german."
 	  (store-match-data (list point point point point)))
       (when (match-end 3)
 	(let ((beg (match-beginning 3))
-	      (end (TeX-find-closing-brace)))
+	      (end (TeX-find-closing-brace
+		    ;; Don't match groups spanning more than one line
+		    ;; in order to avoid visually wrong indentation in
+		    ;; subsequent lines.
+		    nil (line-end-position))))
 	  (store-match-data (if end
 				(list (match-beginning 0) end beg end)
 			      (list beg beg beg beg))))))
