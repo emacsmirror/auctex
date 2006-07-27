@@ -50,7 +50,22 @@ options can be found in the detailed installation instructions below.
 If the configuration script failed to find all required programs, make
 sure that these programs are in your system path and add directories
 containing the programs to the @env{PATH} environment variable if
-necessary.
+necessary.  Here is how to do that in W2000/XP:
+
+@enumerate
+@cindex Adding to @env{PATH} in Windows
+@cindex @env{PATH} in Windows
+@item
+On the desktop, right click ``My Computer'' and select properties.
+@item
+Click on ``Advanced'' in the ``System Properties'' window.
+@item
+Select ``Environment Variables''.
+@item
+Select ``path'' in ``System Variables'' and click ``edit''.  Move to the
+front in the line (this might require scrolling) and add the missing
+path including drive letter, ended with a semicolon.
+@end enumerate
 
 @item
 If there were no further error messages, type

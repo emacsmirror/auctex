@@ -57,7 +57,7 @@ be sensible to instead arrange error messages in language-specific
 files, make a common info file from all such catalogs in a given
 language and look the error texts up in an appropriate index.  The user
 would then specify a preference list of languages, and the errors would
-be looked up in the catalogs in sequence until the were identified.
+be looked up in the catalogs in sequence until they were identified.
 
 @item Combining @samp{docTeX} with RefTeX
 

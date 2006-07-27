@@ -1,3 +1,9 @@
+2006-07-27  David Kastrup  <dak@gnu.org>
+
+	* doc/wininstall.texi: Add explanation of how to augment `PATH'.
+
+	* doc/todo.texi (Mid-term Goals): Typo.
+
 2006-07-25  David Kastrup  <dak@gnu.org>
 
 	* style/doc.el ("doc"): Add macrocode and macrocode* to
