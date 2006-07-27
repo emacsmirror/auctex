@@ -1,3 +1,20 @@
+2006-07-27  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/changes.texi: Add bug fixes.  Add TeX tool bar.
+
+	* doc/auctex.texi (Running TeX and friends): Add
+	TeX-enable-toolbar.
+
+	* tex-bar.el: Copy of tool bar stuff from LaTeX-*.
+	(TeX-bar-TeX-buttons, TeX-bar-TeX-all-button-alists)
+	(TeX-bar-TeX-button-alist): New variables.
+	(TeX-bar-TeX-buttons, TeX-install-toolbar): New funtions.
+	(TeX-tool-bar-button-definitions): New custom group
+
+	* tex.el (TeX-enable-toolbar): New variable.
+	(TeX-maybe-install-toolbar): New function.
+	(TeX-plain-tex-mode): Add `TeX-maybe-install-toolbar'.
+
 2006-07-27  David Kastrup  <dak@gnu.org>
 
 	* doc/wininstall.texi: Add explanation of how to augment `PATH'.

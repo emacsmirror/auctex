@@ -1859,6 +1859,18 @@ FORCE is not nil."
 (defvar TeX-grcl "}" "The TeX group closing character.")
  (make-variable-buffer-local 'TeX-grcl)
 
+(defcustom TeX-enable-toolbar t
+  "Enable TeX tool bar."
+  :group 'TeX-tool-bar
+  :type 'boolean)
+
+(defun TeX-maybe-install-toolbar ()
+  "Conditionally install tool bar buttons for TeX mode.
+Install tool bar if `TeX-enable-toolbar' is non-nil."
+  (when TeX-enable-toolbar
+    ;; Defined in `tex-bar.el':
+    (TeX-install-toolbar)))
+
 ;;; Symbols
 
 ;; Must be before keymaps.
@@ -2432,6 +2444,9 @@ of plain-TeX-mode-hook."
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
+  (add-hook 'tool-bar-mode-on-hook 'TeX-maybe-install-toolbar nil t)
+  (when (if (featurep 'xemacs) (featurep 'toolbar) tool-bar-mode)
+    (TeX-maybe-install-toolbar))
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 

@@ -4,6 +4,25 @@
 
 @end ifset
 
+@heading News after 11.83
+@c @heading News in 11.84
+
+@itemize @bullet
+@item
+The @TeX{} tool bar is now available and enabled by default in plain
+@TeX{} mode.
+@ifclear rawfile
+@xref{Running TeX and friends}.
+@end ifclear
+
+@item
+Bug fix in the display of math subscripts and superscripts.
+
+@item
+Bug fix @code{TeX-doc} for Emacs 21.
+
+@end itemize
+
 @heading News in 11.83
 
 @itemize @bullet
