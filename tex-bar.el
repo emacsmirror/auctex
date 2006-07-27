@@ -121,7 +121,7 @@ alists, see variable `TeX-bar-TeX-all-button-alists'."
       (insert "Available buttons for TeX mode
 ================================")
       (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provide buttons:\n  " (car i)))
+	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
 	(dolist (j (cdr i))
 	  (insert (format " %s" j)))
 	(fill-region (point-at-bol) (point-at-eol))))
@@ -237,7 +237,7 @@ alists, see variable `TeX-bar-LaTeX-all-button-alists'."
       (insert "Available buttons for LaTeX mode
 ================================")
       (dolist (i assqs-button-alists)
-	(insert (format "\n\n`%s' provide buttons:\n  " (car i)))
+	(insert (format "\n\n`%s' provides the following buttons:\n  " (car i)))
 	(dolist (j (cdr i))
 	  (insert (format " %s" j)))
 	(fill-region (point-at-bol) (point-at-eol))))

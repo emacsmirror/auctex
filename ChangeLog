@@ -1,5 +1,8 @@
 2006-07-27  Reiner Steib  <Reiner.Steib@gmx.de>
 
+	* tex-bar.el (TeX-bar-TeX-buttons, TeX-bar-LaTeX-buttons): Improve
+	wording.
+
 	* doc/changes.texi: Add bug fixes.  Add TeX tool bar.
 
 	* doc/auctex.texi (Running TeX and friends): Add
