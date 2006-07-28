@@ -29,7 +29,14 @@ install-texmf: $(TEXMFGEN)
 	  echo $(INSTALL_DATA) $$x $(DESTDIR)$(previewtexmfdir) ; \
 	  $(INSTALL_DATA) $$x $(DESTDIR)$(previewtexmfdir) ; \
 	done
-	-$(TEXHASH)
+# Isn't the texmfdir directory without "tex/latex/preview" available?
+	@ texmfdir="$(DESTDIR)$(previewtexmfdir)/../../.."; \
+	if [ -r "$$texmfdir"/ls-R ]; then \
+	  $(TEXHASH) "$$texmfdir";  \
+	else \
+	  echo "Warning: Cannot update ls-R database in $$texmfdir"; \
+	  sleep 2; \
+	fi
 
 install-texmf-doc: preview.dvi
 	-$(MKINSTALLDIRS) $(DESTDIR)$(previewdocdir)
