@@ -95,11 +95,26 @@ Type `\\[TeX-bar-TeX-buttons]' for a list of available buttons.
 Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-TeX-all-button-alists'."
-  :type '(repeat (choice (symbol :tag "Label")
-			 (vector :args ((symbol :tag "Label in Emacs ")
-					(symbol :tag "Label in XEmacs"))
-				 :tag "Emacs/XEmacs choice")
-			 (sexp :tag "General element")))
+  :type '(list (set :inline t
+		    (const open-file)
+		    (const save-buffer)
+		    (const cut)
+		    (const copy)
+		    (const paste)
+		    (const undo)
+		    (const [separator nil])
+		    (const latex)
+		    (const next-error)
+		    (const view)
+		    (const file)
+		    (const bibtex)
+		    (const clean))
+		    ;; (const latex-symbols-experimental)
+	       (repeat (choice (symbol :tag "Label")
+			       (vector :args ((symbol :tag "Label in Emacs ")
+					      (symbol :tag "Label in XEmacs"))
+				       :tag "Emacs/XEmacs choice")
+			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 
 (defun TeX-bar-TeX-buttons ()
@@ -165,12 +180,17 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 		  (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
 	  :command (TeX-command "File" 'TeX-master-file -1)
+	  :visible (not TeX-PDF-mode)
 	  :help (lambda (&rest ignored)
 		  (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
 	    :command (TeX-command "BibTeX" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
-		    (TeX-bar-help-from-command-list "BibTeX"))))
+		    (TeX-bar-help-from-command-list "BibTeX")))
+    (clean  :image "delete"
+	    :command (TeX-command "Clean" 'TeX-master-file -1)
+	    :help (lambda (&rest ignored)
+		    (TeX-bar-help-from-command-list "Clean"))))
   ;; latex-symbols-experimental?
   "Alist for button definitions in TeX bar.
 Value should le a list where each element is of format (KEY .
@@ -211,11 +231,26 @@ Type `\\[TeX-bar-LaTeX-buttons]' for a list of available buttons.
 Buttons are defined in alists (labels associated to properties
 that define a button).  For a list of variables that hold such
 alists, see variable `TeX-bar-LaTeX-all-button-alists'."
-  :type '(repeat (choice (symbol :tag "Label")
-			 (vector :args ((symbol :tag "Label in Emacs ")
-					(symbol :tag "Label in XEmacs"))
-				 :tag "Emacs/XEmacs choice")
-			 (sexp :tag "General element")))
+  :type '(list (set :inline t
+		    (const open-file)
+		    (const save-buffer)
+		    (const cut)
+		    (const copy)
+		    (const paste)
+		    (const undo)
+		    (const [separator nil])
+		    (const latex)
+		    (const next-error)
+		    (const view)
+		    (const file)
+		    (const bibtex)
+		    (const clean)
+		    (const latex-symbols-experimental))
+	       (repeat (choice (symbol :tag "Label")
+			       (vector :args ((symbol :tag "Label in Emacs ")
+					      (symbol :tag "Label in XEmacs"))
+				       :tag "Emacs/XEmacs choice")
+			       (sexp :tag "General element"))))
   :group 'TeX-tool-bar)
 
 (defun TeX-bar-LaTeX-buttons ()
@@ -281,12 +316,17 @@ the argument BUTTON-ALIST in function `toolbarx-install-toolbar'."
 		  (TeX-bar-help-from-command-list "View")))
     (file :image "dvips"
 	  :command (TeX-command "File" 'TeX-master-file -1)
+	  :visible (not TeX-PDF-mode)
 	  :help (lambda (&rest ignored)
 		  (TeX-bar-help-from-command-list "File")))
     (bibtex :image "bibtex"
 	    :command (TeX-command "BibTeX" 'TeX-master-file -1)
 	    :help (lambda (&rest ignored)
 		    (TeX-bar-help-from-command-list "BibTeX")))
+    (clean  :image "delete"
+	    :command (TeX-command "Clean" 'TeX-master-file -1)
+	    :help (lambda (&rest ignored)
+		    (TeX-bar-help-from-command-list "Clean")))
     (latex-symbols-experimental . (:alias :eval-group
 					  LaTeX-symbols-toolbar-switch-contents
 					  LaTeX-symbols-toolbar-contents)))
