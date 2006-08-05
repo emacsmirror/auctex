@@ -109,6 +109,24 @@
   "The ConTeXt optional argument closing character.")
 
 
+;; Define a ConTeXt macro
+
+(defvar ConTeXt-define-list ()
+  "Calls ConTeXt-XX-define-list where XX is the current interface.")
+
+(defun ConTeXt-define-command (what)
+  "The ConTeXt macro to define WHAT."
+  (funcall
+   (intern (concat "ConTeXt-define-command-" ConTeXt-current-interface)) what))
+
+(defun ConTeXt-insert-define (define)
+  "Insert the ConTeXt define macro DEFINE."
+  (insert TeX-esc (ConTeXt-define-command define))
+  (newline)
+  (indent-according-to-mode)
+  (ConTeXt-arg-setup nil))
+
+
 ;; Setup a ConTeXt macro
 
 (defvar ConTeXt-setup-list ()
@@ -122,6 +140,23 @@
 (defun ConTeXt-insert-setup (setup)
   "Insert the ConTeXt setup macro SETUP."
   (insert TeX-esc (ConTeXt-setup-command setup))
+  (newline)
+  (indent-according-to-mode)
+  (ConTeXt-arg-setup nil))
+
+
+;; Other ConTeXt macro's
+
+(defvar ConTeXt-other-macro-list ()
+  "Calls ConTeXt-XX-other-macro-list where XX is the current interface.")
+
+(defun ConTeXt-other-macro-command (what)
+  "The ConTeXt macro to call WHAT is itself, no interface specific calls."
+  what)
+
+(defun ConTeXt-insert-other-macro (other-macro)
+  "Insert the ConTeXt other macro's macro SETUP."
+  (insert TeX-esc (ConTeXt-other-macro-command other-macro))
   (newline)
   (indent-according-to-mode)
   (ConTeXt-arg-setup nil))
@@ -1188,6 +1223,17 @@ else.  There might be text before point."
   "Create an entry for the change environment menu."
   (vector (car entry) (list 'ConTeXt-modify-environment (car entry)) t))
 
+;; ConTeXt define macros
+(defvar ConTeXt-define-menu-name "Define")
+
+(defun ConTeXt-define-menu-entry (entry)
+  "Create an entry for the define menu."
+  (vector entry (list 'ConTeXt-define-menu entry)))
+
+(defun ConTeXt-define-menu (define)
+  "Insert DEFINE from menu."
+  (ConTeXt-insert-define define))
+
 ;; ConTeXt setup macros
 (defvar ConTeXt-setup-menu-name "Setup")
 
@@ -1198,6 +1244,17 @@ else.  There might be text before point."
 (defun ConTeXt-setup-menu (setup)
   "Insert SETUP from menu."
   (ConTeXt-insert-setup setup))
+
+;; ConTeXt other macros
+(defvar ConTeXt-other-macro-menu-name "Other macro")
+
+(defun ConTeXt-other-macro-menu-entry (entry)
+  "Create an entry for the other macro menu."
+  (vector entry (list 'ConTeXt-other-macro-menu entry)))
+
+(defun ConTeXt-other-macro-menu (other-macro)
+  "Insert OTHER MACRO from menu."
+  (ConTeXt-insert-other-macro other-macro))
 
 
 ;; meta-structure project structure menu entries
@@ -1297,7 +1354,9 @@ else.  There might be text before point."
      (,ConTeXt-environment-modify-menu-name)
      ["Item" ConTeXt-insert-item
       :help "Insert a new \\item into current environment"]
+     (,ConTeXt-define-menu-name)
      (,ConTeXt-setup-menu-name)
+     (,ConTeXt-other-macro-menu-name)
      "-"
      ("Insert Font"
       ["Emphasize"  (TeX-font nil ?\C-e) :keys "C-c C-f C-e"]
@@ -1350,11 +1409,21 @@ else.  There might be text before point."
 			  (LaTeX-split-long-menu
 			   (mapcar 'ConTeXt-environment-modify-menu-entry
 				   (ConTeXt-environment-list))))
+	(message "Updating define menu...")
+	(easy-menu-change '("ConTeXt") ConTeXt-define-menu-name
+			  (LaTeX-split-long-menu
+			   (mapcar 'ConTeXt-define-menu-entry
+				   ConTeXt-define-list)))
 	(message "Updating setup menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-setup-menu-name
 			  (LaTeX-split-long-menu
 			   (mapcar 'ConTeXt-setup-menu-entry
 				   ConTeXt-setup-list)))
+	(message "Updating other macro's menu...")
+	(easy-menu-change '("ConTeXt") ConTeXt-other-macro-menu-name
+			  (LaTeX-split-long-menu
+			   (mapcar 'ConTeXt-other-macro-menu-entry
+				   ConTeXt-other-macro-list)))
 	(message "Updating project structure menu...")
 	(easy-menu-change '("ConTeXt") ConTeXt-project-structure-menu-name
 			  (LaTeX-split-long-menu
@@ -1403,8 +1472,9 @@ else.  There might be text before point."
 ;; They are mapped to interface specific variables
 
 (defvar ConTeXt-language-variable-list
-  '(ConTeXt-setup-list ConTeXt-project-structure-list
-		       ConTeXt-section-block-list ConTeXt-section-list
+  '(ConTeXt-define-list ConTeXt-setup-list ConTeXt-other-macro-list
+           ConTeXt-project-structure-list
+           ConTeXt-section-block-list ConTeXt-section-list
 		       ConTeXt-text ConTeXt-item-list))
 
 (defcustom ConTeXt-clean-intermediate-suffixes
