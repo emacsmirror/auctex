@@ -37,9 +37,9 @@
 (defvar ConTeXt-environment-list-en
   '("alignment" "appendices"
     "background" "backmatter" "bodymatter" "bodypart" "buffer"
-    "color" "columns" "combination"
+    "code" "color" "columns" "combination"
     "encoding" "extroductions"
-    "fact" "formula" "framedtext" "frontmatter"
+    "fact" "formula" "framedcode" "framedtext" "frontmatter"
     "helptext" "hiding"
     "itemize"
     "legend" "line" "linecorrection" "linenumbering" "lines"
@@ -47,11 +47,11 @@
     "makeup" "mapping" "marginblock" "marginedge" "marginrule" "mode"
     "narrower" "notmode"
     "opposite"
-    "packed" "positioning" "postponing"
+    "packed" "pagecomment" "pagefigure" "positioning" "postponing"
     "quotation"
     "raster" "register"
     "standardmakeup"
-    "table" "tabulate" "text" "textbackground" "typing"
+    "table" "tabulate" "TEXpage" "text" "textbackground" "typing"
     "unpacked"
     ;; project structure
     "component" "environment" "product" "project"
@@ -64,6 +64,18 @@
     "uniqueMPgraphic")
   "List of the ConTeXt en interface start/stop pairs.")
 
+(defvar ConTeXt-define-list-en
+  '("accent"
+    "background" "blank" "block" "blocks" "bodyfont" "bodyfontenvironment"
+    "buffer"
+    "casemap" "character" "color" "colorgroup" "combinedlist" "command"
+    "description" "enumeration"
+    "float" "font" "fontsynonym" "framedtext" "head"
+    "indenting" "label"
+    "logo" "overlay"
+    "palet" "program" "startstop" "type" "typing")
+  "List of the names of ConTeXt en interface  macro's that define things.")
+
 (defvar ConTeXt-setup-list-en
   '("align" "arranging" "background" "backgrounds" "blackrules"
     "blank" "block" "bodyfont" "bodyfontenvironment" "bottom"
@@ -75,12 +87,31 @@
     "heads" "headtext" "hyphenmark" "indentations" "indenting" "inmargin"
     "interlinespace" "itemize" "items" "labeltext" "language" "layout"
     "linenumbering" "lines" "list" "makeup" "marginblocks"
-    "marginrules" "marking" "narrower" "oppositeplacing" "pagenumber"
-    "pagenumbering" "palet" "papersize" "paragraphs" "quote" "referencing"
-    "register" "screens" "section" "sectionblock" "sorting" "spacing"
+    "marginrules" "marking" "narrower" "oppositeplacing"
+    "pagecomment" "pagenumber" "pagenumbering" "palet" "papersize" "paragraphs"
+    "quote" "referencing" "register"
+    "screens" "section" "sectionblock" "sorting" "spacing"
     "subpagenumber" "synonyms" "text" "textrules" "texttexts" "thinrules"
     "tolerance" "top" "toptexts" "type" "typing" "underbar" "whitespace")
   "List of the names of ConTeXt en interface  macro's that setup things.")
+
+;; lists some place macro's as well, should perhaps be under separate menu
+(defvar ConTeXt-other-macro-list-en
+  '("adaptlayout" "at" "combinepages" "copypages"
+    "externalfigure" "framed" "from" "input" "insertpages" "filterpages"
+    "getbuffer" "goto"
+    "leftaligned" "midaligned"
+    "obeyspaces"
+    "page" "placeexternalfigure" "placefigure" "placelogos" "placetable"
+    "protect"
+    "raggedcenter" "rightaligned" "rotate"
+    "scale" "showexternalfigures" "slicepages"
+    "useexternalfigure" "unprotect" "url" "usemodule")
+  "List of ConTeXt en interface macro's that are not an environment nor a setup.")
+
+(defun ConTeXt-define-command-en (what)
+  "The ConTeXt en interface way of creating a define command."
+  (concat "define" what))
 
 (defun ConTeXt-setup-command-en (what)
   "The ConTeXt en interface way of creating a setup command."
