@@ -1,5 +1,7 @@
 2006-08-05  Berend de Boer  <berend@pobox.com>
 
+	* context-nl.el: few more Dutch ConTeXt macros made available in menu.
+
 	* context.el: more ConTeXt macros made available in menu.
 
 2006-08-02  Reiner Steib  <Reiner.Steib@gmx.de>
