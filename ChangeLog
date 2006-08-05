@@ -1,3 +1,7 @@
+2006-08-05  Berend de Boer  <berend@pobox.com>
+
+	* context.el: more ConTeXt macros made available in menu.
+
 2006-08-02  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* tex-bar.el (TeX-bar-TeX-button-alist, TeX-bar-LaTeX-button-alist):
