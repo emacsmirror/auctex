@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1655}
+% \CheckSum{1658}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -438,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.120 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.121 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-08-15 10:30:24 $
+\reserved@a\next $Date: 2006-08-15 10:47:32 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -1264,6 +1264,7 @@ Please complain to your document class author}%
   \pr@outerfalse
   \let\@begindvi\@empty
   \the\pr@output}
+\let\output\pr@output
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\pr@typeinfos}

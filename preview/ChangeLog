@@ -3,6 +3,7 @@
 	* latex/preview.dtx: Change from 2006-07-12 could lose the
 	`AtBeginDvi' material.  Fix that.  Disable preview within output
 	routine.
+	And actually hijack `\output' instead of doing it half way.
 
 2006-07-28  Reiner Steib  <Reiner.Steib@gmx.de>
 
