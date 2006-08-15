@@ -1,26 +1,26 @@
 % \iffalse
-%%     preview.dtx for extracting previews from LaTeX documents.
-%%     Developed as part of AUCTeX <URL:http://www.gnu.org/software/auctex>.
-%%
-%%     Copyright (C) 2001, 2002, 2003, 2004, 2005,
-%%                   2006 Free Software Foundation
-%%
-%%     This program is free software; you can redistribute it and/or modify
-%%     it under the terms of the GNU General Public License as published by
-%%     the Free Software Foundation; either version 2 of the License, or
-%%     (at your option) any later version.
-%%
-%%     This program is distributed in the hope that it will be useful,
-%%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%     GNU General Public License for more details.
-%%
-%%     You should have received a copy of the GNU General Public License
-%%     along with this program; if not, write to the
-%%     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-%%     Boston, MA 02110-1301  USA
+%%    The preview style for extracting previews from LaTeX documents.
+%%    Developed as part of AUCTeX <URL:http://www.gnu.org/software/auctex>.
+%
+%     Copyright (C) 2001, 2002, 2003, 2004, 2005,
+%                   2006 Free Software Foundation
+%
+%     This program is free software; you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation; either version 2 of the License, or
+%     (at your option) any later version.
+%
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+%
+%     You should have received a copy of the GNU General Public License
+%     along with this program; if not, write to the
+%     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+%     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1672}
+% \CheckSum{1656}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -438,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.118 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.119 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-07-25 17:41:56 $
+\reserved@a\next $Date: 2006-08-15 10:24:26 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -704,7 +704,7 @@
    \egroup
    \setbox\pr@box\vbox{%
        \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
-       \@begindvi
+       \unvbox\@begindvibox
        \nointerlineskip
        \splittopskip\z@skip\setbox\z@\vsplit\pr@box to\z@
        \unvbox\z@
@@ -1250,25 +1250,22 @@ Please complain to your document class author}%
 \renewenvironment{nopreview}{\pr@outerfalse\ignorespaces}%
   {\ifhmode\unskip\fi}
 %    \end{macrocode}
-% Let the output routine throw everything gathered regularly away.
-% Start with all float boxes, continue with output box, pack
-% everything afloat from \cmd{\@currlist} back into \cmd{\@freelist}.
-% We don't do this if the output routine is special since there are
-% circumstances where this will cause complaints about lost floats.
+% We use the normal output routine, but hijack it a bit for our
+% purposes to preserve \cmd{\AtBeginDvi} hooks and not get previews
+% while in output: that could become rather ugly.
 %
-% This code has now been disabled since it might confuse \LaTeX\ and
-% was rather crude.  We now rely on disabling \cmd{\shipout} alone.
+% The main work of disabling normal output relies on a \cmd{\shipout}
+% redefinition.
+% \begin{macro}{\pr@output}
 %    \begin{macrocode}
-% \output{%
-%   \def\@elt#1{\global\setbox#1=\box\voidb@x}%
-%   \@elt\@cclv
-%   \ifnum\outputpenalty<-\@M \else  \@currlist
-%     \let\@elt\relax
-%     \xdef\@freelist{\@currlist\@freelist}%
-%     \global\let\@currlist\@empty
-%   \fi
-%   \deadcycles\z@}
+\newtoks\pr@output
+\pr@output\output
+\output{%
+  \pr@outerfalse
+  \let\@begindvi\@empty
+  \the\pr@output}
 %    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\pr@typeinfos}
 %   Then we have some document info that style files might want to
 %   output.
@@ -1821,3 +1818,9 @@ Please complain to your document class author}%
 %<driver> \end{document}
 %    \end{macrocode}
 % \Finale{}
+% \iffalse
+% Local Variables: 
+% mode: doctex
+% TeX-master: "preview.drv"
+% End: 
+% \fi
