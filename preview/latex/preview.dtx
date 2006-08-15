@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1656}
+% \CheckSum{1655}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -438,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.119 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.120 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-08-15 10:24:26 $
+\reserved@a\next $Date: 2006-08-15 10:30:24 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -704,7 +704,7 @@
    \egroup
    \setbox\pr@box\vbox{%
        \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
-       \unvbox\@begindvibox
+       \@begindvi
        \nointerlineskip
        \splittopskip\z@skip\setbox\z@\vsplit\pr@box to\z@
        \unvbox\z@
