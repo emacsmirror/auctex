@@ -1,3 +1,7 @@
+2006-08-17  David Kastrup  <dak@gnu.org>
+
+	* doc/auctex.texi (Viewing): Type fix.
+
 2006-08-05  Berend de Boer  <berend@pobox.com>
 
 	* context-en.el: quite a few more English ConTeXt macros made

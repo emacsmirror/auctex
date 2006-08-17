@@ -2203,7 +2203,7 @@ This command toggles the use of the Omega @tex
 @cindex Previewing
 @cindex Starting a previewer
 
-@subsection Starting viewers and customizing their invokation
+@subsection Starting viewers and customizing their invocation
 
 @AUCTeX{} allows you to start external programs for previewing your
 document.  These are normally invoked by pressing @kbd{C-c C-c} once
