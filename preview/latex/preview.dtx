@@ -20,7 +20,7 @@
 %     Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 %     Boston, MA 02110-1301  USA
 % \fi
-% \CheckSum{1658}
+% \CheckSum{1664}
 % \GetFileInfo{preview.sty}
 % \date{\filedate}
 % \author{David Kastrup\thanks{\texttt{dak@gnu.org}}}
@@ -438,11 +438,11 @@
 #4${\xdef#1{\reserved@c #2#4 $}} \def\reserved@c #1 #2${#1}
 \begingroup \catcode`\_=12
 \reserved@a\pr@version $Name:  $ \ifx\pr@version\@empty
-\reserved@a\pr@version CVS-$Revision: 1.121 $ \endgroup \else
+\reserved@a\pr@version CVS-$Revision: 1.122 $ \endgroup \else
   \def\next release_{} \lccode`\_=`.
   \edef\next{\lowercase{\endgroup
     \def\noexpand\pr@version{\expandafter\next\pr@version}}} \next \fi
-\reserved@a\next $Date: 2006-08-15 10:47:32 $
+\reserved@a\next $Date: 2006-08-25 10:34:36 $
 \edef\next{\noexpand\ProvidesPackage{preview}%
   [\next\space \pr@version\space (AUCTeX/preview-latex)]}
 \next
@@ -527,11 +527,14 @@
 %   Now \cmd{\pr@advise} needs its helper macro.  In order to avoid
 %   recursive definitions, we advise only macros that are not yet
 %   advised.  Or, more exactly, we throw away the old advice and only
-%   take the new one.
+%   take the new one.  We use e\TeX's \cmd{\protected} where available
+%   for some extra robustness.
 %    \begin{macrocode}
 \long\def\pr@adviseii#1#2#3{\preview@delay{%
   \ifx#1\relax \let#1#2\fi
-  \toks@{#3#1}\long\edef#2{\the\toks@}}}
+  \toks@{#3#1}%
+  \ifx\@undefined\protected \else \protected\fi
+  \long\edef#2{\the\toks@}}}
 %    \end{macrocode}
 %\end{macro}
 %
