@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 
-;; Author: Ralf Angeli <angeli@iwi.uni-sb.de>
+;; Author: Ralf Angeli <angeli@caeruleus.net>
 ;; Maintainer: auctex-devel@gnu.org
 ;; Created: 2004-11-29
 ;; Keywords: tex
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; This file adds support for `csquotes.sty', version 3.2.
+;; This file adds support for `csquotes.sty', version 3.5.
 
 
 ;;; Code:
@@ -110,8 +110,10 @@ the insertion of optional arguments."
 	"Delimiter for citation" "Closing quotation mark")
       '("MakeHyphenBlockQuote" "Language" "Opening quotation mark"
 	"Delimiter for citation" "Closing quotation mark")
+      "EnableQuotes"
       "DisableQuotes"
-      "RestoreQuotes"
+      "VerbatimQuotes"
+      "DeleteQuotes"
       '("textcquote" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("textcquote*" ["Pre-note"] ["Post-note"] "Key" ["Punctuation"] t)
       '("foreigntextcquote" "Language" ["Pre-note"] ["Post-note"] "Key"
@@ -144,6 +146,7 @@ the insertion of optional arguments."
 		      ',quote-style-name-list)
 	"Alias name")
     '("DeclareQuoteOption" 1)
+    '("ExecuteQuoteOptions" 1)
     '("DeclarePlainStyle" "Opening outer quotation mark"
       "Closing outer quotation mark" "Opening inner quotation mark"
       "Closing inner quotation mark")
