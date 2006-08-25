@@ -1,3 +1,7 @@
+2006-08-25  Ralf Angeli  <angeli@caeruleus.net>
+
+	* style/csquotes.el: Bring up to par with version 3.5.
+
 2006-08-17  David Kastrup  <dak@gnu.org>
 
 	* doc/auctex.texi (Viewing): Type fix.
