@@ -2883,9 +2883,10 @@ Runs style hook @code{TeX-language-nl-hook}.
 @item german
 @itemx ngerman
 Runs style hook @code{TeX-language-de-hook}.  Gives @samp{"} word
-syntax, makes the @key{"} key insert a literal @samp{"}, and pressing it
-twice will give you opening or closing German quotes (@samp{"`} or
-@samp{"'}).  Typing @key{-} twice will insert @samp{"=}.
+syntax, makes the @key{"} key insert a literal @samp{"}.  Pressing the
+key twice will give you opening or closing German quotes (@samp{"`} or
+@samp{"'}).  Typing @key{-} twice will insert @samp{"=}, three times
+@samp{--}.
 
 @item frenchb
 @itemx francais
@@ -2911,14 +2912,14 @@ insert @samp{\uv@{} and @samp{@}} depending on context.
 
 @item swedish
 Runs style hook @code{TeX-language-sv-hook}.  Pressing @key{"} will
-insert @samp{''}.  Typing @key{-} twice will insert @samp{"=}.
+insert @samp{''}.  Typing @key{-} twice will insert @samp{"=}, three
+times @samp{--}.
 @end table
 
-In documents where typing @key{-} may insert language-specific hyphens
-you can insert multiple consecutive @samp{-} characters simply by typing
-the respective key again after a language-specific string was inserted.
-For example if you type @key{-} with point after a @samp{"=} string in a
-Swedish document it will be replaced by @samp{--}.
+Replacement of language-specific hyphen strings like @samp{"=} with
+dashes does not require to type @key{-} three times in a row.  You can
+put point after the hypen string anytime and trigger the replacement by
+typing @key{-}.
 
 In case you are not satisfied with the suggested behavior of quote and
 hyphen insertion you can change it by customizing the variables
@@ -2926,13 +2927,13 @@ hyphen insertion you can change it by customizing the variables
 @code{LaTeX-babel-hyphen-language-alist} respectively.
 
 @defopt TeX-quote-language-alist
-Used for overriding the default language-specific quote insertion.  This
-is an alist where each element is a list consisting of four items.  The
-first item is the name of the language in concern as a string.  The
-second item is the opening quotation mark.  The third item is the
-closing quotation mark.  Opening and closing quotation marks can be
-specified directly as strings or as functions returning a string.  The
-fourth item is a boolean controlling quote insertion.  It should be
+Used for overriding the default language-specific quote insertion
+behavior.  This is an alist where each element is a list consisting of
+four items.  The first item is the name of the language in concern as a
+string.  The second item is the opening quotation mark.  The third item
+is the closing quotation mark.  Opening and closing quotation marks can
+be specified directly as strings or as functions returning a string.
+The fourth item is a boolean controlling quote insertion.  It should be
 non-nil if if the special quotes should only be used after inserting a
 literal @samp{"} character first, i.e. on second key press.
 @end defopt
