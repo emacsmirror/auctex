@@ -1,3 +1,9 @@
+2006-08-30  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (TeX-latex-mode): Check if `tool-bar-mode' is bound.
+
+	* tex.el (TeX-plain-tex-mode): Check if `tool-bar-mode' is bound.
+
 2006-08-26  Ralf Angeli  <angeli@caeruleus.net>
 
 	* doc/auctex.texi (European): Make replacement of
