@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.268 2006-05-25 07:50:57 angeli Exp $
+;; $Id: preview.el,v 1.269 2006-09-01 09:41:57 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1646,20 +1646,17 @@ a hook in some cases"
 	  (preview-delete-file filename)
 	(file-error nil)))))
 
-(defun preview-clearout (&optional start end keep-dir timestamp)
+(defun preview-clearout (&optional start end timestamp)
   "Clear out all previews in the current region.
 When called interactively, the current region is used.
 Non-interactively, the region between START and END is
 affected.  Those two values default to the borders of
-the entire buffer.  If KEEP-DIR is set to a value from
-`TeX-active-tempdir', previews associated with that
-directory are kept.  The same holds for previews with
-the given value of TIMESTAMP."
+the entire buffer.  If TIMESTAMP is non-nil, previews
+with a `timestamp' property of it are kept."
   (interactive "r")
   (dolist (ov (overlays-in (or start (point-min))
 			   (or end (point-max))))
     (and (overlay-get ov 'preview-state)
-	 (not (rassq keep-dir (overlay-get ov 'filenames)))
 	 (not (and timestamp
 		   (equal timestamp (overlay-get ov 'timestamp))))
 	 (preview-delete ov))))
@@ -1720,7 +1717,7 @@ kept."
   (with-current-buffer (or buf (current-buffer))
     (save-restriction
       (widen)
-      (preview-clearout (point-min) (point-max) nil (visited-file-modtime)))))
+      (preview-clearout (point-min) (point-max) (visited-file-modtime)))))
 
 (add-hook 'kill-buffer-hook #'preview-kill-buffer-cleanup)
 (add-hook 'before-revert-hook #'preview-kill-buffer-cleanup)
@@ -1746,7 +1743,7 @@ kept."
 					   (overlay-start y)))))
 	  (when (and (memq (overlay-get ov 'preview-state) '(active inactive))
 		     (null (overlay-get ov 'queued))
-		     (eq 1 (length (overlay-get ov 'filenames))))
+		     (cdr (overlay-get ov 'preview-image)))
 	    (push (preview-dissect ov timestamp) save-info)))
 	(and save-info
 	     (cons 'preview (cons timestamp (nreverse save-info))))))))
@@ -2012,6 +2009,7 @@ to the close hook."
 		     (preview-toggle ,ov 'toggle event))
 		  `(lambda(event) (interactive "e")
 		     (preview-context-menu ,ov event))))
+    (overlay-put ov 'timestamp tempdir)
     (when (cdr counters)
       (overlay-put ov 'preview-counters counters)
       (setq preview-buffer-has-counters t))
@@ -2072,18 +2070,26 @@ is to be situated, IMAGE the image to place there, and FILENAME
 the file to use: a triple consisting of filename, its temp directory
 and the corresponding topdir.  COUNTERS is saved counter information,
 if any."
-  (when (file-readable-p (car filename))
-    (unless (equal (nth 1 filename) (car TeX-active-tempdir))
-      (setq TeX-active-tempdir
-	    (or (assoc (nth 1 filename) tempdirlist)
-		(car (push (append (cdr filename) (list 0)) tempdirlist))))
-      (setcar (cdr TeX-active-tempdir)
-	      (car (or (member (nth 1 TeX-active-tempdir) preview-temp-dirs)
-		       (progn
-			 (add-hook 'kill-emacs-hook #'preview-cleanout-tempfiles t)
-			 (push (nth 1 TeX-active-tempdir) preview-temp-dirs))))))
-    (setcar (nthcdr 2 TeX-active-tempdir) (1+ (nth 2 TeX-active-tempdir)))
-    (setcdr filename TeX-active-tempdir)
+  (when
+      (or (null filename) (file-readable-p (car filename)))
+    (when filename
+      (unless (equal (nth 1 filename) (car TeX-active-tempdir))
+	(setq TeX-active-tempdir
+	      (or (assoc (nth 1 filename) tempdirlist)
+		  (car (push (append (cdr filename) (list 0))
+			     tempdirlist))))
+	(setcar (cdr TeX-active-tempdir)
+		(car (or (member (nth 1 TeX-active-tempdir)
+				 preview-temp-dirs)
+			 (progn
+			   (add-hook 'kill-emacs-hook
+				     #'preview-cleanout-tempfiles t)
+			   (push (nth 1 TeX-active-tempdir)
+				 preview-temp-dirs))))))
+      (setcar (nthcdr 2 TeX-active-tempdir)
+	      (1+ (nth 2 TeX-active-tempdir)))
+      (setcdr filename TeX-active-tempdir)
+      (setq filename (list filename)))
     (let ((ov (make-overlay start end nil nil nil)))
       (when (fboundp 'TeX-overlay-prioritize)
 	(overlay-put ov 'priority (TeX-overlay-prioritize start end)))
@@ -2109,7 +2115,7 @@ if any."
 		      (setq preview-parsed-counters
 			    (preview-parse-counters (cdr counters)))))))
 	(setq preview-buffer-has-counters t))
-      (overlay-put ov 'filenames (list filename))
+      (overlay-put ov 'filenames filename)
       (overlay-put ov 'preview-image (cons (preview-import-image image)
 					   image))
       (overlay-put ov 'strings
@@ -2297,29 +2303,34 @@ result, DONT-ASK in the cdr."
        (let* ((text (with-current-buffer (overlay-buffer ov)
 		     (buffer-substring (overlay-start ov)
 				       (overlay-end ov))))
-	      (file (car (car (last (overlay-get ov 'filenames)))))
-	      (type (mailcap-extension-to-mime
-		     (file-name-extension file))))
-	 (and (not dont-ask)
-	      (nth 3 (cdr (overlay-get ov 'preview-image)))
-	      (if (y-or-n-p "Replace colored borders? ")
-		  (throw 'badcolor t)
-		(setq dont-ask t)))
-	 (cons
-	  (format "<#part %s
+	      (image (cdr (overlay-get ov 'preview-image)))
+	      file type)
+	 (cond ((consp image)
+		(and (not dont-ask)
+		     (nth 3 image)
+		     (if (y-or-n-p "Replace colored borders? ")
+			 (throw 'badcolor t)
+		       (setq dont-ask t)))
+		(setq file (car (car (last (overlay-get ov 'filenames))))
+		      type (mailcap-extension-to-mime
+			    (file-name-extension file)))
+		(cons
+		 (format "<#part %s
 description=\"%s\"
 filename=%s>
 <#/part>"
-		  (if type
-		      (format "type=\"%s\" disposition=inline" type)
-		    "disposition=attachment")
-		  (if (string-match "[\n\"]" text)
-		      "preview-latex image"
-		    text)
-		  (if (string-match "[ \n<>]" file)
-		      (concat "\"" file "\"")
-		    file))
-	  dont-ask))))
+			 (if type
+			     (format "type=\"%s\" disposition=inline" type)
+			   "disposition=attachment")
+			 (if (string-match "[\n\"]" text)
+			     "preview-latex image"
+			   text)
+			 (if (string-match "[ \n<>]" file)
+			     (concat "\"" file "\"")
+			   file))
+		 dont-ask))
+	       ((stringp image)
+		(cons image dont-ask))))))
 
 (defun preview-active-contents (ov)
   "Check whether we have a valid image associated with OV."
@@ -3478,7 +3489,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.268 $"))
+	(rev "$Revision: 1.269 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3492,7 +3503,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-05-25 07:50:57 $"))
+    (let ((date "$Date: 2006-09-01 09:41:57 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

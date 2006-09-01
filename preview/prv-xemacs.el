@@ -738,15 +738,22 @@ of an insertion."
 
 (defun preview-import-image (image)
   "Convert the printable IMAGE rendition back to an image."
-  (if (eq (car image) 'image)
-      (let ((plist (cdr image)))
-	(preview-create-icon-1
-	 (plist-get plist :file)
-	 (plist-get plist :type)
-	 (plist-get plist :ascent)))
-    (preview-create-icon-1 (nth 0 image)
-			 (nth 1 image)
-			 (nth 2 image))))
+  (cond ((stringp image)
+	 (setq image (copy-sequence image))
+	 (add-text-properties 0 (length image)
+			      '(face preview-face)
+			      image)
+	 image)
+	((eq (car image) 'image)
+	 (let ((plist (cdr image)))
+	   (preview-create-icon-1
+	    (plist-get plist :file)
+	    (plist-get plist :type)
+	    (plist-get plist :ascent))))
+	(t
+	 (preview-create-icon-1 (nth 0 image)
+				(nth 1 image)
+				(nth 2 image)))))
 
 (provide 'prv-xemacs)
 

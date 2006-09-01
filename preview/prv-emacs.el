@@ -122,7 +122,7 @@ REST as the remainder, returning T."
 Returns the old arguments to `preview-add-urgentization'
 if there was any urgentization."
   (let ((dispro (overlay-get ov 'display)))
-    (when (eq (car dispro) 'when)
+    (when (and (consp dispro) (eq (car dispro) 'when))
       (prog1
 	  (car (cdr dispro))
 	(overlay-put ov 'display (cdr (cdr dispro)))))))
@@ -371,8 +371,8 @@ purposes."
 
 (defsubst preview-buffer-recode-system (base)
   "This is supposed to translate unrepresentable base encodings
- into something that can be used safely for byte streams in the
- run buffer.  A noop for Emacs."
+into something that can be used safely for byte streams in the
+run buffer.  A noop for Emacs."
   base)
 
 (defun preview-mode-setup ()
@@ -577,14 +577,17 @@ The fourth value is the transparent border thickness."
 
 (defun preview-import-image (image)
   "Convert the printable IMAGE rendition back to an image."
-  (if (eq (car image) 'image)
-      image
-    (preview-create-icon-1 (nth 0 image)
-			   (nth 1 image)
-			   (nth 2 image)
-			   (if (< (length image) 4)
-			       (preview-get-heuristic-mask)
-			     (nth 3 image)))))
+  (cond ((stringp image)
+	 (propertize image 'face 'preview-face))
+	((eq (car image) 'image)
+	 image)
+	(t
+	 (preview-create-icon-1 (nth 0 image)
+				(nth 1 image)
+				(nth 2 image)
+				(if (< (length image) 4)
+				    (preview-get-heuristic-mask)
+				  (nth 3 image))))))
 
 (defsubst preview-supports-image-type (imagetype)
   "Check if IMAGETYPE is supported."

@@ -1,3 +1,21 @@
+2006-09-01  David Kastrup  <dak@gnu.org>
+
+	* prv-xemacs.el (preview-import-image): Allow strings as image
+	properties.
+
+	* prv-emacs.el (preview-remove-urgentization)
+	(preview-import-image): Allow strings as image properties.
+
+	* preview.el (preview-clearout, preview-kill-buffer-cleanup)
+	(preview-place-preview): Use `timestamp' field universally for
+	dealing with when to overwrite and when to retain images, don't
+	rely on filename internals.
+	(desktop-buffer-preview-misc-data): Use `preview-image' to judge
+	the availability of savable data.
+	(preview-reinstate-preview): Allow saving images without
+	associated filenames.
+	(preview-format-mml): Deal with string type images.
+
 2006-08-25  David Kastrup  <dak@gnu.org>
 
 	* latex/preview.dtx: Use eTeX's `\protected' on redefinitions when
