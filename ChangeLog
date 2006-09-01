@@ -1,3 +1,9 @@
+2006-08-25  David Kastrup  <dak@gnu.org>
+
+	* doc/preview-faq.texi (Requirements, Installation Trouble)
+	(Customization): Update and remove stuff, mostly because
+	preview-latex is integrated with AUCTeX now.
+
 2006-08-30  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (TeX-latex-mode): Check if `tool-bar-mode' is bound.

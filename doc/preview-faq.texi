@@ -60,8 +60,10 @@ feedback in case you encounter bugs.
 We recommend to use GNU or AFPL Ghostscript with a version of at least
 7.07.
 
-Proper PDF@LaTeX{} support will require @AUCTeX{} version 11.50 or
-later.  Versions before that are not supported.
+@previewlatex{} has been distributed as part of @AUCTeX{} since version
+11.80.  If your version of @AUCTeX{} is older than that, or if it does
+not contain a working copy of @previewlatex{}, complain to wherever you
+got it from.
 
 @subsection I have trouble with the display format...
 We recommend keeping the variable @code{preview-image-type} set to
@@ -70,8 +72,8 @@ default and can be set via the Preview/Customize menu.
 
 All other formats are known to have inconveniences, either in file size
 or quality.  There are some Emacs versions around not supporting
-@acronym{PNG}, the proper idea to deal with that is to complain to your
-Emacs providers.  Short of that, checking out @acronym{PNM} or
+@acronym{PNG}; the proper way to deal with that is to complain to your
+Emacs provider.  Short of that, checking out @acronym{PNM} or
 @acronym{JPEG} formats might be a good way to find out whether the lack
 of @acronym{PNG} format support might be the only problem with your
 Emacs.
@@ -81,32 +83,27 @@ Emacs.
 It is known to work under the X Window System for Linux and for several
 flavors of Unix: we have reports for HP and Solaris.
 
-Under Windows, you should try the most recent versions of
-@previewlatex{} since a lot of typical Windows problems have been ironed
-out lately.  Under XEmacs, both Cygwin and native ports should work.
-Image support for GNU Emacs under Windows is expected with @w{Emacs
-22} which has not yet been released at the time of this writing.
-@acronym{CVS} versions of it already work, however.
+There are several development versions of Emacs around for native MacOS
+Carbon, and @previewlatex{} is working with them, too.
 
-The entry "X11/Unix" currently means Linux, Solaris or HP/UX, as well
-as the X-specific version for Mac/OSX.
+With Windows, Cygwin and native ports of XEmacs should work.
+@previewlatex{} will not work with any native version 21 of Emacs under
+Windows: you need to get a hold of @w{Emacs 22} which is at the time of
+this writing not released but available as a developer snapshot.
+
+The entry "X11/Unix" currently means Linux, Solaris or HP/UX, as well as
+the X-specific version for Mac/OSX.
 
 @multitable {Win9x native} {Emacs version} {XEmacs version}
 @item OS @tab Emacs version @tab XEmacs version
 @item X11/Unix @tab 21.1 @tab 21.4.9
-@item Win9x cygwin @tab 21.4? @tab 21.4.8
-@item Win9x native @tab 21.4? @tab 21.4.8
+@item Win9x cygwin @tab 21.3.50? @tab 21.4.8
+@item Win9x native @tab 22.1 @tab 21.4.8
+@item MacOSX native @tab 22.1 @tab --
 @end multitable
-
-With display errors, XEmacs versions as early as 21.1.14 might also work.
 
 @node Installation Trouble, Customization, Requirements, Frequently Asked Questions
 @section Installation Trouble
-
-@subsection I could not install the precompiled RPM binaries
-
-Note that the binaries require @acronym{RPM} version 3. 
-
 
 @subsection I just get @samp{LaTeX found no preview images}.
 
@@ -123,18 +120,6 @@ and the problem is most likely a @LaTeX{} problem.  Here are possible
 reasons:
 
 @table @asis
-@item Incompatible @acronym{RPM} installation
-The @acronym{RPM} packages are intended to run on a Redhat system. So
-the TeX files, provided by package @file{preview-latex-common} go into
-@file{/usr/share/texmf/tex/latex/preview} and
-@file{/usr/share/texmf/doc/latex/styles/preview}. If for your system the
-TeX files are in different places you have to set appropriate links.
-
-Another possibility is to get the tar archive, edit the
-@file{preview-latex.spec} accordingly, repack and then use the
-appropriate @samp{rpm} command for building @acronym{RPM}s from a tar
-archive.  If this works, please don't forget to send us the spec file,
-so that we may be able to help others with your platform.
 
 @item Filename database not updated
 Various @TeX{} distributions have their own ways of knowing where the
@@ -166,41 +151,6 @@ is the correct one.
 Please note that the XEmacs installation is different, since XEmacs has
 a package system that gets used here.  Please make sure that you read
 and follow the installation instructions for XEmacs.
-
-The XEmacs Lisp files provided by the @file{preview-latex-xemacs}
-@acronym{RPM} package are in XEmacs package format and will be installed
-right into the XEmacs package tree.  The location is detected when the
-RPM file is built.  If it is wrong for your system, doing an
-@example
-  rpmbuild --rebuild preview-latex-0.9.1-1.fedora.src.rpm
-@end example
-should do the trick and should generate RPMs for your system (even if
-that System happens to be SuSE rather than Fedora).
-
-Alternatively you could install @previewlatex{} manually in your home
-directory either in @file{~/.xemacs} (for XEmacs version below 21.4.x)
-or in @file{~/.xemacs/xemacs-packages} (for versions starting with
-21.4).
-
-@subsection After installation of the XEmacs @acronym{RPM} package, @AUCTeX{} does not work
-
-Most likely you installed the @acronym{RPM} files and you have an XEmacs
-version which uses a different architecture of directories, (SuSE is
-known to have a no standard architecture, besides it changes it from
-SuSE version to SuSE version).  Your init file will contain an
-invocation of @previewlatex{} according to the installation instructions
-in
-@ifclear rawfile
-@ref{Installation}.
-@end ifclear
-@ifset rawfile
-@file{INSTALL}.
-@end ifset
-
-In consequence, the attempt to load @previewlatex{} when entering
-@AUCTeX{} mode fails because of @previewlatex{} being in a different
-directory, and this @AUCTeX{}'s actication is aborted.  Please notice
-that the installation instructions for Emacs and XEmacs differ.
 
 @node Customization,  , Installation Trouble, Frequently Asked Questions
 @section Customization
@@ -329,14 +279,14 @@ resulting @file{.log} file.
 
 @subsection Does @previewlatex{} work with  PDF@LaTeX{}?
 
-Yes.  PDF@LaTeX{} works fine with @AUCTeX{} version 11.50 or later.  For
-earlier versions, you need to have @code{LaTeX-command-style} configured
-manually to call PDF@LaTeX{}.
+Yes, as long as you use @AUCTeX{}'s own PDF@LaTeX{} mode and have not
+messed with @samp{TeX-command-list}.
 
 @subsection Does @previewlatex{} work with @samp{elatex}?
 
 No problem here.  If you configure your @AUCTeX{} to use @samp{elatex},
 or simply have @samp{latex} point to @samp{elatex}, this will work fine.
+Modern @TeX{} distributions use e@TeX{} for @LaTeX{}, anyway.
 
 @subsection Does @previewlatex{} work with @ConTeXt{}?
 
