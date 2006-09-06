@@ -827,17 +827,18 @@ mathematical symbols.  You can enter this mode by typing @kbd{C-c
 
 @deffn Command LaTeX-math-mode
 @kindex C-c ~
-(@kbd{C-c ~}) Toggle LaTeX-math-mode.  This is a minor mode rebinding
+(@kbd{C-c ~}) Toggle LaTeX Math mode.  This is a minor mode rebinding
 the key @code{LaTeX-math-abbrev-prefix} to allow easy typing of
 mathematical symbols.  @kbd{`} will read a character from the keyboard,
-and insert the symbol as specified in @code{LaTeX-math-list}.  If given a
-prefix argument, the symbol will be surrounded by dollar signs.
+and insert the symbol as specified in @code{LaTeX-math-default} and
+@code{LaTeX-math-list}.  If given a prefix argument, the symbol will be
+surrounded by dollar signs.
 @end deffn
 
 You can use another prefix key (instead of @kbd{`}) by  setting the
 variable @code{LaTeX-math-abbrev-prefix}.
 
-To enable LaTeX-math-mode by default, add the following in your
+To enable LaTeX Math mode by default, add the following in your
 @file{.emacs} file:
 @lisp
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
@@ -849,14 +850,27 @@ value defaults to @kbd{`}.
 
 The string has to be a key or key sequence in a format understood by the
 @code{kbd} macro.  This corresponds to the syntax usually used in the
-Emacs and Elisp manuals.
+manuals for Emacs Emacs Lisp.
 @end defopt
 
-The variable @code{LaTeX-math-list} holds the actual mapping.
+The variable @code{LaTeX-math-list} allows you to add your own mappings.
 
 @defopt LaTeX-math-list
-A list containing key command mappings to use in @code{LaTeX-math-mode}.
-The car of each element is the key and the cdr is the macro name.
+A list containing user-defined keys and commands to be used in LaTeX
+Math mode.  Each entry should be a list of two to four elements.
+
+First, the key to be used after @code{LaTeX-math-abbrev-prefix} for
+macro insertion.  If it is nil, the symbol has no associated
+keystroke (it is available in the menu, though).
+
+Second, a string representing the name of the macro (without a leading
+backslash.)
+
+Third, a string representing the name of a submenu the command should be
+added to.  Use a list of strings in case of nested menus.
+
+Fourth, the position of a Unicode character to be displayed in the menu
+alongside the macro name.  This is an integer value.
 @end defopt
 
 @defopt LaTeX-math-menu-unicode
