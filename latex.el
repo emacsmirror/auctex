@@ -3609,7 +3609,8 @@ See also `LaTeX-math-menu'."
   :group 'LaTeX-math
   :type '(repeat (group (choice :tag "Key"
 				(const :tag "none" nil)
-				(character))
+				(choice (character)
+					(string :tag "Key sequence")))
 			(choice :tag "Value"
 				(string :tag "Macro")
 				(function))
@@ -4206,7 +4207,9 @@ the sequence by initializing this variable.")
 	(setq name value))
       (if key
 	  (progn
-	    (setq key (if (numberp key) (char-to-string key) (vector key)))
+	    (setq key (cond ((numberp key) (char-to-string key))
+			    ((stringp key) (kbd key))
+			    (t (vector key))))
 	    (define-key map key name)))
       (if menu
 	  (let ((parent LaTeX-math-menu))
