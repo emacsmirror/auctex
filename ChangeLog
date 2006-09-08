@@ -2,6 +2,7 @@
 
 	* latex.el: Use read-kbd-macro instead of kbd for LaTeX-math-mode.
 	(LaTeX-math-default): Add bindings for \var... symbols.
+	(LaTeX-math-default): Change binding for \vartheta.
 
 2006-09-08  David Kastrup  <dak@gnu.org>
 

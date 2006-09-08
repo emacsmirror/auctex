@@ -3647,7 +3647,7 @@ See also `LaTeX-math-menu'."
     (?y "psi" "Greek Lowercase" 968) ;; #X03C8
     (?w "omega" "Greek Lowercase" 969) ;; #X03C9
     ("v e" "varepsilon" "Greek Lowercase" 949) ;; #X03B5
-    ("v t" "vartheta" "Greek Lowercase" 977) ;; #X03D1
+    ("v j" "vartheta" "Greek Lowercase" 977) ;; #X03D1
     ("v p" "varpi" "Greek Lowercase" 982) ;; #X03D6
     ("v r" "varrho" "Greek Lowercase" 1009) ;; #X03F1
     ("v s" "varsigma" "Greek Lowercase" 962) ;; #X03C2
