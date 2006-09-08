@@ -3646,12 +3646,12 @@ See also `LaTeX-math-menu'."
     (?q "chi" "Greek Lowercase" 967) ;; #X03C7
     (?y "psi" "Greek Lowercase" 968) ;; #X03C8
     (?w "omega" "Greek Lowercase" 969) ;; #X03C9
-    (nil "varepsilon" "Greek Lowercase" 949) ;; #X03B5
-    (nil "vartheta" "Greek Lowercase" 977) ;; #X03D1
-    (nil "varpi" "Greek Lowercase" 982) ;; #X03D6
-    (nil "varrho" "Greek Lowercase" 1009) ;; #X03F1
-    (nil "varsigma" "Greek Lowercase" 962) ;; #X03C2
-    (nil "varphi" "Greek Lowercase" 966) ;; #X03C6
+    ("v e" "varepsilon" "Greek Lowercase" 949) ;; #X03B5
+    ("v t" "vartheta" "Greek Lowercase" 977) ;; #X03D1
+    ("v p" "varpi" "Greek Lowercase" 982) ;; #X03D6
+    ("v r" "varrho" "Greek Lowercase" 1009) ;; #X03F1
+    ("v s" "varsigma" "Greek Lowercase" 962) ;; #X03C2
+    ("v f" "varphi" "Greek Lowercase" 966) ;; #X03C6
     (?G "Gamma" "Greek Uppercase" 915) ;; #X0393
     (?D "Delta" "Greek Uppercase" 916) ;; #X0394
     (?J "Theta" "Greek Uppercase" 920) ;; #X0398
@@ -4208,7 +4208,7 @@ the sequence by initializing this variable.")
       (if key
 	  (progn
 	    (setq key (cond ((numberp key) (char-to-string key))
-			    ((stringp key) (kbd key))
+			    ((stringp key) (read-kbd-macro key))
 			    (t (vector key))))
 	    (define-key map key name)))
       (if menu
