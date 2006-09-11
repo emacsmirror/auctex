@@ -1,3 +1,8 @@
+2006-09-11  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* latex.el (LaTeX-math-default): Remove X2ABB for \Pr.  Suggested
+	by Adam Johnson <thu_zh@hotmail.com>.
+
 2006-09-08  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el: Use read-kbd-macro instead of kbd for LaTeX-math-mode.

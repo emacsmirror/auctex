@@ -3843,7 +3843,7 @@ See also `LaTeX-math-menu'."
     (nil "log" "Log-like")
     (nil "max" "Log-like")
     (nil "min" "Log-like")
-    (nil "Pr" "Log-like" 10939) ;; #X2ABB
+    (nil "Pr" "Log-like")
     (nil "sec" "Log-like")
     (?\C-s "sin" "Log-like")
     (nil "sinh" "Log-like")
