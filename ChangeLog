@@ -1,3 +1,8 @@
+2006-09-13  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* toolbar-x.el (toolbarx-emacs-refresh): Don't modify global value
+	of `tool-bar-map'.
+
 2006-09-11  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* latex.el (LaTeX-math-default): Remove X2ABB for \Pr.  Suggested

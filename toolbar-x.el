@@ -1322,7 +1322,8 @@ is used and the default value of `toolbarx-map' is changed."
 		     toolbarx-internal-button-switches))
 	(used-keys (list :used-symbols nil))
 	(tool-bar-map-temp))
-    (let ((tool-bar-map (make-sparse-keymap)))
+    (let (tool-bar-map)
+      (set (make-local-variable 'tool-bar-map) (make-sparse-keymap))
       (toolbarx-emacs-refresh-process-button-or-insert-list switches used-keys)
       (setq tool-bar-map-temp (copy-sequence tool-bar-map)))
     (if global-flag
