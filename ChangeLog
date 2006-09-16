@@ -1,3 +1,7 @@
+2006-09-16  Ralf Angeli  <angeli@caeruleus.net>
+
+	* doc/faq.texi: Explain the abbreviation AUC.
+
 2006-09-13  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* toolbar-x.el (toolbarx-emacs-refresh): Don't modify global value
