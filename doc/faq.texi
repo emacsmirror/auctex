@@ -124,7 +124,6 @@ file, restart Emacs and open a @LaTeX{} file.  Emacs will complain
 loudly by opening a debugging buffer as soon as an error occurs.  The
 information in the debugging buffer can help you find the cause of the
 error in your init file.
-@end enumerate
 
 @item
 What does AUC stand for?
@@ -132,3 +131,5 @@ What does AUC stand for?
 @AUCTeX{} came into being at Aalborg University in Denmark.  Back then
 the Danish name of the university was Aalborg Universitetscenter; AUC
 for short.
+
+@end enumerate
