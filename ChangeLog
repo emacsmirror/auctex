@@ -1,3 +1,17 @@
+2006-09-20  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el: Let `TeX-active-buffer' return nil if there is no
+	command buffer.  Change copyright notice from Kresten Krab Thorup
+	to reflect assignment to FSF.
+
+	* latex.el: Change copyright notice.
+
+	* tex.el: Change copyright notice.
+
+	* doc/tex-ref.tex: Change copyright notice.
+
+	* doc/auctex.texi: Change copyright notice.
+
 2006-09-17  Reiner Steib  <Reiner.Steib@gmx.de>
 
 	* doc/faq.texi: Fix syntax error.

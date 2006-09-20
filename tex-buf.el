@@ -1,8 +1,7 @@
 ;;; tex-buf.el --- External commands for AUCTeX.
 
-;; Copyright (C) 1993, 1996, 2001, 2003, 2004,
+;; Copyright (C) 1991, 1993, 1996, 2001, 2003, 2004,
 ;;   2005, 2006 Free Software Foundation, Inc.
-;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex, wp
@@ -1110,8 +1109,9 @@ command."
 
 (defun TeX-active-buffer ()
   "Return the buffer of the active process for this buffer."
-  (TeX-process-buffer (with-current-buffer TeX-command-buffer
-			(TeX-active-master))))
+  (and TeX-command-buffer
+       (TeX-process-buffer (with-current-buffer TeX-command-buffer
+			     (TeX-active-master)))))
 
 (defun TeX-active-master (&optional extension nondirectory)
   "The master file currently being compiled.

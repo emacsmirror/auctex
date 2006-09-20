@@ -26,9 +26,8 @@
 @author updates from 11.14 by David Kastrup
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1993, 1994, 1995, 2001, 2002, 2004,
-  2005, 2006 Free Software Foundation, Inc.
-Copyright @copyright{} 1992 Kresten Krab Thorup @*
+Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004,
+  2005, 2006 Free Software Foundation, Inc. @*
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

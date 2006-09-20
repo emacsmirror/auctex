@@ -1,8 +1,7 @@
 ;;; tex.el --- Support for TeX documents.
 
-;; Copyright (C) 1985, 1986, 1987, 1993, 1994, 1996, 1997, 1999, 2000,
+;; Copyright (C) 1985, 1986, 1987, 1991, 1993, 1994, 1996, 1997, 1999, 2000,
 ;;   2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-;; Copyright (C) 1991 Kresten Krab Thorup
 
 ;; Maintainer: auctex-devel@gnu.org
 ;; Keywords: tex
