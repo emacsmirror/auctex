@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.269 2006-09-01 09:41:57 dak Exp $
+;; $Id: preview.el,v 1.270 2006-09-21 10:02:58 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2364,30 +2364,32 @@ environment variable, including an initial `.' at the front."
 	     TeX-kpathsea-path-delimiter)
 	    ((string-match
 	      "\\`.[:]"
-	      (if (file-name-absolute-p TeX-kpathsea-path-delimiter)
-		  TeX-kpathsea-path-delimiter
-		(expand-file-name TeX-kpathsea-path-delimiter)))
+	      (if (file-name-absolute-p preview-TeX-style-dir)
+		  preview-TeX-style-dir
+		(expand-file-name preview-TeX-style-dir)))
 	     ";")
 	    (t ":"))))
-      (concat "." sep TeX-kpathsea-path-delimiter sep))))
+      (concat "." sep preview-TeX-style-dir sep))))
 
 (defun preview-set-texinputs (&optional remove)
-  "Add `preview-TeX-style-dir' into `TEXINPUT' variables.
+  "Add `preview-TeX-style-dir' into `TEXINPUTS' variables.
 With prefix argument REMOVE, remove it again."
   (interactive "P")
-  (if remove
-      (let ((case-fold-search nil)
-	    (pattern (concat "\\`\\(TEXINPUTS[^=]*\\)=\\(.*\\)"
-			     (regexp-quote preview-TeX-style-dir))))
-	(dolist (env (copy-sequence process-environment))
-	  (if (string-match pattern env)
-	      (setenv (match-string 1 env)
-		      (and (or (< (match-beginning 2) (match-end 2))
-			       (< (match-end 0) (length env)))
-			   (concat (match-string 2 env)
-				   (substring env (match-end 0))))))))
-    (let ((case-fold-search nil)
-	  (pattern (regexp-quote preview-TeX-style-dir)))
+  (let ((case-fold-search nil)
+	(preview-TeX-style-dir (preview-TeX-style-cooked))
+	pattern)
+    (if remove
+	(progn
+	  (setq pattern (concat "\\`\\(TEXINPUTS[^=]*\\)=\\(.*\\)"
+				(regexp-quote preview-TeX-style-dir)))
+	  (dolist (env (copy-sequence process-environment))
+	    (if (string-match pattern env)
+		(setenv (match-string 1 env)
+			(and (or (< (match-beginning 2) (match-end 2))
+				 (< (match-end 0) (length env)))
+			     (concat (match-string 2 env)
+				     (substring env (match-end 0))))))))
+      (setq pattern (regexp-quote preview-TeX-style-dir))
       (dolist (env (cons "TEXINPUTS=" (copy-sequence process-environment)))
 	(if (string-match "\\`\\(TEXINPUTS[^=]*\\)=" env)
 	    (unless (string-match pattern env)
@@ -2397,15 +2399,21 @@ With prefix argument REMOVE, remove it again."
 
 (defcustom preview-TeX-style-dir nil
   "This variable contains the location of uninstalled TeX styles.
-This has to be followed by the character with which kpathsea
-separates path components, either `:' on Unix-like systems,
-or `;' on Windows-like systems.  And it should be preceded with
-.: or .; accordingly in order to have . first in the search path.
+If this is nil, the preview styles are considered to be part of
+the installed TeX system.
 
-If this is non-nil, the `TEXINPUT' environment type variables will
-get this prepended at load time calling \\[preview-set-texinputs]
-to reflect this.  You can permanently install the style files
-using \\[preview-install-styles].
+Otherwise, it can either just specify an absolute directory, or
+it can be a complete TEXINPUTS specification.  If it is the
+latter, it has to be followed by the character with which
+kpathsea separates path components, either `:' on Unix-like
+systems, or `;' on Windows-like systems.  And it should be
+preceded with .: or .; accordingly in order to have . first in
+the search path.
+
+The `TEXINPUT' environment type variables will get this prepended
+at load time calling \\[preview-set-texinputs] to reflect this.
+You can permanently install the style files using
+\\[preview-install-styles].
 
 Don't set this variable other than with customize so that its
 changes get properly reflected in the environment."
@@ -2418,7 +2426,7 @@ changes get properly reflected in the environment."
 	 (and (symbol-value var)
 	      (preview-set-texinputs)))
   :type '(choice (const :tag "Installed" nil)
-		 (string :tag "Directory followed by kpathsea delimiter")))
+		 (string :tag "Style directory or TEXINPUTS path")))
 
 ;;;###autoload
 (defun preview-install-styles (dir &optional force-overwrite
@@ -2436,9 +2444,17 @@ files are no longer needed in the search path."
 pp")
   (unless preview-TeX-style-dir
     (error "Styles are already installed"))
-  (dolist (file (directory-files
-		 (substring preview-TeX-style-dir 0 -1)
-		 t "\\.\\(sty\\|def\\|cfg\\)\\'"))
+  (dolist (file (or
+		 (condition-case nil
+		     (directory-files
+		      (progn
+			(string-match
+			 "\\`\\(\\.[:;]\\)?\\(.*?\\)\\([:;]\\)?\\'"
+			 preview-TeX-style-dir)
+			(match-string 2 preview-TeX-style-dir))
+		      t "\\.\\(sty\\|def\\|cfg\\)\\'")
+		   (error nil))
+		 (error "Can't find files to install")))
     (copy-file file dir (cond ((eq force-overwrite 1) 1)
 			      ((numberp force-overwrite)
 			       (> force-overwrite 1))
@@ -3489,7 +3505,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.269 $"))
+	(rev "$Revision: 1.270 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3503,7 +3519,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-09-01 09:41:57 $"))
+    (let ((date "$Date: 2006-09-21 10:02:58 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

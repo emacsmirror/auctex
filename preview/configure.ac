@@ -116,21 +116,9 @@ TEX_PATH_TEXMFDIR
 
 if test "x${texmfdir}" = "xno"
 then
-  AC_MSG_CHECKING([kpathsea directory separator])
-  AC_ARG_WITH(kpathseasep,
-  [  --with-kpathseasep=@<:@:|;@:>@
-                      directory separator for kpathsea],
-  [[kpathseasep="${withval}"]],
-  [test "x${pathoutput}" != x || pathoutput="`kpsepath -n latex tex`"
-    case "${pathoutput}" in *\;*) kpathseasep=";" ;;
-      *:*) kpathseasep=":" ;;
-      *) AC_MSG_ERROR([Can't determine kpathsea directory separator!
-Please use --with-kpathseasep='@<:@:|;@:>@' to specify it!])
-    esac])
-  AC_MSG_RESULT([["${kpathseasep}"]])
   packagetexstyles="${packagedatadir}/latex"
   AC_LISPIFY_DIR(packagetexstyles,"${previewstartfile}")
-  lisppackagetexstyles="(defvar preview-TeX-style-dir (concat \".${kpathseasep}\" ${lisppackagetexstyles} \"${kpathseasep}\"))"
+  lisppackagetexstyles="(defvar preview-TeX-style-dir ${lisppackagetexstyles})"
   test "X${TEXHASH}" = X && TEXHASH=:
 else
   lisppackagetexstyles=

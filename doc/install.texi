@@ -262,11 +262,6 @@ files will be kept in the Emacs Lisp tree, and at runtime the
 can install those files into your own @TeX{} tree at some later time
 with @kbd{M-x preview-install-styles RET}.
 
-@item --with-kpathseasep=@samp{[:|;]}
-Set this option if you use @code{--without-texmf-dir} and the
-configuration routine cannot figure out itself the directory separator
-used by the kpathsea library.
-
 @item --with-tex-dir=@var{/dir}
 If you want to specify an exact directory for the preview @TeX{} files,
 use @code{--with-tex-dir=@var{/dir}}. In this case, the files will be

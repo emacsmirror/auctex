@@ -61,6 +61,9 @@
 (unless (get 'TeX-source-specials-view-editor-flags 'saved-value)
   (setq TeX-source-specials-view-editor-flags ""))
 
+(unless (get 'TeX-kpathsea-path-delimiter 'saved-value)
+  (setq TeX-kpathsea-path-delimiter ";"))
+
 (provide 'tex-mik)
 
 ;;; tex-mik.el ends here

@@ -1,3 +1,14 @@
+2006-09-21  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-TeX-style-cooked): Fix bugs.
+	(preview-set-texinputs): Use `preview-TeX-style-cooked'.
+	(preview-TeX-style-dir): Change doc string to reflect new behavior
+	of `preview-set-texinputs'.
+	(preview-install-styles): Try to deal with `preview-TeX-style-dir'
+	properly.  Bomb out if no styles found to install.
+
+	* configure.ac: Remove `--with-kpathseasep' option.
+
 2006-09-01  David Kastrup  <dak@gnu.org>
 
 	* prv-xemacs.el (preview-import-image): Allow strings as image

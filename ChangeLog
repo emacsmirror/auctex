@@ -1,3 +1,12 @@
+2006-09-21  David Kastrup  <dak@gnu.org>
+
+	* doc/install.texi (Configure): Remove reference to
+	`--with-kpathseasep' option.
+
+	* tex-mik.el (TeX-kpathsea-path-delimiter): initialize to ";".
+
+	* tex-fptex.el (TeX-kpathsea-path-delimiter): initialize to ";".
+
 2006-09-20  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el: Let `TeX-active-buffer' return nil if there is no
