@@ -6,6 +6,8 @@
 	of `preview-set-texinputs'.
 	(preview-install-styles): Try to deal with `preview-TeX-style-dir'
 	properly.  Bomb out if no styles found to install.
+	(preview-report-bug): Add `preview-TeX-style-dir' to reported
+	variables.
 
 	* configure.ac: Remove `--with-kpathseasep' option.
 
