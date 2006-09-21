@@ -1,5 +1,7 @@
 2006-09-21  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: Adapt to upcoming release.
+
 	* doc/install.texi (Configure): Remove reference to
 	`--with-kpathseasep' option.
 

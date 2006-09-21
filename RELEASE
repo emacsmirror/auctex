@@ -1,4 +1,4 @@
-Release notes for AUCTeX 11.83 with preview-latex
+Release notes for AUCTeX 11.84 with preview-latex
 =================================================
 
 AUCTeX provides by far the most wide-spread and sophisticated
@@ -32,35 +32,18 @@ sleuth work, testing.
 New features and fixed bugs in this release
 -------------------------------------------
 
-The new function `TeX-doc' provides easy access to documentation about
-commands and packages or information related to TeX and friends in
-general.  It is accessible with the key binding `C-c ?'  or the `Find
-Documentation...' entry in the mode menus.
+There have been problems with the `-without-texmf-dir' option to
+`configure' when the value of `-with-kpathsea-sep' was set or
+determined for an installation system with a default different from
+that of the runtime system.  This particularly affected use of the
+prebuilt XEmacs package under Windows.  `with-kpathsea-sep' has been
+removed, the setting is now usually determined at runtime.
 
-You can now get rid of generated intermediate and output files by
-means of the new `Clean' and `Clean All' entries in `TeX-command-list'
-accessible with `C-c C-c' or the Command menu.
+`preview.sty' had in some cases failed to emit PostScript header
+specials.
 
-Support for forward search with PDF files was added.  That means you
-can jump to a place in the output file corresponding to the position
-in the source file.  Currently this only works if you use the pdfsync
-LaTeX package and xpdf as your PDF viewer.  The accuracy is in the
-range of +/-1 page.
-
-Adding support for this feature required the default value of the
-variable `TeX-output-view-style' to be changed.  Please make sure you
-either remove any customizations overriding the new default or
-incorporate the changes into your customizations if you want to use
-this feature.
-
-The error parsing of AUCTeX as well as preview-latex now deals with
--file-line-error type messages from newer web2c versions (earlier
-versions would omit the traditional error context, which will not
-work).
-
-The LaTeX tool bar is now enabled by default.
-
-A problem in preview-latex in connection with XyMTeX has been fixed.
+There has been quite a number of bug fixes to various features and
+documentation across the board, most critical probably the tool bar.
 
 IMPORTANT: Many of the new features in the 11.x series rely on special
 properties in the variable `TeX-command-list' and will not work if you
@@ -97,19 +80,19 @@ Availability
 
 AUCTeX can be downloaded in various formats from
 <URL:ftp://ftp.gnu.org/pub/gnu/auctex/>.  At release time, we provide
-the source tarball, source and binary RPMs for Emacs under Fedora
-and SUSE, and a platform-independent XEmacs package file (which you
-have to install yourself using XEmacs' own package system, after using
-it for removing the previous version of AUCTeX).  There are also RPMs
+the source tarball, source and binary RPMs for Emacs under Fedora and
+SUSE, and a platform-independent XEmacs package file (which you have
+to install yourself using XEmacs' own package system, after using it
+for removing the previous version of AUCTeX).  There are also RPMs
 just for installing the LaTeX part of preview (AUCTeX itself does not
 need them, but possibly other applications).  The easiest way for
 using AUCTeX, of course, is using versions of Emacs that already
 include AUCTeX (check the footnotes below).
 
-RPMs with minor version 1 are built from the spec file in the tarball which
-should work on both SUSE as well as Fedora.  The source RPMs should also work
-for rebuilding RPMs on other RPM-based distributions.  (We have only tested
-SUSE and Fedora, though.)
+RPMs with minor version 1 are built from the spec file in the tarball
+which should work on both SUSE as well as Fedora.  The source RPMs
+should also work for rebuilding RPMs on other RPM-based distributions.
+(We have only tested SUSE and Fedora, though.)
 
 The XEmacs package file can be discerned by `pkg' in its name.  It is
 usually more recent and functional than what gets distributed from
