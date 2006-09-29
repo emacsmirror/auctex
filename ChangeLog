@@ -1,3 +1,23 @@
+2006-09-29  David Kastrup  <dak@gnu.org>
+
+	* doc/Makefile.in (AUCTEXDATE, AUCTEXVERSION): get from configure.
+	(AUCTEXTEXIFILES): Add fdl.texi and version.texi
+	(version.texi): create depending on Makefile.
+	(maintainer-clean): Remove version.texi.  Should this be in the
+	distclean target instead?
+
+	* doc/fdl.texi: Add it.
+
+	* Makefile.in (DOCFILES): Remove, unused.
+	(doc/Makefile): Add target.
+	(info, dvi, install-man, install-docs, clean, distclean)
+	(tar-ball): depend on doc/Makefile
+
+	* doc/.cvsignore: Add version.texi, remove unused auto.texi.
+
+	* doc/auctex.texi: Rearrange header material, put under GFDL, add
+	license, take version numbers from version.texi.
+
 2006-09-21  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Adapt to upcoming release.

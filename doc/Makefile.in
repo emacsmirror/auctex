@@ -17,8 +17,12 @@ TEXI2PDF=@TEXI2PDF@
 MKINSTALLDIRS = ../mkinstalldirs
 DVIPS=@DVIPS@
 PERL=@PERL@
+AUCTEXDATE=@AUCTEXDATE@
+AUCTEXVERSION=@AUCTEXVERSION@
+
 AUCTEXTEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
-	changes.texi todo.texi faq.texi macros.texi quickstart.texi
+	changes.texi todo.texi faq.texi macros.texi quickstart.texi \
+	fdl.texi version.texi
 PREVIEWTEXIFILES = copying.texi preview-faq.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi preview-problems.texi \
 	preview-readme.texi preview-todo.texi
@@ -64,6 +68,10 @@ tex-ref.ps: tex-ref.dvi
 
 tex-ref.pdf: tex-ref.tex
 	$(PDFTEX) tex-ref.tex
+
+version.texi: Makefile
+	echo @set VERSION $(AUCTEXVERSION) >version.texi
+	echo @set UPDATED $(AUCTEXDATE) >>version.texi
 
 auctex.dvi: $(AUCTEXTEXIFILES)
 	$(TEXI2DVI) auctex.texi
@@ -158,4 +166,4 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f INSTALL.windows README CHANGES HISTORY TODO FAQ \
-		preview-dtxdoc.texi auto.texi $(DISTTEXTS) *.info *.info-*
+		preview-dtxdoc.texi version.texi $(DISTTEXTS) *.info *.info-*

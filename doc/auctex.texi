@@ -1,14 +1,39 @@
 \input texinfo
+@comment %**start of header
 @setfilename auctex.info
-@settitle AUCTeX
+@include version.texi
+@settitle AUCTeX @value{VERSION}
+@c footnotestyle separate
+@c paragraphindent 2
+@comment %**end of header
+@copying
+This manual is for AUCTeX
+(version @value{VERSION}, @value{UPDATED}),
+a sophisticated TeX environment for Emacs.
+
+Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004, 2005,
+2006 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with the Front-Cover Texts being ``A GNU Manual,''
+and with the Back-Cover Texts as in (a) below.  A copy of the
+license is included in the section entitled ``GNU Free Documentation
+License.''
+
+(a) The FSF's Back-Cover Text is: ``You have freedom to copy and modify
+this GNU Manual, like GNU software.''
+@end quotation
+@end copying
+
 @dircategory Emacs
 @dircategory TeX
 @direntry
 * AUCTeX: (auctex).     A sophisticated TeX environment for Emacs.
 @end direntry
-@c footnotestyle separate
-@c paragraphindent 2
-@comment %**end of header
+
 @iftex
 @tolerance 10000
 @end iftex
@@ -18,50 +43,28 @@
 @finalout
 @titlepage
 @title @AUCTeX{}
-@subtitle A sophisticated @TeX{} environment for Emacs.
-@subtitle Version 11.83
-
-@author by Kresten Krab Thorup
-@author updates from 6.1 to 11.13 by Per Abrahamsen
-@author updates from 11.14 by David Kastrup
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@author Kresten Krab Thorup
+@author Per Abrahamsen
+@author David Kastrup and others
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004,
-  2005, 2006 Free Software Foundation, Inc. @*
-
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-@ignore
-Permission is granted to process this file through @TeX{} and print the
-results, provided the printed document carries copying permission
-notice identical to this one except for the removal of this paragraph
-(this paragraph not being relevant to the printed manual).
-@end ignore
-
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided also that the
-section entitled ``Copying'' is included exactly as in the original, and
-provided that the entire resulting derived work is distributed under the
-terms of a permission notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation
-approved by the Free Software Foundation.
+@insertcopying
 @end titlepage
-@page
+
+@contents
 
 @c Use @ifinfo _and_ @ifhtml here because Texinfo 3 cannot cope with
 @c @ifnottex around a top node.
 @ifinfo
 @node top
 @top @AUCTeX{}
+@insertcopying
 @end ifinfo
 @ifhtml
 @node top
 @top @AUCTeX{}
+@insertcopying
 @end ifhtml
 
 @ifnothtml
@@ -76,7 +79,7 @@ approved by the Free Software Foundation.
 @AUCTeX{} is an integrated environment for editing @LaTeX{}, @ConTeXt{},
 doc@TeX{}, Texinfo, and @TeX{} files.
 
-This file documents @AUCTeX{} version 11.83.
+This file documents @AUCTeX{} version @value{VERSION}.
 
 Although @AUCTeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and @LaTeX{}
@@ -103,14 +106,6 @@ Ref@TeX{} manual})
 For detailed information about the @previewlatex{} subsystem of
 @AUCTeX{}, see @ref{Top,,Introduction,preview-latex,The @previewlatex{}
 Manual}.
-
-NOTE: This documentation is preliminary.  It should however cover most
-important points.  Corrections or perhaps rewrites of sections
-are VERY WELCOME.
-
-Kresten Krab Thorup (6.0) @*
-Per Abrahamsen (updates to 11.13) @*
-David Kastrup (updates from 11.14)
 
 There is a mailing list for general discussion about @AUCTeX{}: write a
 mail with ``subscribe'' in the subject to
@@ -140,6 +135,7 @@ sending ``subscribe'' in the subject of a mail to
 * Internationalization::        Language Support
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
+* Copying this Manual::
 * Changes::                     Changes and New Features
 * Development::                 Future Development
 * FAQ::                         Frequently Asked Questions
@@ -225,41 +221,41 @@ Writing Your own Style Support
 @cindex Right
 @cindex Warranty
 
-(This text stolen from the Texinfo 2.16 distribution).
+@c This text adapted from the Texinfo 2.16 distribution.
 
-The programs currently being distributed that relate to @AUCTeX{}
-include lisp files for Emacs (and XEmacs).  These programs are
-@dfn{free}; this means that everyone is free to use them and free to
-redistribute them on a free basis.  The @AUCTeX{} related programs are
-not in the public domain; they are copyrighted and there are
-restrictions on their distribution, but these restrictions are designed
-to permit everything that a good cooperating citizen would want to do.
-What is not allowed is to try to prevent others from further sharing any
-version of these programs that they might get from you.
+@AUCTeX{} primarily consists of Lisp files for Emacs (and XEmacs), but
+there are also installation scripts and files and @TeX{} support files.
+All of those are @dfn{free}; this means that everyone is free to use
+them and free to redistribute them on a free basis.  The files of
+@AUCTeX{} are not in the public domain; they are copyrighted and there
+are restrictions on their distribution, but these restrictions are
+designed to permit everything that a good cooperating citizen would want
+to do.  What is not allowed is to try to prevent others from further
+sharing any version of these programs that they might get from you.
 
-Specifically, we want to make sure that you have the right to give
-away copies of the programs that relate to @AUCTeX{}, that you receive
-source code or else can get it if you want it, that you can change these
-programs or use pieces of them in new free programs, and that you know
-you can do these things.
+Specifically, we want to make sure that you have the right to give away
+copies of the files that constitute @AUCTeX{}, that you receive source
+code or else can get it if you want it, that you can change these files
+or use pieces of them in new free programs, and that you know you can do
+these things.
 
 To make sure that everyone has such rights, we have to forbid you to
 deprive anyone else of these rights.  For example, if you distribute
-copies of the @AUCTeX{} related programs, you must give the recipients
-all the rights that you have.  You must make sure that they, too,
-receive or can get the source code.  And you must tell them their
-rights.
+copies of parts of @AUCTeX{}, you must give the recipients all the
+rights that you have.  You must make sure that they, too, receive or can
+get the source code.  And you must tell them their rights.
 
 Also, for our own protection, we must make certain that everyone finds
-out that there is no warranty for the programs that relate to @AUCTeX{}.
-If these programs are modified by someone else and passed on, we want
-their recipients to know that what they have is not what we distributed,
-so that any problems introduced by others will not reflect on our
-reputation.
+out that there is no warranty for @AUCTeX{}.  If any parts are modified
+by someone else and passed on, we want their recipients to know that
+what they have is not what we distributed, so that any problems
+introduced by others will not reflect on our reputation.
 
-The precise conditions of the licenses for the programs currently
-being distributed that relate to @AUCTeX{} are found in the General
-Public Licenses that accompany them.
+The precise conditions of the licenses for the files currently being
+distributed as part of @AUCTeX{} are found in the General Public
+Licenses that accompany them.  This manual specifically is covered by
+the GNU Free Documentation License (@pxref{GNU Free Documentation
+License}).
 
 @include intro.texi
 
@@ -3683,6 +3679,16 @@ List of functions to be called before parsing a @TeX{} file.
 @defvar TeX-auto-cleanup-hook nil
 List of functions to be called after parsing a @TeX{} file.
 @end defvar
+
+@node Copying this Manual
+@appendix Copying this Manual
+
+@menu
+* GNU Free Documentation License:: License for copying this manual.
+@end menu
+
+@include fdl.texi
+
 
 @node Changes
 @appendix Changes and New Features

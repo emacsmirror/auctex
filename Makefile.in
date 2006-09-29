@@ -97,11 +97,6 @@ STYLESRC = style/prosper.el \
 	   style/MinionPro.el style/pdfsync.el
 STYLEELC = $(STYLESRC:.el=.elc)
 
-DOCFILES = doc/Makefile.in doc/auctex.texi doc/intro.texi doc/install.texi \
-	doc/changes.texi doc/tex-ref.tex doc/history.texi \
-	doc/wininstall.texi doc/todo.texi doc/faq.texi \
-	doc/quickstart.texi
-
 CLEANFILES = $(AUCELC) $(STYLEELC) $(MULEELC)
 DISTCLEANFILES = Makefile tex-site.el tex-site.el.out auctex.el \
 	auto-loads.el config.*
@@ -122,10 +117,10 @@ all: lisp
 lisp:	tex-site.el $(AUCSRC) $(STYLESRC) $(MULESRC)
 	$(ELCC) -f batch-byte-compile $(AUCSRC) $(STYLESRC) $(MULESRC)
 
-info:
+info:	doc/Makefile
 	cd doc ; $(MAKE) info
 
-dvi:
+dvi:	doc/Makefile
 	cd doc ; $(MAKE) dvi
 
 tex-site.el: tex-site.el.out auto-loads.el Makefile
@@ -144,6 +139,9 @@ configure: configure.ac aclocal.m4
 	autoconf
 
 Makefile: Makefile.in config.status
+	./config.status
+
+doc/Makefile: doc/Makefile.in config.status
 	./config.status
 
 config.status: configure
@@ -166,7 +164,7 @@ install: install-lisp install-docs install-images install-startup
 	$(DESCEND)
 	$(MAKE) 'DESTDIR=$(DESTDIR)' install-metadata
 
-install-man:
+install-man: doc/Makefile
 	cd doc && $(MAKE) 'DESTDIR=$(DESTDIR)' install-man
 	$(INSTALL_DATA) RELEASE $(DESTDIR)$(packagedir)/man/auctex
 
@@ -219,7 +217,7 @@ install-images:
 	  $(INSTALL_DATA) $${x} $(DESTDIR)$(packagedatadir)/images ; \
 	done;
 
-install-docs:
+install-docs:	doc/Makefile
 	cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-auctex
 	test "x$(preview_enabled)" != xyes || { \
 		cd doc ; $(MAKE) DESTDIR=$(DESTDIR) install-preview; }
@@ -246,12 +244,12 @@ install-metadata:
 .el.elc:
 	$(ELCC) -f batch-byte-compile $<
 
-clean:
+clean:	doc/Makefile
 	rm -f $(CLEANFILES)
 	cd doc && $(MAKE) clean
 	$(DESCEND)
 
-distclean:
+distclean:	doc/Makefile
 	rm -f $(CLEANFILES) $(DISTCLEANFILES)
 	cd doc && $(MAKE) distclean
 	$(DESCEND)
@@ -296,7 +294,7 @@ release-commit:
 	cvs commit -m 'Release_$(TAG)' ChangeLog
 	cvs tag release_`echo $(TAG) | sed -e 's/[.]/_/g'`
 
-tar-ball:
+tar-ball:	doc/Makefile
 	test ! -d auctex-$(TAG) || rm -r auctex-$(TAG)
 	mkdir auctex-$(TAG)
 # Use TAG_EXPORT if set (for snapshots)
