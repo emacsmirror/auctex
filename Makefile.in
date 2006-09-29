@@ -302,7 +302,7 @@ tar-ball:	doc/Makefile
           `echo $${TAG_EXPORT:=$(TAG)} | \
 	  sed -e '/^\([-0-9]*[0-9]\)[-a-z]*$$/s//-D \1/' \
               -e '/[.]/{s/^/-r release_/;s/[.]/_/g}'` auctex
-	cd auctex-$(TAG) && ./autogen.sh && rm $(CVSFILES)
+	cd auctex-$(TAG) && AUCTEXVERSION=$(TAG) AUCTEXDATE=$(AUCTEXDATE) ./autogen.sh && rm $(CVSFILES)
 	chmod -R go-w+rX auctex-$(TAG)
 	rm -rf $(FTPDIR)
 	mkdir -p $(FTPDIR)

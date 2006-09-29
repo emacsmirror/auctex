@@ -1,5 +1,13 @@
 2006-09-29  David Kastrup  <dak@gnu.org>
 
+	* doc/Makefile.in (version.texi): Let version.texi depend rather
+	on ChangeLog in order not to disturb pregenerated documentation.
+
+	* autogen.sh: Prepare `AUCTEXDATE' and `AUCTEXVERSION' for `make
+	dist'.
+
+	* Makefile.in (tar-ball): Pass version and date into autogen.sh
+
 	* doc/Makefile.in (AUCTEXDATE, AUCTEXVERSION): get from configure.
 	(AUCTEXTEXIFILES): Add fdl.texi and version.texi
 	(version.texi): create depending on Makefile.
