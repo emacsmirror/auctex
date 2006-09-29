@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.271 2006-09-21 11:19:20 dak Exp $
+;; $Id: preview.el,v 1.272 2006-09-29 00:16:29 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -347,7 +347,9 @@ LIST consists of TeX dimensions in sp (1/65536 TeX point)."
      (dotimes (i 4 box)
        (aset box i (+ (aref box i) (aref border i)))))))
 
-(defcustom preview-gs-command "gs"
+(defcustom preview-gs-command (if (eq system-type 'windows-nt)
+				  "GSWIN32C.EXE"
+				"gs")
   "*How to call gs for conversion from EPS.  See also `preview-gs-options'."
   :group 'preview-gs
   :type 'string)
@@ -3505,7 +3507,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.271 $"))
+	(rev "$Revision: 1.272 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3519,7 +3521,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-09-21 11:19:20 $"))
+    (let ((date "$Date: 2006-09-29 00:16:29 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

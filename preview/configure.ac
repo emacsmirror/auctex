@@ -87,11 +87,9 @@ EMACS_CHECK_AUCTEX
 AC_SUBST(auctexdir)
 
 AC_ARG_VAR(GS,[Ghostscript executable for batch operation])
-AC_CHECK_PROGS_REQUIRED(GS, gs GSWIN32C.EXE, 
-[Ghostscript not found!  Aborting!  
-You need Ghostscript in your PATH for preview to work.])
+AC_CHECK_PROGS(GS, gs GSWIN32C.EXE, NONE)
 
-EMACS_LISP([[lispGS]],[[(if (string= dir \"gs\") \"\" \`(defvar preview-gs-command ,dir))]],-no-site-file,[[dir]],[["${GS}"]])
+EMACS_LISP([[lispGS]],[[(if (member dir (list \"NONE\" (if (eq system-type 'windows-nt) \"GSWIN32C.EXE\" \"gs\"))) \"\" \`(defvar preview-gs-command ,dir))]],-no-site-file,[[dir]],[["${GS}"]])
 AC_SUBST(lispGS)
 
 dnl check to see if GS supports -dTextAlphaBits and -dGraphicsAlphaBits
