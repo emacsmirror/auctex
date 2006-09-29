@@ -1,3 +1,11 @@
+2006-09-29  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-gs-command): Make default depend on
+	`system-type', using "GSWIN32C.EXE" on `windows-nt'.
+
+	* configure.ac: If no GhostScript or the standard setting for the
+	operating system is found, don't override the default.
+
 2006-09-21  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-TeX-style-cooked): Fix bugs.
