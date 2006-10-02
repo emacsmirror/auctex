@@ -1,6 +1,12 @@
+2006-10-02  David Kastrup  <dak@gnu.org>
+
+	* doc/auctex.texi: Change the licensing terms to require no front
+	and back cover texts, and explicitly exclude the GFDL from being
+	licensed under the GFDL.
+
 2006-09-29  David Kastrup  <dak@gnu.org>
 
-	* autogen.sh: Use '=' instead of '==' in tests.
+	* autogen.sh: Use `=' instead of `==' in tests.
 
 	* doc/Makefile.in (version.texi): Let version.texi depend rather
 	on ChangeLog in order not to disturb pregenerated documentation.
