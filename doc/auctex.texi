@@ -132,7 +132,7 @@ sending ``subscribe'' in the subject of a mail to
 * Internationalization::        Language Support
 * Automatic::                   Automatic Customization
 * Style Files::                 Writing Your own Style Support
-* Copying this Manual::
+* Copying this Manual::         GNU Free Documentation License
 * Changes::                     Changes and New Features
 * Development::                 Future Development
 * FAQ::                         Frequently Asked Questions
