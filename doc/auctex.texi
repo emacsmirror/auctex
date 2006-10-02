@@ -8,7 +8,7 @@
 @comment %**end of header
 @copying
 This manual is for AUCTeX
-(version @value{VERSION}, @value{UPDATED}),
+(version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
 Copyright @copyright{} 1992, 1993, 1994, 1995, 2001, 2002, 2004, 2005,
@@ -20,8 +20,7 @@ under the terms of the GNU Free Documentation License, Version 1.2 or
 any later version published by the Free Software Foundation; with no
 Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A
 copy of the license is included in the section entitled ``GNU Free
-Documentation License.''  This permission does not extend to the license
-text itself which contains its own copying terms.
+Documentation License.''
 @end quotation
 @end copying
 
@@ -75,8 +74,6 @@ text itself which contains its own copying terms.
 
 @AUCTeX{} is an integrated environment for editing @LaTeX{}, @ConTeXt{},
 doc@TeX{}, Texinfo, and @TeX{} files.
-
-This file documents @AUCTeX{} version @value{VERSION}.
 
 Although @AUCTeX{} contains a large number of features, there are no
 reasons to despair.  You can continue to write @TeX{} and @LaTeX{}

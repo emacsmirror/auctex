@@ -4,6 +4,8 @@
 	and back cover texts, and explicitly exclude the GFDL from being
 	licensed under the GFDL.
 	(top): Give a synopsis for the license section in the top menu.
+	Remove redundant version mentions, remove the explicit exclusion
+	of the GFDL from GFDL licensing: RMS says it is unnecessary.
 
 2006-09-29  David Kastrup  <dak@gnu.org>
 
