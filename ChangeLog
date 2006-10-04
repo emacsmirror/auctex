@@ -1,3 +1,9 @@
+2006-10-04  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (TeX-find-macro-boundaries): Prevent `up-list' and
+	friends from finding parens in comments if point is not in a
+	comment and vice versa.
+
 2006-10-02  David Kastrup  <dak@gnu.org>
 
 	* doc/auctex.texi: Change the licensing terms to require no front
