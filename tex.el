@@ -4163,17 +4163,18 @@ the macro."
     (unless start-point
       (save-excursion
 	(catch 'abort
-	  (when (condition-case nil (progn (up-list) t) (error nil))
-	    (while (progn
-		     (condition-case nil (backward-sexp)
-		       (error (throw 'abort nil)))
-		     (forward-comment -1)
-		     (and (memq (char-before) '(?\] ?\}))
-			  (not (TeX-escaped-p (1- (point)))))))
-	    (skip-chars-backward "A-Za-z@*")
-	    (when (and (eq (char-before) (aref TeX-esc 0))
-		       (not (TeX-escaped-p (1- (point)))))
-	      (setq start-point (1- (point))))))))
+	  (let ((parse-sexp-ignore-comments t))
+	    (when (condition-case nil (progn (up-list) t) (error nil))
+	      (while (progn
+		       (condition-case nil (backward-sexp)
+			 (error (throw 'abort nil)))
+		       (forward-comment -1)
+		       (and (memq (char-before) '(?\] ?\}))
+			    (not (TeX-escaped-p (1- (point)))))))
+	      (skip-chars-backward "A-Za-z@*")
+	      (when (and (eq (char-before) (aref TeX-esc 0))
+			 (not (TeX-escaped-p (1- (point)))))
+		(setq start-point (1- (point)))))))))
     ;; Search forward for the end of the macro.
     (when start-point
       (save-excursion
