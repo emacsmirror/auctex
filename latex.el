@@ -2501,7 +2501,7 @@ pass args FROM, TO and JUSTIFY-FLAG."
 	  (if (re-search-forward
 	       (concat "\\("
 		       ;; Code comments.
-		       "[^ \t\r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
+		       "[^\r\n%\\]\\([ \t]\\|\\\\\\\\\\)*"
 		       TeX-comment-start-regexp
 		       "\\|"
 		       ;; Lines ending with `\par'.
