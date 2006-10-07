@@ -1,3 +1,8 @@
+2006-10-07  Ralf Angeli  <angeli@caeruleus.net>
+
+	* latex.el (LaTeX-fill-region-as-paragraph): Match "foo\ %" as
+	well.
+
 2006-10-04  Ralf Angeli  <angeli@caeruleus.net>
 
 	* tex.el (TeX-find-macro-boundaries): Prevent `up-list' and
