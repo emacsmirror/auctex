@@ -1,5 +1,8 @@
 2006-10-10  David Kastrup  <dak@gnu.org>
 
+	* RELEASE: Mention space in file names, PostScript stack
+	tolerance.
+	
 	* tex-buf.el (TeX-command-expand): Make `file' self-quoting in
 	expansion, and trick around with `TeX-command-pos' and other junk
 	in order to make the quoting stuff of "%`" and "%'" work.

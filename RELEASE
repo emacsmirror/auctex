@@ -39,6 +39,10 @@ that of the runtime system.  This particularly affected use of the
 prebuilt XEmacs package under Windows.  `with-kpathsea-sep' has been
 removed, the setting is now usually determined at runtime.
 
+AUCTeX and preview-latex have been changed in order to accommodate
+file names containing spaces.  preview-latex now tolerates bad
+PostScript code polluting the stack (like some Omega fonts).
+
 `preview.sty' had in some cases failed to emit PostScript header
 specials.
 
