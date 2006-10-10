@@ -1,3 +1,20 @@
+2006-10-10  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-command-expand): Make `file' self-quoting in
+	expansion, and trick around with `TeX-command-pos' and other junk
+	in order to make the quoting stuff of "%`" and "%'" work.
+	(TeX-view-output-file): Became pretty pointless.  Remove.
+
+	* tex.el (TeX-command-list): Use "%`" and "%'" magic to allow file
+	names with spaces.
+	(TeX-output-view-style): Don't quote "%s", that's the job of
+	`TeX-command-expand'.
+	(TeX-expand-list): Use the `-interaction' option.  Define "%`",
+	" \"\\", "\"" and "%'" patterns.  Somebody should probably rather
+	turn this into external functions in `tex-buf.el': the stuff
+	really has no business here and does not get byte-compiled.  Use
+	`file' for "%o".
+
 2006-10-07  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fill-region-as-paragraph): Match "foo\ %" as

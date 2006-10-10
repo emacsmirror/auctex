@@ -1,6 +1,7 @@
 ;;; preview.el --- embed preview LaTeX images in source buffer
 
-;; Copyright (C) 2001, 02, 03, 04, 05  Free Software Foundation, Inc.
+;; Copyright (C) 2001, 02, 03, 04, 05,
+;;               2006  Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: tex, wp, convenience
@@ -22,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.272 2006-09-29 00:16:29 dak Exp $
+;; $Id: preview.el,v 1.273 2006-10-10 11:32:46 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -664,7 +665,7 @@ Gets the usual PROCESS and STRING parameters, see
 `set-process-filter' for a description."
   (with-current-buffer (process-buffer process)
     (setq preview-gs-answer (concat preview-gs-answer string))
-    (while (string-match "GS\\(<[0-9+]\\)?>" preview-gs-answer)
+    (while (string-match "GS\\(<[0-9]+\\)?>" preview-gs-answer)
       (let* ((pos (match-end 0))
 	     (answer (substring preview-gs-answer 0 pos)))
 	(setq preview-gs-answer (substring preview-gs-answer pos))
@@ -725,14 +726,12 @@ SETUP may contain a parser setup function."
 	  preview-gs-init-string
 	  (format "{DELAYSAFER{.setsafe}if}stopped pop\
 /.preview-BP currentpagedevice/BeginPage get dup \
-null eq {pop{pop}bind}if def\
+null eq{pop{pop}bind}if def\
 <</BeginPage{currentpagedevice/PageSize get dup 0 get 1 ne exch 1 get 1 ne or\
 {.preview-BP %s}{pop}ifelse}bind/PageSize[1 1]>>setpagedevice\
 /preview-do{[count 3 roll save]3 1 roll dup length 0 eq\
-{pop}{{setpagedevice}stopped{handleerror quit}if}ifelse \
-systemdict /.runandhide known{{.runandhide}}if \
-stopped{handleerror quit}if count 1 gt\
-{pop/exec errordict/stackoverflow get exec}if \
+{pop}{setpagedevice}{ifelse .runandhide}\
+stopped{handleerror quit}if \
 aload pop restore}bind def "
 		  (preview-gs-color-string preview-colors)))
     (preview-gs-queue-empty)
@@ -1075,7 +1074,7 @@ NONREL is not NIL."
     (setq preview-gs-dsc (preview-dsc-parse file))
     (setq preview-gs-init-string
 	  (concat preview-gs-init-string
-		  (format "%s(r)file dup %s exec "
+		  (format "[%s(r)file]aload exch %s .runandhide aload pop "
 			  (preview-ps-quote-filename file)
 			  (preview-gs-dsc-cvx 0 preview-gs-dsc))))))
 
@@ -2206,10 +2205,10 @@ list of LaTeX commands is inserted just before \\begin{document}."
   :group 'preview-latex
   :type preview-expandable-string)
 
-(defcustom preview-LaTeX-command '("%l \"\\nonstopmode\\nofiles\
+(defcustom preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
-preview-default-preamble "\\fi}\\input{%t}\"")
+preview-default-preamble "\\fi}\"%' %t")
   "*Command used for starting a preview.
 See description of `TeX-command-list' for details."
   :group 'preview-latex
@@ -2218,8 +2217,7 @@ See description of `TeX-command-list' for details."
 (defun preview-goto-info-page ()
   "Read documentation for preview-latex in the info system."
   (interactive)
-  (require 'info)
-  (Info-goto-node "(preview-latex)"))
+  (info "(preview-latex)"))
 
 (eval-after-load 'info '(add-to-list 'Info-file-list-for-emacs
 				     '("preview" . "preview-latex")))
@@ -2670,7 +2668,12 @@ call, and in its CDR the final stuff for the placement hook."
 	    (while
 		(re-search-forward "\
 \\(^! \\)\\|\
-\(\\([^()\r\n{ ]+\\))*\\(?:{[^}\n]*}\\)?\\(?: \\|\r?$\\)\\|\
+\(\\(/*\
+\\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
+\\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
+\\(?:/+\\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
+\\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
+)*\\(?: \\|\r?$\\)\\|\
 )+\\([ >]\\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
@@ -2680,13 +2683,10 @@ name(\\([^)]+\\))\\)\\|\
 ;;; \(^! \)
 ;;; exclamation point at start of line followed by blank: TeX error
 ;;; match-alternative 2:
-;;; \(?:^\| \)(\([^()\n ]+\))*\(?: \|$\)
-;;; Deep breath: an opening paren either at the start of the line or
-;;; preceded by a space, followed by a file name (which we take to be
-;;; consisting of anything but space, newline, or parens), followed
-;;; immediately by 0 or more closing parens followed by
-;;; either a space or the end of the line: a just opened file.  PDFTeX
-;;; has ugly stuff in braces that we need to check, too.
+;;; Too ugly to describe in detail.  In short, we try to catch file
+;;; names built from path components that don't contain spaces or
+;;; other special characters once the file extension has started.
+;;;
 ;;; Position for searching immediately after the file name so as to
 ;;; not miss closing parens or something.
 ;;; (match-string 2) is the file name.
@@ -2750,9 +2750,9 @@ name(\\([^)]+\\))\\)\\|\
 ;;; to be favorable.  Removing incomplete characters from the error
 ;;; context is an absolute nuisance.
 			    line (and (re-search-forward "\
-^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^?\\(?:[89a-f][0-9a-f]\\|[@-_?]\\)\\|\
+^l\\.\\([0-9]+\\) \\(\\.\\.\\.\\(?:\\^*\\(?:[89a-f][0-9a-f]\\|[]@-\\_?]\\)\\|\
 \[0-9a-f]?\\)\\)?\\([^\n\r]*?\\)\r?
-\\([^\n\r]*?\\)\\(\\.\\.\\.\\|\\^\\(?:\\^[89a-f]?\\)?\\.\\.\\.\\)?\r?$" nil t)
+\\([^\n\r]*?\\)\\(\\(?:\\^+[89a-f]?\\)?\\.\\.\\.\\)?\r?$" nil t)
 				      (string-to-number (match-string 1)))
 			    ;; And a string of the context to search for.
 			    string (and line (match-string 3))
@@ -3172,7 +3172,11 @@ Tries through `preview-format-extensions'."
   (if file
       (concat (file-name-directory file)
 	      "prv_"
-	      (file-name-nondirectory file))
+	      (progn
+		(setq file (file-name-nondirectory file))
+		(while (string-match " " file)
+		  (setq file (replace-match "_" t t file)))
+		file))
     "prv_texput"))
 
 (defun preview-do-replacements (string replacements)
@@ -3222,8 +3226,8 @@ This is passed through `preview-do-replacements'."
 (defcustom preview-dump-replacements
   '(preview-LaTeX-command-replacements
     ("\\`\\([^ ]+\\)\
-\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
-     . ("\\1 -ini \"&\\1\" " preview-format-name ".ini \\5")))
+\\(\\( +-\\([^ \\\\\"]\\|\\\\\\.\\|\"[^\"]*\"\\)*\\)*\\)\\(.*\\)\\'"
+     . ("\\1 -ini -interaction=nonstopmode \"&\\1\" " preview-format-name ".ini \\5")))
   "Generate a dump command from the usual preview command."
   :group 'preview-latex
   :type '(repeat
@@ -3232,9 +3236,8 @@ This is passed through `preview-do-replacements'."
 
 (defcustom preview-undump-replacements
   '(("\\`\\([^ ]+\\)\
-\\(\\( -\\([^ \"]\\|\"[^\"]*\"\\)*\\)*\\).*\
-\\input{\\([^}]*\\)}.*\\'"
-     . ("\\1 \"&" preview-format-name "\" \\5")))
+ .*? \"\\\\input\" \\(.*\\)\\'"
+     . ("\\1 -interaction=nonstopmode \"&" preview-format-name "\" \\2")))
   "Use a dumped format for reading preamble."
   :group 'preview-latex
   :type '(repeat
@@ -3256,8 +3259,9 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
 	  (expand-file-name (preview-dump-file-name (TeX-master-file "ini"))))
 	 (master (TeX-master-file))
 	 (format-name (expand-file-name master))
-	 (preview-format-name (preview-dump-file-name (file-name-nondirectory
-						       master)))
+	 (preview-format-name (shell-quote-argument
+			       (preview-dump-file-name (file-name-nondirectory
+							master))))
 	 (master-file (expand-file-name (TeX-master-file t)))
 	 (command (preview-do-replacements
 		   (TeX-command-expand
@@ -3277,8 +3281,8 @@ If FORMAT-CONS is non-nil, a previous format may get reused."
       ;; in the tools bundle is an empty file.
       (write-region "\\ifx\\pdfoutput\\undefined\\else\
 \\let\\PREVIEWdump\\dump\\def\\dump{%
-\\edef\\next{{\\pdfoutput=\\the\\pdfoutput\\relax\
-\\the\\everyjob}}\\everyjob\\next\\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax\n" nil dump-file)
+\\edef\\next{{\\catcode`\\ 9 \\pdfoutput=\\the\\pdfoutput\\relax\
+\\the\\everyjob}}\\everyjob\\next\\catcode`\\ 10 \\let\\dump\\PREVIEWdump\\dump}\\fi\\input mylatex.ltx \\relax\n" nil dump-file)
       (TeX-save-document master)
       (prog1
 	  (preview-generate-preview
@@ -3464,8 +3468,9 @@ COMMANDBUFF, DUMPED-CONS, MASTER, and GEOMETRY are
 internal parameters, STR may be a log to insert into the current log."
   (set-buffer commandbuff)
   (let*
-      ((preview-format-name (preview-dump-file-name
-			     (file-name-nondirectory master)))
+      ((preview-format-name (shell-quote-argument
+			     (preview-dump-file-name
+			      (file-name-nondirectory master))))
        (process
 	(TeX-run-command
 	 "Preview-LaTeX"
@@ -3507,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.272 $"))
+	(rev "$Revision: 1.273 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3521,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-09-29 00:16:29 $"))
+    (let ((date "$Date: 2006-10-10 11:32:46 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

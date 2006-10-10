@@ -1,3 +1,29 @@
+2006-10-10  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-gs-filter): Fix prompt match expression to
+	allow stack garbage > 10.
+	(preview-gs-open): Assume `.runandhide' is defined (Ghostscript
+	6.53 and greater).  Don't check Ghostscript stack for correctness,
+	just leave garbage.
+	(preview-prepare-fast-conversion): Use `.runandhide' to ignore
+	garbage left by preamble (such as Omega fonts).
+	(preview-LaTeX-command): Use "%'" and "%t" expansion strings in
+	order to allow filenames with spaces in them.
+	(preview-goto-info-page): Use `info' instead of `Info-goto-node'.
+	(preview-parse-messages): Spike up terminal log file name tracing
+	in order to have a reasonable chance of detecting spaces in file
+	names.
+	(preview-parse-messages): Massage match string for partial strings
+	to deal better with TeX-quoted control sequences.
+	(preview-dump-file-name): The format name should not contain
+	spaces.  Replace them with underlines.
+	(preview-dump-replacements, preview-undump-replacements): Use a
+	different replacement in order to work with the new
+	`preview-LaTeX-command'.
+	(preview-cache-preamble): shell-quote `preview-format-name'.  Keep
+	`mylatex.ltx' from ignoring spaces in file names.
+	(TeX-inline-preview-internal): shell-quote `preview-format-name'.
+
 2006-09-29  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-gs-command): Make default depend on

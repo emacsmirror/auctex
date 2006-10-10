@@ -157,10 +157,10 @@ the printer has no corresponding command."
 
 (defcustom TeX-command-list
   ;; Changed to double quotes for Windows afflicted people.
-  `(("TeX" "%(PDF)%(tex) %S%(PDFout) \"%(mode)\\input %t\""
+  `(("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil
      (plain-tex-mode ams-tex-mode texinfo-mode) :help "Run plain TeX")
-    ("LaTeX" "%l \"%(mode)\\input{%t}\""
+    ("LaTeX" "%`%l%(mode)%' %t"
      TeX-run-TeX nil
      (latex-mode doctex-mode) :help "Run LaTeX")
 	;; Not part of standard TeX.
@@ -168,7 +168,7 @@ the printer has no corresponding command."
      (texinfo-mode) :help "Run Makeinfo with Info output")
     ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
      (texinfo-mode) :help "Run Makeinfo with HTML output")
-    ("AmSTeX" "%(PDF)amstex %S%(PDFout) \"%(mode)\\input %t\""
+    ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t"
      TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX")
     ;; support for ConTeXt  --pg
     ;; first version of ConTeXt to support nonstopmode: 2003.2.10
@@ -446,7 +446,7 @@ is not recommended because it is more powerful than
     ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
     ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
     ("^dvi$" "." "%(o?)xdvi %dS %d")
-    ("^pdf$" "." "xpdf -remote \"%s\" -raise %o %(outpage)")
+    ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
     ("^html?$" "." "netscape %o"))
   "List of output file extensions and view options.
 
@@ -510,7 +510,7 @@ string."
     ("%(mode)" (lambda ()
 		 (if TeX-interactive-mode
 		     ""
-		   "\\nonstopmode")))
+		   " -interaction=nonstopmode")))
     ("%(o?)" (lambda () (if TeX-Omega-mode "o" "")))
     ("%(tex)" (lambda () (if TeX-Omega-mode
 			     TeX-Omega-command
@@ -528,10 +528,47 @@ string."
     ;; `file' means to call `TeX-master-file' or `TeX-region-file'
     ("%s" file nil t)
     ("%t" file t t)
+    ("%`" (lambda nil
+	    (setq TeX-command-pos t TeX-command-text "")))
+    (" \"\\" (lambda nil
+	       (if (eq TeX-command-pos t)
+		   (setq TeX-command-pos pos
+			 pos (+ 3 pos))
+		 (setq pos (1+ pos)))))
+    ("\"" (lambda nil (if (numberp TeX-command-pos)
+			  (setq TeX-command-text
+				(concat
+				 TeX-command-text
+				 (substring command
+					    TeX-command-pos
+					    (1+ pos)))
+				command
+				(concat
+				 (substring command
+					    0
+					    TeX-command-pos)
+				 (substring command
+					    (1+ pos)))
+				pos TeX-command-pos
+				TeX-command-pos t)
+			(setq pos (1+ pos)))))
+    ("%'" (lambda nil
+	    (prog1
+		(if (stringp TeX-command-text)
+		    (progn
+		      (setq pos (+ (length TeX-command-text) 9)
+			    TeX-command-pos
+			    (and (string-match " "
+					      (funcall file t t))
+				 "\""))
+		      (concat TeX-command-text " \"\\input\""))
+		  (setq TeX-command-pos nil)
+		  "")
+	      (setq TeX-command-text nil))))
     ("%n" TeX-current-line)
     ("%d" file "dvi" t)
     ("%f" file "ps" t)
-    ("%o" TeX-view-output-file)
+    ("%o" (lambda nil (funcall file (TeX-output-extension) t)))
     ;; for source specials the file name generated for the xdvi
     ;; command needs to be relative to the master file, just in
     ;; case the file is in a different subdirectory

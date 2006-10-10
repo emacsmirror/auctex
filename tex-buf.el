@@ -291,7 +291,12 @@ LIST default to `TeX-expand-list'.  As a special exception,
 without further expansion."
   (let (pat
 	pos
-	entry
+	entry TeX-command-text TeX-command-pos
+	(file `(lambda (&rest args)
+		 (shell-quote-argument
+		  (concat (and (stringp TeX-command-pos) TeX-command-pos)
+			  (apply ',file args)
+			  (and (stringp TeX-command-pos) TeX-command-pos)))))
 	case-fold-search string expansion arguments)
     (setq list (cons
 		(list "%%" (lambda nil
@@ -304,15 +309,16 @@ without further expansion."
 	    entry (assoc string list)
 	    expansion (car (cdr entry)) ;Second element
 	    arguments (cdr (cdr entry)) ;Remaining elements
-	    command (replace-match
-		     (save-match-data
-		       (cond ((TeX-function-p expansion)
-			      (apply expansion arguments))
-			     ((boundp expansion)
-			      (apply (eval expansion) arguments))
-			     (t
-			      (error "Nonexpansion %s" expansion))))
-		     t t command))))
+	    string (save-match-data
+		     (cond ((TeX-function-p expansion)
+			    (apply expansion arguments))
+			   ((boundp expansion)
+			    (apply (eval expansion) arguments))
+			   (t
+			    (error "Nonexpansion %s" expansion)))))
+      (if (stringp string)
+	  (setq command
+		(replace-match string t t command)))))
   command)
 
 (defun TeX-check-files (derived originals extensions)
@@ -444,10 +450,6 @@ QUEUE is non-nil when we are checking for the printer queue."
 				'TeX-output-extension
 				TeX-output-extension)
 	TeX-output-extension)))
-
-(defun TeX-view-output-file ()
-  "Get the name of the current TeX output file"
-  (TeX-active-master (TeX-output-extension) t))
 
 (defun TeX-view-mouse (event)
   "Start `TeX-view' at mouse position."
