@@ -1,3 +1,9 @@
+2006-10-11  David Kastrup  <dak@gnu.org>
+
+	* preview.el (LaTeX-preview-setup): Move setup of
+	`TeX-error-description-list' and `TeX-expand-list' to AUCTeX
+	proper.
+
 2006-10-10  David Kastrup  <dak@gnu.org>
 
 	* preview.el (preview-gs-filter): Fix prompt match expression to

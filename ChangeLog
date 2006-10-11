@@ -1,3 +1,12 @@
+2006-10-11  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-error-description-list): Add preview-latex error
+	pattern here.
+
+	* tex.el (TeX-expand-list): Add "%m" pattern from preview.
+	(TeX-add-local-master): Make a local variable wrapper more
+	suitable for docstrip.
+
 2006-10-10  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Mention space in file names, PostScript stack

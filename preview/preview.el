@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.273 2006-10-10 11:32:46 dak Exp $
+;; $Id: preview.el,v 1.274 2006-10-11 00:50:38 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2506,13 +2506,6 @@ to add the preview functionality."
 	 (customize-menu-create 'preview))])
       ["Read documentation" preview-goto-info-page]
       ["Report Bug" preview-report-bug]))
-  (add-to-list 'TeX-error-description-list
-	       '("\\(?:Package Preview Error\\|Preview\\):.*" .
-"The auctex option to preview should not be applied manually.  If you
-see this error message, either you did something too clever, or the
-preview Emacs Lisp package something too stupid."))
-  (add-to-list 'TeX-expand-list
-	       '("%m" preview-create-subdirectory) t)
   (if (eq major-mode 'latex-mode)
       (preview-mode-setup))
   (if (boundp 'desktop-buffer-misc)
@@ -3512,7 +3505,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.273 $"))
+	(rev "$Revision: 1.274 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3526,7 +3519,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-10-10 11:32:46 $"))
+    (let ((date "$Date: 2006-10-11 00:50:38 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

@@ -572,7 +572,9 @@ string."
     ;; for source specials the file name generated for the xdvi
     ;; command needs to be relative to the master file, just in
     ;; case the file is in a different subdirectory
-    ("%b" TeX-current-file-name-master-relative))
+    ("%b" TeX-current-file-name-master-relative)
+    ;; the following is for preview-latex.
+    ("%m" preview-create-subdirectory) t))
   "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
@@ -1515,19 +1517,19 @@ This will be done when AUCTeX first try to use the master file.")
 	  (beginning-of-line 1)
 	  (insert prefix "TeX-master: " (prin1-to-string TeX-master) "\n"))
       (let ((comment-prefix (cond ((eq major-mode 'texinfo-mode) "@c ")
+				  ((eq major-mode 'doctex-mode) "% ")
 				  (t "%%% ")))
-	    (mode (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode "japanese-")
+	    (mode (concat (and (boundp 'japanese-TeX-mode) japanese-TeX-mode
+			       "japanese-")
 			  (substring (symbol-name major-mode) 0 -5))))
 	(newline)
 	(when (eq major-mode 'doctex-mode)
-	  (insert "% " TeX-esc "iffalse\n"))
+	  (insert comment-prefix TeX-esc "endinput\n"))
 	(insert
 	 comment-prefix "Local " "Variables: \n"
 	 comment-prefix "mode: " mode "\n"
 	 comment-prefix "TeX-master: " (prin1-to-string TeX-master) "\n"
-	 comment-prefix "End: \n")
-      (when (eq major-mode 'doctex-mode)
-	(insert "% " TeX-esc "fi\n"))))))
+	 comment-prefix "End: \n")))))
 
 (defun TeX-local-master-p ()
   "Return non-nil if there is a `TeX-master' entry in local variables spec.

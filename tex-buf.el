@@ -1601,7 +1601,12 @@ You might want to examine and modify the free variables `file',
 ;;; Error Messages
 
 (defcustom TeX-error-description-list
-  '(("Bad \\\\line or \\\\vector argument.*" .
+  '(("\\(?:Package Preview Error\\|Preview\\):.*" .
+"The `auctex' option to `preview' should not be applied manually.
+If you see this error message outside of a preview run, either
+you did something too clever, or AUCTeX something too stupid.")
+
+    ("Bad \\\\line or \\\\vector argument.*" .
 "The first argument of a \\line or \\vector command, which specifies the
 slope, is illegal\.")
 
