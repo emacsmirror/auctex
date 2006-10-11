@@ -574,7 +574,7 @@ string."
     ;; case the file is in a different subdirectory
     ("%b" TeX-current-file-name-master-relative)
     ;; the following is for preview-latex.
-    ("%m" preview-create-subdirectory) t))
+    ("%m" preview-create-subdirectory))
   "List of expansion strings for TeX command names.
 
 Each entry is a list with two or more elements.  The first element is
