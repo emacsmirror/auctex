@@ -1,3 +1,12 @@
+2006-10-16  David Kastrup  <dak@gnu.org>
+
+	* tex-buf.el (TeX-parse-error, TeX-error, TeX-warning): Replace
+	the error parser basically by what we have in preview-latex.
+	However, this does not yet do the fine-grained hackery around
+	possible TeX quote characters that preview-latex employs in order
+	to get the correct character position in a line even under adverse
+	conditions.
+
 2006-10-11  David Kastrup  <dak@gnu.org>
 
 	* tex-buf.el (TeX-error-description-list): Add preview-latex error

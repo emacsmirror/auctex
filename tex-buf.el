@@ -1339,78 +1339,83 @@ You might want to examine and modify the free variables `file',
 (defun TeX-parse-error (old)
   "Goto next error.  Pop to OLD buffer if no more errors are found."
     (while
-	(progn
-	  (re-search-forward
-	   (concat "\\("
-		   ;; Match regular error indicator "!" as well as
-		   ;; file-line-error error indicator "file:line: error".
-		   "^\\(!\\|.*:[0-9]+:\\) \\|"
-		   "(\\|"
-		   ")\\|"
-		   "\\'\\|"
-		   "!offset([---0-9]*)\\|"
-		   "!name([^)]*)"
-		   (when TeX-debug-bad-boxes
-		     "\\|^.*erfull \\\\.*[0-9]*--[0-9]*")
-		   (when TeX-debug-warnings
-		     "\\|^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*")
-		   "\\)"))
-	  (let ((string (TeX-match-buffer 1)))
+	(cond
+	 ((null (re-search-forward
+		 "\
+^\\(!\\|\\(.*?\\):[0-9]+:\\) \\|\
+\(\\(/*\
+\\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
+\\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
+\\(?:/+\\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
+\\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)?\\)*\\)\
+)*\\(?: \\|\r?$\\)\\|\
+\\()\\))*\\(?:[ >]\\|\r?$\\)\\|\
+ !\\(?:offset(\\([---0-9]+\\))\\|\
+name(\\([^)]+\\))\\)\\|\
+^\\(\\(?:Overfull\\|Underfull\\|Tight\\|Loose\\)\
+ \\\\.*?[0-9]+--[0-9]+\\)\\|\
+^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*" nil t))
+	  ;; No more errors.
+	  (message "No more errors.")
+	  (beep)
+	  (pop-to-buffer old)
+	  nil)
+	 ;; TeX error
+	 ((match-beginning 1)
+	  (when (match-beginning 2)
+	    (unless TeX-error-file
+	      (push nil TeX-error-file)
+	      (push nil TeX-error-offset))
+	    (unless (car TeX-error-offset)
+	      (rplaca TeX-error-file (TeX-match-buffer 2))))
+	  (if (looking-at "Preview ")
+	      t
+	    (TeX-error)
+	    nil))
+	 ;; LaTeX badbox
+	 ((match-beginning 7)
+	  (if TeX-debug-bad-boxes
+	      (progn
+		(TeX-warning (TeX-match-buffer 7))
+		nil)
+	    (re-search-forward "\r?\n\
+\\(?:.\\{79\\}\r?\n\
+\\)*.*\r?$")
+	    t))
+	 ;; LaTeX warning
+	 ((match-beginning 8)
+	  (if TeX-debug-warnings
+	      (progn
+		(TeX-warning (TeX-match-buffer 8))
+		nil)
+	    t))
 
-	    (cond (;; TeX error
-		   (match-end 2)
-		   (TeX-error)
-		   nil)
-
-		  ;; LaTeX warning
-		  ((string-match
-		    (concat
-		     "\\("
-		     "^.*erfull \\\\.*[0-9]*--[0-9]*\\|"
-		     ;; XXX: Add full support for multi-line warnings like
-		     ;; Package hyperref Warning: Token not allowed in a PDFDocEncoded string,
-		     ;; (hyperref)                removing `math shift' on input line 1453.
-		     "^\\(LaTeX [A-Za-z]*\\|Package [A-Za-z]+ \\)Warning:.*"
-		     "\\)")
-		    string)
-		   (TeX-warning string)
-		   nil)
-
-		  ;; New file -- Push on stack
-		  ((string= string "(")
-		   (re-search-forward "\\([^(){}\n \t]*\\)")
-		   (setq TeX-error-file
-			 (cons (TeX-match-buffer 1) TeX-error-file))
-		   (setq TeX-error-offset (cons 0 TeX-error-offset))
-		   t)
-
-		  ;; End of file -- Pop from stack
-		  ((string= string ")")
-		   (setq TeX-error-file (cdr TeX-error-file))
-		   (setq TeX-error-offset (cdr TeX-error-offset))
-		   t)
-
-		  ;; Hook to change line numbers
-		  ((string-match "!offset(\\([---0-9]*\\))" string)
-		   (rplaca TeX-error-offset
-			   (string-to-int (substring string
-						     (match-beginning 1)
-						     (match-end 1))))
-		   t)
-
-		  ;; Hook to change file name
-		  ((string-match "!name(\\([^)]*\\))" string)
-		   (rplaca TeX-error-file (substring string
-						     (match-beginning 1)
-						     (match-end 1)))
-		   t)
-
-		  ;; No more errors.
-		  (t
-		   (message "No more errors.")
-		   (beep)
-		   (pop-to-buffer old)
-		   nil))))))
+	 ;; New file -- Push on stack
+	 ((match-beginning 3)
+	  (push (TeX-match-buffer 3) TeX-error-file)
+	  (push nil TeX-error-offset)
+	  (goto-char (match-end 3))
+	  t)
+	 
+	 ;; End of file -- Pop from stack
+	 ((match-beginning 4)
+	  (when (> (length TeX-error-file) 1)
+	    (pop TeX-error-file)
+	    (pop TeX-error-offset))
+	  (goto-char (match-end 4))
+	  t)
+	 
+	 ;; Hook to change line numbers
+	 ((match-beginning 5)
+	  (setq TeX-error-offset
+		(list (string-to-int (TeX-match-buffer 5))))
+	  t)
+	 
+	 ;; Hook to change file name
+	 ((match-beginning 6)
+	  (setq TeX-error-file
+		(list (TeX-match-buffer 6)))
+	  t))))
 
 (defun TeX-error ()
   "Display an error."
@@ -1439,7 +1444,7 @@ You might want to examine and modify the free variables `file',
 						    (end-of-line)
 						    (point))))
 	 ;; We may use these in another buffer.
-	 (offset (car TeX-error-offset) )
+	 (offset (or (car TeX-error-offset) 0))
 	 (file (car TeX-error-file)))
 
     ;; Remember where we was.
@@ -1475,7 +1480,7 @@ You might want to examine and modify the free variables `file',
   (let* ((error (concat "** " string))
 
 	 ;; bad-box is nil if this is a "LaTeX Warning"
-	 (bad-box (string-match "^.*erfull \\\\.*[0-9]*--[0-9]*" string))
+	 (bad-box (string-match "\\\\[vb]ox.*[0-9]*--[0-9]*" string))
 	 ;; line-string: match 1 is beginning line, match 2 is end line
 	 (line-string (if bad-box " \\([0-9]*\\)--\\([0-9]*\\)"
 			"on input line \\([0-9]*\\)\\."))
@@ -1510,7 +1515,7 @@ You might want to examine and modify the free variables `file',
 		   (TeX-match-buffer 1)))
 
 	 ;; We might use these in another file.
-	 (offset (car TeX-error-offset))
+	 (offset (or (car TeX-error-offset) 0))
 	 (file (car TeX-error-file)))
 
     ;; This is where we start next time.

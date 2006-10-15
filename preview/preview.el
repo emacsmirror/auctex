@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.274 2006-10-11 00:50:38 dak Exp $
+;; $Id: preview.el,v 1.275 2006-10-15 23:53:26 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -2660,7 +2660,7 @@ call, and in its CDR the final stuff for the placement hook."
 	  (progn
 	    (while
 		(re-search-forward "\
-\\(^! \\)\\|\
+^\\(!\\|\\(.*?\\):[0-9]+:\\)\\) \\|\
 \(\\(/*\
 \\(?:\\.+[^()\r\n{} /]*\\|[^()\r\n{} ./]+\
 \\(?: [^()\r\n{} ./]+\\)*\\(?:\\.[-0-9a-zA-Z_.]*\\)?\\)\
@@ -2670,30 +2670,31 @@ call, and in its CDR the final stuff for the placement hook."
 )+\\([ >]\\|\r?$\\)\\|\
  !\\(?:offset(\\([---0-9]+\\))\\|\
 name(\\([^)]+\\))\\)\\|\
-^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$\\|\
-^\\(.*\\):[0-9]+: " nil t)
-;;; Ok, here is a line by line breakdown: match-alternative 1:
-;;; \(^! \)
-;;; exclamation point at start of line followed by blank: TeX error
+^Preview: \\([a-zA-Z]+\\) \\([^\n\r]*\\)\r?$" nil t)
+;;; Ok, here is a line by line breakdown:
+;;; match-alternative 1:
+;;; error indicator for TeX error, either style.
 ;;; match-alternative 2:
+;;; The same, but file-line-error-style, matching on file name.
+;;; match-alternative 3:
 ;;; Too ugly to describe in detail.  In short, we try to catch file
 ;;; names built from path components that don't contain spaces or
 ;;; other special characters once the file extension has started.
 ;;;
 ;;; Position for searching immediately after the file name so as to
 ;;; not miss closing parens or something.
-;;; (match-string 2) is the file name.
-;;; match-alternative 3:
+;;; (match-string 3) is the file name.
+;;; match-alternative 4:
 ;;; )+\( \|$\)
 ;;; a closing paren followed by the end of line or a space: a just
 ;;; closed file.
-;;; match-alternative 4 (wrapped into one shy group with
-;;; match-alternative 5, so that the match on first char is slightly
+;;; match-alternative 5 (wrapped into one shy group with
+;;; match-alternative 6, so that the match on first char is slightly
 ;;; faster):
 ;;; !offset(\([---0-9]+\))
-;;; an AUCTeX offset message. (match-string 4) is the offset itself
+;;; an AUCTeX offset message. (match-string 5) is the offset itself
 ;;; !name(\([^)]+\))
-;;; an AUCTeX file name message.  (match-string 5) is the file name
+;;; an AUCTeX file name message.  (match-string 6) is the file name
 ;;; TODO: Actually, the latter two should probably again match only
 ;;; after a space or newline, since that it what \message produces.
 ;;;disabled in prauctex.def:
@@ -2703,10 +2704,9 @@ name(\\([^)]+\\))\\)\\|\
 ;;; This would have caught overfull box messages that consist of
 ;;; several lines of context all with 79 characters in length except
 ;;; of the last one.  prauctex.def kills all such messages.
-	      (setq file (and (match-beginning 8)
-			      (match-string-no-properties 8)))
+	      (setq file (match-string-no-properties 2))
 	      (cond
-	       ((or (match-beginning 1) file)
+	       ((match-beginning 1)
 		(if (looking-at "\
 \\(?:Preview\\|Package Preview Error\\): Snippet \\([---0-9]+\\) \\(started\\|ended\\(\
 \\.? *(\\([---0-9]+\\)\\+\\([---0-9]+\\)x\\([---0-9]+\\))\\)?\\)\\.")
@@ -2790,30 +2790,30 @@ name(\\([^)]+\\))\\)\\|\
 		  (forward-line)
 		  (re-search-forward "^l\\.[0-9]" nil t)
 		  (forward-line 2)))
-	       ((match-beginning 2)
-		;; New file -- Push on stack
-		(push (match-string-no-properties 2) TeX-error-file)
-		(push nil TeX-error-offset)
-		(goto-char (match-end 2)))
 	       ((match-beginning 3)
+		;; New file -- Push on stack
+		(push (match-string-no-properties 3) TeX-error-file)
+		(push nil TeX-error-offset)
+		(goto-char (match-end 3)))
+	       ((match-beginning 4)
 		;; End of file -- Pop from stack
 		(when (> (length TeX-error-file) 1)
 		  (pop TeX-error-file)
 		  (pop TeX-error-offset))
 		(goto-char (1+ (match-beginning 0))))
-	       ((match-beginning 4)
+	       ((match-beginning 5)
 		;; Hook to change line numbers
 		(setq TeX-error-offset
-		      (list (string-to-number (match-string 4)))))
-	       ((match-beginning 5)
-		;; Hook to change file name
-		(setq TeX-error-file (list (match-string-no-properties 5))))
+		      (list (string-to-number (match-string 5)))))
 	       ((match-beginning 6)
+		;; Hook to change file name
+		(setq TeX-error-file (list (match-string-no-properties 6))))
+	       ((match-beginning 7)
 		(let ((var
-		       (assoc (match-string-no-properties 6)
+		       (assoc (match-string-no-properties 7)
 			      preview-parse-variables))
-		      (offset (- (match-beginning 0) (match-beginning 7)))
-		      (str (match-string-no-properties 7)))
+		      (offset (- (match-beginning 0) (match-beginning 8)))
+		      (str (match-string-no-properties 8)))
 		  ;; paste together continuation lines:
 		  (while (= (- (length str) offset) 79)
 		    (search-forward-regexp "^\\([^\n\r]*\\)\r?$")
@@ -3505,7 +3505,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.274 $"))
+	(rev "$Revision: 1.275 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3519,7 +3519,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-10-11 00:50:38 $"))
+    (let ((date "$Date: 2006-10-15 23:53:26 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)

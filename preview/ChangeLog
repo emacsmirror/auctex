@@ -1,3 +1,8 @@
+2006-10-16  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-parse-messages): Rearrange the regexp for
+	matching and renumber the matches and match strings accordingly.
+
 2006-10-11  David Kastrup  <dak@gnu.org>
 
 	* preview.el (LaTeX-preview-setup): Move setup of
