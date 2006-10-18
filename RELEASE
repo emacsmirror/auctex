@@ -35,9 +35,12 @@ New features and fixed bugs in this release
 There have been problems with the `-without-texmf-dir' option to
 `configure' when the value of `-with-kpathsea-sep' was set or
 determined for an installation system with a default different from
-that of the runtime system.  This particularly affected use of the
-prebuilt XEmacs package under Windows.  `with-kpathsea-sep' has been
-removed, the setting is now usually determined at runtime.
+that of the runtime system.  `with-kpathsea-sep' has been removed; the
+setting is now usually determined at runtime.
+
+Due to this and other problems, preview-latex in the released XEmacs
+package failed under Windows or with anything except recent 21.5
+XEmacsen.
 
 AUCTeX and preview-latex have been changed in order to accommodate
 file names containing spaces.  preview-latex now tolerates bad
