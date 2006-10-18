@@ -1,3 +1,10 @@
+2006-10-19  David Kastrup  <dak@gnu.org>
+
+	* prv-xemacs.el (preview-defmacro): Use `fboundp' instead of
+	`functionp'.
+	(add-to-list): compatibility function not needed anymore since
+	2006-10-11 change.
+
 2006-10-18  David Kastrup  <dak@gnu.org>
 
 	* preview.el (eval-when-compile): restore function definitions of

@@ -40,7 +40,7 @@
 
   (defmacro preview-defmacro (name &rest rest)
     (push 
-     (if (functionp name)
+     (if (fboundp name)
 	 (cons name (symbol-function name))
        name)
      preview-compatibility-macros)
@@ -149,33 +149,6 @@ The message is displayed with label `progress'; see `display-message'."
   (and (mark)
        t))
 
-;; Stuff missing from XEmacs that should really be there.
-;; In time, this will hopefully all migrate into XEmacs.
-
-; XEmacs's `add-to-list' takes only two arguments.
-(condition-case nil
-    (let (check)
-      (add-to-list 'check t t))
-  (error
-   (defun add-to-list (list-var element &optional append)
-     "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
-The test for presence of ELEMENT is done with `equal'.
-If ELEMENT is added, it is added at the beginning of the list,
-unless the optional argument APPEND is non-nil, in which case
-ELEMENT is added at the end.
-
-If you want to use `add-to-list' on a variable that is not defined
-until a certain package is loaded, you should put the call to `add-to-list'
-into a hook function that will be run only after loading the package.
-`eval-after-load' provides one way to do this.  In some cases
-other hooks, such as major mode hooks, can do the job."
-     (if (member element (symbol-value list-var))
-	 (symbol-value list-var)
-       (set list-var
-	    (if append
-		(append (symbol-value list-var) (list element))
-	      (cons element (symbol-value list-var))))))))
-     
 (defvar preview-transparent-border)
 
 ;; Images.
