@@ -1,5 +1,11 @@
 2006-10-18  David Kastrup  <dak@gnu.org>
 
+	* preview.el (eval-when-compile): restore function definitions of
+	compatibility macros.
+
+	* prv-xemacs.el (preview-defmacro): Also redefine functions that
+	actually exist, but save their definition.
+
 	* preview.el (preview-parse-messages): Fix bad regexp.
 
 2006-10-16  David Kastrup  <dak@gnu.org>
