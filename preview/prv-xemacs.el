@@ -1,7 +1,7 @@
 ;;; prv-xemacs.el --- XEmacs support for preview-latex
 
-;; Copyright (C) 2001, 02, 03, 04, 05 Free Software Foundation, Inc.
-;; Parts (C)  2002 Nick Alcock.
+;; Copyright (C) 2001, 02, 03, 04, 05,
+;;               2006 Free Software Foundation, Inc.
 
 ;; Author: David Kastrup
 ;; Keywords: convenience, tex, wp
@@ -39,9 +39,12 @@
     "List of macros only present when compiling/loading uncompiled.")
 
   (defmacro preview-defmacro (name &rest rest)
-    (unless (fboundp name)
-      (push name preview-compatibility-macros)
-      `(eval-when-compile (defmacro ,name ,@rest))))
+    (push 
+     (if (functionp name)
+	 (cons name (symbol-function name))
+       name)
+     preview-compatibility-macros)
+    `(eval-when-compile (defmacro ,name ,@rest)))
   (push 'preview-defmacro preview-compatibility-macros))
 
 (preview-defmacro assoc-default (key alist test)
@@ -57,8 +60,8 @@
 
 ;; This is not quite the case, but unless we're playing with duplicable extents,
 ;; the two are equivalent in XEmacs.
-(unless (fboundp 'match-string-no-properties)
-  (define-compatible-function-alias 'match-string-no-properties 'match-string))
+(preview-defmacro match-string-no-properties (&rest args)
+  `(match-string ,@args))
 
 (preview-defmacro face-attribute (face attr)
   (cond
