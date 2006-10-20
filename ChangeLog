@@ -1,5 +1,14 @@
 2006-10-20  David Kastrup  <dak@gnu.org>
 
+	* doc/Makefile.in (PREVIEWTEXIFILES): Add `version.texi'.
+
+	* doc/auctex.texi: Add formatting emergencystretch.  Move macros
+	input.
+	(top): Rearrange somewhat.  Avoid duplicate contents (?).
+
+	* doc/preview-latex.texi: Restructure and relicense taking
+	auctex.texi as an example.
+
 	* doc/auctex.texi (top): In the user-visible part of the info
 	file, move the copying info completely to the "Copying this
 	manual" section in order to reduce clutter.

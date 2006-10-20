@@ -1,8 +1,29 @@
 \input texinfo
+@comment %**start of header
 @setfilename preview-latex.info
-@settitle preview-latex
-@dircategory TeX
+@include version.texi
+@settitle preview-latex @value{VERSION}
+@comment %**end of header
+@include macros.texi
+@copying
+This manual is for preview-latex, a @LaTeX{} preview mode for @AUCTeX{}
+(version @value{VERSION} from @value{UPDATED}).
+
+Copyright @copyright{} 2001, 2002, 2003,
+2004, 2005, 2006 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License.''
+@end quotation
+@end copying
+
 @dircategory Emacs
+@dircategory TeX
 @direntry
 * preview-latex: (preview-latex).       Preview LaTeX fragments in Emacs
 @end direntry
@@ -11,56 +32,47 @@
 @syncodeindex vr cp
 @syncodeindex ky cp
 @syncodeindex fn cp
-@comment %**end of header 
+
 @iftex
 @tolerance 10000 @emergencystretch 3em
 @end iftex
-
-@include macros.texi
 
 @finalout
 @titlepage
 @title @previewlatex{}
 @subtitle A @LaTeX{} preview mode for @AUCTeX{} in Emacs.
-@subtitle Version 11.83
-
-@author by David Kastrup, Alan Shutko,
-@author Jan-@AA{}ke Larsson and Nick Alcock.
+@subtitle Version @value{VERSION}, @value{UPDATED}
+@author Jan-@AA{}ke Larsson
+@author David Kastrup and others
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001--2005 Free Software Foundation, Alan Shutko,
-and Nick Alcock.
- 
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-@ignore
-Permission is granted to process this file through TeX and print the
-results, provided the printed document carries copying permission
-notice identical to this one except for the removal of this paragraph
-(this paragraph not being relevant to the printed manual).
-@end ignore
-
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided also that the
-section entitled ``Copying'' is included exactly as in the original, and
-provided that the entire resulting derived work is distributed under the
-terms of a permission notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation
-approved by the Free Software Foundation.
+@insertcopying
 @end titlepage
-@page
 
 @c @summarycontents
 @contents
 
-@node top, Introduction, (dir), (dir)
-@ifnottex
-@top preview-latex
+@c Use @ifinfo _and_ @ifhtml here because Texinfo 3 cannot cope with
+@c @ifnottex around a top node.
+@ifinfo
+@node top, Copying, (dir), (dir)
+@top @previewlatex{}
+
+This manual may be copied under the conditions spelled out in
+@ref{Copying this Manual}.
+
+@end ifinfo
+@ifhtml
+@node top, Copying, (dir), (dir)
+@top @previewlatex{}
+@insertcopying
+@end ifhtml
+
+@contents
+
+@iftex
+@unnumbered @previewlatex{}
+@end iftex
  
 @previewlatex{} is a package embedding preview fragments into Emacs
 source buffers under the @AUCTeX{} editing environment for @LaTeX{}.  It
@@ -72,16 +84,8 @@ The name of the package is really @samp{preview-latex}, all in
 lowercase letters, with a hyphen.  If you typeset it, you can use a
 sans-serif font to visually offset it.
 
-This file documents @previewlatex{} version 11.83.
-
-This documentation should cover most important points.  However,
-corrections or perhaps rewrites of sections are @emph{very welcome}.
-
-David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
-
-@end ifnottex
-
 @menu
+* Copying::                     Copying
 * Introduction::                Getting started.
 * Installation::                Make Install.
 * Keys and lisp::               Key bindings and user-level lisp functions.
@@ -90,16 +94,37 @@ David Kastrup, Alan Shutko, Jan-@AA{}ke Larsson and Nick Alcock.
 * For advanced users::          Internals and more customizations.
 * ToDo::                        Future development.
 * Frequently Asked Questions::  All about @previewlatex{}
-* License::                     GPL.
+* Copying this Manual::         GNU Free Documentation License
 * Index::                       A menu of many topics.             
 @end menu
 
-@node Introduction, Installation, top, top
+@node Copying, Introduction, top, top
+@unnumbered Copying
+@cindex Copying
+@cindex Copyright
+@cindex GPL
+@cindex General Public License
+@cindex License
+@cindex Free
+@cindex Free software
+@cindex Distribution
+@cindex Right
+@cindex Warranty
+
+For the conditions for copying parts of @previewlatex{}, see the General
+Public Licenses referres to in the copyright notices of the files, the
+General Public Licenses accompanying them and the explanatory section in
+@ref{Copying,,,auctex,the @AUCTeX{} manual}.
+
+This manual specifically is covered by the GNU Free Documentation
+License (@pxref{Copying this Manual}).
+
+@node Introduction, Installation, Copying, top
 @c Used as @file{README} as well: in separate file
 @chapter Introduction
 @include preview-readme.texi
 
-@node Installation, Keys and lisp, Introduction, top
+@node Installation, Keys and lisp, Copying, top
 @chapter Installation
 Installation is now being covered in
 @ref{Installation,,,auctex,the @AUCTeX{} manual}.
@@ -778,20 +803,33 @@ which is customizable in the Preview Latex group.
 @appendix ToDo
 @include preview-todo.texi
 
-@node Frequently Asked Questions, License, ToDo, top
+@node Frequently Asked Questions, Copying this Manual, ToDo, top
 @c Also used as TODO: in separate file
 @appendix Frequently Asked Questions
 @include preview-faq.texi
 
-@node License, Index, Frequently Asked Questions, top
+@node Copying this Manual, Index, Frequently Asked Questions, top
 @c Not to be changed often, I think: in separate file.
-@appendix License
-@include copying.texi
+@appendix Copying this Manual
+
+@ifinfo
+The copyright notice for this manual is:
+
+@insertcopying
+@end ifinfo
+
+The full license text can be read here:
+
+@menu
+* GNU Free Documentation License:: License for copying this manual.
+@end menu
+
+@include fdl.texi
 
 @c @node Credits, Index, Internals, top
 @c @appendix Credits 
 
-@node Index,  , License, top
+@node Index,  , Copying this Manual, top
 @unnumbered Index
 
 @printindex cp

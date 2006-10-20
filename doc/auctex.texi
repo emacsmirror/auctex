@@ -6,8 +6,9 @@
 @c footnotestyle separate
 @c paragraphindent 2
 @comment %**end of header
+@include macros.texi
 @copying
-This manual is for AUCTeX
+This manual is for @AUCTeX{}
 (version @value{VERSION} from @value{UPDATED}),
 a sophisticated TeX environment for Emacs.
 
@@ -31,15 +32,14 @@ Documentation License.''
 @end direntry
 
 @iftex
-@tolerance 10000
+@tolerance 10000 @emergencystretch 3em
 @end iftex
-
-@include macros.texi
 
 @finalout
 @titlepage
 @title @AUCTeX{}
-@subtitle for version @value{VERSION}, @value{UPDATED}
+@subtitle A sophisticated @TeX{} environment for Emacs
+@subtitle Version @value{VERSION}, @value{UPDATED}
 @author Kresten Krab Thorup
 @author Per Abrahamsen
 @author David Kastrup and others
@@ -47,8 +47,6 @@ Documentation License.''
 @vskip 0pt plus 1filll
 @insertcopying
 @end titlepage
-
-@contents
 
 @c Use @ifinfo _and_ @ifhtml here because Texinfo 3 cannot cope with
 @c @ifnottex around a top node.
@@ -66,10 +64,7 @@ This manual may be copied under the conditions spelled out in
 @insertcopying
 @end ifhtml
 
-@ifnothtml
-@shortcontents
 @contents
-@end ifnothtml
 
 @iftex
 @unnumbered Executive Summary

@@ -25,7 +25,7 @@ AUCTEXTEXIFILES = auctex.texi install.texi wininstall.texi intro.texi \
 	fdl.texi version.texi
 PREVIEWTEXIFILES = copying.texi preview-faq.texi macros.texi \
 	preview-dtxdoc.texi preview-latex.texi preview-problems.texi \
-	preview-readme.texi preview-todo.texi
+	preview-readme.texi preview-todo.texi version.texi
 DISTTEXTS = ../README ../INSTALL ../TODO ../INSTALL.windows ../FAQ ../CHANGES
 
 all: dist
