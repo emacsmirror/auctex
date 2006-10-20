@@ -55,7 +55,10 @@ Documentation License.''
 @ifinfo
 @node top
 @top @AUCTeX{}
-@insertcopying
+
+This manual may be copied under the conditions spelled out in
+@ref{Copying this Manual}.
+
 @end ifinfo
 @ifhtml
 @node top
@@ -248,8 +251,7 @@ introduced by others will not reflect on our reputation.
 The precise conditions of the licenses for the files currently being
 distributed as part of @AUCTeX{} are found in the General Public
 Licenses that accompany them.  This manual specifically is covered by
-the GNU Free Documentation License (@pxref{GNU Free Documentation
-License}).
+the GNU Free Documentation License (@pxref{Copying this Manual}).
 
 @include intro.texi
 
@@ -3676,6 +3678,14 @@ List of functions to be called after parsing a @TeX{} file.
 
 @node Copying this Manual
 @appendix Copying this Manual
+
+@ifinfo
+The copyright notice for this manual is:
+
+@insertcopying
+@end ifinfo
+
+The full license text can be read here:
 
 @menu
 * GNU Free Documentation License:: License for copying this manual.

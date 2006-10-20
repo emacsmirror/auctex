@@ -1,3 +1,9 @@
+2006-10-20  David Kastrup  <dak@gnu.org>
+
+	* doc/auctex.texi (top): In the user-visible part of the info
+	file, move the copying info completely to the "Copying this
+	manual" section in order to reduce clutter.
+
 2006-10-19  David Kastrup  <dak@gnu.org>
 
 	* RELEASE: Mention previous XEmacs package problems.
