@@ -81,6 +81,9 @@ described in this manual is useful by itself, but together they provide
 an environment where you will make very few @LaTeX{} errors, and makes it
 easy to find the errors that may slip through anyway.
 
+It is a good idea to make a printout of @AUCTeX{}'s reference card
+@file{tex-ref.tex} or one of its typeset versions.
+
 If you want to make @AUCTeX{} aware of style files and multi-file
 documents right away, insert the following in your @file{.emacs} file.
 

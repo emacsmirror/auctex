@@ -1,5 +1,7 @@
 2006-10-20  David Kastrup  <dak@gnu.org>
 
+	* doc/auctex.texi (top): Mention reference card.
+
 	* doc/Makefile.in (PREVIEWTEXIFILES): Add `version.texi'.
 
 	* doc/auctex.texi: Add formatting emergencystretch.  Move macros
