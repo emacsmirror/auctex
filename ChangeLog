@@ -1,3 +1,7 @@
+2006-10-21  Reiner Steib  <Reiner.Steib@gmx.de>
+
+	* doc/preview-latex.texi: Fix @node commands.
+
 2006-10-20  David Kastrup  <dak@gnu.org>
 
 	* doc/auctex.texi (top): Mention reference card.

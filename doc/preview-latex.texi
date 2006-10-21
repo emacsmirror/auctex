@@ -55,7 +55,7 @@ Documentation License.''
 @c Use @ifinfo _and_ @ifhtml here because Texinfo 3 cannot cope with
 @c @ifnottex around a top node.
 @ifinfo
-@node top, Copying, (dir), (dir)
+@node top, , (dir), (dir)
 @top @previewlatex{}
 
 This manual may be copied under the conditions spelled out in
@@ -124,7 +124,7 @@ License (@pxref{Copying this Manual}).
 @chapter Introduction
 @include preview-readme.texi
 
-@node Installation, Keys and lisp, Copying, top
+@node Installation, Keys and lisp, Introduction, top
 @chapter Installation
 Installation is now being covered in
 @ref{Installation,,,auctex,the @AUCTeX{} manual}.
