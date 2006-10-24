@@ -1,3 +1,8 @@
+2006-10-24  David Kastrup  <dak@gnu.org>
+
+	* preview.el (preview-auto-reveal): Fetch keybindings of [left]
+	and [right] at runtime.  Change proposed default accordingly.
+
 2006-10-19  David Kastrup  <dak@gnu.org>
 
 	* prv-xemacs.el (preview-defmacro): Use `fboundp' instead of

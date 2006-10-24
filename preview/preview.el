@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.277 2006-10-18 17:45:01 dak Exp $
+;; $Id: preview.el,v 1.278 2006-10-24 08:08:20 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1456,9 +1456,9 @@ numbers (can be float if available)."
 Fallback to :inherit and 'default implemented."
   :group 'preview-appearance)
 
-(defcustom preview-auto-reveal `(preview-arrived-via
-				 ,(key-binding [left])
-				 ,(key-binding [right]))
+(defcustom preview-auto-reveal '(eval (preview-arrived-via
+				       (key-binding [left])
+				       (key-binding [right])))
   "*Cause previews to open automatically when entered.
 Possibilities are:
 T autoopens,
@@ -1471,13 +1471,13 @@ the CDR of the CONS-cell in the rest of the arguments, while
 point and current buffer point to the position in question.
 All of the options show reasonable defaults."
   :group 'preview-appearance
-  :type `(choice (const :tag "Off" nil)
+  :type '(choice (const :tag "Off" nil)
 		 (const :tag "On" t)
 		 (symbol :tag "Indirect variable" :value reveal-mode)
 		 (cons :tag "Function call"
-		       :value (preview-arrived-via
-			       ,(key-binding [left])
-			       ,(key-binding [right]))
+		       :value (eval (preview-arrived-via
+				     (key-binding [left])
+				     (key-binding [right])))
 		       function (list :tag "Argument list"
 				      (repeat :inline t sexp)))))
   
@@ -3505,7 +3505,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.277 $"))
+	(rev "$Revision: 1.278 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3519,7 +3519,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-10-18 17:45:01 $"))
+    (let ((date "$Date: 2006-10-24 08:08:20 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
