@@ -1,7 +1,19 @@
 2006-10-24  David Kastrup  <dak@gnu.org>
 
+	* prv-xemacs.el (preview-move-point): rearrange for calling
+	`preview-auto-reveal' with DISTANCE argument.
+
+	* prv-emacs.el (preview-remove-urgentization): Small optimization.
+	(preview-move-point): Rearrange to be more efficient in the
+	absence of overlays.
+
 	* preview.el (preview-auto-reveal): Fetch keybindings of [left]
 	and [right] at runtime.  Change proposed default accordingly.
+	(preview-at-point): Fix change from 2005-03-15 for cursor
+	restoration.
+	(preview-auto-reveal-p): Implement integer MODE and take DISTANCE
+	argument.
+	(preview-auto-reveal): Allow DISTANCE.
 
 2006-10-19  David Kastrup  <dak@gnu.org>
 

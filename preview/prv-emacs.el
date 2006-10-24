@@ -122,7 +122,7 @@ REST as the remainder, returning T."
 Returns the old arguments to `preview-add-urgentization'
 if there was any urgentization."
   (let ((dispro (overlay-get ov 'display)))
-    (when (and (consp dispro) (eq (car dispro) 'when))
+    (when (eq (car-safe dispro) 'when)
       (prog1
 	  (car (cdr dispro))
 	(overlay-put ov 'display (cdr (cdr dispro)))))))
@@ -443,7 +443,7 @@ overlays not in the active window."
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
-  (let (newlist (pt (point)))
+  (let* (newlist (pt (point)) (lst (overlays-at pt)) distance)
     (setq preview-temporary-opened
 	  (dolist (ov preview-temporary-opened newlist)
 	    (and (overlay-buffer ov)
@@ -453,20 +453,23 @@ overlays not in the active window."
 			      (>= pt (overlay-end ov))))
 		     (preview-toggle ov t)
 		   (push ov newlist)))))
-    (if (or disable-point-adjustment
-	    global-disable-point-adjustment
-	    (preview-auto-reveal-p preview-auto-reveal))
-	(preview-open-overlays (overlays-at pt))
-      (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
-			   (< pt (marker-position preview-marker))))
-	    (lst (overlays-at pt)))
+    (when lst
+      (if (or disable-point-adjustment
+	      global-disable-point-adjustment
+	      (preview-auto-reveal-p
+	       preview-auto-reveal
+	       (setq distance
+		     (and (eq (marker-buffer preview-marker)
+			      (current-buffer))
+			  (- pt (marker-position preview-marker))))))
+	  (preview-open-overlays lst)
 	(while lst
 	  (setq lst
 		(if (and
 		     (eq (overlay-get (car lst) 'preview-state) 'active)
 		     (> pt (overlay-start (car lst))))
 		    (overlays-at
-		     (setq pt (if backward
+		     (setq pt (if (< distance 0)
 				  (overlay-start (car lst))
 				(overlay-end (car lst)))))
 		  (cdr lst))))

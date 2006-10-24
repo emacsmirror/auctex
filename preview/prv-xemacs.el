@@ -523,7 +523,7 @@ overlays not in the active window."
 (defun preview-move-point ()
   "Move point out of fake-intangible areas."
   (preview-check-changes)
-  (let (newlist (pt (point)))
+  (let (newlist (pt (point)) distance)
     (setq preview-temporary-opened
 	  (dolist (ov preview-temporary-opened newlist)
 	    (and (extent-object ov)
@@ -534,15 +534,18 @@ overlays not in the active window."
 			      (>= pt (extent-end-position ov))))
 		     (preview-toggle ov t)
 		   (push ov newlist)))))
-    (if	(preview-auto-reveal-p preview-auto-reveal)
+    (if	(preview-auto-reveal-p
+	 preview-auto-reveal
+	 (setq distance
+	       (and (eq (marker-buffer preview-marker)
+			(current-buffer))
+		    (- pt (marker-position preview-marker)))))
 	(map-extents #'preview-open-overlay nil
 		     pt pt nil nil 'preview-state 'active)
-      (let ((backward (and (eq (marker-buffer preview-marker) (current-buffer))
-			   (< pt (marker-position preview-marker))))
-	    newpt)
+      (let (newpt)
 	(while (setq newpt
 		     (map-extents #'preview-skip-overlay nil
-				  pt pt backward nil
+				  pt pt (< distance 0) nil
 				  'preview-state 'active))
 	  (setq pt newpt))
 	(goto-char pt)))))

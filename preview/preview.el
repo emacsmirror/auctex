@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; $Id: preview.el,v 1.278 2006-10-24 08:08:20 dak Exp $
+;; $Id: preview.el,v 1.279 2006-10-24 16:02:21 dak Exp $
 ;;
 ;; This style is for the "seamless" embedding of generated images
 ;; into LaTeX source code.  Please see the README and INSTALL files
@@ -1465,6 +1465,8 @@ T autoopens,
 NIL doesn't,
 a symbol will have its value consulted if it exists,
 defaulting to NIL if it doesn't.
+An integer will specify a maximum cursor movement distance.
+Larger movements won't open the preview.
 A CONS-cell means to call a function for determining the value.
 The CAR of the cell is the function to call which receives
 the CDR of the CONS-cell in the rest of the arguments, while
@@ -1474,6 +1476,7 @@ All of the options show reasonable defaults."
   :type '(choice (const :tag "Off" nil)
 		 (const :tag "On" t)
 		 (symbol :tag "Indirect variable" :value reveal-mode)
+		 (integer :tag "Maximum distance" :value 1)
 		 (cons :tag "Function call"
 		       :value (eval (preview-arrived-via
 				     (key-binding [left])
@@ -1481,14 +1484,18 @@ All of the options show reasonable defaults."
 		       function (list :tag "Argument list"
 				      (repeat :inline t sexp)))))
   
-(defun preview-auto-reveal-p (mode)
+(defun preview-auto-reveal-p (mode distance)
   "Decide whether to auto-reveal.
 Returns non-NIL if region should be auto-opened.
 See `preview-auto-reveal' for definitions of MODE, which gets
-set to `preview-auto-reveal'."
+set to `preview-auto-reveal'.  DISTANCE specifies the movement
+distance with which point has been reached in case it has been
+a movement starting in the current buffer."
   (cond ((symbolp mode)
 	 (and (boundp mode)
               (symbol-value mode)))
+	((integerp mode)
+	 (and distance (/= 0 distance) (<= (abs distance) mode)))
 	((consp mode)
 	 (apply (car mode) (cdr mode)))
 	(t mode)))
@@ -1598,7 +1605,7 @@ through `preview-region'."
 	(let ((preview-state (overlay-get ovr 'preview-state)))
 	  (when preview-state
 	    (unless (eq preview-state 'disabled)
-	      (preview-toggle ovr 'toggle)
+	      (preview-toggle ovr 'toggle (selected-window))
 	      (throw 'exit t)))))
       (preview-region (preview-next-border t)
 		      (preview-next-border nil)))))
@@ -3505,7 +3512,7 @@ internal parameters, STR may be a log to insert into the current log."
 
 (defconst preview-version (eval-when-compile
   (let ((name "$Name:  $")
-	(rev "$Revision: 1.278 $"))
+	(rev "$Revision: 1.279 $"))
     (or (when (string-match "\\`[$]Name: *release_\\([^ ]+\\) *[$]\\'" name)
 	  (setq name (match-string 1 name))
 	  (while (string-match "_" name)
@@ -3519,7 +3526,7 @@ If not a regular release, CVS revision of `preview.el'.")
 
 (defconst preview-release-date
   (eval-when-compile
-    (let ((date "$Date: 2006-10-24 08:08:20 $"))
+    (let ((date "$Date: 2006-10-24 16:02:21 $"))
       (string-match
        "\\`[$]Date: *\\([0-9]+\\)/\\([0-9]+\\)/\\([0-9]+\\)"
        date)
