@@ -2733,7 +2733,12 @@ space does not end a sentence, so don't break a line there."
 	    (while (not (looking-at TeX-comment-start-regexp)) (forward-char))
 	    (skip-chars-backward " \t")
 	    (skip-chars-backward "^ \t\n")
-	    (when (not (bolp))
+	    (unless (or (bolp)
+			;; Comment starters and whitespace.
+			(TeX-looking-at-backward
+			 (concat "^\\([ \t]*" TeX-comment-start-regexp
+				 "+\\)+[ \t]*")
+			 (line-beginning-position)))
 	      (LaTeX-fill-newline)))))
       ;; Leave point after final newline.
       (goto-char to)
