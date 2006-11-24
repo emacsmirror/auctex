@@ -1897,15 +1897,15 @@ FORCE is not nil."
 (defvar TeX-grcl "}" "The TeX group closing character.")
  (make-variable-buffer-local 'TeX-grcl)
 
-(defcustom TeX-enable-toolbar t
-  "Enable TeX tool bar."
+(defcustom plain-TeX-enable-toolbar t
+  "Enable TeX tool bar in plain TeX mode."
   :group 'TeX-tool-bar
   :type 'boolean)
 
-(defun TeX-maybe-install-toolbar ()
-  "Conditionally install tool bar buttons for TeX mode.
-Install tool bar if `TeX-enable-toolbar' is non-nil."
-  (when TeX-enable-toolbar
+(defun plain-TeX-maybe-install-toolbar ()
+  "Conditionally install tool bar buttons for plain TeX mode.
+Install tool bar if `plain-TeX-enable-toolbar' is non-nil."
+  (when plain-TeX-enable-toolbar
     ;; Defined in `tex-bar.el':
     (TeX-install-toolbar)))
 
@@ -2482,11 +2482,11 @@ of plain-TeX-mode-hook."
   (setq TeX-base-mode-name "TeX")
   (setq TeX-command-default "TeX")
   (setq TeX-sentinel-default-function 'TeX-TeX-sentinel)
-  (add-hook 'tool-bar-mode-on-hook 'TeX-maybe-install-toolbar nil t)
+  (add-hook 'tool-bar-mode-on-hook 'plain-TeX-maybe-install-toolbar nil t)
   (when (if (featurep 'xemacs)
 	    (featurep 'toolbar)
 	  (and (boundp 'tool-bar-mode) tool-bar-mode))
-    (TeX-maybe-install-toolbar))
+    (plain-TeX-maybe-install-toolbar))
   (TeX-run-mode-hooks 'text-mode-hook 'TeX-mode-hook 'plain-TeX-mode-hook)
   (TeX-set-mode-name))
 
