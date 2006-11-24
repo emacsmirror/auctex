@@ -1952,11 +1952,12 @@ and moreover allowing you to @emph{debug} your documents.
 
 @cindex tool bar, toolbar
 @vindex LaTeX-enable-toolbar
-@vindex TeX-enable-toolbar
-If you are using the tool bar, @AUCTeX{} provides a special tool bar for
-@TeX{} and @LaTeX{} which offers icons for the most important commands.
-You can customize some tool bar features with @kbd{M-x customize-group
-RET TeX-tool-bar RET}.
+@vindex plain-TeX-enable-toolbar
+@AUCTeX{} comes with a special tool bar for @TeX{} and @LaTeX{} which
+provides buttons for the most important commands.  You can enable or
+disable it by customizing the options @code{plain-TeX-enable-toolbar}
+and @code{LaTeX-enable-toolbar} in the @code{TeX-tool-bar} customization
+group.
 
 @menu
 * Commands::                    Invoking external commands.
