@@ -1,3 +1,14 @@
+2006-11-24  Ralf Angeli  <angeli@caeruleus.net>
+
+	* tex.el (plain-TeX-enable-toolbar): Rename from
+	`TeX-enable-toolbar'.
+	(plain-TeX-maybe-install-toolbar): Rename from
+	`TeX-maybe-install-toolbar'.
+	(TeX-plain-tex-mode): Use new names.
+
+	* doc/auctex.texi (Running TeX and friends): Explicitely mention
+	`plain-TeX-enable-toolbar' and `LaTeX-enable-toolbar'.
+
 2006-11-16  Ralf Angeli  <angeli@caeruleus.net>
 
 	* latex.el (LaTeX-fill-region-as-para-do): Do not break before
