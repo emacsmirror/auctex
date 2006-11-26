@@ -1445,6 +1445,9 @@ else.  There might be text before point."
 
 ;;; Option expander
 
+(defvar ConTeXt-texexec-option-nonstop "--nonstop "
+  "Command line option for texexec to use nonstopmode.")
+
 (defun ConTeXt-expand-options ()
   "Expand options for texexec command."
   (concat
@@ -1456,15 +1459,10 @@ else.  There might be text before point."
 	  (format "--tex=%s " ConTeXt-engine)))
    (unless (eq ConTeXt-current-interface "en")
      (format "--interface=%s " ConTeXt-current-interface))
-   (if TeX-source-specials-mode
-       (format
-	"--passon=\"%s\" "
-	(concat
-	 TeX-source-specials-tex-flags
-	 (unless TeX-interactive-mode
-	   " -interaction=nonstopmode")))
-     (unless TeX-interactive-mode
-       "--passon=\"-interaction=nonstopmode\" "))))
+   (when TeX-source-specials-mode
+     (format "--passon=\"%s\" " TeX-source-specials-tex-flags))
+   (unless TeX-interactive-mode
+     ConTeXt-texexec-option-nonstop)))
 
 ;;; Mode
 
