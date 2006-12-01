@@ -545,7 +545,7 @@ overlays not in the active window."
       (let (newpt)
 	(while (setq newpt
 		     (map-extents #'preview-skip-overlay nil
-				  pt pt (< distance 0) nil
+				  pt pt (and distance (< distance 0)) nil
 				  'preview-state 'active))
 	  (setq pt newpt))
 	(goto-char pt)))))
