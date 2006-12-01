@@ -469,7 +469,7 @@ overlays not in the active window."
 		     (eq (overlay-get (car lst) 'preview-state) 'active)
 		     (> pt (overlay-start (car lst))))
 		    (overlays-at
-		     (setq pt (if (< distance 0)
+		     (setq pt (if (and distance (< distance 0))
 				  (overlay-start (car lst))
 				(overlay-end (car lst)))))
 		  (cdr lst))))

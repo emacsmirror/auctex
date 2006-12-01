@@ -153,15 +153,15 @@ The message is displayed with label `progress'; see `display-message'."
 
 ;; Images.
 
+(defsubst preview-supports-image-type (imagetype)
+  "Return whether IMAGETYPE is supported by XEmacs."
+  (memq imagetype (image-instantiator-format-list)))
+
 ;; TODO: Generalize this so we can create the fixed icons using it.
 
 ;; Argh, dired breaks :file :(
 ;; This is a temporary kludge to get around that until a fixed dired
 ;; or a fixed XEmacs is released.
-
-(defsubst preview-supports-image-type (imagetype)
-  "Return whether IMAGETYPE is supported by XEmacs."
-  (memq imagetype (image-instantiator-format-list)))
 
 (defun preview-create-icon-1 (file type ascent)
   "Create an icon from FILE, image TYPE and ASCENT."

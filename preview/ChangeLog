@@ -1,3 +1,11 @@
+2006-12-01  David Kastrup  <dak@gnu.org>
+
+	* prv-emacs.el (preview-move-point): Do not error out if
+	`distance' is nil.
+
+	* prv-xemacs.el (preview-supports-image-type): Move so that the
+	following comment makes sense.
+
 2006-12-01  Ralf Angeli  <angeli@caeruleus.net>
 
 	* prv-xemacs.el (preview-move-point): Do not error out if
